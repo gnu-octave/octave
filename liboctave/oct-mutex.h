@@ -93,9 +93,11 @@ public:
     }
 
 private:
-  octave_autolock (void) { }
-  octave_autolock (const octave_autolock&) { }
-  octave_autolock& operator = (const octave_autolock&) { }
+
+  // No copying or default constructor!
+  octave_autolock (void);
+  octave_autolock (const octave_autolock&);
+  octave_autolock& operator = (const octave_autolock&);
 
 private:
   octave_mutex mutex;

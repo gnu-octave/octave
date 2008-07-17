@@ -37,6 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "gripes.h"
 #include "oct-map.h"
+#include "oct-mutex.h"
 #include "ov.h"
 
 class caseless_str : public std::string
@@ -1124,11 +1125,6 @@ public:
 
   OCTINTERP_API void execute (const octave_value& data = octave_value ()) const;
 
-  OCTINTERP_API static
-      void execute (const octave_value& cb, const graphics_handle& h,
-		    const octave_value& data = octave_value ());
-
-
   callback_property& operator = (const octave_value& val)
     {
       set (val);
@@ -1566,12 +1562,16 @@ public:
 
   std::string get_handlevisibility (void) const { return handlevisibility.current_value (); }
 
+  bool is_hittest (void) const { return hittest.is_on (); }
   std::string get_hittest (void) const { return hittest.current_value (); }
 
+  bool is_interruptible (void) const { return interruptible.is_on (); }
   std::string get_interruptible (void) const { return interruptible.current_value (); }
 
+  bool is_selected (void) const { return selected.is_on (); }
   std::string get_selected (void) const { return selected.current_value (); }
 
+  bool is_selectionhighlight (void) const { return selectionhighlight.is_on (); }
   std::string get_selectionhighlight (void) const { return selectionhighlight.current_value (); }
   
   octave_value get_uicontextmenu (void) const { return uicontextmenu.get (); }
@@ -1899,6 +1899,17 @@ public:
       }
   }
 
+  graphics_handle get_handle (void) const
+  {
+    if (valid_object ())
+      return get_properties ().get___myhandle__ ();
+    else
+      {
+        error ("base_graphics_object::get_handle: invalid graphics object");
+        return graphics_handle ();
+      }
+  }
+
   virtual void remove_child (const graphics_handle& h)
   {
     if (valid_object ())
@@ -2067,6 +2078,8 @@ public:
   }
 
   graphics_handle get_parent (void) const { return rep->get_parent (); }
+
+  graphics_handle get_handle (void) const { return rep->get_handle (); }
 
   void remove_child (const graphics_handle& h) { rep->remove_child (h); }
 
@@ -3486,6 +3499,8 @@ protected:
 
 public:
 
+  typedef void (*event_fcn) (void*);
+
   static bool instance_ok (void)
   {
     bool retval = true;
@@ -3557,10 +3572,159 @@ public:
     return instance_ok () ? instance->do_handle_list () : Matrix ();
   }
 
+  static void lock (void)
+  {
+    if (instance_ok ())
+      instance->do_lock ();
+  }
+
+  static void unlock (void)
+  {
+    if (instance_ok ())
+      instance->do_unlock ();
+  }
+
   static Matrix figure_handle_list (void)
   {
     return instance_ok () ? instance->do_figure_handle_list () : Matrix ();
   }
+
+  static void execute_callback (const graphics_handle& h,
+				const std::string& name,
+				const octave_value& data = Matrix ())
+  {
+    graphics_object go = get_object (h);
+
+    if (go.valid_object ())
+      {
+	octave_value cb = go.get (name);
+
+	if (! error_state)
+	  execute_callback (h, cb, data);
+      }
+  }
+
+  static void execute_callback (const graphics_handle& h,
+				const octave_value& cb,
+				const octave_value& data = Matrix ())
+  {
+    if (instance_ok ())
+      instance->do_execute_callback (h, cb, data);
+  }
+
+  static void post_callback (const graphics_handle& h,
+			     const std::string& name,
+			     const octave_value& data = Matrix ())
+  {
+    if (instance_ok ())
+      instance->do_post_callback (h, name, data);
+  }
+
+  static void post_function (event_fcn fcn, void* data = 0)
+  {
+    if (instance_ok ())
+      instance->do_post_function (fcn, data);
+  }
+
+  static void post_set (const graphics_handle& h,
+			const std::string& name,
+			const octave_value& value)
+  {
+    if (instance_ok ())
+      instance->do_post_set (h, name, value);
+  }
+
+  static int process_events (void)
+  {
+    return (instance_ok () ?  instance->do_process_events () : 0);
+  }
+
+  static int flush_events (void)
+  {
+    return (instance_ok () ?  instance->do_process_events (true) : 0);
+  }
+
+public:
+  class autolock
+  {
+  public:
+    autolock (void) { lock (); }
+
+    ~autolock (void) { unlock (); }
+
+  private:
+
+    // No copying!
+    autolock (const autolock&);
+    autolock& operator = (const autolock&);
+  };
+
+public:
+  class event_data
+    {
+      public:
+	event_data (void) : rep (0) { }
+
+	event_data (const event_data& d)
+	  {
+	    rep = d.rep;
+	    if (rep)
+	      rep->refcount++;
+	  }
+
+	virtual ~event_data (void)
+	  {
+	    if (rep && --rep->refcount == 0)
+	      {
+		delete rep;
+		rep = 0;
+	      }
+	  }
+
+	event_data& operator = (const event_data& d)
+	  {
+	    if (d.rep != rep)
+	      {
+		if (rep && --rep->refcount == 0)
+		  delete rep;
+
+		rep = d.rep;
+		if (rep)
+		  rep->refcount++;
+	      }
+
+	    return *this;
+	  }
+
+	virtual void execute (void)
+	  { if (rep) rep->execute (); }
+
+	bool ok (void) const { return (rep != 0); }
+	
+	static event_data
+	    create_callback_event (const graphics_handle& h,
+				   const std::string& name,
+				   const octave_value& data = Matrix ());
+
+	static event_data
+	    create_function_event (event_fcn fcn, void *data = 0);
+
+	static event_data
+	    create_set_event (const graphics_handle& h,
+			      const std::string& name,
+			      const octave_value& value);
+
+      protected:
+	explicit event_data (int /* dummy */)
+	    : refcount (0) { }
+
+      private:
+	union
+	  {
+	    event_data *rep;
+	    int refcount;
+	  };
+    };
 
 private:
 
@@ -3587,6 +3751,15 @@ private:
   // The allocated figure handles.  Top of the stack is most recently
   // created.
   std::list<graphics_handle> figure_list;
+
+  // The lock for accessing the graphics sytsem
+  octave_mutex graphics_lock;
+
+  // The list of event queued by backends
+  std::list<event_data> event_queue;
+
+  // The stack of callback objects
+  std::list<graphics_object> callback_objects;
 
   graphics_handle get_handle (const std::string& go_name);
 
@@ -3645,6 +3818,33 @@ private:
   {
     return figure_list.empty () ? graphics_handle () : figure_list.front ();
   }
+
+  void do_lock (void) { graphics_lock.lock (); }
+  
+  void do_unlock (void) { graphics_lock.unlock (); }
+
+  void do_execute_callback (const graphics_handle& h, const octave_value& cb,
+			    const octave_value& data);
+
+  void do_post_callback (const graphics_handle& h, const std::string name,
+			 const octave_value& data);
+
+  void do_post_function (event_fcn fcn, void* fcn_data);
+
+  void do_post_set (const graphics_handle& h, const std::string name,
+		    const octave_value& value);
+
+  int do_process_events (bool force = false);
+
+  static void restore_gcbo (void*)
+  {
+    if (instance_ok ())
+      instance->do_restore_gcbo ();
+  }
+
+  void do_restore_gcbo (void);
+
+  void do_post_event (const event_data& e);
 };
 
 

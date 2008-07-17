@@ -1,3 +1,53 @@
+2008-07-16  John W. Eaton  <jwe@octave.org>
+
+	* graphics.h.in (gh_manager::autolock): Delete copy constructor
+	and assignment definitions.
+
+2008-07-16  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* graphics.h.in (callback_property::execute): Remove static version.
+	(base_properties::is_hittest, base_properties::is_interruptible,
+	base_properties::is_selected, base_properties::is_selectionhighlight):
+	New convenience property accessors.
+	(base_graphics_object::get_handle, graphics_object::get_handle): Idem.
+	(gh_manager::graphics_lock): New global mutex
+	(gh_manager::lock, gh_manager::unlock, gh_manager::do_lock,
+	gh_manager::do_unlock): Add accessors for it.
+	(gh_manager::autolock): New class for easy locking of the graphics
+	system.
+	(gh_manager::event_data): New class for event management.
+	(gh_manager::event_queue): New object to hold pending events.
+	(gh_manager::callback_objects): New stack of callback objects.
+	(gh_manager::execute_callback, gh_manager:post_callback,
+	gh_manager::post_function, gh_manager::post_set,
+	gh_manager::process_events, gh_manager::flush_events,
+	gh_manager::restore_gcbo): New static methods for event management.
+	(gh_manager::do_execute_callback, gh_manager::do_post_callback,
+	gh_manager::do_post_function, gh_manager::do_post_set,
+	gh_manager::do_process_events, gh_manager::do_post_event,
+	gh_manager::do_restore_gcbo): New non-static versions.
+	* graphics.cc (xreset_gcbo): Remove.
+	(execute_callback): Likewise.
+	(base_property::run_listeners, callback_property::execute): Use
+	gh_manager::execute_callback.
+	(class callback_event_data, class function_event_data, class
+	set_event_data): New classes to implement various types of events.
+	(gh_manager::event_data::create_callback_event,
+	gh_manager::event_data::create_function_event,
+	gh_manager::event_data::create_set_event): Implement event factory
+	methods.
+	(gh_manager::do_restore_gcbo, gh_manager::do_execute_callback,
+	gh_manager::do_post_event, gh_manager::do_post_callback,
+	gh_manager::do_post_function, gh_manager::do_post_set,
+	gh_manager::do_process_events): New methods for event management.
+	(Fishandle, Fset, Fget, F__get__, F__go_figure__, F__go_delete__,
+	F__go_axes_init__, F__go_handles__, F__go_figure_handles__,
+	Favailable_backends, Fdrawnow, Faddlistener, Faddproperty,
+	get_property_from_handle, set_property_in_handle): Lock graphics
+	system.
+	(GO_BODY): Likewise.
+	(Fdrawnow): Support single "expose" argument.
+
 2008-07-15  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/__convn__.cc (convn): Cast second arg to

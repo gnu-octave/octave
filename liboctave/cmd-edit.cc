@@ -45,6 +45,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-error.h"
 #include "lo-utils.h"
 #include "oct-env.h"
+#include "oct-mutex.h"
 #include "oct-time.h"
 
 command_editor *command_editor::instance = 0;
@@ -52,6 +53,8 @@ command_editor *command_editor::instance = 0;
 std::set<command_editor::startup_hook_fcn> command_editor::startup_hook_set;
 
 std::set<command_editor::event_hook_fcn> command_editor::event_hook_set;
+
+static octave_mutex event_hook_lock;
 
 #if defined (USE_READLINE)
 
@@ -852,8 +855,14 @@ command_editor::startup_handler (void)
 int
 command_editor::event_handler (void)
 {
-  for (event_hook_set_iterator p = event_hook_set.begin ();
-       p != event_hook_set.end (); p++)
+  event_hook_lock.lock ();
+
+  std::set<event_hook_fcn> hook_set (event_hook_set);
+
+  event_hook_lock.unlock ();
+
+  for (event_hook_set_iterator p = hook_set.begin ();
+       p != hook_set.end (); p++)
     {
       event_hook_fcn f = *p;
 
@@ -1160,6 +1169,8 @@ command_editor::remove_startup_hook (startup_hook_fcn f)
 void
 command_editor::add_event_hook (event_hook_fcn f)
 {
+  octave_autolock guard (event_hook_lock);
+
   if (instance_ok ())
     {
       event_hook_set.insert (f);
@@ -1171,6 +1182,8 @@ command_editor::add_event_hook (event_hook_fcn f)
 void
 command_editor::remove_event_hook (event_hook_fcn f)
 {
+  octave_autolock guard (event_hook_lock);
+
   if (instance_ok ())
     {
       event_hook_set_iterator p = event_hook_set.find (f);

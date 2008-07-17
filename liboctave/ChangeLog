@@ -1,3 +1,18 @@
+2008-07-16  John W. Eaton  <jwe@octave.org>
+
+	* oct-mutex.h (octave_autolock::octave_autolock (void),
+	octave_autolock (const octave_autolock&),
+	octave_autolock::operator = (const octave_autolock&)):
+	Delete definitions.
+
+2008-07-16  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* cmd-edit.cc (event_hook_lock): New static mutex variable.
+	(command_editor::event_handler): Lock and copy event_hook_set before
+	executing handlers.
+	(command_editor::add_event_hook, command_editor::remove_event_hook):
+	Autolock event_hook_lock.
+
 2008-07-15  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* oct-mutex.h, oct-mutex.cc: New files.

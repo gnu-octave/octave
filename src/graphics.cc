@@ -37,6 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "file-ops.h"
 #include "file-stat.h"
 
+#include "cmd-edit.h"
 #include "defun.h"
 #include "error.h"
 #include "graphics.h"
@@ -170,83 +171,6 @@ default_figure_position (void)
   m(2) = 560;
   m(3) = 420;
   return m;
-}
-
-static void
-xset_gcbo (const graphics_handle& h)
-{
-  graphics_object go = gh_manager::get_object (0);
-  root_figure::properties& props =
-      dynamic_cast<root_figure::properties&> (go.get_properties ());
-
-  props.set_callbackobject (h.as_octave_value ());
-}
-
-static void
-xreset_gcbo (void *)
-{
-  xset_gcbo (graphics_handle ());
-}
-
-static void
-execute_callback (const octave_value& cb_arg, const graphics_handle& h,
-                  const octave_value& data)
-{
-  octave_value_list args;
-  octave_function *fcn = 0;
-
-  args(0) = h.as_octave_value ();
-  if (data.is_defined ())
-    args(1) = data;
-  else
-    args(1) = Matrix ();
-
-  unwind_protect::begin_frame ("execute_callback");
-  unwind_protect::add (xreset_gcbo);
-
-  xset_gcbo (h);
-
-  BEGIN_INTERRUPT_WITH_EXCEPTIONS;
-
-  // Copy CB because "function_value" method is non-const.
-
-  octave_value cb = cb_arg;
-
-  if (cb.is_function_handle ())
-    fcn = cb.function_value ();
-  else if (cb.is_string ())
-    {
-      int status;
-      std::string s = cb.string_value ();
-
-      eval_string (s, false, status);
-    }
-  else if (cb.is_cell () && cb.length () > 0
-           && (cb.rows () == 1 || cb.columns () == 1)
-           && cb.cell_value ()(0).is_function_handle ())
-    {
-      Cell c = cb.cell_value ();
-
-      fcn = c(0).function_value ();
-      if (! error_state)
-        {
-          for (int i = 0; i < c.length () ; i++)
-            args(2+i) = c(i);
-        }
-    }
-  else
-    {
-      std::string nm = cb.class_name ();
-      error ("trying to execute non-executable object (class = %s)",
-	     nm.c_str ());
-    }
-
-  if (fcn && ! error_state)
-    feval (fcn, args);
-  
-  END_INTERRUPT_WITH_EXCEPTIONS;
-
-  unwind_protect::run_frame ("execute_callback");
 }
 
 static Matrix
@@ -541,7 +465,7 @@ base_property::run_listeners (listener_mode mode)
 
   for (int i = 0; i < l.length (); i++)
     {
-      execute_callback (l(i), parent, octave_value ());
+      gh_manager::execute_callback (parent, l(i), octave_value ());
 
       if (error_state)
 	break;
@@ -829,15 +753,7 @@ void
 callback_property::execute (const octave_value& data) const
 {
   if (callback.is_defined () && ! callback.is_empty ())
-    execute_callback (callback, get_parent (), data);
-}
-
-void
-callback_property::execute (const octave_value& cb, const graphics_handle& h,
-			    const octave_value& data)
-{
-  if (cb.is_defined () && ! cb.is_empty ())
-    execute_callback (cb, h, data);
+    gh_manager::execute_callback (get_parent (), callback, data);
 }
 
 // Used to cache dummy graphics objects from which dynamic
@@ -3649,6 +3565,323 @@ gh_manager::do_pop_figure (const graphics_handle& h)
     }
 }
 
+class
+callback_event_data : public gh_manager::event_data
+{
+public:
+  callback_event_data (const graphics_handle& h, const std::string& name,
+		       const octave_value& data = Matrix ())
+      : gh_manager::event_data (0), handle (h), callback_name (name),
+        callback_data (data) { }
+
+  void execute (void)
+    {
+      gh_manager::execute_callback (handle, callback_name, callback_data);
+    }
+
+private:
+  callback_event_data (void)
+      : gh_manager::event_data (0) { }
+
+private:
+  graphics_handle handle;
+  std::string callback_name;
+  octave_value callback_data;
+};
+
+class
+function_event_data : public gh_manager::event_data
+{
+public:
+  function_event_data (gh_manager::event_fcn fcn, void* data = 0)
+      : gh_manager::event_data (0), function (fcn),
+        function_data (data) { }
+
+  void execute (void)
+    {
+      function (function_data);
+    }
+
+private:
+  function_event_data (void)
+      : gh_manager::event_data (0) { }
+
+private:
+  gh_manager::event_fcn function;
+  void* function_data;
+};
+
+class
+set_event_data : public gh_manager::event_data
+{
+public:
+  set_event_data (const graphics_handle& h, const std::string& name,
+		  const octave_value& value)
+      : gh_manager::event_data (0), handle (h), property_name (name),
+        property_value (value) { }
+
+  void execute (void)
+    {
+      gh_manager::autolock guard;
+
+      xset (handle, property_name, property_value);
+    }
+
+private:
+  set_event_data (void)
+      : gh_manager::event_data (0) { }
+
+private:
+  graphics_handle handle;
+  std::string property_name;
+  octave_value property_value;
+};
+
+gh_manager::event_data
+gh_manager::event_data::create_callback_event (const graphics_handle& h,
+					       const std::string& name,
+					       const octave_value& data)
+{
+  event_data e;
+
+  e.rep = new callback_event_data (h, name, data);
+
+  e.rep->refcount++;
+
+  return e;
+}
+
+gh_manager::event_data
+gh_manager::event_data::create_function_event (gh_manager::event_fcn fcn,
+					       void *data)
+{
+  event_data e;
+
+  e.rep =new function_event_data (fcn, data);
+
+  e.rep->refcount++;
+
+  return e;
+}
+
+gh_manager::event_data
+gh_manager::event_data::create_set_event (const graphics_handle& h,
+					  const std::string& name,
+					  const octave_value& data)
+{
+  event_data e;
+
+  e.rep = new set_event_data (h, name, data);
+
+  e.rep->refcount++;
+
+  return e;
+}
+
+static void
+xset_gcbo (const graphics_handle& h)
+{
+  graphics_object go = gh_manager::get_object (0);
+  root_figure::properties& props =
+      dynamic_cast<root_figure::properties&> (go.get_properties ());
+
+  props.set_callbackobject (h.as_octave_value ());
+}
+
+void
+gh_manager::do_restore_gcbo (void)
+{
+  gh_manager::autolock guard;
+
+  callback_objects.pop_front ();
+
+  xset_gcbo (callback_objects.empty ()
+	     ? graphics_handle ()
+	     : callback_objects.front ().get_handle ());
+}
+
+void
+gh_manager::do_execute_callback (const graphics_handle& h,
+				 const octave_value& cb_arg,
+				 const octave_value& data)
+{
+  octave_value_list args;
+  octave_function *fcn = 0;
+
+  args(0) = h.as_octave_value ();
+  if (data.is_defined ())
+    args(1) = data;
+  else
+    args(1) = Matrix ();
+
+  unwind_protect::begin_frame ("execute_callback");
+  unwind_protect::add (gh_manager::restore_gcbo);
+
+  if (true)
+    {
+      gh_manager::autolock guard;
+  
+      callback_objects.push_front (get_object (h));
+      xset_gcbo (h);
+    }
+
+  BEGIN_INTERRUPT_WITH_EXCEPTIONS;
+
+  // Copy CB because "function_value" method is non-const.
+
+  octave_value cb = cb_arg;
+
+  if (cb.is_function_handle ())
+    fcn = cb.function_value ();
+  else if (cb.is_string ())
+    {
+      int status;
+      std::string s = cb.string_value ();
+
+      eval_string (s, false, status);
+    }
+  else if (cb.is_cell () && cb.length () > 0
+           && (cb.rows () == 1 || cb.columns () == 1)
+           && cb.cell_value ()(0).is_function_handle ())
+    {
+      Cell c = cb.cell_value ();
+
+      fcn = c(0).function_value ();
+      if (! error_state)
+        {
+          for (int i = 0; i < c.length () ; i++)
+            args(2+i) = c(i);
+        }
+    }
+  else
+    {
+      std::string nm = cb.class_name ();
+      error ("trying to execute non-executable object (class = %s)",
+	     nm.c_str ());
+    }
+
+  if (fcn && ! error_state)
+    feval (fcn, args);
+  
+  END_INTERRUPT_WITH_EXCEPTIONS;
+
+  unwind_protect::run_frame ("execute_callback");
+}
+
+void
+gh_manager::do_post_event (const event_data& e)
+{
+  event_queue.push_back (e);
+
+  command_editor::add_event_hook (gh_manager::process_events);
+}
+
+void
+gh_manager::do_post_callback (const graphics_handle& h, const std::string name,
+			      const octave_value& data)
+{
+  gh_manager::autolock guard;
+
+  graphics_object go = get_object (h);
+
+  if (go.valid_object ())
+    {
+      if (callback_objects.empty ())
+	do_post_event (event_data::create_callback_event (h, name, data));
+      else
+	{
+	  const graphics_object& current = callback_objects.front ();
+
+	  if (current.get_properties ().is_interruptible ())
+	    do_post_event (event_data::create_callback_event (h, name, data));
+	  else
+	    {
+	      caseless_str busy_action (go.get_properties ().get_busyaction ());
+
+	      if (busy_action.compare ("queue"))
+		do_post_event (event_data::create_callback_event (h, name, data));
+	      else
+		{
+		  caseless_str cname (name);
+
+		  if (cname.compare ("deletefcn")
+		      || cname.compare ("createfcn")
+		      || (go.isa ("figure")
+			  && (cname.compare ("closerequestfcn")
+			      || cname.compare ("resizefcn"))))
+		    do_post_event (event_data::create_callback_event (h, name, data));
+		}
+	    }
+	}
+    }
+}
+
+void
+gh_manager::do_post_function (event_fcn fcn, void* fcn_data)
+{
+  gh_manager::autolock guard;
+
+  do_post_event (event_data::create_function_event (fcn, fcn_data));
+}
+
+void
+gh_manager::do_post_set (const graphics_handle& h, const std::string name,
+			 const octave_value& value)
+{
+  gh_manager::autolock guard;
+
+  do_post_event (event_data::create_set_event (h, name, value));
+}
+
+int
+gh_manager::do_process_events (bool force)
+{
+  event_data e;
+
+  do
+    {
+      e = event_data ();
+
+      gh_manager::lock ();
+
+      if (! event_queue.empty ())
+	{
+	  if (callback_objects.empty () || force)
+	    {
+	      e = event_queue.front ();
+	      
+	      event_queue.pop_front ();
+	    }
+	  else
+	    {
+	      const graphics_object& go = callback_objects.front ();
+
+	      if (go.get_properties ().is_interruptible ())
+		{
+		  e = event_queue.front ();
+
+		  event_queue.pop_front ();
+		}
+	    }
+	}
+
+      gh_manager::unlock ();
+
+      if (e.ok ())
+	e.execute ();
+    }
+  while (e.ok ());
+
+  gh_manager::lock ();
+
+  if (event_queue.empty ())
+    command_editor::remove_event_hook (gh_manager::process_events);
+
+  gh_manager::unlock ();
+
+  return 0;
+}
+
 property_list::plist_map_type
 root_figure::init_factory_properties (void)
 {
@@ -3674,6 +3907,8 @@ DEFUN (ishandle, args, ,
 Return true if @var{h} is a graphics handle and false otherwise.\n\
 @end deftypefn")
 {
+  gh_manager::autolock guard;
+
   octave_value retval;
 
   if (args.length () == 1)
@@ -3691,6 +3926,8 @@ Set the named property value or vector @var{p} to the value @var{v}\n\
 for the graphics handle @var{h}.\n\
 @end deftypefn")
 {
+  gh_manager::autolock guard;
+
   octave_value retval;
 
   int nargin = args.length ();
@@ -3741,6 +3978,8 @@ If @var{h} is a vector, return a cell array including the property\n\
 values or lists respectively.\n\
 @end deftypefn")
 {
+  gh_manager::autolock guard;
+
   octave_value retval;
   octave_value_list vlist;
 
@@ -3811,6 +4050,8 @@ If @var{h} is a vector, return a cell array including the property\n\
 values or lists respectively.\n\
 @end deftypefn")
 {
+  gh_manager::autolock guard;
+
   octave_value retval;
   octave_value_list vlist;
 
@@ -3932,6 +4173,8 @@ DEFUN (__go_figure__, args, ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
+  gh_manager::autolock guard;
+
   octave_value retval;
 
   if (args.length () > 0)
@@ -3982,6 +4225,8 @@ Undocumented internal function.\n\
 }
 
 #define GO_BODY(TYPE) \
+  gh_manager::autolock guard; \
+ \
   octave_value retval; \
  \
   if (args.length () > 0) \
@@ -4060,6 +4305,8 @@ DEFUN (__go_delete__, args, ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
+  gh_manager::autolock guard;
+
   octave_value_list retval;
 
   if (args.length () == 1)
@@ -4108,6 +4355,8 @@ DEFUN (__go_axes_init__, args, ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
+  gh_manager::autolock guard;
+
   octave_value retval;
 
   int nargin = args.length ();
@@ -4156,6 +4405,8 @@ DEFUN (__go_handles__, , ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
+  gh_manager::autolock guard;
+
   return octave_value (gh_manager::handle_list ());
 }
 
@@ -4165,6 +4416,8 @@ DEFUN (__go_figure_handles__, , ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
+  gh_manager::autolock guard;
+
   return octave_value (gh_manager::figure_handle_list ());
 }
 
@@ -4174,6 +4427,8 @@ DEFUN (available_backends, , ,
 Returns resgistered graphics backends.\n\
 @end deftypefn")
 {
+  gh_manager::autolock guard;
+
   return octave_value (graphics_backend::available_backends_list ());
 }
 
@@ -4195,6 +4450,8 @@ Undocumented internal function.\n\
 
   octave_value retval;
 
+  gh_manager::lock ();
+
   unwind_protect::begin_frame ("Fdrawnow");
   unwind_protect::add (clear_drawnow_request);
 
@@ -4209,7 +4466,7 @@ Undocumented internal function.\n\
 	  __go_close_all_registered__ = true;
 	}
 
-      if (args.length () == 0)
+      if (args.length () == 0 || args.length () == 1)
 	{
 	  Matrix hlist = gh_manager::figure_handle_list ();
 
@@ -4225,7 +4482,13 @@ Undocumented internal function.\n\
 		  if (fprops.is_modified ())
 		    {
 		      if (fprops.is_visible ())
-			fprops.get_backend ().redraw_figure (h);
+			{
+			  gh_manager::unlock ();
+
+			  fprops.get_backend ().redraw_figure (h);
+
+			  gh_manager::lock ();
+			}
 		      else if (! fprops.get___plot_stream__ ().is_empty ())
 			{
 			  fprops.close (false);
@@ -4235,6 +4498,27 @@ Undocumented internal function.\n\
 		      fprops.set_modified (false);
 		    }
 		}
+	    }
+
+	  bool do_events = true;
+
+	  if (args.length () == 1)
+	    {
+	      caseless_str val (args(0).string_value ());
+
+	      if (! error_state && val.compare ("expose"))
+		do_events = false;
+	      else
+		error ("drawnow: invalid argument, expected `expose' as argument");
+	    }
+
+	  if (do_events)
+	    {
+	      gh_manager::unlock ();
+
+	      gh_manager::process_events ();
+
+	      gh_manager::lock ();
 	    }
 	}
       else if (args.length () >= 2 && args.length () <= 4)
@@ -4276,8 +4560,12 @@ Undocumented internal function.\n\
 			    {
 			      graphics_object go = gh_manager::get_object (h);
 
+			      gh_manager::unlock ();
+
 			      go.get_backend ()
 				.print_figure (h, term, file, mono, debug_file);
+
+			      gh_manager::lock ();
 			    }
 			  else
 			    error ("drawnow: nothing to draw");
@@ -4299,6 +4587,8 @@ Undocumented internal function.\n\
     }
 
   unwind_protect::run_frame ("Fdrawnow");
+
+  gh_manager::unlock ();
 
   return retval;
 }
@@ -4334,6 +4624,8 @@ addlistener (gcf, \"position\", @{@@my_listener, \"my string\"@})\n\
 \n\
 @end deftypefn")
 {
+  gh_manager::autolock guard;
+
   octave_value retval;
 
   if (args.length () == 3)
@@ -4430,6 +4722,8 @@ addproperty (\"my_style\", gcf, \"linelinestyle\", \"--\");\n\
 \n\
 @end deftypefn")
 {
+  gh_manager::autolock guard;
+
   octave_value retval;
 
   if (args.length () >= 3)
@@ -4486,6 +4780,8 @@ octave_value
 get_property_from_handle (double handle, const std::string& property,
 			  const std::string& func)
 {
+  gh_manager::autolock guard;
+
   graphics_object obj = gh_manager::get_object (handle);
   octave_value retval;
 
@@ -4504,6 +4800,8 @@ bool
 set_property_in_handle (double handle, const std::string& property,
 			const octave_value& arg, const std::string& func)
 {
+  gh_manager::autolock guard;
+
   graphics_object obj = gh_manager::get_object (handle);
   int ret = false;
 

@@ -627,15 +627,15 @@ oct-gperf.h: octave.gperf
 
 __magick_read__.d: CPPFLAGS += $(MAGICK_INCFLAGS)
 __magick_read__.o pic/__magick_read__.o: CPPFLAGS += $(MAGICK_INCFLAGS)
-__magick_read__.oct: DL_LDFLAGS += $(MAGICK_LIBS)
+__magick_read__.oct: OCT_LINK_DEPS += $(MAGICK_LIBS)
 
-convhulln.oct: DL_LDFLAGS += $(QHULL_LIBS)
-__delaunayn__.oct: DL_LDFLAGS += $(QHULL_LIBS)
-__voronoi__.oct: DL_LDFLAGS += $(QHULL_LIBS)
-regexp.oct: DL_LDFLAGS += $(REGEX_LIBS)
-urlwrite.oct: DL_LDFLAGS += $(CURL_LIBS)
-__glpk__.oct: DL_LDFLAGS += $(GLPK_LIBS)
-fltk_backend.oct: DL_LDFLAGS += $(GRAPHICS_LIBS) $(FT2_LIBS)
+convhulln.oct: OCT_LINK_DEPS += $(QHULL_LIBS)
+__delaunayn__.oct: OCT_LINK_DEPS += $(QHULL_LIBS)
+__voronoi__.oct: OCT_LINK_DEPS += $(QHULL_LIBS)
+regexp.oct: OCT_LINK_DEPS += $(REGEX_LIBS)
+urlwrite.oct: OCT_LINK_DEPS += $(CURL_LIBS)
+__glpk__.oct: OCT_LINK_DEPS += $(GLPK_LIBS)
+fltk_backend.oct: OCT_LINK_DEPS += $(GRAPHICS_LIBS) $(FT2_LIBS)
 
 check: all
 .PHONY: check

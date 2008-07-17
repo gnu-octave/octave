@@ -1,3 +1,15 @@
+2008-07-17  Jaroslav Hajek <highegg@gmail.com>
+
+	* Makefile.in (convhulln.oct, __delaunayn__.oct, __voronoi__.oct, 
+	regexp.oct, urlwrite.oct, __glpk__.oct, fltk_backend.oct):
+	Use OCT_LINK_DEPS instead of DL_LDFLAGS for target-specific
+	dependencies.
+
+2008-07-17  David Bateman  <dbateman@free.fr>
+
+	* DLD-FUNCTION/__magick_read__.cc (F__magick_read__): Allow build
+	without GraphicsMagick++ installed.
+
 2008-07-16  John W. Eaton  <jwe@octave.org>
 
 	* graphics.h.in (gh_manager::autolock): Delete copy constructor
@@ -47,11 +59,6 @@
 	system.
 	(GO_BODY): Likewise.
 	(Fdrawnow): Support single "expose" argument.
-
-2008-07-17  David Bateman  <dbateman@free.fr>
-
-	* DLD-FUNCTION/__magick_read__.cc (F__magick_read__): Allow build
-	without GraphicsMagick++ installed.
 
 2008-07-15  John W. Eaton  <jwe@octave.org>
 

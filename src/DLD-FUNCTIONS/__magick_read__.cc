@@ -28,6 +28,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun-dld.h"
 #include "error.h"
 
+#ifdef HAVE_MAGICK
+
 #include <GraphicsMagick/Magick++.h>
 
 unsigned int
@@ -303,6 +305,7 @@ read_images (const std::vector<Magick::Image>& imvec,
 
   return retval;
 }
+#endif // HAVE_MAGICK
 
 DEFUN_DLD (__magick_read__, args, nargout,
   "-*- texinfo -*-\n\
@@ -316,6 +319,7 @@ Instead you should use @code{imread}.\n\
 {
   octave_value_list output;
 
+#ifdef HAVE_MAGICK
   if (args.length () > 2 || args.length () < 1 || ! args(0).is_string ()
       || nargout > 3)
     {
@@ -401,6 +405,11 @@ Instead you should use @code{imread}.\n\
 	  error ("__magick_read__: image depths bigger than 16-bit not supported");
 	}
     }
+#else
+
+  error ("__magick_read__: not available in this version of Octave");
+
+#endif
 
   return output;
 }

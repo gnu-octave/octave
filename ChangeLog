@@ -1,3 +1,8 @@
+2008-07-17  David Bateman  <dbateman@free.fr>
+
+	* configure.in (HAVE_MAGICK): New define for presence of
+	GraphicsMagick.
+
 2008-07-16  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* configure.in: Add check for pthread.h.

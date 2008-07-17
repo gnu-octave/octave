@@ -641,6 +641,8 @@ warn_magick=
 AC_CHECK_PROGS(MAGICK_CONFIG, [GraphicsMagick++-config GraphicsMagick-config])
 if test -z "$MAGICK_CONFIG"; then
   warn_magick="GraphicsMagick++ config script not found.  Assuming GraphicsMagic++ library and header files are missing, so imread will not be fully functional"
+else
+  AC_DEFINE(HAVE_MAGICK, 1, [Define if GraphicsMagick++ is available.])
 fi
 
 # ---------------------------------------------------------------------

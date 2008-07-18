@@ -1,3 +1,8 @@
+2008-07-18 Carlo de Falco  <carlo.defalco@gmail.com>
+
+	* gl-render.h: Conditionally include GL/gl.h or OpenGL/gl.h
+	and GL/glu.h or OpenGL/glu.h
+
 2008-07-17  John W. Eaton  <jwe@octave.org>
 
 	* symtab.cc (out_of_date_check_internal): New arg, dispatch_type.

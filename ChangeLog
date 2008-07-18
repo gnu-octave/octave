@@ -1,3 +1,7 @@
+2008-07-18 Carlo de Falco <carlo.defalco@gmail.com>
+
+	* aclocal.m4: Search for gl.h and glu.h in OpenGL/ as well as in GL/.
+
 2008-07-18  John W. Eaton  <jwe@octave.org>
 
 	* configure.in: Fix FTGL test to handle either FTGL/ftgl.h or ftgl.h.

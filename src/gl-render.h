@@ -29,8 +29,17 @@ along with Octave; see the file COPYING.  If not, see
 #include <windows.h>
 #endif
 
+#ifdef HAVE_GL_GL_H
 #include <GL/gl.h>
+#elif defined HAVE_OPENGL_GL_H
+#include <OpenGL/gl.h>
+#endif
+
+#ifdef HAVE_GL_GLU_H
 #include <GL/glu.h>
+#elif defined HAVE_OPENGL_GLU_H
+#include <OpenGL/glu.h>
+#endif
 
 #include "graphics.h"
 

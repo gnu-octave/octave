@@ -1066,12 +1066,12 @@ case $canonical_host_type in
     ;;
 esac
 have_opengl_incs=no
-AC_CHECK_HEADERS(GL/gl.h, [
-  AC_CHECK_HEADERS(GL/glu.h, [
-    have_opengl_incs=yes], [], [
+AC_CHECK_HEADERS(GL/gl.h OpenGL/gl.h, [
+  AC_CHECK_HEADERS(GL/glu.h OpenGL/glu.h, [
+    have_opengl_incs=yes, break], [], [
 #ifdef HAVE_WINDOWS_H
 # include <windows.h>
-#endif])], [], [
+#endif ]), break], [], [
 #ifdef HAVE_WINDOWS_H
 # include <windows.h>
 #endif])

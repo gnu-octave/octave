@@ -1,3 +1,8 @@
+2008-07-21  Jaroslav Hajek <highegg@gmail.com>
+
+	* configure.in: Extend FTGL test to test for both ftgl.h and FTGL.h.
+	Use HAVE_FTGL_UPPERCASE to indicate the latter (version <= 2.1.2).
+
 2008-07-19 Rafael Laboissiere <rafael@debia8n.org>
 
 	* octMakefile.in (CONF_DISTFILES): Include acx_blas_f77_func.m4 in

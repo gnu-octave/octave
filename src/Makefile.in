@@ -218,7 +218,7 @@ SOURCES := $(DIST_SRC) $(OP_SRC) $(TI_SRC)
 
 BUILT_EXTRAS := graphics.h mxarray.h
 
-EXTRAS := ov-base-int.cc ov-base-mat.cc ov-base-scalar.cc
+EXTRAS := ov-base-int.cc ov-base-mat.cc ov-base-scalar.cc graphics-props.cc
 
 EXTRA_OBJECTS := oct-errno.o octave.o builtins.o ops.o
 
@@ -383,10 +383,12 @@ builtins.cc: $(DEF_FILES) mkbuiltins
 	@$(srcdir)/mkbuiltins def-files > $@-t
 	@mv $@-t $@
 
-graphics.h: graphics.h.in genprops.awk
-	@echo making $@
-	@$(AWK) -f $(srcdir)/genprops.awk $< > $@-t
-	@mv $@-t $@
+## FIXME -- maybe genprops.awk should write both output files?
+## Or maybe there should be separate commands to generate each file?
+graphics.h graphics-props.cc: graphics.h.in genprops.awk
+	@echo making graphics.h and graphics-props.cc
+	@$(AWK) -f $(srcdir)/genprops.awk $< > graphics.h-t
+	@mv graphics.h-t graphics.h
 
 PKG_ADD: $(DLD_DEF_FILES)
 	$(srcdir)/mk-pkg-add $(DLD_DEF_FILES) > $@-t

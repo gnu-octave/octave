@@ -1,5 +1,12 @@
 2008-07-18  John W. Eaton  <jwe@octave.org>
 
+	* version.h (OCTAVE_VERSION): Now 3.1.50.
+	(OCTAVE_API_VERSION): Now api-v33.
+	(OCTAVE_RELEASE_DATE): Now 2008-07-18.
+	(OCTAVE_COPYRIGHT): Update date to 2008.
+
+2008-07-18  John W. Eaton  <jwe@octave.org>
+
 	* Makefile.in (__magick_read__.df): New rule.
 	Append MAGICK_INCFLAGS to CPPFLAGS.
 

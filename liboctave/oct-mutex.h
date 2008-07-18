@@ -67,7 +67,7 @@ public:
 
 protected:
     explicit octave_mutex (int /* dummy */)
-	: count (0) { }
+	: rep (0) { }
 
 protected:
     union

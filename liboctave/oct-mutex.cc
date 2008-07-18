@@ -127,5 +127,5 @@ octave_mutex::octave_mutex (void)
 #else
   rep = new octave_default_mutex ();
 #endif
-  rep->count++;
+  rep->count = 1;
 }

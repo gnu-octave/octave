@@ -1,3 +1,9 @@
+2008-07-18  John W. Eaton  <jwe@octave.org>
+
+	* configure.in: Fix FTGL test to handle either FTGL/ftgl.h or ftgl.h.
+	(warn_freetype, warn_ftgl, warn_fltk_config, warn_fltk_opengl):
+	New variables.  Use these instead of overloading warn_graphics.
+
 2008-07-17  David Bateman  <dbateman@free.fr>
 
 	* configure.in (HAVE_MAGICK): New define for presence of

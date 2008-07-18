@@ -628,6 +628,7 @@ oct-gperf.h: octave.gperf
 	@mv $@-t $@
 
 __magick_read__.d: CPPFLAGS += $(MAGICK_INCFLAGS)
+__magick_read__.df: CPPFLAGS += $(MAGICK_INCFLAGS)
 __magick_read__.o pic/__magick_read__.o: CPPFLAGS += $(MAGICK_INCFLAGS)
 __magick_read__.oct: OCT_LINK_DEPS += $(MAGICK_LIBS)
 

@@ -37,7 +37,8 @@ BUILT_CONF_DISTFILES = Makefile
 
 CONF_DISTFILES = Makefile.in octMakefile.in Makeconf.in \
 	configure configure.in config.guess config.sub aclocal.m4 \
-	acx_blas.m4 acx_lapack.m4 config.h.in install-sh autogen.sh
+	acx_blas.m4 acx_lapack.m4 acx_blas_f77_func.m4 \
+	config.h.in install-sh autogen.sh
 
 BUILT_DISTFILES = $(BUILT_CONF_DISTFILES) BUGS INSTALL.OCTAVE
 

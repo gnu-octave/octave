@@ -1,3 +1,8 @@
+2008-07-19 Rafael Laboissiere <rafael@debia8n.org>
+
+	* octMakefile.in (CONF_DISTFILES): Include acx_blas_f77_func.m4 in
+	the list.
+
 2008-07-18 Carlo de Falco <carlo.defalco@gmail.com>
 
 	* aclocal.m4: Search for gl.h and glu.h in OpenGL/ as well as in GL/.

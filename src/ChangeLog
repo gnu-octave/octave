@@ -1,3 +1,8 @@
+2008-07-19  John W. Eaton  <jwe@octave.org>
+
+	* version.h (OCTAVE_VERSION): Now 3.1.50+.
+	(OCTAVE_API_VERSION): Now api-v33+.
+
 2008-07-18  John W. Eaton  <jwe@octave.org>
 
 	* version.h (OCTAVE_VERSION): Now 3.1.50.

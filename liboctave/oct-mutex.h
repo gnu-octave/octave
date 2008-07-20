@@ -23,58 +23,71 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_octave_mutex_h)
 #define octave_octave_mutex_h 1
 
+class octave_mutex;
+
+class
+octave_base_mutex
+{
+public:
+  friend class octave_mutex;
+
+  octave_base_mutex (void) : count (-1) { }
+
+  virtual ~octave_base_mutex (void) { }
+
+  virtual void lock (void);
+
+  virtual void unlock (void);
+
+private:
+  int count;
+};
+
 class
 OCTAVE_API
 octave_mutex
 {
 public:
-    octave_mutex (void);
+  octave_mutex (void);
 
-    octave_mutex (const octave_mutex& m)
+  octave_mutex (const octave_mutex& m)
+  {
+    rep = m.rep;
+    rep->count++;
+  }
+
+  ~octave_mutex (void)
+  {
+    if (--rep->count == 0)
+      delete rep;
+  }
+
+  octave_mutex& operator = (const octave_mutex& m)
+  {
+    if (rep != m.rep)
       {
+	if (--rep->count == 0)
+	  delete rep;
+
 	rep = m.rep;
 	rep->count++;
       }
 
-    virtual ~octave_mutex (void)
-      {
-	if (rep && --rep->count == 0)
-	  {
-	    delete rep;
-	    rep = 0;
-	  }
-      }
+    return *this;
+  }
 
-    octave_mutex& operator = (const octave_mutex& m)
-      {
-	if (rep != m.rep)
-	  {
-	    if (rep && --rep->count == 0)
-	      delete rep;
+  void lock (void)
+  {
+    rep->lock ();
+  }
 
-	    rep = m.rep;
-	    rep->count++;
-	  }
-
-	return *this;
-      }
-
-    virtual void lock (void)
-      { rep->lock (); }
-
-    virtual void unlock (void)
-      { rep->unlock (); }
+  void unlock (void)
+  {
+    rep->unlock ();
+  }
 
 protected:
-    explicit octave_mutex (int /* dummy */)
-	: rep (0) { }
-
-protected:
-    union
-      {
-	octave_mutex *rep;
-	int count;
-      };
+  octave_base_mutex *rep;
 };
 
 class
@@ -82,15 +95,15 @@ octave_autolock
 {
 public:
   octave_autolock (const octave_mutex& m)
-      : mutex (m)
-    {
-      mutex.lock ();
-    }
+    : mutex (m)
+  {
+    mutex.lock ();
+  }
 
   ~octave_autolock (void)
-    {
-      mutex.unlock ();
-    }
+  {
+    mutex.unlock ();
+  }
 
 private:
 

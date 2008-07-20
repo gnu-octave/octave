@@ -1,3 +1,16 @@
+2008-07-19  John W. Eaton  <jwe@octave.org>
+
+	* oct-mutex.h (class octave_base_mutex): New class.
+	(class octave_mutex): Don't use union for rep and count.
+	(octave_mutex::rep): Declare as octave_base_mutex.
+	(octave_mutex::count): Delete.
+	(octave_mutex::lock, octave_mutex::unlock): No longer virtual.
+	(octave_mutex::~octave_mutex): No need to check that rep is
+	valid or set rep to zero after deleting.
+	(octave_mutex::operator =): No need to check that rep is valid.
+	* oct-mutex.cc (octave_w32_mutex, octave_pthread_mutex): Derive
+	from octave_base_mutex, not octave_mutex.
+
 2008-07-18  John W. Eaton  <jwe@octave.org>
 
 	* oct-mutex.h (octave_mutex::octave_mutex (int)): Initialize rep

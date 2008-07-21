@@ -25,7 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "oct-mutex.h"
-#include "error.h"
+#include "lo-error.h"
 
 #if defined (HAVE_PTHREAD_H)
 #include <pthread.h>
@@ -38,13 +38,13 @@ along with Octave; see the file COPYING.  If not, see
 void
 octave_base_mutex::lock (void)
 {
-  error ("mutex not supported on this platform");
+  (*current_liboctave_error_handler) ("mutex not supported on this platform");
 }
 
 void
 octave_base_mutex::unlock (void)
 {
-  error ("mutex not supported on this platform");
+  (*current_liboctave_error_handler) ("mutex not supported on this platform");
 }
 
 #if defined (__WIN32__) && ! defined (__CYGWIN__)

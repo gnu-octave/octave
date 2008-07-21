@@ -31,7 +31,7 @@ octave_base_mutex
 public:
   friend class octave_mutex;
 
-  octave_base_mutex (void) : count (-1) { }
+  octave_base_mutex (void) : count (1) { }
 
   virtual ~octave_base_mutex (void) { }
 

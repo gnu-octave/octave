@@ -319,7 +319,7 @@ octave_class::subsasgn (const std::string& type,
 {
   octave_value retval;
 
-  if (in_class_method ())
+  if (in_class_method () && ! rhs.is_object ())
     {
       // FIXME -- this block of code is the same as the body of
       // octave_struct::subsasgn.  Maybe it could be shared instead of

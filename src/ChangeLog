@@ -1,5 +1,8 @@
 2008-07-21  John W. Eaton  <jwe@octave.org>
 
+	* ov-class.cc (octave_class::subsasgn): Only do internal magic if
+	rhs is not an octave_class object.
+
 	* OPERATORS/op-struct.cc: Define concatenation operators for
 	struct/matrix concatenation (valid if matrix is empty).
 	* OPERATORS/op-cell.cc (install_cell_ops): Likewise, for cells.

@@ -1,3 +1,13 @@
+2008-07-21  John W. Eaton  <jwe@octave.org>
+
+	* aclocal.m4 (OCTAVE_OPENGL): Fix shell syntax problems.
+	Handle HAVE_GL_GL_H and HAVE_OPENGL_GL_H in link test.
+
+	* configure.in: Don't define and substitute FLTK_BACKEND_SRC or
+	GL_RENDER_SRC.
+	(HAVE_FLTK): AC_DEFINE if FLTK is available.
+	(HAVE_OPENGL): AC_DEFINE if OpenGL is available.
+
 2008-07-21  Jaroslav Hajek <highegg@gmail.com>
 
 	* configure.in: Extend FTGL test to test for both ftgl.h and FTGL.h.

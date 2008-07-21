@@ -24,6 +24,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
+#if defined (HAVE_OPENGL)
+
 #include <lo-mappers.h>
 #include "gl-render.h"
 
@@ -2809,6 +2811,8 @@ opengl_renderer::make_marker_list (const std::string& marker, double size,
 
   return ID;
 }
+
+#endif
 
 /*
 ;;; Local Variables: ***

@@ -1066,15 +1066,19 @@ case $canonical_host_type in
     ;;
 esac
 have_opengl_incs=no
-AC_CHECK_HEADERS(GL/gl.h OpenGL/gl.h, [
-  AC_CHECK_HEADERS(GL/glu.h OpenGL/glu.h, [
-    have_opengl_incs=yes, break], [], [
+AC_CHECK_HEADERS([GL/gl.h OpenGL/gl.h], [
+  AC_CHECK_HEADERS([GL/glu.h OpenGL/glu.h], [
+    have_opengl_incs=yes; break], [], [
 #ifdef HAVE_WINDOWS_H
-# include <windows.h>
-#endif ]), break], [], [
+#include <windows.h>
+#endif
+])
+break
+], [], [
 #ifdef HAVE_WINDOWS_H
-# include <windows.h>
-#endif])
+#include <windows.h>
+#endif
+])
 if test "$have_opengl_incs" = "yes"; then
   case $canonical_host_type in
     *-*-msdosmsvc)
@@ -1083,9 +1087,14 @@ if test "$have_opengl_incs" = "yes"; then
       AC_MSG_CHECKING([for glEnable in -lopengl32])
       AC_TRY_LINK([
 #if HAVE_WINDOWS_H
-# include <windows.h>
+#include <windows.h>
 #endif
-#include <GL/gl.h>], [
+#if defined (HAVE_GL_GL_H)
+#include <GL/gl.h>
+#elif defined (HAVE_OPENGL_GL_H)
+#include <OpenGL/gl.h>
+#endif
+], [
 glEnable(GL_SMOOTH);], OPENGL_LIBS="-lopengl32 -lglu32")
       LIBS="$save_LIBS"
       if test "x$OPENGL_LIBS" != "x"; then

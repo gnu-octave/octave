@@ -1,3 +1,15 @@
+2008-07-21  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/fltk_backend.cc: Don't include oct.h.
+	Make compilation of entire file conditional on HAVE_FLTK.
+
+	* gl-render.cc: Make compilation of entire file conditional on
+	HAVE_OPENGL.
+
+	* Makefile.in (GL_RENDER_SRC, FLTK_BACKEND_SRC): Delete variables.
+	(DLD_XSRC): Always include fltk_backend.cc in the list.
+	(DIST_SRC): Always include gl-render.cc in the list.
+
 2008-07-19  John W. Eaton  <jwe@octave.org>
 
 	* version.h (OCTAVE_VERSION): Now 3.1.50+.

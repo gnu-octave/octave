@@ -35,12 +35,12 @@ To initialize:
 #include <config.h>
 #endif
 
+#if defined (HAVE_FLTK)
+
 #include <map>
 #include <set>
 #include <sstream>
 #include <iostream>
-
-#include "gl-render.h"
 
 #include <FL/Fl.H>
 #include <FL/Fl_Window.H>
@@ -51,9 +51,11 @@ To initialize:
 #include <FL/fl_draw.H>
 #include <FL/gl.h>
 
-#include "oct.h"
-#include "parse.h"
+#include "defun-dld.h"
+#include "error.h"
+#include "gl-render.h"
 #include "graphics.h"
+#include "parse.h"
 
 #define FLTK_BACKEND_NAME "fltk"
 
@@ -803,6 +805,8 @@ DEFUN_DLD (__fltk_redraw__, , ,
 
   return retval;	
 }
+
+#endif
 
 /*
 ;;; Local Variables: ***

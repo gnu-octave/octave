@@ -87,7 +87,7 @@ regex_match::init (void)
 {
 #ifdef HAVE_REGEX
   int npat = pat.length ();
-  int err;
+  int err = 0;
   int i;
 
   compiled = new regex_t [npat];

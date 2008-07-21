@@ -1,3 +1,7 @@
+2008-07-21  John W. Eaton  <jwe@octave.org>
+
+	* regex-match.cc (regex_match::init): Initialize err to 0.
+
 2008-07-19  John W. Eaton  <jwe@octave.org>
 
 	* oct-mutex.h (class octave_base_mutex): New class.

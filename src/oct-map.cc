@@ -222,7 +222,21 @@ Octave_map::concat (const Octave_map& rb, const Array<octave_idx_type>& ra_idx)
 	}
     }
   else
-    error ("field name mismatch in structure concatenation");
+    {
+      dim_vector dv = dims ();
+
+      if (dv.all_zero ())
+	retval = rb;
+      else
+	{
+	  dv = rb.dims ();
+
+	  if (dv.all_zero ())
+	    retval = *this;
+	  else
+	    error ("invalid structure concatenation");
+	}
+    }
 
   return retval;
 }

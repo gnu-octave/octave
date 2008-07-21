@@ -1,5 +1,9 @@
 2008-07-21  John W. Eaton  <jwe@octave.org>
 
+	* OPERATORS/op-struct.cc: Define concatenation operators for
+	struct/matrix concatenation (valid if matrix is empty).
+	* OPERATORS/op-cell.cc (install_cell_ops): Likewise, for cells.
+
 	* DLD-FUNCTIONS/fltk_backend.cc: Don't include oct.h.
 	Make compilation of entire file conditional on HAVE_FLTK.
 

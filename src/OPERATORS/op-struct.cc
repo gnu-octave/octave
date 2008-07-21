@@ -27,6 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "gripes.h"
 #include "oct-obj.h"
 #include "ov.h"
+#include "ov-re-mat.h"
 #include "ov-struct.h"
 #include "ov-typeinfo.h"
 #include "ops.h"
@@ -48,6 +49,36 @@ DEFUNOP (transpose, cell)
 
 DEFNDCATOP_FN (struct_struct, struct, struct, map, map, concat)
 
+static octave_value
+oct_catop_struct_matrix (octave_base_value& a1, const octave_base_value& a2,
+			 const Array<octave_idx_type>&)
+{
+  octave_value retval;
+  CAST_BINOP_ARGS (const octave_struct&, const octave_matrix&);
+  NDArray tmp = v2.array_value ();
+  dim_vector dv = tmp.dims ();
+  if (dv.all_zero ())
+    retval = octave_value (v1.map_value ());
+  else
+    error ("invalid concatenation of structure with matrix");
+  return retval;
+}
+
+static octave_value
+oct_catop_matrix_struct (octave_base_value& a1, const octave_base_value& a2,
+			 const Array<octave_idx_type>&)
+{
+  octave_value retval;
+  CAST_BINOP_ARGS (const octave_struct&, const octave_matrix&);
+  NDArray tmp = v1.array_value ();
+  dim_vector dv = tmp.dims ();
+  if (dv.all_zero ())
+    retval = octave_value (v2.map_value ());
+  else
+    error ("invalid concatenation of structure with matrix");
+  return retval;
+}
+
 void
 install_struct_ops (void)
 {
@@ -55,6 +86,8 @@ install_struct_ops (void)
   INSTALL_UNOP (op_hermitian, octave_struct, transpose);
 
   INSTALL_CATOP (octave_struct, octave_struct, struct_struct);
+  INSTALL_CATOP (octave_struct, octave_matrix, struct_matrix);
+  INSTALL_CATOP (octave_matrix, octave_struct, matrix_struct);
 }
 
 /*

@@ -1,5 +1,8 @@
 2008-07-22  Michael Goffioul  <michael.goffioul@gmail.com>
 
+	* DLD-FUNCTIONS/fltk_backend.cc: Undefine min/max after FLTK headers
+	inclusion.
+
 	* graphics.h.in (class base_graphics_event, class graphics_event): New
 	classes (replace gh_manager::event_data).
 	(class gh_manager::event_data): Remove.

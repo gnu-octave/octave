@@ -4415,6 +4415,52 @@ Undocumented internal function.\n\
   return octave_value (gh_manager::figure_handle_list ());
 }
 
+DEFUN (__go_execute_callback__, args, ,
+   "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} __go_execute_callback__ (@var{h}, @var{name})\n\
+@deftypefnx {Built-in Function} {} __go_execute_callback__ (@var{h}, @var{name}, @var{param})\n\
+Undocumented internal function.\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 2 || nargin == 3)
+    {
+      double val = args(0).double_value ();
+
+      if (! error_state)
+	{
+	  graphics_handle h = gh_manager::lookup (val);
+
+	  if (h.ok ())
+	    {
+	      std::string name = args(1).string_value ();
+
+	      if (! error_state)
+		{
+		  if (nargin == 2)
+		    gh_manager::execute_callback (h, name);
+		  else
+		    gh_manager::execute_callback (h, name, args(2));
+		}
+	      else
+		error ("__go_execute_callback__: invalid callback name");
+	    }
+	  else
+	    error ("__go_execute_callback__: invalid graphics object (= %g)",
+		   val);
+	}
+      else
+	error ("__go_execute_callback__: invalid graphics object");
+    }
+  else
+    print_usage ();
+
+  return retval;
+}
+
 DEFUN (available_backends, , ,
    "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} available_backends ()\n\

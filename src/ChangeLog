@@ -1,5 +1,7 @@
 2008-07-22  Michael Goffioul  <michael.goffioul@gmail.com>
 
+	* graphics.cc (F__go_execute_callback__): New function.
+
 	* DLD-FUNCTIONS/fltk_backend.cc: Undefine min/max after FLTK headers
 	inclusion.
 

@@ -3566,12 +3566,12 @@ gh_manager::do_pop_figure (const graphics_handle& h)
 }
 
 class
-callback_event_data : public gh_manager::event_data
+callback_event : public base_graphics_event
 {
 public:
-  callback_event_data (const graphics_handle& h, const std::string& name,
-		       const octave_value& data = Matrix ())
-      : gh_manager::event_data (0), handle (h), callback_name (name),
+  callback_event (const graphics_handle& h, const std::string& name,
+		  const octave_value& data = Matrix ())
+      : base_graphics_event (), handle (h), callback_name (name),
         callback_data (data) { }
 
   void execute (void)
@@ -3580,8 +3580,8 @@ public:
     }
 
 private:
-  callback_event_data (void)
-      : gh_manager::event_data (0) { }
+  callback_event (void)
+      : base_graphics_event () { }
 
 private:
   graphics_handle handle;
@@ -3590,11 +3590,11 @@ private:
 };
 
 class
-function_event_data : public gh_manager::event_data
+function_event : public base_graphics_event
 {
 public:
-  function_event_data (gh_manager::event_fcn fcn, void* data = 0)
-      : gh_manager::event_data (0), function (fcn),
+  function_event (graphics_event::event_fcn fcn, void* data = 0)
+      : base_graphics_event (), function (fcn),
         function_data (data) { }
 
   void execute (void)
@@ -3603,21 +3603,21 @@ public:
     }
 
 private:
-  function_event_data (void)
-      : gh_manager::event_data (0) { }
+  function_event (void)
+      : base_graphics_event () { }
 
 private:
-  gh_manager::event_fcn function;
+  graphics_event::event_fcn function;
   void* function_data;
 };
 
 class
-set_event_data : public gh_manager::event_data
+set_event : public base_graphics_event
 {
 public:
-  set_event_data (const graphics_handle& h, const std::string& name,
-		  const octave_value& value)
-      : gh_manager::event_data (0), handle (h), property_name (name),
+  set_event (const graphics_handle& h, const std::string& name,
+	     const octave_value& value)
+      : base_graphics_event (), handle (h), property_name (name),
         property_value (value) { }
 
   void execute (void)
@@ -3628,8 +3628,8 @@ public:
     }
 
 private:
-  set_event_data (void)
-      : gh_manager::event_data (0) { }
+  set_event (void)
+      : base_graphics_event () { }
 
 private:
   graphics_handle handle;
@@ -3637,43 +3637,37 @@ private:
   octave_value property_value;
 };
 
-gh_manager::event_data
-gh_manager::event_data::create_callback_event (const graphics_handle& h,
-					       const std::string& name,
-					       const octave_value& data)
+graphics_event
+graphics_event::create_callback_event (const graphics_handle& h,
+				       const std::string& name,
+				       const octave_value& data)
 {
-  event_data e;
+  graphics_event e;
 
-  e.rep = new callback_event_data (h, name, data);
-
-  e.rep->refcount++;
+  e.rep = new callback_event (h, name, data);
 
   return e;
 }
 
-gh_manager::event_data
-gh_manager::event_data::create_function_event (gh_manager::event_fcn fcn,
-					       void *data)
+graphics_event
+graphics_event::create_function_event (graphics_event::event_fcn fcn,
+				       void *data)
 {
-  event_data e;
+  graphics_event e;
 
-  e.rep =new function_event_data (fcn, data);
-
-  e.rep->refcount++;
+  e.rep = new function_event (fcn, data);
 
   return e;
 }
 
-gh_manager::event_data
-gh_manager::event_data::create_set_event (const graphics_handle& h,
-					  const std::string& name,
-					  const octave_value& data)
+graphics_event
+graphics_event::create_set_event (const graphics_handle& h,
+				  const std::string& name,
+				  const octave_value& data)
 {
-  event_data e;
+  graphics_event e;
 
-  e.rep = new set_event_data (h, name, data);
-
-  e.rep->refcount++;
+  e.rep = new set_event (h, name, data);
 
   return e;
 }
@@ -3769,7 +3763,7 @@ gh_manager::do_execute_callback (const graphics_handle& h,
 }
 
 void
-gh_manager::do_post_event (const event_data& e)
+gh_manager::do_post_event (const graphics_event& e)
 {
   event_queue.push_back (e);
 
@@ -3787,19 +3781,19 @@ gh_manager::do_post_callback (const graphics_handle& h, const std::string name,
   if (go.valid_object ())
     {
       if (callback_objects.empty ())
-	do_post_event (event_data::create_callback_event (h, name, data));
+	do_post_event (graphics_event::create_callback_event (h, name, data));
       else
 	{
 	  const graphics_object& current = callback_objects.front ();
 
 	  if (current.get_properties ().is_interruptible ())
-	    do_post_event (event_data::create_callback_event (h, name, data));
+	    do_post_event (graphics_event::create_callback_event (h, name, data));
 	  else
 	    {
 	      caseless_str busy_action (go.get_properties ().get_busyaction ());
 
 	      if (busy_action.compare ("queue"))
-		do_post_event (event_data::create_callback_event (h, name, data));
+		do_post_event (graphics_event::create_callback_event (h, name, data));
 	      else
 		{
 		  caseless_str cname (name);
@@ -3809,7 +3803,7 @@ gh_manager::do_post_callback (const graphics_handle& h, const std::string name,
 		      || (go.isa ("figure")
 			  && (cname.compare ("closerequestfcn")
 			      || cname.compare ("resizefcn"))))
-		    do_post_event (event_data::create_callback_event (h, name, data));
+		    do_post_event (graphics_event::create_callback_event (h, name, data));
 		}
 	    }
 	}
@@ -3817,11 +3811,11 @@ gh_manager::do_post_callback (const graphics_handle& h, const std::string name,
 }
 
 void
-gh_manager::do_post_function (event_fcn fcn, void* fcn_data)
+gh_manager::do_post_function (graphics_event::event_fcn fcn, void* fcn_data)
 {
   gh_manager::autolock guard;
 
-  do_post_event (event_data::create_function_event (fcn, fcn_data));
+  do_post_event (graphics_event::create_function_event (fcn, fcn_data));
 }
 
 void
@@ -3830,17 +3824,17 @@ gh_manager::do_post_set (const graphics_handle& h, const std::string name,
 {
   gh_manager::autolock guard;
 
-  do_post_event (event_data::create_set_event (h, name, value));
+  do_post_event (graphics_event::create_set_event (h, name, value));
 }
 
 int
 gh_manager::do_process_events (bool force)
 {
-  event_data e;
+  graphics_event e;
 
   do
     {
-      e = event_data ();
+      e = graphics_event ();
 
       gh_manager::lock ();
 

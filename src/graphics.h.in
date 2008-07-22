@@ -3491,6 +3491,81 @@ set_property_in_handle (double handle, const std::string &property,
 
 // ---------------------------------------------------------------------
 
+class graphics_event;
+
+class
+base_graphics_event
+{
+public:
+  friend class graphics_event;
+
+  base_graphics_event (void) : count (1) { }
+
+  virtual ~base_graphics_event (void) { }
+
+  virtual void execute (void) = 0;
+
+private:
+  int count;
+};
+
+class
+graphics_event
+{
+public:
+  typedef void (*event_fcn) (void*);
+
+  graphics_event (void) : rep (0) { }
+
+  graphics_event (const graphics_event& e)
+    {
+      rep = e.rep;
+      rep->count++;
+    }
+
+  ~graphics_event (void)
+    {
+      if (rep && --rep->count == 0)
+	delete rep;
+    }
+
+  graphics_event& operator = (const graphics_event& e)
+    {
+      if (rep != e.rep)
+	{
+	  if (rep && --rep->count == 0)
+	    delete rep;
+
+	  rep = e.rep;
+	  if (rep)
+	    rep->count++;
+	}
+
+      return *this;
+    }
+
+  void execute (void)
+    { if (rep) rep->execute (); }
+
+  bool ok (void) const
+    { return (rep != 0); }
+
+  static graphics_event
+      create_callback_event (const graphics_handle& h,
+			     const std::string& name,
+			     const octave_value& data = Matrix ());
+
+  static graphics_event
+      create_function_event (event_fcn fcn, void *data = 0);
+
+  static graphics_event
+      create_set_event (const graphics_handle& h,
+			const std::string& name,
+			const octave_value& value);
+private:
+  base_graphics_event *rep;
+};
+
 class OCTINTERP_API gh_manager
 {
 protected:
@@ -3498,8 +3573,6 @@ protected:
   gh_manager (void);
 
 public:
-
-  typedef void (*event_fcn) (void*);
 
   static bool instance_ok (void)
   {
@@ -3620,7 +3693,7 @@ public:
       instance->do_post_callback (h, name, data);
   }
 
-  static void post_function (event_fcn fcn, void* data = 0)
+  static void post_function (graphics_event::event_fcn fcn, void* data = 0)
   {
     if (instance_ok ())
       instance->do_post_function (fcn, data);
@@ -3659,73 +3732,6 @@ public:
     autolock& operator = (const autolock&);
   };
 
-public:
-  class event_data
-    {
-      public:
-	event_data (void) : rep (0) { }
-
-	event_data (const event_data& d)
-	  {
-	    rep = d.rep;
-	    if (rep)
-	      rep->refcount++;
-	  }
-
-	virtual ~event_data (void)
-	  {
-	    if (rep && --rep->refcount == 0)
-	      {
-		delete rep;
-		rep = 0;
-	      }
-	  }
-
-	event_data& operator = (const event_data& d)
-	  {
-	    if (d.rep != rep)
-	      {
-		if (rep && --rep->refcount == 0)
-		  delete rep;
-
-		rep = d.rep;
-		if (rep)
-		  rep->refcount++;
-	      }
-
-	    return *this;
-	  }
-
-	virtual void execute (void)
-	  { if (rep) rep->execute (); }
-
-	bool ok (void) const { return (rep != 0); }
-	
-	static event_data
-	    create_callback_event (const graphics_handle& h,
-				   const std::string& name,
-				   const octave_value& data = Matrix ());
-
-	static event_data
-	    create_function_event (event_fcn fcn, void *data = 0);
-
-	static event_data
-	    create_set_event (const graphics_handle& h,
-			      const std::string& name,
-			      const octave_value& value);
-
-      protected:
-	explicit event_data (int /* dummy */)
-	    : refcount (0) { }
-
-      private:
-	union
-	  {
-	    event_data *rep;
-	    int refcount;
-	  };
-    };
-
 private:
 
   static gh_manager *instance;
@@ -3756,7 +3762,7 @@ private:
   octave_mutex graphics_lock;
 
   // The list of event queued by backends
-  std::list<event_data> event_queue;
+  std::list<graphics_event> event_queue;
 
   // The stack of callback objects
   std::list<graphics_object> callback_objects;
@@ -3829,7 +3835,7 @@ private:
   void do_post_callback (const graphics_handle& h, const std::string name,
 			 const octave_value& data);
 
-  void do_post_function (event_fcn fcn, void* fcn_data);
+  void do_post_function (graphics_event::event_fcn fcn, void* fcn_data);
 
   void do_post_set (const graphics_handle& h, const std::string name,
 		    const octave_value& value);
@@ -3844,7 +3850,7 @@ private:
 
   void do_restore_gcbo (void);
 
-  void do_post_event (const event_data& e);
+  void do_post_event (const graphics_event& e);
 };
 
 

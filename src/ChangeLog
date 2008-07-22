@@ -1,3 +1,22 @@
+2008-07-22  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* graphics.h.in (class base_graphics_event, class graphics_event): New
+	classes (replace gh_manager::event_data).
+	(class gh_manager::event_data): Remove.
+	(gh_manager::post_function, gh_manager::do_post_function): Use
+	graphics_event::event_fcn type.
+	(gh_manager::event_queue, gh_manager::do_post_event): Use
+	graphics_event type.
+	* graphics.cc (class callback_event, class function_event, class
+	set_event): Renamed from xxx_data classes.
+	(graphics_event::create_callback_event,
+	graphics_event::create_function_event,
+	graphics_event::create_set_event): Renamed from gh_manager::xxx
+	equivalent methods, removed reference count increment.
+	(gh_manager::do_post_event): Likewise.
+	(gh_manager::do_post_event): Use graphics_event type.
+	(gh_manager::do_post_function): Use graphics_event::event_fcn type.
+
 2008-07-22  John W. Eaton  <jwe@octave.org>
 
 	* version.h (OCTAVE_VERSION): Now 3.1.51+.

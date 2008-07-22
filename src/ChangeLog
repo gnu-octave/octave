@@ -1,5 +1,8 @@
 2008-07-21  John W. Eaton  <jwe@octave.org>
 
+	* version.h (OCTAVE_VERSION): Now 3.1.51.
+	(OCTAVE_RELEASE_DATE): Now 2008-07-21.
+
 	* ov-class.cc (octave_class::subsasgn): Only do internal magic if
 	rhs is not an octave_class object.
 

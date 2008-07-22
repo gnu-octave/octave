@@ -1,3 +1,9 @@
+2008-07-21  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* plot/closereq.m: Use first gcbf to get the handle of the figure to
+	be closed.
+	* plot/close.m: Call __go_execute_callback__.
+
 2008-07-17  John W. Eaton  <jwe@octave.org>
 
 	* general/fliplr.m: Fix usage test.

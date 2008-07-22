@@ -59,8 +59,7 @@ function retval = close (arg1, arg2)
   endif
 
   for h = figs
-    set (0, "currentfigure", h);
-    feval (get (h, "closerequestfcn"));
+    __go_execute_callback__ (h, "closerequestfcn");
   endfor
 
   if (nargout > 0)

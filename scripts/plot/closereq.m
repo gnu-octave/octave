@@ -28,8 +28,12 @@
 function closereq ()
 
   if (nargin == 0)
-    cf = get (0, "currentfigure");
-    if (cf != 0)
+    cf = gcbf ();
+    if (isempty (cf))
+      warning ("closereq: calling closereq from octave prompt is not supported, use `close' instead");
+      cf = get (0, "currentfigure");
+    endif
+    if (! isempty (cf) && cf != 0)
       delete (cf);
     endif
   else

@@ -1,3 +1,7 @@
+2008-07-22  John W. Eaton  <jwe@octave.org>
+
+	* version.h (OCTAVE_VERSION): Now 3.1.51+.
+
 2008-07-21  John W. Eaton  <jwe@octave.org>
 
 	* version.h (OCTAVE_VERSION): Now 3.1.51.

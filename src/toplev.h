@@ -59,9 +59,6 @@ octave_remove_atexit_function (const std::string& fname);
 // Current command to execute.
 extern OCTINTERP_API tree_statement_list *global_command;
 
-// Pointer to parent function that is currently being evaluated.
-extern OCTINTERP_API octave_function *curr_parent_function;
-
 // TRUE means we are ready to interpret commands, but not everything
 // is ready for interactive use.
 extern OCTINTERP_API bool octave_interpreter_ready;

@@ -197,6 +197,8 @@ public:
 
   void stash_parent_fcn_name (const std::string& p) { parent_name = p; }
 
+  void stash_parent_fcn_scope (symbol_table::scope_id ps) { parent_scope = ps; }
+
   void stash_leading_comment (octave_comment_list *lc) { lead_comm = lc; }
 
   void stash_trailing_comment (octave_comment_list *tc) { trail_comm = tc; }
@@ -212,6 +214,8 @@ public:
   std::string fcn_file_name (void) const { return file_name; }
 
   std::string parent_fcn_name (void) const { return parent_name; }
+
+  symbol_table::scope_id parent_fcn_scope (void) const { return parent_scope; }
 
   symbol_table::scope_id scope (void) { return local_scope; }
 
@@ -379,6 +383,9 @@ private:
 
   // The number of arguments passed in.
   int num_args_passed;
+
+  // The scope of the parent function, if any.
+  symbol_table::scope_id parent_scope;
 
   symbol_table::scope_id local_scope;
 

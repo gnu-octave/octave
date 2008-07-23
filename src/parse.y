@@ -2439,7 +2439,6 @@ start_function (tree_parameter_list *param_list, tree_statement_list *body)
   octave_user_function *fcn
     = new octave_user_function (symbol_table::current_scope (),
 				param_list, 0, body);
-				
 
   if (fcn)
     {
@@ -2501,7 +2500,10 @@ frob_function (const std::string& fname, octave_user_function *fcn)
 	fcn->mark_relative ();
 
       if (lexer_flags.parsing_nested_function)
-        fcn->stash_parent_fcn_name (parent_function_name);
+        {
+          fcn->stash_parent_fcn_name (parent_function_name);
+          fcn->stash_parent_fcn_scope (symbol_table::parent_scope ());
+	}
 
       if (lexer_flags.parsing_class_method)
 	{

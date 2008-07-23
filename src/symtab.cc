@@ -404,29 +404,40 @@ symbol_table::fcn_info::fcn_info_rep::find
 
   scope_val_iterator r = subfunctions.find (xcurrent_scope);
 
+  octave_function *curr_fcn = 0;
+
   if (r != subfunctions.end ())
     {
       // FIXME -- out-of-date check here.
 
       return r->second;
     }
-  else if (curr_parent_function)
+  else
     {
-      scope_id pscope = curr_parent_function->scope ();
+      curr_fcn = octave_call_stack::current ();
 
-      r = subfunctions.find (pscope);
-
-      if (r != subfunctions.end ())
+      if (curr_fcn)
 	{
-	  // FIXME -- out-of-date check here.
+	  scope_id pscope = curr_fcn->parent_fcn_scope ();
 
-	  return r->second;
+	  if (pscope > 0)
+	    {
+	      r = subfunctions.find (pscope);
+
+	      if (r != subfunctions.end ())
+		{
+		  // FIXME -- out-of-date check here.
+
+		  return r->second;
+		}
+	    }
 	}
     }
 
   // Private function.
 
-  octave_function *curr_fcn = octave_call_stack::current ();
+  if (! curr_fcn)
+    curr_fcn = octave_call_stack::current ();
 
   if (curr_fcn)
     {

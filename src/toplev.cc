@@ -90,9 +90,6 @@ bool octave_initialized = false;
 // Current command to execute.
 tree_statement_list *global_command = 0;
 
-// Pointer to parent function that is currently being evaluated.
-octave_function *curr_parent_function = 0;
-
 octave_call_stack *octave_call_stack::instance = 0;
 
 int

@@ -206,7 +206,7 @@ octave_user_function::octave_user_function
     num_named_args (param_list ? param_list->length () : 0),
     nested_function (false), inline_function (false),
     class_constructor (false), class_method (false), xdispatch_class (),
-    args_passed (), num_args_passed (0), local_scope (sid)
+    args_passed (), num_args_passed (0), parent_scope (-1), local_scope (sid)
 {
   if (cmd_list)
     cmd_list->mark_as_function_body ();
@@ -405,12 +405,6 @@ octave_user_function::do_multi_index_op (int nargout,
     {
       // Force symbols to be undefined again when this function exits.
       unwind_protect::add (symbol_table::clear_variables);
-    }
-
-  if (! (is_nested_function () || is_inline_function ()))
-    {
-      unwind_protect_ptr (curr_parent_function);
-      curr_parent_function = this;
     }
 
   // Save and restore args passed for recursive calls.

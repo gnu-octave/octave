@@ -62,6 +62,8 @@ public:
 
   virtual std::string parent_fcn_name (void) const { return std::string (); }
 
+  virtual symbol_table::scope_id parent_fcn_scope (void) const { return -1; }
+
   virtual void mark_fcn_file_up_to_date (const octave_time&) { }
 
   virtual symbol_table::scope_id scope (void) { return -1; }

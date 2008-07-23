@@ -1,3 +1,22 @@
+2008-07-23  John W. Eaton  <jwe@octave.org>
+
+	* ov-usr_fcn.cc (octave_user_function::do_multi_index_op):
+	Don't unwind_protect and set curr_parent_function here.
+	* toplev.cc (curr_parent_function): Delete definition.
+	* toplev.h: (curr_parent_function): Delete declaration.
+
+	* ov-usr-fcn.h (octave_user_function::parent_scope): New data member.
+	(octave_user_function::parent_fcn_scope,
+	octave_user_function::stash_parent_fcn_scope): New functions.
+	* ov-usr_fcn.cc (octave_user_function::octave_user_function):
+	Initialize parent_scope.
+	* symtab.cc (symbol_table::fcn_info::fcn_info_rep::find):
+	Check parent of current function by looking at call stack, not
+	global curr_parent_function variable.
+	* parse.y (frob_function): If parsing nested function, stash
+	current parent function scope.
+	* ov-fcn.h (octave_function::parent_fcn_scope): New virtual function.
+
 2008-07-22  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* graphics.cc (F__go_execute_callback__): New function.

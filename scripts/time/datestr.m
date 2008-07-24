@@ -341,6 +341,7 @@ endfunction
 %!assert(datestr(testtime,29),"20051218");
 %!assert(datestr(testtime,30),"20051218T023317");
 %!assert(datestr(testtime,31),"2005-12-18 02:33:17");
+%!xtest assert(datestr(testtime+[0 0 3 0 0 0],"dddd"),"Wednesday")
 ## avoid the bug where someone happens to give a vector of datenums that
 ## happens to be 6 wide
 %!assert(datestr(733452.933:733457.933), ["14-Feb-2008 22:23:31";"15-Feb-2008 22:23:31";"16-Feb-2008 22:23:31";"17-Feb-2008 22:23:31";"18-Feb-2008 22:23:31";"19-Feb-2008 22:23:31"])

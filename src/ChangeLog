@@ -1,3 +1,8 @@
+2008-07-24  John W. Eaton  <jwe@octave.org>
+
+	* dirfns.cc (Fmkdir): If directory already exists, return status =
+	true, but also set error message.
+
 2008-07-23  John W. Eaton  <jwe@octave.org>
 
 	* ov-usr_fcn.cc (octave_user_function::do_multi_index_op):

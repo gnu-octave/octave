@@ -257,16 +257,31 @@ message identifier.\n\
     {
       std::string msg;
 
-      int status = file_ops::mkdir (file_ops::tilde_expand (dirname),
-				    0777, msg);
+      dirname = file_ops::tilde_expand (dirname);
 
-      if (status < 0)
+      file_stat fs (dirname);
+
+      if (fs && fs.is_dir ())
 	{
+	  // For compatibility with Matlab, we return true when the
+	  // directory already exists.
+
 	  retval(2) = "mkdir";
-	  retval(1) = msg;
+	  retval(1) = "directory exists";
+	  retval(0) = true;
 	}
       else
-	retval(0) = true;
+	{
+	  int status = file_ops::mkdir (dirname, 0777, msg);
+
+	  if (status < 0)
+	    {
+	      retval(2) = "mkdir";
+	      retval(1) = msg;
+	    }
+	  else
+	    retval(0) = true;
+	}
     }
   else
     print_usage ();

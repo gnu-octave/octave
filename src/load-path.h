@@ -233,8 +233,14 @@ private:
     typedef fcn_file_map_type::const_iterator const_fcn_file_map_iterator;
     typedef fcn_file_map_type::iterator fcn_file_map_iterator;
 
-    // <CLASS_NAME, <FCN_NAME, TYPE>>
-    typedef std::map<std::string, fcn_file_map_type> method_file_map_type;
+    struct class_info
+    {
+      fcn_file_map_type method_file_map;
+      fcn_file_map_type private_file_map;
+    };
+
+    // <CLASS_NAME, CLASS_INFO>
+    typedef std::map<std::string, class_info> method_file_map_type;
 
     typedef method_file_map_type::const_iterator const_method_file_map_iterator;
     typedef method_file_map_type::iterator method_file_map_iterator;

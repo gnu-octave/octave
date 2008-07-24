@@ -1,5 +1,13 @@
 2008-07-24  John W. Eaton  <jwe@octave.org>
 
+	* load-path.h (load_path::dir_info::class_info): New struct.
+	(load_path::dir_info::method_file_map_type): Now a map from
+	class name to a to a class_info object.  Change all uses.
+	* load-path.cc (load_path::dir_info::get_method_file_map):
+	Also look for private functions in the class directory.
+	(load_path::add_to_method_map): Also add private functions from
+	class directories to private_fcn_map.
+
 	* dirfns.cc (Fmkdir): If directory already exists, return status =
 	true, but also set error message.
 

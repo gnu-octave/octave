@@ -218,7 +218,14 @@ void
 load_path::dir_info::get_method_file_map (const std::string& d,
 					  const std::string& class_name)
 {
-  method_file_map[class_name] = get_fcn_files (d);
+  method_file_map[class_name].method_file_map = get_fcn_files (d);
+
+  std::string pd = file_ops::concat (d, "private");
+
+  file_stat fs (pd);
+
+  if (fs && fs.is_dir ())
+    method_file_map[class_name].private_file_map = get_fcn_files (pd);
 }
 
 bool
@@ -1346,7 +1353,9 @@ load_path::do_display (std::ostream& os) const
 	      os << "\n*** methods in " << i->dir_name
 		 << "/@" << p->first << ":\n\n";
 
-	      string_vector method_files = get_file_list (p->second);
+	      const dir_info::class_info& ci = p->second;
+
+	      string_vector method_files = get_file_list (ci.method_file_map);
 
 	      method_files.list_in_columns (os);
 	    }
@@ -1494,7 +1503,7 @@ load_path::add_to_method_map (const dir_info& di, bool at_end) const
 {
   std::string dir_name = di.dir_name;
 
-  // <CLASS_NAME, <FCN_NAME, TYPES>>
+  // <CLASS_NAME, CLASS_INFO>
   dir_info::method_file_map_type method_file_map = di.method_file_map;
 
   for (dir_info::const_method_file_map_iterator q = method_file_map.begin ();
@@ -1508,8 +1517,10 @@ load_path::add_to_method_map (const dir_info& di, bool at_end) const
       std::string full_dir_name
 	= file_ops::concat (dir_name, "@" + class_name);
 
+      const dir_info::class_info& ci = q->second;
+
       // <FCN_NAME, TYPES>
-      const dir_info::fcn_file_map_type& m = q->second;
+      const dir_info::fcn_file_map_type& m = ci.method_file_map;
 
       for (dir_info::const_fcn_file_map_iterator p = m.begin ();
 	   p != m.end ();
@@ -1549,6 +1560,12 @@ load_path::add_to_method_map (const dir_info& di, bool at_end) const
 	      fi.types = types;
 	    }
 	}
+
+      // <FCN_NAME, TYPES>
+      dir_info::fcn_file_map_type private_file_map = ci.private_file_map;
+
+      if (! private_file_map.empty ())
+	private_fcn_map[full_dir_name] = private_file_map;
     }
 }
 

@@ -821,7 +821,7 @@ public:
     void clear_user_function (void) { rep->clear_user_function (); }
     
     void clear_mex_function (void) { rep->clear_mex_function (); }
-    
+
     void add_dispatch (const std::string& type, const std::string& fname)
     {
       rep->add_dispatch (type, fname);
@@ -1396,6 +1396,11 @@ public:
       }
   }
 
+  static bool set_class_relationship (const std::string& sup_class,
+				      const std::string& inf_class);
+
+  static bool is_superiorto (const std::string& a, const std::string& b);
+    
   static void alias_built_in_function (const std::string& alias,
 				       const std::string& name)
   {
@@ -1813,6 +1818,13 @@ private:
   // Map from function names to function info (subfunctions, private
   // functions, class constructors, class methods, etc.)
   static std::map<std::string, fcn_info> fcn_table;
+
+  // Mape from class names to set of classes that have lower
+  // precedence.
+  static std::map<std::string, std::set<std::string> > class_precedence_table;
+
+  typedef std::map<std::string, std::set<std::string> >::const_iterator class_precedence_table_const_iterator;
+  typedef std::map<std::string, std::set<std::string> >::iterator class_precedence_table_iterator;
 
   static const scope_id xglobal_scope;
   static const scope_id xtop_scope;

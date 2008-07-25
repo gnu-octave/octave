@@ -1,3 +1,16 @@
+2008-07-25  John W. Eaton  <jwe@octave.org>
+
+	* symtab.cc (get_dispatch_type): New function.
+	(symbol_table::fcn_info::fcn_info_rep::find): Use it.
+
+	* ov-class.cc (set_class_relationship): Delete static function.
+	(Fsuperiorto, Finferiorto): Warn about precedence conflicts.
+	Call symbol_table::set_class_relationship instead of local static
+	function.
+	* symtab.h (symbol_table::class_precedence_table): New data member.
+	(symbol_table::set_class_relationship, symbol_table::is_superiorto):
+	New static functions.
+
 2008-07-24  John W. Eaton  <jwe@octave.org>
 
 	* load-path.h (load_path::dir_info::class_info): New struct.

@@ -53,6 +53,8 @@ std::map<std::string, octave_value> symbol_table::global_table;
 
 std::map<std::string, symbol_table::fcn_info> symbol_table::fcn_table;
 
+std::map<std::string, std::set<std::string> > symbol_table::class_precedence_table;
+
 const symbol_table::scope_id symbol_table::xglobal_scope = 0;
 const symbol_table::scope_id symbol_table::xtop_scope = 1;
 
@@ -359,6 +361,57 @@ symbol_table::fcn_info::fcn_info_rep::help_for_dispatch (void) const
   return retval;
 }
 
+static std::string
+get_dispatch_type (const octave_value_list& evaluated_args)
+{
+  std::string dispatch_type;
+
+  int n = evaluated_args.length ();
+
+  if (n > 0)
+    {
+      // Find first object, if any.
+
+      int i;
+
+      for (i = 0; i < n; i++)
+	{
+	  octave_value arg = evaluated_args(i);
+
+	  if (arg.is_object ())
+	    {
+	      dispatch_type = arg.class_name ();
+	      break;
+	    }
+	}
+
+      for (int j = i+1; j < n; j++)
+	{
+	  octave_value arg = evaluated_args(j);
+
+	  if (arg.is_object ())
+	    {
+	      std::string cname = arg.class_name ();
+
+	      // Only switch to type of ARG if it is marked superior
+	      // to the current DISPATCH_TYPE.
+	      if (! symbol_table::is_superiorto (dispatch_type, cname)
+		  && symbol_table::is_superiorto (cname, dispatch_type))
+		dispatch_type = cname;
+	    }
+	}
+
+      if (dispatch_type.empty ())
+	{
+	  // No object found, so use class of first argument.
+
+	  dispatch_type = evaluated_args(0).class_name ();
+	}
+    }
+
+  return dispatch_type;
+}
+
 // Find the definition of NAME according to the following precedence
 // list:
 //
@@ -519,25 +572,15 @@ symbol_table::fcn_info::fcn_info_rep::find
 
 	  args_evaluated = true;
 
-	  // FIXME -- need to handle precedence.
-
-	  std::string dispatch_type = evaluated_args(0).class_name ();
-
-	  for (int i = 1; i < n; i++)
+	  if (n > 0)
 	    {
-	      octave_value arg = evaluated_args(i);
+	      std::string dispatch_type = get_dispatch_type (evaluated_args);
 
-	      if (arg.is_object ())
-		{
-		  dispatch_type = arg.class_name ();
-		  break;
-		}
+	      octave_value fcn = find_method (dispatch_type);
+
+	      if (fcn.is_defined ())
+		return fcn;
 	    }
-
-	  octave_value fcn = find_method (dispatch_type);
-
-	  if (fcn.is_defined ())
-	    return fcn;
 	}
       else
 	return octave_value ();
@@ -704,6 +747,65 @@ symbol_table::fcn_info::fcn_info_rep::find_user_function (void)
     }
 
   return function_on_path;
+}
+
+// Insert INF_CLASS in the set of class names that are considered
+// inferior to SUP_CLASS.  Return FALSE if INF_CLASS is currently
+// marked as superior to  SUP_CLASS.
+
+bool
+symbol_table::set_class_relationship (const std::string& sup_class,
+				      const std::string& inf_class)
+{
+  class_precedence_table_const_iterator p
+    = class_precedence_table.find (inf_class);
+
+  if (p != class_precedence_table.end ())
+    {
+      const std::set<std::string>& inferior_classes = p->second;
+
+      std::set<std::string>::const_iterator q
+	= inferior_classes.find (sup_class);
+
+      if (q != inferior_classes.end ())
+	return false;
+    }
+
+  class_precedence_table[sup_class].insert (inf_class);
+
+  return true;
+}
+
+// Has class A been marked as superior to class B?  Also returns
+// TRUE if B has been marked as inferior to A, since we only keep
+// one table, and convert inferiort information to a superiorto
+// relationship.  Two calls are required to determine whether there
+// is no relationship between two classes:
+//
+//  if (symbol_table::is_superiorto (a, b))
+//    // A is superior to B, or B has been marked inferior to A.
+//  else if (symbol_table::is_superiorto (b, a))
+//    // B is superior to A, or A has been marked inferior to B.
+//  else
+//    // No relation.
+
+bool
+symbol_table::is_superiorto (const std::string& a, const std::string& b)
+{
+  bool retval = false;
+
+  class_precedence_table_const_iterator p = class_precedence_table.find (a);
+
+  if (p != class_precedence_table.end ())
+    {
+      const std::set<std::string>& inferior_classes = p->second;
+      std::set<std::string>::const_iterator q = inferior_classes.find (b);
+
+      if (q != inferior_classes.end ())
+	retval = true;
+    }
+
+  return retval;
 }
 
 static std::string

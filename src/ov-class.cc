@@ -1097,15 +1097,6 @@ is_built_in_class (const std::string& cn)
   return built_in_class_names.find (cn) != built_in_class_names.end ();
 }
 
-static void
-set_class_relationship (const std::string& sup_class,
-			const std::string& inf_class)
-{
-  // FIXME
-
-  warning ("class precedence not implemented");
-}
-
 DEFUN (superiorto, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} superiorto (@var{class_name})\n\
@@ -1130,7 +1121,10 @@ This function may only be called from a class constructor.\n\
 		{
 		  std::string this_class_name = fcn->name ();
 
-		  set_class_relationship (this_class_name, class_name);
+		  if (! symbol_table::set_class_relationship (this_class_name,
+							      class_name))
+		    error ("superiorto: precedence already set for %s and %s",
+			   this_class_name.c_str (), class_name.c_str ());
 		}
 	      else
 		{
@@ -1174,7 +1168,13 @@ This function may only be called from a class constructor.\n\
 		{
 		  std::string this_class_name = fcn->name ();
 
-		  set_class_relationship (class_name, this_class_name);
+		  symbol_table::set_class_relationship (class_name,
+							this_class_name);
+
+		  if (! symbol_table::set_class_relationship (this_class_name,
+							      class_name))
+		    error ("inferiorto: precedence already set for %s and %s",
+			   this_class_name.c_str (), class_name.c_str ());
 		}
 	      else
 		error ("inferiorto: cannot give user-defined class lower precedence than built-in class");

@@ -1,3 +1,7 @@
+2008-07-28  Jaroslav Hajek <highegg@gmail.com>
+
+	* lo-math.h: Ensure log2 is undefined from cmath in C++ mode.
+
 2008-07-21  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* oct-mutex.h (octave_base_mutex::octave_base_mutex): Initialize

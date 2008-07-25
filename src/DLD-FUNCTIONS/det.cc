@@ -91,9 +91,7 @@ if requested.\n\
 	    {
 	      FloatDET det = m.determinant (info, rcond);
 	      retval(1) = rcond;
-	      volatile float xrcond = rcond;
-	      xrcond += 1.0;
-	      retval(0) = ((info == -1 || xrcond == 1.0) ? static_cast<float>(0.0) : det.value ());
+	      retval(0) = info == -1 ? static_cast<float>(0.0) : det.value ();
 	    }
 	}
       else if (arg.is_complex_type ())
@@ -107,11 +105,7 @@ if requested.\n\
 	    {
 	      FloatComplexDET det = m.determinant (info, rcond);
 	      retval(1) = rcond;
-	      volatile float xrcond = rcond;
-	      xrcond += 1.0;
-	      retval(0) = ((info == -1 || xrcond == 1.0) 
-			   ? FloatComplex (0.0) : det.value ());
-	      
+	      retval(0) = info == -1 ? FloatComplex (0.0) : det.value ();
 	    }
 	}
     }
@@ -130,9 +124,7 @@ if requested.\n\
 		{
 		  DET det = m.determinant (info, rcond);
 		  retval(1) = rcond;
-		  volatile double xrcond = rcond;
-		  xrcond += 1.0;
-		  retval(0) = ((info == -1 || xrcond == 1.0) ? 0.0 : det.value ());
+		  retval(0) = info == -1 ? 0.0 : det.value ();
 		}
 	    }
 	  else
@@ -142,9 +134,7 @@ if requested.\n\
 		{
 		  DET det = m.determinant (info, rcond);
 		  retval(1) = rcond;
-		  volatile double xrcond = rcond;
-		  xrcond += 1.0;
-		  retval(0) = ((info == -1 || xrcond == 1.0) ? 0.0 : det.value ());
+		  retval(0) = info == -1 ? 0.0 : det.value ();
 		}
 	    }
 	}
@@ -161,10 +151,7 @@ if requested.\n\
 		{
 		  ComplexDET det = m.determinant (info, rcond);
 		  retval(1) = rcond;
-		  volatile double xrcond = rcond;
-		  xrcond += 1.0;
-		  retval(0) = ((info == -1 || xrcond == 1.0) 
-			       ? Complex (0.0) : det.value ());
+		  retval(0) = info == -1 ? Complex (0.0) : det.value ();
 		}
 	    }
 	  else
@@ -174,11 +161,7 @@ if requested.\n\
 		{
 		  ComplexDET det = m.determinant (info, rcond);
 		  retval(1) = rcond;
-		  volatile double xrcond = rcond;
-		  xrcond += 1.0;
-		  retval(0) = ((info == -1 || xrcond == 1.0) 
-			       ? Complex (0.0) : det.value ());
-
+		  retval(0) = info == -1 ? Complex (0.0) : det.value ();
 		}
 	    }
 	}

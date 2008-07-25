@@ -1,5 +1,8 @@
 2008-07-25  John W. Eaton  <jwe@octave.org>
 
+	* DLD-FUNCTIONS/det.cc (Fdet): Return calculated determinant for
+	numerically singular matrices, not 0.
+
 	* symtab.cc (get_dispatch_type): New function.
 	(symbol_table::fcn_info::fcn_info_rep::find): Use it.
 

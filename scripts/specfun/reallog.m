@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} realsqrt (@var{x})
+## @deftypefn {Function File} {} reallog (@var{x})
 ## Return the real natural logarithm of @var{x}. If any element results in the
 ## return value being complex @code{reallog} produces an error.
 ## @seealso{log, realsqrt, realpow}

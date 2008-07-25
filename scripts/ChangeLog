@@ -1,7 +1,9 @@
 2008-07-28  Ben Abbott <bpabbott@mac.com>
 
 	* plot/hold.m: Clarify help text.
- 
+
+	* specfun/reallog.m: Fix help string.
+
 2008-07-28  David Bateman  <dbateman@free.fr>
 
 	* strings/regexptranslate.m: Add real documentation.

@@ -170,16 +170,13 @@ It corresponds to GNU Octave version @value{VERSION}.
 * Differential Equations::      
 * Optimization::                
 * Statistics::                  
-* Financial Functions::         
 * Sets::                        
 * Polynomial Manipulations::    
 * Interpolation::
 * Geometry::
-* Control Theory::              
 * Signal Processing::           
 * Image Processing::            
 * Audio Processing::            
-* Quaternions::                 
 * System Utilities::            
 * Packages:: 
 * Dynamically Linked Functions::
@@ -481,34 +478,6 @@ Geometry
 * Convex Hull::
 * Interpolation on Scattered Data::
 
-Control Theory
-
-* sysstruct::                   
-* sysinterface::                
-* sysdisp::                     
-* blockdiag::                   
-* numerical::                   
-* sysprop::                     
-* systime::                     
-* sysfreq::                     
-* cacsd::                       
-* misc::                        
-
-System Data Structure
-
-* sysstructvars::               
-* sysstructtf::                 
-* sysstructzp::                 
-* sysstructss::                 
-
-System Construction and Interface Functions
-
-* fir2sys::                     
-* ss2sys::                      
-* tf2sys::                      
-* zp2sys::                      
-* structaccess::                
-
 Image Processing
 
 * Loading and Saving Images::   
@@ -623,16 +592,13 @@ Emacs Octave Support
 @include diffeq.texi
 @include optim.texi
 @include stats.texi
-@include finance.texi
 @include set.texi
 @include poly.texi
 @include interp.texi
 @include geometry.texi
-@include control.texi
 @include signal.texi
 @include image.texi
 @include audio.texi
-@include quaternion.texi
 @include system.texi
 @include package.texi
 

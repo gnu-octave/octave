@@ -94,13 +94,13 @@ HTML_IMAGES_PNG = $(addprefix HTML/, $(IMAGES_PNG))
 IMAGES = $(IMAGES_EPS) $(IMAGES_PDF) $(IMAGES_PNG) $(IMAGES_TXT)
 
 SUB_SOURCE := arith.txi audio.txi basics.txi bugs.txi \
-	container.txi control.txi cp-idx.txi data.txi \
+	container.txi cp-idx.txi data.txi \
 	debug.txi diffeq.txi dynamic.txi emacs.txi errors.txi eval.txi \
-	expr.txi finance.txi fn-idx.txi func.txi geometry.txi gpl.txi \
+	expr.txi fn-idx.txi func.txi geometry.txi gpl.txi \
 	grammar.txi image.txi install.txi interp.txi \
 	intro.txi io.txi linalg.txi matrix.txi nonlin.txi numbers.txi \
 	op-idx.txi optim.txi package.txi plot.txi poly.txi preface.txi \
-	quad.txi quaternion.txi set.txi signal.txi sparse.txi stats.txi \
+	quad.txi set.txi signal.txi sparse.txi stats.txi \
 	stmt.txi strings.txi system.txi testfun.txi tips.txi var.txi \
 	vr-idx.txi
 

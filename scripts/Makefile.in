@@ -42,9 +42,9 @@ DISTFILES = $(addprefix $(srcdir)/, Makefile.in ChangeLog $(SOURCES) \
 	configure.in configure mkinstalldirs mkdoc mkpkgadd gethelp.cc \
 	skip-autoheader move-if-change) DOCSTRINGS
 
-SUBDIRS = audio control deprecated elfun finance general geometry image io \
+SUBDIRS = audio deprecated elfun general geometry image io \
 	linear-algebra miscellaneous optimization path pkg plot polynomial \
-	quaternion set signal sparse specfun special-matrix startup \
+	set signal sparse specfun special-matrix startup \
 	statistics strings testfun time
 
 DISTSUBDIRS = $(SUBDIRS)

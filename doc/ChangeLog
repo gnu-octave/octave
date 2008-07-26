@@ -1,3 +1,9 @@
+2008-07-29  David Bateman  <dbateman@free.fr>
+
+	* control.txi, finance.txi, quaternion.txi: Delete.
+	* octave.texi: Remove all references to the above.
+	* Makefile.in: ditto.
+
 2008-07-28  David Bateman  <dbateman@free.fr>
 
 	* interpreter/arith.txi: Document reallog, realpow and realsqrt.

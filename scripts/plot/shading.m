@@ -20,9 +20,22 @@
 ## @deftypefn {Function File} {} shading (@var{type})
 ## @deftypefnx {Function File} {} shading (@var{ax}, @dots{})
 ## Set the shading of surface or patch graphic objects. Valid arguments
-## for @var{type} are @code{"flat"}, @code{"interp"}, or
-## @code{"faceted"}.  If @var{ax} is given the shading is applied to
-## axis @var{ax} instead of the current axis.
+## for @var{type} are
+##
+## @table @code
+## @item "flat"
+## Single colored patches with invisible edges.
+##
+## @item "faceted"
+## Single colored patches with visible edges.
+##
+## @item "interp"
+## Color between patch vertices are interpolated and the patch edges are
+## invisible.
+## @end table
+##
+## If @var{ax} is given the shading is applied to axis @var{ax} instead
+## of the current axis.
 ## @end deftypefn
 
 ## Author: Kai Habel <kai.habel@gmx.de>

@@ -1,5 +1,7 @@
 2008-07-28  David Bateman  <dbateman@free.fr>
 
+	* plot/shading.m: Clarify help string.
+	
 	* general/genvarname.m: Trivial documentation fix.
 
 2008-07-28  John W. Eaton  <jwe@octave.org>

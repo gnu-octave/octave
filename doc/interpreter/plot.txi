@@ -750,10 +750,10 @@ May be one of
 
 @item outerposition
 A four-element vector specifying the coordinates of the lower left
-corner and width and height of the plot, in normalized units.  For
-example, @code{[0.2, 0.3, 0.4, 0.5]} sets the lower left corner of the
-axes at @math{(0.2, 0.3)} and the width and height to be 0.4 and 0.5
-respectively.
+corner and width and height of the plot, in normalized units including
+the tics, labels etc.  For example, @code{[0.2, 0.3, 0.4, 0.5]} sets the
+lower left corner of the axes at @math{(0.2, 0.3)} and the width and
+height to be 0.4 and 0.5 respectively.
 @end table
 
 @node Line Properties

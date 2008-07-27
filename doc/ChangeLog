@@ -1,3 +1,8 @@
+2008-07-28  David Bateman  <dbateman@free.fr>
+
+	* interpreter/plot.txi: Clarify the description of OuterPosition
+	axes property.
+
 2008-05-20  David Bateman  <dbateman@free.fr>
 
 	* interpreter/debug.txi: Uodate documentation for multiline

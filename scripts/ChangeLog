@@ -1,4 +1,6 @@
 2008-07-28  David Bateman  <dbateman@free.fr>
+ 
+	* plot/contourf.m: Allow X,Y to be unequal vectors.
 
 	* plot/shading.m: Clarify help string.
 	

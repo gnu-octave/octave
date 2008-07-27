@@ -123,10 +123,12 @@ shown in @ref{fig:hist}.
 
 @DOCSTRING(stem)
 
-The @code{contour} and @code{contourc} functions produce two-dimensional
-contour plots from three dimensional data.
+The @code{contour}, @code{contourf} and @code{contourc} functions
+produce two-dimensional contour plots from three dimensional data.
 
 @DOCSTRING(contour)
+
+@DOCSTRING(contourf)
 
 @DOCSTRING(contourc)
 

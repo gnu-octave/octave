@@ -1,5 +1,7 @@
 2008-07-28  David Bateman  <dbateman@free.fr>
 
+	* interpreter/plot.txi: Document contourf.
+
 	* interpreter/plot.txi: Clarify the description of OuterPosition
 	axes property.
 

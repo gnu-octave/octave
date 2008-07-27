@@ -1,5 +1,7 @@
 2008-07-28  David Bateman  <dbateman@free.fr>
- 
+
+	* strings/regexptranslate.m: Add real documentation.
+
 	* plot/contourf.m: Allow X,Y to be unequal vectors.
 
 	* plot/shading.m: Clarify help string.

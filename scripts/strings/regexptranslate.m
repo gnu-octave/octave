@@ -17,10 +17,21 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} realsqrt (@var{x})
-## Return the real natural logarithm of @var{x}. If any element results in the
-## return value being complex @code{reallog} produces an error.
-## @seealso{log, realsqrt, realpow}
+## @deftypefn {Function File} {} regexptranslate (@var{op}, @var{s})
+## Translate a string for use in a regular expression. This might
+## include either wildcard replacement or special character escaping.
+## The behavior can be controlled by the @var{op} that can have the
+## values
+##
+## @table @asis
+## @item "wildcard"
+## The wildcard characters @code{.}, @code{*} and @code{?} are replaced
+## with wildcards that are appropriate for a regular expression.
+##
+## @item "escape"
+## The characters @code{$.?[]}, that have special meaning for regular
+## expressions are escaped so that they are treated literally.
+## @end table
 ## @end deftypefn
 
 function y = regexptranslate (op, x)

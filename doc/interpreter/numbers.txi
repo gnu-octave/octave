@@ -84,16 +84,16 @@ You may also use @samp{j}, @samp{I}, or @samp{J} in place of the
 
 @DOCSTRING(double)
 
-@DOCSTRING(single)
-
 @DOCSTRING(complex)
 
 @menu
-* Matrices::                    
-* Ranges::                      
+* Matrices::
+* Ranges::
+* Single Precision Data Types::
 * Integer Data Types::
 * Bit Manipulations::
-* Logical Values::              
+* Logical Values:: 
+* Promotion and Demotion of Data Types::
 * Predicates for Numeric Objects::  
 @end menu
 
@@ -399,6 +399,42 @@ When Octave parses a range expression, it examines the elements of the
 expression to determine whether they are all constants.  If they are, it
 replaces the range expression with a single range constant.
 
+@node Single Precision Data Types
+@section Single Precision Data Types
+
+Octave includes support for single precision data types, and most of the
+functions in Octave accept single precision values and return single
+precion answers. A single precision variable is created with the
+@code{sample} function.
+
+@DOCSTRING(single)
+
+for example
+
+@example
+sngl = single (rand (2, 2))
+    @result{} sngl = 0.37569   0.92982
+               0.11962   0.50876
+class (sngl)
+    @result{} single
+@end example
+
+Many functions can also return single precision values directly. For
+example
+
+@example
+ones (2, 2, "single")
+zeros (2, 2, "single")
+eye (2, 2,  "single")
+rand (2, 2, "single")
+NaN (2, 2, "single")
+NA (2, 2, "single")
+Inf (2, 2, "single")
+@end example
+
+@noindent
+will all return single precision matrices.
+
 @node Integer Data Types
 @section Integer Data Types
 
@@ -481,6 +517,8 @@ When doing integer division Octave will round the result to the nearest
 integer. This is different from most programming languages, where the
 result is often floored to the nearest integer. So, the result of
 @code{int32(5)./int32(8)} is @code{1}.
+
+@DOCSTRING(idivide)
 
 @node Bit Manipulations
 @section Bit Manipulations
@@ -605,6 +643,76 @@ or @code{false} functions.
 @DOCSTRING(true)
 
 @DOCSTRING(false)
+
+@node Promotion and Demotion of Data Types
+@section Promotion and Demotion of Data Types
+
+Many operators and functions can work with mixed data types. For example
+
+@example
+uint8 (1) + 1
+    @result{} 2
+@end example
+
+@noindent
+where the above operator works with an 8-bit integer and a double precision
+value and returns an 8-bit integer value. Note that the type is demoted
+to an 8-bit integer, rather than promoted to a double precision value as
+might be expected. The reason is that if Octave promoted values in
+expressions like the above with all numerical constants would need to be
+explicitly cast to the appropriate data type type like
+
+@example
+uint8 (1) + uint8 (1)
+    @result{} 2
+@end example
+
+@noindent
+which becomes difficult for the user to apply uniformly and might allow
+hard to find bugs to be introduced. The same applies to single precision
+values where a mixed operation such as
+
+@example
+single (1) + 1
+    @result{} 2
+@end example
+
+@noindent
+returns a single precision value. The mixed operations that are valid
+and their returned data types are
+
+@multitable @columnfraction .2 .3 .3 .2
+@item @tab Mixed Operation @tab  Result @tab 
+@item @tab double OP single @tab single @tab
+@item @tab double OP integer @tab integer @tab
+@item @tab double OP char @tab double @tab
+@item @tab double OP logical @tab double @tab
+@item @tab single OP integer @tab integer @tab
+@item @tab single OP char @tab single @tab
+@item @tab single OP logical @tab single @tab
+
+The same logic applies to functions with mixed arguments such as
+
+@example
+min (single (1), 0)
+   @result 0
+@end example
+
+@noindent
+where the returned value is single precision.
+
+In the case of mixed type indexed assignments, the type is not
+changed. For example
+
+@example
+x = ones (2, 2);
+x (1, 1) = single (2)
+    @result{} x = 2   1
+            1   1
+@end example
+
+@noindent
+where @code{x} remains of the double precision. 
 
 @node Predicates for Numeric Objects
 @section Predicates for Numeric Objects

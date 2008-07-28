@@ -114,6 +114,32 @@ following the above example, is then
 dbclear ("asind", dbstatus ("asind"));
 @end example
 
+A breakpoint can be set in a subfunction. For example if a file contains
+the functions
+
+@example
+function y = func1 (x)
+  y = func2 (x);
+endfunction
+function y = func2 (x)
+  y = x + 1;
+endfunction
+@end example
+
+@noindent
+then a breakpoint can be set at the start of the subfunction directly
+with
+
+@example
+@group
+dbstop (["func1", filemarker(), "func2"])
+@result{} 5
+@end group
+@end example
+
+Note that @code{filemarker} returns a character that marks the
+subfunctions from the file containing them.
+
 Another simple means of setting a breakpoint in an Octave script is the
 use of the @code{keyboard} function.
 

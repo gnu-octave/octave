@@ -334,6 +334,8 @@ along with a warning.
 
 @DOCSTRING(nargchk)
 
+@DOCSTRING(nargoutchk)
+
 @node Variable-length Argument Lists
 @section Variable-length Argument Lists
 @cindex variable-length argument lists
@@ -1062,6 +1064,8 @@ writing @code{f(x)}.
 @DOCSTRING(formula)
 
 @DOCSTRING(vectorize)
+
+@DOCSTRING(symvar)
 
 @node Commands
 @section Commands

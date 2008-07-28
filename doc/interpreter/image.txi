@@ -152,6 +152,8 @@ between 0 and 1.
 
 @DOCSTRING(winter)
 
+@DOCSTRING(contrast)
+
 An additional colormap is @code{gmap40}. This code map contains only
 colors with integer values of the red, green and blue components. This
 workaround a limitation on gnuplot 4.0, that does not allow the color of

@@ -1,5 +1,30 @@
 2008-07-28  David Bateman  <dbateman@free.fr>
 
+	* interpreter/arith.txi: Document reallog, realpow and realsqrt.
+	* interpreter/dbug.txi: Document the means of setting a breakpoint
+	in a sub-function
+	* interpreter/func.txi: Document nargoutchk and symvar.
+	* interpreter/geometry.txi: Document rectint.
+	* interpreter/image.txi: Document contrast.
+	* interpreter/interp.txi: Document interp1q.
+	* interpreter/linalg.txi: Document planerot, rcond and subspace.
+	* interpreter/numbers.txi: Document data type demotion and single
+	precision data type.
+	* interpreter/plot.txi: Document ginput, gtext,
+	waitforbuttonpress, ezcontour, ezcontourf, ezpolar, ezplot3,
+	ezmesh, ezmeshc, ezsurf, ezsurfc, allchild, findobj and findall
+	functions.
+	* interpreter/quad.txi: Document quadv, quadgk, dblquad and
+	triplequad functions.
+	* interpreter/strings.txi: Document validstring, regexptranslate
+	and isstrprop functions.
+	* interpreter/system.txi: Document addtodate, filemarker and perl
+	functions.
+	* interpreter/var.txi: Document the genvarname and namelengthmax
+	functions.
+	* interpreter/octave.texi: Update table of contents for the above
+	changes.
+
 	* interpreter/plot.txi: Document contourf.
 
 	* interpreter/plot.txi: Clarify the description of OuterPosition

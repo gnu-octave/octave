@@ -228,6 +228,8 @@ functions exist for doing case-insensitive comparisons.
 
 @DOCSTRING(strncmpi)
 
+@DOCSTRING(validstring)
+
 @node Manipulating Strings
 @section Manipulating Strings
 
@@ -272,6 +274,8 @@ general regular expressions, the following functions come with Octave.
 @DOCSTRING(regexpi)
 
 @DOCSTRING(regexprep)
+
+@DOCSTRING(regexptranslate)
 
 @node String Conversions
 @section String Conversions
@@ -358,3 +362,5 @@ isalpha ("!Q@@WERT^Y&")
 @DOCSTRING(isupper)
 
 @DOCSTRING(isxdigit)
+
+@DOCSTRING(isstrprop)

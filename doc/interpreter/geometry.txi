@@ -336,7 +336,11 @@ endfor
 @end group
 @end example
 
-Facets of the Voronoi diagram with a vertex at infinity have infinity area.
+Facets of the Voronoi diagram with a vertex at infinity have infinity
+area. A simplified version of @code{polyarea} for rectangles is
+available with @code{rectint}
+
+@DOCSTRING(rectint)
 
 @DOCSTRING(inpolygon)
 

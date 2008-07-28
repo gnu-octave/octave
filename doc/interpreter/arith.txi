@@ -90,6 +90,12 @@ each element of the matrix.
 
 @DOCSTRING(primes)
 
+@DOCSTRING(reallog)
+
+@DOCSTRING(realpow)
+
+@DOCSTRING(realsqrt)
+
 @DOCSTRING(rem)
 
 @DOCSTRING(round)

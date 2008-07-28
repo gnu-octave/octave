@@ -95,6 +95,8 @@ flag a non-Hermitian matrix.
 
 @DOCSTRING(givens)
 
+@DOCSTRING(planerot)
+
 @DOCSTRING(inv)
 
 @DOCSTRING(matrix_type)
@@ -108,6 +110,8 @@ flag a non-Hermitian matrix.
 @DOCSTRING(pinv)
 
 @DOCSTRING(rank)
+
+@DOCSTRING(rcond)
 
 @DOCSTRING(trace)
 
@@ -141,6 +145,8 @@ flag a non-Hermitian matrix.
 @DOCSTRING(qzhess)
 
 @DOCSTRING(schur)
+
+@DOCSTRING(subspace)
 
 @DOCSTRING(svd)
 

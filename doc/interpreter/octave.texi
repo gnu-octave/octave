@@ -264,11 +264,13 @@ Built-in Data Types
 
 Numeric Data Types
 
-* Matrices::                    
-* Ranges::                      
+* Matrices::
+* Ranges::
+* Single Precision Data Types::
 * Integer Data Types::
 * Bit Manipulations::
-* Logical Values::              
+* Logical Values:: 
+* Promotion and Demotion of Data Types::
 * Predicates for Numeric Objects::  
 
 Matrices

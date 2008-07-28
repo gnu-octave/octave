@@ -42,6 +42,7 @@ If you need finer control over graphics, see @ref{Advanced Plotting}.
 * Multiple Plots on One Page::  
 * Multiple Plot Windows::       
 * Printing Plots::              
+* Interacting with plots::
 * Test Plotting Functions::     
 @end menu
 
@@ -67,23 +68,7 @@ command will open a separate plot window to display the graph.
 @caption{Simple Two-Dimensional Plot.}
 @end float
 
-The function @code{fplot} also generates two-dimensional plots with
-linear axes using a function name and limits for the range of the
-x-coordinate instead of the x and y data.  For example,
-
-@example
-@group
-fplot (@@sin, [-10, 10], 201);
-@end group
-@end example
-
-@noindent
-produces a plot that is equivalent to the one above, but also includes a
-legend displaying the name of the plotted function.
-
 @DOCSTRING(plot)
-
-@DOCSTRING(fplot)
 
 The functions @code{semilogx}, @code{semilogy}, and @code{loglog} are
 similar to the @code{plot} function, but produce plots in which one or
@@ -196,6 +181,37 @@ function.
 
 @DOCSTRING(caxis)
 
+@node Two-dimensional Function Plotting
+@subsubsection Two-dimensional Function Plotting
+
+Octave can plot a function from a function handle inline function or
+string defining the function without the user needing to explicitly
+create the data to be plotted. The function @code{fplot} also generates
+two-dimensional plots with linear axes using a function name and limits
+for the range of the x-coordinate instead of the x and y data.  For
+example,
+
+@example
+@group
+fplot (@@sin, [-10, 10], 201);
+@end group
+@end example
+
+@noindent
+produces a plot that is equivalent to the one above, but also includes a
+legend displaying the name of the plotted function.
+
+@DOCSTRING(fplot)
+
+Other functions that can create two-dimensional plots directly from a
+function include @code{ezcontour}, @code{ezcontourf} and @code{ezpolar}.
+
+@DOCSTRING(ezcontour)
+
+@DOCSTRING(ezcontourf)
+
+@DOCSTRING(ezpolar)
+
 @node Three-Dimensional Plotting
 @subsection Three-Dimensional Plotting
 
@@ -267,6 +283,19 @@ three-dimensional plots.
 @DOCSTRING(view)
 
 @DOCSTRING(shading)
+
+@node Two-dimensional Function Plotting
+@subsubsection Two-dimensional Function Plotting
+
+@DOCSTRING(ezplot3)
+
+@DOCSTRING(ezmesh)
+
+@DOCSTRING(ezmeshc)
+
+@DOCSTRING(ezsurf)
+
+@DOCSTRING(ezsurfc)
 
 @node Plot Annotations
 @subsection Plot Annotations
@@ -364,6 +393,19 @@ writes the current figure to an encapsulated PostScript file called
 @DOCSTRING(print)
 
 @DOCSTRING(orient)
+
+@node Interacting with plots
+@subsection Interacting with plots
+
+The user can select points on a plot with the @code{ginput} function or
+selction the position at which to place text on the plot with the
+@code{gtext} function using the mouse.
+
+@DOCSTRING(ginput)
+
+@DOCSTRING(waitforbuttonpress)
+
+@DOCSTRING(gtext)
 
 @node Test Plotting Functions
 @subsection Test Plotting Functions
@@ -506,6 +548,8 @@ objects.
 
 @DOCSTRING(ancestor)
 
+@DOCSTRING(allchild)
+
 You can create axes, line, and patch objects directly using the
 @code{axes}, @code{line}, and @code{patch} functions.  These objects
 become children of the current axes object.
@@ -579,6 +623,7 @@ figure window, call the @code{close} function.
 * Image Properties::            
 * Patch Properties::            
 * Surface Properties::          
+* Seacrhing Properties::
 @end menu
 
 @node Root Figure Properties
@@ -1137,6 +1182,14 @@ The text of the legend entry corresponding to this surface.  Note that
 this property is not compatible with @sc{Matlab} and may be removed in a
 future version of Octave.
 @end table
+
+@node Seacrhing Properties
+@subsubsection Seacrhing Properties
+
+@DOCSTRING(findobj)
+
+@DOCSTRING(findall)
+
 
 @node Managing Default Properties
 @subsection Managing Default Properties

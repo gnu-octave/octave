@@ -137,3 +137,4 @@ the @code{gls} is needed.
 
 @DOCSTRING(gls)
 
+@DOCSTRING(lsqnonneg)

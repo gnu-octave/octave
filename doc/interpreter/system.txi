@@ -129,11 +129,13 @@ useful.
 
 @DOCSTRING(usleep)
 
-@DOCSTRING(  datenum)
+@DOCSTRING(datenum)
 
 @DOCSTRING(datestr)
 
 @DOCSTRING(datevec)
+
+@DOCSTRING(addtodate)
 
 @DOCSTRING(calendar)
 
@@ -196,6 +198,8 @@ about the status of files.
 
 @DOCSTRING(filesep)
 
+@DOCSTRING(filemarker)
+
 @DOCSTRING(fullfile)
 
 @DOCSTRING(tempdir)
@@ -250,6 +254,8 @@ higher-level functions.
 @DOCSTRING(unix)
 
 @DOCSTRING(dos)
+
+@DOCSTRING(perl)
 
 @DOCSTRING(popen)
 

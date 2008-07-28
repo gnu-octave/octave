@@ -50,6 +50,12 @@ Numerical integration based on Gaussian quadrature.
 @item quadl
 Numerical integration using an adaptive Lobatto rule.
 
+@item quadgk
+Numerical integration using an adaptive Guass-Konrod rule.
+
+@item quadv
+Numerical integration using an adaptive vectorized Simpson's rule.
+
 @item trapz
 Numerical integration using the trapezoidal method.
 @end table
@@ -118,6 +124,10 @@ if you move the lower bound to 0.1, then 0.01, then 0.001, etc.).
 
 @DOCSTRING(quadl)
 
+@DOCSTRING(quadgk)
+
+@DOCSTRING(quadv)
+
 @DOCSTRING(trapz)
 
 @DOCSTRING(cumtrapz)
@@ -173,10 +183,10 @@ u = [ 0; (at - alpha * bt) \ rhs; 1]
 @node Functions of Multiple Variables
 @section Functions of Multiple Variables
 
-Octave does not have built-in functions for computing the integral
-of functions of multiple variables.  It is however possible to compute
-the integral of a function of multiple variables using the functions
-for one-dimensional integrals.
+Octave does not have built-in functions for computing the integral of
+functions of multiple variables directly.  It is however possible to
+compute the integral of a function of multiple variables using the
+functions for one-dimensional integrals.
 
 To illustrate how the integration can be performed, we will integrate
 the function
@@ -215,6 +225,19 @@ I = quadl("g", 0, 1)
       @result{} 0.30022
 @end example
 
+The above process can be simplified with the @code{dblquad} and
+@code{triplequad} functions for integrals over two and three
+variables. For example
+
+@example
+I =  dblquad (@(x, y) sin(pi.*x.*y).*sqrt(x.*y), 0, 1, 0, 1)
+      @result{} 0.30022
+@end example
+
+@DOCSTRING(dblquad)
+
+@DOCSTRING(triplequad)
+
 The above mentioned approach works but is fairly slow, and that problem
 increases exponentially with the dimensionality the problem.  Another
 possible solution is to use Orthogonal Collocation as described in the
@@ -247,7 +270,6 @@ I = q'*f(t,t)*q;
 It should be noted that the number of points determines the quality
 of the approximation.  If the integration needs to be performed between
 @math{a} and @math{b} instead of 0 and 1, a change of variables is needed.
-
 
 
 

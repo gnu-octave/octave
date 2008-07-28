@@ -1,3 +1,8 @@
+2008-07-29  David Bateman  <dbateman@free.fr>
+
+	* NEWS.3: Copy from NEWS.
+	* NEWS: Initial update in preparation for a 3.2 release.
+
 2008-07-21  John W. Eaton  <jwe@octave.org>
 
 	* configure.in: If FTGL.h is found, then also include

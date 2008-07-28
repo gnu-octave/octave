@@ -38,9 +38,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-colon.h"
 #include "unwind-prot.h"
 
-extern octave_value_list 
-Flasterr (const octave_value_list& args_name, int nargout_name);
-
 DEFUN_DLD (cellfun, args, nargout,
   " -*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} cellfun (@var{name}, @var{c})\n\
@@ -364,13 +361,10 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
 
 		  if (error_state && have_error_handler)
 		    {
-		      octave_value_list errtmp = 
-			Flasterr (octave_value_list (), 2);
-
 		      Octave_map msg;
-		      msg.assign ("identifier", errtmp(1));
-		      msg.assign ("message", errtmp(0));
-		      msg.assign ("index", octave_value(double (count)));
+		      msg.assign ("identifier", last_error_id ());
+		      msg.assign ("message", last_error_message ());
+		      msg.assign ("index", octave_value(double (count + static_cast<octave_idx_type>(1))));
 		      octave_value_list errlist = inputlist;
 		      errlist.prepend (msg);
 		      buffer_error_messages--;
@@ -443,13 +437,10 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
 
 		  if (error_state && have_error_handler)
 		    {
-		      octave_value_list errtmp = 
-			Flasterr (octave_value_list (), 2);
-
 		      Octave_map msg;
-		      msg.assign ("identifier", errtmp(1));
-		      msg.assign ("message", errtmp(0));
-		      msg.assign ("index", octave_value(double (count)));
+		      msg.assign ("identifier", last_error_id ());
+		      msg.assign ("message", last_error_message ());
+		      msg.assign ("index", octave_value(double (count + static_cast<octave_idx_type>(1))));
 		      octave_value_list errlist = inputlist;
 		      errlist.prepend (msg);
 		      buffer_error_messages--;

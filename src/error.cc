@@ -1740,6 +1740,30 @@ to enter the debugger when a warning is encountered.\n\
   return SET_INTERNAL_VARIABLE (debug_on_warning);
 }
 
+std::string
+last_error_message (void)
+{
+  return Vlast_error_message;
+}
+
+std::string
+last_error_id (void)
+{
+  return Vlast_error_id;
+}
+
+std::string
+last_warning_message (void)
+{
+  return Vlast_warning_message;
+}
+
+std::string
+last_warning_id (void)
+{
+  return Vlast_warning_id;
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

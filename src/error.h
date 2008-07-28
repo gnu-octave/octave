@@ -114,6 +114,12 @@ extern OCTINTERP_API bool discard_error_messages;
 // TRUE means warning messages are turned off.
 extern OCTINTERP_API bool discard_warning_messages;
 
+// Helper functions to pass last error and warning messages and ids
+extern OCTINTERP_API std::string last_error_message (void);
+extern OCTINTERP_API std::string last_error_id (void);
+extern OCTINTERP_API std::string last_warning_message (void);
+extern OCTINTERP_API std::string last_warning_id (void);
+
 #endif
 
 /*

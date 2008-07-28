@@ -1,3 +1,13 @@
+2008-07-28  David Bateman  <dbateman@free.fr>
+
+	* error.cc (last_error_id, last_error_message, last_warning_id,
+	last_warning_message): New functions to return the error/warning
+	message and id without exposing the internal values.
+	* error.h  (last_error_id, last_error_message, last_warning_id,
+	last_warning_message): Declare them.
+	* DLD-FUNCTIONS/cellfun.cc (Fcellfun): Use them to pass the error
+	to the ErrorHandler function.
+	
 2008-07-28  John W. Eaton  <jwe@octave.org>
 
 	* error.cc (Flasterror, Flasterr): Unwind-protect error_state.

@@ -1,5 +1,7 @@
 2008-07-28  John W. Eaton  <jwe@octave.org>
 
+	* error.cc (Flasterror, Flasterr): Unwind-protect error_state.
+
 	* DLD-FUNCTIONS/__magick_read__.cc (F__magick_write__, write_image):
 	New functions.
 

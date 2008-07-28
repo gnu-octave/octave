@@ -1441,6 +1441,11 @@ their default values.\n\
   octave_value retval;
   int nargin = args.length();
 
+  unwind_protect::begin_frame ("Flasterror");
+
+  unwind_protect_int (error_state);
+  error_state = 0;
+
   if (nargin < 2)
     {
       Octave_map err;
@@ -1565,6 +1570,8 @@ their default values.\n\
   else
     print_usage ();
 
+  unwind_protect::run_frame ("Flasterror");
+
   return retval;  
 }
 
@@ -1577,6 +1584,11 @@ also set the last message identifier.\n\
 @end deftypefn")
 {
   octave_value_list retval;
+
+  unwind_protect::begin_frame ("Flasterr");
+
+  unwind_protect_int (error_state);
+  error_state = 0;
 
   int argc = args.length () + 1;
 
@@ -1606,6 +1618,8 @@ also set the last message identifier.\n\
     }
   else
     print_usage ();
+
+  unwind_protect::run_frame ("Flasterr");
 
   return retval;  
 }

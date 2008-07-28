@@ -305,7 +305,8 @@ read_images (const std::vector<Magick::Image>& imvec,
 
   return retval;
 }
-#endif // HAVE_MAGICK
+
+#endif
 
 DEFUN_DLD (__magick_read__, args, nargout,
   "-*- texinfo -*-\n\
@@ -320,6 +321,7 @@ Instead you should use @code{imread}.\n\
   octave_value_list output;
 
 #ifdef HAVE_MAGICK
+
   if (args.length () > 2 || args.length () < 1 || ! args(0).is_string ()
       || nargout > 3)
     {
@@ -412,6 +414,162 @@ Instead you should use @code{imread}.\n\
 #endif
 
   return output;
+}
+
+#ifdef HAVE_MAGICK
+
+static void 
+write_image (Magick::Image& im, const std::string& filename,
+	     const std::string& fmt)
+{
+  im.syncPixels ();
+
+  // FIXME -- setting fmt to "jpg" and writing to "foo.png" results in
+  // a PNG file, not a JPEG file (for example).  How can the file type
+  // be forced regardless of the name?
+
+  im.magick (fmt);
+
+  try
+    {
+      im.write (filename);
+    }
+  catch (Magick::Warning& w)
+    {
+      warning ("Magick++ warning: %s", w.what ());
+    }
+  catch (Magick::ErrorCoder& e)
+    {
+      warning ("Magick++ coder error: %s", e.what ());
+    }
+  catch (Magick::Exception& e)
+    {
+      error ("Magick++ exception: %s", e.what ());
+    }
+}
+
+static void
+write_image (const std::string& filename, const std::string& fmt,
+	     const octave_value& img,
+	     const octave_value& map = octave_value ())
+{
+  if (img.is_bool_type ())
+    {
+      boolNDArray m = img.bool_array_value ();
+
+      if (! error_state)
+	{
+	  error ("__magick_write__: not implemented");
+	}
+      else
+	error ("__magick_write__: internal error");
+    }
+  else if (img.is_uint8_type ())
+    {
+      uint8NDArray m = img.uint8_array_value ();
+
+      if (! error_state)
+	{
+	  octave_idx_type rows = m.rows ();
+	  octave_idx_type columns = m.columns ();
+
+	  Magick::Image im (Magick::Geometry (columns, rows), "white");
+
+	  im.type (Magick::TrueColorType);
+
+	  im.modifyImage ();
+	  
+	  Magick::PixelPacket *pix = im.getPixels (0, 0, columns, rows);
+
+	  int i = 0;
+
+	  for (int y = 0; y < rows; y++)
+	    {
+	      for (int x = 0; x < columns; x++)
+		{
+		  pix[i].red = m(y,x,0);
+		  pix[i].green = m(y,x,1);
+		  pix[i].blue = m(y,x,2);
+		  i++;
+		}
+	    }
+
+	  write_image (im, filename, fmt);
+	}
+      else
+	error ("__magick_write__: internal error");
+    }
+  else if (img.is_uint16_type ())
+    {
+      uint16NDArray m = img.uint16_array_value ();
+
+      if (! error_state)
+	{
+	  error ("__magick_write__: not implemented");
+	}
+      else
+	error ("__magick_write__: internal error");
+    }
+  else
+    error ("__magick_write__: internal error");
+
+  if (! error_state && map.is_defined ())
+    {
+      NDArray cmap = map.array_value ();
+
+      if (! error_state)
+	{
+	  error ("__magick_write__: not implemented");
+	}
+    }
+}
+
+#endif
+
+DEFUN_DLD (__magick_write__, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Function File} {} __magick_write__(@var{fname}, @var{fmt}, @var{img})\n\
+@deftypefnx {Function File} {} __magick_write__(@var{fname}, @var{fmt}, @var{img}, @var{map})\n\
+Write images with ImageMagick++. In general you should not be using this function.\n\
+Instead you should use @code{imwrite}.\n\
+@seealso{imread}\n\
+@end deftypefn")
+{
+  octave_value_list retval;
+
+#ifdef HAVE_MAGICK
+  int nargin = args.length ();
+
+  if (nargin > 2)
+    {
+      std::string filename = args(0).string_value ();
+
+      if (! error_state)
+	{
+	  std::string fmt = args(1).string_value ();
+
+	  if (! error_state)
+	    {
+	      if (nargin > 3)
+		write_image (filename, fmt, args(2), args(3));
+	      else
+		write_image (filename, fmt, args(2));
+	    }
+	  else
+	    error ("__magick_write__: expecting format as second argument");
+	}
+      else
+	error ("__magick_write__: expecting filename as first argument");
+    }
+  else
+    print_usage ();
+#else
+
+  error ("__magick_write__: not available in this version of Octave");
+
+#endif
+
+  return retval;
 }
 
 /*

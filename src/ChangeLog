@@ -1,3 +1,8 @@
+2008-07-28  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/__magick_read__.cc (F__magick_write__, write_image):
+	New functions.
+
 2008-07-25  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/det.cc (Fdet): Return calculated determinant for

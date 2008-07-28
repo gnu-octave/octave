@@ -1,3 +1,8 @@
+2008-07-28  John W. Eaton  <jwe@octave.org>
+
+	* image/imwrite.m: New function.
+	* image/Makefile.in (SOURCES): Add it to the list.
+
 2008-07-24  Ben Abbott  <bpabbott@mac.com>
 
 	* time/datestr.m: New xtest.

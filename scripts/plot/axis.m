@@ -279,19 +279,20 @@ function lims = __get_tight_lims__ (ca, ax)
 
   ## Get the limits for axis ("tight").
   ## AX should be one of "x", "y", or "z".
-  kids = findobj (ca, "-property", [ax, "data"]);
+  kids = findobj (ca, "-property", strcat (ax, "data"));
   if (isempty (kids))
     ## Return the current limits.
-    lims = get (ca, [ax, "lim"]);
+    lims = get (ca, strcat (ax, "lim"));
   else
-    data = get (kids, [ax, "data"]);
+    data = get (kids, strcat (ax, "data"));
     if (iscell (data))
-      lims(1) = min (cellfun (@min, data));
-      lims(2) = min (cellfun (@max, data));
+      lims(1) = min (cellfun (@min, data)(:));
+      lims(2) = min (cellfun (@max, data)(:));
     else
-      lims = [min(data), max(data)];
+      lims = [min(data(:)), max(data(:))];
     end
   end
+
 
 endfunction
 

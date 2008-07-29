@@ -1,3 +1,8 @@
+2008-07-29  John W. Eaton  <jwe@octave.org>
+
+	* plot/axis.m (__get_tight_lims__): Use strcat instead of [].
+	Don't fail if data is not a vector.
+
 2008-07-29  David Bateman  <dbateman@free.fr>
 
 	* general/cellidx.m: reinclude from control toolbox, as used by

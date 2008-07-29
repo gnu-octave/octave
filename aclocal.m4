@@ -1061,7 +1061,7 @@ dnl
 AC_DEFUN([OCTAVE_OPENGL], [
 OPENGL_LIBS=
 case $canonical_host_type in
-  *-*-msdosmsvc)
+   *-*-mingw32* | *-*-msdosmsvc)
     AC_CHECK_HEADERS(windows.h)
     ;;
 esac
@@ -1081,7 +1081,7 @@ break
 ])
 if test "$have_opengl_incs" = "yes"; then
   case $canonical_host_type in
-    *-*-msdosmsvc)
+    *-*-mingw32* | *-*-msdosmsvc)
       save_LIBS="$LIBS"
       LIBS="$LIBS -lopengl32"
       AC_MSG_CHECKING([for glEnable in -lopengl32])

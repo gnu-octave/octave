@@ -1,3 +1,7 @@
+2008-07-29  Tatsuro MATSUOKA  <tmacchant@yahoo.co.jp>
+
+	* aclocal.m4 (OCTAVE_OPENGL): Handle MinGW the same as MSVC.
+
 2008-07-29  David Bateman  <dbateman@free.fr>
 
 	* NEWS.3: Copy from NEWS.

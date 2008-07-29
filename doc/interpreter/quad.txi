@@ -230,7 +230,7 @@ The above process can be simplified with the @code{dblquad} and
 variables. For example
 
 @example
-I =  dblquad (@(x, y) sin(pi.*x.*y).*sqrt(x.*y), 0, 1, 0, 1)
+I =  dblquad (@@(x, y) sin(pi.*x.*y).*sqrt(x.*y), 0, 1, 0, 1)
       @result{} 0.30022
 @end example
 

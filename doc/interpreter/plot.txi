@@ -181,6 +181,10 @@ function.
 
 @DOCSTRING(caxis)
 
+@menu
+* Two-dimensional Function Plotting::
+@end menu
+
 @node Two-dimensional Function Plotting
 @subsubsection Two-dimensional Function Plotting
 
@@ -284,8 +288,12 @@ three-dimensional plots.
 
 @DOCSTRING(shading)
 
-@node Two-dimensional Function Plotting
-@subsubsection Two-dimensional Function Plotting
+@menu
+* Three-dimensional Function Plotting::
+@end menu
+
+@node Three-dimensional Function Plotting
+@subsubsection Three-dimensional Function Plotting
 
 @DOCSTRING(ezplot3)
 

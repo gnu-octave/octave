@@ -681,7 +681,7 @@ single (1) + 1
 returns a single precision value. The mixed operations that are valid
 and their returned data types are
 
-@multitable @columnfraction .2 .3 .3 .2
+@multitable @columnfractions .2 .3 .3 .2
 @item @tab Mixed Operation @tab  Result @tab 
 @item @tab double OP single @tab single @tab
 @item @tab double OP integer @tab integer @tab
@@ -690,12 +690,13 @@ and their returned data types are
 @item @tab single OP integer @tab integer @tab
 @item @tab single OP char @tab single @tab
 @item @tab single OP logical @tab single @tab
+@end multitable
 
 The same logic applies to functions with mixed arguments such as
 
 @example
 min (single (1), 0)
-   @result 0
+   @result{} 0
 @end example
 
 @noindent
@@ -708,11 +709,11 @@ changed. For example
 x = ones (2, 2);
 x (1, 1) = single (2)
     @result{} x = 2   1
-            1   1
+           1   1
 @end example
 
 @noindent
-where @code{x} remains of the double precision. 
+where @code{x} remains of the double precision type. 
 
 @node Predicates for Numeric Objects
 @section Predicates for Numeric Objects

@@ -21,7 +21,7 @@
 ## Given a two-element column vector, returns the
 ## @iftex
 ## @tex
-## $2\\times 2$ orthogonal matrix
+## $2 \times 2$ orthogonal matrix
 ## @end tex
 ## @end iftex
 ## @ifnottex

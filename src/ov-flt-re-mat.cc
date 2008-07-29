@@ -780,7 +780,7 @@ ARRAY_MAPPER (isnan, FloatNDArray::bmapper, xisnan)
 
 DEFUN (single, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} double (@var{x})\n\
+@deftypefn {Built-in Function} {} single (@var{x})\n\
 Convert @var{x} to single precision type.\n\
 @end deftypefn")
 {

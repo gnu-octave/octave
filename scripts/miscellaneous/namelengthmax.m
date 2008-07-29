@@ -24,7 +24,7 @@
 ## @tex
 ## $2^{31} - 1$
 ## @end tex
-## @end iftext
+## @end iftex
 ## @ifnottex
 ## @code{2 ^ 31 - 1}
 ## @end ifnottex

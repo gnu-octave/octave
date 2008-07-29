@@ -1,5 +1,11 @@
 2008-07-29  David Bateman  <dbateman@free.fr>
 
+	* general/cellidx.m: reinclude from control toolbox, as used by
+	print command. Replace is_signal_list with iscellstr.
+	* general/quadqk.m, linear-algebra/planeror.m,
+	miscellaneous/namelengthmax.m, specfun/realpow.m: Miscellaneous
+	documentation fixes.
+
 	* control, finance, quaternion: Remove directories and all of the
 	files they contain.
 	* Makefile.in: Remove all references to the above directories.

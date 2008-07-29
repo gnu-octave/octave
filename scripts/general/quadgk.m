@@ -32,7 +32,7 @@
 ## The function @var{f} can be defined in terms of a function handle,
 ## inline function or string.
 ##
-## The bounds of the quadrature @code{[@var{a}, @var{b}] can be finite
+## The bounds of the quadrature @code{[@var{a}, @var{b}]} can be finite
 ## or infinite and contain weak end singularities. Variable
 ## transformation will be used to treat infinite intervals and weaken
 ## the singularities. For example

@@ -1,3 +1,7 @@
+2008-07-29  David Bateman  <dbateman@free.fr>
+
+	* ov-flt-re-mat.cc (Fsingle): Documentation fix.
+
 2008-07-28  David Bateman  <dbateman@free.fr>
 
 	* error.cc (last_error_id, last_error_message, last_warning_id,

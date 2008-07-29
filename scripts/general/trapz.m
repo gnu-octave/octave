@@ -73,7 +73,7 @@ function z = trapz (x, y, dim)
   else
     dim = floor (dim);
     if (dim < 1 || dim > nd)
-      error ("cumtrapz: invalid dimension along which to sort");
+      error ("trapz: invalid dimension along which to sort");
     endif
   endif
  
@@ -90,7 +90,7 @@ function z = trapz (x, y, dim)
     z = 0.5 * sum (x(idx1{:}) + x(idx2{:}), dim);
   else
     if (! size_equal (x, y))
-      error ("cumtrapz: x and y must have same shape");
+      error ("trapz: x and y must have same shape");
     endif
     z = 0.5 * sum ((x(idx1{:}) - x(idx2{:})) .* 
 		   (y(idx1{:}) + y(idx2{:})), dim);

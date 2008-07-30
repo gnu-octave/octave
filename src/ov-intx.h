@@ -69,19 +69,18 @@ public:
 
 private:
 
-  template <class _int_matrix>
-  _int_matrix convert_gripe () const
+  template <class IM>
+  IM convert_gripe () const
     {
-      typedef typename _int_matrix::element_type dest_el_type;
+      typedef typename IM::element_type dest_el_type;
       typedef OCTAVE_INT_NDARRAY_T::element_type src_el_type;
       dest_el_type::clear_trunc_flag ();
-      _int_matrix retval (matrix);
+      IM retval (matrix);
       if (dest_el_type::get_trunc_flag ())
         {
           gripe_truncated_conversion (src_el_type::type_name (),
                                       dest_el_type::type_name ());
           dest_el_type::clear_trunc_flag ();
-
         }
 
       return retval;
@@ -429,13 +428,13 @@ public:
 
 private:
 
-  template <class _int_scalar>
-  _int_scalar convert_gripe () const
+  template <class IS>
+  IS convert_gripe () const
     {
-      typedef _int_scalar dest_el_type;
+      typedef IS dest_el_type;
       typedef OCTAVE_INT_T src_el_type;
       dest_el_type::clear_trunc_flag ();
-      _int_scalar retval (scalar);
+      IS retval (scalar);
       if (dest_el_type::get_trunc_flag ())
         {
           gripe_truncated_conversion (src_el_type::type_name (),

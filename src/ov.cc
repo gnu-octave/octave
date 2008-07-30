@@ -1350,19 +1350,19 @@ template <class T>
 static Array<int>
 convert_to_int_array (const Array<octave_int<T> >& A)
 {
-  Array<int> O (A.dims ());
+  Array<int> retval (A.dims ());
   octave_idx_type n = A.numel ();
 
   octave_int<int>::clear_trunc_flag ();
   for (octave_idx_type i = 0; i < n; i++)
-    O.xelem (i) = octave_int<int> (A.xelem (i));
+    retval.xelem (i) = octave_int<int> (A.xelem (i));
   if (octave_int<int>::get_trunc_flag ())
     {
       gripe_truncated_conversion (octave_int<T>::type_name (), "int");
       octave_int<int>::clear_trunc_flag ();
     }
 
-  return O;
+  return retval;
 }
 
 Array<int>

@@ -43,7 +43,7 @@ public:
 };
 
 #define OCTAVE_INT_BINOP_TRAIT(T1, T2, T3) \
-  template<> \
+  template <> \
   class octave_int_binop_traits <T1, T2> \
   { \
   public: \
@@ -506,37 +506,40 @@ operator >> (std::istream& is, octave_int<T>& ival)
 
 #define SPECIALIZE_WIDENING_CONVERSION(T1, T2) \
   template <> template <> \
-  inline octave_int<T2>::octave_int (T1 i) : ival (i) {} \
+  inline octave_int<T2>::octave_int (T1 i) \
+    : ival (i) { } \
+ \
   template <> template <> \
-  inline octave_int<T2>::octave_int (const octave_int<T1>& i) : ival (i.value ()) {}
+  inline octave_int<T2>::octave_int (const octave_int<T1>& i) \
+    : ival (i.value ()) { }
 
-SPECIALIZE_WIDENING_CONVERSION(int8_t, int16_t)
-SPECIALIZE_WIDENING_CONVERSION(int8_t, int32_t)
-SPECIALIZE_WIDENING_CONVERSION(int8_t, int64_t)
-SPECIALIZE_WIDENING_CONVERSION(int16_t, int32_t)
-SPECIALIZE_WIDENING_CONVERSION(int16_t, int64_t)
-SPECIALIZE_WIDENING_CONVERSION(int32_t, int64_t)
-SPECIALIZE_WIDENING_CONVERSION(uint8_t, uint16_t)
-SPECIALIZE_WIDENING_CONVERSION(uint8_t, uint32_t)
-SPECIALIZE_WIDENING_CONVERSION(uint8_t, uint64_t)
-SPECIALIZE_WIDENING_CONVERSION(uint16_t, uint32_t)
-SPECIALIZE_WIDENING_CONVERSION(uint16_t, uint64_t)
-SPECIALIZE_WIDENING_CONVERSION(uint32_t, uint64_t)
+SPECIALIZE_WIDENING_CONVERSION (int8_t, int16_t)
+SPECIALIZE_WIDENING_CONVERSION (int8_t, int32_t)
+SPECIALIZE_WIDENING_CONVERSION (int8_t, int64_t)
+SPECIALIZE_WIDENING_CONVERSION (int16_t, int32_t)
+SPECIALIZE_WIDENING_CONVERSION (int16_t, int64_t)
+SPECIALIZE_WIDENING_CONVERSION (int32_t, int64_t)
+SPECIALIZE_WIDENING_CONVERSION (uint8_t, uint16_t)
+SPECIALIZE_WIDENING_CONVERSION (uint8_t, uint32_t)
+SPECIALIZE_WIDENING_CONVERSION (uint8_t, uint64_t)
+SPECIALIZE_WIDENING_CONVERSION (uint16_t, uint32_t)
+SPECIALIZE_WIDENING_CONVERSION (uint16_t, uint64_t)
+SPECIALIZE_WIDENING_CONVERSION (uint32_t, uint64_t)
 
 // declare type names
 #define DECLARE_OCTAVE_INT_TYPENAME(TYPE, TYPENAME) \
-  template<> \
+  template <> \
   inline const char * \
   octave_int<TYPE>::type_name () { return TYPENAME; }
 
-DECLARE_OCTAVE_INT_TYPENAME(int8_t, "int8")
-DECLARE_OCTAVE_INT_TYPENAME(int16_t, "int16")
-DECLARE_OCTAVE_INT_TYPENAME(int32_t, "int32")
-DECLARE_OCTAVE_INT_TYPENAME(int64_t, "int64")
-DECLARE_OCTAVE_INT_TYPENAME(uint8_t, "uint8")
-DECLARE_OCTAVE_INT_TYPENAME(uint16_t, "uint16")
-DECLARE_OCTAVE_INT_TYPENAME(uint32_t, "uint32")
-DECLARE_OCTAVE_INT_TYPENAME(uint64_t, "uint64")
+DECLARE_OCTAVE_INT_TYPENAME (int8_t, "int8")
+DECLARE_OCTAVE_INT_TYPENAME (int16_t, "int16")
+DECLARE_OCTAVE_INT_TYPENAME (int32_t, "int32")
+DECLARE_OCTAVE_INT_TYPENAME (int64_t, "int64")
+DECLARE_OCTAVE_INT_TYPENAME (uint8_t, "uint8")
+DECLARE_OCTAVE_INT_TYPENAME (uint16_t, "uint16")
+DECLARE_OCTAVE_INT_TYPENAME (uint32_t, "uint32")
+DECLARE_OCTAVE_INT_TYPENAME (uint64_t, "uint64")
 
 typedef octave_int<int8_t> octave_int8;
 typedef octave_int<int16_t> octave_int16;
@@ -559,9 +562,9 @@ typedef octave_int<uint64_t> octave_uint64;
     return OCTAVE_INT_FIT_TO_RANGE2 (r, T1, T2); \
   }
 
-OCTAVE_INT_BIN_OP(+)
-OCTAVE_INT_BIN_OP(-)
-OCTAVE_INT_BIN_OP(*)
+OCTAVE_INT_BIN_OP (+)
+OCTAVE_INT_BIN_OP (-)
+OCTAVE_INT_BIN_OP (*)
 
 template <class T1, class T2>
 octave_int<typename octave_int_binop_traits<T1, T2>::TR>
@@ -584,10 +587,10 @@ operator / (const octave_int<T1>& x, const octave_int<T2>& y)
     return OCTAVE_INT_FIT_TO_RANGE (r, T); \
   }
 
-OCTAVE_INT_DOUBLE_BIN_OP(+)
-OCTAVE_INT_DOUBLE_BIN_OP(-)
-OCTAVE_INT_DOUBLE_BIN_OP(*)
-OCTAVE_INT_DOUBLE_BIN_OP(/)
+OCTAVE_INT_DOUBLE_BIN_OP (+)
+OCTAVE_INT_DOUBLE_BIN_OP (-)
+OCTAVE_INT_DOUBLE_BIN_OP (*)
+OCTAVE_INT_DOUBLE_BIN_OP (/)
 
 #define OCTAVE_DOUBLE_INT_BIN_OP(OP) \
   template <class T> \
@@ -600,10 +603,10 @@ OCTAVE_INT_DOUBLE_BIN_OP(/)
     return OCTAVE_INT_FIT_TO_RANGE (r, T); \
   }
 
-OCTAVE_DOUBLE_INT_BIN_OP(+)
-OCTAVE_DOUBLE_INT_BIN_OP(-)
-OCTAVE_DOUBLE_INT_BIN_OP(*)
-OCTAVE_DOUBLE_INT_BIN_OP(/)
+OCTAVE_DOUBLE_INT_BIN_OP (+)
+OCTAVE_DOUBLE_INT_BIN_OP (-)
+OCTAVE_DOUBLE_INT_BIN_OP (*)
+OCTAVE_DOUBLE_INT_BIN_OP (/)
 
 #define OCTAVE_INT_DOUBLE_CMP_OP(OP) \
   template <class T> \
@@ -648,10 +651,10 @@ OCTAVE_DOUBLE_INT_CMP_OP (!=)
     return OCTAVE_INT_FIT_TO_RANGE (r, T); \
   }
 
-OCTAVE_INT_FLOAT_BIN_OP(+)
-OCTAVE_INT_FLOAT_BIN_OP(-)
-OCTAVE_INT_FLOAT_BIN_OP(*)
-OCTAVE_INT_FLOAT_BIN_OP(/)
+OCTAVE_INT_FLOAT_BIN_OP (+)
+OCTAVE_INT_FLOAT_BIN_OP (-)
+OCTAVE_INT_FLOAT_BIN_OP (*)
+OCTAVE_INT_FLOAT_BIN_OP (/)
 
 #define OCTAVE_FLOAT_INT_BIN_OP(OP) \
   template <class T> \
@@ -664,10 +667,10 @@ OCTAVE_INT_FLOAT_BIN_OP(/)
     return OCTAVE_INT_FIT_TO_RANGE (r, T); \
   }
 
-OCTAVE_FLOAT_INT_BIN_OP(+)
-OCTAVE_FLOAT_INT_BIN_OP(-)
-OCTAVE_FLOAT_INT_BIN_OP(*)
-OCTAVE_FLOAT_INT_BIN_OP(/)
+OCTAVE_FLOAT_INT_BIN_OP (+)
+OCTAVE_FLOAT_INT_BIN_OP (-)
+OCTAVE_FLOAT_INT_BIN_OP (*)
+OCTAVE_FLOAT_INT_BIN_OP (/)
 
 #define OCTAVE_INT_FLOAT_CMP_OP(OP) \
   template <class T> \

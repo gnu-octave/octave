@@ -1,5 +1,7 @@
 2008-07-30  John W. Eaton  <jwe@octave.org>
 
+	* ov-intx.h, ov.cc: Style fixes.
+
 	* gripes.cc (gripe_truncated_conversion): Use the warning ID
 	Octave:int-convert-overflow.
 

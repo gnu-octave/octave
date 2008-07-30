@@ -3026,7 +3026,7 @@ octave_stream::close (void)
 template <class RET_T, class READ_T>
 octave_value
 do_read (octave_stream& strm, octave_idx_type nr, octave_idx_type nc, octave_idx_type block_size,
-	 octave_idx_type skip, bool do_float_fmt_conv,
+	 octave_idx_type skip, bool do_float_fmt_conv, bool do_NA_conv,
 	 oct_mach_info::float_format from_flt_fmt, octave_idx_type& count)
 {
   octave_value retval;
@@ -3139,6 +3139,9 @@ do_read (octave_stream& strm, octave_idx_type nr, octave_idx_type nc, octave_idx
 		      dat = nda.fortran_vec ();
 		    }
 
+		  if (do_NA_conv && __lo_ieee_is_old_NA (tmp))
+		    tmp = __lo_ieee_replace_old_NA (tmp);
+
 		  dat[count++] = tmp;
 
 		  elts_read++;
@@ -3190,7 +3193,7 @@ do_read (octave_stream& strm, octave_idx_type nr, octave_idx_type nc, octave_idx
 
 #define DO_READ_VAL_TEMPLATE(RET_T, READ_T) \
   template octave_value \
-  do_read<RET_T, READ_T> (octave_stream&, octave_idx_type, octave_idx_type, octave_idx_type, octave_idx_type, bool, \
+  do_read<RET_T, READ_T> (octave_stream&, octave_idx_type, octave_idx_type, octave_idx_type, octave_idx_type, bool, bool, \
 			  oct_mach_info::float_format, octave_idx_type&)
 
 // FIXME -- should we only have float if it is a different
@@ -3224,7 +3227,7 @@ INSTANTIATE_DO_READ (NDArray);
 INSTANTIATE_DO_READ (charNDArray);
 INSTANTIATE_DO_READ (boolNDArray);
 
-typedef octave_value (*read_fptr) (octave_stream&, octave_idx_type, octave_idx_type, octave_idx_type, octave_idx_type, bool,
+typedef octave_value (*read_fptr) (octave_stream&, octave_idx_type, octave_idx_type, octave_idx_type, octave_idx_type, bool, bool,
 				   oct_mach_info::float_format ffmt, octave_idx_type&);
 
 NO_INSTANTIATE_ARRAY_SORT (read_fptr);
@@ -3314,10 +3317,13 @@ octave_stream::read (const Array<double>& size, octave_idx_type block_size,
 					 || input_type == oct_data_conv::dt_single)
 					&& ffmt != float_format ());
 
+	      bool do_NA_conv = (output_type == oct_data_conv::dt_double);
+
 	      if (fcn)
 		{
 		  retval = (*fcn) (*this, nr, nc, block_size, skip,
-				   do_float_fmt_conv, ffmt, char_count);
+				   do_float_fmt_conv, do_NA_conv,
+				   ffmt, char_count);
 
 		  // FIXME -- kluge!
 

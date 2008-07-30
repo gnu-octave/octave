@@ -1,3 +1,11 @@
+2008-07-30  John W. Eaton  <jwe@octave.org>
+
+	* oct-stream.cc (do_read): New arg, do_NA_conv.
+	Perform NA translation if do_NA_conv is true.
+	(DO_READ_VAL_TEMPLATE, read_fptr): Include the new arg for do_read
+	in decl.
+	(octave_stream::read): Pass do_NA_conv to do_read.
+
 2008-07-29  David Bateman  <dbateman@free.fr>
 
 	* data.cc (FNA): Add tests for conversion of single to double NA

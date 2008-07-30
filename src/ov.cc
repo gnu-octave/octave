@@ -1346,6 +1346,25 @@ octave_value::vector_value (bool force_string_conv,
                                              type_name (), "real vector"));
 }
 
+template <class T>
+static Array<int>
+convert_to_int_array (const Array<octave_int<T> >& A)
+{
+  Array<int> O (A.dims ());
+  octave_idx_type n = A.numel ();
+
+  octave_int<int>::clear_trunc_flag ();
+  for (octave_idx_type i = 0; i < n; i++)
+    O.xelem (i) = octave_int<int> (A.xelem (i));
+  if (octave_int<int>::get_trunc_flag ())
+    {
+      gripe_truncated_conversion (octave_int<T>::type_name (), "int");
+      octave_int<int>::clear_trunc_flag ();
+    }
+
+  return O;
+}
+
 Array<int>
 octave_value::int_vector_value (bool force_string_conv, bool require_int,
 				bool force_vector_conversion) const
@@ -1354,14 +1373,24 @@ octave_value::int_vector_value (bool force_string_conv, bool require_int,
 
   if (is_integer_type ())
     {
-      // query for the first type that is wide enough
-#if SIZEOF_INT == 2
-      retval = int16_array_value ();
-#elif SIZEOF_INT == 4
-      retval = int32_array_value ();
-#else
-      retval = int64_array_value ();
-#endif
+      if (is_int32_type ())
+        retval = convert_to_int_array (int32_array_value ());
+      else if (is_int64_type ())
+        retval = convert_to_int_array (int64_array_value ());
+      else if (is_int16_type ())
+        retval = convert_to_int_array (int16_array_value ());
+      else if (is_int8_type ())
+        retval = convert_to_int_array (int8_array_value ());
+      else if (is_uint32_type ())
+        retval = convert_to_int_array (uint32_array_value ());
+      else if (is_uint64_type ())
+        retval = convert_to_int_array (uint64_array_value ());
+      else if (is_uint16_type ())
+        retval = convert_to_int_array (uint16_array_value ());
+      else if (is_uint8_type ())
+        retval = convert_to_int_array (uint8_array_value ());
+      else
+        retval = array_value (force_string_conv);
     }
   else 
     {

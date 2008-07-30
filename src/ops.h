@@ -207,6 +207,14 @@ extern void install_ops (void);
     return new octave_ ## ovtto (tto ## NDArray (v.e ## array_value ())); \
   }
 
+#define DEFCONVFNX2(name, tfrom, ovtto, e) \
+  CONVDECL (name) \
+  { \
+    CAST_CONV_ARG (const octave_ ## tfrom&); \
+ \
+    return new octave_ ## ovtto (v.e ## array_value ()); \
+  }
+
 #define DEFDBLCONVFN(name, ovtfrom, e) \
   CONVDECL (name) \
   { \
@@ -222,10 +230,10 @@ extern void install_ops (void);
   DEFCONVFNX(name, tfrom, matrix, , char_)
 
 #define DEFCONVFN(name, tfrom, tto) \
-  DEFCONVFNX (name, tfrom, tto ## _matrix, tto, )
+  DEFCONVFNX2 (name, tfrom, tto ## _matrix, tto ## _)
 
 #define DEFCONVFN2(name, tfrom, sm, tto) \
-  DEFCONVFNX (name, tfrom ## _ ## sm, tto ## _matrix, tto, tfrom ## _)
+  DEFCONVFNX2 (name, tfrom ## _ ## sm, tto ## _matrix, tto ## _)
 
 #define UNOPDECL(name, a) \
   static octave_value \

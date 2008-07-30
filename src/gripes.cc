@@ -204,6 +204,14 @@ gripe_logical_conversion (void)
 		   "value not equal to 1 or 0 converted to logical 1");
 }
 
+extern void
+gripe_truncated_conversion (const char *srctype, const char *desttype)
+{
+  warning_with_id ("Octave:truncated_conversion", 
+                   "data truncated converting from %s to %s",
+                   srctype, desttype);
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

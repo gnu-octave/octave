@@ -108,6 +108,9 @@ gripe_implicit_conversion (const std::string& id, const std::string& from,
 			   const std::string& to);
 
 extern OCTINTERP_API void
+gripe_truncated_conversion (const char *srctype, const char *desttype);
+
+extern OCTINTERP_API void
 gripe_divide_by_zero (void);
 
 extern OCTINTERP_API void

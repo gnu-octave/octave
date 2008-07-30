@@ -67,29 +67,51 @@ public:
 
   bool is_integer_type (void) const { return true; }
 
+private:
+
+  template <class _int_matrix>
+  _int_matrix convert_gripe () const
+    {
+      typedef typename _int_matrix::element_type dest_el_type;
+      typedef OCTAVE_INT_NDARRAY_T::element_type src_el_type;
+      dest_el_type::clear_trunc_flag ();
+      _int_matrix retval (matrix);
+      if (dest_el_type::get_trunc_flag ())
+        {
+          gripe_truncated_conversion (src_el_type::type_name (),
+                                      dest_el_type::type_name ());
+          dest_el_type::clear_trunc_flag ();
+
+        }
+
+      return retval;
+    }
+
+public:
+
   int8NDArray
-  int8_array_value (void) const { return int8NDArray (matrix); }
+  int8_array_value (void) const { return convert_gripe<int8NDArray> (); }
 
   int16NDArray
-  int16_array_value (void) const { return int16NDArray (matrix); }
+  int16_array_value (void) const { return convert_gripe<int16NDArray> (); }
 
   int32NDArray
-  int32_array_value (void) const { return int32NDArray (matrix); }
+  int32_array_value (void) const { return convert_gripe<int32NDArray> (); }
 
   int64NDArray
-  int64_array_value (void) const { return int64NDArray (matrix); }
+  int64_array_value (void) const { return convert_gripe<int64NDArray> (); }
 
   uint8NDArray
-  uint8_array_value (void) const { return uint8NDArray (matrix); }
+  uint8_array_value (void) const { return convert_gripe<uint8NDArray> (); }
 
   uint16NDArray
-  uint16_array_value (void) const { return uint16NDArray (matrix); }
+  uint16_array_value (void) const { return convert_gripe<uint16NDArray> (); }
 
   uint32NDArray
-  uint32_array_value (void) const { return uint32NDArray (matrix); }
+  uint32_array_value (void) const { return convert_gripe<uint32NDArray> (); }
 
   uint64NDArray
-  uint64_array_value (void) const { return uint64NDArray (matrix); }
+  uint64_array_value (void) const { return convert_gripe<uint64NDArray> (); }
 
   double
   double_value (bool = false) const
@@ -405,61 +427,83 @@ public:
 
   bool is_integer_type (void) const { return true; }
 
+private:
+
+  template <class _int_scalar>
+  _int_scalar convert_gripe () const
+    {
+      typedef _int_scalar dest_el_type;
+      typedef OCTAVE_INT_T src_el_type;
+      dest_el_type::clear_trunc_flag ();
+      _int_scalar retval (scalar);
+      if (dest_el_type::get_trunc_flag ())
+        {
+          gripe_truncated_conversion (src_el_type::type_name (),
+                                      dest_el_type::type_name ());
+          dest_el_type::clear_trunc_flag ();
+
+        }
+
+      return retval;
+    }
+
+public:
+
   octave_int8
-  int8_scalar_value (void) const { return octave_int8 (scalar); }
+  int8_scalar_value (void) const { return convert_gripe<octave_int8> (); }
 
   octave_int16
-  int16_scalar_value (void) const { return octave_int16 (scalar); }
+  int16_scalar_value (void) const { return convert_gripe<octave_int16> (); }
 
   octave_int32
-  int32_scalar_value (void) const { return octave_int32 (scalar); }
+  int32_scalar_value (void) const { return convert_gripe<octave_int32> (); }
 
   octave_int64
-  int64_scalar_value (void) const { return octave_int64 (scalar); }
+  int64_scalar_value (void) const { return convert_gripe<octave_int64> (); }
 
   octave_uint8
-  uint8_scalar_value (void) const { return octave_uint8 (scalar); }
+  uint8_scalar_value (void) const { return convert_gripe<octave_uint8> (); }
 
   octave_uint16
-  uint16_scalar_value (void) const { return octave_uint16 (scalar); }
+  uint16_scalar_value (void) const { return convert_gripe<octave_uint16> (); }
 
   octave_uint32
-  uint32_scalar_value (void) const { return octave_uint32 (scalar); }
+  uint32_scalar_value (void) const { return convert_gripe<octave_uint32> (); }
 
   octave_uint64
-  uint64_scalar_value (void) const { return octave_uint64 (scalar); }
+  uint64_scalar_value (void) const { return convert_gripe<octave_uint64> (); }
 
   int8NDArray
   int8_array_value (void) const
-    { return int8NDArray (dim_vector (1, 1), scalar); }
+    { return int8NDArray (dim_vector (1, 1), int8_scalar_value ()); }
 
   int16NDArray
   int16_array_value (void) const
-    { return int16NDArray (dim_vector (1, 1), scalar); }
+    { return int16NDArray (dim_vector (1, 1), int16_scalar_value ()); }
 
   int32NDArray
   int32_array_value (void) const
-    { return int32NDArray (dim_vector (1, 1), scalar); }
+    { return int32NDArray (dim_vector (1, 1), int32_scalar_value ()); }
 
   int64NDArray
   int64_array_value (void) const
-    { return int64NDArray (dim_vector (1, 1), scalar); }
+    { return int64NDArray (dim_vector (1, 1), int64_scalar_value ()); }
 
   uint8NDArray
   uint8_array_value (void) const
-    { return uint8NDArray (dim_vector (1, 1), scalar); }
+    { return uint8NDArray (dim_vector (1, 1), uint8_scalar_value ()); }
 
   uint16NDArray
   uint16_array_value (void) const
-    { return uint16NDArray (dim_vector (1, 1), scalar); }
+    { return uint16NDArray (dim_vector (1, 1), uint16_scalar_value ()); }
 
   uint32NDArray
   uint32_array_value (void) const
-    { return uint32NDArray (dim_vector (1, 1), scalar); }
+    { return uint32NDArray (dim_vector (1, 1), uint32_scalar_value ()); }
 
   uint64NDArray
   uint64_array_value (void) const
-    { return uint64NDArray (dim_vector (1, 1), scalar); }
+    { return uint64NDArray (dim_vector (1, 1), uint64_scalar_value ()); }
 
   octave_value resize (const dim_vector& dv, bool fill = false) const
     {

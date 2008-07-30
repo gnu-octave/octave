@@ -1,6 +1,7 @@
 /*
 
 Copyright (C) 2004, 2005, 2006, 2007 John W. Eaton
+Copyright (C) 2008 Jaroslav Hajek <highegg@gmail.com>
 
 This file is part of Octave.
 
@@ -281,7 +282,10 @@ public:
 
   template <class U>
   octave_int (const octave_int<U>& i)
-    : ival (OCTAVE_INT_FIT_TO_RANGE (i.value (), T)) { }
+    : ival (OCTAVE_INT_FIT_TO_RANGE (i.value (), T)) 
+    { 
+      trunc_flag = trunc_flag || (ival != i.value ());
+    }
 
   octave_int (const octave_int<T>& i) : ival (i.ival) { }
 
@@ -398,14 +402,22 @@ public:
 
   static int byte_size (void) { return sizeof(T); }
 
+  static bool get_trunc_flag () { return trunc_flag; }
+  static void clear_trunc_flag () { trunc_flag = false; }
+
+  static const char *type_name () { return "unknown type"; }
+
   // Unsafe.  This function exists to support the MEX interface.
   // You should not use it anywhere else.
   void *mex_get_data (void) const { return const_cast<T *> (&ival); }
 
 private:
 
+  static bool trunc_flag;
   T ival;
 };
+
+template<class T> bool octave_int<T>::trunc_flag = false; 
 
 template <class T>
 bool
@@ -488,6 +500,43 @@ operator >> (std::istream& is, octave_int<T>& ival)
   ival = tmp;
   return is;
 }
+
+// specialize the widening conversions to make them faster
+// gosh. the syntax is tricky!
+
+#define SPECIALIZE_WIDENING_CONVERSION(T1, T2) \
+  template <> template <> \
+  inline octave_int<T2>::octave_int (T1 i) : ival (i) {} \
+  template <> template <> \
+  inline octave_int<T2>::octave_int (const octave_int<T1>& i) : ival (i.value ()) {}
+
+SPECIALIZE_WIDENING_CONVERSION(int8_t, int16_t)
+SPECIALIZE_WIDENING_CONVERSION(int8_t, int32_t)
+SPECIALIZE_WIDENING_CONVERSION(int8_t, int64_t)
+SPECIALIZE_WIDENING_CONVERSION(int16_t, int32_t)
+SPECIALIZE_WIDENING_CONVERSION(int16_t, int64_t)
+SPECIALIZE_WIDENING_CONVERSION(int32_t, int64_t)
+SPECIALIZE_WIDENING_CONVERSION(uint8_t, uint16_t)
+SPECIALIZE_WIDENING_CONVERSION(uint8_t, uint32_t)
+SPECIALIZE_WIDENING_CONVERSION(uint8_t, uint64_t)
+SPECIALIZE_WIDENING_CONVERSION(uint16_t, uint32_t)
+SPECIALIZE_WIDENING_CONVERSION(uint16_t, uint64_t)
+SPECIALIZE_WIDENING_CONVERSION(uint32_t, uint64_t)
+
+// declare type names
+#define DECLARE_OCTAVE_INT_TYPENAME(TYPE, TYPENAME) \
+  template<> \
+  inline const char * \
+  octave_int<TYPE>::type_name () { return TYPENAME; }
+
+DECLARE_OCTAVE_INT_TYPENAME(int8_t, "int8")
+DECLARE_OCTAVE_INT_TYPENAME(int16_t, "int16")
+DECLARE_OCTAVE_INT_TYPENAME(int32_t, "int32")
+DECLARE_OCTAVE_INT_TYPENAME(int64_t, "int64")
+DECLARE_OCTAVE_INT_TYPENAME(uint8_t, "uint8")
+DECLARE_OCTAVE_INT_TYPENAME(uint16_t, "uint16")
+DECLARE_OCTAVE_INT_TYPENAME(uint32_t, "uint32")
+DECLARE_OCTAVE_INT_TYPENAME(uint64_t, "uint64")
 
 typedef octave_int<int8_t> octave_int8;
 typedef octave_int<int16_t> octave_int16;

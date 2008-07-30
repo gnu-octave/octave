@@ -1,3 +1,12 @@
+2008-07-30  Jaroslav Hajek <highegg@gmail.com>
+
+	* oct-inttypes.h (octave_int<T>::trunc_flag): New member static field.
+	(octave_int<T>::get_trunc_flag, octave_int<T>::clear_trunc_flag): New
+	member functions.
+	(octave_int<T>::octave_int (const octave_int<U>&)): set trunc_flag on truncation.
+	(SPECIALIZE_WIDENING_CONVERSION): New macro.
+	(DECLARE_OCTAVE_INT_TYPENAME): New macro.
+
 2008-07-29  David Bateman  <dbateman@free.fr>
 
 	* lo-ieee.h (LO_IEEE_NA_HW, LO_IEEE_NA_LW, LO_IEEE_NA_FLOAT):

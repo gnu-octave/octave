@@ -1,3 +1,18 @@
+2008-07-30  Jaroslav Hajek <highegg@gmail.com>
+
+	* gripes.cc (gripe_truncated_conversion): New function.
+	* gripes.h (gripe_truncated_conversion): Declare it.
+	* ops.h (DEFCONVFNX2): New macro.
+	(DEFCONVFN, DEFCONVFN2): Call DEFCONVFNX2 instead of DEFCONVFNX.
+	* ov-intx.h (OCTAVE_VALUE_INT_MATRIX_T::convert_gripe): New member
+	function.
+	(OCTAVE_VALUE_INT_MATRIX_T::int*_array_value): Call convert_gripe.
+	(OCTAVE_VALUE_INT_SCALAR_T::convert_gripe): New member function.
+	(OCTAVE_VALUE_INT_SCALAR_T::int*_scalar_value): Call convert_gripe.
+	(OCTAVE_VALUE_INT_SCALAR_T::int*_array_value): Call int*_scalar_value.
+	* ov.cc (convert_to_int_array): New function.
+	(int_vector_value): Call convert_to_int_array.
+
 2008-07-30  John W. Eaton  <jwe@octave.org>
 
 	* defun-dld.h (DEFUNX_DLD): Eliminate fsname arg.

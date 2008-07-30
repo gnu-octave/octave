@@ -1,3 +1,8 @@
+2008-07-30  John W. Eaton  <jwe@octave.org>
+
+	* gripes.cc (gripe_truncated_conversion): Use the warning ID
+	Octave:int-convert-overflow.
+
 2008-07-30  Jaroslav Hajek <highegg@gmail.com>
 
 	* gripes.cc (gripe_truncated_conversion): New function.

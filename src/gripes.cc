@@ -207,7 +207,7 @@ gripe_logical_conversion (void)
 extern void
 gripe_truncated_conversion (const char *srctype, const char *desttype)
 {
-  warning_with_id ("Octave:truncated_conversion", 
+  warning_with_id ("Octave:int-convert-overflow", 
                    "data truncated converting from %s to %s",
                    srctype, desttype);
 }

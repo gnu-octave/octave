@@ -1,5 +1,19 @@
 2008-07-30  John W. Eaton  <jwe@octave.org>
 
+	* defun-dld.h (DEFUNX_DLD): Eliminate fsname arg.
+	* defun-int.h (DEFINE_FUN_INSTALLER_FUN2,
+	DEFINE_FUN_INSTALLER_FUN3, DEFINE_FUNX_INSTALLER_FUN2): Delete.
+	(DEFINE_FUNX_INSTALLER_FUN): Rename from DEFINE_FUNX_INSTALLER_FUN3.
+	Don't emit fsname function.  Don't append cxx_abi to gname.
+	(DEFINE_FUN_INSTALLER_FUN): Define in terms of
+	DEFINE_FUNX_INSTALLER_FUN, not DEFINE_FUN_INSTALLER_FUN2.
+	* dynamic-ld.cc (octave_dynamic_loader::name_mangler,
+	octave_dynamic_loader::name_uscore_mangler): New functions.
+	(octave_dynamic_loader::mangle_name,
+	octave_dynamic_loader::xmangle_name): Delete.
+	(octave_dynamic_loader::do_load_oct): Search for function with
+	name_mangler then name_uscore_mangler.
+
 	* oct-stream.cc (do_read): New arg, do_NA_conv.
 	Perform NA translation if do_NA_conv is true.
 	(DO_READ_VAL_TEMPLATE, read_fptr): Include the new arg for do_read

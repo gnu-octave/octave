@@ -357,7 +357,15 @@ octave_dynamic_loader::do_load_oct (const std::string& fcn_name,
     {
       if (oct_file)
 	{
-	  void *function = oct_file.search (fcn_name, xmangle_name);
+	  void *function = oct_file.search (fcn_name, name_mangler);
+
+	  if (! function)
+	    {
+	      // FIXME -- can we determine this C mangling scheme
+	      // automatically at run time or configure time?
+
+	      function = oct_file.search (fcn_name, name_uscore_mangler);
+	    }
 
 	  if (function)
 	    {
@@ -527,31 +535,15 @@ octave_dynamic_loader::remove_mex (const std::string& fcn_name,
 }
 
 std::string
-octave_dynamic_loader::mangle_name (const std::string& name)
+octave_dynamic_loader::name_mangler (const std::string& name)
 {
-#if defined (CXX_PREPENDS_UNDERSCORE)
-  std::string retval ("_FS");
-#else
-  std::string retval ("FS");
-#endif
-  retval.append (name);
-  retval.append ("_");
-  retval.append (STRINGIFY (CXX_ABI));
-  return retval;
+  return "G" + name;
 }
 
 std::string
-octave_dynamic_loader::xmangle_name (const std::string& name)
+octave_dynamic_loader::name_uscore_mangler (const std::string& name)
 {
-#if defined (CXX_PREPENDS_UNDERSCORE)
-  std::string retval ("_G");
-#else
-  std::string retval ("G");
-#endif
-  retval.append (name);
-  retval.append ("_");
-  retval.append (STRINGIFY (CXX_ABI));
-  return retval;
+  return "_G" + name;
 }
 
 std::string

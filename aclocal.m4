@@ -627,56 +627,6 @@ AC_DEFUN(OCTAVE_PROG_TEXI2PDF, [
   AC_SUBST(TEXI2PDF)
 ])
 dnl
-dnl Find nm.
-dnl
-dnl OCTAVE_PROG_NM
-AC_DEFUN(OCTAVE_PROG_NM,
-[AC_CHECK_PROG(NM, ${ac_tool_prefix}nm, ${ac_tool_prefix}nm, [])
-  AC_SUBST(NM)
-])
-dnl
-dnl See if the C++ compiler prepends an underscore to external names.
-dnl
-dnl OCTAVE_CXX_PREPENDS_UNDERSCORE
-AC_DEFUN(OCTAVE_CXX_PREPENDS_UNDERSCORE, [
-  AC_REQUIRE([OCTAVE_PROG_NM])
-  AC_MSG_CHECKING([whether ${CXX-g++} prepends an underscore to external names])
-  AC_CACHE_VAL(octave_cv_cxx_prepends_underscore,
-    [octave_cv_cxx_prepends_underscore=no
-    AC_LANG_PUSH(C++)
-    cat > conftest.$ac_ext <<EOF
-bool FSmy_dld_fcn (void) { return false; }
-EOF
-    if (eval "$ac_compile") 2>&AS_MESSAGE_LOG_FD; then
-      if test "`${NM-nm} conftest.$ac_objext | grep _FSmy_dld_fcn`" != ""; then
-        octave_cv_cxx_prepends_underscore=yes
-      fi
-    else
-      echo "configure: failed program was:" >&AS_MESSAGE_LOG_FD
-      cat conftest.$ac_ext >&AS_MESSAGE_LOG_FD
-    fi
-    AC_LANG_POP(C++)
-### FIXME -- Ignore test result on Windows.  Yes it prepends
-### underscore, but LoadLibrary ignores it automatically.  The
-### correct test is to build the shared library then try to grab the
-### symbol from it with and without underscore.
-    case "$canonical_host_type" in
-      *-*-cygwin* | *-*-mingw*)
-        octave_cv_cxx_prepends_underscore=no
-      ;;
-### FIXME -- Ignore test result on OS X.  Yes it prepends
-### underscore, but also messes with the name so test fails (incorrectly).
-      *-*-darwin*)
-        octave_cv_cxx_prepends_underscore=yes
-      ;;
-    esac
-  ])
-  AC_MSG_RESULT($octave_cv_cxx_prepends_underscore)
-  if test $octave_cv_cxx_prepends_underscore = yes; then
-    AC_DEFINE(CXX_PREPENDS_UNDERSCORE, 1, [Define if your compiler prepends underscores to external names.])
-  fi
-])
-dnl
 dnl See if the C++ library is ISO compliant.
 dnl FIXME: This is obviously very simplistic, and trivially fooled.
 dnl
@@ -737,43 +687,6 @@ AC_DEFUN(OCTAVE_ENABLE_READLINE, [
     ])
   fi
   AC_SUBST(LIBREADLINE)
-])
-dnl
-dnl Determine the C++ compiler ABI. It sets the macro CXX_ABI to the
-dnl name of the ABI, and is used to mangle the C linkage loadable
-dnl functions to avoid ABI mismatch.  GNU C++ currently uses gnu_v2 
-dnl (GCC versions <= 2.95.x) dnl or gnu_v3 (GCC versions >= 3.0).
-dnl Set to "unknown" is when we don't know enough about the ABI, which 
-dnl will happen when using an unsupported C++ compiler. 
-dnl
-dnl OCTAVE_CXX_ABI
-AC_DEFUN(OCTAVE_CXX_ABI, [
-  AC_REQUIRE([OCTAVE_PROG_NM])
-  AC_MSG_CHECKING([C++ ABI version used by ${CXX}])
-  AC_CACHE_VAL(octave_cv_cxx_abi,
-    [octave_cv_cxx_abi='unknown'
-    AC_LANG_PUSH(C++)
-    cat > conftest.$ac_ext <<EOF
-bool FSmy_dld_fcn (void) { return false; }
-EOF
-    if (eval "$ac_compile") 2>&AS_MESSAGE_LOG_FD; then
-      if test "`${NM-nm} conftest.$ac_objext | grep FSmy_dld_fcn__Fv`" != ""; then
-        octave_cv_cxx_abi='gnu_v2'
-      fi
-      if test "`${NM-nm} conftest.$ac_objext | grep _Z12FSmy_dld_fcnv`" != ""; then
-        octave_cv_cxx_abi='gnu_v3'
-      fi
-      if test "`${NM-nm} conftest.$ac_objext | grep __1cMFSmy_dld_fcn6F_b_`" != ""; then
-        octave_cv_cxx_abi='sun_v5'
-      fi
-    else
-      echo "configure: failed program was:" >&AS_MESSAGE_LOG_FD
-      cat conftest.$ac_ext >&AS_MESSAGE_LOG_FD
-    fi
-    AC_LANG_POP(C++)
-  ])
-  AC_MSG_RESULT($octave_cv_cxx_abi)
-  AC_DEFINE_UNQUOTED(CXX_ABI, $octave_cv_cxx_abi, [Define to the C++ ABI your compiler uses.])
 ])
 dnl
 dnl Check to see if C++ reintrepret cast works for function pointers.

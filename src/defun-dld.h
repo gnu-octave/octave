@@ -48,9 +48,11 @@ along with Octave; see the file COPYING.  If not, see
 // This one can be used when `name' cannot be used directly (if it is
 // already defined as a macro).  In that case, name is already a
 // quoted string, and the internal name of the function must be passed
-// too (the convention is to use a prefix of "F", so "foo" becomes "Ffoo").
+// too (the convention is to use a prefix of "F", so "foo" becomes
+// "Ffoo") as well as the name of the generated installer function
+// (the convention is to use a prefix of "G", so "foo" becomes "Gfoo").
 
-#define DEFUNX_DLD(name, fname, fsname, gname, args_name, nargout_name, doc) \
+#define DEFUNX_DLD(name, fname, gname, args_name, nargout_name, doc) \
   DEFUNX_DLD_INTERNAL (name, fname, args_name, nargout_name, false, doc)
 
 #else
@@ -60,9 +62,9 @@ along with Octave; see the file COPYING.  If not, see
   DEFINE_FUN_INSTALLER_FUN (name, doc) \
   DECLARE_FUN (name, args_name, nargout_name)
 
-#define DEFUNX_DLD(name, fname, fsname, gname, args_name, nargout_name, doc) \
+#define DEFUNX_DLD(name, fname, gname, args_name, nargout_name, doc) \
   DECLARE_FUNX (fname, args_name, nargout_name); \
-  DEFINE_FUNX_INSTALLER_FUN (name, fname, fsname, gname, doc) \
+  DEFINE_FUNX_INSTALLER_FUN (name, fname, gname, doc) \
   DECLARE_FUNX (fname, args_name, nargout_name)
 
 #endif

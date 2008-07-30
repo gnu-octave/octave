@@ -1,3 +1,9 @@
+2008-07-30  John W. Eaton  <jwe@octave.org>
+
+	* aclocal.m4 (CXX_ABI, OCTAVE_CXX_PREPENDS_UNDERSCORE,
+	OCTAVE_PROG_NM): Delete macros.
+	* configure.in: Delete uses.
+
 2008-07-29  Tatsuro MATSUOKA  <tmacchant@yahoo.co.jp>
 
 	* aclocal.m4 (OCTAVE_OPENGL): Handle MinGW the same as MSVC.

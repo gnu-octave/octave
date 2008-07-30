@@ -205,11 +205,6 @@ OCTAVE_CXX_NEW_FRIEND_TEMPLATE_DECL
 OCTAVE_CXX_ISO_COMPLIANT_LIBRARY
 OCTAVE_CXX_BROKEN_REINTERPRET_CAST
 
-# Determine the ABI used the C++ compiler, needed by the dynamic loading
-# code. Currently supported ABIs are GNU v2, GNU v3 and Sun Workshop.
-
-OCTAVE_CXX_ABI
-
 ### See which C compiler to use (we expect to find gcc).
 
 AC_PROG_CC
@@ -348,8 +343,6 @@ if test -n "$LD_STATIC_FLAG"; then
   AC_MSG_NOTICE([defining LD_STATIC_FLAG to be $LD_STATIC_FLAG])
 fi
 AC_SUBST(LD_STATIC_FLAG)
-
-OCTAVE_CXX_PREPENDS_UNDERSCORE
 
 ### Defaults for cross compiling.  BUILD_CC and BUILD_CXX are
 ### the compilers that we use for building tools on the build system.
@@ -1757,8 +1750,6 @@ OCTAVE_PROG_FLEX
 OCTAVE_PROG_BISON
 
 AC_PROG_LN_S
-
-OCTAVE_PROG_NM
 
 AC_PROG_INSTALL
 INSTALL_SCRIPT='${INSTALL}'

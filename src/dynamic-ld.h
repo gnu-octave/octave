@@ -85,9 +85,9 @@ private:
 
 protected:
 
-  static std::string mangle_name (const std::string& name);
+  static std::string name_mangler (const std::string& name);
 
-  static std::string xmangle_name (const std::string& name);
+  static std::string name_uscore_mangler (const std::string& name);
 
   static std::string mex_mangler (const std::string& name);
 

@@ -73,42 +73,13 @@ typedef bool (*octave_dld_fcn_installer) (const octave_shlib&, bool relative);
 typedef octave_function * (*octave_dld_fcn_getter) (const octave_shlib&, bool relative);
 
 #define DEFINE_FUN_INSTALLER_FUN(name, doc) \
-  DEFINE_FUN_INSTALLER_FUN2(name, doc, CXX_ABI)
+  DEFINE_FUNX_INSTALLER_FUN(#name, F ## name, G ## name, doc)
 
-#define DEFINE_FUN_INSTALLER_FUN2(name, doc, cxx_abi) \
-  DEFINE_FUN_INSTALLER_FUN3(name, doc, cxx_abi)
-
-#define DEFINE_FUN_INSTALLER_FUN3(name, doc, cxx_abi) \
-  DEFINE_FUNX_INSTALLER_FUN3(#name, F ## name, FS ## name, G ## name, doc, cxx_abi)
-
-#define DEFINE_FUNX_INSTALLER_FUN(name, fname, fsname, gname, doc) \
-  DEFINE_FUNX_INSTALLER_FUN2(name, fname, fsname, gname, doc, CXX_ABI)
-
-#define DEFINE_FUNX_INSTALLER_FUN2(name, fname, fsname, gname, doc, cxx_abi) \
-  DEFINE_FUNX_INSTALLER_FUN3(name, fname, fsname, gname, doc, cxx_abi)
-
-#define DEFINE_FUNX_INSTALLER_FUN3(name, fname, fsname, gname, doc, cxx_abi) \
-  extern "C" \
-  OCTAVE_EXPORT \
-  bool \
-  fsname ## _ ## cxx_abi (const octave_shlib& shl, bool relative) \
-  { \
-    bool retval = true; \
- \
-    check_version (OCTAVE_API_VERSION, name); \
- \
-    if (error_state) \
-      retval = false; \
-    else \
-      install_dld_function (fname, name, shl, doc, false, relative); \
- \
-    return retval; \
-  } \
- \
+#define DEFINE_FUNX_INSTALLER_FUN(name, fname, gname, doc) \
   extern "C" \
   OCTAVE_EXPORT \
   octave_function * \
-  gname ## _ ## cxx_abi (const octave_shlib& shl, bool relative) \
+  gname (const octave_shlib& shl, bool relative) \
   { \
     octave_function *retval = 0; \
  \

@@ -640,6 +640,10 @@
 	* strings/strtok.m: Include TAB, LF, VT, FF, and CR in default
 	list of delim characters.  Update tests.
 
+2008-07-29  Thomas Treichl  <Thomas.Treichl@gmx.net>
+
+	* general/arrayfun.m: Minor bug fixes, update help text and tests
+
 2008-07-29  John W. Eaton  <jwe@octave.org>
 
 	* plot/axis.m (__get_tight_lims__): Use strcat instead of [].

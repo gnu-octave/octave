@@ -52,6 +52,8 @@ extern bool is_keyword (const std::string& s);
 
 extern void prep_lexer_for_script (void);
 
+extern void force_local_variable (const std::string& name);
+
 // For communication between the lexer and parser.
 
 class
@@ -126,6 +128,9 @@ public:
 
   // Return transpose or start a string?
   bool quote_is_transpose;
+
+  // Set of identifiers that might be local variable names.
+  std::set<std::string> pending_local_variables;
 
 private:
 

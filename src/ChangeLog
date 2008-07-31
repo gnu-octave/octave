@@ -1,3 +1,18 @@
+2008-07-31  John W. Eaton  <jwe@octave.org>
+
+	* parse.y (assign_lhs): Call force_local_variable on all elements
+	of lexer_flags.pending_local_variables here, then clear the set.
+	(matrix): Clear lexer_flags.pending_local_variable here.
+	* lex.l (lexical_feedback::init): Clear it.
+	(force_local_variable): No longer static.
+	(is_variable): Also return true for names in the
+	lexer_flags.pending_local_variables.
+	(handle_identifier): If we are parsing a matrix list, mark
+	identifiers as pending local variables rather than forcing them to
+	be local variables immediately.
+	* lex.h (lexical_feedback::pending_local_variables): New data member.
+	(force_local_variable): Provide decl.
+
 2008-07-30  John W. Eaton  <jwe@octave.org>
 
 	* ov-intx.h, ov.cc: Style fixes.

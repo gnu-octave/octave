@@ -579,16 +579,19 @@ matrix		: '[' ']'
 		  {
 		    $$ = new tree_constant (octave_value (Matrix ()));
 		    lexer_flags.looking_at_matrix_or_assign_lhs = false;
+		    lexer_flags.pending_local_variables.clear ();
 		  }
 		| '[' ';' ']'
 		  {
 		    $$ = new tree_constant (octave_value (Matrix ()));
 		    lexer_flags.looking_at_matrix_or_assign_lhs = false;
+		    lexer_flags.pending_local_variables.clear ();
 		  }
 		| '[' matrix_rows ']'
 		  {
 		    $$ = finish_matrix ($2);
 		    lexer_flags.looking_at_matrix_or_assign_lhs = false;
+		    lexer_flags.pending_local_variables.clear ();
 		  }
 		;
 
@@ -835,6 +838,13 @@ assign_lhs	: simple_expr
 		  {
 		    $$ = $2;
 		    lexer_flags.looking_at_matrix_or_assign_lhs = false;
+		    for (std::set<std::string>::const_iterator p = lexer_flags.pending_local_variables.begin ();
+			 p != lexer_flags.pending_local_variables.end ();
+			 p++)
+		      {
+			force_local_variable (*p);
+		      }
+		    lexer_flags.pending_local_variables.clear ();
 		  }
 		;
 

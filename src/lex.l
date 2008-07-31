@@ -39,6 +39,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <cctype>
 #include <cstring>
 
+#include <set>
 #include <sstream>
 #include <string>
 #include <stack>
@@ -1203,10 +1204,12 @@ is_keyword_token (const std::string& s)
 static bool
 is_variable (const std::string& name)
 {
-  return symbol_table::is_variable (name);
+  return (symbol_table::is_variable (name)
+	  || (lexer_flags.pending_local_variables.find (name)
+	      != lexer_flags.pending_local_variables.end ()));
 }
 
-static void
+void
 force_local_variable (const std::string& name)
 {
   octave_value& val = symbol_table::varref (name);
@@ -2494,10 +2497,13 @@ handle_identifier (void)
       if (next_tok_is_eq
 	  || lexer_flags.looking_at_return_list
 	  || (lexer_flags.looking_at_parameter_list
-	      && ! lexer_flags.looking_at_initializer_expression)
-	  || lexer_flags.looking_at_matrix_or_assign_lhs)
+	      && ! lexer_flags.looking_at_initializer_expression))
 	{
 	  force_local_variable (tok);
+	}
+      else if (lexer_flags.looking_at_matrix_or_assign_lhs)
+	{
+	  lexer_flags.pending_local_variables.insert (tok);
 	}
       else if (! (next_tok_is_paren || lexer_flags.looking_at_object_index))
 	{
@@ -2589,6 +2595,9 @@ lexical_feedback::init (void)
 
   // Quote marks strings intially.
   quote_is_transpose = false;
+
+  // Set of identifiers that might be local variable names is empty.
+  pending_local_variables.clear ();
 }
 
 bool

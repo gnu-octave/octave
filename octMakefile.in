@@ -47,7 +47,7 @@ DISTFILES = $(CONF_DISTFILES) \
 	NEWS.[0-9] PROJECTS README README.Linux README.Windows \
 	README.Cygwin README.MSVC README.kpathsea ROADMAP SENDING-PATCHES \
 	THANKS move-if-change octave-sh octave-bug.in \
-	octave-config.in mk-opts.pl mkinstalldirs \
+	octave-config.in missing mk-opts.pl mkinstalldirs \
 	mkoctfile.in run-octave.in ChangeLog ChangeLog.[0-9]
 
 # Subdirectories in which to run `make all'.

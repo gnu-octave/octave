@@ -1,3 +1,7 @@
+2008-07-31  John W. Eaton  <jwe@octave.org>
+
+	* octMakefile.in (DISTFILES): Add "missing" to the list.
+
 2008-07-30  John W. Eaton  <jwe@octave.org>
 
 	* aclocal.m4 (CXX_ABI, OCTAVE_CXX_PREPENDS_UNDERSCORE,

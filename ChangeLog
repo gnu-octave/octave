@@ -1,5 +1,7 @@
 2008-08-04  John W. Eaton  <jwe@octave.org>
 
+	* aclocal.m4: Fail if no usable version of sed is found.
+
 	* Makefile.in (header-msg): Mention GNU Make requirement.
 	Update GCC version info.
 

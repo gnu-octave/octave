@@ -799,6 +799,9 @@ if test -z "$SED"; then
     rm -rf "$tmp"
   ])
   SED=$octave_cv_path_sed
+  if test -z "$SED"; then
+    AC_MSG_ERROR([no usable version of sed found])
+  fi
 fi
 AC_SUBST(SED)
 AC_MSG_RESULT([$SED])

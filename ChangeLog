@@ -1,3 +1,8 @@
+2008-08-04  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.in (header-msg): Mention GNU Make requirement.
+	Update GCC version info.
+
 2008-07-31  John W. Eaton  <jwe@octave.org>
 
 	* octMakefile.in (DISTFILES): Add "missing" to the list.

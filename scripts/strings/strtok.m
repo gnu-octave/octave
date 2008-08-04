@@ -35,7 +35,7 @@ function [tok, rem] = strtok (str, delim)
   endif
 
   if (nargin < 2 || isempty (delim))
-    delim = " "; 
+    delim = "\t\n\v\f\r "; 
   endif
 
   if (isempty (str))
@@ -114,12 +114,12 @@ endfunction
 
 %!# test the remainder for all cases
 %!test [t,r] = strtok(""); assert(r, "");
-%!test [t,r] = strtok("this"); assert(r, "");
+%!test [t,r] = strtok("this"); assert(r, char (zeros (1, 0)));
 %!test [t,r] = strtok("this "); assert(r, " ");
 %!test [t,r] = strtok("this is"); assert(r, " is");
-%!test [t,r] = strtok(" this"); assert(r, "");
+%!test [t,r] = strtok(" this"); assert(r, char (zeros (1, 0)));
 %!test [t,r] = strtok(" this "); assert(r, " ");
-%!test [t,r] = strtok(" "); assert(r, "");
+%!test [t,r] = strtok(" "); assert(r, char (zeros (1, 0)));
 
 %!# simple check with 2 and 3 delimeters
 %!assert(strtok("this is", "i "), "th");
@@ -138,3 +138,11 @@ endfunction
 %!# test 'bad' string orientations
 %!assert(strtok(" this "'), "this"');   # delimiter at start and end
 %!assert(strtok(" this "',"jkl "), "this"');
+
+%!# test with TAB, LF, VT, FF, and CR
+%!test
+%! for ch = "\t\n\v\f\r"
+%!   [t, r] = strtok (cstrcat ("beg", ch, "end"));
+%!   assert (t, "beg");
+%!   assert (r, cstrcat (ch, "end"))
+%! endfor

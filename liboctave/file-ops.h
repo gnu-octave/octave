@@ -35,6 +35,12 @@ struct
 OCTAVE_API
 file_ops
 {
+protected:
+
+  file_ops (void);
+
+public:
+
   static int mkdir (const std::string&, mode_t);
   static int mkdir (const std::string&, mode_t, std::string&);
 
@@ -84,13 +90,46 @@ file_ops
   static int unlink (const std::string&);
   static int unlink (const std::string&, std::string&);
 
-  static bool is_dir_sep (char);
+  static bool is_dir_sep (char c)
+  {
+    return instance_ok () ? instance->do_is_dir_sep (c) : false;
+  }
 
   static std::string concat (const std::string&, const std::string&);
 
-  static char dir_sep_char;
-  static std::string dir_sep_str;
-  static std::string dir_sep_chars;
+  static char dir_sep_char (void)
+  {
+    return instance_ok () ? instance->xdir_sep_char : 0;
+  }
+
+  static std::string dir_sep_str (void)
+  {
+    return instance_ok () ? instance->xdir_sep_str : std::string ();
+  }
+
+  static std::string dir_sep_chars (void)
+  {
+    return instance_ok () ? instance->xdir_sep_chars : std::string ();
+  }
+
+private:
+
+  // No copying!
+
+  file_ops (const file_ops&);
+
+  file_ops& operator = (const file_ops&);
+
+  // The real thing.
+  static file_ops *instance;
+
+  static bool instance_ok (void);
+
+  char xdir_sep_char;
+  std::string xdir_sep_str;
+  std::string xdir_sep_chars;
+
+  bool do_is_dir_sep (char c) { return xdir_sep_chars.find (c) != NPOS; }
 };
 
 #endif

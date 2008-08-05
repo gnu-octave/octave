@@ -4574,7 +4574,7 @@ Undocumented internal function.\n\
 
 	      if (! error_state)
 		{
-		  size_t pos = file.find_last_of (file_ops::dir_sep_chars);
+		  size_t pos = file.find_last_of (file_ops::dir_sep_chars ());
 
 		  if (pos != NPOS)
 		    {

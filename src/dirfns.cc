@@ -644,7 +644,7 @@ Return the system-dependent character used to separate directory names.\n\
   octave_value retval;
 
   if (args.length () == 0)
-    retval = file_ops::dir_sep_str;
+    retval = file_ops::dir_sep_str ();
   else
     print_usage ();
 

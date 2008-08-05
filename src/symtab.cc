@@ -708,7 +708,7 @@ symbol_table::fcn_info::fcn_info_rep::find_autoload (void)
 
       if (! file_name.empty ())
 	{
-	  size_t pos = file_name.find_last_of (file_ops::dir_sep_chars);
+	  size_t pos = file_name.find_last_of (file_ops::dir_sep_chars ());
 
 	  std::string dir_name = file_name.substr (0, pos);
 

@@ -570,7 +570,7 @@ looks_like_struct (const std::string& text)
 {
   bool retval = (! text.empty ()
 		 && text != "."
-		 && text.find_first_of (file_ops::dir_sep_chars) == NPOS
+		 && text.find_first_of (file_ops::dir_sep_chars ()) == NPOS
 		 && text.find ("..") == NPOS
 		 && text.rfind ('.') != NPOS);
 

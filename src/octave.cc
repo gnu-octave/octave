@@ -220,8 +220,8 @@ initialize_pathsearch (void)
     odb = octave_env::getenv ("OCTAVE_DB_DIR");
 
   if (odb.empty ())
-    odb = Vdata_dir + file_ops::dir_sep_str + "octave:"
-      + Vlibexec_dir + file_ops::dir_sep_str + "octave";
+    odb = Vdata_dir + file_ops::dir_sep_str () + "octave:"
+      + Vlibexec_dir + file_ops::dir_sep_str () + "octave";
 }
 
 DEFUN (__version_info__, args, ,
@@ -444,7 +444,7 @@ execute_command_line_file (const std::string& fname)
 
   octave_program_invocation_name = curr_fcn_file_name;
 
-  size_t pos = curr_fcn_file_name.find_last_of (file_ops::dir_sep_chars);
+  size_t pos = curr_fcn_file_name.find_last_of (file_ops::dir_sep_chars ());
   
   std::string tmp = (pos != NPOS)
     ? curr_fcn_file_name.substr (pos+1) : curr_fcn_file_name;

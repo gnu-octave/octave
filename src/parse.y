@@ -2484,7 +2484,7 @@ frob_function (const std::string& fname, octave_user_function *fcn)
 
 	  std::string nm = curr_fcn_file_name;
 
-	  size_t pos = nm.find_last_of (file_ops::dir_sep_chars);
+	  size_t pos = nm.find_last_of (file_ops::dir_sep_chars ());
 
 	  if (pos != NPOS)
 	    nm = curr_fcn_file_name.substr (pos+1);
@@ -3377,7 +3377,7 @@ With no arguments, return a structure containing the current autoload map.\n\
 		  if (! fname.empty ())
 		    {
 		      fname = octave_env::make_absolute (fname, octave_env::getcwd ());
-		      fname = fname.substr (0, fname.find_last_of (file_ops::dir_sep_str) + 1);
+		      fname = fname.substr (0, fname.find_last_of (file_ops::dir_sep_str ()) + 1);
 
 		      file_stat fs (fname + nm);
 
@@ -3514,7 +3514,7 @@ of the file name and the extension.\n\
     retval = fname;
   else
     {
-      size_t dpos = fname.rfind (file_ops::dir_sep_char);
+      size_t dpos = fname.rfind (file_ops::dir_sep_char ());
       size_t epos = fname.rfind ('.');
 
       if (epos <= dpos)

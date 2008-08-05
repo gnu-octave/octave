@@ -113,8 +113,9 @@ subst_octave_home (const std::string& s)
 	retval.replace (0, len, Voctave_home);
     }
 
-  if (file_ops::dir_sep_char != '/')
-    std::replace (retval.begin (), retval.end (), '/', file_ops::dir_sep_char);
+  if (file_ops::dir_sep_char () != '/')
+    std::replace (retval.begin (), retval.end (), '/',
+		  file_ops::dir_sep_char ());
 
   return retval;
 }

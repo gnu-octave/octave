@@ -51,23 +51,45 @@ along with Octave; see the file COPYING.  If not, see
 #include "statdefs.h"
 #include "str-vec.h"
 
+file_ops::file_ops (void)
+  :
+#if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
+  xdir_sep_char ('\\'),
+  xdir_sep_str ("\\"),
+#else
+  xdir_sep_char ('/'),
+  xdir_sep_str ("/"), 
+#endif
+#if defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM)
+  xdir_sep_chars ("/\\")
+#else
+  xdir_sep_chars (xdir_sep_str)
+#endif
+{ }
+
+file_ops *file_ops::instance = 0;
+
+bool
+file_ops::instance_ok (void)
+{
+  bool retval = true;
+
+  if (! instance)
+    instance = new file_ops ();
+
+  if (! instance)
+    {
+      (*current_liboctave_error_handler)
+	("unable to create file_ops object!");
+
+      retval = false;
+    }
+
+  return retval;
+}
+
 #define NOT_SUPPORTED(nm) \
   nm ": not supported on this system"
-
-#if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) \
-     && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
-char file_ops::dir_sep_char = '\\';
-std::string file_ops::dir_sep_str ("\\");
-#else
-char file_ops::dir_sep_char = '/';
-std::string file_ops::dir_sep_str ("/");
-#endif
-
-#if defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM)
-std::string file_ops::dir_sep_chars ("/\\");
-#else
-std::string file_ops::dir_sep_chars (file_ops::dir_sep_str);
-#endif
 
 // We provide a replacement for mkdir().
 
@@ -346,7 +368,7 @@ file_ops::recursive_rmdir (const std::string& name, std::string& msg)
 	  if (nm == "." || nm == "..")
 	    continue;
 
-	  std::string fullnm = name + file_ops::dir_sep_str + nm;
+	  std::string fullnm = name + file_ops::dir_sep_str () + nm;
 
 	  // Get info about the file.  Don't follow links.
 	  file_stat fs (fullnm, false);
@@ -851,12 +873,6 @@ file_ops::unlink (const std::string& name, std::string& msg)
   return status;
 }
 
-bool
-file_ops::is_dir_sep (char c)
-{
-  return dir_sep_chars.find (c) != NPOS;
-}
-
 std::string
 file_ops::concat (const std::string& dir, const std::string& file)
 {
@@ -864,7 +880,7 @@ file_ops::concat (const std::string& dir, const std::string& file)
     ? file
     : (is_dir_sep (dir[dir.length()-1])
        ? dir + file
-       : dir + file_ops::dir_sep_char + file);
+       : dir + file_ops::dir_sep_char () + file);
 }
 
 /*

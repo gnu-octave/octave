@@ -1,5 +1,27 @@
 2008-08-04  John W. Eaton  <jwe@octave.org>
 
+	* oct-env.cc (octave_env::do_set_program_name,
+	octave_env::do_base_pathname): Fix usage of
+	file_ops::dir_sep_chars.
+	(octave_env::do_make_absolute): Fix usage of
+	file_ops::dir_sep_chars and file_ops::dir_sep_str.
+	(octave_env::do_get_home_directory): Fix usage of
+	file_ops::dir_sep_str.
+
+	* file-ops.h (file_ops::do_is_dir_sep): New function.
+	(file_ops_::is_dir_sep): Call it.
+	* file-ops.cc (class file_ops): Make it a proper singleton object.
+	(file_ops::file_ops): New constructor.
+	(file_ops::instance_ok): New function.
+	(file_ops::xdir_sep_char): Now private.  No longer static.  Rename
+	from dir_sep_char.
+	(file_ops::xdir_sep_str): Likewise, from dir_sep_str.
+	(file_ops::xdir_sep_chars): Likewise, from dir_sep_chars.
+	(file_ops::dir_sep_char, file_ops::dir_sep_str,
+	file_ops::dir_sep_chars): New functions.
+	(file_ops::recursive_rmdir): Fix usage of file_ops::dir_sep_str.
+	(file_ops::concat): Fix usage of file_ops::dir_sep_char.
+
 	* oct-env.cc (octave_env::instance_ok): Fix typo in error message.
 
 2008-07-30  John W. Eaton  <jwe@octave.org>

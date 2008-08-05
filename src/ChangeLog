@@ -1,3 +1,27 @@
+2008-08-04  John W. Eaton  <jwe@octave.org>
+
+	* symtab.cc (symbol_table::fcn_info::fcn_info_rep::find_autoload):
+	Fix usage of file_ops::dir_sep_chars.
+	* variables.cc (looks_like_struct):
+	Likewise.
+	* ov-fcn-handle.cc (octave_fcn_handle::set_fcn): Likewise.
+	* octave.cc (execute_command_line_file): Likewise.
+	* ls-mat5.cc (read_mat5_binary_element): Likewise.
+	* load-save.cc (find_file_to_load): Likewise.
+	* load-path.cc (load_path::do_find_file): Likewise.
+	* graphics.cc (drawnow): Likewise.
+	* parse.y (frob_function): Likewise.
+
+	* octave.cc (initialize_pathsearch): Fix usage of
+	file_ops::dir_sep_str.
+	* help.cc (Flookfor): Likewise.
+	* dirfns.cc (Ffilesep): Likewise.
+	(Fautoload): Likewise.
+
+	* defaults.cc (subst_octave_home): Fix usage of
+	file_ops::dir_sep_char.
+	(Fmfilename): Likewise.
+
 2008-07-31  John W. Eaton  <jwe@octave.org>
 
 	* parse.y (assign_lhs): Call force_local_variable on all elements

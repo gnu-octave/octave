@@ -218,7 +218,8 @@ octave_env::do_set_program_name (const std::string& s) const
 {
   program_invocation_name = s;
 
-  size_t pos = program_invocation_name.find_last_of (file_ops::dir_sep_chars);
+  size_t pos
+    = program_invocation_name.find_last_of (file_ops::dir_sep_chars ());
 
   program_name = (pos == NPOS)
     ? program_invocation_name : program_invocation_name.substr (pos+1);
@@ -302,7 +303,7 @@ octave_env::do_base_pathname (const std::string& s) const
   if (! (do_absolute_pathname (s) || do_rooted_relative_pathname (s)))
     return s;
 
-  size_t pos = s.find_last_of (file_ops::dir_sep_chars);
+  size_t pos = s.find_last_of (file_ops::dir_sep_chars ());
 
   if (pos == NPOS)
     return s;
@@ -333,7 +334,7 @@ octave_env::do_make_absolute (const std::string& s,
   size_t pos = current_dir.length () - 1;
 
   if (! file_ops::is_dir_sep (current_dir[pos]))
-    current_dir.append (file_ops::dir_sep_str);
+    current_dir.append (file_ops::dir_sep_str ());
 
   // FIXME -- this is probably not correct for all systems.
 
@@ -367,7 +368,7 @@ octave_env::do_make_absolute (const std::string& s,
 	    }
 	}
 
-      size_t tmp = s.find_first_of (file_ops::dir_sep_chars, i);
+      size_t tmp = s.find_first_of (file_ops::dir_sep_chars (), i);
 
       if (tmp == NPOS)
 	{
@@ -422,7 +423,7 @@ octave_env::do_get_home_directory (void) const
     {
       octave_passwd pw = octave_passwd::getpwuid (octave_syscalls::getuid ());
 
-      hd = pw ? pw.dir () : std::string (file_ops::dir_sep_str);
+      hd = pw ? pw.dir () : std::string (file_ops::dir_sep_str ());
     }
 
   return hd;

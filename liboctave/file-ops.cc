@@ -51,7 +51,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "statdefs.h"
 #include "str-vec.h"
 
-file_ops::file_ops (void)
+file_ops::static_members *file_ops::static_members::instance = 0;
+
+file_ops::static_members::static_members (void)
   :
 #if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
   xdir_sep_char ('\\'),
@@ -67,20 +69,18 @@ file_ops::file_ops (void)
 #endif
 { }
 
-file_ops *file_ops::instance = 0;
-
 bool
-file_ops::instance_ok (void)
+file_ops::static_members::instance_ok (void)
 {
   bool retval = true;
 
   if (! instance)
-    instance = new file_ops ();
+    instance = new static_members ();
 
   if (! instance)
     {
       (*current_liboctave_error_handler)
-	("unable to create file_ops object!");
+	("unable to create file_ops::static_members object!");
 
       retval = false;
     }

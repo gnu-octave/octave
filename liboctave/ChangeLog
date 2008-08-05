@@ -1,9 +1,13 @@
 2008-08-05  John W. Eaton  <jwe@octave.org>
 
-	* pathsearch.cc (dir_path::init): Move octave_kpathsea_initialized
-	here from file scope.
+	* file-ops.h, file-ops.cc (file_ops::static_members):
+	New singleton class for static members of file_ops.
+
 	* pathsearch.h, pathsearch.cc (class dir_path::static_members):
 	New singleton class for static members of dir_path.
+
+	* pathsearch.cc (dir_path::init): Move octave_kpathsea_initialized
+	here from file scope.
 
 2008-08-04  John W. Eaton  <jwe@octave.org>
 

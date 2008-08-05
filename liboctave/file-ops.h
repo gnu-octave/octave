@@ -35,10 +35,6 @@ struct
 OCTAVE_API
 file_ops
 {
-protected:
-
-  file_ops (void);
-
 public:
 
   static int mkdir (const std::string&, mode_t);
@@ -92,44 +88,71 @@ public:
 
   static bool is_dir_sep (char c)
   {
-    return instance_ok () ? instance->do_is_dir_sep (c) : false;
+    std::string tmp = dir_sep_chars ();
+    return tmp.find (c) != NPOS;
   }
 
   static std::string concat (const std::string&, const std::string&);
 
   static char dir_sep_char (void)
   {
-    return instance_ok () ? instance->xdir_sep_char : 0;
+    return static_members::dir_sep_char ();
   }
 
   static std::string dir_sep_str (void)
   {
-    return instance_ok () ? instance->xdir_sep_str : std::string ();
+    return static_members::dir_sep_str ();
   }
 
   static std::string dir_sep_chars (void)
   {
-    return instance_ok () ? instance->xdir_sep_chars : std::string ();
+    return static_members::dir_sep_chars ();
   }
 
 private:
 
-  // No copying!
+  // Use a singleton class for these data members instead of just
+  // making them static members of the dir_path class so that we can
+  // ensure proper initialization.
 
-  file_ops (const file_ops&);
+  class static_members
+  {
+  public:
 
-  file_ops& operator = (const file_ops&);
+    static_members (void);
 
-  // The real thing.
-  static file_ops *instance;
+    static char dir_sep_char (void)
+    {
+      return instance_ok () ? instance->xdir_sep_char : 0;
+    }
 
-  static bool instance_ok (void);
+    static std::string dir_sep_str (void)
+    {
+      return instance_ok () ? instance->xdir_sep_str : std::string ();
+    }
 
-  char xdir_sep_char;
-  std::string xdir_sep_str;
-  std::string xdir_sep_chars;
+    static std::string dir_sep_chars (void)
+    {
+      return instance_ok () ? instance->xdir_sep_chars : std::string ();
+    }
 
-  bool do_is_dir_sep (char c) { return xdir_sep_chars.find (c) != NPOS; }
+  private:
+
+    // The real thing.
+    static static_members *instance;
+
+    // No copying!
+
+    static_members (const static_members&);
+
+    static_members& operator = (const static_members&);
+
+    static bool instance_ok (void);
+
+    char xdir_sep_char;
+    std::string xdir_sep_str;
+    std::string xdir_sep_chars;
+  };
 };
 
 #endif

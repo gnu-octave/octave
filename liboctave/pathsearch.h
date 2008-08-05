@@ -83,7 +83,38 @@ public:
       init ();
     }
 
+  static char path_sep_char (void)
+  {
+    return static_members::path_sep_char ();
+  }
+
+  static std::string path_sep_str (void)
+  {
+    return static_members::path_sep_str ();
+  }
+
+  static bool is_path_sep (char c) { return c == path_sep_char (); }
+
 private:
+
+  // The colon separated list that we were given.
+  std::string p_orig;
+
+  // The default path.  If specified, replaces leading, trailing, or
+  // doubled colons in p_orig.
+  std::string p_default;
+
+  // TRUE means we've unpacked p.
+  bool initialized;
+
+  // A version of the colon separate list on which we have performed
+  // tilde, variable, and possibly default path expansion.
+  std::string p;
+
+  // The elements of the list.
+  string_vector pv;
+
+  void init (void);
 
   // Use a singleton class for these data members instead of just
   // making them static members of the dir_path class so that we can
@@ -121,41 +152,6 @@ private:
 
     std::string xpath_sep_str;
   };
-
-public:
-
-  static char path_sep_char (void)
-  {
-    return static_members::path_sep_char ();
-  }
-
-  static std::string path_sep_str (void)
-  {
-    return static_members::path_sep_str ();
-  }
-
-  static bool is_path_sep (char c) { return c == path_sep_char (); }
-
-private:
-
-  // The colon separated list that we were given.
-  std::string p_orig;
-
-  // The default path.  If specified, replaces leading, trailing, or
-  // doubled colons in p_orig.
-  std::string p_default;
-
-  // TRUE means we've unpacked p.
-  bool initialized;
-
-  // A version of the colon separate list on which we have performed
-  // tilde, variable, and possibly default path expansion.
-  std::string p;
-
-  // The elements of the list.
-  string_vector pv;
-
-  void init (void);
 };
 
 #endif

@@ -1,3 +1,7 @@
+2008-08-04  John W. Eaton  <jwe@octave.org>
+
+	* oct-env.cc (octave_env::instance_ok): Fix typo in error message.
+
 2008-07-30  John W. Eaton  <jwe@octave.org>
 
 	* oct-inttypes.h: Style fixes.

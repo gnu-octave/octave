@@ -89,7 +89,7 @@ octave_env::instance_ok (void)
   if (! instance)
     {
       (*current_liboctave_error_handler)
-	("unable to create current working directoy object!");
+	("unable to create current working directory object!");
 
       retval = false;
     }

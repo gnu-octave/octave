@@ -600,6 +600,7 @@ echo "making $@ from $<"
 $(SED) < $< \
   -e "s|%AWK%|${AWK}|g" \
   -e "s|%FIND%|${FIND}|g" \
+  -e "s|%SED%|${SED}|g" \
   -e "s|%library_path_var%|${library_path_var}|g" \
   -e "s|%liboctinterp%|${LIBPRE}octinterp.${SHLEXT}|g" \
   -e "s|%liboctave%|${LIBPRE}octave.${SHLEXT}|g" \

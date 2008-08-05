@@ -1,5 +1,10 @@
 2008-08-04  John W. Eaton  <jwe@octave.org>
 
+	* Makeconf.in (do-subst-script-vals): Also substitute SED.
+	* run-octave.in: Use sed to append : to path elements
+	instead of using the find expression "-exec echo '{}':".
+	Substitute SED here.
+
 	* aclocal.m4: Fail if no usable version of sed is found.
 
 	* Makefile.in (header-msg): Mention GNU Make requirement.

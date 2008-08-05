@@ -233,10 +233,10 @@ set_default_bin_dir (void)
 void
 set_exec_path (const std::string& path)
 {
-  VEXEC_PATH = Vlocal_ver_arch_lib_dir + dir_path::path_sep_str
-    + Vlocal_api_arch_lib_dir + dir_path::path_sep_str
-    + Vlocal_arch_lib_dir + dir_path::path_sep_str
-    + Varch_lib_dir + dir_path::path_sep_str
+  VEXEC_PATH = Vlocal_ver_arch_lib_dir + dir_path::path_sep_str ()
+    + Vlocal_api_arch_lib_dir + dir_path::path_sep_str ()
+    + Vlocal_arch_lib_dir + dir_path::path_sep_str ()
+    + Varch_lib_dir + dir_path::path_sep_str ()
     + Vbin_dir;
   
   // This is static so that even if set_exec_path is called more than
@@ -245,7 +245,7 @@ set_exec_path (const std::string& path)
   static std::string shell_path = octave_env::getenv ("PATH");
 
   if (! shell_path.empty ())
-    VEXEC_PATH += dir_path::path_sep_str + shell_path;
+    VEXEC_PATH += dir_path::path_sep_str () + shell_path;
 
   std::string tpath = path;
 
@@ -253,7 +253,7 @@ set_exec_path (const std::string& path)
     tpath = octave_env::getenv ("OCTAVE_EXEC_PATH");
 
   if (! tpath.empty ())
-    VEXEC_PATH = tpath + dir_path::path_sep_str + VEXEC_PATH;
+    VEXEC_PATH = tpath + dir_path::path_sep_str () + VEXEC_PATH;
 
   octave_env::putenv ("PATH", VEXEC_PATH);
 }
@@ -269,12 +269,12 @@ set_image_path (const std::string& path)
     tpath = octave_env::getenv ("OCTAVE_IMAGE_PATH");
 
   if (! tpath.empty ())
-    VIMAGE_PATH += dir_path::path_sep_str + tpath;
+    VIMAGE_PATH += dir_path::path_sep_str () + tpath;
 
   tpath = genpath (Vimage_dir, "");
 
   if (! tpath.empty ())
-    VIMAGE_PATH += dir_path::path_sep_str + tpath;
+    VIMAGE_PATH += dir_path::path_sep_str () + tpath;
 }
 
 static void

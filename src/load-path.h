@@ -209,7 +209,7 @@ public:
     if (command_line_path.empty ())
       command_line_path = p;
     else
-      command_line_path += dir_path::path_sep_str + p;
+      command_line_path += dir_path::path_sep_str () + p;
   }
 
   static std::string system_path (void)

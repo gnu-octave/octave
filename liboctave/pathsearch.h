@@ -83,10 +83,58 @@ public:
       init ();
     }
 
-  static bool is_path_sep (char c) { return c == path_sep_char; }
+private:
 
-  static char path_sep_char;
-  static std::string path_sep_str;
+  // Use a singleton class for these data members instead of just
+  // making them static members of the dir_path class so that we can
+  // ensure proper initialization.
+
+  class static_members
+  {
+  public:
+
+    static_members (void);
+
+    static char path_sep_char (void)
+    {
+      return instance_ok () ? instance->xpath_sep_char : 0;
+    }
+
+    static std::string path_sep_str (void)
+    {
+      return instance_ok () ? instance->xpath_sep_str : std::string ();
+    }
+
+  private:
+
+    static static_members *instance;
+
+    static bool instance_ok (void);
+
+    // No copying!
+
+    static_members (const static_members&);
+
+    static_members& operator = (const static_members&);
+
+    char xpath_sep_char;
+
+    std::string xpath_sep_str;
+  };
+
+public:
+
+  static char path_sep_char (void)
+  {
+    return static_members::path_sep_char ();
+  }
+
+  static std::string path_sep_str (void)
+  {
+    return static_members::path_sep_str ();
+  }
+
+  static bool is_path_sep (char c) { return c == path_sep_char (); }
 
 private:
 

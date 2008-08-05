@@ -37,11 +37,29 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "kpse.cc"
 
-char dir_path::path_sep_char = SEPCHAR;
+dir_path::static_members *dir_path::static_members::instance = 0;
 
-std::string dir_path::path_sep_str (SEPCHAR_STR);
+dir_path::static_members::static_members (void)
+  : xpath_sep_char (SEPCHAR), xpath_sep_str (SEPCHAR_STR) { }
 
-static bool octave_kpathsea_initialized = false;
+bool
+dir_path::static_members::instance_ok (void)
+{
+  bool retval = true;
+
+  if (! instance)
+    instance = new static_members ();
+
+  if (! instance)
+    {
+      (*current_liboctave_error_handler)
+	("unable to create dir_path::static_members object!");
+
+      retval = false;
+    }
+
+  return retval;
+}
 
 string_vector
 dir_path::elements (void)
@@ -123,6 +141,8 @@ dir_path::find_all_first_of (const string_vector& names)
 void
 dir_path::init (void)
 {
+  static bool octave_kpathsea_initialized = false;
+
   if (! octave_kpathsea_initialized)
     {
       std::string val = octave_env::getenv ("KPATHSEA_DEBUG");

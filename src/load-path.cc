@@ -419,7 +419,7 @@ maybe_add_path_elts (std::string& path, const std::string& dir)
       if (path.empty ())
 	path = tpath;
       else
-	path += dir_path::path_sep_str + tpath;
+	path += dir_path::path_sep_str () + tpath;
     }
 }
 
@@ -448,10 +448,10 @@ load_path::do_initialize (bool set_initial_path)
   std::string xpath = ".";
 
   if (! tpath.empty ())
-    xpath += dir_path::path_sep_str + tpath;
+    xpath += dir_path::path_sep_str () + tpath;
 
   if (! sys_path.empty ())
-    xpath += dir_path::path_sep_str + sys_path;
+    xpath += dir_path::path_sep_str () + sys_path;
 
   do_set (xpath, false);
 }
@@ -473,7 +473,7 @@ split_path (const std::string& p)
   std::list<std::string> retval;
 
   size_t beg = 0;
-  size_t end = p.find (dir_path::path_sep_char);
+  size_t end = p.find (dir_path::path_sep_char ());
 
   size_t len = p.length ();
 
@@ -489,7 +489,7 @@ split_path (const std::string& p)
       if (beg == len)
 	break;
 
-      end = p.find (dir_path::path_sep_char, beg);
+      end = p.find (dir_path::path_sep_char (), beg);
     }
 
   std::string elt = p.substr (beg);
@@ -1246,7 +1246,7 @@ load_path::do_path (void) const
     xpath = xdirs[0];
 
   for (octave_idx_type i = 1; i < len; i++)
-    xpath += dir_path::path_sep_str + xdirs[i];
+    xpath += dir_path::path_sep_str () + xdirs[i];
 
   return xpath;
 }
@@ -1610,7 +1610,7 @@ genpath (const std::string& dirname, const string_vector& skip)
 		  file_stat fs (nm);
 
 		  if (fs && fs.is_dir ())
-		    retval += dir_path::path_sep_str + genpath (nm);
+		    retval += dir_path::path_sep_str () + genpath (nm);
 		}
 	    }
 	}
@@ -1754,7 +1754,7 @@ No checks are made for duplicate elements.\n\
 	  std::string path = argv[1];
 
 	  for (int i = 2; i < argc; i++)
-	    path += dir_path::path_sep_str + argv[i];
+	    path += dir_path::path_sep_str () + argv[i];
 
 	  load_path::set (path, true);
 	}

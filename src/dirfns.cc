@@ -662,7 +662,7 @@ a path.\n\
   octave_value retval;
 
   if (args.length () == 0)
-    retval = dir_path::path_sep_str;
+    retval = dir_path::path_sep_str ();
   else
     print_usage ();
 

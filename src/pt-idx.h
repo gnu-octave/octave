@@ -88,8 +88,6 @@ public:
 
   octave_lvalue lvalue (void);
 
-  void eval_error (void) const;
-
   tree_index_expression *dup (symbol_table::scope_id scope,
 			      symbol_table::context_id context);
 

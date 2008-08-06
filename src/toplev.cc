@@ -473,6 +473,41 @@ octave_call_stack::do_goto_base_frame (void)
 }
 
 void
+octave_call_stack::backtrace_error_message (void) const
+{
+  if (error_state > 0)
+    {
+      error_state = -1;
+
+      error ("called from:");
+    }
+
+  if (! cs.empty ())
+    {
+      const call_stack_elt& elt = cs.back ();
+
+      octave_function *fcn = elt.fcn;
+      tree_statement *stmt = elt.stmt;
+
+      std::string fcn_name = "?unknown?";
+
+      if (fcn)
+	{
+	  fcn_name = fcn->fcn_file_name ();
+
+	  if (fcn_name.empty ())
+	    fcn_name = fcn->name ();
+	}
+
+      int line = stmt ? stmt->line () : -1;
+      int column = stmt ? stmt->column () : -1;
+
+      error ("  %s at line %d, column %d",
+	     fcn_name.c_str (), line, column);
+    }
+}
+
+void
 recover_from_exception (void)
 {
   can_interrupt = true;

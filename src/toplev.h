@@ -380,6 +380,9 @@ private:
   {
     if (cs.size () > 1)
       {
+	if (error_state)
+	  backtrace_error_message ();
+
 	const call_stack_elt& elt = cs.back ();
 	curr_frame = elt.prev;
 	cs.pop_back ();
@@ -389,6 +392,8 @@ private:
   }
 
   void do_clear (void) { cs.clear (); }
+
+  void backtrace_error_message (void) const;
 };
 
 #endif

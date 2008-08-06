@@ -62,41 +62,21 @@ tree_binary_expression::rvalue (void)
     {
       octave_value a = op_lhs->rvalue ();
 
-      if (error_state)
-	eval_error ();
-      else if (a.is_defined () && op_rhs)
+      if (! error_state && a.is_defined () && op_rhs)
 	{
 	  octave_value b = op_rhs->rvalue ();
 
-	  if (error_state)
-	    eval_error ();
-	  else if (b.is_defined ())
+	  if (! error_state && b.is_defined ())
 	    {
 	      retval = ::do_binary_op (etype, a, b);
 
 	      if (error_state)
-		{
-		  retval = octave_value ();
-		  eval_error ();
-		}
+		retval = octave_value ();
 	    }
-	  else
-	    eval_error ();
 	}
-      else
-	eval_error ();
     }
-  else
-    eval_error ();
 
   return retval;
-}
-
-void
-tree_binary_expression::eval_error (void)
-{
-  ::error ("evaluating binary operator `%s' near line %d, column %d",
-	   oper () . c_str (), line (), column ());
 }
 
 std::string
@@ -157,15 +137,11 @@ tree_boolean_expression::rvalue (void)
     {
       octave_value a = op_lhs->rvalue ();
 
-      if (error_state)
-	eval_error ();
-      else
+      if (! error_state)
 	{
 	  bool a_true = a.is_true ();
 
-	  if (error_state)
-	    eval_error ();
-	  else
+	  if (! error_state)
 	    {
 	      if (a_true)
 		{
@@ -185,18 +161,9 @@ tree_boolean_expression::rvalue (void)
 		{
 		  octave_value b = op_rhs->rvalue ();
 
-		  if (error_state)
-		    eval_error ();
-		  else
-		    {
-		      result = b.is_true ();
-
-		      if (error_state)
-			eval_error ();
-		    }
+		  if (! error_state)
+		    result = b.is_true ();
 		}
-	      else
-		eval_error ();
 
 	    done:
 
@@ -205,8 +172,6 @@ tree_boolean_expression::rvalue (void)
 	    }
 	}
     }
-  else
-    eval_error ();
 
   return retval;
 }

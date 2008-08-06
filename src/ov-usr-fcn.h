@@ -134,8 +134,6 @@ public:
 
   tree_statement_list *body (void) { return cmd_list; }
 
-  void traceback_error (void) const;
-
   void accept (tree_walker& tw);
 
 private:
@@ -298,8 +296,6 @@ public:
 
   octave_value_list
   do_multi_index_op (int nargout, const octave_value_list& args);
-
-  void traceback_error (void) const;
 
   tree_parameter_list *parameter_list (void) { return param_list; }
 

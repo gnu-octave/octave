@@ -242,12 +242,7 @@ tree_index_expression::make_arg_struct (void) const
 	  break;
 
 	case '.':
-	  {
-	    subs_field(i) = get_struct_index (p_arg_nm, p_dyn_field);
-
-	    if (error_state)
-	      eval_error ();
-	  }
+	  subs_field(i) = get_struct_index (p_arg_nm, p_dyn_field);
 	  break;
 
 	default:
@@ -361,12 +356,7 @@ tree_index_expression::rvalue (int nargout)
 	      break;
 
 	    case '.':
-	      {
-		idx.push_back (octave_value (get_struct_index (p_arg_nm, p_dyn_field)));
-
-		if (error_state)
-		  eval_error ();
-	      }
+	      idx.push_back (octave_value (get_struct_index (p_arg_nm, p_dyn_field)));
 	      break;
 
 	    default:
@@ -618,8 +608,6 @@ tree_index_expression::lvalue (void)
 
 		    idx.push_back (octave_value (tidx));
 		  }
-		else
-		  eval_error ();
 	      }
 	      break;
 
@@ -666,27 +654,6 @@ tree_index_expression::lvalue (void)
 %! x(2).b = 1;
 %! assert (x(2).b == 1);
 */
-
-void
-tree_index_expression::eval_error (void) const
-{
-  int l = line ();
-  int c = column ();
-
-  const char *type_str;
-
-  if (type[0] == '.')
-    type_str = "structure reference operator";
-  else if (args.front ())
-    type_str = "index expression";
-  else
-    type_str = "expression";
-
-  if (l != -1 && c != -1)
-    ::error ("evaluating %s near line %d, column %d", type_str, l, c);
-  else
-    ::error ("evaluating %s", type_str);
-}
 
 tree_index_expression *
 tree_index_expression::dup (symbol_table::scope_id scope,

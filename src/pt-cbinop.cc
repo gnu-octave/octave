@@ -125,32 +125,19 @@ tree_compound_binary_expression::rvalue (void)
     {
       octave_value a = op_lhs->rvalue ();
 
-      if (error_state)
-	eval_error ();
-      else if (a.is_defined () && op_rhs)
+      if (! error_state && a.is_defined () && op_rhs)
 	{
 	  octave_value b = op_rhs->rvalue ();
 
-	  if (error_state)
-	    eval_error ();
-	  else if (b.is_defined ())
+	  if (! error_state && b.is_defined ())
 	    {
 	      retval = ::do_binary_op (etype, a, b);
 
 	      if (error_state)
-		{
-		  retval = octave_value ();
-		  eval_error ();
-		}
+		retval = octave_value ();
 	    }
-	  else
-	    eval_error ();
 	}
-      else
-	eval_error ();
     }
-  else
-    eval_error ();
 
   return retval;
 }

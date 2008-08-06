@@ -208,7 +208,6 @@ tree_simple_assignment::rvalue (void)
 	  if (rhs_val.is_undefined ())
 	    {
 	      error ("value on right hand side of assignment is undefined");
-	      eval_error ();
 	      return retval;
 	    }
 	  else
@@ -222,16 +221,13 @@ tree_simple_assignment::rvalue (void)
 		  else
 		    {
 		      error ("invalid number of elements on RHS of assignment");
-		      eval_error ();
 		      return retval;
 		    }
 		}
 
 	      octave_lvalue ult = lhs->lvalue ();
 
-	      if (error_state)
-		eval_error ();
-	      else
+	      if (! error_state)
 		{
 		  ult.assign (etype, rhs_val);
 
@@ -259,27 +255,12 @@ tree_simple_assignment::rvalue (void)
 						     lhs->name ());
 			}
 		    }
-		  else
-		    eval_error ();
 		}
 	    }
 	}
-      else
-	eval_error ();
     }
 
   return retval;
-}
-
-void
-tree_simple_assignment::eval_error (void)
-{
-  int l = line ();
-  int c = column ();
-
-  if (l != -1 && c != -1)
-    ::error ("evaluating assignment expression near line %d, column %d",
-	     l, c);
 }
 
 std::string
@@ -380,7 +361,6 @@ tree_multi_assignment::rvalue (int)
 	  if (n_out > 0)
 	    {
 	      error ("value on right hand side of assignment is undefined");
-	      eval_error ();
 	      return retval;
 	    }
 	}
@@ -467,10 +447,7 @@ tree_multi_assignment::rvalue (int)
 		}
 
 	      if (error_state)
-		{
-		  eval_error ();
-		  break;
-		}
+		break;
 	      else if (print_result ())
 		{
 		  // We clear any index here so that we can get
@@ -493,21 +470,8 @@ tree_multi_assignment::rvalue (int)
 	    }
 	}
     }
-  else
-    eval_error ();
 
   return retval;
-}
-
-void
-tree_multi_assignment::eval_error (void)
-{
-  int l = line ();
-  int c = column ();
-
-  if (l != -1 && c != -1)
-    ::error ("evaluating assignment expression near line %d, column %d",
-	     l, c);
 }
 
 std::string

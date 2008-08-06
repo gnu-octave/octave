@@ -50,8 +50,6 @@ tree_expression::is_logically_true (const char *warn_for)
 	::error ("%s: undefined value used in conditional expression",
 		 warn_for);
     }
-  else
-    ::error ("%s: error evaluating conditional expression", warn_for);
 
   return expr_value;
 }

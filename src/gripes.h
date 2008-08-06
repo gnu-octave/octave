@@ -116,6 +116,9 @@ gripe_divide_by_zero (void);
 extern OCTINTERP_API void
 gripe_logical_conversion (void);
 
+extern OCTINTERP_API void
+gripe_library_execution_error (void);
+
 #endif
 
 /*

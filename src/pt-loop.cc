@@ -101,10 +101,7 @@ tree_while_command::eval (void)
 	      list->eval ();
 
 	      if (error_state)
-		{
-		  eval_error ();
-		  goto cleanup;
-		}
+		goto cleanup;
 	    }
 
 	  if (quit_loop_now ())
@@ -116,13 +113,6 @@ tree_while_command::eval (void)
 
  cleanup:
   unwind_protect::run_frame ("while_command::eval");
-}
-
-void
-tree_while_command::eval_error (void)
-{
-  ::error ("evaluating while command near line %d, column %d",
-	   line (), column ());
 }
 
 tree_command *
@@ -168,10 +158,7 @@ tree_do_until_command::eval (void)
 	  list->eval ();
 
 	  if (error_state)
-	    {
-	      eval_error ();
-	      goto cleanup;
-	    }
+	    goto cleanup;
 	}
 
       if (quit_loop_now () || expr->is_logically_true ("do-until"))
@@ -180,13 +167,6 @@ tree_do_until_command::eval (void)
 
  cleanup:
   unwind_protect::run_frame ("do_until_command::eval");
-}
-
-void
-tree_do_until_command::eval_error (void)
-{
-  ::error ("evaluating do-until command near line %d, column %d",
-	   line (), column ());
 }
 
 tree_command *
@@ -223,18 +203,8 @@ tree_simple_for_command::do_for_loop_once (octave_lvalue& ult,
 {
   ult.assign (octave_value::op_asn_eq, rhs);
 
-  if (! error_state)
-    {
-      if (list)
-	{
-	  list->eval ();
-
-	  if (error_state)
-	    eval_error ();
-	}
-    }
-  else
-    eval_error ();
+  if (! error_state && list)
+    list->eval ();
 
   quit = quit_loop_now ();
 }
@@ -337,19 +307,13 @@ tree_simple_for_command::eval (void)
   octave_value rhs = expr->rvalue ();
 
   if (error_state || rhs.is_undefined ())
-    {
-      eval_error ();
-      goto cleanup;
-    }
+    goto cleanup;
 
   {
     octave_lvalue ult = lhs->lvalue ();
 
     if (error_state)
-      {
-	eval_error ();
-	goto cleanup;
-      }
+      goto cleanup;
 
     if (rhs.is_range ())
       {
@@ -489,13 +453,6 @@ tree_simple_for_command::eval (void)
   unwind_protect::run_frame ("simple_for_command::eval");
 }
 
-void
-tree_simple_for_command::eval_error (void)
-{
-  ::error ("evaluating for command near line %d, column %d",
-	   line (), column ());
-}
-
 tree_command *
 tree_simple_for_command::dup (symbol_table::scope_id scope,
 			      symbol_table::context_id context)
@@ -534,18 +491,8 @@ tree_complex_for_command::do_for_loop_once (octave_lvalue &val_ref,
   val_ref.assign (octave_value::op_asn_eq, val);
   key_ref.assign (octave_value::op_asn_eq, key);
 
-  if (! error_state)
-    {
-      if (list)
-	{
-	  list->eval ();
-
-	  if (error_state)
-	    eval_error ();
-	}
-    }
-  else
-    eval_error ();
+  if (! error_state && list)
+    list->eval ();
 
   quit = quit_loop_now ();
 }
@@ -565,10 +512,7 @@ tree_complex_for_command::eval (void)
   octave_value rhs = expr->rvalue ();
 
   if (error_state || rhs.is_undefined ())
-    {
-      eval_error ();
-      goto cleanup;
-    }
+    goto cleanup;
 
   if (rhs.is_map ())
     {
@@ -609,13 +553,6 @@ tree_complex_for_command::eval (void)
 
  cleanup:
   unwind_protect::run_frame ("complex_for_command::eval");
-}
-
-void
-tree_complex_for_command::eval_error (void)
-{
-  ::error ("evaluating for command near line %d, column %d",
-	   line (), column ());
 }
 
 tree_command *

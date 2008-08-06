@@ -65,8 +65,6 @@ public:
 
   bool is_assignment_expression (void) const { return true; }
 
-  void eval_error (void);
-
   std::string oper (void) const;
 
   tree_expression *left_hand_side (void) { return lhs; }
@@ -135,8 +133,6 @@ public:
   octave_value rvalue (void);
 
   octave_value_list rvalue (int nargout);
-
-  void eval_error (void);
 
   std::string oper (void) const;
 

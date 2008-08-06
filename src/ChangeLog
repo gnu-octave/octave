@@ -1,5 +1,65 @@
 2008-08-05  John W. Eaton  <jwe@octave.org>
 
+	* toplev.cc (octave_call_stack::backtrace_error_message): New
+	function.
+	* toplev.h: Provide decl.
+	(octave_call_stack::do_pop): Call backtrace_error_message if
+	error_state is nonzero.
+
+	* pt-unop.cc (tree_prefix_expression::eval_error, 
+	tree_postfix_expression::eval_error): Delete.  Eliminate all uses.
+	* pt-unop.h: Delete decls.
+
+	* pt-select.cc (tree_switch_case::eval_error,
+	tree_switch_command::eval_error): Delete.  Eliminate all uses.
+	(tree_if_command::eval): Omit "evaluating if command" message.
+	* pt-select.h: Delete decls.
+
+	* pt-loop.cc (tree_while_command::eval_error,
+	tree_complex_for_command::eval_error,
+	tree_simple_for_command::eval_error,
+	tree_do_until_command::eval_error): Delete.  Eliminate all uses.
+	* pt-loop.h: Delete decls.
+
+	* pt-exp.cc (tree_expression::is_logically_true): Omit "evaluating
+	conditional expression" error message.
+
+	* pt-decl.cc (tree_global_command::eval): Omit "evaluating global
+	command" error message.
+	(tree_static_command::eval): Omit "evaluating static command"
+	error message.
+
+	* pt-colon.cc (tree_colon_expression::eval_error): Omit
+	"evaluating colon expression" error message.
+	* pt-colon.h (tree_colon_expression::eval_error): Eliminate
+	default argument value.
+
+	* pt-idx.cc (tree_index_expression::eval_error): Delete.
+	Eliminate all uses.
+	* pt-idx.h: Delete decl.
+
+	* pt-binop.cc (tree_binary_expression::eval_error): Delete.
+	* pt-binop.cc, pt-cbinop.cc: Eliminate all uses of eval_error.
+	* pt-binop.h: Delete decl.
+
+	* pt-assign.cc (tree_simple_assignment::eval_error,
+	tree_multi_assignment::eval_error): Delete.  Eliminate all uses.
+	* pt-assign.h: Delete decls.
+
+	* ov-usr-fcn.cc (octave_user_script::traceback_error,
+	octave_user_function::traceback_error): Delete.  Eliminate all uses.
+	* ov-usr-fcn.h: Delete decls.
+
+	* ov-builtin.cc (octave_builtin::do_multi_index_op): Call
+	gripe_library_exectuion_error on octave_execution_exception.
+	* ov-mex-fcn.cc (octave_mex_function::do_multi_index_op): Likewise.
+	* ov.cc (do_binary_op, do_cat_op, do_unary_op,
+	do_non_const_unary_op): Likewise.
+	* pt-stmt.cc (tree_statement::eval): Likewise.
+
+	* gripes.cc (gripe_library_execution_error): New function.
+	* gripes.h: Provide decl.
+
 	* dirfns.cc (Fpathsep): Fix usage of dir_path::path_sep_str.
 	* defaults.cc (set_exec_path, set_image_path): Likewise.
 	* load-path.h (load_path::set_command_line_path): Likewise.

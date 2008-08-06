@@ -192,8 +192,6 @@ public:
 
   int eval (const octave_value& val);
 
-  void eval_error (void);
-
   tree_expression *case_label (void) { return label; }
 
   tree_statement_list *commands (void) { return list; }
@@ -276,8 +274,6 @@ public:
   ~tree_switch_command (void);
 
   void eval (void);
-
-  void eval_error (void);
 
   tree_expression *switch_value (void) { return expr; }
 

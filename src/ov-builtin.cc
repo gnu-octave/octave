@@ -26,6 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "error.h"
+#include "gripes.h"
 #include "oct-obj.h"
 #include "ov-builtin.h"
 #include "ov.h"
@@ -107,8 +108,7 @@ octave_builtin::do_multi_index_op (int nargout, const octave_value_list& args)
 	}
       catch (octave_execution_exception)
 	{
-	  octave_exception_state = octave_no_exception;
-	  error ("caught execution error in library function");
+	  gripe_library_execution_error ();
 	}
 
       unwind_protect::run_frame ("builtin_func_eval");

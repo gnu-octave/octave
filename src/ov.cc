@@ -1546,8 +1546,7 @@ do_binary_op (octave_value::binary_op op,
 	    }
 	  catch (octave_execution_exception)
 	    {
-	      octave_exception_state = octave_no_exception;
-	      error ("caught execution error in library function");
+	      gripe_library_execution_error ();
 	    }
 	}	    
       else
@@ -1570,8 +1569,7 @@ do_binary_op (octave_value::binary_op op,
 	    }
 	  catch (octave_execution_exception)
 	    {
-	      octave_exception_state = octave_no_exception;
-	      error ("caught execution error in library function");
+	      gripe_library_execution_error ();
 	    }
 	}
       else
@@ -1630,8 +1628,7 @@ do_binary_op (octave_value::binary_op op,
 		    }
 		  catch (octave_execution_exception)
 		    {
-		      octave_exception_state = octave_no_exception;
-		      error ("caught execution error in library function");
+		      gripe_library_execution_error ();
 		    }
 		}
 	      else
@@ -1685,8 +1682,7 @@ do_binary_op (octave_value::binary_op op,
 			    }
 			  catch (octave_execution_exception)
 			    {
-			      octave_exception_state = octave_no_exception;
-			      error ("caught execution error in library function");
+			      gripe_library_execution_error ();
 			    }
 			}
 		      else
@@ -1749,8 +1745,7 @@ do_binary_op (octave_value::binary_op op,
 			}
 		      catch (octave_execution_exception)
 			{
-			  octave_exception_state = octave_no_exception;
-			  error ("caught execution error in library function");
+			  gripe_library_execution_error ();
 			}
 		    }
 		  else
@@ -1826,8 +1821,7 @@ do_binary_op (octave_value::compound_binary_op op,
 	    }
 	  catch (octave_execution_exception)
 	    {
-	      octave_exception_state = octave_no_exception;
-	      error ("caught execution error in library function");
+	      gripe_library_execution_error ();
 	    }
 	}	    
       else
@@ -1846,8 +1840,7 @@ do_binary_op (octave_value::compound_binary_op op,
 	    }
 	  catch (octave_execution_exception)
 	    {
-	      octave_exception_state = octave_no_exception;
-	      error ("caught execution error in library function");
+	      gripe_library_execution_error ();
 	    }
 	}
       else
@@ -1893,8 +1886,7 @@ do_cat_op (const octave_value& v1, const octave_value& v2,
 	}
       catch (octave_execution_exception)
 	{
-	  octave_exception_state = octave_no_exception;
-	  error ("caught execution error in library function");
+	  gripe_library_execution_error ();
 	}
     }
   else
@@ -1953,8 +1945,7 @@ do_cat_op (const octave_value& v1, const octave_value& v2,
 		}
 	      catch (octave_execution_exception)
 		{
-		  octave_exception_state = octave_no_exception;
-		  error ("caught execution error in library function");
+		  gripe_library_execution_error ();
 		}
 	    }
 	  else
@@ -2010,8 +2001,7 @@ do_unary_op (octave_value::unary_op op, const octave_value& v)
 	    }
 	  catch (octave_execution_exception)
 	    {
-	      octave_exception_state = octave_no_exception;
-	      error ("caught execution error in library function");
+	      gripe_library_execution_error ();
 	    }
 	}
       else
@@ -2034,8 +2024,7 @@ do_unary_op (octave_value::unary_op op, const octave_value& v)
 	    }
 	  catch (octave_execution_exception)
 	    {
-	      octave_exception_state = octave_no_exception;
-	      error ("caught execution error in library function");
+	      gripe_library_execution_error ();
 	    }
 	}
       else
@@ -2063,8 +2052,7 @@ do_unary_op (octave_value::unary_op op, const octave_value& v)
 			}
 		      catch (octave_execution_exception)
 			{
-			  octave_exception_state = octave_no_exception;
-			  error ("caught execution error in library function");
+			  gripe_library_execution_error ();
 			}
 		    }
 		  else
@@ -2111,8 +2099,7 @@ octave_value::do_non_const_unary_op (unary_op op)
 	}
       catch (octave_execution_exception)
 	{
-	  octave_exception_state = octave_no_exception;
-	  error ("caught execution error in library function");
+	  gripe_library_execution_error ();
 	}
     }
   else
@@ -2140,8 +2127,7 @@ octave_value::do_non_const_unary_op (unary_op op)
 		    }
 		  catch (octave_execution_exception)
 		    {
-		      octave_exception_state = octave_no_exception;
-		      error ("caught execution error in library function");
+		      gripe_library_execution_error ();
 		    }
 
 		  if (old_rep && --old_rep->count == 0)

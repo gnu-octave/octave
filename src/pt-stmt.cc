@@ -29,6 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "defun.h"
 #include "error.h"
+#include "gripes.h"
 #include "ov.h"
 #include "oct-lvalue.h"
 #include "input.h"
@@ -129,8 +130,7 @@ tree_statement::eval (bool silent, int nargout,
 	}
       catch (octave_execution_exception)
 	{
-	  octave_exception_state = octave_no_exception;
-	  error ("caught execution error in library function");
+	  gripe_library_execution_error ();
 	}
     }
 

@@ -212,6 +212,15 @@ gripe_truncated_conversion (const char *srctype, const char *desttype)
                    srctype, desttype);
 }
 
+void
+gripe_library_execution_error (void)
+{
+  octave_exception_state = octave_no_exception;
+
+  if (! error_state)
+    error ("caught execution error in library function");
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

@@ -184,11 +184,7 @@ tree_colon_expression::rvalue (void)
 void
 tree_colon_expression::eval_error (const std::string& s) const
 {
-  if (! s.empty ())
-    ::error ("%s", s.c_str ());
-
-  ::error ("evaluating colon expression near line %d column %d",
-	   line (), column ());
+  ::error ("%s", s.c_str ());
 }
 
 int

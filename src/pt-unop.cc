@@ -83,11 +83,7 @@ tree_prefix_expression::rvalue (void)
 
 		  retval = ref.value ();
 		}
-	      else
-		eval_error ();
 	    }
-	  else
-	    eval_error ();
 	}
       else
 	{
@@ -98,26 +94,12 @@ tree_prefix_expression::rvalue (void)
 	      retval = ::do_unary_op (etype, val);
 
 	      if (error_state)
-		{
-		  retval = octave_value ();
-		  eval_error ();
-		}
+		retval = octave_value ();
 	    }
-	  else
-	    eval_error ();
 	}
     }
-  else
-    eval_error ();
 
   return retval;
-}
-
-void
-tree_prefix_expression::eval_error (void)
-{
-  ::error ("evaluating prefix operator `%s' near line %d, column %d",
-	   oper () . c_str (), line (), column ());
 }
 
 tree_expression *
@@ -181,11 +163,7 @@ tree_postfix_expression::rvalue (void)
 
 		  ref.do_unary_op (etype);
 		}
-	      else
-		eval_error ();
 	    }
-	  else
-	    eval_error ();
 	}
       else
 	{
@@ -196,26 +174,12 @@ tree_postfix_expression::rvalue (void)
 	      retval = ::do_unary_op (etype, val);
 
 	      if (error_state)
-		{
-		  retval = octave_value ();
-		  eval_error ();
-		}
+		retval = octave_value ();
 	    }
-	  else
-	    eval_error ();
 	}
     }
-  else
-    eval_error ();
 
   return retval;
-}
-
-void
-tree_postfix_expression::eval_error (void)
-{
-  ::error ("evaluating postfix operator `%s' near line %d, column %d",
-	   oper () . c_str (), line (), column ());
 }
 
 tree_expression *

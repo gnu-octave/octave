@@ -124,10 +124,6 @@ tree_if_command::eval (void)
 {
   if (list)
     list->eval ();
-
-  if (error_state)
-    ::error ("evaluating if command near line %d, column %d",
-	     line (), column ());
 }
 
 tree_command *
@@ -195,10 +191,7 @@ tree_switch_case::label_matches (const octave_value& val)
 		  bool match = equal (val, cell(i,j));
 
 		  if (error_state)
-		    {
-		      eval_error ();
-		      return false;
-		    }
+		    return false;
 		  else if (match)
 		    return true;
 		}
@@ -209,16 +202,11 @@ tree_switch_case::label_matches (const octave_value& val)
 	  bool match = equal (val, label_value);
 
 	  if (error_state)
-	    {
-	      eval_error ();
-	      return false;
-	    }
+	    return false;
 	  else
 	    return match;
 	}
     }
-  else
-    eval_error ();
 
   return false;
 }
@@ -237,12 +225,6 @@ tree_switch_case::eval (const octave_value& val)
     }
 
   return retval;
-}
-
-void
-tree_switch_case::eval_error (void)
-{
-  ::error ("evaluating switch case label");
 }
 
 tree_switch_case *
@@ -313,27 +295,12 @@ tree_switch_command::eval (void)
     {
       octave_value val = expr->rvalue ();
 
-      if (! error_state)
-	{
-	  if (list)
-	    list->eval (val);
-
-	  if (error_state)
-	    eval_error ();
-	}
-      else
-	eval_error ();
+      if (! error_state && list)
+	list->eval (val);
     }
   else
     ::error ("missing value in switch command near line %d, column %d",
 	     line (), column ());
-}
-
-void
-tree_switch_command::eval_error (void)
-{
-  ::error ("evaluating switch command near line %d, column %d",
-	   line (), column ());
 }
 
 tree_command *

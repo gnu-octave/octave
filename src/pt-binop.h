@@ -74,8 +74,6 @@ public:
 
   octave_value_list rvalue (int nargout);
 
-  void eval_error (void);
-
   std::string oper (void) const;
 
   octave_value::binary_op op_type (void) const { return etype; }

@@ -104,8 +104,6 @@ public:
 
   octave_value_list rvalue (int nargout);
 
-  void eval_error (void);
-
   tree_expression *dup (symbol_table::scope_id scope,
 			symbol_table::context_id context);
 
@@ -142,8 +140,6 @@ public:
   octave_value rvalue (void);
 
   octave_value_list rvalue (int nargout);
-
-  void eval_error (void);
 
   tree_expression *dup (symbol_table::scope_id scope,
 			symbol_table::context_id context);

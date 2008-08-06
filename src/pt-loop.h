@@ -69,8 +69,6 @@ public:
 
   void eval (void);
 
-  void eval_error (void);
-
   tree_expression *condition (void) { return expr; }
 
   tree_statement_list *body (void) { return list; }
@@ -133,8 +131,6 @@ public:
 
   void eval (void);
 
-  void eval_error (void);
-
   tree_command *dup (symbol_table::scope_id scope,
 		     symbol_table::context_id context);
 
@@ -171,8 +167,6 @@ public:
   ~tree_simple_for_command (void);
 
   void eval (void);
-
-  void eval_error (void);
 
   tree_expression *left_hand_side (void) { return lhs; }
 
@@ -236,8 +230,6 @@ public:
   ~tree_complex_for_command (void);
 
   void eval (void);
-
-  void eval_error (void);
 
   tree_argument_list *left_hand_side (void) { return lhs; }
 

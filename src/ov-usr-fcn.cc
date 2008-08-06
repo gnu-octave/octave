@@ -110,14 +110,14 @@ octave_user_script::do_multi_index_op (int nargout,
 {
   octave_value_list retval;
 
+  unwind_protect::begin_frame ("user_script_eval");
+
   if (! error_state)
     {
       if (args.length () == 0 && nargout == 0)
 	{
 	  if (cmd_list)
 	    {
-	      unwind_protect::begin_frame ("user_script_eval");
-
 	      unwind_protect_int (call_depth);
 	      call_depth++;
 
@@ -134,19 +134,16 @@ octave_user_script::do_multi_index_op (int nargout,
 
 		  if (tree_break_command::breaking)
 		    tree_break_command::breaking--;
-
-		  if (error_state)
-		    traceback_error ();
 		}
 	      else
 		::error ("max_recursion_limit exceeded");
-
-	      unwind_protect::run_frame ("user_script_eval");
     	    }
 	}
       else
 	error ("invalid call to script");
     }
+
+  unwind_protect::run_frame ("user_script_eval");
 
   return retval;
 }
@@ -155,32 +152,6 @@ void
 octave_user_script::accept (tree_walker& tw)
 {
   tw.visit_octave_user_script (*this);
-}
-
-// FIXME -- this function is exactly the same as
-// octave_user_function::traceback_error.
-
-void
-octave_user_script::traceback_error (void) const
-{
-  if (error_state >= 0)
-    error_state = -1;
-
-  if (my_name.empty ())
-    {
-      if (file_name.empty ())
-	::error ("called from `?unknown?'");
-      else
-	::error ("called from file `%s'", file_name.c_str ());
-    }
-  else
-    {
-      if (file_name.empty ())
-	::error ("called from `%s'", my_name.c_str ());
-      else 
-	::error ("called from `%s' in file `%s'",
-		 my_name.c_str (), file_name.c_str ());
-    }
 }
 
 // User defined functions.
@@ -473,10 +444,7 @@ octave_user_function::do_multi_index_op (int nargout,
       tree_break_command::breaking--;
 
     if (error_state)
-      {
-	traceback_error ();
-	goto abort;
-      }
+      goto abort;
     
     // Copy return values out.
 
@@ -508,29 +476,6 @@ octave_user_function::do_multi_index_op (int nargout,
   unwind_protect::run_frame ("user_func_eval");
 
   return retval;
-}
-
-void
-octave_user_function::traceback_error (void) const
-{
-  if (error_state >= 0)
-    error_state = -1;
-
-  if (my_name.empty ())
-    {
-      if (file_name.empty ())
-	::error ("called from `?unknown?'");
-      else
-	::error ("called from file `%s'", file_name.c_str ());
-    }
-  else
-    {
-      if (file_name.empty ())
-	::error ("called from `%s'", my_name.c_str ());
-      else 
-	::error ("called from `%s' in file `%s'",
-		 my_name.c_str (), file_name.c_str ());
-    }
 }
 
 void

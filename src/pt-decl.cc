@@ -172,10 +172,6 @@ tree_global_command::eval (void)
 
   if (init_list)
     init_list->eval (do_init);
-
-  if (error_state)
-    ::error ("evaluating global command near line %d, column %d",
-	     line (), column ());
 }
 
 tree_command *
@@ -225,10 +221,6 @@ tree_static_command::eval (void)
 
   if (init_list)
     init_list->eval (do_init);
-
-  if (error_state)
-    ::error ("evaluating static command near line %d, column %d",
-	     line (), column ());
 }
 
 tree_command *

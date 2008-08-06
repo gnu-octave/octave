@@ -922,7 +922,7 @@ float_identity_matrix (octave_idx_type nr, octave_idx_type nc)
   return m;
 }
 
-extern int
+int
 octave_format (std::ostream& os, const char *fmt, ...)
 {
   int retval = -1;
@@ -937,7 +937,7 @@ octave_format (std::ostream& os, const char *fmt, ...)
   return retval;
 }
 
-extern int
+int
 octave_vformat (std::ostream& os, const char *fmt, va_list args)
 {
   int retval = -1;

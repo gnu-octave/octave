@@ -2740,7 +2740,7 @@ PRINT_INT_ARRAY_INTERNAL (octave_uint32)
 PRINT_INT_ARRAY_INTERNAL (octave_int64)
 PRINT_INT_ARRAY_INTERNAL (octave_uint64)
 
-extern void
+void
 octave_print_internal (std::ostream&, const Cell&, bool, int, bool)
 {
   panic_impossible ();

@@ -1,5 +1,11 @@
 2008-08-05  John W. Eaton  <jwe@octave.org>
 
+	* gripes.cc (gripe_truncated_conversion,
+	gripe_logical_conversion): Don't declare as extern here.
+	* utils.cc (octave_format, octave_vformat): Likewise.
+	* pr-output.cc (octave_print_internal (std::ostream&, const Cell&,
+	bool, int, bool)): Likewise.
+
 	* toplev.cc (octave_call_stack::backtrace_error_message): New
 	function.
 	* toplev.h: Provide decl.

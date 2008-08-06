@@ -197,14 +197,14 @@ gripe_divide_by_zero (void)
   warning_with_id ("Octave:divide-by-zero", "division by zero");
 }
 
-extern void
+void
 gripe_logical_conversion (void)
 {
   warning_with_id ("Octave:logical-conversion",
 		   "value not equal to 1 or 0 converted to logical 1");
 }
 
-extern void
+void
 gripe_truncated_conversion (const char *srctype, const char *desttype)
 {
   warning_with_id ("Octave:int-convert-overflow", 

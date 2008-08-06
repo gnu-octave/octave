@@ -1,5 +1,10 @@
 2008-08-06  John W. Eaton  <jwe@octave.org>
 
+	* DLD-FUNCTIONS/fsolve.cc (hybrd_info_to_fsolve_info):
+	Update INFO values to be compatible with Matlab's current fsolve.
+	(make_unimplemented_options, override_options): New functions.
+	(Ffsolve): Handle optimset options.  Update doc string.
+
 	* ov-usr-fcn.cc (octave_user_function::do_multi_index_op,
 	octave_user_script::do_multi_index_op):
 	Call octave_call_stack::backtrace_error_message.

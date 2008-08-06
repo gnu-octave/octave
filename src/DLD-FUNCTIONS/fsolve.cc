@@ -25,6 +25,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
+#include <algorithm>
+#include <set>
 #include <string>
 
 #include <iomanip>
@@ -37,6 +39,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun-dld.h"
 #include "error.h"
 #include "gripes.h"
+#include "oct-map.h"
 #include "oct-obj.h"
 #include "ov-fcn.h"
 #include "ov-cell.h"
@@ -69,29 +72,23 @@ hybrd_info_to_fsolve_info (octave_idx_type info)
   switch (info)
     {
     case -1:
-      break;
-
-    case 0:
-      info = -2;
-      break;
-
     case 1:
       break;
 
     case 2:
-      info = 4;
+      info = 0;
       break;
 
     case 3:
     case 4:
     case 5:
-      info = 3;
+      info = -2;
       break;
 
     default:
       {
 	std::ostringstream buf;
-	buf << "fsolve: unrecognized value of INFO from MINPACK (= "
+	buf << "fsolve: unexpected value of INFO from MINPACK (= "
 	    << info << ")";
 	std::string msg = buf.str ();
 	warning (msg.c_str ());
@@ -201,6 +198,98 @@ fsolve_user_jacobian (const ColumnVector& x)
   return retval;
 }
 
+static std::set<std::string>
+make_unimplemented_options (void)
+{
+  static bool initialized = false;
+
+  static std::set<std::string> options;
+
+  if (! initialized)
+    {
+      initialized = true;
+
+      options.insert ("largescale");
+      options.insert ("derivativecheck");
+      options.insert ("diagnostics");
+      options.insert ("diffmaxchange");
+      options.insert ("diffminchange");
+      options.insert ("display");
+      options.insert ("funvalcheck");
+      options.insert ("jacobian");
+      options.insert ("maxfunevals");
+      options.insert ("maxiter");
+      options.insert ("outputfcn");
+      options.insert ("plotfcns");
+      options.insert ("tolfun");
+      options.insert ("tolx");
+      options.insert ("typicalx");
+      options.insert ("jacobmult");
+      options.insert ("jacobpattern");
+      options.insert ("maxpcgiter");
+      options.insert ("precondbandwidth");
+      options.insert ("tolpcg");
+      options.insert ("nonleqnalgorithm");
+      options.insert ("linesearchtype");
+    }
+
+  return options;
+}
+
+static void
+override_options (NLEqn_options& opts, const Octave_map& option_map)
+{
+  string_vector keys = option_map.keys ();
+
+  for (octave_idx_type i = 0; i < keys.length (); i++)
+    {
+      std::string key = keys(i);
+      std::transform (key.begin (), key.end (), key.begin (), tolower);
+
+      if (key == "tolx")
+	{
+	  Cell c = option_map.contents (key);
+
+	  if (c.numel () == 1)
+	    {
+	      octave_value val = c(0);
+
+	      if (! val.is_empty ())
+		{
+		  double dval = val.double_value ();
+
+		  if (! error_state)
+		    opts.set_tolerance (dval);
+		  else
+		    gripe_wrong_type_arg ("fsolve", val);
+		}
+	    }
+	  else
+	    error ("fsolve: invalid value for %s option", key.c_str ());
+	}
+      else
+	{
+	  static std::set<std::string> unimplemented_options
+	    = make_unimplemented_options ();
+
+	  if (unimplemented_options.find (key) != unimplemented_options.end ())
+	    {
+	      Cell c = option_map.contents (key);
+
+	      if (c.numel () == 1)
+		{
+		  octave_value val = c(0);
+
+		  if (! val.is_empty ())
+		    warning_with_id ("Octave:fsolve-unimplemented option",
+				     "fsolve: option `%s' not implemented",
+				     key.c_str ());
+		}
+	    }
+	}
+    }
+}
+
 #define FSOLVE_ABORT() \
   do \
     { \
@@ -227,7 +316,7 @@ fsolve_user_jacobian (const ColumnVector& x)
 
 DEFUN_DLD (fsolve, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {[@var{x}, @var{fval}, @var{info}] =} fsolve (@var{fcn}, @var{x0})\n\
+@deftypefn {Loadable Function} {[@var{x}, @var{fval}, @var{info}] =} fsolve (@var{fcn}, @var{x0}, @var{options})\n\
 Given @var{fcn}, the name of a function of the form @code{f (@var{x})}\n\
 and an initial starting point @var{x0}, @code{fsolve} solves the set of\n\
 equations such that @code{f(@var{x}) == 0}.\n\
@@ -237,17 +326,15 @@ evaluated at @var{x}, and @var{info} may be one of the following values:\n\
 \n\
 @table @asis\n\
 \n\
-@item -2\n\
-Invalid input parameters.\n\
+@item 1\n\
+Algorithm converged with relative error between two consecutive iterates\n\
+less than or equal to the specified tolerance (see @code{fsolve_options}).\n\
+@item 0\n\
+Iteration limit exceeded.\n\
 @item -1\n\
 Error in user-supplied function.\n\
-@item 1\n\
-Relative error between two consecutive iterates is at most the\n\
-specified tolerance (see @code{fsolve_options}).\n\
-@item 3\n\
+@item -2\n\
 Algorithm failed to converge.\n\
-@item 4\n\
-Limit on number of function calls reached.\n\
 @end table\n\
 \n\
 If @var{fcn} is a two-element string array, or a two element cell array\n\
@@ -269,6 +356,11 @@ jac(i,j) = ----\n\
 \n\
 You can use the function @code{fsolve_options} to set optional\n\
 parameters for @code{fsolve}.\n\
+\n\
+If the optional argument @var{options} is provided, it is expected to\n\
+be a structure of the form returned by @code{optimset}.  Options\n\
+specified in this structure override any set globally by\n\
+@code{optimset, fsolve_options}.\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -286,7 +378,7 @@ parameters for @code{fsolve}.\n\
 
   int nargin = args.length ();
 
-  if (nargin == 2 && nargout < 4)
+  if ((nargin == 2 || nargin == 3) && nargout < 4)
     {
       std::string fcn_name, fname, jac_name, jname;
       fsolve_fcn = 0;
@@ -339,7 +431,7 @@ parameters for @code{fsolve}.\n\
 	    FSOLVE_ABORT1 ("incorrect number of elements in cell array");
 	}
 
-      if (!fsolve_fcn && ! f_arg.is_cell())
+      if (! fsolve_fcn && ! f_arg.is_cell())
 	{
 	  if (f_arg.is_function_handle () || f_arg.is_inline_function ())
 	    fsolve_fcn = f_arg.function_value ();
@@ -395,7 +487,7 @@ parameters for @code{fsolve}.\n\
 		}
 	    }
 	}
-
+      
       if (error_state || ! fsolve_fcn)
 	FSOLVE_ABORT ();
 
@@ -417,26 +509,42 @@ parameters for @code{fsolve}.\n\
 	nleqn_fcn.set_jacobian_function (fsolve_user_jacobian);
 
       NLEqn nleqn (x, nleqn_fcn);
-      nleqn.set_options (fsolve_opts);
 
-      octave_idx_type info;
-      ColumnVector soln = nleqn.solve (info);
+      NLEqn_options local_fsolve_opts (fsolve_opts);
 
-      if (fcn_name.length())
-	clear_function (fcn_name);
-      if (jac_name.length())
-	clear_function (jac_name);
+      if (nargin > 2)
+	{
+	  Octave_map option_map = args(2).map_value ();
+
+	  if (! error_state)
+	    override_options (local_fsolve_opts, option_map);
+	  else
+	    error ("fsolve: expecting optimset structure as third argument");
+	}
 
       if (! error_state)
 	{
-	  retval(2) = static_cast<double> (hybrd_info_to_fsolve_info (info));
-	  retval(1) = nleqn.function_value ();
-	  retval(0) = NDArray (ArrayN<double> (soln.reshape (x_dims)));
+	  nleqn.set_options (local_fsolve_opts);
 
-	  if (! nleqn.solution_ok () && nargout < 2)
+	  octave_idx_type info;
+	  ColumnVector soln = nleqn.solve (info);
+
+	  if (fcn_name.length())
+	    clear_function (fcn_name);
+	  if (jac_name.length())
+	    clear_function (jac_name);
+
+	  if (! error_state)
 	    {
-	      std::string msg = nleqn.error_message ();
-	      error ("fsolve: %s", msg.c_str ());
+	      retval(2) = static_cast<double> (hybrd_info_to_fsolve_info (info));
+	      retval(1) = nleqn.function_value ();
+	      retval(0) = NDArray (ArrayN<double> (soln.reshape (x_dims)));
+
+	      if (! nleqn.solution_ok () && nargout < 2)
+		{
+		  std::string msg = nleqn.error_message ();
+		  error ("fsolve: %s", msg.c_str ());
+		}
 	    }
 	}
     }
@@ -463,7 +571,7 @@ parameters for @code{fsolve}.\n\
 %! 2.005014 ];
 %! tol = 1.0e-5;
 %! [x, fval, info] = fsolve ("f", [ 0.5; 2.0; 2.5 ]);
-%! info_bad = (info != 1);
+%! info_bad = (info <= 0);
 %! solution_bad = sum (abs (x - x_opt) > tol);
 %! value_bad = sum (abs (fval) > tol);
 %! if (info_bad)
@@ -497,7 +605,7 @@ parameters for @code{fsolve}.\n\
 %! x_opt = [ -0.767297326653401, 0.590671081117440, 1.47190018629642, -1.52719341133957 ];
 %! tol = 1.0e-5;
 %! [x, fval, info] = fsolve ("f", [-1, 1, 2, -1]);
-%! info_bad = (info != 1);
+%! info_bad = (info <= 0);
 %! solution_bad = sum (abs (x - x_opt) > tol);
 %! value_bad = sum (abs (fval) > tol);
 %! if (info_bad)

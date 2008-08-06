@@ -176,8 +176,7 @@ argument, Octave would have printed an error message like this:
 
 @example
 @group
-error: `retval' undefined near line 1 column 10
-error: evaluating index expression near line 7, column 1
+error: value on right hand side of assignment is undefined
 @end group
 @end example
 

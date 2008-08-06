@@ -73,8 +73,10 @@ octave:13> 3 + 4 i
 
 parse error:
 
-  3 + 4 i
-        ^
+  syntax error
+
+>>> 3 + 4 i
+          ^
 @end group
 @end example
 
@@ -167,7 +169,7 @@ but the expression
 produces the error
 
 @example
-error: number of rows must match near line 13, column 6
+error: number of rows must match (1 != 2) near line 13, column 6
 @end example
 
 @noindent
@@ -248,7 +250,12 @@ expression
 produces the error message
 
 @example
-error: unterminated string constant
+parse error:
+
+  syntax error
+
+>>> [ 1 a ' ]
+              ^
 @end example
 
 @noindent

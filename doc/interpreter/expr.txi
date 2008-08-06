@@ -943,9 +943,8 @@ following will produce an error.
 
 @c Using 'smallexample' to make text fit on page when creating smallbook.
 @smallexample
-[a, b, c, d] = [u, s, v] = svd (a)
+[a, b, c, d] = [u, s, v] = svd (a);
 @print{} error: element number 4 undefined in return list
-@print{} error: evaluating assignment expression near line 8, column 15
 @end smallexample
 
 @opindex +=

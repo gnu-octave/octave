@@ -977,11 +977,11 @@ can help you to quickly locate the exact location of the error:\n\
 @group\n\
 f ()\n\
 error: nargin != 1\n\
-error: evaluating index expression near line 1, column 30\n\
-error: evaluating binary operator `||' near line 1, column 27\n\
-error: called from `h'\n\
-error: called from `g'\n\
-error: called from `f'\n\
+error: called from:\n\
+error:   error at line -1, column -1\n\
+error:   h at line 1, column 27\n\
+error:   g at line 1, column 15\n\
+error:   f at line 1, column 15\n\
 @end group\n\
 @end smallexample\n\
 \n\

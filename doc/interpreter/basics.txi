@@ -737,8 +737,10 @@ Octave will respond immediately with a message like this:
 @example
 parse error:
 
-  functon y = f (x) y = x^2; endfunction
-          ^
+  syntax error
+
+>>> functon y = f (x) y = x^2; endfunction
+             ^
 @end example
 
 @noindent
@@ -767,9 +769,8 @@ Octave will respond with
 @smallexample
 @group
 error: `x' undefined near line 1 column 24
-error: evaluating expression near line 1, column 24
-error: evaluating assignment expression near line 1, column 22
-error: called from `f'
+error: called from:
+error:   f at line 1, column 22
 @end group
 @end smallexample
 
@@ -787,15 +788,13 @@ definition.  For errors occurring at the top level, the line number
 indicates the input line number, which is usually displayed in the
 prompt string.
 
-The second and third lines in the example indicate that the error
-occurred within an assignment expression, and the last line of the error
-message indicates that the error occurred within the function @code{f}.
-If the function @code{f} had been called from another function, for
-example, @code{g}, the list of errors would have ended with one more
-line:
+The second and third lines in the error message indicates that the error occurred
+within the function @code{f}. If the function @code{f} had been called from
+another function, for example, @code{g}, the list of errors would have ended with
+one more line:
 
 @example
-error: called from `g'
+error:   g at line 1, column 17
 @end example
 
 These lists of function calls usually make it fairly easy to trace the

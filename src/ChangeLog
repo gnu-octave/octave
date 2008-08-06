@@ -1,3 +1,8 @@
+2008-08-06  Soren Hauberg  <hauberg@gmail.com>
+
+	* error.cc (Ferror): Update format of error messages in exmple.
+	* parse.y: (Feval): Likewise.
+
 2008-08-06  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/fsolve.cc (hybrd_info_to_fsolve_info):

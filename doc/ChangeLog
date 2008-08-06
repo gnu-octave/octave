@@ -1,3 +1,9 @@
+2008-08-06  Søren Hauberg  <hauberg@gmail.com>
+
+	* interpreter/basics.txi, interpreter/errors.txi,
+	interpreter/expr.txi, interpreter/func.txi,
+	interpreter/numbers.txi: Update format of error messages in examples.
+
 2008-07-29  David Bateman  <dbateman@free.fr>
 
 	* interpreter/numbers.txi, interpreter/plot.txi,

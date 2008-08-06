@@ -101,14 +101,17 @@ error.
 
 @example
 f ()
-     @print{} Invalid call to f.  Correct usage is:
-     @print{} 
+
+Invalid call to f.  Correct usage is:
+
      @print{}  -- Function File: f (ARG1)
+     @print{}      Function help text goes here...
      @print{} 
      @print{} 
      @print{} 
-     @print{} error: evaluating if command near line 6, column 3
-     @print{} error: called from `f' in file `/home/jwe/octave/f.m'
+     @print{} error: called from:
+     @print{} error:   print_usage at line -1, column -1
+     @print{} error:   /home/jwe/octave/f.m at line 7, column 5
 @end example
 
 @DOCSTRING(print_usage)

@@ -473,7 +473,7 @@ octave_call_stack::do_goto_base_frame (void)
 }
 
 void
-octave_call_stack::backtrace_error_message (void) const
+octave_call_stack::do_backtrace_error_message (void) const
 {
   if (error_state > 0)
     {

@@ -134,6 +134,9 @@ octave_user_script::do_multi_index_op (int nargout,
 
 		  if (tree_break_command::breaking)
 		    tree_break_command::breaking--;
+
+		  if (error_state)
+		    octave_call_stack::backtrace_error_message ();
 		}
 	      else
 		::error ("max_recursion_limit exceeded");
@@ -444,7 +447,10 @@ octave_user_function::do_multi_index_op (int nargout,
       tree_break_command::breaking--;
 
     if (error_state)
-      goto abort;
+      {
+	octave_call_stack::backtrace_error_message ();
+	goto abort;
+      }
     
     // Copy return values out.
 

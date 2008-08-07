@@ -250,7 +250,7 @@ a spreadsheet style range such as 'A2..Q15'. The lowest index value is zero.\n\
       while (getline (file, line))
 	{
 	  // Skip blank lines for compatibility.
-	  if (line.find_first_not_of (" \t") == std::string:npos)
+	  if (line.find_first_not_of (" \t") == std::string::npos)
 	    continue;
 
 	  // To be compatible with matlab, blank separator should
@@ -259,7 +259,7 @@ a spreadsheet style range such as 'A2..Q15'. The lowest index value is zero.\n\
 	    {
 	      size_t n = line.find_first_of (",:; \t", 
 					     line.find_first_of ("0123456789"));
-	      if (n == std::string:npos)
+	      if (n == std::string::npos)
 		{
 		  sep = " \t";
 		  sepflag = true;
@@ -291,7 +291,7 @@ a spreadsheet style range such as 'A2..Q15'. The lowest index value is zero.\n\
 	      size_t pos2 = line.find_first_of (sep, pos1);
 	      std::string str = line.substr (pos1, pos2 - pos1);
 
-	      if (sepflag && pos2 != std::string:npos)
+	      if (sepflag && pos2 != std::string::npos)
 		// Treat consecutive separators as one.
 		pos2 = line.find_first_not_of (sep, pos2) - 1;
 
@@ -338,13 +338,13 @@ a spreadsheet style range such as 'A2..Q15'. The lowest index value is zero.\n\
 	      else
 		rdata(i,j++) = 0.;
 
-	      if (pos2 != std::string:npos)
+	      if (pos2 != std::string::npos)
 		pos1 = pos2 + 1;
 	      else
-		pos1 = std::string:npos;
+		pos1 = std::string::npos;
 
 	    }
-	  while (pos1 != std::string:npos);
+	  while (pos1 != std::string::npos);
 
 	  if (nargin == 3 && i == maxrows)
 	    break;

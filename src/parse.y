@@ -2486,7 +2486,7 @@ frob_function (const std::string& fname, octave_user_function *fcn)
 
 	  size_t pos = nm.find_last_of (file_ops::dir_sep_chars ());
 
-	  if (pos != std::string:npos)
+	  if (pos != std::string::npos)
 	    nm = curr_fcn_file_name.substr (pos+1);
 
 	  if (nm != id_name)
@@ -3518,14 +3518,14 @@ of the file name and the extension.\n\
       size_t epos = fname.rfind ('.');
 
       if (epos <= dpos)
-        epos = std::string:npos;
+        epos = std::string::npos;
 
-      fname = (epos != std::string:npos) ? fname.substr (0, epos) : fname;
+      fname = (epos != std::string::npos) ? fname.substr (0, epos) : fname;
 
       if (arg == "fullpath")
 	retval = fname;
       else
-        retval = (dpos != std::string:npos) ? fname.substr (dpos+1) : fname;
+        retval = (dpos != std::string::npos) ? fname.substr (dpos+1) : fname;
     }
 
   return retval;

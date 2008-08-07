@@ -276,7 +276,7 @@ read_ascii_data (std::istream& is, const std::string& filename, bool& global,
       std::string typ;
       size_t pos = tag.rfind (' ');
 
-      if (pos != std::string:npos)
+      if (pos != std::string::npos)
 	{
 	  global = SUBSTRING_COMPARE_EQ (tag, 0, 6, "global");
 

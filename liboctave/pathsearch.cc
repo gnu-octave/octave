@@ -157,7 +157,7 @@ dir_path::init (void)
 			? p_orig : kpse_expand_default (p_orig, p_default));
 
   int count = 0;
-  for (kpse_path_iterator pi (p); pi != std::string:npos; pi++)
+  for (kpse_path_iterator pi (p); pi != std::string::npos; pi++)
     count++;
 
   pv.resize (count);

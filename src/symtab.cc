@@ -909,7 +909,7 @@ symbol_table::find_function (const std::string& name, tree_argument_list *args,
   octave_value retval;
   size_t pos = name.find_first_of (Vfilemarker);
 
-  if (pos == std::string:npos)
+  if (pos == std::string::npos)
     retval = find (name, args, arg_names, evaluated_args, args_evaluated, true);
   else
     {

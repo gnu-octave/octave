@@ -630,7 +630,7 @@ List script file with line numbers.\n\
 
 		  size_t ind = arg.find (':');
 
-		  if (ind != std::string:npos)
+		  if (ind != std::string::npos)
 		    {
 		      std::string start_str = arg.substr (0, ind);
 		      std::string end_str = arg.substr (ind + 1);
@@ -662,7 +662,7 @@ List script file with line numbers.\n\
 	      int end = 0;
 	      size_t ind = arg.find (':');
 
-	      if (ind != std::string:npos)
+	      if (ind != std::string::npos)
 		{
 		  std::string start_str = arg.substr (0, ind);
 		  std::string end_str = arg.substr (ind + 1);

@@ -221,7 +221,7 @@ octave_env::do_set_program_name (const std::string& s) const
   size_t pos
     = program_invocation_name.find_last_of (file_ops::dir_sep_chars ());
 
-  program_name = (pos == std::string:npos)
+  program_name = (pos == std::string::npos)
     ? program_invocation_name : program_invocation_name.substr (pos+1);
 }
 
@@ -305,7 +305,7 @@ octave_env::do_base_pathname (const std::string& s) const
 
   size_t pos = s.find_last_of (file_ops::dir_sep_chars ());
 
-  if (pos == std::string:npos)
+  if (pos == std::string::npos)
     return s;
   else
     return s.substr (pos+1);
@@ -370,7 +370,7 @@ octave_env::do_make_absolute (const std::string& s,
 
       size_t tmp = s.find_first_of (file_ops::dir_sep_chars (), i);
 
-      if (tmp == std::string:npos)
+      if (tmp == std::string::npos)
 	{
 	  current_dir.append (s, i, tmp-i);
 	  break;

@@ -743,12 +743,12 @@ looks_like_texinfo (const std::string& msg, size_t& p1)
 
   std::string t = msg.substr (0, p1);
 
-  if (p1 == std::string:npos)
+  if (p1 == std::string::npos)
     p1 = 0;
 
   size_t p2 = t.find ("-*- texinfo -*-");
 
-  return (p2 != std::string:npos);
+  return (p2 != std::string::npos);
 }
 
 void
@@ -855,7 +855,7 @@ display_usage_text (std::ostream& os, const std::string& msg)
 	{
 	  size_t new_pos = msg.find_first_of ('\n', pos);
 
-	  if (new_pos == std::string:npos)
+	  if (new_pos == std::string::npos)
 	    new_pos = msg_len-1;
 
 	  std::string line = msg.substr (pos, new_pos-pos+1);
@@ -1425,7 +1425,7 @@ first_help_sentence (const std::string& h, bool short_sentence = true)
 	  // Skip leading whitespace and get new line
 	  pos = h2.find_first_not_of ("\n\t ", pos);
 
-	  if (pos == std::string:npos)
+	  if (pos == std::string::npos)
 	    break;
 
 	  size_t new_pos = h2.find_first_of ('\n', pos);
@@ -1441,7 +1441,7 @@ first_help_sentence (const std::string& h, bool short_sentence = true)
 	  break;
 	}
 
-      if (pos == std::string:npos)
+      if (pos == std::string::npos)
 	return retval;
 
       // At start of real text. Get first line with the sentence
@@ -1449,14 +1449,14 @@ first_help_sentence (const std::string& h, bool short_sentence = true)
       std::string line = h2.substr (pos, new_pos-pos);
       size_t dot_pos;
 
-      while ((dot_pos = line.find_first_of ('.')) == std::string:npos)
+      while ((dot_pos = line.find_first_of ('.')) == std::string::npos)
 	{
 	  // Trim trailing blanks on line
 	  line.substr (0, line.find_last_not_of ("\n\t ") + 1);
 
 	  // Append next line
 	  size_t tmp_pos = h2.find_first_not_of ("\n\t ", new_pos + 1);
-	  if (tmp_pos == std::string:npos || h2.substr (tmp_pos, 1) == "\n")
+	  if (tmp_pos == std::string::npos || h2.substr (tmp_pos, 1) == "\n")
 	    break;
 
 	  new_pos = h2.find_first_of ('\n', tmp_pos);
@@ -1464,7 +1464,7 @@ first_help_sentence (const std::string& h, bool short_sentence = true)
 
 	  if (short_sentence)
 	    {
-	      if ((tmp_pos = next.find_first_of ('.')) != std::string:npos)
+	      if ((tmp_pos = next.find_first_of ('.')) != std::string::npos)
 		{
 		  line = line + " " + next;
 		  dot_pos = line.find_first_of ('.');
@@ -1475,7 +1475,7 @@ first_help_sentence (const std::string& h, bool short_sentence = true)
 	    line = line + " " + next;
 	}
 
-      if (dot_pos == std::string:npos)
+      if (dot_pos == std::string::npos)
 	retval = line;
       else
 	retval = line.substr (0, dot_pos + 1);
@@ -1493,7 +1493,7 @@ first_help_sentence (const std::string& h, bool short_sentence = true)
 	  // Skip leading whitespace and get new line
 	  pos = h.find_first_not_of ("\n\t ", pos);
 
-	  if (pos == std::string:npos)
+	  if (pos == std::string::npos)
 	    break;
 
 	  size_t new_pos = h.find_first_of ('\n', pos);
@@ -1507,7 +1507,7 @@ first_help_sentence (const std::string& h, bool short_sentence = true)
 	  if (lower.find_first_of ('-') == 0
 	      || lower.substr (0, 5) == "usage")
 	    {
-	      pos = (new_pos == std::string:npos ? std::string:npos : new_pos + 1);
+	      pos = (new_pos == std::string::npos ? std::string::npos : new_pos + 1);
 	      continue;
 	    }
 
@@ -1517,12 +1517,12 @@ first_help_sentence (const std::string& h, bool short_sentence = true)
 	  // chop " blah : "
 	  tmp_pos = line.find_first_not_of ("\t ", line.find_first_not_of 
 					     (_alphanum, line_pos));
-	  if (tmp_pos != std::string:npos && line.substr (tmp_pos, 1) == ":")
+	  if (tmp_pos != std::string::npos && line.substr (tmp_pos, 1) == ":")
 	    line_pos = line.find_first_not_of ("\t ", tmp_pos + 1);
 
-	  if (line_pos == std::string:npos)
+	  if (line_pos == std::string::npos)
 	    {
-	      pos = (new_pos == std::string:npos ? std::string:npos : new_pos + 1);
+	      pos = (new_pos == std::string::npos ? std::string::npos : new_pos + 1);
 	      continue;
 	    }
 
@@ -1530,9 +1530,9 @@ first_help_sentence (const std::string& h, bool short_sentence = true)
 	  if (lower.substr (line_pos, 8) == "function")
 	    line_pos =  line.find_first_not_of ("\t ", line_pos + 8);
 	  
-	  if (line_pos == std::string:npos)
+	  if (line_pos == std::string::npos)
 	    {
-	      pos = (new_pos == std::string:npos ? std::string:npos : new_pos + 1);
+	      pos = (new_pos == std::string::npos ? std::string::npos : new_pos + 1);
 	      continue;
 	    }
 
@@ -1542,13 +1542,13 @@ first_help_sentence (const std::string& h, bool short_sentence = true)
 	      tmp_pos = line.find_first_not_of 
 		("\t ", line.find_first_of ("]", line_pos) + 1);
 
-	      if (tmp_pos != std::string:npos && line.substr (tmp_pos, 1) == "=")
+	      if (tmp_pos != std::string::npos && line.substr (tmp_pos, 1) == "=")
 		line_pos = line.find_first_not_of ("\t ",tmp_pos + 1);
 	    }
 
-	  if (line_pos == std::string:npos)
+	  if (line_pos == std::string::npos)
 	    {
-	      pos = (new_pos == std::string:npos ? std::string:npos : new_pos + 1);
+	      pos = (new_pos == std::string::npos ? std::string::npos : new_pos + 1);
 	      continue;
 	    }
 
@@ -1557,11 +1557,11 @@ first_help_sentence (const std::string& h, bool short_sentence = true)
 	    {
 	      tmp_pos = line.find_first_not_of ("\t ", line.find_first_not_of 
 						(_alphanum, line_pos));
-	      if (tmp_pos != std::string:npos && line.substr (tmp_pos, 1) == "=")
+	      if (tmp_pos != std::string::npos && line.substr (tmp_pos, 1) == "=")
 		line_pos = line.find_first_not_of ("\t ", tmp_pos + 1);
 	    }
 
-	  if (line_pos == std::string:npos)
+	  if (line_pos == std::string::npos)
 	    {
 	      pos = new_pos + 1;
 	      continue;
@@ -1572,14 +1572,14 @@ first_help_sentence (const std::string& h, bool short_sentence = true)
 	    {
 	      tmp_pos = line.find_first_not_of ("\t ", line.find_first_not_of 
 						(_alphanum, line_pos));
-	      if (tmp_pos != std::string:npos && line.substr (tmp_pos, 1) == "(")
+	      if (tmp_pos != std::string::npos && line.substr (tmp_pos, 1) == "(")
 		line_pos = line.find_first_not_of ("\t ", line.find_first_of 
 						   (")", tmp_pos) + 1);
 	    }
 
-	  if (line_pos == std::string:npos)
+	  if (line_pos == std::string::npos)
 	    {
-	      pos = (new_pos == std::string:npos ? std::string:npos : new_pos + 1);
+	      pos = (new_pos == std::string::npos ? std::string::npos : new_pos + 1);
 	      continue;
 	    }
 
@@ -1588,9 +1588,9 @@ first_help_sentence (const std::string& h, bool short_sentence = true)
 	      || line.substr (line_pos, 1) == ";")
 	    line_pos = line.find_first_not_of ("\t ", line_pos + 1);
 
-	  if (line_pos == std::string:npos)
+	  if (line_pos == std::string::npos)
 	    {
-	      pos = (new_pos == std::string:npos ? std::string:npos : new_pos + 1);
+	      pos = (new_pos == std::string::npos ? std::string::npos : new_pos + 1);
 	      continue;
 	    }
 
@@ -1601,16 +1601,16 @@ first_help_sentence (const std::string& h, bool short_sentence = true)
 	    line_pos = line.find_first_not_of ("\t ", line.find_first_not_of 
 			(_upper + "0123456789_", line_pos));
 
-	  if (line_pos == std::string:npos)
+	  if (line_pos == std::string::npos)
 	    {
-	      pos = (new_pos == std::string:npos ? std::string:npos : new_pos + 1);
+	      pos = (new_pos == std::string::npos ? std::string::npos : new_pos + 1);
 	      continue;
 	    }
 
 	  // chop " blah --- "
 	  tmp_pos = line.find_first_not_of ("\t ", line.find_first_not_of 
 					     (_alphanum, line_pos));
-	  if (tmp_pos != std::string:npos && line.substr (tmp_pos, 1) == "-")
+	  if (tmp_pos != std::string::npos && line.substr (tmp_pos, 1) == "-")
 	    {
 	      tmp_pos = line.find_first_not_of ("-", tmp_pos);
 	      if (line.substr (tmp_pos, 1) == " "
@@ -1618,9 +1618,9 @@ first_help_sentence (const std::string& h, bool short_sentence = true)
 		line_pos = line.find_first_not_of ("\t ", tmp_pos);
 	    }
 
-	  if (line_pos == std::string:npos)
+	  if (line_pos == std::string::npos)
 	    {
-	      pos = (new_pos == std::string:npos ? std::string:npos : new_pos + 1);
+	      pos = (new_pos == std::string::npos ? std::string::npos : new_pos + 1);
 	      continue;
 	    }
 
@@ -1629,14 +1629,14 @@ first_help_sentence (const std::string& h, bool short_sentence = true)
 	    {
 	      tmp_pos = line.find_first_not_of (" ", line.find_first_not_of 
 						(_alphanum, line_pos));
-	      if (tmp_pos != std::string:npos && line.substr (tmp_pos, 1) == "\t")
+	      if (tmp_pos != std::string::npos && line.substr (tmp_pos, 1) == "\t")
 		line_pos = line.find_first_not_of ("\t ", line.find_first_of 
 						   (")", tmp_pos) + 1);
 	    }
 
-	  if (line_pos == std::string:npos)
+	  if (line_pos == std::string::npos)
 	    {
-	      pos = (new_pos == std::string:npos ? std::string:npos : new_pos + 1);
+	      pos = (new_pos == std::string::npos ? std::string::npos : new_pos + 1);
 	      continue;
 	    }
 
@@ -1645,7 +1645,7 @@ first_help_sentence (const std::string& h, bool short_sentence = true)
 	    {
 	      tmp_pos = line.find_first_not_of (_alphanum, line_pos);
 
-	      if (tmp_pos != std::string:npos
+	      if (tmp_pos != std::string::npos
 		  && (line.substr (tmp_pos, 2) == "\t\t"
 		      || line.substr (tmp_pos, 2) == "\t "
 		      || line.substr (tmp_pos, 2) == " \t"
@@ -1653,9 +1653,9 @@ first_help_sentence (const std::string& h, bool short_sentence = true)
 		line_pos = line.find_first_not_of ("\t ", tmp_pos);
 	    }
 
-	  if (line_pos == std::string:npos)
+	  if (line_pos == std::string::npos)
 	    {
-	      pos = (new_pos == std::string:npos ? std::string:npos : new_pos + 1);
+	      pos = (new_pos == std::string::npos ? std::string::npos : new_pos + 1);
 	      continue;
 	    }
 
@@ -1663,11 +1663,11 @@ first_help_sentence (const std::string& h, bool short_sentence = true)
 	  // skip blank line
 	  // skip "# !/usr/bin/octave"
 	  if ((line.substr (line_pos , 2) == "or"
-	       && line.find_first_not_of ("\n\t ", line_pos + 2) == std::string:npos)
-	      || line.find_first_not_of ("\n\t ", line_pos) == std::string:npos
+	       && line.find_first_not_of ("\n\t ", line_pos + 2) == std::string::npos)
+	      || line.find_first_not_of ("\n\t ", line_pos) == std::string::npos
 	      || line.substr (line_pos, 2) == "!/")
 	    {
-	      pos = (new_pos == std::string:npos ? std::string:npos : new_pos + 1);
+	      pos = (new_pos == std::string::npos ? std::string::npos : new_pos + 1);
 	      continue;
 	    }
 
@@ -1676,7 +1676,7 @@ first_help_sentence (const std::string& h, bool short_sentence = true)
 	  break;
 	}
 
-      if (pos == std::string:npos)
+      if (pos == std::string::npos)
 	return retval;
 
       // At start of real text. Get first line with the sentence
@@ -1684,14 +1684,14 @@ first_help_sentence (const std::string& h, bool short_sentence = true)
       std::string line = h.substr (pos, new_pos-pos);
       size_t dot_pos;
 
-      while ((dot_pos = line.find_first_of ('.')) == std::string:npos)
+      while ((dot_pos = line.find_first_of ('.')) == std::string::npos)
 	{
 	  // Trim trailing blanks on line
 	  line = line.substr (0, line.find_last_not_of ("\n\t ") + 1);
 
 	  // Append next line
 	  size_t tmp_pos = h.find_first_not_of ("\t ", new_pos + 1);
-	  if (tmp_pos == std::string:npos || h.substr (tmp_pos, 1) == "\n")
+	  if (tmp_pos == std::string::npos || h.substr (tmp_pos, 1) == "\n")
 	    break;
 
 	  new_pos = h.find_first_of ('\n', tmp_pos);
@@ -1700,7 +1700,7 @@ first_help_sentence (const std::string& h, bool short_sentence = true)
 	  if (short_sentence)
 	    {
 	      // Only add the next line if it terminates the sentence, then break
-	      if ((tmp_pos = next.find_first_of ('.')) != std::string:npos)
+	      if ((tmp_pos = next.find_first_of ('.')) != std::string::npos)
 		{
 		  line = line + " " + next;
 		  dot_pos = line.find_first_of ('.');
@@ -1711,7 +1711,7 @@ first_help_sentence (const std::string& h, bool short_sentence = true)
 	    line = line + " " + next;
 	}
 
-      if (dot_pos == std::string:npos)
+      if (dot_pos == std::string::npos)
 	retval = line;
       else
 	retval = line.substr (0, dot_pos + 1);
@@ -1750,9 +1750,9 @@ print_lookfor (const std::string& name, const std::string& line)
       size_t end_pos = new_pos;
 
       if (line.length () - pos < width)
-	new_pos = end_pos = std::string:npos;
+	new_pos = end_pos = std::string::npos;
       else
-	while (new_pos != std::string:npos && new_pos - pos < width)
+	while (new_pos != std::string::npos && new_pos - pos < width)
 	  {
 	    end_pos = new_pos;
 	    new_pos = line.find_first_of ("\n\t ", new_pos + 1);
@@ -1760,7 +1760,7 @@ print_lookfor (const std::string& name, const std::string& line)
 
       octave_stdout << line.substr (pos, end_pos-pos) << std::endl;
 		  
-      if (end_pos == std::string:npos)
+      if (end_pos == std::string::npos)
 	break;
 
       pos = end_pos + 1;
@@ -1849,7 +1849,7 @@ to find related functions that are not part of Octave.\n\
 	  std::string name = ptr->name;
 	  std::string h = ptr->help;
 
-	  if (name.find (txt) != std::string:npos)
+	  if (name.find (txt) != std::string::npos)
 	    {
 	      if (nargout)
 		{
@@ -1870,7 +1870,7 @@ to find related functions that are not part of Octave.\n\
 	      
 	      std::transform (s.begin (), s.end (), s.begin (), tolower);
 
-	      if (s.length () > 0 && s.find (txt) != std::string:npos)
+	      if (s.length () > 0 && s.find (txt) != std::string::npos)
 		{
 		  if (nargout)
 		    {
@@ -1893,7 +1893,7 @@ to find related functions that are not part of Octave.\n\
 	  std::string name = ptr->name;
 	  std::string h = ptr->help;
 
-	  if (name.find (txt) != std::string:npos)
+	  if (name.find (txt) != std::string::npos)
 	    {
 	      if (nargout)
 		{
@@ -1913,7 +1913,7 @@ to find related functions that are not part of Octave.\n\
 	      
 	      std::transform (s.begin (), s.end (), s.begin (), tolower);
 
-	      if (s.length () > 0 && s.find (txt) != std::string:npos)
+	      if (s.length () > 0 && s.find (txt) != std::string::npos)
 		{
 		  if (nargout)
 		    {
@@ -1948,7 +1948,7 @@ to find related functions that are not part of Octave.\n\
 	    {
 	      std::string h = sr->help ();
 
-	      if (name.find (txt) != std::string:npos)
+	      if (name.find (txt) != std::string::npos)
 		{
 		  if (nargout)
 		    {
@@ -1969,7 +1969,7 @@ to find related functions that are not part of Octave.\n\
 	      
 		  std::transform (s.begin (), s.end (), s.begin (), tolower);
 
-		  if (s.length () > 0 && s.find (txt) != std::string:npos)
+		  if (s.length () > 0 && s.find (txt) != std::string::npos)
 		    {
 		      if (nargout)
 			{
@@ -2041,7 +2041,7 @@ to find related functions that are not part of Octave.\n\
 			  else
 			    h = get_help_from_file (file_name, symbol_found);
 
-			  if (name.find (txt) != std::string:npos)
+			  if (name.find (txt) != std::string::npos)
 			    {
 			      if (nargout)
 				{
@@ -2061,7 +2061,7 @@ to find related functions that are not part of Octave.\n\
 
 			      std::transform (s.begin (), s.end (), s.begin (), tolower);
 
-			      if (s.length () > 0 && s.find (txt) != std::string:npos)
+			      if (s.length () > 0 && s.find (txt) != std::string::npos)
 				{
 				  if (nargout)
 				    {
@@ -2100,7 +2100,7 @@ to find related functions that are not part of Octave.\n\
 			      if (sr && sr->is_defined ())
 				h = sr->help ();
 
-			      if (aname.find (txt) != std::string:npos)
+			      if (aname.find (txt) != std::string::npos)
 				{
 				  if (nargout)
 				    {
@@ -2121,7 +2121,7 @@ to find related functions that are not part of Octave.\n\
 				  std::transform (s.begin (), s.end (), s.begin (), 
 					     tolower);
 
-				  if (s.length () > 0 && s.find (txt) != std::string:npos)
+				  if (s.length () > 0 && s.find (txt) != std::string::npos)
 				    {
 				      if (nargout)
 					{

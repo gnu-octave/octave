@@ -438,7 +438,7 @@ fcn_file_in_path (const std::string& name)
 	{
 	  std::string fname = name;
 	  size_t pos = name.find_first_of (Vfilemarker);
-	  if (pos != std::string:npos)
+	  if (pos != std::string::npos)
 	    fname = name.substr (0, pos);
 
 	  retval = load_path::find_fcn_file (fname);

@@ -138,7 +138,7 @@ w32_set_octave_home (void)
     {
       size_t pos = bin_dir.rfind ("\\bin\\");
 
-      if (pos != std::string:npos)
+      if (pos != std::string::npos)
 	octave_env::putenv ("OCTAVE_HOME", bin_dir.substr (0, pos));
     }
 }

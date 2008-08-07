@@ -446,7 +446,7 @@ execute_command_line_file (const std::string& fname)
 
   size_t pos = curr_fcn_file_name.find_last_of (file_ops::dir_sep_chars ());
   
-  std::string tmp = (pos != std::string:npos)
+  std::string tmp = (pos != std::string::npos)
     ? curr_fcn_file_name.substr (pos+1) : curr_fcn_file_name;
 
   octave_program_name = tmp;

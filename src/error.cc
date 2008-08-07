@@ -1014,7 +1014,7 @@ error: nargin != 1\n\
 
       if (! error_state)
 	{
-	  if (arg1.find ('%') == std::string:npos)
+	  if (arg1.find ('%') == std::string::npos)
 	    {
 	      id = arg1;
 
@@ -1338,7 +1338,7 @@ warning named by @var{id} is handled as if it were an error instead.\n\
 
 	  if (! error_state)
 	    {
-	      if (arg1.find ('%') == std::string:npos)
+	      if (arg1.find ('%') == std::string::npos)
 		{
 		  id = arg1;
 

@@ -59,21 +59,6 @@ fi
 AC_SUBST(ARFLAGS)
 ])
 dnl
-dnl See if the standard string class has npos as a member.
-dnl
-AC_DEFUN(OCTAVE_STRING_NPOS,
-[AC_CACHE_CHECK([whether including <string> defines NPOS],
-octave_cv_string_npos,
-[AC_LANG_PUSH(C++)
-AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <string>]],
-[[size_t foo = NPOS]])],
-octave_cv_string_npos=yes, octave_cv_string_npos=no)])
-if test $octave_cv_string_npos = no; then
-  AC_DEFINE(NPOS, [std::string::npos], [Define (to string::npos) if <string> doesn't])
-fi
-AC_LANG_POP(C++)
-])
-dnl
 dnl See if the compiler supports placement delete
 dnl
 AC_DEFUN(OCTAVE_PLACEMENT_DELETE,

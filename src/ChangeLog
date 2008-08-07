@@ -1,5 +1,12 @@
 2008-08-07  John W. Eaton  <jwe@octave.org>
 
+	* Cell.cc, DLD-FUNCTIONS/regexp.cc, DLD-FUNCTIONS/dlmread.cc,
+	debug.cc, error.cc, file-io.cc, graphics.cc, help.cc, input.cc,
+	lex.l, load-path.cc, load-save.cc, ls-mat-ascii.cc,
+	ls-oct-ascii.cc, oct-stream.cc, octave.cc, variables.cc,
+	ov-fcn-handle.cc, parse.y, pr-output.cc, symtab.cc, sysdep.cc,
+	utils.cc: Replace all uses of NPOS with std::string::npos.
+
 	* ov.cc (octave_value::idx_type_value): Move definition here.
 	* ov.h: From here.
 

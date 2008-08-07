@@ -4576,7 +4576,7 @@ Undocumented internal function.\n\
 		{
 		  size_t pos = file.find_last_of (file_ops::dir_sep_chars ());
 
-		  if (pos != NPOS)
+		  if (pos != std::string:npos)
 		    {
 		      file_stat fs (file.substr (0, pos));
 

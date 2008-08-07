@@ -150,7 +150,7 @@ fopen_mode_to_ios_mode (const std::string& mode_arg)
 
       size_t pos = mode.find ('W');
 
-      if (pos != NPOS)
+      if (pos != std::string:npos)
 	{
 	  warning ("fopen: treating mode \"W\" as equivalent to \"w\"");
 	  mode[pos] = 'w';
@@ -158,7 +158,7 @@ fopen_mode_to_ios_mode (const std::string& mode_arg)
 
       pos = mode.find ('R');
 
-      if (pos != NPOS)
+      if (pos != std::string:npos)
 	{
 	  warning ("fopen: treating mode \"R\" as equivalent to \"r\"");
 	  mode[pos] = 'r';
@@ -166,7 +166,7 @@ fopen_mode_to_ios_mode (const std::string& mode_arg)
 
       pos = mode.find ('z');
 
-      if (pos != NPOS)
+      if (pos != std::string:npos)
 	{
 #if defined (HAVE_ZLIB)
 	  mode.erase (pos, 1);
@@ -444,13 +444,13 @@ do_stream_open (const std::string& name, const std::string& mode,
 	      size_t bpos = tmode.find ('b');
 	      size_t tpos = tmode.find ('t');
 
-	      if (bpos == NPOS && tpos == NPOS)
+	      if (bpos == std::string:npos && tpos == std::string:npos)
 		tmode += 'b';
 
 #if defined (HAVE_ZLIB)
 	      size_t pos = tmode.find ('z');
 
-	      if (pos != NPOS)
+	      if (pos != std::string:npos)
 		{
 		  tmode.erase (pos, 1);
 

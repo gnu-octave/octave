@@ -130,7 +130,7 @@ load_path::dir_info::get_file_list (const std::string& d)
 
 		  size_t pos = fname.rfind ('.');
 
-		  if (pos != NPOS)
+		  if (pos != std::string:npos)
 		    {
 		      std::string ext = fname.substr (pos);
 
@@ -178,7 +178,7 @@ get_fcn_files (const std::string& d)
 
 	  size_t pos = fname.rfind ('.');
 
-	  if (pos != NPOS)
+	  if (pos != std::string:npos)
 	    {
 	      base = fname.substr (0, pos);
 	      ext = fname.substr (pos);
@@ -306,7 +306,7 @@ load_path::move_fcn_map (const std::string& dir_name,
 
       size_t pos = fname.rfind ('.');
 
-      if (pos != NPOS)
+      if (pos != std::string:npos)
 	{
 	  base = fname.substr (0, pos);
 	  ext = fname.substr (pos);
@@ -477,7 +477,7 @@ split_path (const std::string& p)
 
   size_t len = p.length ();
 
-  while (end != NPOS)
+  while (end != std::string:npos)
     {
       std::string elt = p.substr (beg, end-beg);
 
@@ -622,7 +622,7 @@ load_path::remove_fcn_map (const std::string& dir,
 
       size_t pos = fname.rfind ('.');
 
-      if (pos != NPOS)
+      if (pos != std::string:npos)
 	{
 	  base = fname.substr (0, pos);
 	  ext = fname.substr (pos);
@@ -1007,7 +1007,7 @@ load_path::do_find_file (const std::string& file) const
 {
   std::string retval;
 
-  if (file.find_first_of (file_ops::dir_sep_chars ()) != NPOS)
+  if (file.find_first_of (file_ops::dir_sep_chars ()) != std::string:npos)
     {
       if (octave_env::absolute_pathname (file)
 	  || octave_env::rooted_relative_pathname (file))
@@ -1445,7 +1445,7 @@ load_path::add_to_fcn_map (const dir_info& di, bool at_end) const
 
       size_t pos = fname.rfind ('.');
 
-      if (pos != NPOS)
+      if (pos != std::string:npos)
 	{
 	  base = fname.substr (0, pos);
 	  ext = fname.substr (pos);

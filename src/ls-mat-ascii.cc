@@ -130,26 +130,26 @@ get_lines_and_columns (std::istream& is, const std::string& filename, octave_idx
       // CRLF pair as the line separator.  Any other CR in the text
       // will not be considered as whitespace.
 
-      if (beg != NPOS && buf[beg] == '\r' && beg == buf.length () - 1)
+      if (beg != std::string:npos && buf[beg] == '\r' && beg == buf.length () - 1)
 	{
 	  // We had a blank line ending with a CRLF.  Handle it the
 	  // same as an empty line.
-	  beg = NPOS;
+	  beg = std::string:npos;
 	}
 
       octave_idx_type tmp_nc = 0;
 
-      while (beg != NPOS)
+      while (beg != std::string:npos)
 	{
 	  tmp_nc++;
 
 	  size_t end = buf.find_first_of (", \t", beg);
 
-	  if (end != NPOS)
+	  if (end != std::string:npos)
 	    {
 	      beg = buf.find_first_not_of (", \t", end);
 
-	      if (beg == NPOS || (buf[beg] == '\r' && 
+	      if (beg == std::string:npos || (buf[beg] == '\r' && 
 				  beg == buf.length () - 1))
 		{
 		  // We had a line with trailing spaces and
@@ -205,14 +205,14 @@ read_mat_ascii_data (std::istream& is, const std::string& filename,
 
   size_t pos = filename.rfind ('/');
 
-  if (pos != NPOS)
+  if (pos != std::string:npos)
     varname = filename.substr (pos+1);
   else
     varname = filename;
 
   pos = varname.rfind ('.');
 
-  if (pos != NPOS)
+  if (pos != std::string:npos)
     varname = varname.substr (0, pos);
 
   size_t len = varname.length ();

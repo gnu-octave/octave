@@ -449,7 +449,7 @@ private:
       if (e == len)
 	; /* OK, we have found the last element.  */
       else if (e > len)
-	b = e = NPOS;
+	b = e = std::string:npos;
       else
 	{
 	  /* Find the next colon not enclosed by braces (or the end of
@@ -470,7 +470,7 @@ private:
 	b++;
 
       if (b >= len)
-	b = e = NPOS;
+	b = e = std::string:npos;
       else
 	set_end ();
     }
@@ -758,7 +758,7 @@ path_search (const std::string& path, const std::string& name,
   string_vector ret_list;
   bool done = false;
 
-  for (kpse_path_iterator pi (path); ! done && pi != NPOS; pi++)
+  for (kpse_path_iterator pi (path); ! done && pi != std::string:npos; pi++)
     {
       std::string elt = *pi;
 
@@ -935,7 +935,7 @@ path_find_first_of (const std::string& path, const string_vector& names,
   string_vector ret_list;
   bool done = false;
 
-  for (kpse_path_iterator pi (path); ! done && pi != NPOS; pi++)
+  for (kpse_path_iterator pi (path); ! done && pi != std::string:npos; pi++)
     {
       std::string elt = *pi;
 
@@ -1267,7 +1267,7 @@ kpse_expand_kpse_dot (const std::string& path)
   if (kpse_dot.empty ())
     return path;
 
-  for (kpse_path_iterator pi (path); pi != NPOS; pi++)
+  for (kpse_path_iterator pi (path); pi != std::string:npos; pi++)
     {
       std::string elt = *pi;
 
@@ -1347,7 +1347,7 @@ kpse_brace_expand (const std::string& path)
 
   std::string ret;
 
-  for (kpse_path_iterator pi (tmp); pi != NPOS; pi++)
+  for (kpse_path_iterator pi (tmp); pi != std::string:npos; pi++)
     {
       std::string elt = *pi;
 
@@ -1383,7 +1383,7 @@ kpse_path_expand (const std::string& path)
   std::string tmp = kpse_brace_expand (path);
 
   /* Now expand each of the path elements, printing the results */
-  for (kpse_path_iterator pi (tmp); pi != NPOS; pi++)
+  for (kpse_path_iterator pi (tmp); pi != std::string:npos; pi++)
     {
       std::string elt = *pi;
 
@@ -1846,7 +1846,7 @@ kpse_db_search (const std::string& name_arg,
      should never happen.  */
   std::string path_elt;
   size_t last_slash = name.rfind ('/');
-  if (last_slash != NPOS && last_slash != 0)
+  if (last_slash != std::string:npos && last_slash != 0)
     {
       std::string dir_part = name.substr (0, last_slash);
       name = name.substr (last_slash + 1);

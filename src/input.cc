@@ -272,7 +272,8 @@ octave_gets (void)
 
       // There is no need to update the load_path cache if there is no
       // user input.
-      if (! retval.empty () && retval.find_first_not_of (" \t\n\r") != NPOS)
+      if (! retval.empty ()
+	  && retval.find_first_not_of (" \t\n\r") != std::string:npos)
 	load_path::update ();
     }
   else

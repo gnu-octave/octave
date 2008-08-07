@@ -89,7 +89,7 @@ public:
   static bool is_dir_sep (char c)
   {
     std::string tmp = dir_sep_chars ();
-    return tmp.find (c) != NPOS;
+    return tmp.find (c) != std::string::npos;
   }
 
   static std::string concat (const std::string&, const std::string&);

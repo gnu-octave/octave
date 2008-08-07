@@ -507,7 +507,8 @@ find_file_to_load (const std::string& name, const std::string& orig_name)
   size_t dot_pos = fname.rfind (".");
   size_t sep_pos = fname.find_last_of (file_ops::dir_sep_chars ());
     
-  if (dot_pos == NPOS || (sep_pos != NPOS && dot_pos < sep_pos))
+  if (dot_pos == std::string:npos
+      || (sep_pos != std::string:npos && dot_pos < sep_pos))
     {
       // Either no '.' in name or no '.' appears after last directory
       // separator.

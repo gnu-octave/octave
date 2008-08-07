@@ -2802,7 +2802,7 @@ representing the elements of @var{x}. By default @var{len} is 9.\n\
 		{
 		  size_t m = s.find ('\n',  n);
 
-		  if (m == NPOS)
+		  if (m == std::string:npos)
 		    {
 		      lst.push_back (s.substr (n));
 		      break;

@@ -1371,7 +1371,7 @@ command_editor::do_decode_prompt_string (const std::string& s)
 		      {
 			size_t pos = temp.rfind ('/');
 
-			if (pos != NPOS && pos != 0)
+			if (pos != std::string:npos && pos != 0)
 			  temp = temp.substr (pos + 1);
 		      }
 		  }
@@ -1401,7 +1401,7 @@ command_editor::do_decode_prompt_string (const std::string& s)
 
 		size_t pos = temp.find ('.');
 
-		if (pos != NPOS)
+		if (pos != std::string:npos)
 		  temp.resize (pos);
 		
 		goto add_string;

@@ -1558,14 +1558,14 @@ do_scanf_conv (std::istream&, const scanf_format_elt&, double*,
         { \
 	  int chars_read = 0; \
 	  while (is && chars_read++ < width && (c = is.get ()) != EOF \
-	         && char_class.find (c) != NPOS) \
+	         && char_class.find (c) != std::string:npos) \
 	    buf << static_cast<char> (c); \
 	} \
       else \
 	{ \
 	  int chars_read = 0; \
 	  while (is && chars_read++ < width && (c = is.get ()) != EOF \
-	         && char_class.find (c) == NPOS) \
+	         && char_class.find (c) == std::string:npos) \
 	    buf << static_cast<char> (c); \
 	} \
  \
@@ -2602,7 +2602,7 @@ octave_base_stream::do_printf (printf_format_list& fmt_list,
 			  tfmt.replace ((i1 = tfmt.rfind (elt->type)),
 					1, 1, 's');
 
-			  if ((i2 = tfmt.rfind ('.')) != NPOS && i2 < i1)
+			  if ((i2 = tfmt.rfind ('.')) != std::string:npos && i2 < i1)
 			    {
 			      tfmt.erase (i2, i1-i2);
 			      if (elt->prec < 0)

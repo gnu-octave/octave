@@ -468,7 +468,7 @@ get_struct_elts (const std::string& text)
 
   size_t len = text.length ();
 
-  while ((pos = text.find ('.', pos)) != NPOS)
+  while ((pos = text.find ('.', pos)) != std::string:npos)
     {
       if (++pos == len)
 	break;
@@ -484,12 +484,12 @@ get_struct_elts (const std::string& text)
     {
       len = text.find ('.', pos);
 
-      if (len != NPOS)
+      if (len != std::string:npos)
 	len -= pos;
 
       retval[i] = text.substr (pos, len);
 
-      if (len != NPOS)
+      if (len != std::string:npos)
 	pos += len + 1;
     }
 
@@ -519,7 +519,7 @@ generate_struct_completions (const std::string& text,
 
   size_t pos = text.rfind ('.');
 
-  if (pos != NPOS)
+  if (pos != std::string:npos)
     {
       if (pos == text.length ())
 	hint = "";
@@ -532,7 +532,7 @@ generate_struct_completions (const std::string& text,
 
       pos = base_name.find_first_of ("{(.");
 
-      if (pos != NPOS)
+      if (pos != std::string:npos)
 	base_name = base_name.substr (0, pos);
 
       if (is_variable (base_name))
@@ -570,9 +570,9 @@ looks_like_struct (const std::string& text)
 {
   bool retval = (! text.empty ()
 		 && text != "."
-		 && text.find_first_of (file_ops::dir_sep_chars ()) == NPOS
-		 && text.find ("..") == NPOS
-		 && text.rfind ('.') != NPOS);
+		 && text.find_first_of (file_ops::dir_sep_chars ()) == std::string:npos
+		 && text.find ("..") == std::string:npos
+		 && text.rfind ('.') != std::string:npos);
 
 #if 0
   symbol_record *sr = curr_sym_tab->lookup (text);
@@ -660,7 +660,7 @@ symbol_exist (const std::string& name, const std::string& type)
 
   size_t pos = name.find ('.');
 
-  if (pos != NPOS && pos > 0)
+  if (pos != std::string:npos && pos > 0)
     {
       struct_elts = name.substr (pos+1);
       symbol_name = name.substr (0, pos);
@@ -1493,7 +1493,7 @@ public:
 	    // Parse one command from whos_line_format
 	    cmd = Vwhos_line_format.substr (idx, Vwhos_line_format.length ());
 	    pos = cmd.find (';');
-	    if (pos != NPOS)
+	    if (pos != std::string:npos)
 	      cmd = cmd.substr (0, pos+1);
 	    else
 	      error ("parameter without ; in whos_line_format");
@@ -1519,7 +1519,7 @@ public:
 	    // Insert data into parameter
 	    param.first_parameter_length = 0;
 	    pos = param_string.find (param.command);
-	    if (pos != NPOS)
+	    if (pos != std::string:npos)
 	      {
 		param.parameter_length = param_length(pos);
 		param.text = param_names(pos);
@@ -1610,7 +1610,7 @@ public:
 	    size_t pos;
 	    text = Vwhos_line_format.substr (idx, Vwhos_line_format.length ());
 	    pos = text.find ('%');
-	    if (pos != NPOS)
+	    if (pos != std::string:npos)
 	      text = text.substr (0, pos);
 
 	    // Push parameter into list ...
@@ -1696,7 +1696,7 @@ do_who (int argc, const string_vector& argv, bool return_list,
 	{
 	  size_t pos = pat.find_first_of (".({");
 
-	  if (pos != NPOS && pos > 0)
+	  if (pos != std::string:npos && pos > 0)
 	    {
 	      if (verbose)
 		{

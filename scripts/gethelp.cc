@@ -27,10 +27,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 #include <iostream>
 
-#ifndef NPOS
-#define NPOS std::string::npos
-#endif
-
 static bool
 looks_like_octave_copyright (const std::string& s)
 {

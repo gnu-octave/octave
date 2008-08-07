@@ -47,7 +47,7 @@ Cell::Cell (const string_vector& sv, bool trim)
 	    {
 	      size_t pos = s.find_last_not_of (' ');
 
-	      s = (pos == NPOS) ? "" : s.substr (0, pos+1);
+	      s = (pos == std::string:npos) ? "" : s.substr (0, pos+1);
 	    }
 
 	  elem(i,0) = s;
@@ -77,7 +77,7 @@ Cell::Cell (const dim_vector& dv, const string_vector& sv, bool trim)
 	    {
 	      size_t pos = s.find_last_not_of (' ');
 
-	      s = (pos == NPOS) ? "" : s.substr (0, pos+1);
+	      s = (pos == std::string:npos) ? "" : s.substr (0, pos+1);
 	    }
 
 	  elem(i) = s;

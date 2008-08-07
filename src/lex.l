@@ -1716,7 +1716,7 @@ strip_trailing_whitespace (char *s)
 
   size_t pos = retval.find_first_of (" \t");
 
-  if (pos != NPOS)
+  if (pos != std::string:npos)
     retval.resize (pos);
 
   return retval;

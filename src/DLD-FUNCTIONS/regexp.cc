@@ -204,11 +204,11 @@ octregexp_list (const octave_value_list &args, const std::string &nm,
       std::ostringstream buf;
       Array<int> named_idx;
 
-      while ((new_pos = pattern.find ("(?<",pos)) != NPOS)
+      while ((new_pos = pattern.find ("(?<",pos)) != std::string:npos)
 	{
 	  size_t tmp_pos = pattern.find_first_of ('>',new_pos);
 
-	  if (tmp_pos == NPOS)
+	  if (tmp_pos == std::string:npos)
 	    {
 	      error ("syntax error in pattern");
 	      break;

@@ -1,5 +1,8 @@
 2008-08-07  John W. Eaton  <jwe@octave.org>
 
+	* cmd-edit.cc, file-ops.h, kpse.cc, oct-env.cc, pathsearch.cc:
+	Replace all uses of NPOS with std::string::npos.
+
 	* fCmplxLU.h, CmplxLU.h: Fix typo in definition of
 	multiple-inclusion guard macro.
 

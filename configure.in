@@ -1366,10 +1366,6 @@ AC_CHECK_SIZEOF(long long)
 AC_FUNC_ALLOCA
 AC_C_CONST
 
-### See if we should define NPOS.
-
-OCTAVE_STRING_NPOS
-
 ### See if we should use placement delete.
 
 OCTAVE_PLACEMENT_DELETE

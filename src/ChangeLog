@@ -1,5 +1,7 @@
 2008-08-07  John W. Eaton  <jwe@octave.org>
 
+	* src/glrender.h, src/zfstream.h: Don't include config.h.
+
 	* oct-errno.h: Include <cerrno>.
 
 	* Cell.cc, DLD-FUNCTIONS/regexp.cc, DLD-FUNCTIONS/dlmread.cc,

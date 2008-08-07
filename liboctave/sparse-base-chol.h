@@ -24,10 +24,6 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_sparse_base_chol_h)
 #define octave_sparse_base_chol_h 1
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #include "oct-sparse.h"
 #include "dColVector.h"
 

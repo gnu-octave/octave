@@ -33,10 +33,6 @@ along with Octave; see the file COPYING.  If not, see
 #ifndef ZFSTREAM_H
 #define ZFSTREAM_H
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #ifdef HAVE_ZLIB
 
 #include <istream>  // not iostream, since we don't need cin/cout

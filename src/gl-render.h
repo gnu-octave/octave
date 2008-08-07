@@ -23,8 +23,6 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (gl_render_h)
 #define gl_render_h 1
 
-#include "config.h"
-
 #ifdef HAVE_WINDOWS_H
 #include <windows.h>
 #endif

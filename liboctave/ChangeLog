@@ -1,5 +1,7 @@
 2008-08-07  John W. Eaton  <jwe@octave.org>
 
+	* sprse-base-chol.h, oct-sparse.h: Don't include config.h.
+
 	* cmd-edit.cc, file-ops.h, kpse.cc, oct-env.cc, pathsearch.cc:
 	Replace all uses of NPOS with std::string::npos.
 

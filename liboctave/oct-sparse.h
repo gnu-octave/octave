@@ -23,10 +23,6 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (oct_sparse_h)
 #define oct_sparse_h 1
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #if defined (HAVE_SUITESPARSE_AMD_H)
 #include <suitesparse/amd.h>
 #elif defined (HAVE_UFSPARSE_AMD_H)

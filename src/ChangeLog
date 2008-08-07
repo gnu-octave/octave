@@ -1,5 +1,8 @@
 2008-08-07  John W. Eaton  <jwe@octave.org>
 
+	* ov.cc (octave_value::idx_type_value): Move definition here.
+	* ov.h: From here.
+
 	* DLD-FUNCTIONS/fsolve.cc (override_options): Don't fail if
 	options_map does not contain an expected keyword.
 	Fix typo in warning identifier.

@@ -1227,6 +1227,22 @@ octave_value::cell_value (void) const
   return rep->cell_value ();
 }
 
+// Define the idx_type_value function here instead of in ov.h to avoid
+// needing definitions for the SIZEOF_X macros in ov.h.
+
+octave_idx_type
+octave_value::idx_type_value (bool req_int = false,
+			      bool frc_str_conv = false) const
+{
+#if SIZEOF_OCTAVE_IDX_TYPE == SIZEOF_LONG
+  return long_value (req_int, frc_str_conv);
+#elif SIZEOF_OCTAVE_IDX_TYPE == SIZEOF_INT
+  return int_value (req_int, frc_str_conv);
+#else
+#error "no octave_value extractor for octave_idx_type"
+#endif
+}
+
 Octave_map
 octave_value::map_value (void) const
 {

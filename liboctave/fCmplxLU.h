@@ -22,7 +22,7 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 #if !defined (octave_FloatComplexLU_h)
-#define octave_FloatComplex_LU_h 1
+#define octave_FloatComplexLU_h 1
 
 #include "base-lu.h"
 #include "dMatrix.h"

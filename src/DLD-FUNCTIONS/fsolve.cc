@@ -209,28 +209,28 @@ make_unimplemented_options (void)
     {
       initialized = true;
 
-      options.insert ("largescale");
-      options.insert ("derivativecheck");
-      options.insert ("diagnostics");
-      options.insert ("diffmaxchange");
-      options.insert ("diffminchange");
-      options.insert ("display");
-      options.insert ("funvalcheck");
-      options.insert ("jacobian");
-      options.insert ("maxfunevals");
-      options.insert ("maxiter");
-      options.insert ("outputfcn");
-      options.insert ("plotfcns");
-      options.insert ("tolfun");
-      options.insert ("tolx");
-      options.insert ("typicalx");
-      options.insert ("jacobmult");
-      options.insert ("jacobpattern");
-      options.insert ("maxpcgiter");
-      options.insert ("precondbandwidth");
-      options.insert ("tolpcg");
-      options.insert ("nonleqnalgorithm");
-      options.insert ("linesearchtype");
+      options.insert ("Largescale");
+      options.insert ("DerivativeCheck");
+      options.insert ("Diagnostics");
+      options.insert ("DiffMaxChange");
+      options.insert ("DiffMinChange");
+      options.insert ("Display");
+      options.insert ("FunValCheck");
+      options.insert ("Jacobian");
+      options.insert ("MaxFunEvals");
+      options.insert ("MaxIter");
+      options.insert ("OutputFcn");
+      options.insert ("PlotFcns");
+      options.insert ("TolFun");
+      options.insert ("TolX");
+      options.insert ("TypicalX");
+      options.insert ("JacobMult");
+      options.insert ("JacobPattern");
+      options.insert ("MaxPCGIter");
+      options.insert ("PrecondBandwidth");
+      options.insert ("TolPCG");
+      options.insert ("NonlEqnAlgorithm");
+      options.insert ("LineSearchType");
     }
 
   return options;
@@ -244,35 +244,12 @@ override_options (NLEqn_options& opts, const Octave_map& option_map)
   for (octave_idx_type i = 0; i < keys.length (); i++)
     {
       std::string key = keys(i);
-      std::transform (key.begin (), key.end (), key.begin (), tolower);
 
-      if (key == "tolx")
+      // FIXME -- we should be using case-insensitive comparisons.
+
+      if (key == "TolX")
 	{
-	  Cell c = option_map.contents (key);
-
-	  if (c.numel () == 1)
-	    {
-	      octave_value val = c(0);
-
-	      if (! val.is_empty ())
-		{
-		  double dval = val.double_value ();
-
-		  if (! error_state)
-		    opts.set_tolerance (dval);
-		  else
-		    gripe_wrong_type_arg ("fsolve", val);
-		}
-	    }
-	  else
-	    error ("fsolve: invalid value for %s option", key.c_str ());
-	}
-      else
-	{
-	  static std::set<std::string> unimplemented_options
-	    = make_unimplemented_options ();
-
-	  if (unimplemented_options.find (key) != unimplemented_options.end ())
+	  if (option_map.contains (key))
 	    {
 	      Cell c = option_map.contents (key);
 
@@ -281,9 +258,39 @@ override_options (NLEqn_options& opts, const Octave_map& option_map)
 		  octave_value val = c(0);
 
 		  if (! val.is_empty ())
-		    warning_with_id ("Octave:fsolve-unimplemented option",
-				     "fsolve: option `%s' not implemented",
-				     key.c_str ());
+		    {
+		      double dval = val.double_value ();
+
+		      if (! error_state)
+			opts.set_tolerance (dval);
+		      else
+			gripe_wrong_type_arg ("fsolve", val);
+		    }
+		}
+	      else
+		error ("fsolve: invalid value for %s option", key.c_str ());
+	    }
+	}
+      else
+	{
+	  static std::set<std::string> unimplemented_options
+	    = make_unimplemented_options ();
+
+	  if (unimplemented_options.find (key) != unimplemented_options.end ())
+	    {
+	      if (option_map.contains (key))
+		{
+		  Cell c = option_map.contents (key);
+
+		  if (c.numel () == 1)
+		    {
+		      octave_value val = c(0);
+
+		      if (! val.is_empty ())
+			warning_with_id ("Octave:fsolve-unimplemented-option",
+					 "fsolve: option `%s' not implemented",
+					 key.c_str ());
+		    }
 		}
 	    }
 	}

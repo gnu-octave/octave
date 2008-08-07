@@ -1,3 +1,10 @@
+2008-08-07  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/fsolve.cc (override_options): Don't fail if
+	options_map does not contain an expected keyword.
+	Fix typo in warning identifier.
+	(make_unimplemented_options): Use CamelCase names here.
+
 2008-08-06  Soren Hauberg  <hauberg@gmail.com>
 
 	* error.cc (Ferror): Update format of error messages in exmple.

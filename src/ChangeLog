@@ -1,5 +1,8 @@
 2008-08-07  John W. Eaton  <jwe@octave.org>
 
+	* ov.cc (octave_value::idx_type_value): Don't include default
+	argument values in definition.
+
 	* src/glrender.h, src/zfstream.h: Don't include config.h.
 
 	* oct-errno.h: Include <cerrno>.

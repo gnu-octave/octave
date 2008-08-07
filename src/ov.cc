@@ -1231,8 +1231,7 @@ octave_value::cell_value (void) const
 // needing definitions for the SIZEOF_X macros in ov.h.
 
 octave_idx_type
-octave_value::idx_type_value (bool req_int = false,
-			      bool frc_str_conv = false) const
+octave_value::idx_type_value (bool req_int, bool frc_str_conv) const
 {
 #if SIZEOF_OCTAVE_IDX_TYPE == SIZEOF_LONG
   return long_value (req_int, frc_str_conv);

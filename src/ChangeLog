@@ -1,5 +1,7 @@
 2008-08-07  John W. Eaton  <jwe@octave.org>
 
+	* oct-errno.h: Include <cerrno>.
+
 	* Cell.cc, DLD-FUNCTIONS/regexp.cc, DLD-FUNCTIONS/dlmread.cc,
 	debug.cc, error.cc, file-io.cc, graphics.cc, help.cc, input.cc,
 	lex.l, load-path.cc, load-save.cc, ls-mat-ascii.cc,

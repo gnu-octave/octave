@@ -61,7 +61,7 @@ public:
   operator std::string (void) const { return *this; }
 
   // Case-insensitive comparison.
-  bool compare (const std::string& s, size_t limit = NPOS) const
+  bool compare (const std::string& s, size_t limit = std::string::npos) const
   {
     const_iterator p1 = begin ();
     const_iterator p2 = s.begin ();
@@ -77,7 +77,7 @@ public:
 	*p2++;
       }
 
-    return (limit == NPOS) ? size () == s.size () : k == limit;
+    return (limit == std::string::npos) ? size () == s.size () : k == limit;
   }
 };
 

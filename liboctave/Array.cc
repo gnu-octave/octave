@@ -1262,10 +1262,20 @@ Array<T>::transpose (void) const
 }
 
 template <class T>
+static T
+no_op_fcn (const T& x)
+{
+  return x;
+}
+
+template <class T>
 Array<T>
 Array<T>::hermitian (T (*fcn) (const T&)) const
 {
   assert (ndims () == 2);
+
+  if (! fcn)
+    fcn = no_op_fcn<T>;
 
   octave_idx_type nr = dim1 ();
   octave_idx_type nc = dim2 ();

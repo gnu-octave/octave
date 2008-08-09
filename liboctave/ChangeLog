@@ -1,3 +1,8 @@
+2008-08-11  Jaroslav Hajek <highegg@gmail.com>
+
+	* Array.cc (no_op_fcn): New static function.
+	(Array<T>::hermitian): If fcn is null, set to no_op_fcn.
+
 2008-08-07  John W. Eaton  <jwe@octave.org>
 
 	* sprse-base-chol.h, oct-sparse.h: Don't include config.h.

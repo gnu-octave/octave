@@ -1,5 +1,10 @@
 2008-08-12  John W. Eaton  <jwe@octave.org>
 
+	* pt-fcn-handle.cc (tree_anon_fcn_handle::rvalue):
+	Call stash_parent_function_scope for user function.
+	* ov-fcn-inline.cc (octave_fcn_inline::octave_fcn_inline): 
+	Likewise.
+
 	* ov-struct.cc (octave_struct::subsref): Don't allow resizing for
 	simple x(idx) case.
 

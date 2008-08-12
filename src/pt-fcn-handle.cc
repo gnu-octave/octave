@@ -112,7 +112,10 @@ tree_anon_fcn_handle::rvalue (void)
   octave_function *curr_fcn = octave_call_stack::current ();
 
   if (curr_fcn)
-    uf->stash_parent_fcn_name (curr_fcn->name ());
+    {
+      uf->stash_parent_fcn_name (curr_fcn->name ());
+      uf->stash_parent_fcn_scope (curr_fcn->scope ());
+    }
 
   uf->mark_as_inline_function ();
 

@@ -39,9 +39,11 @@ Open Source Initiative (www.opensource.org)
 #include "oct-map.h"
 #include "ov-base.h"
 #include "ov-fcn-inline.h"
+#include "ov-usr-fcn.h"
 #include "pr-output.h"
 #include "variables.h"
 #include "parse.h"
+#include "toplev.h"
 
 #include "byte-swap.h"
 #include "ls-oct-ascii.h"
@@ -83,7 +85,14 @@ octave_fcn_inline::octave_fcn_inline (const std::string& f,
       octave_fcn_handle *fh = anon_fcn_handle.fcn_handle_value ();
 
       if (fh)
-	fcn = fh->fcn_val ();
+	{
+	  fcn = fh->fcn_val ();
+
+	  octave_user_function *uf = fcn.user_function_value ();
+
+	  if (uf)
+	    uf->stash_parent_fcn_scope (octave_call_stack::current_scope ());
+	}
     }
 
   if (fcn.is_undefined ())

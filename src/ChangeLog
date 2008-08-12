@@ -1,3 +1,8 @@
+2008-08-12  John W. Eaton  <jwe@octave.org>
+
+	* ov-struct.cc (octave_struct::subsref): Don't allow resizing for
+	simple x(idx) case.
+
 2008-08-07  John W. Eaton  <jwe@octave.org>
 
 	* ov.cc (octave_value::idx_type_value): Don't include default

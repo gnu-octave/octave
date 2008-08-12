@@ -129,7 +129,7 @@ octave_struct::subsref (const std::string& type,
 	      }
 	  }
 	else
-	  retval(0) = map.index (idx.front (), true);
+	  retval(0) = map.index (idx.front (), false);
       }
       break;
 
@@ -161,6 +161,14 @@ octave_struct::subsref (const std::string& type,
 
   return retval;
 }
+
+/*
+%!test
+%! x(1).a.a = 1; x(2).a.a = 2;
+%! assert (size (x), [1, 2]);
+%! assert (x(1).a.a, 1);
+%! assert (x(2).a.a, 2);
+*/
 
 octave_value
 octave_struct::numeric_conv (const Cell& val,

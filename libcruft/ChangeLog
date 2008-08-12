@@ -1,3 +1,11 @@
+2008-08-12  Thomas Treichl  <Thomas.Treichl@gmx.net>
+
+	* blas/icamax.f, blas/isamax.f: New files.
+	* blas/Makefile.in (FSRC): Add them to the list.
+
+	* lapack/icmax1.f: New file.
+	* lapack/Makefile.in (FSRC): Add it to the list.
+	
 2008-06-16  David Bateman  <dbateman@free.fr>
 
 	* slatec-fn/xacosh.f, slatec-fn/xasinh.f: Replace xsacosh with

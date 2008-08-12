@@ -68,7 +68,7 @@ FSRC = cbdsqr.f csrscl.f cgbcon.f cgbtf2.f cgbtrf.f cgbtrs.f \
   dpotri.f dpotrs.f dptsv.f dpttrf.f dpttrs.f dptts2.f drscl.f \
   dsteqr.f dsterf.f dsyev.f dsytd2.f dsytrd.f dtgevc.f dtrcon.f \
   dtrevc.f dtrexc.f dtrsen.f dtrsyl.f dtrti2.f dtrtri.f dtrtrs.f \
-  dtzrzf.f dzsum1.f ieeeck.f ilaenv.f iparmq.f izmax1.f \
+  dtzrzf.f dzsum1.f icmax1.f ieeeck.f ilaenv.f iparmq.f izmax1.f \
   sbdsqr.f sgbcon.f sgbtf2.f sgbtrf.f sgbtrs.f sgebak.f sgebal.f \
   sgebd2.f sgebrd.f sgecon.f sgeesx.f sgeev.f sgehd2.f sgehrd.f \
   sgelq2.f sgelqf.f sgelsd.f sgelss.f sgelsy.f sgeqp3.f sgeqpf.f \

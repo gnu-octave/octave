@@ -1,3 +1,8 @@
+2008-08-12  Jaroslav Hajek <highegg@gmail.com>
+
+	* lo-ieee.cc (octave_ieee_init): Try to ensure that octave_NaN is
+	classified as positive by lo_ieee_signbit.
+
 2008-08-11  Jaroslav Hajek <highegg@gmail.com>
 
 	* Array.cc (no_op_fcn): New static function.

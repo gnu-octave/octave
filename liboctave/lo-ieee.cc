@@ -95,6 +95,10 @@ octave_ieee_init (void)
 	octave_NaN = (*(X_CAST(double *, DQNAN)));
 #else
 	octave_NaN = tmp_inf / tmp_inf;
+        // try to ensure that lo_ieee_sign gives false for a NaN.
+        if (lo_ieee_signbit (octave_NaN))
+          octave_NaN = -octave_NaN;
+
 #endif
 
 	octave_Inf = tmp_inf;

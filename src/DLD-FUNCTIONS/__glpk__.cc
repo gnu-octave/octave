@@ -575,7 +575,7 @@ Undocumented internal function.\n\
   //--            bound on each of the variables.
   Matrix LB (args(3).matrix_value ());
 
-  if (error_state)
+  if (error_state || LB.length () < mrowsc)
     {
       error ("__glpk__: invalid value of lb");
       return retval;
@@ -600,7 +600,7 @@ Undocumented internal function.\n\
   //--            bound on each of the variables.
   Matrix UB (args(4).matrix_value ());
 
-  if (error_state)
+  if (error_state || UB.length () < mrowsc)
     {
       error ("__glpk__: invalid value of ub");
       return retval;

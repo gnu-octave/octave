@@ -1,5 +1,8 @@
 2008-08-19  Jaroslav Hajek <highegg@gmail.com>
 
+	* DLD-FUNCTIONS/__glpk__.cc (F__glpk__): Checks whether LB and UB are
+	of proper size.
+
 	* oct-obj.cc, oct-obj.h (octave_value_list::make_argv): 
 	Allow calling without fcn_name.
 	* load-save.cc (parse_save_options (const string_vector&, ...)): 

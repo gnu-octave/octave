@@ -1,3 +1,7 @@
+2008-08-19  Jaroslav Hajek <highegg@gmail.com>
+
+	* optimization/glpk.m: Fix invalid call to zeros.
+
 2008-08-19  David Bateman  <dbateman@free.fr>
 
 	statistics/base/ranks.m: Doc fix.

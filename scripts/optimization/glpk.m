@@ -470,7 +470,7 @@ function [xopt, fmin, status, extra] = glpk (c, a, b, lb, ub, ctype, vartype, se
 
   if (nargin > 3)
     if (isempty (lb))
-      lb = zeros (0, nx, 1);
+      lb = zeros (nx, 1);
     elseif (! isreal (lb) || all (size (lb) > 1) || length (lb) != nx)
       error ("LB must be a real valued %d by 1 column vector", nx);
       return;

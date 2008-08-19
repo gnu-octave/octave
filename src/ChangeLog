@@ -1,5 +1,15 @@
 2008-08-19  Jaroslav Hajek <highegg@gmail.com>
 
+	* pt-assign.h (tree_simple_assignment::first_execution): New
+	member field.
+	(tree_simple_assignment::first_execution): Dtto.
+	* pt-assign.cc (tree_simple_assignment::tree_simple_assignment):
+	Initialize first_execution.
+	(tree_multi_assignment::tree_multi_assignment): Dtto.
+	(tree_simple_assignment::rvalue): Check for obsolete built-in
+	variables only at first execution.
+	(tree_multi_assignment::rvalue): Dtto.
+
 	* DLD-FUNCTIONS/__glpk__.cc (F__glpk__): Checks whether LB and UB are
 	of proper size.
 

@@ -1,3 +1,12 @@
+2008-08-19  Jaroslav Hajek <highegg@gmail.com>
+
+	* oct-obj.cc, oct-obj.h (octave_value_list::make_argv): 
+	Allow calling without fcn_name.
+	* load-save.cc (parse_save_options (const string_vector&, ...)): 
+	Return string_vector with parsed arguments removed instead.
+	(parse_save_options (const std::string&, ...)):	Dtto.
+	(Fsave): Fix calls to parse_save_options.
+
 2008-08-19  John W. Eaton  <jwe@octave.org>
 
 	* parse.y (Feval): Return value produced by evaluating CATCH string.

@@ -206,11 +206,16 @@ octave_value_list::make_argv (const std::string& fcn_name) const
 	  total_nr += n ? n : 1;
 	}
 
-      argv.resize (total_nr+1);
+      octave_idx_type k = 0;
+      if (! fcn_name.empty ())
+        {
+          argv.resize (total_nr+1);
+          argv[0] = fcn_name;
+          k = 1;
+        }
+      else
+        argv.resize (total_nr);
 
-      argv[0] = fcn_name;
-
-      octave_idx_type k = 1;
       for (octave_idx_type i = 0; i < len; i++)
 	{
 	  octave_idx_type nr = elem(i).rows ();

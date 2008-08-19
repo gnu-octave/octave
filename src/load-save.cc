@@ -1038,13 +1038,15 @@ save_vars (std::ostream& os, const std::string& pattern,
   return saved;
 }
 
-static int
-parse_save_options (const string_vector &argv, int argc, 
+static string_vector
+parse_save_options (const string_vector &argv,
 		    load_save_format &format, bool &append,
-		    bool &save_as_floats, bool &use_zlib, int start_arg)
+		    bool &save_as_floats, bool &use_zlib)
 {
-  int i;
-  for (i = start_arg; i < argc; i++)
+  string_vector retval;
+  int argc = argv.length ();
+
+  for (int i = 0; i < argc; i++)
     {
       if (argv[i] == "-append")
 	{
@@ -1109,31 +1111,29 @@ parse_save_options (const string_vector &argv, int argc,
 	}
 #endif
       else
-	break;
+        retval.append (argv[i]);
     }
 
-  return i;
+  return retval;
 }
 
-static int
+static string_vector
 parse_save_options (const std::string &arg, load_save_format &format, 
 		    bool &append, bool &save_as_floats, 
-		    bool &use_zlib, int start_arg)
+		    bool &use_zlib)
 {
   std::istringstream is (arg);
   std::string str;
-  int argc = 0;
   string_vector argv;
   
   while (! is.eof ())
     {
       is >> str;
       argv.append (str);
-      argc++;
     }
 
-  return parse_save_options (argv, argc, format, append, save_as_floats, 
-			     use_zlib, start_arg);
+  return parse_save_options (argv, format, append, save_as_floats, 
+			     use_zlib);
 }
 
 void
@@ -1346,7 +1346,7 @@ dump_octave_core (void)
       bool use_zlib = false;
 
       parse_save_options (Voctave_core_file_options, format, append, 
-			  save_as_floats, use_zlib, 0);
+			  save_as_floats, use_zlib);
   
       std::ios::openmode mode = std::ios::out;
 
@@ -1546,9 +1546,9 @@ the file @file{data} in Octave's binary format.\n\
 {
   octave_value_list retval;
 
-  int argc = args.length () + 1;
+  int argc = args.length ();
 
-  string_vector argv = args.make_argv ("save");
+  string_vector argv = args.make_argv ();
 
   if (error_state)
     return retval;
@@ -1564,19 +1564,15 @@ the file @file{data} in Octave's binary format.\n\
 
   bool use_zlib = false;
 
-  load_save_format user_file_format = LS_UNKNOWN;
-  bool dummy;
+  // get default options
+  parse_save_options (Vdefault_save_options, format, append, save_as_floats, 
+                      use_zlib);
 
-  // Get user file format
-  parse_save_options (argv, argc, user_file_format, dummy, 
-		      dummy, dummy, 1);
-
-  if (user_file_format == LS_UNKNOWN)
-    parse_save_options (Vdefault_save_options, format, append, save_as_floats, 
-			use_zlib, 0);
-
-  int i = parse_save_options (argv, argc, format, append, save_as_floats, 
-			      use_zlib, 1);
+  // override from command line
+  argv = parse_save_options (argv, format, append, save_as_floats, 
+                             use_zlib);
+  argc = argv.length ();
+  int i = 0;
 
   if (error_state)
     return retval;

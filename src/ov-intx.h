@@ -74,15 +74,12 @@ private:
     {
       typedef typename IM::element_type dest_el_type;
       typedef OCTAVE_INT_NDARRAY_T::element_type src_el_type;
-      dest_el_type::clear_trunc_flag ();
+      dest_el_type::clear_conv_flag ();
       IM retval (matrix);
       if (dest_el_type::get_trunc_flag ())
-        {
-          gripe_truncated_conversion (src_el_type::type_name (),
-                                      dest_el_type::type_name ());
-          dest_el_type::clear_trunc_flag ();
-        }
-
+	gripe_truncated_conversion (src_el_type::type_name (),
+				    dest_el_type::type_name ());
+      dest_el_type::clear_conv_flag ();
       return retval;
     }
 
@@ -301,9 +298,22 @@ public:
     return retval;
   }
 
-  void increment (void) { matrix += 1; }
+  void increment (void) 
+   { 
+     matrix += 1; 
+     if (OCTAVE_INT_T::get_math_trunc_flag ())
+       gripe_unop_integer_math_truncated ("++", type_name (). c_str ());
 
-  void decrement (void) { matrix -= 1; }
+      OCTAVE_INT_T::clear_conv_flag ();
+   }
+
+  void decrement (void)
+   { 
+     matrix -= 1; 
+     if (OCTAVE_INT_T::get_math_trunc_flag ())
+       gripe_unop_integer_math_truncated ("--", type_name (). c_str ());
+      OCTAVE_INT_T::clear_conv_flag ();
+   }
 
   idx_vector index_vector (void) const { return idx_vector (matrix); }
 
@@ -433,16 +443,13 @@ private:
     {
       typedef IS dest_el_type;
       typedef OCTAVE_INT_T src_el_type;
-      dest_el_type::clear_trunc_flag ();
+      dest_el_type::clear_conv_flag ();
       IS retval (scalar);
+
       if (dest_el_type::get_trunc_flag ())
-        {
-          gripe_truncated_conversion (src_el_type::type_name (),
-                                      dest_el_type::type_name ());
-          dest_el_type::clear_trunc_flag ();
-
-        }
-
+	gripe_truncated_conversion (src_el_type::type_name (),
+				    dest_el_type::type_name ());
+      dest_el_type::clear_conv_flag ();
       return retval;
     }
 
@@ -615,9 +622,21 @@ public:
     return retval;
   }
 
-  void increment (void) { scalar += 1; }
+  void increment (void) 
+   { 
+     scalar += 1; 
+     if (OCTAVE_INT_T::get_math_trunc_flag ())
+       gripe_unop_integer_math_truncated ("++", type_name (). c_str ());
+      OCTAVE_INT_T::clear_conv_flag ();
+   }
 
-  void decrement (void) { scalar -= 1; }
+  void decrement (void)
+   { 
+     scalar -= 1; 
+     if (OCTAVE_INT_T::get_math_trunc_flag ())
+       gripe_unop_integer_math_truncated ("--", type_name (). c_str ());
+      OCTAVE_INT_T::clear_conv_flag ();
+   }
 
   idx_vector index_vector (void) const { return idx_vector (scalar); }
 

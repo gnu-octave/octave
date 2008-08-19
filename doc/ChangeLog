@@ -1,3 +1,7 @@
+2008-08-19  David Bateman  <dbateman@free.fr>
+
+	* interpreter/numbers.txi: Document intwarning.
+
 2008-08-06  Søren Hauberg  <hauberg@gmail.com>
 
 	* interpreter/basics.txi, interpreter/errors.txi,

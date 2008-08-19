@@ -24,6 +24,39 @@
 
 	* parse.y (Feval): Return value produced by evaluating CATCH string.
 
+2008-08-19  David Bateman  <dbateman@free.fr>
+
+	* OPERATORS/op-int-conv.cc (DEFINTCONVFN): New macro that warn
+	for integer conversion issues. Use it to replace DEFCONVFN.
+	* OPERATORS/op-int.h (DEFINTBINOP_OP, DEFINTNDBINOP_OP,
+	DEFINTBINOP_FN, DEFINTNDBINOP_FN): New macros that warn for
+	integer truncation issues. Use them to replace the corresponding
+	macros in the integer arithmetic macros. Update other integer
+	arithmetic functions that don't use these macros individually.
+	* error.cc (initialize_default_warning_state (void)): Initialize
+	the default warning state for the integer warnings to be off.
+	* gripes.cc (void gripe_binop_integer_math_truncated (const char *,
+	const char *, const char *), void gripe_unop_integer_math_truncated
+	(const char *, const char *), void gripe_non_integer_conversion
+	(const char *, const char *), void gripe_nan_conversion (const char *,
+	const char *)): Warning functions for integer conversion and math
+	issues.
+	* gripes.h (void gripe_binop_integer_math_truncated (const char *,
+	const char *, const char *), void gripe_unop_integer_math_truncated
+	(const char *, const char *), void gripe_non_integer_conversion
+	(const char *, const char *), void gripe_nan_conversion (const char *,
+	const char *)): Declare them.
+	* ov-intx.h (OCTAVE_VALUE_INT_MATRIX_T::convert_gripe,
+	OCTAVE_VALUE_INT_SCALAR_T::convert_gripe): Adapt for new means of
+	flagging integer truncation.
+	(OCTAVE_VALUE_INT_MATRIX_T::decrement,
+	OCTAVE_VALUE_INT_MATRIX_T::increment,
+	OCTAVE_VALUE_INT_SCALAR_T::decrement,
+	OCTAVE_VALUE_INT_SCALAR_T::increment): Check for integer
+	truncation.
+	* ov.cc (convert_to_int_array): Adapt for new means of
+	flagging integer truncation.
+
 2008-08-12  John W. Eaton  <jwe@octave.org>
 
 	* pt-fcn-handle.cc (tree_anon_fcn_handle::rvalue):

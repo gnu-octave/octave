@@ -124,16 +124,26 @@ OCTAVE_INT_BINOP_TRAIT (uint64_t, uint64_t, uint64_t);
 
 template <class T1, class T2>
 inline T2
-octave_int_fit_to_range (const T1& x, const T2& mn, const T2& mx)
+octave_int_fit_to_range (const T1& x, const T2& mn, const T2& mx,
+			 int& conv_flag, int math_truncate)
 {
-  return (x > mx ? mx : (x < mn ? mn : T2 (x)));
+  bool out_of_range_max = x > mx;
+  bool out_of_range_min = x < mn;
+  conv_flag |= (out_of_range_max || out_of_range_min ? math_truncate : 0);
+  return (out_of_range_max ? mx : (out_of_range_min ? mn : T2 (x)));
 }
 
 template <typename T>
 inline T
-octave_int_fit_to_range (const double& x, const T& mn, const T& mx)
+octave_int_fit_to_range (const double& x, const T& mn, const T& mx,
+			 int& conv_flag, int math_truncate)
 {
-  return (__lo_ieee_isnan (x) ? 0 : (x > mx ? mx : (x < mn ? mn : static_cast<T> (x))));
+  bool out_of_range_max = x > mx;
+  bool out_of_range_min = x < mn;
+  conv_flag |= (out_of_range_max || out_of_range_min ? math_truncate : 0);
+  return (__lo_ieee_isnan (x)
+	  ? 0 : (out_of_range_max
+		 ? mx : (out_of_range_min ? mn : static_cast<T> (x))));
 }
 
 // If X is unsigned and the new type is signed, then we only have to
@@ -145,9 +155,12 @@ octave_int_fit_to_range (const double& x, const T& mn, const T& mx)
 #define OCTAVE_US_S_FTR(T1, T2, TC) \
   template <> \
   inline T2 \
-  octave_int_fit_to_range<T1, T2> (const T1& x, const T2&, const T2& mx) \
+  octave_int_fit_to_range<T1, T2> (const T1& x, const T2&, const T2& mx, \
+				   int& conv_flag, int math_truncate) \
   { \
-    return x > static_cast<TC> (mx) ? mx : x; \
+    bool out_of_range = x > static_cast<TC> (mx); \
+    conv_flag |= (out_of_range ? math_truncate : 0); \
+    return out_of_range ? mx : x; \
   }
 
 #define OCTAVE_US_S_FTR_FCNS(T) \
@@ -172,10 +185,13 @@ OCTAVE_US_S_FTR_FCNS (unsigned long long)
 #define OCTAVE_S_US_FTR(T1, T2) \
   template <> \
   inline T2 \
-  octave_int_fit_to_range<T1, T2> (const T1& x, const T2&, const T2&) \
+  octave_int_fit_to_range<T1, T2> (const T1& x, const T2&, const T2&, \
+				   int& conv_flag, int math_truncate) \
   { \
+    bool out_of_range = x < 0; \
+    conv_flag |= (out_of_range ? math_truncate : 0); \
     return x <= 0 ? 0 : x; \
-  }
+   }
 
 #define OCTAVE_S_US_FTR_FCNS(T) \
   OCTAVE_S_US_FTR (T, unsigned char) \
@@ -191,10 +207,19 @@ OCTAVE_S_US_FTR_FCNS (int)
 OCTAVE_S_US_FTR_FCNS (long)
 OCTAVE_S_US_FTR_FCNS (long long)
 
+#define OCTAVE_INT_CONV_FIT_TO_RANGE(r, T) \
+  octave_int_fit_to_range (r, \
+                           std::numeric_limits<T>::min (), \
+                           std::numeric_limits<T>::max (), \
+			   octave_int<T>::conv_flag, \
+			   octave_int<T>::int_truncate)
+
 #define OCTAVE_INT_FIT_TO_RANGE(r, T) \
   octave_int_fit_to_range (r, \
                            std::numeric_limits<T>::min (), \
-                           std::numeric_limits<T>::max ())
+                           std::numeric_limits<T>::max (), \
+			   octave_int<T>::conv_flag, \
+			   octave_int<T>::math_truncate)
 
 #define OCTAVE_INT_MIN_VAL2(T1, T2) \
   std::numeric_limits<typename octave_int_binop_traits<T1, T2>::TR>::min ()
@@ -205,7 +230,9 @@ OCTAVE_S_US_FTR_FCNS (long long)
 #define OCTAVE_INT_FIT_TO_RANGE2(r, T1, T2) \
   octave_int_fit_to_range (r, \
                            OCTAVE_INT_MIN_VAL2 (T1, T2), \
-                           OCTAVE_INT_MAX_VAL2 (T1, T2))
+                           OCTAVE_INT_MAX_VAL2 (T1, T2), \
+			   octave_int<typename octave_int_binop_traits<T1, T2>::TR>::conv_flag, \
+			   octave_int<typename octave_int_binop_traits<T1, T2>::TR>::math_truncate)
 
 // We have all the machinery below (octave_int_helper) to avoid a few
 // warnings from GCC about comparisons always false due to limited
@@ -268,24 +295,34 @@ class
 octave_int
 {
 public:
+  enum conv_error_type
+    {
+      int_truncate = 1,
+      conv_nan = 2,
+      conv_non_int = 4,
+      math_truncate = 8
+    };
 
   typedef T val_type;
 
   octave_int (void) : ival () { }
 
   template <class U>
-  octave_int (U i) : ival (OCTAVE_INT_FIT_TO_RANGE (i, T)) { }
+  octave_int (U i) : ival (OCTAVE_INT_CONV_FIT_TO_RANGE (i, T)) { }
 
-  octave_int (double d) : ival (OCTAVE_INT_FIT_TO_RANGE (xround (d), T)) { }
+  octave_int (double d) : ival (OCTAVE_INT_CONV_FIT_TO_RANGE (xround (d), T)) 
+    { 
+      if (xisnan (d))
+	conv_flag |= conv_nan;
+      else
+	conv_flag |= (d != xround (d) ? conv_non_int : 0);
+    }
 
   octave_int (bool b) : ival (b) { }
 
   template <class U>
   octave_int (const octave_int<U>& i)
-    : ival (OCTAVE_INT_FIT_TO_RANGE (i.value (), T)) 
-    { 
-      trunc_flag = trunc_flag || (ival != i.value ());
-    }
+    : ival (OCTAVE_INT_CONV_FIT_TO_RANGE (i.value (), T)) { }
 
   octave_int (const octave_int<T>& i) : ival (i.ival) { }
 
@@ -312,9 +349,13 @@ public:
     // symmetric, which causes things like -intmin("int32") to be the
     // same as intmin("int32") instead of intmax("int32") (which is
     // what we should get with saturation semantics).
-
-    return std::numeric_limits<T>::is_signed ?
-      OCTAVE_INT_FIT_TO_RANGE (- static_cast<double> (ival), T) : 0;
+    if (std::numeric_limits<T>::is_signed)
+      return OCTAVE_INT_FIT_TO_RANGE (- static_cast<double> (ival), T);
+    else
+      {
+	conv_flag |= math_truncate;
+	return 0;
+      }
   }
 
   bool bool_value (void) const { return static_cast<bool> (value ()); }
@@ -402,8 +443,12 @@ public:
 
   static int byte_size (void) { return sizeof(T); }
 
-  static bool get_trunc_flag () { return trunc_flag; }
-  static void clear_trunc_flag () { trunc_flag = false; }
+  static int get_conv_flag () { return conv_flag; }
+  static bool get_trunc_flag () { return (conv_flag & int_truncate); }
+  static bool get_nan_flag () { return (conv_flag & conv_nan); }
+  static bool get_non_int_flag () { return (conv_flag & conv_non_int); }
+  static bool get_math_trunc_flag () { return (conv_flag & math_truncate); }
+  static void clear_conv_flag () { conv_flag = 0; }
 
   static const char *type_name () { return "unknown type"; }
 
@@ -411,13 +456,14 @@ public:
   // You should not use it anywhere else.
   void *mex_get_data (void) const { return const_cast<T *> (&ival); }
 
+  static int conv_flag;
+
 private:
 
-  static bool trunc_flag;
   T ival;
 };
 
-template<class T> bool octave_int<T>::trunc_flag = false; 
+template<class T> int octave_int<T>::conv_flag = 0;
 
 template <class T>
 bool
@@ -480,6 +526,26 @@ pow (const octave_int<T>& a, double b)
   double ta = static_cast<double> (a.value ());
   double r = pow (ta, b);
   r = __lo_ieee_isnan (r) ? 0 : xround (r);
+  return OCTAVE_INT_FIT_TO_RANGE (r, T);
+}
+
+template <class T>
+octave_int<T>
+powf (float a, const octave_int<T>& b)
+{
+  float tb = static_cast<float> (b.value ());
+  float r = powf (a, tb);
+  r = __lo_ieee_float_isnan (r) ? 0 : xround (r);
+  return OCTAVE_INT_FIT_TO_RANGE (r, T);
+}
+
+template <class T>
+octave_int<T>
+powf (const octave_int<T>& a, float b)
+{
+  float ta = static_cast<float> (a.value ());
+  float r = pow (ta, b);
+  r = __lo_ieee_float_isnan (r) ? 0 : xround (r);
   return OCTAVE_INT_FIT_TO_RANGE (r, T);
 }
 

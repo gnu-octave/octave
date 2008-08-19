@@ -46,47 +46,67 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-typeinfo.h"
 #include "ops.h"
 
+#define DEFINTCONVFN(name, tfrom, tto) \
+  CONVDECL (name) \
+  { \
+    CAST_CONV_ARG (const octave_ ## tfrom&); \
+ \
+    octave_ ## tto ::clear_conv_flag (); \
+    octave_ ## tto ## _matrix v2 = v.tto ## _array_value (); \
+    if (octave_ ## tto ::get_trunc_flag ()) \
+      gripe_truncated_conversion (v.type_name (). c_str (), \
+				  v2.type_name (). c_str ()); \
+    if (octave_ ## tto ::get_nan_flag ()) \
+      gripe_nan_conversion (v.type_name (). c_str (), \
+			    v2.type_name (). c_str ()); \
+    if (octave_ ## tto ::get_non_int_flag ()) \
+      gripe_non_integer_conversion (v.type_name (). c_str (), \
+			            v2.type_name (). c_str ()); \
+    octave_ ## tto ::clear_conv_flag (); \
+    return new octave_ ## tto ## _matrix (v2); \
+  }
+
 // conversion ops
 
-DEFCONVFN (scalar_to_int8, scalar, int8)
-DEFCONVFN (scalar_to_int16, scalar, int16)
-DEFCONVFN (scalar_to_int32, scalar, int32)
-DEFCONVFN (scalar_to_int64, scalar, int64)
+DEFINTCONVFN (scalar_to_int8, scalar, int8)
+DEFINTCONVFN (scalar_to_int16, scalar, int16)
+DEFINTCONVFN (scalar_to_int32, scalar, int32)
+DEFINTCONVFN (scalar_to_int64, scalar, int64)
 
-DEFCONVFN (scalar_to_uint8, scalar, uint8)
-DEFCONVFN (scalar_to_uint16, scalar, uint16)
-DEFCONVFN (scalar_to_uint32, scalar, uint32)
-DEFCONVFN (scalar_to_uint64, scalar, uint64)
+DEFINTCONVFN (scalar_to_uint8, scalar, uint8)
+DEFINTCONVFN (scalar_to_uint16, scalar, uint16)
+DEFINTCONVFN (scalar_to_uint32, scalar, uint32)
+DEFINTCONVFN (scalar_to_uint64, scalar, uint64)
 
-DEFCONVFN (matrix_to_int8, matrix, int8)
-DEFCONVFN (matrix_to_int16, matrix, int16)
-DEFCONVFN (matrix_to_int32, matrix, int32)
-DEFCONVFN (matrix_to_int64, matrix, int64)
+DEFINTCONVFN (matrix_to_int8, matrix, int8)
+DEFINTCONVFN (matrix_to_int16, matrix, int16)
+DEFINTCONVFN (matrix_to_int32, matrix, int32)
+DEFINTCONVFN (matrix_to_int64, matrix, int64)
 
-DEFCONVFN (matrix_to_uint8, matrix, uint8)
-DEFCONVFN (matrix_to_uint16, matrix, uint16)
-DEFCONVFN (matrix_to_uint32, matrix, uint32)
-DEFCONVFN (matrix_to_uint64, matrix, uint64)
+DEFINTCONVFN (matrix_to_uint8, matrix, uint8)
+DEFINTCONVFN (matrix_to_uint16, matrix, uint16)
+DEFINTCONVFN (matrix_to_uint32, matrix, uint32)
+DEFINTCONVFN (matrix_to_uint64, matrix, uint64)
 
-DEFCONVFN (float_scalar_to_int8, float_scalar, int8)
-DEFCONVFN (float_scalar_to_int16, float_scalar, int16)
-DEFCONVFN (float_scalar_to_int32, float_scalar, int32)
-DEFCONVFN (float_scalar_to_int64, float_scalar, int64)
+DEFINTCONVFN (float_scalar_to_int8, float_scalar, int8)
+DEFINTCONVFN (float_scalar_to_int16, float_scalar, int16)
+DEFINTCONVFN (float_scalar_to_int32, float_scalar, int32)
+DEFINTCONVFN (float_scalar_to_int64, float_scalar, int64)
 
-DEFCONVFN (float_scalar_to_uint8, float_scalar, uint8)
-DEFCONVFN (float_scalar_to_uint16, float_scalar, uint16)
-DEFCONVFN (float_scalar_to_uint32, float_scalar, uint32)
-DEFCONVFN (float_scalar_to_uint64, float_scalar, uint64)
+DEFINTCONVFN (float_scalar_to_uint8, float_scalar, uint8)
+DEFINTCONVFN (float_scalar_to_uint16, float_scalar, uint16)
+DEFINTCONVFN (float_scalar_to_uint32, float_scalar, uint32)
+DEFINTCONVFN (float_scalar_to_uint64, float_scalar, uint64)
 
-DEFCONVFN (float_matrix_to_int8, float_matrix, int8)
-DEFCONVFN (float_matrix_to_int16, float_matrix, int16)
-DEFCONVFN (float_matrix_to_int32, float_matrix, int32)
-DEFCONVFN (float_matrix_to_int64, float_matrix, int64)
+DEFINTCONVFN (float_matrix_to_int8, float_matrix, int8)
+DEFINTCONVFN (float_matrix_to_int16, float_matrix, int16)
+DEFINTCONVFN (float_matrix_to_int32, float_matrix, int32)
+DEFINTCONVFN (float_matrix_to_int64, float_matrix, int64)
 
-DEFCONVFN (float_matrix_to_uint8, float_matrix, uint8)
-DEFCONVFN (float_matrix_to_uint16, float_matrix, uint16)
-DEFCONVFN (float_matrix_to_uint32, float_matrix, uint32)
-DEFCONVFN (float_matrix_to_uint64, float_matrix, uint64)
+DEFINTCONVFN (float_matrix_to_uint8, float_matrix, uint8)
+DEFINTCONVFN (float_matrix_to_uint16, float_matrix, uint16)
+DEFINTCONVFN (float_matrix_to_uint32, float_matrix, uint32)
+DEFINTCONVFN (float_matrix_to_uint64, float_matrix, uint64)
 
 DEFCONVFN (bool_to_int8, bool, int8)
 DEFCONVFN (bool_to_int16, bool, int16)
@@ -128,15 +148,15 @@ DEFSTRINTCONVFN (char_matrix_dq_str_to_uint16, uint16)
 DEFSTRINTCONVFN (char_matrix_dq_str_to_uint32, uint32)
 DEFSTRINTCONVFN (char_matrix_dq_str_to_uint64, uint64)
 
-DEFCONVFN (range_to_int8, range, int8)
-DEFCONVFN (range_to_int16, range, int16)
-DEFCONVFN (range_to_int32, range, int32)
-DEFCONVFN (range_to_int64, range, int64)
+DEFINTCONVFN (range_to_int8, range, int8)
+DEFINTCONVFN (range_to_int16, range, int16)
+DEFINTCONVFN (range_to_int32, range, int32)
+DEFINTCONVFN (range_to_int64, range, int64)
 
-DEFCONVFN (range_to_uint8, range, uint8)
-DEFCONVFN (range_to_uint16, range, uint16)
-DEFCONVFN (range_to_uint32, range, uint32)
-DEFCONVFN (range_to_uint64, range, uint64)
+DEFINTCONVFN (range_to_uint8, range, uint8)
+DEFINTCONVFN (range_to_uint16, range, uint16)
+DEFINTCONVFN (range_to_uint32, range, uint32)
+DEFINTCONVFN (range_to_uint64, range, uint64)
 
 #define INT_CONV_FUNCTIONS(tfrom) \
   DEFCONVFN2 (tfrom ## _scalar_to_int8, tfrom, scalar, int8) \

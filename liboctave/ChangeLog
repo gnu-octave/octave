@@ -1,3 +1,35 @@
+2008-08-19  David Bateman  <dbateman@free.fr>
+
+	* oct-inttypes.h (template <class T1, class T2> inline T2
+	octave_int_fit_to_range (const T1&, const T2&, const T2&),
+	template <typename T> inline T octave_int_fit_to_range (const
+	double&, const T&, const T&), template <> inline T2
+	octave_int_fit_to_range<T1, T2> (const T1&, const T2&, const T2&),
+	OCTAVE_S_US_FTR): Check and flag integer trunctation.
+	(OCTAVE_INT_FIT_TO_RANGE, OCTAVE_INT_FIT_TO_RANGE2): Adapt for the
+	above change.
+	(OCTAVE_INT_CONV_FIT_TO_RANGE): New macro for conversion to
+	integer types.
+	(octave_int<T>::conv_error_type): New enum to flag conversion and
+	math warnings.
+	(octave_int<T>::octave_int (U i), octave_int<T>::octave_int
+	(double i), octave_int<>::octave_int (const octave_int<U>& i)):
+	Flag conversion and math errors other than integer truncation.
+	(octave_int<T> octave_int<T>::operator - (void)): Flag truncation
+	error.
+	(static bool get_trunc_flag (void), static bool clear_trunc_flag
+	(void, static bool trunc_flag)): Delete.
+	(static int get_conv_flag (void), static bool get_trunc_flag (void),
+	static bool get_nan_flag (void), static bool get_non_int_flag (void),
+	static bool get_math_trunc_flag (void), static void
+	clear_conv_flag (void)): New functions to query and reset
+	conversion and mathw arning state.
+	(static int cov_flag): New parameter holding current conversion
+	and math warning state. Set it to zero.
+	(template <class T> octave_int<T> powf (float, const
+	octave_int<T>&), template <class T> octave_int<T> powf (const
+	octave_int<T>&, float)): New functions.
+	
 2008-08-12  Jaroslav Hajek <highegg@gmail.com>
 
 	* lo-ieee.cc (octave_ieee_init): Try to ensure that octave_NaN is

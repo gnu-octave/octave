@@ -1,5 +1,18 @@
 2008-08-19  David Bateman  <dbateman@free.fr>
 
+	* load-path.cc (load-path::do_find_dir (const std:string&) const)):
+	Method to find a directory on the load-path corresponding to the
+	argument.
+	* load-path.h (load-path::do_find_dir (const std:string&) const),
+	load-path::find_dir (const std::string&) const): New methods.
+	* utils.cc (std::string contents_file_in_path (const std::string&)):
+	New function.
+	* utils.h  (std::string contents_file_in_path (const std::string&)): 
+	Declare it.
+	* help.cc (static bool raw_help_from_file (const std::string&,
+	std::string&, std::string&, bool&)): Also check is requested
+	argument is a directory and contains the file Contents.m.
+
 	* OPERATORS/op-int-conv.cc (DEFINTCONVFN): New macro that warn
 	for integer conversion issues. Use it to replace DEFCONVFN.
 	* OPERATORS/op-int.h (DEFINTBINOP_OP, DEFINTNDBINOP_OP,

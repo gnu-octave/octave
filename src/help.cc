@@ -1005,6 +1005,18 @@ raw_help_from_file (const std::string& nm, std::string& h,
 
   if (h.length () > 0)
     retval = true;
+  else if (! symbol_found)
+    {
+      file = contents_file_in_path (nm);
+      
+      if (! file.empty ())
+	{
+	  h = get_help_from_file (file, symbol_found);
+
+	  if (h.length () > 0)
+	    retval = true;
+	}
+    }
 
   return retval;
 }

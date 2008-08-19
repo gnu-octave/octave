@@ -1054,6 +1054,50 @@ load_path::do_find_file (const std::string& file) const
 }
 
 std::string
+load_path::do_find_dir (const std::string& dir) const
+{
+  std::string retval;
+
+  if (dir.find_first_of (file_ops::dir_sep_chars ()) != std::string::npos
+      && (octave_env::absolute_pathname (dir)
+	  || octave_env::rooted_relative_pathname (dir)))
+    {
+      file_stat fs (dir);
+
+      if (fs.exists () && fs.is_dir ())
+	return dir;
+    }
+  else
+    {
+      for (const_dir_info_list_iterator p = dir_info_list.begin ();
+	   p != dir_info_list.end ();
+	   p++)
+	{
+	  std::string dname = p->dir_name;
+
+	  size_t dname_len = dname.length ();
+
+	  if (dname.substr (dname_len - 1) == file_ops::dir_sep_str ())
+	    dname = dname.substr (0, dname_len - 1);
+
+	  size_t dir_len = dir.length ();
+
+	  if (dname_len >= dir_len
+	      && file_ops::is_dir_sep (dname[dname_len - dir_len - 1])
+	      && dir.compare (dname.substr (dname_len - dir_len)) == 0)
+	    {
+	      file_stat fs (p->dir_name);
+
+	      if (fs.exists () && fs.is_dir ())
+		return p->dir_name;
+	    }
+	}
+    }
+
+  return retval;
+}
+
+std::string
 load_path::do_find_first_of (const string_vector& flist) const
 {
   std::string retval;

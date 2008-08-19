@@ -64,6 +64,8 @@ search_path_for_all_files (const std::string&, const string_vector&);
 extern OCTINTERP_API std::string
 file_in_path (const std::string&, const std::string&);
 
+extern OCTINTERP_API std::string contents_file_in_path (const std::string&);
+
 extern OCTINTERP_API std::string fcn_file_in_path (const std::string&);
 extern OCTINTERP_API std::string oct_file_in_path (const std::string&);
 extern OCTINTERP_API std::string mex_file_in_path (const std::string&);

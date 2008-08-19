@@ -1,4 +1,4 @@
-2008-08-19  Jaroslav Hajek <highegg@gmail.com>
+2008-08-19  Jaroslav Hajek  <highegg@gmail.com>
 
 	* optimization/glpk.m: Fix invalid call to zeros.
 
@@ -76,7 +76,7 @@
 	* general/fliplr.m: Fix usage test.
 	* testfun/test.m: Fix usage tests.
 
-2008-07-17  Jaroslav Hajek <highegg@gmail.com>
+2008-07-17  Jaroslav Hajek  <highegg@gmail.com>
 
 	* statistics/base/cov.m: Fix test that should no longer work.
 
@@ -109,7 +109,7 @@
 
 	* image/imread.m: New file from Octave Forge.
 
-2008-07-10  Jaroslav Hajek <highegg@gmail.com>
+2008-07-10  Jaroslav Hajek  <highegg@gmail.com>
 
 	* set/unique.m: Implement 'first' and 'last', some simplifications.
 	* set/union.m: Implement output indices.
@@ -126,7 +126,7 @@
 	input array are integers.  Append spaces as necessary when
 	building  character array.
 
-2008-06-05  Jaroslav Hajek <highegg@gmail.com>
+2008-06-05  Jaroslav Hajek  <highegg@gmail.com>
 
 	* plot/__go_draw_axes__.m: Use fprintf for formatted output.
 
@@ -144,7 +144,7 @@
 	* general/interp1q.m: Remove spaces between functions and args in
 	[]. Fix test code to actually test interp1q.
 
-2008-06-02  Jaroslav Hajek <highegg@gmail.com>
+2008-06-02  Jaroslav Hajek  <highegg@gmail.com>
 
 	* strings/strcat.m: Add tests.
 
@@ -240,7 +240,7 @@
 	* elfun/acot.m, elfun/acsc.m, elfun/acsch.m, elfun/asec.m,
 	elfun/asech.m, specfun/pow2.m: Fix tests.
 
-2008-04-30  Jaroslav Hajek <highegg@gmail.com>
+2008-04-30  Jaroslav Hajek  <highegg@gmail.com>
 
 	* specfun/log2.m: Delete. 
 	* specfun/Makefile.in (SOURCES): Delete it from the list.
@@ -609,7 +609,7 @@
 	polynomial/pchip.m, polynomial/spline.m, set/unique.m:
 	Texinfo fixes.
 
-2008-03-26  Jaroslav Hajek <highegg@gmail.com>
+2008-03-26  Jaroslav Hajek  <highegg@gmail.com>
 
 	* linear-algebra/dmult.m: Handle scaling along arbitrary dimension.
 

@@ -29,13 +29,13 @@
 	(template <class T> octave_int<T> powf (float, const
 	octave_int<T>&), template <class T> octave_int<T> powf (const
 	octave_int<T>&, float)): New functions.
-	
-2008-08-12  Jaroslav Hajek <highegg@gmail.com>
+
+2008-08-12  Jaroslav Hajek  <highegg@gmail.com>
 
 	* lo-ieee.cc (octave_ieee_init): Try to ensure that octave_NaN is
 	classified as positive by lo_ieee_signbit.
 
-2008-08-11  Jaroslav Hajek <highegg@gmail.com>
+2008-08-11  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Array.cc (no_op_fcn): New static function.
 	(Array<T>::hermitian): If fcn is null, set to no_op_fcn.
@@ -91,7 +91,7 @@
 
 	* oct-inttypes.h: Style fixes.
 
-2008-07-30  Jaroslav Hajek <highegg@gmail.com>
+2008-07-30  Jaroslav Hajek  <highegg@gmail.com>
 
 	* oct-inttypes.h (octave_int<T>::trunc_flag): New member static field.
 	(octave_int<T>::get_trunc_flag, octave_int<T>::clear_trunc_flag): New
@@ -119,7 +119,7 @@
 	save_type, int, bool, octave_mach_info::float_format)): Test if
 	loaded NA values is the old representation and replace it.
 	
-2008-07-28  Jaroslav Hajek <highegg@gmail.com>
+2008-07-28  Jaroslav Hajek  <highegg@gmail.com>
 
 	* lo-math.h: Ensure log2 is undefined from cmath in C++ mode.
 
@@ -232,7 +232,7 @@
 	* lo-specfun.h: Fix typo in erff/erfcf declaration.
 	* lo-specfun.cc: Ditto. Add atanhf implementation.
 
-2008-06-20  Jaroslav Hajek <highegg@gmail.com>
+2008-06-20  Jaroslav Hajek  <highegg@gmail.com>
 
 	* MatrixType.h: Add missing include statement.
 
@@ -294,7 +294,7 @@
 	* Quad.h (class Quad): Handle float type.
 	(class FloatDefQuad, class FloatIndefQuad): New classes.
 
-2008-05-21  Jaroslav Hajek <highegg@gmail.com>
+2008-05-21  Jaroslav Hajek  <highegg@gmail.com>
 
 	* fCMatrix.h (xgemm): Provide decl.
 	(xcdotc, csyrk, cherk): New F77 decls.
@@ -594,7 +594,7 @@
 	(octave_base_shlib::add_to_fcn_names, octave_base_shlib::remove):
 	Perform reference counting for functions accessed.
 
-2008-04-30  Jaroslav Hajek <highegg@gmail.com>
+2008-04-30  Jaroslav Hajek  <highegg@gmail.com>
 
 	* lo-mappers.cc (xlog2 (double)): Compute log (2), not log2 (2).
 	(xlog2 (Complex), xlog2 (double, int&), xlog2 (Complex, int&)):
@@ -615,7 +615,7 @@
 	* idx-vector.cc (IDX_VEC_REP::idx_vector_rep (const boolNDArray&)):
 	Fix for-loop condition.
 
-2008-04-19  Jaroslav Hajek <highegg@gmail.com>
+2008-04-19  Jaroslav Hajek  <highegg@gmail.com>
 
 	* CmplxCHOL.cc, CmplxQR.cc, dbleCHOL.cc, dbleQR.cc: Fix calls to error()
 
@@ -639,7 +639,7 @@
 	file separator when path length is equal to 1 (handle case '\') under
 	__WIN32__ platforms.
 
-2008-04-07  Jaroslav Hajek <highegg@gmail.com>
+2008-04-07  Jaroslav Hajek  <highegg@gmail.com>
 
 	* dbleQR.h, dbleQR.cc (QR::shift_cols): New method.
 	* CmplxQR.h, CmplxQR.cc (ComplexQR::shift_cols): New method.

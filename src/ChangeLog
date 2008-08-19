@@ -1,29 +1,3 @@
-2008-08-19  Jaroslav Hajek <highegg@gmail.com>
-
-	* pt-assign.h (tree_simple_assignment::first_execution): New
-	member field.
-	(tree_simple_assignment::first_execution): Dtto.
-	* pt-assign.cc (tree_simple_assignment::tree_simple_assignment):
-	Initialize first_execution.
-	(tree_multi_assignment::tree_multi_assignment): Dtto.
-	(tree_simple_assignment::rvalue): Check for obsolete built-in
-	variables only at first execution.
-	(tree_multi_assignment::rvalue): Dtto.
-
-	* DLD-FUNCTIONS/__glpk__.cc (F__glpk__): Checks whether LB and UB are
-	of proper size.
-
-	* oct-obj.cc, oct-obj.h (octave_value_list::make_argv): 
-	Allow calling without fcn_name.
-	* load-save.cc (parse_save_options (const string_vector&, ...)): 
-	Return string_vector with parsed arguments removed instead.
-	(parse_save_options (const std::string&, ...)):	Dtto.
-	(Fsave): Fix calls to parse_save_options.
-
-2008-08-19  John W. Eaton  <jwe@octave.org>
-
-	* parse.y (Feval): Return value produced by evaluating CATCH string.
-
 2008-08-19  David Bateman  <dbateman@free.fr>
 
 	* OPERATORS/op-int-conv.cc (DEFINTCONVFN): New macro that warn
@@ -56,6 +30,32 @@
 	truncation.
 	* ov.cc (convert_to_int_array): Adapt for new means of
 	flagging integer truncation.
+
+2008-08-19  Jaroslav Hajek  <highegg@gmail.com>
+
+	* pt-assign.h (tree_simple_assignment::first_execution): New
+	member field.
+	(tree_simple_assignment::first_execution): Dtto.
+	* pt-assign.cc (tree_simple_assignment::tree_simple_assignment):
+	Initialize first_execution.
+	(tree_multi_assignment::tree_multi_assignment): Dtto.
+	(tree_simple_assignment::rvalue): Check for obsolete built-in
+	variables only at first execution.
+	(tree_multi_assignment::rvalue): Dtto.
+
+	* DLD-FUNCTIONS/__glpk__.cc (F__glpk__): Checks whether LB and UB are
+	of proper size.
+
+	* oct-obj.cc, oct-obj.h (octave_value_list::make_argv): 
+	Allow calling without fcn_name.
+	* load-save.cc (parse_save_options (const string_vector&, ...)): 
+	Return string_vector with parsed arguments removed instead.
+	(parse_save_options (const std::string&, ...)):	Dtto.
+	(Fsave): Fix calls to parse_save_options.
+
+2008-08-19  John W. Eaton  <jwe@octave.org>
+
+	* parse.y (Feval): Return value produced by evaluating CATCH string.
 
 2008-08-12  John W. Eaton  <jwe@octave.org>
 
@@ -235,7 +235,7 @@
 	* gripes.cc (gripe_truncated_conversion): Use the warning ID
 	Octave:int-convert-overflow.
 
-2008-07-30  Jaroslav Hajek <highegg@gmail.com>
+2008-07-30  Jaroslav Hajek  <highegg@gmail.com>
 
 	* gripes.cc (gripe_truncated_conversion): New function.
 	* gripes.h (gripe_truncated_conversion): Declare it.
@@ -427,7 +427,7 @@
 	* toplev.h (octave_call_stack::do_caller): New function.
 	(octave_call_stack::caller): Use it.
 
-2008-07-17  Jaroslav Hajek <highegg@gmail.com>
+2008-07-17  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Makefile.in (convhulln.oct, __delaunayn__.oct, __voronoi__.oct, 
 	regexp.oct, urlwrite.oct, __glpk__.oct, fltk_backend.oct):
@@ -724,12 +724,12 @@
 
 	* debug.cc (Fdbstack): Avoid shadowed variable warning.
 
-2008-06-23  Jaroslav Hajek <highegg@gmail.com>
+2008-06-23  Jaroslav Hajek  <highegg@gmail.com>
 
 	* genprops.awk (emit_source): Avoid gensub for portability.
 	(BEGIN): Ditto.
 
-2008-06-20  Jaroslav Hajek <highegg@gmail.com>
+2008-06-20  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/regexp.cc (octregexp_list): Make "once" an output
 	argument.
@@ -1514,7 +1514,7 @@
 	* graphics.cc (axes::properties::set_defaults): Use correct
 	default values for gridlinestyle and minorgridlinestyle.
 
-2008-06-03  Jaroslav Hajek <highegg@gmail.com>
+2008-06-03  Jaroslav Hajek  <highegg@gmail.com>
 
 	* load-save.cc (Fload): Fix "-7" option.
 
@@ -1620,12 +1620,12 @@
 	* ov.cc (octave_value do_cat_op (const octave_value&, const
 	octave_value&, const Array<octave_idx_type>&)): ditto.
 
-2008-06-02  Jaroslav Hajek <highegg@gmail.com>
+2008-06-02  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-cell.cc (Fcellstr): For compatibility with Matlab, return {''}
 	when given ''.
 
-2008-05-26  Jaroslav Hajek <highegg@gmail.com>
+2008-05-26  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/fsolve.cc (fsolve_user_function,
 	fsolve_user_jacobian): Reshape argument to original dims before
@@ -1639,7 +1639,7 @@
 	(Fquad): Handle float type.
 	New tests.
 
-2008-05-21  Jaroslav Hajek <highegg@gmail.com>
+2008-05-21  Jaroslav Hajek  <highegg@gmail.com>
 
 	* OPERATORS/op-fcm-fcm.cc (trans_mul, mul_trans, herm_mul, mul_herm):
 	New functions.
@@ -2327,7 +2327,7 @@
 	* data.cc: Fix tests.  Use "%!assert", not "%! assert" for
 	individual assert tests.
 
-2008-04-30  Jaroslav Hajek <highegg@gmail.com>
+2008-04-30  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-base.cc, ov-base.h, ov-bool-mat.h, ov-bool-sparse.h,
 	ov-bool.h, ov-complex.cc, ov-complex.h, ov-cx-mat.cc, ov-cx-mat.h,
@@ -2397,7 +2397,7 @@
 	* ov-usr-fcn.h (octave_user_script::octave_user_script): 
 	Also Initialize t_parsed and t_checked.
 
-2008-04-24  Jaroslav Hajek <highegg@gmail.com>
+2008-04-24  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-usr-fcn.h (octave_user_script::octave_user_script): 
 	Initialize call_depth.
@@ -2604,7 +2604,7 @@
 	(octave_user_script::subsref, octave_user_script::accept,
 	octave_user_script::traceback_error): Provide decls.
 
-2008-04-14  Jaroslav Hajek <highegg@gmail.com>
+2008-04-14  Jaroslav Hajek  <highegg@gmail.com>
 
 	* oct-stream.cc (octave_scan_1): Ensure digit following X is hex
 	digit before reading number as hex.
@@ -2619,7 +2619,7 @@
 	* DLD-FUNCTIONS/dispatch.cc: Replace system("echo '...'>...") calls
 	with real file writing.
 
-2008-04-07  Jaroslav Hajek <highegg@gmail.com>
+2008-04-07  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/qr.cc (Fqrshift): New function.
 	* DLD-FUNCTIONS/chol.cc (Fcholinsert, Fcholdelete, Fcholshift):

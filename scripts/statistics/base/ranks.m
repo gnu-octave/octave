@@ -19,11 +19,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} ranks (@var{x}, @var{dim})
-## If @var{x} is a vector, return the (column) vector of ranks of
-## @var{x} adjusted for ties.
-##
-## If @var{x} is a matrix, do the above for along the first 
-## non-singleton dimension. If the optional argument @var{dim} is
+## Return the ranks of @var{x} along the first non-singleton dimension
+## adjust for ties. If the optional argument @var{dim} is
 ## given, operate along this dimension.
 ## @end deftypefn
 

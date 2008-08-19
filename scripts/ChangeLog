@@ -1,3 +1,7 @@
+2008-08-19  David Bateman  <dbateman@free.fr>
+
+	statistics/base/ranks.m: Doc fix.
+
 2008-08-08  John W. Eaton  <jwe@octave.org>
 
 	* general/Makefile.in (SOURCES): Add cellidx.m to the list.

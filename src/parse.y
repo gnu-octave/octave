@@ -3852,9 +3852,6 @@ eval ('error (\"This is a bad example\");',\n\
       octave_value_list tmp = eval_string (args(0), nargout > 0,
 					   parse_status, nargout);
 
-      if (nargout > 0)
-	retval = tmp;
-
       if (nargin > 1 && (parse_status != 0 || error_state))
 	{
 	  error_state = 0;
@@ -3864,10 +3861,13 @@ eval ('error (\"This is a bad example\");',\n\
 
 	  buffer_error_messages--;
 
-	  eval_string (args(1), 0, parse_status, nargout);
+	  tmp = eval_string (args(1), nargout > 0, parse_status, nargout);
 
-	  retval = octave_value_list ();
+	  if (nargout > 0)
+	    retval = tmp;
 	}
+      else if (nargout > 0)
+	retval = tmp;
 
       unwind_protect::run_frame ("Feval");
     }

@@ -1,3 +1,7 @@
+2008-08-19  John W. Eaton  <jwe@octave.org>
+
+	* parse.y (Feval): Return value produced by evaluating CATCH string.
+
 2008-08-12  John W. Eaton  <jwe@octave.org>
 
 	* pt-fcn-handle.cc (tree_anon_fcn_handle::rvalue):

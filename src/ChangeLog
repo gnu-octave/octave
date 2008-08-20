@@ -1,3 +1,10 @@
+2008-08-20  John W. Eaton  <jwe@octave.org>
+
+	* help.cc (builtin_help): Go to next symbol name on error.
+	(do_type, do_which): Omit separate path search for files.
+	(help_from_symbol_table): Only insert Texinfo markup if it looks
+	like the help message is already in Texinfo.
+
 2008-08-19  David Bateman  <dbateman@free.fr>
 
 	* load-path.cc (load-path::do_find_dir (const std:string&) const)):

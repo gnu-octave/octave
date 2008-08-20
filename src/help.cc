@@ -979,7 +979,17 @@ help_from_symbol_table (std::ostream& os, const std::string& nm,
     {
       if (h.length () > 0)
 	{
-	  h += "\n\n@noindent\n" + symbol_table::help_for_dispatch (nm);
+	  std::string dispatch_help = symbol_table::help_for_dispatch (nm);
+
+	  if (! dispatch_help.empty ())
+	    {
+	      size_t pos = 0;
+
+	      std::string pfx = looks_like_texinfo (h, pos)
+		? std::string ("\n\n@noindent\n") : std::string ("\n\n");
+
+	      h += pfx + dispatch_help;
+	    }
 
 	  display_help_text (os, h);
 
@@ -1094,8 +1104,22 @@ builtin_help (int argc, const string_vector& argv)
       if (help_from_symbol_table (octave_stdout, argv[i], symbol_found))
 	continue;
 
+      if (error_state)
+	{
+	  octave_stdout << "\n";
+	  error_state = 0;
+	  continue;
+	}
+
       if (help_from_file (octave_stdout, argv[i], symbol_found))
 	continue;
+
+      if (error_state)
+	{
+	  octave_stdout << "\n";
+	  error_state = 0;
+	  continue;
+	}
 
       if (symbol_found)
 	octave_stdout << "\nhelp: `" << argv[i]
@@ -1104,7 +1128,7 @@ builtin_help (int argc, const string_vector& argv)
 	octave_stdout << "\nhelp: `" << argv[i]
 		      << "' not found\n"; 
     }
-
+  
   additional_help_message (octave_stdout);
 }
 
@@ -1203,10 +1227,12 @@ do_type (std::ostream& os, const std::string& name, bool pr_type_info,
 		os << name << " is a built-in function" << std::endl;
 	      else if (fcn->is_dld_function () || fcn->is_mex_function ())
 		os << name
-		   << " is a dyanmically loaded function from the file\n"
+		  << " is a dyanmically loaded function from the file\n"
 		   << fn << std::endl;
 	      else if (pr_orig_txt && ! fn.empty ())
-		display_file (os, name, fn, "function", pr_type_info, quiet);
+		display_file (os, name, fn,
+			      val.is_user_script () ? "script" : "function",
+			      pr_type_info, quiet);
 	      else
 		{
 		  if (pr_type_info && ! quiet)
@@ -1218,7 +1244,11 @@ do_type (std::ostream& os, const std::string& name, bool pr_type_info,
 			  if (fn.empty ())
 			    os << " is a command-line function:\n\n";
 			  else
-			    os << " is a function defined from the file\n"
+			    os << " is a "
+			       << (val.is_user_script ()
+				   ? std::string ("script")
+				   : std::string ("function"))
+			       << " defined from the file\n"
 			       << fn << ":\n\n";
 			}
 		    }
@@ -1228,15 +1258,6 @@ do_type (std::ostream& os, const std::string& name, bool pr_type_info,
 		  fcn->accept (tpc);
 		}
 	    }
-	}
-      else
-	{
-	  std::string fn = fcn_file_in_path (name);
-
-	  if (! fn.empty ())
-	    display_file (os, name, fn, "script", pr_type_info, quiet);
-	  else
-	    error ("type: `%s' undefined", name.c_str ());
 	}
     }
 }
@@ -1313,6 +1334,8 @@ the @code{-q} option suppresses this behaviour.\n\
 std::string
 do_which (const std::string& name)
 {
+  std::string retval;
+
   octave_value val = symbol_table::find_function (name);
 
   if (val.is_defined ())
@@ -1323,14 +1346,14 @@ do_which (const std::string& name)
 	{
 	  std::string fn = fcn->fcn_file_name ();
 
-	  return fn.empty ()
+	  retval = fn.empty ()
 	    ? (fcn->is_user_function ()
 	       ? "command-line function" : "built-in function")
 	    : fn;
 	}
     }
 
-  return fcn_file_in_path (name);
+  return retval;
 }
 
 static void
@@ -1356,21 +1379,14 @@ do_which (std::ostream& os, const std::string& name)
 		desc = "is a built-in function";
 	    }
 	  else
-	    desc = "is the function from the file " + desc;
+	    desc = "is the "
+	      + (val.is_user_script ()
+		 ? std::string ("script") : std::string ("function"))
+	      + " from the file " + desc;
 	}
+      
+      os << "which: `" << name << "' " << desc << std::endl;
     }
-
-  if (desc.empty ())
-    {
-      std::string fn = fcn_file_in_path (name);
-
-      if (! fn.empty ())
-	desc = "is the script file " + fn;
-      else
-	desc = "is undefined";
-    }
-
-  os << "which: `" << name << "' " << desc << std::endl;
 }
 
 DEFCMD (which, args, nargout,

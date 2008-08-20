@@ -1302,7 +1302,7 @@ function configure_make (desc, packdir, verbose)
     if (isempty (filenames))
       idx = [];
     else
-      idx = cellfun (@(x) is_architecture_dependent (x), filenames);
+      idx = cellfun (@is_architecture_dependent, filenames);
     endif
     archdependent = filenames (idx);
     archindependent = filenames (!idx);

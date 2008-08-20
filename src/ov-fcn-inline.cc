@@ -91,7 +91,20 @@ octave_fcn_inline::octave_fcn_inline (const std::string& f,
 	  octave_user_function *uf = fcn.user_function_value ();
 
 	  if (uf)
-	    uf->stash_parent_fcn_scope (octave_call_stack::current_scope ());
+	    {
+	      octave_function *curr_fcn = octave_call_stack::current ();
+
+	      if (curr_fcn)
+		{
+		  symbol_table::scope_id parent_scope
+		    = curr_fcn->parent_fcn_scope ();
+
+		  if (parent_scope < 0)
+		    parent_scope = curr_fcn->scope ();
+	
+		  uf->stash_parent_fcn_scope (parent_scope);
+		}
+	    }
 	}
     }
 

@@ -114,7 +114,13 @@ tree_anon_fcn_handle::rvalue (void)
   if (curr_fcn)
     {
       uf->stash_parent_fcn_name (curr_fcn->name ());
-      uf->stash_parent_fcn_scope (curr_fcn->scope ());
+
+      symbol_table::scope_id parent_scope = curr_fcn->parent_fcn_scope ();
+
+      if (parent_scope < 0)
+	parent_scope = curr_fcn->scope ();
+	
+      uf->stash_parent_fcn_scope (parent_scope);
     }
 
   uf->mark_as_inline_function ();

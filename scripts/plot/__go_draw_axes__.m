@@ -1009,7 +1009,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 
     ## This is need to prevent warnings for rotations in 3D plots, while
     ## allowing colorbars with contours..
-    if (nd == 2 || data_idx > 1)
+    if (nd == 2 || (data_idx > 1 && !view_map))
       fputs (plot_stream, "set pm3d implicit;\n");
     else
       fputs (plot_stream, "set pm3d explicit;\n");

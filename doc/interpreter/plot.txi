@@ -208,7 +208,10 @@ legend displaying the name of the plotted function.
 @DOCSTRING(fplot)
 
 Other functions that can create two-dimensional plots directly from a
-function include @code{ezcontour}, @code{ezcontourf} and @code{ezpolar}.
+function include @code{ezplot), @code{ezcontour}, @code{ezcontourf} and
+@code{ezpolar}.
+
+@DOCSTRING(ezplot)
 
 @DOCSTRING(ezcontour)
 

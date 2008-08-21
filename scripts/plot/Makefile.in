@@ -96,6 +96,7 @@ SOURCES = \
   ezcontour.m \
   ezmeshc.m \
   ezmesh.m \
+  ezplot.m \
   ezplot3.m \
   ezpolar.m \
   ezsurfc.m \

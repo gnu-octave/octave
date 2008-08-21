@@ -26,15 +26,23 @@ function [h, needusage] = __ezplot__ (pfunc, varargin)
   else
     iscontour = false;
   endif
-  if (strcmp (pfunc, "plot3"))
+  if (strcmp (pfunc, "plot"))
+    isplot = true;
+    isplot3 = false;
+    ispolar = false;
+    nargs = 1;
+  elseif (strcmp (pfunc, "plot3"))
+    isplot = false;
     isplot3 = true;
     ispolar = false;
-    nargs = 1
+    nargs = 1;
   elseif (strcmp (pfunc, "polar"))
+    isplot = false;
     isplot3 = false;
     ispolar = true;
     nargs = 1;
   else
+    isplot = false;
     isplot3 = false;
     ispolar = false;
     nargs = 2;
@@ -51,12 +59,25 @@ function [h, needusage] = __ezplot__ (pfunc, varargin)
   parametric = false;
   fun = varargin {1};
   if (ischar (fun))
-    fun = vectorize (inline (fun));
-    if (length (argnames (fun)) != nargs)
+    if (exist (fun, "file") || exist (fun, "builtin"))
+      fun = vectorize (inline (cstrcat (fun, "(t)")));
+    else
+      fun = vectorize (inline (fun));
+    endif
+    if (isplot && length (argnames (fun)) == 2)
+      nargs = 2;
+    elseif (length (argnames (fun)) != nargs)
       error ("%s: excepting a function of %d arguments", func, nargs);
     endif
     fstr = formula (fun);
-    if (isplot3)
+    if (isplot)
+      xarg = argnames(fun){1};
+      if (nargs == 2)
+	yarg = argnames(fun){2};
+      else
+	yarg = "";
+      endif
+    elseif (isplot3)
       xarg = "x";
       yarg = "y";
     elseif (ispolar)
@@ -67,15 +88,24 @@ function [h, needusage] = __ezplot__ (pfunc, varargin)
       yarg = argnames(fun){2};
     endif
   elseif (strcmp (typeinfo (fun), "inline function"))
-    if (length (argnames (fun)) != nargs)
+    if (isplot && length (argnames (fun)) == 2)
+      nargs = 2;
+    elseif (length (argnames (fun)) != nargs)
       error ("%s: excepting a function of %d arguments", func, nargs);
     endif
     fun = vectorize (fun);
     fstr = formula (fun);
-    if (isplot3)
+    if (isplot)
+      xarg = argnames(fun){1};
+      if (nargs == 2)
+	yarg = argnames(fun){2};
+      else
+	yarg = "";
+      endif
+    elseif (isplot3)
       xarg = "x";
       yarg = "y";
-    elseif (ispolar)
+    elseif (isplot || ispolar)
       xarg = "";
       yarg = "";
     else
@@ -84,13 +114,26 @@ function [h, needusage] = __ezplot__ (pfunc, varargin)
     endif
   elseif (isa (fun, "function_handle"))
     fstr = func2str (fun);
-    args = regexp (substr (fstr, 3, findstr (fstr, ")")(1) - 3), 
-		   '(\w[\w\d]*)', 'tokens');
-    if (length (args) != nargs)
+    if (length (findstr (fstr, ")")) != 0)
+      args = regexp (substr (fstr, 3, findstr (fstr, ")")(1) - 3), 
+		     '(\w[\w\d]*)', 'tokens');
+    fstr = substr (fstr, findstr (fstr, ")")(1) + 1);
+    else
+      args = {{"x"}};
+    endif
+    if (isplot && length (args) == 2)
+      nargs = 2;
+    elseif (length (args) != nargs)
       error ("%s: excepting a function of %d arguments", func, nargs);
     endif
-    fstr = substr (fstr, findstr (fstr, ")")(1) + 1);
-    if (isplot3)
+    if (isplot)
+      xarg = args{1}{1};
+      if (nargs == 2)
+	yarg = args{2}{1};
+      else
+	yarg = "";
+      endif
+    elseif (isplot3)
       xarg = "x";
       yarg = "y";
     elseif (ispolar)
@@ -104,13 +147,17 @@ function [h, needusage] = __ezplot__ (pfunc, varargin)
     error ("%s: expecting string, inline function or function handle", func);
   endif
 
-  if (nargin > 2)
+  if (nargin > 2 || (nargin == 2 && isplot))
     funx = fun;
     fstrx = fstr;
     funy = varargin {2};
     if (ischar (funy) && ! strcmp (funy, "circ") && ! strcmp (funy, "animate"))
       parametric = true;
-      funy = vectorize (inline (funy));
+      if (exist (funy, "file") || exist (funy, "builtin"))
+	funy = vectorize (inline (cstrcat (funy, "(t)")));
+      else
+	funy = vectorize (inline (funy));
+      endif
       if (length (argnames (funy)) != nargs)
 	error ("%s: excepting a function of %d arguments", func, nargs);
       endif
@@ -125,19 +172,35 @@ function [h, needusage] = __ezplot__ (pfunc, varargin)
     elseif (isa (funy, "function_handle"))
       parametric = true;
       fstry = func2str (funy);
-      args = regexp (substr (fstry, 3, findstr (fstry, ")")(1) - 3), 
-		     '(\w[\w\d]*)', 'tokens');
+      if (length (findstr (fstry, ")")) != 0)
+	args = regexp (substr (fstry, 3, findstr (fstry, ")")(1) - 3), 
+		       '(\w[\w\d]*)', 'tokens');
+	fstry = substr (fstry, findstr (fstry, ")")(1) + 1);
+      else
+	args = {{"y"}};
+      endif
       if (length (args) != nargs)
 	error ("%s: excepting a function of %d arguments", func, nargs);
       endif
-      fstry = substr (fstry, findstr (fstry, ")")(1) + 1);
     endif
 
-    if (parametric)
+    if (parametric && isplot)
+      xarg = "x";
+      yarg = "y";
+      if (nargs == 2)
+	error ("%s: can not define a parametric function in this manner");
+      endif
+    endif
+
+    if (!isplot && parametric)
       funz = varargin {3};
       if (ischar (funz) && ! strcmp (funz, "circ") && 
-	  ! strcmp (funy, "animate"))
-	funz = vectorize (inline (funz));
+	  ! strcmp (funz, "animate"))
+	if (exist (funz, "file") || exist (funz, "builtin"))
+	  funz = vectorize (inline (cstrcat (funz, "(t)")));
+	else
+	  funz = vectorize (inline (funz));
+	endif
 	if (length (argnames (funz)) != nargs)
 	  error ("%s: excepting a function of %d arguments", func, nargs);
 	endif
@@ -162,12 +225,20 @@ function [h, needusage] = __ezplot__ (pfunc, varargin)
     endif
   endif
 
-  n = 60;
+  if (isplot && nargs != 2)
+    n = 500; 
+  else
+    n = 60;
+  endif
   domain = [];
   circ = false;
   animate = false;
   if (parametric)
-    iarg = 4;
+    if (isplot)
+      iarg = 3;
+    else
+      iarg = 4;
+    endif
   else
     iarg = 2;
   endif
@@ -197,7 +268,7 @@ function [h, needusage] = __ezplot__ (pfunc, varargin)
   endif
 
   if (circ)
-    if (iscontour || isplot3)
+    if (iscontour || isplot3 || isplot)
       needusage = true;
       return;
     endif
@@ -221,15 +292,23 @@ function [h, needusage] = __ezplot__ (pfunc, varargin)
     error ("%s: animated graphs not implemented", func);
   endif
 
-  if (isplot3 || ispolar)
+  if (isplot3 || ispolar || (isplot && nargs == 1))
     X = linspace (domain (1), domain (2), n);
+  elseif (isplot && numel (domain) == 2)
+    x = linspace (domain (1), domain (2), n);
+    [X, Y] = meshgrid (x, x);
   else
     x = linspace (domain (1), domain (2), n);
     y = linspace (domain (3), domain (4), n);
     [X, Y] = meshgrid (x, y);
   endif
+
   if (parametric)
-    if (isplot3)
+    if (isplot)
+      XX = feval (funx, X);
+      Z = feval (funy, X);
+      X = XX;
+    elseif (isplot3)
       Z = feval (funz, X);
       XX = feval (funx, X);
       YY = feval (funy, X);
@@ -252,26 +331,77 @@ function [h, needusage] = __ezplot__ (pfunc, varargin)
 		      '\./', '/'), '[\.]*\*', '');
     fstry = regexprep (regexprep (regexprep (fstry,'\.\^\s*','^'), 
 		      '\./', '/'), '[\.]*\*', '');
-    fstrz = regexprep (regexprep (regexprep (fstrz,'\.\^\s*','^'), 
-		      '\./', '/'), '[\.]*\*', '');
-    fstr = cstrcat ("[",fstrx,",",fstry,",",fstrz,"]");
+    if (isplot)
+      fstr = cstrcat ("x = ",fstrx,", y = ",fstry);
+    else
+      fstrz = regexprep (regexprep (regexprep (fstrz,'\.\^\s*','^'), 
+				    '\./', '/'), '[\.]*\*', '');
+      fstr = cstrcat ("x = ",fstrx,",y = ",fstry,", z = ",fstrz);
+    endif
   else
     if (isplot3)
       needusage = true;
       return;
     endif
 
-    if (ispolar)
-      Z = feval (fun, X);
-    else
-      Z = feval (fun, X, Y);
-
-      ## Eliminate the singularities
-      Z = __eliminate_sing__ (Z);
-    endif
-
     fstr = regexprep (regexprep (regexprep (fstr,'\.\^\s*','^'), '\./', '/'), 
 		      '[\.]*\*', '');
+    if (isplot && nargs == 2)
+      if (strcmp (typeinfo (fun), "inline function") && 
+	  !isempty (strfind (formula (fun) , "=")))
+	fun = inline (cstrcat (strrep (formula (fun), "=", "- ("), ")"));
+      else
+	fstr = cstrcat (fstr, " = 0");
+      endif
+
+      Z = feval (fun, X, Y);
+
+      ## Matlab returns line objects for this case and so can't call 
+      ## contour directly as it returns patch objects to allow colormaps
+      ## to work with contours. Therefore recreate the lines from the
+      ## output for contourc, and store in cell arrays.
+      [c, lev] = contourc (X, Y, Z, [0, 0]);
+
+      i1 = 1;
+      XX = {};
+      YY = {};
+      while (i1 < length (c))
+	clev = c(1,i1);
+	clen = c(2,i1);
+	XX = [XX, {c(1, i1+1:i1+clen)}];
+	YY = [YY, {c(2, i1+1:i1+clen)}];
+	i1 += clen+1;
+      endwhile
+    else  
+      if (ispolar)
+	Z = feval (fun, X);
+      elseif (isplot)
+	Z = real (feval (fun, X));
+
+	## Eliminate the singularities. This seems to be what matlab
+	## does, but can't be sure.
+	XX = sort (Z (isfinite (Z)));
+	if (length (X) > 4)
+	  d = XX(fix (7 * length (XX) / 8)) - XX(fix (length (XX) / 8));
+	  yrange = [max(XX(1) - d/8, XX(fix (length (XX) / 8)) - d), ...
+		    min(XX(end) + d/8, XX(fix (7 * length (XX) / 8)) + d)];
+	else
+	  yrange = [XX(1), XX(end)];
+        endif
+
+	idx = 2 : length(Z);
+	idx = find (((Z(idx) > yrange(2) / 2) & (Z(idx-1) < yrange(1) / 2)) |
+		 ((Z(idx) < yrange(1) / 2) & (Z(idx-1) > yrange (2) / 2)));
+	if (any(idx))
+	  Z(idx) = NaN; 
+	endif
+      else
+	Z = feval (fun, X, Y);
+
+	## Eliminate the singularities
+	Z = __eliminate_sing__ (Z);
+      endif
+    endif
   endif
 
   oldax = gca (); 
@@ -279,8 +409,21 @@ function [h, needusage] = __ezplot__ (pfunc, varargin)
     axes (ax);
     if (iscontour)
       [clev, h] = feval (pfunc, X, Y, Z);
-    elseif (ispolar)
+    elseif (isplot && nargs == 2)
+      h = [];
+      hold_state = get (ax, "nextplot");
+      for i = 1 : length (XX)
+	h = [h; plot(XX{i}, YY{i})];
+	if (i == 1)
+	  set (ax, "nextplot", "add")
+	endif
+      endfor
+      set (ax, "nextplot", hold_state)
+    elseif (ispolar || isplot)
       h = feval (pfunc, X, Z);
+      if (isplot && !parametric)
+	axis ([X(1), X(end), yrange]);
+      endif
     else
       h = feval (pfunc, X, Y, Z);
     endif

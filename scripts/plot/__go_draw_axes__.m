@@ -1021,7 +1021,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
       fputs (plot_stream, "unset hidden3d;\n");
     endif
 
-    have_data = (! (isempty (data) || any (cellfun (@isempty, data))));
+    have_data = (! (isempty (data) || all (cellfun (@isempty, data))));
 
     if (isempty (xlim))
       return;
@@ -1461,15 +1461,19 @@ function __gnuplot_write_data__ (plot_stream, data, nd, parametric, cdata)
       n = columns (data);
       have_nans = true;
       num_nan_elts = numel (nan_elts);
-      k = 1;
-      for i = 1:n
-	if (have_nans && i == nan_elts(k))
-	  fputs (plot_stream, "\n");
-	  have_nans = ++k <= num_nan_elts;
-	else
-	  fprintf (plot_stream, fmt, data(:,i));
-	endif
-      endfor
+      if (num_nan_elts == n)
+	fputs (plot_stream, "Inf Inf\n");
+      else
+	k = 1;
+	for i = 1:n
+	  if (have_nans && i == nan_elts(k))
+	    fputs (plot_stream, "\n");
+	    have_nans = ++k <= num_nan_elts;
+	  else
+	    fprintf (plot_stream, fmt, data(:,i));
+	  endif
+	endfor
+      endif
     endif
   elseif (nd == 3)
     ## FIXME -- handle NaNs here too?

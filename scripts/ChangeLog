@@ -1,3 +1,9 @@
+2008-08-21  John W. Eaton  <jwe@octave.org>
+
+	* plot/__go_draw_axes__.m: Fix test for have_data.
+	(__gnuplot_write_data__): Write "Inf Inf\n" if all data pairs
+	contain NaN values.
+
 2008-08-21  Thomas Treichl  <Thomas.Treichl@gmx.net>
 	
 	* optimization/sqp.m: Increase test script tolerance.

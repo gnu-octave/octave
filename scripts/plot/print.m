@@ -423,7 +423,7 @@ function print (varargin)
     endif
 
     if (! isempty (convertname))
-      command = sprintf ("convert '%s' '%s'", name, convertname);
+      command = sprintf ("convert '%s' '%s'", name, convertname)
       [errcode, output] = system (command);
       unlink (name);
       if (errcode)

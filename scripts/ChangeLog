@@ -1,3 +1,7 @@
+2008-08-21  Thomas Treichl  <Thomas.Treichl@gmx.net>
+	
+	* optimization/sqp.m: Increase test script tolerance.
+
 2008-08-21  David Bateman  <dbateman@free.fr>
 
 	* plot/ezplot.m : New function.

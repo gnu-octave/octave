@@ -1184,7 +1184,7 @@ matrix logarithm, see @ref{Linear Algebra}.\n\
 %!assert(log ([1, e, e^2]), [0, 1, 2], sqrt (eps));
 %!assert(log ([-0.5, -1.5, -2.5]), log([0.5, 1.5, 2.5]) + pi*1i, sqrt (eps));
 
-%!assert(log (single([1, e, e^2])), single([0, 1, 2]), sqrt (eps));
+%!assert(log (single([1, e, e^2])), single([0, 1, 2]), 4*sqrt (eps));
 %!assert(log (single([-0.5, -1.5, -2.5])), single(log([0.5, 1.5, 2.5]) + pi*1i), sqrt (eps));
 
 %!error log ();

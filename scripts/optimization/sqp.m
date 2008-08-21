@@ -742,4 +742,4 @@ endfunction
 %!
 %! obj_opt = 0.0539498477702739;
 %!
-%! assert (all (abs (x-x_opt) < 4*sqrt (eps)) && abs (obj-obj_opt) < sqrt (eps));
+%! assert (all (abs (x-x_opt) < 5*sqrt (eps)) && abs (obj-obj_opt) < sqrt (eps));

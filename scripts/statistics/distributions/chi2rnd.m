@@ -68,7 +68,7 @@ function rnd = chi2rnd (n, r, c)
      if (find (!(n > 0) | !(n < Inf)))
        rnd = NaN * ones (sz);
      else
-       rnd = 2 * randg(n/2, sz)
+       rnd = 2 * randg(n/2, sz);
      endif
   else
     [retval, n, dummy] = common_size (n, ones (sz));

@@ -1,3 +1,7 @@
+2008-08-22  John W. Eaton  <jwe@octave.org>
+
+	* statistics/distributions/chi2rnd.m: Fix missing semicolon.
+
 2008-08-21  John W. Eaton  <jwe@octave.org>
 
 	* plot/__go_draw_axes__.m: Fix test for have_data.

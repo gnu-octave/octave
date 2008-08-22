@@ -1,3 +1,10 @@
+2008-08-22  John W. Eaton  <jwe@octave.org>
+
+	* symtab.h (symbol_table::inherit): Pass reference to symbol table
+	to do_inherit instead of scope.
+	(symbol_table::do_inherit): First arg is now reference to
+	symbol_table, not scope id.  Insert all variables from donor scope.
+
 2008-08-21  Thomas Treichl  <Thomas.Treichl@gmx.net>
 	
 	* mappers.cc: Increase test script tolerance.

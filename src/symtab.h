@@ -1020,7 +1020,12 @@ public:
     symbol_table *inst = get_instance (scope);
 
     if (inst)
-      inst->do_inherit (donor_scope, donor_context);
+      {
+	symbol_table *donor_symbol_table = get_instance (donor_scope);
+
+	if (donor_symbol_table)
+	  inst->do_inherit (*donor_symbol_table, donor_context);
+      }
   }
 
   static bool at_top_level (void) { return xcurrent_scope == xtop_scope; }
@@ -1923,18 +1928,39 @@ private:
       return p->second;
   }
 
-  void do_inherit (scope_id donor_scope, context_id donor_context)
+  void do_inherit (symbol_table& donor_symbol_table, context_id donor_context)
   {
-    for (table_iterator p = table.begin (); p != table.end (); p++)
-      {
-	symbol_record& sr = p->second;
+    // Copy all variables from the donor scope in case they are needed
+    // in a subsequent anonymous function.  For example, to allow
+    //
+    //   function r = f2 (f, x)
+    //     r = f (x);
+    //   end
+    //
+    //   function f = f1 (k)
+    //     f = @(x) f2 (@(y) y-k, x);
+    //   end
+    //
+    //   f = f1 (3)  ==>  @(x) fcn2 (@(y) y - k, x)
+    //   f (10)      ==>  7
+    //
+    // to work as expected.
+    //
+    // FIXME -- is there a better way to accomplish this?
 
-	std::string nm = sr.name ();
+    std::map<std::string, symbol_record> donor_table = donor_symbol_table.table;
+
+    for (table_iterator p = donor_table.begin (); p != donor_table.end (); p++)
+      {
+	symbol_record& donor_sr = p->second;
+
+	std::string nm = donor_sr.name ();
+
+	symbol_record& sr = do_insert (nm);
 
 	if (! (sr.is_automatic () || sr.is_formal () || nm == "__retval__"))
 	  {
-	    octave_value val
-	      = symbol_table::varval (nm, donor_scope, donor_context);
+	    octave_value val = donor_sr.varval (donor_context);
 
 	    if (val.is_defined ())
 	      {

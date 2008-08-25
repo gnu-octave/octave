@@ -1,3 +1,7 @@
+2008-08-25  Thomas L. Scofield  <scofield@calvin.edu>
+
+	* DLD-FUNCTIONS/__magick_read__.cc: Untabify.
+
 2008-08-25  David Bateman  <dbateman@free.fr>
 
 	* graphics.cc (void gh_manager::do_execute_callback 

@@ -36,12 +36,12 @@ unsigned int
 scale_quantum_to_depth (const Magick::Quantum& quantum, unsigned int depth)
 {
   return (static_cast<unsigned int> (static_cast<double> (quantum)
-				     / MaxRGB * ((1 << depth) - 1)));
+                                     / MaxRGB * ((1 << depth) - 1)));
 }
 
 octave_value_list
 read_indexed_images (std::vector<Magick::Image>& imvec,
-		     const Array<int>& frameidx, bool wantalpha)
+                     const Array<int>& frameidx, bool wantalpha)
 {
   octave_value_list output;
 
@@ -69,43 +69,43 @@ read_indexed_images (std::vector<Magick::Image>& imvec,
     case 4:
     case 8:
       {
-	uint8NDArray im = uint8NDArray (dim_vector (rows, columns, nframes));
+        uint8NDArray im = uint8NDArray (dim_vector (rows, columns, nframes));
 
-	for (int frame = 0; frame < nframes; frame++)
-	  {
-	    imvec[frameidx(frame)].getConstPixels (0, 0, columns, rows);
+        for (int frame = 0; frame < nframes; frame++)
+          {
+            imvec[frameidx(frame)].getConstPixels (0, 0, columns, rows);
 
-	    const Magick::IndexPacket *pix
-	      = imvec[frameidx(frame)].getConstIndexes ();
+            const Magick::IndexPacket *pix
+              = imvec[frameidx(frame)].getConstIndexes ();
 
-	    i = 0;
+            i = 0;
 
-	    for (int y = 0; y < rows; y++)
-	      for (int x = 0; x < columns; x++)
-		im(y,x,frame) = static_cast<octave_uint8> (pix[i++]);
-	  }
-	im.chop_trailing_singletons ();
-	output(0) = octave_value (im);
+            for (int y = 0; y < rows; y++)
+              for (int x = 0; x < columns; x++)
+                im(y,x,frame) = static_cast<octave_uint8> (pix[i++]);
+          }
+        im.chop_trailing_singletons ();
+        output(0) = octave_value (im);
       }
       break;
 
     case 16:
       {
-	uint16NDArray im = uint16NDArray (dim_vector(rows, columns, nframes));
+        uint16NDArray im = uint16NDArray (dim_vector(rows, columns, nframes));
 
-	for (int frame = 0; frame < nframes; frame++)
-	  {
-	    imvec[frameidx(frame)].getConstPixels (0, 0, columns, rows);
+        for (int frame = 0; frame < nframes; frame++)
+          {
+            imvec[frameidx(frame)].getConstPixels (0, 0, columns, rows);
 
-	    const Magick::IndexPacket *pix
-	      = imvec[frameidx(frame)].getConstIndexes ();
+            const Magick::IndexPacket *pix
+              = imvec[frameidx(frame)].getConstIndexes ();
 
-	    i = 0;
+            i = 0;
 
-	    for (int y = 0; y < rows; y++)
-	      for (int x = 0; x < columns; x++)
-		im(y,x,frame) = static_cast<octave_uint16> (pix[i++]);
-	  }
+            for (int y = 0; y < rows; y++)
+              for (int x = 0; x < columns; x++)
+                im(y,x,frame) = static_cast<octave_uint16> (pix[i++]);
+          }
         im.chop_trailing_singletons ();
         output(0) = octave_value (im);
       }
@@ -128,12 +128,12 @@ read_indexed_images (std::vector<Magick::Image>& imvec,
       Matrix alpha (mapsize, 1);
       for (i = 0; i < mapsize; i++)
         {
-	  warning ("%d", i);
-	  Magick::ColorRGB c = imvec[0].colorMap (i);
-	  map(i,0) = c.red ();
-	  map(i,1) = c.green ();
-	  map(i,2) = c.blue ();
-	  alpha(i,1) = c.alpha ();
+          warning ("%d", i);
+          Magick::ColorRGB c = imvec[0].colorMap (i);
+          map(i,0) = c.red ();
+          map(i,1) = c.green ();
+          map(i,2) = c.blue ();
+          alpha(i,1) = c.alpha ();
         }
       break;
 #endif
@@ -142,10 +142,10 @@ read_indexed_images (std::vector<Magick::Image>& imvec,
       alpha = Matrix (0, 0);
       for (i = 0; i < mapsize; i++)
         {
-	  Magick::ColorRGB c = imvec[0].colorMap (i);
-	  map(i,0) = c.red ();
-	  map(i,1) = c.green ();
-	  map(i,2) = c.blue ();
+          Magick::ColorRGB c = imvec[0].colorMap (i);
+          map(i,0) = c.red ();
+          map(i,1) = c.green ();
+          map(i,2) = c.blue ();
         }
       break;
 
@@ -165,7 +165,7 @@ read_indexed_images (std::vector<Magick::Image>& imvec,
 template <class T>
 octave_value_list
 read_images (const std::vector<Magick::Image>& imvec,
-	     const Array<int>& frameidx, unsigned int depth)
+             const Array<int>& frameidx, unsigned int depth)
 {
   octave_value_list retval (3, Matrix ());
 
@@ -193,14 +193,14 @@ read_images (const std::vector<Magick::Image>& imvec,
       im = T (dim_vector (rows, columns, nframes));
       for (int frame = 0; frame < nframes; frame++)
         {
-	  const Magick::PixelPacket *pix
-	    = imvec[frameidx(frame)].getConstPixels (0, 0, columns, rows);
+          const Magick::PixelPacket *pix
+            = imvec[frameidx(frame)].getConstPixels (0, 0, columns, rows);
 
-	  int i = 0;
+          int i = 0;
 
-	  for (int y = 0; y < rows; y++)
-	    for (int x = 0; x < columns; x++)
-	      im(y, x, frame) = scale_quantum_to_depth (pix[i++].red, depth);
+          for (int y = 0; y < rows; y++)
+            for (int x = 0; x < columns; x++)
+              im(y, x, frame) = scale_quantum_to_depth (pix[i++].red, depth);
         }
       break;
 
@@ -209,25 +209,25 @@ read_images (const std::vector<Magick::Image>& imvec,
       im = T (idim);
       for (int frame = 0; frame < nframes; frame++)
         {
-	  const Magick::PixelPacket *pix
-	    = imvec[frameidx(frame)].getConstPixels (0, 0, columns, rows);
+          const Magick::PixelPacket *pix
+            = imvec[frameidx(frame)].getConstPixels (0, 0, columns, rows);
 
-	  int i = 0;
-	  idx(3) = frame;
+          int i = 0;
+          idx(3) = frame;
 
-	  for (int y = 0; y < rows; y++)
-	    {
-	      idx(0) = y;
-	      for (int x = 0; x < columns; x++)
-		{
-		  idx(1) = x;
-		  idx(2) = 0;
-		  im(idx) = scale_quantum_to_depth (pix[i].red, depth);
-		  idx(2) = 1;
-		  im(idx) = scale_quantum_to_depth (pix[i].opacity, depth);
-		  i++;
-		}
-	    }
+          for (int y = 0; y < rows; y++)
+            {
+              idx(0) = y;
+              for (int x = 0; x < columns; x++)
+                {
+                  idx(1) = x;
+                  idx(2) = 0;
+                  im(idx) = scale_quantum_to_depth (pix[i].red, depth);
+                  idx(2) = 1;
+                  im(idx) = scale_quantum_to_depth (pix[i].opacity, depth);
+                  i++;
+                }
+            }
         }
       break;
 
@@ -237,27 +237,27 @@ read_images (const std::vector<Magick::Image>& imvec,
       im = T (idim);
       for (int frame = 0; frame < nframes; frame++)
         {
-	  const Magick::PixelPacket *pix
-	    = imvec[frameidx(frame)].getConstPixels (0, 0, columns, rows);
+          const Magick::PixelPacket *pix
+            = imvec[frameidx(frame)].getConstPixels (0, 0, columns, rows);
 
-	  int i = 0;
-	  idx(3) = frame;
+          int i = 0;
+          idx(3) = frame;
 
-	  for (int y = 0; y < rows; y++)
-	    {
-	      idx(0) = y;
-	      for (int x = 0; x < columns; x++)
-		{
-		  idx(1) = x;
-		  idx(2) = 0;
-		  im(idx) = scale_quantum_to_depth (pix[i].red, depth);
-		  idx(2) = 1;
-		  im(idx) = scale_quantum_to_depth (pix[i].green, depth);
-		  idx(2) = 2;
-		  im(idx) = scale_quantum_to_depth (pix[i].blue, depth);
-		  i++;
-		}
-	    }
+          for (int y = 0; y < rows; y++)
+            {
+              idx(0) = y;
+              for (int x = 0; x < columns; x++)
+                {
+                  idx(1) = x;
+                  idx(2) = 0;
+                  im(idx) = scale_quantum_to_depth (pix[i].red, depth);
+                  idx(2) = 1;
+                  im(idx) = scale_quantum_to_depth (pix[i].green, depth);
+                  idx(2) = 2;
+                  im(idx) = scale_quantum_to_depth (pix[i].blue, depth);
+                  i++;
+                }
+            }
         }
       break;
 
@@ -268,29 +268,29 @@ read_images (const std::vector<Magick::Image>& imvec,
       im = T (idim);
       for (int frame = 0; frame < nframes; frame++)
         {
-	  const Magick::PixelPacket *pix
-	    = imvec[frameidx(frame)].getConstPixels (0, 0, columns, rows);
+          const Magick::PixelPacket *pix
+            = imvec[frameidx(frame)].getConstPixels (0, 0, columns, rows);
 
-	  int i = 0;
-	  idx(3) = frame;
+          int i = 0;
+          idx(3) = frame;
 
-	  for (int y = 0; y < rows; y++)
-	    {
-	      idx(0) = y;
-	      for (int x = 0; x < columns; x++)
-		{
-		  idx(1) = x;
-		  idx(2) = 0;
-		  im(idx) = scale_quantum_to_depth (pix[i].red, depth);
-		  idx(2) = 1;
-		  im(idx) = scale_quantum_to_depth (pix[i].green, depth);
-		  idx(2) = 2;
-		  im(idx) = scale_quantum_to_depth (pix[i].blue, depth);
-		  idx(2) = 3;
-		  im(idx) = scale_quantum_to_depth (pix[i].opacity, depth);
-		  i++;
-		}
-	    }
+          for (int y = 0; y < rows; y++)
+            {
+              idx(0) = y;
+              for (int x = 0; x < columns; x++)
+                {
+                  idx(1) = x;
+                  idx(2) = 0;
+                  im(idx) = scale_quantum_to_depth (pix[i].red, depth);
+                  idx(2) = 1;
+                  im(idx) = scale_quantum_to_depth (pix[i].green, depth);
+                  idx(2) = 2;
+                  im(idx) = scale_quantum_to_depth (pix[i].blue, depth);
+                  idx(2) = 3;
+                  im(idx) = scale_quantum_to_depth (pix[i].opacity, depth);
+                  i++;
+                }
+            }
         }
       break;
 
@@ -367,10 +367,10 @@ Instead you should use @code{imread}.\n\
       int nframes = imvec.size ();
 
       if (frameidx(i) >= nframes || frameidx(i) < 0)
-	{
-	  error ("__magick_read__: invalid index vector");
-	  return output;
-	}
+        {
+          error ("__magick_read__: invalid index vector");
+          return output;
+        }
     }
 
   Magick::ClassType klass = imvec[0].classType ();
@@ -382,30 +382,30 @@ Instead you should use @code{imread}.\n\
       unsigned int depth = imvec[0].modulusDepth ();
       int i = 0;
       while (depth >>= 1)
-	i++;
+        i++;
       depth = 1 << i;
 
       switch (depth)
-	{
-	case 1:
-	  output = read_images<boolNDArray> (imvec, frameidx, depth);
-	  break;
+        {
+        case 1:
+          output = read_images<boolNDArray> (imvec, frameidx, depth);
+          break;
 
-	case 2:
-	case 4:
-	case 8:
-	  output = read_images<uint8NDArray> (imvec, frameidx, depth) ;
-	  break;
+        case 2:
+        case 4:
+        case 8:
+          output = read_images<uint8NDArray> (imvec, frameidx, depth) ;
+          break;
 
-	case 16:
-	  output = read_images<uint16NDArray> (imvec, frameidx, depth);
-	  break;
+        case 16:
+          output = read_images<uint16NDArray> (imvec, frameidx, depth);
+          break;
 
-	case 32:
-	case 64:
+        case 32:
+        case 64:
         default:
-	  error ("__magick_read__: image depths bigger than 16-bit not supported");
-	}
+          error ("__magick_read__: image depths bigger than 16-bit not supported");
+        }
     }
 #else
 
@@ -420,7 +420,7 @@ Instead you should use @code{imread}.\n\
 
 static void 
 write_image (Magick::Image& im, const std::string& filename,
-	     const std::string& fmt)
+             const std::string& fmt)
 {
   im.syncPixels ();
 
@@ -450,65 +450,65 @@ write_image (Magick::Image& im, const std::string& filename,
 
 static void
 write_image (const std::string& filename, const std::string& fmt,
-	     const octave_value& img,
-	     const octave_value& map = octave_value ())
+             const octave_value& img,
+             const octave_value& map = octave_value ())
 {
   if (img.is_bool_type ())
     {
       boolNDArray m = img.bool_array_value ();
 
       if (! error_state)
-	{
-	  error ("__magick_write__: not implemented");
-	}
+        {
+          error ("__magick_write__: not implemented");
+        }
       else
-	error ("__magick_write__: internal error");
+        error ("__magick_write__: internal error");
     }
   else if (img.is_uint8_type ())
     {
       uint8NDArray m = img.uint8_array_value ();
 
       if (! error_state)
-	{
-	  octave_idx_type rows = m.rows ();
-	  octave_idx_type columns = m.columns ();
+        {
+          octave_idx_type rows = m.rows ();
+          octave_idx_type columns = m.columns ();
 
-	  Magick::Image im (Magick::Geometry (columns, rows), "white");
+          Magick::Image im (Magick::Geometry (columns, rows), "white");
 
-	  im.type (Magick::TrueColorType);
+          im.type (Magick::TrueColorType);
 
-	  im.modifyImage ();
-	  
-	  Magick::PixelPacket *pix = im.getPixels (0, 0, columns, rows);
+          im.modifyImage ();
+          
+          Magick::PixelPacket *pix = im.getPixels (0, 0, columns, rows);
 
-	  int i = 0;
+          int i = 0;
 
-	  for (int y = 0; y < rows; y++)
-	    {
-	      for (int x = 0; x < columns; x++)
-		{
-		  pix[i].red = m(y,x,0);
-		  pix[i].green = m(y,x,1);
-		  pix[i].blue = m(y,x,2);
-		  i++;
-		}
-	    }
+          for (int y = 0; y < rows; y++)
+            {
+              for (int x = 0; x < columns; x++)
+                {
+                  pix[i].red = m(y,x,0);
+                  pix[i].green = m(y,x,1);
+                  pix[i].blue = m(y,x,2);
+                  i++;
+                }
+            }
 
-	  write_image (im, filename, fmt);
-	}
+          write_image (im, filename, fmt);
+        }
       else
-	error ("__magick_write__: internal error");
+        error ("__magick_write__: internal error");
     }
   else if (img.is_uint16_type ())
     {
       uint16NDArray m = img.uint16_array_value ();
 
       if (! error_state)
-	{
-	  error ("__magick_write__: not implemented");
-	}
+        {
+          error ("__magick_write__: not implemented");
+        }
       else
-	error ("__magick_write__: internal error");
+        error ("__magick_write__: internal error");
     }
   else
     error ("__magick_write__: internal error");
@@ -518,9 +518,9 @@ write_image (const std::string& filename, const std::string& fmt,
       NDArray cmap = map.array_value ();
 
       if (! error_state)
-	{
-	  error ("__magick_write__: not implemented");
-	}
+        {
+          error ("__magick_write__: not implemented");
+        }
     }
 }
 
@@ -545,21 +545,21 @@ Instead you should use @code{imwrite}.\n\
       std::string filename = args(0).string_value ();
 
       if (! error_state)
-	{
-	  std::string fmt = args(1).string_value ();
+        {
+          std::string fmt = args(1).string_value ();
 
-	  if (! error_state)
-	    {
-	      if (nargin > 3)
-		write_image (filename, fmt, args(2), args(3));
-	      else
-		write_image (filename, fmt, args(2));
-	    }
-	  else
-	    error ("__magick_write__: expecting format as second argument");
-	}
+          if (! error_state)
+            {
+              if (nargin > 3)
+                write_image (filename, fmt, args(2), args(3));
+              else
+                write_image (filename, fmt, args(2));
+            }
+          else
+            error ("__magick_write__: expecting format as second argument");
+        }
       else
-	error ("__magick_write__: expecting filename as first argument");
+        error ("__magick_write__: expecting filename as first argument");
     }
   else
     print_usage ();

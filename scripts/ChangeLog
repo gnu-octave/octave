@@ -1,3 +1,8 @@
+2008-08-25  Thomas L. Scofield  <scofield@calvin.edu>
+
+	* image/imwrite.m: Add ras and tiff to the list of accepted formats.
+	Handle parameter-value options.  Untabify.
+	
 2008-08-25  David Bateman  <dbateman@free.fr>
 
 	* plot/__go_draw_axes__.m: Respect the "visible" property of object and

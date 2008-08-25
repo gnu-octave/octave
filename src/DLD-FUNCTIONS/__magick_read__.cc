@@ -25,8 +25,11 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
+#include <cmath>
+
 #include "defun-dld.h"
 #include "error.h"
+#include "ov-struct.h"
 
 #ifdef HAVE_MAGICK
 
@@ -49,10 +52,19 @@ read_indexed_images (std::vector<Magick::Image>& imvec,
   int columns = imvec[0].baseColumns ();
   int nframes = frameidx.length ();
 
+  dim_vector idim = dim_vector ();
+  idim.resize (4);
+  idim(0) = rows;
+  idim(1) = columns;
+  idim(2) = 1;
+  idim(3) = nframes;
+
+  Array<int> idx (dim_vector (4));
+
   Magick::ImageType type = imvec[0].type ();
 
   unsigned int mapsize = imvec[0].colorMapSize ();
-  int i = mapsize;
+  unsigned int i = mapsize;
   unsigned int depth = 0;
   while (i >>= 1)
     depth++;
@@ -69,8 +81,9 @@ read_indexed_images (std::vector<Magick::Image>& imvec,
     case 4:
     case 8:
       {
-        uint8NDArray im = uint8NDArray (dim_vector (rows, columns, nframes));
+        uint8NDArray im = uint8NDArray (idim);
 
+        idx(2) = 0;
         for (int frame = 0; frame < nframes; frame++)
           {
             imvec[frameidx(frame)].getConstPixels (0, 0, columns, rows);
@@ -79,10 +92,17 @@ read_indexed_images (std::vector<Magick::Image>& imvec,
               = imvec[frameidx(frame)].getConstIndexes ();
 
             i = 0;
+            idx(3) = frame;
 
             for (int y = 0; y < rows; y++)
-              for (int x = 0; x < columns; x++)
-                im(y,x,frame) = static_cast<octave_uint8> (pix[i++]);
+              {
+                idx(0) = y;
+                for (int x = 0; x < columns; x++)
+                  {
+                    idx(1) = x;
+                    im(idx) = static_cast<octave_uint8> (pix[i++]);
+                  }
+              }
           }
         im.chop_trailing_singletons ();
         output(0) = octave_value (im);
@@ -91,8 +111,9 @@ read_indexed_images (std::vector<Magick::Image>& imvec,
 
     case 16:
       {
-        uint16NDArray im = uint16NDArray (dim_vector(rows, columns, nframes));
+        uint16NDArray im = uint16NDArray (idim);
 
+        idx(2) = 0;
         for (int frame = 0; frame < nframes; frame++)
           {
             imvec[frameidx(frame)].getConstPixels (0, 0, columns, rows);
@@ -101,10 +122,17 @@ read_indexed_images (std::vector<Magick::Image>& imvec,
               = imvec[frameidx(frame)].getConstIndexes ();
 
             i = 0;
+            idx(3) = frame;
 
             for (int y = 0; y < rows; y++)
-              for (int x = 0; x < columns; x++)
-                im(y,x,frame) = static_cast<octave_uint16> (pix[i++]);
+              {
+                idx(0) = y;
+                for (int x = 0; x < columns; x++)
+                  {
+                    idx(1) = x;
+                    im(idx) = static_cast<octave_uint16> (pix[i++]);
+                  }
+              }
           }
         im.chop_trailing_singletons ();
         output(0) = octave_value (im);
@@ -190,17 +218,25 @@ read_images (const std::vector<Magick::Image>& imvec,
     {
     case Magick::BilevelType:
     case Magick::GrayscaleType:
-      im = T (dim_vector (rows, columns, nframes));
+      im = T (idim);
       for (int frame = 0; frame < nframes; frame++)
         {
           const Magick::PixelPacket *pix
             = imvec[frameidx(frame)].getConstPixels (0, 0, columns, rows);
 
           int i = 0;
+          idx(2) = 0;
+          idx(3) = frame;
 
           for (int y = 0; y < rows; y++)
-            for (int x = 0; x < columns; x++)
-              im(y, x, frame) = scale_quantum_to_depth (pix[i++].red, depth);
+            {
+              idx(0) = y;
+              for (int x = 0; x < columns; x++)
+                {
+                  idx(1) = x;
+                  im(idx) = scale_quantum_to_depth (pix[i++].red, depth);
+                }
+            }
         }
       break;
 
@@ -418,21 +454,281 @@ Instead you should use @code{imread}.\n\
 
 #ifdef HAVE_MAGICK
 
-static void 
-write_image (Magick::Image& im, const std::string& filename,
-             const std::string& fmt)
+static void
+jpg_settings (std::vector<Magick::Image>& imvec,
+              const Octave_map& options,
+              bool)
 {
-  im.syncPixels ();
+  int nframes = static_cast<int>(imvec.size ());
+  bool something_set = 0;
 
-  // FIXME -- setting fmt to "jpg" and writing to "foo.png" results in
-  // a PNG file, not a JPEG file (for example).  How can the file type
-  // be forced regardless of the name?
+  // Quality setting
+  octave_value result;
+  Octave_map::const_iterator p;
+  bool found_it = 0;
+  for (p = options.begin (); p != options.end (); p++)
+    if (options.key (p) == "Quality")
+      {
+        found_it = 1;
+        result = options.contents (p).elem (0);
+        break;
+      }
+  if (found_it && (! result.is_empty ()))
+    {
+      something_set = 1;
+      if (result.is_real_type ())
+        {
+          int qlev = static_cast<int>(result.int_value ());
+          if (qlev < 0 || qlev > 100)
+            warning ("warning: Quality setting invalid--use default of 75");
+          else
+            for (int fnum = 0; fnum < nframes; fnum++)
+              imvec[fnum].quality (static_cast<unsigned int>(qlev));
+        }
+      else
+        warning ("warning: Quality setting invalid--use default of 75");
+    }
 
-  im.magick (fmt);
+  // Other settings go here
+
+  if (! something_set)
+    warning ("__magick_write__ warning: All write parameters ignored.");
+}
+
+static void
+encode_bool_image (std::vector<Magick::Image>& imvec, const octave_value& img)
+{
+  unsigned int nframes = 1;
+  boolNDArray m = img.bool_array_value ();
+
+  dim_vector dsizes = m.dims ();
+  if (dsizes.length () == 4)
+    nframes = dsizes(3);
+
+  Array<octave_idx_type> idx (dsizes.length ());
+
+  octave_idx_type rows = m.rows ();
+  octave_idx_type columns = m.columns ();
+
+  for (unsigned int ii = 0; ii < nframes; ii++)
+    {
+      Magick::Image im(Magick::Geometry (columns, rows), "black");
+      im.classType (Magick::DirectClass);
+      im.depth (1);
+
+      for (int y=0; y < columns; y++)
+        {
+          idx(1) = y;
+          for (int x=0; x < rows; x++)
+            {
+              if (nframes > 1)
+                {
+                  idx(2) = 0;
+                  idx(3) = ii;
+                }
+              idx(0) = x;
+              if (m(idx))
+                im.pixelColor (y, x, "white");
+            }
+        }
+      imvec.push_back (im);
+    }
+}
+
+template <class T>
+static void
+encode_uint_image (std::vector<Magick::Image>& imvec,
+                   const octave_value& img,
+                   bool has_map)
+{
+  unsigned int bitdepth;
+  T m;
+
+  if (img.is_uint8_type ())
+    {
+      bitdepth = 8;
+      m = img.uint8_array_value ();
+    }
+  else if (img.is_uint16_type ())
+    {
+      bitdepth = 16;
+      m = img.uint16_array_value ();
+    }
+  else
+    error ("__magick_write__: invalid image class");
+
+  dim_vector dsizes = m.dims ();
+  unsigned int nframes = 1;
+  if (dsizes.length () == 4)
+    nframes = dsizes(3);
+  bool is_color = ((dsizes.length () > 2) && (dsizes(2) > 2));
+  bool has_alpha = (dsizes.length () > 2 && (dsizes(2) == 2 || dsizes(2) == 4));
+
+  Array<octave_idx_type> idx (dsizes.length ());
+  octave_idx_type rows = m.rows ();
+  octave_idx_type columns = m.columns ();
+  unsigned int div_factor = pow (2, bitdepth) - 1;
+
+  for (unsigned int ii = 0; ii < nframes; ii++)
+    {
+      Magick::Image im(Magick::Geometry (columns, rows), "black");
+      im.depth (bitdepth);
+      if (has_map)
+        im.classType (Magick::PseudoClass);
+      else
+        im.classType (Magick::DirectClass);
+
+      if (is_color)
+        {
+          if (has_alpha)
+            im.type (Magick::TrueColorMatteType);
+          else
+            im.type (Magick::TrueColorType);
+
+          Magick::ColorRGB c;
+          for (int y=0; y < columns; y++)
+            {
+              idx(1) = y;
+              for (int x=0; x < rows; x++)
+                {
+                  idx(0) = x;
+                  if (nframes > 1)
+                    idx(3) = ii;
+
+                  idx(2) = 0;
+                  c.red (static_cast<double>(m(idx)) / div_factor);
+                  idx(2) = 1;
+                  c.green (static_cast<double>(m(idx)) / div_factor);
+                  idx(2) = 2;
+                  c.blue (static_cast<double>(m(idx)) / div_factor);
+
+                  if (has_alpha)
+                    {
+                      idx(2) = 3;
+                      c.alpha (static_cast<double>(m(idx)) / div_factor);
+                    }
+                  im.pixelColor (y, x, c);
+                }
+            }
+        }
+      else
+        {
+          if (has_alpha)
+            im.type (Magick::GrayscaleMatteType);
+          else
+            im.type (Magick::GrayscaleType);
+
+          Magick::ColorGray c;
+
+          for (int y=0; y < columns; y++)
+            {
+              idx(1) = y;
+              for (int x=0; x < rows; x++)
+                {
+                  idx(0) = x;
+                  if (nframes > 1)
+                    {
+                      idx(2) = 0;
+                      idx(3) = ii;
+                    }
+                  if (has_alpha)
+                    {
+                      idx(2) = 1;
+                      c.alpha (static_cast<double>(m(idx)) / div_factor);
+                      idx(2) = 0;
+                    }
+
+                  c.shade (static_cast<double>(m(idx)) / div_factor);
+                  im.pixelColor (y, x, c);
+                }
+            }
+        }
+      imvec.push_back (im);
+    }
+}
+
+static void
+encode_map (std::vector<Magick::Image>& imvec, const NDArray& cmap)
+{
+  unsigned int mapsize = cmap.dim1 ();
+  Magick::ColorRGB c;
+  int nframes = static_cast<int>(imvec.size ());
+
+  for (int fnum = 0; fnum < nframes; fnum++)
+    {
+      imvec[fnum].colorMapSize (mapsize);
+      imvec[fnum].type (Magick::PaletteType);
+    }
+
+  for (unsigned int ii = 0; ii < mapsize; ii++)
+    {
+      c.red (cmap(ii,0));
+      c.green (cmap(ii,1));
+      c.blue (cmap(ii,2));
+
+      // FIXME -- is this case needed?
+      if (cmap.dim2 () == 4)
+        c.alpha (cmap(ii,3));
+
+      try
+        {
+          for_each (imvec.begin (), imvec.end (),
+                    Magick::colorMapImage (ii, c));
+        }
+      catch (Magick::Warning& w)
+        {
+          warning ("Magick++ warning: %s", w.what ());
+        }
+      catch (Magick::ErrorCoder& e)
+        {
+          warning ("Magick++ coder error: %s", e.what ());
+        }
+      catch (Magick::Exception& e)
+        {
+          error ("Magick++ exception: %s", e.what ());
+        }
+    }
+}
+
+static void
+write_image (const std::string& filename, const std::string& fmt,
+             const octave_value& img,
+             const octave_value& map = octave_value (),
+             const octave_value& params = octave_value ())
+{
+  std::vector<Magick::Image> imvec;
+
+  if (img.is_bool_type ())
+    encode_bool_image (imvec, img);
+  else if (img.is_uint8_type ())
+    encode_uint_image<uint8NDArray> (imvec, img, map.is_defined ());
+  else if (img.is_uint16_type ())
+    encode_uint_image<uint16NDArray> (imvec, img, map.is_defined ());
+  else
+    error ("__magick_write__: image type not supported");
+
+  if (! error_state && map.is_defined ())
+    {
+      NDArray cmap = map.array_value ();
+
+      if (! error_state)
+        encode_map (imvec, cmap);
+    }
+
+  if (! error_state && params.is_defined ())
+    {
+      Octave_map options = params.map_value ();
+
+      // Insert calls here to handle parameters for various image formats
+      if (fmt == "jpg" || fmt == "jpeg")
+        jpg_settings (imvec, options, map.is_defined ());
+      else
+        warning ("warning: your parameter(s) currently not supported");
+    }
 
   try
     {
-      im.write (filename);
+      Magick::writeImages (imvec.begin (), imvec.end (), filename);
     }
   catch (Magick::Warning& w)
     {
@@ -445,82 +741,6 @@ write_image (Magick::Image& im, const std::string& filename,
   catch (Magick::Exception& e)
     {
       error ("Magick++ exception: %s", e.what ());
-    }
-}
-
-static void
-write_image (const std::string& filename, const std::string& fmt,
-             const octave_value& img,
-             const octave_value& map = octave_value ())
-{
-  if (img.is_bool_type ())
-    {
-      boolNDArray m = img.bool_array_value ();
-
-      if (! error_state)
-        {
-          error ("__magick_write__: not implemented");
-        }
-      else
-        error ("__magick_write__: internal error");
-    }
-  else if (img.is_uint8_type ())
-    {
-      uint8NDArray m = img.uint8_array_value ();
-
-      if (! error_state)
-        {
-          octave_idx_type rows = m.rows ();
-          octave_idx_type columns = m.columns ();
-
-          Magick::Image im (Magick::Geometry (columns, rows), "white");
-
-          im.type (Magick::TrueColorType);
-
-          im.modifyImage ();
-          
-          Magick::PixelPacket *pix = im.getPixels (0, 0, columns, rows);
-
-          int i = 0;
-
-          for (int y = 0; y < rows; y++)
-            {
-              for (int x = 0; x < columns; x++)
-                {
-                  pix[i].red = m(y,x,0);
-                  pix[i].green = m(y,x,1);
-                  pix[i].blue = m(y,x,2);
-                  i++;
-                }
-            }
-
-          write_image (im, filename, fmt);
-        }
-      else
-        error ("__magick_write__: internal error");
-    }
-  else if (img.is_uint16_type ())
-    {
-      uint16NDArray m = img.uint16_array_value ();
-
-      if (! error_state)
-        {
-          error ("__magick_write__: not implemented");
-        }
-      else
-        error ("__magick_write__: internal error");
-    }
-  else
-    error ("__magick_write__: internal error");
-
-  if (! error_state && map.is_defined ())
-    {
-      NDArray cmap = map.array_value ();
-
-      if (! error_state)
-        {
-          error ("__magick_write__: not implemented");
-        }
     }
 }
 
@@ -550,8 +770,13 @@ Instead you should use @code{imwrite}.\n\
 
           if (! error_state)
             {
-              if (nargin > 3)
-                write_image (filename, fmt, args(2), args(3));
+              if (nargin > 4)
+                write_image (filename, fmt, args(2), args(3), args(4));
+              else if (nargin > 3)
+                if (args(3).is_real_type ())
+                  write_image (filename, fmt, args(2), args(3));
+                else
+                  write_image (filename, fmt, args(2), octave_value(), args(3));
               else
                 write_image (filename, fmt, args(2));
             }
@@ -569,11 +794,12 @@ Instead you should use @code{imwrite}.\n\
 
 #endif
 
-  return retval;
+return retval;
 }
 
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
+;;; indent-tabs-mode: nil ***
 ;;; End: ***
 */

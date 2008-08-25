@@ -1,6 +1,9 @@
 2008-08-25  Thomas L. Scofield  <scofield@calvin.edu>
 
 	* DLD-FUNCTIONS/__magick_read__.cc: Untabify.
+	(jpg_settings, encode_bool_image, encode_uint_image, encode_map):
+	New functions.
+	(write_image): Use them to handle various image types.
 
 2008-08-25  David Bateman  <dbateman@free.fr>
 

@@ -30,7 +30,7 @@
 function imwrite (varargin)
 
   persistent accepted_formats = { "bmp", "gif", "jpg", "jpeg", ...
-    "pbm", "pgm", "png", "ppm", "svg", "tiff" };
+    "ras", "pbm", "pgm", "png", "ppm", "svg", "tif", "tiff" };
 
   img = [];
   map = [];
@@ -42,7 +42,7 @@ function imwrite (varargin)
     if (isnumeric (varargin{2}))
       map = varargin{2};
       if (isempty (map))
-	error ("imwrite: colormap must not be empty");
+        error ("imwrite: colormap must not be empty");
       endif
       offset = 3;
     endif
@@ -50,14 +50,19 @@ function imwrite (varargin)
       filename = varargin{offset};
       offset++;
       if (rem (nargin - offset, 2) == 0 && ischar (varargin{offset}))
-	fmt = varargin{offset};
-	offset++;
+        fmt = varargin{offset};
+        offset++;
       endif
     else
       print_usage ();
     endif
     if (offset < nargin)
-      warning ("imwrite: parameter-value options not implemented");
+      has_param_list = 1;
+      for ii=offset:2:(nargin - 1)
+        options.(varargin{ii}) = varargin{ii + 1};
+      end
+    else
+      has_param_list = 0;
     endif
   else
     print_usage ();
@@ -86,46 +91,52 @@ function imwrite (varargin)
 
   img_class = class (img);
   map_class = class (map);
+  nd = ndims (img);
 
   if (isempty (map))
     if (any (strcmp (img_class, {"logical", "uint8", "uint16", "double"})))
-      nd = ndims (img);
       if ((nd == 2 || nd == 3) && strcmp (img_class, "double"))
-	img = uint8 (img * 255);
+        img = uint8 (img * 255);
       endif
-      if (nd == 3 && size (img, 3) != 3)
-	error ("imwrite: invalid dimensions for truecolor image");
-      endif
-      if (nd == 4 && size (img, 3) != 1)
-	error ("imwrite: invalid size for multiframe image");
+      ## FIXME -- should we handle color images w/ alpha channel here?
+      if (nd == 3 && size (img, 3) < 3)
+        error ("imwrite: invalid dimensions for truecolor image");
       endif
       if (nd > 5)
-	error ("imwrite: invalid %d-dimensional image data", nd);
+        error ("imwrite: invalid %d-dimensional image data", nd);
       endif
     else
       error ("imwrite: %s: invalid class for truecolor image", img_class);
     endif
-    __magick_write__ (filename, fmt, img);
+    if (has_param_list)
+      __magick_write__ (filename, fmt, img, options);
+    else
+      __magick_write__ (filename, fmt, img);
+    endif
   else
     if (any (strcmp (img_class, {"uint8", "uint16", "double"})))
       if (strcmp (img_class, "double"))
-	img = uint8 (img - 1);
+        img = uint8 (img - 1);
       endif
-      if (ndims (img) != 2)
-	error ("imwrite: invalid size for indexed image");
+      if (nd != 2 && nd != 4)
+        error ("imwrite: invalid size for indexed image");
       endif
     else
       error ("imwrite: %s: invalid class for indexed image data", img_class);
     endif
     if (isa (map, "double"))
       if (ndims (map) != 2 || size (map, 2) != 3)
-	error ("imwrite: invalid size for colormap");
+        error ("imwrite: invalid size for colormap");
       endif
     else
       error ("imwrite: %s invalid class for indexed image colormap",
-	     class (map));
+             class (map));
     endif
-    __magick_write__ (filename, fmt, img, map);
+    if (has_param_list)
+      __magick_write__ (filename, fmt, img, map, options);
+    else
+      __magick_write__ (filename, fmt, img, map);
+    endif
   endif
 
 endfunction

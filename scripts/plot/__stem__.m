@@ -31,54 +31,119 @@ function h = __stem__ (have_z, varargin)
 
   [ax, varargin, nargin] = __plt_get_axis_arg__ (caller, varargin{:});
 
-  [x, y, z, dofill, lc, ls, mc, ms] = check_stem_arg (have_z, varargin{:});
-
-  if (dofill)
-    fc = mc;
-  else
-    fc = "none";
-  endif
-
-  newplot ();
-  nx = numel (x);
-  xt = x(:)';
-  xt = [xt; xt; NaN(1, nx)](:);
-  if (have_z)
-    yt = y(:)';
-    yt = [yt; yt; NaN(1, nx)](:);
-    zt = z(:)';
-    zt = [zeros(1, nx); zt; NaN(1, nx)](:);
-  else
-    yt = y(:)';
-    yt = [zeros(1, nx); yt; NaN(1, nx)](:);
-  endif
+  [x, y, z, dofill, llc, ls, mmc, ms] = check_stem_arg (have_z, varargin{:});
 
   oldax = gca ();
   unwind_protect
     axes (ax);
+    hold_state = get (ax, "nextplot");
+    newplot ();
+    h = [];
 
-    if (have_z)
-      h_stems = plot3 (xt, yt, zt, "color", lc, "linestyle", ls,
-		      x, y, z, "color", mc, "marker", ms, "linestyle", "",
-		      "markerfacecolor", fc);
+    nx = rows (x);
+    for i = 1: columns (x)
+      if (have_z)
+	xt = x(:)';
+	xt = [xt; xt; NaN(1, nx)](:);
+	yt = y(:)';
+	yt = [yt; yt; NaN(1, nx)](:);
+	zt = z(:)';
+	zt = [zeros(1, nx); zt; NaN(1, nx)](:);
+      else
+	xt = x(:, i)';
+	xt = [xt; xt; NaN(1, nx)](:);
+	yt = y(:, i)';
+	yt = [zeros(1, nx); yt; NaN(1, nx)](:);
+      endif
 
-      h_baseline = [];
-    else
-      h_stems = plot (xt, yt, "color", lc, "linestyle", ls,
-		      x, y, "color", mc, "marker", ms, "linestyle", "",
-		      "markerfacecolor", fc);
+      hg  = hggroup ();
+      h = [h; hg];
+      if (i == 1)
+	set (ax, "nextplot", "add");
+      endif
 
-      ## Must draw the plot first to get proper x limits.
-      drawnow();
-      x_axis_range = get (gca, "xlim");
-      h_baseline = line (x_axis_range, [0, 0], "color", [0, 0, 0]);
-    endif
+      if (isempty (llc))
+	lc = __next_line_color__ ();
+      else
+	lc = llc;
+      endif
+
+      if (isempty (mmc))
+	mc = lc;
+      else
+	mc = mmc;
+      endif
+
+      if (dofill)
+	fc = mc;
+      else
+	fc = "none";
+      endif
+
+      if (have_z)
+	h_stems = plot3 (xt, yt, zt, "color", lc, "linestyle", ls, 
+			 "parent", hg, x, y, z, "color", mc,
+			 "marker",  ms, "linestyle", "none",
+			 "markerfacecolor", fc, "parent", hg);
+
+	h_baseline = [];
+      else
+	h_stems = plot (xt, yt, "color", lc, "linestyle", ls,
+			"parent", hg, x(:,i), y(:, i), "color", mc, "marker",
+			ms, "linestyle", "none", "markerfacecolor",
+			fc, "parent", hg); 
+
+	if (i == 1)
+	  x_axis_range = get (ax, "xlim");
+	  h_baseline = line (x_axis_range, [0, 0], "color", [0, 0, 0]);
+	  set (h_baseline, "handlevisibility", "off");
+	  addlistener (ax, "xlim", @update_xlim);
+	  addlistener (h_baseline, "ydata", @update_baseline);
+	  addlistener (h_baseline, "visible", @update_baseline);
+	endif
+      endif
+
+      ## Setup the hggroup and listeners
+      addproperty ("showbaseline", hg, "radio", "{on}|off");
+      addproperty ("basevalue", hg, "data", 0);
+      addproperty ("baseline", hg, "data", h_baseline);
+
+      if (!have_z)
+	addlistener (hg, "showbaseline", @show_baseline);
+	addlistener (hg, "basevalue", @move_baseline); 
+      endif
+
+      addproperty ("color", hg, "linecolor", lc);
+      addproperty ("linewidth", hg, "linelinewidth", 0.5);
+      addproperty ("linestyle", hg, "linelinestyle", ls);
+      addproperty ("marker", hg, "linemarker", ms);
+      addproperty ("markerfacecolor", hg, "linemarkerfacecolor", fc);
+      addproperty ("markersize", hg, "linemarkersize", 6);
+
+      addlistener (hg, "color", @update_props);
+      addlistener (hg, "linewidth", @update_props); 
+      addlistener (hg, "linestyle", @update_props); 
+      addlistener (hg, "marker", @update_props); 
+      addlistener (hg, "markerfacecolor", @update_props); 
+      addlistener (hg, "markersize", @update_props);
+
+      addproperty ("xdata", hg, "data", x(:, i));
+      addproperty ("ydata", hg, "data", y(:, i));
+      if (have_z)
+	addproperty ("zdata", hg, "data", z(:, i));
+      else
+	addproperty ("zdata", hg, "data", []);
+      endif
+
+      addlistener (hg, "xdata", @update_data);
+      addlistener (hg, "ydata", @update_data);
+      addlistener (hg, "zdata", @update_data);
+    endfor
+
   unwind_protect_cleanup
+    set (ax, "nextplot", hold_state);
     axes (oldax);
   end_unwind_protect
-
-  h = [h_stems; h_baseline];
-
 endfunction
 
 function [x, y, z, dofill, lc, ls, mc, ms] = check_stem_arg (have_z, varargin)
@@ -115,11 +180,11 @@ function [x, y, z, dofill, lc, ls, mc, ms] = check_stem_arg (have_z, varargin)
   elseif (nargin == 3)
     ## several possibilities
     ## 1. the real y data
-    ## 2. 'fill'
+    ## 2. 'filled'
     ## 3. line spec
     if (ischar (varargin{2}))
       ## only 2. or 3. possible
-      if (strcmp ("fill", varargin{2}))
+      if (strcmpi ("fill", varargin{2}) || strcmpi ("filled", varargin{2}))
 	dofill = 1;
       else
 	## parse the linespec
@@ -154,12 +219,12 @@ function [x, y, z, dofill, lc, ls, mc, ms] = check_stem_arg (have_z, varargin)
   elseif (nargin == 4)
     ## again several possibilities
     ## arg2 1. real y
-    ## arg2 2. 'fill' or linespec
+    ## arg2 2. 'filled' or linespec
     ## arg3 1. real z
-    ## arg3 2. 'fill' or linespec
+    ## arg3 2. 'filled' or linespec
     if (ischar (varargin{2}))
       ## only arg2 2. / arg3 1. & arg3 3. are possible
-      if (strcmp ("fill", varargin{2}))
+      if (strcmpi ("fill", varargin{2}) || strcmpi ("filled", varargin{2}))
 	dofill = 1;
 	fill_2 = 1; # be sure, no second "fill" is in the arguments
       else
@@ -200,14 +265,16 @@ function [x, y, z, dofill, lc, ls, mc, ms] = check_stem_arg (have_z, varargin)
     endif # if ischar(varargin{2})
     if (! have_z)
       ## varargin{3} must be char
-      ## check for "fill"
-      if (strcmp ("fill", varargin{3}) && fill_2)
+      ## check for "fill
+      if ((strcmpi ("fill", varargin{3}) || strcmpi ("filled", varargin{3}))
+	  && fill_2)
 	error ("stem: duplicate fill argument");
       elseif (strcmp("fill", varargin{3}) && linespec_2)
 	## must be "fill"
 	dofill = 1;
 	fill_2 = 1;
-      elseif (strcmp ("fill", varargin{3}) && ! linespec_2)
+      elseif ((strcmpi ("fill", varargin{3}) || strcmpi ("filled", varargin{3}))
+	  && !linespec_2)
 	## must be "fill"
 	dofill = 1;
 	fill_2 = 1;
@@ -234,7 +301,7 @@ function [x, y, z, dofill, lc, ls, mc, ms] = check_stem_arg (have_z, varargin)
     endif
 
     if (! have_z)
-      if (strcmp ("fill", varargin{3}))
+      if (strcmpi ("fill", varargin{3}) || strcmpi ("filled", varargin{3}))
 	dofill = 1;
 	fill_2 = 1; # be sure, no second "fill" is in the arguments
       else
@@ -245,13 +312,16 @@ function [x, y, z, dofill, lc, ls, mc, ms] = check_stem_arg (have_z, varargin)
     endif
 
     ## check for "fill" ..
-    if (strcmp ("fill", varargin{4}) && fill_2)
+    if ((strcmpi ("fill", varargin{4}) || strcmpi ("filled", varargin{4}))
+	&& fill_2)
       error ("%s: duplicate fill argument", caller);
-    elseif (strcmp ("fill", varargin{4}) && linespec_2)
+    elseif ((strcmpi ("fill", varargin{4}) || strcmpi ("filled", varargin{4}))
+	&& linespec_2)
       ## must be "fill"
       dofill = 1;
       fill_2 = 1;
-    elseif (! strcmp ("fill", varargin{4}) && ! linespec_2)
+    elseif (!strcmpi ("fill", varargin{4}) && !strcmpi ("filled", varargin{4})
+	&& !linespec_2)
       ## must be linespec
       [lc, ls, mc, ms] = stem_line_spec (caller, varargin{4});
       linespec_2 = 1;
@@ -264,7 +334,7 @@ function [x, y, z, dofill, lc, ls, mc, ms] = check_stem_arg (have_z, varargin)
       error ("stem3: X, Y and Z must be matrices");
     endif
 
-    if (strcmp ("fill", varargin{4}))
+    if (strcmpi ("fill", varargin{4}) || strcmpi ("filled", varargin{4}))
       dofill = 1;
       fill_2 = 1; # be sure, no second "fill" is in the arguments
     else
@@ -274,19 +344,52 @@ function [x, y, z, dofill, lc, ls, mc, ms] = check_stem_arg (have_z, varargin)
     endif
 
     ## check for "fill" ..
-    if (strcmp ("fill", varargin{5}) && fill_2)
+    if ((strcmpi ("fill", varargin{5}) || strcmpi ("filled", varargin{5}))
+	&& fill_2)
       error ("stem3: duplicate fill argument");
-    elseif (strcmp ("fill", varargin{5}) && linespec_2)
+    elseif ((strcmpi ("fill", varargin{5}) || strcmpi ("filled", varargin{5}))
+	&& linespec_2)
       ## must be "fill"
       dofill = 1;
       fill_2 = 1;
-    elseif (! strcmp ("fill", varargin{5}) && ! linespec_2)
+    elseif (!strcmpi ("fill", varargin{5}) && !strcmpi ("filled", varargin{5})
+	&& !linespec_2)
       ## must be linespec
       [lc, ls, mc, ms] = stem_line_spec (caller, varargin{5});
       linespec_2 = 1;
     endif
   else
     error ("%s: incorrect number of arguments", caller);
+  endif
+
+  ## Check sizes of x, y and z
+  if (have_z)
+    if (!size_equal (x, y, z))
+      error ("stem3: inconsistent size of x, y and z");
+    else
+      x = x(:);
+      y = y(:);
+      z = z(:);
+    endif
+  else
+    if (isvector (x))
+      x = x(:);
+      if (isvector (y))
+	if (length (x) != length (y))
+	  error ("stem: inconsistent size of x and y");
+	else
+	  y = y(:);
+	endif
+      else
+	if (length (x) == rows (y))
+	  x = repmat (x(:), 1, columns (y));
+	else
+	  error ("stem: inconsistent size of x and y");
+	endif
+      endif
+    elseif (!size_equal (x, y ))
+      error ("stem: inconsistent size of x and y");
+    endif
   endif
 
 endfunction
@@ -312,8 +415,103 @@ endfunction
 
 function [lc, ls, mc, ms] = set_default_values ()
   ## set default values
-  mc = [1, 0, 0];
-  lc = [1, 0, 0];
+  mc = [];
+  lc = [];
   ls = "-";
   ms = "o";
+endfunction
+
+function update_xlim (h, d)
+  kids = get (h, "children");
+  xlim = get (h, "xlim");
+
+  for i = 1 : length (kids)
+    obj = get (kids (i));
+    if (strcmp (obj.type, "hggroup") && isfield (obj, "baseline"))
+      if (get (obj.baseline, "xdata") != xlim)
+	set (obj.baseline, "xdata", xlim);
+      endif
+    endif
+  endfor
+endfunction
+
+function update_baseline (h, d)
+  visible = get (h, "visible");
+  ydata = get (h, "ydata")(1);
+
+  kids = get (get (h, "parent"), "children");
+  for i = 1 : length (kids)
+    obj = get (kids (i));
+    if (strcmp (obj.type, "hggroup") && isfield (obj, "baseline") 
+	&& obj.baseline == h)
+      ## Only alter if changed to avoid recursion of the listener functions
+      if (! strcmp (get (kids(i), "showbaseline"), visible))
+	set (kids (i), "showbaseline", visible);
+      endif
+      if (! strcmp (get (kids(i), "basevalue"), visible))
+	set (kids (i), "basevalue", ydata);
+      endif
+    endif
+  endfor
+endfunction
+
+function show_baseline (h, d)
+  set (get (h, "baseline"), "visible", get (h, "showbaseline"));
+endfunction
+
+function move_baseline (h, d)
+  b0 = get (h, "basevalue");
+  bl = get (h, "baseline");
+
+  if (get (bl, "ydata") != [b0, b0])
+    set (bl, "ydata", [b0, b0]);
+  endif
+
+  kids = get (h, "children");
+  yt = get(h, "ydata")(:)';
+  ny = length (yt);
+  yt = [b0 * ones(1, ny); yt; NaN(1, ny)](:);
+  set (kids(1), "ydata", yt);
+endfunction
+
+function update_props (h, d)
+  kids = get (h, "children");
+  set (kids(1), "color", get (h, "color"), 
+       "linewidth", get (h, "linewidth"),
+       "linestyle", get (h, "linestyle"));
+  set (kids(2), "color", get (h, "color"), 
+       "marker", get (h, "marker"),
+       "markerfacecolor", get (h, "markerfacecolor"),
+       "markersize", get (h, "markersize"));
+endfunction
+
+function update_data (h, d)
+  x = get (h, "xdata");
+  y = get (h, "ydata");
+  z = get (h, "zdata");
+
+  if (!isempty (z) && size_equal (x, y, z))
+    error ("stem3: inconsistent size of x, y and z");
+  elseif (numel(x) != numel (y))
+    error ("stem: inconsistent size of x and y");
+  else
+    bl = get (h, "basevalue");
+    nx = numel (x);
+    x = x(:)';
+    xt = [x; x; NaN(1, nx)](:);
+    if (! isempty (z))
+      y = y(:)';
+      yt = [y; y; NaN(1, nx)](:);
+      z = z(:)';
+      zt = [bl * ones(1, nx); z; NaN(1, nx)](:);
+    else
+      y = y(:)';
+      yt = [bl * ones(1, nx); y; NaN(1, nx)](:);
+      zt = [];
+    endif
+
+    kids = get (h, "children");
+    set (kids(1), "xdata", xt, "ydata", yt, "zdata", zt)
+    set (kids(2), "xdata", x, "ydata", y, "zdata", z)
+  endif
 endfunction

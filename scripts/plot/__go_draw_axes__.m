@@ -331,6 +331,10 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
       obj = get (kids(1));
       kids = kids(2:end);
 
+      if (strcmp (obj.visible, "off"))
+	continue;
+      endif
+
       switch (obj.type)
 	case "image"
 	  img_data = obj.cdata;

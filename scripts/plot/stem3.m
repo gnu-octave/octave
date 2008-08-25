@@ -19,9 +19,9 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{h} =} stem3 (@var{x}, @var{y}, @var{z}, @var{linespec})
 ## Plot a three-dimensional stem graph and return the handles of the line
-## and marker objects used to draw the stems.  The default color is @code{"r"}
-## (red).  The default line style is @code{"-"} and the default marker is
-## @code{"o"}.
+## and marker objects used to draw the stems as "stem series" object.
+## The default color is @code{"r"} (red).  The default line style is
+## @code{"-"} and the default marker is @code{"o"}.
 ##
 ## For example,
 ## @example

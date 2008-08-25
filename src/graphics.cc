@@ -3743,8 +3743,8 @@ gh_manager::do_execute_callback (const graphics_handle& h,
       fcn = c(0).function_value ();
       if (! error_state)
         {
-          for (int i = 0; i < c.length () ; i++)
-            args(2+i) = c(i);
+          for (int i = 1; i < c.length () ; i++)
+            args(1+i) = c(i);
         }
     }
   else

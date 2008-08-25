@@ -1793,7 +1793,20 @@ protected:
   handle_property uicontextmenu;
 
 protected:
-  std::map<caseless_str, property> all_props;
+  struct cmp_caseless_str 
+    {
+      bool operator () (const caseless_str &a, const caseless_str &b) const
+        {
+	  std::string a1 = a;
+	  std::transform (a1.begin (), a1.end (), a1.begin (), tolower);
+	  std::string b1 = b;
+	  std::transform (b1.begin (), b1.end (), b1.begin (), tolower);
+
+          return a1 < b1;
+        }
+    };
+
+  std::map<caseless_str, property, cmp_caseless_str> all_props;
 
 protected:
   void insert_static_property (const std::string& name, base_property& p)

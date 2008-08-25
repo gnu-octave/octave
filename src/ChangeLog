@@ -1,3 +1,14 @@
+2008-08-25  David Bateman  <dbateman@free.fr>
+
+	* graphics.cc (void gh_manager::do_execute_callback 
+	(const graphics_handle&, const octave_value&, const
+	octave_value&)): Don't pass the function handle as first arg of
+	property listener functions
+
+	* graphics.h.in (class base_properties): Add functor for caseless
+	string comparison. Use it in the property map, so that user added
+	properties are found in a case insensitive fashion.
+
 2008-08-22  John W. Eaton  <jwe@octave.org>
 
 	* symtab.h (symbol_table::inherit): Pass reference to symbol table

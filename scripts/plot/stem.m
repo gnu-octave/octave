@@ -18,74 +18,51 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{h} =} stem (@var{x}, @var{y}, @var{linespec})
-## Plot a stem graph and return the handles of the line and marker
-## objects used to draw the stems.  The default color is @code{"r"}
-## (red).  The default line style is @code{"-"} and the default marker is
-## @code{"o"}.
+## @deftypefnx {Function File} {@var{h} =} stem (@dots{}, "filled")
+## Plot a stem graph from two vectors of x-y data. If only one argument
+## is given, it is taken as the y-values and the x coordinates are taken
+## from the indicies of the elements.
 ##
-## For example,
-## @example
-## x = 1:10;
-## stem (x);
-## @end example
-## @noindent
-## plots 10 stems with heights from 1 to 10;
+## If @var{y} is a matrix, then each column of the matrix is plotted as
+## a separate stem graph. In this case @var{x} can either be a vector,
+## the same length as the number of rows in @var{y}, or it can be a
+## matrix of the same size as @var{y}.
+##
+## The default color is @code{"r"} (red). The default line style is
+## @code{"-"} and the default marker is @code{"o"}. The line style can
+## be altered by the @code{linespec} argument in the same manner as the
+## @code{plot} command. For example
 ##
 ## @example
+## @group
 ## x = 1:10;
 ## y = ones (1, length (x))*2.*x;
-## stem (x, y);
+## stem (x, y, "b");
+## @end group
 ## @end example
+##
 ## @noindent
-## plots 10 stems with heights from 2 to 20;
+## plots 10 stems with heights from 2 to 20 in blue;
 ## 
-## @example
-## x = 1:10;
-## y = ones (size (x))*2.*x;
-## h = stem (x, y, "b");
-## @end example
-## @noindent
-## plots 10 bars with heights from 2 to 20
-## (the color is blue, and @var{h} is a 2-by-10 array of handles in
-## which the first row holds the line handles and
-## the second row holds the marker handles);
+## The return value of @code{stem} is a vector if "stem series" graphics
+## handles, with one handle per column of the variable @var{y}. This
+## handle regroups the elements of the stem graph together as the
+## children of the "stem series" handle, allowing them to be altered
+## together. For example
 ##
 ## @example
-## x = 1:10;
-## y = ones (size (x))*2.*x;
-## h = stem (x, y, "-.k");
+## @group
+## x = [0 : 10].';
+## y = [sin(x), cos(x)]
+## h = stem (x, y);
+## set (h(2), "color", "g");
+## set (h(1), "basevalue", -1)
+## @end group
 ## @end example
-## @noindent
-## plots 10 stems with heights from 2 to 20
-## (the color is black, line style is @code{"-."}, and @var{h} is a 2-by-10
-## array of handles in which the first row holds the line handles and
-## the second row holds the marker handles);
 ##
-## @example
-## x = 1:10;
-## y = ones (size (x))*2.*x;
-## h = stem (x, y, "-.k.");
-## @end example
 ## @noindent
-## plots 10 stems with heights from 2 to 20
-## (the color is black, line style is @code{"-."} and the marker style
-## is @code{"."}, and @var{h} is a 2-by-10 array of handles in which the
-## first row holds the line handles and the second row holds the marker
-## handles);
-##
-## @example
-## x = 1:10;
-## y = ones (size (x))*2.*x;
-## h = stem (x, y, "fill");
-## @end example
-## @noindent
-## plots 10 stems with heights from 2 to 20
-## (the color is rgb-triple defined, the line style is @code{"-"},
-## the marker style is @code{"o"}, and @var{h} is a 2-by-10 array of
-## handles in which the first row holds the line handles and the second
-## row holds the marker handles).
-##
-## Color definitions with rgb-triples are not valid!
+## changes the color of the second "stem series"  and moves the base line
+## of the first.
 ## @seealso{bar, barh, plot}
 ## @end deftypefn
 
@@ -134,3 +111,10 @@ endfunction
 %! x = 1:10;
 %! y = ones (size (x))*2.*x;
 %! h = stem (x, y, "fill");
+
+%!demo
+%! x = [0 : 10].';
+%! y = [sin(x), cos(x)];
+%! h = stem (x, y);
+%! set (h(2), "color", "g");
+%! set (h(1), "basevalue", -1)

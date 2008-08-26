@@ -459,26 +459,32 @@ make_graphics_object_from_type (const caseless_str& type,
 
 // ---------------------------------------------------------------------
 
-void
+bool
 base_property::set (const octave_value& v, bool do_run )
 {
-  do_set (v);
-
-  // notify backend
-  if (id >= 0)
+  if (do_set (v))
     {
-      graphics_object go = gh_manager::get_object (parent);
-      if (go)
+
+      // notify backend
+      if (id >= 0)
 	{
-	  graphics_backend backend = go.get_backend();
-	  if (backend)
-	    backend.property_changed (go, id);
+	  graphics_object go = gh_manager::get_object (parent);
+	  if (go)
+	    {
+	      graphics_backend backend = go.get_backend();
+	      if (backend)
+		backend.property_changed (go, id);
+	    }
 	}
+
+      // run listeners
+      if (do_run && ! error_state)
+	run_listeners (POSTSET);
+
+      return true;
     }
-  
-  // run listeners
-  if (do_run && ! error_state)
-    run_listeners (POSTSET);
+
+  return false;
 }
 
 
@@ -568,7 +574,7 @@ color_values::str2rgb (std::string str)
   return retval;
 }
 
-void
+bool
 color_property::do_set (const octave_value& val)
 {
   if (val.is_string ())
@@ -579,20 +585,28 @@ color_property::do_set (const octave_value& val)
 	{
 	  if (radio_val.contains (s))
 	    {
-	      current_val = s;
-	      current_type = radio_t;
+	      if (current_type != radio_t || current_val != s)
+		{
+		  current_val = s;
+		  current_type = radio_t;
+		  return true;
+		}
 	    }
           else
 	    {
 	      color_values col (s);
 	      if (! error_state)
 		{
-		  color_val = col;
-		  current_type = color_t;
+		  if (current_type != color_t || col != color_val)
+		    {
+		      color_val = col;
+		      current_type = color_t;
+		      return true;
+		    }
 		}
 	      else
 		error ("invalid value for color property \"%s\" (value = %s)",
-               get_name ().c_str (), s.c_str ());
+		       get_name ().c_str (), s.c_str ());
 	    }	
 	}
       else
@@ -608,8 +622,12 @@ color_property::do_set (const octave_value& val)
 	  color_values col (m (0), m (1), m(2));
 	  if (! error_state)
 	    {
-	      color_val = col;
-	      current_type = color_t;
+	      if (current_type != color_t || col != color_val)
+		{
+		  color_val = col;
+		  current_type = color_t;
+		  return true;
+		}
 	    }
 	}
       else
@@ -619,9 +637,11 @@ color_property::do_set (const octave_value& val)
   else 
     error ("invalid value for color property \"%s\"",
            get_name ().c_str ());
+
+  return false;
 }
 
-void
+bool
 double_radio_property::do_set (const octave_value& val)
 {
   if (val.is_string ())
@@ -630,8 +650,12 @@ double_radio_property::do_set (const octave_value& val)
 
       if (! s.empty () && radio_val.contains (s))
 	{
-	  current_val = s;
-	  current_type = radio_t;
+	  if (current_type != radio_t || s != current_val)
+	    {
+	      current_val = s;
+	      current_type = radio_t;
+	      return true;
+	    }
 	}
       else
 	error ("invalid value for double_radio property \"%s\"",
@@ -639,12 +663,20 @@ double_radio_property::do_set (const octave_value& val)
     }
   else if (val.is_scalar_type () && val.is_real_type ())
     {
-      dval = val.double_value ();
-      current_type = double_t;
+      double new_dval = val.double_value ();
+
+      if (current_type != double_t || new_dval != dval)
+	{
+	  dval = new_dval;
+	  current_type = double_t;
+	  return true;
+	}
     }
   else 
     error ("invalid value for double_radio property \"%s\"",
 	   get_name ().c_str ());
+
+  return false;
 }
 
 bool
@@ -697,6 +729,53 @@ array_property::validate (const octave_value& v)
   return xok;
 }
 
+bool
+array_property::is_equal (const octave_value& v) const
+{
+  if (data.type_name () == v.type_name ())
+    {
+      if (data.dims () == v.dims ())
+	{
+#define CHECK_ARRAY_EQUAL(T,F) \
+	    { \
+	      const T* d1 = data.F ().data (); \
+	      const T* d2 = v.F ().data (); \
+	      \
+	      bool flag = true; \
+	      \
+	      for (int i = 0; flag && i < data.numel (); i++) \
+		if (d1[i] != d2[i]) \
+		  flag = false; \
+	      \
+	      return flag; \
+	    }
+
+	  if (data.is_double_type())
+	    CHECK_ARRAY_EQUAL (double, array_value)
+	  else if (data.is_single_type ())
+	    CHECK_ARRAY_EQUAL (float, float_array_value)
+	  else if (data.is_int8_type ())
+	    CHECK_ARRAY_EQUAL (octave_int8, int8_array_value)
+	  else if (data.is_int16_type ())
+	    CHECK_ARRAY_EQUAL (octave_int16, int16_array_value)
+	  else if (data.is_int32_type ())
+	    CHECK_ARRAY_EQUAL (octave_int32, int32_array_value)
+	  else if (data.is_int64_type ())
+	    CHECK_ARRAY_EQUAL (octave_int64, int64_array_value)
+	  else if (data.is_uint8_type ())
+	    CHECK_ARRAY_EQUAL (octave_uint8, uint8_array_value)
+	  else if (data.is_uint16_type ())
+	    CHECK_ARRAY_EQUAL (octave_uint16, uint16_array_value)
+	  else if (data.is_uint32_type ())
+	    CHECK_ARRAY_EQUAL (octave_uint32, uint32_array_value)
+	  else if (data.is_uint64_type ())
+	    CHECK_ARRAY_EQUAL (octave_uint64, uint64_array_value)
+	}
+    }
+
+  return false;
+}
+
 void
 array_property::get_data_limits (void)
 {
@@ -729,7 +808,7 @@ array_property::get_data_limits (void)
     }
 }
 
-void
+bool
 handle_property::do_set (const octave_value& v)
 {
   double dv = v.double_value ();
@@ -739,7 +818,13 @@ handle_property::do_set (const octave_value& v)
       graphics_handle gh = gh_manager::lookup (dv);
 
       if (xisnan (gh.value ()) || gh.ok ())
-        current_val = gh;
+	{
+	  if (current_val != gh)
+	    {
+	      current_val = gh;
+	      return true;
+	    }
+	}
       else
         error ("set: invalid graphics handle (= %g) for property \"%s\"",
 	       dv, get_name ().c_str ());
@@ -747,6 +832,8 @@ handle_property::do_set (const octave_value& v)
   else
     error ("set: invalid graphics handle for property \"%s\"",
 	   get_name ().c_str ());
+
+  return false;
 }
 
 bool

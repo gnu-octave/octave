@@ -332,17 +332,20 @@ function emit_declarations ()
 	else
 	  has_builtin_listeners = 0;
 
-        printf ("\n  {\n    if (! error_state)\n      {\n        %s.set (val, %s);\n",
+        printf ("\n  {\n    if (! error_state)\n      {\n        if (%s.set (val, %s))\n          {\n",
           name[i], (has_builtin_listeners ? "false" : "true"));
         if (updater[i])
-          printf ("        update_%s ();\n", name[i]);
+          printf ("            update_%s ();\n", name[i]);
         if (limits[i])
-          printf ("        update_axis_limits (\"%s\");\n", name[i]);
+          printf ("            update_axis_limits (\"%s\");\n", name[i]);
         if (mode[i])
-          printf ("        set_%smode (\"manual\");\n", name[i]);
+          printf ("            set_%smode (\"manual\");\n", name[i]);
 	if (has_builtin_listeners)
-	  printf ("        %s.run_listeners (POSTSET);\n", name[i]);
-        printf ("        mark_modified ();\n");
+	  printf ("            %s.run_listeners (POSTSET);\n", name[i]);
+        printf ("            mark_modified ();\n");
+	printf ("          }\n");
+	if (mode[i])
+	  printf ("        else\n          set_%smode (\"manual\");\n", name[i]);
         printf ("      }\n  }\n\n");
       }
       else

@@ -1,5 +1,25 @@
 2008-08-26  Michael Goffioul  <michael.goffioul@gmail.com>
 
+	* genprops.awk (emit_declarations): Call updaters/listeners only when
+	'set' method returned true.
+	* graphics.h.in (base_property::set, base_property::do_set):
+	Return bool value.
+	(property::set): Likewise.
+	(string_property::do_set): Check value change and return bool value.
+	(radio_property::do_set, double_property::do_set,
+	array_property::do_set): Likewise.
+	(color_property::do_set, double_radio_property::do_set,
+	row_vector_property::do_set, bool_property::do_set,
+	handle_property::do_set): Return bool value.
+	(any_property::do_set, callback_property::do_set): Return always true.
+	(color_values::operator==, color_values::operator!=): Add.
+	(array_property::is_equal): Add.
+	* graphics.cc (base_property::set): Executes listeners/notifiers only
+	when do_set returns true. Return bool value.
+	(color_property::do_set, double_radio_property::do_set): Check value
+	change and return bool value.
+	(array_property::is_equal): Add.
+
 	* genprops.awk (emit_declarations, emit_source): Change code emission
 	when emitting base_properties code (base is 1).
 	(BEGIN): Initialize pcount to 0.

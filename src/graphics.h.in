@@ -378,7 +378,7 @@ public:
 
   // Sets property value, notifies backend.
   // If do_run is true, runs associated listeners.
-  void set (const octave_value& v, bool do_run = true);
+  bool set (const octave_value& v, bool do_run = true);
   
   virtual octave_value get (void) const
     {
@@ -404,8 +404,11 @@ public:
     { return new base_property (*this); }
 
 protected:
-  virtual void do_set (const octave_value&)
-    { error ("set: invalid property \"%s\"", name.c_str ()); }
+  virtual bool do_set (const octave_value&)
+    {
+      error ("set: invalid property \"%s\"", name.c_str ());
+      return false;
+    }
 
 private:
   typedef std::map<listener_mode, octave_value_list> listener_map;
@@ -447,13 +450,22 @@ public:
   base_property* clone (void) const { return new string_property (*this); }
 
 protected:
-  void do_set (const octave_value& val)
+  bool do_set (const octave_value& val)
     {
       if (val.is_string ())
-        str = val.string_value ();
+	{
+	  std::string new_str = val.string_value ();
+
+	  if (new_str != str)
+	    {
+	      str = new_str;
+	      return true;
+	    }
+	}
       else
         error ("set: invalid string property value for \"%s\"",
                get_name ().c_str ());
+      return false;
     }
 
 private:
@@ -544,13 +556,19 @@ public:
   base_property* clone (void) const { return new radio_property (*this); }
 
 protected:
-  void do_set (const octave_value& newval) 
+  bool do_set (const octave_value& newval) 
   {
     if (newval.is_string ())
       {
         std::string s = newval.string_value ();
         if (vals.validate (s))
-          current_val = s;
+	  {
+	    if (s != current_val)
+	      {
+		current_val = s;
+		return true;
+	      }
+	  }
         else
           error ("set: invalid value for radio property \"%s\" (value = %s)",
               get_name ().c_str (), s.c_str ());
@@ -558,6 +576,7 @@ protected:
     else	
       error ("set: invalid value for radio property \"%s\"",
           get_name ().c_str ());
+    return false;
   }
 
 private:
@@ -598,6 +617,16 @@ public:
 
     return *this;
   }
+
+  bool operator == (const color_values& c) const
+    {
+      return (xrgb(0) == c.xrgb(0)
+	      && xrgb(1) == c.xrgb(1)
+	      && xrgb(2) == c.xrgb(2));
+    }
+
+  bool operator != (const color_values& c) const
+    { return ! (*this == c); }
 
   Matrix rgb (void) const { return xrgb; }
 
@@ -706,7 +735,7 @@ public:
   base_property* clone (void) const { return new color_property (*this); }
 
 protected:
-  OCTINTERP_API void do_set (const octave_value& newval);
+  OCTINTERP_API bool do_set (const octave_value& newval);
 
 private:
   enum current_enum { color_t, radio_t } current_type;
@@ -741,13 +770,22 @@ public:
   base_property* clone (void) const { return new double_property (*this); }
 
 protected:
-  void do_set (const octave_value& v)
+  bool do_set (const octave_value& v)
     {
       if (v.is_scalar_type () && v.is_real_type ())
-        current_val = v.double_value ();
+	{
+	  double new_val = v.double_value ();
+
+	  if (new_val != current_val)
+	    {
+	      current_val = new_val;
+	      return true;
+	    }
+	}
       else
         error ("set: invalid value for double property \"%s\"",
                get_name ().c_str ());
+      return false;
     }
 
 private:
@@ -827,7 +865,7 @@ public:
     { return new double_radio_property (*this); }
 
 protected:
-  OCTINTERP_API void do_set (const octave_value& v);
+  OCTINTERP_API bool do_set (const octave_value& v);
 
 private:
   enum current_enum { double_t, radio_t } current_type;
@@ -901,21 +939,31 @@ public:
     }
 
 protected:
-  void do_set (const octave_value& v)
+  bool do_set (const octave_value& v)
     {
       if (validate (v))
 	{
-	  data = v;
+	  // FIXME: should we check for actual data change?
+	  if (! is_equal (v))
+	    {
+	      data = v;
 
-	  get_data_limits ();
+	      get_data_limits ();
+
+	      return true;
+	    }
 	}
       else
         error ("invalid value for array property \"%s\"",
                get_name ().c_str ());
+      
+      return false;
     }
 
 private:
   OCTINTERP_API bool validate (const octave_value& v);
+
+  OCTINTERP_API bool is_equal (const octave_value& v) const;
 
   OCTINTERP_API void get_data_limits (void);
 
@@ -982,9 +1030,9 @@ public:
     }
 
 protected:
-  void do_set (const octave_value& v)
+  bool do_set (const octave_value& v)
   {
-    array_property::do_set (v);
+    bool retval = array_property::do_set (v);
 
     if (! error_state)
       {
@@ -998,7 +1046,11 @@ protected:
 
 	    data = data.reshape (dv);
 	  }
+
+	return retval;
       }
+
+    return false;
   }
 
 private:
@@ -1034,12 +1086,12 @@ public:
   base_property* clone (void) const { return new bool_property (*this); }
 
 protected:
-  void do_set (const octave_value& val)
+  bool do_set (const octave_value& val)
     {
       if (val.is_bool_scalar ())
-        radio_property::do_set (val.bool_value () ? "on" : "off");
+        return radio_property::do_set (val.bool_value () ? "on" : "off");
       else
-        radio_property::do_set (val);
+        return radio_property::do_set (val);
     }
 };
 
@@ -1075,7 +1127,7 @@ public:
   base_property* clone (void) const { return new handle_property (*this); }
 
 protected:
-  OCTINTERP_API void do_set (const octave_value& v);
+  OCTINTERP_API bool do_set (const octave_value& v);
 
 private:
   graphics_handle current_val;
@@ -1104,7 +1156,11 @@ public:
   base_property* clone (void) const { return new any_property (*this); }
 
 protected:
-  void do_set (const octave_value& v) { data = v; }
+  bool do_set (const octave_value& v)
+    {
+      data = v;
+      return true;
+    }
 
 private:
   octave_value data;
@@ -1135,13 +1191,17 @@ public:
   base_property* clone (void) const { return new callback_property (*this); }
 
 protected:
-  void do_set (const octave_value& v)
+  bool do_set (const octave_value& v)
     {
       if (validate (v))
-        callback = v;
+	{
+	  callback = v;
+	  return true;
+	}
       else
         error ("invalid value for callback property \"%s\"",
                get_name ().c_str ());
+      return false;
     }
 
 private:
@@ -1204,8 +1264,8 @@ public:
   octave_value get (void) const
     { return rep->get (); }
 
-  void set (const octave_value& val)
-    { rep->set (val); }
+  bool set (const octave_value& val)
+    { return rep->set (val); }
 
   property& operator = (const octave_value& val)
     {

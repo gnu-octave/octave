@@ -1949,10 +1949,10 @@ figure::properties::get_title (void) const
   if (is_numbertitle ())
     {
       std::ostringstream os;
-      std::string name = get_name ();
+      std::string nm = get_name ();
 
       os << "Figure " << __myhandle__.value ();
-      if (! name.empty ())
+      if (! nm.empty ())
 	os << ": " << get_name ();
 
       return os.str ();

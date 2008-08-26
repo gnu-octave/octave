@@ -182,6 +182,7 @@ It corresponds to GNU Octave version @value{VERSION}.
 * Dynamically Linked Functions::
 * Test and Demo Functions::
 * Tips::                        
+* Contributing Guidelines::
 * Trouble::                     If you have trouble installing Octave.
 * Installation::                How to configure, compile and install Octave.
 * Emacs::                       
@@ -615,6 +616,7 @@ Emacs Octave Support
 @include dynamic.texi
 @include testfun.texi
 @include tips.texi
+@include contrib.texi
 @include bugs.texi
 @include install.texi
 @include emacs.texi

@@ -1374,9 +1374,9 @@ Additional user arguments can be passed to callback functions, and will
 be passed after the 2 default arguments. For example
 
 @example
-plot (x, "DeleteFcn", {@@mycallback, "1"})
+plot (x, "DeleteFcn", @{@@mycallback, "1"@})
 @dots{}
-function mycall (src, data, a1)
+function mycallback (src, data, a1)
   fprintf ("Closing plot %d\n", a1);
 endfunction
 @end example

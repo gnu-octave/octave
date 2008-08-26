@@ -459,6 +459,26 @@ make_graphics_object_from_type (const caseless_str& type,
 // ---------------------------------------------------------------------
 
 void
+base_property::set (const octave_value& v, bool do_run )
+{
+  do_set (v);
+
+  // notify backend
+  graphics_object go = gh_manager::get_object (parent);
+  if (go)
+    {
+      graphics_backend backend = go.get_backend();
+      if (backend)
+        backend.property_changed (parent, name);
+    }
+  
+  // run listeners
+  if (do_run && ! error_state)
+    run_listeners (POSTSET);
+}
+
+
+void
 base_property::run_listeners (listener_mode mode)
 {
   const octave_value_list& l = listeners[mode];
@@ -1172,6 +1192,13 @@ gh_manager::do_free (const graphics_handle& h)
 	      p->second.get_properties ().set_beingdeleted (true);
 	      p->second.get_properties ().execute_deletefcn ();
 
+	      // notify backend
+	      graphics_backend backend = p->second.get_backend ();
+	      if (backend)
+                backend.object_destroyed (h);
+                 // note - this will be valid only for first explicitly deleted object.
+                 // All his children will have unknown backend then.
+                 
 	      handle_map.erase (p);
 
 	      if (h.value () < 0)
@@ -3524,6 +3551,11 @@ gh_manager::do_make_graphics_handle (const std::string& go_name,
       handle_map[h] = graphics_object (go);
       if (do_createfcn)
         go->get_properties ().execute_createfcn ();
+
+      // notify backend
+      graphics_backend backend = go->get_backend ();
+      if (backend)
+        backend.object_created (h);
     }
   else
     error ("gh_manager::do_make_graphics_handle: invalid object type `%s'",
@@ -3537,8 +3569,14 @@ gh_manager::do_make_figure_handle (double val)
 {
   graphics_handle h = val;
 
-  handle_map[h] = graphics_object (new figure (h, 0));
+  base_graphics_object* go = new figure (h, 0);
+  handle_map[h] = graphics_object (go);
 
+  // notify backend
+  graphics_backend backend = go->get_backend ();
+  if (backend)
+    backend.object_created (h);
+  
   return h;
 }
 

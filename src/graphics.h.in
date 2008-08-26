@@ -372,14 +372,10 @@ public:
 
   void set_hidden (bool flag) { hidden = flag; }
 
-  void set (const octave_value& v, bool do_run = true)
-    {
-      do_set (v);
-
-      if (do_run && ! error_state)
-	run_listeners (POSTSET);
-    }
-
+  // Sets property value, notifies backend.
+  // If do_run is true, runs associated listeners.
+  void set (const octave_value& v, bool do_run = true);
+  
   virtual octave_value get (void) const
     {
       error ("get: invalid property \"%s\"", name.c_str ());
@@ -1351,6 +1347,18 @@ public:
   virtual void set_figure_position (const graphics_handle&, const Matrix&) const
     { gripe_invalid ("set_figure_position"); }
 
+  // Called when graphics object using this backend changes it's property.
+  virtual void property_changed (const graphics_handle&, const std::string&)
+    { gripe_invalid ("property_changed"); }
+  
+  // Called when new object using this backend is created.
+  virtual void object_created (const graphics_handle&)
+    { gripe_invalid ("object_created"); }
+
+  // Called when object using this backend is destroyed.
+  virtual void object_destroyed (const graphics_handle&)
+    { gripe_invalid ("object_destroyed"); }
+
 private:
   std::string name;
   int count;
@@ -1430,7 +1438,21 @@ public:
 
   void set_figure_position (const graphics_handle& h, const Matrix& pos) const
     { rep->set_figure_position (h, pos); }
+  
+  // Notifies backend that object't property has changed.
+  void property_changed (const graphics_handle& h, const std::string& prop)
+    { rep->property_changed (h, prop); }
 
+  // Notifies backend that new object was created.
+  void object_created (const graphics_handle& h)
+    { rep->object_created (h); }
+  
+  // Notifies backend that object was destroyed.
+  // This is called only for explicitly deleted object. Children are
+  // deleted implicitly and backend isn't notified.
+  void object_destroyed (const graphics_handle& h)
+    { rep->object_destroyed (h); }
+  
   OCTINTERP_API static graphics_backend default_backend (void);
 
   static void register_backend (const graphics_backend& b)

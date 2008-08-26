@@ -1,3 +1,16 @@
+2008-08-26  Maciek Gajewski <maciej.gajewski0@gmail.com>
+
+	* graphics.h.in (base_property::set): Remove inline implementation.
+	(base_graphics_backend::property_changed,
+	base_graphics_backend::object_created,
+	base_graphics_backend::object_destroyed): New method.
+	(graphics_backend::property_changed, graphics_backend::object_created,
+	graphics_backend::object_destroyed): Likewise.
+	* graphics.cc (base_property::set): Moved from header file.
+	(gh_manager::do_free): Add backend notification.
+	(gh_manager::do_make_graphics_handle): Likewise.
+	(gh_manager::do_make_figure_handle): Likewise.
+
 2008-08-25  Thomas L. Scofield  <scofield@calvin.edu>
 
 	* DLD-FUNCTIONS/__magick_read__.cc: Untabify.

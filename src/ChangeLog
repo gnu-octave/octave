@@ -1,3 +1,7 @@
+2008-08-26  Jaroslav Hajek <highegg@gmail.com>
+
+	* parse.y (Fassignin): Use default  scope when calling varref.
+
 2008-08-26  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* genprops.awk (emit_declarations): Call updaters/listeners only when

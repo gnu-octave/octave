@@ -3977,8 +3977,6 @@ may be either @code{\"base\"} or @code{\"caller\"}.\n\
 
       if (! error_state)
         {
-	  symbol_table::scope_id scope = -1;
-
 	  if (context == "caller")
 	    octave_call_stack::goto_caller_frame ();
 	  else if (context == "base")
@@ -3995,7 +3993,7 @@ may be either @code{\"base\"} or @code{\"caller\"}.\n\
 	      if (! error_state)
 		{
 		  if (valid_identifier (nm))
-		    symbol_table::varref (nm, scope) = args(2);
+		    symbol_table::varref (nm) = args(2);
 		  else
 		    error ("assignin: invalid variable name");
 		}

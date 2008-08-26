@@ -44,11 +44,14 @@
 
 function hold (varargin)
 
-  [h, varargin] = __plt_get_axis_arg__ ("hold", varargin{:});
+  if (nargin > 0 && ishandle (varargin{1}))
+    [h, varargin, nargs] = __plt_get_axis_arg__ ("hold", varargin{:});
+  else
+    h = gcf ();
+    nargs = numel (varargin);
+  endif
 
   hold_state = get (h, "nextplot");
-
-  nargs = numel (varargin);
 
   if (nargs == 0)
     if (strcmp (hold_state, "add"))
@@ -69,6 +72,11 @@ function hold (varargin)
     endif
   else
     print_usage ();
+  endif
+
+  if (isfigure (h))
+    axes_objs = findobj (h, "type", "axes");
+    h = [h; axes_objs];
   endif
 
   set (h, "nextplot", hold_state);

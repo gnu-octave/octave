@@ -1,3 +1,57 @@
+2008-08-26  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* DLD_FUNCTIONS/fltk_backend.cc (fltk_backend::close_figure): Remove.
+	(fltk_backend::object_destroyed, fltk_backend::property_changed): New
+	methods.
+	* genprops.awk (emit_declarations): Generate "enum" property fields.
+	(emit_sources): Emit set_id calls.
+	* graphics.h.in (base_property::id): New field.
+	(base_property::base_property): Initialize it.
+	(base_property::get_id, base_property::set_id): Add accessors.
+	(property::get_id, property::set_id): Likewise.
+	(base_graphics_backend::close_figure, graphics_backend::close_figure):
+	Remove methods.
+	(base_graphics_backend::redraw_figure,
+	base_graphics_backend::print_figure, graphics_backend::redraw_figure,
+	graphics_backend::print_figure): Change graphics_handle argument into
+	graphics_object.
+	(base_graphics_backend::property_changed,
+	base_graphics_backend::object_created,
+	base_graphics_backend::object_destroyed,
+	graphics_backend::property_changed, graphics_backend::object_created,
+	graphics_backend::object_destroyed): New signature with
+	graphics_object argument.
+	(base_properties::base_properties): Add set_id calls.
+	(class base_properties): Add "enum" property fields.
+	(root_figure::properties::remove_child): Add overloaded method.
+	(figure::properties::close): Remove.
+	(figure::properties::set_backend): Call object_destroyed instead of
+	close.
+	(figure::~figure): Remove close call.
+	(figure::properties::get_title): New method.
+	* graphics.cc (base_property::set): Call property_changed only for
+	valid id (>=0); Use graphics_object argument.
+	(gh_manager::do_free): Call object_destroyed with graphics_object
+	argument.
+	(base_graphics_backend::property_changed,
+	base_graphics_backend::object_created,
+	base_graphics_object::object_destroyed): Implement wrappers for
+	graphics_handle argument case.
+	(gnuplot_backend::close_figure): Remove.
+	(gnuplot_backend::object_destroyed,
+	gnuplot_backend::property_changed): New methods.
+	(gnuplot_backend::redraw_figure, gnuplot_backend::print_figure):
+	Change graphics_handle argument to graphics_object.
+	(root_figure::properties::remove_child): Add.
+	(figure::properties::close): Remove.
+	(figure::properties::set_position): Do not call set_figure_position.
+	(figure::properties::get_title): New method.
+	(gh_manager::do_make_graphics_handle): Call object_created with
+	a graphics_object argument.
+	(gh_manager::do_make_figure_handle): Likewise.
+	(Fdrawnow): Call redraw_figure and print_figure with a graphics_object
+	argument.
+
 2008-08-26  Maciek Gajewski <maciej.gajewski0@gmail.com>
 
 	* graphics.h.in (base_property::set): Remove inline implementation.

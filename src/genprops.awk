@@ -260,6 +260,18 @@ function emit_declarations ()
 
   if (idx > 0)
     print "\npublic:\n";
+  
+  if (idx > 0)
+  {
+    printf ("  enum\n  {");
+    for (i = 1; i <= idx; i++)
+    {
+      printf ("%s\n    %s = %d", (i == 1 ? "" : ","), toupper(name[i]), pcount);
+      pcount++;
+    }
+    printf ("\n  };\n\n");
+    pcount = (int(pcount/1000)+1)*1000;
+  }
 
   for (i = 1; i <= idx; i++)
   {
@@ -325,7 +337,8 @@ function emit_declarations ()
           printf ("        set_%smode (\"manual\");\n", name[i]);
 	if (has_builtin_listeners)
 	  printf ("        %s.run_listeners (POSTSET);\n", name[i]);
-        printf ("        mark_modified ();\n      }\n  }\n\n");
+        printf ("        mark_modified ();\n");
+        printf ("      }\n  }\n\n");
       }
       else
         printf (";\n\n");
@@ -380,6 +393,7 @@ function emit_source ()
     for (i = 1; i <= idx; i++)
     {
 ##    printf ("  insert_static_property (\"%s\", %s);\n", name[i], name[i]) >> filename;
+      printf ("  %s.set_id (%s);\n", name[i], toupper(name[i])) >> filename;
       if (hidden[i])
         printf ("  %s.set_hidden (true);\n", name[i]) >> filename;
     }
@@ -492,6 +506,7 @@ BEGIN {
   filename = "graphics-props.cc";
   printf ("// DO NOT EDIT!  Generated automatically by genprops.awk.\n\n");
   printf ("// DO NOT EDIT!  Generated automatically by genprops.awk.\n\n") > filename;
+  pcount = 1000;
 }
 
 /BEGIN_PROPERTIES\(.*\)/ {

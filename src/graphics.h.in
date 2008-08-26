@@ -348,13 +348,13 @@ public:
   friend class property;
 
 public:
-  base_property (void) : count (1) { }
+  base_property (void) : id (-1), count (1) { }
 
   base_property (const std::string& s, const graphics_handle& h)
-    : count (1), name (s), parent (h), hidden (false) { }
+    : id (-1), count (1), name (s), parent (h), hidden (false) { }
 
   base_property (const base_property& p)
-    : count (1), name (p.name), parent (p.parent), hidden (p.hidden) { }
+    : id (-1), count (1), name (p.name), parent (p.parent), hidden (p.hidden) { }
 
   virtual ~base_property (void) { }
 
@@ -371,6 +371,10 @@ public:
   bool is_hidden (void) const { return hidden; }
 
   void set_hidden (bool flag) { hidden = flag; }
+
+  int get_id (void) const { return id; }
+
+  void set_id (int d) { id = d; }
 
   // Sets property value, notifies backend.
   // If do_run is true, runs associated listeners.
@@ -409,6 +413,7 @@ private:
   typedef std::map<listener_mode, octave_value_list>::const_iterator listener_map_const_iterator;
 
 private:
+  int id;
   int count;
   std::string name;
   graphics_handle parent;
@@ -1190,6 +1195,12 @@ public:
   void set_hidden (bool flag)
     { rep->set_hidden (flag); }
 
+  int get_id (void) const
+    { return rep->get_id (); }
+
+  void set_id (int d)
+    { rep->set_id (d); }
+
   octave_value get (void) const
     { return rep->get (); }
 
@@ -1299,6 +1310,7 @@ private:
 // ---------------------------------------------------------------------
 
 class graphics_backend;
+class graphics_object;
 
 class base_graphics_backend
 {
@@ -1315,13 +1327,10 @@ public:
 
   virtual bool is_valid (void) const { return false; }
 
-  virtual void close_figure (const octave_value& /*pstream*/) const
-    { gripe_invalid ("close_figure"); }
-
-  virtual void redraw_figure (const graphics_handle&) const
+  virtual void redraw_figure (const graphics_object&) const
     { gripe_invalid ("redraw_figure"); }
 
-  virtual void print_figure (const graphics_handle&, const std::string&,
+  virtual void print_figure (const graphics_object&, const std::string&,
 			     const std::string&, bool,
 			     const std::string& = "") const
     { gripe_invalid ("print_figure"); }
@@ -1344,20 +1353,23 @@ public:
       return Matrix (1, 2, 0.0);
     }
 
-  virtual void set_figure_position (const graphics_handle&, const Matrix&) const
-    { gripe_invalid ("set_figure_position"); }
-
   // Called when graphics object using this backend changes it's property.
-  virtual void property_changed (const graphics_handle&, const std::string&)
+  virtual void property_changed (const graphics_object&, int)
     { gripe_invalid ("property_changed"); }
+
+  void property_changed (const graphics_handle&, int);
   
   // Called when new object using this backend is created.
-  virtual void object_created (const graphics_handle&)
+  virtual void object_created (const graphics_object&)
     { gripe_invalid ("object_created"); }
 
+  void object_created (const graphics_handle&);
+
   // Called when object using this backend is destroyed.
-  virtual void object_destroyed (const graphics_handle&)
+  virtual void object_destroyed (const graphics_object&)
     { gripe_invalid ("object_destroyed"); }
+
+  void object_destroyed (const graphics_handle&);
 
 private:
   std::string name;
@@ -1416,16 +1428,13 @@ public:
 
   std::string get_name (void) const { return rep->get_name (); }
 
-  void close_figure (const octave_value& pstream) const
-    { rep->close_figure (pstream); }
-
-  void redraw_figure (const graphics_handle& fh) const
-    { rep->redraw_figure (fh); }
+  void redraw_figure (const graphics_object& go) const
+    { rep->redraw_figure (go); }
   
-  void print_figure (const graphics_handle& fh, const std::string& term,
+  void print_figure (const graphics_object& go, const std::string& term,
 		     const std::string& file, bool mono,
 		     const std::string& debug_file = "") const
-    { rep->print_figure (fh, term, file, mono, debug_file); }
+    { rep->print_figure (go, term, file, mono, debug_file); }
 
   Matrix get_canvas_size (const graphics_handle& fh) const
     { return rep->get_canvas_size (fh); }
@@ -1436,20 +1445,26 @@ public:
   Matrix get_screen_size (void) const
     { return rep->get_screen_size (); }
 
-  void set_figure_position (const graphics_handle& h, const Matrix& pos) const
-    { rep->set_figure_position (h, pos); }
-  
   // Notifies backend that object't property has changed.
-  void property_changed (const graphics_handle& h, const std::string& prop)
-    { rep->property_changed (h, prop); }
+  void property_changed (const graphics_object& go, int id)
+    { rep->property_changed (go, id); }
+  
+  void property_changed (const graphics_handle& h, int id)
+    { rep->property_changed (h, id); }
 
   // Notifies backend that new object was created.
+  void object_created (const graphics_object& go)
+    { rep->object_created (go); }
+  
   void object_created (const graphics_handle& h)
     { rep->object_created (h); }
   
   // Notifies backend that object was destroyed.
   // This is called only for explicitly deleted object. Children are
   // deleted implicitly and backend isn't notified.
+  void object_destroyed (const graphics_object& go)
+    { rep->object_destroyed (go); }
+  
   void object_destroyed (const graphics_handle& h)
     { rep->object_destroyed (h); }
   
@@ -1482,7 +1497,6 @@ public:
 
     return m;
   }
-	
 
 private:
   base_graphics_backend *rep;
@@ -1523,7 +1537,23 @@ public:
       __modified__ ("__modified__", mh, true),
       __myhandle__ (mh),
       uicontextmenu ("uicontextmenu", mh, graphics_handle ())
-    { }
+    {
+      beingdeleted.set_id (BEINGDELETED);
+      busyaction.set_id (BUSYACTION);
+      buttondownfcn.set_id (BUTTONDOWNFCN);
+      clipping.set_id (CLIPPING);
+      createfcn.set_id (CREATEFCN);
+      deletefcn.set_id (DELETEFCN);
+      handlevisibility.set_id (HANDLEVISIBILITY);
+      hittest.set_id (HITTEST);
+      interruptible.set_id (INTERRUPTIBLE);
+      parent.set_id (PARENT);
+      selected.set_id (SELECTED);
+      selectionhighlight.set_id (SELECTIONHIGHLIGHT);
+      tag.set_id (TAG);
+      userdata.set_id (USERDATA);
+      visible.set_id (VISIBLE);
+    }
 
   virtual ~base_properties (void) { }
 
@@ -1787,7 +1817,27 @@ public:
   virtual bool is_zliminclude (void) const { return false; }
   virtual bool is_climinclude (void) const { return false; }
   virtual bool is_aliminclude (void) const { return false; }
-  
+ 
+  enum
+    {
+      BEINGDELETED = 0,
+      BUSYACTION,
+      BUTTONDOWNFCN,
+      // CHILDREN,
+      CLIPPING,
+      CREATEFCN,
+      DELETEFCN,
+      HANDLEVISIBILITY,
+      HITTEST,
+      INTERRUPTIBLE,
+      PARENT,
+      SELECTED,
+      SELECTIONHIGHLIGHT,
+      TAG,
+      USERDATA,
+      VISIBLE
+    };
+
 protected:
   // properties common to all objects
   bool_property beingdeleted;
@@ -2195,6 +2245,8 @@ public:
   class OCTINTERP_API properties : public base_properties
   {
   public:
+    void remove_child (const graphics_handle& h);
+    
     // See the genprops.awk script for an explanation of the
     // properties declarations.
 
@@ -2311,8 +2363,6 @@ public:
   class OCTINTERP_API properties : public base_properties
   {
   public:
-    void close (bool pop = true);
-
     void set_visible (const octave_value& val);
 
     graphics_backend get_backend (void) const
@@ -2325,7 +2375,8 @@ public:
 
     void set_backend (const graphics_backend& b) 
     { 
-      close (false);
+      if (backend)
+	backend.object_destroyed (__myhandle__);
       backend = b; 
       __backend__ = b.get_name ();
       __plot_stream__ = Matrix ();
@@ -2358,6 +2409,8 @@ public:
     Matrix get_boundingbox (bool internal = false) const;
 
     void set_boundingbox (const Matrix& bb);
+
+    std::string get_title (void) const;
 
     // See the genprops.awk script for an explanation of the
     // properties declarations.
@@ -2444,7 +2497,6 @@ public:
   ~figure (void)
   {
     xproperties.delete_children (); 
-    xproperties.close ();
   }
 
   void override_defaults (base_graphics_object& obj)

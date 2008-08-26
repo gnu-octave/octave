@@ -696,10 +696,31 @@ public:
 
   bool is_valid (void) const { return true; }
 
-  void close_figure (const octave_value& ov) const
+  void object_destroyed (const graphics_object& go)
   {
-    if (ov.is_string ())
-      figure_manager::Instance ().delete_window (ov.string_value ());
+    if (go.isa ("figure"))
+      {
+	octave_value ov = go.get (caseless_str ("__plot_stream__"));
+	figure_manager::Instance ().delete_window (ov.string_value ());
+      }
+  }
+
+  void property_changed (const graphics_object& go, int id)
+  {
+    if (go.isa ("figure"))
+      {
+	octave_value ov = go.get (caseless_str ("__plot_stream__"));
+	
+	if (! ov.is_empty ())
+	  {
+	    switch (id)
+	      {
+	      case base_properties::VISIBLE:
+		// FIXME: something to do here
+		break;
+	      }
+	  }
+      }
   }
 
   void redraw_figure (const graphics_handle& fh) const

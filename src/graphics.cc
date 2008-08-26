@@ -33,6 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <map>
 #include <set>
 #include <string>
+#include <sstream>
 
 #include "file-ops.h"
 #include "file-stat.h"
@@ -464,12 +465,15 @@ base_property::set (const octave_value& v, bool do_run )
   do_set (v);
 
   // notify backend
-  graphics_object go = gh_manager::get_object (parent);
-  if (go)
+  if (id >= 0)
     {
-      graphics_backend backend = go.get_backend();
-      if (backend)
-        backend.property_changed (parent, name);
+      graphics_object go = gh_manager::get_object (parent);
+      if (go)
+	{
+	  graphics_backend backend = go.get_backend();
+	  if (backend)
+	    backend.property_changed (go, id);
+	}
     }
   
   // run listeners
@@ -1189,13 +1193,16 @@ gh_manager::do_free (const graphics_handle& h)
 
 	  if (p != handle_map.end ())
 	    {
+	      // FIXME: should we explicitely free all children first?
+	      //        => call delete_children () ?
+
 	      p->second.get_properties ().set_beingdeleted (true);
 	      p->second.get_properties ().execute_deletefcn ();
 
 	      // notify backend
 	      graphics_backend backend = p->second.get_backend ();
 	      if (backend)
-                backend.object_destroyed (h);
+                backend.object_destroyed (p->second);
                  // note - this will be valid only for first explicitly deleted object.
                  // All his children will have unknown backend then.
                  
@@ -1340,6 +1347,31 @@ xcreatefcn (const graphics_handle& h)
   obj.get_properties ().execute_createfcn  ();
 }
 
+// ---------------------------------------------------------------------
+
+void
+base_graphics_backend::property_changed (const graphics_handle& h, int id)
+{
+  graphics_object go = gh_manager::get_object (h);
+
+  property_changed (go, id);
+}
+
+void
+base_graphics_backend::object_created (const graphics_handle& h)
+{
+  graphics_object go = gh_manager::get_object (h);
+
+  object_created (go);
+}
+
+void
+base_graphics_backend::object_destroyed (const graphics_handle& h)
+{
+  graphics_object go = gh_manager::get_object (h);
+
+  object_destroyed (go);
+}
 // ---------------------------------------------------------------------
 
 static int
@@ -1763,8 +1795,76 @@ public:
   ~gnuplot_backend (void) { }
 
   bool is_valid (void) const { return true; }
- 
-  void close_figure (const octave_value& pstream) const
+
+  void object_destroyed (const graphics_object& go)
+    {
+      if (go.isa ("figure"))
+	{
+	  const figure::properties& props =
+	      dynamic_cast<const figure::properties&> (go.get_properties ());
+
+	  send_quit (props.get___plot_stream__ ());
+	}
+    }
+
+  void property_changed (const graphics_object& go, int id)
+    {
+      if (go.isa ("figure"))
+	{
+	  graphics_object obj (go);
+
+	  figure::properties& props =
+	      dynamic_cast<figure::properties&> (obj.get_properties ());
+
+	  switch (id)
+	    {
+	    case base_properties::VISIBLE:
+	      if (! props.is_visible ())
+		{
+		  send_quit (props.get___plot_stream__ ());
+		  props.set___plot_stream__ (Matrix ());
+		  props.set___enhanced__ (false);
+		}
+	      break;
+	    }
+	}
+    }
+
+  void redraw_figure (const graphics_object& go) const
+    {
+      octave_value_list args;
+      args(0) = go.get_handle ().as_octave_value ();
+      feval ("gnuplot_drawnow", args);
+    }
+
+  void print_figure (const graphics_object& go, const std::string& term,
+		     const std::string& file, bool mono,
+		     const std::string& debug_file) const
+    {
+      octave_value_list args;
+      if (! debug_file.empty ())
+	args(4) = debug_file;
+      args(3) = mono;
+      args(2) = file;
+      args(1) = term;
+      args(0) = go.get_handle ().as_octave_value ();
+      feval ("gnuplot_drawnow", args);
+    }
+
+  Matrix get_canvas_size (const graphics_handle&) const
+    {
+      Matrix sz (1, 2, 0.0);
+      return sz;
+    }
+
+  double get_screen_resolution (void) const
+    { return 72.0; }
+
+  Matrix get_screen_size (void) const
+    { return Matrix (1, 2, 0.0); }
+
+private:
+  void send_quit (const octave_value& pstream) const
     {
       if (! pstream.is_empty())
 	{
@@ -1787,39 +1887,6 @@ public:
 	    }
 	}
     }
-
-  void redraw_figure (const graphics_handle& fh) const
-    {
-      octave_value_list args;
-      args(0) = fh.as_octave_value ();
-      feval ("gnuplot_drawnow", args);
-    }
-
-  void print_figure (const graphics_handle& fh, const std::string& term,
-		     const std::string& file, bool mono,
-		     const std::string& debug_file) const
-    {
-      octave_value_list args;
-      if (! debug_file.empty ())
-	args(4) = debug_file;
-      args(3) = mono;
-      args(2) = file;
-      args(1) = term;
-      args(0) = fh.as_octave_value ();
-      feval ("gnuplot_drawnow", args);
-    }
-
-  Matrix get_canvas_size (const graphics_handle&) const
-    {
-      Matrix sz (1, 2, 0.0);
-      return sz;
-    }
-
-  double get_screen_resolution (void) const
-    { return 72.0; }
-
-  Matrix get_screen_size (void) const
-    { return Matrix (1, 2, 0.0); }
 };
 
 graphics_backend
@@ -1903,6 +1970,18 @@ root_figure::properties::set_callbackobject (const octave_value& v)
     gripe_set_invalid ("callbackobject");
 }
 
+void
+root_figure::properties::remove_child (const graphics_handle& gh)
+{
+  gh_manager::pop_figure (gh);
+
+  graphics_handle cf = gh_manager::current_figure ();
+
+  xset (0, "currentfigure", cf.value ());
+  
+  base_properties::remove_child (gh);
+}
+
 property_list
 root_figure::factory_properties = root_figure::init_factory_properties ();
 
@@ -1933,22 +2012,6 @@ figure::properties::set_visible (const octave_value& val)
 	xset (0, "currentfigure", __myhandle__.value ());
 
       visible = val;
-    }
-}
-
-void
-figure::properties::close (bool pop)
-{
-  if (backend)
-    backend.close_figure (get___plot_stream__ ());
-
-  if (pop)
-    {
-      gh_manager::pop_figure (__myhandle__);
-
-      graphics_handle cf = gh_manager::current_figure ();
-
-      xset (0, "currentfigure", cf.value ());
     }
 }
 
@@ -1999,9 +2062,6 @@ figure::properties::set_position (const octave_value& v)
 
       if (old_bb != new_bb)
 	{
-	  // FIXME: maybe this should be converted into a more generic
-	  //        call like "update_gui (this)"
-	  get_backend ().set_figure_position (__myhandle__, new_bb);
 	  if (old_bb(2) != new_bb(2) || old_bb(3) != new_bb(3))
 	    {
 	      execute_resizefcn ();
@@ -2011,6 +2071,24 @@ figure::properties::set_position (const octave_value& v)
 
       mark_modified ();
     }
+}
+
+std::string
+figure::properties::get_title (void) const
+{
+  if (is_numbertitle ())
+    {
+      std::ostringstream os;
+      std::string name = get_name ();
+
+      os << "Figure " << __myhandle__.value ();
+      if (! name.empty ())
+	os << ": " << get_name ();
+
+      return os.str ();
+    }
+  else
+    return get_name ();
 }
 
 octave_value
@@ -3548,14 +3626,16 @@ gh_manager::do_make_graphics_handle (const std::string& go_name,
   
   if (go)
     {
-      handle_map[h] = graphics_object (go);
+      graphics_object obj (go);
+
+      handle_map[h] = obj;
       if (do_createfcn)
         go->get_properties ().execute_createfcn ();
 
       // notify backend
       graphics_backend backend = go->get_backend ();
       if (backend)
-        backend.object_created (h);
+        backend.object_created (obj);
     }
   else
     error ("gh_manager::do_make_graphics_handle: invalid object type `%s'",
@@ -3570,12 +3650,14 @@ gh_manager::do_make_figure_handle (double val)
   graphics_handle h = val;
 
   base_graphics_object* go = new figure (h, 0);
-  handle_map[h] = graphics_object (go);
+  graphics_object obj (go);
+
+  handle_map[h] = obj;
 
   // notify backend
   graphics_backend backend = go->get_backend ();
   if (backend)
-    backend.object_created (h);
+    backend.object_created (obj);
   
   return h;
 }
@@ -4563,16 +4645,11 @@ Undocumented internal function.\n\
 			{
 			  gh_manager::unlock ();
 
-			  fprops.get_backend ().redraw_figure (h);
+			  fprops.get_backend ().redraw_figure (go);
 
 			  gh_manager::lock ();
 			}
-		      else if (! fprops.get___plot_stream__ ().is_empty ())
-			{
-			  fprops.close (false);
-			  fprops.set___plot_stream__ (Matrix ());
-			  fprops.set___enhanced__ (false);
-			}
+
 		      fprops.set_modified (false);
 		    }
 		}
@@ -4641,7 +4718,7 @@ Undocumented internal function.\n\
 			      gh_manager::unlock ();
 
 			      go.get_backend ()
-				.print_figure (h, term, file, mono, debug_file);
+				.print_figure (go, term, file, mono, debug_file);
 
 			      gh_manager::lock ();
 			    }

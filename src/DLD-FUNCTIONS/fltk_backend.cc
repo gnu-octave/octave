@@ -24,7 +24,6 @@ along with Octave; see the file COPYING.  If not, see
 
 To initialize:
 
-  input_event_hook ("__fltk_redraw__");
   __init_fltk__ ();
   set (gcf (), "__backend__", "fltk");
   plot (randn (1e3, 1));
@@ -56,6 +55,7 @@ To initialize:
 #undef max
 #endif
 
+#include "cmd-edit.h"
 #include "defun-dld.h"
 #include "error.h"
 #include "gl-render.h"
@@ -754,11 +754,50 @@ public:
 };
 
 static bool backend_registered = false;
+// give FLTK no more than 0.01 sec to do it's stuff
+static double fltk_maxtime = 1e-2;
+
+static int
+__fltk_redraw__ (void)
+{
+  if (backend_registered)
+    {
+      // we scan all figures and add those which use FLTK as a backend
+      graphics_object obj = gh_manager::get_object (0);
+      if (obj && obj.isa ("root_figure"))
+	{
+	  base_properties& props = obj.get_properties ();
+	  Matrix children = props.get_children ();
+
+	  for (octave_idx_type n = 0; n < children.numel (); n++)
+	    {
+	      graphics_object fobj = gh_manager::get_object (children (n));
+	      if (fobj && fobj.isa ("figure"))
+		{
+		  figure::properties& fp =
+		      dynamic_cast<figure::properties&> (fobj.get_properties ());
+		  if (fp.get___backend__ () == FLTK_BACKEND_NAME)
+		    figure_manager::Instance ().new_window (fp);
+		}
+	    }
+	}
+
+      Fl::wait (fltk_maxtime);
+    }
+
+  return 0;
+}
+
 // call this to init the fltk backend
 DEFUN_DLD (__init_fltk__, , , "")
 {
-  graphics_backend::register_backend (new fltk_backend);
-  backend_registered = true;
+  if (! backend_registered)
+    {
+      graphics_backend::register_backend (new fltk_backend);
+      backend_registered = true;
+      
+      command_editor::add_event_hook (__fltk_redraw__);
+    }
 
   octave_value retval;
   return retval;
@@ -768,19 +807,22 @@ DEFUN_DLD (__init_fltk__, , , "")
 // call this to delete the fltk backend
 DEFUN_DLD (__remove_fltk__, , , "")
 {
-  figure_manager::Instance ().close_all ();
-  graphics_backend::unregister_backend (FLTK_BACKEND_NAME);
-  backend_registered = false;
+  if (backend_registered)
+    {
+      figure_manager::Instance ().close_all ();
+      graphics_backend::unregister_backend (FLTK_BACKEND_NAME);
+      backend_registered = false;
 
-  // FIXME ???
-  // give FLTK 10 seconds to wrap it up
-  Fl::wait(10);	
+      command_editor::remove_event_hook (__fltk_redraw__);
+
+      // FIXME ???
+      // give FLTK 10 seconds to wrap it up
+      Fl::wait(10);
+    }
+
   octave_value retval;
   return retval;	
 }
-
-// give FLTK no more than 0.01 sec to do it's stuff
-static double fltk_maxtime = 1e-2;
 
 // call this to delete the fltk backend
 DEFUN_DLD (__fltk_maxtime__, args, ,"")
@@ -796,40 +838,6 @@ DEFUN_DLD (__fltk_maxtime__, args, ,"")
     }
 
   return retval;
-}
-
-// call this from the idle_callback to refresh windows
-DEFUN_DLD (__fltk_redraw__, , ,
-  "internal function for the fltk backend")
-{
-  octave_value retval;
-
-  if (!backend_registered)
-    return retval;
-
-  // we scan all figures and add those which use FLTK as a backend
-  graphics_object obj = gh_manager::get_object (0);
-  if (obj && obj.isa ("root_figure"))
-    {
-      base_properties& props = obj.get_properties ();
-      Matrix children = props.get_children ();
-
-      for (octave_idx_type n = 0; n < children.numel (); n++)
-        {
-          graphics_object fobj = gh_manager::get_object (children (n));
-          if (fobj && fobj.isa ("figure"))
-	    {
-	      figure::properties& fp =
-		dynamic_cast<figure::properties&> (fobj.get_properties ());
-	      if (fp.get___backend__ () == FLTK_BACKEND_NAME)
-		figure_manager::Instance ().new_window (fp);
-	    }
-        }
-    }
-
-  Fl::wait (fltk_maxtime);	
-
-  return retval;	
 }
 
 #endif

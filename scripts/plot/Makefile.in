@@ -75,6 +75,7 @@ SOURCES = \
   area.m \
   axes.m \
   axis.m \
+  backend.m \
   bar.m \
   barh.m \
   box.m \

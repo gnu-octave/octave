@@ -1,5 +1,11 @@
 2008-08-26  Michael Goffioul  <michael.goffioul@gmail.com>
 
+	* DLD_FUNCTIONS/fltk_backend.cc (F__fltk_redraw__): Make static.
+	(F__init_fltk__): Protect from mutliple invocations.
+	(F__remove_fltk__): Likewise.
+	(F__init_fltk__): Register input event hook.
+	(F__remove_fltk__): Unregister input event hook.
+
 	* DLD_FUNCTIONS/fltk_backend.cc (fltk_backend::close_figure): Remove.
 	(fltk_backend::object_destroyed, fltk_backend::property_changed): New
 	methods.

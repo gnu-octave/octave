@@ -439,7 +439,9 @@ at the Octave prompt should display a three dimensional plot.
 * Colors::
 * Line Styles::
 * Marker Styles::
-* Interaction with gnuplot::    
+* Callbacks::
+* Object Groups::
+* Graphics backends::
 @end menu
 
 @node Graphics Objects
@@ -1340,9 +1342,385 @@ A number specifying the size of the marker.  The default is 1.  A value
 of 2 is twice as large as the default, etc.
 @end table
 
+@node Callbacks
+@subsection Callbacks
+
+Callback functions can be associated with graphics objects and triggered
+after certain events occur. The basic structure of all callback function
+is 
+
+@example
+@group
+function mycallback (src, data)
+@dots{}
+endfunction
+@end group
+@end example
+
+where @code{src} gives a handle to the source of the callback, and
+@code{code} gives some event specific data. This can then be associated
+with an object either at the objects creation or later with the
+@code{set} function. For example
+
+@example
+plot (x, "DeleteFcn", @@(s, e) disp("Window Deleted"))
+@end example
+
+@noindent
+where at the moment that the plot is deleted, the message "Window
+Deleted" will be displayed.
+
+Additional user arguments can be passed to callback functions, and will
+be passed after the 2 default arguments. For example
+
+@example
+plot (x, "DeleteFcn", {@@mycallback, "1"})
+@dots{}
+function mycall (src, data, a1)
+  fprintf ("Closing plot %d\n", a1);
+endfunction
+@end example
+
+The basic callback functions that are available for all graphics objects
+are
+
+@itemize @bullet
+@item CreateFcn
+This is the callback that is called at the moment of the objects
+creation. It is not called if the object is altered in any way, and so
+it only makes sense to define this callback in the function call that
+defines the object. Callbacks that are added to @code{CreateFcn} later with
+the @code{set} function will never be executed.
+
+@item DeleteFcn
+This is the callback that is called at the moment an object is deleted.
+
+@item ButtonDownFcn
+This is the callback that is called if a mouse button is pressed while
+the pointer is over this object. Note, that the gnuplot interface does
+not respect this callback.
+@end itemize
+
+The object and figure that the event occurred in that resulted in the
+callback being called can be found with the @code{gcbo} and @code{gcbf}
+functions.
+
+@DOCSTRING(gcbo)
+
+@DOCSTRING(gcbf)
+
+Callbacks can equally be added to properties with the @code{addlistener}
+function described below.
+
+@node Object Groups
+@subsection Object Groups
+
+A number of Octave high level plot functions return groups of other
+graphics objects or they return graphics objects that are have their
+properties linked in such a way that changes to one of the properties
+results in changes in the others. A graphic object that groups other
+objects is an @code{hggroup}
+
+@DOCSTRING(hggroup)
+
+For example a simple use of a @code{hggroup} might be
+
+@example
+@group
+x = 0:0.1:10;
+hg = hggroup ();
+plot (x, sin (x), "color", [1, 0, 0], "parent", hg);
+hold on
+plot (x, cos (x), "color", [0, 1, 0], "parent", hg);
+set (hg, "visible", "off");
+@end group
+@end example
+
+@noindent
+which groups the two plots into a single object and contols their
+visiblity directly. The default properties of an @code{hggroup} are
+the same as the set of common properties for the other graphics
+objects. Additional properties can be added with the @code{addproperty}
+function. 
+
+@DOCSTRING(addproperty)
+
+Once a property in added to an @code{hggroup}, it is not linked to any
+other property of either the children of the group, or any other
+graphics object. Add so to control the way in which this newly added
+property is used, the @code{addlistener} function is used to define a
+callback function that is executed when the property is altered.
+
+@DOCSTRING(addlistener)
+
+An example of the use of these two functions might be
+
+@example
+@group
+x = 0:0.1:10;
+hg = hggroup ();
+h = plot (x, sin (x), "color", [1, 0, 0], "parent", hg);
+addproperty ("linestyle", hg, "linelinestyle", get (h, "linestyle"));
+addlistener (hg, "linestyle", @@update_props);
+hold on
+plot (x, cos (x), "color", [0, 1, 0], "parent", hg);
+
+function update_props (h, d)
+  set (get (h, "children"), "linestyle", get (h, "linestyle"));
+endfunction
+@end group
+@end example
+
+@noindent
+that adds a @code{linestyle} property to the @code{hggroup} and
+propagating any changes its its value to the children of the group.
+
+These capabilities are used in a number of basic graphics objects. 
+The @code{hggroup} objects created by the functions of Octave contain
+one or more graphics object and are used to:
+
+@itemize @bullet
+@item group together multiple graphics objects,
+@item create linked properties between different graphics objects, and
+@item to hide the nominal user data, from the actual data of the objects.
+@end itemize
+
+@noindent
+For example the @code{stem} function creates a stem series where each
+@code{hggroup} of the stem series contains two line objects representing
+the body and head of the stem. The @code{ydata} property of the
+@code{hggroup} of the stem series represents the head of the stem,
+whereas the body of the stem is between the baseline and this value. For
+example
+
+@example
+@group
+h = stem (1:4)
+get (h, "xdata")
+@result{} [  1   2   3   4]'
+get (get (h, "children")(1), "xdata")
+@result{} [  1   1 NaN   2   2 NaN   3   3 NaN   4   4 NaN]'
+@end group
+@end example
+
+@noindent
+shows the the difference between the @code{xdata} of the @code{hggroup}
+of a stem series object and the underlying line.
+
+The basic properties of such group objects is that they consist of one 
+or more linked @code{hggroup}, and that changes in certain properties of
+these groups are propagated to other members of the group. Whereas,
+certain properties of the members of the group only apply to the current
+member.
+
+In addition the members of the group can also be linked to other
+graphics objects through callback functions. For example the baseline of
+the @code{bar} or @code{stem} functions is a line object, whose length
+and position are automatically adjusted, based on changes to the
+corresponding hggroup elements.
+
+@menu
+* Area series::
+* Bar series::
+* Contour groups::
+* Error bar series::
+* Line series::
+* Quiver group::
+* Scatter group::
+* Stair group::
+* Stem Series::
+* Surface group::
+@end menu
+
+@node Area series
+@subsubsection Area series
+
+Area series objects are created by the @code{area} function. Each of the
+@code{hggroup} elements contains a single patch object. The properties
+of the area series are
+
+@table @code
+@item basevalue
+The value where the base of the area plot is drawn.
+
+@item linewidth
+@itemx linestyle
+The line width and style of the edge of the patch objects making up the
+areas. @xref{Line Styles}.
+
+@item edgecolor
+@itemx facecolor
+The line and fill color of the patch objects making up the areas. @xref{Colors}.
+
+@item xdata
+@itemx ydata
+The x and y coordinates of the original columns of the data passed to
+@code{area} prior to the cummulative summation used in the @code{area}
+function. 
+@end table
+
+@node Bar series
+@subsubsection Bar series
+
+Bar series objects are created by the @code{bar} or @code{barh}
+functions. Each @code{hgrroup} element contains a single patch object. 
+The properties of the bar series are
+
+@table @code
+@item showbaseline
+@itemx baseline
+@itemx basevalue
+The property @code{showbaseline} flags whether the baseline of the bar
+series is displayed (default is "on"). The handle of the graphics object
+representing the baseline is given by the @code{baseline} property and
+the y-value of the baseline by the @code{basevalue} property. 
+
+Changes to any of these property are propagated to the other members of
+the bar series and to the baseline itself. Equally changes in the
+properties of the base line itself are propagated to the members of the
+corresponding bar series.
+
+@item barwidth
+@itemx barlayout
+@itemx horizontal
+The property @code{barwidth} is the width of the bar corresponding to
+the @var{width} variable passed to @code{bar} or @var{barh}. Whether the
+bar series is "grouped" or "stacked" is determined by the
+@code{barlayout} property and whether the bars are horizontal or
+vertical by the @code{horizontal} property.
+
+Changes to any of these property are propagated to the other members of
+the bar series.
+
+@item linewidth
+@itemx linestyle
+The line width and style of the edge of the patch objects making up the
+bars. @xref{Line Styles}.
+
+@item edgecolor
+@itemx facecolor
+The line and fill color of the patch objects making up the bars. @xref{Colors}.
+
+@item xdata
+The nominal x positions of the bars. Changes in this property and
+propagated to the other members of the bar series. 
+
+@item ydata
+The y value of the bars in the @code{hggroup}.
+@end table
+
+@node Contour groups
+@subsubsection Contour groups
+
+TO BE WRITTEN
+
+@node Error bar series
+@subsubsection Error bar series
+
+TO BE WRITTEN
+
+@node Line series
+@subsubsection Line series
+
+TO BE WRITTEN
+
+@node Quiver group
+@subsubsection Quiver group
+
+Quiver series objects are created by the @code{quiver} or @code{quiver3}
+functions. Each @code{hggroup} element of the series contains three line
+objects as children representing the body and head of the arrow,
+together with a marker as the point of original of the arrows. The 
+properties of the quiver series are
+
+@table @code
+@item autoscale
+@itemx autoscalefactor
+Flag whether the length of the arrows is scaled or defined directly from
+the @var{u}, @var{v} and @var{w} data. If the arrow length is falgged
+as being scaled by the @code{autoscale} property, then the length of the
+autoscaled arrow is controlled by the @code{autoscalefactor}. 
+
+@item maxheadsize
+This property controls the size of the head of the arrows in the quiver
+series. The default value is 0.2.
+
+@item showarrowhead
+Flag whether the arrow heads are displayed in the quiver plot.
+
+@item color
+The RGB color or color name of the line objects of the quiver. @xref{Colors}.
+
+@item linewidth
+@itemx linestyle
+The line width and style of the line objects of the quiver. @xref{Line Styles}.
+
+@item marker
+@itemx markerfacecolor
+@itemx markersize
+The line and fill color of the marker objects at the original of the
+arrows. @xref{Colors}.
+
+@item xdata
+@itemx ydata
+@itemx zdata
+The origins of the values of the vector field.
+
+@item udata
+@itemx vdata
+@itemx wdata
+The values of the vector field to plot.
+@end table
+
+@node Scatter group
+@subsubsection Scatter group
+
+TO BE WRITTEN
+
+@node Stair group
+@subsubsection Stair group
+
+Stair series objects are created by the @code{stair} function. Each
+@code{hggroup} element of the series contains a single line object as a
+child representing the stair. The properties of the stair series are
+
+@table @code
+@item color
+The RGB color or color name of the line objects of the stairs. @xref{Colors}.
+
+@item linewidth
+@itemx linestyle
+The line width and style of the line objects of the stairs. @xref{Line Styles}.
+
+@item marker
+@itemx markeredgecolor
+@itemx markerfacecolor
+@itemx markersize
+The line and fill color of the markers on the stairs. @xref{Colors}.
+
+@item xdata
+@itemx ydata
+The original x and y data of the stairs.
+@end table
+
+@node Surface group
+@subsubsection Surface group
+
+TO BE WRITTEN
+
+@node Graphics backends
+@subsection Graphics backends
+
+@DOCSTRING(available_backends)
+
+@menu
+* Interaction with gnuplot::
+@end menu
+
 @node Interaction with gnuplot
-@subsection Interaction with @code{gnuplot}
+@subsubsection Interaction with @code{gnuplot}
 
 @DOCSTRING(gnuplot_binary)
 
 @DOCSTRING(gnuplot_use_title_option)
+

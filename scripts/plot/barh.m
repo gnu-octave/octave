@@ -36,9 +36,11 @@
 ## argument, which can take the values @code{"grouped"} (the default),
 ## or @code{"stacked"}.
 ##
-## The optional return value @var{h} provides a handle to the patch object.
-## Whereas the option input handle @var{h} allows an axis handle to be passed.
-## Properties of the patch graphics object can be changed using 
+## The optional return value @var{h} provides a handle to the bar series
+## object. See @code{bar} for a description of the use of the bar series.
+##
+## The optional input handle @var{h} allows an axis handle to be passed.
+## Properties of the patch graphics object can be changed using
 ## @var{prop}, @var{val} pairs.
 ##
 ## @seealso{bar, plot}

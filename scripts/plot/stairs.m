@@ -128,17 +128,59 @@ function [h, xs, ys] = __stairs__ (doplot, varargin)
   xs(1,:) = x(1,:);
   ys(1,:) = y(1,:);
 
-  x = x(2:nr,:);
+  xtmp = x(2:nr,:);
   ridx = 2:2:len-1;
-  xs(ridx,:) = x;
+  xs(ridx,:) = xtmp;
   ys(ridx,:) = y(1:nr-1,:);
 
   ridx = 3:2:len;
-  xs(ridx,:) = x;
+  xs(ridx,:) = xtmp;
   ys(ridx,:) = y(2:nr,:);
 
   if (doplot)
-    h = plot (xs, ys, varargin{idx+1:end});
+    h = [];
+    unwind_protect
+      hold_state = get (gca (), "nextplot");
+      for i = 1 : size(y, 2)
+	hg = hggroup ();
+	h = [h; hg];
+
+	if (i == 1)
+	  set (gca (), "nextplot", "add");
+	endif
+
+	addproperty ("xdata", hg, "data", x(:,i).');
+	addproperty ("ydata", hg, "data", y(:,i).');
+
+	addlistener (hg, "xdata", @update_data);
+	addlistener (hg, "ydata", @update_data);
+
+	tmp = line (xs(:,i).', ys(:,i).', "color", __next_line_color__ (),
+		    "parent", hg, varargin{idx+1:end});
+	
+        addproperty ("color", hg, "linecolor", get (tmp, "color"));
+	addproperty ("linewidth", hg, "linelinewidth", get (tmp, "linewidth"));
+	addproperty ("linestyle", hg, "linelinestyle", get (tmp, "linestyle"));
+
+	addproperty ("marker", hg, "linemarker", get (tmp, "marker"));
+	addproperty ("markerfacecolor", hg, "linemarkerfacecolor",
+		     get (tmp, "markerfacecolor"));
+	addproperty ("markeredgecolor", hg, "linemarkeredgecolor",
+		     get (tmp, "markeredgecolor"));
+	addproperty ("markersize", hg, "linemarkersize",
+		     get (tmp, "markersize"));
+
+	addlistener (hg, "color", @update_props);
+	addlistener (hg, "linewidth", @update_props); 
+	addlistener (hg, "linestyle", @update_props); 
+	addlistener (hg, "marker", @update_props); 
+	addlistener (hg, "markerfacecolor", @update_props); 
+	addlistener (hg, "markeredgecolor", @update_props); 
+	addlistener (hg, "markersize", @update_props); 
+      endfor
+    unwind_protect_cleanup
+      set (gca (), "nextplot", hold_state);
+    end_unwind_protect
   else
     h = 0;
   endif
@@ -148,10 +190,43 @@ endfunction
 %!demo
 %! x = 1:10;
 %! y = rand (1, 10);
-## stairs (x, y);
+%! stairs (x, y);
 
 %!demo
 %! x = 1:10;
 %! y = rand (1, 10);
 %! [xs, ys] = stairs (x, y);
 %! plot (xs, ys);
+
+function update_props (h, d)
+  set (get (h, "children"), "color", get (h, "color"), 
+       "linewidth", get (h, "linewidth"),
+       "linestyle", get (h, "linestyle"),
+       "marker", get (h, "marker"),
+       "markerfacecolor", get (h, "markerfacecolor"),
+       "markeredgecolor", get (h, "markeredgecolor"),
+       "markersize", get (h, "markersize"));
+endfunction
+
+function update_data (h, d)
+  x = get (h, "xdata");
+  y = get (h, "ydata");
+
+  nr = length (x);
+  len = 2 * nr - 1;
+  xs = ys = zeros (1, len);
+
+  xs(1) = x(1);
+  ys(1) = y(1);
+
+  xtmp = x(2:nr);
+  ridx = 2:2:len-1;
+  xs(ridx) = xtmp;
+  ys(ridx) = y(1:nr-1);
+
+  ridx = 3:2:len;
+  xs(ridx) = xtmp;
+  ys(ridx) = y(2:nr);
+
+  set (get (h, "children"), "xdata", xs, "ydata", ys);
+endfunction

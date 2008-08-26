@@ -110,18 +110,17 @@ function varargout = __bar__ (vertical, func, varargin)
   endif
 
   ycols = size (y, 2);
-  if (group)
-    width = width / ycols;
-  endif
-
   cutoff = min (diff (double(x))) / 2;
-  delta_p = delta_m = repmat (cutoff * width, size (x));
+  if (group)
+    delta_p = delta_m = repmat (cutoff * width / ycols, size (x));
+  else
+    delta_p = delta_m = repmat (cutoff * width, size (x));
+  endif
   x1 = (x - delta_m)(:)';
   x2 = (x + delta_p)(:)';
   xb = repmat ([x1; x1; x2; x2](:), 1, ycols);
 
   if (group)
-    width = width / ycols;
     offset = ((delta_p + delta_m) * [-(ycols - 1) / 2 : (ycols - 1) / 2]);
     xb(1:4:4*ylen,:) += offset;
     xb(2:4:4*ylen,:) += offset;

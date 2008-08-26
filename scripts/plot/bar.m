@@ -37,12 +37,27 @@
 ## argument, which can take the values @code{"grouped"} (the default),
 ## or @code{"stacked"}.
 ##
-## The optional return value @var{h} provides a handle to the patch object.
-## Whereas the option input handle @var{h} allows an axis handle to be passed.
-## Properties of the patch graphics object can be changed using 
+## The optional return value @var{h} provides a handle to the "bar series"
+## object with one handle per column of the variable @var{y}. This
+## series allows common elements of the group of bar series objects to
+## be changed in a single bar series and the same properties are changed
+## in the other "bar series". For example
+##
+## @example
+## @group
+## h = bar (rand (5, 10));
+## set (h(1), "basevalue", 0.5);
+## @end group
+## @end example
+##
+## @noindent
+## changes the position on the base of all of the bar series.
+##
+## The optional input handle @var{h} allows an axis handle to be passed.
+## Properties of the patch graphics object can be changed using
 ## @var{prop}, @var{val} pairs.
 ##
-## @seealso{barh, plot}
+## @seealso{barh, plot} 
 ## @end deftypefn
 
 ## Author: jwe

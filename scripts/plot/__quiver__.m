@@ -18,13 +18,13 @@
 
 ## Undocumented internal function
 
-function hlist = __quiver__ (varargin)
+function hg = __quiver__ (varargin)
 
   h = varargin{1};
   is3d = varargin{2};
 
-  s = 1;
-  arrowsize = 0.33;
+  autoscale = 0.9;
+  arrowsize = 0.2;
 
   firstnonnumeric = Inf;
   for i = 3:nargin
@@ -46,7 +46,7 @@ function hlist = __quiver__ (varargin)
     endif
     if (nargin >= ioff && isnumeric (varargin{ioff})
 	&& isscalar (varargin{ioff}))
-      s = varargin{ioff++};
+      autoscale = varargin{ioff++};
     endif
   else
     x = varargin{ioff++};
@@ -69,7 +69,7 @@ function hlist = __quiver__ (varargin)
     endif
     if (nargin >= ioff && isnumeric (varargin{ioff})
 	&& isscalar (varargin{ioff}))
-      s = varargin{ioff++};
+      autoscale = varargin{ioff++};
     endif
   endif
 
@@ -95,7 +95,7 @@ function hlist = __quiver__ (varargin)
     endif
   endwhile
 
-  if (s)
+  if (autoscale)
     ## Scale the arrows to fit in the grid
     dx = (max(x(:)) - min(x(:))) ./ size (x, 2);
     dy = (max(y(:)) - min(y(:))) ./ size (y, 1);
@@ -108,7 +108,219 @@ function hlist = __quiver__ (varargin)
       dz = 0;
     endif
     if (len > 0)
-      s = s / sqrt (2) * sqrt (dx.^2 + dy.^2 + dz.^2) / len; 
+      s = 2 * autoscale / sqrt (2) * sqrt (dx.^2 + dy.^2 + dz.^2) / len; 
+      uu = s * u;
+      vv = s * v;
+      if (is3d)
+	ww = s*w;
+      endif
+    endif
+  endif
+
+  hstate = get (h, "nextplot");
+  unwind_protect
+    hg = hggroup ();
+    hold on;
+
+    addproperty ("xdata", hg, "data", x);
+    addproperty ("ydata", hg, "data", y);
+
+    addproperty ("udata", hg, "data", u);
+    addproperty ("vdata", hg, "data", v);
+    if (is3d)
+      addproperty ("zdata", hg, "data", z);
+      addproperty ("wdata", hg, "data", w);
+    else
+      addproperty ("zdata", hg, "data", []);
+      addproperty ("wdata", hg, "data", []);
+    endif
+
+    addlistener (hg, "xdata", @update_data);
+    addlistener (hg, "ydata", @update_data);
+    addlistener (hg, "zdata", @update_data);
+    addlistener (hg, "udata", @update_data);
+    addlistener (hg, "vdata", @update_data);
+    addlistener (hg, "wdata", @update_data);
+
+    x = x(:);
+    y = y(:);
+    xend = x + uu(:);
+    yend = y + vv(:);
+    if (is3d)
+      z = z(:);
+      zend = z + ww(:);
+    endif
+
+    if (have_line_spec)
+      if (is3d)
+	h1 = plot3 ([x.'; xend.'; NaN(1, length (x))](:),
+		    [y.'; yend.'; NaN(1, length (y))](:),
+		    [z.'; zend.'; NaN(1, length (z))](:),
+		    "linestyle", linespec.linestyle, 
+		    "color", linespec.color, "parent", hg);
+      else
+	h1 = plot ([x.'; xend.'; NaN(1, length (x))](:),
+		   [y.'; yend.'; NaN(1, length (y))](:),
+		   "linestyle", linespec.linestyle, 
+		    "color", linespec.color, "parent", hg);
+      endif
+    else
+      if (is3d)
+	h1 = plot3 ([x.'; xend.'; NaN(1, length (x))](:),
+		    [y.'; yend.'; NaN(1, length (y))](:),
+		    [z.'; zend.'; NaN(1, length (z))](:),
+		    "parent", hg);
+      else
+	h1 = plot ([x.'; xend.'; NaN(1, length (x))](:),
+		   [y.'; yend.'; NaN(1, length (y))](:),
+		   "parent", hg);
+      endif
+    endif
+
+    xtmp = x + uu(:) .* (1 - arrowsize);
+    ytmp = y + vv(:) .* (1 - arrowsize);
+    xarrw1 = xtmp + (y - yend) * arrowsize / 3;
+    xarrw2 = xtmp - (y - yend) * arrowsize / 3;
+    yarrw1 = ytmp - (x - xend) * arrowsize / 3;
+    yarrw2 = ytmp + (x - xend) * arrowsize / 3;
+    if (is3d)
+      zarrw1 = zarrw2 = zend - ww(:) * arrowsize;
+    endif
+
+    if (have_line_spec)
+      if (isfield (linespec, "marker") && 
+	! strncmp (linespec.marker, "none", 4))
+	if (is3d)
+	  h2 = plot3 ([xarrw1.'; xend.'; xarrw2.'; NaN(1, length (x))](:),
+		      [yarrw1.'; yend.'; yarrw2.'; NaN(1, length (y))](:),
+		      [zarrw1.'; zend.'; zarrw2.'; NaN(1, length (z))](:),
+		      "linestyle", "none", "parent", hg);
+	else
+	  h2 = plot ([xarrw1.'; xend.'; xarrw2.'; NaN(1, length (x))](:),
+		     [yarrw1.'; yend.'; yarrw2.'; NaN(1, length (y))](:),
+		     "linestyle", "none", "parent", hg);
+	endif
+      else
+	if (is3d)
+	  h2 = plot3 ([xarrw1.'; xend.'; xarrw2.'; NaN(1, length (x))](:),
+		      [yarrw1.'; yend.'; yarrw2.'; NaN(1, length (y))](:),
+		      [zarrw1.'; zend.'; zarrw2.'; NaN(1, length (z))](:),
+		      "linestyle", linespec.linestyle,
+		      "color", linespec.color, "parent", hg);
+	else
+	  h2 = plot ([xarrw1.'; xend.'; xarrw2.'; NaN(1, length (x))](:),
+		     [yarrw1.'; yend.'; yarrw2.'; NaN(1, length (y))](:),
+		     "linestyle", linespec.linestyle,
+		      "color", linespec.color, "parent", hg);
+	endif
+      endif
+    elseif (is3d)
+      h2 = plot3 ([xarrw1.'; xend.'; xarrw2.'; NaN(1, length (x))](:),
+		  [yarrw1.'; yend.'; yarrw2.'; NaN(1, length (y))](:),
+		  [zarrw1.'; zend.'; zarrw2.'; NaN(1, length (z))](:),
+		  "parent", hg);
+    else
+      h2 = plot ([xarrw1.'; xend.'; xarrw2.'; NaN(1, length (x))](:),
+		 [yarrw1.'; yend.'; yarrw2.'; NaN(1, length (y))](:),
+		 "parent", hg);
+    endif
+
+    if (! have_line_spec
+	|| (isfield (linespec, "marker")
+	    && strncmp (linespec.marker, "none", 4)))
+      if (is3d)
+	h3 = plot3 (x, y, z, "linestyle", "none", "marker", "none", 
+		    "parent", hg);
+      else
+	h3 = plot (x, y, "linestyle", "none", "marker", "none", "parent", hg);
+      endif
+    else
+      if (is3d)
+	h3 = plot3 (x, y, z, "linestyle", "none", "marker", linespec.marker,
+		    "parent", hg);
+      else
+
+	h3 = plot (x, y, "linestyle", "none", "marker", linespec.marker,
+		   "parent", hg);
+      endif
+    endif
+    if (have_filled)
+      ## FIXME gnuplot doesn't respect the markerfacecolor field
+      set (h3, "markerfacecolor", get (h1, "color")); 
+    endif
+
+    ## Set up the hggroup properties and listeners
+    if (autoscale)
+      addproperty ("autoscale", hg, "radio", "{on}|off", "on");
+      addproperty ("autoscalefactor", hg, "data", autoscale)
+    else
+      addproperty ("autoscale", hg, "radio", "{on}|off", "off");
+      addproperty ("autoscalefactor", hg, "data", 1.0)
+    endif
+    addlistener (hg, "autoscale", @update_data)
+    addlistener (hg, "autoscalefactor", @update_data)
+
+    addproperty ("maxheadsize", hg, "data", arrowsize)
+    addlistener (hg, "maxheadsize", @update_data);
+
+    addproperty ("showarrowhead", hg, "radio", "{on}|off", "on");
+    addlistener (hg, "showarrowhead", @update_props);
+
+    addproperty ("color", hg, "linecolor", get (h1, "color"));
+    addproperty ("linewidth", hg, "linelinewidth", get (h1, "linewidth"));
+    addproperty ("linestyle", hg, "linelinestyle", get (h1, "linestyle"));
+    addproperty ("marker", hg, "linemarker", get (h3, "marker"));
+    addproperty ("markerfacecolor", hg, "linemarkerfacecolor",
+		 get (h3, "markerfacecolor"));
+    addproperty ("markersize", hg, "linemarkersize", get (h3, "markersize"));
+
+    addlistener (hg, "color", @update_props);
+    addlistener (hg, "linewidth", @update_props); 
+    addlistener (hg, "linestyle", @update_props); 
+    addlistener (hg, "marker", @update_props); 
+    addlistener (hg, "markerfacecolor", @update_props); 
+    addlistener (hg, "markersize", @update_props);
+
+  unwind_protect_cleanup
+    set (h, "nextplot", hstate);
+  end_unwind_protect
+
+endfunction
+
+function update_data (h, d)
+  x = get (h, "xdata");
+  y = get (h, "ydata");
+  z = get (h, "zdata");
+
+  u = get (h, "udata");
+  v = get (h, "vdata");
+  w = get (h, "wdata");
+
+  s = get (h, "autoscalefactor");
+  arrowsize = get (h, "maxheadsize");
+
+  kids = get (h, "children");
+
+  if (isempty (z) || isempty (w))
+    is3d = false;
+  else
+    is3d = true;
+  endif
+
+  if (strcmp (get (h, "autoscale"), "on") && s != 0)
+    ## Scale the arrows to fit in the grid
+    dx = (max(x(:)) - min(x(:))) ./ size (x, 2);
+    dy = (max(y(:)) - min(y(:))) ./ size (y, 1);
+    if (is3d)
+      ## What should this be divided by? The below seems right
+      dz = (max(z(:)) - min(z(:))) ./ max (size (z));
+      len = max (sqrt (u(:).^2 + dy(:).^2) + dz(:).^2);
+    else
+      len = max (sqrt (u(:).^2 + dy(:).^2));
+      dz = 0;
+    endif
+    if (len > 0)
+      s = 2 * s / sqrt (2) * sqrt (dx.^2 + dy.^2 + dz.^2) / len; 
       u = s * u;
       v = s * v;
       if (is3d)
@@ -126,103 +338,58 @@ function hlist = __quiver__ (varargin)
     zend = z + w(:);
   endif
 
-  hstate = get (h, "nextplot");
-  unwind_protect
-    if (have_line_spec)
-      if (is3d)
-	h1 = plot3 ([x.'; xend.'; NaN(1, length (x))](:),
-		    [y.'; yend.'; NaN(1, length (y))](:),
-		    [z.'; zend.'; NaN(1, length (z))](:),
-		    "linestyle", linespec.linestyle, 
-		    "color", linespec.color);
-      else
-	h1 = plot ([x.'; xend.'; NaN(1, length (x))](:),
-		   [y.'; yend.'; NaN(1, length (y))](:),
-		   "linestyle", linespec.linestyle, 
-		    "color", linespec.color);
-      endif
-    else
-      if (is3d)
-	h1 = plot3 ([x.'; xend.'; NaN(1, length (x))](:),
-		    [y.'; yend.'; NaN(1, length (y))](:),
-		    [z.'; zend.'; NaN(1, length (z))](:));
-      else
-	h1 = plot ([x.'; xend.'; NaN(1, length (x))](:),
-		   [y.'; yend.'; NaN(1, length (y))](:));
-      endif
-    endif
-    hold on;
+  set (kids (1), "xdata", [x.'; xend.'; NaN(1, length (x))](:));
+  set (kids (1), "ydata", [y.'; yend.'; NaN(1, length (y))](:));
+  if (is3d)
+    set (kids (1), "zdata", [z.'; zend.'; NaN(1, length (z))](:));
+  endif
 
-    xtmp = x + u(:) .* (1 - arrowsize);
-    ytmp = y + v(:) .* (1 - arrowsize);
-    xarrw1 = xtmp + (y - yend) * arrowsize / 3;
-    xarrw2 = xtmp - (y - yend) * arrowsize / 3;
-    yarrw1 = ytmp - (x - xend) * arrowsize / 3;
-    yarrw2 = ytmp + (x - xend) * arrowsize / 3;
-    if (is3d)
-      zarrw1 = zarrw2 = zend - w(:) * arrowsize;
-    endif
+  xtmp = x + u(:) .* (1 - arrowsize);
+  ytmp = y + v(:) .* (1 - arrowsize);
+  xarrw1 = xtmp + (y - yend) * arrowsize / 3;
+  xarrw2 = xtmp - (y - yend) * arrowsize / 3;
+  yarrw1 = ytmp - (x - xend) * arrowsize / 3;
+  yarrw2 = ytmp + (x - xend) * arrowsize / 3;
+  if (is3d)
+    zarrw1 = zarrw2 = zend - w(:) * arrowsize;
+  endif
 
-    if (have_line_spec)
-      if (isfield (linespec, "marker") && 
-	! strncmp (linespec.marker, "none", 4))
-	if (is3d)
-	  h2 = plot3 ([xarrw1.'; xend.'; xarrw2.'; NaN(1, length (x))](:),
-		      [yarrw1.'; yend.'; yarrw2.'; NaN(1, length (y))](:),
-		      [zarrw1.'; zend.'; zarrw2.'; NaN(1, length (z))](:),
-		      "linestyle", "none");
-	else
-	  h2 = plot ([xarrw1.'; xend.'; xarrw2.'; NaN(1, length (x))](:),
-		     [yarrw1.'; yend.'; yarrw2.'; NaN(1, length (y))](:),
-		     "linestyle", "none");
-	endif
-      else
-	if (is3d)
-	  h2 = plot3 ([xarrw1.'; xend.'; xarrw2.'; NaN(1, length (x))](:),
-		      [yarrw1.'; yend.'; yarrw2.'; NaN(1, length (y))](:),
-		      [zarrw1.'; zend.'; zarrw2.'; NaN(1, length (z))](:),
-		      "linestyle", linespec.linestyle,
-		      "color", linespec.color);
-	else
-	  h2 = plot ([xarrw1.'; xend.'; xarrw2.'; NaN(1, length (x))](:),
-		     [yarrw1.'; yend.'; yarrw2.'; NaN(1, length (y))](:),
-		     "linestyle", linespec.linestyle,
-		      "color", linespec.color);
-	endif
-      endif
-    elseif (is3d)
-      h2 = plot3 ([xarrw1.'; xend.'; xarrw2.'; NaN(1, length (x))](:),
-		  [yarrw1.'; yend.'; yarrw2.'; NaN(1, length (y))](:),
-		  [zarrw1.'; zend.'; zarrw2.'; NaN(1, length (z))](:));
-    else
-      h2 = plot ([xarrw1.'; xend.'; xarrw2.'; NaN(1, length (x))](:),
-		 [yarrw1.'; yend.'; yarrw2.'; NaN(1, length (y))](:));
-    endif
+  set (kids (2), "xdata", [x.'; xend.'; NaN(1, length (x))](:));
+  set (kids (2), "ydata", [y.'; yend.'; NaN(1, length (y))](:));
+  if (is3d)
+    set (kids (2), "zdata", [z.'; zend.'; NaN(1, length (z))](:));
+  endif
 
-    if (! have_line_spec
-	|| (isfield (linespec, "marker")
-	    && strncmp (linespec.marker, "none", 4)))
-      if (is3d)
-	h3 = plot3 (x, y, z, "linestyle", "none", "marker", "none");
-      else
-	h3 = plot (x, y, "linestyle", "none", "marker", "none");
-      endif
-    else
-      if (is3d)
-	h3 = plot3 (x, y, z, "linestyle", "none", "marker", linespec.marker);
-      else
+  set (kids (2), "xdata", [xarrw1.'; xend.'; xarrw2.'; NaN(1, length (x))](:));
+  set (kids (2), "ydata", [yarrw1.'; yend.'; yarrw2.'; NaN(1, length (y))](:));
+  if (is3d)
+    set (kids (2), "zdata", [zarrw1.'; zend.'; zarrw2.'; NaN(1, length (z))](:));
+  endif
 
-	h3 = plot (x, y, "linestyle", "none", "marker", linespec.marker);
-      endif
-    endif
-    if (have_filled)
-      ## FIXME gnuplot doesn't respect the markerfacecolor field
-      set (h3, "markerfacecolor", get (h1, "color")); 
-    endif
-  unwind_protect_cleanup
-    set (h, "nextplot", hstate);
-  end_unwind_protect
+  set (kids (3), "xdata", x);
+  set (kids (3), "ydata", y);
+  if (is3d)
+    set (kids (3), "zdata", z);
+  endif
 
-  hlist = [h1; h2; h3];
+endfunction
 
+function update_props (h, d)
+  kids = get (h, "children");
+
+  set (kids(1), "color", get (h, "color"), 
+       "linewidth", get (h, "linewidth"),
+       "linestyle", get (h, "linestyle"));
+  set (kids(2), "color", get (h, "color"), 
+       "linewidth", get (h, "linewidth"),
+       "linestyle", get (h, "linestyle"));
+  if (strcmp (get (h, "showarrowhead"), "on"))
+    set (kids (2), "visible", "on");
+  else
+    set (kids (2), "visible", "off");
+  endif
+  set (kids(3), "color", get (h, "color"), 
+       "marker", get (h, "marker"),
+       "markerfacecolor", get (h, "markerfacecolor"),
+       "markersize", get (h, "markersize"));
 endfunction

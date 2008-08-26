@@ -97,6 +97,7 @@ function h = __stem__ (have_z, varargin)
 	  x_axis_range = get (ax, "xlim");
 	  h_baseline = line (x_axis_range, [0, 0], "color", [0, 0, 0]);
 	  set (h_baseline, "handlevisibility", "off");
+	  set (h_baseline, "xliminclude", "off");
 	  addlistener (ax, "xlim", @update_xlim);
 	  addlistener (h_baseline, "ydata", @update_baseline);
 	  addlistener (h_baseline, "visible", @update_baseline);
@@ -428,7 +429,7 @@ function update_xlim (h, d)
   for i = 1 : length (kids)
     obj = get (kids (i));
     if (strcmp (obj.type, "hggroup") && isfield (obj, "baseline"))
-      if (get (obj.baseline, "xdata") != xlim)
+      if (any (get (obj.baseline, "xdata") != xlim))
 	set (obj.baseline, "xdata", xlim);
       endif
     endif

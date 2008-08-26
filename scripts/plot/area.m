@@ -34,7 +34,7 @@
 ##
 ## Additional arguments to the @code{area} function are passed to the 
 ## @code{patch}. The optional return value @var{h} provides a handle to 
-## the list of patch objects.
+## area series object representing the patches of the areas.
 ## @seealso{plot, patch}
 ## @end deftypefn
 

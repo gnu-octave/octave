@@ -1,3 +1,23 @@
+2008-08-26  David Bateman  <dbateman@free.fr>
+
+	* plot/__area__.m: Use __next_line_color__ rather than fixed set
+	of colors. Convert to use area series objects.
+	* plot/area.m: Update documentation to correspond to
+	the area series usage.
+	* plot/__bar.m: Pass the original rather than scaled width to
+	__bars__. 
+	* plot/__bars__.m: Convert to use bar series objects.
+	* plot/bar.m, plor/barh.m:  Update documentation to correspond to
+	the bar series usage.
+	* plot/__quiver__.m: Convert to use quiver series objects. Change
+	the default scaling and arrowsize for compatibility.
+	* plot/quiver.m:  Update documentation to correspond to
+	the quiver series usage.
+	* plot/stairs.m: Convert to use stair series objects.
+	* plot/stem.m: Don't include baseline in xlim calculation. Correct
+	test of whether baseline xdata needs updating in the update_xlim
+	callback.
+
 2008-08-25  Thomas L. Scofield  <scofield@calvin.edu>
 
 	* image/imwrite.m: Add ras and tiff to the list of accepted formats.
@@ -5,11 +25,14 @@
 	
 2008-08-25  David Bateman  <dbateman@free.fr>
 
+	* plot/__stem__.m: Use property inheritance and don't explicitly
+	call drawnow.
+
 	* plot/__go_draw_axes__.m: Respect the "visible" property of object and
 	don't draw them if the object is not visible.
 
 	* plot/__stem__.m: Convert to use stem series object.
-	* plot/stem.m, plot/stem3.m: Update documentation to correpsond to
+	* plot/stem.m, plot/stem3.m: Update documentation to correspond to
 	the stem series usage.
 
 2008-08-22  John W. Eaton  <jwe@octave.org>
@@ -36,11 +59,6 @@
 
 	* pkg/pkg.m (configure_make): Pass handle to is_architecture_dependent
 	directly.
-
-2008-08-25  David Bateman  <dbateman@free.fr>
-
-	* plot/__stem__.m: Use property inheritance and don't explicitly
-	call drawnow.
 
 2008-08-20  David Bateman  <dbateman@free.fr>
 

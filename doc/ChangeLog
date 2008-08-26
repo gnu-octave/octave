@@ -1,3 +1,8 @@
+2008-08-26  David Bateman  <dbateman@free.fr>
+
+	* interpreter/plot.txi: Document the group objects (bar, stem,
+	stair, quiver and area series), and cllback functions.
+
 2008-08-26  Jaroslav Hajek  <highegg@gmail.com>
 
 	* interpreter/contrib.txi: New file.

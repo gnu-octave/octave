@@ -43,8 +43,9 @@
 ## printed rather than arrows. If the argument 'filled' is given then the
 ## markers as filled.
 ##
-## The optional return value @var{h} provides a list of handles to the 
-## the parts of the vector field (body, arrow and marker).
+## The optional return value @var{h} provides a quiver group that
+## regroups the components of the quiver plot (body, arrow and marker),
+## and allows them to be changed together
 ##
 ## @example
 ## @group
@@ -52,7 +53,8 @@
 ## surf (x, y, z);
 ## hold on;
 ## [u, v, w] = surfnorm (x, y, z / 10);
-## quiver3 (x, y, z, u, v, w);
+## h = quiver3 (x, y, z, u, v, w);
+## set (h, "maxheadsize", 0.33);
 ## @end group
 ## @end example
 ##
@@ -96,4 +98,5 @@ endfunction
 %! surf (x, y, z);
 %! hold on;
 %! [u, v, w] = surfnorm (x, y, z / 10);
-%! quiver3 (x, y, z, u, v, w);
+%! h = quiver3 (x, y, z, u, v, w);
+%! set (h, "maxheadsize", 0.33);

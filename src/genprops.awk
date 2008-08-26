@@ -112,14 +112,19 @@
 ##       settable from the global set (caseless_str, octave_value)
 ##       method, but still has set_X accessor.
 ##
-##   u:  The property has an updater method. This effectively add
-##       the line
+##   u:  The property has an inline updater method. This effectively
+##       add the line
 ##
 ##         update_NAME ();
 ##
 ##       to the type-specific set function. This line is added before
 ##       any other update call (like those added by the 'l' or 'm'
 ##       modifiers.
+##
+##   U:  Like 'u' modifier except that the updater is not inline.
+##       A declaration for the updater function will be emitted.
+##
+##   f:  The property does not have any factory default value.
 ##
 ## The 'o' and 'O' qualifiers are only useful when the the property type
 ## is something other than octave_value.
@@ -249,11 +254,11 @@ function emit_common_declarations ()
 
 function emit_declarations ()
 {
-  if (class_name)
+  if (class_name && ! base)
     emit_common_declarations();
 
   if (idx > 0)
-    print "private:\n";
+    print (base ? "protected:\n" : "private:\n");
 
   for (i = 1; i <= idx; i++)
     printf ("  %s%s %s;\n", mutable[i] ? "mutable " : "", type[i], name[i]);
@@ -377,12 +382,20 @@ function emit_source ()
 
     ## constructor
 
-    printf ("%s::properties::properties (const graphics_handle& mh, const graphics_handle& p)\n", class_name) >> filename;
-    printf ("  : base_properties (go_name, mh, p),\n") >> filename;
+    if (base)
+      printf ("base_properties::base_properties (const std::string& ty, const graphics_handle& mh, const graphics_handle& p)\n  : ") >> filename;
+    else
+    {
+      printf ("%s::properties::properties (const graphics_handle& mh, const graphics_handle& p)\n", class_name) >> filename;
+      printf ("  : base_properties (go_name, mh, p),\n") >> filename;
+    }
 
     for (i = 1; i <= idx; i++)
     {
-      printf ("    %s (\"%s\", mh, %s)", name[i], name[i], defval[i]) >> filename;
+      if (ptype[i])
+        printf ("    %s (\"%s\", mh, %s)", name[i], name[i], defval[i]) >> filename;
+      else
+        printf ("    %s (%s)", name[i], defval[i]) >> filename;
       if (i < idx)
         printf (",") >> filename;
       printf ("\n") >> filename;
@@ -393,17 +406,23 @@ function emit_source ()
     for (i = 1; i <= idx; i++)
     {
 ##    printf ("  insert_static_property (\"%s\", %s);\n", name[i], name[i]) >> filename;
-      printf ("  %s.set_id (%s);\n", name[i], toupper(name[i])) >> filename;
-      if (hidden[i])
-        printf ("  %s.set_hidden (true);\n", name[i]) >> filename;
+      if (ptype[i])
+      {
+        printf ("  %s.set_id (%s);\n", name[i], toupper(name[i])) >> filename;
+        if (hidden[i])
+          printf ("  %s.set_hidden (true);\n", name[i]) >> filename;
+      }
     }
 
     printf ("  init ();\n}\n\n") >> filename;
 
     ## set method
 
-    printf ("void\n%s::properties::set (const caseless_str& pname, const octave_value& val)\n{\n",
-            class_name) >> filename;
+    if (base)
+      printf ("void\nbase_properties::set (const caseless_str& pname, const octave_value& val)\n{\n") >> filename;
+    else
+      printf ("void\n%s::properties::set (const caseless_str& pname, const octave_value& val)\n{\n",
+              class_name) >> filename;
 
     first = 1;
 
@@ -417,29 +436,43 @@ function emit_source ()
       }
     }
 
-    printf ("  else\n    base_properties::set (pname, val);\n}\n\n") >> filename;
+    if (base)
+      printf ("  else\n    set_dynamic (pname, val);\n}\n\n") >> filename;
+    else
+      printf ("  else\n    base_properties::set (pname, val);\n}\n\n") >> filename;
 
     ## get "all" method
 
-    printf ("octave_value\n%s::properties::get (bool all) const\n{\n", class_name) >> filename;
-    printf ("  Octave_map m = base_properties::get (all).map_value ();\n\n") >> filename;
+    if (base)
+    {
+      printf ("octave_value\nbase_properties::get (bool all) const\n{\n") >> filename;
+      printf ("  Octave_map m = get_dynamic (all).map_value ();\n\n") >> filename;
+    }
+    else
+    {
+      printf ("octave_value\n%s::properties::get (bool all) const\n{\n", class_name) >> filename;
+      printf ("  Octave_map m = base_properties::get (all).map_value ();\n\n") >> filename;
+    }
 
     for (i = 1; i <= idx; i++)
     {
       if (hidden[i])
         printf ("  if (all)\n    m.assign (\"%s\", get_%s ()%s);\n", name[i], name[i],
-                (type[i] == "handle_property" ? ".as_octave_value ()" : "")) >> filename;
+                (type[i] == "handle_property" || type[i] == "graphics_handle" ? ".as_octave_value ()" : "")) >> filename;
       else
         printf ("  m.assign (\"%s\", get_%s ()%s);\n", name[i], name[i],
-                (type[i] == "handle_property" ? ".as_octave_value ()" : "")) >> filename;
+                (type[i] == "handle_property" || type[i] == "graphics_handle" ? ".as_octave_value ()" : "")) >> filename;
     }
 
     printf ("\n  return m;\n}\n\n") >> filename;
     
     ## get "one" method
 
-    printf ("octave_value\n%s::properties::get (const caseless_str& pname) const\n{\n",
-            class_name) >> filename;
+    if (base)
+      printf ("octave_value\nbase_properties::get (const caseless_str& pname) const\n{\n") >> filename;
+    else
+      printf ("octave_value\n%s::properties::get (const caseless_str& pname) const\n{\n",
+              class_name) >> filename;
     printf ("  octave_value retval;\n\n") >> filename;
 
     for (i = 1; i<= idx; i++)
@@ -447,58 +480,82 @@ function emit_source ()
       printf ("  %sif (pname.compare (\"%s\"))\n",
               (i > 1 ? "else " : ""), name[i]) >> filename;
       printf ("    retval = get_%s ()%s;\n", name[i],
-              (type[i] == "handle_property" ? ".as_octave_value ()" : "")) >> filename;
+              (type[i] == "handle_property" || type[i] == "graphics_handle" ? ".as_octave_value ()" : "")) >> filename;
     }
 
-    printf ("  else\n    retval = base_properties::get (pname);\n\n") >> filename;
+    if (base)
+      printf ("  else\n    retval = get_dynamic (pname);\n\n") >> filename;
+    else
+      printf ("  else\n    retval = base_properties::get (pname);\n\n") >> filename;
     printf ("  return retval;\n}\n\n") >> filename;
 
     ## get_property method
 
-    printf ("property\n%s::properties::get_property (const caseless_str& pname)\n{\n",
-            class_name) >> filename;
+    if (base)
+      printf ("property\nbase_properties::get_property (const caseless_str& pname)\n{\n") >> filename;
+    else
+      printf ("property\n%s::properties::get_property (const caseless_str& pname)\n{\n",
+              class_name) >> filename;
 
     for (i = 1; i<= idx; i++)
     {
-      printf ("  %sif (pname.compare (\"%s\"))\n",
-              (i > 1 ? "else " : ""), name[i]) >> filename;
-      printf ("    return property (&%s, true);\n", name[i]) >> filename;
+      if (ptype[i])
+      {
+        printf ("  %sif (pname.compare (\"%s\"))\n",
+                (i > 1 ? "else " : ""), name[i]) >> filename;
+        printf ("    return property (&%s, true);\n", name[i]) >> filename;
+      }
     }
 
-    printf ("  else\n    return base_properties::get_property (pname);\n") >> filename;
+    if (base)
+      printf ("  else\n    return get_property_dynamic (pname);\n") >> filename;
+    else
+      printf ("  else\n    return base_properties::get_property (pname);\n") >> filename;
     printf ("}\n\n") >> filename;
 
 
     ## factory defaults method
 
-    printf ("property_list::pval_map_type\n%s::properties::factory_defaults (void)\n{\n",
-            class_name) >> filename;
-    printf ("  property_list::pval_map_type m;\n\n") >> filename;
+    if (base)
+    {
+      printf ("property_list::pval_map_type\nbase_properties::factory_defaults (void)\n{\n") >> filename;
+      printf ("  property_list::pval_map_type m;\n\n") >> filename;
+    }
+    else
+    {
+      printf ("property_list::pval_map_type\n%s::properties::factory_defaults (void)\n{\n",
+              class_name) >> filename;
+      printf ("  property_list::pval_map_type m = base_properties::factory_defaults ();\n\n") >> filename;
+    }
 
     for (i = 1; i <= idx; i++)
     {
-      dval = defval[i];
-      if (type[i] == "radio_property" || type[i] == "color_property")
-	{
-	  k = index (dval, "{");
-	  dval = substr (dval, k+1);
-	  l = index (dval, "}");
-	  if (k > 0 && l > 0)
-	    dval = "\"" + substr (dval, 1, l-1) +  "\"";
-	  else
-	    dval = "octave_value ()";
-	}
+      if (factory[i])
+      {
+        dval = defval[i];
+        if (type[i] == "radio_property" || type[i] == "color_property")
+      	{
+      	  k = index (dval, "{");
+    	    dval = substr (dval, k+1);
+  	      l = index (dval, "}");
+      	  if (k > 0 && l > 0)
+	          dval = "\"" + substr (dval, 1, l-1) +  "\"";
+    	    else
+  	        dval = "octave_value ()";
+      	}
 
-      printf ("  m[\"%s\"] = %s%s;\n", name[i], dval,
-		 (type[i] == "handle_property" ? ".as_octave_value ()" : "")) >> filename;
+        printf ("  m[\"%s\"] = %s%s;\n", name[i], dval,
+                (type[i] == "handle_property" || type[i] == "graphics_handle" ? ".as_octave_value ()" : "")) >> filename;
+      }
     }
 
     printf ("\n  return m;\n}\n\n") >> filename;
 
     ## go_name static field
 
-    printf ("std::string %s::properties::go_name (\"%s\");\n\n",
-            class_name, class_name) >> filename;
+    if (! base)
+      printf ("std::string %s::properties::go_name (\"%s\");\n\n",
+              class_name, class_name) >> filename;
   }
 }
 
@@ -506,7 +563,7 @@ BEGIN {
   filename = "graphics-props.cc";
   printf ("// DO NOT EDIT!  Generated automatically by genprops.awk.\n\n");
   printf ("// DO NOT EDIT!  Generated automatically by genprops.awk.\n\n") > filename;
-  pcount = 1000;
+  pcount = 0;
 }
 
 /BEGIN_PROPERTIES\(.*\)/ {
@@ -517,6 +574,7 @@ BEGIN {
   str = substr (str, k + 17);
   l = index (str, ")");
   class_name = substr (str, 1, l-1);
+  base = 0;
   next;
 }
 
@@ -524,6 +582,15 @@ BEGIN {
   gather = 1;
   idx = 0;
   class_name = "";
+  base = 0;
+  next;
+}
+
+/BEGIN_BASE_PROPERTIES/ {
+  gather = 1;
+  idx = 0;
+  class_name = "base";
+  base = 1;
   next;
 }
 
@@ -553,6 +620,7 @@ BEGIN {
       mutable[idx] = 0;
 
     type[idx] = $(field++);
+    ptype[idx] = (type[idx] ~ /^.*_property$/);
     name[idx] = $(field++);
 
     limits[idx] = 0;
@@ -563,6 +631,7 @@ BEGIN {
     emit_set[idx] = "definition";
     defval[idx] = "";
     updater[idx] = "";
+    factory[idx] = 1;
 ##    if (type[idx] == "octave_value")
 ##      emit_ov_set[idx] = "";
 ##    else
@@ -617,6 +686,10 @@ BEGIN {
         ## from the set method
         if (index (quals, "U"))
           updater[idx] = "extern";
+
+	## There is not factory default value
+        if (index (quals, "f"))
+          factory[idx] = 0;
 
 ##        ## emmit an asignment set function
 ##        if (index (quals, "a"))

@@ -1516,44 +1516,7 @@ class OCTINTERP_API base_properties
 public:
   base_properties (const std::string& ty = "unknown",
                    const graphics_handle& mh = graphics_handle (),
-                   const graphics_handle& p = graphics_handle ())
-    : beingdeleted ("beingdeleted", mh, false),
-      busyaction ("parent", mh, "{queue}|cancel"),
-      buttondownfcn ("buttondownfcn", mh, Matrix ()),
-      children (),
-      clipping ("clipping", mh, true),
-      createfcn ("createfcn", mh, Matrix ()),
-      deletefcn ("deletefcn", mh, Matrix ()),
-      handlevisibility ("handlevisibility", mh, "{on}|callback|off"),
-      hittest ("hittest", mh, true),
-      interruptible ("interruptible", mh, true),
-      parent ("parent", mh, p), 
-      selected ("selected", mh, false),
-      selectionhighlight ("selectionhighlight", mh, true),
-      tag ("tag", mh),
-      type ("type", mh, ty),
-      userdata ("userdata", mh, Matrix ()),
-      visible ("visible", mh, true),
-      __modified__ ("__modified__", mh, true),
-      __myhandle__ (mh),
-      uicontextmenu ("uicontextmenu", mh, graphics_handle ())
-    {
-      beingdeleted.set_id (BEINGDELETED);
-      busyaction.set_id (BUSYACTION);
-      buttondownfcn.set_id (BUTTONDOWNFCN);
-      clipping.set_id (CLIPPING);
-      createfcn.set_id (CREATEFCN);
-      deletefcn.set_id (DELETEFCN);
-      handlevisibility.set_id (HANDLEVISIBILITY);
-      hittest.set_id (HITTEST);
-      interruptible.set_id (INTERRUPTIBLE);
-      parent.set_id (PARENT);
-      selected.set_id (SELECTED);
-      selectionhighlight.set_id (SELECTIONHIGHLIGHT);
-      tag.set_id (TAG);
-      userdata.set_id (USERDATA);
-      visible.set_id (VISIBLE);
-    }
+                   const graphics_handle& p = graphics_handle ());
 
   virtual ~base_properties (void) { }
 
@@ -1585,57 +1548,8 @@ public:
 
   bool has_property (const caseless_str&);
 
-  std::string get_tag (void) const { return tag.string_value (); }
-
-  graphics_handle get_parent (void) const { return parent.handle_value (); }
-
-  std::string get_type (void) const { return type.string_value (); }
-
-  bool is_modified (void) const { return __modified__.is_on (); }
+  bool is_modified (void) const { return is___modified__ (); }
  
-  graphics_handle get___myhandle__ (void) const { return __myhandle__; }
-  
-  std::string get_busyaction (void) const { return busyaction.current_value (); }
-
-  octave_value get_buttondownfcn (void) const { return buttondownfcn.get (); }
-
-  bool is_clipping (void) const { return clipping.is_on (); }
-  std::string get_clipping (void) const { return clipping.current_value (); }
-
-  void execute_createfcn (const octave_value& data = octave_value ()) const
-    { createfcn.execute (data); }
-
-  octave_value get_createfcn (void) const { return createfcn.get (); }
-
-  void execute_deletefcn (const octave_value& data = octave_value ()) const
-    { deletefcn.execute (data); }
-
-  octave_value get_deletefcn (void) const { return deletefcn.get (); }
-
-  std::string get_handlevisibility (void) const { return handlevisibility.current_value (); }
-
-  bool is_hittest (void) const { return hittest.is_on (); }
-  std::string get_hittest (void) const { return hittest.current_value (); }
-
-  bool is_interruptible (void) const { return interruptible.is_on (); }
-  std::string get_interruptible (void) const { return interruptible.current_value (); }
-
-  bool is_selected (void) const { return selected.is_on (); }
-  std::string get_selected (void) const { return selected.current_value (); }
-
-  bool is_selectionhighlight (void) const { return selectionhighlight.is_on (); }
-  std::string get_selectionhighlight (void) const { return selectionhighlight.current_value (); }
-  
-  octave_value get_uicontextmenu (void) const { return uicontextmenu.get (); }
-
-  octave_value get_userdata (void) const { return userdata.get (); }
- 
-  bool is_visible (void) const { return visible.is_on (); }
-  std::string get_visible (void) const { return visible.current_value (); }
-
-  bool is_beingdeleted (void) const { return beingdeleted.is_on (); }
-  std::string get_beingdeleted (void) const { return beingdeleted.current_value (); }
-
   virtual void remove_child (const graphics_handle& h);
 
   virtual void adopt (const graphics_handle& h)
@@ -1660,135 +1574,11 @@ public:
 
   void set_parent (const octave_value& val);
 
-  void set_modified (const octave_value& val) { __modified__ = val; }
+  void set_children (const octave_value& val);
 
-  void set_busyaction (const octave_value& val)
-  {
-    if (! error_state)
-      {
-        busyaction = val;
-        mark_modified ();
-      }
-  }
+  void set_modified (const octave_value& val) { set___modified__ (val); }
 
-  void set_buttondownfcn (const octave_value& val)
-  {
-    if (! error_state)
-      {
-        buttondownfcn = val;
-        mark_modified ();
-      }
-  }
-
-  void set_clipping (const octave_value& val)
-  {
-    if (! error_state)
-      {
-        clipping = val;
-        mark_modified ();
-      }
-  }
-
-  void set_createfcn (const octave_value& val)
-  {
-    if (! error_state)
-      {
-        createfcn = val;
-        mark_modified ();
-      }
-  }
-
-  void set_deletefcn (const octave_value& val)
-  {
-    if (! error_state)
-      {
-        deletefcn = val;
-        mark_modified ();
-      }
-  }
-
-  void set_handlevisibility (const octave_value& val)
-  {
-    if (! error_state)
-      {
-        handlevisibility = val;
-        mark_modified ();
-      }
-  }
-
-  void set_hittest (const octave_value& val)
-  {
-    if (! error_state)
-      {
-        hittest = val;
-        mark_modified ();
-      }
-  }
-
-  void set_interruptible (const octave_value& val)
-  {
-    if (! error_state)
-      {
-        interruptible = val;
-        mark_modified ();
-      }
-  }
-
-  void set_selected (const octave_value& val)
-  {
-    if (! error_state)
-      {
-        selected = val;
-        mark_modified ();
-      }
-  }
-
-  void set_selectionhighlight (const octave_value& val)
-  {
-    if (! error_state)
-      {
-        selectionhighlight = val;
-        mark_modified ();
-      }
-  }
-
-  void set_uicontextmenu (const octave_value& val)
-  {
-    if (! error_state)
-      {
-        uicontextmenu = val;
-        mark_modified ();
-      }
-  }
-
-  void set_userdata (const octave_value& val)
-  {
-    if (! error_state)
-      {
-        userdata = val;
-        mark_modified ();
-      }
-  }
-
-  virtual void set_visible (const octave_value& val)
-  {
-    if (! error_state)
-      {
-        visible = val;
-        mark_modified ();
-      }
-  }
-
-  void set_beingdeleted (const octave_value& val)
-  {
-    if (! error_state)
-      {
-	beingdeleted = val;
-	mark_modified ();
-      }
-  }
-
-
+  void set___modified__ (const octave_value& val) { __modified__ = val; }
 
   void reparent (const graphics_handle& new_parent) { parent = new_parent; }
 
@@ -1799,7 +1589,7 @@ public:
 
   virtual void delete_children (void);
 
-  Matrix get_children (void) const { return children; }
+  static property_list::pval_map_type factory_defaults (void);
 
   // FIXME -- these functions should be generated automatically by the
   // genprops.awk script.
@@ -1818,51 +1608,41 @@ public:
   virtual bool is_climinclude (void) const { return false; }
   virtual bool is_aliminclude (void) const { return false; }
  
-  enum
-    {
-      BEINGDELETED = 0,
-      BUSYACTION,
-      BUTTONDOWNFCN,
-      // CHILDREN,
-      CLIPPING,
-      CREATEFCN,
-      DELETEFCN,
-      HANDLEVISIBILITY,
-      HITTEST,
-      INTERRUPTIBLE,
-      PARENT,
-      SELECTED,
-      SELECTIONHIGHLIGHT,
-      TAG,
-      USERDATA,
-      VISIBLE
-    };
-
 protected:
-  // properties common to all objects
-  bool_property beingdeleted;
-  radio_property busyaction;
-  callback_property buttondownfcn;
-  // FIXME: use a property class for children
-  Matrix children;
-  bool_property clipping;
-  callback_property createfcn;
-  callback_property deletefcn;
-  radio_property handlevisibility;
-  bool_property hittest;
-  bool_property interruptible;
-  handle_property parent;
-  bool_property selected;
-  bool_property selectionhighlight;
-  string_property tag;
-  string_property type;
-  any_property userdata;
-  bool_property visible;
-  // additional (octave-specific) properties
-  bool_property __modified__;
-  graphics_handle __myhandle__;
-  // FIXME: should this really be here?
-  handle_property uicontextmenu;
+  void set_dynamic (const caseless_str&, const octave_value&);
+
+  octave_value get_dynamic (const caseless_str&) const;
+
+  octave_value get_dynamic (bool all = false) const;
+
+  property get_property_dynamic (const caseless_str&);
+
+  BEGIN_BASE_PROPERTIES
+    // properties common to all objects
+    bool_property beingdeleted , "off"
+    radio_property busyaction , "{queue}|cancel"
+    callback_property buttondownfcn , Matrix ()
+    // FIXME: use a property class for children
+    Matrix children fs , Matrix ()
+    bool_property clipping , "on"
+    callback_property createfcn , Matrix ()
+    callback_property deletefcn , Matrix ()
+    radio_property handlevisibility , "{on}|callback|off"
+    bool_property hittest , "on"
+    bool_property interruptible , "on"
+    handle_property parent fs , p
+    bool_property selected , "off"
+    bool_property selectionhighlight , "on"
+    string_property tag s , ""
+    string_property type frs , ty
+    any_property userdata , Matrix ()
+    bool_property visible , "on"
+    // additional (octave-specific) properties
+    bool_property __modified__ s , "on"
+    graphics_handle __myhandle__ fhrs , mh
+    // FIXME: should this really be here?
+    handle_property uicontextmenu , graphics_handle ()
+  END_PROPERTIES
 
 protected:
   struct cmp_caseless_str 

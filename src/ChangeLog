@@ -1,5 +1,51 @@
 2008-08-26  Michael Goffioul  <michael.goffioul@gmail.com>
 
+	* genprops.awk (emit_declarations, emit_source): Change code emission
+	when emitting base_properties code (base is 1).
+	(BEGIN): Initialize pcount to 0.
+	(BEGIN_PROPERTIES): Initialize base to 0.
+	(BEGIN_BASE_PROPERTIES): New statement.
+	(main): Add support for 'f' modifier. Add support for non xxx_property
+	typed properties.
+	* graphics.h.in (base_properties::base_properties): Remove
+	implementation.
+	(base_properties::get_tag, base_properties::get_parent,
+	base_properties::get_type, base_properties::get___myhandle__,
+	base_properties::get_busyaction, base_properties::get_buttondownfcn,
+	base_properties::is_clipping, base_properties::get_clipping,
+	base_properties::execute_createfcn, base_properties::get_createfcn,
+	base_properties::execute_deletefcn, base_properties::get_deletefcn,
+	base_properties::get_handlevisibility, base_properties::is_hittest,
+	base_properties::get_hittest, base_properties::is_interruptible,
+	base_properties::get_interruptible, base_properties::is_selected,
+	base_properties::get_selected, base_properties::is_selectionhighlight,
+	base_properties::get_selectionhighlight,
+	base_properties::get_uicontextmenu, base_properties::get_userdata,
+	base_properties::is_visible, base_properties::get_visible,
+	base_properties::is_beingdeleted, base_properties::get_beingdeleted,
+	base_properties::set_busyaction, base_properties::set_buttondownfcn,
+	base_properties::set_clipping, base_properties::set_createfcn,
+	base_properties::set_deletefcn, base_properties::set_handlevisibility,
+	base_properties::set_hittest, base_properties::set_interruptible,
+	base_properties::set_selected,
+	base_properties::set_selectionhighlight,
+	base_properties::set_uicontextmenu, base_properties::set_userdata,
+	base_properties::set_visible, base_properties::set_beingdeleted,
+	base_properties::get_children): Remove (now auto-generated).
+	(base_properties::enum): Likewise.
+	(base_properties::is_modified): Call is___modified__.
+	(base_properties::set_modified): Call set___modified__.
+	(base_properties::set_children): Add.
+	(base_properties::set_dynamic, base_properties::get_dynamic,
+	base_properties::get_property_dynamic): New methods.
+	(class base_properties): Surround properties declaration with
+	BEGIN_BASE_PROPERTIES/END_PROPERTIES pair.
+	* graphics.cc (base_properties::get, base_properties::set,
+	base_properties::get_property): Remove (now auto-generated).
+	(base_properties::set_dynamic, base_properties::get_dynamic,
+	base_properties::get_property_dynamic): New methods.
+	(base_properties::set_children): Likewise.
+
 	* DLD_FUNCTIONS/fltk_backend.cc (F__fltk_redraw__): Make static.
 	(F__init_fltk__): Protect from mutliple invocations.
 	(F__remove_fltk__): Likewise.

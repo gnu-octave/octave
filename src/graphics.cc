@@ -1447,63 +1447,22 @@ base_properties::set_from_list (base_graphics_object& obj,
 }
 
 octave_value
-base_properties::get (const caseless_str& name) const
+base_properties::get_dynamic (const caseless_str& name) const
 {
   octave_value retval;
 
-  if (name.compare ("tag"))
-    retval = get_tag ();
-  else if (name.compare ("type"))
-    retval = get_type ();
-  else if (name.compare ("__modified__"))
-    retval = is_modified ();
-  else if (name.compare ("parent"))
-    retval = get_parent ().as_octave_value ();
-  else if (name.compare ("children"))
-    retval = children;
-  else if (name.compare ("busyaction"))
-    retval = get_busyaction ();
-  else if (name.compare ("buttondownfcn"))
-    retval = get_buttondownfcn ();
-  else if (name.compare ("clipping"))
-    retval = get_clipping ();
-  else if (name.compare ("createfcn"))
-    retval = get_createfcn ();
-  else if (name.compare ("deletefcn"))
-    retval = get_deletefcn ();
-  else if (name.compare ("handlevisibility"))
-    retval = get_handlevisibility ();
-  else if (name.compare ("hittest"))
-    retval = get_hittest ();
-  else if (name.compare ("interruptible"))
-    retval = get_interruptible ();
-  else if (name.compare ("selected"))
-    retval = get_selected ();
-  else if (name.compare ("selectionhighlight"))
-    retval = get_selectionhighlight ();
-  else if (name.compare ("uicontextmenu"))
-    retval = get_uicontextmenu ();
-  else if (name.compare ("userdata"))
-    retval = get_userdata ();
-  else if (name.compare ("visible"))
-    retval = get_visible ();
-  else if (name.compare ("beingdeleted"))
-    retval = get_beingdeleted ();
-  else
-  {
-    std::map<caseless_str, property>::const_iterator it = all_props.find (name);
+  std::map<caseless_str, property>::const_iterator it = all_props.find (name);
 
-    if (it != all_props.end ())
-      retval = it->second.get ();
-    else
-      error ("get: unknown property \"%s\"", name.c_str ());
-  }
+  if (it != all_props.end ())
+    retval = it->second.get ();
+  else
+    error ("get: unknown property \"%s\"", name.c_str ());
 
   return retval;
 }
 
 octave_value
-base_properties::get (bool all) const
+base_properties::get_dynamic (bool all) const
 {
   Octave_map m;
 
@@ -1512,130 +1471,35 @@ base_properties::get (bool all) const
     if (all || ! it->second.is_hidden ())
       m.assign (it->second.get_name (), it->second.get ());
 
-  m.assign ("tag", get_tag ());
-  m.assign ("type", get_type ());
-  if (all)
-    m.assign ("__modified__", is_modified ());
-  m.assign ("parent", get_parent ().as_octave_value ());
-  m.assign ("children", children);
-  m.assign ("busyaction", get_busyaction ());
-  m.assign ("buttondownfcn", get_buttondownfcn ());
-  m.assign ("clipping", get_clipping ());
-  m.assign ("createfcn", get_createfcn ());
-  m.assign ("deletefcn", get_deletefcn ());
-  m.assign ("handlevisibility", get_handlevisibility ());
-  m.assign ("hittest", get_hittest ());
-  m.assign ("interruptible", get_interruptible ());
-  m.assign ("selected", get_selected ());
-  m.assign ("selectionhighlight", get_selectionhighlight ());
-  m.assign ("uicontextmenu", get_uicontextmenu ());
-  m.assign ("userdata", get_userdata ());
-  m.assign ("visible", get_visible ());
-  m.assign ("beingdeleted", get_beingdeleted ());
-
   return m;
 }
 
 void
-base_properties::set (const caseless_str& name, const octave_value& val)
+base_properties::set_dynamic (const caseless_str& name, const octave_value& val)
 {
-  if (name.compare ("tag"))
-    set_tag (val);
-  else if (name.compare ("__modified__"))
-    __modified__ = val;
-  else if (name.compare ("parent"))
-    set_parent (val);
-  else if (name.compare ("children"))
-    maybe_set_children (children, val);
-  else if (name.compare ("busyaction"))
-    set_busyaction (val);
-  else if (name.compare ("buttondownfcn"))
-    set_buttondownfcn (val);
-  else if (name.compare ("clipping"))
-    set_clipping (val);
-  else if (name.compare ("createfcn"))
-    set_createfcn (val);
-  else if (name.compare ("deletefcn"))
-    set_deletefcn (val);
-  else if (name.compare ("handlevisibility"))
-    set_handlevisibility (val);
-  else if (name.compare ("hittest"))
-    set_hittest (val);
-  else if (name.compare ("interruptible"))
-    set_interruptible (val);
-  else if (name.compare ("selected"))
-    set_selected (val);
-  else if (name.compare ("selectionhighlight"))
-    set_selectionhighlight (val);
-  else if (name.compare ("uicontextmenu"))
-    set_uicontextmenu (val);
-  else if (name.compare ("userdata"))
-    set_userdata (val);
-  else if (name.compare ("visible"))
-    set_visible (val);
+  std::map<caseless_str, property>::iterator it = all_props.find (name);
+
+  if (it != all_props.end ())
+    it->second.set (val);
   else
-  {
-    std::map<caseless_str, property>::iterator it = all_props.find (name);
+    error ("set: unknown property \"%s\"", name.c_str ());
 
-    if (it != all_props.end ())
-      it->second.set (val);
-    else
-      error ("set: unknown property \"%s\"", name.c_str ());
-  }
-
-  if (! error_state && ! name.compare ("__modified__"))
+  if (! error_state)
     mark_modified ();
 }
 
 property
-base_properties::get_property (const caseless_str& name)
+base_properties::get_property_dynamic (const caseless_str& name)
 {
-  if (name.compare ("beingdeleted"))
-    return property (&beingdeleted, true);
-  else if (name.compare ("busyaction"))
-    return property (&busyaction, true);
-  else if (name.compare ("buttondownfcn"))
-    return property (&buttondownfcn, true);
-  else if (name.compare ("clipping"))
-    return property (&clipping, true);
-  else if (name.compare ("createfcn"))
-    return property (&createfcn, true);
-  else if (name.compare ("deletefcn"))
-    return property (&deletefcn, true);
-  else if (name.compare ("handlevisibility"))
-    return property (&handlevisibility, true);
-  else if (name.compare ("hittest"))
-    return property (&hittest, true);
-  else if (name.compare ("interruptible"))
-    return property (&interruptible, true);
-  else if (name.compare ("parent"))
-    return property (&parent, true);
-  else if (name.compare ("selected"))
-    return property (&selected, true);
-  else if (name.compare ("selectionhighlight"))
-    return property (&selectionhighlight, true);
-  else if (name.compare ("tag"))
-    return property (&tag, true);
-  else if (name.compare ("type"))
-    return property (&userdata, true);
-  else if (name.compare ("userdata"))
-    return property (&visible, true);
-  else if (name.compare ("visible"))
-    return property (&visible, true);
-  else if (name.compare ("__modified__"))
-    return property (&__modified__, true);
-  else
-    {
-      std::map<caseless_str, property>::const_iterator it = all_props.find (name);
+  std::map<caseless_str, property>::const_iterator it = all_props.find (name);
 
-      if (it == all_props.end ())
-	{
-	  error ("get_property: unknown property \"%s\"", name.c_str ());
-	  return property ();
-	}
-      else
-	return it->second;
+  if (it == all_props.end ())
+    {
+      error ("get_property: unknown property \"%s\"", name.c_str ());
+      return property ();
     }
+  else
+    return it->second;
 }
 
 bool
@@ -1711,6 +1575,12 @@ base_properties::set_parent (const octave_value& val)
     }
   else
     error ("set: expecting parent to be a graphics handle");
+}
+
+void
+base_properties::set_children (const octave_value& val)
+{
+  children = maybe_set_children (children, val);
 }
 
 void

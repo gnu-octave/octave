@@ -778,7 +778,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
 %! R1 = cholupdate(R1,single(u),"-");
 %! 
 %! assert(norm(triu(R1)-R1,Inf) == 0)
-%! assert(norm(R1 - R,Inf) < 1e1*eps('single'))
+%! assert(norm(R1 - R,Inf) < 2e1*eps('single'))
 %! 
 %!test
 %! R = chol(single(Ac));
@@ -791,7 +791,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
 %! R1 = cholupdate(R1,single(uc),"-");
 %! 
 %! assert(norm(triu(R1)-R1,Inf) == 0)
-%! assert(norm(R1 - R,Inf) < 1e1*eps('single'))
+%! assert(norm(R1 - R,Inf) < 2e1*eps('single'))
 */
 
 DEFUN_DLD (cholinsert, args, nargout,

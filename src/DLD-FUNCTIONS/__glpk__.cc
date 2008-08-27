@@ -801,11 +801,11 @@ Undocumented internal function.\n\
   OCTAVE_GLPK_GET_REAL_PARAM ("tolobj", 9);
 
   //-- Assign pointers to the output parameters
-  ColumnVector xmin (mrowsc);
-  ColumnVector fmin (1);
+  ColumnVector xmin (mrowsc, octave_NA);
+  ColumnVector fmin (1, octave_NA);
   ColumnVector status (1);
-  ColumnVector lambda (mrowsA);
-  ColumnVector redcosts (mrowsc);
+  ColumnVector lambda (mrowsA, octave_NA);
+  ColumnVector redcosts (mrowsc, octave_NA);
   ColumnVector time (1);
   ColumnVector mem (1);
 

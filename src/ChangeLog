@@ -1,3 +1,8 @@
+2008-08-27  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/__glpk__.cc (F__glpk__): Initialize output vectors 
+	by NA value.
+
 2008-08-26 Ben Abbott <bpabott@mac.com>
 
 	* mappers.cc: Adjust tolerance for single precesion tests.

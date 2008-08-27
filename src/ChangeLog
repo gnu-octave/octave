@@ -1,6 +1,8 @@
 2008-08-26 Ben Abbott <bpabott@mac.com>
 
-	* DLD-FUNCTIONS/chol.cc (test): Double tolerance.
+	* mappers.cc: Adjust tolerance for single precesion tests.
+
+	* DLD-FUNCTIONS/chol.cc: Double tolerance.
 
 2008-08-26  Jaroslav Hajek <highegg@gmail.com>
 

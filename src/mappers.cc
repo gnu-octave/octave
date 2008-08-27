@@ -217,7 +217,7 @@ arg (3 + 4i)\n\
 %!assert(arg (single(i)), single(pi/2));
 %!assert(arg (single(-1)), single(pi));
 %!assert(arg (single(-i)), single(-pi/2));
-%!assert(arg (single([1, i; -1, -i])), single([0, pi/2; pi, -pi/2]));
+%!assert(arg (single([1, i; -1, -i])), single([0, pi/2; pi, -pi/2]), 2e1*eps('single'));
 
 %!error arg ();
 %!error arg (1, 2);
@@ -1185,7 +1185,7 @@ matrix logarithm, see @ref{Linear Algebra}.\n\
 %!assert(log ([-0.5, -1.5, -2.5]), log([0.5, 1.5, 2.5]) + pi*1i, sqrt (eps));
 
 %!assert(log (single([1, e, e^2])), single([0, 1, 2]), 4*sqrt (eps));
-%!assert(log (single([-0.5, -1.5, -2.5])), single(log([0.5, 1.5, 2.5]) + pi*1i), sqrt (eps));
+%!assert(log (single([-0.5, -1.5, -2.5])), single(log([0.5, 1.5, 2.5]) + pi*1i), 4*eps('single'));
 
 %!error log ();
 %!error log (1, 2);

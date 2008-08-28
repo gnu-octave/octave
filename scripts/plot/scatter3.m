@@ -24,11 +24,11 @@
 ## @deftypefnx {Function File} {} scatter3 (@var{h}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} scatter3 (@dots{})
 ##
-## Plot a scatter plot of the data in 3D. A marker is ploted at each point 
-## defined by the points in the vectors @var{x} and @var{y}. The size of
-## the markers used is determined by the @var{s}, which can be a scalar, 
-## a vector of the same length of @var{x} and @var{y}. If @var{s} is not 
-## given or is an empty matrix, then the default value of 8 points is used.
+## Plot a scatter plot of the data in 3D. A marker is plotted at each point 
+## defined by the points in the vectors @var{x}, @var{y} and @var{z}. The size
+## of the markers used is determined by @var{s}, which can be a scalar or
+## a vector of the same length of @var{x}, @var{y} and @var{z}. If @var{s} is
+## not given or is an empty matrix, then the default value of 8 points is used.
 ##
 ## The color of the markers is determined by @var{c}, which can be a string
 ## defining a fixed color, a 3 element vector giving the red, green and blue 

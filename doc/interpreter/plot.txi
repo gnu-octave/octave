@@ -1845,6 +1845,13 @@ The original x and y data of the stairs.
 Data source variables.
 @end table
 
+@node Stem Series
+@subsubsection Stem Series
+@cindex series objects
+@cindex stem series
+
+TO BE WRITTEN
+
 @node Surface group
 @subsubsection Surface group
 @cindex group objects

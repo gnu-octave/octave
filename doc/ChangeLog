@@ -1,7 +1,7 @@
 2008-08-28  John W. Eaton  <jwe@octave.org>
 
-	* interpreter/plot.txi: Doc fixes suggested by Francesco Potorti`
-	<Potorti@isti.cnr.it>.
+	* doc/interpreter/func.txi, interpreter/plot.txi: Doc fixes
+	suggested by Francesco Potorti` <Potorti@isti.cnr.it>.
 
 2008-08-28  David Bateman  <dbateman@free.fr>
 

@@ -454,29 +454,45 @@ Graphics objects are only referenced by a numeric index, or @dfn{handle}.
 
 @table @asis
 @item root figure
+@cindex root figure graphics object
+@cindex graphics object, root figure
 The parent of all figure objects.  The index for the root figure is
 defined to be 0.
 
 @item figure
+@cindex figure graphics object
+@cindex graphics object, figure
 A figure window.
 
 @item axes
+@cindex axes graphics object
+@cindex graphics object, axes
 An set of axes.  This object is a child of a figure object and may be a
 parent of line, text, image, patch, or surface objects.
 
 @item line
+@cindex line graphics object
+@cindex graphics object, line
 A line in two or three dimensions.
 
 @item text
+@cindex text graphics object
+@cindex graphics object, text
 Text annotations.
 
 @item image
+@cindex image graphics object
+@cindex graphics object, image
 A bitmap image.
 
 @item patch
+@cindex patch graphics object
+@cindex graphics object, patch
 A filled polygon, currently limited to two dimensions.
 
 @item surface
+@cindex surface graphics object
+@cindex graphics object, surface 
 A three-dimensional surface.
 @end table
 
@@ -659,6 +675,7 @@ Index to graphics object for the current figure.
 
 @node Figure Properties
 @subsubsection Figure Properties
+@cindex figure properties
 
 @table @code
 @item nextplot
@@ -689,14 +706,17 @@ Indicates the orientation for printing.  Either @code{"landscape"} or
 
 @node Axes Properties
 @subsubsection Axes Properties
+@cindex axes properties
 
 @table @code
 @item position
-A four-element vector specifying the coordinates of the lower left
-corner and width and height of the plot, in normalized units.  For
-example, @code{[0.2, 0.3, 0.4, 0.5]} sets the lower left corner of the
-axes at @math{(0.2, 0.3)} and the width and height to be 0.4 and 0.5
-respectively.
+A vector specifying the position of the plot, excluding titles, axes and
+legend.  The four elements of the vector are the coordinates of the
+lower left corner and width and height of the plot, in units normalized
+to the width and height of the plot window.  For example, @code{[0.2,
+0.3, 0.4, 0.5]} sets the lower left corner of the axes at @math{(0.2,
+0.3)} and the width and height to be 0.4 and 0.5 respectively.  See also
+the @code{outerposition} property.
 
 @item title
 Index of text object for the axes title.
@@ -815,15 +835,18 @@ May be one of
 @end table
 
 @item outerposition
-A four-element vector specifying the coordinates of the lower left
-corner and width and height of the plot, in normalized units including
-the tics, labels etc.  For example, @code{[0.2, 0.3, 0.4, 0.5]} sets the
-lower left corner of the axes at @math{(0.2, 0.3)} and the width and
-height to be 0.4 and 0.5 respectively.
+A vector specifying the position of the plot, including titles, axes and
+legend.  The four elements of the vector are the coordinates of the
+lower left corner and width and height of the plot, in units normalized
+to the width and height of the plot window.  For example, @code{[0.2,
+0.3, 0.4, 0.5]} sets the lower left corner of the axes at @math{(0.2,
+0.3)} and the width and height to be 0.4 and 0.5 respectively.  See also
+the @code{position} property.
 @end table
 
 @node Line Properties
 @subsubsection Line Properties
+@cindex line properties
 
 @table @code
 @itemx xdata
@@ -858,6 +881,7 @@ future version of Octave.
 
 @node Text Properties
 @subsubsection Text Properties
+@cindex text properties
 
 @table @code
 @item string
@@ -1141,6 +1165,7 @@ The result of which can be seen in @ref{fig:extendedtext}
 
 @node Image Properties
 @subsubsection Image Properties
+@cindex image properties
 
 @table @code
 @item cdata
@@ -1158,6 +1183,7 @@ the image.
 
 @node Patch Properties
 @subsubsection Patch Properties
+@cindex patch properties
 
 @table @code
 @item cdata
@@ -1188,6 +1214,7 @@ The color of the line defining the patch.  @xref{Colors}.
 
 @node Surface Properties
 @subsubsection Surface Properties
+@cindex surface properties
 
 @table @code
 @item xdata
@@ -1212,6 +1239,8 @@ future version of Octave.
 
 @node Managing Default Properties
 @subsection Managing Default Properties
+@cindex default graphics properties
+@cindex graphics properties, default
 
 Object properties have two classes of default values, @dfn{factory
 defaults} (the initial values) and @dfn{user-defined defaults}, which
@@ -1298,6 +1327,8 @@ returns a list of factory defaults.
 
 @node Colors
 @subsection Colors
+@cindex graphics colors
+@cindex colors, graphics
 
 Colors may be specified as RGB triplets with values ranging from zero to
 one, or by name.  Recognized color names include @code{"blue"},
@@ -1306,6 +1337,9 @@ one, or by name.  Recognized color names include @code{"blue"},
 
 @node Line Styles
 @subsection Line Styles
+@cindex line styles, graphics
+@cindex graphics line styles
+
 Line styles are specified by the following properties:
 
 @table @code
@@ -1329,6 +1363,9 @@ of 2 is twice as wide as the default, etc.
 
 @node Marker Styles
 @subsection Marker Styles
+@cindex graphics marker styles
+@cindex marker styles, graphics
+
 Marker styles are specified by the following properties:
 @table @code
 @item marker
@@ -1350,6 +1387,7 @@ of 2 is twice as large as the default, etc.
 
 @node Callbacks
 @subsection Callbacks
+@cindex callbacks
 
 Callback functions can be associated with graphics objects and triggered
 after certain events occur. The basic structure of all callback function
@@ -1420,6 +1458,7 @@ function described below.
 
 @node Object Groups
 @subsection Object Groups
+@cindex object groups
 
 A number of Octave high level plot functions return groups of other
 graphics objects or they return graphics objects that are have their
@@ -1556,6 +1595,7 @@ corresponding hggroup elements.
 
 @node Data sources in object groups
 @subsubsection Data sources in object groups
+@cindex data sources in object groups
 
 All of the group objects contain data source parameters. There are
 string parameters that contain an expression that is evaluated to update
@@ -1568,6 +1608,8 @@ function is called.
 
 @node Area series
 @subsubsection Area series
+@cindex series objects
+@cindex area series
 
 Area series objects are created by the @code{area} function. Each of the
 @code{hggroup} elements contains a single patch object. The properties
@@ -1599,6 +1641,8 @@ Data source variables.
 
 @node Bar series
 @subsubsection Bar series
+@cindex series objects
+@cindex bar series
 
 Bar series objects are created by the @code{bar} or @code{barh}
 functions. Each @code{hgrroup} element contains a single patch object. 
@@ -1653,16 +1697,22 @@ Data source variables.
 
 @node Contour groups
 @subsubsection Contour groups
+@cindex series objects
+@cindex contour series
 
 TO BE WRITTEN
 
 @node Error bar series
 @subsubsection Error bar series
+@cindex series objects
+@cindex error bar series
 
 TO BE WRITTEN
 
 @node Line series
 @subsubsection Line series
+@cindex series objects
+@cindex line series
 
 line series objects are created by the @code{plot}  and @code{plot3}
 functions. Each @code{hggroup} element of the series contains a single
@@ -1700,6 +1750,8 @@ Data source variables.
 
 @node Quiver group
 @subsubsection Quiver group
+@cindex group objects
+@cindex quiver group
 
 Quiver series objects are created by the @code{quiver} or @code{quiver3}
 functions. Each @code{hggroup} element of the series contains three line
@@ -1756,11 +1808,15 @@ Data source variables.
 
 @node Scatter group
 @subsubsection Scatter group
+@cindex group objects
+@cindex scatter group
 
 TO BE WRITTEN
 
 @node Stair group
 @subsubsection Stair group
+@cindex group objects
+@cindex stair group
 
 Stair series objects are created by the @code{stair} function. Each
 @code{hggroup} element of the series contains a single line object as a
@@ -1791,11 +1847,15 @@ Data source variables.
 
 @node Surface group
 @subsubsection Surface group
+@cindex group objects
+@cindex surface group
 
 TO BE WRITTEN
 
 @node Graphics backends
 @subsection Graphics backends
+@cindex graphics backends
+@cindex backends, graphics
 
 @DOCSTRING(backends)
 
@@ -1807,6 +1867,7 @@ TO BE WRITTEN
 
 @node Interaction with gnuplot
 @subsubsection Interaction with @code{gnuplot}
+@cindex gnuplot interaction
 
 @DOCSTRING(gnuplot_binary)
 

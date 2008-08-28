@@ -81,8 +81,8 @@ endfunction
 function [h, xs, ys] = __stairs__ (doplot, varargin)
 
   if (nargin == 1 || ischar (varargin{2}))
-    idx = 1;
     y = varargin {1};
+    varargin(1) = [];
     if (ismatrix (y))
       if (isvector (y))
 	y = y(:);
@@ -90,9 +90,9 @@ function [h, xs, ys] = __stairs__ (doplot, varargin)
       x = 1:rows (y);
     endif
   else
-    idx = 2;
     x = varargin{1};
     y = varargin{2};
+    varargin(1:2) = [];
   endif
 
   if (ndims (x) > 2 || ndims (y) > 2)
@@ -144,6 +144,7 @@ function [h, xs, ys] = __stairs__ (doplot, varargin)
       for i = 1 : size(y, 2)
 	hg = hggroup ();
 	h = [h; hg];
+	args = __add_datasource__ ("stairs", hg, {"x", "y"}, varargin{:});
 
 	if (i == 1)
 	  set (gca (), "nextplot", "add");
@@ -156,7 +157,7 @@ function [h, xs, ys] = __stairs__ (doplot, varargin)
 	addlistener (hg, "ydata", @update_data);
 
 	tmp = line (xs(:,i).', ys(:,i).', "color", __next_line_color__ (),
-		    "parent", hg, varargin{idx+1:end});
+		    "parent", hg, args{:});
 	
         addproperty ("color", hg, "linecolor", get (tmp, "color"));
 	addproperty ("linewidth", hg, "linelinewidth", get (tmp, "linewidth"));

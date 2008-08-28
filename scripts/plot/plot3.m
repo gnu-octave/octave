@@ -225,9 +225,15 @@ function retval = plot3 (varargin)
 	color = __next_line_color__ ();
       endif
 
-      tmp(++idx) = line (x(:), y(:), z(:),  "keylabel", key, "color", color,
-			 "linestyle", options.linestyle,
-			 "marker", options.marker, properties{:});
+      hg = hggroup ();
+      tmp(++idx) = hg;
+      properties = __add_datasource__ ("plot3", hg, {"x", "y", "z"}, properties{:});
+
+      hline = line (x(:), y(:), z(:),  "keylabel", key, "color", color,
+		    "linestyle", options.linestyle,
+		    "marker", options.marker, "parent", hg, properties{:});
+
+      __add_line_series__ (h, hg);
 
       x = new;
       y_set = 0;
@@ -289,9 +295,15 @@ function retval = plot3 (varargin)
       color = __next_line_color__ ();
     endif
 
-    tmp(++idx) = line (x(:), y(:), z(:),  "keylabel", key, "color", color,
-		       "linestyle", options.linestyle,
-		       "marker", options.marker, properties{:});
+    hg = hggroup ();
+    tmp(++idx) = hg;
+    properties = __add_datasource__ ("plot3", hg, {"x", "y", "z"}, properties{:});
+
+    hline = line (x(:), y(:), z(:),  "keylabel", key, "color", color,
+		  "linestyle", options.linestyle,
+		  "marker", options.marker, "parent", hg, properties{:});
+
+    __add_line_series__ (h, hg);
   endif
 
   set (gca (), "view", [-37.5, 30]);

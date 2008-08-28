@@ -75,6 +75,7 @@ function hg = __quiver__ (varargin)
 
   have_filled = false;
   have_line_spec = false;
+  args = {};
   while (ioff <= nargin)
     arg = varargin{ioff++};
     if (ischar (arg) && strncmp (tolower (arg), "filled", 6))
@@ -88,10 +89,16 @@ function hg = __quiver__ (varargin)
 	  linespec.linestyle = "-";
 	endif
       else
-	error ("quiver: invalid linespec");
+	args {end + 1} = arg;
+        if (ioff <= nargin)
+          args {end + 1} = varargin{ioff++};
+        endif
       endif
     else
-      error ("quiver: unrecognized argument");
+      args {end + 1} = arg;
+      if (ioff <= nargin)
+        args {end + 1} = varargin{ioff++};
+      endif
     endif
   endwhile
 
@@ -120,6 +127,13 @@ function hg = __quiver__ (varargin)
   hstate = get (h, "nextplot");
   unwind_protect
     hg = hggroup ();
+    if (is3d)
+      args = __add_datasource__ ("quiver3", hg, 
+				 {"x", "y", "z", "u", "v", "w"}, args{:});
+    else
+      args = __add_datasource__ ("quiver", hg, 
+				 {"x", "y", "z", "u", "v", "w"}, args{:});
+    endif
     hold on;
 
     addproperty ("xdata", hg, "data", x);
@@ -157,23 +171,23 @@ function hg = __quiver__ (varargin)
 		    [y.'; yend.'; NaN(1, length (y))](:),
 		    [z.'; zend.'; NaN(1, length (z))](:),
 		    "linestyle", linespec.linestyle, 
-		    "color", linespec.color, "parent", hg);
+		    "color", linespec.color, "parent", hg, args{:});
       else
 	h1 = plot ([x.'; xend.'; NaN(1, length (x))](:),
 		   [y.'; yend.'; NaN(1, length (y))](:),
 		   "linestyle", linespec.linestyle, 
-		    "color", linespec.color, "parent", hg);
+		    "color", linespec.color, "parent", hg, args{:});
       endif
     else
       if (is3d)
 	h1 = plot3 ([x.'; xend.'; NaN(1, length (x))](:),
 		    [y.'; yend.'; NaN(1, length (y))](:),
 		    [z.'; zend.'; NaN(1, length (z))](:),
-		    "parent", hg);
+		    "parent", hg, args{:});
       else
 	h1 = plot ([x.'; xend.'; NaN(1, length (x))](:),
 		   [y.'; yend.'; NaN(1, length (y))](:),
-		   "parent", hg);
+		   "parent", hg, args{:});
       endif
     endif
 

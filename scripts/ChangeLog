@@ -1,3 +1,16 @@
+2008-08-28  David Bateman  <dbateman@free.fr>
+
+	* plot/__add_line_series__.m, plot/ishghandle.m, plot/linkprop.m,
+	plot/refresh.m, plot/refreshdata.m: New functions
+	* Makefile.in (SOURCES): Add them here.
+	
+	* plot/__area__.m, plot/__bars__.m, plot/__quiver__.m,
+	plot/__stem__.m, plot/stairs.m, plot/stem.m: Add data sources.
+
+	* plot/__plt2mm__.m, plot/__plt2mv__.m, plot/__plt2ss__.m,
+	plot/__plt2sv__.m, plot/__plt2vm__.m, plot/__plt2vs__.m,
+	plot/__plt2vv__.m, plot/plot3.m: Add line series and data sources.
+
 2008-08-28  Martin Weiser  <weiser2@natur.cuni.cz>
 
 	* plot/scatter3.m: Doc fix.

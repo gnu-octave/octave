@@ -2093,6 +2093,7 @@ public:
     BEGIN_PROPERTIES(root_figure)
       handle_property currentfigure S , graphics_handle ()
       handle_property callbackobject Sr , graphics_handle ()
+      bool_property showhiddenhandles , "off"
     END_PROPERTIES
 
   private:

@@ -31,7 +31,8 @@ function h = __stem__ (have_z, varargin)
 
   [ax, varargin, nargin] = __plt_get_axis_arg__ (caller, varargin{:});
 
-  [x, y, z, dofill, llc, ls, mmc, ms] = check_stem_arg (have_z, varargin{:});
+  [x, y, z, dofill, llc, ls, mmc, ms, varargin] = ...
+      check_stem_arg (have_z, varargin{:});
 
   oldax = gca ();
   unwind_protect
@@ -58,6 +59,8 @@ function h = __stem__ (have_z, varargin)
 
       hg  = hggroup ();
       h = [h; hg];
+      __add_datasource__ (caller, hg, {"x", "y", "z"}, varargin{:});
+      
       if (i == 1)
 	set (ax, "nextplot", "add");
       endif
@@ -147,13 +150,28 @@ function h = __stem__ (have_z, varargin)
   end_unwind_protect
 endfunction
 
-function [x, y, z, dofill, lc, ls, mc, ms] = check_stem_arg (have_z, varargin)
+function [x, y, z, dofill, lc, ls, mc, ms, newargs] = check_stem_arg (have_z, varargin)
 
   if (have_z)
     caller = "stem3";
   else
     caller = "stem";
   endif
+
+  ## Remove prop/val pairs from data to consider
+  i = 2;
+  newargs = {};
+  while (i < length (varargin))
+    if (ischar (varargin{i}) && !(strcmpi ("fill", varargin{i}) || 
+				 strcmpi ("filled", varargin{i})))
+      newargs{end + 1} = varargin{i};
+      newargs{end + 1} = varargin{i + 1};
+      nargin = nargin - 2;
+      varargin(i:i+1) = [];
+    else
+      i++;
+    endif
+  endwhile
 
   ## set specifiers to default values
   [lc, ls, mc, ms] = set_default_values ();

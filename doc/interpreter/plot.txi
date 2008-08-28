@@ -581,6 +581,12 @@ or when waiting for input.  To force an update at other times, call the
 
 @DOCSTRING(drawnow)
 
+Only figures that are modified will be updated. The @code{refresh}
+function can also be to force an update of the current figure, even if
+it is nor modified.
+
+@DOCSTRING(refresh)
+
 Normally, high-level plot functions like @code{plot} or @code{mesh} call
 @code{newplot} to initialize the state of the current axes so that the
 next plot is drawn in a blank window with default property settings.  To
@@ -636,7 +642,7 @@ figure window, call the @code{close} function.
 * Image Properties::            
 * Patch Properties::            
 * Surface Properties::          
-* Seacrhing Properties::
+* Searching Properties::
 @end menu
 
 @node Root Figure Properties
@@ -1196,8 +1202,8 @@ this property is not compatible with @sc{Matlab} and may be removed in a
 future version of Octave.
 @end table
 
-@node Seacrhing Properties
-@subsubsection Seacrhing Properties
+@node Searching Properties
+@subsubsection Searching Properties
 
 @DOCSTRING(findobj)
 
@@ -1473,7 +1479,22 @@ endfunction
 
 @noindent
 that adds a @code{linestyle} property to the @code{hggroup} and
-propagating any changes its its value to the children of the group.
+propagating any changes its its value to the children of the group. The
+@code{linkprop} function can be used to simplify the above to be
+
+@example
+@group
+x = 0:0.1:10;
+hg = hggroup ();
+h1 = plot (x, sin (x), "color", [1, 0, 0], "parent", hg);
+addproperty ("linestyle", hg, "linelinestyle", get (h, "linestyle"));
+hold on
+h2 = plot (x, cos (x), "color", [0, 1, 0], "parent", hg);
+hlink = linkprop ([hg, h1, h2], "color"); 
+@end group
+@end example
+
+@DOCSTRING(linkprop)
 
 These capabilities are used in a number of basic graphics objects. 
 The @code{hggroup} objects created by the functions of Octave contain
@@ -1520,6 +1541,7 @@ and position are automatically adjusted, based on changes to the
 corresponding hggroup elements.
 
 @menu
+* Data sources in object groups::
 * Area series::
 * Bar series::
 * Contour groups::
@@ -1531,6 +1553,18 @@ corresponding hggroup elements.
 * Stem Series::
 * Surface group::
 @end menu
+
+@node Data sources in object groups
+@subsubsection Data sources in object groups
+
+All of the group objects contain data source parameters. There are
+string parameters that contain an expression that is evaluated to update
+the relevant data property of the group when the @code{refreshdata}
+function is called. 
+
+@DOCSTRING(refreshdata)
+
+@c add the description of the linkdata function here when it is written
 
 @node Area series
 @subsubsection Area series
@@ -1557,6 +1591,10 @@ The line and fill color of the patch objects making up the areas. @xref{Colors}.
 The x and y coordinates of the original columns of the data passed to
 @code{area} prior to the cummulative summation used in the @code{area}
 function. 
+
+@item xdatasource
+@itemx ydatasource
+Data source variables.
 @end table
 
 @node Bar series
@@ -1607,6 +1645,10 @@ propagated to the other members of the bar series.
 
 @item ydata
 The y value of the bars in the @code{hggroup}.
+
+@item xdatasource
+@itemx ydatasource
+Data source variables.
 @end table
 
 @node Contour groups
@@ -1622,7 +1664,39 @@ TO BE WRITTEN
 @node Line series
 @subsubsection Line series
 
-TO BE WRITTEN
+line series objects are created by the @code{plot}  and @code{plot3}
+functions. Each @code{hggroup} element of the series contains a single
+line object as a child representing the stair. The properties of the
+line series are a one-to-one reflection of the children line object, and
+so the line series is only useful for its ability to add data sources to
+the group object.
+
+The properties of the line series are
+
+@table @code
+@item color
+The RGB color or color name of the line objects of the stairs. @xref{Colors}.
+
+@item linewidth
+@itemx linestyle
+The line width and style of the line objects of the stairs. @xref{Line Styles}.
+
+@item marker
+@itemx markeredgecolor
+@itemx markerfacecolor
+@itemx markersize
+The line and fill color of the markers on the stairs. @xref{Colors}.
+
+@item xdata
+@itemx ydata
+@itemx zdata
+The original x, y and z data of the stairs.
+
+@item xdatasource
+@itemx ydatasource
+@itemx zdatasource
+Data source variables.
+@end table
 
 @node Quiver group
 @subsubsection Quiver group
@@ -1670,6 +1744,14 @@ The origins of the values of the vector field.
 @itemx vdata
 @itemx wdata
 The values of the vector field to plot.
+
+@item xdatasource
+@itemx ydatasource
+@itemx zdatasource
+@itemx udatasource
+@itemx vdatasource
+@itemx wdatasource
+Data source variables.
 @end table
 
 @node Scatter group
@@ -1701,6 +1783,10 @@ The line and fill color of the markers on the stairs. @xref{Colors}.
 @item xdata
 @itemx ydata
 The original x and y data of the stairs.
+
+@item xdatasource
+@itemx ydatasource
+Data source variables.
 @end table
 
 @node Surface group
@@ -1710,6 +1796,8 @@ TO BE WRITTEN
 
 @node Graphics backends
 @subsection Graphics backends
+
+@DOCSTRING(backends)
 
 @DOCSTRING(available_backends)
 

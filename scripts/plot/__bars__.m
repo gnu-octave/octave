@@ -29,7 +29,8 @@ function tmp = __bars__ (ax, vertical, x, y, xb, yb, width, group, have_color_sp
   for i = 1:ycols
     hg = hggroup ();
     tmp = [tmp; hg];
-
+    args = __add_datasource__ ("bar", hg, {"x", "y"}, varargin{:});
+    
     if (vertical)
       if (! have_color_spec)
 	if (ycols == 1)
@@ -38,9 +39,9 @@ function tmp = __bars__ (ax, vertical, x, y, xb, yb, width, group, have_color_sp
 	  lev = (i - 1) * (clim(2) - clim(1)) / (ycols - 1) - clim(1);
 	endif
 	h = patch(xb(:,:,i), yb(:,:,i), "FaceColor", "flat", 
-		  "cdata", lev, "parent", hg, varargin{:});
+		  "cdata", lev, "parent", hg, args{:});
       else
-	h = patch(xb(:,:,i), yb(:,:,i), "parent", hg, varargin{:});
+	h = patch(xb(:,:,i), yb(:,:,i), "parent", hg, args{:});
       endif
     else
       if (! have_color_spec)
@@ -50,9 +51,9 @@ function tmp = __bars__ (ax, vertical, x, y, xb, yb, width, group, have_color_sp
 	  lev = (i - 1) * (clim(2) - clim(1)) / (ycols - 1) - clim(1);
 	endif
 	h = patch(yb(:,:,i), xb(:,:,i), "FaceColor", "flat", 
-		  "cdata", lev, "parent", hg, varargin{:});
+		  "cdata", lev, "parent", hg, args{:});
       else
-	h = patch(yb(:,:,i), xb(:,:,i), "parent", hg, varargin{:});
+	h = patch(yb(:,:,i), xb(:,:,i), "parent", hg, args{:});
       endif
     endif
 

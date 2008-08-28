@@ -34,6 +34,8 @@ INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
 SOURCES = \
+  __add_datasource__.m \
+  __add_line_series__.m \
   __area__.m \
   __axes_limits__.m \
   __axis_label__.m \
@@ -120,9 +122,11 @@ SOURCES = \
   hist.m \
   hold.m \
   isfigure.m \
+  ishghandle.m \
   ishold.m \
   legend.m \
   line.m \
+  linkprop.m \
   loglog.m \
   loglogerr.m \
   mesh.m \
@@ -145,6 +149,8 @@ SOURCES = \
   print.m \
   quiver.m \
   quiver3.m \
+  refresh.m \
+  refreshdata.m \
   replot.m \
   ribbon.m \
   rose.m \

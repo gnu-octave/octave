@@ -1,3 +1,7 @@
+2008-08-28  David Bateman  <dbateman@free.fr>
+
+	* NEWS: Update for some of the graphics changes
+	
 2008-08-11  Jaroslav Hajek <highegg@gmail.com>
 
 	* acx_blas_f77_func.m4, acx_lapack.m4: Update macros from

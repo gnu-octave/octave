@@ -3,6 +3,37 @@ Summary of important user-visible changes for version 3.2:
 
  ** Compatibility with Matlab graphics is much better now.  
 
+    The hggroup object and associated listener callback functions have
+    been added allowing the inclusion of group objects. Data sources
+    have been added to these group objects such that
+
+           x = 0:0.1:10;
+           y = sin (x);
+           plot (x, y, "ydatasource", "y");
+           for i = 1 : 100
+             pause(0.1)
+             y = sin (x + 0.1 * i);
+             refreshdata();
+           endfor
+
+    works as expected.
+
+    TO BE WRITTEN (Shai / Micheal inputs please)
+
+ ** Experimental OpenGL/FLTK based backend to replace gnuplot
+
+    An experimental backend to replace the gnuplot backend has been
+    written based on FLTK. This backend is off by default. You can
+    switch to using this  with the command
+
+        backend ("fltk")
+
+    for all future figures or for a particular figure with the command
+
+        backend (h, "fltk")
+
+    where "h" is a valid figure handle.
+
     TO BE WRITTEN (Shai / Micheal inputs please)
 
  ** Eliminate the functions for direct access to gnuplot from Octave.

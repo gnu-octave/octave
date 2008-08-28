@@ -65,9 +65,17 @@ function retval = __plt2vv__ (h, x, y, options, properties)
     if (isempty (color))
       color = __next_line_color__ ();
     endif
-    retval = line (x, y, "keylabel", key, "color", color,
-		   "linestyle", options.linestyle,
-		   "marker", options.marker, properties{:});
+
+    hg = hggroup ();
+    retval = hg;
+    properties = __add_datasource__ ("__plt2vv__", hg, {"x", "y", "z"}, 
+				     properties{:});
+
+    h = line (x, y, "keylabel", key, "color", color,
+	      "linestyle", options.linestyle,
+	      "marker", options.marker, "parent", hg, properties{:});
+
+    __add_line_series__ (h, hg);
   else
     error ("__plt2vv__: vector lengths must match");
   endif

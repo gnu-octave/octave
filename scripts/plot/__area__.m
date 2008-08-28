@@ -25,6 +25,9 @@ function retval = __area__ (ax, x, y, bv, varargin)
   retval = [];
   for i = 1: size (y, 2);
     hg = hggroup ();
+    retval = [retval; hg];
+    args = __add_datasource__ ("area", hg, {"x", "y"}, varargin{:});
+
     x1 = x(:, 1).';
     y1 = y (:, i).';
     addproperty ("xdata", hg, "data", x1);
@@ -35,11 +38,11 @@ function retval = __area__ (ax, x, y, bv, varargin)
 
     if (i == 1)
       h = patch (ax, [x1(1), x1, fliplr(x1)], [bv, y1, bv*ones(1, length(y1))],
-		 __next_line_color__ (), "parent", hg, varargin{:});
+		 __next_line_color__ (), "parent", hg, args{:});
     else
       y1 = y0 + y1;
       h = patch (ax, [x1(1), x1, fliplr(x1)], [y0(1), y1, fliplr(y0)],
-		 __next_line_color__ (), "parent", hg, varargin{:});
+		 __next_line_color__ (), "parent", hg, args{:});
     endif
 
     y0 = y1;
@@ -57,7 +60,6 @@ function retval = __area__ (ax, x, y, bv, varargin)
     addlistener (hg, "linestyle", @update_props); 
     addlistener (hg, "facecolor", @update_props); 
 
-    retval = [retval; hg];
     addproperty ("areagroup", hg, "data");
     set (retval, "areagroup", retval);
   endfor

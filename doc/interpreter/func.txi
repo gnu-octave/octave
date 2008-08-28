@@ -338,7 +338,7 @@ along with a warning.
 @node Variable-length Argument Lists
 @section Variable-length Argument Lists
 @cindex variable-length argument lists
-@cindex @code{varargin}
+@vrindex @code{varargin}
 
 Sometimes the number of input arguments is not known when the function
 is defined.  As an example think of a function that returns the smallest
@@ -422,7 +422,7 @@ print_arguments (1, "two", 3);
 @node Variable-length Return Lists
 @section Variable-length Return Lists
 @cindex variable-length return lists
-@cindex @code{varargout}
+@vrindex @code{varargout}
 
 It is possible to return a variable number of output arguments from a
 function using a syntax that's similar to the one used with the

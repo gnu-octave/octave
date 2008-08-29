@@ -59,7 +59,7 @@ function h = __stem__ (have_z, varargin)
 
       hg  = hggroup ();
       h = [h; hg];
-      __add_datasource__ (caller, hg, {"x", "y", "z"}, varargin{:});
+      args = __add_datasource__ (caller, hg, {"x", "y", "z"}, varargin{:});
       
       if (i == 1)
 	set (ax, "nextplot", "add");
@@ -142,6 +142,11 @@ function h = __stem__ (have_z, varargin)
       addlistener (hg, "xdata", @update_data);
       addlistener (hg, "ydata", @update_data);
       addlistener (hg, "zdata", @update_data);
+
+      set (hg, args{:});
+      if (i == 1 && !isempty(h_baseline))
+	set (h_baseline, "parent", get (hg, "parent"));
+      endif
     endfor
 
   unwind_protect_cleanup

@@ -180,9 +180,17 @@ function retval = plot3 (varargin)
 	color = __next_line_color__ ();
       endif
 
-      tmp(++idx) = line (x(:), y(:), z(:),  "keylabel", key, "color", color,
-			 "linestyle", options.linestyle,
-			 "marker", options.marker, properties{:});
+      hg = hggroup ();
+      tmp(++idx) = hg;
+      properties = __add_datasource__ ("plot3", hg, {"x", "y", "z"}, properties{:});
+
+      hline = line (x(:), y(:), z(:),  "keylabel", key, "color", color,
+		    "linestyle", options.linestyle,
+		    "marker", options.marker, "parent", hg);
+
+      __add_line_series__ (hline, hg);
+
+      set (hg, properties{:});
 
       x_set = 0;
       y_set = 0;
@@ -231,9 +239,11 @@ function retval = plot3 (varargin)
 
       hline = line (x(:), y(:), z(:),  "keylabel", key, "color", color,
 		    "linestyle", options.linestyle,
-		    "marker", options.marker, "parent", hg, properties{:});
+		    "marker", options.marker, "parent", hg);
 
-      __add_line_series__ (h, hg);
+      __add_line_series__ (hline, hg);
+
+      set (hg, properties{:});
 
       x = new;
       y_set = 0;
@@ -301,9 +311,10 @@ function retval = plot3 (varargin)
 
     hline = line (x(:), y(:), z(:),  "keylabel", key, "color", color,
 		  "linestyle", options.linestyle,
-		  "marker", options.marker, "parent", hg, properties{:});
+		  "marker", options.marker, "parent", hg);
 
-    __add_line_series__ (h, hg);
+    __add_line_series__ (hline, hg);
+
   endif
 
   set (gca (), "view", [-37.5, 30]);

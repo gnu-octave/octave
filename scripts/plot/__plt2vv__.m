@@ -73,9 +73,10 @@ function retval = __plt2vv__ (h, x, y, options, properties)
 
     h = line (x, y, "keylabel", key, "color", color,
 	      "linestyle", options.linestyle,
-	      "marker", options.marker, "parent", hg, properties{:});
+	      "marker", options.marker, "parent", hg);
 
     __add_line_series__ (h, hg);
+    set (hg, properties{:});
   else
     error ("__plt2vv__: vector lengths must match");
   endif

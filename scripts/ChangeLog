@@ -1,3 +1,18 @@
+2008-08-29  David Bateman  <dbateman@free.fr>
+
+	* plot/__plt2mm__.m, plot/__plt2mv__.m, plot/__plt2ss__.m,
+	plot/__plt2sv__.m, plot/__plt2vm__.m, plot/__plt2vs__.m,
+	plot/__plt2vv__.m, plot/plot3.m, plot/__area__.m, plot/__bars__.m,
+	plot/__quiver__.m, plot/__stem__.m, plot/stairs.m :
+	Pass additional prop/val pairs to hggroup rather than underlying
+	objects. If a baseline existings specifically associate it with
+	the parent of the created hggroup to allow things like "stem(...,
+	'parent', hg)" to work correctly.
+	* plot/hold.m: If currentaxes if figure doesn't exist, create it.
+
+	* plot/plot3.m: Pass hline to __add_line_series__.
+	* plot/__add_datasource__.m: Fix off by one error.
+
 2008-08-28  David Bateman  <dbateman@free.fr>
 
 	* plot/__add_line_series__.m, plot/ishghandle.m, plot/linkprop.m,

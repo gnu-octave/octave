@@ -1,3 +1,11 @@
+2008-08-29  David Bateman  <dbateman@free.fr>
+
+	* src/graphics.cc: Replace int by octave_idx_type in multiple
+	places.
+	(array_property::is_equal): In macro CHECK_ARRAY_EQUAL, special
+	case scalar case and keep copy of array value to avoid early
+	destruction of converted array values.
+	
 2008-08-28  David Bateman  <dbateman@free.fr>
 
 	* graphics.h.in (root_figure::properties::showhiddenhandles):

@@ -146,10 +146,6 @@ function [h, xs, ys] = __stairs__ (doplot, varargin)
 	h = [h; hg];
 	args = __add_datasource__ ("stairs", hg, {"x", "y"}, varargin{:});
 
-	if (i == 1)
-	  set (gca (), "nextplot", "add");
-	endif
-
 	addproperty ("xdata", hg, "data", x(:,i).');
 	addproperty ("ydata", hg, "data", y(:,i).');
 
@@ -157,8 +153,8 @@ function [h, xs, ys] = __stairs__ (doplot, varargin)
 	addlistener (hg, "ydata", @update_data);
 
 	tmp = line (xs(:,i).', ys(:,i).', "color", __next_line_color__ (),
-		    "parent", hg, args{:});
-	
+		    "parent", hg);
+
         addproperty ("color", hg, "linecolor", get (tmp, "color"));
 	addproperty ("linewidth", hg, "linelinewidth", get (tmp, "linewidth"));
 	addproperty ("linestyle", hg, "linelinestyle", get (tmp, "linestyle"));
@@ -178,6 +174,8 @@ function [h, xs, ys] = __stairs__ (doplot, varargin)
 	addlistener (hg, "markerfacecolor", @update_props); 
 	addlistener (hg, "markeredgecolor", @update_props); 
 	addlistener (hg, "markersize", @update_props); 
+
+	set (hg, args{:});
       endfor
     unwind_protect_cleanup
       set (gca (), "nextplot", hold_state);

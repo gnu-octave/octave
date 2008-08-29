@@ -39,9 +39,9 @@ function tmp = __bars__ (ax, vertical, x, y, xb, yb, width, group, have_color_sp
 	  lev = (i - 1) * (clim(2) - clim(1)) / (ycols - 1) - clim(1);
 	endif
 	h = patch(xb(:,:,i), yb(:,:,i), "FaceColor", "flat", 
-		  "cdata", lev, "parent", hg, args{:});
+		  "cdata", lev, "parent", hg);
       else
-	h = patch(xb(:,:,i), yb(:,:,i), "parent", hg, args{:});
+	h = patch(xb(:,:,i), yb(:,:,i), "parent", hg);
       endif
     else
       if (! have_color_spec)
@@ -51,9 +51,9 @@ function tmp = __bars__ (ax, vertical, x, y, xb, yb, width, group, have_color_sp
 	  lev = (i - 1) * (clim(2) - clim(1)) / (ycols - 1) - clim(1);
 	endif
 	h = patch(yb(:,:,i), xb(:,:,i), "FaceColor", "flat", 
-		  "cdata", lev, "parent", hg, args{:});
+		  "cdata", lev, "parent", hg);
       else
-	h = patch(yb(:,:,i), xb(:,:,i), "parent", hg, args{:});
+	h = patch(yb(:,:,i), xb(:,:,i), "parent", hg);
       endif
     endif
 
@@ -113,6 +113,10 @@ function tmp = __bars__ (ax, vertical, x, y, xb, yb, width, group, have_color_sp
 
     addproperty ("bargroup", hg, "data");
     set (tmp, "bargroup", tmp);
+    set (hg, args{:});
+    if (i == 1)
+      set (h_baseline, "parent", get (hg, "parent"));
+    endif
   endfor
 
   update_xlim (ax, []);

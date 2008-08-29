@@ -38,11 +38,11 @@ function retval = __area__ (ax, x, y, bv, varargin)
 
     if (i == 1)
       h = patch (ax, [x1(1), x1, fliplr(x1)], [bv, y1, bv*ones(1, length(y1))],
-		 __next_line_color__ (), "parent", hg, args{:});
+		 __next_line_color__ (), "parent", hg);
     else
       y1 = y0 + y1;
       h = patch (ax, [x1(1), x1, fliplr(x1)], [y0(1), y1, fliplr(y0)],
-		 __next_line_color__ (), "parent", hg, args{:});
+		 __next_line_color__ (), "parent", hg);
     endif
 
     y0 = y1;
@@ -62,6 +62,8 @@ function retval = __area__ (ax, x, y, bv, varargin)
 
     addproperty ("areagroup", hg, "data");
     set (retval, "areagroup", retval);
+
+    set (hg, args{:});
   endfor
 
 endfunction

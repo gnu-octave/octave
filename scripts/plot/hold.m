@@ -75,6 +75,9 @@ function hold (varargin)
   endif
 
   if (isfigure (h))
+    if (isempty (get (h, "currentaxes")))
+      set (h, "currentaxes", __go_axes__ (h))
+    endif
     axes_objs = findobj (h, "type", "axes");
     h = [h; axes_objs];
   endif

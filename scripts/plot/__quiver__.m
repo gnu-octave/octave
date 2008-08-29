@@ -171,23 +171,23 @@ function hg = __quiver__ (varargin)
 		    [y.'; yend.'; NaN(1, length (y))](:),
 		    [z.'; zend.'; NaN(1, length (z))](:),
 		    "linestyle", linespec.linestyle, 
-		    "color", linespec.color, "parent", hg, args{:});
+		    "color", linespec.color, "parent", hg);
       else
 	h1 = plot ([x.'; xend.'; NaN(1, length (x))](:),
 		   [y.'; yend.'; NaN(1, length (y))](:),
 		   "linestyle", linespec.linestyle, 
-		    "color", linespec.color, "parent", hg, args{:});
+		    "color", linespec.color, "parent", hg);
       endif
     else
       if (is3d)
 	h1 = plot3 ([x.'; xend.'; NaN(1, length (x))](:),
 		    [y.'; yend.'; NaN(1, length (y))](:),
 		    [z.'; zend.'; NaN(1, length (z))](:),
-		    "parent", hg, args{:});
+		    "parent", hg);
       else
 	h1 = plot ([x.'; xend.'; NaN(1, length (x))](:),
 		   [y.'; yend.'; NaN(1, length (y))](:),
-		   "parent", hg, args{:});
+		   "parent", hg);
       endif
     endif
 
@@ -295,6 +295,7 @@ function hg = __quiver__ (varargin)
     addlistener (hg, "markerfacecolor", @update_props); 
     addlistener (hg, "markersize", @update_props);
 
+    set (hg, args{:});
   unwind_protect_cleanup
     set (h, "nextplot", hstate);
   end_unwind_protect

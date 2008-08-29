@@ -319,8 +319,8 @@ convert_cdata (const base_properties& props, const octave_value& cdata,
 
   NDArray a (dv);
 
-  int lda = static_cast<int> (a.numel () / 3);
-  int nc = cmap.rows ();
+  octave_idx_type lda = a.numel () / static_cast<octave_idx_type> (3);
+  octave_idx_type nc = cmap.rows ();
 
   double *av = a.fortran_vec ();
   const double *cmapv = cmap.data ();
@@ -332,7 +332,7 @@ convert_cdata (const base_properties& props, const octave_value& cdata,
   else
     cv = cdata.array_value ().data ();
 
-  for (int i = 0; i < lda; i++)
+  for (octave_idx_type i = 0; i < lda; i++)
     {
       double x = (cv ? cv[i] : double (icv[i]));
 
@@ -346,7 +346,7 @@ convert_cdata (const base_properties& props, const octave_value& cdata,
       else if (x >= nc)
 	x = (nc - 1);
 
-      int idx = static_cast<int> (x);
+      octave_idx_type idx = static_cast<octave_idx_type> (x);
 
       av[i]       = cmapv[idx];
       av[i+lda]   = cmapv[idx+nc];
@@ -362,9 +362,9 @@ get_array_limits (const Array<T>& m, double& emin, double& emax,
 		  double& eminp)
 {
   const T *data = m.data ();
-  int n = m.numel ();
+  octave_idx_type n = m.numel ();
 
-  for (int i = 0; i < n; i++)
+  for (octave_idx_type i = 0; i < n; i++)
     {
       double e = double (data[i]);
 
@@ -736,40 +736,51 @@ array_property::is_equal (const octave_value& v) const
     {
       if (data.dims () == v.dims ())
 	{
-#define CHECK_ARRAY_EQUAL(T,F) \
+
+#define CHECK_ARRAY_EQUAL(T,F,A) \
 	    { \
-	      const T* d1 = data.F ().data (); \
-	      const T* d2 = v.F ().data (); \
-	      \
-	      bool flag = true; \
-	      \
-	      for (int i = 0; flag && i < data.numel (); i++) \
-		if (d1[i] != d2[i]) \
-		  flag = false; \
-	      \
-	      return flag; \
+	      if (data.numel () == 1) \
+		return data.F ## scalar_value () == \
+		  v.F ## scalar_value (); \
+	      else  \
+		{ \
+                  /* Keep copy of array_value to allow sparse/bool arrays */ \
+		  /* that are converted, to not be deallocated early */ \
+		  const A m1 = data.F ## array_value (); \
+		  const T* d1 = m1.data (); \
+		  const A m2 = v.F ## array_value (); \
+		  const T* d2 = m2.data ();\
+		  \
+		  bool flag = true; \
+		  \
+		  for (int i = 0; flag && i < data.numel (); i++) \
+		    if (d1[i] != d2[i]) \
+		      flag = false; \
+		  \
+		  return flag; \
+		} \
 	    }
 
-	  if (data.is_double_type())
-	    CHECK_ARRAY_EQUAL (double, array_value)
+	  if (data.is_double_type() || data.is_bool_type ())
+	    CHECK_ARRAY_EQUAL (double, , NDArray)
 	  else if (data.is_single_type ())
-	    CHECK_ARRAY_EQUAL (float, float_array_value)
+	    CHECK_ARRAY_EQUAL (float, float_, FloatNDArray)
 	  else if (data.is_int8_type ())
-	    CHECK_ARRAY_EQUAL (octave_int8, int8_array_value)
+	    CHECK_ARRAY_EQUAL (octave_int8, int8_, int8NDArray)
 	  else if (data.is_int16_type ())
-	    CHECK_ARRAY_EQUAL (octave_int16, int16_array_value)
+	    CHECK_ARRAY_EQUAL (octave_int16, int16_, int16NDArray)
 	  else if (data.is_int32_type ())
-	    CHECK_ARRAY_EQUAL (octave_int32, int32_array_value)
+	    CHECK_ARRAY_EQUAL (octave_int32, int32_, int32NDArray)
 	  else if (data.is_int64_type ())
-	    CHECK_ARRAY_EQUAL (octave_int64, int64_array_value)
+	    CHECK_ARRAY_EQUAL (octave_int64, int64_, int64NDArray)
 	  else if (data.is_uint8_type ())
-	    CHECK_ARRAY_EQUAL (octave_uint8, uint8_array_value)
+	    CHECK_ARRAY_EQUAL (octave_uint8, uint8_, uint8NDArray)
 	  else if (data.is_uint16_type ())
-	    CHECK_ARRAY_EQUAL (octave_uint16, uint16_array_value)
+	    CHECK_ARRAY_EQUAL (octave_uint16, uint16_, uint16NDArray)
 	  else if (data.is_uint32_type ())
-	    CHECK_ARRAY_EQUAL (octave_uint32, uint32_array_value)
+	    CHECK_ARRAY_EQUAL (octave_uint32, uint32_, uint32NDArray)
 	  else if (data.is_uint64_type ())
-	    CHECK_ARRAY_EQUAL (octave_uint64, uint64_array_value)
+	    CHECK_ARRAY_EQUAL (octave_uint64, uint64_, uint64NDArray)
 	}
     }
 

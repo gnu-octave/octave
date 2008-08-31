@@ -65,7 +65,9 @@ function retval = __plt2mm__ (h, x, y, options, properties)
 		  "marker", options(i).marker, "parent", hg);
 
 	__add_line_series__ (h, hg);
-	set (hg, args {:});
+	if (! isempty( args))
+	  set (hg, args {:});
+	endif
       endfor
     else
       error ("__plt2mm__: arguments must be a matrices");

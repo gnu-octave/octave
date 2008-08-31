@@ -62,7 +62,9 @@ function retval = __plt2ss__ (h, x, y, options, properties)
 	      "marker", options.marker, "parent", hg);
 
     __add_line_series__ (h, hg);
-    set (hg, properties{:});
+    if (! isempty (properties))
+      set (hg, properties{:});
+    endif
   else
     error ("__plt2ss__: arguments must be scalars");
   endif

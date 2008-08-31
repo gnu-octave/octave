@@ -723,12 +723,12 @@ public:
       }
   }
 
-  void redraw_figure (const graphics_handle& fh) const
+  void redraw_figure (const graphics_object& go) const
   {
-    figure_manager::Instance ().mark_modified (fh);
+    figure_manager::Instance ().mark_modified (go.get_handle ());
   }
 
-  void print_figure (const graphics_handle& /*fh*/,
+  void print_figure (const graphics_object& /*go*/,
 		     const std::string& /*term*/,
 		     const std::string& /*file*/, bool /*mono*/,
 		     const std::string& /*debug_file*/) const { }

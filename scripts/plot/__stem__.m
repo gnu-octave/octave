@@ -143,7 +143,9 @@ function h = __stem__ (have_z, varargin)
       addlistener (hg, "ydata", @update_data);
       addlistener (hg, "zdata", @update_data);
 
-      set (hg, args{:});
+      if (! isempty (args))
+	set (hg, args{:});
+      endif
       if (i == 1 && !isempty(h_baseline))
 	set (h_baseline, "parent", get (hg, "parent"));
       endif

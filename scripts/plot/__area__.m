@@ -63,7 +63,9 @@ function retval = __area__ (ax, x, y, bv, varargin)
     addproperty ("areagroup", hg, "data");
     set (retval, "areagroup", retval);
 
-    set (hg, args{:});
+    if (! isempty (args))
+      set (hg, args{:});
+    endif
   endfor
 
 endfunction

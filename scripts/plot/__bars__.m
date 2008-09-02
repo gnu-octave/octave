@@ -113,7 +113,9 @@ function tmp = __bars__ (ax, vertical, x, y, xb, yb, width, group, have_color_sp
 
     addproperty ("bargroup", hg, "data");
     set (tmp, "bargroup", tmp);
-    set (hg, args{:});
+    if (! isempty (args))
+      set (hg, args{:});
+    endif
     if (i == 1)
       set (h_baseline, "parent", get (hg, "parent"));
     endif

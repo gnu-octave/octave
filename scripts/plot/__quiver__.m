@@ -295,7 +295,9 @@ function hg = __quiver__ (varargin)
     addlistener (hg, "markerfacecolor", @update_props); 
     addlistener (hg, "markersize", @update_props);
 
-    set (hg, args{:});
+    if (! isempty (args))
+      set (hg, args{:});
+    endif
   unwind_protect_cleanup
     set (h, "nextplot", hstate);
   end_unwind_protect

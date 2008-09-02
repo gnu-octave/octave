@@ -42,8 +42,7 @@ function h = __line__ (p, varargin)
     num_data_args = 0;
   endif
 
-  if (rem (nvargs - num_data_args, 2) == 0)
-  else
+  if (rem (nvargs - num_data_args, 2) != 0)
     print_usage ("line");
   endif
 

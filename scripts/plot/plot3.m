@@ -161,9 +161,9 @@ function retval = plot3 (varargin)
 	  y = y(:);
 	  z = z(:);
 	elseif (length (x) == rows (z) && length (y) == columns (z))
-	  error ("plot3: [length(x), length(y)] must match size(z)");
-	else
 	  [x, y] = meshgrid (x, y);
+	else
+	  error ("plot3: [length(x), length(y)] must match size(z)");
 	endif
       endif
 
@@ -175,22 +175,28 @@ function retval = plot3 (varargin)
       if (! isempty (key))
 	set (gca (), "key", "on");
       endif
-      color = options.color;
-      if (isempty (options.color))
-	color = __next_line_color__ ();
-      endif
 
-      hg = hggroup ();
-      tmp(++idx) = hg;
-      properties = __add_datasource__ ("plot3", hg, {"x", "y", "z"}, properties{:});
+      for i = 1 : columns (x)
+	color = options.color;
+	if (isempty (options.color))
+	  color = __next_line_color__ ();
+	endif
 
-      hline = line (x(:), y(:), z(:),  "keylabel", key, "color", color,
-		    "linestyle", options.linestyle,
-		    "marker", options.marker, "parent", hg);
+	hg = hggroup ();
+	tmp(++idx) = hg;
+	properties = __add_datasource__ ("plot3", hg, {"x", "y", "z"}, properties{:});
 
-      __add_line_series__ (hline, hg);
+	hline = line (x(:, i), y(:, i), z(:, i),  "keylabel", key,
+		      "color", color,
+		      "linestyle", options.linestyle,
+		      "marker", options.marker, "parent", hg);
 
-      set (hg, properties{:});
+	__add_line_series__ (hline, hg);
+
+	if (! isempty (properties))
+	  set (hg, properties{:});
+	endif
+      endfor
 
       x_set = 0;
       y_set = 0;
@@ -213,9 +219,9 @@ function retval = plot3 (varargin)
 	  y = y(:);
 	  z = z(:);
 	elseif (length (x) == rows (z) && length (y) == columns (z))
-	  error ("plot3: [length(x), length(y)] must match size(z)");
-	else
 	  [x, y] = meshgrid (x, y);
+	else
+	  error ("plot3: [length(x), length(y)] must match size(z)");
 	endif
       endif
 
@@ -228,22 +234,28 @@ function retval = plot3 (varargin)
       if (! isempty (key))
 	set (gca (), "key", "on");
       endif
-      color = options.color;
-      if (isempty (color))
-	color = __next_line_color__ ();
-      endif
 
-      hg = hggroup ();
-      tmp(++idx) = hg;
-      properties = __add_datasource__ ("plot3", hg, {"x", "y", "z"}, properties{:});
+      for i = 1 : columns (x)
+	color = options.color;
+	if (isempty (color))
+	  color = __next_line_color__ ();
+	endif
 
-      hline = line (x(:), y(:), z(:),  "keylabel", key, "color", color,
-		    "linestyle", options.linestyle,
-		    "marker", options.marker, "parent", hg);
+	hg = hggroup ();
+	tmp(++idx) = hg;
+	properties = __add_datasource__ ("plot3", hg, {"x", "y", "z"}, properties{:});
 
-      __add_line_series__ (hline, hg);
+	hline = line (x(:, i), y(:, i), z(:, i),  "keylabel", key,
+		      "color", color,
+		      "linestyle", options.linestyle,
+		      "marker", options.marker, "parent", hg);
 
-      set (hg, properties{:});
+	__add_line_series__ (hline, hg);
+
+	if (! isempty (properties))
+	  set (hg, properties{:});
+	endif
+      endfor
 
       x = new;
       y_set = 0;
@@ -285,9 +297,9 @@ function retval = plot3 (varargin)
 	y = y(:);
 	z = z(:);
       elseif (length (x) == rows (z) && length (y) == columns (z))
-	error ("plot3: [length(x), length(y)] must match size(z)");
-      else
 	[x, y] = meshgrid (x, y);
+      else
+	error ("plot3: [length(x), length(y)] must match size(z)");
       endif
     endif
 
@@ -300,21 +312,28 @@ function retval = plot3 (varargin)
     if (! isempty (key))
       set (gca (), "key", "on");
     endif
-    color = options.color;
-    if (isempty (color))
-      color = __next_line_color__ ();
-    endif
 
-    hg = hggroup ();
-    tmp(++idx) = hg;
-    properties = __add_datasource__ ("plot3", hg, {"x", "y", "z"}, properties{:});
+    for i = 1 : columns (x)
+      color = options.color;
+      if (isempty (color))
+	color = __next_line_color__ ();
+      endif
 
-    hline = line (x(:), y(:), z(:),  "keylabel", key, "color", color,
-		  "linestyle", options.linestyle,
-		  "marker", options.marker, "parent", hg);
+      hg = hggroup ();
+      tmp(++idx) = hg;
+      properties = __add_datasource__ ("plot3", hg, {"x", "y", "z"}, properties{:});
 
-    __add_line_series__ (hline, hg);
+      hline = line (x(:, i), y(:, i), z(:, i),  "keylabel", key, 
+		    "color", color,
+		    "linestyle", options.linestyle,
+		    "marker", options.marker, "parent", hg);
 
+      __add_line_series__ (hline, hg);
+
+      if (! isempty (properties))
+	set (hg, properties{:});
+      endif
+    endfor
   endif
 
   set (gca (), "view", [-37.5, 30]);

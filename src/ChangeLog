@@ -1,3 +1,7 @@
+2008-09-03  Ben Abbott <bpabott@mac.com>
+
+	* mappers.cc: Use eps(single) as tolerance for single precesion test.
+
 2008-09-03  John W. Eaton  <jwe@octave.org>
 
 	* variables.cc (mlock): Lock current function on the call stack.

@@ -193,11 +193,12 @@ out_of_date_check_internal (octave_value& function,
 		      // because load_fcn_file looks at the name to
 		      // decide whether it came from a relative lookup.
 
-		      if (dispatch_type.empty ())
-			file = load_path::find_fcn (nm, dir_name);
-		      else
+		      if (! dispatch_type.empty ())
 			file = load_path::find_method (nm, dispatch_type,
 						       dir_name);
+
+		      if (file.empty ())
+			file = load_path::find_fcn (nm, dir_name);
 		    }
 
 		  if (file.empty ())

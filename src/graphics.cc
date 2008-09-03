@@ -3484,32 +3484,32 @@ hggroup::update_axis_limits (const std::string& axis_type)
 
   char update_type = 0;
 
-  if (axis_type == "xlim")
+  if (axis_type == "xlim" || axis_type == "xliminclude")
     {
       get_children_limits (min_val, max_val, min_pos, kids, 'x');
       
       update_type = 'x';
     }
-  else if (axis_type == "ylim")
+  else if (axis_type == "ylim" || axis_type == "yliminclude")
     {
       get_children_limits (min_val, max_val, min_pos, kids, 'y');
 
       update_type = 'y';
     }
-  else if (axis_type == "zlim")
+  else if (axis_type == "zlim" || axis_type == "zliminclude")
     {
       get_children_limits (min_val, max_val, min_pos, kids, 'z');
 
       update_type = 'z';
     }
-  else if (axis_type == "clim")
+  else if (axis_type == "clim" || axis_type == "climinclude")
     {
       get_children_limits (min_val, max_val, min_pos, kids, 'c');
 
       update_type = 'c';
 
     }
-  else if (axis_type == "alim")
+  else if (axis_type == "alim" || axis_type == "aliminclude")
     {
       get_children_limits (min_val, max_val, min_pos, kids, 'a');
 

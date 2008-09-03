@@ -1,5 +1,8 @@
 2008-09-03  John W. Eaton  <jwe@octave.org>
 
+	* variables.cc (mlock): Lock current function on the call stack.
+	(Fmlock): Lock caller.
+
 	* symtab.cc (out_of_date_check_internal): If dispatch type is set,
 	check for method.  If that fails, check for regular function. 
 

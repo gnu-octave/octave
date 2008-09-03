@@ -1888,7 +1888,7 @@ bind_internal_variable (const std::string& fname, const octave_value& val)
 void 
 mlock (void)
 {
-  octave_function *fcn = octave_call_stack::caller ();
+  octave_function *fcn = octave_call_stack::current ();
 
   if (fcn)
     fcn->lock ();
@@ -1938,7 +1938,14 @@ Lock the current function into memory so that it can't be cleared.\n\
   octave_value_list retval;
 
   if (args.length () == 0)
-    mlock ();
+    {
+      octave_function *fcn = octave_call_stack::caller ();
+
+      if (fcn)
+	fcn->lock ();
+      else
+	error ("mlock: invalid use outside a function");
+    }
   else
     print_usage ();
 

@@ -99,11 +99,11 @@ extract_keyword (std::istream& is, const char *keyword, T& value,
 		; // Skip whitespace and the colon.
 
 	      is.putback (c);
-	      if (c != '\n')
+	      if (c != '\n' && c != '\r')
 		is >> value;
 	      if (is)
 		status = true;
-	      while (is.get (c) && c != '\n')
+	      while (is.get (c) && c != '\n' && c != '\r')
 		; // Skip to beginning of next line;
 	      break;
 	    }
@@ -161,11 +161,11 @@ extract_keyword (std::istream& is, const string_vector& keywords,
 		    ; // Skip whitespace and the colon.
 
 		  is.putback (c);
-		  if (c != '\n')
+		  if (c != '\n' && c != '\r')
 		    is >> value;
 		  if (is)
 		    status = true;
-		  while (is.get (c) && c != '\n')
+		  while (is.get (c) && c != '\n' && c != '\r')
 		    ; // Skip to beginning of next line;
 		  return status;
 		}

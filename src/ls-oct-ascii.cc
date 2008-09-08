@@ -110,10 +110,10 @@ extract_keyword (std::istream& is, const char *keyword, const bool next_only)
 	      while (is.get (c) && (c == ' ' || c == '\t' || c == ':'))
 		; // Skip whitespace and the colon.
 
-	      if (c != '\n')
+	      if (c != '\n' && c != '\r')
 		{
 		  value << c;
-		  while (is.get (c) && c != '\n')
+		  while (is.get (c) && c != '\n' && c != '\r')
 		    value << c;
 		}
 
@@ -124,7 +124,7 @@ extract_keyword (std::istream& is, const char *keyword, const bool next_only)
 	    break;
 	  else
 	    {
-	      while (is.get (c) && c != '\n')
+	      while (is.get (c) && c != '\n' && c != '\r')
 		; // Skip to end of line.
 	    }
 	}

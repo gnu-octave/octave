@@ -1,3 +1,13 @@
+2008-09-08  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* DLD-FUNCTIONS/__magick_read__.cc (encode_uint_image): Resolve "pow"
+	ambiguity.
+
+	* graphics.cc (base_properties::get_dynamic,
+	base_properties::set_dynamic, base_propertyes::get_property_dynamic):
+	Add the 3rd template parameter to std::map, corresponding to all_props
+	field.
+
 2008-09-08  John W. Eaton  <jwe@octave.org>
 
 	* ls-oct-ascii.cc (std::string extract_keyword (std::istream&,

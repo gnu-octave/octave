@@ -567,7 +567,9 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
   Array<octave_idx_type> idx (dsizes.length ());
   octave_idx_type rows = m.rows ();
   octave_idx_type columns = m.columns ();
-  unsigned int div_factor = pow (2, bitdepth) - 1;
+
+  // FIXME -- maybe simply using bit shifting would be better?
+  unsigned int div_factor = pow (2.0, static_cast<int> (bitdepth)) - 1;
 
   for (unsigned int ii = 0; ii < nframes; ii++)
     {

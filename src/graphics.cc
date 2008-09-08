@@ -1549,7 +1549,7 @@ base_properties::get_dynamic (const caseless_str& name) const
 {
   octave_value retval;
 
-  std::map<caseless_str, property>::const_iterator it = all_props.find (name);
+  std::map<caseless_str, property, cmp_caseless_str>::const_iterator it = all_props.find (name);
 
   if (it != all_props.end ())
     retval = it->second.get ();
@@ -1564,7 +1564,7 @@ base_properties::get_dynamic (bool all) const
 {
   Octave_map m;
 
-  for (std::map<caseless_str, property>::const_iterator it = all_props.begin ();
+  for (std::map<caseless_str, property, cmp_caseless_str>::const_iterator it = all_props.begin ();
        it != all_props.end (); ++it)
     if (all || ! it->second.is_hidden ())
       m.assign (it->second.get_name (), it->second.get ());
@@ -1575,7 +1575,7 @@ base_properties::get_dynamic (bool all) const
 void
 base_properties::set_dynamic (const caseless_str& name, const octave_value& val)
 {
-  std::map<caseless_str, property>::iterator it = all_props.find (name);
+  std::map<caseless_str, property, cmp_caseless_str>::iterator it = all_props.find (name);
 
   if (it != all_props.end ())
     it->second.set (val);
@@ -1589,7 +1589,7 @@ base_properties::set_dynamic (const caseless_str& name, const octave_value& val)
 property
 base_properties::get_property_dynamic (const caseless_str& name)
 {
-  std::map<caseless_str, property>::const_iterator it = all_props.find (name);
+  std::map<caseless_str, property, cmp_caseless_str>::const_iterator it = all_props.find (name);
 
   if (it == all_props.end ())
     {

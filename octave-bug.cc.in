@@ -1,0 +1,324 @@
+/*
+
+Copyright (C) 2008 Michael Goffioul
+
+This file is part of Octave.
+
+Octave is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 3 of the License, or (at your
+option) any later version.
+
+Octave is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License
+along with Octave; see the file COPYING.  If not, see
+<http://www.gnu.org/licenses/>.
+
+*/
+
+#include <string>
+#include <map>
+#include <iostream>
+#include <fstream>
+#include <sstream>
+
+#include <windows.h>
+#include <mapi.h>
+#include <unistd.h>
+
+using namespace std;
+
+static map<string,string> vars;
+
+static void
+usage (void)
+{
+  cerr << "usage: octave-bug [-s subject]" << endl;
+  exit (-1);
+}
+
+static void
+error (const string& msg)
+{
+  cerr << "error: " << msg << endl;
+  exit (-1);
+}
+
+static void
+warning (const string& msg)
+{
+  cerr << "warning: " << msg << endl;
+}
+
+static string
+get_env_variable (char *name)
+{
+  char *value = ::getenv (name);
+  if (value)
+    return string (value);
+  else
+    return string ("");
+}
+
+inline bool starts_with(const string& s, const string& prefix)
+{
+	return (s.length() >= prefix.length() && s.find(prefix) == 0);
+}
+
+int main (int argc, char **argv)
+{
+  int arg_idx = 1;
+
+  vars["config_optvars"]=%OCTAVE_CONF_config_opts%;
+  vars["VERSION"]=%OCTAVE_CONF_VERSION%;
+  vars["SED"]=%OCTAVE_CONF_SED%;
+  vars["MACHINE"]=%OCTAVE_CONF_CANONICAL_HOST_TYPE%;
+  vars["F77"]=%OCTAVE_CONF_F77%;
+  vars["FFLAGS"]=%OCTAVE_CONF_FFLAGS%;
+  vars["FPICFLAG"]=%OCTAVE_CONF_FPICFLAG%;
+  vars["FLIBS"]=%OCTAVE_CONF_FLIBS%;
+  vars["F2C"]=%OCTAVE_CONF_F2C%;
+  vars["F2CFLAGS"]=%OCTAVE_CONF_F2CFLAGS%;
+  vars["CPPFLAGS"]=%OCTAVE_CONF_CPPFLAGS%;
+  vars["INCFLAGS"]=%OCTAVE_CONF_INCFLAGS%;
+  vars["CC"]=%OCTAVE_CONF_CC%;
+  vars["CC_VERSION"]=%OCTAVE_CONF_CC_VERSION%;
+  vars["CFLAGS"]=%OCTAVE_CONF_CFLAGS%;
+  vars["CPICFLAG"]=%OCTAVE_CONF_CPICFLAG%;
+  vars["CXX"]=%OCTAVE_CONF_CXX%;
+  vars["CXX_VERSION"]=%OCTAVE_CONF_CXX_VERSION%;
+  vars["CXXFLAGS"]=%OCTAVE_CONF_CXXFLAGS%;
+  vars["CXXPICFLAG"]=%OCTAVE_CONF_CXXPICFLAG%;
+  vars["LD_CXX"]=%OCTAVE_CONF_LD_CXX%;
+  vars["LDFLAGS"]=%OCTAVE_CONF_LDFLAGS%;
+  vars["LIBFLAGS"]=%OCTAVE_CONF_LIBFLAGS%;
+  vars["RLD_FLAG"]=%OCTAVE_CONF_RLD_FLAG%;
+  vars["LIBS"]=%OCTAVE_CONF_LIBS%;
+  vars["BLAS_LIBS"]=%OCTAVE_CONF_BLAS_LIBS%;
+  vars["FFTW_LIBS"]=%OCTAVE_CONF_FFTW_LIBS%;
+  vars["LEXLIB"]=%OCTAVE_CONF_LEXLIB%;
+  vars["LIBGLOB"]=%OCTAVE_CONF_LIBGLOB%;
+  vars["DEFS"]=%OCTAVE_CONF_DEFS%;
+
+  vars["USER"] = get_env_variable ("LOGNAME");
+  if (vars["USER"].empty ())
+    vars["USER"] = get_env_variable ("USERNAME");
+
+  vars["CC_AND_VERSION"] = (vars["CC"] + ", version" + vars["CC_VERSION"]);
+  
+  vars["CXX_AND_VERSION"] = (vars["CXX"] + ", version" + vars["CXX_VERSION"]);
+
+  /* FIXME: could be obtain from OS */
+  vars["UN"] = "Windows";
+
+  if (starts_with (vars["VERSION"], "ss"))
+    vars["BUGADDR"] = "maintainers@octave.org";
+  else
+    {
+      /* FIXME: shell script contains more, but I don't get the logic */
+      vars["BUGADDR"] = "bug@octave.org";
+    }
+
+  vars["SUBJECT"] = "[50 character or so descriptive subject here (for reference)]";
+  if (arg_idx < argc && strcmp (argv[arg_idx], "-s") == 0)
+    {
+      arg_idx++;
+      if (arg_idx < argc)
+	vars["SUBJECT"] = argv[arg_idx++];
+      else
+	usage ();
+    }
+
+  ostringstream os;
+
+  os << "Bug report for Octave " << vars["VERSION"] << " configured for " << vars["MACHINE"] << endl;
+  os << endl;
+  os << "Description:" << endl;
+  os << "-----------" << endl;
+  os << endl;
+  os << "  * Please replace this item with a detailed description of the" << endl;
+  os << "    problem.  Suggestions or general comments are also welcome." << endl;
+  os << endl;
+  os << "Repeat-By:" << endl;
+  os << "---------" << endl;
+  os << endl;
+  os << "  * Please replace this item with a description of the sequence of" << endl;
+  os << "    events that causes the problem to occur. " << endl;
+  os << endl;
+  os << "Fix:" << endl;
+  os << "---" << endl;
+  os << endl;
+  os << "  * If possible, replace this item with a description of how to" << endl;
+  os << "    fix the problem (if you don't have a fix for the problem, don't" << endl;
+  os << "    include this section, but please do submit your report anyway)." << endl;
+  os << endl;
+  os << endl;
+  os << endl;
+  os << "Configuration (please do not edit this section):" << endl;
+  os << "-----------------------------------------------" << endl;
+  os << endl;
+  os << "uname output:     " << vars["UN"] << endl;
+  os << "configure opts:   " << vars["config_opts"] << endl;
+  os << "Fortran compiler: " << vars["F77"] << endl;
+  os << "FFLAGS:           " << vars["FFLAGS"] << endl;
+  os << "F2C:              " << vars["F2C"] << endl;
+  os << "F2CFLAGS:         " << vars["F2CFLAGS"] << endl;
+  os << "FLIBS:            " << vars["FLIBS"] << endl;
+  os << "CPPFLAGS:         " << vars["CPPFLAGS"] << endl;
+  os << "INCFLAGS:         " << vars["INCFLAGS"] << endl;
+  os << "C compiler:       " << vars["CC_AND_VERSION"] << endl;
+  os << "CFLAGS:           " << vars["CFLAGS"] << endl;
+  os << "CPICFLAG:         " << vars["CPICFLAG"] << endl;
+  os << "C++ compiler:     " << vars["CXX_AND_VERSION"] << endl;
+  os << "CXXFLAGS:         " << vars["CXXFLAGS"] << endl;
+  os << "CXXPICFLAG:       " << vars["CXXPICFLAG"] << endl;
+  os << "LD_CXX:           " << vars["LD_CXX"] << endl;
+  os << "LDFLAGS:          " << vars["LDFLAGS"] << endl;
+  os << "LIBFLAGS:         " << vars["LIBFLAGS"] << endl;
+  os << "RLD_FLAG:         " << vars["RLD_FLAG"] << endl;
+  os << "BLAS_LIBS:        " << vars["BLAS_LIBS"] << endl;
+  os << "FFTW_LIBS:        " << vars["FFTW_LIBS"] << endl;
+  os << "LIBS:             " << vars["LIBS"] << endl;
+  os << "LEXLIB:           " << vars["LEXLIB"] << endl;
+  os << "LIBGLOB:          " << vars["LIBGLOB"] << endl;
+  os << "SED:              " << vars["SED"] << endl;
+  os << "DEFS:" << endl << vars["DEFS"] << endl;
+  os << endl;
+
+  if (arg_idx < argc)
+    {
+      os << endl;
+      os << "User-preferences (please do not edit this section):" << endl;
+      os << endl;
+
+      ifstream is (argv[arg_idx++]);
+
+      if (! is.fail ())
+	{
+	  string line;
+
+	  while (! is.eof ())
+	    {
+	      getline (is, line);
+	      os << line << endl;
+	    }
+	}
+      else
+	{
+	  string msg ("unable to open file for reading: ");
+
+	  msg += argv[arg_idx-1];
+	  warning (msg);
+	}
+    }
+
+  string content = os.str (), msg;
+
+  // Now go for MAPI stuff
+
+  HMODULE hMapi;
+  LHANDLE session;
+  LPMAPILOGON mapiLogon;
+  LPMAPILOGOFF mapiLogoff;
+  LPMAPISENDMAIL mapiSendMail;
+
+  hMapi = LoadLibrary ("mapi32.dll");
+  if (hMapi != NULL)
+    {
+      mapiLogon = (LPMAPILOGON) GetProcAddress (hMapi, "MAPILogon");
+      mapiLogoff = (LPMAPILOGOFF) GetProcAddress (hMapi, "MAPILogoff");
+      mapiSendMail = (LPMAPISENDMAIL) GetProcAddress (hMapi, "MAPISendMail");
+
+      if (mapiLogon != NULL && mapiLogoff != NULL
+	  && mapiSendMail != NULL)
+	{
+	  ULONG result = 0;
+
+	  if ((result = mapiLogon (0, "", "", MAPI_LOGON_UI, 0, &session)) == SUCCESS_SUCCESS)
+	    {
+	      MapiMessage mmsg;
+	      MapiRecipDesc mrecip[2];
+
+	      ZeroMemory (&mmsg, sizeof (mmsg));
+	      ZeroMemory (&mrecip, sizeof (mrecip));
+
+	      mmsg.lpszSubject = strdup (vars["SUBJECT"].c_str ());
+	      mmsg.lpszNoteText = strdup (content.c_str ());
+	      mmsg.nRecipCount = 1;
+	      mmsg.lpRecips = mrecip;
+
+	      mrecip[0].ulRecipClass = MAPI_TO;
+	      mrecip[0].lpszName = "Octave";
+	      mrecip[0].lpszAddress = strdup (vars["BUGADDR"].c_str ());
+
+	      if (! vars["USER"].empty ())
+		{
+		  mmsg.nRecipCount = 2;
+		  mrecip[1].ulRecipClass = MAPI_CC;
+		  mrecip[1].lpszName = strdup (vars["USER"].c_str ());
+		}
+
+	      if ((result = mapiSendMail (session, 0, &mmsg, MAPI_DIALOG, 0)) != SUCCESS_SUCCESS
+		  && result != MAPI_USER_ABORT)
+		msg = "mail not sent";
+
+	      free (mmsg.lpszSubject);
+	      free (mmsg.lpszNoteText);
+	      free (mrecip[0].lpszAddress);
+	      if (mmsg.nRecipCount > 1)
+		free (mrecip[1].lpszName);
+
+	      mapiLogoff (session, 0, 0, 0);
+	    }
+	  else
+	    msg = "cannot logon to MAPI service";
+
+	  if (! msg.empty ())
+	    {
+	      char buf[64];
+	      _snprintf (buf, 63, "%08x", result);
+	      msg += (" (result: " + string (buf) + ")");
+	    }
+	}
+      else
+	msg = "cannot find entry points in MAPI library";
+
+      FreeLibrary (hMapi);
+    }
+  else
+    msg = "unable to find MAPI service";
+
+  if (! msg.empty ())
+    {
+      warning (msg);
+
+      string tmpfile = _tempnam (NULL, "octave-");
+      ofstream ofs (tmpfile.c_str ());
+
+      if (! ofs.fail ())
+	{
+	  ofs << content;
+	  ofs.close ();
+      
+	  warning ("");
+	  warning ("the mail could not be sent to octave; a text editor should appear");
+	  warning ("with the content of the bug report; please copy it and paste it");
+	  warning ("manually into your mail client and send it to the following");
+	  warning ("address: " + vars["BUGADDR"]);
+
+	  string cmd ("notepad ");
+
+	  cmd += tmpfile;
+	  ::system (cmd.c_str ());
+	  ::unlink (tmpfile.c_str ());
+	}
+      else
+	error ("unable to open file for writing: " + tmpfile);
+    }
+
+  return 0;
+}

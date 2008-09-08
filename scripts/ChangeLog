@@ -1,3 +1,8 @@
+2008-09-08  Kai Habel  <kai.habel@gmx.de>
+
+        * plot/contourf.m: Fix case for equal-sized matrices
+        of X and Y.
+
 2008-09-02  David Bateman  <dbateman@free.fr>
 
 	* plot/__add_datasource__.m: Fix indexing of varargin.

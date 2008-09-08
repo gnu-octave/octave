@@ -227,7 +227,7 @@ function [X, Y, Z, lvl, patch_props] = parse_args (arg)
     arg(1:4) = [];
   endif
 
-  if (!isvector (X) || !isvector (Y) && any (size (X) != size (Y)))
+  if (! ((isvector (X) && isvector (Y)) || size_equal (X, Y)))
     error ("patch: X and Y must be of same size")
   endif
 

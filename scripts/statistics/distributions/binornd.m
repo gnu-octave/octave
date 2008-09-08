@@ -75,9 +75,11 @@ function rnd = binornd (n, p, r, c)
   endif
 
   if (isscalar (n) && isscalar (p))
-    if (find (!(n > 0) | !(n < Inf) | !(n == round (n)) |
+    if (find (!(n >= 0) | !(n < Inf) | !(n == round (n)) |
               !(p >= 0) | !(p <= 1)))
       rnd = NaN * ones (sz);
+    elseif (n == 0)
+      rnd = zeros (sz);
     else
       nel = prod (sz);
       tmp = rand (n, nel);
@@ -87,7 +89,7 @@ function rnd = binornd (n, p, r, c)
   else
     rnd = zeros (sz);
 
-    k = find (!(n > 0) | !(n < Inf) | !(n == round (n)) |
+    k = find (!(n >= 0) | !(n < Inf) | !(n == round (n)) |
               !(p >= 0) | !(p <= 1));
     if (any (k))
       rnd(k) = NaN;
@@ -105,3 +107,6 @@ function rnd = binornd (n, p, r, c)
   endif
 
 endfunction
+
+%!assert (binornd(0, 0, 1), 0)
+%!assert (binornd([0, 0], [0, 0], 1, 2), [0, 0])

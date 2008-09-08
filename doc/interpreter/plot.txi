@@ -342,6 +342,8 @@ border lines are on.
 
 @DOCSTRING(grid)
 
+@DOCSTRING(colorbar)
+
 @node Multiple Plots on One Page
 @subsection Multiple Plots on One Page
 

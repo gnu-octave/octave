@@ -106,9 +106,6 @@
 ## @item .
 ## Set dots plot style.
 ##
-## @item ^
-## Set impulses plot style.
-##
 ## @item @var{n}
 ## Interpreted as the plot color if @var{n} is an integer in the range 1 to
 ## 6.
@@ -130,6 +127,7 @@
 ## @itemx *
 ## @itemx o
 ## @itemx x
+## @itemx ^
 ## Used in combination with the points or linespoints styles, set the point
 ## style.
 ## @end table

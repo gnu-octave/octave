@@ -1,3 +1,7 @@
+2008-09-08  Tatsuro MATSUOKA  <tmacchant@yahoo.co.jp>
+
+	* plot/plot.m: Doc fix.
+
 2008-09-08  Mark van Rossum  <mvanross@inf.ed.ac.uk>
 
 	* statistics/distributions/binornd.m: Handle zero values of n

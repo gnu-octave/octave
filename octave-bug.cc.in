@@ -55,7 +55,7 @@ warning (const string& msg)
 }
 
 static string
-get_env_variable (char *name)
+get_env_variable (const char *name)
 {
   char *value = ::getenv (name);
   if (value)
@@ -64,45 +64,47 @@ get_env_variable (char *name)
     return string ("");
 }
 
-inline bool starts_with(const string& s, const string& prefix)
+inline bool
+starts_with(const string& s, const string& prefix)
 {
-	return (s.length() >= prefix.length() && s.find(prefix) == 0);
+  return (s.length() >= prefix.length() && s.find(prefix) == 0);
 }
 
-int main (int argc, char **argv)
+int
+main (int argc, char **argv)
 {
   int arg_idx = 1;
 
-  vars["config_optvars"]=%OCTAVE_CONF_config_opts%;
-  vars["VERSION"]=%OCTAVE_CONF_VERSION%;
-  vars["SED"]=%OCTAVE_CONF_SED%;
-  vars["MACHINE"]=%OCTAVE_CONF_CANONICAL_HOST_TYPE%;
-  vars["F77"]=%OCTAVE_CONF_F77%;
-  vars["FFLAGS"]=%OCTAVE_CONF_FFLAGS%;
-  vars["FPICFLAG"]=%OCTAVE_CONF_FPICFLAG%;
-  vars["FLIBS"]=%OCTAVE_CONF_FLIBS%;
-  vars["F2C"]=%OCTAVE_CONF_F2C%;
-  vars["F2CFLAGS"]=%OCTAVE_CONF_F2CFLAGS%;
-  vars["CPPFLAGS"]=%OCTAVE_CONF_CPPFLAGS%;
-  vars["INCFLAGS"]=%OCTAVE_CONF_INCFLAGS%;
-  vars["CC"]=%OCTAVE_CONF_CC%;
-  vars["CC_VERSION"]=%OCTAVE_CONF_CC_VERSION%;
-  vars["CFLAGS"]=%OCTAVE_CONF_CFLAGS%;
-  vars["CPICFLAG"]=%OCTAVE_CONF_CPICFLAG%;
-  vars["CXX"]=%OCTAVE_CONF_CXX%;
-  vars["CXX_VERSION"]=%OCTAVE_CONF_CXX_VERSION%;
-  vars["CXXFLAGS"]=%OCTAVE_CONF_CXXFLAGS%;
-  vars["CXXPICFLAG"]=%OCTAVE_CONF_CXXPICFLAG%;
-  vars["LD_CXX"]=%OCTAVE_CONF_LD_CXX%;
-  vars["LDFLAGS"]=%OCTAVE_CONF_LDFLAGS%;
-  vars["LIBFLAGS"]=%OCTAVE_CONF_LIBFLAGS%;
-  vars["RLD_FLAG"]=%OCTAVE_CONF_RLD_FLAG%;
-  vars["LIBS"]=%OCTAVE_CONF_LIBS%;
-  vars["BLAS_LIBS"]=%OCTAVE_CONF_BLAS_LIBS%;
-  vars["FFTW_LIBS"]=%OCTAVE_CONF_FFTW_LIBS%;
-  vars["LEXLIB"]=%OCTAVE_CONF_LEXLIB%;
-  vars["LIBGLOB"]=%OCTAVE_CONF_LIBGLOB%;
-  vars["DEFS"]=%OCTAVE_CONF_DEFS%;
+  vars["config_optvars"] = %OCTAVE_CONF_config_opts%;
+  vars["VERSION"] = %OCTAVE_CONF_VERSION%;
+  vars["SED"] = %OCTAVE_CONF_SED%;
+  vars["MACHINE"] = %OCTAVE_CONF_CANONICAL_HOST_TYPE%;
+  vars["F77"] = %OCTAVE_CONF_F77%;
+  vars["FFLAGS"] = %OCTAVE_CONF_FFLAGS%;
+  vars["FPICFLAG"] = %OCTAVE_CONF_FPICFLAG%;
+  vars["FLIBS"] = %OCTAVE_CONF_FLIBS%;
+  vars["F2C"] = %OCTAVE_CONF_F2C%;
+  vars["F2CFLAGS"] = %OCTAVE_CONF_F2CFLAGS%;
+  vars["CPPFLAGS"] = %OCTAVE_CONF_CPPFLAGS%;
+  vars["INCFLAGS"] = %OCTAVE_CONF_INCFLAGS%;
+  vars["CC"] = %OCTAVE_CONF_CC%;
+  vars["CC_VERSION"] = %OCTAVE_CONF_CC_VERSION%;
+  vars["CFLAGS"] = %OCTAVE_CONF_CFLAGS%;
+  vars["CPICFLAG"] = %OCTAVE_CONF_CPICFLAG%;
+  vars["CXX"] = %OCTAVE_CONF_CXX%;
+  vars["CXX_VERSION"] = %OCTAVE_CONF_CXX_VERSION%;
+  vars["CXXFLAGS"] = %OCTAVE_CONF_CXXFLAGS%;
+  vars["CXXPICFLAG"] = %OCTAVE_CONF_CXXPICFLAG%;
+  vars["LD_CXX"] = %OCTAVE_CONF_LD_CXX%;
+  vars["LDFLAGS"] = %OCTAVE_CONF_LDFLAGS%;
+  vars["LIBFLAGS"] = %OCTAVE_CONF_LIBFLAGS%;
+  vars["RLD_FLAG"] = %OCTAVE_CONF_RLD_FLAG%;
+  vars["LIBS"] = %OCTAVE_CONF_LIBS%;
+  vars["BLAS_LIBS"] = %OCTAVE_CONF_BLAS_LIBS%;
+  vars["FFTW_LIBS"] = %OCTAVE_CONF_FFTW_LIBS%;
+  vars["LEXLIB"] = %OCTAVE_CONF_LEXLIB%;
+  vars["LIBGLOB"] = %OCTAVE_CONF_LIBGLOB%;
+  vars["DEFS"] = %OCTAVE_CONF_DEFS%;
 
   vars["USER"] = get_env_variable ("LOGNAME");
   if (vars["USER"].empty ())

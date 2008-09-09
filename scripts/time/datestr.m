@@ -164,19 +164,7 @@ function retval = datestr (date, f, p)
     dateform{31} = "yyyymmddTHHMMSS";
     dateform{32} = "yyyy-mm-dd HH:MM:SS";
 
-    names_mmmm = {"January"; "February"; "March"; "April";
-                  "May"; "June"; "July"; "August";
-                  "September"; "October"; "November"; "December"};
-
-    names_mmm = {"Jan"; "Feb"; "Mar"; "Apr"; "May"; "Jun";
-                 "Jul"; "Aug"; "Sep"; "Oct"; "Nov"; "Dec"};
-
     names_m = {"J"; "F"; "M"; "A"; "M"; "J"; "J"; "A"; "S"; "O"; "N"; "D"};
-
-    names_dddd = {"Sunday"; "Monday"; "Tuesday"; "Wednesday";
-                  "Thursday"; "Friday"; "Saturday"};
-
-    names_ddd = {"Sun"; "Mon"; "Tue"; "Wed"; "Thu"; "Fri"; "Sat"};
 
     names_d = {"S"; "M"; "T"; "W"; "T"; "F"; "S"};
 
@@ -238,63 +226,57 @@ function retval = datestr (date, f, p)
       df = f;
     endif
 
-    ## dates to lowercase (note: we cannot convert MM to mm)
-    df = strrep (df, "YYYY", "yyyy");
-    df = strrep (df, "YY", "yy");
-    df = strrep (df, "QQ", "qq");
-    df = strrep (df, "MMMM", "mmmm");
-    df = strrep (df, "MMM", "mmm");
-    #### BEGIN NOT-SO-UGLY HACK ####
-    idx_MM = strfind (df, "MM");
-    idx_AM = strfind (df, "AM");
-    idx_PM = strfind (df, "PM");
-    df = strrep (df, "M", "m");
-    df([idx_MM, idx_MM + 1, idx_AM + 1, idx_PM + 1]) = "M";
-    df(idx_AM) = "A";
-    df(idx_PM) = "P";
-    ####  END NOT-SO-UGLY HACK  ####
-    df = strrep (df, "DDDD", "dddd");
-    df = strrep (df, "DDD", "ddd");
-    df = strrep (df, "DD", "dd");
-    df = strrep (df, "D", "d");
-    ## times to uppercase (also cannot convert mm to MM)
-    df = strrep (df, "hh", "HH");
-    df = strrep (df, "ss", "SS");
-    df = strrep (df, "am", "AM");
-    df = strrep (df, "pm", "PM");
-
-    str = df;
-    ## replace date symbols with actual values
-    str = strrep (str, "yyyy", sprintf ("%04d", v(i,1)));
-    str = strrep (str, "yy", sprintf ("%02d", rem (v(i,1), 100)));
-    str = strrep (str, "qq", sprintf ("Q%d", fix ((v(i,2) + 2) / 3)));
-    str = strrep (str, "mmmm", names_mmmm{v(i,2)});
-    str = strrep (str, "mmm", names_mmm{v(i,2)});
-    str = strrep (str, "mm", sprintf ("%02d", v(i,2)));
-    str = strrep (str, "m", names_m{v(i,2)});
-    str = strrep (str, "dddd", names_dddd{weekday (datenum (v(i,1), v(i,2), v(i,3)))});
-    str = strrep (str, "ddd", names_ddd{weekday (datenum (v(i,1), v(i,2), v(i,3)))});
-    str = strrep (str, "dd", sprintf ("%02d", v(i,3)));
-    str = strrep (str, "d", names_d{weekday (datenum (v(i,1), v(i,2), v(i,3)))});
-    ## replace time symbols with actual values
-    if ((any (strfind (str, "AM")) || any (strfind (str, "PM"))))
-      if (v(i,4) > 12)
-        str = strrep (str, "HH", sprintf ("%d", v(i,4) - 12));
-      else
-        str = strrep (str, "HH", sprintf ("%d", v(i,4)));
-      endif
-      if (v(i,4) < 12)
-        str = strrep (str, "AM", "AM");
-        str = strrep (str, "PM", "AM");
-      else
-        str = strrep (str, "AM", "PM");
-        str = strrep (str, "PM", "PM");
-      endif
+    df_orig = df;
+    df = regexprep (df, "[AP]M", "%p");
+    if (strcmp (df, df_orig))
+      ## PM not set.
+      df = strrep (df, "HH", "%H");
     else
-      str = strrep (str, "HH", sprintf ("%02d", v(i,4)));
-    endif
-    str = strrep (str, "MM", sprintf ("%02d", v(i,5)));
-    str = strrep (str, "SS", sprintf ("%02d", v(i,6)));
+      df = strrep (df, "HH", sprintf ("%2d", v(i,4)));
+    endif  
+
+    df = regexprep (df, "[Yy][Yy][Yy][Yy]", "%C%y");
+
+    df = regexprep (df, "[Yy][Yy]", "%y");
+
+    df = regexprep (df, "[Dd][Dd][Dd][Dd]", "%A");
+
+    df = regexprep (df, "[Dd][Dd][Dd]", "%a");
+
+    df = regexprep (df, "[Dd][Dd]", "%e");
+
+    tmp = names_d{weekday (datenum (v(i,1), v(i,2), v(i,3)))};
+    df = regexprep (df, "([^%])[Dd]", sprintf ("$1%s", tmp));
+    df = regexprep (df, "^[Dd]", sprintf ("%s", tmp));
+
+    df = strrep (df, "mmmm", "%B");
+
+    df = strrep (df, "mmm", "%b");
+
+    df = strrep (df, "mm", "%m");
+
+    tmp = names_m{v(i,2)};
+    pos = regexp (df, "[^%]m") + 1;
+    df(pos) = tmp;
+    df = regexprep (df, "^m", tmp);
+
+    df = strrep (df, "MM", "%M");
+
+    df = strrep (df, "SS", "%S");
+
+    df = regexprep (df, "[Qq][Qq]", sprintf ("Q%d", fix ((v(i,2) + 2) / 3)));
+
+    vi = v(i,:);
+    tm.year = vi(1) - 1900;
+    tm.mon = vi(2) - 1;
+    tm.mday = vi(3);
+    tm.hour = vi(4);
+    tm.min = vi(5);
+    sec = vi(6);
+    tm.sec = fix (sec);
+    tm.usec = fix (rem (sec, 1) * 1e6);
+
+    str = strftime (df, localtime (mktime (tm)));
 
     if (i == 1)
       retval = str;
@@ -323,9 +305,9 @@ endfunction
 %!assert(datestr(testtime,11),"05");
 %!assert(datestr(testtime,12),"Dec05");
 %!assert(datestr(testtime,13),"02:33:17");
-%!assert(datestr(testtime,14),"2:33:17 AM");
+%!assert(datestr(testtime,14)," 2:33:17 AM");
 %!assert(datestr(testtime,15),"02:33");
-%!assert(datestr(testtime,16),"2:33 AM");
+%!assert(datestr(testtime,16)," 2:33 AM");
 %!assert(datestr(testtime,17),"Q4-05");
 %!assert(datestr(testtime,18),"Q4");
 %!assert(datestr(testtime,19),"18/12");
@@ -341,7 +323,7 @@ endfunction
 %!assert(datestr(testtime,29),"20051218");
 %!assert(datestr(testtime,30),"20051218T023317");
 %!assert(datestr(testtime,31),"2005-12-18 02:33:17");
-%!xtest assert(datestr(testtime+[0 0 3 0 0 0],"dddd"),"Wednesday")
+%!assert(datestr(testtime+[0 0 3 0 0 0],"dddd"),"Wednesday")
 ## avoid the bug where someone happens to give a vector of datenums that
 ## happens to be 6 wide
 %!assert(datestr(733452.933:733457.933), ["14-Feb-2008 22:23:31";"15-Feb-2008 22:23:31";"16-Feb-2008 22:23:31";"17-Feb-2008 22:23:31";"18-Feb-2008 22:23:31";"19-Feb-2008 22:23:31"])

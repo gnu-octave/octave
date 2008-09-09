@@ -1,3 +1,8 @@
+2008-09-09  John W. Eaton  <jwe@octave.org>
+
+	* time/datestr.m: Convert format and use strftime to do most of
+	the actual conversion.
+
 2008-09-08  Tatsuro MATSUOKA  <tmacchant@yahoo.co.jp>
 
 	* plot/plot.m: Doc fix.

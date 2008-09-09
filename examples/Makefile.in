@@ -39,6 +39,7 @@ SCRIPTS = info-emacs-info info-emacs-octave-help
 SOURCES = \
   addtwomatrices.cc \
   celldemo.cc \
+  embedded.cc \
   firstmexdemo.c \
   fortdemo.cc \
   fortsub.f \
@@ -62,6 +63,7 @@ SOURCES = \
   oregonator.cc \
   oregonator.m \
   paramdemo.cc \
+  standalone.cc \
   stringdemo.cc \
   structdemo.cc \
   unwinddemo.cc

@@ -1621,28 +1621,7 @@ array and matrix classes as well as to all the Octave algorithms.  The
 following C++ program, uses class Matrix from liboctave.a or
 liboctave.so.
 
-@example
-@group
-#include <iostream>
-#include <octave/oct.h>
-int
-main (void)
-@{
-  std::cout << "Hello Octave world!\n";
-  int n = 2;
-  Matrix a_matrix = Matrix (n, n);
-  for (octave_idx_type i = 0; i < n; i++)
-    @{
-      for (octave_idx_type j = 0; j < n; j++)
-        @{
-          a_matrix (i, j) = (i + 1) * 10 + (j + 1);
-        @}
-    @}
-  std::cout << a_matrix;
-  return 0;
-@}
-@end group
-@end example
+@examplefile{standalone.cc}
 
 @noindent
 mkoctfile can then be used to build a standalone application with a
@@ -1650,8 +1629,8 @@ command like
 
 @example
 @group
-$ mkoctfile --link-stand-alone hello.cc -o hello
-$ ./hello
+$ mkoctfile --link-stand-alone standalone.cc -o standalone
+$ ./standalone
 Hello Octave world!
   11 12
   21 22
@@ -1660,4 +1639,24 @@ $
 @end example
 
 Note that the application @code{hello} will be dynamically linked
-against the octave libraries and any octave support libraries.
+against the octave libraries and any octave support libraries. The above
+allows the Octave math libraries to be used by an application. It does
+not however allow the script files, oct-files or builtin functions of
+Octave to be used by the application. To do that the Octave interpreter
+needs to be initialized first. An example of how to do this can then be
+seen in the code
+
+@examplefile{embedded.cc}
+
+@noindent
+which is compiled and run as before as a standalone application with
+
+@example
+@group
+$ mkoctfile --link-stand-alone embedded.cc -o embedded
+$ ./embedded
+GCD of [10, 15] is 5
+$
+@end group
+@end example
+

@@ -1,3 +1,10 @@
+2008-09-09  David Bateman  <dbateman@free.fr>
+
+	* DLD-FUNCTIONS/regexp.cc (octregexp_list): Distinguish between
+	matlab named tokens and perl lookbehind expressions. For
+	lookbehind expression replace "*" and "+" with a limited number of
+	fixed length expressions to simulate arbitrary length look behind.
+
 2008-09-08  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* DLD-FUNCTIONS/__magick_read__.cc (encode_uint_image): Resolve "pow"

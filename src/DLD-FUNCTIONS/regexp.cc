@@ -80,6 +80,9 @@ public:
 
 typedef std::list<regexp_elem>::const_iterator const_iterator;
 
+#define MAXLOOKBEHIND 10
+static bool lookbehind_warned = false;
+
 static int
 octregexp_list (const octave_value_list &args, const std::string &nm, 
 		bool case_insensitive, std::list<regexp_elem> &lst, 
@@ -96,6 +99,9 @@ octregexp_list (const octave_value_list &args, const std::string &nm,
   once = false;
 
   std::string buffer = args(0).string_value ();
+  size_t max_length = (buffer.length () > MAXLOOKBEHIND ? 
+		       MAXLOOKBEHIND: buffer.length ());
+
   if (error_state)
     {
       gripe_wrong_type_arg (nm.c_str(), args(0));
@@ -190,12 +196,6 @@ octregexp_list (const octave_value_list &args, const std::string &nm,
 
       // named tokens "(?<name>...)" are only treated with PCRE not regex.
 #if HAVE_PCRE
-      // The syntax of named tokens in pcre is "(?P<name>...)" while we need
-      // a syntax "(?<name>...)", so fix that here. Also an expression like
-      // "(?<first>\w+)\s+(?<last>\w+)|(?<last>\w+),\s+(?<first>\w+)" should
-      // be perfectly legal, while pcre does not allow the same named token
-      // name on both sides of the alternative. Also fix that here by replacing
-      // name tokens by dummy names, and dealing with the dummy names later.
       
       size_t pos = 0;
       size_t new_pos;
@@ -204,44 +204,131 @@ octregexp_list (const octave_value_list &args, const std::string &nm,
       std::ostringstream buf;
       Array<int> named_idx;
 
-      while ((new_pos = pattern.find ("(?<",pos)) != std::string::npos)
+      while ((new_pos = pattern.find ("(?",pos)) != std::string::npos)
 	{
-	  size_t tmp_pos = pattern.find_first_of ('>',new_pos);
-
-	  if (tmp_pos == std::string::npos)
+	  if (pattern.at (new_pos + 2) == '<' &&  
+	      !(pattern.at (new_pos + 3) == '=' ||
+		pattern.at (new_pos + 3) == '!'))
 	    {
-	      error ("syntax error in pattern");
-	      break;
+	      // The syntax of named tokens in pcre is "(?P<name>...)" while
+	      // we need a syntax "(?<name>...)", so fix that here. Also an 
+	      // expression like 
+	      // "(?<first>\w+)\s+(?<last>\w+)|(?<last>\w+),\s+(?<first>\w+)" 
+	      // should be perfectly legal, while pcre does not allow the same
+	      // named token name on both sides of the alternative. Also fix
+	      // that here by replacing name tokens by dummy names, and dealing
+	      // with the dummy names later.
+
+	      size_t tmp_pos = pattern.find_first_of ('>',new_pos);
+
+	      if (tmp_pos == std::string::npos)
+		{
+		  error ("syntax error in pattern");
+		  break;
+		}
+
+	      std::string tmp_name = 
+		pattern.substr(new_pos+3,tmp_pos-new_pos-3);
+	      bool found = false;
+
+	      for (int i = 0; i < nnames; i++)
+		if (named(i) == tmp_name)
+		  {
+		    named_idx.resize(inames+1);
+		    named_idx(inames) = i;
+		    found = true;
+		    break;
+		  }
+	      if (! found)
+		{
+		  named_idx.resize(inames+1);
+		  named_idx(inames) = nnames;
+		  named.append(tmp_name);
+		  nnames++;
+		}
+
+	      if (new_pos - pos > 0)
+		buf << pattern.substr(pos,new_pos-pos);
+	      if (inames < 10)
+		buf << "(?P<n00" << inames++;
+	      else if (inames < 100)
+		buf << "(?P<n0" << inames++;
+	      else
+		buf << "(?P<n" << inames++;
+	      pos = tmp_pos;
 	    }
-
-	  std::string tmp_name = pattern.substr(new_pos+3,tmp_pos-new_pos-3);
-	  bool found = false;
-
-	  for (int i = 0; i < nnames; i++)
-	    if (named(i) == tmp_name)
-	      {
-		named_idx.resize(inames+1);
-		named_idx(inames) = i;
-		found = true;
-		break;
-	      }
-	  if (! found)
+	  else if (pattern.at (new_pos + 2) == '<')
 	    {
-	      named_idx.resize(inames+1);
-	      named_idx(inames) = nnames;
-	      named.append(tmp_name);
-	      nnames++;
-	    }
+	      // Find lookbehind operators of arbitrary length (ie like 
+	      // "(?<=[a-z]*)") and replace with a maximum length operator 
+	      // as PCRE can not yet handle arbitrary length lookahead 
+	      // operators. Use the string length as the maximum length to 
+	      // avoid issues.
 
-	  if (new_pos - pos > 0)
-	    buf << pattern.substr(pos,new_pos-pos);
-	  if (inames < 10)
-	    buf << "(?P<n00" << inames++;
-	  else if (inames < 100)
-	    buf << "(?P<n0" << inames++;
+	      int brackets = 1;
+	      size_t tmp_pos1 = new_pos + 2;
+	      size_t tmp_pos2 = tmp_pos1;
+	      while (tmp_pos1 <= pattern.length () && brackets > 0)
+		{
+		  char ch = pattern.at (tmp_pos1);
+		  if (ch == '(')
+		    brackets++;
+		  else if (ch == ')')
+		    {
+		      if (brackets > 1)
+			tmp_pos2 = tmp_pos1;
+
+		      brackets--;
+		    }
+		  tmp_pos1++;
+		}
+
+	      if (brackets != 0)
+		{
+		  buf << pattern.substr (pos, new_pos - pos) << "(?";
+		  pos = new_pos + 2;
+		}
+	      else
+		{
+		  size_t tmp_pos3 = pattern.find_first_of ("*+", tmp_pos2);
+		  if (tmp_pos3 != std::string::npos && tmp_pos3 < tmp_pos1)
+		    {
+		      if (!lookbehind_warned)
+			{
+			  lookbehind_warned = true;
+			  warning ("%s: arbitrary length lookbehind patterns are only support up to length %d", nm.c_str(), MAXLOOKBEHIND);
+			}
+
+		      buf << pattern.substr (pos, new_pos - pos) << "(";
+
+		      size_t i;
+		      if (pattern.at (tmp_pos3) == '*')
+			i = 0;
+		      else
+			i = 1;
+
+		      for (; i < max_length + 1; i++)
+			{
+			  buf <<pattern.substr(new_pos, tmp_pos3 - new_pos)
+			      << "{" << i << "}";
+			  buf << pattern.substr(tmp_pos3 + 1, 
+						tmp_pos1 - tmp_pos3 - 1);
+			  if (i != max_length)
+			    buf << "|";
+			}
+		      buf << ")";
+		    }
+		  else
+		    buf << pattern.substr (pos, tmp_pos1 - pos);
+		  pos = tmp_pos1;
+		}
+	    }
 	  else
-	    buf << "(?P<n" << inames++;
-	  pos = tmp_pos;
+	    {
+	      buf << pattern.substr (pos, new_pos - pos) << "(?";
+	      pos = new_pos + 2;
+	    }
+
 	}
 
       buf << pattern.substr(pos);
@@ -1042,6 +1129,16 @@ The pattern is taken literally.\n\
 %!assert(regexp({'asdfg-dfd';'-dfd-dfd-';'qasfdfdaq'},{'-';'f';'q'}),{6;[3,7];[1,9]})
 %!assert(regexp('Strings',{'t','s'}),{2,7})
 
+## Test case for lookaround operators
+%!assert(regexp('Iraq','q(?!u)'),4)
+%!assert(regexp('quit','q(?!u)'), zeros(1,0))
+%!assert(regexp('quit','q(?=u)','match'), {'q'})
+%!assert(regexp("quit",'q(?=u+)','match'), {'q'})
+%!assert(regexp("qit",'q(?=u+)','match'), cell(1,0))
+%!assert(regexp("qit",'q(?=u*)','match'), {'q'})
+
+%!assert(regexp('thingamabob','(?<=a)b'), 9)
+
 */
 
 DEFUN_DLD (regexpi, args, nargout,
@@ -1568,6 +1665,9 @@ Alternatively, use (?x) or (?-x) in the pattern.\n\
 %!assert(regexprep("abc",{"b","a"},"?"),{"??c"})
 %!assert(regexprep({"abc","cba"},"b","?"),{"a?c","c?a"})
 %!assert(regexprep({"abc","cba"},{"b","a"},{"?","!"}),{"!?c","c?!"})
+
+# Nasty lookbehind expression
+%!assert(regexprep('x^(-1)+y(-1)+z(-1)=0','(?<=[a-z]+)\(\-[1-9]*\)','_minus1'),'x^(-1)+y_minus1+z_minus1=0')
 
 */
 

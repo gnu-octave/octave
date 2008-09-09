@@ -717,7 +717,7 @@ example
 @noindent
 where @code{@var{i}, @var{j}} is equally a comma separated list. Comma
 separated lists can not be directly manipulated by the user. However,
-both structures are cell arrays can be converted into comma
+both structures and cell arrays can be converted into comma
 separated lists, which makes them useful to keep the input arguments and
 return values of functions organized. Another example of where a comma
 separated list can be used is in the creation of a new array. If all the

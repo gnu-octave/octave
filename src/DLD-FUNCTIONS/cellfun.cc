@@ -526,8 +526,8 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
 DEFUN_DLD (num2cell, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{c} =} num2cell (@var{m})\n\
-@deftypefnx {Loadable Function} {@var{c} =} num2cell (@var{m}, @var{d})\n\
-Convert to matrix @var{m} into a cell array. If @var{d} is defined the\n\
+@deftypefnx {Loadable Function} {@var{c} =} num2cell (@var{m}, @var{dim})\n\
+Converts the matrix @var{m} into a cell array. If @var{dim} is defined, the\n\
 value @var{c} is of dimension 1 in this dimension and the elements of\n\
 @var{m} are placed in slices in @var{c}.\n\
 @seealso{mat2cell}\n\
@@ -624,7 +624,7 @@ DEFUN_DLD (mat2cell, args, ,
 @deftypefn {Loadable Function} {@var{b} =} mat2cell (@var{a}, @var{m}, @var{n})\n\
 @deftypefnx {Loadable Function} {@var{b} =} mat2cell (@var{a}, @var{d1}, @var{d2}, @dots{})\n\
 @deftypefnx {Loadable Function} {@var{b} =} mat2cell (@var{a}, @var{r})\n\
-Converts the matrix @var{a} to a cell array If @var{a} is 2-D, then\n\
+Converts the matrix @var{a} to a cell array. If @var{a} is 2-D, then\n\
 it is required that @code{sum (@var{m}) == size (@var{a}, 1)} and\n\
 @code{sum (@var{n}) == size (@var{a}, 2)}. Similarly, if @var{a} is\n\
 a multi-dimensional and the number of dimensional arguments is equal\n\

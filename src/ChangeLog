@@ -1,3 +1,8 @@
+2008-09-10  John W. Eaton  <jwe@octave.org>
+
+	* octave.cc (octave_main): Make all command-line arguments
+	available to startup scripts and PKG_ADD files.
+
 2008-09-09  David Bateman  <dbateman@free.fr>
 
 	* DLD-FUNCTIONS/regexp.cc (octregexp_list): Distinguish between

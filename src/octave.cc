@@ -767,6 +767,11 @@ octave_main (int argc, char **argv, int embedded)
 
   initialize_version_info ();
 
+  // Make all command-line arguments available to startup files,
+  // including PKG_ADD files.
+
+  intern_argv (argc, argv);
+
   load_path::initialize (set_initial_path);
 
   execute_startup_files ();
@@ -795,10 +800,6 @@ octave_main (int argc, char **argv, int embedded)
 
   if (! code_to_eval.empty ())
     {
-      // We probably want all the args for an --eval option.
-
-      intern_argv (argc, argv);
-
       int parse_status = execute_eval_option_code (code_to_eval);
 
       if (! (persist || remaining_args > 0))

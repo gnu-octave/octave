@@ -48,20 +48,46 @@ function m = cell2mat (c)
     else
       error ("cell2mat: all elements of cell array must be numeric, logical or char");
     endif
+  elseif (ndims (c) == 2)
+    nr = rows (c);
+    c1 = cell (nr, 1);
+    for i = 1 : nr
+      c1{i} = [c{i : nr : end}];
+    endfor
+    ## This is faster than "c = cat(1, c{:})"
+    m = [cellfun(@(x) x.', c1, "UniformOutput", false){:}].';
   else
-    ## n dimensions case
-    for k = ndims (c):-1:2,
+   nd = ndims (c);
+   for k = nd : -1 : 2
       sz = size (c);
+      if (k > ndims (c) || sz(end) == 1)
+	continue;
+      endif
       sz(end) = 1;
       c1 = cell (sz);
-      for i = 1:(prod (sz))
-        c1{i} = cat (k, c{i:(prod (sz)):end});
-      endfor
+      sz = prod (sz);
+      if (k == 2)
+        for i = 1 : sz
+	  c1{i} = [c{i : sz : end}];
+        endfor
+      else
+        ## This is faster than
+        ##   for i = 1:sz, c1{i} = cat (k, c{i:(prod (sz)):end}); endfor
+	idx = [1, k, (3 : (k - 1)), 2, ((k + 1): nd)];
+        c = cellfun(@(x) permute (x, idx), c, "UniformOutput", false);
+        for i = 1: sz
+	  c1{i} = ipermute ([c{i : sz : end}], idx);
+        endfor
+      endif
       c = c1;
     endfor
-    m = cat (1, c1{:});
+    if (numel (c) > 1)
+      idx = [2, 1, 3 : nd];
+      m = ipermute([cellfun(@(x) permute (x, idx), c, "UniformOutput", false){:}], idx);
+    else
+      m = c{1};
+    endif
   endif
-
 endfunction
 
 ## Tests

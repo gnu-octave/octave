@@ -80,8 +80,9 @@
 
 function legend (varargin)
 
-  [ca, varargin, nargin] = __plt_get_axis_arg__ ("legend", varargin{:});
   nargs = nargin;
+
+  ca = gca ();
 
   if (nargs > 0)
     pos = varargin{nargs};
@@ -131,25 +132,12 @@ function legend (varargin)
 	  case "boxoff"
 	    set (ca, "keybox", "off");
 	  otherwise
-	    typ = get (kids (k), "type");
-	    while (k <= nkids && ! strcmp (typ, "line") &&
-		   ! strcmp (typ, "hggroup"))
+	    while (k <= nkids && ! strcmp (get (kids(k), "type"), "line"))
 	      k++;
 	    endwhile
 	    if (k <= nkids)
 	      turn_on_legend = true;
-	      if (strcmp (typ, "hggroup"))
-		hgkids = get (kids(k), "children");
-		for j = 1 : length (hgkids)
-		  hgobj = get (hgkids (j));
-		  if (isfield (hgobj, "keylabel"))
-		    set (hgkids(j), "keylabel", arg);
-		    break;
-		  endif
-		endfor
-	      else
-		set (kids(k), "keylabel", arg);
-	      endif
+	      set (kids(k), "keylabel", arg);
 	    else
 	      warning ("legend: ignoring extra labels");
 	    endif
@@ -172,8 +160,7 @@ function legend (varargin)
     for i = 1:nkids
       if (strcmp (get (kids(k), "type"), "line")
 	  || strcmp (get (kids(k), "type"), "surface")
-	  || strcmp (get (kids(k), "type"), "patch")
-	  || strcmp (get (kids(k), "type"), "hggroup"))
+	  || strcmp (get (kids(k), "type"), "patch"))
 	have_data = true;
 	break;
       endif
@@ -190,23 +177,11 @@ function legend (varargin)
       while (k <= nkids
 	     && ! (strcmp (get (kids(k), "type"), "line")
 		   || strcmp (get (kids(k), "type"), "surface")
-		   || strcmp (get (kids(k), "type"), "patch")
-		   || strcmp (get (kids(k), "type"), "hggroup")))
+		   || strcmp (get (kids(k), "type"), "patch")))
 	k++;
       endwhile
       if (k <= nkids)
-	if (strcmp (get (kids(k), "type"), "hggroup"))
-	  hgkids = get (kids(k), "children");
-	  for j = 1 : length (hgkids)
-	    hgobj = get (hgkids (j));
-	    if (isfield (hgobj, "keylabel"))
-	      set (hgkids(j), "keylabel", arg);
-	      break;
-	    endif
-	  endfor
-	else
-	  set (kids(k), "keylabel", arg);
-	endif
+	set (kids(k), "keylabel", arg);
 	turn_on_legend = true;
 	k++;
       elseif (! warned)
@@ -214,9 +189,6 @@ function legend (varargin)
 	warning ("legend: ignoring extra labels");
       endif
     else
-      arg
-      get(kids(k),"type")
-      k
       error ("legend: expecting argument to be a character string");
     endif
   endfor

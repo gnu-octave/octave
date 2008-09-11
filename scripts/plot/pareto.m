@@ -55,6 +55,8 @@
 
 function h = pareto (varargin)
 
+  [ax, varargin, nargin] = __plt_get_axis_arg__ ("pareto", varargin{:});
+
   if (nargin != 1 && nargin != 2)
     print_usage ();
   endif
@@ -82,7 +84,7 @@ function h = pareto (varargin)
   cdf95 = cdf - 0.95;
   idx95 = find(sign(cdf95(1:end-1)) != sign(cdf95(2:end)))(1);
 
-  [ax, hbar, hline] = plotyy (1 : idx95, x (1 : idx95), 
+  [ax, hbar, hline] = plotyy (ax, 1 : idx95, x (1 : idx95), 
 			      1 : length(cdf), 100 .* cdf, 
 			      @bar, @plot);
 

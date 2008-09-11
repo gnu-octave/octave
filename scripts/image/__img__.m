@@ -65,8 +65,7 @@ function h = __img__ (x, y, img, varargin)
     endif
   endif
 
-  set (ca, "view", [0, 90], "xlimmode", "manual", "ylimmode", "manual",
-       "xlim", xlim, "ylim", ylim);
+  set (ca, "view", [0, 90]);
 
   if (strcmp (get (ca, "nextplot"), "replace"))
     set (ca, "ydir", "reverse");

@@ -1301,9 +1301,8 @@ gh_manager::do_free (const graphics_handle& h)
 	      graphics_backend backend = p->second.get_backend ();
 	      if (backend)
                 backend.object_destroyed (p->second);
-                 // note - this will be valid only for first explicitly 
-                 // deleted object. All its children will then have an
-	         // unknown backend.
+                 // note - this will be valid only for first explicitly deleted object.
+                 // All his children will have unknown backend then.
                  
 	      handle_map.erase (p);
 
@@ -1714,15 +1713,8 @@ base_properties::delete_children (void)
 {
   octave_idx_type n = children.numel ();
 
-  // A callback function might have already deleted the child,
-  // so check before deleting
   for (octave_idx_type i = 0; i < n; i++)
-    {
-      graphics_object go = gh_manager::get_object (children(i));
-
-      if (go.valid_object ())
-	gh_manager::free (children(i));
-    }
+    gh_manager::free (children(i));
 }
 
 graphics_backend
@@ -2088,12 +2080,8 @@ figure::get_default (const caseless_str& name) const
 void 
 axes::properties::sync_positions (void)
 {
-#if 0
   // FIXME -- this should take font metrics into consideration,
-  // and also the fact that the colorbox leaves the outerposition
-  // alone but alters the position. For now just don't adjust the
-  // positions relative to each other.
-
+  // for now we'll just make it position 90% of outerposition
   if (activepositionproperty.is ("outerposition"))
     {
       Matrix outpos = outerposition.get ().matrix_value ();
@@ -2114,7 +2102,6 @@ axes::properties::sync_positions (void)
       pos(3) *= 1.1;
       outerposition = pos;
     }
-#endif
 
   update_transform ();
 }
@@ -2171,14 +2158,7 @@ void
 axes::properties::set_defaults (base_graphics_object& obj,
 				const std::string& mode)
 {
-  gh_manager::free (title.handle_value ());
   title = graphics_handle ();
-
-  if (! title.handle_value ().ok ()) 
-    std::cerr << "set_defaults not ok\n";
-  else
-    std::cerr << "set_defaults ok " << title.handle_value().value () << "\n";
-
   box = "on";
   key = "off";
   keybox = "off";
@@ -2202,14 +2182,9 @@ axes::properties::set_defaults (base_graphics_object& obj,
   ylimmode = "auto";
   zlimmode = "auto";
   climmode = "auto";
-
-  gh_manager::free (xlabel.handle_value ());
-  gh_manager::free (ylabel.handle_value ());
-  gh_manager::free (zlabel.handle_value ());
   xlabel = graphics_handle ();
   ylabel = graphics_handle ();
   zlabel = graphics_handle ();
-
   xgrid = "off";
   ygrid = "off";
   zgrid = "off";
@@ -2290,6 +2265,7 @@ axes::properties::set_defaults (base_graphics_object& obj,
     }
 
   activepositionproperty = "outerposition";
+  __colorbar__  = "none";
 
   delete_children ();
 
@@ -2303,19 +2279,8 @@ axes::properties::set_defaults (base_graphics_object& obj,
 graphics_handle
 axes::properties::get_title (void) const
 {
-  if (! title.handle_value ().ok ()) 
-    std::cerr << "get_title not ok\n";
-  else
-    std::cerr << "get_title ok " << title.handle_value().value () << "\n";
-
-    
   if (! title.handle_value ().ok ())
     title = gh_manager::make_graphics_handle ("text", __myhandle__);
-  
-  if (! title.handle_value ().ok ()) 
-    std::cerr << "get_title 2 not ok\n";
-  else
-    std::cerr << "get_title 2 ok " << title.handle_value().value () << "\n";
 
   return title.handle_value ();
 }
@@ -4440,26 +4405,19 @@ Undocumented internal function.\n\
 	    {
 	      graphics_object obj = gh_manager::get_object (h);
 
-	      // Don't do recursive deleting, due to callbacks
-	      if (! obj.get_properties ().is_beingdeleted ())
-		{
-		  graphics_handle parent_h = obj.get_parent ();
+	      graphics_handle parent_h = obj.get_parent ();
 
-		  graphics_object parent_obj = 
-		    gh_manager::get_object (parent_h);
+	      graphics_object parent_obj = gh_manager::get_object (parent_h);
 
-		  // NOTE: free the handle before removing it from its parent's
-		  //       children, such that the object's state is correct
-		  //       when the deletefcn callback is executed
+              // NOTE: free the handle before removing it from its parent's
+              //       children, such that the object's state is correct when
+              //       the deletefcn callback is executed
 
-		  gh_manager::free (h);
+	      gh_manager::free (h);
 
-		  // A callback function might have already deleted the parent
-		  if (parent_obj.valid_object ())
-		    parent_obj.remove_child (h);
+	      parent_obj.remove_child (h);
 
-		  Vdrawnow_requested = true;
-		}
+	      Vdrawnow_requested = true;
 	    }
 	  else
 	    error ("delete: invalid graphics object (= %g)", val);
@@ -4510,10 +4468,6 @@ Undocumented internal function.\n\
 	      graphics_object obj = gh_manager::get_object (h);
 
 	      obj.set_defaults (mode);
-
-	      h = gh_manager::lookup (val);
-	      if (! h.ok ())
-		error ("__go_axes_init__: axis deleted during initialization (= %g)", val);
 	    }
 	  else
 	    error ("__go_axes_init__: invalid graphics object (= %g)", val);

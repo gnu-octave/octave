@@ -126,9 +126,8 @@ function h = subplot (rows, columns, index)
       continue;
     endif
     if (strcmp (get (child, "type"), "axes"))
-      ## Skip legend and colorbar objects.
-      if (strcmp (get (child, "tag"), "legend") || 
-	  strcmp (get (child, "tag"), "colorbar"))
+      ## Skip legend objects.
+      if (strcmp (get (child, "tag"), "legend"))
         continue;
       endif
       objpos = get (child, "outerposition");
@@ -137,6 +136,7 @@ function h = subplot (rows, columns, index)
 	## existing axes object, use the existing axes.
 	found = true;
 	tmp = child;
+	break;
       else
 	## If the new axes overlap an old axes object, delete the old
 	## axes.
@@ -154,9 +154,7 @@ function h = subplot (rows, columns, index)
   if (found)
     set (cf, "currentaxes", tmp);
   else
-    border = [0.130, 0.110, 0.225, 0.185] .* [xsize, ysize, xsize, ysize];
-    pos2 = [pos(1:2) + border(1:2), pos(3:4) - border(1:2) - border(3:4)];
-    tmp = axes ("outerposition", pos, "position", pos2);
+    tmp = axes ("outerposition", pos);
   endif
 
   if (nargout > 0)

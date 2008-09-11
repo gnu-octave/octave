@@ -31,27 +31,17 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
     persistent have_newer_gnuplot ...
       = compare_versions (__gnuplot_version__ (), "4.0", ">");
 
-    ## Set axis properties here?
-    pos = [0, 0, 1, 1];
-    if (strcmpi (axis_obj.activepositionproperty, "outerposition"))
-      ymirror = true;
-      if (! isempty (axis_obj.outerposition))
-	pos = axis_obj.outerposition;
-      endif
-    else
-      ymirror = false;
-      if (! isempty (axis_obj.position))
-	pos = axis_obj.position;
-	fprintf (plot_stream, "set tmargin 0;\n");
-	fprintf (plot_stream, "set bmargin 0;\n");
-	fprintf (plot_stream, "set lmargin 0;\n");
-	fprintf (plot_stream, "set rmargin 0;\n");
-      endif
-    endif
+    pos = axis_obj.position;
+    fprintf (plot_stream, "set tmargin 0;\n");
+    fprintf (plot_stream, "set bmargin 0;\n");
+    fprintf (plot_stream, "set lmargin 0;\n");
+    fprintf (plot_stream, "set rmargin 0;\n");
 
-    if (! strcmpi (get (h, "__colorbar__"), "none"))
-      [pos, cbox_orient, cbox_size, cbox_origin, cbox_mirror] = ...
-	  gnuplot_position_colorbox (pos, get (h, "__colorbar__"), axis_obj);
+    ## Set to false for plotyy axes.
+    if (strcmp (axis_obj.tag, "plotyy"))
+      ymirror = false;
+    else
+      ymirror = true;
     endif
 
     fprintf (plot_stream, "set origin %.15g, %.15g;\n", pos(1), pos(2));
@@ -358,12 +348,16 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 	    if (x_dim > 1)
 	      dx = abs (img_xdata(2)-img_xdata(1))/(x_dim-1);
 	    else
-	      dx = 1;
+	      x_dim = 2;
+	      img_data = [img_data, img_data];
+	      dx = abs (img_xdata(2)-img_xdata(1));
 	    endif
 	    if (y_dim > 1)
 	      dy = abs (img_ydata(2)-img_ydata(1))/(y_dim-1);
 	    else
-	      dy = 1;
+	      y_dim = 2;
+	      img_data = [img_data; img_data];
+	      dy = abs (img_ydata(2)-img_ydata(1));
 	    endif
 	    x_origin = min (img_xdata);
 	    y_origin = min (img_ydata);
@@ -1027,6 +1021,8 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 
     have_data = (! (isempty (data) || all (cellfun (@isempty, data))));
 
+    ## Note we don't use the [xy]2range of gnuplot as we don't use the
+    ## dual axis plotting features of gnuplot
     if (isempty (xlim))
       return;
     endif
@@ -1035,8 +1031,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
     else
       xdir = "noreverse";
     endif
-    fprintf (plot_stream, "set %srange [%.15e:%.15e] %s;\n",
-	     xaxisloc, xlim, xdir);
+    fprintf (plot_stream, "set xrange [%.15e:%.15e] %s;\n", xlim, xdir);
 
     if (isempty (ylim))
       return;
@@ -1046,8 +1041,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
     else
       ydir = "noreverse";
     endif
-    fprintf (plot_stream, "set %srange [%.15e:%.15e] %s;\n",
-	     yaxisloc, ylim, ydir);
+    fprintf (plot_stream, "set yrange [%.15e:%.15e] %s;\n", ylim, ydir);
 
     if (nd == 3)
       if (isempty (zlim))
@@ -1209,16 +1203,8 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 	fputs (plot_stream, ");\n");
       endif
     endif
-	    
-    if (strcmpi (get (h, "__colorbar__"), "none"))
-      fputs (plot_stream, "unset colorbox;\n");
-    else
-      ## FIXME If cbox_mirror is true we want to invert the tic labels
-      ## but gnuplot doesn't allow that
-      fputs (plot_stream, 
-	     sprintf ("set colorbox %s user origin %f,%f size %f,%f;\n",
-		      cbox_orient, cbox_origin, cbox_size));
-    endif
+
+    fputs (plot_stream, "unset colorbox;\n");
 
     if (have_data)
       if (nd == 2)
@@ -1549,7 +1535,7 @@ endfunction
 function do_tics_1 (ticmode, tics, labelmode, labels, color, ax,
 		    plot_stream, mirror, mono, axispos, tickdir)
   colorspec = get_text_colorspec (color, mono);
-  if (strcmpi (ticmode, "manual"))
+  if (strcmpi (ticmode, "manual") || strcmpi (labelmode, "manual"))
     if (isempty (tics))
       fprintf (plot_stream, "unset %stics;\n", ax);
     elseif (strcmpi (labelmode, "manual") && ! isempty (labels))
@@ -1562,7 +1548,8 @@ function do_tics_1 (ticmode, tics, labelmode, labels, color, ax,
 	nlabels = numel (labels);
 	fprintf (plot_stream, "set format %s \"%%s\";\n", ax);
 	if (mirror)
-	  fprintf (plot_stream, "set %stics %s %s (", ax, tickdir, axispos);
+	  fprintf (plot_stream, "set %stics %s %s mirror (", ax, 
+		   tickdir, axispos);
 	else
 	  fprintf (plot_stream, "set %stics %s %s nomirror (", ax,
 		   tickdir, axispos);
@@ -1584,7 +1571,8 @@ function do_tics_1 (ticmode, tics, labelmode, labels, color, ax,
     else
       fprintf (plot_stream, "set format %s \"%%g\";\n", ax);
       if (mirror)
-	fprintf (plot_stream, "set %stics %s %s (", ax, tickdir, axispos );
+	fprintf (plot_stream, "set %stics %s %s mirror (", ax, 
+		 tickdir, axispos );
       else
 	fprintf (plot_stream, "set %stics %s %s nomirror (", ax, tickdir,
 		 axispos);
@@ -1595,8 +1583,8 @@ function do_tics_1 (ticmode, tics, labelmode, labels, color, ax,
   else
     fprintf (plot_stream, "set format %s \"%%g\";\n", ax);
     if (mirror)
-      fprintf (plot_stream, "set %stics %s %s %s;\n", ax, axispos, tickdir,
-	       colorspec);
+      fprintf (plot_stream, "set %stics %s %s mirror %s;\n", ax, 
+	       axispos, tickdir, colorspec);
     else
       fprintf (plot_stream, "set %stics %s %s nomirror %s;\n", ax, 
 	       tickdir, axispos, colorspec);
@@ -1985,105 +1973,6 @@ function sym = __setup_sym_table__ ()
   sym.rfloor = '{/Symbol \373}';
   sym.rceil  = '{/Symbol \371}';
   sym.int = '{/Symbol \362}';
-endfunction
-
-function [pos, orient, sz, origin, mirr] = gnuplot_position_colorbox (pos, cbox, obj)
-  ## This is an emprically derived function that attempts to find a good
-  ## size for the colorbox even for subplots and strange aspect ratios.
-
-  if (strncmp (cbox, "north", 5) || strncmp (cbox, "south", 5))
-    scl = pos([2,4]);
-  else
-    scl = pos([1,3]);
-  endif
-
-  if (length(cbox) > 7 && strncmp (cbox(end-6:end), "outside", 7))
-    scl(2) -= 0.2 * scl(2);
-    if (strncmp (cbox, "west", 4) || strncmp (cbox, "south", 5))
-      scl(1) += 0.2 * scl(2);
-    endif
-  endif
-
-  if (strcmpi (obj.dataaspectratiomode, "manual"))
-    sz = min(pos(3:4))([1,1]);
-    r = obj.dataaspectratio;
-    if (pos(3) > pos(4))
-      switch (cbox)
-	case {"north", "northoutside"}
-	  off = 4 / 3 * [(pos(3) - pos(4)) ./ (r(2)/r(1)), pos(4) / pos(3) / 2];
-	  sz = 2 * sz / 3;
-	case {"south", "southoutside"}
-	  off = 4 / 3 * [(pos(3) - pos(4)) ./ (r(2)/r(1)), 0];
-	  sz = 2 * sz / 3;
-	otherwise
-	  off = [(pos(3) - pos(4)) ./ (r(2)/r(1)), 0];	  
-      endswitch
-    else
-      switch (cbox)
-	case {"north", "northoutside"}
-	  off = 1.5 * [0, (pos(4) - pos(3)) ./ (r(1) / r(2))];
-	case {"south", "southoutside"}
-	  off = 0.5 * [0, (pos(4) - pos(3)) ./ (r(1) / r(2))];
-	otherwise
-	  off = [0, (pos(4) - pos(3)) ./ (r(1) / r(2))];
-      endswitch
-    endif
-    off = off / 2;
-  else
-    sz = pos(3:4);
-    off = 0;
-  endif
-  switch (cbox)
-    case "northoutside"
-      sz = sz - 0.08;
-      origin = [0.05, 0.06] + [0.00, 0.88] .* sz + pos(1:2) + off;
-      mirr = true;
-      orient = "horizontal";
-    case "north"
-      sz = sz - 0.16;
-      origin = [0.09, 0.09] + [0.00, 0.94] .* sz + pos(1:2) + off;
-      mirr = false;
-      orient = "horizontal";
-    case "southoutside"
-      sz = sz - 0.08;
-      origin = [0.05, 0.06] + [0.00, 0.00] .* sz + pos(1:2) + off;
-      mirr = false;
-      orient = "horizontal";
-    case "south"
-      sz = sz - 0.16;
-      origin = [0.08, 0.09] + [0.03, 0.05] .* sz + pos(1:2) + off;
-      mirr = true;
-      orient = "horizontal";
-    case "eastoutside"
-      sz = sz - 0.08;
-      origin = [0.00, 0.06] + [0.94, 0.00] .* sz + pos(1:2) + off;
-      mirr = false;
-      orient = "vertical";
-    case "east"
-      sz = sz - 0.16;
-      origin = [0.09, 0.10] + [0.91, 0.01] .* sz + pos(1:2) + off;
-      mirr = true;
-      orient = "vertical";
-    case "westoutside"
-      sz = sz - 0.08;
-      origin = [0.00, 0.06] + [0.06, 0.00] .* sz + pos(1:2) + off;
-      mirr = true;
-      orient = "vertical";
-    case "west"
-      sz = sz - 0.16;
-      origin = [0.06, 0.09] + [0.04, 0.03] .* sz + pos(1:2) + off;
-      mirr = false;
-      orient = "vertical";
-  endswitch
-
-  if (strncmp (cbox, "north", 5) || strncmp (cbox, "south", 5))
-    sz = sz .* [1, 0.07];
-    pos([2,4]) = scl;
-  else
-    sz = sz .* [0.07, 1];
-    pos([1,3]) = scl;
-  endif
-
 endfunction
 
 function retval = __do_enhanced_option__ (enhanced, obj)

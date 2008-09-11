@@ -1,3 +1,29 @@
+2008-09-11  David Bateman  <dbateman@free.fr>
+
+	* image/__img__.m: Manually set the limits of th eimage
+	* plot/__go_draw_axes__.m: Base window position in the axis
+	position property and not the outerposition property. Remove
+	colorbar code based on the gnuplot colorbox. Allow images to be a
+	vector to support image based colorbars. Also check labelmode for
+	manual tics.
+	* plot/__go_draw_figure__.m: Remove gnuplot colorbox based
+	colorbar code.
+	* plot/colorbar.m: Rewrite to use an image and callbacks to link
+	it to the principal axis.
+	* plot/legend.m: Support an axis handle as the first
+	argument. Support hggroups.
+	* plot/pareto.m: Don't support an axis handle as the first
+	argument as the plotyy command in fact needs two axis handles.
+	* plot/plotyy.m: Rewrite to use listeners and callbacks to
+	synchronize the two axes.
+	* plot/subplot.m: Also skip axes that are tagged as being a
+	colorbar. Don't break in search of overlapping axes to delete. Set
+	both the position and the outerposition.
+	
+2008-09-09  David Bateman  <dbateman@free.fr>
+
+	* general/cell2mat.m: Improve the speed..
+	
 2008-09-09  John W. Eaton  <jwe@octave.org>
 
 	* time/datestr.m: Convert format and use strftime to do most of

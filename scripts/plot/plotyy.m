@@ -77,10 +77,14 @@ function [Ax, H1, H2] = plotyy (varargin)
       ax(2) = axes ();
     else
       ax = get (f, "children");
-      for i = 3 : length (ax)
-	delete (ax (i));
-      endfor
-      ax = ax(1:2);
+      if (length (ax) > 2)
+	for i = 3 : length (ax)
+	  delete (ax (i));
+	endfor
+	ax = ax(1:2);
+      elseif (length (ax) == 1)
+        ax(2) = axes ();
+      endif
     endif
     if (nargin < 2)
       varargin = {};
@@ -125,8 +129,6 @@ function [ax, h1, h2] = __plotyy__ (ax, x1, y1, x2, y2, varargin)
   h1 = feval (fun1, x1, y1);
 
   set (ax(1), "ycolor", getcolor (h1(1)));
-  set (ax(1), "position", [0.11 0.13 0.78 0.73]);
-  set (ax(1), "activepositionproperty", "position");
   set (ax(1), "xlim", xlim);
 
   cf = gcf ();
@@ -141,9 +143,68 @@ function [ax, h1, h2] = __plotyy__ (ax, x1, y1, x2, y2, varargin)
   set (ax(2), "yaxislocation", "right");
   set (ax(2), "ycolor", getcolor (h2(1)));
   set (ax(2), "position", get (ax(1), "position"));
-  set (ax(2), "activepositionproperty", "position");
   set (ax(2), "xlim", xlim);
   set (ax(2), "color", "none");
+
+  ## Add invisible text objects that when destroyed, 
+  ## also remove the other axis
+  t1 = text (0, 0, "", "parent", ax(1), "tag", "plotyy", 
+	     "handlevisibility", "off", "visible", "off",
+	     "xliminclude", "off", "yliminclude", "off");
+  t2 = text (0, 0, "", "parent", ax(2), "tag", "plotyy", 
+	     "handlevisibility", "off", "visible", "off",
+	     "xliminclude", "off", "yliminclude", "off");
+
+  set (t1, "deletefcn", {@deleteplotyy, ax(2), t2});
+  set (t2, "deletefcn", {@deleteplotyy, ax(1), t1});
+
+  addlistener (ax(1), "position", {@update_position, ax(2)});
+  addlistener (ax(2), "position", {@update_position, ax(1)});
+  addlistener (ax(1), "view", {@update_position, ax(2)});
+  addlistener (ax(2), "view", {@update_position, ax(1)});
+
+  ## Tag the plotyy axes, so we can use that information
+  ## not to mirror the y axis tick marks
+  set (ax, "tag", "plotyy")
+
+endfunction
+
+%!demo
+%! x = 0:0.1:2*pi; 
+%! y1 = sin (x);
+%! y2 = exp (x - 1);
+%! ax = plotyy (x, y1, x - 1, y2, @plot, @semilogy);
+%! xlabel ("X");
+%! ylabel (ax(1), "Axis 1");
+%! ylabel (ax(2), "Axis 2");
+
+function deleteplotyy (h, d, ax2, t2)
+  if (ishandle (ax2) && strcmp (get (ax2, "type"), "axes") && 
+      (isempty (gcbf()) || strcmp (get (gcbf(), "beingdeleted"),"off")) &&
+      strcmp (get (ax2, "beingdeleted"), "off"))
+    set (t2, "deletefcn", []);
+    delete (ax2);
+  endif
+endfunction
+
+function update_position (h, d, ax2)
+  persistent recursion = false;
+
+  ## Don't allow recursion
+  if (! recursion)
+    unwind_protect
+      recursion = true;
+      position = get (h, "position");
+      view = get (h, "view");
+      oldposition = get (ax2, "position");
+      oldview = get (ax2, "view");
+      if (! (isequal (position, oldposition) && isequal (view, oldview)))
+	set (ax2, "position", position, "view", view);
+      endif
+    unwind_protect_cleanup
+      recursion = false;
+    end_unwind_protect
+  endif  
 endfunction
 
 function color = getcolor (ax)
@@ -159,11 +220,3 @@ function color = getcolor (ax)
   endif
 endfunction
 
-%!demo
-%! x = 0:0.1:2*pi; 
-%! y1 = sin (x);
-%! y2 = exp (x - 1);
-%! ax = plotyy (x, y1, x - 1, y2, @plot, @semilogy);
-%! xlabel ("X");
-%! ylabel (ax(1), "Axis 1");
-%! ylabel (ax(2), "Axis 2");

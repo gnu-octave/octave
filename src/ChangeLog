@@ -3,6 +3,19 @@
 	* octave.cc (octave_main): Make all command-line arguments
 	available to startup scripts and PKG_ADD files.
 
+2008-09-10  David Bateman  <dbateman@free.fr>
+
+	* graphics.h.in (radio_property axes::properties::__colorbar__):
+	Delete.
+	* graphics.cc (void axes::properties::sync_positions (void)):
+	Disable code synchronizing outerposiiton and position.
+	(void axes::properties::set_defaults (base_graphics_object&,
+	const std::string&): Remove __colorbar__.
+	(F__go_delete__): Don't delete if already being deleting to avoid
+	recursion in callback functions.
+	(F__go_axes_init__): Flag error if handle is deleted during
+	initialization due.
+	
 2008-09-09  David Bateman  <dbateman@free.fr>
 
 	* DLD-FUNCTIONS/regexp.cc (octregexp_list): Distinguish between

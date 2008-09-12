@@ -481,10 +481,15 @@ pow (const octave_int<T>& a, const octave_int<T>& b)
   octave_int<T> zero = octave_int<T> (0);
   octave_int<T> one = octave_int<T> (1);
 
-  if (b == zero)
+  if (b == zero || a == one)
     retval = one;
   else if (b < zero)
-    retval = zero;
+    {
+      if (std::numeric_limits<T>::is_signed && a.value () == -1)
+        retval = (b.value () % 2) ? a : one;
+      else
+        retval = zero;
+    }
   else
     {
       octave_int<T> a_val = a;

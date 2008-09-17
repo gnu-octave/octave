@@ -81,6 +81,12 @@ private:
 // The character to fill with when creating string arrays.
 extern char Vstring_fill_char;
 
+extern std::string 
+get_concat_class (const std::string& c1, const std::string& c2);
+
+extern void
+maybe_warn_string_concat (bool all_dq_strings_p, bool all_sq_strings_p);
+
 #endif
 
 /*

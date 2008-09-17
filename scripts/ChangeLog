@@ -1,3 +1,8 @@
+2008-09-17  David Bateman  <dbateman@free.fr>
+
+	* general/cell2mat.m: Backout previous change. Special case 2D
+	case for speed.
+
 2008-09-11  David Bateman  <dbateman@free.fr>
 
 	* general/cell2mat.m: Improve the speed.

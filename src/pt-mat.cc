@@ -184,7 +184,7 @@ private:
   tm_row_const_rep *rep;
 };
 
-static std::string
+std::string
 get_concat_class (const std::string& c1, const std::string& c2)
 {
   std::string retval = octave_base_value::static_class_name ();
@@ -699,7 +699,7 @@ tree_matrix::rvalue (int nargout)
   return retval;
 }
 
-static void
+void
 maybe_warn_string_concat (bool all_dq_strings_p, bool all_sq_strings_p)
 {
   if (! (all_dq_strings_p || all_sq_strings_p))

@@ -2,6 +2,17 @@
 
 	* DLD-FUNCTIONS/sparse.cc (Fsparse): Clarify the help string.
 
+2008-09-17  David Bateman  <dbateman@free.fr>
+
+	* data.cc (SINGLE_TYPE_CONCAT, DO_SINGLE_TYPE_CONCAT): New macros
+	(do_cat): Special case single type concatenations for speed.
+	* pt.mat.cc (std::string get_concat_class (const std::string&,
+	const std::string&), void maybe_warn_string_concat (bool, bool)):
+	Remove static declaration.
+	* pt-mat.h (std::string get_concat_class (const std::string&,
+	const std::string&), void maybe_warn_string_concat (bool, bool)):
+	Define extern here.
+	
 2008-09-10  John W. Eaton  <jwe@octave.org>
 
 	* octave.cc (octave_main): Make all command-line arguments

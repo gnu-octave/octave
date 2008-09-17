@@ -1853,6 +1853,10 @@ do_cat (const octave_value_list& args, std::string fname)
 				 dv_tmp (dim) : 1);
 	    }
 
+	  // Reshape, chopping trailing singleton dimensions
+	  dv.chop_trailing_singletons ();
+	  tmp = tmp.reshape (dv);
+
 	  retval = tmp;
 	}
       else

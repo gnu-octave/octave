@@ -57,14 +57,20 @@ Return 1 if the value of the expression @var{expr} is a sparse matrix.\n\
 DEFUN_DLD (sparse, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{s} =} sparse (@var{a})\n\
-Create a sparse matrix from the full matrix @var{a}.\n\
-is forced back to a full matrix is resulting matrix is sparse\n\
-\n\
 @deftypefnx {Loadable Function} {@var{s} =} sparse (@var{i}, @var{j}, @var{sv}, @var{m}, @var{n}, @var{nzmax})\n\
-Create a sparse matrix given integer index vectors @var{i} and @var{j},\n\
-a 1-by-@code{nnz} vector of real of complex values @var{sv}, overall\n\
-dimensions @var{m} and @var{n} of the sparse matrix.  The argument\n\
-@code{nzmax} is ignored but accepted for compatibility with @sc{Matlab}.\n\
+@deftypefnx {Loadable Function} {@var{s} =} sparse (@var{i}, @var{j}, @var{sv})\n\
+@deftypefnx {Loadable Function} {@var{s} =} sparse (@var{i}, @var{j}, @var{s}, @var{m}, @var{n}, \"unique\")\n\
+@deftypefnx {Loadable Function} {@var{s} =} sparse (@var{m}, @var{n})\n\
+Create a sparse matrix from the full matrix or row, column, value triplets.\n\
+If @var{a} is a full matrix, convert it to a sparse matrix representation,\n\
+removing all zero values in the process.\n\
+\n\
+Given the integer index vectors @var{i} and @var{j}, a 1-by-@code{nnz} vector\n\
+of real of complex values @var{sv}, overall dimensions @var{m} and @var{n}\n\
+of the sparse matrix.  The argument @code{nzmax} is ignored but accepted for\n\
+compatibility with @sc{Matlab}. If @var{m} or @var{n} are not specified their\n\
+values are derived from the maximum index in the vectors @var{i} and @var{j}\n\
+as given by @code{@var{m} = max (@var{i})}, @code{@var{n} = max (@var{j})}.\n\
 \n\
 @strong{Note}: if multiple values are specified with the same\n\
 @var{i}, @var{j} indices, the corresponding values in @var{s} will\n\
@@ -80,15 +86,11 @@ s = sparse (i, j, s, m, n, \"sum\")\n\
 @end group\n\
 @end example\n\
 \n\
-@deftypefnx {Loadable Function} {@var{s} =} sparse (@var{i}, @var{j}, @var{s}, @var{m}, @var{n}, \"unique\")\n\
-Same as above, except that if more than two values are specified for the\n\
+Given the option \"unique\". if more than two values are specified for the\n\
 same @var{i}, @var{j} indices, the last specified value will be used.\n\
 \n\
-@deftypefnx {Loadable Function} {@var{s} =} sparse (@var{i}, @var{j}, @var{sv})\n\
-Uses @code{@var{m} = max (@var{i})}, @code{@var{n} = max (@var{j})}\n\
-\n\
-@deftypefnx {Loadable Function} {@var{s} =} sparse (@var{m}, @var{n})\n\
-Equivalent to @code{sparse ([], [], [], @var{m}, @var{n}, 0)}\n\
+@code{sparse(@var{m}, @var{n})} is equivalent to\n\
+@code{sparse ([], [], [], @var{m}, @var{n}, 0)}\n\
 \n\
 If any of @var{sv}, @var{i} or @var{j} are scalars, they are expanded\n\
 to have a common size.\n\

@@ -1,3 +1,7 @@
+2008-09-15  David Bateman  <dbateman@free.fr>
+
+	* interpreter/sparse.txi: Minor clarificiation
+
 2008-08-28  John W. Eaton  <jwe@octave.org>
 
 	* doc/interpreter/func.txi, interpreter/plot.txi: Doc fixes

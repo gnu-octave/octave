@@ -297,11 +297,11 @@ number of memory allocations.
 
 @DOCSTRING(spconvert)
 
-The above problem can be avoided in oct-files. However, the construction
-of a sparse matrix from an oct-file is more complex than can be
-discussed in this brief introduction, and you are referred to chapter
-@ref{Dynamically Linked Functions}, to have a full description of the
-techniques involved.
+The above problem of memory reallocation can be avoided in
+oct-files. However, the construction of a sparse matrix from an oct-file
+is more complex than can be discussed in this brief introduction, and
+you are referred to chapter @ref{Dynamically Linked Functions}, to have
+a full description of the techniques involved.
 
 @node Information, Operators and Functions, Creation, Basics
 @subsection Finding out Information about Sparse Matrices

@@ -1,3 +1,7 @@
+2008-09-17  David Bateman  <dbateman@free.fr>
+
+	* DLD-FUNCTIONS/sparse.cc (Fsparse): Clarify the help string.
+
 2008-09-10  John W. Eaton  <jwe@octave.org>
 
 	* octave.cc (octave_main): Make all command-line arguments

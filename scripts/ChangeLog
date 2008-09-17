@@ -1,5 +1,12 @@
 2008-09-17  David Bateman  <dbateman@free.fr>
 
+	* time/datetick.m: New function.
+	* time/Makefile.in (SOURCES): Add it here.
+	* time/datestr.m: More careful check for datevec format with 6
+	column arguments.
+	* plot/__go_draw_axes__ (do_tics_1): Use %.15g format rather than
+	%g format. Also use manual mode if xlabelmode is manual.
+
 	* general/cell2mat.m: Backout previous change. Special case 2D
 	case for speed.
 

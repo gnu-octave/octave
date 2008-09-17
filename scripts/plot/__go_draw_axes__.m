@@ -1549,7 +1549,7 @@ endfunction
 function do_tics_1 (ticmode, tics, labelmode, labels, color, ax,
 		    plot_stream, mirror, mono, axispos, tickdir)
   colorspec = get_text_colorspec (color, mono);
-  if (strcmpi (ticmode, "manual"))
+  if (strcmpi (ticmode, "manual") || strcmpi (labelmode, "manual"))
     if (isempty (tics))
       fprintf (plot_stream, "unset %stics;\n", ax);
     elseif (strcmpi (labelmode, "manual") && ! isempty (labels))
@@ -1562,14 +1562,15 @@ function do_tics_1 (ticmode, tics, labelmode, labels, color, ax,
 	nlabels = numel (labels);
 	fprintf (plot_stream, "set format %s \"%%s\";\n", ax);
 	if (mirror)
-	  fprintf (plot_stream, "set %stics %s %s (", ax, tickdir, axispos);
+	  fprintf (plot_stream, "set %stics %s %s mirror (", ax, 
+		   tickdir, axispos);
 	else
 	  fprintf (plot_stream, "set %stics %s %s nomirror (", ax,
 		   tickdir, axispos);
 	endif
 	labels = regexprep(labels, "%", "%%");
 	for i = 1:ntics
-	  fprintf (plot_stream, " \"%s\" %g", labels{k++}, tics(i));
+	  fprintf (plot_stream, " \"%s\" %.15g", labels{k++}, tics(i));
 	  if (i < ntics)
 	    fputs (plot_stream, ", ");
 	  endif
@@ -1584,13 +1585,14 @@ function do_tics_1 (ticmode, tics, labelmode, labels, color, ax,
     else
       fprintf (plot_stream, "set format %s \"%%g\";\n", ax);
       if (mirror)
-	fprintf (plot_stream, "set %stics %s %s (", ax, tickdir, axispos );
+	fprintf (plot_stream, "set %stics %s %s mirror (", ax, tickdir,
+		 axispos);
       else
 	fprintf (plot_stream, "set %stics %s %s nomirror (", ax, tickdir,
 		 axispos);
       endif
-      fprintf (plot_stream, " %g,", tics(1:end-1));
-      fprintf (plot_stream, " %g);\n", tics(end));
+      fprintf (plot_stream, " %.15g,", tics(1:end-1));
+      fprintf (plot_stream, " %.15g);\n", tics(end));
     endif
   else
     fprintf (plot_stream, "set format %s \"%%g\";\n", ax);

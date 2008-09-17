@@ -196,7 +196,8 @@ function retval = datestr (date, f, p)
       ## Make sure that the input really is a datevec.
       maxdatevec = [Inf, 12, 31, 23, 59, 60];
       for i = 1:numel (maxdatevec)
-        if (any (date(:,i) > maxdatevec(i)))
+        if (any (date(:,i) > maxdatevec(i)) || 
+	    (i != 6 && any (floor (date(:, i)) != date (:, i))))
           v = datevec (date, p);
           break;
         endif

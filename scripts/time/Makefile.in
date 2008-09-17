@@ -33,8 +33,8 @@ INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
 SOURCES = addtodate.m asctime.m calendar.m clock.m ctime.m date.m \
-  datenum.m datestr.m datevec.m eomday.m etime.m is_leap_year.m now.m \
-  weekday.m
+  datenum.m datestr.m datetick.m datevec.m eomday.m etime.m is_leap_year.m \
+  now.m weekday.m
 
 DISTFILES = $(addprefix $(srcdir)/, Makefile.in $(SOURCES))
 

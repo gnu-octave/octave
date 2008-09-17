@@ -585,7 +585,8 @@ returned.  Otherwise, @code{load} returns a structure with members\n\
  corresponding to the names of the variables in the file.\n\
 \n\
 The @code{load} command can read data stored in Octave's text and\n\
-binary formats, and @sc{Matlab}'s binary format.  It will automatically\n\
+binary formats, and @sc{Matlab}'s binary format.  If compiled with zlib\n\
+support, it can load gzip-compressed files as well.  It will automatically\n\
 detect the type of file and do conversion from different floating point\n\
 formats (currently only IEEE big and little endian, though other formats\n\
 may added in the future).\n\

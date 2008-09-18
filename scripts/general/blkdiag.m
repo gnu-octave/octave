@@ -49,7 +49,10 @@ function retval = blkdiag (varargin)
   retval = zeros (csz(end,:));
 
   for p = 1:nargin
-    retval((csz(p,1)+1):csz(p+1,1),(csz(p,2)+1):csz(p+1,2)) = varargin{p};
+    vp = varargin{p};
+    if (! isempty (vp))
+      retval((csz(p,1)+1):csz(p+1,1),(csz(p,2)+1):csz(p+1,2)) = vp;
+    endif
   endfor
 
 endfunction

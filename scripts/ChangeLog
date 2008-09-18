@@ -1,3 +1,7 @@
+2008-09-18  Jaroslav Hajek <highegg@gmail.com>
+
+	* general/blkdiag.m: Skip assignment if rhs is empty.
+
 2008-09-18  Kris Thielemans  <kris.thielemans@csc.mrc.ac.uk>
 
 	* image/imshow.m: Fix for display_range.

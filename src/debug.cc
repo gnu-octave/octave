@@ -994,6 +994,22 @@ functions. This is synonymous with @code{dbstep}.\n\
   return octave_value_list ();
 }
 
+DEFCMD (isdebugmode, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Command} {} isdebugmode ()\n\
+Return true if debug mode is on, otherwise false.\n\
+@seealso{dbstack, dbclear, dbstop, dbstatus}\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  if (args.length() == 0)
+      retval = Vdebugging;
+  else
+    print_usage ();
+
+  return retval;
+}
 
 /*
 ;;; Local Variables: ***

@@ -1,3 +1,7 @@
+2008-09-17  Krzesimir Nowak  <qdlacz@gmail.com>
+
+	* debug.cc (Fisdebugmode): New function.
+
 2008-09-17  David Bateman  <dbateman@free.fr>
 
 	* data.cc (do_cat): Chopping trailing singleton dimensions.

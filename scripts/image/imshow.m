@@ -103,7 +103,7 @@ function h = imshow (im, varargin)
     elseif (ischar (arg))
       switch (arg)
 	case "displayrange";
-	  displayrange = varargin{narg++};
+	  display_range = varargin{narg++};
 	case {"truesize", "initialmagnification"}
 	  warning ("image: zoom argument ignored -- use GUI features");
 	otherwise
@@ -115,10 +115,10 @@ function h = imshow (im, varargin)
     endif
   endwhile
 
-  ## Set default display range.
+  ## Set default display range if display_range not set yet.
   if (isempty (display_range))
     display_range = [min(im(:)), max(im(:))];
-  else
+  elseif (isna (display_range))
     t = class (im);
     switch (t)
       case {"double", "single", "logical"}

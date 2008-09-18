@@ -1,5 +1,7 @@
 2008-09-18  Kris Thielemans  <kris.thielemans@csc.mrc.ac.uk>
 
+	* image/imshow.m: Fix for display_range.
+	
 	* general/interpn.m: Fixe for extrapval and documentation of 
 	extrapval.
 

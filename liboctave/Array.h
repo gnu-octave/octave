@@ -171,11 +171,11 @@ private:
 
   template <class U>
   T *
-  coerce (const U *a, int len)
+  coerce (const U *a, octave_idx_type len)
   {
     T *retval = new T [len];
 
-    for (int i = 0; i < len; i++)
+    for (octave_idx_type i = 0; i < len; i++)
       retval[i] = T (a[i]);
 
     return retval;

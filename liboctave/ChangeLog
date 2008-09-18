@@ -1,3 +1,7 @@
+2008-09-18  Jaroslav Hajek  <highegg@gmail.com>
+
+	* Array.h (Array<T>::coerce): Use octave_idx_type instead of int.
+
 2008-09-12  Jaroslav Hajek  <highegg@gmail.com>
 
 	* oct-inttypes.h (pow (const octave_int<T>&, const octave_int<T>&)): 

@@ -1,3 +1,8 @@
+2008-09-18  Kris Thielemans  <kris.thielemans@csc.mrc.ac.uk>
+
+	* general/interpn.m: Fixe for extrapval and documentation of 
+	extrapval.
+
 2008-09-17  David Bateman  <dbateman@free.fr>
 
 	* time/datetick.m: New function.

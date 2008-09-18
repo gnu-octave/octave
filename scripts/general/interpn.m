@@ -55,9 +55,9 @@
 ##
 ## The default method is 'linear'.
 ##
-## If @var{extrap} is the string 'extrap', then extrapolate values beyond
-## the endpoints.  If @var{extrap} is a number, replace values beyond the
-## endpoints with that number.  If @var{extrap} is missing, assume NA.
+## If @var{extrapval} is the scalar value, use it to replace the values
+## beyond the endpoints with that number. If @var{extrapval} is missing,
+## assume NA.
 ## @seealso{interp1, interp2, spline, ndgrid}
 ## @end deftypefn
 
@@ -79,6 +79,7 @@ function vi = interpn (varargin)
       error ("extrapal is expected to be a numeric scalar");
     endif
     method = varargin{end - 1};
+    extrapval = varargin{end};
     nargs = nargs - 2;
   endif
 

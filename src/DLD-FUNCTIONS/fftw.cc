@@ -42,17 +42,19 @@ DEFUN_DLD (fftw, args, ,
 \n\
 Manage FFTW wisdom data. Wisdom data can be used to significantly\n\
 accelerate the calculation of the FFTs but implies an initial cost\n\
-in its calculation. The wisdom used by Octave can be imported directly,\n\
-usually from a file /etc/fftw/wisdom, or @dfn{fftw} can be used\n\
-to import wisdom. For example\n\
+in its calculation. When the FFTW libraries are initialized, they read\n\
+a system wide wisdom file (typically in @file{/etc/fftw/wisdom}), allowing wisdom\n\
+to be shared between applications other than Octave. Alternatively, the\n\
+@code{fftw} function can be used to import wisdom. For example\n\
 \n\
 @example\n\
 @var{wisdom} = fftw ('dwisdom')\n\
 @end example\n\
 \n\
 will save the existing wisdom used by Octave to the string @var{wisdom}.\n\
-This string can then be saved in the usual manner. This existing wisdom\n\
-can be reimported as follows\n\
+This string can then be saved to a file and restored using the @code{save}\n\
+and @code{load} commands respectively. This existing wisdom can be reimported\n\
+as follows\n\
 \n\
 @example\n\
 fftw ('dwisdom', @var{wisdom})\n\
@@ -62,7 +64,7 @@ If @var{wisdom} is an empty matrix, then the wisdom used is cleared.\n\
 \n\
 During the calculation of fourier transforms further wisdom is generated.\n\
 The fashion in which this wisdom is generated is equally controlled by\n\
-the @dfn{fftw} function. There are five different manners in which the\n\
+the @code{fftw} function. There are five different manners in which the\n\
 wisdom can be treated, these being\n\
 \n\
 @table @asis\n\
@@ -105,10 +107,8 @@ fftw ('planner', @var{method})\n\
 \n\
 Note that calculated wisdom will be lost when restarting Octave. However,\n\
 the wisdom data can be reloaded if it is saved to a file as described\n\
-above.  Also, any system-wide wisdom file that has been found will\n\
-also be used. Saved wisdom files should not be used on different\n\
-platforms since they will not be efficient and the point of calculating\n\
-the wisdom is lost.\n\
+above. Saved wisdom files should not be used on different platforms since\n\
+they will not be efficient and the point of calculating the wisdom is lost.\n\
 @seealso{fft, ifft, fft2, ifft2, fftn, ifftn}\n\
 @end deftypefn")
 {

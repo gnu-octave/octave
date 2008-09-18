@@ -1,3 +1,7 @@
+2008-09-18  David Bateman  <dbateman@free.fr>
+
+	* DLD-FUNCTIONS/fftw.cc (Ffftw): Clarify the documentation.
+
 2008-09-17  Krzesimir Nowak  <qdlacz@gmail.com>
 
 	* debug.cc (Fisdebugmode): New function.

@@ -1535,12 +1535,19 @@ Array<T>::maybe_delete_elements_2 (idx_vector& idx_arg)
   octave_idx_type nr = dim1 ();
   octave_idx_type nc = dim2 ();
 
+  if (idx_arg.is_colon ())
+    {
+      // A(:) = [] always gives 0-by-0 matrix, even if A was empty.
+      resize_no_fill (0, 0);
+      return;
+    }
+
   octave_idx_type n;
   if (nr == 1)
     n = nc;
   else if (nc == 1)
     n = nr;
-  else
+  else if (! idx_arg.orig_empty ())
     {
       // Reshape to row vector for Matlab compatibility.
 
@@ -1549,18 +1556,16 @@ Array<T>::maybe_delete_elements_2 (idx_vector& idx_arg)
       nc = n;
     }
 
-  if (nr > 0 && nc > 0 && idx_arg.is_colon_equiv (n, 1))
-    {
-      // Either A(:) = [] or A(idx) = [] with idx enumerating all
-      // elements, so we delete all elements and return [](0x0).  To
-      // preserve the orientation of the vector, you have to use
-      // A(idx,:) = [] (delete rows) or A(:,idx) (delete columns).
+  idx_arg.sort (true);
 
-      resize_no_fill (0, 0);
+  if (idx_arg.is_colon_equiv (n, 1))
+    {
+      if (nr == 1)
+        resize_no_fill (1, 0);
+      else if (nc == 1)
+        resize_no_fill (0, 1);
       return;
     }
-
-  idx_arg.sort (true);
 
   octave_idx_type num_to_delete = idx_arg.length (n);
 
@@ -1631,166 +1636,132 @@ Array<T>::maybe_delete_elements (idx_vector& idx_i, idx_vector& idx_j)
   octave_idx_type nr = dim1 ();
   octave_idx_type nc = dim2 ();
 
-  if (nr == 0 && nc == 0)
-    return;
-
-  if (idx_i.is_colon ())
+  if (idx_i.is_colon () && idx_j.is_colon ())
     {
-      if (idx_j.is_colon ())
-	{
-	  // A(:,:) -- We are deleting columns and rows, so the result
-	  // is [](0x0).
-
-	  resize_no_fill (0, 0);
-	  return;
-	}
-
-      if (idx_j.is_colon_equiv (nc, 1))
-	{
-	  // A(:,j) -- We are deleting columns by enumerating them,
-	  // If we enumerate all of them, we should have zero columns
-	  // with the same number of rows that we started with.
-
-	  resize_no_fill (nr, 0);
-	  return;
-	}
-    }
-
-  if (idx_j.is_colon () && idx_i.is_colon_equiv (nr, 1))
-    {
-      // A(i,:) -- We are deleting rows by enumerating them.  If we
-      // enumerate all of them, we should have zero rows with the
-      // same number of columns that we started with.
-
+      // A special case: A(:,:). Matlab gives 0-by-nc here, but perhaps we
+      // should not?
       resize_no_fill (0, nc);
-      return;
     }
-
-  if (idx_i.is_colon_equiv (nr, 1))
+  else if (idx_i.is_colon ())
     {
+      idx_j.sort (true); // sort in advance to speed-up the following check
+
       if (idx_j.is_colon_equiv (nc, 1))
-	resize_no_fill (0, 0);
+	resize_no_fill (nr, 0);
       else
 	{
-	  idx_j.sort (true);
-
 	  octave_idx_type num_to_delete = idx_j.length (nc);
 
 	  if (num_to_delete != 0)
-	    {
-	      if (nr == 1 && num_to_delete == nc)
-		resize_no_fill (0, 0);
-	      else
-		{
-		  octave_idx_type new_nc = nc;
+            {
+              octave_idx_type new_nc = nc;
 
-		  octave_idx_type iidx = 0;
+              octave_idx_type iidx = 0;
 
-		  for (octave_idx_type j = 0; j < nc; j++)
-		    if (j == idx_j.elem (iidx))
-		      {
-			iidx++;
-			new_nc--;
+              for (octave_idx_type j = 0; j < nc; j++)
+                if (j == idx_j.elem (iidx))
+                  {
+                    iidx++;
+                    new_nc--;
 
-			if (iidx == num_to_delete)
-			  break;
-		      }
+                    if (iidx == num_to_delete)
+                      break;
+                  }
 
-		  if (new_nc > 0)
-		    {
-		      T *new_data = new T [nr * new_nc];
+              if (new_nc > 0)
+                {
+                  T *new_data = new T [nr * new_nc];
 
-		      octave_idx_type jj = 0;
-		      iidx = 0;
-		      for (octave_idx_type j = 0; j < nc; j++)
-			{
-			  if (iidx < num_to_delete && j == idx_j.elem (iidx))
-			    iidx++;
-			  else
-			    {
-			      for (octave_idx_type i = 0; i < nr; i++)
-				new_data[nr*jj+i] = xelem (i, j);
-			      jj++;
-			    }
-			}
+                  octave_idx_type jj = 0;
+                  iidx = 0;
+                  for (octave_idx_type j = 0; j < nc; j++)
+                    {
+                      if (iidx < num_to_delete && j == idx_j.elem (iidx))
+                        iidx++;
+                      else
+                        {
+                          for (octave_idx_type i = 0; i < nr; i++)
+                            new_data[nr*jj+i] = xelem (i, j);
+                          jj++;
+                        }
+                    }
 
-		      if (--(Array<T>::rep)->count <= 0)
-			delete Array<T>::rep;
+                  if (--(Array<T>::rep)->count <= 0)
+                    delete Array<T>::rep;
 
-		      Array<T>::rep = new typename Array<T>::ArrayRep (new_data, nr * new_nc);
+                  Array<T>::rep = new typename Array<T>::ArrayRep (new_data, nr * new_nc);
 
-		      dimensions.resize (2);
-		      dimensions(1) = new_nc;
-		    }
-		  else
-		    (*current_liboctave_error_handler)
-		      ("A(idx) = []: index out of range");
-		}
-	    }
+                  dimensions.resize (2);
+                  dimensions(1) = new_nc;
+                }
+              else
+                (*current_liboctave_error_handler)
+                  ("A(idx) = []: index out of range");
+            }
 	}
     }
-  else if (idx_j.is_colon_equiv (nc, 1))
+  else if (idx_j.is_colon ())
     {
+      idx_i.sort (true); // sort in advance to speed-up the following check
+
       if (idx_i.is_colon_equiv (nr, 1))
-	resize_no_fill (0, 0);
+	resize_no_fill (0, nc);
       else
 	{
-	  idx_i.sort (true);
-
 	  octave_idx_type num_to_delete = idx_i.length (nr);
 
 	  if (num_to_delete != 0)
-	    {
-	      if (nc == 1 && num_to_delete == nr)
-		resize_no_fill (0, 0);
-	      else
-		{
-		  octave_idx_type new_nr = nr;
+            {
+              octave_idx_type new_nr = nr;
 
-		  octave_idx_type iidx = 0;
+              octave_idx_type iidx = 0;
 
-		  for (octave_idx_type i = 0; i < nr; i++)
-		    if (i == idx_i.elem (iidx))
-		      {
-			iidx++;
-			new_nr--;
+              for (octave_idx_type i = 0; i < nr; i++)
+                if (i == idx_i.elem (iidx))
+                  {
+                    iidx++;
+                    new_nr--;
 
-			if (iidx == num_to_delete)
-			  break;
-		      }
+                    if (iidx == num_to_delete)
+                      break;
+                  }
 
-		  if (new_nr > 0)
-		    {
-		      T *new_data = new T [new_nr * nc];
+              if (new_nr > 0)
+                {
+                  T *new_data = new T [new_nr * nc];
 
-		      octave_idx_type ii = 0;
-		      iidx = 0;
-		      for (octave_idx_type i = 0; i < nr; i++)
-			{
-			  if (iidx < num_to_delete && i == idx_i.elem (iidx))
-			    iidx++;
-			  else
-			    {
-			      for (octave_idx_type j = 0; j < nc; j++)
-				new_data[new_nr*j+ii] = xelem (i, j);
-			      ii++;
-			    }
-			}
+                  octave_idx_type ii = 0;
+                  iidx = 0;
+                  for (octave_idx_type i = 0; i < nr; i++)
+                    {
+                      if (iidx < num_to_delete && i == idx_i.elem (iidx))
+                        iidx++;
+                      else
+                        {
+                          for (octave_idx_type j = 0; j < nc; j++)
+                            new_data[new_nr*j+ii] = xelem (i, j);
+                          ii++;
+                        }
+                    }
 
-		      if (--(Array<T>::rep)->count <= 0)
-			delete Array<T>::rep;
+                  if (--(Array<T>::rep)->count <= 0)
+                    delete Array<T>::rep;
 
-		      Array<T>::rep = new typename Array<T>::ArrayRep (new_data, new_nr * nc);
+                  Array<T>::rep = new typename Array<T>::ArrayRep (new_data, new_nr * nc);
 
-		      dimensions.resize (2);
-		      dimensions(0) = new_nr;
-		    }
-		  else
-		    (*current_liboctave_error_handler)
-		      ("A(idx) = []: index out of range");
-		}
-	    }
+                  dimensions.resize (2);
+                  dimensions(0) = new_nr;
+                }
+              else
+                (*current_liboctave_error_handler)
+                  ("A(idx) = []: index out of range");
+            }
 	}
+    }
+  else
+    {
+      (*current_liboctave_error_handler)
+        ("a null assignment can have only one non-colon index");
     }
 }
 

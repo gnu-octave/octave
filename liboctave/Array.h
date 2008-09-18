@@ -502,6 +502,8 @@ public:
 
   void maybe_delete_elements (Array<idx_vector>& ra_idx, const T& rfv);
 
+  void maybe_delete_elements (octave_idx_type dim, idx_vector& i);
+
   Array<T> value (void) const;
 
   Array<T> index (idx_vector& i, int resize_ok = 0,

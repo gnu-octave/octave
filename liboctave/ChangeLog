@@ -1,5 +1,12 @@
 2008-09-18  Jaroslav Hajek  <highegg@gmail.com>
 
+	* Array.cc (maybe_delete_elements_2 (idx_vector&)): Fix tests to get
+	better Matlab compatibility.
+	(maybe_delete_elements (idx_vector&, idx_vector&)): Fix tests to get
+	better Matlab compatibility, simplify, gripe on invalid 2-D deletion.
+
+2008-09-18  Jaroslav Hajek  <highegg@gmail.com>
+
 	* Array.h (Array<T>::coerce): Use octave_idx_type instead of int.
 
 2008-09-12  Jaroslav Hajek  <highegg@gmail.com>

@@ -1,3 +1,9 @@
+2008-09-19  John W. Eaton  <jwe@octave.org>
+
+	* Array.cc (assign1, assign2, assignN):
+	Clear lhs index before throwing error.
+	(Array<T>::value): Clear index before throwing error.
+
 2008-09-18  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Array.cc (maybe_delete_elements_2 (idx_vector&)): Fix tests to get

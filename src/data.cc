@@ -1763,51 +1763,6 @@ return the product of the elements.\n\
     } \
  while (0)
 
-#define SINGLE_TYPE_CONCAT(TYPE, EXTRACTOR) \
-  do \
-    { \
-      int dv_len = dv.length (); \
-      Array<octave_idx_type> ra_idx (dv_len > 1 ? dv_len : 2, 0); \
-      \
-      for (int j = 1; j < n_args; j++) \
-	{ \
-	  OCTAVE_QUIT; \
-	  \
-	  TYPE ra = args(j).EXTRACTOR ();	\
-	  \
-	  if (! error_state) \
-	    { \
-	      result.insert (ra, ra_idx); \
-	      \
-	      if (error_state) \
-	        return retval; \
-	      \
-	      dim_vector dv_tmp = args (j).dims (); \
-	      \
-	      if (dim >= dv_len) \
-	        { \
-		  if (j > 1) \
-		    error ("%s: indexing error", fname.c_str ()); \
-		  break; \
-		} \
-	      else \
-		ra_idx (dim) += (dim < dv_tmp.length () ? dv_tmp (dim) : 1); \
-	    } \
-	} \
-    } \
- while (0)
-
-#define DO_SINGLE_TYPE_CONCAT(TYPE, EXTRACTOR) \
-  do \
-    { \
-      TYPE result (dv); \
-      \
-      SINGLE_TYPE_CONCAT(TYPE, EXTRACTOR); \
-      \
-      retval = result; \
-    } \
- while (0)
-
 static octave_value
 do_cat (const octave_value_list& args, std::string fname)
 {

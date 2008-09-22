@@ -466,9 +466,21 @@ octave_rand::initialize_mersenne_twister (void)
   ColumnVector s = get_internal_state ();
 
   rand_states[uniform_dist] = s;
+
+  oct_init_by_entropy ();
+  s = get_internal_state ();
   rand_states[normal_dist] = s;
+
+  oct_init_by_entropy ();
+  s = get_internal_state ();
   rand_states[expon_dist] = s;
+
+  oct_init_by_entropy ();
+  s = get_internal_state ();
   rand_states[poisson_dist] = s;
+
+  oct_init_by_entropy ();
+  s = get_internal_state ();
   rand_states[gamma_dist] = s;
 }
 

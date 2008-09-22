@@ -2292,6 +2292,8 @@ private:
 
 extern bool out_of_date_check (octave_value& function);
 
+extern bool out_of_date_check (octave_function* fcn);
+
 #endif
 
 /*

@@ -72,7 +72,7 @@ get_user_code (const std::string& fname = std::string ())
     {
       octave_value fcn = symbol_table::find_function (fname);
 
-      if (fcn.is_defined ())
+      if (fcn.is_defined () && fcn.is_user_code ())
 	dbg_fcn = fcn.user_code_value ();
     }
 
@@ -238,7 +238,8 @@ bp_table::do_remove_breakpoint (const std::string& fname,
 
 
 bp_table::intmap
-bp_table::do_remove_all_breakpoints_in_file (const std::string& fname)
+bp_table::do_remove_all_breakpoints_in_file (const std::string& fname, 
+					     bool silent)
 {
   intmap retval;
 
@@ -265,7 +266,7 @@ bp_table::do_remove_all_breakpoints_in_file (const std::string& fname)
 	    bp_map.erase (it);
 	}
     }
-  else
+  else if (! silent)
     error ("remove_all_breakpoint_in_file: "
 	   "unable to find the function requested\n");
 
@@ -313,6 +314,9 @@ bp_table::do_get_breakpoint_list (const octave_value_list& fname_list)
 	{
 	  octave_user_code *f = it->second;
 
+	  // Clears the breakpoints if the function has been updated
+	  out_of_date_check (f);
+
 	  tree_statement_list *cmds = f->body ();
 
 	  if (cmds)
@@ -321,12 +325,15 @@ bp_table::do_get_breakpoint_list (const octave_value_list& fname_list)
 
 	      octave_idx_type len = bkpts.length (); 
 
-	      bp_table::intmap bkpts_vec;
+	      if (len > 0)
+		{
+		  bp_table::intmap bkpts_vec;
 
-	      for (int i = 0; i < len; i++)
-		bkpts_vec[i] = bkpts (i).double_value ();
+		  for (int i = 0; i < len; i++)
+		    bkpts_vec[i] = bkpts (i).double_value ();
 
-	      retval[it->first] = bkpts_vec;
+		  retval[it->first] = bkpts_vec;
+		}
 	    }
 	}
     }

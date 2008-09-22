@@ -85,10 +85,11 @@ public:
   }
 
   // Remove all the breakpoints in a specified file.
-  static intmap remove_all_breakpoints_in_file (const std::string& fname)
+  static intmap remove_all_breakpoints_in_file (const std::string& fname,
+						bool silent = false)
   {
     return instance_ok ()
-      ? instance->do_remove_all_breakpoints_in_file (fname) : intmap ();
+      ? instance->do_remove_all_breakpoints_in_file (fname, silent) : intmap ();
   }
   
   // Remove all the breakpoints registered with octave.
@@ -124,7 +125,8 @@ private:
 
   int do_remove_breakpoint (const std::string&, const intmap& lines);
 
-  intmap do_remove_all_breakpoints_in_file (const std::string& fname);
+  intmap do_remove_all_breakpoints_in_file (const std::string& fname, 
+					    bool silent);
 
   void do_remove_all_breakpoints (void);
 

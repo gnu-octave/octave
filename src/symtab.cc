@@ -42,6 +42,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "toplev.h"
 #include "unwind-prot.h"
 #include "utils.h"
+#include "debug.h"
 
 symbol_table *symbol_table::instance = 0;
 
@@ -151,12 +152,10 @@ load_out_of_date_fcn (const std::string& ff, const std::string& dir_name,
 }
 
 static inline bool
-out_of_date_check_internal (octave_value& function,
+out_of_date_check_internal (octave_function *fcn, octave_value& function,
 			    const std::string& dispatch_type = std::string ())
 {
   bool retval = false;
-
-  octave_function *fcn = function.function_value (true);
 
   if (fcn)
     {
@@ -175,6 +174,7 @@ out_of_date_check_internal (octave_value& function,
 	      if (tc < Vlast_prompt_time
 		  || (relative && tc < Vlast_chdir_time))
 		{
+		  bool clear_breakpoints = false;
 		  std::string nm = fcn->name ();
 
 		  int nm_len = nm.length ();
@@ -207,6 +207,8 @@ out_of_date_check_internal (octave_value& function,
 		      // directory, so we should clear it.
 
 		      function = octave_value ();
+
+		      clear_breakpoints = true;
 		    }
 		  else if (same_file (file, ff))
 		    {
@@ -226,11 +228,19 @@ out_of_date_check_internal (octave_value& function,
 			  if (fs)
 			    {
 			      if (fs.is_newer (tp))
-				retval = load_out_of_date_fcn (ff, dir_name,
-							       function);
+				{
+				  retval = load_out_of_date_fcn (ff, dir_name,
+								 function);
+
+				  clear_breakpoints = true;
+				}
 			    }
 			  else
-			    function = octave_value ();
+			    {
+			      function = octave_value ();
+
+			      clear_breakpoints = true;
+			    }
 			}
 		    }
 		  else
@@ -239,7 +249,14 @@ out_of_date_check_internal (octave_value& function,
 		      // place of the old.
 
 		      retval = load_out_of_date_fcn (file, dir_name, function);
+
+		      clear_breakpoints = true;
 		    }
+
+		  // If the function has been replaced then clear any 
+		  // breakpoints associated with it
+		  if (clear_breakpoints)
+		    bp_table::remove_all_breakpoints_in_file (nm, true);
 		}
 	    }
 	}
@@ -248,10 +265,25 @@ out_of_date_check_internal (octave_value& function,
   return retval;
 }
 
+static inline bool
+out_of_date_check_internal (octave_value& function,
+			    const std::string& dispatch_type = std::string ())
+{
+  return out_of_date_check_internal (function.function_value (true),
+				     function, dispatch_type);
+}
+
 bool
 out_of_date_check (octave_value& function)
 {
   return out_of_date_check_internal (function);
+}
+
+bool
+out_of_date_check (octave_function* fcn)
+{
+  octave_value function;
+  return out_of_date_check_internal (fcn, function);
 }
 
 octave_value

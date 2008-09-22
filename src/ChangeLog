@@ -1,3 +1,22 @@
+2008-09-22  David Bateman  <dbateman@free.fr>
+
+	* debug.cc (static octave_user_code * get_user_code 
+	(const std::string&)): Only check user code as break points can't
+	be set in builtins or oct-files.
+	(bp_table::intmap bp_table::do_remove_all_breakpoints_in_file 
+	(const std::string&, bool)): Add flag to silence the error message 
+	from this function if a user code with breakpoints is not found.
+	(bp_table::fname_line_map bp_table::do_get_breakpoint_list (const 
+	octave_value_list&)): Do an ourt of date check on the function
+	before checking the breakpoints.
+	* debug.h (do_remove_all_breakpoints_in_file, 
+	remove_all_breakpoints_in_file): Add flag to silence error
+	message.
+	* symtab.cc (out_of_date_check_internal): Clear breakpoints in
+	function if out_of_date. split into two versions taking the 
+	octave_function pointer seperately or not.
+	* symtab.h (bool out_of_date_check (octave_function*)): New function.
+	
 2008-09-18  David Bateman  <dbateman@free.fr>
 
 	* DLD-FUNCTIONS/fftw.cc (Ffftw): Clarify the documentation.

@@ -5,7 +5,10 @@
 
 2008-09-22  David Bateman  <dbateman@free.fr>
 
-	general/quadgk.m: No function count in quadgk and so don't try and
+	* plot/plotmatrix.m: New function.
+	* plot/Makefile.in (SOURCES): Add it here.
+
+	* general/quadgk.m: No function count in quadgk and so don't try and
 	print it when given trace argument.
 
 2008-09-18  Jaroslav Hajek <highegg@gmail.com>

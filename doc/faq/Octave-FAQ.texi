@@ -843,7 +843,7 @@ ones).
 @item Block comments
 Block comments denoted by "%@{" and "%@}" markers are supported by
 Octave with some limitations. The major limitation is that block
-comments are not supported with [] or {}.
+comments are not supported with [] or @{@}.
 
 @item Mat-File format
 There are some differences in the mat v5 file format accepted by

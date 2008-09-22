@@ -1,3 +1,7 @@
+2008-09-22  David Bateman  <dbateman@free.fr>
+
+	* faq/Octave-FAQ.texi: Update for Octave 3.1.51 and Matlab 2008a.
+
 2008-09-15  David Bateman  <dbateman@free.fr>
 
 	* interpreter/sparse.txi: Minor clarificiation

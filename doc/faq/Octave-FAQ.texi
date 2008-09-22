@@ -28,7 +28,7 @@
 @titlepage
 @title Octave FAQ
 @subtitle Frequently asked questions about Octave
-@subtitle September 2007
+@subtitle September 2008
 @sp 1
 @author John W. Eaton and David Bateman
 @page
@@ -56,7 +56,7 @@ you should first check to see if the topic is covered in the manual.
 @menu
 * What is Octave?::  
 * How can I cite Octave?::  
-* Series 2.9.N and 3.0.N::  
+* Series 3.0.N::  
 * Octave Features::  
 * Learning more about Octave:: 
 * Getting Octave::  
@@ -190,15 +190,11 @@ reference, then you can cite the Octave manual:
 @end group
 @end example
 
-@node Series 2.9.N and 3.0.N
-@chapter What's new in version series 2.9.N and 3.0.N of Octave
+@node Series 3.0.N
+@chapter What's new in version series 3.0.N and 3.1.N of Octave
 
-The 2.9.N series, started in March 2005, has enough new features to
-justify a major version number change.  The latest version are as stable
-as the last 2.1.N releases and stability should increase as one gets
-near version 3.0.
-
-The 2.9.N and 3.0.N series brings
+The 3.0.N series has enough new features to justify a major version
+number change. The 3.0.N series brings
 
 @itemize @bullet
 
@@ -232,6 +228,32 @@ Here are some features that have been around since 2.1.N
 
 @end itemize
 
+The 3.1.N series is the current development release and will become a
+3.2.N release in the future. This series brings the new features
+
+@itemize
+@item OpenGL backend
+
+An experimental OpenGL graphics backend to replace the gnuplot
+
+@item Object Orient Programming
+
+@item Block comments
+
+@item imwrite and imread 
+
+The functions are based on the GraphicsMagick library.
+
+@item Lazy transpose
+
+Special treatment in the parser of things like "a' * b", where the
+transpose is never explicitly formed but a flag is rather passed to the
+underlying LAPACK code.
+
+@item Single precision type
+@end itemize
+
+
 @node Octave Features
 @chapter What features are unique to Octave?
 
@@ -248,7 +270,7 @@ Here are some features that have been around since 2.1.N
 * Built-in ODE and DAE solvers::
 @end menu
 
-This section refers to Matlab R2007a and Octave 2.9.13.
+This section refers to Matlab R2008b and Octave 2.1.51.
 
 @node Functions defined on the command-line
 @section Functions defined on the command-line
@@ -386,6 +408,9 @@ guaranteed to be executed regardless of how control exits @var{body}.
 
 The @code{unwind_protect} statement is often used to reliably restore
 the values of global variables that need to be temporarily changed.
+
+Matlab can be made to do something similar with their @code{OnCleanUp}
+function that was introduced in 2008a.
 
 @node Built-in ODE and DAE solvers
 @section Built-in ODE and DAE solvers
@@ -560,7 +585,7 @@ If you are interested in porting Octave to other systems, please contact
 
 @cindex Octave, building 
 
-Octave 2.9.N and 3.0 require approximately 800MB of disk storage to unpack
+Octave 3.2 require approximately 800MB of disk storage to unpack
 and compile from source (considerably less if you don't compile with
 debugging symbols).  Once installed, Octave requires approximately 200MB
 of disk space (again, considerably less if you don't compile with
@@ -687,7 +712,7 @@ that is up to date. You can use this function reference to see the
 number of octave function that are available and their @sc{Matlab}
 compatibility.
 
-The major differences between Octave 2.9.N and  @sc{Matlab} R2007a are:
+The major differences between Octave 3.2.N and  @sc{Matlab} R2008a are:
 
 @itemize @bullet
 @item Nested Functions
@@ -744,16 +769,10 @@ function handles.
 Some limitations of variable argument lists on the LHS of an expression,
 though the most common types are accepted.
 
-@item 
-@sc{Matlab} object-oriented classes with overloading etc through the
-subasgn and "@@" directories is not treated by Octave. There is work to
-remove this restriction in the future.
-
 @item
-@sc{Matlab} private directories are not treated, though as for classes,
-this will change in the near future. This restriction can be alleviated by
-using @code{addpath} on the private directories, but this makes the
-private directories visible in the global scope.
+@sc{Matlab} classdef object oriented programming is not yet supportted,
+though work is underway and when development more on to Octave 3.3 this
+will be included in teh development tree.
 @end itemize
 
 @item Differences in core functions
@@ -786,12 +805,10 @@ example code and would need lots of work to complete it.
 
 @item Graphic Handles
 Up to Octave 2.9.9 there was no support for graphic handles in Octave
-itself.  There is in Octave 2.9.10 and later, and so the graphics between
-Octave and @sc{Matlab} are currently in the process of converging to a
-common interface.  Note that the basic graphic handle stuff is in place
-since 2.9.10, but not certain graphics objects like "barseries",
-etc. The @code{patch} function is currently limited to 2-D patches, due
-to an underlying limitation in gnuplot.
+itself.  In the 3.2.N versions of Octave the support for graphics
+handles is converging towards full compatibility. The @code{patch}
+function is currently limited to 2-D patches, due to an underlying
+limitation in gnuplot.
 
 @item GUI 
 There are no @sc{Matlab} compatible GUI functions.  There are a number of
@@ -821,13 +838,12 @@ arrays as real and imaginary parts, whereas Octave respects the C99/C++
 standards of co-locating the real/imag parts in memory.  Also due to the
 way @sc{Matlab} allows access to the arrays passed through a pointer,
 the MEX interface might require copies of arrays (even non complex
-ones).  There were some serious memory leaks in the MEX API in Octave up
-to version 2.9.9, and version 2.9.10 or later should be used if posible.
+ones).
 
 @item Block comments
-@sc{Matlab} recently included the possibility to have block comments. With
-the "%@{" and "%@}" markers. Octave doesn't yet have block comments, but
-might in the future.
+Block comments denoted by "%@{" and "%@}" markers are supported by
+Octave with some limitations. The major limitation is that block
+comments are not supported with [] or {}.
 
 @item Mat-File format
 There are some differences in the mat v5 file format accepted by
@@ -837,10 +853,8 @@ the standard matlab format can not correctly save variables.. Octave
 accepts HDF5 files, but is not yet compatible with the "-v7.3" versions
 produced by @sc{Matlab}. 
 
-Up to version 2.9.10, Octave can't load/save the inline or function
-handles saved in mat-files by @sc{Matlab} (though can in its own
-format). In 2.9.11 and later Octave can load inline and function handles
-saved in the mat-file formats, but can't save them to mat-files.
+Although Octave can load inline abd function handles saved by
+@sc{Matlab}, it can not yet save them.
 
 Finally, Some multi-byte unicode characters aren't yet treated in
 mat-files.

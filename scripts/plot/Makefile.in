@@ -86,6 +86,7 @@ SOURCES = \
   close.m \
   closereq.m \
   colorbar.m \
+  comet.m \
   compass.m \
   contour3.m \
   contour.m \

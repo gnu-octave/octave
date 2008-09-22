@@ -1,3 +1,8 @@
+2008-09-22  David Bateman  <dbateman@free.fr>
+
+	general/quadgk.m: No function count in quadgk and so don't try and
+	print it when given trace argument.
+
 2008-09-18  Jaroslav Hajek <highegg@gmail.com>
 
 	* general/blkdiag.m: Skip assignment if rhs is empty.

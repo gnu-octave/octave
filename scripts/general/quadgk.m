@@ -345,7 +345,7 @@ function [q, err] = quadgk (f, a, b, varargin)
 	endif
 
 	if (trace)
-	  disp([fcnt, rows(subs), err, q0]);
+	  disp([rows(subs), err, q0]);
 	endif
 
 	## Split remaining sub-intervals in two

@@ -1,3 +1,7 @@
+2008-09-23  Brian Gough  <bjg@network-theory.co.uk>
+
+	* interpreter/matrix.txi: Update docs for random number generators.
+
 2008-09-22  David Bateman  <dbateman@free.fr>
 
 	* faq/Octave-FAQ.texi: Update for Octave 3.1.51 and Matlab 2008a.

@@ -181,14 +181,19 @@ a (i, :)
 
 @DOCSTRING(randg)
 
-The new random generators all use a common Mersenne Twister generator,
-and so the state of only one of the generators needs to be reset.
-The old generator function use separate generators. This ensures that
+The generators operate in the new or old style together, it is not
+possible to mix the two.  Initializing any generator with
+@code{"state"} or @code{"seed"} causes the others to switch to the
+same style for future calls.
+
+The state of each generator is independent and calls to different
+generators can be interleaved without affecting the final result.  For
+example,
 
 @example
 @group
-rand ("seed", 13);
-randn ("seed", 13);
+rand ("state", [11, 22, 33]);
+randn ("state", [44, 55, 66]);
 u = rand (100, 1);
 n = randn (100, 1);
 @end group
@@ -199,8 +204,8 @@ and
 
 @example
 @group
-rand ("seed", 13);
-randn ("seed", 13);
+rand ("state", [11, 22, 33]);
+randn ("state", [44, 55, 66]);
 u = zeros (100, 1);
 n = zeros (100, 1);
 for i = 1:100
@@ -211,18 +216,22 @@ end
 @end example
 
 @noindent
-produce equivalent results.
+produce equivalent results.  When the generators are initialized in
+the old style with @code{"seed"} only @code{rand} and @code{randn} are
+independent, because the old @code{rande}, @code{randg} and
+@code{randp} generators make calls to @code{rand} and @code{randn}.
 
-Normally, @code{rand} and @code{randn} obtain their initial
-seeds from the system clock, so that the sequence of random numbers is
-not the same each time you run Octave.  If you really do need for to
-reproduce a sequence of numbers exactly, you can set the seed to a
-specific value.
+The generators are initialized with random states at start-up, so
+that the sequences of random numbers are not the same each time you run
+Octave.@footnote{The old versions of @code{rand} and @code{randn}
+obtain their initial seeds from the system clock.} If you really do
+need to reproduce a sequence of numbers exactly, you can set the state
+or seed to a specific value.
 
-If it is invoked without arguments, @code{rand} and @code{randn} return a
+If invoked without arguments, @code{rand} and @code{randn} return a
 single element of a random sequence.
 
-The @code{rand} and @code{randn} functions use Fortran code from
+The original @code{rand} and @code{randn} functions use Fortran code from
 @sc{Ranlib}, a library of fortran routines for random number generation,
 compiled by Barry W. Brown and James Lovato of the Department of
 Biomathematics at The University of Texas, M.D. Anderson Cancer Center,

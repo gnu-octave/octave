@@ -418,7 +418,7 @@ Other functions that can manipulate the fields of a structure are given below.
 @subsection Processing Data in Structures
 
 The simplest way to process data in a structure is within a @code{for}
-loop or othe means of iterating over the fields. A similar effect can be
+loop (@pxref{Looping Over Structure Elements}). A similar effect can be
 achieved with the @code{structfun} function, where a user defined
 function is applied to each field of the structure.
 

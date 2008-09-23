@@ -21,11 +21,29 @@
 ## @deftypefnx {Function File} {} pcolor (@var{c})
 ## Density plot for given matrices @var{x}, and @var{y} from @code{meshgrid} and
 ## a matrix @var{c} corresponding to the @var{x} and @var{y} coordinates of
-## the mesh.  If @var{x} and @var{y} are vectors, then a typical vertex
+## the mesh's vertices. If @var{x} and @var{y} are vectors, then a typical vertex
 ## is (@var{x}(j), @var{y}(i), @var{c}(i,j)).  Thus, columns of @var{c}
 ## correspond to different @var{x} values and rows of @var{c} correspond
 ## to different @var{y} values.
-## @seealso{meshgrid, contour}
+##
+## The @code{colormap} is scaled to the extents of @var{c}.
+## Limits may be placed on the color axis by the
+## command @code{caxis}, or by setting the @code{clim} property of the
+## parent axis.
+##
+## The face color of each cell of the mesh is determined by interpolating
+## the values of @var{c} for the cell's vertices. Contrast this with 
+## @code{imagesc} which renders one cell for each element of @var{c}.
+##
+## @code{shading} modifies an attribute determining the manner by which the
+## face color of each cell is interpolated from the values of @var{c},
+## and the visibility of the cells' edges. By default the attribute is
+## "faceted", which renders a single color for each cell's face with the edge
+## visible.
+##
+## @var{h} is the handle to the surface object.
+##
+## @seealso{caxis, contour, meshgrid, imagesc, shading}
 ## @end deftypefn
 
 ## Author: Kai Habel <kai.habel@gmx.de>

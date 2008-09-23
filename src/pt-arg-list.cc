@@ -109,7 +109,7 @@ DEFCONSTFUN (__end__, , ,
 	  octave_value_list args;
 
 	  args(2) = num_indices;
-	  args(1) = index_position;
+	  args(1) = index_position + 1;
 	  args(0) = *indexed_object;
 
 	  std::string class_name = indexed_object->class_name ();

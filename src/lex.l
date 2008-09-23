@@ -1057,7 +1057,10 @@ is_keyword_token (const std::string& s)
  	  break;
 
 	case end_kw:
-	  if (lexer_flags.looking_at_object_index)
+	  if (lexer_flags.looking_at_object_index
+	      || (lexer_flags.defining_func
+		  && ! (lexer_flags.looking_at_return_list
+			|| lexer_flags.parsed_function_name)))
 	    return 0;
 	  else
 	    {

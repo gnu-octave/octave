@@ -36,6 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-obj.h"
 #include "ov.h"
 #include "ov-usr-fcn.h"
+#include "parse.h"
 #include "pt-arg-list.h"
 #include "pt-exp.h"
 #include "pt-pr-code.h"
@@ -103,6 +104,22 @@ DEFCONSTFUN (__end__, , ,
 
   if (indexed_object)
     {
+      if (indexed_object->is_object ())
+	{
+	  octave_value_list args;
+
+	  args(2) = num_indices;
+	  args(1) = index_position;
+	  args(0) = *indexed_object;
+
+	  std::string class_name = indexed_object->class_name ();
+
+	  octave_value meth = symbol_table::find_method ("end", class_name);
+
+	  if (meth.is_defined ())
+	    return feval (meth.function_value (), args, 1);
+	}
+
       dim_vector dv = indexed_object->dims ();
       int ndims = dv.length ();
 

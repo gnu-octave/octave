@@ -1,3 +1,9 @@
+2008-09-23  John W. Eaton  <jwe@octave.org>
+
+	* pt-arg-list.cc (F__end__): Dispatch to user-defined end
+	function for classes if one is defined.
+	* lex.l (is_keyword_token): Allow "end" as a functon name.
+
 2008-09-23  David Bateman  <dbateman@free.fr>
 
 	* variables.cc (static octave_value do_who (int, const string_vector&,

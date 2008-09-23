@@ -208,7 +208,7 @@ x.v =
 
 It is also possible to cycle through all the elements of a structure in
 a loop, using a special form of the @code{for} statement
-(@pxref{The for Statement})
+(@pxref{Looping Over Structure Elements})
 
 @menu
 * Structure Arrays::

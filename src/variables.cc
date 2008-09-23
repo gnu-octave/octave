@@ -1631,7 +1631,7 @@ private:
 
 static octave_value
 do_who (int argc, const string_vector& argv, bool return_list,
-	bool verbose = false)
+	bool verbose = false, std::string msg = std::string ())
 {
   octave_value retval;
 
@@ -1644,7 +1644,48 @@ do_who (int argc, const string_vector& argv, bool return_list,
   for (i = 1; i < argc; i++)
     {
       if (argv[i] == "-file")
-	error ("%s: `-file' option not implemented", my_name.c_str ());
+	{
+	  // FIXME. This is an inefficient manner to implement this as the 
+	  // variables are loaded in to a temporary context and then treated.
+	  // It would be better to refecat symbol_info_list to not store the
+	  // symbol records and then use it in load-save.cc (do_load) to
+	  // implement this option there so that the variables are never 
+	  // stored at all.
+	  if (i == argc - 1)
+	    error ("whos: -file argument must be followed by a file name");
+	  else
+	    {
+	      std::string nm = argv [i + 1];
+
+	      symbol_table::scope_id tmp_scope = symbol_table::alloc_scope ();
+
+	      unwind_protect::begin_frame ("do_who_file");
+
+	      symbol_table::push_scope (tmp_scope);
+	      symbol_table::push_context ();
+	      octave_call_stack::push (0);
+
+	      unwind_protect::add (octave_call_stack::unwind_pop, 0);
+
+	      unwind_protect::add (symbol_table::clear_variables);
+
+	      feval ("load", octave_value (nm), 0);
+
+	      if (! error_state)
+		{
+		  std::string newmsg = std::string ("Variables in the file ") + 
+		    nm + ":\n\n";
+
+		  retval =  do_who (i, argv, return_list, verbose, newmsg);
+		}
+
+	      unwind_protect::run_frame ("do_who_file");
+
+	      symbol_table::erase_scope (tmp_scope);
+	    }
+
+	  return retval;
+	}
       else if (argv[i] == "-regexp")
 	have_regexp = true;
       else if (argv[i] == "global")
@@ -1763,10 +1804,13 @@ do_who (int argc, const string_vector& argv, bool return_list,
     }
   else if (! (symbol_stats.empty () && symbol_names.empty ()))
     {
-      if (global_only)
-	octave_stdout << "Global variables:\n\n";
+      if (msg.length () == 0)
+	if (global_only)
+	  octave_stdout << "Global variables:\n\n";
+	else
+	  octave_stdout << "Variables in the current scope:\n\n";
       else
-	octave_stdout << "Variables in the current scope:\n\n";
+	octave_stdout << msg;
 
       if (verbose)
 	symbol_stats.display (octave_stdout);
@@ -1798,6 +1842,9 @@ List the variables in the global scope rather than the current scope.\n\
 The patterns are considered as regular expressions and will be used\n\
 for matching the variables to display. The same pattern syntax as for\n\
 the @code{regexp} function is used.\n\
+@item -file\n\
+The following argument is treated as a filename, and the variables that\n\
+are found within this file are listed.\n\
 @end table\n\
 \n\
 Valid patterns are the same as described for the @code{clear} command\n\

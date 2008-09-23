@@ -1,3 +1,9 @@
+2008-09-23  David Bateman  <dbateman@free.fr>
+
+	* variables.cc (static octave_value do_who (int, const string_vector&,
+	bool, bool, std::string): Add final message argument and simple
+	treatment of the "-file" option.
+
 2008-09-22  David Bateman  <dbateman@free.fr>
 
 	* debug.cc (static octave_user_code * get_user_code 

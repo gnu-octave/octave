@@ -443,7 +443,7 @@ load_path::do_initialize (bool set_initial_path)
   std::string tpath = load_path::command_line_path;
 
   if (tpath.empty ())
-    tpath = octave_env::getenv ("OCTAVE_LOADPATH");
+    tpath = octave_env::getenv ("OCTAVE_PATH");
 
   std::string xpath = ".";
 

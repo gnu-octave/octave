@@ -1,5 +1,9 @@
 2008-09-24  John W. Eaton  <jwe@octave.org>
 
+	* ov-usr-fcn.cc (octave_user_function::do_multi_index_op):
+	Add symbol_table::clear_variables cleanup function to the
+	unwind_protect stack after the parameter list cleanup functions.
+
 	* load-path.cc (load_path::do_initialize): Check for OCTAVE_PATH
 	in the environment, not OCTAVE_LOADPATH.
 

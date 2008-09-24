@@ -375,11 +375,6 @@ octave_user_function::do_multi_index_op (int nargout,
 
       unwind_protect::add (symbol_table::pop_context);
     }
-  else
-    {
-      // Force symbols to be undefined again when this function exits.
-      unwind_protect::add (symbol_table::clear_variables);
-    }
 
   // Save and restore args passed for recursive calls.
 
@@ -410,6 +405,21 @@ octave_user_function::do_multi_index_op (int nargout,
   // variables that are also named values returned by this function.
 
   unwind_protect::add (clear_param_list, ret_list);
+
+  if (call_depth == 0)
+    {
+      // Force symbols to be undefined again when this function
+      // exits.
+      //
+      // This cleanup function is added to the unwind_protect stack
+      // after the calls to clear the parameter lists so that local
+      // variables will be cleared before the parameter lists are
+      // cleared.  That way, any function parameters that have been
+      // declared global will be unmarked as global before they are
+      // undefined by the clear_param_list cleanup function.
+
+      unwind_protect::add (symbol_table::clear_variables);
+    }
 
   // The following code is in a separate scope to avoid warnings from
   // G++ about `goto abort' crossing the initialization of some

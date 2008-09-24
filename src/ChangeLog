@@ -1,3 +1,10 @@
+2008-09-24  Soren Hauberg  <hauberg@gmail.com>
+
+	* DLD-FUNCTIONS/__magick_read__.cc (magick_to_octave_value): New
+	template function with specializations for various
+	GraphicsMagick++ types.
+	(F__magick_finfo__): New function.
+
 2008-09-24  John W. Eaton  <jwe@octave.org>
 
 	* ov-usr-fcn.cc (octave_user_function::do_multi_index_op):

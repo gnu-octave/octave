@@ -1,3 +1,7 @@
+2008-09-24  Soren Hauberg  <hauberg@gmail.com>
+
+	* interpreter/image.txi: Document imfinfo.
+
 2008-09-23  Francesco Potorti`  <Potorti@isti.cnr.it>.
 
 	* interpreter/container.txi: Fix cross reference in struct docs.

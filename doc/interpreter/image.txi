@@ -64,6 +64,13 @@ saveimage ("my_output_image.img", J);
 
 @DOCSTRING(IMAGE_PATH)
 
+It is possible to get information about an image file on disk, without actually
+reading in into Octave. This is done using the @code{imfinfo} function which
+provides read access to many of the parameters stored in the header of the image
+file.
+
+@DOCSTRING(imfinfo)
+
 @node Displaying Images
 @section Displaying Images
 

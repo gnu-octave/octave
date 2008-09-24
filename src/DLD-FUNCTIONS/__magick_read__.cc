@@ -799,6 +799,161 @@ Instead you should use @code{imwrite}.\n\
 return retval;
 }
 
+template<class T>
+static octave_value
+magick_to_octave_value (const T magick)
+{
+  return octave_value (magick);
+}
+
+static octave_value
+magick_to_octave_value (const Magick::EndianType magick)
+{
+  switch (magick)
+    {
+      case Magick::LSBEndian:
+        return octave_value ("little-endian");
+
+      case Magick::MSBEndian:
+        return octave_value ("big-endian");
+
+      default:
+        return octave_value ("undefined");
+    }
+}
+
+static octave_value
+magick_to_octave_value (const Magick::ResolutionType magick)
+{
+  switch (magick)
+    {
+      case Magick::PixelsPerInchResolution:
+        return octave_value ("pixels per inch");
+
+      case Magick::PixelsPerCentimeterResolution:
+        return octave_value ("pixels per centimeter");
+
+      default:
+        return octave_value ("undefined");
+    }
+}
+
+static octave_value
+magick_to_octave_value (const Magick::ImageType magick)
+{
+  switch (magick)
+    {
+      case Magick::BilevelType:
+      case Magick::GrayscaleType:
+      case Magick::GrayscaleMatteType:
+        return octave_value ("grayscale");
+
+      case Magick::PaletteType:
+      case Magick::PaletteMatteType:
+        return octave_value ("indexed");
+
+      case Magick::TrueColorType:
+      case Magick::TrueColorMatteType:
+      case Magick::ColorSeparationType:
+        return octave_value ("truecolor");
+
+      default:
+        return octave_value ("undefined");
+    }
+}
+
+// We put this in a try-block because GraphicsMagick will throw
+// exceptions if a parameter isn't present in the current image.
+#define GET_PARAM(NAME, OUTNAME) \
+  try \
+    { \
+      st.assign (OUTNAME, magick_to_octave_value (im.NAME ())); \
+    } \
+  catch (Magick::Warning& w) \
+    { \
+    }
+
+DEFUN_DLD (__magick_finfo__, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable File} {} __magick_finfo__(@var{fname})\n\
+Read image information with GraphicsMagick++. In general you should\n\
+not be using this function.  Instead you should use @code{imfinfo}.\n\
+@seealso{imfinfo, imread}\n\
+@end deftypefn")
+{
+  octave_value_list output;
+
+#ifdef HAVE_MAGICK
+
+  if (args.length () < 1 || ! args (0).is_string ())
+    {
+      print_usage ();
+      return output;
+    }
+
+  const std::string filename = args (0).string_value ();
+
+  try
+    {
+      // Read the file.
+      Magick::Image im;
+      im.read (filename);
+      
+      // Read properties.
+      Octave_map st;
+      st.assign ("Filename", filename);
+      
+      // Annoying CamelCase naming is for Matlab compatibility.
+      GET_PARAM (fileSize, "FileSize")
+      GET_PARAM (rows, "Height")
+      GET_PARAM (columns, "Width")
+      GET_PARAM (depth, "BitDepth")
+      GET_PARAM (magick, "Format")
+      GET_PARAM (format, "LongFormat")
+      GET_PARAM (xResolution, "XResolution")
+      GET_PARAM (yResolution, "YResolution")
+      GET_PARAM (totalColors, "TotalColors")
+      GET_PARAM (tileName, "TileName")
+      GET_PARAM (animationDelay, "AnimationDelay")
+      GET_PARAM (animationIterations, "AnimationIterations")
+      GET_PARAM (endian, "ByteOrder")
+      GET_PARAM (gamma, "Gamma")
+      GET_PARAM (matte, "Matte")
+      GET_PARAM (modulusDepth, "ModulusDepth")
+      GET_PARAM (quality, "Quality")
+      GET_PARAM (quantizeColors, "QuantizeColors")
+      GET_PARAM (resolutionUnits, "ResolutionUnits")
+      GET_PARAM (type, "ColorType")
+      GET_PARAM (view, "View")
+        
+      output (0) = st;
+    }
+  catch (Magick::Warning& w)
+    {
+      warning ("Magick++ warning: %s", w.what ());
+    }
+  catch (Magick::ErrorCoder& e)
+    {
+      warning ("Magick++ coder error: %s", e.what ());
+    }
+  catch (Magick::Exception& e)
+    {
+      error ("Magick++ exception: %s", e.what ());
+      return output;
+    }
+
+#else
+
+  error ("imfinfo: not available in this version of Octave");
+
+#endif
+
+  return output;
+}
+
+#undef GET_PARAM
+      
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

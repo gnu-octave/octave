@@ -98,15 +98,16 @@ function fplot (fn, limits, n, linespec)
     y = feval (fn, x);
   endif
 
-  if (length (limits) > 2) 
-    axis (limits);
-  endif
-
   if (have_linespec)
     plot (x, y, linespec);
   else
     plot (x, y);
   endif
+
+  if (length (limits) > 2) 
+    axis (limits);
+  endif
+
   if (isvector(y))
     legend (nam);
   else

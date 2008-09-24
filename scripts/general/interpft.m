@@ -106,9 +106,9 @@ endfunction
 
 %!shared n,y
 %! x = [0:10]'; y = sin(x); n = length (x);
-%!assert (interpft(y, n), y, eps);
-%!assert (interpft(y', n), y', eps);
-%!assert (interpft([y,y],n), [y,y], eps);
+%!assert (interpft(y, n), y, 2*eps);
+%!assert (interpft(y', n), y', 2*eps);
+%!assert (interpft([y,y],n), [y,y], 2*eps);
 
 %!error (interpft(y,n,0))
 %!error (interpft(y,[n,n]))

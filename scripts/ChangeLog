@@ -1,3 +1,7 @@
+2008-09-24  John W. Eaton  <jwe@octave.org>
+
+	* general/interpft.m: Increase tolerance in tests.
+
 2008-09-23  Francesco Potorti`  <Potorti@isti.cnr.it>
 
 	* plot/pcolor.m: Improve doc string.

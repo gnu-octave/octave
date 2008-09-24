@@ -46,6 +46,10 @@ function st = strcat (varargin)
       for nv = 1:nargin
         if (ischar (varargin{nv}))
           varargin{nv} = cellstr (varargin{nv});
+        elseif (isreal (varargin{nv}))
+          varargin{nv} = cellstr (char (varargin{nv}));
+        elseif (isempty (varargin{nv}))
+          varargin{nv} = cellstr ('');
         elseif (iscell (varargin{nv}))
           allchar = false;
         else
@@ -115,5 +119,7 @@ endfunction
 
 %!error strcat ();
 
-%!error strcat (1, 2);
+%!assert (strcat (1, 2), strcat (char(1), char(2)))
+
+%!assert (strcat ('', 2), strcat ([], char(2)))
 

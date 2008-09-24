@@ -1,3 +1,8 @@
+2008-09-24  Ben Abbott  <bpabbott@mac.com>
+
+	* strings/strcat.m: Improve Matlab compatibility for non-character
+	data.
+
 2008-09-24  John W. Eaton  <jwe@octave.org>
 
 	* general/interpft.m: Increase tolerance in tests.

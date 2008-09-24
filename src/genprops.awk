@@ -334,12 +334,12 @@ function emit_declarations ()
 
         printf ("\n  {\n    if (! error_state)\n      {\n        if (%s.set (val, %s))\n          {\n",
           name[i], (has_builtin_listeners ? "false" : "true"));
+        if (mode[i])
+          printf ("            set_%smode (\"manual\");\n", name[i]);
         if (updater[i])
           printf ("            update_%s ();\n", name[i]);
         if (limits[i])
           printf ("            update_axis_limits (\"%s\");\n", name[i]);
-        if (mode[i])
-          printf ("            set_%smode (\"manual\");\n", name[i]);
 	if (has_builtin_listeners)
 	  printf ("            %s.run_listeners (POSTSET);\n", name[i]);
         printf ("            mark_modified ();\n");

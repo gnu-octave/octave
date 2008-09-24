@@ -52,6 +52,10 @@ along with Octave; see the file COPYING.  If not, see
 #include <regex.h>
 #endif
 
+// Define the maximum number of retries for a pattern that 
+// possibly results in an infinite recursion.
+#define PCRE_MATCHLIMIT_MAX 10
+
 // The regexp is constructed as a linked list to avoid resizing the
 // return values in arrays at each new match.
 
@@ -385,9 +389,31 @@ octregexp_list (const octave_value_list &args, const std::string &nm,
 				  (idx ? PCRE_NOTBOL : 0),
 				  ovector, (subpatterns+1)*3);
 
+	  if (matches == PCRE_ERROR_MATCHLIMIT)
+	    {
+	      // try harder; start with default value for MATCH_LIMIT and increase it
+	      warning("Your pattern caused PCRE to hit its MATCH_LIMIT.\nTrying harder now, but this will be slow.");
+	      pcre_extra pe;
+	      pcre_config(PCRE_CONFIG_MATCH_LIMIT, static_cast <void *> (&pe.match_limit));
+	      pe.flags = PCRE_EXTRA_MATCH_LIMIT;
+
+	      int i = 0;
+	      while (matches == PCRE_ERROR_MATCHLIMIT &&
+		     i++ < PCRE_MATCHLIMIT_MAX)
+		{
+		  OCTAVE_QUIT;
+
+		  pe.match_limit *= 10;
+		  matches = pcre_exec(re, &pe, buffer.c_str(), 
+				      buffer.length(), idx, 
+				      (idx ? PCRE_NOTBOL : 0),
+				      ovector, (subpatterns+1)*3);
+		}
+	    }
+
 	  if (matches < 0 && matches != PCRE_ERROR_NOMATCH)
 	    {
-	      error ("%s: internal error calling pcre_exec", nm.c_str());
+	      error ("%s: internal error calling pcre_exec\nError code from pcre_exec is %i", nm.c_str(), matches);
 	      pcre_free(re);
 	      return 0;
 	    }
@@ -983,6 +1009,17 @@ The pattern is taken literally.\n\
 }
 
 /*
+
+## PCRE_ERROR_MATCHLIMIT test
+%!test
+%! s=sprintf('\t4\n0000\t-0.00\t-0.0000\t4\t-0.00\t-0.0000\t4\n0000\t-0.00\t-0.0000\t0\t-0.00\t-');
+%! ws = warning("query");
+%! unwind_protect
+%!   warning("off");
+%!   regexp(s, '(\s*-*\d+[.]*\d*\s*)+\n');
+%! unwind_protect_cleanup
+%!   warning(ws);
+%! end_unwind_protect
 
 ## seg-fault test
 %!assert(regexp("abcde","."),[1,2,3,4,5])

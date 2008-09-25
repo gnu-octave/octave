@@ -6,7 +6,7 @@
 
 	* plot/fplot.m: Call axis after calling plot.
 
-2008-09-24  Soren Hauberg  <hauberg@gmail.com>
+2008-09-24  Søren Hauberg  <hauberg@gmail.com>
 
 	* image/imfinfo.m: New function.
 	* image/Makefile.in (SOURCES): Add it to the list.
@@ -472,7 +472,7 @@
 	Change caller.  Improve sizing and position of colorbox for subplots.
 	* plot/colorbar.m: New demos.
 
-2008-04-16  Soren Hauberg  <hauberg@gmail.com>
+2008-04-16  Søren Hauberg  <hauberg@gmail.com>
 
 	* plot/__gnuplot_version__.m: Display error if gnuplot is not found.
 
@@ -762,7 +762,7 @@
 	* miscellaneous/info.m: New function.
 	* miscellaneous/Makefile.in (SOURCES): Add it to the list.
 
-2008-03-27  Soren Hauberg  <hauberg@gmail.com>
+2008-03-27  Søren Hauberg  <hauberg@gmail.com>
 
 	* plot/xlim.m, plot/ylim.m, plot/zlim.m, strings/strtrim.m:
 	Doc fixes.
@@ -820,7 +820,7 @@
 
 	* linear-algebra/dmult.m: Handle scaling along arbitrary dimension.
 
-2008-03-26  Soren Hauberg  <hauberg@gmail.com>
+2008-03-26  Søren Hauberg  <hauberg@gmail.com>
 
 	* polynomial/convn.m: New tests.
 
@@ -832,7 +832,7 @@
 	statistics/base/prctile.m: New functions.
 	* statistics/base/Makefile.in (SOURCES): Add them to the list.
  
-2008-03-25  Soren Hauberg  <hauberg@gmail.com>
+2008-03-25  Søren Hauberg  <hauberg@gmail.com>
 
 	* polynomial/convn.m: New function.
 	* polynomial/Makefile.in (SOURCES): Add it to the list.
@@ -1349,7 +1349,7 @@
 
 	* plot/axis.m: Correctly handle "tight" and "image" options.
 
-2008-01-14  Soren Hauberg  <hauberg@gmail.com>
+2008-01-14  Søren Hauberg  <hauberg@gmail.com>
 
 	* image/hsv2rgb.m, image/ntsc2rgb.m, image/rgb2hsv.m,
 	image/rgb2ntsc.m: Also accept images as input.
@@ -1410,7 +1410,7 @@
 
 	* general/sub2ind.m, general/ind2sub.m: Doc fix.
 
-2008-01-04  Soren Hauberg   <hauberg@gmail.com>
+2008-01-04  Søren Hauberg   <hauberg@gmail.com>
 
 	* set/create_set.m, set/union.m: Accept "rows" argument.
 
@@ -1438,7 +1438,7 @@
 
 	Version 3.0.0 released.
 
-2007-12-21  Soren Hauberg  <hauberg@gmail.com>
+2007-12-21  Søren Hauberg  <hauberg@gmail.com>
 
 	* image/imshow.m: Accept empty value for display_range.
 
@@ -1446,7 +1446,7 @@
 
 	* pkg/pkg.m: Add .lib as architecture-dependent suffix.
 
-2007-12-19  Soren Hauberg  <hauberg@gmail.com>
+2007-12-19  Søren Hauberg  <hauberg@gmail.com>
 
 	* image/imshow.m: Store uint8 images as doubles.  Handle default
 	display ranges correctly.
@@ -5401,7 +5401,7 @@
 	* tar.m, untar.m, unzip.m: Adapt to Octave coding style.
 	* tar.m, untar.m: Only tar; don't compress or uncompress.
 
-2006-05-10  Soren Hauberg  <hauberg@gmail.com>
+2006-05-10  Søren Hauberg  <hauberg@gmail.com>
 
 	* tar.m, untar.m, unzip.m: New files.
 
@@ -5618,7 +5618,7 @@
 2006-03-15  John W. Eaton  <jwe@octave.org>
 
 	* miscellaneous/doc.m: New file.
-	From Soren Hauberg <soren@hauberg.org>.
+	From Søren Hauberg <soren@hauberg.org>.
 
 2006-03-15  Keith Goodman  <kwgoodman@gmail.com>
 
@@ -6406,7 +6406,7 @@
 	* optimization/glpk.m, optimization/glpkparams.m,
 	optimization/glpktest1, optimization/glpktest2: New files.
 
-2005-03-16  Soren Hauberg  <soren@hauberg.org>
+2005-03-16  Søren Hauberg  <soren@hauberg.org>
 
 	* strings/split.m: Quick return for empty second arg.
 	Improve warning for multi-line strings.

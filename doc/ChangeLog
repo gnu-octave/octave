@@ -3,7 +3,7 @@
 	* interpreter/image.txi: Update for imread and imwrite instead of
 	loadimge and saveimage.
 
-2008-09-24  Soren Hauberg  <hauberg@gmail.com>
+2008-09-24  Søren Hauberg  <hauberg@gmail.com>
 
 	* interpreter/image.txi: Document imfinfo.
 

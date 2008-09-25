@@ -1,3 +1,11 @@
+2008-09-25  David Bateman  <dbateman@free.fr>
+
+	* pt-mat.cc (class tm_row_const): Add any_class test
+	(class tm_const): Ditto.
+	(octave_value tree_matrix::rvalue (void)): If any object to
+	concatenate is a class object, dispatch to the appropriate
+	vertcat/horzcat function.
+
 2008-09-25  John W. Eaton  <jwe@octave.org>
 
 	* symtab.cc (symbol_table::do_find): Don't set evaluated_args and

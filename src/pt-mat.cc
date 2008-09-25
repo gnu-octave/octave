@@ -67,14 +67,14 @@ private:
       : count (1), dv (0, 0), all_str (false),
 	all_sq_str (false), all_dq_str (false),
 	some_str (false), all_real (false), all_cmplx (false),
-	all_mt (true), any_sparse (false),
+	all_mt (true), any_sparse (false), any_class (false),
 	class_nm (octave_base_value::static_class_name ()), ok (false)
     { }
 
     tm_row_const_rep (const tree_argument_list& row)
       : count (1), dv (0, 0), all_str (false), all_sq_str (false),
 	some_str (false), all_real (false), all_cmplx (false),
-	all_mt (true), any_sparse (false),
+	all_mt (true), any_sparse (false), any_class (false),
 	class_nm (octave_base_value::static_class_name ()), ok (false)
     { init (row); }
 
@@ -92,6 +92,7 @@ private:
     bool all_cmplx;
     bool all_mt;
     bool any_sparse;
+    bool any_class;
 
     std::string class_nm;
 
@@ -158,6 +159,8 @@ public:
 
   bool empty (void) const { return rep->empty (); }
 
+  size_t length (void) const { return rep->length (); }
+
   dim_vector dims (void) { return rep->dv; }
 
   bool all_strings_p (void) const { return rep->all_str; }
@@ -168,6 +171,7 @@ public:
   bool all_complex_p (void) const { return rep->all_cmplx; }
   bool all_empty_p (void) const { return rep->all_mt; }
   bool any_sparse_p (void) const { return rep->any_sparse; }
+  bool any_class_p (void) const { return rep->any_class; }
 
   std::string class_name (void) const { return rep->class_nm; }
 
@@ -345,6 +349,9 @@ tm_row_const::tm_row_const_rep::do_init_element (tree_expression *elt,
   if (!any_sparse && val.is_sparse_type ())
     any_sparse = true;
 
+  if (!any_class && val.is_object ())
+    any_class = true;
+
   return true;
 }
 
@@ -357,6 +364,7 @@ tm_row_const::tm_row_const_rep::init (const tree_argument_list& row)
   all_real = true;
   all_cmplx = true;
   any_sparse = false;
+  any_class = false;
 
   bool first_elem = true;
 
@@ -438,7 +446,7 @@ public:
   tm_const (const tree_matrix& tm)
     : dv (0, 0), all_str (false), all_sq_str (false), all_dq_str (false),
       some_str (false), all_real (false), all_cmplx (false),
-      all_mt (true), any_sparse (false),
+      all_mt (true), any_sparse (false), any_class (false),
       class_nm (octave_base_value::static_class_name ()), ok (false)
   { init (tm); }
 
@@ -457,6 +465,7 @@ public:
   bool all_complex_p (void) const { return all_cmplx; }
   bool all_empty_p (void) const { return all_mt; }
   bool any_sparse_p (void) const { return any_sparse; }
+  bool any_class_p (void) const { return any_class; }
 
   std::string class_name (void) const { return class_nm; }
 
@@ -474,6 +483,7 @@ private:
   bool all_cmplx;
   bool all_mt;
   bool any_sparse;
+  bool any_class;
 
   std::string class_nm;
 
@@ -497,6 +507,7 @@ tm_const::init (const tree_matrix& tm)
   all_real = true;
   all_cmplx = true;
   any_sparse = false;
+  any_class = false;
 
   bool first_elem = true;
 
@@ -538,6 +549,9 @@ tm_const::init (const tree_matrix& tm)
 
 	  if (!any_sparse && tmp.any_sparse_p ())
 	    any_sparse = true;
+
+	  if (!any_class && tmp.any_class_p ())
+	    any_class = true;
 
 	  append (tmp);
 	}
@@ -769,6 +783,7 @@ tree_matrix::rvalue (void)
   bool all_real_p = false;
   bool all_complex_p = false;
   bool any_sparse_p = false;
+  bool any_class_p = false;
   bool frc_str_conv = false;
 
   tm_const tmp (*this);
@@ -783,13 +798,75 @@ tree_matrix::rvalue (void)
       all_real_p = tmp.all_real_p ();
       all_complex_p = tmp.all_complex_p ();
       any_sparse_p = tmp.any_sparse_p ();
+      any_class_p = tmp.any_class_p ();
       frc_str_conv = tmp.some_strings_p ();
 
       // Try to speed up the common cases.
 
       std::string result_type = tmp.class_name ();
 
-      if (result_type == "double")
+      if (any_class_p)
+	{
+	  octave_value_list tmp3 (tmp.length (), octave_value ());
+
+	  int j = 0;
+	  for (tm_const::iterator p = tmp.begin (); p != tmp.end (); p++)
+	    {
+	      OCTAVE_QUIT;
+
+	      tm_row_const row = *p;
+
+	      if (row.length () == 1)
+		tmp3 (j++) = *(row.begin ());
+	      else
+		{
+		  octave_value_list tmp1 (row.length (), octave_value ());
+
+		  int i = 0;
+		  for (tm_row_const::iterator q = row.begin (); 
+		       q != row.end (); q++)
+		    tmp1 (i++) = *q;
+
+		  octave_value_list tmp2;
+		  octave_value fcn = 
+		    symbol_table::find_function ("horzcat", tmp1);
+
+		  if (fcn.is_defined ())
+		    {
+		      tmp2 = fcn.do_multi_index_op (1, tmp1);
+		      
+		      if (error_state)
+			goto done;
+
+		      tmp3 (j++) = tmp2 (0);
+		    }
+		  else
+		    {
+		      ::error ("cat not find overloaded horzcat function");
+		      goto done;
+		    }
+		}
+	    }
+
+	  if (tmp.length () == 1)
+	    retval = tmp3 (0);
+	  else
+	    {
+	      octave_value_list tmp2;
+	      octave_value fcn = symbol_table::find_function ("vertcat", tmp3);
+
+	      if (fcn.is_defined ())
+		{
+		  tmp2 = fcn.do_multi_index_op (1, tmp3);
+		      
+		  if (! error_state)
+		    retval = tmp2 (0);
+		}
+	      else
+		::error ("cat not find overloaded vertcat function");
+	    }
+	}
+      else if (result_type == "double")
 	{
 	  if (any_sparse_p)
 	    {	    

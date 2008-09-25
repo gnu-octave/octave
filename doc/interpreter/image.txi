@@ -26,7 +26,7 @@ example will load an image, smooth it by a 5-by-5 averaging filter,
 and compute the gradient of the smoothed image.
 
 @example
-I = loadimage ("default.img");
+I = imread ("myimage.jpg");
 S = conv2 (I, ones (5, 5) / 25, "same");
 [Dx, Dy] = gradient (S);
 @end example
@@ -47,20 +47,22 @@ and @code{Dy} contains the partial spatial derivatives of the image.
 @section Loading and Saving Images
 
 The first step in most image processing tasks is to load an image
-into Octave. Currently Octave only support saving images in the
-Portable Pixmap Format (PPM), PostScript, and Octave's own format, and
-loading images in Octave's format. Most image processing code will
-follow the structure of this code
+into Octave. This is done using the @code{imread} function, which uses the
+@code{GraphicsMagick} library for reading. This means a vast number of image
+formats is supported.  The @code{imwrite} function is the corresponding function
+for writing images to the disk.
+
+In summary, most image processing code will follow the structure of this code
 
 @example
-I = loadimage ("my_input_image.img");
+I = imread ("my_input_image.img");
 J = process_my_image (I);
-saveimage ("my_output_image.img", J);
+imwrite ("my_output_image.img", J);
 @end example
 
-@DOCSTRING(loadimage)
+@DOCSTRING(imread)
 
-@DOCSTRING(saveimage)
+@DOCSTRING(imwrite)
 
 @DOCSTRING(IMAGE_PATH)
 

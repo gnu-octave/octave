@@ -1,3 +1,7 @@
+2008-09-25  Søren Hauberg  <hauberg@gmail.com>
+
+	* image/imread.m, image/imwrite.m: Doc fix.
+
 2008-09-24  John W. Eaton  <jwe@octave.org>
 
 	* plot/fplot.m: Call axis after calling plot.

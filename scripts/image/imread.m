@@ -31,6 +31,8 @@
 ## The colour depth of the image determines the numeric
 ## class of the output: "uint8" or "uint16" for grey
 ## and colour, and "logical" for black and white.
+##
+## @seealso{imwrite, imfinfo}
 ## @end deftypefn
 
 function varargout = imread (filename, varargin)

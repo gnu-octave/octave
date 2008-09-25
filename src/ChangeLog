@@ -1,3 +1,8 @@
+2008-09-25  John W. Eaton  <jwe@octave.org>
+
+	* symtab.cc (symbol_table::do_find): Don't set evaluated_args and
+	args_evaluated here, prior to call to symbol_table::fcn_info::find.
+
 2008-09-24  Soren Hauberg  <hauberg@gmail.com>
 
 	* DLD-FUNCTIONS/__magick_read__.cc (magick_to_octave_value): New

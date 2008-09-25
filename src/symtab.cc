@@ -1072,12 +1072,7 @@ symbol_table::do_find (const std::string& name, tree_argument_list *args,
   fcn_table_iterator p = fcn_table.find (name);
 
   if (p != fcn_table.end ())
-    {
-      evaluated_args = octave_value_list ();
-      args_evaluated = false;
-
-      return p->second.find (args, arg_names, evaluated_args, args_evaluated);
-    }
+    return p->second.find (args, arg_names, evaluated_args, args_evaluated);
   else
     {
       fcn_info finfo (name);

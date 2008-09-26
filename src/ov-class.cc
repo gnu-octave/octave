@@ -561,6 +561,40 @@ octave_class::subsasgn (const std::string& type,
   return retval;
 }
 
+idx_vector
+octave_class::index_vector (void) const
+{
+  idx_vector retval;
+
+  octave_value meth = symbol_table::find_method ("subsindex", class_name ());
+
+  if (meth.is_defined ())
+    {
+      octave_value_list args;
+      args(0) = octave_value (new octave_class (map, c_name));
+
+      octave_value_list tmp = feval (meth.function_value (), args, 1);
+
+      if (!error_state && tmp.length () >= 1)
+	{
+	  if (tmp(0).is_object())
+	    error ("subsindex function must return a valid index vector");
+	  else
+	    // Index vector returned by subsindex is zero based 
+	    // (why this inconsistency Mathworks?), and so we must
+	    // add one to the value returned as the index_vector method
+	    // expects it to be one based.
+	    retval = do_binary_op (octave_value::op_add, tmp (0), 
+				   octave_value (1.0)).index_vector ();
+	}
+    }
+  else
+    error ("no subsindex method defined for class %s",
+	   class_name().c_str ());
+
+  return retval;
+}
+
 size_t
 octave_class::byte_size (void) const
 {
@@ -1019,6 +1053,47 @@ Return true if @var{x} is a class object.\n\
 
   if (args.length () == 1)
     retval = args(0).is_object ();
+  else
+    print_usage ();
+
+  return retval;
+}
+
+DEFUN (ismethod, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} ismethod (@var{x}, @var{method})\n\
+Return true if @var{x} is a class object and the string @var{method}\n\
+is a method of this class.\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  if (args.length () == 2)
+    {
+      octave_value arg = args(0);
+
+      std::string class_name;
+
+      if (arg.is_object ())
+	class_name = arg.class_name ();
+      else if (arg.is_string ())
+	class_name = arg.string_value ();
+      else
+	error ("ismethod: expecting object or class name as first argument");
+
+      if (! error_state)
+	{
+	  std::string method = args(1).string_value ();
+
+	  if (! error_state)
+	    {
+	      if (load_path::find_method (class_name, method) != std::string ())
+		retval = true;
+	      else
+		retval = false;
+	    }
+	}
+    }
   else
     print_usage ();
 

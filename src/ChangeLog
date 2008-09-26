@@ -1,3 +1,11 @@
+2008-09-26  David Bateman  <dbateman@free.fr>
+
+	* ov-class.h (idx_vector index_vector (void) const): Declare new
+	maethod.
+	* ov-class.cc (idx_vector index_vector (void) const): Define new
+	method.
+	* (Fismethod): New function.
+
 2008-09-26  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/urlwrite.cc (urlwrite_cleanup_file) New function.

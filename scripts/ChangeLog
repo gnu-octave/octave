@@ -1,3 +1,9 @@
+2008-09-26  David Bateman  <dbateman@free.fr>
+
+	* general/subsindex.m: Dummy subsindex function for help string
+	and to throw error for use outside of a class
+	* general/Makefile.in (SOURCES): Include it here.
+
 2008-09-26  John W. Eaton  <jwe@octave.org>
 
 	* image/imfinfo.m: Delete temporary file.

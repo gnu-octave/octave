@@ -45,7 +45,8 @@ SOURCES = __isequal__.m __splinen__.m accumarray.m arrayfun.m \
   nargoutchk.m nextpow2.m nthroot.m num2str.m perror.m pol2cart.m \
   polyarea.m postpad.m prepad.m quadgk.m quadl.m quadv.m randperm.m rat.m \
   rem.m repmat.m rot90.m rotdim.m runlength.m shift.m shiftdim.m sortrows.m \
-  sph2cart.m strerror.m structfun.m sub2ind.m triplequad.m trapz.m tril.m triu.m
+  sph2cart.m strerror.m structfun.m sub2ind.m subsindex.m triplequad.m \
+  trapz.m tril.m triu.m
 
 DISTFILES = $(addprefix $(srcdir)/, Makefile.in $(SOURCES))
 

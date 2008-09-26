@@ -82,6 +82,8 @@ public:
 			 const std::list<octave_value_list>& idx,
 			 const octave_value& rhs);
 
+  idx_vector index_vector (void) const;
+
   dim_vector dims (void) const { return map.dims (); }
 
   size_t byte_size (void) const;

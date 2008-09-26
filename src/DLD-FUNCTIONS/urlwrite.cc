@@ -32,6 +32,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <fstream>
 #include <iomanip>
 
+#include "file-ops.h"
+#include "file-stat.h"
 #include "oct-env.h"
 
 #include "defun-dld.h"
@@ -39,6 +41,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-obj.h"
 #include "ov-cell.h"
 #include "pager.h"
+#include "unwind-prot.h"
 
 #if defined (HAVE_CURL)
 
@@ -185,6 +188,17 @@ urlget (const std::string& url, const std::string& method,
 
 #endif
 
+static bool urlwrite_delete_file;
+
+static std::string urlwrite_filename;
+
+static void
+urlwrite_cleanup_file (void *)
+{
+  if (urlwrite_delete_file)
+    file_ops::unlink (urlwrite_filename);
+}
+
 DEFUN_DLD (urlwrite, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} urlwrite (@var{URL}, @var{localfile})\n\
@@ -250,6 +264,8 @@ urlwrite (\"http://www.google.com/search\", \"search.html\",\n\
   // name to store the file if download is succesful
   std::string filename = args(1).string_value();
 
+  urlwrite_filename = filename;
+
   if (error_state)
     {
       error ("urlwrite: localfile must be a character string");
@@ -291,6 +307,14 @@ urlwrite (\"http://www.google.com/search\", \"search.html\",\n\
 	}
     }
 
+  // The file should only be deleted if it doesn't initially exist, we
+  // create it, and the download fails.  We use unwind_protect to do
+  // it so that the deletion happens no matter how we exit the function.
+
+  file_stat fs (filename);
+
+  urlwrite_delete_file = ! fs.exists ();
+
   std::ofstream ofile (filename.c_str(), std::ios::out | std::ios::binary);
 
   if (! ofile.is_open ())
@@ -299,15 +323,30 @@ urlwrite (\"http://www.google.com/search\", \"search.html\",\n\
       return retval;
     }
 
+  unwind_protect::add (urlwrite_cleanup_file);
+
   CURLcode res = urlget (url, method, param, ofile);
 
   ofile.close ();
 
+  urlwrite_delete_file = (res != CURLE_OK);
+
+  unwind_protect::run ();
+
   if (nargout > 0)
     {
-      retval(0) = octave_env::make_absolute (filename, octave_env::getcwd ());
-      retval(1) = res == CURLE_OK;
-      retval(2) = std::string (res == CURLE_OK ? "" : curl_easy_strerror (res));
+      if (res == CURLE_OK)
+	{
+	  retval(2) = std::string ();
+	  retval(1) = true;
+	  retval(0) = octave_env::make_absolute (filename, octave_env::getcwd ());
+	}
+      else
+	{
+	  retval(2) = std::string (curl_easy_strerror (res));
+	  retval(1) = false;
+	  retval(0) = std::string ();
+	}
     }
 
   if (nargout < 2 && res != CURLE_OK)

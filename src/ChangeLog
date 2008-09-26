@@ -1,3 +1,10 @@
+2008-09-26  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/urlwrite.cc (urlwrite_cleanup_file) New function.
+	(urlwrite_delete_file, urlwrite_filename): New static variables.
+	(Furlwrite): Only return filename if urlget succeeds.  Use
+	unwind_protect to delete files we create if download fails.
+
 2008-09-26  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-null-mat.h: New header file.

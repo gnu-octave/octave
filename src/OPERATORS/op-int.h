@@ -884,6 +884,9 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
   DEFNDASSIGNOP_FN (TYPE ## fcms_assign, float_complex_matrix, TYPE ## _scalar, float_complex_array, assign) \
   DEFNDASSIGNOP_FN (TYPE ## fcmm_assign, float_complex_matrix, TYPE ## _matrix, float_complex_array, assign)
 
+#define OCTAVE_INT_NULL_ASSIGN_OPS(TYPE) \
+  DEFNULLASSIGNOP_FN (TYPE ## null_assign, TYPE ## _matrix, delete_elements)
+
 #define OCTAVE_INT_OPS(TYPE) \
   OCTAVE_SS_INT_OPS (TYPE) \
   OCTAVE_SM_INT_OPS (TYPE) \
@@ -893,7 +896,8 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
   OCTAVE_RE_INT_ASSIGN_OPS (TYPE) \
   OCTAVE_FLT_RE_INT_ASSIGN_OPS (TYPE) \
   OCTAVE_CX_INT_ASSIGN_OPS (TYPE) \
-  OCTAVE_FLT_CX_INT_ASSIGN_OPS (TYPE)
+  OCTAVE_FLT_CX_INT_ASSIGN_OPS (TYPE) \
+  OCTAVE_INT_NULL_ASSIGN_OPS(TYPE)
 
 #define OCTAVE_INSTALL_S_INT_UNOPS(TYPE) \
   INSTALL_UNOP (op_not, octave_ ## TYPE ## _scalar, s_not); \
@@ -1137,6 +1141,11 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
   INSTALL_ASSIGNCONV (octave_float_complex_scalar, octave_ ## TYPE ## _scalar, octave_complex_matrix) \
   INSTALL_ASSIGNCONV (octave_float_complex_matrix, octave_ ## TYPE ## _matrix, octave_complex_matrix)
 
+#define OCTAVE_INSTALL_INT_NULL_ASSIGN_OPS(TYPE) \
+  INSTALL_ASSIGNOP (op_asn_eq, octave_ ## TYPE ## _matrix, octave_null_matrix, TYPE ## null_assign) \
+  INSTALL_ASSIGNOP (op_asn_eq, octave_ ## TYPE ## _matrix, octave_null_str, TYPE ## null_assign) \
+  INSTALL_ASSIGNOP (op_asn_eq, octave_ ## TYPE ## _matrix, octave_null_sq_str, TYPE ## null_assign)
+
 #define OCTAVE_INSTALL_INT_OPS(TYPE) \
   OCTAVE_INSTALL_SS_INT_OPS (TYPE) \
   OCTAVE_INSTALL_SM_INT_OPS (TYPE) \
@@ -1146,7 +1155,8 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
   OCTAVE_INSTALL_RE_INT_ASSIGN_OPS (TYPE) \
   OCTAVE_INSTALL_FLT_RE_INT_ASSIGN_OPS (TYPE) \
   OCTAVE_INSTALL_CX_INT_ASSIGN_OPS (TYPE) \
-  OCTAVE_INSTALL_FLT_CX_INT_ASSIGN_OPS (TYPE)
+  OCTAVE_INSTALL_FLT_CX_INT_ASSIGN_OPS (TYPE) \
+  OCTAVE_INSTALL_INT_NULL_ASSIGN_OPS(TYPE)
 
 #define OCTAVE_INSTALL_SM_INT_ASSIGNCONV(TLHS, TRHS) \
   INSTALL_ASSIGNCONV (octave_ ## TLHS ## _scalar, octave_ ## TRHS ## _scalar, octave_ ## TLHS ## _matrix) \

@@ -31,6 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-scalar.h"
 #include "ov-re-mat.h"
 #include "ov-typeinfo.h"
+#include "ov-null-mat.h"
 #include "ops.h"
 
 // cell ops.
@@ -82,6 +83,8 @@ oct_catop_matrix_cell (octave_base_value& a1, const octave_base_value& a2,
 
 DEFASSIGNANYOP_FN (assign, cell, assign);
 
+DEFNULLASSIGNOP_FN (null_assign, cell, delete_elements)
+
 void
 install_cell_ops (void)
 {
@@ -94,6 +97,10 @@ install_cell_ops (void)
   INSTALL_CATOP (octave_matrix, octave_cell, matrix_cell);
 
   INSTALL_ASSIGNANYOP (op_asn_eq, octave_cell, assign);
+
+  INSTALL_ASSIGNOP (op_asn_eq, octave_cell, octave_null_matrix, null_assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_cell, octave_null_str, null_assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_cell, octave_null_sq_str, null_assign);
 }
 
 /*

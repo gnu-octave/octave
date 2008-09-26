@@ -100,7 +100,7 @@ OV_INTTYPE_INC := ov-base-int.h ov-int-traits.h ov-intx.h \
 OV_INCLUDES := ov-re-mat.h ov-cx-mat.h ov-ch-mat.h ov-cs-list.h ov-list.h \
 	ov-struct.h ov-scalar.h ov-range.h ov-complex.h \
 	ov-colon.h ov-base.h ov-base-mat.h ov-base-scalar.h \
-	ov-str-mat.h ov-bool-mat.h ov-bool.h \
+	ov-str-mat.h ov-bool-mat.h ov-null-mat.h ov-bool.h \
 	ov-cell.h ov.h ov-fcn.h ov-builtin.h ov-dld-fcn.h \
 	ov-mex-fcn.h ov-usr-fcn.h ov-fcn-handle.h \
 	ov-fcn-inline.h ov-class.h ov-typeinfo.h ov-type-conv.h \
@@ -181,7 +181,7 @@ OV_SRC := ov-base.cc ov-ch-mat.cc \
 	ov-cs-list.cc ov-list.cc ov-re-mat.cc ov-cx-mat.cc \
 	ov-range.cc ov-scalar.cc ov-complex.cc ov-str-mat.cc \
 	ov-struct.cc \
-	ov-colon.cc ov-bool-mat.cc ov-bool.cc ov-cell.cc \
+	ov-colon.cc ov-bool-mat.cc ov-bool.cc ov-null-mat.cc ov-cell.cc \
 	ov.cc ov-fcn.cc ov-builtin.cc ov-dld-fcn.cc \
 	ov-mex-fcn.cc ov-usr-fcn.cc ov-fcn-handle.cc ov-fcn-inline.cc \
 	ov-class.cc ov-typeinfo.cc \

@@ -33,6 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-re-mat.h"
 #include "ov-flt-re-mat.h"
 #include "ov-typeinfo.h"
+#include "ov-null-mat.h"
 #include "ops.h"
 #include "xdiv.h"
 #include "xpow.h"
@@ -162,6 +163,10 @@ install_s_s_ops (void)
 
   INSTALL_ASSIGNCONV (octave_scalar, octave_scalar, octave_matrix);
   INSTALL_ASSIGNCONV (octave_float_scalar, octave_scalar, octave_float_matrix);
+
+  INSTALL_ASSIGNCONV (octave_scalar, octave_null_matrix, octave_matrix);
+  INSTALL_ASSIGNCONV (octave_scalar, octave_null_str, octave_matrix);
+  INSTALL_ASSIGNCONV (octave_scalar, octave_null_sq_str, octave_matrix);
 
   INSTALL_CONVOP (octave_scalar, octave_float_matrix, scalar_to_float);
 }

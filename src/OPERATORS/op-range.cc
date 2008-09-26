@@ -38,6 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-bool.h"
 #include "ov-bool-mat.h"
 #include "ov-typeinfo.h"
+#include "ov-null-mat.h"
 #include "ops.h"
 
 // range unary ops.
@@ -82,6 +83,13 @@ CONVDECL (range_to_float_matrix)
   return new octave_float_matrix (FloatNDArray (v.array_value ()));
 }
 
+CONVDECL (range_to_matrix)
+{
+  CAST_CONV_ARG (const octave_range&);
+
+  return new octave_matrix (v.array_value ());
+}
+
 void
 install_range_ops (void)
 {
@@ -108,6 +116,17 @@ install_range_ops (void)
   INSTALL_CATOP (octave_char_matrix, octave_range, chm_r);
 
   INSTALL_CONVOP (octave_range, octave_float_matrix, range_to_float_matrix);
+
+  // FIXME: this would be unneccessary if octave_base_value::numeric_assign always tried converting
+  // lhs before rhs.
+  
+  INSTALL_ASSIGNCONV (octave_range, octave_null_matrix, octave_matrix);
+  INSTALL_ASSIGNCONV (octave_range, octave_null_str, octave_matrix);
+  INSTALL_ASSIGNCONV (octave_range, octave_null_sq_str, octave_matrix);
+
+  // However, this should probably be here just in case we need it.
+  
+  INSTALL_WIDENOP (octave_range, octave_matrix, range_to_matrix);
 }
 
 /*

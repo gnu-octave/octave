@@ -20,6 +20,56 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
+static 
+octave_value
+octave_type_conv_body (const octave_value &arg, const std::string& name, int t_result)
+{
+  int t_arg = arg.type_id ();
+  octave_value retval;
+
+  if (t_arg == t_result || arg.class_name () == name)
+    {
+      retval = arg;
+    }
+  else
+    {
+      octave_base_value::type_conv_fcn cf
+        = octave_value_typeinfo::lookup_type_conv_op (t_arg, t_result);
+       
+      if (cf)
+        {
+          octave_base_value *tmp (cf (*(arg.internal_rep ())));
+
+          if (tmp)
+            {
+              retval = octave_value (tmp);
+
+              retval.maybe_mutate ();
+            }
+        }
+      else
+        {
+          octave_base_value::type_conv_fcn cf
+            = arg.numeric_conversion_function ();
+
+          if (cf)
+            {
+              octave_base_value *tmp (cf (*(arg.internal_rep ())));
+
+              if (tmp)
+                {
+                  octave_value xarg (tmp);
+
+                  retval = octave_type_conv_body (xarg, name, t_result);
+                }
+            }
+        }
+    }
+
+  return retval;
+}
+                         
+
 #define OCTAVE_TYPE_CONV_BODY3(NAME, MATRIX_RESULT_T, SCALAR_RESULT_T) \
  \
   octave_value retval; \
@@ -30,41 +80,19 @@ along with Octave; see the file COPYING.  If not, see
     { \
       const octave_value arg = args(0); \
  \
-      int t_arg = arg.type_id (); \
- \
       int t_result = MATRIX_RESULT_T::static_type_id (); \
  \
-      if (t_arg == t_result || arg.class_name () == #NAME) \
-	{ \
-	  retval = arg; \
-	} \
-      else \
+      retval = octave_type_conv_body (arg, #NAME, t_result); \
+      if (retval.is_undefined ()) \
         { \
-          octave_base_value::type_conv_fcn cf \
-	    = octave_value_typeinfo::lookup_type_conv_op (t_arg, t_result); \
+          std::string arg_tname = arg.type_name (); \
  \
-          if (cf) \
-	    { \
-	      octave_base_value *tmp (cf (*(arg.internal_rep ()))); \
+          std::string result_tname = arg.numel () == 1 \
+            ? SCALAR_RESULT_T::static_type_name () \
+            : MATRIX_RESULT_T::static_type_name (); \
  \
-	      if (tmp) \
-		{ \
-		  retval = octave_value (tmp); \
- \
-		  retval.maybe_mutate (); \
-		} \
-	    } \
-	  else \
-	    { \
-	      std::string arg_tname = arg.type_name (); \
- \
-	      std::string result_tname = arg.numel () == 1 \
-		? SCALAR_RESULT_T::static_type_name () \
-		: MATRIX_RESULT_T::static_type_name (); \
- \
-	      gripe_invalid_conversion (arg_tname, result_tname); \
-	    } \
-	} \
+          gripe_invalid_conversion (arg_tname, result_tname); \
+        } \
     } \
   else \
     print_usage (); \

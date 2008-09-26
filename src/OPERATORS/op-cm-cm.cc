@@ -31,6 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-cx-mat.h"
 #include "ov-flt-cx-mat.h"
 #include "ov-typeinfo.h"
+#include "ov-null-mat.h"
 #include "ops.h"
 #include "xdiv.h"
 #include "xpow.h"
@@ -160,6 +161,8 @@ DEFNDCATOP_FN (cm_cm, complex_matrix, complex_matrix, complex_array, complex_arr
 
 DEFNDASSIGNOP_FN (assign, complex_matrix, complex_matrix, complex_array, assign)
 
+DEFNULLASSIGNOP_FN (null_assign, complex_matrix, delete_elements)
+
 CONVDECL (complex_matrix_to_float_complex_matrix)
 {
   CAST_CONV_ARG (const octave_complex_matrix&);
@@ -205,6 +208,10 @@ install_cm_cm_ops (void)
   INSTALL_CATOP (octave_complex_matrix, octave_complex_matrix, cm_cm);
 
   INSTALL_ASSIGNOP (op_asn_eq, octave_complex_matrix, octave_complex_matrix, assign);
+
+  INSTALL_ASSIGNOP (op_asn_eq, octave_complex_matrix, octave_null_matrix, null_assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_complex_matrix, octave_null_str, null_assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_complex_matrix, octave_null_sq_str, null_assign);
 
   INSTALL_CONVOP (octave_complex_matrix, octave_float_complex_matrix, 
 		  complex_matrix_to_float_complex_matrix);

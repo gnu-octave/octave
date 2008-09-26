@@ -121,6 +121,8 @@ public:
 
   string_vector name_tags (void) const { return names; }
 
+  void normalize_null_values (void);
+
 private:
 
   static octave_allocator allocator;

@@ -77,6 +77,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-cx-mat.h"
 #include "ov-flt-cx-mat.h"
 #include "ov-typeinfo.h"
+#include "ov-null-mat.h"
 #include "ops.h"
 #include "xdiv.h"
 #include "xpow.h"
@@ -134,6 +135,8 @@ OCTAVE_MM_INT_ASSIGN_OPS (mmui16, uint64_, uint16_, uint16_)
 OCTAVE_MM_INT_ASSIGN_OPS (mmi32, uint64_, int32_, int32_)
 OCTAVE_MM_INT_ASSIGN_OPS (mmui32, uint64_, uint32_, uint32_)
 OCTAVE_MM_INT_ASSIGN_OPS (mmi64, uint64_, int64_, int64_)
+
+OCTAVE_INT_NULL_ASSIGN_OPS (uint64)
 
 OCTAVE_MIXED_INT_CMP_OPS (uint64, int8)
 OCTAVE_MIXED_INT_CMP_OPS (uint64, uint8)
@@ -199,6 +202,8 @@ install_ui64_ui64_ops (void)
   OCTAVE_INSTALL_MM_INT_ASSIGN_OPS (mmi32, uint64_, int32_);
   OCTAVE_INSTALL_MM_INT_ASSIGN_OPS (mmui32, uint64_, uint32_);
   OCTAVE_INSTALL_MM_INT_ASSIGN_OPS (mmi64, uint64_, int64_);
+
+  OCTAVE_INSTALL_INT_NULL_ASSIGN_OPS (uint64)
 
   OCTAVE_INSTALL_SM_INT_ASSIGNCONV (uint64, int8);
   OCTAVE_INSTALL_SM_INT_ASSIGNCONV (uint64, uint8);

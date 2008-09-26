@@ -489,6 +489,9 @@ public:
   bool is_magic_colon (void) const
     { return rep->is_magic_colon (); }
 
+  bool is_null_value (void) const
+    { return rep->is_null_value (); }
+
   // Are any or all of the elements in this constant nonzero?
 
   octave_value all (int dim = 0) const
@@ -834,6 +837,14 @@ public:
 
   Array<FloatComplex> float_complex_vector_value (bool frc_str_conv = false,
 				       bool frc_vec_conv = false) const;
+
+  // Make a copy that is not a special null matrix
+
+  octave_value non_null_value (void) const;
+
+  // Ditto, but in place.
+
+  void make_non_null_value (void);
 
   // Conversions.  These should probably be private.  If a user of this
   // class wants a certain kind of constant, he should simply ask for

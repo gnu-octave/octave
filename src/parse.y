@@ -65,6 +65,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-map.h"
 #include "ov-fcn-handle.h"
 #include "ov-usr-fcn.h"
+#include "ov-null-mat.h"
 #include "toplev.h"
 #include "pager.h"
 #include "parse.h"
@@ -577,13 +578,19 @@ constant	: NUM
 
 matrix		: '[' ']'
 		  {
-		    $$ = new tree_constant (octave_value (Matrix ()));
+		    $$ = new tree_constant (octave_null_matrix::instance);
 		    lexer_flags.looking_at_matrix_or_assign_lhs = false;
 		    lexer_flags.pending_local_variables.clear ();
 		  }
 		| '[' ';' ']'
 		  {
-		    $$ = new tree_constant (octave_value (Matrix ()));
+		    $$ = new tree_constant (octave_null_matrix::instance);
+		    lexer_flags.looking_at_matrix_or_assign_lhs = false;
+		    lexer_flags.pending_local_variables.clear ();
+		  }
+		| '[' ',' ']'
+		  {
+		    $$ = new tree_constant (octave_null_matrix::instance);
 		    lexer_flags.looking_at_matrix_or_assign_lhs = false;
 		    lexer_flags.pending_local_variables.clear ();
 		  }
@@ -1721,9 +1728,17 @@ make_constant (int op, token *tok_val)
       {
 	std::string txt = tok_val->text ();
 
-	char delim = op == DQ_STRING ? '"' : '\'';
+        char delim = op == DQ_STRING ? '"' : '\'';
+        octave_value tmp (txt, delim);
 
-	octave_value tmp (txt, delim);
+        if (txt.empty ())
+          {
+            if (op == DQ_STRING)
+              tmp = octave_null_str::instance;
+            else
+              tmp = octave_null_sq_str::instance;
+          }
+
 	retval = new tree_constant (tmp, l, c);
 
 	if (op == DQ_STRING)

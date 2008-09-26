@@ -69,6 +69,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-fcn-handle.h"
 #include "ov-fcn-inline.h"
 #include "ov-typeinfo.h"
+#include "ov-null-mat.h"
 
 #include "defun.h"
 #include "error.h"
@@ -1153,7 +1154,8 @@ const octave_value&
 octave_value::assign (assign_op op, const octave_value& rhs)
 {
   if (op == op_asn_eq)
-    operator = (rhs);
+    // Regularize a null matrix if stored into a variable.
+    operator = (rhs.non_null_value ());
   else
     {
       // FIXME -- only do the following stuff if we can't find
@@ -1514,6 +1516,28 @@ octave_value::float_complex_vector_value (bool force_string_conv,
     return retval.reshape (make_vector_dims (retval.dims (),
                                              force_vector_conversion,
                                              type_name (), "complex vector"));
+}
+
+
+octave_value 
+octave_value::non_null_value (void) const
+{
+  if (is_null_value ())
+    return octave_value (rep->empty_clone ());
+  else
+    return *this;
+}
+
+void 
+octave_value::make_non_null_value (void) 
+{
+  if (is_null_value ())
+    {
+      octave_base_value *rc = rep->empty_clone ();
+      if (--rep->count == 0)
+        delete rep;
+      rep = rc;
+    }
 }
 
 int
@@ -2397,6 +2421,9 @@ install_types (void)
   octave_float_complex::register_type ();
   octave_float_matrix::register_type ();
   octave_float_complex_matrix::register_type ();
+  octave_null_matrix::register_type ();
+  octave_null_str::register_type ();
+  octave_null_sq_str::register_type ();
 }
 
 #if 0

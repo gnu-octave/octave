@@ -1,3 +1,58 @@
+2008-09-26  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-null-mat.h: New header file.
+	* ov-null-mat.cc: New source.
+	* ov.h (octave_value::is_null_value, octave_value::non_null_value,
+	octave_value::make_non_null_value):
+	Declare new member functions.
+	* ov.cc (octave_value:non_null_value, octave_value::make_non_null_value): 
+	Define them.
+	(octave_value::assign (assign_op op, const octave_value& rhs)): 
+	(register_types): Register null types.
+	Call non_null_value ().
+	* oct-obj.cc (octave_value_list::normalize_null_values): New member
+	function. 
+	* oct-obj.h (octave_value_list::normalize_null_values): Declare it.
+	* ov-base.h (is_null_value): New virtual member function.
+	* ops.h (NULLASSIGNOPDECL, DEFNULLASSIGNOP_FN): New macros.
+	* ov-base-mat.cc (octave_base_mat<MT>::delete_elements): New member func.
+	* ov-base-mat.h: Declare it.
+	* ov-base-sparse.cc (octave_base_sparse<MT>::delete_elements): New member func.
+	* ov-base-sparse.h: Declare it.
+	* ov-cell.cc (octave_cell:subsasgn): Handle null values.	
+	* ov-struct.cc (octave_cell:subsasgn): Handle null values.
+	* ov-builtin.cc (octave_builtin::do_multi_index_op): Normalize return
+	values.
+	* pt-misc.cc (tree_parameter_list::define_from_arg_vector): Call
+	octave_lvalue::define instead of octave_lvalue::assign.
+	* pt-decl.h (tree_decl_elt::rvalue): Call non_null_value ().
+	* OPERATORS/op-int.h (OCTAVE_INT_NULL_ASSIGN_OPS,
+	OCTAVE_INSTALL_INT_NULL_ASSIGN_OPS): New macros.
+	* OPERATORS/op-m-m.cc: Install & define assignment & conversion operators.
+	* OPERATORS/op-bm-bm.cc: Dtto.
+	* OPERATORS/op-cell.cc: Dtto.
+	* OPERATORS/op-cm-cm.cc: Dtto.
+	* OPERATORS/op-cs-cs.cc: Dtto.
+	* OPERATORS/op-fcm-fcm.cc: Dtto.
+	* OPERATORS/op-fcs-fcs.cc: Dtto.
+	* OPERATORS/op-fm-fm.cc: Dtto.
+	* OPERATORS/op-fs-fs.cc: Dtto.
+	* OPERATORS/op-int.h: Dtto.
+	* OPERATORS/op-m-m.cc: Dtto.
+	* OPERATORS/op-range.cc: Dtto.
+	* OPERATORS/op-s-s.cc: Dtto.
+	* OPERATORS/op-scm-scm.cc: Dtto.
+	* OPERATORS/op-sm-sm.cc: Dtto.
+	* OPERATORS/op-str-str.cc: Dtto.
+	* OPERATORS/op-i16-i16.cc: Dtto.
+	* OPERATORS/op-i32-i32.cc: Dtto.
+	* OPERATORS/op-i64-i64.cc: Dtto.
+	* OPERATORS/op-i8-i8.cc: Dtto.
+	* OPERATORS/op-ui16-ui16.cc: Dtto.
+	* OPERATORS/op-ui32-ui32.cc: Dtto.
+	* OPERATORS/op-ui64-ui64.cc: Dtto.
+	* OPERATORS/op-ui8-ui8.cc: Dtto.
+
 2008-09-25  David Bateman  <dbateman@free.fr>
 
 	* pt-mat.cc (class tm_row_const): Add any_class test

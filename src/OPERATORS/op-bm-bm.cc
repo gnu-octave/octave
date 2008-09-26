@@ -44,6 +44,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-uint32.h"
 #include "ov-uint64.h"
 #include "ov-typeinfo.h"
+#include "ov-null-mat.h"
 #include "ops.h"
 #include "xdiv.h"
 #include "xpow.h"
@@ -85,6 +86,8 @@ DEFNDCATOP_FN (bm_fm, bool_matrix, float_matrix, float_array, float_array, conca
 DEFNDCATOP_FN (fm_bm, float_matrix, bool_matrix, float_array, float_array, concat)
 
 DEFNDASSIGNOP_FN (assign, bool_matrix, bool_matrix, bool_array, assign)
+
+DEFNULLASSIGNOP_FN (null_assign, bool_matrix, delete_elements)
 
 static octave_value
 oct_assignop_conv_and_assign (octave_base_value& a1,
@@ -150,6 +153,10 @@ install_bm_bm_ops (void)
   INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_uint16_matrix, conv_and_assign);
   INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_uint32_matrix, conv_and_assign);
   INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_uint64_matrix, conv_and_assign);
+
+  INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_null_matrix, null_assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_null_str, null_assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_null_sq_str, null_assign);
 }
 
 /*

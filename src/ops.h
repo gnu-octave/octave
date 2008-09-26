@@ -152,6 +152,12 @@ extern void install_ops (void);
 			 const octave_value_list& idx, \
 			 const octave_base_value& a2)
 
+#define NULLASSIGNOPDECL(name) \
+  static octave_value \
+  oct_assignop_ ## name (octave_base_value& a, \
+			 const octave_value_list& idx, \
+			 const octave_base_value&)
+
 #define ASSIGNANYOPDECL(name) \
   static octave_value \
   oct_assignop_ ## name (octave_base_value& a1, \
@@ -167,6 +173,15 @@ extern void install_ops (void);
     CAST_BINOP_ARGS (octave_ ## t1&, const octave_ ## t2&); \
  \
     v1.f (idx, v2.t1 ## _value ()); \
+    return octave_value (); \
+  }
+
+#define DEFNULLASSIGNOP_FN(name, t, f) \
+  NULLASSIGNOPDECL (name) \
+  { \
+    CAST_UNOP_ARG (octave_ ## t&); \
+ \
+    v.f (idx); \
     return octave_value (); \
   }
 

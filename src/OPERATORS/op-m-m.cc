@@ -31,6 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-re-mat.h"
 #include "ov-flt-re-mat.h"
 #include "ov-typeinfo.h"
+#include "ov-null-mat.h"
 #include "ops.h"
 #include "xdiv.h"
 #include "xpow.h"
@@ -130,6 +131,8 @@ DEFNDCATOP_FN (m_m, matrix, matrix, array, array, concat)
 DEFNDASSIGNOP_FN (assign, matrix, matrix, array, assign)
 DEFNDASSIGNOP_FN (sgl_assign, float_matrix, matrix, float_array, assign)
 
+DEFNULLASSIGNOP_FN (null_assign, matrix, delete_elements)
+
 CONVDECL (matrix_to_float_matrix)
 {
   CAST_CONV_ARG (const octave_matrix&);
@@ -176,6 +179,10 @@ install_m_m_ops (void)
 
   INSTALL_ASSIGNOP (op_asn_eq, octave_matrix, octave_matrix, assign);
   INSTALL_ASSIGNOP (op_asn_eq, octave_float_matrix, octave_matrix, sgl_assign);
+
+  INSTALL_ASSIGNOP (op_asn_eq, octave_matrix, octave_null_matrix, null_assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_matrix, octave_null_str, null_assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_matrix, octave_null_sq_str, null_assign);
 
   INSTALL_CONVOP (octave_matrix, octave_float_matrix, matrix_to_float_matrix);
 }

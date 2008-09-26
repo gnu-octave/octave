@@ -97,6 +97,8 @@ octave_base_sparse : public octave_base_value
 
   void assign (const octave_value_list& idx, const T& rhs);
 
+  void delete_elements (const octave_value_list& idx);
+
   dim_vector dims (void) const { return matrix.dims (); }
 
   octave_value do_index_op (const octave_value_list& idx,

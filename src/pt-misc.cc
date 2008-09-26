@@ -179,7 +179,7 @@ tree_parameter_list::define_from_arg_vector (const octave_value_list& args)
 		}
 	    }
 	  else
-	    ref.assign (octave_value::op_asn_eq, args(i));
+	    ref.define (args(i));
 	}
       else
 	elt->eval ();

@@ -206,6 +206,23 @@ octave_base_matrix<MT>::assign (const octave_value_list& idx, const MT& rhs)
 }
 
 template <class MT>
+void
+octave_base_matrix<MT>::delete_elements (const octave_value_list& idx)
+{
+  octave_idx_type len = idx.length ();
+
+  Array<idx_vector> ra_idx (len);
+
+  for (octave_idx_type i = 0; i < len; i++)
+    ra_idx(i) = idx(i).index_vector ();
+
+  matrix.maybe_delete_elements (ra_idx, MT::resize_fill_value ());
+
+  // Invalidate the matrix type
+  typ.invalidate_type ();
+}
+
+template <class MT>
 octave_value
 octave_base_matrix<MT>::resize (const dim_vector& dv, bool fill) const
 {

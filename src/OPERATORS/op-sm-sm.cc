@@ -30,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov.h"
 #include "ov-typeinfo.h"
 #include "ov-re-mat.h"
+#include "ov-null-mat.h"
 #include "ops.h"
 
 #include "sparse-xpow.h"
@@ -148,6 +149,8 @@ DEFCATOP_FN (sm_sm, sparse_matrix, sparse_matrix, concat)
 
 DEFASSIGNOP_FN (assign, sparse_matrix, sparse_matrix, assign)
 
+DEFNULLASSIGNOP_FN (null_assign, sparse_matrix, delete_elements)
+
 void
 install_sm_sm_ops (void)
 {
@@ -186,6 +189,10 @@ install_sm_sm_ops (void)
 
   INSTALL_ASSIGNOP (op_asn_eq, octave_sparse_matrix, octave_sparse_matrix, 
 		    assign);
+
+  INSTALL_ASSIGNOP (op_asn_eq, octave_sparse_matrix, octave_null_matrix, null_assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_sparse_matrix, octave_null_str, null_assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_sparse_matrix, octave_null_sq_str, null_assign);
 }
 
 /*

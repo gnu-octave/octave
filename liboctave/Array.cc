@@ -1758,7 +1758,7 @@ Array<T>::maybe_delete_elements (idx_vector& idx_i, idx_vector& idx_j)
             }
 	}
     }
-  else
+  else if (! (idx_i.orig_empty () || idx_j.orig_empty ()))
     {
       (*current_liboctave_error_handler)
         ("a null assignment can have only one non-colon index");
@@ -1777,6 +1777,21 @@ void
 Array<T>::maybe_delete_elements (Array<idx_vector>& ra_idx, const T& rfv)
 {
   octave_idx_type n_idx = ra_idx.length ();
+
+  // Special case matrices
+  if (ndims () == 2)
+    {
+      if (n_idx == 1)
+        {
+          maybe_delete_elements (ra_idx (0));
+          return;
+        }
+      else if (n_idx == 2)
+        {
+          maybe_delete_elements (ra_idx (0), ra_idx (1));
+          return;
+        }
+    }
 
   dim_vector lhs_dims = dims ();
 
@@ -1818,6 +1833,7 @@ Array<T>::maybe_delete_elements (Array<idx_vector>& ra_idx, const T& rfv)
 
   for (octave_idx_type i = 0; i < n_idx; i++)
     {
+      if (ra_idx(i).orig_empty ()) return;
       idx_is_colon_equiv(i) = ra_idx(i).is_colon_equiv (lhs_dims(i), 1);
 
       idx_is_colon(i) = ra_idx(i).is_colon ();
@@ -1873,18 +1889,15 @@ Array<T>::maybe_delete_elements (Array<idx_vector>& ra_idx, const T& rfv)
   if (idx_ok)
     {
       if (n_idx > 1
-	  && (all_ones (idx_is_colon) || all_ones (idx_is_colon_equiv)))
+	  && (all_ones (idx_is_colon)))
 	{
 	  // A(:,:,:) -- we are deleting elements in all dimensions, so
 	  // the result is [](0x0x0).
 
-	  dim_vector zeros;
-	  zeros.resize (n_idx);
+	  dim_vector newdim = dims ();
+          newdim(0) = 0;
 
-	  for (int i = 0; i < n_idx; i++)
-	    zeros(i) = 0;
-
-	  resize (zeros, rfv);
+	  resize (newdim, rfv);
 	}
 
       else if (n_idx > 1
@@ -3089,102 +3102,95 @@ assign2 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 	}
 
       if (idx_i && idx_j)
-	{
-	  if (rhs_nr == 0 && rhs_nc == 0)
-	    {
-	      lhs.maybe_delete_elements (idx_i, idx_j);
-	    }
-	  else
-	    {
-	      if (rhs_is_scalar && n >= 0 && m >= 0)
-		{
-		  // No need to do anything if either of the indices
-		  // are empty.
+        {
+          if (rhs_is_scalar && n >= 0 && m >= 0)
+            {
+              // No need to do anything if either of the indices
+              // are empty.
 
-		  if (n > 0 && m > 0)
-		    {
-		      lhs.make_unique ();
+              if (n > 0 && m > 0)
+                {
+                  lhs.make_unique ();
 
-		      MAYBE_RESIZE_LHS;
+                  MAYBE_RESIZE_LHS;
 
-		      RT scalar = xrhs.elem (0, 0);
+                  RT scalar = xrhs.elem (0, 0);
 
-		      for (octave_idx_type j = 0; j < m; j++)
-			{
-			  octave_idx_type jj = idx_j.elem (j);
-			  for (octave_idx_type i = 0; i < n; i++)
-			    {
-			      octave_idx_type ii = idx_i.elem (i);
-			      lhs.xelem (ii, jj) = scalar;
-			    }
-			}
-		    }
-		}
-	      else if ((n == 1 || m == 1)
-		       && (rhs_nr == 1 || rhs_nc == 1)
-		       && n * m == rhs_nr * rhs_nc)
-		{
-		  lhs.make_unique ();
+                  for (octave_idx_type j = 0; j < m; j++)
+                    {
+                      octave_idx_type jj = idx_j.elem (j);
+                      for (octave_idx_type i = 0; i < n; i++)
+                        {
+                          octave_idx_type ii = idx_i.elem (i);
+                          lhs.xelem (ii, jj) = scalar;
+                        }
+                    }
+                }
+            }
+          else if ((n == 1 || m == 1)
+                   && (rhs_nr == 1 || rhs_nc == 1)
+                   && n * m == rhs_nr * rhs_nc)
+            {
+              lhs.make_unique ();
 
-		  MAYBE_RESIZE_LHS;
+              MAYBE_RESIZE_LHS;
 
-		  if (n > 0 && m > 0)
-		    {
-		      octave_idx_type k = 0;
+              if (n > 0 && m > 0)
+                {
+                  octave_idx_type k = 0;
 
-		      for (octave_idx_type j = 0; j < m; j++)
-			{
-			  octave_idx_type jj = idx_j.elem (j);
-			  for (octave_idx_type i = 0; i < n; i++)
-			    {
-			      octave_idx_type ii = idx_i.elem (i);
-			      lhs.xelem (ii, jj) = xrhs.elem (k++);
-			    }
-			}
-		    }
-		}
-	      else if (n == rhs_nr && m == rhs_nc)
-		{
-		  lhs.make_unique ();
+                  for (octave_idx_type j = 0; j < m; j++)
+                    {
+                      octave_idx_type jj = idx_j.elem (j);
+                      for (octave_idx_type i = 0; i < n; i++)
+                        {
+                          octave_idx_type ii = idx_i.elem (i);
+                          lhs.xelem (ii, jj) = xrhs.elem (k++);
+                        }
+                    }
+                }
+            }
+          else if (n == rhs_nr && m == rhs_nc)
+            {
+              lhs.make_unique ();
 
-		  MAYBE_RESIZE_LHS;
+              MAYBE_RESIZE_LHS;
 
-		  if (n > 0 && m > 0)
-		    {
-		      for (octave_idx_type j = 0; j < m; j++)
-			{
-			  octave_idx_type jj = idx_j.elem (j);
-			  for (octave_idx_type i = 0; i < n; i++)
-			    {
-			      octave_idx_type ii = idx_i.elem (i);
-			      lhs.xelem (ii, jj) = xrhs.elem (i, j);
-			    }
-			}
-		    }
-		}
-	      else if (n == 0 && m == 0)
-		{
-		  if (! (rhs_is_scalar || (rhs_nr == 0 || rhs_nc == 0)))
-		    {
-		      lhs.clear_index ();
+              if (n > 0 && m > 0)
+                {
+                  for (octave_idx_type j = 0; j < m; j++)
+                    {
+                      octave_idx_type jj = idx_j.elem (j);
+                      for (octave_idx_type i = 0; i < n; i++)
+                        {
+                          octave_idx_type ii = idx_i.elem (i);
+                          lhs.xelem (ii, jj) = xrhs.elem (i, j);
+                        }
+                    }
+                }
+            }
+          else if (n == 0 && m == 0)
+            {
+              if (! (rhs_is_scalar || (rhs_nr == 0 || rhs_nc == 0)))
+                {
+                  lhs.clear_index ();
 
-		      (*current_liboctave_error_handler)
-		("A([], []) = X: X must be an empty matrix or a scalar");
+                  (*current_liboctave_error_handler)
+                    ("A([], []) = X: X must be an empty matrix or a scalar");
 
-		      retval = 0;
-		    }
-		}
-	      else
-		{
-		  lhs.clear_index ();
+                  retval = 0;
+                }
+            }
+          else
+            {
+              lhs.clear_index ();
 
-		  (*current_liboctave_error_handler)
-    ("A(I, J) = X: X must be a scalar or the number of elements in I must match the number of rows in X and the number of elements in J must match the number of columns in X");
+              (*current_liboctave_error_handler)
+                ("A(I, J) = X: X must be a scalar or the number of elements in I must match the number of rows in X and the number of elements in J must match the number of columns in X");
 
-		  retval = 0;
-		}
-	    }
-	}
+              retval = 0;
+            }
+        }
       // idx_vector::freeze() printed an error message for us.
     }
   else if (n_idx == 1)
@@ -3198,49 +3204,42 @@ assign2 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 	  idx_i.freeze (lhs_len, 0, true);
 
 	  if (idx_i)
-	    {
-	      if (rhs_nr == 0 && rhs_nc == 0)
-		{
-		  lhs.maybe_delete_elements (idx_i);
-		}
-	      else
-		{
-		  if (lhs_is_empty
-		      && idx_i.is_colon ()
-		      && ! (rhs_nr == 1 || rhs_nc == 1))
-		    {
-		      (*current_liboctave_warning_with_id_handler)
-			("Octave:fortran-indexing",
-			 "A(:) = X: X is not a vector or scalar");
-		    }
-		  else
-		    {
-		      octave_idx_type idx_nr = idx_i.orig_rows ();
-		      octave_idx_type idx_nc = idx_i.orig_columns ();
+            {
+              if (lhs_is_empty
+                  && idx_i.is_colon ()
+                  && ! (rhs_nr == 1 || rhs_nc == 1))
+                {
+                  (*current_liboctave_warning_with_id_handler)
+                    ("Octave:fortran-indexing",
+                     "A(:) = X: X is not a vector or scalar");
+                }
+              else
+                {
+                  octave_idx_type idx_nr = idx_i.orig_rows ();
+                  octave_idx_type idx_nc = idx_i.orig_columns ();
 
-		      if (! (rhs_nr == idx_nr && rhs_nc == idx_nc))
-			(*current_liboctave_warning_with_id_handler)
-			  ("Octave:fortran-indexing",
-			   "A(I) = X: X does not have same shape as I");
-		    }
+                  if (! (rhs_nr == idx_nr && rhs_nc == idx_nc))
+                    (*current_liboctave_warning_with_id_handler)
+                      ("Octave:fortran-indexing",
+                       "A(I) = X: X does not have same shape as I");
+                }
 
-		  if (assign1 (lhs, xrhs, rfv))
-		    {
-		      octave_idx_type len = lhs.length ();
+              if (assign1 (lhs, xrhs, rfv))
+                {
+                  octave_idx_type len = lhs.length ();
 
-		      if (len > 0)
-			{
-			  // The following behavior is much simplified
-			  // over previous versions of Octave.  It
-			  // seems to be compatible with Matlab.
+                  if (len > 0)
+                    {
+                      // The following behavior is much simplified
+                      // over previous versions of Octave.  It
+                      // seems to be compatible with Matlab.
 
-			  lhs.dimensions = dim_vector (1, lhs.length ());
-			}
-		    }
-		  else
-		    retval = 0;
-		}
-	    }
+                      lhs.dimensions = dim_vector (1, lhs.length ());
+                    }
+                }
+              else
+                retval = 0;
+            }
 	  // idx_vector::freeze() printed an error message for us.
 	}
       else if (lhs_nr == 1)
@@ -3248,17 +3247,12 @@ assign2 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 	  idx_i.freeze (lhs_nc, "vector", true);
 
 	  if (idx_i)
-	    {
-	      if (rhs_nr == 0 && rhs_nc == 0)
-		lhs.maybe_delete_elements (idx_i);
-	      else
-		{
-		  if (assign1 (lhs, xrhs, rfv))
-		    lhs.dimensions = dim_vector (1, lhs.length ());
-		  else
-		    retval = 0;
-		}
-	    }
+            {
+              if (assign1 (lhs, xrhs, rfv))
+                lhs.dimensions = dim_vector (1, lhs.length ());
+              else
+                retval = 0;
+            }
 	  // idx_vector::freeze() printed an error message for us.
 	}
       else if (lhs_nc == 1)
@@ -3267,15 +3261,10 @@ assign2 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 
 	  if (idx_i)
 	    {
-	      if (rhs_nr == 0 && rhs_nc == 0)
-		lhs.maybe_delete_elements (idx_i);
-	      else
-		{
-		  if (assign1 (lhs, xrhs, rfv))
-		    lhs.dimensions = dim_vector (lhs.length (), 1);
-		  else
-		    retval = 0;
-		}
+              if (assign1 (lhs, xrhs, rfv))
+                lhs.dimensions = dim_vector (lhs.length (), 1);
+              else
+                retval = 0;
 	    }
 	  // idx_vector::freeze() printed an error message for us.
 	}
@@ -3289,9 +3278,7 @@ assign2 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 
 	  if (idx_i)
 	    {
-	      if (rhs_nr == 0 && rhs_nc == 0)
-		lhs.maybe_delete_elements (idx_i);
-	      else if (len == 0)
+	      if (len == 0)
 		{
 		  if (! (rhs_is_scalar || (rhs_nr == 0 || rhs_nc == 0)))
 		    {

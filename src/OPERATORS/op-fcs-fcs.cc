@@ -32,6 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-flt-complex.h"
 #include "ov-flt-cx-mat.h"
 #include "ov-typeinfo.h"
+#include "ov-null-mat.h"
 #include "ops.h"
 #include "xdiv.h"
 #include "xpow.h"
@@ -231,6 +232,10 @@ install_fcs_fcs_ops (void)
   INSTALL_ASSIGNCONV (octave_float_complex, octave_float_complex, octave_float_complex_matrix);
 
   INSTALL_ASSIGNCONV (octave_complex, octave_float_complex, octave_complex_matrix);
+
+  INSTALL_ASSIGNCONV (octave_float_complex, octave_null_matrix, octave_float_complex_matrix);
+  INSTALL_ASSIGNCONV (octave_float_complex, octave_null_str, octave_float_complex_matrix);
+  INSTALL_ASSIGNCONV (octave_float_complex, octave_null_sq_str, octave_float_complex_matrix);
 
   INSTALL_CONVOP (octave_float_complex, octave_complex_matrix, 
 		  float_complex_to_complex);

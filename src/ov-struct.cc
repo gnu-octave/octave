@@ -344,7 +344,7 @@ octave_struct::subsasgn (const std::string& type,
 		  }
 		else
 		  {
-		    if (t_rhs.is_empty()) 
+		    if (t_rhs.is_null_value()) 
 		      {
 			map.maybe_delete_elements (idx.front());
 
@@ -385,7 +385,8 @@ octave_struct::subsasgn (const std::string& type,
 		map.assign (key, tmp_cell);
 	      }
 	    else
-	      map.assign (key, t_rhs);
+              // Regularize a null matrix if stored into a struct component.
+	      map.assign (key, t_rhs.non_null_value ());
 
 	    if (! error_state)
 	      {

@@ -230,8 +230,8 @@ octave_cell::subsasgn (const std::string& type,
 	    if (t_rhs.is_cell ())
 	      octave_base_matrix<Cell>::assign (i, t_rhs.cell_value ());
 	    else
-	      if (t_rhs.is_empty ())
-		octave_base_matrix<Cell>::assign (i, Cell());
+	      if (t_rhs.is_null_value ())
+		octave_base_matrix<Cell>::delete_elements (i);
 	      else
 		octave_base_matrix<Cell>::assign (i, Cell (t_rhs));
 
@@ -263,7 +263,8 @@ octave_cell::subsasgn (const std::string& type,
 		octave_base_matrix<Cell>::assign (i, tmp_cell);
 	      }
 	    else
-	      octave_base_matrix<Cell>::assign (i, Cell (t_rhs));
+              // Regularize a null matrix if stored into a struct component.
+	      octave_base_matrix<Cell>::assign (i, Cell (t_rhs.non_null_value ()));
 
 	    if (! error_state)
 	      {

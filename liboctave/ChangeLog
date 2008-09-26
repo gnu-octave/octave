@@ -1,3 +1,12 @@
+2008-09-26  Jaroslav Hajek  <highegg@gmail.com>
+
+	* Array.cc (assign1, assign2, assignN): Do not call
+	maybe_delete_elements.
+	(maybe_delete_elements (Array<idx_vector>&)): Call the 1D and 2D
+	special handlers if possible.
+	* Sparse.cc (assign1, assign2, assignN): Do not call
+	maybe_delete_elements.
+
 2008-09-22  Brian Gough  <bjg@gnu.org>
 
 	* oct-rand.cc (initialize_mersenne_twister): Use separate

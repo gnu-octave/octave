@@ -88,6 +88,8 @@ public:
 
   void assign (const octave_value_list& idx, const MT& rhs);
 
+  void delete_elements (const octave_value_list& idx);
+
   dim_vector dims (void) const { return matrix.dims (); }
 
   octave_idx_type nnz (void) const { return matrix.nnz (); }

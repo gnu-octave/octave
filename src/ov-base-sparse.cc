@@ -196,6 +196,23 @@ octave_base_sparse<T>::assign (const octave_value_list& idx, const T& rhs)
   typ.invalidate_type ();
 }
 
+template <class MT>
+void
+octave_base_sparse<MT>::delete_elements (const octave_value_list& idx)
+{
+  octave_idx_type len = idx.length ();
+
+  Array<idx_vector> ra_idx (len);
+
+  for (octave_idx_type i = 0; i < len; i++)
+    ra_idx(i) = idx(i).index_vector ();
+
+  matrix.maybe_delete_elements (ra_idx);
+
+  // Invalidate the matrix type
+  typ.invalidate_type ();
+}
+
 template <class T>
 octave_value 
 octave_base_sparse<T>::resize (const dim_vector& dv, bool) const

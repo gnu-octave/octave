@@ -30,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov.h"
 #include "ov-str-mat.h"
 #include "ov-typeinfo.h"
+#include "ov-null-mat.h"
 #include "ops.h"
 
 // string unary ops.
@@ -92,6 +93,8 @@ DEFASSIGNOP (assign, char_matrix_str, char_matrix_str)
   return octave_value ();
 }
 
+DEFNULLASSIGNOP_FN (null_assign, char_matrix_str, delete_elements)
+
 DEFNDCHARCATOP_FN (str_str, char_matrix_str, char_matrix_str, concat)
 
 void
@@ -142,6 +145,14 @@ install_str_str_ops (void)
   INSTALL_ASSIGNOP (op_asn_eq, octave_char_matrix_str, octave_char_matrix_sq_str, assign);
   INSTALL_ASSIGNOP (op_asn_eq, octave_char_matrix_sq_str, octave_char_matrix_str, assign);
   INSTALL_ASSIGNOP (op_asn_eq, octave_char_matrix_sq_str, octave_char_matrix_sq_str, assign);
+
+  INSTALL_ASSIGNOP (op_asn_eq, octave_char_matrix_str, octave_null_matrix, null_assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_char_matrix_str, octave_null_str, null_assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_char_matrix_str, octave_null_sq_str, null_assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_char_matrix_sq_str, octave_null_matrix, null_assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_char_matrix_sq_str, octave_null_str, null_assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_char_matrix_sq_str, octave_null_sq_str, null_assign);
+
 }
 
 /*

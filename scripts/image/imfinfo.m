@@ -95,26 +95,46 @@ function info = imfinfo (filename)
 
   filename = tilde_expand (filename);
 
-  fn = file_in_path (IMAGE_PATH, filename);
-  if (isempty (fn))
-    ## Couldn't find file. See if it's an URL.
-    tmp = tmpnam ();
+  delete_file = false;
 
-    [fn, status, msg] = urlwrite (filename, tmp);
+  unwind_protect
 
-    if (! status)
-      error ("imfinfo: cannot find %s", filename);
+    fn = file_in_path (IMAGE_PATH, filename);
+
+    if (isempty (fn))
+
+      ## Couldn't find file. See if it's an URL.
+
+      tmp = tmpnam ();
+
+      [fn, status, msg] = urlwrite (filename, tmp);
+
+      if (! status)
+	error ("imfinfo: cannot find %s", filename);
+      endif
+
+      if (! isempty (fn))
+	delete_file = true;
+      endif
+
     endif
-  endif
 
-  [statinfo, err, msg] = stat (fn);
-  if (err != 0)
-    error ("imfinfo: error reading '%s': %s", fn, msg);
-  endif
+    [statinfo, err, msg] = stat (fn);
+    if (err != 0)
+      error ("imfinfo: error reading '%s': %s", fn, msg);
+    endif
 
-  time_stamp = strftime ("%e-%b-%Y %H:%M:%S", localtime (statinfo.mtime));
+    time_stamp = strftime ("%e-%b-%Y %H:%M:%S", localtime (statinfo.mtime));
   
-  info = __magick_finfo__ (filename);
-  info.FileModDate = time_stamp;
+    info = __magick_finfo__ (fn);
+    info.FileModDate = time_stamp;
+
+  unwind_protect_cleanup
+
+    if (delete_file)
+      unlink (fn);
+    endif
+
+  end_unwind_protect
 
 endfunction

@@ -1,3 +1,7 @@
+2008-09-26  Jaroslav Hajek <highegg@gmail.com>
+
+	* test_null_assign.m: More test for null assignments.
+
 2008-09-18  Jaroslav Hajek  <highegg@gmail.com>
 
 	* test_null_assign.m: New tests.

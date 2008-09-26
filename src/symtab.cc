@@ -194,7 +194,7 @@ out_of_date_check_internal (octave_function *fcn, octave_value& function,
 		      // decide whether it came from a relative lookup.
 
 		      if (! dispatch_type.empty ())
-			file = load_path::find_method (nm, dispatch_type,
+			file = load_path::find_method (dispatch_type, nm,
 						       dir_name);
 
 		      if (file.empty ())

@@ -879,7 +879,7 @@ gen_save_tests() {
 %! load(savefile,"as_save");
 %! unlink(savefile);
 %! assert(as_save,sparse(af));
-%!test # save hdf5
+%!testif HAVE_HDF5 # save hdf5
 %! savefile= tmpnam();
 %! as_save=as; save("-hdf5",savefile,"bf","as_save","af");
 %! clear as_save;

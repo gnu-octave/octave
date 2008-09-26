@@ -85,7 +85,7 @@ function yi = griddatan (x, y, xi, method, varargin)
 
 endfunction
 
-%!test
+%!testif HAVE_QHULL
 %! [xx,yy] = meshgrid(linspace(-1,1,32));
 %! xi = [xx(:), yy(:)];
 %! x = (2 * rand(100,2) - 1);
@@ -95,7 +95,7 @@ endfunction
 %! zz2 = griddata(x(:,1),x(:,2),y,xi(:,1),xi(:,2),'linear');
 %! assert (zz, zz2, 1e-10)
 
-%!test
+%!testif HAVE_QHULL
 %! [xx,yy] = meshgrid(linspace(-1,1,32));
 %! xi = [xx(:), yy(:)];
 %! x = (2 * rand(100,2) - 1);

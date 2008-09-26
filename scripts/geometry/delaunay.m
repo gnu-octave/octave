@@ -73,7 +73,7 @@ function ret = delaunay (x, y, opt)
   endif
 endfunction
 
-%!test
+%!testif HAVE_QHULL
 %! x = [-1, 0, 1, 0, 0];
 %! y = [0, 1, 0, -1, 0];
 %! assert (sortrows (sort (delaunay (x, y), 2)), [1,2,5;1,4,5;2,3,5;3,4,5])

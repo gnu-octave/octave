@@ -55,7 +55,7 @@ function vi = griddata3 (x, y, z, v, xi, yi, zi, method, varargin)
   vi = reshape (vi, size (xi));
 endfunction
 
-%!test
+%!testif HAVE_QHULL
 %! rand('state', 0);
 %! x = 2 * rand(1000, 1) - 1;
 %! y = 2 * rand(1000, 1) - 1;
@@ -67,7 +67,7 @@ endfunction
 %! vv = vi - xi.^2 - yi.^2 - zi.^2;
 %! assert (max(abs(vv(:))), 0, 0.1)
 
-%!test
+%!testif HAVE_QHULL
 %! rand('state', 0);
 %! x = 2 * rand(1000, 1) - 1;
 %! y = 2 * rand(1000, 1) - 1;

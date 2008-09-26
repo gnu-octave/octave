@@ -73,7 +73,7 @@ function H = convhull (x, y, opt)
   H(n + 1) = H(1);
 endfunction
 
-%!test
+%!testif HAVE_QHULL
 %! x = -3:0.5:3;
 %! y = abs (sin (x));
 %! assert (convhull (x, y, {"s","Qci","Tcv","Pp"}), [1;7;13;12;11;10;4;3;2;1])

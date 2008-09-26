@@ -125,7 +125,7 @@ function [rx, ry, rz] = griddata (x, y, z, xi, yi, method)
   endif
 endfunction
 
-%!test
+%!testif HAVE_QHULL
 %! [xx,yy]=meshgrid(linspace(-1,1,32));
 %! x = xx(:);
 %! x = x + 10 * (2 * round(rand(size(x))) - 1) * eps;

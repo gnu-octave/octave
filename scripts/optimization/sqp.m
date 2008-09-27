@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{x}, @var{obj}, @var{info}, @var{iter}, @var{nf}, @var{lambda}] =} sqp (@var{x}, @var{phi}, @var{g}, @var{h})
+## @deftypefn {Function File} {[@var{x}, @var{obj}, @var{info}, @var{iter}, @var{nf}, @var{lambda}] =} sqp (@var{x}, @var{phi}, @var{g}, @var{h}, @var{lb}, @var{ub}, @var{maxiter}, @var{tolerance})
 ## Solve the nonlinear program
 ## @iftex
 ## @tex
@@ -38,7 +38,7 @@
 ## @iftex
 ## @tex
 ## $$
-##  g(x) = 0 \qquad h(x) \geq 0
+##  g(x) = 0 \qquad h(x) \geq 0 \qquad lb \leq x \leq ub
 ## $$
 ## @end tex
 ## @end iftex
@@ -47,6 +47,7 @@
 ## @example
 ##      g(x)  = 0
 ##      h(x) >= 0
+##      lb <= x <= ub
 ## @end example
 ## @end ifnottex
 ##
@@ -130,6 +131,17 @@
 ##                 [  dx_1     dx_2          dx_N  ]
 ## @end example
 ## @end ifnottex
+##
+## The fifth and sixth arguments are vectors containing lower and upper bounds
+## on @var{x}. These must be consistent with equality and inequality
+## constraints @var{g} and @var{h}. If the bounds are not specified, or are
+## empty, they are set to -@var{realmax} and @var{realmax} by default.
+##
+## The seventh argument is max. number of iterations. If not specified,
+## the default value is 100.
+##
+## The eighth argument is tolerance for stopping criteria. If not specified,
+## the default value is @var{eps}.
 ##
 ## Here is an example of calling @code{sqp}:
 ##

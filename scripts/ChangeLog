@@ -1,5 +1,12 @@
 2008-09-28  Jaroslav Hajek <highegg@gmail.com>
 
+	* optimization/__fdjac__.m: New function file.
+	* optimization/__dogleg__.m: New function file.
+	* optimization/fsolve.m: New function file.
+	* optimization/Makefile.in: Include the new sources.
+	
+2008-09-28  Jaroslav Hajek <highegg@gmail.com>
+
 	* optimization/fzero.m: Replace tabs by spaces.
 
 2008-09-28  Jaroslav Hajek <highegg@gmail.com>

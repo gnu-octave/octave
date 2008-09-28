@@ -73,14 +73,14 @@ VX_OP_INC := $(shell $(AWK) -f $(srcdir)/mk-ops.awk prefix=vx list_h_files=1 $(s
 
 SPARSE_MX_OP_INC := $(shell $(AWK) -f $(srcdir)/sparse-mk-ops.awk prefix=smx list_h_files=1 $(srcdir)/sparse-mx-ops)
 
-OPT_BASE := $(addsuffix -opts, DASPK DASRT DASSL LSODE NLEqn Quad)
+OPT_BASE := $(addsuffix -opts, DASPK DASRT DASSL LSODE Quad)
 OPT_IN := $(addsuffix .in, $(OPT_BASE))
 OPT_INC := $(addsuffix .h, $(OPT_BASE))
 
 INCLUDES := Bounds.h CollocWt.h DAE.h DAEFunc.h DAERT.h \
 	DAERTFunc.h DASPK.h DASRT.h DASSL.h FEGrid.h \
-	LinConst.h LP.h LSODE.h NLConst.h NLEqn.h \
-	NLFunc.h NLP.h ODE.h ODEFunc.h ODES.h ODESFunc.h \
+	LinConst.h LP.h LSODE.h \
+	ODE.h ODEFunc.h ODES.h ODESFunc.h \
 	Objective.h QP.h Quad.h Range.h base-dae.h \
 	base-de.h base-min.h byte-swap.h cmd-edit.h cmd-hist.h \
 	data-conv.h dir-ops.h file-ops.h file-stat.h functor.h getopt.h \
@@ -143,7 +143,7 @@ VX_OP_SRC := $(shell $(AWK) -f $(srcdir)/mk-ops.awk prefix=vx list_cc_files=1 $(
 SPARSE_MX_OP_SRC := $(shell $(AWK) -f $(srcdir)/sparse-mk-ops.awk prefix=smx list_cc_files=1 $(srcdir)/sparse-mx-ops)
 
 LIBOCTAVE_CXX_SOURCES := Bounds.cc CollocWt.cc DASPK.cc DASRT.cc \
-	DASSL.cc FEGrid.cc LinConst.cc LSODE.cc NLEqn.cc ODES.cc \
+	DASSL.cc FEGrid.cc LinConst.cc LSODE.cc ODES.cc \
 	Quad.cc Range.cc data-conv.cc dir-ops.cc \
 	file-ops.cc file-stat.cc glob-match.cc idx-vector.cc \
 	lo-ieee.cc lo-mappers.cc lo-specfun.cc lo-sysdep.cc \

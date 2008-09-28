@@ -1999,7 +1999,7 @@ AC_CONFIG_FILES([Makefile octMakefile Makeconf test/Makefile
   libcruft/Makerules libcruft/amos/Makefile libcruft/blas/Makefile
   libcruft/daspk/Makefile libcruft/dasrt/Makefile
   libcruft/dassl/Makefile libcruft/fftpack/Makefile
-  libcruft/lapack/Makefile libcruft/minpack/Makefile
+  libcruft/lapack/Makefile 
   libcruft/misc/Makefile libcruft/odepack/Makefile
   libcruft/ordered-qz/Makefile libcruft/quadpack/Makefile
   libcruft/qrupdate/Makefile

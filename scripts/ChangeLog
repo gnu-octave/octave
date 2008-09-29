@@ -1,3 +1,7 @@
+2008-09-29  John W. Eaton  <jwe@octave.org>
+
+	* plot/__gnuplot_version__.m: Also include patchlevel.
+
 2008-09-29  Ben Abbott <bpabbott@mac.com>
 
 	* polynomial/deconv.m: Fix row/col orientation & length of output.

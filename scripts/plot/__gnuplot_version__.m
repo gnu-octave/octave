@@ -38,7 +38,11 @@ function version = __gnuplot_version__ ()
     pattern = "^[^\\s]*\\s*([0-9]+\\.[0-9]+)\\s*[^\\s]*\\s*([^\\s]*)";
     [d1, d2, d3, d4, matches] = regexp (output, pattern);
     if (iscell (matches) && numel (matches) > 0 && iscellstr (matches{1}))
-      __version__ = matches{1}{1};
+      if (numel (matches{1}) == 2)
+	__version__ = sprintf ("%s.%s", matches{1}{:});
+      else
+	__version__ = matches{1}{1};
+      endif
     endif
   endif
 

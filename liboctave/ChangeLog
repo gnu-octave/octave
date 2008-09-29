@@ -1,3 +1,8 @@
+2008-09-29  Jaroslav Hajek  <highegg@gmail.com>
+
+	* Array.cc (Array<T>::maybe_delete_elements_2(idx_vector&)): Return on
+	empty index vector.
+
 2008-09-26  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Array.cc (assign1, assign2, assignN): Do not call

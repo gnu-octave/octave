@@ -47,25 +47,26 @@ function y = conv (a, b)
 
   ly = la + lb - 1;
 
-  ## Ensure that both vectors are row vectors.
-  if (rows (a) > 1)
-    a = reshape (a, 1, la);
-  endif
-  if (rows (b) > 1)
-    b = reshape (b, 1, lb);
-  endif
-
   ## Use the shortest vector as the coefficent vector to filter.
+  ## Preserve the row/column orientation of the longer input.
   if (la < lb)
     if (ly > lb)
-      x = [b, (zeros (1, ly - lb))];
+      if (size (b, 1) <= size (b, 2))
+        x = [b, (zeros (1, ly - lb))];
+      else
+        x = [b; (zeros (ly - lb, 1))];
+      endif
     else
       x = b;
     endif
     y = filter (a, 1, x);
   else
     if(ly > la)
-      x = [a, (zeros (1, ly - la))];
+      if (size (a, 1) <= size (a, 2))
+        x = [a, (zeros (1, ly - la))];
+      else
+        x = [a; (zeros (ly - la, 1))];
+      endif
     else
       x = a;
     endif
@@ -74,7 +75,7 @@ function y = conv (a, b)
 
 endfunction
 
-%!assert(all (all (conv (ones (3, 1), ones (3, 1)) == [1, 2, 3, 2, 1])));
+%!assert(all (all (conv (ones (3, 1), ones (3, 1)) == [1; 2; 3; 2; 1])));
 
 %!assert(all (all (conv (ones (1, 3), ones (3, 1)) == [1, 2, 3, 2, 1])));
 
@@ -85,4 +86,36 @@ endfunction
 %!assert(conv (2, 3),6);
 
 %!error conv (2, []);
+
+%!test
+%! a = 1:10;
+%! b = 1:3;
+%! c = conv (a, b);
+%! assert (size(c), [1, numel(a)+numel(b)-1])
+%!test
+%! a = (1:10).';
+%! b = 1:3;
+%! c = conv (a, b);
+%! assert (size(c), [numel(a)+numel(b)-1, 1])
+%!test
+%! a = 1:10;
+%! b = (1:3).';
+%! c = conv (a, b);
+%! assert (size(c), [1, numel(a)+numel(b)-1])
+
+%!test
+%! b = 1:10;
+%! a = 1:3;
+%! c = conv (a, b);
+%! assert (size(c), [1, numel(a)+numel(b)-1])
+%!test
+%! b = (1:10).';
+%! a = 1:3;
+%! c = conv (a, b);
+%! assert (size(c), [numel(a)+numel(b)-1, 1])
+%!test
+%! b = 1:10;
+%! a = (1:3).';
+%! c = conv (a, b);
+%! assert (size(c), [1, numel(a)+numel(b)-1])
 

@@ -1,3 +1,10 @@
+2008-09-29  David Bateman  <dbateman@free.fr>
+
+	* symtab.cc (octave_value symbol_table::find_function 
+	(const std::string&, tree_argument_list *, const string_vector&,
+	octave_value_list&, bool&)): If first character of function name
+	is "@" then look for class specific method.
+
 2008-09-26  John W. Eaton  <jwe@octave.org>
 
 	* symtab.cc (out_of_date_check_internal):

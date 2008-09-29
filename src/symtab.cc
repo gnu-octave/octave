@@ -940,28 +940,45 @@ symbol_table::find_function (const std::string& name, tree_argument_list *args,
 			     bool& args_evaluated)
 {
   octave_value retval;
-  size_t pos = name.find_first_of (Vfilemarker);
 
-  if (pos == std::string::npos)
-    retval = find (name, args, arg_names, evaluated_args, args_evaluated, true);
+  if (name.at(0) == '@')
+    {
+      // Looking for a class specific function
+      std::string dispatch_type = 
+	name.substr(1, name.find_first_of(file_ops::dir_sep_str ()) - 1);
+      std::string method = 
+	name.substr (name.find_last_of(file_ops::dir_sep_str ()) + 1, 
+		     std::string::npos);
+
+      retval = find_method (method, dispatch_type);
+    }
   else
     {
-      std::string fcn_scope = name.substr(0, pos);
-      scope_id stored_scope = xcurrent_scope;
-      xcurrent_scope = xtop_scope;
-      octave_value parent = find_function (name.substr(0, pos));
-      if (parent.is_defined ())
+      size_t pos = name.find_first_of (Vfilemarker);
+
+      if (pos == std::string::npos)
+	retval = 
+	  find (name, args, arg_names, evaluated_args, args_evaluated, true);
+      else
 	{
-	  octave_function *parent_fcn = parent.function_value ();
-	  if (parent_fcn)
+	  std::string fcn_scope = name.substr(0, pos);
+	  scope_id stored_scope = xcurrent_scope;
+	  xcurrent_scope = xtop_scope;
+	  octave_value parent = find_function (name.substr(0, pos));
+	  if (parent.is_defined ())
 	    {
-	      xcurrent_scope = parent_fcn->scope ();
-	      if (xcurrent_scope > 1)
-		retval = find_function (name.substr (pos + 1), args, arg_names, 
-					evaluated_args, args_evaluated);
+	      octave_function *parent_fcn = parent.function_value ();
+	      if (parent_fcn)
+		{
+		  xcurrent_scope = parent_fcn->scope ();
+		  if (xcurrent_scope > 1)
+		    retval = find_function (name.substr (pos + 1), args,
+					    arg_names, evaluated_args, 
+					    args_evaluated);
+		}
 	    }
+	  xcurrent_scope = stored_scope;
 	}
-      xcurrent_scope = stored_scope;
     }
 
   return retval;

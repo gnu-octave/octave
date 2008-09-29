@@ -1,3 +1,8 @@
+2008-09-29  John W. Eaton  <jwe@octave.org>
+
+	* symtab.cc (symbol_table::fcn_info::fcn_info_rep::load_class_method):
+	Call load_class_constructor if name and dispatch_type are the same.
+
 2008-09-29  David Bateman  <dbateman@free.fr>
 
 	* symtab.cc (octave_value symbol_table::find_function 

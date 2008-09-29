@@ -339,20 +339,26 @@ symbol_table::fcn_info::fcn_info_rep::load_class_method
 {
   octave_value retval;
 
-  std::string dir_name;
-
-  std::string file_name = load_path::find_method (dispatch_type, name, dir_name);
-
-  if (! file_name.empty ())
+  if (name == dispatch_type)
+    retval = load_class_constructor ();
+  else
     {
-      octave_function *fcn = load_fcn_from_file (file_name, dir_name,
-						 dispatch_type);
+      std::string dir_name;
 
-      if (fcn)
+      std::string file_name = load_path::find_method (dispatch_type, name,
+						      dir_name);
+
+      if (! file_name.empty ())
 	{
-	  retval = octave_value (fcn);
+	  octave_function *fcn = load_fcn_from_file (file_name, dir_name,
+						     dispatch_type);
 
-	  class_methods[dispatch_type] = retval;
+	  if (fcn)
+	    {
+	      retval = octave_value (fcn);
+
+	      class_methods[dispatch_type] = retval;
+	    }
 	}
     }
 

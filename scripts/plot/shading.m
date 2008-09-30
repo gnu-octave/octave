@@ -74,3 +74,21 @@ function shading (varargin)
   endfor
 
 endfunction
+
+%!demo
+%! figure(1); clf
+%! sombrero
+%! shading faceted
+%! title('shading "faceted"')
+%! figure(2); clf
+%! sombrero
+%! shading interp
+%! title('shading "interp"')
+%! figure (3); clf
+%! pcolor (peaks ())
+%! shading faceted
+%! title('shading "faceted"')
+%! figure (4); clf
+%! pcolor (peaks ())
+%! shading interp
+%! title('shading "interp"')

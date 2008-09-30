@@ -1,3 +1,9 @@
+2008-09-30  Ben Abbott <bpabbott@mac.com>
+
+	* plot/__go_draw_axes__.m: Fix interpolation of facecolors.
+
+	* plot/shading.m: New demo.
+
 2008-09-29  John W. Eaton  <jwe@octave.org>
 
 	* plot/__go_draw_axes__.m: Eliminate have_newer_gnuplot variable.

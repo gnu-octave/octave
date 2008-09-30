@@ -28,9 +28,6 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 
     parent_figure_obj = get (axis_obj.parent);
 
-    persistent have_newer_gnuplot ...
-      = compare_versions (__gnuplot_version__ (), "4.0", ">");
-
     ## Set axis properties here?
     pos = [0, 0, 1, 1];
     if (strcmpi (axis_obj.activepositionproperty, "outerposition"))
@@ -71,8 +68,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
       if (isempty (t.string))
 	fputs (plot_stream, "unset title;\n");
       else
-	[tt, f, s] = __maybe_munge_text__ (enhanced, t, "string", 
-					   have_newer_gnuplot);
+	[tt, f, s] = __maybe_munge_text__ (enhanced, t, "string");
 	if (strcmp (f, "*"))
 	  fontspec = "";
 	else
@@ -92,8 +88,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 	fprintf (plot_stream, "unset xlabel;\n");
 	fprintf (plot_stream, "unset x2label;\n");
       else
-	[tt, f, s] = __maybe_munge_text__ (enhanced, t, "string",
-					   have_newer_gnuplot);
+	[tt, f, s] = __maybe_munge_text__ (enhanced, t, "string");
 	if (strcmp (f, "*"))
 	  fontspec = "";
 	else
@@ -108,12 +103,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 		   undo_string_escapes (tt), colorspec, fontspec,
 		   __do_enhanced_option__ (enhanced, t));
 	endif
-	if (have_newer_gnuplot)
-	  ## Rotation of xlabel not yet support by gnuplot as of 4.2, but
-	  ## there is no message about it.
-	  fprintf (plot_stream, " rotate by %f", angle);
-	endif
-	fputs (plot_stream, ";\n");
+	fprintf (plot_stream, " rotate by %f;\n", angle);
 	if (strcmpi (axis_obj.xaxislocation, "top"))
 	  fprintf (plot_stream, "unset xlabel;\n");
 	else
@@ -130,8 +120,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 	fprintf (plot_stream, "unset ylabel;\n");
 	fprintf (plot_stream, "unset y2label;\n");
       else
-	[tt, f, s] = __maybe_munge_text__ (enhanced, t, "string",
-					   have_newer_gnuplot);
+	[tt, f, s] = __maybe_munge_text__ (enhanced, t, "string");
 	if (strcmp (f, "*"))
 	  fontspec = "";
 	else
@@ -146,10 +135,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 		   undo_string_escapes (tt), colorspec, fontspec,
 		   __do_enhanced_option__ (enhanced, t));
 	endif
-	if (have_newer_gnuplot)
-	  fprintf (plot_stream, " rotate by %f;\n", angle);
-	endif
-	fputs (plot_stream, ";\n");
+	fprintf (plot_stream, " rotate by %f;\n", angle);
 	if (strcmpi (axis_obj.yaxislocation, "right"))
 	  fprintf (plot_stream, "unset ylabel;\n");
 	else
@@ -165,8 +151,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
       if (isempty (t.string))
 	fputs (plot_stream, "unset zlabel;\n");
       else
-	[tt, f, s] = __maybe_munge_text__ (enhanced, t, "string",
-					   have_newer_gnuplot);
+	[tt, f, s] = __maybe_munge_text__ (enhanced, t, "string");
 	if (strcmp (f, "*"))
 	  fontspec = "";
 	else
@@ -175,12 +160,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 	fprintf (plot_stream, "set zlabel \"%s\" %s %s %s",
 		 undo_string_escapes (tt), colorspec, fontspec,
 		 __do_enhanced_option__ (enhanced, t));
-	if (have_newer_gnuplot)
-	  ## Rotation of zlabel not yet support by gnuplot as of 4.2, but
-	  ## there is no message about it.
-	  fprintf (plot_stream, " rotate by %f;\n", angle);
-	endif
-	fputs (plot_stream, ";\n");
+	fprintf (plot_stream, " rotate by %f;\n", angle);
       endif
     endif
 
@@ -401,7 +381,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 	  if (isempty (obj.keylabel))
 	    titlespec{data_idx} = "title \"\"";
 	  else
-	    tmp = undo_string_escapes (__maybe_munge_text__ (enhanced, obj, "keylabel", have_newer_gnuplot));
+	    tmp = undo_string_escapes (__maybe_munge_text__ (enhanced, obj, "keylabel"));
 	    titlespec{data_idx} = cstrcat ("title \"", tmp, "\"");
 	  endif
 	  usingclause{data_idx} = "";
@@ -493,22 +473,8 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 	  [style, typ, with] = do_linestyle_command (obj, data_idx, mono,
 						     plot_stream, errbars);
 
-	  if (have_newer_gnuplot || isnan (typ))
-	    withclause{data_idx} = sprintf ("with %s linestyle %d",
-					    style, data_idx);
-	  else
-	    withclause{data_idx} = sprintf ("with %s linetype %d",
-					    style, typ);
-	  endif
-
-	  if (! (have_newer_gnuplot || isempty (with)))
-	    if (isempty (withclause{data_idx}))
-	      withclause{data_idx} = sprintf ("with %s", with);
-	    else
-	      withclause{data_idx} = sprintf ("%s %s", withclause{data_idx},
-					      with);
-	    endif
-	  endif
+	  withclause{data_idx} = sprintf ("with %s linestyle %d",
+					  style, data_idx);
 
        case "patch"
          cmap = parent_figure_obj.colormap;
@@ -553,7 +519,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 	       if (i > 1 || isempty (obj.keylabel))
 		 titlespec{data_idx} = "title \"\"";
 	       else
-		 tmp = undo_string_escapes (__maybe_munge_text__ (enhanced, obj, "keylabel", have_newer_gnuplot));
+		 tmp = undo_string_escapes (__maybe_munge_text__ (enhanced, obj, "keylabel"));
 		 titlespec{data_idx} = cstrcat ("title \"", tmp, "\"");
 	       endif
 	       usingclause{data_idx} = "";
@@ -600,19 +566,14 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 		 color = [0, 1, 0];
                endif
 
-	       if (have_newer_gnuplot)
-		 if (mono)
-		   colorspec = "";
-		 else
-		   colorspec = sprintf ("lc rgb \"#%02x%02x%02x\"",
-					round (255*color));
-		 endif
-		 withclause{data_idx} = sprintf ("with filledcurve %s",
-						 colorspec);
+	       if (mono)
+		 colorspec = "";
 	       else
-		 typ = get_old_gnuplot_color (color);
-		 withclause{data_idx} = sprintf ("with filledcurve lt %d", typ);
+		 colorspec = sprintf ("lc rgb \"#%02x%02x%02x\"",
+				      round (255*color));
 	       endif
+	       withclause{data_idx} = sprintf ("with filledcurve %s",
+					       colorspec);
 	       data{data_idx} = [xcol, ycol]';
 	       usingclause{data_idx} = "using ($1):($2)";
 	     endif
@@ -695,11 +656,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 	     endif
 
 	     if (isfield (obj, "linewidth"))
-	       if (have_newer_gnuplot)
-		 lw = sprintf("linewidth %f", obj.linewidth);
-	       else
-		 lw = sprintf("lw %f", obj.linewidth);
-	       endif
+	       lw = sprintf("linewidth %f", obj.linewidth);
 	     else
 	       lw  = "";
 	     endif
@@ -759,11 +716,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 		 m = mdat;
 	       endif
 	       if (! strcmpi (style, "lines"))
-		 if (have_newer_gnuplot)
-		   ps = sprintf("pointsize %f", m);
-		 else
-		   ps = sprintf("ps %f", m);
-		 endif
+		 ps = sprintf("pointsize %f", m);
 	       else
 		 ps = "";
 	       endif
@@ -771,21 +724,15 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 	       ps = "";
 	     endif
 
-	     if (have_newer_gnuplot)
-	       if (mono)
-		 colorspec = "";
-	       else
-		 colorspec = sprintf ("lc rgb \"#%02x%02x%02x\"",
-				      round (255*color));
-	       endif
-	       withclause{data_idx} = sprintf ("with %s %s %s %s %s %s",
-					       style, lw, pt, lt, ps, 
-					       colorspec);
+	     if (mono)
+	       colorspec = "";
 	     else
-	       typ = get_old_gnuplot_color (color);
-	       withclause{data_idx} = sprintf ("with %s %s %s %s lt %d", 
-					       style, lw, pt, ps, typ);
+	       colorspec = sprintf ("lc rgb \"#%02x%02x%02x\"",
+				    round (255*color));
 	     endif
+	     withclause{data_idx} = sprintf ("with %s %s %s %s %s %s",
+					     style, lw, pt, lt, ps, 
+					     colorspec);
 
 	     if (nd == 3)
 	       if (! isnan (xcol) && ! isnan (ycol) && ! isnan (zcol))
@@ -819,17 +766,12 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 	    if (isempty (obj.keylabel))
 	      titlespec{data_idx} = "title \"\"";
 	    else
-	      tmp = undo_string_escapes (__maybe_munge_text__ (enhanced, obj, "keylabel", have_newer_gnuplot));
+	      tmp = undo_string_escapes (__maybe_munge_text__ (enhanced, obj, "keylabel"));
 	      titlespec{data_idx} = cstrcat ("title \"", tmp, "\"");
 	    endif
 	    usingclause{data_idx} = "";
-	    if (have_newer_gnuplot || isnan (typ))
-	      withclause{data_idx} = sprintf ("with pm3d linestyle %d",
-		           		      data_idx);
-	    else
-	      withclause{data_idx} = sprintf ("with pm3d linetype %d %s",
-		 			      typ, with);
-	    endif
+	    withclause{data_idx} = sprintf ("with pm3d linestyle %d",
+		           		    data_idx);
 
 	    xdat = obj.xdata;
 	    ydat = obj.ydata;
@@ -897,36 +839,25 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
               endif
 	    elseif (facecolor_none_or_white)
 	      edgecol = obj.edgecolor;
-	      if (have_newer_gnuplot)
-		if (mono)
-		  colorspec = "";
-		else
-		  colorspec = sprintf ("linecolor rgb \"#%02x%02x%02x\"",
-				 round (255*edgecol));
-		endif
-		if (all (obj.facecolor == 1))
-                  hidden_removal = true;
-                endif
-		fputs(plot_stream,"unset pm3d;\n");
-                fprintf (plot_stream,
-                         "set style line %d %s lw %f;\n",
-                         data_idx, colorspec, obj.linewidth);
-		fputs(plot_stream,"set style increment user;\n");
-              else
-		typ = get_old_gnuplot_color (edgecol);
-                fprintf (plot_stream,
-                         "set style line %d lt %d lw %f;\n",
-                         data_idx, typ, obj.linewidth);
+	      if (mono)
+		colorspec = "";
+	      else
+		colorspec = sprintf ("linecolor rgb \"#%02x%02x%02x\"",
+				     round (255*edgecol));
 	      endif
+	      if (all (obj.facecolor == 1))
+                hidden_removal = true;
+              endif
+	      fputs(plot_stream,"unset pm3d;\n");
+              fprintf (plot_stream,
+                       "set style line %d %s lw %f;\n",
+                       data_idx, colorspec, obj.linewidth);
+	      fputs(plot_stream,"set style increment user;\n");
 	      withclause{data_idx} = sprintf("with line linestyle %d", data_idx);
 	      fputs (plot_stream, "unset pm3d\n");
             endif
 
-	    if (have_newer_gnuplot)
-	      dord = "depthorder";
-	    else
-	      dord = "";
-	    endif
+	    dord = "depthorder";
 
 	    if (flat_interp_face && strncmp (obj.edgecolor, "flat", 4))
               fprintf (plot_stream, "set pm3d explicit at s %s %s corners2color c3;\n", 
@@ -943,29 +874,21 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
                 fprintf (plot_stream, "set pm3d explicit at s hidden3d %d %s %s corners2color c3;\n", 
 			 data_idx, interp_str, dord);
 
-		if (have_newer_gnuplot)
-		  if (mono)
-		    colorspec = "";
-		  else
-		    colorspec = sprintf ("linecolor rgb \"#%02x%02x%02x\"",
-					 round (255*edgecol));
-		  endif
-                  fprintf (plot_stream,
-                           "set style line %d %s lw %f;\n",
-                           data_idx, colorspec, obj.linewidth);
+		if (mono)
+		  colorspec = "";
 		else
-		  typ = get_old_gnuplot_color (edgecol);
-                  fprintf (plot_stream,
-                           "set style line %d lt %d lw %f;\n",
-                           data_idx, typ, obj.linewidth);
+		  colorspec = sprintf ("linecolor rgb \"#%02x%02x%02x\"",
+				       round (255*edgecol));
 		endif
+                fprintf (plot_stream,
+                         "set style line %d %s lw %f;\n",
+                         data_idx, colorspec, obj.linewidth);
               endif
             endif
 	  endif
 
 	case "text"
-	  [label, f, s] = __maybe_munge_text__ (enhanced, obj, "string",
-						have_newer_gnuplot);
+	  [label, f, s] = __maybe_munge_text__ (enhanced, obj, "string");
 	  if (strcmp (f, "*"))
 	    fontspec = "";
 	  else
@@ -1168,9 +1091,6 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 	otherwise
 	  pos = "";
       endswitch
-      if (! have_newer_gnuplot)
-	inout = "";
-      endif
       fprintf (plot_stream, "set key %s %s %s;\n", inout, pos, box);
     else
       fputs (plot_stream, "unset key;\n");
@@ -1185,29 +1105,14 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
     endif
 
     if (length(cmap) > 0)
-      if (have_newer_gnuplot)
-        fprintf (plot_stream,
-		 "set palette positive color model RGB maxcolors %i;\n",
-	         cmap_sz);
-	fprintf (plot_stream,
-	         "set palette file \"-\" binary record=%d using 1:2:3:4;\n",
-	         cmap_sz);
-	fwrite (plot_stream, [1:cmap_sz; cmap.'], "float32");
-	fwrite (plot_stream, "\n");
-      else
-	fputs (plot_stream, "set palette defined (");
-	for i = 1: cmap_sz
-	  col = floor(cmap(i, :) * 255);
-          if (i == 1)
-	    fputs (plot_stream, sprintf("%d \"#%02X%02X%02X\"", i - 1, 
-					col(1), col(2), col(3)));
-	  else
-	    fputs (plot_stream, sprintf(", %d \"#%02X%02X%02X\"", i - 1, 
-					col(1), col(2), col(3)));
-	  endif
-	endfor
-	fputs (plot_stream, ");\n");
-      endif
+      fprintf (plot_stream,
+	       "set palette positive color model RGB maxcolors %i;\n",
+	       cmap_sz);
+      fprintf (plot_stream,
+	       "set palette file \"-\" binary record=%d using 1:2:3:4;\n",
+	       cmap_sz);
+      fwrite (plot_stream, [1:cmap_sz; cmap.'], "float32");
+      fwrite (plot_stream, "\n");
     endif
 	    
     if (strcmpi (get (h, "__colorbar__"), "none"))
@@ -1272,12 +1177,7 @@ endfunction
 function [style, typ, with] = do_linestyle_command (obj, idx, mono,
 						    plot_stream, errbars = "")
 
-  persistent have_newer_gnuplot ...
-    = compare_versions (__gnuplot_version__ (), "4.0", ">");
-
-  if (have_newer_gnuplot)
-    fprintf (plot_stream, "set style line %d default;\n", idx);
-  endif
+  fprintf (plot_stream, "set style line %d default;\n", idx);
   fprintf (plot_stream, "set style line %d", idx);
 
   found_style = false;
@@ -1287,13 +1187,9 @@ function [style, typ, with] = do_linestyle_command (obj, idx, mono,
   if (isfield (obj, "color"))
     color = obj.color;
     if (isnumeric (color))
-      if (have_newer_gnuplot)
-	if (! mono)
-	  fprintf (plot_stream, " linecolor rgb \"#%02x%02x%02x\"",
-		   round (255*color));
-	endif
-      else
-	typ = get_old_gnuplot_color (color);
+      if (! mono)
+	fprintf (plot_stream, " linecolor rgb \"#%02x%02x%02x\"",
+		 round (255*color));
       endif
     endif
     found_style = true;
@@ -1334,11 +1230,7 @@ function [style, typ, with] = do_linestyle_command (obj, idx, mono,
   endif
 
   if (isfield (obj, "linewidth"))
-    if (have_newer_gnuplot)
-      fprintf (plot_stream, " linewidth %f", obj.linewidth);
-    else
-      with = sprintf ("%s lw %f", with, obj.linewidth);
-    endif
+    fprintf (plot_stream, " linewidth %f", obj.linewidth);
     found_style = true;
   endif
 
@@ -1376,11 +1268,7 @@ function [style, typ, with] = do_linestyle_command (obj, idx, mono,
 	pt = "";
     endswitch
     if (! isempty (pt))
-      if (have_newer_gnuplot)
-	fprintf (plot_stream, " pointtype %s", pt);
-      else
-	with = sprintf ("%s pt %s", with, pt);
-      endif
+      fprintf (plot_stream, " pointtype %s", pt);
       found_style = true;
     endif
   else
@@ -1398,13 +1286,7 @@ function [style, typ, with] = do_linestyle_command (obj, idx, mono,
     endif
 
     if (isfield (obj, "markersize"))
-      if (have_newer_gnuplot)
-	fprintf (plot_stream, " pointsize %f", obj.markersize / 6);
-      else
-	if (! strcmpi (style, "lines"))
-	  with = sprintf ("%s ps %f", with, obj.markersize / 6);
-	endif
-      endif
+      fprintf (plot_stream, " pointsize %f", obj.markersize / 6);
       found_style = true;
     endif
   else
@@ -1412,7 +1294,7 @@ function [style, typ, with] = do_linestyle_command (obj, idx, mono,
     found_style = true;
   endif
 
-  if (have_newer_gnuplot && ! found_style)
+  if (! found_style)
     fputs (plot_stream, " default");
   endif
 
@@ -1607,19 +1489,11 @@ function do_tics_1 (ticmode, tics, labelmode, labels, color, ax,
 endfunction
 
 function colorspec = get_text_colorspec (color, mono)
-  persistent have_newer_gnuplot ...
-      = compare_versions (__gnuplot_version__ (), "4.0", ">");
-
-  if (have_newer_gnuplot)
-    if (mono)
-      colorspec = "";
-    else
-      colorspec = sprintf ("textcolor rgb \"#%02x%02x%02x\"",
-			   round (255*color));
-    endif
+  if (mono)
+    colorspec = "";
   else
-    typ = get_old_gnuplot_color (color);
-    colorspec = sprintf ("textcolor lt %d", typ);
+    colorspec = sprintf ("textcolor rgb \"#%02x%02x%02x\"",
+			 round (255*color));
   endif
 endfunction
 
@@ -1656,8 +1530,8 @@ function [f, s, fnt, it, bld] = get_fontname_and_size (t)
   endif
 endfunction
 
-function [str, f, s] = __maybe_munge_text__ (enhanced, obj, fld, 
-					     have_newer_gnuplot)
+function [str, f, s] = __maybe_munge_text__ (enhanced, obj, fld)
+
   persistent warned_latex = false;
 
   if (strcmp (fld, "string"))
@@ -1674,10 +1548,6 @@ function [str, f, s] = __maybe_munge_text__ (enhanced, obj, fld,
   if (enhanced)
     if (strcmp (obj.interpreter, "tex"))
       str = __tex2enhanced__ (str, fnt, it, bld);
-      if (! have_newer_gnuplot)
-	## Set the font to work around gnuplot 4.0 X11 enhanced terminal bug
-	str = cstrcat ('{/', f, ' ', str, ' }'); 
-      endif
     elseif (strcmp (obj.interpreter, "latex"))
       if (! warned_latex)
 	warning ("latex text objects not supported");

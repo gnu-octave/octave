@@ -1,5 +1,7 @@
 2008-09-29  John W. Eaton  <jwe@octave.org>
 
+	* plot/__go_draw_axes__.m: Eliminate have_newer_gnuplot variable.
+
 	* plot/__gnuplot_version__.m: Also include patchlevel.
 
 2008-09-29  Ben Abbott <bpabbott@mac.com>

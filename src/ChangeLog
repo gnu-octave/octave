@@ -1,3 +1,8 @@
+2008-09-30  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/__magick_read__.cc: Only define
+	magick_to_octave_value if HAVE_MAGICK is defined.
+
 2008-09-29  John W. Eaton  <jwe@octave.org>
 
 	* symtab.cc (symbol_table::fcn_info::fcn_info_rep::load_class_method):

@@ -799,6 +799,8 @@ Instead you should use @code{imwrite}.\n\
 return retval;
 }
 
+#ifdef HAVE_MAGICK
+
 template<class T>
 static octave_value
 magick_to_octave_value (const T magick)
@@ -872,6 +874,8 @@ magick_to_octave_value (const Magick::ImageType magick)
   catch (Magick::Warning& w) \
     { \
     }
+
+#endif
 
 DEFUN_DLD (__magick_finfo__, args, ,
   "-*- texinfo -*-\n\

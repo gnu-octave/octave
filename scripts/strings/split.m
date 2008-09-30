@@ -107,3 +107,8 @@ endfunction
 
 %!error split ("foo", "bar", 3, 4);
 
+%!assert (all (strcmp (split("road//to/hell","/"), ["road"; "    "; "to  "; "hell"])))
+
+%!assert (all (strcmp (split("/road/to/hell/","/"), ["    "; "road"; "to  "; "hell"; "    "])))
+
+

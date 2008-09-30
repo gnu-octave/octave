@@ -135,23 +135,6 @@ octave_char_matrix_str::do_index_op_internal (const octave_value_list& idx,
   return retval;
 }
 
-void
-octave_char_matrix_str::assign (const octave_value_list& idx,
-				const charMatrix& rhs)
-{
-  octave_idx_type len = idx.length ();
-
-  // FIXME
-  charMatrix tmp = rhs;
-  if (tmp.rows () == 1 && tmp.columns () == 0)
-    tmp.resize (0, 0);    
-
-  for (octave_idx_type i = 0; i < len; i++)
-    matrix.set_index (idx(i).index_vector ());
-
-  ::assign (matrix, tmp, Vstring_fill_char);
-}
-
 octave_value 
 octave_char_matrix_str::resize (const dim_vector& dv, bool fill) const
 {

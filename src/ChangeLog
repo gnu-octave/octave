@@ -1,3 +1,8 @@
+2008-09-30  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-str-mat.h (octave-char-matrix-str::assign): Remove declaration.
+	* ov-str-mat.cc (octave-char-matrix-str::assign): Remove definition.
+
 2008-09-30  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/__magick_read__.cc: Only define

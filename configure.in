@@ -1374,6 +1374,10 @@ OCTAVE_PLACEMENT_DELETE
 
 OCTAVE_DYNAMIC_AUTO_ARRAYS
 
+### See if we can use fast integer arithmetics
+
+OCTAVE_FAST_INT_OPS
+
 ### Checks for header files.
 
 AC_HEADER_STDC

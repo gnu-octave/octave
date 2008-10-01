@@ -25,6 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_inttypes_h 1
 
 #include <climits>
+#include <cstdlib>
 
 #include <limits>
 #include <iostream>
@@ -33,296 +34,661 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-ieee.h"
 #include "lo-mappers.h"
 
-template <class T1, class T2>
-class
-octave_int_binop_traits
+// Query for an integer type of certain sizeof, and signedness.
+template<int qsize, bool qsigned>
+struct query_integer_type
 {
 public:
-  // The return type for a T1 by T2 binary operation.
-  typedef T1 TR;
+  static const bool registered = false;
+  typedef void type; // Void shall result in a compile-time error if we 
+                     // attempt to use it in computations.
 };
 
-#define OCTAVE_INT_BINOP_TRAIT(T1, T2, T3) \
-  template <> \
-  class octave_int_binop_traits <T1, T2> \
-  { \
-  public: \
-    typedef T3 TR; \
-  }
-
-OCTAVE_INT_BINOP_TRAIT (int8_t, int8_t, int8_t);
-OCTAVE_INT_BINOP_TRAIT (int8_t, int16_t, int8_t);
-OCTAVE_INT_BINOP_TRAIT (int8_t, int32_t, int8_t);
-OCTAVE_INT_BINOP_TRAIT (int8_t, int64_t, int8_t);
-OCTAVE_INT_BINOP_TRAIT (int8_t, uint8_t, int8_t);
-OCTAVE_INT_BINOP_TRAIT (int8_t, uint16_t, int8_t);
-OCTAVE_INT_BINOP_TRAIT (int8_t, uint32_t, int8_t);
-OCTAVE_INT_BINOP_TRAIT (int8_t, uint64_t, int8_t);
-
-OCTAVE_INT_BINOP_TRAIT (int16_t, int8_t, int16_t);
-OCTAVE_INT_BINOP_TRAIT (int16_t, int16_t, int16_t);
-OCTAVE_INT_BINOP_TRAIT (int16_t, int32_t, int16_t);
-OCTAVE_INT_BINOP_TRAIT (int16_t, int64_t, int16_t);
-OCTAVE_INT_BINOP_TRAIT (int16_t, uint8_t, int16_t);
-OCTAVE_INT_BINOP_TRAIT (int16_t, uint16_t, int16_t);
-OCTAVE_INT_BINOP_TRAIT (int16_t, uint32_t, int16_t);
-OCTAVE_INT_BINOP_TRAIT (int16_t, uint64_t, int16_t);
-
-OCTAVE_INT_BINOP_TRAIT (int32_t, int8_t, int32_t);
-OCTAVE_INT_BINOP_TRAIT (int32_t, int16_t, int32_t);
-OCTAVE_INT_BINOP_TRAIT (int32_t, int32_t, int32_t);
-OCTAVE_INT_BINOP_TRAIT (int32_t, int64_t, int32_t);
-OCTAVE_INT_BINOP_TRAIT (int32_t, uint8_t, int32_t);
-OCTAVE_INT_BINOP_TRAIT (int32_t, uint16_t, int32_t);
-OCTAVE_INT_BINOP_TRAIT (int32_t, uint32_t, int32_t);
-OCTAVE_INT_BINOP_TRAIT (int32_t, uint64_t, int32_t);
-
-OCTAVE_INT_BINOP_TRAIT (int64_t, int8_t, int64_t);
-OCTAVE_INT_BINOP_TRAIT (int64_t, int16_t, int64_t);
-OCTAVE_INT_BINOP_TRAIT (int64_t, int32_t, int64_t);
-OCTAVE_INT_BINOP_TRAIT (int64_t, int64_t, int64_t);
-OCTAVE_INT_BINOP_TRAIT (int64_t, uint8_t, int64_t);
-OCTAVE_INT_BINOP_TRAIT (int64_t, uint16_t, int64_t);
-OCTAVE_INT_BINOP_TRAIT (int64_t, uint32_t, int64_t);
-OCTAVE_INT_BINOP_TRAIT (int64_t, uint64_t, int64_t);
-
-OCTAVE_INT_BINOP_TRAIT (uint8_t, int8_t, int8_t);
-OCTAVE_INT_BINOP_TRAIT (uint8_t, int16_t, int8_t);
-OCTAVE_INT_BINOP_TRAIT (uint8_t, int32_t, int8_t);
-OCTAVE_INT_BINOP_TRAIT (uint8_t, int64_t, int8_t);
-OCTAVE_INT_BINOP_TRAIT (uint8_t, uint8_t, uint8_t);
-OCTAVE_INT_BINOP_TRAIT (uint8_t, uint16_t, uint8_t);
-OCTAVE_INT_BINOP_TRAIT (uint8_t, uint32_t, uint8_t);
-OCTAVE_INT_BINOP_TRAIT (uint8_t, uint64_t, uint8_t);
-
-OCTAVE_INT_BINOP_TRAIT (uint16_t, int8_t, int16_t);
-OCTAVE_INT_BINOP_TRAIT (uint16_t, int16_t, int16_t);
-OCTAVE_INT_BINOP_TRAIT (uint16_t, int32_t, int16_t);
-OCTAVE_INT_BINOP_TRAIT (uint16_t, int64_t, int16_t);
-OCTAVE_INT_BINOP_TRAIT (uint16_t, uint8_t, uint16_t);
-OCTAVE_INT_BINOP_TRAIT (uint16_t, uint16_t, uint16_t);
-OCTAVE_INT_BINOP_TRAIT (uint16_t, uint32_t, uint16_t);
-OCTAVE_INT_BINOP_TRAIT (uint16_t, uint64_t, uint16_t);
-
-OCTAVE_INT_BINOP_TRAIT (uint32_t, int8_t, int32_t);
-OCTAVE_INT_BINOP_TRAIT (uint32_t, int16_t, int32_t);
-OCTAVE_INT_BINOP_TRAIT (uint32_t, int32_t, int32_t);
-OCTAVE_INT_BINOP_TRAIT (uint32_t, int64_t, int32_t);
-OCTAVE_INT_BINOP_TRAIT (uint32_t, uint8_t, uint32_t);
-OCTAVE_INT_BINOP_TRAIT (uint32_t, uint16_t, uint32_t);
-OCTAVE_INT_BINOP_TRAIT (uint32_t, uint32_t, uint32_t);
-OCTAVE_INT_BINOP_TRAIT (uint32_t, uint64_t, uint32_t);
-
-OCTAVE_INT_BINOP_TRAIT (uint64_t, int8_t, int64_t);
-OCTAVE_INT_BINOP_TRAIT (uint64_t, int16_t, int64_t);
-OCTAVE_INT_BINOP_TRAIT (uint64_t, int32_t, int64_t);
-OCTAVE_INT_BINOP_TRAIT (uint64_t, int64_t, int64_t);
-OCTAVE_INT_BINOP_TRAIT (uint64_t, uint8_t, uint64_t);
-OCTAVE_INT_BINOP_TRAIT (uint64_t, uint16_t, uint64_t);
-OCTAVE_INT_BINOP_TRAIT (uint64_t, uint32_t, uint64_t);
-OCTAVE_INT_BINOP_TRAIT (uint64_t, uint64_t, uint64_t);
-
-template <class T1, class T2>
-inline T2
-octave_int_fit_to_range (const T1& x, const T2& mn, const T2& mx,
-			 int& conv_flag, int math_truncate)
-{
-  bool out_of_range_max = x > mx;
-  bool out_of_range_min = x < mn;
-  conv_flag |= (out_of_range_max || out_of_range_min ? math_truncate : 0);
-  return (out_of_range_max ? mx : (out_of_range_min ? mn : T2 (x)));
+#define REGISTER_INT_TYPE(TYPE) \
+template <> \
+class query_integer_type<sizeof (TYPE), std::numeric_limits<TYPE>::is_signed> \
+{ \
+public: \
+  static const bool registered = true; \
+  typedef TYPE type; \
 }
 
-template <typename T>
-inline T
-octave_int_fit_to_range (const double& x, const T& mn, const T& mx,
-			 int& conv_flag, int math_truncate)
-{
-  bool out_of_range_max = x > mx;
-  bool out_of_range_min = x < mn;
-  conv_flag |= (out_of_range_max || out_of_range_min ? math_truncate : 0);
-  return (__lo_ieee_isnan (x)
-	  ? 0 : (out_of_range_max
-		 ? mx : (out_of_range_min ? mn : static_cast<T> (x))));
-}
+// No two registered integers can share sizeof and signedness.
+REGISTER_INT_TYPE (int8_t);
+REGISTER_INT_TYPE (uint8_t);
+REGISTER_INT_TYPE (int16_t);
+REGISTER_INT_TYPE (uint16_t);
+REGISTER_INT_TYPE (int32_t);
+REGISTER_INT_TYPE (uint32_t);
+REGISTER_INT_TYPE (int64_t);
+REGISTER_INT_TYPE (uint64_t);
 
-// If X is unsigned and the new type is signed, then we only have to
-// check the upper limit, but we should cast the maximum value of the
-// new type to an unsigned type before performing the comparison.
-// This should always be OK because the maximum value should always be
-// positive.
+// Selects one of two types, according to a static bool.  May be useful in
+// general.
 
-#define OCTAVE_US_S_FTR(T1, T2, TC) \
-  template <> \
-  inline T2 \
-  octave_int_fit_to_range<T1, T2> (const T1& x, const T2&, const T2& mx, \
-				   int& conv_flag, int math_truncate) \
-  { \
-    bool out_of_range = x > static_cast<TC> (mx); \
-    conv_flag |= (out_of_range ? math_truncate : 0); \
-    return out_of_range ? mx : x; \
-  }
-
-#define OCTAVE_US_S_FTR_FCNS(T) \
-  OCTAVE_US_S_FTR (T, char, unsigned char) \
-  OCTAVE_US_S_FTR (T, signed char, unsigned char) \
-  OCTAVE_US_S_FTR (T, short, unsigned short) \
-  OCTAVE_US_S_FTR (T, int, unsigned int) \
-  OCTAVE_US_S_FTR (T, long, unsigned long) \
-  OCTAVE_US_S_FTR (T, long long, unsigned long long)
-
-OCTAVE_US_S_FTR_FCNS (unsigned char)
-OCTAVE_US_S_FTR_FCNS (unsigned short)
-OCTAVE_US_S_FTR_FCNS (unsigned int)
-OCTAVE_US_S_FTR_FCNS (unsigned long)
-OCTAVE_US_S_FTR_FCNS (unsigned long long)
-
-// If X is signed and the new type is unsigned, then we only have to
-// check the lower limit (which will always be 0 for an unsigned
-// type).  The upper limit will be enforced correctly by converting to
-// the new type, even if the type of X is wider than the new type.
-
-#define OCTAVE_S_US_FTR(T1, T2) \
-  template <> \
-  inline T2 \
-  octave_int_fit_to_range<T1, T2> (const T1& x, const T2&, const T2&, \
-				   int& conv_flag, int math_truncate) \
-  { \
-    bool out_of_range = x < 0; \
-    conv_flag |= (out_of_range ? math_truncate : 0); \
-    return x <= 0 ? 0 : x; \
-   }
-
-#define OCTAVE_S_US_FTR_FCNS(T) \
-  OCTAVE_S_US_FTR (T, unsigned char) \
-  OCTAVE_S_US_FTR (T, unsigned short) \
-  OCTAVE_S_US_FTR (T, unsigned int) \
-  OCTAVE_S_US_FTR (T, unsigned long) \
-  OCTAVE_S_US_FTR (T, unsigned long long)
-
-OCTAVE_S_US_FTR_FCNS (char)
-OCTAVE_S_US_FTR_FCNS (signed char)
-OCTAVE_S_US_FTR_FCNS (short)
-OCTAVE_S_US_FTR_FCNS (int)
-OCTAVE_S_US_FTR_FCNS (long)
-OCTAVE_S_US_FTR_FCNS (long long)
-
-#define OCTAVE_INT_CONV_FIT_TO_RANGE(r, T) \
-  octave_int_fit_to_range (r, \
-                           std::numeric_limits<T>::min (), \
-                           std::numeric_limits<T>::max (), \
-			   octave_int<T>::conv_flag, \
-			   octave_int<T>::int_truncate)
-
-#define OCTAVE_INT_FIT_TO_RANGE(r, T) \
-  octave_int_fit_to_range (r, \
-                           std::numeric_limits<T>::min (), \
-                           std::numeric_limits<T>::max (), \
-			   octave_int<T>::conv_flag, \
-			   octave_int<T>::math_truncate)
-
-#define OCTAVE_INT_MIN_VAL2(T1, T2) \
-  std::numeric_limits<typename octave_int_binop_traits<T1, T2>::TR>::min ()
-
-#define OCTAVE_INT_MAX_VAL2(T1, T2) \
-  std::numeric_limits<typename octave_int_binop_traits<T1, T2>::TR>::max ()
-
-#define OCTAVE_INT_FIT_TO_RANGE2(r, T1, T2) \
-  octave_int_fit_to_range (r, \
-                           OCTAVE_INT_MIN_VAL2 (T1, T2), \
-                           OCTAVE_INT_MAX_VAL2 (T1, T2), \
-			   octave_int<typename octave_int_binop_traits<T1, T2>::TR>::conv_flag, \
-			   octave_int<typename octave_int_binop_traits<T1, T2>::TR>::math_truncate)
-
-// We have all the machinery below (octave_int_helper) to avoid a few
-// warnings from GCC about comparisons always false due to limited
-// range of data types.  Ugh.  The cure may be worse than the disease.
-
-// FIXME -- it would be nice to nest the helper class inside the
-// octave_int class, but I don't see the magic for that at the moment.
-
-template <class T> class octave_int;
-
-template <class T, bool is_signed>
-class octave_int_helper
+template<bool cond, class TT, class FT>
+class if_else_type
 {
 public:
-  static octave_int<T> abs (const T& x);
-
-  static octave_int<T> signum (const T& x);
-
-  template <class T2> static void rshift_eq (T& ival, const T2& x);
+  typedef FT type;
 };
 
-template <class T>
-class octave_int_helper<T, false>
+template<class TT, class FT>
+class if_else_type<true, TT, FT>
 {
 public:
-  static octave_int<T>
-  abs (const T& x) { return x; }
-
-  static octave_int<T>
-  signum (const T& x) { return x > 0 ? 1 : 0; }
-
-  template <class T2>
-  static void
-  rshift_eq (T& ival, const T2& x) { ival = ival >> x; }
+  typedef TT type;
 };
 
-template <class T>
-class octave_int_helper<T, true>
+// Rationale: Comparators have a single static method, rel(), that returns the
+// result of the binary relation. They also have two static boolean fields:
+// ltval, gtval determine the value of x OP y if x < y, x > y, respectively. 
+#define REGISTER_OCTAVE_CMP_OP(NM,OP) \
+  class NM \
+    { \
+    public: \
+      static const bool ltval = (0 OP 1), gtval = (1 OP 0); \
+      template <class T> \
+      static bool op (T x, T y) { return x OP y; } \
+    }
+
+// We also provide two special relations: ct, yielding always true, and cf,
+// yielding always false.
+#define REGISTER_OCTAVE_CONST_OP(NM,value) \
+  class NM \
+    { \
+    public: \
+      static const bool ltval = value, gtval = value; \
+      template <class T> \
+      static bool op (T, T) { return value; } \
+    }
+
+// Handles non-homogeneous integer comparisons. Avoids doing useless tests.
+class octave_int_cmp_op
 {
-public:
-  static octave_int<T>
-  abs (const T& x) { return x < 0 ? -x : x; }
-
-  static octave_int<T>
-  signum (const T& x) { return x < 0 ? -1 : (x > 0 ? 1 : 0); }
-
-  template <class T2>
-  static void
-  rshift_eq (T& ival, const T2& x)
-  {
-    if (ival < 0)
-      ival = - (((-ival) >> x) & std::numeric_limits<T>::max());
-    else
-      ival = ival >> x;
-  }
-};
-
-template <class T>
-class
-octave_int
-{
-public:
-  enum conv_error_type
+  // This determines a suitable promotion type for T1 when meeting T2 in a
+  // binary relation. If promotion to int or T2 is safe, it is used. Otherwise,
+  // the signedness of T1 is preserved and it is widened if T2 is wider.
+  // Notice that if this is applied to both types, they must end up with equal
+  // size.
+  template <class T1, class T2>
+  class prom
     {
-      int_truncate = 1,
-      conv_nan = 2,
-      conv_non_int = 4,
-      math_truncate = 8
+      // Promote to int?
+      static const bool pint = (sizeof (T1) < sizeof (int) 
+                                && sizeof (T2) < sizeof (int));
+      static const bool t1sig = std::numeric_limits<T1>::is_signed;
+      static const bool t2sig = std::numeric_limits<T2>::is_signed;
+      static const bool psig = 
+        (pint || (sizeof (T2) > sizeof (T1) && t2sig) || t1sig);
+      static const int psize =
+        (pint ? sizeof (int) : (sizeof (T2) > sizeof (T1) 
+                                ? sizeof (T2) : sizeof (T1)));
+    public:
+      typedef typename query_integer_type<psize, psig>::type type;
     };
 
+  // Implements comparisons between two types of equal size but
+  // possibly different signedness.
+  template<class xop, int size>
+  class uiop
+    {
+      typedef typename query_integer_type<size, false>::type utype;
+      typedef typename query_integer_type<size, true>::type stype;
+    public:
+      static bool op (utype x, utype y) 
+        { return xop::op (x, y); }
+      static bool op (stype x, stype y) 
+        { return xop::op (x, y); }
+      static bool op (stype x, utype y) 
+        { return (x < 0) ? xop::ltval : xop::op (static_cast<utype> (x), y); }
+      static bool op (utype x, stype y) 
+        { return (y < 0) ? xop::gtval : xop::op (x, static_cast<utype> (y)); }
+    };
+
+public:
+  REGISTER_OCTAVE_CMP_OP (lt, <);
+  REGISTER_OCTAVE_CMP_OP (le, <=);
+  REGISTER_OCTAVE_CMP_OP (gt, >);
+  REGISTER_OCTAVE_CMP_OP (ge, >=);
+  REGISTER_OCTAVE_CMP_OP (eq, ==);
+  REGISTER_OCTAVE_CMP_OP (ne, !=);
+  REGISTER_OCTAVE_CONST_OP (ct, true);
+  REGISTER_OCTAVE_CONST_OP (cf, false);
+
+  // Universal comparison operation.
+  template<class xop, class T1, class T2>
+  static bool
+  op (T1 x, T2 y)
+    {
+      typedef typename prom<T1, T2>::type PT1;
+      typedef typename prom<T2, T1>::type PT2;
+      return uiop<xop, sizeof (PT1)>::op (static_cast<PT1> (x), 
+                                          static_cast<PT2> (y));
+    }
+};
+
+// Base integer class. No data, just conversion methods and exception flags.
+template <class T> 
+class octave_int_base
+{
+protected:
+
+  static T min_val () { return std::numeric_limits<T>:: min (); }
+  static T max_val () { return std::numeric_limits<T>:: max (); }
+
+public:
+
+  // Convert integer value.
+  template <class S>
+  static T 
+  truncate_int (const S& value)
+    { 
+      // An exhaustive test whether the max and/or min check can be omitted.
+      static const bool t_is_signed = std::numeric_limits<T>::is_signed;
+      static const bool s_is_signed = std::numeric_limits<S>::is_signed;
+      static const int t_size = sizeof (T), s_size = sizeof (S);
+      static const bool omit_chk_min = 
+        (! s_is_signed || (t_is_signed && t_size >= s_size));
+      static const bool omit_chk_max = 
+        (t_size > s_size || (t_size == s_size 
+         && (! t_is_signed || s_is_signed)));
+      // If the check can be omitted, substitute constant false relation.
+      typedef octave_int_cmp_op::cf cf;
+      typedef octave_int_cmp_op::lt lt;
+      typedef octave_int_cmp_op::gt gt;
+      typedef typename if_else_type<omit_chk_min, cf, lt>::type chk_min;
+      typedef typename if_else_type<omit_chk_max, cf, gt>::type chk_max;
+
+      // Efficiency of the following depends on inlining and dead code
+      // elimination, but that should be a piece of cake for most compilers.
+      if (chk_min::op (value, static_cast<S> (min_val ())))
+        {
+          ftrunc = true;
+          return min_val ();
+        }
+      else if (chk_max::op (value, static_cast<S> (max_val ())))
+        {
+          ftrunc = true;
+          return max_val ();
+        }
+      else
+        return static_cast<T> (value);
+    }
+
+  // This does not check for NaN and non-int. It can be useful when using real
+  // types for integer arithmetics, e.g., 64-bit multiply via long double.
+  template <class S>
+  static T
+  truncate_real (const S& value)
+    {
+      if (value < min_val ())
+        {
+          ftrunc = true;
+          return min_val ();
+        }
+      else if (value > max_val ())
+        {
+          ftrunc = true;
+          return max_val ();
+        }
+      else
+        return static_cast<T> (value);
+    }
+
+  // Convert a real number (check NaN and non-int).
+  template <class S>
+  static T 
+  convert_real (const S& value)
+    {
+      if (lo_ieee_isnan (value))
+        {
+          fnan = true;
+          return static_cast<T> (0);
+        }
+      else if (value < min_val ())
+        {
+          octave_int_base<T>::ftrunc = true;
+          return min_val ();
+        }
+      else if (value > max_val ())
+        {
+          ftrunc = true;
+          return max_val ();
+        }
+      else
+        {
+          S rvalue = xround (value);
+          if (rvalue != value) fnon_int = true;
+          return static_cast<T> (rvalue);
+        }
+    }
+
+  // Exception flags rationale:
+  // There is little reason to distinguish math and conversion exceptions at
+  // octave_int level. Doing this would require special constructors for
+  // intermediate int results in math computations.
+  // 
+  // Boolean flags are used rather than a single flag, because raising a boolean
+  // flag is faster than masking an int flag (single mov versus mov, or, mov).
+  // Also, it is atomic, and thus thread-safe (but there is *one* flag for all
+  // threads).
+
+  static bool get_trunc_flag () { return ftrunc; }
+  static bool get_nan_flag () { return fnan; }
+  static bool get_non_int_flag () { return fnon_int; }
+  static void clear_conv_flags () 
+    { 
+      ftrunc = false;
+      fnan = false;
+      fnon_int = false;
+    }
+  // For compatibility.
+  static bool get_math_trunc_flag () { return ftrunc || fnan; }
+  static void clear_conv_flag () { clear_conv_flags (); }
+
+protected:
+
+  // Conversion flags.
+  static bool ftrunc;
+  static bool fnon_int;
+  static bool fnan;
+};
+
+template<class T> bool octave_int_base<T>::ftrunc = false;
+template<class T> bool octave_int_base<T>::fnon_int = false;
+template<class T> bool octave_int_base<T>::fnan = false;
+
+// Saturated (homogeneous) integer arithmetics. The signed and unsigned
+// implementations are significantly different, so we implement another layer
+// and completely specialize. Arithmetics inherits from octave_int_base so that
+// it can use its exceptions and truncation functions.
+
+template <class T, bool is_signed>
+class octave_int_arith_base
+{ };
+
+// Unsigned arithmetics. C++ standard requires it to be modular, so the
+// overflows can be handled efficiently and reliably.
+template <class T>
+class octave_int_arith_base<T, false> : octave_int_base<T>
+{
+public:
+
+  static T
+  abs (T x) { return x; }
+
+  static T
+  signum (T x) { return x ? static_cast<T> (1) : static_cast<T> (0); }
+
+  // Shifts do not overflow.
+  static T
+  rshift (T x, int n) { return x >> n; }
+
+  static T
+  lshift (T x, int n) { return x << n; }
+
+  static T
+  minus (T x)
+    {
+      if (x != 0) octave_int_base<T>::ftrunc = true;
+      return static_cast<T> (0);
+    }
+
+  // the overflow behaviour for unsigned integers is guaranteed by C/C++,
+  // so the following should always work.
+  static T 
+  add (T x, T y)
+    {
+      T u = x + y;
+      if (u < x)
+        {
+          u = octave_int_base<T>::max_val ();
+          octave_int_base<T>::ftrunc = true; 
+        }
+      return u;
+    }
+
+  static T 
+  sub (T x, T y)
+    {
+      T u = x - y;
+      if (u > x)
+        {
+          u = 0;
+          octave_int_base<T>::ftrunc = true; 
+        }
+      return u;
+    }
+
+  // Multiplication is done using promotion to wider type.  If there is no
+  // suitable promotion type, this operation *MUST* be specialized. But note
+  // that a real type can be used as the promotion type (e.g., long double for
+  // int64_t).
+  static T 
+  mul (T x, T y)
+    {
+      // Promotion type for multiplication (if exists).
+      typedef typename query_integer_type<2*sizeof (T), false>::type mptype;
+      return truncate_int (static_cast<mptype> (x) 
+                           * static_cast<mptype> (y));
+    }
+
+  // Division with rounding to nearest. Note that / and % are probably
+  // computed by a single instruction.
+  static T 
+  div (T x, T y)
+    {
+      if (y != 0)
+        {
+          T z = x / y, w = x % y;
+          if (w >= y-w) z += 1;
+          return z;
+        }
+      else
+        {
+          octave_int_base<T>::ftrunc = true; 
+          return x ? octave_int_base<T>::max_val () : 0;
+        }
+    }
+};
+
+// Special handler for 64-bit integer multiply.
+template <>
+OCTAVE_API uint64_t 
+octave_int_arith_base<uint64_t, false>::mul (uint64_t, uint64_t);
+
+// Signed integer arithmetics.
+// Rationale: If HAVE_FAST_INT_OPS is defined, the following conditions
+// should hold:
+// 1. Signed numbers are represented by twos complement
+//    (see <http://en.wikipedia.org/wiki/Two%27s_complement>)
+// 2. static_cast to unsigned int counterpart works like interpreting
+//    the signed bit pattern as unsigned (and is thus zero-cost).
+// 3. Signed addition and subtraction yield the same bit results as unsigned.
+//    (We use casts to prevent optimization interference, so there is no
+//     need for things like -ftrapv).
+// 4. Bit operations on signed integers work like on unsigned integers,
+//    except for the shifts. Shifts are arithmetic.
+//
+// The above conditions are satisfied by most modern platforms. If
+// HAVE_FAST_INT_OPS is defined, bit tricks and wraparound arithmetics are used
+// to avoid conditional jumps as much as possible, thus being friendly to modern
+// pipeline processor architectures.
+// Otherwise, we fall back to a bullet-proof code that only uses assumptions 
+// guaranteed by the standard.
+
+template <class T>
+class octave_int_arith_base<T, true> : octave_int_base<T>
+{
+  // The corresponding unsigned type.
+  typedef typename query_integer_type<sizeof (T), false>::type UT;
+public:
+
+  // Returns 1 for negative number, 0 otherwise.
+  static T
+  signbit (T x) 
+    { 
+#ifdef HAVE_FAST_INT_OPS
+      return static_cast<UT> (x) >> std::numeric_limits<T>::digits;
+#else
+      return (x < 0) ? 1 : 0; 
+#endif
+    }
+
+  static T
+  abs (T x)
+    {
+#ifdef HAVE_FAST_INT_OPS
+      // This is close to how GCC does std::abs, but we can't just use std::abs,
+      // because its behaviour for INT_MIN is undefined and the compiler could
+      // discard the following test.
+      T m = x >> std::numeric_limits<T>::digits;
+      T y = (x ^ m) - m;
+      if (y < 0) 
+        {
+          y = octave_int_base<T>::max_val ();
+          octave_int_base<T>::ftrunc = true;
+        }
+      return y;
+#else
+      // -INT_MAX is safe because C++ actually allows only three implementations
+      // of integers: sign & magnitude, ones complement and twos complement.
+      // The first test will, with modest optimizations, evaluate at compile
+      // time, and maybe eliminate the branch completely.
+      T y;
+      if (octave_int_base<T>::min_val () < -octave_int_base<T>::max_val ()
+          && x == octave_int_base<T>::min_val ())
+        {
+          y = octave_int_base<T>::max_val ();
+          octave_int_base<T>::ftrunc = true;
+        }
+      else
+        y = (x < 0) ? -x : x;
+      return y;
+#endif
+    }
+
+  static T
+  signum (T x) 
+    { 
+      // With modest optimizations, this will compile without a jump.
+      return ((x > 0) ? 1 : 0) - signbit (x); 
+    }
+
+  // TODO: We do not have an authority what signed shifts should exactly do, so
+  // we define them the easy way. Note that Matlab does not define signed
+  // shifts.
+
+  static T
+  rshift (T x, int n) { return x >> n; }
+
+  static T
+  lshift (T x, int n) { return x << n; }
+
+  // Minus has problems similar to abs.
+  static T
+  minus (T x)
+    {
+#ifdef HAVE_FAST_INT_OPS
+      T y = -x;
+      if (y == octave_int_base<T>::min_val ())
+        {
+          --y;
+          octave_int_base<T>::ftrunc = false;
+        }
+      return y;
+#else
+      T y;
+      if (octave_int_base<T>::min_val () < -octave_int_base<T>::max_val ()
+          && x == octave_int_base<T>::min_val ())
+        {
+          y = octave_int_base<T>::max_val ();
+          octave_int_base<T>::ftrunc = true;
+        }
+      else
+        y = -x;
+      return y;
+#endif
+    }
+
+  static T 
+  add (T x, T y)
+    {
+#ifdef HAVE_FAST_INT_OPS
+    // The typecasts do nothing, but they are here to prevent an optimizing
+    // compiler from interfering. Also, the signed operations on small types
+    // actually return int.
+      T u = static_cast<UT> (x) + static_cast<UT> (y);
+      T ux = u ^ x, uy = u ^ y; 
+      if ((ux & uy) < 0) 
+        {
+          u = octave_int_base<T>::max_val () + signbit (~u);
+          octave_int_base<T>::ftrunc = true;
+        }
+      return u;
+#else
+      // We shall carefully avoid anything that may overflow.
+      T u;
+      if (y < 0)
+        {
+          if (x < octave_int_base<T>::min_val () - y)
+            {
+              u = octave_int_base<T>::min_val ();
+              octave_int_base<T>::ftrunc = true;
+            }
+          else
+            u = x + y;
+        }
+      else
+        {
+          if (x > octave_int_base<T>::max_val () - y)
+            {
+              u = octave_int_base<T>::max_val ();
+              octave_int_base<T>::ftrunc = true;
+            }
+          else
+            u = x + y;
+        }
+
+      return u;
+#endif
+    }
+
+  // This is very similar to addition.
+  static T 
+  sub (T x, T y)
+    {
+#ifdef HAVE_FAST_INT_OPS
+    // The typecasts do nothing, but they are here to prevent an optimizing
+    // compiler from interfering. Also, the signed operations on small types
+    // actually return int.
+      T u = static_cast<UT> (x) - static_cast<UT> (y);
+      T ux = u ^ x, uy = u ^ ~y; 
+      if ((ux & uy) < 0) 
+        {
+          u = octave_int_base<T>::max_val () + signbit (~u);
+          octave_int_base<T>::ftrunc = true;
+        }
+      return u;
+#else
+      // We shall carefully avoid anything that may overflow.
+      T u;
+      if (y < 0)
+        {
+          if (x > octave_int_base<T>::max_val () + y)
+            {
+              u = octave_int_base<T>::max_val ();
+              octave_int_base<T>::ftrunc = true;
+            }
+          else
+            u = x - y;
+        }
+      else
+        {
+          if (x < octave_int_base<T>::min_val () + y)
+            {
+              u = octave_int_base<T>::min_val ();
+              octave_int_base<T>::ftrunc = true;
+            }
+          else
+            u = x - y;
+        }
+
+      return u;
+#endif
+    }
+
+  // Multiplication is done using promotion to wider type.  If there is no
+  // suitable promotion type, this operation *MUST* be specialized. But note
+  // that a real type can be used as the promotion type (e.g., long double for
+  // int64_t).
+  static T 
+  mul (T x, T y)
+    {
+      // Promotion type for multiplication (if exists).
+      typedef typename query_integer_type<2*sizeof (T), true>::type mptype;
+      return truncate_int (static_cast<mptype> (x) 
+                           * static_cast<mptype> (y));
+    }
+
+  // Division.
+  static T 
+  div (T x, T y)
+    {
+      T z;
+      if (y == 0)
+        {
+          octave_int_base<T>::ftrunc = true;
+          if (x < 0)
+            z = octave_int_base<T>::min_val ();
+          else if (x != 0)
+            z = octave_int_base<T>::max_val ();
+          else
+            z = 0;
+        }
+      else if (y < 0)
+        {
+          // This is a special case that overflows as well.
+          if (y == -1 && x == octave_int_base<T>::min_val ())
+            {
+              octave_int_base<T>::ftrunc = true;
+              z = octave_int_base<T>::max_val ();
+            }
+          else
+            {
+              z = x / y;
+              T w = -std::abs (x % y); // Can't overflow, but std::abs (x) can!
+              if (w <= y - w) 
+                z -= 1 - (signbit (x) << 1);
+            }
+        }
+      else
+        {
+          z = x / y;
+          T w = std::abs (x % y); // Can't overflow, but std::abs (x) can!
+          if (w >= y - w) 
+            z += 1 - (signbit (x) << 1);
+        }
+      return z;
+    }
+
+};
+
+// Special handler for 64-bit integer multiply.
+template <>
+OCTAVE_API int64_t 
+octave_int_arith_base<int64_t, true>::mul (int64_t, int64_t);
+
+// This class simply selects the proper arithmetics.
+template<class T>
+class octave_int_arith 
+ : public octave_int_arith_base<T, std::numeric_limits<T>::is_signed>
+{};
+
+template <class T>
+class
+octave_int : public octave_int_base<T>
+{
+public:
   typedef T val_type;
 
   octave_int (void) : ival () { }
 
-  template <class U>
-  octave_int (U i) : ival (OCTAVE_INT_CONV_FIT_TO_RANGE (i, T)) { }
+  octave_int (T i) : ival (i) { }
 
-  octave_int (double d) : ival (OCTAVE_INT_CONV_FIT_TO_RANGE (xround (d), T)) 
-    { 
-      if (xisnan (d))
-	conv_flag |= conv_nan;
-      else
-	conv_flag |= (d != xround (d) ? conv_non_int : 0);
-    }
+  octave_int (double d) : ival (octave_int_base<T>::convert_real (d)) { } 
+
+  octave_int (float d) : ival (octave_int_base<T>::convert_real (d)) { } 
 
   octave_int (bool b) : ival (b) { }
 
   template <class U>
+  octave_int (const U& i) : ival(octave_int_base<T>::truncate_int (i)) { }
+
+  template <class U>
   octave_int (const octave_int<U>& i)
-    : ival (OCTAVE_INT_CONV_FIT_TO_RANGE (i.value (), T)) { }
+    : ival (octave_int_base<T>::truncate_int (i.value ())) { }
 
   octave_int (const octave_int<T>& i) : ival (i.ival) { }
 
@@ -332,31 +698,12 @@ public:
     return *this;
   }
 
-  ~octave_int (void) { }
-  
   T value (void) const { return ival; }
 
   const unsigned char * iptr (void) const
   { return reinterpret_cast<const unsigned char *> (& ival); }
 
   bool operator ! (void) const { return ! ival; }
-
-  octave_int<T> operator + (void) const { return *this; }
-
-  octave_int<T> operator - (void) const
-  {
-    // Can't just return -ival because signed types are not
-    // symmetric, which causes things like -intmin("int32") to be the
-    // same as intmin("int32") instead of intmax("int32") (which is
-    // what we should get with saturation semantics).
-    if (std::numeric_limits<T>::is_signed)
-      return OCTAVE_INT_FIT_TO_RANGE (- static_cast<double> (ival), T);
-    else
-      {
-	conv_flag |= math_truncate;
-	return 0;
-      }
-  }
 
   bool bool_value (void) const { return static_cast<bool> (value ()); }
 
@@ -374,188 +721,110 @@ public:
 
   operator float (void) const { return float_value (); }
 
-  octave_int<T>& operator += (const octave_int<T>& x)
-  {
-    double t = static_cast<double> (value ());
-    double tx = static_cast<double> (x.value ());
-    ival = OCTAVE_INT_FIT_TO_RANGE (t + tx, T);
-    return *this;
+  octave_int<T>
+  operator + () const
+    { return *this; }
+
+  // unary operators & mappers
+#define OCTAVE_INT_UN_OP(OPNAME,NAME) \
+  inline octave_int<T> \
+  OPNAME () const \
+  { return octave_int_arith<T>::NAME (ival); }
+
+  OCTAVE_INT_UN_OP(operator -, minus)
+  OCTAVE_INT_UN_OP(abs, abs)
+  OCTAVE_INT_UN_OP(signum, signum)
+
+# undef OCTAVE_INT_UN_OP
+
+// Homogeneous binary integer operations.
+#define OCTAVE_INT_BIN_OP(OP, NAME, ARGT) \
+  inline octave_int<T> \
+  operator OP (const ARGT& y) const \
+  { return octave_int_arith<T>::NAME (ival, y); } \
+  inline octave_int<T>& \
+  operator OP##= (const ARGT& y) \
+  { \
+    ival = octave_int_arith<T>::NAME (ival, y); \
+    return *this; \
   }
 
-  octave_int<T>& operator -= (const octave_int<T>& x)
-  {
-    double t = static_cast<double> (value ());
-    double tx = static_cast<double> (x.value ());
-    ival = OCTAVE_INT_FIT_TO_RANGE (t - tx, T);
-    return *this;
-  }
+  OCTAVE_INT_BIN_OP(+, add, octave_int<T>)
+  OCTAVE_INT_BIN_OP(-, sub, octave_int<T>)
+  OCTAVE_INT_BIN_OP(*, mul, octave_int<T>)
+  OCTAVE_INT_BIN_OP(/, div, octave_int<T>)
+  OCTAVE_INT_BIN_OP(<<, lshift, int)
+  OCTAVE_INT_BIN_OP(>>, rshift, int)
 
-  octave_int<T>& operator *= (const octave_int<T>& x)
-  {
-    double t = static_cast<double> (value ());
-    double tx = static_cast<double> (x.value ());
-    ival = OCTAVE_INT_FIT_TO_RANGE (t * tx, T);
-    return *this;
-  }
-
-  octave_int<T>& operator /= (const octave_int<T>& x)
-  {
-    double t = static_cast<double> (value ());
-    double tx = static_cast<double> (x.value ());
-    double r = (t == 0 && tx == 0) ? 0 : xround (t / tx);
-    ival = OCTAVE_INT_FIT_TO_RANGE (r, T);
-    return *this;
-  }
-
-  template <class T2>
-  octave_int<T>& operator <<= (const T2& x)
-  {
-    ival = ival << x;
-    return *this;
-  }
-
-  // Use helper functions in the operator >>=, abs, and signum
-  // functions to avoid "comparison of unsigned expression < 0 is
-  // always false" warnings from GCC when instantiating these funtions
-  // for unsigned types.
-
-  template <class T2>
-  octave_int<T>& operator >>= (const T2& x)
-  {
-    octave_int_helper<T, std::numeric_limits<T>::is_signed>::rshift_eq (ival, x);
-    return *this;
-  }
-
-  octave_int<T> abs (void) const
-  {
-    return octave_int_helper<T, std::numeric_limits<T>::is_signed>::abs (value ());
-  }
-
-  octave_int<T> signum (void) const 
-  { 
-    return octave_int_helper<T, std::numeric_limits<T>::is_signed>::signum (value ());
-  }
+# undef OCTAVE_INT_BIN_OP
 
   octave_int<T> min (void) const { return std::numeric_limits<T>::min (); }
   octave_int<T> max (void) const { return std::numeric_limits<T>::max (); }
 
-  static int nbits (void) { return sizeof (T) * CHAR_BIT; }
+  static int nbits (void) { return std::numeric_limits<T>::digits; }
 
   static int byte_size (void) { return sizeof(T); }
 
-  static int get_conv_flag () { return conv_flag; }
-  static bool get_trunc_flag () { return (conv_flag & int_truncate); }
-  static bool get_nan_flag () { return (conv_flag & conv_nan); }
-  static bool get_non_int_flag () { return (conv_flag & conv_non_int); }
-  static bool get_math_trunc_flag () { return (conv_flag & math_truncate); }
-  static void clear_conv_flag () { conv_flag = 0; }
-
-  static const char *type_name () { return "unknown type"; }
+  static const char *type_name ();
 
   // Unsafe.  This function exists to support the MEX interface.
   // You should not use it anywhere else.
   void *mex_get_data (void) const { return const_cast<T *> (&ival); }
-
-  static int conv_flag;
 
 private:
 
   T ival;
 };
 
-template<class T> int octave_int<T>::conv_flag = 0;
+// No mixed integer binary operations!
 
 template <class T>
-bool
+inline bool
 xisnan (const octave_int<T>&)
-{
-  return false;
-}
+{ return false; }
+
+// TODO: Can/should any of these be inline?
 
 template <class T>
-octave_int<T>
-pow (const octave_int<T>& a, const octave_int<T>& b)
-{
-  octave_int<T> retval;
-
-  octave_int<T> zero = octave_int<T> (0);
-  octave_int<T> one = octave_int<T> (1);
-
-  if (b == zero || a == one)
-    retval = one;
-  else if (b < zero)
-    {
-      if (std::numeric_limits<T>::is_signed && a.value () == -1)
-        retval = (b.value () % 2) ? a : one;
-      else
-        retval = zero;
-    }
-  else
-    {
-      octave_int<T> a_val = a;
-      octave_int<T> b_val = b;
-
-      retval = a;
-
-      b_val -= 1;
-
-      while (b_val != zero)
-	{
-	  if ((b_val & one) != zero)
-	    retval = retval * a_val;
-
-	  b_val = b_val >> 1;
-
-	  if (b_val > zero)
-	    a_val = a_val * a_val;
-	}
-    }
-
-  return retval;
-}
+extern OCTAVE_API octave_int<T>
+pow (const octave_int<T>&, const octave_int<T>&);
 
 template <class T>
-octave_int<T>
-pow (double a, const octave_int<T>& b)
-{
-  double tb = static_cast<double> (b.value ());
-  double r = pow (a, tb);
-  r = __lo_ieee_isnan (r) ? 0 : xround (r);
-  return OCTAVE_INT_FIT_TO_RANGE (r, T);
-}
+extern OCTAVE_API octave_int<T>
+pow (const double& a, const octave_int<T>& b);
 
 template <class T>
-octave_int<T>
-pow (const octave_int<T>& a, double b)
-{
-  double ta = static_cast<double> (a.value ());
-  double r = pow (ta, b);
-  r = __lo_ieee_isnan (r) ? 0 : xround (r);
-  return OCTAVE_INT_FIT_TO_RANGE (r, T);
-}
+extern OCTAVE_API octave_int<T>
+pow (const octave_int<T>& a, const double& b);
 
 template <class T>
-octave_int<T>
-powf (float a, const octave_int<T>& b)
-{
-  float tb = static_cast<float> (b.value ());
-  float r = powf (a, tb);
-  r = __lo_ieee_float_isnan (r) ? 0 : xround (r);
-  return OCTAVE_INT_FIT_TO_RANGE (r, T);
-}
+extern OCTAVE_API octave_int<T>
+powf (const float& a, const octave_int<T>& b);
 
 template <class T>
-octave_int<T>
-powf (const octave_int<T>& a, float b)
-{
-  float ta = static_cast<float> (a.value ());
-  float r = pow (ta, b);
-  r = __lo_ieee_float_isnan (r) ? 0 : xround (r);
-  return OCTAVE_INT_FIT_TO_RANGE (r, T);
-}
+extern OCTAVE_API octave_int<T>
+powf (const octave_int<T>& a, const float& b);
+
+// Binary relations
+
+#define OCTAVE_INT_CMP_OP(OP, NAME) \
+  template<class T1, class T2> \
+  inline bool \
+  operator OP (const octave_int<T1>& x, const octave_int<T2>& y) \
+  { return octave_int_cmp_op::op<octave_int_cmp_op::NAME, T1, T2> \
+    (x.value (), y.value ()); }
+
+OCTAVE_INT_CMP_OP (<, lt)
+OCTAVE_INT_CMP_OP (<=, le)
+OCTAVE_INT_CMP_OP (>, gt)
+OCTAVE_INT_CMP_OP (>=, ge)
+OCTAVE_INT_CMP_OP (==, eq)
+OCTAVE_INT_CMP_OP (!=, ne)
+
+# undef OCTAVE_INT_CMP_OP
 
 template <class T>
-std::ostream&
+inline std::ostream&
 operator << (std::ostream& os, const octave_int<T>& ival)
 {
   os << ival.value ();
@@ -563,7 +832,7 @@ operator << (std::ostream& os, const octave_int<T>& ival)
 }
 
 template <class T>
-std::istream&
+inline std::istream&
 operator >> (std::istream& is, octave_int<T>& ival)
 {
   T tmp = 0;
@@ -572,237 +841,21 @@ operator >> (std::istream& is, octave_int<T>& ival)
   return is;
 }
 
-// specialize the widening conversions to make them faster
-// gosh. the syntax is tricky!
-
-#define SPECIALIZE_WIDENING_CONVERSION(T1, T2) \
-  template <> template <> \
-  inline octave_int<T2>::octave_int (T1 i) \
-    : ival (i) { } \
- \
-  template <> template <> \
-  inline octave_int<T2>::octave_int (const octave_int<T1>& i) \
-    : ival (i.value ()) { }
-
-SPECIALIZE_WIDENING_CONVERSION (int8_t, int16_t)
-SPECIALIZE_WIDENING_CONVERSION (int8_t, int32_t)
-SPECIALIZE_WIDENING_CONVERSION (int8_t, int64_t)
-SPECIALIZE_WIDENING_CONVERSION (int16_t, int32_t)
-SPECIALIZE_WIDENING_CONVERSION (int16_t, int64_t)
-SPECIALIZE_WIDENING_CONVERSION (int32_t, int64_t)
-SPECIALIZE_WIDENING_CONVERSION (uint8_t, uint16_t)
-SPECIALIZE_WIDENING_CONVERSION (uint8_t, uint32_t)
-SPECIALIZE_WIDENING_CONVERSION (uint8_t, uint64_t)
-SPECIALIZE_WIDENING_CONVERSION (uint16_t, uint32_t)
-SPECIALIZE_WIDENING_CONVERSION (uint16_t, uint64_t)
-SPECIALIZE_WIDENING_CONVERSION (uint32_t, uint64_t)
-
-// declare type names
-#define DECLARE_OCTAVE_INT_TYPENAME(TYPE, TYPENAME) \
-  template <> \
-  inline const char * \
-  octave_int<TYPE>::type_name () { return TYPENAME; }
-
-DECLARE_OCTAVE_INT_TYPENAME (int8_t, "int8")
-DECLARE_OCTAVE_INT_TYPENAME (int16_t, "int16")
-DECLARE_OCTAVE_INT_TYPENAME (int32_t, "int32")
-DECLARE_OCTAVE_INT_TYPENAME (int64_t, "int64")
-DECLARE_OCTAVE_INT_TYPENAME (uint8_t, "uint8")
-DECLARE_OCTAVE_INT_TYPENAME (uint16_t, "uint16")
-DECLARE_OCTAVE_INT_TYPENAME (uint32_t, "uint32")
-DECLARE_OCTAVE_INT_TYPENAME (uint64_t, "uint64")
-
-typedef octave_int<int8_t> octave_int8;
-typedef octave_int<int16_t> octave_int16;
-typedef octave_int<int32_t> octave_int32;
-typedef octave_int<int64_t> octave_int64;
-
-typedef octave_int<uint8_t> octave_uint8;
-typedef octave_int<uint16_t> octave_uint16;
-typedef octave_int<uint32_t> octave_uint32;
-typedef octave_int<uint64_t> octave_uint64;
-
-#define OCTAVE_INT_BIN_OP(OP) \
-  template <class T1, class T2> \
-  octave_int<typename octave_int_binop_traits<T1, T2>::TR> \
-  operator OP (const octave_int<T1>& x, const octave_int<T2>& y) \
-  { \
-    double tx = static_cast<double> (x.value ()); \
-    double ty = static_cast<double> (y.value ()); \
-    double r = tx OP ty; \
-    return OCTAVE_INT_FIT_TO_RANGE2 (r, T1, T2); \
-  }
-
-OCTAVE_INT_BIN_OP (+)
-OCTAVE_INT_BIN_OP (-)
-OCTAVE_INT_BIN_OP (*)
-
-template <class T1, class T2>
-octave_int<typename octave_int_binop_traits<T1, T2>::TR>
-operator / (const octave_int<T1>& x, const octave_int<T2>& y)
-{
-  double tx = static_cast<double> (x.value ());
-  double ty = static_cast<double> (y.value ());
-  double r = (tx == 0 && ty == 0) ? 0 : xround (tx / ty);
-  return OCTAVE_INT_FIT_TO_RANGE2 (r, T1, T2);
-}
-
-#define OCTAVE_INT_DOUBLE_BIN_OP(OP) \
-  template <class T> \
-  octave_int<T> \
-  operator OP (const octave_int<T>& x, double y) \
-  { \
-    double tx = static_cast<double> (x.value ()); \
-    double r = xround (tx OP y); \
-    r = __lo_ieee_isnan (r) ? 0 : xround (r); \
-    return OCTAVE_INT_FIT_TO_RANGE (r, T); \
-  }
-
-OCTAVE_INT_DOUBLE_BIN_OP (+)
-OCTAVE_INT_DOUBLE_BIN_OP (-)
-OCTAVE_INT_DOUBLE_BIN_OP (*)
-OCTAVE_INT_DOUBLE_BIN_OP (/)
-
-#define OCTAVE_DOUBLE_INT_BIN_OP(OP) \
-  template <class T> \
-  octave_int<T> \
-  operator OP (double x, const octave_int<T>& y) \
-  { \
-    double ty = static_cast<double> (y.value ()); \
-    double r = x OP ty; \
-    r = __lo_ieee_isnan (r) ? 0 : xround (r); \
-    return OCTAVE_INT_FIT_TO_RANGE (r, T); \
-  }
-
-OCTAVE_DOUBLE_INT_BIN_OP (+)
-OCTAVE_DOUBLE_INT_BIN_OP (-)
-OCTAVE_DOUBLE_INT_BIN_OP (*)
-OCTAVE_DOUBLE_INT_BIN_OP (/)
-
-#define OCTAVE_INT_DOUBLE_CMP_OP(OP) \
-  template <class T> \
-  bool \
-  operator OP (const octave_int<T>& x, const double& y) \
-  { \
-    double tx = static_cast<double> (x.value ()); \
-    return tx OP y; \
-  }
-
-OCTAVE_INT_DOUBLE_CMP_OP (<)
-OCTAVE_INT_DOUBLE_CMP_OP (<=)
-OCTAVE_INT_DOUBLE_CMP_OP (>=)
-OCTAVE_INT_DOUBLE_CMP_OP (>)
-OCTAVE_INT_DOUBLE_CMP_OP (==)
-OCTAVE_INT_DOUBLE_CMP_OP (!=)
-
-#define OCTAVE_DOUBLE_INT_CMP_OP(OP) \
-  template <class T> \
-  bool \
-  operator OP (const double& x, const octave_int<T>& y) \
-  { \
-    double ty = static_cast<double> (y.value ()); \
-    return x OP ty; \
-  }
-
-OCTAVE_DOUBLE_INT_CMP_OP (<)
-OCTAVE_DOUBLE_INT_CMP_OP (<=)
-OCTAVE_DOUBLE_INT_CMP_OP (>=)
-OCTAVE_DOUBLE_INT_CMP_OP (>)
-OCTAVE_DOUBLE_INT_CMP_OP (==)
-OCTAVE_DOUBLE_INT_CMP_OP (!=)
-
-#define OCTAVE_INT_FLOAT_BIN_OP(OP) \
-  template <class T> \
-  octave_int<T> \
-  operator OP (const octave_int<T>& x, float y) \
-  { \
-    double tx = static_cast<double> (x.value ()); \
-    double r = xround (tx OP y); \
-    r = __lo_ieee_isnan (r) ? 0 : xround (r); \
-    return OCTAVE_INT_FIT_TO_RANGE (r, T); \
-  }
-
-OCTAVE_INT_FLOAT_BIN_OP (+)
-OCTAVE_INT_FLOAT_BIN_OP (-)
-OCTAVE_INT_FLOAT_BIN_OP (*)
-OCTAVE_INT_FLOAT_BIN_OP (/)
-
-#define OCTAVE_FLOAT_INT_BIN_OP(OP) \
-  template <class T> \
-  octave_int<T> \
-  operator OP (float x, const octave_int<T>& y) \
-  { \
-    double ty = static_cast<double> (y.value ()); \
-    double r = x OP ty; \
-    r = __lo_ieee_isnan (r) ? 0 : xround (r); \
-    return OCTAVE_INT_FIT_TO_RANGE (r, T); \
-  }
-
-OCTAVE_FLOAT_INT_BIN_OP (+)
-OCTAVE_FLOAT_INT_BIN_OP (-)
-OCTAVE_FLOAT_INT_BIN_OP (*)
-OCTAVE_FLOAT_INT_BIN_OP (/)
-
-#define OCTAVE_INT_FLOAT_CMP_OP(OP) \
-  template <class T> \
-  bool \
-  operator OP (const octave_int<T>& x, const float& y) \
-  { \
-    double tx = static_cast<double> (x.value ()); \
-    return tx OP y; \
-  }
-
-OCTAVE_INT_FLOAT_CMP_OP (<)
-OCTAVE_INT_FLOAT_CMP_OP (<=)
-OCTAVE_INT_FLOAT_CMP_OP (>=)
-OCTAVE_INT_FLOAT_CMP_OP (>)
-OCTAVE_INT_FLOAT_CMP_OP (==)
-OCTAVE_INT_FLOAT_CMP_OP (!=)
-
-#define OCTAVE_FLOAT_INT_CMP_OP(OP) \
-  template <class T> \
-  bool \
-  operator OP (const float& x, const octave_int<T>& y) \
-  { \
-    double ty = static_cast<double> (y.value ()); \
-    return x OP ty; \
-  }
-
-OCTAVE_FLOAT_INT_CMP_OP (<)
-OCTAVE_FLOAT_INT_CMP_OP (<=)
-OCTAVE_FLOAT_INT_CMP_OP (>=)
-OCTAVE_FLOAT_INT_CMP_OP (>)
-OCTAVE_FLOAT_INT_CMP_OP (==)
-OCTAVE_FLOAT_INT_CMP_OP (!=)
+// Bitwise operations
 
 #define OCTAVE_INT_BITCMP_OP(OP) \
   template <class T> \
   octave_int<T> \
   operator OP (const octave_int<T>& x, const octave_int<T>& y) \
-  { \
-    return x.value () OP y.value (); \
-  }
+  { return x.value () OP y.value (); }
 
 OCTAVE_INT_BITCMP_OP (&)
 OCTAVE_INT_BITCMP_OP (|)
 OCTAVE_INT_BITCMP_OP (^)
 
-template <class T1, class T2>
-octave_int<T1>
-operator << (const octave_int<T1>& x, const T2& y)
-{
-  octave_int<T1> retval = x;
-  return retval <<= y;
-}
+# undef OCTAVE_INT_BITCMP_OP
 
-template <class T1, class T2>
-octave_int<T1>
-operator >> (const octave_int<T1>& x, const T2& y)
-{
-  octave_int<T1> retval = x;
-  return retval >>= y;
-}
-
+// General bit shift.
 template <class T>
 octave_int<T>
 bitshift (const octave_int<T>& a, int n,
@@ -816,127 +869,115 @@ bitshift (const octave_int<T>& a, int n,
     return a;
 }
 
-#define OCTAVE_INT_CMP_OP(OP) \
-  template <class T1, class T2> \
-  bool \
-  operator OP (const octave_int<T1>& x, const octave_int<T2>& y) \
-  { \
-    return x.value () OP y.value (); \
-  }
+typedef octave_int<int8_t> octave_int8;
+typedef octave_int<int16_t> octave_int16;
+typedef octave_int<int32_t> octave_int32;
+typedef octave_int<int64_t> octave_int64;
 
-OCTAVE_INT_CMP_OP (<)
-OCTAVE_INT_CMP_OP (<=)
-OCTAVE_INT_CMP_OP (>=)
-OCTAVE_INT_CMP_OP (>)
-OCTAVE_INT_CMP_OP (==)
-OCTAVE_INT_CMP_OP (!=)
+typedef octave_int<uint8_t> octave_uint8;
+typedef octave_int<uint16_t> octave_uint16;
+typedef octave_int<uint32_t> octave_uint32;
+typedef octave_int<uint64_t> octave_uint64;
 
-// The following apply if the unsigned type is at least as wide as the
-// signed type (then we can cast postive signed values to the unsigned
-// type and compare).
-
-#define OCTAVE_US_TYPE1_CMP_OP_DECL(OP, LTZ_VAL, UT, ST) \
+#define OCTAVE_INT_DOUBLE_BIN_OP(OP) \
+  template <class T> \
+  inline octave_int<T> \
+  operator OP (const octave_int<T>& x, const double& y) \
+  { return octave_int<T> (static_cast<double> (x) OP y); } \
   template <> \
-  bool \
-  OCTAVE_API operator OP (const octave_int<UT>& lhs, const octave_int<ST>& rhs);
-
-#define OCTAVE_US_TYPE1_CMP_OP_DECLS(UT, ST) \
-  OCTAVE_US_TYPE1_CMP_OP_DECL (<, false, UT, ST) \
-  OCTAVE_US_TYPE1_CMP_OP_DECL (<=, false, UT, ST) \
-  OCTAVE_US_TYPE1_CMP_OP_DECL (>=, true, UT, ST) \
-  OCTAVE_US_TYPE1_CMP_OP_DECL (>, true, UT, ST) \
-  OCTAVE_US_TYPE1_CMP_OP_DECL (==, false, UT, ST) \
-  OCTAVE_US_TYPE1_CMP_OP_DECL (!=, true, UT, ST)
-
-#define OCTAVE_SU_TYPE1_CMP_OP_DECL(OP, LTZ_VAL, ST, UT) \
+  OCTAVE_API octave_int64 \
+  operator OP (const octave_int64&, const double&); \
   template <> \
-  bool \
-  OCTAVE_API operator OP (const octave_int<ST>& lhs, const octave_int<UT>& rhs);
-
-#define OCTAVE_SU_TYPE1_CMP_OP_DECLS(ST, UT) \
-  OCTAVE_SU_TYPE1_CMP_OP_DECL (<, true, ST, UT) \
-  OCTAVE_SU_TYPE1_CMP_OP_DECL (<=, true, ST, UT) \
-  OCTAVE_SU_TYPE1_CMP_OP_DECL (>=, false, ST, UT) \
-  OCTAVE_SU_TYPE1_CMP_OP_DECL (>, false, ST, UT) \
-  OCTAVE_SU_TYPE1_CMP_OP_DECL (==, false, ST, UT) \
-  OCTAVE_SU_TYPE1_CMP_OP_DECL (!=, true, ST, UT)
-
-#define OCTAVE_TYPE1_CMP_OP_DECLS(UT, ST) \
-  OCTAVE_US_TYPE1_CMP_OP_DECLS (UT, ST) \
-  OCTAVE_SU_TYPE1_CMP_OP_DECLS (ST, UT)
-
-OCTAVE_TYPE1_CMP_OP_DECLS (uint32_t, int8_t)
-OCTAVE_TYPE1_CMP_OP_DECLS (uint32_t, int16_t)
-OCTAVE_TYPE1_CMP_OP_DECLS (uint32_t, int32_t)
-
-OCTAVE_TYPE1_CMP_OP_DECLS (uint64_t, int8_t)
-OCTAVE_TYPE1_CMP_OP_DECLS (uint64_t, int16_t)
-OCTAVE_TYPE1_CMP_OP_DECLS (uint64_t, int32_t)
-OCTAVE_TYPE1_CMP_OP_DECLS (uint64_t, int64_t)
-
-// The following apply if the signed type is wider than the unsigned
-// type (then we can cast unsigned values to the signed type and
-// compare if the signed value is positive).
-
-#define OCTAVE_US_TYPE2_CMP_OP_DECL(OP, LTZ_VAL, UT, ST) \
+  OCTAVE_API octave_uint64 \
+  operator OP (const octave_uint64&, const double&); \
+  template <class T> \
+  inline octave_int<T> \
+  operator OP (const double& x, const octave_int<T>& y) \
+  { return octave_int<T> (x OP static_cast<double> (y)); } \
   template <> \
-  bool \
-  OCTAVE_API operator OP (const octave_int<UT>& lhs, const octave_int<ST>& rhs);
-
-#define OCTAVE_US_TYPE2_CMP_OP_DECLS(ST, UT) \
-  OCTAVE_US_TYPE2_CMP_OP_DECL (<, false, ST, UT) \
-  OCTAVE_US_TYPE2_CMP_OP_DECL (<=, false, ST, UT) \
-  OCTAVE_US_TYPE2_CMP_OP_DECL (>=, true, ST, UT) \
-  OCTAVE_US_TYPE2_CMP_OP_DECL (>, true, ST, UT) \
-  OCTAVE_US_TYPE2_CMP_OP_DECL (==, false, ST, UT) \
-  OCTAVE_US_TYPE2_CMP_OP_DECL (!=, true, ST, UT)
-
-#define OCTAVE_SU_TYPE2_CMP_OP_DECL(OP, LTZ_VAL, ST, UT) \
+  OCTAVE_API octave_int64 \
+  operator OP (const double&, const octave_int64&); \
   template <> \
+  OCTAVE_API octave_uint64 \
+  operator OP (const double&, const octave_uint64&);
+
+
+OCTAVE_INT_DOUBLE_BIN_OP (+)
+OCTAVE_INT_DOUBLE_BIN_OP (-)
+OCTAVE_INT_DOUBLE_BIN_OP (*)
+OCTAVE_INT_DOUBLE_BIN_OP (/)
+
+# undef OCTAVE_INT_DOUBLE_BIN_OP
+
+#define OCTAVE_INT_DOUBLE_CMP_OP(OP) \
+  template <class T> \
+  inline bool \
+  operator OP (const octave_int<T>& x, const double& y) \
+  { return static_cast<double> (x.value ()) OP y; } \
+  template <> \
+  OCTAVE_API bool \
+  operator OP (const octave_int64&, const double&); \
+  template <> \
+  OCTAVE_API bool \
+  operator OP (const octave_uint64&, const double&); \
+  template <class T> \
+  inline bool \
+  operator OP (const double& x, const octave_int<T>& y) \
+  { return x OP static_cast<double> (y.value ()); } \
+  template <> \
+  OCTAVE_API bool \
+  operator OP (const double&, const octave_int64&); \
+  template <> \
+  OCTAVE_API bool \
+  operator OP (const double&, const octave_uint64&);
+
+
+OCTAVE_INT_DOUBLE_CMP_OP (<)
+OCTAVE_INT_DOUBLE_CMP_OP (<=)
+OCTAVE_INT_DOUBLE_CMP_OP (>=)
+OCTAVE_INT_DOUBLE_CMP_OP (>)
+OCTAVE_INT_DOUBLE_CMP_OP (==)
+OCTAVE_INT_DOUBLE_CMP_OP (!=)
+
+# undef OCTAVE_INT_DOUBLE_CMP_OP
+
+// Floats are handled by simply converting to doubles.
+
+#define OCTAVE_INT_FLOAT_BIN_OP(OP) \
+  template <class T> \
+  inline octave_int<T> \
+  operator OP (const octave_int<T>& x, float y) \
+  { return x OP static_cast<double> (y); } \
+  template <class T> \
+  inline octave_int<T> \
+  operator OP (float x, const octave_int<T>& y) \
+  { return static_cast<double> (x) OP y; }
+
+OCTAVE_INT_FLOAT_BIN_OP (+)
+OCTAVE_INT_FLOAT_BIN_OP (-)
+OCTAVE_INT_FLOAT_BIN_OP (*)
+OCTAVE_INT_FLOAT_BIN_OP (/)
+
+# undef OCTAVE_INT_FLOAT_BIN_OP
+
+#define OCTAVE_INT_FLOAT_CMP_OP(OP) \
+  template <class T> \
+  inline bool \
+  operator OP (const octave_int<T>& x, const float& y) \
+  { return x OP static_cast<double> (y); } \
+  template <class T> \
   bool \
-  OCTAVE_API operator OP (const octave_int<ST>& lhs, const octave_int<UT>& rhs);
+  operator OP (const float& x, const octave_int<T>& y) \
+  { return static_cast<double> (x) OP y; }
 
-#define OCTAVE_SU_TYPE2_CMP_OP_DECLS(ST, UT) \
-  OCTAVE_SU_TYPE2_CMP_OP_DECL (<, true, ST, UT) \
-  OCTAVE_SU_TYPE2_CMP_OP_DECL (<=, true, ST, UT) \
-  OCTAVE_SU_TYPE2_CMP_OP_DECL (>=, false, ST, UT) \
-  OCTAVE_SU_TYPE2_CMP_OP_DECL (>, false, ST, UT) \
-  OCTAVE_SU_TYPE2_CMP_OP_DECL (==, false, ST, UT) \
-  OCTAVE_SU_TYPE2_CMP_OP_DECL (!=, true, ST, UT)
+OCTAVE_INT_FLOAT_CMP_OP (<)
+OCTAVE_INT_FLOAT_CMP_OP (<=)
+OCTAVE_INT_FLOAT_CMP_OP (>=)
+OCTAVE_INT_FLOAT_CMP_OP (>)
+OCTAVE_INT_FLOAT_CMP_OP (==)
+OCTAVE_INT_FLOAT_CMP_OP (!=)
 
-#define OCTAVE_TYPE2_CMP_OP_DECLS(UT, ST) \
-  OCTAVE_US_TYPE2_CMP_OP_DECLS (UT, ST) \
-  OCTAVE_SU_TYPE2_CMP_OP_DECLS (ST, UT)
-
-OCTAVE_TYPE2_CMP_OP_DECLS (uint32_t, int64_t)
-
-#undef OCTAVE_INT_BINOP_TRAIT
-#undef OCTAVE_US_S_FTR
-#undef OCTAVE_US_S_FTR_FCNS
-#undef OCTAVE_S_US_FTR
-#undef OCTAVE_S_US_FTR_FCNS
-#undef OCTAVE_INT_FIT_TO_RANGE
-#undef OCTAVE_INT_MIN_VAL2
-#undef OCTAVE_INT_MAX_VAL2
-#undef OCTAVE_INT_FIT_TO_RANGE2
-#undef OCTAVE_INT_BIN_OP
-#undef OCTAVE_INT_DOUBLE_BIN_OP
-#undef OCTAVE_DOUBLE_INT_BIN_OP
-#undef OCTAVE_INT_DOUBLE_CMP_OP
-#undef OCTAVE_DOUBLE_INT_CMP_OP
-#undef OCTAVE_INT_BITCMP_OP
-#undef OCTAVE_INT_CMP_OP
-#undef OCTAVE_US_TYPE1_CMP_OP_DECL
-#undef OCTAVE_US_TYPE1_CMP_OP_DECLS
-#undef OCTAVE_SU_TYPE1_CMP_OP_DECL
-#undef OCTAVE_SU_TYPE1_CMP_OP_DECLS
-#undef OCTAVE_TYPE1_CMP_OP_DECLS
-#undef OCTAVE_US_TYPE2_CMP_OP_DECL
-#undef OCTAVE_US_TYPE2_CMP_OP_DECLS
-#undef OCTAVE_SU_TYPE2_CMP_OP_DECL
-#undef OCTAVE_SU_TYPE2_CMP_OP_DECLS
-#undef OCTAVE_TYPE2_CMP_OP_DECLS
-
+# undef OCTAVE_INT_FLOAT_CMP_OP
 #endif
 
 /*

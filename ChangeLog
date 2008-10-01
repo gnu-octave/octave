@@ -1,3 +1,8 @@
+2008-09-30  Jaroslav Hajek <highegg@gmail.com>
+
+	* aclocal.m4 (OCTAVE_FAST_INT_OPS): New macro.
+	* configure.in: Call OCTAVE_FAST_INT_OPS
+
 2008-09-08  John W. Eaton  <jwe@octave.org>
 
 	* mkoctfile.cc.in, octave-bug.cc.in, octave-config.cc.in: Style fixes.

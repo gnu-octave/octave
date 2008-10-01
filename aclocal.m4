@@ -1206,3 +1206,68 @@ main()
    AC_SUBST([FT2_CFLAGS])
    AC_SUBST([FT2_LIBS])])
 dnl end of freetype2.m4
+
+dnl Check whether fast signed integer arithmetics using bit tricks
+dnl can be used in oct-inttypes.h. Defines HAVE_FAST_INT_OPS if
+dnl the following conditions hold:
+dnl 1. Signed numbers are represented by twos complement
+dnl    (see <http://en.wikipedia.org/wiki/Two%27s_complement>)
+dnl 2. static_cast to unsigned int counterpart works like interpreting
+dnl    the signed bit pattern as unsigned (and is thus zero-cost).
+dnl 3. Signed addition and subtraction yield the same bit results as unsigned.
+dnl    (We use casts to prevent optimization interference, so there is no
+dnl     need for things like -ftrapv).
+dnl 4. Bit operations on signed integers work like on unsigned integers,
+dnl    except for the shifts. Shifts are arithmetic.
+dnl
+AC_DEFUN([OCTAVE_FAST_INT_OPS],[
+AC_MSG_CHECKING([whether fast integer arithmetics is usable])
+AC_LANG_PUSH(C++)
+AC_RUN_IFELSE([AC_LANG_PROGRAM([[
+#include <limits>
+template<class UT, class ST>
+static bool 
+do_test (UT, ST)
+{
+  volatile ST s = std::numeric_limits<ST>::min () / 3;
+  volatile UT u = static_cast<UT> (s);
+  if (*(reinterpret_cast<volatile ST *> (&u)) != s) return true;
+  
+  u = 0; u = ~u;
+  if (*(reinterpret_cast<volatile ST *> (&u)) != -1) return true;
+  
+  ST sx, sy;
+  sx = std::numeric_limits<ST>::max () / 2 + 1;
+  sy = std::numeric_limits<ST>::max () / 2 + 2;
+  if (static_cast<ST> (static_cast<UT> (sx) + static_cast<UT> (sy))
+      != std::numeric_limits<ST>::min () + 1) return true;
+  if (static_cast<ST> (static_cast<UT> (sx) - static_cast<UT> (sy))
+      != -1) return true;
+  
+  if ((sx & sy) != (static_cast<UT> (sx) & static_cast<UT> (sy)))
+    return true;
+  if ((sx | sy) != (static_cast<UT> (sx) | static_cast<UT> (sy)))
+    return true;
+  if ((sx ^ sy) != (static_cast<UT> (sx) ^ static_cast<UT> (sy)))
+    return true;
+  if ((-1 >> 1) != -1) return true;
+  return false;
+}
+
+#define DO_TEST(T) \
+if (do_test (static_cast<unsigned T> (0), static_cast<signed T> (0))) \
+  return sizeof (T);
+]],[[
+  DO_TEST(char)
+  DO_TEST(short)
+  DO_TEST(int)
+  DO_TEST(long)
+#if (defined(HAVE_LONG_LONG_INT) && defined(HAVE_UNSIGNED_LONG_LONG_INT))
+  DO_TEST(long long)
+#endif
+]])],
+[AC_MSG_RESULT([yes])
+ AC_DEFINE(HAVE_FAST_INT_OPS,1,[Define if signed integers use two's complement])],
+[AC_MSG_RESULT([no])])
+AC_LANG_POP(C++)])
+

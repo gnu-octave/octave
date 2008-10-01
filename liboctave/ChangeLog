@@ -1,3 +1,8 @@
+2008-09-30  Jaroslav Hajek <highegg@gmail.com>
+
+	* oct-inttypes.h: Mostly rewrite. 
+	* oct-inttypes.cc: Modstly rewrite.
+
 2008-09-29  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Array.cc (Array<T>::maybe_delete_elements_2(idx_vector&)): Return on

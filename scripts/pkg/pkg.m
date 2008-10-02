@@ -1281,21 +1281,10 @@ function configure_make (desc, packdir, verbose)
       m = dir (fullfile (src, "*.m"));
       oct = dir (fullfile (src, "*.oct"));
       mex = dir (fullfile (src, "*.mex"));
-      archdependent = "";
-      archindependent = "";
-      filenames = "";
-      if (length (m) > 0)
-	filenames = sprintf (fullfile (src, "%s "), m.name);
-      endif
-      if (length (oct) > 0)
-	filenames = cstrcat (filenames, " ",
-			    sprintf (fullfile (src, "%s "), oct.name));
-      endif
-      if (length (mex) > 0)
-	filenames = cstrcat (filenames, " ",
-			    sprintf (fullfile (src, "%s "), mex.name));
-      endif
-      filenames = split_by (filenames, " ");
+
+      filenames = cellfun (@(x) fullfile (src, x),
+			   {m.name, oct.name, mex.name},
+			   "UniformOutput", false);
     endif
 
     ## Split into architecture dependent and independent files

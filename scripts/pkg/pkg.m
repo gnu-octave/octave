@@ -1228,7 +1228,7 @@ function configure_make (desc, packdir, verbose)
       if (isempty (getenv ("RANLIB")))
         flags = cstrcat (flags, " RANLIB=\"", octave_config_info ("RANLIB"), "\"");
       endif
-      [status, output] = shell (cstrcat ("cd ", src, "; ./configure --prefix=\"",
+      [status, output] = shell (strcat ("cd '", src, "'; ./configure --prefix=\"",
                                         desc.dir, "\"", flags));
       if (status != 0)
 	rm_rf (desc.dir);
@@ -1242,7 +1242,7 @@ function configure_make (desc, packdir, verbose)
     ## make
     if (exist (fullfile (src, "Makefile"), "file"))
       [status, output] = shell (cstrcat ("export INSTALLDIR=\"", desc.dir,
-					 "\"; make -C ", src));
+					 "\"; make -C '", src, "'"));
       if (status != 0)
 	rm_rf (desc.dir);
 	error ("'make' returned the following error: %s", output);

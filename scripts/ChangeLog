@@ -1,3 +1,7 @@
+2008-10-02  Ben Abbott <bpabbott@mac.com>
+
+	* plot/__go_draw_axes__.m: Remove depdenence on gnuplot version..
+
 2008-09-30  Jaroslav Hajek  <highegg@gmail.com>
 
 	* string/split.m: New tests.

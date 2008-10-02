@@ -24,16 +24,6 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 
   if (nargin == 4)
 
-    ## Gnupot versions > 4.2.4 include a patch to properly interpolate
-    ## colors.  Prior to that version the interpolation of colors used
-    ## the zdata rather than the cdata.
-    ##
-    ## FIXME: when gnuplot 4.3 is released the special treatment might
-    ## be removed.
-
-    persistent gp_version_gt_4p2p4 = ...
-	compare_versions (__gnuplot_version__ (), "4.2.4", ">");
-
     axis_obj = __get__ (h);
 
     parent_figure_obj = get (axis_obj.parent);
@@ -325,25 +315,9 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 	continue;
       endif
 
-      ## Check for color interpolation for surfaces.
-      doing_interp_color = strncmp (obj.facecolor, "interp", 6);
-      if (doing_interp_color)
-	## Check to see if gnuplot is fully functional in this regard.
-	if (gp_version_gt_4p2p4)
-	  ## Color interpolation works correctly in gnuplot >4.2.4.
-	  fake_color_interp = false;
-	else
-	  ## The patches may be applied to >4.2.2, but don't count on it.
-	  ## For versions >4.1 & <4.2.5 the interpolation uses the zdata
-	  ## rather than the cdata. As a result surfc() will work because
-	  ## all(zdata(:)==cdata(:)). pcolor() may be given the illusion
-	  ## of working when the veiw is directly from above.
-	  fake_color_interp = (all (axis_obj.view == [0, 90])
-			       || all (obj.zdata(:) == obj.cdata(:)));
-	endif
-      else
-        fake_color_interp = false;
-      endif
+      ## Check for facecolor interpolation for surfaces.
+      doing_interp_color = ...
+         isfield (obj, "facecolor") && strncmp (obj.facecolor, "interp", 6);
 
       switch (obj.type)
 	case "image"
@@ -848,19 +822,11 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 
 	    if (doing_interp_color)
 	      interp_str = "interpolate 4, 4";
-	      if (fake_color_interp)
-		## In this instance the interpolation of color respects zdata
-		## rather than cdata.
-		usingclause{data_idx} = "using ($1):($2):($4)";
-	      else
-	        ## The proper gnuplot inputs include xdata, ydata, zdata, & cdata.
-		usingclause{data_idx} = "using ($1):($2):($3):($4)";
-	      endif
 	    else
-	      ## No interpolation of colors.
+	      ## No interpolation of facecolors.
 	      interp_str = "";
-	      usingclause{data_idx} = "using ($1):($2):($3):($4)";
 	    endif
+	    usingclause{data_idx} = "using ($1):($2):($3):($4)";
 
             flat_interp_face = (strncmp (obj.facecolor, "flat", 4)
 				|| strncmp (obj.facecolor, "interp", 6));
@@ -1027,13 +993,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
       else
 	zdir = "noreverse";
       endif
-      if (doing_interp_color)
-	if (! fake_color_interp || any (obj.zdata(:) ~= 0))
-	  fprintf (plot_stream, "set zrange [%.15e:%.15e] %s;\n", zlim, zdir);
-	end
-      else
-	fprintf (plot_stream, "set zrange [%.15e:%.15e] %s;\n", zlim, zdir);
-      endif
+      fprintf (plot_stream, "set zrange [%.15e:%.15e] %s;\n", zlim, zdir);
     endif
 
     cmap = parent_figure_obj.colormap;    

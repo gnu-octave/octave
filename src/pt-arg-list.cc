@@ -214,7 +214,7 @@ tree_argument_list::convert_to_const_vector (const octave_value *object)
 		  for (int i = 0; i < n; i++)
 		    args(j++) = tl(i);
 		}
-	      else
+	      else if (tmp.is_defined ())
 		args(j++) = tmp;
 	    }
 	}

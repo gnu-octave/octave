@@ -1,3 +1,8 @@
+2008-10-02  John W. Eaton  <jwe@octave.org>
+
+	* pt-arg-list.cc (tree_argument_list::convert_to_const_vector):
+	Don't insert undefined elements in return list.
+
 2008-09-30  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-str-mat.h (octave-char-matrix-str::assign): Remove declaration.

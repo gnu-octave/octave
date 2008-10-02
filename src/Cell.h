@@ -89,6 +89,8 @@ public:
 	      const octave_value& rfv = resize_fill_value ()) const
     { return Cell (ArrayN<octave_value>::index (ra_idx, resize_ok, rfv)); }
 
+  Cell& delete_elements (const octave_value_list& idx);
+
   Cell& assign (const octave_value_list& idx, const Cell& rhs,
 		const octave_value& fill_val = octave_value ());
 

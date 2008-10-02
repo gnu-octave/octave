@@ -290,7 +290,7 @@ Octave_map::maybe_delete_elements (const octave_value_list& idx)
 	{
 	  std::string k = t_keys[i];
 
-	  map[k] = contents(k).assign (idx, Cell());
+	  map[k] = contents(k).delete_elements (idx);
 
 	  if (error_state)
 	    break;

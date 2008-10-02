@@ -172,6 +172,19 @@ Cell::assign (const octave_value_list& idx_arg, const Cell& rhs,
   return *this;
 }
 
+Cell&
+Cell::delete_elements (const octave_value_list& idx_arg)
+
+{
+  Array<idx_vector> ra_idx (idx_arg.length ());
+  for (octave_idx_type i = 0; i < idx_arg.length (); i++)
+    ra_idx.xelem (i) = idx_arg(i).index_vector ();
+
+  maybe_delete_elements (ra_idx, octave_value ());
+
+  return *this;
+}
+
 octave_idx_type
 Cell::nnz (void) const
 {

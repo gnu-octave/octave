@@ -1,3 +1,8 @@
+2008-10-03  Jaroslav Hajek  <highegg@gmail.com>
+
+	* Array.cc (assignN): Do not call maybe_delete_elements when
+	for empty matrix.
+
 2008-09-30  Jaroslav Hajek <highegg@gmail.com>
 
 	* oct-inttypes.h: Mostly rewrite. 

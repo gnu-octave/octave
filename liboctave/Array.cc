@@ -3374,11 +3374,7 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 
   Array<idx_vector> idx = conv_to_array (idx_vex, n_idx);
 
-  if (rhs_dims_len == 2 && rhs_dims(0) == 0 && rhs_dims(1) == 0)
-    {
-      lhs.maybe_delete_elements (idx, rfv);
-    }
-  else if (n_idx == 0)
+  if (n_idx == 0)
     {
       lhs.clear_index ();
 

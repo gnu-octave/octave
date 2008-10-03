@@ -1,4 +1,7 @@
 2008-10-03  Thorsten Meyer  <thorsten.meyier@gmx.de>
+	* interpreter/contrib.txi: added example for mercurial queues
+
+08-10-03  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
         * interpreter/contrib.txi: correction of the mercurial example
         * interpreter/container.txi: minor correction of the text

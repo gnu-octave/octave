@@ -54,7 +54,7 @@ hg clone http://www.octave.org/hg/octave
 cd octave
 # change some sources...
 hg commit -m "make Octave the coolest software ever"
-hg export ../cool.diff
+hg export -o ../cool.diff tip
 # send ../cool.diff via email
 @end example
 

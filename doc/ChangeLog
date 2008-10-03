@@ -1,6 +1,7 @@
 2008-10-03  Thorsten Meyer <thorsten.meyier@gmx.de>
+        * interpreter/contrib.txi: correction of the mercurial example
         * interpreter/container.txi: minor correction of the text
-        
+
 2008-09-25  Søren Hauberg  <hauberg@gmail.com>
 
 	* interpreter/image.txi: Update for imread and imwrite instead of

@@ -768,8 +768,8 @@ This syntax is however a bit cumbersome, and since this is a common
 operation, it is possible to achieve the same using the @samp{(}
 and @samp{)} operators for indexing. When a cell array is indexed
 using the @samp{(} and @samp{)} operators a new cell array containing
-the selected elements. Using this syntax, the previous example can
-be simplified into the following
+the selected elements will be created. Using this syntax, the previous 
+example can be simplified into the following
 
 @example
 a = @{1, rand(2, 2), "three"@};

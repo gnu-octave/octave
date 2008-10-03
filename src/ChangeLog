@@ -1,3 +1,9 @@
+2008-10-03  Jaroslav Hajek  <highegg@gmail.com>
+
+	* Cell.cc (Cell::delete_elements): Don't pass second arg to
+	Array<T>::maybe_delete_elements.
+	* ov-base-mat.cc (octave_base_matrix<MT>::delete_elements): Dtto.
+
 2008-10-02  Jaroslav Hajek <highegg@gmail.com>
 
 	* Cell.h (Cell::delete_elements): Declare new member function.

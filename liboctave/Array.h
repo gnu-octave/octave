@@ -500,7 +500,7 @@ public:
 
   void maybe_delete_elements (idx_vector& i, idx_vector& j, idx_vector& k);
 
-  void maybe_delete_elements (Array<idx_vector>& ra_idx, const T& rfv);
+  void maybe_delete_elements (Array<idx_vector>& ra_idx);
 
   Array<T> value (void) const;
 

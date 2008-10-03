@@ -216,7 +216,7 @@ octave_base_matrix<MT>::delete_elements (const octave_value_list& idx)
   for (octave_idx_type i = 0; i < len; i++)
     ra_idx(i) = idx(i).index_vector ();
 
-  matrix.maybe_delete_elements (ra_idx, MT::resize_fill_value ());
+  matrix.maybe_delete_elements (ra_idx);
 
   // Invalidate the matrix type
   typ.invalidate_type ();

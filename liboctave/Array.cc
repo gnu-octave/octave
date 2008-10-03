@@ -1776,7 +1776,7 @@ Array<T>::maybe_delete_elements (idx_vector&, idx_vector&, idx_vector&)
 
 template <class T>
 void
-Array<T>::maybe_delete_elements (Array<idx_vector>& ra_idx, const T& rfv)
+Array<T>::maybe_delete_elements (Array<idx_vector>& ra_idx)
 {
   octave_idx_type n_idx = ra_idx.length ();
 
@@ -1804,7 +1804,7 @@ Array<T>::maybe_delete_elements (Array<idx_vector>& ra_idx, const T& rfv)
 
   if (n_idx == 1 && ra_idx(0).is_colon ())
     {
-      resize (dim_vector (0, 0), rfv);
+      resize (dim_vector (0, 0));
       return;
     }
 
@@ -1899,7 +1899,7 @@ Array<T>::maybe_delete_elements (Array<idx_vector>& ra_idx, const T& rfv)
 	  dim_vector newdim = dims ();
           newdim(0) = 0;
 
-	  resize (newdim, rfv);
+	  resize (newdim);
 	}
 
       else if (n_idx > 1
@@ -1979,7 +1979,7 @@ Array<T>::maybe_delete_elements (Array<idx_vector>& ra_idx, const T& rfv)
 
 		  dim_vector zero_dims (n_idx, 0);
 
-		  resize (zero_dims, rfv);
+		  resize (zero_dims);
 		}
 	      else
 		{

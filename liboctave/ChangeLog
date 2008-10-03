@@ -1,5 +1,12 @@
 2008-10-03  Jaroslav Hajek  <highegg@gmail.com>
 
+	* Array.h (Array<T>::maybe_delete_elements): Remove rfv argument from
+	declaration.
+	* Array.cc (Array<T>::maybe_delete_elements): Remove all usages of
+	rfv.
+
+2008-10-03  Jaroslav Hajek  <highegg@gmail.com>
+
 	* Array.cc (assignN): Do not call maybe_delete_elements when
 	for empty matrix.
 

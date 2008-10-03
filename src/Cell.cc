@@ -180,7 +180,7 @@ Cell::delete_elements (const octave_value_list& idx_arg)
   for (octave_idx_type i = 0; i < idx_arg.length (); i++)
     ra_idx.xelem (i) = idx_arg(i).index_vector ();
 
-  maybe_delete_elements (ra_idx, octave_value ());
+  maybe_delete_elements (ra_idx);
 
   return *this;
 }

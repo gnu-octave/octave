@@ -1,4 +1,4 @@
-2008-09-26  Jaroslav Hajek <highegg@gmail.com>
+2008-09-26  Jaroslav Hajek  <highegg@gmail.com>
 
 	* test_null_assign.m: More test for null assignments.
 

@@ -1,4 +1,5 @@
-2008-10-03  Thorsten Meyer <thorsten.meyier@gmx.de>
+2008-10-03  Thorsten Meyer  <thorsten.meyier@gmx.de>
+
         * interpreter/contrib.txi: correction of the mercurial example
         * interpreter/container.txi: minor correction of the text
 
@@ -110,7 +111,7 @@
 	and dbdown functions.
 	* interpreter/octave.texi: Upodate index for debugging functions.
 
-2008-05-03  Rafael Laboissiere <rafael@debian.org>
+2008-05-03  Rafael Laboissiere  <rafael@debian.org>
 
 	* interpreter/expr.txi, interpreter/tips.txi: Use ischar instead of
 	deprecated isstr.
@@ -145,7 +146,7 @@
 	* interpreter/io.txi: Document dlmread, dlmwrite, csvread and
 	csvwrite.
 
-2008-02-25  Ben Abbott <bpabbott@mac.com>
+2008-02-25  Ben Abbott  <bpabbott@mac.com>
 
 	* interpreter/geometryimages.m, interpreter/interpimages.m,
 	interpreter/plotimages.m, interpreter/sparseimages.m:
@@ -794,7 +795,7 @@
 	($(HTML_IMAGES_PNG): HTML/%.png : %.png): New pattern rule.
 	(html-dir): Delete target.
 
-2006-10-03  Rafael Laboissiere <rafael@debian.org>
+2006-10-03  Rafael Laboissiere  <rafael@debian.org>
 
 	* interpreter/mkoctfile.1: Fix indentation for --mex description.
 

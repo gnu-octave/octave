@@ -4,7 +4,7 @@
 	Array<T>::maybe_delete_elements.
 	* ov-base-mat.cc (octave_base_matrix<MT>::delete_elements): Dtto.
 
-2008-10-02  Jaroslav Hajek <highegg@gmail.com>
+2008-10-02  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Cell.h (Cell::delete_elements): Declare new member function.
 	* Cell.h (Cell::delete_elements): Define it.
@@ -284,7 +284,7 @@
 
 	* DLD-FUNCTIONS/chol.cc: Double tolerance.
 
-2008-08-26  Jaroslav Hajek <highegg@gmail.com>
+2008-08-26  Jaroslav Hajek  <highegg@gmail.com>
 
 	* parse.y (Fassignin): Use default  scope when calling varref.
 

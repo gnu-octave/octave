@@ -1,20 +1,20 @@
 2008-10-02  John W. Eaton  <jwe@octave.org>
 
-	* pkg/pkg.m (configure_make): Handle filenames with spaces.: 
+	* pkg/pkg.m (configure_make): Handle filenames with spaces.
 
-2008-10-02  Benjamin Lindner <lindnerb@users.sourceforge.net>
+2008-10-02  Benjamin Lindner  <lindnerb@users.sourceforge.net>
 
 	* pkg.m (configure_make): Enclose building directory in quotes.
 
-2008-10-02  Ben Abbott <bpabbott@mac.com>
+2008-10-02  Ben Abbott  <bpabbott@mac.com>
 
-	* plot/__go_draw_axes__.m: Remove depdenence on gnuplot version..
+	* plot/__go_draw_axes__.m: Remove depdenence on gnuplot version.
 
 2008-09-30  Jaroslav Hajek  <highegg@gmail.com>
 
 	* string/split.m: New tests.
 
-2008-09-30  Ben Abbott <bpabbott@mac.com>
+2008-09-30  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/__go_draw_axes__.m: Fix interpolation of facecolors.
 
@@ -26,7 +26,7 @@
 
 	* plot/__gnuplot_version__.m: Also include patchlevel.
 
-2008-09-29  Ben Abbott <bpabbott@mac.com>
+2008-09-29  Ben Abbott  <bpabbott@mac.com>
 
 	* polynomial/deconv.m: Fix row/col orientation & length of output.
 
@@ -72,7 +72,7 @@
 
 	* plot/pcolor.m: Improve doc string.
 
-2008-09-22 Ben Abbott <bpabbott@mac.com>
+2008-09-22 Ben Abbott  <bpabbott@mac.com>
 
 	* plot/comet.m: New file.
 	* plot/Makefile.in (SOURCES): Add it here.
@@ -85,7 +85,7 @@
 	* general/quadgk.m: No function count in quadgk and so don't try and
 	print it when given trace argument.
 
-2008-09-18  Jaroslav Hajek <highegg@gmail.com>
+2008-09-18  Jaroslav Hajek  <highegg@gmail.com>
 
 	* general/blkdiag.m: Skip assignment if rhs is empty.
 
@@ -243,7 +243,7 @@
 	* plot/Makefile.in (SOURCES): Add ezplot.m to the list.
 	* plot/__ezplot__.m: Adapt to allow for use with the ezplot function.
 	
-2008-08-20  Jaroslav Hajek <highegg@gmail.com>
+2008-08-20  Jaroslav Hajek  <highegg@gmail.com>
 
 	* pkg/pkg.m (configure_make): Pass handle to is_architecture_dependent
 	directly.
@@ -295,7 +295,7 @@
 	* Makefile.in: Remove all references to the above directories.
 	* configure.in: ditto.
 
-2008-07-28  Ben Abbott <bpabbott@mac.com>
+2008-07-28  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/hold.m: Clarify help text.
 
@@ -872,7 +872,7 @@
 
 	* polynomial/convn.m: New tests.
 
-2008-03-20  Ben Abbott <bpabbott@mac.com>
+2008-03-20  Ben Abbott  <bpabbott@mac.com>
 
 	* statistics/base/statistics.m: Calculate median and quantiles in
 	a manner consistent with method #7 used by GNU R.

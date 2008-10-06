@@ -1424,10 +1424,34 @@ is_handle (double val)
   return h.ok ();
 }
 
-static bool
+static octave_value
 is_handle (const octave_value& val)
 {
-  return val.is_real_scalar () && is_handle (val.double_value ());
+  octave_value retval = false;
+
+  if (val.is_real_scalar () && is_handle (val.double_value ()))
+    retval = true;
+  else if (val.is_real_matrix ())
+    {
+      if (val.is_string ())
+	retval = boolNDArray (val.dims (), false);
+      else
+	{
+	  const NDArray handles = val.array_value ();
+
+	  if (! error_state)
+	    {
+	      boolNDArray result (handles.dims ());
+
+	      for (octave_idx_type i = 0; i < handles.numel (); i++)
+		result.xelem (i) = is_handle (handles (i));
+
+	      retval = result;
+	    }
+	}
+    }
+
+  return retval;
 }
 
 static bool

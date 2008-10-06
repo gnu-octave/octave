@@ -32,7 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 
 // a simple binary lookup
 template<typename T, typename bpred>
-octave_idx_type
+inline octave_idx_type
 bin_lookup (const T *table, octave_idx_type size, 
             const T& val,
             bpred comp)
@@ -42,7 +42,7 @@ bin_lookup (const T *table, octave_idx_type size,
 
 // version using < operator
 template<typename T>
-octave_idx_type
+inline octave_idx_type
 bin_lookup (const T *table, octave_idx_type size,
             const T& val)
 {
@@ -72,14 +72,14 @@ private:
 //           bind2nd (less<T>(), a),
 //           not1 (bind2nd (less<T>(), b)))
 template<class T, class bpred>
-out_range<T, bpred> 
+inline out_range<T, bpred> 
 chk_out_range (const T& a, const T& b, bpred comp)
 {
   return out_range<T, bpred> (a, b, comp);
 }
 
 template<typename T, typename bpred>
-void 
+inline void 
 seq_lookup (const T *table, octave_idx_type offset, octave_idx_type size,
             const T *vals, octave_idx_type nvals,
             octave_idx_type *idx, bpred comp)
@@ -125,11 +125,11 @@ seq_lookup (const T *table, octave_idx_type offset, octave_idx_type size,
             else
               // special case: lowermost range (-Inf, min) 
               vnew = std::find_if (vcur, vend,
-                                   not1 (bind2nd (comp, *cur)));
+                                   std::not1 (std::bind2nd (comp, *cur)));
           else
             // special case: uppermost range [max, Inf)
             vnew = std::find_if (vcur, vend,
-                                 bind2nd (comp, *(cur-1)));
+                                 std::bind2nd (comp, *(cur-1)));
 
           // store index of the current interval.
           std::fill_n (idx, vnew - vcur, cur - table);
@@ -142,7 +142,7 @@ seq_lookup (const T *table, octave_idx_type offset, octave_idx_type size,
 
 // overload using < operator
 template<typename T, typename bpred>
-void 
+inline void 
 seq_lookup (const T *table, octave_idx_type offset, octave_idx_type size,
             const T *vals, octave_idx_type nvals,
             octave_idx_type *idx)
@@ -152,14 +152,14 @@ seq_lookup (const T *table, octave_idx_type offset, octave_idx_type size,
 
 // helper functions - determine whether an array is descending
 template<typename T>
-bool 
+inline bool 
 is_descending (const T *table, octave_idx_type size)
 {
   return size > 1 && table[size-1] < table[0];
 }
 
 template<typename T, typename bpred>
-bool 
+inline bool 
 is_descending (const T *table, octave_idx_type size,
                     bpred comp)
 {

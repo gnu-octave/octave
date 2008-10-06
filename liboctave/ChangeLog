@@ -1,3 +1,7 @@
+2008-10-06  Jaroslav Hajek  <highegg@gmail.com>
+
+	* oct-lookup.h: Mark functions inline. Add missing std:: qualifiers.
+
 2008-10-03  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Array.h (Array<T>::maybe_delete_elements): Remove rfv argument from

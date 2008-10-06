@@ -749,15 +749,11 @@ along with Octave; see the file COPYING.  If not, see
     \
     if (m1_nr == 1 && m1_nc == 1) \
       { \
-        extern OCTAVE_API SparseBoolMatrix F (const double&, const M2&); \
-        extern OCTAVE_API SparseBoolMatrix F (const Complex&, const M2&); \
-        r = F (m1.elem(0,0), m2); \
+        r = F (m1.elem(0,0) != M1::elt_type (), m2); \
       } \
     else if (m2_nr == 1 && m2_nc == 1) \
       { \
-        extern OCTAVE_API SparseBoolMatrix F (const M1&, const double&); \
-        extern OCTAVE_API SparseBoolMatrix F (const M1&, const Complex&); \
-        r = F (m1, m2.elem(0,0)); \
+        r = F (m1, m2.elem(0,0) != M2::elt_type ()); \
       } \
     else if (m1_nr == m2_nr && m1_nc == m2_nc) \
       { \
@@ -883,15 +879,11 @@ along with Octave; see the file COPYING.  If not, see
     \
     if (m1_nr == 1 && m1_nc == 1) \
       { \
-        extern OCTAVE_API SparseBoolMatrix F (const double&, const M2&); \
-        extern OCTAVE_API SparseBoolMatrix F (const Complex&, const M2&); \
-        r = F (m1.elem(0,0), m2); \
+        r = F (m1.elem(0,0) != M1::elt_type (), m2); \
       } \
     else if (m2_nr == 1 && m2_nc == 1) \
       { \
-        extern OCTAVE_API SparseBoolMatrix F (const M1&, const double&); \
-        extern OCTAVE_API SparseBoolMatrix F (const M1&, const Complex&); \
-        r = F (m1, m2.elem(0,0)); \
+        r = F (m1, m2.elem(0,0) != M2::elt_type ()); \
       } \
     else if (m1_nr == m2_nr && m1_nc == m2_nc) \
       { \

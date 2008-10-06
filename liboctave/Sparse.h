@@ -46,6 +46,10 @@ template <class T>
 class
 Sparse
 {
+public:
+
+  typedef T elt_type;
+
 protected:
   //--------------------------------------------------------------------
   // The real representation of all Sparse arrays.

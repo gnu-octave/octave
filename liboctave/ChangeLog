@@ -2,6 +2,13 @@
 
 	* oct-lookup.h: Mark functions inline. Add missing std:: qualifiers.
 
+2008-10-06  John W. Eaton  <jwe@octave.org>
+
+	* Sparse.h (Sparse<T>::elt_type): New typedef.
+	* Sparse-op-defs.h (SPARSE_SMSM_BOOL_OP, SPARSE_MSM_CMP_OP):
+	Use it to call sparse-matrix/scalar operator instead of attempting
+	to instantiate mixed-type sparse-matrix/scalar operators.
+
 2008-10-03  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Array.h (Array<T>::maybe_delete_elements): Remove rfv argument from

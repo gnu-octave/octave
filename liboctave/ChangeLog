@@ -1,3 +1,7 @@
+2008-10-06  John W. Eaton  <jwe@octave.org>
+
+	* Spasre-op-defs.h: Undo previous change.
+
 2008-10-01  Jaroslav Hajek <highegg@gmail.com>
 
 	* oct-inttypes.h (octave_int<T>::one, octave_int<T>::zero): Declare

@@ -1,3 +1,8 @@
+2008-10-01  Jaroslav Hajek <highegg@gmail.com>
+
+	* OPERATORS/op-i64-i64.cc: Instantiate all 64-bit operations.
+	* OPERATORS/op-ui64-ui64.cc: Instantiate all unsigned 64-bit operations.
+
 2008-10-06  John W. Eaton  <jwe@octave.org>
 
 	* ov-type-conv.h (octave_type_conv_body): Avoid shadow warning

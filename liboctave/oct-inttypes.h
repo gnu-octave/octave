@@ -1,7 +1,7 @@
 /*
 
 Copyright (C) 2004, 2005, 2006, 2007 John W. Eaton
-Copyright (C) 2008 Jaroslav Hajek <highegg@gmail.com>
+Copyright (C) 2008 Jaroslav Hajek  <highegg@gmail.com>
 
 This file is part of Octave.
 
@@ -30,9 +30,14 @@ along with Octave; see the file COPYING.  If not, see
 #include <limits>
 #include <iostream>
 
+#include "lo-math.h"
 #include "oct-types.h"
 #include "lo-ieee.h"
 #include "lo-mappers.h"
+
+#ifdef OCTAVE_INT_USE_LONG_DOUBLE
+inline long double xround (long double x) { return roundl (x); }
+#endif
 
 // Query for an integer type of certain sizeof, and signedness.
 template<int qsize, bool qsigned>
@@ -166,6 +171,45 @@ public:
       return uiop<xop, sizeof (PT1)>::op (static_cast<PT1> (x), 
                                           static_cast<PT2> (y));
     }
+  
+public:
+
+  // Mixed comparisons
+  template <class xop, class T>
+  static bool
+  mop (T x, double y)
+    { return xop::op (static_cast<double> (x), y); }
+
+  template <class xop, class T>
+  static bool
+  mop (double x, T y)
+    { return xop::op (x, static_cast<double> (y)); }
+
+  // Typecasting to doubles won't work properly for 64-bit integers - they lose precision.
+  // If we have long doubles, use them...
+#ifdef OCTAVE_INT_USE_LONG_DOUBLE
+#define DEFINE_LONG_DOUBLE_CMP_OP(T1, T2) \
+  template <class xop> \
+  static bool \
+  mop (T1 x, T2 y) \
+    { \
+      return xop::op (static_cast<long double> (x), \
+                      static_cast<long double> (y)); \
+    }
+  DEFINE_LONG_DOUBLE_CMP_OP(double, uint64_t)
+  DEFINE_LONG_DOUBLE_CMP_OP(double, int64_t)
+  DEFINE_LONG_DOUBLE_CMP_OP(int64_t, double)
+  DEFINE_LONG_DOUBLE_CMP_OP(uint64_t, double)
+#undef DEFINE_LONG_DOUBLE_CMP_OP
+
+#else
+  // ... otherwise, use external handlers
+  template <class xop> static OCTAVE_API bool mop (uint64_t, double);
+  template <class xop> static OCTAVE_API bool mop (int64_t, double);
+  template <class xop> static OCTAVE_API bool mop (double, uint64_t);
+  template <class xop> static OCTAVE_API bool mop (double, int64_t);
+#endif
+
 };
 
 // Base integer class. No data, just conversion methods and exception flags.
@@ -216,42 +260,40 @@ public:
         return static_cast<T> (value);
     }
 
-  // This does not check for NaN and non-int. It can be useful when using real
-  // types for integer arithmetics, e.g., 64-bit multiply via long double.
-  template <class S>
-  static T
-  truncate_real (const S& value)
-    {
-      if (value < min_val ())
-        {
-          ftrunc = true;
-          return min_val ();
-        }
-      else if (value > max_val ())
-        {
-          ftrunc = true;
-          return max_val ();
-        }
-      else
-        return static_cast<T> (value);
-    }
+private:
 
+  // Computes a real-valued threshold for a max/min check. 
+  template <class S>
+  static S 
+  compute_threshold (S val, T orig_val)
+    { 
+      if (static_cast <T> (val) != orig_val)
+        return val;
+      else
+        // Next number away from zero.
+        return val * (static_cast<S> (1.0) + std::numeric_limits<S>::epsilon ()); 
+    }
+  
+public:
   // Convert a real number (check NaN and non-int).
   template <class S>
   static T 
   convert_real (const S& value)
     {
+      // Compute proper thresholds.
+      static const S thmin = compute_threshold (static_cast<S> (min_val ()), min_val ());
+      static const S thmax = compute_threshold (static_cast<S> (max_val ()), max_val ());
       if (lo_ieee_isnan (value))
         {
           fnan = true;
           return static_cast<T> (0);
         }
-      else if (value < min_val ())
+      else if (value <= thmin)
         {
           octave_int_base<T>::ftrunc = true;
           return min_val ();
         }
-      else if (value > max_val ())
+      else if (value >= thmax)
         {
           ftrunc = true;
           return max_val ();
@@ -361,10 +403,8 @@ public:
       return u;
     }
 
-  // Multiplication is done using promotion to wider type.  If there is no
-  // suitable promotion type, this operation *MUST* be specialized. But note
-  // that a real type can be used as the promotion type (e.g., long double for
-  // int64_t).
+  // Multiplication is done using promotion to wider integer type. If there is
+  // no suitable promotion type, this operation *MUST* be specialized. 
   static T 
   mul (T x, T y)
     {
@@ -393,10 +433,27 @@ public:
     }
 };
 
+#ifdef OCTAVE_INT_USE_LONG_DOUBLE
+// Handle 64-bit multiply using long double
+template <>
+inline uint64_t
+octave_int_arith_base<uint64_t, false>:: mul (uint64_t x, uint64_t y)
+{
+  long double p = static_cast<long double> (x) * static_cast<long double> (y);
+  if (p > static_cast<long double> (octave_int_base<uint64_t>::max_val ()))
+    {
+      octave_int_base<uint64_t>::ftrunc = true;
+      return octave_int_base<uint64_t>::max_val ();
+    }
+  else
+    return static_cast<uint64_t> (p);
+}
+#else
 // Special handler for 64-bit integer multiply.
 template <>
 OCTAVE_API uint64_t 
 octave_int_arith_base<uint64_t, false>::mul (uint64_t, uint64_t);
+#endif
 
 // Signed integer arithmetics.
 // Rationale: If HAVE_FAST_INT_OPS is defined, the following conditions
@@ -599,10 +656,8 @@ public:
 #endif
     }
 
-  // Multiplication is done using promotion to wider type.  If there is no
-  // suitable promotion type, this operation *MUST* be specialized. But note
-  // that a real type can be used as the promotion type (e.g., long double for
-  // int64_t).
+  // Multiplication is done using promotion to wider integer type. If there is
+  // no suitable promotion type, this operation *MUST* be specialized. 
   static T 
   mul (T x, T y)
     {
@@ -655,10 +710,35 @@ public:
 
 };
 
+#ifdef OCTAVE_INT_USE_LONG_DOUBLE
+// Handle 64-bit multiply using long double
+template <>
+inline int64_t
+octave_int_arith_base<int64_t, true>:: mul (int64_t x, int64_t y)
+{
+  long double p = static_cast<long double> (x) * static_cast<long double> (y);
+  // NOTE: We could maybe do it with a single branch if HAVE_FAST_INT_OPS, but it
+  // would require one more runtime conversion, so the question is whether it would
+  // really be faster.
+  if (p > static_cast<long double> (octave_int_base<int64_t>::max_val ()))
+    {
+      octave_int_base<int64_t>::ftrunc = true;
+      return octave_int_base<int64_t>::max_val ();
+    }
+  else if (p < static_cast<long double> (octave_int_base<int64_t>::min_val ()))
+    {
+      octave_int_base<int64_t>::ftrunc = true;
+      return octave_int_base<int64_t>::min_val ();
+    }
+  else
+    return static_cast<int64_t> (p);
+}
+#else
 // Special handler for 64-bit integer multiply.
 template <>
 OCTAVE_API int64_t 
 octave_int_arith_base<int64_t, true>::mul (int64_t, int64_t);
+#endif
 
 // This class simply selects the proper arithmetics.
 template<class T>
@@ -680,6 +760,10 @@ public:
   octave_int (double d) : ival (octave_int_base<T>::convert_real (d)) { } 
 
   octave_int (float d) : ival (octave_int_base<T>::convert_real (d)) { } 
+
+#ifdef OCTAVE_INT_USE_LONG_DOUBLE
+  octave_int (long double d) : ival (octave_int_base<T>::convert_real (d)) { } 
+#endif
 
   octave_int (bool b) : ival (b) { }
 
@@ -735,7 +819,7 @@ public:
   OCTAVE_INT_UN_OP(abs, abs)
   OCTAVE_INT_UN_OP(signum, signum)
 
-# undef OCTAVE_INT_UN_OP
+#undef OCTAVE_INT_UN_OP
 
 // Homogeneous binary integer operations.
 #define OCTAVE_INT_BIN_OP(OP, NAME, ARGT) \
@@ -756,10 +840,10 @@ public:
   OCTAVE_INT_BIN_OP(<<, lshift, int)
   OCTAVE_INT_BIN_OP(>>, rshift, int)
 
-# undef OCTAVE_INT_BIN_OP
+#undef OCTAVE_INT_BIN_OP
 
-  octave_int<T> min (void) const { return std::numeric_limits<T>::min (); }
-  octave_int<T> max (void) const { return std::numeric_limits<T>::max (); }
+  static octave_int<T> min (void) { return std::numeric_limits<T>::min (); }
+  static octave_int<T> max (void) { return std::numeric_limits<T>::max (); }
 
   static int nbits (void) { return std::numeric_limits<T>::digits; }
 
@@ -767,6 +851,9 @@ public:
 
   static const char *type_name ();
 
+  // The following are provided for convenience.
+  static const octave_int zero, one;
+  
   // Unsafe.  This function exists to support the MEX interface.
   // You should not use it anywhere else.
   void *mex_get_data (void) const { return const_cast<T *> (&ival); }
@@ -821,7 +908,7 @@ OCTAVE_INT_CMP_OP (>=, ge)
 OCTAVE_INT_CMP_OP (==, eq)
 OCTAVE_INT_CMP_OP (!=, ne)
 
-# undef OCTAVE_INT_CMP_OP
+#undef OCTAVE_INT_CMP_OP
 
 template <class T>
 inline std::ostream&
@@ -853,7 +940,7 @@ OCTAVE_INT_BITCMP_OP (&)
 OCTAVE_INT_BITCMP_OP (|)
 OCTAVE_INT_BITCMP_OP (^)
 
-# undef OCTAVE_INT_BITCMP_OP
+#undef OCTAVE_INT_BITCMP_OP
 
 // General bit shift.
 template <class T>
@@ -879,67 +966,82 @@ typedef octave_int<uint16_t> octave_uint16;
 typedef octave_int<uint32_t> octave_uint32;
 typedef octave_int<uint64_t> octave_uint64;
 
-#define OCTAVE_INT_DOUBLE_BIN_OP(OP) \
+#define OCTAVE_INT_DOUBLE_BIN_OP0(OP) \
   template <class T> \
   inline octave_int<T> \
   operator OP (const octave_int<T>& x, const double& y) \
   { return octave_int<T> (static_cast<double> (x) OP y); } \
-  template <> \
-  OCTAVE_API octave_int64 \
-  operator OP (const octave_int64&, const double&); \
-  template <> \
-  OCTAVE_API octave_uint64 \
-  operator OP (const octave_uint64&, const double&); \
   template <class T> \
   inline octave_int<T> \
   operator OP (const double& x, const octave_int<T>& y) \
   { return octave_int<T> (x OP static_cast<double> (y)); } \
+
+#ifdef OCTAVE_INT_USE_LONG_DOUBLE
+// Handle mixed op using long double
+#define OCTAVE_INT_DOUBLE_BIN_OP(OP) \
+  OCTAVE_INT_DOUBLE_BIN_OP0(OP) \
+  template <> \
+  inline octave_int64 \
+  operator OP (const double& x, const octave_int64& y) \
+  { return octave_int64 (x OP static_cast<long double> (y.value ())); } \
+  template <> \
+  inline octave_uint64 \
+  operator OP (const double& x, const octave_uint64& y) \
+  { return octave_int64 (x OP static_cast<long double> (y.value ())); } \
+  template <> \
+  inline octave_int64 \
+  operator OP (const octave_int64& x, const double& y) \
+  { return octave_int64 (static_cast<long double> (x.value ()) OP y); } \
+  template <> \
+  inline octave_uint64 \
+  operator OP (const octave_uint64& x, const double& y) \
+  { return octave_int64 (static_cast<long double> (x.value ()) OP y); }
+
+#else
+// external handlers
+#define OCTAVE_INT_DOUBLE_BIN_OP(OP) \
+  OCTAVE_INT_DOUBLE_BIN_OP0(OP) \
   template <> \
   OCTAVE_API octave_int64 \
   operator OP (const double&, const octave_int64&); \
   template <> \
   OCTAVE_API octave_uint64 \
-  operator OP (const double&, const octave_uint64&);
+  operator OP (const double&, const octave_uint64&); \
+  template <> \
+  OCTAVE_API octave_int64 \
+  operator OP (const octave_int64&, const double&); \
+  template <> \
+  OCTAVE_API octave_uint64 \
+  operator OP (const octave_uint64&, const double&);
 
+#endif
 
 OCTAVE_INT_DOUBLE_BIN_OP (+)
 OCTAVE_INT_DOUBLE_BIN_OP (-)
 OCTAVE_INT_DOUBLE_BIN_OP (*)
 OCTAVE_INT_DOUBLE_BIN_OP (/)
 
-# undef OCTAVE_INT_DOUBLE_BIN_OP
+#undef OCTAVE_INT_DOUBLE_BIN_OP0
+#undef OCTAVE_INT_DOUBLE_BIN_OP
 
-#define OCTAVE_INT_DOUBLE_CMP_OP(OP) \
+#define OCTAVE_INT_DOUBLE_CMP_OP(OP,NAME) \
   template <class T> \
   inline bool \
   operator OP (const octave_int<T>& x, const double& y) \
-  { return static_cast<double> (x.value ()) OP y; } \
-  template <> \
-  OCTAVE_API bool \
-  operator OP (const octave_int64&, const double&); \
-  template <> \
-  OCTAVE_API bool \
-  operator OP (const octave_uint64&, const double&); \
+  { return octave_int_cmp_op::mop<octave_int_cmp_op::NAME> (x.value (), y); } \
   template <class T> \
   inline bool \
   operator OP (const double& x, const octave_int<T>& y) \
-  { return x OP static_cast<double> (y.value ()); } \
-  template <> \
-  OCTAVE_API bool \
-  operator OP (const double&, const octave_int64&); \
-  template <> \
-  OCTAVE_API bool \
-  operator OP (const double&, const octave_uint64&);
+  { return octave_int_cmp_op::mop<octave_int_cmp_op::NAME> (x, y.value ()); }
 
+OCTAVE_INT_DOUBLE_CMP_OP (<, lt)
+OCTAVE_INT_DOUBLE_CMP_OP (<=, le)
+OCTAVE_INT_DOUBLE_CMP_OP (>=, ge)
+OCTAVE_INT_DOUBLE_CMP_OP (>, gt)
+OCTAVE_INT_DOUBLE_CMP_OP (==, eq)
+OCTAVE_INT_DOUBLE_CMP_OP (!=, ne)
 
-OCTAVE_INT_DOUBLE_CMP_OP (<)
-OCTAVE_INT_DOUBLE_CMP_OP (<=)
-OCTAVE_INT_DOUBLE_CMP_OP (>=)
-OCTAVE_INT_DOUBLE_CMP_OP (>)
-OCTAVE_INT_DOUBLE_CMP_OP (==)
-OCTAVE_INT_DOUBLE_CMP_OP (!=)
-
-# undef OCTAVE_INT_DOUBLE_CMP_OP
+#undef OCTAVE_INT_DOUBLE_CMP_OP
 
 // Floats are handled by simply converting to doubles.
 
@@ -958,7 +1060,7 @@ OCTAVE_INT_FLOAT_BIN_OP (-)
 OCTAVE_INT_FLOAT_BIN_OP (*)
 OCTAVE_INT_FLOAT_BIN_OP (/)
 
-# undef OCTAVE_INT_FLOAT_BIN_OP
+#undef OCTAVE_INT_FLOAT_BIN_OP
 
 #define OCTAVE_INT_FLOAT_CMP_OP(OP) \
   template <class T> \
@@ -977,7 +1079,8 @@ OCTAVE_INT_FLOAT_CMP_OP (>)
 OCTAVE_INT_FLOAT_CMP_OP (==)
 OCTAVE_INT_FLOAT_CMP_OP (!=)
 
-# undef OCTAVE_INT_FLOAT_CMP_OP
+#undef OCTAVE_INT_FLOAT_CMP_OP
+
 #endif
 
 /*

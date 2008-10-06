@@ -1,3 +1,13 @@
+2008-10-01  Jaroslav Hajek <highegg@gmail.com>
+
+	* oct-inttypes.h (octave_int<T>::one, octave_int<T>::zero): Declare
+	constants. 
+	* oct-inttypes.cc: Define them.
+	* oct-inttypes.h: Define mixed operations via long double if possible.
+	* oct-inttypes.cc: Define alternative implementations for 64-bit
+	multiplication and mixed operations. 
+	* mx-ops: Instantiate all 64-bit integer operations.
+
 2008-10-06  Jaroslav Hajek  <highegg@gmail.com>
 
 	* oct-lookup.h: Mark functions inline. Add missing std:: qualifiers.

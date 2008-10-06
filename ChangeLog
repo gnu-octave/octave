@@ -1,3 +1,7 @@
+2008-10-01  Jaroslav Hajek <highegg@gmail.com>
+
+	* configure.in: Check for sizeof (long double) and randl.
+
 2008-09-30  Jaroslav Hajek <highegg@gmail.com>
 
 	* aclocal.m4 (OCTAVE_FAST_INT_OPS): New macro.

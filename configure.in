@@ -1378,6 +1378,10 @@ OCTAVE_DYNAMIC_AUTO_ARRAYS
 
 OCTAVE_FAST_INT_OPS
 
+### Check for long double type (for 64-bit integers)
+
+AC_CHECK_SIZEOF(long double)
+
 ### Checks for header files.
 
 AC_HEADER_STDC
@@ -1452,7 +1456,7 @@ AC_CHECK_FUNCS(atexit basename bcopy bzero canonicalize_file_name \
   getppid getpwent getpwuid gettimeofday getuid getwd _kbhit kill \
   lgamma lgammaf lgamma_r lgammaf_r link localtime_r log1p log1pf lstat \
   memmove mkdir mkfifo mkstemp on_exit pipe poll putenv raise readlink \
-  realpath rename resolvepath rindex rmdir round select setgrent setlocale \
+  realpath rename resolvepath rindex rmdir round roundl select setgrent setlocale \
   setpwent setvbuf sigaction siglongjmp sigpending sigprocmask sigsuspend \
   snprintf stat strcasecmp strdup strerror stricmp strncasecmp \
   strnicmp strptime strsignal symlink tempnam tgamma tgammaf trunc umask \
@@ -1965,6 +1969,13 @@ typedef int sig_atomic_t;
 #define SIZEOF_OCTAVE_IDX_TYPE 8
 #else
 #define SIZEOF_OCTAVE_IDX_TYPE SIZEOF_INT
+#endif
+
+// To be able to use long doubles for 64-bit mixed arithmetics, we need them at
+// least 80 bits wide and we need roundl declared in math.h
+// TODO: Maybe substitute this by a more precise check in the future.
+#if (SIZEOF_LONG_DOUBLE >= 10) && defined (HAVE_ROUNDL)
+#define OCTAVE_INT_USE_LONG_DOUBLE
 #endif
 
 #define OCTAVE_EMPTY_CPP_ARG

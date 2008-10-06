@@ -33,12 +33,12 @@ octave_type_conv_body (const octave_value &arg, const std::string& name, int t_r
     }
   else
     {
-      octave_base_value::type_conv_fcn cf
+      octave_base_value::type_conv_fcn cf1
         = octave_value_typeinfo::lookup_type_conv_op (t_arg, t_result);
        
-      if (cf)
+      if (cf1)
         {
-          octave_base_value *tmp (cf (*(arg.internal_rep ())));
+          octave_base_value *tmp (cf1 (*(arg.internal_rep ())));
 
           if (tmp)
             {
@@ -49,12 +49,12 @@ octave_type_conv_body (const octave_value &arg, const std::string& name, int t_r
         }
       else
         {
-          octave_base_value::type_conv_fcn cf
+          octave_base_value::type_conv_fcn cf2
             = arg.numeric_conversion_function ();
 
-          if (cf)
+          if (cf2)
             {
-              octave_base_value *tmp (cf (*(arg.internal_rep ())));
+              octave_base_value *tmp (cf2 (*(arg.internal_rep ())));
 
               if (tmp)
                 {

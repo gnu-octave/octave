@@ -44,8 +44,10 @@
 
 function hold (varargin)
 
-  if (nargin > 0 && ishandle (varargin{1}))
+  if (nargin > 0 && numel (varargin{1}) == 1 && ishandle (varargin{1}(1)))
     [h, varargin, nargs] = __plt_get_axis_arg__ ("hold", varargin{:});
+  elseif (nargin > 0 && numel (varargin{1}) > 1 && ishandle (varargin{1}(1)))
+    print_usage ();
   else
     h = gcf ();
     nargs = numel (varargin);

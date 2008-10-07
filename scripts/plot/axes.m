@@ -43,12 +43,13 @@ function h = axes (varargin)
     ## arg is axes handle, make it the current axes for the current
     ## figure.
     tmp = varargin{1};
-    if (ishandle (tmp) && strcmp (get (tmp, "type"), "axes"))
+    if (length(tmp) == 1 && ishandle (tmp)
+	&& strcmp (get (tmp, "type"), "axes"))
       parent = ancestor (tmp, "figure");
       set (0, "currentfigure", parent);
       set (parent, "currentaxes", tmp);
     else
-      error ("axes: expecting argument to be axes handle");
+      error ("axes: expecting argument to be a scalar axes handle");
     endif
   endif
 

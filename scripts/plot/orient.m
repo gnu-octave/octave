@@ -32,7 +32,7 @@ function retval = orient (varargin)
 
   nargs = nargin;
 
-  if (nargs > 0 && ishandle (varargin{1}))
+  if (nargs > 0 && numel (varargin{1}) == 1 && ishandle (varargin{1}))
     cf = varargin{1};
     varargin(1) = [];
     nargs--;

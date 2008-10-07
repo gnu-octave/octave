@@ -1,5 +1,10 @@
 2008-10-06  Ben Abbott  <bpabbott@mac.com>
 
+	* plot/orient.m: Figure handle must be scalar.
+	* plot/hold.m: Axis handle must be scalar.
+	* plot/axes.m: Axis handle must be scalar.
+	* plot/__plt_get_axis_arg__.m: Handle must be scalar.
+
 	* miscellaneous/delete.m: Permit a vector of handles to be deleted.
 
 2008-10-02  John W. Eaton  <jwe@octave.org>

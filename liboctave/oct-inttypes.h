@@ -987,7 +987,7 @@ typedef octave_int<uint64_t> octave_uint64;
   template <> \
   inline octave_uint64 \
   operator OP (const double& x, const octave_uint64& y) \
-  { return octave_int64 (x OP static_cast<long double> (y.value ())); } \
+  { return octave_uint64 (x OP static_cast<long double> (y.value ())); } \
   template <> \
   inline octave_int64 \
   operator OP (const octave_int64& x, const double& y) \
@@ -995,7 +995,7 @@ typedef octave_int<uint64_t> octave_uint64;
   template <> \
   inline octave_uint64 \
   operator OP (const octave_uint64& x, const double& y) \
-  { return octave_int64 (static_cast<long double> (x.value ()) OP y); }
+  { return octave_uint64 (static_cast<long double> (x.value ()) OP y); }
 
 #else
 // external handlers

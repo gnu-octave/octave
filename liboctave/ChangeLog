@@ -1,3 +1,8 @@
+2008-10-07  Jaroslav Hajek <highegg@gmail.com>
+
+	* oct-inttypes.h (OCTAVE_INT_DOUBLE_BIN_OP): Change octave_int64 to 
+	octave_uint64 where appropriate.
+
 2008-10-06  David Bateman  <dbateman@free.fr>
 	
 	* Sparse-op-defs.h (SPARSE_SMSM_CMP_OPS): Duplicate code for scalar

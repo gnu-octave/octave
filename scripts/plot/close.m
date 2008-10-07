@@ -43,7 +43,7 @@ function retval = close (arg1, arg2)
       figs = [];
     endif
   elseif (nargin == 1)
-    if (ischar (arg1) && strcmp (arg1, "all"))
+    if (ischar (arg1) && strcmpi (arg1, "all"))
       close_all_figures (false);
     elseif (isfigure (arg1))
       figs = arg1;
@@ -51,8 +51,8 @@ function retval = close (arg1, arg2)
       error ("close: expecting argument to be \"all\" or a figure handle");
     endif
   elseif (nargin == 2
-	  && ischar (arg1) && strcmp (arg1, "all")
-	  && ischar (arg2) && strcmp (arg2, "hidden"))
+	  && ischar (arg1) && strcmpi (arg1, "all")
+	  && ischar (arg2) && strcmpi (arg2, "hidden"))
     close_all_figures (true);
   else
     print_usage ();
@@ -72,7 +72,7 @@ function close_all_figures (close_hidden_figs)
 
   while (! isempty (fig = get (0, "currentfigure")))
     ## handlevisibility = get (fig, "handlevisibility")
-    ## if (close_hidden_figs || ! strcmp (handlevisibility, "off"))
+    ## if (close_hidden_figs || ! strcmpi (handlevisibility, "off"))
     close (fig);
     ## endif
   endwhile

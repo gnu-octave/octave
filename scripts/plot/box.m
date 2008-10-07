@@ -38,7 +38,7 @@ function box (varargin)
   nargs = numel (varargin);
 
   if (nargs == 0)
-    if (strcmp (box_state, "on"))
+    if (strcmpi (box_state, "on"))
       box_state = "off";
     else
       box_state = "on";
@@ -46,9 +46,9 @@ function box (varargin)
   elseif (nargs == 1)
     state = varargin{1};
     if (ischar (state))
-      if (strcmp ("off", state))
+      if (strcmpi (state, "off"))
 	box_state = "off";
-      elseif (strcmp ("on", state))
+      elseif (strcmpi (state, "on"))
 	box_state = "on";
       else
 	print_usage ();

@@ -169,8 +169,8 @@ function [x, y, z, dofill, lc, ls, mc, ms, newargs] = check_stem_arg (have_z, va
   i = 2;
   newargs = {};
   while (i < length (varargin))
-    if (ischar (varargin{i}) && !(strcmpi ("fill", varargin{i}) || 
-				 strcmpi ("filled", varargin{i})))
+    if (ischar (varargin{i}) && !(strcmpi ("fill", varargin{i})
+				  || strcmpi ("filled", varargin{i})))
       newargs{end + 1} = varargin{i};
       newargs{end + 1} = varargin{i + 1};
       nargin = nargin - 2;
@@ -292,14 +292,14 @@ function [x, y, z, dofill, lc, ls, mc, ms, newargs] = check_stem_arg (have_z, va
     if (! have_z)
       ## varargin{3} must be char
       ## check for "fill
-      if ((strcmpi ("fill", varargin{3}) || strcmpi ("filled", varargin{3}))
+      if ((strcmpi (varargin{3}, "fill") || strcmpi (varargin{3}, "filled"))
 	  && fill_2)
 	error ("stem: duplicate fill argument");
-      elseif (strcmp("fill", varargin{3}) && linespec_2)
+      elseif (strcmpi ("fill", varargin{3}) && linespec_2)
 	## must be "fill"
 	dofill = 1;
 	fill_2 = 1;
-      elseif ((strcmpi ("fill", varargin{3}) || strcmpi ("filled", varargin{3}))
+      elseif ((strcmpi (varargin{3}, "fill") || strcmpi (varargin{3}, "filled"))
 	  && !linespec_2)
 	## must be "fill"
 	dofill = 1;
@@ -327,7 +327,7 @@ function [x, y, z, dofill, lc, ls, mc, ms, newargs] = check_stem_arg (have_z, va
     endif
 
     if (! have_z)
-      if (strcmpi ("fill", varargin{3}) || strcmpi ("filled", varargin{3}))
+      if (strcmpi (varargin{3}, "fill") || strcmpi (varargin{3}, "filled"))
 	dofill = 1;
 	fill_2 = 1; # be sure, no second "fill" is in the arguments
       else
@@ -338,15 +338,15 @@ function [x, y, z, dofill, lc, ls, mc, ms, newargs] = check_stem_arg (have_z, va
     endif
 
     ## check for "fill" ..
-    if ((strcmpi ("fill", varargin{4}) || strcmpi ("filled", varargin{4}))
+    if ((strcmpi (varargin{4}, "fill") || strcmpi (varargin{4}, "filled"))
 	&& fill_2)
       error ("%s: duplicate fill argument", caller);
-    elseif ((strcmpi ("fill", varargin{4}) || strcmpi ("filled", varargin{4}))
+    elseif ((strcmpi (varargin{4}, "fill") || strcmpi (varargin{4}, "filled"))
 	&& linespec_2)
       ## must be "fill"
       dofill = 1;
       fill_2 = 1;
-    elseif (!strcmpi ("fill", varargin{4}) && !strcmpi ("filled", varargin{4})
+    elseif (!strcmpi (varargin{4}, "fill") && !strcmpi (varargin{4}, "filled")
 	&& !linespec_2)
       ## must be linespec
       [lc, ls, mc, ms] = stem_line_spec (caller, varargin{4});
@@ -360,7 +360,7 @@ function [x, y, z, dofill, lc, ls, mc, ms, newargs] = check_stem_arg (have_z, va
       error ("stem3: X, Y and Z must be matrices");
     endif
 
-    if (strcmpi ("fill", varargin{4}) || strcmpi ("filled", varargin{4}))
+    if (strcmpi (varargin{4}, "fill") || strcmpi (varargin{4}, "filled"))
       dofill = 1;
       fill_2 = 1; # be sure, no second "fill" is in the arguments
     else
@@ -370,16 +370,16 @@ function [x, y, z, dofill, lc, ls, mc, ms, newargs] = check_stem_arg (have_z, va
     endif
 
     ## check for "fill" ..
-    if ((strcmpi ("fill", varargin{5}) || strcmpi ("filled", varargin{5}))
+    if ((strcmpi (varargin{5}, "fill") || strcmpi (varargin{5}, "filled"))
 	&& fill_2)
       error ("stem3: duplicate fill argument");
-    elseif ((strcmpi ("fill", varargin{5}) || strcmpi ("filled", varargin{5}))
+    elseif ((strcmpi (varargin{5}, "fill") || strcmpi (varargin{5}, "filled"))
 	&& linespec_2)
       ## must be "fill"
       dofill = 1;
       fill_2 = 1;
-    elseif (!strcmpi ("fill", varargin{5}) && !strcmpi ("filled", varargin{5})
-	&& !linespec_2)
+    elseif (!strcmpi (varargin{5}, "fill") && !strcmpi (varargin{5}, "filled")
+	    && !linespec_2)
       ## must be linespec
       [lc, ls, mc, ms] = stem_line_spec (caller, varargin{5});
       linespec_2 = 1;
@@ -433,7 +433,7 @@ function [lc, ls, mc, ms] = stem_line_spec (caller, str)
       mc = lc = cur_props(i).color;
     elseif (isfield (cur_props(i), "linestyle"))
       ls = cur_props(i).linestyle;
-    elseif (isfield (cur_props(i), "marker") && ! strcmp (cur_props(i).marker, "none"))
+    elseif (isfield (cur_props(i), "marker") && ! strcmpi (cur_props(i).marker, "none"))
       ms = cur_props(i).marker;
     endif
   endfor
@@ -471,10 +471,10 @@ function update_baseline (h, d)
     if (strcmp (obj.type, "hggroup") && isfield (obj, "baseline") 
 	&& obj.baseline == h)
       ## Only alter if changed to avoid recursion of the listener functions
-      if (! strcmp (get (kids(i), "showbaseline"), visible))
+      if (! strcmpi (get (kids(i), "showbaseline"), visible))
 	set (kids (i), "showbaseline", visible);
       endif
-      if (! strcmp (get (kids(i), "basevalue"), visible))
+      if (! strcmpi (get (kids(i), "basevalue"), visible))
 	set (kids (i), "basevalue", ydata);
       endif
     endif

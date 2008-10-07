@@ -54,12 +54,12 @@ function [c, h] = __contour__ (varargin)
   endwhile
 
   if (ischar (z))
-    if (strcmp (z, "none"))
+    if (strcmpi (z, "none"))
       z = NaN;
-    elseif (strcmp (z, "base"))
+    elseif (strcmpi (z, "base"))
       z = varargin{3};
       z = 2 * (min (z(:)) - max (z(:)));
-    elseif (! strcmp (z, "level"))
+    elseif (! strcmpi (z, "level"))
       error ("unrecognized z argument");
     endif
   endif

@@ -77,7 +77,7 @@ function h = __scatter__ (varargin)
   iarg = firstnonnumeric;
   while (iarg <= nargin)
     arg = varargin{iarg++};
-    if (ischar (arg) && strncmp (tolower (arg), "filled", 6))
+    if (ischar (arg) && strncmpi (arg, "filled", 6))
       filled = true;
     elseif ((ischar (arg) || iscell (arg)) && ! have_marker)
       [linespec, valid] = __pltopt__ ("scatter", arg, false);
@@ -99,16 +99,16 @@ function h = __scatter__ (varargin)
   endwhile
 
   if (ischar (c))
-    h = patch("faces", [1:length(x)].', "vertices", [x, y, z], "facecolor",
-	      "none", "edgecolor", c, "marker", marker, 
-	      "markersize", s, "linestyle", "none");
+    h = patch ("faces", [1:length(x)].', "vertices", [x, y, z], "facecolor",
+	       "none", "edgecolor", c, "marker", marker, 
+	       "markersize", s, "linestyle", "none");
     if (filled)
       set(h, "markerfacecolor", c); 
     endif
   else
-    h = patch("faces", [1:length(x)].', "vertices", [x, y, z], "facecolor",
-	      "none", "edgecolor", "flat", "cdata", c, "marker", marker, 
-	      "markersize", s, "linestyle", "none");
+    h = patch ("faces", [1:length(x)].', "vertices", [x, y, z], "facecolor",
+	       "none", "edgecolor", "flat", "cdata", c, "marker", marker, 
+	       "markersize", s, "linestyle", "none");
     if (filled)
       set(h, "markerfacecolor", "flat"); 
     endif

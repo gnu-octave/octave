@@ -148,26 +148,25 @@ function curr_axis = __axis__ (ca, ax, varargin)
     endif
 
   elseif (ischar (ax))
-    ax = tolower (ax);
     len = length (ax);
 
     ## 'matrix mode' to reverse the y-axis
-    if (strcmp (ax, "ij"))
+    if (strcmpi (ax, "ij"))
       set (ca, "ydir", "reverse");
-    elseif (strcmp (ax, "xy"))
+    elseif (strcmpi (ax, "xy"))
       set (ca, "ydir", "normal");
 
       ## aspect ratio
-    elseif (strcmp (ax, "image"))
+    elseif (strcmpi (ax, "image"))
       set (ca, "dataaspectratio", [1, 1, 1]);
       __do_tight_option__ (ca);
-    elseif (strcmp (ax, "equal") || strcmp (ax, "square"))
+    elseif (strcmpi (ax, "equal") || strcmpi (ax, "square"))
       set (ca, "dataaspectratio", [1, 1, 1]);
-    elseif (strcmp (ax, "normal"))
+    elseif (strcmpi (ax, "normal"))
       set (ca, "dataaspectratiomode", "auto");
 
       ## axis limits
-    elseif (len >= 4 && strcmp (ax(1:4), "auto"))
+    elseif (len >= 4 && strcmpi (ax(1:4), "auto"))
       if (len > 4)
 	if (any (ax == "x"))
 	  set (ca, "xlimmode", "auto");
@@ -181,23 +180,23 @@ function curr_axis = __axis__ (ca, ax, varargin)
       else
 	set (ca, "xlimmode", "auto", "ylimmode", "auto", "zlimmode", "auto");
       endif
-    elseif (strcmp (ax, "manual"))
+    elseif (strcmpi (ax, "manual"))
       ## fixes the axis limits, like axis(axis) should;
       set (ca, "xlimmode", "manual", "ylimmode", "manual", "zlimmode", "manual");
-    elseif (strcmp (ax, "tight"))
+    elseif (strcmpi (ax, "tight"))
       ## sets the axis limits to the min and max of all data.
       __do_tight_option__ (ca);
 
       ## tic marks
-    elseif (strcmp (ax, "on") || strcmp (ax, "tic"))
+    elseif (strcmpi (ax, "on") || strcmpi (ax, "tic"))
       set (ca, "xtickmode", "auto", "ytickmode", "auto", "ztickmode", "auto");
       set (ca, "xticklabelmode", "auto", "yticklabelmode", "auto",
 	   "zticklabelmode", "auto");
       set (ca, "visible", "on");
-    elseif (strcmp (ax, "off"))
+    elseif (strcmpi (ax, "off"))
       set (ca, "xtick", [], "ytick", [], "ztick", []);
       set (ca, "visible", "off");
-    elseif (len > 3 && strcmp (ax(1:3), "tic"))
+    elseif (len > 3 && strcmpi (ax(1:3), "tic"))
       if (any (ax == "x"))
 	set (ca, "xtickmode", "auto");
       else
@@ -213,12 +212,12 @@ function curr_axis = __axis__ (ca, ax, varargin)
       else
 	set (ca, "ztick", []);
       endif
-    elseif (strcmp (ax, "label"))
+    elseif (strcmpi (ax, "label"))
       set (ca, "xticklabelmode", "auto", "yticklabelmode", "auto",
 	   "zticklabelmode", "auto");
-    elseif (strcmp (ax, "nolabel"))
+    elseif (strcmpi (ax, "nolabel"))
       set (ca, "xticklabel", "", "yticklabel", "", "zticklabel", "");
-    elseif (len > 5 && strcmp (ax(1:5), "label"))
+    elseif (len > 5 && strcmpi (ax(1:5), "label"))
       if (any (ax == "x"))
 	set (ca, "xticklabelmode", "auto");
       else

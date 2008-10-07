@@ -78,10 +78,10 @@ function h = findobj (varargin)
     endif
     if (n1 <= nargin)
       if (ischar (varargin{n1}))
-	if (strcmpi (varargin{n1}, 'flat'))
+	if (strcmpi (varargin{n1}, "flat"))
 	  depth = 0;
 	  n1 = n1 + 1;
-	elseif (strcmpi(varargin{n1}, '-depth'))
+	elseif (strcmpi (varargin{n1}, "-depth"))
 	  depth = varargin{n1+1};
 	  n1 = n1 + 2;
 	endif
@@ -108,9 +108,9 @@ function h = findobj (varargin)
   while (na <= numel (args))
     regularexpression(np) = 0;
     property(np) = 0;
-    logicaloperator{np} = 'and';
+    logicaloperator{np} = "and";
     if (ischar (args{na}))
-      if (strcmpi(args{na}, '-regexp'))
+      if (strcmpi (args{na}, "-regexp"))
 	if (na + 2 <= numel (args))
 	  regularexpression(np) = 1;
 	  na = na + 1;
@@ -122,7 +122,7 @@ function h = findobj (varargin)
 	else
 	  error ("findobj: inconsistent number of arguments");
 	endif
-      elseif (strcmpi(args{na}, '-property'))
+      elseif (strcmpi (args{na}, "-property"))
 	if (na + 1 <= numel (args))
 	  na = na + 1;
 	  property(np) = 1;
@@ -133,7 +133,7 @@ function h = findobj (varargin)
 	else
 	  error ("findobj: inconsistent number of arguments");
 	endif
-      elseif (! strcmp (args{na}(1), '-')) # parameter/value pairs
+      elseif (! strcmp (args{na}(1), "-")) # parameter/value pairs
 	if (na + 1 <= numel (args))
 	  pname{np} = args{na};
 	  na = na + 1;
@@ -141,24 +141,24 @@ function h = findobj (varargin)
 	  na = na + 1;
 	  if (na <= numel(args))
 	    if (ischar (args{na}))
-	      if strcmpi(args{na}, '-and')
-		logicaloperator{np} = 'and';
+	      if strcmpi(args{na}, "-and")
+		logicaloperator{np} = "and";
 		na = na+1;
-	      elseif strcmpi(args{na}, '-or')
-		logicaloperator{np} = 'or';
+	      elseif strcmpi(args{na}, "-or")
+		logicaloperator{np} = "or";
 		na = na+1;
-	      elseif strcmpi(args{na}, '-xor')
-		logicaloperator{np} = 'xor';
+	      elseif strcmpi(args{na}, "-xor")
+		logicaloperator{np} = "xor";
 		na = na+1;
-	      elseif strcmpi(args{na}, '-not')
-		logicaloperator{np} = 'not';
+	      elseif strcmpi(args{na}, "-not")
+		logicaloperator{np} = "not";
 		na = na+1;
 	      endif
 	    else
 	      error ("findobj: properties and options must be strings");
 	    endif
 	  else
-	    logicaloperator{np} = 'and';
+	    logicaloperator{np} = "and";
 	  endif
 	  np = np + 1;
 	else
@@ -166,7 +166,7 @@ function h = findobj (varargin)
 	endif
       else
 	## this is sloppy ... but works like matlab
-	if strcmpi(args{na}, '-not')
+	if strcmpi(args{na}, "-not")
 	  h = [];
 	  return
 	endif
@@ -185,7 +185,7 @@ function h = findobj (varargin)
   while (numel (handles) && ! (idepth >= depth))
     children = [];
     for n = 1 : numel (handles)
-      children = union (children, get(handles(n), 'children'));
+      children = union (children, get(handles(n), "children"));
     endfor 
     handles = children;
     h = union (h, children);
@@ -220,7 +220,7 @@ function h = findobj (varargin)
             endif
             match = all (match);
           endif
-          if (strcmpi (logicaloperator{np}, 'not'))
+          if (strcmpi (logicaloperator{np}, "not"))
             keepers(nh) = ! keepers(nh) & ! match;
           else
             keepers(nh) = feval (logicaloperator{np}, keepers(nh), match);

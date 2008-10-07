@@ -1,3 +1,16 @@
+2008-10-06  John W. Eaton  <jwe@octave.org>
+
+	* plot/__add_datasource__.m, plot/__axes_limits__.m,
+	plot/__bar__.m, plot/__bars__.m, plot/__contour__.m,
+	plot/__go_draw_axes__.m, plot/__go_draw_figure__.m,
+	plot/__patch__.m, plot/__quiver__.m, plot/__scatter__.m,
+	plot/__stem__.m, plot/ancestor.m, plot/axis.m, plot/box.m,
+	plot/caxis.m, plot/close.m, plot/colorbar.m, plot/fill.m,
+	plot/findobj.m, plot/grid.m, plot/hidden.m, plot/hold.m,
+	plot/ishold.m, plot/legend.m, plot/linkprop.m, plot/orient.m,
+	plot/plotmatrix.m, plot/shading.m: Use case-insensitive comparison
+	for properties.  Misc style fixes.
+
 2008-10-06  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/orient.m: Figure handle must be scalar.

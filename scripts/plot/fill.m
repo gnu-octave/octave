@@ -64,8 +64,9 @@ function iargs = __find_patches__ (varargin)
   i = 1;
   while (i < nargin)
     iargs (end + 1) = i;
-    if (ischar (varargin{i}) && (strcmp (tolower (varargin{i}), "faces") || 
-				  strcmp (tolower (varargin{i}), "vertices")))
+    if (ischar (varargin{i})
+	&& (strcmpi (varargin{i}, "faces")
+	    || strcmpi (varargin{i}, "vertices")))
       i += 4;
     elseif (isnumeric (varargin{i}))
       i += 2;
@@ -74,8 +75,8 @@ function iargs = __find_patches__ (varargin)
     if (i <= nargin)
       while (true);
 	if (ischar (varargin{i}) && 
-	    (strcmp (tolower (varargin{i}), "faces") || 
-	     strcmp (tolower (varargin{i}), "vertices")))
+	    (strcmpi (varargin{i}, "faces")
+	     || strcmpi (varargin{i}, "vertices")))
 	  break;
 	elseif (isnumeric (varargin{i}))
 	  ## Assume its the colorspec
@@ -85,16 +86,16 @@ function iargs = __find_patches__ (varargin)
 	  colspec = tolower (varargin{i});
 	  collen = length (colspec);
 
-	  if (strncmp (colspec, "blue", collen) ||
-	      strncmp (colspec, "black", collen) ||
-	      strncmp (colspec, "k", collen) ||
-	      strncmp (colspec, "black", collen) ||
-	      strncmp (colspec, "red", collen) ||
-	      strncmp (colspec, "green", collen) ||
-	      strncmp (colspec, "yellow", collen) ||
-	      strncmp (colspec, "magenta", collen) ||
-	      strncmp (colspec, "cyan", collen) ||
-	      strncmp (colspec, "white", collen))
+	  if (strncmp (colspec, "blue", collen)
+	      || strncmp (colspec, "black", collen)
+	      || strncmp (colspec, "k", collen)
+	      || strncmp (colspec, "black", collen)
+	      || strncmp (colspec, "red", collen)
+	      || strncmp (colspec, "green", collen)
+	      || strncmp (colspec, "yellow", collen)
+	      || strncmp (colspec, "magenta", collen)
+	      || strncmp (colspec, "cyan", collen)
+	      || strncmp (colspec, "white", collen))
 	    i++;
 	    break;
 	  endif

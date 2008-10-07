@@ -102,10 +102,10 @@ function plotmatrixdelete (h, d, ax)
   for i = 1 : numel (ax)
     hc = ax(i);
     if (ishandle (hc) && strcmp (get (hc, "type"), "axes") && 
-	strcmp (get (hc, "beingdeleted"), "off"))
+	strcmpi (get (hc, "beingdeleted"), "off"))
       parent = get (hc, "parent");
       ## If the parent is invalid or being deleted, then do nothing
-      if (ishandle (parent) && strcmp (get (parent, "beingdeleted"), "off"))
+      if (ishandle (parent) && strcmpi (get (parent, "beingdeleted"), "off"))
 	delete (hc);
       endif
     endif

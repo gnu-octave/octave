@@ -78,7 +78,7 @@ function hg = __quiver__ (varargin)
   args = {};
   while (ioff <= nargin)
     arg = varargin{ioff++};
-    if (ischar (arg) && strncmp (tolower (arg), "filled", 6))
+    if (ischar (arg) && strncmpi (arg, "filled", 6))
       have_filled = true;
     elseif ((ischar (arg) || iscell (arg))
 	    && ! have_line_spec)
@@ -324,7 +324,7 @@ function update_data (h, d)
     is3d = true;
   endif
 
-  if (strcmp (get (h, "autoscale"), "on") && s != 0)
+  if (strcmpi (get (h, "autoscale"), "on") && s != 0)
     ## Scale the arrows to fit in the grid
     dx = (max(x(:)) - min(x(:))) ./ size (x, 2);
     dy = (max(y(:)) - min(y(:))) ./ size (y, 1);
@@ -400,7 +400,7 @@ function update_props (h, d)
   set (kids(2), "color", get (h, "color"), 
        "linewidth", get (h, "linewidth"),
        "linestyle", get (h, "linestyle"));
-  if (strcmp (get (h, "showarrowhead"), "on"))
+  if (strcmpi (get (h, "showarrowhead"), "on"))
     set (kids (2), "visible", "on");
   else
     set (kids (2), "visible", "off");

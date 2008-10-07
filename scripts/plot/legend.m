@@ -122,7 +122,7 @@ function legend (varargin)
 	    set (ca, "key", "on");
 	  case "toggle"
 	    val = get (ca, "key");
-	    if (strcmp (val, "on"))
+	    if (strcmpi (val, "on"))
 	      set (ca, "key", "off");
 	    else
 	      set (ca, "key", "on");

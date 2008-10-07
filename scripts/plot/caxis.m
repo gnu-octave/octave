@@ -65,10 +65,9 @@ function [cmin, cmax] = __caxis__ (ca, ax, varargin)
       cmin = cmin(1);
     endif
   elseif (ischar (ax))
-    ax = tolower (ax);
-    if (strcmp (ax, "auto"))
+    if (strcmpi (ax, "auto"))
       set (ca, "climmode", "auto");
-    elseif (strcmp (ax, "manual"))
+    elseif (strcmpi (ax, "manual"))
       set (ca, "climmode", "manual");
     endif
   elseif (isvector (ax))

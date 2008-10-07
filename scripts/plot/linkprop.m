@@ -87,7 +87,7 @@ function delete_prop (h, d, hlist, prop)
   ## However, only warn if the graphics objects aren't being deleted.
   warn = false;
   for h = hlist(:)'
-    if (ishandle (h) && !strcmp (get (h, "beingdeleted"), "on"))
+    if (ishandle (h) && !strcmpi (get (h, "beingdeleted"), "on"))
       warn = true;
       break;
     endif

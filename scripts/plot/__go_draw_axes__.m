@@ -311,7 +311,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
       obj = get (kids(1));
       kids = kids(2:end);
 
-      if (strcmp (obj.visible, "off"))
+      if (strcmpi (obj.visible, "off"))
 	continue;
       endif
 
@@ -1558,9 +1558,9 @@ function [str, f, s] = __maybe_munge_text__ (enhanced, obj, fld)
 
   str = getfield (obj, fld);
   if (enhanced)
-    if (strcmp (obj.interpreter, "tex"))
+    if (strcmpi (obj.interpreter, "tex"))
       str = __tex2enhanced__ (str, fnt, it, bld);
-    elseif (strcmp (obj.interpreter, "latex"))
+    elseif (strcmpi (obj.interpreter, "latex"))
       if (! warned_latex)
 	warning ("latex text objects not supported");
 	warned_latex = true;
@@ -1616,7 +1616,7 @@ function str = __tex2enhanced__ (str, fnt, it, bld)
           str = cstrcat (str(1:s(i) - 1), '/', fnt, '-bold ', 
 			str(s(i) + 3:end));
         endif
-      elseif (strcmp (f, "color"))
+      elseif (strcmpi (f, "color"))
 	## FIXME Ignore \color but remove trailing {} block as well
 	d = strfind(str(e(i) + 1:end),'}');
         if (isempty (d))
@@ -1624,7 +1624,7 @@ function str = __tex2enhanced__ (str, fnt, it, bld)
 	else
 	  str = cstrcat (str(1:s(i) - 1), str(e(i) + d + 1:end));
         endif
-      elseif(strcmp (f, "fontname"))
+      elseif(strcmpi (f, "fontname"))
 	b1 = strfind(str(e(i) + 1:end),'{');
 	b2 = strfind(str(e(i) + 1:end),'}');
         if (isempty(b1) || isempty(b2))
@@ -1634,7 +1634,7 @@ function str = __tex2enhanced__ (str, fnt, it, bld)
 			str(e(i)+b1(1) + 1:e(i)+b2(1)-1), '{}',
 			str(e(i) + b2(1) + 1:end));
         endif
-      elseif(strcmp (f, "fontsize"))
+      elseif(strcmpi (f, "fontsize"))
 	b1 = strfind(str(e(i) + 1:end),'{');
 	b2 = strfind(str(e(i) + 1:end),'}');
         if (isempty(b1) || isempty(b2))

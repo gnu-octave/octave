@@ -67,10 +67,10 @@ function varargout = __bar__ (vertical, func, varargin)
   newargs = {};
   have_line_spec = false;
   while (idx <= nargin - 2)
-    if (ischar (varargin{idx}) && strcmp (varargin{idx}, "grouped"))
+    if (ischar (varargin{idx}) && strcmpi (varargin{idx}, "grouped"))
       group = true;
       idx++;
-    elseif (ischar (varargin{idx}) && strcmp (varargin{idx}, "stacked"))
+    elseif (ischar (varargin{idx}) && strcmpi (varargin{idx}, "stacked"))
       group = false;
       idx++;
     else
@@ -88,8 +88,9 @@ function varargout = __bar__ (vertical, func, varargin)
 	width = varargin{idx++};
       elseif (idx == nargin - 2)
 	newargs = [newargs,varargin(idx++)];
-      elseif (ischar (varargin{idx}) && strcmp (tolower (varargin{idx}), "basevalue") &&
-          isscalar (varargin{idx+1}))
+      elseif (ischar (varargin{idx})
+	      && strcmpi (varargin{idx}, "basevalue")
+	      && isscalar (varargin{idx+1}))
         bv = varargin{idx+1};
         idx += 2;
       else

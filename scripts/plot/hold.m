@@ -56,7 +56,7 @@ function hold (varargin)
   hold_state = get (h, "nextplot");
 
   if (nargs == 0)
-    if (strcmp (hold_state, "add"))
+    if (strcmpi (hold_state, "add"))
       hold_state = "replace";
     else
       hold_state = "add";
@@ -64,9 +64,9 @@ function hold (varargin)
   elseif (nargs == 1)
     state = varargin{1};
     if (ischar (state))
-      if (strcmp ("off", state))
+      if (strcmpi (state, "off"))
 	hold_state = "replace";
-      elseif (strcmp ("on", state))
+      elseif (strcmpi (state, "on"))
 	hold_state = "add";
       else
 	print_usage ();

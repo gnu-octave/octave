@@ -44,7 +44,7 @@ function retval = orient (varargin)
     retval = get (cf, "paperorientation");
   elseif (nargin == 1)
     orientation = varargin{1};
-    if (strcmp (orientation, "landscape") || strcmp (orientation, "portrait"))
+    if (strcmpi (orientation, "landscape") || strcmpi (orientation, "portrait"))
       set (cf, "paperorientation", orientation)
     else
       error ("orient: unknown orientation");

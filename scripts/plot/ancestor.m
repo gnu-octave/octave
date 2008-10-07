@@ -42,7 +42,7 @@ function p = ancestor (h, type, toplevel)
     if (iscellstr (type))
       look_first = true;
       if (nargin == 3)
-        if (ischar (toplevel) && strcmp (toplevel, "toplevel"))
+        if (ischar (toplevel) && strcmpi (toplevel, "toplevel"))
           look_first = false;
         else
           error ("ancestor: third argument must be \"toplevel\"");

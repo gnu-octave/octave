@@ -53,22 +53,22 @@ function [h, fail] = __patch__ (p, varargin)
       iarg++;
     endif
   elseif (ischar (varargin{1})
-	  && (strcmp (tolower (varargin{1}), "faces")
-	      || strcmp (tolower (varargin{1}), "vertices")))
+	  && (strcmpi (varargin{1}, "faces")
+	      || strcmpi (varargin{1}, "vertices")))
     if (! isnumeric (varargin{2}))
       fail = true;
       return;
     endif
     
-    if (strcmp (tolower (varargin{1}), "faces"))
+    if (strcmpi (varargin{1}, "faces"))
       faces = varargin{2};
-      if (strcmp (tolower (varargin{3}), "vertices"))
+      if (strcmpi (varargin{3}, "vertices"))
 	vert = varargin{4};
 	have_faces = true;
       endif
-    elseif (strcmp (tolower (varargin{3}), "vertices"))
+    elseif (strcmpi (varargin{3}, "vertices"))
       vert = varargin{2};
-      if (strcmp (tolower (varargin{3}), "faces"))
+      if (strcmpi (varargin{3}, "faces"))
 	faces = varargin{4};
 	have_faces = true;
       endif

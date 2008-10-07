@@ -49,7 +49,7 @@ function retval = hidden (mode)
     if (strcmp (htype, "surface"))
       fc = get (h, "facecolor");
       if ((! ischar (fc) && is_white (fc))
-	  || (ischar (fc) && strcmp (fc, "none")))
+	  || (ischar (fc) && strcmpi (fc, "none")))
         switch (mode)
         case "on"
           set (h, "facecolor", "w");

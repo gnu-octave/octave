@@ -49,11 +49,11 @@ function grid (varargin)
   else
     x = varargin{1};
     if (ischar (x))
-      if (strcmp ("off", x))
+      if (strcmpi (x, "off"))
 	grid_on = false;
-      elseif (strcmp ("on", x))
+      elseif (strcmpi (x, "on"))
 	grid_on = true;
-      elseif (strcmp ("minor", x))
+      elseif (strcmpi (x, "minor"))
 	minor_on = ! minor_on;
 	if (minor_on)
 	  grid_on = true;

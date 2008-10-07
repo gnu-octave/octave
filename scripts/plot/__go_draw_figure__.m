@@ -38,7 +38,7 @@ function __go_draw_figure__ (f, plot_stream, enhanced, mono)
 	    case "axes"
 	      axes_count++;
 	      ## Force multiplot with a colorbar to ensure colorbar on the page
-	      if (!strcmp (obj.__colorbar__, "none"))
+	      if (!strcmpi (obj.__colorbar__, "none"))
 		axes_count++;
 	      endif
 	  endswitch

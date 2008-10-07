@@ -59,13 +59,13 @@ function shading (varargin)
 
   for n = 1:numel(obj)
     h = obj(n); 
-    if (strcmp (mode, "flat"))
+    if (strcmpi (mode, "flat"))
       set (h, "facecolor", "flat");
       set (h, "edgecolor", "none");
-    elseif (strcmp (mode, "interp"))
+    elseif (strcmpi (mode, "interp"))
       set (h, "facecolor", "interp");
       set (h, "edgecolor", "none");
-    elseif (strcmp (mode, "faceted"))
+    elseif (strcmpi (mode, "faceted"))
       set (h, "facecolor", "flat");
       set (h, "edgecolor", [0 0 0]);
     else

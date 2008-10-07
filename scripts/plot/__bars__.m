@@ -148,10 +148,10 @@ function update_baseline (h, d)
     if (strcmp (obj.type, "hggroup") && isfield (obj, "baseline") 
 	&& obj.baseline == h)
       ## Only alter if changed to avoid recursion of the listener functions
-      if (! strcmp (get (kids(i), "showbaseline"), visible))
+      if (! strcmpi (get (kids(i), "showbaseline"), visible))
 	set (kids (i), "showbaseline", visible);
       endif
-      if (! strcmp (get (kids(i), "basevalue"), visible))
+      if (! strcmpi (get (kids(i), "basevalue"), visible))
 	set (kids (i), "basevalue", ydata);
       endif
     endif
@@ -187,7 +187,7 @@ function move_baseline (h, d)
     set (bl, "ydata", [b0, b0]);
   endif
 
-  if (strcmp (get (h, "barlayout"), "grouped"))
+  if (strcmpi (get (h, "barlayout"), "grouped"))
     update_data (h, d);
   endif
 endfunction
@@ -221,7 +221,7 @@ function update_data (h, d)
       [xb, yb] = bar (x, y, get (h, "barwidth"), get (h, "barlayout"),
 		      "basevalue", get (h, "basevalue"));
       ny = columns (y);
-      vert = strcmp (get (h, "horizontal"), "off");
+      vert = strcmpi (get (h, "horizontal"), "off");
 
       for i = 1:ny
 	hp = get (hlist(i), "children");
@@ -255,10 +255,10 @@ function update_group (h, d)
 	  if (get (hh, "barwidth") != barwidth)
 	    set (hh, "barwidth", barwidth);
 	  endif
-	  if (! strcmp (get (hh, "barlayout"), barlayout))
+	  if (! strcmpi (get (hh, "barlayout"), barlayout))
 	    set (hh, "barlayout", barlayout);
 	  endif
-	  if (! strcmp (get (hh, "horizontal"), horizontal))
+	  if (! strcmpi (get (hh, "horizontal"), horizontal))
 	    set (hh, "horizontal", horizontal);
 	  endif
 	endif

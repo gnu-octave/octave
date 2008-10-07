@@ -25,7 +25,7 @@
 function retval = ishold ()
 
   if (nargin == 0)
-    retval = strcmp (get (gca (), "nextplot"), "add");
+    retval = strcmpi (get (gca (), "nextplot"), "add");
   else
     print_usage ();
   endif

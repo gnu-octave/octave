@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} delete (@var{file})
 ## @deftypefnx {Function File} {} delete (@var{h})
-## Delete the named file or figure handle.
+## Delete the named file or graphics handle.
 ## @end deftypefn
 
 ## PKG_ADD: mark_as_command delete
@@ -31,9 +31,11 @@ function delete (arg)
   if (nargin == 1)
     if (ischar (arg))
       unlink (arg);
-    elseif (ishandle (arg))
+    elseif (all (ishandle (arg)))
       ## Delete a graphics object.
-      __go_delete__ (arg);
+      for n = 1:numel(arg)
+         __go_delete__ (arg(n));
+      endfor
     else
       error ("delete: expecting argument to be a filename or graphics handle");
     endif

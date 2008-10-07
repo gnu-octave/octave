@@ -1,3 +1,8 @@
+2008-10-06  David Bateman  <dbateman@free.fr>
+	
+	* Sparse-op-defs.h (SPARSE_SMSM_CMP_OPS): Duplicate code for scalar
+	sparse arguments rather than rely on extern function.
+
 2008-10-06  John W. Eaton  <jwe@octave.org>
 
 	* Spasre-op-defs.h: Undo previous change.

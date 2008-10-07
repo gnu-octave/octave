@@ -749,15 +749,61 @@ along with Octave; see the file COPYING.  If not, see
     \
     if (m1_nr == 1 && m1_nc == 1) \
       { \
-        extern OCTAVE_API SparseBoolMatrix F (const double&, const M2&); \
-        extern OCTAVE_API SparseBoolMatrix F (const Complex&, const M2&); \
-        r = F (m1.elem(0,0), m2); \
+    if (C1 (m1.elem(0,0)) OP C2 (Z2)) \
+	  { \
+	    r = SparseBoolMatrix (m2_nr, m2_nc, true); \
+	    for (octave_idx_type j = 0; j < m2_nc; j++) \
+	      for (octave_idx_type i = m2.cidx(j); i < m2.cidx(j+1); i++) \
+		if (! (C1 (m1.elem (0,0)) OP C2 (m2.data(i)))) \
+		  r.data (m2.ridx (i) + j * m2_nr) = false; \
+	    r.maybe_compress (true); \
+	  } \
+	else \
+	  { \
+	    r = SparseBoolMatrix (m2_nr, m2_nc, m2.nnz ()); \
+	    r.cidx (0) = static_cast<octave_idx_type> (0); \
+	    octave_idx_type nel = 0; \
+	    for (octave_idx_type j = 0; j < m2_nc; j++) \
+	      { \
+		for (octave_idx_type i = m2.cidx(j); i < m2.cidx(j+1); i++) \
+		  if (C1 (m1.elem (0,0)) OP C2 (m2.data(i))) \
+		    { \
+		      r.ridx (nel) = m2.ridx (i); \
+		      r.data (nel++) = true; \
+		    } \
+		r.cidx (j + 1) = nel; \
+	      }	\
+	    r.maybe_compress (false); \
+	  } \
       } \
     else if (m2_nr == 1 && m2_nc == 1) \
       { \
-        extern OCTAVE_API SparseBoolMatrix F (const M1&, const double&); \
-        extern OCTAVE_API SparseBoolMatrix F (const M1&, const Complex&); \
-        r = F (m1, m2.elem(0,0)); \
+	if (C1 (Z1) OP C2 (m2.elem (0,0))) \
+	  { \
+	    r = SparseBoolMatrix (m1_nr, m1_nc, true); \
+	    for (octave_idx_type j = 0; j < m1_nc; j++) \
+	      for (octave_idx_type i = m1.cidx(j); i < m1.cidx(j+1); i++) \
+		if (! (C1 (m1.data (i)) OP C2 (m2.elem(0,0)))) \
+		  r.data (m1.ridx (i) + j * m1_nr) = false; \
+	    r.maybe_compress (true); \
+	  } \
+	else \
+	  { \
+	    r = SparseBoolMatrix (m1_nr, m1_nc, m1.nnz ()); \
+	    r.cidx (0) = static_cast<octave_idx_type> (0); \
+	    octave_idx_type nel = 0; \
+	    for (octave_idx_type j = 0; j < m1_nc; j++) \
+	      { \
+		for (octave_idx_type i = m1.cidx(j); i < m1.cidx(j+1); i++) \
+		  if (C1 (m1.data (i)) OP C2 (m2.elem(0,0))) \
+		    { \
+		      r.ridx (nel) = m1.ridx (i); \
+		      r.data (nel++) = true; \
+		    } \
+		r.cidx (j + 1) = nel; \
+	      }	\
+	    r.maybe_compress (false); \
+	  } \
       } \
     else if (m1_nr == m2_nr && m1_nc == m2_nc) \
       { \

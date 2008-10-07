@@ -607,6 +607,41 @@ INSTANTIATE_INTTYPE (uint32_t);
 INSTANTIATE_INTTYPE (uint64_t);
 
 
+// Tests follow.
+
+/*
+
+%!assert(intmax("int64")/intmin("int64"),int64(-1))
+%!assert(intmin("int64")/int64(-1),intmax("int64"))
+%!assert(int64(2**63),intmax("int64"))
+%!test
+%! wstate = warning("query", "Octave:int-convert-overflow");
+%! warning("on", "Octave:int-convert-overflow");
+%! fail("int64(2**63)","warning",".*")
+%! warning(wstate.state, "Octave:int-convert-overflow");
+%!assert(uint64(2**64),intmax("uint64"))
+%!test
+%! a = 1.9*2^61; b = uint64(a); b++; assert(b > a)
+%!test
+%! a = -1.9*2^61; b = int64(a); b++; assert(b > a)
+%!test
+%! a = int64(-2**60) + 2; assert(1.25*a == (5*a)/4)
+%!test
+%! a = uint64(2**61) + 2; assert(1.25*a == (5*a)/4)
+%!assert(int32(2**31+0.5),intmax('int32'))
+%!test
+%! wstate = warning("query", "Octave:int-convert-overflow");
+%! warning("on", "Octave:int-convert-overflow");
+%! fail("int32(2**31+0.5)","warning",".*")
+%! warning(wstate.state, "Octave:int-convert-overflow");
+%!assert(int32(-2**31-0.5),intmin('int32'))
+%!test
+%! wstate = warning("query", "Octave:int-convert-overflow");
+%! warning("on", "Octave:int-convert-overflow");
+%! fail("int32(-2**31-0.5)","warning",".*")
+%! warning(wstate.state, "Octave:int-convert-overflow");
+*/
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

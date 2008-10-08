@@ -33,9 +33,15 @@ function [directory, name, extension, version] = fileparts (filename)
       if (es <= ds)
 	es = length(filename)+1;
       endif
-      directory = filename(1:ds-1);
+      if (ds == 0)
+	directory = "";
+      elseif (ds == 1)
+	directory = filename(1);
+      else
+	directory = filename(1:ds-1);
+      endif
       name = filename(ds+1:es-1);
-      if (es > 0)
+      if (es > 0 && es <= length (filename))
 	extension = filename(es:end);
       else
 	extension = "";
@@ -49,3 +55,39 @@ function [directory, name, extension, version] = fileparts (filename)
   endif
 
 endfunction
+
+%!test
+%! [d, n, e] = fileparts ("file");
+%! assert (strcmp (d, "") && strcmp (n, "file") && strcmp (e, ""));
+
+%!test
+%! [d, n, e] = fileparts ("file.ext");
+%! assert (strcmp (d, "") && strcmp (n, "file") && strcmp (e, ".ext"));
+
+%!test
+%! [d, n, e] = fileparts ("/file.ext");
+%! assert (strcmp (d, "/") && strcmp (n, "file") && strcmp (e, ".ext"));
+
+%!test
+%! [d, n, e] = fileparts ("dir/file.ext");
+%! assert (strcmp (d, "dir") && strcmp (n, "file") && strcmp (e, ".ext"));
+
+%!test
+%! [d, n, e] = fileparts ("./file.ext");
+%! assert (strcmp (d, ".") && strcmp (n, "file") && strcmp (e, ".ext"));
+
+%!test
+%! [d, n, e] = fileparts ("d1/d2/file.ext");
+%! assert (strcmp (d, "d1/d2") && strcmp (n, "file") && strcmp (e, ".ext"));
+
+%!test
+%! [d, n, e] = fileparts ("/d1/d2/file.ext");
+%! assert (strcmp (d, "/d1/d2") && strcmp (n, "file") && strcmp (e, ".ext"));
+
+%!test
+%! [d, n, e] = fileparts ("/.ext");
+%! assert (strcmp (d, "/") && strcmp (n, char (zeros (1, 0))) && strcmp (e, ".ext"));
+
+%!test
+%! [d, n, e] = fileparts (".ext");
+%! assert (strcmp (d, "") && strcmp (n, char (zeros (1, 0))) && strcmp (e, ".ext"));

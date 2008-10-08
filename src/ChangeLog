@@ -1,3 +1,7 @@
+2008-10-07  David Bateman  <dbateman@free.fr>
+
+	* graphics.cc (F__go_delete__): Allow arrays of graphic handles.
+
 2008-10-01  Jaroslav Hajek <highegg@gmail.com>
 
 	* OPERATORS/op-i64-i64.cc: Instantiate all 64-bit operations.

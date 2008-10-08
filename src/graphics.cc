@@ -4419,32 +4419,40 @@ Undocumented internal function.\n\
     {
       graphics_handle h = octave_NaN;
 
-      double val = args(0).double_value ();
+      const NDArray vals = args (0).array_value ();
 
       if (! error_state)
 	{
-	  h = gh_manager::lookup (val);
-
-	  if (h.ok ())
+	  for (octave_idx_type i = 0; i < vals.numel (); i++)
 	    {
-	      graphics_object obj = gh_manager::get_object (h);
+	      h = gh_manager::lookup (vals.elem (i));
 
-	      graphics_handle parent_h = obj.get_parent ();
+	      if (h.ok ())
+		{
+		  graphics_object obj = gh_manager::get_object (h);
 
-	      graphics_object parent_obj = gh_manager::get_object (parent_h);
+		  graphics_handle parent_h = obj.get_parent ();
 
-              // NOTE: free the handle before removing it from its parent's
-              //       children, such that the object's state is correct when
-              //       the deletefcn callback is executed
+		  graphics_object parent_obj = 
+		    gh_manager::get_object (parent_h);
 
-	      gh_manager::free (h);
+		  // NOTE: free the handle before removing it from its parent's
+		  //       children, such that the object's state is correct
+		  //       when the deletefcn callback is executed
 
-	      parent_obj.remove_child (h);
+		  gh_manager::free (h);
 
-	      Vdrawnow_requested = true;
+		  parent_obj.remove_child (h);
+
+		  Vdrawnow_requested = true;
+		}
+	      else
+		{
+		  error ("delete: invalid graphics object (= %g)", 
+			 vals.elem (i));
+		  break;
+		}
 	    }
-	  else
-	    error ("delete: invalid graphics object (= %g)", val);
 	}
       else
 	error ("delete: invalid graphics object");

@@ -735,6 +735,10 @@ along with Octave; see the file COPYING.  If not, see
   SPARSE_CMP_OP_DECL (mx_el_eq, M1, M2, API); \
   SPARSE_CMP_OP_DECL (mx_el_ne, M1, M2, API);
 
+// FIXME -- this macro duplicatest the bodies of the template
+// functions defined in the SPARSE_SSM_CMP_OP and SPARSE_SMS_CMP_OP
+// macros.
+
 #define SPARSE_SMSM_CMP_OP(F, OP, M1, Z1, C1, M2, Z2, C2)	\
   SparseBoolMatrix \
   F (const M1& m1, const M2& m2) \
@@ -915,6 +919,10 @@ along with Octave; see the file COPYING.  If not, see
   SPARSE_BOOL_OP_DECL (mx_el_and, M1, M2, API); \
   SPARSE_BOOL_OP_DECL (mx_el_or,  M1, M2, API);
 
+// FIXME -- this macro duplicatest the bodies of the template
+// functions defined in the SPARSE_SSM_BOOL_OP and SPARSE_SMS_BOOL_OP
+// macros.
+
 #define SPARSE_SMSM_BOOL_OP(F, OP, M1, M2, LHS_ZERO, RHS_ZERO) \
   SparseBoolMatrix \
   F (const M1& m1, const M2& m2) \
@@ -929,15 +937,67 @@ along with Octave; see the file COPYING.  If not, see
     \
     if (m1_nr == 1 && m1_nc == 1) \
       { \
-        extern OCTAVE_API SparseBoolMatrix F (const double&, const M2&); \
-        extern OCTAVE_API SparseBoolMatrix F (const Complex&, const M2&); \
-        r = F (m1.elem(0,0), m2); \
+	if (m2_nr > 0 && m2_nc > 0) \
+	  { \
+	    if ((m1.elem(0,0) != LHS_ZERO) OP RHS_ZERO)	\
+	      { \
+		r = SparseBoolMatrix (m2_nr, m2_nc, true); \
+		for (octave_idx_type j = 0; j < m2_nc; j++) \
+		  for (octave_idx_type i = m2.cidx(j); i < m2.cidx(j+1); i++) \
+		    if (! ((m1.elem(0,0) != LHS_ZERO) OP (m2.data(i) != RHS_ZERO))) \
+		      r.data (m2.ridx (i) + j * m2_nr) = false; \
+		r.maybe_compress (true); \
+	      } \
+	    else \
+	      { \
+		r = SparseBoolMatrix (m2_nr, m2_nc, m2.nnz ()); \
+		r.cidx (0) = static_cast<octave_idx_type> (0); \
+		octave_idx_type nel = 0; \
+		for (octave_idx_type j = 0; j < m2_nc; j++) \
+		  { \
+		    for (octave_idx_type i = m2.cidx(j); i < m2.cidx(j+1); i++) \
+		      if ((m1.elem(0,0) != LHS_ZERO) OP (m2.data(i) != RHS_ZERO)) \
+			{ \
+			  r.ridx (nel) = m2.ridx (i); \
+			  r.data (nel++) = true; \
+			} \
+		    r.cidx (j + 1) = nel; \
+		  } \
+		r.maybe_compress (false); \
+	      } \
+	  } \
       } \
     else if (m2_nr == 1 && m2_nc == 1) \
       { \
-        extern OCTAVE_API SparseBoolMatrix F (const M1&, const double&); \
-        extern OCTAVE_API SparseBoolMatrix F (const M1&, const Complex&); \
-        r = F (m1, m2.elem(0,0)); \
+	if (m1_nr > 0 && m1_nc > 0) \
+	  { \
+	    if (LHS_ZERO OP (m2.elem(0,0) != RHS_ZERO)) \
+	      { \
+		r = SparseBoolMatrix (m1_nr, m1_nc, true); \
+		for (octave_idx_type j = 0; j < m1_nc; j++) \
+		  for (octave_idx_type i = m1.cidx(j); i < m1.cidx(j+1); i++) \
+		    if (! ((m1.data(i) != LHS_ZERO) OP (m2.elem(0,0) != RHS_ZERO))) \
+		      r.data (m1.ridx (i) + j * m1_nr) = false; \
+		r.maybe_compress (true); \
+	      } \
+	    else \
+	      { \
+		r = SparseBoolMatrix (m1_nr, m1_nc, m1.nnz ()); \
+		r.cidx (0) = static_cast<octave_idx_type> (0); \
+		octave_idx_type nel = 0; \
+		for (octave_idx_type j = 0; j < m1_nc; j++) \
+		  { \
+		    for (octave_idx_type i = m1.cidx(j); i < m1.cidx(j+1); i++) \
+		      if ((m1.data(i) != LHS_ZERO) OP (m2.elem(0,0) != RHS_ZERO)) \
+			{ \
+			  r.ridx (nel) = m1.ridx (i); \
+			  r.data (nel++) = true; \
+			} \
+		    r.cidx (j + 1) = nel; \
+		  } \
+		r.maybe_compress (false); \
+	      } \
+	  } \
       } \
     else if (m1_nr == m2_nr && m1_nc == m2_nc) \
       { \

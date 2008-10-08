@@ -1,3 +1,8 @@
+2008-10-08  John W. Eaton  <jwe@octave.org>
+
+	* Sparse-op-defs.h (SPARSE_SMSM_BOOL_OPS): Duplicate code for scalar
+	sparse arguments rather than rely on extern function.
+
 2008-10-08  Jaroslav Hajek  <highegg@gmail.com>
 
 	* oct-inttypes.h (octave_base_int<T>::compute_threshold): Return

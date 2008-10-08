@@ -535,7 +535,8 @@ pow (const octave_int<T>& a, const octave_int<T>& b)
 
   if (b == zero || a == one)
     retval = one;
-  else if (b < zero)
+  // the is_signed check is inserted twice to avoid compiler warnings
+  else if (std::numeric_limits<T>::is_signed && b < zero)
     {
       if (std::numeric_limits<T>::is_signed && a.value () == -1)
         retval = (b.value () % 2) ? a : one;
@@ -574,7 +575,11 @@ pow (const double& a, const octave_int<T>& b)
 template <class T>
 octave_int<T>
 pow (const octave_int<T>& a, const double& b)
-{ return octave_int<T> (pow (a.double_value (), b)); }
+{ 
+  return ((b >= 0 && b < std::numeric_limits<T>::digits && b == xround (b))
+          ? pow (a, octave_int<T> (static_cast<T> (b)))
+          : octave_int<T> (pow (a.double_value (), b))); 
+}
 
 template <class T>
 octave_int<T>
@@ -584,7 +589,11 @@ powf (const float& a, const octave_int<T>& b)
 template <class T>
 octave_int<T>
 powf (const octave_int<T>& a, const float& b)
-{ return octave_int<T> (pow (a.float_value (), b)); }
+{
+  return ((b >= 0 && b < std::numeric_limits<T>::digits && b == xround (b))
+          ? pow (a, octave_int<T> (static_cast<T> (b)))
+          : octave_int<T> (pow (a.double_value (), b))); 
+}
 
 #define INSTANTIATE_INTTYPE(T) \
   template class OCTAVE_API octave_int<T>; \
@@ -640,6 +649,8 @@ INSTANTIATE_INTTYPE (uint64_t);
 %! warning("on", "Octave:int-convert-overflow");
 %! fail("int32(-2**31-0.5)","warning",".*")
 %! warning(wstate.state, "Octave:int-convert-overflow");
+%!assert((int64(2**62)+1)**1, int64(2**62)+1)
+%!assert((int64(2**30)+1)**2, int64(2**60+2**31) + 1)
 */
 
 /*

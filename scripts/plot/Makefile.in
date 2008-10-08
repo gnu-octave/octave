@@ -82,6 +82,7 @@ SOURCES = \
   barh.m \
   box.m \
   caxis.m \
+  cla.m \
   clf.m \
   close.m \
   closereq.m \

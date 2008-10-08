@@ -1,3 +1,8 @@
+2008-10-07  Ben Abbott  <bpabbott@mac.com>
+
+	* plot/cla.m: New function.
+	* plot/Makefile.in (SOURCES): Add it to the list.
+
 2008-10-07  John W. Eaton  <jwe@octave.org>
 
 	* miscellaneous/delete.m: Pass array of handles to __go_delete__.

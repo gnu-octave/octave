@@ -51,10 +51,10 @@
 ## @seealso{test}
 ## @end deftypefn
 
-## TODO: Output throttling: don't print out the entire 100x100 matrix,
-## TODO: but instead give a summary; don't print out the whole list, just
-## TODO: say what the first different element is, etc.  To do this, make
-## TODO: the message generation type specific.
+## FIXME: Output throttling: don't print out the entire 100x100 matrix,
+## but instead give a summary; don't print out the whole list, just
+## say what the first different element is, etc.  To do this, make
+## the message generation type specific.
 
 function assert (cond, varargin)
 

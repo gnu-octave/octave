@@ -267,7 +267,7 @@ static void store_args (int argc, char *const *argv) __attribute__ ((unused));
 static void
 store_args (int argc, char *const *argv)
 {
-  /* XXX This is no good solution.  We should rather copy the args so
+  /* FIXME: This is no good solution.  We should rather copy the args so
      that we can compare them later.  But we must not use malloc(3).  */
   original_argc = argc;
   original_argv = argv;

@@ -1973,7 +1973,7 @@ typedef int sig_atomic_t;
 
 // To be able to use long doubles for 64-bit mixed arithmetics, we need them at
 // least 80 bits wide and we need roundl declared in math.h
-// TODO: Maybe substitute this by a more precise check in the future.
+// FIXME: Maybe substitute this by a more precise check in the future.
 #if (SIZEOF_LONG_DOUBLE >= 10) && defined (HAVE_ROUNDL)
 #define OCTAVE_INT_USE_LONG_DOUBLE
 #endif

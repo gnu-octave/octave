@@ -18,7 +18,7 @@
    write to the Free Software Foundation, Inc., 51 Franklin Street,
    Fifth Floor, Boston, MA 02110-1301, USA.  */
 
-/* XXX This version of the implementation is not really complete.
+/* FIXME: This version of the implementation is not really complete.
    Some of the fields cannot add information alone.  But if seeing
    some of them in the same format (such as year, week and weekday)
    this is enough information for determining the date.  */
@@ -614,12 +614,12 @@ strptime_internal (buf, format, tm, decided)
 	  break;
 	case 'g':
 	  get_number (0, 99, 2);
-	  /* XXX This cannot determine any field in TM.  */
+	  /* FIXME: This cannot determine any field in TM.  */
 	  break;
 	case 'G':
 	  if (*rp < '0' || *rp > '9')
 	    return NULL;
-	  /* XXX Ignore the number since we would need some more
+	  /* FIXME: Ignore the number since we would need some more
 	     information to compute a real date.  */
 	  do
 	    ++rp;
@@ -629,7 +629,7 @@ strptime_internal (buf, format, tm, decided)
 	case 'V':
 	case 'W':
 	  get_number (0, 53, 2);
-	  /* XXX This cannot determine any field in TM without some
+	  /* FIXME: This cannot determine any field in TM without some
 	     information.  */
 	  break;
 	case 'w':
@@ -656,7 +656,7 @@ strptime_internal (buf, format, tm, decided)
 	  want_xday = 1;
 	  break;
 	case 'Z':
-	  /* XXX How to handle this?  */
+	  /* FIXME: How to handle this?  */
 	  break;
 	case 'E':
 #ifdef _NL_CURRENT
@@ -696,7 +696,7 @@ strptime_internal (buf, format, tm, decided)
 	    case 'Y':
 	      /* Match name of base year in locale's alternate
 		 representation.  */
-	      /* XXX This is currently not implemented.  It should
+	      /* FIXME: This is currently not implemented.  It should
 		 use the value _NL_CURRENT (LC_TIME, ERA).  */
 	      break;
 	    case 'x':
@@ -807,7 +807,7 @@ strptime_internal (buf, format, tm, decided)
 	    case 'V':
 	    case 'W':
 	      get_alt_number (0, 53, 2);
-	      /* XXX This cannot determine any field in TM without
+	      /* FIXME: This cannot determine any field in TM without
 		 further information.  */
 	      break;
 	    case 'w':

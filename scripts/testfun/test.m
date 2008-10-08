@@ -68,10 +68,10 @@
 ## @seealso{error, assert, fail, demo, example}
 ## @end deftypefn
 
-## TODO: * Consider using keyword fail rather then error?  This allows us
-## TODO: to make a functional form of error blocks, which means we
-## TODO: can include them in test sections which means that we can use
-## TODO: octave flow control for both kinds of tests.
+## FIXME: * Consider using keyword fail rather then error?  This allows us
+## to make a functional form of error blocks, which means we
+## can include them in test sections which means that we can use
+## octave flow control for both kinds of tests.
 
 ## PKG_ADD: mark_as_command test
 

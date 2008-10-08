@@ -270,7 +270,7 @@ private:
       val = xround (val); // Fool optimizations (maybe redundant)
       // If val is even, but orig_val is odd, we're one unit off.
       if (orig_val % 2 && val / 2 == xround (val / 2))
-        // TODO: is this always correct?
+        // FIXME: is this always correct?
         val *= (static_cast<S>(1) - (std::numeric_limits<S>::epsilon () / 2)); 
       return val;
     }
@@ -534,7 +534,7 @@ public:
       return ((x > 0) ? 1 : 0) - signbit (x); 
     }
 
-  // TODO: We do not have an authority what signed shifts should exactly do, so
+  // FIXME: We do not have an authority what signed shifts should exactly do, so
   // we define them the easy way. Note that Matlab does not define signed
   // shifts.
 
@@ -871,7 +871,7 @@ inline bool
 xisnan (const octave_int<T>&)
 { return false; }
 
-// TODO: Can/should any of these be inline?
+// FIXME: Can/should any of these be inline?
 
 template <class T>
 extern OCTAVE_API octave_int<T>

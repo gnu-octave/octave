@@ -198,7 +198,7 @@
 ## PKG_ADD: mark_as_command pkg
 
 function [local_packages, global_packages] = pkg (varargin)
-  ## Installation prefix (XXX: what should these be on windows?)
+  ## Installation prefix (FIXME: what should these be on windows?)
   persistent user_prefix = false;
   persistent prefix = -1;
   persistent archprefix = -1;
@@ -398,7 +398,7 @@ function [local_packages, global_packages] = pkg (varargin)
       if (length (files) == 0)
 	error ("you must specify at least one package or 'all' when calling 'pkg describe'");
       endif
-      ## XXX FIXME: the name of the output variables is inconsistent
+      ## FIXME: the name of the output variables is inconsistent
       ##            with their content
       switch (nargout)
 	case 0
@@ -871,11 +871,11 @@ function uninstall (pkgnames, handle_deps, verbose, local_list,
 	endif
       endfor
       if (length (delete_idx) != length (pkgnames))
-	## XXX: We should have a better error message
+	## FIXME: We should have a better error message
 	warning ("some of the packages you want to uninstall are not installed");
       endif
     else
-      ## XXX: We should have a better error message
+      ## FIXME: We should have a better error message
       warning ("some of the packages you want to uninstall are not installed.");
     endif
   endif
@@ -1050,7 +1050,7 @@ function [pkg_idx_struct] = parse_pkg_idx (packdir)
     if (! any (! isspace (line)) || line(1) == "#" || any (line == "="))
       ## Comments,  blank lines or comments about unimplemented 
       ## functions: do nothing
-      ## XXX: probably comments and pointers to external functions
+      ## FIXME: probably comments and pointers to external functions
       ## could be treated better when printing to screen?
     elseif (! isempty (strfind (line, ">>")))
       ## Skip package name and description as they are in
@@ -1723,11 +1723,11 @@ function deps_cell = fix_depends (depends)
 endfunction
 
 ## Strip the text of spaces from the right
-## Example: "  hello world  " => "  hello world" (XXX: is this the same as deblank?)
+## Example: "  hello world  " => "  hello world" (FIXME: is this the same as deblank?)
 function text = rstrip (text)
   chars = find (! isspace (text));
   if (length (chars) > 0)
-    ## XXX: shouldn't it be text = text(1:chars(end));
+    ## FIXME: shouldn't it be text = text(1:chars(end));
     text = text (chars(1):end);
   else
     text = "";
@@ -2061,7 +2061,7 @@ function unload_packages (files, handle_deps, local_list, global_list)
     idx = strcmp (p, d);
     if (any (idx))
       rmpath (d);
-      ## XXX: We should also check if we need to remove items from EXEC_PATH
+      ## FIXME: We should also check if we need to remove items from EXEC_PATH
     endif
   endfor
 endfunction

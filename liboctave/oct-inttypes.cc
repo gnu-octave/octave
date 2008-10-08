@@ -194,7 +194,7 @@ octave_int_arith_base<int64_t, true>::mul (int64_t x, int64_t y)
   
   // Essentially, what we do is compute sign, multiply absolute values
   // (as above) and impose the sign.
-  // TODO: Can we do something faster if we HAVE_FAST_INT_OPS?
+  // FIXME: Can we do something faster if we HAVE_FAST_INT_OPS?
 
   uint64_t usx = std::abs (x), usy = std::abs (y);
   bool positive = (x < 0) == (y < 0);

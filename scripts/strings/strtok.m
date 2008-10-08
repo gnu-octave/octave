@@ -26,7 +26,7 @@
 ##
 ## @end deftypefn
 
-## TODO: check what to do for a null delimiter
+## FIXME: check what to do for a null delimiter
 
 function [tok, rem] = strtok (str, delim)
 

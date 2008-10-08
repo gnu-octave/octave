@@ -35,7 +35,7 @@ EL_FILES = octave-hlp.el octave-inf.el octave-mod.el
 
 SOURCES = $(EL_FILES) octave-tags
 
-DISTFILES = $(addprefix $(srcdir)/, Makefile.in $(EL_FILES) octave-tags octave-tags.1 NEWS TODO README)
+DISTFILES = $(addprefix $(srcdir)/, Makefile.in $(EL_FILES) octave-tags octave-tags.1 NEWS FIXME README)
 
 all:
 .PHONY: all

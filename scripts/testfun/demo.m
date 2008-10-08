@@ -70,9 +70,9 @@
 ## @seealso{test, example}
 ## @end deftypefn
 
-## TODO: modify subplot so that gnuplot_has_multiplot == 0 causes it to
-## TODO: use the current figure window but pause if not plotting in the
-## TODO: first subplot.
+## FIXME: modify subplot so that gnuplot_has_multiplot == 0 causes it to
+## use the current figure window but pause if not plotting in the
+## first subplot.
 
 ## PKG_ADD: mark_as_command demo
 

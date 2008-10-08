@@ -65,7 +65,7 @@
 
 ## Author: Bill Denney <denney@seas.upenn.edu>
 
-## TODO?: This allows a single equal sign "=" to indicate equality, do
+## FIXME?: This allows a single equal sign "=" to indicate equality, do
 ## we want to require a double equal since that is the boolean operator?
 
 function out = compare_versions (v1, v2, operator)

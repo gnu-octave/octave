@@ -41,10 +41,10 @@
 ## @end smallexample
 ## @end deftypefn
 
-## TODO: subsort returned pairs by imaginary magnitude
-## TODO: Why doesn't exp(2i*pi*[0:4]'/5) produce exact conjugates. Does
-## TODO:    it in Matlab?  The reason is that complex pairs are supposed
-## TODO:    to be exact conjugates, and not rely on a tolerance test.
+## FIXME: subsort returned pairs by imaginary magnitude
+## FIXME: Why doesn't exp(2i*pi*[0:4]'/5) produce exact conjugates. Does
+## FIXME:    it in Matlab?  The reason is that complex pairs are supposed
+## FIXME:    to be exact conjugates, and not rely on a tolerance test.
 
 ## 2006-05-12 David Bateman - Modified for NDArrays
 

@@ -148,6 +148,8 @@ functions in the file, you should also include the name of the modified function
 The ChangeLog entries should describe what is changed, not why.  The reason of
 the change should appear in the commit message.
 
+The preferred comment mark for places that may need further attention is FIXME.
+
 @node Octave Sources (m-files)
 @section Octave Sources (m-files)
 

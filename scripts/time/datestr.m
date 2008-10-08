@@ -102,23 +102,23 @@
 ## @seealso{datenum, datevec, date, clock, now, datetick}
 ## @end deftypefn
 
-## TODO: parse arbitrary code strings.
-## TODO: e.g., for  Wednesday 2001-03-05 09:04:06 AM, use
-## TODO:     yy    01
-## TODO:     yyyy  2001
-## TODO:     m     M
-## TODO:     mm    03
-## TODO:     mmm   Mar
-## TODO:     d     W
-## TODO:     dd    05
-## TODO:     ddd   Wed
-## TODO:     HH    09
-## TODO:     MM    04
-## TODO:     SS    06
-## TODO:     PM    AM
-## TODO: Vectorize.  It is particularly easy since all the codes are
-## TODO:    fixed width.  Just generate the parts in separate arrays and
-## TODO:    concatenate.
+## FIXME: parse arbitrary code strings.
+## e.g., for  Wednesday 2001-03-05 09:04:06 AM, use
+##     yy    01
+##     yyyy  2001
+##     m     M
+##     mm    03
+##     mmm   Mar
+##     d     W
+##     dd    05
+##     ddd   Wed
+##     HH    09
+##     MM    04
+##     SS    06
+##     PM    AM
+## FIXME: Vectorize.  It is particularly easy since all the codes are
+##    fixed width.  Just generate the parts in separate arrays and
+##    concatenate.
 
 ## Author: pkienzle <pkienzle@users.sf.net>
 ## Created: 10 October 2001 (CVS)

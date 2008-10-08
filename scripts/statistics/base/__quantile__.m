@@ -47,7 +47,7 @@ function inv = __quantile__ (x, p, method = 5)
   p = p(:);
 
   ## Save length and set shape of samples.
-  ## TODO: does sort guarantee that NaN's come at the end?
+  ## FIXME: does sort guarantee that NaN's come at the end?
   x = sort (x);
   m = sum (! isnan (x));
   mx = size (x, 1);

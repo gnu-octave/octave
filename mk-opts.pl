@@ -21,7 +21,7 @@
 # Generate option handling code from a simpler input files for
 # Octave's functions like lsode, dassl, etc.
 
-# TODO:
+# FIXME:
 #
 # * Improve default documentation and/or individual documentation
 #   in data files. 

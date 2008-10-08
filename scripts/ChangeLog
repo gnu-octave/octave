@@ -1,3 +1,7 @@
+2008-10-07  John W. Eaton  <jwe@octave.org>
+
+	* miscellaneous/delete.m: Pass array of handles to __go_delete__.
+
 2008-10-06  John W. Eaton  <jwe@octave.org>
 
 	* plot/__add_datasource__.m, plot/__axes_limits__.m,

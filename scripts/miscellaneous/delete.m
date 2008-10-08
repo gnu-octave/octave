@@ -31,11 +31,9 @@ function delete (arg)
   if (nargin == 1)
     if (ischar (arg))
       unlink (arg);
-    elseif (all (ishandle (arg)))
+    elseif (all (ishandle (arg(:))))
       ## Delete a graphics object.
-      for n = 1:numel(arg)
-         __go_delete__ (arg(n));
-      endfor
+      __go_delete__ (arg);
     else
       error ("delete: expecting argument to be a filename or graphics handle");
     endif

@@ -1,3 +1,10 @@
+2008-10-08  Jaroslav Hajek  <highegg@gmail.com>
+
+	* oct-inttypes.h (octave_base_int<T>::compute_threshold): Return
+	exclusive bounds rather than inclusive, be resistant to compiler
+	optimizations.
+	(octave_base_int<T>::convert_real): Use exclusive bounds.
+
 2008-10-07  Jaroslav Hajek <highegg@gmail.com>
 
 	* oct-inttypes.h (OCTAVE_INT_DOUBLE_BIN_OP): Change octave_int64 to 

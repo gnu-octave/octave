@@ -267,11 +267,12 @@ private:
   static S 
   compute_threshold (S val, T orig_val)
     { 
-      if (static_cast <T> (val) != orig_val)
-        return val;
-      else
-        // Next number away from zero.
-        return val * (static_cast<S> (1.0) + std::numeric_limits<S>::epsilon ()); 
+      val = xround (val); // Fool optimizations (maybe redundant)
+      // If val is even, but orig_val is odd, we're one unit off.
+      if (orig_val % 2 && val / 2 == xround (val / 2))
+        // TODO: is this always correct?
+        val *= (static_cast<S>(1) - (std::numeric_limits<S>::epsilon () / 2)); 
+      return val;
     }
   
 public:
@@ -288,12 +289,12 @@ public:
           fnan = true;
           return static_cast<T> (0);
         }
-      else if (value <= thmin)
+      else if (value < thmin)
         {
-          octave_int_base<T>::ftrunc = true;
+          ftrunc = true;
           return min_val ();
         }
-      else if (value >= thmax)
+      else if (value > thmax)
         {
           ftrunc = true;
           return max_val ();

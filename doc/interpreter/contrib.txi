@@ -147,8 +147,8 @@ functions in the file, you should also include the name of the modified function
 @noindent
 The ChangeLog entries should describe what is changed, not why.  Any
 explanation of why a change is needed should appear as comments in the
-code, particularly if there is something in the code that might not be
-obvious to someone reading the code later.
+code, particularly if there is something that might not be obvious to
+someone reading it later.
 
 The preferred comment mark for places that may need further attention is FIXME.
 

@@ -36,6 +36,27 @@
 	(F__go_axes_init__): Flag error if handle is deleted during
 	initialization due.
 	
+2008-10-09  David Bateman  <dbateman@free.fr>
+
+	* ov-class.cc (Octave_map octave_class::map_value (void) const): 
+	Remove.
+	(bool octave_class::save_ascii (std::ostream&), 
+	bool octave_class::load_ascii (std::istream&),
+	bool octave_class::save_binary (std::ostream&, bool&),
+	bool octave_class::save_binary (std::ostream&, bool&),
+	bool octave_class::save_hdf5 (hid_t, const char *, bool),
+	bool octave_class::load_hdf5 (hid_t, const char *, bool)):
+	Allow saving and reloading of classes.
+	* ov-class. (Octave_map octave_class::map_value (void) const): 
+	Remove.
+	* ls-mat.cc (std::string read_mat5_binary_element (std::istream&, 
+	const std::string&, bool, bool&, octave_value&), 
+	int save_mat5_element_length (const octave_value&, const std::string&,
+	bool, bool)): Allow saving and loading of classes. 
+	* ls-oct-ascii.h (template <class T> bool extract_keyword 
+	(std::istream&, const char *, T&, const bool)): Initialize value with
+	null constructor rather than 0.
+	
 2008-10-07  David Bateman  <dbateman@free.fr>
 
 	* graphics.cc (F__go_delete__): Allow arrays of graphic handles.

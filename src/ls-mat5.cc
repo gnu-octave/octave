@@ -58,6 +58,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-obj.h"
 #include "oct-map.h"
 #include "ov-cell.h"
+#include "ov-class.h"
 #include "ov-fcn-inline.h"
 #include "pager.h"
 #include "pt-exp.h"
@@ -1099,8 +1100,18 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 	      }
 	    else
 	      {
-		warning ("load: objects are not implemented");
-		goto skip_ahead;
+		tc = new octave_class (m, classname);
+
+		if (load_path::find_method (classname, "loadobj") != 
+		    std::string())
+		  {
+		    octave_value_list tmp = feval ("loadobj", tc, 1);
+
+		    if (! error_state)
+		      tc = tmp(0);
+		    else
+		      goto data_read_error;
+		  }
 	      }
 	  }
 	else
@@ -1794,7 +1805,7 @@ save_mat5_element_length (const octave_value& tc, const std::string& name,
       ret += save_mat5_array_length (m.fortran_vec (), m.nelem (),
 				     save_as_floats);
     }
-  else if (tc.is_map () || tc.is_inline_function ()) 
+  else if (tc.is_map () || tc.is_inline_function () || tc.is_object ()) 
     {
       int fieldcnt = 0;
       const Octave_map m = tc.map_value ();
@@ -1803,6 +1814,12 @@ save_mat5_element_length (const octave_value& tc, const std::string& name,
       if (tc.is_inline_function ())
 	// length of "inline" is 6
 	ret += 8 + PAD (6 > max_namelen ? max_namelen : 6);
+      else if (tc.is_object ())
+	{
+	  int classlen = tc.class_name (). length ();
+
+	  ret += 8 + PAD (classlen > max_namelen ? max_namelen : classlen);
+	}
 
       for (Octave_map::const_iterator i = m.begin (); i != m.end (); i++)
 	fieldcnt++;
@@ -1942,7 +1959,7 @@ save_mat5_binary_element (std::ostream& os,
     flags |= MAT_FILE_STRUCT_CLASS;
   else if (tc.is_cell ())
     flags |= MAT_FILE_CELL_CLASS;
-  else if (tc.is_inline_function ())
+  else if (tc.is_inline_function () || tc.is_object ())
     flags |= MAT_FILE_OBJECT_CLASS;
   else
     {
@@ -2131,12 +2148,11 @@ save_mat5_binary_element (std::ostream& os,
       write_mat5_array (os, ::real (m_cmplx), save_as_floats);
       write_mat5_array (os, ::imag (m_cmplx), save_as_floats);
     }
-  else if (tc.is_map () || tc.is_inline_function()) 
+  else if (tc.is_map () || tc.is_inline_function() || tc.is_object ()) 
     {
-      const Octave_map m = tc.map_value ();
-      if (tc.is_inline_function ())
+      if (tc.is_inline_function () || tc.is_object ())
 	{
-	  std::string classname = "inline";
+	  std::string classname = tc.is_object() ? tc.class_name () : "inline";
 	  int namelen = classname.length ();
 
 	  if (namelen > max_namelen)
@@ -2150,6 +2166,20 @@ save_mat5_binary_element (std::ostream& os,
 	  strncpy (paddedname, classname.c_str (), namelen);
 	  os.write (paddedname, paddedlength);
 	}
+
+      Octave_map m;
+
+      if (tc.is_object () &&
+	  load_path::find_method (tc.class_name (), "saveobj") != std::string())
+	{
+	  octave_value_list tmp = feval ("saveobj", tc, 1);
+	  if (! error_state)
+	    m = tmp(0).map_value ();
+	  else
+	    goto error_cleanup;
+	}
+      else
+	m = tc.map_value ();
 
       // an Octave structure */
       // recursively write each element of the structure

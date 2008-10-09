@@ -24,6 +24,11 @@
 
 	* plot/__axis_label__.m: Inherit font properties from axes.
 
+2008-10-09  David Bateman  <dbateman@free.fr>
+
+	* general/loadobj.m, general/saveobj.m, general/display: New functions
+	* general/Makefile.in (SOURCES): Add then here.
+	
 2008-10-08  John W. Eaton  <jwe@octave.org>
 
 	* miscellaneous/fileparts.m: Handle "/file" properly.

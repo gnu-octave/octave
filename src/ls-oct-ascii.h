@@ -72,7 +72,7 @@ extract_keyword (std::istream& is, const char *keyword, T& value,
 		 const bool next_only = false)
 {
   bool status = false;
-  value = 0;
+  value = T();
 
   char c;
   while (is.get (c))

@@ -614,14 +614,6 @@ octave_class::byte_size (void) const
   return retval;
 }
 
-Octave_map
-octave_class::map_value (void) const
-{
-  Octave_map retval;
-  gripe_wrong_type_arg ("octave_class::map_value()", type_name ());
-  return retval;
-}
-
 string_vector
 octave_class::map_keys (void) const
 {
@@ -688,68 +680,31 @@ octave_class::print_with_name (std::ostream&, const std::string& name,
     }
 }
 
-bool 
-octave_class::save_ascii (std::ostream&, bool&)
-{
-  gripe_wrong_type_arg ("octave_class::save_ascii()", type_name ());
-  return false;
-}
-
-bool 
-octave_class::load_ascii (std::istream&)
-{
-  gripe_wrong_type_arg ("octave_class::load_ascii()", type_name ());
-  return false;
-}
-
-bool 
-octave_class::save_binary (std::ostream&, bool&)
-{
-  gripe_wrong_type_arg ("octave_class::save_binary()", type_name ());
-  return false;
-}
-
-bool 
-octave_class::load_binary (std::istream&, bool,
-				oct_mach_info::float_format)
-{
-  gripe_wrong_type_arg ("octave_class::load_binary()", type_name ());
-  return false;
-}
-
-#if defined (HAVE_HDF5)
-
 bool
-octave_class::save_hdf5 (hid_t, const char *, bool)
+octave_class::save_ascii (std::ostream& os)
 {
-  gripe_wrong_type_arg ("octave_class::save_binary()", type_name ());
+  os << "# classname: " << class_name () << "\n";
+  Octave_map m;
+  if (load_path::find_method (class_name (), "saveobj") != std::string())
+    {
+      octave_value in = new octave_class (*this);
+      octave_value_list tmp = feval ("saveobj", in, 1);
+      if (! error_state)
+	m = tmp(0).map_value ();
+      else
+	return false;
+    }
+  else
+    m = map_value ();
 
-  return false;
-}
-
-bool 
-octave_class::load_hdf5 (hid_t, const char *, bool)
-{
-  gripe_wrong_type_arg ("octave_class::load_binary()", type_name ());
-
-  return false;
-}
-
-#endif
-
-#if 0
-bool
-octave_class::save_ascii (std::ostream& os, bool& infnan_warned)
-{
-  Octave_map m = map_value ();
-  os << "# length: " << m.length () << "\n";
+  os << "# length: " << m.nfields () << "\n";
 
   Octave_map::iterator i = m.begin ();
   while (i != m.end ())
     {
       octave_value val = map.contents (i);
 
-      bool b = save_ascii_data (os, val, m.key (i), infnan_warned, false, 0);
+      bool b = save_ascii_data (os, val, m.key (i), false, 0);
       
       if (! b)
 	return os;
@@ -764,54 +719,82 @@ bool
 octave_class::load_ascii (std::istream& is)
 {
   octave_idx_type len = 0;
+  std::string classname;
   bool success = true;
 
-  if (extract_keyword (is, "length", len) && len >= 0)
+  if (extract_keyword (is, "classname", classname) && classname != "")
     {
-      if (len > 0)
+      if (extract_keyword (is, "length", len) && len >= 0)
 	{
-	  Octave_map m (map);
-
-	  for (octave_idx_type j = 0; j < len; j++)
+	  if (len > 0)
 	    {
-	      octave_value t2;
-	      bool dummy;
+	      Octave_map m (map);
 
-	      // recurse to read cell elements
-	      std::string nm
-		= read_ascii_data (is, std::string (), dummy, t2, j);
-
-	      if (!is)
-		break;
-
-	      Cell tcell = t2.is_cell () ? t2.cell_value () : Cell (t2);
-
-	      if (error_state)
+	      for (octave_idx_type j = 0; j < len; j++)
 		{
-		  error ("load: internal error loading class elements");
-		  return false;
+		  octave_value t2;
+		  bool dummy;
+
+		  // recurse to read cell elements
+		  std::string nm
+		    = read_ascii_data (is, std::string (), dummy, t2, j);
+
+		  if (!is)
+		    break;
+
+		  Cell tcell = t2.is_cell () ? t2.cell_value () : Cell (t2);
+
+		  if (error_state)
+		    {
+		      error ("load: internal error loading class elements");
+		      return false;
+		    }
+
+		  m.assign (nm, tcell);
 		}
 
-	      m.assign (nm, tcell);
-	    }
+	      if (is) 
+		{
+		  map = m;
+		  c_name = classname;
 
-	  if (is) 
-	    map = m;
-	  else
-	    {
-	      error ("load: failed to load class");
-	      success = false;
+		  if (load_path::find_method (classname, "loadobj") != 
+		      std::string())
+		    {
+		      octave_value in = new octave_class (*this);
+		      octave_value_list tmp = feval ("loadobj", in, 1);
+
+		      if (! error_state)
+			map = tmp(0).map_value ();
+		      else
+			success = false;
+		    }
+		}
+	      else
+		{
+		  error ("load: failed to load class");
+		  success = false;
+		}
 	    }
+	  else if (len == 0 )
+	    {
+	      map = Octave_map (dim_vector (1, 1));
+	      c_name = classname;
+	    }
+	  else
+	    panic_impossible ();
 	}
-      else if (len == 0 )
-	map = Octave_map (dim_vector (1, 1));
-      else
-	panic_impossible ();
+      else 
+	{
+	  error ("load: failed to extract number of elements in class");
+	  success = false;
+	}
     }
-  else {
-    error ("load: failed to extract number of elements in class");
-    success = false;
-  }
+  else
+    {
+      error ("load: failed to extract name of class");
+      success = false;
+    }
 
   return success;
 }
@@ -819,9 +802,25 @@ octave_class::load_ascii (std::istream& is)
 bool 
 octave_class::save_binary (std::ostream& os, bool& save_as_floats)
 {
-  Octave_map m = map_value ();
+  int32_t classname_len = class_name().length ();
 
-  int32_t len = m.length();
+  os.write (reinterpret_cast<char *> (&classname_len), 4);
+  os << class_name ();
+
+  Octave_map m;
+  if (load_path::find_method (class_name (), "saveobj") != std::string())
+    {
+      octave_value in = new octave_class (*this);
+      octave_value_list tmp = feval ("saveobj", in, 1);
+      if (! error_state)
+	m = tmp(0).map_value ();
+      else
+	return false;
+    }
+  else
+    m = map_value ();
+
+  int32_t len = m.nfields();
   os.write (reinterpret_cast<char *> (&len), 4);
   
   Octave_map::iterator i = m.begin ();
@@ -845,6 +844,23 @@ octave_class::load_binary (std::istream& is, bool swap,
 			    oct_mach_info::float_format fmt)
 {
   bool success = true;
+
+  int32_t classname_len;
+
+  is.read (reinterpret_cast<char *> (&classname_len), 4);
+  if (! is)
+    return false;
+  else if (swap)
+    swap_bytes<4> (&classname_len);
+
+  {
+    OCTAVE_LOCAL_BUFFER (char, classname, classname_len+1);
+    classname[classname_len] = '\0';
+    if (! is.read (reinterpret_cast<char *> (classname), classname_len))
+      return false;
+    c_name = classname;
+  }
+
   int32_t len;
   if (! is.read (reinterpret_cast<char *> (&len), 4))
     return false;
@@ -880,7 +896,20 @@ octave_class::load_binary (std::istream& is, bool swap,
 	}
 
       if (is) 
-	map = m;
+	{
+	  map = m;
+
+	  if (load_path::find_method (class_name(), "loadobj") != std::string())
+	    {
+	      octave_value in = new octave_class (*this);
+	      octave_value_list tmp = feval ("loadobj", in, 1);
+
+	      if (! error_state)
+		map = tmp(0).map_value ();
+	      else
+		success = false;
+	    }
+	}
       else
 	{
 	  error ("load: failed to load class");
@@ -900,14 +929,53 @@ octave_class::load_binary (std::istream& is, bool swap,
 bool
 octave_class::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
 {
+  hsize_t hdims[3];
+  hid_t group_hid = -1;
+  hid_t type_hid = -1;
+  hid_t space_hid = -1;
+  hid_t class_hid = -1;
   hid_t data_hid = -1;
+  Octave_map m;
+  Octave_map::iterator i;
 
-  data_hid = H5Gcreate (loc_id, name, 0);
-  if (data_hid < 0) return false;
+  group_hid = H5Gcreate (loc_id, name, 0);
+  if (group_hid < 0)
+    goto error_cleanup;
+
+  // Add the class name to the group
+  type_hid = H5Tcopy (H5T_C_S1); H5Tset_size (type_hid, c_name.length () + 1);
+  if (type_hid < 0)
+    goto error_cleanup;
+
+  hdims[0] = 0;
+  space_hid = H5Screate_simple (0 , hdims, 0);
+  if (space_hid < 0)
+    goto error_cleanup;
+
+  class_hid = H5Dcreate (group_hid, "classname",  type_hid, space_hid,
+			 H5P_DEFAULT);
+  if (class_hid < 0 || H5Dwrite (class_hid, type_hid, H5S_ALL, H5S_ALL, 
+				    H5P_DEFAULT, c_name.c_str ()) < 0)
+    goto error_cleanup;
+
+  data_hid = H5Gcreate (group_hid, "value", 0);
+  if (data_hid < 0)
+    goto error_cleanup;
+
+  if (load_path::find_method (class_name (), "saveobj") != std::string())
+    {
+      octave_value in = new octave_class (*this);
+      octave_value_list tmp = feval ("saveobj", in, 1);
+      if (! error_state)
+	m = tmp(0).map_value ();
+      else
+	goto error_cleanup;
+    }
+  else
+    m = map_value ();
 
   // recursively add each element of the class to this group
-  Octave_map m = map_value ();
-  Octave_map::iterator i = m.begin ();
+  i = m.begin ();
   while (i != m.end ())
     {
       octave_value val = map.contents (i);
@@ -921,7 +989,22 @@ octave_class::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
       i++;
     }
 
-  H5Gclose (data_hid);
+ error_cleanup:
+
+  if (data_hid > 0)
+    H5Gclose (data_hid);
+
+  if (class_hid > 0)
+    H5Dclose (class_hid);
+
+  if (space_hid > 0)
+    H5Sclose (space_hid);
+
+  if (type_hid > 0)
+    H5Tclose (type_hid);
+
+  if (group_hid > 0)
+    H5Gclose (group_hid);
 
   return true;
 }
@@ -932,22 +1015,87 @@ octave_class::load_hdf5 (hid_t loc_id, const char *name,
 {
   bool retval = false;
 
+  hid_t group_hid = -1;
+  hid_t data_hid = -1;
+  hid_t type_hid = -1;
+  hid_t type_class_hid = -1;
+  hid_t space_hid = -1;
+  hid_t subgroup_hid = -1; 
+  hid_t st_id = -1;
+
   hdf5_callback_data dsub;
 
   herr_t retval2 = 0;
   Octave_map m (dim_vector (1, 1));
   int current_item = 0;
-#ifdef HAVE_H5GGET_NUM_OBJS
   hsize_t num_obj = 0;
-  hid_t group_id = H5Gopen (loc_id, name); 
-  H5Gget_num_objs (group_id, &num_obj);
-  H5Gclose (group_id);
+  int slen = 0;
+  hsize_t rank = 0;
+
+  group_hid = H5Gopen (loc_id, name);
+  if (group_hid < 0)
+    goto error_cleanup;
+
+  
+  data_hid = H5Dopen (group_hid, "classname");
+
+  if (data_hid < 0)
+    goto error_cleanup;
+
+  type_hid = H5Dget_type (data_hid);
+
+  type_class_hid = H5Tget_class (type_hid);
+
+  if (type_class_hid != H5T_STRING)
+    goto error_cleanup;
+	  
+  space_hid = H5Dget_space (data_hid);
+  rank = H5Sget_simple_extent_ndims (space_hid);
+
+  if (rank != 0)
+    goto error_cleanup;
+
+  slen = H5Tget_size (type_hid);
+  if (slen < 0)
+    goto error_cleanup;
+
+  // do-while loop here to prevent goto crossing initialization of classname
+  do
+    {
+      OCTAVE_LOCAL_BUFFER (char, classname, slen);
+
+      // create datatype for (null-terminated) string to read into:
+      st_id = H5Tcopy (H5T_C_S1);
+      H5Tset_size (st_id, slen);
+
+      if (H5Dread (data_hid, st_id, H5S_ALL, H5S_ALL, H5P_DEFAULT, 
+		   classname) < 0)
+	{
+	  H5Tclose (st_id);
+	  H5Dclose (data_hid);
+	  H5Gclose (group_hid);
+	  return false;
+	}
+     
+      H5Tclose (st_id);
+      H5Dclose (data_hid);
+      data_hid = -1;
+
+      c_name = classname;
+    }
+  while (0);
+
+
+#ifdef HAVE_H5GGET_NUM_OBJS
+  subgroup_hid = H5Gopen (group_hid, name); 
+  H5Gget_num_objs (subgroup_hid, &num_obj);
+  H5Gclose (subgroup_hid);
 
   while (current_item < static_cast<int> (num_obj)
-	 && (retval2 = H5Giterate (loc_id, name, &current_item,
+	 && (retval2 = H5Giterate (group_hid, name, &current_item,
 				   hdf5_read_next_data, &dsub)) > 0)
 #else
-  while ((retval2 = H5Giterate (loc_id, name, &current_item,
+  while ((retval2 = H5Giterate (group_hid, name, &current_item,
 				hdf5_read_next_data, &dsub)) > 0)
 #endif
     {
@@ -970,13 +1118,33 @@ octave_class::load_hdf5 (hid_t loc_id, const char *name,
   if (retval2 >= 0)
     {
       map = m;
-      retval = true;
+
+      if (load_path::find_method (class_name(), "loadobj") != std::string())
+	{
+	  octave_value in = new octave_class (*this);
+	  octave_value_list tmp = feval ("loadobj", in, 1);
+
+	  if (! error_state)
+	    {
+	      map = tmp(0).map_value ();
+	      retval = true;
+	    }
+	  else
+	    retval = false;
+	}
+      else
+	retval = true;
     }
   
+ error_cleanup:
+  if (data_hid > 0)
+    H5Dclose (data_hid);
+
+  if (data_hid > 0)
+    H5Gclose (group_hid);
+
   return retval;
 }
-
-#endif
 
 #endif
 

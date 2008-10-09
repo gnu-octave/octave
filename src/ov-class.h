@@ -110,7 +110,7 @@ public:
 
   bool is_object (void) const { return true; }
 
-  Octave_map map_value (void) const;
+  Octave_map map_value (void) const { return map; }
 
   string_vector map_keys (void) const;
 
@@ -123,7 +123,7 @@ public:
   void print_with_name (std::ostream& os, const std::string& name, 
 			bool print_padding = true) const;
 
-  bool save_ascii (std::ostream& os, bool& infnan_warned);
+  bool save_ascii (std::ostream& os);
 
   bool load_ascii (std::istream& is);
 

@@ -31,8 +31,12 @@ function retval = __axis_label__ (caller, txt, varargin)
     else
       rot = 0;
     endif
-
-    h = __go_text__ (ca, "string", txt, "rotation", rot, varargin{:});
+    h = __go_text__ (ca, "fontangle", get (ca, "fontangle"),
+                         "fontname", get (ca, "fontname"),
+                         "fontsize", get (ca, "fontsize"),
+                         "fontunits", get (ca, "fontunits"),
+                         "fontweight", get (ca, "fontweight"),
+                         "string", txt, "rotation", rot, varargin{:});
     set (ca, caller, h);
     if (nargout > 0)
       retval = h;

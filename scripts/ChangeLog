@@ -1,3 +1,7 @@
+2008-10-09  Ben Abbott <bpabbott@mac.com>
+
+	* plot/__axis_label__.m: Inherit font properties from axes.
+
 2008-10-08  John W. Eaton  <jwe@octave.org>
 
 	* miscellaneous/fileparts.m: Handle "/file" properly.

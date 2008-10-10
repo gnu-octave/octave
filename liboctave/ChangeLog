@@ -1,3 +1,11 @@
+2008-10-09  Jaroslav Hajek <highegg@gmail.com>
+
+	* oct-sort.cc (octave_sort<T>::merge_getmem,
+	octave_sort<T>::merge_freemem): Replace malloc -> new [], free ->
+	delete [].
+	(octave_sort<T>::merge_lo, octave_sort<T>::merge_hi): Replace
+	std::memcpy and std::memmove with std::copy.
+
 2008-10-08  John W. Eaton  <jwe@octave.org>
 
 	* Sparse-op-defs.h (SPARSE_SMSM_BOOL_OPS): Duplicate code for scalar

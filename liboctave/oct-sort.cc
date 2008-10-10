@@ -1,5 +1,6 @@
 /*
 Copyright (C) 2003, 2004, 2005, 2006, 2007 David Bateman
+Copyright (C) 2008 Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -26,6 +27,11 @@ made are
 
 * convert the sorting code in listobject.cc into a generic class, 
   replacing PyObject* with the type of the class T.
+
+* replaced usages of malloc, free, memcpy and memmove by standard C++
+  new [], delete [] and std::copy. Note that replacing memmove by std::copy
+  is possible if the destination starts before the source.
+  
 
 The Python license is
 
@@ -84,7 +90,7 @@ The Python license is
 #endif
 
 #include <cassert>
-#include <cstdlib>
+#include <algorithm>
 #include <cstring>
 
 #include "lo-mappers.h"
@@ -434,8 +440,7 @@ template <class T>
 void
 octave_sort<T>::merge_freemem (void)
 {
-  if (ms.a)
-    free (ms.a);
+  delete [] ms.a;
   ms.alloced = 0;
   ms.a = 0;
 }
@@ -492,7 +497,7 @@ octave_sort<T>::merge_getmem (octave_idx_type need)
    * we don't care what's in the block.
    */
   merge_freemem ();
-  ms.a = static_cast <T *> (malloc (need * sizeof (T)));
+  ms.a = new T[need];
   if (ms.a)
     {
       ms.alloced = need;
@@ -522,7 +527,7 @@ octave_sort<T>::merge_lo (T *pa, octave_idx_type na, T *pb, octave_idx_type nb)
 
   if (MERGE_GETMEM (na) < 0)
     return -1;
-  std::memcpy (ms.a, pa, na * sizeof (T));
+  std::copy (pa, pa + na, ms.a);
   dest = pa;
   pa = ms.a;
 
@@ -584,7 +589,7 @@ octave_sort<T>::merge_lo (T *pa, octave_idx_type na, T *pb, octave_idx_type nb)
 	    {
 	      if (k < 0)
 		goto Fail;
-	      std::memcpy (dest, pa, k * sizeof (T));
+              std::copy (pa, pa + k, dest);
 	      dest += k;
 	      pa += k;
 	      na -= k;
@@ -608,7 +613,7 @@ octave_sort<T>::merge_lo (T *pa, octave_idx_type na, T *pb, octave_idx_type nb)
 	    {
 	      if (k < 0)
 		goto Fail;
-	      std::memmove (dest, pb, k * sizeof (T));
+              std::copy (pb, pb + k, dest);
 	      dest += k;
 	      pb += k;
 	      nb -= k;
@@ -631,12 +636,12 @@ octave_sort<T>::merge_lo (T *pa, octave_idx_type na, T *pb, octave_idx_type nb)
 
  Fail:
   if (na)
-    std::memcpy (dest, pa, na * sizeof (T));
+    std::copy (pa, pa + na, dest);
   return result;
 
  CopyB:
   /* The last element of pa belongs at the end of the merge. */
-  std::memmove (dest, pb, nb * sizeof (T));
+  std::copy (pb, pb + nb, dest);
   dest[nb] = *pa;
 
   return 0;
@@ -662,7 +667,7 @@ octave_sort<T>::merge_hi (T *pa, octave_idx_type na, T *pb, octave_idx_type nb)
   if (MERGE_GETMEM (nb) < 0)
     return -1;
   dest = pb + nb - 1;
-  std::memcpy (ms.a, pb, nb * sizeof (T));
+  std::copy (pb, pb + nb, ms.a);
   basea = pa;
   baseb = ms.a;
   pb = ms.a + nb - 1;
@@ -728,7 +733,7 @@ octave_sort<T>::merge_hi (T *pa, octave_idx_type na, T *pb, octave_idx_type nb)
 	    {
 	      dest -= k;
 	      pa -= k;
-	      std::memmove (dest+1, pa+1, k * sizeof (T));
+              std::copy (pa+1, pa+1 + k, dest+1);
 	      na -= k;
 	      if (na == 0)
 		goto Succeed;
@@ -747,7 +752,7 @@ octave_sort<T>::merge_hi (T *pa, octave_idx_type na, T *pb, octave_idx_type nb)
 	    {
 	      dest -= k;
 	      pb -= k;
-	      std::memcpy (dest+1, pb+1, k * sizeof (T));
+              std::copy (pb+1, pb+1 + k, dest+1);
 	      nb -= k;
 	      if (nb == 1)
 		goto CopyA;
@@ -772,14 +777,14 @@ Succeed:
 
 Fail:
   if (nb)
-    std::memcpy (dest-(nb-1), baseb, nb * sizeof (T));
+    std::copy (baseb, baseb + nb, dest-(nb-1));
   return result;
 
 CopyA:
   /* The first element of pb belongs at the front of the merge. */
   dest -= na;
   pa -= na;
-  std::memmove (dest+1, pa+1, na * sizeof (T));
+  std::copy (pa+1, pa+1 + na, dest+1);
   *dest = *pb;
 
   return 0;

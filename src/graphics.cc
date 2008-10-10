@@ -1530,7 +1530,8 @@ maybe_set_children (const Matrix& kids, const octave_value& val)
 
 	  if (t1 != t2)
 	    ok = false;
-	}      else
+	}
+      else
 	ok = false;
 
       if (! ok)

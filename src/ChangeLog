@@ -1,3 +1,37 @@
+2008-10-10  John W. Eaton  <jwe@octave.org>
+
+	* graphics.cc (gh_manager::do_free): Set the beingdeleted
+	property, then delete the children, then execute the deletefcn.
+	(axes::properties::set_defaults, axes::properties::remove_child,
+	axes::properites::delete_children): Call delete_text_child to
+	manage the title, xlabel, ylabel, and zlabel properties.
+	(axes::properties::get_title, axes::properties::get_xlabel,
+	axes::properties::get_ylabel, axes::properties::get_zlabel): Delete.
+
+	* graphics.h.in (axes::properites::title,
+	axes::properites::xlabel, axes::properites::ylabel,
+	axes::properites::zlabel): No longer mutable.  Don't generate
+	factory default values or custom get functions for these
+	properties.
+
+	* graphics.cc (axes::properties::delete_text_child): New function.
+	* graphics.h.in: Provide decl.
+
+	* graphics.h.in (graphics_object::type): New function.
+
+2008-10-10  David Bateman  <dbateman@free.fr>
+
+	* graphics.h.in (radio_property axes::properties::__colorbar__):
+	Delete.
+	* graphics.cc (void axes::properties::sync_positions (void)):
+	Disable code synchronizing outerposiiton and position.
+	(void axes::properties::set_defaults (base_graphics_object&,
+	const std::string&): Remove __colorbar__.
+	(F__go_delete__): Don't delete if already being deleting to avoid
+	recursion in callback functions.
+	(F__go_axes_init__): Flag error if handle is deleted during
+	initialization due.
+	
 2008-10-07  David Bateman  <dbateman@free.fr>
 
 	* graphics.cc (F__go_delete__): Allow arrays of graphic handles.

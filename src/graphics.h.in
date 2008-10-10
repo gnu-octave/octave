@@ -2030,6 +2030,8 @@ public:
 
   bool valid_object (void) const { return rep->valid_object (); }
 
+  std::string type (void) const { return rep->type (); }
+
   operator bool (void) const { return rep->valid_object (); }
 
   // FIXME -- these functions should be generated automatically by the
@@ -2530,12 +2532,14 @@ public:
     Matrix x_zlim;
     std::list<octave_value> zoom_stack;
 
+    void delete_text_child (handle_property& h);
+
     // See the genprops.awk script for an explanation of the
     // properties declarations.
 
     BEGIN_PROPERTIES(axes)
       array_property position u , default_axes_position ()
-      mutable handle_property title GSO , graphics_handle ()
+      handle_property title SOf , gh_manager::make_graphics_handle ("text", __myhandle__)
       bool_property box , "on"
       bool_property key , "off"
       bool_property keybox , "off"
@@ -2554,9 +2558,9 @@ public:
       radio_property zlimmode al , "{auto}|manual"
       radio_property climmode al , "{auto}|manual"
       radio_property alimmode    , "{auto}|manual"
-      mutable handle_property xlabel GSO , graphics_handle ()
-      mutable handle_property ylabel GSO , graphics_handle ()
-      mutable handle_property zlabel GSO , graphics_handle ()
+      handle_property xlabel SOf , gh_manager::make_graphics_handle ("text", __myhandle__)
+      handle_property ylabel SOf , gh_manager::make_graphics_handle ("text", __myhandle__)
+      handle_property zlabel SOf , gh_manager::make_graphics_handle ("text", __myhandle__)
       bool_property xgrid , "off"
       bool_property ygrid , "off"
       bool_property zgrid , "off"
@@ -2595,7 +2599,6 @@ public:
       radio_property nextplot , "add|replace_children|{replace}"
       array_property outerposition u , default_axes_outerposition ()
       radio_property activepositionproperty , "{outerposition}|position"
-      radio_property __colorbar__ h , "{none}|north|south|east|west|northoutside|southoutside|eastoutside|westoutside"
       color_property ambientlightcolor , color_values (1, 1, 1)
       array_property cameraposition m , Matrix (1, 3, 0.0)
       array_property cameratarget m , Matrix (1, 3, 0.0)

@@ -1,5 +1,9 @@
 2008-10-10  John W. Eaton  <jwe@octave.org>
 
+	* graphics.h.in (base_properties::adopt): Place new child at front
+	of list, not end.  Make list of children a column vector instead
+	of a row vector.
+
 	* graphics.cc (gh_manager::do_free): Set the beingdeleted
 	property, then delete the children, then execute the deletefcn.
 	(axes::properties::set_defaults, axes::properties::remove_child,

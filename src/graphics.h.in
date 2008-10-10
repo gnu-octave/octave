@@ -1615,8 +1615,10 @@ public:
   virtual void adopt (const graphics_handle& h)
   {
     octave_idx_type n = children.numel ();
-    children.resize (1, n+1);
-    children(n) = h.value ();
+    children.resize (n+1, 1);
+    for (octave_idx_type i = n; i > 0; i--)
+      children(i) = children(i-1);
+    children(0) = h.value ();
     mark_modified ();
   }
 

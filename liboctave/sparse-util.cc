@@ -30,8 +30,15 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-error.h"
 #include "sparse-util.h"
 
+// FIXME this overload is here due to API change in SuiteSparse (3.1 -> 3.2)
 void
 SparseCholError (int status, char *file, int line, char *message)
+{
+  SparseCholError (status, file, line, message);
+}
+
+void
+SparseCholError (int status, const char *file, int line, const char *message)
 {
   (*current_liboctave_warning_handler)("warning %i, at line %i in file %s",
 				     status, line, file);

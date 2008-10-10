@@ -1,3 +1,9 @@
+2008-10-10  Jaroslav Hajek  <highegg@gmail.com>
+
+	* sparse-util.h (SparseCholPrint): Change char * argument to const
+	char *.
+	* sparse-util.cc (SparseCholPrint): Likewise.
+
 2008-10-09  Jaroslav Hajek <highegg@gmail.com>
 
 	* oct-sort.cc (octave_sort<T>::merge_getmem,

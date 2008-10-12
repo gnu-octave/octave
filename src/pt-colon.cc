@@ -113,28 +113,51 @@ tree_colon_expression::make_range (const octave_value& ov_base,
 {
   octave_value retval;
 
-  bool result_is_str = (ov_base.is_string () && ov_limit.is_string ());
-  bool dq_str = (ov_base.is_dq_string () || ov_limit.is_dq_string ());
+  if (ov_base.is_object () || ov_limit.is_object () || 
+      ov_increment.is_object ())
+    {
+      octave_value_list tmp1;
+      tmp1(2) = ov_limit;
+      tmp1(1) = ov_increment;
+      tmp1(0) = ov_base;
 
-  Matrix m_base = ov_base.matrix_value (true);
+      octave_value fcn = symbol_table::find_function ("colon", tmp1);
 
-  if (error_state)
-    eval_error ("invalid base value in colon expression");
+      if (fcn.is_defined ())
+	{
+	  octave_value_list tmp2 = fcn.do_multi_index_op (1, tmp1);
+		      
+	  if (! error_state)
+	    retval = tmp2 (0);
+	}
+      else
+	::error ("can not find overloaded colon function");
+    }
   else
     {
-      Matrix m_limit = ov_limit.matrix_value (true);
+      bool result_is_str = (ov_base.is_string () && ov_limit.is_string ());
+      bool dq_str = (ov_base.is_dq_string () || ov_limit.is_dq_string ());
+
+      Matrix m_base = ov_base.matrix_value (true);
 
       if (error_state)
-	eval_error ("invalid limit value in colon expression");
+	eval_error ("invalid base value in colon expression");
       else
 	{
-	  Matrix m_increment = ov_increment.matrix_value (true);
+	  Matrix m_limit = ov_limit.matrix_value (true);
 
 	  if (error_state)
-	    eval_error ("invalid increment value in colon expression");
+	    eval_error ("invalid limit value in colon expression");
 	  else
-	    retval = make_range (m_base, m_limit, m_increment,
-				 result_is_str, dq_str);
+	    {
+	      Matrix m_increment = ov_increment.matrix_value (true);
+
+	      if (error_state)
+		eval_error ("invalid increment value in colon expression");
+	      else
+		retval = make_range (m_base, m_limit, m_increment,
+				     result_is_str, dq_str);
+	    }
 	}
     }
 
@@ -161,6 +184,44 @@ tree_colon_expression::rvalue (void)
 
       if (error_state || ov_limit.is_undefined ())
 	eval_error ("invalid limit value in colon expression");
+      else if (ov_base.is_object () || ov_limit.is_object ())
+	{
+	  octave_value_list tmp1;
+
+	  if (op_increment)
+	    {
+	      octave_value ov_increment = op_increment->rvalue ();
+
+	      if (error_state || ov_increment.is_undefined ())
+		eval_error ("invalid increment value in colon expression");
+	      else
+		{
+		  tmp1(2) = ov_limit;
+		  tmp1(1) = ov_increment;
+		  tmp1(0) = ov_base;
+		}
+	    }
+	  else
+	    {
+	      tmp1(1) = ov_limit;
+	      tmp1(0) = ov_base;
+	    }
+
+	  if (!error_state)
+	    {
+	      octave_value fcn = symbol_table::find_function ("colon", tmp1);
+
+	      if (fcn.is_defined ())
+		{
+		  octave_value_list tmp2 = fcn.do_multi_index_op (1, tmp1);
+		      
+		  if (! error_state)
+		    retval = tmp2 (0);
+		}
+	      else
+		::error ("can not find overloaded colon function");
+	    }
+	}
       else
 	{
 	  octave_value ov_increment = 1.0;

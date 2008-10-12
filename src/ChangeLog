@@ -1,3 +1,10 @@
+2008-10-12  David Bateman  <dbateman@free.fr>
+
+	* pt-colon.cc (octave_value tree_colon_expression::make_range 
+	(const octave_value&, const octave_value&, const octave_value&)):
+	Treating class overloading of colon operator.
+	(octave_value tree_colon_expression::rvalue (void)): Ditto.
+
 2008-10-10  John W. Eaton  <jwe@octave.org>
 
 	* graphics.h.in (base_properties::adopt): Place new child at front

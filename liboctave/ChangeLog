@@ -1,3 +1,11 @@
+2008-10-12  Jaroslav Hajek <highegg@gmail.com>
+
+	* CSparse.cc (ComplexMatrix::expm): Improve inverse preconditioning
+	according to Marco Caliari.
+	* dSparse.cc (Matrix::expm): Likewise.
+	* fCSparse.cc (FloatComplexMatrix::expm): Likewise.
+	* fSparse.cc (FloatMatrix::expm): Likewise.
+
 2008-10-10  Jaroslav Hajek  <highegg@gmail.com>
 
 	* sparse-util.h (SparseCholPrint): Change char * argument to const

@@ -3027,21 +3027,30 @@ ComplexMatrix::expm (void) const
   // inverse scaling (diagonal transformation)
   for (octave_idx_type i = 0; i < nc; i++)
     for (octave_idx_type j = 0; j < nc; j++)
-       retval(i,j) *= dscale(i) / dscale(j);
+      retval(i,j) *= dscale(i) / dscale(j);
 
   OCTAVE_QUIT;
 
   // construct balancing permutation vector
   Array<octave_idx_type> iperm (nc);
   for (octave_idx_type i = 0; i < nc; i++)
-    iperm(i) = i;  // initialize to identity permutation
+    iperm(i) = i;  // identity permutation
+
+  // trailing permutations must be done in reverse order
+  for (octave_idx_type i = nc - 1; i >= ihi; i--)
+    {
+      octave_idx_type swapidx = static_cast<octave_idx_type> (dpermute(i)) - 1;
+      octave_idx_type tmp = iperm(i);
+      iperm(i) = iperm(swapidx);
+      iperm(swapidx) = tmp;
+    }
 
   // leading permutations in forward order
   for (octave_idx_type i = 0; i < (ilo-1); i++)
     {
       octave_idx_type swapidx = static_cast<octave_idx_type> (dpermute(i)) - 1;
       octave_idx_type tmp = iperm(i);
-      iperm(i) = iperm(swapidx);
+      iperm(i) = iperm (swapidx);
       iperm(swapidx) = tmp;
     }
 
@@ -3057,32 +3066,7 @@ ComplexMatrix::expm (void) const
     for (octave_idx_type j = 0; j < nc; j++)
       retval(i,j) = tmpMat(invpvec(i),invpvec(j));
 
-  OCTAVE_QUIT;
-
-  for (octave_idx_type i = 0; i < nc; i++)
-    iperm(i) = i;  // initialize to identity permutation
-
-  // trailing permutations must be done in reverse order
-  for (octave_idx_type i = nc - 1; i >= ihi; i--)
-    {
-      octave_idx_type swapidx = static_cast<octave_idx_type> (dpermute(i)) - 1;
-      octave_idx_type tmp = iperm(i);
-      iperm(i) = iperm(swapidx);
-      iperm(swapidx) = tmp;
-    }
-
-  // construct inverse balancing permutation vector
-  for (octave_idx_type i = 0; i < nc; i++)
-    invpvec(iperm(i)) = i;     // Thanks to R. A. Lippert for this method
-
-  OCTAVE_QUIT;
-
-  tmpMat = retval;
-  for (octave_idx_type i = 0; i < nc; i++)
-    for (octave_idx_type j = 0; j < nc; j++)
-      retval(i,j) = tmpMat(invpvec(i),invpvec(j));
-
-  // Reverse preconditioning step 1: fix trace normalization.
+  // Reverse preconditioning step 1: fix trace normalization. 
 
   return exp (trshift) * retval;
 }

@@ -2659,7 +2659,7 @@ Matrix::expm (void) const
   // apply inverse scaling to computed exponential
   for (octave_idx_type i = 0; i < nc; i++)
     for (octave_idx_type j = 0; j < nc; j++)
-       retval(i,j) *= dscale(i) / dscale(j);
+      retval(i,j) *= dscale(i) / dscale(j);
 
   OCTAVE_QUIT;
 
@@ -2667,6 +2667,15 @@ Matrix::expm (void) const
   Array<octave_idx_type> iperm (nc);
   for (octave_idx_type i = 0; i < nc; i++)
     iperm(i) = i;  // identity permutation
+
+  // trailing permutations must be done in reverse order
+  for (octave_idx_type i = nc - 1; i >= ihi; i--)
+    {
+      octave_idx_type swapidx = static_cast<octave_idx_type> (dpermute(i)) - 1;
+      octave_idx_type tmp = iperm(i);
+      iperm(i) = iperm(swapidx);
+      iperm(swapidx) = tmp;
+    }
 
   // leading permutations in forward order
   for (octave_idx_type i = 0; i < (ilo-1); i++)
@@ -2683,39 +2692,13 @@ Matrix::expm (void) const
     invpvec(iperm(i)) = i;     // Thanks to R. A. Lippert for this method
 
   OCTAVE_QUIT;
- 
+
   Matrix tmpMat = retval;
   for (octave_idx_type i = 0; i < nc; i++)
     for (octave_idx_type j = 0; j < nc; j++)
       retval(i,j) = tmpMat(invpvec(i),invpvec(j));
 
-  OCTAVE_QUIT;
-
-  for (octave_idx_type i = 0; i < nc; i++)
-    iperm(i) = i;  // identity permutation
-
-  // trailing permutations must be done in reverse order
-  for (octave_idx_type i = nc - 1; i >= ihi; i--)
-    {
-      octave_idx_type swapidx = static_cast<octave_idx_type> (dpermute(i)) - 1;
-      octave_idx_type tmp = iperm(i);
-      iperm(i) = iperm(swapidx);
-      iperm(swapidx) = tmp;
-    }
-
-  // construct inverse balancing permutation vector
-  for (octave_idx_type i = 0; i < nc; i++)
-    invpvec(iperm(i)) = i;     // Thanks to R. A. Lippert for this method
-
-  OCTAVE_QUIT;
- 
-  tmpMat = retval;
-  for (octave_idx_type i = 0; i < nc; i++)
-    for (octave_idx_type j = 0; j < nc; j++)
-      retval(i,j) = tmpMat(invpvec(i),invpvec(j));
-
-  // Reverse preconditioning step 1: fix trace normalization.
-  
+  // Reverse preconditioning step 1: fix trace normalization. 
   if (trshift > 0.0)
     retval = exp (trshift) * retval;
 

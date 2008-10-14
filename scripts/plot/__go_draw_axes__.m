@@ -930,8 +930,12 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 	  endif
 
         case "hggroup"
-          # push group children into the kid list
-          kids = [obj.children kids];
+	  # push group children into the kid list
+	  if (isempty (kids))
+	    kids = obj.children;
+	  elseif (! isempty (obj.children))
+	    kids = [obj.children; kids];
+	  endif
 
 	otherwise
 	  error ("__go_draw_axes__: unknown object class, %s",

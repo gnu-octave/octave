@@ -1,3 +1,7 @@
+2008-10-14  Daniel J. Sebald  <daniel.sebald@ieee.org>
+
+	* plot/__go_draw_axes__.m: Send binary data to gnuplot.
+
 2008-10-13  Ben Abbott <bpabbott@mac.com>
 
 	* plot/__go_draw_axes__.m: Fix concatenation of handles.

@@ -1144,11 +1144,11 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 	  fprintf (plot_stream, "set view %.15g, %.15g;\n", rot_x, rot_z);
 	endif
       endif
-      fprintf (plot_stream, "%s \"-\" %s %s %s \\\n", plot_cmd,
-	       usingclause{1}, titlespec{1}, withclause{1});
+      fprintf (plot_stream, "%s \"-\" binary record=%d format='%%float64' %s %s %s \\\n", plot_cmd,
+	       columns(data{1}), usingclause{1}, titlespec{1}, withclause{1});
       for i = 2:data_idx
-	fprintf (plot_stream, ", \"-\" %s %s %s \\\n",
-		 usingclause{i}, titlespec{i}, withclause{i});
+	fprintf (plot_stream, ", \"-\" binary record=%d format='%%float64' %s %s %s \\\n",
+		 columns(data{i}), usingclause{i}, titlespec{i}, withclause{i});
       endfor
       fputs (plot_stream, ";\n");
       for i = 1:data_idx
@@ -1341,48 +1341,23 @@ function __gnuplot_write_data__ (plot_stream, data, nd, parametric, cdata)
   endif
 
   if (nd == 2)
-    nan_elts = find (sum (isnan (data)));
-    fmt = cstrcat (repmat ("%.15g ", 1, rows (data)), "\n");
-    if (isempty (nan_elts))
-      fprintf (plot_stream, fmt, data);
-    else
-      n = columns (data);
-      have_nans = true;
-      num_nan_elts = numel (nan_elts);
-      if (num_nan_elts == n)
-	fputs (plot_stream, "Inf Inf\n");
-      else
-	k = 1;
-	for i = 1:n
-	  if (have_nans && i == nan_elts(k))
-	    fputs (plot_stream, "\n");
-	    have_nans = ++k <= num_nan_elts;
-	  else
-	    fprintf (plot_stream, fmt, data(:,i));
-	  endif
-	endfor
-      endif
-    endif
+    fwrite (plot_stream, data, "float64");
   elseif (nd == 3)
-    ## FIXME -- handle NaNs here too?
     if (parametric)
-      fprintf (plot_stream, "%.15g %.15g %.15g\n", data);
+      fwrite (plot_stream, data, "float64");
     else
       nr = rows (data);
       if (cdata)
 	for j = 1:4:nr
-	  fprintf (plot_stream, "%.15g %.15g %.15g %.15g\n", data(j:j+3,:));
-	  fputs (plot_stream, "\n");
+	  fwrite (plot_stream, data(j:j+3,:), "float64");
 	endfor
       else
 	for j = 1:3:nr
-	  fprintf (plot_stream, "%.15g %.15g %.15g\n", data(j:j+2,:));
-	  fputs (plot_stream, "\n");
+	  fwrite (plot_stream, data(j:j+2,:), "float64");
 	endfor
       endif
     endif
   endif
-  fputs (plot_stream, "e\n");
 
 endfunction
 

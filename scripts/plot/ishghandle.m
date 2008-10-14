@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} ishghandle (@var{h})
-## Return true if @var{h} is a graphics handle and false otherwise.\n\
+## Return true if @var{h} is a graphics handle and false otherwise.
 ## @end deftypefn
 
 function retval = ishghandle (h)

@@ -649,6 +649,24 @@ found at @url{http://sourceforge.net/tracker/index.php?func=detail&aid=1716556&g
 If you have obtained your copy of Octave from a distribution please file
 a bug report requesting that the fix reported in the above bug report be
 included.
+
+@item
+I cannot install a package. Octave complains about a missing @code{mkoctfile}.
+
+Most distributions split Octave into several packages. The script
+@code{mkoctfile} is then part of a separate package:
+@itemize @minus
+@item
+Debian/Ubuntu
+
+@code{aptitude install octave3.0-headers}
+
+@item
+Fedora
+
+@code{yum install octave-devel}
+
+@end itemize
 @end itemize
 
 @node How do I ...?

@@ -1,3 +1,8 @@
+2008-10-15  David Bateman  <dbateman@free.fr>
+
+	* ov-class.c (Fsuperiorto, Finferiorto): Allow more than one class
+	to be defined at a time.
+
 2008-10-12  David Bateman  <dbateman@free.fr>
 
 	* pt-colon.cc (octave_value tree_colon_expression::make_range 

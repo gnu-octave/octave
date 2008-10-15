@@ -1342,9 +1342,10 @@ is_built_in_class (const std::string& cn)
 
 DEFUN (superiorto, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} superiorto (@var{class_name})\n\
+@deftypefn {Built-in Function} {} superiorto (@var{class_name}, @dots{})\n\
 When called from a class constructor, mark the object currently\n\
 constructed as having a higher precedence than @var{class_name}.\n\
+More that one such class can be specified in a single call.\n\
 This function may only be called from a class constructor.\n\
 @end deftypefn")
 {
@@ -1354,9 +1355,9 @@ This function may only be called from a class constructor.\n\
 
   if (fcn && fcn->is_class_constructor ())
     {
-      if (args.length () == 1)
+      for (int i = 0; i < args.length(); i++)
 	{
-	  std::string class_name = args(0).string_value ();
+	  std::string class_name = args(i).string_value ();
 
 	  if (! error_state)
 	    {
@@ -1366,8 +1367,11 @@ This function may only be called from a class constructor.\n\
 
 		  if (! symbol_table::set_class_relationship (this_class_name,
 							      class_name))
-		    error ("superiorto: precedence already set for %s and %s",
-			   this_class_name.c_str (), class_name.c_str ());
+		    {
+		      error ("superiorto: precedence already set for %s and %s",
+			     this_class_name.c_str (), class_name.c_str ());
+		      break;
+		    }
 		}
 	      else
 		{
@@ -1376,10 +1380,11 @@ This function may only be called from a class constructor.\n\
 		}
 	    }
 	  else
-	    error ("superiorto: expecting argument to be class name");
+	    {
+	      error ("superiorto: expecting argument to be class name");
+	      break;
+	    }
 	}
-      else
-	print_usage ();
     }
   else
     error ("superiorto: invalid call from outside class constructor");
@@ -1389,9 +1394,10 @@ This function may only be called from a class constructor.\n\
 
 DEFUN (inferiorto, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} inferiorto (@var{class_name})\n\
+@deftypefn {Built-in Function} {} inferiorto (@var{class_name}, @dots{})\n\
 When called from a class constructor, mark the object currently\n\
 constructed as having a lower precedence than @var{class_name}.\n\
+More that one such class can be specified in a single call.\n\
 This function may only be called from a class constructor.\n\
 @end deftypefn")
 {
@@ -1401,9 +1407,9 @@ This function may only be called from a class constructor.\n\
 
   if (fcn && fcn->is_class_constructor ())
     {
-      if (args.length () == 1)
+      for (int i = 0; i < args.length(); i++)
 	{
-	  std::string class_name = args(0).string_value ();
+	  std::string class_name = args(i).string_value ();
 
 	  if (! error_state)
 	    {
@@ -1416,17 +1422,24 @@ This function may only be called from a class constructor.\n\
 
 		  if (! symbol_table::set_class_relationship (this_class_name,
 							      class_name))
-		    error ("inferiorto: precedence already set for %s and %s",
-			   this_class_name.c_str (), class_name.c_str ());
+		    {
+		      error ("inferiorto: precedence already set for %s and %s",
+			     this_class_name.c_str (), class_name.c_str ());
+		      break;
+		    }
 		}
 	      else
-		error ("inferiorto: cannot give user-defined class lower precedence than built-in class");
+		{
+		  error ("inferiorto: cannot give user-defined class lower precedence than built-in class");
+		  break;
+		}
 	    }
 	  else
-	    error ("inferiorto: expecting argument to be class name");
+	    {
+	      error ("inferiorto: expecting argument to be class name");
+	      break;
+	    }
 	}
-      else
-	print_usage ();
     }
   else
     error ("inferiorto: invalid call from outside class constructor");

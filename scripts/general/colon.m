@@ -27,6 +27,7 @@
 ## a = myclass (@dots{})
 ## b = myclass (@dots{})
 ## c = a : b
+## @end group
 ## @end example
 ##
 ## @seealso{class, subsref, subsasgn}

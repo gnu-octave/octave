@@ -1,3 +1,18 @@
+2008-10-15  David Bateman  <dbateman@free.fr>
+
+	* examples/polynomial/display.m, examples/polynomial/double.m,
+	examples/polynomial/end.m, examples/polynomial/get.m,
+	examples/polynomial/mtimes.m, examples/polynomial/plot.m,
+	examples/polynomial/polynomial.m,
+	examples/polynomial/polynomial_superiorto.m,
+	examples/polynomial/polyval.m, examples/polynomial/set.m,
+	examples/polynomial/subsasgn.m, examples/polynomial/subsref.m:
+	New example files for a sample OOP class.
+	* examples/polynomial/Makefile.in: Add a makefile for this new
+	directory
+	* examples/Makefile.in: Reference the new subdirectory here.
+	* configure.in: Add the new makefile to AC_CONFIG_FILES.
+	
 2008-10-01  Jaroslav Hajek <highegg@gmail.com>
 
 	* configure.in: Check for sizeof (long double) and randl.

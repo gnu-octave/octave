@@ -1,3 +1,8 @@
+2008-10-15  David Bateman  <dbateman@free.fr>
+
+	* general/colon.m: Small typo.
+	* general/loadobj.m: Ditto.
+
 2008-10-14  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/__go_draw_axes__.m (do_tics_1): New args, fontname and fontsize.

@@ -1,4 +1,16 @@
+2008-10-15  David Bateman  <dbateman@free.fr>
+
+	* interpreter/oop.txi: New file.
+	* interpreter/Makefile.in (SUB_SOURCES): Add it here.
+	(POLYNOMIAL_FILES_NODIR): New varaible for polynomial example class
+	methods.
+	(EXAMPLE_FILES_NODIR): Add POLYNOMIAL_FILES_NODIR here.
+	* interpreter/octave.texi: Reference new OOP chapter here.
+	* interpreter/func.txi: Document private directories and function
+	precedence here.
+	
 2008-10-03  Thorsten Meyer  <thorsten.meyier@gmx.de>
+
 	* interpreter/contrib.txi: added example for mercurial queues
 
 08-10-03  Thorsten Meyer  <thorsten.meyier@gmx.de>

@@ -625,8 +625,10 @@ ignore the time stamps for all function files.  Passing
 @menu
 * Manipulating the load path::
 * Subfunctions::
+* Private Functions::
 * Overloading and Autoloading::
 * Function Locking::
+* Function Precedence::
 @end menu
 
 @node Manipulating the load path
@@ -699,6 +701,34 @@ defines a main function @code{f} and two subfunctions.  The
 subfunctions @code{g} and @code{h} may only be called from the main
 function @code{f} or from the other subfunctions, but not from outside
 the file @file{f.m}.
+
+@node Private Functions
+@subsection Private Functions
+
+In many cases one function needs to access one or more helper
+functions.  If the helper function is limited to the scope of a single
+function, then subfunctions as discussed above might be used. However,
+if a single helper function is used by more than one function, then
+this is no longer possible.  In this case the helper functions might
+be placed in a subdirectory, called "private", of the directory in which
+the functions needing access to this helper function are found.
+
+As a simple example, consider a function @code{func1}, that calls a helper
+function @code{func2} to do much of the work. For example
+
+@example
+@group
+function y = func1 (x)
+  y = func2 (x);
+endfunction
+@end group
+@end example
+
+@noindent
+Then if the path to @code{func1} is @code{<directory>/func1.m}, and if
+@code{func2} is found in the directory @code{<directory>/private/func2.m}, 
+then @code{func2} is only available for use of the functions, like 
+@code{func1}, that are found in @code{<directory>}.
 
 @node Overloading and Autoloading
 @subsection Overloading and Autoloading
@@ -825,6 +855,49 @@ effect in Octave, though a similar effect can be had with the
 @DOCSTRING(munlock)
 
 @DOCSTRING(mislocked)
+
+@node Function Precedence
+@subsection Function Precedence
+
+Given the numereous different ways that Octave can define a function, it
+is possible and even likely that multiple versions of a function, might be
+defined within a particular scope. The precedence of which function will be
+used within a particular scope is given by
+
+@enumerate 1
+@item Subfunction
+A subfunction with the required function name in the given scope.
+
+@item Private function
+A function defined within a private directory of the directory 
+which contains the current function.
+
+@item Class constructor
+A function that constuctors a user class as defined in chapter 
+@ref{Object Oriented Programming}.
+
+@item Class method
+An overloaded function of a class as in chapter
+@ref{Object Oriented Programming}.
+
+@item Legacy Dispatch
+An overloaded function as defined by @xref{dispatch}.
+
+@item Command-line Function
+A function that has been defined on the command-line.
+
+@item Autoload function
+A function that is marked as autoloaded with @xref{autoload}.
+
+@item A Function on the Path
+A function that can be found on the users load-path. There can also be
+Oct-file, mex-file or m-file versions of this function and the precedence
+between these versions are in that order.
+
+@item Built-in function
+A function that is builtin to Octave itself such as @code{numel},
+@code{size}, etc.
+@end enumerate
 
 @node Script Files
 @section Script Files

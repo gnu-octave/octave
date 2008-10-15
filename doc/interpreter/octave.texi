@@ -177,6 +177,7 @@ It corresponds to GNU Octave version @value{VERSION}.
 * Signal Processing::           
 * Image Processing::            
 * Audio Processing::            
+* Object Oriented Programming::            
 * System Utilities::            
 * Packages:: 
 * Dynamically Linked Functions::
@@ -487,6 +488,13 @@ Image Processing
 * Plotting on top of Images::   
 * Color Conversion::            
 
+Object Oriented Programming
+
+* Creating a Class:
+* Manipulating Classes::
+* Indexing Objects::
+* Overloading Objects::
+
 System Utilities
 
 * Timing Utilities::            
@@ -600,6 +608,7 @@ Emacs Octave Support
 @include signal.texi
 @include image.texi
 @include audio.texi
+@include oop.texi
 @include system.texi
 @include package.texi
 

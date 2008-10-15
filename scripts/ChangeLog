@@ -1,3 +1,8 @@
+2008-10-15  Daniel J. Sebald  <daniel.sebald@ieee.org>
+
+	* plot/__go_draw_axes__.m: Make previous change work for surface
+	plots.
+
 2008-10-14  Daniel J. Sebald  <daniel.sebald@ieee.org>
 
 	* plot/__go_draw_axes__.m: Send binary data to gnuplot.

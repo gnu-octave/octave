@@ -382,7 +382,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 	    tmp = undo_string_escapes (__maybe_munge_text__ (enhanced, obj, "keylabel"));
 	    titlespec{data_idx} = cstrcat ("title \"", tmp, "\"");
 	  endif
-	  usingclause{data_idx} = "";
+	  usingclause{data_idx} = sprintf ("record=%d", numel (obj.xdata));
 	  errbars = "";
 	  if (nd == 3)
 	    xdat = obj.xdata(:);
@@ -393,7 +393,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 	      zdat = zeros (size (xdat));
 	    endif
 	    data{data_idx} = [xdat, ydat, zdat]';
-	    usingclause{data_idx} = "using ($1):($2):($3)";
+	    usingclause{data_idx} = sprintf ("record=%d using ($1):($2):($3)", numel (xdat));
 	    ## fputs (plot_stream, "set parametric;\n");
 	  else
 	    xdat = obj.xdata(:);
@@ -440,11 +440,11 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 		  xhi = xdat+xudat;
 		endif
 		data{data_idx} = [xdat, ydat, xlo, xhi, ylo, yhi]';
-		usingclause{data_idx} = "using ($1):($2):($3):($4):($5):($6)";
+		usingclause{data_idx} = sprintf ("record=%d using ($1):($2):($3):($4):($5):($6)", numel (xdat));
 		errbars = "xyerrorbars";
 	      else
 		data{data_idx} = [xdat, ydat, ylo, yhi]';
-		usingclause{data_idx} = "using ($1):($2):($3):($4)";
+		usingclause{data_idx} = sprintf ("record=%d using ($1):($2):($3):($4)", numel (xdat));
 		errbars = "yerrorbars";
 	      endif
 	    elseif (xerr)
@@ -459,12 +459,12 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 		xhi = xdat+xudat;
 	      endif
 	      data{data_idx} = [xdat, ydat, xlo, xhi]';
-	      usingclause{data_idx} = "using ($1):($2):($3):($4)";
+	      usingclause{data_idx} = sprintf ("record=%d using ($1):($2):($3):($4)", numel (xdat));
 	      errbars = "xerrorbars";
 	    else
 	      data{data_idx} = [xdat, ydat]';
-	      usingclause{data_idx} = sprintf ("using ($1):($2) axes %s%s",
-					      xaxisloc_using, yaxisloc_using);
+	      usingclause{data_idx} = sprintf ("record=%d using ($1):($2) axes %s%s",
+					      rows(xdat), xaxisloc_using, yaxisloc_using);
 	    endif
 	  endif
 
@@ -520,7 +520,6 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 		 tmp = undo_string_escapes (__maybe_munge_text__ (enhanced, obj, "keylabel"));
 		 titlespec{data_idx} = cstrcat ("title \"", tmp, "\"");
 	       endif
-	       usingclause{data_idx} = "";
                if (isfield (obj, "facecolor"))
 		 if ((strncmp (obj.facecolor, "flat", 4)
 		     || strncmp (obj.facecolor, "interp", 6))
@@ -573,7 +572,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 	       withclause{data_idx} = sprintf ("with filledcurve %s",
 					       colorspec);
 	       data{data_idx} = [xcol, ycol]';
-	       usingclause{data_idx} = "using ($1):($2)";
+	       usingclause{data_idx} = sprintf ("record=%d using ($1):($2)", numel (xcol));
 	     endif
 	   endif
 
@@ -585,7 +584,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
              parametric(data_idx) = false;
 	     have_cdata(data_idx) = false;
              titlespec{data_idx} = "title \"\"";
-	     usingclause{data_idx} = "";
+	     usingclause{data_idx} = sprintf ("record=%d", numel (obj.xdata));
 
 	     if (isfield (obj, "markersize"))
 	       mdat = obj.markersize / 6;
@@ -739,14 +738,14 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 	       else
 		 data{data_idx} = [xcol, ycol, zcol]';
 	       endif
-	       usingclause{data_idx} = "using ($1):($2):($3)";
+	       usingclause{data_idx} = sprintf ("record=%d using ($1):($2):($3)", columns (data{data_idx}));
 	     else
 	       if (! isnan (xcol) && ! isnan (ycol))
 		 data{data_idx} = [[xcol; xcol(1)], [ycol; ycol(1)]]';
 	       else
 		 data{data_idx} = [xcol, ycol]';
 	       endif
-	       usingclause{data_idx} = "using ($1):($2)";
+	       usingclause{data_idx} = sprintf ("record=%d using ($1):($2)", columns (data{data_idx}));
 	     endif
 	   endif
 	 endfor
@@ -767,7 +766,6 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 	      tmp = undo_string_escapes (__maybe_munge_text__ (enhanced, obj, "keylabel"));
 	      titlespec{data_idx} = cstrcat ("title \"", tmp, "\"");
 	    endif
-	    usingclause{data_idx} = "";
 	    withclause{data_idx} = sprintf ("with pm3d linestyle %d",
 		           		    data_idx);
 
@@ -820,7 +818,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 	      ## No interpolation of facecolors.
 	      interp_str = "";
 	    endif
-	    usingclause{data_idx} = "using ($1):($2):($3):($4)";
+	    usingclause{data_idx} = sprintf ("record=%dx%d using ($1):($2):($3):($4)", xlen, ylen);
 
             flat_interp_face = (strncmp (obj.facecolor, "flat", 4)
 				|| strncmp (obj.facecolor, "interp", 6));
@@ -1144,11 +1142,11 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 	  fprintf (plot_stream, "set view %.15g, %.15g;\n", rot_x, rot_z);
 	endif
       endif
-      fprintf (plot_stream, "%s \"-\" binary record=%d format='%%float64' %s %s %s \\\n", plot_cmd,
-	       columns(data{1}), usingclause{1}, titlespec{1}, withclause{1});
+      fprintf (plot_stream, "%s \"-\" binary format='%%float64' %s %s %s \\\n", plot_cmd,
+	       usingclause{1}, titlespec{1}, withclause{1});
       for i = 2:data_idx
-	fprintf (plot_stream, ", \"-\" binary record=%d format='%%float64' %s %s %s \\\n",
-		 columns(data{i}), usingclause{i}, titlespec{i}, withclause{i});
+	fprintf (plot_stream, ", \"-\" binary format='%%float64' %s %s %s \\\n",
+		 usingclause{i}, titlespec{i}, withclause{i});
       endfor
       fputs (plot_stream, ";\n");
       for i = 1:data_idx

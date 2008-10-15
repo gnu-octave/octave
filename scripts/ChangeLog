@@ -1,3 +1,13 @@
+2008-10-14  Ben Abbott  <bpabbott@mac.com>
+
+	* plot/__go_draw_axes__.m (do_tics_1): New args, fontname and fontsize.
+	Pass fontspec for tic marks to gnuplot.
+	(do_tics): Pass axes fontname and fontsize to do_tics_1.
+	
+	* plot/newplot.m: Perserve fontangle, fontname, fontsize,
+	fontunits, fontweight, position, outerposition, and
+	activepositionproperty axes properties when replacing plot.
+
 2008-10-15  Daniel J. Sebald  <daniel.sebald@ieee.org>
 
 	* plot/__go_draw_axes__.m: Make previous change work for surface
@@ -7,7 +17,7 @@
 
 	* plot/__go_draw_axes__.m: Send binary data to gnuplot.
 
-2008-10-13  Ben Abbott <bpabbott@mac.com>
+2008-10-13  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/__go_draw_axes__.m: Fix concatenation of handles.
 

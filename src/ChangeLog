@@ -1,5 +1,10 @@
 2008-10-16  John W. Eaton  <jwe@octave.org>
 
+	* graphics.cc (make_handle_fraction): New static function.
+	(gh_manager::get_handle): Use it.
+	(gh_manager::do_free): Call make_handle_fraction to replace
+	fractional part of non-figure handles.
+
 	* graphics.cc (base_properties::remove_child): Handle children as
 	a column vector instead of a row vector.
 

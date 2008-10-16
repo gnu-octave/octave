@@ -186,7 +186,7 @@ function resetaxis (h, d, pos, opos)
   if (ishandle (h) && strcmp (get (h, "type"), "axes") && 
       (isempty (gcbf()) || strcmp (get (gcbf(), "beingdeleted"),"off")) &&
       ishandle (get (h, "axes")))
-    #set (get (h, "axes"), "position", pos, "outerposition", opos);
+     set (get (h, "axes"), "position", pos, "outerposition", opos);
   endif
 endfunction
 

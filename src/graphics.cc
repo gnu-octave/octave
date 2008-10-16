@@ -2269,11 +2269,6 @@ axes::properties::set_defaults (base_graphics_object& obj,
   cameraviewanglemode = "auto";
   plotboxaspectratio = Matrix (1, 3, 1.0);
   drawmode = "normal";
-  fontangle = "normal";
-  fontname = "Helvetica";
-  fontsize = 12;
-  fontunits = "points";
-  fontweight = "normal";
   gridlinestyle = ":";
   linestyleorder = "-";
   linewidth = 0.5;
@@ -2297,20 +2292,24 @@ axes::properties::set_defaults (base_graphics_object& obj,
   visible = "on";
   nextplot = "replace";
 
-  // FIXME -- this is not quite right; we should preserve
-  // "position" and "units".
-
   if (mode != "replace")
     {
+      fontangle = "normal";
+      fontname = "Helvetica";
+      fontsize = 12;
+      fontunits = "points";
+      fontweight = "normal";
+
       Matrix touterposition (1, 4, 0.0);
       touterposition(2) = 1;
       touterposition(3) = 1;
       outerposition = touterposition;
 
       position = default_axes_position ();
+
+      activepositionproperty = "outerposition";
     }
 
-  activepositionproperty = "outerposition";
 
   delete_children ();
 

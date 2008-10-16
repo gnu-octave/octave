@@ -4,6 +4,13 @@
 
 2008-10-16  David Bateman  <dbateman@free.fr>
 
+	* plot/colorbar.m (colorbar:resetaxis): Uncomment the reseting of
+	the axes.
+
+	* plot/newplot.m: Don't preserve axes properties here, but rather
+	do it in the graphics handle code so that the preservation can be
+	done after callbacks are executed.
+	
 	* plot/__go_draw_axes__.m: If current plot is an image, don't flag
 	the plot as binary, as the binary specification is already in the
 	"usingclause".

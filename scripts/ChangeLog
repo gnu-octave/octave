@@ -1,3 +1,7 @@
+2008-10-16  Ben Abbott <bpabbott@mac.com>
+
+	* plot/contourf.m: Correct order of patch object handles.
+
 2008-10-16  David Bateman  <dbateman@free.fr>
 
 	* plot/__go_draw_axes__.m: If current plot is an image, don't flag

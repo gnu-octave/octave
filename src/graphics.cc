@@ -1666,7 +1666,7 @@ base_properties::remove_child (const graphics_handle& h)
 
   if (k >= 0)
     {
-      Matrix new_kids (1, n-1);
+      Matrix new_kids (n-1, 1);
       octave_idx_type j = 0;
       for (octave_idx_type i = 0; i < n; i++)
 	{

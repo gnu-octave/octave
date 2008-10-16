@@ -1,5 +1,8 @@
 2008-10-16  John W. Eaton  <jwe@octave.org>
 
+	* graphics.cc (base_properties::remove_child): Handle children as
+	a column vector instead of a row vector.
+
 	* utils.cc (Fis_absolute_filename, Fis_rooted_relative_filename,
 	Fmake_absolute_filename, Ffind_dir_in_path): New functions.
 
@@ -8,7 +11,6 @@
 	* graphics.cc (void axes::properties::set_defaults 
 	(base_graphics_object&,	const std::string&)): Preserve font
 	and position properties if the axis is "replaced".
-
 
 2008-10-16  John W. Eaton  <jwe@octave.org>
 

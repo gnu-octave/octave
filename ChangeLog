@@ -1,3 +1,7 @@
+2008-10-16  David Bateman  <dbateman@free.fr>
+
+	* NEWS: Minor update.
+
 2008-10-15  David Bateman  <dbateman@free.fr>
 
 	* examples/polynomial/display.m, examples/polynomial/double.m,

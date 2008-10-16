@@ -16,9 +16,8 @@ Summary of important user-visible changes for version 3.2:
              refreshdata();
            endfor
 
-    works as expected.
-
-    TO BE WRITTEN (Shai / Micheal inputs please)
+    works as expected. This capability has be used to introduce stem-series,
+    bar-series, etc objects for better Matlab compatibility.
 
  ** Experimental OpenGL/FLTK based backend to replace gnuplot
 
@@ -34,8 +33,6 @@ Summary of important user-visible changes for version 3.2:
 
     where "h" is a valid figure handle.
 
-    TO BE WRITTEN (Shai / Micheal inputs please)
-
  ** Eliminate the functions for direct access to gnuplot from Octave.
     The functions __gnuplot_plot__, __gnuplot_set__, __gnuplot_raw__,
      __gnuplot_show__, __gnuplot_replot__, __gnuplot_splot__,
@@ -50,7 +47,12 @@ Summary of important user-visible changes for version 3.2:
 
  ** Object Oriented Programming
 
-    TO BE WRITTEN
+    Octave now includes OOP features and the user can create their 
+    own class objects and overloaded functions and operators. For
+    example, all methods of a class called "myclass" will be found in 
+    a directory "@myclass" on the users path. The class specific versions
+    of functions and operators take precedence over the generic versions
+    of these functions. See the Octave manual for more details.
 
  ** Block comments
     Commented code can be between matching "%{" and "%}" markers, even

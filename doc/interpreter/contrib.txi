@@ -306,5 +306,17 @@ possible. This usually means that non-legacy compilers also accept the sources.
 
 The M4 macro language is mainly used for autoconf configuration files. You should
 follow normal M4 rules when contributing to these files. Some M4 files come
-from external source, namely the Autoconf archive @url{http://autoconf-archive.cryp.to}.
+from external source, namely the Autoconf archive
+@url{http://autoconf-archive.cryp.to}.
 
+If you give a code example in the documentation written in texinfo with the 
+@code{@@example} environment, you should be aware that the text within such an 
+environment will not be wrapped. It is recommended that you keep the lines
+short enough to fit on pages in the generated pdf or ps documents. Here is a 
+ruler (in an @code{@@example} environment) for finding the appropriate line 
+width:
+
+@example
+         1         2         3         4         5         6         7         8
+12345678901234567890123456789012345678901234567890123456789012345678901234567890
+@end example

@@ -55,6 +55,10 @@
 	* interpreter/func.txi: Document private directories and function
 	precedence here.
 	
+2008-10-16  Thorsten Meyer  <thorsten.meyier@gmx.de>
+        * interpreter/contrib.txi: added recommendation of limited
+          line width in code examples
+          
 2008-10-03  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
 	* interpreter/contrib.txi: added example for mercurial queues

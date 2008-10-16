@@ -1,5 +1,9 @@
 2008-10-16  David Bateman  <dbateman@free.fr>
 
+	* plot/__go_draw_axes__.m: If current plot is an image, don't flag
+	the plot as binary, as the binary specification is already in the
+	"usingclause".
+	
 	* plot/__go_draw_figure__.m: Always use multiplot and create an 
 	enclosing axis to ensure bounding box of postscript is correct.
 

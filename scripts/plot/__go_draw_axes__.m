@@ -1142,11 +1142,21 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 	  fprintf (plot_stream, "set view %.15g, %.15g;\n", rot_x, rot_z);
 	endif
       endif
-      fprintf (plot_stream, "%s \"-\" binary format='%%float64' %s %s %s \\\n", plot_cmd,
-	       usingclause{1}, titlespec{1}, withclause{1});
+      if (is_image_data (1))
+	fprintf (plot_stream, "%s \"-\" %s %s %s \\\n", plot_cmd,
+		 usingclause{1}, titlespec{1}, withclause{1});
+      else
+	fprintf (plot_stream, "%s \"-\" binary format='%%float64' %s %s %s \\\n", plot_cmd,
+		 usingclause{1}, titlespec{1}, withclause{1});
+      endif
       for i = 2:data_idx
-	fprintf (plot_stream, ", \"-\" binary format='%%float64' %s %s %s \\\n",
-		 usingclause{i}, titlespec{i}, withclause{i});
+	if (is_image_data (i))
+	  fprintf (plot_stream, "%s \"-\" %s %s %s \\\n", plot_cmd,
+		   usingclause{i}, titlespec{i}, withclause{i});
+	else
+	  fprintf (plot_stream, ", \"-\" binary format='%%float64' %s %s %s \\\n",
+		   usingclause{i}, titlespec{i}, withclause{i});
+	endif
       endfor
       fputs (plot_stream, ";\n");
       for i = 1:data_idx

@@ -1,3 +1,7 @@
+2008-10-16  David Bateman  <dbateman@free.fr>
+
+	* plot/subplot.m: Allow for column vector of children for figure.
+
 2008-10-16  John W. Eaton  <jwe@octave.org>
 
 	* testfun/rundemos.m: New function.

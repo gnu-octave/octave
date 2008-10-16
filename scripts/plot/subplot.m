@@ -117,7 +117,8 @@ function h = subplot (rows, columns, index)
   set (cf, "nextplot", "add");
 
   found = false;
-  for child = get (cf, "children")
+  kids = get (cf, "children");
+  for child = reshape (kids, 1, numel (kids))
     ## Check whether this child is still valid; this might not be the
     ## case anymore due to the deletion of previous children (due to
     ## "deletefcn" callback or for legends/colorbars that are deleted

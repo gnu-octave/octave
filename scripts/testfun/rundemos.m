@@ -39,13 +39,14 @@ function rundemos (directory)
 	error ("rundemos: expecting argument to be a directory name");
       endif
     endif
-    for i = 1:numel (dirs)
-      d = dirs{i};
-      run_all_demos (d);
-    endfor
   else
     print_usage ();
   endif
+
+  for i = 1:numel (dirs)
+    d = dirs{i};
+    run_all_demos (d);
+  endfor
 
 endfunction
 

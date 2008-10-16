@@ -42,12 +42,9 @@ function __go_draw_figure__ (f, plot_stream, enhanced, mono)
 
 	fputs (plot_stream, "\nreset;\n");
 	fputs (plot_stream, "set autoscale fix;\n");
-
-	multiplot_mode = axes_count > 1;
-
-	if (multiplot_mode)
-	  fputs (plot_stream, "set multiplot;\n");
-	endif
+	fputs (plot_stream, "set multiplot;\n");
+	fputs (plot_stream, "set origin 0, 0\n");
+	fputs (plot_stream, "set size 1, 1\n");
 
 	for i = 1:nkids
 	  obj = get (kids(i));
@@ -60,9 +57,7 @@ function __go_draw_figure__ (f, plot_stream, enhanced, mono)
 	  endswitch
 	endfor
 
-	if (multiplot_mode)
-	  fputs (plot_stream, "unset multiplot;\n");
-	endif
+	fputs (plot_stream, "unset multiplot;\n");
       else
 	fputs (plot_stream, "\nreset; clear;\n");
 	fflush (plot_stream);

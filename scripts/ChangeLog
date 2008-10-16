@@ -1,3 +1,8 @@
+2008-10-16  David Bateman  <dbateman@free.fr>
+
+	* plot/__go_draw_figure__.m: Always use multiplot and create an 
+	enclosing axis to ensure bounding box of postscript is correct.
+
 2008-10-16  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/__go_draw_axes__.m (do_tics_1): New arg, interpreter.

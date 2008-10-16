@@ -1,3 +1,7 @@
+2008-10-16  John W. Eaton  <jwe@octave.org>
+
+	* testfun/rundemos.m: New function.
+
 2008-10-16  Ben Abbott <bpabbott@mac.com>
 
 	* plot/contourf.m: Correct order of patch object handles.

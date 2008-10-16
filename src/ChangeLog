@@ -1,3 +1,8 @@
+2008-10-16  John W. Eaton  <jwe@octave.org>
+
+	* utils.cc (Fis_absolute_filename, Fis_rooted_relative_filename,
+	Fmake_absolute_filename, Ffind_dir_in_path): New functions.
+
 2008-10-16  David Bateman  <dbateman@free.fr>
 
 	* graphics.cc (void axes::properties::set_defaults 

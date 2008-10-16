@@ -739,6 +739,90 @@ representation.\n\
   return retval;
 }
 
+DEFUN (is_absolute_filename, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} is_absolute_filename (@var{file})\n\
+Return true if @var{file} is an absolute filename.\n\
+@end deftypefn")
+{
+  octave_value retval = false;
+
+  if (args.length () == 1)
+    retval = (args(0).is_string ()
+	      && octave_env::absolute_pathname (args(0).string_value ()));
+  else
+    print_usage ();
+
+  return retval;
+}
+
+DEFUN (is_rooted_relative_filename, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} is_rooted_relative_filename (@var{file})\n\
+Return true if @var{file} is a rooted-relative filename.\n\
+@end deftypefn")
+{
+  octave_value retval = false;
+
+  if (args.length () == 1)
+    retval = (args(0).is_string ()
+	      && octave_env::rooted_relative_pathname (args(0).string_value ()));
+  else
+    print_usage ();
+
+  return retval;
+}
+
+DEFUN (make_absolute_filename, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} make_absolute_filename (@var{file})\n\
+Return the full name of @var{file}, relative to the current directory.\n\
+@end deftypefn")
+{
+  octave_value retval = std::string ();
+
+  if (args.length () == 1)
+    {
+      std::string nm = args(0).string_value ();
+
+      if (! error_state)
+	retval = octave_env::make_absolute (nm, octave_env::getcwd ());
+      else
+	error ("make_absolute_filename: expecting argument to be a file name");
+    }      
+  else
+    print_usage ();
+
+  return retval;
+}
+
+DEFUN (find_dir_in_path, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} find_dir_in_path (@var{dir})\n\
+Return the full name of the path element matching @var{dir}.  The\n\
+match is performed at the end of each path element.  For example, if\n\
+@var{dir} is @code{\"foo/bar\"}, it matches the path element\n\
+@code{\"/some/dir/foo/bar\"}, but not @code{\"/some/dir/foo/bar/baz\"}\n\
+or @code{\"/some/dir/allfoo/bar.\n\
+@end deftypefn")
+{
+  octave_value retval = std::string ();
+
+  if (args.length () == 1)
+    {
+      std::string dir = args(0).string_value ();
+
+      if (! error_state)
+	retval = load_path::find_dir (dir);
+      else
+	error ("find_dir_in_path: expecting argument to be a directory name");
+    }
+  else
+    print_usage ();
+
+  return retval;
+}
+
 DEFUNX ("errno", Ferrno, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{err} =} errno ()\n\

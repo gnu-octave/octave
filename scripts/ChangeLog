@@ -1,3 +1,8 @@
+2008-10-16  Ben Abbott  <bpabbott@mac.com>
+
+	* plot/__go_draw_axes__.m (do_tics_1): New arg, interpreter.
+	(do_tics): Pass interpreter to do_tics_1.
+
 2008-10-15  David Bateman  <dbateman@free.fr>
 
 	* general/colon.m: Small typo.

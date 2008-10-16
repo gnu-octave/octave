@@ -1,3 +1,7 @@
+2008-10-16  John W. Eaton  <jwe@octave.org>
+
+	* graphics.h.in (class axes::properties): New property: interpreter.
+
 2008-10-15  David Bateman  <dbateman@free.fr>
 
 	* ov-class.c (Fsuperiorto, Finferiorto): Allow more than one class

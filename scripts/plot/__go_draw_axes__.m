@@ -1360,59 +1360,72 @@ function __gnuplot_write_data__ (plot_stream, data, nd, parametric, cdata)
 endfunction
 
 function do_tics (obj, plot_stream, ymirror, mono)
+
   [fontname, fontsize] = get_fontname_and_size (obj);
+
   if (strcmpi (obj.xaxislocation, "top"))
     do_tics_1 (obj.xtickmode, obj.xtick, obj.xticklabelmode, obj.xticklabel,
 	       obj.xcolor, "x2", plot_stream, true, mono, "border",
-	       obj.tickdir, fontname, fontsize);
+	       obj.tickdir, fontname, fontsize, obj.interpreter);
     do_tics_1 ("manual", [], obj.xticklabelmode, obj.xticklabel,
 	       obj.xcolor, "x", plot_stream, true, mono, "border",
-	       "", fontname, fontsize);
+	       "", fontname, fontsize, obj.interpreter);
   elseif (strcmpi (obj.xaxislocation, "zero"))
     do_tics_1 (obj.xtickmode, obj.xtick, obj.xticklabelmode, obj.xticklabel,
 	       obj.xcolor, "x", plot_stream, true, mono, "axis",
-	       obj.tickdir, fontname, fontsize);
+	       obj.tickdir, fontname, fontsize, obj.interpreter);
     do_tics_1 ("manual", [], obj.xticklabelmode, obj.xticklabel,
 	       obj.xcolor, "x2", plot_stream, true, mono, "axis",
-	       "", fontname, fontsize);
+	       "", fontname, fontsize, obj.interpreter);
   else
     do_tics_1 (obj.xtickmode, obj.xtick, obj.xticklabelmode, obj.xticklabel,
 	       obj.xcolor, "x", plot_stream, true, mono, "border",
-	       obj.tickdir, fontname, fontsize);
+	       obj.tickdir, fontname, fontsize, obj.interpreter);
     do_tics_1 ("manual", [], obj.xticklabelmode, obj.xticklabel,
 	       obj.xcolor, "x2", plot_stream, true, mono, "border",
-	       "", fontname, fontsize);
+	       "", fontname, fontsize, obj.interpreter);
   endif
   if (strcmpi (obj.yaxislocation, "right"))
     do_tics_1 (obj.ytickmode, obj.ytick, obj.yticklabelmode, obj.yticklabel,
 	       obj.ycolor, "y2", plot_stream, ymirror, mono, "border",
-	       obj.tickdir, fontname, fontsize);
+	       obj.tickdir, fontname, fontsize, obj.interpreter);
     do_tics_1 ("manual", [], obj.yticklabelmode, obj.yticklabel,
 	       obj.ycolor, "y", plot_stream, ymirror, mono, "border",
-	       "", fontname, fontsize);
+	       "", fontname, fontsize, obj.interpreter);
   elseif (strcmpi (obj.xaxislocation, "zero"))
     do_tics_1 (obj.ytickmode, obj.ytick, obj.yticklabelmode, obj.yticklabel,
 	       obj.ycolor, "y", plot_stream, ymirror, mono, "axis",
-	       obj.tickdir, fontname, fontsize);
+	       obj.tickdir, fontname, fontsize, obj.interpreter);
     do_tics_1 ("manual", [], obj.yticklabelmode, obj.yticklabel,
 	       obj.ycolor, "y2", plot_stream, ymirror, mono, "axis",
-	       "", fontname, fontsize);
+	       "", fontname, fontsize, obj.interpreter);
   else
     do_tics_1 (obj.ytickmode, obj.ytick, obj.yticklabelmode, obj.yticklabel,
 	       obj.ycolor, "y", plot_stream, ymirror, mono, "border",
-	       obj.tickdir, fontname, fontsize);
+	       obj.tickdir, fontname, fontsize, obj.interpreter);
     do_tics_1 ("manual", [], obj.yticklabelmode, obj.yticklabel,
 	       obj.ycolor, "y2", plot_stream, ymirror, mono, "border",
-	       "", fontname, fontsize);
+	       "", fontname, fontsize, obj.interpreter);
   endif
   do_tics_1 (obj.ztickmode, obj.ztick, obj.zticklabelmode, obj.zticklabel,
 	     obj.zcolor, "z", plot_stream, true, mono, "border",
-	     obj.tickdir, fontname, fontsize);
+	     obj.tickdir, fontname, fontsize, obj.interpreter);
 endfunction
 
 function do_tics_1 (ticmode, tics, labelmode, labels, color, ax,
 		    plot_stream, mirror, mono, axispos, tickdir,
-		    fontname, fontsize)
+		    fontname, fontsize, interpreter)
+  persistent warned_latex = false;
+  if (strcmpi (interpreter, "tex"))
+    for n = 1 : numel(labels)
+      labels{n} = __tex2enhanced__ (labels{n}, fontname, false, false);
+    endfor
+  elseif (strcmpi (interpreter, "latex"))
+    if (! warned_latex)
+      warning ("latex markup not supported for tick marks");
+      warned_latex = true;
+    endif
+  endif
   if (strcmp (fontname, "*"))
     fontspec = "";
   else
@@ -1538,7 +1551,7 @@ function [str, f, s] = __maybe_munge_text__ (enhanced, obj, fld)
       str = __tex2enhanced__ (str, fnt, it, bld);
     elseif (strcmpi (obj.interpreter, "latex"))
       if (! warned_latex)
-	warning ("latex text objects not supported");
+	warning ("latex markup not supported for text objects");
 	warned_latex = true;
       endif
     endif

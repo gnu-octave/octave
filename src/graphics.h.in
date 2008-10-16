@@ -2539,6 +2539,8 @@ public:
     // See the genprops.awk script for an explanation of the
     // properties declarations.
 
+    // properties which are not in matlab: interpreter
+
     BEGIN_PROPERTIES(axes)
       array_property position u , default_axes_position ()
       handle_property title SOf , gh_manager::make_graphics_handle ("text", __myhandle__)
@@ -2585,6 +2587,7 @@ public:
       radio_property xticklabelmode , "{auto}|manual"
       radio_property yticklabelmode , "{auto}|manual"
       radio_property zticklabelmode , "{auto}|manual"
+      radio_property interpreter , "tex|{none}|latex"
       color_property color , color_property (color_values (1, 1, 1), radio_values ("none"))
       color_property xcolor , color_values (0, 0, 0)
       color_property ycolor , color_values (0, 0, 0)

@@ -57,7 +57,7 @@
 
 ## Author: Shai Ayal <shaiay@users.sourceforge.net>
 
-function [c, lev] = contourc (varargin)
+function [cout, lev] = contourc (varargin)
 
   if (nargin == 1)
     vn = 10;
@@ -127,7 +127,8 @@ function [c, lev] = contourc (varargin)
     endwhile
   endif
     
-  if (nargout == 2)
+  if (nargout > 0)
+    cout = c;
     lev = vv;
   endif
 

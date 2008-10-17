@@ -1,3 +1,11 @@
+2008-10-17  David Bateman  <dbateman@free.fr>
+
+	* plot/__plt_get_axis_arg__.m: Exclude non-numeric and root figure
+	from potential axis handles.
+	* plot/colorbar.m: Remove debug output.
+	* plot/comet.m: Close plot before demo
+	* plot/contourc.m: No output if nargout == 0.
+
 2008-10-16  David Bateman  <dbateman@free.fr>
 
 	* plot/subplot.m: Allow for column vector of children for figure.

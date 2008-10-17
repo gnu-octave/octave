@@ -236,7 +236,6 @@ function update_colorbar_axis (h, d, cax)
     endif
 
     if (! isnan (aspect))
-      aspect
       set (cax, "dataaspectratio", aspect);
     endif
   endif

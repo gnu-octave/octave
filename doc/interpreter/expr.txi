@@ -187,8 +187,6 @@ endfor
 particularly for large matrices because Octave does not have to
 repeatedly resize the result.
 
-@DOCSTRING(subsref)
-
 @DOCSTRING(sub2ind)
 
 @DOCSTRING(ind2sub)
@@ -1009,8 +1007,6 @@ example, it is valid to write @code{x != (y = 1)} to set @code{y} to 1
 and then test whether @code{x} equals 1.  But this style tends to make
 programs hard to read.  Except in a one-shot program, you should rewrite
 it to get rid of such nesting of assignments.  This is never very hard.
-
-@DOCSTRING(subsasgn)
 
 @cindex increment operator
 @cindex decrement operator

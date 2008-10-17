@@ -265,7 +265,7 @@ determined by the @code{subsref} method.
 @DOCSTRING(subsref)
 
 For example we might decide that indexing with "()" evaluates the
-polynomial and indexing with "{}" returns the @var{n}-th coefficient.
+polynomial and indexing with "@{@}" returns the @var{n}-th coefficient.
 In this case the @code{subsref} method of our polynomial class might look like
 
 @polynomialfile{subsref.m}

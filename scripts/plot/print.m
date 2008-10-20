@@ -190,7 +190,7 @@ function print (varargin)
 	elseif (length (arg) > 0)
 	  name = arg;
         endif
-      elseif (ishandle (arg))
+      elseif (isfigure (arg))
         figure (arg);
       else
         error ("print: expecting inputs to be character string options or a figure handle");
@@ -439,7 +439,7 @@ function print (varargin)
     endif
 
   unwind_protect_cleanup
-    if (ishandle (old_fig))
+    if (isfigure (old_fig))
       figure (old_fig)
     endif
   end_unwind_protect

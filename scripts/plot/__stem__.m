@@ -497,7 +497,7 @@ function move_baseline (h, d)
   yt = get(h, "ydata")(:)';
   ny = length (yt);
   yt = [b0 * ones(1, ny); yt; NaN(1, ny)](:);
-  set (kids(1), "ydata", yt);
+  set (kids(end), "ydata", yt);
 endfunction
 
 function update_props (h, d)

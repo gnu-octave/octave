@@ -1,3 +1,8 @@
+2008-10-20  Ben Abbott  <bpabbott@mac.com>
+
+	* plot/__stem__.m: Respect new ordering of children when setting
+	baseline.
+
 2008-10-20  David Bateman  <dbateman@free.fr>
 
 	* plot/plotyy.m: Test that an axes handle actually is one before
@@ -19,7 +24,7 @@
 
 	* testfun/rundemos.m: New function.
 
-2008-10-16  Ben Abbott <bpabbott@mac.com>
+2008-10-16  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/contourf.m: Correct order of patch object handles.
 
@@ -99,7 +104,7 @@
 	colorbar. Don't break in search of overlapping axes to delete. Set
 	both the position and the outerposition.
 	
-2008-10-09  Ben Abbott <bpabbott@mac.com>
+2008-10-09  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/__axis_label__.m: Inherit font properties from axes.
 

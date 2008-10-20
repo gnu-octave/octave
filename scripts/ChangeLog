@@ -5,6 +5,8 @@
 
 	* plot/orient.m, plot/print.m: Properly validate figure handle.
 
+	* plot/hold.m, plot/comet.m: Properly validate axes handle.
+
 2008-10-20  David Bateman  <dbateman@free.fr>
 
 	* plot/plotyy.m: Test that an axes handle actually is one before

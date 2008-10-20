@@ -1,5 +1,7 @@
 2008-10-20  David Bateman  <dbateman@free.fr>
 
+	* testfun/rundemos.m: Pause between files, as demo itself doesn't.
+	
 	* plot/fill.m, plot/quiver.m: Quiet the demos.
 	* plot/stair.m: Treat a line style argument correctly.
 

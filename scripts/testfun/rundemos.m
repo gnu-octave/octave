@@ -59,6 +59,9 @@ function run_all_demos (directory)
       f = fullfile (directory, f);
       if (has_demos (f))
 	demo (f);
+	if (i != numel (flist))
+	  input ("Press <enter> to continue: ", "s");
+	endif
       endif
     endif
   endfor

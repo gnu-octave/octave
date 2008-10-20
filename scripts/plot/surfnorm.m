@@ -114,11 +114,16 @@ function [Nx, Ny, Nz] = surfnorm (varargin)
       axes (h);
       newplot ();
       surf (x, y, z, varargin{ioff:end});
-      hold on;
-      plot3 ([x(:)'; x(:).' + nx(:).' ; NaN(size(x(:).'))](:),
-	     [y(:)'; y(:).' + ny(:).' ; NaN(size(y(:).'))](:),
-	     [z(:)'; z(:).' + nz(:).' ; NaN(size(z(:).'))](:), 
-	     varargin{ioff:end});
+      old_hold_state = get (h, "nextplot");
+      unwind_protect
+	set (h, "nextplot", "add");
+	plot3 ([x(:)'; x(:).' + nx(:).' ; NaN(size(x(:).'))](:),
+	       [y(:)'; y(:).' + ny(:).' ; NaN(size(y(:).'))](:),
+	       [z(:)'; z(:).' + nz(:).' ; NaN(size(z(:).'))](:), 
+	       varargin{ioff:end});
+      unwind_protect_cleanup
+	set (h, "nextplot", old_hold_state);
+      end_unwind_protect
     unwind_protect_cleanup
       axes (oldh);
     end_unwind_protect

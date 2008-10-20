@@ -1,3 +1,9 @@
+2008-10-20  John W. Eaton  <jwe@octave.org>
+
+	* plot/surfnorm.m: Save and restore hold state.
+	From Daniel J. Sebald <daniel.sebald@ieee.org> and
+	Ben Abbott <bpabbott@mac.com>.
+
 2008-10-20  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/__stem__.m: Respect new ordering of children when setting

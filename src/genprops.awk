@@ -558,7 +558,7 @@ function emit_source ()
 
     if (! base)
       printf ("std::string %s::properties::go_name (\"%s\");\n\n",
-              class_name, class_name) >> filename;
+              class_name, object_name) >> filename;
   }
 }
 
@@ -569,14 +569,22 @@ BEGIN {
   pcount = 0;
 }
 
-/BEGIN_PROPERTIES\(.*\)/ {
+/BEGIN_PROPERTIES *\(.*\)/ {
   gather = 1;
   idx = 0;
   str = $0;
-  k = index (str, "BEGIN_PROPERTIES(");
-  str = substr (str, k + 17);
-  l = index (str, ")");
-  class_name = substr (str, 1, l-1);
+  beg = index (str, "(") + 1;
+  len = index (str, ")") - beg;
+  args = substr (str, beg, len);
+  n = split (args, arg_list, ",");
+  if (n > 0)
+      class_name = arg_list[1];
+  if (n > 1)
+      object_name = arg_list[2];
+  else
+      object_name = class_name;
+  gsub (/ /, "", class_name);
+  gsub (/ /, "", object_name);
   base = 0;
   next;
 }

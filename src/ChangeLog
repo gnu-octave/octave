@@ -1,3 +1,11 @@
+2008-10-20  John W. Eaton  <jwe@octave.org>
+
+	* genprops.awk: Allow whitespace between BEGIN_PROPERTIES and
+	opening paren.  Accept optional second argument for graphics
+	object name.
+	* graphics.h.in (root_figure properties): Pass "root" as second
+	arg to BEGIN_PROPERTIES.
+
 2008-10-16  John W. Eaton  <jwe@octave.org>
 
 	* graphics.cc (make_handle_fraction): New static function.

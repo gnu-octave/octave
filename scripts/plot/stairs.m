@@ -138,7 +138,7 @@ function [h, xs, ys] = __stairs__ (doplot, varargin)
   ys(ridx,:) = y(2:nr,:);
 
   have_line_spec = false;
-  for i = 1 : nargin - 1
+  for i = 1 : length (varargin)
     arg = varargin {i};
     if ((ischar (arg) || iscell (arg)) && ! have_line_spec)
       [linespec, valid] = __pltopt__ ("stairs", arg, false);

@@ -71,7 +71,7 @@ function [y, dy] = polyval (p, x, s, mu)
   k = numel (x);
   x = (x - mu(1)) / mu(2);
   A = (x(:) * ones (1, n+1)) .^ (ones (k, 1) * (n:-1:0));
-  y(:) = A * p(:);
+  y = A * p(:);
   y = reshape (y, size (x));
 
   if (nargout == 2)

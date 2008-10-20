@@ -322,34 +322,6 @@ all_colon_equiv (const Array<idx_vector>& ra_idx,
 }
 
 bool
-is_in (octave_idx_type num, const idx_vector& idx)
-{
-  octave_idx_type n = idx.capacity ();
-
-  for (octave_idx_type i = 0; i < n; i++)
-    if (idx.elem (i) == num)
-      return true;
-
-  return false;
-}
-
-octave_idx_type
-how_many_lgt (const octave_idx_type num, idx_vector& idxv)
-{
-  octave_idx_type retval = 0;
-
-  octave_idx_type n = idxv.capacity ();
-
-  for (octave_idx_type i = 0; i < n; i++)
-    {
-      if (num > idxv.elem (i))
-	retval++;
-    }
-
-  return retval;
-}
-
-bool
 all_ones (const Array<octave_idx_type>& arr)
 {
   bool retval = true;
@@ -413,62 +385,90 @@ get_ra_idx (octave_idx_type idx, const dim_vector& dims)
   return retval;
 }
 
-dim_vector
-short_freeze (Array<idx_vector>& ra_idx, const dim_vector& dimensions,
-	      int resize_ok)
+dim_vector zero_dims_inquire (const Array<idx_vector>& ia,
+                              const dim_vector& rhdv)
 {
-  dim_vector retval;
-
-  int n = ra_idx.length ();
-
-  int n_dims = dimensions.length ();
-
-  if (n == n_dims)
+  int ial = ia.length (), rhdvl = rhdv.length ();
+  dim_vector rdv;
+  rdv.resize (ial);
+  bool *scalar = new bool[ial], *colon = new bool[ial];
+  // Mark scalars and colons, count non-scalar indices.
+  int nonsc = 0; 
+  bool all_colons = true;
+  for (int i = 0; i < ial; i++)
     {
-      retval = freeze (ra_idx, dimensions, resize_ok);
+      // FIXME: should we check for length() instead?
+      scalar[i] = ia(i).is_scalar ();
+      colon[i] = ia(i).is_colon ();
+      if (! scalar[i]) nonsc++;
+      if (! colon[i]) rdv(i) = ia(i).extent (0);
+      all_colons = all_colons && colon[i];
     }
-  else if (n < n_dims)
+
+  bool match = false;
+  // If the number of nonscalar indices matches the dimensionality of RHS,
+  // we try an exact match, inquiring even singleton dimensions.
+  if (all_colons)
     {
-      retval.resize (n);
-      
-      for (int i = 0; i < n - 1; i++)
-        retval(i) = ra_idx(i).freeze (dimensions(i), "dimension", resize_ok);
-
-      int size_left = 1;
-
-      for (int i = n - 1; i < n_dims; i++)
-        size_left *= dimensions(i); 
- 
-      if (ra_idx(n-1).is_colon())
+      rdv = rhdv;
+      rdv.resize(ial, 1);
+    }
+  else if (nonsc == rhdvl)
+    {
+      for (int i = 0, j = 0; i < ial; i++)
         {
-	  retval(n-1) = size_left;
-	}
-      else
-	{
-	  octave_idx_type last_ra_idx = ra_idx(n-1)(0);
-	  for (octave_idx_type i = 1; i < ra_idx (n - 1).capacity (); i++)
-	    last_ra_idx = (last_ra_idx > ra_idx(n-1)(i) ? last_ra_idx : 
-			   ra_idx(n-1)(i));
-
-	  if (last_ra_idx < size_left)
-            {
-              retval(n-1) = ra_idx(n-1).freeze (size_left,
-						"dimension", resize_ok);
-            }
-          else
-            {
-	      // Make it larger than it should be to get an error
-	      // later.
-
-	      retval.resize (n_dims+1);
-
-	      (*current_liboctave_error_handler)
-		("index exceeds N-d array dimensions");
-	    }
-	}
+          if (scalar[i]) continue;
+          if (colon[i])
+            rdv(i) = rhdv(j++);
+        }
+    }
+  else
+    {
+      dim_vector rhdv0 = rhdv;
+      rhdv0.chop_all_singletons ();
+      int rhdv0l = rhdv0.length ();
+      for (int i = 0, j = 0; i < ial; i++)
+        {
+          if (scalar[i]) continue;
+          if (colon[i])
+            rdv(i) =  (j < rhdv0l) ? rhdv0(j++) : 1;
+        }
     }
 
-  return retval;
+  delete [] scalar;
+  delete [] colon;
+
+  return rdv;
+}
+
+dim_vector zero_dims_inquire (const idx_vector& i, const idx_vector& j,
+                              const dim_vector& rhdv)
+{
+  bool icol = i.is_colon (), jcol = j.is_colon ();
+  dim_vector rdv;
+  if (icol && jcol && rhdv.length () == 2)
+    {
+      rdv(0) = rhdv(0);
+      rdv(1) = rhdv(1);
+    }
+  else
+    {
+      dim_vector rhdv0 = rhdv;
+      rhdv0.chop_all_singletons ();
+      int k = 0;
+      rdv(0) = i.extent (0);
+      if (icol)
+        rdv(0) = rhdv0(k++);
+      else if (! i.is_scalar ())
+        k++;
+      rdv(1) = j.extent (0);
+      if (jcol)
+        rdv(1) = rhdv0(k++);
+      else if (! j.is_scalar ())
+        k++;
+    }
+
+  return rdv;
 }
 
 int

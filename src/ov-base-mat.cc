@@ -195,11 +195,12 @@ octave_base_matrix<MT>::assign (const octave_value_list& idx, const MT& rhs)
 {
   octave_idx_type len = idx.length ();
 
+  Array<idx_vector> ra_idx (len);
+
   for (octave_idx_type i = 0; i < len; i++)
-    matrix.set_index (idx(i).index_vector ());
+    ra_idx(i) = idx(i).index_vector ();
 
-  ::assign (matrix, rhs, MT::resize_fill_value ());
-
+  matrix.assign (ra_idx, rhs, MT::resize_fill_value ());
 
   // Invalidate the matrix type
   typ.invalidate_type ();
@@ -216,7 +217,7 @@ octave_base_matrix<MT>::delete_elements (const octave_value_list& idx)
   for (octave_idx_type i = 0; i < len; i++)
     ra_idx(i) = idx(i).index_vector ();
 
-  matrix.maybe_delete_elements (ra_idx);
+  matrix.delete_elements (ra_idx);
 
   // Invalidate the matrix type
   typ.invalidate_type ();

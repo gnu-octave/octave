@@ -206,12 +206,7 @@ octave_list::subsasgn (const std::string& type,
 	  {
 	    octave_value_list i = idx.front ();
 
-	    octave_idx_type len = i.length ();
-
-	    for (octave_idx_type k = 0; k < len; k++)
-	      data.set_index (i(k).index_vector ());
-
-	    ::assign (data, Cell (t_rhs), Cell::resize_fill_value ());
+	    data.assign (i, Cell (t_rhs), Cell::resize_fill_value ());
 
 	    count++;
 	    retval = octave_value (this);

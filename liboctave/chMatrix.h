@@ -29,6 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "MArray2.h"
 
 #include "mx-defs.h"
+#include "mx-op-defs.h"
 #include "str-vec.h"
 
 class

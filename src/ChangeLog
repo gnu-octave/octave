@@ -1,3 +1,23 @@
+2008-10-28  Jaroslav Hajek <highegg@gmail.com>
+
+	* Cell.h (Cell::assign (const Array<idx_vector>&, ...),
+	Cell::delete_elements (const Array<idx_vector>&, ...)):
+	New member functions.
+	* Cell.cc (Cell::assign (const octave_value_list&, ...),
+	Cell::delete_elements (const octave_value_list&, ...)):
+	Call Array<T>::assign.
+	* DLD-FUNCTIONS/dlmread.cc: Call Array<T>::resize_fill.
+	* ov-base-mat.cc (octave_base_matrix::assign): Call Array<T>::assign.
+	(octave_base_matrix::delete_elements):: Call Array<T>::delete_elements.
+	* ov-cell.cc (Fcell): Call Array<T>::chop_trailing_singletons,
+	simplify.
+	* ov-cx-mat.cc (octave_complex_matrix::assign): Call Array<T>::assign.
+	* ov-flt-cx-mat.cc (octave_float_complex_matrix::assign): Call
+	Array<T>::assign.
+	* ov-list.cc (octave_list::subsasgn): Call Array<T>::assign.
+	* pr-output.cc (PRINT_ND_ARRAY): Use zero-based indices.
+
+
 2008-10-29  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
 	* data.cc (Fcolumns): Remove "and" from @seealso string.

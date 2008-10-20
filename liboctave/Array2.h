@@ -92,10 +92,11 @@ public:
       return *this;
     }
 
-  void resize (octave_idx_type r, octave_idx_type c) { this->resize_no_fill (r, c); }
+  void resize (octave_idx_type r, octave_idx_type c)
+    { Array<T>::resize_fill (r, c, Array<T>::resize_fill_value ()); }
 
   void resize (octave_idx_type r, octave_idx_type c, const T& val)
-    { this->resize_and_fill (r, c, val); }
+    { Array<T>::resize_fill (r, c, val); }
 
   Array2<T>& insert (const Array2<T>& a, octave_idx_type r, octave_idx_type c)
     {

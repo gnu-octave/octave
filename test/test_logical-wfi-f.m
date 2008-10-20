@@ -48,7 +48,7 @@
 %! warning ("off", "Octave:fortran-indexing");
 %!shared a
 %!  a = 2;
-%!error <invalid vector index> a(logical ([1,1]));
+%!error <A\(I\): Index exceeds matrix dimension\.> a(logical ([1,1]));
 %! warning ("wfi.state", "Octave:fortran-indexing");
 
 %% test/octave.test/logical-wfi-f/v-1.m

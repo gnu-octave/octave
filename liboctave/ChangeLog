@@ -1,3 +1,28 @@
+2008-10-28  Jaroslav Hajek <highegg@gmail.com>
+
+	* Array-C.cc Array-d.cc Array-f.cc Array-fC.cc Array-i.cc Array-s.cc:
+	Don't use semicolon after INSTANTIATE_ARRAY_ASSIGN.
+	* Array-util.h (zero_dims_inquire): New declarations.
+	(is_in, how_many_lgt, short_freeze): Remove declarations.
+	* Array-util.cc (zero_dims_inquire): New functions.
+	(is_in, how_many_lgt, short_freeze): Remove functions.
+	* Array.cc (Array<T>::index, Array<T>::resize_fill, Array<T>::resize,
+	Array<T>::assign, Array<T>::delete_elements):
+	Rewrite.
+	* Array.h (Array<T>::index, Array<T>::resize_fill, Array<T>::resize,
+	Array<T>::assign, Array<T>::delete_elements):
+	Rewrite interfaces.
+	* Array2.h (Array2<T>::resize): Call Array<T>::resize_fill.
+	* Array3.h (Array3<T>::resize): Call Array<T>::resize_fill.
+	* ArrayN.h (ArrayN<T>::resize): Remove declarations.
+	(ArrayN<T>::index): Fix call to resize_fill_value.
+	* Sparse.cc (assign, assign1): Use zero-based indices.
+	* chMatrix.h: Include mx-op-defs.h
+	* dim-vector.h (dim_vector::any_neg, dim_vector::chop_all_singletons,
+	dim_vector::redim): New member functions.
+	* idx-vector.cc: Mostly rewrite.
+	* idx-vector.h: Mostly rewrite.
+
 2008-10-29  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* lo-specfun.cc (cbesj, cbesy, cbesi, cbesk, cbesh1, cbesh2): Do not

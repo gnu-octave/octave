@@ -93,12 +93,6 @@ public:
   ArrayN<T> ipermute (const Array<octave_idx_type>& vec) const
     { return Array<T>::ipermute (vec); }
 
-  void resize (const dim_vector& dv)
-    { this->resize_no_fill (dv); }
-
-  void resize (const dim_vector& dv, const T& val)
-    { Array<T>::resize (dv, val); }
-
   ArrayN<T> squeeze (void) const { return Array<T>::squeeze (); }
 
   ArrayN<T> transpose (void) const { return Array<T>::transpose (); }
@@ -117,21 +111,21 @@ public:
   }
 
   ArrayN<T> index (idx_vector& i, int resize_ok = 0,
-		   const T& rfv = resize_fill_value (T ())) const
+		   const T& rfv = Array<T>::resize_fill_value ()) const
     {
       Array<T> tmp = Array<T>::index (i, resize_ok, rfv);
       return ArrayN<T> (tmp, tmp.dims ());
     }
 
   ArrayN<T> index (idx_vector& i, idx_vector& j, int resize_ok = 0,
-		   const T& rfv = resize_fill_value (T ())) const
+		   const T& rfv = Array<T>::resize_fill_value ()) const
     {
       Array<T> tmp = Array<T>::index (i, j, resize_ok, rfv);
       return ArrayN<T> (tmp, tmp.dims ());
     }
 
   ArrayN<T> index (Array<idx_vector>& ra_idx, int resize_ok = 0,
-		   const T& rfv = resize_fill_value (T ())) const
+		   const T& rfv = Array<T>::resize_fill_value ()) const
     {
       Array<T> tmp = Array<T>::index (ra_idx, resize_ok, rfv);
       return ArrayN<T> (tmp, tmp.dims ());

@@ -1017,23 +1017,12 @@ rows and columns, respectively.\n\
 
   if (! error_state)
     {
-      int ndim = dims.length ();
+      dims.chop_trailing_singletons ();
 
       check_dimensions (dims, "cell");
 
       if (! error_state)
-	{
-	  switch (ndim)
-	    {
-	    case 1:
-	      retval = Cell (dims(0), dims(0), Matrix ());
-	      break;
-
-	    default:
-	      retval = Cell (dims, Matrix ());
-	      break;
-	    }
-	}
+        retval = Cell (dims, Matrix ());
     }
 
   return retval;

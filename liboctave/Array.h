@@ -3,6 +3,7 @@
 
 Copyright (C) 1993, 1994, 1995, 1996, 1997, 2000, 2001, 2002, 2003,
               2004, 2005, 2006, 2007 John W. Eaton
+Copyright (C) 2008 Jaroslav Hajek <highegg@gmail.com>
 
 This file is part of Octave.
 
@@ -31,21 +32,13 @@ along with Octave; see the file COPYING.  If not, see
 #include <iostream>
 
 #include "dim-vector.h"
+#include "idx-vector.h"
 #include "lo-utils.h"
 #include "oct-sort.h"
 #include "quit.h"
 
-class idx_vector;
-
 // One dimensional array class.  Handles the reference counting for
 // all the derived classes.
-
-template <class T>
-T
-resize_fill_value (const T& x)
-{
-  return x;
-}
 
 template <class T>
 class
@@ -148,16 +141,12 @@ public:
 
 protected:
 
-  mutable idx_vector *idx;
-  mutable int idx_count;
-
   Array (T *d, octave_idx_type n)
-    : rep (new typename Array<T>::ArrayRep (d, n)), dimensions (n),
-      idx (0), idx_count (0) { }
+    : rep (new typename Array<T>::ArrayRep (d, n)), dimensions (n) { }
 
   Array (T *d, const dim_vector& dv)
     : rep (new typename Array<T>::ArrayRep (d, get_size (dv))),
-      dimensions (dv), idx (0), idx_count (0) { }
+      dimensions (dv) { }
 
 private:
 
@@ -184,16 +173,13 @@ private:
 public:
 
   Array (void)
-    : rep (nil_rep ()), dimensions (),
-      idx (0), idx_count (0) { rep->count++; }
+    : rep (nil_rep ()), dimensions () { rep->count++; }
 
   explicit Array (octave_idx_type n)
-    : rep (new typename Array<T>::ArrayRep (n)), dimensions (n),
-      idx (0), idx_count (0) { }
+    : rep (new typename Array<T>::ArrayRep (n)), dimensions (n) { }
 
   explicit Array (octave_idx_type n, const T& val)
-    : rep (new typename Array<T>::ArrayRep (n)), dimensions (n),
-      idx (0), idx_count (0)
+    : rep (new typename Array<T>::ArrayRep (n)), dimensions (n)
     {
       fill (val);
     }
@@ -202,13 +188,13 @@ public:
   template <class U>
   Array (const Array<U>& a)
     : rep (new typename Array<T>::ArrayRep (coerce (a.data (), a.length ()), a.length ())),
-      dimensions (a.dimensions), idx (0), idx_count (0)
+      dimensions (a.dimensions)
     {
     }
 
   // No type conversion case.
   Array (const Array<T>& a)
-    : rep (a.rep), dimensions (a.dimensions), idx (0), idx_count (0)
+    : rep (a.rep), dimensions (a.dimensions)
     {
       rep->count++;
     }
@@ -217,11 +203,11 @@ public:
 
   Array (const dim_vector& dv)
     : rep (new typename Array<T>::ArrayRep (get_size (dv))),
-      dimensions (dv), idx (0), idx_count (0) { }
+      dimensions (dv) { }
 
   Array (const dim_vector& dv, const T& val)
     : rep (new typename Array<T>::ArrayRep (get_size (dv))),
-      dimensions (dv), idx (0), idx_count (0)
+      dimensions (dv)
     {
       fill (val);
     }
@@ -419,43 +405,6 @@ public:
   Array<T> ipermute (const Array<octave_idx_type>& vec) const
     { return permute (vec, true); }
 
-  void resize_no_fill (octave_idx_type n);
-  void resize_and_fill (octave_idx_type n, const T& val);
-
-  // !!! WARNING !!! -- the following resize_no_fill and
-  // resize_and_fill functions are public because template friends
-  // don't work properly with versions of gcc earlier than 3.3.  You
-  // should use these functions only in classes that are derived
-  // from Array<T>.
-
-  // protected:
-
-  void resize_no_fill (octave_idx_type r, octave_idx_type c);
-  void resize_and_fill (octave_idx_type r, octave_idx_type c, const T& val);
-
-  void resize_no_fill (octave_idx_type r, octave_idx_type c, octave_idx_type p);
-  void resize_and_fill (octave_idx_type r, octave_idx_type c, octave_idx_type p, const T& val);
-
-  void resize_no_fill (const dim_vector& dv);
-  void resize_and_fill (const dim_vector& dv, const T& val);
-
-public:
-
-  void resize (octave_idx_type n) { resize_no_fill (n); }
-
-  void resize (octave_idx_type n, const T& val) { resize_and_fill (n, val); }
-
-  void resize (const dim_vector& dv) { resize_no_fill (dv); }
-
-  void resize (const dim_vector& dv, const T& val)
-    { resize_and_fill (dv, val); }
-
-  Array<T>& insert (const Array<T>& a, octave_idx_type r, octave_idx_type c);
-  Array<T>& insert2 (const Array<T>& a, octave_idx_type r, octave_idx_type c);
-  Array<T>& insertN (const Array<T>& a, octave_idx_type r, octave_idx_type c);
-
-  Array<T>& insert (const Array<T>& a, const Array<octave_idx_type>& idx);
-
   bool is_square (void) const { return (dim1 () == dim2 ()); }
 
   bool is_empty (void) const { return numel () == 0; }
@@ -482,47 +431,98 @@ public:
 
   void maybe_delete_dims (void);
 
-  void clear_index (void) const;
+  // Indexing without resizing.
 
-  void set_index (const idx_vector& i) const;
+  Array<T> index (const idx_vector& i) const;
 
-  int index_count (void) const { return idx_count; }
+  Array<T> index (const idx_vector& i, const idx_vector& j) const;
 
-  idx_vector *get_idx (void) const { return idx; }
+  Array<T> index (const Array<idx_vector>& ia) const;
 
-  void maybe_delete_elements (idx_vector& i);
+  static T resize_fill_value (); 
 
-  void maybe_delete_elements_1 (idx_vector& i);
+  // Resizing (with fill).
 
-  void maybe_delete_elements_2 (idx_vector& i);
+  void resize_fill (octave_idx_type n, const T& rfv);
 
-  void maybe_delete_elements (idx_vector& i, idx_vector& j);
+  void resize_fill (octave_idx_type nr, octave_idx_type nc, const T& rfv);
 
-  void maybe_delete_elements (idx_vector& i, idx_vector& j, idx_vector& k);
+  void resize_fill (const dim_vector& dv, const T& rfv);
 
-  void maybe_delete_elements (Array<idx_vector>& ra_idx);
+  // Resizing with default fill.
+  // Rationale: 
+  // These use the default fill value rather than leaving memory uninitialized.
+  // Resizing without fill leaves the resulting array in a rather weird state,
+  // where part of the data is initialized an part isn't.
 
-  Array<T> value (void) const;
+  void resize (octave_idx_type n)
+    { resize_fill (n, resize_fill_value ()); }
 
-  Array<T> index (idx_vector& i, int resize_ok = 0,
-		  const T& rfv = resize_fill_value (T ())) const;
+  // FIXME: This method cannot be defined here because it would clash with
+  //   void resize (octave_idx_type, const T&)
+  // (these become undistinguishable when T = octave_idx_type). 
+  // In the future, I think the resize (.., const T& rfv) overloads should go away
+  // in favor of using resize_fill.
 
-  Array<T> index1 (idx_vector& i, int resize_ok = 0,
-		   const T& rfv = resize_fill_value (T ())) const;
+  // void resize (octave_idx_type nr, octave_idx_type nc)
+  //  { resize_fill (nr, nc, resize_fill_value ()); }
 
-  Array<T> index2 (idx_vector& i, int resize_ok = 0,
-		   const T& rfv = resize_fill_value (T ())) const;
+  void resize (dim_vector dv)
+    { resize_fill (dv, resize_fill_value ()); }
 
-  Array<T> indexN (idx_vector& i, int resize_ok = 0,
-		   const T& rfv = resize_fill_value (T ())) const;
+  // FIXME: these are here for backward compatibility. They should go away in favor
+  // of using resize_fill directly.
+  void resize (octave_idx_type n, const T& rfv)
+    { resize_fill (n, static_cast<T> (rfv)); }
 
-  Array<T> index (idx_vector& i, idx_vector& j, int resize_ok = 0,
-		  const T& rfv = resize_fill_value (T ())) const;
+  void resize (octave_idx_type nr, octave_idx_type nc, const T& rfv)
+    { resize_fill (nr, nc, rfv); }
 
-  Array<T> index (Array<idx_vector>& ra_idx, int resize_ok = 0,
-		  const T& rfv = resize_fill_value (T ())) const;
+  void resize (dim_vector dv, const T& rfv)
+    { resize_fill (dv, rfv); }
 
-  //  static T resize_fill_value (void) { return T (); }
+  // Indexing with possible resizing and fill
+  // FIXME: This is really a corner case, that should better be handled
+  // directly in liboctinterp.
+
+  Array<T> index (const idx_vector& i, bool resize_ok,
+                  const T& rfv = resize_fill_value ()) const;
+
+  Array<T> index (const idx_vector& i, const idx_vector& j, 
+                  bool resize_ok, const T& rfv = resize_fill_value ()) const;
+
+  Array<T> index (const Array<idx_vector>& ia,
+                  bool resize_ok, const T& rfv = resize_fill_value ()) const;
+
+  // Indexed assignment (always with resize & fill).
+
+  void assign (const idx_vector& i, const Array<T>& rhs, 
+               const T& rfv = resize_fill_value ());
+
+  void assign (const idx_vector& i, const idx_vector& j, const Array<T>& rhs,
+               const T& rfv = resize_fill_value ());
+
+  void assign (const Array<idx_vector>& ia, const Array<T>& rhs,
+               const T& rfv = resize_fill_value ());
+
+  // Deleting elements.
+
+  // A(I) = [] (with a single subscript)
+  void delete_elements (const idx_vector& i);
+
+  // A(:,...,I,...,:) = [] (>= 2 subscripts, one of them is non-colon)
+  void delete_elements (int dim, const idx_vector& i);
+
+  // Dispatcher to the above two.
+  void delete_elements (const Array<idx_vector>& ia);
+
+  // FIXME: are these required? What exactly are they supposed to do?.
+
+  Array<T>& insert (const Array<T>& a, octave_idx_type r, octave_idx_type c);
+  Array<T>& insert2 (const Array<T>& a, octave_idx_type r, octave_idx_type c);
+  Array<T>& insertN (const Array<T>& a, octave_idx_type r, octave_idx_type c);
+
+  Array<T>& insert (const Array<T>& a, const Array<octave_idx_type>& idx);
 
   void print_info (std::ostream& os, const std::string& prefix) const;
 
@@ -558,48 +558,18 @@ public:
   }
 };
 
-// NOTE: these functions should be friends of the Array<T> class and
-// Array<T>::dimensions should be protected, not public, but we can't
-// do that because of bugs in gcc prior to 3.3.
-
-template <class LT, class RT>
-/* friend */ int
-assign (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv);
-
-template <class LT, class RT>
-/* friend */ int
-assign1 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv);
-
-template <class LT, class RT>
-/* friend */ int
-assign2 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv);
-
-template <class LT, class RT>
-/* friend */ int
-assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv);
-
-template <class LT, class RT>
-int
-assign (Array<LT>& lhs, const Array<RT>& rhs)
-{
-  return assign (lhs, rhs, resize_fill_value (LT ()));
-}
-
-#define INSTANTIATE_ARRAY_ASSIGN(LT, RT, API) \
-  template API int assign (Array<LT>&, const Array<RT>&, const LT&); \
-  template API int assign1 (Array<LT>&, const Array<RT>&, const LT&); \
-  template API int assign2 (Array<LT>&, const Array<RT>&, const LT&); \
-  template API int assignN (Array<LT>&, const Array<RT>&, const LT&); \
-  template API int assign (Array<LT>&, const Array<RT>&)
-
-
 #define INSTANTIATE_ARRAY(T, API) \
-  template class API Array<T>; \
-  template API T resize_fill_value (const T&); \
+  template class API Array<T>
 
+// FIXME: These are here for compatibility. In current implementation, only
+// homogeneous array assignments are actually instantiated. I think heterogeneous
+// indexed assignments are rare enough to be implemented via conversion first.
+// This decision may still be revised, that's why these macros stay here.
 #define INSTANTIATE_ARRAY_AND_ASSIGN(T, API) \
-  INSTANTIATE_ARRAY (T, API); \
-  INSTANTIATE_ARRAY_ASSIGN (T, T, API)
+  INSTANTIATE_ARRAY(T, API)
+
+#define INSTANTIATE_ARRAY_ASSIGN(LT, RT, API)
+  // do nothing
 
 #define INSTANTIATE_ARRAY_SORT(T) \
   template class octave_sort<T>; \

@@ -1747,7 +1747,7 @@ octave_print_internal (std::ostream& os, const Matrix& m,
               idx(1) = idx_vector (':'); \
  \
               for (int k = 2; k < ndims; k++) \
-                idx(k) = idx_vector (ra_idx(k) + 1); \
+                idx(k) = idx_vector (ra_idx(k)); \
  \
               octave_value page \
                 = MAT_T (Array2<ELT_T> (nda.index (idx), nr, nc)); \
@@ -2291,7 +2291,7 @@ octave_print_internal (std::ostream& os, const ArrayN<std::string>& nda,
 	  idx(1) = idx_vector (':');
 
 	  for (int k = 2; k < ndims; k++)
-	    idx(k) = idx_vector (ra_idx(k) + 1);
+	    idx(k) = idx_vector (ra_idx(k));
 
 	  Array2<std::string> page (nda.index (idx), nr, nc);
 
@@ -2558,7 +2558,7 @@ octave_print_internal_template (std::ostream& os, const intNDArray<T>& nda,
 	  idx(1) = idx_vector (':');
 
 	  for (int k = 2; k < ndims; k++)
-	    idx(k) = idx_vector (ra_idx(k) + 1);
+	    idx(k) = idx_vector (ra_idx(k));
 
 	  Array2<T> page (nda.index (idx), nr, nc);
 
@@ -2663,7 +2663,7 @@ octave_print_internal_template (std::ostream& os, const intNDArray<T>& nda,
 	  idx(1) = idx_vector (':');
 
 	  for (int k = 2; k < ndims; k++)
-	    idx(k) = idx_vector (ra_idx(k) + 1);
+	    idx(k) = idx_vector (ra_idx(k));
 
 	  Array2<T> page (nda.index (idx), nr, nc);
 

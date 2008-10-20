@@ -130,6 +130,18 @@ protected:
 	}
     }
 
+    void chop_all_singletons (void)
+    {
+      int j = 0;
+      for (int i = 0; i < ndims; i++)
+	{
+	  if (dims[i] != 1)
+            dims[j++] = dims[i];
+	}
+      if (j == 1) dims[1] = 1;
+      ndims = j > 2 ? j : 2;
+    }
+
   private:
 
     // No assignment!
@@ -309,10 +321,24 @@ public:
     return retval;
   }
 
+  bool any_neg (void) const
+  {
+    int n_dims = length (), i;
+    for (i = 0; i < n_dims; i++)
+      if (elem (i) < 0) break;
+    return i < n_dims;
+  }
+
   void chop_trailing_singletons (void)
   {
     make_unique ();
     rep->chop_trailing_singletons ();
+  }
+
+  void chop_all_singletons (void)
+  {
+    make_unique ();
+    rep->chop_all_singletons ();
   }
 
   dim_vector squeeze (void) const
@@ -439,6 +465,44 @@ public:
 
     return true;
   }
+
+  // Forces certain dimensionality, preserving numel (). Missing dimensions are
+  // set to 1, redundant are folded into the trailing one. If n = 1, the result
+  // is 2d and the second dim is 1 (dim_vectors are always at least 2D).
+  // If the original dimensions were all zero, the padding value is zero.
+  dim_vector redim (int n) const
+    {
+      int n_dims = length ();
+      if (n_dims == n)
+        return *this;
+      else
+        {
+          dim_vector retval;
+          retval.resize (n == 1 ? 2 : n, 1);
+          
+          bool zeros = true;
+          for (int i = 0; i < n && i < n_dims; i++)
+            {
+              retval(i) = elem (i);
+              zeros = zeros && elem (i) == 0;
+            }
+
+          if (n < n_dims)
+            {
+              octave_idx_type k = 1;
+              for (int i = n; i < n_dims; i++)
+                k *= elem (i);
+              retval(n - 1) *= k;
+            }
+          else if (zeros)
+            {
+              for (int i = n_dims; i < n; i++)
+                retval.elem (i) = 0;
+            }
+
+          return retval;
+        }
+    }
 };
 
 static inline bool

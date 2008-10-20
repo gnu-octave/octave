@@ -89,10 +89,21 @@ public:
 	      const octave_value& rfv = resize_fill_value ()) const
     { return Cell (ArrayN<octave_value>::index (ra_idx, resize_ok, rfv)); }
 
+  // FIXME: This seems necessary for octave_base_mat<Cell>::delete_elements
+  // to work, but I don't understand why.
+  void delete_elements (const Array<idx_vector>& ia)
+    { ArrayN<octave_value>::delete_elements (ia); }
+
   Cell& delete_elements (const octave_value_list& idx);
 
   Cell& assign (const octave_value_list& idx, const Cell& rhs,
 		const octave_value& fill_val = octave_value ());
+
+  // FIXME: This seems necessary for octave_base_mat<Cell>::assign
+  // to work, but I don't understand why.
+  void assign (const Array<idx_vector>& ia, const Array<octave_value>& rhs,
+               const octave_value& fill_val = octave_value ())
+    { ArrayN<octave_value>::assign (ia, rhs, fill_val); }
 
   Cell reshape (const dim_vector& new_dims) const
     { return ArrayN<octave_value>::reshape (new_dims); }

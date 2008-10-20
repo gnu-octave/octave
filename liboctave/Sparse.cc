@@ -2507,7 +2507,7 @@ assign1 (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 
 	      for (octave_idx_type i = 0; i < n; i++)
 		{
-		  new_idx.xelem(i) = sidx[i]->i + 1;
+		  new_idx.xelem(i) = sidx[i]->i;
 		  rhs_idx[i] = sidx[i]->idx;
 		}
 
@@ -3061,7 +3061,7 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 
                       for (octave_idx_type i = 0; i < n; i++)
                         {
-                          new_idx.xelem(i) = sidx[i]->i + 1;
+                          new_idx.xelem(i) = sidx[i]->i;
                           rhs_idx_i[i] = sidx[i]->idx;
                         }
 
@@ -3100,7 +3100,7 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 
                       for (octave_idx_type i = 0; i < m; i++)
                         {
-                          new_idx.xelem(i) = sidx[i]->i + 1;
+                          new_idx.xelem(i) = sidx[i]->i;
                           rhs_idx_j[i] = sidx[i]->idx;
                         }
 
@@ -3318,7 +3318,7 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 
 		      for (octave_idx_type i = 0; i < len; i++)
 			{
-			  new_idx.xelem(i) = sidx[i]->i + 1;
+			  new_idx.xelem(i) = sidx[i]->i;
 			  rhs_idx[i] = sidx[i]->idx;
 			}
 

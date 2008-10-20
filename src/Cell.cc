@@ -164,10 +164,14 @@ Cell::assign (const octave_value_list& idx_arg, const Cell& rhs,
 	      const octave_value& fill_val)
 
 {
-  for (octave_idx_type i = 0; i < idx_arg.length (); i++)
-    set_index (idx_arg(i).index_vector ());
+  octave_idx_type len = idx_arg.length ();
 
-  ::assign (*this, rhs, fill_val);
+  Array<idx_vector> ra_idx (len);
+
+  for (octave_idx_type i = 0; i < len; i++)
+    ra_idx(i) = idx_arg(i).index_vector ();
+
+  Array<octave_value>::assign (ra_idx, rhs, fill_val);
 
   return *this;
 }
@@ -176,11 +180,14 @@ Cell&
 Cell::delete_elements (const octave_value_list& idx_arg)
 
 {
-  Array<idx_vector> ra_idx (idx_arg.length ());
-  for (octave_idx_type i = 0; i < idx_arg.length (); i++)
+  octave_idx_type len = idx_arg.length ();
+
+  Array<idx_vector> ra_idx (len);
+
+  for (octave_idx_type i = 0; i < len; i++)
     ra_idx.xelem (i) = idx_arg(i).index_vector ();
 
-  maybe_delete_elements (ra_idx);
+  Array<octave_value>::delete_elements (ra_idx);
 
   return *this;
 }

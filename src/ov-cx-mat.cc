@@ -122,10 +122,12 @@ octave_complex_matrix::assign (const octave_value_list& idx,
 {
   octave_idx_type len = idx.length ();
 
-  for (octave_idx_type i = 0; i < len; i++)
-    matrix.set_index (idx(i).index_vector ());
+  Array<idx_vector> ra_idx (len);
 
-  ::assign (matrix, rhs);
+  for (octave_idx_type i = 0; i < len; i++)
+    ra_idx(i) = idx(i).index_vector ();
+
+  matrix.assign (ra_idx, rhs);
 }
 
 bool

@@ -65,10 +65,6 @@ extern OCTAVE_API bool any_orig_empty (const Array<idx_vector>& ra_idx);
 extern OCTAVE_API bool all_colon_equiv (const Array<idx_vector>& ra_idx,
 			     const dim_vector& frozen_lengths);
 
-extern OCTAVE_API bool is_in (octave_idx_type num, const idx_vector& idx);
-
-extern OCTAVE_API octave_idx_type how_many_lgt (const octave_idx_type num, idx_vector& idxv);
-
 extern OCTAVE_API bool all_ones (const Array<octave_idx_type>& arr);
 
 extern OCTAVE_API Array<octave_idx_type> get_elt_idx (const Array<idx_vector>& ra_idx,
@@ -76,9 +72,11 @@ extern OCTAVE_API Array<octave_idx_type> get_elt_idx (const Array<idx_vector>& r
 
 extern OCTAVE_API Array<octave_idx_type> get_ra_idx (octave_idx_type idx, const dim_vector& dims);
 
-extern OCTAVE_API dim_vector short_freeze (Array<idx_vector>& ra_idx,
-				const dim_vector& dimensions,
-				int resize_ok);
+extern OCTAVE_API dim_vector zero_dims_inquire (const Array<idx_vector>& ia,
+                                                const dim_vector& rhdv);
+
+extern OCTAVE_API dim_vector zero_dims_inquire (const idx_vector& i, const idx_vector& j,
+                                                const dim_vector& rhdv);
 
 struct
 permute_vector

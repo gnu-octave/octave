@@ -1,3 +1,8 @@
+2008-10-20  David Bateman  <dbateman@free.fr>
+
+	* plot/fill.m, plot/quiver.m: Quiet the demos.
+	* plot/stair.m: Treat a line style argument correctly.
+
 2008-10-20  John W. Eaton  <jwe@octave.org>
 
 	* plot/surfnorm.m: Save and restore hold state.

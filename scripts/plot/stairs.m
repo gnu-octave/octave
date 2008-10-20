@@ -137,6 +137,19 @@ function [h, xs, ys] = __stairs__ (doplot, varargin)
   xs(ridx,:) = xtmp;
   ys(ridx,:) = y(2:nr,:);
 
+  have_line_spec = false;
+  for i = 1 : nargin - 1
+    arg = varargin {i};
+    if ((ischar (arg) || iscell (arg)) && ! have_line_spec)
+      [linespec, valid] = __pltopt__ ("stairs", arg, false);
+      if (valid)
+	have_line_spec = true;
+	varargin(i) = [];
+	break;
+      endif
+    endif
+  endfor 
+
   if (doplot)
     h = [];
     unwind_protect
@@ -152,8 +165,13 @@ function [h, xs, ys] = __stairs__ (doplot, varargin)
 	addlistener (hg, "xdata", @update_data);
 	addlistener (hg, "ydata", @update_data);
 
-	tmp = line (xs(:,i).', ys(:,i).', "color", __next_line_color__ (),
-		    "parent", hg);
+	if (have_line_spec)
+	  tmp = line (xs(:,i).', ys(:,i).', "color", linespec.color,
+		      "parent", hg);
+	else
+	  tmp = line (xs(:,i).', ys(:,i).', "color", __next_line_color__ (),
+		      "parent", hg);
+	endif
 
         addproperty ("color", hg, "linecolor", get (tmp, "color"));
 	addproperty ("linewidth", hg, "linelinewidth", get (tmp, "linewidth"));

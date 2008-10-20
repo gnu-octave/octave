@@ -115,4 +115,4 @@ endfunction
 %! y1 = cos(t1);
 %! x2 = sin(t2) + 0.8;
 %! y2 = cos(t2);
-%! h = fill(x1,y1,'r',x2,y2,'g')
+%! h = fill(x1,y1,'r',x2,y2,'g');

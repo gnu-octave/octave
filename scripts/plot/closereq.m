@@ -33,7 +33,7 @@ function closereq ()
       warning ("closereq: calling closereq from octave prompt is not supported, use `close' instead");
       cf = get (0, "currentfigure");
     endif
-    if (! isempty (cf) && cf != 0)
+    if (! isempty (cf) && isfigure (cf))
       delete (cf);
     endif
   else

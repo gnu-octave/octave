@@ -13,6 +13,8 @@
 
 2008-10-20  Ben Abbott  <bpabbott@mac.com>
 
+	* plot/closereq.m: Respect property tag.
+
 	* plot/__stem__.m: Respect new ordering of children when setting
 	baseline.
 

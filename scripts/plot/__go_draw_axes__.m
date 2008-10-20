@@ -818,7 +818,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 	      ## No interpolation of facecolors.
 	      interp_str = "";
 	    endif
-	    usingclause{data_idx} = sprintf ("record=%dx%d using ($1):($2):($3):($4)", xlen, ylen);
+	    usingclause{data_idx} = sprintf ("record=%dx%d using ($1):($2):($3):($4)", ylen, xlen);
 
             flat_interp_face = (strncmp (obj.facecolor, "flat", 4)
 				|| strncmp (obj.facecolor, "interp", 6));

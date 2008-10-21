@@ -18,24 +18,60 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} clf ()
-## Clear the current figure.
-## @seealso{close, delete}
+## @deftypefnx {Function File} {} clf ("reset")
+## @deftypefnx {Function File} {} clf (@var{hfig})
+## @deftypefnx {Function File} {} clf (@var{hfig}, "reset")
+## @deftypefnx {Function File} {@var{hfig} =} clf (@dots{})
+## Delete the children of the current figure with visible handles.
+## If @var{hfig} is specified and is an figure object handle, operate on it
+## instead of the current figure.  If the optional argument @code{"reset"}
+## is specified, also delete the figure's children with hidden handles.
+## @seealso{cla, close, delete}
 ## @end deftypefn
 
 ## Author: jwe
 
-function clf ()
+function clf (varargin)
 
-  if (nargin == 0)
-    cf = gcf ();
-    set (cf, "currentaxes", []);
-    for k = get (cf, "children")
-      if (ishandle (k))
-        delete (k);
-      endif
-    endfor
-  else
+  if (nargin > 2)
     print_usage ();
+  elseif (nargin > 1)
+    if (isfigure (varargin{1}) && ischar (varargin{2})
+	&& strcmpi (varargin{2}, "reset"))
+      oldfig = gcf;
+      hfig = varargin{1};
+      do_reset = true;
+    else
+      print_usage ();
+    endif
+  elseif (nargin == 1)
+    if (isfigure (varargin{1}))
+      oldfig = gcf;
+      hfig = varargin{1};
+      do_reset = false;
+    elseif (ischar (varargin{1}) && strcmpi (varargin{1}, "reset"))
+      hfig = gcf;
+      oldfig = hfig;
+      do_reset = true;
+    else
+      print_usage ();
+    endif
+  else
+    hfig = gcf;
+    oldfig = hfig;
+    do_reset = false;
+  end
+
+  if (do_reset)
+    ## Select all the children, including the one with hidden handles.
+    hc = allchild (hfig);
+    reset (hfig)
+  else
+    ## Select only the chilren with visible handles.
+    hc = get (hfig, "children");
   endif
+
+  ## Delete the children.
+  delete (hc);
 
 endfunction

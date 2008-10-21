@@ -1,3 +1,7 @@
+2008-10-21  Ben Abbott <bpabbott@mac.com>
+
+	* plot/clf.m: Improve Matlab compatibility.
+
 2008-10-21  John W. Eaton  <jwe@octave.org>
 
 	* plot/gnuplot_drawnow.m: Pass handle to __go_draw_figure__, not

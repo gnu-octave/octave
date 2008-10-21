@@ -1,3 +1,12 @@
+2008-10-21  John W. Eaton  <jwe@octave.org>
+
+	* plot/gnuplot_drawnow.m: Pass handle to __go_draw_figure__, not
+	struct.  Use get instead of examining struct fields directly.
+	* plot/__go_draw_figure__.m: First arg is now handle, not figure
+	object struct.  Use get instead of examining struct elements
+	directly.  Use allhild instead of looking at children field of
+	figure object struct.
+
 2008-10-20  Ben Abbott <bpabbott@mac.com>
 
 	* plot/orient.m: Fix syntax error.

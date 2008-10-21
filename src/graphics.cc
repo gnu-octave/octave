@@ -2133,6 +2133,54 @@ figure::get_default (const caseless_str& name) const
 
 // ---------------------------------------------------------------------
 
+void
+axes::properties::init (void)
+{
+  position.add_constraint (dim_vector (1, 4));
+  position.add_constraint (dim_vector (0, 0));
+  outerposition.add_constraint (dim_vector (1, 4));
+  colororder.add_constraint (dim_vector (-1, 3));
+  dataaspectratio.add_constraint (dim_vector (1, 3));
+  plotboxaspectratio.add_constraint (dim_vector (1, 3));
+  xlim.add_constraint (2);
+  ylim.add_constraint (2);
+  zlim.add_constraint (2);
+  clim.add_constraint (2);
+  alim.add_constraint (2);
+  xtick.add_constraint (dim_vector (1, -1));
+  ytick.add_constraint (dim_vector (1, -1));
+  ztick.add_constraint (dim_vector (1, -1));
+  Matrix vw (1, 2, 0);
+  vw(1) = 90;
+  view = vw;
+  view.add_constraint (dim_vector (1, 2));
+  cameraposition.add_constraint (dim_vector (1, 3));
+  Matrix upv (1, 3, 0.0);
+  upv(2) = 1.0;
+  cameraupvector = upv;
+  cameraupvector.add_constraint (dim_vector (1, 3));
+  currentpoint.add_constraint (dim_vector (2, 3));
+  ticklength.add_constraint (dim_vector (1, 2));
+  tightinset.add_constraint (dim_vector (1, 4));
+
+  x_zlim.resize (1, 2);
+  sx = "linear";
+  sy = "linear";
+  sz = "linear";
+
+  xset (xlabel.handle_value (), "handlevisibility", "off");
+  xset (ylabel.handle_value (), "handlevisibility", "off");
+  xset (zlabel.handle_value (), "handlevisibility", "off");
+
+  xset (title.handle_value (), "handlevisibility", "off");
+
+  adopt (xlabel.handle_value ());
+  adopt (ylabel.handle_value ());
+  adopt (zlabel.handle_value ());
+
+  adopt (title.handle_value ());
+}
+
 void 
 axes::properties::sync_positions (void)
 {
@@ -2168,59 +2216,54 @@ axes::properties::sync_positions (void)
 }
 
 void
-axes::properties::set_title (const octave_value& v)
+axes::properties::set_text_child (handle_property& hp,
+				  const std::string& who,
+				  const octave_value& v)
 {
-  graphics_handle val = ::reparent (v, "set", "title", __myhandle__, false);
+  graphics_handle val = ::reparent (v, "set", who, __myhandle__, false);
 
   if (! error_state)
     {
-      gh_manager::free (title.handle_value ());
-      title = val;
+      xset (val, "handlevisibility", "off");
+
+      gh_manager::free (hp.handle_value ());
+
+      base_properties::remove_child (hp.handle_value ());
+
+      hp = val;
+
+      adopt (hp.handle_value ());
     }
 }
 
 void
 axes::properties::set_xlabel (const octave_value& v)
 {
-  graphics_handle val = ::reparent (v, "set", "xlabel", __myhandle__, false);
-
-  if (! error_state)
-    {
-      gh_manager::free (xlabel.handle_value ());
-      xlabel = val;
-    }
+  set_text_child (xlabel, "xlabel", v);
 }
 
 void
 axes::properties::set_ylabel (const octave_value& v)
 {
-  graphics_handle val = ::reparent (v, "set", "ylabel", __myhandle__, false);
-
-  if (! error_state)
-    {
-      gh_manager::free (ylabel.handle_value ());
-      ylabel = val;
-    }
+  set_text_child (ylabel, "ylabel", v);
 }
 
 void
 axes::properties::set_zlabel (const octave_value& v)
 {
-  graphics_handle val = ::reparent (v, "set", "zlabel", __myhandle__, false);
+  set_text_child (zlabel, "zlabel", v);
+}
 
-  if (! error_state)
-    {
-      gh_manager::free (zlabel.handle_value ());
-      zlabel = val;
-    }
+void
+axes::properties::set_title (const octave_value& v)
+{
+  set_text_child (title, "title", v);
 }
 
 void
 axes::properties::set_defaults (base_graphics_object& obj,
 				const std::string& mode)
 {
-  delete_text_child (title);
-
   box = "on";
   key = "off";
   keybox = "off";
@@ -2244,10 +2287,6 @@ axes::properties::set_defaults (base_graphics_object& obj,
   ylimmode = "auto";
   zlimmode = "auto";
   climmode = "auto";
-
-  delete_text_child (xlabel);
-  delete_text_child (ylabel);
-  delete_text_child (zlabel);
 
   xgrid = "off";
   ygrid = "off";
@@ -2328,10 +2367,27 @@ axes::properties::set_defaults (base_graphics_object& obj,
       activepositionproperty = "outerposition";
     }
 
-
   delete_children ();
 
   children = Matrix ();
+
+  xlabel = gh_manager::make_graphics_handle ("text", __myhandle__, false);
+  ylabel = gh_manager::make_graphics_handle ("text", __myhandle__, false);
+  zlabel = gh_manager::make_graphics_handle ("text", __myhandle__, false);
+
+  title = gh_manager::make_graphics_handle ("text", __myhandle__, false);
+
+  xset (xlabel.handle_value (), "handlevisibility", "off");
+  xset (ylabel.handle_value (), "handlevisibility", "off");
+  xset (zlabel.handle_value (), "handlevisibility", "off");
+
+  xset (title.handle_value (), "handlevisibility", "off");
+
+  adopt (xlabel.handle_value ());
+  adopt (ylabel.handle_value ());
+  adopt (zlabel.handle_value ());
+
+  adopt (title.handle_value ());
 
   update_transform ();
 
@@ -2349,37 +2405,66 @@ axes::properties::delete_text_child (handle_property& hp)
 
       if (go.valid_object ())
 	gh_manager::free (h);
+
+      base_properties::remove_child (h);
     }
 
+  // FIXME -- is it necessary to check whether the axes object is
+  // being deleted now?  I think this function is only called when an
+  // individual child object is delete and not when the parent axes
+  // object is deleted.
+
   if (! is_beingdeleted ())
-    hp = gh_manager::make_graphics_handle ("text", __myhandle__);
+    {
+      hp = gh_manager::make_graphics_handle ("text", __myhandle__, false);
+
+      xset (hp.handle_value (), "handlevisibility", "off");
+
+      adopt (hp.handle_value ());
+    }
 }
 
 void
 axes::properties::remove_child (const graphics_handle& h)
 {
-  if (title.handle_value ().ok () && h == title.handle_value ())
-    delete_text_child (title);
-  else if (xlabel.handle_value ().ok () && h == xlabel.handle_value ())
+  if (xlabel.handle_value ().ok () && h == xlabel.handle_value ())
     delete_text_child (xlabel);
   else if (ylabel.handle_value ().ok () && h == ylabel.handle_value ())
     delete_text_child (ylabel);
   else if (zlabel.handle_value ().ok () && h == zlabel.handle_value ())
     delete_text_child (zlabel);
+  else if (title.handle_value ().ok () && h == title.handle_value ())
+    delete_text_child (title);
   else
     base_properties::remove_child (h);
 }
 
-void
-axes::properties::delete_children (void)
+Matrix
+base_properties::get_children (void) const
 {
-  base_properties::delete_children ();
+  Matrix retval = children;
+  
+  graphics_object go = gh_manager::get_object (0);
 
-  delete_text_child (title);
+  root_figure::properties& props =
+      dynamic_cast<root_figure::properties&> (go.get_properties ());
 
-  delete_text_child (xlabel);
-  delete_text_child (ylabel);
-  delete_text_child (zlabel);
+  if (! props.is_showhiddenhandles ())
+    {
+      octave_idx_type k = 0;
+
+      for (octave_idx_type i = 0; i < children.numel (); i++)
+	{
+	  graphics_handle kid = children (i);
+
+	  if (gh_manager::is_handle_visible (kid))
+	    retval(k++) = children(i);
+	}
+
+      retval.resize (k, 1);
+    }
+
+  return retval;;
 }
 
 inline Matrix

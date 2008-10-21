@@ -34,16 +34,15 @@ function gnuplot_drawnow (h, term, file, mono, debug_file)
   endif
 
   if (nargin >= 3 && nargin <= 5)
-    f = __get__ (h);
     plot_stream = [];
     fid = [];
     unwind_protect
       [plot_stream, enhanced] = open_gnuplot_stream (1, [], term, file);
-      __go_draw_figure__ (f, plot_stream, enhanced, mono);
+      __go_draw_figure__ (h, plot_stream, enhanced, mono);
       if (nargin == 5)
         fid = fopen (debug_file, "wb");
         enhanced = init_plot_stream (fid, [], term, file);
-        __go_draw_figure__ (f, fid, enhanced, mono);
+        __go_draw_figure__ (h, fid, enhanced, mono);
       endif
     unwind_protect_cleanup
       if (! isempty (plot_stream))
@@ -54,15 +53,14 @@ function gnuplot_drawnow (h, term, file, mono, debug_file)
       endif
     end_unwind_protect
   elseif (nargin == 1)
-    f = __get__ (h);
-    plot_stream = f.__plot_stream__;
+    plot_stream = get (h, "__plot_stream__");
     if (isempty (plot_stream))
       [plot_stream, enhanced] = open_gnuplot_stream (2, h);
       set (h, "__enhanced__", enhanced);
     else
-      enhanced = f.__enhanced__;
+      enhanced = get (h, "__enhanced__");
     endif
-    __go_draw_figure__ (f, plot_stream (1), enhanced, mono);
+    __go_draw_figure__ (h, plot_stream (1), enhanced, mono);
     fflush (plot_stream (1));
   else
     print_usage ();

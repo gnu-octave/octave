@@ -1,4 +1,27 @@
-2008-10-20  John W. Eaton  <jwe@octave.org>
+2008-10-21  John W. Eaton  <jwe@octave.org>
+
+	* graphics.h.in (gh_manager::is_handle_visible): New function.
+	(axes::properites): Move title property after label properties.
+	(graphics_object::is_handle_visible): New function.
+	(base_properties::is_handle_visible): New function.
+	(base_properties): Mark children property with G.
+	* graphics.cc (axes::properties::set_text_child): New function.
+	(axes::properties::set_title, axes::properties::set_xlabel,
+	axes::properties::set_ylabel, axes::properties::set_zlabel): Use it.
+	(base_property::get_children): New function.  Only
+	return handles that are visible.
+	(axes::properties::delete_text_child): Set handlevisibility to
+	"off" for newly created object and add it to the list of children.
+	Call base_properties::remove_child on previous handle value.
+	(axes::properties::set_defaults): Don't explicitly delete xlabel,
+	ylabel, zlabel, and title handles.  Reinitialize them after
+	deleting children.
+	(axes::properties::remove_child): Don't explicitly delete xlabel,
+	ylabel, zlabel, and title handles.
+	(axes::properties::init): Move here from graphics.h.in.  Set
+	handlevisibility to "off" for xlabel, ylabel, zlabel, and title
+	and add them to the list of children.
+	(axes::properties::delete_children): Delete.
 
 	* genprops.awk: Allow whitespace between BEGIN_PROPERTIES and
 	opening paren.  Accept optional second argument for graphics

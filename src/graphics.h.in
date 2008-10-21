@@ -1669,6 +1669,11 @@ public:
   virtual bool is_zliminclude (void) const { return false; }
   virtual bool is_climinclude (void) const { return false; }
   virtual bool is_aliminclude (void) const { return false; }
+
+  bool is_handle_visible (void) const
+  {
+    return ! handlevisibility.is ("off");
+  }
  
 protected:
   void set_dynamic (const caseless_str&, const octave_value&);
@@ -1685,7 +1690,7 @@ protected:
     radio_property busyaction , "{queue}|cancel"
     callback_property buttondownfcn , Matrix ()
     // FIXME: use a property class for children
-    Matrix children fs , Matrix ()
+    Matrix children Gfs , Matrix ()
     bool_property clipping , "on"
     callback_property createfcn , Matrix ()
     callback_property deletefcn , Matrix ()
@@ -2070,6 +2075,9 @@ public:
   
   bool is_aliminclude (void) const
   { return get_properties ().is_aliminclude (); }
+
+  bool is_handle_visible (void) const
+  { return get_properties ().is_handle_visible (); }
   
   graphics_backend get_backend (void) const { return rep->get_backend (); }
 
@@ -2534,6 +2542,9 @@ public:
     Matrix x_zlim;
     std::list<octave_value> zoom_stack;
 
+    void set_text_child (handle_property& h, const std::string& who,
+			 const octave_value& v);
+
     void delete_text_child (handle_property& h);
 
     // See the genprops.awk script for an explanation of the
@@ -2543,7 +2554,6 @@ public:
 
     BEGIN_PROPERTIES (axes)
       array_property position u , default_axes_position ()
-      handle_property title SOf , gh_manager::make_graphics_handle ("text", __myhandle__)
       bool_property box , "on"
       bool_property key , "off"
       bool_property keybox , "off"
@@ -2562,9 +2572,10 @@ public:
       radio_property zlimmode al , "{auto}|manual"
       radio_property climmode al , "{auto}|manual"
       radio_property alimmode    , "{auto}|manual"
-      handle_property xlabel SOf , gh_manager::make_graphics_handle ("text", __myhandle__)
-      handle_property ylabel SOf , gh_manager::make_graphics_handle ("text", __myhandle__)
-      handle_property zlabel SOf , gh_manager::make_graphics_handle ("text", __myhandle__)
+      handle_property xlabel SOf , gh_manager::make_graphics_handle ("text", __myhandle__, false)
+      handle_property ylabel SOf , gh_manager::make_graphics_handle ("text", __myhandle__, false)
+      handle_property zlabel SOf , gh_manager::make_graphics_handle ("text", __myhandle__, false)
+      handle_property title SOf , gh_manager::make_graphics_handle ("text", __myhandle__, false)
       bool_property xgrid , "off"
       bool_property ygrid , "off"
       bool_property zgrid , "off"
@@ -2643,40 +2654,7 @@ public:
    END_PROPERTIES
 
   protected:
-    void init (void)
-      {
-        position.add_constraint (dim_vector (1, 4));
-	position.add_constraint (dim_vector (0, 0));
-        outerposition.add_constraint (dim_vector (1, 4));
-        colororder.add_constraint (dim_vector (-1, 3));
-        dataaspectratio.add_constraint (dim_vector (1, 3));
-        plotboxaspectratio.add_constraint (dim_vector (1, 3));
-	xlim.add_constraint (2);
-	ylim.add_constraint (2);
-	zlim.add_constraint (2);
-	clim.add_constraint (2);
-	alim.add_constraint (2);
-        xtick.add_constraint (dim_vector (1, -1));
-        ytick.add_constraint (dim_vector (1, -1));
-        ztick.add_constraint (dim_vector (1, -1));
-        Matrix vw (1, 2, 0);
-        vw(1) = 90;
-        view = vw;
-        view.add_constraint (dim_vector (1, 2));
-	cameraposition.add_constraint (dim_vector (1, 3));
-	Matrix upv (1, 3, 0.0);
-	upv(2) = 1.0;
-	cameraupvector = upv;
-	cameraupvector.add_constraint (dim_vector (1, 3));
-	currentpoint.add_constraint (dim_vector (2, 3));
-	ticklength.add_constraint (dim_vector (1, 2));
-	tightinset.add_constraint (dim_vector (1, 4));
-
-	x_zlim.resize (1, 2);
-	sx = "linear";
-	sy = "linear";
-	sz = "linear";
-      }
+    void init (void);
 
   private:
     void update_xscale (void) { sx = get_xscale (); }
@@ -3651,6 +3629,18 @@ public:
   static int flush_events (void)
   {
     return (instance_ok () ?  instance->do_process_events (true) : 0);
+  }
+
+  static bool is_handle_visible (const graphics_handle& h)
+  {
+    bool retval = false;
+
+    graphics_object go = get_object (h);
+
+    if (go.valid_object ())
+      retval = go.is_handle_visible ();
+
+    return retval;
   }
 
 public:

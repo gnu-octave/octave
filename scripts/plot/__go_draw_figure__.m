@@ -20,14 +20,16 @@
 
 ## Author: jwe
 
-function __go_draw_figure__ (f, plot_stream, enhanced, mono)
+function __go_draw_figure__ (h, plot_stream, enhanced, mono)
 
   if (nargin == 4)
-    if (strcmp (f.type, "figure"))
+    htype = get (h, "type");
+    if (strcmp (htype, "figure"))
 
       ## Set figure properties here?
 
-      kids = f.children;
+      ## Get complete list of children.
+      kids = allchild (h);
       nkids = length (kids);
 
       if (nkids > 0)
@@ -64,7 +66,7 @@ function __go_draw_figure__ (f, plot_stream, enhanced, mono)
       endif
     else
       error ("__go_draw_figure__: expecting figure object, found `%s'",
-	     f.type);
+	     htype);
     endif
   else
     print_usage ();

@@ -49,13 +49,8 @@ function newplot ()
       otherwise
 	error ("newplot: unrecognized nextplot property for current axes");
     endswitch
-
-    yt = get (ca, "ylabel");
-    if (! strcmp (get (yt, "type"), "text"))
-      disp("BAD!!!!!");
-      get(yt)
-    endif
   else
     print_usage ();
   endif
+
 endfunction

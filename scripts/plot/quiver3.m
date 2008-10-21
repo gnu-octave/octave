@@ -100,3 +100,4 @@ endfunction
 %! [u, v, w] = surfnorm (x, y, z / 10);
 %! h = quiver3 (x, y, z, u, v, w);
 %! set (h, "maxheadsize", 0.33);
+%! hold off;

@@ -1,3 +1,7 @@
+2008-10-20  Ben Abbott <bpabbott@mac.com>
+
+	* plot/orient.m: Fix syntax error.
+
 2008-10-20  David Bateman  <dbateman@free.fr>
 
 	* testfun/rundemos.m: Pause between files, as demo itself doesn't.

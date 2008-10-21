@@ -1,4 +1,4 @@
-2008-10-21  Ben Abbott <bpabbott@mac.com>
+2008-10-21  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/clf.m: Improve Matlab compatibility.
 
@@ -11,7 +11,7 @@
 	directly.  Use allhild instead of looking at children field of
 	figure object struct.
 
-2008-10-20  Ben Abbott <bpabbott@mac.com>
+2008-10-20  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/orient.m: Fix syntax error.
 

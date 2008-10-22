@@ -764,7 +764,7 @@ __fltk_redraw__ (void)
     {
       // we scan all figures and add those which use FLTK as a backend
       graphics_object obj = gh_manager::get_object (0);
-      if (obj && obj.isa ("root_figure"))
+      if (obj && obj.isa ("root"))
 	{
 	  base_properties& props = obj.get_properties ();
 	  Matrix children = props.get_children ();

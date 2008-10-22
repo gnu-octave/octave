@@ -575,7 +575,7 @@ opengl_renderer::draw (const figure::properties& props)
 
   // Draw children
 
-  draw (props.get_children ());
+  draw (props.get_all_children ());
 }
 
 void

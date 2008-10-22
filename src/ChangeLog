@@ -1,3 +1,12 @@
+2008-10-22  John W. Eaton  <jwe@octave.org>
+
+	* gl-render.cc (opengl_renderer::draw): Get all children.
+
+	* DLD-FUNCTIONS/fltk_backend.cc (__fltk_redraw__):
+	Check for "root" object, not "root_figure".
+
+	* graphics.h.in (base_properties::get_all_children): New function.
+
 2008-10-22  David Bateman  <dbateman@free.fr>
 
 	* graphics.h.in (line::properties, surface::properties): Add data

@@ -1636,6 +1636,8 @@ public:
 
   void set_parent (const octave_value& val);
 
+  Matrix get_all_children (void) const { return children; }
+
   void set_children (const octave_value& val);
 
   void set_modified (const octave_value& val) { set___modified__ (val); }

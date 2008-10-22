@@ -1,5 +1,7 @@
 2008-10-21  John W. Eaton  <jwe@octave.org>
 
+	* graphics.h.in (axes::properties::delete_children): Delete decl.
+
 	* graphics.h.in (gh_manager::is_handle_visible): New function.
 	(axes::properites): Move title property after label properties.
 	(graphics_object::is_handle_visible): New function.

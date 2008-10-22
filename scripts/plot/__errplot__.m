@@ -29,8 +29,7 @@ function h = __errplot__ (fstr, p, a1, a2, a3, a4, a5, a6)
     print_usage ();
   endif
 
-  fstr
-  [fmt, key] = __pltopt__ ("__errplot__", fstr)
+  [fmt, key] = __pltopt__ ("__errplot__", fstr);
 
   [len, nplots] = size (a1);
   h = [];

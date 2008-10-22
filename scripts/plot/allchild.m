@@ -32,8 +32,8 @@
 
 function h = allchild (ha)
 
+  shh = get (0, "showhiddenhandles");
   unwind_protect
-    shh = get (0, "showhiddenhandles");
     set (0, "showhiddenhandles", "on");
     if (isscalar (ha))
       h = get (ha, "children");

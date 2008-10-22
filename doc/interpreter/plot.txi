@@ -1744,45 +1744,6 @@ The original x, y, l, u, xl, xu data of the error bars.
 Data source variables.
 @end table
 
-@node Surface group
-@subsubsection Surface group
-@cindex group objects
-@cindex surface group
-
-Surface group objects are created by the @code{surf} or @code{mesh}
-functions, but are equally one of the handles returned by the @code{surfc}
-or @code{meshc} functions. The surface group is of the type @code{surface}.
-
-The properties of the surface group are
-
-@table @code
-@item edgecolor
-@item facecolor
-The RGB color or color name of the edges or faces of the surface. @xref{Colors}.
-
-@item linewidth
-@itemx linestyle
-The line width and style of the lines on the surface. @xref{Line Styles}.
-
-@item marker
-@itemx markeredgecolor
-@itemx markerfacecolor
-@itemx markersize
-The line and fill color of the markers on the surface. @xref{Colors}.
-
-@item xdata
-@itemx ydata
-@itemx zdata
-@item cdata
-The original x, y, z and c data.
-
-@item xdatasource
-@itemx ydatasource
-@itemx zdatasource
-@itemx cdatasource
-Data source variables.
-@end table
-
 @node Line series
 @subsubsection Line series
 @cindex series objects

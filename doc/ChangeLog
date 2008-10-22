@@ -1,5 +1,10 @@
 2008-10-22  David Bateman  <dbateman@free.fr>
 
+	* interprter/plot.txi: Add documentation for error bar series.
+
+	* interprter/plot.txi: Update documentation for line series, Add 
+	documetation for scatter groups, stem series and surface groups.
+
 	* texinfo.tex: Import new upstream version.
 	* interpreter/Makefile.in (EXAMPLE_FILES_NODIR): Update for new OOP
 	class example location.

@@ -127,3 +127,9 @@ function retval = errorbar (varargin)
   end_unwind_protect
 
 endfunction
+
+%!demo
+%! errorbar(0:10,rand(1,11),0.25*rand(1,11))
+
+%!demo
+%! errorbar(0:10,rand(1,11),rand(1,11), ">")

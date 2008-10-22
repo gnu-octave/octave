@@ -64,15 +64,17 @@ function cla (varargin)
     do_reset = false;
   end
 
-  if (do_reset)
-    hc = get (hax, "children");
-  else
-    hc = findobj (get (hax, "children"), "flat", "visible", "on");
+  hc = get (hax, "children");
+
+  if (! do_reset && ! isempty (hc))
+    hc = findobj (hc, "flat", "visible", "on");
     hc = setdiff (hc, hax);
   end
 
-  ## Delete the children of the axis.
-  delete (hc);
+  if (! isempty (hc))
+    ## Delete the children of the axis.
+    delete (hc);
+  endif
 
   ## FIXME: The defaults should be "reset()" below, but so far there is
   ## no method to determine the defaults, much less return an object's
@@ -86,3 +88,17 @@ function cla (varargin)
   axes (oldhax);
 
 endfunction
+
+%!test
+%! hf = figure;
+%! unwind_protect
+%!   set (hf, "visible", "off")
+%!   clf
+%!   plot (1:10)
+%!   cla ()
+%!   kids = get (gca, "children");
+%!   cla ()
+%! unwind_protect_cleanup
+%!   close (hf)
+%! end_unwind_protect
+%! assert (numel (kids), 0)

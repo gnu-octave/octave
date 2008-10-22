@@ -1989,7 +1989,7 @@ typedef int sig_atomic_t;
 AC_CONFIG_FILES([Makefile octMakefile Makeconf test/Makefile
   doc/Makefile doc/faq/Makefile doc/interpreter/Makefile
   doc/liboctave/Makefile doc/refcard/Makefile emacs/Makefile
-  examples/Makefile examples/polynomial/Makefile liboctave/Makefile
+  examples/Makefile examples/@polynomial/Makefile liboctave/Makefile
   liboctave/oct-types.h src/Makefile src/mxarray.h libcruft/Makefile
   libcruft/Makerules libcruft/amos/Makefile libcruft/blas/Makefile
   libcruft/daspk/Makefile libcruft/dasrt/Makefile

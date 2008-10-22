@@ -29,7 +29,7 @@
 @end macro
 
 @macro polynomialfile{file}
-@classfile{polynomial,\file\}
+@classfile{@@polynomial,\file\}
 @end macro
 
 @node Object Oriented Programming

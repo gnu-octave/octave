@@ -1,3 +1,11 @@
+2008-10-22  David Bateman  <dbateman@free.fr>
+
+	* examples/@polynomial: Move examples/polynomial here.
+	* examples/@polynomial/Makefile.in: Update for new location.
+	* examples/Makefile.in: Ditto.
+	* configure.in: Change locate of examples/@polynomial makefile
+	in AC_CONFIG_FILES.
+	
 2008-10-16  David Bateman  <dbateman@free.fr>
 
 	* NEWS: Minor update.

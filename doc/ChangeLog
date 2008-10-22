@@ -1,3 +1,10 @@
+2008-10-22  David Bateman  <dbateman@free.fr>
+
+	* texinfo.tex: Import new upstream version.
+	* interpreter/Makefile.in (EXAMPLE_FILES_NODIR): Update for new OOP
+	class example location.
+	* interpreter/oop.txi: Ditto.
+
 2008-10-15  David Bateman  <dbateman@free.fr>
 
 	* interpreter/oop.txi: New file.

@@ -67,7 +67,7 @@ EXAMPLE_FILES_NODIR = \
   stringdemo.cc \
   structdemo.cc \
   unwinddemo.cc \
-  $(addprefix polynomial/, $(POLYNOMIAL_FILES_NODIR))
+  $(addprefix @polynomial/, $(POLYNOMIAL_FILES_NODIR))
 
 EXAMPLE_FILES = $(addprefix $(top_srcdir)/examples/, $(EXAMPLE_FILES_NODIR))
 

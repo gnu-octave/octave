@@ -20,7 +20,7 @@
 
 TOPDIR = ../..
 
-script_sub_dir = polynomial
+script_sub_dir = @polynomial
 
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@

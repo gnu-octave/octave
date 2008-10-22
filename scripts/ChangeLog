@@ -2,6 +2,8 @@
 
 	* plot/cla.m: Fix error when no children to clear.
 
+	* plot/findobj.m: Allow handle to be empty.
+
 2008-10-22  John W. Eaton  <jwe@octave.org>
 
 	* plot/allchild.m: Move call to get showhiddenhandles outside of

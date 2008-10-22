@@ -69,12 +69,18 @@ function h = findobj (varargin)
     handles = 0;
     n1 = 0;
   else
-    if (ishandle (varargin{1}(1)))
-      handles = varargin{1};
-      n1 = 2;
+    if (! isempty (varargin{1}))
+      if (ishandle (varargin{1}(1)))
+        handles = varargin{1};
+        n1 = 2;
+      else
+        handles = 0;
+        n1 = 1;
+      endif
     else
-      handles = 0;
-      n1 = 1;
+      ## Return [](0x1) for compatibility.
+      h = zeros (0, 1);
+      return;
     endif
     if (n1 <= nargin)
       if (ischar (varargin{n1}))

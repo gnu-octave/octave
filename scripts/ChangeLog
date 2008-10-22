@@ -1,5 +1,7 @@
 2008-10-21  Ben Abbott  <bpabbott@mac.com>
 
+	* specfun/legendre.m: Warn once on under/overflow.
+
 	* plot/clf.m: Improve Matlab compatibility.
 
 2008-10-21  John W. Eaton  <jwe@octave.org>

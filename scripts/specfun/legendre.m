@@ -111,6 +111,8 @@
 
 function retval = legendre (n, x, normalization)
 
+  persistent warned_overflow = false;
+
   if (nargin < 2 || nargin > 3)
     print_usage ();
   endif
@@ -140,20 +142,32 @@ function retval = legendre (n, x, normalization)
       error ("legendre: expecting normalization option to be \"norm\", \"sch\", or \"unnorm\"");
   endswitch
 
+  scale = scale * ones (1, numel (x));
+
   ## Based on the recurrence relation below
   ##            m                 m              m
   ## (n-m+1) * P (x) = (2*n+1)*x*P (x)  - (n+1)*P (x)
   ##            n+1               n              n-1
   ## http://en.wikipedia.org/wiki/Associated_Legendre_function
 
+  overflow = false;
   for m = 1:n
     lpm1 = scale;
     lpm2 = (2*m-1) .* x .* scale;      
     lpm3 = lpm2;
     for k = m+1:n
-      lpm3 = ((2*k-1) .* x .* lpm2 - (k+m-2) .* lpm1)/(k-m+1);
+      lpm3a = (2*k-1) .* x .* lpm2;
+      lpm3b = (k+m-2) .* lpm1;
+      lpm3 = (lpm3a - lpm3b)/(k-m+1);
       lpm1 = lpm2;
       lpm2 = lpm3;
+      if (! warned_overflow)
+        if (any (abs (lpm3a) > realmax)
+            || any (abs (lpm3b) > realmax)
+            || any (abs (lpm3)  > realmax))
+          overflow = true;
+        endif
+      endif
     endfor
     retval(m,:) = lpm3;
     if (strcmp (normalization, "unnorm"))
@@ -169,6 +183,11 @@ function retval = legendre (n, x, normalization)
 
   if (strcmp (normalization, "sch"))
     retval(1,:) = retval(1,:) / sqrt (2);
+  endif
+
+  if (overflow && ! warned_overflow)
+    warning ("legendre: overflow - results may be unstable for high orders.");
+    warned_overflow = true;
   endif
 
 endfunction
@@ -213,4 +232,6 @@ endfunction
 %! ## This agrees with Matlab's result.
 %! assert (result(end), 3.7532741115719e+306, 0.0000000000001e+306)
 
-
+%!test
+%! result = legendre (0, 0:0.1:1);
+%! assert (result, ones(1,11))

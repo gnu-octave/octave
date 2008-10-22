@@ -2026,6 +2026,32 @@ figure::properties::set_currentaxes (const octave_value& v)
 }
 
 void
+figure::properties::remove_child (const graphics_handle& gh)
+{
+  base_properties::remove_child (gh);
+
+  if (gh == currentaxes.handle_value ())
+    {
+      graphics_handle new_currentaxes;
+
+      for (octave_idx_type i = 0; i < children.numel (); i++)
+	{
+	  graphics_handle kid = children(i);
+
+	  graphics_object go = gh_manager::get_object (kid);
+
+	  if (go.isa ("axes"))
+	    {
+	      new_currentaxes = kid;
+	      break;
+	    }
+	}
+
+      currentaxes = new_currentaxes;
+    }
+}
+
+void
 figure::properties::set_visible (const octave_value& val)
 {
   std::string s = val.string_value ();

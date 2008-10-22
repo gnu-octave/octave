@@ -2218,6 +2218,8 @@ public:
   class OCTINTERP_API properties : public base_properties
   {
   public:
+    void remove_child (const graphics_handle& h);
+
     void set_visible (const octave_value& val);
 
     graphics_backend get_backend (void) const

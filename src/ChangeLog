@@ -1,5 +1,8 @@
 2008-10-22  John W. Eaton  <jwe@octave.org>
 
+	* graphics.cc (figure::properties::remove_child): New function.
+	* graphics.h.in: Provide decl.
+
 	* gl-render.cc (opengl_renderer::draw): Get all children.
 
 	* DLD-FUNCTIONS/fltk_backend.cc (__fltk_redraw__):

@@ -135,6 +135,7 @@ function legend (varargin)
 	    while (k <= nkids && ! strcmp (typ, "line") &&
 		   ! strcmp (typ, "hggroup"))
 	      k++;
+	      typ = get (kids (k), "type");
 	    endwhile
 	    if (k <= nkids)
 	      turn_on_legend = true;
@@ -214,9 +215,6 @@ function legend (varargin)
 	warning ("legend: ignoring extra labels");
       endif
     else
-      arg
-      get(kids(k),"type")
-      k
       error ("legend: expecting argument to be a character string");
     endif
   endfor

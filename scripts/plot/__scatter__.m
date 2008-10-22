@@ -18,7 +18,7 @@
 
 ## Undocumented internal function.
 
-function h = __scatter__ (varargin)
+function hg = __scatter__ (varargin)
 
   h = varargin{1};
   nd = varargin{2};
@@ -57,17 +57,27 @@ function h = __scatter__ (varargin)
   else
     s = 6;
   endif
+  if (numel (s) == 1)
+    ss = s;
+    s = repmat (s, numel(x), 1);
+  endif
 
   if (istart < nargin && firstnonnumeric > istart + 1)
     c = varargin{istart + 1};
     if (isvector (c))
-      c = c(:);
+      if (columns (c) == 3)
+	cc = c;
+	c = repmat (c, numel(x), 1);
+      else
+	c = c(:);
+      endif
     endif
   elseif (firstnonnumeric == istart + 1 && ischar (varargin{istart + 1}))
     c = varargin{istart + 1};
     firstnonnumeric++;
   else
-    c = 1 : length(x);
+    cc = __next_line_color__();
+    c = repmat (cc, numel(x), 1);
   endif
 
   newargs = {};
@@ -80,7 +90,7 @@ function h = __scatter__ (varargin)
     if (ischar (arg) && strncmpi (arg, "filled", 6))
       filled = true;
     elseif ((ischar (arg) || iscell (arg)) && ! have_marker)
-      [linespec, valid] = __pltopt__ ("scatter", arg, false);
+      [linespec, valid] = __pltopt__ (fcn, arg, false);
       if (valid)
 	have_marker = true;
 	marker = linespec.marker;
@@ -88,7 +98,7 @@ function h = __scatter__ (varargin)
 	  marker = "o";
 	endif
       else
-	error ("scatter: invalid linespec");
+	error ("%s: invalid linespec", fcn);
       endif
     else
       newargs{end+1} = arg;
@@ -98,21 +108,51 @@ function h = __scatter__ (varargin)
     endif
   endwhile
 
-  if (ischar (c))
-    h = patch ("faces", [1:length(x)].', "vertices", [x, y, z], "facecolor",
-	       "none", "edgecolor", c, "marker", marker, 
-	       "markersize", s, "linestyle", "none");
-    if (filled)
-      set(h, "markerfacecolor", c); 
-    endif
+  hg = hggroup ();
+  newargs = __add_datasource__ (fcn, hg, {"x", "y", "z", "c", "size"}, 
+			     newargs{:});
+
+  addproperty ("xdata", hg, "data", x);
+  addproperty ("ydata", hg, "data", y);
+  addproperty ("zdata", hg, "data", z);
+  if (exist ("cc", "var"))
+    addproperty ("cdata", hg, "data", cc);
   else
-    h = patch ("faces", [1:length(x)].', "vertices", [x, y, z], "facecolor",
-	       "none", "edgecolor", "flat", "cdata", c, "marker", marker, 
-	       "markersize", s, "linestyle", "none");
-    if (filled)
-      set(h, "markerfacecolor", "flat"); 
-    endif
-    ax = get (h, "parent");
+    addproperty ("cdata", hg, "data", c);
+  endif
+  if (exist ("ss", "var"))
+    addproperty ("sizedata", hg, "data", ss);
+  else
+    addproperty ("sizedata", hg, "data", s);
+  endif
+  addlistener (hg, "xdata", @update_data);
+  addlistener (hg, "ydata", @update_data);
+  addlistener (hg, "zdata", @update_data);
+  addlistener (hg, "cdata", @update_data);
+  addlistener (hg, "sizedata", @update_data);
+
+  if (ischar (c))
+    for i = 1 : numel (x)
+      h = __go_patch__ (hg, "xdata", x(i), "ydata", y(i), "zdata", z(i,:),
+			"faces", 1, "vertices", [x(i), y(i), z(i,:)], 
+			"facecolor", "none", "edgecolor", c, "marker", marker, 
+			"markersize", s(i), "linestyle", "none");
+      if (filled)
+	set(h, "markerfacecolor", c); 
+      endif
+    endfor
+  else
+    for i = 1 : numel (x)
+      h = __go_patch__ (hg, "xdata", x(i), "ydata", y(i), "zdata", z(i,:),
+			"faces", 1, "vertices", [x(i), y(i), z(i,:)], 
+			"facecolor", "none", "edgecolor", "flat", 
+			"cdata", c(i), "marker", marker, "markersize", s(i), 
+			"linestyle", "none");
+      if (filled)
+	set(h, "markerfacecolor", "flat"); 
+      endif
+    endfor
+    ax = get (hg, "parent");
     clim = get (ax, "clim");
     if (min(c(:)) < clim(1))
       clim(1) = min(c(:));
@@ -123,4 +163,63 @@ function h = __scatter__ (varargin)
     endif
   endif
 
+  addproperty ("linewidth", hg, "patchlinewidth", 0.5);
+  addproperty ("marker", hg, "patchmarker", marker);
+  if (numel (x) > 0)
+    addproperty ("markerfacecolor", hg, "patchmarkerfacecolor", "none");
+    addproperty ("markeredgecolor", hg, "patchmarkeredgecolor", "none");
+  else
+    addproperty ("markerfacecolor", hg, "patchmarkerfacecolor", 
+		 get (h, "markerfacecolor"));
+    addproperty ("markeredgecolor", hg, "patchmarkeredgecolor",
+		 get (h, "edgecolor"));
+  endif
+  addlistener (hg, "linewidth", @update_props); 
+  addlistener (hg, "marker", @update_props); 
+  addlistener (hg, "markerfacecolor", @update_props); 
+  addlistener (hg, "markeredgecolor", @update_props);
+
+  if (! isempty (newargs))
+    set (hg, newargs{:})
+  endif
+
+endfunction
+
+function update_props (h, d)
+  lw = get (h, "linewidth");
+  m = get (h, "marker");
+  fc = get (h, "markerfacecolor");
+  ec = get (h, "markeredgecolor");
+  kids = get (h, "children");
+
+  for i = 1 : numel (kids)
+    set (kids (i), "linewidth", lw, "marker", m, "markerfacecolor", fc, 
+	 "edgecolor", ec)
+  endfor
+endfunction
+
+function update_data (h, d)
+  x1 = get (h, "xdata");
+  y1 = get (h, "ydata");
+  z1 = get (h, "zdata");
+  c1 = get (h, "cdata");
+  if (!ischar (c1) && rows (c1) == 1)
+    c1 = repmat (c1, numel (x1), 1);
+  endif
+  size1 = get (h, "sizedata");
+  if (numel (size1) == 1)
+    size1 = repmat (size1, numel (x1), 1);
+  endif
+  hlist = get (h, "children");
+  if (ischar (c1))
+    for i = 1 : length (hlist)
+      set (hlist(i), "vertices", [x1(i), y1(i), y2(i)], "cdata", c1,
+	   "markersize", size1(i));
+    endfor
+  else
+    for i = 1 : length (hlist)
+      set (hlist(i), "vertices", [x1(i), y1(i), y2(i)], "cdata", c1(i,:),
+	   "markersize", size1(i));
+    endfor
+  endif
 endfunction

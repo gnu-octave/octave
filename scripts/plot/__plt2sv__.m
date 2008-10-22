@@ -51,19 +51,9 @@ function retval = __plt2sv__ (h, x, y, options, properties)
 	color = __next_line_color__ ();
       endif
 
-      hg = hggroup ();
-      retval(i) = hg;
-      args = __add_datasource__ ("__plt2sv__", hg, {"x", "y", "z"}, 
-				 properties{:});
-
-      h = line (x, y(i), "keylabel", tkey, "color", color,
-		"linestyle", options(i).linestyle,
-		"marker", options(i).marker, "parent", hg);
-
-      __add_line_series__ (h, hg);
-      if (! isempty(args))
-        set (hg, args{:});
-      endif
+      retval(i) = line (x, y(i), "keylabel", tkey, "color", color,
+			"linestyle", options(i).linestyle,
+			"marker", options(i).marker, properties{:});
     endfor
   else
     error ("__plt2sv__: first arg must be scalar, second arg must be vector");

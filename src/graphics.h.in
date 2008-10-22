@@ -2825,6 +2825,9 @@ public:
       row_vector_property udata u , Matrix ()
       row_vector_property xldata u , Matrix ()
       row_vector_property xudata u , Matrix ()
+      string_property xdatasource , ""
+      string_property ydatasource , ""
+      string_property zdatasource , ""
       color_property color , color_values (0, 0, 0)
       radio_property linestyle , "{-}|--|:|-.|none"
       double_property linewidth , 0.5
@@ -3201,6 +3204,10 @@ public:
       array_property zdata u , Matrix ()
       array_property cdata u , Matrix ()
       radio_property cdatamapping al , "{scaled}|direct"
+      string_property xdatasource , ""
+      string_property ydatasource , ""
+      string_property zdatasource , ""
+      string_property cdatasource , ""
       color_property facecolor , "{flat}|none|interp|texturemap"
       double_radio_property facealpha , double_radio_property (1.0, radio_values ("flat|interp"))
       color_property edgecolor , color_property (color_values (0, 0, 0), radio_values ("flat|none|interp"))

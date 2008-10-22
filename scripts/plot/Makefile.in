@@ -35,7 +35,6 @@ INSTALL_DATA = @INSTALL_DATA@
 
 SOURCES = \
   __add_datasource__.m \
-  __add_line_series__.m \
   __area__.m \
   __axes_limits__.m \
   __axis_label__.m \

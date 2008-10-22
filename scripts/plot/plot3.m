@@ -182,20 +182,10 @@ function retval = plot3 (varargin)
 	  color = __next_line_color__ ();
 	endif
 
-	hg = hggroup ();
-	tmp(++idx) = hg;
-	properties = __add_datasource__ ("plot3", hg, {"x", "y", "z"}, properties{:});
-
-	hline = line (x(:, i), y(:, i), z(:, i),  "keylabel", key,
-		      "color", color,
-		      "linestyle", options.linestyle,
-		      "marker", options.marker, "parent", hg);
-
-	__add_line_series__ (hline, hg);
-
-	if (! isempty (properties))
-	  set (hg, properties{:});
-	endif
+	tmp(++idx) = line (x(:, i), y(:, i), z(:, i),  "keylabel", key,
+			   "color", color,
+			   "linestyle", options.linestyle,
+			   "marker", options.marker, properties{:});
       endfor
 
       x_set = 0;
@@ -241,20 +231,10 @@ function retval = plot3 (varargin)
 	  color = __next_line_color__ ();
 	endif
 
-	hg = hggroup ();
-	tmp(++idx) = hg;
-	properties = __add_datasource__ ("plot3", hg, {"x", "y", "z"}, properties{:});
-
-	hline = line (x(:, i), y(:, i), z(:, i),  "keylabel", key,
-		      "color", color,
-		      "linestyle", options.linestyle,
-		      "marker", options.marker, "parent", hg);
-
-	__add_line_series__ (hline, hg);
-
-	if (! isempty (properties))
-	  set (hg, properties{:});
-	endif
+	tmp(++idx) = line (x(:, i), y(:, i), z(:, i),  "keylabel", key,
+			   "color", color,
+			   "linestyle", options.linestyle,
+			   "marker", options.marker, properties{:});
       endfor
 
       x = new;
@@ -319,20 +299,10 @@ function retval = plot3 (varargin)
 	color = __next_line_color__ ();
       endif
 
-      hg = hggroup ();
-      tmp(++idx) = hg;
-      properties = __add_datasource__ ("plot3", hg, {"x", "y", "z"}, properties{:});
-
-      hline = line (x(:, i), y(:, i), z(:, i),  "keylabel", key, 
-		    "color", color,
-		    "linestyle", options.linestyle,
-		    "marker", options.marker, "parent", hg);
-
-      __add_line_series__ (hline, hg);
-
-      if (! isempty (properties))
-	set (hg, properties{:});
-      endif
+      tmp(++idx) = line (x(:, i), y(:, i), z(:, i),  "keylabel", key, 
+			 "color", color,
+			 "linestyle", options.linestyle,
+			 "marker", options.marker, properties{:});
     endfor
   endif
 

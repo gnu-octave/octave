@@ -37,7 +37,7 @@ function newargs = __add_datasource__ (fcn, h, data, varargin)
   while (i < numel (varargin))
     arg = varargin{++i};
     if (i != numel(varargin) && ischar (arg)
-	&& length (arg) > 1 && strcmpi (arg(2:end), "datasource"))
+	&& length (arg) > 1 && strcmpi (arg(end-9:end), "datasource"))
       arg = tolower (arg);
       val = varargin{++i};
       if (ischar (val))

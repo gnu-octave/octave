@@ -1,3 +1,16 @@
+2008-10-22  David Bateman  <dbateman@free.fr>
+
+	* plot/__add_line_series__.m: Remove
+	* plot/Makefile.in (SOURCES): Remove it here too.
+	* plot/__add_datasource__.m: Allow for more than one character in
+	source name.
+	* plot/refreshdata.m: Ditto.
+	* plot/__plt2mm__.m, plot/__plt2mv__.m, plot/__plt2ss__.m, 
+	plot/__plt2sv__.m, plot/__plt2vm__.m, plot/__plt2vv__.m, 
+	plot/__plt2vs__.m, plot3.m: Remove previous line series changes.
+	* plot/__scatter__.m: Add scatter series objects and data sources.
+	* plot/legend.m: Update type in loop and remove debugging messages.
+	
 2008-10-21  Ben Abbott  <bpabbott@mac.com>
 
 	* specfun/legendre.m: Warn once on under/overflow.

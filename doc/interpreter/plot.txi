@@ -1716,33 +1716,28 @@ TO BE WRITTEN
 @cindex series objects
 @cindex line series
 
-line series objects are created by the @code{plot}  and @code{plot3}
-functions. Each @code{hggroup} element of the series contains a single
-line object as a child representing the stair. The properties of the
-line series are a one-to-one reflection of the children line object, and
-so the line series is only useful for its ability to add data sources to
-the group object.
-
-The properties of the line series are
+Line series objects are created by the @code{plot}  and @code{plot3}
+functions and are of the type @code{line}. The properties of the
+line series with the ability to add data sources.
 
 @table @code
 @item color
-The RGB color or color name of the line objects of the stairs. @xref{Colors}.
+The RGB color or color name of the line objects. @xref{Colors}.
 
 @item linewidth
 @itemx linestyle
-The line width and style of the line objects of the stairs. @xref{Line Styles}.
+The line width and style of the line objects. @xref{Line Styles}.
 
 @item marker
 @itemx markeredgecolor
 @itemx markerfacecolor
 @itemx markersize
-The line and fill color of the markers on the stairs. @xref{Colors}.
+The line and fill color of the markers. @xref{Colors}.
 
 @item xdata
 @itemx ydata
 @itemx zdata
-The original x, y and z data of the stairs.
+The original x, y and z data.
 
 @item xdatasource
 @itemx ydatasource
@@ -1813,7 +1808,40 @@ Data source variables.
 @cindex group objects
 @cindex scatter group
 
-TO BE WRITTEN
+Scatter series objects are created by the @code{scatter} or @code{scatter3}
+functions. A single hggroup element contains as many children as there are
+points in the scatter plot, with each child representing one of the points.
+The properties of the stem series are
+
+@table @code
+@item linewidth
+The line width of the line objects of the points. @xref{Line Styles}.
+
+@item marker
+@itemx markeredgecolor
+@itemx markerfacecolor
+The line and fill color of the markers of the points. @xref{Colors}.
+
+@item xdata
+@itemx ydata
+@itemx zdata
+The original x, y and z data of the stems.
+
+@item cdata
+The color data for the points of the plot. Each point can have a separate
+color, or a unique color can be specified.
+
+@item sizedata
+The size data for the points of the plot. Each point can its own size or a 
+unique size can be specified.
+
+@item xdatasource
+@itemx ydatasource
+@itemx zdatasource
+@itemx cdatasource
+@itemx sizedatasource
+Data source variables.
+@end table
 
 @node Stair group
 @subsubsection Stair group
@@ -1852,14 +1880,88 @@ Data source variables.
 @cindex series objects
 @cindex stem series
 
-TO BE WRITTEN
+Stem series objects are created by the @code{stem} or @code{stem3}
+functions. Each @code{hgrroup} element contains a single line object
+as a child respresenting the stems. The properties of the stem series
+are
+
+@table @code
+@item showbaseline
+@itemx baseline
+@itemx basevalue
+The property @code{showbaseline} flags whether the baseline of the
+stem series is displayed (default is "on"). The handle of the graphics
+object representing the baseline is given by the @code{baseline}
+property and the y-value (or z-value for @code{stem3}) of the baseline
+by the @code{basevalue} property.
+
+Changes to any of these property are propagated to the other members of
+the stem series and to the baseline itself. Equally changes in the
+properties of the base line itself are propagated to the members of the
+corresponding stem series.
+
+@item color
+The RGB color or color name of the line objects of the stems. @xref{Colors}.
+
+@item linewidth
+@itemx linestyle
+The line width and style of the line objects of the stems. @xref{Line Styles}.
+
+@item marker
+@itemx markeredgecolor
+@itemx markerfacecolor
+@itemx markersize
+The line and fill color of the markers on the stems. @xref{Colors}.
+
+@item xdata
+@itemx ydata
+@itemx zdata
+The original x, y and z data of the stems.
+
+@item xdatasource
+@itemx ydatasource
+@itemx zdatasource
+Data source variables.
+@end table
 
 @node Surface group
 @subsubsection Surface group
 @cindex group objects
 @cindex surface group
 
-TO BE WRITTEN
+Surface group objects are created by the @code{surf} or @code{mesh}
+functions, but are equally one of the handles returned by the @code{surfc}
+or @code{meshc} functions. The surface group is of the type @code{surface}.
+
+The properties of the surface group are
+
+@table @code
+@item edgecolor
+@item facecolor
+The RGB color or color name of the edges or faces of the surface. @xref{Colors}.
+
+@item linewidth
+@itemx linestyle
+The line width and style of the lines on the surface. @xref{Line Styles}.
+
+@item marker
+@itemx markeredgecolor
+@itemx markerfacecolor
+@itemx markersize
+The line and fill color of the markers on the surface. @xref{Colors}.
+
+@item xdata
+@itemx ydata
+@itemx zdata
+@item cdata
+The original x, y, z and c data.
+
+@item xdatasource
+@itemx ydatasource
+@itemx zdatasource
+@itemx cdatasource
+Data source variables.
+@end table
 
 @node Graphics backends
 @subsection Graphics backends

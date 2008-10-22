@@ -71,19 +71,9 @@ function retval = __plt2mv__ (h, x, y, options, properties)
 	color = __next_line_color__ ();
       endif
 
-      hg = hggroup ();
-      retval(i) = hg;
-      args = __add_datasource__ ("__plt2mv__", hg, {"x", "y", "z"}, 
-				 properties{:});
-
-      h = line (x(:,i), y, "keylabel", tkey, "color", color,
-		"linestyle", options(i).linestyle,
-		"marker", options(i).marker, "parent", hg);
-   
-      __add_line_series__ (h, hg);
-      if (! isempty (args))
-        set (hg, args{:});
-      endif
+      retval(i) = line (x(:,i), y, "keylabel", tkey, "color", color,
+			"linestyle", options(i).linestyle,
+			"marker", options(i).marker, properties{:});
     endfor
   else
     error ("__plt2mv__: arguments must be a matrices");

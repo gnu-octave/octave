@@ -611,8 +611,16 @@ octave_dyld_shlib::open (const std::string& f)
 	    }
 	  else
 	    {
-	      (*current_liboctave_error_handler)
-		("couldn't link module %s", file.c_str ());	
+	      NSLinkEditErrors ler;
+	      int lerno;
+	      const char *file2;
+	      const char *errstr = 0;
+
+	      NSLinkEditError (&ler, &lerno, &file2, &errstr);
+
+	      if (errstr)
+		(*current_liboctave_error_handler)
+		  ("%s: %s", file.c_str (), errstr);	
 	    }
 	}
       else

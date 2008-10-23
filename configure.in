@@ -654,6 +654,12 @@ if test -n "$OPENGL_LIBS"; then
     [warn_freetype="FreeType library not found. Native renderer will not have on-screen text"])
   if test -z "$warn_freetype"; then
     AC_LANG_PUSH(C++)
+      save_LIBS="$LIBS"
+      save_CXXFLAGS="$CXXFLAGS"
+      save_CPPFLAGS="$CPPFLAGS"
+      LIBS="$LIBS $OPENGL_LIBS $FT2_LIBS"
+      CXXFLAGS="$CXXFLAGS $FT2_CFLAGS"
+      CPPFLAGS="$CPPFLAGS $FT2_CFLAGS"
       has_ftgl_h=yes
       AC_CHECK_HEADERS([FTGL/ftgl.h ftgl.h], break, [
 	AC_CHECK_HEADERS([FTGL/FTGL.h FTGL.h], [
@@ -662,10 +668,7 @@ if test -n "$OPENGL_LIBS"; then
 	  ], has_ftgl_h=no)])
       if test "$has_ftgl_h" = yes; then
 	AC_MSG_CHECKING([for FTGLTextureFont in -lftgl])
-        save_LIBS="$LIBS"
-	save_CXXFLAGS="$CXXFLAGS"
-	LIBS="$LIBS $OPENGL_LIBS $FT2_LIBS -lftgl"
-	CXXFLAGS="$CXXFLAGS $FT2_CFLAGS"
+	LIBS="$LIBS -lftgl"
         AC_TRY_LINK([
 #ifdef HAVE_FTGL_FTGL_H
 #ifdef HAVE_FTGL_UPPERCASE
@@ -685,6 +688,7 @@ if test -n "$OPENGL_LIBS"; then
 FTGLTextureFont font("");], [
           OPENGL_LIBS="$OPENGL_LIBS $FT2_LIBS -lftgl"
 	  LIBS="$save_LIBS"
+	  CPPFLAGS="$save_CPPFLAGS"
           AC_DEFINE(HAVE_FTGL, 1, [Define to 1 if FTGL is present])
 	  AC_MSG_RESULT(yes)
 	  XTRA_CXXFLAGS="$XTRA_CXXFLAGS $FT2_CFLAGS"],[
@@ -693,6 +697,7 @@ FTGLTextureFont font("");], [
         ])
 	LIBS="$save_LIBS"
 	CXXFLAGS="$save_CXXFLAGS"
+	CPPFLAGS="$save_CPPFLAGS"
       else
         warn_ftgl="FTGL headers not found. Native renderer will not have on-screen text"
       fi

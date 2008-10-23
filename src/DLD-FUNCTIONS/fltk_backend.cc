@@ -668,12 +668,13 @@ private:
     return sz;
   }
 
+  // FIXME -- default size should be configurable.
   void default_size (int& x, int& y, int& w, int& h)
   {
-    x = 10;
-    y = 10;
-    w = 400;
-    h = 300;
+    x = 0;
+    y = 0;
+    w = 640;
+    h = 480;
   }
 
   static int str2idx (const caseless_str clstr)

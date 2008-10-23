@@ -21,6 +21,9 @@
 	(figure_manager::hnd2idx, figure_manager::figprops2idx,
 	figure_manager::figprops2idx, figure_manager::str2idx): Now static.
 
+	* DLD-FUNCTIONS/fltk_backend.cc (figure_manager::default_size):
+	Increase default window size.
+
 	* graphics.cc (figure::properties::remove_child): New function.
 	* graphics.h.in: Provide decl.
 

@@ -24,8 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 
 To initialize:
 
-  __init_fltk__ ();
-  set (gcf (), "__backend__", "fltk");
+  backend ("fltk");
   plot (randn (1e3, 1));
 
 */

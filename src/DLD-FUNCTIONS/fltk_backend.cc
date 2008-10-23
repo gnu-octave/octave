@@ -529,10 +529,21 @@ class figure_manager
 {
 public:
 
-  static figure_manager& Instance (void)
+  static bool instance_ok (void)
   {
-    static figure_manager fm;
-    return fm;
+    bool retval = true;
+
+    if (! instance)
+      instance = new figure_manager ();
+
+    if (! instance)
+      {
+	::error ("unable to create figure_manager object!");
+
+	retval = false;
+      }
+
+    return retval;
   }
 
   ~figure_manager (void)
@@ -540,79 +551,60 @@ public:
     close_all ();
   }
 
-  void close_all (void)
+  static void close_all (void)
   {
-    wm_iterator win;
-    for (win = windows.begin (); win != windows.end (); win++)
-      delete (*win).second;
-    windows.clear ();
+    if (instance_ok ())
+      instance->do_close_all ();
   }
 
-  void new_window (figure::properties& fp)
+  static void new_window (figure::properties& fp)
   {
-    int x, y, w, h;
-
-    int idx = figprops2idx (fp);
-    if (idx >= 0 && windows.find (idx) == windows.end ())
-      {
-	default_size(x,y,w,h);
-	idx2figprops (curr_index , fp);
-	windows[curr_index++] = new plot_window (x, y, w, h, fp);
-      }
+    if (instance_ok ())
+      instance->do_new_window (fp);
   }
 
-  void delete_window (int idx)
+  static void delete_window (int idx)
   {
-    wm_iterator win;
-    if ((win = windows.find (idx)) != windows.end ())
-      {
-	delete (*win).second;
-	windows.erase (win);
-      }
+    if (instance_ok ())
+      instance->do_delete_window (idx);
   }
 
-  void delete_window (std::string idx_str)
+  static void delete_window (std::string idx_str)
   {
     delete_window (str2idx (idx_str));
   }
 
-  void mark_modified (int idx)
+  static void mark_modified (int idx)
   {
-    wm_iterator win;
-    if ((win=windows.find (idx)) != windows.end ())
-      {
-	(*win).second->mark_modified ();
-      }
+    if (instance_ok ())
+      instance->do_mark_modified (idx);
   }
 
-  void mark_modified (const graphics_handle& gh)
+  static void mark_modified (const graphics_handle& gh)
   {
     mark_modified (hnd2idx (gh));
   }
 
-  Matrix get_size (int idx)
+  static Matrix get_size (int idx)
   {
-    Matrix sz (1, 2, 0.0);
-
-    wm_iterator win;
-    if ((win = windows.find (idx)) != windows.end ())
-      {
-	sz(0) = (*win).second->w ();
-	sz(1) = (*win).second->h ();
-      }
-
-    return sz;
+    return instance_ok () ? instance->do_get_size (idx) : Matrix ();
   }
 
-  Matrix get_size (const graphics_handle& gh)
+  static Matrix get_size (const graphics_handle& gh)
   {
     return get_size (hnd2idx (gh));
   }
 
 private:
+
+  static figure_manager *instance;
+
   figure_manager (void) { }
-  figure_manager (const figure_manager&) { }
-  figure_manager& operator = (const figure_manager&) { return *this; }
+
+  // No copying!
+  figure_manager (const figure_manager&);
+  figure_manager& operator = (const figure_manager&);
+
   // singelton -- hide all of the above
 
   static int curr_index;
@@ -622,6 +614,60 @@ private:
 
   static std::string fltk_idx_header;
 
+  void do_close_all (void)
+  {
+    wm_iterator win;
+    for (win = windows.begin (); win != windows.end (); win++)
+      delete win->second;
+    windows.clear ();
+  }
+
+  void do_new_window (figure::properties& fp)
+  {
+    int x, y, w, h;
+
+    int idx = figprops2idx (fp);
+    if (idx >= 0 && windows.find (idx) == windows.end ())
+      {
+	default_size (x, y, w, h);
+	idx2figprops (curr_index , fp);
+	windows[curr_index++] = new plot_window (x, y, w, h, fp);
+      }
+  }
+
+  void do_delete_window (int idx)
+  {
+    wm_iterator win;
+    if ((win = windows.find (idx)) != windows.end ())
+      {
+	delete win->second;
+	windows.erase (win);
+      }
+  }
+
+  void do_mark_modified (int idx)
+  {
+    wm_iterator win;
+    if ((win = windows.find (idx)) != windows.end ())
+      {
+	win->second->mark_modified ();
+      }
+  }
+
+  Matrix do_get_size (int idx)
+  {
+    Matrix sz (1, 2, 0.0);
+
+    wm_iterator win;
+    if ((win = windows.find (idx)) != windows.end ())
+      {
+	sz(0) = win->second->w ();
+	sz(1) = win->second->h ();
+      }
+
+    return sz;
+  }
+
   void default_size (int& x, int& y, int& w, int& h)
   {
     x = 10;
@@ -630,7 +676,7 @@ private:
     h = 300;
   }
 
-  int str2idx (const caseless_str clstr)
+  static int str2idx (const caseless_str clstr)
   {
     int ind;
     if (clstr.find (fltk_idx_header,0) == 0)
@@ -650,7 +696,7 @@ private:
     fp.set___plot_stream__ (ind_str.str ());
   }
 
-  int figprops2idx (const figure::properties& fp)
+  static int figprops2idx (const figure::properties& fp)
   {
     if (fp.get___backend__ () == FLTK_BACKEND_NAME)
       {
@@ -664,12 +710,7 @@ private:
     return -1;
   }
 
-  int hnd2idx (const graphics_handle& fh)
-  {
-    return hnd2idx (fh.value ());
-  }
-
-  int hnd2idx (const double h)
+  static int hnd2idx (const double h)
   {
     graphics_object fobj = gh_manager::get_object (h);
     if (fobj &&  fobj.isa ("figure"))
@@ -681,7 +722,14 @@ private:
     error ("fltk_backend:: not a figure");
     return -1;
   }
+
+  static int hnd2idx (const graphics_handle& fh)
+  {
+    return hnd2idx (fh.value ());
+  }
 };
+
+figure_manager *figure_manager::instance = 0;
 
 std::string figure_manager::fltk_idx_header="fltk index=";
 int figure_manager::curr_index = 1;
@@ -701,7 +749,7 @@ public:
     if (go.isa ("figure"))
       {
 	octave_value ov = go.get (caseless_str ("__plot_stream__"));
-	figure_manager::Instance ().delete_window (ov.string_value ());
+	figure_manager::delete_window (ov.string_value ());
       }
   }
 
@@ -725,7 +773,7 @@ public:
 
   void redraw_figure (const graphics_object& go) const
   {
-    figure_manager::Instance ().mark_modified (go.get_handle ());
+    figure_manager::mark_modified (go.get_handle ());
   }
 
   void print_figure (const graphics_object& /*go*/,
@@ -735,7 +783,7 @@ public:
 
   Matrix get_canvas_size (const graphics_handle& fh) const
   {
-    return figure_manager::Instance ().get_size (fh);
+    return figure_manager::get_size (fh);
   }
 
   double get_screen_resolution (void) const
@@ -777,7 +825,7 @@ __fltk_redraw__ (void)
 		  figure::properties& fp =
 		      dynamic_cast<figure::properties&> (fobj.get_properties ());
 		  if (fp.get___backend__ () == FLTK_BACKEND_NAME)
-		    figure_manager::Instance ().new_window (fp);
+		    figure_manager::new_window (fp);
 		}
 	    }
 	}
@@ -809,7 +857,7 @@ DEFUN_DLD (__remove_fltk__, , , "")
 {
   if (backend_registered)
     {
-      figure_manager::Instance ().close_all ();
+      figure_manager::close_all ();
       graphics_backend::unregister_backend (FLTK_BACKEND_NAME);
       backend_registered = false;
 

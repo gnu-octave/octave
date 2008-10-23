@@ -1,5 +1,26 @@
 2008-10-22  John W. Eaton  <jwe@octave.org>
 
+	* DLD-FUNCTIONS/fltk_backend.cc (figure_manager::do_close_all):
+	Rename from close_all.  Now private.
+	(figure_manager::do_new_window): Rename from new_window.
+	Now private.
+	(figure_manager::do_delete_window): Rename from delete_window.
+	Now private.
+	(figure_manager::do_mark_modified): Rename from mark_modified.
+	Now private.
+	(figure_manager::do_get_size): Rename from get_size.  Now private.
+	(figure_manager::close_all, figure_manager::do_new_window, 
+	figure_manager::do_delete_window,
+	figure_manager::do_mark_modified, figure_manager::do_get_size):
+	New static functions.
+	(figure_manager::instance_ok): New function.
+	(figure_manager::Instance): Delete.  Eliminate all uses in favor
+	of static methods that call instance_ok and forward to private
+	member functions.
+	(figure_manager::instance): New static data member.
+	(figure_manager::hnd2idx, figure_manager::figprops2idx,
+	figure_manager::figprops2idx, figure_manager::str2idx): Now static.
+
 	* graphics.cc (figure::properties::remove_child): New function.
 	* graphics.h.in: Provide decl.
 

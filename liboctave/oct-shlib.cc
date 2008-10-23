@@ -243,8 +243,12 @@ octave_dlopen_shlib::open (const std::string& f)
 
       int flags = 0;
 
-#if defined (RTLD_LAZY)
-      flags |= RTLD_LAZY;
+      // Use RTLD_NOW to resolve all symbols before dlopen returns.
+      // By using this option, dlopen will detect errors and Octave
+      // won't exit if there are unresolved symbols in the file we are
+      // loading, and we may even get a useful diagnostic.
+#if defined (RTLD_NOW)
+      flags |= RTLD_NOW;
 #endif
 
 #if defined (RTLD_GLOBAL)

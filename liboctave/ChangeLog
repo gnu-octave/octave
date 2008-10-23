@@ -1,3 +1,8 @@
+2008-10-23  John W. Eaton  <jwe@octave.org>
+
+	* oct-shlib.cc (octave_dlopen_shlib::open): Use RTLD_NOW instead
+	of RTLD_LAZY.
+
 2008-10-12  Jaroslav Hajek <highegg@gmail.com>
 
 	* CSparse.cc (ComplexMatrix::expm): Improve inverse preconditioning

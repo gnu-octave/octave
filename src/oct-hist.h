@@ -28,7 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "cmd-hist.h"
 
-extern void initialize_history (void);
+extern void initialize_history (bool read_history_file = false);
 
 // Write timestamp to history file.
 extern void octave_history_write_timestamp (void);

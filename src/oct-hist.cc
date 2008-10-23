@@ -529,12 +529,13 @@ do_run_history (int argc, const string_vector& argv)
 }
 
 void
-initialize_history (void)
+initialize_history (bool read_history_file)
 {
   command_history::set_file (Vhistory_file);
   command_history::set_size (Vhistory_size);
 
-  command_history::read (false);
+  if (read_history_file)
+    command_history::read (false);
 }
 
 void

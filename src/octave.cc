@@ -628,12 +628,15 @@ octave_main (int argc, char **argv, int embedded)
 
   bool forced_line_editing = false;
 
+  bool read_history_file = true;
+
   int optc;
   while ((optc = args.getopt ()) != EOF)
     {
       switch (optc)
 	{
 	case 'H':
+	  read_history_file = false;
 	  bind_internal_variable ("saving_history", false);
 	  break;
 
@@ -776,7 +779,7 @@ octave_main (int argc, char **argv, int embedded)
 
   execute_startup_files ();
 
-  initialize_history ();
+  initialize_history (read_history_file);
 
   if (! inhibit_startup_message && reading_startup_message_printed)
     std::cout << std::endl;

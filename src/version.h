@@ -45,7 +45,7 @@ along with Octave; see the file COPYING.  If not, see
   "This is free software; see the source code for copying conditions."
 
 #define X_OCTAVE_WARRANTY_STATEMENT(ARG) \
-  "There is ABSOLUTELY NO WARRANTY; not even for MERCHANTIBILITY or\n\
+  "There is ABSOLUTELY NO WARRANTY; not even for MERCHANTABILITY or\n\
 FITNESS FOR A PARTICULAR PURPOSE." ARG
 
 #define OCTAVE_WARRANTY_STATEMENT \

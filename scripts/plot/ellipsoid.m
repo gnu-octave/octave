@@ -45,7 +45,7 @@ function [xx, yy, zz] = ellipsoid (varargin)
   yr = varargin{5};
   zr = varargin{6};
 
-  if (nargin == 5)
+  if (nargin == 6)
     n = 20;
   else
     n = varargin{7};

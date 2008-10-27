@@ -45,6 +45,7 @@ extern "C"
 #include <glpk.h>
 #endif
 
+#if 0
 #ifdef GLPK_PRE_4_14
 
 #ifndef _GLPLIB_H
@@ -62,6 +63,7 @@ extern "C"
 void _glp_lib_print_hook (int (*func)(void *info, char *buf), void *info);
 void _glp_lib_fault_hook (int (*func)(void *info, char *buf), void *info);
 
+#endif
 #endif
 }
 
@@ -137,6 +139,7 @@ int RParam[NRealP] = {
 
 static jmp_buf mark;  //-- Address for long jump to jump to
 
+#if 0
 int
 glpk_fault_hook (void * /* info */, char *msg)
 {
@@ -150,6 +153,7 @@ glpk_print_hook (void * /* info */, char *msg)
   message (0, "%s", msg);
   return 1;
 }
+#endif
 
 int
 glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
@@ -164,6 +168,7 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
 
   clock_t t_start = clock();
 
+#if 0
 #ifdef GLPK_PRE_4_14
   lib_set_fault_hook (0, glpk_fault_hook);
 #else
@@ -175,6 +180,7 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
     lib_set_print_hook (0, glpk_print_hook);
 #else
     _glp_lib_print_hook (glpk_print_hook, 0);
+#endif
 #endif
 
   LPX *lp = lpx_create_prob ();
@@ -314,11 +320,14 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
       break;
 
     default:
+      break;
+#if 0
 #ifdef GLPK_PRE_4_14
       insist (method != method);
 #else
       static char tmp[] = "method != method";
       glpk_fault_hook (0, tmp);
+#endif
 #endif
     }
 

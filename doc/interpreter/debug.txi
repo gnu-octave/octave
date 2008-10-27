@@ -60,7 +60,7 @@ the functions @code{debug_on_interrupt}, @code{debug_on_warning} and
 To leave the debug mode, you should simply type either @code{dbcont} 
 or @code{return}.
 
-@DOCSTRING(dbcont}
+@DOCSTRING(dbcont)
 
 To quit debug mode and return directly to the prompt @code{dbquit}
 should be used instead

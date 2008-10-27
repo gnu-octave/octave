@@ -508,8 +508,6 @@ the return statement is ignored.  A @code{return} statement is assumed
 at the end of every function definition.
 @end deffn
 
-@DOCSTRING(return_last_computed_value)
-
 @node Default Arguments
 @section Default Arguments
 @cindex default arguments

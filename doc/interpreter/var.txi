@@ -486,11 +486,6 @@ Default value: 1.
 
 Default value: 1.
 
-@item return_last_computed_value
-@xref{Returning From a Function}.
-
-Default value: 0.
-
 @item save_precision
 @xref{Simple File I/O}.
 

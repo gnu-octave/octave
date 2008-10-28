@@ -149,7 +149,7 @@ All Octave abbrevs start with a grave accent (`).")
     "page_output_immediately" "page_screen_output" "pi"
     "print_answer_id_name" "print_empty_dimensions"
     "program_invocation_name" "program_name"
-    "realmax" "realmin" "return_last_computed_value" "save_precision"
+    "realmax" "realmin" "save_precision"
     "saving_history" "sighup_dumps_octave_core" "sigterm_dumps_octave_core"
     "silent_functions" "split_long_rows" "stderr" "stdin" "stdout"
     "string_fill_char" "struct_levels_to_print"

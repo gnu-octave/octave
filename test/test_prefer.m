@@ -154,11 +154,6 @@
 %% test/octave.test/prefer/prefer-24.m
 %!assert(all (svd ([]) == zeros (0, 1)));
 
-%% FIXME return_last_computed_value no longer exists!!
-%% Remove the next two tests
-%% test/octave.test/prefer/prefer-25.m
-%% test/octave.test/prefer/prefer-26.m
-
 %% test/octave.test/prefer/prefer-27.m
 %!test
 %! sp = save_precision ();

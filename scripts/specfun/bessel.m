@@ -26,21 +26,23 @@
 ## 
 ## @table @code
 ## @item besselj
-## Bessel functions of the first kind.
+## Bessel functions of the first kind. If the argument @var{opt} is supplied, 
+## the result is multiplied by @code{exp(-abs(imag(x)))}.
 ## @item bessely
-## Bessel functions of the second kind.
+## Bessel functions of the second kind. If the argument @var{opt} is supplied,
+## the result is multiplied by @code{exp(-abs(imag(x)))}.
 ## @item besseli
-## Modified Bessel functions of the first kind.
+## Modified Bessel functions of the first kind.  If the argument @var{opt} is supplied,
+## the result is multiplied by @code{exp(-abs(real(x)))}.
 ## @item besselk
-## Modified Bessel functions of the second kind.
+## Modified Bessel functions of the second kind.  If the argument @var{opt} is supplied,
+## the result is multiplied by @code{exp(x)}.
 ## @item besselh
 ## Compute Hankel functions of the first (@var{k} = 1) or second (@var{k}
-##  = 2) kind.
-## @end table
-## 
-## If the argument @var{opt} is supplied, the result is scaled by the
+## = 2) kind. If the argument @var{opt} is supplied, the result is multiplied by
 ## @code{exp (-I*@var{x})} for @var{k} = 1 or @code{exp (I*@var{x})} for
-##  @var{k} = 2.
+## @var{k} = 2.
+## @end table
 ## 
 ## If @var{alpha} is a scalar, the result is the same size as @var{x}.
 ## If @var{x} is a scalar, the result is the same size as @var{alpha}.

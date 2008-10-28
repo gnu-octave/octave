@@ -388,21 +388,23 @@ Compute Bessel or Hankel functions of various kinds:\n\
 \n\
 @table @code\n\
 @item besselj\n\
-Bessel functions of the first kind.\n\
+Bessel functions of the first kind. If the argument @var{opt} is supplied, \n\
+the result is multiplied by @code{exp(-abs(imag(x)))}.\n\
 @item bessely\n\
-Bessel functions of the second kind.\n\
+Bessel functions of the second kind. If the argument @var{opt} is supplied,\n\
+the result is multiplied by @code{exp(-abs(imag(x)))}.\n\
 @item besseli\n\
-Modified Bessel functions of the first kind.\n\
+Modified Bessel functions of the first kind.  If the argument @var{opt} is supplied,\n\
+the result is multiplied by @code{exp(-abs(real(x)))}.\n\
 @item besselk\n\
-Modified Bessel functions of the second kind.\n\
+Modified Bessel functions of the second kind.  If the argument @var{opt} is supplied,\n\
+the result is multiplied by @code{exp(x)}.\n\
 @item besselh\n\
 Compute Hankel functions of the first (@var{k} = 1) or second (@var{k}\n\
- = 2) kind.\n\
-@end table\n\
-\n\
-If the argument @var{opt} is supplied, the result is scaled by the\n\
+= 2) kind. If the argument @var{opt} is supplied, the result is multiplied by\n\
 @code{exp (-I*@var{x})} for @var{k} = 1 or @code{exp (I*@var{x})} for\n\
- @var{k} = 2.\n\
+@var{k} = 2.\n\
+@end table\n\
 \n\
 If @var{alpha} is a scalar, the result is the same size as @var{x}.\n\
 If @var{x} is a scalar, the result is the same size as @var{alpha}.\n\
@@ -628,6 +630,288 @@ return @code{NaN}.\n\
 
   return retval;
 }
+
+/*
+%! # Test values computed with GP/PARI version 2.3.3
+%!
+%!shared alpha, x, jx, yx, ix, kx, nix
+%!
+%! # Bessel functions, even order, positive and negative x
+%! alpha = 2; x = 1.25;
+%! jx = 0.1710911312405234823613091417;
+%! yx = -1.193199310178553861283790424;
+%! ix = 0.2220184483766341752692212604;
+%! kx = 0.9410016167388185767085460540;
+%!
+%!assert(besselj(alpha,x), jx, 100*eps) 
+%!assert(bessely(alpha,x), yx, 100*eps)
+%!assert(besseli(alpha,x), ix, 100*eps)
+%!assert(besselk(alpha,x), kx, 100*eps) 
+%!assert(besselh(alpha,1,x), jx + I*yx, 100*eps)
+%!assert(besselh(alpha,2,x), jx - I*yx, 100*eps)
+%!
+%!assert(besselj(alpha,x,1), jx*exp(-abs(imag(x))), 100*eps) 
+%!assert(bessely(alpha,x,1), yx*exp(-abs(imag(x))), 100*eps)
+%!assert(besseli(alpha,x,1), ix*exp(-abs(real(x))), 100*eps)
+%!assert(besselk(alpha,x,1), kx*exp(x), 100*eps) 
+%!assert(besselh(alpha,1,x,1), (jx + I*yx)*exp(-I*x), 100*eps)
+%!assert(besselh(alpha,2,x,1), (jx - I*yx)*exp(I*x), 100*eps)
+%!
+%!assert(besselj(-alpha,x), jx, 100*eps) 
+%!assert(bessely(-alpha,x), yx, 100*eps)
+%!assert(besseli(-alpha,x), ix, 100*eps)
+%!assert(besselk(-alpha,x), kx, 100*eps) 
+%!assert(besselh(-alpha,1,x), jx + I*yx, 100*eps)
+%!assert(besselh(-alpha,2,x), jx - I*yx, 100*eps)
+%!
+%!assert(besselj(-alpha,x,1), jx*exp(-abs(imag(x))), 100*eps) 
+%!assert(bessely(-alpha,x,1), yx*exp(-abs(imag(x))), 100*eps)
+%!assert(besseli(-alpha,x,1), ix*exp(-abs(real(x))), 100*eps)
+%!assert(besselk(-alpha,x,1), kx*exp(x), 100*eps) 
+%!assert(besselh(-alpha,1,x,1), (jx + I*yx)*exp(-I*x), 100*eps)
+%!assert(besselh(-alpha,2,x,1), (jx - I*yx)*exp(I*x), 100*eps)
+%!
+%! x *= -1;
+%! yx = -1.193199310178553861283790424 + 0.3421822624810469647226182835*I;
+%! kx = 0.9410016167388185767085460540 - 0.6974915263814386815610060884*I;
+%!
+%!assert(besselj(alpha,x), jx, 100*eps) 
+%!assert(bessely(alpha,x), yx, 100*eps)
+%!assert(besseli(alpha,x), ix, 100*eps)
+%!assert(besselk(alpha,x), kx, 100*eps) 
+%!assert(besselh(alpha,1,x), jx + I*yx, 100*eps)
+%!assert(besselh(alpha,2,x), jx - I*yx, 100*eps)
+%!
+%!assert(besselj(alpha,x,1), jx*exp(-abs(imag(x))), 100*eps) 
+%!assert(bessely(alpha,x,1), yx*exp(-abs(imag(x))), 100*eps)
+%!assert(besseli(alpha,x,1), ix*exp(-abs(real(x))), 100*eps)
+%!assert(besselk(alpha,x,1), kx*exp(x), 100*eps) 
+%!assert(besselh(alpha,1,x,1), (jx + I*yx)*exp(-I*x), 100*eps)
+%!assert(besselh(alpha,2,x,1), (jx - I*yx)*exp(I*x), 100*eps)
+%!
+%! # Bessel functions, odd order, positive and negative x
+%! alpha = 3; x = 2.5;
+%! jx = 0.2166003910391135247666890035;
+%! yx = -0.7560554967536709968379029772;
+%! ix = 0.4743704087780355895548240179;
+%! kx = 0.2682271463934492027663765197;
+%!
+%!assert(besselj(alpha,x), jx, 100*eps) 
+%!assert(bessely(alpha,x), yx, 100*eps)
+%!assert(besseli(alpha,x), ix, 100*eps)
+%!assert(besselk(alpha,x), kx, 100*eps) 
+%!assert(besselh(alpha,1,x), jx + I*yx, 100*eps)
+%!assert(besselh(alpha,2,x), jx - I*yx, 100*eps)
+%!
+%!assert(besselj(alpha,x,1), jx*exp(-abs(imag(x))), 100*eps) 
+%!assert(bessely(alpha,x,1), yx*exp(-abs(imag(x))), 100*eps)
+%!assert(besseli(alpha,x,1), ix*exp(-abs(real(x))), 100*eps)
+%!assert(besselk(alpha,x,1), kx*exp(x), 100*eps) 
+%!assert(besselh(alpha,1,x,1), (jx + I*yx)*exp(-I*x), 100*eps)
+%!assert(besselh(alpha,2,x,1), (jx - I*yx)*exp(I*x), 100*eps)
+%!
+%!assert(besselj(-alpha,x), -jx, 100*eps) 
+%!assert(bessely(-alpha,x), -yx, 100*eps)
+%!assert(besseli(-alpha,x), ix, 100*eps)
+%!assert(besselk(-alpha,x), kx, 100*eps) 
+%!assert(besselh(-alpha,1,x), -(jx + I*yx), 100*eps)
+%!assert(besselh(-alpha,2,x), -(jx - I*yx), 100*eps)
+%!
+%!assert(besselj(-alpha,x,1), -jx*exp(-abs(imag(x))), 100*eps) 
+%!assert(bessely(-alpha,x,1), -yx*exp(-abs(imag(x))), 100*eps)
+%!assert(besseli(-alpha,x,1), ix*exp(-abs(real(x))), 100*eps)
+%!assert(besselk(-alpha,x,1), kx*exp(x), 100*eps) 
+%!assert(besselh(-alpha,1,x,1), -(jx + I*yx)*exp(-I*x), 100*eps)
+%!assert(besselh(-alpha,2,x,1), -(jx - I*yx)*exp(I*x), 100*eps)
+%!
+%! x *= -1;
+%! jx = -jx;
+%! yx = 0.7560554967536709968379029772 - 0.4332007820782270495333780070*I;
+%! ix = -ix;
+%! kx = -0.2682271463934492027663765197 - 1.490278591297463775542004240*I;
+%!
+%!assert(besselj(alpha,x), jx, 100*eps) 
+%!assert(bessely(alpha,x), yx, 100*eps)
+%!assert(besseli(alpha,x), ix, 100*eps)
+%!assert(besselk(alpha,x), kx, 100*eps) 
+%!assert(besselh(alpha,1,x), jx + I*yx, 100*eps)
+%!assert(besselh(alpha,2,x), jx - I*yx, 100*eps)
+%!
+%!assert(besselj(alpha,x,1), jx*exp(-abs(imag(x))), 100*eps) 
+%!assert(bessely(alpha,x,1), yx*exp(-abs(imag(x))), 100*eps)
+%!assert(besseli(alpha,x,1), ix*exp(-abs(real(x))), 100*eps)
+%!assert(besselk(alpha,x,1), kx*exp(x), 100*eps) 
+%!assert(besselh(alpha,1,x,1), (jx + I*yx)*exp(-I*x), 100*eps)
+%!assert(besselh(alpha,2,x,1), (jx - I*yx)*exp(I*x), 100*eps)
+%!
+%! # Bessel functions, fractional order, positive and negative x
+%!
+%! alpha = 3.5; x = 2.75;
+%! jx = 0.1691636439842384154644784389;
+%! yx = -0.8301381935499356070267953387;
+%! ix = 0.3930540878794826310979363668;
+%! kx = 0.2844099013460621170288192503;
+%!
+%!assert(besselj(alpha,x), jx, 100*eps) 
+%!assert(bessely(alpha,x), yx, 100*eps)
+%!assert(besseli(alpha,x), ix, 100*eps)
+%!assert(besselk(alpha,x), kx, 100*eps) 
+%!assert(besselh(alpha,1,x), jx + I*yx, 100*eps)
+%!assert(besselh(alpha,2,x), jx - I*yx, 100*eps)
+%!
+%!assert(besselj(alpha,x,1), jx*exp(-abs(imag(x))), 100*eps) 
+%!assert(bessely(alpha,x,1), yx*exp(-abs(imag(x))), 100*eps)
+%!assert(besseli(alpha,x,1), ix*exp(-abs(real(x))), 100*eps)
+%!assert(besselk(alpha,x,1), kx*exp(x), 100*eps) 
+%!assert(besselh(alpha,1,x,1), (jx + I*yx)*exp(-I*x), 100*eps)
+%!assert(besselh(alpha,2,x,1), (jx - I*yx)*exp(I*x), 100*eps)
+%!
+%! nix = 0.2119931212254662995364461998;
+%!
+%!assert(besselj(-alpha,x), yx, 100*eps) 
+%!assert(bessely(-alpha,x), -jx, 100*eps)
+%!assert(besseli(-alpha,x), nix, 100*eps)
+%!assert(besselk(-alpha,x), kx, 100*eps) 
+%!assert(besselh(-alpha,1,x), -I*(jx + I*yx), 100*eps)
+%!assert(besselh(-alpha,2,x), I*(jx - I*yx), 100*eps)
+%!
+%!assert(besselj(-alpha,x,1), yx*exp(-abs(imag(x))), 100*eps) 
+%!assert(bessely(-alpha,x,1), -jx*exp(-abs(imag(x))), 100*eps)
+%!assert(besseli(-alpha,x,1), nix*exp(-abs(real(x))), 100*eps)
+%!assert(besselk(-alpha,x,1), kx*exp(x), 100*eps) 
+%!assert(besselh(-alpha,1,x,1), -I*(jx + I*yx)*exp(-I*x), 100*eps)
+%!assert(besselh(-alpha,2,x,1), I*(jx - I*yx)*exp(I*x), 100*eps)
+%!
+%! x *= -1;
+%! jx *= -I;
+%! yx = -0.8301381935499356070267953387*I;
+%! ix *= -I;
+%! kx = -0.9504059335995575096509874508*I;
+%!
+%!assert(besselj(alpha,x), jx, 100*eps) 
+%!assert(bessely(alpha,x), yx, 100*eps)
+%!assert(besseli(alpha,x), ix, 100*eps)
+%!assert(besselk(alpha,x), kx, 100*eps) 
+%!assert(besselh(alpha,1,x), jx + I*yx, 100*eps)
+%!assert(besselh(alpha,2,x), jx - I*yx, 100*eps)
+%!
+%!assert(besselj(alpha,x,1), jx*exp(-abs(imag(x))), 100*eps) 
+%!assert(bessely(alpha,x,1), yx*exp(-abs(imag(x))), 100*eps)
+%!assert(besseli(alpha,x,1), ix*exp(-abs(real(x))), 100*eps)
+%!assert(besselk(alpha,x,1), kx*exp(x), 100*eps) 
+%!assert(besselh(alpha,1,x,1), (jx + I*yx)*exp(-I*x), 100*eps)
+%!assert(besselh(alpha,2,x,1), (jx - I*yx)*exp(I*x), 100*eps)
+%!
+%! # Bessel functions, even order, complex x
+%!
+%! alpha = 2; x = 1.25 + 3.625 * I;
+%! jx = -1.299533366810794494030065917 + 4.370833116012278943267479589*I;
+%! yx = -4.370357232383223896393056727 - 1.283083391453582032688834041*I;
+%! ix = -0.6717801680341515541002273932 - 0.2314623443930774099910228553*I;
+%! kx = -0.01108009888623253515463783379 + 0.2245218229358191588208084197*I;
+%!
+%!assert(besselj(alpha,x), jx, 100*eps) 
+%!assert(bessely(alpha,x), yx, 100*eps)
+%!assert(besseli(alpha,x), ix, 100*eps)
+%!assert(besselk(alpha,x), kx, 100*eps) 
+%!assert(besselh(alpha,1,x), jx + I*yx, 100*eps)
+%!assert(besselh(alpha,2,x), jx - I*yx, 100*eps)
+%!
+%!assert(besselj(alpha,x,1), jx*exp(-abs(imag(x))), 100*eps) 
+%!assert(bessely(alpha,x,1), yx*exp(-abs(imag(x))), 100*eps)
+%!assert(besseli(alpha,x,1), ix*exp(-abs(real(x))), 100*eps)
+%!assert(besselk(alpha,x,1), kx*exp(x), 100*eps) 
+%!assert(besselh(alpha,1,x,1), (jx + I*yx)*exp(-I*x), 100*eps)
+%!assert(besselh(alpha,2,x,1), (jx - I*yx)*exp(I*x), 100*eps)
+%!
+%!assert(besselj(-alpha,x), jx, 100*eps) 
+%!assert(bessely(-alpha,x), yx, 100*eps)
+%!assert(besseli(-alpha,x), ix, 100*eps)
+%!assert(besselk(-alpha,x), kx, 100*eps) 
+%!assert(besselh(-alpha,1,x), jx + I*yx, 100*eps)
+%!assert(besselh(-alpha,2,x), jx - I*yx, 100*eps)
+%!
+%!assert(besselj(-alpha,x,1), jx*exp(-abs(imag(x))), 100*eps) 
+%!assert(bessely(-alpha,x,1), yx*exp(-abs(imag(x))), 100*eps)
+%!assert(besseli(-alpha,x,1), ix*exp(-abs(real(x))), 100*eps)
+%!assert(besselk(-alpha,x,1), kx*exp(x), 100*eps) 
+%!assert(besselh(-alpha,1,x,1), (jx + I*yx)*exp(-I*x), 100*eps)
+%!assert(besselh(-alpha,2,x,1), (jx - I*yx)*exp(I*x), 100*eps)
+%!
+%! # Bessel functions, odd order, complex x
+%!
+%! alpha = 3; x = 2.5 + 1.875 * I;
+%! jx = 0.1330721523048277493333458596 + 0.5386295217249660078754395597*I;
+%! yx = -0.6485072392105829901122401551 + 0.2608129289785456797046996987*I;
+%! ix = -0.6182064685486998097516365709 + 0.4677561094683470065767989920*I;
+%! kx = -0.1568585587733540007867882337 - 0.05185853709490846050505141321*I;
+%!
+%!assert(besselj(alpha,x), jx, 100*eps) 
+%!assert(bessely(alpha,x), yx, 100*eps)
+%!assert(besseli(alpha,x), ix, 100*eps)
+%!assert(besselk(alpha,x), kx, 100*eps) 
+%!assert(besselh(alpha,1,x), jx + I*yx, 100*eps)
+%!assert(besselh(alpha,2,x), jx - I*yx, 100*eps)
+%!
+%!assert(besselj(alpha,x,1), jx*exp(-abs(imag(x))), 100*eps) 
+%!assert(bessely(alpha,x,1), yx*exp(-abs(imag(x))), 100*eps)
+%!assert(besseli(alpha,x,1), ix*exp(-abs(real(x))), 100*eps)
+%!assert(besselk(alpha,x,1), kx*exp(x), 100*eps) 
+%!assert(besselh(alpha,1,x,1), (jx + I*yx)*exp(-I*x), 100*eps)
+%!assert(besselh(alpha,2,x,1), (jx - I*yx)*exp(I*x), 100*eps)
+%!
+%!assert(besselj(-alpha,x), -jx, 100*eps) 
+%!assert(bessely(-alpha,x), -yx, 100*eps)
+%!assert(besseli(-alpha,x), ix, 100*eps)
+%!assert(besselk(-alpha,x), kx, 100*eps) 
+%!assert(besselh(-alpha,1,x), -(jx + I*yx), 100*eps)
+%!assert(besselh(-alpha,2,x), -(jx - I*yx), 100*eps)
+%!
+%!assert(besselj(-alpha,x,1), -jx*exp(-abs(imag(x))), 100*eps) 
+%!assert(bessely(-alpha,x,1), -yx*exp(-abs(imag(x))), 100*eps)
+%!assert(besseli(-alpha,x,1), ix*exp(-abs(real(x))), 100*eps)
+%!assert(besselk(-alpha,x,1), kx*exp(x), 100*eps) 
+%!assert(besselh(-alpha,1,x,1), -(jx + I*yx)*exp(-I*x), 100*eps)
+%!assert(besselh(-alpha,2,x,1), -(jx - I*yx)*exp(I*x), 100*eps)
+%!
+%! # Bessel functions, fractional order, complex x
+%!
+%! alpha = 3.5; x = 1.75 + 4.125 * I;
+%! jx = -3.018566131370455929707009100 - 0.7585648436793900607704057611*I;
+%! yx = 0.7772278839106298215614791107 - 3.018518722313849782683792010*I;
+%! ix = 0.2100873577220057189038160913 - 0.6551765604618246531254970926*I;
+%! kx = 0.1757147290513239935341488069 + 0.08772348296883849205562558311*I;
+%!
+%!assert(besselj(alpha,x), jx, 100*eps) 
+%!assert(bessely(alpha,x), yx, 100*eps)
+%!assert(besseli(alpha,x), ix, 100*eps)
+%!assert(besselk(alpha,x), kx, 100*eps) 
+%!assert(besselh(alpha,1,x), jx + I*yx, 100*eps)
+%!assert(besselh(alpha,2,x), jx - I*yx, 100*eps)
+%!
+%!assert(besselj(alpha,x,1), jx*exp(-abs(imag(x))), 100*eps) 
+%!assert(bessely(alpha,x,1), yx*exp(-abs(imag(x))), 100*eps)
+%!assert(besseli(alpha,x,1), ix*exp(-abs(real(x))), 100*eps)
+%!assert(besselk(alpha,x,1), kx*exp(x), 100*eps) 
+%!assert(besselh(alpha,1,x,1), (jx + I*yx)*exp(-I*x), 100*eps)
+%!assert(besselh(alpha,2,x,1), (jx - I*yx)*exp(I*x), 100*eps)
+%!
+%!  nix = 0.09822388691172060573913739253 - 0.7110230642207380127317227407*I;
+%!
+%!assert(besselj(-alpha,x), yx, 100*eps) 
+%!assert(bessely(-alpha,x), -jx, 100*eps)
+%!assert(besseli(-alpha,x), nix, 100*eps)
+%!assert(besselk(-alpha,x), kx, 100*eps) 
+%!assert(besselh(-alpha,1,x), -I*(jx + I*yx), 100*eps)
+%!assert(besselh(-alpha,2,x), I*(jx - I*yx), 100*eps)
+%!
+%!assert(besselj(-alpha,x,1), yx*exp(-abs(imag(x))), 100*eps) 
+%!assert(bessely(-alpha,x,1), -jx*exp(-abs(imag(x))), 100*eps)
+%!assert(besseli(-alpha,x,1), nix*exp(-abs(real(x))), 100*eps)
+%!assert(besselk(-alpha,x,1), kx*exp(x), 100*eps) 
+%!assert(besselh(-alpha,1,x,1), -I*(jx + I*yx)*exp(-I*x), 100*eps)
+%!assert(besselh(-alpha,2,x,1), I*(jx - I*yx)*exp(I*x), 100*eps)
+*/
 
 /*
 ;;; Local Variables: ***

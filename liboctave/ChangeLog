@@ -1,3 +1,8 @@
+2008-10-28  Brian Gough  <bjg@gnu.org>
+
+	* lo-specfun.cc (zbesi): Fix scaling factor for negative alpha.
+	(cbesi): Likewise.
+
 2008-10-23  John Swensen  <jpswensen@comcast.net>
 
 	* oct-shlib.cc (octave_dyld_shlib::open): Call NSLinkEditError to

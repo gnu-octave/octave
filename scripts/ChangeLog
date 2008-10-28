@@ -1,3 +1,8 @@
+2008-10-28  Gabriele Pannocchia  <g.pannocchia@ing.unipi.it>
+
+	* optimization/qp.m: Convert bounds of the form b <= x <= b and
+	constraints of the form b <= A*x <= b to equality constraints.
+
 2008-10-27  Søren Hauberg  <hauberg@gmail.com>
 
 	* plot/ellipsoid.m: Check nargin == 6, not nargin == 5.

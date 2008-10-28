@@ -131,7 +131,7 @@ function [x, obj, INFO, lambda] = qp (x0, H, q, A, b, lb, ub, A_lb, A_in, A_ub)
       if (! isempty (lb))
 	if (length(lb) != n)
 	  error ("qp: lower bound has incorrect length");
-	else
+	elseif (isempty (ub))
 	  Ain = [Ain; eye(n)];
 	  bin = [bin; lb];
 	endif
@@ -140,10 +140,30 @@ function [x, obj, INFO, lambda] = qp (x0, H, q, A, b, lb, ub, A_lb, A_in, A_ub)
       if (! isempty (ub))
 	if (length (ub) != n)
 	  error ("qp: upper bound has incorrect length");
-	else
+	elseif (isempty (lb))
 	  Ain = [Ain; -eye(n)];
 	  bin = [bin; -ub];
 	endif
+      endif
+      
+      if (! isempty (lb) && ! isempty (ub))
+	rtol = sqrt (eps);
+	for i = 1:n
+	  if (abs(lb (i) - ub(i)) < rtol*(1 + max (abs (lb(i) + ub(i)))))
+            ## These are actually an equality constraint
+	    tmprow = zeros(1,n);
+	    tmprow(i) = 1;
+            A = [A;tmprow];
+            b = [b; 0.5*(lb(i) + ub(i))];
+	    n_eq = n_eq + 1;
+	  else
+	    tmprow = zeros(1,n);
+	    tmprow(i) = 1;
+	    Ain = [Ain; tmprow; -tmprow];
+	    bin = [bin; lb(i); -ub(i)];
+	    n_in = n_in + 2;
+	  endif
+	endfor
       endif
     endif
 
@@ -156,7 +176,7 @@ function [x, obj, INFO, lambda] = qp (x0, H, q, A, b, lb, ub, A_lb, A_in, A_ub)
 	if (! isempty (A_lb))
 	  if (length (A_lb) != dimA_in)
 	    error ("qp: inequality constraint matrix and lower bound vector inconsistent");
-	  else
+	  elseif (isempty (A_ub))
 	    Ain = [Ain; A_in];
 	    bin = [bin; A_lb];
 	  endif
@@ -164,10 +184,28 @@ function [x, obj, INFO, lambda] = qp (x0, H, q, A, b, lb, ub, A_lb, A_in, A_ub)
 	if (! isempty (A_ub))
 	  if (length (A_ub) != dimA_in)
 	    error ("qp: inequality constraint matrix and upper bound vector inconsistent");
-	  else
+	  elseif (isempty (A_lb))
 	    Ain = [Ain; -A_in];
 	    bin = [bin; -A_ub];
 	  endif
+	endif
+	
+	if (! isempty (A_lb) && ! isempty (A_ub))
+	  rtol = sqrt (eps);
+	  for i=1:dimA_in
+	    if (abs (A_lb(i) - A_ub(i)) < rtol*(1 + max (abs (A_lb(i) + A_ub(i)))))
+              ## These are actually an equality constraint
+	      tmprow = A_in(i,:);
+              A = [A;tmprow];
+              b = [b; 0.5*(A_lb(i) + A_ub(i))];
+	      n_eq = n_eq + 1;
+	    else
+	      tmprow = A_in(i,:);
+	      Ain = [Ain; tmprow; -tmprow];
+	      bin = [bin; A_lb(i); -A_ub(i)];
+	      n_in = n_in + 2;
+	    endif
+	  endfor
 	endif
       endif
     endif
@@ -195,8 +233,8 @@ function [x, obj, INFO, lambda] = qp (x0, H, q, A, b, lb, ub, A_lb, A_in, A_ub)
       rtol = sqrt (eps);
     endif
 
-    eq_infeasible = (n_eq > 0 && norm (A*x0-b) > rtol*(1+norm (b)));
-    in_infeasible = (n_in > 0 && any (Ain*x0-bin < -rtol*(1+norm (bin))));
+    eq_infeasible = (n_eq > 0 && norm (A*x0-b) > rtol*(1+abs (b)));
+    in_infeasible = (n_in > 0 && any (Ain*x0-bin < -rtol*(1+abs (bin))));
 
     info = 0;
     if (eq_infeasible || in_infeasible)
@@ -216,7 +254,7 @@ function [x, obj, INFO, lambda] = qp (x0, H, q, A, b, lb, ub, A_lb, A_in, A_ub)
       ## constraints also.
       if (n_in > 0)
 	res = Ain * xbar - bin;
-	if (any (res < -rtol * (1 + norm (bin))))
+	if (any (res < -rtol * (1 + abs (bin))))
 	  ## xbar is not feasible with respect to the inequality
 	  ## constraints.  Compute a step in the null space of the
 	  ## equality constraints, by solving a QP.  If the slack is

@@ -1,3 +1,8 @@
+2008-10-28  John W. Eaton  <jwe@octave.org>
+
+	* parse.y (finish_function): Clear local variables in function scope.
+	* symtab.h (symbol_table::clear_variables): New argument, scope.
+
 2008-10-28  Brian Gough  <bjg@gnu.org>
 
 	* DLD-FUNCTIONS/besselj.cc: Added tests.

@@ -1287,9 +1287,9 @@ public:
     clear_functions ();
   }
 
-  static void clear_variables (void)
+  static void clear_variables (scope_id scope = xcurrent_scope)
   {
-    symbol_table *inst = get_instance (xcurrent_scope);
+    symbol_table *inst = get_instance (scope);
 
     if (inst)
       inst->do_clear_variables ();

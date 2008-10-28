@@ -2618,6 +2618,11 @@ finish_function (tree_parameter_list *ret_list,
 
 	  retval = new tree_function_def (fcn);
 	}
+
+      // Clear any local variables that may have been added by
+      // while parsing (for example, by force_local_variable in lex.l).
+
+      symbol_table::clear_variables (fcn->scope ());
     }
 
   return retval;

@@ -77,29 +77,31 @@ extern "C"
 			   double*, octave_idx_type&, octave_idx_type&);
 
   F77_RET_T
-  F77_FUNC (cbesj, cBESJ) (const float&, const float&, const float&,
-			   const octave_idx_type&, const octave_idx_type&, float*, float*,
+  F77_FUNC (cbesj, cBESJ) (const FloatComplex&, const float&,
+			   const octave_idx_type&, const octave_idx_type&,
+			   FloatComplex*, octave_idx_type&, octave_idx_type&);
+
+  F77_RET_T
+  F77_FUNC (cbesy, CBESY) (const FloatComplex&, const float&,
+			   const octave_idx_type&, const octave_idx_type&,
+			   FloatComplex*, octave_idx_type&,
+			   FloatComplex*, octave_idx_type&);
+
+  F77_RET_T
+  F77_FUNC (cbesi, CBESI) (const FloatComplex&, const float&,
+			   const octave_idx_type&, const octave_idx_type&,
+			   FloatComplex*, octave_idx_type&, octave_idx_type&);
+
+  F77_RET_T
+  F77_FUNC (cbesk, CBESK) (const FloatComplex&, const float&,
+			   const octave_idx_type&, const octave_idx_type&,
+			   FloatComplex*, octave_idx_type&, octave_idx_type&);
+
+  F77_RET_T
+  F77_FUNC (cbesh, CBESH) (const FloatComplex&, const float&,
+			   const octave_idx_type&, const octave_idx_type&,
+			   const octave_idx_type&, FloatComplex*,
 			   octave_idx_type&, octave_idx_type&);
-
-  F77_RET_T
-  F77_FUNC (cbesy, CBESY) (const float&, const float&, const float&,
-			   const octave_idx_type&, const octave_idx_type&, float*, float*,
-			   octave_idx_type&, float*, float*, octave_idx_type&);
-
-  F77_RET_T
-  F77_FUNC (cbesi, CBESI) (const float&, const float&, const float&,
-			   const octave_idx_type&, const octave_idx_type&, float*, float*,
-			   octave_idx_type&, octave_idx_type&);
-
-  F77_RET_T
-  F77_FUNC (cbesk, CBESK) (const float&, const float&, const float&,
-			   const octave_idx_type&, const octave_idx_type&, float*, float*,
-			   octave_idx_type&, octave_idx_type&);
-
-  F77_RET_T
-  F77_FUNC (cbesh, CBESH) (const float&, const float&, const float&,
-			   const octave_idx_type&, const octave_idx_type&, const octave_idx_type&, float*,
-			   float*, octave_idx_type&, octave_idx_type&);
 
   F77_RET_T
   F77_FUNC (zairy, ZAIRY) (const double&, const double&, const octave_idx_type&,
@@ -1289,27 +1291,23 @@ cbesj (const FloatComplex& z, float alpha, int kode, octave_idx_type& ierr)
 
   if (alpha >= 0.0)
     {
-      float yr = 0.0;
-      float yi = 0.0;
+      FloatComplex y = 0.0;
 
       octave_idx_type nz;
 
-      float zr = z.real ();
-      float zi = z.imag ();
-
-      F77_FUNC (cbesj, CBESJ) (zr, zi, alpha, 2, 1, &yr, &yi, nz, ierr);
+      F77_FUNC (cbesj, CBESJ) (z, alpha, 2, 1, &y, nz, ierr);
 
       if (kode != 2)
 	{
-	  float expz = exp (std::abs (zi)); 
-	  yr *= expz;
-	  yi *= expz;
+	  float expz = exp (std::abs (imag (z))); 
+	  y.real () *= expz;
+	  y.imag () *= expz;
 	}
 
-      if (zi == 0.0 && zr >= 0.0)
-	yi = 0.0;
+      if (imag (z) == 0.0 && real (z) >= 0.0)
+	y.imag () = 0.0;
 
-      retval = bessel_return_value (FloatComplex (yr, yi), ierr);
+      retval = bessel_return_value (y, ierr);
     }
   else if (is_integer_value (alpha))
     {
@@ -1346,40 +1344,34 @@ cbesy (const FloatComplex& z, float alpha, int kode, octave_idx_type& ierr)
 
   if (alpha >= 0.0)
     {
-      float yr = 0.0;
-      float yi = 0.0;
+      FloatComplex y = 0.0;
 
       octave_idx_type nz;
 
-      float wr, wi;
-
-      float zr = z.real ();
-      float zi = z.imag ();
+      FloatComplex w;
 
       ierr = 0;
 
-      if (zr == 0.0 && zi == 0.0)
+      if (real (z) == 0.0 && imag (z) == 0.0)
 	{
-	  yr = -octave_Float_Inf;
-	  yi = 0.0;
+	  y = FloatComplex (-octave_Float_Inf, 0.0);
 	}
       else
 	{
-	  F77_FUNC (cbesy, CBESY) (zr, zi, alpha, 2, 1, &yr, &yi, nz,
-				   &wr, &wi, ierr);
+	  F77_FUNC (cbesy, CBESY) (z, alpha, 2, 1, &y, nz, &w, ierr);
 
 	  if (kode != 2)
 	    {
-	      float expz = exp (std::abs (zi));
-	      yr *= expz;
-	      yi *= expz;
+	      float expz = exp (std::abs (imag (z)));
+	      y.real () *= expz;
+	      y.imag () *= expz;
 	    }
 
-	  if (zi == 0.0 && zr >= 0.0)
-	    yi = 0.0;
+	  if (imag (z) == 0.0 && real (z) >= 0.0)
+	    y.imag () = 0.0;
 	}
 
-      return bessel_return_value (FloatComplex (yr, yi), ierr);
+      return bessel_return_value (y, ierr);
     }
   else if (is_integer_value (alpha - 0.5))
     {
@@ -1416,27 +1408,22 @@ cbesi (const FloatComplex& z, float alpha, int kode, octave_idx_type& ierr)
 
   if (alpha >= 0.0)
     {
-      float yr = 0.0;
-      float yi = 0.0;
+      FloatComplex y = 0.0;
 
       octave_idx_type nz;
 
-      float zr = z.real ();
-      float zi = z.imag ();
-
-      F77_FUNC (cbesi, CBESI) (zr, zi, alpha, 2, 1, &yr, &yi, nz, ierr);
+      F77_FUNC (cbesi, CBESI) (z, alpha, 2, 1, &y, nz, ierr);
 
       if (kode != 2)
 	{
-	  float expz = exp (std::abs (zr));
-	  yr *= expz;
-	  yi *= expz;
+	  float expz = exp (std::abs (real (z)));
+	  y *= expz;
 	}
 
-      if (zi == 0.0 && zr >= 0.0)
-	yi = 0.0;
+      if (imag (z) == 0.0 && real (z) >= 0.0)
+	y.imag () = 0.0;
 
-      retval = bessel_return_value (FloatComplex (yr, yi), ierr);
+      retval = bessel_return_value (y, ierr);
     }
   else
     {
@@ -1473,24 +1460,19 @@ cbesk (const FloatComplex& z, float alpha, int kode, octave_idx_type& ierr)
 
   if (alpha >= 0.0)
     {
-      float yr = 0.0;
-      float yi = 0.0;
+      FloatComplex y = 0.0;
 
       octave_idx_type nz;
 
-      float zr = z.real ();
-      float zi = z.imag ();
-
       ierr = 0;
 
-      if (zr == 0.0 && zi == 0.0)
+      if (real (z) == 0.0 && imag (z) == 0.0)
 	{
-	  yr = octave_Float_Inf;
-	  yi = 0.0;
+	  y = FloatComplex (octave_Float_Inf, 0.0);
 	}
       else
 	{
-	  F77_FUNC (cbesk, CBESK) (zr, zi, alpha, 2, 1, &yr, &yi, nz, ierr);
+	  F77_FUNC (cbesk, CBESK) (z, alpha, 2, 1, &y, nz, ierr);
 
 	  if (kode != 2)
 	    {
@@ -1499,17 +1481,17 @@ cbesk (const FloatComplex& z, float alpha, int kode, octave_idx_type& ierr)
 	      float rexpz = real (expz);
 	      float iexpz = imag (expz);
 
-	      float tmp = yr*rexpz - yi*iexpz;
+	      float tmp = real (y) * rexpz - imag (y) * iexpz;
 
-	      yi = yr*iexpz + yi*rexpz;
-	      yr = tmp;
+	      y.imag () = real (y) * iexpz + imag (y) * rexpz;
+	      y.real () = tmp;
 	    }
 
-	  if (zi == 0.0 && zr >= 0.0)
-	    yi = 0.0;
+	  if (imag (z) == 0.0 && real (z) >= 0.0)
+	    y.imag () = 0.0;
 	}
 
-      retval = bessel_return_value (FloatComplex (yr, yi), ierr);
+      retval = bessel_return_value (y, ierr);
     }
   else
     {
@@ -1528,15 +1510,11 @@ cbesh1 (const FloatComplex& z, float alpha, int kode, octave_idx_type& ierr)
 
   if (alpha >= 0.0)
     {
-      float yr = 0.0;
-      float yi = 0.0;
+      FloatComplex y = 0.0;
 
       octave_idx_type nz;
 
-      float zr = z.real ();
-      float zi = z.imag ();
-
-      F77_FUNC (cbesh, CBESH) (zr, zi, alpha, 2, 1, 1, &yr, &yi, nz, ierr);
+      F77_FUNC (cbesh, CBESH) (z, alpha, 2, 1, 1, &y, nz, ierr);
 
       if (kode != 2)
 	{
@@ -1545,13 +1523,13 @@ cbesh1 (const FloatComplex& z, float alpha, int kode, octave_idx_type& ierr)
 	  float rexpz = real (expz);
 	  float iexpz = imag (expz);
 
-	  float tmp = yr*rexpz - yi*iexpz;
+	  float tmp = real (y) * rexpz - imag (y) * iexpz;
 
-	  yi = yr*iexpz + yi*rexpz;
-	  yr = tmp;
+	  y.imag () = real (y) * iexpz + imag (y) * rexpz;
+	  y.real () = tmp;
 	}
 
-      retval = bessel_return_value (FloatComplex (yr, yi), ierr);
+      retval = bessel_return_value (y, ierr);
     }
   else
     {
@@ -1574,15 +1552,11 @@ cbesh2 (const FloatComplex& z, float alpha, int kode, octave_idx_type& ierr)
 
   if (alpha >= 0.0)
     {
-      float yr = 0.0;
-      float yi = 0.0;
+      FloatComplex y = 0.0;
 
       octave_idx_type nz;
 
-      float zr = z.real ();
-      float zi = z.imag ();
-
-      F77_FUNC (cbesh, CBESH) (zr, zi, alpha, 2, 2, 1, &yr, &yi, nz, ierr);
+      F77_FUNC (cbesh, CBESH) (z, alpha, 2, 2, 1, &y, nz, ierr);
 
       if (kode != 2)
 	{
@@ -1591,13 +1565,13 @@ cbesh2 (const FloatComplex& z, float alpha, int kode, octave_idx_type& ierr)
 	  float rexpz = real (expz);
 	  float iexpz = imag (expz);
 
-	  float tmp = yr*rexpz - yi*iexpz;
+	  float tmp = real (y) * rexpz - imag (y) * iexpz;
 
-	  yi = yr*iexpz + yi*rexpz;
-	  yr = tmp;
+	  y.imag () = real (y) * iexpz + imag (y) * rexpz;
+	  y.real () = tmp;
 	}
 
-      retval = bessel_return_value (FloatComplex (yr, yi), ierr);
+      retval = bessel_return_value (y, ierr);
     }
   else
     {

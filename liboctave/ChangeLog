@@ -1,3 +1,10 @@
+2008-10-28  John W. Eaton  <jwe@octave.org>
+
+	* lo-specfun.cc: Fix prototypes for the Fortran subroutines cbesh,
+	cbesi, cbesj, cbesk, and cbesy.
+	(cbesh, cbesi, cbesj, cbesk, cbesy): Fix calls to Fortran
+	subroutines.
+
 2008-10-28  Brian Gough  <bjg@gnu.org>
 
 	* lo-specfun.cc (zbesi): Fix scaling factor for negative alpha.

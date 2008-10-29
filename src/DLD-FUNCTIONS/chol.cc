@@ -799,7 +799,7 @@ DEFUN_DLD (cholinsert, args, nargout,
 @deftypefn {Loadable Function} {[@var{R1}, @var{info}] =} cholinsert (@var{R}, @var{j}, @var{u})\n\
 Given a Cholesky@tie{}factorization of a real symmetric or complex hermitian\n\
 positive definite matrix @w{@var{A} = @var{R}'*@var{R}}, @var{R}@tie{}upper triangular,\n\
-return the QR@tie{}factorization of\n\
+return the Cholesky@tie{}factorization of\n\
 @var{A1}, where @w{A1(p,p) = A}, @w{A1(:,j) = A1(j,:)' = u} and\n\
 @w{p = [1:j-1,j+1:n+1]}. @w{u(j)} should be positive.\n\
 On return, @var{info} is set to\n\
@@ -993,7 +993,7 @@ DEFUN_DLD (choldelete, args, ,
 @deftypefn {Loadable Function} {@var{R1} =} choldelete (@var{R}, @var{j})\n\
 Given a Cholesky@tie{}factorization of a real symmetric or complex hermitian\n\
 positive definite matrix @w{@var{A} = @var{R}'*@var{R}}, @var{R}@tie{}upper triangular,\n\
-return the QR@tie{}factorization of @w{A(p,p)}, where @w{p = [1:j-1,j+1:n+1]}.\n\
+return the Cholesky@tie{}factorization of @w{A(p,p)}, where @w{p = [1:j-1,j+1:n+1]}.\n\
 @seealso{chol, cholupdate, cholinsert}\n\
 @end deftypefn")
 {
@@ -1125,7 +1125,7 @@ DEFUN_DLD (cholshift, args, ,
 @deftypefn {Loadable Function} {@var{R1} =} cholshift (@var{R}, @var{i}, @var{j})\n\
 Given a Cholesky@tie{}factorization of a real symmetric or complex hermitian\n\
 positive definite matrix @w{@var{A} = @var{R}'*@var{R}}, @var{R}@tie{}upper triangular,\n\
-return the QR@tie{}factorization of\n\
+return the Cholesky@tie{}factorization of\n\
 @w{@var{A}(p,p)}, where @w{p} is the permutation @*\n\
 @code{p = [1:i-1, shift(i:j, 1), j+1:n]} if @w{@var{i} < @var{j}} @*\n\
  or @*\n\

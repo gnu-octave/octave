@@ -1,3 +1,8 @@
+2008-10-29  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/qr.cc (Fcholinsert, Fcholdelete, Fcholshift): Fix
+	inline docs.
+
 2008-10-28  John W. Eaton  <jwe@octave.org>
 
 	* parse.y (finish_function): Clear local variables in function scope.

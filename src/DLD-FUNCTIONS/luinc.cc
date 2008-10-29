@@ -93,7 +93,7 @@ are the same as for @dfn{lu}.\n\
 \n\
 Given the string argument 'vector', @dfn{luinc} returns the values of @var{p}\n\
 @var{q} as vector values.\n\
-@seealso{sparse, lu, cholinc}\n\
+@seealso{sparse, lu}\n\
 @end deftypefn")
 {
   int nargin = args.length ();

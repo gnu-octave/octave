@@ -749,7 +749,7 @@ gamma (z) = | t^(z-1) exp (-t) dt.\n\
          t=0\n\
 @end example\n\
 @end ifinfo\n\
-@seealso{gammai, lgamma}\n\
+@seealso{gammainc, lgamma}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1125,7 +1125,7 @@ DEFUN (lgamma, args, ,
 @deftypefn {Mapping Function} {} lgamma (@var{x})\n\
 @deftypefnx {Mapping Function} {} gammaln (@var{x})\n\
 Return the natural logarithm of the gamma function of @var{x}.\n\
-@seealso{gamma, gammai}\n\
+@seealso{gamma, gammainc}\n\
 @end deftypefn")
 {
   octave_value retval;

@@ -752,6 +752,8 @@ the other is more `C-like'.
 
 @DOCSTRING(fscanf)
 
+@DOCSTRING(scanf)
+
 @DOCSTRING(sscanf)
 
 Calls to @code{scanf} are superficially similar to calls to

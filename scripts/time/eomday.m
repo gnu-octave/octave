@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{e} =} eomday (@var{y}, @var{m})
 ## Return the last day of the month @var{m} for the year @var{y}.
-## @seealso{datenum, datevec, weekday, eomdate}
+## @seealso{datenum, datevec, weekday}
 ## @end deftypefn
 
 ## Author: pkienzle <pkienzle@users.sf.net>

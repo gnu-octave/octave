@@ -21,7 +21,7 @@
 ## Return the element by element power operator. This is equivalent to
 ## @code{@var{x} .^ @var{y}}, except that if the return value
 ## is complex @code{realpow} produces an error.
-## @seealso{pow, reallog, realsqrt}
+## @seealso{reallog, realsqrt}
 ## @end deftypefn
 
 function z = realpow (x, y)

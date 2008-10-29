@@ -85,6 +85,8 @@ for a definition), and then finding its eigenvalues.
 
 @DOCSTRING(compan)
 
+@DOCSTRING(mpoles)
+
 @node Products of Polynomials
 @section Products of Polynomials
 
@@ -118,6 +120,8 @@ area = polyval(integral, 3) - polyval(integral, 0)
 @DOCSTRING(polyderiv)
 
 @DOCSTRING(polyder)
+
+@DOCSTRING(polyinteg)
 
 @DOCSTRING(polyint)
 
@@ -169,5 +173,7 @@ plot(xi, yi);
 @DOCSTRING(polyout)
 
 @DOCSTRING(polyreduce)
+
+
 
 

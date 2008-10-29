@@ -20,7 +20,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} zlabel (@var{string})
 ## @deftypefnx {Function File} {} zlabel (@var{h}, @var{string})
-## See xlabel.
+## @seealso{xlabel}.
 ## @end deftypefn
 
 ## PKG_ADD: mark_as_command zlabel

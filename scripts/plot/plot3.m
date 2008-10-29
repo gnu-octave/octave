@@ -79,7 +79,7 @@
 ##    plot3 (z, exp(2i*pi*z), ";complex sinusoid;");
 ## @end group
 ## @end example
-## @seealso{plot}
+## @seealso{plot, xlabel, ylabel, zlabel, title, print}
 ## @end deftypefn
 
 ## Author: Paul Kienzle

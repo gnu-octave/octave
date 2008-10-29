@@ -22,8 +22,8 @@
 ## coefficients are represented by the vector @var{c}.
 ##
 ## The constant of integration is set to zero.
-## @seealso{poly, polyderiv, polyreduce, roots, conv, deconv, residue,
-## filter, polyval, and polyvalm}
+## @seealso{polyint, poly, polyderiv, polyreduce, roots, conv, deconv, residue,
+## filter, polyval, polyvalm}
 ## @end deftypefn
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>

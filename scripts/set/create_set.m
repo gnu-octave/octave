@@ -40,7 +40,7 @@
 ##     4   2
 ## @end group
 ## @end example
-## @seealso{union, intersection, complement, unique}
+## @seealso{union, intersect, complement, unique}
 ## @end deftypefn
 
 ## Author: jwe

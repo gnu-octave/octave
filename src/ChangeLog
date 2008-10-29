@@ -1,3 +1,24 @@
+2008-10-29  Thorsten Meyer  <thorsten.meyier@gmx.de>
+
+	* data.cc (Fcolumns): Remove "and" from @seealso string.
+	* mappers.cc (Fgamma, Flgamma): Replace @seealso reference to
+	deprecated gammai by gammainc.
+	* DLD-FUNCTIONS/sqrtm.cc (Fsqrtm): Remove reference to Octave
+	Forge function funm.
+	* DLD-FUNCTIONS/qz.cc (Fqz): removed @seealso reference to Octave
+	Forge function dare.
+	* DLD-FUNCTIONS/rcond.cc (Frcond): removed @seealso reference to
+	mldivide.
+	* debug.cc (Fdbstop): Fix @seealso references and function name in
+	docstring of dbnext.
+	* DLD-FUNCTIONS/cellfun.cc (Fcellfun): Remove @seealso reference
+	to isclass.
+	* syscalls.cc (Fwaitpid): Replace WCONTINUED by WCONTINUE.
+	* oct-hist.cc (Fhistory_size, Fsaving_history): Fix @seealso
+	references to history_timestamp_format_string.
+	* DLD-FUNCTIONS/luinc.cc (Fluinc): Remove reference to missing
+	function cholinc.
+        
 2008-10-29  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/qr.cc (Fcholinsert, Fcholdelete, Fcholshift): Fix

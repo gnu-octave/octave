@@ -147,6 +147,10 @@ Octave also includes @sc{Dassl}, an earlier version of @var{Daspk},
 and @var{dasrt}, which can be used to solve DAEs with constraints
 (stopping conditions).
 
+@DOCSTRING(dassl)
+
+@DOCSTRING(dassl_options)
+
 @DOCSTRING(dasrt)
 
 @DOCSTRING(dasrt_options)

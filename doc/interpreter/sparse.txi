@@ -817,6 +817,8 @@ used with care.
 
 @DOCSTRING(normest)
 
+@DOCSTRING(onenormest)
+
 @DOCSTRING(condest)
 
 @DOCSTRING(spparms)

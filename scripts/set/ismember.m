@@ -60,7 +60,7 @@
 ## @end group
 ## @end example
 ##
-## @seealso{unique, union, intersection, setxor, setdiff}
+## @seealso{unique, union, intersect, setxor, setdiff}
 ## @end deftypefn
 
 ## Author: Paul Kienzle <pkienzle@users.sf.net>

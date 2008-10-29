@@ -124,7 +124,7 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
 @end group\n\
 @end example\n\
 \n\
-@seealso{isempty, islogical, isreal, length, ndims, numel, size, isclass}\n\
+@seealso{isempty, islogical, isreal, length, ndims, numel, size}\n\
 @end deftypefn")
 {
   octave_value_list retval;

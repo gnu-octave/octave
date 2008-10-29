@@ -335,6 +335,7 @@ along with a warning.
 
 @DOCSTRING(nargoutchk)
 
+@anchor{doc-varargin} @anchor{doc-varargout}
 @node Variable-length Argument Lists
 @section Variable-length Argument Lists
 @cindex variable-length argument lists

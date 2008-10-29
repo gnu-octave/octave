@@ -1,3 +1,13 @@
+2008-10-29  Thorsten Meyer  <tmeyier@gmx.de>
+
+	* interpreter/system.txi, interpreter/poly.txi,
+	interpreter/arith.txi, interpreter/poly.txi,
+	interpreter/optim.txi, interpreter/diffeq.txi,
+	interpreter/sparse.txi, interpreter/matrix.txi,
+	interpreter/plot.txi, interpreter/io.txi, interpreter/debug.txi,
+	interpreter/var.txi, interpreter/strings.txi:
+	Add missing @DOCSTRING commands.
+
 2008-10-22  David Bateman  <dbateman@free.fr>
 
 	* interprter/plot.txi: Add documentation for error bar series.

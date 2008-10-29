@@ -280,7 +280,7 @@ in the closed right half-plane\n\
 Note: qz performs permutation balancing, but not scaling (see balance).\n\
 Order of output arguments was selected for compatibility with MATLAB\n\
 \n\
-@seealso{balance, dare, eig, schur}\n\
+@seealso{balance, eig, schur}\n\
 @end deftypefn")
 {
   octave_value_list retval;

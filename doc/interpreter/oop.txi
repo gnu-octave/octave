@@ -349,6 +349,14 @@ in the use of methods of other classes with the user class. An example
 @subsection Operator Overloading
 
 @float Table,tab:overload_ops
+
+@anchor{doc-rdivide} @anchor{doc-plus} @anchor{doc-minus} @anchor{doc-uminus}
+@anchor{doc-uplus} @anchor{doc-times} @anchor{doc-mtimes} @anchor{doc-mrdivide}
+@anchor{doc-ldivide} @anchor{doc-mldivide} @anchor{doc-power}
+@anchor{doc-mpower} @anchor{doc-lt} @anchor{doc-le} @anchor{doc-gt}
+@anchor{doc-ge} @anchor{doc-eq} @anchor{doc-ne} @anchor{doc-and}
+@anchor{doc-or} @anchor{doc-not} @anchor{doc-ctranspose} @anchor{doc-transpose}
+
 @iftex
 @tex
 \vskip 6pt

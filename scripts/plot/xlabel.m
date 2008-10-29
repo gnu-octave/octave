@@ -25,7 +25,7 @@
 ## Specify x, y, and z axis labels for the current figure. If @var{h} is
 ## specified then label the axis defined by @var{h}.
 ## @seealso{plot, semilogx, semilogy, loglog, polar, mesh, contour,
-## bar, stairs,  ylabel, title}
+## bar, stairs, title}
 ## @end deftypefn
 
 ## PKG_ADD: mark_as_command xlabel

@@ -249,6 +249,7 @@ Octave also provides the following functions which work with degrees.
 
 @DOCSTRING(legendre)
 
+@anchor{doc-gammaln}
 @DOCSTRING(lgamma)
 
 @DOCSTRING(cross)

@@ -38,7 +38,7 @@
 ## @result{} [ 0, 0, 0 ]
 ## @end example
 ## @seealso{poly, polyinteg, polyderiv, polyreduce, roots, conv, deconv,
-## residue, filter, polyval, and polyvalm}
+## residue, filter, polyval, polyvalm}
 ## @end deftypefn
 
 function x = polygcd (b, a, tol)

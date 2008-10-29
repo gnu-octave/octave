@@ -40,7 +40,7 @@ by LAPACK. If the matrix is well-conditioned then @var{c} will be near\n\
 The matrix @var{a} must not be sparse. If the matrix is sparse then\n\
 @code{condest (@var{a})} or @code{rcond (full (@var{a}))} should be used\n\
 instead.\n\
-@seealso{inv, mldivide}\n\
+@seealso{inv}\n\
 @end deftypefn")
 {
   octave_value retval;

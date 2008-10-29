@@ -378,7 +378,7 @@ lines might be given as separate arguments or as a vector.\n\
 @end table\n\
 \n\
 The rline returned is the real line that the breakpoint was set at.\n\
-@seealso{dbclear, dbstatus, dbnext}\n\
+@seealso{dbclear, dbstatus, dbstep}\n\
 @end deftypefn")
 {
   bp_table::intmap retval;
@@ -972,7 +972,7 @@ In debugging mode, quit debugging mode and return to the top level.\n\
 
 DEFCMD (dbnext, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Command} {} dbquit ()\n\
+@deftypefn {Command} {} dbnext ()\n\
 In debugging mode, execute the next line of code without stepping in to\n\
 functions. This is synonymous with @code{dbstep}.\n\
 @seealso{dbstep, dbcont, dbquit}\n\

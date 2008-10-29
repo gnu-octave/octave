@@ -1,3 +1,18 @@
+2008-10-29  Thorsten Meyer  <thorsten.meyier@gmx.de>
+
+	* set/create_set.m, set/ismember.m, set/union.m, set/complement.m:
+	Fix @seealso references to deprecated function intersection.
+	* polynomial/polyvalm.m, polynomial/polyout.m,
+	polynomial/polyint.m, polynomial/polygcd.m,
+	deprecated/polyinteg.m: Remove "and" from @seealso string.
+	* specfun/betaln.m: Change @seealso reference from deprecated
+	betai to betainc.
+	* plot/plot.m, plot/xlabel.m, plot/ylabel.m, plot/zlabel.m, 
+	plot/plot3.m: Fix @seealso references to ylabel and zlabel.
+	* general/issymmetric.m, image/imagesc.m, specfun/realpow.m,
+	polynomial/polyfit.m, time/eomday.m: Remove @seealso references to
+	non-existent functions.
+
 2008-10-29  John W. Eaton  <jwe@octave.org>
 
 	* plot/cla.m: In test, set visible off when creating figure.

@@ -188,6 +188,8 @@ array of strings, which is described in @ref{Cell Arrays of Strings}.
 
 @DOCSTRING(strvcat)
 
+@DOCSTRING(cstrcat)
+
 @DOCSTRING(strtrunc)
 
 @DOCSTRING(string_fill_char)

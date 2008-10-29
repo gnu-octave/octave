@@ -167,6 +167,7 @@ the commands @code{dbstep}.
 
 @c leave dbnext undocumented
 
+@anchor{doc-dbnext}
 @DOCSTRING(dbstep)
 
 @node Call Stack

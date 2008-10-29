@@ -24,7 +24,7 @@
 ## @var{tol} is omitted, use a tolerance equal to the machine precision.
 ## Matrix @var{x} is considered symmetric if
 ## @code{norm (@var{x} - @var{x}.', inf) / norm (@var{x}, inf) < @var{tol}}.
-## @seealso{size, rows, columns, length, ishermitian, ismatrix, isscalar,
+## @seealso{size, rows, columns, length, ismatrix, isscalar,
 ## issquare, isvector}
 ## @end deftypefn
 

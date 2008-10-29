@@ -2487,7 +2487,7 @@ DEFUN (columns, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} columns (@var{a})\n\
 Return the number of columns of @var{a}.\n\
-@seealso{size, numel, rows, length, isscalar, isvector, and ismatrix}\n\
+@seealso{size, numel, rows, length, isscalar, isvector, ismatrix}\n\
 @end deftypefn")
 {
   octave_value retval;

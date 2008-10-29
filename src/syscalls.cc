@@ -1284,7 +1284,7 @@ Do not hang if status is not immediately available.\n\
 Report the status of any child processes that are stopped, and whose\n\
 status has not yet been reported since they stopped.\n\
 \n\
-@item WCONTINUED\n\
+@item WCONTINUE\n\
 Return if a stopped child has been resumed by delivery of @code{SIGCONT}.\n\
 This value may not be meaningful on all systems.\n\
 @end table\n\
@@ -1294,7 +1294,7 @@ ID of the child process that exited.  If an error occurs, @var{pid} will\n\
 be less than zero and @var{msg} will contain a system-dependent error\n\
 message.  The value of @var{status} contains additional system-dependent\n\
 information about the subprocess that exited.\n\
-@seealso{WCONTINUED, WCOREDUMP, WEXITSTATUS, WIFCONTINUED, WIFSIGNALED, WIFSTOPPED, WNOHANG, WSTOPSIG, WTERMSIG, WUNTRACED}\n\
+@seealso{WCONTINUE, WCOREDUMP, WEXITSTATUS, WIFCONTINUED, WIFSIGNALED, WIFSTOPPED, WNOHANG, WSTOPSIG, WTERMSIG, WUNTRACED}\n\
 @end deftypefn")
 {
   octave_value_list retval;

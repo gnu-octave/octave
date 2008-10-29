@@ -32,7 +32,7 @@
 ## betaln (a, b) = gammaln (a) + gammaln (b) - gammaln (a + b)
 ## @end example
 ## @end ifinfo
-## @seealso{beta, betai, gammaln}
+## @seealso{beta, betainc, gammaln}
 ## @end deftypefn
 
 ## Author:   Nicol N. Schraudolph <nic@idsia.ch>

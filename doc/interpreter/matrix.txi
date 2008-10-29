@@ -143,6 +143,7 @@ a (i, :)
 
 @DOCSTRING(swaprows)
 
+@anchor{doc-triu}
 @DOCSTRING(tril)
 
 @DOCSTRING(vec)

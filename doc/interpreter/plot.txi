@@ -336,6 +336,8 @@ border lines are on.
 
 @DOCSTRING(text)
 
+@anchor{doc-ylabel}
+@anchor{doc-zlabel}
 @DOCSTRING(xlabel)
 
 @DOCSTRING(box)
@@ -632,12 +634,15 @@ plot.
 
 @DOCSTRING(ishold)
 
-To clear the current figure, call the @code{clf} function.  To bring it
+To clear the current figure, call the @code{clf} function.  To clear the
+current axis, call the @code{cla} function. To bring the current fingure
 to the top of the window stack, call the @code{shg} function.  To delete
 a graphics object, call @code{delete} on its index.  To close the
 figure window, call the @code{close} function.
 
 @DOCSTRING(clf)
+
+@DOCSTRING(cla)
 
 @DOCSTRING(shg)
 
@@ -1606,7 +1611,10 @@ function is called.
 
 @DOCSTRING(refreshdata)
 
+@anchor{doc-linkdata}
 @c add the description of the linkdata function here when it is written
+@c remove the explicit anchor when you add the corresponding @DOCSTRING
+@c command
 
 @node Area series
 @subsubsection Area series

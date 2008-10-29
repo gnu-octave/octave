@@ -48,7 +48,7 @@
 ## Where @var{mu}(1) = mean (@var{x}), and @var{mu}(2) = std (@var{x}).
 ## This linear transformation of @var{x} improves the numerical
 ## stability of the fit.
-## @seealso{polyval, polyconf, residue}
+## @seealso{polyval, residue}
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>

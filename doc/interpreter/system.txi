@@ -121,6 +121,7 @@ useful.
 
 @DOCSTRING(is_leap_year)
 
+@anchor{doc-toc}
 @DOCSTRING(tic)
 
 @DOCSTRING(pause)
@@ -142,6 +143,10 @@ useful.
 @DOCSTRING(weekday)
 
 @DOCSTRING(eomday)
+
+@DOCSTRING(eomdate)
+
+@DOCSTRING(datetick)
 
 @node Filesystem Utilities
 @section Filesystem Utilities
@@ -229,6 +234,8 @@ about the status of files.
 
 @DOCSTRING(unpack)
 
+@DOCSTRING(bzip2)
+
 @node Networking Utilities
 @section Networking Utilities
 
@@ -278,6 +285,28 @@ they can be used, look at the definition of the function @code{popen2}.
 @DOCSTRING(dup2)
 
 @DOCSTRING(waitpid)
+
+@DOCSTRING(WCONTINUE)
+
+@DOCSTRING(WCOREDUMP)
+
+@DOCSTRING(WEXITSTATUS)
+
+@DOCSTRING(WIFCONTINUED)
+ 
+@DOCSTRING(WIFSIGNALED)
+
+@DOCSTRING(WIFSTOPPED)
+
+@DOCSTRING(WIFEXITED)
+
+@DOCSTRING(WNOHANG)
+
+@DOCSTRING(WSTOPSIG)
+ 
+@DOCSTRING(WTERMSIG)
+
+@DOCSTRING(WUNTRACED)
 
 @DOCSTRING(fcntl)
 
@@ -408,11 +437,15 @@ referred to as a @var{grp_struct}.
 
 @DOCSTRING(isunix)
 
+@DOCSTRING(ismac)
+
 @DOCSTRING(isieee)
 
 @DOCSTRING(OCTAVE_HOME)
 
 @DOCSTRING(OCTAVE_VERSION)
+
+@DOCSTRING(license)
 
 @DOCSTRING(version)
 

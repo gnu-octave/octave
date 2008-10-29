@@ -33,7 +33,7 @@
 ## values for the respective axes, or as values for each row and column
 ## of the matrix @var{a}.
 ##
-## @seealso{image, imshow, clim, caxis}
+## @seealso{image, imshow, caxis}
 ## @end deftypefn
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>

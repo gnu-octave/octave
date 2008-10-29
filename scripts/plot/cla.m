@@ -90,9 +90,8 @@ function cla (varargin)
 endfunction
 
 %!test
-%! hf = figure;
+%! hf = figure (1, "visible", "off");
 %! unwind_protect
-%!   set (hf, "visible", "off")
 %!   clf
 %!   plot (1:10)
 %!   cla ()

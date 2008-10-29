@@ -57,7 +57,7 @@ function [c, h] = contour3 (varargin)
   unwind_protect
     axes (xh);
     newplot ();
-    [ctmp, htmp] = __contour__ (xh, "level", varargin{:});
+    [ctmp, htmp] = __contour__ (xh, "auto", varargin{:});
   unwind_protect_cleanup
     axes (oldh);
   end_unwind_protect
@@ -68,7 +68,7 @@ function [c, h] = contour3 (varargin)
 
   if (nargout > 0)
     c = ctmp;
-    h = htmp
+    h = htmp;
   endif
 
 endfunction

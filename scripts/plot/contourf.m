@@ -57,204 +57,24 @@
 ## Author: Kai Habel <kai.habel@gmx.de>
 ## Author: Shai Ayal <shaiay@users.sourceforge.net>
 
-function varargout = contourf (varargin)
+function [c, h] = contourf (varargin)
 
-  [ax, varargin] = __plt_get_axis_arg__ ("contourf", varargin{:});
+  [xh, varargin] = __plt_get_axis_arg__ ("contour", varargin{:});
 
-  [X, Y, Z, lvl, patch_props] = parse_args (varargin);
-
-  [nr, nc] = size (Z);
-
-  [minx, maxx] = deal (min (X(:)), max (X(:)));
-  [miny, maxy] = deal (min (Y(:)), max (Y(:)));
-
-  if (diff (lvl) < 10*eps) 
-    lvl_eps = 1e-6;
-  else
-    lvl_eps = min (diff (lvl)) / 1000.0;
-  endif
-
-  X0 = prepad(X, nc+1, 2 * X(1, 1) - X(1, 2), 2);
-  X0 = postpad(X0, nc+2, 2 * X(1, nc) - X(1, nc - 1), 2);
-  X0 = [X0(1, :); X0; X0(1, :)];
-  Y0 = prepad(Y, nr+1, 2 * Y(1, 1) - Y(2, 1), 1);
-  Y0 = postpad(Y0, nr+2, 2 * Y(nr, 1) - Y(nr - 1, 1));
-  Y0 = [Y0(:, 1), Y0, Y0(:, 1)];
-
-  Z0 = -Inf(nr+2, nc+2);
-  Z0(2:nr+1, 2:nc+1) = Z;
-  [c, lev] = contourc (X0, Y0, Z0, lvl);
-  cmap = colormap ();
-
-  levx = linspace (min (lev), max (lev), size (cmap, 1));
-
-  newplot ();
-
-  ## Decode contourc output format.
-  i1 = 1;
-  ncont = 0;
-  while (i1 < columns (c))
-    ncont++;
-    cont_lev(ncont) = c(1, i1);
-    cont_len(ncont) = c(2, i1);
-    cont_idx(ncont) = i1+1;
-
-    ii = i1+1:i1+cont_len(ncont);
-    cur_cont = c(:, ii);
-    c(:, ii);
-    startidx = ii(1);
-    stopidx = ii(end);
-    cont_area(ncont) = polyarea (c(1, ii), c(2, ii));
-    i1 += c(2, i1) + 1;
-  endwhile
-
-  ## Handle for each level the case where we have (a) hole(s) in a patch.
-  ## Those are to be filled with the color of level below or with the
-  ## background colour.
-  for k = 1:numel (lev)
-    lvl_idx = find (abs (cont_lev - lev(k)) < lvl_eps);
-    len = numel (lvl_idx);
-    if (len > 1)
-      ## mark = logical(zeros(size(lvl_idx)));
-      mark = false (size (lvl_idx));
-      a = 1;
-      while (a < len)
-        # take 1st patch
-        b = a + 1;
-        pa_idx = lvl_idx(a);
-        # get pointer to contour start, and contour length
-        curr_ct_idx = cont_idx(pa_idx);
-        curr_ct_len = cont_len(pa_idx);
-        # get contour
-        curr_ct = c(:, curr_ct_idx:curr_ct_idx+curr_ct_len-1);
-        b_vec = (a+1):len;
-        next_ct_pt_vec = c(:, cont_idx(lvl_idx(b_vec)));
-        in = inpolygon (next_ct_pt_vec(1,:), next_ct_pt_vec(2,:),
-			curr_ct(1, :), curr_ct(2, :));
-        mark(b_vec(in)) = !mark(b_vec(in));
-        a++;
-      endwhile
-      if (numel (mark) > 0)
-	## All marked contours describe a hole in a larger contour of
-	## the same level and must be filled with colour of level below.
-        ma_idx = lvl_idx(mark);
-        if (k > 1)
-	  ## Find color of level below.
-          tmp = find(abs(cont_lev - lev(k - 1)) < lvl_eps);
-          lvl_bel_idx = tmp(1);
-	  ## Set color of patches found.
-	  cont_lev(ma_idx) = cont_lev(lvl_bel_idx);
-        else
-	  ## Set lowest level contour to NaN.
-	  cont_lev(ma_idx) = NaN;
-        endif
-      endif
-    endif
-  endfor
-
-  ## The algorithm can create patches with the size of the plotting
-  ## area, we would like to draw only the patch with the highest level.
-  del_idx = [];
-  max_idx = find (cont_area == max (cont_area));
-  if (numel (max_idx) > 1)
-    # delete double entries
-    del_idx = max_idx(1:end-1);
-    cont_area(del_idx) = cont_lev(del_idx) = [];
-    cont_len(del_idx) = cont_idx(del_idx) = [];
-  endif
-
-  ## Now we have everything together and can start plotting the patches
-  ## beginning with largest area.
-  [tmp, svec] = sort (cont_area);
-  len = ncont - numel (del_idx);
-  h = zeros (1, len);
-  for n = 1:len
-    idx = svec(n);
-    ii = cont_idx(idx):cont_idx(idx) + cont_len(idx) - 2;
-    h(n) = patch (c(1, ii), c(2, ii), cont_lev(idx), patch_props{:});
-  endfor
-
-  if (min (lev) == max (lev))
-    set (gca (), "clim", [min(lev)-1, max(lev)+1]);
-  else
-    set (gca(), "clim", [min(lev), max(lev)]);
-  endif
-
-  set (gca (), "layer", "top");
+  oldh = gca ();
+  unwind_protect
+    axes (xh);
+    newplot ();
+    [ctmp, htmp] = __contour__ (xh, "none", "fill", "on",
+				"linecolor", "black", varargin{:});
+  unwind_protect_cleanup
+    axes (oldh);
+  end_unwind_protect
 
   if (nargout > 0)
-    varargout{2} = h;
-    varargout{1} = c;
+    c = ctmp;
+    h = htmp;
   endif
-
-endfunction
-
-function [X, Y, Z, lvl, patch_props] = parse_args (arg)
-
-  patch_props = {};
-  nolvl = false;
-
-  for n = 1:numel (arg)
-    if (ischar (arg{n}))
-      patch_props = arg(n:end);
-      arg(n:end) = [];
-      break;
-    endif
-  endfor
-
-  if (mod (numel (patch_props), 2) != 0)
-    error ("patch: property value is missing");
-  endif
-
-  if (numel (arg) < 3)
-    Z = arg{1};
-    [X, Y] = meshgrid (1:columns (Z), 1:rows (Z));
-  endif
-
-  if (numel (arg) == 1)
-    nolvl = true;
-    arg(1) = [];
-  elseif (numel (arg) == 2)
-    lvl = arg{2};
-    arg(1:2) = [];
-  elseif (numel (arg) == 3)
-    arg{1:3};
-    [X, Y, Z] = deal (arg{1:3});
-    arg(1:3) = [];
-    nolvl = true;
-  elseif (numel (arg) == 4)
-    [X, Y, Z, lvl] = deal (arg{1:4});
-    arg(1:4) = [];
-  endif
-
-  if (! ((isvector (X) && isvector (Y)) || size_equal (X, Y)))
-    error ("patch: X and Y must be of same size")
-  endif
-
-  if (isvector (X) || isvector (Y))
-    [X, Y] = meshgrid (X, Y);
-  endif
-
-  Z_no_inf = Z(!isinf (Z));
-  [minz, maxz] = deal (min (Z_no_inf(:)), max (Z_no_inf(:)));
-  Z(isnan (Z)) = -Inf;
-
-  if (nolvl)
-    lvl = linspace (minz, maxz, 12);
-  endif
-
-  if (isscalar (lvl))
-    lvl = linspace (minz, maxz, lvl + 2)(1:end-1);
-  else
-    idx1 = find(lvl < minz);
-    idx2 = find(lvl > maxz);
-    lvl(idx1(1:end-1)) = [];
-    lvl(idx2) = [];
-    if (isempty (lvl))
-      lvl = [minz, minz];
-    endif
-  endif
-
 endfunction
 
 %!demo

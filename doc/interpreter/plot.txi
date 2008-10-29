@@ -1710,7 +1710,76 @@ Data source variables.
 @cindex series objects
 @cindex contour series
 
-TO BE WRITTEN
+Contour group objects are created by the @code{contour}, @code{contourf}
+and @code{contour3} functions. The are equally one of the handles returned
+by the @code{surfc} and @code{meshc} functions. The properties of the contour
+group are
+
+@table @code
+@item contourmatrix
+A read only property that contains the data return by @code{contourc} used to
+create the contours of the plot.
+
+@item fill
+A radio property that can have the values "on" or "off" that flags whether the
+contours to plot are to be filled.
+
+@item zlevelmode
+@itemx zlevel
+The radio property @code{zlevelmode} can have the values "none", "auto" or 
+"manual". When its value is "none" there is no z component to the plotted
+contours. When its value is "auto" the z value of the plotted contours is 
+at the same value as the contour itself. If the value is "manual", then the
+z value at which to plot the contour is determined by the @code{zlevel}
+property.
+
+@item levellistmode
+@itemx levellist
+@itemx levelstepmode
+@itemx levelstep
+If @code{levellistmode} is "manual", then the levels at whch to plot the 
+contours is determined by @code{levellist}. If @code{levellistmode} is
+set to "auto", then the distance between contours is determined by 
+@code{levelstep}. If both @code{levellistmode} and @code{levelstepmode}
+are set to "auto", then there are assumed to be 10 equal spaced contours.
+
+@item textlistmode
+@itemx textlist
+@itemx textstepmode
+@itemx textstep
+If @code{textlistmode} is "manual", then the labelled contours 
+is determined by @code{textlist}. If @code{textlistmode} is set to 
+"auto", then the distance between labelled contours is determined by 
+@code{textstep}. If both @code{textlistmode} and @code{textstepmode}
+are set to "auto", then there are assumed to be 10 equal spaced 
+labelled contours.
+
+@item showtext
+Flag whether the contour labels are shown or not.
+
+@item labelspacing
+The distance between labels on a single contour in points.
+
+@item linewidth
+@item linestyle
+@item linecolor
+The properties of the contour lines. The properties @code{linewidth} and
+@code{linestyle} are similar to the correponding properties for lines. The
+property @code{linecolor} is a color property (@xref{Colors}), that can also
+have the values of "none" or "auto". If @code{linecolor} is "none", then no
+contour line is drawn. If @code{linecolor} is "auto" then the line color is
+determined by the colormap.
+
+@item xdata
+@itemx ydata
+@itemx zdata
+The original x, y, and z data of the contour lines.
+
+@item xdatasource
+@itemx ydatasource
+@itemx zdatasource
+Data source variables.
+@end table
 
 @node Error bar series
 @subsubsection Error bar series

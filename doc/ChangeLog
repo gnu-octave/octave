@@ -1,3 +1,7 @@
+2008-10-30  David Bateman  <dbateman@free.fr>
+
+	* interpreter/plot.txi: Document contour groups.
+
 2008-10-29  Thorsten Meyer  <tmeyier@gmx.de>
 
 	* interpreter/system.txi, interpreter/poly.txi,

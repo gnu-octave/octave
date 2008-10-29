@@ -40,6 +40,7 @@ SOURCES = \
   __axis_label__.m \
   __bar__.m \
   __bars__.m \
+  __clabel__.m \
   __contour__.m \
   __default_plot_options__.m \
   __errcomm__.m \
@@ -82,6 +83,7 @@ SOURCES = \
   box.m \
   caxis.m \
   cla.m \
+  clabel.m \
   clf.m \
   close.m \
   closereq.m \

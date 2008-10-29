@@ -59,7 +59,7 @@ function [c, h] = contour (varargin)
   unwind_protect
     axes (xh);
     newplot ();
-    [ctmp, htmp] = __contour__ (xh, NaN, varargin{:});
+    [ctmp, htmp] = __contour__ (xh, "none", varargin{:});
   unwind_protect_cleanup
     axes (oldh);
   end_unwind_protect

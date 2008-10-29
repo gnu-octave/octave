@@ -8,6 +8,9 @@
 	interpreter/var.txi, interpreter/strings.txi:
 	Add missing @DOCSTRING commands.
 
+	* interpreter/munge-texi.cc (extract_docstring): Expand arguments
+	of @seealso{} into Texinfo references.
+          
 2008-10-22  David Bateman  <dbateman@free.fr>
 
 	* interprter/plot.txi: Add documentation for error bar series.

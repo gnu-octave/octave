@@ -70,8 +70,82 @@ extract_docstring (std::istream& is)
 
   int c;
   while ((c = is.get ()) != EOF && c != doc_delim)
-    doc += (char) c;
+    {
+      // Expand @seealso commands to Texinfo references.
+      if (c == '@')
+        {
+          char buf[16];
+          int i = 0;
+          buf[i++] = (char) c;
+          
+          if ((   buf[i++] = (char) is.get ()) == 's'  
+              && (buf[i++] = (char) is.get ()) == 'e'
+              && (buf[i++] = (char) is.get ()) == 'e'
+              && (buf[i++] = (char) is.get ()) == 'a'
+              && (buf[i++] = (char) is.get ()) == 'l'
+              && (buf[i++] = (char) is.get ()) == 's'
+              && (buf[i++] = (char) is.get ()) == 'o'
+              && (buf[i++] = (char) is.get ()) == '{')
+            {
+              doc += "@seealso{";
+              
+              bool first = true;
+              
+              // process @seealso parameters
+              while ((c = is.get ()) != EOF
+                     && c != doc_delim
+                     && c != '}') 
+                {
+                  // ignore whitespace and delimiters
+                  while (   c == ' ' 
+                         || c == '\t'
+                         || c == '\r'
+                         || c == '\n'
+                         || c == ',')
+                    {
+                      c = is.get ();
+                    }
+                    
+                  // test for end of @seealso
+                  if (c == '}') 
+                    break;
+                  
+                  // get function name
+	          std::string function_name;
+                  do 
+                    function_name += (char) c;
+                  while ((c = is.get ()) != EOF
+                          && c != doc_delim
+                          && c != ' '
+                          && c != '\t'
+                          && c != '\r'
+                          && c != '\n'
+                          && c != ','
+                          && c != '}');
+                  if (first)
+                    first = false;
+                  else
+                    doc += ", ";
 
+                  doc += "@ref{doc-" + function_name + ",,"
+		    + function_name + "}";
+
+                  // test for end of @seealso
+                  if (c == '}') 
+                    break;
+                }
+              if (c == '}')
+                doc += (char) c;
+            }
+          else
+            {
+              for (int j = 0; j < i; j++)
+                doc += buf[j];
+            }
+        }
+      else
+        doc += (char) c;
+    }
   return doc;
 }
 
@@ -149,9 +223,9 @@ process_texi_input_file (std::istream& is, std::ostream& os)
 
 	      char buf[16];
 	      int i = 0;
-	      buf[i++] = c;
+	      buf[i++] = (char) c;
 
-	      if ((buf[i++] = (char) is.get ()) == 'D'
+	      if ((   buf[i++] = (char) is.get ()) == 'D'
 		  && (buf[i++] = (char) is.get ()) == 'O'
 		  && (buf[i++] = (char) is.get ()) == 'C'
 		  && (buf[i++] = (char) is.get ()) == 'S'

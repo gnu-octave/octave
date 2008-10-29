@@ -39,6 +39,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "idx-vector.h"
 #include "lo-error.h"
 #include "quit.h"
+#include "oct-locbuf.h"
 
 #include "Sparse.h"
 #include "sparse-sort.h"

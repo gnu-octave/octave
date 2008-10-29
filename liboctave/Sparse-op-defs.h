@@ -27,6 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "Array-util.h"
 #include "mx-ops.h"
+#include "oct-locbuf.h"
 
 #define SPARSE_BIN_OP_DECL(R, OP, X, Y, API) \
   extern API R OP (const X&, const Y&)

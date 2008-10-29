@@ -34,6 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-re-sparse.h"
 #include "ov-cx-sparse.h"
 #include "MatrixType.h"
+#include "oct-locbuf.h"
 
 DEFUN_DLD (matrix_type, args, ,
   "-*- texinfo -*-\n\

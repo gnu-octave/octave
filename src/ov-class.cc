@@ -28,6 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "Array-util.h"
 #include "byte-swap.h"
+#include "oct-locbuf.h"
 
 #include "Cell.h"
 #include "defun.h"

@@ -47,6 +47,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "f77-fcn.h"
 #include "functor.h"
 #include "lo-error.h"
+#include "oct-locbuf.h"
 #include "lo-ieee.h"
 #include "lo-mappers.h"
 #include "lo-utils.h"

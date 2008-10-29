@@ -30,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "Array.h"
 #include "Array.cc"
 #include "oct-sort.cc"
+#include "oct-locbuf.h"
 
 #if defined (HAVE_IEEE754_DATA_FORMAT)
 

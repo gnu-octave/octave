@@ -1,3 +1,15 @@
+2008-10-29  Jaroslav Hajek  <highegg@gmail.com>
+
+	* oct-locbuf.h: New header file.
+	* Array-d.cc, Array-f.cc, Array.cc, CMatrix.cc, CNDArray.cc,
+	CSparse.cc, CmplxCHOL.cc, CmplxGEPBAL.cc, MatrixType.cc,
+	Sparse-op-defs.h, Sparse.cc, SparseCmplxLU.cc, SparseCmplxQR.cc,
+	SparseQR.cc, SparsedbleLU.cc, dMatrix.cc, dNDArray.cc, dSparse.cc,
+	data-conv.cc, dbleCHOL.cc, dbleGEPBAL.cc, fCMatrix.cc, fCNDArray.cc,
+	fCmplxCHOL.cc, fCmplxGEPBAL.cc, fMatrix.cc, fNDArray.cc, file-ops.cc,
+	floatCHOL.cc, floatGEPBAL.cc, lo-sysdep.cc, oct-fftw.cc, oct-md5.cc,
+	oct-rand.cc, regex-match.cc, sparse-dmsolve.cc: Include oct-locbuf.h.
+
 2008-12-04  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DiagArray2.h (DiagArray2<T>): Inherit Array<T> privately.

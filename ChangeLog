@@ -1,3 +1,8 @@
+2008-10-29  Jaroslav Hajek  <highegg@gmail.com>
+
+	* configure.in: Remove the OCTAVE_LOCAL_BUFFER stuff (moved to
+	liboctave).
+
 2008-12-04  Jaroslav Hajek  <highegg@gmail.com>
 
 	* NEWS: Document more new features.

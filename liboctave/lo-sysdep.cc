@@ -48,6 +48,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "pathlen.h"
 #include "lo-sysdep.h"
 #include "str-vec.h"
+#include "oct-locbuf.h"
 
 std::string
 octave_getcwd (void)

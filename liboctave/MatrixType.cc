@@ -33,6 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "dSparse.h"
 #include "CSparse.h"
 #include "oct-spparms.h"
+#include "oct-locbuf.h"
 
 // FIXME There is a large code duplication here
 

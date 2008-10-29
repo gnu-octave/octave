@@ -42,6 +42,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-map.h"
 
 #include "oct-sparse.h"
+#include "oct-locbuf.h"
 
 #ifdef IDX_TYPE_LONG
 #define AMD_NAME(name) amd_l ## name

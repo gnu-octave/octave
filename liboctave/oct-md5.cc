@@ -30,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-error.h"
 #include "oct-md5.h"
 #include "md5.h"
+#include "oct-locbuf.h"
  
 std::string
 oct_md5 (const std::string str)

@@ -35,6 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "data-conv.h"
 #include "lo-error.h"
 #include "lo-ieee.h"
+#include "oct-locbuf.h"
 
 template void swap_bytes<2> (volatile void *, int);
 template void swap_bytes<4> (volatile void *, int);

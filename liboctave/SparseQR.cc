@@ -27,6 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "lo-error.h"
 #include "SparseQR.h"
+#include "oct-locbuf.h"
 
 SparseQR::SparseQR_rep::SparseQR_rep (const SparseMatrix& a, int order)
 {

@@ -32,6 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "SparseCmplxQR.h"
 #include "MatrixType.h"
 #include "oct-sort.h"
+#include "oct-locbuf.h"
 
 template <class T>
 static MSparse<T>

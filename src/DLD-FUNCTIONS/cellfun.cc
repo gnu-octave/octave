@@ -29,6 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <list>
 
 #include "lo-mappers.h"
+#include "oct-locbuf.h"
 
 #include "Cell.h"
 #include "oct-map.h"

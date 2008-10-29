@@ -34,6 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-mappers.h"
 #include "mx-base.h"
 #include "mach-info.h"
+#include "oct-locbuf.h"
 
 #include "gripes.h"
 #include "oct-obj.h"

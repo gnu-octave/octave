@@ -29,6 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <vector>
 
 #include "file-ops.h"
+#include "oct-locbuf.h"
 
 #include "defun.h"
 #include "error.h"

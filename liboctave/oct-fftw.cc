@@ -32,6 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-error.h"
 #include "oct-fftw.h"
 #include "quit.h"
+#include "oct-locbuf.h"
 
 // Helper class to create and cache fftw plans for both 1d and
 // 2d. This implementation defaults to using FFTW_ESTIMATE to create

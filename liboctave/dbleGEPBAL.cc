@@ -31,6 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "dbleGEPBAL.h"
 #include "Array-util.h"
 #include "f77-fcn.h"
+#include "oct-locbuf.h"
 
 extern "C"
 {

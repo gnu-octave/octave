@@ -1932,32 +1932,6 @@ typedef int sig_atomic_t;
 #define OCTAVE_HAVE_SIG_JUMP
 #endif
 
-/* Always use vector<T>, since we sometimes allocate large chunks
-   of memory and that can cause trouble due to stack size limits.
-
-   Note that using auto_ptr is not appropriate because it uses delete,
-   not delete[] and we need the latter to properly handle arrays
-   allocated with new[size].
-
-   Use < T > instead of <T> to avoid problems if T is a template type
-   (say, foo<int>) and the preprocessor fails to insert a space and
-   generates <foo<int>>.
-
-#if defined (HAVE_DYNAMIC_AUTO_ARRAYS)
-
-#define OCTAVE_LOCAL_BUFFER(T, buf, size) \
-  T buf[size]
-
-#else
-
-*/
-
-#define OCTAVE_LOCAL_BUFFER(T, buf, size) \
-  std::vector< T > buf ## _vector (size); \
-  T *buf = ((size) > 0 ? &(buf ## _vector[0]) : 0)
-
-/* #endif */
-
 #if defined (__DECCXX)
 #define __USE_STD_IOSTREAM
 #endif

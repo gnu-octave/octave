@@ -59,6 +59,7 @@ Written by Michael Weitzel <michael.weitzel@@uni-siegen.de>
 #include "error.h"
 #include "gripes.h"
 #include "utils.h"
+#include "oct-locbuf.h"
 
 #include "ov-re-mat.h"
 #include "ov-re-sparse.h"

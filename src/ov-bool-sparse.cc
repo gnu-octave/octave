@@ -36,6 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-bool-mat.h"
 #include "gripes.h"
 #include "ops.h"
+#include "oct-locbuf.h"
 
 #include "ov-re-sparse.h"
 #include "ov-cx-sparse.h"

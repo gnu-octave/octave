@@ -25,6 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "dNDArray.h"
+#include "oct-locbuf.h"
 
 #include "defun-dld.h"
 #include "error.h"

@@ -32,6 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "lo-specfun.h"
 #include "lo-mappers.h"
+#include "oct-locbuf.h"
 
 #include "ov-base.h"
 #include "ov-scalar.h"

@@ -29,6 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "fNDArray.h"
 #include "fCNDArray.h"
 #include "lo-mappers.h"
+#include "oct-locbuf.h"
 
 #include "defun-dld.h"
 #include "error.h"

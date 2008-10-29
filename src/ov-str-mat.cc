@@ -34,6 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-ieee.h"
 #include "mach-info.h"
 #include "mx-base.h"
+#include "oct-locbuf.h"
 
 #include "defun.h"
 #include "byte-swap.h"

@@ -33,6 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "f77-fcn.h"
 #include "lo-ieee.h"
+#include "oct-locbuf.h"
 
 // mxArray must be declared as a class before including mexproto.h.
 class mxArray;

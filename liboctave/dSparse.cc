@@ -35,6 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-mappers.h"
 #include "f77-fcn.h"
 #include "dRowVector.h"
+#include "oct-locbuf.h"
 
 #include "CSparse.h"
 #include "boolSparse.h"

@@ -63,6 +63,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "file-stat.h"
 #include "lo-ieee.h"
 #include "oct-env.h"
+#include "oct-locbuf.h"
 
 #include "defun.h"
 #include "file-io.h"

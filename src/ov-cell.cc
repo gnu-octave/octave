@@ -34,6 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "byte-swap.h"
 #include "lo-utils.h"
 #include "quit.h"
+#include "oct-locbuf.h"
 
 #include "defun.h"
 #include "error.h"

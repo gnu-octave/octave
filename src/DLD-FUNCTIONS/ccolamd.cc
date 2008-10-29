@@ -41,6 +41,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-cx-sparse.h"
 
 #include "oct-sparse.h"
+#include "oct-locbuf.h"
 
 #ifdef IDX_TYPE_LONG
 #define CCOLAMD_NAME(name) ccolamd_l ## name

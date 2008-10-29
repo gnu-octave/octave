@@ -38,6 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "randpoisson.h"
 #include "randgamma.h"
 #include "mach-info.h"
+#include "oct-locbuf.h"
 
 extern "C"
 {

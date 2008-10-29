@@ -27,6 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #if defined (HAVE_OPENGL)
 
 #include <lo-mappers.h>
+#include "oct-locbuf.h"
 #include "gl-render.h"
 
 #define LIGHT_MODE GL_FRONT_AND_BACK

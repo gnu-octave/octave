@@ -1,3 +1,17 @@
+2008-10-29  Jaroslav Hajek  <highegg@gmail.com>
+	* file-io.cc, gl-render.cc, load-save.cc, ls-hdf5.cc, ls-mat4.cc,
+	ls-mat5.cc, ls-oct-binary.cc, mex.cc, oct.h, ov-base-int.cc,
+	ov-bool-mat.cc, ov-bool-sparse.cc, ov-cell.cc, ov-class.cc,
+	ov-cx-mat.cc, ov-cx-sparse.cc, ov-fcn-handle.cc, ov-fcn-inline.cc,
+	ov-flt-cx-mat.cc, ov-flt-re-mat.cc, ov-re-mat.cc, ov-re-sparse.cc,
+	ov-str-mat.cc, ov-struct.cc, toplev.cc,
+	DLD-FUNCTIONS/__lin_interpn__.cc, DLD-FUNCTIONS/amd.cc,
+	DLD-FUNCTIONS/ccolamd.cc, DLD-FUNCTIONS/cellfun.cc,
+	DLD-FUNCTIONS/colamd.cc, DLD-FUNCTIONS/gcd.cc,
+	DLD-FUNCTIONS/matrix_type.cc, DLD-FUNCTIONS/regexp.cc,
+	DLD-FUNCTIONS/symbfact.cc, DLD-FUNCTIONS/symrcm.cc: 
+	Include oct-locbuf.h.
+
 2008-12-05  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-base-diag.cc (save_ascii, load_ascii): Save natively.

@@ -50,6 +50,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "quit.h"
 #include "statdefs.h"
 #include "str-vec.h"
+#include "oct-locbuf.h"
 
 file_ops::static_members *file_ops::static_members::instance = 0;
 

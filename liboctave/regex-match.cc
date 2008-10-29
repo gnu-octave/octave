@@ -30,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "regex-match.h"
 #include "str-vec.h"
+#include "oct-locbuf.h"
 
 regex_match& 
 regex_match::operator = (const regex_match& gm)

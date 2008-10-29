@@ -28,6 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <vector>
 
 #include "lo-error.h"
+#include "oct-locbuf.h"
 
 #include "SparsedbleLU.h"
 #include "oct-spparms.h"

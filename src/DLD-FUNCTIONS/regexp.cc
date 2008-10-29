@@ -39,6 +39,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "str-vec.h"
 #include "quit.h"
 #include "parse.h"
+#include "oct-locbuf.h"
 
 #if defined (HAVE_PCRE)
 #include <pcre.h>

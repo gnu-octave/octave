@@ -50,6 +50,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-env.h"
 #include "quit.h"
 #include "str-vec.h"
+#include "oct-locbuf.h"
 
 #include <defaults.h>
 #include "defun.h"

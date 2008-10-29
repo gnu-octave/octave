@@ -33,6 +33,8 @@ Open Source Initiative (www.opensource.org)
 #include <sstream>
 #include <vector>
 
+#include "oct-locbuf.h"
+
 #include "defun.h"
 #include "error.h"
 #include "gripes.h"

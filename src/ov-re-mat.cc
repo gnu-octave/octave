@@ -38,6 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "mach-info.h"
 #include "mx-base.h"
 #include "quit.h"
+#include "oct-locbuf.h"
 
 #include "defun.h"
 #include "gripes.h"

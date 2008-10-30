@@ -196,7 +196,7 @@ octave_int_arith_base<int64_t, true>::mul (int64_t x, int64_t y)
   // (as above) and impose the sign.
   // FIXME: Can we do something faster if we HAVE_FAST_INT_OPS?
 
-  uint64_t usx = std::abs (x), usy = std::abs (y);
+  uint64_t usx = octave_int_abs (x), usy = octave_int_abs (y);
   bool positive = (x < 0) == (y < 0);
 
   // Get upper words
@@ -454,7 +454,7 @@ INT_DOUBLE_BINOP_DECL (*, int64)
       dblesplit (y, sign, my, e);
       uint32_t w[4];
       sign = (sign != (x.value () < 0));
-      umul128 (std::abs (x.value ()), my, w);
+      umul128 (octave_int_abs (x.value ()), my, w);
       octave_int64 res = octave_int64::zero;
       for (short i = 0; i < 4; i++)
         {

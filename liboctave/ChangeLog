@@ -1,3 +1,10 @@
+2008-10-30  Jaroslav Hajek <highegg@gmail.com>
+
+	* oct-inttypes.h (octave_int_abs): New function.
+	(octave_int_arith_base<T, true>::div): Use octave_int_abs instead of
+	std::abs.
+	* oct-inttypes.cc (octave_int_arith_base<int64_t, true>): Dtto.
+
 2008-10-28  Jaroslav Hajek <highegg@gmail.com>
 
 	* Array-C.cc Array-d.cc Array-f.cc Array-fC.cc Array-i.cc Array-s.cc:

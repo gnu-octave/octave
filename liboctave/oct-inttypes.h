@@ -39,6 +39,12 @@ along with Octave; see the file COPYING.  If not, see
 inline long double xround (long double x) { return roundl (x); }
 #endif
 
+// FIXME: we define this by our own because some compilers, such as MSVC,
+// do not provide std::abs (int64_t) and std::abs (uint64_t). In the future,
+// it should go away in favor of std::abs.
+template <class T>
+inline T octave_int_abs (T x) { return x >= 0 ? x : -x; }
+
 // Query for an integer type of certain sizeof, and signedness.
 template<int qsize, bool qsigned>
 struct query_integer_type
@@ -694,7 +700,7 @@ public:
           else
             {
               z = x / y;
-              T w = -std::abs (x % y); // Can't overflow, but std::abs (x) can!
+              T w = -octave_int_abs (x % y); // Can't overflow, but std::abs (x) can!
               if (w <= y - w) 
                 z -= 1 - (signbit (x) << 1);
             }
@@ -702,7 +708,8 @@ public:
       else
         {
           z = x / y;
-          T w = std::abs (x % y); // Can't overflow, but std::abs (x) can!
+          // FIXME: this is a workaround due to MSVC's absence of std::abs (int64_t).
+          T w = octave_int_abs (x % y); // Can't overflow, but std::abs (x) can!
           if (w >= y - w) 
             z += 1 - (signbit (x) << 1);
         }

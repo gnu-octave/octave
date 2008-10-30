@@ -369,7 +369,7 @@ width 0.6pt \tabskip=0pt\cr
 & Operation && Method && Description &\cr
 \noalign{\hrule}
 & $a + b$ && plus (a, b) && Binary addition operator&\cr
-& $a - b$ && plus (a, b) && Binary subtraction operator&\cr
+& $a - b$ && minus (a, b) && Binary subtraction operator&\cr
 & $+ a$ && uplus (a) && Unary addition operator&\cr
 & $- a$ && uminus (a) && Unary subtraction operator&\cr
 & $a .* b$ && times (a, b) && Element-wise multiplication operator&\cr
@@ -407,7 +407,7 @@ width 0.6pt \tabskip=0pt\cr
 @multitable @columnfractions .1 .20 .20 .40 .1
 @item @tab Operation @tab Method @tab Description @tab
 @item @tab a + b @tab plus (a, b) @tab Binary addition @tab
-@item @tab a - b$ @tab plus (a, b) @tab Binary subtraction operator @tab
+@item @tab a - b$ @tab minus (a, b) @tab Binary subtraction operator @tab
 @item @tab + a$ @tab uplus (a) @tab Unary addition operator @tab
 @item @tab - a$ @tab uminus (a) @tab Unary subtraction operator @tab
 @item @tab a .* b$ @tab times (a, b) @tab Element-wise multiplication operator @tab

@@ -6,7 +6,7 @@
 	
 	* interpreter/plot.txi: Document contour groups.
 
-2008-10-29  Thorsten Meyer  <tmeyier@gmx.de>
+2008-10-29  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
 	* interpreter/system.txi, interpreter/poly.txi,
 	interpreter/arith.txi, interpreter/poly.txi,

@@ -1,3 +1,7 @@
+2008-10-30  John W. Eaton  <jwe@octave.org>
+
+	* oct-map.cc (Octave_map::index): Copy key_list.
+
 2008-10-30  David Bateman  <dbateman@free.fr>
 
 	* graphic.h.in (axes::properties): Add keyreverse property.

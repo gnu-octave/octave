@@ -487,6 +487,9 @@ Octave_map::index (const octave_value_list& idx, bool resize_ok) const
 
 	  retval.assign (key(p), tmp);
 	}
+
+      // Preserve order of keys.
+      retval.key_list = key_list;
     }
   else
     retval = *this;
@@ -509,6 +512,9 @@ Octave_map::index (idx_vector& i, int resize_ok, const octave_value& rfv) const
       retval.assign (key (p), tmp);
     }
 
+  // Preserve order of keys.
+  retval.key_list = key_list;
+
   return retval;
 }
 
@@ -528,6 +534,9 @@ Octave_map::index (idx_vector& i, idx_vector& j, int resize_ok,
       retval.assign (key (p), tmp);
     }
 
+  // Preserve order of keys.
+  retval.key_list = key_list;
+
   return retval;
 }
 
@@ -546,6 +555,9 @@ Octave_map::index (Array<idx_vector>& ra_idx, int resize_ok,
 
       retval.assign (key (p), tmp);
     }
+
+  // Preserve order of keys.
+  retval.key_list = key_list;
 
   return retval;
 }

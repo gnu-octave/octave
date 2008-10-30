@@ -1,5 +1,9 @@
 2008-10-30  David Bateman  <dbateman@free.fr>
 
+	* faq/Octave-FAQ.texi: Document improved indexing and add an faq for
+	the compatibility of mldivide/mrdivide for singualr, under- and 
+	over-determined matrices.
+	
 	* interpreter/plot.txi: Document contour groups.
 
 2008-10-29  Thorsten Meyer  <tmeyier@gmx.de>

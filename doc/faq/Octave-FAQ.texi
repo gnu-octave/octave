@@ -251,6 +251,10 @@ transpose is never explicitly formed but a flag is rather passed to the
 underlying LAPACK code.
 
 @item Single precision type
+
+@item Improved array indexing
+The underlying code used for indexing of arrays has been completely
+rewritten and so the indexing of arrays is now significantly faster.
 @end itemize
 
 
@@ -861,7 +865,7 @@ ones).
 @item Block comments
 Block comments denoted by "%@{" and "%@}" markers are supported by
 Octave with some limitations. The major limitation is that block
-comments are not supported with [] or @{@}.
+comments are not supported within [] or @{@}.
 
 @item Mat-File format
 There are some differences in the mat v5 file format accepted by
@@ -980,6 +984,80 @@ in this context even if you can use logical gymnastics to convince
 yourself that "all" the elements of a matrix that doesn't actually have
 any elements are nonzero. Octave however duplicates this behavior for if
 statements containing empty matrices.
+
+@item Solvers for singular, under- and over-determined matrices
+
+Matlab's solvers as used by the operators mldivide (\) and mrdivide (/),
+use a different approach than Octave's in the case of singular, under-, 
+or over-determined matrices. In the case of a singular matrix, Matlab
+returns the result given by the LU decomposition, even though the underlying
+solver has flagged the result as erroneous. Octave has made the choice
+of falling back to a minimum norm solution of matrices that have been
+flagged as singular which arguably is a better result for these cases.
+
+In the case of under- or over-determined matrices, Octave continues to
+use a minimum norm solution, whereas Matlab uses an approach that is
+equivalent to
+
+@example
+@group
+function x = mldivide (A, b)
+  [Q, R, E] = qr(A);
+  x = [A \ b, E(:, 1:m) * (R(:, 1:m) \ (Q' * b))]
+end
+@end group
+@end example
+
+@noindent
+While this approach is certainly faster and uses less memory than
+Octave's minimum norm approach, this approach seems to be inferior in
+other ways.
+
+A numerical question arises: how big can the null space component become,
+relative to the minimum-norm solution? Can it be nicely bounded, or can it be
+arbitrarily big? Consider this example:
+
+@example
+@group
+m = 10; 
+n = 10000; 
+A = ones(m, n) + 1e-6 * randn(m,n); 
+b = ones(m, 1) + 1e-6 * randn(m,1); 
+norm(A \ b)
+@end group
+@end example
+
+@noindent
+while Octave's minimum-norm values are around 3e-2, Matlab's results
+are 50-times larger. For another issue, try this code:
+
+@example
+@group
+m = 5; 
+n = 100; 
+j = floor(m * rand(1, n)) + 1; 
+b = ones(m, 1);
+A = zeros(m, n);
+A(sub2ind(size(A),j,1:n)) = 1;
+x = A \ b; 
+[dummy,p] = sort(rand(1,n)); 
+y = A(:,p)\b; 
+norm(x(p)-y)
+@end group
+@end example
+
+@noindent
+It shows that unlike in Octave, mldivide in Matlab is not invariant
+with respect to column permutations. If there are multiple columns of
+the same norm, permuting columns of the matrix gets you different
+result than permuting the solution vector. This will surprise many
+users.
+
+Since the mldivide (\) and mrdivide (/) operators are often part of a more 
+complex expression, where there is no room to react to warnings or flags, it 
+should prefer intelligence (robustness) to speed, and so the Octave developers
+are firmly of the opinion that Octave's approach for singular, under- and
+over-determined matrices is a better choice that Matlab's
 
 @item Octave extensions
 The extensions in Octave over @sc{Matlab} syntax are

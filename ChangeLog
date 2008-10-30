@@ -1,3 +1,7 @@
+2008-10-30  David Bateman  <dbateman@free.fr>
+
+	* NEWS: Minor update to document improved indexing code.
+
 2008-10-23  Jason Riedy  <jason@acm.org>
 
 	* configure.in: Take care to use FT2_CFLAGS when checking

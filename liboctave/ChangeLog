@@ -1,3 +1,9 @@
+2008-10-29  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* lo-specfun.cc (cbesj, cbesy, cbesi, cbesk, cbesh1, cbesh2): Do not
+	use std::complex::real() and std::complex::imag() as l-value, this is
+	not supported under MSVC.
+
 2008-10-28  John W. Eaton  <jwe@octave.org>
 
 	* lo-specfun.cc: Fix prototypes for the Fortran subroutines cbesh,

@@ -1299,13 +1299,12 @@ cbesj (const FloatComplex& z, float alpha, int kode, octave_idx_type& ierr)
 
       if (kode != 2)
 	{
-	  float expz = exp (std::abs (imag (z))); 
-	  y.real () *= expz;
-	  y.imag () *= expz;
+	  float expz = exp (std::abs (imag (z)));
+	  y *= expz;
 	}
 
       if (imag (z) == 0.0 && real (z) >= 0.0)
-	y.imag () = 0.0;
+	y = FloatComplex (y.real (), 0.0);
 
       retval = bessel_return_value (y, ierr);
     }
@@ -1363,12 +1362,11 @@ cbesy (const FloatComplex& z, float alpha, int kode, octave_idx_type& ierr)
 	  if (kode != 2)
 	    {
 	      float expz = exp (std::abs (imag (z)));
-	      y.real () *= expz;
-	      y.imag () *= expz;
+	      y *= expz;
 	    }
 
 	  if (imag (z) == 0.0 && real (z) >= 0.0)
-	    y.imag () = 0.0;
+	    y = FloatComplex (y.real (), 0.0);
 	}
 
       return bessel_return_value (y, ierr);
@@ -1421,7 +1419,7 @@ cbesi (const FloatComplex& z, float alpha, int kode, octave_idx_type& ierr)
 	}
 
       if (imag (z) == 0.0 && real (z) >= 0.0)
-	y.imag () = 0.0;
+	y = FloatComplex (y.real (), 0.0);
 
       retval = bessel_return_value (y, ierr);
     }
@@ -1481,14 +1479,14 @@ cbesk (const FloatComplex& z, float alpha, int kode, octave_idx_type& ierr)
 	      float rexpz = real (expz);
 	      float iexpz = imag (expz);
 
-	      float tmp = real (y) * rexpz - imag (y) * iexpz;
+	      float tmp_r = real (y) * rexpz - imag (y) * iexpz;
+	      float tmp_i = real (y) * iexpz + imag (y) * rexpz;
 
-	      y.imag () = real (y) * iexpz + imag (y) * rexpz;
-	      y.real () = tmp;
+	      y = FloatComplex (tmp_r, tmp_i);
 	    }
 
 	  if (imag (z) == 0.0 && real (z) >= 0.0)
-	    y.imag () = 0.0;
+	    y = FloatComplex (y.real (), 0.0);
 	}
 
       retval = bessel_return_value (y, ierr);
@@ -1523,10 +1521,10 @@ cbesh1 (const FloatComplex& z, float alpha, int kode, octave_idx_type& ierr)
 	  float rexpz = real (expz);
 	  float iexpz = imag (expz);
 
-	  float tmp = real (y) * rexpz - imag (y) * iexpz;
+	  float tmp_r = real (y) * rexpz - imag (y) * iexpz;
+	  float tmp_i = real (y) * iexpz + imag (y) * rexpz;
 
-	  y.imag () = real (y) * iexpz + imag (y) * rexpz;
-	  y.real () = tmp;
+	  y = FloatComplex (tmp_r, tmp_i);
 	}
 
       retval = bessel_return_value (y, ierr);
@@ -1565,10 +1563,10 @@ cbesh2 (const FloatComplex& z, float alpha, int kode, octave_idx_type& ierr)
 	  float rexpz = real (expz);
 	  float iexpz = imag (expz);
 
-	  float tmp = real (y) * rexpz - imag (y) * iexpz;
+	  float tmp_r = real (y) * rexpz - imag (y) * iexpz;
+	  float tmp_i = real (y) * iexpz + imag (y) * rexpz;
 
-	  y.imag () = real (y) * iexpz + imag (y) * rexpz;
-	  y.real () = tmp;
+	  y = FloatComplex (tmp_r, tmp_i);
 	}
 
       retval = bessel_return_value (y, ierr);

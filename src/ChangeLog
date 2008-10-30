@@ -1,3 +1,9 @@
+2008-10-30  David Bateman  <dbateman@free.fr>
+
+	* graphic.h.in (axes::properties): Add keyreverse property.
+	* graphic.cc (axes::properties::set_defaults): Initialize
+	keyreverse property.
+
 2008-10-28  Jaroslav Hajek <highegg@gmail.com>
 
 	* Cell.h (Cell::assign (const Array<idx_vector>&, ...),

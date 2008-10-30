@@ -130,6 +130,10 @@ function legend (varargin)
 	    set (ca, "key", "on", "keybox", "on");
 	  case "boxoff"
 	    set (ca, "keybox", "off");
+	  case "left"
+	    set (ca, "keyreverse", "off")
+	  case "right"
+	    set (ca, "keyreverse", "on")
 	  otherwise
 	    typ = get (kids (k), "type");
 	    while (k <= nkids && ! strcmp (typ, "line") &&

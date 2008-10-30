@@ -1053,6 +1053,11 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
       else
 	box = "nobox";
       endif
+      if (strcmpi (axis_obj.keyreverse, "on"))
+	reverse = "reverse";
+      else
+	reverse = "noreverse";
+      endif
       inout = "inside";
       keypos = axis_obj.keypos;
       if (ischar (keypos))
@@ -1099,7 +1104,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 	otherwise
 	  pos = "";
       endswitch
-      fprintf (plot_stream, "set key %s %s %s;\n", inout, pos, box);
+      fprintf (plot_stream, "set key %s %s %s %s;\n", inout, pos, box, reverse);
     else
       fputs (plot_stream, "unset key;\n");
     endif

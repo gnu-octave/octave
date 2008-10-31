@@ -1,3 +1,16 @@
+2008-09-28  Jaroslav Hajek <highegg@gmail.com>
+
+	* optimization/fzero.m: Replace tabs by spaces.
+
+2008-09-28  Jaroslav Hajek <highegg@gmail.com>
+
+	* optimization/fzero.m: Simplify exception handling.
+
+2008-10-31  Jaroslav Hajek  <highegg@gmail.com>
+
+	* optimization/fzero.m: New function file.
+	* optimization/Makefile.in: Add it.
+
 2008-10-31  Jaroslav Hajek  <highegg@gmail.com>
 
 	* optimization/optimset.m: Don't include empty options in option

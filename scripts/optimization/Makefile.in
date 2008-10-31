@@ -34,6 +34,7 @@ INSTALL_DATA = @INSTALL_DATA@
 
 SOURCES = \
   __fsolve_defopts__.m \
+  fzero.m \
   glpk.m \
   glpkmex.m \
   lsqnonneg.m \

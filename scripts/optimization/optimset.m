@@ -45,18 +45,16 @@ function retval = optimset (varargin)
       tmp = opts';
       disp (struct (tmp{:}));
     else
-      ## Return structure with empty values.
-      t1 = opts(:,1)';
-      t2 = cell (size (t1));
-      tmp = [t1; t2];
-      retval = struct (tmp{:});
+      ## Return empty structure.
+      ## We're incompatible with Matlab at this point.
+      retval = struct ();
     endif
   elseif (nargs == 1 && ischar (varargin{1}))
     ## Return defaults for named function.
     fcn = varargin{1};
     optfcn = sprintf ("__%s_defopts__", fcn);
     if (exist (optfcn))
-      retval = optimset (optimset (), feval (optfcn));
+      retval = optimset (struct (), feval (optfcn));
     else
       error ("no defaults for function `%s'", fcn);
     endif
@@ -80,7 +78,7 @@ function retval = optimset (varargin)
   elseif (rem (nargs, 2) == 0)
     ## Create struct.  Default values are replaced by those specified by
     ## name/value pairs.
-    retval = optimset (optimset (), struct (varargin{:}));
+    retval = optimset (struct (), struct (varargin{:}));
   else
     print_usage ();
   endif

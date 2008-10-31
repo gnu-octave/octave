@@ -38,6 +38,7 @@ SOURCES = \
   glpkmex.m \
   lsqnonneg.m \
   optimset.m \
+  optimget.m \
   qp.m \
   sqp.m
 

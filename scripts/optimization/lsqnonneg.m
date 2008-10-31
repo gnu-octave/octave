@@ -67,10 +67,7 @@ function [x, resnorm, residual, exitflag, output, lambda] = lsqnonneg (c, d, x =
     x = zeros (columns (c), 1);
   endif
 
-  if (isempty (options))
-    ## FIXME: what are the correct defaults?
-    options = optimset ("maxiter", 1e5, "tolx", 1e-8);
-  endif
+  MaxIter = optimget (options, "MaxIter", 1e5);
 
   ## Initialize the values.
   p = [];
@@ -80,7 +77,7 @@ function [x, resnorm, residual, exitflag, output, lambda] = lsqnonneg (c, d, x =
 
   iter = 0;
   ## LH3: test for completion.
-  while (! isempty (z) && any (w(z) > 0) && iter < options.MaxIter)
+  while (! isempty (z) && any (w(z) > 0) && iter < MaxIter)
     ## LH4: find the maximum gradient.
     idx = find (w == max (w));
     if (numel (idx) > 1)
@@ -93,7 +90,7 @@ function [x, resnorm, residual, exitflag, output, lambda] = lsqnonneg (c, d, x =
     p(end+1) = idx;
 
     newx = false;
-    while (! newx && iter < options.MaxIter)
+    while (! newx && iter < MaxIter)
       iter++;
 
       ## LH6: compute the positive matrix and find the min norm solution
@@ -132,7 +129,7 @@ function [x, resnorm, residual, exitflag, output, lambda] = lsqnonneg (c, d, x =
     residual = d-C*x;
   endif
   exitflag = iter;
-  if (nargout > 3 && iter >= options.MaxIter)
+  if (nargout > 3 && iter >= MaxIter)
     exitflag = 0;
   endif
   if (nargout > 4)

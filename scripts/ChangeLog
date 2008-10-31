@@ -1,3 +1,11 @@
+2008-10-31  Jaroslav Hajek  <highegg@gmail.com>
+
+	* optimization/optimset.m: Don't include empty options in option
+	structure.
+	* optimization/optimget.m: New function file.
+	* optimization/Makefile.in: Add it.
+	* optimization/lsqnonneg.m: Query options using optimget.
+
 2008-10-31  Jaroslav Hajek <highegg@gmail.com>
 
 	* linear-algebra/__norm__.m: Remove.

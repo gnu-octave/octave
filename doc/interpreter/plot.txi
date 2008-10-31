@@ -1765,7 +1765,7 @@ The distance between labels on a single contour in points.
 @item linecolor
 The properties of the contour lines. The properties @code{linewidth} and
 @code{linestyle} are similar to the correponding properties for lines. The
-property @code{linecolor} is a color property (@xref{Colors}), that can also
+property @code{linecolor} is a color property (@pxref{Colors}), that can also
 have the values of "none" or "auto". If @code{linecolor} is "none", then no
 contour line is drawn. If @code{linecolor} is "auto" then the line color is
 determined by the colormap.

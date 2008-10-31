@@ -198,6 +198,7 @@ automatically from the functions in the package and the
 @code{Categories} keyword in the @code{DESCRIPTION} file.
 @xref{The INDEX file}, for details on this file.
 
+@anchor{doc-PKG_ADD}
 @item package/PKG_ADD
 An optional file that includes commands that are run when the package
 is added to the users path. Note that @code{PKG_ADD} directives in the

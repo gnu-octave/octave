@@ -22,7 +22,7 @@
 ## @var{dir} is not specified, it defaults to the current directory. If
 ## the @var{gzfile} is a directory, all files in the directory will be
 ## recursively gunzipped.
-## @seealso{unpack, bzip2, bunzip2, tar, untar, gzip, gunzip, zip, unzip}
+## @seealso{unpack, bunzip2, tar, untar, gzip, gunzip, zip, unzip}
 ## @end deftypefn
 
 ## Author: Bill Denney <denney@seas.upenn.edu>

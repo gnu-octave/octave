@@ -27,7 +27,7 @@
 ## @var{filetype} to unpack must also be specified.
 ##
 ## The @var{files} includes the entire path to the output files.
-## @seealso{bzip2,bunzip2,tar,untar,gzip,gunzip,zip,unzip}
+## @seealso{bunzip2, tar, untar, gzip, gunzip, zip, unzip}
 ## @end deftypefn
 
 ## Author: Bill Denney <denney@seas.upenn.edu>

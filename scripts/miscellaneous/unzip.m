@@ -20,7 +20,7 @@
 ## @deftypefn {Function File} {} unzip (@var{zipfile}, @var{dir})
 ## Unpack the ZIP archive @var{zipfile} to the directory @var{dir}.
 ## If @var{dir} is not specified, it defaults to the current directory.
-## @seealso{unpack, bzip2, bunzip2, tar, untar, gzip, gunzip, zip}
+## @seealso{unpack, bunzip2, tar, untar, gzip, gunzip, zip}
 ## @end deftypefn
 
 ## Author: Søren Hauberg <hauberg@gmail.com>

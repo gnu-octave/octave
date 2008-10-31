@@ -3073,6 +3073,7 @@ public:
 	xdata.add_constraint (2);
 	ydata.add_constraint (2);
 	cdata.add_constraint ("double");
+	cdata.add_constraint ("logical");
 	cdata.add_constraint ("uint8");
 	cdata.add_constraint (dim_vector (-1, -1));
 	cdata.add_constraint (dim_vector (-1, -1, 3));

@@ -4,6 +4,9 @@
 
 2008-10-31  David Bateman  <dbateman@free.fr>
 
+	* graphics.h.in (void image::init (void)): Add a constraint for
+	logical cdata.
+	
 	* graphics.h.in (base_property::delete_listener): New method.
 	(property::delete_listener): New method.
 	(base_graphics_object::delete_listener): New method.

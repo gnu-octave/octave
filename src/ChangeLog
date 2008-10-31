@@ -1,3 +1,12 @@
+2008-10-31  Jaroslav Hajek <highegg@gmail.com>
+
+	* xnorm.cc: New source.
+	* xnorm.h: New header file.
+	* Makefile.in: Include xnorm.cc in the build process.
+	* data.cc (Fnorm): Call xnorm, xcolnorms, xrownorms or xfrobnorm
+	to do the actual work.
+
+
 2008-10-30  John W. Eaton  <jwe@octave.org>
 
 	* oct-map.cc (Octave_map::index): Copy key_list.

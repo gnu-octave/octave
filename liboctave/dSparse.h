@@ -121,6 +121,12 @@ SparseMatrix : public MSparse<double>
     }
   SparseMatrix hermitian (void) const { return transpose (); }
 
+  // extract row or column i.
+
+  RowVector row (octave_idx_type i) const;
+
+  ColumnVector column (octave_idx_type i) const;
+
 private:
   SparseMatrix dinverse (MatrixType &mattyp, octave_idx_type& info, 
 			 double& rcond, const bool force = false, 

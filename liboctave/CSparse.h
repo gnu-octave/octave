@@ -127,6 +127,12 @@ public:
 
   friend SparseComplexMatrix conj (const SparseComplexMatrix& a);
 
+  // extract row or column i.
+
+  ComplexRowVector row (octave_idx_type i) const;
+
+  ComplexColumnVector column (octave_idx_type i) const;
+
 private:
   SparseComplexMatrix dinverse (MatrixType &mattyp, octave_idx_type& info, 
 				double& rcond, const bool force = false, 

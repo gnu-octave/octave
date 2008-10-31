@@ -1,3 +1,7 @@
+2008-10-31  Jaroslav Hajek <highegg@gmail.com>
+
+	* linear-algebra/__norm__.m: Remove.
+
 2008-10-31  David Bateman  <dbateman@free.fr>
 
 	* plot/__contour__.m: Exclude infinite values when calculating contour

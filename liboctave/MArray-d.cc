@@ -26,23 +26,16 @@ along with Octave; see the file COPYING.  If not, see
 
 // Instantiate MArrays of double values.
 
-#include "f77-fcn.h"
-
-extern "C"
-{
-  F77_RET_T
-  F77_FUNC (xdnrm2, XDNRM2) (const octave_idx_type&, const double*,
-			     const octave_idx_type&, double&);
-}
-
 #include "MArray.h"
 #include "MArray.cc"
+#include "dColVector.h"
+#include "oct-norm.h"
 
 template <>
 OCTAVE_API double
 MArray<double>::norm (double p) const
 {
-  MARRAY_NORM_BODY (double, double, xdnrm2, XDNRM2, octave_NaN);
+  return xnorm (ColumnVector (*this), p);
 }
 
 template class OCTAVE_API MArray<double>;

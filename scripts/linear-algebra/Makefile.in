@@ -33,7 +33,7 @@ INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
-SOURCES = __norm__.m commutation_matrix.m cond.m condest.m cross.m \
+SOURCES = commutation_matrix.m cond.m condest.m cross.m \
   dmult.m dot.m duplication_matrix.m housh.m krylov.m krylovb.m logm.m \
   null.m onenormest.m orth.m planerot.m qzhess.m rank.m rref.m subspace.m \
   trace.m vec.m vech.m

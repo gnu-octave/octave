@@ -28,23 +28,17 @@ along with Octave; see the file COPYING.  If not, see
 // Instantiate MArrays of FloatComplex values.
 
 #include "oct-cmplx.h"
-#include "f77-fcn.h"
-
-extern "C"
-{
-  F77_RET_T
-  F77_FUNC (xscnrm2, XSCNRM2) (const octave_idx_type&, const FloatComplex*,
-			       const octave_idx_type&, float&);
-}
 
 #include "MArray.h"
 #include "MArray.cc"
+#include "fCColVector.h"
+#include "oct-norm.h"
 
 template <>
 OCTAVE_API float
 MArray<FloatComplex>::norm (float p) const
 {
-  MARRAY_NORM_BODY (FloatComplex, float, xscnrm2, XSCNRM2, octave_Float_NaN);
+  return xnorm (FloatComplexColumnVector (*this));
 }
 
 template class OCTAVE_API MArray<FloatComplex>;

@@ -62,6 +62,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 #include "variables.h"
 #include "pager.h"
+#include "xnorm.h"
 
 #if ! defined (HAVE_HYPOTF) && defined (HAVE__HYPOTF)
 #define hypotf _hypotf
@@ -4574,11 +4575,11 @@ a minimum of two dimensions and row vectors are left unchanged.\n\
 
 DEFUN (norm, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Function File} {} norm (@var{a}, @var{p})\n\
+@deftypefn {Function File} {} norm (@var{a}, @var{p}, @var{opt})\n\
 Compute the p-norm of the matrix @var{a}.  If the second argument is\n\
 missing, @code{p = 2} is assumed.\n\
 \n\
-If @var{a} is a matrix:\n\
+If @var{a} is a matrix (or sparse matrix):\n\
 \n\
 @table @asis\n\
 @item @var{p} = @code{1}\n\
@@ -4594,6 +4595,10 @@ Infinity norm, the largest row sum of the absolute values of @var{a}.\n\
 @item @var{p} = @code{\"fro\"}\n\
 @cindex Frobenius norm\n\
 Frobenius norm of @var{a}, @code{sqrt (sum (diag (@var{a}' * @var{a})))}.\n\
+\n\
+@item other @var{p}, @code{@var{p} > 1}\n\
+@cindex general p-norm \n\
+maximum @code{norm (A*x, p)} such that @code{norm (x, p) == 1}\n\
 @end table\n\
 \n\
 If @var{a} is a vector or a scalar:\n\
@@ -4608,20 +4613,27 @@ If @var{a} is a vector or a scalar:\n\
 @item @var{p} = @code{\"fro\"}\n\
 Frobenius norm of @var{a}, @code{sqrt (sumsq (abs (a)))}.\n\
 \n\
-@item other\n\
+@item @var{p} = 0\n\
+Hamming norm - the number of nonzero elements.\n\
+\n\
+@item other @var{p}, @code{@var{p} > 1}\n\
 p-norm of @var{a}, @code{(sum (abs (@var{a}) .^ @var{p})) ^ (1/@var{p})}.\n\
+\n\
+@item other @var{p} @code{@var{p} < 1}\n\
+the p-pseudonorm defined as above.\n\
 @end table\n\
+\n\
+If @code{\"rows\"} is given as @var{opt}, the norms of all rows of the matrix @var{a} are\n\
+returned as a column vector. Similarly, if @code{\"columns\"} or @code{\"cols\"} is passed\n\
+column norms are computed.\n\
 @seealso{cond, svd}\n\
 @end deftypefn")
 {
-  // Currently only handles vector norms for full double/complex
-  // vectors internally.  Other cases are handled by __norm__.m.
-
   octave_value_list retval;
 
   int nargin = args.length ();
 
-  if (nargin == 1 || nargin == 2)
+  if (nargin >= 1 && nargin <= 3)
     {
       octave_value x_arg = args(0);
 
@@ -4634,103 +4646,54 @@ p-norm of @var{a}, @code{(sum (abs (@var{a}) .^ @var{p})) ^ (1/@var{p})}.\n\
 	}
       else if (x_arg.ndims () == 2)
 	{
-	  if ((x_arg.rows () == 1 || x_arg.columns () == 1)
-	      && ! (x_arg.is_sparse_type () || x_arg.is_integer_type ()))
-	    {
-	      double p_val = 2;
+          enum { sfmatrix, sfcols, sfrows, sffrob, sfinf } strflag = sfmatrix;
+          if (nargin > 1 && args(nargin-1).is_string ())
+            {
+              std::string str = args(nargin-1).string_value ();
+              if (str == "cols" || str == "columns")
+                strflag = sfcols;
+              else if (str == "rows")
+                strflag = sfrows;
+              else if (str == "fro")
+                strflag = sffrob;
+              else if (str == "inf")
+                strflag = sfinf;
+              else
+                error ("norm: unrecognized option: %s", str.c_str ());
+              // we've handled the last parameter, so act as if it was removed
+              nargin --;
+            }
+          else if (nargin > 1 && ! args(1).is_scalar_type ())
+            gripe_wrong_type_arg ("norm", args(1), true);
 
-	      if (nargin == 2)
-		{
-		  octave_value p_arg = args(1);
-
-		  if (p_arg.is_string ())
-		    {
-		      std::string p = args(1).string_value ();
-
-		      if (p == "inf")
-			p_val = octave_Inf;
-		      else if (p == "fro")
-			p_val = -1;
-		      else
-			error ("norm: unrecognized norm `%s'", p.c_str ());
-		    }
-		  else
-		    {
-		      p_val = p_arg.double_value ();
-
-		      if (error_state)
-			error ("norm: unrecognized norm value");
-		    }
-		}
-
-	      if (x_arg.is_single_type ())
-		{
-		  if (! error_state)
-		    {
-		      if (x_arg.is_real_type ())
-			{
-			  MArray<float> x (x_arg.float_array_value ());
-
-			  if (! error_state)
-			    retval(0) = x.norm (static_cast<float>(p_val));
-			  else
-			    error ("norm: expecting real vector");
-			}
-		      else
-			{
-			  MArray<FloatComplex> x (x_arg.float_complex_array_value ());
-
-			  if (! error_state)
-			    retval(0) = x.norm (static_cast<float>(p_val));
-			  else
-			    error ("norm: expecting complex vector");
-			}
-		    }
-		}
-	      else
-		{
-		  if (! error_state)
-		    {
-		      if (x_arg.is_real_type ())
-			{
-			  MArray<double> x (x_arg.array_value ());
-
-			  if (! error_state)
-			    retval(0) = x.norm (p_val);
-			  else
-			    error ("norm: expecting real vector");
-			}
-		      else
-			{
-			  MArray<Complex> x (x_arg.complex_array_value ());
-
-			  if (! error_state)
-			    retval(0) = x.norm (p_val);
-			  else
-			    error ("norm: expecting complex vector");
-			}
-		    }
-		}
-	    }
-	  else
-	    retval = feval ("__norm__", args);
+          if (! error_state)
+            {
+              octave_value p_arg = (nargin > 1) ? args(1) : octave_value (2);
+              switch (strflag)
+                {
+                case sfmatrix:
+                  retval(0) = xnorm (x_arg, p_arg);
+                  break;
+                case sfcols:
+                  retval(0) = xcolnorms (x_arg, p_arg);
+                  break;
+                case sfrows:
+                  retval(0) = xrownorms (x_arg, p_arg);
+                  break;
+                case sffrob:
+                  retval(0) = xfrobnorm (x_arg);
+                  break;
+                case sfinf:
+                  retval(0) = xnorm (x_arg, octave_Inf);
+                  break;
+                }
+            }
 	}
       else
 	error ("norm: only valid for 2-D objects");
     }
   else
     print_usage ();
-
-  // Should not return a sparse type
-  if (retval(0).is_sparse_type ())
-    {
-      if (retval(0).type_name () == "sparse matrix") 
-	retval(0) = retval(0).matrix_value ();
-      else if (retval(0).type_name () == "sparse complex matrix")
-	retval(0) = retval(0).complex_matrix_value ();
-      else if (retval(0).type_name () == "sparse bool matrix")
-	retval(0) = retval(0).bool_matrix_value ();
-    }
 
   return retval;
 }

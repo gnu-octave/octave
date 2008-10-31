@@ -515,6 +515,37 @@ SparseMatrix::min (Array2<octave_idx_type>& idx_arg, int dim) const
   return result;
 }
 
+RowVector 
+SparseMatrix::row (octave_idx_type i) const
+{
+  octave_idx_type nc = columns ();
+  RowVector retval (nc, 0);
+
+  for (octave_idx_type j = 0; j < nc; j++)
+    for (octave_idx_type k = cidx (j); k < cidx (j+1); k++)
+      {
+        if (ridx (k) == i)
+          {
+            retval(j) = data (k);
+            break;
+          }
+      }
+
+  return retval;
+}
+
+ColumnVector 
+SparseMatrix::column (octave_idx_type i) const
+{
+  octave_idx_type nr = rows ();
+  ColumnVector retval (nr);
+
+  for (octave_idx_type k = cidx (i); k < cidx (i+1); k++)
+    retval(ridx (k)) = data (k);
+
+  return retval;
+}
+
 SparseMatrix
 SparseMatrix::concat (const SparseMatrix& rb, const Array<octave_idx_type>& ra_idx)
 {

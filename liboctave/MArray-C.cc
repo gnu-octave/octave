@@ -28,23 +28,17 @@ along with Octave; see the file COPYING.  If not, see
 // Instantiate MArrays of Complex values.
 
 #include "oct-cmplx.h"
-#include "f77-fcn.h"
-
-extern "C"
-{
-  F77_RET_T
-  F77_FUNC (xdznrm2, XDZNRM2) (const octave_idx_type&, const Complex*,
-			       const octave_idx_type&, double&);
-}
 
 #include "MArray.h"
 #include "MArray.cc"
+#include "CColVector.h"
+#include "oct-norm.h"
 
 template <>
 OCTAVE_API double
 MArray<Complex>::norm (double p) const
 {
-  MARRAY_NORM_BODY (Complex, double, xdznrm2, XDZNRM2, octave_NaN);
+  return xnorm (ComplexColumnVector (*this), p);
 }
 
 template class OCTAVE_API MArray<Complex>;

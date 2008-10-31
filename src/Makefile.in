@@ -128,7 +128,7 @@ INCLUDES := Cell.h base-list.h builtins.h c-file-ptr-stream.h \
 	pager.h parse.h pr-output.h procstream.h sighandlers.h \
 	siglist.h sparse-xdiv.h sparse-xpow.h symtab.h sysdep.h \
 	token.h toplev.h unwind-prot.h utils.h variables.h \
-	version.h xdiv.h xpow.h \
+	version.h xdiv.h xnorm.h xpow.h \
 	$(OV_INCLUDES) \
 	$(PT_INCLUDES) \
 	$(OV_SPARSE_INCLUDES)
@@ -207,7 +207,7 @@ DIST_SRC := Cell.cc bitfcns.cc c-file-ptr-stream.cc comment-list.cc \
 	parse.y pr-output.cc procstream.cc sighandlers.cc \
 	siglist.c sparse-xdiv.cc sparse-xpow.cc strfns.cc \
 	syscalls.cc symtab.cc sysdep.cc token.cc toplev.cc \
-	unwind-prot.cc utils.cc variables.cc xdiv.cc xpow.cc \
+	unwind-prot.cc utils.cc variables.cc xdiv.cc xnorm.cc xpow.cc \
 	$(OV_SRC) \
 	$(PT_SRC)
 

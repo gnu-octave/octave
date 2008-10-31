@@ -88,9 +88,9 @@ INCLUDES := Bounds.h CollocWt.h DAE.h DAEFunc.h DAERT.h \
 	lo-ieee.h lo-mappers.h lo-math.h lo-specfun.h \
 	lo-sysdep.h lo-utils.h mach-info.h md5.h oct-alloc.h oct-cmplx.h \
 	oct-env.h oct-fftw.h oct-getopt.h oct-group.h oct-inttypes.h \
-	oct-lookup.h oct-md5.h oct-mutex.h oct-passwd.h oct-rand.h oct-rl-edit.h \
-	oct-rl-hist.h oct-shlib.h oct-sort.h oct-spparms.h oct-syscalls.h \
-	oct-sparse.h oct-time.h oct-uname.h \
+	oct-lookup.h oct-md5.h oct-mutex.h oct-norm.h oct-passwd.h \
+	oct-rand.h oct-rl-edit.h oct-rl-hist.h oct-shlib.h oct-sort.h \
+	oct-spparms.h oct-syscalls.h oct-sparse.h oct-time.h oct-uname.h \
 	pathlen.h pathsearch.h prog-args.h \
 	randgamma.h randmtzig.h randpoisson.h regex-match.h \
 	sparse-sort.h statdefs.h str-vec.h \
@@ -148,7 +148,8 @@ LIBOCTAVE_CXX_SOURCES := Bounds.cc CollocWt.cc DASPK.cc DASRT.cc \
 	file-ops.cc file-stat.cc glob-match.cc idx-vector.cc \
 	lo-ieee.cc lo-mappers.cc lo-specfun.cc lo-sysdep.cc \
 	lo-utils.cc mach-info.cc oct-alloc.cc oct-env.cc \
-	oct-fftw.cc oct-group.cc oct-mutex.cc oct-md5.cc oct-passwd.cc oct-rand.cc \
+	oct-fftw.cc oct-group.cc oct-mutex.cc oct-md5.cc \
+	oct-norm.cc oct-passwd.cc oct-rand.cc \
 	oct-shlib.cc oct-spparms.cc oct-syscalls.cc oct-time.cc oct-uname.cc \
 	prog-args.cc regex-match.cc \
 	sparse-sort.cc sparse-util.cc str-vec.cc \

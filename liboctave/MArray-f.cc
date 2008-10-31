@@ -26,23 +26,16 @@ along with Octave; see the file COPYING.  If not, see
 
 // Instantiate MArrays of float values.
 
-#include "f77-fcn.h"
-
-extern "C"
-{
-  F77_RET_T
-  F77_FUNC (xsnrm2, XSNRM2) (const octave_idx_type&, const float*,
-			     const octave_idx_type&, float&);
-}
-
 #include "MArray.h"
 #include "MArray.cc"
+#include "fColVector.h"
+#include "oct-norm.h"
 
 template <>
 OCTAVE_API float
 MArray<float>::norm (float p) const
 {
-  MARRAY_NORM_BODY (float, float, xsnrm2, XSNRM2, octave_Float_NaN);
+  return xnorm (FloatColumnVector (*this));
 }
 
 template class OCTAVE_API MArray<float>;

@@ -1,3 +1,20 @@
+2008-10-31  Jaroslav Hajek  <highegg@gmail.com>
+
+	* oct-norm.h: New header file.
+	* oct-norm.cc: New source.
+	* CSparse.cc (SparseComplexMatrix::row, SparseComplexMatrix::column):
+	New member functions.
+	* CSparse.h (SparseComplexMatrix): Declare them.
+	* dSparse.cc (SparseMatrix::row, SparseMatrix::column):
+	New member functions.
+	* dSparse.h (SparseMatrix): Declare them.
+	* MArray-C.cc (MArray<Complex>::norm), 
+	MArray-d.cc (MArray<double>::norm), 
+	MArray-fC.cc (MArray<FloatComplex>::norm), 
+	MArray-f.cc (MArray<float>::norm): Wrap a call to xnorm. 
+
+	* MArray-defs.h (MARRAY_NORM_BODY): Remove.
+
 2008-11-02  Jaroslav Hajek <highegg@gmail.com>
 
 	* idx-vector.cc (idx_vector::is_complement): Set resulting extent

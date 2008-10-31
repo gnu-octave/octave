@@ -182,6 +182,7 @@ function [ax, h1, h2] = __plotyy__ (ax, x1, y1, x2, y2, varargin)
 endfunction
 
 %!demo
+%! close all;
 %! x = 0:0.1:2*pi; 
 %! y1 = sin (x);
 %! y2 = exp (x - 1);

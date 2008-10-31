@@ -398,6 +398,37 @@ public:
       l.resize (l.length () + 1, v);
     }
 
+  void delete_listener (const octave_value& v = octave_value (), 
+			listener_mode mode = POSTSET)
+    {
+      octave_value_list& l = listeners[mode];
+
+      if (v.is_defined ())
+	{
+	  bool found = false;
+	  int i;
+
+	  for (i = 0; i < l.length (); i++)
+	    {
+	      if (v.internal_rep () == l(i).internal_rep ())
+		{
+		  found = true;
+		  break;
+		}
+	    }
+	  if (found)
+	    {
+	      for (int j = i; j < l.length() - 1; j++)
+		l(j) = l (j + 1);
+
+	      l.resize (l.length () - 1);
+	    }
+	}
+      else
+	l.resize (0);
+
+    }
+
   OCTINTERP_API void run_listeners (listener_mode mode = POSTSET);
 
   virtual base_property* clone (void) const
@@ -1287,6 +1318,10 @@ public:
   void add_listener (const octave_value& v, listener_mode mode = POSTSET)
     { rep->add_listener (v, mode); }
 
+  void delete_listener (const octave_value& v = octave_value (), 
+			listener_mode mode = POSTSET)
+  { rep->delete_listener (v, mode); }
+
   void run_listeners (listener_mode mode = POSTSET)
     { rep->run_listeners (mode); }
 
@@ -1632,6 +1667,9 @@ public:
   virtual void add_listener (const caseless_str&, const octave_value&,
 			     listener_mode = POSTSET);
 
+  virtual void delete_listener (const caseless_str&, const octave_value&,
+				listener_mode = POSTSET);
+
   void set_tag (const octave_value& val) { tag = val; }
 
   void set_parent (const octave_value& val);
@@ -1927,6 +1965,16 @@ public:
 	get_properties ().add_listener (nm, v, mode);
     }
 
+  virtual void delete_property_listener (const std::string& nm,
+					 const octave_value& v,
+					 listener_mode mode = POSTSET)
+    {
+      if (valid_object ())
+	get_properties ().delete_listener (nm, v, mode);
+    }
+
+  virtual void remove_all_listeners (void);
+
 protected:
   // A reference count.
   int count;
@@ -2086,6 +2134,10 @@ public:
   void add_property_listener (const std::string& nm, const octave_value& v,
 			      listener_mode mode = POSTSET)
     { rep->add_property_listener (nm, v, mode); }
+
+  void delete_property_listener (const std::string& nm, const octave_value& v,
+				 listener_mode mode = POSTSET)
+    { rep->delete_property_listener (nm, v, mode); }
 
 private:
   base_graphics_object *rep;
@@ -2773,6 +2825,7 @@ public:
 
   void set_defaults (const std::string& mode)
   {
+    remove_all_listeners ();
     xproperties.set_defaults (*this, mode);
   }
 

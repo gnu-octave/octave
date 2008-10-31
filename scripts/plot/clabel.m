@@ -129,9 +129,11 @@ function retval = clabel (c, varargin)
 endfunction
 
 %!demo
+%! close all
 %! [c, h] = contour (peaks(), -4 : 6);
 %! clabel (c, h, -4 : 2 : 6, 'fontsize', 12);
 
 %!demo
+%! close all
 %! [c, h] = contourf (peaks(), -7 : 6);
 %! clabel (c, h, -6 : 2 : 6, 'fontsize', 12);

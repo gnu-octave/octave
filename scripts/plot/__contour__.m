@@ -78,6 +78,13 @@ function [c, hg] = __contour__ (varargin)
     vn = 10; 
   endif
 
+  if (isscalar (vn))
+    lvl = linspace (min (z1(!isinf(z1))), max (z1(!isinf(z1))), 
+		    vn + 2)(1:end-1);
+  else
+    lvl = vn;
+  endif
+
   if (strcmpi (filled, "on"))
     if (isvector (x1) || isvector (y1))
       [x1, y1] = meshgrid (x1, y1);
@@ -91,9 +98,9 @@ function [c, hg] = __contour__ (varargin)
     y0 = [y0(:, 1), y0, y0(:, 1)];
     z0 = -Inf(nr+2, nc+2);
     z0(2:nr+1, 2:nc+1) = z1;
-    [c, lev] = contourc (x0, y0, z0, vn);
+    [c, lev] = contourc (x0, y0, z0, lvl);
   else
-    [c, lev] = contourc (x1, y1, z1, vn);
+    [c, lev] = contourc (x1, y1, z1, lvl);
   endif
 
   hg = hggroup ();
@@ -128,11 +135,7 @@ function [c, hg] = __contour__ (varargin)
     endif
   endif
 
-  if (isscalar (vn))
-    lvlstep = (max(z1(:)) - min(z1(:))) / vn;
-  else
-    lvlstep = (max(z1(:)) - min(z1(:))) / 10;
-  endif
+  lvlstep = sum (abs (diff (lvl))) / (length (lvl) - 1);
 
   addproperty ("levellist", hg, "data", lev);
   addproperty ("levelstep", hg, "double", lvlstep);

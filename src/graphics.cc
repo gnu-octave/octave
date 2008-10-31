@@ -1808,6 +1808,16 @@ base_properties::add_listener (const caseless_str& nm, const octave_value& v,
     p.add_listener (v, mode);
 }
 
+void
+base_properties::delete_listener (const caseless_str& nm, 
+				  const octave_value& v, listener_mode mode)
+{
+  property p = get_property (nm);
+
+  if (! error_state && p.ok ())
+    p.delete_listener (v, mode);
+}
+
 // ---------------------------------------------------------------------
 
 class gnuplot_backend : public base_graphics_backend
@@ -1938,6 +1948,23 @@ base_graphics_object::update_axis_limits (const std::string& axis_type)
     }
   else
     error ("base_graphics_object::update_axis_limits: invalid graphics object");
+}
+
+void
+base_graphics_object::remove_all_listeners (void)
+{
+  Octave_map m = get (true).map_value ();
+
+  for (Octave_map::const_iterator pa = m.begin (); pa != m.end (); pa++)
+    {
+      if (get_properties().has_property (pa->first))
+	{
+	  property p = get_properties ().get_property (pa->first);
+
+	  if (! error_state && p.ok ())
+	    p.delete_listener ();
+	}
+    }
 }
 
 // ---------------------------------------------------------------------
@@ -4954,6 +4981,72 @@ addlistener (gcf, \"position\", @{@@my_listener, \"my string\"@})\n\
 	}
       else
 	error ("addlistener: invalid handle");
+    }
+  else
+    print_usage ();
+
+  return retval;
+}
+
+DEFUN (dellistener, args, ,
+   "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} dellistener (@var{h}, @var{prop}, @var{fcn})\n\
+Remove the registration of @var{fcn} as a listener for the property\n\
+@var{prop} of the graphics object @var{h}. The function @var{fcn} must\n\
+be the same variable (not just the same value), as was passed to the\n\
+original call to @code{addlistener}.\n\
+\n\
+If @var{fcn} is not defined then all listener functions of @var{prop}\n\
+are removed.\n\
+\n\
+Example:\n\
+\n\
+@example\n\
+function my_listener (h, dummy, p1)\n\
+  fprintf (\"my_listener called with p1=%s\\n\", p1);\n\
+endfunction\n\
+\n\
+c = @{@@my_listener, \"my string\"@};\n\
+addlistener (gcf, \"position\", c);\n\
+dellistener (gcf, \"position\", c);\n\
+@end example\n\
+\n\
+@end deftypefn")
+{
+  gh_manager::autolock guard;
+
+  octave_value retval;
+
+  if (args.length () == 3 || args.length () == 2)
+    {
+      double h = args(0).double_value ();
+
+      if (! error_state)
+	{
+	  std::string pname = args(1).string_value ();
+
+	  if (! error_state)
+	    {
+	      graphics_handle gh = gh_manager::lookup (h);
+
+	      if (gh.ok ())
+		{
+		  graphics_object go = gh_manager::get_object (gh);
+
+		  if (args.length () == 2)
+		    go.delete_property_listener (pname, octave_value (), POSTSET);
+		  else
+		    go.delete_property_listener (pname, args(2), POSTSET);
+		}
+	      else
+		error ("dellistener: invalid graphics object (= %g)",
+		       h);
+	    }
+	  else
+	    error ("dellistener: invalid property name, expected a string value");
+	}
+      else
+	error ("dellistener: invalid handle");
     }
   else
     print_usage ();

@@ -2,10 +2,24 @@
 
 	* oct-map.cc (Octave_map::index): Copy key_list.
 
+2008-10-31  David Bateman  <dbateman@free.fr>
+
+	* graphics.h.in (base_property::delete_listener): New method.
+	(property::delete_listener): New method.
+	(base_graphics_object::delete_listener): New method.
+	(base_graphics_object::delete_property_listener): New method.
+	(base_graphics_object::remove_all_listeners): New method.
+	(graphics_object::delete_property_listener): New method.
+	(axes::set_defaults): Call remove_all_listeners.
+	* graphics.cc (void base_properties::delete_listener): New method
+	(void base_graphics_object::remove_all_listeners (void)): New method
+	(Fdellistener): New command to remove listener functions associated
+	with a property.
+	
 2008-10-30  David Bateman  <dbateman@free.fr>
 
-	* graphic.h.in (axes::properties): Add keyreverse property.
-	* graphic.cc (axes::properties::set_defaults): Initialize
+	* graphics.h.in (axes::properties): Add keyreverse property.
+	* graphics.cc (axes::properties::set_defaults): Initialize
 	keyreverse property.
 
 2008-10-28  Jaroslav Hajek <highegg@gmail.com>

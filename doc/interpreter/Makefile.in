@@ -167,28 +167,25 @@ SPELL = $(patsubst %.texi, %.spell, $(TEXINFO))
 
 %.spell : %.texi
 	rm -f $@
-	$(SED) -e 's/@@/ at /g' -e 's/@[a-zA-Z]*//g' $< | spell > $@.tmp
-	mv $@.tmp $@
+	$(SED) -e 's/@@/ at /g' -e 's/@[a-zA-Z]*//g' $< | spell > $@-t
+	mv $@-t $@
 
 all: octave.info octave.pdf octave-a4.pdf HTML/index.html
 .PHONY: all
 
-$(TEXINFO): src-DOCSTRINGS scripts-DOCSTRINGS munge-texi$(BUILD_EXEEXT)
+DOCSTRING_FILES := $(TOPDIR)/src/DOCSTRINGS $(TOPDIR)/scripts/DOCSTRINGS
+
+$(TEXINFO): $(DOCSTRING_FILES) munge-texi$(BUILD_EXEEXT)
 
 munge-texi$(BUILD_EXEEXT): munge-texi.cc
 	$(BUILD_CXX) $(BUILD_CXXFLAGS) -o $@ $^ $(BUILD_LDFLAGS)
 
-src-DOCSTRINGS:
-	$(MAKE) -C ../../src DOCSTRINGS
-.PHONY: src-DOCSTRINGS
-
-scripts-DOCSTRINGS:
-	$(MAKE) -C ../../scripts DOCSTRINGS
-.PHONY: scripts-DOCSTRINGS
+$(DOCSTRING_FILES):
+	$(MAKE) -C $(dir $@) $(notdir $@)
 
 contributors.texi: contributors.in
 	$(AWK) -f $(srcdir)/mkcontrib.awk $(srcdir)/contributors.in > $@-t
-	@$(simple-move-if-change-rule)
+	mv $@-t $@
 
 octave-a4.texi: $(MAIN_TEXINFO)
 	cp $< $@
@@ -197,11 +194,8 @@ octave-smallbook.texi: $(MAIN_TEXINFO)
 	cp $< $@
 
 $(SUB_TEXINFO) : %.texi : %.txi
-	@echo making $@ from $<
-	@./munge-texi \
-	  -d $(TOPDIR)/src/DOCSTRINGS \
-	  -d $(TOPDIR)/scripts/DOCSTRINGS < $< > $@-t
-	@$(simple-move-if-change-rule)
+	./munge-texi $(foreach f, $(DOCSTRING_FILES), -d $(f)) < $< > $@-t
+	mv $@-t $@
 
 octave.info: $(IMAGES_TXT) $(TEXINFO) $(EXAMPLE_FILES)
 	-$(MAKEINFO) -I.. -I$(srcdir) -I$(srcdir)/.. $(MAIN_TEXINFO)

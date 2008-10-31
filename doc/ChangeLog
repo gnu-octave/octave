@@ -1,3 +1,16 @@
+2008-10-31  John W. Eaton  <jwe@octave.org>
+
+	* interpreter/Makefile.in ($(TEXINFO)): Depend directly on
+	../../src/DOCSTRINGS and ../../scripts/DOCSTRINGS instead of phony
+	src-DOCSTRINGS and scripts-DOCSTRINGS targets.
+	(src-DOCSTRINGS, scripts-DOCSTRINGS): Delete.
+	(DOCSTRING_FILES): New variable.
+	($(SUB_TEXFINO)): Use it.  Display actual command.
+	($(DOCSTRING_FILES)): New target.
+	(%.spell : %.texi): Use -t suffix instead of .tmp.
+	(constributors.texi, $(SUB_TEXINFO)): Use mv, instead of
+	$(simple-move-if-change-rule).
+
 2008-10-30  David Bateman  <dbateman@free.fr>
 
 	* faq/Octave-FAQ.texi: Document improved indexing and add an faq for

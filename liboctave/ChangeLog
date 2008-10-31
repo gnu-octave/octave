@@ -1,3 +1,10 @@
+2008-10-31  Jaroslav Hajek  <highegg@gmail.com>
+
+	* idx-vector.h (idx_vector::idx_range_rep::extent): Don't change
+	extent when len is zero.
+	* idx-vector.h (idx_vector::idx_range_rep::idx_range_rep (void)):
+	Create empty range by default.
+
 2008-10-30  Jaroslav Hajek <highegg@gmail.com>
 
 	* oct-inttypes.h (octave_int_abs): New function.

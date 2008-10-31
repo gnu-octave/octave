@@ -152,7 +152,7 @@ private:
       : idx_base_rep (), start(_start), len(_len), step(_step) { }
 
     idx_range_rep (void) 
-      : start(0), len(1), step(1) { }
+      : start(0), len(0), step(1) { }
 
     // Zero-based constructor.
     idx_range_rep (octave_idx_type _start, octave_idx_type _limit,
@@ -169,7 +169,7 @@ private:
       { return len; }
 
     octave_idx_type extent (octave_idx_type n) const
-      { return std::max (n, (start + 1 + (step < 0 ? 0 : step * (len - 1)))); }
+      { return len ? std::max (n, (start + 1 + (step < 0 ? 0 : step * (len - 1)))) : n; }
 
     idx_class_type idx_class () const { return class_range; }
 

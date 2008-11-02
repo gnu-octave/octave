@@ -1352,7 +1352,7 @@ template <class T>
 void 
 Array<T>::delete_elements (int dim, const idx_vector& i)
 {
-  if (dim > ndims ())
+  if (dim < 0 || dim >= ndims ())
     {
       (*current_liboctave_error_handler)
         ("invalid dimension in delete_elements");

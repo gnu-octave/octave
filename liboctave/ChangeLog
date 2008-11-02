@@ -2,6 +2,8 @@
 
 	* idx-vector.cc (idx_vector::is_complement): Set resulting extent
 	correctly.
+	* Array.cc (Array<T>::delete_elements (int, const idx_vector&)):
+	Fix check for invalid dim.
 
 2008-10-31  Jaroslav Hajek  <highegg@gmail.com>
 

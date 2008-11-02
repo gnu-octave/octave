@@ -1,0 +1,124 @@
+## Copyright (C) 2008 Thorsten Meyer
+## based on the original gzip function by David Bateman
+##
+## This file is part of Octave.
+##
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 3 of the License, or (at
+## your option) any later version.
+##
+## Octave is distributed in the hope that it will be useful, but
+## WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+## General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, see
+## <http://www.gnu.org/licenses/>.
+
+## -*- texinfo -*-
+## @deftypefn {Function File} {@var{entries} =} _xzip_ (@var{commandname}, @var{extension}, @var{commandtemplate}, @var{files}, @var{outdir})
+## Compresses the list of files and/or directories specified in @var{files} 
+## with the external compression command @var{commandname}. The template 
+## @var{commandtemplate} is used to actually start the command. Each file
+## is compressed separately and a new file with the extension @var{extension} 
+## is created and placed into the directory @var{outdir}. The original files 
+## are not touched. Existing compressed files are silently overwritten. 
+## This is an internal function. Do not use directly.
+## @seealso{gzip, bzip2}
+## @end deftypefn
+
+function entries = __xzip__ (commandname, extension, 
+                             commandtemplate, files, outdir)
+
+  if (nargin == 4 || nargin == 5)
+    if (! ischar (extension) || length (extension) == 0)
+      error (sprintf("%s: extension has to be a string with finite length",
+                     commandname));
+    endif
+    
+    if (nargin == 5 && ! exist (outdir, "dir"))
+      error ("__xzip__: output directory does not exist");
+    endif
+
+    if (ischar (files))
+      files = cellstr (files);
+    endif
+
+    if (nargin == 4)
+      outdir = tmpnam ();
+      mkdir (outdir);
+    endif
+
+    cwd = pwd();
+    unwind_protect
+      if (iscellstr (files))
+	files = glob (files);
+
+	## Ignore any file with the compress extension
+	files (cellfun (@(x) length(x) > length(extension) 
+          && strcmp (x((end - length(extension) + 1):end), extension), 
+          files)) = [];
+        
+	copyfile (files, outdir);
+
+	[d, f] = myfileparts(files);
+        
+	cd (outdir);
+
+	cmd = sprintf (commandtemplate, sprintf (" %s", f{:}));
+
+	[status, output] = system (cmd);
+	if (status == 0)
+
+	  if (nargin == 5)
+	    compressed_files = cellfun(
+                @(x) fullfile (outdir, sprintf ("%s.%s", x, extension)), 
+                f, "UniformOutput", false);
+	  else
+	    movefile (cellfun(@(x) sprintf ("%s.%s", x, extension), f, 
+			      "UniformOutput", false), cwd);
+            ## FIXME this does not work when you try to compress directories
+                     
+	    compressed_files  = cellfun(@(x) sprintf ("%s.%s", x, extension), 
+			      files, "UniformOutput", false);
+	  endif
+
+	  if (nargout > 0)
+            entries = compressed_files;
+	  endif
+	else
+	  error (sprintf("%s command failed with exit status = %d", 
+                         commandname, status));
+	endif
+    
+      else
+	error ("__xzip__: expecting all arguments to be character strings");
+      endif
+    unwind_protect_cleanup
+      cd(cwd);
+      if (nargin == 1)
+	crr = confirm_recursive_rmdir ();
+	unwind_protect
+	  confirm_recursive_rmdir (false);
+	  rmdir (outdir, "s");
+	unwind_protect_cleanup
+	  confirm_recursive_rmdir (crr);
+	end_unwind_protect
+      endif
+    end_unwind_protect
+  else
+    print_usage ();
+  endif
+
+endfunction
+
+function [d, f] = myfileparts (files)
+  [d, f, ext] = cellfun (@(x) fileparts (x), files, "UniformOutput", false);
+  f = cellfun (@(x, y) sprintf ("%s%s", x, y), f, ext,
+	       "UniformOutput", false); 
+  idx = cellfun (@(x) isdir (x), files);
+  d(idx) = "";
+  f(idx) = files(idx);
+endfunction

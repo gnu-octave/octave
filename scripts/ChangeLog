@@ -64,6 +64,12 @@
 
 	* linear-algebra/__norm__.m: Remove.
 
+2008-10-25  Thorsten Meyer  <thorsten.meyier@gmx.de>
+
+        * miscellaneous/bzip2.m, miscellaneous/__xzip__.m: new commands.
+        * miscellaneous/gzip.m: change to use __xzip__ for actual compression,
+          add tests.
+                  
 2008-10-31  David Bateman  <dbateman@free.fr>
 
 	* plot/__contour__.m: Exclude infinite values when calculating contour

@@ -21,89 +21,45 @@
 ## @deftypefnx {Function File} {@var{entries} =} gzip (@var{files}, @var{outdir})
 ## Compress the list of files and/or directories specified in @var{files}.
 ## Each file is compressed separately and a new file with a '.gz' extension
-## is created. The original file is not touched. If @var{rootdir} is defined 
-## the compressed versions of the files are placed in this directory.
-## @seealso{gunzip, zip, tar}
+## is created. The original files are not touched. Existing compressed
+## files are silently overwritten. If @var{outdir} is defined the compressed 
+## versions of the files are placed in this directory.
+## @seealso{gunzip, bzip2, zip, tar, __xzip__}
 ## @end deftypefn
 
-function entries = gzip (files, outdir)
-
-  if (nargin == 1 || nargin == 2)
-
-    if (nargin == 2 && ! exist (outdir, "dir"))
-      error ("gzip: output directory does not exist");
+function entries = gzip (varargin)
+  if (nargin == 1 || nargin == 2) && (nargout <= 1)
+    if nargout == 0
+      __xzip__ ("gzip", "gz", "gzip -r %s", varargin{:});
+    else
+      entries = __xzip__ ("gzip", "gz", "gzip -r %s", varargin{:});
     endif
-
-    if (ischar (files))
-      files = cellstr (files);
-    endif
-
-    if (nargin == 1)
-      outdir = tmpnam ();
-      mkdir (outdir);
-    endif
-
-    cwd = pwd();
-    unwind_protect
-      if (iscellstr (files))
-	files = glob (files);
-
-	## Ignore any file with a .gz extension
-	files (cellfun (@(x) strcmp (x(end-2:end), ".gz"), files)) = [];
-    
-	copyfile (files, outdir);
-	[d, f] = myfileparts(files);
-	cd (outdir);
-
-	cmd = sprintf ("gzip -r %s", sprintf (" %s", f{:}));
-
-	[status, output] = system (cmd);
-
-	if (status == 0)
-
-	  if (nargin == 2)
-	    gzfiles = cellfun(@(x) fullfile (outdir, sprintf ("%s.gz", x)), ...
-			      f, "UniformOutput", false);
-	  else
-	    movefile (cellfun(@(x) sprintf ("%s.gz", x), f, ...
-			      "UniformOutput", false), cwd);
-	    gzfiles = cellfun(@(x) sprintf ("%s.gz", x), ...
-			      files, "UniformOutput", false);
-	  endif
-
-	  if (nargout > 0)
-            entries = gzfiles;
-	  endif
-	else
-	  error ("gzip: failed with exit status = %d", status);
-	endif
-    
-      else
-	error ("gzip: expecting all arguments to be character strings");
-      endif
-    unwind_protect_cleanup
-      cd(cwd);
-      if (nargin == 1)
-	crr = confirm_recursive_rmdir ();
-	unwind_protect
-	  confirm_recursive_rmdir (false);
-	  rmdir (outdir, "s");
-	unwind_protect_cleanup
-	  confirm_recursive_rmdir (crr);
-	end_unwind_protect
-      endif
-    end_unwind_protect
   else
     print_usage ();
   endif
-
 endfunction
 
-function [d, f] = myfileparts (x)
-  [d, f, ext] = cellfun (@(x) fileparts (x), x, "UniformOutput", false);
-  f = cellfun (@(x, y) sprintf ("%s%s", x, y), f, ext, ...
-	       "UniformOutput", false); 
-  idx = cellfun (@(x) isdir (x), x);
-  d(idx) = "";
-  f(idx) = x(idx);
-endfunction
+%!error <Invalid call to gzip.  Correct usage is> gzip("1", "2", "3");
+%!error <Invalid call to gzip.  Correct usage is> gzip();
+%!error <output directory does not exist> gzip("1", tmpnam);
+%!error <expecting all arguments to be character strings> gzip(1);
+%!xtest
+%!  unwind_protect
+%!    filename = tmpnam;
+%!    dummy    = 1;
+%!    save(filename, "dummy");
+%!    dirname  = tmpnam;
+%!    mkdir(dirname);
+%!    entry = gzip(filename, dirname);
+%!    [path, basename, extension] = fileparts(filename);
+%!    if ! strcmp(entry, [dirname, "/", basename, extension, ".gz"])
+%!      error("gzipped file does not match expected name!");
+%!    endif
+%!    if ! exist(entry, "file")
+%!      error("gzipped file cannot be found!");
+%!    endif 
+%!  unwind_protect_cleanup
+%!    delete(filename);
+%!    delete(entry{:});
+%!    rmdir(dirname);
+%!  end_unwind_protect

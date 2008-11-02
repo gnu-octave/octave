@@ -518,7 +518,9 @@ idx_vector::complement (octave_idx_type n) const
   for (octave_idx_type i = 0, j = 0; i < n; i++)
     if (left[i]) data[j++] = i;
 
-  return new idx_vector_rep (data, len, data[len-1], dim_vector (1, len), DIRECT);
+  return new idx_vector_rep (data, len, 
+                             len ? data[len-1]+1 : 0, 
+                             dim_vector (1, len), DIRECT);
 }
 
 octave_idx_type 

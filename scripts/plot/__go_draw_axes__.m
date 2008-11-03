@@ -1454,6 +1454,12 @@ function do_tics_1 (ticmode, tics, mtics, labelmode, labels, color, ax,
       if (ischar (labels))
 	labels = cellstr (labels);
       endif
+      if (isnumeric (labels))
+	labels = num2str (real (labels(:)));
+      endif
+      if (ischar (labels))
+	labels = permute (cellstr (labels), [2, 1]);
+      endif
       if (iscellstr (labels))
 	k = 1;
 	ntics = numel (tics);

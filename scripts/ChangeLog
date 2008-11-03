@@ -41,6 +41,10 @@
         * miscellaneous/unpack.m: return directly after recursive handling
           of cell-strings
           
+2008-11-03  Ben Abbott <bpabbott@mac.com>
+
+	* plot/__go_draw_axes__.m: xticklabel should accept a numeric vector.
+
 2008-09-28  Jaroslav Hajek <highegg@gmail.com>
 
 	* optimization/__fdjac__.m: New function file.

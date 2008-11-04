@@ -84,6 +84,9 @@ public:
   octave_value permute (const Array<int>&, bool = false) const
     { return scalar; }
 
+  octave_value reshape (const dim_vector& new_dims) const
+    { return array_value ().reshape (new_dims); }
+
   size_t byte_size (void) const { return sizeof (ST); }
 
   octave_value all (int = 0) const { return (scalar != ST ()); }

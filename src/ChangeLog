@@ -7,6 +7,11 @@
 	to do the actual work.
 
 
+2008-10-31  David Bateman  <dbateman@free.fr>
+
+	* ov-base-scalar.h (octave_value octave_base_scalar::reshape 
+	(const dim_vector&) const): New method.
+
 2008-10-30  John W. Eaton  <jwe@octave.org>
 
 	* oct-map.cc (Octave_map::index): Copy key_list.

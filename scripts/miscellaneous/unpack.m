@@ -97,6 +97,12 @@ function filelist = unpack (file, directory, filetype)
       files = {files{:} tmpfiles{:}};
     endfor
 
+    ## Return output if requested.
+    if (nargout > 0)
+      filelist = files;
+    endif
+
+    return
   else
     error ("unpack: invalid input file class, %s", class(file));
   endif

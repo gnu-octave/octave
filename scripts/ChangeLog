@@ -36,6 +36,11 @@
 
         * plot/subplot.m: fix texi bug
 
+2008-11-04  Thorsten Meyer <thorsten.meyier@gmx.de>
+
+        * miscellaneous/unpack.m: return directly after recursive handling
+          of cell-strings
+          
 2008-09-28  Jaroslav Hajek <highegg@gmail.com>
 
 	* optimization/__fdjac__.m: New function file.

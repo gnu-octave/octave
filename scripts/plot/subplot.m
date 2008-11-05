@@ -45,16 +45,16 @@
 ## @end iftex
 ## @ifinfo
 ## @display
-## @group
 ## @example
+## @group
 ##
 ## +-----+-----+-----+
 ## |  1  |  2  |  3  |
 ## +-----+-----+-----+
 ## |  4  |  5  |  6  |
 ## +-----+-----+-----+
-## @end example
 ## @end group
+## @end example
 ## @end display
 ## @end ifinfo
 ## @seealso{plot}

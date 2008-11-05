@@ -32,6 +32,10 @@
 	* polynomial/spline.m: Delete debugging statements.  From
 	Sebastian Schöps <sebastian@schoeps.org>.
 
+2008-11-05  Thorsten Meyer  <thorsten.meyier@gmx.de>
+
+        * plot/subplot.m: fix texi bug
+
 2008-09-28  Jaroslav Hajek <highegg@gmail.com>
 
 	* optimization/__fdjac__.m: New function file.

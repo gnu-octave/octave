@@ -31,12 +31,12 @@ along with Octave; see the file COPYING.  If not, see
 #include <cmath>
 
 #include <iostream>
+#include <vector>
 
 #include "oct-cmplx.h"
 #include "lo-error.h"
 #include "lo-ieee.h"
 #include "Array.h"
-#include "Array.cc"
 #include "Array-util.h"
 #include "CMatrix.h"
 #include "dMatrix.h"
@@ -224,7 +224,7 @@ inline void vector_norm (const Array<T>& v, R& res, ACC acc)
 template <class T, class R, class ACC>
 void column_norms (const MArray2<T>& m, MArray<R>& res, ACC acc)
 {
-  res.resize (m.columns ());
+  res = MArray2<R> (1, m.columns ());
   for (octave_idx_type j = 0; j < m.columns (); j++)
     {
       ACC accj = acc;
@@ -238,23 +238,23 @@ void column_norms (const MArray2<T>& m, MArray<R>& res, ACC acc)
 template <class T, class R, class ACC>
 void row_norms (const MArray2<T>& m, MArray<R>& res, ACC acc)
 {
-  res.resize (m.rows ());
-  Array<ACC> acci (m.rows (), acc); 
+  res = MArray2<R> (m.rows (), 1);
+  std::vector<ACC> acci (m.rows (), acc); 
   for (octave_idx_type j = 0; j < m.columns (); j++)
     {
       for (octave_idx_type i = 0; i < m.rows (); i++)
-        acci.xelem (i).accum (m(i, j));
+        acci[i].accum (m(i, j));
     }
 
   for (octave_idx_type i = 0; i < m.rows (); i++)
-    res.xelem (i) = acci(i);
+    res.xelem (i) = acci[i];
 }
 
 // sparse versions
 template <class T, class R, class ACC>
 void column_norms (const MSparse<T>& m, MArray<R>& res, ACC acc)
 {
-  res.resize (m.columns ());
+  res = MArray2<R> (1, m.columns ());
   for (octave_idx_type j = 0; j < m.columns (); j++)
     {
       ACC accj = acc;
@@ -268,12 +268,12 @@ void column_norms (const MSparse<T>& m, MArray<R>& res, ACC acc)
 template <class T, class R, class ACC>
 void row_norms (const MSparse<T>& m, MArray<R>& res, ACC acc)
 {
-  res.resize (m.rows ());
-  Array<ACC> acci (m.rows (), acc); 
+  res = MArray2<R> (m.rows (), 1);
+  std::vector<ACC> acci (m.rows (), acc); 
   for (octave_idx_type j = 0; j < m.columns (); j++)
     {
       for (octave_idx_type k = m.cidx (j); k < m.cidx (j+1); k++)
-        acci(m.ridx (k)).accum (m.data (k));
+        acci[m.ridx (k)].accum (m.data (k));
     }
 
   for (octave_idx_type i = 0; i < m.rows (); i++)

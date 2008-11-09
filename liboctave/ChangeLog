@@ -1,3 +1,13 @@
+2008-11-09  Jaroslav Hajek <highegg@gmail.com>
+
+	* oct-norm.cc: Don't include Array.cc.  
+	(column_norms (const MArray2<T>&, ...)): Use std::vector instead of Array<T> for
+	accumulator containers. Use empty constructor instead of
+	Array<T>::resize.
+	(row_norms (const MArray2<T>&, ...)): Dtto.
+	(column_norms (const MSparse2<T>&, ...)): Dtto.
+	(row_norms (const MSparse2<T>&, ...)): Dtto.
+
 2008-10-31  Jaroslav Hajek  <highegg@gmail.com>
 
 	* oct-norm.h: New header file.

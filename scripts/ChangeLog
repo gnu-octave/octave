@@ -1,3 +1,8 @@
+2008-11-10  John W. Eaton  <jwe@octave.org>
+
+	* polynomial/spline.m: Delete debugging statements.  From
+	Sebastian Schöps <sebastian@schoeps.org>.
+
 2008-09-28  Jaroslav Hajek <highegg@gmail.com>
 
 	* optimization/__fdjac__.m: New function file.

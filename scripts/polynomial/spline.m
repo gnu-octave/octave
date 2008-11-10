@@ -125,10 +125,6 @@ function ret = spline (x, y, xi)
 
       e = h(2:n-2);
 
-      size(a)
-      size(h)
-      n
-
       g = 3 * diff (a(2:n,:)) ./ h(2:n-1,idx) ...
           - 3 * diff (a(1:n-1,:)) ./ h(1:n-2,idx);
       g(1,:) = 3 * (a(3,:) - a(2,:)) / h(2) ...

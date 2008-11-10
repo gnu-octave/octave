@@ -277,7 +277,7 @@ void row_norms (const MSparse<T>& m, MArray<R>& res, ACC acc)
     }
 
   for (octave_idx_type i = 0; i < m.rows (); i++)
-    res.xelem (i) = acci(i);
+    res.xelem (i) = acci[i];
 }
 
 // now the dispatchers

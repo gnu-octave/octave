@@ -1,5 +1,8 @@
 2008-11-11  John W. Eaton  <jwe@octave.org>
 
+	* lex.l (<MATRIX_START>{S}+): Don't insert separator if next token
+	is a separator.
+
 	* parse.y (F__parser_debug_flag__): New function.
 
 2008-10-31  Jaroslav Hajek <highegg@gmail.com>

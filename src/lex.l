@@ -440,10 +440,11 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     current_input_column += yyleng;
 
     int tmp = eat_continuation ();
-    int bin_op = next_token_is_bin_op (true);
-    int postfix_un_op = next_token_is_postfix_unary_op (true);
+    bool bin_op = next_token_is_bin_op (true);
+    bool postfix_un_op = next_token_is_postfix_unary_op (true);
+    bool sep_op = next_token_is_sep_op ();
 
-    if (! (postfix_un_op || bin_op)
+    if (! (postfix_un_op || bin_op || sep_op)
 	&& nesting_level.is_bracket_or_brace ()
 	&& lexer_flags.convert_spaces_to_comma)
       {

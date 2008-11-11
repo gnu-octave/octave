@@ -1,3 +1,7 @@
+2008-11-11  Jaroslav Hajek <highegg@gmail.com>
+
+	* pt-assign.cc: Fix handling of empty cs-lists in assignment LHS.
+
 2008-11-11  John W. Eaton  <jwe@octave.org>
 
 	* lex.l (<MATRIX_START>{S}+): Don't insert separator if next token

@@ -434,7 +434,7 @@ tree_multi_assignment::rvalue (int)
 		  else
 		    error ("some elements undefined in return list");
 		}
-	      else
+	      else if (nel == 1)
 		{
 		  if (k < n)
 		    {

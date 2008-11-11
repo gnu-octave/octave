@@ -4101,6 +4101,21 @@ context @var{context}, which may be either @code{\"caller\"} or\n\
   return retval;
 }
 
+DEFUN (__parser_debug_flag__, args, nargout,
+  "Undocumented internal function.")
+{
+  octave_value retval;
+
+  bool debug_flag = octave_debug;
+
+  retval = set_internal_variable (debug_flag, args, nargout,
+           			  "__parser_debug_flag__");
+
+  octave_debug = debug_flag;
+
+  return retval;
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: text ***

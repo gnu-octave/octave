@@ -1,3 +1,7 @@
+2008-11-11  John W. Eaton  <jwe@octave.org>
+
+	* parse.y (F__parser_debug_flag__): New function.
+
 2008-10-31  Jaroslav Hajek <highegg@gmail.com>
 
 	* xnorm.cc: New source.

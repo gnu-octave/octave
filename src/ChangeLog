@@ -3,6 +3,9 @@
 	* dirfcn.cc (Ffilesep): Make it return all file separators when 'all'
 	is given as argument.
 
+	* DLD-FUNCTIONS/getrusage.cc: Undefine min/max.
+	* TEMPLATE-INST/Array-os.cc: Declare Array<bool> as extern template.
+
 2008-11-12  David Bateman  <dbateman@free.fr>
 
 	* OPERATORS/op-cell.cc (op_catop_matrix_cell): Cast args in the correct

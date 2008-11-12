@@ -1,3 +1,22 @@
+2008-11-12  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* MArray-C.cc, MArray-d.cc, MArray-f.cc, MArray-fC.cc: Declare
+	MArray<T>::norm specialization before implicit MArray<T> implicit
+	instantiation.
+	* idx-vector.h (class idx_vector::idx_base_rep, class
+	idx_vector::idx_range_rep, class idx_vector::idx_colon_rep, class
+	idx_vector::idx_scalar_rep, class idx_vector::idx_vector_rep): Add
+	OCTAVE_API tag.
+	* idx-vector.cc (idx_vector::idx_scalar_rep::idx_scalar_rep(T),
+	idx_vector::idx_vector_rep::idx_vector_rep(const Array<T>&)): Ditto.
+	* oct-inttypes.cc (octave_int<T>::type_name): Ditto.
+	* oct-inttypes.cc (powf(const octave_int<T>&,const float&)): Cast 'b'
+	to double.
+	* oct-inttypes.h: Undefine min/max.
+	* oct-norm.h (xnorm, xfrobnorm, xcolnorms, xrownorms): Add OCTAVE_API
+	tag.
+	* oct-norm.cc (xnorm, xfrobnorm, xcolnorms, xrownorms): Ditto.
+
 2008-11-12  Jaroslav Hajek <highegg@gmail.com>
 
 	* DiagArray2.h (DiagArray2<T>::maybe_delete_elements): Remove

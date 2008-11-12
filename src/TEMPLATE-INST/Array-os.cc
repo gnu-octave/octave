@@ -29,6 +29,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "Array.h"
 #include "Array.cc"
 
+extern template class OCTAVE_API Array<bool>;
+
 #include "oct-stream.h"
 
 typedef scanf_format_elt* scanf_format_elt_ptr;

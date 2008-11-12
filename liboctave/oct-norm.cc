@@ -508,13 +508,13 @@ R matrix_norm (const MatrixT& m, R p, VectorT)
 // and finally, here's what we've promised in the header file
 
 #define DEFINE_XNORM_FUNCS(PREFIX, RTYPE) \
-  RTYPE xnorm (const PREFIX##ColumnVector& x, RTYPE p) \
+  OCTAVE_API RTYPE xnorm (const PREFIX##ColumnVector& x, RTYPE p) \
   { return vector_norm (x, p); } \
-  RTYPE xnorm (const PREFIX##RowVector& x, RTYPE p) \
+  OCTAVE_API RTYPE xnorm (const PREFIX##RowVector& x, RTYPE p) \
   { return vector_norm (x, p); } \
-  RTYPE xnorm (const PREFIX##Matrix& x, RTYPE p) \
+  OCTAVE_API RTYPE xnorm (const PREFIX##Matrix& x, RTYPE p) \
   { return matrix_norm (x, p, PREFIX##Matrix (), PREFIX##SVD ()); } \
-  RTYPE xfrobnorm (const PREFIX##Matrix& x) \
+  OCTAVE_API RTYPE xfrobnorm (const PREFIX##Matrix& x) \
   { return vector_norm (x, static_cast<RTYPE> (2)); }
 
 DEFINE_XNORM_FUNCS(, double)
@@ -534,9 +534,9 @@ inline void array_norm_2 (const T* v, octave_idx_type n, R& res)
 }
 
 #define DEFINE_XNORM_SPARSE_FUNCS(PREFIX, RTYPE) \
-  RTYPE xnorm (const Sparse##PREFIX##Matrix& x, RTYPE p) \
+  OCTAVE_API RTYPE xnorm (const Sparse##PREFIX##Matrix& x, RTYPE p) \
   { return matrix_norm (x, p, PREFIX##Matrix ()); } \
-  RTYPE xfrobnorm (const Sparse##PREFIX##Matrix& x) \
+  OCTAVE_API RTYPE xfrobnorm (const Sparse##PREFIX##Matrix& x) \
   { \
     RTYPE res; \
     array_norm_2 (x.data (), x.nnz (), res); \
@@ -547,9 +547,9 @@ DEFINE_XNORM_SPARSE_FUNCS(, double)
 DEFINE_XNORM_SPARSE_FUNCS(Complex, double)
 
 #define DEFINE_COLROW_NORM_FUNCS(PREFIX, RPREFIX, RTYPE) \
-  extern RPREFIX##RowVector xcolnorms (const PREFIX##Matrix& m, RTYPE p) \
+  extern OCTAVE_API RPREFIX##RowVector xcolnorms (const PREFIX##Matrix& m, RTYPE p) \
   { return column_norms (m, p); } \
-  extern RPREFIX##ColumnVector xrownorms (const PREFIX##Matrix& m, RTYPE p) \
+  extern OCTAVE_API RPREFIX##ColumnVector xrownorms (const PREFIX##Matrix& m, RTYPE p) \
   { return row_norms (m, p); } \
 
 DEFINE_COLROW_NORM_FUNCS(, , double)

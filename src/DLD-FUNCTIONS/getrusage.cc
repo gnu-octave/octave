@@ -39,6 +39,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <windows.h>
 #ifdef min
 #undef min
+#undef max
 #endif
 #endif
 

@@ -32,10 +32,10 @@ along with Octave; see the file COPYING.  If not, see
   class PREFIX##ColumnVector; \
   class PREFIX##RowVector; \
   \
-  extern RTYPE xnorm (const PREFIX##ColumnVector&, RTYPE p = 2); \
-  extern RTYPE xnorm (const PREFIX##RowVector&, RTYPE p = 2); \
-  extern RTYPE xnorm (const PREFIX##Matrix&, RTYPE p = 2); \
-  extern RTYPE xfrobnorm (const PREFIX##Matrix&); 
+  extern OCTAVE_API RTYPE xnorm (const PREFIX##ColumnVector&, RTYPE p = 2); \
+  extern OCTAVE_API RTYPE xnorm (const PREFIX##RowVector&, RTYPE p = 2); \
+  extern OCTAVE_API RTYPE xnorm (const PREFIX##Matrix&, RTYPE p = 2); \
+  extern OCTAVE_API RTYPE xfrobnorm (const PREFIX##Matrix&); 
 
 DECLARE_XNORM_FUNCS(, double)
 DECLARE_XNORM_FUNCS(Complex, double)
@@ -46,8 +46,8 @@ DECLARE_XNORM_FUNCS(Sparse, double)
 DECLARE_XNORM_FUNCS(SparseComplex, double)
 
 #define DECLARE_COLROW_NORM_FUNCS(PREFIX, RPREFIX, RTYPE) \
-  extern RPREFIX##RowVector xcolnorms (const PREFIX##Matrix&, RTYPE p = 2); \
-  extern RPREFIX##ColumnVector xrownorms (const PREFIX##Matrix&, RTYPE p = 2); \
+  extern OCTAVE_API RPREFIX##RowVector xcolnorms (const PREFIX##Matrix&, RTYPE p = 2); \
+  extern OCTAVE_API RPREFIX##ColumnVector xrownorms (const PREFIX##Matrix&, RTYPE p = 2); \
 
 DECLARE_COLROW_NORM_FUNCS(, , double)
 DECLARE_COLROW_NORM_FUNCS(Complex, , double)

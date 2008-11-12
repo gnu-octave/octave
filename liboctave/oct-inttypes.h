@@ -39,6 +39,12 @@ along with Octave; see the file COPYING.  If not, see
 inline long double xround (long double x) { return roundl (x); }
 #endif
 
+// Undefine min/max if needed (this may happen under Windows)
+#ifdef min
+#undef min
+#undef max
+#endif
+
 // FIXME: we define this by our own because some compilers, such as MSVC,
 // do not provide std::abs (int64_t) and std::abs (uint64_t). In the future,
 // it should go away in favor of std::abs.

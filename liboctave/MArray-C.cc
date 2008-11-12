@@ -31,6 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "MArray.h"
 #include "MArray.cc"
+template <> OCTAVE_API double MArray<Complex>::norm (double p) const;
 #include "CColVector.h"
 #include "oct-norm.h"
 

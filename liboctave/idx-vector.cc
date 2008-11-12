@@ -551,8 +551,8 @@ idx_vector::ones_count () const
 
 // Instantiate the octave_int constructors we want.
 #define INSTANTIATE_SCALAR_VECTOR_REP_CONST(T) \
-  template idx_vector::idx_scalar_rep::idx_scalar_rep (T); \
-  template idx_vector::idx_vector_rep::idx_vector_rep (const Array<T>&);
+  template OCTAVE_API idx_vector::idx_scalar_rep::idx_scalar_rep (T); \
+  template OCTAVE_API idx_vector::idx_vector_rep::idx_vector_rep (const Array<T>&);
 
 INSTANTIATE_SCALAR_VECTOR_REP_CONST (float)
 INSTANTIATE_SCALAR_VECTOR_REP_CONST (double)

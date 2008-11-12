@@ -38,7 +38,7 @@ const octave_int<T> octave_int<T>::one (static_cast<T> (1));
 // define type names. 
 #define DECLARE_OCTAVE_INT_TYPENAME(TYPE, TYPENAME) \
   template <> \
-  const char * \
+  OCTAVE_API const char * \
   octave_int<TYPE>::type_name () { return TYPENAME; }
 
 DECLARE_OCTAVE_INT_TYPENAME (int8_t, "int8")
@@ -592,7 +592,7 @@ powf (const octave_int<T>& a, const float& b)
 {
   return ((b >= 0 && b < std::numeric_limits<T>::digits && b == xround (b))
           ? pow (a, octave_int<T> (static_cast<T> (b)))
-          : octave_int<T> (pow (a.double_value (), b))); 
+          : octave_int<T> (pow (a.double_value (), static_cast<double> (b)))); 
 }
 
 #define INSTANTIATE_INTTYPE(T) \

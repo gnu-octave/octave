@@ -28,6 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "MArray.h"
 #include "MArray.cc"
+template <> OCTAVE_API float MArray<float>::norm (float p) const;
 #include "fColVector.h"
 #include "oct-norm.h"
 

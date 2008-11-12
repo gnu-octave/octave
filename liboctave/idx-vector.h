@@ -59,7 +59,7 @@ public:
 
 private:
 
-  class idx_base_rep
+  class OCTAVE_API idx_base_rep
   {
   public:
     idx_base_rep (void) : count (1), err (false) { }
@@ -106,7 +106,7 @@ private:
   };
 
   // The magic colon index.
-  class idx_colon_rep : public idx_base_rep
+  class OCTAVE_API idx_colon_rep : public idx_base_rep
   {
   public:
     idx_colon_rep (void) { }
@@ -144,7 +144,7 @@ private:
   enum direct { DIRECT };
 
   // The integer range index.
-  class idx_range_rep : public idx_base_rep
+  class OCTAVE_API idx_range_rep : public idx_base_rep
   {
   public:
     idx_range_rep (octave_idx_type _start, octave_idx_type _len,
@@ -197,7 +197,7 @@ private:
   };
 
   // The integer scalar index.
-  class idx_scalar_rep : public idx_base_rep
+  class OCTAVE_API idx_scalar_rep : public idx_base_rep
   {
   public:
     idx_scalar_rep (octave_idx_type i, direct)
@@ -248,7 +248,7 @@ private:
   };
 
   // The integer vector index.
-  class idx_vector_rep : public idx_base_rep
+  class OCTAVE_API idx_vector_rep : public idx_base_rep
   {
   public:
     // Direct constructor.

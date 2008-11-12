@@ -28,6 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "MArray.h"
 #include "MArray.cc"
+template <> OCTAVE_API double MArray<double>::norm (double p) const;
 #include "dColVector.h"
 #include "oct-norm.h"
 

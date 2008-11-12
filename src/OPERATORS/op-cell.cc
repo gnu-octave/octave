@@ -71,7 +71,7 @@ oct_catop_matrix_cell (octave_base_value& a1, const octave_base_value& a2,
 			 const Array<octave_idx_type>&)
 {
   octave_value retval;
-  CAST_BINOP_ARGS (const octave_cell&, const octave_matrix&);
+  CAST_BINOP_ARGS (const octave_matrix&, const octave_cell&);
   NDArray tmp = v1.array_value ();
   dim_vector dv = tmp.dims ();
   if (dv.all_zero ())

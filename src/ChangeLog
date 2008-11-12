@@ -3,6 +3,12 @@
 	* dirfcn.cc (Ffilesep): Make it return all file separators when 'all'
 	is given as argument.
 
+2008-11-12  David Bateman  <dbateman@free.fr>
+
+	* OPERATORS/op-cell.cc (op_catop_matrix_cell): Cast args in the correct
+	order.
+	* OPERATORS/op-struct.cc (op_catop_matrix_struct): Ditto.
+
 2008-11-11  Jaroslav Hajek <highegg@gmail.com>
 
 	* pt-assign.cc: Fix handling of empty cs-lists in assignment LHS.

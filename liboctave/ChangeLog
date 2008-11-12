@@ -1,3 +1,8 @@
+2008-11-12  Jaroslav Hajek <highegg@gmail.com>
+
+	* DiagArray2.h (DiagArray2<T>::maybe_delete_elements): Remove
+	declaration.
+
 2008-11-09  Jaroslav Hajek <highegg@gmail.com>
 
 	* oct-norm.cc: Don't include Array.cc.  

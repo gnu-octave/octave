@@ -497,15 +497,15 @@ function move_baseline (h, d)
   yt = get(h, "ydata")(:)';
   ny = length (yt);
   yt = [b0 * ones(1, ny); yt; NaN(1, ny)](:);
-  set (kids(end), "ydata", yt);
+  set (kids(2), "ydata", yt);
 endfunction
 
 function update_props (h, d)
   kids = get (h, "children");
-  set (kids(1), "color", get (h, "color"), 
+  set (kids(2), "color", get (h, "color"), 
        "linewidth", get (h, "linewidth"),
        "linestyle", get (h, "linestyle"));
-  set (kids(2), "color", get (h, "color"), 
+  set (kids(1), "color", get (h, "color"), 
        "marker", get (h, "marker"),
        "markerfacecolor", get (h, "markerfacecolor"),
        "markersize", get (h, "markersize"));
@@ -537,7 +537,7 @@ function update_data (h, d)
     endif
 
     kids = get (h, "children");
-    set (kids(1), "xdata", xt, "ydata", yt, "zdata", zt)
-    set (kids(2), "xdata", x, "ydata", y, "zdata", z)
+    set (kids(2), "xdata", xt, "ydata", yt, "zdata", zt)
+    set (kids(1), "xdata", x, "ydata", y, "zdata", z)
   endif
 endfunction

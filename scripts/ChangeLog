@@ -3,6 +3,12 @@
 	* polynomial/spline.m: Delete debugging statements.  From
 	Sebastian Schöps <sebastian@schoeps.org>.
 
+2008-11-12  David Bateman  <dbateman@free.fr>
+
+	* plot/__quiver__.m: Only autoscale if more than one element to
+	plot. Modify callbacks for change in order of children.
+	* plot/__stem__.m: Modify callbacks for change in order of children.
+
 2008-09-28  Jaroslav Hajek <highegg@gmail.com>
 
 	* optimization/__fdjac__.m: New function file.

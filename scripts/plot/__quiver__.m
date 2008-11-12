@@ -102,7 +102,7 @@ function hg = __quiver__ (varargin)
     endif
   endwhile
 
-  if (autoscale)
+  if (autoscale && numel (u) > 1)
     ## Scale the arrows to fit in the grid
     dx = (max(x(:)) - min(x(:))) ./ size (x, 2);
     dy = (max(y(:)) - min(y(:))) ./ size (y, 1);
@@ -121,6 +121,12 @@ function hg = __quiver__ (varargin)
       if (is3d)
 	ww = s*w;
       endif
+    endif
+  else
+    uu = u;
+    vv = v;
+    if (is3d)
+      ww = w;
     endif
   endif
 
@@ -355,10 +361,10 @@ function update_data (h, d)
     zend = z + w(:);
   endif
 
-  set (kids (1), "xdata", [x.'; xend.'; NaN(1, length (x))](:));
-  set (kids (1), "ydata", [y.'; yend.'; NaN(1, length (y))](:));
+  set (kids (3), "xdata", [x.'; xend.'; NaN(1, length (x))](:));
+  set (kids (3), "ydata", [y.'; yend.'; NaN(1, length (y))](:));
   if (is3d)
-    set (kids (1), "zdata", [z.'; zend.'; NaN(1, length (z))](:));
+    set (kids (3), "zdata", [z.'; zend.'; NaN(1, length (z))](:));
   endif
 
   xtmp = x + u(:) .* (1 - arrowsize);
@@ -383,10 +389,10 @@ function update_data (h, d)
     set (kids (2), "zdata", [zarrw1.'; zend.'; zarrw2.'; NaN(1, length (z))](:));
   endif
 
-  set (kids (3), "xdata", x);
-  set (kids (3), "ydata", y);
+  set (kids (1), "xdata", x);
+  set (kids (1), "ydata", y);
   if (is3d)
-    set (kids (3), "zdata", z);
+    set (kids (1), "zdata", z);
   endif
 
 endfunction
@@ -394,7 +400,7 @@ endfunction
 function update_props (h, d)
   kids = get (h, "children");
 
-  set (kids(1), "color", get (h, "color"), 
+  set (kids(3), "color", get (h, "color"), 
        "linewidth", get (h, "linewidth"),
        "linestyle", get (h, "linestyle"));
   set (kids(2), "color", get (h, "color"), 
@@ -405,7 +411,7 @@ function update_props (h, d)
   else
     set (kids (2), "visible", "off");
   endif
-  set (kids(3), "color", get (h, "color"), 
+  set (kids(1), "color", get (h, "color"), 
        "marker", get (h, "marker"),
        "markerfacecolor", get (h, "markerfacecolor"),
        "markersize", get (h, "markersize"));

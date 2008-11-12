@@ -1,3 +1,8 @@
+2008-11-12  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* dirfcn.cc (Ffilesep): Make it return all file separators when 'all'
+	is given as argument.
+
 2008-11-11  Jaroslav Hajek <highegg@gmail.com>
 
 	* pt-assign.cc: Fix handling of empty cs-lists in assignment LHS.

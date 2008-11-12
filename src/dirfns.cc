@@ -637,7 +637,13 @@ fnmatch (\"a*b\", @{\"ab\"; \"axyzb\"; \"xyzab\"@})\n\
 DEFUN (filesep, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} filesep ()\n\
+@deftypefnx {Built-in Function} {} filesep ('all')\n\
 Return the system-dependent character used to separate directory names.\n\
+\n\
+If 'all' is given, the function return all valid file separators in\n\
+the form of a string. The list of file separators is system-dependent.\n\
+It is / (forward slash) under UNIX or Mac OS X, / and \\ (forward and\n\
+backward slashes) under Windows.\n\
 @seealso{pathsep, dir, ls}\n\
 @end deftypefn")
 {
@@ -645,6 +651,20 @@ Return the system-dependent character used to separate directory names.\n\
 
   if (args.length () == 0)
     retval = file_ops::dir_sep_str ();
+  else if (args.length () == 1)
+    {
+      std::string s = args(0).string_value ();
+
+      if (! error_state)
+	{
+	  if (s == "all")
+	    retval = file_ops::dir_sep_chars ();
+	  else
+	    gripe_wrong_type_arg ("filesep", args(0));
+	}
+      else
+	gripe_wrong_type_arg ("filesep", args(0));
+    }
   else
     print_usage ();
 

@@ -84,7 +84,7 @@ function rnd = chi2rnd (n, r, c)
 
     k = find ((n > 0) & (n < Inf));
     if (any (k))
-      rnd(k) = 2 * randg(n(k)/2, size(k))
+      rnd(k) = 2 * randg(n(k)/2, size(k));
     endif
   endif
 

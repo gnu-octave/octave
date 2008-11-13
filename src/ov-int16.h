@@ -23,12 +23,12 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_int16_h)
 #define octave_int16_h 1
 
+#define OCTAVE_INT_T octave_int16
+
 #define OCTAVE_VALUE_INT_MATRIX_T octave_int16_matrix
-#define OCTAVE_INT_NDARRAY_T int16NDArray
 #define OCTAVE_VALUE_INT_NDARRAY_EXTRACTOR_FUNCTION int16_array_value
 
 #define OCTAVE_VALUE_INT_SCALAR_T octave_int16_scalar
-#define OCTAVE_INT_T octave_int16
 #define OCTAVE_VALUE_INT_SCALAR_EXTRACTOR_FUNCTION int16_scalar_value
 
 #define OCTAVE_TYPE_PREDICATE_FUNCTION is_int16_type
@@ -37,12 +37,12 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "ov-intx.h"
 
+#undef OCTAVE_INT_T
+
 #undef OCTAVE_VALUE_INT_MATRIX_T
-#undef OCTAVE_INT_NDARRAY_T
 #undef OCTAVE_VALUE_INT_NDARRAY_EXTRACTOR_FUNCTION
 
 #undef OCTAVE_VALUE_INT_SCALAR_T
-#undef OCTAVE_INT_T
 #undef OCTAVE_VALUE_INT_SCALAR_EXTRACTOR_FUNCTION
 
 #undef OCTAVE_TYPE_PREDICATE_FUNCTION

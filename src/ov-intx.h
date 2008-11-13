@@ -42,18 +42,19 @@ along with Octave; see the file COPYING.  If not, see
 class
 OCTINTERP_API
 OCTAVE_VALUE_INT_MATRIX_T
-  : public octave_base_int_matrix<OCTAVE_INT_NDARRAY_T>
+  : public octave_base_int_matrix<intNDArray<OCTAVE_INT_T> >
 {
 public:
 
   OCTAVE_VALUE_INT_MATRIX_T (void)
-    : octave_base_int_matrix<OCTAVE_INT_NDARRAY_T> () { }
+    : octave_base_int_matrix<intNDArray<OCTAVE_INT_T> > () { }
 
-  OCTAVE_VALUE_INT_MATRIX_T (const OCTAVE_INT_NDARRAY_T& nda)
-    : octave_base_int_matrix<OCTAVE_INT_NDARRAY_T> (nda) { }
+  OCTAVE_VALUE_INT_MATRIX_T (const intNDArray<OCTAVE_INT_T>& nda)
+    : octave_base_int_matrix<intNDArray<OCTAVE_INT_T> > (nda) { }
 
   OCTAVE_VALUE_INT_MATRIX_T (const ArrayN<OCTAVE_INT_T>& nda)
-    : octave_base_int_matrix<OCTAVE_INT_NDARRAY_T> (OCTAVE_INT_NDARRAY_T (nda)) { }
+    : octave_base_int_matrix<intNDArray<OCTAVE_INT_T> >
+        (intNDArray<OCTAVE_INT_T> (nda)) { }
 
   ~OCTAVE_VALUE_INT_MATRIX_T (void) { }
 
@@ -73,7 +74,7 @@ private:
   IM convert_gripe () const
     {
       typedef typename IM::element_type dest_el_type;
-      typedef OCTAVE_INT_NDARRAY_T::element_type src_el_type;
+      typedef intNDArray<OCTAVE_INT_T>::element_type src_el_type;
       dest_el_type::clear_conv_flag ();
       IM retval (matrix);
       if (dest_el_type::get_trunc_flag ())
@@ -300,7 +301,7 @@ public:
 
   void increment (void) 
    { 
-     matrix += 1; 
+     matrix += OCTAVE_INT_T (1); 
      if (OCTAVE_INT_T::get_math_trunc_flag ())
        gripe_unop_integer_math_truncated ("++", type_name (). c_str ());
 
@@ -309,7 +310,7 @@ public:
 
   void decrement (void)
    { 
-     matrix -= 1; 
+     matrix -= OCTAVE_INT_T (1); 
      if (OCTAVE_INT_T::get_math_trunc_flag ())
        gripe_unop_integer_math_truncated ("--", type_name (). c_str ());
       OCTAVE_INT_T::clear_conv_flag ();
@@ -348,8 +349,8 @@ public:
 
   octave_value imag (void) const
   {
-    return OCTAVE_INT_NDARRAY_T (matrix.dims (),
-				 static_cast<OCTAVE_INT_T>(0));
+    return intNDArray<OCTAVE_INT_T> (matrix.dims (),
+				     static_cast<OCTAVE_INT_T>(0));
   }
 
 #define NO_OP_MAPPER(FCN) \
@@ -515,14 +516,14 @@ public:
     {
       if (fill)
 	{
-	  OCTAVE_INT_NDARRAY_T retval (dv, 0);
+	  intNDArray<OCTAVE_INT_T> retval (dv, 0);
 	  if (dv.numel())
 	    retval(0) = scalar;
 	  return retval;
 	}
       else
 	{
-	  OCTAVE_INT_NDARRAY_T retval (dv);
+	  intNDArray<OCTAVE_INT_T> retval (dv);
 	  if (dv.numel())
 	    retval(0) = scalar;
 	  return retval;
@@ -624,7 +625,7 @@ public:
 
   void increment (void) 
    { 
-     scalar += 1; 
+     scalar += OCTAVE_INT_T (1); 
      if (OCTAVE_INT_T::get_math_trunc_flag ())
        gripe_unop_integer_math_truncated ("++", type_name (). c_str ());
       OCTAVE_INT_T::clear_conv_flag ();
@@ -632,7 +633,7 @@ public:
 
   void decrement (void)
    { 
-     scalar -= 1; 
+     scalar -= OCTAVE_INT_T (1); 
      if (OCTAVE_INT_T::get_math_trunc_flag ())
        gripe_unop_integer_math_truncated ("--", type_name (). c_str ());
       OCTAVE_INT_T::clear_conv_flag ();

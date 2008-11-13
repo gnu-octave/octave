@@ -1,3 +1,16 @@
+2008-11-13  John W. Eaton  <jwe@octave.org>
+
+	* ov-int8.h, ov-int16.h, ov-int32.h, ov-int64.h, ov-uint8.h,
+	ov-uint16.h, ov-uint32.h, ov-uint64.h: Don't define
+	OCTAVE_INT_NDARRAY_T.
+	* ov-intx.h (class OCTAVE_VALUE_INT_MATRIX_T,
+	class OCTAVE_VALUE_INT_SCALAR_T): Use intNDArray<OCTAVE_INT_T>
+	instead of OCTAVE_INT_NDARRAY_T.
+	(OCTAVE_VALUE_INT_MATRIX_T::increment,
+	OCTAVE_VALUE_INT_MATRIX_T::decrement,
+	OCTAVE_VALUE_INT_SCALAR_T::increment,
+	OCTAVE_VALUE_INT_SCALAR_T::decrement): Convert 1 to OCTAVE_INT_T.
+
 2008-11-12  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* dirfcn.cc (Ffilesep): Make it return all file separators when 'all'

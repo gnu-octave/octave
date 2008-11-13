@@ -2159,6 +2159,8 @@ public:
     BEGIN_PROPERTIES (root_figure, root)
       handle_property currentfigure S , graphics_handle ()
       handle_property callbackobject Sr , graphics_handle ()
+      array_property screensize , Matrix (1, 4, 0)
+      double_property screenpixelsperinch , 72
       bool_property showhiddenhandles , "off"
     END_PROPERTIES
 
@@ -2351,8 +2353,8 @@ public:
       radio_property paperunits , "{inches}|centimeters|normalized|points"
       array_property paperposition , Matrix (1, 4 , 0) 
       radio_property paperpositionmode , "auto|{manual}"
-      array_property papersize r , Matrix (1, 4, 0)
-      radio_property papertype , "{usletter}|uslegal|a0|a1|a2|a3|a4|a5|b0|b1|b2|b3|b4|b5|arch-a|arch-b|arch-c|arch-d|arch-e|a|b|c|d|e|tabloid"
+      array_property papersize , Matrix (1, 2, 0)
+      radio_property papertype , "{usletter}|uslegal|a0|a1|a2|a3|a4|a5|b0|b1|b2|b3|b4|b5|arch-a|arch-b|arch-c|arch-d|arch-e|a|b|c|d|e|tabloid|<custom>"
       radio_property pointer , "crosshair|fullcrosshair|{arrow}|ibeam|watch|topl|topr|botl|botr|left|top|right|bottom|circle|cross|fleur|custom|hand"
       array_property pointershapecdata , Matrix (16, 16, 0)
       array_property pointershapehotspot , Matrix (1, 2, 0)

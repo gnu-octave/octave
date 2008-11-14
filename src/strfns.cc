@@ -90,7 +90,10 @@ of the string array have the same length.\n\
 	      return retval;
 	    }
 
-	  n_elts += s.length ();
+	  if (s.length () > 0)
+            n_elts += s.length ();
+          else
+            n_elts += 1;
 
 	  int s_max_len = s.max_length ();
 
@@ -108,16 +111,23 @@ of the string array have the same length.\n\
 
 	  int n = s.length ();
 
-	  for (int j = 0; j < n; j++)
-	    {
-	      std::string t = s[j];
-	      int t_len = t.length ();
+          if (n > 0)
+            {
+	      for (int j = 0; j < n; j++)
+	        {
+	          std::string t = s[j];
+	          int t_len = t.length ();
 
-	      if (max_len > t_len)
-		t += std::string (max_len - t_len, ' ');
+	          if (max_len > t_len)
+		    t += std::string (max_len - t_len, ' ');
 
-	      result[k++] = t;
-	    }
+	          result[k++] = t;
+	        }
+            }
+          else
+            {
+               result[k++] = std::string (max_len, ' ');
+            }
 	}
 
       retval = octave_value (result, '\'');
@@ -127,6 +137,20 @@ of the string array have the same length.\n\
 
   return retval;
 }
+
+/*
+%!error <Invalid call to char> char()
+%!assert (char (100) == "d");
+%!assert (all(char (100,100) == ["d";"d"]));
+%!assert (all(char ({100,100}) == ["d";"d"]));
+%!assert (all(char ([100,100]) == ["dd"]));
+%!assert (all(char ({100,{100}}) == ["d";"d"]));
+%!assert (all(char (100, [], 100) == ["d";" ";"d"]))
+%!assert (all(char ({100, [], 100}) == ["d";" ";"d"]))
+%!assert (all(char ({100,{100, {""}}}) == ["d";"d";" "]))
+%!assert (all(char (["a";"be"], {"c", 100}) == ["a";"be";"c";"d"]))
+*/
+
 
 DEFUN (ischar, args, ,
   "-*- texinfo -*-\n\

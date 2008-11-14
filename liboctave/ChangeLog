@@ -17,6 +17,11 @@
 	tag.
 	* oct-norm.cc (xnorm, xfrobnorm, xcolnorms, xrownorms): Ditto.
 
+2008-11-14  David Bateman  <dbateman@free.fr>
+
+	* Array2.h (Array2<T> Array2<T>::index): Correct use of
+	resize_fill_value.
+
 2008-11-12  Jaroslav Hajek <highegg@gmail.com>
 
 	* DiagArray2.h (DiagArray2<T>::maybe_delete_elements): Remove

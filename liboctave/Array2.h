@@ -117,14 +117,14 @@ public:
     }
 
   Array2<T> index (idx_vector& i, int resize_ok = 0,
-		   const T& rfv = resize_fill_value (T ())) const
+		   const T& rfv = Array<T>::resize_fill_value ()) const
     {
       Array<T> tmp = Array<T>::index (i, resize_ok, rfv);
       return Array2<T> (tmp, tmp.rows (), tmp.columns ());
     }
 
   Array2<T> index (idx_vector& i, idx_vector& j, int resize_ok = 0,
-		   const T& rfv = resize_fill_value (T ())) const
+		   const T& rfv = Array<T>::resize_fill_value ()) const
     {
       Array<T> tmp = Array<T>::index (i, j, resize_ok, rfv);
       return Array2<T> (tmp, tmp.rows (), tmp.columns ());

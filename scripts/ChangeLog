@@ -5,6 +5,11 @@
 
 2008-11-12  David Bateman  <dbateman@free.fr>
 
+	* plot/__go_draw_axes__.m (do_tics_1): Support the minorick properties
+	of the axis object.
+
+2008-11-12  David Bateman  <dbateman@free.fr>
+
 	* plot/__quiver__.m: Only autoscale if more than one element to
 	plot. Modify callbacks for change in order of children.
 	* plot/__stem__.m: Modify callbacks for change in order of children.

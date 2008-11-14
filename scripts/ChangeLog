@@ -16,6 +16,10 @@
 	* plot/__go_draw_axes__.m (do_tics_1): Support the minorick properties
 	of the axis object.
 
+2008-11-14  Ben Abbott <bpabbott@mac.com>
+
+	* plot/gnuplot_drawnow.m: Add support of properites to gp backend.
+
 2008-11-13  John W. Eaton  <jwe@octave.org>
 
 	* statistics/distributions/chi2rnd.m: Fix another missing semicolon.

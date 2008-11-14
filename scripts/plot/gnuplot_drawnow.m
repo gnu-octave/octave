@@ -34,14 +34,16 @@ function gnuplot_drawnow (h, term, file, mono, debug_file)
   endif
 
   if (nargin >= 3 && nargin <= 5)
+    ## Produce various output formats, or redirect gnuplot stream to a debug file
     plot_stream = [];
     fid = [];
     unwind_protect
-      [plot_stream, enhanced] = open_gnuplot_stream (1, [], term, file);
+      plot_stream = open_gnuplot_stream (1, []);
+      enhanced = gnuplot_set_term (plot_stream (1), h, term, file);
       __go_draw_figure__ (h, plot_stream, enhanced, mono);
       if (nargin == 5)
         fid = fopen (debug_file, "wb");
-        enhanced = init_plot_stream (fid, [], term, file);
+        enhanced = gnuplot_set_term (fid, h, term, file);
         __go_draw_figure__ (h, fid, enhanced, mono);
       endif
     unwind_protect_cleanup
@@ -53,13 +55,12 @@ function gnuplot_drawnow (h, term, file, mono, debug_file)
       endif
     end_unwind_protect
   elseif (nargin == 1)
+    ##  Graphics terminal for display
     plot_stream = get (h, "__plot_stream__");
     if (isempty (plot_stream))
-      [plot_stream, enhanced] = open_gnuplot_stream (2, h);
-      set (h, "__enhanced__", enhanced);
-    else
-      enhanced = get (h, "__enhanced__");
+      plot_stream = open_gnuplot_stream (2, h);
     endif
+    enhanced = gnuplot_set_term (plot_stream (1), h);
     __go_draw_figure__ (h, plot_stream (1), enhanced, mono);
     fflush (plot_stream (1));
   else
@@ -68,10 +69,8 @@ function gnuplot_drawnow (h, term, file, mono, debug_file)
 
 endfunction
 
-function [plot_stream, enhanced] = open_gnuplot_stream (npipes, h, varargin)
-
+function [plot_stream, enhanced] = open_gnuplot_stream (npipes, h)
   cmd = gnuplot_binary ();
-
   if (npipes > 1)
     [plot_stream(1), plot_stream(2), pid] = popen2 (cmd);
     if (pid < 0)
@@ -83,104 +82,307 @@ function [plot_stream, enhanced] = open_gnuplot_stream (npipes, h, varargin)
       error ("drawnow: failed to open connection to gnuplot");
     endif
   endif
-
   if (! isempty (h))
     set (h, "__plot_stream__", plot_stream);
   endif
-
-  enhanced = init_plot_stream (plot_stream (1), h, varargin{:});
-
 endfunction
 
-function enhanced = init_plot_stream (plot_stream, h, term, file)
-
-  if (nargin == 4)
-    enhanced = enhanced_term (term);
-    if (! isempty (term))
-      if (enhanced)
-	fprintf (plot_stream, "set terminal %s enhanced;\n", term);
-      else
-	fprintf (plot_stream, "set terminal %s;\n", term);
-      endif
-    endif
-    if (! isempty (file))
-      fprintf (plot_stream, "set output \"%s\";\n", file);
-    endif
+function [ enhanced ] = gnuplot_set_term (plot_stream, h, term, file)
+  ## Generate the gnuplot "set terminal <term> ..." command. Include the subset
+  ## of properties "position", "units", "paperposition", "paperunits", "name", 
+  ## and "numbertitle". When "term" originates from print.m, it may include
+  ## gnuplot terminal options.
+  if (nargin == 2)
+    ## This supports the gnuplot backend
+    term = gnuplot_term ();
+    opts_str = "";
   else
+    ## Get the one word terminal id and save the remaining as options to be passed
+    ## on to gnuplot. The terminal may respect the backend.
+    [term, opts_str] = gnuplot_trim_term (term);
+  endif
 
-    ## Guess the terminal type.
-    term = getenv ("GNUTERM");
-    if (isempty (term))
-      if (! isempty (getenv ("DISPLAY")))
-	term = "x11";
-      elseif (! isunix ())
-	term = "windows";
-      else
-	## This should really be checking for os x before setting
-	## the terminal type to aqua, but nobody will notice because
-	## every other unix will be using x11 and windows will be
-	## using windows.  Those diehards still running octave from
-	## a linux console know how to set the GNUTERM variable.
-	term = "aqua";
-      endif
-    endif
+  enhanced = gnuplot_is_enhanced_term (term);
 
-    enhanced = enhanced_term (term);
+  ## Set the terminal
+  if (! isempty (term))
+
     if (enhanced)
       enh_str = "enhanced";
     else
       enh_str = "";
     endif
 
-    ## If no 'h' (why not?) then open the terminal as Figure 0.
-    if (isempty (h))
-      h = 0;
+    if (! isempty (h) && isfigure (h))
+
+      ## Generate gnuoplot title string for backend plot windows
+      if (isbackend (term))
+        fig.numbertitle = get (h, "numbertitle");
+        fig.name = get (h, "name");
+        if (strcmpi (get (h, "numbertitle"), "on"))
+          title_str = sprintf ("Figure %d", h);
+        else
+          title_str = "";
+        end
+        if (! isempty (fig.name) && ! isempty (title_str))
+          title_str = sprintf ("%s: %s", title_str, fig.name);
+        elseif (! isempty (fig.name) && isempty (title_str))
+          title_str = fig.name;
+        end
+        if (! isempty (title_str))
+          title_str = sprintf ("title \"%s\"", title_str);
+        endif
+      else
+        title_str = "";
+      endif
+
+      if (isempty (strfind (opts_str, " size ")))
+        ## Convert position to units used by gnuplot.
+        if (isbackend (term))
+          ## Get figure size in pixels.
+          gnuplot_size = get_figsize (h);
+        else
+          ## Get size of the printed plot in inches.
+          gnuplot_size = get_canvassize (h);
+          ## If the output is a bitmap, convert to pixels.
+          if (isbitmap (term) || strcmpi (term, "svg"))
+            gnuplot_size = gnuplot_size * get (0, "screenpixelsperinch");
+          endif
+        endif
+        if (all (gnuplot_size > 0))
+          ## Set terminal size
+          terminals_with_size = {"emf", "gif", "jpeg", "latex", "pbm", ...
+                                 "pdf", "png", "postscript", "svg", "wxt", ...
+                                 "epslatex", "pstex", "pslatex"};
+          if (any (strncmpi (term, terminals_with_size, 3)))
+            size_str = sprintf("size %d,%d", gnuplot_size(1), gnuplot_size(2));
+          elseif (any (strncmpi (term, {"aqua", "fig"}, 3)))
+            ## Aqua and Fig also have size, but the format is different.
+            size_str = sprintf("size %d %d", gnuplot_size(1), gnuplot_size(2));
+          elseif (any (strncmpi (term, {"corel", "hpgl"}, 3)))
+            ## The size for corel and hpgl are goes at the end (implicit)
+            size_str = sprintf("%d %d",gnuplot_size(1), gnuplot_size(2));
+          elseif (any (strncmpi (term, {"dxf"}, 3)))
+            ## DXF uses autocad units
+            size_str = "";
+          else
+            size_str = "";
+          endif
+        else
+          size_str = "";
+	  warning ("gnuplot_set_term: size is zero")
+        endif
+      else
+        ## A specified size take priority over the figure properies.
+        size_str = "";
+      endif
+    else
+      if isempty (h)
+        disp ("gnuplot_set_term: figure handle is empty")
+      elseif !isfigure(h)
+        disp ("gnuplot_set_term: not a figure handle")
+      endif
+      title_str = "";
+      size_str = "";
     endif
 
-    if (strcmp (term, "x11"))
-      fprintf (plot_stream, "set terminal x11 %s title \"Figure %d\"\n",
-	       enh_str, h);
-    elseif (strcmp (term, "aqua"))
-      ## Aqua doesn't understand the 'title' option despite what the
-      ## gnuplot 4.2 documentation says.
-      fprintf (plot_stream, "set terminal aqua %d %s\n", h, enh_str);
-    elseif (strcmp (term, "wxt"))
-      fprintf (plot_stream, "set terminal wxt %s title \"Figure %d\"\n", 
-	       enh_str, h);
-
-    elseif (enhanced)
-      fprintf (plot_stream, "set terminal %s %s\n", term, enh_str);
-    endif
-    ## gnuplot will pick up the GNUTERM environment variable itself
-    ## so no need to set the terminal type if not also setting the
-    ## figure title or enhanced mode.
-
+    ## Set the gnuplot terminal (type, enhanced?, title, & size)
+    if (! isempty (term))
+      term_str = sprintf ("set terminal %s", term);
+      if (! isempty (enh_str))
+        term_str = sprintf ("%s %s", term_str, enh_str);
+      end
+      if (! isempty (title_str))
+        term_str = sprintf ("%s %s", term_str, title_str);
+      end
+      if (! isempty (size_str))
+        ## size_str goes last to permit specification of canvas size
+        ## for terminals cdr/corel
+        term_str = sprintf ("%s %s", term_str, size_str);
+      end
+      if (nargin > 4 && ischar (opts_str))
+        ## Options must go last
+        term_str = sprintf ("%s %s", term_str, opts_str);
+      endif
+      fprintf (plot_stream, sprintf ("%s\n", term_str));
+    else
+      ## gnuplot will pick up the GNUTERM environment variable itself
+      ## so no need to set the terminal type if not also setting the
+      ## figure title, enhanced mode, or position.
+    end
   endif
 
+  if (nargin == 4)
+    if (! isempty (file))
+      fprintf (plot_stream, "set output \"%s\";\n", file);
+    endif
+  endif
 endfunction
 
-function have_enhanced = enhanced_term (term)
-  persistent enhanced_terminals;
+function term = gnuplot_term ()
+  term = getenv ("GNUTERM");
+  ## If not specified, guess the terminal type.
+  if (isempty (term))
+    if (ismac ())
+      term = "aqua";
+    elseif (! isunix ())
+      term = "windows";
+    else
+      term = "x11";
+    endif
+  endif
+endfunction
 
+function [term, opts] = gnuplot_trim_term (string)
+  ## Extract the terminal type and terminal options (from print.m)
+  string = deblank (string);
+  n = strfind (string, ' ');
+  if (isempty (n))
+    term = string;
+    opts = "";
+  else
+    term = string(1:(n-1));
+    opts = string((n+1):end);
+  endif
+endfunction
+
+function have_enhanced = gnuplot_is_enhanced_term (term)
+  persistent enhanced_terminals;
   if (isempty (enhanced_terminals))
     ## Don't include pstex, pslatex or epslatex here as the TeX commands
     ## should not be interpreted in that case.
-    if (compare_versions (__gnuplot_version__ (), "4.0", ">"))
-      enhanced_terminals = {"aqua", "dumb", "png", "jpeg", "gif", "pm", ...
-	                    "windows", "wxt", "svg", "postscript", "x11", "pdf"};
-    else 
-      enhanced_terminals = {"x11", "postscript"};
-    endif
+    enhanced_terminals = {"aqua", "dumb", "png", "jpeg", "gif", "pm", ...
+                          "windows", "wxt", "svg", "postscript", "x11", "pdf"};
   endif
-
-  term = tolower (term);
-
+  if (nargin < 1)
+    ## Determine the default gnuplot terminal.
+    term = gnuplot_term ();
+  endif
   have_enhanced = false;
-  for i = 1 : length (enhanced_terminals)
-    t = enhanced_terminals{i};
+  for n = 1 : length (enhanced_terminals)
+    t = enhanced_terminals{n};
     if (strncmp (term, t, min (length (term), length (t))))
       have_enhanced = true;
       break;
     endif
   endfor
+endfunction
+
+function ret = isbackend (term)
+  if (nargin == 0)
+    term = gnuplot_term ();
+  endif
+  ret = any (strcmpi ({"aqua", "wxt", "x11", "windows", "pm"}, term));
+endfunction
+
+function ret = isbitmap (term)
+  if (nargin == 0)
+    term = gnuplot_term ();
+  endif
+  ret = any (strcmpi ({"png", "jpeg", "gif", "pbm"}, term));
+endfunction
+
+function [ fig_size ] = get_figsize (h)
+  ## Determine the size of the figure in pixels  
+  possize = get (h, "position")(3:4);
+  units = get (h, "units");
+  t.inches      = 1;
+  t.centimeters = 2.54;
+  t.pixels      = get (0, "screenpixelsperinch");
+  ## gnuplot treats pixels/points the same
+  t.points      = t.pixels;
+  t.normalized  = get (0, "screensize")(3:4) / t.pixels;
+  fig_size = possize * (t.pixels / t.(units));
+  if (prod (fig_size) > 1e8)
+    warning ("gnuplot_drawnow: figure size is excessive. Reducing to 1024x768.")
+    fig_size = [1024, 768];
+    position = get (h, "position");
+    set (h, "position", [position(1:2), fig_size], "units", "pixels");
+  endif
+endfunction
+
+function [plotsize] = get_canvassize (h)
+  ## Returns the intended size of the plot on the page in inches. 
+  ## "canvas size" is a gnuplot term. Gnuplot doesn't explicity plot to
+  ## an area/position on a page. Instead it plots to a "canvas" of a 
+  ## explicit or implicit size.
+  t.points      = get (0, "screenpixelsperinch");
+  t.centimeters = 2.54;
+  t.inches      = 1.00;
+  papersize = get_papersize (h);
+  paperunits = get (h, "paperunits");
+  paperposition = get (h, "paperposition") / t.(paperunits);
+  if (strcmpi (paperunits, "normalized"))
+    plotsize = papersize .* paperposition(3:4);
+  else
+    plotsize = paperposition(3:4);
+  endif
+endfunction
+
+function [ papersize ] = get_papersize (h)
+  ## Returns the papersize in inches
+  persistent papertypes papersizes
+  if (isempty (papertypes))
+    papertypes = {"usletter", "uslegal", ...
+                 "a0", "a1", "a2", "a3", "a4", "a5", ...
+                 "b0", "b1", "b2", "b3", "b4", "b5", ...
+                 "arch-a", "arch-b", "arch-c", "arch-d", "arch-e", ...
+                 "a", "b", "c", "d", "e", ...
+                 "tabloid", "<custom>"};
+    papersizes = [ 8.500, 11.000
+                   8.500, 14.000
+                  33.135, 46.847
+                  23.404, 33.135
+                  16.548, 23.404
+                  11.694, 16.528
+                   8.268, 11.693
+                   5.847,  8.264
+                  40.543, 57.366
+                  28.683, 40.503
+                  20.252, 28.683
+                  14.342, 20.252
+                  10.126, 14.342
+                   7.171, 10.126
+                   9.000, 12.000
+                  12.000, 18.000
+                  18.000, 24.000
+                  24.000, 36.000
+                  36.000, 48.000
+                   8.500, 11.000
+                  11.000, 17.000
+                  17.000, 22.000
+                  22.000, 34.000
+                  34.000, 44.000
+                  11.000, 17.000
+                   8.500, 11.000];
+    ## <custom> has a page size since we're not doing any checking here.
+    papersizes = round (1000 * papersizes);
+  endif
+
+  paperunits = get (h, "paperunits");
+  if (strcmpi (paperunits, "normalized"))
+    papertype = get (h, "papertype");
+    n = find (strcmpi (papertypes, papertype));
+    papersize = 0.001 * papersizes(n, :);
+    paperunits = "inches";
+  else
+    t.points      = 72;
+    t.centimeters = 2.54;
+    t.inches      = 1.00;
+    ## FIXME - this papersize/type administration should be done at a lower level.
+    if (strcmpi (get (h, "papertype"), "<custom>"))
+      ## if the type is custom but the size is a standard, then set the standard type.
+      papersize = get (h "papersize");
+      papersize = papersize * t.(paperunits);
+      n = find (all ((ones ([size(papersizes, 1), 1]) * round(1000*papersize) - papersizes) == 0, 2));
+      if (! isempty (n))
+        set (h, "papertype", papertypes{n});
+      endif
+    else
+      papertype = get (h, "papertype");
+      n = find (strcmpi (papertypes, papertype));
+      papersize = papersizes(n,:) * 0.001;
+      set (h, "papersize", papersize * t.(paperunits));
+    endif
+  endif
 endfunction

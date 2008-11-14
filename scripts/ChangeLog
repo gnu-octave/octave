@@ -1,12 +1,12 @@
+2008-11-14  David Bateman  <dbateman@free.fr>
+
+	* plot/__go_draw_axes__.m (do_tics_1): Support the minorick properties
+	of the axis object.
+
 2008-11-13  John W. Eaton  <jwe@octave.org>
 
 	* statistics/distributions/chi2rnd.m: Fix another missing semicolon.
 	From sven.mattisson@insatnet.nu.
-
-2008-11-12  David Bateman  <dbateman@free.fr>
-
-	* plot/__go_draw_axes__.m (do_tics_1): Support the minorick properties
-	of the axis object.
 
 2008-11-12  David Bateman  <dbateman@free.fr>
 

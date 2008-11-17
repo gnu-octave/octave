@@ -1085,7 +1085,7 @@ are touched are restored. You can do something similar with
 @sc{Matlab}, however rethrow and lasterror are only available in Octave 2.9.10 and later.
 
 Note that using @code{try}/@code{catch} combined with @samp{rethrow
-(lasterror ())} can not guarentee that global variables will be
+(lasterror ())} can not guarantee that global variables will be
 correctly reset, as it won't catch user interrupts with Ctrl-C. For
 example
 

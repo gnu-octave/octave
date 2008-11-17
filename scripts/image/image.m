@@ -22,7 +22,7 @@
 ## @deftypefnx {Function File} {} image (@var{x}, @var{y}, @var{img})
 ## Display a matrix as a color image.  The elements of @var{x} are indices
 ## into the current colormap, and the colormap will be scaled so that the
-## extremes of @var{x} are mapped to the extremes of teh colormap.
+## extremes of @var{x} are mapped to the extremes of the colormap.
 ##
 ## It first tries to use @code{gnuplot}, then @code{display} from 
 ## @code{ImageMagick}, then @code{xv}, and then @code{xloadimage}.

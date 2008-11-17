@@ -99,7 +99,7 @@ and so it is entirely the responsibility of the user to correctly identify the\n
 matrix type.\n\
 \n\
 Also the test for positive definiteness is a low cost test for a hermitian\n\
-matrix with a real positive diagonal. This does not guarentee that the matrix\n\
+matrix with a real positive diagonal. This does not guarantee that the matrix\n\
 is positive definite, but only that it is a probable candidate. When such a\n\
 matrix is factorized, a Cholesky factorization is first attempted, and if\n\
 that fails the matrix is then treated with an LU factorization. Once the\n\

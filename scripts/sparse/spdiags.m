@@ -33,7 +33,7 @@
 ## Otherwise a matrix of @var{m} by @var{n} is created with the
 ## diagonals given by @var{v}.
 ##
-## Negative values of @var{c} representive diagonals below the main
+## Negative values of @var{c} represent diagonals below the main
 ## diagonal, and positive values of @var{c} diagonals above the main
 ## diagonal.
 ##

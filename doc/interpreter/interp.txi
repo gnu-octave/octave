@@ -77,7 +77,7 @@ step function}
 
 @float Figure,fig:interpderiv2
 @image{interpderiv2,8cm}
-@caption{Comparison of the second derivate of the 'phcip' and 'spline' 
+@caption{Comparison of the second derivative of the 'phcip' and 'spline' 
 interpolation methods for a step function}
 @end float
 @end ifnotinfo

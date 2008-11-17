@@ -21,7 +21,7 @@
 ## Sort the rows of the matrix @var{a} according to the order of the
 ## columns specified in @var{c}.  If @var{c} is omitted, a
 ## lexicographical sort is used. By default ascending order is used 
-## however if elements of @var{c} are negative then the corrosponding 
+## however if elements of @var{c} are negative then the corresponding  
 ## column is sorted in descending order.
 ## @end deftypefn
 

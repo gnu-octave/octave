@@ -40,7 +40,7 @@ F (x) = 0
 using the function @code{fsolve}, which is based on the @sc{Minpack}
 subroutine @code{hybrd}.  This is an iterative technique so a starting
 point will have to be provided.  This also has the consequence that
-convergence is not guarantied even if a solution exists.
+convergence is not guaranteed even if a solution exists.
 
 @DOCSTRING(fsolve)
 

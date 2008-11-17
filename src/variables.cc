@@ -2345,7 +2345,7 @@ Clears the local variable names.\n\
 The arguments are treated as regular expressions as any variables that\n\
 match will be cleared.\n\
 @end table\n\
-With the execption of @code{exclusive}, all long options can be used \n\
+With the exception of @code{exclusive}, all long options can be used \n\
 without the dash as well.\n\
 @end deffn")
 {

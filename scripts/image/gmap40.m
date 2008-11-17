@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} gmap40 (@var{n})
 ## Create a color colormap. The colormap is red, green, blue, yellow,
-## magneta and cyan. These are the colors that are allowed with patch
+## magenta and cyan. These are the colors that are allowed with patch
 ## objects using gnuplot 4.0, and so this colormap function is specially
 ## designed for users of gnuplot 4.0.  The argument @var{n} should be 
 ## a scalar.  If it is omitted, a length of 6 is assumed. Larger values

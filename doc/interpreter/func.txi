@@ -1236,7 +1236,7 @@ and @code{triu}, as well as other basic functions, like
 Image processing tools.  These functions require the X Window System.
 
 @item io
-Input-ouput functions.
+Input-output functions.
 
 @item linear-algebra
 Functions for linear algebra.

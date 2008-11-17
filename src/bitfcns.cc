@@ -513,7 +513,7 @@ DEFUN (bitmax, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} bitmax ()\n\
 Return the largest integer that can be represented as a floating point\n\
-value.  On IEEE-754 compatiable systems, @code{bitmax} is @code{2^53 - 1}.\n\
+value.  On IEEE-754 compatible systems, @code{bitmax} is @code{2^53 - 1}.\n\
 @end deftypefn")
 {
   octave_value retval;

@@ -42,7 +42,7 @@
 ##
 ## @item assert(@var{observed}, @var{expected}, @var{tol})
 ## Accept a tolerance when comparing numbers. 
-## If @var{tol} is possitive use it as an absolute tolerance, will produce an error if
+## If @var{tol} is positive use it as an absolute tolerance, will produce an error if
 ## @code{abs(@var{observed} - @var{expected}) > abs(@var{tol})}.
 ## If @var{tol} is negative use it as a relative tolerance, will produce an error if
 ## @code{abs(@var{observed} - @var{expected}) > abs(@var{tol} * @var{expected})}.

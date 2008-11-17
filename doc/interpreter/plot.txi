@@ -864,7 +864,7 @@ the @code{position} property.
 @itemx xldata
 @itemx xudata
 The data to be plotted.  The @code{ldata} and @code{udata} elements are
-for errobars in the y direction, and the @code{xldata} and @code{xudata}
+for errorbars in the y direction, and the @code{xldata} and @code{xudata}
 elements are for errorbars in the x direction.
 
 @item color
@@ -941,7 +941,7 @@ such as Greek or mathematical symbols within the text. The special
 characters are also inserted with a code starting with the back-slash
 (\) character, as in the table @ref{tab:extended}. 
 
-In addition, the formating of the text can be changed within the string
+In addition, the formatting of the text can be changed within the string
 with the codes 
 
 @multitable @columnfractions .2 .2 .6 .2
@@ -1641,7 +1641,7 @@ The line and fill color of the patch objects making up the areas. @xref{Colors}.
 @item xdata
 @itemx ydata
 The x and y coordinates of the original columns of the data passed to
-@code{area} prior to the cummulative summation used in the @code{area}
+@code{area} prior to the cumulative summation used in the @code{area}
 function. 
 
 @item xdatasource

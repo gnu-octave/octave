@@ -24,7 +24,7 @@
 ## @deftypefnx {Function File} {@var{h} =} pie (@dots{});
 ## Produce a pie chart. 
 ##
-## Called with a single vector arrgument, produces a pie chart of the
+## Called with a single vector argument, produces a pie chart of the
 ## elements in @var{x}, with the size of the slice determined by percentage
 ## size of the values of @var{x}.
 ##

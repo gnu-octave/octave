@@ -582,7 +582,7 @@ operators.
 
 @DOCSTRING(bitxor)
 
-The bitwise 'not' operator is unary operator that performs a logial
+The bitwise 'not' operator is unary operator that performs a logical
 negation of each of the bits of the value. For this to make sense, the
 mask against which the value is negated must be defined. Octave's
 bitwise 'not' operator is @code{bitcmp}.

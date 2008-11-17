@@ -400,7 +400,7 @@ from the build dependencies, and therefore the often a
 @noindent
 The developer is free to add additional arguments to the 
 @code{DESCRIPTION} file for their own purposes. One further detail to
-aid the packager is that the @code{SystemRequirments} and
+aid the packager is that the @code{SystemRequirements} and
 @code{BuildRequires} keywords can have distribution dependent section,
 and the automatic build process will use these. An example of the
 format of this is

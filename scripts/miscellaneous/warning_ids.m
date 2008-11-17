@@ -202,7 +202,7 @@
 ## automatically in literal matrices.
 ## 
 ## @item Octave:single-quote-string
-## Print warning if a signle quote character is used to introduce a
+## Print warning if a single quote character is used to introduce a
 ## string constant.
 ## 
 ## @item Octave:str-to-num

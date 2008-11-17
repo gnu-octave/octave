@@ -35,7 +35,7 @@
 ## column vector and returns a scalar. The result of the function should not
 ## depend on the order of the subscripts.
 ##
-## The elements of the returned array that have no subscripts assoicated with
+## The elements of the returned array that have no subscripts associated with
 ## them are set to zero. Defining @var{fillval} to some other value allows
 ## these values to be defined.
 ##

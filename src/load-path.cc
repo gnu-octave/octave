@@ -1701,7 +1701,7 @@ execute_pkg_del (const std::string& dir)
 DEFUN (genpath, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} genpath (@var{dir})\n\
-Return a path constructed from @var{dir} and all its subdiretories.\n\
+Return a path constructed from @var{dir} and all its subdirectories.\n\
 @end deftypefn")
 {
   octave_value retval;

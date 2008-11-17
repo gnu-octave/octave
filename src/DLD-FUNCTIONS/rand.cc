@@ -341,7 +341,7 @@ By default, the generator is initialized from @code{/dev/urandom} if it is\n\
 available, otherwise from cpu time, wall clock time and the current\n\
 fraction of a second.\n\
 \n\
-To compute the psuedo-random sequence, @code{rand} uses the Mersenne\n\
+To compute the pseudo-random sequence, @code{rand} uses the Mersenne\n\
 Twister with a period of 2^19937-1 (See M. Matsumoto and T. Nishimura,\n\
 ``Mersenne Twister: A 623-dimensionally\n\
 equidistributed uniform pseudorandom number generator'', ACM Trans. on\n\
@@ -884,7 +884,7 @@ Stadlober E., et al., WinRand source code, available via FTP.\n\
 @item For matrix @var{l} > 10, use patchwork rejection method.\n\
 Stadlober E., et al., WinRand source code, available via FTP, or\n\
 H. Zechner, 'Efficient sampling from continuous and discrete\n\
-unimodal distributions', Doctoral Dissertaion, 156pp., Technical\n\
+unimodal distributions', Doctoral Dissertation, 156pp., Technical\n\
 University Graz, Austria, 1994.\n\
 @item For @var{l} > 1e8, use normal approximation.\n\
 L. Montanet, et al., 'Review of Particle Properties', Physical Review\n\

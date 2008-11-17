@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{c}, @var{lev}] =}  contourc (@var{x}, @var{y}, @var{z}, @var{vn})
-## Compute isolines (countour lines) of the matrix @var{z}. 
+## Compute isolines (contour lines) of the matrix @var{z}. 
 ## Parameters @var{x}, @var{y} and @var{vn} are optional.
 ##
 ## The return value @var{lev} is a vector of the contour levels.

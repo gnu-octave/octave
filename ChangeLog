@@ -1,3 +1,7 @@
+2008-11-18  John W. Eaton  <jwe@octave.org>
+
+	* mkoctfile.cc.in, octave-bug.cc.in: Style fixes.
+
 2008-10-30  David Bateman  <dbateman@free.fr>
 
 	* NEWS: Minor update to document improved indexing code.

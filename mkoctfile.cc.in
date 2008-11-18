@@ -27,8 +27,8 @@ static map<string,string> vars;
 static string OCTAVE_VERSION = %OCTAVE_CONF_VERSION%;
 
 static std::string
-substitute_prefix(const std::string& s, const std::string& prefix,
-		  const std::string& new_prefix)
+substitute_prefix (const std::string& s, const std::string& prefix,
+		   const std::string& new_prefix)
 {
   std::string retval = s;
 
@@ -80,15 +80,16 @@ get_variable (const char *name, const string& defval)
 }
 
 static string
-quote_path(const string& s)
+quote_path (const string& s)
 {
   if (s.find (' ') != string::npos && s[0] != '"')
     return "\"" + s + "\"";
-  return s;
+  else
+    return s;
 }
 
 static void
-initialize(void)
+initialize (void)
 {
   if (initialized)
     return;
@@ -127,7 +128,7 @@ initialize(void)
     }
 #endif
 
-  vars["SED"] = get_variable("SED", %OCTAVE_CONF_SED%);
+  vars["SED"] = get_variable ("SED", %OCTAVE_CONF_SED%);
 
   vars["OCTAVE_PREFIX"] = %OCTAVE_CONF_PREFIX%;
 
@@ -136,80 +137,80 @@ initialize(void)
   std::string DEFAULT_LIBDIR = %OCTAVE_CONF_LIBDIR%;
   std::string DEFAULT_OCTLIBDIR = %OCTAVE_CONF_OCTLIBDIR%;
 
-  if (! vars["OCTAVE_HOME"].empty())
+  if (! vars["OCTAVE_HOME"].empty ())
     {
       DEFAULT_OCTINCLUDEDIR
-	= substitute_prefix(DEFAULT_OCTINCLUDEDIR, vars["OCTAVE_PREFIX"],
-			    vars["OCTAVE_HOME"]);
+	= substitute_prefix (DEFAULT_OCTINCLUDEDIR, vars["OCTAVE_PREFIX"],
+			     vars["OCTAVE_HOME"]);
 
       DEFAULT_INCLUDEDIR
-	= substitute_prefix(DEFAULT_INCLUDEDIR, vars["OCTAVE_PREFIX"],
-			    vars["OCTAVE_HOME"]);
+	= substitute_prefix (DEFAULT_INCLUDEDIR, vars["OCTAVE_PREFIX"],
+			     vars["OCTAVE_HOME"]);
 
       DEFAULT_LIBDIR
-	= substitute_prefix(DEFAULT_LIBDIR, vars["OCTAVE_PREFIX"],
-			    vars["OCTAVE_HOME"]);
+	= substitute_prefix (DEFAULT_LIBDIR, vars["OCTAVE_PREFIX"],
+			     vars["OCTAVE_HOME"]);
 
       DEFAULT_OCTLIBDIR
-	= substitute_prefix(DEFAULT_OCTLIBDIR, vars["OCTAVE_PREFIX"],
-			    vars["OCTAVE_HOME"]);
+	= substitute_prefix (DEFAULT_OCTLIBDIR, vars["OCTAVE_PREFIX"],
+			     vars["OCTAVE_HOME"]);
     }
 
-  vars["OCTINCLUDEDIR"] = get_variable("OCTINCLUDEDIR", DEFAULT_OCTINCLUDEDIR);
-  vars["INCLUDEDIR"] = get_variable("INCLUDEDIR", DEFAULT_INCLUDEDIR);
-  vars["LIBDIR"] = get_variable("LIBDIR", DEFAULT_LIBDIR);
-  vars["OCTLIBDIR"] = get_variable("OCTLIBDIR", DEFAULT_OCTLIBDIR);
+  vars["OCTINCLUDEDIR"] = get_variable ("OCTINCLUDEDIR", DEFAULT_OCTINCLUDEDIR);
+  vars["INCLUDEDIR"] = get_variable ("INCLUDEDIR", DEFAULT_INCLUDEDIR);
+  vars["LIBDIR"] = get_variable ("LIBDIR", DEFAULT_LIBDIR);
+  vars["OCTLIBDIR"] = get_variable ("OCTLIBDIR", DEFAULT_OCTLIBDIR);
 
 #if defined (__WIN32__) && ! defined (_POSIX_VERSION)
-  std::string DEFAULT_INCFLAGS = "-I" + quote_path(vars["OCTINCLUDEDIR"])
-    + " -I" + quote_path(vars["OCTINCLUDEDIR"] + "\\octave");
+  std::string DEFAULT_INCFLAGS = "-I" + quote_path (vars["OCTINCLUDEDIR"])
+    + " -I" + quote_path (vars["OCTINCLUDEDIR"] + "\\octave");
 #else
-  std::string DEFAULT_INCFLAGS = "-I" + quote_path(vars["OCTINCLUDEDIR"])
- + " -I" + quote_path(vars["OCTINCLUDEDIR"] + "/octave");
+  std::string DEFAULT_INCFLAGS = "-I" + quote_path (vars["OCTINCLUDEDIR"])
+ + " -I" + quote_path (vars["OCTINCLUDEDIR"] + "/octave");
 #endif
   if (vars["INCLUDEDIR"] != "/usr/include")
-    DEFAULT_INCFLAGS += " -I" + quote_path(vars["INCLUDEDIR"]);
+    DEFAULT_INCFLAGS += " -I" + quote_path (vars["INCLUDEDIR"]);
 
-  std::string DEFAULT_LFLAGS = "-L" + quote_path(vars["OCTLIBDIR"]);
+  std::string DEFAULT_LFLAGS = "-L" + quote_path (vars["OCTLIBDIR"]);
   if (vars["LIBDIR"] != "/usr/lib")
-    DEFAULT_LFLAGS += " -L" + quote_path(vars["LIBDIR"]);
+    DEFAULT_LFLAGS += " -L" + quote_path (vars["LIBDIR"]);
 
-  vars["CPPFLAGS"] = get_variable("CPPFLAGS", %OCTAVE_CONF_CPPFLAGS%);
-  vars["INCFLAGS"] = get_variable("INCFLAGS", DEFAULT_INCFLAGS);
-  vars["F2C"] = get_variable("F2C", %OCTAVE_CONF_F2C%);
-  vars["F2CFLAGS"] = get_variable("F2CFLAGS", %OCTAVE_CONF_F2CFLAGS%);
-  vars["F77"] = get_variable("F77", %OCTAVE_CONF_F77%);
-  vars["FFLAGS"] = get_variable("FFLAGS", %OCTAVE_CONF_FFLAGS%);
-  vars["FPICFLAG"] = get_variable("FPICFLAG", %OCTAVE_CONF_FPICFLAG%);
-  vars["CC"] = get_variable("CC", %OCTAVE_CONF_CC%);
-  vars["CFLAGS"] = get_variable("CFLAGS", %OCTAVE_CONF_CFLAGS%);
-  vars["CPICFLAG"] = get_variable("CPICFLAG", %OCTAVE_CONF_CPICFLAG%);
-  vars["CXX"] = get_variable("CXX", %OCTAVE_CONF_CXX%);
-  vars["CXXFLAGS"] = get_variable("CXXFLAGS", %OCTAVE_CONF_CXXFLAGS%);
-  vars["CXXPICFLAG"] = get_variable("CXXPICFLAG", %OCTAVE_CONF_CXXPICFLAG%);
-  vars["XTRA_CFLAGS"] = get_variable("XTRA_CFLAGS", %OCTAVE_CONF_XTRA_CFLAGS%);
-  vars["XTRA_CXXFLAGS"] = get_variable("XTRA_CXXFLAGS", %OCTAVE_CONF_XTRA_CXXFLAGS%);
+  vars["CPPFLAGS"] = get_variable ("CPPFLAGS", %OCTAVE_CONF_CPPFLAGS%);
+  vars["INCFLAGS"] = get_variable ("INCFLAGS", DEFAULT_INCFLAGS);
+  vars["F2C"] = get_variable ("F2C", %OCTAVE_CONF_F2C%);
+  vars["F2CFLAGS"] = get_variable ("F2CFLAGS", %OCTAVE_CONF_F2CFLAGS%);
+  vars["F77"] = get_variable ("F77", %OCTAVE_CONF_F77%);
+  vars["FFLAGS"] = get_variable ("FFLAGS", %OCTAVE_CONF_FFLAGS%);
+  vars["FPICFLAG"] = get_variable ("FPICFLAG", %OCTAVE_CONF_FPICFLAG%);
+  vars["CC"] = get_variable ("CC", %OCTAVE_CONF_CC%);
+  vars["CFLAGS"] = get_variable ("CFLAGS", %OCTAVE_CONF_CFLAGS%);
+  vars["CPICFLAG"] = get_variable ("CPICFLAG", %OCTAVE_CONF_CPICFLAG%);
+  vars["CXX"] = get_variable ("CXX", %OCTAVE_CONF_CXX%);
+  vars["CXXFLAGS"] = get_variable ("CXXFLAGS", %OCTAVE_CONF_CXXFLAGS%);
+  vars["CXXPICFLAG"] = get_variable ("CXXPICFLAG", %OCTAVE_CONF_CXXPICFLAG%);
+  vars["XTRA_CFLAGS"] = get_variable ("XTRA_CFLAGS", %OCTAVE_CONF_XTRA_CFLAGS%);
+  vars["XTRA_CXXFLAGS"] = get_variable ("XTRA_CXXFLAGS", %OCTAVE_CONF_XTRA_CXXFLAGS%);
 
-  vars["DEPEND_FLAGS"] = get_variable("DEPEND_FLAGS", %OCTAVE_CONF_DEPEND_FLAGS%);
-  vars["DEPEND_EXTRA_SED_PATTERN"] = get_variable("DEPEND_EXTRA_SED_PATTERN", %OCTAVE_CONF_DEPEND_EXTRA_SED_PATTERN%);
+  vars["DEPEND_FLAGS"] = get_variable ("DEPEND_FLAGS", %OCTAVE_CONF_DEPEND_FLAGS%);
+  vars["DEPEND_EXTRA_SED_PATTERN"] = get_variable ("DEPEND_EXTRA_SED_PATTERN", %OCTAVE_CONF_DEPEND_EXTRA_SED_PATTERN%);
 
-  vars["DL_LD"] = get_variable("DL_LD", %OCTAVE_CONF_DL_LD%);
-  vars["DL_LDFLAGS"] = get_variable("DL_LDFLAGS", %OCTAVE_CONF_MKOCTFILE_DL_LDFLAGS%);
+  vars["DL_LD"] = get_variable ("DL_LD", %OCTAVE_CONF_DL_LD%);
+  vars["DL_LDFLAGS"] = get_variable ("DL_LDFLAGS", %OCTAVE_CONF_MKOCTFILE_DL_LDFLAGS%);
 
-  vars["RLD_FLAG"] = get_variable("RLD_FLAG", %OCTAVE_CONF_RLD_FLAG%);
-  vars["RDYNAMIC_FLAG"] = get_variable("RDYNAMIC_FLAG", %OCTAVE_CONF_RDYNAMIC_FLAG%);
+  vars["RLD_FLAG"] = get_variable ("RLD_FLAG", %OCTAVE_CONF_RLD_FLAG%);
+  vars["RDYNAMIC_FLAG"] = get_variable ("RDYNAMIC_FLAG", %OCTAVE_CONF_RDYNAMIC_FLAG%);
   vars["LIBOCTAVE"] = "-loctave";
   vars["LIBOCTINTERP"] = "-loctinterp";
   vars["LIBREADLINE"] = "-lreadline";
   vars["LIBCRUFT"] = "-lcruft";
-  vars["BLAS_LIBS"] = get_variable("BLAS_LIBS", %OCTAVE_CONF_BLAS_LIBS%);
-  vars["FFTW_LIBS"] = get_variable("FFTW_LIBS", %OCTAVE_CONF_FFTW_LIBS%);
-  vars["LIBS"] = get_variable("LIBS", %OCTAVE_CONF_LIBS%);
-  vars["FLIBS"] = get_variable("FLIBS", %OCTAVE_CONF_FLIBS%);
-  vars["LD_CXX"] = get_variable("LD_CXX", %OCTAVE_CONF_LD_CXX%);
-  vars["LDFLAGS"] = get_variable("LDFLAGS", %OCTAVE_CONF_LDFLAGS%);
-  vars["LD_STATIC_FLAG"] = get_variable("LD_STATIC_FLAG", %OCTAVE_CONF_LD_STATIC_FLAG%);
-  vars["LFLAGS"] = get_variable("LFLAGS", DEFAULT_LFLAGS);
+  vars["BLAS_LIBS"] = get_variable ("BLAS_LIBS", %OCTAVE_CONF_BLAS_LIBS%);
+  vars["FFTW_LIBS"] = get_variable ("FFTW_LIBS", %OCTAVE_CONF_FFTW_LIBS%);
+  vars["LIBS"] = get_variable ("LIBS", %OCTAVE_CONF_LIBS%);
+  vars["FLIBS"] = get_variable ("FLIBS", %OCTAVE_CONF_FLIBS%);
+  vars["LD_CXX"] = get_variable ("LD_CXX", %OCTAVE_CONF_LD_CXX%);
+  vars["LDFLAGS"] = get_variable ("LDFLAGS", %OCTAVE_CONF_LDFLAGS%);
+  vars["LD_STATIC_FLAG"] = get_variable ("LD_STATIC_FLAG", %OCTAVE_CONF_LD_STATIC_FLAG%);
+  vars["LFLAGS"] = get_variable ("LFLAGS", DEFAULT_LFLAGS);
 
   vars["ALL_FFLAGS"] = vars["FFLAGS"];
 
@@ -326,7 +327,7 @@ basename (const string& s, bool strip_path = false)
     {
       size_t p1 = retval.rfind ('/'), p2 = retval.rfind ('\\');
       pos = (p1 != string::npos && p2 != string::npos
-	     ? max(p1, p2) : (p2 != string::npos ? p2 : p1));
+	     ? max (p1, p2) : (p2 != string::npos ? p2 : p1));
       if (pos != string::npos)
 	retval = retval.substr (0, pos);
     }
@@ -343,7 +344,7 @@ inline bool
 ends_with (const string& s, const string& suffix)
 {
   return (s.length () >= suffix.length ()
-	  && s.rfind (suffix) == s.length ()-suffix.length());
+	  && s.rfind (suffix) == s.length () - suffix.length ());
 }
 
 static int
@@ -351,7 +352,7 @@ run_command (const string& cmd)
 {
   if (debug)
     cout << cmd << endl;
-  return system (cmd.c_str());
+  return system (cmd.c_str ());
 }
 
 int
@@ -385,7 +386,7 @@ main (int argc, char **argv)
       return 1;
     }
 
-  if (argc == 2 && (!strcmp (argv[1], "-v") || !strcmp(argv[1], "--version")))
+  if (argc == 2 && (!strcmp (argv[1], "-v") || !strcmp (argv[1], "--version")))
     {
       cout << version_msg << endl;
       return 0;
@@ -556,7 +557,7 @@ main (int argc, char **argv)
 	    + vars["CPPFLAGS"] + " " + vars["ALL_CFLAGS"] + " "
 	    + incflags  + " " + defs + " " + quote_path (f);
 
-	  FILE *fd = popen (cmd.c_str(), "r");
+	  FILE *fd = popen (cmd.c_str (), "r");
 	  ofstream fo (dfile.c_str ());
 	  int pos;
 	  while (!feof (fd))
@@ -579,12 +580,12 @@ main (int argc, char **argv)
 	{
 	  string f = *it, dfile = basename (f) + ".d", line;
 
-	  unlink(dfile.c_str ());
+	  unlink (dfile.c_str ());
 	  string cmd = vars["CC"] + " " + vars["DEPEND_FLAGS"] + " "
 	    + vars["CPPFLAGS"] + " " + vars["ALL_CXXFLAGS"] + " "
-	    + incflags  + " " + defs + " " + quote_path(f);
+	    + incflags  + " " + defs + " " + quote_path (f);
 
-	  FILE *fd = popen (cmd.c_str(), "r");
+	  FILE *fd = popen (cmd.c_str (), "r");
 	  ofstream fo (dfile.c_str ());
 	  int pos;
 	  while (!feof (fd))

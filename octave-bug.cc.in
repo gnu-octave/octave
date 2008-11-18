@@ -65,9 +65,9 @@ get_env_variable (const char *name)
 }
 
 inline bool
-starts_with(const string& s, const string& prefix)
+starts_with (const string& s, const string& prefix)
 {
-  return (s.length() >= prefix.length() && s.find(prefix) == 0);
+  return (s.length () >= prefix.length () && s.find (prefix) == 0);
 }
 
 int
@@ -114,16 +114,17 @@ main (int argc, char **argv)
   
   vars["CXX_AND_VERSION"] = (vars["CXX"] + ", version" + vars["CXX_VERSION"]);
 
-  /* FIXME: could be obtain from OS */
+  // FIXME -- could be obtained from OS.
   vars["UN"] = "Windows";
 
+  // FIXME -- the shell script also checks the minor version number,
+  // and if it is greater than or equal to 90, it is assumed that this
+  // version of Octave is a test release and bugs should go to the
+  // maintainers@octave.org list instead of bugs.
   if (starts_with (vars["VERSION"], "ss"))
     vars["BUGADDR"] = "maintainers@octave.org";
   else
-    {
-      /* FIXME: shell script contains more, but I don't get the logic */
-      vars["BUGADDR"] = "bug@octave.org";
-    }
+    vars["BUGADDR"] = "bug@octave.org";
 
   vars["SUBJECT"] = "[50 character or so descriptive subject here (for reference)]";
   if (arg_idx < argc && strcmp (argv[arg_idx], "-s") == 0)
@@ -220,7 +221,7 @@ main (int argc, char **argv)
 
   string content = os.str (), msg;
 
-  // Now go for MAPI stuff
+  // Now go for MAPI stuff.
 
   HMODULE hMapi;
   LHANDLE session;

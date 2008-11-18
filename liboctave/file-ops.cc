@@ -768,53 +768,58 @@ tilde_expand_word (const std::string& filename)
 std::string
 file_ops::tilde_expand (const std::string& name)
 {
-  std::string result;
-
-  size_t name_len = name.length ();
-
-  // Scan through S expanding tildes as we come to them.
-
-  size_t pos = 0;
-
-  while (1)
+  if (name.find ('~') == std::string::npos)
+    return name;
+  else
     {
-      if (pos > name_len)
-	break;
+      std::string result;
 
-      size_t len;
+      size_t name_len = name.length ();
 
-      // Make START point to the tilde which starts the expansion.
+      // Scan through S expanding tildes as we come to them.
 
-      size_t start = tilde_find_prefix (name.substr (pos), len);
+      size_t pos = 0;
 
-      result.append (name.substr (pos, start));
+      while (1)
+	{
+	  if (pos > name_len)
+	    break;
 
-      // Advance STRING to the starting tilde.
+	  size_t len;
 
-      pos += start;
+	  // Make START point to the tilde which starts the expansion.
 
-      // Make FINI be the index of one after the last character of the
-      // username.
+	  size_t start = tilde_find_prefix (name.substr (pos), len);
 
-      size_t fini = tilde_find_suffix (name.substr (pos));
+	  result.append (name.substr (pos, start));
 
-      // If both START and FINI are zero, we are all done.
+	  // Advance STRING to the starting tilde.
 
-      if (! (start || fini))
-	break;
+	  pos += start;
 
-      // Expand the entire tilde word, and copy it into RESULT.
+	  // Make FINI be the index of one after the last character of the
+	  // username.
 
-      std::string tilde_word = name.substr (pos, fini);
+	  size_t fini = tilde_find_suffix (name.substr (pos));
 
-      pos += fini;
+	  // If both START and FINI are zero, we are all done.
 
-      std::string expansion = tilde_expand_word (tilde_word);
+	  if (! (start || fini))
+	    break;
 
-      result.append (expansion);
+	  // Expand the entire tilde word, and copy it into RESULT.
+
+	  std::string tilde_word = name.substr (pos, fini);
+
+	  pos += fini;
+
+	  std::string expansion = tilde_expand_word (tilde_word);
+
+	  result.append (expansion);
+	}
+
+      return result;
     }
-
-  return result;
 }
 
 // A vector version of the above.

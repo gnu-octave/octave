@@ -109,6 +109,10 @@ load_path::dir_info::initialize (void)
       std::string abs_name
 	= octave_env::make_absolute (dir_name, octave_env::getcwd ());
 
+      // FIXME -- nothing is ever removed from this cache of directory
+      // information, so there could be some resource problems.
+      // Perhaps it should be pruned from time to time.
+
       abs_dir_cache[abs_name] = *this;      
     }
   else

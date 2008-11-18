@@ -117,8 +117,9 @@ install_range_ops (void)
 
   INSTALL_CONVOP (octave_range, octave_float_matrix, range_to_float_matrix);
 
-  // FIXME: this would be unneccessary if octave_base_value::numeric_assign always tried converting
-  // lhs before rhs.
+  // FIXME -- this would be unneccessary if
+  // octave_base_value::numeric_assign always tried converting lhs
+  // before rhs.
   
   INSTALL_ASSIGNCONV (octave_range, octave_null_matrix, octave_matrix);
   INSTALL_ASSIGNCONV (octave_range, octave_null_str, octave_matrix);

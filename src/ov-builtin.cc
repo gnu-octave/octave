@@ -106,7 +106,7 @@ octave_builtin::do_multi_index_op (int nargout, const octave_value_list& args)
 	{
 	  retval = (*f) (args, nargout);
           // Do not allow null values to be returned from functions.
-          // FIXME: perhaps true builtins should be allowed?
+          // FIXME -- perhaps true builtins should be allowed?
           retval.normalize_null_values ();
 	}
       catch (octave_execution_exception)

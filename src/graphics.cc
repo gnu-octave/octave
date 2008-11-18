@@ -194,7 +194,7 @@ convert_position (const Matrix& pos, const caseless_str& from_units,
     }
   else if (from_units.compare ("characters"))
     {
-      // FIXME: implement this
+      // FIXME -- implement this.
     }
   else
     {
@@ -229,7 +229,7 @@ convert_position (const Matrix& pos, const caseless_str& from_units,
 	}
       else if (to_units.compare ("characters"))
 	{
-	  // FIXME: implement this
+	  // FIXME -- implement this.
 	}
       else
 	{
@@ -684,7 +684,7 @@ array_property::validate (const octave_value& v)
 {
   bool xok = false;
 
-  // FIXME: should we always support []?
+  // FIXME -- should we always support []?
   if (v.is_empty () && v.is_double_type ())
     return true;
 
@@ -954,8 +954,8 @@ property::create (const std::string& name, const graphics_handle& h,
 	{
 	  retval.set (args(0));
 
-	  // FIXME: additional argument could define constraints
-	  //        but is this really useful...?
+	  // FIXME -- additional argument could define constraints,
+	  // but is this really useful?
 	}
     }
   else if (type.compare ("color"))
@@ -2096,7 +2096,7 @@ Matrix
 figure::properties::get_boundingbox (bool) const
 {
   graphics_backend b = get_backend ();
-  // FIXME: screen size should be obtained from root object
+  // FIXME -- screen size should be obtained from root object.
   Matrix screen_size = b.get_screen_size ();
   Matrix pos;
 
@@ -2114,7 +2114,7 @@ void
 figure::properties::set_boundingbox (const Matrix& bb)
 {
   graphics_backend b = get_backend ();
-  // FIXME: screen size should be obtained from root object
+  // FIXME -- screen size should be obtained from root object.
   Matrix screen_size = b.get_screen_size ();
   Matrix pos = bb;
 
@@ -2801,7 +2801,7 @@ axes::properties::update_camera (void)
     {
       double af;
 
-      // FIXME: Was this really needed? When compared to Matlab, it
+      // FIXME -- was this really needed?  When compared to Matlab, it
       // does not seem to be required. Need investigation with concrete
       // backend to see results visually.
       if (false && dowarp)
@@ -2916,8 +2916,8 @@ axes::properties::update_aspectratios (void)
 	}
     }
   
-  // FIXME: if plotboxaspectratiomode is "manual", limits
-  // and/or dataaspectratio might be adapted
+  // FIXME -- if plotboxaspectratiomode is "manual", limits
+  // and/or dataaspectratio might be adapted.
 }
 
 // The INTERNAL flag defines whether position or outerposition is used.
@@ -2999,8 +2999,8 @@ axes::get_default (const caseless_str& name) const
   return retval;
 }
 
-// FIXME: Remove
-// FIXME: Maybe this should go into array_property class?
+// FIXME -- remove.
+// FIXME -- maybe this should go into array_property class?
 /*
 static void
 check_limit_vals (double& min_val, double& max_val, double& min_pos,
@@ -3606,7 +3606,7 @@ surface::properties::update_normals (void)
       i1 = i2 = i3 = 0;
       j1 = j2 = j3 = 0;
 
-      // FIXME: normal computation at boundaries
+      // FIXME -- normal computation at boundaries.
       for (int i = 1; i < (p-1); i++)
 	{
 	  if (y_mat)

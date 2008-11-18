@@ -764,7 +764,7 @@ public:
 	    switch (id)
 	      {
 	      case base_properties::VISIBLE:
-		// FIXME: something to do here
+		// FIXME -- something to do here.
 		break;
 	      }
 	  }

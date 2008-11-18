@@ -458,11 +458,14 @@ public:
   void resize (octave_idx_type n)
     { resize_fill (n, resize_fill_value ()); }
 
-  // FIXME: This method cannot be defined here because it would clash with
+  // FIXME -- this method cannot be defined here because it would
+  // clash with
+  //
   //   void resize (octave_idx_type, const T&)
-  // (these become undistinguishable when T = octave_idx_type). 
-  // In the future, I think the resize (.., const T& rfv) overloads should go away
-  // in favor of using resize_fill.
+  //
+  // (these become indistinguishable when T = octave_idx_type).
+  // In the future, I think the resize (.., const T& rfv) overloads
+  // should go away in favor of using resize_fill.
 
   // void resize (octave_idx_type nr, octave_idx_type nc)
   //  { resize_fill (nr, nc, resize_fill_value ()); }
@@ -470,8 +473,8 @@ public:
   void resize (dim_vector dv)
     { resize_fill (dv, resize_fill_value ()); }
 
-  // FIXME: these are here for backward compatibility. They should go away in favor
-  // of using resize_fill directly.
+  // FIXME -- these are here for backward compatibility. They should
+  // go away in favor of using resize_fill directly.
   void resize (octave_idx_type n, const T& rfv)
     { resize_fill (n, static_cast<T> (rfv)); }
 
@@ -482,8 +485,8 @@ public:
     { resize_fill (dv, rfv); }
 
   // Indexing with possible resizing and fill
-  // FIXME: This is really a corner case, that should better be handled
-  // directly in liboctinterp.
+  // FIXME -- this is really a corner case, that should better be
+  // handled directly in liboctinterp.
 
   Array<T> index (const idx_vector& i, bool resize_ok,
                   const T& rfv = resize_fill_value ()) const;
@@ -516,7 +519,7 @@ public:
   // Dispatcher to the above two.
   void delete_elements (const Array<idx_vector>& ia);
 
-  // FIXME: are these required? What exactly are they supposed to do?.
+  // FIXME -- are these required? What exactly are they supposed to do?.
 
   Array<T>& insert (const Array<T>& a, octave_idx_type r, octave_idx_type c);
   Array<T>& insert2 (const Array<T>& a, octave_idx_type r, octave_idx_type c);
@@ -561,10 +564,11 @@ public:
 #define INSTANTIATE_ARRAY(T, API) \
   template class API Array<T>
 
-// FIXME: These are here for compatibility. In current implementation, only
-// homogeneous array assignments are actually instantiated. I think heterogeneous
-// indexed assignments are rare enough to be implemented via conversion first.
-// This decision may still be revised, that's why these macros stay here.
+// FIXME -- these are here for compatibility.  In the current
+// implementation, only homogeneous array assignments are actually
+// instantiated.  I think heterogeneous indexed assignments are rare
+// enough to be implemented via conversion first.  This decision may
+// still be revised, that's why these macros stay here.
 #define INSTANTIATE_ARRAY_AND_ASSIGN(T, API) \
   INSTANTIATE_ARRAY(T, API)
 

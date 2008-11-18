@@ -168,8 +168,8 @@ University of Florida (see @url{http://www.cise.ufl.edu/research/sparse/amd}).\n
 	      Matrix xinfo (AMD_INFO, 1);
 	      double *Info = xinfo.fortran_vec ();
 
-	      // FIXME: How can we manage the memory allocation of amd in 
-	      // a cleaner manner? 
+	      // FIXME -- how can we manage the memory allocation of
+	      // amd in a cleaner manner? 
 	      amd_malloc = malloc;
 	      amd_free = free;
 	      amd_calloc = calloc;

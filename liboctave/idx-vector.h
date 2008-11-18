@@ -79,7 +79,7 @@ private:
     virtual octave_idx_type extent (octave_idx_type n) const = 0;
 
     // Index class.
-    virtual idx_class_type idx_class () const { return class_invalid; }
+    virtual idx_class_type idx_class (void) const { return class_invalid; }
 
     // Sorts, maybe uniqifies, and returns a clone object pointer.
     virtual idx_base_rep *sort_uniq_clone (bool uniq = false) = 0;
@@ -89,7 +89,7 @@ private:
       { return false; }
 
     // The original dimensions of this object (used when subscribing by matrices).
-    virtual dim_vector orig_dimensions () const
+    virtual dim_vector orig_dimensions (void) const
       { return dim_vector (); }
 
     // i/o
@@ -124,7 +124,7 @@ private:
     octave_idx_type extent (octave_idx_type n) const
       { return n; }
 
-    idx_class_type idx_class () const { return class_colon; }
+    idx_class_type idx_class (void) const { return class_colon; }
 
     idx_base_rep *sort_uniq_clone (bool = false) 
       { count++; return this; }
@@ -171,19 +171,19 @@ private:
     octave_idx_type extent (octave_idx_type n) const
       { return len ? std::max (n, (start + 1 + (step < 0 ? 0 : step * (len - 1)))) : n; }
 
-    idx_class_type idx_class () const { return class_range; }
+    idx_class_type idx_class (void) const { return class_range; }
 
     idx_base_rep *sort_uniq_clone (bool uniq = false);
 
     bool is_colon_equiv (octave_idx_type n) const
       { return start == 0 && step == 1 && len == n; }
 
-    dim_vector orig_dimensions () const
+    dim_vector orig_dimensions (void) const
       { return dim_vector (1, len); }
 
-    octave_idx_type get_start () const { return start; }
+    octave_idx_type get_start (void) const { return start; }
 
-    octave_idx_type get_step () const { return step; }
+    octave_idx_type get_step (void) const { return step; }
 
     std::ostream& print (std::ostream& os) const;
 
@@ -223,7 +223,7 @@ private:
     octave_idx_type extent (octave_idx_type n) const
       { return std::max (n, data + 1); }
 
-    idx_class_type idx_class () const { return class_scalar; }
+    idx_class_type idx_class (void) const { return class_scalar; }
 
     idx_base_rep *sort_uniq_clone (bool = false)
       { count++; return this; }
@@ -231,10 +231,10 @@ private:
     bool is_colon_equiv (octave_idx_type n) const
       { return n == 1 && data == 0; }
 
-    dim_vector orig_dimensions () const
+    dim_vector orig_dimensions (void) const
       { return dim_vector (1, 1); }
 
-    octave_idx_type get_data () const { return data; }
+    octave_idx_type get_data (void) const { return data; }
 
     std::ostream& print (std::ostream& os) const;
 
@@ -283,14 +283,14 @@ private:
     octave_idx_type extent (octave_idx_type n) const
       { return std::max (n, ext); }
 
-    idx_class_type idx_class () const { return class_vector; }
+    idx_class_type idx_class (void) const { return class_vector; }
 
     idx_base_rep *sort_uniq_clone (bool uniq = false);
 
-    dim_vector orig_dimensions () const
+    dim_vector orig_dimensions (void) const
       { return orig_dims; }
 
-    const octave_idx_type *get_data () const { return data; }
+    const octave_idx_type *get_data (void) const { return data; }
 
     std::ostream& print (std::ostream& os) const;
 
@@ -317,14 +317,14 @@ private:
   idx_vector (idx_base_rep *r) : rep (r) { }
 
   // The shared empty vector representation (for fast default constructor)
-  static idx_vector_rep *nil_rep ()
+  static idx_vector_rep *nil_rep (void)
     {
       static idx_vector_rep ivr;
       return &ivr;
     }
 
   // The shared empty vector representation with the error flag set.
-  static idx_vector_rep *err_rep ()
+  static idx_vector_rep *err_rep (void)
     {
       static idx_vector_rep ivr;
       ivr.err = true;
@@ -441,7 +441,7 @@ public:
 #endif
     }
 
-  operator bool () const
+  operator bool (void) const
     { return ! rep->err; }
 
   bool is_colon (void) const 
@@ -458,10 +458,10 @@ public:
 
   dim_vector orig_dimensions (void) const { return rep->orig_dimensions (); }
 
-  octave_idx_type orig_rows () const
+  octave_idx_type orig_rows (void) const
     { return orig_dimensions () (0); }
 
-  octave_idx_type orig_columns () const
+  octave_idx_type orig_columns (void) const
     { return orig_dimensions () (1); }
 
   int orig_empty (void) const
@@ -719,8 +719,8 @@ public:
   idx_vector
   complement (octave_idx_type n) const;
 
-  // FIXME: These are here for compatibility. They should be removed when no
-  // longer in use.
+  // FIXME -- these are here for compatibility.  They should be removed
+  // when no longer in use.
 
   octave_idx_type elem (octave_idx_type n) const 
     { return (*this) (n); }
@@ -728,14 +728,15 @@ public:
   bool is_colon_equiv (octave_idx_type n, int) const
     { return is_colon_equiv (n); }
 
-  octave_idx_type freeze (octave_idx_type z_len, const char *tag, bool resize_ok = false);
+  octave_idx_type
+  freeze (octave_idx_type z_len, const char *tag, bool resize_ok = false);
 
   void sort (bool uniq = false)
     { *this = sorted (uniq); }
 
-  octave_idx_type ones_count () const;
+  octave_idx_type ones_count (void) const;
 
-  octave_idx_type max () const { return extent (1) - 1; }
+  octave_idx_type max (void) const { return extent (1) - 1; }
   
 private:
 

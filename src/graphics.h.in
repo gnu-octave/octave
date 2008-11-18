@@ -974,7 +974,7 @@ protected:
     {
       if (validate (v))
 	{
-	  // FIXME: should we check for actual data change?
+	  // FIXME -- should we check for actual data change?
 	  if (! is_equal (v))
 	    {
 	      data = v;
@@ -1729,7 +1729,7 @@ protected:
     bool_property beingdeleted , "off"
     radio_property busyaction , "{queue}|cancel"
     callback_property buttondownfcn , Matrix ()
-    // FIXME: use a property class for children
+    // FIXME -- use a property class for children.
     Matrix children Gfs , Matrix ()
     bool_property clipping , "on"
     callback_property createfcn , Matrix ()
@@ -1747,7 +1747,7 @@ protected:
     // additional (octave-specific) properties
     bool_property __modified__ s , "on"
     graphics_handle __myhandle__ fhrs , mh
-    // FIXME: should this really be here?
+    // FIXME -- should this really be here?
     handle_property uicontextmenu , graphics_handle ()
   END_PROPERTIES
 
@@ -2646,7 +2646,7 @@ public:
       bool_property xminortick , "off"
       bool_property yminortick , "off"
       bool_property zminortick , "off"
-      // FIXME: should be kind of string array
+      // FIXME -- should be kind of string array.
       any_property xticklabel m , ""
       any_property yticklabel m , ""
       any_property zticklabel m , ""
@@ -2687,7 +2687,7 @@ public:
       radio_property fontunits , "{points}|normalized|inches|centimeters|pixels"
       radio_property fontweight , "{normal}|light|demi|bold"
       radio_property gridlinestyle , "-|--|{:}|-.|none"
-      // FIXME: should be kind of string array
+      // FIXME -- should be kind of string array.
       string_property linestyleorder , "-"
       double_property linewidth , 0.5
       radio_property minorgridlinestyle , "-|--|{:}|-.|none"
@@ -2698,7 +2698,7 @@ public:
       radio_property tickdirmode , "{auto}|manual"
       array_property ticklength , Matrix (1, 2, 0.1)
       array_property tightinset r , Matrix (1, 4, 0.0)
-      // FIXME: uicontextmenu should be moved here
+      // FIXME -- uicontextmenu should be moved here.
       radio_property units , "{normalized}|inches|centimeters|points|pixels|characters"
       // hidden properties for transformation computation
       array_property x_viewtransform h , Matrix (4, 4, 0.0)
@@ -3080,11 +3080,11 @@ public:
       }
 
   private:
-    // FIXME: limits should take pixel width into account
+    // FIXME -- limits should take pixel width into account.
     void update_xdata (void)
       { set_xlim (xdata.get_limits ()); }
 
-    // FIXME: idem
+    // FIXME -- idem.
     void update_ydata (void)
       { set_ylim (ydata.get_limits ()); }
 

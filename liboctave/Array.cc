@@ -749,22 +749,27 @@ Array<T>::index (const idx_vector& i) const
     }
   else
     {
-      // FIXME: This is the only place where orig_dimensions are used.
+      // FIXME -- this is the only place where orig_dimensions are used.
       dim_vector rd = i.orig_dimensions ();
       octave_idx_type il = i.length (n);
 
-      // FIXME: This is for Matlab compatibility. Matlab 2007 given `b = ones(3,1)'
+      // FIXME -- this is for Matlab compatibility.  Matlab 2007 given
+      //
+      //   b = ones(3,1)
+      //
       // yields the following:
-      // b(zeros(0,0)) gives []
-      // b(zeros(1,0)) gives zeros(0,1)
-      // b(zeros(0,1)) gives zeros(0,1)
-      // b(zeros(0,m)) gives zeros(0,m)
-      // b(zeros(m,0)) gives zeros(m,0)
-      // b(1:2) gives ones(2,1)
-      // b(ones(2)) gives ones(2) etc.
+      //
+      //   b(zeros(0,0)) gives []
+      //   b(zeros(1,0)) gives zeros(0,1)
+      //   b(zeros(0,1)) gives zeros(0,1)
+      //   b(zeros(0,m)) gives zeros(0,m)
+      //   b(zeros(m,0)) gives zeros(m,0)
+      //   b(1:2) gives ones(2,1)
+      //   b(ones(2)) gives ones(2) etc.
+      //
       // As you can see, the behaviour is weird, but the tests end up pretty
-      // simple. Nah, I don't want to suggest that this is ad hoc :) Neither do
-      // I want to say that Matlab is a lousy piece of s...oftware.
+      // simple.  Nah, I don't want to suggest that this is ad hoc :)
+
       if (ndims () == 2 && n != 1)
         {
           if (columns () == 1 && rd(0) == 1)
@@ -773,7 +778,8 @@ Array<T>::index (const idx_vector& i) const
             rd = dim_vector (1, il);
         }
 
-      // Don't use resize here to avoid useless initialization for POD types.
+      // Don't use resize here to avoid useless initialization for POD
+      // types.
       retval = Array<T> (rd);
 
       if (il != 0)
@@ -887,18 +893,19 @@ Array<T>::index (const Array<idx_vector>& ia) const
   return retval;
 }
 
-// FIXME: the following is a common error message to resize, regardless of whether it's
-// called from assign or elsewhere. It seems OK to me, but eventually the gripe can be
-// specialized. Anyway, propagating various error messages into procedure is, IMHO, a
-// nonsense. If anything, we should change error handling here (and throughout liboctave)
-// to allow custom handling of errors
+// FIXME -- the following is a common error message to resize,
+// regardless of whether it's called from assign or elsewhere.  It
+// seems OK to me, but eventually the gripe can be specialized.
+// Anyway, propagating various error messages into procedure is, IMHO,
+// a nonsense.  If anything, we should change error handling here (and
+// throughout liboctave) to allow custom handling of errors
 static void gripe_invalid_resize (void)
 {
   (*current_liboctave_error_handler)
     ("resize: Invalid resizing operation or ambiguous assignment to an out-of-bounds array element.");
 }
 
-// The default fill value. Override if you want a different one.
+// The default fill value.  Override if you want a different one.
 
 template <class T>
 T Array<T>::resize_fill_value ()
@@ -906,8 +913,8 @@ T Array<T>::resize_fill_value ()
   return T ();
 }
 
-// Yes, we could do resize using index & assign.  However, that would possibly
-// involve a lot more memory traffic than we actually need.
+// Yes, we could do resize using index & assign.  However, that would
+// possibly involve a lot more memory traffic than we actually need.
 
 template <class T>
 void
@@ -916,13 +923,13 @@ Array<T>::resize_fill (octave_idx_type n, const T& rfv)
   if (n >= 0 && ndims () == 2)
     {
       dim_vector dv;
-      // This is driven by Matlab's behaviour of giving a *row* vector on
-      // some out-of-bounds assignments. Specifically, matlab allows a(i) with
-      // out-of-bouds i when a is either of 0x0, 1x0, 1x1, 0xN, and gives
-      // a row vector in all cases (yes, even the last one, search me why).
-      // Giving a column vector would make much more sense (given the way
-      // trailing singleton dims are treated), but hey, Matlab is not here to
-      // make sense, it's here to make money ;)
+      // This is driven by Matlab's behaviour of giving a *row* vector
+      // on some out-of-bounds assignments.  Specifically, Matlab
+      // allows a(i) with out-of-bouds i when a is either of 0x0, 1x0,
+      // 1x1, 0xN, and gives a row vector in all cases (yes, even the
+      // last one, search me why).  Giving a column vector would make
+      // much more sense (given the way trailing singleton dims are
+      // treated).
       bool invalid = false;
       if (rows () == 0 || rows () == 1)
         dv = dim_vector (1, n);          
@@ -1144,8 +1151,9 @@ Array<T>::assign (const idx_vector& i, const idx_vector& j,
   dim_vector dv = dimensions.redim (2);
   // Check for out-of-bounds and form resizing dimensions.
   dim_vector rdv; 
-  // In the special when all dimensions are zero, colons are allowed to inquire
-  // the shape of RHS. The rules are more obscure, so we solve that elsewhere.
+  // In the special when all dimensions are zero, colons are allowed
+  // to inquire the shape of RHS.  The rules are more obscure, so we
+  // solve that elsewhere.
   if (dv.all_zero ())
     rdv = zero_dims_inquire (i, j, rhdv);
   else
@@ -1157,7 +1165,8 @@ Array<T>::assign (const idx_vector& i, const idx_vector& j,
   bool isfill = rhs.numel () == 1;
   octave_idx_type il = i.length (rdv(0)), jl = j.length (rdv(1));
   rhdv.chop_all_singletons ();
-  bool match = isfill || (rhdv.length () == 2 && il == rhdv(0) && jl == rhdv(1));
+  bool match = (isfill
+		|| (rhdv.length () == 2 && il == rhdv(0) && jl == rhdv(1)));
   match = match || (il == 1 && jl == rhdv(0) && rhdv(1) == 1);
 
   if (match)
@@ -1242,9 +1251,9 @@ Array<T>::assign (const Array<idx_vector>& ia,
       // Get the extents forced by indexing. 
       dim_vector rdv;
 
-      // In the special when all dimensions are zero, colons are allowed to
-      // inquire the shape of RHS. The rules are more obscure, so we solve that
-      // elsewhere.
+      // In the special when all dimensions are zero, colons are
+      // allowed to inquire the shape of RHS.  The rules are more
+      // obscure, so we solve that elsewhere.
       if (dv.all_zero ())
         rdv = zero_dims_inquire (ia, rhdv);
       else
@@ -1691,7 +1700,7 @@ Array<T>::transpose (void) const
     }
   else
     {
-      // Fast transpose for vectors and empty matrices
+      // Fast transpose for vectors and empty matrices.
       return Array<T> (*this, dim_vector (nc, nr));
     }
 }

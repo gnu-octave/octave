@@ -876,7 +876,7 @@ location of the error. Typically @var{err} is returned from\n\
 		rethrow_error (id.c_str (), "%s", tmp_msg);
 	      delete [] tmp_msg;
 
-	      // FIXME: Need to restore the stack as rethrow_error sets it?
+	      // FIXME -- Need to restore the stack as rethrow_error sets it?
 	      Vlast_error_file = file;
 	      Vlast_error_name = nm;
 	      Vlast_error_line = l;

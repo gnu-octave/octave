@@ -45,9 +45,9 @@ inline long double xround (long double x) { return roundl (x); }
 #undef max
 #endif
 
-// FIXME: we define this by our own because some compilers, such as MSVC,
-// do not provide std::abs (int64_t) and std::abs (uint64_t). In the future,
-// it should go away in favor of std::abs.
+// FIXME -- we define this by our own because some compilers, such as
+// MSVC, do not provide std::abs (int64_t) and std::abs (uint64_t).  In
+// the future, it should go away in favor of std::abs.
 template <class T>
 inline T octave_int_abs (T x) { return x >= 0 ? x : -x; }
 
@@ -282,7 +282,7 @@ private:
       val = xround (val); // Fool optimizations (maybe redundant)
       // If val is even, but orig_val is odd, we're one unit off.
       if (orig_val % 2 && val / 2 == xround (val / 2))
-        // FIXME: is this always correct?
+        // FIXME -- is this always correct?
         val *= (static_cast<S>(1) - (std::numeric_limits<S>::epsilon () / 2)); 
       return val;
     }
@@ -546,9 +546,9 @@ public:
       return ((x > 0) ? 1 : 0) - signbit (x); 
     }
 
-  // FIXME: We do not have an authority what signed shifts should exactly do, so
-  // we define them the easy way. Note that Matlab does not define signed
-  // shifts.
+  // FIXME -- we do not have an authority what signed shifts should
+  // exactly do, so we define them the easy way. Note that Matlab does
+  // not define signed shifts.
 
   static T
   rshift (T x, int n) { return x >> n; }
@@ -714,8 +714,11 @@ public:
       else
         {
           z = x / y;
-          // FIXME: this is a workaround due to MSVC's absence of std::abs (int64_t).
-          T w = octave_int_abs (x % y); // Can't overflow, but std::abs (x) can!
+          // FIXME -- this is a workaround due to MSVC's absence of
+          // std::abs (int64_t).  The call to octave_int_abs can't
+          // overflow, but std::abs (x) can!
+	  T w = octave_int_abs (x % y);
+
           if (w >= y - w) 
             z += 1 - (signbit (x) << 1);
         }
@@ -884,7 +887,7 @@ inline bool
 xisnan (const octave_int<T>&)
 { return false; }
 
-// FIXME: Can/should any of these be inline?
+// FIXME -- can/should any of these be inline?
 
 template <class T>
 extern OCTAVE_API octave_int<T>

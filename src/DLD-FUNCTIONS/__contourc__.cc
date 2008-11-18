@@ -158,7 +158,8 @@ drawcn (const RowVector& X, const RowVector& Y, const Matrix& Z,
       start_contour (lvl, ct_x, ct_y);
     }
 
-  // Find stop edge FIXME: control flow --> while.
+  // Find stop edge.
+  // FIXME -- perhaps this should use a while loop?
   for (unsigned int k = 1; k <= 4; k++)
     {
       if (start_edge == 0 || start_edge == 2)

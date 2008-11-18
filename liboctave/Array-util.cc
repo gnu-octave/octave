@@ -29,7 +29,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-error.h"
 
 bool
-index_in_bounds (const Array<octave_idx_type>& ra_idx, const dim_vector& dimensions)
+index_in_bounds (const Array<octave_idx_type>& ra_idx,
+		 const dim_vector& dimensions)
 {
   bool retval = true;
 
@@ -339,7 +340,8 @@ all_ones (const Array<octave_idx_type>& arr)
 }
 
 Array<octave_idx_type>
-get_elt_idx (const Array<idx_vector>& ra_idx, const Array<octave_idx_type>& result_idx)
+get_elt_idx (const Array<idx_vector>& ra_idx,
+	     const Array<octave_idx_type>& result_idx)
 {
   octave_idx_type n = ra_idx.length ();
 
@@ -375,7 +377,8 @@ get_ra_idx (octave_idx_type idx, const dim_vector& dims)
   octave_idx_type var = 1;
   for (int i = 0; i < n_dims; i++)
     {
-      std::cout << "idx: " << idx << ", var: " << var << ", dims(" << i << "): " << dims(i) <<"\n";
+      std::cout << "idx: " << idx << ", var: " << var
+		<< ", dims(" << i << "): " << dims(i) <<"\n";
       retval(i) = ((int)floor(((idx) / (double)var))) % dims(i);
       idx -= var * retval(i);
       var = dims(i);
@@ -397,7 +400,7 @@ dim_vector zero_dims_inquire (const Array<idx_vector>& ia,
   bool all_colons = true;
   for (int i = 0; i < ial; i++)
     {
-      // FIXME: should we check for length() instead?
+      // FIXME -- should we check for length() instead?
       scalar[i] = ia(i).is_scalar ();
       colon[i] = ia(i).is_colon ();
       if (! scalar[i]) nonsc++;
@@ -406,8 +409,8 @@ dim_vector zero_dims_inquire (const Array<idx_vector>& ia,
     }
 
   bool match = false;
-  // If the number of nonscalar indices matches the dimensionality of RHS,
-  // we try an exact match, inquiring even singleton dimensions.
+  // If the number of nonscalar indices matches the dimensionality of
+  // RHS, we try an exact match, inquiring even singleton dimensions.
   if (all_colons)
     {
       rdv = rhdv;

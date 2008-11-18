@@ -1977,7 +1977,7 @@ octave_print_internal (std::ostream& os, bool d, bool pr_as_read_syntax)
   octave_print_internal (os, double (d), pr_as_read_syntax); 
 }
 
-// FIXME: Write single precision versions of the printing functions
+// FIXME -- write single precision versions of the printing functions.
 
 void
 octave_print_internal (std::ostream& os, float d, bool pr_as_read_syntax)

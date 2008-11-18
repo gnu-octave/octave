@@ -37,19 +37,22 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-error.h"
 #include "lo-mappers.h"
 
-static void gripe_invalid_index ()
+static void
+gripe_invalid_index (void)
 {
   (*current_liboctave_error_handler)
     ("subscript indices must be either positive integers or logicals.");
 }
 
-static void gripe_invalid_range ()
+static void
+gripe_invalid_range (void)
 {
   (*current_liboctave_error_handler)
     ("invalid range used as index.");
 }
 
-static void gripe_index_out_of_range ()
+static void
+gripe_index_out_of_range (void)
 {
   (*current_liboctave_error_handler)
     ("internal error: idx_vector index out of range.");
@@ -99,7 +102,8 @@ idx_vector::idx_range_rep::idx_range_rep (octave_idx_type _start, octave_idx_typ
     }
 }
 
-static void gripe_non_int_range ()
+static void
+gripe_non_int_range (void)
 {
   (*current_liboctave_error_handler)
     ("If a range is used as subscript, all elements are expected to be integers.");
@@ -458,8 +462,9 @@ bool idx_vector::maybe_reduce (octave_idx_type n, const idx_vector& j,
   return reduced;
 }
 
-bool idx_vector::is_cont_range (octave_idx_type n,
-                                octave_idx_type& l, octave_idx_type& u) const
+bool
+idx_vector::is_cont_range (octave_idx_type n,
+			   octave_idx_type& l, octave_idx_type& u) const
 {
   bool res = false;
   switch (rep->idx_class ())

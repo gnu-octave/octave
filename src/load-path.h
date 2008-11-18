@@ -251,10 +251,16 @@ private:
     typedef method_file_map_type::const_iterator const_method_file_map_iterator;
     typedef method_file_map_type::iterator method_file_map_iterator;
 
+    // This default constructor is only provided so we can create a
+    // std::map of dir_info objects.  You should not use this
+    // constructor for any other purpose.
+    dir_info (void) { }
+
     dir_info (const std::string& d) : dir_name (d) { initialize (); }
 
     dir_info (const dir_info& di)
-      : dir_name (di.dir_name), is_relative (di.is_relative),
+      : dir_name (di.dir_name), abs_dir_name (di.abs_dir_name),
+	is_relative (di.is_relative),
 	dir_mtime (di.dir_mtime), all_files (di.all_files),
 	fcn_files (di.fcn_files),
 	private_file_map (di.private_file_map),
@@ -267,6 +273,7 @@ private:
       if (&di != this)
 	{
 	  dir_name = di.dir_name;
+	  abs_dir_name = di.abs_dir_name;
 	  is_relative = di.is_relative;
 	  dir_mtime = di.dir_mtime;
 	  all_files = di.all_files;
@@ -281,6 +288,7 @@ private:
     void update (void);
 
     std::string dir_name;
+    std::string abs_dir_name;
     bool is_relative;
     octave_time dir_mtime;
     string_vector all_files;
@@ -346,6 +354,11 @@ private:
   typedef dir_info_list_type::const_iterator const_dir_info_list_iterator;
   typedef dir_info_list_type::iterator dir_info_list_iterator;
 
+  typedef std::map<std::string, dir_info> abs_dir_cache_type;
+
+  typedef abs_dir_cache_type::const_iterator const_abs_dir_cache_iterator;
+  typedef abs_dir_cache_type::iterator abs_dir_cache_iterator;
+
   typedef std::list<file_info> file_info_list_type;
 
   typedef file_info_list_type::const_iterator const_file_info_list_iterator;
@@ -386,6 +399,8 @@ private:
   static std::string command_line_path;
 
   static std::string sys_path;
+
+  static abs_dir_cache_type abs_dir_cache;
 
   static bool instance_ok (void);
 

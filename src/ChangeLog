@@ -1,3 +1,18 @@
+2008-11-17  John W. Eaton  <jwe@octave.org>
+
+	* load-path.h (load_path::dir_info::abs_dir_name): New data member.
+	(load_path::dir_info::dir_info, load_path::dir_info::operator =):
+	Copy abs_dir_name.
+	(load_path::abs_dir_cache_type, load_path::dir_cache_iterator,
+	load_path::const_dir_cache_iterator): New typedefs.
+	(load_path::abs_dir_cache): New static data member.
+	(load_path::dir_info:dir_info): New constructor.
+	* load-path.cc (load_path::abs_dir_cache): Define new static data
+	member.
+	(load_path::dir_info::update): Look in abs_dir_cache for relative
+	directory names.
+	(load_path::dir_info::initialize): Update abs_dir_cache here.
+
 2008-11-13  John W. Eaton  <jwe@octave.org>
 
 	* ov-int8.h, ov-int16.h, ov-int32.h, ov-int64.h, ov-uint8.h,

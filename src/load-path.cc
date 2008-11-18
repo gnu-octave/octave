@@ -47,26 +47,59 @@ load_path::hook_fcn_ptr load_path::add_hook = execute_pkg_add;
 load_path::hook_fcn_ptr load_path::remove_hook = execute_pkg_del;
 std::string load_path::command_line_path;
 std::string load_path::sys_path;
+load_path::abs_dir_cache_type load_path::abs_dir_cache;
 
 void
 load_path::dir_info::update (void)
 {
   if (is_relative)
-    initialize ();
+    {
+      std::string abs_name
+	= octave_env::make_absolute (dir_name, octave_env::getcwd ());
+
+      abs_dir_cache_iterator p = abs_dir_cache.find (abs_name);
+
+      if (p != abs_dir_cache.end ())
+	{
+	  // The directory is in the cache of all directories we have
+	  // visited (indexed by its absolute name).  If it is out of
+	  // date, initialize it.  Otherwise, copy the info from the
+	  // cache.  By doing that, we avoid unnecessary calls to stat
+	  // that can slow things down tremendously for large
+	  // directories.
+
+	  const dir_info& di = p->second;
+
+	  file_stat fs (dir_name);
+
+	  if (fs)
+	    {
+	      if (fs.mtime () != di.dir_mtime)
+		initialize ();
+	      else
+		*this = di;
+
+	      return;
+	    }
+	  else
+	    {
+	      std::string msg = fs.error ();
+	      warning ("load_path: %s: %s", dir_name.c_str (), msg.c_str ());
+	    }
+	}
+    }
+
+  file_stat fs (dir_name);
+
+  if (fs)
+    {
+      if (fs.mtime () != dir_mtime)
+	initialize ();
+    }
   else
     {
-      file_stat fs (dir_name);
-
-      if (fs)
-	{
-	  if (fs.mtime () != dir_mtime)
-	    initialize ();
-	}
-      else
-	{
-	  std::string msg = fs.error ();
-	  warning ("load_path: %s: %s", dir_name.c_str (), msg.c_str ());
-	}
+      std::string msg = fs.error ();
+      warning ("load_path: %s: %s", dir_name.c_str (), msg.c_str ());
     }
 }
 
@@ -82,6 +115,11 @@ load_path::dir_info::initialize (void)
       dir_mtime = fs.mtime ();
 
       get_file_list (dir_name);
+
+      std::string abs_name
+	= octave_env::make_absolute (dir_name, octave_env::getcwd ());
+
+      abs_dir_cache[abs_name] = *this;      
     }
   else
     {

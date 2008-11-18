@@ -180,12 +180,12 @@ reference, then you can cite the Octave manual:
 
 @example
 @group
-@@BOOK@{eaton:2002,
-  author =     "John W. Eaton",
-  title =      "GNU Octave Manual",
+@@BOOK@{eaton:2008,
+  author =     "John W. Eaton and David Bateman and Søren Hauberg",
+  title =      "GNU Octave Manual Version 3",
   publisher =  "Network Theory Limited",
-  year =       "2002",
-  isbn =       "0-9541617-2-6"
+  year =       "2008",
+  isbn =       "0-9546120-6-X"
 @}
 @end group
 @end example

@@ -52,28 +52,28 @@ load_path::abs_dir_cache_type load_path::abs_dir_cache;
 void
 load_path::dir_info::update (void)
 {
-  if (is_relative)
+  file_stat fs (dir_name);
+
+  if (fs)
     {
-      std::string abs_name
-	= octave_env::make_absolute (dir_name, octave_env::getcwd ());
-
-      abs_dir_cache_iterator p = abs_dir_cache.find (abs_name);
-
-      if (p != abs_dir_cache.end ())
+      if (is_relative)
 	{
-	  // The directory is in the cache of all directories we have
-	  // visited (indexed by its absolute name).  If it is out of
-	  // date, initialize it.  Otherwise, copy the info from the
-	  // cache.  By doing that, we avoid unnecessary calls to stat
-	  // that can slow things down tremendously for large
-	  // directories.
+	  std::string abs_name
+	    = octave_env::make_absolute (dir_name, octave_env::getcwd ());
 
-	  const dir_info& di = p->second;
+	  abs_dir_cache_iterator p = abs_dir_cache.find (abs_name);
 
-	  file_stat fs (dir_name);
-
-	  if (fs)
+	  if (p != abs_dir_cache.end ())
 	    {
+	      // The directory is in the cache of all directories we have
+	      // visited (indexed by its absolute name).  If it is out of
+	      // date, initialize it.  Otherwise, copy the info from the
+	      // cache.  By doing that, we avoid unnecessary calls to stat
+	      // that can slow things down tremendously for large
+	      // directories.
+
+	      const dir_info& di = p->second;
+
 	      if (fs.mtime () != di.dir_mtime)
 		initialize ();
 	      else
@@ -81,18 +81,8 @@ load_path::dir_info::update (void)
 
 	      return;
 	    }
-	  else
-	    {
-	      std::string msg = fs.error ();
-	      warning ("load_path: %s: %s", dir_name.c_str (), msg.c_str ());
-	    }
 	}
-    }
 
-  file_stat fs (dir_name);
-
-  if (fs)
-    {
       if (fs.mtime () != dir_mtime)
 	initialize ();
     }

@@ -1,5 +1,8 @@
 2008-11-17  John W. Eaton  <jwe@octave.org>
 
+	* load-path.cc (load_path::dir_info::update): Simplify previous
+	change.
+
 	* load-path.h (load_path::dir_info::abs_dir_name): New data member.
 	(load_path::dir_info::dir_info, load_path::dir_info::operator =):
 	Copy abs_dir_name.

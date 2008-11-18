@@ -28,6 +28,9 @@ along with Octave; see the file COPYING.  If not, see
 #include <cstdlib>
 #include <cstring>
 
+#include <list>
+#include <string>
+
 #include "sysdir.h"
 
 #include "dir-ops.h"
@@ -69,40 +72,26 @@ dir_entry::open (const std::string& n)
 string_vector
 dir_entry::read (void)
 {
-  static octave_idx_type grow_size = 100;
-
-  octave_idx_type len = 0;
-
-  string_vector dirlist;
+  string_vector retval;
 
   if (ok ())
     {
-      int count = 0;
+      std::list<std::string> dirlist;
 
       struct dirent *dir_ent;
 
       while ((dir_ent = readdir (static_cast<DIR *> (dir))))
 	{
 	  if (dir_ent)
-	    {
-	      if (count >= len)
-		{
-		  len += grow_size;
-		  dirlist.resize (len);
-		}
-
-	      dirlist[count] = dir_ent->d_name;
-
-	      count++;
-	    }
+	    dirlist.push_back (dir_ent->d_name);
 	  else
 	    break;
 	}
 
-      dirlist.resize (count);
+      retval = string_vector (dirlist);
     }
 
-  return dirlist;
+  return retval;
 }
 
 void

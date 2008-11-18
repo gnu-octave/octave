@@ -1,3 +1,8 @@
+2008-11-17  John W. Eaton  <jwe@octave.org>
+
+	* dir-ops.cc (dir_entry::read): Use std::list<std::string> to
+	cache names before converting to string_vector.
+
 2008-11-14  David Bateman  <dbateman@free.fr>
 
 	* Array2.h (Array2<T> Array2<T>::index): Correct use of

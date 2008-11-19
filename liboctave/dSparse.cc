@@ -1188,10 +1188,7 @@ SparseMatrix::determinant (octave_idx_type& err, double& rcond, int) const
 
   if (nr == 0 || nc == 0 || nr != nc)
     {
-      double d[2];
-      d[0] = 1.0;
-      d[1] = 0.0;
-      retval = DET (d);
+      retval = DET (1.0);
     }
   else
     {
@@ -1270,10 +1267,9 @@ SparseMatrix::determinant (octave_idx_type& err, double& rcond, int) const
 	    {
 	      UMFPACK_DNAME (report_numeric) (Numeric, control);
 
-	      double d[2];
+	      double c10, e10;
 
-	      status = UMFPACK_DNAME (get_determinant) (&d[0],
-						   &d[1], Numeric, info);
+	      status = UMFPACK_DNAME (get_determinant) (&c10, &e10, Numeric, info);
 
 	      if (status < 0)
 		{
@@ -1284,7 +1280,7 @@ SparseMatrix::determinant (octave_idx_type& err, double& rcond, int) const
 		  UMFPACK_DNAME (report_info) (control, info);
 		}
 	      else
-		retval = DET (d);
+		retval = DET (c10, e10, 10);
 
 	      UMFPACK_DNAME (free_numeric) (&Numeric);
 	    }

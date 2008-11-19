@@ -25,10 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#include "CmplxDET.h"
-#include "dbleDET.h"
-#include "fCmplxDET.h"
-#include "floatDET.h"
+#include "DET.h"
 
 #include "defun-dld.h"
 #include "error.h"

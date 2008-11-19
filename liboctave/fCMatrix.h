@@ -31,6 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "mx-defs.h"
 #include "mx-op-defs.h"
 #include "oct-cmplx.h"
+#include "DET.h"
 
 class
 OCTAVE_API

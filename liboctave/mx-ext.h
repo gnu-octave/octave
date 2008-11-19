@@ -31,10 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 
 // Result of a Determinant calculation.
 
-#include "dbleDET.h"
-#include "CmplxDET.h"
-#include "floatDET.h"
-#include "fCmplxDET.h"
+#include "DET.h"
 
 // Result of a Cholesky Factorization
 

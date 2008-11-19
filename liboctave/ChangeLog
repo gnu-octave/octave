@@ -1,3 +1,19 @@
+2008-11-19  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DET.h: New source.
+	* CmplxDET.cc, CmplxDET.h, dbleDET.cc, dbleDET.h, fCmplxDET.cc,
+	fCmplxDET.h, floatDET.cc, floatDET.h: Remove.
+	* Makefile.in: Reflect changes.
+	* mx-defs.h: Remove DET decls.
+	* mx-ext.h, dMatrix.h, fMatrix.h, CMatrix.h, fCMatrix.h,
+	dSparse.h, CSparse.h: Include only DET.h.
+	* dMatrix.cc (Matrix::determinant),
+	fMatrix.cc (FloatMatrix::determinant),
+	CMatrix.cc (ComplexMatrix::determinant),
+	fCMatrix.cc (FloatComplexMatrix::determinant),
+	dSparse.cc (SparseMatrix::determinant),
+	CSparse.cc (SparseComplexMatrix::determinant): Use new class.
+
 2008-11-18  David Bateman  <dbateman@free.fr>
 
 	* file-ops.cc (std::string file_ops::tilde_expand (const 

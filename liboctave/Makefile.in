@@ -46,10 +46,10 @@ MATRIX_INC := Array.h Array2.h Array3.h ArrayN.h DiagArray2.h \
 	base-lu.h dim-vector.h mx-base.h mx-op-defs.h \
 	mx-defs.h mx-ext.h CColVector.h CDiagMatrix.h CMatrix.h \
 	CNDArray.h CRowVector.h CmplxAEPBAL.h CmplxCHOL.h \
-	CmplxDET.h CmplxGEPBAL.h CmplxHESS.h CmplxLU.h CmplxQR.h CmplxQRP.h \
+	CmplxGEPBAL.h CmplxHESS.h CmplxLU.h CmplxQR.h CmplxQRP.h \
 	CmplxSCHUR.h CmplxSVD.h EIG.h fEIG.h boolMatrix.h boolNDArray.h \
 	chMatrix.h chNDArray.h dColVector.h dDiagMatrix.h dMatrix.h \
-	dNDArray.h dRowVector.h dbleAEPBAL.h dbleCHOL.h dbleDET.h \
+	dNDArray.h dRowVector.h dbleAEPBAL.h dbleCHOL.h DET.h \
 	dbleGEPBAL.h dbleHESS.h dbleLU.h dbleQR.h dbleQRP.h dbleSCHUR.h \
 	dbleSVD.h boolSparse.h CSparse.h dSparse.h MSparse-defs.h MSparse.h \
 	Sparse.h sparse-base-lu.h SparseCmplxLU.h SparsedbleLU.h \
@@ -62,9 +62,9 @@ MATRIX_INC := Array.h Array2.h Array3.h ArrayN.h DiagArray2.h \
 	fCColVector.h fCRowVector.h fCDiagMatrix.h fCMatrix.h fCNDArray.h \
 	fColVector.h fRowVector.h fDiagMatrix.h fMatrix.h fNDArray.h \
 	fCmplxAEPBAL.h fCmplxGEPBAL.h fCmplxHESS.h fCmplxCHOL.h \
-	fCmplxDET.h fCmplxLU.h fCmplxSCHUR.h fCmplxSVD.h fCmplxQR.h \
+	fCmplxLU.h fCmplxSCHUR.h fCmplxSVD.h fCmplxQR.h \
 	fCmplxQRP.h floatAEPBAL.h \
-	floatCHOL.h floatDET.h floatGEPBAL.h floatHESS.h floatLU.h \
+	floatCHOL.h floatGEPBAL.h floatHESS.h floatLU.h \
 	floatSCHUR.h floatSVD.h floatQR.h floatQRP.h
 
 MX_OP_INC := $(shell $(AWK) -f $(srcdir)/mk-ops.awk prefix=mx list_h_files=1 $(srcdir)/mx-ops)
@@ -116,12 +116,12 @@ TI_SRC := Array-C.cc Array-b.cc Array-ch.cc Array-i.cc Array-d.cc \
 
 MATRIX_SRC := Array-util.cc CColVector.cc \
 	CDiagMatrix.cc CMatrix.cc CNDArray.cc CRowVector.cc \
-	CmplxAEPBAL.cc CmplxCHOL.cc CmplxDET.cc CmplxGEPBAL.cc CmplxHESS.cc \
+	CmplxAEPBAL.cc CmplxCHOL.cc CmplxGEPBAL.cc CmplxHESS.cc \
 	CmplxLU.cc CmplxQR.cc CmplxQRP.cc CmplxSCHUR.cc CmplxSVD.cc \
 	EIG.cc fEIG.cc boolMatrix.cc boolNDArray.cc chMatrix.cc \
 	chNDArray.cc dColVector.cc dDiagMatrix.cc dMatrix.cc \
 	dNDArray.cc dRowVector.cc dbleAEPBAL.cc dbleCHOL.cc \
-	dbleDET.cc dbleGEPBAL.cc dbleHESS.cc dbleLU.cc dbleQR.cc dbleQRP.cc \
+	dbleGEPBAL.cc dbleHESS.cc dbleLU.cc dbleQR.cc dbleQRP.cc \
 	dbleSCHUR.cc dbleSVD.cc boolSparse.cc CSparse.cc dSparse.cc \
 	MSparse.cc Sparse.cc SparseCmplxLU.cc SparsedbleLU.cc \
 	SparseCmplxCHOL.cc SparsedbleCHOL.cc \
@@ -130,9 +130,9 @@ MATRIX_SRC := Array-util.cc CColVector.cc \
 	int32NDArray.cc uint32NDArray.cc int64NDArray.cc uint64NDArray.cc \
 	fCColVector.cc fCRowVector.cc fCDiagMatrix.cc fCMatrix.cc fCNDArray.cc \
 	fColVector.cc fRowVector.cc fDiagMatrix.cc fMatrix.cc fNDArray.cc \
-	fCmplxAEPBAL.cc fCmplxCHOL.cc fCmplxDET.cc fCmplxGEPBAL.cc \
+	fCmplxAEPBAL.cc fCmplxCHOL.cc fCmplxGEPBAL.cc \
 	fCmplxHESS.cc fCmplxLU.cc fCmplxSCHUR.cc fCmplxSVD.cc fCmplxQR.cc \
-	fCmplxQRP.cc floatAEPBAL.cc floatCHOL.cc floatDET.cc \
+	fCmplxQRP.cc floatAEPBAL.cc floatCHOL.cc \
 	floatGEPBAL.cc floatHESS.cc floatLU.cc \
 	floatSCHUR.cc floatSVD.cc floatQR.cc floatQRP.cc
 

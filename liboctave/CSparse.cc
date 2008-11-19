@@ -1114,10 +1114,7 @@ SparseComplexMatrix::determinant (octave_idx_type& err, double& rcond, int) cons
 
   if (nr == 0 || nc == 0 || nr != nc)
     {
-      Complex d[2];
-      d[0] = 1.0;
-      d[1] = 0.0;
-      retval = ComplexDET (d);
+      retval = ComplexDET (1.0);
     }
   else
     {
@@ -1201,13 +1198,10 @@ SparseComplexMatrix::determinant (octave_idx_type& err, double& rcond, int) cons
 	    {
 	      UMFPACK_ZNAME (report_numeric) (Numeric, control);
 
-	      Complex d[2];
-	      double d_exponent;
+	      double c10[2], e10;
 
-	      status = UMFPACK_ZNAME (get_determinant) 
-		(reinterpret_cast<double *> (&d[0]), 0, &d_exponent,
-		 Numeric, info);
-	      d[1] = d_exponent;
+              status = UMFPACK_ZNAME (get_determinant) (c10, 0, &e10,
+                                                        Numeric, info);
 
 	      if (status < 0)
 		{
@@ -1218,7 +1212,7 @@ SparseComplexMatrix::determinant (octave_idx_type& err, double& rcond, int) cons
 		  UMFPACK_ZNAME (report_info) (control, info);
 		}
 	      else
-		retval = ComplexDET (d);
+		retval = ComplexDET (Complex (c10[0], c10[1]), e10, 10);
 		  
 	      UMFPACK_ZNAME (free_numeric) (&Numeric);
 	    }

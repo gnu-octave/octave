@@ -30,7 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "dColVector.h"
 #include "CColVector.h"
 
-#include "dbleDET.h"
+#include "DET.h"
 #include "MSparse.h"
 #include "MSparse-defs.h"
 #include "Sparse-op-defs.h"

@@ -1,3 +1,7 @@
+2008-11-19  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD_FUNCTIONS/det.cc: Include only DET.h.
+
 2008-11-17  John W. Eaton  <jwe@octave.org>
 
 	* load-path.cc (load_path::dir_info::update): Simplify previous

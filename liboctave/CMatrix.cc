@@ -40,7 +40,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "Array-util.h"
 #include "CMatrix.h"
 #include "CmplxAEPBAL.h"
-#include "CmplxDET.h"
+#include "DET.h"
 #include "CmplxSCHUR.h"
 #include "CmplxSVD.h"
 #include "CmplxCHOL.h"
@@ -1631,33 +1631,13 @@ ComplexMatrix::determinant (octave_idx_type& info, double& rcon, int calc_cond) 
 	    } 
 	  else 
 	    {
-	      Complex c = 1.0;
-	      int e = 0;
-
+              retval = ComplexDET (1.0);
+              
 	      for (octave_idx_type i = 0; i < nc; i++) 
 		{
-		  if (ipvt(i) != (i+1))
-		    c = -c;
-
-		  c *= atmp(i,i);
-
-		  if (c == 0.0)
-		    break;
-
-		  while (std::abs(c) < 0.5)
-		    {
-		      c *= 2.0;
-		      e--;
-		    }
-
-		  while (std::abs(c) >= 2.0)
-		    {
-		      c /= 2.0;
-		      e++;
-		    }
-		}
-
-	      retval = ComplexDET (c, e);
+                  Complex c = atmp(i,i);
+                  retval *= (ipvt(i) != (i+1)) ? -c : c;
+                }
 	    }
 	}
     }

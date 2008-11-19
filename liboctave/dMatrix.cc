@@ -36,7 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "byte-swap.h"
 #include "dMatrix.h"
 #include "dbleAEPBAL.h"
-#include "dbleDET.h"
+#include "DET.h"
 #include "dbleSCHUR.h"
 #include "dbleSVD.h"
 #include "dbleCHOL.h"
@@ -1297,33 +1297,13 @@ Matrix::determinant (octave_idx_type& info, double& rcon, int calc_cond) const
 	    } 
 	  else 
 	    {
-	      double c = 1.0;
-	      int e = 0;
-
+              retval = DET (1.0);
+              
 	      for (octave_idx_type i = 0; i < nc; i++) 
 		{
-		  if (ipvt(i) != (i+1))
-		    c = -c;
-
-		  c *= atmp(i,i);
-
-		  if (c == 0.0)
-		    break;
-
-		  while (fabs (c) < 0.5)
-		    {
-		      c *= 2.0;
-		      e--;
-		    }
-
-		  while (fabs (c) >= 2.0)
-		    {
-		      c /= 2.0;
-		      e++;
-		    }
-		}
-
-	      retval = DET (c, e);
+                  double c = atmp(i,i);
+                  retval *= (ipvt(i) != (i+1)) ? -c : c;
+                }
 	    }
 	}
     }

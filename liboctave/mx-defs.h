@@ -70,11 +70,6 @@ class ComplexCHOL;
 class FloatCHOL;
 class FloatComplexCHOL;
 
-class DET;
-class ComplexDET;
-class FloatDET;
-class FloatComplexDET;
-
 class EIG;
 
 class HESS;

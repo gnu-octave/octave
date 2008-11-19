@@ -38,7 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "Array-util.h"
 #include "fCMatrix.h"
-#include "fCmplxDET.h"
+#include "DET.h"
 #include "fCmplxSCHUR.h"
 #include "fCmplxSVD.h"
 #include "fCmplxCHOL.h"
@@ -1624,33 +1624,13 @@ FloatComplexMatrix::determinant (octave_idx_type& info, float& rcon, int calc_co
 	    } 
 	  else 
 	    {
-	      FloatComplex c = 1.0;
-	      int e = 0;
-
+              retval = FloatComplexDET (1.0);
+              
 	      for (octave_idx_type i = 0; i < nc; i++) 
 		{
-		  if (ipvt(i) != (i+1))
-		    c = -c;
-
-		  c *= atmp(i,i);
-
-		  if (c == static_cast<float> (0.0))
-		    break;
-
-		  while (std::abs(c) < 0.5)
-		    {
-		      c *= 2.0;
-		      e--;
-		    }
-
-		  while (std::abs(c) >= 2.0)
-		    {
-		      c /= 2.0;
-		      e++;
-		    }
-		}
-
-	      retval = FloatComplexDET (c, e);
+                  FloatComplex c = atmp(i,i);
+                  retval *= (ipvt(i) != (i+1)) ? -c : c;
+                }
 	    }
 	}
     }

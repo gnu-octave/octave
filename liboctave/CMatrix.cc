@@ -56,6 +56,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "mx-cm-s.h"
 #include "mx-inlines.cc"
 #include "oct-cmplx.h"
+#include "oct-norm.h"
 
 #if defined (HAVE_FFTW3)
 #include "oct-fftw.h"
@@ -1574,74 +1575,132 @@ ComplexMatrix::determinant (octave_idx_type& info) const
 ComplexDET
 ComplexMatrix::determinant (octave_idx_type& info, double& rcon, int calc_cond) const
 {
-  ComplexDET retval;
+  MatrixType mattype (*this);
+  return determinant (mattype, info, rcon, calc_cond);
+}
+
+ComplexDET
+ComplexMatrix::determinant (MatrixType& mattype,
+                            octave_idx_type& info, double& rcon, int calc_cond) const
+{
+  ComplexDET retval (1.0);
 
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
 
-  if (nr == 0 || nc == 0)
-    {
-      retval = ComplexDET (1.0, 0);
-    }
+  if (nr != nc)
+    (*current_liboctave_error_handler) ("matrix must be square");
   else
     {
-      Array<octave_idx_type> ipvt (nr);
-      octave_idx_type *pipvt = ipvt.fortran_vec ();
+      int typ = mattype.type ();
 
-      ComplexMatrix atmp = *this;
-      Complex *tmp_data = atmp.fortran_vec ();
+      if (typ == MatrixType::Lower || typ == MatrixType::Upper)
+        {
+          for (octave_idx_type i = 0; i < nc; i++) 
+            retval *= elem (i,i);
+        }
+      else if (typ == MatrixType::Hermitian)
+        {
+          ComplexMatrix atmp = *this;
+          Complex *tmp_data = atmp.fortran_vec ();
 
-      info = 0;
+          info = 0;
+          double anorm = 0;
+          if (calc_cond) anorm = xnorm (*this, 1);
 
-      // Calculate the norm of the matrix, for later use.
-      double anorm = 0;
-      if (calc_cond) 
-	anorm = atmp.abs().sum().row(static_cast<octave_idx_type>(0)).max();
 
-      F77_XFCN (zgetrf, ZGETRF, (nr, nc, tmp_data, nr, pipvt, info));
+          char job = 'L';
+          F77_XFCN (zpotrf, ZPOTRF, (F77_CONST_CHAR_ARG2 (&job, 1), nr, 
+                                     tmp_data, nr, info
+                                     F77_CHAR_ARG_LEN (1)));
 
-      // Throw-away extra info LAPACK gives so as to not change output.
-      rcon = 0.0;
-      if (info != 0) 
-	{
-	  info = -1;
-	  retval = ComplexDET ();
-	} 
-      else 
-	{
-	  if (calc_cond) 
-	    {
-	      // Now calc the condition number for non-singular matrix.
-	      char job = '1';
-	      Array<Complex> z (2*nr);
-	      Complex *pz = z.fortran_vec ();
-	      Array<double> rz (2*nr);
-	      double *prz = rz.fortran_vec ();
+          if (info != 0) 
+            {
+              rcon = 0.0;
+              mattype.mark_as_unsymmetric ();
+              typ = MatrixType::Full;
+            }
+          else 
+            {
+              Array<Complex> z (2 * nc);
+              Complex *pz = z.fortran_vec ();
+              Array<double> rz (nc);
+              double *prz = rz.fortran_vec ();
 
-	      F77_XFCN (zgecon, ZGECON, (F77_CONST_CHAR_ARG2 (&job, 1),
-					 nc, tmp_data, nr, anorm, 
-					 rcon, pz, prz, info
-					 F77_CHAR_ARG_LEN (1)));
-	    }
+              F77_XFCN (zpocon, ZPOCON, (F77_CONST_CHAR_ARG2 (&job, 1),
+                                         nr, tmp_data, nr, anorm,
+                                         rcon, pz, prz, info
+                                         F77_CHAR_ARG_LEN (1)));
 
-	  if (info != 0) 
-	    {
-	      info = -1;
-	      retval = ComplexDET ();
-	    } 
-	  else 
-	    {
-              retval = ComplexDET (1.0);
-              
-	      for (octave_idx_type i = 0; i < nc; i++) 
-		{
-                  Complex c = atmp(i,i);
-                  retval *= (ipvt(i) != (i+1)) ? -c : c;
+              if (info != 0) 
+                rcon = 0.0;
+
+              for (octave_idx_type i = 0; i < nc; i++) 
+                retval *= elem (i,i);
+
+              retval = retval.square ();
+            }
+        }
+      else if (typ != MatrixType::Full)
+        (*current_liboctave_error_handler) ("det: invalid dense matrix type");
+
+      if (typ == MatrixType::Full)
+        {
+          Array<octave_idx_type> ipvt (nr);
+          octave_idx_type *pipvt = ipvt.fortran_vec ();
+
+          ComplexMatrix atmp = *this;
+          Complex *tmp_data = atmp.fortran_vec ();
+
+          info = 0;
+
+          // Calculate the norm of the matrix, for later use.
+          double anorm = 0;
+          if (calc_cond) anorm = xnorm (*this, 1);
+
+          F77_XFCN (zgetrf, ZGETRF, (nr, nr, tmp_data, nr, pipvt, info));
+
+          // Throw-away extra info LAPACK gives so as to not change output.
+          rcon = 0.0;
+          if (info != 0) 
+            {
+              info = -1;
+              retval = ComplexDET ();
+            } 
+          else 
+            {
+              if (calc_cond) 
+                {
+                  // Now calc the condition number for non-singular matrix.
+                  char job = '1';
+                  Array<Complex> z (2 * nc);
+                  Complex *pz = z.fortran_vec ();
+                  Array<double> rz (2 * nc);
+                  double *prz = rz.fortran_vec ();
+
+                  F77_XFCN (zgecon, ZGECON, (F77_CONST_CHAR_ARG2 (&job, 1),
+                                             nc, tmp_data, nr, anorm, 
+                                             rcon, pz, prz, info
+                                             F77_CHAR_ARG_LEN (1)));
                 }
-	    }
-	}
+
+              if (info != 0) 
+                {
+                  info = -1;
+                  retval = ComplexDET ();
+                } 
+              else 
+                {
+                  for (octave_idx_type i = 0; i < nc; i++) 
+                    {
+                      Complex c = atmp(i,i);
+                      retval *= (ipvt(i) != (i+1)) ? -c : c;
+                    }
+                }
+            }
+        }
     }
-  
+
   return retval;
 }
 

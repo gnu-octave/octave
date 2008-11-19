@@ -176,6 +176,8 @@ public:
   FloatComplexDET determinant (void) const;
   FloatComplexDET determinant (octave_idx_type& info) const;
   FloatComplexDET determinant (octave_idx_type& info, float& rcon, int calc_cond = 1) const;
+  FloatComplexDET determinant (MatrixType &mattype, octave_idx_type& info, 
+                               float& rcon, int calc_cond = 1) const;
 
   float rcond (void) const;
   float rcond (MatrixType &mattype) const;

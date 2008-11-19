@@ -34,7 +34,7 @@ base_det
 {
 public:
 
-  base_det (T c = 0, int e = 0) 
+  base_det (T c = 1, int e = 0) 
     { 
       c2 = xlog2 (c, e2); 
       e2 += e; 
@@ -64,6 +64,8 @@ public:
 
   T value () const { return c2 * static_cast<T> (std::ldexp (1.0, e2)); }
   operator T () const { return value (); }
+
+  base_det square () const { return base_det (c2*c2, e2+e2); }
 
   void operator *= (T t)
     {

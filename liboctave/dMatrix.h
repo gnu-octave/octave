@@ -145,6 +145,8 @@ public:
   DET determinant (void) const;
   DET determinant (octave_idx_type& info) const;
   DET determinant (octave_idx_type& info, double& rcon, int calc_cond = 1) const;
+  DET determinant (MatrixType &mattype, octave_idx_type& info, 
+                   double& rcon, int calc_cond = 1) const;
 
   double rcond (void) const;
   double rcond (MatrixType &mattype) const;

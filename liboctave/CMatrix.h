@@ -176,6 +176,8 @@ public:
   ComplexDET determinant (void) const;
   ComplexDET determinant (octave_idx_type& info) const;
   ComplexDET determinant (octave_idx_type& info, double& rcon, int calc_cond = 1) const;
+  ComplexDET determinant (MatrixType &mattype, octave_idx_type& info, 
+                          double& rcon, int calc_cond = 1) const;
 
   double rcond (void) const;
   double rcond (MatrixType &mattype) const;

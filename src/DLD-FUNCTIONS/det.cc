@@ -33,6 +33,15 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-obj.h"
 #include "utils.h"
 
+#include "ov-re-mat.h"
+#include "ov-cx-mat.h"
+#include "ov-flt-re-mat.h"
+#include "ov-flt-cx-mat.h"
+
+#define MAYBE_CAST(VAR, CLASS) \
+  const CLASS *VAR = arg.type_id () == CLASS::static_type_id () ? \
+   dynamic_cast<const CLASS *> (&arg.get_rep ()) : 0
+
 DEFUN_DLD (det, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {[@var{d}, @var{rcond}] =} det (@var{a})\n\
@@ -68,6 +77,7 @@ if requested.\n\
   if (arg_is_empty > 0)
     return octave_value (Matrix (1, 1, 1.0));
 
+
   if (nr != nc)
     {
       gripe_square_matrix_required ("det");
@@ -86,9 +96,12 @@ if requested.\n\
 	  FloatMatrix m = arg.float_matrix_value ();
 	  if (! error_state)
 	    {
-	      FloatDET det = m.determinant (info, rcond);
+              MAYBE_CAST (rep, octave_float_matrix);
+              MatrixType mtype = rep ? rep -> matrix_type () : MatrixType ();
+	      FloatDET det = m.determinant (mtype, info, rcond);
 	      retval(1) = rcond;
 	      retval(0) = info == -1 ? static_cast<float>(0.0) : det.value ();
+              if (rep) rep->matrix_type (mtype);
 	    }
 	}
       else if (arg.is_complex_type ())
@@ -100,9 +113,12 @@ if requested.\n\
 	  FloatComplexMatrix m = arg.float_complex_matrix_value ();
 	  if (! error_state)
 	    {
-	      FloatComplexDET det = m.determinant (info, rcond);
+              MAYBE_CAST (rep, octave_float_complex_matrix);
+              MatrixType mtype = rep ? rep -> matrix_type () : MatrixType ();
+	      FloatComplexDET det = m.determinant (mtype, info, rcond);
 	      retval(1) = rcond;
 	      retval(0) = info == -1 ? FloatComplex (0.0) : det.value ();
+              if (rep) rep->matrix_type (mtype);
 	    }
 	}
     }
@@ -129,9 +145,12 @@ if requested.\n\
 	      Matrix m = arg.matrix_value ();
 	      if (! error_state)
 		{
-		  DET det = m.determinant (info, rcond);
+                  MAYBE_CAST (rep, octave_matrix);
+                  MatrixType mtype = rep ? rep -> matrix_type () : MatrixType ();
+		  DET det = m.determinant (mtype, info, rcond);
 		  retval(1) = rcond;
 		  retval(0) = info == -1 ? 0.0 : det.value ();
+                  if (rep) rep->matrix_type (mtype);
 		}
 	    }
 	}
@@ -156,9 +175,12 @@ if requested.\n\
 	      ComplexMatrix m = arg.complex_matrix_value ();
 	      if (! error_state)
 		{
-		  ComplexDET det = m.determinant (info, rcond);
+                  MAYBE_CAST (rep, octave_complex_matrix);
+                  MatrixType mtype = rep ? rep -> matrix_type () : MatrixType ();
+		  ComplexDET det = m.determinant (mtype, info, rcond);
 		  retval(1) = rcond;
 		  retval(0) = info == -1 ? Complex (0.0) : det.value ();
+                  if (rep) rep->matrix_type (mtype);
 		}
 	    }
 	}

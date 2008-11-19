@@ -1,6 +1,7 @@
 2008-11-19  Jaroslav Hajek  <highegg@gmail.com>
 
-	* DLD_FUNCTIONS/det.cc: Include only DET.h.
+	* DLD_FUNCTIONS/det.cc: Include only DET.h. Retrieve & matrix type &
+	store it after calculation if possible.
 
 2008-11-17  John W. Eaton  <jwe@octave.org>
 

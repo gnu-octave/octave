@@ -1594,6 +1594,9 @@ ComplexMatrix::determinant (MatrixType& mattype,
     {
       int typ = mattype.type ();
 
+      if (typ == MatrixType::Unknown)
+        typ = mattype.type (*this);
+
       if (typ == MatrixType::Lower || typ == MatrixType::Upper)
         {
           for (octave_idx_type i = 0; i < nc; i++) 
@@ -1636,7 +1639,7 @@ ComplexMatrix::determinant (MatrixType& mattype,
                 rcon = 0.0;
 
               for (octave_idx_type i = 0; i < nc; i++) 
-                retval *= elem (i,i);
+                retval *= atmp (i,i);
 
               retval = retval.square ();
             }

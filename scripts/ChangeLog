@@ -1,3 +1,8 @@
+2008-11-21  Radek Salac  <salac.r@gmail.com>
+
+	* sparse/cgs.m, sparse/treelayout.m: New functions.
+	* sparse/Makefile.in (SOURCES): Add them here.
+
 2008-11-14  David Bateman  <dbateman@free.fr>
 
 	* plot/__go_draw_axes__.m (do_tics_1): Support the minorick properties

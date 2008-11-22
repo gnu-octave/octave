@@ -304,19 +304,32 @@ bp_table::do_get_breakpoint_list (const octave_value_list& fname_list)
 {
   fname_line_map retval;
 
+  // Clear the breakpoints in the function if it has been updated.
+  // FIXME:  This is a bad way of doing this, but I can't think of another.  The
+  // problem is due to the fact that out_of_date_check(...) calls 
+  // remove_breakpoints_in_file(...), which in turn modifies bp_map while we are
+  // in the middle of iterating through it.
+  std::list<octave_user_code*> usercode_list;
+  for (breakpoint_map_iterator it = bp_map.begin (); it != bp_map.end (); it++)
+    {
+      octave_user_code *f = it->second;
+      usercode_list.push_back(f);
+    }
+
+  for (std::list<octave_user_code*>::iterator it = usercode_list.begin (); it != usercode_list.end (); it++)
+    {
+      out_of_date_check(*it);
+    }
+
+
   // Iterate through each of the files in the map and get the 
   // name and list of breakpoints.
-
   for (breakpoint_map_iterator it = bp_map.begin (); it != bp_map.end (); it++)
     {
       if (fname_list.length () == 0
 	  || do_find_bkpt_list (fname_list, it->first) != "")
 	{
 	  octave_user_code *f = it->second;
-
-	  // Clears the breakpoints if the function has been updated
-	  out_of_date_check (f);
-
 	  tree_statement_list *cmds = f->body ();
 
 	  if (cmds)

@@ -1,3 +1,9 @@
+2008-11-24  David Bateman  <dbateman@free.fr>
+
+	* graphics.cc (F__go_delete__): Check validity of handles before
+	deleting them to avoid issues with callback function also deleting
+	the handles.
+	
 2008-11-21  Jarkko Kaleva  <d3roga@gmail.com>
 
 	* DLD-FUNCTIONS/eig.cc (Feig): Handle generalized eigenvalues and 
@@ -8,12 +14,6 @@
 	* DLD_FUNCTIONS/det.cc: Include only DET.h. Retrieve & matrix type &
 	store it after calculation if possible.
 
-2008-11-24  David Bateman  <dbateman@free.fr>
-
-	* graphics.cc (F__go_delete__): Check validity of handles before
-	deleting them to avoid issues with callback function also deleting
-	the handles.
-	
 2008-11-17  John W. Eaton  <jwe@octave.org>
 
 	* load-path.cc (load_path::dir_info::update): Simplify previous

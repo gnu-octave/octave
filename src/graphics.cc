@@ -4582,42 +4582,54 @@ Undocumented internal function.\n\
 
       if (! error_state)
 	{
+	  // Check is all the handles to delete are valid first
+	  // as callbacks might delete one of the handles we
+	  // later want to delete
 	  for (octave_idx_type i = 0; i < vals.numel (); i++)
 	    {
 	      h = gh_manager::lookup (vals.elem (i));
 
-	      if (h.ok ())
-		{
-		  graphics_object obj = gh_manager::get_object (h);
-
-		  // Don't do recursive deleting, due to callbacks
-		  if (! obj.get_properties ().is_beingdeleted ())
-		    {
-		      graphics_handle parent_h = obj.get_parent ();
-
-		      graphics_object parent_obj = 
-			gh_manager::get_object (parent_h);
-
-		      // NOTE: free the handle before removing it from its
-		      //       parent's children, such that the object's 
-		      //       state is correct when the deletefcn callback
-		      //       is executed
-
-		      gh_manager::free (h);
-
-		      // A callback function might have already deleted 
-		      // the parent
-		      if (parent_obj.valid_object ())
-			parent_obj.remove_child (h);
-
-		      Vdrawnow_requested = true;
-		    }
-		}
-	      else
+	      if (! h.ok ())
 		{
 		  error ("delete: invalid graphics object (= %g)", 
 			 vals.elem (i));
 		  break;
+		}
+	    }
+
+	  if (! error_state)
+	    {
+	      for (octave_idx_type i = 0; i < vals.numel (); i++)
+		{
+		  h = gh_manager::lookup (vals.elem (i));
+
+		  if (h.ok ())
+		    {
+		      graphics_object obj = gh_manager::get_object (h);
+
+		      // Don't do recursive deleting, due to callbacks
+		      if (! obj.get_properties ().is_beingdeleted ())
+			{
+			  graphics_handle parent_h = obj.get_parent ();
+
+			  graphics_object parent_obj = 
+			    gh_manager::get_object (parent_h);
+
+			  // NOTE: free the handle before removing it from its
+			  //       parent's children, such that the object's 
+			  //       state is correct when the deletefcn callback
+			  //       is executed
+
+			  gh_manager::free (h);
+
+			  // A callback function might have already deleted 
+			  // the parent
+			  if (parent_obj.valid_object ())
+			    parent_obj.remove_child (h);
+
+			  Vdrawnow_requested = true;
+			}
+		    }
 		}
 	    }
 	}

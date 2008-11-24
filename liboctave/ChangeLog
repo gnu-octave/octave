@@ -1,3 +1,41 @@
+2008-11-21  Jarkko Kaleva  <d3roga@gmail.com>
+
+	* EIG.h (EIG::EIG (const Matrix& a, const Matrix& b, 
+	bool calc_eigenvectors = true)): New constructor.
+	(EIG::EIG (const Matrix& a, const Matrix& b, octave_idx_type& info, 
+	bool calc_eigenvectors = true)): New constructor.
+	(EIG::EIG (const ComplexMatrix& a, const ComplexMatrix& b, 
+	bool calc_eigenvectors = true)): New constructor.
+	(EIG::EIG (const ComplexMatrix& a, const ComplexMatrix& b, 
+	octave_idx_type& info, bool calc_eigenvectors = true)): New 
+	constructor.
+	* EIG.cc (EIG::init (const Matrix& a, const Matrix& b, 
+	bool calc_eigenvectors)): New function.
+	(EIG::init (const ComplexMatrix& a, const ComplexMatrix& b, 
+	bool calc_eigenvectors)): New function.
+	(EIG::symmetric_init (const Matrix& a, const Matrix& b, 
+	bool calc_eigenvectors)): New function.
+	(EIG::hermitian_init (const ComplexMatrix& a, const ComplexMatrix& b, 
+	bool calc_eigenvectors)): New function.
+	* fEIG.h (fEIG::fEIG (const FloatMatrix& a, const FloatMatrix& b, 
+	bool calc_eigenvectors = true)): New constructor.
+	(fEIG::fEIG (const FloatMatrix& a, const FloatMatrix& b, 
+	octave_idx_type& info, bool calc_eigenvectors = true)): New 
+	constructor.
+	(fEIG::fEIG (const FloatComplexMatrix& a, const FloatComplexMatrix& b, 
+	bool calc_eigenvectors = true)): New constructor.	
+	(fEIG::fEIG (const FloatComplexMatrix& a, const FloatComplexMatrix& b, 
+	octave_idx_type& info, bool calc_eigenvectors = true)): New 
+	constructor.
+	(fEIG::init (const FloatMatrix& a, const FloatMatrix& b, 
+	bool calc_eigenvectors)): New function.
+	(fEIG::init (const FloatComplexMatrix& a, const FloatComplexMatrix& b, 
+	bool calc_eigenvectors)): New function.
+	(fEIG::symmetric_init (const FloatMatrix& a, const FloatMatrix& b, 
+	bool calc_eigenvectors)): New function.
+	(fEIG::hermitian_init (const FloatComplexMatrix& a, 
+	const FloatComplexMatrix& b, bool calc_eigenvectors)): New function.
+
 2008-11-19  Jaroslav Hajek  <highegg@gmail.com>
 	
 	* dMatrix.cc (Matrix::determinant),

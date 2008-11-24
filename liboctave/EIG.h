@@ -48,11 +48,23 @@ public:
   EIG (const Matrix& a, octave_idx_type& info, bool calc_eigenvectors = true)
     { info = init (a, calc_eigenvectors); }
 
+  EIG (const Matrix& a, const Matrix& b, bool calc_eigenvectors = true)
+    { init (a, b, calc_eigenvectors); }
+
+  EIG (const Matrix& a, const Matrix& b, octave_idx_type& info, bool calc_eigenvectors = true)
+    { info = init (a, b, calc_eigenvectors); }
+
   EIG (const ComplexMatrix& a, bool calc_eigenvectors = true)
     { init (a, calc_eigenvectors); }
 
   EIG (const ComplexMatrix& a, octave_idx_type& info, bool calc_eigenvectors = true)
     { info = init (a, calc_eigenvectors); }
+
+  EIG (const ComplexMatrix& a, const ComplexMatrix& b, bool calc_eigenvectors = true)
+    { init (a, b, calc_eigenvectors); }
+
+  EIG (const ComplexMatrix& a, const ComplexMatrix& b, octave_idx_type& info, bool calc_eigenvectors = true)
+    { info = init (a, b, calc_eigenvectors); }
 
   EIG (const EIG& a)
     : lambda (a.lambda), v (a.v) { }
@@ -81,10 +93,14 @@ private:
   ComplexMatrix v;
 
   octave_idx_type init (const Matrix& a, bool calc_eigenvectors);
+  octave_idx_type init (const Matrix& a, const Matrix& b, bool calc_eigenvectors);
   octave_idx_type init (const ComplexMatrix& a, bool calc_eigenvectors);
+  octave_idx_type init (const ComplexMatrix& a, const ComplexMatrix& b, bool calc_eigenvectors);
 
   octave_idx_type symmetric_init (const Matrix& a, bool calc_eigenvectors);
+  octave_idx_type symmetric_init (const Matrix& a, const Matrix& b, bool calc_eigenvectors);
   octave_idx_type hermitian_init (const ComplexMatrix& a, bool calc_eigenvectors);
+  octave_idx_type hermitian_init (const ComplexMatrix& a, const ComplexMatrix& b, bool calc_eigenvectors);
 };
 
 #endif

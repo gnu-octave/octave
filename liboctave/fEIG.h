@@ -48,11 +48,23 @@ public:
   FloatEIG (const FloatMatrix& a, octave_idx_type& info, bool calc_eigenvectors = true)
     { info = init (a, calc_eigenvectors); }
 
+  FloatEIG (const FloatMatrix& a, const FloatMatrix& b, bool calc_eigenvectors = true)
+    { init (a, b, calc_eigenvectors); }
+
+  FloatEIG (const FloatMatrix& a, const FloatMatrix& b, octave_idx_type& info, bool calc_eigenvectors = true)
+    { info = init (a, b, calc_eigenvectors); }
+
   FloatEIG (const FloatComplexMatrix& a, bool calc_eigenvectors = true)
     { init (a, calc_eigenvectors); }
 
   FloatEIG (const FloatComplexMatrix& a, octave_idx_type& info, bool calc_eigenvectors = true)
     { info = init (a, calc_eigenvectors); }
+
+  FloatEIG (const FloatComplexMatrix& a, const FloatComplexMatrix& b, bool calc_eigenvectors = true)
+    { init (a, b, calc_eigenvectors); }
+
+  FloatEIG (const FloatComplexMatrix& a, const FloatComplexMatrix& b, octave_idx_type& info, bool calc_eigenvectors = true)
+    { info = init (a, b, calc_eigenvectors); }
 
   FloatEIG (const FloatEIG& a)
     : lambda (a.lambda), v (a.v) { }
@@ -81,10 +93,14 @@ private:
   FloatComplexMatrix v;
 
   octave_idx_type init (const FloatMatrix& a, bool calc_eigenvectors);
+  octave_idx_type init (const FloatMatrix& a, const FloatMatrix& b, bool calc_eigenvectors);
   octave_idx_type init (const FloatComplexMatrix& a, bool calc_eigenvectors);
+  octave_idx_type init (const FloatComplexMatrix& a, const FloatComplexMatrix& b, bool calc_eigenvectors);
 
   octave_idx_type symmetric_init (const FloatMatrix& a, bool calc_eigenvectors);
+  octave_idx_type symmetric_init (const FloatMatrix& a, const FloatMatrix& b, bool calc_eigenvectors);
   octave_idx_type hermitian_init (const FloatComplexMatrix& a, bool calc_eigenvectors);
+  octave_idx_type hermitian_init (const FloatComplexMatrix& a, const FloatComplexMatrix& b, bool calc_eigenvectors);
 };
 
 #endif

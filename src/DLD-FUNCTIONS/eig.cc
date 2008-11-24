@@ -37,7 +37,9 @@ along with Octave; see the file COPYING.  If not, see
 DEFUN_DLD (eig, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{lambda} =} eig (@var{a})\n\
+@deftypefnx {Loadable Function} {@var{lambda} =} eig (@var{a}, @var{b})\n\
 @deftypefnx {Loadable Function} {[@var{v}, @var{lambda}] =} eig (@var{a})\n\
+@deftypefnx {Loadable Function} {[@var{v}, @var{lambda}] =} eig (@var{a}, @var{b})\n\
 The eigenvalues (and eigenvectors) of a matrix are computed in a several\n\
 step process which begins with a Hessenberg decomposition, followed by a\n\
 Schur decomposition, from which the eigenvalues are apparent.  The\n\
@@ -51,55 +53,116 @@ The eigenvalues returned by @code{eig} are not ordered.\n\
 
   int nargin = args.length ();
 
-  if (nargin != 1 || nargout > 2)
+  if (nargin > 2 || nargin == 0 || nargout > 2)
     {
       print_usage ();
       return retval;
     }
 
-  octave_value arg = args(0);
+  octave_value arg_a, arg_b;
 
-  octave_idx_type nr = arg.rows ();
-  octave_idx_type nc = arg.columns ();
+  octave_idx_type nr_a = 0, nr_b = 0;
+  octave_idx_type nc_a = 0, nc_b = 0;
 
-  int arg_is_empty = empty_arg ("eig", nr, nc);
+  arg_a = args(0);
+  nr_a = arg_a.rows ();
+  nc_a = arg_a.columns ();
+
+  int arg_is_empty = empty_arg ("eig", nr_a, nc_a);
   if (arg_is_empty < 0)
     return retval;
   else if (arg_is_empty > 0)
     return octave_value_list (2, Matrix ());
 
-  if (nr != nc)
+  if (!(arg_a.is_single_type () || arg_a.is_double_type ()))
+    {
+      gripe_wrong_type_arg ("eig", arg_a);
+      return retval;
+    }
+
+  if (nargin == 2)
+    {
+      arg_b = args(1);
+      nr_b = arg_b.rows ();
+      nc_b = arg_b.columns ();
+
+      arg_is_empty = empty_arg ("eig", nr_b, nc_b);
+      if (arg_is_empty < 0)
+        return retval;
+      else if (arg_is_empty > 0)
+        return octave_value_list (2, Matrix ());
+
+      if (!(arg_b.is_single_type() || arg_b.is_double_type ()))
+	{
+	  gripe_wrong_type_arg ("eig", arg_b);
+	  return retval;
+	}
+    }
+
+  if (nr_a != nc_a)
     {
       gripe_square_matrix_required ("eig");
       return retval;
     }
 
-  Matrix tmp;
-  ComplexMatrix ctmp;
-  FloatMatrix ftmp;
-  FloatComplexMatrix fctmp;
+  if (nargin == 2 && nr_b != nc_b)
+    {
+      gripe_square_matrix_required ("eig");
+      return retval;
+    }
 
-  if (arg.is_single_type ())
+  Matrix tmp_a, tmp_b;
+  ComplexMatrix ctmp_a, ctmp_b;
+  FloatMatrix ftmp_a, ftmp_b;
+  FloatComplexMatrix fctmp_a, fctmp_b;
+
+  if (arg_a.is_single_type ())
     {
       FloatEIG result;
 
-      if (arg.is_real_type ())
+      if (nargin == 1)
 	{
-	  ftmp = arg.float_matrix_value ();
+	  if (arg_a.is_real_type ())
+	    {
+	      ftmp_a = arg_a.float_matrix_value ();
 
-	  if (error_state)
-	    return retval;
+	      if (error_state)
+	        return retval;
+	      else
+	        result = FloatEIG (ftmp_a, nargout > 1);
+	    }
 	  else
-	    result = FloatEIG (ftmp, nargout > 1);
+	    {
+	      fctmp_a = arg_a.float_complex_matrix_value ();
+
+	      if (error_state)
+	        return retval;
+	      else
+	        result = FloatEIG (fctmp_a, nargout > 1);
+	    }
 	}
-      else if (arg.is_complex_type ())
+      else if (nargin == 2)
 	{
-	  fctmp = arg.float_complex_matrix_value ();
+	  if (arg_a.is_real_type () && arg_b.is_real_type ())
+	    {
+	      ftmp_a = arg_a.float_matrix_value ();
+	      ftmp_b = arg_b.float_matrix_value ();
 
-	  if (error_state)
-	    return retval;
+	      if (error_state)
+	        return retval;
+	      else
+	        result = FloatEIG (ftmp_a, ftmp_b, nargout > 1);
+	    }
 	  else
-	    result = FloatEIG (fctmp, nargout > 1);
+	    {
+	      fctmp_a = arg_a.float_complex_matrix_value ();
+	      fctmp_b = arg_b.float_complex_matrix_value ();
+
+	      if (error_state)
+	        return retval;
+	      else
+	        result = FloatEIG (fctmp_a, fctmp_b, nargout > 1);
+	    }
 	}
 
       if (! error_state)
@@ -123,28 +186,49 @@ The eigenvalues returned by @code{eig} are not ordered.\n\
     {
       EIG result;
 
-      if (arg.is_real_type ())
+      if (nargin == 1)
 	{
-	  tmp = arg.matrix_value ();
+	  if (arg_a.is_real_type ())
+	    {
+	      tmp_a = arg_a.matrix_value ();
 
-	  if (error_state)
-	    return retval;
+	      if (error_state)
+	        return retval;
+	      else
+	        result = EIG (tmp_a, nargout > 1);
+	    }
 	  else
-	    result = EIG (tmp, nargout > 1);
-	}
-      else if (arg.is_complex_type ())
-	{
-	  ctmp = arg.complex_matrix_value ();
+	    {
+	      ctmp_a = arg_a.complex_matrix_value ();
 
-	  if (error_state)
-	    return retval;
-	  else
-	    result = EIG (ctmp, nargout > 1);
+	      if (error_state)
+	        return retval;
+	      else
+	        result = EIG (ctmp_a, nargout > 1);
+	    }
 	}
-      else
+      else if (nargin == 2)
 	{
-	  gripe_wrong_type_arg ("eig", tmp);
-	  return retval;
+	  if (arg_a.is_real_type () && arg_b.is_real_type ())
+	    {
+	      tmp_a = arg_a.matrix_value ();
+	      tmp_b = arg_b.matrix_value ();
+
+	      if (error_state)
+	        return retval;
+	      else
+	        result = EIG (tmp_a, tmp_b, nargout > 1);
+	    }
+	  else 
+	    {
+	      ctmp_a = arg_a.complex_matrix_value ();
+	      ctmp_b = arg_b.complex_matrix_value ();
+
+	      if (error_state)
+	        return retval;
+	      else
+	        result = EIG (ctmp_a, ctmp_b, nargout > 1);
+	    }
 	}
 
       if (! error_state)
@@ -186,9 +270,67 @@ The eigenvalues returned by @code{eig} are not ordered.\n\
 %! assert(d, single([-1, 0; 0, 3]), sqrt (eps('single')));
 %! assert(v, [-x, x; x, x], sqrt (eps('single')));
 
+%!test
+%! A = [1, 2; -1, 1]; B = [3, 3; 1, 2];
+%! [v, d] = eig (A, B);
+%! assert(A * v(:, 1), d(1, 1) * B * v(:, 1), sqrt (eps));
+%! assert(A * v(:, 2), d(2, 2) * B * v(:, 2), sqrt (eps));
+
+%!test
+%! A = single([1, 2; -1, 1]); B = single([3, 3; 1, 2]);
+%! [v, d] = eig (A, B);
+%! assert(A * v(:, 1), d(1, 1) * B * v(:, 1), sqrt (eps('single')));
+%! assert(A * v(:, 2), d(2, 2) * B * v(:, 2), sqrt (eps('single')));
+
+%!test
+%! A = [1, 2; 2, 1]; B = [3, -2; -2, 3];
+%! [v, d] = eig (A, B);
+%! assert(A * v(:, 1), d(1, 1) * B * v(:, 1), sqrt (eps));
+%! assert(A * v(:, 2), d(2, 2) * B * v(:, 2), sqrt (eps));
+
+%!test
+%! A = single([1, 2; 2, 1]); B = single([3, -2; -2, 3]);
+%! [v, d] = eig (A, B);
+%! assert(A * v(:, 1), d(1, 1) * B * v(:, 1), sqrt (eps('single')));
+%! assert(A * v(:, 2), d(2, 2) * B * v(:, 2), sqrt (eps('single')));
+
+%!test
+%! A = [1+3i, 2+i; 2-i, 1+3i]; B = [5+9i, 2+i; 2-i, 5+9i];
+%! [v, d] = eig (A, B);
+%! assert(A * v(:, 1), d(1, 1) * B * v(:, 1), sqrt (eps));
+%! assert(A * v(:, 2), d(2, 2) * B * v(:, 2), sqrt (eps));
+
+%!test
+%! A = single([1+3i, 2+i; 2-i, 1+3i]); B = single([5+9i, 2+i; 2-i, 5+9i]);
+%! [v, d] = eig (A, B);
+%! assert(A * v(:, 1), d(1, 1) * B * v(:, 1), sqrt (eps('single')));
+%! assert(A * v(:, 2), d(2, 2) * B * v(:, 2), sqrt (eps('single')));
+
+%!test
+%! A = [1+3i, 2+3i; 3-8i, 8+3i]; B = [8+i, 3+i; 4-9i, 3+i];
+%! [v, d] = eig (A, B);
+%! assert(A * v(:, 1), d(1, 1) * B * v(:, 1), sqrt (eps));
+%! assert(A * v(:, 2), d(2, 2) * B * v(:, 2), sqrt (eps));
+
+%!test
+%! A = single([1+3i, 2+3i; 3-8i, 8+3i]); B = single([8+i, 3+i; 4-9i, 3+i]);
+%! [v, d] = eig (A, B);
+%! assert(A * v(:, 1), d(1, 1) * B * v(:, 1), sqrt (eps('single')));
+%! assert(A * v(:, 2), d(2, 2) * B * v(:, 2), sqrt (eps('single')));
+
+%!test
+%! A = [1, 2; 3, 8]; B = [8, 3; 4, 3];
+%! [v, d] = eig (A, B);
+%! assert(A * v(:, 1), d(1, 1) * B * v(:, 1), sqrt (eps));
+%! assert(A * v(:, 2), d(2, 2) * B * v(:, 2), sqrt (eps));
+
 %!error <Invalid call to eig.*> eig ();
-%!error <Invalid call to eig.*> eig ([1, 2; 3, 4], 2);
+%!error <Invalid call to eig.*> eig ([1, 2; 3, 4], [4, 3; 2, 1], 1);
+%!error eig ([1, 2; 3, 4], 2);
 %!error eig ([1, 2; 3, 4; 5, 6]);
+%!error eig ("abcd");
+%!error eig ([1 2 ; 2 3], "abcd");
+%!error eig (false, [1 2 ; 2 3]);
 
  */
 

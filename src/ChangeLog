@@ -1,3 +1,8 @@
+2008-11-21  Jarkko Kaleva  <d3roga@gmail.com>
+
+	* DLD-FUNCTIONS/eig.cc (Feig): Handle generalized eigenvalues and 
+	eigenvectors.
+
 2008-11-19  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD_FUNCTIONS/det.cc: Include only DET.h. Retrieve & matrix type &

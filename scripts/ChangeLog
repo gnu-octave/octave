@@ -1,3 +1,7 @@
+2008-11-24  Ben Abbott <bpabbott@mac.com>
+
+	* plot/legend.m: Correct ording of legend labels.
+
 2008-11-21  Radek Salac  <salac.r@gmail.com>
 
 	* sparse/cgs.m, sparse/treelayout.m: New functions.

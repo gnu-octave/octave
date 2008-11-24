@@ -298,8 +298,8 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 
     while (! isempty (kids))
 
-      obj = get (kids(1));
-      kids = kids(2:end);
+      obj = get (kids(end));
+      kids = kids(1:(end-1));
 
       if (strcmpi (obj.visible, "off"))
 	continue;

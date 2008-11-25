@@ -1614,7 +1614,18 @@ do_binary_op (octave_value::binary_op op,
       else
 	{
 	  octave_value tv1;
-	  octave_base_value::type_conv_fcn cf1 = v1.numeric_conversion_function ();
+	  octave_base_value::type_conv_info cf1 = v1.numeric_conversion_function ();
+
+	  octave_value tv2;
+	  octave_base_value::type_conv_info cf2 = v2.numeric_conversion_function ();
+
+          // Try biased (one-sided) conversions first.
+          if (cf2.type_id () >= 0 &&
+              octave_value_typeinfo::lookup_binary_op (op, t1, cf2.type_id ()))
+            cf1 = 0;
+          else if (cf1.type_id () >= 0 &&
+                   octave_value_typeinfo::lookup_binary_op (op, cf1.type_id (), t2))
+            cf2 = 0;
 
 	  if (cf1)
 	    {
@@ -1633,9 +1644,6 @@ do_binary_op (octave_value::binary_op op,
 	    }
 	  else
 	    tv1 = v1;
-
-	  octave_value tv2;
-	  octave_base_value::type_conv_fcn cf2 = v2.numeric_conversion_function ();
 
 	  if (cf2)
 	    {
@@ -1657,86 +1665,22 @@ do_binary_op (octave_value::binary_op op,
 
 	  if (cf1 || cf2)
 	    {
-	      f = octave_value_typeinfo::lookup_binary_op (op, t1, t2);
-
-	      if (f)
-		{
-		  try
-		    {
-		      retval = f (*tv1.rep, *tv2.rep);
-		    }
-		  catch (octave_execution_exception)
-		    {
-		      gripe_library_execution_error ();
-		    }
-		}
-	      else
-		{
-		  //demote double -> single and try again
-		  cf1 = tv1.numeric_demotion_function ();
-
-		  if (cf1)
-		    {
-		      octave_base_value *tmp = cf1 (*tv1.rep);
-
-		      if (tmp)
-			{
-			  tv1 = octave_value (tmp);
-			  t1 = tv1.type_id ();
-			}
-		      else
-			{
-			  gripe_binary_op_conv (octave_value::binary_op_as_string (op));
-			  return retval;
-			}
-		    }
-
-		  cf2 = tv2.numeric_demotion_function ();
-
-		  if (cf2)
-		    {
-		      octave_base_value *tmp = cf2 (*tv2.rep);
-
-		      if (tmp)
-			{
-			  tv2 = octave_value (tmp);
-			  t2 = tv2.type_id ();
-			}
-		      else
-			{
-			  gripe_binary_op_conv (octave_value::binary_op_as_string (op));
-			  return retval;
-			}
-		    }
-
-		  if (cf1 || cf2)
-		    {
-		      f = octave_value_typeinfo::lookup_binary_op (op, t1, t2);
-
-		      if (f)
-			{
-			  try
-			    {
-			      retval = f (*tv1.rep, *tv2.rep);
-			    }
-			  catch (octave_execution_exception)
-			    {
-			      gripe_library_execution_error ();
-			    }
-			}
-		      else
-			gripe_binary_op (octave_value::binary_op_as_string (op),
-					 v1.type_name (), v2.type_name ());
-		    }
-		  else
-		    gripe_binary_op (octave_value::binary_op_as_string (op),
-				     v1.type_name (), v2.type_name ());
-		}
+              retval = do_binary_op (op, tv1, tv2);
 	    }
 	  else
 	    {
 	      //demote double -> single and try again
 	      cf1 = tv1.numeric_demotion_function ();
+
+	      cf2 = tv2.numeric_demotion_function ();
+
+              // Try biased (one-sided) conversions first.
+              if (cf2.type_id () >= 0
+                  && octave_value_typeinfo::lookup_binary_op (op, t1, cf2.type_id ()))
+                cf1 = 0;
+              else if (cf1.type_id () >= 0
+                       && octave_value_typeinfo::lookup_binary_op (op, cf1.type_id (), t2))
+                cf2 = 0;
 
 	      if (cf1)
 		{
@@ -1753,8 +1697,6 @@ do_binary_op (octave_value::binary_op op,
 		      return retval;
 		    }
 		}
-
-	      cf2 = tv2.numeric_demotion_function ();
 
 	      if (cf2)
 		{
@@ -1931,7 +1873,18 @@ do_cat_op (const octave_value& v1, const octave_value& v2,
   else
     {
       octave_value tv1;
-      octave_base_value::type_conv_fcn cf1 = v1.numeric_conversion_function ();
+      octave_base_value::type_conv_info cf1 = v1.numeric_conversion_function ();
+
+      octave_value tv2;
+      octave_base_value::type_conv_info cf2 = v2.numeric_conversion_function ();
+
+      // Try biased (one-sided) conversions first.
+      if (cf2.type_id () >= 0
+          && octave_value_typeinfo::lookup_cat_op (t1, cf2.type_id ()))
+        cf1 = 0;
+      else if (cf1.type_id () >= 0
+               && octave_value_typeinfo::lookup_cat_op (cf1.type_id (), t2))
+        cf2 = 0;
 
       if (cf1)
 	{
@@ -1950,9 +1903,6 @@ do_cat_op (const octave_value& v1, const octave_value& v2,
 	}
       else
 	tv1 = v1;
-
-      octave_value tv2;
-      octave_base_value::type_conv_fcn cf2 = v2.numeric_conversion_function ();
 
       if (cf2)
 	{
@@ -1974,21 +1924,7 @@ do_cat_op (const octave_value& v1, const octave_value& v2,
 
       if (cf1 || cf2)
 	{
-	  f = octave_value_typeinfo::lookup_cat_op (t1, t2);
-
-	  if (f)
-	    {
-	      try
-		{
-		  retval = f (*tv1.rep, *tv2.rep, ra_idx);
-		}
-	      catch (octave_execution_exception)
-		{
-		  gripe_library_execution_error ();
-		}
-	    }
-	  else
-	    gripe_cat_op (v1.type_name (), v2.type_name ());
+          retval = do_cat_op (tv1, tv2, ra_idx);
 	}
       else
 	gripe_cat_op (v1.type_name (), v2.type_name ());
@@ -2079,24 +2015,7 @@ do_unary_op (octave_value::unary_op op, const octave_value& v)
 	      if (tmp)
 		{
 		  tv = octave_value (tmp);
-		  t = tv.type_id ();
-
-		  f = octave_value_typeinfo::lookup_unary_op (op, t);
-
-		  if (f)
-		    {
-		      try
-			{
-			  retval = f (*tv.rep);
-			}
-		      catch (octave_execution_exception)
-			{
-			  gripe_library_execution_error ();
-			}
-		    }
-		  else
-		    gripe_unary_op (octave_value::unary_op_as_string (op),
-				    v.type_name ());
+                  retval = do_unary_op (op, tv);
 		}
 	      else
 		gripe_unary_op_conv (octave_value::unary_op_as_string (op));

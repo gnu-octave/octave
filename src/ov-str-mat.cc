@@ -66,21 +66,16 @@ default_numeric_conversion_function (const octave_base_value& a)
 
   NDArray nda = v.array_value (true);
 
-  if (! error_state)
-    {
-      if (nda.numel () == 1)
-	retval = new octave_scalar (nda(0));
-      else
-	retval = new octave_matrix (nda);
-    }
+  if (! error_state) retval = new octave_matrix (nda);
 
   return retval;
 }
 
-octave_base_value::type_conv_fcn
+octave_base_value::type_conv_info
 octave_char_matrix_str::numeric_conversion_function (void) const
 {
-  return default_numeric_conversion_function;
+  return octave_base_value::type_conv_info (default_numeric_conversion_function,
+                                            octave_matrix::static_type_id ());
 }
 
 octave_value

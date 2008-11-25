@@ -73,7 +73,7 @@ public:
   octave_base_value *empty_clone (void) const
     { return new octave_complex_matrix (); }
 
-  type_conv_fcn numeric_demotion_function (void) const;
+  type_conv_info numeric_demotion_function (void) const;
 
   octave_base_value *try_narrowing_conversion (void);
 

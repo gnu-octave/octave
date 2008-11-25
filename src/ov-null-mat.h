@@ -47,7 +47,7 @@ public:
 
   bool is_null_value (void) const { return true; }
 
-  type_conv_fcn numeric_conversion_function (void) const;
+  type_conv_info numeric_conversion_function (void) const;
 
 private:
 
@@ -68,7 +68,7 @@ public:
 
   bool is_null_value (void) const { return true; }
 
-  type_conv_fcn numeric_conversion_function (void) const;
+  type_conv_info numeric_conversion_function (void) const;
 
 
 private:
@@ -90,7 +90,7 @@ public:
 
   bool is_null_value (void) const { return true; }
 
-  type_conv_fcn numeric_conversion_function (void) const;
+  type_conv_info numeric_conversion_function (void) const;
 
 private:
 

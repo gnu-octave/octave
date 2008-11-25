@@ -84,7 +84,7 @@ public:
   // to create an empty matrix (0x0) instead of an empty range (1x0).
   octave_base_value *empty_clone (void) const { return new octave_matrix (); }
 
-  type_conv_fcn numeric_conversion_function (void) const;
+  type_conv_info numeric_conversion_function (void) const;
 
   octave_base_value *try_narrowing_conversion (void);
 

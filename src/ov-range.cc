@@ -54,10 +54,11 @@ default_numeric_conversion_function (const octave_base_value& a)
   return new octave_matrix (v.matrix_value ());
 }
 
-octave_base_value::type_conv_fcn
+octave_base_value::type_conv_info
 octave_range::numeric_conversion_function (void) const
 {
-  return default_numeric_conversion_function;
+  return octave_base_value::type_conv_info (default_numeric_conversion_function,
+                                            octave_matrix::static_type_id ());
 }
 
 octave_base_value *

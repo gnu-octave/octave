@@ -106,6 +106,24 @@ public:
 
   typedef octave_base_value * (*type_conv_fcn) (const octave_base_value&);
 
+  // type conversion, including result type information
+  class type_conv_info
+  {
+  public:
+    type_conv_info (type_conv_fcn f = 0, int t = -1) : _fcn (f), _type_id (t) { }
+
+    operator type_conv_fcn (void) const { return _fcn; }
+
+    octave_base_value * operator () (const octave_base_value &v) const 
+      { return (*_fcn) (v); }
+
+    int type_id (void) const { return _type_id; }
+
+  private:
+    type_conv_fcn _fcn;
+    int _type_id;
+  };
+
   friend class octave_value;
 
   octave_base_value (void) : count (1) { }
@@ -120,13 +138,13 @@ public:
   virtual octave_base_value *
   empty_clone (void) const { return new octave_base_value (); }
 
-  virtual type_conv_fcn
+  virtual type_conv_info
   numeric_conversion_function (void) const
-    { return static_cast<type_conv_fcn> (0); }
+    { return type_conv_info (); }
 
-  virtual type_conv_fcn
+  virtual type_conv_info
   numeric_demotion_function (void) const
-    { return static_cast<type_conv_fcn> (0); }
+    { return type_conv_info (); }
 
   virtual octave_value squeeze (void) const;
 

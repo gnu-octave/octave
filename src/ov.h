@@ -315,10 +315,10 @@ public:
 
   int get_count (void) const { return rep->count; }
 
-  octave_base_value::type_conv_fcn numeric_conversion_function (void) const
+  octave_base_value::type_conv_info numeric_conversion_function (void) const
     { return rep->numeric_conversion_function (); }
 
-  octave_base_value::type_conv_fcn numeric_demotion_function (void) const
+  octave_base_value::type_conv_info numeric_demotion_function (void) const
     { return rep->numeric_demotion_function (); }
 
   void maybe_mutate (void);

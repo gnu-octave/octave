@@ -1,3 +1,19 @@
+2008-11-25  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-base.h (octave_base_value::type_conv_info): New class.
+	* ov-base.h, ov-bool-mat.cc, ov-bool-mat.h, ov-bool-sparse.cc,
+	ov-bool-sparse.h, ov-bool.cc, ov-bool.h, ov-complex.cc, ov-complex.h,
+	ov-cx-mat.cc, ov-cx-mat.h, ov-null-mat.cc, ov-null-mat.h,
+	ov-range.cc, ov-range.h, ov-re-mat.cc, ov-re-mat.h, ov-scalar.cc,
+	ov-scalar.h, ov-str-mat.cc, ov-str-mat.h, ov.h:
+	Return type_conv_info instead of type_conv_fcn from
+	numeric_conversion_function and numeric_demotion_function
+	methods.
+	* ov-base.cc (octave_base_value::numeric_assign): Try biased conversion
+	first if possible.
+	* ov.cc (do_binary_op): Likewise. Also, search recursively.
+	* ov.cc (do_cat_op): Likewise.
+
 2008-11-24  David Bateman  <dbateman@free.fr>
 
 	* graphics.cc (F__go_delete__): Check validity of handles before

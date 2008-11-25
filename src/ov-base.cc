@@ -1150,8 +1150,25 @@ octave_base_value::numeric_assign (const std::string& type,
 	{
 	  octave_value tmp_rhs;
 
-	  octave_base_value::type_conv_fcn cf_rhs
+	  octave_base_value::type_conv_info cf_rhs
 	    = rhs.numeric_conversion_function ();
+
+	  octave_base_value::type_conv_info cf_this
+	    = numeric_conversion_function ();
+
+          // Try biased (one-sided) conversions first.
+          if (cf_rhs.type_id () >= 0
+              && (octave_value_typeinfo::lookup_assign_op (octave_value::op_asn_eq,
+                                                           t_lhs, cf_rhs.type_id ())
+                  || octave_value_typeinfo::lookup_pref_assign_conv (t_lhs, 
+                                                                     cf_rhs.type_id ()) >= 0))
+            cf_this = 0;
+          else if (cf_this.type_id () >= 0
+                   && (octave_value_typeinfo::lookup_assign_op (octave_value::op_asn_eq,
+                                                                cf_this.type_id (), t_rhs)
+                       || octave_value_typeinfo::lookup_pref_assign_conv (cf_this.type_id (),
+                                                                          t_rhs) >= 0))
+            cf_rhs = 0;
 
 	  if (cf_rhs)
 	    {
@@ -1168,9 +1185,6 @@ octave_base_value::numeric_assign (const std::string& type,
 	    }
 	  else
 	    tmp_rhs = rhs;
-
-	  octave_base_value::type_conv_fcn cf_this
-	    = numeric_conversion_function ();
 
 	  count++;
 	  octave_value tmp_lhs = octave_value (this);

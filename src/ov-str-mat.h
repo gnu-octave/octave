@@ -85,7 +85,7 @@ public:
   octave_base_value *clone (void) const { return new octave_char_matrix_str (*this); }
   octave_base_value *empty_clone (void) const { return new octave_char_matrix_str (); }
 
-  type_conv_fcn numeric_conversion_function (void) const;
+  type_conv_info numeric_conversion_function (void) const;
 
   octave_value do_index_op (const octave_value_list& idx,
 			    bool resize_ok = false)

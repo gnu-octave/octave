@@ -58,10 +58,12 @@ default_numeric_conversion_function (const octave_base_value& a)
   return new octave_scalar (v.bool_value ());
 }
 
-octave_base_value::type_conv_fcn
+octave_base_value::type_conv_info
 octave_bool::numeric_conversion_function (void) const
 {
-  return default_numeric_conversion_function;
+  return octave_base_value::type_conv_info (default_numeric_conversion_function,
+                                            octave_scalar::static_type_id ());
+
 }
 
 static inline bool

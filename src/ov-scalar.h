@@ -76,7 +76,7 @@ public:
   octave_value do_index_op (const octave_value_list& idx,
 			    bool resize_ok = false);
 
-  type_conv_fcn numeric_demotion_function (void) const;
+  type_conv_info numeric_demotion_function (void) const;
 
   idx_vector index_vector (void) const { return idx_vector (scalar); }
 

@@ -81,10 +81,11 @@ default_numeric_demotion_function (const octave_base_value& a)
   return new octave_float_matrix (v.float_matrix_value ());
 }
 
-octave_base_value::type_conv_fcn
+octave_base_value::type_conv_info
 octave_matrix::numeric_demotion_function (void) const
 {
-  return default_numeric_demotion_function;
+  return octave_base_value::type_conv_info(default_numeric_demotion_function,
+                                           octave_float_matrix::static_type_id ());
 }
 
 octave_base_value *

@@ -1,5 +1,12 @@
 2008-11-25  Jaroslav Hajek  <highegg@gmail.com>
 
+	* ov.cc (octave_value::is_equal): New member function.
+	* ov.h: Declare it.
+	* pt-select.cc (tree_switch_case::label_matches): Call
+	octave_value::is_equal.
+
+2008-11-25  Jaroslav Hajek  <highegg@gmail.com>
+
 	* ov-base.h (octave_base_value::type_conv_info): New class.
 	* ov-base.h, ov-bool-mat.cc, ov-bool-mat.h, ov-bool-sparse.cc,
 	ov-bool-sparse.h, ov-bool.cc, ov-bool.h, ov-complex.cc, ov-complex.h,

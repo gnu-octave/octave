@@ -152,27 +152,6 @@ tree_switch_case::~tree_switch_case (void)
 }
 
 
-// Compare two octave values, returning true if equal, false if not
-// FIXME --- should be member or friend of octave_value class.
-
-static bool
-equal (const octave_value& val, const octave_value& test)
-{
-  bool retval = false;
-
-  // If there is no op_eq for these types, we can't compare values.
-
-  if (val.rows () == test.rows () && val.columns () == test.columns ())
-    {
-      octave_value tmp = do_binary_op (octave_value::op_eq, val, test);
-
-      if (! error_state && tmp.is_defined ())
-	retval = tmp.is_true ();
-    }
-
-  return retval;
-}
-
 bool
 tree_switch_case::label_matches (const octave_value& val)
 {
@@ -188,7 +167,7 @@ tree_switch_case::label_matches (const octave_value& val)
 	    {
 	      for (octave_idx_type j = 0; j < cell.columns (); j++)
 		{
-		  bool match = equal (val, cell(i,j));
+		  bool match = val.is_equal (cell(i,j));
 
 		  if (error_state)
 		    return false;
@@ -199,7 +178,7 @@ tree_switch_case::label_matches (const octave_value& val)
 	}
       else
 	{
-	  bool match = equal (val, label_value);
+	  bool match = val.is_equal (label_value);
 
 	  if (error_state)
 	    return false;

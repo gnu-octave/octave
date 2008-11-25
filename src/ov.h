@@ -574,6 +574,10 @@ public:
   bool is_true (void) const
     { return rep->is_true (); }
 
+  // Do two constants match (in a switch statement)?
+  
+  bool is_equal (const octave_value&) const;
+
   // Are the dimensions of this constant zero by zero?
 
   bool is_zero_by_zero (void) const

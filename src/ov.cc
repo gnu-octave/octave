@@ -1223,6 +1223,25 @@ octave_value::size (void) const
   return retval;
 }
 
+bool
+octave_value::is_equal (const octave_value& test) const
+{
+  bool retval = false;
+
+  // If there is no op_eq for these types, we can't compare values.
+
+  if (rows () == test.rows () && columns () == test.columns ())
+    {
+      octave_value tmp = do_binary_op (octave_value::op_eq, *this, test);
+
+      // Empty array also means a match.
+      if (! error_state && tmp.is_defined ())
+	retval = tmp.is_true () || tmp.is_empty ();
+    }
+
+  return retval;
+}
+
 Cell
 octave_value::cell_value (void) const
 {

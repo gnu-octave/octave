@@ -40,18 +40,38 @@ represent the string whose contents are @samp{parrot}.  Strings in
 Octave can be of any length.
 
 Since the single-quote mark is also used for the transpose operator
-(@pxref{Arithmetic Ops}) but double-quote marks have no other purpose in
-Octave, it is best to use double-quote marks to denote strings.
+(@pxref{Arithmetic Ops}) but double-quote marks have no other purpose in Octave,
+it is best to use double-quote marks to denote strings.
 
+Strings can be concatenated using the notation for defining matrices.  For
+example, the expression 
+ 
+@example
+[ "foo" , "bar" , "baz" ]
+@end example
+
+@noindent
+produces the string whose contents are @samp{foobarbaz}.  @xref{Numeric Data
+Types}, for more information about creating matrices.
+
+@menu
+* Escape Sequences in string constants::
+* Character Arrays::
+* Creating Strings:: 
+* Comparing Strings::           
+* Manipulating Strings::     
+* String Conversions::          
+* Character Class Functions::   
+@end menu
+
+@node Escape Sequences in string constants
+@section Escape Sequences in string constants
 @cindex escape sequence notation
 In double-quoted strings, the backslash character is used to introduce
 @dfn{escape sequences} that represent other characters.  For example,
 @samp{\n} embeds a newline character in a double-quoted string and
-@samp{\"} embeds a double quote character.
-
-In single-quoted strings, backslash is not a special character.
-
-Here is an example showing the difference
+@samp{\"} embeds a double quote character.  In single-quoted strings, backslash
+is not a special character.  Here is an example showing the difference:
 
 @example
 @group
@@ -62,16 +82,9 @@ toascii ('\n')
 @end group
 @end example
 
-You may also insert a single quote character in a single-quoted string
-by using two single quote characters in succession.  For example,
-
-@example
-'I can''t escape'
-    @result{} I can't escape
-@end example
-
-Here is a table of all the escape sequences used in Octave.  They are
-the same as those used in the C programming language.
+Here is a table of all the escape sequences used in Octave (within
+double quoted strings).  They are the same as those used in the C 
+programming language.
 
 @table @code
 @item \\
@@ -124,44 +137,29 @@ Represents a vertical tab, control-k, ASCII code 11.
 @c @samp{\x} escape sequence is not allowed in @sc{posix} @code{awk}.)@refill
 @end table
 
-Strings may be concatenated using the notation for defining matrices.
-For example, the expression
+In a single-quoted string there is only one escape sequence: you may insert a
+single quote character using two single quote characters in succession.  For
+example,
 
 @example
-[ "foo" , "bar" , "baz" ]
+@group
+'I can''t escape'
+    @result{} I can't escape
+@end group
 @end example
 
-@noindent
-produces the string whose contents are @samp{foobarbaz}.  @xref{Numeric
-Data Types}, for more information about creating matrices.
 
-@menu
-* Creating Strings:: 
-* Comparing Strings::           
-* Manipulating Strings::     
-* String Conversions::          
-* Character Class Functions::   
-@end menu
-
-@node Creating Strings
-@section Creating Strings
-
-The easiest way to create a string is, as illustrated in the introduction,
-to enclose a text in double-quotes or single-quotes. It is however
-possible to create a string without actually writing a text. The
-function @code{blanks} creates a string of a given length consisting
-only of blank characters (ASCII code 32).
-
-@DOCSTRING(blanks)
+@node Character Arrays
+@section Character Arrays
 
 The string representation used by Octave is an array of characters, so
-the result of @code{blanks(10)} is actually a row vector of length 10
-containing the value 32 in all places. This lends itself to the obvious
-generalisation to character matrices. Using a matrix of characters, it
-is possible to represent a collection of same-length strings in one
-variable. The convention used in Octave is that each row in a
-character matrix is a separate string, but letting each column represent
-a string is equally possible.
+internally the string "dddddddddd" is actually a row vector of length 10
+containing the value 100 in all places (100 is the ASCII code of "d").  This
+lends itself to the obvious generalisation to character matrices.  Using a
+matrix of characters, it is possible to represent a collection of same-length
+strings in one variable.  The convention used in Octave is that each row in a
+character matrix is a separate string, but letting each column represent a
+string is equally possible.
 
 The easiest way to create a character matrix is to put several strings
 together into a matrix.
@@ -173,30 +171,190 @@ collection = [ "String #1"; "String #2" ];
 @noindent
 This creates a 2-by-9 character matrix.
 
-One relevant question is, what happens when character matrix is
-created from strings of different length. The answer is that Octave
+The function @code{ischar} can be used to test if an object is a character
+matrix.
+
+@DOCSTRING(ischar)
+
+To test if an object is a string (i.e., a character vector and not a character
+matrix) you can use the @code{ischar} function in combination with the
+@code{isvector} function as in the following example:
+
+@example
+@group
+ischar(collection)
+     @result{} ans = 1
+ischar(collection) && isvector(collection)
+     @result{} ans = 0
+ischar("my string") && isvector("my string")
+     @result{} ans = 1
+@end group
+@end example
+
+One relevant question is, what happens when a character matrix is
+created from strings of different length.  The answer is that Octave
 puts blank characters at the end of strings shorter than the longest
-string. While it is possible to use a different character than the
-blank character using the @code{string_fill_char} function, it shows
-a problem with character matrices. It simply isn't possible to
-represent strings of different lengths. The solution is to use a cell
-array of strings, which is described in @ref{Cell Arrays of Strings}.
-
-@DOCSTRING(char)
-
-@DOCSTRING(strcat)
-
-@DOCSTRING(strvcat)
-
-@DOCSTRING(cstrcat)
-
-@DOCSTRING(strtrunc)
+string.  It is possible to use a different character than the
+blank character using the @code{string_fill_char} function.
 
 @DOCSTRING(string_fill_char)
 
+This shows a problem with character matrices.  It simply isn't possible to
+represent strings of different lengths.  The solution is to use a cell array of
+strings, which is described in @ref{Cell Arrays of Strings}.
+
+@node Creating Strings
+@section Creating Strings
+
+The easiest way to create a string is, as illustrated in the introduction,
+to enclose a text in double-quotes or single-quotes.  It is however
+possible to create a string without actually writing a text.  The
+function @code{blanks} creates a string of a given length consisting
+only of blank characters (ASCII code 32).
+
+@DOCSTRING(blanks)
+
+@menu
+* Concatenating Strings:: 
+* Conversion of Numerical Data to Strings::
+@end menu
+
+@node Concatenating Strings
+@subsection Concatenating Strings
+
+It has been shown above that strings can be concatenated using matrix notation
+(@pxref{Strings}, @ref{Character Arrays}).  Apart from that, there are several
+functions to concatenate string objects: @code{char}, @code{str2mat},
+@code{strvcat}, @code{strcat} and @code{cstrcat}.  In addition, the general
+purpose concatenation functions can be used: see @ref{doc-cat,,cat},
+@ref{doc-horzcat,,horzcat} and @ref{doc-vertcat,,vertcat}.
+
+@itemize @bullet
+@item All string concatenation functions except @code{cstrcat}
+convert numerical input into character data by taking the corresponding ASCII
+character for each element, as in the following example:
+
+@example
+@group
+char([98, 97, 110, 97, 110, 97])
+     @result{} ans =
+       banana
+@end group
+@end example
+
+@item
+@code{char}, @code{str2mat} and @code{strvcat}
+concatenate vertically, while @code{strcat} and @code{cstrcat} concatenate
+horizontally.  For example:
+
+@example
+@group
+char("an apple", "two pears")
+     @result{} ans =
+       an apple
+       two pears
+@end group
+
+@group
+strcat("oc", "tave", " is", " good", " for you")
+     @result{} ans =
+       octave is good for you
+@end group
+@end example
+
+@item @code{char} and @code{str2mat} both generate an empty row in the output
+for each empty string in the input.  @code{strvcat}, on the other hand,
+eliminates empty strings.
+
+@example
+@group
+char("orange", "green", "", "red")
+     @result{} ans =
+       orange
+       green 
+             
+       red   
+@end group
+
+@group
+strvcat("orange", "green", "", "red")
+     @result{} ans =
+       orange
+       green 
+       red  
+@end group
+@end example
+
+@item All string concatenation functions except @code{cstrcat} also accept cell
+array data (@pxref{Cell Arrays}).  @code{char}, @code{str2mat} and
+@code{strvcat} convert cell arrays into character arrays, while @code{strcat}
+concatenates within the cells of the cell arrays:
+
+@example
+@group
+char(@{"red", "green", "", "blue"@})
+     @result{} ans =
+       red  
+       green
+
+       blue 
+@end group
+
+@group
+strcat(@{"abc"; "ghi"@}, @{"def"; "jkl"@})
+     @result{} ans =
+       @{
+         [1,1] = abcdef
+         [2,1] = ghijkl
+       @}
+@end group
+@end example
+
+@item @code{strcat} removes trailing white space in the arguments (except
+within cell arrays), while @code{cstrcat} leaves white space untouched.  Both
+kinds of behaviour can be useful as can be seen in the examples:
+
+@example
+@group
+strcat(["dir1";"directory2"], ["/";"/"], ["file1";"file2"])
+     @result{} ans =
+       dir1/file1      
+       directory2/file2
+@end group
+@group
+
+cstrcat(["thirteen apples"; "a banana"], [" 5$";" 1$"])
+     @result{} ans =
+       thirteen apples 5$
+       a banana        1$
+@end group
+@end example
+
+Note that in the above example for @code{cstrcat}, the white space originates
+from the internal representation of the strings in a string array
+(@pxref{Character Arrays}).
+@end itemize
+
+@DOCSTRING(char)
+
 @DOCSTRING(str2mat)
 
-@DOCSTRING(ischar)
+@DOCSTRING(strvcat)
+
+@DOCSTRING(strcat)
+
+@DOCSTRING(cstrcat)
+
+@node Conversion of Numerical Data to Strings 
+@subsection Conversion of Numerical Data to Strings
+Apart from the string concatenation functions (@pxref{Concatenating Strings})
+which cast numerical data to the corresponding ASCII characters, there are
+several functions that format numerical data as strings.  @code{mat2str} and
+@code{num2str} convert real or complex matrices, while @code{int2str} converts
+integer matrices.  @code{int2str} takes the real part of complex values and
+round fractional values to integer.  A more flexible way to format numerical
+data as strings is the @code{sprintf} function (@pxref{Formatted Output},
+@ref{doc-sprintf}).
 
 @DOCSTRING(mat2str)
 
@@ -207,30 +365,31 @@ array of strings, which is described in @ref{Cell Arrays of Strings}.
 @node Comparing Strings
 @section Comparing Strings
 
-Since a string is a character array comparison between strings work
+Since a string is a character array comparison between strings works
 element by element as the following example shows.
 
 @example
 GNU = "GNU's Not UNIX";
 spaces = (GNU == " ")
-@result{} spaces =
-      0   0   0   0   0   1   0   0   0   1   0   0   0   0
+     @result{} spaces =
+       0   0   0   0   0   1   0   0   0   1   0   0   0   0
 @end example
 
-@noindent
-To determine if two strings are identical it is therefore necessary
-to use the @code{strcmp} or @code{strncpm} functions. Similar 
-functions exist for doing case-insensitive comparisons.
+@noindent To determine if two strings are identical it is necessary to use the
+@code{strcmp} function.  It compares complete strings and is case
+sensistive.  @code{strncmp} compares only the first @code{N} characters (with
+@code{N} given as a parameter).  @code{strcmpi} and @code{strncmpi} are the
+corresponding functions for case-insensitive comparison.
 
 @DOCSTRING(strcmp)
 
-@DOCSTRING(strcmpi)
-
 @DOCSTRING(strncmp)
+
+@DOCSTRING(strcmpi)
 
 @DOCSTRING(strncmpi)
 
-@DOCSTRING(validstring)
+@DOCSTRING(validatestring)
 
 @node Manipulating Strings
 @section Manipulating Strings
@@ -252,6 +411,8 @@ For more complex manipulations, such as searching, replacing, and
 general regular expressions, the following functions come with Octave.
 
 @DOCSTRING(deblank)
+
+@DOCSTRING(strtrunc)
 
 @DOCSTRING(findstr)
 
@@ -283,7 +444,7 @@ general regular expressions, the following functions come with Octave.
 @section String Conversions
 
 Octave supports various kinds of conversions between strings and
-numbers. As an example, it is possible to convert a string containing
+numbers.  As an example, it is possible to convert a string containing
 a hexadecimal number to a floating point number.
 
 @example

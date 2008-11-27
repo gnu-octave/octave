@@ -1,3 +1,8 @@
+2008-11-15  Thorsten Meyer  <thorsten.meyier@gmx.de>
+
+        * interpreter/strings.txi: Add text around docstrings, change
+        structure of the strings chapter.
+        
 2008-10-31  John W. Eaton  <jwe@octave.org>
 
 	* interpreter/Makefile.in ($(TEXINFO)): Depend directly on

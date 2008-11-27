@@ -118,7 +118,7 @@ produce two-dimensional contour plots from three dimensional data.
 @DOCSTRING(contourc)
 
 The @code{errorbar}, @code{semilogxerr}, @code{semilogyerr}, and
-@code{loglogerr} functions produces plots with error bar markers.  For
+@code{loglogerr} functions produce plots with error bar markers.  For
 example,
 
 @example

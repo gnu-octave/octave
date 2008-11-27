@@ -33,7 +33,7 @@ executed.
 
 @cindex @code{end} statement
 Each control statement has a corresponding @dfn{end} statement that
-marks the end of the end of the control statement.  For example, the
+marks the end of the control statement.  For example, the
 keyword @code{endif} marks the end of an @code{if} statement, and
 @code{endwhile} marks the end of a @code{while} statement.  You can use
 the keyword @code{end} anywhere a more specific end keyword is expected,
@@ -247,7 +247,7 @@ endswitch
 @noindent
 This code makes the repetitive structure of the problem more explicit,
 making the code easier to read, and hence maintain. Also, if the
-variable @code{X} should change it's name, only one line would need
+variable @code{X} should change its name, only one line would need
 changing compared to one line per case when @code{if} statements are
 used.
 

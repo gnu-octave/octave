@@ -24,7 +24,7 @@
 ##
 ## @table @asis
 ## @item @var{x}
-## Samples points.
+## Sample points.
 ## @item @var{p}
 ## Polynomial coefficients for points in sample interval. @code{@var{p}
 ## (@var{i}, :)} contains the coefficients for the polynomial over

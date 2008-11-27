@@ -21,7 +21,7 @@
 
 Octave supports several ways of reading and writing data to or from the
 prompt or a file.  The most simple functions for data Input and Output
-(I/O) are easy to use, but only provides a limited control of how
+(I/O) are easy to use, but only provides limited control of how
 data is processed.  For more control, a set of functions modelled
 after the C standard library are also provided by Octave.
 
@@ -218,7 +218,7 @@ separated lists.
 @node Saving Data on Unexpected Exits
 @subsubsection Saving Data on Unexpected Exits
 
-If Octave for some reason exits unexpected it will by default save the
+If Octave for some reason exits unexpectedly it will by default save the
 variables available in the workspace to a file in the current directory.
 By default this file is named @samp{octave-core} and can be loaded
 into memory with the @code{load} command.  While the default behaviour

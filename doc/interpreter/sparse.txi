@@ -435,7 +435,7 @@ symmetric or @code{treeplot(etree(A+A'))} otherwise.
 
 An important consideration in the use of the sparse functions of
 Octave is that many of the internal functions of Octave, such as
-@dfn{diag}, can not accept sparse matrices as an input. The sparse
+@dfn{diag}, cannot accept sparse matrices as an input. The sparse
 implementation in Octave therefore uses the @dfn{dispatch}
 function to overload the normal Octave functions with equivalent
 functions that work with sparse matrices. However, at any time the
@@ -576,7 +576,7 @@ no problems. However @var{s} raised element-wise to itself involves a
 large number of terms @code{0 .^ 0} which is 1. There @code{@var{s} .^
 @var{s}} is a full matrix. 
 
-Likewise @code{@var{s} .^ -2} involves terms terms like @code{0 .^ -2} which
+Likewise @code{@var{s} .^ -2} involves terms like @code{0 .^ -2} which
 is infinity, and so @code{@var{s} .^ -2} is equally a full matrix.
 
 For the "./" operator @code{@var{s} ./ 2} has no problems, but 
@@ -811,7 +811,7 @@ the case of banded matrices.
 
 The user can force the type of the matrix with the @code{matrix_type}
 function. This overcomes the cost of discovering the type of the matrix.
-However, it should be noted incorrectly identifying the type of the matrix
+However, it should be noted that identifying the type of the matrix incorrectly
 will lead to unpredictable results, and so @code{matrix_type} should be
 used with care.
 

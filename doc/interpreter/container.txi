@@ -277,7 +277,7 @@ ans =
 @end example
 
 Furthermore, the structure array can return a comma separated list
-(@pxref{Comma Separated Lists}), if indexed by one of itself field
+(@pxref{Comma Separated Lists}), if indexed by one of its own field
 names. For example
 
 @example
@@ -541,7 +541,7 @@ Just like numerical arrays, cell arrays can be multidimensional. The
 @code{cell} function accepts any number of positive integers to describe
 the size of the returned cell array. It is also possible to set the size
 of the cell array through a vector of positive integers. In the
-following example two cell arrays of equal size is created, and the size
+following example two cell arrays of equal size are created, and the size
 of the first one is displayed
 
 @example
@@ -557,7 +557,7 @@ As can be seen, the @code{size} function also works for cell arrays. As
 do the other functions describing the size of an object, such as
 @code{length}, @code{numel}, @code{rows}, and @code{columns}.
 
-An alternative to creating empty cell arrays, and then filling them, it
+As an alternative to creating empty cell arrays, and then filling them,  it
 is possible to convert numerical arrays into cell arrays using the
 @code{num2cell} and @code{mat2cell} functions.
 
@@ -716,7 +716,7 @@ example
 
 @noindent
 where @code{@var{i}, @var{j}} is equally a comma separated list. Comma
-separated lists can not be directly manipulated by the user. However,
+separated lists cannot be directly manipulated by the user. However,
 both structures and cell arrays can be converted into comma
 separated lists, which makes them useful to keep the input arguments and
 return values of functions organized. Another example of where a comma
@@ -797,7 +797,7 @@ out = cell (4, 1);
 @end example
 
 Structure arrays can equally be used to create comma separated
-lists. This is done by addresses one of the fields of a structure
+lists. This is done by addressing one of the fields of a structure
 array. For example
 
 @example

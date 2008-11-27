@@ -504,7 +504,7 @@ when converted.
 While many numerical computations can't be carried out in integers,
 Octave does support basic operations like addition and multiplication
 on integers. The operators @code{+}, @code{-}, @code{.*}, and @code{./}
-works on integers of the same type. So, it is possible to add two 32 bit
+work on integers of the same type. So, it is possible to add two 32 bit
 integers, but not to add a 32 bit integer and a 16 bit integer.
 
 The arithmetic operations on integers are performed by casting the
@@ -573,7 +573,7 @@ the function @code{bitmax}.
 This is the double precision version of the functions @code{intmax},
 previously discussed.
 
-Octave also include the basic bitwise 'and', 'or' and 'exclusive or'
+Octave also includes the basic  bitwise 'and', 'or' and 'exclusive or'
 operators.
 
 @DOCSTRING(bitand)
@@ -582,19 +582,19 @@ operators.
 
 @DOCSTRING(bitxor)
 
-The bitwise 'not' operator is unary operator that performs a logical
+The bitwise 'not' operator is a unary operator that performs a logical
 negation of each of the bits of the value. For this to make sense, the
 mask against which the value is negated must be defined. Octave's
 bitwise 'not' operator is @code{bitcmp}.
 
 @DOCSTRING(bitcmp)
 
-Octave also includes the ability to left and right values bitwise.
+Octave also includes the ability to left-shift and right-shift values bitwise.
 
 @DOCSTRING(bitshift)
 
 Bits that are shifted out of either end of the value are lost. Octave
-also uses arithmetic shifts, where the sign bit of the value is keep
+also uses arithmetic shifts, where the sign bit of the value is kept
 during a right shift. For example
 
 @example
@@ -619,7 +619,7 @@ the result will be a logical value whose value depends on whether or
 not the comparison is true.
 
 The basic logical operations are @code{&}, @code{|}, and @code{!},
-that corresponds to ``Logical And'', ``Logical Or'', and ``Logical
+which correspond to ``Logical And'', ``Logical Or'', and ``Logical
 Negation''. These operations all follow the rules of logic.
 
 It is also possible to use logical values as part of standard numerical
@@ -728,7 +728,7 @@ where @code{x} remains of the double precision type.
 @section Predicates for Numeric Objects
 
 Since the type of a variable may change during the execution of a
-program, it can be necessary to type checking at run-time. Doing this
+program, it can be necessary to do type checking at run-time. Doing this
 also allows you to change the behaviour of a function depending on the
 type of the input. As an example, this naive implementation of @code{abs}
 returns the absolute value of the input if it is a real number, and the

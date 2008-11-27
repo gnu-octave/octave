@@ -284,7 +284,7 @@ external scripts, etc, called by functions within the package.
 @subsection The DESCRIPTION File
 
 The @code{DESCRIPTION} file contains various information about the
-package, such as it's name, author, and version. This file has a very
+package, such as its name, author, and version. This file has a very
 simple format
 
 @noindent
@@ -382,13 +382,13 @@ or newer). This is optional since the file @code{COPYING} is mandatory.
 @item SystemRequirements
 These are the external install dependencies of the package and are not
 checked by the package manager. This is here as a hint to the
-distribution packager. They follows the same conventions as the
+distribution packager. They follow the same conventions as the
 @code{Depends} keyword.
 
 @item BuildRequires
 These are the external build dependencies of the package and are not
 checked by the package manager. This is here as a hint to the
-distribution packager. They follows the same conventions as the 
+distribution packager. They follow the same conventions as the 
 @code{Depends} keyword. Note that in general, packaging systems such
 as @code{rpm} or @code{deb} and autoprobe the install dependencies
 from the build dependencies, and therefore the often a
@@ -401,7 +401,7 @@ from the build dependencies, and therefore the often a
 The developer is free to add additional arguments to the 
 @code{DESCRIPTION} file for their own purposes. One further detail to
 aid the packager is that the @code{SystemRequirements} and
-@code{BuildRequires} keywords can have distribution dependent section,
+@code{BuildRequires} keywords can have a distribution dependent section,
 and the automatic build process will use these. An example of the
 format of this is
 
@@ -417,7 +417,7 @@ name will be used instead.
 @node The INDEX file
 @subsection The INDEX file
 
-The optional @code{INDEX} file provides an categorical view of the
+The optional @code{INDEX} file provides a categorical view of the
 functions in the package. This file has a very simple format
 
 @noindent
@@ -434,7 +434,7 @@ toolbox >> Toolbox name
 category of functions.
 
 @item Lines starting with a white space character indicate that the
-function names on the line belong to last mentioned category.
+function names on the line belong to the last mentioned category.
 @end itemize
 
 @noindent

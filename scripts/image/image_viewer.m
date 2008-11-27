@@ -29,7 +29,7 @@
 ## behaviour.
 ##
 ## When called with one input argument images will be displayed by saving
-## the image to a file and the system command @var{command} will called
+## the image to a file and the system command @var{command} will be called
 ## to view the image.  The @var{command} must be a string containing
 ## @code{%s} and possibly @code{%f}. The @code{%s} will be replaced by
 ## the filename of the image, and the @code{%f} will (if present) be

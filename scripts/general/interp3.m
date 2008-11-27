@@ -24,7 +24,7 @@
 ## @deftypefnx {Function File} {@var{vi} =} interp3 (@dots{}, @var{method})
 ## @deftypefnx {Function File} {@var{vi} =} interp3 (@dots{}, @var{method}, @var{extrapval})
 ##
-## Perform 3-dimensional interpolation. Each element of then 3-dimensional 
+## Perform 3-dimensional interpolation. Each element of the 3-dimensional 
 ## array @var{v} represents a value at a location given by the parameters 
 ## @var{x}, @var{y}, and @var{z}. The parameters @var{x}, @var{x}, and 
 ## @var{z} are either 3-dimensional arrays of the same size as the array 

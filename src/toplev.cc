@@ -790,7 +790,7 @@ Execute a shell command specified by @var{string}.  The second\n\
 argument is optional.  If @var{type} is @code{\"async\"}, the process\n\
 is started in the background and the process id of the child process\n\
 is returned immediately.  Otherwise, the process is started, and\n\
-Octave waits until it exits.  If @var{type} argument is omitted, a\n\
+Octave waits until it exits.  If the @var{type} argument is omitted, a\n\
 value of @code{\"sync\"} is assumed.\n\
 \n\
 If two input arguments are given (the actual value of\n\

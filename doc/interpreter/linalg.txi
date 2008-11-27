@@ -22,7 +22,7 @@
 This chapter documents the linear algebra functions of Octave.
 Reference material for many of these functions may be found in
 Golub and Van Loan, @cite{Matrix Computations, 2nd Ed.}, Johns Hopkins,
-1989, and in @cite{@sc{Lapack} Users' Guide}, SIAM, 1992.
+1989, and in the @cite{@sc{Lapack} Users' Guide}, SIAM, 1992.
 
 @menu
 * Techniques used for Linear Algebra::
@@ -68,7 +68,7 @@ the @sc{Lapack} xGELSD function.
 
 The user can force the type of the matrix with the @code{matrix_type}
 function. This overcomes the cost of discovering the type of the matrix.
-However, it should be noted incorrectly identifying the type of the matrix
+However, it should be noted that identifying the type of the matrix incorrectly
 will lead to unpredictable results, and so @code{matrix_type} should be
 used with care.
 

@@ -30,7 +30,7 @@
 ## Portable pixmap format.
 ##
 ## @item "ps"
-## PostScript format.  Note that images saved in PostScript format can not
+## PostScript format.  Note that images saved in PostScript format cannot
 ## be read back into Octave with loadimage.
 ## @end table
 ##

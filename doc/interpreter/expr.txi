@@ -267,7 +267,7 @@ means that each argument in a function call is evaluated and assigned to
 a temporary location in memory before being passed to the function.
 There is currently no way to specify that a function parameter should be
 passed by reference instead of by value.  This means that it is
-impossible to directly alter the value of function parameter in the
+impossible to directly alter the value of a function parameter in the
 calling function.  It can only change the local copy within the function
 body.  For example, the function
 
@@ -624,7 +624,7 @@ considered to be false if it is zero, and true otherwise.
 
 Element-by-element boolean expressions can be used wherever comparison
 expressions can be used.  They can be used in @code{if} and @code{while}
-statements.  However, if a matrix value used as the condition in an
+statements.  However,  a matrix value used as the condition in an
 @code{if} or @code{while} statement is only true if @emph{all} of its
 elements are nonzero.
 

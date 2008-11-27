@@ -33,7 +33,7 @@
 ## @var{z} correspond to different @var{y} values. If @var{x} and @var{y}
 ## are missing, they are constructed from size of the matrix @var{z}.
 ##
-## Any additional properties passed are assigned the the surface..
+## Any additional properties passed are assigned to the surface.
 ## @seealso{surf, mesh, patch, line}
 ## @end deftypefn
 

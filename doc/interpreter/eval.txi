@@ -25,7 +25,7 @@ a file.
 
 Sometimes, you may find it necessary to evaluate an expression that has
 been computed and stored in a string, which is exactly what the
-@code{eval} lets you do.
+@code{eval} function lets you do.
 
 @DOCSTRING(eval)
 
@@ -38,7 +38,7 @@ been computed and stored in a string, which is exactly what the
 @section Calling a Function by its Name
 
 The @code{feval} function allows you to call a function from a string
-containing its name. This is useful when writing a function that need to
+containing its name. This is useful when writing a function that needs to
 call user-supplied functions. The @code{feval} function takes the name
 of the function to call as its first argument, and the remaining 
 arguments are given to the function.

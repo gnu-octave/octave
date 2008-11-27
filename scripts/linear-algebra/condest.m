@@ -21,7 +21,7 @@
 ## @deftypefnx {Function File} {[@var{est}, @var{v}] =} condest (@var{a}, @var{solve}, @var{solve_t}, @var{t})
 ## @deftypefnx {Function File} {[@var{est}, @var{v}] =} condest (@var{apply}, @var{apply_t}, @var{solve}, @var{solve_t}, @var{n}, @var{t})
 ##
-## Estimate the 1-norm condition number of a matrix matrix @var{A}
+## Estimate the 1-norm condition number of a matrix @var{A}
 ## using @var{t} test vectors using a randomized 1-norm estimator.
 ## If @var{t} exceeds 5, then only 5 test vectors are used.
 ##

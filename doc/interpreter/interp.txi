@@ -29,7 +29,7 @@
 
 Octave supports several methods for one-dimensional interpolation, most
 of which are described in this section.  @ref{Polynomial Interpolation}
-and @ref{Interpolation on Scattered Data} describes further methods.
+and @ref{Interpolation on Scattered Data} describe further methods.
 
 @DOCSTRING(interp1)
 
@@ -133,7 +133,7 @@ underlie the @code{interp1} function can be called directly.
 
 @DOCSTRING(spline)
 
-The @code{lookup} is used by other interpolation function to identify
+The @code{lookup} function is used by other interpolation functions to identify
 the points of the original data that are closest to the current point
 of interest.
 

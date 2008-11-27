@@ -34,8 +34,8 @@
 ## returned as separate output variables.
 ##
 ## If the param 'UniformOutput' is set to true (the default), then the function
-## must return either a single element which will be concatenated into the
-## return value. If 'UniformOutput is false, the outputs placed in a structure
+## must return a single element which will be concatenated into the
+## return value. If 'UniformOutput' is false, the outputs placed in a structure
 ## with the same fieldnames as the input structure.
 ## 
 ## @example

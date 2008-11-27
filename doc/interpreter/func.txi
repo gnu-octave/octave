@@ -641,7 +641,7 @@ working directory. To see your current load path call the @code{path}
 function without any input or output arguments.
 
 It is possible to add or remove directories to or from the load path
-using the @code{addpath} and @code{rmpath}. As an example, the following
+using @code{addpath} and @code{rmpath}. As an example, the following
 code adds @samp{~/Octave} to the load path.
 
 @example
@@ -752,7 +752,7 @@ y1 = sin(speye(3));
 @end example
 
 @noindent
-Which aliases the @code{spsin} to @code{sin}, but only for real sparse
+which aliases the user-defined function @code{spsin} to @code{sin}, but only for real sparse
 matrices. Note that the builtin @code{sin} already  correctly treats
 sparse matrices and so this example is only illustrative.
 

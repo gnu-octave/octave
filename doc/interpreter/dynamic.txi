@@ -69,7 +69,7 @@ of your time, relative to staying in Octave?
 @end itemize
 
 Also, as oct- and mex-files are dynamically linked to octave, they
-introduce to possibility of having Octave abort due to coding errors in
+introduce the possibility of Octave crashing due to errors in
 the user code.  For example a segmentation violation in the user's code
 will cause Octave to abort.
 
@@ -1137,7 +1137,7 @@ than what they requested.\n\
 
 @noindent
 where, as can be seen, end line of text within the help string is
-terminated by @code{\n\} which is an an embedded new-line in the string
+terminated by @code{\n\} which is an embedded new-line in the string
 together with a C++ string continuation character.  Note that the final
 @code{\} must be the last character on the line.
 
@@ -1259,7 +1259,7 @@ given by the mex-file, while the help string will come from the
 m-file.  This can also be useful to allow a sample implementation of the
 mex-file within the Octave language itself for testing purposes.
 
-Although we can not have multiple entry points into a single mex-file,
+Although we cannot have multiple entry points into a single mex-file,
 we can use the @code{mexFunctionName} function to determine what name
 the mex-file was called with.  This can be used to alter the behavior of
 the mex-file based on the function name.  For example if

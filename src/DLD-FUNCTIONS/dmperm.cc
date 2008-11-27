@@ -195,7 +195,7 @@ DEFUN_DLD (sprank, args, nargout,
 @cindex Structural Rank\n\
 Calculates the structural rank of a sparse matrix @var{s}. Note that\n\
 only the structure of the matrix is used in this calculation based on\n\
-a Dulmage-Mendelsohn to block triangular form. As such the numerical\n\
+a Dulmage-Mendelsohn permutation to block triangular form. As such the numerical\n\
 rank of the matrix @var{s} is bounded by @code{sprank (@var{s}) >=\n\
 rank (@var{s})}. Ignoring floating point errors @code{sprank (@var{s}) ==\n\
 rank (@var{s})}.\n\

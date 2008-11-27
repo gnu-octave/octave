@@ -1417,7 +1417,7 @@ The text of the last error message\n\
 The message identifier of this error message\n\
 @item 'stack'\n\
 A structure containing information on where the message occurred. This might\n\
-be an empty structure if this in the case where this information can not\n\
+be an empty structure if this in the case where this information cannot\n\
 be obtained. The fields of this structure are:\n\
 \n\
 @table @asis\n\

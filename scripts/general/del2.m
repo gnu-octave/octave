@@ -44,7 +44,7 @@
 ## derivative over the higher dimensions.
 ##
 ## The spacing between evaluation points may be defined by @var{h}, which is a
-## scalar defining the spacing in all dimensions. Or alternative, the spacing
+## scalar defining the spacing in all dimensions. Or alternatively, the spacing
 ## in each dimension may be defined separately by @var{dx}, @var{dy}, etc. 
 ## Scalar spacing values give equidistant spacing, whereas vector spacing 
 ## values can be used to specify variable spacing. The length of the vectors

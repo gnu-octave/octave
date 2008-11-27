@@ -1817,7 +1817,7 @@ each of their help strings.\n\
 Note that the ability of @code{lookfor} to correctly identify the first\n\
 sentence of the help of the functions is dependent on the format of the\n\
 functions help. All of the functions in Octave itself will correctly\n\
-find the first sentence, but the same can not be guaranteed for other\n\
+find the first sentence, but the same cannot be guaranteed for other\n\
 functions. Therefore the use of the '-all' argument might be necessary\n\
 to find related functions that are not part of Octave.\n\
 @seealso{help, which}\n\

@@ -917,7 +917,7 @@ how to create an executable Octave script.\n\
 DEFUN (program_name, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} program_name ()\n\
-Return the last component of of the value returned by\n\
+Return the last component of the value returned by\n\
 @code{program_invocation_name}.\n\
 @seealso{program_invocation_name}\n\
 @end deftypefn")

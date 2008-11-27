@@ -398,7 +398,7 @@ functions.  The important aspects of the documentation string are
 
 @table @asis
 @item -*- texinfo -*-
-This string signals Octave that the follow text is in Texinfo format,
+This string signals Octave that the following text is in Texinfo format,
 and should be the first part of any help string in Texinfo format.
 @item @@deftypefn@{class@} @dots{} @@end deftypefn
 The entire help string should be enclosed within the block defined by

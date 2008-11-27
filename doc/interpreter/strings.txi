@@ -218,7 +218,7 @@ spaces = (GNU == " ")
 @end example
 
 @noindent
-To determine if two functions are identical it is therefore necessary
+To determine if two strings are identical it is therefore necessary
 to use the @code{strcmp} or @code{strncpm} functions. Similar 
 functions exist for doing case-insensitive comparisons.
 

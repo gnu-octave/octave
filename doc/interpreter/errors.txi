@@ -170,7 +170,7 @@ When an error has been handled it is possible to raise it again.  This
 can be useful when an error needs to be detected, but the program should
 still abort.  This is possible using the @code{rethrow} function.  The
 previous example can now be changed to count the number of errors
-related to the @samp{*} operator, but still abort of another kind of
+related to the @samp{*} operator, but still abort if another kind of
 error occurs.
 
 @example
@@ -240,7 +240,7 @@ to catch a warning using the @code{try} statement or something similar.
 It is however possible to access the last warning as a string using the
 @code{lastwarn} function.
 
-It is also possible to assign an identification string a a warning.
+It is also possible to assign an identification string to a warning.
 If a warning has such an ID the user can enable and disable this warning
 as will be described in the next section.  To assign an ID to a warning,
 simply call @code{warning} with two string arguments, where the first

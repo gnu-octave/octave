@@ -38,7 +38,7 @@
 Octave includes the capability to include user classes, including the
 features of operator and function overloading. Equally a user class
 can be used to encapsulate certain properties of the class so that
-they can not be altered accidentally and can be set up to address the
+they cannot be altered accidentally and can be set up to address the
 issue of class precedence in mixed class operations.
 
 This chapter discussions the means of constructing a user class with

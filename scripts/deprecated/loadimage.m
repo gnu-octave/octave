@@ -19,7 +19,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{x}, @var{map}] =} loadimage (@var{file})
-## Load an image file and it's associated color map from the specified
+## Load an image file and its associated color map from the specified
 ## @var{file}.  The image must be stored in Octave's image format.
 ## @seealso{saveimage, load, save}
 ## @end deftypefn

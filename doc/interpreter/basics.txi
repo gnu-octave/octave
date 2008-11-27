@@ -296,7 +296,7 @@ directory after it reads @file{~/.octaverc}.  Any use of the @code{cd}
 command in the @file{~/.octaverc} file will affect the directory that
 Octave searches for the file @file{.octaverc}.
 
-If you start Octave in your home directory, commands from from the file
+If you start Octave in your home directory, commands from the file
 @file{~/.octaverc} will only be executed once.
 @end table
 

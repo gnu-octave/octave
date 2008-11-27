@@ -79,7 +79,7 @@ function.
 @DOCSTRING(dbstop)
 
 @noindent
-Note that breakpoints can not be set in built-in functions
+Note that breakpoints cannot be set in built-in functions
 (eg. @code{sin}, etc) or dynamically loaded function (ie. oct-files). To
 set a breakpoint immediately on entering a function, the breakpoint
 should be set to line 1. The leading comment block will be ignored and

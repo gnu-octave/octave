@@ -19,7 +19,7 @@
 @node Geometry
 @chapter Geometry
 
-Much of geometry code in Octave is based on the QHull @footnote{Barber,
+Much of geometry code in Octave is based on the QHull library@footnote{Barber,
 C.B., Dobkin, D.P., and Huhdanpaa, H.T., "The Quickhull algorithm for
 convex hulls," ACM Trans. on Mathematical Software, 22(4):469-483, Dec
 1996, @url{http://www.qhull.org}}. Some of the documentation for Qhull,
@@ -145,7 +145,7 @@ Cartesian coordinates of the point in a parametric form with respect to
 the N-Simplex.  This parametric form is called the Barycentric
 Coordinates of the point.  If the points defining the N-Simplex are given
 by @code{@var{N} + 1} vectors @var{t}(@var{i},:), then the Barycentric
-coordinates defining the point @var{p} is given by
+coordinates defining the point @var{p} are given by
 
 @example
 @var{p} = sum (@var{beta}(1:@var{N}+1) * @var{t}(1:@var{N}+1),:)
@@ -278,7 +278,7 @@ such that all points in @code{@var{v}(@var{p})}, a partitions of the
 tessellation where @var{p} is a member of @var{s}, are closer to @var{p}
 than any other point in @var{s}.  The Voronoi diagram is related to the
 Delaunay triangulation of a set of points, in that the vertexes of the
-Voronoi tessellation are the center's of the circum-circles of the
+Voronoi tessellation are the centers of  the circum-circles of the
 simplicies of the Delaunay tessellation. 
 
 @DOCSTRING(voronoi)

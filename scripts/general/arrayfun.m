@@ -142,7 +142,8 @@ function varargout = arrayfun (func, varargin)
   m2cargs{2} = ones (size (varargin{1}, 2), 1);
   cfarg{1} = mat2cell (varargin{1}, m2cargs{:});
   stillmatches = true;
-  idx = 1; len = length (varargin);
+  idx = 1;
+  len = length (varargin);
   while (stillmatches && idx < len)
     idx++;
     thissize = size (varargin{idx});

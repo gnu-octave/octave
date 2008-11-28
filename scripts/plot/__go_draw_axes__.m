@@ -263,6 +263,8 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
     cdatadirect = false;
     truecolor = false;
 
+    fputs (plot_stream, "set clip two;\n");
+
     kids = axis_obj.children;
 
     nd = __calc_dimensions__ (axis_obj);

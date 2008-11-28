@@ -1,3 +1,7 @@
+2008-11-28  David Bateman  <dbateman@free.fr>
+
+	* plot/__go_draw_axes__.m: Set two point clipping mode to be on.
+
 2008-11-24  Ben Abbott <bpabbott@mac.com>
 
 	* plot/legend.m: Correct ording of legend labels.

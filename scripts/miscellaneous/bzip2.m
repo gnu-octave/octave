@@ -25,15 +25,37 @@
 ## is created. The original files are not touched.  Existing compressed files 
 ## are silently overwritten.If @var{outdir} is defined the compressed versions 
 ## of the files are placed in this directory.
-## @seealso{bunzip2, gzip, zip, tar, __xzip__}
+## @seealso{bunzip2, gzip, zip, tar}
 ## @end deftypefn
 
 function entries = bzip2 (varargin)
 
   if (nargin == 1 || nargin == 2)
-    __xzip__ ("bzip2", "bz2", "bzip2 %s", varargin{:});
+    if nargout == 0
+      __xzip__ ("bzip2", "bz2", "bzip2 %s", varargin{:});
+    else
+      entries = __xzip__ ("bzip2", "bz2", "bzip2 %s", varargin{:});
+    endif      
   else
     print_usage ();
   endif
 
 endfunction
+
+%!xtest
+%!  # test for correct cleanup of temporary files
+%!  unwind_protect
+%!    filename = tmpnam;
+%!    dummy    = 1;
+%!    save(filename, "dummy");
+%!    n_tmpfiles_before = length(find(strncmp("oct-", cellstr(ls(P_tmpdir)), 4)));
+%!    entry = bzip2(filename);
+%!    n_tmpfiles_after = length(find(strncmp("oct-", cellstr(ls(P_tmpdir)), 4)));
+%!    if (n_tmpfiles_before != n_tmpfiles_after)
+%!      error("bzip2 has not cleaned up temporary files correctly!");
+%!    endif
+%!  unwind_protect_cleanup
+%!    delete(filename);
+%!    [path, basename, extension] = fileparts(filename);
+%!    delete([basename, extension, ".bz2"]);
+%!  end_unwind_protect

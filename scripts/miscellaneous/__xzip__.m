@@ -44,6 +44,8 @@ function entries = __xzip__ (commandname, extension,
 
     if (ischar (files))
       files = cellstr (files);
+    else
+      error ("__xzip__: expecting FILES to be a character array");
     endif
 
     if (nargin == 4)
@@ -53,59 +55,54 @@ function entries = __xzip__ (commandname, extension,
 
     cwd = pwd();
     unwind_protect
-      if (iscellstr (files))
-	files = glob (files);
+      files = glob (files);
 
-	## Ignore any file with the compress extension
-	files (cellfun (@(x) length(x) > length(extension) 
-          && strcmp (x((end - length(extension) + 1):end), extension), 
-          files)) = [];
-        
-	copyfile (files, outdir);
+      ## Ignore any file with the compress extension
+      files (cellfun (@(x) length(x) > length(extension) 
+        && strcmp (x((end - length(extension) + 1):end), extension), 
+        files)) = [];
 
-	[d, f] = myfileparts(files);
-        
-	cd (outdir);
+      copyfile (files, outdir);
 
-	cmd = sprintf (commandtemplate, sprintf (" %s", f{:}));
+      [d, f] = myfileparts(files);
 
-	[status, output] = system (cmd);
-	if (status == 0)
+      cd (outdir);
 
-	  if (nargin == 5)
-	    compressed_files = cellfun(
-                @(x) fullfile (outdir, sprintf ("%s.%s", x, extension)), 
-                f, "UniformOutput", false);
-	  else
-	    movefile (cellfun(@(x) sprintf ("%s.%s", x, extension), f, 
-			      "UniformOutput", false), cwd);
-            ## FIXME this does not work when you try to compress directories
-                     
-	    compressed_files  = cellfun(@(x) sprintf ("%s.%s", x, extension), 
-			      files, "UniformOutput", false);
-	  endif
+      cmd = sprintf (commandtemplate, sprintf (" %s", f{:}));
 
-	  if (nargout > 0)
-            entries = compressed_files;
-	  endif
-	else
-	  error (sprintf("%s command failed with exit status = %d", 
-                         commandname, status));
-	endif
-    
+      [status, output] = system (cmd);
+      if (status == 0)
+
+        if (nargin == 5)
+          compressed_files = cellfun(
+              @(x) fullfile (outdir, sprintf ("%s.%s", x, extension)), 
+              f, "UniformOutput", false);
+        else
+          movefile (cellfun(@(x) sprintf ("%s.%s", x, extension), f, 
+                            "UniformOutput", false), cwd);
+          ## FIXME this does not work when you try to compress directories
+
+          compressed_files  = cellfun(@(x) sprintf ("%s.%s", x, extension), 
+                            files, "UniformOutput", false);
+        endif
+
+        if (nargout > 0)
+          entries = compressed_files;
+        endif
       else
-	error ("__xzip__: expecting all arguments to be character strings");
+        error (sprintf("%s command failed with exit status = %d", 
+                       commandname, status));
       endif
     unwind_protect_cleanup
       cd(cwd);
-      if (nargin == 1)
-	crr = confirm_recursive_rmdir ();
-	unwind_protect
-	  confirm_recursive_rmdir (false);
-	  rmdir (outdir, "s");
-	unwind_protect_cleanup
-	  confirm_recursive_rmdir (crr);
-	end_unwind_protect
+      if (nargin == 4)
+        crr = confirm_recursive_rmdir ();
+        unwind_protect
+          confirm_recursive_rmdir (false);
+          rmdir (outdir, "s");
+        unwind_protect_cleanup
+          confirm_recursive_rmdir (crr);
+        end_unwind_protect
       endif
     end_unwind_protect
   else
@@ -117,7 +114,7 @@ endfunction
 function [d, f] = myfileparts (files)
   [d, f, ext] = cellfun (@(x) fileparts (x), files, "UniformOutput", false);
   f = cellfun (@(x, y) sprintf ("%s%s", x, y), f, ext,
-	       "UniformOutput", false); 
+               "UniformOutput", false); 
   idx = cellfun (@(x) isdir (x), files);
   d(idx) = "";
   f(idx) = files(idx);

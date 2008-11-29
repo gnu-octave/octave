@@ -24,7 +24,7 @@
 ## is created. The original files are not touched. Existing compressed
 ## files are silently overwritten. If @var{outdir} is defined the compressed 
 ## versions of the files are placed in this directory.
-## @seealso{gunzip, bzip2, zip, tar, __xzip__}
+## @seealso{gunzip, bzip2, zip, tar}
 ## @end deftypefn
 
 function entries = gzip (varargin)
@@ -42,8 +42,9 @@ endfunction
 %!error <Invalid call to gzip.  Correct usage is> gzip("1", "2", "3");
 %!error <Invalid call to gzip.  Correct usage is> gzip();
 %!error <output directory does not exist> gzip("1", tmpnam);
-%!error <expecting all arguments to be character strings> gzip(1);
+%!error <expecting FILES to be a character array> gzip(1);
 %!xtest
+%!  # test gzip together with gunzip
 %!  unwind_protect
 %!    filename = tmpnam;
 %!    dummy    = 1;
@@ -58,8 +59,13 @@ endfunction
 %!    if ! exist(entry, "file")
 %!      error("gzipped file cannot be found!");
 %!    endif 
+%!    gunzip(entry);
+%!    if (system(sprintf("diff %s %s/%s%s", filename, dirname, 
+%!                                          basename, extension)))
+%!      error("unzipped file not equal to original file!");
+%!    end
 %!  unwind_protect_cleanup
 %!    delete(filename);
-%!    delete(entry{:});
+%!    delete([dirname, "/", basename, extension]);
 %!    rmdir(dirname);
 %!  end_unwind_protect

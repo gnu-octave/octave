@@ -6,6 +6,15 @@
 
 	* specfun/nchoosek.m: Set max_recursion_depth and use a subfunction.
 
+2008-11-29  Thorsten Meyer  <thorsten.meyier@gmx.de>
+
+        * miscellaneous/gzip.m: Remove @seealso reference to __xzip__,
+          improve tests
+          miscellaneous/bzip2.m: Remove @seealso reference to __xzip__,
+          fix handling of output argument, add test
+          miscellaneous/__xzip__.m: Improve error messages, fix cleanup
+          of temporary directories, remove tab characters
+
 2008-11-24  Ben Abbott <bpabbott@mac.com>
 
 	* plot/legend.m: Correct ording of legend labels.

@@ -75,9 +75,26 @@ function A = nchoosek (v, k)
   elseif (k == n)
      A = v(:).';
   else
-    m = round (exp (sum (log (k:n-1)) - sum (log (2:n-k))));
-    A = [v(1)*ones(m,1), nchoosek(v(2:n),k-1);
-	 nchoosek(v(2:n),k)];
+    oldmax = max_recursion_depth ();
+    unwind_protect
+      max_recursion_depth (n);
+      A = nck (v, k);
+    unwind_protect_cleanup
+      max_recursion_depth (oldmax);
+    end_unwind_protect
   endif
-
 endfunction
+
+function A = nck (v, k)
+  n = length (v);
+  if (n == 1 || k < 2 || k == n)
+    A = nchoosek (v, k);
+  else
+    m = nchoosek (n-1, k-1);
+    A = [v(1)*ones(m,1), nck(v(2:n),k-1);
+	 nck(v(2:n), k)];
+  endif
+endfunction
+
+%!assert (nchoosek(100,45), bincoeff(100,45))
+%!assert (nchoosek(1:5,3),[1:3;1,2,4;1,2,5;1,3,4;1,3,5;1,4,5;2:4;2,3,5;2,4,5;3:5])

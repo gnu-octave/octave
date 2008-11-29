@@ -2,6 +2,10 @@
 
 	* plot/__go_draw_axes__.m: Set two point clipping mode to be on.
 
+2008-11-26  Francesco Potortì  <pot@gnu.org>
+
+	* specfun/nchoosek.m: Set max_recursion_depth and use a subfunction.
+
 2008-11-24  Ben Abbott <bpabbott@mac.com>
 
 	* plot/legend.m: Correct ording of legend labels.

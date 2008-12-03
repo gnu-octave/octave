@@ -65,6 +65,10 @@ public:
   ComplexDiagMatrix (const ComplexDiagMatrix& a)
     : MDiagArray2<Complex> (a) { }
 
+  template <class U>
+  ComplexDiagMatrix (const DiagArray2<U>& a) 
+    : MDiagArray2<Complex> (a) { }
+
   ComplexDiagMatrix& operator = (const ComplexDiagMatrix& a)
     {
       MDiagArray2<Complex>::operator = (a);
@@ -89,6 +93,7 @@ public:
 
   ComplexDiagMatrix hermitian (void) const { return MDiagArray2<Complex>::hermitian (std::conj); }
   ComplexDiagMatrix transpose (void) const { return MDiagArray2<Complex>::transpose(); }
+  DiagMatrix abs (void) const; 
 
   friend ComplexDiagMatrix conj (const ComplexDiagMatrix& a);
 
@@ -106,6 +111,8 @@ public:
 
   ComplexDiagMatrix inverse (int& info) const;
   ComplexDiagMatrix inverse (void) const;
+
+  bool all_elements_are_real (void) const;
 
   // diagonal matrix by diagonal matrix -> diagonal matrix operations
 
@@ -125,6 +132,8 @@ private:
   ComplexDiagMatrix (Complex *d, octave_idx_type nr, octave_idx_type nc)
     : MDiagArray2<Complex> (d, nr, nc) { }
 };
+
+ComplexDiagMatrix conj (const ComplexDiagMatrix& a);
 
 // diagonal matrix by diagonal matrix -> diagonal matrix operations
 

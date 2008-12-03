@@ -56,6 +56,9 @@ public:
 
   MDiagArray2 (const DiagArray2<T>& a) : DiagArray2<T> (a) { }
 
+  template <class U>
+  MDiagArray2 (const DiagArray2<U>& a) : DiagArray2<T> (a) { }
+
   explicit MDiagArray2 (const Array<T>& a) : DiagArray2<T> (a) { }
 
   ~MDiagArray2 (void) { }
@@ -77,6 +80,23 @@ public:
 
       for (octave_idx_type i = 0; i < len; i++)
 	retval.xelem (i, i) = this->xelem (i, i);
+
+      return retval;
+    }
+
+  octave_idx_type nnz (void) const
+    {
+      octave_idx_type retval = 0;
+
+      const T *d = this->Array<T>::data ();
+
+      octave_idx_type nel = this->Array<T>::numel ();
+
+      for (octave_idx_type i = 0; i < nel; i++)
+	{
+	  if (d[i] != T ())
+	    retval++;
+	}
 
       return retval;
     }

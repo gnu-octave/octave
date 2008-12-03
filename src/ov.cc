@@ -40,6 +40,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-float.h"
 #include "ov-re-mat.h"
 #include "ov-flt-re-mat.h"
+#include "ov-re-diag.h"
+#include "ov-flt-re-diag.h"
 #include "ov-bool-sparse.h"
 #include "ov-cx-sparse.h"
 #include "ov-re-sparse.h"
@@ -55,6 +57,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-flt-complex.h"
 #include "ov-cx-mat.h"
 #include "ov-flt-cx-mat.h"
+#include "ov-cx-diag.h"
+#include "ov-flt-cx-diag.h"
 #include "ov-ch-mat.h"
 #include "ov-str-mat.h"
 #include "ov-range.h"
@@ -568,13 +572,13 @@ octave_value::octave_value (const ArrayN<float>& a)
 }
 
 octave_value::octave_value (const DiagMatrix& d)
-  : rep (new octave_matrix (d))
+  : rep (new octave_diag_matrix (d))
 {
   maybe_mutate ();
 }
 
 octave_value::octave_value (const FloatDiagMatrix& d)
-  : rep (new octave_float_matrix (d))
+  : rep (new octave_float_diag_matrix (d))
 {
   maybe_mutate ();
 }
@@ -652,13 +656,13 @@ octave_value::octave_value (const ArrayN<FloatComplex>& a)
 }
 
 octave_value::octave_value (const ComplexDiagMatrix& d)
-  : rep (new octave_complex_matrix (d))
+  : rep (new octave_complex_diag_matrix (d))
 {
   maybe_mutate ();
 }
 
 octave_value::octave_value (const FloatComplexDiagMatrix& d)
-  : rep (new octave_float_complex_matrix (d))
+  : rep (new octave_float_complex_diag_matrix (d))
 {
   maybe_mutate ();
 }
@@ -2319,7 +2323,9 @@ install_types (void)
   octave_scalar::register_type ();
   octave_complex::register_type ();
   octave_matrix::register_type ();
+  octave_diag_matrix::register_type ();
   octave_complex_matrix::register_type ();
+  octave_complex_diag_matrix::register_type ();
   octave_range::register_type ();
   octave_bool::register_type ();
   octave_bool_matrix::register_type ();
@@ -2358,7 +2364,9 @@ install_types (void)
   octave_float_scalar::register_type ();
   octave_float_complex::register_type ();
   octave_float_matrix::register_type ();
+  octave_float_diag_matrix::register_type ();
   octave_float_complex_matrix::register_type ();
+  octave_float_complex_diag_matrix::register_type ();
   octave_null_matrix::register_type ();
   octave_null_str::register_type ();
   octave_null_sq_str::register_type ();

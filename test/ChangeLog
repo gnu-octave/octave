@@ -1,3 +1,7 @@
+2008-12-02  Jaroslav Hajek  <highegg@gmail.com>
+
+	* build_sparse_tests.sh: Fix test.
+
 2008-10-28  Jaroslav Hajek <highegg@gmail.com>
 
 	* test_logical-wfi-f.m: Fix error messages.

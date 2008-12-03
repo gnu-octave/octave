@@ -2,8 +2,77 @@
 
 	* debug.cc (bp_table::do_get_breakpoint_list): Style fixes.
 
-2008-11-25  Jaroslav Hajek  <highegg@gmail.com>
+2008-12-01  Jaroslav Hajek  <highegg@gmail.com>
 
+	* ov-base.h (octave_base_value::is_diag_matrix): New virtual method.
+	* ops.h (CONCAT2, CONCAT3): New macros. Use CONCAT macros instead of 
+	direct token pasting to avoid disabling argument prescan.
+	* xdiv.cc, xdiv.h: Implement xdiv and xleftdiv overloads for diagonal
+	and mixed dense-diagonal operands.
+
+	* ov-re-diag.h: New source.
+	* ov-re-diag.cc: New source.
+	* ov-flt-re-diag.h: New source.
+	* ov-flt-re-diag.cc: New source.
+	* ov-base-diag.h: New source.
+	* ov-base-diag.cc: New source.
+	* OPERATORS/op-m-dm.cc: New source.
+	* OPERATORS/op-m-cdm.cc: New source.
+	* OPERATORS/op-fm-fdm.cc: New source.
+	* OPERATORS/op-fm-fcdm.cc: New source.
+	* OPERATORS/op-fdm-fs.cc: New source.
+	* OPERATORS/op-fdm-fm.cc: New source.
+	* OPERATORS/op-fdm-fdm.cc: New source.
+	* OPERATORS/op-fdm-fcs.cc: New source.
+	* OPERATORS/op-fdm-fcm.cc: New source.
+	* OPERATORS/op-fdm-fcdm.cc: New source.
+	* OPERATORS/op-fcm-fdm.cc: New source.
+	* OPERATORS/op-fcm-fcdm.cc: New source.
+	* OPERATORS/op-fcdm-fs.cc: New source.
+	* OPERATORS/op-fcdm-fm.cc: New source.
+	* OPERATORS/op-fcdm-fdm.cc: New source.
+	* OPERATORS/op-fcdm-fcs.cc: New source.
+	* OPERATORS/op-fcdm-fcm.cc: New source.
+	* OPERATORS/op-fcdm-fcdm.cc: New source.
+	* OPERATORS/op-dms-template.cc: New source.
+	* OPERATORS/op-dm-template.cc: New source.
+	* OPERATORS/op-dm-s.cc: New source.
+	* OPERATORS/op-dm-m.cc: New source.
+	* OPERATORS/op-dm-dm.cc: New source.
+	* OPERATORS/op-dm-cs.cc: New source.
+	* OPERATORS/op-dm-cm.cc: New source.
+	* OPERATORS/op-dm-cdm.cc: New source.
+	* OPERATORS/op-cm-dm.cc: New source.
+	* OPERATORS/op-cm-cdm.cc: New source.
+	* OPERATORS/op-cdm-s.cc: New source.
+	* OPERATORS/op-cdm-m.cc: New source.
+	* OPERATORS/op-cdm-dm.cc: New source.
+	* OPERATORS/op-cdm-cs.cc: New source.
+	* OPERATORS/op-cdm-cm.cc: New source.
+	* OPERATORS/op-cdm-cdm.cc: New source.
+	* Makefile.in: Include them.
+
+	* ov-re-mat.cc (octave_matrix::diag): New method override.
+	* ov-re-mat.h: Declare it.
+	* ov-cx-mat.cc: Likewise with octave_complex_matrix.
+	* ov-cx-mat.h: Likewise with octave_complex_matrix.
+	* ov-flt-re-mat.cc: Likewise with octave_float_matrix.
+	* ov-flt-re-mat.h: Likewise with octave_float_matrix.
+	* ov-flt-cx-mat.cc: Likewise with octave_float_complex_matrix.
+	* ov-flt-cx-mat.h: Likewise with octave_float_complex_matrix.
+	* ov.cc (octave_value::octave_value (const DiagMatrix&))
+	(octave_value::octave_value (const FloatDiagMatrix&))
+	(octave_value::octave_value (const ComplexDiagMatrix&))
+	(octave_value::octave_value (const FloatComplexDiagMatrix&)):
+	Construct a diagonal matrix object.
+	* data.cc (Fdiag): Support explicit dimensions. Fix tests.
+	(Feye): Return diagonal matrix objects if possible. Fix tests.
+	* mappers.cc (Freal, Fimag): Fix tests.
+	* DLD-FUNCTIONS/inv.cc (Finv): Handle diagonal matrix objects.
+	* ov-range.h (octave_range::diag): Declare only.
+	* ov-range.cc (octave_range::diag): Return DiagMatrix if possible.
+
+2008-11-25  Jaroslav Hajek  <highegg@gmail.com>
 	* ov.cc (octave_value::is_equal): New member function.
 	* ov.h: Declare it.
 	* pt-select.cc (tree_switch_case::label_matches): Call

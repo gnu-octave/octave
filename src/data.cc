@@ -1617,6 +1617,20 @@ Given a matrix argument, instead of a vector, @code{diag} extracts the\n\
       else
 	retval = args(0).diag(k);
     }
+  else if (nargin == 3)
+    {
+      octave_value arg0 = args(0);
+      if (arg0.ndims () == 2 && (args(0).rows () == 1 || args(0).columns () == 1))
+        {
+          octave_idx_type m = args(1).int_value (), n = args(2).int_value ();
+          if (! error_state)
+            retval = arg0.diag ().resize (dim_vector (m, n));
+          else
+            error ("diag: invalid dimensions");
+        }
+      else
+        error ("diag: first argument must be a vector");
+    }
   else
     print_usage ();
 
@@ -1625,7 +1639,7 @@ Given a matrix argument, instead of a vector, @code{diag} extracts the\n\
 
 /*
 
-%!assert(diag ([1; 2; 3]), [1, 0, 0; 0, 2, 0; 0, 0, 3]);
+%!assert(diag ([1; 2; 3])(:,:), [1, 0, 0; 0, 2, 0; 0, 0, 3]);
 %!assert(diag ([1; 2; 3], 1), [0, 1, 0, 0; 0, 0, 2, 0; 0, 0, 0, 3; 0, 0, 0, 0]);
 %!assert(diag ([1; 2; 3], 2), [0, 0, 1, 0, 0; 0, 0, 0, 2, 0; 0, 0, 0, 0, 3; 0, 0, 0, 0, 0; 0, 0, 0, 0, 0]);
 %!assert(diag ([1; 2; 3],-1), [0, 0, 0, 0; 1, 0, 0, 0; 0, 2, 0, 0; 0, 0, 3, 0]);
@@ -1635,7 +1649,7 @@ Given a matrix argument, instead of a vector, @code{diag} extracts the\n\
 %!assert(diag ([0, 1, 0, 0; 0, 0, 2, 0; 0, 0, 0, 3; 0, 0, 0, 0], 1), [1; 2; 3]);
 %!assert(diag ([0, 0, 0, 0; 1, 0, 0, 0; 0, 2, 0, 0; 0, 0, 3, 0], -1), [1; 2; 3]);
 
-%!assert(diag (single([1; 2; 3])), single([1, 0, 0; 0, 2, 0; 0, 0, 3]));
+%!assert(diag (single([1; 2; 3]))(:,:), single([1, 0, 0; 0, 2, 0; 0, 0, 3]));
 %!assert(diag (single([1; 2; 3]), 1), single([0, 1, 0, 0; 0, 0, 2, 0; 0, 0, 0, 3; 0, 0, 0, 0]));
 %!assert(diag (single([1; 2; 3]), 2), single([0, 0, 1, 0, 0; 0, 0, 0, 2, 0; 0, 0, 0, 0, 3; 0, 0, 0, 0, 0; 0, 0, 0, 0, 0]));
 %!assert(diag (single([1; 2; 3]),-1), single([0, 0, 0, 0; 1, 0, 0, 0; 0, 2, 0, 0; 0, 0, 3, 0]));
@@ -1656,7 +1670,6 @@ Given a matrix argument, instead of a vector, @code{diag} extracts the\n\
 %!assert(diag (int8([0, 0, 0, 0; 1, 0, 0, 0; 0, 2, 0, 0; 0, 0, 3, 0]), -1), int8([1; 2; 3]));
 
 %!error <Invalid call to diag.*> diag ();
-%!error <Invalid call to diag.*> diag (1, 2, 3);
 
  */
 
@@ -4081,11 +4094,11 @@ identity_matrix (int nr, int nc, oct_data_conv::data_type dt)
 	  break;
 
 	case oct_data_conv::dt_single:
-	  retval = identity_matrix<FloatNDArray> (nr, nc);
+	  retval = FloatDiagMatrix (nr, nc, 1.0f);
 	  break;
 
 	case oct_data_conv::dt_double:
-	  retval = identity_matrix<NDArray> (nr, nc);
+	  retval = DiagMatrix (nr, nc, 1.0);
 	  break;
 
 	case oct_data_conv::dt_logical:
@@ -4204,11 +4217,11 @@ with @sc{Matlab}.\n\
 
 /*
 
-%!assert (eye(3), [1, 0, 0; 0, 1, 0; 0, 0, 1]);
-%!assert (eye(2, 3), [1, 0, 0; 0, 1, 0]);
+%!assert (eye(3)(:,:), [1, 0, 0; 0, 1, 0; 0, 0, 1]);
+%!assert (eye(2, 3)(:,:), [1, 0, 0; 0, 1, 0]);
 
-%!assert (eye(3,'single'), single([1, 0, 0; 0, 1, 0; 0, 0, 1]));
-%!assert (eye(2, 3,'single'), single([1, 0, 0; 0, 1, 0]));
+%!assert (eye(3,'single')(:,:), single([1, 0, 0; 0, 1, 0; 0, 0, 1]));
+%!assert (eye(2, 3,'single')(:,:), single([1, 0, 0; 0, 1, 0]));
 
 %!assert (eye(3,'int8'), int8([1, 0, 0; 0, 1, 0; 0, 0, 1]));
 %!assert (eye(2, 3,'int8'), int8([1, 0, 0; 0, 1, 0]));

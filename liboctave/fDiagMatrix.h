@@ -50,6 +50,9 @@ public:
 
   FloatDiagMatrix (const MDiagArray2<float>& a) : MDiagArray2<float> (a) { }
 
+  template <class U>
+  FloatDiagMatrix (const DiagArray2<U>& a) : MDiagArray2<float> (a) { }
+
   explicit FloatDiagMatrix (const FloatRowVector& a) : MDiagArray2<float> (a) { }
 
   explicit FloatDiagMatrix (const FloatColumnVector& a) : MDiagArray2<float> (a) { }
@@ -71,6 +74,7 @@ public:
   FloatDiagMatrix& fill (const FloatRowVector& a, octave_idx_type beg);
 
   FloatDiagMatrix transpose (void) const { return MDiagArray2<float>::transpose(); }
+  FloatDiagMatrix abs (void) const; 
 
   friend OCTAVE_API FloatDiagMatrix real (const FloatComplexDiagMatrix& a);
   friend OCTAVE_API FloatDiagMatrix imag (const FloatComplexDiagMatrix& a);
@@ -102,6 +106,9 @@ private:
 
   FloatDiagMatrix (float *d, octave_idx_type nr, octave_idx_type nc) : MDiagArray2<float> (d, nr, nc) { }
 };
+
+OCTAVE_API FloatDiagMatrix real (const FloatComplexDiagMatrix& a);
+OCTAVE_API FloatDiagMatrix imag (const FloatComplexDiagMatrix& a);
 
 // diagonal matrix by diagonal matrix -> diagonal matrix operations
 

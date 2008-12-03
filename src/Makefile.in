@@ -101,6 +101,7 @@ OV_INCLUDES := ov-re-mat.h ov-cx-mat.h ov-ch-mat.h ov-cs-list.h ov-list.h \
 	ov-struct.h ov-scalar.h ov-range.h ov-complex.h \
 	ov-colon.h ov-base.h ov-base-mat.h ov-base-scalar.h \
 	ov-str-mat.h ov-bool-mat.h ov-null-mat.h ov-bool.h \
+	ov-base-diag.h ov-re-diag.h ov-flt-re-diag.h ov-cx-diag.h ov-flt-cx-diag.h \
 	ov-cell.h ov.h ov-fcn.h ov-builtin.h ov-dld-fcn.h \
 	ov-mex-fcn.h ov-usr-fcn.h ov-fcn-handle.h \
 	ov-fcn-inline.h ov-class.h ov-typeinfo.h ov-type-conv.h \
@@ -160,15 +161,26 @@ FLOAT_OP_XSRC := op-fcm-fcm.cc op-fcm-fcs.cc op-fcm-fm.cc \
 	op-fm-fcs.cc op-fm-fm.cc op-fm-fs.cc op-fs-fcm.cc \
 	op-fs-fcs.cc op-fs-fm.cc op-fs-fs.cc 
 
+DIAG_OP_XSRC := op-cdm-cdm.cc op-cdm-cm.cc op-cdm-cs.cc op-cdm-dm.cc \
+	op-cdm-m.cc op-cdm-s.cc op-cm-cdm.cc op-cm-dm.cc op-dm-cdm.cc \
+	op-dm-cm.cc op-dm-cs.cc op-dm-dm.cc op-dm-m.cc op-dm-s.cc \
+	op-m-cdm.cc op-m-dm.cc
+
+FDIAG_OP_XSRC := op-fcdm-fcdm.cc op-fcdm-fcm.cc op-fcdm-fcs.cc op-fcdm-fdm.cc \
+	op-fcdm-fm.cc op-fcdm-fs.cc op-fcm-fcdm.cc op-fcm-fdm.cc \
+	op-fdm-fcdm.cc op-fdm-fcm.cc op-fdm-fcs.cc op-fdm-fdm.cc \
+	op-fdm-fm.cc op-fdm-fs.cc op-fm-fcdm.cc op-fm-fdm.cc
+
 OP_XSRC :=  op-b-b.cc op-b-bm.cc op-bm-b.cc op-bm-bm.cc op-cell.cc \
 	op-chm.cc op-class.cc op-list.cc op-range.cc op-str-m.cc \
 	op-str-s.cc op-str-str.cc op-struct.cc \
 	$(DOUBLE_OP_XSRC) $(FLOAT_OP_XSRC) $(INTTYPE_OP_XSRC) \
-	$(SPARSE_OP_XSRC)
+	$(SPARSE_OP_XSRC) $(DIAG_OP_XSRC) $(FDIAG_OP_XSRC)
 
 OP_SRC := $(addprefix OPERATORS/, $(OP_XSRC))
 
-OP_INCLUDES := OPERATORS/op-int.h
+OP_INCLUDES := OPERATORS/op-int.h \
+	OPERATORS/op-dm-template.cc OPERATORS/op-dms-template.cc
 
 OV_INTTYPE_SRC := \
 	ov-int8.cc ov-int16.cc ov-int32.cc ov-int64.cc \
@@ -186,6 +198,7 @@ OV_SRC := ov-base.cc ov-ch-mat.cc \
 	ov-mex-fcn.cc ov-usr-fcn.cc ov-fcn-handle.cc ov-fcn-inline.cc \
 	ov-class.cc ov-typeinfo.cc \
 	ov-flt-re-mat.cc ov-flt-cx-mat.cc ov-float.cc ov-flt-complex.cc \
+	ov-re-diag.cc ov-flt-re-diag.cc ov-cx-diag.cc ov-flt-cx-diag.cc \
 	$(OV_INTTYPE_SRC) \
 	$(OV_SPARSE_SRC)
 
@@ -215,7 +228,7 @@ SOURCES := $(DIST_SRC) $(OP_SRC) $(TI_SRC)
 
 BUILT_EXTRAS := graphics.h mxarray.h
 
-EXTRAS := ov-base-int.cc ov-base-mat.cc ov-base-scalar.cc graphics-props.cc
+EXTRAS := ov-base-int.cc ov-base-mat.cc ov-base-diag.cc ov-base-scalar.cc graphics-props.cc
 
 EXTRA_OBJECTS := oct-errno.o octave.o builtins.o ops.o
 

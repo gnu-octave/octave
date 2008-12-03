@@ -297,6 +297,19 @@ octave_float_complex_matrix::sparse_complex_matrix_value (bool) const
   return SparseComplexMatrix (matrix.matrix_value ());
 }
 
+octave_value
+octave_float_complex_matrix::diag (octave_idx_type k) const
+{
+  octave_value retval;
+  if (k == 0 && matrix.ndims () == 2 
+      && (matrix.rows () == 1 || matrix.columns () == 1))
+    retval = FloatComplexDiagMatrix (DiagArray2<FloatComplex> (matrix));
+  else
+    retval = octave_base_matrix<FloatComplexNDArray>::diag (k);
+
+  return retval;
+}
+
 bool 
 octave_float_complex_matrix::save_ascii (std::ostream& os)
 {

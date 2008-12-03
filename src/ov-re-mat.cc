@@ -262,6 +262,19 @@ octave_matrix::sparse_complex_matrix_value (bool) const
 }
 
 octave_value
+octave_matrix::diag (octave_idx_type k) const
+{
+  octave_value retval;
+  if (k == 0 && matrix.ndims () == 2 
+      && (matrix.rows () == 1 || matrix.columns () == 1))
+    retval = DiagMatrix (DiagArray2<double> (matrix));
+  else
+    retval = octave_base_matrix<NDArray>::diag (k);
+
+  return retval;
+}
+
+octave_value
 octave_matrix::convert_to_str_internal (bool, bool, char type) const
 {
   octave_value retval;

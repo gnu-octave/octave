@@ -29,6 +29,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "gripes.h"
 #include "oct-obj.h"
+#include "ops.h"
+#include "ov-re-diag.h"
+#include "ov-cx-diag.h"
+#include "ov-flt-re-diag.h"
+#include "ov-flt-cx-diag.h"
 #include "utils.h"
 
 DEFUN_DLD (inv, args, nargout,
@@ -80,7 +85,39 @@ be avoided. It is significantly more accurate and faster to do\n\
   float frcond = 0.0;
   bool isfloat = arg.is_single_type ();
 
-  if (isfloat)
+  if (arg.is_diag_matrix ())
+    {
+      rcond = 1.0;
+      frcond = 1.0f;
+      const octave_base_value& a = arg.get_rep ();
+      if (arg.is_complex_type ())
+        {
+          if (isfloat)
+            {
+              CAST_CONV_ARG (const octave_float_complex_diag_matrix&);
+              result = v.float_complex_diag_matrix_value ().inverse (info);
+            }
+          else
+            {
+              CAST_CONV_ARG (const octave_complex_diag_matrix&);
+              result = v.complex_diag_matrix_value ().inverse (info);
+            }
+        }
+      else
+        {
+          if (isfloat)
+            {
+              CAST_CONV_ARG (const octave_float_diag_matrix&);
+              result = v.float_diag_matrix_value ().inverse (info);
+            }
+          else
+            {
+              CAST_CONV_ARG (const octave_diag_matrix&);
+              result = v.diag_matrix_value ().inverse (info);
+            }
+        }
+    }
+  else if (isfloat)
     {
       if (arg.is_real_type ())
 	{

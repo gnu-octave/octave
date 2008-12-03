@@ -139,6 +139,15 @@ FloatDiagMatrix::fill (const FloatRowVector& a, octave_idx_type beg)
 }
 
 FloatDiagMatrix
+FloatDiagMatrix::abs (void) const
+{
+  FloatDiagMatrix retval (rows (), cols ());
+  for (octave_idx_type i = 0; i < rows (); i++)
+    retval(i, i) = std::abs (elem (i, i));
+  return retval;
+}
+
+FloatDiagMatrix
 real (const FloatComplexDiagMatrix& a)
 {
   FloatDiagMatrix retval;

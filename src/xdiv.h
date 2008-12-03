@@ -2,6 +2,7 @@
 
 Copyright (C) 1993, 1994, 1995, 1996, 1997, 2003, 2005, 2006, 2007
               John W. Eaton
+Copyright (C) 2008 Jaroslav Hajek <highegg@gmail.com>
 
 This file is part of Octave.
 
@@ -91,6 +92,55 @@ extern FloatComplexMatrix xleftdiv (const FloatComplexMatrix& a, const FloatMatr
 extern FloatComplexMatrix xleftdiv (const FloatComplexMatrix& a, const FloatComplexMatrix& b,
 			       MatrixType &typ);
 
+
+class DiagMatrix;
+class FloatDiagMatrix;
+class ComplexDiagMatrix;
+class FloatComplexDiagMatrix;
+
+extern Matrix xdiv (const Matrix& a, const DiagMatrix& b);
+extern ComplexMatrix xdiv (const ComplexMatrix& a, const DiagMatrix& b);
+extern ComplexMatrix xdiv (const ComplexMatrix& a, const ComplexDiagMatrix& b);
+
+extern DiagMatrix xdiv (const DiagMatrix& a, const DiagMatrix& b);
+extern ComplexDiagMatrix xdiv (const ComplexDiagMatrix& a, const DiagMatrix& b);
+extern ComplexDiagMatrix xdiv (const ComplexDiagMatrix& a, const ComplexDiagMatrix& b);
+
+extern FloatMatrix xdiv (const FloatMatrix& a, const FloatDiagMatrix& b);
+extern FloatComplexMatrix xdiv (const FloatComplexMatrix& a, 
+                                const FloatDiagMatrix& b); 
+extern FloatComplexMatrix xdiv (const FloatMatrix& a, 
+                                const FloatComplexDiagMatrix& b); 
+extern FloatComplexMatrix xdiv (const FloatComplexMatrix& a, 
+                                const FloatComplexDiagMatrix& b);
+
+extern FloatDiagMatrix xdiv (const FloatDiagMatrix& a, const FloatDiagMatrix& b);
+extern FloatComplexDiagMatrix xdiv (const FloatComplexDiagMatrix& a, 
+                                    const FloatDiagMatrix& b);
+extern FloatComplexDiagMatrix xdiv (const FloatComplexDiagMatrix& a, 
+                                    const FloatComplexDiagMatrix& b);
+
+extern Matrix xleftdiv (const DiagMatrix& a, const Matrix& b);
+extern ComplexMatrix xleftdiv (const DiagMatrix& a, const ComplexMatrix& b);
+extern ComplexMatrix xleftdiv (const ComplexDiagMatrix& a, const ComplexMatrix& b);
+
+extern DiagMatrix xleftdiv (const DiagMatrix& a, const DiagMatrix& b);
+extern ComplexDiagMatrix xleftdiv (const DiagMatrix& a, const ComplexDiagMatrix& b);
+extern ComplexDiagMatrix xleftdiv (const ComplexDiagMatrix& a, const ComplexDiagMatrix& b);
+
+extern FloatMatrix xleftdiv (const FloatDiagMatrix& a, 
+                             const FloatMatrix& b);
+extern FloatComplexMatrix xleftdiv (const FloatDiagMatrix& a, 
+                                    const FloatComplexMatrix& b);
+extern FloatComplexMatrix xleftdiv (const FloatComplexDiagMatrix& a, 
+                                    const FloatComplexMatrix& b);
+
+extern FloatDiagMatrix xleftdiv (const FloatDiagMatrix& a, 
+                                 const FloatDiagMatrix& b);
+extern FloatComplexDiagMatrix xleftdiv (const FloatDiagMatrix& a, 
+                                        const FloatComplexDiagMatrix& b);
+extern FloatComplexDiagMatrix xleftdiv (const FloatComplexDiagMatrix& a, 
+                                        const FloatComplexDiagMatrix& b);
 
 #endif
 

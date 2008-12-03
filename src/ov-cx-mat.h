@@ -136,6 +136,8 @@ public:
 
   SparseComplexMatrix sparse_complex_matrix_value (bool = false) const;
 
+  octave_value diag (octave_idx_type k = 0) const;
+
   void increment (void) { matrix += Complex (1.0); }
 
   void decrement (void) { matrix -= Complex (1.0); }

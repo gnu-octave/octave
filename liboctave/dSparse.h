@@ -29,6 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "CMatrix.h"
 #include "dColVector.h"
 #include "CColVector.h"
+#include "dDiagMatrix.h"
 
 #include "DET.h"
 #include "MSparse.h"
@@ -79,6 +80,8 @@ SparseMatrix : public MSparse<double>
 			 const Array<double>& c, octave_idx_type nr = -1, 
 			 octave_idx_type nc = -1, bool sum_terms = true)
     : MSparse<double> (a, r, c, nr, nc, sum_terms) { }
+
+  explicit SparseMatrix (const DiagMatrix& a);
 
   SparseMatrix (octave_idx_type r, octave_idx_type c, octave_idx_type num_nz) : MSparse<double> (r, c, num_nz) { }
 

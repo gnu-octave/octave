@@ -139,6 +139,23 @@ SparseMatrix::SparseMatrix (const SparseBoolMatrix &a)
     }
 }
 
+SparseMatrix::SparseMatrix (const DiagMatrix& a)
+  : MSparse<double> (a.rows (), a.cols (), a.nnz ())
+{
+  octave_idx_type nz = a.nnz (), l = a.length ();
+  for (octave_idx_type i = 0, j = 0; i < l; i++)
+    {
+      if (a(i, i) != 0.0)
+        {
+          data (j) = a(i, i);
+          ridx (j) = i;
+          cidx (j) = j;
+          j++;
+        }
+    }
+  cidx (nz) = nz;
+}
+
 bool
 SparseMatrix::operator == (const SparseMatrix& a) const
 {

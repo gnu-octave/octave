@@ -65,6 +65,10 @@ public:
   FloatComplexDiagMatrix (const FloatComplexDiagMatrix& a)
     : MDiagArray2<FloatComplex> (a) { }
 
+  template <class U>
+  FloatComplexDiagMatrix (const DiagArray2<U>& a) 
+    : MDiagArray2<FloatComplex> (a) { }
+
   FloatComplexDiagMatrix& operator = (const FloatComplexDiagMatrix& a)
     {
       MDiagArray2<FloatComplex>::operator = (a);
@@ -89,6 +93,7 @@ public:
 
   FloatComplexDiagMatrix hermitian (void) const { return MDiagArray2<FloatComplex>::hermitian (std::conj); }
   FloatComplexDiagMatrix transpose (void) const { return MDiagArray2<FloatComplex>::transpose(); }
+  FloatDiagMatrix abs (void) const; 
 
   friend FloatComplexDiagMatrix conj (const FloatComplexDiagMatrix& a);
 
@@ -106,6 +111,8 @@ public:
 
   FloatComplexDiagMatrix inverse (int& info) const;
   FloatComplexDiagMatrix inverse (void) const;
+
+  bool all_elements_are_real (void) const;
 
   // diagonal matrix by diagonal matrix -> diagonal matrix operations
 
@@ -125,6 +132,8 @@ private:
   FloatComplexDiagMatrix (FloatComplex *d, octave_idx_type nr, octave_idx_type nc)
     : MDiagArray2<FloatComplex> (d, nr, nc) { }
 };
+
+FloatComplexDiagMatrix conj (const FloatComplexDiagMatrix& a);
 
 // diagonal matrix by diagonal matrix -> diagonal matrix operations
 

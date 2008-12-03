@@ -462,6 +462,9 @@ public:
   bool is_char_matrix (void) const
     { return rep->is_char_matrix (); }
 
+  bool is_diag_matrix (void) const
+    { return rep->is_diag_matrix (); }
+
   bool is_string (void) const
     { return rep->is_string (); }
 

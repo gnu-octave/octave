@@ -129,8 +129,7 @@ public:
 
   octave_value any (int dim = 0) const;
 
-  octave_value diag (octave_idx_type k = 0) const
-    { return octave_value (range.diag (k)); }
+  octave_value diag (octave_idx_type k = 0) const;
 
   octave_value sort (octave_idx_type dim = 0, sortmode mode = ASCENDING) const
     { return range.sort (dim, mode); }

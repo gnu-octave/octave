@@ -188,6 +188,15 @@ octave_range::any (int dim) const
   return m.any (dim);
 }
 
+octave_value 
+octave_range::diag (octave_idx_type k) const
+{ 
+  return (k == 0
+          ? octave_value (DiagMatrix (DiagArray2<double> (range.matrix_value ())))
+          : octave_value (range.diag (k))); 
+}
+
+
 bool
 octave_range::is_true (void) const
 {

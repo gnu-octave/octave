@@ -2,6 +2,7 @@
 
 Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 2000, 2002, 2003,
               2005, 2006, 2007 John W. Eaton
+Copyright (C) 2008 Jaroslav Hajek <highegg@gmail.com>
 
 This file is part of Octave.
 
@@ -37,6 +38,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "fCNDArray.h"
 #include "fNDArray.h"
 #include "oct-cmplx.h"
+#include "dDiagMatrix.h"
+#include "fDiagMatrix.h"
+#include "CDiagMatrix.h"
+#include "fCDiagMatrix.h"
 #include "quit.h"
 
 #include "error.h"
@@ -721,6 +726,299 @@ xleftdiv (const FloatComplexMatrix& a, const FloatComplexMatrix& b, MatrixType &
   float rcond = 0.0;
   return a.solve (typ, b, info, rcond, solve_singularity_warning);
 }
+
+// Diagonal matrix division.
+
+template <class MT, class DMT>
+MT
+mdm_div_impl (const MT& a, const DMT& d)
+{
+  if (! mx_div_conform (a, d))
+    return MT ();
+
+  octave_idx_type m = a.rows (), n = d.rows (), k = d.cols ();
+  MT x (m, n);
+  const typename DMT::element_type zero = typename DMT::element_type ();
+
+  for (octave_idx_type j = 0; j < n; j++)
+    {
+      if (j < k && d(j, j) != zero)
+        {
+          for (octave_idx_type i = 0; i < m; i++)
+            x(i, j) = a(i, j) / d(j, j);
+        }
+      else
+        {
+          for (octave_idx_type i = 0; i < m; i++)
+            x(i, j) = zero;
+        }
+    }
+
+  return x;
+}
+
+// Right division functions.
+//
+//       op2 / op1:   dm  cdm
+//            +--   +---+----+
+//   matrix         | 1 |    |
+//                  +---+----+
+//   complex_matrix | 2 |  3 |
+//                  +---+----+
+
+// -*- 1 -*-
+Matrix
+xdiv (const Matrix& a, const DiagMatrix& b)
+{ return mdm_div_impl (a, b); }
+
+// -*- 2 -*-
+ComplexMatrix
+xdiv (const ComplexMatrix& a, const DiagMatrix& b)
+{ return mdm_div_impl (a, b); }
+
+// -*- 3 -*-
+ComplexMatrix
+xdiv (const ComplexMatrix& a, const ComplexDiagMatrix& b)
+{ return mdm_div_impl (a, b); }
+
+// Right division functions, float type.
+//
+//       op2 / op1:   dm  cdm
+//            +--   +---+----+
+//   matrix         | 1 |    |
+//                  +---+----+
+//   complex_matrix | 2 |  3 |
+//                  +---+----+
+
+// -*- 1 -*-
+FloatMatrix
+xdiv (const FloatMatrix& a, const FloatDiagMatrix& b)
+{ return mdm_div_impl (a, b); }
+
+// -*- 2 -*-
+FloatComplexMatrix
+xdiv (const FloatComplexMatrix& a, const FloatDiagMatrix& b)
+{ return mdm_div_impl (a, b); }
+
+// -*- 3 -*-
+FloatComplexMatrix
+xdiv (const FloatComplexMatrix& a, const FloatComplexDiagMatrix& b)
+{ return mdm_div_impl (a, b); }
+
+template <class MT, class DMT>
+MT
+dmm_leftdiv_impl (const DMT& d, const MT& a)
+{
+  if (! mx_leftdiv_conform (d, a))
+    return MT ();
+
+  octave_idx_type m = d.cols (), n = a.cols (), k = d.rows ();
+  octave_idx_type mk = m < k ? m : k;
+  MT x (m, n);
+  const typename DMT::element_type zero = typename DMT::element_type ();
+
+  for (octave_idx_type j = 0; j < n; j++)
+    {
+      for (octave_idx_type i = 0; i < mk; i++)
+        x(i, j) = d(i, i) != zero ? a(i, j) / d(i, i) : 0;
+      for (octave_idx_type i = mk; i < m; i++)
+        x(i, j) = zero;
+    }
+
+  return x;
+}
+
+// Left division functions.
+//
+//       op2 \ op1:         m   cm
+//                        +---+----+
+//   diag_matrix          | 1 |  2 |
+//                        +---+----+
+//   complex_diag_matrix  |   |  3 |
+//                        +---+----+
+
+// -*- 1 -*-
+Matrix
+xleftdiv (const DiagMatrix& a, const Matrix& b)
+{ return dmm_leftdiv_impl (a, b); }
+
+// -*- 2 -*-
+ComplexMatrix
+xleftdiv (const DiagMatrix& a, const ComplexMatrix& b)
+{ return dmm_leftdiv_impl (a, b); }
+
+// -*- 3 -*-
+ComplexMatrix
+xleftdiv (const ComplexDiagMatrix& a, const ComplexMatrix& b)
+{ return dmm_leftdiv_impl (a, b); }
+
+// Left division functions, float type.
+//
+//       op2 \ op1:         m   cm
+//                        +---+----+
+//   diag_matrix          | 1 |  2 |
+//                        +---+----+
+//   complex_diag_matrix  |   |  3 |
+//                        +---+----+
+
+// -*- 1 -*-
+FloatMatrix
+xleftdiv (const FloatDiagMatrix& a, const FloatMatrix& b)
+{ return dmm_leftdiv_impl (a, b); }
+
+// -*- 2 -*-
+FloatComplexMatrix
+xleftdiv (const FloatDiagMatrix& a, const FloatComplexMatrix& b)
+{ return dmm_leftdiv_impl (a, b); }
+
+// -*- 3 -*-
+FloatComplexMatrix
+xleftdiv (const FloatComplexDiagMatrix& a, const FloatComplexMatrix& b)
+{ return dmm_leftdiv_impl (a, b); }
+
+// Diagonal by diagonal matrix division.
+
+template <class MT, class DMT>
+MT
+dmdm_div_impl (const MT& a, const DMT& d)
+{
+  if (! mx_div_conform (a, d))
+    return MT ();
+
+  octave_idx_type m = a.rows (), n = d.rows (), k = d.cols ();
+  octave_idx_type mn = m < n ? m : n;
+  MT x (m, n);
+  const typename DMT::element_type zero = typename DMT::element_type ();
+
+  for (octave_idx_type j = 0; j < mn; j++)
+    {
+      if (j < k && d(j, j) != zero)
+        x(j, j) = a(j, j) / d(j, j);
+      else
+        x(j, j) = zero;
+    }
+
+  return x;
+}
+
+// Right division functions.
+//
+//       op2 / op1:        dm  cdm
+//            +--        +---+----+
+//   diag_matrix         | 1 |    |
+//                       +---+----+
+//   complex_diag_matrix | 2 |  3 |
+//                       +---+----+
+
+// -*- 1 -*-
+DiagMatrix
+xdiv (const DiagMatrix& a, const DiagMatrix& b)
+{ return dmdm_div_impl (a, b); }
+
+// -*- 2 -*-
+ComplexDiagMatrix
+xdiv (const ComplexDiagMatrix& a, const DiagMatrix& b)
+{ return dmdm_div_impl (a, b); }
+
+// -*- 3 -*-
+ComplexDiagMatrix
+xdiv (const ComplexDiagMatrix& a, const ComplexDiagMatrix& b)
+{ return dmdm_div_impl (a, b); }
+
+// Right division functions, float type.
+//
+//       op2 / op1:        dm  cdm
+//            +--        +---+----+
+//   diag_matrix         | 1 |    |
+//                       +---+----+
+//   complex_diag_matrix | 2 |  3 |
+//                       +---+----+
+
+// -*- 1 -*-
+FloatDiagMatrix
+xdiv (const FloatDiagMatrix& a, const FloatDiagMatrix& b)
+{ return dmdm_div_impl (a, b); }
+
+// -*- 2 -*-
+FloatComplexDiagMatrix
+xdiv (const FloatComplexDiagMatrix& a, const FloatDiagMatrix& b)
+{ return dmdm_div_impl (a, b); }
+
+// -*- 3 -*-
+FloatComplexDiagMatrix
+xdiv (const FloatComplexDiagMatrix& a, const FloatComplexDiagMatrix& b)
+{ return dmdm_div_impl (a, b); }
+
+template <class MT, class DMT>
+MT
+dmdm_leftdiv_impl (const DMT& d, const MT& a)
+{
+  if (! mx_leftdiv_conform (d, a))
+    return MT ();
+
+  octave_idx_type m = d.cols (), n = a.cols (), k = d.rows ();
+  octave_idx_type mn = m < n ? m : n;
+  MT x (m, n);
+  const typename DMT::element_type zero = typename DMT::element_type ();
+
+  for (octave_idx_type j = 0; j < mn; j++)
+    {
+      if (j < k && d(j, j) != zero)
+        x(j, j) = a(j, j) / d(j, j);
+      else
+        x(j, j) = zero;
+    }
+
+  return x;
+}
+
+// Left division functions.
+//
+//       op2 \ op1:         dm  cdm
+//                        +---+----+
+//   diag_matrix          | 1 |  2 |
+//                        +---+----+
+//   complex_diag_matrix  |   |  3 |
+//                        +---+----+
+
+// -*- 1 -*-
+DiagMatrix
+xleftdiv (const DiagMatrix& a, const DiagMatrix& b)
+{ return dmdm_leftdiv_impl (a, b); }
+
+// -*- 2 -*-
+ComplexDiagMatrix
+xleftdiv (const DiagMatrix& a, const ComplexDiagMatrix& b)
+{ return dmdm_leftdiv_impl (a, b); }
+
+// -*- 3 -*-
+ComplexDiagMatrix
+xleftdiv (const ComplexDiagMatrix& a, const ComplexDiagMatrix& b)
+{ return dmdm_leftdiv_impl (a, b); }
+
+// Left division functions, float type.
+//
+//       op2 \ op1:         dm  cdm
+//                        +---+----+
+//   diag_matrix          | 1 |  2 |
+//                        +---+----+
+//   complex_diag_matrix  |   |  3 |
+//                        +---+----+
+
+// -*- 1 -*-
+FloatDiagMatrix
+xleftdiv (const FloatDiagMatrix& a, const FloatDiagMatrix& b)
+{ return dmdm_leftdiv_impl (a, b); }
+
+// -*- 2 -*-
+FloatComplexDiagMatrix
+xleftdiv (const FloatDiagMatrix& a, const FloatComplexDiagMatrix& b)
+{ return dmdm_leftdiv_impl (a, b); }
+
+// -*- 3 -*-
+FloatComplexDiagMatrix
+xleftdiv (const FloatComplexDiagMatrix& a, const FloatComplexDiagMatrix& b)
+{ return dmdm_leftdiv_impl (a, b); }
 
 /*
 ;;; Local Variables: ***

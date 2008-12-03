@@ -130,6 +130,10 @@ public:
   DiagArray2 (const DiagArray2<T>& a) : Array<T> (a)
     { this->dimensions = a.dims (); }
 
+  template <class U>
+  DiagArray2 (const DiagArray2<U>& a) : Array<T> (a)
+    { this->dimensions = a.dims (); }
+
   ~DiagArray2 (void) { }
 
   DiagArray2<T>& operator = (const DiagArray2<T>& a)
@@ -167,14 +171,33 @@ public:
 	return Proxy (this, r, c);
   }
 
-  T elem (octave_idx_type r, octave_idx_type c) const;
+  T elem (octave_idx_type r, octave_idx_type c) const
+    {
+      return (r == c) ? Array<T>::xelem (r) : T (0);
+    }
+
   T checkelem (octave_idx_type r, octave_idx_type c) const;
-  T operator () (octave_idx_type r, octave_idx_type c) const;
+  T operator () (octave_idx_type r, octave_idx_type c) const
+    {
+#if defined (BOUNDS_CHECKING)
+      return checkelem (r, c);
+#else
+      return elem (r, c);
+#endif
+    }
 
   // No checking.
 
-  T& xelem (octave_idx_type r, octave_idx_type c);
-  T xelem (octave_idx_type r, octave_idx_type c) const;
+  T& xelem (octave_idx_type r, octave_idx_type c)
+    {
+      static T foo (0);
+      return (r == c) ? Array<T>::xelem (r) : foo;
+    }
+
+  T xelem (octave_idx_type r, octave_idx_type c) const
+    {
+      return (r == c) ? Array<T>::xelem (r) : T (0);
+    }
 
   void resize (octave_idx_type n, octave_idx_type m);
   void resize (octave_idx_type n, octave_idx_type m, const T& val);

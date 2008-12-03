@@ -1052,7 +1052,7 @@ operator * (const M& m, const DM& dm) \
     gripe_nonconformant ("operator *", m_nr, m_nc, dm_nr, dm_nc); \
   else \
     { \
-      r.resize (m_nr, dm_nc, R_ZERO); \
+      r = R (m_nr, dm_nc); \
  \
       if (m_nr > 0 && m_nc > 0 && dm_nc > 0) \
 	{ \
@@ -1060,8 +1060,9 @@ operator * (const M& m, const DM& dm) \
  \
 	  for (int j = 0; j < len; j++) \
 	    { \
+              const DM::element_type djj = dm.elem (j, j); \
 	      for (int i = 0; i < m_nr; i++) \
-	      r.elem(i, j) = dm.elem(j, j) * m.elem(i, j); \
+	        r.xelem (i, j) = djj * m.elem (i, j); \
 	    } \
 	} \
     } \
@@ -1132,7 +1133,7 @@ operator * (const DM& dm, const M& m) \
     gripe_nonconformant ("operator *", dm_nr, dm_nc, m_nr, m_nc); \
   else \
     { \
-      r.resize (dm_nr, m_nc, R_ZERO); \
+      r = R (dm_nr, m_nc); \
  \
       if (dm_nr > 0 && dm_nc > 0 && m_nc > 0) \
 	{ \
@@ -1141,7 +1142,7 @@ operator * (const DM& dm, const M& m) \
 	  for (int i = 0; i < len; i++) \
 	    { \
 	      for (int j = 0; j < m_nc; j++) \
-	        r.elem(i, j) = dm.elem(i, i) * m.elem(i, j); \
+	        r.xelem (i, j) = dm.elem (i, i) * m.elem (i, j); \
 	    } \
 	} \
     } \

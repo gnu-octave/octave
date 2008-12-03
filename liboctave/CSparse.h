@@ -90,6 +90,8 @@ public:
 
   explicit SparseComplexMatrix (const SparseBoolMatrix& a);
 
+  explicit SparseComplexMatrix (const ComplexDiagMatrix& a);
+
   SparseComplexMatrix (octave_idx_type r, octave_idx_type c, octave_idx_type num_nz) 
     : MSparse<Complex> (r, c, num_nz) { }
 

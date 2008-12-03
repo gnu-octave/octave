@@ -59,13 +59,6 @@ DiagArray2<T>::hermitian (T (* fcn) (const T&)) const
 
 template <class T>
 T
-DiagArray2<T>::elem (octave_idx_type r, octave_idx_type c) const
-{
-  return (r == c) ? Array<T>::xelem (r) : T (0);
-}
-
-template <class T>
-T
 DiagArray2<T>::checkelem (octave_idx_type r, octave_idx_type c) const
 {
   if (r < 0 || c < 0 || r >= this->dim1 () || c >= this->dim2 ())
@@ -73,33 +66,6 @@ DiagArray2<T>::checkelem (octave_idx_type r, octave_idx_type c) const
       (*current_liboctave_error_handler) ("range error in DiagArray2");
       return T ();
     }
-  return (r == c) ? Array<T>::xelem (r) : T (0);
-}
-
-template <class T>
-T
-DiagArray2<T>::operator () (octave_idx_type r, octave_idx_type c) const
-{
-  if (r < 0 || c < 0 || r >= this->dim1 () || c >= this->dim2 ())
-    {
-      (*current_liboctave_error_handler) ("range error in DiagArray2");
-      return T ();
-    }
-  return (r == c) ? Array<T>::xelem (r) : T (0);
-}
-
-template <class T>
-T&
-DiagArray2<T>::xelem (octave_idx_type r, octave_idx_type c)
-{
-  static T foo (0);
-  return (r == c) ? Array<T>::xelem (r) : foo;
-}
-
-template <class T>
-T
-DiagArray2<T>::xelem (octave_idx_type r, octave_idx_type c) const
-{
   return (r == c) ? Array<T>::xelem (r) : T (0);
 }
 

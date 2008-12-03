@@ -1,3 +1,71 @@
+2008-12-01  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DiagArray2.h (DiagArray2<T>::DiagArray2<T> (const DiagArray2<U>&)): New template
+	constructor.
+	(DiagArray2<T>::elem, xelem, operator ()): Move to header file to
+	enable inlining.
+	* DiagArray2.cc (DiagArray2<T>::elem, xelem, operator ()): Remove
+	implementations.
+	* MDiagArray2.h (MDiagArray2<T>::MDiagArray2<T> (const DiagArray2<U>&)): New template
+	constructor.
+	(MDiagArray2<T>::nnz): New method.
+	* MDiagArray2.cc (MDiagArray2<T>::nnz): Implement it.
+
+	* dDiagMatrix.h (DiagMatrix::DiagMatrix (const DiagArray2<U>&)): New template
+	constructor.
+	(DiagMatrix::abs): New method decl.
+	(real (const ComplexDiagMatrix&), imag (const ComplexDiagMatrix&)):
+	New decls.
+	* dDiagMatrix.cc (DiagMatrix::abs): New method.
+	(operator *(const DiagMatrix&, const DiagMatrix&)): Optimize.
+	(real (const ComplexDiagMatrix&), imag (const ComplexDiagMatrix&)):
+	New functions.
+
+	* fDiagMatrix.h (FloatDiagMatrix::FloatDiagMatrix (const DiagArray2<U>&)): New template
+	constructor.
+	(FloatDiagMatrix::abs): New method decl.
+	(real (const FloatComplexDiagMatrix&), imag (const FloatComplexDiagMatrix&)):
+	New decls.
+	* fDiagMatrix.cc (FloatDiagMatrix::abs): New method.
+	(operator *(const FloatDiagMatrix&, const FloatDiagMatrix&)): Optimize.
+	(real (const FloatComplexDiagMatrix&), imag (const FloatComplexDiagMatrix&)):
+	New functions.
+	
+	* CDiagMatrix.h (ComplexDiagMatrix::ComplexDiagMatrix (const DiagArray2<U>&)): New template
+	constructor.
+	(ComplexDiagMatrix::abs): New method decl.
+	(conj (const ComplexDiagMatrix&)): Add missing decl.
+	(ComplexDiagMatrix::all_elements_are_real): New method decl.
+
+	* CDiagMatrix.cc (CDiagMatrix::abs): New method.
+	(operator *(const DiagMatrix&, const ComplexDiagMatrix&)): Optimize.
+	(operator *(const ComplexDiagMatrix&, const DiagMatrix&)): Optimize.
+	(operator *(const ComplexDiagMatrix&, const ComplexDiagMatrix&)): Optimize.
+	(ComplexDiagMatrix::all_elements_are_real): New method.
+
+	* fCDiagMatrix.h (FloatComplexDiagMatrix::FloatComplexDiagMatrix (const DiagArray2<U>&)): New template
+	constructor.
+	(FloatComplexDiagMatrix::abs): New method decl.
+	(conj (const FloatComplexDiagMatrix&)): Add missing decl.
+	(FloatComplexDiagMatrix::all_elements_are_real): New method decl.
+
+	* fCDiagMatrix.cc (CDiagMatrix::abs): New method.
+	(operator *(const FloatDiagMatrix&, const FloatComplexDiagMatrix&)): Optimize.
+	(operator *(const FloatComplexDiagMatrix&, const FloatDiagMatrix&)): Optimize.
+	(operator *(const ComplexDiagMatrix&, const ComplexDiagMatrix&)): Optimize.
+	(FloatComplexDiagMatrix::all_elements_are_real): New method.
+
+	* dSparse.cc (SparseMatrix::SparseMatrix (const DiagMatrix&)): New
+	constructor.
+	* dSparse.h (SparseMatrix::SparseMatrix (const DiagMatrix&)): Declare
+	it.
+
+	* CSparse.cc (SparseComplexMatrix::SparseComplexMatrix (const ComplexDiagMatrix&)): 
+	New constructor.
+	* CSparse.h (SparseComplexMatrix::SparseComplexMatrix (const ComplexDiagMatrix&)): 
+	Declare it.
+	* mx-op-defs.h (DMM_MULTIPLY_OP, MDM_MULTIPLY_OP): Optimize.
+
 2008-11-21  Jarkko Kaleva  <d3roga@gmail.com>
 
 	* EIG.h (EIG::EIG (const Matrix& a, const Matrix& b, 

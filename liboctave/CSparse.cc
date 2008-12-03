@@ -144,6 +144,22 @@ SparseComplexMatrix::SparseComplexMatrix (const SparseBoolMatrix& a)
     }
 }
 
+SparseComplexMatrix::SparseComplexMatrix (const ComplexDiagMatrix& a)
+  : MSparse<Complex> (a.rows (), a.cols (), a.nnz ())
+{
+  octave_idx_type nz = a.nnz (), l = a.length ();
+  for (octave_idx_type i = 0, j = 0; i < l; i++)
+    {
+      if (a(i, i) != Complex (0.0, 0.0))
+        {
+          data (j) = a(i, i);
+          ridx (j) = i;
+          cidx (j) = j;
+          j++;
+        }
+    }
+  cidx (nz) = nz;
+}
 bool
 SparseComplexMatrix::operator == (const SparseComplexMatrix& a) const
 {

@@ -1,3 +1,7 @@
+2008-12-03  John W. Eaton  <jwe@octave.org>
+
+	* config.guess, config.sub: Update from FSF sources.
+
 2008-11-21  John Swensen <jpswensen@comcast.net> 
         * debug.cc: Bugfix for symtab/debugger interactions.
 

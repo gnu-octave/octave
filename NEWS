@@ -109,4 +109,17 @@ Summary of important user-visible changes for version 3.2:
     The underlying code used for indexing of arrays has been completely
     rewritten and so the indexing of arrays is now significantly faster.
 
+ ** 64-bit integer arithmetic
+    Arithmetic with 64-bit integers (int64 and uint64 types) is fully supported,
+    with saturation semantics like the other integer types. Most of the integer
+    arithmetic operations was rewritten to exploit integer arithmetic in the CPU
+    efficiently. As a result, performance was significantly improved.
+
+ ** Diagonal and permutation matrices
+    The interpreter can now treat diagonal and permutation matrices as special
+    objects, rather than general full matrices. Therefore, it is now possible
+    to construct & use these matrices in linear algebra without suffering a 
+    performance penalty.
+
+
 See NEWS.3 for old news.

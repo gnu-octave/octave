@@ -34,9 +34,9 @@ along with Octave; see the file COPYING.  If not, see
 extern "C"
 {
   F77_RET_T
-  F77_FUNC (zgeqpf, ZGEQPF) (const octave_idx_type&, const octave_idx_type&, Complex*,
+  F77_FUNC (zgeqp3, ZGEQP3) (const octave_idx_type&, const octave_idx_type&, Complex*,
 			     const octave_idx_type&, octave_idx_type*, Complex*, Complex*,
-			     double*, octave_idx_type&);
+			     const octave_idx_type&, double*, octave_idx_type&);
 
   F77_RET_T
   F77_FUNC (zungqr, ZUNGQR) (const octave_idx_type&, const octave_idx_type&, const octave_idx_type&,
@@ -71,10 +71,6 @@ ComplexQRP::init (const ComplexMatrix& a, QR::type qr_type)
   Array<Complex> tau (min_mn);
   Complex *ptau = tau.fortran_vec ();
 
-  octave_idx_type lwork = 3*n > 32*m ? 3*n : 32*m;
-  Array<Complex> work (lwork);
-  Complex *pwork = work.fortran_vec ();
-
   octave_idx_type info = 0;
 
   ComplexMatrix A_fact = a;
@@ -89,10 +85,19 @@ ComplexQRP::init (const ComplexMatrix& a, QR::type qr_type)
   MArray<octave_idx_type> jpvt (n, 0);
   octave_idx_type *pjpvt = jpvt.fortran_vec ();
 
+  Complex rlwork = 0;
+  // Workspace query...
+  F77_XFCN (zgeqp3, ZGEQP3, (m, n, tmp_data, m, pjpvt, ptau, &rlwork,
+			     -1, prwork, info));
+
+  octave_idx_type lwork = rlwork.real ();
+  Array<Complex> work (lwork);
+  Complex *pwork = work.fortran_vec ();
+
   // Code to enforce a certain permutation could go here...
 
-  F77_XFCN (zgeqpf, ZGEQPF, (m, n, tmp_data, m, pjpvt, ptau, pwork,
-			     prwork, info));
+  F77_XFCN (zgeqp3, ZGEQP3, (m, n, tmp_data, m, pjpvt, ptau, pwork,
+			     lwork, prwork, info));
 
   // Form Permutation matrix (if economy is requested, return the
   // indices only!)

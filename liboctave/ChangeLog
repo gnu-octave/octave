@@ -1,3 +1,10 @@
+2008-12-04  Jaroslav Hajek  <highegg@gmail.com>
+
+	* dbleQRP.cc (QRP::QRP): Call DGEQP3 rather than DGEQPF.
+	* floatQRP.cc (FloatQRP::FloatQRP): Call SGEQP3 rather than SGEQPF.
+	* CmplxQRP.cc (ComplexQRP::ComplexQRP): Call ZGEQP3 rather than ZGEQPF.
+	* fCmplxQRP.cc (FloatComplexQRP::FloatComplexQRP): Call CGEQP3 rather than CGEQPF.
+
 2008-12-03  Jaroslav Hajek  <highegg@gmail.com>
 
 	* PermMatrix.h, PermMatrix.cc: New sources.

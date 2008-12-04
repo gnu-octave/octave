@@ -34,8 +34,9 @@ along with Octave; see the file COPYING.  If not, see
 extern "C"
 {
   F77_RET_T
-  F77_FUNC (dgeqpf, DGEQPF) (const octave_idx_type&, const octave_idx_type&, double*,
-			     const octave_idx_type&, octave_idx_type*, double*, double*, octave_idx_type&);
+  F77_FUNC (dgeqp3, DGEQP3) (const octave_idx_type&, const octave_idx_type&, double*,
+			     const octave_idx_type&, octave_idx_type*, double*, double*,
+                             const octave_idx_type&, octave_idx_type&);
 
   F77_RET_T
   F77_FUNC (dorgqr, DORGQR) (const octave_idx_type&, const octave_idx_type&, const octave_idx_type&,
@@ -69,10 +70,6 @@ QRP::init (const Matrix& a, QR::type qr_type)
   Array<double> tau (min_mn);
   double *ptau = tau.fortran_vec ();
 
-  octave_idx_type lwork = 3*n > 32*m ? 3*n : 32*m;
-  Array<double> work (lwork);
-  double *pwork = work.fortran_vec ();
-
   octave_idx_type info = 0;
 
   Matrix A_fact = a;
@@ -84,9 +81,17 @@ QRP::init (const Matrix& a, QR::type qr_type)
   MArray<octave_idx_type> jpvt (n, 0);
   octave_idx_type *pjpvt = jpvt.fortran_vec ();
 
+  double rlwork = 0;
+  // Workspace query...
+  F77_XFCN (dgeqp3, DGEQP3, (m, n, tmp_data, m, pjpvt, ptau, &rlwork, -1, info));
+
+  octave_idx_type lwork = rlwork;
+  Array<double> work (lwork);
+  double *pwork = work.fortran_vec ();
+
   // Code to enforce a certain permutation could go here...
 
-  F77_XFCN (dgeqpf, DGEQPF, (m, n, tmp_data, m, pjpvt, ptau, pwork, info));
+  F77_XFCN (dgeqp3, DGEQP3, (m, n, tmp_data, m, pjpvt, ptau, pwork, lwork, info));
 
   // Form Permutation matrix (if economy is requested, return the
   // indices only!)

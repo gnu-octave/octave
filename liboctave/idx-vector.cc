@@ -522,6 +522,8 @@ idx_vector::complement (octave_idx_type n) const
   octave_idx_type len = cnt, *data = new octave_idx_type[len];
   for (octave_idx_type i = 0, j = 0; i < n; i++)
     if (left[i]) data[j++] = i;
+  
+  delete left;
 
   return new idx_vector_rep (data, len, 
                              len ? data[len-1]+1 : 0, 

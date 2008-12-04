@@ -1,5 +1,9 @@
 2008-12-04  Jaroslav Hajek  <highegg@gmail.com>
 
+	* idx-vector.cc (idx-vector::complement): Add missing delete.
+
+2008-12-04  Jaroslav Hajek  <highegg@gmail.com>
+
 	* dbleQRP.cc (QRP::QRP): Call DGEQP3 rather than DGEQPF.
 	* floatQRP.cc (FloatQRP::FloatQRP): Call SGEQP3 rather than SGEQPF.
 	* CmplxQRP.cc (ComplexQRP::ComplexQRP): Call ZGEQP3 rather than ZGEQPF.

@@ -118,6 +118,10 @@
 	* pt-select.cc (tree_switch_case::label_matches): Call
 	octave_value::is_equal.
 
+2008-12-04  Thomas Treichl  <Thomas.Treichl@gmx.net>
+
+	* DLD-FUNCTIONS/cellfun.cc: Added more tests for cellfun.
+
 2008-11-25  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-base.h (octave_base_value::type_conv_info): New class.

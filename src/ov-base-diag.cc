@@ -70,18 +70,58 @@ octave_base_diag<DMT, MT>::do_index_op (const octave_value_list& idx,
                                         bool resize_ok)
 {
   octave_value retval;
+  typedef typename DMT::element_type el_type;
+  el_type one = 1;
 
-  if (idx.length () == 2 && idx(0).is_scalar_type () 
-      && idx(1).is_scalar_type () && ! resize_ok)
+  octave_idx_type nidx = idx.length ();
+  idx_vector idx0, idx1;
+  if (nidx == 2)
     {
-      idx_vector i = idx(0).index_vector (), j = idx(1).index_vector ();
-      // FIXME: the proxy mechanism of DiagArray2 causes problems here.
-      typedef typename DMT::element_type el_type;
-      if (! error_state)
-         retval = el_type (matrix.checkelem (i(0), j(0)));
+      idx0 = idx(0).index_vector ();
+      idx1 = idx(1).index_vector ();
     }
-  else
-    retval = to_dense ().do_index_op (idx, resize_ok);
+
+  // This hack is to allow constructing permutation matrices using
+  // eye(n)(p,:), eye(n)(:,q) && eye(n)(p,q) where p & q are permutation
+  // vectors. 
+  // Note that, for better consistency, eye(n)(:,:) still converts to a full
+  // matrix.
+  // FIXME: This check is probably unnecessary for complex matrices. 
+  if (! error_state && nidx == 2 && matrix.is_multiple_of_identity (one))
+    {
+      
+      bool left = idx0.is_permutation (matrix.rows ());
+      bool right = idx1.is_permutation (matrix.cols ());
+
+      if (left && right)
+        {
+          if (idx0.is_colon ()) left = false;
+          if (idx1.is_colon ()) right = false;
+          if (left && right)
+              retval = octave_value (PermMatrix (idx0, false) * PermMatrix (idx1, true),
+                                     is_single_type ());
+          else if (left)
+              retval = octave_value (PermMatrix (idx0, false),
+                                     is_single_type ());
+          else if (right)
+              retval = octave_value (PermMatrix (idx1, true),
+                                     is_single_type ());
+        }
+    }
+
+  // if error_state is set, we've already griped.
+  if (! error_state && ! retval.is_defined ())
+    {
+      if (nidx == 2 && ! resize_ok &&
+          idx0.is_scalar () && idx1.is_scalar ())
+        {
+          // FIXME: the proxy mechanism of DiagArray2 causes problems here.
+          retval = el_type (matrix.checkelem (idx0(0), idx1(0)));
+        }
+      else
+        retval = to_dense ().do_index_op (idx, resize_ok);
+    }
+
   return retval;
 }
 

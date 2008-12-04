@@ -1,3 +1,25 @@
+2008-12-03  Jaroslav Hajek  <highegg@gmail.com>
+
+	* PermMatrix.h, PermMatrix.cc: New sources.
+	* MDiagArray2.cc (MDiagArray2<T>::is_multiple_of_identity): New method.
+	* MDiagArray2.h (MDiagArray2<T>::is_multiple_of_identity): Declare it.
+	* idx-vector.cc (idx_vector::is_permutation): New method.
+	* idx-vector.h (idx_vector::is_permutation): Declare it.
+	* base-lu.cc (base_lu::getp): New method.
+	(base_lu::P): Call getp.
+	(base_lu::Pvec): Call getp.
+	* base-lu.h (base_lu): Delcare P as PermMatrix. Remove unused template
+	params.
+	* dbleQRP.cc (dbleQRP::dbleQRP): Construct a permutation matrix.
+	(dbleQRP::Pvec): New method.
+	* dbleQRP.h: Declare new method. Declare P as PermMatrix.
+	* CmplxQRP.cc (ComplexQRP): Likewise.
+	* CmplxQRP.h (ComplexQRP): Likewise.
+	* floatQRP.cc (FloatQRP): Likewise.
+	* floatQRP.h (FloatQRP): Likewise.
+	* fCmplxQRP.cc (FloatComplexQRP): Likewise.
+	* fCmplxQRP.h (FloatComplexQRP): Likewise.
+
 2008-12-01  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DiagArray2.h (DiagArray2<T>::DiagArray2<T> (const DiagArray2<U>&)): New template

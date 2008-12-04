@@ -86,7 +86,7 @@ ComplexQRP::init (const ComplexMatrix& a, QR::type qr_type)
   Array<double> rwork (2*n);
   double *prwork = rwork.fortran_vec ();
 
-  Array<octave_idx_type> jpvt (n, 0);
+  MArray<octave_idx_type> jpvt (n, 0);
   octave_idx_type *pjpvt = jpvt.fortran_vec ();
 
   // Code to enforce a certain permutation could go here...
@@ -97,18 +97,8 @@ ComplexQRP::init (const ComplexMatrix& a, QR::type qr_type)
   // Form Permutation matrix (if economy is requested, return the
   // indices only!)
 
-  if (qr_type == QR::economy)
-    {
-      p.resize (1, n, 0.0);
-      for (octave_idx_type j = 0; j < n; j++)
-	p.elem (0, j) = jpvt.elem (j);
-    }
-  else
-    {
-      p.resize (n, n, 0.0);
-      for (octave_idx_type j = 0; j < n; j++)
-	p.elem (jpvt.elem (j) - 1, j) = 1.0;
-    }
+  jpvt -= 1;
+  p = PermMatrix (jpvt, true);
 
   octave_idx_type n2 = (qr_type == QR::economy) ? min_mn : m;
 
@@ -129,6 +119,14 @@ ComplexQRP::init (const ComplexMatrix& a, QR::type qr_type)
 
   q = A_fact;
   q.resize (m, n2);
+}
+
+ColumnVector
+ComplexQRP::Pvec (void) const
+{
+  Array<double> pa (p);
+  ColumnVector pv (MArray<double> (pa) + 1.0);
+  return pv;
 }
 
 /*

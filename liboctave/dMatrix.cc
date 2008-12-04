@@ -248,6 +248,19 @@ Matrix::Matrix (const DiagMatrix& a)
     elem (i, i) = a.elem (i, i);
 }
 
+Matrix::Matrix (const PermMatrix& a)
+  : MArray2<double> (a.rows (), a.cols (), 0.0)
+{
+  const Array<octave_idx_type> ia (a);
+  octave_idx_type len = a.rows ();
+  if (a.is_col_perm ())
+    for (octave_idx_type i = 0; i < len; i++)
+      elem (ia(i), i) = 1.0;
+  else
+    for (octave_idx_type i = 0; i < len; i++)
+      elem (i, ia(i)) = 1.0;
+}
+
 // FIXME -- could we use a templated mixed-type copy function
 // here?
 

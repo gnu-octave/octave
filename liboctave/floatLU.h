@@ -30,20 +30,20 @@ along with Octave; see the file COPYING.  If not, see
 
 class
 OCTAVE_API
-FloatLU : public base_lu <FloatMatrix, float, Matrix, double>
+FloatLU : public base_lu <FloatMatrix>
 {
 public:
 
-  FloatLU (void) : base_lu <FloatMatrix, float, Matrix, double> () { }
+  FloatLU (void) : base_lu <FloatMatrix> () { }
 
   FloatLU (const FloatMatrix& a);
 
-  FloatLU (const FloatLU& a) : base_lu <FloatMatrix, float, Matrix, double> (a) { }
+  FloatLU (const FloatLU& a) : base_lu <FloatMatrix> (a) { }
 
   FloatLU& operator = (const FloatLU& a)
     {
       if (this != &a)
-	base_lu <FloatMatrix, float, Matrix, double> :: operator = (a);
+	base_lu <FloatMatrix> :: operator = (a);
 
       return *this;
     }

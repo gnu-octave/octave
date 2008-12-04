@@ -98,6 +98,8 @@ public:
 
   FloatColumnVector diag (octave_idx_type k = 0) const;
 
+  bool is_identity (void) const;
+
   // i/o
 
   friend OCTAVE_API std::ostream& operator << (std::ostream& os, const FloatDiagMatrix& a);

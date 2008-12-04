@@ -58,6 +58,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "fDiagMatrix.h"
 #include "fCDiagMatrix.h"
 
+// Permutation matrix class
+#include "PermMatrix.h"
+
 // Sparse Matrix classes.
 
 #include "boolSparse.h"

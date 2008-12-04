@@ -55,6 +55,8 @@ class ComplexDiagMatrix;
 class FloatDiagMatrix;
 class FloatComplexDiagMatrix;
 
+class PermMatrix;
+
 class AEPBALANCE;
 class ComplexAEPBALANCE;
 class FloatAEPBALANCE;

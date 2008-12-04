@@ -25,12 +25,15 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "MArray.h"
 #include "dColVector.h"
+#include "PermMatrix.h"
 
-template <class lu_type, class lu_elt_type, class p_type, class p_elt_type>
+template <class lu_type>
 class
 base_lu
 {
 public:
+
+  typedef typename lu_type::element_type lu_elt_type;
 
   base_lu (void) { }
 
@@ -54,12 +57,13 @@ public:
 
   lu_type Y (void) const { return a_fact; }
 
-  p_type P (void) const;
+  PermMatrix P (void) const;
 
   ColumnVector P_vec (void) const;
 
 protected:
 
+  Array<octave_idx_type> getp (void) const;
   lu_type a_fact;
   MArray<octave_idx_type> ipvt;
 };

@@ -64,9 +64,12 @@ public:
 
   explicit FloatMatrix (const FloatDiagMatrix& a);
 
+  explicit FloatMatrix (const PermMatrix& a);
+
   explicit FloatMatrix (const boolMatrix& a);
 
   explicit FloatMatrix (const charMatrix& a);
+
 
   FloatMatrix& operator = (const FloatMatrix& a)
     {

@@ -34,7 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <base-lu.h>
 #include <base-lu.cc>
 
-template class base_lu <ComplexMatrix, Complex, Matrix, double>;
+template class base_lu <ComplexMatrix>;
 
 // Define the constructor for this particular derivation.
 

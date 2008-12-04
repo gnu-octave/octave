@@ -308,7 +308,10 @@ as\n\
 		    default:
 		      {
 			FloatQRP fact (m, type);
-			retval(2) = fact.P ();
+                        if (type == QR::economy)
+                          retval(2) = fact.Pvec ();
+                        else
+                          retval(2) = fact.P ();
 			retval(1) = fact.R ();
 			retval(0) = fact.Q ();
 		      }
@@ -343,7 +346,10 @@ as\n\
 		    default:
 		      {
 			FloatComplexQRP fact (m, type);
-			retval(2) = fact.P ();
+                        if (type == QR::economy)
+                          retval(2) = fact.Pvec ();
+                        else
+                          retval(2) = fact.P ();
 			retval(1) = fact.R ();
 			retval(0) = fact.Q ();
 		      }
@@ -381,7 +387,10 @@ as\n\
 		    default:
 		      {
 			QRP fact (m, type);
-			retval(2) = fact.P ();
+                        if (type == QR::economy)
+                          retval(2) = fact.Pvec ();
+                        else
+                          retval(2) = fact.P ();
 			retval(1) = fact.R ();
 			retval(0) = fact.Q ();
 		      }
@@ -416,7 +425,10 @@ as\n\
 		    default:
 		      {
 			ComplexQRP fact (m, type);
-			retval(2) = fact.P ();
+                        if (type == QR::economy)
+                          retval(2) = fact.Pvec ();
+                        else
+                          retval(2) = fact.P ();
 			retval(1) = fact.R ();
 			retval(0) = fact.Q ();
 		      }

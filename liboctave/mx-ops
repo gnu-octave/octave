@@ -70,6 +70,7 @@ i32nda int32NDArray ND int32NDArray.h YES octave_int32::zero int32_t
 ui32nda uint32NDArray ND uint32NDArray.h YES octave_uint32::zero uint32_t
 i64nda int64NDArray ND int64NDArray.h YES octave_int64::zero int64_t
 ui64nda uint64NDArray ND uint64NDArray.h YES octave_uint64::zero uint64_t
+pm PermMatrix PM PermMatrix.h YES static_cast<octave_idx_type>(0)
 # ops
 # result_t lhs_t rhs_t op-type lhs_conv rhs_conv headers ...
 #
@@ -140,6 +141,15 @@ fm fdm fm B
 fm fdm fs B
 fm fm fdm B
 fm fs fdm B
+#
+m pm m B
+m m pm B
+cm pm cm B
+cm cm pm B
+fm pm fm B
+fm fm pm B
+fcm pm fcm B
+fcm fcm pm B
 #
 i8nda s i8nda BCL NONE NONE boolMatrix.h boolNDArray.h
 i8nda i8nda s BCL NONE NONE boolMatrix.h boolNDArray.h

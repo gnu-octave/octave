@@ -64,6 +64,8 @@ public:
 
   explicit Matrix (const DiagMatrix& a);
 
+  explicit Matrix (const PermMatrix& a);
+
   explicit Matrix (const boolMatrix& a);
 
   explicit Matrix (const charMatrix& a);

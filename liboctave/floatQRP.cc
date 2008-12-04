@@ -81,7 +81,7 @@ FloatQRP::init (const FloatMatrix& a, QR::type qr_type)
 
   float *tmp_data = A_fact.fortran_vec ();
 
-  Array<octave_idx_type> jpvt (n, 0);
+  MArray<octave_idx_type> jpvt (n, 0);
   octave_idx_type *pjpvt = jpvt.fortran_vec ();
 
   // Code to enforce a certain permutation could go here...
@@ -91,18 +91,8 @@ FloatQRP::init (const FloatMatrix& a, QR::type qr_type)
   // Form Permutation matrix (if economy is requested, return the
   // indices only!)
 
-  if (qr_type == QR::economy)
-    {
-      p.resize (1, n, 0.0);
-      for (octave_idx_type j = 0; j < n; j++)
-	p.elem (0, j) = jpvt.elem (j);
-    }
-  else
-    {
-      p.resize (n, n, 0.0);
-      for (octave_idx_type j = 0; j < n; j++)
-	p.elem (jpvt.elem (j) - 1, j) = 1.0;
-    }
+  jpvt -= 1;
+  p = PermMatrix (jpvt, true);
 
   octave_idx_type n2 = (qr_type == QR::economy) ? min_mn : m;
 
@@ -125,6 +115,13 @@ FloatQRP::init (const FloatMatrix& a, QR::type qr_type)
   q.resize (m, n2);
 }
 
+FloatColumnVector
+FloatQRP::Pvec (void) const
+{
+  Array<float> pa (p);
+  FloatColumnVector pv (MArray<float> (pa) + 1.0f);
+  return pv;
+}
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

@@ -719,6 +719,8 @@ public:
   idx_vector
   complement (octave_idx_type n) const;
 
+  bool is_permutation (octave_idx_type n) const;
+
   // FIXME -- these are here for compatibility.  They should be removed
   // when no longer in use.
 

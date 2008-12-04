@@ -387,6 +387,7 @@ DiagMatrix::diag (octave_idx_type k) const
   return d;
 }
 
+
 std::ostream&
 operator << (std::ostream& os, const DiagMatrix& a)
 {

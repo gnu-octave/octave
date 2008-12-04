@@ -1,3 +1,29 @@
+2008-12-03  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-perm.h: New source.
+	* ov-perm.cc: New source.
+	* ov-flt-perm.h: New source.
+	* ov-flt-perm.cc: New source.
+	* ov-base-diag.cc (octave_base_diag<DMT, MT>::do_index_op):
+	If subscripting an identity matrix by permutation(s), return a
+	permutation matrix object.
+	* ov.cc (octave_value::octave_value (const PermMatrix&)): New
+	constructor.
+	* ov.cc (octave_value::octave_value (const PermMatrix&)): Declare it.
+	* op-cm-pm.cc: New source.
+	* op-fcm-fpm.cc: New source.
+	* op-fm-fpm.cc: New source.
+	* op-fpm-fcm.cc: New source.
+	* op-fpm-fm.cc: New source.
+	* op-fpm-fpm.cc: New source.
+	* op-m-pm.cc: New source.
+	* op-pm-cm.cc: New source.
+	* op-pm-m.cc: New source.
+	* op-pm-pm.cc: New source.
+	* op-pm-template.cc: New source.
+	* Makefile.in: Include new sources.
+	* DLD-FUNCTIONS/qr.cc (Fqr): Reflect interface changes of QR classes.
+
 2008-12-03  John W. Eaton  <jwe@octave.org>
 
 	* debug.cc (bp_table::do_get_breakpoint_list): Style fixes.

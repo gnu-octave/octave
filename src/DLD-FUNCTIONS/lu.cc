@@ -356,7 +356,7 @@ information.\n\
 
 		    case 2:
 		      {
-			FloatMatrix P = fact.P ();
+			PermMatrix P = fact.P ();
 			FloatMatrix L = P.transpose () * fact.L ();
 			retval(1) = fact.U ();
 			retval(0) = L;
@@ -394,7 +394,7 @@ information.\n\
 
 		    case 2:
 		      {
-			Matrix P = fact.P ();
+			PermMatrix P = fact.P ();
 			Matrix L = P.transpose () * fact.L ();
 			retval(1) = fact.U ();
 			retval(0) = L;
@@ -435,7 +435,7 @@ information.\n\
 
 		    case 2:
 		      {
-			FloatMatrix P = fact.P ();
+			PermMatrix P = fact.P ();
 			FloatComplexMatrix L = P.transpose () * fact.L ();
 			retval(1) = fact.U ();
 			retval(0) = L;
@@ -473,7 +473,7 @@ information.\n\
 
 		    case 2:
 		      {
-			Matrix P = fact.P ();
+			PermMatrix P = fact.P ();
 			ComplexMatrix L = P.transpose () * fact.L ();
 			retval(1) = fact.U ();
 			retval(0) = L;
@@ -515,7 +515,7 @@ information.\n\
 %! [l, u, p] = lu ([1, 2; 3, 4]);
 %! assert(l, [1, 0; 1/3, 1], sqrt (eps));
 %! assert(u, [3, 4; 0, 2/3], sqrt (eps));
-%! assert(p, [0, 1; 1, 0], sqrt (eps));
+%! assert(p(:,:), [0, 1; 1, 0], sqrt (eps));
 
 %!test
 %! [l, u, p] = lu ([1, 2; 3, 4],'vector');
@@ -527,7 +527,7 @@ information.\n\
 %! [l u p] = lu ([1, 2; 3, 4; 5, 6]);
 %! assert(l, [1, 0; 1/5, 1; 3/5, 1/2], sqrt (eps));
 %! assert(u, [5, 6; 0, 4/5], sqrt (eps));
-%! assert(p, [0, 0, 1; 1, 0, 0; 0 1 0], sqrt (eps));
+%! assert(p(:,:), [0, 0, 1; 1, 0, 0; 0 1 0], sqrt (eps));
 
 %!assert(lu (single([1, 2; 3, 4])), single([3, 4; 1/3, 2/3]), eps('single'));
 
@@ -540,7 +540,7 @@ information.\n\
 %! [l, u, p] = lu (single([1, 2; 3, 4]));
 %! assert(l, single([1, 0; 1/3, 1]), sqrt (eps('single')));
 %! assert(u, single([3, 4; 0, 2/3]), sqrt (eps('single')));
-%! assert(p, single([0, 1; 1, 0]), sqrt (eps('single')));
+%! assert(p(:,:), single([0, 1; 1, 0]), sqrt (eps('single')));
 
 %!test
 %! [l, u, p] = lu (single([1, 2; 3, 4]),'vector');
@@ -552,7 +552,7 @@ information.\n\
 %! [l u p] = lu (single([1, 2; 3, 4; 5, 6]));
 %! assert(l, single([1, 0; 1/5, 1; 3/5, 1/2]), sqrt (eps('single')));
 %! assert(u, single([5, 6; 0, 4/5]), sqrt (eps('single')));
-%! assert(p, single([0, 0, 1; 1, 0, 0; 0 1 0]), sqrt (eps('single')));
+%! assert(p(:,:), single([0, 0, 1; 1, 0, 0; 0 1 0]), sqrt (eps('single')));
 
 %!error <Invalid call to lu.*> lu ();
 %!error lu ([1, 2; 3, 4], 2);

@@ -528,6 +528,39 @@ idx_vector::complement (octave_idx_type n) const
                              dim_vector (1, len), DIRECT);
 }
 
+bool
+idx_vector::is_permutation (octave_idx_type n) const
+{
+  bool retval = false;
+
+  if (is_colon_equiv (n))
+    retval = true;
+  else if (length (n) == n && extent(n) == n)
+    {
+      bool *left = new bool[n];
+
+      std::fill (left, left + n, true);
+
+      retval = true;
+
+      for (octave_idx_type i = 0, len = length (); i < len; i++)
+        { 
+          octave_idx_type k = xelem (i);
+          if (left[k])
+              left[k] = false;
+          else
+            {
+              retval = false;
+              break;
+            }
+        }
+
+      delete left;
+    }
+
+  return retval;
+}
+
 octave_idx_type 
 idx_vector::freeze (octave_idx_type z_len, const char *tag, bool resize_ok)
 {

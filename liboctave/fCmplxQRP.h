@@ -27,7 +27,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <iostream>
 
 #include "fCmplxQR.h"
-#include "fMatrix.h"
+#include "PermMatrix.h"
+#include "fColVector.h"
 
 class
 OCTAVE_API
@@ -55,13 +56,15 @@ public:
 
   void init (const FloatComplexMatrix&, QR::type = QR::std);
 
-  FloatMatrix P (void) const { return p; }
+  PermMatrix P (void) const { return p; }
+
+  FloatColumnVector Pvec (void) const;
 
   friend std::ostream&  operator << (std::ostream&, const FloatComplexQRP&);
 
 private:
 
-  FloatMatrix p;
+  PermMatrix p;
 };
 
 #endif

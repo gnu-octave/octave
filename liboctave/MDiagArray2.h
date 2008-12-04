@@ -104,6 +104,8 @@ public:
   MDiagArray2<T> transpose (void) const { return DiagArray2<T>::transpose (); }
   MDiagArray2<T> hermitian (T (*fcn) (const T&) = 0) const { return DiagArray2<T>::hermitian (fcn); }
 
+  bool is_multiple_of_identity (T val) const;
+
   static MDiagArray2<T> nil_array;
 
   // Currently, the OPS functions don't need to be friends, but that

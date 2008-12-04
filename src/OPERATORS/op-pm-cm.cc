@@ -1,7 +1,6 @@
 /*
 
-Copyright (C) 1994, 1995, 1996, 1997, 2002, 2004, 2005, 2006, 2007
-              John W. Eaton
+Copyright (C) 2008 Jaroslav Hajek <highegg@gmail.com>
 
 This file is part of Octave.
 
@@ -21,39 +20,14 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_LU_h)
-#define octave_LU_h 1
+#define MINCLUDE "ov-cx-mat.h"
 
-#include "base-lu.h"
-#include "dMatrix.h"
+#define LMATRIX perm_matrix
+#define RMATRIX complex_matrix
 
-class
-OCTAVE_API
-LU : public base_lu <Matrix>
-{
-public:
+#define LSHORT pm
+#define RSHORT cm
 
-  LU (void) : base_lu <Matrix> () { }
+#define LEFT
 
-  LU (const Matrix& a);
-
-  LU (const LU& a) : base_lu <Matrix> (a) { }
-
-  LU& operator = (const LU& a)
-    {
-      if (this != &a)
-	base_lu <Matrix> :: operator = (a);
-
-      return *this;
-    }
-
-  ~LU (void) { }
-};
-
-#endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/
+#include "op-pm-template.cc"

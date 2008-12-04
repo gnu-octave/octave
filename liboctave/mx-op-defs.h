@@ -1289,6 +1289,60 @@ FCN (const T ## NDArray& a, const T ## NDArray& b) \
   extern OCTAVE_API T ## NDArray max (const T ## NDArray& a, \
 				       const T ## NDArray& b);
 
+#define PMM_MULTIPLY_OP(PM, M) \
+M operator * (const PM& p, const M& x) \
+{ \
+  octave_idx_type nr = x.rows (), nc = x.columns (); \
+  M result; \
+  if (p.columns () != nr) \
+    gripe_nonconformant ("operator *", p.rows (), p.columns (), nr, nc); \
+  else \
+    { \
+      if (p.is_col_perm ()) \
+        { \
+          result = M (nr, nc); \
+          result.assign (idx_vector (p), idx_vector::colon, x); \
+        } \
+      else \
+        result = x.index (idx_vector (p), idx_vector::colon); \
+    } \
+  \
+  return result; \
+}
+
+#define MPM_MULTIPLY_OP(M, PM) \
+M operator * (const M& x, const PM& p) \
+{ \
+  octave_idx_type nr = x.rows (), nc = x.columns (); \
+  M result; \
+  if (p.rows () != nc) \
+    gripe_nonconformant ("operator *", nr, nc, p.rows (), p.columns ()); \
+  else \
+    { \
+      if (p.is_col_perm ()) \
+        result = x.index (idx_vector::colon, idx_vector (p)); \
+      else \
+        { \
+          result = M (nr, nc); \
+          result.assign (idx_vector::colon, idx_vector (p), x); \
+        } \
+    } \
+  \
+  return result; \
+}
+
+#define PMM_BIN_OP_DECLS(R, PM, M, API) \
+  BIN_OP_DECL (R, operator *, PM, M, API);
+
+#define PMM_BIN_OPS(R, PM, M) \
+  PMM_MULTIPLY_OP(PM, M);
+
+#define MPM_BIN_OP_DECLS(R, M, PM, API) \
+  BIN_OP_DECL (R, operator *, M, PM, API);
+
+#define MPM_BIN_OPS(R, M, PM) \
+  MPM_MULTIPLY_OP(M, PM);
+
 
 /*
 ;;; Local Variables: ***

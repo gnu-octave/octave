@@ -32,52 +32,13 @@
 ## Adapted-By: jwe
 
 function retval = str2mat (varargin)
-
-  if (nargin == 0)
-    print_usage ();
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+             "str2mat is obsolete and will be removed from a future version of Octave; please use char instead.");
   endif
 
-  nc = 0;
-  nr = 0;
-
-  nr = zeros (nargin, 1);
-  nc = zeros (nargin, 1);
-  for k = 1 : nargin
-    s = varargin{k};
-    if (! ischar (s))
-      s = char (s);
-    endif
-    [nr(k), nc(k)] = size (s);
-  endfor
-
-  tmp = find (nr == 0);
-
-  if (! isempty (tmp))
-    nr(tmp) = 1;
-  endif
-
-  retval_nr = sum (nr);
-  retval_nc = max (nc);
-
-  retval = char (ones (retval_nr, retval_nc) * toascii (" "));
-
-  row_offset = 0;
-  for k = 1 : nargin
-    s = varargin{k};
-    if (! ischar (s))
-      s = char (s);
-    endif
-    if (nc(k) > 0)
-      retval ((row_offset + 1) : (row_offset + nr(k)), 1:nc(k)) = s;
-    endif
-    row_offset = row_offset + nr(k);
-  endfor
+  retval = char (varargin{:});
 
 endfunction
-
-%!assert(strcmp (str2mat ("a", "bb", "ccc"), ["a  "; "bb "; "ccc"]));
-
-%!error str2mat ();
-
-%!assert(all (str2mat (1, 2, 3) == setstr ([1; 2; 3])));
-

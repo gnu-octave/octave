@@ -665,7 +665,7 @@ strcmp ("hello", c)
 @noindent
 The following functions for string manipulation support cell arrays of
 strings, @code{strcmp}, @code{strcmpi}, @code{strncmp}, @code{strncmpi}, 
-@code{str2double}, @code{str2mat}, @code{strappend}, @code{strtrunc},
+@code{str2double}, @code{char}, @code{strappend}, @code{strtrunc},
 @code{strvcat}, @code{strfind}, and @code{strmatch}.
 
 @DOCSTRING(cellstr)

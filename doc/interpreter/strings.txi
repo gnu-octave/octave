@@ -224,7 +224,7 @@ only of blank characters (ASCII code 32).
 
 It has been shown above that strings can be concatenated using matrix notation
 (@pxref{Strings}, @ref{Character Arrays}).  Apart from that, there are several
-functions to concatenate string objects: @code{char}, @code{str2mat},
+functions to concatenate string objects: @code{char},
 @code{strvcat}, @code{strcat} and @code{cstrcat}.  In addition, the general
 purpose concatenation functions can be used: see @ref{doc-cat,,cat},
 @ref{doc-horzcat,,horzcat} and @ref{doc-vertcat,,vertcat}.
@@ -243,7 +243,7 @@ char([98, 97, 110, 97, 110, 97])
 @end example
 
 @item
-@code{char}, @code{str2mat} and @code{strvcat}
+@code{char} and @code{strvcat}
 concatenate vertically, while @code{strcat} and @code{cstrcat} concatenate
 horizontally.  For example:
 
@@ -262,7 +262,7 @@ strcat("oc", "tave", " is", " good", " for you")
 @end group
 @end example
 
-@item @code{char} and @code{str2mat} both generate an empty row in the output
+@item @code{char} generates an empty row in the output
 for each empty string in the input.  @code{strvcat}, on the other hand,
 eliminates empty strings.
 
@@ -286,7 +286,7 @@ strvcat("orange", "green", "", "red")
 @end example
 
 @item All string concatenation functions except @code{cstrcat} also accept cell
-array data (@pxref{Cell Arrays}).  @code{char}, @code{str2mat} and
+array data (@pxref{Cell Arrays}).  @code{char} and
 @code{strvcat} convert cell arrays into character arrays, while @code{strcat}
 concatenates within the cells of the cell arrays:
 
@@ -336,8 +336,6 @@ from the internal representation of the strings in a string array
 @end itemize
 
 @DOCSTRING(char)
-
-@DOCSTRING(str2mat)
 
 @DOCSTRING(strvcat)
 

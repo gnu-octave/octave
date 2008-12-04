@@ -1,3 +1,8 @@
+2008-12-02  Thorsten Meyer  <thorsten.meyier@gmx.de>
+
+        * interpreter/container.txi, interpreter/strings.txi:
+        Remove reference to str2mat.m
+        
 2008-11-15  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
         * interpreter/strings.txi: Add text around docstrings, change

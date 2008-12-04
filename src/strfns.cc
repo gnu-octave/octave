@@ -149,6 +149,7 @@ of the string array have the same length.\n\
 %!assert (all(char ({100, [], 100}) == ["d";" ";"d"]))
 %!assert (all(char ({100,{100, {""}}}) == ["d";"d";" "]))
 %!assert (all(char (["a";"be"], {"c", 100}) == ["a";"be";"c";"d"]))
+%!assert(strcmp (char ("a", "bb", "ccc"), ["a  "; "bb "; "ccc"]));
 */
 
 

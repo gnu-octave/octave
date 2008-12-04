@@ -570,6 +570,33 @@ ComplexDiagMatrix::diag (octave_idx_type k) const
   return d;
 }
 
+ComplexDET
+ComplexDiagMatrix::determinant (void) const
+{
+  ComplexDET det (1.0);
+  if (rows () != cols ())
+    {
+      (*current_liboctave_error_handler) ("determinant requires square matrix");
+      det = ComplexDET (0.0);
+    }
+  else
+    {
+      octave_idx_type len = length ();
+      for (octave_idx_type i = 0; i < len; i++)
+        det *= elem (i, i);
+    }
+
+  return det;
+}
+
+double
+ComplexDiagMatrix::rcond (void) const
+{
+  ColumnVector av = diag (0).map (std::abs);
+  double amx = av.max (), amn = av.min ();
+  return amx == 0 ? 0.0 : amn / amx;
+}
+
 // i/o
 
 std::ostream&

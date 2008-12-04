@@ -34,6 +34,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-cx-diag.h"
 #include "ov-flt-re-diag.h"
 #include "ov-flt-cx-diag.h"
+#include "ov-perm.h"
+#include "ov-flt-perm.h"
 #include "utils.h"
 
 DEFUN_DLD (inv, args, nargout,
@@ -96,11 +98,15 @@ be avoided. It is significantly more accurate and faster to do\n\
             {
               CAST_CONV_ARG (const octave_float_complex_diag_matrix&);
               result = v.float_complex_diag_matrix_value ().inverse (info);
+              if (nargout > 1)
+                frcond = v.float_complex_diag_matrix_value ().rcond ();
             }
           else
             {
               CAST_CONV_ARG (const octave_complex_diag_matrix&);
               result = v.complex_diag_matrix_value ().inverse (info);
+              if (nargout > 1)
+                rcond = v.complex_diag_matrix_value ().rcond ();
             }
         }
       else
@@ -109,12 +115,33 @@ be avoided. It is significantly more accurate and faster to do\n\
             {
               CAST_CONV_ARG (const octave_float_diag_matrix&);
               result = v.float_diag_matrix_value ().inverse (info);
+              if (nargout > 1)
+                frcond = v.float_diag_matrix_value ().rcond ();
             }
           else
             {
               CAST_CONV_ARG (const octave_diag_matrix&);
               result = v.diag_matrix_value ().inverse (info);
+              if (nargout > 1)
+                rcond = v.diag_matrix_value ().rcond ();
             }
+        }
+    }
+  else if (arg.is_perm_matrix ())
+    {
+      rcond = 1.0;
+      frcond = 1.0f;
+      info = 0;
+      const octave_base_value& a = arg.get_rep ();
+      if (isfloat)
+        {
+          CAST_CONV_ARG (const octave_float_perm_matrix&);
+          result = v.perm_matrix_value ().inverse ();
+        }
+      else
+        {
+          CAST_CONV_ARG (const octave_perm_matrix&);
+          result = v.perm_matrix_value ().inverse ();
         }
     }
   else if (isfloat)

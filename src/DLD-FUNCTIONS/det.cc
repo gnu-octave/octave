@@ -32,17 +32,24 @@ along with Octave; see the file COPYING.  If not, see
 #include "gripes.h"
 #include "oct-obj.h"
 #include "utils.h"
+#include "ops.h"
 
 #include "ov-re-mat.h"
 #include "ov-cx-mat.h"
 #include "ov-flt-re-mat.h"
 #include "ov-flt-cx-mat.h"
+#include "ov-re-diag.h"
+#include "ov-cx-diag.h"
+#include "ov-flt-re-diag.h"
+#include "ov-flt-cx-diag.h"
+#include "ov-perm.h"
+#include "ov-flt-perm.h"
 
 #define MAYBE_CAST(VAR, CLASS) \
   const CLASS *VAR = arg.type_id () == CLASS::static_type_id () ? \
    dynamic_cast<const CLASS *> (&arg.get_rep ()) : 0
 
-DEFUN_DLD (det, args, ,
+DEFUN_DLD (det, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {[@var{d}, @var{rcond}] =} det (@var{a})\n\
 Compute the determinant of @var{a} using @sc{Lapack} for full and UMFPACK\n\
@@ -84,8 +91,65 @@ if requested.\n\
       return retval;
     }
 
+  bool isfloat = arg.is_single_type ();
 
-  if (arg.is_single_type ())
+  if (arg.is_diag_matrix ())
+    {
+      const octave_base_value& a = arg.get_rep ();
+      if (arg.is_complex_type ())
+        {
+          if (isfloat)
+            {
+              CAST_CONV_ARG (const octave_float_complex_diag_matrix&);
+              retval(0) = v.float_complex_diag_matrix_value ().determinant ().value ();
+              if (nargout > 1)
+                retval(1) = v.float_complex_diag_matrix_value ().rcond ();
+            }
+          else
+            {
+              CAST_CONV_ARG (const octave_complex_diag_matrix&);
+              retval(0) = v.complex_diag_matrix_value ().determinant ().value ();
+              if (nargout > 1)
+                retval(1) = v.complex_diag_matrix_value ().rcond ();
+            }
+        }
+      else
+        {
+          if (isfloat)
+            {
+              CAST_CONV_ARG (const octave_float_diag_matrix&);
+              retval(0) = v.float_diag_matrix_value ().determinant ().value ();
+              if (nargout > 1)
+                retval(1) = v.float_diag_matrix_value ().rcond ();
+            }
+          else
+            {
+              CAST_CONV_ARG (const octave_diag_matrix&);
+              retval(0) = v.diag_matrix_value ().determinant ().value ();
+              if (nargout > 1)
+                retval(1) = v.diag_matrix_value ().rcond ();
+            }
+        }
+    }
+  else if (arg.is_perm_matrix ())
+    {
+      const octave_base_value& a = arg.get_rep ();
+      if (isfloat)
+        {
+          CAST_CONV_ARG (const octave_float_perm_matrix&);
+          retval(0) = static_cast<float> (v.perm_matrix_value ().determinant ());
+          if (nargout > 1)
+            retval(1) = 1.0;
+        }
+      else
+        {
+          CAST_CONV_ARG (const octave_perm_matrix&);
+          retval(0) = static_cast<double> (v.perm_matrix_value ().determinant ());
+          if (nargout > 1)
+            retval(1) = 1.0f;
+        }
+    }
+  else if (arg.is_single_type ())
     {
       if (arg.is_real_type ())
 	{

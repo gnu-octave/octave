@@ -28,6 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "fRowVector.h"
 #include "fColVector.h"
+#include "DET.h"
 
 #include "mx-defs.h"
 
@@ -98,7 +99,8 @@ public:
 
   FloatColumnVector diag (octave_idx_type k = 0) const;
 
-  bool is_identity (void) const;
+  FloatDET determinant (void) const;
+  float rcond (void) const;
 
   // i/o
 

@@ -1,3 +1,13 @@
+2008-12-04  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov.h (octave_value::is_perm_matrix): New method.
+	* ov-base.h (octave_base_value::is_perm_matrix): New method.
+	* ov-perm.h (octave_perm_matrix::is_perm_matrix): New method.
+	* DLD-FUNCTIONS/inv.cc (Finv): Handle permutation matrices specially,
+	compute rcond for diagonal matrices.
+	* DLD-FUNCTIONS/det.cc (Fdet): Handle permutation & diagonal matrices
+	specially.
+
 2008-12-03  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-perm.h: New source.

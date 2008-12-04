@@ -466,6 +466,9 @@ public:
   bool is_diag_matrix (void) const
     { return rep->is_diag_matrix (); }
 
+  bool is_perm_matrix (void) const
+    { return rep->is_perm_matrix (); }
+
   bool is_string (void) const
     { return rep->is_string (); }
 

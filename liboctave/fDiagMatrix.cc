@@ -394,6 +394,33 @@ FloatDiagMatrix::diag (octave_idx_type k) const
   return d;
 }
 
+FloatDET
+FloatDiagMatrix::determinant (void) const
+{
+  FloatDET det (1.0f);
+  if (rows () != cols ())
+    {
+      (*current_liboctave_error_handler) ("determinant requires square matrix");
+      det = 0.0f;
+    }
+  else
+    {
+      octave_idx_type len = length ();
+      for (octave_idx_type i = 0; i < len; i++)
+        det *= elem (i, i);
+    }
+
+  return det;
+}
+
+float
+FloatDiagMatrix::rcond (void) const
+{
+  FloatColumnVector av = diag (0).map (fabsf);
+  float amx = av.max (), amn = av.min ();
+  return amx == 0 ? 0.0f : amn / amx;
+}
+
 std::ostream&
 operator << (std::ostream& os, const FloatDiagMatrix& a)
 {

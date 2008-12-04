@@ -91,6 +91,8 @@ public:
 		     sortmode mode = ASCENDING) const
     { return to_dense ().sort (sidx, dim, mode); }
 
+  bool is_perm_matrix (void) const { return true; }
+
   bool is_matrix_type (void) const { return true; }
 
   bool is_numeric_type (void) const { return true; }

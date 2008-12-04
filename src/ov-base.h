@@ -238,6 +238,8 @@ public:
 
   virtual bool is_diag_matrix (void) const { return false; }
 
+  virtual bool is_perm_matrix (void) const { return false; }
+
   virtual bool is_string (void) const { return false; }
 
   virtual bool is_sq_string (void) const { return false; }

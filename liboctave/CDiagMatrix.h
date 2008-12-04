@@ -30,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "CRowVector.h"
 #include "dColVector.h"
 #include "CColVector.h"
+#include "DET.h"
 
 #include "mx-defs.h"
 
@@ -122,6 +123,9 @@ public:
   // other operations
 
   ComplexColumnVector diag (octave_idx_type k = 0) const;
+
+  ComplexDET determinant (void) const;
+  double rcond (void) const;
 
   // i/o
 

@@ -1,4 +1,19 @@
 2008-12-04  Jaroslav Hajek  <highegg@gmail.com>
+	
+	* dDiagMatrix.cc (DiagMatrix::determinant, DiagMatrix::rcond): New
+	method.
+	* dDiagMatrix.h: Declare them.
+	* fDiagMatrix.cc (FloatDiagMatrix::determinant,
+	FloatDiagMatrix::rcond): New methods.
+	* fDiagMatrix.h: Declare them.
+	* CDiagMatrix.cc (ComplexDiagMatrix::determinant,
+	ComplexDiagMatrix::rcond): New methods.
+	* CDiagMatrix.h: Declare them.
+	* fCDiagMatrix.cc (FloatComplexDiagMatrix::determinant,
+	FloatComplexDiagMatrix::rcond): New methods.
+	* fCDiagMatrix.h: Declare them.
+
+2008-12-04  Jaroslav Hajek  <highegg@gmail.com>
 
 	* idx-vector.cc (idx-vector::complement): Add missing delete.
 

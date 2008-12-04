@@ -30,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "fCRowVector.h"
 #include "fColVector.h"
 #include "fCColVector.h"
+#include "DET.h"
 
 #include "mx-defs.h"
 
@@ -122,6 +123,9 @@ public:
   // other operations
 
   FloatComplexColumnVector diag (octave_idx_type k = 0) const;
+
+  FloatComplexDET determinant (void) const;
+  float rcond (void) const;
 
   // i/o
 

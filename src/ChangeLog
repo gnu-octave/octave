@@ -27,6 +27,11 @@
 	deleting them to avoid issues with callback function also deleting
 	the handles.
 	
+2008-11-21  John Swensen  <jpswensen@comcast.net> 
+
+	* debug.cc (bp_table::do_get_breakpoint_list): Avoid modifying
+	bp_map while iterating over it.
+
 2008-11-21  Jarkko Kaleva  <d3roga@gmail.com>
 
 	* DLD-FUNCTIONS/eig.cc (Feig): Handle generalized eigenvalues and 

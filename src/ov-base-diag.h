@@ -189,11 +189,7 @@ public:
 
   bool save_ascii (std::ostream& os);
 
-  bool save_binary (std::ostream& os, bool& save_as_floats);
-
-#if defined (HAVE_HDF5)
-  bool save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats);
-#endif
+  bool load_ascii (std::istream& is);
 
   int write (octave_stream& os, int block_size,
 	     oct_data_conv::data_type output_type, int skip,

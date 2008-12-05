@@ -36,6 +36,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-stream.h"
 #include "ops.h"
 
+#include "ls-oct-ascii.h"
+
 template <class DMT, class MT>
 octave_value
 octave_base_diag<DMT, MT>::subsref (const std::string& type,
@@ -355,32 +357,59 @@ template <class DMT, class MT>
 bool 
 octave_base_diag<DMT, MT>::save_ascii (std::ostream& os)
 {
-  // FIXME: this should probably save the matrix as diagonal.
-  return to_dense ().save_ascii (os);
+  os << "# rows: " << matrix.rows () << "\n"
+    << "# columns: " << matrix.columns () << "\n";
+
+  os << matrix.diag ();
+
+  return true;
 }
 
 template <class DMT, class MT>
 bool 
-octave_base_diag<DMT, MT>::save_binary (std::ostream& os, bool& save_as_floats)
+octave_base_diag<DMT, MT>::load_ascii (std::istream& is)
 {
-  return to_dense ().save_binary (os, save_as_floats);
+  octave_idx_type r = 0, c = 0;
+  bool success = true;
+
+  if (extract_keyword (is, "rows", r, true)
+      && extract_keyword (is, "columns", c, true))
+    {
+      octave_idx_type l = r < c ? r : c;
+      MT tmp (l, 1);
+      is >> tmp;
+
+      if (!is) 
+	{
+	  error ("load: failed to load diagonal matrix constant");
+	  success = false;
+	}
+      else
+        {
+          // This is a little tricky, as we have the Matrix type, but
+          // not ColumnVector type. We need to help the compiler get
+          // through the inheritance tree.
+          typedef typename DMT::element_type el_type;
+          matrix = DMT (MDiagArray2<el_type> (MArray<el_type> (tmp)));
+          matrix.resize (r, c);
+
+          // Invalidate cache. Probably not necessary, but safe.
+          dense_cache = octave_value ();
+        }
+    }
+  else
+    {
+      error ("load: failed to extract number of rows and columns");
+      success = false;
+    }
+
+  return success;
 }
-
-#if defined (HAVE_HDF5)
-
-template <class DMT, class MT>
-bool
-octave_base_diag<DMT, MT>::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
-{
-  return to_dense ().save_hdf5 (loc_id, name, save_as_floats);
-}
-
-#endif
 
 template <class DMT, class MT>
 void
 octave_base_diag<DMT, MT>::print_raw (std::ostream& os,
-			  bool pr_as_read_syntax) const
+                                      bool pr_as_read_syntax) const
 {
   return to_dense ().print_raw (os, pr_as_read_syntax);
 }
@@ -405,7 +434,8 @@ template <class DMT, class MT>
 void
 octave_base_diag<DMT, MT>::print (std::ostream& os, bool pr_as_read_syntax) const
 {
-  to_dense ().print (os, pr_as_read_syntax);
+  print_raw (os, pr_as_read_syntax);
+  newline (os);
 }
 template <class DMT, class MT>
 int
@@ -419,7 +449,7 @@ octave_base_diag<DMT, MT>::write (octave_stream& os, int block_size,
 template <class DMT, class MT>
 void
 octave_base_diag<DMT, MT>::print_info (std::ostream& os,
-				    const std::string& prefix) const
+                                       const std::string& prefix) const
 {
   matrix.print_info (os, prefix);
 }

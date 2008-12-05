@@ -1,3 +1,11 @@
+2008-12-05  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-base-diag.cc (save_ascii, load_ascii): Save natively.
+	* ov-base-diag.h (load_ascii): Declare.
+	* ov-perm.cc (save_ascii, load_ascii): Save natively.
+	* ov-perm.h (load_ascii): Declare.
+
+
 2008-12-04  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
         * strfns.cc (Fchar): Add test from str2mat.m

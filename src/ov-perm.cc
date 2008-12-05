@@ -32,6 +32,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "gripes.h"
 #include "ops.h"
 
+#include "ls-oct-ascii.h"
+
 octave_value
 octave_perm_matrix::subsref (const std::string& type,
                              const std::list<octave_value_list>& idx)
@@ -239,25 +241,58 @@ octave_perm_matrix::convert_to_str_internal (bool pad, bool force, char type) co
 bool 
 octave_perm_matrix::save_ascii (std::ostream& os)
 {
-  // FIXME: this should probably save the matrix as permutation.
-  return to_dense ().save_ascii (os);
+  typedef octave_int<octave_idx_type> idx_int_type;
+
+  os << "# size: " << matrix.rows () << "\n";
+  os << "# orient: " << (matrix.is_col_perm () ? 'c' : 'r') << '\n';
+
+  Array<octave_idx_type> pvec = matrix.pvec ();
+  octave_idx_type n = pvec.length ();
+  ColumnVector tmp (n);
+  for (octave_idx_type i = 0; i < n; i++) tmp(i) = pvec(i) + 1;
+  os << tmp;
+
+  return true;
 }
 
 bool 
-octave_perm_matrix::save_binary (std::ostream& os, bool& save_as_floats)
+octave_perm_matrix::load_ascii (std::istream& is)
 {
-  return to_dense ().save_binary (os, save_as_floats);
+  typedef octave_int<octave_idx_type> idx_int_type;
+  octave_idx_type n;
+  bool success = true;
+  char orient;
+
+  if (extract_keyword (is, "size", n, true)
+      && extract_keyword (is, "orient", orient, true))
+    {
+      bool colp = orient == 'c';
+      dim_vector dv (n);
+      ColumnVector tmp (n);
+      is >> tmp;
+      if (!is) 
+	{
+	  error ("load: failed to load permutation matrix constant");
+	  success = false;
+	}
+      else
+        {
+          Array<octave_idx_type> pvec (n);
+          for (octave_idx_type i = 0; i < n; i++) pvec(i) = tmp(i) - 1;
+          matrix = PermMatrix (pvec, colp);
+
+          // Invalidate cache. Probably not necessary, but safe.
+          dense_cache = octave_value ();
+        }
+    }
+  else
+    {
+      error ("load: failed to extract size & orientation");
+      success = false;
+    }
+
+  return success;
 }
-
-#if defined (HAVE_HDF5)
-
-bool
-octave_perm_matrix::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
-{
-  return to_dense ().save_hdf5 (loc_id, name, save_as_floats);
-}
-
-#endif
 
 void
 octave_perm_matrix::print_raw (std::ostream& os,

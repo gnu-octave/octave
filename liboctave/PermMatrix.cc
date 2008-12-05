@@ -123,7 +123,7 @@ PermMatrix::determinant (void) const
 PermMatrix 
 operator *(const PermMatrix& a, const PermMatrix& b)
 {
-  const Array<octave_idx_type>& ia = a, ib = b;
+  const Array<octave_idx_type> ia = a.pvec (), ib = b.pvec ();
   PermMatrix r;
   octave_idx_type n = a.columns ();
   if (n != b.rows ())

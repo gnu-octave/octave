@@ -97,7 +97,8 @@ public:
 
   // other operations
 
-  FloatColumnVector diag (octave_idx_type k = 0) const;
+  FloatColumnVector diag (octave_idx_type k = 0) const
+    { return MDiagArray2<float>::diag (k); }
 
   FloatDET determinant (void) const;
   float rcond (void) const;

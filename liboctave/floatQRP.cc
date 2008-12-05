@@ -123,7 +123,7 @@ FloatQRP::init (const FloatMatrix& a, QR::type qr_type)
 FloatColumnVector
 FloatQRP::Pvec (void) const
 {
-  Array<float> pa (p);
+  Array<float> pa (p.pvec ());
   FloatColumnVector pv (MArray<float> (pa) + 1.0f);
   return pv;
 }

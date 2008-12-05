@@ -122,7 +122,8 @@ public:
 
   // other operations
 
-  FloatComplexColumnVector diag (octave_idx_type k = 0) const;
+  FloatComplexColumnVector diag (octave_idx_type k = 0) const
+    { return MDiagArray2<FloatComplex>::diag (k); }
 
   FloatComplexDET determinant (void) const;
   float rcond (void) const;

@@ -26,7 +26,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "Array.h"
 #include "mx-defs.h"
 
-class PermMatrix : public Array<octave_idx_type>
+// Array<T> is inherited privately because we abuse the dimensions variable
+// for true dimensions. Therefore, the inherited Array<T> object is not a valid
+// Array<T> object, and should not be publicly accessible.
+
+class PermMatrix : private Array<octave_idx_type>
 {
 private:
 
@@ -42,10 +46,34 @@ public:
               bool check = true);
 
   PermMatrix (const PermMatrix& m)
-    : Array<octave_idx_type> (m), _colp(m._colp) 
-    { this->dimensions = m.dims (); }
+    : Array<octave_idx_type> (m), _colp(m._colp) { }
   
   PermMatrix (const idx_vector& idx, bool colp = false, octave_idx_type n = 0); 
+
+  octave_idx_type dim1 (void) const 
+    { return Array<octave_idx_type>::dimensions(0); }
+  octave_idx_type dim2 (void) const 
+    { return Array<octave_idx_type>::dimensions(1); }
+
+  octave_idx_type rows (void) const { return dim1 (); }
+  octave_idx_type cols (void) const { return dim2 (); }
+  octave_idx_type columns (void) const { return dim2 (); }
+
+  octave_idx_type length (void) const 
+    { return Array<octave_idx_type>::length (); }
+  octave_idx_type nelem (void) const { return dim1 () * dim2 (); }
+  octave_idx_type numel (void) const { return nelem (); }
+
+  size_t byte_size (void) const { return length () * sizeof (octave_idx_type); }
+
+  dim_vector dims (void) const { return Array<octave_idx_type>::dimensions; }
+
+  Array<octave_idx_type> pvec (void) const
+    {
+      Array<octave_idx_type> retval (*this);
+      retval.dimensions = dim_vector (length ());
+      return retval;
+    }
 
   octave_idx_type 
   elem (octave_idx_type i, octave_idx_type j) const
@@ -79,6 +107,18 @@ public:
   bool is_row_perm (void) const { return !_colp; }
 
   friend PermMatrix operator *(const PermMatrix& a, const PermMatrix& b);
+
+  const octave_idx_type *data (void) const 
+    { return Array<octave_idx_type>::data (); }
+
+  const octave_idx_type *fortran_vec (void) const 
+    { return Array<octave_idx_type>::fortran_vec (); }
+
+  octave_idx_type *fortran_vec (void) 
+    { return Array<octave_idx_type>::fortran_vec (); }
+
+  void print_info (std::ostream& os, const std::string& prefix) const
+    { Array<octave_idx_type>::print_info (os, prefix); }
 
 private:
   bool _colp;

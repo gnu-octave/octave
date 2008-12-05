@@ -250,7 +250,7 @@ FloatMatrix::FloatMatrix (const FloatDiagMatrix& a)
 FloatMatrix::FloatMatrix (const PermMatrix& a)
   : MArray2<float> (a.rows (), a.cols (), 0.0)
 {
-  const Array<octave_idx_type> ia (a);
+  const Array<octave_idx_type> ia (a.pvec ());
   octave_idx_type len = a.rows ();
   if (a.is_col_perm ())
     for (octave_idx_type i = 0; i < len; i++)

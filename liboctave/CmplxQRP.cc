@@ -129,7 +129,7 @@ ComplexQRP::init (const ComplexMatrix& a, QR::type qr_type)
 ColumnVector
 ComplexQRP::Pvec (void) const
 {
-  Array<double> pa (p);
+  Array<double> pa (p.pvec ());
   ColumnVector pv (MArray<double> (pa) + 1.0);
   return pv;
 }

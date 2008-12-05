@@ -1301,10 +1301,10 @@ M operator * (const PM& p, const M& x) \
       if (p.is_col_perm ()) \
         { \
           result = M (nr, nc); \
-          result.assign (idx_vector (p), idx_vector::colon, x); \
+          result.assign (p.pvec (), idx_vector::colon, x); \
         } \
       else \
-        result = x.index (idx_vector (p), idx_vector::colon); \
+        result = x.index (p.pvec (), idx_vector::colon); \
     } \
   \
   return result; \
@@ -1320,11 +1320,11 @@ M operator * (const M& x, const PM& p) \
   else \
     { \
       if (p.is_col_perm ()) \
-        result = x.index (idx_vector::colon, idx_vector (p)); \
+        result = x.index (idx_vector::colon, p.pvec ()); \
       else \
         { \
           result = M (nr, nc); \
-          result.assign (idx_vector::colon, idx_vector (p), x); \
+          result.assign (idx_vector::colon, p.pvec (), x); \
         } \
     } \
   \

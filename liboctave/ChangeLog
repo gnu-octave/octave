@@ -1,4 +1,22 @@
 2008-12-04  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DiagArray2.h (DiagArray2<T>): Inherit Array<T> privately.
+	(DiagArray2<T>::dim1, dim2, rows, columns, cols, length,
+	nelem, numel, byte_size, dims): New methods.
+	(DiagArray2<T>::diag): New method decl.
+	* DiagArray2.cc (DiagArray2<T>::diag): New method.
+	* MDiagArray2.h (MDiagArray2<T>::diag): New method.
+	* dDiagMatrix.cc (DiagMatrix::diag): Remove.
+	* fDiagMatrix.cc (FloatDiagMatrix::diag): Remove.
+	* CDiagMatrix.cc (ComplexDiagMatrix::diag): Remove.
+	* fCDiagMatrix.cc (FloatComplexDiagMatrix::diag): Remove.
+
+	* PermMatrix.h (PermMatrix): Inherit Array<octave_idx_type> privately.
+	(PermMatrix::dim1, dim2, rows, columns, cols, length,
+	nelem, numel, byte_size, dims): New methods.
+
+	
+2008-12-04  Jaroslav Hajek  <highegg@gmail.com>
 	
 	* dDiagMatrix.cc (DiagMatrix::determinant, DiagMatrix::rcond): New
 	method.

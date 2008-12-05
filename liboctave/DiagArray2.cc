@@ -30,16 +30,41 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <iostream>
 
+#include <algorithm>
+
 #include "DiagArray2.h"
 
 #include "lo-error.h"
+
+template <class T>
+Array<T>
+DiagArray2<T>::diag (octave_idx_type k) const
+{
+  Array<T> d;
+
+  if (k == 0)
+    {
+      // The main diagonal is shallow-copied.
+      d = *this;
+      d.dimensions = dim_vector (length ());
+    }
+  else if (k > 0 && k < cols ())
+    d = Array<T> (std::min (cols () - k, rows ()), T ());
+  else if (k < 0 && -k < rows ())
+    d = Array<T> (std::min (rows () + k, cols ()), T ());
+  else
+    (*current_liboctave_error_handler)
+      ("diag: requested diagonal out of range");
+
+  return d;
+}
 
 template <class T>
 DiagArray2<T>
 DiagArray2<T>::transpose (void) const
 {
   DiagArray2<T> retval (*this);
-  retval.dimensions = dim_vector (this->dim2 (), this->dim1 ());
+  retval.dimensions = dim_vector (dim2 (), dim1 ());
   return retval;
 }
 
@@ -47,7 +72,7 @@ template <class T>
 DiagArray2<T>
 DiagArray2<T>::hermitian (T (* fcn) (const T&)) const
 {
-  DiagArray2<T> retval (this->dim2 (), this->dim1 ());
+  DiagArray2<T> retval (dim2 (), dim1 ());
   const T *p = this->data ();
   T *q = retval.fortran_vec ();
   for (octave_idx_type i = 0; i < this->length (); i++)
@@ -61,7 +86,7 @@ template <class T>
 T
 DiagArray2<T>::checkelem (octave_idx_type r, octave_idx_type c) const
 {
-  if (r < 0 || c < 0 || r >= this->dim1 () || c >= this->dim2 ())
+  if (r < 0 || c < 0 || r >= dim1 () || c >= dim2 ())
     {
       (*current_liboctave_error_handler) ("range error in DiagArray2");
       return T ();
@@ -79,7 +104,7 @@ DiagArray2<T>::resize (octave_idx_type r, octave_idx_type c)
       return;
     }
 
-  if (r == this->dim1 () && c == this->dim2 ())
+  if (r == dim1 () && c == dim2 ())
     return;
 
   typename Array<T>::ArrayRep *old_rep = Array<T>::rep;
@@ -114,7 +139,7 @@ DiagArray2<T>::resize (octave_idx_type r, octave_idx_type c, const T& val)
       return;
     }
 
-  if (r == this->dim1 () && c == this->dim2 ())
+  if (r == dim1 () && c == dim2 ())
     return;
 
   typename Array<T>::ArrayRep *old_rep = Array<T>::rep;

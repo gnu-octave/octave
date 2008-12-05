@@ -557,7 +557,7 @@ idx_vector::is_permutation (octave_idx_type n) const
             }
         }
 
-      delete left;
+      delete [] left;
     }
 
   return retval;

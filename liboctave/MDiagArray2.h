@@ -27,6 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "DiagArray2.h"
 #include "MArray2.h"
+#include "MArray.h"
 
 // Two dimensional diagonal array with math ops.
 
@@ -88,9 +89,9 @@ public:
     {
       octave_idx_type retval = 0;
 
-      const T *d = this->Array<T>::data ();
+      const T *d = this->data ();
 
-      octave_idx_type nel = this->Array<T>::numel ();
+      octave_idx_type nel = this->length ();
 
       for (octave_idx_type i = 0; i < nel; i++)
 	{
@@ -100,6 +101,9 @@ public:
 
       return retval;
     }
+
+  MArray<T> diag (octave_idx_type k = 0) const
+    { return DiagArray2<T>::diag (k); }
 
   MDiagArray2<T> transpose (void) const { return DiagArray2<T>::transpose (); }
   MDiagArray2<T> hermitian (T (*fcn) (const T&) = 0) const { return DiagArray2<T>::hermitian (fcn); }

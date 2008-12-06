@@ -1915,10 +1915,7 @@ Array<T>::sort (octave_idx_type dim, sortmode mode) const
     }
   else
     {
-      // Don't use OCTAVE_LOCAL_BUFFER here as it doesn't work with bool
-      // on some compilers.
-      Array<T> vi (ns);
-      T *pvi = vi.fortran_vec ();
+      OCTAVE_LOCAL_BUFFER (T, pvi, ns);
 
       for (octave_idx_type j = 0; j < iter; j++) 
 	{

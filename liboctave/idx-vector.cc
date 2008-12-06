@@ -34,6 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "Array.h"
 #include "Range.h"
 
+#include "oct-locbuf.h"
 #include "lo-error.h"
 #include "lo-mappers.h"
 
@@ -502,10 +503,7 @@ idx_vector::is_cont_range (octave_idx_type n,
 idx_vector
 idx_vector::complement (octave_idx_type n) const
 {
-
-  bool *left = new bool[n];
-
-  std::fill (left, left + n, true);
+  OCTAVE_LOCAL_BUFFER_INIT (bool, left, n, true);
 
   octave_idx_type cnt = n;
 
@@ -522,8 +520,6 @@ idx_vector::complement (octave_idx_type n) const
   octave_idx_type len = cnt, *data = new octave_idx_type[len];
   for (octave_idx_type i = 0, j = 0; i < n; i++)
     if (left[i]) data[j++] = i;
-  
-  delete [] left;
 
   return new idx_vector_rep (data, len, 
                              len ? data[len-1]+1 : 0, 
@@ -539,9 +535,7 @@ idx_vector::is_permutation (octave_idx_type n) const
     retval = true;
   else if (length (n) == n && extent(n) == n)
     {
-      bool *left = new bool[n];
-
-      std::fill (left, left + n, true);
+      OCTAVE_LOCAL_BUFFER_INIT (bool, left, n, true);
 
       retval = true;
 
@@ -557,7 +551,6 @@ idx_vector::is_permutation (octave_idx_type n) const
             }
         }
 
-      delete [] left;
     }
 
   return retval;

@@ -65,7 +65,7 @@ private:
      <= OCTAVE_LOCAL_BUFFER_MAX_STACK_SIZE; \
   T _bufaut_ ## buf [_lbufaut_ ## buf ? _bufsize_ ## buf : 0]; \
   octave_local_buffer<T> _bufheap_ ## buf (!_lbufaut_ ## buf ? _bufsize_ ## buf : 0); \
-  T *buf = _lbufaut_ ## buf ? _bufaut_ ## buf : static_cast<T *> (_bufheap_ ## buf);
+  T *buf = _lbufaut_ ## buf ? _bufaut_ ## buf : static_cast<T *> (_bufheap_ ## buf)
 
 #else
 
@@ -73,9 +73,17 @@ private:
 
 #define OCTAVE_LOCAL_BUFFER(T, buf, size) \
   octave_local_buffer<T> _buffer_ ## buf (size); \
-  T *buf = _buffer_ ## buf;
+  T *buf = _buffer_ ## buf
 
 #endif 
+
+// Yeah overloading macros would be nice.
+// Note: we use weird variables in the for loop to avoid warnings about
+// shadowed parameters.
+#define OCTAVE_LOCAL_BUFFER_INIT(T, buf, size, value) \
+  OCTAVE_LOCAL_BUFFER(T, buf, size); \
+  for (size_t _buf_iter = 0, _buf_size = size; \
+       _buf_iter < _buf_size; _buf_iter++) buf[_buf_iter] = value
 
 #endif
 

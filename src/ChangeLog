@@ -1,3 +1,8 @@
+2008-12-06  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-fcn-handle.cc (octave_fcn_handle::load_binary): Call istream::get
+	rather than istream::read to supply null terminating character.
+
 2008-10-29  Jaroslav Hajek  <highegg@gmail.com>
 	* file-io.cc, gl-render.cc, load-save.cc, ls-hdf5.cc, ls-mat4.cc,
 	ls-mat5.cc, ls-oct-binary.cc, mex.cc, oct.h, ov-base-int.cc,

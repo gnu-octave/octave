@@ -474,7 +474,7 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
     swap_bytes<4> (&tmp);
 
   OCTAVE_LOCAL_BUFFER (char, ctmp1, tmp+1);
-  is.read (ctmp1, tmp);
+  is.get (ctmp1, tmp+1, 0);
   nm = std::string (ctmp1);
 
   if (! is)
@@ -497,7 +497,7 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
 	swap_bytes<4> (&tmp);
 
       OCTAVE_LOCAL_BUFFER (char, ctmp2, tmp+1);
-      is.read (ctmp2, tmp);
+      is.get (ctmp2, tmp+1, 0);
 
       symbol_table::scope_id local_scope = symbol_table::alloc_scope ();
 	      

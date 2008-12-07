@@ -30,6 +30,14 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "oct-cmplx.h"
 
+template <class R, class S>
+inline void
+mx_inline_fill_vs (R *r, size_t n, S s)
+{
+  for (size_t i = 0; i < n; i++)
+    r[i] = s;
+}
+
 #define VS_OP_FCN(F, OP) \
   template <class R, class V, class S> \
   inline void \

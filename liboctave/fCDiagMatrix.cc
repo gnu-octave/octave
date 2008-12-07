@@ -455,14 +455,7 @@ operator * (const FloatComplexDiagMatrix& a, const FloatDiagMatrix& b)
       FloatComplex a_element = a.elem (i, i);
       float b_element = b.elem (i, i);
 
-      if (a_element == static_cast<float> (0.0) || b_element == static_cast<float> (0.0))
-        c.elem (i, i) = 0;
-      else if (a_element == static_cast<float> (1.0))
-        c.elem (i, i) = b_element;
-      else if (b_element == static_cast<float> (1.0))
-        c.elem (i, i) = a_element;
-      else
-        c.elem (i, i) = a_element * b_element;
+      c.elem (i, i) = a_element * b_element;
     }
 
   return c;
@@ -495,14 +488,7 @@ operator * (const FloatDiagMatrix& a, const FloatComplexDiagMatrix& b)
       float a_element = a.elem (i, i);
       FloatComplex b_element = b.elem (i, i);
 
-      if (a_element == static_cast<float> (0.0) || b_element == static_cast<float> (0.0))
-        c.elem (i, i) = 0;
-      else if (a_element == static_cast<float> (1.0))
-        c.elem (i, i) = b_element;
-      else if (b_element == static_cast<float> (1.0))
-        c.elem (i, i) = a_element;
-      else
-        c.elem (i, i) = a_element * b_element;
+      c.elem (i, i) = a_element * b_element;
     }
 
   return c;
@@ -535,14 +521,7 @@ operator * (const FloatComplexDiagMatrix& a, const FloatComplexDiagMatrix& b)
       FloatComplex a_element = a.elem (i, i);
       FloatComplex b_element = b.elem (i, i);
 
-      if (a_element == static_cast<float> (0.0) || b_element == static_cast<float> (0.0))
-        c.elem (i, i) = 0;
-      else if (a_element == static_cast<float> (1.0))
-        c.elem (i, i) = b_element;
-      else if (b_element == static_cast<float> (1.0))
-        c.elem (i, i) = a_element;
-      else
-        c.elem (i, i) = a_element * b_element;
+      c.elem (i, i) = a_element * b_element;
     }
 
   return c;

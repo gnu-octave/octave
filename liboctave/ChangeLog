@@ -1,3 +1,12 @@
+2008-12-07  Jaroslav Hajek  <highegg@gmail.com>
+
+	* mx-inlines.cc (mx_inline_fill_vs): New template function.
+	* mx-op-defs.h (everywhere): Replace int by octave_idx_type.
+	(MDM_MULTIPLY_OP): Use mx_inline_mul_vs and mx_inline_fill_vs.
+	(DMM_MULTIPLY_OP): Dtto.
+	* fDiagMatrix.cc (operator *): Remove redundant ifs.
+	* fCDiagMatrix.cc (operator *): Remove redundant ifs.
+
 2008-12-06  Jaroslav Hajek  <highegg@gmail.com>
 
 	* oct-locbuf.h (OCTAVE_LOCAL_BUFFER_INIT): New macro.

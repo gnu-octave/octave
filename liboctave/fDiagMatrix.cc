@@ -334,14 +334,7 @@ operator * (const FloatDiagMatrix& a, const FloatDiagMatrix& b)
       float a_element = a.elem (i, i);
       float b_element = b.elem (i, i);
 
-      if (a_element == 0.0 || b_element == 0.0)
-        c.elem (i, i) = 0.0;
-      else if (a_element == 1.0)
-        c.elem (i, i) = b_element;
-      else if (b_element == 1.0)
-        c.elem (i, i) = a_element;
-      else
-        c.elem (i, i) = a_element * b_element;
+      c.elem (i, i) = a_element * b_element;
     }
 
   return c;

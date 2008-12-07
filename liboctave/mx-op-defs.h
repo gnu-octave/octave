@@ -2,6 +2,7 @@
 
 Copyright (C) 1996, 1997, 1998, 2000, 2001, 2003, 2004, 2005, 2006,
               2007 John W. Eaton
+Copyright (C) 2008 Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -24,6 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_mx_op_defs_h)
 #define octave_mx_op_defs_h 1
 
+#include "oct-types.h"
 #include "mx-inlines.cc"
 
 #define BIN_OP_DECL(R, OP, X, Y, API) \
@@ -56,11 +58,11 @@ class boolNDArray;
   R \
   F (const V& v, const S& s) \
   { \
-    int len = v.length (); \
+    octave_idx_type len = v.length (); \
  \
     R r (len); \
  \
-    for (int i = 0; i < len; i++) \
+    for (octave_idx_type i = 0; i < len; i++) \
       r.elem(i) = v.elem(i) OP s; \
  \
     return r; \
@@ -87,11 +89,11 @@ class boolNDArray;
   R \
   F (const S& s, const V& v) \
   { \
-    int len = v.length (); \
+    octave_idx_type len = v.length (); \
  \
     R r (len); \
  \
-    for (int i = 0; i < len; i++) \
+    for (octave_idx_type i = 0; i < len; i++) \
       r.elem(i) = s OP v.elem(i); \
  \
     return r; \
@@ -120,8 +122,8 @@ class boolNDArray;
   { \
     R r; \
  \
-    int v1_len = v1.length (); \
-    int v2_len = v2.length (); \
+    octave_idx_type v1_len = v1.length (); \
+    octave_idx_type v2_len = v2.length (); \
  \
     if (v1_len != v2_len) \
       gripe_nonconformant (#OP, v1_len, v2_len); \
@@ -129,7 +131,7 @@ class boolNDArray;
       { \
 	r.resize (v1_len); \
  \
-	for (int i = 0; i < v1_len; i++) \
+	for (octave_idx_type i = 0; i < v1_len; i++) \
 	  r.elem(i) = v1.elem(i) OP v2.elem(i); \
       } \
  \
@@ -157,8 +159,8 @@ class boolNDArray;
   R \
   OP (const M& m, const S& s) \
   { \
-    int nr = m.rows (); \
-    int nc = m.cols (); \
+    octave_idx_type nr = m.rows (); \
+    octave_idx_type nc = m.cols (); \
  \
     R r (nr, nc); \
  \
@@ -188,15 +190,15 @@ class boolNDArray;
   { \
     boolMatrix r; \
  \
-    int nr = m.rows (); \
-    int nc = m.cols (); \
+    octave_idx_type nr = m.rows (); \
+    octave_idx_type nc = m.cols (); \
  \
     r.resize (nr, nc); \
  \
     if (nr > 0 && nc > 0) \
       { \
-        for (int j = 0; j < nc; j++) \
-          for (int i = 0; i < nr; i++) \
+        for (octave_idx_type j = 0; j < nc; j++) \
+          for (octave_idx_type i = 0; i < nr; i++) \
 	    r.elem(i, j) = MC (m.elem(i, j)) OP SC (s); \
       } \
  \
@@ -221,8 +223,8 @@ class boolNDArray;
   { \
     boolMatrix r; \
  \
-    int nr = m.rows (); \
-    int nc = m.cols (); \
+    octave_idx_type nr = m.rows (); \
+    octave_idx_type nc = m.cols (); \
  \
     if (nr != 0 && nc != 0) \
       { \
@@ -233,8 +235,8 @@ class boolNDArray;
 	else \
 	  { \
  \
-	    for (int j = 0; j < nc; j++) \
-	      for (int i = 0; i < nr; i++) \
+	    for (octave_idx_type j = 0; j < nc; j++) \
+	      for (octave_idx_type i = 0; i < nr; i++) \
 		if (xisnan (m.elem(i, j))) \
 		  { \
 		    gripe_nan_to_logical_conversion (); \
@@ -272,8 +274,8 @@ class boolNDArray;
   R \
   OP (const S& s, const M& m) \
   { \
-    int nr = m.rows (); \
-    int nc = m.cols (); \
+    octave_idx_type nr = m.rows (); \
+    octave_idx_type nc = m.cols (); \
  \
     R r (nr, nc); \
  \
@@ -303,15 +305,15 @@ class boolNDArray;
   { \
     boolMatrix r; \
  \
-    int nr = m.rows (); \
-    int nc = m.cols (); \
+    octave_idx_type nr = m.rows (); \
+    octave_idx_type nc = m.cols (); \
  \
     r.resize (nr, nc); \
  \
     if (nr > 0 && nc > 0) \
       { \
-        for (int j = 0; j < nc; j++) \
-          for (int i = 0; i < nr; i++) \
+        for (octave_idx_type j = 0; j < nc; j++) \
+          for (octave_idx_type i = 0; i < nr; i++) \
 	    r.elem(i, j) = SC (s) OP MC (m.elem(i, j)); \
       } \
  \
@@ -336,8 +338,8 @@ class boolNDArray;
   { \
     boolMatrix r; \
  \
-    int nr = m.rows (); \
-    int nc = m.cols (); \
+    octave_idx_type nr = m.rows (); \
+    octave_idx_type nc = m.cols (); \
  \
     if (nr != 0 && nc != 0) \
       { \
@@ -347,8 +349,8 @@ class boolNDArray;
 	  gripe_nan_to_logical_conversion (); \
 	else \
 	  { \
-	    for (int j = 0; j < nc; j++) \
-	      for (int i = 0; i < nr; i++) \
+	    for (octave_idx_type j = 0; j < nc; j++) \
+	      for (octave_idx_type i = 0; i < nr; i++) \
 		if (xisnan (m.elem(i, j))) \
 		  { \
 		    gripe_nan_to_logical_conversion (); \
@@ -388,11 +390,11 @@ class boolNDArray;
   { \
     R r; \
  \
-    int m1_nr = m1.rows (); \
-    int m1_nc = m1.cols (); \
+    octave_idx_type m1_nr = m1.rows (); \
+    octave_idx_type m1_nc = m1.cols (); \
  \
-    int m2_nr = m2.rows (); \
-    int m2_nc = m2.cols (); \
+    octave_idx_type m2_nr = m2.rows (); \
+    octave_idx_type m2_nc = m2.cols (); \
  \
     if (m1_nr != m2_nr || m1_nc != m2_nc) \
       gripe_nonconformant (#OP, m1_nr, m1_nc, m2_nr, m2_nc); \
@@ -427,18 +429,18 @@ class boolNDArray;
   { \
     boolMatrix r; \
  \
-    int m1_nr = m1.rows (); \
-    int m1_nc = m1.cols (); \
+    octave_idx_type m1_nr = m1.rows (); \
+    octave_idx_type m1_nc = m1.cols (); \
  \
-    int m2_nr = m2.rows (); \
-    int m2_nc = m2.cols (); \
+    octave_idx_type m2_nr = m2.rows (); \
+    octave_idx_type m2_nc = m2.cols (); \
  \
     if (m1_nr == m2_nr && m1_nc == m2_nc) \
       { \
 	r.resize (m1_nr, m1_nc); \
  \
-	for (int j = 0; j < m1_nc; j++) \
-	  for (int i = 0; i < m1_nr; i++) \
+	for (octave_idx_type j = 0; j < m1_nc; j++) \
+	  for (octave_idx_type i = 0; i < m1_nr; i++) \
 	    r.elem(i, j) = C1 (m1.elem(i, j)) OP C2 (m2.elem(i, j)); \
       } \
     else \
@@ -465,11 +467,11 @@ class boolNDArray;
   { \
     boolMatrix r; \
  \
-    int m1_nr = m1.rows (); \
-    int m1_nc = m1.cols (); \
+    octave_idx_type m1_nr = m1.rows (); \
+    octave_idx_type m1_nc = m1.cols (); \
  \
-    int m2_nr = m2.rows (); \
-    int m2_nc = m2.cols (); \
+    octave_idx_type m2_nr = m2.rows (); \
+    octave_idx_type m2_nc = m2.cols (); \
  \
     if (m1_nr == m2_nr && m1_nc == m2_nc) \
       { \
@@ -477,8 +479,8 @@ class boolNDArray;
 	  { \
 	    r.resize (m1_nr, m1_nc); \
  \
-	    for (int j = 0; j < m1_nc; j++) \
-	      for (int i = 0; i < m1_nr; i++) \
+	    for (octave_idx_type j = 0; j < m1_nc; j++) \
+	      for (octave_idx_type i = 0; i < m1_nr; i++) \
 		if (xisnan (m1.elem(i, j)) || xisnan (m2.elem(i, j))) \
 		  { \
 		    gripe_nan_to_logical_conversion (); \
@@ -524,7 +526,7 @@ class boolNDArray;
   { \
     R r (m.dims ()); \
  \
-    int len = m.length (); \
+    octave_idx_type len = m.length (); \
  \
     if (len > 0) \
       F ## _vs (r.fortran_vec (), m.data (), len, s); \
@@ -552,11 +554,11 @@ class boolNDArray;
   { \
     boolNDArray r; \
  \
-    int len = m.length (); \
+    octave_idx_type len = m.length (); \
  \
     r.resize (m.dims ()); \
  \
-    for (int i = 0; i < len; i++) \
+    for (octave_idx_type i = 0; i < len; i++) \
       r.elem(i) = NDC (m.elem(i)) OP SC (s); \
  \
     return r; \
@@ -576,11 +578,11 @@ class boolNDArray;
   { \
     boolNDArray r; \
  \
-    int len = m.length (); \
+    octave_idx_type len = m.length (); \
  \
     r.resize (m.dims ()); \
  \
-    for (int i = 0; i < len; i++) \
+    for (octave_idx_type i = 0; i < len; i++) \
       r.elem(i) = operator OP <SPEC> (NDC (m.elem(i)), SC (s)); \
  \
     return r; \
@@ -600,11 +602,11 @@ class boolNDArray;
   { \
     boolNDArray r; \
  \
-    int len = m.length (); \
+    octave_idx_type len = m.length (); \
  \
     r.resize (m.dims ()); \
  \
-    for (int i = 0; i < len; i++) \
+    for (octave_idx_type i = 0; i < len; i++) \
       r.elem(i) = operator OP <SPEC1,SPEC2> (NDC (m.elem(i)), SC (s)); \
  \
     return r; \
@@ -628,7 +630,7 @@ class boolNDArray;
   { \
     boolNDArray r; \
  \
-    int len = m.length (); \
+    octave_idx_type len = m.length (); \
  \
     if (len > 0) \
       { \
@@ -638,7 +640,7 @@ class boolNDArray;
 	  gripe_nan_to_logical_conversion (); \
 	else \
 	  { \
-	    for (int i = 0; i < len; i++) \
+	    for (octave_idx_type i = 0; i < len; i++) \
 	      if (xisnan (m.elem(i))) \
 		{ \
 		  gripe_nan_to_logical_conversion (); \
@@ -678,7 +680,7 @@ class boolNDArray;
   { \
     R r (m.dims ()); \
  \
-    int len = m.length (); \
+    octave_idx_type len = m.length (); \
  \
     if (len > 0) \
       F ## _sv (r.fortran_vec (), s, m.data (), len); \
@@ -706,11 +708,11 @@ class boolNDArray;
   { \
     boolNDArray r; \
  \
-    int len = m.length (); \
+    octave_idx_type len = m.length (); \
  \
     r.resize (m.dims ()); \
  \
-    for (int i = 0; i < len; i++) \
+    for (octave_idx_type i = 0; i < len; i++) \
       r.elem(i) = SC (s) OP NDC (m.elem(i)); \
  \
     return r; \
@@ -730,11 +732,11 @@ class boolNDArray;
   { \
     boolNDArray r; \
  \
-    int len = m.length (); \
+    octave_idx_type len = m.length (); \
  \
     r.resize (m.dims ()); \
  \
-    for (int i = 0; i < len; i++) \
+    for (octave_idx_type i = 0; i < len; i++) \
       r.elem(i) = operator OP <SPEC> (SC (s), NDC (m.elem(i))); \
  \
     return r; \
@@ -754,11 +756,11 @@ class boolNDArray;
   { \
     boolNDArray r; \
  \
-    int len = m.length (); \
+    octave_idx_type len = m.length (); \
  \
     r.resize (m.dims ()); \
  \
-    for (int i = 0; i < len; i++) \
+    for (octave_idx_type i = 0; i < len; i++) \
       r.elem(i) = operator OP <SPEC1, SPEC2> (SC (s), NDC (m.elem(i))); \
  \
     return r; \
@@ -782,7 +784,7 @@ class boolNDArray;
   { \
     boolNDArray r; \
  \
-    int len = m.length (); \
+    octave_idx_type len = m.length (); \
  \
     if (len > 0) \
       { \
@@ -792,7 +794,7 @@ class boolNDArray;
 	  gripe_nan_to_logical_conversion (); \
 	else \
 	  { \
-	    for (int i = 0; i < len; i++) \
+	    for (octave_idx_type i = 0; i < len; i++) \
 	      if (xisnan (m.elem(i))) \
 		{ \
 	          gripe_nan_to_logical_conversion (); \
@@ -841,7 +843,7 @@ class boolNDArray;
       { \
 	r.resize (m1_dims); \
  \
-	int len = m1.length (); \
+	octave_idx_type len = m1.length (); \
  \
 	if (len > 0) \
 	  F ## _vv (r.fortran_vec (), m1.data (), m2.data (), len); \
@@ -877,7 +879,7 @@ class boolNDArray;
       { \
 	r.resize (m1_dims); \
  \
-	for (int i = 0; i < m1.length (); i++) \
+	for (octave_idx_type i = 0; i < m1.length (); i++) \
 	  r.elem(i) = C1 (m1.elem(i)) OP C2 (m2.elem(i)); \
       } \
     else \
@@ -913,7 +915,7 @@ class boolNDArray;
 	  { \
 	    r.resize (m1_dims); \
  \
-	    for (int i = 0; i < m1.length (); i++) \
+	    for (octave_idx_type i = 0; i < m1.length (); i++) \
 	      if (xisnan (m1.elem(i)) || xisnan (m2.elem(i))) \
 		{ \
 	          gripe_nan_to_logical_conversion (); \
@@ -951,12 +953,12 @@ class boolNDArray;
   R \
   OP (const S& s, const DM& dm) \
   { \
-    int nr = dm.rows (); \
-    int nc = dm.cols (); \
+    octave_idx_type nr = dm.rows (); \
+    octave_idx_type nc = dm.cols (); \
  \
     R r (nr, nc, s); \
  \
-    for (int i = 0; i < dm.length (); i++) \
+    for (octave_idx_type i = 0; i < dm.length (); i++) \
       r.elem(i, i) OPEQ dm.elem(i, i); \
  \
     return r; \
@@ -979,12 +981,12 @@ class boolNDArray;
   R \
   OP (const DM& dm, const S& s) \
   { \
-    int nr = dm.rows (); \
-    int nc = dm.cols (); \
+    octave_idx_type nr = dm.rows (); \
+    octave_idx_type nc = dm.cols (); \
  \
     R r (nr, nc, SGN s); \
  \
-    for (int i = 0; i < dm.length (); i++) \
+    for (octave_idx_type i = 0; i < dm.length (); i++) \
       r.elem(i, i) += dm.elem(i, i); \
  \
     return r; \
@@ -1010,11 +1012,11 @@ OP (const M& m, const DM& dm) \
 { \
   R r; \
  \
-  int m_nr = m.rows (); \
-  int m_nc = m.cols (); \
+  octave_idx_type m_nr = m.rows (); \
+  octave_idx_type m_nc = m.cols (); \
  \
-  int dm_nr = dm.rows (); \
-  int dm_nc = dm.cols (); \
+  octave_idx_type dm_nr = dm.rows (); \
+  octave_idx_type dm_nc = dm.cols (); \
  \
   if (m_nr != dm_nr || m_nc != dm_nc) \
     gripe_nonconformant (#OP, m_nr, m_nc, dm_nr, dm_nc); \
@@ -1026,9 +1028,9 @@ OP (const M& m, const DM& dm) \
 	{ \
 	  r = R (m); \
  \
-	  int len = dm.length (); \
+	  octave_idx_type len = dm.length (); \
  \
-	  for (int i = 0; i < len; i++) \
+	  for (octave_idx_type i = 0; i < len; i++) \
 	    r.elem(i, i) OPEQ dm.elem(i, i); \
 	} \
     } \
@@ -1042,29 +1044,28 @@ operator * (const M& m, const DM& dm) \
 { \
   R r; \
  \
-  int m_nr = m.rows (); \
-  int m_nc = m.cols (); \
+  octave_idx_type m_nr = m.rows (); \
+  octave_idx_type m_nc = m.cols (); \
  \
-  int dm_nr = dm.rows (); \
-  int dm_nc = dm.cols (); \
+  octave_idx_type dm_nr = dm.rows (); \
+  octave_idx_type dm_nc = dm.cols (); \
  \
   if (m_nc != dm_nr) \
     gripe_nonconformant ("operator *", m_nr, m_nc, dm_nr, dm_nc); \
   else \
     { \
       r = R (m_nr, dm_nc); \
+      R::element_type *rd = r.fortran_vec (); \
+      const M::element_type *md = m.data (); \
+      const DM::element_type *dd = dm.data (); \
  \
-      if (m_nr > 0 && m_nc > 0 && dm_nc > 0) \
-	{ \
-	  int len = dm.length (); \
- \
-	  for (int j = 0; j < len; j++) \
-	    { \
-              const DM::element_type djj = dm.elem (j, j); \
-	      for (int i = 0; i < m_nr; i++) \
-	        r.xelem (i, j) = djj * m.elem (i, j); \
-	    } \
-	} \
+      octave_idx_type len = dm.length (); \
+      for (octave_idx_type i = 0; i < len; i++) \
+        { \
+          mx_inline_multiply_vs (rd, md, m_nr, dd[i]); \
+          rd += m_nr; md += m_nr; \
+        } \
+      mx_inline_fill_vs (rd, m_nr * (dm_nc - len), R_ZERO); \
     } \
  \
   return r; \
@@ -1091,11 +1092,11 @@ OP (const DM& dm, const M& m) \
 { \
   R r; \
  \
-  int dm_nr = dm.rows (); \
-  int dm_nc = dm.cols (); \
+  octave_idx_type dm_nr = dm.rows (); \
+  octave_idx_type dm_nc = dm.cols (); \
  \
-  int m_nr = m.rows (); \
-  int m_nc = m.cols (); \
+  octave_idx_type m_nr = m.rows (); \
+  octave_idx_type m_nc = m.cols (); \
  \
   if (dm_nr != m_nr || dm_nc != m_nc) \
     gripe_nonconformant (#OP, dm_nr, dm_nc, m_nr, m_nc); \
@@ -1105,9 +1106,9 @@ OP (const DM& dm, const M& m) \
 	{ \
 	  r = R (PREOP m); \
  \
-	  int len = dm.length (); \
+	  octave_idx_type len = dm.length (); \
  \
-	  for (int i = 0; i < len; i++) \
+	  for (octave_idx_type i = 0; i < len; i++) \
 	    r.elem(i, i) OPEQ dm.elem(i, i); \
 	} \
       else \
@@ -1123,28 +1124,29 @@ operator * (const DM& dm, const M& m) \
 { \
   R r; \
  \
-  int dm_nr = dm.rows (); \
-  int dm_nc = dm.cols (); \
+  octave_idx_type dm_nr = dm.rows (); \
+  octave_idx_type dm_nc = dm.cols (); \
  \
-  int m_nr = m.rows (); \
-  int m_nc = m.cols (); \
+  octave_idx_type m_nr = m.rows (); \
+  octave_idx_type m_nc = m.cols (); \
  \
   if (dm_nc != m_nr) \
     gripe_nonconformant ("operator *", dm_nr, dm_nc, m_nr, m_nc); \
   else \
     { \
       r = R (dm_nr, m_nc); \
+      R::element_type *rd = r.fortran_vec (); \
+      const M::element_type *md = m.data (); \
+      const DM::element_type *dd = dm.data (); \
  \
-      if (dm_nr > 0 && dm_nc > 0 && m_nc > 0) \
-	{ \
-	  int len = dm.length (); \
- \
-	  for (int i = 0; i < len; i++) \
-	    { \
-	      for (int j = 0; j < m_nc; j++) \
-	        r.xelem (i, j) = dm.elem (i, i) * m.elem (i, j); \
-	    } \
-	} \
+      octave_idx_type len = dm.length (); \
+      for (octave_idx_type i = 0; i < m_nc; i++) \
+        { \
+          mx_inline_multiply_vv (rd, md, dd, len); \
+          rd += len; md += m_nr; \
+          mx_inline_fill_vs (rd, dm_nr - len, R_ZERO); \
+          rd += dm_nr - len; \
+        } \
     } \
  \
   return r; \
@@ -1171,11 +1173,11 @@ operator * (const DM& dm, const M& m) \
   { \
     R r; \
  \
-    int dm1_nr = dm1.rows (); \
-    int dm1_nc = dm1.cols (); \
+    octave_idx_type dm1_nr = dm1.rows (); \
+    octave_idx_type dm1_nc = dm1.cols (); \
  \
-    int dm2_nr = dm2.rows (); \
-    int dm2_nc = dm2.cols (); \
+    octave_idx_type dm2_nr = dm2.rows (); \
+    octave_idx_type dm2_nc = dm2.cols (); \
  \
     if (dm1_nr != dm2_nr || dm1_nc != dm2_nc) \
       gripe_nonconformant (#OP, dm1_nr, dm1_nc, dm2_nr, dm2_nc); \

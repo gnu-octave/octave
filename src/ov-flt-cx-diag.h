@@ -71,6 +71,11 @@ public:
 
   FloatComplexDiagMatrix float_complex_diag_matrix_value (bool = false) const;
 
+  bool save_binary (std::ostream& os, bool& save_as_floats);
+
+  bool load_binary (std::istream& is, bool swap, 
+		    oct_mach_info::float_format fmt);
+
   octave_value abs (void) const;
   octave_value conj (void) const;
   octave_value imag (void) const;

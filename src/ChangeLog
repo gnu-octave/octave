@@ -1,3 +1,21 @@
+2008-12-08  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-re-diag.cc (octave_diag_matrix::save_binary,
+	octave_diag_matrix::load_binary): New methods.
+	* ov-re-diag.h: Declare them.
+	* ov-flt-re-diag.cc (octave_float_diag_matrix::save_binary,
+	octave_float_diag_matrix::load_binary): New methods.
+	* ov-flt-re-diag.h: Declare them.
+	* ov-cx-diag.cc (octave_complex_diag_matrix::save_binary,
+	octave_complex_diag_matrix::load_binary): New methods.
+	* ov-cx-diag.h: Declare them.
+	* ov-flt-cx-diag.cc (octave_float_complex_diag_matrix::save_binary,
+	octave_float_complex_diag_matrix::load_binary): New methods.
+	* ov-flt-cx-diag.h: Declare them.
+	* ov-perm.cc (octave_perm_matrix::save_binary,
+	octave_perm_matrix::load_binary): New methods.
+	* ov-perm.h: Declare them.
+
 2008-12-06  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-fcn-handle.cc (octave_fcn_handle::load_binary): Call istream::get

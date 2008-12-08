@@ -24,6 +24,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
+#include "byte-swap.h"
+
 #include "ov-perm.h"
 #include "ov-flt-perm.h"
 #include "ov-re-mat.h"
@@ -294,9 +296,62 @@ octave_perm_matrix::load_ascii (std::istream& is)
   return success;
 }
 
+bool 
+octave_perm_matrix::save_binary (std::ostream& os, bool&)
+{
+
+  int32_t size = matrix.rows ();
+  bool colp = matrix.is_col_perm ();
+  os.write (reinterpret_cast<char *> (&size), 4);
+  os.write (reinterpret_cast<char *> (&colp), 1);
+  os.write (reinterpret_cast<const char *> (matrix.data ()), matrix.byte_size());
+
+  return true;
+}
+
+bool
+octave_perm_matrix::load_binary (std::istream& is, bool swap,
+                                 oct_mach_info::float_format )
+{
+  int32_t size;
+  bool colp;
+  if (! (is.read (reinterpret_cast<char *> (&size), 4)
+         && is.read (reinterpret_cast<char *> (&colp), 1)))
+    return false;
+
+  MArray<octave_idx_type> m (size);
+
+  if (! is.read (reinterpret_cast<char *> (m.fortran_vec ()), m.byte_size ()))
+    return false;
+
+  if (swap)
+    {
+      int nel = m.numel ();
+      for (int i = 0; i < nel; i++) 
+	switch (sizeof (octave_idx_type))
+	  {
+	  case 8:
+	    swap_bytes<8> (&m(i));
+	    break;
+	  case 4:
+	    swap_bytes<4> (&m(i));
+	    break;
+	  case 2:
+	    swap_bytes<2> (&m(i));
+	    break;
+	  case 1:
+	  default:
+	    break;
+	  }
+    }
+
+  matrix = PermMatrix (m, colp);
+  return true;
+}
+
 void
 octave_perm_matrix::print_raw (std::ostream& os,
-			  bool pr_as_read_syntax) const
+                               bool pr_as_read_syntax) const
 {
   return to_dense ().print_raw (os, pr_as_read_syntax);
 }

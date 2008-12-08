@@ -24,10 +24,13 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
+#include "byte-swap.h"
+
 #include "ov-flt-re-diag.h"
 #include "ov-base-diag.cc"
 #include "ov-float.h"
 #include "ov-flt-re-mat.h"
+#include "ls-utils.h"
 
 template class octave_base_diag<FloatDiagMatrix, FloatMatrix>;
 
@@ -109,4 +112,54 @@ octave_value
 octave_float_diag_matrix::imag (void) const
 {
   return DiagMatrix (matrix.rows (), matrix.cols ());
+}
+
+bool 
+octave_float_diag_matrix::save_binary (std::ostream& os, bool& save_as_floats)
+{
+
+  int32_t r = matrix.rows (), c = matrix.cols ();
+  os.write (reinterpret_cast<char *> (&r), 4);
+  os.write (reinterpret_cast<char *> (&c), 4);
+
+  FloatMatrix m = FloatMatrix (matrix.diag ());
+  save_type st = LS_FLOAT;
+  if (matrix.length () > 8192) // FIXME -- make this configurable.
+    {
+      float max_val, min_val;
+      if (m.all_integers (max_val, min_val))
+	st = get_save_type (max_val, min_val);
+    }
+
+  const float *mtmp = m.data ();
+  write_floats (os, mtmp, st, m.numel ());
+
+  return true;
+}
+
+bool 
+octave_float_diag_matrix::load_binary (std::istream& is, bool swap,
+				 oct_mach_info::float_format fmt)
+{
+  int32_t r, c;
+  char tmp;
+  if (! (is.read (reinterpret_cast<char *> (&r), 4)
+         && is.read (reinterpret_cast<char *> (&c), 4)
+         && is.read (reinterpret_cast<char *> (&tmp), 1)))
+    return false;
+  if (swap)
+    {
+      swap_bytes<4> (&r);
+      swap_bytes<4> (&c);
+    }
+
+  FloatDiagMatrix m (r, c);
+  float *re = m.fortran_vec ();
+  octave_idx_type len = m.length ();
+  read_floats (is, re, static_cast<save_type> (tmp), len, swap, fmt);
+  if (error_state || ! is)
+    return false;
+  matrix = m;
+
+  return true;
 }

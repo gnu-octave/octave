@@ -40,7 +40,7 @@ template <int n>
 void
 swap_bytes (volatile void *ptr)
 {
-  for (size_t i = 0; i < n/2; i++)
+  for (int i = 0; i < n/2; i++)
     swap_bytes (ptr, i, n-1-i);
 }
 

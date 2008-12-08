@@ -114,7 +114,17 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options)
     fsiz = size (fvec);
     fvec = fvec(:);
     fn = norm (fvec);
-
+    m = length (fvec);
+    n = length (x);
+    if (m < n)
+      error ("fsolve:under", "cannot solve underdetermined systems");
+    elseif (m > n && niter == 1)
+      if (isempty (optimget (options, "TolFun")))
+	warning (["An overdetermined system cannot usually be solved exactly. ", ...
+	"Consider specifying the TolFun option."]);
+      endif
+    endif
+    
     # get QR factorization of the jacobian
     [q, r] = qr (fjac);
 
@@ -142,7 +152,8 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options)
       qtf = q'*fvec;
 
       # get TR model (dogleg) minimizer
-      p = - __dogleg__ (r, qtf, dg, delta);
+      # in case of an overdetermined system, get lsq solution
+      p = - __dogleg__ (r(1:n,:), qtf(1:n), dg, delta);
       pn = norm (dg .* p);
 
       if (niter == 1)
@@ -221,7 +232,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options)
         # Again a classic one. It seems weird to use the same tolf for two
         # different tests, but that's what M*b manual appears to say.
         elseif (actred < tolf)
-          info = 3
+          info = 3;
         endif
       endif
 
@@ -275,7 +286,7 @@ endfunction
 %! tol = 1.0e-5;
 %! [x, fval, info] = fsolve (@f, [ 0.5; 2.0; 2.5 ]);
 %! assert (info > 0);
-%! assert (norm (x - x_opt, 1) < tol);
+%! assert (norm (x - x_opt, Inf) < tol);
 %! assert (norm (fval) < tol);
 
 %!function retval = f (p)
@@ -293,5 +304,25 @@ endfunction
 %! tol = 1.0e-5;
 %! [x, fval, info] = fsolve (@f, [-1, 1, 2, -1]);
 %! assert (info > 0);
-%! assert (norm (x - x_opt, 1) < tol);
+%! assert (norm (x - x_opt, Inf) < tol);
 %! assert (norm (fval) < tol);
+
+%!function retval = f (p) 
+%!  x = p(1);
+%!  y = p(2);
+%!  z = p(3);
+%!  retval = zeros (3, 1);
+%!  retval(1) = sin(x) + y**2 + log(z) - 7;
+%!  retval(2) = 3*x + 2**y -z**3 + 1;
+%!  retval(3) = x + y + z - 5;
+%!  retval(4) = x*x + y - z*log(z) - 1.36;
+%!test
+%! x_opt = [ 0.599054;
+%! 2.395931;
+%! 2.005014 ];
+%! tol = 1.0e-5;
+%! [x, fval, info] = fsolve (@f, [ 0.5; 2.0; 2.5 ], optimset ("TolFun", 1e-6));
+%! assert (info > 0);
+%! assert (norm (x - x_opt, Inf) < tol);
+%! assert (norm (fval) < tol);
+

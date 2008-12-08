@@ -25,6 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "ops.h"
+#include "xpow.h"
 #include SINCLUDE
 #include MINCLUDE
 
@@ -58,6 +59,13 @@ DEFBINOP (sdmldiv, SCALAR, MATRIX)
   return v2.MATRIX_VALUE () / v1.SCALAR_VALUE ();
 }
 
+DEFBINOP (dmspow, MATRIX, SCALAR)
+{
+  CAST_BINOP_ARGS (const OCTAVE_MATRIX&, const OCTAVE_SCALAR&);
+
+  return xpow (v1.MATRIX_VALUE (), v2.SCALAR_VALUE ());
+}
+
 #define SHORT_NAME CONCAT3(MSHORT, _, SSHORT)
 #define INST_NAME CONCAT3(install_, SHORT_NAME, _ops)
 
@@ -72,4 +80,5 @@ INST_NAME (void)
   INSTALL_BINOP (op_sub, OCTAVE_SCALAR, OCTAVE_MATRIX, sdmsub);
   INSTALL_BINOP (op_mul, OCTAVE_SCALAR, OCTAVE_MATRIX, sdmmul);
   INSTALL_BINOP (op_ldiv, OCTAVE_SCALAR, OCTAVE_MATRIX, sdmldiv);
+  INSTALL_BINOP (op_pow, OCTAVE_MATRIX, OCTAVE_SCALAR, dmspow);
 }

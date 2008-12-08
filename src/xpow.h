@@ -30,6 +30,14 @@ class Matrix;
 class ComplexMatrix;
 class FloatMatrix;
 class FloatComplexMatrix;
+class DiagMatrix;
+class ComplexDiagMatrix;
+class FloatDiagMatrix;
+class FloatComplexDiagMatrix;
+class NDArray;
+class FloatNDArray;
+class ComplexNDArray;
+class FloatComplexNDArray;
 class octave_value;
 
 extern octave_value xpow (double a, double b);
@@ -40,6 +48,9 @@ extern octave_value xpow (double a, const ComplexMatrix& b);
 extern octave_value xpow (const Matrix& a, double b);
 extern octave_value xpow (const Matrix& a, const Complex& b);
 
+extern octave_value xpow (const DiagMatrix& a, double b);
+extern octave_value xpow (const DiagMatrix& a, const Complex& b);
+
 extern octave_value xpow (const Complex& a, double b);
 extern octave_value xpow (const Complex& a, const Matrix& b);
 extern octave_value xpow (const Complex& a, const Complex& b);
@@ -47,6 +58,9 @@ extern octave_value xpow (const Complex& a, const ComplexMatrix& b);
 
 extern octave_value xpow (const ComplexMatrix& a, double b);
 extern octave_value xpow (const ComplexMatrix& a, const Complex& b);
+
+extern octave_value xpow (const ComplexDiagMatrix& a, double b);
+extern octave_value xpow (const ComplexDiagMatrix& a, const Complex& b);
 
 extern octave_value elem_xpow (double a, const Matrix& b);
 extern octave_value elem_xpow (double a, const ComplexMatrix& b);
@@ -89,6 +103,9 @@ extern octave_value xpow (float a, const FloatComplexMatrix& b);
 extern octave_value xpow (const FloatMatrix& a, float b);
 extern octave_value xpow (const FloatMatrix& a, const FloatComplex& b);
 
+extern octave_value xpow (const FloatDiagMatrix& a, float b);
+extern octave_value xpow (const FloatDiagMatrix& a, const FloatComplex& b);
+
 extern octave_value xpow (const FloatComplex& a, float b);
 extern octave_value xpow (const FloatComplex& a, const FloatMatrix& b);
 extern octave_value xpow (const FloatComplex& a, const FloatComplex& b);
@@ -96,6 +113,9 @@ extern octave_value xpow (const FloatComplex& a, const FloatComplexMatrix& b);
 
 extern octave_value xpow (const FloatComplexMatrix& a, float b);
 extern octave_value xpow (const FloatComplexMatrix& a, const FloatComplex& b);
+
+extern octave_value xpow (const FloatComplexDiagMatrix& a, float b);
+extern octave_value xpow (const FloatComplexDiagMatrix& a, const FloatComplex& b);
 
 extern octave_value elem_xpow (float a, const FloatMatrix& b);
 extern octave_value elem_xpow (float a, const FloatComplexMatrix& b);

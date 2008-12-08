@@ -31,10 +31,12 @@ along with Octave; see the file COPYING.  If not, see
 #include "Array-util.h"
 #include "CColVector.h"
 #include "CDiagMatrix.h"
+#include "fCDiagMatrix.h"
 #include "CMatrix.h"
 #include "EIG.h"
 #include "fEIG.h"
 #include "dDiagMatrix.h"
+#include "fDiagMatrix.h"
 #include "dMatrix.h"
 #include "mx-cm-cdm.h"
 #include "oct-cmplx.h"
@@ -256,6 +258,38 @@ xpow (const Matrix& a, double b)
 	    }
 	  else
 	    error ("xpow: matrix diagonalization failed");
+	}
+    }
+
+  return retval;
+}
+
+// -*- 5d -*-
+octave_value
+xpow (const DiagMatrix& a, double b)
+{
+  octave_value retval;
+
+  octave_idx_type nr = a.rows ();
+  octave_idx_type nc = a.cols ();
+
+  if (nr == 0 || nc == 0 || nr != nc)
+    error ("for A^b, A must be square");
+  else
+    {
+      if (static_cast<int> (b) == b)
+	{
+          DiagMatrix r (nr, nc);
+          for (octave_idx_type i = 0; i < nc; i++)
+            r(i, i) = std::pow (a(i, i), b);
+          retval = r;
+        }
+      else
+	{
+          ComplexDiagMatrix r (nr, nc);
+          for (octave_idx_type i = 0; i < nc; i++)
+            r(i, i) = std::pow (static_cast<Complex> (a(i, i)), b);
+          retval = r;
 	}
     }
 
@@ -516,6 +550,42 @@ xpow (const ComplexMatrix& a, const Complex& b)
 
   return retval;
 }
+
+// -*- 12d -*-
+octave_value
+xpow (const ComplexDiagMatrix& a, const Complex& b)
+{
+  octave_value retval;
+
+  octave_idx_type nr = a.rows ();
+  octave_idx_type nc = a.cols ();
+
+  if (nr == 0 || nc == 0 || nr != nc)
+    error ("for A^b, A must be square");
+  else
+    {
+      ComplexDiagMatrix r (nr, nc);
+      for (octave_idx_type i = 0; i < nc; i++)
+        r(i, i) = std::pow (a(i, i), b);
+      retval = r;
+    }
+
+  return retval;
+}
+
+// mixed
+octave_value
+xpow (const ComplexDiagMatrix& a, double b)
+{
+  return xpow (a, static_cast<Complex> (b));
+}
+
+octave_value
+xpow (const DiagMatrix& a, const Complex& b)
+{
+  return xpow (ComplexDiagMatrix (a), b);
+}
+
 
 // Safer pow functions that work elementwise for matrices.
 //
@@ -1474,6 +1544,38 @@ xpow (const FloatMatrix& a, float b)
   return retval;
 }
 
+// -*- 5d -*-
+octave_value
+xpow (const FloatDiagMatrix& a, float b)
+{
+  octave_value retval;
+
+  octave_idx_type nr = a.rows ();
+  octave_idx_type nc = a.cols ();
+
+  if (nr == 0 || nc == 0 || nr != nc)
+    error ("for A^b, A must be square");
+  else
+    {
+      if (static_cast<int> (b) == b)
+	{
+          FloatDiagMatrix r (nr, nc);
+          for (octave_idx_type i = 0; i < nc; i++)
+            r(i, i) = std::pow (a(i, i), b);
+          retval = r;
+        }
+      else
+	{
+          FloatComplexDiagMatrix r (nr, nc);
+          for (octave_idx_type i = 0; i < nc; i++)
+            r(i, i) = std::pow (static_cast<FloatComplex> (a(i, i)), b);
+          retval = r;
+	}
+    }
+
+  return retval;
+}
+
 // -*- 6 -*-
 octave_value
 xpow (const FloatMatrix& a, const FloatComplex& b)
@@ -1727,6 +1829,41 @@ xpow (const FloatComplexMatrix& a, const FloatComplex& b)
     }
 
   return retval;
+}
+
+// -*- 12d -*-
+octave_value
+xpow (const FloatComplexDiagMatrix& a, const FloatComplex& b)
+{
+  octave_value retval;
+
+  octave_idx_type nr = a.rows ();
+  octave_idx_type nc = a.cols ();
+
+  if (nr == 0 || nc == 0 || nr != nc)
+    error ("for A^b, A must be square");
+  else
+    {
+      FloatComplexDiagMatrix r (nr, nc);
+      for (octave_idx_type i = 0; i < nc; i++)
+        r(i, i) = std::pow (a(i, i), b);
+      retval = r;
+    }
+
+  return retval;
+}
+
+// mixed
+octave_value
+xpow (const FloatComplexDiagMatrix& a, float b)
+{
+  return xpow (a, static_cast<FloatComplex> (b));
+}
+
+octave_value
+xpow (const FloatDiagMatrix& a, const FloatComplex& b)
+{
+  return xpow (FloatComplexDiagMatrix (a), b);
 }
 
 // Safer pow functions that work elementwise for matrices.

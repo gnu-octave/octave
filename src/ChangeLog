@@ -1,4 +1,18 @@
 2008-12-08  Jaroslav Hajek  <highegg@gmail.com>
+	
+	* xpow.cc ( xpow (const DiagMatrix& a, double b), 
+	xpow (const DiagMatrix& a, const Complex& b), 
+	xpow (const ComplexDiagMatrix& a, double b), 
+	xpow (const ComplexDiagMatrix& a, const Complex& b), 
+	xpow (const FloatDiagMatrix& a, float b), 
+	xpow (const FloatDiagMatrix& a, const FloatComplex& b), 
+	xpow (const FloatComplexDiagMatrix& a, float b), 
+	xpow (const FloatComplexDiagMatrix& a, const FloatComplex& b)):
+	New methods.
+	* xpow.h: Declare them.
+	* OPERATORS/op-dms-template.cc: Support diagonal matrix ^ scalar.
+
+2008-12-08  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-re-diag.cc (octave_diag_matrix::save_binary,
 	octave_diag_matrix::load_binary): New methods.

@@ -32,6 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "idx-vector.h"
 #include "Array.h"
+#include "Sparse.h"
 #include "Range.h"
 
 #include "oct-locbuf.h"
@@ -312,7 +313,38 @@ idx_vector::idx_vector_rep::idx_vector_rep (const Array<bool>& bnda)
 
       data = d;
 
-      ext = k;
+      ext = d[k-1] + 1;
+    }
+}
+
+idx_vector::idx_vector_rep::idx_vector_rep (const Sparse<bool>& bnda)
+  : data (0), len (0), ext (0), aowner (0), orig_dims ()
+{
+  for (octave_idx_type i = 0, l = bnda.nnz (); i < l; i++)
+    if (bnda.data (i)) len++;
+
+  dim_vector dv = bnda.dims ();
+
+  orig_dims = ((dv.length () == 2 && dv(0) == 1)
+	       ? dim_vector (1, len) : orig_dims = dim_vector (len, 1));
+
+  if (len != 0)
+    {
+      octave_idx_type *d = new octave_idx_type [len];
+
+      octave_idx_type nnz = bnda.nnz ();
+
+      octave_idx_type k = 0;
+      // FIXME: I hope this is OK, i.e. the element iterated this way are correctly ordered.
+      for (octave_idx_type i = 0; i < nnz; i++)
+        {
+          if (bnda.data (i)) 
+            d[k++] = bnda.cidx (i) + bnda.rows () * bnda.ridx (i);
+        }
+
+      data = d;
+
+      ext = d[k-1] + 1;
     }
 }
 

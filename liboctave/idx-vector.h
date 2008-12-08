@@ -33,6 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-inttypes.h"
 
 template<class T> class Array;
+template<class T> class Sparse;
 class Range;
 
 // Design rationale:
@@ -270,6 +271,8 @@ private:
 
     idx_vector_rep (const Array<bool>&);
 
+    idx_vector_rep (const Sparse<bool>&);
+
     ~idx_vector_rep (void);
 
     octave_idx_type xelem (octave_idx_type i) const
@@ -395,6 +398,9 @@ public:
 
   idx_vector (const Range& r) 
     : rep (new idx_range_rep (r))
+    { chkerr (); }
+
+  idx_vector (const Sparse<bool>& nda) : rep (new idx_vector_rep (nda))
     { chkerr (); }
 
   idx_vector (const idx_vector& a) : rep (a.rep) { rep->count++; }

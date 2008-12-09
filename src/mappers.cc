@@ -1569,9 +1569,10 @@ toascii (\"ASCII\")\n\
 DEFUNX ("tolower", Ftolower, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} tolower (@var{s})\n\
-Return a copy of the string @var{s}, with each upper-case character\n\
-replaced by the corresponding lower-case one; nonalphabetic characters\n\
-are left unchanged.  For example,\n\
+@deftypefnx {Mapping Function} {} lower (@var{s})\n\
+Return a copy of the string or cell string @var{s}, with each upper-case\n\
+character replaced by the corresponding lower-case one; nonalphabetic\n\
+characters are left unchanged.  For example,\n\
 \n\
 @example\n\
 tolower (\"MiXeD cAsE 123\")\n\
@@ -1588,12 +1589,33 @@ tolower (\"MiXeD cAsE 123\")\n\
   return retval;
 }
 
+DEFALIAS (lower, tolower);
+
+/*
+ 
+%!error <Invalid call to tolower.*> tolower();
+%!error <Invalid call to tolower.*> lower();
+%!assert(tolower("OCTAVE"), "octave");
+%!assert(tolower("123OCTave!_&"), "123octave!_&");
+%!assert(tolower({"ABC", "DEF", {"GHI", {"JKL"}}}), {"abc", "def", {"ghi", {"jkl"}}});
+%!assert(tolower(["ABC"; "DEF"]), ["abc"; "def"]);
+%!assert(tolower({["ABC"; "DEF"]}), {["abc";"def"]});
+%!assert(tolower(68), "d");
+%!assert(tolower({[68, 68; 68, 68]}), {["dd";"dd"]});
+%!test
+%!  a(3,3,3,3) = "D";
+%!  assert(tolower(a)(3,3,3,3), "d");
+
+*/
+
+
 DEFUNX ("toupper", Ftoupper, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} toupper (@var{s})\n\
-Return a copy of the string @var{s}, with each  lower-case character\n\
-replaced by the corresponding upper-case one; nonalphabetic characters\n\
-are left unchanged.  For example,\n\
+@deftypefnx {Built-in Function} {} upper (@var{s})\n\
+Return a copy of the string or cell string @var{s}, with each  lower-case\n\
+character replaced by the corresponding upper-case one; nonalphabetic\n\
+characters are left unchanged.  For example,\n\
 \n\
 @example\n\
 @group\n\
@@ -1611,6 +1633,25 @@ toupper (\"MiXeD cAsE 123\")\n\
 
   return retval;
 }
+
+DEFALIAS (upper, toupper);
+
+/*
+ 
+%!error <Invalid call to toupper.*> toupper();
+%!error <Invalid call to toupper.*> upper();
+%!assert(toupper("octave"), "OCTAVE");
+%!assert(toupper("123OCTave!_&"), "123OCTAVE!_&");
+%!assert(toupper({"abc", "def", {"ghi", {"jkl"}}}), {"ABC", "DEF", {"GHI", {"JKL"}}});
+%!assert(toupper(["abc"; "def"]), ["ABC"; "DEF"]);
+%!assert(toupper({["abc"; "def"]}), {["ABC";"DEF"]});
+%!assert(toupper(100), "D");
+%!assert(toupper({[100, 100; 100, 100]}), {["DD";"DD"]});
+%!test
+%!  a(3,3,3,3) = "d";
+%!  assert(toupper(a)(3,3,3,3), "D");
+
+*/
 
 DEFALIAS (gammaln, lgamma);
 

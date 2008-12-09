@@ -1,3 +1,8 @@
+2008-12-07  Thorsten Meyer  <thorsten.meyier@gmx.de>
+
+        * mappers.cc (Ftolower): Make lower alias of tolower, add tests
+        * mappers.cc (Ftoupper): Make upper alias of toupper, add tests
+
 2008-12-09  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/balance.cc (Fbalance): Exploit the new AEPBAL functionality.

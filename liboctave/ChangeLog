@@ -7,6 +7,10 @@
 	* idx-vector.cc (idx_vector::idx_vector_rep::idx_vector_rep (const
 	Array<bool>&)): Fix extent calculation.
 
+2008-12-09  David Bateman  <dbateman@free.fr>
+
+	* Makefile.in (INCLUDES): Add oct-locbuf.h
+	
 2008-12-07  Jaroslav Hajek  <highegg@gmail.com>
 
 	* mx-inlines.cc (mx_inline_fill_vs): New template function.

@@ -1,3 +1,11 @@
+2008-12-09  Jaroslav Hajek  <highegg@gmail.com>
+
+	* base-aepbal.h: New source.
+	* dbleAEPBAL.h, dbleAEPBAL.cc: Rebase AEPBAL on base_aepbal.
+	* floatAEPBAL.h, floatAEPBAL.cc: Rebase FloatAEPBAL on base_aepbal.
+	* CmplxAEPBAL.h, CmplxAEPBAL.cc: Rebase ComplexAEPBAL on base_aepbal.
+	* fCmplxAEPBAL.h, fCmplxAEPBAL.cc: Rebase FloatComplexAEPBAL on base_aepbal.
+
 2008-12-08  Jaroslav Hajek  <highegg@gmail.com>
 
 	* idx-vector.cc (idx_vector::idx_vector_rep::idx_vector_rep (const 

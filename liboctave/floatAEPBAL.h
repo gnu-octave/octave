@@ -2,6 +2,7 @@
 
 Copyright (C) 1994, 1995, 1996, 1997, 2000, 2002, 2004, 2005, 2006,
               2007 John W. Eaton
+Copyright (C) 2008 Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -27,48 +28,25 @@ along with Octave; see the file COPYING.  If not, see
 #include <iostream>
 #include <string>
 
+#include "base-aepbal.h"
 #include "fMatrix.h"
+#include "fColVector.h"
 
 class
 OCTAVE_API
-FloatAEPBALANCE
+FloatAEPBALANCE : public base_aepbal<FloatMatrix, FloatColumnVector>
 {
 public:
 
-  FloatAEPBALANCE (void) : balanced_mat (), balancing_mat () { }
+  FloatAEPBALANCE (void) : base_aepbal<FloatMatrix, FloatColumnVector> () { }
 
-  FloatAEPBALANCE (const FloatMatrix& a,const std::string& balance_job)
-    {
-      init (a, balance_job); 
-    }
+  FloatAEPBALANCE (const FloatMatrix& a, bool noperm = false,
+                   bool noscal = false);
 
-  FloatAEPBALANCE (const FloatAEPBALANCE& a)
-    : balanced_mat (a.balanced_mat), balancing_mat (a.balancing_mat) { }
+  FloatAEPBALANCE (const FloatAEPBALANCE& a) 
+    : base_aepbal<FloatMatrix, FloatColumnVector> (a) { }
 
-  FloatAEPBALANCE& operator = (const FloatAEPBALANCE& a)
-    {
-      if (this != &a)
-	{
-	  balanced_mat = a.balanced_mat;
-	  balancing_mat = a.balancing_mat;
-	}
-      return *this;
-    }
-
-  ~FloatAEPBALANCE (void) { }
-
-  FloatMatrix balanced_matrix (void) const { return balanced_mat; }
-
-  FloatMatrix balancing_matrix (void) const { return balancing_mat; }
-
-  friend std::ostream& operator << (std::ostream& os, const FloatAEPBALANCE& a);
-
-private:
-
-  FloatMatrix balanced_mat;
-  FloatMatrix balancing_mat;
-
-  octave_idx_type init (const FloatMatrix& a, const std::string& balance_job);
+  FloatMatrix balancing_matrix (void) const;
 };
 
 #endif

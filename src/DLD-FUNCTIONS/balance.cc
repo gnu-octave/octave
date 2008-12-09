@@ -2,6 +2,7 @@
 
 Copyright (C) 1996, 1997, 1998, 1999, 2000, 2002, 2003, 2005, 2006,
               2007 John W. Eaton
+Copyright (C) 2008 Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -50,6 +51,7 @@ DEFUN_DLD (balance, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{aa} =} balance (@var{a}, @var{opt})\n\
 @deftypefnx {Loadable Function} {[@var{dd}, @var{aa}] =} balance (@var{a}, @var{opt})\n\
+@deftypefnx {Loadable Function} {[@var{p}, @var{d}, @var{aa}] =} balance (@var{a}, @var{opt})\n\
 @deftypefnx {Loadable Function} {[@var{cc}, @var{dd}, @var{aa}, @var{bb}] =} balance (@var{a}, @var{b}, @var{opt})\n\
 \n\
 Compute @code{aa = dd \\ a * dd} in which @code{aa} is a matrix whose\n\
@@ -58,6 +60,11 @@ row and column norms are roughly equal in magnitude, and\n\
 matrix and @code{d} is a diagonal matrix of powers of two.  This allows\n\
 the equilibration to be computed without roundoff.  Results of\n\
 eigenvalue calculation are typically improved by balancing first.\n\
+\n\
+If two output values are requested, @code{balance} returns \n\
+the permutation @code{p} and the diagonal @code{d} separately as vectors. \n\
+In this case, @code{dd = eye(n)(p,:) * diag (d)}, where @code{n} is the matrix \n\
+size. \n\
 \n\
 If four output values are requested, compute @code{aa = cc*a*dd} and\n\
 @code{bb = cc*b*dd)}, in which @code{aa} and @code{bb} have non-zero\n\
@@ -68,19 +75,11 @@ eigenvalue problem.\n\
 The eigenvalue balancing option @code{opt} may be one of:\n\
 \n\
 @table @asis\n\
-@item @code{\"N\"}, @code{\"n\"}\n\
-No balancing; arguments copied, transformation(s) set to identity.\n\
+@item @code{\"noperm\"}, @code{\"S\"}\n\
+Scale only; do not permute.\n\
 \n\
-@item @code{\"P\"}, @code{\"p\"}\n\
-Permute argument(s) to isolate eigenvalues where possible.\n\
-\n\
-@item @code{\"S\"}, @code{\"s\"}\n\
-Scale to improve accuracy of computed eigenvalues.\n\
-\n\
-@item @code{\"B\"}, @code{\"b\"}\n\
-Permute and scale, in that order. Rows/columns of a (and b)\n\
-that are isolated by permutation are not scaled.  This is the default\n\
-behavior.\n\
+@item @code{\"noscal\"}, @code{\"P\"}\n\
+Permute only; do not scale.\n\
 @end table\n\
 \n\
 Algebraic eigenvalue balancing uses standard @sc{Lapack} routines.\n\
@@ -100,19 +99,10 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
     }
 
   // determine if it's AEP or GEP
-  int AEPcase = nargin == 1 ? 1 : args(1).is_string ();
-  std::string bal_job;
+  bool AEPcase = nargin == 1 || args(1).is_string ();
 
   // problem dimension
   octave_idx_type nn = args(0).rows ();
-
-  octave_idx_type arg_is_empty = empty_arg ("balance", nn, args(0).columns());
-
-  if (arg_is_empty < 0)
-    return retval;
-
-  if (arg_is_empty > 0)
-    return octave_value_list (2, Matrix ());
 
   if (nn != args(0).columns())
     {
@@ -154,75 +144,98 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
   if (AEPcase)
     {  
       // Algebraic eigenvalue problem.
-
-      if (nargin == 1)
-	bal_job = "B";
-      else if (args(1).is_string ())
-	bal_job = args(1).string_value ();
-      else
-	{
-	  error ("balance: AEP argument 2 must be a string");
-	  return retval;
-	}
+      bool noperm = false, noscal = false;
+      if (nargin > 1)
+        {
+          std::string a1s = args(1).string_value ();
+          noperm = a1s == "noperm" || a1s == "S";
+          noscal = a1s == "noscal" || a1s == "P";
+        }
 
       // balance the AEP
       if (isfloat)
 	{
 	  if (complex_case)
 	    {
-	      FloatComplexAEPBALANCE result (fcaa, bal_job);
+	      FloatComplexAEPBALANCE result (fcaa, noperm, noscal);
 
 	      if (nargout == 0 || nargout == 1)
 		retval(0) = result.balanced_matrix ();
-	      else
+	      else if (nargout == 2)
 		{
 		  retval(1) = result.balanced_matrix ();
 		  retval(0) = result.balancing_matrix ();
 		}
+              else
+                {
+                  retval(2) = result.balanced_matrix ();
+                  retval(1) = result.scaling_vector ();
+                  retval(0) = result.permuting_vector ();
+                }
+
 	    }
 	  else
 	    {
-	      FloatAEPBALANCE result (faa, bal_job);
+	      FloatAEPBALANCE result (faa, noperm, noscal);
 
 	      if (nargout == 0 || nargout == 1)
 		retval(0) = result.balanced_matrix ();
-	      else
+	      else if (nargout == 2)
 		{
 		  retval(1) = result.balanced_matrix ();
 		  retval(0) = result.balancing_matrix ();
 		}
+              else
+                {
+                  retval(2) = result.balanced_matrix ();
+                  retval(1) = result.scaling_vector ();
+                  retval(0) = result.permuting_vector ();
+                }
 	    }
 	}
       else
 	{
 	  if (complex_case)
 	    {
-	      ComplexAEPBALANCE result (caa, bal_job);
+	      ComplexAEPBALANCE result (caa, noperm, noscal);
 
 	      if (nargout == 0 || nargout == 1)
 		retval(0) = result.balanced_matrix ();
-	      else
+	      else if (nargout == 2)
 		{
 		  retval(1) = result.balanced_matrix ();
 		  retval(0) = result.balancing_matrix ();
 		}
+              else
+                {
+                  retval(2) = result.balanced_matrix ();
+                  retval(1) = result.scaling_vector ();
+                  retval(0) = result.permuting_vector ();
+                }
 	    }
 	  else
 	    {
-	      AEPBALANCE result (aa, bal_job);
+	      AEPBALANCE result (aa, noperm, noscal);
 
 	      if (nargout == 0 || nargout == 1)
 		retval(0) = result.balanced_matrix ();
-	      else
+	      else if (nargout == 2)
 		{
 		  retval(1) = result.balanced_matrix ();
 		  retval(0) = result.balancing_matrix ();
 		}
+              else
+                {
+                  retval(2) = result.balanced_matrix ();
+                  retval(1) = result.scaling_vector ();
+                  retval(0) = result.permuting_vector ();
+                }
 	    }
 	}
     }
   else
     {
+      std::string bal_job;
       if (nargout == 1)
 	warning ("balance: used GEP, should have two output arguments");
 

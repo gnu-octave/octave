@@ -1,3 +1,7 @@
+2008-12-09  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/balance.cc (Fbalance): Exploit the new AEPBAL functionality.
+
 2008-12-08  Jaroslav Hajek  <highegg@gmail.com>
 	
 	* xpow.cc ( xpow (const DiagMatrix& a, double b), 

@@ -2,6 +2,7 @@
 
 Copyright (C) 1994, 1995, 1996, 1997, 2000, 2002, 2004, 2005, 2006,
               2007 John W. Eaton
+Copyright (C) 2008 Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -27,48 +28,25 @@ along with Octave; see the file COPYING.  If not, see
 #include <iostream>
 #include <string>
 
+#include "base-aepbal.h"
 #include "CMatrix.h"
+#include "dColVector.h"
 
 class
 OCTAVE_API
-ComplexAEPBALANCE
+ComplexAEPBALANCE : public base_aepbal<ComplexMatrix, ColumnVector>
 {
 public:
 
-  ComplexAEPBALANCE (void) : balanced_mat (), balancing_mat () { }
+  ComplexAEPBALANCE (void) : base_aepbal<ComplexMatrix, ColumnVector> () { }
 
-  ComplexAEPBALANCE (const ComplexMatrix& a, const std::string& balance_job)
-    {
-      init (a, balance_job); 
-    }
+  ComplexAEPBALANCE (const ComplexMatrix& a, bool noperm = false,
+                     bool noscal = false);
 
-  ComplexAEPBALANCE (const ComplexAEPBALANCE& a)
-    : balanced_mat (a.balanced_mat), balancing_mat (a.balancing_mat) { }
+  ComplexAEPBALANCE (const ComplexAEPBALANCE& a) 
+    : base_aepbal<ComplexMatrix, ColumnVector> (a) { }
 
-  ComplexAEPBALANCE& operator = (const ComplexAEPBALANCE& a)
-    {
-      if (this != &a)
-	{
-	  balanced_mat = a.balanced_mat;
-	  balancing_mat = a.balancing_mat;
-	}
-      return *this;
-    }
-
-  ~ComplexAEPBALANCE (void) { }
-
-  ComplexMatrix balanced_matrix (void) const { return balanced_mat; }
-
-  ComplexMatrix balancing_matrix (void) const { return balancing_mat; }
-
-  friend std::ostream& operator << (std::ostream& os, const ComplexAEPBALANCE& a);
-
-private:
-
-  ComplexMatrix balanced_mat;
-  ComplexMatrix balancing_mat;
-
-  octave_idx_type init (const ComplexMatrix& a, const std::string& balance_job);
+  ComplexMatrix balancing_matrix (void) const;
 };
 
 #endif

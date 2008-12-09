@@ -2,6 +2,7 @@
 
 Copyright (C) 1994, 1995, 1996, 1997, 2000, 2002, 2004, 2005, 2006,
               2007 John W. Eaton
+Copyright (C) 2008 Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -27,48 +28,25 @@ along with Octave; see the file COPYING.  If not, see
 #include <iostream>
 #include <string>
 
+#include "base-aepbal.h"
 #include "dMatrix.h"
+#include "dColVector.h"
 
 class
 OCTAVE_API
-AEPBALANCE
+AEPBALANCE : public base_aepbal<Matrix, ColumnVector>
 {
 public:
 
-  AEPBALANCE (void) : balanced_mat (), balancing_mat () { }
+  AEPBALANCE (void) : base_aepbal<Matrix, ColumnVector> () { }
 
-  AEPBALANCE (const Matrix& a,const std::string& balance_job)
-    {
-      init (a, balance_job); 
-    }
+  AEPBALANCE (const Matrix& a, bool noperm = false,
+              bool noscal = false);
 
-  AEPBALANCE (const AEPBALANCE& a)
-    : balanced_mat (a.balanced_mat), balancing_mat (a.balancing_mat) { }
+  AEPBALANCE (const AEPBALANCE& a) 
+    : base_aepbal<Matrix, ColumnVector> (a) { }
 
-  AEPBALANCE& operator = (const AEPBALANCE& a)
-    {
-      if (this != &a)
-	{
-	  balanced_mat = a.balanced_mat;
-	  balancing_mat = a.balancing_mat;
-	}
-      return *this;
-    }
-
-  ~AEPBALANCE (void) { }
-
-  Matrix balanced_matrix (void) const { return balanced_mat; }
-
-  Matrix balancing_matrix (void) const { return balancing_mat; }
-
-  friend std::ostream& operator << (std::ostream& os, const AEPBALANCE& a);
-
-private:
-
-  Matrix balanced_mat;
-  Matrix balancing_mat;
-
-  octave_idx_type init (const Matrix& a, const std::string& balance_job);
+  Matrix balancing_matrix (void) const;
 };
 
 #endif

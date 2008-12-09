@@ -2,6 +2,7 @@
 
 Copyright (C) 1994, 1995, 1996, 1997, 2000, 2002, 2003, 2004, 2005,
               2007 John W. Eaton
+Copyright (C) 2008 Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -42,46 +43,52 @@ extern "C"
   F77_RET_T
   F77_FUNC (zgebak, ZGEBAK) (F77_CONST_CHAR_ARG_DECL, F77_CONST_CHAR_ARG_DECL,
 			     const octave_idx_type&, const octave_idx_type&,
-			     const octave_idx_type&, double*,
+			     const octave_idx_type&, const double*,
 			     const octave_idx_type&, Complex*,
 			     const octave_idx_type&, octave_idx_type&
 			     F77_CHAR_ARG_LEN_DECL  F77_CHAR_ARG_LEN_DECL);
 }
 
-octave_idx_type
-ComplexAEPBALANCE::init (const ComplexMatrix& a,
-			 const std::string& balance_job)
+ComplexAEPBALANCE::ComplexAEPBALANCE (const ComplexMatrix& a, 
+                                      bool noperm, bool noscal)
+  : base_aepbal<ComplexMatrix, ColumnVector> ()
 {
   octave_idx_type n = a.cols ();
 
   if (a.rows () != n)
     {
       (*current_liboctave_error_handler) ("AEPBALANCE requires square matrix");
-      return -1;
+      return;
     }
 
   octave_idx_type info;
-  octave_idx_type ilo;
-  octave_idx_type ihi;
 
-  Array<double> scale (n);
+  scale = ColumnVector (n);
   double *pscale = scale.fortran_vec ();
 
   balanced_mat = a;
   Complex *p_balanced_mat = balanced_mat.fortran_vec ();
 
-  char job = balance_job[0];
+  job = noperm ? (noscal ? 'N' : 'S') : (noscal ? 'P' : 'B');
 
   F77_XFCN (zgebal, ZGEBAL, (F77_CONST_CHAR_ARG2 (&job, 1),
 			     n, p_balanced_mat, n, ilo, ihi,
 			     pscale, info
 			     F77_CHAR_ARG_LEN (1)));
+}
 
-  balancing_mat = ComplexMatrix (n, n, 0.0);
+ComplexMatrix
+ComplexAEPBALANCE::balancing_matrix (void) const
+{
+  octave_idx_type n = balanced_mat.rows ();
+  ComplexMatrix balancing_mat (n, n, 0.0);
   for (octave_idx_type i = 0; i < n; i++)
     balancing_mat.elem (i, i) = 1.0;
 
   Complex *p_balancing_mat = balancing_mat.fortran_vec ();
+  const double *pscale = scale.fortran_vec ();
+
+  octave_idx_type info;
 
   char side = 'R';
 
@@ -92,7 +99,7 @@ ComplexAEPBALANCE::init (const ComplexMatrix& a,
 			     F77_CHAR_ARG_LEN (1)
 			     F77_CHAR_ARG_LEN (1)));
 
-  return info;
+  return balancing_mat;
 }
 
 /*

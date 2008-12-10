@@ -1,5 +1,9 @@
 2008-12-09  Jaroslav Hajek  <highegg@gmail.com>
 
+	* script/nchoosek.m: Use a recursionless approach.
+
+2008-12-09  Jaroslav Hajek  <highegg@gmail.com>
+
 	* general/repmat.m: Optimize & simplify the scalar & 2d matrix case.
 
 2008-12-07  Thorsten Meyer  <thorsten.meyier@gmx.de>

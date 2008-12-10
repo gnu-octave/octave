@@ -1,4 +1,5 @@
 ## Copyright (C) 2001, 2006, 2007 Rolf Fabian and Paul Kienzle
+## Copyright (C) 2008 Jaroslav Hajek
 ##
 ## This file is part of Octave.
 ##
@@ -67,34 +68,48 @@ function A = nchoosek (v, k)
   n = length (v);
 
   if (n == 1)
-     A = round (exp (sum (log (k+1:v)) - sum (log (2:v-k))));
-  elseif (k == 0)
-    A = [];
+    if (k > v/2)
+      k = v - k;
+    endif
+    A = round (prod ((v-k+1:v)./(1:k)));
   elseif (k == 1)
     A = v(:);
-  elseif (k == n)
-     A = v(:).';
+  elseif (k > n)
+    A = zeros (0, k, class (v));
   else
-    oldmax = max_recursion_depth ();
-    unwind_protect
-      max_recursion_depth (n);
-      A = nck (v, k);
-    unwind_protect_cleanup
-      max_recursion_depth (oldmax);
-    end_unwind_protect
+    p = cell (1, k);
+    # hack: do the op in the smallest integer class possible to avoid moving
+    # too much data.
+    if (n < intmax ("uint8"))
+      cl = "uint8";
+    elseif (n < intmax ("uint16"))
+      cl = "uint16";
+    elseif (n < intmax ("uint32"))
+      cl = "uint32";
+    else
+      # This would exhaust memory anyway.
+      cl = "double";
+    endif
+     
+    # Use a generalized Pascal triangle. Traverse backwards to keep
+    # alphabetical order.
+    for i = 1:k
+      p{i} = zeros (0, i, cl);
+    endfor
+    s = ones (1, 1, cl);
+    p{1} = n*s;
+    for j = n-1:-1:1
+      for i = k:-1:2
+	q = p{i-1};
+	p{i} = [[repmat(s*j, rows (p{i-1}), 1), p{i-1}]; p{i}];
+      endfor
+      p{1} = [j;p{1}];
+    endfor
+    v = v(:);
+    A = v(p{k});
   endif
 endfunction
 
-function A = nck (v, k)
-  n = length (v);
-  if (n == 1 || k < 2 || k == n)
-    A = nchoosek (v, k);
-  else
-    m = nchoosek (n-1, k-1);
-    A = [v(1)*ones(m,1), nck(v(2:n),k-1);
-	 nck(v(2:n), k)];
-  endif
-endfunction
-
-%!assert (nchoosek(100,45), bincoeff(100,45))
+# nchoosek seems to be slightly more accurate (but only allowing scalar inputs)
+%!assert (nchoosek(100,45), bincoeff(100,45), -1e2*eps)
 %!assert (nchoosek(1:5,3),[1:3;1,2,4;1,2,5;1,3,4;1,3,5;1,4,5;2:4;2,3,5;2,4,5;3:5])

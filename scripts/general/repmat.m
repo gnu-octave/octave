@@ -1,4 +1,5 @@
 ## Copyright (C) 2000, 2002, 2004, 2005, 2006, 2007 Paul Kienzle
+## Copyright (C) 2008 Jaroslav Hajek
 ##
 ## This file is part of Octave.
 ##
@@ -44,7 +45,7 @@ function x = repmat (a, m, n)
       idx = [m, m];
       n = m;
     elseif (isvector (m) && length (m) > 1)
-      # Ensure that we have a row vector
+      ## Ensure that we have a row vector
       idx = m(:).';
     else
       error ("repmat: invalid dimensional argument");
@@ -52,34 +53,19 @@ function x = repmat (a, m, n)
   endif
 
   if (numel (a) == 1)
-    if (ischar (a))
-      x = char (toascii (a) * ones (idx));
-    else
-      if (strcmp (class (a), "double"))
-	## This is faster with octave for double/Complex
-	x = a * ones(idx, class(a));
-      else
-	cidx = cell (1, length (idx));
-	for i=1:length(idx)
-	  cidx{i} = ones (1,idx(i));
-	endfor
-	x = a (cidx{:});
-      endif
-    endif
+    ## optimize the scalar fill case.
+    x(1:prod (idx)) = a;
+    x = reshape (x, idx);
   elseif (ndims (a) == 2 && length (idx) < 3)
-    if (ischar (a))
-      x = char (kron (ones (idx), toascii (a)));
-    elseif (strcmp (class(a), "double"))
-      ## FIXME -- DISPATCH.
-      if (issparse (a))
-        x = spkron (ones (idx), a);
-      else
-        x = kron (ones (idx), a);
-      endif
+    if (issparse (a))
+      x = spkron (ones (idx), a);
     else
-      aidx = size(a);
-      x = a (kron (ones (1, idx(1)), 1:aidx(1)),  
-	     kron (ones (1, idx(2)), 1:aidx(2)));
+      ## indexing is now faster, so we use it rather than kron.
+      m = rows (a); n = columns (a);
+      p = idx(1); q = idx(2);
+      x = reshape (a, m, 1, n, 1);
+      x = x(:, ones (1, p), :, ones (1, q));
+      x = reshape (x, m*p, n*q);
     endif
   else
     aidx = size(a);

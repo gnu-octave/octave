@@ -1113,7 +1113,13 @@ Array<T>::assign (const idx_vector& i, const Array<T>& rhs, const T& rfv)
       // Try to resize first if necessary. 
       if (nx != n)
         {
-          resize_fill (nx, rfv);      
+          // A simple optimization. Things like A(1:N) = x will skip fill on
+          // resizing, if A is 0x0.
+          if (rows () == 0 && columns () == 0 && ndims () == 2
+              && rhl == 1 && i.is_colon_equiv (nx))
+            *this = Array<T> (dim_vector (1, nx));
+          else
+            resize_fill (nx, rfv);      
           n = numel ();
         }
 

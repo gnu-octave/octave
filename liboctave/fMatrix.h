@@ -268,8 +268,6 @@ public:
 			       octave_idx_type& info,
 			       octave_idx_type& rank, float& rcon) const;
 
-  FloatMatrix expm (void) const;
-
   FloatMatrix& operator += (const FloatDiagMatrix& a);
   FloatMatrix& operator -= (const FloatDiagMatrix& a);
 

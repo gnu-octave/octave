@@ -65,7 +65,7 @@ OPT_INC := $(addprefix ../liboctave/, $(addsuffix .h, $(OPT_BASE)))
 DLD_XSRC := amd.cc balance.cc besselj.cc betainc.cc bsxfun.cc cellfun.cc \
 	chol.cc ccolamd.cc colamd.cc colloc.cc conv2.cc convhulln.cc daspk.cc \
 	dasrt.cc dassl.cc det.cc dispatch.cc dlmread.cc dmperm.cc eig.cc \
-	expm.cc fft.cc fft2.cc fftn.cc fftw.cc filter.cc find.cc \
+	fft.cc fft2.cc fftn.cc fftw.cc filter.cc find.cc \
 	fltk_backend.cc \
 	gammainc.cc gcd.cc getgrent.cc getpwent.cc getrusage.cc \
 	givens.cc hess.cc hex2num.cc inv.cc kron.cc lookup.cc lsode.cc \

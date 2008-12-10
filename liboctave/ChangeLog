@@ -1,3 +1,10 @@
+2008-12-10  Jaroslav Hajek  <highegg@gmail.com>
+
+	* dMatrix.h, dMatrix.cc (Matrix::expm): Remove.
+	* fMatrix.h, fMatrix.cc (FloatMatrix::expm): Remove.
+	* CMatrix.h, CMatrix.cc (ComplexMatrix::expm): Remove.
+	* fCMatrix.h, fCMatrix.cc (FloatComplexMatrix::expm): Remove.
+
 2008-12-09  Jaroslav Hajek  <highegg@gmail.com>
 
 	* base-aepbal.h: New source.

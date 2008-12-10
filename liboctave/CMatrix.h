@@ -301,8 +301,6 @@ public:
 			       octave_idx_type& info,
 			       octave_idx_type& rank, double& rcon) const;
 
-  ComplexMatrix expm (void) const;
-
   // matrix by diagonal matrix -> matrix operations
 
   ComplexMatrix& operator += (const DiagMatrix& a);

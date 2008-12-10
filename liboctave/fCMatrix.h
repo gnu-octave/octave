@@ -301,8 +301,6 @@ public:
 			       octave_idx_type& info,
 			       octave_idx_type& rank, float& rcon) const;
 
-  FloatComplexMatrix expm (void) const;
-
   // matrix by diagonal matrix -> matrix operations
 
   FloatComplexMatrix& operator += (const FloatDiagMatrix& a);

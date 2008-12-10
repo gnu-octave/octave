@@ -1,5 +1,10 @@
 2008-12-10  Jaroslav Hajek  <highegg@gmail.com>
 
+	* DLD-FUNCTIONS/expm.cc: Remove.
+	* Makefile.in: Update.
+
+2008-12-10  Jaroslav Hajek  <highegg@gmail.com>
+
 	* ov-intx.h (OCTAVE_VALUE_INT_SCALAR_T::empty_clone): Construct an
 	empty matrix instead of zero.
 

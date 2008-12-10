@@ -267,8 +267,6 @@ public:
 			       octave_idx_type& info,
 			       octave_idx_type& rank, double& rcon) const;
 
-  Matrix expm (void) const;
-
   Matrix& operator += (const DiagMatrix& a);
   Matrix& operator -= (const DiagMatrix& a);
 

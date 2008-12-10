@@ -1,0 +1,158 @@
+## Copyright (C) 2008 Jaroslav Hajek, Marco Caliari
+##
+## This file is part of Octave.
+##
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 3 of the License, or (at
+## your option) any later version.
+##
+## Octave is distributed in the hope that it will be useful, but
+## WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+## General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, see
+## <http://www.gnu.org/licenses/>.
+
+##-*- texinfo -*-
+## @deftypefn {Function File} {} expm (@var{a})
+## Return the exponential of a matrix, defined as the infinite Taylor
+## series
+## @iftex
+## @tex
+## $$
+##  \exp (A) = I + A + {A^2 \over 2!} + {A^3 \over 3!} + \cdots
+## $$
+## @end tex
+## @end iftex
+## @ifinfo
+## 
+## @example
+## expm(a) = I + a + a^2/2! + a^3/3! + ...
+## @end example
+## 
+## @end ifinfo
+## The Taylor series is @emph{not} the way to compute the matrix
+## exponential; see Moler and Van Loan, @cite{Nineteen Dubious Ways to
+## Compute the Exponential of a Matrix}, SIAM Review, 1978.  This routine
+## uses Ward's diagonal
+## @iftex
+## @tex
+## Pad\'e
+## @end tex
+## @end iftex
+## @ifinfo
+## Pade'
+## @end ifinfo
+## approximation method with three step preconditioning (SIAM Journal on
+## Numerical Analysis, 1977).  Diagonal
+## @iftex
+## @tex
+## Pad\'e
+## @end tex
+## @end iftex
+## @ifinfo
+## Pade'
+## @end ifinfo
+##  approximations are rational polynomials of matrices
+## @iftex
+## @tex
+## $D_q(a)^{-1}N_q(a)$
+## @end tex
+## @end iftex
+## @ifinfo
+## 
+## @example
+##      -1
+## D (a)   N (a)
+## @end example
+## 
+## @end ifinfo
+##  whose Taylor series matches the first
+## @iftex
+## @tex
+## $2 q + 1 $
+## @end tex
+## @end iftex
+## @ifinfo
+## @code{2q+1}
+## @end ifinfo
+## terms of the Taylor series above; direct evaluation of the Taylor series
+## (with the same preconditioning steps) may be desirable in lieu of the
+## @iftex
+## @tex
+## Pad\'e
+## @end tex
+## @end iftex
+## @ifinfo
+## Pade'
+## @end ifinfo
+## approximation when
+## @iftex
+## @tex
+## $D_q(a)$
+## @end tex
+## @end iftex
+## @ifinfo
+## @code{Dq(a)}
+## @end ifinfo
+## is ill-conditioned.
+## @end deftypefn
+
+function r = expm (a)
+
+  if (! ismatrix (a) || ! issquare (a))
+    error ("expm requires a square matrix")
+  endif
+
+  n = rows (a);
+  # trace reduction
+  a(a == -Inf) = -realmax;
+  trshift = trace (a) / length (a);
+  if (trshift > 0)
+    a -= trshift*eye (n);
+  endif
+  # balancing
+  [p, d, aa] = balance (a);
+  # FIXME: can we both permute and scale at once? Or should we rather do this:
+  # [p, xx, aa] = balance (a, "noscal");
+  # [xx, d, aa] = balance (aa, "noperm");
+  [f, e] = log2 (norm (aa, "inf"));
+  s = max (0, e);
+  s = min (s, 1023);
+  aa *= 2^(-s);
+
+  # Pade approximation for exp(A)
+  c = [5.0000000000000000e-1,...
+       1.1666666666666667e-1,...
+       1.6666666666666667e-2,...
+       1.6025641025641026e-3,...
+       1.0683760683760684e-4,...
+       4.8562548562548563e-6,...
+       1.3875013875013875e-7,...
+       1.9270852604185938e-9];
+
+  a2 = aa^2;
+  id = eye (n);
+  x = (((c(8) * a2 + c(6) * id) * a2 + c(4) * id) * a2 + c(2) * id) * a2 + id;
+  y = (((c(7) * a2 + c(5) * id) * a2 + c(3) * id) * a2 + c(1) * id) * aa;
+
+  r = (x - y) \ (x + y);
+
+  # Undo scaling by repeated squaring
+  for k = 1:s 
+    r ^= 2;
+  endfor
+
+  # inverse balancing
+  ds = diag (s);
+  r = ds * r / ds;
+  r = r(p, p);
+  # inverse trace reduction
+  if (trshift >0)
+    r *= exp (trshift);
+  endif
+
+endfunction

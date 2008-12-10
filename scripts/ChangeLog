@@ -1,3 +1,7 @@
+2008-12-10  Jaroslav Hajek  <highegg@gmail.com>
+
+	* script/linear-algebra/expm.m: New source.
+
 2008-12-09  Jaroslav Hajek  <highegg@gmail.com>
 
 	* script/nchoosek.m: Use a recursionless approach.

@@ -402,7 +402,7 @@ public:
     { return new OCTAVE_VALUE_INT_SCALAR_T (*this); }
 
   octave_base_value *empty_clone (void) const
-    { return new OCTAVE_VALUE_INT_SCALAR_T (); }
+    { return new OCTAVE_VALUE_INT_MATRIX_T (); }
 
   octave_value do_index_op (const octave_value_list& idx,
 			    bool resize_ok = false)

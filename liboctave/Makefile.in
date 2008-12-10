@@ -105,7 +105,7 @@ BUILT_INCLUDES := oct-types.h mx-ops.h \
 
 TEMPLATE_SRC := Array.cc ArrayN.cc DiagArray2.cc \
 	MArray.cc MArray2.cc MArrayN.cc MDiagArray2.cc \
-	base-lu.cc eigs-base.cc oct-sort.cc sparse-base-lu.cc \
+	base-lu.cc oct-sort.cc sparse-base-lu.cc \
 	sparse-base-chol.cc sparse-dmsolve.cc
 
 TI_SRC := Array-C.cc Array-b.cc Array-ch.cc Array-i.cc Array-d.cc \

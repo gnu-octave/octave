@@ -220,3 +220,12 @@ octave_complex_diag_matrix::load_binary (std::istream& is, bool swap,
   return true;
 }
 
+bool 
+octave_complex_diag_matrix::chk_valid_scalar (const octave_value& val, 
+                                              Complex& x) const
+{
+  bool retval = val.is_complex_scalar () || val.is_real_scalar ();
+  if (retval)
+    x = val.complex_value ();
+  return retval;
+}

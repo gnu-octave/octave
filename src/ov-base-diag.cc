@@ -128,6 +128,75 @@ octave_base_diag<DMT, MT>::do_index_op (const octave_value_list& idx,
 }
 
 template <class DMT, class MT>
+octave_value 
+octave_base_diag<DMT, MT>::subsasgn (const std::string& type,
+                                     const std::list<octave_value_list>& idx,
+                                     const octave_value& rhs)
+{
+  octave_value retval;
+
+  switch (type[0])
+    {
+    case '(':
+      {
+	if (type.length () == 1)
+          {
+            octave_value_list jdx = idx.front ();
+            // Check for a simple element assignment. That means, if D is a diagonal matrix,
+            // `D(i,i) = x' will not destroy its diagonality (provided i is a valid index).
+            if (jdx.length () == 2 && jdx(0).is_scalar_type () && jdx(1).is_scalar_type ())
+              {
+                typename DMT::element_type val;
+                idx_vector i0 = jdx(0).index_vector (), i1 = jdx(1).index_vector ();
+                if (! error_state  && i0(0) == i1(0) 
+                    && i0(0) < matrix.rows () && i1(0) < matrix.cols ()
+                    && chk_valid_scalar (rhs, val))
+                  {
+                    matrix (i0(0), i1(0)) = val;                    
+                    retval = this;
+                    this->count++;
+                    // invalidate cache
+                    dense_cache = octave_value ();
+                  }
+              }
+
+            if (! error_state && ! retval.is_defined ())
+              retval = numeric_assign (type, idx, rhs);
+          }
+	else
+	  {
+	    std::string nm = type_name ();
+	    error ("in indexed assignment of %s, last lhs index must be ()",
+		   nm.c_str ());
+	  }
+      }
+      break;
+
+    case '{':
+    case '.':
+      {
+	if (is_empty ())
+	  {
+	    octave_value tmp = octave_value::empty_conv (type, rhs);
+
+	    retval = tmp.subsasgn (type, idx, rhs);
+	  }
+	else
+	  {
+	    std::string nm = type_name ();
+	    error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
+	  }
+      }
+      break;
+
+    default:
+      panic_impossible ();
+    }
+
+  return retval;
+}
+
+template <class DMT, class MT>
 octave_value
 octave_base_diag<DMT, MT>::resize (const dim_vector& dv, bool fill) const
 {

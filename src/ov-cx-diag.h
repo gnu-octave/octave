@@ -84,6 +84,10 @@ public:
   octave_value real (void) const;
 
 private:
+
+  bool chk_valid_scalar (const octave_value&, 
+                         Complex&) const;
+
   DECLARE_OCTAVE_ALLOCATOR
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA

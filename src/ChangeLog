@@ -1,3 +1,22 @@
+2008-12-11  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-base-diag.cc (octave_base_diag<DMT,MT>::subsasgn): New method.
+	* ov-base-diag.h (octave_base_diag<DMT,MT>::subsasgn): Declare it.
+	(octave_base_diag<DMT,MT>::chk_valid_scalar): New method decl.
+
+	* ov-re-diag.cc (octave_diag_matrix::chk_valid_scalar): New method
+	override.
+	* ov-re-diag.h: Declare it.
+	* ov-flt-re-diag.cc (octave_float_diag_matrix::chk_valid_scalar): New
+	method override.
+	* ov-flt-re-diag.h: Declare it.
+	* ov-cx-diag.cc (octave_complex_diag_matrix::chk_valid_scalar): New 
+	method override.
+	* ov-cx-diag.h: Declare it.
+	* ov-flt-cx-diag.cc (octave_float_complex_diag_matrix::chk_valid_scalar): 
+	New method override.
+	* ov-flt-cx-diag.h: Declare it.
+
 2008-12-10  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/expm.cc: Remove.

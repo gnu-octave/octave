@@ -163,3 +163,13 @@ octave_float_diag_matrix::load_binary (std::istream& is, bool swap,
 
   return true;
 }
+
+bool 
+octave_float_diag_matrix::chk_valid_scalar (const octave_value& val, 
+                                            float& x) const
+{
+  bool retval = val.is_real_scalar ();
+  if (retval)
+    x = val.float_value ();
+  return retval;
+}

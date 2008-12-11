@@ -194,3 +194,13 @@ octave_float_complex_diag_matrix::load_binary (std::istream& is, bool swap,
 
   return true;
 }
+
+bool 
+octave_float_complex_diag_matrix::chk_valid_scalar (const octave_value& val, 
+                                                    FloatComplex& x) const
+{
+  bool retval = val.is_complex_scalar () || val.is_real_scalar ();
+  if (retval)
+    x = val.float_complex_value ();
+  return retval;
+}

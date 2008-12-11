@@ -72,6 +72,10 @@ public:
   octave_value do_index_op (const octave_value_list& idx,
 			    bool resize_ok = false);
 
+  octave_value subsasgn (const std::string& type,
+			 const std::list<octave_value_list>& idx,
+			 const octave_value& rhs);
+
   dim_vector dims (void) const { return matrix.dims (); }
 
   octave_idx_type nnz (void) const { return to_dense ().nnz (); }
@@ -244,7 +248,10 @@ protected:
 
   DMT matrix;
 
-  octave_value to_dense () const;
+  octave_value to_dense (void) const;
+
+  virtual bool chk_valid_scalar (const octave_value&, 
+                                 typename DMT::element_type&) const = 0;
 
 private:
 

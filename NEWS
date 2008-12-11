@@ -44,6 +44,7 @@ Summary of important user-visible changes for version 3.2:
     also the optimset function).
     The INFO values returned from fsolve have changed to be compatible
     with Matlab's fsolve function.
+    Additionally, fsolve is now able to solve overdetermined systems.
 
  ** Object Oriented Programming
 

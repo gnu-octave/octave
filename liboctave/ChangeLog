@@ -1,3 +1,7 @@
+2008-12-11  Jaroslav Hajek  <highegg@gmail.com>
+
+	* mx-op-defs.h (DMDM_BIN_OP): Fix invalid buffer length.
+
 2008-12-10  Jaroslav Hajek  <highegg@gmail.com>
 
 	* dMatrix.h, dMatrix.cc (Matrix::expm): Remove.

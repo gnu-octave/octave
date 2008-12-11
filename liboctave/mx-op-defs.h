@@ -1187,7 +1187,7 @@ operator * (const DM& dm, const M& m) \
  \
 	if (dm1_nr > 0 && dm1_nc > 0) \
 	  F ## _vv (r.fortran_vec (), dm1.data (), dm2.data (), \
-		    dm1_nr * dm2_nc); \
+		    dm1.length ()); \
       } \
  \
     return r; \

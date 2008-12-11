@@ -75,6 +75,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options)
   maxiter = optimget (options, "MaxIter", Inf);
   maxfev = optimget (options, "MaxFunEvals", Inf);
   outfcn = optimget (options, "OutputFcn");
+  pivoting = optimget (options, "Pivoting", false);
   funvalchk = strcmp (optimget (options, "FunValCheck", "off"), "on");
 
   if (funvalchk)
@@ -126,7 +127,11 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options)
     endif
     
     # get QR factorization of the jacobian
-    [q, r] = qr (fjac);
+    if (pivoting)
+      [q, r, p] = qr (fjac);
+    else
+      [q, r] = qr (fjac);
+    endif
 
     # get column norms, use them as scaling factor
     jcn = norm (fjac, 'columns').';
@@ -153,14 +158,17 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options)
 
       # get TR model (dogleg) minimizer
       # in case of an overdetermined system, get lsq solution
-      p = - __dogleg__ (r(1:n,:), qtf(1:n), dg, delta);
-      pn = norm (dg .* p);
+      s = - __dogleg__ (r(1:n,:), qtf(1:n), dg, delta);
+      if (pivoting)
+	s = p * s;
+      endif
+      sn = norm (dg .* s);
 
       if (niter == 1)
-        delta = min (delta, pn);
+        delta = min (delta, sn);
       endif
 
-      fvec1 = fcn (reshape (x + p, xsiz)) (:);
+      fvec1 = fcn (reshape (x + s, xsiz)) (:);
       fn1 = norm (fvec1);
 
       if (fn1 < fn)
@@ -171,7 +179,11 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options)
       endif
 
       # scaled predicted reduction, and ratio
-      w = qtf + r*p; 
+      if (pivoting)
+	w = qtf + r*(p'*s);
+      else
+	w = qtf + r*s;
+      endif
       t = norm (w);
       if (t < fn)
         prered = 1 - (t/fn)^2;
@@ -195,15 +207,15 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options)
         nfail = 0;
         nsuc ++;
         if (abs (1-ratio) <= 0.1)
-          delta = 2*pn;
+          delta = 2*sn;
         elseif (ratio >= 0.5 || nsuc > 1)
-          delta = max (delta, 2*pn);
+          delta = max (delta, 2*sn);
         endif
       endif
 
       if (ratio >= 1e-4)
         # successful iteration
-        x += p;
+        x += s;
         xn = norm (dg .* x);
         fvec = fvec1;
         fn = fn1;
@@ -227,7 +239,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options)
       elseif (actred > 0)
         # This one is classic. Note that we use scaled variables again, but
         # compare to scaled step, so nothing bad.
-        if (pn <= tolx*xn)
+        if (sn <= tolx*xn)
           info = 2;
         # Again a classic one. It seems weird to use the same tolf for two
         # different tests, but that's what M*b manual appears to say.
@@ -242,8 +254,11 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options)
       endif
 
       # compute the scaled Broyden update
-      u = (fvec1 - q*w) / pn; 
-      v = dg .* ((dg .* p) / pn);
+      u = (fvec1 - q*w) / sn; 
+      v = dg .* ((dg .* s) / sn);
+      if (pivoting)
+	v = p'*v;
+      endif
 
       # update the QR factorization
       [q, r] = qrupdate (q, r, u, v);
@@ -322,6 +337,25 @@ endfunction
 %! 2.005014 ];
 %! tol = 1.0e-5;
 %! [x, fval, info] = fsolve (@f, [ 0.5; 2.0; 2.5 ], optimset ("TolFun", 1e-6));
+%! assert (info > 0);
+%! assert (norm (x - x_opt, Inf) < tol);
+%! assert (norm (fval) < tol);
+
+%!function retval = f (p) 
+%!  x = p(1);
+%!  y = p(2);
+%!  z = p(3);
+%!  retval = zeros (3, 1);
+%!  retval(1) = sin(x) + y**2 + log(z) - 7;
+%!  retval(2) = 3*x + 2**y -z**3 + 1;
+%!  retval(3) = x + y + z - 5;
+%!test
+%! x_opt = [ 0.599054;
+%! 2.395931;
+%! 2.005014 ];
+%! tol = 1.0e-5;
+%! opt = optimset ("Pivoting", true);
+%! [x, fval, info] = fsolve (@f, [ 0.5; 2.0; 2.5 ], opt);
 %! assert (info > 0);
 %! assert (norm (x - x_opt, Inf) < tol);
 %! assert (norm (fval) < tol);

@@ -55,6 +55,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-complex.h"
 #include "ov-cx-mat.h"
 #include "ov-re-sparse.h"
+#include "ov-re-diag.h"
+#include "ov-cx-diag.h"
+#include "ov-perm.h"
 #include "ov-type-conv.h"
 #include "pr-output.h"
 #include "variables.h"
@@ -829,9 +832,24 @@ Convert @var{x} to double precision type.\n\
   // inside their own scopes, and we don't declare retval here to
   // avoid a shadowed declaration warning.
 
-  if (args.length () == 1)
+  if (args(0).is_perm_matrix ())
     {
-      if (args(0).is_sparse_type ())
+      OCTAVE_TYPE_CONV_BODY3 (double, octave_perm_matrix, octave_scalar);
+    }
+  else if (args.length () == 1)
+    {
+      if (args(0).is_diag_matrix ())
+        {
+	  if (args(0).is_complex_type ())
+	    {
+	      OCTAVE_TYPE_CONV_BODY3 (double, octave_complex_diag_matrix, octave_complex);
+	    }
+	  else
+	    {
+	      OCTAVE_TYPE_CONV_BODY3 (double, octave_diag_matrix, octave_scalar);
+	    }
+        }
+      else if (args(0).is_sparse_type ())
 	{
 	  if (args(0).is_complex_type ())
 	    {

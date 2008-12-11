@@ -1,4 +1,9 @@
 2008-12-11  Jaroslav Hajek  <highegg@gmail.com>
+	
+	* ov-re-mat.cc (Fdouble): Handle diagonal & perm matrices. 
+	* ov-flt-re-mat.cc (Fsingle): Handle diagonal & perm matrices. 
+
+2008-12-11  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-base-diag.cc (octave_base_diag<DMT,MT>::subsasgn): New method.
 	* ov-base-diag.h (octave_base_diag<DMT,MT>::subsasgn): Declare it.

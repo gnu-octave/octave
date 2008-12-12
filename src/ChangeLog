@@ -1,3 +1,7 @@
+2008-12-12  David Bateman  <dbateman@free.fr>
+
+	* DLD-FUNCTIONS/chol.cc (Fcholinv): Add test.
+
 2008-12-12  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ls-hdf5.cc (add_hdf5_data): Check for diagonal & permutation
@@ -45,10 +49,6 @@
 2008-12-09  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/balance.cc (Fbalance): Exploit the new AEPBAL functionality.
-
-2008-12-12  David Bateman  <dbateman@free.fr>
-
-	* DLD-FUNCTIONS/chol.cc (Fcholinv): Add test.
 
 2008-12-08  Jaroslav Hajek  <highegg@gmail.com>
 	

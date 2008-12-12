@@ -277,15 +277,15 @@ sparse_base_chol<chol_type, chol_elt, p_type>::inverse (void) const
   double rcond2;
   octave_idx_type info;
   MatrixType mattype (MatrixType::Upper);
-  chol_type linv = L().transpose().inverse(mattype, info, rcond2, 1, 0);
+  chol_type linv = L().hermitian().inverse(mattype, info, rcond2, 1, 0);
 
   if (perms.length() == n)
     {
       p_type Qc = Q();
-      retval = Qc * linv.transpose() * linv * Qc.transpose();
+      retval = Qc * linv * linv.hermitian() * Qc.transpose();
     }
   else
-    retval = linv.transpose() * linv;
+    retval = linv * linv.hermitian ();
 #endif
   return retval;
 }

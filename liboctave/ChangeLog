@@ -24,6 +24,11 @@
 	* CmplxAEPBAL.h, CmplxAEPBAL.cc: Rebase ComplexAEPBAL on base_aepbal.
 	* fCmplxAEPBAL.h, fCmplxAEPBAL.cc: Rebase FloatComplexAEPBAL on base_aepbal.
 
+2008-12-12  David Bateman  <dbateman@free.fr>
+
+	* sparse-base-chol.cc (inverse): Fix inversion based on cholesky 
+	factorization.
+	
 2008-12-08  Jaroslav Hajek  <highegg@gmail.com>
 
 	* idx-vector.cc (idx_vector::idx_vector_rep::idx_vector_rep (const 

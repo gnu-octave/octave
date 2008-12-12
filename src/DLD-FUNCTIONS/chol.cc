@@ -469,6 +469,24 @@ symmetric positive definite matrix @var{a}.\n\
   return retval;
 }
 
+/*
+
+%!test
+%! A = [2,0.2;0.2,1];
+%! issymmetric(A)
+%! min(eig(A))
+%! Ainv = inv(A);
+%! Ainv1 = cholinv(A);
+%! Ainv2 = inv(sparse(A));
+%! Ainv3 = cholinv(sparse(A));
+%! Ainv4 = spcholinv(sparse(A));
+%! assert (norm(Ainv-Ainv1),1e-10)
+%! assert (norm(Ainv-Ainv2),1e-10)
+%! assert (norm(Ainv-Ainv3),1e-10)
+%! assert (norm(Ainv-Ainv4),1e-10)
+
+*/
+
 DEFUN_DLD (chol2inv, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} chol2inv (@var{u})\n\

@@ -24,6 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_local_buffer_h 1
 
 #include <cstddef>
+#include "oct-cmplx.h"
 
 // The default local buffer simply encapsulates an *array* pointer that gets
 // delete[]d automatically. For common POD types, we provide specializations.
@@ -44,11 +45,68 @@ private:
   T *data;
 };
 
+// For buffers of POD types, we'll be more smart. There is one thing that
+// differentiates a local buffer from a dynamic array - the local buffers, if
+// not manipulated improperly, have a FIFO semantics, meaning that if buffer B
+// is allocated after buffer A, B *must* be deallocated before A. This is
+// *guaranteed* if you use local buffer exclusively through the
+// OCTAVE_LOCAL_BUFFER macro, because the C++ standard *mandates* explicit
+// local objects be destroyed in reverse order of declaration.
+// Therefore, we can avoid memory fragmentation by allocating fairly large
+// chunks of memory and serving local buffers from them in a stack-like manner.
+// The first returning buffer in previous chunk will be responsible for
+// deallocating the chunk.
 
-// If the compiler supports dynamic stack arrays, we can use the attached hack to 
-// place small buffer arrays on the stack. 
+class octave_chunk_buffer
+{
+  static const size_t chunk_size;
 
-#ifdef HAVE_DYNAMIC_AUTO_ARRAYS
+  static char *top, *chunk;
+  static size_t left;
+
+  char *cnk;
+  char *dat;
+
+public:
+
+  octave_chunk_buffer (size_t size);
+
+  ~octave_chunk_buffer (void);
+
+  char *data (void) const { return dat; }
+};
+
+// This specializes octave_local_buffer to use the chunked buffer mechanism
+// for POD types.
+#define SPECIALIZE_POD_BUFFER(TYPE) \
+template <> \
+class octave_local_buffer<TYPE> : private octave_chunk_buffer \
+{ \
+public: \
+  octave_local_buffer (size_t size) : octave_chunk_buffer (size * sizeof (TYPE)) { } \
+  operator TYPE *() const { return reinterpret_cast<TYPE *> (this->data ()); } \
+}
+
+SPECIALIZE_POD_BUFFER (bool);
+SPECIALIZE_POD_BUFFER (char);
+SPECIALIZE_POD_BUFFER (unsigned short);
+SPECIALIZE_POD_BUFFER (short);
+SPECIALIZE_POD_BUFFER (int);
+SPECIALIZE_POD_BUFFER (unsigned int);
+SPECIALIZE_POD_BUFFER (long);
+SPECIALIZE_POD_BUFFER (unsigned long);
+SPECIALIZE_POD_BUFFER (float);
+SPECIALIZE_POD_BUFFER (double);
+// FIXME: Are these guaranteed to be POD and satisfy alignment?
+SPECIALIZE_POD_BUFFER (Complex);
+SPECIALIZE_POD_BUFFER (FloatComplex);
+// MORE ?
+
+// If the compiler supports dynamic stack arrays, we can use the attached hack
+// to place small buffer arrays on the stack. It may be even faster than our
+// obstack-like optimization, but is dangerous because stack is a very limited
+// resource, so we disable it.
+#if 0 //defined (HAVE_DYNAMIC_AUTO_ARRAYS)
 
 // Maximum buffer size (in bytes) to be placed on the stack.
 

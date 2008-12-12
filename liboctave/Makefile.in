@@ -142,7 +142,7 @@ VX_OP_SRC := $(shell $(AWK) -f $(srcdir)/mk-ops.awk prefix=vx list_cc_files=1 $(
 
 SPARSE_MX_OP_SRC := $(shell $(AWK) -f $(srcdir)/sparse-mk-ops.awk prefix=smx list_cc_files=1 $(srcdir)/sparse-mx-ops)
 
-LIBOCTAVE_CXX_SOURCES := Bounds.cc CollocWt.cc DASPK.cc DASRT.cc \
+LIBOCTAVE_CXX_SOURCES := oct-locbuf.cc Bounds.cc CollocWt.cc DASPK.cc DASRT.cc \
 	DASSL.cc FEGrid.cc LinConst.cc LSODE.cc ODES.cc \
 	Quad.cc Range.cc data-conv.cc dir-ops.cc \
 	file-ops.cc file-stat.cc glob-match.cc idx-vector.cc \

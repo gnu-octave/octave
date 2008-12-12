@@ -1,3 +1,10 @@
+2008-12-12  Jaroslav Hajek  <highegg@gmail.com>
+
+	* oct-locbuf.cc: New source.
+	* oct-locbuf.h (octave_chunk_buffer): New class.
+	(octave_local_buffer): Subclass from octave_chunk_buffer for selected
+	POD types.
+
 2008-12-11  Jaroslav Hajek  <highegg@gmail.com>
 
 	* mx-op-defs.h (DMDM_BIN_OP): Fix invalid buffer length.

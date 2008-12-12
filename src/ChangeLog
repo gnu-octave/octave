@@ -1,3 +1,8 @@
+2008-12-12  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ls-hdf5.cc (add_hdf5_data): Check for diagonal & permutation
+	matrices and convert them to full prior to saving.
+
 2008-12-11  Jaroslav Hajek  <highegg@gmail.com>
 	
 	* ov-re-mat.cc (Fdouble): Handle diagonal & perm matrices. 

@@ -747,7 +747,13 @@ add_hdf5_data (hid_t loc_id, const octave_value& tc,
   hid_t type_id = -1, space_id = -1, data_id = -1, data_type_id = -1;
   bool retval = false;
   octave_value val = tc;
-  std::string t = tc.type_name();
+  // FIXME: diagonal & permutation matrices currently don't know how to save
+  // themselves, so we convert them first to normal matrices using A = A(:,:).
+  // This is a temporary hack.
+  if (val.is_diag_matrix () || val.is_perm_matrix ())
+    val = val.do_index_op (octave_value_list (2, octave_value::magic_colon_t));
+
+  std::string t = val.type_name();
 
   data_id = H5Gcreate (loc_id, name.c_str (), 0);
   if (data_id < 0)

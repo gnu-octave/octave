@@ -50,30 +50,43 @@
 ## resulting @var{c} has size @code{[nchoosek (length (@var{n}), 
 ## @var{k}), @var{k}]}.
 ##
+## @code{nchoosek} works only for nonnegative integer arguments; use
+## @code{bincoeff} for non-integer scalar arguments and for using vector
+## arguments to compute many coefficients at once.
+##
 ## @seealso{bincoeff}
 ## @end deftypefn
 
 ## Author: Rolf Fabian  <fabian@tu-cottbus.de>
 ## Author: Paul Kienzle <pkienzle@users.sf.net>
-
-## FIXME -- This function is identical to bincoeff for scalar
-## values, and so should probably be combined with bincoeff.
+## Author: Jaroslav Hajek
 
 function A = nchoosek (v, k)
 
-  if (nargin != 2)
+  if (nargin != 2
+      || !isnumeric(k) || !isnumeric(v)
+      || !isscalar(k) || (!isscalar(v) && !isvector(v)))
     print_usage ();
+  endif
+  if ((isscalar(v) && v < k) || k < 0
+      || k != round(k) || any (v < 0 || v != round(v)))
+    error ("nchoosek: args are nonnegative integers with V not less than K");
   endif
 
   n = length (v);
 
   if (n == 1)
-    if (k > v/2)
-      k = v - k;
-    endif
+    k = min (k, v-k);		# improve precision at next step
     A = round (prod ((v-k+1:v)./(1:k)));
+    if (A*2*k*eps >= 0.5)
+      warning ("nchoosek", "nchoosek: possible loss of precision");
+    endif
+  elseif (k == 0)
+    A = [];
   elseif (k == 1)
     A = v(:);
+  elseif (k == n)
+    A = v(:).';
   elseif (k > n)
     A = zeros (0, k, class (v));
   else
@@ -110,6 +123,8 @@ function A = nchoosek (v, k)
   endif
 endfunction
 
-# nchoosek seems to be slightly more accurate (but only allowing scalar inputs)
-%!assert (nchoosek(100,45), bincoeff(100,45), -1e2*eps)
+%!warning (nchoosek(100,45));
+%!error (nchoosek(100,45.5));
+%!error (nchoosek(100,145));
+%!assert (nchoosek(80,10), bincoeff(80,10))
 %!assert (nchoosek(1:5,3),[1:3;1,2,4;1,2,5;1,3,4;1,3,5;1,4,5;2:4;2,3,5;2,4,5;3:5])

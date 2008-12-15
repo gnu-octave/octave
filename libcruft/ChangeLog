@@ -1,3 +1,12 @@
+2008-12-15  Jaroslav Hajek  <highegg@gmail.com>
+
+	* blas/zsyrk.f: New source.
+	* lapack/cggbak.f, lapack/cggev.f, lapack/cgghrd.f, lapack/chgeqz.f,
+	lapack/ctgevc.f, lapack/dggev.f, lapack/sggev.f, lapack/zggbak.f,
+	lapack/zggev.f, lapack/zgghrd.f, lapack/zhgeqz.f, lapack/ztgevc.f:
+	New sources.
+	* lapack/Makefile.in: Include them.
+
 2008-08-12  Thomas Treichl  <Thomas.Treichl@gmx.net>
 
 	* blas/icamax.f, blas/isamax.f: New files.

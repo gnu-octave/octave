@@ -26,91 +26,129 @@ VPATH = @srcdir@
 
 EXTERNAL_DISTFILES = $(DISTFILES)
 
-FSRC = cbdsqr.f csrscl.f cgbcon.f cgbtf2.f cgbtrf.f cgbtrs.f \
-  cgebak.f cgebal.f cgebd2.f cgebrd.f cgecon.f cgeesx.f cgeev.f \
-  cgehd2.f cgehrd.f cgelq2.f cgelqf.f cgelsd.f cgelss.f cgelsy.f \
-  cgeqp3.f cgeqpf.f cgeqr2.f cgeqrf.f cgesv.f cgesvd.f cgetf2.f \
-  cgetrf.f cgetri.f cgetrs.f cggbal.f cgtsv.f cgttrf.f cgttrs.f \
-  cgtts2.f cheev.f chetd2.f chetrd.f chseqr.f clabrd.f clacgv.f \
-  clacn2.f clacon.f clacpy.f cladiv.f clahqr.f clahr2.f clahrd.f \
-  claic1.f clals0.f clalsa.f clalsd.f clange.f clanhe.f clanhs.f \
-  clantr.f claqp2.f claqps.f claqr0.f claqr1.f claqr2.f claqr3.f \
-  claqr4.f claqr5.f clarf.f clarfb.f clarfg.f clarft.f clarfx.f \
-  clartg.f clarz.f clarzb.f clarzt.f clascl.f claset.f clasr.f \
-  classq.f claswp.f clatbs.f clatrd.f clatrs.f clatrz.f clauu2.f \
-  clauum.f cpbcon.f cpbtf2.f cpbtrf.f cpbtrs.f cpocon.f cpotf2.f \
-  cpotrf.f cpotri.f cpotrs.f cptsv.f cpttrf.f cpttrs.f cptts2.f crot.f \
-  csteqr.f ctrcon.f ctrevc.f ctrexc.f ctrsen.f ctrsyl.f ctrti2.f \
-  ctrtri.f ctrtrs.f ctzrzf.f cung2l.f cung2r.f cungbr.f cunghr.f \
-  cungl2.f cunglq.f cungql.f cungqr.f cungtr.f cunm2r.f cunmbr.f \
-  cunml2.f cunmlq.f cunmqr.f cunmr3.f cunmrz.f \
-  dbdsqr.f dgbcon.f dgbtf2.f dgbtrf.f dgbtrs.f dgebak.f dgebal.f \
-  dgebd2.f dgebrd.f dgecon.f dgeesx.f dgeev.f dgehd2.f dgehrd.f \
-  dgelq2.f dgelqf.f dgelsd.f dgelss.f dgelsy.f dgeqp3.f dgeqpf.f \
-  dgeqr2.f dgeqrf.f dgesv.f dgesvd.f dgetf2.f dgetrf.f dgetri.f \
-  dgetrs.f dggbak.f dggbal.f dgghrd.f dgtsv.f dgttrf.f dgttrs.f \
-  dgtts2.f dhgeqz.f dhseqr.f dlabad.f dlabrd.f dlacn2.f dlacon.f \
-  dlacpy.f dladiv.f dlae2.f dlaed6.f dlaev2.f dlaexc.f dlag2.f \
-  dlahqr.f dlahr2.f dlahrd.f dlaic1.f dlaln2.f dlals0.f dlalsa.f \
-  dlalsd.f dlamc1.f dlamc2.f dlamc3.f dlamc4.f dlamc5.f dlamch.f \
-  dlamrg.f dlange.f dlanhs.f dlanst.f dlansy.f dlantr.f dlanv2.f \
-  dlapy2.f dlapy3.f dlaqp2.f dlaqps.f dlaqr0.f dlaqr1.f dlaqr2.f \
-  dlaqr3.f dlaqr4.f dlaqr5.f dlarf.f dlarfb.f dlarfg.f dlarft.f \
-  dlarfx.f dlartg.f dlarz.f dlarzb.f dlarzt.f dlas2.f dlascl.f \
-  dlasd0.f dlasd1.f dlasd2.f dlasd3.f dlasd4.f dlasd5.f dlasd6.f \
-  dlasd7.f dlasd8.f dlasda.f dlasdq.f dlasdt.f dlaset.f dlasq1.f \
-  dlasq2.f dlasq3.f dlasq4.f dlasq5.f dlasq6.f dlasr.f dlasrt.f \
-  dlassq.f dlasv2.f dlaswp.f dlasy2.f dlatbs.f dlatrd.f dlatrs.f \
-  dlatrz.f dlauu2.f dlauum.f dlazq3.f dlazq4.f dorg2l.f dorg2r.f \
-  dorgbr.f dorghr.f dorgl2.f dorglq.f dorgql.f dorgqr.f dorgtr.f \
-  dorm2r.f dormbr.f dorml2.f dormlq.f dormqr.f dormr3.f dormrz.f \
-  dpbcon.f dpbtf2.f dpbtrf.f dpbtrs.f dpocon.f dpotf2.f dpotrf.f \
-  dpotri.f dpotrs.f dptsv.f dpttrf.f dpttrs.f dptts2.f drscl.f \
-  dsteqr.f dsterf.f dsyev.f dsytd2.f dsytrd.f dtgevc.f dtrcon.f \
-  dtrevc.f dtrexc.f dtrsen.f dtrsyl.f dtrti2.f dtrtri.f dtrtrs.f \
-  dtzrzf.f dzsum1.f icmax1.f ieeeck.f ilaenv.f iparmq.f izmax1.f \
-  sbdsqr.f sgbcon.f sgbtf2.f sgbtrf.f sgbtrs.f sgebak.f sgebal.f \
-  sgebd2.f sgebrd.f sgecon.f sgeesx.f sgeev.f sgehd2.f sgehrd.f \
-  sgelq2.f sgelqf.f sgelsd.f sgelss.f sgelsy.f sgeqp3.f sgeqpf.f \
-  sgeqr2.f sgeqrf.f sgesv.f sgesvd.f sgetf2.f sgetrf.f sgetri.f \
-  sgetrs.f sggbak.f sggbal.f sgghrd.f sgtsv.f sgttrf.f sgttrs.f \
-  sgtts2.f shgeqz.f shseqr.f slabad.f slabrd.f slacn2.f slacon.f \
-  slacpy.f sladiv.f slae2.f slaed6.f slaev2.f slaexc.f slag2.f \
-  slahqr.f slahr2.f slahrd.f slaic1.f slaln2.f slals0.f slalsa.f \
-  slalsd.f slamc1.f slamc2.f slamc3.f slamc4.f slamc5.f slamch.f \
-  slamrg.f slange.f slanhs.f slanst.f slansy.f slantr.f slanv2.f \
-  slapy2.f slapy3.f slaqp2.f slaqps.f slaqr0.f slaqr1.f slaqr2.f \
-  slaqr3.f slaqr4.f slaqr5.f slarf.f slarfb.f slarfg.f slarft.f \
-  slarfx.f slartg.f slarz.f slarzb.f slarzt.f slas2.f slascl.f \
-  slasd0.f slasd1.f slasd2.f slasd3.f slasd4.f slasd5.f slasd6.f \
-  slasd7.f slasd8.f slasda.f slasdq.f slasdt.f slaset.f slasq1.f \
-  slasq2.f slasq3.f slasq4.f slasq5.f slasq6.f slasr.f slasrt.f \
-  slassq.f slasv2.f slaswp.f slasy2.f slatbs.f slatrd.f slatrs.f \
-  slatrz.f slauu2.f slauum.f slazq3.f slazq4.f sorg2l.f sorg2r.f \
-  sorgbr.f sorghr.f sorgl2.f sorglq.f sorgql.f sorgqr.f sorgtr.f \
-  sorm2r.f sormbr.f sorml2.f sormlq.f sormqr.f sormr3.f sormrz.f \
-  spbcon.f spbtf2.f spbtrf.f spbtrs.f spocon.f spotf2.f spotrf.f \
-  spotri.f spotrs.f sptsv.f spttrf.f spttrs.f sptts2.f srscl.f \
-  ssteqr.f ssterf.f ssyev.f ssytd2.f ssytrd.f stgevc.f strcon.f \
-  strevc.f strexc.f strsen.f strsyl.f strti2.f strtri.f strtrs.f \
-  stzrzf.f scsum1.f zbdsqr.f zdrscl.f zgbcon.f zgbtf2.f zgbtrf.f zgbtrs.f \
-  zgebak.f zgebal.f zgebd2.f zgebrd.f zgecon.f zgeesx.f zgeev.f \
-  zgehd2.f zgehrd.f zgelq2.f zgelqf.f zgelsd.f zgelss.f zgelsy.f \
-  zgeqp3.f zgeqpf.f zgeqr2.f zgeqrf.f zgesv.f zgesvd.f zgetf2.f \
-  zgetrf.f zgetri.f zgetrs.f zggbal.f zgtsv.f zgttrf.f zgttrs.f \
-  zgtts2.f zheev.f zhetd2.f zhetrd.f zhseqr.f zlabrd.f zlacgv.f \
-  zlacn2.f zlacon.f zlacpy.f zladiv.f zlahqr.f zlahr2.f zlahrd.f \
-  zlaic1.f zlals0.f zlalsa.f zlalsd.f zlange.f zlanhe.f zlanhs.f \
-  zlantr.f zlaqp2.f zlaqps.f zlaqr0.f zlaqr1.f zlaqr2.f zlaqr3.f \
-  zlaqr4.f zlaqr5.f zlarf.f zlarfb.f zlarfg.f zlarft.f zlarfx.f \
-  zlartg.f zlarz.f zlarzb.f zlarzt.f zlascl.f zlaset.f zlasr.f \
-  zlassq.f zlaswp.f zlatbs.f zlatrd.f zlatrs.f zlatrz.f zlauu2.f \
-  zlauum.f zpbcon.f zpbtf2.f zpbtrf.f zpbtrs.f zpocon.f zpotf2.f \
-  zpotrf.f zpotri.f zpotrs.f zptsv.f zpttrf.f zpttrs.f zptts2.f zrot.f \
-  zsteqr.f ztrcon.f ztrevc.f ztrexc.f ztrsen.f ztrsyl.f ztrti2.f \
-  ztrtri.f ztrtrs.f ztzrzf.f zung2l.f zung2r.f zungbr.f zunghr.f \
-  zungl2.f zunglq.f zungql.f zungqr.f zungtr.f zunm2r.f zunmbr.f \
-  zunml2.f zunmlq.f zunmqr.f zunmr3.f zunmrz.f
+FSRC = 
+	cbdsqr.f cgbcon.f cgbtf2.f cgbtrf.f cgbtrs.f cgbtrs.f \
+	cgebak.f cgebal.f cgebd2.f cgebrd.f cgecon.f cgecon.f \
+	cgeesx.f cgeev.f cgehd2.f cgehrd.f cgelq2.f cgelq2.f \
+	cgelqf.f cgelsd.f cgelss.f cgelsy.f cgeqp3.f cgeqp3.f \
+	cgeqpf.f cgeqr2.f cgeqrf.f cgesvd.f cgesv.f cgesv.f \
+	cgetf2.f cgetrf.f cgetri.f cgetrs.f cggbak.f cggbak.f \
+	cggbal.f cggev.f cgghrd.f cgtsv.f cgttrf.f cgttrf.f \
+	cgttrs.f cgtts2.f cheev.f chetd2.f chetrd.f chetrd.f \
+	chgeqz.f chseqr.f clabrd.f clacgv.f clacn2.f clacn2.f \
+	clacon.f clacpy.f cladiv.f clahqr.f clahr2.f clahr2.f \
+	clahrd.f claic1.f clals0.f clalsa.f clalsd.f clalsd.f \
+	clange.f clanhe.f clanhs.f clantr.f claqp2.f claqp2.f \
+	claqps.f claqr0.f claqr1.f claqr2.f claqr3.f claqr3.f \
+	claqr4.f claqr5.f clarfb.f clarf.f clarfg.f clarfg.f \
+	clarft.f clarfx.f clartg.f clarzb.f clarz.f clarz.f \
+	clarzt.f clascl.f claset.f clasr.f classq.f classq.f \
+	claswp.f clatbs.f clatrd.f clatrs.f clatrz.f clatrz.f \
+	clauu2.f clauum.f cpbcon.f cpbtf2.f cpbtrf.f cpbtrf.f \
+	cpbtrs.f cpocon.f cpotf2.f cpotrf.f cpotri.f cpotri.f \
+	cpotrs.f cptsv.f cpttrf.f cpttrs.f cptts2.f cptts2.f \
+	crot.f csrscl.f csteqr.f ctgevc.f ctrcon.f ctrcon.f \
+	ctrevc.f ctrexc.f ctrsen.f ctrsyl.f ctrti2.f ctrti2.f \
+	ctrtri.f ctrtrs.f ctzrzf.f cung2l.f cung2r.f cung2r.f \
+	cungbr.f cunghr.f cungl2.f cunglq.f cungql.f cungql.f \
+	cungqr.f cungtr.f cunm2r.f cunmbr.f cunml2.f cunml2.f \
+	cunmlq.f cunmqr.f cunmr3.f cunmrz.f dbdsqr.f dbdsqr.f \
+	dgbcon.f dgbtf2.f dgbtrf.f dgbtrs.f dgebak.f dgebak.f \
+	dgebal.f dgebd2.f dgebrd.f dgecon.f dgeesx.f dgeesx.f \
+	dgeev.f dgehd2.f dgehrd.f dgelq2.f dgelqf.f dgelqf.f \
+	dgelsd.f dgelss.f dgelsy.f dgeqp3.f dgeqpf.f dgeqpf.f \
+	dgeqr2.f dgeqrf.f dgesvd.f dgesv.f dgetf2.f dgetf2.f \
+	dgetrf.f dgetri.f dgetrs.f dggbak.f dggbal.f dggbal.f \
+	dggev.f dgghrd.f dgtsv.f dgttrf.f dgttrs.f dgttrs.f \
+	dgtts2.f dhgeqz.f dhseqr.f dlabad.f dlabrd.f dlabrd.f \
+	dlacn2.f dlacon.f dlacpy.f dladiv.f dlae2.f dlae2.f \
+	dlaed6.f dlaev2.f dlaexc.f dlag2.f dlahqr.f dlahqr.f \
+	dlahr2.f dlahrd.f dlaic1.f dlaln2.f dlals0.f dlals0.f \
+	dlalsa.f dlalsd.f dlamc1.f dlamc2.f dlamc3.f dlamc3.f \
+	dlamc4.f dlamc5.f dlamch.f dlamrg.f dlange.f dlange.f \
+	dlanhs.f dlanst.f dlansy.f dlantr.f dlanv2.f dlanv2.f \
+	dlapy2.f dlapy3.f dlaqp2.f dlaqps.f dlaqr0.f dlaqr0.f \
+	dlaqr1.f dlaqr2.f dlaqr3.f dlaqr4.f dlaqr5.f dlaqr5.f \
+	dlarfb.f dlarf.f dlarfg.f dlarft.f dlarfx.f dlarfx.f \
+	dlartg.f dlarzb.f dlarz.f dlarzt.f dlas2.f dlas2.f \
+	dlascl.f dlasd0.f dlasd1.f dlasd2.f dlasd3.f dlasd3.f \
+	dlasd4.f dlasd5.f dlasd6.f dlasd7.f dlasd8.f dlasd8.f \
+	dlasda.f dlasdq.f dlasdt.f dlaset.f dlasq1.f dlasq1.f \
+	dlasq2.f dlasq3.f dlasq4.f dlasq5.f dlasq6.f dlasq6.f \
+	dlasr.f dlasrt.f dlassq.f dlasv2.f dlaswp.f dlaswp.f \
+	dlasy2.f dlatbs.f dlatrd.f dlatrs.f dlatrz.f dlatrz.f \
+	dlauu2.f dlauum.f dlazq3.f dlazq4.f dorg2l.f dorg2l.f \
+	dorg2r.f dorgbr.f dorghr.f dorgl2.f dorglq.f dorglq.f \
+	dorgql.f dorgqr.f dorgtr.f dorm2r.f dormbr.f dormbr.f \
+	dorml2.f dormlq.f dormqr.f dormr3.f dormrz.f dormrz.f \
+	dpbcon.f dpbtf2.f dpbtrf.f dpbtrs.f dpocon.f dpocon.f \
+	dpotf2.f dpotrf.f dpotri.f dpotrs.f dptsv.f dptsv.f \
+	dpttrf.f dpttrs.f dptts2.f drscl.f dsteqr.f dsteqr.f \
+	dsterf.f dsyev.f dsytd2.f dsytrd.f dtgevc.f dtgevc.f \
+	dtrcon.f dtrevc.f dtrexc.f dtrsen.f dtrsyl.f dtrsyl.f \
+	dtrti2.f dtrtri.f dtrtrs.f dtzrzf.f dzsum1.f dzsum1.f \
+	icmax1.f ieeeck.f ilaenv.f iparmq.f izmax1.f izmax1.f \
+	sbdsqr.f scsum1.f sgbcon.f sgbtf2.f sgbtrf.f sgbtrf.f \
+	sgbtrs.f sgebak.f sgebal.f sgebd2.f sgebrd.f sgebrd.f \
+	sgecon.f sgeesx.f sgeev.f sgehd2.f sgehrd.f sgehrd.f \
+	sgelq2.f sgelqf.f sgelsd.f sgelss.f sgelsy.f sgelsy.f \
+	sgeqp3.f sgeqpf.f sgeqr2.f sgeqrf.f sgesvd.f sgesvd.f \
+	sgesv.f sgetf2.f sgetrf.f sgetri.f sgetrs.f sgetrs.f \
+	sggbak.f sggbal.f sggev.f sgghrd.f sgtsv.f sgtsv.f \
+	sgttrf.f sgttrs.f sgtts2.f shgeqz.f shseqr.f shseqr.f \
+	slabad.f slabrd.f slacn2.f slacon.f slacpy.f slacpy.f \
+	sladiv.f slae2.f slaed6.f slaev2.f slaexc.f slaexc.f \
+	slag2.f slahqr.f slahr2.f slahrd.f slaic1.f slaic1.f \
+	slaln2.f slals0.f slalsa.f slalsd.f slamc1.f slamc1.f \
+	slamc2.f slamc3.f slamc4.f slamc5.f slamch.f slamch.f \
+	slamrg.f slange.f slanhs.f slanst.f slansy.f slansy.f \
+	slantr.f slanv2.f slapy2.f slapy3.f slaqp2.f slaqp2.f \
+	slaqps.f slaqr0.f slaqr1.f slaqr2.f slaqr3.f slaqr3.f \
+	slaqr4.f slaqr5.f slarfb.f slarf.f slarfg.f slarfg.f \
+	slarft.f slarfx.f slartg.f slarzb.f slarz.f slarz.f \
+	slarzt.f slas2.f slascl.f slasd0.f slasd1.f slasd1.f \
+	slasd2.f slasd3.f slasd4.f slasd5.f slasd6.f slasd6.f \
+	slasd7.f slasd8.f slasda.f slasdq.f slasdt.f slasdt.f \
+	slaset.f slasq1.f slasq2.f slasq3.f slasq4.f slasq4.f \
+	slasq5.f slasq6.f slasr.f slasrt.f slassq.f slassq.f \
+	slasv2.f slaswp.f slasy2.f slatbs.f slatrd.f slatrd.f \
+	slatrs.f slatrz.f slauu2.f slauum.f slazq3.f slazq3.f \
+	slazq4.f sorg2l.f sorg2r.f sorgbr.f sorghr.f sorghr.f \
+	sorgl2.f sorglq.f sorgql.f sorgqr.f sorgtr.f sorgtr.f \
+	sorm2r.f sormbr.f sorml2.f sormlq.f sormqr.f sormqr.f \
+	sormr3.f sormrz.f spbcon.f spbtf2.f spbtrf.f spbtrf.f \
+	spbtrs.f spocon.f spotf2.f spotrf.f spotri.f spotri.f \
+	spotrs.f sptsv.f spttrf.f spttrs.f sptts2.f sptts2.f \
+	srscl.f ssteqr.f ssterf.f ssyev.f ssytd2.f ssytd2.f \
+	ssytrd.f stgevc.f strcon.f strevc.f strexc.f strexc.f \
+	strsen.f strsyl.f strti2.f strtri.f strtrs.f strtrs.f \
+	stzrzf.f zbdsqr.f zdrscl.f zgbcon.f zgbtf2.f zgbtf2.f \
+	zgbtrf.f zgbtrs.f zgebak.f zgebal.f zgebd2.f zgebd2.f \
+	zgebrd.f zgecon.f zgeesx.f zgeev.f zgehd2.f zgehd2.f \
+	zgehrd.f zgelq2.f zgelqf.f zgelsd.f zgelss.f zgelss.f \
+	zgelsy.f zgeqp3.f zgeqpf.f zgeqr2.f zgeqrf.f zgeqrf.f \
+	zgesvd.f zgesv.f zgetf2.f zgetrf.f zgetri.f zgetri.f \
+	zgetrs.f zggbak.f zggbal.f zggev.f zgghrd.f zgghrd.f \
+	zgtsv.f zgttrf.f zgttrs.f zgtts2.f zheev.f zheev.f \
+	zhetd2.f zhetrd.f zhgeqz.f zhseqr.f zlabrd.f zlabrd.f \
+	zlacgv.f zlacn2.f zlacon.f zlacpy.f zladiv.f zladiv.f \
+	zlahqr.f zlahr2.f zlahrd.f zlaic1.f zlals0.f zlals0.f \
+	zlalsa.f zlalsd.f zlange.f zlanhe.f zlanhs.f zlanhs.f \
+	zlantr.f zlaqp2.f zlaqps.f zlaqr0.f zlaqr1.f zlaqr1.f \
+	zlaqr2.f zlaqr3.f zlaqr4.f zlaqr5.f zlarfb.f zlarfb.f \
+	zlarf.f zlarfg.f zlarft.f zlarfx.f zlartg.f zlartg.f \
+	zlarzb.f zlarz.f zlarzt.f zlascl.f zlaset.f zlaset.f \
+	zlasr.f zlassq.f zlaswp.f zlatbs.f zlatrd.f zlatrd.f \
+	zlatrs.f zlatrz.f zlauu2.f zlauum.f zpbcon.f zpbcon.f \
+	zpbtf2.f zpbtrf.f zpbtrs.f zpocon.f zpotf2.f zpotf2.f \
+	zpotrf.f zpotri.f zpotrs.f zptsv.f zpttrf.f zpttrf.f \
+	zpttrs.f zptts2.f zrot.f zsteqr.f ztgevc.f ztgevc.f \
+	ztrcon.f ztrevc.f ztrexc.f ztrsen.f ztrsyl.f ztrsyl.f \
+	ztrti2.f ztrtri.f ztrtrs.f ztzrzf.f zung2l.f zung2l.f \
+	zung2r.f zungbr.f zunghr.f zungl2.f zunglq.f zunglq.f \
+	zungql.f zungqr.f zungtr.f zunm2r.f zunmbr.f zunmbr.f \
+	zunml2.f zunmlq.f zunmqr.f zunmr3.f zunmrz.f zunmrz.f
+
 
 include $(TOPDIR)/Makeconf
 

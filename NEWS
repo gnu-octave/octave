@@ -46,6 +46,9 @@ Summary of important user-visible changes for version 3.2:
     with Matlab's fsolve function.
     Additionally, fsolve is now able to solve overdetermined systems.
 
+ ** The norm function is now able to compute row or column norms of a matrix
+    in a single call, as well as general matrix p-norms.
+
  ** Object Oriented Programming
 
     Octave now includes OOP features and the user can create their 

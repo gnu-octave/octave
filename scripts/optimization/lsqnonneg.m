@@ -1,4 +1,5 @@
 ## Copyright (C) 2008 Bill Denney
+## Copyright (C) 2008 Jaroslav Hajek
 ##
 ## This file is part of Octave.
 ##
@@ -67,17 +68,28 @@ function [x, resnorm, residual, exitflag, output, lambda] = lsqnonneg (c, d, x =
     x = zeros (columns (c), 1);
   endif
 
+
   MaxIter = optimget (options, "MaxIter", 1e5);
 
   ## Initialize the values.
-  p = [];
-  z = 1:numel (x);
+  p = false (1, numel (x));
+  z = ~p;
+  ## If the problem is significantly over-determined, preprocess it using a
+  ## QR factorization first.
+  if (rows (c) >= 1.5 * columns (c))
+    [q, r] = qr (c, 0);
+    d = q'*d;
+    c = r;
+    clear q
+  endif
   ## LH2: compute the gradient.
   w = c'*(d - c*x);
 
+  xtmp = zeros (columns (c), 1);
+
   iter = 0;
   ## LH3: test for completion.
-  while (! isempty (z) && any (w(z) > 0) && iter < MaxIter)
+  while (any (z) && any (w(z) > 0) && iter < MaxIter)
     ## LH4: find the maximum gradient.
     idx = find (w == max (w));
     if (numel (idx) > 1)
@@ -86,8 +98,8 @@ function [x, resnorm, residual, exitflag, output, lambda] = lsqnonneg (c, d, x =
       idx = idx(1);
     endif
     ## LH5: move the index from Z to P.
-    z(z == idx) = [];
-    p(end+1) = idx;
+    z(idx) = false;
+    p(idx) = true;
 
     newx = false;
     while (! newx && iter < MaxIter)
@@ -95,12 +107,9 @@ function [x, resnorm, residual, exitflag, output, lambda] = lsqnonneg (c, d, x =
 
       ## LH6: compute the positive matrix and find the min norm solution
       ## of the positive problem.
-      cpos = c;
-      cpos(:,z) = 0;
       ## Find min norm solution to the positive matrix.
-      [cpos_q, cpos_r] = qr (cpos, 0);
-      xtmp = (cpos_r\cpos_q')*d;
-      xtmp(z) = 0;
+      xtmp(:) = 0;
+      xtmp(p) = c(:,p) \ d;
       if (all (xtmp >= 0))
         ## LH7: tmp solution found, iterate.
         newx = true;
@@ -112,9 +121,8 @@ function [x, resnorm, residual, exitflag, output, lambda] = lsqnonneg (c, d, x =
         ## LH10: adjust X.
         x = x + alpha*(xtmp - x);
         ## LH11: move from P to Z all X == 0.
-        idx = find (x == 0);
-        p(ismember (p, idx)) = [];
-        z = [z idx];
+	z |= (x == 0);
+	p = ~z;
       endif
     endwhile
     w = c'*(d - c*x);
@@ -123,10 +131,10 @@ function [x, resnorm, residual, exitflag, output, lambda] = lsqnonneg (c, d, x =
 
   ## Generate the additional output arguments.
   if (nargout > 1)
-    resnorm = norm (C*x-d) ^ 2;
+    resnorm = norm (c*x - d) ^ 2;
   endif
   if (nargout > 2)
-    residual = d-C*x;
+    residual = d - c*x;
   endif
   exitflag = iter;
   if (nargout > 3 && iter >= MaxIter)
@@ -136,8 +144,7 @@ function [x, resnorm, residual, exitflag, output, lambda] = lsqnonneg (c, d, x =
     output = struct ("algorithm", "nnls", "iterations", iter);
   endif
   if (nargout > 5)
-    ## FIXME
-    error ("lsqnonneg: lambda is not yet implemented");
+    lambda = w;
   endif
 
 endfunction

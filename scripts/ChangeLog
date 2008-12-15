@@ -1,3 +1,9 @@
+2008-12-15  Jaroslav Hajek  <highegg@gmail.com>
+
+	* optimization/lsqnonneg.m: Preprocess using QR for over-determined
+	systems. Simplify & fix indexing. Use left division for step problem.
+	Fix output args.
+
 2008-12-13  Francesco Potortì  <pot@gnu.org>
 
 	* specfun/nchoosek.m: Check for input arguments, signal loss of

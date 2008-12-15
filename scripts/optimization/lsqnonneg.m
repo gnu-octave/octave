@@ -121,8 +121,8 @@ function [x, resnorm, residual, exitflag, output, lambda] = lsqnonneg (c, d, x =
         ## LH10: adjust X.
         x = x + alpha*(xtmp - x);
         ## LH11: move from P to Z all X == 0.
-	z |= (x == 0);
-	p = ~z;
+        z |= (x == 0);
+        p = ~z;
       endif
     endwhile
     w = c'*(d - c*x);

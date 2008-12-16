@@ -419,6 +419,88 @@ Array<T>::reshape (const dim_vector& new_dims) const
   return retval;
 }
 
+// Helper class for multi-d dimension permuting (generalized transpose).
+class rec_permute_helper
+{
+  octave_idx_type *dim, *stride;
+  int top;
+
+public:
+  rec_permute_helper (const dim_vector& dv, const Array<octave_idx_type>& perm)
+    {
+      int n = dv.length ();
+      assert (n == perm.length ());
+
+      dim = new octave_idx_type [2*n];
+      // A hack to avoid double allocation
+      stride = dim + n;
+      top = 0;
+
+      // Get cumulative dimensions.
+      OCTAVE_LOCAL_BUFFER (octave_idx_type, cdim, n+1);
+      cdim[0] = 1;
+      for (int i = 1; i < n+1; i++) cdim[i] = cdim[i-1] * dv(i-1);
+
+      int k = 0;
+      // Reduce leading identity
+      for (; k < n && perm(k) == k; k++) ;
+      if (k > 0)
+        {
+          dim[0] = cdim[k];
+          stride[0] = 1;
+        }
+      else
+        top = -1;
+
+      // Setup the permuted strides.
+      for (; k < n; k++)
+        {
+          ++top;
+          int kk = perm(k);
+          dim[top] = dv(kk);
+          stride[top] = cdim[kk];
+        }
+
+    }
+
+  ~rec_permute_helper (void) { delete [] dim; }
+
+private:
+
+  // Recursive N-d generalized transpose
+  template <class T>
+  T *do_permute (const T *src, T *dest, int lev) const
+    {
+      if (lev == 0)
+        {
+          octave_idx_type step = stride[0], len = dim[0];
+          if (step == 1)
+            dest = std::copy (src, src + len, dest);
+          else
+            {
+              for (octave_idx_type i = 0, j = 0; i < len; i++, j += step)
+                dest[i] = src[j];
+
+              dest += len;
+            }
+
+        }
+      else
+        {
+          octave_idx_type step = stride[lev], len = dim[lev];
+          for (octave_idx_type i = 0, j = 0; i < len; i++, j+= step)
+           dest = do_permute (src + i * step, dest, lev-1);
+        }
+
+      return dest;
+    }
+  
+public:
+
+  template <class T>
+  void permute (const T *src, T *dest) const { do_permute (src, dest, top); }
+
+};
 
 
 template <class T>
@@ -432,7 +514,7 @@ Array<T>::permute (const Array<octave_idx_type>& perm_vec_arg, bool inv) const
   dim_vector dv = dims ();
   dim_vector dv_new;
 
-  int perm_vec_len = perm_vec.length ();
+  int perm_vec_len = perm_vec_arg.length ();
 
   if (perm_vec_len < dv.length ())
     (*current_liboctave_error_handler)
@@ -444,13 +526,12 @@ Array<T>::permute (const Array<octave_idx_type>& perm_vec_arg, bool inv) const
   dv.resize (perm_vec_len, 1);
 
   // Need this array to check for identical elements in permutation array.
-  Array<bool> checked (perm_vec_len, false);
+  OCTAVE_LOCAL_BUFFER_INIT (bool, checked, perm_vec_len, false);
 
   // Find dimension vector of permuted array.
   for (int i = 0; i < perm_vec_len; i++)
     {
       octave_idx_type perm_elt = perm_vec.elem (i);
-
       if (perm_elt >= perm_vec_len || perm_elt < 0)
 	{
 	  (*current_liboctave_error_handler)
@@ -460,7 +541,7 @@ Array<T>::permute (const Array<octave_idx_type>& perm_vec_arg, bool inv) const
 	  return retval;
 	}
 
-      if (checked.elem(perm_elt))
+      if (checked[perm_elt])
 	{
 	  (*current_liboctave_error_handler)
 	    ("%s: permutation vector cannot contain identical elements",
@@ -469,86 +550,23 @@ Array<T>::permute (const Array<octave_idx_type>& perm_vec_arg, bool inv) const
 	  return retval;
 	}
       else
-	checked.elem(perm_elt) = true;
+	checked[perm_elt] = true;
 
       dv_new(i) = dv(perm_elt);
     }
 
-  int nd = dv.length ();
-
-  // FIXME -- it would be nice to have a sort method in the
-  // Array class that also returns the sort indices.
-
   if (inv)
     {
-      OCTAVE_LOCAL_BUFFER (permute_vector, pvec, nd);
-
-      for (int i = 0; i < nd; i++)
-	{
-	  pvec[i].pidx = perm_vec(i);
-	  pvec[i].iidx = i;
-	}
-
-      octave_qsort (pvec, static_cast<size_t> (nd),
-		    sizeof (permute_vector), permute_vector_compare);
-
-      for (int i = 0; i < nd; i++)
-	{
-	  perm_vec(i) = pvec[i].iidx;
-	  dv_new(i) = dv(perm_vec(i));
-	}
+      for (int i = 0; i < perm_vec_len; i++)
+        perm_vec(perm_vec_arg(i)) = i;
     }
 
-  retval.resize (dv_new);
+  retval = Array<T> (dv_new);
 
   if (numel () > 0)
     {
-      Array<octave_idx_type> cp (nd+1, 1);
-      for (octave_idx_type i = 1; i < nd+1; i++)
-	cp(i) = cp(i-1) * dv(i-1);
-
-      octave_idx_type incr = cp(perm_vec(0));
-
-      Array<octave_idx_type> base_delta (nd-1, 0);
-      Array<octave_idx_type> base_delta_max (nd-1);
-      Array<octave_idx_type> base_incr (nd-1);
-      for (octave_idx_type i = 0; i < nd-1; i++)
-	{
-	  base_delta_max(i) = dv_new(i+1);
-	  base_incr(i) = cp(perm_vec(i+1));
-	}
-
-      octave_idx_type nr_new = dv_new(0);
-      octave_idx_type nel_new = dv_new.numel ();
-      octave_idx_type n = nel_new / nr_new;
-
-      octave_idx_type k = 0;
-
-      for (octave_idx_type i = 0; i < n; i++)
-	{
-	  octave_idx_type iidx = 0;
-	  for (octave_idx_type kk = 0; kk < nd-1; kk++)
-	    iidx += base_delta(kk) * base_incr(kk);
-
-	  for (octave_idx_type j = 0; j < nr_new; j++)
-	    {
-	      OCTAVE_QUIT;
-
-	      retval(k++) = elem(iidx);
-	      iidx += incr;
-	    }
-
-	  base_delta(0)++;
-
-	  for (octave_idx_type kk = 0; kk < nd-2; kk++)
-	    {
-	      if (base_delta(kk) == base_delta_max(kk))
-		{
-		  base_delta(kk) = 0;
-		  base_delta(kk+1)++;
-		}
-	    }
-	}
+      rec_permute_helper rh (dv, perm_vec);
+      rh.permute (data (), retval.fortran_vec ());
     }
 
   retval.chop_trailing_singletons ();

@@ -1,3 +1,8 @@
+2008-12-16  Jaroslav Hajek  <highegg@gmail.com>
+
+	* Array.cc (rec_permute_helper): New class.
+	(Array<T>::permute): Rewrite using the recursive algorithm.
+
 2008-12-12  David Bateman  <dbateman@free.fr>
 
 	* sparse-base-chol.cc (inverse): Fix inversion based on cholesky 

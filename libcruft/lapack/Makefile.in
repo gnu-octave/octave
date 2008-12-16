@@ -26,8 +26,7 @@ VPATH = @srcdir@
 
 EXTERNAL_DISTFILES = $(DISTFILES)
 
-FSRC = 
-	cbdsqr.f cgbcon.f cgbtf2.f cgbtrf.f cgbtrs.f cgbtrs.f \
+FSRC = 	cbdsqr.f cgbcon.f cgbtf2.f cgbtrf.f cgbtrs.f cgbtrs.f \
 	cgebak.f cgebal.f cgebd2.f cgebrd.f cgecon.f cgecon.f \
 	cgeesx.f cgeev.f cgehd2.f cgehrd.f cgelq2.f cgelq2.f \
 	cgelqf.f cgelsd.f cgelss.f cgelsy.f cgeqp3.f cgeqp3.f \

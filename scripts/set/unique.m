@@ -45,26 +45,31 @@ function [y, i, j] = unique (x, varargin)
     print_usage ();
   endif
 
-  ## parse options
-  if (iscellstr (varargin))
-    optfirst = strmatch ('first', varargin) > 0;
-    optlast = strmatch ('last', varargin) > 0;
-    optrows = strmatch ('rows', varargin) > 0 && size (x, 2) > 1;
-    if (optfirst && optlast)
-      error ("unique: cannot specify both 'last' and 'first'.");
-    elseif (optfirst + optlast + optrows != nargin-1)
-      error ("unique: invalid option.");
-    endif
-    optlast = ! optfirst;
-  else
-    error ("unique: options must be strings");
-  endif
+  if (nargin > 1)
 
-  if (iscell (x))
-    if (optrows)
+    ## parse options
+    if (iscellstr (varargin))
+      varargin = unique(varargin);
+      optfirst = strmatch ('first', varargin) > 0;
+      optlast = strmatch ('last', varargin) > 0;
+      optrows = strmatch ('rows', varargin) > 0 && size (x, 2) > 1;
+      if (optfirst && optlast)
+        error ("unique: cannot specify both 'last' and 'first'.");
+      elseif (optfirst + optlast + optrows != nargin-1)
+        error ("unique: invalid option.");
+      endif
+    else
+      error ("unique: options must be strings");
+    endif
+
+    if (optrows && iscell (x))
       warning ("unique: 'rows' is ignored for cell arrays");
       optrows = false;
     endif
+
+  else
+    optfirst = 0;
+    optrows = 0;
   endif
 
   if (optrows)
@@ -101,12 +106,11 @@ function [y, i, j] = unique (x, varargin)
     y(idx) = [];
   endif
 
-  ## I don't know why anyone would need reverse indices, but it
-  ## was an interesting challenge.  I welcome cleaner solutions.
   if (nargout >= 3)
     j = i;
-    j(i) = cumsum (prepad (! match, n, 1));
+    j(i) = cumsum ([1 !match]);
   endif
+
   if (optfirst)
     i(idx+1) = [];
   else

@@ -49,7 +49,7 @@ function [y, i, j] = unique (x, varargin)
 
     ## parse options
     if (iscellstr (varargin))
-      varargin = unique(varargin);
+      varargin = unique (varargin);
       optfirst = strmatch ('first', varargin) > 0;
       optlast = strmatch ('last', varargin) > 0;
       optrows = strmatch ('rows', varargin) > 0 && size (x, 2) > 1;
@@ -108,7 +108,7 @@ function [y, i, j] = unique (x, varargin)
 
   if (nargout >= 3)
     j = i;
-    j(i) = cumsum ([1 !match]);
+    j(i) = cumsum ([1, !match]);
   endif
 
   if (optfirst)

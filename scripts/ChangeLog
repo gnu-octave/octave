@@ -1,3 +1,9 @@
+2008-12-18  Daniel J Sebald <daniel.sebald@ieee.org>
+
+	* time/datevec.m (__date_vfmt2sfmt__): New helper function.
+	(datevec): Avoid repeated parsing of the format string.
+	* set/unique.m: Only check for options if nargin > 1.
+
 2008-12-15  Jaroslav Hajek  <highegg@gmail.com>
 
 	* optimization/lsqnonneg.m: Preprocess using QR for over-determined

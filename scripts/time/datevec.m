@@ -108,9 +108,7 @@ function [y, m, d, h, mi, s] = datevec (date, varargin)
   endif
 
   if (ischar (date))
-    t = date;
-    date = cell (1);
-    date{1} = t;
+    date = cellstr (date);
   endif
 
   if (iscell (date))
@@ -123,7 +121,8 @@ function [y, m, d, h, mi, s] = datevec (date, varargin)
       for k = 1:nd
         found = false;
         for l = 1:nfmt
-          [found y(k) m(k) d(k) h(k) mi(k) s(k)] = __date_str2vec__ (date{k}, std_formats{l}, p);
+          [f, rY, ry, fy, fm, fd, fh, fmi, fs] = __date_vfmt2sfmt__ (std_formats{l});
+          [found y(k) m(k) d(k) h(k) mi(k) s(k)] = __date_str2vec__ (date{k}, p, f, rY, ry, fy, fm, fd, fh, fmi, fs);
           if (found)
             break;
           endif
@@ -133,8 +132,10 @@ function [y, m, d, h, mi, s] = datevec (date, varargin)
         endif
       endfor
     else
+      % Decipher the format string just once for sake of speed.
+      [f, rY, ry, fy, fm, fd, fh, fmi, fs] = __date_vfmt2sfmt__ (f);
       for k = 1:nd
-        [found y(k) m(k) d(k) h(k) mi(k) s(k)] = __date_str2vec__ (date{k}, f, p);
+        [found y(k) m(k) d(k) h(k) mi(k) s(k)] = __date_str2vec__ (date{k}, p, f, rY, ry, fy, fm, fd, fh, fmi, fs);
         if (! found)
           error ("datevec: date not parsed correctly with given format");
         endif
@@ -183,7 +184,7 @@ function [y, m, d, h, mi, s] = datevec (date, varargin)
 
 ### endfunction
 
-function [found, y, m, d, h, mi, s] = __date_str2vec__ (ds, f, p)
+function [f, rY, ry, fy, fm, fd, fh, fmi, fs] = __date_vfmt2sfmt__ (f)
 
   # Play safe with percent signs
   f = strrep(f, "%", "%%");
@@ -245,14 +246,28 @@ function [found, y, m, d, h, mi, s] = __date_str2vec__ (ds, f, p)
   f = strrep (f, "MM", "%M");
   f = strrep (f, "SS", "%S");
 
+  rY = rindex (f, "%Y");
+  ry = rindex (f, "%y");
+
+  # check whether we need to give default values
+  # possible error when string contains "%%"
+  fy = rY || ry;
+  fm = index (f, "%m") || index (f, "%b") || index (f, "%B");
+  fd = index (f, "%d") || index (f, "%a") || index (f, "%A");
+  fh = index (f, "%H") || index (f, "%I");
+  fmi = index (f, "%M");
+  fs = index (f, "%S");
+
+### endfunction
+
+function [found, y, m, d, h, mi, s] = __date_str2vec__ (ds, p, f, rY, ry, fy, fm, fd, fh, fmi, fs)
+
   [tm, nc] = strptime (ds, f);
 
-  if (nc == length (ds) + 1)
+  if (nc == size (ds, 2) + 1)
     y = tm.year + 1900; m = tm.mon + 1; d = tm.mday;
     h = tm.hour; mi = tm.min; s = tm.sec + tm.usec / 1e6;
     found = true;
-    rY = rindex (f, "%Y");
-    ry = rindex (f, "%y");
     if (rY < ry)
       if (y > 1999)
         y -= 2000;
@@ -264,14 +279,6 @@ function [found, y, m, d, h, mi, s] = __date_str2vec__ (ds, f, p)
         y += 100;
       endif
     endif
-    # check whether we need to give default values
-    # possible error when string contains "%%"
-    fy = rY || ry;
-    fm = index (f, "%m") || index (f, "%b") || index (f, "%B");
-    fd = index (f, "%d") || index (f, "%a") || index (f, "%A");
-    fh = index (f, "%H") || index (f, "%I");
-    fmi = index (f, "%M");
-    fs = index (f, "%S");
     if (! fy && ! fm && ! fd)
       tvm = localtime (time ());  ## tvm: this very moment
       y = tvm.year + 1900;

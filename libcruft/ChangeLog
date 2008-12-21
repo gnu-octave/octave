@@ -1,3 +1,11 @@
+2008-12-21  Jaroslav Hajek <highegg@gmail.com>
+
+	* lapack/chegs2.f lapack/chegst.f lapack/chegv.f lapack/dsygs2.f 
+	lapack/dsygst.f lapack/dsygv.f lapack/ssygs2.f lapack/ssygst.f 
+	lapack/ssygv.f lapack/zhegs2.f lapack/zhegst.f lapack/zhegv.f:
+	New sources.
+	* lapack/Makefile.in: Include them.
+
 2008-12-15  Jaroslav Hajek  <highegg@gmail.com>
 
 	* blas/zsyrk.f: New source.

@@ -146,7 +146,9 @@ FSRC = 	cbdsqr.f cgbcon.f cgbtf2.f cgbtrf.f cgbtrs.f cgbtrs.f \
 	ztrti2.f ztrtri.f ztrtrs.f ztzrzf.f zung2l.f zung2l.f \
 	zung2r.f zungbr.f zunghr.f zungl2.f zunglq.f zunglq.f \
 	zungql.f zungqr.f zungtr.f zunm2r.f zunmbr.f zunmbr.f \
-	zunml2.f zunmlq.f zunmqr.f zunmr3.f zunmrz.f zunmrz.f
+	zunml2.f zunmlq.f zunmqr.f zunmr3.f zunmrz.f zunmrz.f \
+	chegs2.f chegst.f chegv.f dsygs2.f dsygst.f dsygv.f \
+	ssygs2.f ssygst.f ssygv.f zhegs2.f zhegst.f zhegv.f
 
 
 include $(TOPDIR)/Makeconf

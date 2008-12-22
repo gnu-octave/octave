@@ -165,7 +165,7 @@ Undocumented internal function.\n\
       boolMatrix AtInf (np, 1);
       for (i = 0; i < np; i++) 
 	AtInf(i) = false;
-      octave_value_list F;
+      octave_value_list F (np, octave_value ());
       k = 0;
       i = 0;
 
@@ -220,6 +220,7 @@ Undocumented internal function.\n\
 
       retval(0) = v;
       retval(1) = C;
+      AtInf.resize (r, 1);
       retval(2) = AtInf;
 
       // free long memory

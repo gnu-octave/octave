@@ -1,3 +1,8 @@
+2008-11-21  Radek Salac  <salac.r@gmail.com>
+
+	* sparse/bicgstab.m: New function.
+	* sparse/Makefile.in (SOURCES): Add it here.
+
 2008-12-18  Daniel J Sebald <daniel.sebald@ieee.org>
 
 	* time/datevec.m (__date_vfmt2sfmt__): New helper function.

@@ -32,7 +32,7 @@ INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
-SOURCES = cgs.m colperm.m etreeplot.m gplot.m nonzeros.m normest.m \
+SOURCES = bicgstab.m cgs.m colperm.m etreeplot.m gplot.m nonzeros.m normest.m \
   pcg.m pcr.m spalloc.m spaugment.m spconvert.m spdiags.m speye.m \
   spfun.m sphcat.m spones.m sprand.m sprandn.m sprandsym.m spstats.m \
   spvcat.m spy.m treelayout.m treeplot.m

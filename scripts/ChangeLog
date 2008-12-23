@@ -1,3 +1,8 @@
+2008-12-23  David Bateman  <dbateman@free.fr>
+
+	* sparse/svds.m: New function.
+	* sparse/Makefile.in (SOURCES): Add it here.
+
 2008-11-21  Radek Salac  <salac.r@gmail.com>
 
 	* sparse/bicgstab.m: New function.

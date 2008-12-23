@@ -1044,6 +1044,27 @@ if test -n "$warn_cxsparse"; then
   AC_MSG_WARN($warn_cxsparse)
 fi
 
+ARPACK_LIBS=
+AC_SUBST(ARPACK_LIBS)
+
+AC_ARG_WITH(arpack,
+  [AS_HELP_STRING([--without-arpack],
+     [don't use ARPACK, disable some sparse functionality])],
+  with_arpack=$withval, with_arpack=yes)
+
+warn_arpack="arpack not found. This will result in a lack of the eigs function."
+if test "$with_arpack" = yes; then
+  with_arpack=no
+  AC_CHECK_LIB(arpack, F77_FUNC(dseupd,DSEUPD), [ARPACK_LIBS="-larpack"; with_arpack=yes], , $LAPACK_LIBS $FLIBS)
+  if test "$with_arpack" = yes; then
+    AC_DEFINE(HAVE_ARPACK, 1, [Define if the ARPACK library is used.])
+    warn_arpack=
+  fi
+fi
+if test -n "$warn_arpack"; then
+  AC_MSG_WARN($warn_arpack)
+fi
+
 ### Handle shared library options.
 
 ### Enable creation of static libraries.
@@ -2012,6 +2033,7 @@ Octave is now configured for $canonical_host_type
   CCOLAMD libraries:    $CCOLAMD_LIBS
   CHOLMOD libraries:    $CHOLMOD_LIBS
   CXSPARSE libraries:   $CXSPARSE_LIBS
+  ARPACK libraries:     $ARPACK_LIBS
   HDF5 libraries:       $HDF5_LIBS
   CURL libraries:       $CURL_LIBS
   REGEX libraries:      $REGEX_LIBS
@@ -2120,6 +2142,11 @@ fi
 
 if test -n "$warn_cxsparse"; then
   AC_MSG_WARN($warn_cxsparse)
+  warn_msg_printed=true
+fi
+
+if test -n "$warn_arpack"; then
+  AC_MSG_WARN($warn_arpack)
   warn_msg_printed=true
 fi
 

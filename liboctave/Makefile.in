@@ -103,7 +103,7 @@ BUILT_INCLUDES := oct-types.h mx-ops.h \
 	$(VX_OP_INC) \
 	$(SPARSE_MX_OP_INC)
 
-TEMPLATE_SRC := Array.cc ArrayN.cc DiagArray2.cc \
+TEMPLATE_SRC := Array.cc ArrayN.cc eigs-base.cc DiagArray2.cc \
 	MArray.cc MArray2.cc MArrayN.cc MDiagArray2.cc \
 	base-lu.cc oct-sort.cc sparse-base-lu.cc \
 	sparse-base-chol.cc sparse-dmsolve.cc

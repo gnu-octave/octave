@@ -300,7 +300,7 @@ OCT_LINK_DEPS = \
   -L../libcruft $(LIBCRUFT) -L../liboctave $(LIBOCTAVE) \
   -L. $(LIBOCTINTERP) $(CHOLMOD_LIBS) $(UMFPACK_LIBS) $(AMD_LIBS) \
    $(CAMD_LIBS) $(COLAMD_LIBS) $(CCOLAMD_LIBS) $(CXSPARSE_LIBS) $(BLAS_LIBS) \
-   $(FFTW_LIBS) $(LIBS) $(FLIBS)
+   $(FFTW_LIBS) $(ARPACK_LIBS) $(LIBS) $(FLIBS)
 
 BUILT_DISTFILES = DOCSTRINGS oct-gperf.h parse.cc lex.cc y.tab.h \
 	$(OPT_HANDLERS) $(BUILT_EXTRAS)
@@ -371,7 +371,7 @@ octave$(EXEEXT): $(LIBRARIES) main.o $(DLD_STATIC_OBJ)
 	$(OCTAVE_LIBS) \
 	$(LEXLIB) $(UMFPACK_LIBS) $(AMD_LIBS) $(CAMD_LIBS) $(COLAMD_LIBS) \
 	$(CHOLMOD_LIBS) $(CCOLAMD_LIBS) $(CXSPARSE_LIBS) $(BLAS_LIBS) \
-	$(FFTW_LIBS) $(OPENGL_LIBS) $(LIBS) $(FLIBS)
+	$(FFTW_LIBS) $(ARPACK_LIBS) $(OPENGL_LIBS) $(LIBS) $(FLIBS)
 
 stmp-pic: pic
 	@if [ -f stmp-pic ]; then \
@@ -650,6 +650,7 @@ __magick_read__.oct: OCT_LINK_DEPS += $(MAGICK_LIBS)
 convhulln.oct: OCT_LINK_DEPS += $(QHULL_LIBS)
 __delaunayn__.oct: OCT_LINK_DEPS += $(QHULL_LIBS)
 __voronoi__.oct: OCT_LINK_DEPS += $(QHULL_LIBS)
+eigs.oct: OCT_LINK_DEPS += $(ARPACK_LIBS)
 regexp.oct: OCT_LINK_DEPS += $(REGEX_LIBS)
 urlwrite.oct: OCT_LINK_DEPS += $(CURL_LIBS)
 __glpk__.oct: OCT_LINK_DEPS += $(GLPK_LIBS)

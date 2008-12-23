@@ -1,3 +1,8 @@
+2008-12-23  David Bateman  <dbateman@free.fr>
+
+	* DLD-FUNCTIONS/eigs.cc: New file.
+	* Makefile.in (DLD_XSRC): Add it here.
+
 2008-12-22  David Bateman  <dbateman@free.fr>
 
 	* DLD-FUNCTIONS/__voronoi__.cc (F__voronoi__): Resize AtInf array

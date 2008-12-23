@@ -84,6 +84,9 @@ Summary of important user-visible changes for version 3.2:
  ** The imwrite and imread function have been included in Octave based
     on the GraphicsMagick library.
 
+ ** The eigs and svds functions have been included in Octave based on
+    the ARPACK library.
+
  ** Special treatment in the parser of expressions like "a' * b". In
     these cases the transpose is no longer explicitly formed and BLAS
     libraries are called with the transpose flagged. This significantly  

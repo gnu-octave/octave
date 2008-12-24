@@ -42,7 +42,7 @@ function grid (varargin)
 
   [ax, varargin, nargs] = __plt_get_axis_arg__ ("grid", varargin{:});
 
-  if (nargs > 1)
+  if (nargs > 2)
     print_usage ();
   elseif (nargs == 0)
     grid_on = ! grid_on;
@@ -54,9 +54,21 @@ function grid (varargin)
       elseif (strcmpi (x, "on"))
 	grid_on = true;
       elseif (strcmpi (x, "minor"))
-	minor_on = ! minor_on;
-	if (minor_on)
-	  grid_on = true;
+        if (nargs == 2)
+	  x2 = varargin{2};
+	  if (strcmpi (x2, "on"))
+	    minor_on = true;
+	    grid_on=true;
+	    elseif (strcmpi (x2, "off"))
+	      minor_on = false;
+	   else
+	      print_usage ();
+	  endif
+	else
+	   minor_on = ! minor_on
+	   if (minor_on)
+	     grid_on = true;
+	   endif
 	endif
       else
 	print_usage ();

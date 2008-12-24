@@ -1,3 +1,7 @@
+2008-12-24  Doug Stewart  <dastew@sympatico.ca>
+
+	* plot/grid.m: Handle "minor" option.
+
 2008-12-24  John W. Eaton  <jwe@octave.org>
 
 	* testfun/test.m: Print "has no tests" message if there are demos

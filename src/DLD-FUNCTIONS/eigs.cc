@@ -729,100 +729,100 @@ K Maschhoff, D Sorensen and C Yang. For more information see\n\
 %! d2 = sort(d0);
 %! [dum, idx] = sort( abs(d0));
 %! d0 = d0(idx);
-%!test
+%!testif HAVE_ARPACK
 %! d1 = eigs (A, k);
 %! assert (d1, d0(end:-1:(end-k+1)), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! d1 = eigs (A,k+1);
 %! assert (d1, d0(end:-1:(end-k)),1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! d1 = eigs (A, k, 'lm');
 %! assert (d1, d0(end:-1:(end-k+1)), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! d1 = eigs (A, k, 'sm');
 %! assert (d1, d0(k:-1:1), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! d1 = eigs (A, k, 'la');
 %! assert (d1, d2(end:-1:(end-k+1)), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! d1 = eigs (A, k, 'sa');
 %! assert (d1, d2(1:k), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! d1 = eigs (A, k, 'be');
 %! assert (d1, d2([1:floor(k/2), (end - ceil(k/2) + 1):end]), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! d1 = eigs (A, k+1, 'be');
 %! assert (d1, d2([1:floor((k+1)/2), (end - ceil((k+1)/2) + 1):end]), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! d1 = eigs (A, k, 4.1);
 %! [dum,idx0] = sort (abs(d0 - 4.1));
 %! [dum,idx1] = sort (abs(d1 - 4.1));
 %! assert (d1(idx1), d0(idx0(1:k)), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! d1 = eigs(A, speye(n), k, 'lm');
 %! assert (abs(d1), abs(d0(end:-1:(end-k+1))), 1e-12);
 %!assert (eigs(A,k,4.1), eigs(A,speye(n),k,4.1), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! opts.cholB=true;
 %! d1 = eigs(A, speye(n), k, 'lm', opts);
 %! assert (abs(d1), abs(d0(end:-1:(end-k+1))), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! opts.cholB=true;
 %! q = [2:n,1];
 %! opts.permB=q;
 %! d1 = eigs(A, speye(n)(q,q), k, 'lm', opts);
 %! assert (abs(d1), abs(d0(end:-1:(end-k+1))), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! opts.cholB=true;
 %! d1 = eigs(A, speye(n), k, 4.1, opts);
 %! assert (abs(d1), eigs(A,k,4.1), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! opts.cholB=true;
 %! q = [2:n,1];
 %! opts.permB=q;
 %! d1 = eigs(A, speye(n)(q,q), k, 4.1, opts);
 %! assert (abs(d1), eigs(A,k,4.1), 1e-12);
 %!assert (eigs(A,k,4.1), eigs(A,speye(n),k,4.1), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! fn = @(x) A * x;
 %! opts.issym = 1; opts.isreal = 1;
 %! d1 = eigs (fn, n, k, 'lm', opts);
 %! assert (d1, d0(end:-1:(end-k+1)), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! fn = @(x) A \ x;
 %! opts.issym = 1; opts.isreal = 1;
 %! d1 = eigs (fn, n, k, 'sm', opts);
 %! assert (d1, d0(k:-1:1), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! fn = @(x) (A - 4.1 * eye(n)) \ x;
 %! opts.issym = 1; opts.isreal = 1;
 %! d1 = eigs (fn, n, k, 4.1, opts);
 %! assert (d1, eigs(A,k,4.1), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! [v1,d1] = eigs(A, k, 'lm');
 %! d1 = diag(d1);
 %! for i=1:k
 %!  assert(max(abs((A - d1(i)*speye(n))*v1(:,i))),0.,1e-12)
 %! endfor
-%!test
+%!testif HAVE_ARPACK
 %! [v1,d1] = eigs(A, k, 'sm');
 %! d1 = diag(d1);
 %! for i=1:k
 %!  assert(max(abs((A - d1(i)*speye(n))*v1(:,i))),0.,1e-12)
 %! endfor
-%!test
+%!testif HAVE_ARPACK
 %! [v1,d1] = eigs(A, k, 'la');
 %! d1 = diag(d1);
 %! for i=1:k
 %!  assert(max(abs((A - d1(i)*speye(n))*v1(:,i))),0.,1e-12)
 %! endfor
-%!test
+%!testif HAVE_ARPACK
 %! [v1,d1] = eigs(A, k, 'sa');
 %! d1 = diag(d1);
 %! for i=1:k
 %!  assert(max(abs((A - d1(i)*speye(n))*v1(:,i))),0.,1e-12)
 %! endfor
-%!test
+%!testif HAVE_ARPACK
 %! [v1,d1] = eigs(A, k, 'be');
 %! d1 = diag(d1);
 %! for i=1:k
@@ -841,62 +841,62 @@ K Maschhoff, D Sorensen and C Yang. For more information see\n\
 %! d0 = eig (A);
 %! [dum, idx] = sort(abs(d0));
 %! d0 = d0(idx);
-%!test
+%!testif HAVE_ARPACK
 %! d1 = eigs (A, k);
 %! assert (abs(d1), abs(d0(end:-1:(end-k+1))), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! d1 = eigs (A,k+1);
 %! assert (abs(d1), abs(d0(end:-1:(end-k))),1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! d1 = eigs (A, k, 'lm');
 %! assert (abs(d1), abs(d0(end:-1:(end-k+1))), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! d1 = eigs (A, k, 'sm');
 %! assert (abs(d1), abs(d0(1:k)), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! d1 = eigs (A, k, 'lr');
 %! [dum, idx] = sort (real(d0));
 %! d2 = d0(idx);
 %! assert (real(d1), real(d2(end:-1:(end-k+1))), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! d1 = eigs (A, k, 'sr');
 %! [dum, idx] = sort (real(abs(d0)));
 %! d2 = d0(idx);
 %! assert (real(d1), real(d2(1:k)), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! d1 = eigs (A, k, 'li');
 %! [dum, idx] = sort (imag(abs(d0)));
 %! d2 = d0(idx);
 %! assert (sort(imag(d1)), sort(imag(d2(end:-1:(end-k+1)))), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! d1 = eigs (A, k, 'si');
 %! [dum, idx] = sort (imag(abs(d0)));
 %! d2 = d0(idx);
 %! assert (sort(imag(d1)), sort(imag(d2(1:k))), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! d1 = eigs (A, k, 4.1);
 %! [dum,idx0] = sort (abs(d0 - 4.1));
 %! [dum,idx1] = sort (abs(d1 - 4.1));
 %! assert (abs(d1(idx1)), abs(d0(idx0(1:k))), 1e-12);
 %! assert (sort(imag(d1(idx1))), sort(imag(d0(idx0(1:k)))), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! d1 = eigs(A, speye(n), k, 'lm');
 %! assert (abs(d1), abs(d0(end:-1:(end-k+1))), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! opts.cholB=true;
 %! d1 = eigs(A, speye(n), k, 'lm', opts);
 %! assert (abs(d1), abs(d0(end:-1:(end-k+1))), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! opts.cholB=true;
 %! q = [2:n,1];
 %! opts.permB=q;
 %! d1 = eigs(A, speye(n)(q,q), k, 'lm', opts);
 %! assert (abs(d1), abs(d0(end:-1:(end-k+1))), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! opts.cholB=true;
 %! d1 = eigs(A, speye(n), k, 4.1, opts);
 %! assert (abs(d1), eigs(A,k,4.1), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! opts.cholB=true;
 %! q = [2:n,1];
 %! opts.permB=q;
@@ -904,52 +904,52 @@ K Maschhoff, D Sorensen and C Yang. For more information see\n\
 %! assert (abs(d1), eigs(A,k,4.1), 1e-12);
 %!assert (abs(eigs(A,k,4.1)), abs(eigs(A,speye(n),k,4.1)), 1e-12);
 %!assert (sort(imag(eigs(A,k,4.1))), sort(imag(eigs(A,speye(n),k,4.1))), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! fn = @(x) A * x;
 %! opts.issym = 0; opts.isreal = 1;
 %! d1 = eigs (fn, n, k, 'lm', opts);
 %! assert (abs(d1), abs(d0(end:-1:(end-k+1))), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! fn = @(x) A \ x;
 %! opts.issym = 0; opts.isreal = 1;
 %! d1 = eigs (fn, n, k, 'sm', opts);
 %! assert (abs(d1), d0(1:k), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! fn = @(x) (A - 4.1 * eye(n)) \ x;
 %! opts.issym = 0; opts.isreal = 1;
 %! d1 = eigs (fn, n, k, 4.1, opts);
 %! assert (abs(d1), eigs(A,k,4.1), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! [v1,d1] = eigs(A, k, 'lm');
 %! d1 = diag(d1);
 %! for i=1:k
 %!  assert(max(abs((A - d1(i)*speye(n))*v1(:,i))),0.,1e-12)
 %! endfor
-%!test
+%!testif HAVE_ARPACK
 %! [v1,d1] = eigs(A, k, 'sm');
 %! d1 = diag(d1);
 %! for i=1:k
 %!  assert(max(abs((A - d1(i)*speye(n))*v1(:,i))),0.,1e-12)
 %! endfor
-%!test
+%!testif HAVE_ARPACK
 %! [v1,d1] = eigs(A, k, 'lr');
 %! d1 = diag(d1);
 %! for i=1:k
 %!  assert(max(abs((A - d1(i)*speye(n))*v1(:,i))),0.,1e-12)
 %! endfor
-%!test
+%!testif HAVE_ARPACK
 %! [v1,d1] = eigs(A, k, 'sr');
 %! d1 = diag(d1);
 %! for i=1:k
 %!  assert(max(abs((A - d1(i)*speye(n))*v1(:,i))),0.,1e-12)
 %! endfor
-%!test
+%!testif HAVE_ARPACK
 %! [v1,d1] = eigs(A, k, 'li');
 %! d1 = diag(d1);
 %! for i=1:k
 %!  assert(max(abs((A - d1(i)*speye(n))*v1(:,i))),0.,1e-12)
 %! endfor
-%!test
+%!testif HAVE_ARPACK
 %! [v1,d1] = eigs(A, k, 'si');
 %! d1 = diag(d1);
 %! for i=1:k
@@ -968,63 +968,63 @@ K Maschhoff, D Sorensen and C Yang. For more information see\n\
 %! d0 = eig (A);
 %! [dum, idx] = sort(abs(d0));
 %! d0 = d0(idx);
-%!test
+%!testif HAVE_ARPACK
 %! d1 = eigs (A, k);
 %! assert (abs(d1), abs(d0(end:-1:(end-k+1))), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! d1 = eigs (A,k+1);
 %! assert (abs(d1), abs(d0(end:-1:(end-k))),1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! d1 = eigs (A, k, 'lm');
 %! assert (abs(d1), abs(d0(end:-1:(end-k+1))), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! d1 = eigs (A, k, 'sm');
 %! assert (abs(d1), abs(d0(1:k)), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! d1 = eigs (A, k, 'lr');
 %! [dum, idx] = sort (real(abs(d0)));
 %! d2 = d0(idx);
 %! assert (real(d1), real(d2(end:-1:(end-k+1))), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! d1 = eigs (A, k, 'sr');
 %! [dum, idx] = sort (real(abs(d0)));
 %! d2 = d0(idx);
 %! assert (real(d1), real(d2(1:k)), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! d1 = eigs (A, k, 'li');
 %! [dum, idx] = sort (imag(abs(d0)));
 %! d2 = d0(idx);
 %! assert (sort(imag(d1)), sort(imag(d2(end:-1:(end-k+1)))), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! d1 = eigs (A, k, 'si');
 %! [dum, idx] = sort (imag(abs(d0)));
 %! d2 = d0(idx);
 %! assert (sort(imag(d1)), sort(imag(d2(1:k))), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! d1 = eigs (A, k, 4.1);
 %! [dum,idx0] = sort (abs(d0 - 4.1));
 %! [dum,idx1] = sort (abs(d1 - 4.1));
 %! assert (abs(d1(idx1)), abs(d0(idx0(1:k))), 1e-12);
 %! assert (sort(imag(d1(idx1))), sort(imag(d0(idx0(1:k)))), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! d1 = eigs(A, speye(n), k, 'lm');
 %! assert (abs(d1), abs(d0(end:-1:(end-k+1))), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! opts.cholB=true;
 %! d1 = eigs(A, speye(n), k, 'lm', opts);
 %! assert (abs(d1), abs(d0(end:-1:(end-k+1))), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! opts.cholB=true;
 %! q = [2:n,1];
 %! opts.permB=q;
 %! d1 = eigs(A, speye(n)(q,q), k, 'lm', opts);
 %! assert (abs(d1), abs(d0(end:-1:(end-k+1))), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! opts.cholB=true;
 %! d1 = eigs(A, speye(n), k, 4.1, opts);
 %! assert (abs(abs(d1)), abs(eigs(A,k,4.1)), 1e-12);
 %! assert (sort(imag(abs(d1))), sort(imag(eigs(A,k,4.1))), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! opts.cholB=true;
 %! q = [2:n,1];
 %! opts.permB=q;
@@ -1033,52 +1033,52 @@ K Maschhoff, D Sorensen and C Yang. For more information see\n\
 %! assert (sort(imag(abs(d1))), sort(imag(eigs(A,k,4.1))), 1e-12);
 %!assert (abs(eigs(A,k,4.1)), abs(eigs(A,speye(n),k,4.1)), 1e-12);
 %!assert (sort(imag(eigs(A,k,4.1))), sort(imag(eigs(A,speye(n),k,4.1))), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! fn = @(x) A * x;
 %! opts.issym = 0; opts.isreal = 0;
 %! d1 = eigs (fn, n, k, 'lm', opts);
 %! assert (abs(d1), abs(d0(end:-1:(end-k+1))), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! fn = @(x) A \ x;
 %! opts.issym = 0; opts.isreal = 0;
 %! d1 = eigs (fn, n, k, 'sm', opts);
 %! assert (abs(d1), d0(1:k), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! fn = @(x) (A - 4.1 * eye(n)) \ x;
 %! opts.issym = 0; opts.isreal = 0;
 %! d1 = eigs (fn, n, k, 4.1, opts);
 %! assert (abs(d1), eigs(A,k,4.1), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! [v1,d1] = eigs(A, k, 'lm');
 %! d1 = diag(d1);
 %! for i=1:k
 %!  assert(max(abs((A - d1(i)*speye(n))*v1(:,i))),0.,1e-12)
 %! endfor
-%!test
+%!testif HAVE_ARPACK
 %! [v1,d1] = eigs(A, k, 'sm');
 %! d1 = diag(d1);
 %! for i=1:k
 %!  assert(max(abs((A - d1(i)*speye(n))*v1(:,i))),0.,1e-12)
 %! endfor
-%!test
+%!testif HAVE_ARPACK
 %! [v1,d1] = eigs(A, k, 'lr');
 %! d1 = diag(d1);
 %! for i=1:k
 %!  assert(max(abs((A - d1(i)*speye(n))*v1(:,i))),0.,1e-12)
 %! endfor
-%!test
+%!testif HAVE_ARPACK
 %! [v1,d1] = eigs(A, k, 'sr');
 %! d1 = diag(d1);
 %! for i=1:k
 %!  assert(max(abs((A - d1(i)*speye(n))*v1(:,i))),0.,1e-12)
 %! endfor
-%!test
+%!testif HAVE_ARPACK
 %! [v1,d1] = eigs(A, k, 'li');
 %! d1 = diag(d1);
 %! for i=1:k
 %!  assert(max(abs((A - d1(i)*speye(n))*v1(:,i))),0.,1e-12)
 %! endfor
-%!test
+%!testif HAVE_ARPACK
 %! [v1,d1] = eigs(A, k, 'si');
 %! d1 = diag(d1);
 %! for i=1:k
@@ -1100,100 +1100,100 @@ K Maschhoff, D Sorensen and C Yang. For more information see\n\
 %! d2 = sort(d0);
 %! [dum, idx] = sort( abs(d0));
 %! d0 = d0(idx);
-%!test
+%!testif HAVE_ARPACK
 %! d1 = eigs (A, k);
 %! assert (d1, d0(end:-1:(end-k+1)), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! d1 = eigs (A,k+1);
 %! assert (d1, d0(end:-1:(end-k)),1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! d1 = eigs (A, k, 'lm');
 %! assert (d1, d0(end:-1:(end-k+1)), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! d1 = eigs (A, k, 'sm');
 %! assert (d1, d0(k:-1:1), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! d1 = eigs (A, k, 'la');
 %! assert (d1, d2(end:-1:(end-k+1)), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! d1 = eigs (A, k, 'sa');
 %! assert (d1, d2(1:k), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! d1 = eigs (A, k, 'be');
 %! assert (d1, d2([1:floor(k/2), (end - ceil(k/2) + 1):end]), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! d1 = eigs (A, k+1, 'be');
 %! assert (d1, d2([1:floor((k+1)/2), (end - ceil((k+1)/2) + 1):end]), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! d1 = eigs (A, k, 4.1);
 %! [dum,idx0] = sort (abs(d0 - 4.1));
 %! [dum,idx1] = sort (abs(d1 - 4.1));
 %! assert (d1(idx1), d0(idx0(1:k)), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! d1 = eigs(A, eye(n), k, 'lm');
 %! assert (abs(d1), abs(d0(end:-1:(end-k+1))), 1e-12);
 %!assert (eigs(A,k,4.1), eigs(A,eye(n),k,4.1), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! opts.cholB=true;
 %! d1 = eigs(A, eye(n), k, 'lm', opts);
 %! assert (abs(d1), abs(d0(end:-1:(end-k+1))), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! opts.cholB=true;
 %! q = [2:n,1];
 %! opts.permB=q;
 %! d1 = eigs(A, eye(n)(q,q), k, 'lm', opts);
 %! assert (abs(d1), abs(d0(end:-1:(end-k+1))), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! opts.cholB=true;
 %! d1 = eigs(A, eye(n), k, 4.1, opts);
 %! assert (abs(d1), eigs(A,k,4.1), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! opts.cholB=true;
 %! q = [2:n,1];
 %! opts.permB=q;
 %! d1 = eigs(A, eye(n)(q,q), k, 4.1, opts);
 %! assert (abs(d1), eigs(A,k,4.1), 1e-12);
 %!assert (eigs(A,k,4.1), eigs(A,eye(n),k,4.1), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! fn = @(x) A * x;
 %! opts.issym = 1; opts.isreal = 1;
 %! d1 = eigs (fn, n, k, 'lm', opts);
 %! assert (d1, d0(end:-1:(end-k+1)), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! fn = @(x) A \ x;
 %! opts.issym = 1; opts.isreal = 1;
 %! d1 = eigs (fn, n, k, 'sm', opts);
 %! assert (d1, d0(k:-1:1), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! fn = @(x) (A - 4.1 * eye(n)) \ x;
 %! opts.issym = 1; opts.isreal = 1;
 %! d1 = eigs (fn, n, k, 4.1, opts);
 %! assert (d1, eigs(A,k,4.1), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! [v1,d1] = eigs(A, k, 'lm');
 %! d1 = diag(d1);
 %! for i=1:k
 %!  assert(max(abs((A - d1(i)*eye(n))*v1(:,i))),0.,1e-12)
 %! endfor
-%!test
+%!testif HAVE_ARPACK
 %! [v1,d1] = eigs(A, k, 'sm');
 %! d1 = diag(d1);
 %! for i=1:k
 %!  assert(max(abs((A - d1(i)*eye(n))*v1(:,i))),0.,1e-12)
 %! endfor
-%!test
+%!testif HAVE_ARPACK
 %! [v1,d1] = eigs(A, k, 'la');
 %! d1 = diag(d1);
 %! for i=1:k
 %!  assert(max(abs((A - d1(i)*eye(n))*v1(:,i))),0.,1e-12)
 %! endfor
-%!test
+%!testif HAVE_ARPACK
 %! [v1,d1] = eigs(A, k, 'sa');
 %! d1 = diag(d1);
 %! for i=1:k
 %!  assert(max(abs((A - d1(i)*eye(n))*v1(:,i))),0.,1e-12)
 %! endfor
-%!test
+%!testif HAVE_ARPACK
 %! [v1,d1] = eigs(A, k, 'be');
 %! d1 = diag(d1);
 %! for i=1:k
@@ -1212,62 +1212,62 @@ K Maschhoff, D Sorensen and C Yang. For more information see\n\
 %! d0 = eig (A);
 %! [dum, idx] = sort(abs(d0));
 %! d0 = d0(idx);
-%!test
+%!testif HAVE_ARPACK
 %! d1 = eigs (A, k);
 %! assert (abs(d1), abs(d0(end:-1:(end-k+1))), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! d1 = eigs (A,k+1);
 %! assert (abs(d1), abs(d0(end:-1:(end-k))),1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! d1 = eigs (A, k, 'lm');
 %! assert (abs(d1), abs(d0(end:-1:(end-k+1))), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! d1 = eigs (A, k, 'sm');
 %! assert (abs(d1), abs(d0(1:k)), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! d1 = eigs (A, k, 'lr');
 %! [dum, idx] = sort (real(d0));
 %! d2 = d0(idx);
 %! assert (real(d1), real(d2(end:-1:(end-k+1))), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! d1 = eigs (A, k, 'sr');
 %! [dum, idx] = sort (real(abs(d0)));
 %! d2 = d0(idx);
 %! assert (real(d1), real(d2(1:k)), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! d1 = eigs (A, k, 'li');
 %! [dum, idx] = sort (imag(abs(d0)));
 %! d2 = d0(idx);
 %! assert (sort(imag(d1)), sort(imag(d2(end:-1:(end-k+1)))), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! d1 = eigs (A, k, 'si');
 %! [dum, idx] = sort (imag(abs(d0)));
 %! d2 = d0(idx);
 %! assert (sort(imag(d1)), sort(imag(d2(1:k))), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! d1 = eigs (A, k, 4.1);
 %! [dum,idx0] = sort (abs(d0 - 4.1));
 %! [dum,idx1] = sort (abs(d1 - 4.1));
 %! assert (abs(d1(idx1)), abs(d0(idx0(1:k))), 1e-12);
 %! assert (sort(imag(d1(idx1))), sort(imag(d0(idx0(1:k)))), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! d1 = eigs(A, eye(n), k, 'lm');
 %! assert (abs(d1), abs(d0(end:-1:(end-k+1))), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! opts.cholB=true;
 %! d1 = eigs(A, eye(n), k, 'lm', opts);
 %! assert (abs(d1), abs(d0(end:-1:(end-k+1))), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! opts.cholB=true;
 %! q = [2:n,1];
 %! opts.permB=q;
 %! d1 = eigs(A, eye(n)(q,q), k, 'lm', opts);
 %! assert (abs(d1), abs(d0(end:-1:(end-k+1))), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! opts.cholB=true;
 %! d1 = eigs(A, eye(n), k, 4.1, opts);
 %! assert (abs(d1), eigs(A,k,4.1), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! opts.cholB=true;
 %! q = [2:n,1];
 %! opts.permB=q;
@@ -1275,52 +1275,52 @@ K Maschhoff, D Sorensen and C Yang. For more information see\n\
 %! assert (abs(d1), eigs(A,k,4.1), 1e-12);
 %!assert (abs(eigs(A,k,4.1)), abs(eigs(A,eye(n),k,4.1)), 1e-12);
 %!assert (sort(imag(eigs(A,k,4.1))), sort(imag(eigs(A,eye(n),k,4.1))), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! fn = @(x) A * x;
 %! opts.issym = 0; opts.isreal = 1;
 %! d1 = eigs (fn, n, k, 'lm', opts);
 %! assert (abs(d1), abs(d0(end:-1:(end-k+1))), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! fn = @(x) A \ x;
 %! opts.issym = 0; opts.isreal = 1;
 %! d1 = eigs (fn, n, k, 'sm', opts);
 %! assert (abs(d1), d0(1:k), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! fn = @(x) (A - 4.1 * eye(n)) \ x;
 %! opts.issym = 0; opts.isreal = 1;
 %! d1 = eigs (fn, n, k, 4.1, opts);
 %! assert (abs(d1), eigs(A,k,4.1), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! [v1,d1] = eigs(A, k, 'lm');
 %! d1 = diag(d1);
 %! for i=1:k
 %!  assert(max(abs((A - d1(i)*eye(n))*v1(:,i))),0.,1e-12)
 %! endfor
-%!test
+%!testif HAVE_ARPACK
 %! [v1,d1] = eigs(A, k, 'sm');
 %! d1 = diag(d1);
 %! for i=1:k
 %!  assert(max(abs((A - d1(i)*eye(n))*v1(:,i))),0.,1e-12)
 %! endfor
-%!test
+%!testif HAVE_ARPACK
 %! [v1,d1] = eigs(A, k, 'lr');
 %! d1 = diag(d1);
 %! for i=1:k
 %!  assert(max(abs((A - d1(i)*eye(n))*v1(:,i))),0.,1e-12)
 %! endfor
-%!test
+%!testif HAVE_ARPACK
 %! [v1,d1] = eigs(A, k, 'sr');
 %! d1 = diag(d1);
 %! for i=1:k
 %!  assert(max(abs((A - d1(i)*eye(n))*v1(:,i))),0.,1e-12)
 %! endfor
-%!test
+%!testif HAVE_ARPACK
 %! [v1,d1] = eigs(A, k, 'li');
 %! d1 = diag(d1);
 %! for i=1:k
 %!  assert(max(abs((A - d1(i)*eye(n))*v1(:,i))),0.,1e-12)
 %! endfor
-%!test
+%!testif HAVE_ARPACK
 %! [v1,d1] = eigs(A, k, 'si');
 %! d1 = diag(d1);
 %! for i=1:k
@@ -1339,63 +1339,63 @@ K Maschhoff, D Sorensen and C Yang. For more information see\n\
 %! d0 = eig (A);
 %! [dum, idx] = sort(abs(d0));
 %! d0 = d0(idx);
-%!test
+%!testif HAVE_ARPACK
 %! d1 = eigs (A, k);
 %! assert (abs(d1), abs(d0(end:-1:(end-k+1))), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! d1 = eigs (A,k+1);
 %! assert (abs(d1), abs(d0(end:-1:(end-k))),1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! d1 = eigs (A, k, 'lm');
 %! assert (abs(d1), abs(d0(end:-1:(end-k+1))), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! d1 = eigs (A, k, 'sm');
 %! assert (abs(d1), abs(d0(1:k)), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! d1 = eigs (A, k, 'lr');
 %! [dum, idx] = sort (real(abs(d0)));
 %! d2 = d0(idx);
 %! assert (real(d1), real(d2(end:-1:(end-k+1))), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! d1 = eigs (A, k, 'sr');
 %! [dum, idx] = sort (real(abs(d0)));
 %! d2 = d0(idx);
 %! assert (real(d1), real(d2(1:k)), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! d1 = eigs (A, k, 'li');
 %! [dum, idx] = sort (imag(abs(d0)));
 %! d2 = d0(idx);
 %! assert (sort(imag(d1)), sort(imag(d2(end:-1:(end-k+1)))), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! d1 = eigs (A, k, 'si');
 %! [dum, idx] = sort (imag(abs(d0)));
 %! d2 = d0(idx);
 %! assert (sort(imag(d1)), sort(imag(d2(1:k))), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! d1 = eigs (A, k, 4.1);
 %! [dum,idx0] = sort (abs(d0 - 4.1));
 %! [dum,idx1] = sort (abs(d1 - 4.1));
 %! assert (abs(d1(idx1)), abs(d0(idx0(1:k))), 1e-12);
 %! assert (sort(imag(d1(idx1))), sort(imag(d0(idx0(1:k)))), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! d1 = eigs(A, eye(n), k, 'lm');
 %! assert (abs(d1), abs(d0(end:-1:(end-k+1))), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! opts.cholB=true;
 %! d1 = eigs(A, eye(n), k, 'lm', opts);
 %! assert (abs(d1), abs(d0(end:-1:(end-k+1))), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! opts.cholB=true;
 %! q = [2:n,1];
 %! opts.permB=q;
 %! d1 = eigs(A, eye(n)(q,q), k, 'lm', opts);
 %! assert (abs(d1), abs(d0(end:-1:(end-k+1))), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! opts.cholB=true;
 %! d1 = eigs(A, eye(n), k, 4.1, opts);
 %! assert (abs(abs(d1)), abs(eigs(A,k,4.1)), 1e-12);
 %! assert (sort(imag(abs(d1))), sort(imag(eigs(A,k,4.1))), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! opts.cholB=true;
 %! q = [2:n,1];
 %! opts.permB=q;
@@ -1404,52 +1404,52 @@ K Maschhoff, D Sorensen and C Yang. For more information see\n\
 %! assert (sort(imag(abs(d1))), sort(imag(eigs(A,k,4.1))), 1e-12);
 %!assert (abs(eigs(A,k,4.1)), abs(eigs(A,eye(n),k,4.1)), 1e-12);
 %!assert (sort(imag(eigs(A,k,4.1))), sort(imag(eigs(A,eye(n),k,4.1))), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! fn = @(x) A * x;
 %! opts.issym = 0; opts.isreal = 0;
 %! d1 = eigs (fn, n, k, 'lm', opts);
 %! assert (abs(d1), abs(d0(end:-1:(end-k+1))), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! fn = @(x) A \ x;
 %! opts.issym = 0; opts.isreal = 0;
 %! d1 = eigs (fn, n, k, 'sm', opts);
 %! assert (abs(d1), d0(1:k), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! fn = @(x) (A - 4.1 * eye(n)) \ x;
 %! opts.issym = 0; opts.isreal = 0;
 %! d1 = eigs (fn, n, k, 4.1, opts);
 %! assert (abs(d1), eigs(A,k,4.1), 1e-12);
-%!test
+%!testif HAVE_ARPACK
 %! [v1,d1] = eigs(A, k, 'lm');
 %! d1 = diag(d1);
 %! for i=1:k
 %!  assert(max(abs((A - d1(i)*eye(n))*v1(:,i))),0.,1e-12)
 %! endfor
-%!test
+%!testif HAVE_ARPACK
 %! [v1,d1] = eigs(A, k, 'sm');
 %! d1 = diag(d1);
 %! for i=1:k
 %!  assert(max(abs((A - d1(i)*eye(n))*v1(:,i))),0.,1e-12)
 %! endfor
-%!test
+%!testif HAVE_ARPACK
 %! [v1,d1] = eigs(A, k, 'lr');
 %! d1 = diag(d1);
 %! for i=1:k
 %!  assert(max(abs((A - d1(i)*eye(n))*v1(:,i))),0.,1e-12)
 %! endfor
-%!test
+%!testif HAVE_ARPACK
 %! [v1,d1] = eigs(A, k, 'sr');
 %! d1 = diag(d1);
 %! for i=1:k
 %!  assert(max(abs((A - d1(i)*eye(n))*v1(:,i))),0.,1e-12)
 %! endfor
-%!test
+%!testif HAVE_ARPACK
 %! [v1,d1] = eigs(A, k, 'li');
 %! d1 = diag(d1);
 %! for i=1:k
 %!  assert(max(abs((A - d1(i)*eye(n))*v1(:,i))),0.,1e-12)
 %! endfor
-%!test
+%!testif HAVE_ARPACK
 %! [v1,d1] = eigs(A, k, 'si');
 %! d1 = diag(d1);
 %! for i=1:k

@@ -1,5 +1,8 @@
 2008-12-24  John W. Eaton  <jwe@octave.org>
 
+	* DLD-FUNCTIONS/eigs.cc: Use "testif HAVE_ARPACK" to skip tests if
+	ARPACK is not available.
+
 	* Makefile.in (DLD_XSRC): Add eigs.cc to the list.
 
 	* load-save.cc (parse_save_options): Handle -double.

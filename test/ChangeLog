@@ -1,3 +1,8 @@
+2008-12-24  John W. Eaton  <jwe@octave.org>
+
+	* fntests.m (hastests): Use fread instead of fscanf to preserve
+	whitespace.
+
 2008-12-02  Jaroslav Hajek  <highegg@gmail.com>
 
 	* build_sparse_tests.sh: Fix test.

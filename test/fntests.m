@@ -68,9 +68,10 @@ function print_pass_fail (n, p)
   puts ("\n");
 endfunction
 
+## FIXME -- should we only try match the keyword at the start of a line?
 function y = hastests (f)
   fid = fopen (f);
-  str = fscanf (fid, "%s");
+  str = fread (fid, "*char")';
   fclose (fid);
   y = (findstr (str, "%!test") || findstr (str, "%!assert")
        || findstr (str, "%!error") || findstr (str, "%!warning"));

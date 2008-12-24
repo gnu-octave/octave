@@ -1,3 +1,8 @@
+2008-12-24  Ben Abbott  <bpabbott@mac.com>
+
+	* DLD-FUNCTIONS/chol.cc: Compare results to 0 in tests.
+	Delete spurious function calls in test block.
+
 2008-12-24  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/eigs.cc: Use "testif HAVE_ARPACK" to skip tests if
@@ -881,7 +886,7 @@
 	(template <class T> bool extract_keyword (std::istream&, const
 	string_vector&, std::string&, T&, const bool)): Likewise.
 
-2008-09-03  Ben Abbott <bpabott@mac.com>
+2008-09-03  Ben Abbott  <bpabott@mac.com>
 
 	* mappers.cc: Use eps(single) as tolerance for single precesion test.
 
@@ -922,7 +927,7 @@
 	* DLD-FUNCTIONS/__glpk__.cc (F__glpk__): Initialize output vectors 
 	by NA value.
 
-2008-08-26 Ben Abbott <bpabott@mac.com>
+2008-08-26 Ben Abbott  <bpabott@mac.com>
 
 	* mappers.cc: Adjust tolerance for single precesion tests.
 

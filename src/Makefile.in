@@ -62,20 +62,21 @@ OPT_HANDLERS := $(addsuffix .cc, $(OPT_BASE))
 OPT_IN := $(addprefix ../liboctave/, $(addsuffix .in, $(OPT_BASE)))
 OPT_INC := $(addprefix ../liboctave/, $(addsuffix .h, $(OPT_BASE)))
 
-DLD_XSRC := amd.cc balance.cc besselj.cc betainc.cc bsxfun.cc cellfun.cc \
-	chol.cc ccolamd.cc colamd.cc colloc.cc conv2.cc convhulln.cc daspk.cc \
-	dasrt.cc dassl.cc det.cc dispatch.cc dlmread.cc dmperm.cc eig.cc \
-	fft.cc fft2.cc fftn.cc fftw.cc filter.cc find.cc \
-	fltk_backend.cc \
+DLD_XSRC := amd.cc balance.cc besselj.cc betainc.cc bsxfun.cc \
+	cellfun.cc chol.cc ccolamd.cc colamd.cc colloc.cc \
+	conv2.cc convhulln.cc daspk.cc dasrt.cc dassl.cc det.cc \
+	dispatch.cc dlmread.cc dmperm.cc eig.cc eigs.cc fft.cc \
+	fft2.cc fftn.cc fftw.cc filter.cc find.cc fltk_backend.cc \
 	gammainc.cc gcd.cc getgrent.cc getpwent.cc getrusage.cc \
-	givens.cc hess.cc hex2num.cc inv.cc kron.cc lookup.cc lsode.cc \
-	lu.cc luinc.cc matrix_type.cc max.cc md5sum.cc pinv.cc qr.cc \
-	quad.cc qz.cc rand.cc rcond.cc regexp.cc schur.cc sparse.cc \
-	spparms.cc sqrtm.cc svd.cc syl.cc symrcm.cc symbfact.cc \
-	time.cc tsearch.cc typecast.cc \
-	urlwrite.cc __contourc__.cc __delaunayn__.cc __dsearchn__.cc \
-	__glpk__.cc __lin_interpn__.cc __magick_read__.cc __pchip_deriv__.cc \
-	__qp__.cc __voronoi__.cc __convn__.cc
+	givens.cc hess.cc hex2num.cc inv.cc kron.cc lookup.cc \
+	lsode.cc lu.cc luinc.cc matrix_type.cc max.cc md5sum.cc \
+	pinv.cc qr.cc quad.cc qz.cc rand.cc rcond.cc regexp.cc \
+	schur.cc sparse.cc spparms.cc sqrtm.cc svd.cc syl.cc \
+	symrcm.cc symbfact.cc time.cc tsearch.cc typecast.cc \
+	urlwrite.cc __contourc__.cc __delaunayn__.cc \
+	__dsearchn__.cc __glpk__.cc __lin_interpn__.cc \
+	__magick_read__.cc __pchip_deriv__.cc __qp__.cc \
+	__voronoi__.cc __convn__.cc
 
 DLD_SRC := $(addprefix DLD-FUNCTIONS/, $(DLD_XSRC))
 

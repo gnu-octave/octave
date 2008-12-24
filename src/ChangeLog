@@ -1,3 +1,7 @@
+2008-12-24  John W. Eaton  <jwe@octave.org>
+
+	* load-save.cc (parse_save_options): Handle -double.
+
 2008-12-23  David Bateman  <dbateman@free.fr>
 
 	* DLD-FUNCTIONS/eigs.cc: New file.

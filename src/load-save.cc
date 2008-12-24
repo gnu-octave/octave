@@ -1048,6 +1048,8 @@ parse_save_options (const string_vector &argv,
   string_vector retval;
   int argc = argv.length ();
 
+  bool do_double = false;
+
   for (int i = 0; i < argc; i++)
     {
       if (argv[i] == "-append")
@@ -1057,6 +1059,10 @@ parse_save_options (const string_vector &argv,
       else if (argv[i] == "-ascii" || argv[i] == "-a")
 	{
 	  format = LS_MAT_ASCII;
+	}
+      else if (argv[i] == "-double")
+	{
+	  do_double = true;
 	}
       else if (argv[i] == "-text" || argv[i] == "-t")
 	{
@@ -1114,6 +1120,14 @@ parse_save_options (const string_vector &argv,
 #endif
       else
         retval.append (argv[i]);
+    }
+
+  if (do_double)
+    {
+      if (format == LS_MAT_ASCII)
+	format = LS_MAT_ASCII_LONG;
+      else
+	warning ("save: \"-double\" option only has an effect with \"-ascii\"");
     }
 
   return retval;

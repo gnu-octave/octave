@@ -506,14 +506,18 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
   eval (__clear, "");
 
   if (nargout == 0)
-    if (__xfail)
-      printf ("PASSES %d out of %d tests (%d expected failures)\n",
-	      __successes, __tests, __xfail);
+    if (__tests || __xfail || __xskip)
+      if (__xfail)
+	printf ("PASSES %d out of %d tests (%d expected failures)\n",
+		__successes, __tests, __xfail);
+      else
+	printf ("PASSES %d out of %d tests\n", __successes, __tests);
+      endif
+      if (__xskip)
+	printf ("Skipped %d tests due to missing features\n", __xskip);
+      endif
     else
-      printf ("PASSES %d out of %d tests\n", __successes, __tests);
-    endif
-    if (__xskip)
-      printf ("Skipped %d tests due to missing features\n", __xskip);
+      printf ("%s%s has no tests available\n", __signal_empty, __file);
     endif
   elseif (__grabdemo)
     __ret1 = __demo_code;

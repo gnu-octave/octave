@@ -29,7 +29,7 @@ read_mat_ascii_data (std::istream& is, const std::string& filename,
 
 extern bool
 save_mat_ascii_data (std::ostream& os, const octave_value& val_arg,
-		     int precision);
+		     int precision, bool tabs = false);
 
 #endif
 

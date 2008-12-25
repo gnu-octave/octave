@@ -30,12 +30,13 @@ along with Octave; see the file COPYING.  If not, see
 
 class octave_value;
 
-enum load_save_format
+// FIXME: maybe MAT5 and MAT7 should be options to MAT_BINARY.
+// Similarly, save_as_floats may be an option for LS_BINARY, LS_HDF5 etc.
+enum load_save_format_type
   {
     LS_ASCII,
     LS_BINARY,
     LS_MAT_ASCII,
-    LS_MAT_ASCII_LONG,
     LS_MAT_BINARY,
     LS_MAT5_BINARY,
     LS_MAT7_BINARY,
@@ -44,6 +45,29 @@ enum load_save_format
 #endif /* HAVE_HDF5 */
     LS_UNKNOWN
   };
+
+enum load_save_format_options
+{
+  // LS_MAT_ASCII options (not exclusive)
+  LS_MAT_ASCII_LONG = 1,
+  LS_MAT_ASCII_TABS = 2,
+  // LS_MAT_BINARY options
+  LS_MAT_BINARY_V5 = 1,
+  LS_MAT_BINARY_V7,
+  // zero means no option.
+  LS_NO_OPTION = 0  
+};
+
+class load_save_format
+{
+public:
+  load_save_format (load_save_format_type t,
+                    load_save_format_options o = LS_NO_OPTION)
+    : type (t), opts (o) { }
+  operator int (void) const
+    { return type; }
+  int type, opts;
+};
 
 extern void dump_octave_core (void);
 

@@ -1,3 +1,14 @@
+2008-12-25  Jaroslav Hajek <highegg@gmail.com>
+
+	* load-save.h (load_save_format_type, load_save_format_options): New
+	enums.
+	(load_save_format): Convert to a class.
+	* load-save.cc (do_save(..., const octave_value&,...)): Use fmt.type
+	in switch. Use options of LS_MAT_ASCII.
+	(do_load, write_header): Use format.type in switch.
+	* ls-mat-ascii.h (save_mat_ascii_data): Add tabs option.
+	* ls-mat-ascii.cc (save_mat_ascii_data): Implement it.
+
 2008-12-24  Ben Abbott  <bpabbott@mac.com>
 
 	* DLD-FUNCTIONS/chol.cc: Compare results to 0 in tests.

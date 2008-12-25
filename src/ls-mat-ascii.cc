@@ -329,7 +329,7 @@ read_mat_ascii_data (std::istream& is, const std::string& filename,
 
 bool
 save_mat_ascii_data (std::ostream& os, const octave_value& val,
-		     int precision)
+		     int precision, bool tabs)
 {
   bool success = true;
 
@@ -353,7 +353,21 @@ save_mat_ascii_data (std::ostream& os, const octave_value& val,
       std::ios::fmtflags oflags
 	= os.flags (static_cast<std::ios::fmtflags> (std::ios::scientific));
 
-      os << m;
+      if (tabs)
+        {
+          for (octave_idx_type i = 0; i < m.rows (); i++)
+            {
+              for (octave_idx_type j = 0; j < m.cols (); j++)
+                {
+                  // Omit leading tabs.
+                  if (j != 0) os << '\t'; 
+                  octave_write_double (os, m (i, j));
+                }
+              os << "\n";
+            }
+        }
+      else
+        os << m;
 
       os.flags (oflags);
 

@@ -347,7 +347,7 @@ do_load (std::istream& stream, const std::string& orig_fname,
       std::string name;
       std::string doc;
 
-      switch (format)
+      switch (format.type)
 	{
 	case LS_ASCII:
 	  name = read_ascii_data (stream, orig_fname, global, tc, count);
@@ -928,7 +928,7 @@ do_save (std::ostream& os, const octave_value& tc,
 	 const std::string& name, const std::string& help,
 	 bool global, load_save_format fmt, bool save_as_floats)
 {
-  switch (fmt)
+  switch (fmt.type)
     {
     case LS_ASCII:
       save_ascii_data (os, tc, name, global, 0);
@@ -939,8 +939,8 @@ do_save (std::ostream& os, const octave_value& tc,
       break;
 
     case LS_MAT_ASCII:
-    case LS_MAT_ASCII_LONG:
-      if (! save_mat_ascii_data (os, tc, fmt == LS_MAT_ASCII ? 8 : 16))
+      if (! save_mat_ascii_data (os, tc, fmt.opts & LS_MAT_ASCII_LONG ? 16 : 8, 
+                                 fmt.opts & LS_MAT_ASCII_TABS))
 	warning ("save: unable to save %s in ASCII format", name.c_str ());
       break;
 
@@ -1048,7 +1048,7 @@ parse_save_options (const string_vector &argv,
   string_vector retval;
   int argc = argv.length ();
 
-  bool do_double = false;
+  bool do_double = false, do_tabs = false;
 
   for (int i = 0; i < argc; i++)
     {
@@ -1063,6 +1063,10 @@ parse_save_options (const string_vector &argv,
       else if (argv[i] == "-double")
 	{
 	  do_double = true;
+	}
+      else if (argv[i] == "-tabs")
+	{
+	  do_tabs = true;
 	}
       else if (argv[i] == "-text" || argv[i] == "-t")
 	{
@@ -1125,9 +1129,17 @@ parse_save_options (const string_vector &argv,
   if (do_double)
     {
       if (format == LS_MAT_ASCII)
-	format = LS_MAT_ASCII_LONG;
+	format.opts |= LS_MAT_ASCII_LONG;
       else
 	warning ("save: \"-double\" option only has an effect with \"-ascii\"");
+    }
+
+  if (do_tabs)
+    {
+      if (format == LS_MAT_ASCII)
+	format.opts |= LS_MAT_ASCII_TABS;
+      else
+	warning ("save: \"-tabs\" option only has an effect with \"-ascii\"");
     }
 
   return retval;
@@ -1155,7 +1167,7 @@ parse_save_options (const std::string &arg, load_save_format &format,
 void
 write_header (std::ostream& os, load_save_format format)
 {
-  switch (format)
+  switch (format.type)
     {
     case LS_BINARY:
       {

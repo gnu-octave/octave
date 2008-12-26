@@ -1,5 +1,8 @@
 2008-12-26  Francesco Potortì  <pot@gnu.org>
 
+	* interpreter/matrix.txi (Rearranging Matrices): Add reference
+	to resize function.
+
 	* interpreter/plot.txi (Plot Annotations): Add cross reference to
 	Text Properties.
 	(Two-Dimensional Plots): Update introduction to the axis function.

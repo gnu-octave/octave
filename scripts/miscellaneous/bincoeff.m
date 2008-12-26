@@ -48,6 +48,12 @@
 ##      @result{} 10
 ## @end group
 ## @end example
+##
+## In most cases, the @code{nchoosek} function is faster for small
+## scalar integer arguments.  It also warns about loss of precision for
+## big arguments.
+##
+## @seealso{nchoosek}
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
@@ -108,4 +114,3 @@ endfunction
 %!error bincoeff ();
 
 %!error bincoeff (1, 2, 3);
-

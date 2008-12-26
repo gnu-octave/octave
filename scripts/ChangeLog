@@ -1,3 +1,8 @@
+2008-12-26  Francesco Potortì  <pot@gnu.org>
+
+	* plot/hist.m: Doc string now mentions matrix input argument.
+	Correct error message.
+
 2008-12-24  Doug Stewart  <dastew@sympatico.ca>
 
 	* plot/grid.m: Handle "minor" option.

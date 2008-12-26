@@ -23,7 +23,8 @@
 ##
 ## With one vector input argument, plot a histogram of the values with
 ## 10 bins.  The range of the histogram bins is determined by the range
-## of the data.
+## of the data.  With one matrix input argument, plot a hystogram where
+## each bin contains a bar per input column.
 ##
 ## Given a second scalar argument, use that as the number of bins.
 ##
@@ -59,7 +60,7 @@ function [nn, xx] = hist (y, varargin)
     max_val = max (y(:));
     min_val = min (y(:));
   else
-    error ("hist: first argument must be a vector");
+    error ("hist: first argument must be real valued");
   endif
 
   iarg = 1;

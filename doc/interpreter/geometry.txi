@@ -43,7 +43,7 @@ circumference of the circum-circle. None of the points in the set of
 points falls within any of the circum-circles.
 
 In general there are only three points on the circumference of any
-circum-circle. However, in the some cases, and in particular for the
+circum-circle. However, in some cases, and in particular for the
 case of a regular grid, 4 or more points can be on a single
 circum-circle. In this case the Delaunay triangulation is not unique. 
 

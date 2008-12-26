@@ -20,7 +20,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} strrep (@var{s}, @var{x}, @var{y})
 ## Replaces all occurrences of the substring @var{x} of the string @var{s}
-## with the string @var{y}.  For example,
+## with the string @var{y} and returns the result.  For example,
 ##
 ## @example
 ## strrep ("This is a test string", "is", "&%$")
@@ -95,4 +95,3 @@ endfunction
 %!error strrep ();
 
 %!error strrep ("foo", "bar", 3, 4);
-

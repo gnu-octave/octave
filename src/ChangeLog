@@ -1,3 +1,7 @@
+2008-12-26  Francesco Potortì  <pot@gnu.org>
+
+	* data.cc (resize): Add cross reference to postpad.
+
 2008-12-25  Jaroslav Hajek <highegg@gmail.com>
 
 	* load-save.h (load_save_format_type, load_save_format_options): New

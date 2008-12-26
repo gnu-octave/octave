@@ -4370,7 +4370,7 @@ result is @var{m}-by-@var{m}.  If @var{m} is a vector, then the\n\
 dimensions of the result are given by the elements of @var{m}.\n\
 If both @var{m} and @var{n} are scalars, then the dimensions of\n\
 the result are @var{m}-by-@var{n}.\n\
-@seealso{reshape}\n\
+@seealso{reshape, postpad}\n\
 @end deftypefn")
 {
   octave_value retval;

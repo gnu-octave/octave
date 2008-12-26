@@ -1,5 +1,7 @@
 2008-12-26  Francesco Potortì  <pot@gnu.org>
 
+	* general/postpad.m: Use @seealso.  Add reference to resize.
+
 	* statistics/base/statistics.m: Correct help string.
 
 	* plot/hist.m: Doc string now mentions matrix input argument.

@@ -19,7 +19,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} postpad (@var{x}, @var{l}, @var{c})
-## See prepad.
+## @seealso{prepad, resize}
 ## @end deftypefn
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>

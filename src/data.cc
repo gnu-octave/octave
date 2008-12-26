@@ -2676,7 +2676,7 @@ DEFUN (isinteger, args, ,
 @deftypefn {Built-in Function} {} isinteger (@var{x})\n\
 Return true if @var{x} is an integer object (int8, uint8, int16, etc.).\n\
 Note that @code{isinteger (14)} is false because numeric constants in\n\
-are double precision floating point values.\n\
+Octave are double precision floating point values.\n\
 @seealso{isreal, isnumeric, class, isa}\n\
 @end deftypefn")
 {

@@ -172,7 +172,8 @@ produces the spiral plot shown in @ref{fig:polar}.
 @DOCSTRING(area)
 
 The axis function may be used to change the axis limits of an existing
-plot.
+plot and various other axis properties, such as the aspect ratio and the
+appearance of tic marks.
 
 @DOCSTRING(axis)
 

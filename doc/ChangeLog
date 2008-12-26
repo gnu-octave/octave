@@ -2,6 +2,7 @@
 
 	* interpreter/plot.txi (Plot Annotations): Add cross reference to
 	Text Properties.
+	(Two-Dimensional Plots): Update introduction to the axis function.
 
        * interpreter/signal.txi (Signal Processing): Add explanation of
        what wisdom is.

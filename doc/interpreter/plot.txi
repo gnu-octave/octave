@@ -336,6 +336,8 @@ border lines are on.
 
 @DOCSTRING(text)
 
+See @ref{Text Properties} for the properties that you can set.
+
 @anchor{doc-ylabel}
 @anchor{doc-zlabel}
 @DOCSTRING(xlabel)
@@ -2093,4 +2095,3 @@ Data source variables.
 @DOCSTRING(gnuplot_binary)
 
 @DOCSTRING(gnuplot_use_title_option)
-

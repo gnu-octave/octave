@@ -1,5 +1,8 @@
 2008-12-26  Francesco Potortì  <pot@gnu.org>
 
+	* interpreter/plot.txi (Plot Annotations): Add cross reference to
+	Text Properties.
+
        * interpreter/signal.txi (Signal Processing): Add explanation of
        what wisdom is.
 

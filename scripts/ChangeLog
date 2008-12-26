@@ -1,5 +1,7 @@
 2008-12-26  Francesco Potortì  <pot@gnu.org>
 
+	* general/prepad.m: Add reference to postpad.
+
 	* miscellaneous/bincoeff.m: Make reference to nchoosek.
 
 	* general/postpad.m: Use @seealso.  Add reference to resize.

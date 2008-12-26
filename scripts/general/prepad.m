@@ -33,6 +33,7 @@
 ##
 ## If the optional @var{dim} argument is given, then operate along this
 ## dimension.
+## @seealso{postpad}
 ## @end deftypefn
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>

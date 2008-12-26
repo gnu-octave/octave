@@ -21,7 +21,7 @@
 ## @deftypefn {Function File} {} statistics (@var{x})
 ## If @var{x} is a matrix, return a matrix with the minimum, first
 ## quartile, median, third quartile, maximum, mean, standard deviation,
-## skewness and kurtosis of the columns of @var{x} as its rows.
+## skewness and kurtosis of the columns of @var{x} as its columns.
 ##
 ## If @var{x} is a vector, calculate the statistics along the 
 ## non-singleton dimension.
@@ -72,4 +72,3 @@ endfunction
 %! s = statistics (x);
 %! m = median (x);
 %! assert (m, s(3,:), eps);
-

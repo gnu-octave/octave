@@ -87,8 +87,6 @@ public:
 
   bool is_real_type (void) const { return true; }
 
-  bool valid_as_scalar_index (void) const;
-
   double double_value (bool = false) const;
 
   float float_value (bool = false) const;

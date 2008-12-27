@@ -570,12 +570,6 @@ public:
   bool is_sparse_type (void) const
     { return rep->is_sparse_type (); }
 
-  bool valid_as_scalar_index (void) const
-    { return rep->valid_as_scalar_index (); }
-
-  bool valid_as_zero_index (void) const
-    { return rep->valid_as_zero_index (); }
-
   // Does this constant correspond to a truth value?
 
   bool is_true (void) const

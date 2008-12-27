@@ -83,8 +83,6 @@ public:
       return *this;
     }
 
-  bool valid_scalar_indices (void) const;
-
   // Assignment will resize on range errors.
 
   octave_value& operator () (octave_idx_type n) { return elem (n); }

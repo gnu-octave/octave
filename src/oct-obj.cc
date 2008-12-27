@@ -31,18 +31,6 @@ along with Octave; see the file COPYING.  If not, see
 octave_allocator
 octave_value_list::allocator (sizeof (octave_value_list));
 
-bool
-octave_value_list::valid_scalar_indices (void) const
-{
-  octave_idx_type n = length ();
-
-  for (octave_idx_type i = 0; i < n; i++)
-    if (! data[i].valid_as_scalar_index ())
-      return false;
-
-  return true;
-}
-
 void
 octave_value_list::resize (octave_idx_type n, const octave_value& val)
 {

@@ -144,20 +144,6 @@ public:
 
   bool is_float_type (void) const { return true; }
 
-  bool valid_as_scalar_index (void) const
-    {
-      double b = range.base ();
-      return (range.nelem () == 1
-	      && ! xisnan (b) && D_NINT (b) == b && NINTbig (b) == 1);
-    }
-
-  bool valid_as_zero_index (void) const
-    {
-      double b = range.base ();
-      return (range.nelem () == 1
-	      && ! xisnan (b) && D_NINT (b) == b && NINTbig (b) == 0);
-    }
-
   bool is_numeric_type (void) const { return true; }
 
   bool is_true (void) const;

@@ -66,43 +66,22 @@ octave_bool::numeric_conversion_function (void) const
 
 }
 
-static inline bool
-valid_scalar_indices (const octave_value_list& args)
-{
-  int nargin = args.length ();
-
-  for (int i = 0; i < nargin; i++)
-    if (! args(i).valid_as_scalar_index ())
-      return false;
-
-  return true;
-}
-
 octave_value
 octave_bool::do_index_op (const octave_value_list& idx, bool resize_ok)
 {
-  octave_value retval;
+  // FIXME -- this doesn't solve the problem of
+  //
+  //   a = 1; a([1,1], [1,1], [1,1])
+  //
+  // and similar constructions.  Hmm...
 
-  if (valid_scalar_indices (idx))
-    retval = scalar;
-  else
-    {
-      // FIXME -- this doesn't solve the problem of
-      //
-      //   a = 1; a([1,1], [1,1], [1,1])
-      //
-      // and similar constructions.  Hmm...
+  // FIXME -- using this constructor avoids narrowing the
+  // 1x1 matrix back to a scalar value.  Need a better solution
+  // to this problem.
 
-      // FIXME -- using this constructor avoids narrowing the
-      // 1x1 matrix back to a scalar value.  Need a better solution
-      // to this problem.
+  octave_value tmp (new octave_bool_matrix (bool_matrix_value ()));
 
-      octave_value tmp (new octave_bool_matrix (bool_matrix_value ()));
-
-      retval = tmp.do_index_op (idx, resize_ok);
-    }
-
-  return retval;
+  return tmp.do_index_op (idx, resize_ok);
 }
 
 octave_value 

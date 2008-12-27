@@ -81,10 +81,6 @@ public:
 
   bool is_real_type (void) const { return true; }
 
-  bool valid_as_scalar_index (void) const { return scalar; }
-
-  bool valid_as_zero_index (void) const { return ! scalar; }
-
   bool is_true (void) const { return scalar; }
 
   int8NDArray

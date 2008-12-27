@@ -407,30 +407,21 @@ public:
   octave_value do_index_op (const octave_value_list& idx,
 			    bool resize_ok = false)
     {
-      octave_value retval;
+      // FIXME -- this doesn't solve the problem of
+      //
+      //   a = 1; a([1,1], [1,1], [1,1])
+      //
+      // and similar constructions.  Hmm...
 
-      if (idx.valid_scalar_indices ())
-	retval = scalar;
-      else
-	{
-	  // FIXME -- this doesn't solve the problem of
-	  //
-	  //   a = 1; a([1,1], [1,1], [1,1])
-	  //
-	  // and similar constructions.  Hmm...
+      // FIXME -- using this constructor avoids narrowing the
+      // 1x1 matrix back to a scalar value.  Need a better solution
+      // to this problem.
 
-	  // FIXME -- using this constructor avoids narrowing the
-	  // 1x1 matrix back to a scalar value.  Need a better solution
-	  // to this problem.
+      octave_value tmp
+        (new OCTAVE_VALUE_INT_MATRIX_T
+         (OCTAVE_VALUE_INT_NDARRAY_EXTRACTOR_FUNCTION ())); 
 
-	  octave_value tmp
-	    (new OCTAVE_VALUE_INT_MATRIX_T
-	     (OCTAVE_VALUE_INT_NDARRAY_EXTRACTOR_FUNCTION ())); 
-
-	  retval = tmp.do_index_op (idx, resize_ok);
-	}
-
-      return retval;
+      return tmp.do_index_op (idx, resize_ok);
     }
 
   bool OCTAVE_TYPE_PREDICATE_FUNCTION (void) const { return true; }

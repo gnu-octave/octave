@@ -54,14 +54,6 @@ octave_char_matrix::index_vector (void) const
     return idx_vector (array_value (true)); 
 }
 
-bool
-octave_char_matrix::valid_as_scalar_index (void) const
-{
-  bool retval = false;
-  error ("octave_char_matrix::valid_as_scalar_index(): not implemented");
-  return retval;
-}
-
 double
 octave_char_matrix::double_value (bool) const
 {

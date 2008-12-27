@@ -67,10 +67,6 @@ public:
 
   bool is_magic_colon (void) const { return true; }
 
-  bool valid_as_scalar_index (void) const { return true; }
-
-  bool valid_as_zero_index (void) const { return false; }
-
   void print (std::ostream& os, bool pr_as_read_syntax = false) const;
 
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;

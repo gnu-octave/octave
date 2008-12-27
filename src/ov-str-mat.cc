@@ -142,14 +142,6 @@ octave_char_matrix_str::resize (const dim_vector& dv, bool fill) const
   return octave_value (retval, true);
 }
 
-bool
-octave_char_matrix_str::valid_as_scalar_index (void) const
-{
-  bool retval = false;
-  error ("octave_char_matrix_str::valid_as_scalar_index(): not implemented");
-  return retval;
-}
-
 #define CHAR_MATRIX_CONV(T, INIT, TNAME, FCN) \
   T retval INIT; \
  \

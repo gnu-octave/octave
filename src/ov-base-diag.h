@@ -116,8 +116,6 @@ public:
 
   bool is_diag_matrix (void) const { return true; }
 
-  bool valid_as_scalar_index (void) const;
-
   double double_value (bool = false) const;
 
   float float_value (bool = false) const;

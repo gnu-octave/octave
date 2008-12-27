@@ -93,10 +93,6 @@ public:
 
   bool is_float_type (void) const { return true; }
 
-  // FIXME ???
-  bool valid_as_scalar_index (void) const { return false; }
-  bool valid_as_zero_index (void) const { return false; }
-
   double double_value (bool = false) const;
 
   float float_value (bool = false) const;

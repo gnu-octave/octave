@@ -219,14 +219,6 @@ octave_base_diag<DMT, MT>::is_true (void) const
   return to_dense ().is_true ();
 }
 
-template <class DMT, class MT>
-bool
-octave_base_diag<DMT, MT>::valid_as_scalar_index (void) const
-{
-  // FIXME
-  return false;
-}
-
 // FIXME: this should be achieveable using ::real
 template <class T> inline T helper_getreal (T x) { return x; }
 template <class T> inline T helper_getreal (std::complex<T> x) { return x.real (); }

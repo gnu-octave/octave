@@ -123,12 +123,6 @@ octave_perm_matrix::is_true (void) const
   return to_dense ().is_true ();
 }
 
-bool
-octave_perm_matrix::valid_as_scalar_index (void) const
-{
-  return false;
-}
-
 double
 octave_perm_matrix::double_value (bool) const
 {

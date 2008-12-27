@@ -100,8 +100,6 @@ public:
 
   bool is_float_type (void) const { return true; }
 
-  bool valid_as_scalar_index (void) const;
-
   int8NDArray
   int8_array_value (void) const { return int8NDArray (matrix); }
 

@@ -107,8 +107,6 @@ public:
 
   bool is_numeric_type (void) const { return false; }
 
-  bool valid_as_scalar_index (void) const;
-
   double double_value (bool = false) const;
 
   Matrix matrix_value (bool = false) const;

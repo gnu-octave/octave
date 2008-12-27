@@ -1,3 +1,19 @@
+2008-12-27  Jaroslav Hajek <highegg@gmail.com>
+
+	* oct-obj.h, oct-obj.cc (octave_value_list::valid_scalar_indices): Remove.
+	* ov-base-diag.cc, ov-base-diag.h, ov-base-scalar.cc, ov-base.h,
+	ov-bool-mat.cc, ov-bool-mat.h, ov-bool-sparse.cc, ov-bool-sparse.h,
+	ov-bool.cc, ov-bool.h, ov-ch-mat.cc, ov-ch-mat.h, ov-colon.h,
+	ov-complex.cc, ov-complex.h, ov-cx-mat.cc, ov-cx-mat.h,
+	ov-cx-sparse.cc, ov-cx-sparse.h, ov-float.cc, ov-float.h,
+	ov-flt-complex.cc, ov-flt-complex.h, ov-flt-cx-mat.cc,
+	ov-flt-cx-mat.h, ov-flt-re-mat.cc, ov-flt-re-mat.h, ov-intx.h,
+	ov-perm.cc, ov-perm.h, ov-range.h, ov-re-mat.cc, ov-re-mat.h,
+	ov-re-sparse.cc, ov-re-sparse.h, ov-scalar.cc, ov-scalar.h,
+	ov-str-mat.cc, ov-str-mat.h, ov.h:
+	Remove valid_as_scalar_index and valid_as_zero_index methods
+	from octave_value, octave_base_value and all of its subclasses.
+
 2008-12-26  Francesco Potortì  <pot@gnu.org>
 
 	* data.cc (resize): Add cross reference to postpad.

@@ -302,10 +302,6 @@ public:
 
   virtual bool is_sparse_type (void) const { return false; }
 
-  virtual bool valid_as_scalar_index (void) const { return false; }
-
-  virtual bool valid_as_zero_index (void) const { return false; }
-
   virtual bool is_true (void) const { return false; }
 
   virtual bool is_null_value (void) const { return false; }

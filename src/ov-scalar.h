@@ -91,20 +91,6 @@ public:
 
   bool is_float_type (void) const { return true; }
 
-  bool valid_as_scalar_index (void) const
-    {
-      return (! xisnan (scalar)
-	      && D_NINT (scalar) == scalar
-	      && NINTbig (scalar) == 1);
-    }
-
-  bool valid_as_zero_index (void) const
-    {
-      return (! xisnan (scalar)
-	      && D_NINT (scalar) == scalar
-	      && NINTbig (scalar) == 0);
-    }
-
   int8NDArray
   int8_array_value (void) const
     { return int8NDArray (dim_vector (1, 1), scalar); }

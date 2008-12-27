@@ -60,28 +60,19 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_float_scalar, "float scalar", "singl
 octave_value
 octave_float_scalar::do_index_op (const octave_value_list& idx, bool resize_ok)
 {
-  octave_value retval;
+  // FIXME -- this doesn't solve the problem of
+  //
+  //   a = 1; a([1,1], [1,1], [1,1])
+  //
+  // and similar constructions.  Hmm...
 
-  if (idx.valid_scalar_indices ())
-    retval = scalar;
-  else
-    {
-      // FIXME -- this doesn't solve the problem of
-      //
-      //   a = 1; a([1,1], [1,1], [1,1])
-      //
-      // and similar constructions.  Hmm...
+  // FIXME -- using this constructor avoids narrowing the
+  // 1x1 matrix back to a scalar value.  Need a better solution
+  // to this problem.
 
-      // FIXME -- using this constructor avoids narrowing the
-      // 1x1 matrix back to a scalar value.  Need a better solution
-      // to this problem.
+  octave_value tmp (new octave_matrix (matrix_value ()));
 
-      octave_value tmp (new octave_matrix (matrix_value ()));
-
-      retval = tmp.do_index_op (idx, resize_ok);
-    }
-
-  return retval;
+  return tmp.do_index_op (idx, resize_ok);
 }
 
 octave_value 

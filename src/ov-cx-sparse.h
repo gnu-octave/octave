@@ -105,8 +105,6 @@ public:
 
   bool is_float_type (void) const { return true; }
 
-  bool valid_as_scalar_index (void) const;
-
   double double_value (bool = false) const;
 
   double scalar_value (bool frc_str_conv = false) const

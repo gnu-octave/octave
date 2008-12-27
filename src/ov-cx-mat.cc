@@ -132,13 +132,6 @@ octave_complex_matrix::assign (const octave_value_list& idx,
   matrix.assign (ra_idx, rhs);
 }
 
-bool
-octave_complex_matrix::valid_as_scalar_index (void) const
-{
-  // FIXME
-  return false;
-}
-
 double
 octave_complex_matrix::double_value (bool force_conversion) const
 {

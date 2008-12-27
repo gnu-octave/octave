@@ -103,13 +103,6 @@ octave_matrix::try_narrowing_conversion (void)
   return retval;
 }
 
-bool
-octave_matrix::valid_as_scalar_index (void) const
-{
-  // FIXME
-  return false;
-}
-
 double
 octave_matrix::double_value (bool) const
 {

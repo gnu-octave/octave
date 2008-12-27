@@ -75,14 +75,7 @@ octave_base_scalar<ST>::subsasgn (const std::string& type,
     case '(':
       {
 	if (type.length () == 1)
-	  {
-	    if (idx.front().valid_scalar_indices ()
-		&& rhs.is_scalar_type ()
-		&& rhs.is_numeric_type ())
-	      retval = rhs;
-	    else
-	      retval = numeric_assign (type, idx, rhs);
-	  }
+          retval = numeric_assign (type, idx, rhs);
 	else
 	  {
 	    std::string nm = type_name ();

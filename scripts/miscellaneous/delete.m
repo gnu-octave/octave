@@ -30,7 +30,17 @@ function delete (arg)
 
   if (nargin == 1)
     if (ischar (arg))
-      unlink (arg);
+      files = glob (arg).';
+      if (isempty (files))
+        warning ("delete: no such file: %s", arg);
+      endif
+      for i = 1:length (files)
+        file = files{i};
+        [err, msg] = unlink (file);
+        if (err)
+          warning ("delete: %s: %s", file, msg);
+        endif
+      endfor
     elseif (all (ishandle (arg(:))))
       ## Delete a graphics object.
       __go_delete__ (arg);

@@ -74,9 +74,9 @@ Summary of important user-visible changes for version 3.2:
     the line "y += 1;" will not be executed.
   
  ** Removed the Control, Finance and Quaternions toolboxes
-    These toolboxes have been removed and ported to octave-forge, and
+    These toolboxes have been removed and ported to octave-forge, as
     they are specialized toolboxes that not all users need. These
-    functions can be reinstalled use the Octave package manager (see
+    functions can be reinstalled using the Octave package manager (see
     the pkg function) and the packages available at
 
     http://octave.sourceforge.net/packages.html

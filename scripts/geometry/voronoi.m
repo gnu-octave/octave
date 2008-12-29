@@ -106,44 +106,31 @@ function [vvx, vvy] = voronoi (varargin)
     error ("voronoi: arguments must be vectors of same length");
   endif
 
-  ## Add big box to approximate rays to infinity
+  ## Add box to approximate rays to infinity. For Voronoi diagrams the
+  ## box can (and should) be close to the points themselves. To make the
+  ## job of finding the exterior edges it should be at least two times the
+  ## delta below however
   xmax = max (x(:));
   xmin = min (x(:));
   ymax = max (y(:));
   ymin = min (y(:));
   xdelta = xmax - xmin;
   ydelta = ymax - ymin;
-  scale = 10e4;
+  scale = 2;
 
   xbox = [xmin - scale * xdelta; xmin - scale * xdelta; ...
 	  xmax + scale * xdelta; xmax + scale * xdelta];
   ybox = [xmin - scale * xdelta; xmax + scale * xdelta; ...
 	  xmax + scale * xdelta; xmin - scale * xdelta];
-  x = [x(:) ; xbox(:)];
-  y = [y(:) ; ybox(:)];
 
-  [p, c, infi] = __voronoi__ ([x(:), y(:)], opts{:});
+  [p, c, infi] = __voronoi__ ([[x(:) ; xbox(:)], [y(:); ybox(:)]], opts{:});
 
   idx = find (!infi);
-
   ll = length (idx);
-  k = 0;r = 1;
-
-  for i = 1 : ll
-    k += length (c{idx(i)});
-  endfor
-
-  edges = zeros (2, k);
-
-  for i = 1 : ll
-    fac = c{idx(i)};
-    lf = length (fac);
-    fac = [fac, fac(1)];
-    fst = fac (1 : length(fac) - 1);
-    sec = fac(2 : length(fac));
-    edges (:, r : r + lf - 1) = [fst; sec];
-    r += lf;
-  endfor
+  c = c(idx).';
+  k = sum (cellfun ('length', c));
+  edges = cell2mat(cellfun (@(x) [x ; [x(end), x(1:end-1)]], c, 
+			    "UniformOutput", false));
 
   ## Identify the unique edges of the Voronoi diagram
   edges = sortrows (sort (edges).').';

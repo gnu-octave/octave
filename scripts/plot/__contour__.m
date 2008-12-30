@@ -288,7 +288,7 @@ function add_patch_children (hg)
     [tmp, svec] = sort (cont_area);
     len = ncont - numel (del_idx);
     h = [];
-    for n = 1:len
+    for n = len:(-1):1
       idx = svec(n);
       ctmp = c(:, cont_idx(idx):cont_idx(idx) + cont_len(idx) - 1);
       if (all (ctmp(:,1) == ctmp(:,end)))

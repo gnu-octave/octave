@@ -184,8 +184,10 @@ matrix) you can use the @code{ischar} function in combination with the
 @group
 ischar(collection)
      @result{} ans = 1
+
 ischar(collection) && isvector(collection)
      @result{} ans = 0
+
 ischar("my string") && isvector("my string")
      @result{} ans = 1
 @end group

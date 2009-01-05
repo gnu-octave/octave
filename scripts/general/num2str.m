@@ -18,13 +18,45 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} num2str (@var{n})
+## @deftypefn {Function File} {} num2str (@var{x})
 ## @deftypefnx {Function File} {} num2str (@var{x}, @var{precision})
 ## @deftypefnx {Function File} {} num2str (@var{x}, @var{format})
-## Convert a number to a string.  This function is not very flexible.
-## For better control over the results, use @code{sprintf}
-## (@pxref{Formatted Output}).
-## @seealso{sprintf, int2str}
+## Convert a number (or array) to a string (or a character array).  The
+## optional second argument may either give the number of significant
+## digits (@var{precision}) to be used in the output or a format
+## template string (@var{format}) as in @code{sprintf} (@pxref{Formatted
+## Output}).  @code{num2str} can also handle complex numbers.  For
+## example: 
+##
+## @example
+## @group
+## num2str (123.456)
+##      @result{} "123.46"
+##
+## num2str (123.456, 4)
+##      @result{} "123.5"
+##
+## s = num2str ([1, 1.34; 3, 3.56], "%5.1f")
+##      @result{} s =
+##         1.0  1.3
+##         3.0  3.6
+## whos s
+##      @result{}
+##       Attr Name        Size                     Bytes  Class
+##       ==== ====        ====                     =====  ===== 
+##            s           2x8                         16  char
+##
+## num2str (1.234 + 27.3i)
+##      @result{} "1.234+27.3i"
+## @end group
+## @end example
+##
+## The @code{num2str} function is not very flexible.  For better control
+## over the results, use @code{sprintf} (@pxref{Formatted Output}). 
+## Note that for complex @var{x}, the format string may only contain one
+## output conversion specification and nothing else.  Otherwise, you
+## will get unpredictable results.  
+## @seealso{sprintf, int2str, mat2str}
 ## @end deftypefn
 
 ## Author: jwe
@@ -149,9 +181,10 @@ function retval = num2str (x, arg)
 
 endfunction
 
-%!assert((strcmp (num2str (123), "123") && strcmp (num2str (1.23), "1.23")));
-
+%!assert ((strcmp (num2str (123), "123") && strcmp (num2str (1.23), "1.23")));
+%!assert (num2str (123.456, 4), "123.5");
+%!assert (all (num2str ([1, 1.34; 3, 3.56], "%5.1f") == ["1.0  1.3"; "3.0  3.6"]));
+%!assert (num2str (1.234 + 27.3i), "1.234+27.3i");
 %!error num2str ();
-
 %!error num2str (1, 2, 3);
 

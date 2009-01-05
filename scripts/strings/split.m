@@ -27,16 +27,19 @@
 ##
 ## @example
 ## split ("Test string", "t")
-##      @result{} "Tes "
+##      @result{}
+##         "Tes "
 ##         " s  "
 ##         "ring"
 ## @end example
 ##
 ## @example
-## split ("Test string", "t", 2)
-##      @result{} "Tes    "
-##         " string"
+## split ("Test string", "t s", 2)
+##      @result{}
+##         "Tes  "
+##         "tring"
 ## @end example
+## @seealso{strtok, index}
 ## @end deftypefn
 
 ## Author: Kurt Hornik <Kurt.Hornik@wu-wien.ac.at>

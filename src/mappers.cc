@@ -1555,6 +1555,7 @@ toascii (\"ASCII\")\n\
 @end group\n\
 \n\
 @end example\n\
+@seealso{char}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1578,6 +1579,7 @@ characters are left unchanged.  For example,\n\
 tolower (\"MiXeD cAsE 123\")\n\
      @result{} \"mixed case 123\"\n\
 @end example\n\
+@seealso{toupper}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1623,6 +1625,7 @@ toupper (\"MiXeD cAsE 123\")\n\
      @result{} \"MIXED CASE 123\"\n\
 @end group\n\
 @end example\n\
+@seealso{tolower}\n\
 @end deftypefn")
 {
   octave_value retval;

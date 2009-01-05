@@ -36,16 +36,18 @@
 ##
 ## @example
 ## @group
-##    mat2str( [ -1/3 + i/7; 1/3 - i/7 ], [4 2] )
-##    @result{} '[-0.3333+0.14i;0.3333-0.14i]'
-##    mat2str( [ -1/3 +i/7; 1/3 -i/7 ], [4 2] )
-##    @result{} '[-0.3333+0i,0+0.14i;0.3333+0i,-0-0.14i]'
-##    mat2str( int16([1 -1]), 'class')
-##    @result{} 'int16([1,-1])'
+## mat2str( [ -1/3 + i/7; 1/3 - i/7 ], [4 2] )
+##      @result{} "[-0.3333+0.14i;0.3333-0.14i]"
+##
+## mat2str( [ -1/3 +i/7; 1/3 -i/7 ], [4 2] )
+##      @result{} "[-0.3333+0i,0+0.14i;0.3333+0i,-0-0.14i]"
+##
+## mat2str( int16([1 -1]), 'class')
+##      @result{} "int16([1,-1])"
 ## @end group
 ## @end example
 ##
-## @seealso{sprintf, int2str}
+## @seealso{sprintf, num2str, int2str}
 ## @end deftypefn
 
 ## Author: Rolf Fabian <fabian@tu-cottbus.de>

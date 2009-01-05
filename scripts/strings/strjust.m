@@ -21,7 +21,18 @@
 ## Shift the non-blank text of @var{s} to the left, right or center of
 ## the string.  If @var{s} is a string array, justify each string in the
 ## array.  Null characters are replaced by blanks.  If no justification
-## is specified, then all rows are right-justified.
+## is specified, then all rows are right-justified. For example:
+##
+## @example
+## @group
+## strjust (["a"; "ab"; "abc"; "abcd"])
+##      @result{} ans =
+##            a
+##           ab
+##          abc
+##         abcd
+## @end group
+## @end example
 ## @end deftypefn
 
 function x = strjust (x, just)
@@ -63,3 +74,10 @@ function x = strjust (x, just)
   x = x (idx*nr + [1:nr]'*ones(1,nc));
 
 endfunction
+
+%!error <Invalid call to strjust> strjust();
+%!error <Invalid call to strjust> strjust(["a";"ab"], "center", 1);
+%!assert (strjust (["a"; "ab"; "abc"; "abcd"]),
+%!        ["   a";"  ab"; " abc"; "abcd"]);
+%!assert (strjust (["a"; "ab"; "abc"; "abcd"], "center"),
+%!        [" a  "; " ab"; "abc "; "abcd"]);

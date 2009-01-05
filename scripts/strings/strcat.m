@@ -19,16 +19,36 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} strcat (@var{s1}, @var{s2}, @dots{})
-## Return a string containing all the arguments concatenated.  For example,
+## Return a string containing all the arguments concatenated
+## horizontally.  If the arguments are cells strings,  @code{strcat}
+## returns a cell string with the individual cells concatenated.
+## For numerical input, each element is converted to the
+## corresponding ASCII character. Trailing white space is eliminated.
+## For example,
 ##
 ## @example
 ## @group
 ## s = [ "ab"; "cde" ];
 ## strcat (s, s, s)
-##      @result{} "ab ab ab "
+##      @result{} ans =
+##         "ab ab ab "
 ##         "cdecdecde"
 ## @end group
 ## @end example
+##
+## @example
+## @group
+## s = @{ "ab"; "cde" @};
+## strcat (s, s, s)
+##      @result{} ans =
+##         @{
+##           [1,1] = ababab
+##           [2,1] = cdecdecde
+##         @}
+## @end group
+## @end example
+##
+## @seealso{cstrcat, char, strvcat}
 ## @end deftypefn
 
 ## Author: jwe

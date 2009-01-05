@@ -21,7 +21,17 @@
 ## Remove leading and trailing blanks and nulls from @var{s}.  If
 ## @var{s} is a matrix, @var{strtrim} trims each row to the length of
 ## longest string.  If @var{s} is a cell array, operate recursively on
-## each element of the cell array. 
+## each element of the cell array. For example:
+##
+## @example
+## @group
+## strtrim ("    abc  ")
+##      @result{} "abc"
+##
+## strtrim ([" abc   "; "   def   "])
+##      @result{} ["abc  "; "  def"]
+## @end group
+## @end example
 ## @end deftypefn
 
 ## Author: John Swensen <jpswensen@jhu.edu>
@@ -52,3 +62,8 @@ function s = strtrim (s)
   endif
 
 endfunction
+
+%!error <Invalid call to strtrim> strtrim();
+%!error <Invalid call to strtrim> strtrim("abc", "def");
+%!assert (strtrim ("    abc  "), "abc");
+%!assert (strtrim ([" abc   "; "   def   "]), ["abc  "; "  def"]);

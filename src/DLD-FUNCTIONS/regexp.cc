@@ -994,6 +994,7 @@ The pattern can include arbitrary whitespace and comments starting with\n\
 @item literalspacing\n\
 The pattern is taken literally.\n\
 @end table\n\
+@seealso{regexpi, regexprep}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -1186,7 +1187,7 @@ DEFUN_DLD (regexpi, args, nargout,
 \n\
 Case insensitive regular expression string matching. Matches @var{pat} in\n\
 @var{str} and returns the position and matching substrings or empty values\n\
-if there are none. See @code{regexp} for more details\n\
+if there are none.  @xref{doc-regexp,,regexp}, for more details\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -1569,7 +1570,7 @@ Whether whitespace and # comments can be used to make the regular expression mor
 Alternatively, use (?x) or (?-x) in the pattern.\n\
 \n\
 @end table\n\
-@seealso{regexp,regexpi}\n\
+@seealso{regexp,regexpi,strrep}\n\
 @end deftypefn")
 {
   octave_value_list retval;

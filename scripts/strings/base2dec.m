@@ -81,3 +81,9 @@ function out = base2dec (d, base)
   out = d * (base .^ (columns(d)-1 : -1 : 0)');
 
 endfunction
+
+%!error <Invalid call to base2dec.*> base2dec();
+%!error <Invalid call to base2dec.*> base2dec("11120");
+%!error <Invalid call to base2dec.*> base2dec("11120", 3, 4);
+%!assert(base2dec ("11120", 3), 123);
+%!assert(base2dec ("yyyzx", "xyz"), 123);

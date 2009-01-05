@@ -23,7 +23,22 @@
 ## The second argument @var{a} may be a string matrix or a cell array of
 ## strings.  If the third argument @code{"exact"} is not given, then
 ## @var{s} only needs to match @var{a} up to the length of @var{s}.  Nul
-## characters match blanks.  Results are returned as a column vector.
+## characters match blanks.  Results are returned as a column vector. 
+## For example:
+##
+## @example
+## @group
+## strmatch ("apple", "apple juice")
+##      @result{} 1
+##
+## strmatch ("apple", ["apple pie"; "apple juice"; "an apple"])
+##      @result{} [1; 2]
+##
+## strmatch ("apple", @{"apple pie"; "apple juice"; "tomato"@})
+##      @result{} [1; 2]
+## @end group
+## @end example
+## @seealso{strfind, findstr, strcmp, strncmp, strcmpi, strncmpi, find}
 ## @end deftypefn
 
 ## Author: Paul Kienzle, Alois Schloegl
@@ -66,3 +81,13 @@ function idx = strmatch (s, A, exact)
   endif
     
 endfunction 
+
+%!error <Invalid call to strmatch> strmatch();
+%!error <Invalid call to strmatch> strmatch("a", "aaa", "exact", 1);
+%!assert (strmatch("a", {"aaa", "bab", "bbb"}), 1);
+%!assert (strmatch ("apple", "apple juice"), 1);
+%!assert (strmatch ("apple", ["apple pie"; "apple juice"; "an apple"]),
+%!        [1; 2]);
+%!assert (strmatch ("apple", {"apple pie"; "apple juice"; "tomato"}),
+%!        [1; 2]);
+%!assert (strmatch ("apple pie", "apple"), []);

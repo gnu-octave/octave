@@ -1,3 +1,18 @@
+2008-12-26  Thorsten Meyer  <thorsten.meyier@gmx.de>
+
+	* general/int2str.m, general/num2str.m, strings/base2dec.m,
+	strings/blanks.m, strings/cstrcat.m, strings/findstr.m,
+	strings/isstrprop.m, strings/mat2str.m, strings/regexptranslate.m,
+	strings/split.m, strings/str2double.m, strings/str2num.m,
+	strings/strcat.m, strings/strcmpi.m, strings/strfind.m,
+	strings/strjust.m, strings/strmatch.m, strings/strncmpi.m,
+	strings/strrep.m, strings/strtok.m, strings/strtrim.m,
+	strings/strtrunc.m, strings/strvcat.m, strings/substr.m: 
+	Fix documentation strings, add examples, references and tests.
+	* scripts/general/int2str.m: Add missing semicolon.
+	* scripts/strings/regexptranslate.m: add nargin check.
+	* scripts/strings/str2double.m: fix nargin check.
+	
 2008-12-29  David Bateman  <dbateman@free.fr>
 
 	* goemetry/voronoi.m: Speed up and handle dense grids.

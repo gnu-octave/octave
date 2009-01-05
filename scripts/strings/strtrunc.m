@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} strtrunc (@var{s}, @var{n})
 ## Truncate the character string @var{s} to length @var{n}. If @var{s}
-## is a char matrix, then the number of columns are adjusted.
+## is a char matrix, then the number of columns is adjusted.
 ##
 ## If @var{s} is a cell array of strings, then the operation is performed
 ## on its members and the new cell array is returned.
@@ -51,3 +51,9 @@ function s = strtrunc (s, n)
   endif
 
 endfunction
+
+%!error <Invalid call to strtrunc> strtrunc ();
+%!error <s must be a character string or a cell array of strings> strtrunc (1, 1)
+%!assert (strtrunc("abcdefg", 4), "abcd");
+%!assert (strtrunc("abcdefg", 10), "abcdefg");
+%!assert (strtrunc({"abcdef", "fedcba"}, 3), {"abc", "fed"});

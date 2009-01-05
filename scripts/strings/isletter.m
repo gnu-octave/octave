@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} isletter (@var{s})
-## Returns true if @var{s} is a letter false otherwise.
+## Returns true if @var{s} is a letter, false otherwise.
 ## @seealso{isalpha}
 ## @end deftypefn
 
@@ -33,3 +33,6 @@ function retval = isletter (s)
   retval = isalpha (s);
 
 endfunction
+
+%!error isletter();
+%!error isletter("a", "b");

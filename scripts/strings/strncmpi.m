@@ -19,11 +19,12 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} strncmpi (@var{s1}, @var{s2}, @var{n})
 ## Ignoring case, return 1 if the first @var{n} characters of character
-## strings @var{s1} and @var{s2} are the same, and 0 otherwise.
+## strings (or character arrays) @var{s1} and @var{s2} are the same, and
+## 0 otherwise.
 ##
 ## If either @var{s1} or @var{s2} is a cell array of strings, then an array
 ## of the same size is returned, containing the values described above for
-## every member of the cell array. The other argument may also be a cell
+## every member of the cell array.  The other argument may also be a cell
 ## array of strings (of the same size or with only one element), char matrix
 ## or character string.
 ##
@@ -44,3 +45,5 @@ function retval = strncmpi (s1, s2, n)
   endif
 
 endfunction
+
+%!assert (strncmpi("abc123", "ABC456", 3), logical(1));

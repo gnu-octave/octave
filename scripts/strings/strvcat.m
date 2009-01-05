@@ -18,11 +18,26 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} strvcat (@var{s_1}, @dots{}, @var{s_n})
-## Return a matrix containing the strings (and cell-strings) 
+## Return a character array containing the strings (or cell-strings) 
 ## @var{s_1}, @dots{}, @var{s_n} as
 ## its rows.  Each string is padded with blanks in order to form a valid
-## matrix.  Unlike @var{char}, empty strings are ignored.
-## @seealso{cstrcat, char}
+## matrix.  For numerical input, each element is converted to the
+## corresponding ASCII character.  Unlike @var{char}, empty strings are
+## removed. For example:
+##
+## @example
+## @group
+## strvcat ([97, 98, 99], "", @{"98", "99", 100@}, ["num", "bers"])
+##     @result{} ans = 
+##        ["abc    "
+##         "98     "
+##         "99     "
+##         "d      "
+##         "numbers"]
+## @end group
+## @end example
+##
+## @seealso{char, cstrcat, strcat}
 ## @end deftypefn
 
 ## Author: Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>

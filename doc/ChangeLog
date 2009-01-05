@@ -1,3 +1,7 @@
+2008-12-26  Thorsten Meyer  <thorsten.meyier@gmx.de>
+
+	* interpreter/strings.txi: Add space to ischar example.
+	
 2008-12-26  Francesco Potortì  <pot@gnu.org>
 
 	* interpreter/matrix.txi (Rearranging Matrices): Add reference

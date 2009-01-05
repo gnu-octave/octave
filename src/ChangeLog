@@ -1,3 +1,10 @@
+2008-12-26  Thorsten Meyer  <thorsten.meyier@gmx.de>
+
+	* mappers.cc (Ftoascii), mappers.cc (Ftolower), mappers.cc
+	(Ftoupper), DLD-FUNCTIONS/regexp.cc (Fregexp),
+	DLD-FUNCTIONS/regexp.cc	(Fregexpi), DLD-FUNCTIONS/regexp.cc
+	(Fregexprep): Add references.
+	
 2008-12-27  Jaroslav Hajek <highegg@gmail.com>
 
 	* oct-obj.h, oct-obj.cc (octave_value_list::valid_scalar_indices): Remove.

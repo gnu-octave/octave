@@ -26,6 +26,7 @@
 ## strrep ("This is a test string", "is", "&%$")
 ##      @result{} "Th&%$ &%$ a test string"
 ## @end example
+## @seealso{regexprep, strfind, findstr}
 ## @end deftypefn
 
 ## Author: Kurt Hornik <Kurt.Hornik@wu-wien.ac.at>

@@ -19,10 +19,31 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} int2str (@var{n})
-## Convert an integer to a string.  This function is not very flexible.
-## For better control over the results, use @code{sprintf}
-## (@pxref{Formatted Output}). 
-## @seealso{sprintf, num2str}
+## Convert an integer (or array of integers) to a string (or a character
+## array).
+##
+## @example
+## @group
+##
+## int2str (123)
+##      @result{} "123"
+##
+## s = int2str ([1, 2, 3; 4, 5, 6])
+##      @result{} s = 
+##         1  2  3
+##         4  5  6
+## 
+## whos s
+##      @result{} s = 
+##       Attr Name        Size                     Bytes  Class
+##       ==== ====        ====                     =====  ===== 
+##            s           2x7                         14  char
+## @end group
+## @end example
+##
+## This function is not very flexible.  For better control over the
+## results, use @code{sprintf} (@pxref{Formatted Output}). 
+## @seealso{sprintf, num2str, mat2str}
 ## @end deftypefn
 
 ## Author: jwe
@@ -43,7 +64,7 @@ function retval = int2str (x)
       ifmt = get_fmt (x(idx{:}), 0);
       idx(2) = 2:sz(2);
       rfmt = get_fmt (x(idx{:}), 2);
-      fmt = cstrcat (ifmt, repmat (rfmt, 1, nc-1), "\n")
+      fmt = cstrcat (ifmt, repmat (rfmt, 1, nc-1), "\n");
     else
       fmt = cstrcat (get_fmt (x, 0), "\n");
     endif
@@ -93,8 +114,7 @@ function fmt = get_fmt (x, sep)
 endfunction
 
 %!assert(strcmp (int2str (-123), "-123") && strcmp (int2str (1.2), "1"));
-
+%!assert (all (int2str ([1, 2, 3; 4, 5, 6]) == ["1  2  3";"4  5  6"]));
 %!error int2str ();
-
 %!error int2str (1, 2);
 

@@ -19,7 +19,18 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} blanks (@var{n})
-## Return a string of @var{n} blanks.
+## Return a string of @var{n} blanks, for example:
+##
+## @example
+## @group
+## blanks(10);
+## whos ans;
+##      @result{}
+##       Attr Name        Size                     Bytes  Class
+##       ==== ====        ====                     =====  ===== 
+##            ans         1x10                        10  char
+## @end group
+## @end example
 ## @seealso{repmat}
 ## @end deftypefn
 

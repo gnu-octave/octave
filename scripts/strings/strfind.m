@@ -26,8 +26,26 @@
 ##
 ## If the cell array of strings @var{cellstr} is specified instead of the
 ## string @var{str}, then @var{idx} is a cell array of vectors, as specified
-## above.
-## @seealso{findstr, strmatch, strcmp, strncmp, strcmpi, strncmpi}
+## above. Examples:
+##
+## @example
+## @group
+## strfind ("abababa", "aba")
+##      @result{} [1, 3, 5]
+##
+## strfind (@{"abababa", "bebebe", "ab"@}, "aba")
+##      @result{} ans =
+##         @{
+##           [1,1] =
+##
+##              1   3   5
+##
+##           [1,2] = [](1x0)
+##           [1,3] = [](1x0)
+##         @}
+## @end group
+## @end example
+## @seealso{findstr, strmatch, strcmp, strncmp, strcmpi, strncmpi, find}
 ## @end deftypefn
 
 ## Author: alois schloegl <a.schloegl@ieee.org>
@@ -66,3 +84,11 @@ function idx = __strfind_string__ (text, pattern, lp)
   endwhile
 
 ### endfunction
+
+%!error <Invalid call to strfind> strfind ();
+%!error <Invalid call to strfind> strfind ("foo", "bar", 1);
+%!error <pattern must be a string value> strfind ("foo", 100);
+%!error <text must be a string or cell array of string> strfind (100, "foo");
+
+%!assert (strfind ("abababa", "aba"), [1, 3, 5]);
+%!assert (strfind ({"abababa", "bla", "bla"}, "a"), {[1, 3, 5, 7], 3, 3});

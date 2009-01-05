@@ -59,6 +59,7 @@
 ## Examples:
 ##
 ## @example
+## @group
 ## str2double ("-.1e-5")
 ## @result{} -1.0000e-006
 ##
@@ -73,7 +74,9 @@
 ##     200   300   NaN  -Inf   NaN   NaN   999   NaN   NaN
 ## @result{} status =
 ##       0     0     0     0    -1    -1     0    -1     0
+## @end group
 ## @end example
+## @seealso{str2num}
 ## @end deftypefn
 
 ## Author: Alois Schloegl <a.schloegl@ieee.org>
@@ -87,8 +90,8 @@ function [num, status, strarray] = str2double (s, cdelim, rdelim, ddelim)
   ## valid delimiters
   valid_delim = char (sort ([0, 9:14, 32:34, abs("()[]{},;:\"|/")]));
 
-  if (nargin < 1)
-    error ("missing input argument");
+  if (nargin < 1 || nargin > 4)
+    print_usage ();
   endif
 
   if (nargin < 2)
@@ -277,3 +280,14 @@ function [num, status, strarray] = str2double (s, cdelim, rdelim, ddelim)
   endfor
 
 endfunction
+
+%!error <Invalid call to str2double> str2double();
+%!error <Invalid call to str2double> str2double("1e10", " ", "\n", ".", "x");
+%!assert (str2double ("-.1e-5"), -1.0000e-006);
+%!assert (str2double (".314e1, 44.44e-1, .7; -1e+1"),
+%!  [3.1400, 4.4440, 0.7000; -10.0000, NaN, NaN]);
+%!test
+%!  line = "200, 300, NaN, -inf, yes, no, 999, maybe, NaN";
+%!  [x, status] = str2double (line);
+%!  assert (x, [200, 300, NaN, -Inf, NaN, NaN, 999, NaN, NaN]);
+%!  assert (status, [0, 0, 0, 0, -1, -1, 0, -1, 0]);

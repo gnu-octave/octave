@@ -25,11 +25,14 @@
 ## can include overlapping positions (this is the default).  For example,
 ##
 ## @example
+## @group
 ## findstr ("ababab", "a")
-##      @result{} [ 1, 3, 5 ]
+##      @result{} [1, 3, 5]
 ## findstr ("abababa", "aba", 0)
-##      @result{} [ 1, 5 ]
+##      @result{} [1, 5]
+## @end group
 ## @end example
+## @seealso{strfind, strmatch, strcmp, strncmp, strcmpi, strncmpi, find}
 ## @end deftypefn
 
 ## Note that this implementation swaps the strings if second one is longer
@@ -129,7 +132,7 @@ function v = findstr (s, t, overlap)
 
 endfunction
 
-%!assert((findstr ("abababa", "a") == [1, 3, 5, 7]
+%!assert ((findstr ("abababa", "a") == [1, 3, 5, 7]
 %! && findstr ("abababa", "aba") == [1, 3, 5]
 %! && findstr ("abababa", "aba", 0) == [1, 5]));
 

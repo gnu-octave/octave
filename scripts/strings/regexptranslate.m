@@ -26,15 +26,32 @@
 ## @table @asis
 ## @item "wildcard"
 ## The wildcard characters @code{.}, @code{*} and @code{?} are replaced
-## with wildcards that are appropriate for a regular expression.
-##
+## with wildcards that are appropriate for a regular expression. For example:
+## @example
+## @group
+## regexptranslate ("wildcard", "*.m")
+##      @result{} ".*\.m"
+## @end group
+## @end example
+## 
 ## @item "escape"
 ## The characters @code{$.?[]}, that have special meaning for regular
-## expressions are escaped so that they are treated literally.
+## expressions are escaped so that they are treated literally. For example:
+## @example
+## @group
+## regexptranslate ("escape", "12.5")
+##      @result{} "12\.5"
+## @end group
+## @end example
 ## @end table
+## @seealso{regexp, regexpi, regexprep}
 ## @end deftypefn
 
 function y = regexptranslate (op, x)
+  
+  if nargin != 2
+    print_usage ();
+  endif 
   
   if (ischar (op))
     op = tolower (op);
@@ -55,5 +72,10 @@ function y = regexptranslate (op, x)
   endif
 endfunction
 
+%!error <Invalid call to regexptranslate> regexptranslate ();
+%!error <Invalid call to regexptranslate> regexptranslate ("wildcard");
+%!error <Invalid call to regexptranslate> regexptranslate ("a", "b", "c");
+%!error <unexpected operation> regexptranslate ("foo", "abc");
+%!error <expecting operation to be a string> regexptranslate (10, "abc");
 %!assert (regexptranslate ("wildcard", "/a*b?c."), "/a.*b.c\\.")
 %!assert (regexptranslate ("escape", '$.?[]'), '\$\.\?\[\]')

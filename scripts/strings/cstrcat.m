@@ -19,16 +19,26 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} cstrcat (@var{s1}, @var{s2}, @dots{})
-## Return a string containing all the arguments concatenated.  For example,
+## Return a string containing all the arguments concatenated
+## horizontally. Trailing white space is preserved. For example,
+##
+## @example
+## @group
+## cstrcat ("ab   ", "cd")
+##      @result{} "ab   cd"
+## @end group
+## @end example
 ##
 ## @example
 ## @group
 ## s = [ "ab"; "cde" ];
 ## cstrcat (s, s, s)
-##      @result{} "ab ab ab "
+##      @result{} ans =
+##         "ab ab ab "
 ##         "cdecdecde"
 ## @end group
 ## @end example
+## @seealso{strcat, char, strvcat}
 ## @end deftypefn
 
 ## Author: jwe

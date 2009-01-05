@@ -22,7 +22,7 @@
 ##
 ## @example
 ## @group
-## isstrprop ("abc123", "isalpha")
+## isstrprop ("abc123", "alpha")
 ## @result{} [1, 1, 1, 0, 0, 0]
 ## @end group
 ## @end example
@@ -116,3 +116,6 @@ function retval = isstrprop (str, pred)
   endif
 
 endfunction
+
+%!error <invalid predicate> isstrprop ("abc123", "foo");
+%!assert (isstrprop ("abc123", "alpha"), logical ([1, 1, 1, 0, 0, 0]));

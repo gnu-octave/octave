@@ -22,8 +22,21 @@
 ## Find all characters up to but not including the first character which
 ## is in the string delim.  If @var{rem} is requested, it contains the
 ## remainder of the string, starting at the first deliminator. Leading
-## delimiters are ignored.  If @var{delim} is not specified, space is assumed.
+## delimiters are ignored.  If @var{delim} is not specified, space is
+## assumed.  For example: 
 ##
+## @example
+## @group
+## strtok ("this is the life")
+##      @result{} "this"
+##
+## [tok, rem] = strtok ("14*27+31", "+-*/")
+##      @result{}
+##         tok = 14
+##         rem = *27+31
+## @end group
+## @end example
+## @seealso{index, split}
 ## @end deftypefn
 
 ## FIXME: check what to do for a null delimiter

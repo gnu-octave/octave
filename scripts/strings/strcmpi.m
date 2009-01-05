@@ -18,8 +18,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} strcmpi (@var{s1}, @var{s2})
-## Ignoring case, return 1 if the character strings @var{s1} and @var{s2}
-## are the same, and 0 otherwise.
+## Ignoring case, return 1 if the character strings (or character
+## arrays) @var{s1} and @var{s2} are the same, and 0 otherwise.
 ##
 ## If either @var{s1} or @var{s2} is a cell array of strings, then an array
 ## of the same size is returned, containing the values described above for
@@ -51,3 +51,5 @@ function retval = strcmpi (s1, s2)
   endif
 
 endfunction
+
+%!assert (strcmpi("abc123", "ABC123"), logical(1));

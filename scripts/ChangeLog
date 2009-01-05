@@ -165,6 +165,11 @@
 	* polynomial/spline.m: Delete debugging statements.  From
 	Sebastian Schöps <sebastian@schoeps.org>.
 
+2008-11-07  Thorsten Meyer  <thorsten.meyier@gmx.de>
+
+        * mkdoc: do not remove white space before @ within @example
+          environment
+
 2008-11-05  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
         * plot/subplot.m: fix texi bug

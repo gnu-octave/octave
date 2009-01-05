@@ -34,9 +34,16 @@ if test -f gethelp; then
 ### Edit those files instead and run make to update this file.
 
 EOF
-  find $d -name '*.m' | \
-    sed "s,\(.*\)/\(.*\)\.m,./gethelp \2 < & | sed 's/^ *@/@/'," | \
-    /bin/sh
+  $FIND $d -name '*.m' | \
+    $PERL -ne 'm{(.*)/(.*)\.m};
+               for (qx{./gethelp $2 < $_}) {
+                 s/^\s+\@/\@/ unless $i_am_in_example;
+                 s/^\s+\@group/\@group/;
+                 s/^\s+\@end\s+group/\@end\s+group/;
+                 $i_am_in_example = 1 if /\s*\@example/;
+                 $i_am_in_example = 0 if /\s*\@end\s+example/;
+                 print;
+               }'  
 else
   echo "gethelp program seems to be missing!" 1>&2
   exit 1

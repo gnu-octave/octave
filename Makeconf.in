@@ -33,6 +33,8 @@ FIND = @FIND@
 export FIND
 
 PERL = @PERL@
+export PERL
+
 PYTHON = @PYTHON@
 
 GNUPLOT = @GNUPLOT@

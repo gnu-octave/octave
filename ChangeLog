@@ -26,6 +26,10 @@
 
 	* src/graphics.h.in: Add props screensize & screenpixelsperinch.
 
+2008-11-08  Thorsten Meyer  <thorsten.meyier@gmx.de>
+
+        * Makeconf.in: export PERL variable for use in scripts/mkdoc
+        
 2008-10-30  David Bateman  <dbateman@free.fr>
 
 	* NEWS: Minor update to document improved indexing code.

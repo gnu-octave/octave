@@ -1,3 +1,7 @@
+2009-01-01  Thorsten Meyer  <thorsten.meyier@gmx.de>
+
+	* miscellaneous/__xzip__.m: Fix error messages, add tests.
+	
 2008-12-26  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
 	* general/int2str.m, general/num2str.m, strings/base2dec.m,

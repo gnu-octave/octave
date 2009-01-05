@@ -34,8 +34,7 @@ function entries = __xzip__ (commandname, extension,
 
   if (nargin == 4 || nargin == 5)
     if (! ischar (extension) || length (extension) == 0)
-      error (sprintf("%s: extension has to be a string with finite length",
-                     commandname));
+      error ("__xzip__: extension has to be a string with finite length");
     endif
     
     if (nargin == 5 && ! exist (outdir, "dir"))
@@ -83,15 +82,15 @@ function entries = __xzip__ (commandname, extension,
           ## FIXME this does not work when you try to compress directories
 
           compressed_files  = cellfun(@(x) sprintf ("%s.%s", x, extension), 
-                            files, "UniformOutput", false);
+                                      files, "UniformOutput", false);
         endif
 
         if (nargout > 0)
           entries = compressed_files;
         endif
       else
-        error (sprintf("%s command failed with exit status = %d", 
-                       commandname, status));
+        error ("%s command failed with exit status = %d",
+               commandname, status);
       endif
     unwind_protect_cleanup
       cd(cwd);
@@ -119,3 +118,22 @@ function [d, f] = myfileparts (files)
   d(idx) = "";
   f(idx) = files(idx);
 endfunction
+
+%!error <extension has to be a string with finite length> 
+%!  __xzip__("gzip", "", "gzip -r %s", "bla");
+%!error <no files to move>
+%!  __xzip__("gzip", ".gz", "gzip -r %s", tmpnam);
+%!error <command failed with exit status>
+%!  # test __xzip__ with invalid compression command
+%!  unwind_protect
+%!    filename = tmpnam;
+%!    dummy    = 1;
+%!    save(filename, "dummy");
+%!    dirname  = tmpnam;
+%!    mkdir(dirname);
+%!    entry = __xzip__("gzip", ".gz", "xxxzipxxx -r %s 2>/dev/null", 
+%!                     filename, dirname);
+%!  unwind_protect_cleanup
+%!    delete(filename);
+%!    rmdir(dirname);
+%!  end_unwind_protect

@@ -20,10 +20,17 @@
 
 set -e
 
-if test $# != 1; then
+FIND=${FIND:-'find'}
+
+PERL=${PERL:-'perl'}
+
+if test $# -eq 1; then
+  d=$1
+elif test $# -eq 0; then
   d=.
 else
-  d=$1
+  echo "usage: mkdoc [directory]" 1>&2
+  exit 1
 fi
 
 if test -f gethelp; then

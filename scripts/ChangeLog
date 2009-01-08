@@ -25,6 +25,12 @@
 
 	* goemetry/voronoi.m: Speed up and handle dense grids.
 
+2009-01-08  Kai Habel <kai.habel@gmx.de>
+
+        * plot/surfl.m: New function
+        * plot/diffuse.m: dito
+        * plot/specular.m: dito
+
 2008-12-28  Jaroslav Hajek <highegg@gmail.com>
 
 	* miscellaneous/delete.m: Allow filename globs. Display warnings if
@@ -42,6 +48,10 @@
 
 	* plot/hist.m: Doc string now mentions matrix input argument.
 	Correct error message.
+
+2008-12-30  Ben Abbott <bpabbott@mac.com>
+
+	* plot/__contour__.m: __contour__.m: correct order of patches
 
 2008-12-30  Ben Abbott <bpabbott@mac.com>
 

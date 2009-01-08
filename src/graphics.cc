@@ -3594,62 +3594,69 @@ surface::properties::update_normals (void)
       Matrix y = get_ydata ().matrix_value ();
       Matrix z = get_zdata ().matrix_value ();
 
+
       int p = z.columns (), q = z.rows ();
-      int i1, i2, i3;
-      int j1, j2, j3;
+      int i1 = 0, i2 = 0, i3 = 0;
+      int j1 = 0, j2 = 0, j3 = 0;
 
       bool x_mat = (x.rows () == q);
       bool y_mat = (y.columns () == p);
 
       NDArray n (dim_vector (q, p, 3), 0.0);
 
-      i1 = i2 = i3 = 0;
-      j1 = j2 = j3 = 0;
-
-      // FIXME -- normal computation at boundaries.
-      for (int i = 1; i < (p-1); i++)
+      for (int i = 0; i < p; i++)
 	{
 	  if (y_mat)
 	    {
-	      i1 = i-1;
+	      i1 = i - 1;
 	      i2 = i;
-	      i3 = i+1;
+	      i3 = i + 1;
 	    }
 
-	  for (int j = 1; j < (q-1); j++)
+	  for (int j = 0; j < q; j++)
 	    {
 	      if (x_mat)
 		{
-		  j1 = j-1;
+		  j1 = j - 1;
 		  j2 = j;
-		  j3 = j+1;
+		  j3 = j + 1;
 		}
 
-	      double& nx = n(j,i,0);
-	      double& ny = n(j,i,1);
-	      double& nz = n(j,i,2);
+	      double& nx = n(j, i, 0);
+	      double& ny = n(j, i, 1);
+	      double& nz = n(j, i, 2);
 
-	      cross_product (x(j3,i)-x(j2,i), y(j+1,i2)-y(j,i2), z(j+1,i)-z(j,i),
-			     x(j2,i+1)-x(j2,i), y(j,i3)-y(j,i2), z(j,i+1)-z(i,j),
-			     nx, ny, nz);
-	      cross_product (x(j2,i-1)-x(j2,i), y(j,i1)-y(j,i2), z(j,i-1)-z(j,i),
-			     x(j3,i)-x(j2,i), y(j+1,i2)-y(j,i2), z(j+1,i)-z(i,j),
-			     nx, ny, nz);
-	      cross_product (x(j1,i)-x(j2,i), y(j-1,i2)-y(j,i2), z(j-1,i)-z(j,i),
-			     x(j2,i-1)-x(j2,i), y(j,i1)-y(j,i2), z(j,i-1)-z(i,j),
-			     nx, ny, nz);
-	      cross_product (x(j2,i+1)-x(j2,i), y(j,i3)-y(j,i2), z(j,i+1)-z(j,i),
-			     x(j1,i)-x(j2,i), y(j-1,i2)-y(j,i2), z(j-1,i)-z(i,j),
-			     nx, ny, nz);
+              if ((j > 0) && (i > 0))
+                  // upper left quadrangle
+	          cross_product (x(j1,i-1)-x(j2,i), y(j-1,i1)-y(j,i2), z(j-1,i-1)-z(j,i),
+		                 x(j2,i-1)-x(j1,i), y(j,i1)-y(j-1,i2), z(j,i-1)-z(j-1,i),
+			         nx, ny, nz);
 
-	      double d = - sqrt (nx*nx + ny*ny + nz*nz);
+              if ((j > 0) && (i < (p -1)))
+                  // upper right quadrangle
+                  cross_product (x(j1,i+1)-x(j2,i), y(j-1,i3)-y(j,i2), z(j-1,i+1)-z(j,i),
+		                 x(j1,i)-x(j2,i+1), y(j-1,i2)-y(j,i3), z(j-1,i)-z(j,i+1),
+			         nx, ny, nz);
+
+              if ((j < (q - 1)) && (i > 0))
+                  // lower left quadrangle
+                  cross_product (x(j2,i-1)-x(j3,i), y(j,i1)-y(j+1,i2), z(j,i-1)-z(j+1,i),
+		                 x(j3,i-1)-x(j2,i), y(j+1,i1)-y(j,i2), z(j+1,i-1)-z(j,i),
+			         nx, ny, nz);
+
+              if ((j < (q - 1)) && (i < (p -1)))
+                  // lower right quadrangle
+	          cross_product (x(j3,i)-x(j2,i+1), y(j+1,i2)-y(j,i3), z(j+1,i)-z(j,i+1),
+                                 x(j3,i+1)-x(j2,i), y(j+1,i3)-y(j,i2), z(j+1,i+1)-z(j,i),
+			         nx, ny, nz);
+
+              double d = - std::max(std::max(fabs(nx), fabs(ny)), fabs(nz));
 
 	      nx /= d;
 	      ny /= d;
 	      nz /= d;
 	    }
 	}
-
       vertexnormals = n;
     }
 }

@@ -1,3 +1,8 @@
+2009-01-08  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-cell.cc (octave_cell::subsasgn): Erase duplicate lhs value 
+	prior to assignment to avoid a redundant copy.
+
 2008-12-26  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
 	* mappers.cc (Ftoascii), mappers.cc (Ftolower), mappers.cc

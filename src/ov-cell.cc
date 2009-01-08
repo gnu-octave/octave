@@ -181,21 +181,20 @@ octave_cell::subsasgn (const std::string& type,
 	  {
 	    octave_value tmp = do_index_op (idx.front (), true);
 
-	    if (! tmp.is_defined ())
-	      tmp = octave_value::empty_conv (type.substr (1), rhs);
-
 	    if (! error_state)
 	      {
-		const Cell tcell = tmp.cell_value ();
-
-		if (! error_state && tcell.length () == 1)
+		if (tmp.dims ().numel () == 1)
 		  {
-		    tmp = tcell(0,0);
+		    tmp = tmp.cell_value ()(0,0);
+
+                    // Erase the reference to avoid copying.
+                    assign (idx.front (), octave_value ());
 
 		    std::list<octave_value_list> next_idx (idx);
 
 		    next_idx.erase (next_idx.begin ());
 
+                    // This should be a no-op.
 		    tmp.make_unique ();
 
 		    if (! tmp.is_defined () || tmp.is_zero_by_zero ())
@@ -204,6 +203,8 @@ octave_cell::subsasgn (const std::string& type,
 		    if (! error_state)
 		      t_rhs = tmp.subsasgn (type.substr (1), next_idx, rhs);
 		  }
+                else
+                  error ("scalar indices required for {} in assignment.");
 	      }
 	  }
 	  break;

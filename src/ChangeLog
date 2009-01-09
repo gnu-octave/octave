@@ -19,6 +19,11 @@
 	(eval_string): Unwind-protect input_line_number and
 	current_input_column.
 
+	* parse.y (make_statement): New function.
+	(statement): Use it.
+	(make_statement_list, append_statement_list): New functions.
+	(simple_list1, list1): Use them.
+
 2009-01-08  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-cell.cc (octave_cell::subsasgn): Erase duplicate lhs value 

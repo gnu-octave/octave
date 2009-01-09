@@ -187,18 +187,22 @@ octave_cell::subsasgn (const std::string& type,
 		  {
 		    tmp = tmp.cell_value ()(0,0);
 
-                    // Erase the reference to avoid copying.
-                    assign (idx.front (), octave_value ());
-
 		    std::list<octave_value_list> next_idx (idx);
 
 		    next_idx.erase (next_idx.begin ());
 
-                    // This should be a no-op.
-		    tmp.make_unique ();
-
 		    if (! tmp.is_defined () || tmp.is_zero_by_zero ())
 		      tmp = octave_value::empty_conv (type.substr (1), rhs);
+                    else
+                      {
+                        // This is a bit of black magic. tmp is a shallow copy
+                        // of an element inside this cell, and maybe more. To
+                        // prevent make_unique from always forcing a copy, we
+                        // temporarily delete the stored value.
+                        assign (idx.front (), octave_value ());
+                        tmp.make_unique ();
+                        assign (idx.front (), Cell (tmp));
+                      }
 
 		    if (! error_state)
 		      t_rhs = tmp.subsasgn (type.substr (1), next_idx, rhs);

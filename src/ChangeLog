@@ -1,3 +1,8 @@
+2009-01-09  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-cell.cc (octave_cell::subsasgn): Put erased copy back after
+	make_unique has been called.
+
 2009-01-09  Kai Habel <kai.habel@gmx.de>
 
         * graphics.cc: Calculate normals for surface boundaries, use

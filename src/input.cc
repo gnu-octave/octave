@@ -330,9 +330,6 @@ get_user_input (void)
 
   current_input_line = retval;
 
-  if (! get_input_from_eval_string)
-    input_line_number++;
-
   return retval;
 }
 

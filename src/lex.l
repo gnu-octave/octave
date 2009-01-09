@@ -257,6 +257,7 @@ static int block_comment_nesting_level = 0;
 // file.
 
 static int text_yyinput (void);
+static void xunput (char c, char *buf);
 static void fixup_column_count (char *s);
 static void do_comma_insert_check (void);
 static int is_keyword_token (const std::string& s);
@@ -308,19 +309,19 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
 <SCRIPT_FILE_BEGIN>. {
     BEGIN (INITIAL);
-    yyunput (yytext[0], yytext);
+    xunput (yytext[0], yytext);
     COUNT_TOK_AND_RETURN (SCRIPT);
   }
 
 <NESTED_FUNCTION_END>. {
     BEGIN (NESTED_FUNCTION_BEGIN);
-    yyunput (yytext[0], yytext);
+    xunput (yytext[0], yytext);
     COUNT_TOK_AND_RETURN (';');
   }
 
 <NESTED_FUNCTION_BEGIN>. {
     BEGIN (INITIAL);
-    yyunput (yytext[0], yytext);
+    xunput (yytext[0], yytext);
     prep_for_nested_function ();
     COUNT_TOK_AND_RETURN (FCN);
   }
@@ -333,6 +334,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
 <COMMAND_START>{NL} {
     BEGIN (INITIAL);
+    input_line_number++;
     current_input_column = 1;
     lexer_flags.quote_is_transpose = false;
     lexer_flags.convert_spaces_to_comma = true;
@@ -574,6 +576,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
       gripe_matlab_incompatible_continuation ();
     scan_for_comments (yytext);
     promptflag--;
+    input_line_number++;
     current_input_column = 1;
   }
 
@@ -626,6 +629,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 %}
 
 {NL} {
+    input_line_number++;
     current_input_column = 1;
     lexer_flags.quote_is_transpose = false;
     lexer_flags.convert_spaces_to_comma = true;
@@ -674,7 +678,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 %} 
 
 {CCHAR} {
-    yyunput (yytext[0], yytext);
+    xunput (yytext[0], yytext);
 
     bool eof = false;
     int tok = process_comment (false, eof);
@@ -690,6 +694,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 %}
 
 ^{S}*{CCHAR}\{{S}*{NL} {
+    input_line_number++;
     current_input_column = 1;
     block_comment_nesting_level++;
     promptflag--;
@@ -807,7 +812,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 . {
     // EOF happens here if we are parsing nested functions.
 
-    yyunput (yytext[0], yytext);
+    xunput (yytext[0], yytext);
 
     int c = text_yyinput ();
 
@@ -839,7 +844,7 @@ do_comma_insert_check (void)
 
   int c = text_yyinput ();
 
-  yyunput (c, yytext);
+  xunput (c, yytext);
 
   if (spc_gobbled)
     yyunput (' ', yytext);
@@ -886,7 +891,7 @@ reset_parser (void)
   if (! (reading_script_file || reading_fcn_file))
     {
       current_input_column = 1;
-      input_line_number = command_editor::current_command_number () - 1;
+      input_line_number = command_editor::current_command_number ();
     }
 
   // Only ask for input from stdin if we are expecting interactive
@@ -924,7 +929,19 @@ text_yyinput (void)
 	}
     }
 
+  if (c == '\n')
+    input_line_number++;
+
   return c;
+}
+
+static void
+xunput (char c, char *buf)
+{
+  if (c == '\n')
+    input_line_number--;
+
+  yyunput (c, buf);
 }
 
 // If we read some newlines, we need figure out what column we're
@@ -937,7 +954,10 @@ fixup_column_count (char *s)
   while ((c = *s++) != '\0')
     {
       if (c == '\n')
-	  current_input_column = 1;
+        {
+          input_line_number++;
+          current_input_column = 1;
+        }
       else
 	current_input_column++;
     }
@@ -1461,7 +1481,7 @@ public:
   flex_stream_reader (char *buf_arg) : stream_reader (), buf (buf_arg) { }
 
   int getc (void) { return ::text_yyinput (); }
-  int ungetc (int c) { ::yyunput (c, buf); return 0; }
+  int ungetc (int c) { ::xunput (c, buf); return 0; }
   
 private:
   char *buf;
@@ -1557,7 +1577,7 @@ next_token_is_sep_op (void)
 
   retval = match_any (c, ",;\n]");
 
-  yyunput (c, yytext);
+  xunput (c, yytext);
 
   return retval;
 }
@@ -1580,22 +1600,22 @@ next_token_is_postfix_unary_op (bool spc_prev)
     {
       int c1 = text_yyinput ();
       un_op = (c1 == '\'');
-      yyunput (c1, yytext);
+      xunput (c1, yytext);
     }
   else if (c0 == '+')
     {
       int c1 = text_yyinput ();
       un_op = (c1 == '+');
-      yyunput (c1, yytext);
+      xunput (c1, yytext);
     }
   else if (c0 == '-')
     {
       int c1 = text_yyinput ();
       un_op = (c1 == '-');
-      yyunput (c1, yytext);
+      xunput (c1, yytext);
     }
 
-  yyunput (c0, yytext);
+  xunput (c0, yytext);
 
   return un_op;
 }
@@ -1644,7 +1664,7 @@ next_token_is_bin_op (bool spc_prev)
 	    break;
 	  }
 
-	yyunput (c1, yytext);
+	xunput (c1, yytext);
       }
       break;
 
@@ -1668,7 +1688,7 @@ next_token_is_bin_op (bool spc_prev)
 	  // A structure element reference is a binary op.
 	  bin_op = true;
 
-	yyunput (c1, yytext);
+	xunput (c1, yytext);
       }
       break;
 
@@ -1698,7 +1718,7 @@ next_token_is_bin_op (bool spc_prev)
 	if (c1 == '=')
 	  bin_op = true;
 
-	yyunput (c1, yytext);
+	xunput (c1, yytext);
       }
       break;
 
@@ -1706,7 +1726,7 @@ next_token_is_bin_op (bool spc_prev)
       break;
     }
 
-  yyunput (c0, yytext);
+  xunput (c0, yytext);
 
   return bin_op;
 }
@@ -1897,7 +1917,7 @@ eat_whitespace (void)
     octave_comment_buffer::append (comment_buf);
 
  done:
-  yyunput (c, yytext);
+  xunput (c, yytext);
   current_input_column--;
   return retval;
 }
@@ -2034,7 +2054,7 @@ have_continuation (bool trailing_comments_ok)
 	}
     }
 
-  yyunput (c, yytext);
+  xunput (c, yytext);
   return false;
 
 cleanup:
@@ -2043,7 +2063,7 @@ cleanup:
 
   int len = s.length ();
   while (len--)
-    yyunput (s[len], yytext);
+    xunput (s[len], yytext);
 
   return false;
 }
@@ -2063,12 +2083,12 @@ have_ellipsis_continuation (bool trailing_comments_ok)
 	return true;
       else
 	{
-	  yyunput (c2, yytext);
-	  yyunput (c1, yytext);
+	  xunput (c2, yytext);
+	  xunput (c1, yytext);
 	}
     }
   else
-    yyunput (c1, yytext);
+    xunput (c1, yytext);
 
   return false;
 }
@@ -2089,7 +2109,7 @@ eat_continuation (void)
       || (c == '\\' && have_continuation ()))
     retval = eat_whitespace ();
   else
-    yyunput (c, yytext);
+    xunput (c, yytext);
 
   return retval;
 }
@@ -2154,7 +2174,7 @@ handle_string (char delim, int text_style)
 	      else
 		{
 		  std::string s;  
-		  yyunput (c, yytext);
+		  xunput (c, yytext);
 
 		  if (lexer_flags.doing_rawcommand || delim == '\'')
 		    s = buf.str ();
@@ -2204,7 +2224,7 @@ next_token_is_assign_op (void)
     case '=':
       {
 	int c1 = text_yyinput ();
-	yyunput (c1, yytext);
+	xunput (c1, yytext);
 	if (c1 != '=')
 	  retval = true;
       }
@@ -2219,7 +2239,7 @@ next_token_is_assign_op (void)
     case '|':
       {
 	int c1 = text_yyinput ();
-	yyunput (c1, yytext);
+	xunput (c1, yytext);
 	if (c1 == '=')
 	  retval = true;
       }
@@ -2231,11 +2251,11 @@ next_token_is_assign_op (void)
 	if (match_any (c1, "+-*/\\"))
 	  {
 	    int c2 = text_yyinput ();
-	    yyunput (c2, yytext);
+	    xunput (c2, yytext);
 	    if (c2 == '=')
 	      retval = true;
 	  }
-	yyunput (c1, yytext);
+	xunput (c1, yytext);
       }
       break;
 
@@ -2245,11 +2265,11 @@ next_token_is_assign_op (void)
 	if (c1 == '>')
 	  {
 	    int c2 = text_yyinput ();
-	    yyunput (c2, yytext);
+	    xunput (c2, yytext);
 	    if (c2 == '=')
 	      retval = true;
 	  }
-	yyunput (c1, yytext);
+	xunput (c1, yytext);
       }
       break;
 
@@ -2259,11 +2279,11 @@ next_token_is_assign_op (void)
 	if (c1 == '<')
 	  {
 	    int c2 = text_yyinput ();
-	    yyunput (c2, yytext);
+	    xunput (c2, yytext);
 	    if (c2 == '=')
 	      retval = true;
 	  }
-	yyunput (c1, yytext);
+	xunput (c1, yytext);
       }
       break;
 
@@ -2271,7 +2291,7 @@ next_token_is_assign_op (void)
       break;
     }
 
-  yyunput (c0, yytext);
+  xunput (c0, yytext);
 
   return retval;
 }
@@ -2280,7 +2300,7 @@ static bool
 next_token_is_index_op (void)
 {
   int c = text_yyinput ();
-  yyunput (c, yytext);
+  xunput (c, yytext);
   return c == '(' || c == '{';
 }
 
@@ -2364,8 +2384,8 @@ maybe_unput_comma (int spc_gobbled)
       int c1 = text_yyinput ();
       int c2 = text_yyinput ();
 
-      yyunput (c2, yytext);
-      yyunput (c1, yytext);
+      xunput (c2, yytext);
+      xunput (c1, yytext);
 
       int sep_op = next_token_is_sep_op ();
 
@@ -2478,13 +2498,13 @@ handle_identifier (void)
   if (c1 == '=')
     {
       int c2 = text_yyinput ();
-      yyunput (c2, yytext);
+      xunput (c2, yytext);
 
       if (c2 != '=')
 	next_tok_is_eq = true;
     }
 
-  yyunput (c1, yytext);
+  xunput (c1, yytext);
 
   // Kluge alert.
   //

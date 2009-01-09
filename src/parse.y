@@ -77,7 +77,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "variables.h"
 
 // The current input line number.
-int input_line_number = 0;
+int input_line_number = 1;
 
 // The column of the current token.
 int current_input_column = 1;
@@ -2895,15 +2895,14 @@ text_getc (FILE *f)
     {
       c = getc (f);
 
-      if (c == '\n')
-        input_line_number++;
-      else
+      if (c != '\n')
 	{
 	  ungetc (c, f);
 	  c = '\n';
 	}
     }
-  else if (c == '\n')
+
+  if (c == '\n')
     input_line_number++;
 
   return c;
@@ -2916,7 +2915,13 @@ public:
   stdio_stream_reader (FILE *f_arg) : stream_reader (), f (f_arg) { }
 
   int getc (void) { return ::text_getc (f); }
-  int ungetc (int c) { return ::ungetc (c, f); }
+  int ungetc (int c)
+  {
+    if (c == '\n')
+      input_line_number--;
+
+    return ::ungetc (c, f);
+  }
   
 private:
   FILE *f;
@@ -3051,7 +3056,7 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
   unwind_protect_str (parent_function_name);
   unwind_protect_str (current_class_name);
 
-  input_line_number = 0;
+  input_line_number = 1;
   current_input_column = 1;
   end_tokens_expected = 0;
   reading_fcn_file = true;
@@ -3738,12 +3743,16 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
 
   unwind_protect::begin_frame ("eval_string");
 
+  unwind_protect_int (input_line_number);
+  unwind_protect_int (current_input_column);
   unwind_protect_bool (get_input_from_eval_string);
   unwind_protect_bool (input_from_eval_string_pending);
   unwind_protect_bool (parser_end_of_input);
   unwind_protect_bool (line_editing);
   unwind_protect_str (current_eval_string);
 
+  input_line_number = 1;
+  current_input_column = 1;
   get_input_from_eval_string = true;
   input_from_eval_string_pending = true;
   parser_end_of_input = false;

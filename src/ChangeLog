@@ -1,3 +1,24 @@
+2009-01-09  John W. Eaton  <jwe@octave.org>
+
+	* input.cc (get_user_input (void)): Don't increment input_line_number.
+	* lex.l (xunput): New function.  Use it in place of yyunput
+	anywhere a newline character may be put back on the input stream.
+	Increment input_line_number in all rules that consume newlines
+	characters.
+	(text_yyinput): Increment input_line_number
+	(fixup_column_count): Increment input_line_number.
+	(prep_for_function): Set input_line_number to 1, not 0.
+	(reset_parser): Set input_line_number to current_command_number,
+	not current_command_number-1.
+	(flex_stream_reader::ungetc): Call xunput, not yyunput.
+	* parse.y (input_line_number): Initialize to 1, not 0.
+	(text_getc): Increment input_line_number correctly.
+	(stdio_stream_reader::ungetc): Decrement input_line_number if
+	putting back a newline character.
+	(parse_fcn_file): Set input_line_number to 1, not 0.
+	(eval_string): Unwind-protect input_line_number and
+	current_input_column.
+
 2009-01-08  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-cell.cc (octave_cell::subsasgn): Erase duplicate lhs value 

@@ -87,5 +87,6 @@ install_fpm_fpm_ops (void)
   INSTALL_CONVOP (octave_float_perm_matrix, octave_float_matrix, float_perm_matrix_to_float_matrix);
   INSTALL_CONVOP (octave_float_perm_matrix, octave_perm_matrix, float_perm_matrix_to_perm_matrix);
   INSTALL_ASSIGNCONV (octave_float_perm_matrix, octave_float_matrix, octave_float_matrix);
+  INSTALL_WIDENOP (octave_float_perm_matrix, octave_float_matrix, float_perm_matrix_to_float_matrix);
 }
 

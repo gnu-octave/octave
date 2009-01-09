@@ -99,4 +99,5 @@ install_dm_dm_ops (void)
   INSTALL_CONVOP (octave_diag_matrix, octave_matrix, diag_matrix_to_matrix);
   INSTALL_CONVOP (octave_diag_matrix, octave_float_diag_matrix, diag_matrix_to_float_diag_matrix);
   INSTALL_ASSIGNCONV (octave_diag_matrix, octave_matrix, octave_matrix);
+  INSTALL_WIDENOP (octave_diag_matrix, octave_matrix, diag_matrix_to_matrix);
 }

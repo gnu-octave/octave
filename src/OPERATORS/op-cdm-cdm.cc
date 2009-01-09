@@ -106,4 +106,5 @@ install_cdm_cdm_ops (void)
   INSTALL_CONVOP (octave_complex_diag_matrix, octave_float_complex_diag_matrix, 
                   complex_diag_matrix_to_float_complex_diag_matrix);
   INSTALL_ASSIGNCONV (octave_complex_diag_matrix, octave_complex_matrix, octave_complex_matrix);
+  INSTALL_WIDENOP (octave_complex_diag_matrix, octave_complex_matrix, complex_diag_matrix_to_complex_matrix);
 }

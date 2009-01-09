@@ -1,5 +1,14 @@
 2009-01-09  Jaroslav Hajek  <highegg@gmail.com>
 
+	* OPERATORS/op-cdm-cdm.cc: Install missing widening op.
+	* OPERATORS/op-dm-dm.cc: Dtto.
+	* OPERATORS/op-fcdm-fcdm.cc: Dtto.
+	* OPERATORS/op-fdm-fdm.cc: Dtto.
+	* OPERATORS/op-pm-pm.cc: Dtto.
+	* OPERATORS/op-fpm-fpm.cc: Dtto.
+
+2009-01-09  Jaroslav Hajek  <highegg@gmail.com>
+
 	* ov-cell.cc (octave_cell::subsasgn): Put erased copy back after
 	make_unique has been called.
 

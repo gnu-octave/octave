@@ -99,4 +99,5 @@ install_fdm_fdm_ops (void)
   INSTALL_CONVOP (octave_float_diag_matrix, octave_float_matrix, float_diag_matrix_to_float_matrix);
   INSTALL_CONVOP (octave_float_diag_matrix, octave_diag_matrix, float_diag_matrix_to_diag_matrix);
   INSTALL_ASSIGNCONV (octave_float_diag_matrix, octave_float_matrix, octave_float_matrix);
+  INSTALL_WIDENOP (octave_float_diag_matrix, octave_float_matrix, float_diag_matrix_to_float_matrix);
 }

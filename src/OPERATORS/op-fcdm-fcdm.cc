@@ -102,8 +102,11 @@ install_fcdm_fcdm_ops (void)
   INSTALL_BINOP (op_div, octave_float_complex_diag_matrix, octave_float_complex_diag_matrix, div);
   INSTALL_BINOP (op_ldiv, octave_float_complex_diag_matrix, octave_float_complex_diag_matrix, ldiv);
 
-  INSTALL_CONVOP (octave_float_complex_diag_matrix, octave_complex_diag_matrix, float_complex_diag_matrix_to_complex_diag_matrix);
+  INSTALL_CONVOP (octave_float_complex_diag_matrix, octave_complex_diag_matrix, 
+                  float_complex_diag_matrix_to_complex_diag_matrix);
   INSTALL_CONVOP (octave_float_complex_diag_matrix, octave_float_complex_matrix, 
                   float_complex_diag_matrix_to_float_complex_matrix);
   INSTALL_ASSIGNCONV (octave_float_complex_diag_matrix, octave_float_complex_matrix, octave_float_complex_matrix);
+  INSTALL_WIDENOP (octave_float_complex_diag_matrix, octave_complex_diag_matrix, 
+                   float_complex_diag_matrix_to_complex_diag_matrix);
 }

@@ -1,3 +1,8 @@
+2009-01-09  Kai Habel <kai.habel@gmx.de>
+
+        * graphics.cc: Calculate normals for surface boundaries, use
+        more neighboring points to calculate interior normals
+
 2009-01-09  John W. Eaton  <jwe@octave.org>
 
 	* input.cc (get_user_input (void)): Don't increment input_line_number.
@@ -36,11 +41,6 @@
 	DLD-FUNCTIONS/regexp.cc	(Fregexpi), DLD-FUNCTIONS/regexp.cc
 	(Fregexprep): Add references.
 	
-2009-01-08  Kai Habel <kai.habel@gmx.de>
-
-        * graphics.cc: Calculate normals for surface boundaries, use
-        more neighboring points to calculate interior normals
-
 2008-12-27  Jaroslav Hajek <highegg@gmail.com>
 
 	* oct-obj.h, oct-obj.cc (octave_value_list::valid_scalar_indices): Remove.

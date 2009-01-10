@@ -352,7 +352,7 @@ to have a common size.\n\
 DEFUN_DLD (full, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{FM} =} full (@var{SM})\n\
- returns a full storage matrix from a sparse one\n\
+ returns a full storage matrix from a sparse, diagonal, permutation matrix or a range.\n\
 @seealso{sparse}\n\
 @end deftypefn")
 {
@@ -373,10 +373,16 @@ DEFUN_DLD (full, args, ,
       else if (args(0).type_name () == "sparse bool matrix")
 	retval = args(0).bool_matrix_value ();
     } 
-  else if (args(0).is_real_type())
-    retval = args(0).matrix_value();
-  else if (args(0).is_complex_type())
-    retval = args(0).complex_matrix_value();
+  else if (args(0).is_diag_matrix () || args(0).is_perm_matrix ())
+    {
+      octave_value_list idx;
+      idx(0) = idx(1) = ':';
+      retval = args(0).do_index_op (idx);
+    }
+  else if (args(0).is_range ())
+    retval = args(0).matrix_value ();
+  else if (args(0).is_matrix_type ())
+    retval = args(0);
   else
     gripe_wrong_type_arg ("full", args(0));
 

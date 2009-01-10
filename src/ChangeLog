@@ -1,3 +1,8 @@
+2009-01-10  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/sparse.cc (Ffull): Convert diagonal & permutation
+	matrices, leave other classes untouched.
+
 2009-01-09  Jaroslav Hajek  <highegg@gmail.com>
 
 	* OPERATORS/op-cdm-cdm.cc: Install missing widening op.

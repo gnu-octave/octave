@@ -90,7 +90,7 @@ function [t, p] = orderfields (s1, s2)
   if (numel (s1) == 0)
     args = cell (1, 2 * numel (names));
     args(1:2:end) = names;
-      args{2:2:end} = {};
+    args(2:2:end) = {[]};
     t = struct (args{:});
   else
     for i = 1:numel (names)

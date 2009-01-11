@@ -86,7 +86,7 @@ function st = strcat (varargin)
       for nv = find (numstrs == 1)
         str = varargin{nv}{1};
         varargin{nv} = cell (dim);
-        varargin{nv}{:} = str;
+        varargin{nv}(:) = {str};
       endfor
 
       ## Concatenate the strings

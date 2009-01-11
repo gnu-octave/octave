@@ -34,7 +34,7 @@ function [s, i] = sortrows (m, c)
   other_mode = "descend";
   if (nargin < 2)
     indices = [1:size(m,2)]';
-    mode{1:size(m,2)} = default_mode;
+    mode(1:size(m,2)) = {default_mode};
   else
     for ii = 1:length (c);
       if (c(ii) < 0)

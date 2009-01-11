@@ -37,7 +37,7 @@ function varargout = ndgrid (varargin)
   if (nargin == 1)
     n = max ([nargout, 2]);  
     ## If only one input argument is given, repeat it n-times
-    varargin{1:n} = varargin{1};
+    varargin(1:n) = varargin(1);
   elseif (nargin >= nargout)
     n = max ([nargin, 2]);  
   else

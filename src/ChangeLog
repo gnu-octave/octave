@@ -1,3 +1,10 @@
+2009-01-11  Jaroslav Hajek  <highegg@gmail.com>
+
+	* oct-obj.cc (octave_value_list::all_scalars): New method.
+	* oct-obj.h: Declare it.
+	* ov-cell.cc (octave_cell::subsasgn): Disable assigning
+	to non-scalar {}-indexed cell, unless in a multi-assignment.
+
 2009-01-10  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/sparse.cc (Ffull): Convert diagonal & permutation

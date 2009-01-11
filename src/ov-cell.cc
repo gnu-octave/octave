@@ -268,9 +268,11 @@ octave_cell::subsasgn (const std::string& type,
 
 		octave_base_matrix<Cell>::assign (i, tmp_cell);
 	      }
-	    else
-              // Regularize a null matrix if stored into a struct component.
-	      octave_base_matrix<Cell>::assign (i, Cell (t_rhs.non_null_value ()));
+	    else if (i.all_scalars () || do_index_op (i, true).dims ().numel () == 1)
+              // Regularize a null matrix if stored into a cell.
+              octave_base_matrix<Cell>::assign (i, Cell (t_rhs.non_null_value ()));
+            else if (! error_state)
+              error ("scalar indices required for {} in assignment.");
 
 	    if (! error_state)
 	      {

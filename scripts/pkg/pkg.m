@@ -971,11 +971,11 @@ function [pkg_desc_list, flag] = describe (pkgnames, verbose,
   describe_all = false;
   if (any (strcmp ("all", pkgnames)))
     describe_all = true;
-    flag{1:num_packages} = "Not Loaded";
+    flag(1:num_packages) = {"Not Loaded"};
     num_pkgnames = num_packages;
   else
     num_pkgnames = length (pkgnames);
-    flag{1:num_pkgnames} = "Not installed";
+    flag(1:num_pkgnames) = {"Not installed"};
   endif
 
   for i = 1:num_packages

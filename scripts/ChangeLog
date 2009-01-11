@@ -1,3 +1,12 @@
+2009-01-11  Jaroslav Hajek  <highegg@gmail.com>
+
+	* general/sortrows.m: Fix invalid `{x:y} = z' assignment.
+	* miscellaneous/orderfields.m: Dtto.
+	* miscellaneous/what.m: Dtto.
+	* pkg/pkg.m: Dtto.
+	* plot/ndgrid.m: Dtto.
+	* strings/strcat.m: Dtto.
+
 2009-01-09  Kai Habel <kai.habel@gmx.de>
 
         * plot/surfl.m: New function

@@ -162,6 +162,16 @@ octave_value_list::all_strings_p (void) const
 }
 
 bool
+octave_value_list::all_scalars (void) const
+{
+  octave_idx_type n = length (), i;
+
+  for (i = 0; i < n && elem (i).is_string (); i++) ;
+  
+  return i == n;
+}
+
+bool
 octave_value_list::has_magic_colon (void) const
 {
   octave_idx_type n = length ();

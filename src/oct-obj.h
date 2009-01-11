@@ -111,6 +111,8 @@ public:
 
   bool all_strings_p (void) const;
 
+  bool all_scalars (void) const;
+
   bool has_magic_colon (void) const;
 
   string_vector make_argv (const std::string& = std::string()) const;

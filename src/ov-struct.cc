@@ -224,11 +224,26 @@ octave_struct::subsasgn (const std::string& type,
 		  u = octave_value::empty_conv (type.substr (2), rhs);
 		else
 		  {
-		    Cell map_val = map.contents (key);
+		    Cell& cell_ref = map.contents (key);
 
-		    Cell map_elt = map_val.index (idx.front (), true);
+                    octave_value u1 = cell_ref.index (idx.front (), true);
+                    u = numeric_conv (u1, type.substr (2));
 
-		    u = numeric_conv (map_elt, type.substr (2));
+                    if (u.is_defined () && u.is_copy_of (u1))
+                      {
+                        // This is a bit of black magic. u is a shallow copy
+                        // of an element inside this struct, and maybe more. To
+                        // prevent make_unique from always forcing a copy, we
+                        // temporarily delete the stored value.
+                        u1 = octave_value ();
+                        cell_ref.assign (idx.front (), Cell (octave_value ()));
+                        u.make_unique ();
+                        cell_ref.assign (idx.front (), Cell (u));
+                      }
+                    else
+                      // Safe is safe.
+                      u.make_unique ();
+
 		  }
 
 		if (! error_state)
@@ -240,8 +255,6 @@ octave_struct::subsasgn (const std::string& type,
 
 		    next_idx.erase (next_idx.begin ());
 		    next_idx.erase (next_idx.begin ());
-
-		    u.make_unique ();
 
 		    t_rhs = u.subsasgn (type.substr (2), next_idx, rhs);
 		  }
@@ -265,9 +278,23 @@ octave_struct::subsasgn (const std::string& type,
 	      u = octave_value::empty_conv (type.substr (1), rhs);
 	    else
 	      {
-		Cell map_val = map.contents (key);
+        	Cell& cell_ref = map.contents (key);
 
-		u = numeric_conv (map_val, type.substr (1));
+                u = numeric_conv (cell_ref, type.substr (2));
+
+                if (u.is_defined () && u.is_copy_of (cell_ref(0)))
+                  {
+                    // This is a bit of black magic. u is a shallow copy
+                    // of an element inside this struct, and maybe more. To
+                    // prevent make_unique from always forcing a copy, we
+                    // temporarily delete the stored value.
+                    cell_ref(0) = octave_value ();
+                    u.make_unique ();
+                    cell_ref(0) = u;
+                  }
+                else
+                  // Safe is safe.
+                  u.make_unique ();
 	      }
 
 	    if (! error_state)
@@ -275,8 +302,6 @@ octave_struct::subsasgn (const std::string& type,
 		std::list<octave_value_list> next_idx (idx);
 
 		next_idx.erase (next_idx.begin ());
-
-		u.make_unique ();
 
 		t_rhs = u.subsasgn (type.substr (1), next_idx, rhs);
 	      }

@@ -1,4 +1,11 @@
 2009-01-11  Jaroslav Hajek  <highegg@gmail.com>
+	
+	* ov.h (octave_value::is_copy_of): New method.
+	* ov-struct.cc (numeric_conv): Add output parameter orig.
+	(octave_struct::subsasgn): Temporarily erase duplicate lhs value prior
+	to assignment.
+
+2009-01-11  Jaroslav Hajek  <highegg@gmail.com>
 
 	* oct-obj.cc (octave_value_list::all_scalars): New method.
 	* oct-obj.h: Declare it.

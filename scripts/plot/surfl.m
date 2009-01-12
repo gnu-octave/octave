@@ -68,38 +68,37 @@ function retval = surfl (varargin)
     axes (h);
     newplot ();
 
-    ## check for lighting type
+    ## Check for lighting type.
     use_cdata = true;
     if (ischar (varargin{end}))
       lstr = varargin{end};
-      if strncmp (tolower (lstr), "light", 5)
+      if (strncmp (tolower (lstr), "light", 5))
         warning ("light method not supported (yet), using cdata method instead");
-        # this can be implemented when light objects are being
-        # supported.
+	## This can be implemented when light objects are supported.
         use_cdata = false;
       elseif (strncmp (tolower (lstr), "cdata", 5))
         use_cdata = true;
       else
-        usage ("unknown lighting method");
+        error ("surfl: unknown lighting method");
       endif
       varargin(end) = [];
     endif
 
-    ## check for reflection properties argument
+    ## Check for reflection properties argument.
+    ##
     ## r = [ambient light strength,
     ##      diffuse reflection strength,
     ##      specular reflection strength,
     ##      specular shine] 
-    if ((length (varargin{end}) == 4) && isnumeric (varargin{end}))
+    if (length (varargin{end}) == 4 && isnumeric (varargin{end}))
       r = varargin{end};
       varargin(end) = [];
     else
-      ## default values
+      ## Default values.
       r = [0.55, 0.6, 0.4, 10];
     endif
-    
 
-    ## check for light vector (lv) argument
+    ## Check for light vector (lv) argument.
     have_lv = false;
     if (isnumeric (varargin{end}))
       len = numel (varargin{end});
@@ -121,35 +120,35 @@ function retval = surfl (varargin)
 	   "xgrid", "on", "ygrid", "on", "zgrid", "on", "clim", [0 1]);
     endif
 
-    ## get view vector (vv)
+    ## Get view vector (vv).
     a = axis;
     [az, el] = view;
     [vv(1), vv(2), vv(3)] = sph2cart ((az - 90) * pi/180.0, el * pi/180.0, 1.0);
     vv /= norm (vv);
 
     if (!have_lv)
-      ## calculate light vector (lv) from view vector
+      ## Calculate light vector (lv) from view vector.
       Phi = 45.0 / 180.0 * pi;
-      R = [cos(Phi), -sin(Phi), 0;\
-           sin(Phi),  cos(Phi), 0;\
+      R = [cos(Phi), -sin(Phi), 0;
+           sin(Phi),  cos(Phi), 0;
            0,          0,         1];
       lv = (R * vv.').';
     endif
 
     vn = get (tmp, "vertexnormals");
     dar = get (h, "dataaspectratio");
-    vn(:, :, 1) *= dar(1);
-    vn(:, :, 2) *= dar(2);
-    vn(:, :, 3) *= dar(3);
+    vn(:,:,1) *= dar(1);
+    vn(:,:,2) *= dar(2);
+    vn(:,:,3) *= dar(3);
 
-    ## normalize vn
+    ## Normalize vn.
     vn = vn ./ repmat (sqrt (sumsq (vn, 3)), [1, 1, 3]);
     [nr, nc] = size(get(tmp, "zdata"));
 
-    ## ambient, diffuse, and specular term
-    cdata = r(1) * ones (nr, nc) \
-          + r(2) * diffuse  (vn(:, :, 1), vn(:, :, 2), vn(:, :, 3), lv) \
-          + r(3) * specular (vn(:, :, 1), vn(:, :, 2), vn(:, :, 3), lv, vv, r(4));
+    ## Ambient, diffuse, and specular term.
+    cdata = (r(1) * ones (nr, nc)
+             + r(2) * diffuse  (vn(:,:,1), vn(:,:,2), vn(:,:,3), lv)
+             + r(3) * specular (vn(:,:,1), vn(:,:,2), vn(:,:,3), lv, vv, r(4)));
 
     set (tmp, "cdata", cdata ./ sum (r(1:3)));
     

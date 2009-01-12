@@ -1,3 +1,7 @@
+2009-01-12  John W. Eaton  <jwe@octave.org>
+
+	* plot/diffuse.m, plot/surfl.m, plot/specular.m: Style fixes.
+
 2009-01-11  Jaroslav Hajek  <highegg@gmail.com>
 
 	* general/sortrows.m: Fix invalid `{x:y} = z' assignment.

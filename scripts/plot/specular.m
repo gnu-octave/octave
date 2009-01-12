@@ -31,40 +31,39 @@
 
 function retval = specular (sx, sy, sz, lv, vv, se)
 
-  ## general checks
-  if ((nargin < 5) || (nargin > 6))
-    usage ("number of arguments must be 5 or 6")
+  if (nargin < 5 || nargin > 6)
+    print_usage ();
   endif
 
-  ## checks for specular exponent (se)
+  ## Checks for specular exponent (se).
   if (nargin < 6)
     se = 10;
   else
-    if (!isnumeric (se) || (numel (se) != 1) || (se <= 0))
-      usage ("specular exponent must be positive scalar");
+    if (!isnumeric (se) || numel (se) != 1 || se <= 0)
+      error ("specular: exponent must be positive scalar");
     endif
   endif
 
-  ## checks for normal vector
+  ## Checks for normal vector.
   if (!size_equal (sx, sy, sz))
-    usage ("SX, SY, and SZ must have same size")
+    error ("specular: SX, SY, and SZ must have same size");
   endif
   
-  ## check for light vector (lv) argument
+  ## Check for light vector (lv) argument.
   if (length (lv) < 2 || length (lv) > 3)
-    usage ("light vector LV must be a 2- or 3-element vector");
+    error ("specular: light vector LV must be a 2- or 3-element vector");
   elseif (length (lv) == 2)
     [lv(1), lv(2), lv(3)] = sph2cart (lv(1) * pi/180, lv(2) * pi/180, 1.0);
   endif
 
-  ## check for view vector (vv) argument
-  if ((length (vv) < 2) || (length (lv) > 3))
+  ## Check for view vector (vv) argument.
+  if (length (vv) < 2 || length (lv) > 3)
     error ("view vector VV must be a 2- or 3-element vector");
   elseif (length (vv) == 2)
     [vv(1), vv(2), vv(3)] = sph2cart (vv(1) * pi / 180, vv(2) * pi / 180, 1.0);
   endif
 
-  ## normalize view and light vector
+  ## Normalize view and light vector.
   if (sum (abs (lv)) > 0)
     lv  /= norm (lv);
   endif
@@ -72,18 +71,18 @@ function retval = specular (sx, sy, sz, lv, vv, se)
     vv  /= norm (vv);
   endif
 
-  ## calculate normal vector lengths and dot-products
+  ## Calculate normal vector lengths and dot-products.
   ns = sqrt (sx.^2 + sy.^2 + sz.^2);
   l_dot_n = (sx * lv(1) + sy * lv(2) + sz * lv(3)) ./ ns;
   v_dot_n = (sx * vv(1) + sy * vv(2) + sz * vv(3)) ./ ns;
 
-  ## calculate specular reflection using Phong's approximation
+  ## Calculate specular reflection using Phong's approximation.
   retval = 2 * l_dot_n .* v_dot_n - dot (lv, vv);
   
-  ## set zero if light is on the other side
+  ## Set zero if light is on the other side.
   retval(l_dot_n < 0) = 0;
 
-  ## allow postive values only
+  ## Allow postive values only.
   retval(retval < 0) = 0;
   retval = retval .^ se;
   

@@ -30,24 +30,23 @@
 
 function retval = diffuse (sx, sy, sz, lv)
 
-  ## general checks
   if (nargin != 4)
-    usage ("number of arguments must be 4")
+    print_usage ();
   endif
 
   ## check for normal vector
   if (!size_equal (sx, sy, sz))
-    usage ("SX, SY, and SZ must have same size")
+    error ("diffuse: SX, SY, and SZ must have same size");
   endif
   
   ## check for light vector (lv) argument
   if (length (lv) < 2 || length (lv) > 3)
-    usage ("light vector LV must be a 2- or 3-element vector");
+    error ("diffuse: light vector LV must be a 2- or 3-element vector");
   elseif (length (lv) == 2)
     [lv(1), lv(2), lv(3)] = sph2cart (lv(1) * pi/180, lv(2) * pi/180, 1.0);
   endif
 
-  ## normalize view and light vector
+  ## Normalize view and light vector.
   if (sum (abs (lv)) > 0)
     lv  /= norm (lv);
   endif

@@ -27,6 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <cctype>
 
+#include <queue>
 #include <sstream>
 
 #include "dMatrix.h"
@@ -80,6 +81,8 @@ char ([97, 98, 99], \"\", @{\"98\", \"99\", 100@}, [\"num\", \"bers\"])\n\
 
       int max_len = 0;
 
+      std::queue<string_vector> args_as_strings;
+
       for (int i = 0; i < nargin; i++)
 	{
 	  string_vector s = args(i).all_strings ();
@@ -99,6 +102,8 @@ char ([97, 98, 99], \"\", @{\"98\", \"99\", 100@}, [\"num\", \"bers\"])\n\
 
 	  if (s_max_len > max_len)
 	    max_len = s_max_len;
+
+	  args_as_strings.push (s);
 	}
 
       string_vector result (n_elts);
@@ -107,7 +112,7 @@ char ([97, 98, 99], \"\", @{\"98\", \"99\", 100@}, [\"num\", \"bers\"])\n\
 
       for (int i = 0; i < nargin; i++)
 	{
-	  string_vector s = args(i).all_strings ();
+	  string_vector s = args_as_strings.pop ();
 
 	  int n = s.length ();
 
@@ -125,9 +130,7 @@ char ([97, 98, 99], \"\", @{\"98\", \"99\", 100@}, [\"num\", \"bers\"])\n\
 	        }
             }
           else
-            {
-               result[k++] = std::string (max_len, ' ');
-            }
+	    result[k++] = std::string (max_len, ' ');
 	}
 
       retval = octave_value (result, '\'');
@@ -190,6 +193,8 @@ strvcat ([97, 98, 99], \"\", @{\"98\", \"99\", 100@}, [\"num\", \"bers\"])\n\
 
       int max_len = 0;
 
+      std::queue<string_vector> args_as_strings;
+
       for (int i = 0; i < nargin; i++)
 	{
 	  string_vector s = args(i).all_strings ();
@@ -216,6 +221,8 @@ strvcat ([97, 98, 99], \"\", @{\"98\", \"99\", 100@}, [\"num\", \"bers\"])\n\
 
 	  if (s_max_len > max_len)
 	    max_len = s_max_len;
+
+	  args_as_strings.push (s);
 	}
 
       string_vector result (n_elts);
@@ -224,7 +231,7 @@ strvcat ([97, 98, 99], \"\", @{\"98\", \"99\", 100@}, [\"num\", \"bers\"])\n\
 
       for (int i = 0; i < nargin; i++)
 	{
-	  string_vector s = args(i).all_strings ();
+	  string_vector s = args_as_strings.pop ();
 
 	  int n = s.length ();
 

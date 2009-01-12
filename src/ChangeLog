@@ -1,3 +1,8 @@
+2009-01-12  John W. Eaton  <jwe@octave.org>
+
+	* strfns.cc (Fstrvcat, Fchar): Use queue to avoid duplicate calls
+	to all_strings.
+
 2009-01-12  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
 	* strfns.cc (Fstrvcap): New function.

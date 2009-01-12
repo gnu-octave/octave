@@ -119,7 +119,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options)
     m = length (fvec);
     n = length (x);
     if (m < n)
-      error ("fsolve: cannot solve underdetermined systems");
+      error ("fsolve:under", "cannot solve underdetermined systems");
     elseif (m > n && niter == 1)
       if (isempty (optimget (options, "TolFun")))
 	warning ("an overdetermined system cannot usually be solved exactly; consider specifying the TolFun option");
@@ -282,9 +282,9 @@ endfunction
 function fx = guarded_eval (fun, x)
   fx = fun (x);
   if (! all (isreal (fx)))
-    error ("fsolve: non-real value encountered"); 
+    error ("fsolve:notreal", "fsolve: non-real value encountered"); 
   elseif (any (isnan (fx)))
-    error ("fsolve: NaN value encountered"); 
+    error ("fsolve:isnan", "fsolve: NaN value encountered"); 
   endif
 endfunction
 
@@ -361,4 +361,3 @@ endfunction
 %! assert (info > 0);
 %! assert (norm (x - x_opt, Inf) < tol);
 %! assert (norm (fval) < tol);
-

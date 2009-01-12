@@ -124,7 +124,7 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
   endif
 
   if (! (sign (fa) * sign (fb) <= 0))
-    error ("fzero: not a valid initial bracketing");
+    error ("fzero:bracket", "fzero: not a valid initial bracketing");
   endif
 
   itype = 1;
@@ -242,7 +242,7 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
       break;
     else
       ## this should never happen.
-      error ("fzero: zero point is not bracketed");
+      error ("fzero:bracket", "fzero: zero point is not bracketed");
     endif
 
     ## if there's an output function, use it now
@@ -288,9 +288,9 @@ function fx = guarded_eval (fun, x)
   fx = fun (x);
   fx = fx(1);
   if (! isreal (fx))
-    error ("fzero: non-real value encountered"); 
+    error ("fzero:notreal", "fzero: non-real value encountered"); 
   elseif (isnan (fx))
-    error ("fzero: NaN value encountered"); 
+    error ("fzero:isnan", "fzero: NaN value encountered"); 
   endif
 endfunction
 

@@ -769,8 +769,8 @@ Q*Q'*u*v' instead of u*v'.\n\
   octave_value argu = args(2);
   octave_value argv = args(3);
 
-  if (argq.is_matrix_type () && argr.is_matrix_type () 
-      && argu.is_matrix_type () && argv.is_matrix_type ())
+  if (argq.is_numeric_type () && argr.is_numeric_type () 
+      && argu.is_numeric_type () && argv.is_numeric_type ())
     {
       octave_idx_type m = argq.rows ();
       octave_idx_type n = argr.columns ();
@@ -854,7 +854,7 @@ Q*Q'*u*v' instead of u*v'.\n\
 	error ("qrupdate: dimensions mismatch");
     }
   else
-    print_usage ();
+    error ("qrupdate: expecting numeric arguments");
 
   return retval;
 }
@@ -958,8 +958,8 @@ If @var{orient} is @code{\"row\"}, @var{Q} must be square.\n\
   octave_value argj = args(2);
   octave_value argx = args(3);
       
-  if (argq.is_matrix_type () && argr.is_matrix_type ()
-      && argj.is_scalar_type () && argx.is_matrix_type ()
+  if (argq.is_numeric_type () && argr.is_numeric_type ()
+      && argj.is_scalar_type () && argx.is_numeric_type ()
       && (nargin < 5 || args(4).is_string ()))
     {
       octave_idx_type m = argq.rows ();
@@ -1178,7 +1178,8 @@ If @var{orient} is \"row\", @var{Q} must be square.\n\
   octave_value argr = args(1);
   octave_value argj = args(2);
 
-  if (argq.is_matrix_type () && argr.is_matrix_type () && argj.is_scalar_type ()
+  if (argq.is_numeric_type () && argr.is_numeric_type ()
+      && argj.is_scalar_type ()
       && (nargin < 4 || args(3).is_string ()))
     {
       octave_idx_type m = argq.rows ();
@@ -1438,7 +1439,7 @@ of @w{@var{A}(:,p)}, where @w{p} is the permutation @*\n\
   octave_value argi = args(2);
   octave_value argj = args(3);
 
-  if (argq.is_matrix_type () && argr.is_matrix_type () 
+  if (argq.is_numeric_type () && argr.is_numeric_type () 
       && argi.is_real_scalar () && argj.is_real_scalar ())
     {
       octave_idx_type n = argr.columns ();
@@ -1513,7 +1514,7 @@ of @w{@var{A}(:,p)}, where @w{p} is the permutation @*\n\
 	error ("qrshift: dimensions mismatch");
     }
   else
-    print_usage ();
+    error ("qrshift: expecting numeric arguments");
 
   return retval;
 }

@@ -807,12 +807,12 @@ Return the imaginary part of @var{z} as a real number.\n\
 %!assert(imag (1), 0);
 %!assert(imag (i), 1);
 %!assert(imag (1+i), 1);
-%!assert(imag ([i, 1; 1, i]), eye (2)(:,:));
+%!assert(imag ([i, 1; 1, i]), full (eye (2)));
 
 %!assert(imag (single(1)), single(0));
 %!assert(imag (single(i)), single(1));
 %!assert(imag (single(1+i)), single(1));
-%!assert(imag (single([i, 1; 1, i])), eye (2,'single')(:,:));
+%!assert(imag (single([i, 1; 1, i])), full (eye (2,'single')));
 
 %!error imag ();
 %!error imag (1, 2);
@@ -1254,12 +1254,12 @@ Return the real part of @var{z}.\n\
 %!assert(real (1), 1);
 %!assert(real (i), 0);
 %!assert(real (1+i), 1);
-%!assert(real ([1, i; i, 1]), eye (2)(:,:));
+%!assert(real ([1, i; i, 1]), full (eye (2)));
 
 %!assert(real (single(1)), single(1));
 %!assert(real (single(i)), single(0));
 %!assert(real (single(1+i)), single(1));
-%!assert(real (single([1, i; i, 1])), eye (2,'single')(:,:));
+%!assert(real (single([1, i; i, 1])), full (eye (2,'single')));
 
 %!error real ();
 %!error real (1, 2);

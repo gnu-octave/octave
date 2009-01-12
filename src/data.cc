@@ -1639,7 +1639,7 @@ Given a matrix argument, instead of a vector, @code{diag} extracts the\n\
 
 /*
 
-%!assert(diag ([1; 2; 3])(:,:), [1, 0, 0; 0, 2, 0; 0, 0, 3]);
+%!assert(full (diag ([1; 2; 3])), [1, 0, 0; 0, 2, 0; 0, 0, 3]);
 %!assert(diag ([1; 2; 3], 1), [0, 1, 0, 0; 0, 0, 2, 0; 0, 0, 0, 3; 0, 0, 0, 0]);
 %!assert(diag ([1; 2; 3], 2), [0, 0, 1, 0, 0; 0, 0, 0, 2, 0; 0, 0, 0, 0, 3; 0, 0, 0, 0, 0; 0, 0, 0, 0, 0]);
 %!assert(diag ([1; 2; 3],-1), [0, 0, 0, 0; 1, 0, 0, 0; 0, 2, 0, 0; 0, 0, 3, 0]);
@@ -1649,7 +1649,7 @@ Given a matrix argument, instead of a vector, @code{diag} extracts the\n\
 %!assert(diag ([0, 1, 0, 0; 0, 0, 2, 0; 0, 0, 0, 3; 0, 0, 0, 0], 1), [1; 2; 3]);
 %!assert(diag ([0, 0, 0, 0; 1, 0, 0, 0; 0, 2, 0, 0; 0, 0, 3, 0], -1), [1; 2; 3]);
 
-%!assert(diag (single([1; 2; 3]))(:,:), single([1, 0, 0; 0, 2, 0; 0, 0, 3]));
+%!assert(full (diag (single([1; 2; 3]))), single([1, 0, 0; 0, 2, 0; 0, 0, 3]));
 %!assert(diag (single([1; 2; 3]), 1), single([0, 1, 0, 0; 0, 0, 2, 0; 0, 0, 0, 3; 0, 0, 0, 0]));
 %!assert(diag (single([1; 2; 3]), 2), single([0, 0, 1, 0, 0; 0, 0, 0, 2, 0; 0, 0, 0, 0, 3; 0, 0, 0, 0, 0; 0, 0, 0, 0, 0]));
 %!assert(diag (single([1; 2; 3]),-1), single([0, 0, 0, 0; 1, 0, 0, 0; 0, 2, 0, 0; 0, 0, 3, 0]));
@@ -4217,11 +4217,11 @@ with @sc{Matlab}.\n\
 
 /*
 
-%!assert (eye(3)(:,:), [1, 0, 0; 0, 1, 0; 0, 0, 1]);
-%!assert (eye(2, 3)(:,:), [1, 0, 0; 0, 1, 0]);
+%!assert (full (eye(3)), [1, 0, 0; 0, 1, 0; 0, 0, 1]);
+%!assert (full (eye(2, 3)), [1, 0, 0; 0, 1, 0]);
 
-%!assert (eye(3,'single')(:,:), single([1, 0, 0; 0, 1, 0; 0, 0, 1]));
-%!assert (eye(2, 3,'single')(:,:), single([1, 0, 0; 0, 1, 0]));
+%!assert (full (eye(3,'single')), single([1, 0, 0; 0, 1, 0; 0, 0, 1]));
+%!assert (full (eye(2, 3,'single')), single([1, 0, 0; 0, 1, 0]));
 
 %!assert (eye(3,'int8'), int8([1, 0, 0; 0, 1, 0; 0, 0, 1]));
 %!assert (eye(2, 3,'int8'), int8([1, 0, 0; 0, 1, 0]));

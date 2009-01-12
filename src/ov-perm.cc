@@ -99,6 +99,11 @@ octave_perm_matrix::do_index_op (const octave_value_list& idx,
                 p = p * PermMatrix (idx1, true);
               retval = octave_value (p, is_single_type ());
             }
+          else
+            {
+              retval = this;
+              this->count++;
+            }
         }
     }
 

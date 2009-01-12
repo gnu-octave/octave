@@ -1,12 +1,20 @@
 2009-01-12  Jaroslav Hajek  <highegg@gmail.com>
 
+	* ov-perm.cc (octave_perm_matrix::do_index_op): Return shallow copy
+	when indexed by (:,:).
+	* ov-base-mat.cc (octave_base_diag::do_index_op): Return shallow copy
+	when indexed by (:,:). Optimize indexing equivalent to resizing.
+	* data.cc: Fix tests.
+	* mappers.cc: Fix tests.
+
+2009-01-12  Jaroslav Hajek  <highegg@gmail.com>
+
 	* ov-base-diag.h, ov-base-mat.h, ov-base-scalar.h, ov-base-sparse.h,
 	ov-base.cc, ov-base.h, ov-perm.h, ov-range.h, ov.h: Add full_value
 	methods to octave_value, octave_base_value and its relevant
 	subclasses.
 	* data.cc (Ffull): New DEFUN.
 	* DLD-FUNCTIONS/sparse.cc (Ffull): move to data.cc.
-
 2009-01-11  Jaroslav Hajek  <highegg@gmail.com>
 	
 	* ov.h (octave_value::is_copy_of): New method.

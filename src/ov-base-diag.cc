@@ -86,8 +86,6 @@ octave_base_diag<DMT, MT>::do_index_op (const octave_value_list& idx,
   // This hack is to allow constructing permutation matrices using
   // eye(n)(p,:), eye(n)(:,q) && eye(n)(p,q) where p & q are permutation
   // vectors. 
-  // Note that, for better consistency, eye(n)(:,:) still converts to a full
-  // matrix.
   // FIXME: This check is probably unnecessary for complex matrices. 
   if (! error_state && nidx == 2 && matrix.is_multiple_of_identity (one))
     {
@@ -108,6 +106,11 @@ octave_base_diag<DMT, MT>::do_index_op (const octave_value_list& idx,
           else if (right)
               retval = octave_value (PermMatrix (idx1, true),
                                      is_single_type ());
+          else
+            {
+              retval = this;
+              this->count++;
+            }
         }
     }
 
@@ -119,6 +122,20 @@ octave_base_diag<DMT, MT>::do_index_op (const octave_value_list& idx,
         {
           // FIXME: the proxy mechanism of DiagArray2 causes problems here.
           retval = el_type (matrix.checkelem (idx0(0), idx1(0)));
+        }
+      else if (nidx == 2 && ! resize_ok)
+        {
+          octave_idx_type m = idx0.length (matrix.rows ());
+          octave_idx_type n = idx1.length (matrix.columns ());
+          if (idx0.is_colon_equiv (m) && idx1.is_colon_equiv (n)
+              && m <= matrix.rows () && n <= matrix.rows ())
+            {
+              DMT rm (matrix);
+              rm.resize (m, n);
+              retval = rm;
+            }
+          else
+            retval = to_dense ().do_index_op (idx, resize_ok);
         }
       else
         retval = to_dense ().do_index_op (idx, resize_ok);

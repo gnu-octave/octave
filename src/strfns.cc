@@ -112,7 +112,8 @@ char ([97, 98, 99], \"\", @{\"98\", \"99\", 100@}, [\"num\", \"bers\"])\n\
 
       for (int i = 0; i < nargin; i++)
 	{
-	  string_vector s = args_as_strings.pop ();
+	  string_vector s = args_as_strings.front ();
+	  args_as_strings.pop ();
 
 	  int n = s.length ();
 
@@ -231,7 +232,8 @@ strvcat ([97, 98, 99], \"\", @{\"98\", \"99\", 100@}, [\"num\", \"bers\"])\n\
 
       for (int i = 0; i < nargin; i++)
 	{
-	  string_vector s = args_as_strings.pop ();
+	  string_vector s = args_as_strings.front ();
+	  args_as_strings.pop ();
 
 	  int n = s.length ();
 

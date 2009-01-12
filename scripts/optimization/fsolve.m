@@ -18,49 +18,49 @@
 ##
 ## Author: Jaroslav Hajek <highegg@gmail.com>
 
-# -*- texinfo -*-
-# @deftypefn{Function File} {} fsolve(@var{fcn}, @var{x0}, @var{options})
-# @deftypefnx{Function File} {[@var{x}, @var{fvec}, @var{info}, @var{output}, @var{fjac}]} = fsolve (@var{fcn}, @dots{})
-# Solves a system of nonlinear equations defined by the function @var{fcn}.
-# @var{fcn} should accepts a vector (array) defining the unknown variables,
-# and return a vector of left-hand sides of the equations. Right-hand sides
-# are defined to be zeros.
-# In other words, this function attempts to determine a vector @var{X} such 
-# that @code{@var{fcn}(@var{X})} gives (approximately) all zeros.
-# @var{x0} determines a starting guess. The shape of @var{x0} is preserved
-# in all calls to @var{fcn}, but otherwise it is treated as a column vector.
-# @var{options} is a structure specifying additional options. Currently, fsolve
-# recognizes these options: FunValCheck, OutputFcn, TolX, TolFun, MaxIter,
-# MaxFunEvals and Jacobian. 
-#
-# If Jacobian is 'on', it specifies that @var{fcn}, called with 2 output arguments,
-# also returns the Jacobian matrix of right-hand sides at the requested point.
-# TolX specifies the termination tolerance in the unknown variables, while
-# TolFun is a tolerance for equations. Default is @code{1e1*eps}
-# for TolX and @code{1e2*eps} for TolFun.
-# For description of the other options, see @code{optimset}.
-#
-# On return, @var{fval} contains the value of the function @var{fcn}
-# evaluated at @var{x}, and @var{info} may be one of the following values:
-# 
-# @table @asis
-# @item 1
-# Converged to a solution point. Relative residual error is less than specified
-# by TolFun.
-# @item 2
-# Last relative step size was less that TolX.
-# @item 3
-# Last relative decrease in residual was less than TolF. 
-# @item 0
-# Iteration limit exceeded.
-# @item -3
-# The trust region radius became excessively small. 
-# @end table
-#
-# Note: If you only have a single nonlinear equation of one variable, using 
-# @code{fzero} is usually a much better idea.
-# @seealso{fzero,optimset}
-# @end deftypefn
+## -*- texinfo -*-
+## @deftypefn{Function File} {} fsolve(@var{fcn}, @var{x0}, @var{options})
+## @deftypefnx{Function File} {[@var{x}, @var{fvec}, @var{info}, @var{output}, @var{fjac}]} = fsolve (@var{fcn}, @dots{})
+## Solves a system of nonlinear equations defined by the function @var{fcn}.
+## @var{fcn} should accepts a vector (array) defining the unknown variables,
+## and return a vector of left-hand sides of the equations. Right-hand sides
+## are defined to be zeros.
+## In other words, this function attempts to determine a vector @var{X} such 
+## that @code{@var{fcn}(@var{X})} gives (approximately) all zeros.
+## @var{x0} determines a starting guess. The shape of @var{x0} is preserved
+## in all calls to @var{fcn}, but otherwise it is treated as a column vector.
+## @var{options} is a structure specifying additional options. Currently, fsolve
+## recognizes these options: FunValCheck, OutputFcn, TolX, TolFun, MaxIter,
+## MaxFunEvals and Jacobian. 
+##
+## If Jacobian is 'on', it specifies that @var{fcn}, called with 2 output arguments,
+## also returns the Jacobian matrix of right-hand sides at the requested point.
+## TolX specifies the termination tolerance in the unknown variables, while
+## TolFun is a tolerance for equations. Default is @code{1e1*eps}
+## for TolX and @code{1e2*eps} for TolFun.
+## For description of the other options, see @code{optimset}.
+##
+## On return, @var{fval} contains the value of the function @var{fcn}
+## evaluated at @var{x}, and @var{info} may be one of the following values:
+## 
+## @table @asis
+## @item 1
+## Converged to a solution point. Relative residual error is less than specified
+## by TolFun.
+## @item 2
+## Last relative step size was less that TolX.
+## @item 3
+## Last relative decrease in residual was less than TolF. 
+## @item 0
+## Iteration limit exceeded.
+## @item -3
+## The trust region radius became excessively small. 
+## @end table
+##
+## Note: If you only have a single nonlinear equation of one variable, using 
+## @code{fzero} is usually a much better idea.
+## @seealso{fzero,optimset}
+## @end deftypefn
 
 function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options)
 
@@ -79,12 +79,12 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options)
   funvalchk = strcmp (optimget (options, "FunValCheck", "off"), "on");
 
   if (funvalchk)
-    # replace fun with a guarded version
+    ## replace fun with a guarded version
     fun = @(x) guarded_eval (fun, x);
   endif
 
-  # These defaults are rather stringent. I think that normally, user prefers
-  # accuracy to performance.
+  ## These defaults are rather stringent. I think that normally, user
+  ## prefers accuracy to performance.
 
   macheps = eps (class (x0));
 
@@ -92,7 +92,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options)
   tolf = optimget (options, "TolFun",1e2*macheps);
 
   factor = 100;
-  # FIXME: TypicalX corresponds to user scaling (???)
+  ## FIXME: TypicalX corresponds to user scaling (???)
   autodg = true;
 
   niter = 1; nfev = 0;
@@ -100,11 +100,11 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options)
   x = x0(:);
   info = 0;
 
-  # outer loop
+  ## outer loop
   while (niter < maxiter && nfev < maxfev && ! info)
 
-    # calc func value and jacobian (possibly via FD)
-    # handle arbitrary shapes of x and f and remember them
+    ## calc func value and jacobian (possibly via FD)
+    ## handle arbitrary shapes of x and f and remember them
     if (has_jac)
       [fvec, fjac] = fcn (reshape (x, xsiz));
       nfev ++;
@@ -118,22 +118,21 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options)
     m = length (fvec);
     n = length (x);
     if (m < n)
-      error ("fsolve:under", "cannot solve underdetermined systems");
+      error ("fsolve: cannot solve underdetermined systems");
     elseif (m > n && niter == 1)
       if (isempty (optimget (options, "TolFun")))
-	warning (["An overdetermined system cannot usually be solved exactly. ", ...
-	"Consider specifying the TolFun option."]);
+	warning ("an overdetermined system cannot usually be solved exactly; consider specifying the TolFun option");
       endif
     endif
     
-    # get QR factorization of the jacobian
+    ## get QR factorization of the jacobian
     if (pivoting)
       [q, r, p] = qr (fjac);
     else
       [q, r] = qr (fjac);
     endif
 
-    # get column norms, use them as scaling factor
+    ## get column norms, use them as scaling factor
     jcn = norm (fjac, 'columns').';
     if (niter == 1)
       if (autodg)
@@ -144,20 +143,20 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options)
       delta = factor * xn;
     endif
 
-    # rescale if necessary
+    ## rescale if necessary
     if (autodg)
       dg = max (dg, jcn);
     endif
 
     nfail = 0;
     nsuc = 0;
-    # inner loop
+    ## inner loop
     while (niter <= maxiter && nfev < maxfev && ! info)
 
       qtf = q'*fvec;
 
-      # get TR model (dogleg) minimizer
-      # in case of an overdetermined system, get lsq solution
+      ## get TR model (dogleg) minimizer
+      ## in case of an overdetermined system, get lsq solution
       s = - __dogleg__ (r(1:n,:), qtf(1:n), dg, delta);
       if (pivoting)
 	s = p * s;
@@ -172,13 +171,13 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options)
       fn1 = norm (fvec1);
 
       if (fn1 < fn)
-        # scaled actual reduction
+        ## scaled actual reduction
         actred = 1 - (fn1/fn)^2;
       else
         actred = -1;
       endif
 
-      # scaled predicted reduction, and ratio
+      ## scaled predicted reduction, and ratio
       if (pivoting)
 	w = qtf + r*(p'*s);
       else
@@ -193,13 +192,13 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options)
         ratio = 0;
       endif
 
-      # update delta
+      ## update delta
       if (ratio < 0.1)
         nsuc = 0;
         nfail ++;
         delta *= 0.5;
         if (delta <= sqrt (macheps)*xn)
-          # trust region became uselessly small
+          ## trust region became uselessly small
           info = -3;
           break;
         endif
@@ -214,7 +213,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options)
       endif
 
       if (ratio >= 1e-4)
-        # successful iteration
+        ## successful iteration
         x += s;
         xn = norm (dg .* x);
         fvec = fvec1;
@@ -222,51 +221,53 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options)
         niter ++;
       endif
 
-      # Tests for termination conditions. A mysterious place, anything can
-      # happen if you change something here...
+      ## Tests for termination conditions. A mysterious place, anything
+      ## can happen if you change something here...
       
-      # The rule of thumb (which I'm not sure M*b is quite following) is that
-      # for a tolerance that depends on scaling, only 0 makes sense as a
-      # default value. But 0 usually means uselessly long iterations,
-      # so we need scaling-independent tolerances wherever possible.
+      ## The rule of thumb (which I'm not sure M*b is quite following)
+      ## is that for a tolerance that depends on scaling, only 0 makes
+      ## sense as a default value. But 0 usually means uselessly long
+      ## iterations, so we need scaling-independent tolerances wherever
+      ## possible.
 
-      # XXX: why tolf*n*xn? If abs (e) ~ abs(x) * eps is a vector of
-      # perturbations of x, then norm (fjac*e) <= eps*n*xn, i.e. by tolf ~
-      # eps we demand as much accuracy as we can expect. 
+      ## FIXME -- why tolf*n*xn? If abs (e) ~ abs(x) * eps is a vector
+      ## of perturbations of x, then norm (fjac*e) <= eps*n*xn, i.e. by
+      ## tolf ~ eps we demand as much accuracy as we can expect.
       if (fn <= tolf*n*xn)
         info = 1;
-      # The following tests done only after successful step.
+	## The following tests done only after successful step.
       elseif (actred > 0)
-        # This one is classic. Note that we use scaled variables again, but
-        # compare to scaled step, so nothing bad.
+        ## This one is classic. Note that we use scaled variables again,
+	## but compare to scaled step, so nothing bad.
         if (sn <= tolx*xn)
           info = 2;
-        # Again a classic one. It seems weird to use the same tolf for two
-        # different tests, but that's what M*b manual appears to say.
+          ## Again a classic one. It seems weird to use the same tolf
+	  ## for two different tests, but that's what M*b manual appears
+	  ## to say.
         elseif (actred < tolf)
           info = 3;
         endif
       endif
 
-      # criterion for recalculating jacobian 
+      ## criterion for recalculating jacobian 
       if (nfail == 2)
         break;
       endif
 
-      # compute the scaled Broyden update
+      ## compute the scaled Broyden update
       u = (fvec1 - q*w) / sn; 
       v = dg .* ((dg .* s) / sn);
       if (pivoting)
 	v = p'*v;
       endif
 
-      # update the QR factorization
+      ## update the QR factorization
       [q, r] = qrupdate (q, r, u, v);
 
     endwhile
   endwhile
 
-  # restore original shapes
+  ## restore original shapes
   x = reshape (x, xsiz);
   fvec = reshape (fvec, fsiz);
 
@@ -275,14 +276,14 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options)
 
 endfunction
 
-# an assistant function that evaluates a function handle and checks for bad
-# results.
+## An assistant function that evaluates a function handle and checks for
+## bad results.
 function fx = guarded_eval (fun, x)
   fx = fun (x);
   if (! all (isreal (fx)))
-    error ("fsolve:notreal", "fsolve: non-real value encountered"); 
+    error ("fsolve: non-real value encountered"); 
   elseif (any (isnan (fx)))
-    error ("fsolve:isnan", "fsolve: NaN value encountered"); 
+    error ("fsolve: NaN value encountered"); 
   endif
 endfunction
 

@@ -71,12 +71,12 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options)
   xsiz = size (x0);
   n = numel (x0);
 
-  has_jac = strcmp (optimget (options, "Jacobian", "off"), "on");
+  has_jac = strcmpi (optimget (options, "Jacobian", "off"), "on");
   maxiter = optimget (options, "MaxIter", Inf);
   maxfev = optimget (options, "MaxFunEvals", Inf);
   outfcn = optimget (options, "OutputFcn");
   pivoting = optimget (options, "Pivoting", false);
-  funvalchk = strcmp (optimget (options, "FunValCheck", "off"), "on");
+  funvalchk = strcmpi (optimget (options, "FunValCheck", "off"), "on");
 
   if (funvalchk)
     ## replace fun with a guarded version
@@ -89,13 +89,14 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options)
   macheps = eps (class (x0));
 
   tolx = optimget (options, "TolX", 1e1*macheps);
-  tolf = optimget (options, "TolFun",1e2*macheps);
+  tolf = optimget (options, "TolFun", 1e2*macheps);
 
   factor = 100;
   ## FIXME: TypicalX corresponds to user scaling (???)
   autodg = true;
 
-  niter = 1; nfev = 0;
+  niter = 1;
+  nfev = 0;
 
   x = x0(:);
   info = 0;

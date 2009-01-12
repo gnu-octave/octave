@@ -18,56 +18,59 @@
 ##
 ## Author: Jaroslav Hajek <highegg@gmail.com>
 
-# -*- texinfo -*-
-# @deftypefn{Function File}{[@var{x}, @var{fval}, @var{info}, @var{output}] =} fzero (@var{fun}, @var{x0}, @var{options})
-# Finds a zero point of a univariate function. @var{fun} should be a function
-# handle or name. @var{x0} specifies a starting point. @var{options} is a
-# structure specifying additional options. Currently, fzero recognizes these
-# options: FunValCheck, OutputFcn, TolX, MaxIter, MaxFunEvals. 
-# For description of these options, see @code{optimset}.
-# 
-# On exit, the function returns @var{x}, the approximate zero point
-# and @var{fval}, the function value thereof.
-# @var{info} is an exit flag that can have these values:
-# @itemize
-# @item 1
-# The algorithm converged to a solution.
-# @item 0
-# Maximum number of iterations or function evaluations has been exhausted.
-# @item -1
-# The algorithm has been terminated from user output function.
-# @item -2 
-# A general unexpected error.
-# @item -3
-# A non-real value encountered.
-# @item -4
-# A NaN value encountered.
-# @end itemize
-# @seealso{optimset, fminbnd, fsolve} 
-# @end deftypefn
+## -*- texinfo -*-
+## @deftypefn{Function File}{[@var{x}, @var{fval}, @var{info}, @var{output}] =} fzero (@var{fun}, @var{x0}, @var{options})
+## Finds a zero point of a univariate function. @var{fun} should be a function
+## handle or name. @var{x0} specifies a starting point. @var{options} is a
+## structure specifying additional options. Currently, fzero recognizes these
+## options: FunValCheck, OutputFcn, TolX, MaxIter, MaxFunEvals. 
+## For description of these options, see @code{optimset}.
+## 
+## On exit, the function returns @var{x}, the approximate zero point
+## and @var{fval}, the function value thereof.
+## @var{info} is an exit flag that can have these values:
+## @itemize
+## @item 1
+## The algorithm converged to a solution.
+## @item 0
+## Maximum number of iterations or function evaluations has been exhausted.
+## @item -1
+## The algorithm has been terminated from user output function.
+## @item -2 
+## A general unexpected error.
+## @item -3
+## A non-real value encountered.
+## @item -4
+## A NaN value encountered.
+## @end itemize
+## @seealso{optimset, fminbnd, fsolve} 
+## @end deftypefn
 
-# This is essentially the ACM algorithm 748: Enclosing Zeros of Continuous
-# Functions due to Alefeld, Potra and Shi, ACM Transactions on Mathematical
-# Software, Vol. 21, No. 3, September 1995.
-# Although the workflow should be the same, the structure of the algorithm has
-# been transformed non-trivially; instead of the authors' approach of
-# sequentially calling building blocks subprograms we implement here a FSM
-# version using one interior point determination and one bracketing per
-# iteration, thus reducing the number of temporary variables and simplifying
-# the algorithm structure. Further, this approach reduces the need for external
-# functions and error handling. The algorithm has also been slightly modified.
-#
+## This is essentially the ACM algorithm 748: Enclosing Zeros of
+## Continuous Functions due to Alefeld, Potra and Shi, ACM Transactions
+## on Mathematical Software, Vol. 21, No. 3, September 1995. Although
+## the workflow should be the same, the structure of the algorithm has
+## been transformed non-trivially; instead of the authors' approach of
+## sequentially calling building blocks subprograms we implement here a
+## FSM version using one interior point determination and one bracketing
+## per iteration, thus reducing the number of temporary variables and
+## simplifying the algorithm structure. Further, this approach reduces
+## the need for external functions and error handling. The algorithm has
+## also been slightly modified.
+
 function [x, fval, info, output] = fzero (fun, x0, options = struct ())
+
   if (nargin < 2 || nargin > 3)
     print_usage ();
   endif
+
   if (ischar (fun))
     fun = str2func (fun);
   endif
 
-  # TODO
-  #displev = optimget (options, "Display", "notify");
-  funvalchk = strcmp (optimget (options, "FunValCheck", "off"), "on");
+  ## TODO
+  ## displev = optimget (options, "Display", "notify");
+  funvalchk = strcmpi (optimget (options, "FunValCheck", "off"), "on");
   outfcn = optimget (options, "OutputFcn");
   tolx = optimget (options, "TolX", 0);
   maxiter = optimget (options, "MaxIter", Inf);
@@ -76,23 +79,27 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
   persistent mu = 0.5;
 
   if (funvalchk)
-    # replace fun with a guarded version
+    ## replace fun with a guarded version
     fun = @(x) guarded_eval (fun, x);
   endif
 
-  info = 0; # the default exit flag if exceeded number of iterations
-  niter = 0; nfev = 0;
+  ## the default exit flag if exceeded number of iterations
+  info = 0;
+  niter = 0;
+  nfev = 0;
 
   x = fval = a = fa = b = fb = NaN;
 
-  # prepare...
-  a = x0(1);  fa = fun (a); 
+  ## prepare...
+  a = x0(1);
+  fa = fun (a); 
   nfev = 1;
   if (length (x0) > 1)
     b = x0(2);
-    fb = fun (b); nfev += 1;
+    fb = fun (b);
+    nfev += 1;
   else
-    # try to get b
+    ## try to get b
     if (a == 0)
       aa = 1;
     else
@@ -107,12 +114,17 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
   endif
 
   if (b < a)
-    u = a; a = b; b = u;
-    fu = fa; fa = fb; fb = fu;
+    u = a;
+    a = b;
+    b = u;
+ 
+    fu = fa;
+    fa = fb;
+    fb = fu;
   endif
 
   if (! (sign (fa) * sign (fb) <= 0))
-    error ("fzero:bracket", "fzero: not a valid initial bracketing");
+    error ("fzero: not a valid initial bracketing");
   endif
 
   itype = 1;
@@ -129,17 +141,17 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
   while (niter < maxiter && nfev < maxfev)
     switch (itype)
     case 1
-      # the initial test
+      ## the initial test
       if (b - a <= 2*(2 * abs (u) * eps + tolx))
         x = u; fval = fu;
         info = 1;
         break;
       endif
       if (abs (fa) <= 1e3*abs (fb) && abs (fb) <= 1e3*abs (fa))
-        # secant step
+        ## secant step
         c = u - (a - b) / (fa - fb) * fu;
       else
-        # bisection step
+        ## bisection step
         c = 0.5*(a + b);
       endif
       d = u; fd = fu;
@@ -147,7 +159,7 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
     case {2, 3}
       l = length (unique ([fa, fb, fd, fe]));
       if (l == 4)
-        # inverse cubic interpolation
+        ## inverse cubic interpolation
         q11 = (d - e) * fd / (fe - fd);
         q21 = (b - d) * fb / (fd - fb);
         q31 = (a - b) * fa / (fb - fa);
@@ -160,11 +172,11 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
         c = a + q31 + q32 + q33;
       endif
       if (l < 4 || sign (c - a) * sign (c - b) > 0)
-        # quadratic interpolation + newton
+        ## quadratic interpolation + newton
         a0 = fa;
         a1 = (fb - fa)/(b - a);
         a2 = ((fd - fb)/(d - b) - a1) / (d - a);
-        # modification 1: this is simpler and does not seem to be worse
+        ## modification 1: this is simpler and does not seem to be worse
         c = a - a0/a1;
         if (a2 != 0)
           c = a - a0/a1;
@@ -181,20 +193,20 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
       endif
       itype += 1; 
     case 4
-      # double secant step
+      ## double secant step
       c = u - 2*(b - a)/(fb - fa)*fu;
-      # bisect if too far
+      ## bisect if too far
       if (abs (c - u) > 0.5*(b - a))
         c = 0.5 * (b + a);
       endif
       itype = 5;
     case 5
-      # bisection step
+      ## bisection step
       c = 0.5 * (b + a);
       itype = 2;
     endswitch
 
-    # don't let c come too close to a or b
+    ## don't let c come too close to a or b
     delta = 2*0.7*(2 * abs (u) * eps + tolx);
     if ((b - a) <= 2*delta)
       c = (a + b)/2;
@@ -202,22 +214,22 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
       c = max (a + delta, min (b - delta, c));
     endif
 
-    # calculate new point
+    ## calculate new point
     x = c;
     fval = fc = fun (c); 
     niter ++; nfev ++;
 
-    # modification 2: skip inverse cubic interpolation if nonmonotonicity is
-    # detected
+    ## modification 2: skip inverse cubic interpolation if
+    ## nonmonotonicity is detected
     if (sign (fc - fa) * sign (fc - fb) >= 0)
-      # the new point broke monotonicity. 
-      # disable inverse cubic 
+      ## the new point broke monotonicity. 
+      ## disable inverse cubic 
       fe = fc;
     else
       e = d; fe = fd;
     endif
 
-    # bracketing
+    ## bracketing
     if (sign (fa) * sign (fc) < 0)
       d = b; fd = fb;
       b = c; fb = fc;
@@ -229,11 +241,11 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
       info = 1;
       break;
     else
-      # this should never happen.
-      #error ("fzero:bracket", "fzero: zero point is not bracketed");
+      ## this should never happen.
+      error ("fzero: zero point is not bracketed");
     endif
 
-    # if there's an output function, use it now
+    ## if there's an output function, use it now
     if (outfcn)
       optv.funccount = niter + 2;
       optv.fval = fval;
@@ -254,7 +266,7 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
       break;
     endif
 
-    # skip bisection step if successful reduction
+    ## skip bisection step if successful reduction
     if (itype == 5 && (b - a) <= mba)
       itype = 2;
     endif
@@ -270,15 +282,15 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
 
 endfunction
 
-# an assistant function that evaluates a function handle and checks for bad
-# results.
+## an assistant function that evaluates a function handle and checks for
+## bad results.
 function fx = guarded_eval (fun, x)
   fx = fun (x);
   fx = fx(1);
   if (! isreal (fx))
-    error ("fzero:notreal", "fzero: non-real value encountered"); 
+    error ("fzero: non-real value encountered"); 
   elseif (isnan (fx))
-    error ("fzero:isnan", "fzero: NaN value encountered"); 
+    error ("fzero: NaN value encountered"); 
   endif
 endfunction
 

@@ -1,6 +1,7 @@
 2009-01-12  John W. Eaton  <jwe@octave.org>
 
-	* optimization/fsolve.m: Style fixes.
+	* optimization/fzero.m, optimization/fsolve.m: Style fixes.
+	Use strcmpi to compare options.
 
 2009-01-12  Thorsten Meyer  <thorsten.meyier@gmx.de>
 

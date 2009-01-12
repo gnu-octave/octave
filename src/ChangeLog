@@ -1,3 +1,7 @@
+2009-01-12  Thorsten Meyer  <thorsten.meyier@gmx.de>
+
+	* strfns.cc (Fstrvcap): New function.
+	
 2008-11-29  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
         * strfns.cc (Fchar, Fischar, Fstrncmp, Flist_in_columns):

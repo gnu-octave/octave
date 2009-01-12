@@ -152,6 +152,123 @@ char ([97, 98, 99], \"\", @{\"98\", \"99\", 100@}, [\"num\", \"bers\"])\n\
 %!assert(strcmp (char ("a", "bb", "ccc"), ["a  "; "bb "; "ccc"]));
 */
 
+DEFUN (strvcat, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} strvcat (@var{x})\n\
+@deftypefnx {Built-in Function} {} strvcat (@var{cell_array})\n\
+@deftypefnx {Built-in Function} {} strvcat (@var{s1}, @var{s2}, @dots{})\n\
+Create a character array from one or more numeric matrices, character\n\
+matrices or cell arrays.  For numerical input, each element is converted\n\
+to the corresponding ASCII character.  The arguments (and elements of\n\
+cell array(s)) are concatenated vertically.\n\
+The returned values are padded with blanks as needed to make each row\n\
+of the string array have the same length.  Unlike @code{char}, empty\n\
+strings are removed.\n\
+For example,\n\
+\n\
+@example\n\
+@group\n\
+strvcat ([97, 98, 99], \"\", @{\"98\", \"99\", 100@}, [\"num\", \"bers\"])\n\
+     @result{} [\"abc    \"\n\
+        \"98     \"\n\
+        \"99     \"\n\
+        \"d      \"\n\
+        \"numbers\"]\n\
+@end group\n\
+@end example\n\
+\n\
+@seealso{char, strcat, cstrcat}\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  int nargin = args.length ();
+
+  if (nargin > 0)
+    {
+      int n_elts = 0;
+
+      int max_len = 0;
+
+      for (int i = 0; i < nargin; i++)
+	{
+	  string_vector s = args(i).all_strings ();
+
+	  if (error_state)
+	    {
+	      error ("strvcat: unable to convert some args to strings");
+	      return retval;
+	    }
+
+          int n = s.length ();
+
+          // do not count empty strings in calculation of number of elements
+          if (n > 0)
+            {
+              for (int j = 0; j < n; j++)
+                {
+                  if (s[j].length () > 0)
+                    n_elts++;
+                }
+            }
+
+	  int s_max_len = s.max_length ();
+
+	  if (s_max_len > max_len)
+	    max_len = s_max_len;
+	}
+
+      string_vector result (n_elts);
+
+      int k = 0;
+
+      for (int i = 0; i < nargin; i++)
+	{
+	  string_vector s = args(i).all_strings ();
+
+	  int n = s.length ();
+
+          if (n > 0)
+            {
+	      for (int j = 0; j < n; j++)
+	        {
+	          std::string t = s[j];
+                  if (t.length () > 0)
+                    {
+                      int t_len = t.length ();
+
+                      if (max_len > t_len)
+                        t += std::string (max_len - t_len, ' ');
+
+                      result[k++] = t;
+                    }
+	        }
+            }
+	}
+
+      retval = octave_value (result, '\'');
+    }
+  else
+    print_usage ();
+
+  return retval;
+}
+
+/*
+%!error <Invalid call to strvcat> strvcat()
+%!assert (strvcat (""), "");
+%!assert (strvcat (100) == "d");
+%!assert (all(strvcat (100,100) == ["d";"d"]));
+%!assert (all(strvcat ({100,100}) == ["d";"d"]));
+%!assert (all(strvcat ([100,100]) == ["dd"]));
+%!assert (all(strvcat ({100,{100}}) == ["d";"d"]));
+%!assert (all(strvcat (100, [], 100) == ["d";"d"]))
+%!assert (all(strvcat ({100, [], 100}) == ["d";"d"]))
+%!assert (all(strvcat ({100,{100, {""}}}) == ["d";"d"]))
+%!assert (all(strvcat (["a";"be"], {"c", 100}) == ["a";"be";"c";"d"]))
+%!assert(strcmp (strvcat ("a", "bb", "ccc"), ["a  "; "bb "; "ccc"]));
+*/
+
 
 DEFUN (ischar, args, ,
   "-*- texinfo -*-\n\

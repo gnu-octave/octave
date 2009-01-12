@@ -84,6 +84,8 @@ octave_base_sparse : public octave_base_value
 
   octave_value squeeze (void) const { return matrix.squeeze (); }
 
+  octave_value full_value (void) const { return matrix.matrix_value (); }
+
   octave_value subsref (const std::string& type,
 			const std::list<octave_value_list>& idx);
 

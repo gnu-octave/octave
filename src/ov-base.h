@@ -148,6 +148,8 @@ public:
 
   virtual octave_value squeeze (void) const;
 
+  virtual octave_value full_value (void) const;
+
   virtual octave_base_value *try_narrowing_conversion (void) { return 0; }
 
   virtual octave_value

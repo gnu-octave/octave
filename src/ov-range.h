@@ -119,6 +119,8 @@ public:
 
   octave_value squeeze (void) const { return range; }
 
+  octave_value full_value (void) const { return range.matrix_value (); }
+
   bool is_defined (void) const { return true; }
 
   bool is_constant (void) const { return true; }

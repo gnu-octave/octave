@@ -74,6 +74,13 @@ octave_base_value::squeeze (void) const
 }
 
 octave_value
+octave_base_value::full_value (void) const
+{
+  gripe_wrong_type_arg ("full: invalid operation for %s type", type_name ());
+  return octave_value ();
+}
+
+octave_value
 octave_base_value::subsref (const std::string&,
 			    const std::list<octave_value_list>&)
 {

@@ -327,6 +327,10 @@ public:
   octave_value squeeze (void) const
     { return rep->squeeze (); }
 
+  // The result of full().
+  octave_value full_value (void) const
+    { return rep->full_value (); }
+
   octave_base_value *try_narrowing_conversion (void)
     { return rep->try_narrowing_conversion (); }
 

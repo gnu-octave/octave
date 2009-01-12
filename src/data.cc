@@ -4584,6 +4584,23 @@ a minimum of two dimensions and row vectors are left unchanged.\n\
   return retval;
 }
 
+DEFUN (full, args, ,
+    "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{FM} =} full (@var{SM})\n\
+ returns a full storage matrix from a sparse, diagonal, permutation matrix or a range.\n\
+@seealso{sparse}\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  if (args.length () == 1)
+    retval = args(0).full_value ();
+  else
+    print_usage ();    
+
+  return retval;
+}
+
 // Compute various norms of the vector X.
 
 DEFUN (norm, args, ,

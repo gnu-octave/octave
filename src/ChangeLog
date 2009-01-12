@@ -1,3 +1,8 @@
+2008-11-29  Thorsten Meyer  <thorsten.meyier@gmx.de>
+
+        * strfns.cc (Fchar, Fischar, Fstrncmp, Flist_in_columns):
+	Improve documentation strings.  Add examples and tests.
+        
 2009-01-12  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-perm.cc (octave_perm_matrix::do_index_op): Return shallow copy

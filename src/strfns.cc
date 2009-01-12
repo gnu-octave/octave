@@ -45,26 +45,26 @@ DEFUN (char, args, ,
 @deftypefn {Built-in Function} {} char (@var{x})\n\
 @deftypefnx {Built-in Function} {} char (@var{cell_array})\n\
 @deftypefnx {Built-in Function} {} char (@var{s1}, @var{s2}, @dots{})\n\
-Create a string array from a numeric matrix, cell array, or list of\n\
-\n\
-If the argument is a numeric matrix, each element of the matrix is\n\
-converted to the corresponding ASCII character.  For example,\n\
+Create a string array from one or more numeric matrices, character\n\
+matrices or cell arrays.  For numerical input, each element is converted\n\
+to the corresponding ASCII character.  The arguments (and elements of\n\
+cell array(s)) are concatenated vertically.\n\
+The returned values are padded with blanks as needed to make each row\n\
+of the string array have the same length.  Empty strings are not removed.\n\
+For example,\n\
 \n\
 @example\n\
 @group\n\
-char ([97, 98, 99])\n\
-     @result{} \"abc\"\n\
+char ([97, 98, 99], \"\", @{\"98\", \"99\", 100@}, [\"num\", \"bers\"])\n\
+     @result{} [\"abc    \"\n\
+        \"       \"\n\
+        \"98     \"\n\
+        \"99     \"\n\
+        \"d      \"\n\
+        \"numbers\"]\n\
 @end group\n\
 @end example\n\
 \n\
-If the argument is a cell array of strings, the result is a string array\n\
-with each element corresponding to one element of the cell array.\n\
-\n\
-For multiple string arguments, the result is a string array with each\n\
-element corresponding to the arguments.\n\
-\n\
-The returned values are padded with blanks as needed to make each row\n\
-of the string array have the same length.\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -156,7 +156,7 @@ of the string array have the same length.\n\
 DEFUN (ischar, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} ischar (@var{a})\n\
-Return 1 if @var{a} is a string.  Otherwise, return 0.\n\
+Return 1 if @var{a} is a character array.  Otherwise, return 0.\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -170,6 +170,16 @@ Return 1 if @var{a} is a string.  Otherwise, return 0.\n\
 
   return retval;
 }
+
+/*
+
+%!assert (ischar ("a"), logical (1));
+%!assert (ischar (["ab";"cd"]), logical (1));
+%!assert (ischar ({"ab"}), logical (0));
+%!assert (ischar (1), logical (0));
+%!error <Invalid call to ischar.*> ischar ();
+
+ */
 
 DEFUN (strcmp, args, ,
   "-*- texinfo -*-\n\
@@ -748,6 +758,18 @@ This is just the opposite of the corresponding C library function.\n\
   return retval;
 }
 
+/*
+%!error <Invalid call to strncmp.*> strncmp ();
+%!error <Invalid call to strncmp.*> strncmp ("abc", "def");
+%!assert (strncmp ("abce", "abc", 3) == 1)
+%!assert (strncmp (100, 100, 1) == 0)
+%!assert (all (strncmp ("abce", {"abcd", "bca", "abc"}, 3) == [1, 0, 1]))
+%!assert (all (strncmp ("abc",  {"abcd", "bca", "abc"}, 4) == [0, 0, 0]))
+%!assert (all (strncmp ({"abcd", "bca", "abc"},"abce", 3) == [1, 0, 1]))
+%!assert (all (strncmp ({"abcd", "bca", "abc"},{"abcd", "bca", "abe"}, 3) == [1, 1, 0]))
+*/
+
+
 DEFUN (list_in_columns, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} list_in_columns (@var{arg}, @var{width})\n\
@@ -755,6 +777,28 @@ Return a string containing the elements of @var{arg} listed in\n\
 columns with an overall maximum width of @var{width}.  The argument\n\
 @var{arg} must be a cell array of character strings or a character array.\n\
 If @var{width} is not specified, the width of the terminal screen is used.\n\
+Newline characters are used to break the lines in the output string.\n\
+For example:\n\
+\n\
+@example\n\
+@group\n\
+list_in_columns (@{\"abc\", \"def\", \"ghijkl\", \"mnop\", \"qrs\", \"tuv\"@}, 20)\n\
+     @result{} ans = abc     mnop\n\
+            def     qrs\n\
+            ghijkl  tuv\n\
+\n\
+whos ans\n\
+     @result{}\n\
+     Variables in the current scope:\n\
+\n\
+       Attr Name        Size                     Bytes  Class\n\
+       ==== ====        ====                     =====  =====\n\
+            ans         1x37                        37  char\n\
+\n\
+     Total is 37 elements using 37 bytes\n\
+@end group\n\
+@end example\n\
+\n\
 @seealso{terminal_size}\n\
 @end deftypefn")
 {
@@ -793,6 +837,20 @@ If @var{width} is not specified, the width of the terminal screen is used.\n\
 
   return retval;
 }
+
+/*
+%!error <Invalid call to list_in_columns.*> list_in_columns ();
+%!error <Invalid call to list_in_columns.*> list_in_columns (["abc", "def"], 20, 2);
+%!error <invalid conversion from string to real scalar.*> list_in_columns (["abc", "def"], "a");
+%!test
+%!  input  = {"abc", "def", "ghijkl", "mnop", "qrs", "tuv"};
+%!  result = "abc     mnop\ndef     qrs\nghijkl  tuv\n";
+%!  assert (list_in_columns (input, 20) == result);
+%!test
+%!  input  = ["abc"; "def"; "ghijkl"; "mnop"; "qrs"; "tuv"];
+%!  result = "abc     mnop  \ndef     qrs   \nghijkl  tuv   \n";
+%!  assert (list_in_columns (input, 20) == result);
+*/
 
 /*
 ;;; Local Variables: ***

@@ -183,7 +183,7 @@ octave_cell::subsasgn (const std::string& type,
 
 	    if (! error_state)
 	      {
-		if (tmp.dims ().numel () == 1)
+		if (tmp.numel () == 1)
 		  {
 		    tmp = tmp.cell_value ()(0,0);
 
@@ -268,7 +268,7 @@ octave_cell::subsasgn (const std::string& type,
 
 		octave_base_matrix<Cell>::assign (i, tmp_cell);
 	      }
-	    else if (i.all_scalars () || do_index_op (i, true).dims ().numel () == 1)
+	    else if (i.all_scalars () || do_index_op (i, true).numel () == 1)
               // Regularize a null matrix if stored into a cell.
               octave_base_matrix<Cell>::assign (i, Cell (t_rhs.non_null_value ()));
             else if (! error_state)

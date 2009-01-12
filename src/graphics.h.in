@@ -2974,7 +2974,7 @@ public:
       color_property edgecolor , "{none}"
       radio_property erasemode , "{normal}|none|xor|background"
       bool_property editing , "off"
-      radio_property fontunits , "inches|centimeters|normalized|{points}|pixel"
+      radio_property fontunits , "inches|centimeters|normalized|{points}|pixels"
       radio_property linestyle , "{-}|--|:|-.|none"
       double_property linewidth , 0.5
       double_property margin , 1

@@ -188,7 +188,7 @@ system-dependent error message.\n\
 	  if (dir)
 	    {
 	      string_vector dirlist = dir.read ();
-	      retval(0) = Cell (dirlist.qsort ());
+	      retval(0) = Cell (dirlist.sort ());
 	      retval(1) = 0.0;
 	    }
 	  else

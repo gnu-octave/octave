@@ -255,8 +255,8 @@ keys_ok (const Octave_map& a, const Octave_map& b, string_vector& keys)
     }
   else
     {
-      string_vector a_keys = a.keys().qsort ();
-      string_vector b_keys = b.keys().qsort ();
+      string_vector a_keys = a.keys().sort ();
+      string_vector b_keys = b.keys().sort ();
 
       octave_idx_type a_len = a_keys.length ();
       octave_idx_type b_len = b_keys.length ();

@@ -83,15 +83,6 @@ string_vector::string_vector (const char * const *s, octave_idx_type n)
     elem (i) = s[i];
 }
 
-int
-string_vector::compare (const void *a_arg, const void *b_arg)
-{
-  const std::string *a = static_cast<const std::string *>  (a_arg);
-  const std::string *b = static_cast<const std::string *> (b_arg);
-
-  return a->compare (*b);
-}
-
 string_vector&
 string_vector::uniq (void)
 {

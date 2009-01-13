@@ -84,11 +84,9 @@ public:
 
   std::string operator[] (octave_idx_type i) const { return Array<std::string>::elem (i); }
 
-  static int compare (const void *a_arg, const void *b_arg);
-
-  string_vector& qsort (bool make_uniq = false)
+  string_vector& sort (bool make_uniq = false)
   {
-    Array<std::string>::qsort (compare);
+    Array<std::string>::sort ();
 
     if (make_uniq)
       uniq ();

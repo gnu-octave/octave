@@ -646,7 +646,7 @@ display_names_from_help_list (std::ostream& os, help_list *list,
     {
       os << "\n*** " << desc << ":\n\n";
 
-      symbols.qsort ();
+      symbols.sort ();
 
       symbols.list_in_columns (os);
     }
@@ -693,7 +693,7 @@ simple_help (void)
     {
       octave_stdout << "\n*** autoloaded functions:\n\n";
 
-      autoloaded.qsort ();
+      autoloaded.sort ();
 
       autoloaded.list_in_columns (octave_stdout);
     }

@@ -447,7 +447,7 @@ generate_possible_completions (const std::string& text, std::string& prefix,
 
   // Sort and remove duplicates.
 
-  names.qsort (true);
+  names.sort (true);
 
   return names;
 }

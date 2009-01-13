@@ -1,3 +1,12 @@
+2009-01-13  Jaroslav Hajek  <highegg@gmail.com>
+
+	* Array.h (Array::ArrayRep::qsort): Remove.
+	(Array::qsort): Remove.
+	* glob-match.cc (glob_match::glob): qsort -> sort.
+	* str-vec.cc (string_vector::compare): Remove.
+	* str-vec.h (string_vector::compare): Remove decl.
+	(string_vector::qsort): Rename to sort, call Array::sort.
+
 2008-12-23  David Bateman  <dbateman@free.fr>
 
 	* eigs-base.cc: New file with template wrapper for ARPACK.

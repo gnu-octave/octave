@@ -91,11 +91,6 @@ protected:
 
     T elem (octave_idx_type n) const { return data[n]; }
 
-    void qsort (int (*compare) (const void *, const void *))
-      {
-	octave_qsort (data, static_cast<size_t> (len), sizeof (T), compare);
-      }
-
   private:
 
     // No assignment!
@@ -417,15 +412,6 @@ public:
   const T *fortran_vec (void) const { return data (); }
 
   T *fortran_vec (void);
-
-  Array<T>& qsort (int (*compare) (const void *, const void *))
-    {
-      make_unique ();
-
-      rep->qsort (compare);
-
-      return *this;
-    }
 
   int ndims (void) const { return dimensions.length (); }
 

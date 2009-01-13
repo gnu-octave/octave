@@ -125,7 +125,7 @@ glob_match::glob (void)
 	}
     }
 
-  return retval.qsort ();
+  return retval.sort ();
 }
 
 /*

@@ -1,3 +1,13 @@
+2009-01-13  Jaroslav Hajek  <highegg@gmail.com>
+
+	* dirfns.cc (Freadddir): qsort -> sort.
+	* graphics.cc (maybe_set_children): Dtto.
+	* help.cc (simple_help): Dtto.
+	* input.cc (generate_possible_completions): Dtto.
+	* oct_map.cc (keys_ok): Dtto.
+	* ov-fcn-inline.cc (Finline): Dtto.
+	* variables.cc (Fisrawcommand): Dtto.
+
 2009-01-12  John W. Eaton  <jwe@octave.org>
 
 	* octave.cc (maximum_braindamage): Set confirm_recursive_rmdir to

@@ -1520,15 +1520,6 @@ base_graphics_backend::object_destroyed (const graphics_handle& h)
 }
 // ---------------------------------------------------------------------
 
-static int
-compare (const void *a_arg, const void *b_arg)
-{
-  double a = *(static_cast<const double *> (a_arg));
-  double b = *(static_cast<const double *> (b_arg));
-
-  return a > b ? 1 : (a < b) ? -1 : 0;
-}
-
 static Matrix
 maybe_set_children (const Matrix& kids, const octave_value& val)
 {
@@ -1543,8 +1534,8 @@ maybe_set_children (const Matrix& kids, const octave_value& val)
 	  Matrix t1 = kids;
 	  Matrix t2 = new_kids;
 
-	  t1.qsort (compare);
-	  t2.qsort (compare);
+	  t1.sort ();
+	  t2.sort ();
 
 	  if (t1 != t2)
 	    ok = false;

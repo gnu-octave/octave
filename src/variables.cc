@@ -208,7 +208,7 @@ is omitted, return a list of identifiers which are marked as commands with\n\
 	   p != command_set.end (); p++)
 	lst[i++] = *p;
 
-      retval = Cell (lst.qsort ());
+      retval = Cell (lst.sort ());
     }
   else if (nargin == 1)
     {
@@ -349,7 +349,7 @@ raw input commands with mark_as_rawcommand.\n\
 	   p++)
 	lst[i++] = *p;
 
-      retval = Cell (lst.qsort ());
+      retval = Cell (lst.sort ());
     }
   else if (nargin == 1)
     {

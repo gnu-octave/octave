@@ -711,7 +711,7 @@ If the second argument is an integer @var{n}, the arguments are\n\
 		}
 
 	      // Sort the arguments into ascii order.
-	      fargs.qsort ();
+	      fargs.sort ();
 	    }
 	  else if (nargin == 2 && args(1).is_numeric_type ())
 	    {

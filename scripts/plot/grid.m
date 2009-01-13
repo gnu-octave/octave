@@ -59,10 +59,10 @@ function grid (varargin)
 	  if (strcmpi (x2, "on"))
 	    minor_on = true;
 	    grid_on=true;
-	    elseif (strcmpi (x2, "off"))
-	      minor_on = false;
-	   else
-	      print_usage ();
+	  elseif (strcmpi (x2, "off"))
+	    minor_on = false;
+	  else
+	    print_usage ();
 	  endif
 	else
 	   minor_on = ! minor_on

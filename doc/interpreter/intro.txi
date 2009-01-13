@@ -113,7 +113,7 @@ octave:3> B
 @subsection Matrix Arithmetic
 
 Octave has a convenient operator notation for performing matrix
-arithmetic.  For example, to multiply the matrix @code{a} by a scalar
+arithmetic.  For example, to multiply the matrix @code{A} by a scalar
 value, type the command
 
 @example
@@ -121,7 +121,7 @@ octave:4> 2 * A
 @end example
 
 @noindent
-To multiply the two matrices @code{a} and @code{b}, type the command
+To multiply the two matrices @code{A} and @code{B}, type the command
 
 @example
 octave:5> A * B

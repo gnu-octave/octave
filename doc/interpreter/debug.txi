@@ -26,7 +26,7 @@ has stopped, and debug mode is entered, the symbol table at the point
 where execution has stopped can be examined and modified to check for
 errors.
 
-The normal commandline editing and history functions are available in
+The normal command-line editing and history functions are available in
 debug mode.
 
 @menu

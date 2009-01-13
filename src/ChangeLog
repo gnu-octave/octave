@@ -1,5 +1,14 @@
 2009-01-12  John W. Eaton  <jwe@octave.org>
 
+	* strfns.cc (Fstrcmp, Fstrncmp): Simplify by initializing all
+	elements of output to false with constructor argument.
+
+2009-01-12  Thorsten Meyer  <thorsten.meyier@gmx.de>
+
+	* strfns.cc (Fstrncmp): New test.
+	
+2009-01-12  John W. Eaton  <jwe@octave.org>
+
 	* pt-stmt.h (tree_statement::is_null_statement): New function.
 	* parse.y (set_stmt_print_flag): Return list.  Remove trailing
 	null statements from list.

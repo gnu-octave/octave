@@ -395,7 +395,7 @@ This is just the opposite of the corresponding C library function.\n\
 	    {
 	      // Broadcast the string.
 
-	      boolNDArray output (cell.dimensions);
+	      boolNDArray output (cell.dimensions, false);
 
 	      std::string s = r == 0 ? std::string () : str[0];
 
@@ -403,8 +403,6 @@ This is just the opposite of the corresponding C library function.\n\
 		{
 		  if (cell(i).is_string ())
 		    output(i) = (cell(i).string_value () == s);
-		  else
-		    output(i) = false;
 		}
 
 	      retval = output;
@@ -416,7 +414,7 @@ This is just the opposite of the corresponding C library function.\n\
 		  // Broadcast the cell.
 
 		  const dim_vector dv (r, 1);
-		  boolNDArray output (dv);
+		  boolNDArray output (dv, false);
 
 		  if (cell(0).is_string ())
 		    {
@@ -425,11 +423,6 @@ This is just the opposite of the corresponding C library function.\n\
 		      for (int i = 0; i < r; i++)
 			output(i) = (str[i] == str2);
 		    }
-		  else
-		    {
-		      for (int i = 0; i < r; i++)
-			output(i) = false;
-		    }
 
 		  retval = output;
 		}
@@ -437,7 +430,7 @@ This is just the opposite of the corresponding C library function.\n\
 		{
 		  // Must match in all dimensions.
 
-		  boolNDArray output (cell.dimensions);
+		  boolNDArray output (cell.dimensions, false);
 
 		  if (cell.length () == r)
 		    {
@@ -445,8 +438,6 @@ This is just the opposite of the corresponding C library function.\n\
 			{
 			  if (cell(i).is_string ())
 			    output(i) = (str[i] == cell(i).string_value ());
-			  else
-			    output(i) = false;
 			}
 
 		      retval = output;
@@ -483,18 +474,13 @@ This is just the opposite of the corresponding C library function.\n\
 	  const dim_vector size1 = cell1.dimensions;
 	  const dim_vector size2 = cell2.dimensions;
 
-	  boolNDArray output (size1);
+	  boolNDArray output (size1, false);
 
 	  if (r2 == 1)
 	    {
 	      // Broadcast cell2.
 
-	      if (! cell2(0).is_string ())
-		{
-		  for (int i = 0; i < r1; i++)
-		    output(i) = false;
-		}
-	      else
+	      if (cell2(0).is_string ())
 		{
 		  const std::string str2 = cell2(0).string_value ();
 
@@ -505,8 +491,6 @@ This is just the opposite of the corresponding C library function.\n\
 			  const std::string str1 = cell1(i).string_value ();
 			  output(i) = (str1 == str2);
 			}
-		      else
-			output(i) = false;
 		    }
 		}
 	    }
@@ -526,8 +510,6 @@ This is just the opposite of the corresponding C library function.\n\
 		      const std::string str2 = cell2(i).string_value ();
 		      output(i) = (str1 == str2);
 		    }
-		  else
-		    output(i) = false;
 		}
 	    }
 
@@ -689,7 +671,7 @@ This is just the opposite of the corresponding C library function.\n\
 	    {
 	      // Broadcast the string.
 
-	      boolNDArray output (cell.dimensions);
+	      boolNDArray output (cell.dimensions, false);
 
 	      if (c < n)
 		{
@@ -704,15 +686,9 @@ This is just the opposite of the corresponding C library function.\n\
 			{
 			  const std::string str2 = cell(i).string_value ();
 
-			  if (str2.length() >= n) 
-			    {
-			      if (str2.compare (0, n, str[0], 0, n) == 0)
+			  if (str2.length() >= n
+			      && str2.compare (0, n, str[0], 0, n) == 0)
 				output(i) = true;
-			      else
-				output(i) = false;
-			    }
-			  else
-			    output(i) = false;
 			}
 		    }
 		}
@@ -726,7 +702,7 @@ This is just the opposite of the corresponding C library function.\n\
 		  // Broadcast the cell.
 
 		  const dim_vector dv (r, 1);
-		  boolNDArray output (dv);
+		  boolNDArray output (dv, false);
 
 		  if (cell(0).is_string () && c >= n)
 		    {
@@ -738,20 +714,8 @@ This is just the opposite of the corresponding C library function.\n\
 			    {
 			      if (str[i].compare (0, n, str2, 0, n) == 0)
 				output(i) = true;
-			      else
-				output(i) = false;
 			    }
 			}
-		      else
-			{
-			  for (int i = 0; i < r; i++)
-			    output(i) = false;
-			}
-		    }
-		  else
-		    {
-		      for (int i = 0; i < r; i++)
-			output(i) = false;
 		    }
 
 		  retval = output;
@@ -760,14 +724,12 @@ This is just the opposite of the corresponding C library function.\n\
 		{
 		  // Must match in all dimensions.
 
-		  boolNDArray output (cell.dimensions);
+		  boolNDArray output (cell.dimensions, false);
 
 		  if (cell.numel () == r)
 		    {
 		      for (int i = 0; i < r; i++)
 			{
-			  output(i) = false;
-
 			  if (cell(i).is_string () && c >= n)
 			    {
 			      std::string str2 = cell(i).string_value ();
@@ -815,18 +777,13 @@ This is just the opposite of the corresponding C library function.\n\
 	  const dim_vector size1 = cell1.dimensions;
 	  const dim_vector size2 = cell2.dimensions;
 
-	  boolNDArray output (size1);
+	  boolNDArray output (size1, false);
 
 	  if (r2 == 1)
 	    {
 	      // Broadcast cell2.
 
-	      if (! cell2(0).is_string ())
-		{
-		  for (int i = 0; i < r1; i++)
-		    output(i) = false;
-		}
-	      else
+	      if (cell2(0).is_string ())
 		{
 		  const std::string str2 = cell2(0).string_value ();
 
@@ -839,11 +796,7 @@ This is just the opposite of the corresponding C library function.\n\
 			  if (str1.length () >= n && str2.length () >= n
 			      && str1.compare (0, n, str2, 0, n) == 0)
 			    output(i) = true;
-			  else
-			    output(i) = false;
 			}
-		      else
-			output(i) = false;
 		    }
 		}
 	    }
@@ -865,11 +818,7 @@ This is just the opposite of the corresponding C library function.\n\
 		      if (str1.length () >= n && str2.length () >= n
 			  && str1.compare (0, n, str2, 0, n) == 0)
 			output(i) = true;
-		      else
-			output(i) = false;
 		    }
-		  else
-		    output(i) = false;
 		}
 	    }
 
@@ -893,6 +842,7 @@ This is just the opposite of the corresponding C library function.\n\
 %!assert (all (strncmp ("abc",  {"abcd", "bca", "abc"}, 4) == [0, 0, 0]))
 %!assert (all (strncmp ({"abcd", "bca", "abc"},"abce", 3) == [1, 0, 1]))
 %!assert (all (strncmp ({"abcd", "bca", "abc"},{"abcd", "bca", "abe"}, 3) == [1, 1, 0]))
+%!assert (all (strncmp("abc", {"abcd", 10}, 2) == [1, 0]))
 */
 
 

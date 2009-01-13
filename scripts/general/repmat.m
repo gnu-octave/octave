@@ -51,6 +51,12 @@ function x = repmat (a, m, n)
       error ("repmat: invalid dimensional argument");
     endif
   endif
+  
+  if (all (idx < 0))
+    error ("repmat: invalid dimensions");
+  else
+    idx = max (idx, 0);
+  endif
 
   if (numel (a) == 1)
     ## optimize the scalar fill case.
@@ -121,3 +127,7 @@ endfunction
 # Test that sparsity is kept
 %!assert(sparse(4,4), repmat(sparse(2,2),[2 2]));
 
+
+%!assert (size (repmat (".", -1, 1)), [0, 1]);
+%!assert (size (repmat (".", 1, -1)), [1, 0]);
+%!error (size (repmat (".", -1, -1)));

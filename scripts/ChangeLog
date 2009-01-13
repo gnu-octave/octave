@@ -1,5 +1,7 @@
 2009-01-13  John W. Eaton  <jwe@octave.org>
 
+	* general/repmat.m: Handle negative row or column dimension.
+
 	* elfun/lcm.m, general/accumarray.m, general/bicubic.m,
 	general/cellidx.m, general/cplxpair.m, general/dblquad.m,
 	general/gradient.m, general/interp1.m , general/pol2cart.m,

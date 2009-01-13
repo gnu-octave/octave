@@ -1,3 +1,7 @@
+2009-01-13  Daniel J Sebald  <daniel.sebald@ieee.org>
+
+	* set/unique.m: Fix for vertical array inputs.
+
 2009-01-12  John W. Eaton  <jwe@octave.org>
 
 	* optimization/fzero.m, optimization/fsolve.m: Style fixes.

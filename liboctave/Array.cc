@@ -1916,6 +1916,7 @@ Array<T>::sort (octave_idx_type dim, sortmode mode) const
   octave_idx_type ns = dv(dim);
   octave_idx_type iter = dv.numel () / ns;
   octave_idx_type stride = 1;
+
   for (int i = 0; i < dim; i++)
     stride *= dv(i);
 
@@ -1943,13 +1944,15 @@ Array<T>::sort (octave_idx_type dim, sortmode mode) const
 
       for (octave_idx_type j = 0; j < iter; j++) 
 	{
-	   octave_idx_type offset = j;
-	   octave_idx_type offset2 = 0;
+	  octave_idx_type offset = j;
+	  octave_idx_type offset2 = 0;
+
 	  while (offset >= stride)
 	    {
 	      offset -= stride;
 	      offset2++;
 	    }
+
 	  offset += offset2 * stride * ns;
 	  
 	  for (octave_idx_type i = 0; i < ns; i++)
@@ -1983,6 +1986,7 @@ Array<T>::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
   octave_idx_type ns = dv(dim);
   octave_idx_type iter = dv.numel () / ns;
   octave_idx_type stride = 1;
+
   for (int i = 0; i < dim; i++)
     stride *= dv(i);
 
@@ -2032,11 +2036,13 @@ Array<T>::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
 	{
 	  octave_idx_type offset = j;
 	  octave_idx_type offset2 = 0;
+
 	  while (offset >= stride)
 	    {
 	      offset -= stride;
 	      offset2++;
 	    }
+
 	  offset += offset2 * stride * ns;
 	      
 	  for (octave_idx_type i = 0; i < ns; i++)

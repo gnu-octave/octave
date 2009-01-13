@@ -2653,7 +2653,7 @@ is omitted, return a list of keywords.\n\
       for (int i = 0; i < TOTAL_KEYWORDS; i++)
 	lst[i] = wordlist[i].name;
 
-      retval = Cell (lst.qsort ());
+      retval = Cell (lst.sort ());
     }
   else if (argc == 2)
     {

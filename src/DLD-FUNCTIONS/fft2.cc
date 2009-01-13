@@ -170,7 +170,7 @@ do_fft2 (const octave_value_list &args, const char *fcn, int type)
 DEFUN_DLD (fft2, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} fft2 (@var{a}, @var{n}, @var{m})\n\
-Compute the two dimensional FFT of @var{a} using subroutines from\n"
+Compute the two-dimensional FFT of @var{a} using subroutines from\n"
 FFTSRC
 ". The optional arguments @var{n} and @var{m} may be used specify the\n\
 number of rows and columns of @var{a} to use.  If either of these is\n\
@@ -189,7 +189,7 @@ of @var{a} is treated separately\n\
 DEFUN_DLD (ifft2, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} fft2 (@var{a}, @var{n}, @var{m})\n\
-Compute the inverse two dimensional FFT of @var{a} using subroutines from\n"
+Compute the inverse two-dimensional FFT of @var{a} using subroutines from\n"
 FFTSRC
 ". The optional arguments @var{n} and @var{m} may be used specify the\n\
 number of rows and columns of @var{a} to use.  If either of these is\n\

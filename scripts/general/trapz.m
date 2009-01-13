@@ -23,7 +23,7 @@
 ## 
 ## Numerical integration using trapezoidal method. @code{trapz
 ## (@var{y})} computes the integral of the @var{y} along the first
-## non singleton dimension. If the argument @var{x} is omitted a 
+## non-singleton dimension. If the argument @var{x} is omitted a 
 ## equally spaced vector is assumed. @code{trapz (@var{x}, @var{y})} 
 ## evaluates the integral with respect to @var{x}.
 ##  

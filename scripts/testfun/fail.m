@@ -75,20 +75,24 @@ function ret = fail (code, pattern, warning_pattern)
   endif  
 
   if (test_warning)
-    ## perform the warning test
-    lastwarn ();  # clear old warnings
-    state = warning ("query", "quiet"); # make sure warnings are turned on
+    ## Perform the warning test.
+    ## Clear old warnings.
+    lastwarn ();
+    ## Make sure warnings are turned on.
+    state = warning ("query", "quiet");
     warning ("on", "quiet");
     try
       ## printf("lastwarn before %s: %s\n",code,lastwarn);
       evalin ("caller", sprintf ("%s;", code));
       ## printf("lastwarn after %s: %s\n",code,lastwarn);
-      err = lastwarn ();  # retrieve new warnings
+      ## Retrieve new warnings.
+      err = lastwarn ();
       warning (state.state, "quiet");
       if (isempty (err))
         msg = sprintf ("expected warning <%s> but got none", pattern); 
       else
-        err([1:9, end]) = [];  # transform "warning: ...\n" to "..."
+	## Transform "warning: ...\n" to "...".
+        err([1:9, end]) = [];
         if (! isempty (regexp (err, pattern, "once")))
 	  return;
 	endif
@@ -97,12 +101,13 @@ function ret = fail (code, pattern, warning_pattern)
     catch
       warning (state.state, "quiet");
       err = lasterr;
-      err([1:7, end]) = [];  # transform "error: ...\n", to "..."
+      ## Transform "error: ...\n", to "...".
+      err([1:7, end]) = [];
       msg = sprintf ("expected warning <%s> but got error <%s>", pattern, err);
     end_try_catch
       
   else
-    ## perform the error test
+    ## Perform the error test.
     try
       evalin ("caller", sprintf ("%s;", code));
       msg = sprintf ("expected error <%s> but got none", pattern);
@@ -118,8 +123,9 @@ function ret = fail (code, pattern, warning_pattern)
     end_try_catch
   endif
 
-  ## if we get here, then code didn't fail or error didn't match
+  ## If we get here, then code didn't fail or error didn't match.
   error (msg);
+
 endfunction
 
 %!fail ('[1,2]*[2,3]','nonconformant')

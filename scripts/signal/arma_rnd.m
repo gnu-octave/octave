@@ -66,7 +66,8 @@ function x = arma_rnd (a, b, v, t, n)
   a = reshape (a, ar, 1);
   b = reshape (b, br, 1);
 
-  a = [1; -a];                        # apply our notational convention
+  ## Apply our notational convention.
+  a = [1; -a];
   b = [1; b];
 
   n = min (n, ar + br);

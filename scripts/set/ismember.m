@@ -184,20 +184,22 @@ endfunction
 function [tf, a_idx] = cell_ismember (a, s)
   if (nargin == 2)
     if (ischar (a) && iscellstr (s)) 
-      if (isempty (a)) # Work around bug in 'cellstr' 
+      if (isempty (a))
+	## Work around bug in cellstr.
         a = {''};
       else
         a = cellstr (a);
       endif
     elseif (iscellstr (a) && ischar (s))
-      if (isempty (s)) # Work around bug in 'cellstr' 
+      if (isempty (s))
+	## Work around bug in cellstr.
         s = {''};
       else
         s = cellstr (s);
       endif
     endif 
     if (iscellstr (a) && iscellstr (s))
-      ## Do the actual work
+      ## Do the actual work.
       if (isempty (a) || isempty (s))
         tf = zeros (size (a), "logical");
         a_idx = zeros (size (a)); 
@@ -230,7 +232,7 @@ function [tf, a_idx] = cell_ismember (a, s)
   else
     print_usage ();
   endif
-  ## Resize result to the original size of 'a' 
+  ## Resize result to the original size of A.
   size_a = size (a);
   tf = reshape (tf, size_a); 
   a_idx = reshape (a_idx, size_a); 

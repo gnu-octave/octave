@@ -139,7 +139,8 @@ function h = findobj (varargin)
 	else
 	  error ("findobj: inconsistent number of arguments");
 	endif
-      elseif (! strcmp (args{na}(1), "-")) # parameter/value pairs
+      elseif (! strcmp (args{na}(1), "-"))
+	## Parameter/value pairs.
 	if (na + 1 <= numel (args))
 	  pname{np} = args{na};
 	  na = na + 1;
@@ -171,7 +172,7 @@ function h = findobj (varargin)
 	  error ("findobj: inconsistent number of arguments");
 	endif
       else
-	## this is sloppy ... but works like matlab
+	## This is sloppy ... but works like Matlab.
 	if strcmpi(args{na}, "-not")
 	  h = [];
 	  return
@@ -185,7 +186,7 @@ function h = findobj (varargin)
 
   numpairs = np - 1;
   
-  ## load all objects which qualify for being searched
+  ## Load all objects which qualify for being searched.
   idepth = 0;
   h = handles;
   while (numel (handles) && ! (idepth >= depth))

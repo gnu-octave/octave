@@ -49,7 +49,9 @@ function S = sprandsym (n, d)
     ## random values than necessary in order to reduce the probability
     ## that there are less than k distinct values; maybe a better
     ## strategy could be used but I don't think it's worth the price.
-    k1 = min (length (idx1), k1);  # actual number of entries in S
+
+    ## Actual number of entries in S.
+    k1 = min (length (idx1), k1);
     j1 = floor ((idx1(1:k1)-1)/m1);
     i1 = idx1(1:k1) - j1*m1;
 

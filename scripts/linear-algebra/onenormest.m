@@ -131,9 +131,14 @@ function [est, v, w, iter] = onenormest (varargin)
   X = rand (n, t);
   X = X ./ (ones (n,1) * sum (abs (X), 1));
 
-  been_there = zeros (n, 1); # Track if a vertex has been visited.
-  est_old = 0; # To check if the estimate has increased.
-  S = zeros (n, t); # Normalized vector of signs.  The normalization is 
+  ## Track if a vertex has been visited.
+  been_there = zeros (n, 1);
+
+  ## To check if the estimate has increased.
+  est_old = 0;
+
+  ## Normalized vector of signs.
+  S = zeros (n, t);
 
   if (issing)
     myeps = eps ("single");

@@ -87,7 +87,7 @@ function [num, status, strarray] = str2double (s, cdelim, rdelim, ddelim)
   ## digits, sign, exponent,NaN,Inf
   ## valid_char = '0123456789eE+-.nNaAiIfF';
 
-  ## valid delimiters
+  ## Valid delimiters.
   valid_delim = char (sort ([0, 9:14, 32:34, abs("()[]{},;:\"|/")]));
 
   if (nargin < 1 || nargin > 4)
@@ -95,20 +95,20 @@ function [num, status, strarray] = str2double (s, cdelim, rdelim, ddelim)
   endif
 
   if (nargin < 2)
-    ## column delimiter
+    ## Column delimiter.
     cdelim = char ([9, 32, abs(",")]);
   else
-    ## make unique cdelim
+    ## Make unique cdelim.
     cdelim = char (sort (cdelim(:)));
     tmp = [1; 1+find(diff(abs(cdelim))>0)];
     cdelim = cdelim(tmp)';
   endif
 
   if (nargin < 3)
-    ## row delimiter
+    ## Row delimiter.
     rdelim = char ([0, 10, 13, abs(";")]);
   else
-    ## make unique rdelim
+    ## Make unique rdelim.
     rdelim = char (sort (rdelim(:)));
     tmp = [1; 1+find(diff(abs(rdelim))>0)];
     rdelim = rdelim(tmp)';
@@ -120,7 +120,7 @@ function [num, status, strarray] = str2double (s, cdelim, rdelim, ddelim)
     error ("decimal delimiter must be exactly one character");
   endif
 
-  ## check if RDELIM and CDELIM are distinct
+  ## Check if RDELIM and CDELIM are distinct.
 
   delim = sort (abs ([cdelim, rdelim, ddelim]));
   tmp   = [1, 1+find(diff(delim)>0)];
@@ -131,26 +131,26 @@ function [num, status, strarray] = str2double (s, cdelim, rdelim, ddelim)
     error ("row, column and decimal delimiter are not distinct");
   endif
 
-  ## check if delimiters are valid
+  ## Check if delimiters are valid.
   tmp  = sort (abs ([cdelim, rdelim]));
   flag = zeros (size (tmp));
-  k1 = 1;
-  k2 = 1;
-  while (k1 <= length (tmp) && k2 <= length (valid_delim)),
-    if (tmp(k1) == valid_delim(k2))
-      flag(k1) = 1;
-      k1++;
-    elseif (tmp(k1) < valid_delim(k2))
-      k1++;
-    elseif (tmp(k1) > valid_delim(k2))
-      k2++;
+  curr_row = 1;
+  curr_col = 1;
+  while (curr_row <= length (tmp) && curr_col <= length (valid_delim)),
+    if (tmp(curr_row) == valid_delim(curr_col))
+      flag(curr_row) = 1;
+      curr_row++;
+    elseif (tmp(curr_row) < valid_delim(curr_col))
+      curr_row++;
+    elseif (tmp(curr_row) > valid_delim(curr_col))
+      curr_col++;
     endif
   endwhile
   if (! all (flag))
     error ("invalid delimiters!");
   endif
 
-  ## various input parameters
+  ## Various input parameters.
 
   if (isnumeric (s))
     if (all (s < 256) && all (s >= 0))
@@ -167,7 +167,7 @@ function [num, status, strarray] = str2double (s, cdelim, rdelim, ddelim)
   elseif (iscell (s))
     strarray = s;
   elseif (ischar (s) && all (size (s) > 1))
-    ## char array transformed into a string.
+    ## Char array transformed into a string.
     for k = 1:size (s, 1)
       tmp = find (! isspace (s(k,:)));
       strarray{k,1} = s(k,min(tmp):max(tmp));
@@ -176,7 +176,7 @@ function [num, status, strarray] = str2double (s, cdelim, rdelim, ddelim)
     num = [];
     status = 0;
     strarray = {};
-    ## add stop sign; makes sure last digit is not skipped
+    ## Add stop sign; makes sure last digit is not skipped.
     s(end+1) = rdelim(1);
     RD = zeros (size (s));
     for k = 1:length (rdelim),
@@ -187,9 +187,9 @@ function [num, status, strarray] = str2double (s, cdelim, rdelim, ddelim)
       CD = CD | (s==cdelim(k));
     endfor
 
-    k1 = 1; # current row
-    k2 = 0; # current column
-    k3 = 0; # current element
+    curr_row = 1;
+    curr_col = 0;
+    curr_elt = 0;
 
     sl = length (s);
     ix = 1;
@@ -208,10 +208,10 @@ function [num, status, strarray] = str2double (s, cdelim, rdelim, ddelim)
         te = ix - 1;
       endif
       if (! isempty (te))
-        k2++;
-        k3++;
-        strarray{k1,k2} = s(ta:te);
-        ## strarray{k1,k2} = [ta,te];
+        curr_col++;
+        curr_elt++;
+        strarray{curr_row,curr_col} = s(ta:te);
+        ## strarray{curr_row,curr_col} = [ta,te];
 
         flag = 0;
         ## while any(abs(s(ix))==[cdelim(1),rdelim(1)]) & (ix < sl),
@@ -221,8 +221,8 @@ function [num, status, strarray] = str2double (s, cdelim, rdelim, ddelim)
         endwhile
 
         if (flag)
-          k2 = 0;
-          k1++;
+          curr_col = 0;
+          curr_row++;
         endif
         ta = ix;
         te = [];
@@ -237,15 +237,15 @@ function [num, status, strarray] = str2double (s, cdelim, rdelim, ddelim)
   status = zeros (nr, nc);
   num = repmat (NaN, nr, nc);
 
-  for k1 = 1:nr
-    for k2 = 1:nc
-      t = strarray{k1,k2};
+  for curr_row = 1:nr
+    for curr_col = 1:nc
+      t = strarray{curr_row,curr_col};
       if (length (t) == 0)
-	## return error code
-	status(k1,k2) = -1;
-	num(k1,k2) = NaN;
+	## Return error code.
+	status(curr_row,curr_col) = -1;
+	num(curr_row,curr_col) = NaN;
       else
-	## get mantisse
+	## Get mantisse.
 	g = 0;
 	v = 1;
 	if (t(1) == "-")
@@ -258,9 +258,9 @@ function [num, status, strarray] = str2double (s, cdelim, rdelim, ddelim)
 	endif
 
 	if (strcmpi (t(l:end), "inf"))
-	  num(k1,k2) = v*Inf;
+	  num(curr_row,curr_col) = v*Inf;
 	elseif (strcmpi (t(l:end), "NaN"));
-	  num(k1,k2) = NaN;
+	  num(curr_row,curr_col) = NaN;
 	else
 	  if (ddelim == ".")
 	    t(t==ddelim) = ".";
@@ -269,10 +269,10 @@ function [num, status, strarray] = str2double (s, cdelim, rdelim, ddelim)
 	  ## [v,c,em,ni] = sscanf(char(t),"%f %s");
 	  ## c = c * (ni>length(t));
 	  if (c == 1),
-	    num(k1,k2) = v;
+	    num(curr_row,curr_col) = v;
 	  else
-	    num(k1,k2) = NaN;
-	    status(k1,k2) = -1;
+	    num(curr_row,curr_col) = NaN;
+	    status(curr_row,curr_col) = -1;
 	  endif
 	endif
       endif

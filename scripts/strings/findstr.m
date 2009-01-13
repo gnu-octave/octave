@@ -106,11 +106,13 @@ function v = findstr (s, t, overlap)
 	keep(idx) = all (s(v(idx) + ind) == t);
       endfor
     else
-      next = 1; # first possible position for next non-overlapping match
+      ## First possible position for next non-overlapping match.
+      next = 1;
       for idx = 1:length (v)
 	if (v(idx) >= next && s(v(idx) + ind) == t)
 	  keep(idx) = 1;
-	  next = v(idx) + l_t; # skip to the next possible match position
+	  ## Skip to the next possible match position.
+	  next = v(idx) + l_t;
 	else
 	  keep(idx) = 0;
 	endif
@@ -125,7 +127,7 @@ function v = findstr (s, t, overlap)
     v = [];
   endif
 
-  ## Always return a column vector, because that's what the old one did
+  ## Always return a column vector, because that's what the old one did.
   if (rows (v) > 1) 
     v = v.';
   endif

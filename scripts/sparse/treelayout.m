@@ -33,53 +33,52 @@ function [XCoordinate, YCoordinate, Height, s] = treelayout (Tree, Permutation)
         ||  any (Tree > length (Tree)) || any (Tree < 0) )
     error ("treelayout: the first input argument must be a vector of predecessors");
   else
-    ## make it a row vector
+    ## Make it a row vector.
     Tree = Tree(:)';
 
-    ## the count of nodes of the graph
+    ## The count of nodes of the graph.
     NodNumber = length (Tree);
-    ## the number of children
+    ## The number of children.
     ChildNumber = zeros (1, NodNumber + 1);
 
-
-    ## checking vector of predecessors
+    ## Checking vector of predecessors.
     for i = 1 : NodNumber
       if (Tree (i) < i)
-	## this part of graph was checked before
+	## This part of graph was checked before.
         continue;
       endif
 
-      ## Try to find cicle in this part of graph
-      ## we use modified Floyd's cycle-finding algorithm
+      ## Try to find cicle in this part of graph using modified Floyd's
+      ## cycle-finding algorithm.
       tortoise = Tree (i);
       hare = Tree (tortoise);
 
       while (tortoise != hare)
-	## we end after find a cicle or when we reach a checked part of graph
+	## End after finding a cicle or reaching a checked part of graph.
 
         if (hare < i)
-          ## this part of graph was checked before
+          ## This part of graph was checked before.
           break
         endif
 
         tortoise = Tree (tortoise);
-	## hare will move faster than tortoise so in cicle hare
-	## must reach tortoise
+	## Hare will move faster than tortoise so in cicle hare must
+	## reach tortoise.
         hare = Tree (Tree (hare));
 
       endwhile
 
       if (tortoise == hare)
-	## if hare reach tortoise we find cicle
+	## If hare reach tortoise we found circle.
         error ("treelayout: vector of predecessors has bad format");
       endif
 
     endfor
-    ## vector of predecessors has right format
+    ## Vector of predecessors has right format.
 
     for i = 1:NodNumber
       ## VecOfChild is helping vector which is used to speed up the
-      ## choose of descendant nodes
+      ## choice of descendant nodes.
 
       ChildNumber (Tree (i) + 1) = ChildNumber (Tree (i) + 1) + 1;
     endfor
@@ -101,31 +100,30 @@ function [XCoordinate, YCoordinate, Height, s] = treelayout (Tree, Permutation)
       VecOfChild = Permutation;
     endif
 
-
-    ## the number of "parent" (actual) node (it's descendants will be
-    ## browse in the next iteration)
+    ## The number of "parent" (actual) node (it's descendants will be
+    ## browse in the next iteration).
     ParNumber = 0;
 
-    ## the x-coordinate of the left most descendant of "parent node"
-    ## this value is increased in each leaf		
+    ## The x-coordinate of the left most descendant of "parent node"
+    ## this value is increased in each leaf.
     LeftMost = 0;
 
-    ## the level of "parent" node (root level is NodNumber)
+    ## The level of "parent" node (root level is NodNumber).
     Level = NodNumber;
 
-    ## NodNumber - Max is the height of this graph
+    ## NodNumber - Max is the height of this graph.
     Max = NodNumber;
 
-    ## main stack - each item consists of two numbers - the number of
+    ## Main stack - each item consists of two numbers - the number of
     ## node and the number it's of parent node on the top of stack
-    ## there is "parent node"
+    ## there is "parent node".
     St = [-1, 0];
 
-    #number of vertices s in the top-level separator
+    ## Number of vertices s in the top-level separator.
     s = 0;
-    # flag which says if we are in top level separator
+    ## Flag which says if we are in top level separator.
     topLevel = 1;
-    ## the top of the stack
+    ## The top of the stack.
     while (ParNumber != -1)
       if (Start(ParNumber + 1) < Stop(ParNumber + 1))
         idx = VecOfChild (Start (ParNumber + 1) : Stop (ParNumber + 1) - 1);
@@ -133,57 +131,57 @@ function [XCoordinate, YCoordinate, Height, s] = treelayout (Tree, Permutation)
         idx = zeros (1, 0);
       endif
 
-      ## add to idx the vector of parent descendants
+      ## Add to idx the vector of parent descendants.
       St = [St ; [idx', ones(fliplr(size(idx))) * ParNumber]];
 
-      # we are in top level separator when we have one children
-      ## and the flag is 1
+      ## We are in top level separator when we have one child and the
+      ## flag is 1
       if (columns(idx) == 1 && topLevel ==1 )
         s += 1;
       else
-        # we arent in top level separator now
+        # We aren't in top level separator now.
         topLevel = 0;
       endif
-      ## if there is not any descendant of "parent node":
+      ## If there is not any descendant of "parent node":
       if (St(end,2) != ParNumber)
        LeftMost = LeftMost + 1;
        XCoordinateR(ParNumber) = LeftMost;           
        Max = min (Max, Level);
        if ((length(St) > 1) && (find((shift(St,1)-St) == 0) >1) 
 	   && St(end,2) != St(end-1,2))
-	  ## return to the nearest branching the position to return
+	  ## Return to the nearest branching the position to return
 	  ## position is the position on the stack, where should be
           ## started further search (there are two nodes which has the
-          ## same parent node)
+          ## same parent node).
 
           Position = (find ((shift (St(:, 2), 1) - St(:, 2)) == 0))(end)+1;
           ParNumberVec = St(Position : end, 2);
 
-          ## the vector of removed nodes (the content of stack form
-          ## position to end)
+          ## The vector of removed nodes (the content of stack form
+          ## position to end).
 
           Level = Level + length(ParNumberVec);
 
-	  ## the level have to be decreased
+	  ## The level have to be decreased.
 
           XCoordinateR(ParNumberVec) = LeftMost;
           St(Position:end, :) = [];
         endif	
 
-        ## remove the next node from "searched branch"
+        ## Remove the next node from "searched branch".
 
         St(end, :) = [];
-	## choose new "parent node"
+	## Choose new "parent node".
         ParNumber = St(end, 1);
-	## if there is another branch start to search it
+	## If there is another branch start to search it.
 	if (ParNumber != -1)
           YCoordinate(ParNumber) = Level;	
           XCoordinateL(ParNumber) = LeftMost + 1;
 	endif
       else
 
-        ## there were descendants of "parent nod" choose the last of
-        ## them and go on through it
+        ## There were descendants of "parent nod" choose the last of
+        ## them and go on through it.
         Level--;
         ParNumber = St(end, 1);
         YCoordinate(ParNumber) = Level;     
@@ -191,8 +189,8 @@ function [XCoordinate, YCoordinate, Height, s] = treelayout (Tree, Permutation)
       endif
     endwhile
 
-    ## calculate the x coordinates (the known values are the position
-    ## of most left and most right descendants)
+    ## Calculate the x coordinates (the known values are the position
+    ## of most left and most right descendants).
     XCoordinate = (XCoordinateL + XCoordinateR) / 2;
 
     Height = NodNumber - Max - 1;

@@ -67,7 +67,8 @@ function assert (cond, varargin)
   if (nargin == 1 || (nargin > 1 && islogical (cond) && ischar (varargin{1})))
     if (! isnumeric (cond) || ! all (cond(:)))
       if (nargin == 1)
-	error ("assert %s failed", in); # say which elements failed?
+	## Say which elements failed?
+	error ("assert %s failed", in);
       else
 	error (varargin{:});
       endif
@@ -144,10 +145,11 @@ function assert (cond, varargin)
       iserror = 1;
       coda = cstrcat ("Type ", typeinfo (cond), " != ", typeinfo (expected));
 
-    else # numeric
+    else
+      ## Numeric.
       A = cond(:);
       B = expected(:);
-      ## Check exceptional values
+      ## Check exceptional values.
       if (any (isna (A) != isna (B)))
 	iserror = 1;
 	coda = "NAs don't match";
@@ -160,7 +162,7 @@ function assert (cond, varargin)
 	iserror = 1;
 	coda = "Infs don't match";
       else
-	## Check normal values
+	## Check normal values.
 	A = A(finite (A));
 	B = B(finite (B));
 	if (tol == 0)
@@ -188,8 +190,8 @@ function assert (cond, varargin)
       return;
     endif
 
-    ## pretty print the "expected but got" info,
-    ## trimming leading and trailing "\n"
+    ## Pretty print the "expected but got" info, trimming leading and
+    ## trailing "\n".
     str = disp (expected);
     idx = find (str != "\n");
     if (! isempty (idx))

@@ -42,7 +42,7 @@ function [n,d] = rat(x,tol)
 
   y = x(:);
 
-  ## replace inf with 0 while calculating ratios
+  ## Replace Inf with 0 while calculating ratios.
   y(isinf(y)) = 0;
 
   ## default norm
@@ -51,7 +51,9 @@ function [n,d] = rat(x,tol)
   endif
 
   ## First step in the approximation is the integer portion
-  n = round(y);  # first element in the continued fraction
+
+  ## First element in the continued fraction.
+  n = round(y);
   d = ones(size(y));
   frac = y-n;
   lastn = ones(size(y));
@@ -61,9 +63,9 @@ function [n,d] = rat(x,tol)
   nsz = numel (y);
   steps = zeros([nsz, 0]);
 
-  ## grab new factors until all continued fractions converge
+  ## Grab new factors until all continued fractions converge.
   while (1)
-    ## determine which fractions have not yet converged
+    ## Determine which fractions have not yet converged.
     idx = find(abs (y-n./d) >= tol);
     if (isempty(idx))
       if (isempty (steps))
@@ -72,9 +74,10 @@ function [n,d] = rat(x,tol)
       break;
     endif
 
-    ## grab the next step in the continued fraction
+    ## Grab the next step in the continued fraction.
     flip = 1./frac(idx);
-    step = round(flip); # next element in the continued fraction
+    ## Next element in the continued fraction.
+    step = round(flip);
 
     if (nargout < 2)
       tsteps = NaN .* ones (nsz, 1);
@@ -84,7 +87,7 @@ function [n,d] = rat(x,tol)
 
     frac(idx) = flip-step;
 
-    ## update the numerator/denominator
+    ## Update the numerator/denominator.
     nextn = n;
     nextd = d;
     n(idx) = n(idx).*step + lastn(idx);
@@ -94,19 +97,19 @@ function [n,d] = rat(x,tol)
   endwhile
 
   if (nargout == 2)
-    ## move the minus sign to the top
+    ## Move the minus sign to the top.
     n = n.*sign(d);
     d = abs(d);
 
-    ## return the same shape as you receive
+    ## Return the same shape as you receive.
     n = reshape(n, size(x));
     d = reshape(d, size(x));
 
-    ## use 1/0 for Inf
+    ## Use 1/0 for Inf.
     n(isinf(x)) = sign(x(isinf(x)));
     d(isinf(x)) = 0;
 
-    ## reshape the output
+    ## Reshape the output.
     n = reshape (n, size (x));
     d = reshape (d, size (x));
   else

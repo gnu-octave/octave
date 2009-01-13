@@ -117,9 +117,11 @@ function [h_r, f_r] = freqz (b, a, n, region, Fs)
   a = a(:);
   b = b(:);
 
-  if (! isscalar (n)) ## Explicit frequency vector given
+  if (! isscalar (n))
+    ## Explicit frequency vector given
     w = f = n;
-    if (nargin == 4)  ## Sampling rate Fs was specified
+    if (nargin == 4)
+      ## Sampling rate Fs was specified
       w = 2*pi*f/Fs;
     endif
     k = max (length (b), length (a));
@@ -142,10 +144,12 @@ function [h_r, f_r] = freqz (b, a, n, region, Fs)
 
   h = hb ./ ha;
 
-  if (nargout != 0), # return values and don't plot
+  if (nargout != 0)
+    ## Return values and don't plot.
     h_r = h;
     f_r = f;
-  else             # plot and don't return values
+  else
+    ## Plot and don't return values.
     freqz_plot (f, h);
   endif
 

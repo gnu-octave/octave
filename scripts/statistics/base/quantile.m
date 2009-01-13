@@ -104,27 +104,27 @@ function q = quantile (x, p, dim, method)
     error ("quantile: invalid dimension.")
   endif
 
-  # Set the permutation vector.
+  ## Set the permutation vector.
   perm = 1:ndims(x);
   perm(1) = dim;
   perm(dim) = 1;
 
-  # Permute dim to the 1st index.
+  ## Permute dim to the 1st index.
   x = permute (x, perm);
 
-  # Save the size of the permuted x N-d array.
+  ## Save the size of the permuted x N-d array.
   sx = size (x);
 
-  # Reshape to a 2-d array.
+  ## Reshape to a 2-d array.
   x = reshape (x, [sx(1), prod(sx(2:end))]);
 
-  # Calculate the quantiles.
+  ## Calculate the quantiles.
   q = __quantile__ (x, p, method);
 
-  # Return the shape to the original N-d array.
+  ## Return the shape to the original N-d array.
   q = reshape (q, [numel(p), sx(2:end)]);
 
-  # Permute the 1st index back to dim.
+  ## Permute the 1st index back to dim.
   q = ipermute (q, perm);
 
 endfunction

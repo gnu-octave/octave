@@ -252,13 +252,16 @@ endif
     preconditioned_residual_out = true;
   endif
 
-  matrix_positive_definite = true;	# assume A is positive definite
+  ## Assume A is positive definite.
+  matrix_positive_definite = true;
 
   p = zeros (size (b));
   oldtau = 1; 
-  if (isnumeric (A))			# is A a matrix?
+  if (isnumeric (A))
+    ## A is a matrix.
     r = b - A*x; 
-  else					# then A should be a function!
+  else
+    ## A should be a function.
     r = b - feval (A, x, varargin{:});
   endif
 
@@ -290,14 +293,18 @@ endif
     beta = tau / oldtau;
     oldtau = tau;
     p = z + beta * p;
-    if (isnumeric (A))		# is A a matrix?
+    if (isnumeric (A))
+      ## A is a matrix.
       w = A * p;
-    else			# then A should be a function!
+    else
+      ## A should be a function.
       w = feval (A, p, varargin{:});
     endif
-    oldalpha = alpha; 		# needed only for eigest
+    ## Needed only for eigest.
+    oldalpha = alpha;
     alpha = tau / (p'*w);
-    if (alpha <= 0.0) # negative matrix?
+    if (alpha <= 0.0)
+      ## Negative matrix.
       matrix_positive_definite = false;
     endif
     x += alpha * p;
@@ -327,8 +334,8 @@ endif
       eigest = [NaN, NaN];
     endif
 
-    ## apply the preconditioner once more and finish with the precond
-    ## residual
+    ## Apply the preconditioner once more and finish with the precond
+    ## residual.
     if (existM1)
       if(isnumeric (M1))
 	y = M1 \ r;

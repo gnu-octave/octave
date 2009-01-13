@@ -64,13 +64,13 @@ function h = __errplot__ (fstr, p, a1, a2, a3, a4, a5, a6)
       hl = __line__ (hg, "color", fmt.color);
     endif
 
-    ## FIXME
-    ## Note the below adds the errorbar data directly as ldata, etc 
-    ## properties of the line objects, as gnuplot can handle this.
-    ## Matlab has the errorbar part of the plot as a special line object
-    ## with embedded NaNs that draws the three segments of the bar
-    ## separately. Should we duplicate Matlab's behavior and stop using the
-    ## ldata, etc properties of the line objects that are Octace specific?
+    ## FIXME -- note the code below adds the errorbar data directly as
+    ## ldata, etc properties of the line objects, as gnuplot can handle
+    ## this.  Matlab has the errorbar part of the plot as a special line
+    ## object with embedded NaNs that draws the three segments of the
+    ## bar separately.  Should we duplicate Matlab's behavior and stop
+    ## using the ldata, etc. properties of the line objects that are
+    ## Octace specific?
 
     switch (nargin - 2)
       case 1

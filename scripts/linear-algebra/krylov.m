@@ -68,11 +68,13 @@ function [Uret, H, nu] = krylov (A, V, k, eps1, pflg);
   if (nargin < 3 || nargin > 5)
     print_usage ();
   elseif (nargin < 5)
-    pflg = 0;        # default permutation flag
+    ## Default permutation flag.
+    pflg = 0;
   endif
 
   if(nargin < 4)
-    eps1 = defeps;    # default tolerance parameter
+    ## Default tolerance parameter.
+    eps1 = defeps;
   endif
 
   if (isempty (eps1))
@@ -96,7 +98,7 @@ function [Uret, H, nu] = krylov (A, V, k, eps1, pflg);
 
   Vnrm = norm (V, Inf);
 
-  ## check for trivial solution
+  ## check for trivial solution.
   if (Vnrm == 0)
     Uret = [];
     H = [];
@@ -104,11 +106,11 @@ function [Uret, H, nu] = krylov (A, V, k, eps1, pflg);
     return;
   endif
 
-  # identify trivial null space
+  ## Identify trivial null space.
   abm = max (abs ([A, V]'));
   zidx = find (abm == 0);
 
-  # set up vector of pivot points
+  ## Set up vector of pivot points.
   pivot_vec = 1:na;
 
   iter = 0;
@@ -117,10 +119,10 @@ function [Uret, H, nu] = krylov (A, V, k, eps1, pflg);
   while (length(alpha) < na) && (columns(V) > 0) && (iter < k)
     iter++;
 
-    ## get orthogonal basis of V
+    ## Get orthogonal basis of V.
     jj = 1;
     while (jj <= columns (V) && length (alpha) < na)
-      ## index of next Householder reflection
+      ## Index of next Householder reflection.
       nu = length(alpha)+1;
 
       short_pv = pivot_vec(nu:na);
@@ -128,7 +130,7 @@ function [Uret, H, nu] = krylov (A, V, k, eps1, pflg);
       short_q = q(short_pv);
 
       if (norm (short_q) < eps1)
-	## insignificant column; delete
+	## Insignificant column; delete.
         nv = columns (V);
         if (jj != nv)
           [V(:,jj), V(:,nv)] = swap (V(:,jj), V(:,nv));
@@ -136,18 +138,18 @@ function [Uret, H, nu] = krylov (A, V, k, eps1, pflg);
 	  ## since Block Hessenberg structure is lost anyway.
         endif
         V = V(:,1:(nv-1));
-	## one less reflection
+	## One less reflection.
         nu--;
       else
-	## new householder reflection
+	## New householder reflection.
         if (pflg)
-          ## locate max magnitude element in short_q
+          ## Locate max magnitude element in short_q.
           asq = abs (short_q);
           maxv = max (asq);
           maxidx = find (asq == maxv, 1);
           pivot_idx = short_pv(maxidx);
 
-	  ## see if need to change the pivot list
+	  ## See if need to change the pivot list.
           if (pivot_idx != pivot_vec(nu))
             swapidx = maxidx + (nu-1);
             [pivot_vec(nu), pivot_vec(swapidx)] = ...
@@ -155,7 +157,7 @@ function [Uret, H, nu] = krylov (A, V, k, eps1, pflg);
           endif
         endif
 
-	## isolate portion of vector for reflection
+	## Isolate portion of vector for reflection.
         idx = pivot_vec(nu:na);
         jdx = pivot_vec(1:nu);
 
@@ -163,21 +165,21 @@ function [Uret, H, nu] = krylov (A, V, k, eps1, pflg);
         alpha(nu) = av;
         U(idx,nu) = hv;
 
-        # reduce V per the reflection
+        ## Reduce V per the reflection.
         V(idx,:) = V(idx,:) - av*hv*(hv' * V(idx,:));
         if(iter > 1)
-	  ## FIXME -- not done correctly for block case
+	  ## FIXME -- not done correctly for block case.
           H(nu,nu-1) = V(pivot_vec(nu),jj);
         endif
 
-        ## advance to next column of V
+        ## Advance to next column of V.
         jj++;
       endif
     endwhile
 
-    ## check for oversize V (due to full rank)
+    ## Check for oversize V (due to full rank).
     if ((columns (V) > na) && (length (alpha) == na))
-      ## trim to size
+      ## Trim to size.
       V = V(:,1:na);
     elseif (columns(V) > na)
       krylov_V = V
@@ -187,13 +189,13 @@ function [Uret, H, nu] = krylov (A, V, k, eps1, pflg);
     endif
 
     if (columns (V) > 0)
-      ## construct next Q and multiply
+      ## Construct next Q and multiply.
       Q = zeros (size (V));
       for kk = 1:columns (Q)
         Q(pivot_vec(nu-columns(Q)+kk),kk) = 1;
       endfor
 
-      ## apply Householder reflections
+      ## Apply Householder reflections.
       for ii = nu:-1:1
         idx = pivot_vec(ii:na);
         hv = U(idx,ii);
@@ -202,9 +204,9 @@ function [Uret, H, nu] = krylov (A, V, k, eps1, pflg);
       endfor
     endif
 
-    ## multiply to get new vector;
+    ## Multiply to get new vector.
     V = A*Q;
-    ## project off of previous vectors
+    ## Project off of previous vectors.
     nu = length (alpha);
     for i = 1:nu
       hv = U(:,i);
@@ -215,8 +217,8 @@ function [Uret, H, nu] = krylov (A, V, k, eps1, pflg);
 
   endwhile
 
-  ## Back out complete U matrix
-  ## back out U matrix ;
+  ## Back out complete U matrix.
+  ## back out U matrix.
   j1 = columns (U);
   for i = j1:-1:1;
     idx = pivot_vec(i:na);

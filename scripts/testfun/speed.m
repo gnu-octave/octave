@@ -169,7 +169,7 @@ function [__order, __test_n, __tnew, __torig] ...
 
   __numtests = 15;
 
-  ## Let user specify range of n
+  ## Let user specify range of n.
   if (isscalar (__max_n))
     __min_n = 1;
     assert (__max_n > __min_n);
@@ -182,14 +182,15 @@ function [__order, __test_n, __tnew, __torig] ...
   else
     __test_n = __max_n;
   endif
-  __test_n = unique (round (__test_n)); # Force n to be an integer
+  ## Force n to be an integer.
+  __test_n = unique (round (__test_n));
   assert (__test_n >= 1);
 
   __torig = __tnew = zeros (size (__test_n));
 
   disp (cstrcat ("testing ", __f1, "\ninit: ", __init));
 
-  ## make sure the functions are freshly loaded by evaluating them at
+  ## Make sure the functions are freshly loaded by evaluating them at
   ## test_n(1); first have to initialize the args though.
   n = 1;
   k = 0;
@@ -199,7 +200,7 @@ function [__order, __test_n, __tnew, __torig] ...
   endif
   eval (cstrcat (__f1, ";"));
 
-  ## run the tests
+  ## Run the tests.
   for k = 1:length (__test_n)
     n = __test_n(k);
     eval (cstrcat (__init, ";"));
@@ -227,7 +228,7 @@ function [__order, __test_n, __tnew, __torig] ...
     endif
   endfor
   
-  ## Drop times of zero
+  ## Drop times of zero.
   if (! isempty (__f2))
     zidx = (__tnew < 100*eps |  __torig < 100*eps);
     __test_n(zidx) = [];
@@ -239,7 +240,7 @@ function [__order, __test_n, __tnew, __torig] ...
     __tnew(zidx) = [];
   endif
 
-  ## Approximate time complexity and return it if requested
+  ## Approximate time complexity and return it if requested.
   tailidx = ceil(length(__test_n)/2):length(__test_n);
   p = polyfit (log (__test_n(tailidx)), log (__tnew(tailidx)), 1);
   if (nargout > 0) 
@@ -297,7 +298,7 @@ function [__order, __test_n, __tnew, __torig] ...
 
     loglog (__test_n(tailidx), exp(v)*1000, sprintf ("b;%s;", order)); 
 
-    ## Get base time to 1 digit of accuracy
+    ## Get base time to 1 digit of accuracy.
     dt = exp (p(2));
     dt = floor (dt/10^floor(log10(dt)))*10^floor(log10(dt));
     if (log10 (dt) >= -0.5)

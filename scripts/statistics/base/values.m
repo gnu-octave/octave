@@ -40,7 +40,8 @@ function v = values (x)
   endif
 
   i = any (isnan (x));
-  x = x(find(!isnan (x)));      # HACK!
+  ## HACK!
+  x = x(find(!isnan (x)));
   n = length (x);
   x = reshape (x, n, 1);
   s = sort (x);

@@ -107,7 +107,7 @@ function h = __stem__ (have_z, varargin)
 	endif
       endif
 
-      ## Setup the hggroup and listeners
+      ## Setup the hggroup and listeners.
       addproperty ("showbaseline", hg, "radio", "{on}|off");
       addproperty ("basevalue", hg, "data", 0);
       addproperty ("baseline", hg, "data", h_baseline);
@@ -159,13 +159,18 @@ endfunction
 
 function [x, y, z, dofill, lc, ls, mc, ms, newargs] = check_stem_arg (have_z, varargin)
 
+  ## FIXME -- there seems to be a lot of duplicated code in this
+  ## function.  It seems like it should be possible to simplify things
+  ## by combining some of the nearly identical code sections into
+  ## additional subfunctions.
+
   if (have_z)
     caller = "stem3";
   else
     caller = "stem";
   endif
 
-  ## Remove prop/val pairs from data to consider
+  ## Remove prop/val pairs from data to consider.
   i = 2;
   newargs = {};
   while (i < length (varargin))
@@ -180,14 +185,14 @@ function [x, y, z, dofill, lc, ls, mc, ms, newargs] = check_stem_arg (have_z, va
     endif
   endwhile
 
-  ## set specifiers to default values
+  ## set specifiers to default values.
   [lc, ls, mc, ms] = set_default_values ();
   dofill = 0;
   fill_2 = 0;
   linespec_2 = 0;
   z = [];
 
-  ## check input arguments
+  ## Check input arguments.
   if (nargin == 2)
     if (have_z)
       z = varargin{1};
@@ -204,16 +209,17 @@ function [x, y, z, dofill, lc, ls, mc, ms, newargs] = check_stem_arg (have_z, va
       endif # in each case, x & y will be defined
     endif
   elseif (nargin == 3)
-    ## several possibilities
+    ## Several possibilities
+    ##
     ## 1. the real y data
     ## 2. 'filled'
     ## 3. line spec
     if (ischar (varargin{2}))
-      ## only 2. or 3. possible
+      ## Only 2. or 3. possible.
       if (strcmpi ("fill", varargin{2}) || strcmpi ("filled", varargin{2}))
 	dofill = 1;
       else
-	## parse the linespec
+	## Parse the linespec.
 	[lc, ls, mc, ms] = stem_line_spec (caller, varargin{2});
       endif
       if (have_z)
@@ -234,7 +240,7 @@ function [x, y, z, dofill, lc, ls, mc, ms, newargs] = check_stem_arg (have_z, va
       if (have_z)
 	error ("stem3: must define X, Y and Z");
       else
-	## must be the real y data
+	## Must be the real y data.
 	x = varargin{1};
 	y = varargin{2};
 	if (! (ismatrix (x) && ismatrix (y)))
@@ -243,18 +249,19 @@ function [x, y, z, dofill, lc, ls, mc, ms, newargs] = check_stem_arg (have_z, va
       endif
     endif
   elseif (nargin == 4)
-    ## again several possibilities
+    ## Again, several possibilities:
+    ##
     ## arg2 1. real y
     ## arg2 2. 'filled' or linespec
     ## arg3 1. real z
     ## arg3 2. 'filled' or linespec
     if (ischar (varargin{2}))
-      ## only arg2 2. / arg3 1. & arg3 3. are possible
+      ## Only arg2 2. / arg3 1. & arg3 3. are possible.
       if (strcmpi ("fill", varargin{2}) || strcmpi ("filled", varargin{2}))
 	dofill = 1;
-	fill_2 = 1; # be sure, no second "fill" is in the arguments
+	fill_2 = 1; # Be sure, no second "fill" is in the arguments.
       else
-	## must be a linespec
+	## Must be a linespec.
 	[lc, ls, mc, ms] = stem_line_spec (caller, varargin{2});
 	linespec_2 = 1;
       endif
@@ -281,7 +288,7 @@ function [x, y, z, dofill, lc, ls, mc, ms, newargs] = check_stem_arg (have_z, va
 	  error ("stem3: X, Y and Z must be matrices");
 	endif
       else
-	## must be the real y data
+	## must be the real y data.
 	x = varargin{1};
 	y = varargin{2};
 	if (! (ismatrix (x) && ismatrix (y)))
@@ -290,22 +297,22 @@ function [x, y, z, dofill, lc, ls, mc, ms, newargs] = check_stem_arg (have_z, va
       endif
     endif # if ischar(varargin{2})
     if (! have_z)
-      ## varargin{3} must be char
-      ## check for "fill
+      ## varargin{3} must be char.
+      ## Check for "fill.
       if ((strcmpi (varargin{3}, "fill") || strcmpi (varargin{3}, "filled"))
 	  && fill_2)
 	error ("stem: duplicate fill argument");
       elseif (strcmpi ("fill", varargin{3}) && linespec_2)
-	## must be "fill"
+	## Must be "fill".
 	dofill = 1;
 	fill_2 = 1;
       elseif ((strcmpi (varargin{3}, "fill") || strcmpi (varargin{3}, "filled"))
 	  && !linespec_2)
-	## must be "fill"
+	## Must be "fill".
 	dofill = 1;
 	fill_2 = 1;
       elseif (! linespec_2)
-	## must be linespec
+	## Must be linespec.
 	[lc, ls, mc, ms] = stem_line_spec (caller, varargin{3});
 	linespec_2 = 1;
       endif
@@ -329,26 +336,26 @@ function [x, y, z, dofill, lc, ls, mc, ms, newargs] = check_stem_arg (have_z, va
     if (! have_z)
       if (strcmpi (varargin{3}, "fill") || strcmpi (varargin{3}, "filled"))
 	dofill = 1;
-	fill_2 = 1; # be sure, no second "fill" is in the arguments
+	fill_2 = 1; # Be sure, no second "fill" is in the arguments.
       else
-	## must be a linespec
+	## Must be a linespec.
 	[lc, ls, mc, ms] = stem_line_spec (caller, varargin{3});
 	linespec_2 = 1;
       endif
     endif
 
-    ## check for "fill" ..
+    ## Check for "fill".
     if ((strcmpi (varargin{4}, "fill") || strcmpi (varargin{4}, "filled"))
 	&& fill_2)
       error ("%s: duplicate fill argument", caller);
     elseif ((strcmpi (varargin{4}, "fill") || strcmpi (varargin{4}, "filled"))
 	&& linespec_2)
-      ## must be "fill"
+      ## Must be "fill".
       dofill = 1;
       fill_2 = 1;
     elseif (!strcmpi (varargin{4}, "fill") && !strcmpi (varargin{4}, "filled")
 	&& !linespec_2)
-      ## must be linespec
+      ## Must be linespec.
       [lc, ls, mc, ms] = stem_line_spec (caller, varargin{4});
       linespec_2 = 1;
     endif
@@ -364,7 +371,7 @@ function [x, y, z, dofill, lc, ls, mc, ms, newargs] = check_stem_arg (have_z, va
       dofill = 1;
       fill_2 = 1; # be sure, no second "fill" is in the arguments
     else
-      ## must be a linespec
+      ## Must be a linespec.
       [lc, ls, mc, ms] = stem_line_spec (caller, varargin{4});
       linespec_2 = 1;
     endif
@@ -375,12 +382,12 @@ function [x, y, z, dofill, lc, ls, mc, ms, newargs] = check_stem_arg (have_z, va
       error ("stem3: duplicate fill argument");
     elseif ((strcmpi (varargin{5}, "fill") || strcmpi (varargin{5}, "filled"))
 	&& linespec_2)
-      ## must be "fill"
+      ## Must be "fill".
       dofill = 1;
       fill_2 = 1;
     elseif (!strcmpi (varargin{5}, "fill") && !strcmpi (varargin{5}, "filled")
 	    && !linespec_2)
-      ## must be linespec
+      ## Must be linespec.
       [lc, ls, mc, ms] = stem_line_spec (caller, varargin{5});
       linespec_2 = 1;
     endif
@@ -388,7 +395,7 @@ function [x, y, z, dofill, lc, ls, mc, ms, newargs] = check_stem_arg (have_z, va
     error ("%s: incorrect number of arguments", caller);
   endif
 
-  ## Check sizes of x, y and z
+  ## Check sizes of x, y and z.
   if (have_z)
     if (!size_equal (x, y, z))
       error ("stem3: inconsistent size of x, y and z");

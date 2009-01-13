@@ -76,7 +76,8 @@ function A = nchoosek (v, k)
   n = length (v);
 
   if (n == 1)
-    k = min (k, v-k);		# improve precision at next step
+    ## Improve precision at next step.
+    k = min (k, v-k);
     A = round (prod ((v-k+1:v)./(1:k)));
     if (A*2*k*eps >= 0.5)
       warning ("nchoosek", "nchoosek: possible loss of precision");
@@ -91,8 +92,8 @@ function A = nchoosek (v, k)
     A = zeros (0, k, class (v));
   else
     p = cell (1, k);
-    # hack: do the op in the smallest integer class possible to avoid moving
-    # too much data.
+    ## Hack: do the op in the smallest integer class possible to avoid
+    ## moving too much data.
     if (n < intmax ("uint8"))
       cl = "uint8";
     elseif (n < intmax ("uint16"))
@@ -100,12 +101,12 @@ function A = nchoosek (v, k)
     elseif (n < intmax ("uint32"))
       cl = "uint32";
     else
-      # This would exhaust memory anyway.
+      ## This would exhaust memory anyway.
       cl = "double";
     endif
      
-    # Use a generalized Pascal triangle. Traverse backwards to keep
-    # alphabetical order.
+    ## Use a generalized Pascal triangle. Traverse backwards to keep
+    ## alphabetical order.
     for i = 1:k
       p{i} = zeros (0, i, cl);
     endfor

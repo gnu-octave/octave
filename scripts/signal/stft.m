@@ -56,7 +56,7 @@
 
 function [Y, c] = stft(X, win, inc, coef, w_type)
 
-  ## default values of unspecified arguments
+  ## Default values of unspecified arguments.
   if (nargin < 5)
     w_type = 1;
     if (nargin < 4)
@@ -84,7 +84,7 @@ function [Y, c] = stft(X, win, inc, coef, w_type)
     print_usage ();
   endif
 
-  ## check whether X is a vector
+  ## Check whether X is a vector.
   [nr, nc] = size (X);
   if (nc != 1)
     if (nr == 1)
@@ -103,15 +103,18 @@ function [Y, c] = stft(X, win, inc, coef, w_type)
   num_win = fix ((nr - win) / inc);
 
   ## compute the window coefficients
-  if (w_type == 3)              # rectangular window
+  if (w_type == 3)
+    ## Rectangular window.
     WIN_COEF = ones (win, 1);
-  elseif (w_type == 2)          # Hamming window
+  elseif (w_type == 2)
+    ## Hamming window.
     WIN_COEF = hamming (win);
-  else                          # Hanning window
+  else
+    ## Hanning window.
     WIN_COEF = hanning (win);
   endif
 
-  ## create a matrix Z whose columns contain the windowed time-slices
+  ## Create a matrix Z whose columns contain the windowed time-slices.
   Z = zeros (num_coef, num_win + 1);
   start = 1;
   for i = 0:num_win

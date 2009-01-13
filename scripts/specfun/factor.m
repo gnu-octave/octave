@@ -46,7 +46,7 @@ function [x, m] = factor (n)
     error ("factor: n must be a scalar integer");
   endif
 
-  ## special case of no primes less than sqrt(n)
+  ## Special case of no primes less than sqrt(n).
   if (n < 4)
     x = n;
     m = 1;
@@ -60,19 +60,20 @@ function [x, m] = factor (n)
   ## then n >= p1*p2 > sqrt(n)*sqrt(n) == n. Contradiction.]
   p = primes (sqrt (n));
   while (n > 1)
-    ## find prime factors in remaining n
+    ## Find prime factors in remaining n.
     q = n ./ p;
     p = p (q == fix (q));
     if (isempty (p))
-      p = n;  # can't be reduced further, so n must itself be a prime.
+      ## Can't be reduced further, so n must itself be a prime.
+      p = n;
     endif
     x = [x, p];
-    ## reduce n
+    ## Reduce n.
     n = n / prod (p);
   endwhile
   x = sort (x);
 
-  ## determine muliplicity
+  ## Determine muliplicity.
   if (nargout > 1)
     idx = find ([0, x] != [x, 0]);
     x = x(idx(1:length(idx)-1));

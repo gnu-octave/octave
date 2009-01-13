@@ -44,7 +44,7 @@ function x = primes (p)
   endif
 
   if (p > 100000)
-    ## optimization: 1/6 less memory, and much faster (asymptotically)
+    ## Optimization: 1/6 less memory, and much faster (asymptotically)
     ## 100000 happens to be the cross-over point for Paul's machine;
     ## below this the more direct code below is faster.  At the limit
     ## of memory in Paul's machine, this saves .7 seconds out of 7 for
@@ -54,7 +54,7 @@ function x = primes (p)
     sievem = ones (1, lenm);      # assume every number of form 6n-1 is prime
     sievep = ones (1, lenp);      # assume every number of form 6n+1 is prime
 
-    for i = 1:(sqrt(p)+1)/6         # check up to sqrt(p)
+    for i = 1:(sqrt(p)+1)/6       # check up to sqrt(p)
       if (sievem(i))              # if i is prime, eliminate multiples of i
         sievem(7*i-1:6*i-1:lenm) = 0;
         sievep(5*i-1:6*i-1:lenp) = 0;
@@ -65,7 +65,7 @@ function x = primes (p)
       endif
     endfor
     x = sort([2, 3, 6*find(sievem)-1, 6*find(sievep)+1]);
-  elseif (p > 352) # nothing magical about 352; just has to be greater than 2
+  elseif (p > 352)                # nothing magical about 352; must be >2
     len = floor ((p-1)/2);        # length of the sieve
     sieve = ones (1, len);        # assume every odd number is prime
     for i = 1:(sqrt(p)-1)/2       # check up to sqrt(p)

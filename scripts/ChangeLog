@@ -1,3 +1,18 @@
+2009-01-13  John W. Eaton  <jwe@octave.org>
+
+	* audio/wavread.m, general/__splinen__.m, general/bicubic.m,
+	general/rat.m, linear-algebra/expm.m, linear-algebra/krylov.m,
+	linear-algebra/onenormest.m, miscellaneous/edit.m,
+	optimization/__dogleg__.m, pkg/pkg.m, plot/__errplot__.m,
+	plot/__go_draw_axes__.m, plot/__stem__.m, plot/findobj.m,
+	set/ismember.m, signal/arma_rnd.m, signal/freqz.m, signal/stft.m,
+	sparse/pcg.m, sparse/sprandsym.m, sparse/treelayout.m,
+	specfun/factor.m, specfun/nchoosek.m, specfun/primes.m,
+	statistics/base/quantile.m, statistics/base/values.m,
+	strings/findstr.m, strings/str2double.m, strings/strrep.m,
+	testfun/assert.m, testfun/fail.m, testfun/speed.m, testfun/test.m,
+	time/datestr.m, time/datevec.m: Comment style fixes.
+
 2009-01-13  Daniel J Sebald  <daniel.sebald@ieee.org>
 
 	* set/unique.m: Fix for vertical array inputs.

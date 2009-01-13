@@ -27,21 +27,21 @@
 ## TODO: handle singularity, or leave it up to mldivide?
 
 function x = __dogleg__ (r, b, d, delta)
-  # get Gauss-Newton direction
+  ## Get Gauss-Newton direction.
   x = r \ b;
   xn = norm (d .* x);
   if (xn > delta)
-    # GN is too big, get scaled gradient
+    ## GN is too big, get scaled gradient.
     s = (r' * b) ./ d;
     sn = norm (s);
     if (sn > 0)
-      # normalize and rescale 
+      ## Normalize and rescale.
       s = (s / sn) ./ d;
-      # get the line minimizer in s direction
+      ## Get the line minimizer in s direction.
       tn = norm (r*s);
       snm = (sn / tn) / tn;
       if (snm < delta)
-        # get the dogleg path minimizer 
+	## Get the dogleg path minimizer.
         bn = norm (b);
         dxn = delta/xn; snmd = snm/delta;
         t = (bn/sn) * (bn/xn) * snmd;
@@ -53,7 +53,7 @@ function x = __dogleg__ (r, b, d, delta)
     else
       snm = 0;
     endif
-    # form the appropriate convex combination
+    ## Form the appropriate convex combination.
     x = alpha * x + ((1-alpha) * min (snm, delta)) * s;
   endif
 endfunction

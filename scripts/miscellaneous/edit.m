@@ -148,7 +148,8 @@ function ret = edit (file, state)
   				"MODE", "sync",
   				"EDITINPLACE", false);
 
-  mlock; # make sure the state variables survive "clear functions"
+  ## Make sure the state variables survive "clear functions".
+  mlock;
 
   if (nargin == 2)
     switch (toupper (file))

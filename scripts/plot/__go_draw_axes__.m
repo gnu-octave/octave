@@ -930,7 +930,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 	  endif
 
         case "hggroup"
-	  # push group children into the kid list
+	  ## Push group children into the kid list.
 	  if (isempty (kids))
 	    kids = obj.children;
 	  elseif (! isempty (obj.children))
@@ -945,7 +945,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
     endwhile
 
     ## This is need to prevent warnings for rotations in 3D plots, while
-    ## allowing colorbars with contours..
+    ## allowing colorbars with contours.
     if (nd == 2 || (data_idx > 1 && !view_map))
       fputs (plot_stream, "set pm3d implicit;\n");
     else
@@ -961,7 +961,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
     have_data = (! (isempty (data) || all (cellfun (@isempty, data))));
 
     ## Note we don't use the [xy]2range of gnuplot as we don't use the
-    ## dual axis plotting features of gnuplot
+    ## dual axis plotting features of gnuplot.
     if (isempty (xlim))
       return;
     endif
@@ -1101,8 +1101,8 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 	case "best" 
 	  pos = "";
 	  warning ("legend: 'Best' not yet implemented for location specifier.\n");
-	  ## least conflict with data in plot
-	  ## least unused space outside plot
+	  ## Least conflict with data in plot.
+	  ## Least unused space outside plot.
 	otherwise
 	  pos = "";
       endswitch
@@ -1178,7 +1178,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
       fputs (plot_stream, "plot \"-\";\nInf Inf\ne\n");
     endif
 
-    ## Needed to allow mouse rotation with pcolor
+    ## Needed to allow mouse rotation with pcolor.
     if (view_map)
       fputs (plot_stream, "unset view;\n");
     endif
@@ -1697,13 +1697,13 @@ function str = __tex2enhanced__ (str, fnt, it, bld)
     endif
   endfor
 
-  ## Prepend @ to things  things like _0^x or _{-100}^{100} for alignment
-  ## But need to put the shorter of the two arguments first. Carful of 
-  ## nested {} and unprinted characters when defining shortest.. Don't 
-  ## have to worry about things like ^\theta as they are already converted to
-  ## ^{/Symbol q}.
+  ## Prepend @ to things  things like _0^x or _{-100}^{100} for
+  ## alignment But need to put the shorter of the two arguments first.
+  ## Carful of nested {} and unprinted characters when defining
+  ## shortest.. Don't have to worry about things like ^\theta as they
+  ## are already converted to ^{/Symbol q}.
 
-  ## FIXME.. This is a mess... Is it worth it just for a "@" character?
+  ## FIXME -- This is a mess... Is it worth it just for a "@" character?
 
   [s, m] = regexp(str,'[_\^]','start','matches');
   i = 1;
@@ -1745,15 +1745,15 @@ function str = __tex2enhanced__ (str, fnt, it, bld)
 	    l2 = l2 (min (length(l2), si));
 	    if (length_string (str(s(i)+p+2:s(i)+p+l1-1)) <=
 		length_string(str(s(i+1)+p+2:s(i+1)+p+l2-1)))
-	      ## shortest already first!
+	      ## Shortest already first!
 	      str = cstrcat (str(1:s(i)+p-1), "@", str(s(i)+p:end));
 	    else
-	      ## Have to swap sub/super-script to get shortest first
+	      ## Have to swap sub/super-script to get shortest first.
 	      str = cstrcat (str(1:s(i)+p-1), "@", str(s(i+1)+p:s(i+1)+p+l2),
 			    str(s(i)+p:s(i)+p+l1), str(s(i+1)+p+l2+1:end));
 	    endif
 	  else
-	    ## Have to swap sub/super-script to get shortest first
+	    ## Have to swap sub/super-script to get shortest first.
 	    str = cstrcat (str(1:s(i)+p-1), "@", str(s(i+1)+p:s(i+1)+p+1),
 			  str(s(i)+p:s(i)+p+l1), str(s(i+1)+p+2:end));
 	  endif
@@ -1764,7 +1764,7 @@ function str = __tex2enhanced__ (str, fnt, it, bld)
 	endif
       else
 	if (s(i+1) == s(i) + 2)
-	  ## shortest already first!
+	  ## Shortest already first!
 	  str = cstrcat (str(1:s(i)+p-1), "@", str(s(i)+p:end));
 	  p ++;
           i += 2;

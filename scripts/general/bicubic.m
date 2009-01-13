@@ -88,12 +88,12 @@ function F = bicubic (X, Y, Z, XI, YI, extrapval, spline_alpha)
       error ("X, Y and Z must be martrices of same size");
     endif
     
-    ## mark values outside the lookup table
+    ## Mark values outside the lookup table.
     xfirst_ind = find (XI < X(1));
     xlast_ind  = find (XI > X(cz));    
     yfirst_ind = find (YI < Y(1));
     ylast_ind  = find (YI > Y(rz));
-    ## set value outside the table preliminary to min max index   
+    ## Set value outside the table preliminary to min max index.
     XI(xfirst_ind) = X(1);
     XI(xlast_ind) = X(cz);
     YI(yfirst_ind) = Y(1);
@@ -120,7 +120,7 @@ function F = bicubic (X, Y, Z, XI, YI, extrapval, spline_alpha)
     o = cumsum (i <= rz);
     yidx = o([find( i> rz)]);
     
-    ## set s and t used follow codes
+    ## Set s and t used follow codes.
     s = xidx + ((XI .- X(xidx))./(X(xidx+1) .- X(xidx)));
     t = yidx + ((YI - Y(yidx))./(Y(yidx+1) - Y(yidx)));
   else
@@ -152,7 +152,7 @@ function F = bicubic (X, Y, Z, XI, YI, extrapval, spline_alpha)
   p(:,1)      =    (6*(1-a))*p(:,2)    -3*p(:,3)   + (6*a-2)*p(:,4);
   p(:,cz+2)   =    (6*(1-a))*p(:,cz+1)  -3*p(:,cz) + (6*a-2)*p(:,cz-1);
 
-  ## calculte the C1(t) C2(t) C3(t) C4(t) and C1(s) C2(s) C3(s) C4(s)
+  ## Calculte the C1(t) C2(t) C3(t) C4(t) and C1(s) C2(s) C3(s) C4(s).
   t2= t.*t;
   t3= t2.*t;
 
@@ -188,7 +188,7 @@ function F = bicubic (X, Y, Z, XI, YI, extrapval, spline_alpha)
 	 p(int,inds+2) .* cs2 + p(int,inds+3) .* cs3);
   endfor
 
-  ## set points outside the table to extrapval
+  ## Set points outside the table to extrapval.
   if (! (isempty (xfirst_ind) && isempty (xlast_ind)))
     F(:, [xfirst_ind, xlast_ind]) = extrapval;
   endif

@@ -187,7 +187,7 @@ function retval = datestr (date, f, p)
     date{1} = t;
   endif
 
-  # guess, so we might be wrong
+  ## Guess, so we might be wrong.
   if (iscell (date) || columns (date) != 6)
     v = datevec (date, p);
   else
@@ -213,7 +213,7 @@ function retval = datestr (date, f, p)
     if (isempty (f) || f == -1)
       if (v(i,4:6) == 0)
         f = 1;
-      #elseif (v(i,1:3) == [0, 1, 1])
+	## elseif (v(i,1:3) == [0, 1, 1])
       elseif (v(i,1:3) == [-1, 12, 31])
         f = 16;
       else

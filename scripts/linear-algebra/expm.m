@@ -108,23 +108,25 @@ function r = expm (a)
   endif
 
   n = rows (a);
-  # trace reduction
+  ## Trace reduction.
   a(a == -Inf) = -realmax;
   trshift = trace (a) / length (a);
   if (trshift > 0)
     a -= trshift*eye (n);
   endif
-  # balancing
+  ## Balancing.
   [p, d, aa] = balance (a);
-  # FIXME: can we both permute and scale at once? Or should we rather do this:
-  # [p, xx, aa] = balance (a, "noscal");
-  # [xx, d, aa] = balance (aa, "noperm");
+  ## FIXME: can we both permute and scale at once? Or should we rather do
+  ## this:
+  ##
+  ##   [p, xx, aa] = balance (a, "noscal");
+  ##   [xx, d, aa] = balance (aa, "noperm");
   [f, e] = log2 (norm (aa, "inf"));
   s = max (0, e);
   s = min (s, 1023);
   aa *= 2^(-s);
 
-  # Pade approximation for exp(A)
+  ## Pade approximation for exp(A).
   c = [5.0000000000000000e-1,...
        1.1666666666666667e-1,...
        1.6666666666666667e-2,...
@@ -141,16 +143,16 @@ function r = expm (a)
 
   r = (x - y) \ (x + y);
 
-  # Undo scaling by repeated squaring
-  for k = 1:s 
+  ## Undo scaling by repeated squaring.
+  for k = 1:s
     r ^= 2;
   endfor
 
-  # inverse balancing
+  ## inverse balancing.
   ds = diag (s);
   r = ds * r / ds;
   r = r(p, p);
-  # inverse trace reduction
+  ## Inverse trace reduction.
   if (trshift >0)
     r *= exp (trshift);
   endif

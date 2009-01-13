@@ -73,7 +73,7 @@ function [y, m, d, h, mi, s] = datevec (date, varargin)
     std_formats{++nfmt} = "mmm.dd.yyyy HH:MM:SS";
     std_formats{++nfmt} = "mmm.dd.yyyy";
 
-   # custom formats
+    ## Custom formats.
     std_formats{++nfmt} = "mmmyy";                  # 12
     std_formats{++nfmt} = "mm/dd/yyyy HH:MM";
   endif
@@ -186,10 +186,10 @@ function [y, m, d, h, mi, s] = datevec (date, varargin)
 
 function [f, rY, ry, fy, fm, fd, fh, fmi, fs] = __date_vfmt2sfmt__ (f)
 
-  # Play safe with percent signs
+  ## Play safe with percent signs.
   f = strrep(f, "%", "%%");
 
-  ## dates to lowercase (note: we cannot convert MM to mm)
+  ## Dates to lowercase (note: we cannot convert MM to mm).
   f = strrep (f, "YYYY", "yyyy");
   f = strrep (f, "YY", "yy");
   f = strrep (f, "QQ", "qq");
@@ -198,13 +198,14 @@ function [f, rY, ry, fy, fm, fd, fh, fmi, fs] = __date_vfmt2sfmt__ (f)
   f = strrep (f, "DDDD", "dddd");
   f = strrep (f, "DDD", "ddd");
   f = strrep (f, "DD", "dd");
-  ## times to uppercase (also cannot convert mm to MM)
+  ## Times to uppercase (also cannot convert mm to MM).
   f = strrep (f, "hh", "HH");
   f = strrep (f, "ss", "SS");
   f = strrep (f, "pm", "PM");
   f = strrep (f, "am", "AM");
 
-  ## right now, the format string may only contain these tokens:
+  ## Right now, the format string may only contain these tokens:
+  ##
   ## yyyy   4 digit year
   ## yy     2 digit year
   ## mmmm   month name, full
@@ -225,7 +226,7 @@ function [f, rY, ry, fy, fm, fd, fh, fmi, fs] = __date_vfmt2sfmt__ (f)
     ampm = false;
   endif
 
-  # date part
+  ## Date part.
   f = strrep (f, "yyyy", "%Y");
   f = strrep (f, "yy", "%y");
   f = strrep (f, "mmmm", "%B");
@@ -235,7 +236,7 @@ function [f, rY, ry, fy, fm, fd, fh, fmi, fs] = __date_vfmt2sfmt__ (f)
   f = strrep (f, "ddd", "%a");
   f = strrep (f, "dd", "%d");
 
-  # time part
+  ## Time part.
   if (ampm)
     f = strrep (f, "HH", "%I");
     f = strrep (f, "PM", "%p");
@@ -249,8 +250,8 @@ function [f, rY, ry, fy, fm, fd, fh, fmi, fs] = __date_vfmt2sfmt__ (f)
   rY = rindex (f, "%Y");
   ry = rindex (f, "%y");
 
-  # check whether we need to give default values
-  # possible error when string contains "%%"
+  ## Check whether we need to give default values.
+  ## Possible error when string contains "%%".
   fy = rY || ry;
   fm = index (f, "%m") || index (f, "%b") || index (f, "%B");
   fd = index (f, "%d") || index (f, "%a") || index (f, "%A");
@@ -280,15 +281,15 @@ function [found, y, m, d, h, mi, s] = __date_str2vec__ (ds, p, f, rY, ry, fy, fm
       endif
     endif
     if (! fy && ! fm && ! fd)
-      tvm = localtime (time ());  ## tvm: this very moment
-      y = tvm.year + 1900;
-      m = tvm.mon + 1;
-      d = tvm.mday;
+      tmp = localtime (time ());
+      y = tmp.year + 1900;
+      m = tmp.mon + 1;
+      d = tmp.mday;
     elseif (! fy && fm && fd)
-      tvm = localtime (time ());  ## tvm: this very moment
-      y = tvm.year + 1900;
+      tmp = localtime (time ());
+      y = tmp.year + 1900;
     elseif (fy && fm && ! fd)
-      tvm = localtime (time ());  ## tvm: this very moment
+      tmp = localtime (time ());
       d = 1;
     endif
     if (! fh && ! fmi && ! fs)

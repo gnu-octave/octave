@@ -32,7 +32,7 @@
 ## @table @code
 ## @item interp2 (@var{x}, @var{y}, @var{Z}, @var{xi}, @var{yi}, @dots{}) 
 ## Returns a matrix corresponding to the points described by the
-## matrices  @var{XI}, @var{YI}. 
+## matrices @var{xi}, @var{yi}.  
 ##
 ## If the last argument is a string, the interpolation method can
 ## be specified. The method can be 'linear', 'nearest' or 'cubic'.

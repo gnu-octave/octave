@@ -1,5 +1,9 @@
 2009-01-12  John W. Eaton  <jwe@octave.org>
 
+	* base-list.h (octave_base_list::push_front,
+	octave_base_list::push_back, octave_base_list::pop_front,
+	octave_base_list::pop_back): New functions.
+
 	* DLD-FUNCTIONS/qr.cc (Fqrupdate, Fqrinsert, Fqrdelete, Fqrshift):
 	Require args to be numeric, not necessarily matrix objects.
 

@@ -65,8 +65,6 @@ public:
 
   void clear (void) { lst.clear (); }
 
-  void append (const elt_type& s) { lst.push_back (s); }
-
   iterator begin (void) { return iterator (lst.begin ()); }
   const_iterator begin (void) const { return const_iterator (lst.begin ()); }
 
@@ -78,6 +76,15 @@ public:
 
   const elt_type& front (void) const { return lst.front (); }
   const elt_type& back (void) const { return lst.back (); }
+
+  void push_front (const elt_type& s) { lst.push_front (s); }
+  void push_back (const elt_type& s) { lst.push_back (s); }
+
+  void pop_front (void) { lst.pop_front (); }
+  void pop_back (void) { lst.pop_back (); }
+
+  // For backward compatibility.
+  void append (const elt_type& s) { lst.push_back (s); }
 
 private:
 

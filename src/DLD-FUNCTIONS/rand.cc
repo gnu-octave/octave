@@ -342,7 +342,7 @@ available, otherwise from cpu time, wall clock time and the current\n\
 fraction of a second.\n\
 \n\
 To compute the pseudo-random sequence, @code{rand} uses the Mersenne\n\
-Twister with a period of 2^19937-1 (See M. Matsumoto and T. Nishimura,\n\
+Twister with a period of @math{2^{19937}-1} (See M. Matsumoto and T. Nishimura,\n\
 @cite{Mersenne Twister: A 623-dimensionally equidistributed uniform pseudorandom number generator}, ACM Trans. on\n\
 Modeling and Computer Simulation Vol. 8, No. 1, January pp.3-30 1998,\n\
 @url{http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/emt.html}).\n\

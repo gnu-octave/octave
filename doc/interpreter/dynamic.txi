@@ -1204,7 +1204,7 @@ discussed above if possible.
 
 The basic command to build a mex-file is either @code{mkoctfile --mex} or
 @code{mex}.  The first can either be used from within Octave or from the
-commandline.  However, to avoid issues with the installation of other
+command line.  However, to avoid issues with the installation of other
 products, the use of the command @code{mex} is limited to within Octave.
 
 @DOCSTRING(mex)

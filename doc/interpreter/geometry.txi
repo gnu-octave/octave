@@ -133,17 +133,17 @@ The output of the above can be seen in @ref{fig:triplot}.
 
 It is often necessary to identify whether a particular point in the
 N-dimensional space is within the Delaunay tessellation of a set of
-points in this N-dimensional space, and if so which N-Simplex contains
+points in this N-dimensional space, and if so which N-simplex contains
 the point and which point in the tessellation is closest to the desired
 point.  The functions @code{tsearch} and @code{dsearch} perform this
 function in a triangulation, and @code{tsearchn} and @code{dsearchn} in
 an N-dimensional tessellation.
 
 To identify whether a particular point represented by a vector @var{p}
-falls within one of the simplices of an N-Simplex, we can write the
+falls within one of the simplices of an N-simplex, we can write the
 Cartesian coordinates of the point in a parametric form with respect to
-the N-Simplex.  This parametric form is called the Barycentric
-Coordinates of the point.  If the points defining the N-Simplex are given
+the N-simplex.  This parametric form is called the Barycentric
+Coordinates of the point.  If the points defining the N-simplex are given
 by @code{@var{N} + 1} vectors @var{t}(@var{i},:), then the Barycentric
 coordinates defining the point @var{p} are given by
 
@@ -182,7 +182,7 @@ Solving for @var{beta} we can then write
 which gives the formula for the conversion of the Cartesian coordinates
 of the point @var{p} to the Barycentric coordinates @var{beta}.  An
 important property of the Barycentric coordinates is that for all points
-in the N-Simplex
+in the N-simplex
 
 @example
 0 <= @var{beta}(@var{i}) <= 1
@@ -191,7 +191,7 @@ in the N-Simplex
 @noindent
 Therefore, the test in @code{tsearch} and @code{tsearchn} essentially
 only needs to express each point in terms of the Barycentric coordinates
-of each of the simplices of the N-Simplex and test the values of
+of each of the simplices of the N-simplex and test the values of
 @var{beta}. This is exactly the implementation used in
 @code{tsearchn}. @code{tsearch} is optimized for 2-dimensions and the
 Barycentric coordinates are not explicitly formed.

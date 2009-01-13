@@ -47,7 +47,7 @@
 ##
 ## The argument @var{fid} can be used to allow batch processing. Errors
 ## can be written to the already open file defined by @var{fid}, and 
-## hopefully when octave crashes this file will tell you what was happening
+## hopefully when Octave crashes this file will tell you what was happening
 ## when it did. You can use @code{stdout} if you want to see the results as
 ## they happen.  You can also give a file name rather than an @var{fid}, in
 ## which case the contents of the file will be replaced with the log from 

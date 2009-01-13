@@ -171,7 +171,7 @@ example is the @code{fail (@samp{code}, @samp{pattern})} function
 which evaluates @samp{code} in the caller's context and
 checks that the error message it produces matches
 the given pattern.  Other examples such as @code{save} and @code{load}
-are written in C++ where all octave variables
+are written in C++ where all Octave variables
 are in the @samp{caller} context and @code{evalin} is not needed.
 
 @DOCSTRING(evalin)

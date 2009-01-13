@@ -215,7 +215,7 @@ for information about how to report bugs.
 @item
 Once you have successfully compiled Octave, run @samp{make install}.
 
-This will install a copy of octave, its libraries, and its documentation
+This will install a copy of Octave, its libraries, and its documentation
 in the destination directory.  As distributed, Octave is installed in
 the following directories.  In the table below, @var{prefix} defaults to
 @file{/usr/local}, @var{version} stands for the current version number

@@ -25,7 +25,7 @@
 ## from the usual script code, all lines are prefixed by @code{%!}. Each
 ## example is introduced by the keyword 'demo' flush left to the prefix,
 ## with no intervening spaces.  The remainder of the example can contain 
-## arbitrary octave code. For example:
+## arbitrary Octave code. For example:
 ##
 ## @example
 ##    %!demo

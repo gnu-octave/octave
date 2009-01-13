@@ -36,7 +36,7 @@ and demonstration code in the source code of the functions themselves.
 
 @code{test} scans the named script file looking for lines which
 start with @code{%!}. The prefix is stripped off and the rest of the
-line is processed through the octave interpreter. If the code
+line is processed through the Octave interpreter. If the code
 generates an error, then the test is said to fail.
 
 Since @code{eval()} will stop at the first error it encounters, you must
@@ -285,7 +285,7 @@ or
 
 but then the code will have to be on the load path and the user 
 will have to remember to type test('name.cc').  Conversely, you
-can separate the tests from normal octave script files by putting
+can separate the tests from normal Octave script files by putting
 them in plain files with no extension rather than in script files.
 @c DO I WANT TO INCLUDE THE EDITOR SPECIFIC STATEMENT BELOW???
 @c Don't forget to tell emacs that the plain text file you are using

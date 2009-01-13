@@ -89,7 +89,7 @@ function move_baseline (h, d)
       b0 = get (h, "basevalue");
 
       for hh = hlist(:)'
-	if (hh != h )
+	if (hh != h)
 	  b1 = get (hh, "basevalue");
 	  if (b1 != b0)
 	    set (hh, "basevalue", b0);

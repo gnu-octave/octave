@@ -122,10 +122,10 @@
 ## 
 ## @example
 ## @group
-## 	N = 10; 
-## 	A = diag (sparse([1:N]));
-## 	b = rand (N, 1);
-##      [L, U, P, Q] = luinc (A,1.e-3);
+## 	n = 10; 
+## 	a = diag (sparse (1:n));
+## 	b = rand (n, 1);
+##      [l, u, p, q] = luinc (a, 1.e-3);
 ## @end group
 ## @end example
 ## 
@@ -140,18 +140,18 @@
 ## 
 ## @example
 ## @group
-##   function y = applyA (x)
+##   function y = apply_a (x)
 ##     y = [1:N]'.*x; 
 ##   endfunction
 ##
-##   x = pcg ("applyA", b)
+##   x = pcg ("apply_a", b)
 ## @end group
 ## @end example
 ##
 ## @sc{Example 3:} @code{pcg} with a preconditioner: @var{l} * @var{u}
 ##
 ## @example
-## x=pcg(A,b,1.e-6,500,L*U);
+## x = pcg (a, b, 1.e-6, 500, l*u);
 ## @end example
 ##
 ## @sc{Example 4:} @code{pcg} with a preconditioner: @var{l} * @var{u}.
@@ -159,7 +159,7 @@
 ## are easier to invert
 ##
 ## @example
-## x=pcg(A,b,1.e-6,500,L,U);
+## x = pcg (a, b, 1.e-6, 500, l, u);
 ## @end example
 ##
 ## @sc{Example 5:} Preconditioned iteration, with full diagnostics. The
@@ -168,14 +168,14 @@
 ## 
 ## @example
 ## @group
-##   function y = applyM(x)
-##     K = floor (length (x) - 2);
+##   function y = apply_m (x)
+##     k = floor (length (x) - 2);
 ##     y = x;
-##     y(1:K) = x(1:K)./[1:K]';
+##     y(1:k) = x(1:k)./[1:k]';
 ##   endfunction
 ## 
 ##   [x, flag, relres, iter, resvec, eigest] = ...
-##                      pcg (A, b, [], [], "applyM");
+##                      pcg (a, b, [], [], "apply_m");
 ##   semilogy (1:iter+1, resvec);
 ## @end group
 ## @end example
@@ -185,14 +185,14 @@
 ## 
 ## @example
 ## @group
-##   function y = applyM (x, varargin)
+##   function y = apply_M (x, varargin)
 ##   K = varargin@{1@}; 
 ##   y = x;
 ##   y(1:K) = x(1:K)./[1:K]';
 ##   endfunction
 ## 
 ##   [x, flag, relres, iter, resvec, eigest] = ...
-##        pcg (A, b, [], [], "applyM", [], [], 3)
+##        pcg (A, b, [], [], "apply_m", [], [], 3)
 ## @end group
 ## @end example
 ## 
@@ -214,9 +214,9 @@
 ##    - Add the ability to provide the pre-conditioner as two separate
 ## matrices
 
-  function [x, flag, relres, iter, resvec, eigest] = pcg (A, b, tol, maxit, M1, M2, x0, varargin)
+function [x, flag, relres, iter, resvec, eigest] = pcg (a, b, tol, maxit, m1, m2, x0, varargin)
 
-## M = M1*M2
+  ## M = M1*M2
 
   if (nargin < 7 || isempty (x0))
     x = zeros (size (b));
@@ -224,17 +224,17 @@
     x = x0;
   endif
 
-if ((nargin < 5) || isempty (M1))
-   existM1 = 0;
-else
-   existM1 = 1;
-endif
+  if (nargin < 5 || isempty (m1))
+     exist_m1 = 0;
+  else
+     exist_m1 = 1;
+  endif
 
-if ((nargin < 6) || isempty (M2))
-   existM2 = 0;
-else
-   existM2 = 1;
-endif
+  if (nargin < 6 || isempty (m2))
+     exist_m2 = 0;
+  else
+     exist_m2 = 1;
+  endif
 
   if (nargin < 4 || isempty (maxit))
     maxit = min (size (b, 1), 20);
@@ -257,12 +257,12 @@ endif
 
   p = zeros (size (b));
   oldtau = 1; 
-  if (isnumeric (A))
+  if (isnumeric (a))
     ## A is a matrix.
-    r = b - A*x; 
+    r = b - a*x; 
   else
     ## A should be a function.
-    r = b - feval (A, x, varargin{:});
+    r = b - feval (a, x, varargin{:});
   endif
 
   resvec(1,1) = norm (r);
@@ -270,20 +270,20 @@ endif
   iter = 2;
 
   while (resvec (iter-1,1) > tol * resvec (1,1) && iter < maxit)
-    if (existM1)
-      if(isnumeric (M1))
-	y = M1 \ r;
+    if (exist_m1)
+      if(isnumeric (m1))
+	y = m1 \ r;
       else
-	y = feval (M1, r, varargin{:});
+	y = feval (m1, r, varargin{:});
       endif
     else
       y = r;
     endif
-    if (existM2)
-      if (isnumeric (M2))
-	z = M2 \ y;
+    if (exist_m2)
+      if (isnumeric (m2))
+	z = m2 \ y;
       else
-	z = feval (M2, y, varargin{:});
+	z = feval (m2, y, varargin{:});
       endif
     else
       z = y;
@@ -293,12 +293,12 @@ endif
     beta = tau / oldtau;
     oldtau = tau;
     p = z + beta * p;
-    if (isnumeric (A))
+    if (isnumeric (a))
       ## A is a matrix.
-      w = A * p;
+      w = a * p;
     else
       ## A should be a function.
-      w = feval (A, p, varargin{:});
+      w = feval (a, p, varargin{:});
     endif
     ## Needed only for eigest.
     oldalpha = alpha;
@@ -336,20 +336,20 @@ endif
 
     ## Apply the preconditioner once more and finish with the precond
     ## residual.
-    if (existM1)
-      if(isnumeric (M1))
-	y = M1 \ r;
+    if (exist_m1)
+      if (isnumeric (m1))
+	y = m1 \ r;
       else
-	y = feval (M1, r, varargin{:});
+	y = feval (m1, r, varargin{:});
       endif
     else
       y = r;
     endif
-    if (existM2)
-      if (isnumeric (M2))
-	z = M2 \ y;
+    if (exist_m2)
+      if (isnumeric (m2))
+	z = m2 \ y;
       else
-	z = feval (M2, y, varargin{:});
+	z = feval (m2, y, varargin{:});
       endif
     else
       z = y;

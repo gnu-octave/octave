@@ -40,7 +40,7 @@ function [newphi, newv] = durbinlevinson (c, oldphi, oldv)
   endif
 
   if (columns (c) > 1)
-    c=c';
+    c = c';
   endif
 
   newphi = 0;

@@ -39,7 +39,7 @@ function p = polyreduce (p)
     error ("polyreduce: argument must be a vector");
   endif
 
-  if (! isempty (p) )
+  if (! isempty (p))
 
     index = find (p != 0);
 

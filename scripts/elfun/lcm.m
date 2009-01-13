@@ -69,7 +69,7 @@ function l = lcm (varargin)
     sz = size (l);
     nel = numel (l);
 
-    for i=2:nargin
+    for i = 2:nargin
       a = varargin{i};
 
       if (size (a) != sz)

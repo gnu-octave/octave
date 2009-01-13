@@ -28,7 +28,7 @@
 ##
 ## Without any arguments, @code{axis} turns autoscaling on.  
 ##
-## With one output argument, @code{x=axis} returns the current axes 
+## With one output argument, @code{x = axis} returns the current axes 
 ##
 ## The vector argument specifying limits is optional, and additional
 ## string arguments may be used to specify various axis properties.  For

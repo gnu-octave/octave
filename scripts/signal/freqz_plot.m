@@ -43,7 +43,7 @@ function freqz_plot (w, h)
   subplot (3, 1, 1);
   plot (w, mag);
   grid ("on");
-  legend("Pass band (dB)");
+  legend ("Pass band (dB)");
   axis ([w(1), w(n), maxmag-3, maxmag], "labely");
 
   subplot (3, 1, 2);

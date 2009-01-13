@@ -18,21 +18,21 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{h} =} findobj ()
-## @deftypefnx {Function File} {@var{h} =} findobj (@var{propName}, @var{propValue})
-## @deftypefnx {Function File} {@var{h} =} findobj ('-property', @var{propName})
-## @deftypefnx {Function File} {@var{h} =} findobj ('-regexp', @var{propName},, @var{pattern})
+## @deftypefnx {Function File} {@var{h} =} findobj (@var{prop_name}, @var{prop_value})
+## @deftypefnx {Function File} {@var{h} =} findobj ('-property', @var{prop_name})
+## @deftypefnx {Function File} {@var{h} =} findobj ('-regexp', @var{prop_name}, @var{pattern})
 ## @deftypefnx {Function File} {@var{h} =} findobj ('flat', @dots{})
 ## @deftypefnx {Function File} {@var{h} =} findobj (@var{h}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} findobj (@var{h}, '-depth', @var{d}, @dots{})
 ## Find object with specified property values. The simplest form is
 ##
 ## @example
-## findobj (@var{propName}, @var{propValue})
+## findobj (@var{prop_name}, @var{prop_Value})
 ## @end example
 ##
 ## @noindent
 ## which returns all of the handles to the objects with the name 
-## @var{propName} and the name @var{propValue}. The search can be limited
+## @var{prop_name} and the name @var{prop_Value}. The search can be limited
 ## to a particular object or set of objects and their descendants by 
 ## passing a handle or set of handles @var{h} as the first argument to 
 ## @code{findobj}.
@@ -42,20 +42,20 @@
 ## to search to @var{d} generations of children, and example is
 ##
 ## @example
-## findobj (@var{h}, '-depth', @var{d}, @var{propName}, @var{propValue})
+## findobj (@var{h}, '-depth', @var{d}, @var{prop_Name}, @var{prop_Value})
 ## @end example
 ##
 ## Specifying a depth @var{d} of 0, limits the search to the set of object
 ## passed in @var{h}. A depth @var{d} of 0 is equivalent to the '-flat'
 ## argument. 
 ##
-## A specified logical operator may be applied to the pairs of @var{propName}
-## and @var{propValue}. The supported logical operators are '-and', '-or', 
+## A specified logical operator may be applied to the pairs of @var{prop_Name}
+## and @var{prop_Value}. The supported logical operators are '-and', '-or', 
 ## '-xor', '-not'.
 ##
 ## The objects may also be matched by comparing a regular expression to the 
 ## property values, where property values that match @code{regexp 
-## (@var{propValue}, @var{pattern})} are returned.  Finally, objects may be 
+## (@var{prop_Value}, @var{pattern})} are returned.  Finally, objects may be 
 ## matched by property name only, using the '-property' option.
 ## @seealso{get, set}
 ## @end deftypefn

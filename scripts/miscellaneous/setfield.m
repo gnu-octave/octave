@@ -22,8 +22,8 @@
 ##
 ## @example
 ## @group
-## oo(1,1).f0= 1;
-## oo = setfield(oo,@{1,2@},'fd',@{3@},'b', 6);
+## oo(1,1).f0 = 1;
+## oo = setfield (oo, @{1,2@}, "fd", @{3@}, "b", 6);
 ## oo(1,2).fd(3).b == 6
 ## @result{} ans = 1
 ## @end group
@@ -32,8 +32,8 @@
 ## Note that this function could be written
 ##
 ## @example
-##          i1= @{1,2@}; i2= 'fd'; i3= @{3@}; i4= 'b';
-##          oo( i1@{:@} ).( i2 )( i3@{:@} ).( i4 ) == 6;
+## i1 = @{1,2@}; i2 = "fd"; i3 = @{3@}; i4 = "b";
+## oo(i1@{:@}).(i2)(i3@{:@}).(i4) == 6;
 ## @end example
 ## @seealso{getfield, rmfield, isfield, isstruct, fieldnames, struct}
 ## @end deftypefn
@@ -62,9 +62,9 @@ endfunction
 %!test
 %! x.a = "hello";
 %! x = setfield(x,"b","world");
-%! y = struct('a','hello','b','world');
+%! y = struct("a","hello","b","world");
 %! assert(x,y);
 %!test
 %! oo(1,1).f0= 1;
-%! oo = setfield(oo,{1,2},'fd',{3},'b', 6);
+%! oo = setfield(oo,{1,2},"fd",{3},"b", 6);
 %! assert (oo(1,2).fd(3).b, 6)

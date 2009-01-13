@@ -39,16 +39,13 @@ function [X, Y, Z] = pol2cart (Theta, R, Z)
     error ("pol2cart: number of output arguments must not be greater than number of input arguments");
   endif
 
-  if ((! (ismatrix (Theta) && ismatrix (R)))
-      || ((! size_equal (Theta, R)) && (! isscalar (Theta)) && (! isscalar (R)))
+  if (! (ismatrix (Theta) && ismatrix (R))
+      || ! size_equal (Theta, R) && ! isscalar (Theta) && ! isscalar (R)
       || (nargin == 3
-          && ((! ismatrix(Z))
-              || ( (! isscalar(Z))
-                   && ( (!(isscalar(R) || size_equal (R, Z))) || (!(isscalar(Theta) || size_equal (Theta, Z))) )
-                 )
-             )
-         )
-     )
+          && (! ismatrix (Z)
+              || (! isscalar (Z)
+                  && (! (isscalar (R) || size_equal (R, Z))
+		      || ! (isscalar(Theta) || size_equal (Theta, Z)))))))
     error ("pol2cart: arguments must be matrices of same size or scalar");
   endif
 

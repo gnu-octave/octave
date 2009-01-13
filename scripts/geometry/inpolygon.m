@@ -67,15 +67,15 @@ function [IN, ON] = inpolygon (X, Y, xv, yv)
     ##
     ## is Y between the y-values of edge i,j
     ##        AND (X,Y) on the left of the edge ?
-    idx1 = ((yv(i) <= Y & Y < yv(j)) | (yv(j) <= Y & Y < yv(i)) ) & ...
-           0 < distance.*delta_yv;
+    idx1 = (((yv(i) <= Y & Y < yv(j)) | (yv(j) <= Y & Y < yv(i)))
+	    & 0 < distance.*delta_yv);
     IN (idx1) = !IN (idx1);
 
     ## Check if (X,Y) are actually ON the boundary of the polygon.
     if (do_boundary)
-       idx2 = ((yv(i) <= Y & Y <= yv(j)) | (yv(j) <= Y & Y <= yv(i))) & ...
-              ((xv(i) <= X & X <= xv(j)) | (xv(j) <= X & X <= xv(i))) & ...
-              (0 == distance | !delta_xv);
+       idx2 = (((yv(i) <= Y & Y <= yv(j)) | (yv(j) <= Y & Y <= yv(i)))
+	       & ((xv(i) <= X & X <= xv(j)) | (xv(j) <= X & X <= xv(i)))
+	       & (0 == distance | !delta_xv));
        ON (idx2) = true;
     endif
     j = i;

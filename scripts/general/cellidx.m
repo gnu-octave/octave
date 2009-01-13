@@ -78,7 +78,7 @@ function [idxvec,errmsg]  = cellidx (listvar, strlist)
   for idx = 1:length(strlist)
     signame = strlist{idx};
     for jdx = 1:nsigs
-      if (strcmp (signame, listvar{jdx}) )
+      if (strcmp (signame, listvar{jdx}))
 	if (idxvec(idx) != 0)
 	  warning ("Duplicate signal name %s (%d,%d)\n",
 		   listvar{jdx}, jdx, idxvec(idx));

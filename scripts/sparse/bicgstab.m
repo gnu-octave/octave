@@ -60,20 +60,20 @@ function [x, flag, relres, iter, resvec] = bicgstab (A, b, tol, maxit, M1, M2, x
   elseif (nargin > 6 && !isvector (x0))
     error ("bicgstab: x0 must be a vector");
   elseif (nargin > 6 && rows (x0) != rows (b))
-    error ("bicgstab: xO must have the same number of rows as b");
+    error ("bicgstab: x0 must have the same number of rows as b");
   endif
 
-  ## default toleration
+  ## Default tolerance.
   if (nargin < 3)
     tol = 1e-6;
   endif
 
-  ## default maximum number of iteration
+  ## Default maximum number of iteration.
   if (nargin < 4)
     maxit = min (rows (b), 20);
   endif
 
-  ## left preconditioner
+  ## Left preconditioner.
   if (nargin == 5)
     precon = M1;
   elseif (nargin > 5)
@@ -85,16 +85,16 @@ function [x, flag, relres, iter, resvec] = bicgstab (A, b, tol, maxit, M1, M2, x
   endif
 
   if (nargin > 4 && isnumeric (precon))
-    ## precon can by also function
+    ## Precon can by also function.
     if (det (precon) != 0) 
-      ## we can compute inverse preconditioner and use quicker algorithm
-      precon=inv (precon);
+      ## We can compute inverse preconditioner and use quicker algorithm.
+      precon = inv (precon);
     else
       error ("bicgstab: preconditioner is ill conditioned");
     endif
 
     if (isinf (cond (precon))); 
-      ## we must make test if preconditioner isn't ill conditioned
+      ## We must make test if preconditioner isn't ill conditioned.
       error ("bicgstab: preconditioner is ill conditioned");
     endif
   endif
@@ -111,10 +111,10 @@ function [x, flag, relres, iter, resvec] = bicgstab (A, b, tol, maxit, M1, M2, x
   res = b - A*x;
   rr = res;
 
-  ## vector of the residual norms for each iteration
+  ## Vector of the residual norms for each iteration.
   resvec = [norm(res)];
 
-  ## default behaviour we don't reach tolerance tol within maxit iterations
+  ## Default behaviour we don't reach tolerance tol within maxit iterations.
   flag = 1;
 
   for iter = 1:maxit
@@ -130,7 +130,7 @@ function [x, flag, relres, iter, resvec] = bicgstab (A, b, tol, maxit, M1, M2, x
     if (nargin > 4 && isnumeric (precon))
       phat = precon * p;
     elseif (nargin > 4)
-      ## our preconditioner is a function
+      ## Our preconditioner is a function.
       phat = feval (precon, p);
     else
       phat = p;
@@ -143,7 +143,7 @@ function [x, flag, relres, iter, resvec] = bicgstab (A, b, tol, maxit, M1, M2, x
     if (nargin > 4 && isnumeric (precon))
       shat = precon * s;
     elseif (nargin > 4)
-      ## our preconditioner is a function
+      ## Our preconditioner is a function.
       shat = feval (precon, s);
     else
       shat = s;
@@ -159,11 +159,11 @@ function [x, flag, relres, iter, resvec] = bicgstab (A, b, tol, maxit, M1, M2, x
     resvec = [resvec; relres];
 
     if (relres <= tol)
-      ## we reach tolerance tol within maxit iterations
+      ## We reach tolerance tol within maxit iterations.
       flag = 0;
       break;
-    elseif ( resvec (end) == resvec (end - 1)) 
-      ## the method stagnates
+    elseif (resvec (end) == resvec (end - 1)) 
+      ## The method stagnates.
       flag = 3;
       break;
     endif

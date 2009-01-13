@@ -118,7 +118,7 @@ function F = bicubic (X, Y, Z, XI, YI, extrapval, spline_alpha)
     YI = reshape (YI, length (YI), 1);
     [m, i] = sort ([Y; YI]);
     o = cumsum (i <= rz);
-    yidx = o([find( i> rz)]);
+    yidx = o([find(i > rz)]);
     
     ## Set s and t used follow codes.
     s = xidx + ((XI .- X(xidx))./(X(xidx+1) .- X(xidx)));
@@ -147,29 +147,29 @@ function F = bicubic (X, Y, Z, XI, YI, extrapval, spline_alpha)
 
   p = zeros (size (Z) + 2);
   p(2:rz+1,2:cz+1) = Z;
-  p(1,:)      =    (6*(1-a))*p(2,:)    -3*p(3,:)   + (6*a-2)*p(4,:);
-  p(rz+2,:)   =    (6*(1-a))*p(rz+1,:) -3*p(rz,:)  + (6*a-2)*p(rz-1,:);
-  p(:,1)      =    (6*(1-a))*p(:,2)    -3*p(:,3)   + (6*a-2)*p(:,4);
-  p(:,cz+2)   =    (6*(1-a))*p(:,cz+1)  -3*p(:,cz) + (6*a-2)*p(:,cz-1);
+  p(1,:) =    (6*(1-a))*p(2,:)    - 3*p(3,:)  + (6*a-2)*p(4,:);
+  p(rz+2,:) = (6*(1-a))*p(rz+1,:) - 3*p(rz,:) + (6*a-2)*p(rz-1,:);
+  p(:,1) =    (6*(1-a))*p(:,2)    - 3*p(:,3)  + (6*a-2)*p(:,4);
+  p(:,cz+2) = (6*(1-a))*p(:,cz+1) - 3*p(:,cz) + (6*a-2)*p(:,cz-1);
 
   ## Calculte the C1(t) C2(t) C3(t) C4(t) and C1(s) C2(s) C3(s) C4(s).
-  t2= t.*t;
-  t3= t2.*t;
+  t2 = t.*t;
+  t3 = t2.*t;
 
-  ct0=     -a .* t3 +     (2 * a) .* t2 - a .* t ;      # -a G0
+  ct0 =    -a .* t3 +     (2 * a) .* t2 - a .* t ;      # -a G0
   ct1 = (2-a) .* t3 +      (-3+a) .* t2          + 1 ;  # F0 - a G1
   ct2 = (a-2) .* t3 + (-2 *a + 3) .* t2 + a .* t ;      # F1 + a G0
   ct3 =     a .* t3 -           a .* t2;                # a G1
-  t = [];t2=[]; t3=[];
+  t = []; t2 = []; t3 = [];
 
-  s2= s.*s;
-  s3= s2.*s;
+  s2 = s.*s;
+  s3 = s2.*s;
 
-  cs0=     -a .* s3 +     (2 * a) .* s2 - a .*s ;      # -a G0
+  cs0 =    -a .* s3 +     (2 * a) .* s2 - a .*s ;      # -a G0
   cs1 = (2-a) .* s3 +    (-3 + a) .* s2         + 1 ;  # F0 - a G1
   cs2 = (a-2) .* s3 + (-2 *a + 3) .* s2 + a .*s ;      # F1 + a G0
   cs3 =     a .* s3 -           a .* s2;               # a G1
-  s=[] ; s2 = []; s3 = [];
+  s = []; s2 = []; s3 = [];
 
   cs0 = cs0([1,1,1,1],:);
   cs1 = cs1([1,1,1,1],:);
@@ -183,9 +183,9 @@ function F = bicubic (X, Y, Z, XI, YI, extrapval, spline_alpha)
   for i = 1:lent
     it = indt(i);
     int = [it, it+1, it+2, it+3];
-    F(i,:) = [ct0(i),ct1(i),ct2(i),ct3(i)] * ...
-	(p(int,inds) .* cs0 + p(int,inds+1) .* cs1 + ...
-	 p(int,inds+2) .* cs2 + p(int,inds+3) .* cs3);
+    F(i,:) = ([ct0(i),ct1(i),ct2(i),ct3(i)]
+	      * (p(int,inds) .* cs0 + p(int,inds+1) .* cs1
+		 + p(int,inds+2) .* cs2 + p(int,inds+3) .* cs3));
   endfor
 
   ## Set points outside the table to extrapval.

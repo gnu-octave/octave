@@ -34,7 +34,7 @@ function ret = what (d)
   if (nargin == 0)
     d = pwd ();
   elseif (isempty (strfind (d, filesep ())))
-    ## Find the appropriate directory on the path
+    ## Find the appropriate directory on the path.
     p = split (path (), pathsep());
     p = cellfun (@(x) deblank (x), mat2cell (p, ones (1, size (p, 1)), ...
 		size (p, 2)), "UniformOutput", false);

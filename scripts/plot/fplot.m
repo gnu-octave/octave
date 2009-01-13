@@ -108,10 +108,10 @@ function fplot (fn, limits, n, linespec)
     axis (limits);
   endif
 
-  if (isvector(y))
+  if (isvector (y))
     legend (nam);
   else
-    for i=1:columns(y)
+    for i = 1:columns (y)
       nams{i} = sprintf ("%s(:,%i)", nam, i);
     endfor
     legend (nams{:});

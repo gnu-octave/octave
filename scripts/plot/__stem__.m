@@ -420,7 +420,7 @@ function [x, y, z, dofill, lc, ls, mc, ms, newargs] = check_stem_arg (have_z, va
 	  error ("stem: inconsistent size of x and y");
 	endif
       endif
-    elseif (!size_equal (x, y ))
+    elseif (!size_equal (x, y))
       error ("stem: inconsistent size of x and y");
     endif
   endif

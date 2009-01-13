@@ -63,15 +63,17 @@
 ##
 ## @example
 ## @group
-##    xf=[0:0.05:10]; yf = sin(2*pi*xf/5);
-##    xp=[0:10];      yp = sin(2*pi*xp/5);
-##    lin=interp1(xp,yp,xf);
-##    spl=interp1(xp,yp,xf,'spline');
-##    cub=interp1(xp,yp,xf,'cubic');
-##    near=interp1(xp,yp,xf,'nearest');
-##    plot(xf,yf,"r",xf,lin,"g",xf,spl,"b", ...
-##         xf,cub,"c",xf,near,"m",xp,yp,"r*");
-##    legend ("original","linear","spline","cubic","nearest")
+## xf = [0:0.05:10];
+## yf = sin (2*pi*xf/5);
+## xp = [0:10];
+## yp = sin (2*pi*xp/5);
+## lin = interp1 (xp, yp, xf);
+## spl = interp1 (xp, yp, xf, "spline");
+## cub = interp1 (xp, yp, xf, "cubic");
+## near = interp1 (xp, yp, xf, "nearest");
+## plot (xf, yf, "r", xf, lin, "g", xf, spl, "b",
+##       xf, cub, "c", xf, near, "m", xp, yp, "r*");
+## legend ("original", "linear", "spline", "cubic", "nearest")
 ## @end group
 ## @end example
 ##
@@ -142,7 +144,7 @@ function yi = interp1 (x, y, varargin)
   endif
 
   ## determine which values are out of range and set them to extrap,
-  ## unless extrap=="extrap" in which case, extrapolate them like we
+  ## unless extrap == "extrap" in which case, extrapolate them like we
   ## should be doing in the first place.
   minx = x(1);
   maxx = x(nx);

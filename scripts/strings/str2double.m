@@ -184,7 +184,7 @@ function [num, status, strarray] = str2double (s, cdelim, rdelim, ddelim)
     endfor
     CD = RD;
     for k = 1:length (cdelim),
-      CD = CD | (s==cdelim(k));
+      CD = CD | (s == cdelim(k));
     endfor
 
     curr_row = 1;
@@ -263,7 +263,7 @@ function [num, status, strarray] = str2double (s, cdelim, rdelim, ddelim)
 	  num(curr_row,curr_col) = NaN;
 	else
 	  if (ddelim == ".")
-	    t(t==ddelim) = ".";
+	    t(t == ddelim) = ".";
 	  endif
 	  [v, tmp2, c] = sscanf(char(t), "%f %s", "C");
 	  ## [v,c,em,ni] = sscanf(char(t),"%f %s");

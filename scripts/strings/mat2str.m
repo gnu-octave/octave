@@ -36,13 +36,13 @@
 ##
 ## @example
 ## @group
-## mat2str( [ -1/3 + i/7; 1/3 - i/7 ], [4 2] )
+## mat2str ([ -1/3 + i/7; 1/3 - i/7 ], [4 2])
 ##      @result{} "[-0.3333+0.14i;0.3333-0.14i]"
 ##
-## mat2str( [ -1/3 +i/7; 1/3 -i/7 ], [4 2] )
+## mat2str ([ -1/3 +i/7; 1/3 -i/7 ], [4 2])
 ##      @result{} "[-0.3333+0i,0+0.14i;0.3333+0i,-0-0.14i]"
 ##
-## mat2str( int16([1 -1]), 'class')
+## mat2str (int16([1 -1]), 'class')
 ##      @result{} "int16([1,-1])"
 ## @end group
 ## @end example
@@ -81,7 +81,7 @@ function s = mat2str (x, n, cls)
   if (! x_iscomplex)
     fmt = sprintf ("%%.%dg", n(1));
   else
-    if (length (n) == 1 )
+    if (length (n) == 1)
       n = [n, n];
     endif
     fmt = sprintf ("%%.%dg%%+.%dgi", n(1), n(2));

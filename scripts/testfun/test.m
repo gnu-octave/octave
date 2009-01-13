@@ -220,7 +220,7 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
 
   ## Ready to start tests ... if in batch mode, tell us what is happening.
   if (__verbose)
-    disp (cstrcat ( __signal_file, __file));
+    disp (cstrcat (__signal_file, __file));
   endif
 
   ## Assume all tests will pass.

@@ -24,7 +24,7 @@
 ## Note that if you need a specific number of primes, you can use the
 ## fact the distance from one prime to the next is on average
 ## proportional to the logarithm of the prime.  Integrating, you find
-## that there are about @math{k} primes less than @math{k \log ( 5 k )}.
+## that there are about @math{k} primes less than @math{k \log (5 k)}.
 ##
 ## The algorithm used is called the Sieve of Erastothenes.
 ## @end deftypefn
@@ -48,7 +48,7 @@ function x = primes (p)
     ## 100000 happens to be the cross-over point for Paul's machine;
     ## below this the more direct code below is faster.  At the limit
     ## of memory in Paul's machine, this saves .7 seconds out of 7 for
-    ## p=3e6.  Hardly worthwhile, but Dirk reports better numbers.
+    ## p = 3e6.  Hardly worthwhile, but Dirk reports better numbers.
     lenm = floor ((p+1)/6);       # length of the 6n-1 sieve
     lenp = floor ((p-1)/6);       # length of the 6n+1 sieve
     sievem = ones (1, lenm);      # assume every number of form 6n-1 is prime

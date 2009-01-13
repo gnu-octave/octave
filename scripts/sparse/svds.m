@@ -80,79 +80,81 @@
 
 function [u, s, v, flag] = svds (a, k, sigma, opts)
 
+  persistent root2 = sqrt (2);
+
   if (nargin < 1 || nargin > 4)
-    error ("Incorrect number of arguments");
+    print_usage ();
   endif
 
   if (nargin < 4)
-    opts.tol = 1e-10 / sqrt(2);
+    opts.tol = 1e-10 / root2;
     opts.disp = 0;
     opts.maxit = 300;
   else
-    if (!isstruct(opts))
-      error("opts must be a structure");
+    if (!isstruct (opts))
+      error ("svds: opts must be a structure");
     endif
-    if (!isfield(opts,"tol"))
-      opts.tol = 1e-10 / sqrt(2);
+    if (!isfield (opts, "tol"))
+      opts.tol = 1e-10 / root2;
     endif
   endif
 
-  if (nargin < 3 || strcmp(sigma,"L"))
-    if (isreal(a))
+  if (nargin < 3 || strcmp (sigma, "L"))
+    if (isreal (a))
       sigma = "LA";
     else
       sigma = "LR";
     endif
-  elseif (isscalar(sigma) && isreal(sigma))
-    if ((sigma < 0))
-      error ("sigma must be a positive real value");
+  elseif (isscalar (sigma) && isreal (sigma))
+    if (sigma < 0)
+      error ("svds: sigma must be a positive real value");
     endif
   else
-    error ("sigma must be a positive real value or the string 'L'");
+    error ("svds: sigma must be a positive real value or the string 'L'");
   endif
 
-  maxA = max(max(abs(a)));
-  if (maxA == 0)
-    u = eye(m, k);
-    s = zeros(k, k);
-    v = eye(n, k);
+  max_a = max (abs (a(:)));
+  if (max_a == 0)
+    u = eye (m, k);
+    s = zeros (k, k);
+    v = eye (n, k);
   else
-    [m, n] = size(a);
+    [m, n] = size (a);
     if (nargin < 2)
-      k = min([6, m, n]);
+      k = min ([6, m, n]);
     else
-      k = min([k, m, n]);
+      k = min ([k, m, n]);
     endif
 
     ## Scale everything by the 1-norm to make things more stable.
-    B = a / maxA;
-    Bopts = opts;
-    Bopts.tol = opts.tol / maxA;
-    Bsigma = sigma;
-    if (!ischar(Bsigma))
-      Bsigma = Bsigma / maxA;
+    b = a / max_a;
+    b_opts = opts;
+    b_opts.tol = opts.tol / max_a;
+    b_sigma = sigma;
+    if (!ischar (b_sigma))
+      b_sigma = b_sigma / max_a;
     endif
 
-    if (!ischar(Bsigma) && Bsigma == 0)
+    if (!ischar (b_sigma) && b_sigma == 0)
       ## The eigenvalues returns by eigs are symmetric about 0. As we 
       ## are only interested in the positive eigenvalues, we have to
       ## double k. If sigma is smaller than the smallest singular value
       ## this can also be an issue. However, we'd like to avoid double
       ## k for all scalar value of sigma...
-      [V, s, flag] = eigs ([sparse(m,m), B; B', sparse(n,n)], 
-			   2 * k, Bsigma, Bopts);
+      [V, s, flag] = eigs ([sparse(m,m), b; b', sparse(n,n)], 
+			   2 * k, b_sigma, b_opts);
     else
-      [V, s, flag] = eigs ([sparse(m,m), B; B', sparse(n,n)],
-			   k, Bsigma, Bopts);
+      [V, s, flag] = eigs ([sparse(m,m), b; b', sparse(n,n)],
+			   k, b_sigma, b_opts);
     endif
-    s = diag(s);
+    s = diag (s);
 
-    if (ischar(sigma))
-      norma = max(s);
+    if (ischar (sigma))
+      norma = max (s);
     else
-      norma = normest(a);
+      norma = normest (a);
     endif
-    V = sqrt(2) * V;
+    V = root2 * V;
     u = V(1:m,:);
     v = V(m+1:end,:);
 
@@ -166,27 +168,27 @@ function [u, s, v, flag] = svds (a, k, sigma, opts)
     ## values. What is appropriate for the tolerance?
     tol = norma * opts.tol;
     ind = find(s > tol);
-    if (length(ind) < k)
+    if (length (ind) < k)
       ## Find the zero eigenvalues of B, Ignore the eigenvalues that are 
       ## nominally negative.
-      zind = find(abs(s) <= tol);
-      p = min(length(zind), k-length(ind));
-      ind = [ind;zind(1:p)];
-    elseif (length(ind) > k)
+      zind = find (abs (s) <= tol);
+      p = min (length (zind), k - length (ind));
+      ind = [ind; zind(1:p)];
+    elseif (length (ind) > k)
       ind = ind(1:k);
     endif
     u = u(:,ind);
     s = s(ind);
     v = v(:,ind);
 
-    if (length(s) < k)
-      warning("returning fewer singular values than requested.");
-      if (!ischar(sigma))
-	warning("try increasing the value of sigma");
+    if (length (s) < k)
+      warning ("returning fewer singular values than requested");
+      if (!ischar (sigma))
+	warning ("try increasing the value of sigma");
       endif
     endif
 
-    s = s * maxA;
+    s = s * max_a;
   endif
 
   if (nargout < 2)
@@ -194,7 +196,7 @@ function [u, s, v, flag] = svds (a, k, sigma, opts)
   else
     s = diag(s);
     if (nargout > 3)
-      flag = norm(a*v - u*s, 1) > sqrt(2) * opts.tol * norm(a, 1);
+      flag = norm (a*v - u*s, 1) > root2 * opts.tol * norm (a, 1);
     endif
   endif
 endfunction

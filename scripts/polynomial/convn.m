@@ -121,8 +121,8 @@ endfunction
 
 %!test
 %! ## Complex data
-%! a = complex( ones (10,10,10), ones(10,10,10) ); 
-%! b = complex( ones (3,3,3), ones(3,3,3) );
+%! a = complex(ones (10,10,10), ones(10,10,10));
+%! b = complex(ones (3,3,3), ones(3,3,3));
 %! c = convn (a, b, "valid");
 %! assert (all (c == 2*i*numel (b)));
 

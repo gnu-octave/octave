@@ -79,18 +79,18 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
   persistent mu = 0.5;
 
   if (funvalchk)
-    ## replace fun with a guarded version
+    ## Replace fun with a guarded version.
     fun = @(x) guarded_eval (fun, x);
   endif
 
-  ## the default exit flag if exceeded number of iterations
+  ## The default exit flag if exceeded number of iterations.
   info = 0;
   niter = 0;
   nfev = 0;
 
   x = fval = a = fa = b = fb = NaN;
 
-  ## prepare...
+  ## Prepare...
   a = x0(1);
   fa = fun (a); 
   nfev = 1;
@@ -99,7 +99,7 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
     fb = fun (b);
     nfev += 1;
   else
-    ## try to get b
+    ## Try to get b.
     if (a == 0)
       aa = 1;
     else
@@ -141,17 +141,17 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
   while (niter < maxiter && nfev < maxfev)
     switch (itype)
     case 1
-      ## the initial test
+      ## The initial test.
       if (b - a <= 2*(2 * abs (u) * eps + tolx))
         x = u; fval = fu;
         info = 1;
         break;
       endif
       if (abs (fa) <= 1e3*abs (fb) && abs (fb) <= 1e3*abs (fa))
-        ## secant step
+        ## Secant step.
         c = u - (a - b) / (fa - fb) * fu;
       else
-        ## bisection step
+        ## Bisection step.
         c = 0.5*(a + b);
       endif
       d = u; fd = fu;
@@ -159,7 +159,7 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
     case {2, 3}
       l = length (unique ([fa, fb, fd, fe]));
       if (l == 4)
-        ## inverse cubic interpolation
+        ## Inverse cubic interpolation.
         q11 = (d - e) * fd / (fe - fd);
         q21 = (b - d) * fb / (fd - fb);
         q31 = (a - b) * fa / (fb - fa);
@@ -172,11 +172,11 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
         c = a + q31 + q32 + q33;
       endif
       if (l < 4 || sign (c - a) * sign (c - b) > 0)
-        ## quadratic interpolation + newton
+        ## Quadratic interpolation + newton.
         a0 = fa;
         a1 = (fb - fa)/(b - a);
         a2 = ((fd - fb)/(d - b) - a1) / (d - a);
-        ## modification 1: this is simpler and does not seem to be worse
+        ## Modification 1: this is simpler and does not seem to be worse.
         c = a - a0/a1;
         if (a2 != 0)
           c = a - a0/a1;
@@ -193,20 +193,20 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
       endif
       itype += 1; 
     case 4
-      ## double secant step
+      ## Double secant step.
       c = u - 2*(b - a)/(fb - fa)*fu;
-      ## bisect if too far
+      ## Bisect if too far.
       if (abs (c - u) > 0.5*(b - a))
         c = 0.5 * (b + a);
       endif
       itype = 5;
     case 5
-      ## bisection step
+      ## Bisection step.
       c = 0.5 * (b + a);
       itype = 2;
     endswitch
 
-    ## don't let c come too close to a or b
+    ## Don't let c come too close to a or b.
     delta = 2*0.7*(2 * abs (u) * eps + tolx);
     if ((b - a) <= 2*delta)
       c = (a + b)/2;
@@ -214,22 +214,22 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
       c = max (a + delta, min (b - delta, c));
     endif
 
-    ## calculate new point
+    ## Calculate new point.
     x = c;
     fval = fc = fun (c); 
     niter ++; nfev ++;
 
-    ## modification 2: skip inverse cubic interpolation if
-    ## nonmonotonicity is detected
+    ## Modification 2: skip inverse cubic interpolation if
+    ## nonmonotonicity is detected.
     if (sign (fc - fa) * sign (fc - fb) >= 0)
-      ## the new point broke monotonicity. 
-      ## disable inverse cubic 
+      ## The new point broke monotonicity. 
+      ## Disable inverse cubic.
       fe = fc;
     else
       e = d; fe = fd;
     endif
 
-    ## bracketing
+    ## Bracketing.
     if (sign (fa) * sign (fc) < 0)
       d = b; fd = fb;
       b = c; fb = fc;
@@ -241,11 +241,11 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
       info = 1;
       break;
     else
-      ## this should never happen.
+      ## This should never happen.
       error ("fzero:bracket", "fzero: zero point is not bracketed");
     endif
 
-    ## if there's an output function, use it now
+    ## If there's an output function, use it now.
     if (outfcn)
       optv.funccount = niter + 2;
       optv.fval = fval;
@@ -266,7 +266,7 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
       break;
     endif
 
-    ## skip bisection step if successful reduction
+    ## Skip bisection step if successful reduction.
     if (itype == 5 && (b - a) <= mba)
       itype = 2;
     endif
@@ -282,7 +282,7 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
 
 endfunction
 
-## an assistant function that evaluates a function handle and checks for
+## An assistant function that evaluates a function handle and checks for
 ## bad results.
 function fx = guarded_eval (fun, x)
   fx = fun (x);

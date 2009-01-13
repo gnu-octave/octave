@@ -73,7 +73,7 @@ function n = index (s, t, direction)
 
   elseif (l_t == 1)
     ## length one target: simple find
-    v = find (s==t, 1, direction);
+    v = find (s == t, 1, direction);
 
   elseif (l_t == 2)
     ## length two target: find first at i and second at i+1

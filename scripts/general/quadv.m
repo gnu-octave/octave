@@ -42,7 +42,7 @@
 ## @seealso{triplequad, dblquad, quad, quadl, quadgk, trapz}
 ## @end deftypefn
 
-function [Q, fcnt] = quadv (f, a, b, tol, trace, varargin)
+function [q, fcnt] = quadv (f, a, b, tol, trace, varargin)
   if (nargin < 3)
     print_usage ();
   endif
@@ -81,49 +81,49 @@ function [Q, fcnt] = quadv (f, a, b, tol, trace, varargin)
   endif
 
   h = (b - a) / 2;
-  Q = (b - a) / 6 * (fa + 4 * fc + fb);
+  q = (b - a) / 6 * (fa + 4 * fc + fb);
  
-  [Q, fcnt, hmin] = simpsonstp (f, a, b, c, fa, fb, fc, Q, fcnt, abs (b - a), 
+  [q, fcnt, hmin] = simpsonstp (f, a, b, c, fa, fb, fc, q, fcnt, abs (b - a), 
 				tol, trace, varargin{:});
 
   if (fcnt > 10000)
-    warning("Maximum iteration count reached");
-  elseif (isnan(Q) || isinf (Q))
-    warning ("Infinite or NaN function evaluations were returned");
+    warning ("maximum iteration count reached");
+  elseif (isnan (q) || isinf (q))
+    warning ("infinite or NaN function evaluations were returned");
   elseif (hmin < (b - a) * myeps)
-    warning ("Minimum step size reached. Possibly singular integral");
+    warning ("minimum step size reached -- possibly singular integral");
   endif
 endfunction
 
-function [Q, fcnt, hmin] = simpsonstp (f, a, b, c, fa, fb, fc, Q0, 
+function [q, fcnt, hmin] = simpsonstp (f, a, b, c, fa, fb, fc, q0, 
 				       fcnt, hmin, tol, trace, varargin)
   if (fcnt > 10000)
-    Q = Q0;
+    q = q0;
   else
     d = (a + c) / 2;
     e = (c + b) / 2;
     fd = feval (f, d, varargin{:});
     fe = feval (f, e, varargin{:});
     fcnt += 2;
-    Q1 = (c - a) / 6 * (fa + 4 * fd + fc);
-    Q2 = (b - c) / 6 * (fc + 4 * fe + fb);
-    Q = Q1 + Q2;
+    q1 = (c - a) / 6 * (fa + 4 * fd + fc);
+    q2 = (b - c) / 6 * (fc + 4 * fe + fb);
+    q = q1 + q2;
 
     if (abs(a -  c) < hmin)
       hmin = abs (a - c);
     endif
 
     if (trace)
-      disp ([fcnt, a, b-a, Q]);
+      disp ([fcnt, a, b-a, q]);
     endif
 
-    ## Force at least one adpative step
-    if (fcnt == 5 || abs (Q - Q0) > tol)
-      [Q1, fcnt, hmin] = simpsonstp (f, a, c, d, fa, fc, fd, Q1, fcnt, hmin,
+    ## Force at least one adpative step.
+    if (fcnt == 5 || abs (q - q0) > tol)
+      [q1, fcnt, hmin] = simpsonstp (f, a, c, d, fa, fc, fd, q1, fcnt, hmin,
 				    tol, trace, varargin{:});
-      [Q2, fcnt, hmin] = simpsonstp (f, c, b, e, fc, fb, fe, Q2, fcnt, hmin,
+      [q2, fcnt, hmin] = simpsonstp (f, c, b, e, fc, fb, fe, q2, fcnt, hmin,
 				     tol, trace, varargin{:});
-      Q = Q1 + Q2;
+      q = q1 + q2;
     endif
   endif
 endfunction

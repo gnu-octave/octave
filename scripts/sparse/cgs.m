@@ -51,21 +51,20 @@ function [x, flag, relres, iter, resvec] = cgs (A, b, tol, maxit, M1, M2, x0)
   elseif (nargin > 6 && !isvector (x0))
     error ("cgs: x0 must be a vector");
   elseif (nargin > 6 && rows (x0) != rows (b))
-    error ("cgs: xO must have the same number of rows as b");
+    error ("cgs: x0 must have the same number of rows as b");
   endif
 
-  ## default toleration
+  ## Default tolerance.
   if (nargin < 3)
     tol = 1e-6;
   endif
 
-  ## default maximum number of iteration
+  ## Default maximum number of iteration.
   if (nargin < 4)
     maxit = min (rows (b),20);
   endif
 
-
-  ## left preconditioner
+  ## Left preconditioner.
   precon = [];
   if (nargin == 5)
     precon = M1;
@@ -77,23 +76,23 @@ function [x, flag, relres, iter, resvec] = cgs (A, b, tol, maxit, M1, M2, x0)
     endif
   endif
 
-  ## precon can by also function
+  ## Precon can also be a function.
   if (nargin > 4 && isnumeric (precon))
 
-    ## we can compute inverse preconditioner and use quicker algorithm
+    ## We can compute inverse preconditioner and use quicker algorithm.
     if (det (precon) != 0)
-     precon=inv (precon);
+     precon = inv (precon);
     else
      error ("cgs: preconditioner is ill conditioned");
     endif
 
-    ## we must make test if preconditioner isn't ill conditioned
+    ## We must make test if preconditioner isn't ill conditioned.
     if (isinf (cond (precon))); 
       error ("cgs: preconditioner is ill conditioned");
     endif
   endif
 
-  ## specifies initial estimate x0
+  ## Specifies initial estimate x0.
   if (nargin < 7)
     x = zeros (rows (b), 1);
   else
@@ -101,26 +100,26 @@ function [x, flag, relres, iter, resvec] = cgs (A, b, tol, maxit, M1, M2, x0)
   endif
 
   relres = b - A * x;
-  ## vector of the residual norms for each iteration
+  ## Vector of the residual norms for each iteration.
   resvec = [norm(relres)];
   ro = 0;
   norm_b = norm (b);
-  ## default behaviour we don't reach tolerance tol within maxit iterations
+  ## Default behavior we don't reach tolerance tol within maxit iterations.
   flag = 1;
   for iter = 1 : maxit
 
     if (nargin > 4 && isnumeric (precon))
-      ## we have computed inverse matrix so we can use quick algorithm
+      ## We have computed inverse matrix so we can use quick algorithm.
       z = precon * relres;
     elseif (nargin > 4)
-      ## our preconditioner is a function
+      ## Our preconditioner is a function.
       z = feval (precon, relres);
     else
-      ## we don't use preconditioning
+      ## We don't use preconditioning.
       z = relres;
     endif
 
-    ## cache
+    ## Cache.
     ro_old = ro;
     ro = relres' * z;
     if (iter == 1)
@@ -129,7 +128,8 @@ function [x, flag, relres, iter, resvec] = cgs (A, b, tol, maxit, M1, M2, x0)
       beta = ro / ro_old;
       p = z + beta * p;
     endif
-    q = A * p; #cache
+    ## Cache.
+    q = A * p;
     alpha = ro / (p' * q);
     x = x + alpha * p;
 
@@ -138,11 +138,11 @@ function [x, flag, relres, iter, resvec] = cgs (A, b, tol, maxit, M1, M2, x0)
 
     relres_distance = resvec (end) / norm_b;
     if (relres_distance <= tol)
-      ## we reach tolerance tol within maxit iterations
+      ## We reach tolerance tol within maxit iterations.
       flag = 0;
       break;
-    elseif (resvec (end) == resvec (end - 1) )
-      ## the method stagnates
+    elseif (resvec (end) == resvec (end - 1))
+      ## The method stagnates.
       flag = 3;
       break;
     endif

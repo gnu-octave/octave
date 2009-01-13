@@ -19,8 +19,8 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} structfun (@var{func}, @var{s})
 ## @deftypefnx {Function File} {[@var{a}, @var{b}] =} structfun (@dots{})
-## @deftypefnx {Function File} {} structfun (@dots{}, 'ErrorHandler', @var{errfunc})
-## @deftypefnx {Function File} {} structfun (@dots{}, 'UniformOutput', @var{val})
+## @deftypefnx {Function File} {} structfun (@dots{}, "ErrorHandler", @var{errfunc})
+## @deftypefnx {Function File} {} structfun (@dots{}, "UniformOutput", @var{val})
 ## 
 ## Evaluate the function named @var{name} on the fields of the structure
 ## @var{s}. The fields of @var{s} are passed to the function @var{func}
@@ -33,21 +33,21 @@
 ## a string value. If the function returns more than one argument, they are
 ## returned as separate output variables.
 ##
-## If the param 'UniformOutput' is set to true (the default), then the function
+## If the param "UniformOutput" is set to true (the default), then the function
 ## must return a single element which will be concatenated into the
-## return value. If 'UniformOutput' is false, the outputs placed in a structure
+## return value. If "UniformOutput" is false, the outputs placed in a structure
 ## with the same fieldnames as the input structure.
 ## 
 ## @example
 ## @group
 ## s.name1 = "John Smith"; 
 ## s.name2 = "Jill Jones"; 
-## structfun (@@(x) regexp (x, '(\w+)$', 'matches')@{1@}, s, 
-##            'UniformOutput', false)
+## structfun (@@(x) regexp (x, '(\w+)$', "matches")@{1@}, s, 
+##            "UniformOutput", false)
 ## @end group
 ## @end example
 ## 
-## Given the parameter 'ErrorHandler', then @var{errfunc} defines a function to
+## Given the parameter "ErrorHandler", then @var{errfunc} defines a function to
 ## call in case @var{func} generates an error. The form of the function is
 ## 
 ## @example
@@ -56,7 +56,7 @@
 ## 
 ## where there is an additional input argument to @var{errfunc} relative to
 ## @var{func}, given by @var{se}. This is a structure with the elements
-## 'identifier', 'message' and 'index', giving respectively the error
+## "identifier", "message" and "index", giving respectively the error
 ## identifier, the error message, and the index into the input arguments
 ## of the element that caused the error.
 ## @seealso{cellfun, arrayfun}
@@ -81,6 +81,6 @@ endfunction
 %! s.name2 = "Jill Jones"; 
 %! l.name1 = "Smith";
 %! l.name2 = "Jones";
-%! o = structfun (@(x) regexp (x, '(\w+)$', 'matches'){1}, s, 
-%!		  'UniformOutput', false);
+%! o = structfun (@(x) regexp (x, '(\w+)$', "matches"){1}, s, 
+%!		  "UniformOutput", false);
 %! assert (o, l);

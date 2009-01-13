@@ -75,7 +75,7 @@ function x = repmat (a, m, n)
       aidx = [aidx, ones(1,length(idx)-length(aidx))];
     endif
     cidx = cell (1, length (aidx));
-    for i=1:length(aidx)
+    for i = 1:length (aidx)
       cidx{i} = kron (ones (1, idx(i)), 1:aidx(i));
     endfor
     x = a (cidx{:});

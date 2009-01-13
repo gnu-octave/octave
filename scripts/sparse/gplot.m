@@ -32,7 +32,7 @@
 ## @seealso{treeplot, etreeplot, spy}
 ## @end deftypefn
 
-function [x, y] = gplot (A, xy, line_style)
+function [x, y] = gplot (a, xy, line_style)
 
   if (nargin < 2 || nargin > 3 || nargout > 2)
     print_usage ();
@@ -42,7 +42,7 @@ function [x, y] = gplot (A, xy, line_style)
     line_style = "-";
   endif
 
-  [i, j] = find (A);
+  [i, j] = find (a);
   xcoord = [xy(i,1), xy(j,1), NaN * ones(length(i),1)]'(:);
   ycoord = [xy(i,2), xy(j,2), NaN * ones(length(i),1)]'(:);
 

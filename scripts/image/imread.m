@@ -50,7 +50,7 @@ function varargout = imread (filename, varargin)
   fn = file_in_path (IMAGE_PATH, filename);
 
   if (isempty (fn))
-    error ( "imread: cannot find %s", filename);
+    error ("imread: cannot find %s", filename);
   endif
 
   try

@@ -40,7 +40,7 @@
 ## Initialization expression for function argument values.  Use @var{k} 
 ## for the test number and @var{n} for the size of the test.  This should
 ## compute values for all variables listed in args.  Note that init will
-## be evaluated first for k=0, so things which are constant throughout
+## be evaluated first for @math{k = 0}, so things which are constant throughout
 ## the test can be computed then. The default value is @code{@var{x} =
 ## randn (@var{n}, 1);}.
 ##
@@ -87,14 +87,14 @@
 ## the following is not the expected @code{O(n)}:
 ##
 ## @example
-##   speed("for i=1:n,y@{i@}=x(i); end", "", [1000,10000])
+## speed ("for i = 1:n, y@{i@} = x(i); end", "", [1000,10000])
 ## @end example
 ##
 ## but it is if you preallocate the cell array @code{y}:
 ##
 ## @example
-##   speed("for i=1:n,y@{i@}=x(i);end", ...
-##         "x=rand(n,1);y=cell(size(x));", [1000,10000])
+## speed ("for i = 1:n, y@{i@} = x(i); end", ...
+##        "x = rand (n, 1); y = cell (size (x));", [1000, 10000])
 ## @end example
 ##
 ## An attempt is made to approximate the cost of the individual 
@@ -103,7 +103,7 @@
 ## example:
 ##
 ## @example
-##   speed("airy(x)", "x=rand(n,10)", [10000,100000])
+## speed ("airy(x)", "x = rand (n, 10)", [10000, 100000])
 ## @end example
 ##
 ## When comparing a new and original expression, the line on the
@@ -114,8 +114,8 @@
 ## example:
 ##
 ## @example
-##   speed("v=sum(x)", "", [10000,100000], ...
-##         "v=0;for i=1:length(x),v+=x(i);end")
+## speed ("v = sum (x)", "", [10000, 100000], ...
+##        "v = 0; for i = 1:length (x), v += x(i); end")
 ## @end example
 ## 
 ## A more complex example, if you had an original version of @code{xcorr}
@@ -124,10 +124,10 @@
 ## vector lengths as follows:
 ##
 ## @example
-##   speed("v=xcorr(x,n)", "x=rand(128,1);", 100, ...
-##         "v2=xcorr_orig(x,n)", -100*eps)
-##   speed("v=xcorr(x,15)", "x=rand(20+n,1);", 100, ...
-##         "v2=xcorr_orig(x,n)", -100*eps)
+## speed ("v = xcorr (x, n)", "x = rand (128, 1);", 100,
+##        "v2 = xcorr_orig (x, n)", -100*eps)
+## speed ("v = xcorr (x, 15)", "x = rand (20+n, 1);", 100,
+##        "v2 = xcorr_orig (x, n)", -100*eps)
 ## @end example
 ##
 ## Assuming one of the two versions is in @var{xcorr_orig}, this
@@ -205,21 +205,21 @@ function [__order, __test_n, __tnew, __torig] ...
     n = __test_n(k);
     eval (cstrcat (__init, ";"));
     
-    printf ("n%i=%i  ",k, n);
+    printf ("n%i = %i  ",k, n);
     fflush (stdout);
-    eval (cstrcat ("__t=time();", __f1, "; __v1=ans; __t = time()-__t;"));
+    eval (cstrcat ("__t = time();", __f1, "; __v1=ans; __t = time()-__t;"));
     if (__t < 0.25)
-      eval (cstrcat ("__t2=time();", __f1, "; __t2 = time()-__t2;"));
-      eval (cstrcat ("__t3=time();", __f1, "; __t3 = time()-__t3;"));
+      eval (cstrcat ("__t2 = time();", __f1, "; __t2 = time()-__t2;"));
+      eval (cstrcat ("__t3 = time();", __f1, "; __t3 = time()-__t3;"));
       __t = min ([__t, __t2, __t3]);
     endif
     __tnew(k) = __t;
 
     if (! isempty (__f2))
-      eval (cstrcat ("__t=time();", __f2, "; __v2=ans; __t = time()-__t;"));
+      eval (cstrcat ("__t = time();", __f2, "; __v2=ans; __t = time()-__t;"));
       if (__t < 0.25)
-      	eval (cstrcat ("__t2=time();", __f2, "; __t2 = time()-__t2;"));
-      	eval (cstrcat ("__t3=time();", __f2, "; __t3 = time()-__t3;"));
+      	eval (cstrcat ("__t2 = time();", __f2, "; __t2 = time()-__t2;"));
+      	eval (cstrcat ("__t3 = time();", __f2, "; __t3 = time()-__t3;"));
       endif
       __torig(k) = __t;
       if (! isinf(__tol))
@@ -269,7 +269,7 @@ function [__order, __test_n, __tnew, __torig] ...
 
     subplot (1, 2, 2);
     loglog (__test_n, __tnew*1000,
-	    cstrcat ("*-g;", strrep (__f1, ";", "."), ";" ), 
+	    cstrcat ("*-g;", strrep (__f1, ";", "."), ";"), 
 	    __test_n, __torig*1000,
 	    cstrcat ("*-r;", strrep (__f2,";","."), ";"));
   

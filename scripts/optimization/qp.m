@@ -192,7 +192,7 @@ function [x, obj, INFO, lambda] = qp (x0, H, q, A, b, lb, ub, A_lb, A_in, A_ub)
 	
 	if (! isempty (A_lb) && ! isempty (A_ub))
 	  rtol = sqrt (eps);
-	  for i=1:dimA_in
+	  for i = 1:dimA_in
 	    if (abs (A_lb(i) - A_ub(i)) < rtol*(1 + max (abs (A_lb(i) + A_ub(i)))))
               ## These are actually an equality constraint
 	      tmprow = A_in(i,:);

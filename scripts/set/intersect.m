@@ -87,7 +87,7 @@ endfunction
 %! a = [3 2 4 5 7 6 5 1 0 13 13];
 %! b = [3 5 12 1 1 7];
 %! [c,ia,ib] = intersect(a,b);
-%! assert( c,[1 3 5 7]);
+%! assert(c,[1 3 5 7]);
 %! assert(ia,[8 1 7 5]);
 %! assert(ib,[5 1 2 6]);
 %! assert(a(ia),c);

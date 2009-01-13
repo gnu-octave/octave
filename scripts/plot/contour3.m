@@ -34,7 +34,7 @@
 ## @group
 ## contour3 (peaks (19));
 ## hold on
-## surface (peaks (19), 'FaceColor', 'none', 'EdgeColor', 'black')
+## surface (peaks (19), "facecolor", "none", "EdgeColor", "black")
 ## colormap hot
 ## @end group
 ## @end example
@@ -76,6 +76,6 @@ endfunction
 %!demo
 %! contour3 (peaks (19));
 %! hold on
-%! surface (peaks (19), 'FaceColor', 'none', 'EdgeColor', 'black')
+%! surface (peaks (19), "facecolor", "none", "edgecolor", "black")
 %! colormap hot
 %! hold off

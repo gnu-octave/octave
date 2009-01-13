@@ -60,7 +60,7 @@ function ret = fail (code, pattern, warning_pattern)
   test_warning = (nargin > 1 && strcmp (pattern, "warning"));
   if (nargin == 3)
     pattern = warning_pattern;
-  elseif (nargin == 1 || (nargin==2 && test_warning))
+  elseif (nargin == 1 || (nargin == 2 && test_warning))
     pattern = "";
   endif
 

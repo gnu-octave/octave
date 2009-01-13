@@ -189,7 +189,7 @@ function [est, v, w, iter] = onenormest (varargin)
       S(:,partest) = replacements;
     endif
     ## Now test for parallel vectors within S.
-    partest = any ( (S' * S - eye (t)) == n );
+    partest = any ((S' * S - eye (t)) == n);
     if (any (partest))
       numpar = sum (partest);
       replacements = 2*(rand (n,numpar) < 0.5) - 1;

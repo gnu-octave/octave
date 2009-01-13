@@ -59,7 +59,7 @@ function y = ranks (x, dim)
   if (sz(dim) == 1)
     y = ones(sz);
   else
-    ## The algorithm works only on dim=1, so permute if necesary
+    ## The algorithm works only on dim = 1, so permute if necesary.
     if (dim != 1)
       perm = [1 : nd];
       perm(1) = dim;

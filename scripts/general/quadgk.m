@@ -208,7 +208,7 @@ function [q, err] = quadgk (f, a, b, varargin)
       ##               - \int_{-\infinity}^0 f (b - t^2) 2 t dt
       ## (note minus sign) and the finite interval transform is
       ##   \int_{-\infinity}^0 f(b - t^2)  2 t dt = 
-      ##                  \int_{-1}^0 f (b - g(s) ^ 2 ) 2 g(s) g'(s) ds
+      ##                  \int_{-1}^0 f (b - g(s) ^ 2) 2 g(s) g'(s) ds
       ## where 
       ##   g(s)  = s / (1 + s)
       ##   g'(s) = 1 / (1 + s) ^ 2
@@ -232,7 +232,7 @@ function [q, err] = quadgk (f, a, b, varargin)
       ##   \int_a^\infinity f(x) dx = \int_0^\infinity f (a + t^2) 2 t dt
       ## and the finite interval transform is
       ##  \int_0^\infinity f(a + t^2)  2 t dt = 
-      ##           \int_0^1 f (a + g(s) ^ 2 ) 2 g(s) g'(s) ds
+      ##           \int_0^1 f (a + g(s) ^ 2) 2 g(s) g'(s) ds
       ## where 
       ##   g(s)  = s / (1 - s)
       ##   g'(s) = 1 / (1 - s) ^ 2

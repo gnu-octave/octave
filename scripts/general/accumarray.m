@@ -60,7 +60,7 @@ function A = accumarray (subs, val, sz, fun, fillval, isspar)
   endif
 
   if (iscell (subs))
-    subs = cell2mat (cellfun (@(x) x(:), subs, 'UniformOutput', false));
+    subs = cell2mat (cellfun (@(x) x(:), subs, "UniformOutput", false));
   endif
   ndims = size (subs, 2);
 
@@ -107,7 +107,7 @@ function A = accumarray (subs, val, sz, fun, fillval, isspar)
   else
     if (iscell (x))
       ## Why did matlab choose to reverse the order of the elements
-      x = cellfun (@(x) flipud (x(:)), x, 'UniformOutput', false);
+      x = cellfun (@(x) flipud (x(:)), x, "UniformOutput", false);
       A = cell (sz);
     elseif (fillval == 0)
       A = zeros (sz, class (x));

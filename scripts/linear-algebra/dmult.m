@@ -78,15 +78,15 @@ function m = dmult (a, b, ind)
 endfunction
 
 %!test
-%! assert ( dmult ([1,2,3], ones(3)), [1,1,1;2,2,2;3,3,3] )
-%! assert ( dmult ([1,2,3]', ones(3)), [1,1,1;2,2,2;3,3,3] )
+%! assert (dmult ([1,2,3], ones(3)), [1,1,1;2,2,2;3,3,3])
+%! assert (dmult ([1,2,3]', ones(3)), [1,1,1;2,2,2;3,3,3])
 %!test
-%! assert ( dmult ([1,2,3], ones(3,2,2)), reshape ([1,1,1,1;2,2,2,2;3,3,3,3], [3,2,2]) )
+%! assert (dmult ([1,2,3], ones(3,2,2)), reshape ([1,1,1,1;2,2,2,2;3,3,3,3], [3,2,2]))
 %!test
-%! assert ( dmult (ones(3), [1,2,3]), [1,2,3;1,2,3;1,2,3] )
-%! assert ( dmult (ones(3), [1,2,3]'), [1,2,3;1,2,3;1,2,3] )
+%! assert (dmult (ones(3), [1,2,3]), [1,2,3;1,2,3;1,2,3])
+%! assert (dmult (ones(3), [1,2,3]'), [1,2,3;1,2,3;1,2,3])
 %!test
-%! assert ( dmult (ones(2,2,3), [1,2,3]), reshape ([1,2,3;1,2,3;1,2,3;1,2,3], [2,2,3]) )
+%! assert (dmult (ones(2,2,3), [1,2,3]), reshape ([1,2,3;1,2,3;1,2,3;1,2,3], [2,2,3]))
 %!test
-%! assert ( dmult (ones(3,4,2), [1 2 3 4], 2),...
-%! reshape ([1 1 1 2 2 2 3 3 3 4 4 4 1 1 1 2 2 2 3 3 3 4 4 4], [3,4,2]) ) 
+%! assert (dmult (ones(3,4,2), [1 2 3 4], 2),...
+%! reshape ([1 1 1 2 2 2 3 3 3 4 4 4 1 1 1 2 2 2 3 3 3 4 4 4], [3,4,2]))

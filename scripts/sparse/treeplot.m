@@ -17,172 +17,190 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} treeplot (@var{Tree})
-## @deftypefnx {Function File} {} treeplot (@var{Tree}, @var{LineStyle}, @var{EdgeStyle})
+## @deftypefn {Function File} {} treeplot (@var{tree})
+## @deftypefnx {Function File} {} treeplot (@var{tree}, @var{line_style}, @var{edge_style})
 ## Produces a graph of tree or forest. The first argument is vector of
-## predecessors, optional parameters @var{LineStyle} and @var{EdgeStyle}
+## predecessors, optional parameters @var{line_style} and @var{edge_style}
 ## define the output style. The complexity of the algorithm is O(n) in
 ## terms of is time and memory requirements.
 ## @seealso{etreeplot, gplot}
 ## @end deftypefn
 
-function treeplot (Tree, NodeS, EdgeS)
+function treeplot (tree, node_s, edge_s)
 
   if (nargin < 1 || nargin > 3 || nargout > 0)
     print_usage ();
   else
-    if (! ismatrix (Tree) || rows (Tree) != 1 || ! isnumeric (Tree) 
-        || ! isvector (Tree) || any (Tree > length (Tree)))
+    if (! ismatrix (tree) || rows (tree) != 1 || ! isnumeric (tree) 
+        || ! isvector (tree) || any (tree > length (tree)))
       error ("treeplot: the first input argument must be a vector of predecessors");
     else
-      ## the inicialization of node end edge style
-      NodeStyle = "k*";
-      EdgeStyle = "r";      
+      ## The initialization of node end edge style.
+      node_style = "k*";
+      edge_style = "r";      
       if (nargin > 2)
-        EdgeStyle = EdgeS;
+        edge_style = edge_s;
         if (nargin > 1) 
-	  if (length (findstr (NodeS, "*")) == 0
-	      && length (findstr (NodeS, "+")) == 0
-	      && length (findstr (NodeS, "x")) == 0)
-	    NodeStyle = [NodeS, "o"];
+	  if (length (findstr (node_s, "*")) == 0
+	      && length (findstr (node_s, "+")) == 0
+	      && length (findstr (node_s, "x")) == 0)
+	    node_style = [node_s, "o"];
 	  else
-	    NodeStyle = NodeS;
+	    node_style = node_s;
 	  endif
         endif
       endif
 
-      Tree = Tree(:)';		            ## make it a row vector
-      NodNumber = length (Tree);            ## the count of nodes of the graph
-      ChildNumber = zeros (1, NodNumber+1); ## the number of childrens
+      ## Make it a row vector.
+      tree = tree(:)';
+
+      ## The count of nodes of the graph.
+      num_nodes = length (tree);
+
+      ## The number of children.
+      num_children = zeros (1, num_nodes+1);
       
-      for i = 1:NodNumber
-        ## VecOfChild is helping vector which is used to speed up the
-        ## choose of descendant nodes
+      for i = 1:num_nodes
+        ## VEC_OF_CHILD is helping vector which is used to speed up the
+        ## choose of descendant nodes.
 
-        ChildNumber(Tree(i)+1) = ChildNumber(Tree(i)+1) + 1;
+        num_children(tree(i)+1) = num_children(tree(i)+1) + 1;
       endfor
-      Pos = 1;
-      for i = 1:NodNumber+1
-        Start(i) = Pos;
-	Help(i) = Pos;
-	Pos += ChildNumber(i);
-	Stop(i) = Pos;
+      pos = 1;
+      start = zeros (1, num_nodes+1);
+      xhelp = zeros (1, num_nodes+1);
+      stop = zeros (1, num_nodes+1);
+      for i = 1:num_nodes+1
+        start(i) = pos;
+	xhelp(i) = pos;
+	pos += num_children(i);
+	stop(i) = pos;
       endfor
-      for i = 1:NodNumber        
-        VecOfChild(Help(Tree(i)+1)) = i;  
-	Help(Tree(i)+1) = Help(Tree(i)+1)+1;
+      for i = 1:num_nodes        
+        vec_of_child(xhelp(tree(i)+1)) = i;  
+	xhelp(tree(i)+1) = xhelp(tree(i)+1)+1;
       endfor
 
-      ## the number of "parent" (actual) node (it's descendants will be
-      ## browse in the next iteration)
-      ParNumber = 0;
+      ## The number of "parent" (actual) node (it's descendants will be
+      ## browse in the next iteration).
+      par_number = 0;
 
-      ## the x-coordinate of the left most descendant of "parent node"
-      ## this value is increased in each leaf		
-      LeftMost = 0;
+      ## The x-coordinate of the left most descendant of "parent node"
+      ## this value is increased in each leaf.
+      left_most = 0;
 
-      ## the level of "parent" node (root level is NodNumber)
-      Level = NodNumber;
+      ## The level of "parent" node (root level is num_nodes).
+      level = num_nodes;
 
-      ## NodNumber - Max is the height of this graph
-      Max = NodNumber;
+      ## Num_nodes - max_ht is the height of this graph.
+      max_ht = num_nodes;
 
-      ## main stack - each item consists of two numbers - the number of
+      ## Main stack - each item consists of two numbers - the number of
       ## node and the number it's of parent node on the top of stack
-      ## there is "parent node"
-      St = [-1,0];
+      ## there is "parent node".
+      stk = [-1, 0];
 
-      ## stack which is use to draw the graph edge (it have to be
-      ## uninterupted line)
-      Skelet = 0;
+      ## Stack which is use to draw the graph edge (it have to be
+      ## uninterupted line).
+      skelet = 0;
 
-      ## the top of the stack
-      while (ParNumber != -1)
-	if (Start(ParNumber+1) < Stop(ParNumber+1))
-	  idx = VecOfChild(Start(ParNumber+1):Stop(ParNumber+1)-1);
+      ## The top of the stack.
+      while (par_number != -1)
+	if (start(par_number+1) < stop(par_number+1))
+	  idx = vec_of_child(start(par_number+1):stop(par_number+1)-1);
 	else
 	  idx = zeros (1, 0);
 	endif
-        ## add to idx the vector of parent descendants
-	St = [St ; [idx', ones(fliplr(size(idx)))*ParNumber]];
-	## add to stack the records relevant to parent descandant s
-	if (ParNumber != 0)
-	  Skelet = [Skelet; ([ones(size(idx))*ParNumber; idx])(:)];
+        ## Add to idx the vector of parent descendants.
+	stk = [stk; [idx', ones(fliplr(size(idx)))*par_number]];
+	## Add to stack the records relevant to parent descandant s.
+	if (par_number != 0)
+	  skelet = [skelet; ([ones(size(idx))*par_number; idx])(:)];
 	endif
 
-	## if there is not any descendant of "parent node":
-	if (St(end,2) != ParNumber)
-	  LeftMost = LeftMost + 1;
-          XCoordinateR(ParNumber) = LeftMost;           
-	  Max = min (Max, Level);
-          if ((length(St)>1) && (find((shift(St,1)-St) == 0) >1)
-	      && St(end,2) != St(end-1,2))
-	    ## return to the nearest branching the position to return
+	## If there is not any descendant of "parent node":
+	if (stk(end,2) != par_number)
+	  left_most++;
+          x_coordinate_r(par_number) = left_most;           
+	  max_ht = min (max_ht, level);
+          if (length(stk) > 1 && find ((shift(stk,1)-stk) == 0) > 1
+	      && stk(end,2) != stk(end-1,2))
+	    ## Return to the nearest branching the position to return
 	    ## position is the position on the stack, where should be
 	    ## started further search (there are two nodes which has the
-	    ## same parent node)
-            Position = (find((shift(St(:,2),1)-St(:,2)) == 0))(end)+1;
-            ParNumberVec = St(Position:end,2);
-            ## the vector of removed nodes (the content of stack form
-	    ## position to end)
-            Skelet = [Skelet; flipud(ParNumberVec)];
-            Level = Level + length(ParNumberVec);
-	    ## the level have to be decreased
-            XCoordinateR(ParNumberVec) = LeftMost;
-            St(Position:end,:) = [];
+	    ## same parent node).
+            position = (find ((shift(stk(:,2),1)-stk(:,2)) == 0))(end) + 1;
+            par_number_vec = stk(position:end,2);
+            ## The vector of removed nodes (the content of stack form
+	    ## position to end).
+            skelet = [skelet; flipud(par_number_vec)];
+            level += length (par_number_vec);
+	    ## The level have to be decreased.
+            x_coordinate_r(par_number_vec) = left_most;
+            stk(position:end,:) = [];
           endif	
-       	  ## remove the next node from "searched branch"
-	  St(end,:) = [];
-	  ## choose new "parent node"
-          ParNumber = St(end,1);
-	  ## if there is another branch start to search it
-	  if (ParNumber != -1)
-	    Skelet = [Skelet ; St(end,2); ParNumber];
-            YCoordinate(ParNumber) = Level;	
-	    XCoordinateL(ParNumber) = LeftMost + 1;
+       	  ## Remove the next node from "searched branch".
+	  stk(end,:) = [];
+	  ## Choose new "parent node".
+          par_number = stk(end,1);
+	  ## If there is another branch start to search it.
+	  if (par_number != -1)
+	    skelet = [skelet; stk(end,2); par_number];
+            y_coordinate(par_number) = level;	
+	    x_coordinate_l(par_number) = left_most + 1;
 	  endif
 	else
-          ## there were descendants of "parent nod" choose the last of
-	  ## them and go on through it
-          Level--;
-	  ParNumber = St(end,1);
-	  YCoordinate(ParNumber) = Level;     
-	  XCoordinateL(ParNumber) = LeftMost+1;
+          ## There were descendants of "parent nod" choose the last of
+	  ## them and go on through it.
+          level--;
+	  par_number = stk(end,1);
+	  y_coordinate(par_number) = level;     
+	  x_coordinate_l(par_number) = left_most + 1;
 	endif
       endwhile
 
-      ## calculate the x coordinates (the known values are the position
-      ## of most left and most right descendants)
-      XCoordinate = (XCoordinateL + XCoordinateR) / 2;
+      ## Calculate the x coordinates (the known values are the position
+      ## of most left and most right descendants).
+      x_coordinate = (x_coordinate_l + x_coordinate_r) / 2;
 
-      hold ("on");
+      ## FIXME -- we should probably stuff all the arguments into a cell
+      ## array and make a single call to plot here so we can avoid
+      ## setting the hold state...
 
-      ## plot grah nodes 
-      plot (XCoordinate,YCoordinate,NodeStyle);
-      
-      ## helping command - usable for plotting edges
-      Skelet = [Skelet; 0];
-      
-      ## draw graph edges 
-      idx = find (Skelet == 0);
-       
-      ## plot each tree component in one loop
-      for i = 2:length(idx)
-        ## tree component start
-	istart = idx(i-1) + 1;
-        ## tree component end
-	istop = idx(i) - 1;
-	if (istop - istart < 1)                          
-	  continue;
+      hold_is_on = ishold ();
+      unwind_protect
+	hold ("on");
+
+	## Plot grah nodes.
+	plot (x_coordinate, y_coordinate, node_style);
+
+	## Helping command - usable for plotting edges
+	skelet = [skelet; 0];
+
+	## Draw graph edges.
+	idx = find (skelet == 0);
+
+	## Plot each tree component in one loop.
+	for i = 2:length(idx)
+	  ## Tree component start.
+	  istart = idx(i-1) + 1;
+	  ## Tree component end.
+	  istop = idx(i) - 1;
+	  if (istop - istart < 1)                          
+	    continue;
+	  endif
+	  plot (x_coordinate(skelet(istart:istop)),
+		y_coordinate(skelet(istart:istop)), edge_style)
+	endfor
+
+	## Set axis and graph size.
+	axis ([0.5, left_most+0.5, max_ht-0.5, num_nodes-0.5], "nolabel");
+
+      unwind_protect_cleanup
+	if (! hold_is_on)
+	  hold ("off");
 	endif
-	plot (XCoordinate(Skelet(istart:istop)),
-	      YCoordinate(Skelet(istart:istop)), EdgeStyle)
-      endfor
-      
-      ## set axis and graph size 
-      axis ([0.5, LeftMost+0.5, Max-0.5, NodNumber-0.5], "nolabel");
-      
-      hold ("off");
+      end_unwind_protect
       
     endif
   endif

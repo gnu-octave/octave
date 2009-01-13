@@ -111,7 +111,7 @@ function assert (cond, varargin)
 
     elseif (isstruct (expected))
       if (! isstruct (cond) || any (size (cond) != size (expected))
-	  || rows(struct_elements (cond)) != rows (struct_elements (expected)))
+	  || rows (fieldnames (cond)) != rows (fieldnames (expected)))
 	iserror = 1;
       else
 	try

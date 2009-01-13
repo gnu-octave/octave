@@ -100,9 +100,9 @@
 ## 
 ## @example
 ## @group
-## 	N = 10; 
-## 	A = diag([1:N]); A = sparse(A);  
-## 	b = rand(N,1);
+## 	n = 10; 
+## 	a = sparse (diag (1:n));
+## 	b = rand (N, 1);
 ## @end group
 ## @end example
 ## 
@@ -117,11 +117,11 @@
 ##
 ## @example
 ## @group
-##   function y = applyA(x) 
+##   function y = apply_a (x) 
 ##     y = [1:10]'.*x; 
 ##   endfunction
 ## 
-##   x = pcr('applyA',b)
+##   x = pcr ("apply_a", b)
 ## @end group
 ## @end example
 ## 
@@ -131,14 +131,14 @@
 ## 
 ## @example
 ## @group
-##   function y = applyM(x)		
-##     K = floor(length(x)-2); 
+##   function y = apply_m (x)		
+##     k = floor (length(x)-2); 
 ##     y = x; 
-##     y(1:K) = x(1:K)./[1:K]';	
+##     y(1:k) = x(1:k)./[1:k]';	
 ##   endfunction
 ## 
 ##   [x, flag, relres, iter, resvec] = ...
-##                      pcr(A, b, [], [], 'applyM')
+##                      pcr (a, b, [], [], "apply_m")
 ##   semilogy([1:iter+1], resvec);
 ## @end group
 ## @end example
@@ -148,13 +148,13 @@
 ## 
 ## @example
 ## @group
-##   function y = applyM(x, varargin)
-##     K = varargin@{1@}; 
-##     y = x; y(1:K) = x(1:K)./[1:K]';	 
+##   function y = apply_m (x, varargin)
+##     k = varargin@{1@}; 
+##     y = x; y(1:k) = x(1:k)./[1:k]';	 
 ##   endfunction
 ## 
 ##   [x, flag, relres, iter, resvec] = ...
-##                      pcr(A, b, [], [], 'applyM', [], 3)
+##                      pcr (a, b, [], [], "apply_m"', [], 3)
 ## @end group
 ## @end example
 ## 
@@ -168,7 +168,7 @@
 
 ## Author: Piotr Krzyzanowski <piotr.krzyzanowski@mimuw.edu.pl>
 
-function [x, flag, relres, iter, resvec] = pcr (A, b, tol, maxit, M, x0, varargin)
+function [x, flag, relres, iter, resvec] = pcr (a, b, tol, maxit, m, x0, varargin)
 
   breakdown = false;
 
@@ -179,7 +179,7 @@ function [x, flag, relres, iter, resvec] = pcr (A, b, tol, maxit, M, x0, varargi
   endif
 
   if (nargin < 5)
-    M = [];
+    m = [];
   endif
 
   if (nargin < 4 || isempty (maxit))
@@ -197,20 +197,20 @@ function [x, flag, relres, iter, resvec] = pcr (A, b, tol, maxit, M, x0, varargi
   endif
 
   ##  init
-  if (isnumeric (A))		# is A a matrix?
-    r = b - A*x;
+  if (isnumeric (a))		# is A a matrix?
+    r = b - a*x;
   else				# then A should be a function!
-    r = b - feval (A, x, varargin{:});
+    r = b - feval (a, x, varargin{:});
   endif
 
-  if (isnumeric (M))		# is M a matrix?
-    if (isempty (M))		# if M is empty, use no precond
+  if (isnumeric (m))		# is M a matrix?
+    if (isempty (m))		# if M is empty, use no precond
       p = r;
     else			# otherwise, apply the precond
-      p = M \ r;
+      p = m \ r;
     endif
   else				# then M should be a function!
-    p = feval (M, r, varargin{:});
+    p = feval (m, r, varargin{:});
   endif
 
   iter = 2;
@@ -218,10 +218,10 @@ function [x, flag, relres, iter, resvec] = pcr (A, b, tol, maxit, M, x0, varargi
   b_bot_old = 1;
   q_old = p_old = s_old = zeros (size (x));
 
-  if (isnumeric (A))		# is A a matrix?
-    q = A * p;
+  if (isnumeric (a))		# is A a matrix?
+    q = a * p;
   else				# then A should be a function!
-    q = feval (A, p, varargin{:});
+    q = feval (a, p, varargin{:});
   endif
 	
   resvec(1) = abs (norm (r)); 
@@ -229,14 +229,14 @@ function [x, flag, relres, iter, resvec] = pcr (A, b, tol, maxit, M, x0, varargi
   ## iteration
   while (resvec(iter-1) > tol*resvec(1) && iter < maxit)
 
-    if (isnumeric (M))		# is M a matrix?
-      if (isempty (M))		# if M is empty, use no precond
+    if (isnumeric (m))		# is M a matrix?
+      if (isempty (m))		# if M is empty, use no precond
 	s = q;
       else			# otherwise, apply the precond
-	s = M \ q;
+	s = m \ q;
       endif
     else			# then M should be a function!
-      s = feval (M, q, varargin{:});
+      s = feval (m, q, varargin{:});
     endif
     b_top = r' * s;
     b_bot = q' * s;
@@ -250,10 +250,10 @@ function [x, flag, relres, iter, resvec] = pcr (A, b, tol, maxit, M, x0, varargi
     x += lambda*p;
     r -= lambda*q;
 	
-    if (isnumeric(A))		# is A a matrix?
-      t = A*s;
+    if (isnumeric(a))		# is A a matrix?
+      t = a*s;
     else			# then A should be a function!
-      t = feval (A, s, varargin{:});
+      t = feval (a, s, varargin{:});
     endif
 	
     alpha0 = (t'*s) / b_bot;
@@ -286,7 +286,7 @@ function [x, flag, relres, iter, resvec] = pcr (A, b, tol, maxit, M, x0, varargi
   elseif (nargout < 2 && ! breakdown)
     fprintf (stderr, "pcr: converged in %d iterations. \n", iter);
     fprintf (stderr, "the initial residual norm was reduced %g times.\n",
-	     1.0/relres);
+	     1.0 / relres);
   endif
 
   if (breakdown)

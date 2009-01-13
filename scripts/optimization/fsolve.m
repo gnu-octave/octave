@@ -79,7 +79,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options)
   funvalchk = strcmpi (optimget (options, "FunValCheck", "off"), "on");
 
   if (funvalchk)
-    ## replace fun with a guarded version
+    ## Replace fun with a guarded version.
     fun = @(x) guarded_eval (fun, x);
   endif
 
@@ -101,11 +101,11 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options)
   x = x0(:);
   info = 0;
 
-  ## outer loop
+  ## Outer loop.
   while (niter < maxiter && nfev < maxfev && ! info)
 
-    ## calc func value and jacobian (possibly via FD)
-    ## handle arbitrary shapes of x and f and remember them
+    ## Calculate function value and Jacobian (possibly via FD).
+    ## Handle arbitrary shapes of x and f and remember them.
     if (has_jac)
       [fvec, fjac] = fcn (reshape (x, xsiz));
       nfev ++;
@@ -126,14 +126,14 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options)
       endif
     endif
     
-    ## get QR factorization of the jacobian
+    ## Get QR factorization of the jacobian.
     if (pivoting)
       [q, r, p] = qr (fjac);
     else
       [q, r] = qr (fjac);
     endif
 
-    ## get column norms, use them as scaling factor
+    ## Get column norms, use them as scaling factor.
     jcn = norm (fjac, 'columns').';
     if (niter == 1)
       if (autodg)
@@ -144,20 +144,20 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options)
       delta = factor * xn;
     endif
 
-    ## rescale if necessary
+    ## Rescale if necessary.
     if (autodg)
       dg = max (dg, jcn);
     endif
 
     nfail = 0;
     nsuc = 0;
-    ## inner loop
+    ## Inner loop.
     while (niter <= maxiter && nfev < maxfev && ! info)
 
       qtf = q'*fvec;
 
-      ## get TR model (dogleg) minimizer
-      ## in case of an overdetermined system, get lsq solution
+      ## Get TR model (dogleg) minimizer
+      ## in case of an overdetermined system, get lsq solution.
       s = - __dogleg__ (r(1:n,:), qtf(1:n), dg, delta);
       if (pivoting)
 	s = p * s;
@@ -172,13 +172,13 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options)
       fn1 = norm (fvec1);
 
       if (fn1 < fn)
-        ## scaled actual reduction
+        ## Scaled actual reduction.
         actred = 1 - (fn1/fn)^2;
       else
         actred = -1;
       endif
 
-      ## scaled predicted reduction, and ratio
+      ## Scaled predicted reduction, and ratio.
       if (pivoting)
 	w = qtf + r*(p'*s);
       else
@@ -193,13 +193,13 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options)
         ratio = 0;
       endif
 
-      ## update delta
+      ## Update delta.
       if (ratio < 0.1)
         nsuc = 0;
         nfail ++;
         delta *= 0.5;
         if (delta <= sqrt (macheps)*xn)
-          ## trust region became uselessly small
+          ## Trust region became uselessly small.
           info = -3;
           break;
         endif
@@ -214,7 +214,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options)
       endif
 
       if (ratio >= 1e-4)
-        ## successful iteration
+        ## Successful iteration.
         x += s;
         xn = norm (dg .* x);
         fvec = fvec1;
@@ -250,25 +250,25 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options)
         endif
       endif
 
-      ## criterion for recalculating jacobian 
+      ## Criterion for recalculating jacobian.
       if (nfail == 2)
         break;
       endif
 
-      ## compute the scaled Broyden update
+      ## Compute the scaled Broyden update.
       u = (fvec1 - q*w) / sn; 
       v = dg .* ((dg .* s) / sn);
       if (pivoting)
 	v = p'*v;
       endif
 
-      ## update the QR factorization
+      ## Update the QR factorization.
       [q, r] = qrupdate (q, r, u, v);
 
     endwhile
   endwhile
 
-  ## restore original shapes
+  ## Restore original shapes.
   x = reshape (x, xsiz);
   fvec = reshape (fvec, fsiz);
 

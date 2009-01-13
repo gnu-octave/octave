@@ -70,8 +70,8 @@ function [code_r, idx_r] = example (name, n)
       doidx = [];
     endif
 
-    for i=1:length(doidx)
-      block = code(idx(doidx(i)):idx(doidx(i)+1)-1);
+    for i = 1:length (doidx)
+      block = code (idx(doidx(i)):idx(doidx(i)+1)-1);
       printf ("%s example %d:%s\n\n", name, doidx(i), block);
     endfor
   endif

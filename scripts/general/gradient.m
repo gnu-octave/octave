@@ -51,7 +51,7 @@
 ## Author:  Kai Habel <kai.habel@gmx.de>
 ## Modified: David Bateman <dbateman@free.fr> Added NDArray support
 
-function [varargout] = gradient (M, varargin)
+function varargout = gradient (M, varargin)
   
   if (nargin < 1)
     print_usage ()
@@ -59,7 +59,7 @@ function [varargout] = gradient (M, varargin)
 
   transposed = false;
   if (isvector (M))
-    ## make a column vector
+    ## Make a column vector.
     transposed = (size (M, 2) == 1);
     M = M(:)';
   endif
@@ -72,7 +72,7 @@ function [varargout] = gradient (M, varargin)
     
   d = cell (1, nd);
   if (nargin == 1)
-    for i=1:nd
+    for i = 1:nd
       d{i} = ones (sz(i), 1);
     endfor
   elseif (nargin == 2)
@@ -86,9 +86,9 @@ function [varargout] = gradient (M, varargin)
       endfor
     endif
   else
-    for i=1:nd
+    for i = 1:nd
       if (isscalar (varargin{i}))
-	## Why the hell did matlab decide to swap these two values?
+	## Why the hell did Matlab decide to swap these two values?
 	if (i == 1)
 	  d{2} = varargin{1} * ones (sz(2), 1);
 	elseif (i == 2)
@@ -97,7 +97,7 @@ function [varargout] = gradient (M, varargin)
 	  d{i} = varargin{i} * ones (sz(i), 1);
 	endif
       else
-	## Why the hell did matlab decide to swap these two values?
+	## Why the hell did Matlab decide to swap these two values?
 	if (i == 1)
 	  d{2} = varargin{1};
 	elseif (i == 2)
@@ -115,13 +115,13 @@ function [varargout] = gradient (M, varargin)
     Y = zeros (size (M), class (M));
 
     if (mr > 1)
-      ## top and bottom boundary
+      ## Top and bottom boundary.
       Y(1,:) = diff (M(1:2,:)) / d{i}(1);
       Y(mr,:) = diff (M(mr-1:mr,:)) / d{i}(mr-1);
     endif
 
     if (mr > 2)
-      ## interior points
+      ## Interior points.
       Y(2:mr-1,:) = (M(3:mr,:) .- M(1:mr-2,:)) ...
 	  ./ kron (d{i}(1:mr-2) .+ d{i}(2:mr-1), ones (1, mc));
     endif
@@ -129,7 +129,7 @@ function [varargout] = gradient (M, varargin)
     M = permute (M, [2:nd,1]);
   endfor
 
-  ## Why the hell did matlab decide to swap these two values?
+  ## Why the hell did Matlab decide to swap these two values?
   tmp = varargout{1};
   varargout{1} = varargout{2};
   varargout{2} = tmp;

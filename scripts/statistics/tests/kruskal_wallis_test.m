@@ -32,9 +32,9 @@
 ## If the data contains ties (some value appears more than once)
 ## @var{k} is divided by
 ## 
-## 1 - @var{sumTies} / ( @var{n}^3 - @var{n} )
+## 1 - @var{sum_ties} / (@var{n}^3 - @var{n})
 ##
-## where @var{sumTies} is the sum of @var{t}^2 - @var{t} over each group
+## where @var{sum_ties} is the sum of @var{t}^2 - @var{t} over each group
 ## of ties where @var{t} is the number of ties in the group and @var{n}
 ## is the total number of values in the input data. For more info on
 ## this adjustment see "Use of Ranks in One-Criterion Variance Analysis"

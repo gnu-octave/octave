@@ -161,11 +161,11 @@ endfunction
 %!assert(hist(1,1),1);
 %!test
 %!  for n = [10, 30, 100, 1000]
-%!    assert( sum(hist([1:n], n)), n );
-%!    assert( sum(hist([1:n], [2:n-1])), n);
-%!    assert( sum(hist([1:n], [1:n])), n );
-%!    assert( sum(hist([1:n], 29)), n);
-%!    assert( sum(hist([1:n], 30)), n);
+%!    assert(sum(hist([1:n], n)), n);
+%!    assert(sum(hist([1:n], [2:n-1])), n);
+%!    assert(sum(hist([1:n], [1:n])), n);
+%!    assert(sum(hist([1:n], 29)), n);
+%!    assert(sum(hist([1:n], 30)), n);
 %!  endfor
 %!test
 %!  assert (size (hist(randn(750,240), 200)), [200,240]);

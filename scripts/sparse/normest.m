@@ -41,7 +41,7 @@ function [e1, c] = normest (A, tol)
       tol = eps
     endif
   endif
-  if (ndims(A) != 2)
+  if (ndims (A) != 2)
     error ("normest: A must be a matrix");
   endif 
   maxA = max (max (abs (A)));

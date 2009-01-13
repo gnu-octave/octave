@@ -58,17 +58,18 @@ function t = strrep (s, x, y)
     ## Copy the parts of s that aren't being replaced.  This is done
     ## with an index vector, with jumps where each search string
     ## is found.  For a jump of 0 (target length == replacement length)
-    ## the index is just cumsum ( ones (length (s))).  For non-zero
+    ## the index is just cumsum (ones (length (s))).  For non-zero
     ## jumps, add the jump size to the ones vector at each found position.
     jump = length(y) - length(x);
     if (jump > 0)
       ## S expands.
-      di = ones(size(s));
+      di = ones (size (s));
       di(ind) = 1 + jump * ones (length (ind), 1);
       t(cumsum (di)) = s;
-    elseif (jump < 0) # s contracts
+    elseif (jump < 0)
+      ## S contracts.
       di = ones (jump * length (ind) + length (s), 1);
-      di (ind + jump * [0:length(ind)-1]) = 1 - jump * ones(length(ind), 1);
+      di (ind + jump * [0:length(ind)-1]) = 1 - jump * ones (length (ind), 1);
       t = s (cumsum (di));
     else
       ## S stays the same length.

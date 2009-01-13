@@ -40,8 +40,8 @@ function retval = center (x, varargin)
   elseif (ismatrix (x))
     if nargin < 2
       dim = find (size (x) > 1, 1);
-      if isempty (dim), 
-	dim=1; 
+      if (isempty (dim))
+	dim = 1; 
       endif;
     else
       dim = varargin{1};

@@ -86,7 +86,7 @@ function y = cplxpair (z, tol, dim)
     endif
   endif
 
-  ## Move dimension to treat first, and convert to a 2-D matrix
+  ## Move dimension to treat first, and convert to a 2-D matrix.
   perm = [dim:nd, 1:dim-1];
   z = permute (z, perm);
   sz = size (z);
@@ -94,16 +94,16 @@ function y = cplxpair (z, tol, dim)
   m = prod (sz) / n;
   z = reshape (z, n, m);
 
-  ## Sort the sequence in terms of increasing real values
+  ## Sort the sequence in terms of increasing real values.
   [q, idx] = sort (real (z), 1);
   z = z(idx + n * ones (n, 1) * [0:m-1]);
 
-  ## Put the purely real values at the end of the returned list
+  ## Put the purely real values at the end of the returned list.
   cls = "double";
   if (isa (z, "single"))
     cls = "single";
   endif
-  [idxi, idxj] = find (abs (imag (z)) ./ (abs (z) + realmin(cls)) < tol );
+  [idxi, idxj] = find (abs (imag (z)) ./ (abs (z) + realmin(cls)) < tol);
   q = sparse (idxi, idxj, 1, n, m);
   nr = sum (q, 1);
   [q, idx] = sort (q, 1);
@@ -115,7 +115,7 @@ function y = cplxpair (z, tol, dim)
   ## consideration.
   for j = 1:m
     p = n - nr(j);
-    for i=1:2:p
+    for i = 1:2:p
       if (i+1 > p)
 	error ("cplxpair could not pair all complex numbers");
       endif
@@ -132,7 +132,7 @@ function y = cplxpair (z, tol, dim)
     endfor
   endfor
 
-  ## Reshape the output matrix
+  ## Reshape the output matrix.
   y = ipermute (reshape (y, sz), perm);
 
 endfunction

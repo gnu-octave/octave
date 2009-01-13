@@ -32,7 +32,7 @@
 ## @seealso{triplequad, quad, quadv, quadl, quadgk, trapz}
 ## @end deftypefn
 
-function Q = dblquad(f, xa, xb, ya, yb, tol, quadf, varargin) 
+function q = dblquad(f, xa, xb, ya, yb, tol, quadf, varargin) 
   if (nargin < 5)
     print_usage ();
   endif
@@ -49,14 +49,14 @@ function Q = dblquad(f, xa, xb, ya, yb, tol, quadf, varargin)
     varargin = {};
   endif
 
-  Q = feval (quadf, @(y) inner (y, f, xa, xb, tol, quadf,
+  q = feval (quadf, @(y) inner (y, f, xa, xb, tol, quadf,
 				varargin{:}), ya, yb, tol);
 endfunction
 
-function Q = __dblquad_inner__ (y, f, xa, xb, tol, quadf, varargin)
-  Q = zeros (size(y));
+function q = __dblquad_inner__ (y, f, xa, xb, tol, quadf, varargin)
+  q = zeros (size(y));
   for i = 1 : length (y)
-    Q(i) = feval (quadf, @(x) f(x, y(i), varargin{:}), xa, xb, tol);
+    q(i) = feval (quadf, @(x) f(x, y(i), varargin{:}), xa, xb, tol);
   endfor
 endfunction
 

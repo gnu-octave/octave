@@ -38,7 +38,7 @@ function retval = spectral_adf (c, win, b)
   cr = length (c);
 
   if (columns (c) > 1)
-    c=c';
+    c = c';
   endif
 
   if (nargin < 3)

@@ -45,8 +45,8 @@
 ##
 ## @deftypefnx {Function File} {[@var{c}, @var{ia}, @var{ib}] =} union (@var{a}, @var{b})
 ##
-## Return index vectors @var{ia} and @var{ib} such that @code{a==c(ia)} and
-## @code{b==c(ib)}.
+## Return index vectors @var{ia} and @var{ib} such that @code{a == c(ia)} and
+## @code{b == c(ib)}.
 ## 
 ## @seealso{create_set, intersect, complement}
 ## @end deftypefn

@@ -18,31 +18,31 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} colorbar (@var{s})
-## @deftypefnx {Function File} {} colorbar ('peer', @var{h}, @dots{})
+## @deftypefnx {Function File} {} colorbar ("peer", @var{h}, @dots{})
 ## Adds a colorbar to the current axes. Valid values for @var{s} are
 ##
 ## @table @asis
-## @item 'EastOutside'
+## @item "EastOutside"
 ## Place the colorbar outside the plot to the right. This is the default.
-## @item 'East'
+## @item "East"
 ## Place the colorbar inside the plot to the right.
-## @item 'WestOutside'
+## @item "WestOutside"
 ## Place the colorbar outside the plot to the left.
-## @item 'West'
+## @item "West"
 ## Place the colorbar inside the plot to the left.
-## @item 'NorthOutside'
+## @item "NorthOutside"
 ## Place the colorbar above the plot.
-## @item 'North'
+## @item "North"
 ## Place the colorbar at the top of the plot.
-## @item 'SouthOutside'
+## @item "SouthOutside"
 ## Place the colorbar under the plot.
-## @item 'South'
+## @item "South"
 ## Place the colorbar at the bottom of the plot.
-## @item 'Off', 'None'
+## @item "Off", "None"
 ## Remove any existing colorbar from the plot.
 ## @end table
 ##
-## If the argument 'peer' is given, then the following argument is treated
+## If the argument "peer" is given, then the following argument is treated
 ## as the axes handle on which to add the colorbar.
 ## @end deftypefn
 
@@ -62,12 +62,12 @@ function h = colorbar (varargin)
     if (ischar(arg))
       if (strcmpi (arg, "peer"))
 	if (i > nargin)
-	  error ("colorbar: missing axes handle after 'peer'");
+	  error ("colorbar: missing axes handle after \"peer\"");
 	else
 	  ax = vargin{i++}
 	  if (!isscalar (ax) || ! ishandle (ax)
 	      || strcmp (get (ax, "type"), "axes"))
-	    error ("colorbar: expecting an axes handle following 'peer'");
+	    error ("colorbar: expecting an axes handle following \"peer\"");
 	  endif
 	endif
       elseif (strcmpi (arg, "north") || strcmpi (arg, "south")

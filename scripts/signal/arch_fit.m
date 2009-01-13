@@ -96,7 +96,7 @@ function [a, b] = arch_fit (y, X, p, ITER, gamma, a0, b0)
       s = s - a(j+1) * tmp(j+1:T-p+j);
     endfor
     r    = 1 ./ h(1:T-p);
-    for j=1:p;
+    for j = 1:p;
       r = r + 2 * h(j+1:T-p+j).^2 .* esq(1:T-p);
     endfor
     r   = sqrt (r);

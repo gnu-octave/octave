@@ -59,7 +59,7 @@ function retval = fftshift (V, dim)
     sz = size (V);
     sz2 = ceil (sz(dim) / 2);
     idx = cell ();
-    for i=1:nd
+    for i = 1:nd
       idx{i} = 1:sz(i);
     endfor
     idx{dim} = [sz2+1:sz(dim), 1:sz2];
@@ -74,7 +74,7 @@ function retval = fftshift (V, dim)
       sz = size (V);
       sz2 = ceil (sz ./ 2);
       idx = cell ();
-      for i=1:nd
+      for i = 1:nd
         idx{i} = [sz2(i)+1:sz(i), 1:sz2(i)];
       endfor
       retval = V (idx{:});

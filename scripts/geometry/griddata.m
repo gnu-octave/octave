@@ -51,8 +51,8 @@ function [rx, ry, rz] = griddata (x, y, z, xi, yi, method)
     error ("griddata: x, y, and z must be vectors of same length");
   endif
   
-  ## meshgrid xi and yi if they are vectors unless they
-  ## are vectors of the same length 
+  ## Meshgrid xi and yi if they are vectors unless they
+  ## are vectors of the same length.
   if (isvector (xi) && isvector (yi) && numel (xi) != numel (yi))
     [xi, yi] = meshgrid (xi, yi);
   endif
@@ -63,7 +63,7 @@ function [rx, ry, rz] = griddata (x, y, z, xi, yi, method)
 
   [nr, nc] = size (xi);
   
-  ## triangulate data
+  ## Triangulate data.
   tri = delaunay (x, y);
   zi = nan (size (xi));
   
@@ -71,21 +71,21 @@ function [rx, ry, rz] = griddata (x, y, z, xi, yi, method)
     error ("griddata: cubic interpolation not yet implemented")
 
   elseif (strcmp (method, "nearest"))
-    ## search index of nearest point
+    ## Search index of nearest point.
     idx = dsearch (x, y, tri, xi, yi);
     valid = !isnan (idx);
     zi(valid) = z(idx(valid));
 
   elseif (strcmp (method, "linear"))
-    ## search for every point the enclosing triangle
-    tri_list= tsearch (x, y, tri, xi(:), yi(:));
+    ## Search for every point the enclosing triangle.
+    tri_list = tsearch (x, y, tri, xi(:), yi(:));
 
-    ## only keep the points within triangles.
+    ## Only keep the points within triangles.
     valid = !isnan (reshape (tri_list, size (xi)));
     tri_list = tri_list(!isnan (tri_list));
     nr_t = rows (tri_list);
 
-    ## assign x,y,z for each point of triangle
+    ## Assign x,y,z for each point of triangle.
     x1 = x(tri(tri_list,1));
     x2 = x(tri(tri_list,2));
     x3 = x(tri(tri_list,3));
@@ -98,17 +98,17 @@ function [rx, ry, rz] = griddata (x, y, z, xi, yi, method)
     z2 = z(tri(tri_list,2));
     z3 = z(tri(tri_list,3));
 
-    ## calculate norm vector
+    ## Calculate norm vector.
     N = cross ([x2-x1, y2-y1, z2-z1], [x3-x1, y3-y1, z3-z1]);
     N_norm = sqrt (sumsq (N, 2));
     N = N ./ N_norm(:,[1,1,1]);
     
-    ## calculate D of plane equation
-    ## Ax+By+Cz+D=0;
+    ## Calculate D of plane equation
+    ## Ax+By+Cz+D = 0;
     D = -(N(:,1) .* x1 + N(:,2) .* y1 + N(:,3) .* z1);
     
-    ## calculate zi by solving plane equation for xi,yi
-    zi(valid) = -(N(:,1).*xi(valid) + N(:,2).*yi(valid) + D ) ./ N(:,3);
+    ## Calculate zi by solving plane equation for xi, yi.
+    zi(valid) = -(N(:,1).*xi(valid) + N(:,2).*yi(valid) + D) ./ N(:,3);
     
   else
     error ("griddata: unknown interpolation method");

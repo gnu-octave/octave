@@ -979,7 +979,7 @@ function [pkg_desc_list, flag] = describe (pkgnames, verbose,
   endif
 
   for i = 1:num_packages
-    curr_name= installed_pkgs_lst{i}.name;
+    curr_name = installed_pkgs_lst{i}.name;
     if (describe_all)
       name_pos = i;
     else

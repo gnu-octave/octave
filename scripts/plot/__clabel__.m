@@ -18,7 +18,7 @@
 
 ## Undocumented internal function.
 
-function h = __clabel__ (c, v, hparent, LabelSpacing, z, varargin)
+function h = __clabel__ (c, v, hparent, label_spacing, z, varargin)
   ## FIXME
   ## Assume that the plot size is 4 by 3 inches.
   lims = axis ();
@@ -65,15 +65,15 @@ function h = __clabel__ (c, v, hparent, LabelSpacing, z, varargin)
     d = sqrt (sumsq (diff (p, 1, 2)));
     cumd = cumsum (d);
     td = sum(d);
-    ntag = ceil (td / LabelSpacing);
+    ntag = ceil (td / label_spacing);
 
     if (all (c(:,i1+1) == c(:,i1+clen)))
       Spacing = td / ntag;
       pos = Spacing / 2 + [0:ntag-1] * Spacing;
     else
       pos = zeros(1, ntag);
-      pos(1) = (td - LabelSpacing * (ntag - 1)) ./ 2;
-      pos(2:ntag) = pos(1) + [1:ntag-1] * LabelSpacing;
+      pos(1) = (td - label_spacing * (ntag - 1)) ./ 2;
+      pos(2:ntag) = pos(1) + [1:ntag-1] * label_spacing;
     endif
 
     j1 = 2;

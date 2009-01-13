@@ -25,8 +25,8 @@
 ## dimensions.
 ##
 ## If @var{a} or @var{b} are matrices, then the output, @var{area}, is a
-## matrix where the ith row corresponds to the ith row of a and the jth
-## column corresponds to the jth row of b.
+## matrix where the i-th row corresponds to the i-th row of a and the j-th
+## column corresponds to the j-th row of b.
 ##
 ## @seealso{polyarea}
 ## @end deftypefn

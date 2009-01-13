@@ -44,7 +44,7 @@
 ## where @math{M} is the number of poles (the length of the @var{r},
 ## @var{p}, and @var{e}), the @var{k} vector is a polynomial of order @math{N-1}
 ## representing the direct contribution, and the @var{e} vector specifies
-## the multiplicity of the mth residue's pole.
+## the multiplicity of the m-th residue's pole.
 ##
 ## For example,
 ##

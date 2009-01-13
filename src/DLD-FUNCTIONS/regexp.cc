@@ -907,7 +907,7 @@ Anchoring operator. @code{^} matches the start of the string @var{str} and\n\
 \n\
 In addition the following escaped characters have special meaning. It should\n\
 be noted that it is recommended to quote @var{pat} in single quotes rather\n\
-than double quotes, to avoid the escape sequences being interpreted by octave\n\
+than double quotes, to avoid the escape sequences being interpreted by Octave\n\
 before being passed to @code{regexp}.\n\
 \n\
 @table @code\n\

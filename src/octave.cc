@@ -563,6 +563,7 @@ maximum_braindamage (void)
   bind_internal_variable ("PS1", ">> ");
   bind_internal_variable ("PS2", "");
   bind_internal_variable ("beep_on_error", true);
+  bind_internal_variable ("confirm_recursive_rmdir", false);
   bind_internal_variable ("crash_dumps_octave_core", false);
   bind_internal_variable ("default_save_options", "-mat-binary");
   bind_internal_variable ("fixed_point_format", true);

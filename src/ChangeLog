@@ -1,5 +1,8 @@
 2009-01-12  John W. Eaton  <jwe@octave.org>
 
+	* octave.cc (maximum_braindamage): Set confirm_recursive_rmdir to
+	false.
+
 	* strfns.cc (Fstrcmp, Fstrncmp): Simplify by initializing all
 	elements of output to false with constructor argument.
 

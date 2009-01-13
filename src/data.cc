@@ -3752,7 +3752,7 @@ Return a matrix or N-dimensional array whose elements are all eps,\n\
 the machine precision.  More precisely, @code{eps} is the largest\n\
 relative spacing between any two adjacent numbers in the machine's\n\
 floating point system.  This number is obviously system-dependent.  On\n\
-machines that support 64 bit IEEE floating point arithmetic, @code{eps}\n\
+machines that support 64-bit IEEE floating point arithmetic, @code{eps}\n\
 is approximately\n\
 @ifinfo\n\
  2.2204e-16.\n\

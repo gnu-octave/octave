@@ -476,7 +476,7 @@ handled the same as the arguments for @code{rand}.\n\
 \n\
 By default, @code{randn} uses a Marsaglia and Tsang Ziggurat technique to\n\
 transform from a uniform to a normal distribution. (G. Marsaglia and\n\
-W.W. Tsang, 'Ziggurat method for generating random variables',\n\
+W.W. Tsang, @cite{Ziggurat method for generating random variables},\n\
 J. Statistical Software, vol 5, 2000,\n\
 @url{http://www.jstatsoft.org/v05/i08/})\n\
 \n\
@@ -550,7 +550,7 @@ arguments are handled the same as the arguments for @code{rand}.\n\
 \n\
 By default, @code{randn} uses a Marsaglia and Tsang Ziggurat technique to\n\
 transform from a uniform to a exponential distribution. (G. Marsaglia and\n\
-W.W. Tsang, 'Ziggurat method for generating random variables',\n\
+W.W. Tsang, @cite{Ziggurat method for generating random variables},\n\
 J. Statistical Software, vol 5, 2000,\n\
 @url{http://www.jstatsoft.org/v05/i08/})\n\
 @seealso{rand, randn, randg, randp}\n\

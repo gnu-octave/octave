@@ -620,7 +620,7 @@ DEFUN (typeinfo, args, ,
 @deftypefn {Built-in Function} {} typeinfo (@var{expr})\n\
 \n\
 Return the type of the expression @var{expr}, as a string.  If\n\
-@var{EXPR}  is omitted, return an array of strings containing all the\n\
+@var{expr} is omitted, return an array of strings containing all the\n\
 currently installed data types.\n\
 @end deftypefn")
 {

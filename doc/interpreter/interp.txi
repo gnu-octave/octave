@@ -95,7 +95,7 @@ reconverted to the time domain.
 @DOCSTRING(interpft)
 
 There are two significant limitations on Fourier interpolation. Firstly,
-the function signal is assumed to be periodic, and so non periodic
+the function signal is assumed to be periodic, and so non-periodic
 signals will be poorly represented at the edges. Secondly, both the
 signal and its interpolation are required to be sampled at equispaced
 points. An example of the use of @code{interpft} is
@@ -114,17 +114,14 @@ legend ('sin(4t+0.3)cos(3t-0.1','spline','interpft','data');
 @end example
 
 @ifinfo
-which demonstrates the poor behavior of Fourier interpolation for non
-periodic functions.
+which demonstrates the poor behavior of Fourier interpolation for non-periodic functions.
 @end ifinfo
 @ifnotinfo
-which demonstrates the poor behavior of Fourier interpolation for non
-periodic functions, as can be seen in @ref{fig:interpft}.
+which demonstrates the poor behavior of Fourier interpolation for non-periodic functions, as can be seen in @ref{fig:interpft}.
 
 @float Figure,fig:interpft
 @image{interpft,8cm}
-@caption{Comparison of @code{interp1} and @code{interpft} for non
-periodic data}
+@caption{Comparison of @code{interp1} and @code{interpft} for non-periodic data}
 @end float
 @end ifnotinfo
 

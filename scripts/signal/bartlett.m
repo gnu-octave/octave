@@ -23,7 +23,7 @@
 ## length @var{m}.
 ##
 ## For a definition of the Bartlett window, see e.g. A. V. Oppenheim &
-## R. W. Schafer, "Discrete-Time Signal Processing".
+## R. W. Schafer, @cite{Discrete-Time Signal Processing}.
 ## @end deftypefn
 
 ## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>

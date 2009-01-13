@@ -1,5 +1,12 @@
 2009-01-12  John W. Eaton  <jwe@octave.org>
 
+	* pt-stmt.h (tree_statement::is_null_statement): New function.
+	* parse.y (set_stmt_print_flag): Return list.  Remove trailing
+	null statements from list.
+	(list, simple_list): Simplify action.
+	(make_statement, make_statement_list, append_statement_list):
+	Always create statements and them to the list.
+
 	* base-list.h (octave_base_list::push_front,
 	octave_base_list::push_back, octave_base_list::pop_front,
 	octave_base_list::pop_back): New functions.

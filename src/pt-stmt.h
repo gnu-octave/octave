@@ -78,6 +78,8 @@ public:
 
   octave_comment_list *comment_text (void) { return comm; }
 
+  bool is_null_statement (void) const { return ! (cmd || expr || comm); }
+
   // Allow modification of this statement.  Note that there is no
   // checking.  If you use these, are you sure you knwo what you are
   // doing?

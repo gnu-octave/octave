@@ -311,7 +311,7 @@ static void
 maybe_warn_missing_semi (tree_statement_list *);
 
 // Set the print flag for a statement based on the separator type.
-static void
+static tree_statement_list *
 set_stmt_print_flag (tree_statement_list *, char, bool);
 
 // Create a statement list.
@@ -327,16 +327,9 @@ template <class T>
 static tree_statement *
 make_statement (T *arg)
 {
-  tree_statement *retval = 0;
+  octave_comment_list *comment = octave_comment_buffer::get_comment ();
 
-  if (arg)
-    {
-      octave_comment_list *comment = octave_comment_buffer::get_comment ();
-
-      retval = new tree_statement (arg, comment);
-    }
-
-  return retval;
+  return new tree_statement (arg, comment);
 }
 
 #define ABORT_PARSE \
@@ -521,10 +514,7 @@ input1		: '\n'
 		;
 
 simple_list	: simple_list1 opt_sep_no_nl
-		  {
-		    set_stmt_print_flag ($1, $2, false);
-		    $$ = $1;
-		  }
+		  { $$ = set_stmt_print_flag ($1, $2, false); }
 		;
 
 simple_list1	: statement
@@ -540,10 +530,7 @@ opt_list	: // empty
 		;
 
 list		: list1 opt_sep
-		  {
-		    set_stmt_print_flag ($1, $2, true);
-		    $$ = $1;
-		  }
+		  { $$ = set_stmt_print_flag ($1, $2, true); }
 		;
 
 list1		: statement
@@ -2834,17 +2821,16 @@ maybe_warn_missing_semi (tree_statement_list *t)
     }
 }
 
-static void
+static tree_statement_list *
 set_stmt_print_flag (tree_statement_list *list, char sep,
 		     bool warn_missing_semi)
 {
+  tree_statement *tmp = list->back ();
+
   switch (sep)
     {
     case ';':
-      {
-	tree_statement *tmp = list->back ();
-	tmp->set_print_flag (0);
-      }
+      tmp->set_print_flag (0);
       break;
 
     case 0:
@@ -2858,28 +2844,34 @@ set_stmt_print_flag (tree_statement_list *list, char sep,
       warning ("unrecognized separator type!");
       break;
     }
+
+  // Even if a statement is null, we add it to the list then remove it
+  // here so that the print flag is applied to the correct statement.
+
+  if (tmp->is_null_statement ())
+    {
+      list->pop_back ();
+      delete tmp;
+    }
+
+  return list;
 }
 
 static tree_statement_list *
 make_statement_list (tree_statement *stmt)
 {
-  return stmt ? new tree_statement_list (stmt) : new tree_statement_list ();
+  return new tree_statement_list (stmt);
 }
 
 static tree_statement_list *
 append_statement_list (tree_statement_list *list, char sep,
 		       tree_statement *stmt, bool warn_missing_semi)
 {
-  tree_statement_list *retval = list;
+  set_stmt_print_flag (list, sep, warn_missing_semi);
 
-  if (stmt)
-    {
-      set_stmt_print_flag (list, sep, warn_missing_semi);
+  list->append (stmt);
 
-      list->append (stmt);
-    }
-
-  return retval;
+  return list;
 }
 
 static void

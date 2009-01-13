@@ -725,7 +725,7 @@ reorder the matrix to maximize performance.
 @node Sparse Linear Algebra, Iterative Techniques, Basics, Sparse Matrices
 @section Linear Algebra on Sparse Matrices
 
-Octave includes a poly-morphic solver for sparse matrices, where 
+Octave includes a polymorphic solver for sparse matrices, where 
 the exact solver used to factorize the matrix, depends on the properties
 of the sparse matrix itself. Generally, the cost of determining the matrix type
 is small relative to the cost of factorizing the matrix itself, but in any

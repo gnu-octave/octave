@@ -34,7 +34,7 @@ Golub and Van Loan, @cite{Matrix Computations, 2nd Ed.}, Johns Hopkins,
 @node Techniques used for Linear Algebra
 @section Techniques used for Linear Algebra
 
-Octave includes a poly-morphic solver, that selects an appropriate
+Octave includes a polymorphic solver, that selects an appropriate
 matrix factorization depending on the properties of the matrix itself. 
 Generally, the cost of determining the matrix type is small relative to 
 the cost of factorizing the matrix itself, but in any case the matrix 

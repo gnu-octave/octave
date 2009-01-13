@@ -681,7 +681,7 @@ Data that is stored in a cell array can be processed in several ways
 depending on the actual data. The most simple way to process that data
 is to iterate through it using one or more @code{for} loops. The same
 idea can be implemented easier through the use of the @code{cellfun}
-function that calls a user specified function on all elements of a cell
+function that calls a user-specified function on all elements of a cell
 array.
 
 @DOCSTRING(cellfun)

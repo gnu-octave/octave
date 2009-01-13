@@ -68,7 +68,7 @@ Does writing a dynamically linked function represent useful investment
 of your time, relative to staying in Octave?
 @end itemize
 
-Also, as oct- and mex-files are dynamically linked to octave, they
+Also, as oct- and mex-files are dynamically linked to Octave, they
 introduce the possibility of Octave crashing due to errors in
 the user code.  For example a segmentation violation in the user's code
 will cause Octave to abort.

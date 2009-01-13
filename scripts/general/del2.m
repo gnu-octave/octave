@@ -27,7 +27,7 @@
 ##
 ## @iftex
 ## @tex
-## $d = {1 \over 4} \left( {d^2 \over dx^2} M(x,y) + {d^2 \over dy^2} M(x,y) \right)$
+## $$d = {1 \over 4} \left( {d^2 \over dx^2} M(x,y) + {d^2 \over dy^2} M(x,y) \right)$$
 ## @end tex
 ## @end iftex
 ## @ifnottex

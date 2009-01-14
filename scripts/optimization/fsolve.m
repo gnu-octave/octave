@@ -25,14 +25,14 @@
 ## @var{fcn} should accepts a vector (array) defining the unknown variables,
 ## and return a vector of left-hand sides of the equations. Right-hand sides
 ## are defined to be zeros.
-## In other words, this function attempts to determine a vector @var{X} such 
-## that @code{@var{fcn}(@var{X})} gives (approximately) all zeros.
+## In other words, this function attempts to determine a vector @var{x} such 
+## that @code{@var{fcn} (@var{x})} gives (approximately) all zeros.
 ## @var{x0} determines a starting guess. The shape of @var{x0} is preserved
 ## in all calls to @var{fcn}, but otherwise it is treated as a column vector.
 ## @var{options} is a structure specifying additional options. Currently, fsolve
 ## recognizes these options: @code{"FunValCheck"}, @code{"OutputFcn"},
 ## @code{"TolX"}, @code{"TolFun"}, @code{"MaxIter"},
-## @code{"MaxFunEvals"} and @code{"Jacobian"}.
+## @code{"MaxFunEvals"}, and @code{"Jacobian"}.
 ##
 ## If @code{"Jacobian"} is @code{"on"}, it specifies that @var{fcn},
 ## called with 2 output arguments, also returns the Jacobian matrix

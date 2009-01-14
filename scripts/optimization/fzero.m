@@ -20,11 +20,12 @@
 
 ## -*- texinfo -*-
 ## @deftypefn{Function File}{[@var{x}, @var{fval}, @var{info}, @var{output}] =} fzero (@var{fun}, @var{x0}, @var{options})
-## Finds a zero point of a univariate function. @var{fun} should be a function
+## Find a zero point of a univariate function. @var{fun} should be a function
 ## handle or name. @var{x0} specifies a starting point. @var{options} is a
-## structure specifying additional options. Currently, fzero recognizes these
-## options: FunValCheck, OutputFcn, TolX, MaxIter, MaxFunEvals. 
-## For description of these options, see @code{optimset}.
+## structure specifying additional options. Currently, @code{fzero}
+## recognizes these options: @code{"FunValCheck"}, @code{"OutputFcn"},
+## @code{"TolX"}, @code{"MaxIter"}, @code{"MaxFunEvals"}. 
+## For description of these options, see @ref{doc-optimset,,optimset}.
 ## 
 ## On exit, the function returns @var{x}, the approximate zero point
 ## and @var{fval}, the function value thereof.
@@ -43,7 +44,7 @@
 ## @item -4
 ## A NaN value encountered.
 ## @end itemize
-## @seealso{optimset, fminbnd, fsolve} 
+## @seealso{optimset, fsolve} 
 ## @end deftypefn
 
 ## This is essentially the ACM algorithm 748: Enclosing Zeros of

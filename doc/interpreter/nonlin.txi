@@ -152,3 +152,4 @@ Using this Jacobian is done with the following code
 @noindent
 which gives the same solution as before.
 
+@DOCSTRING(fzero)

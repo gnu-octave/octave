@@ -93,7 +93,11 @@ function dlmwrite (file, a, varargin)
   r = 0;
   c = 0;
   newline = "\n";
-  precision = "%.16g";
+  if (ischar (a))
+    precision = "%c";
+  else
+    precision = "%.16g";
+  endif
   opentype = "wt";
 
   ## process the input arguements

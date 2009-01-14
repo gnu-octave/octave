@@ -1,3 +1,7 @@
+2009-01-14  John W. Eaton  <jwe@octave.org>
+
+	* io/dlmwrite.m: Use '%c' format for character data.
+
 2009-01-13  John W. Eaton  <jwe@octave.org>
 
 	* general/repmat.m: Handle negative row or column dimension.

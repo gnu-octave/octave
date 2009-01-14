@@ -535,8 +535,6 @@ split_path (const std::string& p)
 void
 load_path::do_set (const std::string& p, bool warn)
 {
-  do_clear ();
-
   std::list<std::string> elts = split_path (p);
 
   // Temporarily disable add hook.
@@ -544,6 +542,8 @@ load_path::do_set (const std::string& p, bool warn)
   unwind_protect_fptr (add_hook);
 
   add_hook = 0;
+
+  do_clear ();
 
   for (std::list<std::string>::const_iterator i = elts.begin ();
        i != elts.end ();

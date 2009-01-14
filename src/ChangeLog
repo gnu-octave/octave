@@ -1,3 +1,8 @@
+2009-01-14  John W. Eaton  <jwe@octave.org>
+
+	* load-path.cc (load_path::do_set): Call do_clear after disabling
+	add_hook.
+
 2009-01-13  Jaroslav Hajek  <highegg@gmail.com>
 
 	* dirfns.cc (Freadddir): qsort -> sort.

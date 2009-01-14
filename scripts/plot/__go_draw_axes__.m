@@ -589,7 +589,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 	     usingclause{data_idx} = sprintf ("record=%d", numel (obj.xdata));
 
 	     if (isfield (obj, "markersize"))
-	       mdat = obj.markersize / 6;
+	       mdat = obj.markersize / 3;
 	     endif
 
              if (isfield (obj, "edgecolor"))
@@ -1303,7 +1303,7 @@ function [style, typ, with] = do_linestyle_command (obj, idx, mono,
     endif
 
     if (isfield (obj, "markersize"))
-      fprintf (plot_stream, " pointsize %f", obj.markersize / 6);
+      fprintf (plot_stream, " pointsize %f", obj.markersize / 3);
       found_style = true;
     endif
   else

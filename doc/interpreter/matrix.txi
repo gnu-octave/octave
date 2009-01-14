@@ -152,6 +152,7 @@ a (i, :)
 
 @DOCSTRING(vech)
 
+@anchor{doc-postpad}
 @DOCSTRING(prepad)
 
 @DOCSTRING(blkdiag)

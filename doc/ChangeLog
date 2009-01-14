@@ -1,3 +1,7 @@
+2009-01-14  Thorsten Meyer  <thorsten.meyier@gmx.de>
+
+	* interpreter/matrix.txi: Add anchor for doc-postpad.
+	
 2008-12-26  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
 	* interpreter/strings.txi: Add space to ischar example.

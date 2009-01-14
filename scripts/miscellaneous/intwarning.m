@@ -30,13 +30,15 @@
 ## Otherwise it is returned in a structure with the fields "identifier"
 ## and "state".
 ##
-## @example
+## @smallexample
+## @group
 ## intwarning ("query")
 ## The state of warning "Octave:int-convert-nan" is "off"
 ## The state of warning "Octave:int-convert-non-int-val" is "off"
 ## The state of warning "Octave:int-convert-overflow" is "off"
 ## The state of warning "Octave:int-math-overflow" is "off"
-## @end example 
+## @end group
+## @end smallexample 
 ##
 ## @item "on"
 ## Turn integer conversion and math warnings "on". If there is no output

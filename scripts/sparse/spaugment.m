@@ -50,7 +50,8 @@
 ## @example
 ## @group
 ## m = 11; n = 10; mn = max(m ,n);
-## a = spdiags ([ones(mn,1), 10*ones(mn,1), -ones(mn,1)],[-1,0,1], m, n);
+## a = spdiags ([ones(mn,1), 10*ones(mn,1), -ones(mn,1)],
+##              [-1, 0, 1], m, n);
 ## x0 = a \ ones (m,1);
 ## s = spaugment (a);
 ## [L, U, P, Q] = lu (s);

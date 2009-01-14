@@ -74,11 +74,11 @@
 ##
 ## @item WayPoints
 ## If there exists discontinuities in the first derivative of the
-## function to integrate, then these can be flagged with teh 'WayPoints'
-## property. This forces the ends of a sub-interval to fall on the
-## breakpoints of the function and can result in significantly improved
-## estimated of the error in the integral, faster computation or both.
-## For example
+## function to integrate, then these can be flagged with the
+## @code{"WayPoints"} property. This forces the ends of a sub-interval
+## to fall on the breakpoints of the function and can result in
+## significantly improved estimated of the error in the integral, faster
+## computation or both.  For example,
 ##
 ## @example
 ## quadgk (@@(x) abs (1 - x .^ 2), 0, 2, 'Waypoints', 1)
@@ -98,7 +98,8 @@
 ## assuemd to have no edge singularities. For example
 ##
 ## @example
-## quadgk (@@ (z) log (z), 1+1i, 1+1i, 'WayPoints', [1-1i, -1,-1i, -1+1i])
+## quadgk (@@(z) log (z), 1+1i, 1+1i, "WayPoints",
+##         [1-1i, -1,-1i, -1+1i])
 ## @end example
 ##
 ## @noindent

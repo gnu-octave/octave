@@ -2502,18 +2502,19 @@ Centered (may only be applied to command %s).\n\
 \n\
 A command is composed like this:\n\
 \n\
-@example\n\
+@smallexample\n\
 %[modifier]<command>[:size_of_parameter[:center-specific[:balance]]];\n\
-@end example\n\
+@end smallexample\n\
 \n\
-Command and modifier is already explained. Size_of_parameter\n\
-tells how many columns the parameter will need for printing.\n\
+Command and modifier is already explained.  The @code{size_of_parameter}\n\
+parameter tells how many columns the parameter will need for printing.\n\
 The @code{center-specific} parameter may only be applied to command\n\
 @samp{%s}.\n\
 The @code{balance} parameter specifies the offset for printing\n\
 the dimensions string.\n\
 \n\
-The default format is \"  %a:4; %ln:6; %cs:16:6:1;  %rb:12;  %lc:-1;\\n\".\n\
+The default format is\n\
+@code{\"  %a:4; %ln:6; %cs:16:6:1;  %rb:12;  %lc:-1;\\n\"}.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (whos_line_format);

@@ -11,7 +11,8 @@ function b = subsref (a, s)
       if (strcmp (fld, "poly"))
 	b = a.poly;
       else
-	error ("subsref: unrecognized property \"%s\" of a polynomial", fld);
+	error ("@polynomial/subsref: invalid property \"%s\"",
+	       fld);
       endif
   endswitch
 endfunction

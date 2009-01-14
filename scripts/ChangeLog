@@ -1,5 +1,7 @@
 2009-01-14  John W. Eaton  <jwe@octave.org>
 
+	* optimization/fsolve.m: Doc fix.
+
 	* plot/__go_draw_axes__.m: Scale markersize by 1/3, not 1/6.
 
 	* io/dlmwrite.m: Use '%c' format for character data.

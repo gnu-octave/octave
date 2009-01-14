@@ -19,9 +19,9 @@
 ## Author: Jaroslav Hajek <highegg@gmail.com>
 
 ## -*- texinfo -*-
-## @deftypefn{Function File} {} fsolve(@var{fcn}, @var{x0}, @var{options})
+## @deftypefn{Function File} {} fsolve (@var{fcn}, @var{x0}, @var{options})
 ## @deftypefnx{Function File} {[@var{x}, @var{fvec}, @var{info}, @var{output}, @var{fjac}]} = fsolve (@var{fcn}, @dots{})
-## Solves a system of nonlinear equations defined by the function @var{fcn}.
+## Solve a system of nonlinear equations defined by the function @var{fcn}.
 ## @var{fcn} should accepts a vector (array) defining the unknown variables,
 ## and return a vector of left-hand sides of the equations. Right-hand sides
 ## are defined to be zeros.
@@ -30,14 +30,16 @@
 ## @var{x0} determines a starting guess. The shape of @var{x0} is preserved
 ## in all calls to @var{fcn}, but otherwise it is treated as a column vector.
 ## @var{options} is a structure specifying additional options. Currently, fsolve
-## recognizes these options: FunValCheck, OutputFcn, TolX, TolFun, MaxIter,
-## MaxFunEvals and Jacobian. 
+## recognizes these options: @code{"FunValCheck"}, @code{"OutputFcn"},
+## @code{"TolX"}, @code{"TolFun"}, @code{"MaxIter"},
+## @code{"MaxFunEvals"} and @code{"Jacobian"}.
 ##
-## If Jacobian is 'on', it specifies that @var{fcn}, called with 2 output arguments,
-## also returns the Jacobian matrix of right-hand sides at the requested point.
-## TolX specifies the termination tolerance in the unknown variables, while
-## TolFun is a tolerance for equations. Default is @code{1e1*eps}
-## for TolX and @code{1e2*eps} for TolFun.
+## If @code{"Jacobian"} is @code{"on"}, it specifies that @var{fcn},
+## called with 2 output arguments, also returns the Jacobian matrix
+## of right-hand sides at the requested point.  @code{"TolX"} specifies
+## the termination tolerance in the unknown variables, while 
+## @code{"TolFun"} is a tolerance for equations. Default is @code{1e1*eps}
+## for @code{"TolX"} and @code{1e2*eps} for @code{"TolFun"}.
 ## For description of the other options, see @code{optimset}.
 ##
 ## On return, @var{fval} contains the value of the function @var{fcn}
@@ -59,7 +61,7 @@
 ##
 ## Note: If you only have a single nonlinear equation of one variable, using 
 ## @code{fzero} is usually a much better idea.
-## @seealso{fzero,optimset}
+## @seealso{fzero, optimset}
 ## @end deftypefn
 
 function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options)

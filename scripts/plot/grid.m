@@ -20,14 +20,18 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} grid (@var{arg})
 ## @deftypefnx {Function File} {} grid ("minor", @var{arg2})
+## @deftypefnx {Function File} {} grid (@var{hax}, @dots{})
 ## Force the display of a grid on the plot.
-## The argument may be either @code{"on"} or @code{"off"}.  If it is
-## omitted, the current grid state is toggled.
+## The argument may be either @code{"on"}, or @code{"off"}.
+## If it is omitted, the current grid state is toggled.
 ##
 ## If @var{arg} is @code{"minor"} then the minor grid is toggled.  When
 ## using a minor grid a second argument @var{arg2} is allowed, which can
 ## be either @code{"on"} or @code{"off"} to explicitly set the state of
 ## the minor grid.
+##
+## If the first argument is an axis handle, @var{hax}, operate on the
+## specified axis object.
 ## @seealso{plot}
 ## @end deftypefn
 

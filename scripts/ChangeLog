@@ -1,3 +1,7 @@
+2008-01-15  Ben Abbott  <bpabbott@mac.com>
+
+	* plot/grid.m: Document handle argument.
+
 2009-01-15  Peter L. Søndergaard  <peter@sonderport.dk>
 
 	* general/nargoutchk.m: Doc fix.

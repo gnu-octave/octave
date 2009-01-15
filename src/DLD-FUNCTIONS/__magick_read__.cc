@@ -541,7 +541,7 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
                    const octave_value& img,
                    bool has_map)
 {
-  unsigned int bitdepth;
+  unsigned int bitdepth = 0;
   T m;
 
   if (img.is_uint8_type ())

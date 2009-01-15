@@ -1,3 +1,8 @@
+2009-01-15  Søren Hauberg  <hauberg@gmail.com>
+
+	* DLD-FUNCTIONS/__magick_read__.cc (encode_uint_image):
+	Initialize bitdepth.
+
 2009-01-14  Søren Hauberg  <hauberg@gmail.com>
 
 	* DLD-FUNCTIONS/betainc.cc, DLD-FUNCTIONS/chol.cc,

@@ -187,7 +187,7 @@ with\n\
 $$ x(t_0) = x_0, \\dot{x}(t_0) = \\dot{x}_0 $$\n\
 @end tex\n\
 @end iftex\n\
-@ifinfo\n\
+@ifnottex\n\
 \n\
 @example\n\
 0 = f (x, xdot, t)\n\
@@ -200,7 +200,7 @@ with\n\
 x(t_0) = x_0, xdot(t_0) = xdot_0\n\
 @end example\n\
 \n\
-@end ifinfo\n\
+@end ifnottex\n\
 The solution is returned in the matrices @var{x} and @var{xdot},\n\
 with each row in the result matrices corresponding to one of the\n\
 elements in the vector @var{t}.  The first element of @var{t}\n\
@@ -234,13 +234,13 @@ J = {\\partial f \\over \\partial x}\n\
 $$\n\
 @end tex\n\
 @end iftex\n\
-@ifinfo\n\
+@ifnottex\n\
 @example\n\
       df       df\n\
 jac = -- + c ------\n\
       dx     d xdot\n\
 @end example\n\
-@end ifinfo\n\
+@end ifnottex\n\
 \n\
 The modified Jacobian function must have the form\n\
 \n\

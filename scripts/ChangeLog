@@ -1,4 +1,25 @@
+2009-01-14  Søren Hauberg  <hauberg@gmail.com>
+
+	* general/diff.m, general/logspace.m, general/nextpow2.m,
+	linear-algebra/commutation_matrix.m,
+	linear-algebra/duplication_matrix.m, linear-algebra/expm.m,
+	miscellaneous/bincoeff.m, miscellaneous/list_primes.m,
+	optimization/fsolve.m, plot/subplot.m, polynomial/pchip.m,
+	polynomial/polyout.m, polynomial/residue.m, polynomial/spline.m,
+	signal/freqz.m, signal/sinc.m, specfun/beta.m, specfun/betaln.m,
+	specfun/nchoosek.m, specfun/pow2.m, special-matrix/hankel.m,
+	special-matrix/hilb.m, special-matrix/invhilb.m
+	special-matrix/sylvester_matrix.m, special-matrix/toeplitz.m,
+	special-matrix/vander.m, statistics/base/gls.m,
+	statistics/base/kendall.m, statistics/base/kurtosis.m,
+	statistics/base/mean.m, statistics/base/median.m,
+	statistics/base/ols.m, statistics/base/skewness.m,
+	statistics/distributions/kolmogorov_smirnov_cdf.m:
+	Use ifnottex instead of ifinfo.
+
 2009-01-14  John W. Eaton  <jwe@octave.org>
+
+	* linear-algebra/expm.m: 
 
 	* optimization/fsolve.m: Doc fix.
 

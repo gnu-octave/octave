@@ -43,7 +43,7 @@ $$\n\
 $$\n\
 @end tex\n\
 @end iftex\n\
-@ifinfo\n\
+@ifnottex\n\
 \n\
 @smallexample\n\
                                 x\n\
@@ -53,7 +53,7 @@ gammainc (x, a) = ---------    | exp (-t) t^(a-1) dt\n\
                             t=0\n\
 @end smallexample\n\
 \n\
-@end ifinfo\n\
+@end ifnottex\n\
 with the limiting value of 1 as @var{x} approaches infinity.\n\
 The standard notation is @math{P(a,x)}, e.g. Abramowitz and Stegun (6.5.1).\n\
 \n\

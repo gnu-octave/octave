@@ -43,7 +43,7 @@ $$\n\
 $$\n\
 @end tex\n\
 @end iftex\n\
-@ifinfo\n\
+@ifnottex\n\
 \n\
 @smallexample\n\
                                       x\n\
@@ -52,7 +52,7 @@ betainc (x, a, b) = beta (a, b)^(-1) | t^(a-1) (1-t)^(b-1) dt.\n\
                                      /\n\
                                   t=0\n\
 @end smallexample\n\
-@end ifinfo\n\
+@end ifnottex\n\
 \n\
 If x has more than one component, both @var{a} and @var{b} must be\n\
 scalars.  If @var{x} is a scalar, @var{a} and @var{b} must be of\n\

@@ -45,9 +45,9 @@ Compute the magnitude of @var{z}, defined as\n\
 $|z| = \\sqrt{x^2 + y^2}$.\n\
 @end tex\n\
 @end iftex\n\
-@ifinfo\n\
+@ifnottex\n\
 |@var{z}| = @code{sqrt (x^2 + y^2)}.\n\
-@end ifinfo\n\
+@end ifnottex\n\
 \n\
 For example,\n\
 \n\
@@ -180,9 +180,9 @@ Compute the argument of @var{z}, defined as\n\
 $\\theta = \\tan^{-1}(y/x)$.\n\
 @end tex\n\
 @end iftex\n\
-@ifinfo\n\
+@ifnottex\n\
 @var{theta} = @code{atan (@var{y}/@var{x})}.\n\
-@end ifinfo\n\
+@end ifnottex\n\
 @noindent\n\
 in radians. \n\
 \n\
@@ -394,9 +394,9 @@ Return the complex conjugate of @var{z}, defined as\n\
 $\\bar{z} = x - iy$.\n\
 @end tex\n\
 @end iftex\n\
-@ifinfo\n\
+@ifnottex\n\
 @code{conj (@var{z})} = @var{x} - @var{i}@var{y}.\n\
-@end ifinfo\n\
+@end ifnottex\n\
 @seealso{real, imag}\n\
 @end deftypefn")
 {
@@ -507,7 +507,7 @@ $$\n\
 $$\n\
 @end tex\n\
 @end iftex\n\
-@ifinfo\n\
+@ifnottex\n\
 \n\
 @smallexample\n\
                          z\n\
@@ -516,7 +516,7 @@ erf (z) = (2/sqrt (pi)) | e^(-t^2) dt\n\
                         /\n\
                      t=0\n\
 @end smallexample\n\
-@end ifinfo\n\
+@end ifnottex\n\
 @seealso{erfc, erfinv}\n\
 @end deftypefn")
 {
@@ -568,9 +568,9 @@ Computes the complementary error function,\n\
 $1 - {\\rm erf} (z)$.\n\
 @end tex\n\
 @end iftex\n\
-@ifinfo\n\
+@ifnottex\n\
 @code{1 - erf (@var{z})}.\n\
-@end ifinfo\n\
+@end ifnottex\n\
 @seealso{erf, erfinv}\n\
 @end deftypefn")
 {
@@ -739,7 +739,7 @@ $$\n\
 $$\n\
 @end tex\n\
 @end iftex\n\
-@ifinfo\n\
+@ifnottex\n\
 \n\
 @example\n\
             infinity\n\
@@ -748,7 +748,7 @@ gamma (z) = | t^(z-1) exp (-t) dt.\n\
             /\n\
          t=0\n\
 @end example\n\
-@end ifinfo\n\
+@end ifnottex\n\
 @seealso{gammainc, lgamma}\n\
 @end deftypefn")
 {
@@ -1335,14 +1335,14 @@ $$\n\
 $$\n\
 @end tex\n\
 @end iftex\n\
-@ifinfo\n\
+@ifnottex\n\
 \n\
 @example\n\
            -1, x < 0;\n\
 sign (x) =  0, x = 0;\n\
             1, x > 0.\n\
 @end example\n\
-@end ifinfo\n\
+@end ifnottex\n\
 \n\
 For complex arguments, @code{sign} returns @code{x ./ abs (@var{x})}.\n\
 @end deftypefn")

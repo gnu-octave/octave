@@ -294,20 +294,20 @@ $$\n\
 $$\n\
 @end tex\n\
 @end iftex\n\
-@ifinfo\n\
+@ifnottex\n\
 \n\
 @smallexample\n\
    N                   M\n\
   SUM a(k+1) y(n-k) = SUM b(k+1) x(n-k)      for 1<=n<=length(x)\n\
   k=0                 k=0\n\
 @end smallexample\n\
-@end ifinfo\n\
+@end ifnottex\n\
 \n\
 @noindent\n\
 where\n\
-@ifinfo\n\
+@ifnottex\n\
  N=length(a)-1 and M=length(b)-1.\n\
-@end ifinfo\n\
+@end ifnottex\n\
 @iftex\n\
 @tex\n\
  $a \\in \\Re^{N-1}$, $b \\in \\Re^{M-1}$, and $x \\in \\Re^P$.\n\
@@ -323,20 +323,20 @@ y_n = -\\sum_{k=1}^N c_{k+1} y_{n-k} + \\sum_{k=0}^M d_{k+1} x_{n-k}, \\qquad\n\
 $$\n\
 @end tex\n\
 @end iftex\n\
-@ifinfo\n\
+@ifnottex\n\
 \n\
 @smallexample\n\
             N                   M\n\
   y(n) = - SUM c(k+1) y(n-k) + SUM d(k+1) x(n-k)  for 1<=n<=length(x)\n\
            k=1                 k=0\n\
 @end smallexample\n\
-@end ifinfo\n\
+@end ifnottex\n\
 \n\
 @noindent\n\
 where\n\
-@ifinfo\n\
+@ifnottex\n\
  c = a/a(1) and d = b/a(1).\n\
-@end ifinfo\n\
+@end ifnottex\n\
 @iftex\n\
 @tex\n\
 $c = a/a_1$ and $d = b/a_1$.\n\
@@ -361,7 +361,7 @@ H(z) = {\\displaystyle\\sum_{k=0}^M d_{k+1} z^{-k}\n\
 $$\n\
 @end tex\n\
 @end iftex\n\
-@ifinfo\n\
+@ifnottex\n\
 \n\
 @example\n\
              M\n\
@@ -372,7 +372,7 @@ $$\n\
           1 + SUM c(k+1) z^(-k)\n\
               k=1\n\
 @end example\n\
-@end ifinfo\n\
+@end ifnottex\n\
 @end deftypefn")
 {
   octave_value_list retval;

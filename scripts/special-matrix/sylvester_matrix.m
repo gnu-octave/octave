@@ -25,9 +25,9 @@
 ## $n = 2^k$.
 ## @end tex
 ## @end iftex
-## @ifinfo
+## @ifnottex
 ## n = 2^k.
-## @end ifinfo
+## @end ifnottex
 ## @seealso{hankel, vander, hilb, invhilb, toeplitz}
 ## @end deftypefn
 

@@ -56,11 +56,11 @@ where $P$ is a square unitary matrix ($P^HP = I$), and $H$\n\
 is upper Hessenberg ($H_{i,j} = 0, \\forall i \\ge j+1$).\n\
 @end tex\n\
 @end iftex\n\
-@ifinfo\n\
+@ifnottex\n\
 @code{p * h * p' = a} where @code{p} is a square unitary matrix\n\
 (@code{p' * p = I}, using complex-conjugate transposition) and @code{h}\n\
 is upper Hessenberg (@code{i >= j+1 => h (i, j) = 0}).\n\
-@end ifinfo\n\
+@end ifnottex\n\
 @end deftypefn")
 {
   octave_value_list retval;

@@ -27,12 +27,12 @@
 ## $$
 ## @end tex
 ## @end iftex
-## @ifinfo
+## @ifnottex
 ##
 ## @example
 ## beta (a, b) = gamma (a) * gamma (b) / gamma (a + b).
 ## @end example
-## @end ifinfo
+## @end ifnottex
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>

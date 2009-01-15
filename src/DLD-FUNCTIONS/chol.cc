@@ -61,12 +61,12 @@ matrix @var{a}, where\n\
 $ R^T R = A $.\n\
 @end tex\n\
 @end iftex\n\
-@ifinfo\n\
+@ifnottex\n\
 \n\
 @example\n\
 @var{r}' * @var{r} = @var{a}.\n\
 @end example\n\
-@end ifinfo\n\
+@end ifnottex\n\
 \n\
 Called with one output argument @code{chol} fails if @var{a} or @var{s} is\n\
 not positive definite. With two or more output arguments @var{p} flags\n\
@@ -82,12 +82,12 @@ is the factorization of @code{@var{a}(@var{q},@var{q})} such that\n\
 $ R^T R = Q^T A Q$.\n\
 @end tex\n\
 @end iftex\n\
-@ifinfo\n\
+@ifnottex\n\
 \n\
 @example\n\
 @var{r}' * @var{r} = @var{q}' * @var{a} * @var{q}.\n\
 @end example\n\
-@end ifinfo\n\
+@end ifnottex\n\
 \n\
 The sparsity preserving permutation is generally returned as a matrix.\n\
 However, given the flag 'vector', @var{q} will be returned as a vector\n\
@@ -97,12 +97,12 @@ such that\n\
 $ R^T R = A (Q, Q)$.\n\
 @end tex\n\
 @end iftex\n\
-@ifinfo\n\
+@ifnottex\n\
 \n\
 @example\n\
 @var{r}' * @var{r} = a (@var{q}, @var{q}).\n\
 @end example\n\
-@end ifinfo\n\
+@end ifnottex\n\
 \n\
 Called with either a sparse or full matrix and uing the 'lower' flag,\n\
 @code{chol} returns the lower triangular factorization such that\n\
@@ -111,12 +111,12 @@ Called with either a sparse or full matrix and uing the 'lower' flag,\n\
 $ L L^T = A $.\n\
 @end tex\n\
 @end iftex\n\
-@ifinfo\n\
+@ifnottex\n\
 \n\
 @example\n\
 @var{l} * @var{l}' = @var{a}.\n\
 @end example\n\
-@end ifinfo\n\
+@end ifnottex\n\
 \n\
 In general the lower trinagular factorization is significantly faster for\n\
 sparse matrices.\n\

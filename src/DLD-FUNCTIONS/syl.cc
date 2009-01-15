@@ -44,12 +44,12 @@ $$\n\
 $$\n\
 @end tex\n\
 @end iftex\n\
-@ifinfo\n\
+@ifnottex\n\
 \n\
 @example\n\
 A X + X B + C = 0\n\
 @end example\n\
-@end ifinfo\n\
+@end ifnottex\n\
 using standard @sc{Lapack} subroutines.  For example,\n\
 \n\
 @example\n\

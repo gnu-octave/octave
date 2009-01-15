@@ -1,3 +1,15 @@
+2009-01-14  Søren Hauberg  <hauberg@gmail.com>
+
+	* DLD-FUNCTIONS/betainc.cc, DLD-FUNCTIONS/chol.cc,
+	DLD-FUNCTIONS/daspk.cc, DLD-FUNCTIONS/dasrt.cc,
+	DLD-FUNCTIONS/dassl.cc, DLD-FUNCTIONS/filter.cc,
+	DLD-FUNCTIONS/gammainc.cc, DLD-FUNCTIONS/gcd.cc,
+	DLD-FUNCTIONS/givens.cc, DLD-FUNCTIONS/hess.cc,
+	DLD-FUNCTIONS/lsode.cc, DLD-FUNCTIONS/qr.cc, DLD-FUNCTIONS/qz.cc,
+	DLD-FUNCTIONS/schur.cc, DLD-FUNCTIONS/svd.cc,
+	DLD-FUNCTIONS/syl.cc, data.cc, mappers.cc:
+	Use ifnottex instead of ifinfo.
+
 2009-01-14  John W. Eaton  <jwe@octave.org>
 
 	* load-path.cc (load_path::do_set): Call do_clear after disabling

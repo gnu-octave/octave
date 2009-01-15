@@ -218,9 +218,9 @@ Computes the generalized eigenvalues\n\
 $\\lambda$\n\
 @end tex\n\
 @end iftex\n\
-@ifinfo\n\
+@ifnottex\n\
 @var{lambda}\n\
-@end ifinfo\n\
+@end ifnottex\n\
 of @math{(A - s B)}.\n\
 @item @code{[AA, BB, Q, Z, V, W, lambda] = qz (A, B)}\n\
 \n\
@@ -233,7 +233,7 @@ $$ W^T A = { \\rm diag }(\\lambda)W^T B $$\n\
 $$ AA = Q^T AZ, BB = Q^T BZ $$\n\
 @end tex\n\
 @end iftex\n\
-@ifinfo\n\
+@ifnottex\n\
 @example\n\
 @group\n\
 \n\
@@ -243,7 +243,7 @@ $$ AA = Q^T AZ, BB = Q^T BZ $$\n\
 \n\
 @end group\n\
 @end example\n\
-@end ifinfo\n\
+@end ifnottex\n\
 with @var{Q} and @var{Z} orthogonal (unitary)= @var{I}\n\
 \n\
 @item @code{[AA,BB,Z@{, lambda@}] = qz(A,B,opt)}\n\

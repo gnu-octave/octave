@@ -26,12 +26,12 @@
 ## $$
 ## @end tex
 ## @end iftex
-## @ifinfo
+## @ifnottex
 ##
 ## @example
 ## betaln (a, b) = gammaln (a) + gammaln (b) - gammaln (a + b)
 ## @end example
-## @end ifinfo
+## @end ifnottex
 ## @seealso{beta, betainc, gammaln}
 ## @end deftypefn
 

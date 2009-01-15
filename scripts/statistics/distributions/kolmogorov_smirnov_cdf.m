@@ -25,13 +25,13 @@
 ## $$ Q(x) = \sum_{k=-\infty}^\infty (-1)^k \exp(-2 k^2 x^2) $$
 ## @end tex
 ## @end iftex
-## @ifinfo
+## @ifnottex
 ## @example
 ##          Inf
 ## Q(x) =   SUM    (-1)^k exp(-2 k^2 x^2)
 ##        k = -Inf
 ## @end example
-## @end ifinfo
+## @end ifnottex
 ##
 ## @noindent
 ## for @var{x} > 0.

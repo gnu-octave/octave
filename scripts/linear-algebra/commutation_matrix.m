@@ -25,45 +25,45 @@
 ##  $K_{m,n}$
 ## @end tex
 ## @end iftex
-## @ifinfo
+## @ifnottex
 ##  K(m,n)
-## @end ifinfo
+## @end ifnottex
 ##  which is the unique
 ## @iftex
 ## @tex
 ##  $m n \times m n$
 ## @end tex
 ## @end iftex
-## @ifinfo
+## @ifnottex
 ##  @var{m}*@var{n} by @var{m}*@var{n}
-## @end ifinfo
+## @end ifnottex
 ##  matrix such that
 ## @iftex
 ## @tex
 ##  $K_{m,n} \cdot {\rm vec} (A) = {\rm vec} (A^T)$
 ## @end tex
 ## @end iftex
-## @ifinfo
+## @ifnottex
 ##  @math{K(m,n) * vec(A) = vec(A')}
-## @end ifinfo
+## @end ifnottex
 ##  for all
 ## @iftex
 ## @tex
 ##  $m\times n$
 ## @end tex
 ## @end iftex
-## @ifinfo
+## @ifnottex
 ##  @math{m} by @math{n}
-## @end ifinfo
+## @end ifnottex
 ##  matrices
 ## @iftex
 ## @tex
 ##  $A$.
 ## @end tex
 ## @end iftex
-## @ifinfo
+## @ifnottex
 ##  @math{A}.
-## @end ifinfo
+## @end ifnottex
 ##
 ## If only one argument @var{m} is given,
 ## @iftex
@@ -71,9 +71,9 @@
 ##  $K_{m,m}$
 ## @end tex
 ## @end iftex
-## @ifinfo
+## @ifnottex
 ##  @math{K(m,m)}
-## @end ifinfo
+## @end ifnottex
 ##  is returned.
 ##
 ## See Magnus and Neudecker (1988), Matrix differential calculus with

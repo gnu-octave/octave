@@ -27,13 +27,13 @@
 ## $$
 ## @end tex
 ## @end iftex
-## @ifinfo
+## @ifnottex
 ## 
 ## @example
 ## expm(a) = I + a + a^2/2! + a^3/3! + ...
 ## @end example
 ## 
-## @end ifinfo
+## @end ifnottex
 ## The Taylor series is @emph{not} the way to compute the matrix
 ## exponential; see Moler and Van Loan, @cite{Nineteen Dubious Ways to
 ## Compute the Exponential of a Matrix}, SIAM Review, 1978.  This routine
@@ -43,9 +43,9 @@
 ## Pad\'e
 ## @end tex
 ## @end iftex
-## @ifinfo
+## @ifnottex
 ## Pade'
-## @end ifinfo
+## @end ifnottex
 ## approximation method with three step preconditioning (SIAM Journal on
 ## Numerical Analysis, 1977).  Diagonal
 ## @iftex
@@ -53,32 +53,32 @@
 ## Pad\'e
 ## @end tex
 ## @end iftex
-## @ifinfo
+## @ifnottex
 ## Pade'
-## @end ifinfo
+## @end ifnottex
 ##  approximations are rational polynomials of matrices
 ## @iftex
 ## @tex
 ## $D_q(a)^{-1}N_q(a)$
 ## @end tex
 ## @end iftex
-## @ifinfo
+## @ifnottex
 ## 
 ## @example
 ##      -1
 ## D (a)   N (a)
 ## @end example
 ## 
-## @end ifinfo
+## @end ifnottex
 ##  whose Taylor series matches the first
 ## @iftex
 ## @tex
 ## $2 q + 1 $
 ## @end tex
 ## @end iftex
-## @ifinfo
+## @ifnottex
 ## @code{2q+1}
-## @end ifinfo
+## @end ifnottex
 ## terms of the Taylor series above; direct evaluation of the Taylor series
 ## (with the same preconditioning steps) may be desirable in lieu of the
 ## @iftex
@@ -86,18 +86,18 @@
 ## Pad\'e
 ## @end tex
 ## @end iftex
-## @ifinfo
+## @ifnottex
 ## Pade'
-## @end ifinfo
+## @end ifnottex
 ## approximation when
 ## @iftex
 ## @tex
 ## $D_q(a)$
 ## @end tex
 ## @end iftex
-## @ifinfo
+## @ifnottex
 ## @code{Dq(a)}
-## @end ifinfo
+## @end ifnottex
 ## is ill-conditioned.
 ## @end deftypefn
 

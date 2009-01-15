@@ -25,11 +25,11 @@
 ## $$ c(x) = c_1 x^n + \ldots + c_n x + c_{n+1} $$
 ## @end tex
 ## @end iftex
-## @ifinfo
+## @ifnottex
 ## @example
 ##    c(x) = c(1) * x^n + ... + c(n) x + c(n+1)
 ## @end example
-## @end ifinfo
+## @end ifnottex
 ##  and return it as a string or write it to the screen (if
 ##  @var{nargout} is zero).
 ##  @var{x} defaults to the string @code{"s"}.

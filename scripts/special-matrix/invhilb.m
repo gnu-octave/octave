@@ -35,7 +35,7 @@
 ##               \left( \matrix{ n \cr k } \right)
 ##$$
 ## @end tex
-## @ifinfo
+## @ifnottex
 ## @example
 ##
 ##             (i+j)         /n+i-1\  /n+j-1\   /i+j-2\ 2
@@ -51,7 +51,7 @@
 ##     p(k) = -1  (       ) (   )
 ##                 \ k-1 /   \k/
 ## @end example
-## @end ifinfo
+## @end ifnottex
 ##
 ## The validity of this formula can easily be checked by expanding 
 ## the binomial coefficients in both formulas as factorials.  It can 

@@ -80,11 +80,11 @@ gcd ([15, 9], [20 18])\n\
 Optional return arguments @var{v1}, etc, contain integer vectors such\n\
 that,\n\
 \n\
-@ifinfo\n\
+@ifnottex\n\
 @example\n\
 @var{g} = @var{v1} .* @var{a1} + @var{v2} .* @var{a2} + @dots{}\n\
 @end example\n\
-@end ifinfo\n\
+@end ifnottex\n\
 @iftex\n\
 @tex\n\
 $g = v_1 a_1 + v_2 a_2 + \\cdots$\n\

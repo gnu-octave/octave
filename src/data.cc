@@ -3668,9 +3668,9 @@ Return a matrix or N-dimensional array whose elements are all NaN\n\
 $0/0$, or $\\infty - \\infty$,\n\
 @end tex\n\
 @end iftex\n\
-@ifinfo\n\
+@ifnottex\n\
 0/0, or @samp{Inf - Inf},\n\
-@end ifinfo\n\
+@end ifnottex\n\
 or any operation with a NaN.\n\
 \n\
 Note that NaN always compares not equal to NaN.  This behavior is\n\
@@ -3719,18 +3719,18 @@ to the base of natural logarithms.  The constant\n\
  $e$\n\
 @end tex\n\
 @end iftex\n\
-@ifinfo\n\
+@ifnottex\n\
  @var{e}\n\
-@end ifinfo\n\
+@end ifnottex\n\
  satisfies the equation\n\
 @iftex\n\
 @tex\n\
  $\\log (e) = 1$.\n\
 @end tex\n\
 @end iftex\n\
-@ifinfo\n\
+@ifnottex\n\
  @code{log} (@var{e}) = 1.\n\
-@end ifinfo\n\
+@end ifnottex\n\
 @end deftypefn")
 {
 #if defined (M_E)
@@ -3754,18 +3754,18 @@ relative spacing between any two adjacent numbers in the machine's\n\
 floating point system.  This number is obviously system-dependent.  On\n\
 machines that support 64-bit IEEE floating point arithmetic, @code{eps}\n\
 is approximately\n\
-@ifinfo\n\
+@ifnottex\n\
  2.2204e-16.\n\
-@end ifinfo\n\
+@end ifnottex\n\
 @iftex\n\
 @tex\n\
  $2.2204\\times10^{-16}$.\n\
 @end tex\n\
 @end iftex\n\
 for double precision and\n\
-@ifinfo\n\
+@ifnottex\n\
  1.1921e-07.\n\
-@end ifinfo\n\
+@end ifnottex\n\
 @iftex\n\
 @tex\n\
  $1.1921\\times10^{-7}$.\n\
@@ -3891,9 +3891,9 @@ Return a matrix or N-dimensional array whose elements are all equal\n\
 to the largest floating point number that is representable.  The actual\n\
 value is system-dependent.  On machines that support 64-bit IEEE\n\
 floating point arithmetic, @code{realmax} is approximately\n\
-@ifinfo\n\
+@ifnottex\n\
  1.7977e+308\n\
-@end ifinfo\n\
+@end ifnottex\n\
 @iftex\n\
 @tex\n\
  $1.7977\\times10^{308}$.\n\
@@ -3915,9 +3915,9 @@ Return a matrix or N-dimensional array whose elements are all equal\n\
 to the smallest normalized floating point number that is representable.\n\
 The actual value is system-dependent.  On machines that support\n\
 64-bit IEEE floating point arithmetic, @code{realmin} is approximately\n\
-@ifinfo\n\
+@ifnottex\n\
  2.2251e-308\n\
-@end ifinfo\n\
+@end ifnottex\n\
 @iftex\n\
 @tex\n\
  $2.2251\\times10^{-308}$.\n\
@@ -3942,9 +3942,9 @@ to the pure imaginary unit, defined as\n\
   $\\sqrt{-1}$.\n\
 @end tex\n\
 @end iftex\n\
-@ifinfo\n\
+@ifnottex\n\
   @code{sqrt (-1)}.\n\
-@end ifinfo\n\
+@end ifnottex\n\
 Since I (also i, J, and j) is a function, you can use the name(s) for\n\
 other purposes.\n\
 @end deftypefn")

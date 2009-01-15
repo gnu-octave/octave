@@ -28,12 +28,12 @@
 ## where $\bar{x}$ is the mean value of $x$.
 ## @end tex
 ## @end iftex
-## @ifinfo
+## @ifnottex
 ##
 ## @example
 ## kurtosis (x) = N^(-1) std(x)^(-4) sum ((x - mean(x)).^4) - 3
 ## @end example
-## @end ifinfo
+## @end ifnottex
 ##
 ## @noindent
 ## of @var{x}.  If @var{x} is a matrix, return the kurtosis over the

@@ -38,13 +38,13 @@
 ## $$ \tau = {1 \over n(n-1)} \sum_{i,j} {\rm sign}(q_i-q_j) {\rm sign}(r_i-r_j) $$
 ## @end tex
 ## @end iftex
-## @ifinfo
+## @ifnottex
 ## @example
 ##          1    
 ## tau = -------   SUM sign (q(i) - q(j)) * sign (r(i) - r(j))
 ##       n (n-1)   i,j
 ## @end example
-## @end ifinfo
+## @end ifnottex
 ##
 ## @noindent
 ## in which the
@@ -53,9 +53,9 @@
 ## $q_i$ and $r_i$
 ## @end tex
 ## @end iftex
-## @ifinfo
+## @ifnottex
 ## @var{q}(@var{i}) and @var{r}(@var{i})
-## @end ifinfo
+## @end ifnottex
 ##  are the ranks of
 ## @var{x} and @var{y}, respectively.
 ##

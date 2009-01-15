@@ -40,18 +40,18 @@
 ## $$[s_1, s_2, \cdots, s_k, n]$$
 ## @end tex
 ## @end iftex
-## @ifinfo
+## @ifnottex
 ## @code{[@var{s1}, @var{s2}, @dots{}, @var{sk}, @var{n}]}
-## @end ifinfo
+## @end ifnottex
 ## or
 ## @iftex
 ## @tex
 ## $$[s_1, s_2, \cdots, s_k, n + 2]$$.
 ## @end tex
 ## @end iftex
-## @ifinfo
+## @ifnottex
 ## @code{[@var{s1}, @var{s2}, @dots{}, @var{sk}, @var{n} + 2]}.
-## @end ifinfo
+## @end ifnottex
 ## The array is then reshaped internally to a matrix where to leading
 ## dimension is given by 
 ## @iftex
@@ -59,9 +59,9 @@
 ## $$s_1 s_2 \cdots s_k$$
 ## @end tex
 ## @end iftex
-## @ifinfo
+## @ifnottex
 ## @code{@var{s1} * @var{s2} * @dots{} * @var{sk}}
-## @end ifinfo
+## @end ifnottex
 ## and each row this matrix is then treated separately. Note that this
 ## is exactly the opposite treatment than @code{interp1} and is done
 ## for compatibility.

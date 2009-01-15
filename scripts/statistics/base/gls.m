@@ -26,10 +26,10 @@
 ## with $\bar{e} = 0$ and cov(vec($e$)) = $(s^2)o$,
 ## @end tex
 ## @end iftex
-## @ifinfo
+## @ifnottex
 ## @math{y = x b + e} with @math{mean (e) = 0} and
 ## @math{cov (vec (e)) = (s^2) o},
-## @end ifinfo
+## @end ifnottex
 ##  where
 ## @iftex
 ## @tex
@@ -38,12 +38,12 @@
 ## tp$ matrix.
 ## @end tex
 ## @end iftex
-## @ifinfo
+## @ifnottex
 ## @math{y} is a @math{t} by @math{p} matrix, @math{x} is a @math{t} by
 ## @math{k} matrix, @math{b} is a @math{k} by @math{p} matrix, @math{e}
 ## is a @math{t} by @math{p} matrix, and @math{o} is a @math{t p} by
 ## @math{t p} matrix.
-## @end ifinfo
+## @end ifnottex
 ##
 ## @noindent
 ## Each row of @var{y} and @var{x} is an observation and each column a

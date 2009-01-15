@@ -32,7 +32,7 @@
 ## $$
 ## @end tex
 ## @end iftex
-## @ifinfo
+## @ifnottex
 ##
 ## @example
 ## @group
@@ -43,7 +43,7 @@
 ##  \   /
 ## @end group
 ## @end example
-## @end ifinfo
+## @end ifnottex
 ##
 ## If @var{n} is a vector generate all combinations of the elements
 ## of @var{n}, taken @var{k} at a time, one row per combination. The 

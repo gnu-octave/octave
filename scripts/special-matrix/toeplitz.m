@@ -37,7 +37,7 @@
 ## $$
 ## @end tex
 ## @end iftex
-## @ifinfo
+## @ifnottex
 ##
 ## @example
 ## @group
@@ -50,7 +50,7 @@
 ## c(n) c(n-1) c(n-2) ...  c(0)
 ## @end group
 ## @end example
-## @end ifinfo
+## @end ifnottex
 ## @seealso{hankel, vander, sylvester_matrix, hilb, invhilb}
 ## @end deftypefn
 

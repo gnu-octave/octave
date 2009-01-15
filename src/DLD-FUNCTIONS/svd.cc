@@ -50,12 +50,12 @@ $$\n\
 $$\n\
 @end tex\n\
 @end iftex\n\
-@ifinfo\n\
+@ifnottex\n\
 \n\
 @example\n\
 A = U*S*V'\n\
 @end example\n\
-@end ifinfo\n\
+@end ifnottex\n\
 \n\
 The function @code{svd} normally returns the vector of singular values.\n\
 If asked for three return values, it computes\n\
@@ -64,9 +64,9 @@ If asked for three return values, it computes\n\
 $U$, $S$, and $V$.\n\
 @end tex\n\
 @end iftex\n\
-@ifinfo\n\
+@ifnottex\n\
 U, S, and V.\n\
-@end ifinfo\n\
+@end ifnottex\n\
 For example,\n\
 \n\
 @example\n\

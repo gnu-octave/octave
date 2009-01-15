@@ -34,7 +34,7 @@
 ## $$
 ## @end tex
 ## @end iftex
-## @ifinfo
+## @ifnottex
 ##
 ## @example
 ## @group
@@ -42,7 +42,7 @@
 ## H(i,j) = r(i+j-m),  otherwise
 ## @end group
 ## @end example
-## @end ifinfo
+## @end ifnottex
 ## @seealso{vander, sylvester_matrix, hilb, invhilb, toeplitz}
 ## @end deftypefn
 

@@ -47,11 +47,11 @@ $$\n\
 with $x$ and $y$ scalars.\n\
 @end tex\n\
 @end iftex\n\
-@ifinfo\n\
+@ifnottex\n\
 Return a 2 by 2 orthogonal matrix\n\
 @code{@var{g} = [@var{c} @var{s}; -@var{s}' @var{c}]} such that\n\
 @code{@var{g} [@var{x}; @var{y}] = [*; 0]} with @var{x} and @var{y} scalars.\n\
-@end ifinfo\n\
+@end ifnottex\n\
 \n\
 For example,\n\
 \n\

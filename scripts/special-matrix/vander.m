@@ -32,7 +32,7 @@
 ## $$
 ## @end tex
 ## @end iftex
-## @ifinfo
+## @ifnottex
 ##
 ## @example
 ## @group
@@ -44,7 +44,7 @@
 ## c(n)^(n-1) ... c(n)^2  c(n)  1
 ## @end group
 ## @end example
-## @end ifinfo
+## @end ifnottex
 ## @seealso{hankel, sylvester_matrix, hilb, invhilb, toeplitz}
 ## @end deftypefn
 

@@ -26,18 +26,18 @@
 ##  $2^x$
 ## @end tex
 ## @end iftex
-## @ifinfo
+## @ifnottex
 ##  2 .^ x
-## @end ifinfo
+## @end ifnottex
 ## for each element of @var{x}.  With two arguments, returns
 ## @iftex
 ## @tex
 ##  $f \cdot 2^e$.
 ## @end tex
 ## @end iftex
-## @ifinfo
+## @ifnottex
 ##  f .* (2 .^ e).
-## @end ifinfo
+## @end ifnottex
 ## @seealso{nextpow2}
 ## @end deftypefn
 

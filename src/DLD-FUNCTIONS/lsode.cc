@@ -171,7 +171,7 @@ $$ {dx \\over dt} = f (x, t) $$\n\
 with\n\
 $$ x(t_0) = x_0 $$\n\
 @end tex\n\
-@ifinfo\n\
+@ifnottex\n\
 \n\
 @example\n\
 dx\n\
@@ -185,7 +185,7 @@ with\n\
 x(t_0) = x_0\n\
 @end example\n\
 \n\
-@end ifinfo\n\
+@end ifnottex\n\
 The solution is returned in the matrix @var{x}, with each row\n\
 corresponding to an element of the vector @var{t}.  The first element\n\
 of @var{t} should be @math{t_0} and should correspond to the initial\n\
@@ -230,7 +230,7 @@ $$ J = {\\partial f_i \\over \\partial x_j} = \\left[\\matrix{\n\
   & \\cdots\n\
   & {\\partial f_3 \\over \\partial x_N} \\cr}\\right]$$\n\
 @end tex\n\
-@ifinfo\n\
+@ifnottex\n\
 \n\
 @example\n\
              | df_1  df_1       df_1 |\n\
@@ -250,7 +250,7 @@ jac = ---- = |                       |\n\
              | dx_1  dx_2       dx_N |\n\
 @end example\n\
 \n\
-@end ifinfo\n\
+@end ifnottex\n\
 \n\
 The second and third arguments specify the initial state of the system,\n\
 @math{x_0}, and the initial value of the independent variable @math{t_0}.\n\

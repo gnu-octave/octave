@@ -25,9 +25,9 @@
 ## $ \sin (\pi x)/(\pi x)$.
 ## @end tex
 ## @end iftex
-## @ifinfo
+## @ifnottex
 ##  sin(pi*x)/(pi*x).
-## @end ifinfo
+## @end ifnottex
 ## @end deftypefn
 
 ## Author: jwe ???

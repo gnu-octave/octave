@@ -26,9 +26,9 @@
 ## $10^{base}$ to $10^{limit}$.
 ## @end tex
 ## @end iftex
-## @ifinfo
+## @ifnottex
 ## 10^base to 10^limit.
-## @end ifinfo
+## @end ifnottex
 ##
 ## If @var{limit} is equal to
 ## @iftex
@@ -36,27 +36,27 @@
 ## $\pi$,
 ## @end tex
 ## @end iftex
-## @ifinfo
+## @ifnottex
 ## pi,
-## @end ifinfo
+## @end ifnottex
 ## the points are between
 ## @iftex
 ## @tex
 ## $10^{base}$ and $\pi$,
 ## @end tex
 ## @end iftex
-## @ifinfo
+## @ifnottex
 ## 10^base and pi,
-## @end ifinfo
+## @end ifnottex
 ## @emph{not}
 ## @iftex
 ## @tex
 ## $10^{base}$ and $10^{\pi}$,
 ## @end tex
 ## @end iftex
-## @ifinfo
+## @ifnottex
 ## 10^base and 10^pi,
-## @end ifinfo
+## @end ifnottex
 ## in order to  be compatible with the corresponding @sc{Matlab}
 ## function.
 ##

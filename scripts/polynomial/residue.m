@@ -31,14 +31,14 @@
 ## $$
 ## @end tex
 ## @end iftex
-## @ifinfo
+## @ifnottex
 ##
 ## @example
 ##  B(s)    M       r(m)         N
 ##  ---- = SUM -------------  + SUM k(i)*s^(N-i)
 ##  A(s)   m=1 (s-p(m))^e(m)    i=1
 ## @end example
-## @end ifinfo
+## @end ifnottex
 ##
 ## @noindent
 ## where @math{M} is the number of poles (the length of the @var{r},
@@ -69,7 +69,7 @@
 ## $$
 ## @end tex
 ## @end iftex
-## @ifinfo
+## @ifnottex
 ##
 ## @example
 ##         s^2 + s + 1       -2        7        3
@@ -77,7 +77,7 @@
 ##    s^3 - 5s^2 + 8s - 4   (s-2)   (s-2)^2   (s-1)
 ## @end example
 ##
-## @end ifinfo
+## @end ifnottex
 ##
 ## @deftypefnx {Function File} {[@var{b}, @var{a}] =} residue (@var{r}, @var{p}, @var{k})
 ## @deftypefnx {Function File} {[@var{b}, @var{a}] =} residue (@var{r}, @var{p}, @var{k}, @var{e})
@@ -128,14 +128,14 @@
 ## $$
 ## @end tex
 ## @end iftex
-## @ifinfo
+## @ifnottex
 ##
 ## @example
 ##     -2        7        3         s^4 - 5s^3 + 9s^2 - 3s + 1
 ##    ----- + ------- + ----- + s = --------------------------
 ##    (s-2)   (s-2)^2   (s-1)          s^3 - 5s^2 + 8s - 4
 ## @end example
-## @end ifinfo
+## @end ifnottex
 ## @seealso{poly, roots, conv, deconv, mpoles, polyval, polyderiv, polyinteg}
 ## @end deftypefn
 

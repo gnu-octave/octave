@@ -26,9 +26,9 @@
 ##  $x_2 - x_1, \ldots{}, x_n - x_{n-1}$.
 ## @end tex
 ## @end iftex
-## @ifinfo
+## @ifnottex
 ##  @var{x}(2) - @var{x}(1), @dots{}, @var{x}(n) - @var{x}(n-1).
-## @end ifinfo
+## @end ifnottex
 ##
 ## If @var{x} is a matrix, @code{diff (@var{x})} is the matrix of column
 ## differences along the first non-singleton dimension.

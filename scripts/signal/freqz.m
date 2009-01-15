@@ -23,9 +23,9 @@
 ## whose numerator and denominator coefficients are @var{b} and @var{a},
 ## respectively.  The response is evaluated at @var{n} angular frequencies
 ## between 0 and
-## @ifinfo
+## @ifnottex
 ##  2*pi.
-## @end ifinfo
+## @end ifnottex
 ## @iftex
 ## @tex
 ##  $2\pi$.
@@ -37,9 +37,9 @@
 ##
 ## If the fourth argument is omitted, the response is evaluated at
 ## frequencies between 0 and
-## @ifinfo
+## @ifnottex
 ##  pi.
-## @end ifinfo
+## @end ifnottex
 ## @iftex
 ## @tex
 ##  $\pi$.

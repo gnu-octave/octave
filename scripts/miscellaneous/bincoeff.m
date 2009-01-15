@@ -27,7 +27,7 @@
 ## $$
 ## @end tex
 ## @end iftex
-## @ifinfo
+## @ifnottex
 ##
 ## @example
 ## @group
@@ -38,7 +38,7 @@
 ##  \   /
 ## @end group
 ## @end example
-## @end ifinfo
+## @end ifnottex
 ##
 ## For example,
 ##

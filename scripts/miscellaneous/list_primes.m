@@ -28,9 +28,9 @@
 ##  {\TeX}book.
 ## @end tex
 ## @end iftex
-## @ifinfo
+## @ifnottex
 ##  TeXbook.
-## @end ifinfo
+## @end ifnottex
 ## @end deftypefn
 
 ## Author: jwe

@@ -25,9 +25,9 @@
 ## $i,\,j$
 ## @end tex
 ## @end iftex
-## @ifinfo
+## @ifnottex
 ## i, j
-## @end ifinfo
+## @end ifnottex
 ## element of a Hilbert matrix is defined as
 ## @iftex
 ## @tex
@@ -36,12 +36,12 @@
 ## $$
 ## @end tex
 ## @end iftex
-## @ifinfo
+## @ifnottex
 ##
 ## @example
 ## H (i, j) = 1 / (i + j - 1)
 ## @end example
-## @end ifinfo
+## @end ifnottex
 ## @seealso{hankel, vander, sylvester_matrix, invhilb, toeplitz}
 ## @end deftypefn
 

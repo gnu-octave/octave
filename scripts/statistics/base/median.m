@@ -31,7 +31,7 @@
 ## $$
 ## @end tex
 ## @end iftex
-## @ifinfo
+## @ifnottex
 ##
 ## @example
 ## @group
@@ -40,7 +40,7 @@
 ##             (x(N/2) + x((N/2)+1))/2,  N even
 ## @end group
 ## @end example
-## @end ifinfo
+## @end ifnottex
 ## If @var{x} is a matrix, compute the median value for each
 ## column and return them in a row vector. If the optional @var{dim}
 ## argument is given, operate along this dimension.

@@ -43,7 +43,7 @@
 ## \vskip 10pt
 ## @end tex
 ## @end iftex
-## @ifinfo
+## @ifnottex
 ## @display
 ## @example
 ## @group
@@ -56,7 +56,7 @@
 ## @end group
 ## @end example
 ## @end display
-## @end ifinfo
+## @end ifnottex
 ## @seealso{plot}
 ## @end deftypefn
 

@@ -27,10 +27,10 @@
 ## $\bar{e} = 0$, and cov(vec($e$)) = kron ($s, I$)
 ## @end tex
 ## @end iftex
-## @ifinfo
+## @ifnottex
 ## @math{y = x b + e} with
 ## @math{mean (e) = 0} and @math{cov (vec (e)) = kron (s, I)}.
-## @end ifinfo
+## @end ifnottex
 ##  where
 ## @iftex
 ## @tex
@@ -38,11 +38,11 @@
 ## $b$ is a $k \times p$ matrix, and $e$ is a $t \times p$ matrix.
 ## @end tex
 ## @end iftex
-## @ifinfo
+## @ifnottex
 ## @math{y} is a @math{t} by @math{p} matrix, @math{x} is a @math{t} by
 ## @math{k} matrix, @math{b} is a @math{k} by @math{p} matrix, and
 ## @math{e} is a @math{t} by @math{p} matrix.
-## @end ifinfo
+## @end ifnottex
 ##
 ## Each row of @var{y} and @var{x} is an observation and each column a
 ## variable.

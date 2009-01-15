@@ -3,7 +3,7 @@
 
 Copyright (C) 1993, 1994, 1995, 1996, 1997, 2000, 2002, 2003, 2004,
               2005, 2006, 2007 John W. Eaton 
-Copyright (C) 2008 Jaroslav Hajek <highegg@gmail.com>
+Copyright (C) 2008, 2009 Jaroslav Hajek <highegg@gmail.com>
 
 This file is part of Octave.
 
@@ -47,7 +47,8 @@ along with Octave; see the file COPYING.  If not, see
 
 template <class T>
 Array<T>::Array (const Array<T>& a, const dim_vector& dv)
-  : rep (a.rep), dimensions (dv)
+  : rep (a.rep), dimensions (dv), 
+    slice_data (a.slice_data), slice_len (a.slice_len)
 {
   rep->count++;
 
@@ -76,6 +77,8 @@ Array<T>::operator = (const Array<T>& a)
       rep->count++;
 
       dimensions = a.dimensions;
+      slice_data = a.slice_data;
+      slice_len = a.slice_len;
     }
 
   return *this;
@@ -680,6 +683,11 @@ public:
   template <class T>
   void fill (const T& val, T *dest) const { do_fill (val, dest, top); }
 
+  bool is_cont_range (octave_idx_type& l, 
+                            octave_idx_type& u) const
+    {
+      return top == 0 && idx[0].is_cont_range (dim[0], l, u);
+    }
 };
 
 // Helper class for multi-d recursive resizing
@@ -758,9 +766,7 @@ Array<T>::index (const idx_vector& i) const
   if (i.is_colon ())
     {
       // A(:) produces a shallow copy as a column vector.
-      retval.dimensions = dim_vector (n, 1);
-      rep->count++;
-      retval.rep = rep;
+      retval = Array<T> (*this, dim_vector (n, 1));
     }
   else if (i.extent (n) != n)
     {
@@ -797,12 +803,19 @@ Array<T>::index (const idx_vector& i) const
             rd = dim_vector (1, il);
         }
 
-      // Don't use resize here to avoid useless initialization for POD
-      // types.
-      retval = Array<T> (rd);
+      octave_idx_type l, u;
+      if (il != 0 && i.is_cont_range (n, l, u))
+        // If suitable, produce a shallow slice.
+        retval = Array<T> (*this, rd, l, u);
+      else
+        {
+          // Don't use resize here to avoid useless initialization for POD
+          // types.
+          retval = Array<T> (rd);
 
-      if (il != 0)
-        i.index (data (), n, retval.fortran_vec ());
+          if (il != 0)
+            i.index (data (), n, retval.fortran_vec ());
+        }
     }
 
   return retval;
@@ -830,18 +843,30 @@ Array<T>::index (const idx_vector& i, const idx_vector& j) const
     {
       octave_idx_type n = numel (), il = i.length (r), jl = j.length (c);
 
-      // Don't use resize here to avoid useless initialization for POD types.
-      retval = Array<T> (dim_vector (il, jl));
-
       idx_vector ii (i);
 
-      const T* src = data ();
-      T *dest = retval.fortran_vec ();
-
       if (ii.maybe_reduce (r, j, c))
-        ii.index (src, n, dest);
+        {
+          octave_idx_type l, u;
+          if (ii.length () > 0 && ii.is_cont_range (n, l, u))
+            // If suitable, produce a shallow slice.
+            retval = Array<T> (*this, dim_vector (il, jl), l, u);
+          else
+            {
+              // Don't use resize here to avoid useless initialization for POD types.
+              retval = Array<T> (dim_vector (il, jl));
+
+              ii.index (data (), n, retval.fortran_vec ());
+            }
+        }
       else
         {
+          // Don't use resize here to avoid useless initialization for POD types.
+          retval = Array<T> (dim_vector (il, jl));
+
+          const T* src = data ();
+          T *dest = retval.fortran_vec ();
+
           for (octave_idx_type k = 0; k < jl; k++)
             dest += i.index (src + r * j.xelem (k), r, dest);
         }
@@ -898,14 +923,21 @@ Array<T>::index (const Array<idx_vector>& ia) const
           for (int i = 0; i < ial; i++) rdv(i) = ia(i).length (dv(i));
           rdv.chop_trailing_singletons ();
 
-          // Don't use resize here to avoid useless initialization for POD types.
-          retval = Array<T> (rdv);
-
           // Prepare for recursive indexing
           rec_index_helper rh (dv, ia);
 
-          // Do it.
-          rh.index (data (), retval.fortran_vec ());
+          octave_idx_type l, u;
+          if (rh.is_cont_range (l, u))
+            // If suitable, produce a shallow slice.
+            retval = Array<T> (*this, rdv, l, u);
+          else
+            {
+              // Don't use resize here to avoid useless initialization for POD types.
+              retval = Array<T> (rdv);
+
+              // Do it.
+              rh.index (data (), retval.fortran_vec ());
+            }
         }
     }
 
@@ -1842,7 +1874,7 @@ Array<T>::fortran_vec (void)
 {
   make_unique ();
 
-  return rep->data;
+  return slice_data;
 }
 
 template <class T>
@@ -2174,10 +2206,12 @@ template <class T>
 void
 Array<T>::print_info (std::ostream& os, const std::string& prefix) const
 {
-  os << prefix << "rep address: " << rep << "\n"
-     << prefix << "rep->len:    " << rep->len << "\n"
-     << prefix << "rep->data:   " << static_cast<void *> (rep->data) << "\n"
-     << prefix << "rep->count:  " << rep->count << "\n";
+  os << prefix << "rep address: " << rep << '\n'
+     << prefix << "rep->len:    " << rep->len << '\n'
+     << prefix << "rep->data:   " << static_cast<void *> (rep->data) << '\n'
+     << prefix << "rep->count:  " << rep->count << '\n'
+     << prefix << "slice_data:  " << static_cast<void *> (slice_data) << '\n'
+     << prefix << "slice_len:   " << slice_len << '\n';
 
   // 2D info:
   //

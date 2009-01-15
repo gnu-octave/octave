@@ -1170,7 +1170,7 @@ octave_value::assign (assign_op op, const octave_value& rhs)
 {
   if (op == op_asn_eq)
     // Regularize a null matrix if stored into a variable.
-    operator = (rhs.non_null_value ());
+    operator = (rhs.storable_value ());
   else
     {
       // FIXME -- only do the following stuff if we can't find
@@ -1552,18 +1552,23 @@ octave_value::float_complex_vector_value (bool force_string_conv,
                                              type_name (), "complex vector"));
 }
 
+// FIXME: This is a good place for pre-storage hooks, but the functions should
+// probably be named differently. These functions will be called
 
 octave_value 
-octave_value::non_null_value (void) const
+octave_value::storable_value (void) const
 {
+  octave_value retval = *this;
   if (is_null_value ())
-    return octave_value (rep->empty_clone ());
+    retval = octave_value (rep->empty_clone ());
   else
-    return *this;
+    retval.maybe_economize ();
+
+  return retval;
 }
 
 void 
-octave_value::make_non_null_value (void) 
+octave_value::make_storable_value (void) 
 {
   if (is_null_value ())
     {
@@ -1572,6 +1577,8 @@ octave_value::make_non_null_value (void)
         delete rep;
       rep = rc;
     }
+  else
+    maybe_economize ();
 }
 
 int

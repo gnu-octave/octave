@@ -3,7 +3,7 @@
 
 Copyright (C) 1993, 1994, 1995, 1996, 1997, 2000, 2001, 2002, 2003,
               2004, 2005, 2006, 2007 John W. Eaton
-Copyright (C) 2008 Jaroslav Hajek <highegg@gmail.com>
+Copyright (C) 2008, 2009 Jaroslav Hajek <highegg@gmail.com>
 
 This file is part of Octave.
 
@@ -30,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <cstddef>
 
 #include <iostream>
+#include <algorithm>
 
 #include "dim-vector.h"
 #include "idx-vector.h"
@@ -58,7 +59,12 @@ protected:
     octave_idx_type len;
     int count;
 
-    ArrayRep (T *d, octave_idx_type l) : data (d), len (l), count (1) { }
+    ArrayRep (T *d, octave_idx_type l, bool copy = false) 
+      : data (copy ? new T [l] : d), len (l), count (1) 
+        { 
+          if (copy)
+            std::copy (d, d + l, data);
+        }
 
     ArrayRep (void) : data (0), len (0), count (1) { }
 
@@ -67,29 +73,18 @@ protected:
     explicit ArrayRep (octave_idx_type n, const T& val)
       : data (new T [n]), len (n), count (1)
       {
-	fill (val);
+        std::fill (data, data + n, val);
       }
 
     ArrayRep (const ArrayRep& a)
       : data (new T [a.len]), len (a.len), count (1)
       {
-        for (octave_idx_type i = 0; i < len; i++)
-	  data[i] = a.data[i];
+        std::copy (a.data, a.data + a.len, data);
       }
  
     ~ArrayRep (void) { delete [] data; }
 
     octave_idx_type length (void) const { return len; }
-
-    void fill (const T& val)
-      {
-	for (octave_idx_type i = 0; i < len; i++)
-	  data[i] = val;
-      }
-
-    T& elem (octave_idx_type n) { return data[n]; }
-
-    T elem (octave_idx_type n) const { return data[n]; }
 
   private:
 
@@ -110,19 +105,29 @@ public:
       if (rep->count > 1)
 	{
 	  --rep->count;
-	  rep = new ArrayRep (*rep);
+	  rep = new ArrayRep (slice_data, slice_len, true);
+          slice_data = rep->data;
 	}
-    }
+      else if (slice_len != rep->len)
+        {
+          // Possibly economize here.
+          ArrayRep *new_rep = new ArrayRep (slice_data, slice_len, true);
+          delete rep;
+          rep = new_rep;
+          slice_data = rep->data;
+        }
+      }
 
   void make_unique (const T& val)
     {
       if (rep->count > 1)
 	{
 	  --rep->count;
-	  rep = new ArrayRep (rep->length (), val);
+	  rep = new ArrayRep (slice_len, val);
+          slice_data = rep->data;
 	}
       else
-	rep->fill (val);
+        std::fill (slice_data, slice_data + slice_len, val);
     }
 
   typedef T element_type;
@@ -136,12 +141,33 @@ public:
 
 protected:
 
+  T* slice_data;
+  octave_idx_type slice_len;
+
   Array (T *d, octave_idx_type n)
-    : rep (new typename Array<T>::ArrayRep (d, n)), dimensions (n) { }
+    : rep (new typename Array<T>::ArrayRep (d, n)), dimensions (n) 
+    { 
+      slice_data = rep->data;
+      slice_len = rep->len;
+    }
 
   Array (T *d, const dim_vector& dv)
     : rep (new typename Array<T>::ArrayRep (d, get_size (dv))),
-      dimensions (dv) { }
+      dimensions (dv) 
+    { 
+      slice_data = rep->data;
+      slice_len = rep->len;
+    }
+
+  // slice constructor
+  Array (const Array<T>& a, const dim_vector& dv,
+         octave_idx_type l, octave_idx_type u)
+    : rep(a.rep), dimensions (dv)
+    {
+      rep->count++;
+      slice_data = a.slice_data + l;
+      slice_len = std::min (u, a.slice_len) - l;
+    }
 
 private:
 
@@ -168,14 +194,25 @@ private:
 public:
 
   Array (void)
-    : rep (nil_rep ()), dimensions () { rep->count++; }
+    : rep (nil_rep ()), dimensions () 
+    { 
+      rep->count++; 
+      slice_data = rep->data;
+      slice_len = rep->len;
+    }
 
   explicit Array (octave_idx_type n)
-    : rep (new typename Array<T>::ArrayRep (n)), dimensions (n) { }
+    : rep (new typename Array<T>::ArrayRep (n)), dimensions (n) 
+    { 
+      slice_data = rep->data;
+      slice_len = rep->len;
+    }
 
   explicit Array (octave_idx_type n, const T& val)
     : rep (new typename Array<T>::ArrayRep (n)), dimensions (n)
     {
+      slice_data = rep->data;
+      slice_len = rep->len;
       fill (val);
     }
 
@@ -185,6 +222,8 @@ public:
     : rep (new typename Array<T>::ArrayRep (coerce (a.data (), a.length ()), a.length ())),
       dimensions (a.dimensions)
     {
+      slice_data = rep->data;
+      slice_len = rep->len;
     }
 
   // No type conversion case.
@@ -192,18 +231,26 @@ public:
     : rep (a.rep), dimensions (a.dimensions)
     {
       rep->count++;
+      slice_data = a.slice_data;
+      slice_len = a.slice_len;
     }
 
 public:
 
   Array (const dim_vector& dv)
     : rep (new typename Array<T>::ArrayRep (get_size (dv))),
-      dimensions (dv) { }
+      dimensions (dv) 
+    { 
+      slice_data = rep->data;
+      slice_len = rep->len;
+    }
 
   Array (const dim_vector& dv, const T& val)
     : rep (new typename Array<T>::ArrayRep (get_size (dv))),
       dimensions (dv)
     {
+      slice_data = rep->data;
+      slice_len = rep->len;
       fill (val);
     }
 
@@ -215,7 +262,7 @@ public:
 
   void fill (const T& val) { make_unique (val); }
 
-  octave_idx_type capacity (void) const { return rep->length (); }
+  octave_idx_type capacity (void) const { return slice_len; }
   octave_idx_type length (void) const { return capacity (); }
   octave_idx_type nelem (void) const { return capacity (); }
   octave_idx_type numel (void) const { return nelem (); }
@@ -258,8 +305,8 @@ public:
 
   // No checking, even for multiple references, ever.
 
-  T& xelem (octave_idx_type n) { return rep->elem (n); }
-  T xelem (octave_idx_type n) const { return rep->elem (n); }
+  T& xelem (octave_idx_type n) { return slice_data [n]; }
+  T xelem (octave_idx_type n) const { return slice_data [n]; }
 
   T& xelem (octave_idx_type i, octave_idx_type j) { return xelem (dim1()*j+i); }
   T xelem (octave_idx_type i, octave_idx_type j) const { return xelem (dim1()*j+i); }
@@ -279,7 +326,7 @@ public:
 
   T& checkelem (octave_idx_type n)
     {
-      if (n < 0 || n >= rep->length ())
+      if (n < 0 || n >= slice_len)
 	return range_error ("T& Array<T>::checkelem", n);
       else
 	{
@@ -341,7 +388,7 @@ public:
 
   T checkelem (octave_idx_type n) const
     {
-      if (n < 0 || n >= rep->length ())
+      if (n < 0 || n >= slice_len)
 	return range_error ("T Array<T>::checkelem", n);
       else
 	return xelem (n);
@@ -407,7 +454,7 @@ public:
   Array<T> transpose (void) const;
   Array<T> hermitian (T (*fcn) (const T&) = 0) const;
 
-  const T *data (void) const { return rep->data; }
+  const T *data (void) const { return slice_data; }
 
   const T *fortran_vec (void) const { return data (); }
 
@@ -512,6 +559,17 @@ public:
   Array<T>& insertN (const Array<T>& a, octave_idx_type r, octave_idx_type c);
 
   Array<T>& insert (const Array<T>& a, const Array<octave_idx_type>& idx);
+
+  void maybe_economize (void)
+    {
+      if (rep->count == 1 && slice_len != rep->len)
+        {
+          ArrayRep *new_rep = new ArrayRep (slice_data, slice_len, true);
+          delete rep;
+          rep = new_rep;
+          slice_data = rep->data;
+        }
+    }
 
   void print_info (std::ostream& os, const std::string& prefix) const;
 

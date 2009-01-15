@@ -270,7 +270,7 @@ octave_cell::subsasgn (const std::string& type,
 	      }
 	    else if (i.all_scalars () || do_index_op (i, true).numel () == 1)
               // Regularize a null matrix if stored into a cell.
-              octave_base_matrix<Cell>::assign (i, Cell (t_rhs.non_null_value ()));
+              octave_base_matrix<Cell>::assign (i, Cell (t_rhs.storable_value ()));
             else if (! error_state)
               error ("scalar indices required for {} in assignment.");
 

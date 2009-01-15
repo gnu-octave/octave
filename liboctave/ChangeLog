@@ -1,3 +1,17 @@
+2009-01-14  Jaroslav Hajek  <highegg@gmail.com>
+
+	* Array.cc, Array.h (all Array<T> constructors): Handle slice_data and
+	slice_len.
+	(Array<T>::Array<T> (const Array<T>&, const dim_vector&,
+	octave_idx_type, octave_idx_type)): New constructor.
+	(Array<T>::index): Use shallow copy when index reduces to a contiguous
+	range.
+	(Array<T>::make_unique): Rewrite.
+	(Array<T>::ArrayRep): Delete redundant methods.
+	(rec_index_helper::is_cont_range): New method.
+	(Array<T>::maybe_economize): New method.
+	* DiagArray2.cc (DiagArray2<T>::resize): Fix the mess.
+
 2008-01-15  Rafael Laboissiere  <rafael@debian.org>
 
 	* oct-md5.cc: Include <cstdio>.

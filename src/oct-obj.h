@@ -121,7 +121,7 @@ public:
 
   string_vector name_tags (void) const { return names; }
 
-  void normalize_null_values (void);
+  void make_storable_values (void);
 
 private:
 

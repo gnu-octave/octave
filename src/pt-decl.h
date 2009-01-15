@@ -66,7 +66,7 @@ public:
   bool lvalue_ok (void) { return id ? id->lvalue_ok () : false; }
 
   // Do not allow functions return null values
-  octave_value rvalue (void) { return id ? id->rvalue ().non_null_value () : octave_value (); }
+  octave_value rvalue (void) { return id ? id->rvalue ().storable_value () : octave_value (); }
 
   octave_value_list rvalue (int nargout)
   {

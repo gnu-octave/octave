@@ -412,7 +412,7 @@ octave_struct::subsasgn (const std::string& type,
 	      }
 	    else
               // Regularize a null matrix if stored into a struct component.
-	      map.assign (key, t_rhs.non_null_value ());
+	      map.assign (key, t_rhs.storable_value ());
 
 	    if (! error_state)
 	      {

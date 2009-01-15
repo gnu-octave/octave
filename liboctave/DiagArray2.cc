@@ -107,6 +107,7 @@ DiagArray2<T>::resize (octave_idx_type r, octave_idx_type c)
   if (r == dim1 () && c == dim2 ())
     return;
 
+  // FIXME: this is a mess. DiagArray2 really needs a rewrite.
   typename Array<T>::ArrayRep *old_rep = Array<T>::rep;
   const T *old_data = this->data ();
   octave_idx_type old_len = this->length ();
@@ -114,6 +115,8 @@ DiagArray2<T>::resize (octave_idx_type r, octave_idx_type c)
   octave_idx_type new_len = r < c ? r : c;
 
   Array<T>::rep = new typename Array<T>::ArrayRep (new_len);
+  Array<T>::slice_data = Array<T>::rep->data;
+  Array<T>::slice_len = Array<T>::rep->len;
 
   this->dimensions = dim_vector (r, c);
 

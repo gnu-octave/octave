@@ -236,11 +236,11 @@ octave_value_list::make_argv (const std::string& fcn_name) const
 }
 
 void
-octave_value_list::normalize_null_values (void)
+octave_value_list::make_storable_values (void)
 {
   octave_idx_type len = length ();
   for (octave_idx_type i = 0; i < len; i++)
-    data[i].make_non_null_value ();
+    data[i].make_storable_value ();
 }
 
 /*

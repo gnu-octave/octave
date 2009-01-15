@@ -1,3 +1,18 @@
+2009-01-14  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov.cc (octave_value::maybe_economize): New method.
+	(octave_value::non_null_value): rename to storable_value.
+	(octave_value::make_non_null_value): rename to make_storable_value.
+	* ov-base.h (octave_base_value::maybe_economize): New method.
+	* ov-base-mat.h (octave_base_mat::maybe_economize): New override.
+	* oct-obj.cc (octave_value_list::normalize_null_values):
+	Rename to make_storable_values, use make_storable_value.
+	* oct-obj.h: Dtto.
+	* ov-builtin.cc: non_null_value -> storable_value.
+	* ov-cell.cc: Dtto.
+	* ov-struct.cc: Dtto.
+	* pt-decl.h: Dtto.
+
 2009-01-15  Søren Hauberg  <hauberg@gmail.com>
 
 	* DLD-FUNCTIONS/__magick_read__.cc (encode_uint_image):

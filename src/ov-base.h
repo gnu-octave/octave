@@ -152,6 +152,8 @@ public:
 
   virtual octave_base_value *try_narrowing_conversion (void) { return 0; }
 
+  virtual void maybe_economize (void) { }
+
   virtual octave_value
   subsref (const std::string& type,
 	   const std::list<octave_value_list>& idx);

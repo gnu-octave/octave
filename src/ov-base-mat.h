@@ -74,6 +74,8 @@ public:
 
   octave_value full_value (void) const { return matrix; }
 
+  void maybe_economize (void) { matrix.maybe_economize (); }
+
   octave_value subsref (const std::string& type,
 			const std::list<octave_value_list>& idx);
 

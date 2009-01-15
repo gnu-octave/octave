@@ -23,8 +23,8 @@
 ## Return an appropriate error message string (or structure) if the
 ## number of outputs requested is invalid.
 ##
-## This is useful for checking to see that the number of arguments supplied
-## to a function is within an acceptable range.
+## This is useful for checking to see that the number of output
+## arguments supplied to a function is within an acceptable range.
 ## @seealso{nargchk, error, nargout, nargin}
 ## @end deftypefn
 

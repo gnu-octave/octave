@@ -1,3 +1,8 @@
+2009-01-15  Peter L. Søndergaard  <peter@sonderport.dk>
+
+	* general/nargoutchk.m: Doc fix.
+	* general/nargchk.m: Improve compatibility.  New tests.
+
 2008-01-15  Rafael Laboissiere  <rafael@debian.org>
 
 	* gethelp.cc: Include <cstdio>.

@@ -24,8 +24,10 @@ along with Octave; see the file COPYING.  If not, see
 #define __USE_STD_IOSTREAM
 #endif
 
-#include <string>
+#include <cstdio>
+
 #include <iostream>
+#include <string>
 
 static bool
 looks_like_octave_copyright (const std::string& s)

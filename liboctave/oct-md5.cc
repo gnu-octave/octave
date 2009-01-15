@@ -20,12 +20,14 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#include <string>
-#include <vector>
-
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
+
+#include <cstdio>
+
+#include <string>
+#include <vector>
 
 #include "lo-error.h"
 #include "oct-md5.h"

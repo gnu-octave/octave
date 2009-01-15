@@ -1,3 +1,7 @@
+2008-01-15  Rafael Laboissiere  <rafael@debian.org>
+
+	* oct-md5.cc: Include <cstdio>.
+
 2009-01-13  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Array.h (Array::ArrayRep::qsort): Remove.

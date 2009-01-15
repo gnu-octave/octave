@@ -1,3 +1,7 @@
+2008-01-15  Rafael Laboissiere  <rafael@debian.org>
+
+	* gethelp.cc: Include <cstdio>.
+
 2009-01-14  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/__go_draw_axes__.m (ticklabel_to_cell): New function.

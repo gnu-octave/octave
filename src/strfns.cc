@@ -395,7 +395,7 @@ This is just the opposite of the corresponding C library function.\n\
 	    {
 	      // Broadcast the string.
 
-	      boolNDArray output (cell.dimensions, false);
+	      boolNDArray output (cell.dims (), false);
 
 	      std::string s = r == 0 ? std::string () : str[0];
 
@@ -430,7 +430,7 @@ This is just the opposite of the corresponding C library function.\n\
 		{
 		  // Must match in all dimensions.
 
-		  boolNDArray output (cell.dimensions, false);
+		  boolNDArray output (cell.dims (), false);
 
 		  if (cell.length () == r)
 		    {
@@ -471,8 +471,8 @@ This is just the opposite of the corresponding C library function.\n\
 	      r2 = cell2.length ();
 	    }
 
-	  const dim_vector size1 = cell1.dimensions;
-	  const dim_vector size2 = cell2.dimensions;
+	  const dim_vector size1 = cell1.dims ();
+	  const dim_vector size2 = cell2.dims ();
 
 	  boolNDArray output (size1, false);
 
@@ -671,7 +671,7 @@ This is just the opposite of the corresponding C library function.\n\
 	    {
 	      // Broadcast the string.
 
-	      boolNDArray output (cell.dimensions, false);
+	      boolNDArray output (cell.dims (), false);
 
 	      if (c < n)
 		{
@@ -724,7 +724,7 @@ This is just the opposite of the corresponding C library function.\n\
 		{
 		  // Must match in all dimensions.
 
-		  boolNDArray output (cell.dimensions, false);
+		  boolNDArray output (cell.dims (), false);
 
 		  if (cell.numel () == r)
 		    {
@@ -774,8 +774,8 @@ This is just the opposite of the corresponding C library function.\n\
 	      r2 = cell2.length ();
 	    }
 
-	  const dim_vector size1 = cell1.dimensions;
-	  const dim_vector size2 = cell2.dimensions;
+	  const dim_vector size1 = cell1.dims ();
+	  const dim_vector size2 = cell2.dims ();
 
 	  boolNDArray output (size1, false);
 

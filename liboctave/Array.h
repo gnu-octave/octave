@@ -97,49 +97,15 @@ protected:
 
 public:
 
-  // !!! WARNING !!! -- these should be protected, not public.  You
-  // should not access these methods directly!
-
-  void make_unique (void)
-    {
-      if (rep->count > 1)
-	{
-	  --rep->count;
-	  rep = new ArrayRep (slice_data, slice_len, true);
-          slice_data = rep->data;
-	}
-      else if (slice_len != rep->len)
-        {
-          // Possibly economize here.
-          ArrayRep *new_rep = new ArrayRep (slice_data, slice_len, true);
-          delete rep;
-          rep = new_rep;
-          slice_data = rep->data;
-        }
-      }
-
-  void make_unique (const T& val)
-    {
-      if (rep->count > 1)
-	{
-	  --rep->count;
-	  rep = new ArrayRep (slice_len, val);
-          slice_data = rep->data;
-	}
-      else
-        std::fill (slice_data, slice_data + slice_len, val);
-    }
+  void make_unique (void);
 
   typedef T element_type;
 
-  // !!! WARNING !!! -- these should be protected, not public.  You
-  // should not access these data members directly!
+protected:
 
   typename Array<T>::ArrayRep *rep;
 
   dim_vector dimensions;
-
-protected:
 
   T* slice_data;
   octave_idx_type slice_len;
@@ -220,7 +186,7 @@ public:
   template <class U>
   Array (const Array<U>& a)
     : rep (new typename Array<T>::ArrayRep (coerce (a.data (), a.length ()), a.length ())),
-      dimensions (a.dimensions)
+      dimensions (a.dims ())
     {
       slice_data = rep->data;
       slice_len = rep->len;
@@ -260,7 +226,7 @@ public:
 
   Array<T>& operator = (const Array<T>& a);
 
-  void fill (const T& val) { make_unique (val); }
+  void fill (const T& val); 
 
   octave_idx_type capacity (void) const { return slice_len; }
   octave_idx_type length (void) const { return capacity (); }

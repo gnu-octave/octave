@@ -3,7 +3,7 @@
 
 Copyright (C) 1996, 1997, 2000, 2002, 2003, 2004, 2005, 2006, 2007
               John W. Eaton
-Copyright (C) 2008 Jaroslav Hajek
+Copyright (C) 2008, 2009 Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -30,10 +30,10 @@ along with Octave; see the file COPYING.  If not, see
 #include <cstdlib>
 
 #include "Array.h"
+#include "Array2.h"
 #include "lo-error.h"
 
 // A two-dimensional array with diagonal elements only.
-//
 // Idea and example code for Proxy class and functions from:
 //
 // From: kanze@us-es.sel.de (James Kanze)
@@ -45,13 +45,12 @@ along with Octave; see the file COPYING.  If not, see
 // James Kanze                             email: kanze@us-es.sel.de
 // GABI Software, Sarl., 8 rue du Faisan, F-67000 Strasbourg, France
 
-// Array<T> is inherited privately because we abuse the dimensions variable
-// for true dimensions. Therefore, the inherited Array<T> object is not a valid
-// Array<T> object, and should not be publicly accessible.
+// Array<T> is inherited privately so that some methods, like index, don't
+// produce unexpected results.
 
 template <class T>
 class
-DiagArray2 : private Array<T>
+DiagArray2 : protected Array<T>
 {
 private:
 
@@ -66,30 +65,9 @@ private:
     Proxy (DiagArray2<T> *ref, octave_idx_type r, octave_idx_type c)
       : i (r), j (c), object (ref) { } 
 
-    const Proxy& operator = (const T& val) const
-      {
-	if (i == j)
-	  {
-	    if (object)
-	      object->set (val, i);
-	  }
-	else
-	  (*current_liboctave_error_handler)
-	    ("invalid assignment to off-diagonal in diagonal array");
+    const Proxy& operator = (const T& val) const;
 
-	return *this;
-      }
-
-    operator T () const
-      {
-	if (object && i == j)
-	  return object->get (i);
-	else
-	  {
-	    static T foo;
-	    return foo;
-	  }
-      }
+    operator T () const;
 
   private:
 
@@ -106,100 +84,92 @@ private:
 
   };
 
-friend class Proxy;
+  friend class Proxy;
 
 protected:
+  octave_idx_type d1, d2;
 
-  DiagArray2 (T *d, octave_idx_type r, octave_idx_type c) : Array<T> (d, r < c ? r : c)
-    { Array<T>::dimensions = dim_vector (r, c); }
+  DiagArray2 (T *d, octave_idx_type r, octave_idx_type c) 
+    : Array<T> (d, std::min (r, c)), d1 (r), d2 (c) { }
 
 public:
 
   typedef T element_type;
 
-  DiagArray2 (void) : Array<T> (dim_vector (0, 0)) { }
+  DiagArray2 (void) 
+    : Array<T> (), d1 (0), d2 (0) { }
 
-  DiagArray2 (octave_idx_type r, octave_idx_type c) : Array<T> (r < c ? r : c)
-    { this->dimensions = dim_vector (r, c); }
+  DiagArray2 (octave_idx_type r, octave_idx_type c) 
+    : Array<T> (std::min (r, c)), d1 (r), d2 (c) { }
 
-  DiagArray2 (octave_idx_type r, octave_idx_type c, const T& val) : Array<T> (r < c ? r : c)
-    {
-      this->dimensions = dim_vector (r, c);
+  DiagArray2 (octave_idx_type r, octave_idx_type c, const T& val) 
+    : Array<T> (std::min (r, c), val), d1 (r), d2 (c) { }
 
-      Array<T>::fill (val);
-    }
+  DiagArray2 (const Array<T>& a) 
+    : Array<T> (a), d1 (a.numel ()), d2 (a.numel ()) { }
 
-  DiagArray2 (const Array<T>& a) : Array<T> (a)
-    { this->dimensions = dim_vector (a.length (), a.length ()); }
-
-  DiagArray2 (const DiagArray2<T>& a) : Array<T> (a)
-    { this->dimensions = a.dims (); }
+  DiagArray2 (const DiagArray2<T>& a) 
+    : Array<T> (a), d1 (a.d1), d2 (a.d2) { }
 
   template <class U>
-  DiagArray2 (const DiagArray2<U>& a) : Array<T> (a.diag ())
-    { this->dimensions = a.dims (); }
+  DiagArray2 (const DiagArray2<U>& a) 
+  : Array<T> (a.diag ()), d1 (a.dim1 ()), d2 (a.dim2 ()) { }
 
   ~DiagArray2 (void) { }
 
   DiagArray2<T>& operator = (const DiagArray2<T>& a)
     {
       if (this != &a)
-	Array<T>::operator = (a);
+        {
+          Array<T>::operator = (a);
+          d1 = a.d1;
+          d2 = a.d2;
+        }
 
       return *this;
     }
 
-
-  octave_idx_type dim1 (void) const { return Array<T>::dimensions(0); }
-  octave_idx_type dim2 (void) const { return Array<T>::dimensions(1); }
+  octave_idx_type dim1 (void) const { return d1; }
+  octave_idx_type dim2 (void) const { return d2; }
 
   octave_idx_type rows (void) const { return dim1 (); }
   octave_idx_type cols (void) const { return dim2 (); }
   octave_idx_type columns (void) const { return dim2 (); }
 
+  // FIXME: a dangerous ambiguity?
   octave_idx_type length (void) const { return Array<T>::length (); }
   octave_idx_type nelem (void) const { return dim1 () * dim2 (); }
   octave_idx_type numel (void) const { return nelem (); }
 
   size_t byte_size (void) const { return length () * sizeof (T); }
 
-  dim_vector dims (void) const { return Array<T>::dimensions; }
+  dim_vector dims (void) const { return dim_vector (d1, d2); }
 
   Array<T> diag (octave_idx_type k = 0) const;
 
-  Proxy elem (octave_idx_type r, octave_idx_type c)
-    {
-      return Proxy (this, r, c);
-    }
-
-  Proxy checkelem (octave_idx_type r, octave_idx_type c)
-    {
-      if (r < 0 || c < 0 || r >= dim1 () || c >= dim2 ())
-	{
-	  (*current_liboctave_error_handler) ("range error in DiagArray2");
-	  return Proxy (0, r, c);
-	}
-      else
-	return Proxy (this, r, c);
-    }
-
-  Proxy operator () (octave_idx_type r, octave_idx_type c)
-    {
-      if (r < 0 || c < 0 || r >= dim1 () || c >= dim2 ())
-	{
-	  (*current_liboctave_error_handler) ("range error in DiagArray2");
-	  return Proxy (0, r, c);
-	}
-      else
-	return Proxy (this, r, c);
-  }
+  // Warning: the non-const two-index versions will silently ignore assignments
+  // to off-diagonal elements. 
 
   T elem (octave_idx_type r, octave_idx_type c) const
     {
-      return (r == c) ? Array<T>::xelem (r) : T (0);
+      return (r == c) ? Array<T>::elem (r) : T (0);
     }
 
+  T& elem (octave_idx_type r, octave_idx_type c)
+    {
+      static T zero (0);
+      return (r == c) ? Array<T>::elem (r) : zero;
+    }
+
+  T dgelem (octave_idx_type i) const
+    { return Array<T>::elem (i); }
+
+  T& dgelem (octave_idx_type i) 
+    { return Array<T>::elem (i); }
+
   T checkelem (octave_idx_type r, octave_idx_type c) const;
+  Proxy checkelem (octave_idx_type r, octave_idx_type c);
+
   T operator () (octave_idx_type r, octave_idx_type c) const
     {
 #if defined (BOUNDS_CHECKING)
@@ -209,24 +179,39 @@ public:
 #endif
     }
 
-  // No checking.
-
-  T& xelem (octave_idx_type r, octave_idx_type c)
+  // FIXME: can this cause problems?
+#if defined (BOUNDS_CHECKING)
+  Proxy operator () (octave_idx_type r, octave_idx_type c)
     {
-      static T foo (0);
-      return (r == c) ? Array<T>::xelem (r) : foo;
+      return checkelem (r, c);
     }
+#else
+  T& operator () (octave_idx_type r, octave_idx_type c) 
+    {
+      return elem (r, c);
+    }
+#endif
+
+  // No checking.
 
   T xelem (octave_idx_type r, octave_idx_type c) const
     {
       return (r == c) ? Array<T>::xelem (r) : T (0);
     }
 
+  T& dgxelem (octave_idx_type i)
+    { return Array<T>::xelem (i); }
+
+  T dgxelem (octave_idx_type i) const
+    { return Array<T>::xelem (i); }
+
   void resize (octave_idx_type n, octave_idx_type m);
-  void resize (octave_idx_type n, octave_idx_type m, const T& val);
+  void resize_fill (octave_idx_type n, octave_idx_type m, const T& val);
 
   DiagArray2<T> transpose (void) const;
   DiagArray2<T> hermitian (T (*fcn) (const T&) = 0) const;
+
+  operator Array2<T> (void) const;
 
   const T *data (void) const { return Array<T>::data (); }
 

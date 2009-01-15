@@ -1,4 +1,18 @@
 2009-01-14  Jaroslav Hajek  <highegg@gmail.com>
+	
+	* Array.h (Array<T>::rep, Array<T>::dimensions): Make protected.
+	* Array.cc (Array<T>::make_unique): Move implementation here.
+	(Array<T>::fill): Dtto.
+	* DiagArray2.h (DiagArray2<T>): Reimplement without abusing
+	Array<T> internals.
+	(DiagArray2<T>::operator Array2<T>): New method.
+	* DiagArray2.cc (DiagArray2<T>): Update methods.
+	* MDiagArray2.h (MDiagArray2<T>::operator Array2<T>): Simplify.
+	* PermMatrix.h (PermMatrix): Reimplement without abusing
+	Array<T> internals.
+	* PermMatrix.cc (PermMatrix): Update methods.
+
+2009-01-14  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Array.cc, Array.h (all Array<T> constructors): Handle slice_data and
 	slice_len.

@@ -37,17 +37,42 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-error.h"
 
 template <class T>
+const typename DiagArray2<T>::Proxy& 
+DiagArray2<T>::Proxy::operator = (const T& val) const
+{
+  if (i == j)
+    {
+      if (object)
+        object->set (val, i);
+    }
+  else
+    (*current_liboctave_error_handler)
+      ("invalid assignment to off-diagonal in diagonal array");
+
+  return *this;
+}
+
+template <class T>
+DiagArray2<T>::Proxy::operator T () const
+{
+  if (object && i == j)
+    return object->get (i);
+  else
+    {
+      static T foo;
+      return foo;
+    }
+}
+
+template <class T>
 Array<T>
 DiagArray2<T>::diag (octave_idx_type k) const
 {
   Array<T> d;
 
   if (k == 0)
-    {
-      // The main diagonal is shallow-copied.
-      d = *this;
-      d.dimensions = dim_vector (length ());
-    }
+    // The main diagonal is shallow-copied.
+    d = *this;
   else if (k > 0 && k < cols ())
     d = Array<T> (std::min (cols () - k, rows ()), T ());
   else if (k < 0 && -k < rows ())
@@ -64,7 +89,8 @@ DiagArray2<T>
 DiagArray2<T>::transpose (void) const
 {
   DiagArray2<T> retval (*this);
-  retval.dimensions = dim_vector (dim2 (), dim1 ());
+  retval.d1 = d2;
+  retval.d2 = d1;
   return retval;
 }
 
@@ -91,7 +117,20 @@ DiagArray2<T>::checkelem (octave_idx_type r, octave_idx_type c) const
       (*current_liboctave_error_handler) ("range error in DiagArray2");
       return T ();
     }
-  return (r == c) ? Array<T>::xelem (r) : T (0);
+  return elem (r, c);
+}
+
+template <class T>
+typename DiagArray2<T>::Proxy
+DiagArray2<T>::checkelem (octave_idx_type r, octave_idx_type c) 
+{
+  if (r < 0 || c < 0 || r >= dim1 () || c >= dim2 ())
+    {
+      (*current_liboctave_error_handler) ("range error in DiagArray2");
+      return Proxy (0, r, c);
+    }
+  else
+    return Proxy (this, r, c);
 }
 
 template <class T>
@@ -104,37 +143,16 @@ DiagArray2<T>::resize (octave_idx_type r, octave_idx_type c)
       return;
     }
 
-  if (r == dim1 () && c == dim2 ())
-    return;
-
-  // FIXME: this is a mess. DiagArray2 really needs a rewrite.
-  typename Array<T>::ArrayRep *old_rep = Array<T>::rep;
-  const T *old_data = this->data ();
-  octave_idx_type old_len = this->length ();
-
-  octave_idx_type new_len = r < c ? r : c;
-
-  Array<T>::rep = new typename Array<T>::ArrayRep (new_len);
-  Array<T>::slice_data = Array<T>::rep->data;
-  Array<T>::slice_len = Array<T>::rep->len;
-
-  this->dimensions = dim_vector (r, c);
-
-  if (old_data && old_len > 0)
+  if (r != dim1 () || c != dim2 ())
     {
-      octave_idx_type min_len = old_len < new_len ? old_len : new_len;
-
-      for (octave_idx_type i = 0; i < min_len; i++)
-	xelem (i, i) = old_data[i];
+      Array<T>::resize (std::min (r, c));
+      d1 = r; d2 = c;
     }
-
-  if (--old_rep->count <= 0)
-    delete old_rep;
 }
 
 template <class T>
 void
-DiagArray2<T>::resize (octave_idx_type r, octave_idx_type c, const T& val)
+DiagArray2<T>::resize_fill (octave_idx_type r, octave_idx_type c, const T& val)
 {
   if (r < 0 || c < 0)
     {
@@ -142,32 +160,21 @@ DiagArray2<T>::resize (octave_idx_type r, octave_idx_type c, const T& val)
       return;
     }
 
-  if (r == dim1 () && c == dim2 ())
-    return;
-
-  typename Array<T>::ArrayRep *old_rep = Array<T>::rep;
-  const T *old_data = this->data ();
-  octave_idx_type old_len = this->length ();
-
-  octave_idx_type new_len = r < c ? r : c;
-
-  Array<T>::rep = new typename Array<T>::ArrayRep (new_len);
-
-  this->dimensions = dim_vector (r, c);
-
-  octave_idx_type min_len = old_len < new_len ? old_len : new_len;
-
-  if (old_data && old_len > 0)
+  if (r != dim1 () || c != dim2 ())
     {
-      for (octave_idx_type i = 0; i < min_len; i++)
-	xelem (i, i) = old_data[i];
+      Array<T>::resize_fill (std::min (r, c), val);
+      d1 = r; d2 = c;
     }
+}
 
-  for (octave_idx_type i = min_len; i < new_len; i++)
-    xelem (i, i) = val;
+template <class T>
+DiagArray2<T>::operator Array2<T> (void) const
+{
+  Array2<T> result (dim1 (), dim2 ());
+  for (octave_idx_type i = 0, len = length (); i < len; i++)
+    result.xelem (i, i) = dgelem (i);
 
-  if (--old_rep->count <= 0)
-    delete old_rep;
+  return result;
 }
 
 /*

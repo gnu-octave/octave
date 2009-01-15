@@ -26,15 +26,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "Array.h"
 #include "mx-defs.h"
 
-// Array<T> is inherited privately because we abuse the dimensions variable
-// for true dimensions. Therefore, the inherited Array<T> object is not a valid
-// Array<T> object, and should not be publicly accessible.
+// Array<T> is inherited privately so that some methods, like index, don't
+// produce unexpected results.
 
-class PermMatrix : private Array<octave_idx_type>
+class PermMatrix : protected Array<octave_idx_type>
 {
-private:
-
-  octave_idx_type get (octave_idx_type i) const { return Array<octave_idx_type>::xelem (i); }
 
 public:
 
@@ -51,36 +47,34 @@ public:
   PermMatrix (const idx_vector& idx, bool colp = false, octave_idx_type n = 0); 
 
   octave_idx_type dim1 (void) const 
-    { return Array<octave_idx_type>::dimensions(0); }
+    { return Array<octave_idx_type>::length (); }
   octave_idx_type dim2 (void) const 
-    { return Array<octave_idx_type>::dimensions(1); }
+    { return Array<octave_idx_type>::length (); }
 
   octave_idx_type rows (void) const { return dim1 (); }
   octave_idx_type cols (void) const { return dim2 (); }
   octave_idx_type columns (void) const { return dim2 (); }
 
-  octave_idx_type length (void) const 
+  octave_idx_type perm_length (void) const 
     { return Array<octave_idx_type>::length (); }
+  octave_idx_type length (void) const 
+    { return dim1 () * dim2 (); }
   octave_idx_type nelem (void) const { return dim1 () * dim2 (); }
   octave_idx_type numel (void) const { return nelem (); }
 
-  size_t byte_size (void) const { return length () * sizeof (octave_idx_type); }
+  size_t byte_size (void) const { return perm_length () * sizeof (octave_idx_type); }
 
-  dim_vector dims (void) const { return Array<octave_idx_type>::dimensions; }
+  dim_vector dims (void) const { return dim_vector (dim1 (), dim2 ()); }
 
   Array<octave_idx_type> pvec (void) const
-    {
-      Array<octave_idx_type> retval (*this);
-      retval.dimensions = dim_vector (length ());
-      return retval;
-    }
+    { return *this; }
 
   octave_idx_type 
   elem (octave_idx_type i, octave_idx_type j) const
     {
       return (_colp 
-              ? ((get(j) != i) ? 1 : 0)
-              : ((get(i) != j) ? 1 : 0));
+              ? ((Array<octave_idx_type>::elem (j) != i) ? 1 : 0)
+              : ((Array<octave_idx_type>::elem (i) != j) ? 1 : 0));
     }
 
   octave_idx_type 

@@ -46,6 +46,26 @@ along with Octave; see the file COPYING.  If not, see
 // all the derived classes.
 
 template <class T>
+void
+Array<T>::make_unique (void)
+{
+  if (rep->count > 1)
+    {
+      --rep->count;
+      rep = new ArrayRep (slice_data, slice_len, true);
+      slice_data = rep->data;
+    }
+  else if (slice_len != rep->len)
+    {
+      // Possibly economize here.
+      ArrayRep *new_rep = new ArrayRep (slice_data, slice_len, true);
+      delete rep;
+      rep = new_rep;
+      slice_data = rep->data;
+    }
+}
+
+template <class T>
 Array<T>::Array (const Array<T>& a, const dim_vector& dv)
   : rep (a.rep), dimensions (dv), 
     slice_data (a.slice_data), slice_len (a.slice_len)
@@ -82,6 +102,20 @@ Array<T>::operator = (const Array<T>& a)
     }
 
   return *this;
+}
+
+template <class T>
+void
+Array<T>::fill (const T& val)
+{
+  if (rep->count > 1)
+    {
+      --rep->count;
+      rep = new ArrayRep (length (), val);
+      slice_data = rep->data;
+    }
+  else
+    std::fill (slice_data, slice_data + slice_len, val);
 }
 
 template <class T>
@@ -131,13 +165,7 @@ Array<T>::squeeze (void) const
 	    }
 	}
 
-      // FIXME -- it would be better if we did not have to do
-      // this, so we could share the data while still having different
-      // dimension vectors.
-
-      retval.make_unique ();
-
-      retval.dimensions = new_dimensions;
+      retval = Array<T> (*this, new_dimensions);
     }
 
   return retval;

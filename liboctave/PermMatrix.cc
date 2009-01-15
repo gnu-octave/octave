@@ -39,7 +39,6 @@ gripe_invalid_permutation (void)
 PermMatrix::PermMatrix (const Array<octave_idx_type>& p, bool colp, bool check)
   : Array<octave_idx_type> (p), _colp(colp)
 {
-  this->dimensions = dim_vector (p.length (), p.length ());
   if (check)
     {
       if (! idx_vector (p).is_permutation (p.length ()))
@@ -61,14 +60,12 @@ PermMatrix::PermMatrix (const idx_vector& idx, bool colp, octave_idx_type n)
       Array<octave_idx_type> idxa (len);
       for (octave_idx_type i = 0; i < len; i++) idxa(i) = idx(i);
       Array<octave_idx_type>::operator = (idxa);
-      this->dimensions = dim_vector (len, len);
     }
 }
 
 PermMatrix::PermMatrix (octave_idx_type n)
   : Array<octave_idx_type> (n), _colp (false)
 {
-  this->dimensions = dim_vector (n, n);
   for (octave_idx_type i = 0; i < n; i++) xelem (i) = i;
 }
 

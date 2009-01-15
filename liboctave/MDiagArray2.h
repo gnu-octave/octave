@@ -72,17 +72,7 @@ public:
 
   operator MArray2<T> () const
     {
-      octave_idx_type nr = DiagArray2<T>::dim1 ();
-      octave_idx_type nc = DiagArray2<T>::dim2 ();
-
-      MArray2<T> retval (nr, nc,  T (0));
-
-      octave_idx_type len = nr < nc ? nr : nc;
-
-      for (octave_idx_type i = 0; i < len; i++)
-	retval.xelem (i, i) = this->xelem (i, i);
-
-      return retval;
+      return DiagArray2<T>::operator Array2<T> ();
     }
 
   octave_idx_type nnz (void) const

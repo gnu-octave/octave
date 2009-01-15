@@ -1378,6 +1378,10 @@ endfunction
 
 function do_tics (obj, plot_stream, ymirror, mono)
 
+  obj.xticklabel = ticklabel_to_cell (obj.xticklabel);
+  obj.yticklabel = ticklabel_to_cell (obj.yticklabel);
+  obj.zticklabel = ticklabel_to_cell (obj.zticklabel);
+
   [fontname, fontsize] = get_fontname_and_size (obj);
 
   if (strcmpi (obj.xaxislocation, "top"))
@@ -1525,6 +1529,16 @@ function do_tics_1 (ticmode, tics, mtics, labelmode, labels, color, ax,
     else
       fprintf (plot_stream, "unset m%stics;\n", ax);
     endif
+  endif
+endfunction
+
+function ticklabel = ticklabel_to_cell (ticklabel)
+  if (! isempty (ticklabel) && ! iscell (ticklabel))
+    if (isnumeric (ticklabel))
+      ## Use upto 5 significant digits
+      ticklabel = num2str (ticklabel(:), 5);
+    endif
+    ticklabel = cellstr (ticklabel);
   endif
 endfunction
 

@@ -1,3 +1,8 @@
+2009-01-14  Ben Abbott  <bpabbott@mac.com>
+
+	* plot/__go_draw_axes__.m (ticklabel_to_cell): New function.
+	Use it to handle non-cell ticklabels.
+
 2009-01-14  Søren Hauberg  <hauberg@gmail.com>
 
 	* general/diff.m, general/logspace.m, general/nextpow2.m,

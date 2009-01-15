@@ -2081,7 +2081,7 @@ Data source variables.
 @cindex graphics backends
 @cindex backends, graphics
 
-@DOCSTRING(backends)
+@DOCSTRING(backend)
 
 @DOCSTRING(available_backends)
 
@@ -2094,5 +2094,3 @@ Data source variables.
 @cindex gnuplot interaction
 
 @DOCSTRING(gnuplot_binary)
-
-@DOCSTRING(gnuplot_use_title_option)

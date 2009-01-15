@@ -139,12 +139,6 @@ a (i, :)
 @end group
 @end example
 
-@DOCSTRING(swap)
-
-@DOCSTRING(swapcols)
-
-@DOCSTRING(swaprows)
-
 @anchor{doc-triu}
 @DOCSTRING(tril)
 

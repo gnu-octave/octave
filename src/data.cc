@@ -4537,10 +4537,12 @@ by an empty argument.\n\
 
   octave_value arg = args(0);
 
-  if (new_dims.numel () == arg.numel ())
-    retval = (new_dims == arg.dims ()) ? arg : arg.reshape (new_dims);
+  dim_vector dims = arg.dims ();
+
+  if (new_dims.numel () == dims.numel ())
+    retval = (new_dims == dims) ? arg : arg.reshape (new_dims);
   else
-    error ("reshape: size mismatch");
+    error ("reshape: size mismatch (%s != %s)", dims.str (), new_dims.str ());
 
   return retval;
 }

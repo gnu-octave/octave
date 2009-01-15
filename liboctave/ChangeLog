@@ -1,3 +1,10 @@
+2009-01-15  John W. Eaton  <jwe@octave.org>
+
+	* Sparse.cc (Sparse<T>::reshape): Include mismatched dimensions in
+	error message.
+	* Array.cc (Array<T>::reshape): Likewise.
+	From Robert Millan <rmh@aybabtu.com>.
+
 2009-01-14  Jaroslav Hajek  <highegg@gmail.com>
 	
 	* Array.h (Array<T>::rep, Array<T>::dimensions): Make protected.

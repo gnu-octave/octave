@@ -442,7 +442,9 @@ Array<T>::reshape (const dim_vector& new_dims) const
       if (dimensions.numel () == new_dims.numel ())
 	retval = Array<T> (*this, new_dims);
       else
-	(*current_liboctave_error_handler) ("reshape: size mismatch");
+	(*current_liboctave_error_handler)
+	  ("reshape: size mismatch (%s != %s)", dimensions.str (),
+	   new_dims.str ());
     }
   else
     retval = *this;

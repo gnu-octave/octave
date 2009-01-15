@@ -4542,7 +4542,13 @@ by an empty argument.\n\
   if (new_dims.numel () == dims.numel ())
     retval = (new_dims == dims) ? arg : arg.reshape (new_dims);
   else
-    error ("reshape: size mismatch (%s != %s)", dims.str (), new_dims.str ());
+    {
+      std::string dims_str = dims.str ();
+      std::string new_dims_str = new_dims.str ();
+
+      error ("reshape: can't reshape %s array to %s array",
+	     dims_str.c_str (), new_dims_str.c_str ());
+    }
 
   return retval;
 }

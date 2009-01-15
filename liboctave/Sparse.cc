@@ -796,9 +796,14 @@ Sparse<T>::reshape (const dim_vector& new_dims) const
 	    retval.xcidx(k+1) = new_nnz;
 	}
       else
-	(*current_liboctave_error_handler)
-	  ("reshape: size mismatch (%s != %s)", dimensions.str (),
-	   new_dims.str ());
+	{
+	  std::string dimensions_str = dimensions.str ();
+	  std::string new_dims_str = new_dims.str ();
+
+	  (*current_liboctave_error_handler)
+	    ("reshape: can't reshape %s array to %s array",
+	     dimensions_str.c_str (), new_dims_str.c_str ());
+	}
     }
   else
     retval = *this;

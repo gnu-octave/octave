@@ -200,7 +200,7 @@ function [ enhanced ] = gnuplot_set_term (plot_stream, h, term, file)
         ## for terminals cdr/corel
         term_str = sprintf ("%s %s", term_str, size_str);
       end
-      if (nargin > 4 && ischar (opts_str))
+      if (nargin > 2 && ischar (opts_str))
         ## Options must go last
         term_str = sprintf ("%s %s", term_str, opts_str);
       endif

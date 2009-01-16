@@ -1,3 +1,7 @@
+2009-01-16  Daniel J Sebald <daniel.sebald@ieee.org>
+
+	* plot/gnuplot_drawnow.m: Fix for handling options.
+
 2009-01-16  Daniel J Sebald  <daniel.sebald@ieee.org>
 
 	* plot/legend.m: Fix legend order for both horizontal and

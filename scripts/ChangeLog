@@ -1,3 +1,8 @@
+2009-01-16  Daniel J Sebald  <daniel.sebald@ieee.org>
+
+	* plot/legend.m: Fix legend order for both horizontal and
+	vertical string cell.
+
 2008-01-15  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/grid.m: Document handle argument.

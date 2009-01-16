@@ -165,13 +165,11 @@ function legend (varargin)
 	nargs = numel (varargin);
       endif
     elseif (iscellstr (arg))
-      varargin = fliplr (arg);
+      varargin = arg;
       nargs = numel (varargin);
     else
       error ("legend: expecting argument to be a character string");
     endif
-  else
-    varargin(1:nargs) = fliplr (varargin(1:nargs));
   endif
 
   if (nargs > 0)
@@ -191,7 +189,7 @@ function legend (varargin)
   endif
 
   warned = false;
-  for i = 1:nargs
+  for i = nargs:-1:1
     arg = varargin{i};
     if (ischar (arg))
       while (k <= nkids

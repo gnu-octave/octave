@@ -1,3 +1,8 @@
+2009-01-17  Jaroslav Hajek  <highegg@gmail.com>
+
+	* Array.h (Array<T>): Document internal use of slice_data and
+	slice_len.
+
 2009-01-15  John W. Eaton  <jwe@octave.org>
 
 	* Sparse.cc (Sparse<T>::reshape): Include mismatched dimensions in

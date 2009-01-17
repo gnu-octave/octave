@@ -852,11 +852,14 @@ public:
   void maybe_economize (void)
     { rep->maybe_economize (); }
 
-  // Make a copy suitable for storing.
+  // The following two hook conversions are called on any octave_value prior to
+  // storing it to a "permanent" location, like a named variable, a cell or a
+  // struct component, or a return value of a function. 
 
   octave_value storable_value (void) const;
 
-  // Ditto, but in place.
+  // Ditto, but in place, i.e. equivalent to *this = this->storable_value (),
+  // but possibly more efficient.
 
   void make_storable_value (void);
 

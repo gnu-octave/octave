@@ -107,6 +107,13 @@ protected:
 
   dim_vector dimensions;
 
+  // Rationale:
+  // slice_data is a pointer to rep->data, denoting together with slice_len the
+  // actual portion of the data referenced by this Array<T> object. This allows
+  // to make shallow copies not only of a whole array, but also of contiguous
+  // subranges. Every time rep is directly manipulated, slice_data and slice_len
+  // need to be properly updated.
+
   T* slice_data;
   octave_idx_type slice_len;
 

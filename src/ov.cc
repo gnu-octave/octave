@@ -1552,9 +1552,6 @@ octave_value::float_complex_vector_value (bool force_string_conv,
                                              type_name (), "complex vector"));
 }
 
-// FIXME: This is a good place for pre-storage hooks, but the functions should
-// probably be named differently. These functions will be called
-
 octave_value 
 octave_value::storable_value (void) const
 {

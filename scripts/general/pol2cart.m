@@ -20,7 +20,7 @@
 ## @deftypefn {Function File} {[@var{x}, @var{y}] =} pol2cart (@var{theta}, @var{r})
 ## @deftypefnx {Function File} {[@var{x}, @var{y}, @var{z}] =} pol2cart (@var{theta}, @var{r}, @var{z})
 ## Transform polar or cylindrical to cartesian coordinates.
-## @var{theta}, @var{r} (and @var{z}) must be of same shape.
+## @var{theta}, @var{r} (and @var{z}) must be of same shape, or scalar.
 ## @var{theta} describes the angle relative to the x-axis.
 ## @var{r} is the distance to the z-axis (0, 0, z).
 ## @seealso{cart2pol, cart2sph, sph2cart}
@@ -29,7 +29,7 @@
 ## Author: Kai Habel <kai.habel@gmx.de>
 ## Adapted-by: jwe
 
-function [X, Y, Z] = pol2cart (Theta, R, Z)
+function [x, y, z] = pol2cart (theta, r, z)
 
   if (nargin < 2 || nargin > 3)
     error ("pol2cart: number of arguments must be 2 or 3");
@@ -39,17 +39,67 @@ function [X, Y, Z] = pol2cart (Theta, R, Z)
     error ("pol2cart: number of output arguments must not be greater than number of input arguments");
   endif
 
-  if (! (ismatrix (Theta) && ismatrix (R))
-      || ! size_equal (Theta, R) && ! isscalar (Theta) && ! isscalar (R)
-      || (nargin == 3
-          && (! ismatrix (Z)
-              || (! isscalar (Z)
-                  && (! (isscalar (R) || size_equal (R, Z))
-		      || ! (isscalar(Theta) || size_equal (Theta, Z)))))))
-    error ("pol2cart: arguments must be matrices of same size or scalar");
+   if ((ismatrix (theta) && ismatrix (r) && (nargin == 2 || ismatrix (z)))
+       && (size_equal (theta, r) || isscalar (theta) || isscalar (r))
+       && (nargin == 2 || size_equal (theta, z) || isscalar (theta) || isscalar (z))
+       && (nargin == 2 || size_equal (r, z) || isscalar (r) || isscalar (z)))
+
+    x = cos (theta) .* r;
+    y = sin (theta) .* r;
+
+  else
+    error ("pol2cart: arguments must be matrices of same size, or scalar");
   endif
 
-  X = cos (Theta) .* R;
-  Y = sin (Theta) .* R;
-
 endfunction
+
+%!test
+%! t = [0, 0.5, 1] * pi;
+%! r = 1;
+%! [x, y] = pol2cart (t, r);
+%! assert (x, [1, 0, -1], sqrt(eps));
+%! assert (y, [0, 1,  0], sqrt(eps));
+
+%!test
+%! t = [0, 1, 1] * pi/4;
+%! r = sqrt(2) * [0, 1, 2];
+%! [x, y] = pol2cart (t, r);
+%! assert (x, [0, 1, 2], sqrt(eps));
+%! assert (y, [0, 1, 2], sqrt(eps));
+
+%!test
+%! t = [0, 1, 1] * pi/4;
+%! r = sqrt(2) * [0, 1, 2];
+%! z = [0, 1, 2];
+%! [x, y, z2] = pol2cart (t, r, z);
+%! assert (x, [0, 1, 2], sqrt(eps));
+%! assert (y, [0, 1, 2], sqrt(eps));
+%! assert (z, z2);
+
+%!test
+%! t = 0;
+%! r = [0, 1, 2];
+%! z = [0, 1, 2];
+%! [x, y, z2] = pol2cart (t, r, z);
+%! assert (x, [0, 1, 2], sqrt(eps));
+%! assert (y, [0, 0, 0], sqrt(eps));
+%! assert (z, z2);
+
+%!test
+%! t = [1, 1, 1]*pi/4;
+%! r = 1;
+%! z = [0, 1, 2];
+%! [x, y, z2] = pol2cart (t, r, z);
+%! assert (x, [1, 1, 1] / sqrt(2), eps);
+%! assert (y, [1, 1, 1] / sqrt(2), eps);
+%! assert (z, z2);
+
+%!test
+%! t = 0;
+%! r = [1, 2, 3];
+%! z = 1;
+%! [x, y, z2] = pol2cart (t, r, z);
+%! assert (x, [1, 2, 3], eps);
+%! assert (y, [0, 0, 0] / sqrt(2), eps);
+%! assert (z, z2);
+

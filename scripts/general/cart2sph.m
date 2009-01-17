@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{theta}, @var{phi}, @var{r}] =} cart2sph (@var{x}, @var{y}, @var{z})
 ## Transform cartesian to spherical coordinates.
-## @var{x}, @var{y} and @var{z} must be of same shape.
+## @var{x}, @var{y} and @var{z} must be of same shape, or scalar.
 ## @var{theta} describes the angle relative to the x-axis.
 ## @var{phi} is the angle relative to the xy-plane.
 ## @var{r} is the distance to the origin (0, 0, 0).
@@ -29,20 +29,60 @@
 ## Author: Kai Habel <kai.habel@gmx.de>
 ## Adapted-by: jwe
 
-function [Theta, Phi, R] = cart2sph (X, Y, Z)
+function [theta, phi, r] = cart2sph (x, y, z)
 
   if (nargin != 3)
     print_usage ();
   endif
 
-  if (! (ismatrix (X) && ismatrix (Y) && ismatrix (Z))
-      || ! size_equal (X, Y)
-      || ! size_equal (X, Z))
-    error ("cart2sph: arguments must be matrices of same size");
+  if ((ismatrix (x) && ismatrix (y) && ismatrix (z))
+      && (size_equal (x, y) || isscalar (x) || isscalar (y))
+      && (size_equal (x, z) || isscalar (x) || isscalar (z))
+      && (size_equal (y, z) || isscalar (y) || isscalar (z)))
+
+    theta = atan2 (y, x);
+    phi = atan2 (z, sqrt (x .^ 2 + y .^ 2));
+    r = sqrt (x .^ 2 + y .^ 2 + z .^ 2);
+
+  else
+    error ("cart2sph: arguments must be matrices of same size, or scalar");
   endif
 
-  Theta = atan2 (Y, X);
-  Phi = atan2 (Z, sqrt (X .^ 2 + Y .^ 2));
-  R = sqrt (X .^ 2 + Y .^ 2 + Z .^ 2);
-
 endfunction
+
+%!test
+%! x = [0, 1, 2];
+%! y = [0, 1, 2];
+%! z = [0, 1, 2];
+%! [t, p, r] = cart2sph (x, y, z);
+%! assert (t, [0, pi/4, pi/4], eps);
+%! assert (p, [0, 1, 1]*atan(sqrt(0.5)), eps);
+%! assert (r, [0, 1, 2]*sqrt(3), eps);
+
+%!test
+%! x = 0;
+%! y = [0, 1, 2];
+%! z = [0, 1, 2];
+%! [t, p, r] = cart2sph (x, y, z);
+%! assert (t, [0, 1, 1] * pi/2, eps);
+%! assert (p, [0, 1, 1] * pi/4, eps);
+%! assert (r, [0, 1, 2] * sqrt(2), eps);
+
+%!test
+%! x = [0, 1, 2];
+%! y = 0;
+%! z = [0, 1, 2];
+%! [t, p, r] = cart2sph (x, y, z);
+%! assert (t, [0, 0, 0]);
+%! assert (p, [0, 1, 1] * pi/4);
+%! assert (r, [0, 1, 2] * sqrt(2));
+
+%!test
+%! x = [0, 1, 2];
+%! y = [0, 1, 2];
+%! z = 0;
+%! [t, p, r] = cart2sph (x, y, z);
+%! assert (t, [0, 1, 1] * pi/4);
+%! assert (p, [0, 0, 0]);
+%! assert (r, [0, 1, 2] * sqrt(2));
+

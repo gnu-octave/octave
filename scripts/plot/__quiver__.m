@@ -40,9 +40,9 @@ function hg = __quiver__ (varargin)
     v = varargin{ioff++};
     if (is3d)
       w = varargin{ioff++}
-      [x, y, z] = meshgrid (1:size(u,1), 1:size(u,2), 1:max(size(w)));
+      [x, y, z] = meshgrid (1:size(u,2), 1:size(u,1), 1:max(size(w)));
     else
-      [x, y] = meshgrid (1:size(u,1), 1:size(u,2));
+      [x, y] = meshgrid (1:size(u,2), 1:size(u,1));
     endif
     if (nargin >= ioff && isnumeric (varargin{ioff})
 	&& isscalar (varargin{ioff}))

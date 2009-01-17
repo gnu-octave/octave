@@ -1,3 +1,7 @@
+2009-01-17  Steven Verstoep <isgoed@hotmail.com>
+
+	* plot/__quiver__.m: __quiver__.m: Fix auto-size of (x,y) coord.
+
 2009-01-16  Daniel J Sebald <daniel.sebald@ieee.org>
 
 	* plot/gnuplot_drawnow.m: Fix for handling options.

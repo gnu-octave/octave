@@ -1,3 +1,7 @@
+2009-01-18  Thorsten Meyer  <thorsten.meyier@gmx.de>
+
+	* interpreter/numbers.txi (Numeric Data Types): Trivial fixes.
+
 2009-01-14  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
 	* interpreter/matrix.txi: Add anchor for doc-postpad.

@@ -30,8 +30,9 @@ that can be an integer, a decimal fraction, a number in scientific
 constants are represented within Octave in double-precision floating
 point format (complex constants are stored as pairs of double-precision
 floating point values).  It is however possible to represent real
-integers as described in @ref{Integer Data Types}. Here are some examples
-of real-valued numeric constants, which all have the same value:
+integers as described in @ref{Integer Data Types}.  Here are some
+examples of real-valued numeric constants, which all have the same
+value:
 
 @example
 @group
@@ -412,7 +413,7 @@ replaces the range expression with a single range constant.
 Octave includes support for single precision data types, and most of the
 functions in Octave accept single precision values and return single
 precion answers. A single precision variable is created with the
-@code{sample} function.
+@code{single} function.
 
 @DOCSTRING(single)
 
@@ -420,8 +421,9 @@ for example
 
 @example
 sngl = single (rand (2, 2))
-    @result{} sngl = 0.37569   0.92982
-               0.11962   0.50876
+     @result{} sngl = 
+        0.37569   0.92982
+        0.11962   0.50876
 class (sngl)
     @result{} single
 @end example

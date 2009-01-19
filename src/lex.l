@@ -118,6 +118,12 @@ along with Octave; see the file COPYING.  If not, see
       int tok_val = tok; \
       if (Vdisplay_tokens) \
         display_token (tok_val); \
+      if (lexer_debug_flag) \
+        { \
+	  std::cerr << "R: "; \
+          display_token (tok_val); \
+	  std::cerr << std::endl;  \
+	} \
       return tok_val; \
     } \
   while (0)
@@ -167,6 +173,14 @@ along with Octave; see the file COPYING.  If not, see
     { \
 	gripe_matlab_incompatible_operator (yytext); \
         BIN_OP_RETURN (tok, convert); \
+    } \
+  while (0)
+
+#define LEXER_DEBUG(pattern) \
+  do \
+    { \
+      if (lexer_debug_flag) \
+        lexer_debug (pattern, yytext); \
     } \
   while (0)
 
@@ -253,6 +267,9 @@ static unsigned int Vtoken_count = 0;
 // comment was noticed.
 static int block_comment_nesting_level = 0;
 
+// Internal variable for lexer debugging state.
+static bool lexer_debug_flag = false;
+
 // Forward declarations for functions defined at the bottom of this
 // file.
 
@@ -285,6 +302,7 @@ static void maybe_gripe_matlab_incompatible_comment (char c);
 static void gripe_matlab_incompatible_continuation (void);
 static void gripe_matlab_incompatible_operator (const std::string& op);
 static void display_token (int tok);
+static void lexer_debug (const char *pattern, const char *text);
 
 %}
 
@@ -308,18 +326,24 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 %%
 
 <SCRIPT_FILE_BEGIN>. {
+    LEXER_DEBUG ("<SCRIPT_FILE_BEGIN>.");
+
     BEGIN (INITIAL);
     xunput (yytext[0], yytext);
     COUNT_TOK_AND_RETURN (SCRIPT);
   }
 
 <NESTED_FUNCTION_END>. {
+    LEXER_DEBUG ("<NESTED_FUNCTION_END>.");
+
     BEGIN (NESTED_FUNCTION_BEGIN);
     xunput (yytext[0], yytext);
     COUNT_TOK_AND_RETURN (';');
   }
 
 <NESTED_FUNCTION_BEGIN>. {
+    LEXER_DEBUG ("<NESTED_FUNCTION_BEGIN>.");
+
     BEGIN (INITIAL);
     xunput (yytext[0], yytext);
     prep_for_nested_function ();
@@ -333,6 +357,8 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 %}
 
 <COMMAND_START>{NL} {
+    LEXER_DEBUG ("<COMMAND_START>{NL}");
+
     BEGIN (INITIAL);
     input_line_number++;
     current_input_column = 1;
@@ -343,6 +369,8 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
   }
 
 <COMMAND_START>[\;\,] {
+    LEXER_DEBUG ("<COMMAND_START>[\\;\\,]");
+
     if (lexer_flags.doing_rawcommand)
       TOK_PUSH_AND_RETURN (yytext, SQ_STRING);
 
@@ -355,12 +383,16 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
   }
 
 <COMMAND_START>[\"\'] {
+    LEXER_DEBUG ("<COMMAND_START>[\\\"\\']");
+
     current_input_column++;
     int tok = handle_string (yytext[0], true);
     COUNT_TOK_AND_RETURN (tok);
   }
 
 <COMMAND_START>[^#% \t\r\n\;\,\"\'][^ \t\r\n\;\,]*{S}* {
+    LEXER_DEBUG ("<COMMAND_START>[^#% \\t\\r\\n\\;\\,\\\"\\'][^ \\t\\r\\n\\;\\,]*{S}*");
+
     std::string tok = strip_trailing_whitespace (yytext);
     TOK_PUSH_AND_RETURN (tok, SQ_STRING);
   }
@@ -380,6 +412,8 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 %}
 
 <MATRIX_START>{SNLCMT}*\]{S}* {
+    LEXER_DEBUG ("<MATRIX_START>{SNLCMT}*\\]{S}*");
+
     scan_for_comments (yytext);
     fixup_column_count (yytext);
     int c = yytext[yyleng-1];
@@ -396,6 +430,8 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 %}
 
 <MATRIX_START>{SNLCMT}*\}{S}* {
+    LEXER_DEBUG ("<MATRIX_START>{SNLCMT}*\\}{S}*");
+
     scan_for_comments (yytext);
     fixup_column_count (yytext);
     int c = yytext[yyleng-1];
@@ -414,6 +450,8 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 %}
 
 <MATRIX_START>{S}*\,{S}* {
+    LEXER_DEBUG ("<MATRIX_START>{S}*\\,{S}*");
+
     current_input_column += yyleng;
 
     int tmp = eat_continuation ();
@@ -439,6 +477,8 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 %}
 
 <MATRIX_START>{S}+ {
+    LEXER_DEBUG ("<MATRIX_START>{S}+");
+
     current_input_column += yyleng;
 
     int tmp = eat_continuation ();
@@ -475,6 +515,8 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 %}
 
 <MATRIX_START>{SNLCMT}*;{SNLCMT}* {
+    LEXER_DEBUG ("<MATRIX_START>{SNLCMT}*;{SNLCMT}*");
+
     scan_for_comments (yytext);
     fixup_column_count (yytext);
     eat_whitespace ();
@@ -493,6 +535,8 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
 <MATRIX_START>{S}*{COMMENT}{SNLCMT}* |
 <MATRIX_START>{S}*{NL}{SNLCMT}* {
+    LEXER_DEBUG ("<MATRIX_START>{S}*{COMMENT}{SNLCMT}*|<MATRIX_START>{S}*{NL}{SNLCMT}*");
+
     scan_for_comments (yytext);
     fixup_column_count (yytext);
     eat_whitespace ();
@@ -512,6 +556,8 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
   }
 
 \[{S}* {
+    LEXER_DEBUG ("\\[{S}*");
+
     nesting_level.bracket ();
 
     current_input_column += yyleng;
@@ -532,6 +578,8 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
   }
 
 \] {
+    LEXER_DEBUG ("\\]");
+
     nesting_level.remove ();
 
     TOK_RETURN (']');
@@ -542,6 +590,8 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 %}
 
 {NUMBER}{Im} {
+    LEXER_DEBUG ("{NUMBER}{Im}");
+
     handle_number ();
     COUNT_TOK_AND_RETURN (IMAG_NUM);
   }
@@ -551,8 +601,9 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 // the constant.
 %}
 
-{D}+/\.[\*/\\^'] |
+{D}+/\.[\*/\\^\'] |
 {NUMBER} {
+    LEXER_DEBUG ("{D}+/\\.[\\*/\\^\\']|{NUMBER}");
     handle_number ();
     COUNT_TOK_AND_RETURN (NUM);
   }
@@ -572,6 +623,8 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
 {CONT}{S}*{NL} |
 {CONT}{S}*{COMMENT} {
+    LEXER_DEBUG ("{CONT}{S}*{NL}|{CONT}{S}*{COMMENT}");
+
     if (yytext[0] == '\\')
       gripe_matlab_incompatible_continuation ();
     scan_for_comments (yytext);
@@ -585,6 +638,8 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 %}
 
 <<EOF>> {
+    LEXER_DEBUG ("<<EOF>>");
+
     if (block_comment_nesting_level != 0)
       {
 	warning ("block comment open at end of input");
@@ -604,6 +659,8 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 %}
 
 {IDENT}{S}* {
+    LEXER_DEBUG ("{IDENT}{S}*");
+
     int id_tok = handle_identifier ();
 
     if (id_tok >= 0)
@@ -615,6 +672,8 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 %}
 
 "@" {
+    LEXER_DEBUG ("@");
+
     current_input_column++;
     lexer_flags.quote_is_transpose = false;
     lexer_flags.convert_spaces_to_comma = false;
@@ -629,6 +688,8 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 %}
 
 {NL} {
+    LEXER_DEBUG ("{NL}");
+
     input_line_number++;
     current_input_column = 1;
     lexer_flags.quote_is_transpose = false;
@@ -647,6 +708,8 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 %}
 
 "'" {
+    LEXER_DEBUG ("'");
+
     current_input_column++;
     lexer_flags.convert_spaces_to_comma = true;
 
@@ -667,6 +730,8 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 %}
 
 \" {
+    LEXER_DEBUG ("\"");
+
     current_input_column++;
     int tok = handle_string ('"');
     COUNT_TOK_AND_RETURN (tok);
@@ -678,6 +743,8 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 %} 
 
 {CCHAR} {
+    LEXER_DEBUG ("{CCHAR}");
+
     xunput (yytext[0], yytext);
 
     bool eof = false;
@@ -694,6 +761,8 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 %}
 
 ^{S}*{CCHAR}\{{S}*{NL} {
+    LEXER_DEBUG ("^{S}*{CCHAR}\\{{S}*{NL}");
+
     input_line_number++;
     current_input_column = 1;
     block_comment_nesting_level++;
@@ -706,43 +775,45 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 // Other operators.
 %}
 
-":"     { BIN_OP_RETURN (':', false); }
+":"     { LEXER_DEBUG (":"); BIN_OP_RETURN (':', false); }
 
-".+"	{ XBIN_OP_RETURN (EPLUS, false); }
-".-"	{ XBIN_OP_RETURN (EMINUS, false); }
-".*"	{ BIN_OP_RETURN (EMUL, false); }
-"./"	{ BIN_OP_RETURN (EDIV, false); }
-".\\"	{ BIN_OP_RETURN (ELEFTDIV, false); }
-".^"	{ BIN_OP_RETURN (EPOW, false); }
-".**"	{ XBIN_OP_RETURN (EPOW, false); }
-".'"	{ do_comma_insert_check (); BIN_OP_RETURN (TRANSPOSE, true); }
-"++"	{ do_comma_insert_check (); XBIN_OP_RETURN (PLUS_PLUS, true); }
-"--"	{ do_comma_insert_check (); XBIN_OP_RETURN (MINUS_MINUS, true); }
-"<="	{ BIN_OP_RETURN (EXPR_LE, false); }
-"=="	{ BIN_OP_RETURN (EXPR_EQ, false); }
-"~="	{ BIN_OP_RETURN (EXPR_NE, false); }
-"!="	{ XBIN_OP_RETURN (EXPR_NE, false); }
-">="	{ BIN_OP_RETURN (EXPR_GE, false); }
-"&"	{ BIN_OP_RETURN (EXPR_AND, false); }
-"|"	{ BIN_OP_RETURN (EXPR_OR, false); }
-"<"	{ BIN_OP_RETURN (EXPR_LT, false); }
-">"	{ BIN_OP_RETURN (EXPR_GT, false); }
-"+"     { BIN_OP_RETURN ('+', false); }
-"-"     { BIN_OP_RETURN ('-', false); }
-"*"	{ BIN_OP_RETURN ('*', false); }
-"/"	{ BIN_OP_RETURN ('/', false); }
-"\\"	{ BIN_OP_RETURN (LEFTDIV, false); }
-";"	{ BIN_OP_RETURN (';', true); }
-","	{ BIN_OP_RETURN (',', true); }
-"^"	{ BIN_OP_RETURN (POW, false); }
-"**"	{ XBIN_OP_RETURN (POW, false); }
-"="	{ BIN_OP_RETURN ('=', true); }
-"&&"	{ BIN_OP_RETURN (EXPR_AND_AND, false); }
-"||"	{ BIN_OP_RETURN (EXPR_OR_OR, false); }
-"<<"	{ XBIN_OP_RETURN (LSHIFT, false); }
-">>"	{ XBIN_OP_RETURN (RSHIFT, false); }
+".+"	{ LEXER_DEBUG (".+"); XBIN_OP_RETURN (EPLUS, false); }
+".-"	{ LEXER_DEBUG (".-"); XBIN_OP_RETURN (EMINUS, false); }
+".*"	{ LEXER_DEBUG (".*"); BIN_OP_RETURN (EMUL, false); }
+"./"	{ LEXER_DEBUG ("./"); BIN_OP_RETURN (EDIV, false); }
+".\\"	{ LEXER_DEBUG (".\\"); BIN_OP_RETURN (ELEFTDIV, false); }
+".^"	{ LEXER_DEBUG (".^"); BIN_OP_RETURN (EPOW, false); }
+".**"	{ LEXER_DEBUG (".**"); XBIN_OP_RETURN (EPOW, false); }
+".'"	{ LEXER_DEBUG (".'"); do_comma_insert_check (); BIN_OP_RETURN (TRANSPOSE, true); }
+"++"	{ LEXER_DEBUG ("++"); do_comma_insert_check (); XBIN_OP_RETURN (PLUS_PLUS, true); }
+"--"	{ LEXER_DEBUG ("--"); do_comma_insert_check (); XBIN_OP_RETURN (MINUS_MINUS, true); }
+"<="	{ LEXER_DEBUG ("<="); BIN_OP_RETURN (EXPR_LE, false); }
+"=="	{ LEXER_DEBUG ("=="); BIN_OP_RETURN (EXPR_EQ, false); }
+"~="	{ LEXER_DEBUG ("~="); BIN_OP_RETURN (EXPR_NE, false); }
+"!="	{ LEXER_DEBUG ("!="); XBIN_OP_RETURN (EXPR_NE, false); }
+">="	{ LEXER_DEBUG (">="); BIN_OP_RETURN (EXPR_GE, false); }
+"&"	{ LEXER_DEBUG ("&"); BIN_OP_RETURN (EXPR_AND, false); }
+"|"	{ LEXER_DEBUG ("|"); BIN_OP_RETURN (EXPR_OR, false); }
+"<"	{ LEXER_DEBUG ("<"); BIN_OP_RETURN (EXPR_LT, false); }
+">"	{ LEXER_DEBUG (">"); BIN_OP_RETURN (EXPR_GT, false); }
+"+"     { LEXER_DEBUG ("+"); BIN_OP_RETURN ('+', false); }
+"-"     { LEXER_DEBUG ("-"); BIN_OP_RETURN ('-', false); }
+"*"	{ LEXER_DEBUG ("*"); BIN_OP_RETURN ('*', false); }
+"/"	{ LEXER_DEBUG ("/"); BIN_OP_RETURN ('/', false); }
+"\\"	{ LEXER_DEBUG ("\\"); BIN_OP_RETURN (LEFTDIV, false); }
+";"	{ LEXER_DEBUG (";"); BIN_OP_RETURN (';', true); }
+","	{ LEXER_DEBUG (","); BIN_OP_RETURN (',', true); }
+"^"	{ LEXER_DEBUG ("^"); BIN_OP_RETURN (POW, false); }
+"**"	{ LEXER_DEBUG ("**"); XBIN_OP_RETURN (POW, false); }
+"="	{ LEXER_DEBUG ("="); BIN_OP_RETURN ('=', true); }
+"&&"	{ LEXER_DEBUG ("&&"); BIN_OP_RETURN (EXPR_AND_AND, false); }
+"||"	{ LEXER_DEBUG ("||"); BIN_OP_RETURN (EXPR_OR_OR, false); }
+"<<"	{ LEXER_DEBUG ("<<"); XBIN_OP_RETURN (LSHIFT, false); }
+">>"	{ LEXER_DEBUG (">>"); XBIN_OP_RETURN (RSHIFT, false); }
 
 {NOT} {
+    LEXER_DEBUG ("{NOT}");
+
     if (yytext[0] == '~')
       BIN_OP_RETURN (EXPR_NOT, false);
     else
@@ -750,6 +821,8 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
   }
 
 "(" {
+    LEXER_DEBUG ("(");
+
     lexer_flags.looking_at_indirect_ref = false;
     nesting_level.paren ();
     promptflag--;
@@ -757,6 +830,8 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
   }
 
 ")" {
+    LEXER_DEBUG (")");
+
     nesting_level.remove ();
     current_input_column++;
     lexer_flags.quote_is_transpose = true;
@@ -765,26 +840,28 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     COUNT_TOK_AND_RETURN (')');
   }
 
-"."     { TOK_RETURN ('.'); }
+"."     { LEXER_DEBUG ("."); TOK_RETURN ('.'); }
 
-"+="	{ XBIN_OP_RETURN (ADD_EQ, false); }
-"-="	{ XBIN_OP_RETURN (SUB_EQ, false); }
-"*="	{ XBIN_OP_RETURN (MUL_EQ, false); }
-"/="	{ XBIN_OP_RETURN (DIV_EQ, false); }
-"\\="	{ XBIN_OP_RETURN (LEFTDIV_EQ, false); }
-".+="	{ XBIN_OP_RETURN (ADD_EQ, false); }
-".-="	{ XBIN_OP_RETURN (SUB_EQ, false); }
-".*="	{ XBIN_OP_RETURN (EMUL_EQ, false); }
-"./="	{ XBIN_OP_RETURN (EDIV_EQ, false); }
-".\\="	{ XBIN_OP_RETURN (ELEFTDIV_EQ, false); }
-{POW}=  { XBIN_OP_RETURN (POW_EQ, false); }
-{EPOW}= { XBIN_OP_RETURN (EPOW_EQ, false); }
-"&="	{ XBIN_OP_RETURN (AND_EQ, false); }
-"|="	{ XBIN_OP_RETURN (OR_EQ, false); }
-"<<="	{ XBIN_OP_RETURN (LSHIFT_EQ, false); }
-">>="	{ XBIN_OP_RETURN (RSHIFT_EQ, false); }
+"+="	{ LEXER_DEBUG ("+="); XBIN_OP_RETURN (ADD_EQ, false); }
+"-="	{ LEXER_DEBUG ("-="); XBIN_OP_RETURN (SUB_EQ, false); }
+"*="	{ LEXER_DEBUG ("*="); XBIN_OP_RETURN (MUL_EQ, false); }
+"/="	{ LEXER_DEBUG ("/="); XBIN_OP_RETURN (DIV_EQ, false); }
+"\\="	{ LEXER_DEBUG ("\\="); XBIN_OP_RETURN (LEFTDIV_EQ, false); }
+".+="	{ LEXER_DEBUG (".+="); XBIN_OP_RETURN (ADD_EQ, false); }
+".-="	{ LEXER_DEBUG (".-="); XBIN_OP_RETURN (SUB_EQ, false); }
+".*="	{ LEXER_DEBUG (".*="); XBIN_OP_RETURN (EMUL_EQ, false); }
+"./="	{ LEXER_DEBUG ("./="); XBIN_OP_RETURN (EDIV_EQ, false); }
+".\\="	{ LEXER_DEBUG (".\\="); XBIN_OP_RETURN (ELEFTDIV_EQ, false); }
+{POW}=  { LEXER_DEBUG ("{POW}="); XBIN_OP_RETURN (POW_EQ, false); }
+{EPOW}= { LEXER_DEBUG ("{EPOW}="); XBIN_OP_RETURN (EPOW_EQ, false); }
+"&="	{ LEXER_DEBUG ("&="); XBIN_OP_RETURN (AND_EQ, false); }
+"|="	{ LEXER_DEBUG ("|="); XBIN_OP_RETURN (OR_EQ, false); }
+"<<="	{ LEXER_DEBUG ("<<="); XBIN_OP_RETURN (LSHIFT_EQ, false); }
+">>="	{ LEXER_DEBUG (">>="); XBIN_OP_RETURN (RSHIFT_EQ, false); }
 
 \{{S}* {
+    LEXER_DEBUG ("\\{{S}*");
+
     nesting_level.brace ();
 
     current_input_column += yyleng;
@@ -800,6 +877,8 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
   }
 
 "}" {
+    LEXER_DEBUG ("}");
+
     nesting_level.remove ();
 
     TOK_RETURN ('}');
@@ -810,6 +889,8 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 %}
 
 . {
+    LEXER_DEBUG (".");
+
     // EOF happens here if we are parsing nested functions.
 
     xunput (yytext[0], yytext);
@@ -936,8 +1017,160 @@ text_yyinput (void)
 }
 
 static void
+display_character (char c)
+{
+  if (isgraph (c))
+    std::cerr << c;
+  else
+    switch (c)
+      {
+      case 0:
+	std::cerr << "NUL";
+	break;
+
+      case 1:
+	std::cerr << "SOH";
+	break;
+
+      case 2:
+	std::cerr << "STX";
+	break;
+
+      case 3:
+	std::cerr << "ETX";
+	break;
+
+      case 4:
+	std::cerr << "EOT";
+	break;
+
+      case 5:
+	std::cerr << "ENQ";
+	break;
+
+      case 6:
+	std::cerr << "ACK";
+	break;
+
+      case 7:
+	std::cerr << "\\a";
+	break;
+
+      case 8:
+	std::cerr << "\\b";
+	break;
+
+      case 9:
+	std::cerr << "\\t";
+	break;
+
+      case 10:
+	std::cerr << "\\n";
+	break;
+
+      case 11:
+	std::cerr << "\\v";
+	break;
+
+      case 12:
+	std::cerr << "\\f";
+	break;
+
+      case 13:
+	std::cerr << "\\r";
+	break;
+
+      case 14:
+	std::cerr << "SO";
+	break;
+
+      case 15:
+	std::cerr << "SI";
+	break;
+
+      case 16:
+	std::cerr << "DLE";
+	break;
+
+      case 17:
+	std::cerr << "DC1";
+	break;
+
+      case 18:
+	std::cerr << "DC2";
+	break;
+
+      case 19:
+	std::cerr << "DC3";
+	break;
+
+      case 20:
+	std::cerr << "DC4";
+	break;
+
+      case 21:
+	std::cerr << "NAK";
+	break;
+
+      case 22:
+	std::cerr << "SYN";
+	break;
+
+      case 23:
+	std::cerr << "ETB";
+	break;
+
+      case 24:
+	std::cerr << "CAN";
+	break;
+
+      case 25:
+	std::cerr << "EM";
+	break;
+
+      case 26:
+	std::cerr << "SUB";
+	break;
+
+      case 27:
+	std::cerr << "ESC";
+	break;
+
+      case 28:
+	std::cerr << "FS";
+	break;
+
+      case 29:
+	std::cerr << "GS";
+	break;
+
+      case 30:
+	std::cerr << "RS";
+	break;
+
+      case 31:
+	std::cerr << "US";
+	break;
+
+      case 32:
+	std::cerr << "SPACE";
+	break;
+
+      case 127:
+	std::cerr << "DEL";
+	break;
+      }
+}
+static void
 xunput (char c, char *buf)
 {
+  if (lexer_debug_flag)
+    {
+      std::cerr << "U: ";
+      display_character (c);
+      std::cerr << std::endl;
+    }
+
   if (c == '\n')
     input_line_number--;
 
@@ -1505,6 +1738,9 @@ process_comment (bool start_in_block, bool& eof)
   std::string txt = start_in_block
     ? grab_block_comment (flex_reader, eof)
     : grab_comment_block (flex_reader, false, eof);
+
+  if (lexer_debug_flag)
+    std::cerr << "C: " txt << std::endl;
 
   if (help_txt.empty () && nesting_level.none ())
     {
@@ -2827,6 +3063,54 @@ display_token (int tok)
     }
 }
 
+static void
+display_state (void)
+{
+  std::cerr << "S: ";
+
+  switch (YY_START)
+    {
+    case INITIAL:
+      std::cerr << "INITIAL" << std::endl;
+      break;
+
+    case COMMAND_START:
+      std::cerr << "COMMAND_START" << std::endl;
+      break;
+
+    case MATRIX_START:
+      std::cerr << "MATRIX_START" << std::endl;
+      break;
+
+    case SCRIPT_FILE_BEGIN:
+      std::cerr << "SCRIPT_FILE_BEGIN" << std::endl;
+      break;
+
+    case NESTED_FUNCTION_END:
+      std::cerr << "NESTED_FUNCTION_END" << std::endl;
+      break;
+
+    case NESTED_FUNCTION_BEGIN:
+      std::cerr << "NESTED_FUNCTION_BEGIN" << std::endl;
+      break;
+
+    default:
+      std::cerr << "UNKNOWN START STATE!" << std::endl;
+      break;
+    }
+}
+
+static void
+lexer_debug (const char *pattern, const char *text)
+{
+  std::cerr << std::endl;
+
+  display_state ();
+
+  std::cerr << "P: " << pattern << std::endl;
+  std::cerr << "T: " << text << std::endl;
+}
+
 DEFUN (__display_tokens__, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __display_tokens__\n\
@@ -2844,6 +3128,17 @@ Number of language tokens processed since Octave startup.\n\
 @end deftypefn")
 {
   return octave_value (Vtoken_count);
+}
+
+DEFUN (__lexer_debug_flag__, args, nargout,
+  "Undocumented internal function.")
+{
+  octave_value retval;
+
+  retval = set_internal_variable (lexer_debug_flag, args, nargout,
+           			  "__lexer_debug_flag__");
+
+  return retval;
 }
 
 /*

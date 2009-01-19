@@ -1,3 +1,14 @@
+2009-01-19  John W. Eaton  <jwe@octave.org>
+
+	* lex.l (lexer_debug_flag): New static variable.
+	(F__lexer_debug_flag__): New function.
+	(LEXER_DEBUG): New macro.  Use it in all patterns.
+	(DISPLAY_TOK_AND_RETURN): Also display token if lexer_debug_flag
+	is set.
+	(process_comment): Display comment if lexer_debug_flag is set.
+	(display_character, display_state, lexer_debug): New static functions.
+	(xunput): Display character if lexer_debug_flag is set.
+
 2009-01-17  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov.h: Describe usage of storable_value and make_storable_value.

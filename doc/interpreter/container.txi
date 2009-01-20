@@ -697,9 +697,11 @@ using the @code{cell2mat} and @code{cell2struct} functions.
 @node Comma Separated Lists
 @section Comma Separated Lists
 @cindex comma separated lists
+@cindex cs-lists
 
-Comma separated lists are the basic argument type to all Octave
-functions. In the example
+Comma separated lists@footnote{Comma-separated lists are also sometimes
+informally referred to as @dfn{cs-lists}.} are the basic argument type
+to all Octave functions. In the example
 
 @example
 max (@var{a}, @var{b})

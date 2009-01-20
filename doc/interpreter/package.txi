@@ -107,6 +107,8 @@ Since the installed package expects its dependencies to be installed
 it may not function correctly. Because of this it is not recommended
 to disable dependency checking.
 
+@DOCSTRING(pkg)
+
 @node Using Packages
 @section Using Packages
 

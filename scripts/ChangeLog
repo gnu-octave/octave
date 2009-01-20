@@ -1,3 +1,7 @@
+2009-01-20  John W. Eaton  <jwe@octave.org>
+
+	* testfun/assert.m: Use isfield instead of struct_contains.
+
 2009-01-17 Ben Abbott <bpabbott@mac.com>
 
 	* general/cart2sph.m, cart2pol.m, sph2cart.m pol2cart.m:

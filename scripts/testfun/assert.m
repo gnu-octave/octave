@@ -118,7 +118,7 @@ function assert (cond, varargin)
 	  empty = numel (cond) == 0;
 	  normal = numel (cond) == 1;
 	  for [v, k] = cond
-	    if (! struct_contains (expected, k))
+	    if (! isfield (expected, k))
 	      error ();
 	    endif
 	    if (empty)

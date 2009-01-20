@@ -27,6 +27,14 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "error.h"
 #include "oct-obj.h"
+#include "Cell.h"
+
+octave_value_list::octave_value_list (const Cell& tc)
+  : data (tc.numel ())
+{
+  for (octave_idx_type i = 0; i < tc.numel (); i++)
+    data[i] = tc(i);
+}
 
 octave_allocator
 octave_value_list::allocator (sizeof (octave_value_list));

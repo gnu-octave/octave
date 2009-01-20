@@ -31,6 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "str-vec.h"
 
 #include "ov.h"
+class Cell;
 
 class
 OCTINTERP_API
@@ -46,6 +47,8 @@ public:
 
   octave_value_list (const octave_value& tc)
     : data (1, tc) { }
+
+  octave_value_list (const Cell& tc);
 
   octave_value_list (const octave_value_list& obj)
     : data (obj.data), names (obj.names) { }

@@ -75,7 +75,7 @@ public:
   octave_value_list subsref (const std::string&,
 			     const std::list<octave_value_list>&, int);
 
-  static octave_value numeric_conv (const Cell& val,
+  static octave_value numeric_conv (const octave_value& val,
 				    const std::string& type);
 
   octave_value subsasgn (const std::string& type,

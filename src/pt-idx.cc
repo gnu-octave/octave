@@ -391,6 +391,12 @@ tree_index_expression::rvalue (void)
   return retval;
 }
 
+static void
+gripe_invalid_inquiry_subscript (void)
+{
+  error ("invalid dimension inquiry of a non-existent value");
+}
+
 octave_lvalue
 tree_index_expression::lvalue (void)
 {
@@ -409,8 +415,6 @@ tree_index_expression::lvalue (void)
   if (! error_state)
     {
       bool have_new_struct_field = false;
-
-      octave_idx_type new_struct_field_nel = 0;
 
       // I think it is OK to have a copy here.
 
@@ -441,10 +445,15 @@ tree_index_expression::lvalue (void)
 		  // that argument list so we pass the appropriate
 		  // value to the built-in __end__ function.
 
-		  octave_value_list tmp_list
-		    = first_retval_object.subsref (type.substr (0, i), idx, 1);
+                  if (first_retval_object.is_defined ())
+                    {
+                      octave_value_list tmp_list
+                        = first_retval_object.subsref (type.substr (0, i), idx, 1);
 
-		  tmp = tmp_list(0);
+                      tmp = tmp_list(0);
+                    }
+                  else
+                    gripe_invalid_inquiry_subscript ();
 
 		  if (error_state)
 		    break;
@@ -464,23 +473,27 @@ tree_index_expression::lvalue (void)
 
 		idx.push_back (tidx);
 
-		if (i == n-1)
+		if (! tidx.all_scalars () && retval.numel () == 1)
 		  {
-		    // Last indexing element.  Will this result in a
-		    // comma-separated list?
+                    // Possible cs-list.
 
 		    if (tidx.has_magic_colon ())
 		      {
-			octave_value_list tmp_list
-			  = first_retval_object.subsref (type, idx, 1);
+                        if (first_retval_object.is_defined ())
+                          {
+                            octave_value_list tmp_list
+                              = first_retval_object.subsref (type, idx, 1);
 
-			if (! error_state)
-			  {
-			    octave_value val = tmp_list(0);
+                            if (! error_state)
+                              {
+                                octave_value val = tmp_list(0);
 
-			    if (val.is_cs_list ())
-			      retval.numel (val.numel ());
-			  }
+                                if (val.is_cs_list ())
+                                  retval.numel (val.numel ());
+                              }
+                          }
+                        else
+                          gripe_invalid_inquiry_subscript ();
 		      }
 		    else
 		      {
@@ -504,110 +517,109 @@ tree_index_expression::lvalue (void)
 	    case '.':
 	      {
 		octave_value tidx = get_struct_index (p_arg_nm, p_dyn_field);
+                if (error_state)
+                  break;
 
-		if (! error_state)
-		  {
-		    if (i == n-1)
-		      {
-			// Last indexing element.  Will this result in a
-			// comma-separated list?
+                if (i > 0 && type [i-1] == '(' && retval.numel () == 1 
+                    && ! idx.back ().all_scalars ())
+                  {
+                    // Possible cs-list.
 
-			if (have_new_struct_field)
-			  retval.numel (new_struct_field_nel);
-			else if (i > 0)
-			  {
-			    std::string ttype = type.substr (0, i);
+                    std::string ttype = type.substr (0, i);
 
-			    char c = ttype[ttype.length()-1];
-			    if (c == '(' || c == '{')
-			      {
-				octave_idx_type nel = 1;
+                    octave_value_list xidx = idx.back ();
 
-				octave_value_list xidx = idx.back ();
+                    if (xidx.has_magic_colon ())
+                      {
+                        if (first_retval_object.is_defined () && ! have_new_struct_field)
+                          {
+                            octave_value_list tmp_list
+                              = first_retval_object.subsref (ttype, idx, 1);
 
-				octave_idx_type nidx = xidx.length ();
+                            if (! error_state)
+                              {
+                                octave_value val = tmp_list(0);
 
-				for (octave_idx_type j = 0; j < nidx; j++)
-				  {
-				    octave_value val = xidx(j);
+                                if (val.is_map ())
+                                  retval.numel (val.numel ());
+                              }
+                          }
+                        else
+                          gripe_invalid_inquiry_subscript ();
+                      }
+                    else
+                      {
+                        octave_idx_type nel = 1;
 
-				    nel *= val.numel ();
-				  }
+                        octave_idx_type nidx = xidx.length ();
 
-				retval.numel (nel);
-			      }
-			    else if (first_retval_object.is_defined ()
-				     && ! (first_retval_object.is_real_matrix ()
-					   && first_retval_object.is_zero_by_zero ()))
-			      {
-				octave_value_list tmp_list
-				  = first_retval_object.subsref (ttype, idx, 1);
+                        for (octave_idx_type j = 0; j < nidx; j++)
+                          {
+                            octave_value val = xidx(j);
 
-				if (! error_state)
-				  {
-				    octave_value val = tmp_list(0);
+                            nel *= val.numel ();
+                          }
 
-				    retval.numel (val.numel ());
-				  }
-			      }
-			    else
-			      retval.numel (1);
-			  }
-			else
-			  {
-			    if (first_retval_object.is_defined ()
-				&& ! (first_retval_object.is_real_matrix ()
-				      && first_retval_object.is_zero_by_zero ()))
-			      retval.numel (first_retval_object.numel ());
-			    else
-			      retval.numel (1);
-			  }
-		      }
-		    else
-		      {
-			octave_value tobj = first_retval_object;
+                        retval.numel (nel);
+                      }
+                  }
+                else if (retval.numel () == 1 && first_retval_object.is_defined ())
+                  {
+                    octave_value tobj = first_retval_object;
 
-			if (! have_new_struct_field)
-			  {
-			    if (i > 0 && first_retval_object.is_defined ()
-				&& ! (first_retval_object.is_real_matrix ()
-				      && first_retval_object.is_zero_by_zero ()))
-			      {
-				std::string ttype = type.substr (0, i);
+                    std::string ttype = type.substr (0, i);
 
-				char c = ttype[ttype.length()-1];
+                    if (i > 0)
+                      {
+                        // Here we need to ensure that keys do exist.
+                        
+                        octave_value_list tmp_list
+                          = first_retval_object.subsref (ttype, idx, 1);
 
-				if (! (c == '(' || c == '{'))
-				  {
-				    octave_value_list tmp_list
-				      = first_retval_object.subsref (ttype, idx, 1);
+                        if (tmp_list.length () > 0) tobj = tmp_list (0);
+                      }
 
-				    if (! error_state)
-				      tobj = tmp_list(0);
-				  }
-			      }
 
-			    if (! error_state && tobj.is_map ())
-			      {
-				if (tidx.is_string ())
-				  {
-				    Octave_map m = tobj.map_value ();
+                    std::string key = tidx.string_value ();
 
-				    std::string s = tidx.string_value ();
+                    if (! error_state)
+                      {
+                        if (tobj.is_map ())
+                          {
+                            Octave_map map = tobj.map_value ();
+                            if (map.contains (key))
+                              retval.numel (map.contents (key).numel ());
+                            else
+                              {
+                                map.contents (key) = octave_value ();
+                                if (i > 0)
+                                  first_retval_object = 
+                                    first_retval_object.subsasgn (ttype, idx, map);
+                                else
+                                  first_retval_object = map;
 
-				    if (! m.contains (s))
-				      {
-					have_new_struct_field = true;
+                                have_new_struct_field = true;
+                              }
+                          }
+                        else 
+                          {
+                            Octave_map map (key, octave_value ());
+                            if (i > 0)
+                              first_retval_object = 
+                                first_retval_object.subsasgn (ttype, idx, map);
+                            else
+                              first_retval_object = map;
 
-					new_struct_field_nel = m.numel ();
-				      }
-				  }
-			      }
-			  }
-		      }
+                            have_new_struct_field = true;
+                          }
+                      }
+                  }
 
-		    idx.push_back (octave_value (tidx));
-		  }
+                if (! error_state)
+                  idx.push_back (tidx);
+                else
+                  break;
+
 	      }
 	      break;
 
@@ -625,6 +637,7 @@ tree_index_expression::lvalue (void)
 
       if (! error_state)
 	retval.set_index (type, idx);
+
     }
 
   return retval;

@@ -298,6 +298,19 @@ public:
 	}
     }
 
+  // This uniquifies the value if it is referenced by more than a certain
+  // number of shallow copies. This is useful for optimizations where we
+  // know a certain copy, typically within a cell array, to be obsolete.
+  void make_unique (int obsolete_copies)
+    {
+      if (rep->count > obsolete_copies + 1)
+	{
+	  --rep->count;
+	  rep = rep->clone ();
+	  rep->count = 1;
+	}
+    }
+
   // Simple assignment.
 
   octave_value& operator = (const octave_value& a)

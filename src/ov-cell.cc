@@ -90,19 +90,7 @@ octave_cell::subsref (const std::string& type,
 	    if (tcell.length () == 1)
 	      retval(0) = tcell(0,0);
 	    else
-	      {
-		octave_idx_type n = tcell.numel ();
-
-		octave_value_list lst (n, octave_value ());
-
-		for (octave_idx_type i = 0; i < n; i++)
-		  {
-		    OCTAVE_QUIT;
-		    lst(i) = tcell(i);
-		  }
-
-		retval(0) = octave_value (lst, true);
-	      }
+              retval = octave_value (octave_value_list (tcell), true);
 	  }
       }
       break;
@@ -179,36 +167,59 @@ octave_cell::subsasgn (const std::string& type,
 
 	case '{':
 	  {
-	    octave_value tmp = do_index_op (idx.front (), true);
+	    Cell tmpc = matrix.index (idx.front (), true);
 
 	    if (! error_state)
 	      {
-		if (tmp.numel () == 1)
+                std::list<octave_value_list> next_idx (idx);
+
+                next_idx.erase (next_idx.begin ());
+
+                std::string next_type = type.substr (1);
+
+                if (rhs.is_cs_list ())
+                  {
+                    const octave_value_list rhsl = rhs.list_value ();
+                    if (tmpc.numel () == rhsl.length ())
+                      {
+                        for (octave_idx_type k = 0; k < tmpc.numel () && ! error_state; k++)
+                          {
+                            octave_value tmp = tmpc (k);
+                            if (! tmp.is_defined () || tmp.is_zero_by_zero ())
+                              {
+                                tmp = octave_value::empty_conv (next_type, rhs);
+                                tmp.make_unique (); // probably a no-op.
+                              }
+                            else
+                              // optimization: ignore the copy still stored inside our array and in tmpc.
+                              tmp.make_unique (2);
+
+                            tmpc(k) = tmp.subsasgn (next_type, next_idx, rhsl(k));
+                          }
+
+                        t_rhs = octave_value (octave_value_list (tmpc), true);
+                      }
+                    else
+                      error ("invalid cs-list length in assignment");
+                  }
+                else if (tmpc.numel () == 1)
 		  {
-		    tmp = tmp.cell_value ()(0,0);
-
-		    std::list<octave_value_list> next_idx (idx);
-
-		    next_idx.erase (next_idx.begin ());
+		    octave_value tmp = tmpc(0);
 
 		    if (! tmp.is_defined () || tmp.is_zero_by_zero ())
-		      tmp = octave_value::empty_conv (type.substr (1), rhs);
-                    else
                       {
-                        // This is a bit of black magic. tmp is a shallow copy
-                        // of an element inside this cell, and maybe more. To
-                        // prevent make_unique from always forcing a copy, we
-                        // temporarily delete the stored value.
-                        assign (idx.front (), octave_value ());
-                        tmp.make_unique ();
-                        assign (idx.front (), Cell (tmp));
+                        tmp = octave_value::empty_conv (type.substr (1), rhs);
+                        tmp.make_unique (); // probably a no-op.
                       }
+                    else
+                      // optimization: ignore the copy still stored inside our array and in tmpc.
+                      tmp.make_unique (2);
 
 		    if (! error_state)
-		      t_rhs = tmp.subsasgn (type.substr (1), next_idx, rhs);
+		      t_rhs = tmp.subsasgn (next_type, next_idx, rhs);
 		  }
                 else
-                  error ("scalar indices required for {} in assignment.");
+                  error ("invalid assignment to cs-list outside multiple assignment.");
 	      }
 	  }
 	  break;
@@ -272,7 +283,7 @@ octave_cell::subsasgn (const std::string& type,
               // Regularize a null matrix if stored into a cell.
               octave_base_matrix<Cell>::assign (i, Cell (t_rhs.storable_value ()));
             else if (! error_state)
-              error ("scalar indices required for {} in assignment.");
+              error ("invalid assignment to cs-list outside multiple assignment.");
 
 	    if (! error_state)
 	      {

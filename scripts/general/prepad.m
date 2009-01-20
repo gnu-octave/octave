@@ -19,10 +19,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} prepad (@var{x}, @var{l}, @var{c})
-## @deftypefnx {Function File} {} postpad (@var{x}, @var{l}, @var{c})
-## @deftypefnx {Function File} {} postpad (@var{x}, @var{l}, @var{c}, @var{dim})
-##
-## Prepends (appends) the scalar value @var{c} to the vector @var{x}
+## @deftypefnx {Function File} {} prepad (@var{x}, @var{l}, @var{c}, @var{dim})
+## Prepend (append) the scalar value @var{c} to the vector @var{x}
 ## until it is of length @var{l}.  If the third argument is not
 ## supplied, a value of 0 is used.
 ##

@@ -19,6 +19,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} postpad (@var{x}, @var{l}, @var{c})
+## @deftypefnx {Function File} {} postpad (@var{x}, @var{l}, @var{c}, @var{dim})
 ## @seealso{prepad, resize}
 ## @end deftypefn
 

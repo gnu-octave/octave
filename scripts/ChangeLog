@@ -1,5 +1,7 @@
 2009-01-20  John W. Eaton  <jwe@octave.org>
 
+	* general/postpad.m: Doc fix.
+	* general/prepad.m: Doc fix.
 	* image/pink.m: Spelling fix.
 	* image/hsv.m: Doc fix.
 	From Francesco Potorti` <Potorti@isti.cnr.it>.

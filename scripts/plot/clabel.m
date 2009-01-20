@@ -29,12 +29,12 @@
 ## that are returned by @code{contour}, @code{contourf} and @code{contour3}.
 ## The contour labels are rotated and placed in the contour itself.
 ##
-## By default, all contours are labelled. However, the conours to label can be
+## By default, all contours are labelled. However, the contours to label can be
 ## specified by the vector @var{v}. If the "manual" argument is given then
 ## the contours to label can be selected with the mouse.
 ##
 ## Additional property/value pairs that are valid properties of text objects
-## can be given and are passed to the underlying text cobjects. Additionally,
+## can be given and are passed to the underlying text objects. Additionally,
 ## the property "LabelSpacing" is available allowing the spacing between labels
 ## on a contour (in points) to be specified. The default is 144 points, or 2
 ## inches.

@@ -18,8 +18,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} pink (@var{n})
-## Create color colormap. This colormap gives a sephia tone on black and
-## white images. The argument @var{n} should be a scalar.  If it
+## Create color colormap.  This colormap gives a sepia tone on black and
+## white images.  The argument @var{n} should be a scalar.  If it
 ## is omitted, the length of the current colormap or 64 is assumed.
 ## @seealso{colormap}
 ## @end deftypefn

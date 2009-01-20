@@ -1,6 +1,8 @@
 2009-01-20  John W. Eaton  <jwe@octave.org>
 
-	* image/hsv.m: Doc fix from Francesco Potorti` <Potorti@isti.cnr.it>.
+	* image/pink.m: Spelling fix.
+	* image/hsv.m: Doc fix.
+	From Francesco Potorti` <Potorti@isti.cnr.it>.
 
 	* testfun/assert.m: Use isfield instead of struct_contains.
 

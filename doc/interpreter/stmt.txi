@@ -782,7 +782,8 @@ guaranteed to be executed regardless of how control exits @var{body}.
 This is useful to protect temporary changes to global variables from
 possible errors.  For example, the following code will always restore
 the original value of the global variable @code{frobnositcate}
-even if an error occurs while performing the indexing operation.
+even if an error occurs in the first part of the @code{unwind_protect}
+block.
 
 @example
 @group
@@ -798,9 +799,10 @@ end_unwind_protect
 
 @noindent
 Without @code{unwind_protect}, the value of @var{frobnosticate}
-would not be restored if an error occurs while performing the indexing
-operation because evaluation would stop at the point of the error and
-the statement to restore the value would not be executed.
+would not be restored if an error occurs while evaluating the first part
+of the @code{unwind_protect} block because evaluation would stop at the
+point of the error and the statement to restore the value would not be
+executed.
 
 @node The try Statement
 @section The @code{try} Statement

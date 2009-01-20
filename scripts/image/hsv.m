@@ -18,9 +18,14 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} hsv (@var{n})
-## Create color colormap. This colormap is red through yellow, green, cyan,
-## blue, magenta to red. The argument @var{n} should be a scalar.  If it
-## is omitted, the length of the current colormap or 64 is assumed.
+## Create color colormap.  This colormap is red through yellow, green,
+## cyan, blue, magenta to red.  It is obtained by linearly varying the
+## hue through all possible values while keeping constant maximum
+## saturation and value and is equivalent to
+## @code{hsv2rgb ([linspace(0,1,N)', ones(N,2)])}.
+##
+## The argument @var{n} should be a scalar.  If it is omitted, the
+## length of the current colormap or 64 is assumed.
 ## @seealso{colormap}
 ## @end deftypefn
 

@@ -738,8 +738,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 }
 
 %{
-// Gobble comments.  If closest nesting is inside parentheses, don't
-// return a new line.
+// Gobble comments.
 %} 
 
 {CCHAR} {
@@ -1740,7 +1739,7 @@ process_comment (bool start_in_block, bool& eof)
     : grab_comment_block (flex_reader, false, eof);
 
   if (lexer_debug_flag)
-    std::cerr << "C: " txt << std::endl;
+    std::cerr << "C: " << txt << std::endl;
 
   if (help_txt.empty () && nesting_level.none ())
     {

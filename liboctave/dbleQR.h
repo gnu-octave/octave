@@ -2,6 +2,7 @@
 
 Copyright (C) 1994, 1995, 1996, 1997, 2000, 2002, 2004, 2005, 2006,
               2007 John W. Eaton
+Copyright (C) 2008, 2009 Jaroslav Hajek              
 
 This file is part of Octave.
 
@@ -20,8 +21,6 @@ along with Octave; see the file COPYING.  If not, see
 <http://www.gnu.org/licenses/>.
 
 */
-
-// updating/downdating by Jaroslav Hajek 2008
 
 #if !defined (octave_QR_h)
 #define octave_QR_h 1
@@ -71,19 +70,27 @@ public:
 
   Matrix R (void) const { return r; }
 
+#ifdef HAVE_QRUPDATE
+
+  void update (const ColumnVector& u, const ColumnVector& v);
+
   void update (const Matrix& u, const Matrix& v);
 
-  void insert_col (const Matrix& u, octave_idx_type j);
+  void insert_col (const ColumnVector& u, octave_idx_type j);
+
+  void insert_col (const Matrix& u, const Array<octave_idx_type>& j);
 
   void delete_col (octave_idx_type j);
 
-  void insert_row (const Matrix& u, octave_idx_type j);
+  void delete_col (const Array<octave_idx_type>& j);
+
+  void insert_row (const RowVector& u, octave_idx_type j);
 
   void delete_row (octave_idx_type j);
 
   void shift_cols (octave_idx_type i, octave_idx_type j);
 
-  void economize (void);
+#endif
 
   friend std::ostream&  operator << (std::ostream&, const QR&);
 

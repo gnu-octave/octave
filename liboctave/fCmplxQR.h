@@ -2,6 +2,7 @@
 
 Copyright (C) 1994, 1995, 1996, 1997, 2000, 2002, 2004, 2005, 2006,
               2007 John W. Eaton
+Copyright (C) 2008, 2009 Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -65,19 +66,27 @@ public:
 
   FloatComplexMatrix R (void) const { return r; }
 
+#ifdef HAVE_QRUPDATE
+
+  void update (const FloatComplexColumnVector& u, const FloatComplexColumnVector& v);
+
   void update (const FloatComplexMatrix& u, const FloatComplexMatrix& v);
 
-  void insert_col (const FloatComplexMatrix& u, octave_idx_type j);
+  void insert_col (const FloatComplexColumnVector& u, octave_idx_type j);
+
+  void insert_col (const FloatComplexMatrix& u, const Array<octave_idx_type>& j);
 
   void delete_col (octave_idx_type j);
 
-  void insert_row (const FloatComplexMatrix& u, octave_idx_type j);
+  void delete_col (const Array<octave_idx_type>& j);
+
+  void insert_row (const FloatComplexRowVector& u, octave_idx_type j);
 
   void delete_row (octave_idx_type j);
 
   void shift_cols (octave_idx_type i, octave_idx_type j);
 
-  void economize();
+#endif
 
   friend std::ostream&  operator << (std::ostream&, const FloatComplexQR&);
 

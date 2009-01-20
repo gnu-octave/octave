@@ -2,6 +2,7 @@
 
 Copyright (C) 1994, 1995, 1996, 1997, 2002, 2003, 2004, 2005, 2007
               John W. Eaton
+Copyright (C) 2008, 2009 Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -20,8 +21,6 @@ along with Octave; see the file COPYING.  If not, see
 <http://www.gnu.org/licenses/>.
 
 */
-
-// updating/downdating by Jaroslav Hajek 2008
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -52,23 +51,30 @@ extern "C"
 			     Complex*, const octave_idx_type&, const double&,
 			     double&, Complex*, double*, 
 			     octave_idx_type& F77_CHAR_ARG_LEN_DECL);
-  F77_RET_T
-  F77_FUNC (zch1up, ZCH1UP) (const octave_idx_type&, Complex*, Complex*, double*);
+#ifdef HAVE_QRUPDATE
 
   F77_RET_T
-  F77_FUNC (zch1dn, ZCH1DN) (const octave_idx_type&, Complex*, Complex*, double*, 
+  F77_FUNC (zch1up, ZCH1UP) (const octave_idx_type&, Complex*, const octave_idx_type&,
+                             Complex*, double*);
+
+  F77_RET_T
+  F77_FUNC (zch1dn, ZCH1DN) (const octave_idx_type&, Complex*, const octave_idx_type&,
+                             Complex*, double*, octave_idx_type&);
+
+  F77_RET_T
+  F77_FUNC (zchinx, ZCHINX) (const octave_idx_type&, Complex*, const octave_idx_type&,
+                             const octave_idx_type&, Complex*, double*, 
                              octave_idx_type&);
 
   F77_RET_T
-  F77_FUNC (zqrshc, ZQRSHC) (const octave_idx_type&, const octave_idx_type&, const octave_idx_type&,
-                             Complex*, Complex*, const octave_idx_type&, const octave_idx_type&);
+  F77_FUNC (zchdex, ZCHDEX) (const octave_idx_type&, Complex*, const octave_idx_type&,
+                             const octave_idx_type&, double*);
 
   F77_RET_T
-  F77_FUNC (zchinx, ZCHINX) (const octave_idx_type&, const Complex*, Complex*, const octave_idx_type&,
-                             const Complex*, octave_idx_type&);
-
-  F77_RET_T
-  F77_FUNC (zchdex, ZCHDEX) (const octave_idx_type&, const Complex*, Complex*, const octave_idx_type&);
+  F77_FUNC (zchshx, ZCHSHX) (const octave_idx_type&, Complex*, const octave_idx_type&,
+                             const octave_idx_type&, const octave_idx_type&, 
+                             Complex*, double*);
+#endif
 }
 
 octave_idx_type
@@ -182,26 +188,28 @@ ComplexCHOL::set (const ComplexMatrix& R)
     (*current_liboctave_error_handler) ("CHOL requires square matrix");
 }
 
+#ifdef HAVE_QRUPDATE
+
 void
-ComplexCHOL::update (const ComplexMatrix& u)
+ComplexCHOL::update (const ComplexColumnVector& u)
 {
   octave_idx_type n = chol_mat.rows ();
 
   if (u.length () == n)
     {
-      ComplexMatrix tmp = u;
+      ComplexColumnVector utmp = u;
 
-      OCTAVE_LOCAL_BUFFER (double, w, n);
+      OCTAVE_LOCAL_BUFFER (double, rw, n);
 
-      F77_XFCN (zch1up, ZCH1UP, (n, chol_mat.fortran_vec (),
-				 tmp.fortran_vec (), w));
+      F77_XFCN (zch1up, ZCH1UP, (n, chol_mat.fortran_vec (), chol_mat.rows (),
+                                 utmp.fortran_vec (), rw));
     }
   else
-    (*current_liboctave_error_handler) ("CHOL update dimension mismatch");
+    (*current_liboctave_error_handler) ("cholupdate: dimension mismatch");
 }
 
 octave_idx_type
-ComplexCHOL::downdate (const ComplexMatrix& u)
+ComplexCHOL::downdate (const ComplexColumnVector& u)
 {
   octave_idx_type info = -1;
 
@@ -209,38 +217,40 @@ ComplexCHOL::downdate (const ComplexMatrix& u)
 
   if (u.length () == n)
     {
-      ComplexMatrix tmp = u;
+      ComplexColumnVector utmp = u;
 
-      OCTAVE_LOCAL_BUFFER (double, w, n);
+      OCTAVE_LOCAL_BUFFER (double, rw, n);
 
-      F77_XFCN (zch1dn, ZCH1DN, (n, chol_mat.fortran_vec (),
-				 tmp.fortran_vec (), w, info));
+      F77_XFCN (zch1dn, ZCH1DN, (n, chol_mat.fortran_vec (), chol_mat.rows (),
+                                 utmp.fortran_vec (), rw, info));
     }
   else
-    (*current_liboctave_error_handler) ("CHOL downdate dimension mismatch");
+    (*current_liboctave_error_handler) ("cholupdate: dimension mismatch");
 
   return info;
 }
 
 octave_idx_type
-ComplexCHOL::insert_sym (const ComplexMatrix& u, octave_idx_type j)
+ComplexCHOL::insert_sym (const ComplexColumnVector& u, octave_idx_type j)
 {
   octave_idx_type info = -1;
 
   octave_idx_type n = chol_mat.rows ();
   
-  if (u.length () != n+1)
-    (*current_liboctave_error_handler) ("CHOL insert dimension mismatch");
+  if (u.length () != n + 1)
+    (*current_liboctave_error_handler) ("cholinsert: dimension mismatch");
   else if (j < 0 || j > n)
-    (*current_liboctave_error_handler) ("CHOL insert index out of range");
+    (*current_liboctave_error_handler) ("cholinsert: index out of range");
   else
     {
-      ComplexMatrix chol_mat1 (n+1, n+1);
+      ComplexColumnVector utmp = u;
 
-      F77_XFCN (zchinx, ZCHINX, (n, chol_mat.data (), chol_mat1.fortran_vec (), 
-                                 j+1, u.data (), info));
+      OCTAVE_LOCAL_BUFFER (double, rw, n);
 
-      chol_mat = chol_mat1;
+      chol_mat.resize (n+1, n+1);
+
+      F77_XFCN (zchinx, ZCHINX, (n, chol_mat.fortran_vec (), chol_mat.rows (),
+                                 j + 1, utmp.fortran_vec (), rw, info));
     }
 
   return info;
@@ -252,14 +262,15 @@ ComplexCHOL::delete_sym (octave_idx_type j)
   octave_idx_type n = chol_mat.rows ();
   
   if (j < 0 || j > n-1)
-    (*current_liboctave_error_handler) ("CHOL delete index out of range");
+    (*current_liboctave_error_handler) ("choldelete: index out of range");
   else
     {
-      ComplexMatrix chol_mat1 (n-1, n-1);
+      OCTAVE_LOCAL_BUFFER (double, rw, n);
 
-      F77_XFCN (zchdex, ZCHDEX, (n, chol_mat.data (), chol_mat1.fortran_vec (), j+1));
+      F77_XFCN (zchdex, ZCHDEX, (n, chol_mat.fortran_vec (), chol_mat.rows (), 
+                                 j + 1, rw));
 
-      chol_mat = chol_mat1;
+      chol_mat.resize (n-1, n-1);
     }
 }
 
@@ -267,13 +278,20 @@ void
 ComplexCHOL::shift_sym (octave_idx_type i, octave_idx_type j)
 {
   octave_idx_type n = chol_mat.rows ();
-  Complex dummy;
   
   if (i < 0 || i > n-1 || j < 0 || j > n-1) 
-    (*current_liboctave_error_handler) ("CHOL shift index out of range");
+    (*current_liboctave_error_handler) ("cholshift: index out of range");
   else
-    F77_XFCN (zqrshc, ZQRSHC, (0, n, n, &dummy, chol_mat.fortran_vec (), i+1, j+1));
+    {
+      OCTAVE_LOCAL_BUFFER (Complex, w, n);
+      OCTAVE_LOCAL_BUFFER (double, rw, n);
+
+      F77_XFCN (zchshx, ZCHSHX, (n, chol_mat.fortran_vec (), chol_mat.rows (),
+                                 i + 1, j + 1, w, rw));
+    }
 }
+
+#endif
 
 ComplexMatrix
 chol2inv (const ComplexMatrix& r)

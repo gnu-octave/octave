@@ -2,6 +2,7 @@
 
 Copyright (C) 1994, 1995, 1996, 1997, 2000, 2002, 2004, 2005, 2006,
               2007 John W. Eaton
+Copyright (C) 2008, 2009 Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -21,14 +22,13 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-// updating/downdating by Jaroslav Hajek 2008
-
 #if !defined (octave_ComplexCHOL_h)
 #define octave_ComplexCHOL_h 1
 
 #include <iostream>
 
 #include "CMatrix.h"
+#include "CColVector.h"
 
 class
 OCTAVE_API
@@ -67,15 +67,19 @@ public:
 
   void set (const ComplexMatrix& R);
 
-  void update (const ComplexMatrix& u);
+#ifdef HAVE_QRUPDATE
 
-  octave_idx_type downdate (const ComplexMatrix& u);
+  void update (const ComplexColumnVector& u);
 
-  octave_idx_type insert_sym (const ComplexMatrix& u, octave_idx_type j);
+  octave_idx_type downdate (const ComplexColumnVector& u);
+
+  octave_idx_type insert_sym (const ComplexColumnVector& u, octave_idx_type j);
 
   void delete_sym (octave_idx_type j);
 
   void shift_sym (octave_idx_type i, octave_idx_type j);
+
+#endif
 
   friend OCTAVE_API std::ostream& operator << (std::ostream& os, const ComplexCHOL& a);
 

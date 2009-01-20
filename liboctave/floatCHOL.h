@@ -2,6 +2,7 @@
 
 Copyright (C) 1994, 1995, 1996, 1997, 2000, 2002, 2004, 2005, 2006,
               2007 John W. Eaton
+Copyright (C) 2008, 2009 Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -21,14 +22,13 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-// updating/downdating by Jaroslav Hajek 2008
-
 #if !defined (octave_FloatCHOL_h)
 #define octave_FloatCHOL_h 1
 
 #include <iostream>
 
 #include "fMatrix.h"
+#include "fColVector.h"
 
 class
 OCTAVE_API
@@ -64,15 +64,19 @@ public:
 
   void set (const FloatMatrix& R);
 
-  void update (const FloatMatrix& u);
+#ifdef HAVE_QRUPDATE
 
-  octave_idx_type downdate (const FloatMatrix& u);
+  void update (const FloatColumnVector& u);
 
-  octave_idx_type insert_sym (const FloatMatrix& u, octave_idx_type j);
+  octave_idx_type downdate (const FloatColumnVector& u);
+
+  octave_idx_type insert_sym (const FloatColumnVector& u, octave_idx_type j);
 
   void delete_sym (octave_idx_type j);
 
   void shift_sym (octave_idx_type i, octave_idx_type j);
+
+#endif
 
   friend OCTAVE_API std::ostream& operator << (std::ostream& os, const FloatCHOL& a);
 

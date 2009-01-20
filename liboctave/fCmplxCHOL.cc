@@ -2,6 +2,7 @@
 
 Copyright (C) 1994, 1995, 1996, 1997, 2002, 2003, 2004, 2005, 2007
               John W. Eaton
+Copyright (C) 2008, 2009 Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -20,8 +21,6 @@ along with Octave; see the file COPYING.  If not, see
 <http://www.gnu.org/licenses/>.
 
 */
-
-// updating/downdating by Jaroslav Hajek 2008
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -52,23 +51,30 @@ extern "C"
 			     FloatComplex*, const octave_idx_type&, const float&,
 			     float&, FloatComplex*, float*, 
 			     octave_idx_type& F77_CHAR_ARG_LEN_DECL);
-  F77_RET_T
-  F77_FUNC (cch1up, CCH1UP) (const octave_idx_type&, FloatComplex*, FloatComplex*, float*);
+#ifdef HAVE_QRUPDATE
 
   F77_RET_T
-  F77_FUNC (cch1dn, CCH1DN) (const octave_idx_type&, FloatComplex*, FloatComplex*, float*, 
+  F77_FUNC (cch1up, CCH1UP) (const octave_idx_type&, FloatComplex*, const octave_idx_type&,
+                             FloatComplex*, float*);
+
+  F77_RET_T
+  F77_FUNC (cch1dn, CCH1DN) (const octave_idx_type&, FloatComplex*, const octave_idx_type&,
+                             FloatComplex*, float*, octave_idx_type&);
+
+  F77_RET_T
+  F77_FUNC (cchinx, CCHINX) (const octave_idx_type&, FloatComplex*, const octave_idx_type&,
+                             const octave_idx_type&, FloatComplex*, float*, 
                              octave_idx_type&);
 
   F77_RET_T
-  F77_FUNC (cqrshc, CQRSHC) (const octave_idx_type&, const octave_idx_type&, const octave_idx_type&,
-                             FloatComplex*, FloatComplex*, const octave_idx_type&, const octave_idx_type&);
+  F77_FUNC (cchdex, CCHDEX) (const octave_idx_type&, FloatComplex*, const octave_idx_type&,
+                             const octave_idx_type&, float*);
 
   F77_RET_T
-  F77_FUNC (cchinx, CCHINX) (const octave_idx_type&, const FloatComplex*, FloatComplex*, const octave_idx_type&,
-                             const FloatComplex*, octave_idx_type&);
-
-  F77_RET_T
-  F77_FUNC (cchdex, CCHDEX) (const octave_idx_type&, const FloatComplex*, FloatComplex*, const octave_idx_type&);
+  F77_FUNC (cchshx, CCHSHX) (const octave_idx_type&, FloatComplex*, const octave_idx_type&,
+                             const octave_idx_type&, const octave_idx_type&, 
+                             FloatComplex*, float*);
+#endif
 }
 
 octave_idx_type
@@ -182,26 +188,28 @@ FloatComplexCHOL::set (const FloatComplexMatrix& R)
     (*current_liboctave_error_handler) ("CHOL requires square matrix");
 }
 
+#ifdef HAVE_QRUPDATE
+
 void
-FloatComplexCHOL::update (const FloatComplexMatrix& u)
+FloatComplexCHOL::update (const FloatComplexColumnVector& u)
 {
   octave_idx_type n = chol_mat.rows ();
 
   if (u.length () == n)
     {
-      FloatComplexMatrix tmp = u;
+      FloatComplexColumnVector utmp = u;
 
-      OCTAVE_LOCAL_BUFFER (float, w, n);
+      OCTAVE_LOCAL_BUFFER (float, rw, n);
 
-      F77_XFCN (cch1up, CCH1UP, (n, chol_mat.fortran_vec (),
-				 tmp.fortran_vec (), w));
+      F77_XFCN (cch1up, CCH1UP, (n, chol_mat.fortran_vec (), chol_mat.rows (),
+                                 utmp.fortran_vec (), rw));
     }
   else
-    (*current_liboctave_error_handler) ("CHOL update dimension mismatch");
+    (*current_liboctave_error_handler) ("cholupdate: dimension mismatch");
 }
 
 octave_idx_type
-FloatComplexCHOL::downdate (const FloatComplexMatrix& u)
+FloatComplexCHOL::downdate (const FloatComplexColumnVector& u)
 {
   octave_idx_type info = -1;
 
@@ -209,38 +217,40 @@ FloatComplexCHOL::downdate (const FloatComplexMatrix& u)
 
   if (u.length () == n)
     {
-      FloatComplexMatrix tmp = u;
+      FloatComplexColumnVector utmp = u;
 
-      OCTAVE_LOCAL_BUFFER (float, w, n);
+      OCTAVE_LOCAL_BUFFER (float, rw, n);
 
-      F77_XFCN (cch1dn, CCH1DN, (n, chol_mat.fortran_vec (),
-				 tmp.fortran_vec (), w, info));
+      F77_XFCN (cch1dn, CCH1DN, (n, chol_mat.fortran_vec (), chol_mat.rows (),
+                                 utmp.fortran_vec (), rw, info));
     }
   else
-    (*current_liboctave_error_handler) ("CHOL downdate dimension mismatch");
+    (*current_liboctave_error_handler) ("cholupdate: dimension mismatch");
 
   return info;
 }
 
 octave_idx_type
-FloatComplexCHOL::insert_sym (const FloatComplexMatrix& u, octave_idx_type j)
+FloatComplexCHOL::insert_sym (const FloatComplexColumnVector& u, octave_idx_type j)
 {
   octave_idx_type info = -1;
 
   octave_idx_type n = chol_mat.rows ();
   
-  if (u.length () != n+1)
-    (*current_liboctave_error_handler) ("CHOL insert dimension mismatch");
+  if (u.length () != n + 1)
+    (*current_liboctave_error_handler) ("cholinsert: dimension mismatch");
   else if (j < 0 || j > n)
-    (*current_liboctave_error_handler) ("CHOL insert index out of range");
+    (*current_liboctave_error_handler) ("cholinsert: index out of range");
   else
     {
-      FloatComplexMatrix chol_mat1 (n+1, n+1);
+      FloatComplexColumnVector utmp = u;
 
-      F77_XFCN (cchinx, CCHINX, (n, chol_mat.data (), chol_mat1.fortran_vec (), 
-                                 j+1, u.data (), info));
+      OCTAVE_LOCAL_BUFFER (float, rw, n);
 
-      chol_mat = chol_mat1;
+      chol_mat.resize (n+1, n+1);
+
+      F77_XFCN (cchinx, CCHINX, (n, chol_mat.fortran_vec (), chol_mat.rows (),
+                                 j + 1, utmp.fortran_vec (), rw, info));
     }
 
   return info;
@@ -252,14 +262,15 @@ FloatComplexCHOL::delete_sym (octave_idx_type j)
   octave_idx_type n = chol_mat.rows ();
   
   if (j < 0 || j > n-1)
-    (*current_liboctave_error_handler) ("CHOL delete index out of range");
+    (*current_liboctave_error_handler) ("choldelete: index out of range");
   else
     {
-      FloatComplexMatrix chol_mat1 (n-1, n-1);
+      OCTAVE_LOCAL_BUFFER (float, rw, n);
 
-      F77_XFCN (cchdex, CCHDEX, (n, chol_mat.data (), chol_mat1.fortran_vec (), j+1));
+      F77_XFCN (cchdex, CCHDEX, (n, chol_mat.fortran_vec (), chol_mat.rows (), 
+                                 j + 1, rw));
 
-      chol_mat = chol_mat1;
+      chol_mat.resize (n-1, n-1);
     }
 }
 
@@ -267,13 +278,20 @@ void
 FloatComplexCHOL::shift_sym (octave_idx_type i, octave_idx_type j)
 {
   octave_idx_type n = chol_mat.rows ();
-  FloatComplex dummy;
   
   if (i < 0 || i > n-1 || j < 0 || j > n-1) 
-    (*current_liboctave_error_handler) ("CHOL shift index out of range");
+    (*current_liboctave_error_handler) ("cholshift: index out of range");
   else
-    F77_XFCN (cqrshc, CQRSHC, (0, n, n, &dummy, chol_mat.fortran_vec (), i+1, j+1));
+    {
+      OCTAVE_LOCAL_BUFFER (FloatComplex, w, n);
+      OCTAVE_LOCAL_BUFFER (float, rw, n);
+
+      F77_XFCN (cchshx, CCHSHX, (n, chol_mat.fortran_vec (), chol_mat.rows (),
+                                 i + 1, j + 1, w, rw));
+    }
 }
+
+#endif
 
 FloatComplexMatrix
 chol2inv (const FloatComplexMatrix& r)

@@ -2,6 +2,8 @@
 
 Copyright (C) 1996, 1997, 1999, 2000, 2002, 2005, 2006, 2007
               John W. Eaton
+Copyright (C) 2008, 2009 Jaroslav Hajek
+Copyright (C) 2008, 2009 VZLU Prague
 
 This file is part of Octave.
 
@@ -21,9 +23,6 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-// The cholupdate, cholinsert, choldelete and cholshift functions were
-//  written by Jaroslav Hajek <highegg@gmail.com>, Copyright (C) 2008  
-//  VZLU Prague, a.s., Czech Republic.
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -577,6 +576,8 @@ using @code{inv}.\n\
   return retval;
 }
 
+#ifdef HAVE_QRUPDATE
+
 DEFUN_DLD (cholupdate, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {[@var{R1}, @var{info}] =} cholupdate (@var{R}, @var{u}, @var{op})\n\
@@ -628,27 +629,22 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
       if (down || op == "+")
         if (argr.columns () == n && argu.rows () == n && argu.columns () == 1)
           {
+            int err = 0;
 	    if (argr.is_single_type () || argu.is_single_type ())
 	      {
-		if (argr.is_real_matrix () && argu.is_real_matrix ())
+		if (argr.is_real_type () && argu.is_real_type ())
 		  {
 		    // real case
 		    FloatMatrix R = argr.float_matrix_value ();
-		    FloatMatrix u = argu.float_matrix_value ();
+		    FloatColumnVector u = argu.float_column_vector_value ();
 
 		    FloatCHOL fact;
 		    fact.set (R);
-		    int err = 0;
 
 		    if (down)
 		      err = fact.downdate (u);
 		    else
 		      fact.update (u);
-
-		    if (nargout > 1)
-		      retval(1) = err;
-		    else if (err)
-		      error ("cholupdate: downdate violates positiveness");
 
 		    retval(0) = fact.chol_matrix ();
 		  }
@@ -656,46 +652,34 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
 		  {
 		    // complex case
 		    FloatComplexMatrix R = argr.float_complex_matrix_value ();
-		    FloatComplexMatrix u = argu.float_complex_matrix_value ();
+		    FloatComplexColumnVector u = argu.float_complex_column_vector_value ();
 
 		    FloatComplexCHOL fact;
 		    fact.set (R);
-		    int err = 0;
 
 		    if (down)
 		      err = fact.downdate (u);
 		    else
 		      fact.update (u);
-
-		    if (nargout > 1)
-		      retval(1) = err;
-		    else if (err)
-		      error ("cholupdate: downdate violates positiveness");
 
 		    retval(0) = fact.chol_matrix ();
 		  }
 	      }
 	    else
 	      {
-		if (argr.is_real_matrix () && argu.is_real_matrix ())
+		if (argr.is_real_type () && argu.is_real_type ())
 		  {
 		    // real case
 		    Matrix R = argr.matrix_value ();
-		    Matrix u = argu.matrix_value ();
+		    ColumnVector u = argu.column_vector_value ();
 
 		    CHOL fact;
 		    fact.set (R);
-		    int err = 0;
 
 		    if (down)
 		      err = fact.downdate (u);
 		    else
 		      fact.update (u);
-
-		    if (nargout > 1)
-		      retval(1) = err;
-		    else if (err)
-		      error ("cholupdate: downdate violates positiveness");
 
 		    retval(0) = fact.chol_matrix ();
 		  }
@@ -703,25 +687,26 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
 		  {
 		    // complex case
 		    ComplexMatrix R = argr.complex_matrix_value ();
-		    ComplexMatrix u = argu.complex_matrix_value ();
+		    ComplexColumnVector u = argu.complex_column_vector_value ();
 
 		    ComplexCHOL fact;
 		    fact.set (R);
-		    int err = 0;
 
 		    if (down)
 		      err = fact.downdate (u);
 		    else
 		      fact.update (u);
 
-		    if (nargout > 1)
-		      retval(1) = err;
-		    else if (err)
-		      error ("cholupdate: downdate violates positiveness");
-
 		    retval(0) = fact.chol_matrix ();
 		  }
 	      }
+
+            if (nargout > 1)
+              retval(1) = err;
+            else if (err == 1)
+              error ("cholupdate: downdate violates positiveness");
+            else if (err == 2)
+              error ("cholupdate: singular matrix");
           }
         else
           error ("cholupdate: dimension mismatch");
@@ -853,22 +838,18 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
         {
           if (j > 0 && j <= n+1)
             {
+              int err = 0;
 	      if (argr.is_single_type () || argu.is_single_type ())
 		{
-		  if (argr.is_real_matrix () && argu.is_real_matrix ())
+		  if (argr.is_real_type () && argu.is_real_type ())
 		    {
 		      // real case
 		      FloatMatrix R = argr.float_matrix_value ();
-		      FloatMatrix u = argu.float_matrix_value ();
+		      FloatColumnVector u = argu.float_column_vector_value ();
 
 		      FloatCHOL fact;
 		      fact.set (R);
-		      int err = fact.insert_sym (u, j-1);
-
-		      if (nargout > 1)
-			retval(1) = err;
-		      else if (err)
-			error ("cholinsert: insertion violates positiveness");
+		      err = fact.insert_sym (u, j-1);
 
 		      retval(0) = fact.chol_matrix ();
 		    }
@@ -876,36 +857,26 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
 		    {
 		      // complex case
 		      FloatComplexMatrix R = argr.float_complex_matrix_value ();
-		      FloatComplexMatrix u = argu.float_complex_matrix_value ();
+		      FloatComplexColumnVector u = argu.float_complex_column_vector_value ();
 
 		      FloatComplexCHOL fact;
 		      fact.set (R);
-		      int err = fact.insert_sym (u, j-1);
-
-		      if (nargout > 1)
-			retval(1) = err;
-		      else if (err)
-			error ("cholinsert: insertion violates positiveness");
+		      err = fact.insert_sym (u, j-1);
 
 		      retval(0) = fact.chol_matrix ();
 		    }
 		}
 	      else
 		{
-		  if (argr.is_real_matrix () && argu.is_real_matrix ())
+		  if (argr.is_real_type () && argu.is_real_type ())
 		    {
 		      // real case
 		      Matrix R = argr.matrix_value ();
-		      Matrix u = argu.matrix_value ();
+		      ColumnVector u = argu.column_vector_value ();
 
 		      CHOL fact;
 		      fact.set (R);
-		      int err = fact.insert_sym (u, j-1);
-
-		      if (nargout > 1)
-			retval(1) = err;
-		      else if (err)
-			error ("cholinsert: insertion violates positiveness");
+		      err = fact.insert_sym (u, j-1);
 
 		      retval(0) = fact.chol_matrix ();
 		    }
@@ -913,20 +884,24 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
 		    {
 		      // complex case
 		      ComplexMatrix R = argr.complex_matrix_value ();
-		      ComplexMatrix u = argu.complex_matrix_value ();
+		      ComplexColumnVector u = argu.complex_column_vector_value ();
 
 		      ComplexCHOL fact;
 		      fact.set (R);
-		      int err = fact.insert_sym (u, j-1);
-
-		      if (nargout > 1)
-			retval(1) = err;
-		      else if (err)
-			error ("cholinsert: insertion violates positiveness");
+		      err = fact.insert_sym (u, j-1);
 
 		      retval(0) = fact.chol_matrix ();
 		    }
 		}
+
+              if (nargout > 1)
+                retval(1) = err;
+              else if (err == 1)
+                error ("cholinsert: insertion violates positiveness");
+              else if (err == 2)
+                error ("cholinsert: singular matrix");
+              else if (err == 3)
+                error ("cholinsert: diagonal element must be real");
             }
           else
             error ("cholinsert: index out of range");
@@ -1037,7 +1012,7 @@ return the Cholesky@tie{}factorization of @w{A(p,p)}, where @w{p = [1:j-1,j+1:n+
             {
 	      if (argr.is_single_type ())
 		{
-		  if (argr.is_real_matrix ())
+		  if (argr.is_real_type ())
 		    {
 		      // real case
 		      FloatMatrix R = argr.float_matrix_value ();
@@ -1062,7 +1037,7 @@ return the Cholesky@tie{}factorization of @w{A(p,p)}, where @w{p = [1:j-1,j+1:n+
 		}
 	      else
 		{
-		  if (argr.is_real_matrix ())
+		  if (argr.is_real_type ())
 		    {
 		      // real case
 		      Matrix R = argr.matrix_value ();
@@ -1178,7 +1153,7 @@ return the Cholesky@tie{}factorization of\n\
 	      if (argr.is_single_type () && argi.is_single_type () && 
 		  argj.is_single_type ())
 		{
-		  if (argr.is_real_matrix ())
+		  if (argr.is_real_type ())
 		    {
 		      // real case
 		      FloatMatrix R = argr.float_matrix_value ();
@@ -1203,7 +1178,7 @@ return the Cholesky@tie{}factorization of\n\
 		}
 	      else
 		{
-		  if (argr.is_real_matrix ())
+		  if (argr.is_real_type ())
 		    {
 		      // real case
 		      Matrix R = argr.matrix_value ();
@@ -1300,6 +1275,8 @@ return the Cholesky@tie{}factorization of\n\
 %! assert(norm(triu(R1)-R1,Inf) == 0)
 %! assert(norm(R1'*R1 - single(Ac(p,p)),Inf) < 1e1*eps('single'))
 */
+
+#endif
 
 /*
 ;;; Local Variables: ***

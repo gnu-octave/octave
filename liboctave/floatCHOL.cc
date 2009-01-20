@@ -2,6 +2,7 @@
 
 Copyright (C) 1994, 1995, 1996, 1997, 2002, 2003, 2004, 2005, 2007
               John W. Eaton
+Copyright (C) 2008, 2009 Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -20,8 +21,6 @@ along with Octave; see the file COPYING.  If not, see
 <http://www.gnu.org/licenses/>.
 
 */
-
-// updating/downdating by Jaroslav Hajek 2008
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -52,23 +51,30 @@ extern "C"
 			     float*, const octave_idx_type&, const float&,
 			     float&, float*, octave_idx_type*, 
 			     octave_idx_type& F77_CHAR_ARG_LEN_DECL);
-  F77_RET_T
-  F77_FUNC (sch1up, SCH1UP) (const octave_idx_type&, float*, float*, float*);
+#ifdef HAVE_QRUPDATE
 
   F77_RET_T
-  F77_FUNC (sch1dn, SCH1DN) (const octave_idx_type&, float*, float*, float*, 
+  F77_FUNC (sch1up, SCH1UP) (const octave_idx_type&, float*, const octave_idx_type&,
+                             float*, float*);
+
+  F77_RET_T
+  F77_FUNC (sch1dn, SCH1DN) (const octave_idx_type&, float*, const octave_idx_type&,
+                             float*, float*, octave_idx_type&);
+
+  F77_RET_T
+  F77_FUNC (schinx, SCHINX) (const octave_idx_type&, float*, const octave_idx_type&,
+                             const octave_idx_type&, float*, float*, 
                              octave_idx_type&);
 
   F77_RET_T
-  F77_FUNC (sqrshc, SQRSHC) (const octave_idx_type&, const octave_idx_type&, const octave_idx_type&,
-                             float*, float*, const octave_idx_type&, const octave_idx_type&);
+  F77_FUNC (schdex, SCHDEX) (const octave_idx_type&, float*, const octave_idx_type&,
+                             const octave_idx_type&, float*);
 
   F77_RET_T
-  F77_FUNC (schinx, SCHINX) (const octave_idx_type&, const float*, float*, const octave_idx_type&,
-                             const float*, octave_idx_type&);
-
-  F77_RET_T
-  F77_FUNC (schdex, SCHDEX) (const octave_idx_type&, const float*, float*, const octave_idx_type&);
+  F77_FUNC (schshx, SCHSHX) (const octave_idx_type&, float*, const octave_idx_type&,
+                             const octave_idx_type&, const octave_idx_type&, 
+                             float*);
+#endif
 }
 
 octave_idx_type
@@ -186,26 +192,28 @@ FloatCHOL::set (const FloatMatrix& R)
     (*current_liboctave_error_handler) ("FloatCHOL requires square matrix");
 }
 
+#ifdef HAVE_QRUPDATE
+
 void
-FloatCHOL::update (const FloatMatrix& u)
+FloatCHOL::update (const FloatColumnVector& u)
 {
   octave_idx_type n = chol_mat.rows ();
 
   if (u.length () == n)
     {
-      FloatMatrix tmp = u;
+      FloatColumnVector utmp = u;
 
       OCTAVE_LOCAL_BUFFER (float, w, n);
 
-      F77_XFCN (sch1up, SCH1UP, (n, chol_mat.fortran_vec (),
-				 tmp.fortran_vec (), w));
+      F77_XFCN (sch1up, SCH1UP, (n, chol_mat.fortran_vec (), chol_mat.rows (),
+                                 utmp.fortran_vec (), w));
     }
   else
-    (*current_liboctave_error_handler) ("FloatCHOL update dimension mismatch");
+    (*current_liboctave_error_handler) ("cholupdate: dimension mismatch");
 }
 
 octave_idx_type
-FloatCHOL::downdate (const FloatMatrix& u)
+FloatCHOL::downdate (const FloatColumnVector& u)
 {
   octave_idx_type info = -1;
 
@@ -213,38 +221,40 @@ FloatCHOL::downdate (const FloatMatrix& u)
 
   if (u.length () == n)
     {
-      FloatMatrix tmp = u;
+      FloatColumnVector utmp = u;
 
       OCTAVE_LOCAL_BUFFER (float, w, n);
 
-      F77_XFCN (sch1dn, SCH1DN, (n, chol_mat.fortran_vec (),
-				 tmp.fortran_vec (), w, info));
+      F77_XFCN (sch1dn, SCH1DN, (n, chol_mat.fortran_vec (), chol_mat.rows (),
+                                 utmp.fortran_vec (), w, info));
     }
   else
-    (*current_liboctave_error_handler) ("FloatCHOL downdate dimension mismatch");
+    (*current_liboctave_error_handler) ("cholupdate: dimension mismatch");
 
   return info;
 }
 
 octave_idx_type
-FloatCHOL::insert_sym (const FloatMatrix& u, octave_idx_type j)
+FloatCHOL::insert_sym (const FloatColumnVector& u, octave_idx_type j)
 {
   octave_idx_type info = -1;
 
   octave_idx_type n = chol_mat.rows ();
   
-  if (u.length () != n+1)
-    (*current_liboctave_error_handler) ("FloatCHOL insert dimension mismatch");
+  if (u.length () != n + 1)
+    (*current_liboctave_error_handler) ("cholinsert: dimension mismatch");
   else if (j < 0 || j > n)
-    (*current_liboctave_error_handler) ("FloatCHOL insert index out of range");
+    (*current_liboctave_error_handler) ("cholinsert: index out of range");
   else
     {
-      FloatMatrix chol_mat1 (n+1, n+1);
+      FloatColumnVector utmp = u;
 
-      F77_XFCN (schinx, SCHINX, (n, chol_mat.data (), chol_mat1.fortran_vec (), 
-                                 j+1, u.data (), info));
+      OCTAVE_LOCAL_BUFFER (float, w, n);
 
-      chol_mat = chol_mat1;
+      chol_mat.resize (n+1, n+1);
+
+      F77_XFCN (schinx, SCHINX, (n, chol_mat.fortran_vec (), chol_mat.rows (),
+                                 j + 1, utmp.fortran_vec (), w, info));
     }
 
   return info;
@@ -256,14 +266,15 @@ FloatCHOL::delete_sym (octave_idx_type j)
   octave_idx_type n = chol_mat.rows ();
   
   if (j < 0 || j > n-1)
-    (*current_liboctave_error_handler) ("FloatCHOL delete index out of range");
+    (*current_liboctave_error_handler) ("choldelete: index out of range");
   else
     {
-      FloatMatrix chol_mat1 (n-1, n-1);
+      OCTAVE_LOCAL_BUFFER (float, w, n);
 
-      F77_XFCN (schdex, SCHDEX, (n, chol_mat.data (), chol_mat1.fortran_vec (), j+1));
+      F77_XFCN (schdex, SCHDEX, (n, chol_mat.fortran_vec (), chol_mat.rows (), 
+                                 j + 1, w));
 
-      chol_mat = chol_mat1;
+      chol_mat.resize (n-1, n-1);
     }
 }
 
@@ -271,13 +282,19 @@ void
 FloatCHOL::shift_sym (octave_idx_type i, octave_idx_type j)
 {
   octave_idx_type n = chol_mat.rows ();
-  float dummy;
   
   if (i < 0 || i > n-1 || j < 0 || j > n-1) 
-    (*current_liboctave_error_handler) ("FloatCHOL shift index out of range");
+    (*current_liboctave_error_handler) ("cholshift: index out of range");
   else
-    F77_XFCN (sqrshc, SQRSHC, (0, n, n, &dummy, chol_mat.fortran_vec (), i+1, j+1));
+    {
+      OCTAVE_LOCAL_BUFFER (float, w, 2*n);
+
+      F77_XFCN (schshx, SCHSHX, (n, chol_mat.fortran_vec (), chol_mat.rows (),
+                                 i + 1, j + 1, w));
+    }
 }
+
+#endif
 
 FloatMatrix
 chol2inv (const FloatMatrix& r)

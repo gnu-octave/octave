@@ -1,5 +1,73 @@
 2009-01-17  Jaroslav Hajek  <highegg@gmail.com>
 
+	* floatQR.h (FloatQR::update, FloatQR::insert_col,
+	FloatQR::insert_row, FloatQR::delete_col, FloatQR::delete_row,
+	FloatQR::shift_col): Update interfaces.
+
+	* floatQR.cc: Update external decls for qrupdate routines.
+	(FloatQR::update, FloatQR::insert_col, FloatQR::insert_row,
+	FloatQR::delete_col, FloatQR::delete_row, FloatQR::shift_col): Reflect
+	changes in qrupdate interfaces, implement batch updates.
+
+	* dbleQR.h (QR::update, QR::insert_col, QR::insert_row,
+	QR::delete_col, QR::delete_row, QR::shift_col): Update interfaces.
+
+	* dbleQR.cc: Update external decls for qrupdate routines.
+	(QR::update, QR::insert_col, QR::insert_row, QR::delete_col,
+	QR::delete_row, QR::shift_col): Reflect changes in qrupdate
+	interfaces, implement batch updates.
+
+	* fCmplxQR.h (FloatComplexQR::update, FloatComplexQR::insert_col,
+	FloatComplexQR::insert_row, FloatComplexQR::delete_col,
+	FloatComplexQR::delete_row, FloatComplexQR::shift_col): Update
+	interfaces.
+
+	* fCmplxQR.cc: Update external decls for qrupdate routines.
+	(FloatComplexQR::update, FloatComplexQR::insert_col,
+	FloatComplexQR::insert_row, FloatComplexQR::delete_col,
+	FloatComplexQR::delete_row, FloatComplexQR::shift_col): Reflect
+	changes in qrupdate interfaces,
+	implement batch updates.
+
+	* CmplxQR.h (ComplexQR::update, ComplexQR::insert_col,
+	ComplexQR::insert_row, ComplexQR::delete_col, ComplexQR::delete_row,
+	ComplexQR::shift_col): Update interfaces.
+
+	* CmplxQR.cc: Update external decls for qrupdate routines.
+	(ComplexQR::update, ComplexQR::insert_col,
+	ComplexQR::insert_row, ComplexQR::delete_col, ComplexQR::delete_row,
+	ComplexQR::shift_col): Reflect changes in qrupdate interfaces,
+	implement batch updates.
+
+	* floatCHOL.h (FloatCHOL::update, FloatCHOL::downdate,
+	FloatCHOL::insert_sym): Update interfaces.
+	* floatCHOL.cc: Update external decls for qrupdate routines.
+	(FloatCHOL::update, FloatCHOL::downdate, FloatCHOL::insert_sym,
+	FloatCHOL::delete_sym, FloatCHOL::shift_sym): Reflect changes in
+	qrupdate interfaces,
+
+	* CHOL.h (CHOL::update, CHOL::downdate, CHOL::insert_sym): Update
+	interfaces.
+	* CHOL.cc: Update external decls for qrupdate routines.
+	(CHOL::update, CHOL::downdate, CHOL::insert_sym, CHOL::delete_sym,
+	CHOL::shift_sym): Reflect changes in qrupdate interfaces,
+
+	* fCmplxCHOL.h (FloatComplexCHOL::update, FloatComplexCHOL::downdate,
+	FloatComplexCHOL::insert_sym): Update interfaces.  
+	* fCmplxCHOL.cc: Update external decls for qrupdate routines.
+	(FloatComplexCHOL::update, FloatComplexCHOL::downdate,
+	FloatComplexCHOL::insert_sym, FloatComplexCHOL::delete_sym,
+	FloatComplexCHOL::shift_sym): Reflect changes in qrupdate interfaces,
+
+	* CmplxCHOL.h (ComplexCHOL::update, ComplexCHOL::downdate,
+	ComplexCHOL::insert_sym): Update interfaces.
+	* CmplxCHOL.cc: Update external decls for qrupdate routines.
+	(ComplexCHOL::update, ComplexCHOL::downdate, ComplexCHOL::insert_sym,
+	ComplexCHOL::delete_sym, ComplexCHOL::shift_sym): Reflect changes in
+	qrupdate interfaces,
+
+2009-01-17  Jaroslav Hajek  <highegg@gmail.com>
+
 	* Array.h (Array<T>): Document internal use of slice_data and
 	slice_len.
 

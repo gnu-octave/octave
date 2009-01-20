@@ -865,6 +865,34 @@ if test "x$acx_blas_f77_func_ok" = "xno"; then
   AC_MSG_WARN($warn_blas_f77_incompatible)
 fi
 
+QRUPDATE_LIBS=
+AC_SUBST(QRUPDATE_LIBS)
+
+# Check for the qrupdate library
+AC_ARG_WITH(qrupdate,
+  [AS_HELP_STRING([--without-qrupdate],
+     [don't use qrupdate, disable QR & Cholesky updating functions])],
+  with_qrupdate=$withval, with_qrupdate=yes)
+
+warn_qrupdate="qrupdate not found. The QR & Cholesky updating function will not be available."
+if test "$with_qrupdate" = yes; then
+  with_qrupdate=no
+  if $have_fortran_compiler; then 
+    AC_F77_FUNC(sqr1up)
+  elif $have_f2c; then
+    sqr1up=sqr1up_
+  fi
+  AC_CHECK_LIB(qrupdate, $sqr1up, 
+    [QRUPDATE_LIBS="-lqrupdate"; with_qrupdate=yes], [], [$BLAS_LIBS $FLIBS])
+  if test "$with_qrupdate" = yes; then
+    AC_DEFINE(HAVE_QRUPDATE, 1, [Define if the qrupdate library is used.])
+    warn_qrupdate=
+  fi
+fi
+if test -n "$warn_qrupdate"; then
+  AC_MSG_WARN($warn_qrupdate)
+fi
+
 # Check for AMD library
 AMD_LIBS=
 AC_SUBST(AMD_LIBS)
@@ -1997,7 +2025,6 @@ AC_CONFIG_FILES([Makefile octMakefile Makeconf test/Makefile
   libcruft/lapack/Makefile 
   libcruft/misc/Makefile libcruft/odepack/Makefile
   libcruft/ordered-qz/Makefile libcruft/quadpack/Makefile
-  libcruft/qrupdate/Makefile
   libcruft/ranlib/Makefile libcruft/slatec-fn/Makefile
   libcruft/slatec-err/Makefile libcruft/villad/Makefile
   libcruft/blas-xtra/Makefile libcruft/lapack-xtra/Makefile])
@@ -2034,6 +2061,7 @@ Octave is now configured for $canonical_host_type
   CHOLMOD libraries:    $CHOLMOD_LIBS
   CXSPARSE libraries:   $CXSPARSE_LIBS
   ARPACK libraries:     $ARPACK_LIBS
+  QRUPDATE libraries:	$QRUPDATE_LIBS
   HDF5 libraries:       $HDF5_LIBS
   CURL libraries:       $CURL_LIBS
   REGEX libraries:      $REGEX_LIBS
@@ -2117,6 +2145,11 @@ fi
 
 if test -n "$warn_umfpack"; then
   AC_MSG_WARN($warn_umfpack)
+  warn_msg_printed=true
+fi
+
+if test -n "$warn_qrupdate"; then
+  AC_MSG_WARN($warn_qrupdate)
   warn_msg_printed=true
 fi
 

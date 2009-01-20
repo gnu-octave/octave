@@ -1667,6 +1667,20 @@ grab_comment_block (stream_reader& reader, bool at_bol,
 	      at_bol = true;
 	      current_input_column = 0;
 	      in_comment = false;
+
+	      // FIXME -- bailing out here prevents things like
+	      //
+	      //    octave> # comment
+	      //    octave> x = 1
+	      //
+	      // from failing at the command line, while still
+	      // allowing blocks of comments to be grabbed properly
+	      // for function doc strings.  But only the first line of
+	      // a mult-line doc string will be picked up for
+	      // functions defined on the command line.  We need a
+	      // better way of collecting these comments...
+	      if (! (reading_fcn_file || reading_script_file))
+		goto done;
 	    }
 	}
       else

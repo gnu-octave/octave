@@ -1,5 +1,8 @@
 2009-01-19  John W. Eaton  <jwe@octave.org>
 
+	* lex.l (grab_comment_block): If not reading input from a file,
+	bail out at first newline inside a comment.
+
 	* lex.l (lexer_debug_flag): New static variable.
 	(F__lexer_debug_flag__): New function.
 	(LEXER_DEBUG): New macro.  Use it in all patterns.

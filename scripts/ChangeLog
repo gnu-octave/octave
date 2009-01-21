@@ -1,3 +1,7 @@
+2009-01-20  Jaroslav Hajek  <highegg@gmail.com>
+
+	* optimization/fsolve.m: Only use qrupdate if available.
+
 2009-01-20  John W. Eaton  <jwe@octave.org>
 
 	* general/postpad.m: Doc fix.

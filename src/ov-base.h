@@ -164,6 +164,11 @@ public:
 	   int nargout);
 
   virtual octave_value
+  subsref (const std::string& type,
+	   const std::list<octave_value_list>& idx,
+           bool auto_add);
+
+  virtual octave_value
   do_index_op (const octave_value_list& idx, bool resize_ok = false);
 
   virtual octave_value_list

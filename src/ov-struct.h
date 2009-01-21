@@ -63,7 +63,7 @@ public:
   octave_base_value *clone (void) const { return new octave_struct (*this); }
   octave_base_value *empty_clone (void) const { return new octave_struct (); }
 
-  Cell dotref (const octave_value_list& idx);
+  Cell dotref (const octave_value_list& idx, bool auto_add = false);
 
   octave_value subsref (const std::string& type,
 			const std::list<octave_value_list>& idx)
@@ -74,6 +74,10 @@ public:
 
   octave_value_list subsref (const std::string&,
 			     const std::list<octave_value_list>&, int);
+
+  octave_value subsref (const std::string& type,
+			const std::list<octave_value_list>& idx,
+                        bool auto_add);
 
   static octave_value numeric_conv (const octave_value& val,
 				    const std::string& type);

@@ -53,7 +53,7 @@ DEFINE_OCTAVE_ALLOCATOR(octave_struct);
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA(octave_struct, "struct", "struct");
 
 Cell
-octave_struct::dotref (const octave_value_list& idx)
+octave_struct::dotref (const octave_value_list& idx, bool auto_add)
 {
   Cell retval;
 
@@ -65,7 +65,9 @@ octave_struct::dotref (const octave_value_list& idx)
 
   if (p != map.end ())
     retval = map.contents (p);
-  else
+  else if (auto_add)
+    retval = (numel () == 0) ? Cell (dim_vector (1)) : Cell (dims ());
+  else 
     error ("structure has no member `%s'", nm.c_str ());
 
   return retval;
@@ -119,7 +121,7 @@ octave_struct::subsref (const std::string& type,
 
 	    if (! error_state)
 	      {
-		Cell t = tmp.index (idx.front (), true);
+		Cell t = tmp.index (idx.front ());
 
 		retval(0) = (t.length () == 1) ? t(0) : octave_value (t, true);
 
@@ -130,7 +132,7 @@ octave_struct::subsref (const std::string& type,
 	      }
 	  }
 	else
-	  retval(0) = map.index (idx.front (), false);
+	  retval(0) = map.index (idx.front ());
       }
       break;
 
@@ -159,6 +161,72 @@ octave_struct::subsref (const std::string& type,
 
   if (idx.size () > 1)
     retval = retval(0).next_subsref (nargout, type, idx, skip);
+
+  return retval;
+}
+
+octave_value
+octave_struct::subsref (const std::string& type,
+			const std::list<octave_value_list>& idx,
+			bool auto_add)
+{
+  octave_value retval;
+
+  int skip = 1;
+
+  switch (type[0])
+    {
+    case '(':
+      {
+	if (type.length () > 1 && type[1] == '.')
+	  {
+	    std::list<octave_value_list>::const_iterator p = idx.begin ();
+	    octave_value_list key_idx = *++p;
+
+	    Cell tmp = dotref (key_idx, auto_add);
+
+	    if (! error_state)
+	      {
+		Cell t = tmp.index (idx.front (), auto_add);
+
+		retval = (t.length () == 1) ? t(0) : octave_value (t, true);
+
+		// We handled two index elements, so tell
+		// next_subsref to skip both of them.
+
+		skip++;
+	      }
+	  }
+	else
+	  retval = map.index (idx.front (), auto_add);
+      }
+      break;
+
+    case '.':
+      {
+	if (map.numel() > 0)
+	  {
+	    Cell t = dotref (idx.front (), auto_add);
+
+	    retval = (t.length () == 1) ? t(0) : octave_value (t, true);
+	  }
+      }
+      break;
+
+    case '{':
+      gripe_invalid_index_type (type_name (), type[0]);
+      break;
+
+    default:
+      panic_impossible ();
+    }
+
+  // FIXME -- perhaps there should be an
+  // octave_value_list::next_subsref member function?  See also
+  // octave_user_function::subsref.
+
+  if (idx.size () > 1)
+    retval = retval.next_subsref (auto_add, type, idx, skip);
 
   return retval;
 }

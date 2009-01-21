@@ -263,6 +263,18 @@ tree_index_expression::make_arg_struct (void) const
   return m;
 }
 
+static void
+gripe_invalid_inquiry_subscript (void)
+{
+  error ("invalid dimension inquiry of a non-existent value");
+}
+
+static void
+gripe_indexed_cs_list (void)
+{
+  error ("a cs-list cannot be further indexed");
+}
+
 octave_value_list
 tree_index_expression::rvalue (int nargout)
 {
@@ -302,6 +314,7 @@ tree_index_expression::rvalue (int nargout)
 	first_expr_val = expr->rvalue ();
 
       octave_value tmp = first_expr_val;
+      octave_idx_type tmpi = 0;
 
       std::list<octave_value_list> idx;
 
@@ -330,9 +343,14 @@ tree_index_expression::rvalue (int nargout)
 		  // value to the built-in __end__ function.
 
 		  octave_value_list tmp_list
-		    = first_expr_val.subsref (type.substr (0, i), idx, nargout);
+		    = tmp.subsref (type.substr (tmpi, i - tmpi), idx, nargout);
 
 		  tmp = tmp_list(0);
+                  tmpi = i;
+                  idx.clear ();
+                  
+                  if (tmp.is_cs_list ())
+                    gripe_indexed_cs_list ();
 
 		  if (error_state)
 		    break;
@@ -372,7 +390,7 @@ tree_index_expression::rvalue (int nargout)
 	}
 
       if (! error_state)
-	retval = first_expr_val.subsref (type, idx, nargout);
+	retval = tmp.subsref (type.substr (tmpi, n - tmpi), idx, nargout);
     }
 
   return retval;
@@ -389,12 +407,6 @@ tree_index_expression::rvalue (void)
     retval = tmp(0);
 
   return retval;
-}
-
-static void
-gripe_invalid_inquiry_subscript (void)
-{
-  error ("invalid dimension inquiry of a non-existent value");
 }
 
 octave_lvalue
@@ -414,8 +426,6 @@ tree_index_expression::lvalue (void)
 
   if (! error_state)
     {
-      bool have_new_struct_field = false;
-
       // I think it is OK to have a copy here.
 
       const octave_value *tro = retval.object ();
@@ -426,91 +436,123 @@ tree_index_expression::lvalue (void)
 	first_retval_object = *tro;
 
       octave_value tmp = first_retval_object;
+      octave_idx_type tmpi = 0;
+      std::list<octave_value_list> tmpidx;
 
       for (int i = 0; i < n; i++)
 	{
-	  if (i > 0)
-	    {
-	      tree_argument_list *al = *p_args;
+          if (retval.numel () != 1)
+            gripe_indexed_cs_list ();
 
-	      if (al && al->has_magic_end ())
-		{
-		  // We have an expression like
-		  //
-		  //   x{end}.a(end)
-		  //
-		  // and we are looking at the argument list that
-		  // contains the second (or third, etc.) "end" token,
-		  // so we must evaluate everything up to the point of
-		  // that argument list so we pass the appropriate
-		  // value to the built-in __end__ function.
+          if (i > 0)
+            {
+              tree_argument_list *al = *p_args;
 
-                  if (first_retval_object.is_defined ())
+              if (al && al->has_magic_end ())
+                {
+                  // We have an expression like
+                  //
+                  //   x{end}.a(end)
+                  //
+                  // and we are looking at the argument list that
+                  // contains the second (or third, etc.) "end" token,
+                  // so we must evaluate everything up to the point of
+                  // that argument list so we pass the appropriate
+                  // value to the built-in __end__ function.
+
+                  if (tmp.is_defined ())
                     {
-                      octave_value_list tmp_list
-                        = first_retval_object.subsref (type.substr (0, i), idx, 1);
+                      if (tmpi < i)
+                        {
+                          tmp = tmp.subsref (type.substr (tmpi, i - tmpi), tmpidx, true);
 
-                      tmp = tmp_list(0);
+                          tmpi = i;
+                          tmpidx.clear ();
+                        }
                     }
                   else
                     gripe_invalid_inquiry_subscript ();
 
-		  if (error_state)
-		    break;
-		}
-	    }
+                  if (tmp.is_undefined ())
+                    gripe_invalid_inquiry_subscript ();
+                  else if (tmp.is_cs_list ())
+                    gripe_indexed_cs_list ();
+
+                  if (error_state)
+                    break;
+                }
+            }
 
 	  switch (type[i])
 	    {
 	    case '(':
-	      idx.push_back (make_value_list (*p_args, *p_arg_nm, &tmp));
-	      break;
+              {
+                octave_value_list tidx
+                  = make_value_list (*p_args, *p_arg_nm, &tmp);
+                idx.push_back (tidx);
+                tmpidx.push_back (tidx);
+              }
+              break;
 
 	    case '{':
 	      {
 		octave_value_list tidx
 		  = make_value_list (*p_args, *p_arg_nm, &tmp);
 
-		idx.push_back (tidx);
-
-		if (! tidx.all_scalars () && retval.numel () == 1)
+		if (! tidx.all_scalars ())
 		  {
+                    octave_idx_type nel = 1;
+
+                    octave_idx_type nidx = tidx.length ();
+
                     // Possible cs-list.
+                    bool has_magic_colon = tidx.has_magic_colon ();
+                    dim_vector dims;
 
-		    if (tidx.has_magic_colon ())
+		    if (has_magic_colon)
 		      {
-                        if (first_retval_object.is_defined ())
+                        if (tmp.is_defined ())
                           {
-                            octave_value_list tmp_list
-                              = first_retval_object.subsref (type, idx, 1);
-
-                            if (! error_state)
+                            if (tmpi < i)
                               {
-                                octave_value val = tmp_list(0);
-
-                                if (val.is_cs_list ())
-                                  retval.numel (val.numel ());
+                                tmp = tmp.subsref (type.substr (tmpi, i - tmpi), tmpidx, true);
+                                tmpi = i;
+                                tmpidx.clear ();
                               }
+
+                            if (tmp.is_undefined ())
+                              gripe_invalid_inquiry_subscript ();
+                            else if (tmp.is_cs_list ())
+                              gripe_indexed_cs_list ();
+
+                            dims = (nidx == 1) ? dim_vector (tmp.numel (), 1) : tmp.dims ();
                           }
                         else
                           gripe_invalid_inquiry_subscript ();
-		      }
-		    else
-		      {
-			octave_idx_type nel = 1;
 
-			octave_idx_type nidx = tidx.length ();
+                        if (error_state)
+                          break;
+                      }
 
-			for (octave_idx_type j = 0; j < nidx; j++)
-			  {
-			    octave_value val = tidx(j);
+                    for (octave_idx_type j = 0; j < nidx; j++)
+                      {
+                        octave_value val = tidx(j);
 
-			    nel *= val.numel ();
-			  }
+                        if (val.is_magic_colon ())
+                          nel *= dims (j);
+                        else
+                          nel *= val.numel ();
+                      }
 
-			retval.numel (nel);
-		      }
+                    retval.numel (nel);
 		  }
+
+                if (error_state)
+                  break;
+
+		idx.push_back (tidx);
+                tmpidx.push_back (tidx);
+
 	      }
 	      break;
 
@@ -520,105 +562,91 @@ tree_index_expression::lvalue (void)
                 if (error_state)
                   break;
 
-                if (i > 0 && type [i-1] == '(' && retval.numel () == 1 
-                    && ! idx.back ().all_scalars ())
+                if (i > 0 && type [i-1] == '(')
                   {
                     // Possible cs-list.
 
-                    std::string ttype = type.substr (0, i);
-
                     octave_value_list xidx = idx.back ();
 
-                    if (xidx.has_magic_colon ())
-                      {
-                        if (first_retval_object.is_defined () && ! have_new_struct_field)
-                          {
-                            octave_value_list tmp_list
-                              = first_retval_object.subsref (ttype, idx, 1);
-
-                            if (! error_state)
-                              {
-                                octave_value val = tmp_list(0);
-
-                                if (val.is_map ())
-                                  retval.numel (val.numel ());
-                              }
-                          }
-                        else
-                          gripe_invalid_inquiry_subscript ();
-                      }
-                    else
+                    if (! xidx.all_scalars ())
                       {
                         octave_idx_type nel = 1;
 
                         octave_idx_type nidx = xidx.length ();
 
+                        // Possible cs-list.
+                        bool has_magic_colon = xidx.has_magic_colon ();
+                        dim_vector dims;
+
+                        if (has_magic_colon)
+                          {
+                            // Evaluate everything up to the point preceding the last paren.
+                            if (tmp.is_defined ())
+                              {
+                                if (tmpi < i-1)
+                                  {
+                                    tmpidx.pop_back ();
+                                    tmp = tmp.subsref (type.substr (tmpi, i-1 - tmpi), tmpidx, true);
+                                    tmpi = i - 1;
+                                    tmpidx.clear ();
+                                    tmpidx.push_back (xidx);
+                                  }
+
+                                if (tmp.is_undefined ())
+                                  gripe_invalid_inquiry_subscript ();
+                                else if (tmp.is_cs_list ())
+                                  gripe_indexed_cs_list ();
+
+                                dims = (nidx == 1) ? dim_vector (tmp.numel (), 1) : tmp.dims ();
+                              }
+                            else
+                              gripe_invalid_inquiry_subscript ();
+
+                            if (error_state)
+                              break;
+                          }
+
                         for (octave_idx_type j = 0; j < nidx; j++)
                           {
                             octave_value val = xidx(j);
 
-                            nel *= val.numel ();
+                            if (val.is_magic_colon ())
+                              nel *= dims (j);
+                            else
+                              nel *= val.numel ();
                           }
 
                         retval.numel (nel);
                       }
                   }
-                else if (retval.numel () == 1 && first_retval_object.is_defined ())
+                else
                   {
-                    octave_value tobj = first_retval_object;
-
-                    std::string ttype = type.substr (0, i);
-
-                    if (i > 0)
+                    // A plain struct component can also yield a list reference.
+                    if (tmp.is_defined () && tmpi < i)
                       {
-                        // Here we need to ensure that keys do exist.
-                        
-                        octave_value_list tmp_list
-                          = first_retval_object.subsref (ttype, idx, 1);
+                        tmp = tmp.subsref (type.substr (tmpi, i - tmpi), tmpidx, true);
 
-                        if (tmp_list.length () > 0) tobj = tmp_list (0);
+                        tmpi = i;
+                        tmpidx.clear ();
                       }
 
+                    if (tmp.is_cs_list ())
+                      gripe_indexed_cs_list ();
+                    else if (tmp.is_map ())
+                      retval.numel (tmp.numel ());
+                    else
+                      tmp = Octave_map ();
 
-                    std::string key = tidx.string_value ();
+                    if (error_state)
+                      break;
 
-                    if (! error_state)
-                      {
-                        if (tobj.is_map ())
-                          {
-                            Octave_map map = tobj.map_value ();
-                            if (map.contains (key))
-                              retval.numel (map.contents (key).numel ());
-                            else
-                              {
-                                map.contents (key) = octave_value ();
-                                if (i > 0)
-                                  first_retval_object = 
-                                    first_retval_object.subsasgn (ttype, idx, map);
-                                else
-                                  first_retval_object = map;
-
-                                have_new_struct_field = true;
-                              }
-                          }
-                        else 
-                          {
-                            Octave_map map (key, octave_value ());
-                            if (i > 0)
-                              first_retval_object = 
-                                first_retval_object.subsasgn (ttype, idx, map);
-                            else
-                              first_retval_object = map;
-
-                            have_new_struct_field = true;
-                          }
-                      }
                   }
 
-                if (! error_state)
-                  idx.push_back (tidx);
-                else
+                if (error_state)
                   break;
+
+                idx.push_back (tidx);
+                tmpidx.push_back (tidx);
 
 	      }
 	      break;

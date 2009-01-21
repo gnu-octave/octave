@@ -99,6 +99,15 @@ octave_base_value::subsref (const std::string&,
 }
 
 octave_value
+octave_base_value::subsref (const std::string& type,
+			    const std::list<octave_value_list>& idx,
+                            bool auto_add)
+{
+  // This way we may get a more meaningful error message.
+  return subsref (type, idx);
+}
+
+octave_value
 octave_base_value::do_index_op (const octave_value_list&, bool)
 {
   std::string nm = type_name ();

@@ -117,6 +117,56 @@ octave_cell::subsref (const std::string& type,
 }
 
 octave_value
+octave_cell::subsref (const std::string& type,
+		      const std::list<octave_value_list>& idx,
+		      bool auto_add)
+{
+  octave_value retval;
+
+  switch (type[0])
+    {
+    case '(':
+      retval = do_index_op (idx.front (), auto_add);
+      break;
+
+    case '{':
+      {
+	octave_value tmp = do_index_op (idx.front (), auto_add);
+
+	if (! error_state)
+	  {
+	    Cell tcell = tmp.cell_value ();
+
+	    if (tcell.length () == 1)
+	      retval = tcell(0,0);
+	    else
+              retval = octave_value (octave_value_list (tcell), auto_add);
+	  }
+      }
+      break;
+
+    case '.':
+      {
+	std::string nm = type_name ();
+	error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
+      }
+      break;
+
+    default:
+      panic_impossible ();
+    }
+
+  // FIXME -- perhaps there should be an
+  // octave_value_list::next_subsref member function?  See also
+  // octave_user_function::subsref.
+
+  if (idx.size () > 1)
+    retval = retval.next_subsref (auto_add, type, idx);
+
+  return retval;
+}
+
+octave_value
 octave_cell::subsasgn (const std::string& type,
 		       const std::list<octave_value_list>& idx,
 		       const octave_value& rhs)

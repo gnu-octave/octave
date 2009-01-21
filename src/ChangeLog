@@ -1,3 +1,30 @@
+2009-01-21  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov.h (octave_value::subsref (..., bool auto_add)): New method.
+	(octave_value::next_subsref (bool auto_add, ...)): New method.
+	* ov.cc (octave_value::next_subsref (bool auto_add, ...)): New method.
+	* ov-base.h (octave_base_value::subsref (..., bool auto_add)): New
+	virtual method.
+	* ov-base.cc (octave_base_value::subsref (..., bool auto_add)): New
+	virtual method.
+	* ov-cell.cc (octave_cell::subsref (..., bool auto_add)): New virtual
+	method.
+	* ov-cell.h (octave_cell::subsref (..., bool auto_add)): Declare it.
+	* ov-struct.cc (octave_struct::subsref (..., bool auto_add)): New
+	virtual method.
+	(octave_struct::subsref (const std::string& type, const
+	std::list<octave_value_list>& idx)): Do not allow resizing.
+	* ov-struct.h (octave_struct::subsref (..., bool auto_add)): Declare
+	it.
+	* ov-struct.cc (octave_struct::dotref (..., bool auto_add)): New
+	virtual method.
+	* ov-struct.h (octave_struct::dotref (..., bool auto_add)): Declare it.
+	* pt-idx.cc (tree_index_expression::rvalue): Do not reevaluate already
+	evaluated part of the index chain.
+	(tree_index_expression::rvalue): Do not reevaluate already evaluated
+	part of the index chain. Do not actually perform trailing indexing. 
+	Do not allow indexing cs-lists.
+
 2009-01-20  John W. Eaton  <jwe@octave.org>
 
 	* file-io.cc (Ffstat): New function.

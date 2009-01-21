@@ -351,12 +351,17 @@ public:
 			       const octave_value_list& idx);
 
   octave_value subsref (const std::string& type,
-				const std::list<octave_value_list>& idx)
+                        const std::list<octave_value_list>& idx)
     { return rep->subsref (type, idx); }
 
+  octave_value subsref (const std::string& type,
+                        const std::list<octave_value_list>& idx,
+                        bool auto_add)
+    { return rep->subsref (type, idx, auto_add); }
+
   octave_value_list subsref (const std::string& type,
-				     const std::list<octave_value_list>& idx,
-    				     int nargout);
+                             const std::list<octave_value_list>& idx,
+                             int nargout);
 
   octave_value next_subsref (const std::string& type, const
 			     std::list<octave_value_list>& idx,
@@ -366,6 +371,10 @@ public:
 				  const std::string& type, const
 				  std::list<octave_value_list>& idx,
 				  size_t skip = 1);
+
+  octave_value next_subsref (bool auto_add, const std::string& type, const
+			     std::list<octave_value_list>& idx,
+			     size_t skip = 1);
 
   octave_value do_index_op (const octave_value_list& idx,
 			    bool resize_ok = false)

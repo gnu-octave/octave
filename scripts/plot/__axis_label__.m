@@ -26,17 +26,12 @@ function retval = __axis_label__ (caller, txt, varargin)
     ## FIXME -- should be able to use text instead of __go_text__.
     ca = gca ();
 
-    if (strcmp (caller, "ylabel"))
-      rot = 90;
-    else
-      rot = 0;
-    endif
     h = __go_text__ (ca, "fontangle", get (ca, "fontangle"),
                          "fontname", get (ca, "fontname"),
                          "fontsize", get (ca, "fontsize"),
                          "fontunits", get (ca, "fontunits"),
                          "fontweight", get (ca, "fontweight"),
-                         "string", txt, "rotation", rot, varargin{:});
+                         "string", txt, varargin{:});
     set (ca, caller, h);
     if (nargout > 0)
       retval = h;

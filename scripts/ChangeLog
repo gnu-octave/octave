@@ -1,5 +1,9 @@
 2009-01-21  John W. Eaton  <jwe@octave.org>
 
+	* plot/ylabel.m: Insert rotation property in varargin before
+	passing it on to __axis_label__.
+	* plot/__axis_label__.m: Don't set rotation for ylabel here.
+
 	* plot/title.m: Insert horizontalalignment property in varargin
 	before passing it on to __axis_label__.
 

@@ -294,6 +294,37 @@ operator - (const Range& r)
   return Range (-r.base (), -r.limit (), -r.inc ());
 }
 
+Range operator + (double x, const Range& r)
+{
+  return Range (x + r.base (), x + r.limit (), r.inc ());
+}
+
+Range operator + (const Range& r, double x)
+{
+  return Range (r.base () + x, r.limit () + x, r.inc ());
+}
+
+Range operator - (double x, const Range& r)
+{
+  return Range (x - r.base (), x - r.limit (), -r.inc ());
+}
+
+Range operator - (const Range& r, double x)
+{
+  return Range (r.base () - x, r.limit () - x, r.inc ());
+}
+
+Range operator * (double x, const Range& r)
+{
+  return Range (x * r.base (), x * r.limit (), x * r.inc ());
+}
+
+Range operator * (const Range& r, double x)
+{
+  return Range (r.base () * x, r.limit () * x, r.inc () * x);
+}
+
+
 // C  See Knuth, Art Of Computer Programming, Vol. 1, Problem 1.2.4-5.
 // C
 // C===Tolerant FLOOR function.

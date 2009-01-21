@@ -121,6 +121,18 @@ Range
 
 extern OCTAVE_API Range operator - (const Range& r);
 
+extern OCTAVE_API Range operator + (double x, const Range& r);
+
+extern OCTAVE_API Range operator + (const Range& r, double x);
+
+extern OCTAVE_API Range operator - (double x, const Range& r);
+
+extern OCTAVE_API Range operator - (const Range& r, double x);
+
+extern OCTAVE_API Range operator * (double x, const Range& r);
+
+extern OCTAVE_API Range operator * (const Range& r, double x);
+
 #endif
 
 /*

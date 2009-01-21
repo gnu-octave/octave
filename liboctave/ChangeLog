@@ -1,3 +1,14 @@
+2009-01-21  Jaroslav Hajek  <highegg@gmail.com>
+
+	* Range.cc ( operator + (double x, const Range& r),
+	operator + (const Range& r, double x),
+	operator - (double x, const Range& r),
+	operator - (const Range& r, double x),
+	operator * (double x, const Range& r),
+	operator * (const Range& r, double x)): New operators.
+	* Range.h: Declare them.
+
+
 2009-01-20  John W. Eaton  <jwe@octave.org>
 
 	* file-stat.h, file-stat.cc (class base_file_stat): New base class.

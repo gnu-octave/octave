@@ -1,4 +1,8 @@
 2009-01-21  Jaroslav Hajek  <highegg@gmail.com>
+	
+	* OPERATORS/op-range.cc: Define & register range-scalar ops.
+
+2009-01-21  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov.h (octave_value::subsref (..., bool auto_add)): New method.
 	(octave_value::next_subsref (bool auto_add, ...)): New method.

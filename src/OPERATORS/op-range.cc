@@ -60,6 +60,13 @@ DEFUNOP (transpose, range)
   return octave_value (v.matrix_value().transpose ());
 }
 
+DEFBINOP_OP (addrs, range, scalar, +)
+DEFBINOP_OP (addsr, scalar, range, +)
+DEFBINOP_OP (subrs, range, scalar, -)
+DEFBINOP_OP (subsr, scalar, range, -)
+DEFBINOP_OP (mulrs, range, scalar, *)
+DEFBINOP_OP (mulsr, scalar, range, *)
+
 DEFNDCATOP_FN (r_r, range, range, array, array, concat)
 DEFNDCATOP_FN (r_s, range, scalar, array, array, concat)
 DEFNDCATOP_FN (r_m, range, matrix, array, array, concat)
@@ -98,6 +105,13 @@ install_range_ops (void)
   INSTALL_UNOP (op_uminus, octave_range, uminus);
   INSTALL_UNOP (op_transpose, octave_range, transpose);
   INSTALL_UNOP (op_hermitian, octave_range, transpose);
+
+  INSTALL_BINOP (op_add, octave_range, octave_scalar, addrs);
+  INSTALL_BINOP (op_add, octave_scalar, octave_range, addsr);
+  INSTALL_BINOP (op_sub, octave_range, octave_scalar, subrs);
+  INSTALL_BINOP (op_sub, octave_scalar, octave_range, subsr);
+  INSTALL_BINOP (op_mul, octave_range, octave_scalar, mulrs);
+  INSTALL_BINOP (op_mul, octave_scalar, octave_range, mulsr);
 
   INSTALL_CATOP (octave_range, octave_range, r_r);
   INSTALL_CATOP (octave_range, octave_scalar, r_s);

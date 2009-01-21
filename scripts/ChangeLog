@@ -1,3 +1,8 @@
+2009-01-21  John W. Eaton  <jwe@octave.org>
+
+	* plot/title.m: Insert horizontalalignment property in varargin
+	before passing it on to __axis_label__.
+
 2009-01-21  Jaroslav Hajek  <highegg@gmail.com>
 
 	* strings/strchr.m: New function.

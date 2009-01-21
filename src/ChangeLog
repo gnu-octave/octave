@@ -1,3 +1,9 @@
+2009-01-21  John W. Eaton  <jwe@octave.org>
+
+	* graphics.cc (properties::init): Set default xlabel, ylabel,
+	zlabel, and title properties that differ from default text
+	properties.
+
 2009-01-21  Jaroslav Hajek  <highegg@gmail.com>
 	
 	* OPERATORS/op-range.cc: Define & register range-scalar ops.

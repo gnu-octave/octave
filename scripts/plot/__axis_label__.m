@@ -23,16 +23,18 @@
 function retval = __axis_label__ (caller, txt, varargin)
 
   if (ischar (txt))
-    ## FIXME -- should be able to use text instead of __go_text__.
     ca = gca ();
 
-    h = __go_text__ (ca, "fontangle", get (ca, "fontangle"),
-                         "fontname", get (ca, "fontname"),
-                         "fontsize", get (ca, "fontsize"),
-                         "fontunits", get (ca, "fontunits"),
-                         "fontweight", get (ca, "fontweight"),
-                         "string", txt, varargin{:});
-    set (ca, caller, h);
+    h = get (gca (), caller);
+
+    set (h, "fontangle", get (ca, "fontangle"),
+         "fontname", get (ca, "fontname"),
+         "fontsize", get (ca, "fontsize"),
+         "fontunits", get (ca, "fontunits"),
+         "fontweight", get (ca, "fontweight"),
+         "string", txt,
+	 varargin{:});
+
     if (nargout > 0)
       retval = h;
     endif

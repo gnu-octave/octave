@@ -2208,6 +2208,7 @@ axes::properties::init (void)
   tightinset.add_constraint (dim_vector (1, 4));
 
   x_zlim.resize (1, 2);
+
   sx = "linear";
   sy = "linear";
   sz = "linear";
@@ -2215,13 +2216,22 @@ axes::properties::init (void)
   xset (xlabel.handle_value (), "handlevisibility", "off");
   xset (ylabel.handle_value (), "handlevisibility", "off");
   xset (zlabel.handle_value (), "handlevisibility", "off");
-
   xset (title.handle_value (), "handlevisibility", "off");
+
+  xset (xlabel.handle_value (), "horizontalalignment", "center");
+  xset (ylabel.handle_value (), "horizontalalignment", "center");
+  xset (zlabel.handle_value (), "horizontalalignment", "right");
+  xset (title.handle_value (), "horizontalalignment", "center");
+
+  xset (xlabel.handle_value (), "verticalalignment", "cap");
+  xset (ylabel.handle_value (), "verticalalignment", "bottom");
+  xset (title.handle_value (), "verticalalignment", "bottom");
+
+  xset (ylabel.handle_value (), "rotation", 90.0);
 
   adopt (xlabel.handle_value ());
   adopt (ylabel.handle_value ());
   adopt (zlabel.handle_value ());
-
   adopt (title.handle_value ());
 }
 

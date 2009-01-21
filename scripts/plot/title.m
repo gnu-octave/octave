@@ -30,7 +30,6 @@
 function h = title (s, varargin)
 
   if (rem (nargin, 2) == 1)
-    varargin = [{"horizontalalignment", "center"}, varargin];
     if (nargout > 0)
       h = __axis_label__ ("title", s, varargin{:});
     else

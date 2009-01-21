@@ -1,5 +1,10 @@
 2009-01-21  John W. Eaton  <jwe@octave.org>
 
+	* plot/__axis_label__.m: Set properties in existing axis label
+	object instead of creating a new text object.
+	* plot/ylabel.m: Don't set rotation property here.
+	* plot/title.m: Don't set horizontalalignment property here.
+
 	* plot/ylabel.m: Insert rotation property in varargin before
 	passing it on to __axis_label__.
 	* plot/__axis_label__.m: Don't set rotation for ylabel here.

@@ -38,7 +38,6 @@ function retval = ylabel (varargin)
   oldh = gca ();
   unwind_protect
     axes (h);
-    varargin = {varargin{1}, "rotation", 90, varargin{2:end}};
     tmp = __axis_label__ ("ylabel", varargin{:});
   unwind_protect_cleanup
     axes (oldh);

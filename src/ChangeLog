@@ -1,3 +1,7 @@
+2009-01-20  John W. Eaton  <jwe@octave.org>
+
+	* file-io.cc (Ffstat): New function.
+
 2009-01-17  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/qr.cc (Fqrupdate, Fqrinsert, Fqrdelete, Fqrshift):

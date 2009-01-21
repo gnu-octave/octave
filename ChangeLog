@@ -1,3 +1,7 @@
+2009-01-20  John W. Eaton  <jwe@octave.org>
+
+	* configure.in: Check for fstat.
+
 2008-12-23  David Bateman  <dbateman@free.fr>
 
 	* configure.in: Add configuration test for ARPACK. 

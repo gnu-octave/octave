@@ -1,3 +1,8 @@
+2009-01-20  John W. Eaton  <jwe@octave.org>
+
+	* interpreter/system.txi (Filesystem Utilities): @DOCSTRING for
+	fstat.  Delete @DOCSTRING for lstat.  Add anchor for doc-lstat.
+
 2009-01-18  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
 	* interpreter/numbers.txi (Numeric Data Types): Trivial fixes.

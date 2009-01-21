@@ -63,7 +63,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "input.h"
 
 static Octave_map
-mk_stat_map (const file_stat& fs)
+mk_stat_map (const base_file_stat& fs)
 {
   Octave_map m;
 
@@ -713,6 +713,43 @@ Return 0 if successful, otherwise return -1.\n\
 
 	      retval(1) = msg;
 	      retval(0) = status;
+	    }
+	}
+    }
+  else
+    print_usage ();
+
+  return retval;
+}
+
+DEFUN (fstat, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {[@var{info}, @var{err}, @var{msg}] =} fstat (@var{fid})\n\
+Return information about about the open file @var{fid}.  See @code{stat}\n\
+for a description of the contents of @var{info}.\n\
+@end deftypefn")
+{
+  octave_value_list retval;
+
+  if (args.length () == 1)
+    {
+      int fid = octave_stream_list::get_file_number (args(0));
+
+      if (! error_state)
+	{
+	  file_fstat fs (fid);
+
+	  if (fs)
+	    {
+	      retval(2) = std::string ();
+	      retval(1) = 0;
+	      retval(0) = octave_value (mk_stat_map (fs));
+	    }
+	  else
+	    {
+	      retval(2) = fs.error ();
+	      retval(1) = -1;
+	      retval(0) = Matrix ();
 	    }
 	}
     }

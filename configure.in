@@ -1505,7 +1505,7 @@ fi
 ### Checks for functions and variables.
 
 AC_CHECK_FUNCS(atexit basename bcopy bzero canonicalize_file_name \
-  chmod dup2 endgrent endpwent execvp expm1 expm1f fcntl fork getcwd \
+  chmod dup2 endgrent endpwent execvp expm1 expm1f fcntl fork fstat getcwd \
   getegid geteuid getgid getgrent getgrgid getgrnam getpgrp getpid \
   getppid getpwent getpwuid gettimeofday getuid getwd _kbhit kill \
   lgamma lgammaf lgamma_r lgammaf_r link localtime_r log1p log1pf lstat \

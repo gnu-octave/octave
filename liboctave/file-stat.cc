@@ -52,49 +52,49 @@ lstat (const char *name, struct stat *buf)
 // initialized, they should throw an exception.
 
 bool
-file_stat::is_blk (void) const
+base_file_stat::is_blk (void) const
 {
   return is_blk (fs_mode);
 }
 
 bool
-file_stat::is_chr (void) const
+base_file_stat::is_chr (void) const
 {
   return is_chr (fs_mode);
 }
 
 bool
-file_stat::is_dir (void) const
+base_file_stat::is_dir (void) const
 { 
   return is_dir (fs_mode);
 }
 
 bool
-file_stat::is_fifo (void) const
+base_file_stat::is_fifo (void) const
 { 
   return is_fifo (fs_mode);
 }
 
 bool
-file_stat::is_lnk (void) const
+base_file_stat::is_lnk (void) const
 { 
   return is_lnk (fs_mode);
 }
 
 bool
-file_stat::is_reg (void) const
+base_file_stat::is_reg (void) const
 { 
   return is_reg (fs_mode);
 }
 
 bool
-file_stat::is_sock (void) const
+base_file_stat::is_sock (void) const
 { 
   return is_sock (fs_mode);
 }
 
 bool
-file_stat::is_blk (mode_t mode)
+base_file_stat::is_blk (mode_t mode)
 {
 #ifdef S_ISBLK
   return S_ISBLK (mode);
@@ -104,7 +104,7 @@ file_stat::is_blk (mode_t mode)
 }
 
 bool
-file_stat::is_chr (mode_t mode)
+base_file_stat::is_chr (mode_t mode)
 {
 #ifdef S_ISCHR
   return S_ISCHR (mode);
@@ -114,7 +114,7 @@ file_stat::is_chr (mode_t mode)
 }
 
 bool
-file_stat::is_dir (mode_t mode)
+base_file_stat::is_dir (mode_t mode)
 { 
 #ifdef S_ISDIR
   return S_ISDIR (mode);
@@ -124,7 +124,7 @@ file_stat::is_dir (mode_t mode)
 }
 
 bool
-file_stat::is_fifo (mode_t mode)
+base_file_stat::is_fifo (mode_t mode)
 { 
 #ifdef S_ISFIFO
   return S_ISFIFO (mode);
@@ -134,7 +134,7 @@ file_stat::is_fifo (mode_t mode)
 }
 
 bool
-file_stat::is_lnk (mode_t mode)
+base_file_stat::is_lnk (mode_t mode)
 { 
 #ifdef S_ISLNK
   return S_ISLNK (mode);
@@ -144,7 +144,7 @@ file_stat::is_lnk (mode_t mode)
 }
 
 bool
-file_stat::is_reg (mode_t mode)
+base_file_stat::is_reg (mode_t mode)
 { 
 #ifdef S_ISREG
   return S_ISREG (mode);
@@ -154,7 +154,7 @@ file_stat::is_reg (mode_t mode)
 }
 
 bool
-file_stat::is_sock (mode_t mode)
+base_file_stat::is_sock (mode_t mode)
 { 
 #ifdef S_ISSOCK
   return S_ISSOCK (mode);
@@ -166,7 +166,7 @@ file_stat::is_sock (mode_t mode)
 extern "C" void mode_string (unsigned short, char *);
 
 std::string
-file_stat::mode_as_string (void) const
+base_file_stat::mode_as_string (void) const
 {
   char buf[11];
 
@@ -181,7 +181,7 @@ file_stat::mode_as_string (void) const
 // and -1 for any error.
 
 int
-file_stat::is_newer (const std::string& file, const octave_time& time)
+base_file_stat::is_newer (const std::string& file, const octave_time& time)
 {
   file_stat fs (file);
 
@@ -252,35 +252,61 @@ file_stat::update_internal (bool force)
 }
 
 void
-file_stat::copy (const file_stat& fs)
+file_fstat::update_internal (bool force)
 {
-  file_name = fs.file_name;
-  follow_links = fs.follow_links;
-  initialized = fs.initialized;
-  fail = fs.fail;
-  errmsg = fs.errmsg;
-  fs_mode = fs.fs_mode;
-  fs_ino = fs.fs_ino;
-  fs_dev = fs.fs_dev;
-  fs_nlink = fs.fs_nlink;
-  fs_uid = fs.fs_uid;
-  fs_gid = fs.fs_gid;
-  fs_size = fs.fs_size;
-  fs_atime = fs.fs_atime;
-  fs_mtime = fs.fs_mtime;
-  fs_ctime = fs.fs_ctime;
+  if (! initialized || force)
+    {
+      initialized = false;
+      fail = false;
+
+#if defined (HAVE_FSTAT)
+
+      struct stat buf;
+
+      int status = fstat (fid, &buf);
+
+      if (status < 0)
+	{
+	  using namespace std;
+
+	  fail = true;
+	  errmsg = strerror (errno);
+	}
+      else
+	{
+	  fs_mode = buf.st_mode;
+	  fs_ino = buf.st_ino;
+	  fs_dev = buf.st_dev;
+	  fs_nlink = buf.st_nlink;
+	  fs_uid = buf.st_uid;
+	  fs_gid = buf.st_gid;
+	  fs_size = buf.st_size;
+	  fs_atime = buf.st_atime;
+	  fs_mtime = buf.st_mtime;
+	  fs_ctime = buf.st_ctime;
 
 #if defined (HAVE_STRUCT_STAT_ST_RDEV)
-  fs_rdev = fs.fs_rdev;
+	  fs_rdev = buf.st_rdev;
 #endif
 
 #if defined (HAVE_STRUCT_STAT_ST_BLKSIZE)
-  fs_blksize = fs.fs_blksize;
+	  fs_blksize = buf.st_blksize;
 #endif
 
 #if defined (HAVE_STRUCT_STAT_ST_BLOCKS)
-  fs_blocks = fs.fs_blocks;
+	  fs_blocks = buf.st_blocks;
 #endif
+	}
+
+#else
+
+      fail = true;
+      errmsg = "fstat not available on this system";
+
+#endif
+
+      initialized = true;
+    }
 }
 
 /*

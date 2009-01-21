@@ -177,9 +177,10 @@ about the status of files.
 
 @DOCSTRING(umask)
 
+@anchor{doc-lstat}
 @DOCSTRING(stat)
 
-@DOCSTRING(lstat)
+@DOCSTRING(fstat)
 
 @DOCSTRING(fileattrib)
 

@@ -107,3 +107,7 @@ function retval = doc (fname)
   endif
 
 endfunction
+
+%!test if exist( info_file ()) != 2
+%!       error ("Info file %s does not exist!", info_file ());
+%!     endif

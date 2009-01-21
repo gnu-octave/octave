@@ -1,3 +1,7 @@
+2009-01-18  Thorsten Meyer  <thorsten.meyier@gmx.de>
+
+	* miscellaneous/doc.m: Add test for existence of info file.
+	
 2009-01-21  John W. Eaton  <jwe@octave.org>
 
 	* plot/__axis_label__.m: Set properties in existing axis label

@@ -1987,6 +1987,10 @@ typedef int sig_atomic_t;
 #define OCTAVE_USE_WINDOWS_API 1
 #endif
 
+#if defined (__APPLE__)
+#define OCTAVE_USE_OS_X_API 1
+#endif
+
 /* sigsetjmp is a macro, not a function. */
 #if defined (sigsetjmp) && defined (HAVE_SIGLONGJMP)
 #define OCTAVE_HAVE_SIG_JUMP

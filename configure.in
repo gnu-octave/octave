@@ -1987,7 +1987,7 @@ typedef int sig_atomic_t;
 #define OCTAVE_USE_WINDOWS_API 1
 #endif
 
-#if defined (__APPLE__)
+#if defined (__APPLE__) && defined (__MACH__)
 #define OCTAVE_USE_OS_X_API 1
 #endif
 

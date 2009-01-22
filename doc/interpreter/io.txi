@@ -63,8 +63,6 @@ value of a variable without printing its name, use the function
 The @code{format} command offers some control over the way Octave prints
 values with @code{disp} and through the normal echoing mechanism.
 
-@DOCSTRING(ans)
-
 @DOCSTRING(disp)
 
 @DOCSTRING(format)

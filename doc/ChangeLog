@@ -1,5 +1,7 @@
 2009-01-22  John W. Eaton  <jwe@octave.org>
 
+	* interpreter/io.txi (Terminal Output): Remove @DOCSTRING(ans).
+
 	* vr-idx.txi: Delete.
 	* interpreter/Makefile.in (SUB_SOURCE): Remove it from the list.
 

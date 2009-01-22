@@ -1283,7 +1283,7 @@ specified option.\n\
 #endif
 #endif
 
-#if defined (__APPLE__) && defined (__MACH__)
+#if defined (OCTAVE_USE_OS_X_API)
       mac_system = true;
 #endif
 

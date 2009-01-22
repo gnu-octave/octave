@@ -1,5 +1,12 @@
 2009-01-22  Jaroslav Hajek  <highegg@gmail.com>
 
+	* pt-idx.cc (tree_index_expression::lvalue): Correct tmpi when seeing
+	a plain struct component.
+	* ov-struct.cc (octave_struct::subsasgn): Use proper type substr in
+	empty_conv.
+
+2009-01-22  Jaroslav Hajek  <highegg@gmail.com>
+
 	* DLD-FUNCTIONS/qr.cc: Remove HAVE_QRUPDATE check.
 	* DLD-FUNCTIONS/chol.cc: Dtto.
 

@@ -623,12 +623,10 @@ tree_index_expression::lvalue (void)
                   {
                     // A plain struct component can also yield a list reference.
                     if (tmp.is_defined () && tmpi < i)
-                      {
                         tmp = tmp.subsref (type.substr (tmpi, i - tmpi), tmpidx, true);
 
-                        tmpi = i;
-                        tmpidx.clear ();
-                      }
+                    tmpi = i;
+                    tmpidx.clear ();
 
                     if (tmp.is_cs_list ())
                       gripe_indexed_cs_list ();

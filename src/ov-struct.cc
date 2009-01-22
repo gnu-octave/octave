@@ -332,7 +332,7 @@ octave_struct::subsasgn (const std::string& type,
 
                         if (! tmp.is_defined () || tmp.is_zero_by_zero ())
                           {
-                            tmp = octave_value::empty_conv (type.substr (1), rhs);
+                            tmp = octave_value::empty_conv (next_type, rhs);
                             tmp.make_unique (); // probably a no-op.
                           }
                         else

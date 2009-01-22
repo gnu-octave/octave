@@ -26,9 +26,16 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <cstdlib>
 
-#if defined (HAVE_X_WINDOWS)
+#if defined (OCTAVE_USE_WINDOWS_API)
+#include <Windows.h>
+#elif defined (OCTAVE_USE_OS_X_API)
+#include <CGDirectDisplay.h>
+#include <CGDisplayConfiguration.h>
+#elif defined (HAVE_X_WINDOWS)
 #include <X11/Xlib.h>
 #endif
+
+
 
 #include "display.h"
 #include "error.h"
@@ -40,11 +47,47 @@ display_info::init (void)
 {
 #if defined (OCTAVE_USE_WINDOWS_API)
 
-  warning ("code to find screen properties is missing");
+  HDC hdc = GetDC (0);
 
-#elif defined (OCTAVE_USE_COCOA_API)  // FIXME -- what should this be called?
+  if (hdc)
+    {
+      dp = GetDeviceCaps (hdc, BITSPIXEL)
 
-  warning ("code to find screen properties is missing");
+      ht = GetDeviceCaps (hdc, VERTRES);
+      wd = GetDeviceCaps (hdc, HORZRES);
+
+      double ht_mm = GetDeviceCaps (hdc, VERTSIZE);
+      double wd_mm = GetDeviceCaps (hdc, HORZSIZE);
+
+      rx = wd * 25.4 / wd_mm;
+      ry = ht * 25.4 / ht_mm;
+    }
+  else
+    warning ("no graphical display found");
+
+#elif defined (OCTAVE_USE_OS_X_API)
+
+  CGDirectDisplayID display = CGMainDisplayID ();
+
+  if (display)
+    {
+      dp = CGDisplayBitsPerPixel (display);
+
+      ht = CGDisplayPixelsHigh (display);
+      wd = CGDisplayPixelsWide (display);
+
+      CGSize sz_mm = CGDisplayScreenSize (display);
+
+      CGFloat ht_mm = sz_mm.height;
+      CGFloat wd_mm = sz_mm.width;
+
+      rx = wd * 25.4 / wd_mm;
+      ry = ht * 25.4 / ht_mm;
+
+      std::cerr << depth << " bit depth" << std::endl;
+    }
+  else
+    warning ("no graphical display found");
 
 #elif defined (HAVE_X_WINDOWS)
 

@@ -1,3 +1,8 @@
+2009-01-22  John W. Eaton  <jwe@octave.org>
+
+	* display.cc (display_info::init): Get info for Windows and OS X
+	systems.
+
 2009-01-22  Jaroslav Hajek  <highegg@gmail.com>
 
 	* pt-idx.cc (tree_index_expression::lvalue): Correct tmpi when seeing

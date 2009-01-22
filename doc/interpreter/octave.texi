@@ -190,7 +190,6 @@ It corresponds to GNU Octave version @value{VERSION}.
 @c * Grammar::                     
 * Copying::                     The GNU General Public License.
 * Concept Index::               An item for each concept.
-* Variable Index::              An item for each documented variable.
 * Function Index::              An item for each documented function.
 * Operator Index::              An item for each documented operator.
 
@@ -290,13 +289,6 @@ Data Containers
 * Cell Arrays::
 * Comma Separated Lists::
 
-Variables
-
-* Global Variables::            
-* Status of Variables::         
-* Summary of Built-in Variables::  
-* Defaults from the Environment::  
-
 Expressions
 
 * Index Expressions::           
@@ -309,6 +301,11 @@ Expressions
 * Operator Precedence::         
 
 Calling Functions
+
+Variables
+
+* Global Variables::            
+* Status of Variables::         
 
 * Call by Value::               
 * Recursion::                   

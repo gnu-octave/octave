@@ -2159,8 +2159,10 @@ public:
     BEGIN_PROPERTIES (root_figure, root)
       handle_property currentfigure S , graphics_handle ()
       handle_property callbackobject Sr , graphics_handle ()
-      array_property screensize , Matrix (1, 4, 0)
-      double_property screenpixelsperinch , 72
+      double_property screendepth r , default_screendepth ()
+      array_property screensize r , default_screensize ()
+      double_property screenpixelsperinch r , default_screenpixelsperinch ()
+      radio_property units U , "inches|centimeters|normalized|points|{pixels}"
       bool_property showhiddenhandles , "off"
     END_PROPERTIES
 

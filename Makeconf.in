@@ -148,6 +148,9 @@ else
 endif
 INCFLAGS = $(TMP_IF_1) $(TMP_IF_2)
 
+X11_INCFLAGS = @X11_INCFLAGS@
+X11_LIBS = @X11_LIBS@
+
 MAGICK_CONFIG = @MAGICK_CONFIG@
 MAGICK_INCFLAGS = $(shell $(MAGICK_CONFIG) --cppflags)
 MAGICK_LIBS = $(shell $(MAGICK_CONFIG) --ldflags --libs)

@@ -121,7 +121,7 @@ PT_INCLUDES := pt.h pt-all.h pt-arg-list.h pt-assign.h pt-binop.h \
 
 INCLUDES := Cell.h base-list.h builtins.h c-file-ptr-stream.h \
 	comment-list.h debug.h defun-dld.h defun-int.h defun.h \
-	dirfns.h dynamic-ld.h error.h file-io.h gl-render.h \
+	dirfns.h display.h dynamic-ld.h error.h file-io.h gl-render.h \
 	gripes.h help.h input.h lex.h load-path.h load-save.h ls-hdf5.h \
 	ls-mat-ascii.h ls-mat4.h ls-mat5.h ls-oct-ascii.h \
 	ls-oct-binary.h ls-utils.h mex.h mexproto.h oct-errno.h \
@@ -216,7 +216,7 @@ PT_SRC := pt.cc pt-arg-list.cc pt-assign.cc pt-bp.cc pt-binop.cc \
 
 DIST_SRC := Cell.cc bitfcns.cc c-file-ptr-stream.cc comment-list.cc \
 	cutils.c data.cc debug.cc defaults.cc defun.cc dirfns.cc \
-	dynamic-ld.cc error.cc file-io.cc gl-render.cc graphics.cc \
+	display.cc dynamic-ld.cc error.cc file-io.cc gl-render.cc graphics.cc \
 	gripes.cc help.cc input.cc lex.l load-path.cc load-save.cc \
 	ls-hdf5.cc ls-mat-ascii.cc ls-mat4.cc ls-mat5.cc ls-oct-ascii.cc \
 	ls-oct-binary.cc ls-utils.cc main.c mappers.cc matherr.c \
@@ -373,7 +373,7 @@ octave$(EXEEXT): $(LIBRARIES) main.o $(DLD_STATIC_OBJ)
 	$(LEXLIB) $(UMFPACK_LIBS) $(AMD_LIBS) $(CAMD_LIBS) $(COLAMD_LIBS) \
 	$(CHOLMOD_LIBS) $(CCOLAMD_LIBS) $(CXSPARSE_LIBS) $(BLAS_LIBS) \
 	$(FFTW_LIBS) $(QRUPDATE_LIBS) $(ARPACK_LIBS) $(OPENGL_LIBS) \
-	$(LIBS) $(FLIBS)
+	$(X11_LIBS) $(LIBS) $(FLIBS)
 
 stmp-pic: pic
 	@if [ -f stmp-pic ]; then \
@@ -643,6 +643,8 @@ oct-gperf.h: octave.gperf
 	  $(SED) 's,lookup\[,gperf_lookup[,' > $@-t \
 	  || (rm -f $@-t; exit 1)
 	@mv $@-t $@
+
+display.o: CPPFLAGS += $(X11_FLAGS)
 
 __magick_read__.d: CPPFLAGS += $(MAGICK_INCFLAGS)
 __magick_read__.df: CPPFLAGS += $(MAGICK_INCFLAGS)

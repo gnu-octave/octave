@@ -40,6 +40,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "cmd-edit.h"
 #include "defun.h"
+#include "display.h"
 #include "error.h"
 #include "graphics.h"
 #include "input.h"
@@ -96,6 +97,29 @@ jet_colormap (void)
     }
 
   return cmap;
+}
+
+static double
+default_screendepth (void)
+{
+  return display_info::depth ();
+}
+
+static Matrix
+default_screensize (void)
+{
+  Matrix retval (1, 4, 1.0);
+
+  retval(2) = display_info::width ();
+  retval(3) = display_info::height ();
+
+  return retval;
+}
+
+static double
+default_screenpixelsperinch (void)
+{
+  return (display_info::x_dpi () + display_info::y_dpi ()) / 2;
 }
 
 static Matrix
@@ -2010,6 +2034,44 @@ root_figure::properties::set_callbackobject (const octave_value& v)
     }
   else
     gripe_set_invalid ("callbackobject");
+}
+
+void
+root_figure::properties::update_units (void)
+{
+  caseless_str xunits = get_units ();
+
+  Matrix ss = default_screensize ();
+
+  double dpi = get_screenpixelsperinch ();
+
+  if (xunits.compare ("inches"))
+    {
+      ss(0) = 0;
+      ss(1) = 0;
+      ss(2) /= dpi;
+      ss(3) /= dpi;
+    }
+  else if (xunits.compare ("centimeters"))
+    {
+      ss(0) = 0;
+      ss(1) = 0;
+      ss(2) *= 2.54 / dpi;
+      ss(3) *= 2.54 / dpi;
+    }
+  else if (xunits.compare ("normalized"))
+    {
+      ss = Matrix (1, 4, 1.0);
+    }
+  else if (xunits.compare ("points"))
+    {
+      ss(0) = 0;
+      ss(1) = 0;
+      ss(2) *= 72 / dpi;
+      ss(3) *= 72 / dpi;
+    }
+
+  set_screensize (ss);
 }
 
 void

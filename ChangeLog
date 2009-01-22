@@ -1,5 +1,9 @@
 2009-01-21  John W. Eaton  <jwe@octave.org>
 
+	* Makeconf.in: Substitute X11_INCFLAGS and X11_LIBS.
+	* configure.in: Use AC_PATH_X to check for X11 header files and
+	libraries.
+
 	* THANKS, Announce: Remove obsolete files.
 	* octMakefile.in (DISTFILES): Remove THANKS from the list.
 

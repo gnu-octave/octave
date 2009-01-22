@@ -1,5 +1,16 @@
 2009-01-21  John W. Eaton  <jwe@octave.org>
 
+	* Makefile.in (display.o): Add X11_INCFLAGS to CPPFLAGS.
+	(octave$(EXEEXT)): Link with X11_LIBS.
+
+	* display.h, display.cc: New files.
+	* graphics.cc (default_screendepth, default_screensize,
+	default_screenpixelsperinch): New functions.
+	* graphics.h.in (class root_figure::properties): New property,
+	screendepth.  Use default_screensize to initialize screensize
+	property.  Use default_screenpixelsperinch to initialize
+	screenpixelsperinch property.
+
 	* graphics.cc (properties::init): Set default xlabel, ylabel,
 	zlabel, and title properties that differ from default text
 	properties.

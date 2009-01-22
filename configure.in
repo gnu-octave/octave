@@ -259,6 +259,17 @@ AC_SUBST(INCLUDE_DEPS)
 AC_SUBST(DEPEND_FLAGS)
 AC_SUBST(DEPEND_EXTRA_SED_PATTERN)
 
+AC_PATH_X
+if test "$have_x"; then
+  AC_DEFINE(HAVE_X_WINDOWS, 1, [Define if you have X11])
+
+  X11_INCFLAGS="$x_includes"
+  AC_SUBST(X11_INCFLAGS)
+
+  AC_CHECK_LIB(X11, XrmInitialize, [X11_LIBS=-lX11], [X11_LIBS=])
+  AC_SUBST(X11_LIBS)
+fi
+
 ### On Intel systems with gcc, we may need to compile with -mieee-fp
 ### and -ffloat-store to get full support for IEEE floating point.
 ###
@@ -2066,11 +2077,13 @@ Octave is now configured for $canonical_host_type
   CURL libraries:       $CURL_LIBS
   REGEX libraries:      $REGEX_LIBS
   QHULL libraries:	$QHULL_LIBS
+  OPENGL libraries:     $OPENGL_LIBS
+  FLTK backend libs:    $GRAPHICS_LIBS
+  X11 include flags:    $X11_INCFLAGS
+  X11 libraries:        $X11_LIBS
   LIBS:                 $LIBS
   Default pager:        $DEFAULT_PAGER
   gnuplot:              $GNUPLOT
-  OPENGL libraries:     $OPENGL_LIBS
-  FLTK backend libs:    $GRAPHICS_LIBS
   Magick config:        $MAGICK_CONFIG
 
   Do internal array bounds checking:  $BOUNDS_CHECKING

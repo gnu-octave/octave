@@ -1119,7 +1119,12 @@ Array<T>::index (const idx_vector& i, bool resize_ok, const T& rfv) const
     {
       octave_idx_type n = numel (), nx = i.extent (n);
       if (n != nx)
-        tmp.resize_fill (nx, rfv);
+        {
+          if (i.is_scalar ())
+            return Array<T> (1, rfv);
+          else
+            tmp.resize_fill (nx, rfv);
+        }
 
       if (tmp.numel () != nx)
         return Array<T> ();
@@ -1140,7 +1145,12 @@ Array<T>::index (const idx_vector& i, const idx_vector& j,
       octave_idx_type r = dv(0), c = dv(1);
       octave_idx_type rx = i.extent (r), cx = j.extent (c);
       if (r != rx || c != cx)
-        tmp.resize_fill (rx, cx, rfv);
+        {
+          if (i.is_scalar () && j.is_scalar ())
+            return Array<T> (1, rfv);
+          else
+            tmp.resize_fill (rx, cx, rfv);
+        }
 
       if (tmp.rows () != rx || tmp.columns () != cx)
         return Array<T> ();
@@ -1162,7 +1172,15 @@ Array<T>::index (const Array<idx_vector>& ia,
       dim_vector dvx; dvx.resize (ial);
       for (int i = 0; i < ial; i++) dvx(i) = ia(i).extent (dv (i));
       if (! (dvx == dv))
-        tmp.resize_fill (dvx, rfv);
+        {
+          bool all_scalars = true;
+          for (int i = 0; i < ial; i++) 
+            all_scalars = all_scalars && ia(i).is_scalar ();
+          if (all_scalars)
+            return Array<T> (1, rfv);
+          else
+            tmp.resize_fill (dvx, rfv);
+        }
 
       if (tmp.dimensions != dvx)
         return Array<T> ();

@@ -1,5 +1,10 @@
 2009-01-22  Jaroslav Hajek  <highegg@gmail.com>
 
+	* Array.cc (Array<T>::index (..., bool resize_ok)):
+	Optimize the all-scalar-indices cases.
+
+2009-01-22  Jaroslav Hajek  <highegg@gmail.com>
+
 	* dbleQR.h: Optionally declare warn_qrupdate_once.
 	* dbleQR.cc: Define it.
 	* (CmplxQR.h, dbleQR.h, fCmplxQR.h, floatQR.h): Declare replacement

@@ -22,7 +22,8 @@
 	file_is_in_dir, F__list_functions__): New functions.
 	(pair_type, map_iter): New typedefs.
 	(operators, keywords): Use pair_type for elements of list.
-	(names): Use map for lists.
+	(names): Use map for (keyword, doc) lists.
+	(make_name_list): Sprinkle with const.
 	* help.h (display_help_text, display_usage_text,
 	additional_help_message): Delete decls.
 

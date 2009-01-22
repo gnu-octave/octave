@@ -1,5 +1,9 @@
-2009-01-22  Soren Hauberg  <hauberg@gmail.com>
+2009-01-22  Søren Hauberg  <hauberg@gmail.com>
 
+	* interpreter/func.txi: Put varargin and varargout in concept index.
+	* interpreter/var.txi: Put ans in concept index.
+	* interpreter/octave.texi: Don't include vr-idx.texi.
+	
         * interpreter/var.txi: Remove sections on built-in variables.
 
 2009-01-20  John W. Eaton  <jwe@octave.org>

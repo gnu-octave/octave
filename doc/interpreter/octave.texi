@@ -633,7 +633,7 @@ Emacs Octave Support
 @include gpl.texi
 
 @include cp-idx.texi
-@include vr-idx.texi
+@c @include vr-idx.texi
 @include fn-idx.texi
 @include op-idx.texi
 

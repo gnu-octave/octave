@@ -1,3 +1,16 @@
+2009-01-22  Jaroslav Hajek  <highegg@gmail.com>
+
+	* dbleQR.h: Optionally declare warn_qrupdate_once.
+	* dbleQR.cc: Define it.
+	* (CmplxQR.h, dbleQR.h, fCmplxQR.h, floatQR.h): Declare replacement
+	methods unconditionally.
+	* (CmplxQR.cc, dbleQR.cc, fCmplxQR.cc, floatQR.cc): Define
+	updating replacement methods.
+	* (CmplxCHOL.h, dbleCHOL.h, fCmplxCHOL.h, floatCHOL.h): Declare
+	replacement methods unconditionally.
+	* (CmplxCHOL.cc, dbleCHOL.cc, fCmplxCHOL.cc, floatCHOL.cc): Define
+	updating replacement methods.
+
 2009-01-21  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Range.cc ( operator + (double x, const Range& r),

@@ -67,8 +67,6 @@ public:
 
   void set (const ComplexMatrix& R);
 
-#ifdef HAVE_QRUPDATE
-
   void update (const ComplexColumnVector& u);
 
   octave_idx_type downdate (const ComplexColumnVector& u);
@@ -78,8 +76,6 @@ public:
   void delete_sym (octave_idx_type j);
 
   void shift_sym (octave_idx_type i, octave_idx_type j);
-
-#endif
 
   friend OCTAVE_API std::ostream& operator << (std::ostream& os, const ComplexCHOL& a);
 

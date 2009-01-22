@@ -67,8 +67,6 @@
 
 function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options)
 
-  persistent have_qrupdate = exist ('qrupdate') == 5;
-
   if (nargin < 3)
     options = struct ();
   endif
@@ -268,11 +266,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options)
       endif
 
       ## Update the QR factorization.
-      if (have_qrupdate)
-        [q, r] = qrupdate (q, r, u, v);
-      else
-        [q, r] = qr (q*r + u*v');
-      endif
+      [q, r] = qrupdate (q, r, u, v);
 
     endwhile
   endwhile

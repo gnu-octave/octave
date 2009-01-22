@@ -159,14 +159,28 @@ QR::init (const Matrix& a, QR::type qr_type)
 
 QR::QR (const Matrix& q_arg, const Matrix& r_arg)
 {
-  if (q_arg.columns () != r_arg.rows ()) 
+  octave_idx_type qr = q_arg.rows (), qc = q_arg.columns ();
+  octave_idx_type rr = r_arg.rows (), rc = r_arg.columns ();
+  if (qc == rr && (qr == qc || (qr > qc && rr == rc)))
     {
-      (*current_liboctave_error_handler) ("QR dimensions mismatch");
-      return;
+      q = q_arg;
+      r = r_arg;
     }
+  else
+    (*current_liboctave_error_handler) ("QR dimensions mismatch");
+}
 
-  this->q = q_arg;
-  this->r = r_arg;
+QR::type
+QR::get_type (void) const
+{
+  QR::type retval;
+  if (!q.is_empty () && q.is_square ())
+    retval = QR::std;
+  else if (q.rows () > q.columns () && r.is_square ())
+    retval = QR::economy;
+  else
+    retval = QR::raw;
+  return retval;
 }
 
 #ifdef HAVE_QRUPDATE
@@ -186,7 +200,7 @@ QR::update (const ColumnVector& u, const ColumnVector& v)
                                  utmp.fortran_vec (), vtmp.fortran_vec (), w));
     }
   else
-    (*current_liboctave_error_handler) ("QR update dimensions mismatch");
+    (*current_liboctave_error_handler) ("qrupdate: dimensions mismatch");
 }
 
 void
@@ -415,6 +429,261 @@ QR::shift_cols (octave_idx_type i, octave_idx_type j)
                                  q.fortran_vec (), q.rows (),
                                  r.fortran_vec (), r.rows (),
                                  i + 1, j + 1, w));
+    }
+}
+
+#else
+
+// Replacement update methods.
+
+void
+QR::update (const ColumnVector& u, const ColumnVector& v)
+{
+  warn_qrupdate_once ();
+
+  octave_idx_type m = q.rows ();
+  octave_idx_type n = r.columns ();
+
+  if (u.length () == m && v.length () == n)
+    {
+      init(q*r + Matrix (u) * Matrix (v).transpose (), get_type ());
+    }
+  else
+    (*current_liboctave_error_handler) ("qrupdate: dimensions mismatch");
+}
+
+void
+QR::update (const Matrix& u, const Matrix& v)
+{
+  warn_qrupdate_once ();
+
+  octave_idx_type m = q.rows ();
+  octave_idx_type n = r.columns ();
+
+  if (u.rows () == m && v.rows () == n && u.cols () == v.cols ())
+    {
+      init(q*r + u * v.transpose (), get_type ());
+    }
+  else
+    (*current_liboctave_error_handler) ("qrupdate: dimensions mismatch");
+}
+
+static
+Matrix insert_col (const Matrix& a, octave_idx_type i,
+                        const ColumnVector& x)
+{
+  Matrix retval (a.rows (), a.columns () + 1);
+  retval.assign (idx_vector::colon, idx_vector (0, i),
+                 a.index (idx_vector::colon, idx_vector (0, i)));
+  retval.assign (idx_vector::colon, idx_vector (i), x);
+  retval.assign (idx_vector::colon, idx_vector (i+1, retval.columns ()),
+                 a.index (idx_vector::colon, idx_vector (i, a.columns ())));
+  return retval;
+}
+
+static
+Matrix insert_row (const Matrix& a, octave_idx_type i,
+                        const RowVector& x)
+{
+  Matrix retval (a.rows () + 1, a.columns ());
+  retval.assign (idx_vector (0, i), idx_vector::colon,
+                 a.index (idx_vector (0, i), idx_vector::colon));
+  retval.assign (idx_vector (i), idx_vector::colon, x);
+  retval.assign (idx_vector (i+1, retval.rows ()), idx_vector::colon,
+                 a.index (idx_vector (i, a.rows ()), idx_vector::colon));
+  return retval;
+}
+
+static
+Matrix delete_col (const Matrix& a, octave_idx_type i)
+{
+  Matrix retval = a;
+  retval.delete_elements (1, idx_vector (i));
+  return retval;
+}
+
+static
+Matrix delete_row (const Matrix& a, octave_idx_type i)
+{
+  Matrix retval = a;
+  retval.delete_elements (0, idx_vector (i));
+  return retval;
+}
+
+static
+Matrix shift_cols (const Matrix& a, 
+                        octave_idx_type i, octave_idx_type j)
+{
+  octave_idx_type n = a.columns ();
+  Array<octave_idx_type> p (n);
+  for (octave_idx_type k = 0; k < n; k++) p(k) = k;
+  if (i < j)
+    {
+      for (octave_idx_type k = i; k < j; k++) p(k) = k+1;
+      p(j) = i;
+    }
+  else if (j < i)
+    {
+      p(j) = i;
+      for (octave_idx_type k = j+1; k < i+1; k++) p(k) = k-1;
+    }
+
+  return a.index (idx_vector::colon, idx_vector (p));
+}
+
+void
+QR::insert_col (const ColumnVector& u, octave_idx_type j)
+{
+  warn_qrupdate_once ();
+
+  octave_idx_type m = q.rows ();
+  octave_idx_type n = r.columns ();
+
+  if (u.length () != m)
+    (*current_liboctave_error_handler) ("qrinsert: dimensions mismatch");
+  else if (j < 0 || j > n) 
+    (*current_liboctave_error_handler) ("qrinsert: index out of range");
+  else
+    {
+      init (::insert_col (q*r, j, u), get_type ());
+    }
+}
+
+void
+QR::insert_col (const Matrix& u, const Array<octave_idx_type>& j)
+{
+  warn_qrupdate_once ();
+
+  octave_idx_type m = q.rows ();
+  octave_idx_type n = r.columns ();
+
+  Array<octave_idx_type> jsi;
+  Array<octave_idx_type> js = j.sort (jsi, ASCENDING);
+  octave_idx_type nj = js.length ();
+  bool dups = false;
+  for (octave_idx_type i = 0; i < nj - 1; i++)
+    dups = dups && js(i) == js(i+1);
+
+  if (dups)
+    (*current_liboctave_error_handler) ("qrinsert: duplicate index detected");
+  else if (u.length () != m || u.columns () != nj)
+    (*current_liboctave_error_handler) ("qrinsert: dimensions mismatch");
+  else if (nj > 0 && (js(0) < 0 || js(nj-1) > n))
+    (*current_liboctave_error_handler) ("qrinsert: index out of range");
+  else if (nj > 0)
+    {
+      Matrix a = q*r;
+      for (octave_idx_type i = 0; i < js.length (); i++)
+        a = ::insert_col (a, js(i), u.column (i));
+      init (a, get_type ());
+    }
+}
+
+void
+QR::delete_col (octave_idx_type j)
+{
+  warn_qrupdate_once ();
+
+  octave_idx_type m = q.rows ();
+  octave_idx_type n = r.columns ();
+
+  if (j < 0 || j > n-1) 
+    (*current_liboctave_error_handler) ("qrdelete: index out of range");
+  else
+    {
+      init (::delete_col (q*r, j), get_type ());
+    }
+}
+
+void
+QR::delete_col (const Array<octave_idx_type>& j)
+{
+  warn_qrupdate_once ();
+
+  octave_idx_type m = q.rows ();
+  octave_idx_type n = r.columns ();
+
+  Array<octave_idx_type> jsi;
+  Array<octave_idx_type> js = j.sort (jsi, DESCENDING);
+  octave_idx_type nj = js.length ();
+  bool dups = false;
+  for (octave_idx_type i = 0; i < nj - 1; i++)
+    dups = dups && js(i) == js(i+1);
+
+  if (dups)
+    (*current_liboctave_error_handler) ("qrinsert: duplicate index detected");
+  else if (nj > 0 && (js(0) > n-1 || js(nj-1) < 0))
+    (*current_liboctave_error_handler) ("qrinsert: index out of range");
+  else if (nj > 0)
+    {
+      Matrix a = q*r;
+      for (octave_idx_type i = 0; i < js.length (); i++)
+        a = ::delete_col (a, js(i));
+      init (a, get_type ());
+    }
+}
+
+void
+QR::insert_row (const RowVector& u, octave_idx_type j)
+{
+  warn_qrupdate_once ();
+
+  octave_idx_type m = r.rows ();
+  octave_idx_type n = r.columns ();
+
+  if (! q.is_square () || u.length () != n)
+    (*current_liboctave_error_handler) ("qrinsert: dimensions mismatch");
+  else if (j < 0 || j > m) 
+    (*current_liboctave_error_handler) ("qrinsert: index out of range");
+  else
+    {
+      init (::insert_row (q*r, j, u), get_type ());
+    }
+}
+
+void
+QR::delete_row (octave_idx_type j)
+{
+  octave_idx_type m = r.rows ();
+  octave_idx_type n = r.columns ();
+
+  if (! q.is_square ())
+    (*current_liboctave_error_handler) ("qrdelete: dimensions mismatch");
+  else if (j < 0 || j > m-1) 
+    (*current_liboctave_error_handler) ("qrdelete: index out of range");
+  else
+    {
+      init (::delete_row (q*r, j), get_type ());
+    }
+}
+
+void
+QR::shift_cols (octave_idx_type i, octave_idx_type j)
+{
+  warn_qrupdate_once ();
+
+  octave_idx_type m = q.rows ();
+  octave_idx_type n = r.columns ();
+
+  if (i < 0 || i > n-1 || j < 0 || j > n-1) 
+    (*current_liboctave_error_handler) ("qrshift: index out of range");
+  else
+    {
+      init (::shift_cols (q*r, i, j), get_type ());
+    }
+}
+
+void warn_qrupdate_once (void)
+{
+  static bool warned = false;
+  if (! warned)
+    {
+      (*current_liboctave_warning_handler)
+        ("In this version of Octave, QR & Cholesky updating routines\n"
+         "simply update the matrix and recalculate factorizations.\n"
+         "To use fast algorithms, link Octave with the qrupdate library.\n"
+         "See <http://sourceforge.net/projects/qrupdate>.\n");
+      warned = true;
     }
 }
 

@@ -70,7 +70,7 @@ public:
 
   Matrix R (void) const { return r; }
 
-#ifdef HAVE_QRUPDATE
+  QR::type get_type (void) const;
 
   void update (const ColumnVector& u, const ColumnVector& v);
 
@@ -90,8 +90,6 @@ public:
 
   void shift_cols (octave_idx_type i, octave_idx_type j);
 
-#endif
-
   friend std::ostream&  operator << (std::ostream&, const QR&);
 
 protected:
@@ -99,6 +97,10 @@ protected:
   Matrix q;
   Matrix r;
 };
+
+#ifndef HAVE_QRUPDATE
+void warn_qrupdate_once (void);
+#endif
 
 #endif
 

@@ -739,8 +739,6 @@ as\n\
 
 */
 
-#ifdef HAVE_QRUPDATE
-
 static
 bool check_qr_dims (const octave_value& q, const octave_value& r,
                     bool allow_ecf = false)
@@ -1579,8 +1577,6 @@ of @w{@var{A}(:,p)}, where @w{p} is the permutation @*\n\
 %! assert(norm(vec(triu(R)-R),Inf) == 0)
 %! assert(norm(vec(Q*R - AA(:,p)),Inf) < norm(AA)*1e1*eps('single'))
 */
-
-#endif
 
 /*
 ;;; Local Variables: ***

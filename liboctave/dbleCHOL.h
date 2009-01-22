@@ -64,8 +64,6 @@ public:
 
   void set (const Matrix& R);
 
-#ifdef HAVE_QRUPDATE
-
   void update (const ColumnVector& u);
 
   octave_idx_type downdate (const ColumnVector& u);
@@ -75,8 +73,6 @@ public:
   void delete_sym (octave_idx_type j);
 
   void shift_sym (octave_idx_type i, octave_idx_type j);
-
-#endif
 
   friend OCTAVE_API std::ostream& operator << (std::ostream& os, const CHOL& a);
 

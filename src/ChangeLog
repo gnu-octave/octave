@@ -1,3 +1,8 @@
+2009-01-22  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/qr.cc: Remove HAVE_QRUPDATE check.
+	* DLD-FUNCTIONS/chol.cc: Dtto.
+
 2009-01-21  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.in (display.o): Add X11_INCFLAGS to CPPFLAGS.

@@ -1,3 +1,7 @@
+2009-01-22  Jaroslav Hajek  <highegg@gmail.com>
+
+	* configure.in: Fix qrupdate warning message.
+
 2009-01-21  John W. Eaton  <jwe@octave.org>
 
 	* Makeconf.in: Substitute X11_INCFLAGS and X11_LIBS.

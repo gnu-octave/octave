@@ -885,7 +885,7 @@ AC_ARG_WITH(qrupdate,
      [don't use qrupdate, disable QR & Cholesky updating functions])],
   with_qrupdate=$withval, with_qrupdate=yes)
 
-warn_qrupdate="qrupdate not found. The QR & Cholesky updating function will not be available."
+warn_qrupdate="qrupdate not found. The QR & Cholesky updating functions will be slow."
 if test "$with_qrupdate" = yes; then
   with_qrupdate=no
   if $have_fortran_compiler; then 

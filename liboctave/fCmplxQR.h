@@ -66,7 +66,7 @@ public:
 
   FloatComplexMatrix R (void) const { return r; }
 
-#ifdef HAVE_QRUPDATE
+  QR::type get_type (void) const;
 
   void update (const FloatComplexColumnVector& u, const FloatComplexColumnVector& v);
 
@@ -85,8 +85,6 @@ public:
   void delete_row (octave_idx_type j);
 
   void shift_cols (octave_idx_type i, octave_idx_type j);
-
-#endif
 
   friend std::ostream&  operator << (std::ostream&, const FloatComplexQR&);
 

@@ -34,6 +34,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "f77-fcn.h"
 #include "lo-error.h"
 #include "oct-locbuf.h"
+#ifndef HAVE_QRUPDATE
+#include "dbleQR.h"
+#endif
 
 extern "C"
 {
@@ -288,6 +291,146 @@ FloatComplexCHOL::shift_sym (octave_idx_type i, octave_idx_type j)
 
       F77_XFCN (cchshx, CCHSHX, (n, chol_mat.fortran_vec (), chol_mat.rows (),
                                  i + 1, j + 1, w, rw));
+    }
+}
+
+#else
+
+void
+FloatComplexCHOL::update (const FloatComplexColumnVector& u)
+{
+  warn_qrupdate_once ();
+
+  octave_idx_type n = chol_mat.rows ();
+
+  if (u.length () == n)
+    {
+      init (chol_mat.hermitian () * chol_mat 
+            + FloatComplexMatrix (u) * FloatComplexMatrix (u).hermitian (), false);
+    }
+  else
+    (*current_liboctave_error_handler) ("cholupdate: dimension mismatch");
+}
+
+static bool
+singular (const FloatComplexMatrix& a)
+{
+  for (octave_idx_type i = 0; i < a.rows (); i++)
+    if (a(i,i) == 0.0f) return true;
+  return false;
+}
+
+octave_idx_type
+FloatComplexCHOL::downdate (const FloatComplexColumnVector& u)
+{
+  warn_qrupdate_once ();
+
+  octave_idx_type info = -1;
+
+  octave_idx_type n = chol_mat.rows ();
+
+  if (u.length () == n)
+    {
+      if (singular (chol_mat))
+        info = 2;
+      else
+        {
+          info = init (chol_mat.hermitian () * chol_mat 
+                       - FloatComplexMatrix (u) * FloatComplexMatrix (u).hermitian (), false);
+          if (info) info = 1;
+        }
+    }
+  else
+    (*current_liboctave_error_handler) ("cholupdate: dimension mismatch");
+
+  return info;
+}
+
+octave_idx_type
+FloatComplexCHOL::insert_sym (const FloatComplexColumnVector& u, octave_idx_type j)
+{
+  warn_qrupdate_once ();
+
+  octave_idx_type info = -1;
+
+  octave_idx_type n = chol_mat.rows ();
+
+  if (u.length () != n + 1)
+    (*current_liboctave_error_handler) ("cholinsert: dimension mismatch");
+  else if (j < 0 || j > n)
+    (*current_liboctave_error_handler) ("cholinsert: index out of range");
+  else
+    {
+      if (singular (chol_mat))
+        info = 2;
+      else if (u(j).imag () != 0.0)
+        info = 3;
+      else
+        {
+          FloatComplexMatrix a = chol_mat.hermitian () * chol_mat;
+          FloatComplexMatrix a1 (n+1, n+1);
+          for (octave_idx_type k = 0; k < n+1; k++)
+            for (octave_idx_type l = 0; l < n+1; l++)
+              {
+                if (l == j)
+                  a1(k, l) = u(k);
+                else if (k == j)
+                  a1(k, l) = std::conj (u(l));
+                else
+                  a1(k, l) = a(k < j ? k : k-1, l < j ? l : l-1);
+              }
+          info = init (a1, false);
+          if (info) info = 1;
+        }
+    }
+
+  return info;
+}
+
+void
+FloatComplexCHOL::delete_sym (octave_idx_type j)
+{
+  warn_qrupdate_once ();
+
+  octave_idx_type n = chol_mat.rows ();
+
+  if (j < 0 || j > n-1)
+    (*current_liboctave_error_handler) ("choldelete: index out of range");
+  else
+    {
+      FloatComplexMatrix a = chol_mat.hermitian () * chol_mat;
+      a.delete_elements (1, idx_vector (j));
+      a.delete_elements (0, idx_vector (j));
+      init (a, false);
+    }
+}
+
+void
+FloatComplexCHOL::shift_sym (octave_idx_type i, octave_idx_type j)
+{
+  warn_qrupdate_once ();
+
+  octave_idx_type n = chol_mat.rows ();
+
+  if (i < 0 || i > n-1 || j < 0 || j > n-1) 
+    (*current_liboctave_error_handler) ("cholshift: index out of range");
+  else
+    {
+      FloatComplexMatrix a = chol_mat.hermitian () * chol_mat;
+      Array<octave_idx_type> p (n);
+      for (octave_idx_type k = 0; k < n; k++) p(k) = k;
+      if (i < j)
+        {
+          for (octave_idx_type k = i; k < j; k++) p(k) = k+1;
+          p(j) = i;
+        }
+      else if (j < i)
+        {
+          p(j) = i;
+          for (octave_idx_type k = j+1; k < i+1; k++) p(k) = k-1;
+        }
+
+      init (a.index (idx_vector (p), idx_vector (p)), false);
     }
 }
 

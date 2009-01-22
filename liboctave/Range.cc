@@ -130,7 +130,7 @@ Range::sort_internal (bool ascending)
       rng_inc = -rng_inc;
       clear_cache ();
     }
-  else if (rng_base < rng_limit && rng_inc > 0.0)
+  else if (! ascending && rng_base < rng_limit && rng_inc > 0.0)
     {
       double tmp = rng_limit;
       rng_limit = min ();

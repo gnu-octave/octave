@@ -1,5 +1,9 @@
 2009-01-22  Jaroslav Hajek  <highegg@gmail.com>
 
+	* Range.cc (sort_internal): Add missing test.
+
+2009-01-22  Jaroslav Hajek  <highegg@gmail.com>
+
 	* Array.cc (Array<T>::index (..., bool resize_ok)):
 	Optimize the all-scalar-indices cases.
 

@@ -1,3 +1,27 @@
+2009-01-22  John W. Eaton  <jwe@octave.org>
+
+	* help/which.m: New function.
+	* help/Makefile.in (SOURCES): Add it to the list.
+
+	* help/help.m: Also display location of the file before the help text.
+	* help/print_usage: Also display additional help text.
+	* help/__additional_help_message__.m: Return message instead of
+	displaying it.
+
+2009-01-22  Søren Hauberg  <hauberg@gmail.com>
+
+	* help: New directory.
+	* configure.in (AC_CONFIG_FILES): Add help/Makefile to the list.
+	* Makefile.in (SUBDIRS): Add it to the list.
+	* help/__additional_help_message__.m, help/__strip_html_tags__.m,
+	help/gen_doc_cache.m, help/get_first_help_sentence.m, help/help.m,
+	help/lookfor.m, help/makeinfo.m, help/print_usage.m, help/type.m:
+	New functions.
+	* help/Makefile.in (SOURCES): Add them to the list.
+	* help/doc.m: Move here from miscellaneous/doc.m.
+	* miscellaneous/Makefile.in (SOURCES): Remove doc.m from the list.
+	* miscellaneous/pkg.m: Generate documentation cache during install.
+
 2009-01-22  Jaroslav Hajek  <highegg@gmail.com>
 
 	* optimization/fsolve.m: Undo the last change.

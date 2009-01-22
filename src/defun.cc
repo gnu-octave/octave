@@ -44,72 +44,23 @@ along with Octave; see the file COPYING.  If not, see
 #include "symtab.h"
 #include "toplev.h"
 #include "variables.h"
+#include "parse.h"
 
 // Print the usage part of the doc string of FCN (user-defined or DEFUN).
-
-static void
-print_usage (octave_function *fcn)
+void
+print_usage (void)
 {
-  if (fcn)
-    {
-      std::string nm = fcn->name ();
-
-      std::string doc = fcn->doc_string ();
-
-      if (doc.length () > 0)
-	{
-	  std::ostringstream buf;
-
-	  buf << "\nInvalid call to " << nm << ".  Correct usage is:\n\n";
-
-	  display_usage_text (buf, doc);
-
-	  buf << "\n";
-
-	  additional_help_message (buf);
-
-	  defun_usage_message (buf.str ());
-	}
-      else
-	error ("no usage message found for `%s'", nm.c_str ());
-    }
+  const octave_function *cur = octave_call_stack::current ();
+  if (cur)
+    print_usage (cur->name ());
   else
     error ("print_usage: invalid function");
 }
 
-// Print the usage part of the doc string of the current function
-// (user-defined or DEFUN).
-
 void
-print_usage (void)
+print_usage (const std::string& name)
 {
-  print_usage (octave_call_stack::current ());
-}
-
-// Deprecated.
-void
-print_usage (const std::string&)
-{
-  print_usage ();
-}
-
-DEFUN (print_usage, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} print_usage ()\n\
-Print the usage message for the currently executing function.  The\n\
-@code{print_usage} function is only intended to work inside a\n\
-user-defined function.\n\
-@seealso{help}\n\
-@end deftypefn")
-{
-  octave_value retval;
-
-  if (args.length () == 0)
-    print_usage (octave_call_stack::caller_user_code ());
-  else
-    print_usage ();
-
-  return retval;
+  feval ("print_usage", octave_value (name), 0);
 }
 
 void

@@ -1,7 +1,6 @@
-# Makefile for octave's scripts/miscellaneous directory
+# Makefile for octave's scripts/help directory
 #
-# Copyright (C) 1994, 1995, 1996, 1997, 2002, 2005, 2006, 2007
-#               John W. Eaton
+# Copyright (C) 1995, 1996, 1997, 2002, 2005, 2006, 2007 John W. Eaton
 #
 # This file is part of Octave.
 # 
@@ -21,7 +20,7 @@
 
 TOPDIR = ../..
 
-script_sub_dir = miscellaneous
+script_sub_dir = help
 
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
@@ -33,16 +32,18 @@ INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
-SOURCES = ans.m bincoeff.m bug_report.m bunzip2.m cast.m comma.m \
-  compare_versions.m computer.m copyfile.m debug.m \
-  delete.m dir.m dos.m dump_prefs.m edit.m \
-  fileattrib.m fileparts.m flops.m fullfile.m getfield.m gunzip.m gzip.m \
-  info.m inputname.m intwarning.m ismac.m ispc.m isunix.m license.m \
-  list_primes.m ls.m ls_command.m menu.m mex.m mexext.m mkoctfile.m \
-  movefile.m namelengthmax.m news.m orderfields.m pack.m paren.m \
-  parseparams.m perl.m run.m semicolon.m setfield.m substruct.m swapbytes.m \
-  symvar.m tar.m tempdir.m tempname.m texas_lotto.m unix.m unpack.m untar.m \
-  unzip.m ver.m version.m warning_ids.m what.m xor.m zip.m
+SOURCES = \
+  __additional_help_message__.m \
+  __strip_html_tags__.m \
+  doc.m \
+  gen_doc_cache.m \
+  get_first_help_sentence.m \
+  help.m \
+  lookfor.m \
+  makeinfo.m \
+  print_usage.m \
+  type.m \
+  which.m
 
 DISTFILES = $(addprefix $(srcdir)/, Makefile.in $(SOURCES))
 
@@ -85,7 +86,7 @@ maintainer-clean: distclean
 .PHONY: maintainer-clean
 
 dist:
-	ln $(DISTFILES) ../../`cat ../../.fname`/scripts/miscellaneous
+	ln $(DISTFILES) ../../`cat ../../.fname`/scripts/help
 .PHONY: dist
 
 check-m-sources:

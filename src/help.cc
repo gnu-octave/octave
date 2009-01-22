@@ -86,258 +86,259 @@ static std::string Vmakeinfo_program = "makeinfo";
 // functions.
 static bool Vsuppress_verbose_help_message = false;
 
-// FIXME -- maybe this should use string instead of char*.
+#include <map>
 
-struct help_list
+typedef std::map<std::string, std::string> map_type;
+typedef map_type::value_type pair_type;
+typedef map_type::const_iterator map_iter;
+
+template<typename T, std::size_t z>
+std::size_t
+size (T const (&)[z])
 {
-  const char *name;
-  const char *help;
-};
+  return z;
+}
 
-static help_list operators[] =
+// FIXME -- The descriptions could easily be in texinfo -- should they?
+const static pair_type operators[] =
 {
-  { "!",
-    "Logical not operator.  See also `~'.\n", },
+  pair_type ("!",
+    "Logical not operator.  See also `~'.\n"),
 
-  { "!=",
-    "Logical not equals operator.  See also `~' and `<>'.\n", },
+  pair_type ("!=",
+    "Logical not equals operator.  See also `~='.\n"),
 
-  { "\"",
-    "String delimiter.\n", },
+  pair_type ("\"",
+    "String delimiter.\n"),
 
-  { "#",
-    "Begin comment character.  See also `%'.", },
+  pair_type ("#",
+    "Begin comment character.  See also `%'."),
 
-  { "%",
-    "Begin comment charcter.  See also `#'.", },
+  pair_type ("%",
+    "Begin comment charcter.  See also `#'."),
 
-  { "&",
-    "Logical and operator.  See also `&&'.", },
+  pair_type ("&",
+    "Element by element logical and operator.  See also `&&'."),
 
-  { "&&",
-    "Logical and operator.  See also `&'.", },
+  pair_type ("&&",
+    "Logical and operator (with short-circuit evaluation).  See also `&'."),
 
-  { "'",
+  pair_type ("'",
     "Matrix transpose operator.  For complex matrices, computes the\n\
 complex conjugate (Hermitian) transpose.  See also `.''\n\
 \n\
 The single quote character may also be used to delimit strings, but\n\
 it is better to use the double quote character, since that is never\n\
-ambiguous", },
+ambiguous"),
 
-  { "(",
-    "Array index or function argument delimiter.", },
+  pair_type ("(",
+    "Array index or function argument delimiter."),
 
-  { ")",
-    "Array index or function argument delimiter.", },
+  pair_type (")",
+    "Array index or function argument delimiter."),
 
-  { "*",
-    "Multiplication operator.  See also `.*'", },
+  pair_type ("*",
+    "Multiplication operator.  See also `.*'"),
 
-  { "**",
-    "Power operator.  See also `^', `.**', and `.^'", },
+  pair_type ("**",
+    "Power operator.  See also `^', `.**', and `.^'"),
 
-  { "+",
-    "Addition operator.", },
+  pair_type ("+",
+    "Addition operator."),
 
-  { "++",
+  pair_type ("++",
     "Increment operator.  As in C, may be applied as a prefix or postfix\n\
-operator.", },
+operator."),
 
-  { ",",
-    "Array index, function argument, or command separator.", },
+  pair_type (",",
+    "Array index, function argument, or command separator."),
 
-  { "-",
-    "Subtraction or unary negation operator.", },
+  pair_type ("-",
+    "Subtraction or unary negation operator."),
 
-  { "--",
+  pair_type ("--",
     "Decrement operator.  As in C, may be applied as a prefix or postfix\n\
-operator.", },
+operator."),
 
-  { ".'",
+  pair_type (".'",
     "Matrix transpose operator.  For complex matrices, computes the\n\
-transpose, *not* the complex conjugate transpose.  See also `''.", },
+transpose, *not* the complex conjugate transpose.  See also `''."),
 
-  { ".*",
-    "Element by element multiplication operator.  See also `*'.", },
+  pair_type (".*",
+    "Element by element multiplication operator.  See also `*'."),
 
-  { ".**",
-    "Element by element power operator.  See also `**', `^', and `.^'.", },
+  pair_type (".**",
+    "Element by element power operator.  See also `**', `^', and `.^'."),
 
-  { "./",
-    "Element by element division operator.  See also `/' and `\\'.", },
+  pair_type ("./",
+    "Element by element division operator.  See also `/' and `\\'."),
 
-  { ".^",
-    "Element by element power operator.  See also `**', `^', and `.^'.", },
+  pair_type (".^",
+    "Element by element power operator.  See also `**', `^', and `.^'."),
 
-  { "/",
-    "Right division.  See also `\\' and `./'.", },
+  pair_type ("/",
+    "Right division.  See also `\\' and `./'."),
 
-  { ":",
-    "Select entire rows or columns of matrices.", },
+  pair_type (":",
+    "Select entire rows or columns of matrices."),
 
-  { ";",
-    "Array row or command separator.  See also `,'.", },
+  pair_type (";",
+    "Array row or command separator.  See also `,'."),
 
-  { "<",
-    "Less than operator.", },
+  pair_type ("<",
+    "Less than operator."),
 
-  { "<=",
-    "Less than or equals operator.", },
+  pair_type ("<=",
+    "Less than or equals operator."),
 
-  { "<>",
-    "Logical not equals operator.  See also `!=' and `~='.", },
+  pair_type ("=",
+    "Assignment operator."),
 
-  { "=",
-    "Assignment operator.", },
+  pair_type ("==",
+    "Equality test operator."),
 
-  { "==",
-    "Equality test operator.", },
+  pair_type (">",
+    "Greater than operator."),
 
-  { ">",
-    "Greater than operator.", },
+  pair_type (">=",
+    "Greater than or equals operator."),
 
-  { ">=",
-    "Greater than or equals operator.", },
+  pair_type ("[",
+    "Return list delimiter.  See also `]'."),
 
-  { "[",
-    "Return list delimiter.  See also `]'.", },
+  pair_type ("\\",
+    "Left division operator.  See also `/' and `./'."),
 
-  { "\\",
-    "Left division operator.  See also `/' and `./'.", },
+  pair_type ("]",
+    "Return list delimiter.  See also `['."),
 
-  { "]",
-    "Return list delimiter.  See also `['.", },
+  pair_type ("^",
+    "Power operator.  See also `**', `.^', and `.**.'"),
 
-  { "^",
-    "Power operator.  See also `**', `.^', and `.**.'", },
+  pair_type ("|",
+    "Element by element logical or operator.  See also `||'."),
 
-  { "|",
-    "Logical or operator.  See also `||'.", },
+  pair_type ("||",
+    "Logical or operator (with short-circuit evaluation).  See also `|'."),
 
-  { "||",
-    "Logical or operator.  See also `|'.", },
+  pair_type ("~",
+    "Logical not operator.  See also `!' and `~'."),
 
-  { "~",
-    "Logical not operator.  See also `!' and `~'.", },
-
-  { "~=",
-    "Logical not equals operator.  See also `<>' and `!='.", },
-
-  { 0, 0, },
+  pair_type ("~=",
+    "Logical not equals operator.  See also `!='."),
 };
 
-static help_list keywords[] =
+const static pair_type keywords[] =
 {
-  { "break",
+  pair_type ("break",
     "-*- texinfo -*-\n\
 @deffn Keyword break\n\
 Exit the innermost enclosing do, while or for loop.\n\
 @seealso{do, while, for, continue}\n\
-@end deffn", },
+@end deffn"),
 
-  { "case",
+  pair_type ("case",
     "-*- texinfo -*-\n\
 @deffn Keyword case @{@var{value}@}\n\
 A case statement in an switch. Octave cases are exclusive and do not\n\
 fall-through as do C-language cases. A switch statement must have at least\n\
 one case.  See @code{switch} for an example.\n\
 @seealso{switch}\n\
-@end deffn", },
+@end deffn"),
 
-  { "catch",
+  pair_type ("catch",
     "-*- texinfo -*-\n\
 @deffn Keyword catch\n\
 Begin the cleanup part of a try-catch block.\n\
 @seealso{try}\n\
-@end deffn", },
+@end deffn"),
 
-  { "continue",
+  pair_type ("continue",
     "-*- texinfo -*-\n\
 @deffn Keyword continue\n\
 Jump to the end of the innermost enclosing do, while or for loop.\n\
 @seealso{do, while, for, break}\n\
-@end deffn", },
+@end deffn"),
 
-  { "do",
+  pair_type ("do",
     "-*- texinfo -*-\n\
 @deffn Keyword do\n\
 Begin a do-until loop. This differs from a do-while loop in that the\n\
 body of the loop is executed at least once.\n\
 @seealso{while}\n\
-@end deffn", },
+@end deffn"),
 
-  { "else",
+  pair_type ("else",
     "-*- texinfo -*-\n\
 @deffn Keyword else\n\
 Alternate action for an if block.  See @code{if} for an example.\n\
 @seealso{if}\n\
-@end deffn", },
+@end deffn"),
 
-  { "elseif",
+  pair_type ("elseif",
     "-*- texinfo -*-\n\
 @deffn Keyword elseif (@var{condition})\n\
 Alternate conditional test for an if block.  See @code{if} for an example.\n\
 @seealso{if}\n\
-@end deffn", },
+@end deffn"),
 
-  { "end",
+  pair_type ("end",
     "-*- texinfo -*-\n\
 @deffn Keyword end\n\
 Mark the end of any @code{for}, @code{if}, @code{do}, @code{while}, or @code{function} block.\n\
 @seealso{for, if, do, while, function}\n\
-@end deffn", },
+@end deffn"),
 
-  { "end_try_catch",
+  pair_type ("end_try_catch",
     "-*- texinfo -*-\n\
 @deffn Keyword end_try_catch\n\
 Mark the end of an @code{try-catch} block.\n\
 @seealso{try, catch}\n\
-@end deffn", }, 
+@end deffn"), 
 
-  { "end_unwind_protect",
+  pair_type ("end_unwind_protect",
     "-*- texinfo -*-\n\
 @deffn Keyword end_unwind_protect\n\
 Mark the end of an unwind_protect block.\n\
 @seealso{unwind_protect}\n\
-@end deffn", }, 
+@end deffn"), 
 
-  { "endfor",
+  pair_type ("endfor",
     "-*- texinfo -*-\n\
 @deffn Keyword endfor\n\
 Mark the end of a for loop.  See @code{for} for an example.\n\
 @seealso{for}\n\
-@end deffn", },
+@end deffn"),
 
-  { "endfunction",
+  pair_type ("endfunction",
     "-*- texinfo -*-\n\
 @deffn Keyword endfunction\n\
 Mark the end of a function.\n\
 @seealso{function}\n\
-@end deffn", },
+@end deffn"),
 
-  { "endif",
+  pair_type ("endif",
     "-*- texinfo -*-\n\
 @deffn Keyword endif\n\
 Mark the end of an if block.  See @code{if} for an example.\n\
 @seealso{if}\n\
-@end deffn", },
+@end deffn"),
 
-  { "endswitch",
+  pair_type ("endswitch",
     "-*- texinfo -*-\n\
 @deffn Keyword endswitch\n\
 Mark the end of a switch block.  See @code{switch} for an example.\n\
 @seealso{switch}\n\
-@end deffn", },
+@end deffn"),
 
-  { "endwhile",
+  pair_type ("endwhile",
     "-*- texinfo -*-\n\
 @deffn Keyword endwhile\n\
 Mark the end of a while loop.  See @code{while} for an example.\n\
 @seealso{do, while}\n\
-@end deffn", },
+@end deffn"),
 
-  { "for",
+  pair_type ("for",
     "-*- texinfo -*-\n\
 @deffn Keyword for @var{i} = @var{range}\n\
 Begin a for loop.\n\
@@ -347,9 +348,9 @@ for i = 1:10\n\
 endfor\n\
 @end example\n\
 @seealso{do, while}\n\
-@end deffn", },
+@end deffn"),
 
-  { "function",
+  pair_type ("function",
     "-*- texinfo -*-\n\
 @deffn Keyword function @var{outputs} = function (@var{input}, ...)\n\
 @deffnx Keyword function {} function (@var{input}, ...)\n\
@@ -357,9 +358,9 @@ endfor\n\
 Begin a function body with @var{outputs} as results and @var{inputs} as\n\
 parameters.\n\
 @seealso{return}\n\
-@end deffn", },
+@end deffn"),
 
-  { "global",
+  pair_type ("global",
     "-*- texinfo -*-\n\
 @deffn Keyword global\n\
 Declare variables to have global scope.\n\
@@ -370,9 +371,9 @@ if isempty (@var{x})\n\
 endif\n\
 @end example\n\
 @seealso{persistent}\n\
-@end deffn", },
+@end deffn"),
 
-  { "if",
+  pair_type ("if",
     "-*- texinfo -*-\n\
 @deffn Keyword if (@var{cond}) @dots{} endif\n\
 @deffnx Keyword if (@var{cond}) @dots{} else @dots{} endif\n\
@@ -390,16 +391,16 @@ else\n\
 endif\n\
 @end example\n\
 @seealso{switch}\n\
-@end deffn", },
+@end deffn"),
 
-  { "otherwise",
+  pair_type ("otherwise",
     "-*- texinfo -*-\n\
 @deffn Keyword otherwise\n\
 The default statement in a switch block (similar to else in an if block).\n\
 @seealso{switch}\n\
-@end deffn", },
+@end deffn"),
 
-  { "persistent",
+  pair_type ("persistent",
     "-*- texinfo -*-\n\
 @deffn Keyword persistent @var{var}\n\
 Declare variables as persistent.  A variable that has been declared\n\
@@ -408,30 +409,30 @@ subsequent calls to the same function.  The difference between persistent\n\
 variables and global variables is that persistent variables are local in \n\
 scope to a particular function and are not visible elsewhere.\n\
 @seealso{global}\n\
-@end deffn", },
+@end deffn"),
 
-  { "replot",
+  pair_type ("replot",
     "-*- texinfo -*-\n\
 @deffn Keyword replot\n\
 Replot a graphic.\n\
 @seealso{plot}\n\
-@end deffn", },
+@end deffn"),
 
-  { "return",
+  pair_type ("return",
     "-*- texinfo -*-\n\
 @deffn Keyword return\n\
 Return from a function.\n\
 @seealso{function}\n\
-@end deffn", },
+@end deffn"),
 
-  { "static",
+  pair_type ("static",
     "-*- texinfo -*-\n\
 @deffn Keyword static\n\
 This function has been deprecated in favor of persistent.\n\
 @seealso{persistent}\n\
-@end deffn", },
+@end deffn"),
 
-  { "switch",
+  pair_type ("switch",
     "-*- texinfo -*-\n\
 @deffn Keyword switch @var{statement}\n\
 Begin a switch block.\n\
@@ -448,9 +449,9 @@ switch yesno\n\
 endswitch\n\
 @end example\n\
 @seealso{if, case, otherwise}\n\
-@end deffn", },
+@end deffn"),
 
-  { "try",
+  pair_type ("try",
     "-*- texinfo -*-\n\
 @deffn Keyword try\n\
 Begin a try-catch block.\n\
@@ -460,16 +461,16 @@ execution will proceed after the catch block (though it is often\n\
 recommended to use the lasterr function to re-throw the error after cleanup\n\
 is completed).\n\
 @seealso{catch,unwind_protect}\n\
-@end deffn", }, 
+@end deffn"), 
 
-  { "until",
+  pair_type ("until",
     "-*- texinfo -*-\n\
 @deffn Keyword until\n\
 End a do-until loop.\n\
 @seealso{do}\n\
-@end deffn", },
+@end deffn"),
 
-  { "unwind_protect",
+  pair_type ("unwind_protect",
     "-*- texinfo -*-\n\
 @deffn Keyword unwind_protect\n\
 Begin an unwind_protect block.\n\
@@ -481,112 +482,82 @@ unwind_protect_cleanup block is still executed (in other words, the\n\
 unwind_protect_cleanup will be run with or without an error in the\n\
 unwind_protect block).\n\
 @seealso{unwind_protect_cleanup,try}\n\
-@end deffn", }, 
+@end deffn"), 
 
-  { "unwind_protect_cleanup",
+  pair_type ("unwind_protect_cleanup",
     "-*- texinfo -*-\n\
 @deffn Keyword unwind_protect_cleanup\n\
 Begin the cleanup section of an unwind_protect block.\n\
 @seealso{unwind_protect}\n\
-@end deffn", }, 
+@end deffn"), 
 
-  { "varargin",
+  pair_type ("varargin",
     "-*- texinfo -*-\n\
 @deffn Keyword varargin\n\
 Pass an arbitrary number of arguments into a function.\n\
 @seealso{varargout, nargin, nargout}\n\
-@end deffn", },
+@end deffn"),
 
-  { "varargout",
+  pair_type ("varargout",
     "-*- texinfo -*-\n\
 @deffn Keyword varargout\n\
 Pass an arbitrary number of arguments out of a function.\n\
 @seealso{varargin, nargin, nargout}\n\
-@end deffn", },
+@end deffn"),
 
-  { "while",
+  pair_type ("while",
     "-*- texinfo -*-\n\
 @deffn Keyword while\n\
 Begin a while loop.\n\
 @seealso{do}\n\
-@end deffn", },
-
-  { 0, 0, },
+@end deffn"),
 };
 
 // Return a copy of the operator or keyword names.
-
 static string_vector
-names (help_list *lst)
+names (const map_type& lst)
 {
-  string_vector retval;
-
-  int count = 0;
-  help_list *ptr = lst;
-  while (ptr->name)
-    {
-      count++;
-      ptr++;
-    }
-
-  if (count > 0)
-    {
-      retval.resize (count);
-
-      ptr = lst;
-      for (int i = 0; i < count; i++)
-	{
-	  retval[i] = ptr->name;
-	  ptr++;
-	}
-    }
-
+  string_vector retval (lst.size ());
+  int j = 0;
+  for (map_iter iter = lst.begin (); iter != lst.end (); iter ++)
+    retval [j++] = iter->first;
   return retval;
 }
 
-static help_list *
-operator_help (void)
-{
-  return operators;
-}
+const static map_type operators_map (operators, operators + size (operators));
+const static map_type keywords_map (keywords, keywords + size (keywords));
+const static string_vector keyword_names = names (keywords_map);
 
-static help_list *
-keyword_help (void)
-{
-  return keywords;
-}
-
-// It's not likely that this does the right thing now.  FIXME
+// FIXME -- It's not likely that this does the right thing now.
 
 string_vector
 make_name_list (void)
 {
-  string_vector key = names (keyword_help ());
-  int key_len = key.length ();
+  const int key_len = keyword_names.length ();
 
-  string_vector bif = symbol_table::built_in_function_names ();
-  int bif_len = bif.length ();
-
-  // FIXME -- is this really necessary here?
-  string_vector glb = symbol_table::global_variable_names ();
-  int glb_len = glb.length ();
+  const string_vector bif = symbol_table::built_in_function_names ();
+  const int bif_len = bif.length ();
 
   // FIXME -- is this really necessary here?
-  string_vector top = symbol_table::top_level_variable_names ();
-  int top_len = top.length ();
+  const string_vector glb = symbol_table::global_variable_names ();
+  const int glb_len = glb.length ();
+
+  // FIXME -- is this really necessary here?
+  const string_vector top = symbol_table::top_level_variable_names ();
+  const int top_len = top.length ();
 
   string_vector lcl;
   if (! symbol_table::at_top_level ())
     lcl = symbol_table::variable_names ();
-  int lcl_len = lcl.length ();
+  const int lcl_len = lcl.length ();
 
-  string_vector ffl = load_path::fcn_names ();
-  int ffl_len = ffl.length ();
+  const string_vector ffl = load_path::fcn_names ();
+  const int ffl_len = ffl.length ();
 
-  string_vector afl = autoloaded_functions ();
-  int afl_len = afl.length ();
+  const string_vector afl = autoloaded_functions ();
+  const int afl_len = afl.length ();
 
-  int total_len = key_len + bif_len + glb_len + top_len + lcl_len
+  const int total_len = key_len + bif_len + glb_len + top_len + lcl_len
     + ffl_len + afl_len;
 
   string_vector list (total_len);
@@ -596,7 +567,7 @@ make_name_list (void)
   int j = 0;
   int i = 0;
   for (i = 0; i < key_len; i++)
-    list[j++] = key[i];
+    list[j++] = keyword_names[i];
 
   for (i = 0; i < bif_len; i++)
     list[j++] = bif[i];
@@ -619,121 +590,14 @@ make_name_list (void)
   return list;
 }
 
-void
-additional_help_message (std::ostream& os)
+static bool
+looks_like_html (const std::string& msg)
 {
-  if (! Vsuppress_verbose_help_message)
-    os << "\
-Additional help for built-in functions and operators is\n\
-available in the on-line version of the manual.  Use the command\n\
-`doc <topic>' to search the manual index.\n\
-\n\
-Help and information about Octave is also available on the WWW\n\
-at http://www.octave.org and via the help@octave.org\n\
-mailing list.\n"; 
-}
-
-// FIXME -- this needs a major overhaul to cope with new
-// symbol table stuff.
-
-static void
-display_names_from_help_list (std::ostream& os, help_list *list,
-			      const char *desc)
-{
-  string_vector symbols = names (list);
-
-  if (! symbols.empty ())
-    {
-      os << "\n*** " << desc << ":\n\n";
-
-      symbols.sort ();
-
-      symbols.list_in_columns (os);
-    }
-}
-
-static void
-display_symtab_names (std::ostream& os, const std::list<std::string>& names,
-		      const std::string& desc)
-{
-  if (! names.empty ())
-    {
-      os << "\n*** " << desc << ":\n\n";
-
-      string_vector sv (names);
-
-      sv.list_in_columns (os);
-    }
-}
-
-static void
-simple_help (void)
-{
-  octave_stdout << "Help is available for the topics listed below.\n";
-
-  additional_help_message (octave_stdout);
-
-  display_names_from_help_list (octave_stdout, operator_help (),
-				"operators");
-
-  display_names_from_help_list (octave_stdout, keyword_help (),
-				"reserved words");
-
-  display_symtab_names (octave_stdout,
-			symbol_table::built_in_function_names (),
-			"built-in functions");
-
-  // FIXME -- list functions defined on command line?
-
-  load_path::display (octave_stdout);
-
-  string_vector autoloaded = autoloaded_functions ();
-
-  if (! autoloaded.empty ())
-    {
-      octave_stdout << "\n*** autoloaded functions:\n\n";
-
-      autoloaded.sort ();
-
-      autoloaded.list_in_columns (octave_stdout);
-    }
-}
-
-static int
-try_info (const std::string& nm)
-{
-  int retval = -1;
-
-  warning ("please use `doc' instead of `help -i'");
-
-  octave_value_list args;
-  args(0) = nm;
-  octave_value_list result = feval ("doc", args, 1);
-
-  if (result.length () > 0)
-    retval = result(0).int_value ();
-
-  return retval;
-}
-
-static void
-help_from_info (const string_vector& argv, int idx, int argc)
-{
-  if (idx == argc)
-    try_info (std::string ());
-  else
-    {
-      for (int i = idx; i < argc; i++)
-	{
-	  int status = try_info (argv[i]);
-
-	  if (status == 127)
-	    break;
-	  else if (status != 0)
-	    message ("help", "`%s' is not indexed in the manual",
-		     argv[i].c_str ());
-	}
-    }
+  const size_t p1 = msg.find ('\n');
+  std::string t = msg.substr (0, p1);
+  const size_t p2 = t.find ("<html"); // FIXME: this comparison should be case-insensitive
+  
+   return (p2 != std::string::npos);
 }
 
 static bool
@@ -749,187 +613,6 @@ looks_like_texinfo (const std::string& msg, size_t& p1)
   size_t p2 = t.find ("-*- texinfo -*-");
 
   return (p2 != std::string::npos);
-}
-
-void
-display_help_text (std::ostream& os, const std::string& msg)
-{
-  // Look for "-*- texinfo -*-" in first line of help message.  If it
-  // is present, use makeinfo to format the rest of the message before
-  // sending it to the output stream.  Otherwise, just print the
-  // message.
-
-  size_t pos;
-
-  if (looks_like_texinfo (msg, pos))
-    {
-      os.flush ();
-
-      std::string tmp_file_name = file_ops::tempnam ("", "");
-
-      int cols = command_editor::terminal_cols ();
-
-      if (cols > 16)
-	cols--;
-
-      if (cols > 64)
-	cols -= 7;
-
-      if (cols > 80)
-	cols = 72;
-
-      std::ostringstream buf;
-
-      // Use double quotes to quote the sed patterns for Windows.
-
-      buf << "sed -e \"s/^[#%][#%]* *//\" -e \"s/^ *@/@/\" | "
-	  << "\"" << Vmakeinfo_program << "\""
-	  << " -D \"VERSION " << OCTAVE_VERSION << "\""
-	  << " -D \"OCTAVEHOME " << OCTAVE_PREFIX << "\""
-	  << " -D \"TARGETHOSTTYPE " << OCTAVE_CANONICAL_HOST_TYPE << "\""
-	  << " --fill-column " << cols
-	  << " --no-warn"
-	  << " --no-validate"
-	  << " --no-headers"
-	  << " --force"
-	  << " --output \"" << tmp_file_name << "\"";
-
-      oprocstream filter (buf.str ());
-
-      if (filter && filter.is_open ())
-	{
-	  filter << "@macro seealso {args}\n"
-		 << "@sp 1\n"
-		 << "@noindent\n"
-		 << "See also: \\args\\.\n"
-                 << "@end macro\n";
-
-	  filter << msg.substr (pos+1) << std::endl;
-
-	  int status = filter.close ();
-
-	  std::ifstream tmp_file (tmp_file_name.c_str ());
-
-	  if (WIFEXITED (status) && WEXITSTATUS (status) == 0)
-	    {
-	      int c;
-	      while ((c = tmp_file.get ()) != EOF)
-		os << (char) c;
-
-	      tmp_file.close ();
-	    }
-	  else
-	    {
-	      warning ("help: Texinfo formatting filter exited abnormally");
-	      warning ("help: raw Texinfo source of help text follows...");
-	      warning ("help:\n\n%s\n\n", msg.c_str ());
-	    }
-
-	  file_ops::unlink (tmp_file_name);
-	}
-      else
-	os << msg;
-    }
-  else
-    os << msg;
-}
-
-void
-display_usage_text (std::ostream& os, const std::string& msg)
-{
-  std::string filtered_msg = msg;
-
-  size_t pos;
-
-  if (looks_like_texinfo (msg, pos))
-    {
-      std::ostringstream buf;
-
-      buf << "-*- texinfo -*-\n";
-
-      bool found_def = false;
-
-      size_t msg_len = msg.length ();
-
-      while (pos < msg_len)
-	{
-	  size_t new_pos = msg.find_first_of ('\n', pos);
-
-	  if (new_pos == std::string::npos)
-	    new_pos = msg_len-1;
-
-	  std::string line = msg.substr (pos, new_pos-pos+1);
-
-	  if (line.substr (0, 4) == "@def"
-	      || line.substr (0, 8) == "@end def")
-	    {
-	      found_def = true;
-	      buf << line;
-	    }
-
-	  pos = new_pos + 1;
-	}
-
-      if (found_def)
-	filtered_msg = buf.str ();
-    }
-
-  display_help_text (os, filtered_msg);
-}
-
-static bool
-raw_help_from_list (const help_list *list, const std::string& nm, 
-		    std::string& h, bool& symbol_found)
-{
-  bool retval = false;
-
-  const char *name;
-
-  while ((name = list->name) != 0)
-    {
-      if (strcmp (name, nm.c_str ()) == 0)
-	{
-	  symbol_found = true;
-
-	  h = list->help;
-
-	  if (h.length () > 0)
-	    retval = true;
-
-	  break;
-	}
-      list++;
-    }
-
-  return retval;;
-}
-
-static bool
-help_from_list (std::ostream& os, const help_list *list,
-		const std::string& nm, int usage, bool& symbol_found)
-{
-  bool retval = false;
-
-  std::string h;
-
-  if (raw_help_from_list (list, nm, h, symbol_found))
-    {
-      if (h.length () > 0)
-	{
-	  if (usage)
-	    os << "\nusage: ";
-	  else
-	    os << "\n*** " << nm << ":\n\n";
-
-	  display_help_text (os, h);
-
-	  os << "\n";
-
-	  retval = true;
-	}
-    }
-
-  return retval;
 }
 
 static bool
@@ -967,45 +650,6 @@ raw_help_from_symbol_table (const std::string& nm, std::string& h,
 }
 
 static bool
-help_from_symbol_table (std::ostream& os, const std::string& nm,
-			bool& symbol_found)
-{
-  bool retval = false;
-
-  std::string h;
-  std::string w;
-
-  if (raw_help_from_symbol_table (nm, h, w, symbol_found))
-    {
-      if (h.length () > 0)
-	{
-	  std::string dispatch_help = symbol_table::help_for_dispatch (nm);
-
-	  if (! dispatch_help.empty ())
-	    {
-	      size_t pos = 0;
-
-	      std::string pfx = looks_like_texinfo (h, pos)
-		? std::string ("\n\n@noindent\n") : std::string ("\n\n");
-
-	      h += pfx + dispatch_help;
-	    }
-
-	  display_help_text (os, h);
-
-	  if (w.length () > 0 && ! Vsuppress_verbose_help_message)
-	    os << w << "\n";
-
-	  os << "\n";
-
-	  retval = true;
-	}
-    }
-
-  return retval;
-}
-
-static bool
 raw_help_from_file (const std::string& nm, std::string& h, 
 		    std::string& file, bool& symbol_found)
 {
@@ -1032,303 +676,159 @@ raw_help_from_file (const std::string& nm, std::string& h,
 }
 
 static bool
-help_from_file (std::ostream& os, const std::string& nm, bool& symbol_found)
+raw_help_from_map (const std::string& nm, std::string& h, 
+		   const map_type& map, bool& symbol_found)
 {
-  bool retval = false;
-
-  std::string h;
-  std::string file;
-
-  if (raw_help_from_file (nm, h, file, symbol_found))
-    {
-      if (h.length () > 0)
-	{
-	  // Strip extension
-	  size_t l = file.length ();
-	  if (l > 2 && file.substr (l-2) == ".m")
-	    {
-	      std::string tmp = file.substr (0, l - 2);
-
-	      if (file_stat (tmp + ".oct"))
-		file = tmp + ".oct";
-	      else if (file_stat (tmp + ".mex"))
-		file = tmp + ".mex";
-	    }
-
-	  os << nm << " is the file " << file << "\n\n";
-
-	  display_help_text (os, h);
-
-	  os << "\n";
-
-	  retval = true;
-	}
-    }
-
-  return retval;
+  map_iter idx = map.find (nm);
+  symbol_found = (idx != map.end ());
+  h = (symbol_found) ? idx->second : "";
+  return symbol_found;
 }
 
 std::string
-raw_help (const std::string& nm, bool &symbol_found)
+raw_help (const std::string& nm, bool& symbol_found)
 {
   std::string h;
   std::string w;
   std::string f;
 
-  (raw_help_from_list (operator_help (), nm, h, symbol_found)
-   || raw_help_from_list (keyword_help (), nm, h, symbol_found)
-   || raw_help_from_symbol_table (nm, h, w, symbol_found)
-   || raw_help_from_file (nm, h, f, symbol_found));
+  (raw_help_from_symbol_table (nm, h, w, symbol_found)
+   || raw_help_from_file (nm, h, f, symbol_found)
+   || raw_help_from_map (nm, h, operators_map, symbol_found)
+   || raw_help_from_map (nm, h, keywords_map, symbol_found));
 
   return h;
 }
 
 static void
-builtin_help (int argc, const string_vector& argv)
+do_get_help_text (const std::string name, std::string& text,
+		  std::string& format)
 {
-  help_list *op_help_list = operator_help ();
-  help_list *kw_help_list = keyword_help ();
-
-  for (int i = 1; i < argc; i++)
-    {
-      bool symbol_found = false;
-
-      if (help_from_list (octave_stdout, op_help_list, argv[i], 0,
-			  symbol_found))
-	continue;
-
-      if (help_from_list (octave_stdout, kw_help_list, argv[i], 0,
-			  symbol_found))
-	continue;
-
-      if (help_from_symbol_table (octave_stdout, argv[i], symbol_found))
-	continue;
-
-      if (error_state)
-	{
-	  octave_stdout << "\n";
-	  error_state = 0;
-	  continue;
-	}
-
-      if (help_from_file (octave_stdout, argv[i], symbol_found))
-	continue;
-
-      if (error_state)
-	{
-	  octave_stdout << "\n";
-	  error_state = 0;
-	  continue;
-	}
-
-      if (symbol_found)
-	octave_stdout << "\nhelp: `" << argv[i]
-		      << "' is not documented\n"; 
-      else
-	octave_stdout << "\nhelp: `" << argv[i]
-		      << "' not found\n"; 
-    }
+  bool symbol_found = false;
+  text = raw_help (name, symbol_found);
   
-  additional_help_message (octave_stdout);
+  format = "Not found";
+  if (symbol_found)
+    {
+      size_t idx = -1;
+      if (looks_like_texinfo (text, idx))
+        {
+          format = "texinfo";
+          text.erase (0, idx);
+        }
+      else if (looks_like_html (text))
+        {
+          format = "html";
+        }
+      else
+        {
+          format = "plain text";
+        }
+    }
 }
 
-DEFCMD (help, args, ,
-  "-*- texinfo -*-\n\
-@deffn {Command} help @var{name}\n\
-Display the help text for @var{name}.\n\
-If invoked without any arguments, @code{help} prints a list\n\
-of all the available operators and functions.\n\
+DEFUN (get_help_text, args, , "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {[@var{text}, @var{format}] =} get_help_text (@var{name})\n\
+Returns the help text of a given function.\n\
 \n\
-For example, the command @kbd{help help} prints a short message\n\
-describing the @code{help} command.\n\
+This function returns the raw help text @var{text} and an indication of\n\
+its format for the function @var{name}. The format indication @var{format}\n\
+is a string that can be either @t{\"texinfo\"}, @t{\"html\"}, or\n\
+@t{\"plain text\"}.\n\
 \n\
-The help command can give you information about operators, but not the\n\
-comma and semicolons that are used as command separators.  To get help\n\
-for those, you must type @kbd{help comma} or @kbd{help semicolon}.\n\
-@seealso{doc, which, lookfor}\n\
-@end deffn")
+To convert the help text to other formats, use the @code{makeinfo} function.\n\
+\n\
+@seealso{makeinfo}\n\
+@end deftypefn\n")
 {
   octave_value_list retval;
 
-  int argc = args.length () + 1;
-
-  string_vector argv = args.make_argv ("help");
-
-  if (error_state)
-    return retval;
-
-  if (argc == 1)
-    simple_help ();
-  else
+  if (args.length () == 1)
     {
-      if (argv[1] == "-i")
-	help_from_info (argv, 2, argc);
+      const std::string name = args (0).string_value ();
+
+      if (! error_state)
+	{
+	  std::string text;
+	  std::string format;
+
+	  do_get_help_text (name, text, format);
+  
+	  retval(1) = format;
+	  retval(0) = text;
+	}
       else
-	builtin_help (argc, argv);
+	error ("get_help_text: invalid input");
     }
+  else
+    print_usage ();
 
   return retval;
 }
 
-static void
-display_file (std::ostream& os, const std::string& name,
-	      const std::string& fname, const std::string& type,
-	      bool pr_type_info, bool quiet)
+DEFUN (__operators__, , , "-*- texinfo -*-\n\
+@deftypefn {Function File} __operators__ ()\n\
+Return a cell array of strings containing the names of all operators.\n\
+\n\
+This is an internal function and should not be used directly.\n\
+@end deftypefn\n")
 {
-  std::ifstream fs (fname.c_str (), std::ios::in);
-
-  if (fs)
-    {
-      if (pr_type_info && ! quiet)
-	os << name << " is the " << type << " defined from the file\n"
-	   << fname << ":\n\n";
-
-      char ch;
-
-      while (fs.get (ch))
-	os << ch;
-    }
-  else
-    os << "unable to open `" << fname << "' for reading!\n";
+  return octave_value (Cell (names (operators_map)));
 }
 
-static void
-do_type (std::ostream& os, const std::string& name, bool pr_type_info,
-	 bool quiet, bool pr_orig_txt)
+DEFUN (__keywords__, , , "-*- texinfo -*-\n\
+@deftypefn {Function File} __keywords__ ()\n\
+Return a cell array of strings containing the names of all keywords.\n\
+\n\
+This is an internal function and should not be used directly.\n\
+@end deftypefn\n")
 {
-  // FIXME -- should we bother with variables here (earlier versions
-  // of Octave displayed them)?
+  return octave_value (Cell (names (keywords_map)));
+}
 
-  octave_value val = symbol_table::varval (name);
+DEFUN (__builtins__, , , "-*- texinfo -*-\n\
+@deftypefn {Function File} __builtins__ ()\n\
+Return a cell array of strings containing the names of all builtin functions.\n\
+\n\
+This is an internal function and should not be used directly.\n\
+@end deftypefn\n")
+{
+  const string_vector bif = symbol_table::built_in_function_names ();
+
+  return octave_value (Cell (bif));
+}
+
+static std::string
+do_which (const std::string& name, std::string& type)
+{
+  std::string file;
+
+  type = std::string ();
+
+  octave_value val = symbol_table::find_function (name);
 
   if (val.is_defined ())
     {
-      if (pr_type_info && ! quiet)
-	os << name << " is a variable\n";
+      octave_function *fcn = val.function_value ();
 
-      val.print_raw (os, pr_orig_txt);
-
-      if (pr_type_info)
-	os << "\n";
-    }
-  else
-    {
-      val = symbol_table::find_function (name);
-
-      if (val.is_defined ())
+      if (fcn)
 	{
-	  octave_function *fcn = val.function_value ();
+	  file = fcn->fcn_file_name ();
 
-	  if (fcn)
+	  if (file.empty ())
 	    {
-	      std::string fn = fcn->fcn_file_name ();
-
-	      if (fcn->is_builtin_function ())
-		os << name << " is a built-in function" << std::endl;
-	      else if (fcn->is_dld_function () || fcn->is_mex_function ())
-		os << name
-		  << " is a dyanmically loaded function from the file\n"
-		   << fn << std::endl;
-	      else if (pr_orig_txt && ! fn.empty ())
-		display_file (os, name, fn,
-			      val.is_user_script () ? "script" : "function",
-			      pr_type_info, quiet);
+	      if (fcn->is_user_function ())
+		type = "command-line function";
 	      else
-		{
-		  if (pr_type_info && ! quiet)
-		    {
-		      os << name;
-
-		      if (fcn->is_user_function ())
-			{
-			  if (fn.empty ())
-			    os << " is a command-line function:\n\n";
-			  else
-			    os << " is a "
-			       << (val.is_user_script ()
-				   ? std::string ("script")
-				   : std::string ("function"))
-			       << " defined from the file\n"
-			       << fn << ":\n\n";
-			}
-		    }
-
-		  tree_print_code tpc (os, "", pr_orig_txt);
-
-		  fcn->accept (tpc);
-		}
-	    }
-	}
-    }
-}
-
-DEFCMD (type, args, nargout,
-  "-*- texinfo -*-\n\
-\n\
-@deffn {Command} type options name @dots{}\n\
-Display the definition of each @var{name} that refers to a function.\n\
-\n\
-Normally also displays whether each @var{name} is user-defined or built-in;\n\
-the @code{-q} option suppresses this behaviour.\n\
-@end deffn")
-{
-  octave_value retval;
-
-  int argc = args.length () + 1;
-
-  string_vector argv = args.make_argv ("type");
-
-  if (! error_state)
-    {
-      if (argc > 1)
-	{
-	  // FIXME -- we should really use getopt ()
-
-	  bool quiet = false;
-	  bool pr_orig_txt = true;
-
-	  int idx;
-
-	  for (idx = 1; idx < argc; idx++)
-	    {
-	      if (argv[idx] == "-q" || argv[idx] == "-quiet")
-		quiet = true;
-	      else if (argv[idx] == "-t" || argv[idx] == "-transformed")
-		pr_orig_txt = false;
-	      else
-		break;
-	    }
-
-	  if (idx < argc)
-	    {
-	      std::ostringstream output_buf;
-
-	      for (int i = idx; i < argc; i++)
-		{
-		  std::string id = argv[i];
-
-		  if (nargout == 0)
-		    do_type (octave_stdout, id, true, quiet, pr_orig_txt);
-		  else
-		    do_type (output_buf, id, false, quiet, pr_orig_txt);
-
-		  if (error_state)
-		    goto abort;
-		}
-
-	      if (nargout != 0)
-		retval = output_buf.str ();
+		type = "built-in function";
 	    }
 	  else
-	    print_usage ();
+	    type = val.is_user_script ()
+	      ? std::string ("script") : std::string ("function");
 	}
-      else
-	print_usage ();
     }
 
- abort:
-
-  return retval;
+  return file;
 }
 
 std::string
@@ -1336,68 +836,20 @@ do_which (const std::string& name)
 {
   std::string retval;
 
-  octave_value val = symbol_table::find_function (name);
+  std::string type;
 
-  if (val.is_defined ())
-    {
-      octave_function *fcn = val.function_value ();
-
-      if (fcn)
-	{
-	  std::string fn = fcn->fcn_file_name ();
-
-	  retval = fn.empty ()
-	    ? (fcn->is_user_function ()
-	       ? "command-line function" : "built-in function")
-	    : fn;
-	}
-    }
+  retval = do_which (name, type);
 
   return retval;
 }
 
-static void
-do_which (std::ostream& os, const std::string& name)
-{
-  std::string desc;
-
-  octave_value val = symbol_table::find_function (name);
-
-  if (val.is_defined ())
-    {
-      octave_function *fcn = val.function_value ();
-
-      if (fcn)
-	{
-	  desc = fcn->fcn_file_name ();
-
-	  if (desc.empty ())
-	    {
-	      if (fcn->is_user_function ())
-		desc = "is a command-line function";
-	      else
-		desc = "is a built-in function";
-	    }
-	  else
-	    desc = "is the "
-	      + (val.is_user_script ()
-		 ? std::string ("script") : std::string ("function"))
-	      + " from the file " + desc;
-	}
-      
-      os << "which: `" << name << "' " << desc << std::endl;
-    }
-}
-
-DEFCMD (which, args, nargout,
+DEFUN (__which__, args, ,
   "-*- texinfo -*-\n\
-@deffn {Command} which name @dots{}\n\
-Display the type of each @var{name}.  If @var{name} is defined from a\n\
-function file, the full name of the file is also displayed.\n\
-@seealso{help, lookfor}\n\
-@end deffn")
+@deftypefn {Built-in Function} {} __which__ (@var{name}, @dots{})\n\
+Undocumented internal function.\n\
+@end deftypefn")
 {
-  octave_value_list retval;
+  octave_value retval;
 
   string_vector argv = args.make_argv ("which");
 
@@ -1405,20 +857,32 @@ function file, the full name of the file is also displayed.\n\
     {
       int argc = argv.length ();
 
-      if (nargout > 0)
-	retval.resize (argc-1, Matrix ());
-
       if (argc > 1)
 	{
+	  Octave_map m (dim_vector (1, argc-1));
+
+	  Cell names (1, argc-1);
+	  Cell files (1, argc-1);
+	  Cell types (1, argc-1);
+
 	  for (int i = 1; i < argc; i++)
 	    {
-	      std::string id = argv[i];
+	      std::string name = argv[i];
 
-	      if (nargout == 0)
-		do_which (octave_stdout, id);
-	      else
-		retval(i-1) = do_which (id);
+	      std::string type;
+
+	      std::string file = do_which (name, type);
+
+	      names(i-1) = name;
+	      files(i-1) = file;
+	      types(i-1) = type;
 	    }
+
+	  m.assign ("name", names);
+	  m.assign ("file", files);
+	  m.assign ("type", types);
+
+	  retval = m;
 	}
       else
 	print_usage ();
@@ -1427,757 +891,95 @@ function file, the full name of the file is also displayed.\n\
   return retval;
 }
 
-// FIXME 
-// This function attempts to find the first sentence of a help string, though
-// given that the user can create the help in an arbitrary format, your
-// success might vary.. it works much better with help string formated in
-// texinfo. Using regex might make this function much simpler.
-
-std::string 
-first_help_sentence (const std::string& h, bool short_sentence = true)
+// FIXME -- Are we sure this function always does the right thing?
+inline bool
+file_is_in_dir (const std::string filename, const std::string dir)
 {
-  std::string retval;
-
-  size_t pos = 0;
-
-  if (looks_like_texinfo (h, pos))
-    { 
-     // Get the parsed help string.
-      pos = 0;
-      std::ostringstream os;
-      display_help_text (os, h);
-      std::string h2 = os.str ();
-
-      while (1)
-	{
-	  // Skip leading whitespace and get new line
-	  pos = h2.find_first_not_of ("\n\t ", pos);
-
-	  if (pos == std::string::npos)
-	    break;
-
-	  size_t new_pos = h2.find_first_of ('\n', pos);
-	  std::string line = h2.substr (pos, new_pos-pos);
-
-	  // Skip lines starting in "-"
-	  if (line.find_first_of ('-') == 0)
-	    {
-	      pos = new_pos + 1;
-	      continue;
-	    }
-
-	  break;
-	}
-
-      if (pos == std::string::npos)
-	return retval;
-
-      // At start of real text. Get first line with the sentence
-      size_t new_pos = h2.find_first_of ('\n', pos);
-      std::string line = h2.substr (pos, new_pos-pos);
-      size_t dot_pos;
-
-      while ((dot_pos = line.find_first_of ('.')) == std::string::npos)
-	{
-	  // Trim trailing blanks on line
-	  line.substr (0, line.find_last_not_of ("\n\t ") + 1);
-
-	  // Append next line
-	  size_t tmp_pos = h2.find_first_not_of ("\n\t ", new_pos + 1);
-	  if (tmp_pos == std::string::npos || h2.substr (tmp_pos, 1) == "\n")
-	    break;
-
-	  new_pos = h2.find_first_of ('\n', tmp_pos);
-	  std::string next = h2.substr (tmp_pos, new_pos-tmp_pos);
-
-	  if (short_sentence)
-	    {
-	      if ((tmp_pos = next.find_first_of ('.')) != std::string::npos)
-		{
-		  line = line + " " + next;
-		  dot_pos = line.find_first_of ('.');
-		}
-	      break;
-	    }
-	  else
-	    line = line + " " + next;
-	}
-
-      if (dot_pos == std::string::npos)
-	retval = line;
-      else
-	retval = line.substr (0, dot_pos + 1);
+  if (filename.find (dir) == 0)
+    {
+      const int dir_len = dir.size ();
+      const int filename_len = filename.size ();
+      const int max_allowed_seps = file_ops::is_dir_sep (dir [dir_len-1]) ? 0 : 1;
+      
+      int num_seps = 0;
+      for (int i = dir_len; i < filename_len; i++)
+        if (file_ops::is_dir_sep (filename [i]))
+          num_seps ++;
+      
+      return (num_seps <= max_allowed_seps);
     }
   else
-    {
-      std::string _upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-      std::string _lower = "abcdefghijklmnopqrstuvwxyz";
-      std::string _alpha = _upper + _lower + "_";
-      std::string _alphanum = _alpha + "1234567890";
-      pos = 0;
-
-      while (1)
-	{
-	  // Skip leading whitespace and get new line
-	  pos = h.find_first_not_of ("\n\t ", pos);
-
-	  if (pos == std::string::npos)
-	    break;
-
-	  size_t new_pos = h.find_first_of ('\n', pos);
-	  std::string line = h.substr (pos, new_pos-pos);
-
-	  // Make a lower case copy to simplify some tests
-	  std::string lower = line;
-	  std::transform (lower.begin (), lower.end (), lower.begin (), tolower);
-
-	  // Skip lines starting in "-" or "Usage"
-	  if (lower.find_first_of ('-') == 0
-	      || lower.substr (0, 5) == "usage")
-	    {
-	      pos = (new_pos == std::string::npos ? std::string::npos : new_pos + 1);
-	      continue;
-	    }
-
-	  size_t line_pos = 0;
-	  size_t tmp_pos = 0;
-
-	  // chop " blah : "
-	  tmp_pos = line.find_first_not_of ("\t ", line.find_first_not_of 
-					     (_alphanum, line_pos));
-	  if (tmp_pos != std::string::npos && line.substr (tmp_pos, 1) == ":")
-	    line_pos = line.find_first_not_of ("\t ", tmp_pos + 1);
-
-	  if (line_pos == std::string::npos)
-	    {
-	      pos = (new_pos == std::string::npos ? std::string::npos : new_pos + 1);
-	      continue;
-	    }
-
-	  // chop " function "
-	  if (lower.substr (line_pos, 8) == "function")
-	    line_pos =  line.find_first_not_of ("\t ", line_pos + 8);
-	  
-	  if (line_pos == std::string::npos)
-	    {
-	      pos = (new_pos == std::string::npos ? std::string::npos : new_pos + 1);
-	      continue;
-	    }
-
-	  // chop " [a,b] = "
-	  if (line.substr (line_pos, 1) == "[")
-	    {
-	      tmp_pos = line.find_first_not_of 
-		("\t ", line.find_first_of ("]", line_pos) + 1);
-
-	      if (tmp_pos != std::string::npos && line.substr (tmp_pos, 1) == "=")
-		line_pos = line.find_first_not_of ("\t ",tmp_pos + 1);
-	    }
-
-	  if (line_pos == std::string::npos)
-	    {
-	      pos = (new_pos == std::string::npos ? std::string::npos : new_pos + 1);
-	      continue;
-	    }
-
-	  // chop " a = "
-	  if (line.find_first_not_of (_alpha, line_pos) != line_pos)
-	    {
-	      tmp_pos = line.find_first_not_of ("\t ", line.find_first_not_of 
-						(_alphanum, line_pos));
-	      if (tmp_pos != std::string::npos && line.substr (tmp_pos, 1) == "=")
-		line_pos = line.find_first_not_of ("\t ", tmp_pos + 1);
-	    }
-
-	  if (line_pos == std::string::npos)
-	    {
-	      pos = new_pos + 1;
-	      continue;
-	    }
-
-	  // chop " f(x) "
-	  if (line.find_first_not_of (_alpha, line_pos) != line_pos)
-	    {
-	      tmp_pos = line.find_first_not_of ("\t ", line.find_first_not_of 
-						(_alphanum, line_pos));
-	      if (tmp_pos != std::string::npos && line.substr (tmp_pos, 1) == "(")
-		line_pos = line.find_first_not_of ("\t ", line.find_first_of 
-						   (")", tmp_pos) + 1);
-	    }
-
-	  if (line_pos == std::string::npos)
-	    {
-	      pos = (new_pos == std::string::npos ? std::string::npos : new_pos + 1);
-	      continue;
-	    }
-
-	  // chop " ; "
-	  if (line.substr (line_pos, 1) == ":"
-	      || line.substr (line_pos, 1) == ";")
-	    line_pos = line.find_first_not_of ("\t ", line_pos + 1);
-
-	  if (line_pos == std::string::npos)
-	    {
-	      pos = (new_pos == std::string::npos ? std::string::npos : new_pos + 1);
-	      continue;
-	    }
-
-	  // chop " BLAH "
-	  if (line.length () > line_pos + 2
-	      && line.find_first_of (_upper, line_pos) == line_pos
-	      && line.find_first_of (_upper, line_pos+1) == line_pos + 1)
-	    line_pos = line.find_first_not_of ("\t ", line.find_first_not_of 
-			(_upper + "0123456789_", line_pos));
-
-	  if (line_pos == std::string::npos)
-	    {
-	      pos = (new_pos == std::string::npos ? std::string::npos : new_pos + 1);
-	      continue;
-	    }
-
-	  // chop " blah --- "
-	  tmp_pos = line.find_first_not_of ("\t ", line.find_first_not_of 
-					     (_alphanum, line_pos));
-	  if (tmp_pos != std::string::npos && line.substr (tmp_pos, 1) == "-")
-	    {
-	      tmp_pos = line.find_first_not_of ("-", tmp_pos);
-	      if (line.substr (tmp_pos, 1) == " "
-		  || line.substr (tmp_pos, 1) == "\t")
-		line_pos = line.find_first_not_of ("\t ", tmp_pos);
-	    }
-
-	  if (line_pos == std::string::npos)
-	    {
-	      pos = (new_pos == std::string::npos ? std::string::npos : new_pos + 1);
-	      continue;
-	    }
-
-	  // chop " blah <TAB> "
-	  if (line.find_first_not_of (_alpha, line_pos) != line_pos)
-	    {
-	      tmp_pos = line.find_first_not_of (" ", line.find_first_not_of 
-						(_alphanum, line_pos));
-	      if (tmp_pos != std::string::npos && line.substr (tmp_pos, 1) == "\t")
-		line_pos = line.find_first_not_of ("\t ", line.find_first_of 
-						   (")", tmp_pos) + 1);
-	    }
-
-	  if (line_pos == std::string::npos)
-	    {
-	      pos = (new_pos == std::string::npos ? std::string::npos : new_pos + 1);
-	      continue;
-	    }
-
-	  // chop " blah  "
-	  if (line.find_first_not_of (_alpha, line_pos) != line_pos)
-	    {
-	      tmp_pos = line.find_first_not_of (_alphanum, line_pos);
-
-	      if (tmp_pos != std::string::npos
-		  && (line.substr (tmp_pos, 2) == "\t\t"
-		      || line.substr (tmp_pos, 2) == "\t "
-		      || line.substr (tmp_pos, 2) == " \t"
-		      || line.substr (tmp_pos, 2) == " "))
-		line_pos = line.find_first_not_of ("\t ", tmp_pos);
-	    }
-
-	  if (line_pos == std::string::npos)
-	    {
-	      pos = (new_pos == std::string::npos ? std::string::npos : new_pos + 1);
-	      continue;
-	    }
-
-	  // skip blah \n or \n blah
-	  // skip blank line
-	  // skip "# !/usr/bin/octave"
-	  if ((line.substr (line_pos , 2) == "or"
-	       && line.find_first_not_of ("\n\t ", line_pos + 2) == std::string::npos)
-	      || line.find_first_not_of ("\n\t ", line_pos) == std::string::npos
-	      || line.substr (line_pos, 2) == "!/")
-	    {
-	      pos = (new_pos == std::string::npos ? std::string::npos : new_pos + 1);
-	      continue;
-	    }
-
-	  // Got the start of first sentence, break.
-	  pos = pos + line_pos;
-	  break;
-	}
-
-      if (pos == std::string::npos)
-	return retval;
-
-      // At start of real text. Get first line with the sentence
-      size_t new_pos = h.find_first_of ('\n', pos);
-      std::string line = h.substr (pos, new_pos-pos);
-      size_t dot_pos;
-
-      while ((dot_pos = line.find_first_of ('.')) == std::string::npos)
-	{
-	  // Trim trailing blanks on line
-	  line = line.substr (0, line.find_last_not_of ("\n\t ") + 1);
-
-	  // Append next line
-	  size_t tmp_pos = h.find_first_not_of ("\t ", new_pos + 1);
-	  if (tmp_pos == std::string::npos || h.substr (tmp_pos, 1) == "\n")
-	    break;
-
-	  new_pos = h.find_first_of ('\n', tmp_pos);
-	  std::string next = h.substr (tmp_pos, new_pos-tmp_pos);
-
-	  if (short_sentence)
-	    {
-	      // Only add the next line if it terminates the sentence, then break
-	      if ((tmp_pos = next.find_first_of ('.')) != std::string::npos)
-		{
-		  line = line + " " + next;
-		  dot_pos = line.find_first_of ('.');
-		}
-	      break;
-	    }
-	  else
-	    line = line + " " + next;
-	}
-
-      if (dot_pos == std::string::npos)
-	retval = line;
-      else
-	retval = line.substr (0, dot_pos + 1);
-    }
-
-  return retval;
+    return false;
 }
 
-static void
-print_lookfor (const std::string& name, const std::string& line)
-{
-  const size_t deflen = 20;
-
-  size_t max_width = command_editor::terminal_cols () - deflen;
-  if (max_width < deflen)
-    max_width = deflen;
-
-  size_t name_len = name.length ();
-
-  size_t width = max_width;
-  if (name_len > deflen)
-    {
-      width = command_editor::terminal_cols () - name_len;
-      if (width < deflen)
-	width = deflen;
-    }
-
-  size_t pad_len = deflen > name_len ? deflen - name_len + 1 : 1;
-  octave_stdout << name << std::string (pad_len, ' ');
-
-  size_t pos = 0;
-
-  while (1)
-    {
-      size_t new_pos = line.find_first_of ("\n\t ", pos);
-      size_t end_pos = new_pos;
-
-      if (line.length () - pos < width)
-	new_pos = end_pos = std::string::npos;
-      else
-	while (new_pos != std::string::npos && new_pos - pos < width)
-	  {
-	    end_pos = new_pos;
-	    new_pos = line.find_first_of ("\n\t ", new_pos + 1);
-	  }
-
-      octave_stdout << line.substr (pos, end_pos-pos) << std::endl;
-		  
-      if (end_pos == std::string::npos)
-	break;
-
-      pos = end_pos + 1;
-      width = max_width;
-      octave_stdout << std::string (deflen + 1, ' ');
-    }
-}
-
-DEFCMD (lookfor, args, nargout, 
-  "-*- texinfo -*-\n\
-@deffn {Command} lookfor @var{str}\n\
-@deffnx {Command} lookfor -all @var{str}\n\
-@deffnx {Function} {[@var{fun}, @var{helpstring}] = } lookfor (@var{str})\n\
-@deffnx {Function} {[@var{fun}, @var{helpstring}] = } lookfor ('-all', @var{str})\n\
-Search for the string @var{str} in all of the functions found in the\n\
-function search path.  By default @code{lookfor} searches for @var{str}\n\
-in the first sentence of the help string of each function found. The entire\n\
-help string of each function found in the path can be searched if\n\
-the '-all' argument is supplied. All searches are case insensitive.\n\
+DEFUN (__list_functions__, args, , "-*- texinfo -*-\n\
+@deftypefn {Function File} {@var{retval} =} __list_functions__ ()\n\
+@deftypefnx{Function File} {@var{retval} =} __list_functions__ (@var{directory})\n\
+Return the functions available in a given directory.\n\
 \n\
-Called with no output arguments, @code{lookfor} prints the list of matching\n\
-functions to the terminal. Otherwise the output arguments @var{fun} and\n\
-@var{helpstring} define the matching functions and the first sentence of\n\
-each of their help strings.\n\
+The function returns a cell array of strings containing the names of all\n\
+functions available in said directory. If no directory is given, the current\n\
+path is searched.\n\
 \n\
-Note that the ability of @code{lookfor} to correctly identify the first\n\
-sentence of the help of the functions is dependent on the format of the\n\
-functions help. All of the functions in Octave itself will correctly\n\
-find the first sentence, but the same cannot be guaranteed for other\n\
-functions. Therefore the use of the '-all' argument might be necessary\n\
-to find related functions that are not part of Octave.\n\
-@seealso{help, which}\n\
-@end deffn")
+This is an internal function and should not be used directly.\n\
+@seealso{path}\n\
+@end deftypefn\n")
 {
   octave_value_list retval;
 
-  int nargin = args.length ();
-  bool first_sentence_only = true;
-
-  if (nargin != 1 && nargin != 2)
+  // Get list of functions
+  const string_vector ffl = load_path::fcn_names ();
+  const int ffl_len = ffl.length ();
+  const string_vector afl = autoloaded_functions ();
+  const int afl_len = afl.length ();
+  
+  if (args.length () == 0)
     {
-      print_usage ();
-      return retval;
-    }
-
-  string_vector ret[2];
-
-  std::string txt;
-
-  if (args(0).is_string ())
-    {
-      txt = args(0).string_value ();
-
-      if (nargin == 2)
-	{
-	  if (args(1).is_string ())
-	    {
-	      std::string tmp = args(1).string_value ();
-
-	      if (txt.substr(0,1) == "-")
-		{
-		  txt = tmp;
-		  tmp = args(0).string_value ();
-		}
-
-	      if (tmp == "-all")
-		first_sentence_only = false;
-	      else
-		error ("lookfor: unrecognized option argument");
-	    }
-	  else
-	    error ("lookfor: arguments must be a string");
-	}
-    }
-  else
-    error ("lookfor: argument must be a string");
-
-  if (!error_state)
-    {
-      // All tests in lower case
-      std::transform (txt.begin (), txt.end (), txt.begin (), tolower);
-
-      help_list *ptr = keyword_help ();
-      while (ptr->name)
-	{
-	  std::string name = ptr->name;
-	  std::string h = ptr->help;
-
-	  if (name.find (txt) != std::string::npos)
-	    {
-	      if (nargout)
-		{
-		  ret[0].append (name);
-		  ret[1].append (first_help_sentence (h));
-		}
-	      else
-		print_lookfor (name, first_help_sentence (h));
-	    }
-	  else
-	    {
-	      std::string s;
-
-	      if (first_sentence_only)
-		s = first_help_sentence (h);
-	      else
-		s = h;
-	      
-	      std::transform (s.begin (), s.end (), s.begin (), tolower);
-
-	      if (s.length () > 0 && s.find (txt) != std::string::npos)
-		{
-		  if (nargout)
-		    {
-		      ret[0].append (name);
-		      ret[1].append (first_help_sentence (h));
-		    }
-		  else
-		    print_lookfor (name, first_help_sentence (h));
-		}
-	    }
-
-	  OCTAVE_QUIT;
-
-	  ptr++;
-	}
-
-      ptr = operator_help ();
-      while (ptr->name)
-	{
-	  std::string name = ptr->name;
-	  std::string h = ptr->help;
-
-	  if (name.find (txt) != std::string::npos)
-	    {
-	      if (nargout)
-		{
-		  ret[0].append (name);
-		  ret[1].append (first_help_sentence (h));
-		}
-	      else
-		print_lookfor (name, first_help_sentence (h));
-	    }
-	  else
-	    {
-	      std::string s;
-	      if (first_sentence_only)
-		s = first_help_sentence (h);
-	      else
-		s = h;
-	      
-	      std::transform (s.begin (), s.end (), s.begin (), tolower);
-
-	      if (s.length () > 0 && s.find (txt) != std::string::npos)
-		{
-		  if (nargout)
-		    {
-		      ret[0].append (name);
-		      ret[1].append (first_help_sentence (h));
-		    }
-		  else
-		    print_lookfor (name, first_help_sentence (h));
-		}
-	    }
-
-	  OCTAVE_QUIT;
-
-	  ptr++;
-	}
-
-      string_vector names;
-
-#ifdef OLD_SYMTAB
-      // Check the symbol record table
-      names = fbi_sym_tab->name_list (string_vector (), true);
-
-      for (octave_idx_type i = 0; i < names.length (); i++)
-	{
-	  std::string name = names (i);
-
-	  OCTAVE_QUIT;
-
-	  symbol_record *sr = lookup_by_name (name, 0);
-	  if (sr && sr->is_defined ()
-	      && sr->type_name () != "overloaded function")
-	    {
-	      std::string h = sr->help ();
-
-	      if (name.find (txt) != std::string::npos)
-		{
-		  if (nargout)
-		    {
-		      ret[0].append (name);
-		      ret[1].append (first_help_sentence (h));
-		    }
-		  else
-		    print_lookfor (name, first_help_sentence (h));
-		}
-	      else
-		{
-		  std::string s;
-
-		  if (first_sentence_only)
-		    s = first_help_sentence (h);
-		  else
-		    s = h;
-	      
-		  std::transform (s.begin (), s.end (), s.begin (), tolower);
-
-		  if (s.length () > 0 && s.find (txt) != std::string::npos)
-		    {
-		      if (nargout)
-			{
-			  ret[0].append (name);
-			  ret[1].append (first_help_sentence (h));
-			}
-		      else
-			print_lookfor (name, first_help_sentence (h));
-		    }
-		}
-	    }
-	}
-#endif
-
-      string_vector dirs = load_path::dirs ();
-
-      int len = dirs.length ();
-
-      for (int i = 0; i < len; i++)
-	{
-	  names = load_path::files (dirs[i]);
-
-	  if (! names.empty ())
-	    {
-	      for (int j = 0; j < names.length (); j++)
-		{
-		  std::string name = names (j);
-
-		  OCTAVE_QUIT;
-
-		  // Strip extension
-		  size_t l = name.length ();
-		  if (l > 4 && name.substr (l-4) == ".oct")
-		    name = name.substr (0, l - 4);
-		  else if (l > 2 && name.substr (l-2) == ".m")
-		    name = name.substr (0, l - 2);
-		  else
-		    continue;
-
-#ifdef OLD_SYMTAB
-		  // Check if already in symbol table
-		  symbol_record *sr = fbi_sym_tab->lookup (name);
-
-		  if (!sr)
-		    {
-		      // Check if this version is first in the path
-
-		      std::string file_name = load_path::find_fcn (name);
-		      
-		      std::string dir = dirs[i];
-
-		      if (! file_ops::is_dir_sep (dir[dir.length()-1]))
-			dir += file_ops::dir_sep_str ();
-
-		      if (file_name == dir + name + ".oct"
-			  || file_name == dir + name + ".m")
-			{
-			  bool symbol_found;
-
-			  std::string h;
-			  if (file_name == dir + name + ".oct")
-			    {
-			      // oct-file. Must load to get help
-			      sr = lookup_by_name (name, false);
-
-			      if (sr && sr->is_defined ())
-				h = sr->help ();
-			    }
-			  else
-			    h = get_help_from_file (file_name, symbol_found);
-
-			  if (name.find (txt) != std::string::npos)
-			    {
-			      if (nargout)
-				{
-				  ret[0].append (name);
-				  ret[1].append (first_help_sentence (h));
-				}
-			      else
-				print_lookfor (name, first_help_sentence (h));
-			    }
-			  else
-			    {
-			      std::string s;
-			      if (first_sentence_only)
-				s = first_help_sentence (h);
-			      else
-				s = h;
-
-			      std::transform (s.begin (), s.end (), s.begin (), tolower);
-
-			      if (s.length () > 0 && s.find (txt) != std::string::npos)
-				{
-				  if (nargout)
-				    {
-				      ret[0].append (name);
-				      ret[1].append (first_help_sentence (h));
-				    }
-				  else
-				    print_lookfor (name, first_help_sentence (h));
-				}
-			    }
-			}
-		    }
-#endif
-
-		  // Check if this function has autoloaded functions attached to it
-		  std::string file_name = load_path::find_fcn (name);
-
-		  string_vector autoload_fcns = reverse_lookup_autoload (file_name);
-
-		  if (! autoload_fcns.empty ())
-		    {
-		      for (int k = 0; k < autoload_fcns.length (); k++)
-			{
-			  std::string aname = autoload_fcns (k);
-
-#ifdef OLD_SYMTAB
-			  // Check if already in symbol table
-			  sr = fbi_sym_tab->lookup (aname);
-
-			  if (!sr)
-			    {
-			      // Must load to get help
-			      sr = lookup_by_name (aname, false);
-
-			      std::string h;
-			      if (sr && sr->is_defined ())
-				h = sr->help ();
-
-			      if (aname.find (txt) != std::string::npos)
-				{
-				  if (nargout)
-				    {
-				      ret[0].append (aname);
-				      ret[1].append (first_help_sentence (h));
-				    }
-				  else
-				    print_lookfor (aname, first_help_sentence (h));
-				}
-			      else
-				{
-				  std::string s;
-				  if (first_sentence_only)
-				    s = first_help_sentence (h);
-				  else
-				    s = h;
-
-				  std::transform (s.begin (), s.end (), s.begin (), 
-					     tolower);
-
-				  if (s.length () > 0 && s.find (txt) != std::string::npos)
-				    {
-				      if (nargout)
-					{
-					  ret[0].append (aname);
-					  ret[1].append (first_help_sentence (h));
-					}
-				      else
-					print_lookfor (aname, first_help_sentence (h));
-				    }
-				}
-			    }
-#endif
-			}
-		    }
-		}
-	    }
-	}
-
-      if (nargout != 0)
-	{
-	  retval (1) = ret[1];
-	  retval (0) = ret[0];
-	}
+      Cell C (ffl_len + afl_len, 1);
+      int j = 0;
+      for (int i = 0; i < ffl_len; i++)
+        C (j++, 0) = octave_value (ffl [i]);
+      for (int i = 0; i < afl_len; i++)
+        C (j++, 0) = octave_value (afl [i]);
+            
+      retval.append (octave_value (C));
     }
   else
     {
-      error ("lookfor: argument must be a string");
-    }
+      // Get input
+      std::string dir = args (0).string_value ();
+      if (error_state)
+        error ("__list_functions__: input must be a string");
+      else
+        {
+          dir = file_ops::canonicalize_file_name (dir);
+          
+          // FIXME -- This seems very inefficient. Is there a better way?
+          std::list<std::string> list;
+          for (int i = 0; i < ffl_len; i++)
+            {
+              const std::string filename = do_which (ffl [i]);
+              if (file_is_in_dir (filename, dir))
+                list.push_back (ffl [i]);
+            }
+          for (int i = 0; i < afl_len; i++)
+            {
+              const std::string filename = do_which (afl [i]);
+              if (file_is_in_dir (filename, dir))
+                list.push_back (afl [i]);
+            }
+            
+          Cell C (list.size (), 1);
+          int j = 0;
+          for (std::list<std::string>::const_iterator iter = list.begin ();
+               iter != list.end (); iter++)
+            {
+              C (j++, 0) = octave_value (*iter);
+            }
+
+          retval.append (octave_value (C));
+        }
+    }  
 
   return retval;
 }

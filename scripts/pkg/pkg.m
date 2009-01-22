@@ -743,7 +743,8 @@ function install (files, handle_deps, autoload, prefix, archprefix, verbose,
       copy_files (desc, pdir, global_install);
       create_pkgadddel (desc, pdir, "PKG_ADD", global_install);
       create_pkgadddel (desc, pdir, "PKG_DEL", global_install);
-      finish_installation (desc, pdir, global_install)
+      finish_installation (desc, pdir, global_install);
+      generate_lookfor_cache (desc);
     endfor
   catch
     ## Something went wrong, delete tmpdirs.
@@ -1583,6 +1584,10 @@ function finish_installation (desc, packdir, global_install)
       rethrow (lasterror ());
     end_try_catch
   endif
+endfunction
+
+function generate_lookfor_cache (desc)
+  gen_doc_cache (genpath (desc.dir));
 endfunction
 
 ## Make sure the package contains the essential files.

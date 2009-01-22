@@ -29,7 +29,7 @@ AC_CONFIG_SRCDIR([startup/inputrc])
 AC_PROG_INSTALL
 
 AC_CONFIG_FILES([Makefile audio/Makefile deprecated/Makefile elfun/Makefile \
-	  general/Makefile geometry/Makefile image/Makefile \
+	  general/Makefile geometry/Makefile help/Makefile image/Makefile \
 	  io/Makefile linear-algebra/Makefile miscellaneous/Makefile \
 	  optimization/Makefile path/Makefile pkg/Makefile plot/Makefile \
 	  polynomial/Makefile set/Makefile \

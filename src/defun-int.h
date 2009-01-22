@@ -34,7 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 class octave_value;
 
 extern OCTINTERP_API void print_usage (void);
-extern OCTINTERP_API void print_usage (const std::string&) GCC_ATTR_DEPRECATED;
+extern OCTINTERP_API void print_usage (const std::string&);
 
 extern OCTINTERP_API void check_version (const std::string& version, const std::string& fcn);
 

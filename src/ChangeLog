@@ -1,5 +1,33 @@
 2009-01-22  John W. Eaton  <jwe@octave.org>
 
+	* help.cc (do_which (std::ostream&, const std::string&), Fwhich):
+	Delete.
+	(do_which (const std::string&, std::string&), F__which__):
+	New functions.
+	* do_which (const std::string&):
+	Call do_which (const std::string&, std::string&) to do the work.
+
+2009-01-22  Søren Hauberg  <hauberg@gmail.com>
+
+	* defun-int.h (print_usage): No longer mark as deprecated.
+	* defun.cc (print_usage): Simply call feval to execute print_usage.m.
+	* help.cc (additional_help_message, display_names_from_help_list,
+	display_symtab_names, simple_help, try_info, help_from_info,
+	display_help_text, display_usage_text, raw_help_from_list,
+	help_from_list, help_from_symbol_table, help_from_file,
+	builtin_help, Fhelp, display_file, do_type, Ftype,
+	first_help_sentence, print_lookfor, Flookfor): Delete.
+	(looks_like_html, raw_help_from_map, raw_help, do_get_help_text,
+	F__operators__, F__keywords__, F__builtins__,
+	file_is_in_dir, F__list_functions__): New functions.
+	(pair_type, map_iter): New typedefs.
+	(operators, keywords): Use pair_type for elements of list.
+	(names): Use map for lists.
+	* help.h (display_help_text, display_usage_text,
+	additional_help_message): Delete decls.
+
+2009-01-22  John W. Eaton  <jwe@octave.org>
+
 	* toplev.cc (octave_config_info): Check OCTAVEUSE_OS_X_API instead
 	of __APPLE__ && __MACH__.
 

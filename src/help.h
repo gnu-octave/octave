@@ -31,12 +31,6 @@ class string_vector;
 
 extern string_vector make_name_list (void);
 
-extern void display_help_text (std::ostream&, const std::string&);
-
-extern void display_usage_text (std::ostream&, const std::string&);
-
-extern void additional_help_message (std::ostream&);
-
 extern OCTINTERP_API std::string raw_help (const std::string&, bool&);
 
 // Name of the info file specified on command line.

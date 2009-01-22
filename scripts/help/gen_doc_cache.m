@@ -1,0 +1,151 @@
+## Copyright (C) 2009 Søren Hauberg
+##
+## This program is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 3 of the License, or (at
+## your option) any later version.
+##
+## This program is distributed in the hope that it will be useful, but
+## WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+## General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with this program; see the file COPYING.  If not, see
+## <http://www.gnu.org/licenses/>.
+
+## -*- texinfo -*-
+## @deftypefn {Function File} gen_doc_cache ()
+## @deftypefnx{Function File} gen_doc_cache (@var{directory})
+## Generate documentation caches for all functions in a given directory.
+##
+## A documentation cache is generated for all functions in @var{directory}. The
+## resulting cache is saved in the file @code{help_cache.mat} in @var{directory}.
+## The cache is used to speed up @code{lookfor}.
+## If no directory is given, all directories in the current path is traversed.
+##
+## @seealso{lookfor, path}
+## @end deftypefn
+
+function gen_doc_cache (p = path ())
+  if (!ischar (p))
+    print_usage ();
+  endif
+  
+  ## Generate caches for all directories in path
+  idx = find (p == pathsep ());
+  prev_idx = 1;
+  for n = 1:length (idx)
+    f = p (prev_idx:idx (n)-1);
+    gen_doc_cache_in_dir (f);
+    prev_idx = idx (n) + 1;
+  endfor
+    
+  ## Generate cache for keywords, operators, and builtins if we're handling the
+  ## entire path
+  if (nargin == 0)
+    gen_builtin_cache ();
+  endif
+endfunction
+
+function [text, first_sentence, status] = handle_function (f, text, format)
+  first_sentence = "";
+  ## Skip functions that start with __ as these shouldn't be searched by lookfor
+  if (length (f) > 2 && all (f (1:2) == "_"))
+    status = 1;
+    return;
+  endif
+
+  ## Take action depending on help text format
+  switch (lower (format))
+    case "plain text"
+      status = 0;
+    case "texinfo"
+      [text, status] = makeinfo (text, "plain text");
+    case "html"
+      [text, status] = strip_html_tags (text);
+    otherwise
+      status = 1;
+  endswitch
+    
+  ## Did we get the help text?
+  if (status != 0 || isempty (text))
+    warning ("gen_doc_cache: unusable help text in '%s'. Ignoring function.", f);
+    return;
+  endif
+
+  ## Get first sentence of help text
+  first_sentence = get_first_help_sentence (f);
+endfunction
+
+function cache = create_cache (list)
+  cache = {};
+  
+  ## For each function:
+  for n = 1:length (list)
+    f = list {n};
+    
+    ## Get help text
+    [text, format] = get_help_text (f);
+    
+    [text, first_sentence, status] = handle_function (f, text, format);
+
+    ## Did we get the help text?
+    if (status != 0)
+      continue;
+    endif
+    
+    ## Store the help text
+    cache (1, end+1) = f;
+    cache (2, end) = text;
+    cache (3, end) = first_sentence;
+  endfor
+endfunction
+
+function gen_doc_cache_in_dir (directory)
+  ## If 'directory' is not in the current path, add it so we search it
+  dir_in_path = false;
+  p = path ();
+  idx = find (p == pathsep ());
+  prev_idx = 1;
+  for n = 1:length (idx)
+    f = p (prev_idx:idx (n)-1);
+    if (strcmp (f, directory))
+      dir_in_path = true;
+      break;
+    endif
+    prev_idx = idx (n) + 1;
+  endfor
+  
+  if (!dir_in_path)
+    addpath (directory);
+  endif
+
+  ## Get list of functions in directory and create cache
+  list = __list_functions__ (directory);
+  cache = create_cache (list);
+  
+  ## Write the cache
+  fn = fullfile (directory, "help_cache.mat");
+  save ("-binary", fn, "cache"); # FIXME: Should we zip it ?
+  
+  if (!dir_in_path)
+    rmpath (directory);
+  endif
+endfunction
+
+function gen_builtin_cache ()
+  operators = __operators__ ();
+  keywords = __keywords__ ();
+  builtins = __builtins__ ();
+  list = {operators{:}, keywords{:}, builtins{:}};
+
+  cache = create_cache (list);
+  
+  ## Write the cache
+  ## FIXME: Where should we store this cache?
+  ## FIXME: if we change it -- update 'lookfor'
+  fn = fullfile (octave_config_info.datadir, "builtin_cache.mat"); 
+  save ("-binary", fn, "cache"); # FIXME: Should we zip it ?
+endfunction
+

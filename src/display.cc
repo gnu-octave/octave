@@ -83,8 +83,6 @@ display_info::init (void)
 
       rx = wd * 25.4 / wd_mm;
       ry = ht * 25.4 / ht_mm;
-
-      std::cerr << depth << " bit depth" << std::endl;
     }
   else
     warning ("no graphical display found");

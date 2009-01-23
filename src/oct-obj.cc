@@ -29,31 +29,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-obj.h"
 #include "Cell.h"
 
-octave_value_list::octave_value_list (const Cell& tc)
-  : data (tc.numel ())
-{
-  for (octave_idx_type i = 0; i < tc.numel (); i++)
-    data[i] = tc(i);
-}
-
 octave_allocator
 octave_value_list::allocator (sizeof (octave_value_list));
-
-void
-octave_value_list::resize (octave_idx_type n, const octave_value& val)
-{
-  octave_idx_type len = length ();
-
-  if (n > len)
-    {
-      data.resize (n);
-
-      for (octave_idx_type i = len; i < n; i++)
-	data[i] = val;
-    }
-  else if (n < len)
-    data.resize (n);
-}
 
 octave_value_list&
 octave_value_list::prepend (const octave_value& val)
@@ -247,8 +224,15 @@ void
 octave_value_list::make_storable_values (void)
 {
   octave_idx_type len = length ();
+  const Array<octave_value>& cdata = data;
+
   for (octave_idx_type i = 0; i < len; i++)
-    data[i].make_storable_value ();
+    {
+      // This is optimized so that we don't force a copy unless necessary.
+      octave_value tmp = cdata(i).storable_value ();
+      if (! tmp.is_copy_of (cdata (i)))
+        data(i) = tmp;
+    }
 }
 
 /*

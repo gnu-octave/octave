@@ -29,6 +29,12 @@ along with Octave; see the file COPYING.  If not, see
 #include "Cell.h"
 #include "error.h"
 #include "gripes.h"
+#include "oct-obj.h"
+
+Cell::Cell (const octave_value_list& ovl)
+  : ArrayN<octave_value> (ovl.cell_value ())
+{
+}
 
 Cell::Cell (const string_vector& sv, bool trim)
   : ArrayN<octave_value> ()

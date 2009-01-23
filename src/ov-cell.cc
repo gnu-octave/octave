@@ -48,6 +48,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-scalar.h"
 #include "pr-output.h"
 #include "ov-scalar.h"
+#include "gripes.h"
 
 #include "ls-oct-ascii.h"
 #include "ls-oct-binary.h"
@@ -140,7 +141,7 @@ octave_cell::subsref (const std::string& type,
 	    if (tcell.length () == 1)
 	      retval = tcell(0,0);
 	    else
-              retval = octave_value (octave_value_list (tcell), auto_add);
+              retval = octave_value (octave_value_list (tcell), true);
 	  }
       }
       break;
@@ -227,40 +228,12 @@ octave_cell::subsasgn (const std::string& type,
 
                 std::string next_type = type.substr (1);
 
-                if (rhs.is_cs_list ())
-                  {
-                    const octave_value_list rhsl = rhs.list_value ();
-                    if (tmpc.numel () == rhsl.length ())
-                      {
-                        for (octave_idx_type k = 0; k < tmpc.numel () && ! error_state; k++)
-                          {
-                            octave_value tmp = tmpc (k);
-                            if (! tmp.is_defined () || tmp.is_zero_by_zero ())
-                              {
-                                tmp = octave_value::empty_conv (next_type, rhs);
-                                tmp.make_unique (); // probably a no-op.
-                              }
-                            else
-                              // optimization: ignore the copy still stored inside our array and in tmpc.
-                              tmp.make_unique (2);
-
-                            tmpc(k) = tmp.subsasgn (next_type, next_idx, rhsl(k));
-                          }
-
-                        t_rhs = octave_value (octave_value_list (tmpc), true);
-                      }
-                    else
-                      error ("invalid cs-list length in assignment");
-                  }
-                else if (tmpc.numel () == 1)
+                if (tmpc.numel () == 1)
 		  {
 		    octave_value tmp = tmpc(0);
 
 		    if (! tmp.is_defined () || tmp.is_zero_by_zero ())
-                      {
-                        tmp = octave_value::empty_conv (type.substr (1), rhs);
-                        tmp.make_unique (); // probably a no-op.
-                      }
+                      tmp = octave_value::empty_conv (type.substr (1), rhs);
                     else
                       // optimization: ignore the copy still stored inside our array and in tmpc.
                       tmp.make_unique (2);
@@ -269,7 +242,7 @@ octave_cell::subsasgn (const std::string& type,
 		      t_rhs = tmp.subsasgn (next_type, next_idx, rhs);
 		  }
                 else
-                  error ("invalid assignment to cs-list outside multiple assignment.");
+                  gripe_indexed_cs_list ();
 	      }
 	  }
 	  break;

@@ -39,14 +39,8 @@ DEFINE_OCTAVE_ALLOCATOR (octave_cs_list);
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_cs_list, "cs-list", "cs-list");
 
 octave_cs_list::octave_cs_list (const Cell& c)
-  : octave_base_value (), lst ()
+  : octave_base_value (), lst (c)
 {
-  octave_idx_type n = c.length ();
-
-  lst.resize (n);
-
-  for (octave_idx_type i = 0; i < n; i++)
-    lst(i) = c(i);
 }
 
 /*

@@ -39,6 +39,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-walk.h"
 #include "utils.h"
 #include "variables.h"
+#include "gripes.h"
 
 // Index expressions.
 
@@ -261,18 +262,6 @@ tree_index_expression::make_arg_struct (void) const
   m.assign ("subs", subs_field);
 
   return m;
-}
-
-static void
-gripe_invalid_inquiry_subscript (void)
-{
-  error ("invalid dimension inquiry of a non-existent value");
-}
-
-static void
-gripe_indexed_cs_list (void)
-{
-  error ("a cs-list cannot be further indexed");
 }
 
 octave_value_list

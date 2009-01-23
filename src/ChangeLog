@@ -1,3 +1,22 @@
+2009-01-23  Jaroslav Hajek  <highegg@gmail.com>
+
+	* gripes.cc (gripe_indexed_cs_list, gripe_invalid_inquiry_subscript):
+	New functions.
+	* gripes.h: Declare them.
+	* pt-idx.cc: Remove definitions of the above funcs.
+	* ov-cell.cc (octave_cell::subsasgn): Remove dead branch.
+	* ov-struct.cc (octave_struct::subsasgn): Remove dead branch.
+	* ov-cs-list.cc (octave_cs_list::octave_cs_list (const Cell&)):
+	Optimize.
+
+2009-01-22  Jaroslav Hajek  <highegg@gmail.com>
+
+	* Cell.h (Cell::Cell (octave_value_list)): Only declare.
+	(Cell::index (*)): Change resize_ok type to bool.
+	* Cell.cc (Cell::Cell (octave_value_list)): Redefine.
+	* oct-obj.h, oct-obj.cc: Change octave_value_list::data to
+	Cell variable, reflect changes.
+
 2009-01-22  John W. Eaton  <jwe@octave.org>
 
 	* help.cc (do_which (std::ostream&, const std::string&), Fwhich):

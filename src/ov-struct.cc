@@ -301,32 +301,7 @@ octave_struct::subsasgn (const std::string& type,
                 // FIXME: better code reuse? cf. octave_cell::subsasgn and the case below.
 		if (! error_state)
 		  {
-                    if (rhs.is_cs_list ())
-                      {
-                        octave_value_list rhsl = rhs.list_value ();
-                        if (tmpc.numel () == rhsl.length ())
-                          {
-                            for (octave_idx_type k = 0; k < tmpc.numel () && ! error_state; k++)
-                              {
-                                octave_value tmp = tmpc (k);
-                                if (! tmp.is_defined () || tmp.is_zero_by_zero ())
-                                  {
-                                    tmp = octave_value::empty_conv (next_type, rhs);
-                                    tmp.make_unique (); // probably a no-op.
-                                  }
-                                else
-                                  // optimization: ignore the copy still stored inside our map and in tmpc.
-                                  tmp.make_unique (2);
-
-                                tmpc(k) = tmp.subsasgn (next_type, next_idx, rhsl(k));
-                              }
-
-                            t_rhs = octave_value (octave_value_list (tmpc), true);
-                          }
-                        else
-                          error ("invalid cs-list length in assignment");
-                      }
-                    else if (tmpc.numel () == 1)
+                    if (tmpc.numel () == 1)
                       {
                         octave_value tmp = tmpc(0);
 
@@ -343,7 +318,7 @@ octave_struct::subsasgn (const std::string& type,
                           t_rhs = tmp.subsasgn (next_type, next_idx, rhs);
                       }
                     else
-                      error ("invalid assignment to cs-list outside multiple assignment.");
+                      gripe_indexed_cs_list ();
 		  }
 	      }
 	    else
@@ -373,32 +348,7 @@ octave_struct::subsasgn (const std::string& type,
             // FIXME: better code reuse?
             if (! error_state)
               {
-                if (rhs.is_cs_list ())
-                  {
-                    octave_value_list rhsl = rhs.list_value ();
-                    if (tmpc.numel () == rhsl.length ())
-                      {
-                        for (octave_idx_type k = 0; k < tmpc.numel () && ! error_state; k++)
-                          {
-                            octave_value tmp = tmpc (k);
-                            if (! tmp.is_defined () || tmp.is_zero_by_zero ())
-                              {
-                                tmp = octave_value::empty_conv (next_type, rhs);
-                                tmp.make_unique (); // probably a no-op.
-                              }
-                            else
-                              // optimization: ignore the copy still stored inside our map.
-                              tmp.make_unique (1);
-
-                            tmpc(k) = tmp.subsasgn (next_type, next_idx, rhsl(k));
-                          }
-
-                        t_rhs = octave_value (octave_value_list (tmpc), true);
-                      }
-                    else
-                      error ("invalid cs-list length in assignment");
-                  }
-                else if (tmpc.numel () == 1)
+                if (tmpc.numel () == 1)
                   {
                     octave_value tmp = tmpc(0);
 
@@ -415,7 +365,7 @@ octave_struct::subsasgn (const std::string& type,
                       t_rhs = tmp.subsasgn (next_type, next_idx, rhs);
                   }
                 else
-                  error ("invalid assignment to cs-list outside multiple assignment.");
+                  gripe_indexed_cs_list ();
               }
 	  }
 	  break;

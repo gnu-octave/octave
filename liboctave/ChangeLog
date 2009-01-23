@@ -1,5 +1,11 @@
 2009-01-22  Jaroslav Hajek  <highegg@gmail.com>
 
+	* Array2.h (Array2<T>::index): Declare resize_ok as bool.
+	* ArrayN.h (ArrayN<T>::index): Dtto. Declare index vectors as const
+	refs.
+
+2009-01-22  Jaroslav Hajek  <highegg@gmail.com>
+
 	* Range.cc (sort_internal): Add missing test.
 
 2009-01-22  Jaroslav Hajek  <highegg@gmail.com>

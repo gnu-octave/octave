@@ -251,6 +251,18 @@ gripe_nan_conversion (const char *srctype, const char *desttype)
                    srctype, desttype);
 }
 
+void
+gripe_invalid_inquiry_subscript (void)
+{
+  error ("invalid dimension inquiry of a non-existent value");
+}
+
+void
+gripe_indexed_cs_list (void)
+{
+  error ("a cs-list cannot be further indexed");
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

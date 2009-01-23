@@ -116,14 +116,14 @@ public:
       return Array2<T> (tmp, tmp.rows (), tmp.columns ());
     }
 
-  Array2<T> index (const idx_vector& i, int resize_ok = 0,
+  Array2<T> index (const idx_vector& i, bool resize_ok = false,
 		   const T& rfv = Array<T>::resize_fill_value ()) const
     {
       Array<T> tmp = Array<T>::index (i, resize_ok, rfv);
       return Array2<T> (tmp, tmp.rows (), tmp.columns ());
     }
 
-  Array2<T> index (const idx_vector& i, const idx_vector& j, int resize_ok = 0,
+  Array2<T> index (const idx_vector& i, const idx_vector& j, bool resize_ok = false,
 		   const T& rfv = Array<T>::resize_fill_value ()) const
     {
       Array<T> tmp = Array<T>::index (i, j, resize_ok, rfv);

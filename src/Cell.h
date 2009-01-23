@@ -28,8 +28,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "ArrayN.h"
 #include "oct-alloc.h"
 #include "str-vec.h"
+#include "ov.h"
 
-#include "oct-obj.h"
+class octave_value_list;
 
 class
 OCTINTERP_API
@@ -43,12 +44,7 @@ public:
   Cell (const octave_value& val)
     : ArrayN<octave_value> (dim_vector (1, 1), val) { }
 
-  Cell (const octave_value_list& ovl)
-    : ArrayN<octave_value> (dim_vector (1, ovl.length ()))
-    {
-      for (octave_idx_type i = 0; i < ovl.length (); i++)
-	elem (i) = ovl (i);
-    }
+  Cell (const octave_value_list& ovl);
 
   Cell (octave_idx_type n, octave_idx_type m,
 	const octave_value& val = resize_fill_value ())
@@ -77,15 +73,15 @@ public:
 
   Cell index (const octave_value_list& idx, bool resize_ok = false) const;
 
-  Cell index (idx_vector& i, int resize_ok = 0,
+  Cell index (const idx_vector& i, bool resize_ok = 0,
 	      const octave_value& rfv = resize_fill_value ()) const
     { return Cell (ArrayN<octave_value>::index (i, resize_ok, rfv)); }
 
-  Cell index (idx_vector& i, idx_vector& j, int resize_ok = 0,
+  Cell index (const idx_vector& i, idx_vector& j, bool resize_ok = 0,
 	      const octave_value& rfv = resize_fill_value ()) const
     { return Cell (ArrayN<octave_value>::index (i, j, resize_ok, rfv)); }
 
-  Cell index (Array<idx_vector>& ra_idx, int resize_ok = 0,
+  Cell index (const Array<idx_vector>& ra_idx, bool resize_ok = 0,
 	      const octave_value& rfv = resize_fill_value ()) const
     { return Cell (ArrayN<octave_value>::index (ra_idx, resize_ok, rfv)); }
 

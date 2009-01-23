@@ -110,21 +110,21 @@ public:
     return *this;
   }
 
-  ArrayN<T> index (idx_vector& i, int resize_ok = 0,
+  ArrayN<T> index (const idx_vector& i, bool resize_ok = false,
 		   const T& rfv = Array<T>::resize_fill_value ()) const
     {
       Array<T> tmp = Array<T>::index (i, resize_ok, rfv);
       return ArrayN<T> (tmp, tmp.dims ());
     }
 
-  ArrayN<T> index (idx_vector& i, idx_vector& j, int resize_ok = 0,
+  ArrayN<T> index (const idx_vector& i, const idx_vector& j, bool resize_ok = false,
 		   const T& rfv = Array<T>::resize_fill_value ()) const
     {
       Array<T> tmp = Array<T>::index (i, j, resize_ok, rfv);
       return ArrayN<T> (tmp, tmp.dims ());
     }
 
-  ArrayN<T> index (Array<idx_vector>& ra_idx, int resize_ok = 0,
+  ArrayN<T> index (const Array<idx_vector>& ra_idx, bool resize_ok = false,
 		   const T& rfv = Array<T>::resize_fill_value ()) const
     {
       Array<T> tmp = Array<T>::index (ra_idx, resize_ok, rfv);

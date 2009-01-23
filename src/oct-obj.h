@@ -29,9 +29,10 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "oct-alloc.h"
 #include "str-vec.h"
+#include "Array.h"
 
 #include "ov.h"
-class Cell;
+#include "Cell.h"
 
 class
 OCTINTERP_API
@@ -43,12 +44,16 @@ public:
     : data () { }
 
   octave_value_list (octave_idx_type n, const octave_value& val)
-    : data (n, val) { }
+    : data (dim_vector (1, n), val) { }
 
   octave_value_list (const octave_value& tc)
     : data (1, tc) { }
 
-  octave_value_list (const Cell& tc);
+  octave_value_list (const Array<octave_value>& d)
+    : data (d.reshape (dim_vector (1, d.numel ()))) { }
+
+  octave_value_list (const Cell& tc)
+    : data (tc.reshape (dim_vector (1, tc.numel ()))) { }
 
   octave_value_list (const octave_value_list& obj)
     : data (obj.data), names (obj.names) { }
@@ -86,19 +91,24 @@ public:
       return *this;
     }
 
+  Array<octave_value> array_value (void) const { return data; }
+
+  Cell cell_value (void) const { return array_value (); }
+
   // Assignment will resize on range errors.
 
   octave_value& operator () (octave_idx_type n) { return elem (n); }
 
   octave_value operator () (octave_idx_type n) const { return elem (n); }
 
-  octave_idx_type length (void) const { return data.size (); }
+  octave_idx_type length (void) const { return data.length (); }
 
   bool empty (void) const { return length () == 0; }
 
   void resize (octave_idx_type n) { data.resize (n); }
 
-  void resize (octave_idx_type n, const octave_value& val);
+  void resize (octave_idx_type n, const octave_value& val)
+    { data.resize (n, val); }
 
   octave_value_list& prepend (const octave_value& val);
 
@@ -107,6 +117,10 @@ public:
   octave_value_list& append (const octave_value_list& lst);
 
   octave_value_list& reverse (void);
+
+  octave_value_list
+  slice (octave_idx_type offset, octave_idx_type len) const
+    { return data.index (idx_vector (offset, offset + len)); }
 
   octave_value_list
   splice (octave_idx_type offset, octave_idx_type len,
@@ -130,7 +144,7 @@ private:
 
   static octave_allocator allocator;
 
-  std::vector<octave_value> data;
+  Array<octave_value> data;
 
   // This list of strings can be used to tag each element of data with
   // a name.  By default, it is empty.
@@ -152,26 +166,16 @@ private:
 
   octave_value_list (octave_idx_type n);
 
-  octave_value_list (const Array<octave_value>& d);
-
   octave_value& elem (octave_idx_type n)
     {
-      static Matrix empty_matrix;
-
       if (n >= length ())
-	resize (n+1, empty_matrix);
+	resize (n + 1);
 
-      return data[n];
+      return data(n);
     }
 
   octave_value elem (octave_idx_type n) const
-    {
-#if defined (BOUNDS_CHECKING)
-      return data.at (n);
-#else
-      return data[n];
-#endif
-    }
+    { return data(n); }
 };
 
 #endif

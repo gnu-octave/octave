@@ -1,3 +1,8 @@
+2009-01-23  John W. Eaton  <jwe@octave.org>
+
+	* toplev.cc (octave_call_stack::do_goto_caller_frame):
+	Also allow caller frame to be base frame, not just user code.
+
 2009-01-23  Jaroslav Hajek  <highegg@gmail.com>
 
 	* gripes.cc (gripe_indexed_cs_list, gripe_invalid_inquiry_subscript):

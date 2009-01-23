@@ -437,7 +437,7 @@ octave_call_stack::do_goto_caller_frame (void)
 
       octave_function *f = elt.fcn;
 
-      if (f && f->is_user_code ())
+      if (frame == 0 || (f && f->is_user_code ()))
 	{
 	  if (! skipped)
 	    // We found the current user code frame, so skip it.

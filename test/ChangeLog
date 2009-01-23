@@ -1,3 +1,7 @@
+2009-01-23  Søren Hauberg  <hauberg@gmail.com>
+
+	* test_prefer.m: Update to match new API of the 'type' function.
+
 2008-12-24  John W. Eaton  <jwe@octave.org>
 
 	* fntests.m (hastests): Use fread instead of fscanf to preserve

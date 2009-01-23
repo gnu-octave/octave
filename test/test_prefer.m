@@ -135,8 +135,8 @@
 %! print_empty_dimensions (0);
 %! a = cell (1, 1);
 %! b = type -q a;
-%! assert(!isempty(findstr(b,"[]")));
-%! assert(isempty(findstr(b,"[](0x0)")));
+%! assert (!isempty (findstr (b{1}, "[]")));
+%! assert (isempty (findstr (b{1} ,"[](0x0)")));
 %! print_empty_dimensions (ped);
 
 %% test/octave.test/prefer/prefer-22.m
@@ -145,7 +145,7 @@
 %! print_empty_dimensions (1);
 %! a = cell (1, 1);
 %! b = type -q a;
-%! assert(!isempty(findstr(b,"[](0x0)")));
+%! assert (!isempty (findstr (b{1}, "[](0x0)")));
 %! print_empty_dimensions (ped);
 
 %% test/octave.test/prefer/prefer-23.m

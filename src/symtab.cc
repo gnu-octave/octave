@@ -631,7 +631,8 @@ symbol_table::fcn_info::fcn_info_rep::find
 
   if (args_evaluated && ! dispatch_map.empty ())
     {
-      std::string dispatch_type = evaluated_args(0).type_name ();
+      std::string dispatch_type = 
+        const_cast<const octave_value_list&>(evaluated_args)(0).type_name ();
 
       std::string fname;
 

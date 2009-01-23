@@ -263,16 +263,10 @@ octave_user_function::octave_all_va_args (void)
 {
   octave_value_list retval;
 
-  int n = num_args_passed - num_named_args;
+  octave_idx_type n = num_args_passed - num_named_args;
 
   if (n > 0)
-    {
-      retval.resize (n);
-
-      int k = 0;
-      for (int i = num_named_args; i < num_args_passed; i++)
-	retval(k++) = args_passed(i);
-    }
+    retval = args_passed.slice (num_named_args, n);
 
   return retval;
 }
@@ -539,16 +533,7 @@ octave_user_function::bind_automatic_vars
   symbol_table::mark_hidden (".nargout.");
 
   if (takes_varargs ())
-    {
-      int n = va_args.length ();
-
-      Cell varargin (1, n);
-
-      for (int i = 0; i < n; i++)
-	varargin(0,i) = va_args(i);
-
-      symbol_table::varref ("varargin") = varargin;
-    }
+    symbol_table::varref ("varargin") = va_args.cell_value ();
 }
 
 DEFUN (nargin, args, ,

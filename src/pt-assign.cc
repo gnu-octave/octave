@@ -217,7 +217,7 @@ tree_simple_assignment::rvalue (void)
 	    {
 	      if (rhs_val.is_cs_list ())
 		{
-		  octave_value_list lst = rhs_val.list_value ();
+		  const octave_value_list lst = rhs_val.list_value ();
 
 		  if (! lst.empty ())
 		    rhs_val = lst(0);
@@ -315,7 +315,7 @@ tree_multi_assignment::rvalue (void)
 {
   octave_value retval;
 
-  octave_value_list tmp = rvalue (1);
+  const octave_value_list tmp = rvalue (1);
 
   if (! tmp.empty ())
     retval = tmp(0);
@@ -359,7 +359,10 @@ tree_multi_assignment::rvalue (int)
 	   p++)
 	n_out += p->numel ();
 
-      octave_value_list rhs_val = rhs->rvalue (n_out);
+      // The following trick is used to keep rhs_val constant.
+      const octave_value_list rhs_val1 = rhs->rvalue (n_out);
+      const octave_value_list rhs_val = (rhs_val1.length () == 1 && rhs_val1(0).is_cs_list ()
+                                         ? rhs_val1(0).list_value () : rhs_val1);
 
       if (error_state)
 	return retval;
@@ -378,18 +381,9 @@ tree_multi_assignment::rvalue (int)
 
 	  octave_idx_type n = rhs_val.length ();
 
-	  if (n == 1)
-	    {
-	      octave_value tmp = rhs_val(0);
-
-	      if (tmp.is_cs_list ())
-		{
-		  rhs_val = tmp.list_value ();
-		  n = rhs_val.length ();
-		}
-	    }
-
-	  retval.resize (n, octave_value ());
+          // To avoid copying per elements and possible optimizations, we
+          // postpone joining the final values.
+          std::list<octave_value_list> retval_list;
 
 	  tree_argument_list::iterator q = lhs->begin ();
 
@@ -409,17 +403,14 @@ tree_multi_assignment::rvalue (int)
 		    {
 		      if (etype == octave_value::op_asn_eq)
 			{
-			  octave_value_list ovl (nel, octave_value ());
-
-			  for (octave_idx_type j = 0; j < nel; j++)
-			    ovl(j) = rhs_val(k+j);
+                          // This won't do a copy.
+			  octave_value_list ovl  = rhs_val.slice (k, nel);
 
 			  ult.assign (etype, octave_value (ovl, true));
 
 			  if (! error_state)
 			    {
-			      for (octave_idx_type j = 0; j < nel; j++)
-				retval(k+j) = rhs_val(k+j);
+                              retval_list.push_back (ovl);
 
 			      k += nel;
 			    }
@@ -443,9 +434,9 @@ tree_multi_assignment::rvalue (int)
 		      if (! error_state)
 			{
 			  if (etype == octave_value::op_asn_eq)
-			    retval(k) = rhs_val(k);
+                            retval_list.push_back (rhs_val(k));
 			  else
-			    retval(k) = ult.value ();
+                            retval_list.push_back (ult.value ());
 
 			  k++;
 			}
@@ -476,6 +467,9 @@ tree_multi_assignment::rvalue (int)
 		break;
 
 	    }
+          
+          // Concatenate return values.
+          retval = retval_list;
 	}
     }
 

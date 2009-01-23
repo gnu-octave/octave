@@ -117,11 +117,11 @@ octave_struct::subsref (const std::string& type,
 	    std::list<octave_value_list>::const_iterator p = idx.begin ();
 	    octave_value_list key_idx = *++p;
 
-	    Cell tmp = dotref (key_idx);
+	    const Cell tmp = dotref (key_idx);
 
 	    if (! error_state)
 	      {
-		Cell t = tmp.index (idx.front ());
+		const Cell t = tmp.index (idx.front ());
 
 		retval(0) = (t.length () == 1) ? t(0) : octave_value (t, true);
 
@@ -140,7 +140,7 @@ octave_struct::subsref (const std::string& type,
       {
 	if (map.numel() > 0)
 	  {
-	    Cell t = dotref (idx.front ());
+	    const Cell t = dotref (idx.front ());
 
 	    retval(0) = (t.length () == 1) ? t(0) : octave_value (t, true);
 	  }
@@ -183,11 +183,11 @@ octave_struct::subsref (const std::string& type,
 	    std::list<octave_value_list>::const_iterator p = idx.begin ();
 	    octave_value_list key_idx = *++p;
 
-	    Cell tmp = dotref (key_idx, auto_add);
+	    const Cell tmp = dotref (key_idx, auto_add);
 
 	    if (! error_state)
 	      {
-		Cell t = tmp.index (idx.front (), auto_add);
+		const Cell t = tmp.index (idx.front (), auto_add);
 
 		retval = (t.length () == 1) ? t(0) : octave_value (t, true);
 
@@ -206,7 +206,7 @@ octave_struct::subsref (const std::string& type,
       {
 	if (map.numel() > 0)
 	  {
-	    Cell t = dotref (idx.front (), auto_add);
+	    const Cell t = dotref (idx.front (), auto_add);
 
 	    retval = (t.length () == 1) ? t(0) : octave_value (t, true);
 	  }
@@ -296,7 +296,6 @@ octave_struct::subsasgn (const std::string& type,
 
                 // cast map to const reference to avoid forced key insertion.
                 Cell tmpc = cmap.contents (key).index (idx.front (), true);
-                tmpc.make_unique ();
 
                 // FIXME: better code reuse? cf. octave_cell::subsasgn and the case below.
 		if (! error_state)
@@ -304,6 +303,7 @@ octave_struct::subsasgn (const std::string& type,
                     if (tmpc.numel () == 1)
                       {
                         octave_value tmp = tmpc(0);
+                        tmpc = Cell ();
 
                         if (! tmp.is_defined () || tmp.is_zero_by_zero ())
                           {
@@ -311,8 +311,8 @@ octave_struct::subsasgn (const std::string& type,
                             tmp.make_unique (); // probably a no-op.
                           }
                         else
-                          // optimization: ignore the copy still stored inside our map and in tmpc.
-                          tmp.make_unique (2);
+                          // optimization: ignore the copy still stored inside our map.
+                          tmp.make_unique (1);
 
                         if (! error_state)
                           t_rhs = tmp.subsasgn (next_type, next_idx, rhs);
@@ -340,10 +340,8 @@ octave_struct::subsasgn (const std::string& type,
 
             std::string next_type = type.substr (1);
 
-            Cell tmpc1 = octave_value ();
-            Cell& tmpc = (map.contains (key)) ? map.contents (key) : tmpc1;
-
-            tmpc.make_unique ();
+            Cell tmpc (1, 1);
+            if (map.contains (key)) tmpc = cmap.contents (key);
 
             // FIXME: better code reuse?
             if (! error_state)
@@ -351,10 +349,11 @@ octave_struct::subsasgn (const std::string& type,
                 if (tmpc.numel () == 1)
                   {
                     octave_value tmp = tmpc(0);
+                    tmpc = Cell ();
 
                     if (! tmp.is_defined () || tmp.is_zero_by_zero ())
                       {
-                        tmp = octave_value::empty_conv (type.substr (1), rhs);
+                        tmp = octave_value::empty_conv (next_type, rhs);
                         tmp.make_unique (); // probably a no-op.
                       }
                     else

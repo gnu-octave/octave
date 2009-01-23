@@ -4,10 +4,22 @@
 	New functions.
 	* gripes.h: Declare them.
 	* pt-idx.cc: Remove definitions of the above funcs.
-	* ov-cell.cc (octave_cell::subsasgn): Remove dead branch.
-	* ov-struct.cc (octave_struct::subsasgn): Remove dead branch.
+	* ov-cell.cc (octave_cell::subsref): Declare constants as const.
+	(octave_cell::subsasgn): Remove dead branch, declare constants as const.
+	(octave_cell::list_value): Optimize.
+	* ov-struct.cc 
+	(octave_struct::subsref): Declare constants as const.
+	(octave_struct::subsasgn): Remove dead branch, declare constants as const.
 	* ov-cs-list.cc (octave_cs_list::octave_cs_list (const Cell&)):
 	Optimize.
+	* oct-obj.cc (octave_value_list::octave_value_list (const
+	std::list<octave_value_list>&)): New constructor.
+	* oct-obj.h: Declare it.
+	* pt-arg-list.cc (convert_to_const_vector): Optimize.
+	* symtab.cc (symbol_table::fcn_info::fcn_info_rep::find): Use const
+	reference to avoid redundant copy.
+	* ov-usr-fcn.cc (octave_user_function::bind_automatic_vars): Optimize.
+	(octave_user_function::octave_all_va_args): Optimize.
 
 2009-01-22  Jaroslav Hajek  <highegg@gmail.com>
 

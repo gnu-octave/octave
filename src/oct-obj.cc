@@ -2,6 +2,7 @@
 
 Copyright (C) 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2002, 2003,
               2004, 2005, 2006, 2007 John W. Eaton
+Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
 
@@ -28,6 +29,36 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "oct-obj.h"
 #include "Cell.h"
+
+octave_value_list::octave_value_list (const std::list<octave_value_list>& lst)
+{
+  octave_idx_type n = 0, nel = 0;
+
+  // Determine number.
+  for (std::list<octave_value_list>::const_iterator p = lst.begin ();
+       p != lst.end (); p++)
+    {
+      n++;
+      nel += p->length ();
+    }
+
+  // Optimize single-element case
+  if (n == 1)
+    data = lst.front ().data;
+  else if (nel > 0)
+    {
+      data.resize (nel);
+      octave_idx_type k = 0;
+      for (std::list<octave_value_list>::const_iterator p = lst.begin ();
+           p != lst.end (); p++)
+        {
+          data.assign (idx_vector (k, k + p->length ()), p->data);
+          k += p->length ();
+        }
+      assert (k == nel);
+    }
+
+}
 
 octave_allocator
 octave_value_list::allocator (sizeof (octave_value_list));

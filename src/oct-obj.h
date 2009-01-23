@@ -2,6 +2,7 @@
 
 Copyright (C) 1994, 1995, 1996, 1997, 1998, 2000, 2002, 2003, 2004,
               2005, 2006, 2007 John W. Eaton
+Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
 
@@ -57,6 +58,9 @@ public:
 
   octave_value_list (const octave_value_list& obj)
     : data (obj.data), names (obj.names) { }
+
+  // Concatenation constructor.
+  octave_value_list (const std::list<octave_value_list>&);
 
   ~octave_value_list (void) { }
 

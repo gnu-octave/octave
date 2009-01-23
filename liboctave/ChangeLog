@@ -1,3 +1,10 @@
+2009-01-23  Jaroslav Hajek  <highegg@gmail.com>
+
+	* Array.cc (Array<T>::assign (const idx_vector&, const Array<T>&)):
+	Optimize assignment to an empty array.
+	(Array<T>::assign (const idx_vector&, const idx_vector&, const Array<T>&)):
+	Optimize assignment to an empty array.
+
 2009-01-22  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Array2.h (Array2<T>::index): Declare resize_ok as bool.

@@ -136,7 +136,7 @@ octave_cell::subsref (const std::string& type,
 
 	if (! error_state)
 	  {
-	    Cell tcell = tmp.cell_value ();
+	    const Cell tcell = tmp.cell_value ();
 
 	    if (tcell.length () == 1)
 	      retval = tcell(0,0);
@@ -231,12 +231,16 @@ octave_cell::subsasgn (const std::string& type,
                 if (tmpc.numel () == 1)
 		  {
 		    octave_value tmp = tmpc(0);
+                    tmpc = Cell ();
 
 		    if (! tmp.is_defined () || tmp.is_zero_by_zero ())
-                      tmp = octave_value::empty_conv (type.substr (1), rhs);
+                      {
+                        tmp = octave_value::empty_conv (type.substr (1), rhs);
+                        tmp.make_unique (); // probably a no-op.
+                      }
                     else
-                      // optimization: ignore the copy still stored inside our array and in tmpc.
-                      tmp.make_unique (2);
+                      // optimization: ignore the copy still stored inside our array. 
+                      tmp.make_unique (1);
 
 		    if (! error_state)
 		      t_rhs = tmp.subsasgn (next_type, next_idx, rhs);
@@ -356,29 +360,7 @@ octave_cell::byte_size (void) const
 octave_value_list
 octave_cell::list_value (void) const
 {
-  octave_value_list retval;
-
-  octave_idx_type nr = rows ();
-  octave_idx_type nc = columns ();
-
-  if (nr == 1 && nc > 0)
-    {
-      retval.resize (nc);
-
-      for (octave_idx_type i = 0; i < nc; i++)
-	retval(i) = matrix(0,i);
-    }
-  else if (nc == 1 && nr > 0)
-    {
-      retval.resize (nr);
-
-      for (octave_idx_type i = 0; i < nr; i++)
-	retval(i) = matrix(i,0);
-    }
-  else
-    error ("invalid conversion from cell array to list");
-
-  return retval;
+  return octave_value_list (matrix);
 }
 
 string_vector

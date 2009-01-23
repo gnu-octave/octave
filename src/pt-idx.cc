@@ -331,7 +331,7 @@ tree_index_expression::rvalue (int nargout)
 		  // that argument list so we can pass the appropriate
 		  // value to the built-in __end__ function.
 
-		  octave_value_list tmp_list
+		  const octave_value_list tmp_list
 		    = tmp.subsref (type.substr (tmpi, i - tmpi), idx, nargout);
 
 		  tmp = tmp_list(0);
@@ -390,7 +390,7 @@ tree_index_expression::rvalue (void)
 {
   octave_value retval;
 
-  octave_value_list tmp = rvalue (1);
+  const octave_value_list tmp = rvalue (1);
 
   if (! tmp.empty ())
     retval = tmp(0);

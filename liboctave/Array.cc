@@ -1216,13 +1216,18 @@ Array<T>::assign (const idx_vector& i, const Array<T>& rhs, const T& rfv)
       // Try to resize first if necessary. 
       if (nx != n)
         {
-          // A simple optimization. Things like A(1:N) = x will skip fill on
-          // resizing, if A is 0x0.
+          // Optimize case A = []; A(1:n) = X with A empty. 
           if (rows () == 0 && columns () == 0 && ndims () == 2
-              && rhl == 1 && i.is_colon_equiv (nx))
-            *this = Array<T> (dim_vector (1, nx));
-          else
-            resize_fill (nx, rfv);      
+              && i.is_colon_equiv (nx))
+            {
+              if (rhl == 1)
+                *this = Array<T> (dim_vector (1, nx), rhs(0));
+              else
+                *this = Array<T> (rhs, dim_vector (1, nx));
+              return;
+            }
+
+          resize_fill (nx, rfv);      
           n = numel ();
         }
 
@@ -1284,6 +1289,17 @@ Array<T>::assign (const idx_vector& i, const idx_vector& j,
       // Resize if requested.
       if (rdv != dv)
         {
+          // Optimize case A = []; A(1:m, 1:n) = X
+          if (dv.all_zero () && i.is_colon_equiv (rdv(0))
+              && j.is_colon_equiv (rdv(1)))
+            {
+              if (isfill)
+                *this = Array<T> (rdv, rhs(0));
+              else
+                *this = Array<T> (rhs, rdv);
+              return;
+            }
+
           resize (rdv, rfv);
           dv = dimensions;
         }

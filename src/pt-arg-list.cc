@@ -174,12 +174,9 @@ tree_argument_list::convert_to_const_vector (const octave_value *object)
 
   int len = length ();
 
-  octave_value_list args;
-  int args_len = len;
-  args.resize (args_len);
+  std::list<octave_value_list> args;
 
   iterator p = begin ();
-  int j = 0;
   for (int k = 0; k < len; k++)
     {
       if (stash_object)
@@ -200,32 +197,23 @@ tree_argument_list::convert_to_const_vector (const octave_value *object)
 	  if (error_state)
 	    {
 	      ::error ("evaluating argument list element number %d", k+1);
-	      args = octave_value_list ();
+	      args.clear ();
 	      break;
 	    }
 	  else
 	    {
 	      if (tmp.is_cs_list ())
-		{
-		  octave_value_list tl = tmp.list_value ();
-		  int n = tl.length ();
-		  args_len += n - 1;
-		  args.resize (args_len);
-		  for (int i = 0; i < n; i++)
-		    args(j++) = tl(i);
-		}
+                args.push_back (tmp.list_value ());
 	      else if (tmp.is_defined ())
-		args(j++) = tmp;
+                args.push_back (tmp);
 	    }
 	}
       else
 	{
-	  args(j++) = octave_value ();
+	  args.push_back (octave_value ());
 	  break;
 	}
     }
-
-  args.resize (j);
 
   if (stash_object)
     unwind_protect::run_frame ("convert_to_const_vector");

@@ -45,57 +45,68 @@ function retval = type (varargin)
     varargin (idx) = [];
   endif
 
-  text = cell (size (varargin));
-  for n = 1:length (varargin)
-    text {n} = do_type (varargin {n}, quiet);
-    if (nargout == 0)
-      disp (text {n});
-    endif
-  endfor
-  
-  ## Should we return the text or print if
   if (nargout > 0)
-    retval = text;
+    retval = cell (size (varargin));
   endif
-endfunction
-
-function text = do_type (name, quiet)
-  ## Find function and get its code
-  text = "";
-  e = exist (name);
-  if (e == 2)
-    ## m-file or ordinary file
-    file = which (name);
-    if (isempty (file))
-      ## 'name' is an ordinary file, and not a function name.
-      ## FIXME: Should we just print it anyway?
+  
+  for n = 1:length (varargin)
+    name = varargin {n};
+    
+    ## Find function and get its code
+    text = "";
+    cmd = sprintf ("exist ('%s')", name);
+    e = evalin ("caller", cmd);
+    if (e == 1)
+      ## Variable
+      cmd = sprintf ("disp (%s);", name);
+      desc = evalin ("caller", cmd);
+      if (quiet)
+        text = desc;
+      else
+        text = sprintf ("%s is a variable\n%s", name, desc);
+      endif
+    elseif (e == 2)
+      ## m-file or ordinary file
+      file = which (name);
+      if (isempty (file))
+        ## 'name' is an ordinary file, and not a function name.
+        ## FIXME: Should we just print it anyway?
+        error ("type: `%s' undefined\n", name);
+      endif
+    
+      ## Read the file
+      fid = fopen (file, "r");
+      if (fid < 0)
+        error ("type: couldn't open `%s' for reading", file);
+      endif
+      contents = char (fread (fid).');
+      fclose (fid);
+    
+      if (quiet)
+        text = contents;
+      else
+        text = sprintf ("%s is the user-defined function defined from: %s\n\n%s",
+                        name, file, contents);
+      endif    
+    elseif (e == 3)
+      text = sprintf ("%s is a dynamically-linked function", name);
+    elseif (e == 5)
+      text = sprintf ("%s is a built-in function", name);
+    elseif (any (strcmp (__operators__ (), name)))
+      text = sprintf ("%s is an operator", name);
+    elseif (any (strcmp (__keywords__ (), name)))
+      text = sprintf ("%s is a keyword", name);
+    else
       error ("type: `%s' undefined\n", name);
     endif
-    
-    ## Read the file
-    fid = fopen (file, "r");
-    if (fid < 0)
-      error ("type: couldn't open `%s' for reading", file);
-    endif
-    contents = char (fread (fid).');
-    fclose (fid);
-    
-    if (quiet)
-      text = contents;
+
+    ## Should we return the text or print if
+    if (nargout == 0)
+      disp (text);
     else
-      text = sprintf ("%s is the user-defined function defined from: %s\n\n%s",
-                      name, file, contents);
-    endif    
-  elseif (e == 3)
-    text = sprintf ("%s is a dynamically-linked function", name);
-  elseif (e == 5)
-    text = sprintf ("%s is a built-in function", name);
-  elseif (any (strcmp (__operators__ (), name)))
-    text = sprintf ("%s is an operator", name);
-  elseif (any (strcmp (__keywords__ (), name)))
-    text = sprintf ("%s is a keyword", name);
-  else
-    error ("type: `%s' undefined\n", name);
-  endif
+      retval {n} = text;
+    endif
+  endfor
 endfunction
+
 

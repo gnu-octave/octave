@@ -1,3 +1,7 @@
+2009-01-24 Ben Abbott <bpabbott@mac.com>
+
+	* DLD-FUNCTIONS/eigs.cc: eigs.cc: skip tests if ARPACK is missing.
+
 2009-01-23  John W. Eaton  <jwe@octave.org>
 
 	* toplev.cc (octave_call_stack::do_goto_caller_frame):

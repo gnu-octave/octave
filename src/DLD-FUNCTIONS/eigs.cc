@@ -761,7 +761,8 @@ K Maschhoff, D Sorensen and C Yang. For more information see\n\
 %!testif HAVE_ARPACK
 %! d1 = eigs(A, speye(n), k, 'lm');
 %! assert (abs(d1), abs(d0(end:-1:(end-k+1))), 1e-12);
-%!assert (eigs(A,k,4.1), eigs(A,speye(n),k,4.1), 1e-12);
+%!testif HAVE_ARPACK
+%! assert (eigs(A,k,4.1), eigs(A,speye(n),k,4.1), 1e-12);
 %!testif HAVE_ARPACK
 %! opts.cholB=true;
 %! d1 = eigs(A, speye(n), k, 'lm', opts);
@@ -782,7 +783,8 @@ K Maschhoff, D Sorensen and C Yang. For more information see\n\
 %! opts.permB=q;
 %! d1 = eigs(A, speye(n)(q,q), k, 4.1, opts);
 %! assert (abs(d1), eigs(A,k,4.1), 1e-12);
-%!assert (eigs(A,k,4.1), eigs(A,speye(n),k,4.1), 1e-12);
+%!testif HAVE_ARPACK
+%! assert (eigs(A,k,4.1), eigs(A,speye(n),k,4.1), 1e-12);
 %!testif HAVE_ARPACK
 %! fn = @(x) A * x;
 %! opts.issym = 1; opts.isreal = 1;
@@ -902,8 +904,10 @@ K Maschhoff, D Sorensen and C Yang. For more information see\n\
 %! opts.permB=q;
 %! d1 = eigs(A, speye(n)(q,q), k, 4.1, opts);
 %! assert (abs(d1), eigs(A,k,4.1), 1e-12);
-%!assert (abs(eigs(A,k,4.1)), abs(eigs(A,speye(n),k,4.1)), 1e-12);
-%!assert (sort(imag(eigs(A,k,4.1))), sort(imag(eigs(A,speye(n),k,4.1))), 1e-12);
+%!testif HAVE_ARPACK
+%! assert (abs(eigs(A,k,4.1)), abs(eigs(A,speye(n),k,4.1)), 1e-12);
+%!testif HAVE_ARPACK
+%! assert (sort(imag(eigs(A,k,4.1))), sort(imag(eigs(A,speye(n),k,4.1))), 1e-12);
 %!testif HAVE_ARPACK
 %! fn = @(x) A * x;
 %! opts.issym = 0; opts.isreal = 1;
@@ -1031,8 +1035,10 @@ K Maschhoff, D Sorensen and C Yang. For more information see\n\
 %! d1 = eigs(A, speye(n)(q,q), k, 4.1, opts);
 %! assert (abs(abs(d1)), abs(eigs(A,k,4.1)), 1e-12);
 %! assert (sort(imag(abs(d1))), sort(imag(eigs(A,k,4.1))), 1e-12);
-%!assert (abs(eigs(A,k,4.1)), abs(eigs(A,speye(n),k,4.1)), 1e-12);
-%!assert (sort(imag(eigs(A,k,4.1))), sort(imag(eigs(A,speye(n),k,4.1))), 1e-12);
+%!testif HAVE_ARPACK
+%! assert (abs(eigs(A,k,4.1)), abs(eigs(A,speye(n),k,4.1)), 1e-12);
+%!testif HAVE_ARPACK
+%! assert (sort(imag(eigs(A,k,4.1))), sort(imag(eigs(A,speye(n),k,4.1))), 1e-12);
 %!testif HAVE_ARPACK
 %! fn = @(x) A * x;
 %! opts.issym = 0; opts.isreal = 0;
@@ -1132,7 +1138,8 @@ K Maschhoff, D Sorensen and C Yang. For more information see\n\
 %!testif HAVE_ARPACK
 %! d1 = eigs(A, eye(n), k, 'lm');
 %! assert (abs(d1), abs(d0(end:-1:(end-k+1))), 1e-12);
-%!assert (eigs(A,k,4.1), eigs(A,eye(n),k,4.1), 1e-12);
+%!testif HAVE_ARPACK
+%! assert (eigs(A,k,4.1), eigs(A,eye(n),k,4.1), 1e-12);
 %!testif HAVE_ARPACK
 %! opts.cholB=true;
 %! d1 = eigs(A, eye(n), k, 'lm', opts);
@@ -1153,7 +1160,8 @@ K Maschhoff, D Sorensen and C Yang. For more information see\n\
 %! opts.permB=q;
 %! d1 = eigs(A, eye(n)(q,q), k, 4.1, opts);
 %! assert (abs(d1), eigs(A,k,4.1), 1e-12);
-%!assert (eigs(A,k,4.1), eigs(A,eye(n),k,4.1), 1e-12);
+%!testif HAVE_ARPACK
+%! assert (eigs(A,k,4.1), eigs(A,eye(n),k,4.1), 1e-12);
 %!testif HAVE_ARPACK
 %! fn = @(x) A * x;
 %! opts.issym = 1; opts.isreal = 1;
@@ -1273,8 +1281,10 @@ K Maschhoff, D Sorensen and C Yang. For more information see\n\
 %! opts.permB=q;
 %! d1 = eigs(A, eye(n)(q,q), k, 4.1, opts);
 %! assert (abs(d1), eigs(A,k,4.1), 1e-12);
-%!assert (abs(eigs(A,k,4.1)), abs(eigs(A,eye(n),k,4.1)), 1e-12);
-%!assert (sort(imag(eigs(A,k,4.1))), sort(imag(eigs(A,eye(n),k,4.1))), 1e-12);
+%!testif HAVE_ARPACK
+%! assert (abs(eigs(A,k,4.1)), abs(eigs(A,eye(n),k,4.1)), 1e-12);
+%!testif HAVE_ARPACK
+%! assert (sort(imag(eigs(A,k,4.1))), sort(imag(eigs(A,eye(n),k,4.1))), 1e-12);
 %!testif HAVE_ARPACK
 %! fn = @(x) A * x;
 %! opts.issym = 0; opts.isreal = 1;
@@ -1402,8 +1412,10 @@ K Maschhoff, D Sorensen and C Yang. For more information see\n\
 %! d1 = eigs(A, eye(n)(q,q), k, 4.1, opts);
 %! assert (abs(abs(d1)), abs(eigs(A,k,4.1)), 1e-12);
 %! assert (sort(imag(abs(d1))), sort(imag(eigs(A,k,4.1))), 1e-12);
-%!assert (abs(eigs(A,k,4.1)), abs(eigs(A,eye(n),k,4.1)), 1e-12);
-%!assert (sort(imag(eigs(A,k,4.1))), sort(imag(eigs(A,eye(n),k,4.1))), 1e-12);
+%!testif HAVE_ARPACK
+%! assert (abs(eigs(A,k,4.1)), abs(eigs(A,eye(n),k,4.1)), 1e-12);
+%!testif HAVE_ARPACK
+%! assert (sort(imag(eigs(A,k,4.1))), sort(imag(eigs(A,eye(n),k,4.1))), 1e-12);
 %!testif HAVE_ARPACK
 %! fn = @(x) A * x;
 %! opts.issym = 0; opts.isreal = 0;

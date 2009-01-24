@@ -213,17 +213,17 @@ endfunction
 %! u = u(:,idx);
 %! v = v(:,idx);
 %! randn('state',42)
-%!test
+%!testif HAVE_ARPACK
 %! [u2,s2,v2,flag] = svds(a,k);
 %! s2 = diag(s2);
 %! assert(flag,!1);
 %! assert(s(end:-1:end-k+1), s2, 1e-10); 
-%!test
+%!testif HAVE_ARPACK
 %! [u2,s2,v2,flag] = svds(a,k,0);
 %! s2 = diag(s2);
 %! assert(flag,!1);
 %! assert(s(k:-1:1), s2, 1e-10); 
-%!test
+%!testif HAVE_ARPACK
 %! idx = floor(n/2);
 %! % Don't put sigma right on a singular value or there are convergence 
 %! sigma = 0.99*s(idx) + 0.01*s(idx+1); 

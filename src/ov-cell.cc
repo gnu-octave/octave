@@ -291,24 +291,27 @@ octave_cell::subsasgn (const std::string& type,
 
 	case '{':
 	  {
-	    octave_value_list i = idx.front ();
+	    octave_value_list idxf = idx.front ();
 
 	    if (t_rhs.is_cs_list ())
 	      {
 		Cell tmp_cell = Cell (t_rhs.list_value ());
 
-		// The shape of the RHS is irrelevant, we just want
-		// the number of elements to agree and to preserve the
-		// shape of the left hand side of the assignment.
+                // Inquire the proper shape of the RHS.
 
-		if (numel () == tmp_cell.numel ())
-		  tmp_cell = tmp_cell.reshape (dims ());
+                dim_vector didx = dims ().redim (idxf.length ());
+                for (octave_idx_type k = 0; k < idxf.length (); k++)
+                  if (! idxf(k).is_magic_colon ()) didx(k) = idxf(k).numel ();
 
-		octave_base_matrix<Cell>::assign (i, tmp_cell);
+                if (didx.numel () == tmp_cell.numel ())
+                  tmp_cell = tmp_cell.reshape (didx);
+
+
+		octave_base_matrix<Cell>::assign (idxf, tmp_cell);
 	      }
-	    else if (i.all_scalars () || do_index_op (i, true).numel () == 1)
+	    else if (idxf.all_scalars () || do_index_op (idxf, true).numel () == 1)
               // Regularize a null matrix if stored into a cell.
-              octave_base_matrix<Cell>::assign (i, Cell (t_rhs.storable_value ()));
+              octave_base_matrix<Cell>::assign (idxf, Cell (t_rhs.storable_value ()));
             else if (! error_state)
               error ("invalid assignment to cs-list outside multiple assignment.");
 

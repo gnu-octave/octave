@@ -388,7 +388,7 @@ octave_struct::subsasgn (const std::string& type,
 	      {
 		std::list<octave_value_list>::const_iterator p = idx.begin ();
 		octave_value_list key_idx = *++p;
-                octave_value_list idx_front = idx.front ();
+                octave_value_list idxf = idx.front ();
 
 		assert (key_idx.length () == 1);
 
@@ -398,7 +398,19 @@ octave_struct::subsasgn (const std::string& type,
 		  {
                     if (t_rhs.is_cs_list ())
                       {
-                        map.assign (idx.front (), key, Cell (t_rhs.list_value ()));
+                        Cell tmp_cell = Cell (t_rhs.list_value ());
+
+                        // Inquire the proper shape of the RHS.
+
+                        dim_vector didx = dims ().redim (idxf.length ());
+                        for (octave_idx_type k = 0; k < idxf.length (); k++)
+                          if (! idxf(k).is_magic_colon ()) didx(k) = idxf(k).numel ();
+
+                        if (didx.numel () == tmp_cell.numel ())
+                          tmp_cell = tmp_cell.reshape (didx);
+
+
+                        map.assign (idxf, key, tmp_cell);
 
                         if (! error_state)
                           {
@@ -411,10 +423,10 @@ octave_struct::subsasgn (const std::string& type,
                     else 
                       {
                         // cast map to const reference to avoid forced key insertion.
-                        if (idx_front.all_scalars () 
-                            || cmap.contents (key).index (idx_front, true).numel () == 1)
+                        if (idxf.all_scalars () 
+                            || cmap.contents (key).index (idxf, true).numel () == 1)
                           {
-                            map.assign (idx_front, key, t_rhs.storable_value ());
+                            map.assign (idxf, key, t_rhs.storable_value ());
                             if (! error_state)
                               {
                                 count++;

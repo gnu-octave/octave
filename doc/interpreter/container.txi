@@ -240,24 +240,14 @@ to print the value of the structure array, you can type its name:
 
 @example
 @group
-octave:2> x
+octave:1> x
 x =
 @{
-  a =
+  1x2 struct array containing the fields:
 
-  (,
-    [1] = string1
-    [2] = string2
-  ,)
-
-  b =
-
-  (,
-    [1] =  1
-    [2] =  2
-  ,)
-
-@}
+    a
+    b
+@}  
 @end group
 @end example
 
@@ -283,24 +273,47 @@ names. For example
 @example
 @group
 octave:3> x.a
-ans =
-
-(,
-  [1] = string1
-  [2] = string2
-,)
+ans = string1
+ans = string2
 @end group
 @end example
 
-The function @code{size} with return the size of the structure. For
+Here is another example, using this comma separated list on the
+left-hand side of an assignment:
+
+@example
+@group
+octave:4> [x.a] = deal("new string1", "new string2");
+octave:5> x(1).a
+ans = new string1
+octave:6> x(2).a
+ans = new string2
+@end group
+@end example
+
+Just as for numerical arrays, it is possible to use vectors as indices (@pxref{Index Expressions}):
+
+@example
+@group
+octave:7> x(3:4) = x(1:2);
+octave:8> [x([1,3]).a] = deal("other string1", "other string2");
+octave:9> x.a
+ans = other string1
+ans = new string2
+ans = other string2
+ans = new string2
+@end group
+@end example
+
+The function @code{size} will return the size of the structure. For
 the example above
 
 @example
 @group
-octave:4> size(x)
+octave:10> size(x)
 ans =
 
-   1   2
+   1   4
 @end group
 @end example
 

@@ -1,3 +1,8 @@
+2009-01-24  Thorsten Meyer  <thorsten@hexe>
+
+	* interpreter/container.txi (Data Structures): Update examples for
+	structure arrays.
+
 2009-01-22  John W. Eaton  <jwe@octave.org>
 
 	* interpreter/io.txi (Terminal Output): Remove @DOCSTRING(ans).

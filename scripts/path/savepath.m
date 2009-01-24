@@ -18,8 +18,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} savepath (@var{file})
-## Save the current function search path to @var{file}.  If @var{file}
-## is omitted, @file{~/.octaverc} is used.  If successful,
+## Save the the portion of the current function search path, that is
+## not set during Octave's initialization process, to @var{file}.
+## If @var{file} is omitted, @file{~/.octaverc} is used.  If successful,
 ## @code{savepath} returns 0.
 ## @seealso{path, addpath, rmpath, genpath, pathdef, pathsep}
 ## @end deftypefn
@@ -112,11 +113,80 @@ function varargout = savepath (savefile)
       fprintf (fid, "%s\n", pre{i})
     endfor
 
+    ## Remove the portion of the path defined via the command line
+    ## and/or the environment.
+    workingpath = parsepath (path);
+    command_line_path = parsepath (commandlinepath ());
+    octave_path = parsepath (getenv ("OCTAVE_PATH"));
+    if (isempty (pathdef ()))
+      ## This occurs when running octave via run-octave. In this instance
+      ## the entire path is specified via the command line and pathdef()
+      ## is empty.
+      [tmp, n] = setdiff (workingpath, octave_path);
+      default_path = command_line_path;
+    else
+      [tmp, n] = setdiff (workingpath, union (command_line_path, octave_path));
+      default_path = parsepath (pathdef ());
+    endif
+    ## This is the path we'd like to preserve when octave is run.
+    path_to_preserve = workingpath(sort(n));
+
+    ## Determine the path to Octave's user and sytem wide pkgs.
+    [pkg_user, pkg_system] = pkg ("list");
+    pkg_user_path = cell (1, numel (pkg_user));
+    pkg_system_path = cell (1, numel (pkg_system));
+    for n = 1:numel(pkg_user)
+      pkg_user_path{n} = pkg_user{n}.archprefix;
+    endfor
+    for n = 1:numel(pkg_system)
+      pkg_system_path{n} = pkg_system{n}.archprefix;
+    endfor
+    pkg_path = union (pkg_user_path, pkg_system_path);
+
+    ## Rely on Octave's initialization to include the pkg path elements.
+    if (! isempty (pkg_path))
+      [tmp, n] = setdiff (path_to_preserve, strcat (pkg_path, ":"));
+      path_to_preserve = path_to_preserve(sort(n));
+    endif
+
+    ## Split the path to be saved into two groups. Those path elements that
+    ## belong at the beginning and those at the end.
+    if (! isempty (default_path))
+      n1 = strmatch (default_path{1}, path_to_preserve, "exact");
+      n2 = strmatch (default_path{end}, path_to_preserve, "exact");
+      n_middle = round (0.5*(n1+n2));
+      [tmp, n] = setdiff (path_to_preserve, default_path);
+      path_to_save = path_to_preserve(sort (n));
+      ## Remove pwd
+      path_to_save = path_to_save (! strcmpi (path_to_save, strcat (".", pathsep)));
+      n = ones (size (path_to_save));
+      for m = 1:numel(path_to_save)
+        n(m) = strmatch (path_to_save{m}, path_to_preserve);
+      endfor
+      path_to_save_begin = path_to_save(n <= n_middle);
+      path_to_save_end   = path_to_save(n > n_middle);
+    else
+      path_to_save_begin = path_to_preserve;
+      path_to_save_end   = {};
+    endif
+    path_to_save_begin = cell2mat (path_to_save_begin);
+    path_to_save_end   = cell2mat (path_to_save_end);
+
     ## Use single quotes for PATH argument to avoid string escape
     ## processing.  Since we are using single quotes around the arg,
     ## double any single quote characters found in the string.
-    fprintf (fid, "\n%s\n  path ('%s');\n%s\n",
-	     beginstring, strrep (path (), "'", "''"), endstring);
+    fprintf (fid, "%s\n", beginstring)
+    if (! isempty (path_to_save_begin))
+      n = find (path_to_save_begin != pathsep, 1, "last");
+      fprintf (fid, "  addpath ('%s', '-begin');\n",
+               strrep (path_to_save_begin(1:n), "'", "''"))
+    endif
+    if (! isempty (path_to_save_end))
+      n = find (path_to_save_end != pathsep, 1, "last");
+      fprintf (fid, "  addpath ('%s', '-end');\n",
+               strrep (path_to_save_end(1:n), "'", "''"))
+    endif
+    fprintf (fid, "%s\n", endstring)
 
     for i = 1:length (post)
       fprintf (fid, "%s\n", post{i});
@@ -137,3 +207,9 @@ function varargout = savepath (savefile)
   endif
   
 endfunction  
+
+function path_elements = parsepath (p)
+  pat = sprintf ("([^%s]+[%s$])", pathsep, pathsep);
+  [jnk1, jnk2, jnk3, path_elements] = regexpi (strcat (p, pathsep), pat);
+endfunction
+

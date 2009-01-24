@@ -1,3 +1,7 @@
+2008-12-24 Ben Abbott <bpabbott@mac.com>
+
+	* path/savepath.m: Respect cmd-line and env paths.
+
 2009-01-24 Ben Abbott <bpabbott@mac.com>
 
 	* sparse/svds.m: svds.m: skip tests if ARPACK is missing.

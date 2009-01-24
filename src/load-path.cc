@@ -1772,6 +1772,17 @@ Reinitialize Octave's load path directory cache.\n\
   return retval;
 }
 
+DEFUN (commandlinepath, , ,
+    "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} commandlinepath (@dots{})\n\
+Return the command line path variable.\n\
+\n\
+@seealso{path, addpath, rmpath, genpath, pathdef, savepath, pathsep}\n\
+@end deftypefn")
+{
+  return octave_value (load_path::get_command_line_path ());
+}
+
 DEFUN (restoredefaultpath, , ,
     "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} restoredefaultpath (@dots{})\n\

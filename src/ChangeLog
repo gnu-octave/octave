@@ -1,3 +1,8 @@
+2008-12-25 Ben Abbott <bpabbott@mac.com>
+
+	* load-path.cc: New function commandlinepath.
+	* load-path.h: Make command_line_path public.
+
 2009-01-24 Ben Abbott <bpabbott@mac.com>
 
 	* DLD-FUNCTIONS/eigs.cc: eigs.cc: skip tests if ARPACK is missing.

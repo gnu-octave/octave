@@ -218,6 +218,11 @@ public:
       command_line_path += dir_path::path_sep_str () + p;
   }
 
+  static std::string get_command_line_path (void)
+  {
+    return instance_ok () ? instance->do_get_command_line_path () : std::string ();
+  }
+
   static std::string system_path (void)
   {
     return instance_ok () ? instance->do_system_path () : std::string ();
@@ -485,6 +490,8 @@ private:
   void do_display (std::ostream& os) const;
 
   std::string do_system_path (void) const { return sys_path; }
+
+  std::string do_get_command_line_path (void) const { return command_line_path; }
 
   void add_to_fcn_map (const dir_info& di, bool at_end) const;
 

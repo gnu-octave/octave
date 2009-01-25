@@ -61,7 +61,10 @@ function help (name)
       case "html"
         [text, status] = strip_html_tags (text);
       case "not found"
-        error ("help: `%s' not found\n", name);
+        [text, status] = do_contents (name);
+        if (status != 0)
+          error ("help: `%s' not found\n", name);
+        endif
       otherwise
         error ("help: internal error: unsupported help text format: '%s'\n", format);
     endswitch
@@ -77,6 +80,34 @@ function help (name)
     
   else
     error ("help: invalid input\n");
+  endif
+endfunction
+
+function [text, status] = do_contents (name)
+  text = "";
+  status = 1;
+
+  d = find_dir_in_path (name);
+  if (!isempty (d))
+    p = path ();
+    unwind_protect
+      ## Only include 'd' in the path, and then get the help text of 'Contents'
+      path (d);
+      [text, format] = get_help_text ("Contents");
+
+      ## Take action depending on help text format
+      switch (lower (format))
+        case "plain text"
+          status = 0;
+        case "texinfo"
+          [text, status] = makeinfo (text, "plain text");
+        case "html"
+          [text, status] = strip_html_tags (text);
+      endswitch
+    unwind_protect_cleanup
+      ## Restore path
+      path (p);
+    end_unwind_protect
   endif
 endfunction
 

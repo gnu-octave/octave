@@ -90,6 +90,10 @@
 
 	* sparse/svds.m: svds.m: skip tests if ARPACK is missing.
 
+2009-01-25  Søren Hauberg  <hauberg@gmail.com>
+
+	* help/help.m: Allow displaying 'Contents.m' files.
+
 2009-01-23  Søren Hauberg  <hauberg@gmail.com>
 
 	* help/type.m: Make 'type X' work, when X is the name of a variable.

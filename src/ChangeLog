@@ -80,6 +80,12 @@
 
 	* DLD-FUNCTIONS/eigs.cc: eigs.cc: skip tests if ARPACK is missing.
 
+2009-01-25  Søren Hauberg  <hauberg@gmail.com>
+
+	* help.cc (raw_help_from_file): No longer search for files called
+	'Contents.m', as this is moved to 'script/help.m'.
+	
+
 2009-01-23  John W. Eaton  <jwe@octave.org>
 
 	* toplev.cc (octave_call_stack::do_goto_caller_frame):

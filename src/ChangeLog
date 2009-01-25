@@ -1,5 +1,9 @@
 2009-01-24  Jaroslav Hajek  <highegg@gmail.com>
 
+	* pt-cell.cc (tree_cell::rvalue): Optimize the single row case.
+
+2009-01-24  Jaroslav Hajek  <highegg@gmail.com>
+
 	* ov-struct.cc (octave_struct::subsasgn): Reshape cs-list on rhs 
 	according to the index expression.
 	* ov-cell.cc (octave_cell::subsasgn): Dtto.

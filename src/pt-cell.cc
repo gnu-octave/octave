@@ -60,7 +60,10 @@ tree_cell::rvalue (void)
 
       octave_value_list row = elt->convert_to_const_vector ();
       
-      if (nc < 0)
+      if (nr == 1)
+        // Optimize the single row case.
+        val = row.cell_value ();
+      else if (nc < 0)
 	{
 	  nc = row.length ();
 

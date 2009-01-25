@@ -633,16 +633,13 @@ raw_help_from_symbol_table (const std::string& nm, std::string& h,
 
 	  h = fcn->doc_string ();
 
-	  if (! h.empty ())
-	    {
-	      retval = true;
+          retval = true;
 
-	      w = fcn->fcn_file_name ();
+	  w = fcn->fcn_file_name ();
 
-	      if (w.empty ())
-		w = fcn->is_user_function ()
-		  ? "command-line function" : "built-in function";
-	    }
+	  if (w.empty ())
+            w = fcn->is_user_function ()
+              ? "command-line function" : "built-in function";
 	}
     }
 
@@ -699,7 +696,11 @@ do_get_help_text (const std::string name, std::string& text,
   if (symbol_found)
     {
       size_t idx = -1;
-      if (looks_like_texinfo (text, idx))
+      if (text.empty ())
+        {
+          format = "Not documented";
+        }
+      else if (looks_like_texinfo (text, idx))
         {
           format = "texinfo";
           text.erase (0, idx);

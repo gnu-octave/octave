@@ -82,6 +82,11 @@
 
 2009-01-25  Søren Hauberg  <hauberg@gmail.com>
 
+	* help.cc (do_get_help_text, raw_help_from_symbol_table): new output to
+	flag the a function is found but not documented.
+	
+2009-01-25  Søren Hauberg  <hauberg@gmail.com>
+
 	* help.cc (raw_help_from_file): No longer search for files called
 	'Contents.m', as this is moved to 'script/help.m'.
 	

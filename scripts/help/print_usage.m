@@ -47,6 +47,8 @@ function print_usage (name)
       [usage_string, status] = get_usage_texinfo (text, max_len);
     case "html"
       [usage_string, status] = get_usage_html (text, max_len);
+    case "not documented"
+      error ("print_usage: `%s' is not documented\n", name);
     case "not found"
       error ("print_usage: `%s' not found\n", name);
     otherwise

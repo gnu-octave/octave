@@ -61,6 +61,8 @@ function [retval, status] = get_first_help_sentence (name, max_len = 80)
       [retval, status] = first_sentence_texinfo (help_text, max_len);
     case "html"
       [retval, status] = first_sentence_html (help_text, max_len);
+    case "not documented"
+      error ("get_first_help_sentence: `%s' is not documented\n", name);
     case "not found"
       error ("get_first_help_sentence: `%s' not found\n", name);
     otherwise

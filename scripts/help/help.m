@@ -60,6 +60,8 @@ function help (name)
         [text, status] = makeinfo (text, "plain text");
       case "html"
         [text, status] = strip_html_tags (text);
+      case "not documented"
+        error ("help: `%s' is not documented\n", name);
       case "not found"
         [text, status] = do_contents (name);
         if (status != 0)

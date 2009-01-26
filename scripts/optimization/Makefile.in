@@ -33,7 +33,6 @@ INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
 SOURCES = \
-  __fsolve_defopts__.m \
   fzero.m \
   __fdjac__.m \
   __dogleg__.m \

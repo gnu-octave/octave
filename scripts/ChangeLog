@@ -1,5 +1,9 @@
 2009-01-17  Jaroslav Hajek  <highegg@gmail.com>
 
+	* optimization/fsolve.m: Disable Broyden updates for sparse jacobians.
+
+2009-01-17  Jaroslav Hajek  <highegg@gmail.com>
+
 	* optimization/__fsolve_defopts__.m: Remove.
 	* optimization/Makefile.in: Reflect change.
 

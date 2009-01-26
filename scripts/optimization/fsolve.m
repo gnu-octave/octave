@@ -119,6 +119,10 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options)
     ## Handle arbitrary shapes of x and f and remember them.
     if (has_jac)
       [fvec, fjac] = fcn (reshape (x, xsiz));
+      ## If the jacobian is sparse, disable Broyden updating.
+      if (issparse (fjac))
+        updating = false;
+      endif
       nfev ++;
     else
       [fvec, fjac] = __fdjac__ (fcn, reshape (x, xsiz));

@@ -50,6 +50,11 @@ Range
     : rng_base (b), rng_limit (l), rng_inc (i),
       rng_nelem (nelem_internal ()), cache () { }
 
+  // For operators' usage (to preserve element count).
+  Range (double b, double i, octave_idx_type n)
+    : rng_base (b), rng_limit (b + n * i), rng_inc (i), 
+      rng_nelem (n), cache () { }
+
   double base (void) const { return rng_base; }
   double limit (void) const { return rng_limit; }
   double inc (void) const { return rng_inc; }

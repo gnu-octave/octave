@@ -291,37 +291,37 @@ operator >> (std::istream& is, Range& a)
 Range
 operator - (const Range& r)
 {
-  return Range (-r.base (), -r.limit (), -r.inc ());
+  return Range (-r.base (), -r.inc (), r.nelem ());
 }
 
 Range operator + (double x, const Range& r)
 {
-  return Range (x + r.base (), x + r.limit (), r.inc ());
+  return Range (x + r.base (), r.inc (), r.nelem ());
 }
 
 Range operator + (const Range& r, double x)
 {
-  return Range (r.base () + x, r.limit () + x, r.inc ());
+  return Range (r.base () + x, r.inc (), r.nelem ());
 }
 
 Range operator - (double x, const Range& r)
 {
-  return Range (x - r.base (), x - r.limit (), -r.inc ());
+  return Range (x - r.base (), -r.inc (), r.nelem ());
 }
 
 Range operator - (const Range& r, double x)
 {
-  return Range (r.base () - x, r.limit () - x, r.inc ());
+  return Range (r.base () - x, r.inc (), r.nelem ());
 }
 
 Range operator * (double x, const Range& r)
 {
-  return Range (x * r.base (), x * r.limit (), x * r.inc ());
+  return Range (x * r.base (), x * r.inc (), r.nelem ());
 }
 
 Range operator * (const Range& r, double x)
 {
-  return Range (r.base () * x, r.limit () * x, r.inc () * x);
+  return Range (r.base () * x, r.inc () * x, r.nelem ());
 }
 
 

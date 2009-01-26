@@ -24,7 +24,7 @@ function [fvec, fjac] = __fdjac__ (fcn, x, err = 0)
   err = sqrt (max (eps, err));
   fvec = fcn (x);
   fv = fvec(:);
-  h = max (abs (x(:))*err, (norm (fv, Inf)*eps)/realmax);
+  h = abs (x(:))*err;
   h(h == 0) = err;
   fjac = zeros (length (fv), numel (x));
   for i = 1:numel (x)

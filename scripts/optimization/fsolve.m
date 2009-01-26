@@ -1,4 +1,4 @@
-## Copyright (C) 2008 VZLU Prague, a.s.
+## Copyright (C) 2008, 2009 VZLU Prague, a.s.
 ##
 ## This file is part of Octave.
 ##
@@ -32,8 +32,8 @@
 ## @var{options} is a structure specifying additional options.
 ## Currently, @code{fsolve} recognizes these options:
 ## @code{"FunValCheck"}, @code{"OutputFcn"}, @code{"TolX"},
-## @code{"TolFun"}, @code{"MaxIter"}, @code{"MaxFunEvals"}, and
-## @code{"Jacobian"}.
+## @code{"TolFun"}, @code{"MaxIter"}, @code{"MaxFunEvals"}, 
+## @code{"Jacobian"} and @code{"Updating"}. 
 ##
 ## If @code{"Jacobian"} is @code{"on"}, it specifies that @var{fcn},
 ## called with 2 output arguments, also returns the Jacobian matrix
@@ -41,6 +41,13 @@
 ## the termination tolerance in the unknown variables, while 
 ## @code{"TolFun"} is a tolerance for equations. Default is @code{1e1*eps}
 ## for @code{"TolX"} and @code{1e2*eps} for @code{"TolFun"}.
+## If @code{"Updating"} is true, the function will attempt to use Broyden
+## updates to update the Jacobian, in order to reduce the amount of jacobian
+## calculations.
+## If your user function always calculates the Jacobian (regardless of number
+## of output arguments), this option provides no advantage and should be set to
+## false.
+## 
 ## For description of the other options, see @code{optimset}.
 ##
 ## On return, @var{fval} contains the value of the function @var{fcn}
@@ -78,7 +85,8 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options)
   maxiter = optimget (options, "MaxIter", Inf);
   maxfev = optimget (options, "MaxFunEvals", Inf);
   outfcn = optimget (options, "OutputFcn");
-  pivoting = optimget (options, "Pivoting", false);
+  updating = optimget (options, "Updating", true);
+
   funvalchk = strcmpi (optimget (options, "FunValCheck", "off"), "on");
 
   if (funvalchk)
@@ -91,8 +99,8 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options)
 
   macheps = eps (class (x0));
 
-  tolx = optimget (options, "TolX", 1e1*macheps);
-  tolf = optimget (options, "TolFun", 1e2*macheps);
+  tolx = optimget (options, "TolX", sqrt (macheps));
+  tolf = optimget (options, "TolFun", sqrt (macheps));
 
   factor = 100;
   ## FIXME: TypicalX corresponds to user scaling (???)
@@ -121,22 +129,30 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options)
     fn = norm (fvec);
     m = length (fvec);
     n = length (x);
-    if (m < n)
-      error ("fsolve:under", "cannot solve underdetermined systems");
-    elseif (m > n && niter == 1)
-      if (isempty (optimget (options, "TolFun")))
-	warning ("an overdetermined system cannot usually be solved exactly; consider specifying the TolFun option");
+
+    ## For square and overdetermined systems, we update a (pivoted) QR
+    ## factorization of the jacobian to avoid solving a full system in each
+    ## step. In this case, we pass a triangular matrix to __dogleg__.
+    ## Pivoted QR is used for slightly better robustness and invariance
+    ## w.r.t. permutations of variables.
+    useqr = updating && m >= n && n > 10;
+
+    if (useqr)
+      ## Get QR factorization of the jacobian, optionally with column pivoting.
+      ## TODO: pivoting is only done in the first step, to get invariance
+      ## w.r.t. permutations of variables. Maybe it could be beneficial to
+      ## repivot occassionally?
+      if (niter == 1)
+        [q, r, p] = qr (fjac, 0);
+        ## p is a column vector. Blame Matlab for the inconsistency.
+        ## Octave can handle permutation matrices gracefully.
+        p = eye (n)(:, p);
+      else
+        [q, r] = qr (fjac*p, 0);
       endif
     endif
-    
-    ## Get QR factorization of the jacobian.
-    if (pivoting)
-      [q, r, p] = qr (fjac);
-    else
-      [q, r] = qr (fjac);
-    endif
 
-    ## Get column norms, use them as scaling factor.
+    ## Get column norms, use them as scaling factors.
     jcn = norm (fjac, 'columns').';
     if (niter == 1)
       if (autodg)
@@ -144,7 +160,8 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options)
         dg(dg == 0) = 1;
       endif
       xn = norm (dg .* x);
-      delta = factor * xn;
+      ## FIXME: something better?
+      delta = max (factor * xn, 1);
     endif
 
     ## Rescale if necessary.
@@ -157,22 +174,33 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options)
     ## Inner loop.
     while (niter <= maxiter && nfev < maxfev && ! info)
 
-      qtf = q'*fvec;
-
-      ## Get TR model (dogleg) minimizer
-      ## in case of an overdetermined system, get lsq solution.
-      s = - __dogleg__ (r(1:n,:), qtf(1:n), dg, delta);
-      if (pivoting)
-	s = p * s;
+      if (useqr)
+        tr_mat = r;
+        tr_vec = q'*fvec;
+      else
+        tr_mat = fjac;
+        tr_vec = fvec;
       endif
-      sn = norm (dg .* s);
 
+      ## Get trust-region model (dogleg) minimizer.
+      if (useqr)
+        qtf = q'*fvec;
+        s = - __dogleg__ (r, qtf, dg, delta);
+        w = qtf + r * s;
+        s = p * s;
+      else
+        s = - __dogleg__ (fjac, fvec, dg, delta);
+        w = fvec + fjac * s;
+      endif
+
+      sn = norm (dg .* s);
       if (niter == 1)
         delta = min (delta, sn);
       endif
 
       fvec1 = fcn (reshape (x + s, xsiz)) (:);
       fn1 = norm (fvec1);
+      nfev ++;
 
       if (fn1 < fn)
         ## Scaled actual reduction.
@@ -182,11 +210,6 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options)
       endif
 
       ## Scaled predicted reduction, and ratio.
-      if (pivoting)
-	w = qtf + r*(p'*s);
-      else
-	w = qtf + r*s;
-      endif
       t = norm (w);
       if (t < fn)
         prered = 1 - (t/fn)^2;
@@ -201,7 +224,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options)
         nsuc = 0;
         nfail ++;
         delta *= 0.5;
-        if (delta <= sqrt (macheps)*xn)
+        if (delta <= 1e1*macheps*xn)
           ## Trust region became uselessly small.
           info = -3;
           break;
@@ -223,6 +246,20 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options)
         fvec = fvec1;
         fn = fn1;
         niter ++;
+      endif
+
+      ## FIXME: should outputfcn be only called after a successful iteration?
+      if (outfcn)
+        optimvalues.iter = niter;
+        optimvalues.funccount = nfev;
+        optimvalues.fval = fn;
+        optimvalues.searchdirection = s;
+        state = 'iter';
+        stop = outfcn (x, optimvalues, state);
+        if (stop)
+          info = -1;
+          break;
+        endif
       endif
 
       ## Tests for termination conditions. A mysterious place, anything
@@ -254,20 +291,25 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options)
       endif
 
       ## Criterion for recalculating jacobian.
-      if (nfail == 2)
+      if (! updating || nfail == 2)
         break;
       endif
 
       ## Compute the scaled Broyden update.
-      u = (fvec1 - q*w) / sn; 
-      v = dg .* ((dg .* s) / sn);
-      if (pivoting)
-	v = p'*v;
+      if (useqr)
+        u = (fvec1 - q*w) / sn; 
+        v = dg .* ((dg .* s) / sn);
+        v = p' * v;
+
+        ## Update the QR factorization.
+        [q, r] = qrupdate (q, r, u, v);
+      else
+        u = (fvec1 - w);
+        v = dg .* ((dg .* s) / sn);
+
+        ## update the jacobian
+        fjac += u * v';
       endif
-
-      ## Update the QR factorization.
-      [q, r] = qrupdate (q, r, u, v);
-
     endwhile
   endwhile
 
@@ -276,7 +318,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options)
   fvec = reshape (fvec, fsiz);
 
   output.iterations = niter;
-  output.funcCount = niter + 2;
+  output.funcCount = nfev;
 
 endfunction
 
@@ -341,7 +383,7 @@ endfunction
 %! 2.395931;
 %! 2.005014 ];
 %! tol = 1.0e-5;
-%! [x, fval, info] = fsolve (@f, [ 0.5; 2.0; 2.5 ], optimset ("TolFun", 1e-6));
+%! [x, fval, info] = fsolve (@f, [ 0.5; 2.0; 2.5 ]);
 %! assert (info > 0);
 %! assert (norm (x - x_opt, Inf) < tol);
 %! assert (norm (fval) < tol);
@@ -359,8 +401,23 @@ endfunction
 %! 2.395931;
 %! 2.005014 ];
 %! tol = 1.0e-5;
-%! opt = optimset ("Pivoting", true);
+%! opt = optimset ("Updating", "qrp");
 %! [x, fval, info] = fsolve (@f, [ 0.5; 2.0; 2.5 ], opt);
 %! assert (info > 0);
 %! assert (norm (x - x_opt, Inf) < tol);
 %! assert (norm (fval) < tol);
+
+%!test
+%! b0 = 3;
+%! a0 = 0.2;
+%! x = 0:.5:5;
+%! noise = 1e-5 * sin (100*x);
+%! y = exp (-a0*x) + b0 + noise;
+%! c_opt = [a0, b0];
+%! tol = 1e-5;
+%! 
+%! [c, fval, info, output] =  fsolve (@(c) (exp(-c(1)*x) + c(2) - y), [0, 0]);
+%! assert (info > 0);
+%! assert (norm (c - c_opt, Inf) < tol);
+%! assert (norm (fval) < norm (noise));
+

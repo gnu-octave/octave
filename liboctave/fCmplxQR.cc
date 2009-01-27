@@ -3,6 +3,7 @@
 Copyright (C) 1994, 1995, 1996, 1997, 2002, 2003, 2004, 2005, 2007
               John W. Eaton
 Copyright (C) 2008, 2009 Jaroslav Hajek
+Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
 
@@ -93,36 +94,35 @@ FloatComplexQR::init (const FloatComplexMatrix& a, QR::type qr_type)
   octave_idx_type m = a.rows ();
   octave_idx_type n = a.cols ();
 
-  if (m == 0 || n == 0)
-    {
-      (*current_liboctave_error_handler)
-	("FloatComplexQR must have non-empty matrix");
-      return;
-    }
-
   octave_idx_type min_mn = m < n ? m : n;
-
-  Array<FloatComplex> tau (min_mn);
-  FloatComplex *ptau = tau.fortran_vec ();
-
-  octave_idx_type lwork = 32*n;
-  Array<FloatComplex> work (lwork);
-  FloatComplex *pwork = work.fortran_vec ();
+  OCTAVE_LOCAL_BUFFER (FloatComplex, tau, min_mn);
 
   octave_idx_type info = 0;
 
-  FloatComplexMatrix A_fact;
-  if (m > n && qr_type != QR::economy)
+  FloatComplexMatrix afact = a;
+  if (m > n && qr_type == QR::std)
+    afact.resize (m, m);
+
+  if (m > 0)
     {
-      A_fact.resize (m, m);
-      A_fact.insert (a, 0, 0);
+      // workspace query.
+      FloatComplex clwork;
+      F77_XFCN (cgeqrf, CGEQRF, (m, n, afact.fortran_vec (), m, tau, &clwork, -1, info));
+
+      // allocate buffer and do the job.
+      octave_idx_type lwork = clwork.real (); lwork = std::max (lwork, 1);
+      OCTAVE_LOCAL_BUFFER (FloatComplex, work, lwork);
+      F77_XFCN (cgeqrf, CGEQRF, (m, n, afact.fortran_vec (), m, tau, work, lwork, info));
     }
-  else
-    A_fact = a;
 
-  FloatComplex *tmp_data = A_fact.fortran_vec ();
+  form (n, afact, tau, qr_type);
+}
 
-  F77_XFCN (cgeqrf, CGEQRF, (m, n, tmp_data, m, ptau, pwork, lwork, info));
+void FloatComplexQR::form (octave_idx_type n, FloatComplexMatrix& afact, 
+                           FloatComplex *tau, QR::type qr_type)
+{
+  octave_idx_type m = afact.rows (), min_mn = std::min (m, n);
+  octave_idx_type info;
 
   if (qr_type == QR::raw)
     {
@@ -130,39 +130,58 @@ FloatComplexQR::init (const FloatComplexMatrix& a, QR::type qr_type)
 	{
 	  octave_idx_type limit = j < min_mn - 1 ? j : min_mn - 1;
 	  for (octave_idx_type i = limit + 1; i < m; i++)
-	    A_fact.elem (i, j) *= tau.elem (j);
+	    afact.elem (i, j) *= tau[j];
 	}
 
-      r = A_fact;
-
-      if (m > n)
-	r.resize (m, n);
+      r = afact;
     }
   else
     {
-      octave_idx_type n2 = (qr_type == QR::economy) ? min_mn : m;
-
-      if (qr_type == QR::economy && m > n)
-	r.resize (n, n, 0.0);
+      // Attempt to minimize copying.
+      if (m >= n)
+        {
+          // afact will become q.
+          q = afact;
+          octave_idx_type k = qr_type == QR::economy ? n : m;
+          r = FloatComplexMatrix (k, n);
+          for (octave_idx_type j = 0; j < n; j++)
+            {
+              octave_idx_type i = 0;
+              for (; i <= j; i++)
+                r.xelem (i, j) = afact.xelem (i, j);
+              for (;i < k; i++)
+                r.xelem (i, j) = 0;
+            }
+          afact = FloatComplexMatrix (); // optimize memory
+        }
       else
-	r.resize (m, n, 0.0);
+        {
+          // afact will become r.
+          q = FloatComplexMatrix (m, m);
+          for (octave_idx_type j = 0; j < m; j++)
+            for (octave_idx_type i = j + 1; i < m; i++)
+              {
+                q.xelem (i, j) = afact.xelem (i, j);
+                afact.xelem (i, j) = 0;
+              }
+          r = afact;
+        }
 
-      for (octave_idx_type j = 0; j < n; j++)
-	{
-	  octave_idx_type limit = j < min_mn-1 ? j : min_mn-1;
-	  for (octave_idx_type i = 0; i <= limit; i++)
-	    r.elem (i, j) = A_fact.elem (i, j);
-	}
 
-      lwork = 32 * n2;
-      work.resize (lwork);
-      FloatComplex *pwork2 = work.fortran_vec ();
+      if (m > 0)
+        {
+          octave_idx_type k = q.columns ();
+          // workspace query.
+          FloatComplex clwork;
+          F77_XFCN (cungqr, CUNGQR, (m, k, min_mn, q.fortran_vec (), m, tau,
+                                     &clwork, -1, info));
 
-      F77_XFCN (cungqr, CUNGQR, (m, n2, min_mn, tmp_data, m, ptau,
-				 pwork2, lwork, info));
-
-      q = A_fact;
-      q.resize (m, n2);
+          // allocate buffer and do the job.
+          octave_idx_type lwork = clwork.real (); lwork = std::max (lwork, 1);
+          OCTAVE_LOCAL_BUFFER (FloatComplex, work, lwork);
+          F77_XFCN (cungqr, CUNGQR, (m, k, min_mn, q.fortran_vec (), m, tau,
+                                     work, lwork, info));
+        }
     }
 }
 

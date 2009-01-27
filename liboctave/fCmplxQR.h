@@ -90,6 +90,9 @@ public:
 
 protected:
 
+  void form (octave_idx_type n, FloatComplexMatrix& afact, 
+             FloatComplex *tau, QR::type qr_type);
+
   FloatComplexMatrix q;
   FloatComplexMatrix r;
 };

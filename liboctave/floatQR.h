@@ -88,6 +88,9 @@ public:
 
 protected:
 
+  void form (octave_idx_type n, FloatMatrix& afact, 
+             float *tau, QR::type qr_type);
+
   FloatMatrix q;
   FloatMatrix r;
 };

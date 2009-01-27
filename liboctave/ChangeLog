@@ -1,3 +1,33 @@
+2009-01-27  Jaroslav Hajek  <highegg@gmail.com>
+
+	* dbleQR.cc (QR::init): Use form. Use local buffers.
+	Query for optimal block size.
+	(QR::form): New function.
+	* dbleQR.h: Declare it.
+	* dbleQRP.cc (QRP::init):Use form. Use local buffers.
+	Query for optimal block size.
+
+	* floatQR.cc (FloatQR::init): Use form. Use local buffers.
+	Query for optimal block size.
+	(FloatQR::form): New function.
+	* floatQR.h: Declare it.
+	* floatQRP.cc (FloatQRP::init):Use form. Use local buffers.
+	Query for optimal block size.
+
+	* CmplxQR.cc (ComplexQR::init): Use form. Use local buffers.
+	Query for optimal block size.
+	(ComplexQR::form): New function.
+	* CmplxQR.h: Declare it.
+	* CmplxQRP.cc (ComplexQRP::init):Use form. Use local buffers.
+	Query for optimal block size.
+
+	* fCmplxQR.cc (FloatComplexQR::init): Use form. Use local buffers.
+	Query for optimal block size.
+	(FloatComplexQR::form): New function.
+	* fCmplxQR.h: Declare it.
+	* fCmplxQRP.cc (FloatComplexQRP::init):Use form. Use local buffers.
+	Query for optimal block size.
+
 2009-01-23  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Array.cc (Array<T>::assign (const idx_vector&, const Array<T>&)):

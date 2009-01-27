@@ -197,8 +197,6 @@ as\n\
 
   if (arg_is_empty < 0)
     return retval;
-  else if (arg_is_empty > 0)
-    return octave_value_list (3, Matrix ());
 
   if (arg.is_sparse_type ())
     {

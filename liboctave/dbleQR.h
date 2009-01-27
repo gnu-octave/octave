@@ -94,6 +94,9 @@ public:
 
 protected:
 
+  void form (octave_idx_type n, Matrix& afact, 
+             double *tau, QR::type qr_type);
+
   Matrix q;
   Matrix r;
 };

@@ -89,6 +89,9 @@ public:
 
 protected:
 
+  void form (octave_idx_type n, ComplexMatrix& afact, 
+             Complex *tau, QR::type qr_type);
+
   ComplexMatrix q;
   ComplexMatrix r;
 };

@@ -87,26 +87,49 @@ function [t, p] = orderfields (s1, s2)
   endif
 
   ## Permute the names in the structure.
-  args = cell (1, 2 * numel (names));
-  args(1:2:end) = names;
   if (numel (s1) == 0)
+    args = cell (1, 2 * numel (names));
+    args(1:2:end) = names;
     args(2:2:end) = {[]};
+    t = struct (args{:});
   else
-    args(2:2:end) = {s1.(names)};
+    for i = 1:numel (names)
+      el = names(i);
+      for k = 1:length (s1)
+	t(k).(el) = s1(k).(el);
+      endfor
+    endfor
   endif
-  t = struct (args{:});
 
 endfunction
 
-%!shared a, b
+%!shared a, b, c
 %! a = struct ("foo", {1, 2}, "bar", {3, 4});
 %! b = struct ("bar", 6, "foo", 5);
+%! c = struct ("bar", {7, 8}, "foo", 9);
 %!test
 %! a(2) = orderfields (b, a);
 %! assert (a(2).foo, 5)
+%! assert (a(2).bar, 6)
 %!test
 %! a(2) = orderfields (b, [2 1]);
 %! assert (a(2).foo, 5)
+%! assert (a(2).bar, 6)
 %!test
 %! a(2) = orderfields (b, fieldnames (a));
 %! assert (a(2).foo, 5)
+%! assert (a(2).bar, 6)
+%!test
+%! a(1:2) = orderfields (c, fieldnames (a));
+%! assert (a(2).foo, 9)
+%! assert (a(2).bar, 8)
+
+%!test
+%! aa.x = {1, 2};
+%! aa.y = 3;
+%! aa(2).x = {4, 5};
+%! bb.y = {6, 7};
+%! bb.x = 8;
+%! aa(2) = orderfields (bb, aa);
+%! assert (aa(2).x, 8);
+%! assert (aa(2).y{1}, 6);

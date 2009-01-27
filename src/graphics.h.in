@@ -2353,9 +2353,9 @@ public:
       string_property name , ""
       bool_property numbertitle , "on"
       radio_property paperunits , "{inches}|centimeters|normalized|points"
-      array_property paperposition , Matrix (1, 4 , 0) 
+      array_property paperposition , default_figure_paperposition ()
       radio_property paperpositionmode , "auto|{manual}"
-      array_property papersize , Matrix (1, 2, 0)
+      array_property papersize , default_figure_papersize ()
       radio_property papertype , "{usletter}|uslegal|a0|a1|a2|a3|a4|a5|b0|b1|b2|b3|b4|b5|arch-a|arch-b|arch-c|arch-d|arch-e|a|b|c|d|e|tabloid|<custom>"
       radio_property pointer , "crosshair|fullcrosshair|{arrow}|ibeam|watch|topl|topr|botl|botr|left|top|right|bottom|circle|cross|fleur|custom|hand"
       array_property pointershapecdata , Matrix (16, 16, 0)
@@ -2641,9 +2641,9 @@ public:
       bool_property xminorgrid , "off"
       bool_property yminorgrid , "off"
       bool_property zminorgrid , "off"
-      row_vector_property xtick m , Matrix ()
-      row_vector_property ytick m , Matrix ()
-      row_vector_property ztick m , Matrix ()
+      row_vector_property xtick m , default_axes_tick ()
+      row_vector_property ytick m , default_axes_tick ()
+      row_vector_property ztick m , default_axes_tick ()
       radio_property xtickmode , "{auto}|manual"
       radio_property ytickmode , "{auto}|manual"
       radio_property ztickmode , "{auto}|manual"

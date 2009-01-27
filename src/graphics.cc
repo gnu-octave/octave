@@ -188,6 +188,19 @@ default_axes_outerposition (void)
 }
 
 static Matrix
+default_axes_tick (void)
+{
+  Matrix m (1, 6, 0.0);
+  m(0) = 0.0;
+  m(1) = 0.2;
+  m(2) = 0.4;
+  m(3) = 0.6;
+  m(4) = 0.8;
+  m(5) = 1.0;
+  return m;
+}
+
+static Matrix
 default_figure_position (void)
 {
   Matrix m (1, 4, 0.0);
@@ -195,6 +208,26 @@ default_figure_position (void)
   m(1) = 200;
   m(2) = 560;
   m(3) = 420;
+  return m;
+}
+
+static Matrix
+default_figure_papersize (void)
+{
+  Matrix m (1, 2, 0.0);
+  m(0) = 8.5;
+  m(1) = 11.5;
+  return m;
+}
+
+static Matrix
+default_figure_paperposition (void)
+{
+  Matrix m (1, 4, 0.0);
+  m(0) = 0.25;
+  m(1) = 2.50;
+  m(2) = 8.00;
+  m(3) = 6.00;
   return m;
 }
 
@@ -218,7 +251,21 @@ convert_position (const Matrix& pos, const caseless_str& from_units,
     }
   else if (from_units.compare ("characters"))
     {
-      // FIXME -- implement this.
+      res = backend.get_screen_resolution ();
+
+      double f = 0.0;
+
+      // FIXME -- this assumes the system font is Helvetica 10pt 
+      //          (for which "x" requires 6x12 pixels at 74.951 pixels/inch)
+      f = 12.0 * res / 74.951;
+
+      if (f > 0)
+	{
+	  retval(0) = 0.5 * pos(0) * f;
+	  retval(1) = pos(1) * f;
+	  retval(2) = 0.5 * pos(2) * f;
+	  retval(3) = pos(3) * f;
+	}
     }
   else
     {
@@ -253,7 +300,19 @@ convert_position (const Matrix& pos, const caseless_str& from_units,
 	}
       else if (to_units.compare ("characters"))
 	{
-	  // FIXME -- implement this.
+	  res = backend.get_screen_resolution ();
+
+	  double f = 0.0;
+
+	  f = 12.0 * res / 74.951;
+
+	  if (f > 0)
+	    {
+	      retval(0) = 2 * retval(0) / f;
+	      retval(1) = retval(1) / f;
+	      retval(2) = 2 * retval(2) / f;
+	      retval(3) = retval(3) / f;
+	    }
 	}
       else
 	{

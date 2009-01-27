@@ -1,3 +1,12 @@
+2009-01-27 Ben Abbott <bpabbott@mac.com>
+
+	* graphics.cc (convert_position): Handle character units.
+	(default_axes_tick, default_figure_papersize,
+	default_figure_paperposition): New functions.
+	* graphics.h.in (class figure::properties): Use them to
+	initialize papersize, paperposition, xtick, ytick, and ztick
+	properties.
+
 2009-01-27  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/qr.cc (Fqr): Treat empty matrices correctly.

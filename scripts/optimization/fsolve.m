@@ -102,8 +102,8 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
   funvalchk = strcmpi (optimget (options, "FunValCheck", "off"), "on");
 
   if (funvalchk)
-    ## Replace fun with a guarded version.
-    fun = @(x) guarded_eval (fun, x);
+    ## Replace fcn with a guarded version.
+    fcn = @(x) guarded_eval (fcn, x);
   endif
 
   ## These defaults are rather stringent. I think that normally, user

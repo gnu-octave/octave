@@ -56,7 +56,7 @@ function retval = optimset (varargin)
       retval = feval (fcn, 'defaults');
     catch
       error ("no defaults for function `%s'", fcn);
-    endif
+    end_try_catch
   elseif (nargs == 2 && isstruct (varargin{1}) && isstruct (varargin{2}))
     ## Set slots in old from nonempties in new.  Should we be checking
     ## to ensure that the field names are expected?

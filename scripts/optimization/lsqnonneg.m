@@ -1,5 +1,6 @@
 ## Copyright (C) 2008 Bill Denney
 ## Copyright (C) 2008 Jaroslav Hajek
+## Copyright (C) 2009 VZLU Prague
 ##
 ## This file is part of Octave.
 ##
@@ -60,72 +61,111 @@
 ## This is implemented from Lawson and Hanson's 1973 algorithm on page
 ## 161 of Solving Least Squares Problems.
 
-function [x, resnorm, residual, exitflag, output, lambda] = lsqnonneg (c, d, x = [], options = [])
+function [x, resnorm, residual, exitflag, output, lambda] = lsqnonneg (c, d, x = [], options = struct ())
+
+  if (nargin == 1 && ischar (c) && strcmp (c, 'defaults'))
+    x = optimset ("MaxIter", 1e5);
+    return
+  endif
+
+  if (! (nargin >= 2 && nargin <= 4 && ismatrix (c) && ismatrix (d) && isstruct (options)))
+    print_usage ();
+  endif
 
   ## Lawson-Hanson Step 1 (LH1): initialize the variables.
+  m = rows (c);
+  n = columns (c);
   if (isempty (x))
     ## Initial guess is 0s.
-    x = zeros (columns (c), 1);
+    x = zeros (n, 1);
+  else
+    ## ensure nonnegative guess.
+    x = max (x, 0);
   endif
 
-
+  useqr = m >= n;
   max_iter = optimget (options, "MaxIter", 1e5);
 
-  ## Initialize the values.
-  p = false (1, numel (x));
-  z = !p;
-  ## If the problem is significantly over-determined, preprocess it using a
-  ## QR factorization first.
-  if (rows (c) >= 1.5 * columns (c))
-    [q, r] = qr (c, 0);
-    d = q'*d;
-    c = r;
-    clear q
+  ## Initialize P, according to zero pattern of x.
+  p = find (x > 0).';
+  if (useqr)
+    ## Initialize the QR factorization, economized form.
+    [q, r] = qr (c(:,p), 0);
   endif
-  ## LH2: compute the gradient.
-  w = c'*(d - c*x);
-
-  xtmp = zeros (columns (c), 1);
 
   iter = 0;
+
   ## LH3: test for completion.
-  while (any (z) && any (w(z) > 0) && iter < max_iter)
-    ## LH4: find the maximum gradient.
+  while (iter < max_iter)
+    while (iter < max_iter)
+      iter++;
+
+      ## LH6: compute the positive matrix and find the min norm solution
+      ## of the positive problem.
+      if (useqr)
+        xtmp = r \ q'*d;
+      else
+        xtmp = c(:,p) \ d;
+      endif
+      idx = find (xtmp < 0);
+
+      if (isempty (idx)) 
+        ## LH7: tmp solution found, iterate.
+        x(:) = 0;
+        x(p) = xtmp;
+        break;
+      else
+        ## LH8, LH9: find the scaling factor.
+        pidx = p(idx);
+        sf = x(pidx)./(x(pidx) - xtmp(idx));
+        alpha = min (sf);
+        ## LH10: adjust X.
+        xx = zeros (n, 1);
+        xx(p) = xtmp;
+        x += alpha*(xx - x);
+        ## LH11: move from P to Z all X == 0.
+        ## This corresponds to those indices where minimum of sf is attained.
+        idx = idx (sf == alpha);
+        p(idx) = [];
+        if (useqr)
+          ## update the QR factorization.
+          [q, r] = qrdelete (q, r, idx);
+        endif
+      endif
+    endwhile
+      
+    ## compute the gradient.
+    w = c'*(d - c*x);
+    w(p) = [];
+    if (! any (w > 0))
+      if (useqr)
+        ## verify the solution achieved using qr updating.
+        ## in the best case, this should only take a single step.
+        useqr = false;
+        continue;
+      else
+        ## we're finished.
+        break;
+      endif
+    endif
+
+    ## find the maximum gradient.
     idx = find (w == max (w));
     if (numel (idx) > 1)
       warning ("lsqnonneg:nonunique",
                "A non-unique solution may be returned due to equal gradients.");
       idx = idx(1);
     endif
-    ## LH5: move the index from Z to P.
-    z(idx) = false;
-    p(idx) = true;
+    ## move the index from Z to P. Keep P sorted.
+    z = [1:n]; z(p) = [];
+    zidx = z(idx);
+    jdx = 1 + lookup (p, zidx);
+    p = [p(1:jdx-1), zidx, p(jdx:end)];
+    if (useqr)
+      ## insert the column into the QR factorization.
+      [q, r] = qrinsert (q, r, jdx, c(:,zidx));
+    endif
 
-    newx = false;
-    while (! newx && iter < max_iter)
-      iter++;
-
-      ## LH6: compute the positive matrix and find the min norm solution
-      ## of the positive problem.
-      ## Find min norm solution to the positive matrix.
-      xtmp(:) = 0;
-      xtmp(p) = c(:,p) \ d;
-      if (all (xtmp >= 0))
-        ## LH7: tmp solution found, iterate.
-        newx = true;
-        x = xtmp;
-      else
-        ## LH8, LH9: find the scaling factor and adjust X.
-        mask = (xtmp < 0);
-        alpha = min (x(mask)./(x(mask) - xtmp(mask)));
-        ## LH10: adjust X.
-        x = x + alpha*(xtmp - x);
-        ## LH11: move from P to Z all X == 0.
-        z |= (x == 0);
-        p = !z;
-      endif
-    endwhile
-    w = c'*(d - c*x);
   endwhile
   ## LH12: complete.
 
@@ -144,7 +184,8 @@ function [x, resnorm, residual, exitflag, output, lambda] = lsqnonneg (c, d, x =
     output = struct ("algorithm", "nnls", "iterations", iter);
   endif
   if (nargout > 5)
-    lambda = w;
+    lambda = zeros (size (x));
+    lambda(p) = w;
   endif
 
 endfunction

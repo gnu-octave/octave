@@ -1,5 +1,10 @@
 2009-01-27  Jaroslav Hajek  <highegg@gmail.com>
 
+	* optimization/lsqnonneg.m: Reimplement using QR updating for
+	square and overdetermined systems.
+
+2009-01-27  Jaroslav Hajek  <highegg@gmail.com>
+
 	* optimization/fsolve.m: Provide default values on request.
 	Adjust some defaults.
 	* optimization/fzero.m: Dtto.

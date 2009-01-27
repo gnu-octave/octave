@@ -109,3 +109,93 @@
 %! s.a = 1;
 %! fail("isstruct (s, 1)","Invalid call to isstruct.*");
 
+## increment element of matrix stored in struct array field
+%!test
+%!  a = struct("c", {[1, 2, 3], [4, 5, 6], [7, 8, 9]});
+%!  a(2).c(3)++;
+%!  assert(a(2).c, [4, 5, 7]);
+
+## create struct array by assignment to cs-list
+%!test
+%!  [a(1:2).x] = deal (1, 3);
+%!  assert(a, struct("x", {1, 3}));
+%!  assert({a(1:2).x}, {1, 3});
+
+## assign to subrange of struct array field
+%!test
+%!  b = struct ("name", {"a", "b", "c"; "d", "e", "f"}, "value", 100);
+%!  [b(1:2, [1,3]).name] = deal("aaa", "ddd", "ccc", "fff");
+%!  assert ({b.name}, {"aaa", "ddd", "b", "e", "ccc", "fff"});
+
+## index into nested struct arrays
+%!test
+%!  a = struct ("name", {"a", "b", "c"; "d", "e", "f"}, "value", 0);
+%!  a(2).value = a;
+%!  assert (a(2).value(2,3).name, "f");
+
+## assign to subrange of field in nested struct array
+%!test
+%!  b = struct ("name", {"a", "b", "c"; "d", "e", "f"}, "value", 0);
+%!  b(3, 1).value = b;
+%!  [b(3, 1).value(1, [1, 3]).name] = deal ("aaa", "ccc");
+%!  assert (size (b), [3, 3]);
+%!  assert (b(3,1).value(1, 3).name, "ccc");
+
+## test 4 dimensional struct array
+%!test
+%!  c(4, 4, 4, 4).name  = "a";
+%!  c(3, 3, 3, 3).value = 1;
+%!  assert (c(2,2,2,2), struct ("name", [], "value", []));
+
+## assign to subrange of field in 4d struct array
+%!test
+%!  c(4, 4, 4, 4).name  = "a";
+%!  c(3, 3, 3, 3).value = 1;
+%!  [c([1, 3], 2, :, [3, 4]).value] = deal (1);
+%!  assert (length(find([c.value] == 1)), 17);
+%!  assert (length(find([c.value])), 17);
+
+## swap elements of struct array
+%!test
+%!  b = struct ("name", {"a", "b", "c"; "d", "e", "f"}, "value", 0);
+%!  [b([2, 1], [3, 1]).name] = deal(b([1, 2], [1, 2]).name);
+%!  assert ({b.name}, {"e", "b", "b", "e", "d", "a"});
+
+## test internal ordering of struct array fields
+%!test
+%!  c(4, 4, 4, 4).value = 3;
+%!  c(1, 2, 3, 4).value = 2;
+%!  c(3, 3, 3, 3).value = 1;
+%!  d = reshape ({c.value}, size(c));
+%!  assert ([d{4, 4, 4, 4}, d{1, 2, 3, 4}, d{3, 3, 3, 3}],
+%!          [3, 2, 1]);
+
+## test assignment to mixed cs-list of field element subranges
+%!test
+%!  b = struct ("name", {"a", "b", "c"; "d", "e", "f"}, "value", 100);
+%!  [b(1:2, [1, 3]).name, b(2, 1:3).value] = ...
+%!    deal (1, 2, 3, 4, "5", "6", "7");
+%!  assert ({b.name}, {1, 2, "b", "e", 3, 4});
+%!  assert ({b.value}, {100, "5", 100, "6", 100, "7"});
+
+%!error <a cs-list cannot be further indexed>
+%!  [a(1:3).x] = deal ([1, 5], [3, 7], [8, 9]);
+%!  [a(2:3).x(2)] = deal (10, 11);
+
+%!error <can't perform indexing operations for cs-list type>
+%!  [a(1:3).x] = deal ([1, 5], [3, 7], [8, 9]);
+%!  a(2:3).x(2);
+
+%!error <Index exceeds matrix dimension>
+%!  a(1).x.x = 1;
+%!  a(2).x;
+
+%!error <invalid number of output arguments for constant expression>
+%!  a = struct ("value", {1, 2, 3, 4, 5});
+%!  [a(2:4).value] = 1;
+
+%!error <invalid assignment to cs-list outside multiple assignment>
+%!  c(4, 4, 4, 4).name  = "a";
+%!  c(3, 3, 3, 3).value = 1;
+%!  c([1, 3], 2, :, [3, 4]).value = 1;
+

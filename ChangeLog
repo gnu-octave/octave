@@ -1,7 +1,12 @@
+2009-01-26  Thomas Treichl  <Thomas.Treichl@gmx.net>
+
+	* aclocal.m4 (OCTAVE_HAVE_FRAMEWORK): New macro.
+	* configure.in: Use it.
+
 2009-01-22  John W. Eaton  <jwe@octave.org>
 
 	* configure.in (AH_BOTTOM): Define OCTAVE_USE_OS_X_API if
-	__APPLE__ and __MACK__ are defined.
+	__APPLE__ and __MACH__ are defined.
 
 2009-01-22  Jaroslav Hajek  <highegg@gmail.com>
 

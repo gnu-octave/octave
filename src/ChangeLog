@@ -1,3 +1,8 @@
+2009-01-26  Thomas Treichl  <Thomas.Treichl@gmx.net>
+
+	* display.cc (display_info::init): Use double instead of CGFloat.
+	Use HAVE_FRAMEWORK_CARBON instead of OCTAVE_USE_OS_X_API.
+
 2009-01-26  John W. Eaton  <jwe@octave.org>
 
 	* load-path.cc (load_path::do_find_fcn): Handle @foo/bar.

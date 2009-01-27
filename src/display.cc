@@ -28,14 +28,11 @@ along with Octave; see the file COPYING.  If not, see
 
 #if defined (OCTAVE_USE_WINDOWS_API)
 #include <Windows.h>
-#elif defined (OCTAVE_USE_OS_X_API)
-#include <CGDirectDisplay.h>
-#include <CGDisplayConfiguration.h>
+#elif defined (HAVE_FRAMEWORK_CARBON)
+#include <Carbon/Carbon.h>
 #elif defined (HAVE_X_WINDOWS)
 #include <X11/Xlib.h>
 #endif
-
-
 
 #include "display.h"
 #include "error.h"
@@ -65,7 +62,7 @@ display_info::init (void)
   else
     warning ("no graphical display found");
 
-#elif defined (OCTAVE_USE_OS_X_API)
+#elif defined (HAVE_FRAMEWORK_CARBON)
 
   CGDirectDisplayID display = CGMainDisplayID ();
 
@@ -78,8 +75,11 @@ display_info::init (void)
 
       CGSize sz_mm = CGDisplayScreenSize (display);
 
-      CGFloat ht_mm = sz_mm.height;
-      CGFloat wd_mm = sz_mm.width;
+      // On modern Mac systems (>= 10.5) CGSize is a struct keeping 2
+      // CGFloat values, but the CGFloat typedef is not present on
+      // older systems, so use double instead.
+      double ht_mm = sz_mm.height;
+      double wd_mm = sz_mm.width;
 
       rx = wd * 25.4 / wd_mm;
       ry = ht * 25.4 / ht_mm;

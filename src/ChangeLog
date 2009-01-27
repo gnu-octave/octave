@@ -1,3 +1,7 @@
+2009-01-26  John W. Eaton  <jwe@octave.org>
+
+	* load-path.cc (load_path::do_find_fcn): Handle @foo/bar.
+
 2009-01-24  Jaroslav Hajek  <highegg@gmail.com>
 
 	* pt-cell.cc (tree_cell::rvalue): Optimize the single row case.

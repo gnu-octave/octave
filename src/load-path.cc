@@ -903,30 +903,47 @@ load_path::do_find_fcn (const std::string& fcn, std::string& dir_name,
   
   //  update ();
 
-  dir_name = std::string ();
-
-  const_fcn_map_iterator p = fcn_map.find (fcn);
-
-  if (p != fcn_map.end ())
+  if (fcn.length () > 0 && fcn[0] == '@')
     {
-      const file_info_list_type& file_info_list = p->second;
+      size_t pos = fcn.find ('/');
 
-      for (const_file_info_list_iterator i = file_info_list.begin ();
-	   i != file_info_list.end ();
-	   i++)
+      if (pos != std::string::npos)
 	{
-	  const file_info& fi = *i;
+	  std::string class_name = fcn.substr (1, pos-1);
+	  std::string meth = fcn.substr (pos+1);
 
-	  retval = file_ops::concat (fi.dir_name, fcn);
+	  retval = do_find_method (class_name, meth, dir_name);
+	}
+      else
+	retval = std::string ();
+    }
+  else
+    {
+      dir_name = std::string ();
 
-	  if (check_file_type (retval, type, fi.types,
-			       fcn, "load_path::do_find_fcn"))
+      const_fcn_map_iterator p = fcn_map.find (fcn);
+
+      if (p != fcn_map.end ())
+	{
+	  const file_info_list_type& file_info_list = p->second;
+
+	  for (const_file_info_list_iterator i = file_info_list.begin ();
+	       i != file_info_list.end ();
+	       i++)
 	    {
-	      dir_name = fi.dir_name;
-	      break;
+	      const file_info& fi = *i;
+
+	      retval = file_ops::concat (fi.dir_name, fcn);
+
+	      if (check_file_type (retval, type, fi.types,
+				   fcn, "load_path::do_find_fcn"))
+		{
+		  dir_name = fi.dir_name;
+		  break;
+		}
+	      else
+		retval = std::string ();
 	    }
-	  else
-	    retval = std::string ();
 	}
     }
 

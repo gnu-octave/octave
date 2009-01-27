@@ -1,3 +1,8 @@
+2009-01-27  Søren Hauberg  <hauberg@gmail.com>
+
+	* general/gradient.m: Handle computing the gradient of a function
+	handle.
+
 2009-01-27  Jaroslav Hajek  <highegg@gmail.com>
 
 	* optimization/lsqnonneg.m: Reimplement using QR updating for
@@ -39,7 +44,7 @@
 
 	* sparse/svds.m: svds.m: skip tests if ARPACK is missing.
 
-2009-01-23  SÃ¸ren Hauberg  <hauberg@gmail.com>
+2009-01-23  Søren Hauberg  <hauberg@gmail.com>
 
 	* help/type.m: Make 'type X' work, when X is the name of a variable.
 

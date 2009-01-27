@@ -17,17 +17,20 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{x} =} gradient (@var{M})
-## @deftypefnx {Function File} {[@var{x}, @var{y}, @dots{}] =} gradient (@var{M})
-## @deftypefnx {Function File} {[@dots{}] =} gradient (@var{M}, @var{s})
-## @deftypefnx {Function File} {[@dots{}] =} gradient (@var{M}, @var{dx}, @var{dy}, @dots{})
+## @deftypefn {Function File} {@var{x} =} gradient (@var{m})
+## @deftypefnx {Function File} {[@var{x}, @var{y}, @dots{}] =} gradient (@var{m})
+## @deftypefnx {Function File} {[@dots{}] =} gradient (@var{m}, @var{s})
+## @deftypefnx {Function File} {[@dots{}] =} gradient (@var{m}, @var{dx}, @var{dy}, @dots{})
+## @deftypefnx {Function File} {[@dots{}] =} gradient (@var{f}, @var{x0})
+## @deftypefnx {Function File} {[@dots{}] =} gradient (@var{f}, @var{x0}, @var{s})
+## @deftypefnx {Function File} {[@dots{}] =} gradient (@var{f}, @var{x0}, @var{dx}, @var{dy}, @dots{})
 ##
-## Calculates the gradient. @code{@var{x} = gradient (@var{M})}
-## calculates the one dimensional gradient if @var{M} is a vector. If
-## @var{M} is a matrix the gradient is calculated for each row.
+## Calculate the gradient of sampled data, or of a function.  If @var{m}
+## is a vector, calculate the one dimensional gradient of @var{m}. If
+## @var{m} is a matrix the gradient is calculated for each row.
 ##
-## @code{[@var{x}, @var{y}] = gradient (@var{M})} calculates the one
-## dimensional gradient for each direction if @var{M} if @var{M} is a
+## @code{[@var{x}, @var{y}] = gradient (@var{m})} calculates the one
+## dimensional gradient for each direction if @var{m} if @var{m} is a
 ## matrix. Additional return arguments can be use for multi-dimensional
 ## matrices.
 ##
@@ -37,7 +40,7 @@
 ## values of the spacing can be supplied by the @var{dx}, etc variables.
 ## A scalar value specifies an equidistant spacing, while a vector value
 ## can be used to specify a variable spacing. The length must match
-## their respective dimension of @var{M}.
+## their respective dimension of @var{m}.
 ## 
 ## At boundary points a linear extrapolation is applied. Interior points
 ## are calculated with the first approximation of the numerical gradient
@@ -46,26 +49,47 @@
 ## y'(i) = 1/(x(i+1)-x(i-1)) *(y(i-1)-y(i+1)).
 ## @end example
 ## 
+## If the first argument @var{f} is a function handle, the gradient of the
+## function at the points in @var{x0} is approximated using central
+## difference.  For example, @code{gradient (@@cos, 0)} approximates the
+## gradient of the cosine function in the point @math{x0 = 0}. As with
+## sampled data, the spacing values between the points from which the
+## gradient is estimated can be set via the @var{s} or @var{dx},
+## @var{dy}, @dots{} arguments. By default a spacing of 1 is used.
 ## @end deftypefn
 
 ## Author:  Kai Habel <kai.habel@gmx.de>
 ## Modified: David Bateman <dbateman@free.fr> Added NDArray support
 
-function varargout = gradient (M, varargin)
+function varargout = gradient (m, varargin)
   
   if (nargin < 1)
     print_usage ()
   endif
 
-  transposed = false;
-  if (isvector (M))
-    ## Make a column vector.
-    transposed = (size (M, 2) == 1);
-    M = M(:)';
+  nargout_with_ans = max(1,nargout);
+  if (ismatrix (m))
+    [varargout{1:nargout_with_ans}] = matrix_gradient (m, varargin{:});
+  elseif (isa (m, "function_handle"))
+    [varargout{1:nargout_with_ans}] = handle_gradient (m, varargin{:});
+  elseif (ischar(m))
+    [varargout{1:nargout_with_ans}] = handle_gradient (str2func (m), varargin{:});
+  else
+    error ("gradient: first input must be an array or a function");
   endif
 
-  nd = ndims (M);
-  sz = size (M);
+endfunction
+
+function varargout = matrix_gradient (m, varargin)
+  transposed = false;
+  if (isvector (m))
+    ## make a column vector.
+    transposed = (size (m, 2) == 1);
+    m = m(:)';
+  endif
+
+  nd = ndims (m);
+  sz = size (m);
   if (nargin > 2 && nargin != nd + 1)
     print_usage ()
   endif
@@ -112,21 +136,21 @@ function varargout = gradient (M, varargin)
   for i = 1:max (2, min (nd, nargout))
     mr = sz(i);
     mc = prod ([sz(1:i-1), sz(i+1:nd)]);
-    Y = zeros (size (M), class (M));
+    Y = zeros (size (m), class (m));
 
     if (mr > 1)
       ## Top and bottom boundary.
-      Y(1,:) = diff (M(1:2,:)) / d{i}(1);
-      Y(mr,:) = diff (M(mr-1:mr,:)) / d{i}(mr-1);
+      Y(1,:) = diff (m(1:2,:)) / d{i}(1);
+      Y(mr,:) = diff (m(mr-1:mr,:)) / d{i}(mr-1);
     endif
 
     if (mr > 2)
       ## Interior points.
-      Y(2:mr-1,:) = (M(3:mr,:) .- M(1:mr-2,:)) ...
-	  ./ kron (d{i}(1:mr-2) .+ d{i}(2:mr-1), ones (1, mc));
+      Y(2:mr-1,:) = ((m(3:mr,:) - m(1:mr-2,:))
+		     ./ kron (d{i}(1:mr-2) + d{i}(2:mr-1), ones (1, mc)));
     endif
     varargout{i} = ipermute (Y, [i:nd,1:i-1]);
-    M = permute (M, [2:nd,1]);
+    m = permute (m, [2:nd,1]);
   endfor
 
   ## Why the hell did Matlab decide to swap these two values?
@@ -138,3 +162,75 @@ function varargout = gradient (M, varargin)
     varargout{1} = varargout{1}.';
   endif
 endfunction
+
+function varargout = handle_gradient (f, p0, varargin)
+  ## Input checking
+  p0_size = size (p0);
+
+  if (numel (p0_size) != 2)
+    error ("gradient: the second input argument should either be a vector or a matrix");
+  endif
+
+  if (any (p0_size == 1))
+    p0 = p0 (:);
+    dim = 1;
+    num_points = numel (p0);
+  else
+    num_points = p0_size (1);
+    dim = p0_size (2);
+  endif
+  
+  if (length (varargin) == 0)
+    delta = 1;
+  elseif (length (varargin) == 1 || length (varargin) == dim)
+    try
+      delta = [varargin{:}];
+    catch
+      error ("gradient: spacing parameters must be scalars or a vector");
+    end_try_catch
+  else
+    error ("gradient: incorrect number of spacing parameters");
+  endif
+  
+  if (isscalar (delta))
+    delta = repmat (delta, 1, dim);
+  elseif (!isvector (delta))
+    error ("gradient: spacing values must be scalars or a vector");
+  endif
+  
+  ## Calculate the gradient
+  p0 = mat2cell (p0, num_points, ones (1, dim));
+  varargout = cell (1,dim);
+  for d = 1:dim
+    s = delta (d);
+    df_dx = (f (p0{1:d-1}, p0{d}+s, p0{d+1:end})
+           - f (p0{1:d-1}, p0{d}-s, p0{d+1:end})) ./ (2*s);
+    if (dim == 1)
+      varargout{d} = reshape (df_dx, p0_size);
+    else
+      varargout{d} = df_dx;
+    endif
+  endfor
+endfunction
+
+%!test
+%! data = [1, 2, 4, 2];
+%! dx = gradient (data);
+%! assert (dx, [1, 3/2, 0, -2]);
+
+%!test
+%! x = 0:10;
+%! f = @cos;
+%! df_dx = @(x) -sin (x);
+%! assert (gradient (f, x), df_dx (x), 0.2);
+%! assert (gradient (f, x, 0.5), df_dx (x), 0.1);
+
+%!test
+%! xy = reshape (1:10, 5, 2);
+%! f = @(x,y) sin (x) .* cos (y);
+%! df_dx = @(x, y) cos (x) .* cos (y);
+%! df_dy = @(x, y) -sin (x) .* sin (y);
+%! [dx, dy] = gradient (f, xy);
+%! assert (dx, df_dx (xy (:, 1), xy (:, 2)), 0.1)
+%! assert (dy, df_dy (xy (:, 1), xy (:, 2)), 0.1)
+

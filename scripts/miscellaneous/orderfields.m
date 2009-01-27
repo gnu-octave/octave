@@ -87,16 +87,26 @@ function [t, p] = orderfields (s1, s2)
   endif
 
   ## Permute the names in the structure.
+  args = cell (1, 2 * numel (names));
+  args(1:2:end) = names;
   if (numel (s1) == 0)
-    args = cell (1, 2 * numel (names));
-    args(1:2:end) = names;
     args(2:2:end) = {[]};
-    t = struct (args{:});
   else
-    for i = 1:numel (names)
-      el = names(i);
-      t(:).(el) = s1(:).(el);
-    endfor
+    args(2:2:end) = {s1.(names)};
   endif
+  t = struct (args{:});
 
 endfunction
+
+%!shared a, b
+%! a = struct ("foo", {1, 2}, "bar", {3, 4});
+%! b = struct ("bar", 6, "foo", 5);
+%!test
+%! a(2) = orderfields (b, a);
+%! assert (a(2).foo, 5)
+%!test
+%! a(2) = orderfields (b, [2 1]);
+%! assert (a(2).foo, 5)
+%!test
+%! a(2) = orderfields (b, fieldnames (a));
+%! assert (a(2).foo, 5)

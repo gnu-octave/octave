@@ -39,9 +39,9 @@
 ## called with 2 output arguments, also returns the Jacobian matrix
 ## of right-hand sides at the requested point.  @code{"TolX"} specifies
 ## the termination tolerance in the unknown variables, while 
-## @code{"TolFun"} is a tolerance for equations. Default is @code{1e1*eps}
-## for @code{"TolX"} and @code{1e2*eps} for @code{"TolFun"}.
-## If @code{"Updating"} is true, the function will attempt to use Broyden
+## @code{"TolFun"} is a tolerance for equations. Default is @code{1e-7}
+## for both @code{"TolX"} and @code{"TolFun"}.
+## If @code{"Updating"} is "on", the function will attempt to use Broyden
 ## updates to update the Jacobian, in order to reduce the amount of jacobian
 ## calculations.
 ## If your user function always calculates the Jacobian (regardless of number
@@ -72,20 +72,32 @@
 ## @seealso{fzero, optimset}
 ## @end deftypefn
 
-function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options)
+function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
 
-  if (nargin < 3)
-    options = struct ();
+  ## Get default options if requested.
+  if (nargin == 1 && ischar (fcn) && strcmp (fcn, 'defaults'))
+    x = optimset ("MaxIter", 400, "MaxFunEvals", Inf, \
+    "Jacobian", "off", "TolX", 1e-7, "TolF", 1e-7,
+    "OutputFcn", [], "Updating", "on", "FunValCheck", "off");
+    return;
+  endif
+
+  if (nargin < 2 || nargin > 3 || ! ismatrix (x0))
+    print_usage ();
+  endif    
+
+  if (ischar (fcn))
+    fcn = str2func (fcn);
   endif
 
   xsiz = size (x0);
   n = numel (x0);
 
   has_jac = strcmpi (optimget (options, "Jacobian", "off"), "on");
-  maxiter = optimget (options, "MaxIter", Inf);
+  maxiter = optimget (options, "MaxIter", 400);
   maxfev = optimget (options, "MaxFunEvals", Inf);
   outfcn = optimget (options, "OutputFcn");
-  updating = optimget (options, "Updating", true);
+  updating = strcmpi (optimget (options, "Updating", "on"), "on");
 
   funvalchk = strcmpi (optimget (options, "FunValCheck", "off"), "on");
 
@@ -99,8 +111,8 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options)
 
   macheps = eps (class (x0));
 
-  tolx = optimget (options, "TolX", sqrt (macheps));
-  tolf = optimget (options, "TolFun", sqrt (macheps));
+  tolx = optimget (options, "TolX", 1e-7);
+  tolf = optimget (options, "TolFun", 1e-7);
 
   factor = 100;
   ## FIXME: TypicalX corresponds to user scaling (???)

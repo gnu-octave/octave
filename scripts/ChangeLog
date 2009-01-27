@@ -1,3 +1,10 @@
+2009-01-27  Jaroslav Hajek  <highegg@gmail.com>
+
+	* optimization/fsolve.m: Provide default values on request.
+	Adjust some defaults.
+	* optimization/fzero.m: Dtto.
+	* optimization/optimset.m: Query optimal values via the M*b way.
+
 2009-01-26  Jason Riedy  <jason@acm.org>
 
 	* miscellaneous/orderfields.m: Also avoid loop for non-empty structs.

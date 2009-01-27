@@ -61,6 +61,13 @@
 
 function [x, fval, info, output] = fzero (fun, x0, options = struct ())
 
+  ## Get default options if requested.
+  if (nargin == 1 && ischar (fun) && strcmp (fun, 'defaults'))
+    x = optimset ("MaxIter", Inf, "MaxFunEvals", Inf, "TolX", 0, \
+    "OutputFcn", [], "FunValCheck", "off");
+    return;
+  endif
+
   if (nargin < 2 || nargin > 3)
     print_usage ();
   endif

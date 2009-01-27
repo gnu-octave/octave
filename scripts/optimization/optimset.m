@@ -52,10 +52,9 @@ function retval = optimset (varargin)
   elseif (nargs == 1 && ischar (varargin{1}))
     ## Return defaults for named function.
     fcn = varargin{1};
-    optfcn = sprintf ("__%s_defopts__", fcn);
-    if (exist (optfcn))
-      retval = optimset (struct (), feval (optfcn));
-    else
+    try
+      retval = feval (fcn, 'defaults');
+    catch
       error ("no defaults for function `%s'", fcn);
     endif
   elseif (nargs == 2 && isstruct (varargin{1}) && isstruct (varargin{2}))

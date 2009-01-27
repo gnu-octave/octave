@@ -21,18 +21,22 @@
 ## @deftypefn {Function File} {@var{pp} =} spline (@var{x}, @var{y})
 ## @deftypefnx {Function File} {@var{yi} =} spline (@var{x}, @var{y}, @var{xi})
 ##
-## Returns the cubic spline interpolation of @var{y} at the point
-## @var{x}. Called with two arguments the piece-wise polynomial @var{pp}
-## that may later be used with @code{ppval} to evaluate the polynomial
-## at specific points.
+## Return the cubic spline interpolant of @var{y} at points @var{x}. 
+## If called with two arguments, @code{spline} returns the piece-wise
+## polynomial @var{pp} that may later be used with @code{ppval} to
+## evaluate the polynomial at specific points.
+## If called with a third input argument, @code{spline} evaluates the 
+## spline at the points @var{xi}. There is an equivalence
+## between @code{ppval (spline (@var{x}, @var{y}), @var{xi})} and
+## @code{spline (@var{x}, @var{y}, @var{xi})}.
 ##
 ## The variable @var{x} must be a vector of length @var{n}, and @var{y}
 ## can be either a vector or array. In the case where @var{y} is a
 ## vector, it can have a length of either @var{n} or @code{@var{n} + 2}.
 ## If the length of @var{y} is @var{n}, then the 'not-a-knot' end
 ## condition is used. If the length of @var{y} is @code{@var{n} + 2},
-## then the first and last values of the vector @var{y} are the first
-## derivative of the cubic spline at the end-points.
+## then the first and last values of the vector @var{y} are the values
+## of the first derivative of the cubic spline at the end-points.
 ##
 ## If @var{y} is an array, then the size of @var{y} must have the form
 ## @iftex
@@ -52,7 +56,7 @@
 ## @ifnottex
 ## @code{[@var{s1}, @var{s2}, @dots{}, @var{sk}, @var{n} + 2]}.
 ## @end ifnottex
-## The array is then reshaped internally to a matrix where to leading
+## The array is then reshaped internally to a matrix where the leading
 ## dimension is given by 
 ## @iftex
 ## @tex
@@ -62,15 +66,9 @@
 ## @ifnottex
 ## @code{@var{s1} * @var{s2} * @dots{} * @var{sk}}
 ## @end ifnottex
-## and each row this matrix is then treated separately. Note that this
+## and each row of this matrix is then treated separately. Note that this
 ## is exactly the opposite treatment than @code{interp1} and is done
 ## for compatibility.
-##
-## Called with a third input argument, @code{spline} evaluates the 
-## piece-wise spline at the points @var{xi}. There is an equivalence
-## between @code{ppval (spline (@var{x}, @var{y}), @var{xi})} and
-## @code{spline (@var{x}, @var{y}, @var{xi})}.
-##
 ## @seealso{ppval, mkpp, unmkpp}
 ## @end deftypefn
 

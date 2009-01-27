@@ -1,3 +1,7 @@
+2009-01-27  Carlo de Falco  <kingcrimson@tsicali.it>
+
+	* polynomial/spline.m: Doc fix.
+
 2009-01-27  Søren Hauberg  <hauberg@gmail.com>
 
 	* general/gradient.m: Handle computing the gradient of a function

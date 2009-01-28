@@ -37,7 +37,7 @@ function varargout = savepath (savefile)
   endstring   = "## End savepath auto-created section";
 
   if (nargin == 0)
-    savefile = ["~", filesep, ".octaverc"];
+    savefile = fullfile ("~", ".octaverc");
   endif
 
   ## parse the file if it exists to see if we should replace a section
@@ -94,7 +94,7 @@ function varargout = savepath (savefile)
   elseif (startline == 1)
     pre = {};
     post = filelines(endline+1:end);
-  elseif (endline == length(filelines))
+  elseif (endline == length (filelines))
     pre = filelines(1:startline-1);
     post = {};
   else
@@ -129,7 +129,7 @@ function varargout = savepath (savefile)
       default_path = parsepath (pathdef ());
     endif
     ## This is the path we'd like to preserve when octave is run.
-    path_to_preserve = workingpath(sort(n));
+    path_to_preserve = workingpath (sort (n));
 
     ## Determine the path to Octave's user and sytem wide pkgs.
     [pkg_user, pkg_system] = pkg ("list");
@@ -146,7 +146,7 @@ function varargout = savepath (savefile)
     ## Rely on Octave's initialization to include the pkg path elements.
     if (! isempty (pkg_path))
       [tmp, n] = setdiff (path_to_preserve, strcat (pkg_path, ":"));
-      path_to_preserve = path_to_preserve(sort(n));
+      path_to_preserve = path_to_preserve (sort (n));
     endif
 
     ## Split the path to be saved into two groups. Those path elements that
@@ -156,9 +156,10 @@ function varargout = savepath (savefile)
       n2 = strmatch (default_path{end}, path_to_preserve, "exact");
       n_middle = round (0.5*(n1+n2));
       [tmp, n] = setdiff (path_to_preserve, default_path);
-      path_to_save = path_to_preserve(sort (n));
+      path_to_save = path_to_preserve (sort (n));
       ## Remove pwd
-      path_to_save = path_to_save (! strcmpi (path_to_save, strcat (".", pathsep)));
+      path_to_save = path_to_save (! strcmpi (path_to_save,
+					      strcat (".", pathsep)));
       n = ones (size (path_to_save));
       for m = 1:numel(path_to_save)
         n(m) = strmatch (path_to_save{m}, path_to_preserve);

@@ -32,8 +32,9 @@
 
 2008-12-25 Ben Abbott <bpabbott@mac.com>
 
-	* load-path.cc: New function commandlinepath.
-	* load-path.h: Make command_line_path public.
+	* load-path.cc (Fcommandlinepath): New function.
+	* load-path.h (load_path::get_command_line_path,
+	load_path::do_get_command_line_path): New functions.
 
 2009-01-24 Ben Abbott <bpabbott@mac.com>
 

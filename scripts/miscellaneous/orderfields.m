@@ -93,12 +93,13 @@ function [t, p] = orderfields (s1, s2)
     args(2:2:end) = {[]};
     t = struct (args{:});
   else
+    n = numel (s1);
     for i = 1:numel (names)
       el = names(i);
-      for k = 1:length (s1)
-	t(k).(el) = s1(k).(el);
-      endfor
+      [t(1:n).(el)] = s1(:).(el);
     endfor
+    ## inherit dimensions
+    t = reshape (t, size (s1));
   endif
 
 endfunction

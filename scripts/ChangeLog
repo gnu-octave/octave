@@ -1,3 +1,8 @@
+2009-01-28  Jaroslav Hajek  <highegg@gmail.com>
+
+	* miscellaneous/ordefields.m: Use indexed assignment instead of a
+	loop. Fix for multidimensional cases.
+
 2009-01-27  John W. Eaton  <jwe@octave.org>
 
 	* general/arrayfun.m, image/imwrite.m, plot/axis.m, plot/clf.m,

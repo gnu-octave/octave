@@ -1,10 +1,15 @@
 2009-01-28  John W. Eaton  <jwe@octave.org>
 
+	* configure.in: Check to see that pcre library has pcre_compile
+	function.  Don't check for other regex functions is pcre library
+	is found.
+
  	* configure.in (SHLLIBPRE, SHLBINPRE): New variables.  AC_SUBST them.
  	(*-*-cygwin*): Set LIBPRE and SHLBINPRE to cyg and SHLLIBPRE to lib.
 	Use SHLLIBPRE and SHLLIB in definition of SONAME_FLAGS.
 	(*-*-msdosmsvc): Make SHLBINPRE and SHLLIBPRE empty.
  	Adjust definition of SONAME_FLAGS for SHLLIBPRE.
+
 	* Makeconf.in (SHLLIBPRE, SHLBINPRE): Substitute new variables here.
 	From Marco Atzeri <marco_atzeri@yahoo.it>.
 

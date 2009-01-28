@@ -457,30 +457,37 @@ PCRE_HAS_MACROS_WE_NEED
 WITH_PCRE="$ac_cv_pcre_h_macros_present"
 
 REGEX_LIBS=
-if test $WITH_PCRE = yes; then
-  AC_DEFINE(HAVE_PCRE, 1, [Define if PCRE is available.])
-  if test $WITH_PCRE_CONFIG = yes; then
+using_pcre=no
+using_regex=no
+if test "$WITH_PCRE" = yes; then
+  if test "$WITH_PCRE_CONFIG" = yes; then
     REGEX_LIBS=$(pcre-config --libs)
   else
     REGEX_LIBS=-lpcre
   fi
+  save_LIBS="$LIBS"
+  LIBS="$REGEX_LIBS $LIBS"
+  AC_CHECK_FUNCS(pcre_compile, [using_pcre=yes
+    AC_DEFINE(HAVE_PCRE, 1, [Define if PCRE library is available.])], [
+      REGEX_LIBS=
+      warn_pcre="PCRE library not found.  This will result in some loss of functionality for the regular expression matching functions."
+      AC_MSG_WARN($warn_pcre)])
+  LIBS="$save_LIBS"
 else
   warn_pcre="PCRE library not found.  This will result in some loss of functionality for the regular expression matching functions."
   AC_MSG_WARN($warn_pcre)
 fi
 
-AC_CHECK_FUNCS(regexec, WITH_REGEX=yes , [
-  AC_CHECK_LIB(regex, regexec, WITH_REGEX=yes, WITH_REGEX=no)])
-if test $WITH_REGEX = yes ; then
-  AC_DEFINE(HAVE_REGEX, 1, [Define if regex is available.])
-    AC_CHECK_FUNCS(regexec, REGEX_LIBS= , [
-      AC_CHECK_LIB(regex, regexec, REGEX_LIBS="$REGEX_LIBS -lregex")])
+if test "$using_pcre" = no; then
+  AC_CHECK_FUNCS(regexec, [using_regex=yes], [
+    AC_CHECK_LIB(regex, regexec, [using_regex=yes
+      REGEX_LIBS="-lregex"], [
+      warn_regex="regular expression functions not found.  The regular expression matching functions will be disabled."
+      AC_MSG_WARN($warn_regex)])])
+  if test "$using_regex" = yes; then
+    AC_DEFINE(HAVE_REGEX, 1, [Define if regex library is available.])
+  fi
 fi
-if test $WITH_REGEX = no; then
-  warn_regex="regular expression functions not found.  The regular expression matching functions will be disabled."
-  AC_MSG_WARN($warn_regex)
-fi
-
 AC_SUBST(REGEX_LIBS)
 
 ### Check for ZLIB library.

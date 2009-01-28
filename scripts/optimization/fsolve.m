@@ -277,7 +277,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
       endif
 
       ## FIXME: should outputfcn be only called after a successful iteration?
-      if (outfcn)
+      if (! isempty (outfcn))
         optimvalues.iter = niter;
         optimvalues.funccount = nfev;
         optimvalues.fval = fn;

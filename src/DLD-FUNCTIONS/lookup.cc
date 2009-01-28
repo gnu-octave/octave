@@ -102,19 +102,23 @@ ov_stri_greater (const octave_value& a, const octave_value& b)
 
 DEFUN_DLD (lookup, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Function File} {@var{idx} =} lookup (@var{table}, @var{y}, @var{opt})\n\
+@deftypefn {Loadable Function} {@var{idx} =} lookup (@var{table}, @var{y}, @var{opt})\n\
 Lookup values in a sorted table.  Usually used as a prelude to\n\
 interpolation.\n\
 \n\
 If table is strictly increasing and @code{idx = lookup (table, y)}, then\n\
 @code{table(idx(i)) <= y(i) < table(idx(i+1))} for all @code{y(i)}\n\
-within the table.  If @code{y(i)} is before the table, then\n\
-@code{idx(i)} is 0. If @code{y(i)} is after the table then\n\
+within the table.  If @code{y(i) < table (1)} then\n\
+@code{idx(i)} is 0. If @code{y(i) >= table(end)} then\n\
 @code{idx(i)} is @code{table(n)}.\n\
 \n\
 If the table is strictly decreasing, then the tests are reversed.\n\
 There are no guarantees for tables which are non-monotonic or are not\n\
 strictly monotonic.\n\
+\n\
+The algorithm used by lookup is standard binary search, with optimizations\n\
+to speed up the case of partially ordered arrays (dense downsampling).\n\
+In particular, looking up a single entry is of binary complexity.\n\
 \n\
 @var{table} and @var{y} can also be a cell array of strings\n\
 (or @var{y} can be a single string). In this case, string lookup\n\

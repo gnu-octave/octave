@@ -1,3 +1,7 @@
+2009-01-28  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/lookup.cc (Flookup): Fix doc string.
+
 2009-01-27  John W. Eaton  <jwe@octave.org>
 
 	* load-path.cc (Fcommand_line_path): Rename from Fcommandlinepath.

@@ -168,7 +168,7 @@ function varargout = arrayfun (func, varargin)
     [varargout{:}] = cellfun (func, cfarg{:});
   else
     [varargout{:}] = cellfun (func, cfarg{:}, varargin{idx:len});
-  end
+  endif
 endfunction
 
 %% Test function to check the "Errorhandler" option

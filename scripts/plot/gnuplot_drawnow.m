@@ -123,12 +123,12 @@ function [ enhanced ] = gnuplot_set_term (plot_stream, h, term, file)
           title_str = sprintf ("Figure %d", h);
         else
           title_str = "";
-        end
+        endif
         if (! isempty (fig.name) && ! isempty (title_str))
           title_str = sprintf ("%s: %s", title_str, fig.name);
         elseif (! isempty (fig.name) && isempty (title_str))
           title_str = fig.name;
-        end
+        endif
         if (! isempty (title_str))
           title_str = sprintf ("title \"%s\"", title_str);
         endif
@@ -191,15 +191,15 @@ function [ enhanced ] = gnuplot_set_term (plot_stream, h, term, file)
       term_str = sprintf ("set terminal %s", term);
       if (! isempty (enh_str))
         term_str = sprintf ("%s %s", term_str, enh_str);
-      end
+      endif
       if (! isempty (title_str))
         term_str = sprintf ("%s %s", term_str, title_str);
-      end
+      endif
       if (! isempty (size_str))
         ## size_str goes last to permit specification of canvas size
         ## for terminals cdr/corel
         term_str = sprintf ("%s %s", term_str, size_str);
-      end
+      endif
       if (nargin > 2 && ischar (opts_str))
         ## Options must go last
         term_str = sprintf ("%s %s", term_str, opts_str);
@@ -209,7 +209,7 @@ function [ enhanced ] = gnuplot_set_term (plot_stream, h, term, file)
       ## gnuplot will pick up the GNUTERM environment variable itself
       ## so no need to set the terminal type if not also setting the
       ## figure title, enhanced mode, or position.
-    end
+    endif
   endif
 
   if (nargin == 4)

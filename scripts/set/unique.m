@@ -114,7 +114,7 @@ function [y, i, j] = unique (x, varargin)
       j(i) = cumsum ([1; !match]);
     else
       j(i) = cumsum ([1, !match]);
-    end
+    endif
   endif
 
   if (optfirst)

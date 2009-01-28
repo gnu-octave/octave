@@ -289,8 +289,8 @@ function lims = __get_tight_lims__ (ca, ax)
       lims(2) = min (cellfun (@max, data)(:));
     else
       lims = [min(data(:)), max(data(:))];
-    end
-  end
+    endif
+  endif
 
 
 endfunction

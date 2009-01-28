@@ -46,7 +46,7 @@ function h = ribbon (x, y, width)
     width = 0.75;
   elseif (nargin != 3)
     print_usage ();
-  end
+  endif
 
   if (isvector (x) && isvector (y))
     if (length (x) != length (y))

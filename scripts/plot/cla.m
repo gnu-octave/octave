@@ -62,14 +62,14 @@ function cla (varargin)
     hax = gca;
     oldhax = hax;
     do_reset = false;
-  end
+  endif
 
   hc = get (hax, "children");
 
   if (! do_reset && ! isempty (hc))
     hc = findobj (hc, "flat", "visible", "on");
     hc = setdiff (hc, hax);
-  end
+  endif
 
   if (! isempty (hc))
     ## Delete the children of the axis.

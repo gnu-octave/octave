@@ -60,7 +60,7 @@ function clf (varargin)
     hfig = gcf;
     oldfig = hfig;
     do_reset = false;
-  end
+  endif
 
   if (do_reset)
     ## Select all the children, including the one with hidden handles.

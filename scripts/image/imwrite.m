@@ -70,7 +70,7 @@ function imwrite (varargin)
       has_param_list = 1;
       for ii = offset:2:(nargin - 1)
         options.(varargin{ii}) = varargin{ii + 1};
-      end
+      endfor
     else
       has_param_list = 0;
     endif

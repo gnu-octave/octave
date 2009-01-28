@@ -273,17 +273,13 @@ FloatComplexMatrix::FloatComplexMatrix (const FloatDiagMatrix& a)
 }
 
 FloatComplexMatrix::FloatComplexMatrix (const FloatComplexRowVector& rv)
-  : MArray2<FloatComplex> (1, rv.length (), 0.0)
+  : MArray2<FloatComplex> (Array2<FloatComplex> (rv, 1, rv.length ()))
 {
-  for (octave_idx_type i = 0; i < rv.length (); i++)
-    elem (0, i) = rv.elem (i);
 }
 
 FloatComplexMatrix::FloatComplexMatrix (const FloatComplexColumnVector& cv)
-  : MArray2<FloatComplex> (cv.length (), 1, 0.0)
+  : MArray2<FloatComplex> (Array2<FloatComplex> (cv, cv.length (), 1))
 {
-  for (octave_idx_type i = 0; i < cv.length (); i++)
-    elem (i, 0) = cv.elem (i);
 }
 
 FloatComplexMatrix::FloatComplexMatrix (const FloatComplexDiagMatrix& a)
@@ -951,35 +947,13 @@ FloatComplexMatrix::extract_n (octave_idx_type r1, octave_idx_type c1, octave_id
 FloatComplexRowVector
 FloatComplexMatrix::row (octave_idx_type i) const
 {
-  octave_idx_type nc = cols ();
-  if (i < 0 || i >= rows ())
-    {
-      (*current_liboctave_error_handler) ("invalid row selection");
-      return FloatComplexRowVector ();
-    }
-
-  FloatComplexRowVector retval (nc);
-  for (octave_idx_type j = 0; j < cols (); j++)
-    retval.xelem (j) = elem (i, j);
-
-  return retval;
+  return MArray<FloatComplex> (index (idx_vector (i), idx_vector::colon));
 }
 
 FloatComplexColumnVector
 FloatComplexMatrix::column (octave_idx_type i) const
 {
-  octave_idx_type nr = rows ();
-  if (i < 0 || i >= cols ())
-    {
-      (*current_liboctave_error_handler) ("invalid column selection");
-      return FloatComplexColumnVector ();
-    }
-
-  FloatComplexColumnVector retval (nr);
-  for (octave_idx_type j = 0; j < nr; j++)
-    retval.xelem (j) = elem (j, i);
-
-  return retval;
+  return MArray<FloatComplex> (index (idx_vector::colon, idx_vector (i)));
 }
 
 FloatComplexMatrix

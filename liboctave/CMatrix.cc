@@ -279,17 +279,13 @@ ComplexMatrix::ComplexMatrix (const DiagMatrix& a)
 }
 
 ComplexMatrix::ComplexMatrix (const ComplexRowVector& rv)
-  : MArray2<Complex> (1, rv.length (), 0.0)
+  : MArray2<Complex> (Array2<Complex> (rv, 1, rv.length ()))
 {
-  for (octave_idx_type i = 0; i < rv.length (); i++)
-    elem (0, i) = rv.elem (i);
 }
 
 ComplexMatrix::ComplexMatrix (const ComplexColumnVector& cv)
-  : MArray2<Complex> (cv.length (), 1, 0.0)
+  : MArray2<Complex> (Array2<Complex> (cv, cv.length (), 1))
 {
-  for (octave_idx_type i = 0; i < cv.length (); i++)
-    elem (i, 0) = cv.elem (i);
 }
 
 ComplexMatrix::ComplexMatrix (const ComplexDiagMatrix& a)
@@ -957,35 +953,13 @@ ComplexMatrix::extract_n (octave_idx_type r1, octave_idx_type c1, octave_idx_typ
 ComplexRowVector
 ComplexMatrix::row (octave_idx_type i) const
 {
-  octave_idx_type nc = cols ();
-  if (i < 0 || i >= rows ())
-    {
-      (*current_liboctave_error_handler) ("invalid row selection");
-      return ComplexRowVector ();
-    }
-
-  ComplexRowVector retval (nc);
-  for (octave_idx_type j = 0; j < cols (); j++)
-    retval.xelem (j) = elem (i, j);
-
-  return retval;
+  return MArray<Complex> (index (idx_vector (i), idx_vector::colon));
 }
 
 ComplexColumnVector
 ComplexMatrix::column (octave_idx_type i) const
 {
-  octave_idx_type nr = rows ();
-  if (i < 0 || i >= cols ())
-    {
-      (*current_liboctave_error_handler) ("invalid column selection");
-      return ComplexColumnVector ();
-    }
-
-  ComplexColumnVector retval (nr);
-  for (octave_idx_type j = 0; j < nr; j++)
-    retval.xelem (j) = elem (j, i);
-
-  return retval;
+  return MArray<Complex> (index (idx_vector::colon, idx_vector (i)));
 }
 
 ComplexMatrix

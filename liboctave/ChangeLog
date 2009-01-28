@@ -1,3 +1,28 @@
+2009-01-28  Jaroslav Hajek  <highegg@gmail.com>
+
+	* dMatrix.cc (Matrix::Matrix (const RowVector&)): Use shallow copy.
+	(Matrix::Matrix (const ColumnVector&)): Dtto.
+	(Matrix::row): Dtto.
+	(Matrix::column): Dtto.
+
+	* fMatrix.cc (FloatMatrix::FloatMatrix (const FloatRowVector&)): Use
+	shallow copy.
+	(FloatMatrix::FloatMatrix (const FloatColumnVector&)): Dtto.
+	(FloatMatrix::row): Dtto.
+	(FloatMatrix::column): Dtto.
+
+	* CMatrix.cc (ComplexMatrix::ComplexMatrix (const ComplexRowVector&)):
+	Use shallow copy.
+	(ComplexMatrix::ComplexMatrix (const ComplexColumnVector&)): Dtto.
+	(ComplexMatrix::row): Dtto.
+	(ComplexMatrix::column): Dtto.
+
+	* fCMatrix.cc (FloatComplexMatrix::FloatComplexMatrix (const FloatComplexRowVector&)):
+	Use shallow copy.
+	(FloatComplexMatrix::FloatComplexMatrix (const FloatComplexColumnVector&)): Dtto.
+	(FloatComplexMatrix::row): Dtto.
+	(FloatComplexMatrix::column): Dtto.
+
 2009-01-27  Benjamin Lindner  <lindnerb@users.sourceforge.net>
 
 	* Makefile.in (LINK_DEPS): Include ARPACK_LIBS and REGEX_LIBS in

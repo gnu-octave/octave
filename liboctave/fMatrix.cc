@@ -228,17 +228,13 @@ extern "C"
 // Matrix class.
 
 FloatMatrix::FloatMatrix (const FloatRowVector& rv)
-  : MArray2<float> (1, rv.length (), 0.0)
+  : MArray2<float> (Array2<float> (rv, 1, rv.length ()))
 {
-  for (octave_idx_type i = 0; i < rv.length (); i++)
-    elem (0, i) = rv.elem (i);
 }
 
 FloatMatrix::FloatMatrix (const FloatColumnVector& cv)
-  : MArray2<float> (cv.length (), 1, 0.0)
+  : MArray2<float> (Array2<float> (cv, cv.length (), 1))
 {
-  for (octave_idx_type i = 0; i < cv.length (); i++)
-    elem (i, 0) = cv.elem (i);
 }
 
 FloatMatrix::FloatMatrix (const FloatDiagMatrix& a)
@@ -640,35 +636,13 @@ FloatMatrix::extract_n (octave_idx_type r1, octave_idx_type c1, octave_idx_type 
 FloatRowVector
 FloatMatrix::row (octave_idx_type i) const
 {
-  octave_idx_type nc = cols ();
-  if (i < 0 || i >= rows ())
-    {
-      (*current_liboctave_error_handler) ("invalid row selection");
-      return FloatRowVector ();
-    }
-
-  FloatRowVector retval (nc);
-  for (octave_idx_type j = 0; j < nc; j++)
-    retval.xelem (j) = elem (i, j);
-
-  return retval;
+  return MArray<float> (index (idx_vector (i), idx_vector::colon));
 }
 
 FloatColumnVector
 FloatMatrix::column (octave_idx_type i) const
 {
-  octave_idx_type nr = rows ();
-  if (i < 0 || i >= cols ())
-    {
-      (*current_liboctave_error_handler) ("invalid column selection");
-      return FloatColumnVector ();
-    }
-
-  FloatColumnVector retval (nr);
-  for (octave_idx_type j = 0; j < nr; j++)
-    retval.xelem (j) = elem (j, i);
-
-  return retval;
+  return MArray<float> (index (idx_vector::colon, idx_vector (i)));
 }
 
 FloatMatrix

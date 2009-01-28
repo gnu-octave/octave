@@ -1,3 +1,13 @@
+2009-01-28  John W. Eaton  <jwe@octave.org>
+
+ 	* configure.in (SHLLIBPRE, SHLBINPRE): New variables.  AC_SUBST them.
+ 	(*-*-cygwin*): Set LIBPRE and SHLBINPRE to cyg and SHLLIBPRE to lib.
+	Use SHLLIBPRE and SHLLIB in definition of SONAME_FLAGS.
+	(*-*-msdosmsvc): Make SHLBINPRE and SHLLIBPRE empty.
+ 	Adjust definition of SONAME_FLAGS for SHLLIBPRE.
+	* Makeconf.in (SHLLIBPRE, SHLBINPRE): Substitute new variables here.
+	From Marco Atzeri <marco_atzeri@yahoo.it>.
+
 2009-01-27  Benjamin Lindner  <lindnerb@users.sourceforge.net>
 
 	* configure.in: Add of -lregex to REGEX_LIBS.

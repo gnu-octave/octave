@@ -1,3 +1,9 @@
+2009-01-28  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.in (LIBRARIES, install, uninstall): Use SHLLIBPRE
+	and SHLBINPRE library prefixes.
+	From Marco Atzeri <marco_atzeri@yahoo.it>.
+
 2009-01-28  Jaroslav Hajek  <highegg@gmail.com>
 
 	* dMatrix.cc (Matrix::Matrix (const RowVector&)): Use shallow copy.

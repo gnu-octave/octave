@@ -1,3 +1,9 @@
+2009-01-28  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.in (LIBRARIES, install, uninstall): use SHLLIBPRE and
+	SHLBINPRE library prefixes.
+	From Marco Atzeri <marco_atzeri@yahoo.it>.
+
 2008-12-21  Jaroslav Hajek <highegg@gmail.com>
 
 	* lapack/chegs2.f lapack/chegst.f lapack/chegv.f lapack/dsygs2.f 

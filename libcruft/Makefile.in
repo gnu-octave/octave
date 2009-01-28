@@ -97,9 +97,9 @@ endif
 
 ifeq ($(SHARED_LIBS), true)
   ifeq ($(STATIC_LIBS), true)
-    LIBRARIES = $(LIBPRE)cruft.$(LIBEXT) $(LIBPRE)cruft.$(SHLEXT_VER)
+    LIBRARIES = $(LIBPRE)cruft.$(LIBEXT) $(SHLLIBPRE)cruft.$(SHLEXT_VER)
   else
-    LIBRARIES = $(LIBPRE)cruft.$(SHLEXT_VER)
+    LIBRARIES = $(SHLLIBPRE)cruft.$(SHLEXT_VER)
   endif
 else
   ifeq ($(STATIC_LIBS), true)
@@ -124,11 +124,11 @@ $(LIBPRE)cruft.$(LIBEXT): $(CRUFT_OBJ)
 	$(AR) $(ARFLAGS) $@ $^
 	$(RANLIB) $@
 
-$(LIBPRE)cruft.$(SHLEXT_VER): $(LIBPRE)cruft.$(SHLEXT)
+$(SHLLIBPRE)cruft.$(SHLEXT_VER): $(SHLLIBPRE)cruft.$(SHLEXT)
 	rm -f $@
 	$(LN_S) $< $@
 
-$(LIBPRE)cruft.$(SHLEXT): $(CRUFT_PICOBJ)
+$(SHLLIBPRE)cruft.$(SHLEXT): $(CRUFT_PICOBJ)
 	rm -f $@
 	$(SH_LD) $(SH_LDFLAGS) $(SONAME_FLAGS) -o $@ $^ $(LINK_DEPS)
 
@@ -152,16 +152,16 @@ install::
 	  $(RANLIB) $(DESTDIR)$(octlibdir)/$(LIBPRE)cruft.$(LIBEXT) ; \
 	fi
 	if $(SHARED_LIBS); then \
-	  rm -f $(DESTDIR)$(octlibdir)/$(LIBPRE)cruft.$(SHLLIB_VER); \
+	  rm -f $(DESTDIR)$(octlibdir)/$(SHLLIBPRE)cruft.$(SHLLIB_VER); \
 	  $(INSTALL) \
-	    $(LIBPRE)cruft.$(SHLLIB) $(DESTDIR)$(octlibdir)/$(LIBPRE)cruft.$(SHLLIB_VER); \
-	  rm -f $(DESTDIR)$(octlibdir)/$(LIBPRE)cruft.$(SHLLIB); \
+	    $(SHLLIBPRE)cruft.$(SHLLIB) $(DESTDIR)$(octlibdir)/$(SHLLIBPRE)cruft.$(SHLLIB_VER); \
+	  rm -f $(DESTDIR)$(octlibdir)/$(SHLLIBPRE)cruft.$(SHLLIB); \
 	  (cd $(DESTDIR)$(octlibdir); \
-	  $(LN_S) $(LIBPRE)cruft.$(SHLLIB_VER) $(DESTDIR)$(octlibdir)/$(LIBPRE)cruft.$(SHLLIB)); \
+	  $(LN_S) $(SHLLIBPRE)cruft.$(SHLLIB_VER) $(DESTDIR)$(octlibdir)/$(SHLLIBPRE)cruft.$(SHLLIB)); \
 	  if  test x$(SHLBIN) != x ; then \
-	    rm -f $(DESTDIR)$(bindir)/$(LIBPRE)cruft.$(SHLBIN); \
+	    rm -f $(DESTDIR)$(bindir)/$(SHLBINPRE)cruft.$(SHLBIN); \
 	    $(INSTALL_PROGRAM) \
-	      $(LIBPRE)cruft.$(SHLBIN) $(DESTDIR)$(bindir)/$(LIBPRE)cruft.$(SHLBIN); \
+	      $(SHLBINPRE)cruft.$(SHLBIN) $(DESTDIR)$(bindir)/$(SHLBINPRE)cruft.$(SHLBIN); \
 	  fi; \
 	fi
 
@@ -170,11 +170,11 @@ install-strip::
 
 uninstall::
 	rm -f $(DESTDIR)$(octlibdir)/$(LIBPRE)cruft.$(LIBEXT)
-	rm -f $(DESTDIR)$(octlibdir)/$(LIBPRE)cruft.$(SHLLIB)
-	rm -f $(DESTDIR)$(octlibdir)/$(LIBPRE)cruft.$(SHLLIB_VER)
+	rm -f $(DESTDIR)$(octlibdir)/$(SHLLIBPRE)cruft.$(SHLLIB)
+	rm -f $(DESTDIR)$(octlibdir)/$(SHLLIBPRE)cruft.$(SHLLIB_VER)
 	if test x$(SHLBIN) != x; then \
-	  rm -f $(DESTDIR)$(bindir)/$(LIBPRE)cruft.$(SHLBIN); \
-	  rm -f $(DESTDIR)$(bindir)/$(LIBPRE)cruft.$(SHLBIN_VER); \
+	  rm -f $(DESTDIR)$(bindir)/$(SHLBINPRE)cruft.$(SHLBIN); \
+	  rm -f $(DESTDIR)$(bindir)/$(SHLBINPRE)cruft.$(SHLBIN_VER); \
 	fi
 
 tags TAGS:: $(SOURCES)
@@ -188,7 +188,8 @@ TAGS:: $(SOURCES)
 
 clean mostlyclean distclean::
 	rm -f $(LIBPRE)cruft.$(LIBEXT)
-	rm -f $(LIBPRE)cruft.$(SHLEXT_VER) $(LIBPRE)cruft.$(SHLEXT)
+	rm -f $(SHLLIBPRE)cruft.$(SHLEXT_VER) $(SHLLIBPRE)cruft.$(SHLEXT)
+	rm -f $(SHLBINPRE)cruft.$(SHLBIN_VER) $(SHLBINPRE)cruft.$(SHLBIN)
 	rm -f $(CRUFT_DEFS) cruft.def mkf77def
 
 distclean maintainer-clean::

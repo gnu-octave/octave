@@ -249,17 +249,19 @@ PREREQ := $(OPT_INC) $(VX_OP_INC) $(VX_OP_SRC) \
 
 ifeq ($(SHARED_LIBS), true)
   ifeq ($(STATIC_LIBS), true)
-    libraries: $(LIBPRE)octave.$(LIBEXT) $(LIBPRE)octave.$(SHLEXT_VER)
+    LIBRARIES = $(LIBPRE)octave.$(LIBEXT) $(SHLLIBPRE)octave.$(SHLEXT_VER)
   else
-    libraries: $(LIBPRE)octave.$(SHLEXT_VER)
+    LIBRARIES = $(SHLLIBPRE)octave.$(SHLEXT_VER)
   endif
 else
   ifeq ($(STATIC_LIBS), true)
-    libraries: $(LIBPRE)octave.$(LIBEXT)
+    LIBRARIES = $(LIBPRE)octave.$(LIBEXT)
   else
-    libraries:
+    LIBRARIES =
   endif
 endif
+
+libraries: $(LIBRARIES)
 .PHONY: libraries
 
 $(LIBPRE)octave.$(LIBEXT): $(LIBOCTAVE_OBJECTS)
@@ -267,11 +269,11 @@ $(LIBPRE)octave.$(LIBEXT): $(LIBOCTAVE_OBJECTS)
 	$(TEMPLATE_AR) $(TEMPLATE_ARFLAGS) $@ $(LIBOCTAVE_OBJECTS)
 	$(RANLIB) $@
 
-$(LIBPRE)octave.$(SHLEXT_VER): $(LIBPRE)octave.$(SHLEXT)
+$(SHLLIBPRE)octave.$(SHLEXT_VER): $(SHLLIBPRE)octave.$(SHLEXT)
 	rm -f $@
 	$(LN_S) $< $@
 
-$(LIBPRE)octave.$(SHLEXT): $(LIBOCTAVE_PICOBJ)
+$(SHLLIBPRE)octave.$(SHLEXT): $(LIBOCTAVE_PICOBJ)
 	rm -f $@
 	$(SH_LD) $(SH_LDFLAGS) $(SONAME_FLAGS) -o $@ \
 	$(LIBOCTAVE_PICOBJ) $(LINK_DEPS)
@@ -301,15 +303,15 @@ install-lib:
 	  $(RANLIB) $(DESTDIR)$(octlibdir)/$(LIBPRE)octave.$(LIBEXT); \
 	fi
 	if $(SHARED_LIBS); then \
-	  rm -f $(DESTDIR)$(octlibdir)/$(LIBPRE)octave.$(SHLLIB_VER); \
+	  rm -f $(DESTDIR)$(octlibdir)/$(SHLLIBPRE)octave.$(SHLLIB_VER); \
 	  $(INSTALL) \
-	    $(LIBPRE)octave.$(SHLLIB) $(DESTDIR)$(octlibdir)/$(LIBPRE)octave.$(SHLLIB_VER); \
-	  rm -f $(DESTDIR)$(octlibdir)/$(LIBPRE)octave.$(SHLLIB); \
-	  (cd $(DESTDIR)$(octlibdir) ; $(LN_S) $(LIBPRE)octave.$(SHLLIB_VER) $(DESTDIR)$(octlibdir)/$(LIBPRE)octave.$(SHLLIB)); \
+	    $(SHLLIBPRE)octave.$(SHLLIB) $(DESTDIR)$(octlibdir)/$(SHLLIBPRE)octave.$(SHLLIB_VER); \
+	  rm -f $(DESTDIR)$(octlibdir)/$(SHLLIBPRE)octave.$(SHLLIB); \
+	  (cd $(DESTDIR)$(octlibdir) ; $(LN_S) $(SHLLIBPRE)octave.$(SHLLIB_VER) $(DESTDIR)$(octlibdir)/$(SHLLIBPRE)octave.$(SHLLIB)); \
 	  if  test x$(SHLBIN) != x ; then \
-	    rm -f $(DESTDIR)$(bindir)/$(LIBPRE)octave.$(SHLBIN); \
+	    rm -f $(DESTDIR)$(bindir)/$(SHLBINPRE)octave.$(SHLBIN); \
 	    $(INSTALL_PROGRAM) \
-	      $(LIBPRE)octave.$(SHLBIN) $(DESTDIR)$(bindir)/$(LIBPRE)octave.$(SHLBIN); \
+	      $(SHLBINPRE)octave.$(SHLBIN) $(DESTDIR)$(bindir)/$(SHLBINPRE)octave.$(SHLBIN); \
 	  fi; \
 	fi
 .PHONY: install-lib
@@ -328,11 +330,11 @@ install-inc:
 
 uninstall:
 	rm -f $(DESTDIR)$(octlibdir)/$(LIBPRE)octave.$(LIBEXT)
-	rm -f $(DESTDIR)$(octlibdir)/$(LIBPRE)octave.$(SHLLIB)
-	rm -f $(DESTDIR)$(octlibdir)/$(LIBPRE)octave.$(SHLLIB_VER)
+	rm -f $(DESTDIR)$(octlibdir)/$(SHLLIBPRE)octave.$(SHLLIB)
+	rm -f $(DESTDIR)$(octlibdir)/$(SHLLIBPRE)octave.$(SHLLIB_VER)
 	if test x$(SHLBIN) != x; then \
-	  rm -f $(DESTDIR)$(bindir)/$(LIBPRE)octave.$(SHLBIN); \
-	  rm -f $(DESTDIR)$(bindir)/$(LIBPRE)octave.$(SHLBIN_VER); \
+	  rm -f $(DESTDIR)$(bindir)/$(SHLBINPRE)octave.$(SHLBIN); \
+	  rm -f $(DESTDIR)$(bindir)/$(SHLBINPRE)octave.$(SHLBIN_VER); \
 	fi
 	for f in $(INCLUDES_FOR_INSTALL); do rm -f $(DESTDIR)$(octincludedir)/octave/$$f; done
 .PHONY: uninstall
@@ -344,7 +346,9 @@ TAGS: $(SOURCES)
 	etags $(SOURCES)
 
 clean:
-	rm -f $(LIBPRE)octave.$(LIBEXT) $(LIBPRE)octave.$(SHLEXT_VER) $(LIBPRE)octave.$(SHLEXT)
+	rm -f $(LIBPRE)octave.$(LIBEXT)
+	rm -f $(SHLLIBPRE)octave.$(SHLEXT_VER) $(SHLLIBPRE)octave.$(SHLEXT)
+	rm -f $(SHLBINPRE)octave.$(SHLBIN_VER) $(SHLBINPRE)octave.$(SHLBIN)
 	rm -f $(LIBOCTAVE_OBJECTS) $(MAKEDEPS) $(LIBOCTAVE_PICOBJ) stmp-pic
 	-rmdir pic
 .PHONY: clean

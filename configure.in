@@ -1172,6 +1172,8 @@ SHLLIB_VER='$(SHLLIB).$(version)'
 SHLBIN_VER='$(SHLBIN).$(version)'
 SHLLINKEXT=
 LIBPRE=lib
+SHLLIBPRE=lib
+SHLBINPRE=lib
 SH_LD='$(CXX)'
 SH_LDFLAGS=-shared
 DL_LD='$(SH_LD)'
@@ -1225,19 +1227,19 @@ case "$canonical_host_type" in
     SONAME_FLAGS='-install_name $(octlibdir)/$@'
     library_path_var=DYLD_LIBRARY_PATH	
   ;;
-  *-*-cygwin* | *-*-mingw*)
+  *-*-mingw* | *-*-cygwin*)
+    case "$canonical_host_type" in
+      *-*-cygwin*)
+        LIBPRE=cyg
+	SHLLIBPRE=lib
+        SHLBINPRE=cyg
+      ;;
+    esac
     DL_LDFLAGS="-shared -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-runtime-pseudo-reloc"
-    CXXPICFLAG=
-    CPICFLAG=
-    FPICFLAG=
-    SHLEXT=dll
-    SHLLIB=dll.a
-    SHLBIN=dll
     SH_LDFLAGS="-shared -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-auto-image-base"
-    SHLLINKEXT=.dll
-    SONAME_FLAGS='-Wl,--out-implib=$@.a'
-    library_path_var=PATH
+    SONAME_FLAGS='-Wl,--out-implib=$(SHLLIBPRE)$(basename $@)$(SHLLIB)'
   ;;
+
   *-*-msdosmsvc)
     DL_LDFLAGS="-shared"
     CPICFLAG=
@@ -1247,6 +1249,8 @@ case "$canonical_host_type" in
     SHLLIB=lib
     SHLBIN=dll
     LIBPRE=
+    SHLLIBPRE=
+    SHLBINPRE=
     SH_LDFLAGS="-shared"
       if test -n "`echo $CFLAGS | grep -e '-g'`" -o -n "`echo $CXXFLAGS | grep -e '-g'`"; then
       DL_LDFLAGS="$DL_LDFLAGS -g"
@@ -1350,6 +1354,8 @@ AC_MSG_NOTICE([defining SHLLIB_VER to be $SHLLIB_VER])
 AC_MSG_NOTICE([defining SHLBIN_VER to be $SHLBIN_VER])
 AC_MSG_NOTICE([defining SHLLINKEXT to be $SHLLINKEXT])
 AC_MSG_NOTICE([defining LIBPRE to be $LIBPRE])
+AC_MSG_NOTICE([defining SHLLIBPRE to be $SHLLIBPRE])
+AC_MSG_NOTICE([defining SHLBINPRE to be $SHLBINPRE])
 AC_MSG_NOTICE([defining SH_LD to be $SH_LD])
 AC_MSG_NOTICE([defining SH_LDFLAGS to be $SH_LDFLAGS])
 AC_MSG_NOTICE([defining DL_LD to be $DL_LD])
@@ -1376,6 +1382,8 @@ AC_SUBST(SHLLIB_VER)
 AC_SUBST(SHLBIN_VER)
 AC_SUBST(SHLLINKEXT)
 AC_SUBST(LIBPRE)
+AC_SUBST(SHLLIBPRE)
+AC_SUBST(SHLBINPRE)
 AC_SUBST(SH_LD)
 AC_SUBST(SH_LDFLAGS)
 AC_SUBST(DL_LD)

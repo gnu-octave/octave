@@ -335,9 +335,9 @@ endif
 
 ifeq ($(SHARED_LIBS), true)
   ifeq ($(STATIC_LIBS), true)
-    LIBRARIES = $(LIBPRE)octinterp.$(LIBEXT) $(LIBPRE)octinterp.$(SHLEXT_VER)
+    LIBRARIES = $(LIBPRE)octinterp.$(LIBEXT) $(SHLLIBPRE)octinterp.$(SHLEXT_VER)
   else
-    LIBRARIES = $(LIBPRE)octinterp.$(SHLEXT_VER)
+    LIBRARIES = $(SHLLIBPRE)octinterp.$(SHLEXT_VER)
   endif
 else
   ifeq ($(STATIC_LIBS), true)
@@ -356,11 +356,11 @@ $(LIBPRE)octinterp.$(LIBEXT): $(OBJECTS) $(XERBLA)
 	$(TEMPLATE_AR) $(TEMPLATE_ARFLAGS) $@ $^
 	$(RANLIB) $@
 
-$(LIBPRE)octinterp.$(SHLEXT_VER): $(LIBPRE)octinterp.$(SHLEXT)
+$(SHLLIBPRE)octinterp.$(SHLEXT_VER): $(SHLLIBPRE)octinterp.$(SHLEXT)
 	rm -f $@
 	$(LN_S) $< $@
 
-$(LIBPRE)octinterp.$(SHLEXT): $(PICOBJ) $(PIC_XERBLA)
+$(SHLLIBPRE)octinterp.$(SHLEXT): $(PICOBJ) $(PIC_XERBLA)
 	rm -f $@
 	$(SH_LD) $(SH_LDFLAGS) $(SONAME_FLAGS) -o $@ $^ $(OCTINTERP_LINK_DEPS)
 
@@ -480,15 +480,15 @@ install-lib:
 	  $(RANLIB) $(DESTDIR)$(octlibdir)/$(LIBPRE)octinterp.$(LIBEXT); \
 	fi
 	if $(SHARED_LIBS); then \
-	  rm -f $(DESTDIR)$(octlibdir)/$(LIBPRE)octinterp.$(SHLEXT_VER); \
-	  $(INSTALL) $(LIBPRE)octinterp.$(SHLLIB) \
-	    $(DESTDIR)$(octlibdir)/$(LIBPRE)octinterp.$(SHLLIB_VER); \
-	  rm -f $(DESTDIR)$(octlibdir)/$(LIBPRE)octinterp.$(SHLLIB); \
-	  (cd $(DESTDIR)$(octlibdir) ; $(LN_S) $(LIBPRE)octinterp.$(SHLLIB_VER) $(DESTDIR)$(octlibdir)/$(LIBPRE)octinterp.$(SHLLIB)); \
+	  rm -f $(DESTDIR)$(octlibdir)/$(SHLLIBPRE)octinterp.$(SHLEXT_VER); \
+	  $(INSTALL) $(SHLLIBPRE)octinterp.$(SHLLIB) \
+	    $(DESTDIR)$(octlibdir)/$(SHLLIBPRE)octinterp.$(SHLLIB_VER); \
+	  rm -f $(DESTDIR)$(octlibdir)/$(SHLLIBPRE)octinterp.$(SHLLIB); \
+	  (cd $(DESTDIR)$(octlibdir) ; $(LN_S) $(SHLLIBPRE)octinterp.$(SHLLIB_VER) $(DESTDIR)$(octlibdir)/$(SHLLIBPRE)octinterp.$(SHLLIB)); \
 	  if  test x$(SHLBIN) != x ; then \
-	    rm -f $(DESTDIR)$(bindir)/$(LIBPRE)octinterp.$(SHLBIN); \
+	    rm -f $(DESTDIR)$(bindir)/$(SHLBINPRE)octinterp.$(SHLBIN); \
 	    $(INSTALL_PROGRAM) \
-	      $(LIBPRE)octinterp.$(SHLBIN) $(DESTDIR)$(bindir)/$(LIBPRE)octinterp.$(SHLBIN); \
+	      $(SHLBINPRE)octinterp.$(SHLBIN) $(DESTDIR)$(bindir)/$(SHLBINPRE)octinterp.$(SHLBIN); \
 	  fi; \
 	fi
 .PHONY: install-lib
@@ -517,11 +517,11 @@ uninstall:
 	rm -f $(DESTDIR)$(bindir)/octave$(EXEEXT)
 	rm -f $(DESTDIR)$(bindir)/octave-$(version)$(EXEEXT)
 	rm -f $(DESTDIR)$(octlibdir)/$(LIBPRE)octinterp.$(LIBEXT)
-	rm -f $(DESTDIR)$(octlibdir)/$(LIBPRE)octinterp.$(SHLLIB)
-	rm -f $(DESTDIR)$(octlibdir)/$(LIBPRE)octinterp.$(SHLLIB_VER)
+	rm -f $(DESTDIR)$(octlibdir)/$(SHLLIBPRE)octinterp.$(SHLLIB)
+	rm -f $(DESTDIR)$(octlibdir)/$(SHLLIBPRE)octinterp.$(SHLLIB_VER)
 	if test x$(SHLBIN) != x ; then \
-	  rm -f $(DESTDIR)$(bindir)/$(LIBPRE)octinterp.$(SHLBIN); \
-	  rm -f $(DESTDIR)$(bindir)/$(LIBPRE)octinterp.$(SHLBIN_VER); \
+	  rm -f $(DESTDIR)$(bindir)/$(SHLBINPRE)octinterp.$(SHLBIN); \
+	  rm -f $(DESTDIR)$(bindir)/$(SHLBINPRE)octinterp.$(SHLBIN_VER); \
 	fi
 	for f in $(INCLUDES_FOR_INSTALL) defaults.h oct-conf.h oct-gperf.h; do \
 	  rm -f $(DESTDIR)$(octincludedir)/octave/$$f; \
@@ -547,7 +547,8 @@ TAGS: $(SOURCES) $(DLD_SRC)
 
 clean:
 	rm -f $(LIBPRE)octinterp.$(LIBEXT)
-	rm -f $(LIBPRE)octinterp.$(SHLEXT_VER) $(LIBPRE)octinterp.$(SHLEXT)
+	rm -f $(SHLLIBPRE)octinterp.$(SHLEXT_VER) $(SHLLIBPRE)octinterp.$(SHLEXT)
+	rm -f $(SHLBINPRE)octinterp.$(SHLBIN_VER) $(SHLBINPRE)octinterp.$(SHLBIN)
 	rm -f $(OBJECTS) $(DLD_OBJ) $(MAKEDEPS) $(DOC_FILES) $(OCT_FILES)
 	rm -f $(PICOBJ) $(DLD_PICOBJ) stmp-pic gendoc$(EXEEXT)
 	rm -f builtins.cc ops.cc defaults.h oct-conf.h def-files

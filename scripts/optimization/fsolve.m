@@ -77,7 +77,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
   ## Get default options if requested.
   if (nargin == 1 && ischar (fcn) && strcmp (fcn, 'defaults'))
     x = optimset ("MaxIter", 400, "MaxFunEvals", Inf, \
-    "Jacobian", "off", "TolX", 1e-7, "TolF", 1e-7,
+    "Jacobian", "off", "TolX", 1.5e-8, "TolF", 1.5e-8,
     "OutputFcn", [], "Updating", "on", "FunValCheck", "off");
     return;
   endif
@@ -111,8 +111,8 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
 
   macheps = eps (class (x0));
 
-  tolx = optimget (options, "TolX", 1e-7);
-  tolf = optimget (options, "TolFun", 1e-7);
+  tolx = optimget (options, "TolX", sqrt (macheps));
+  tolf = optimget (options, "TolFun", sqrt (macheps));
 
   factor = 100;
   ## FIXME: TypicalX corresponds to user scaling (???)
@@ -182,7 +182,19 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
 
     ## Rescale if necessary.
     if (autodg)
-      dg = max (dg, jcn);
+      ## FIXME: the original minpack used the following rescaling strategy:
+      ##   dg = max (dg, jcn);
+      ## but it seems not good if we start with a bad guess yielding jacobian
+      ## columns with large norms that later decrease, because the corresponding
+      ## variable will still be overscaled. So instead, we only give the old
+      ## scaling a small momentum, but do not honor it.
+
+      dg = max (0.1*dg, jcn);
+
+      ## It also seems that in the case of fast (and inhomogeneously) changing
+      ## jacobian, the Broyden updates are of little use, so maybe we could
+      ## skip them if a big disproportional change is expected. The question is,
+      ## of course, how to define the above terms :)
     endif
 
     nfail = 0;

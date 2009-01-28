@@ -473,10 +473,8 @@ AC_CHECK_FUNCS(regexec, WITH_REGEX=yes , [
   AC_CHECK_LIB(regex, regexec, WITH_REGEX=yes, WITH_REGEX=no)])
 if test $WITH_REGEX = yes ; then
   AC_DEFINE(HAVE_REGEX, 1, [Define if regex is available.])
-  if test $WITH_PCRE = no ; then
     AC_CHECK_FUNCS(regexec, REGEX_LIBS= , [
-      AC_CHECK_LIB(regex, regexec, REGEX_LIBS="-lregex")])
-  fi
+      AC_CHECK_LIB(regex, regexec, REGEX_LIBS="$REGEX_LIBS -lregex")])
 fi
 if test $WITH_REGEX = no; then
   warn_regex="regular expression functions not found.  The regular expression matching functions will be disabled."

@@ -1,3 +1,8 @@
+2009-01-27  Benjamin Lindner  <lindnerb@users.sourceforge.net>
+
+	* Makefile.in (LINK_DEPS): Include ARPACK_LIBS and REGEX_LIBS in
+	the list.
+
 2009-01-27  Jaroslav Hajek  <highegg@gmail.com>
 
 	* dbleQR.cc (QR::init): Use form. Use local buffers.

@@ -1,3 +1,7 @@
+2009-01-27  Benjamin Lindner  <lindnerb@users.sourceforge.net>
+
+	* configure.in: Add of -lregex to REGEX_LIBS.
+
 2009-01-26  Thomas Treichl  <Thomas.Treichl@gmx.net>
 
 	* aclocal.m4 (OCTAVE_HAVE_FRAMEWORK): New macro.

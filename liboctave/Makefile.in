@@ -38,7 +38,7 @@ LINK_DEPS = \
   -L../libcruft -L. $(RLD_FLAG) \
   $(LIBCRUFT) $(CHOLMOD_LIBS) $(UMFPACK_LIBS)  $(AMD_LIBS) \
   $(CAMD_LIBS) $(COLAMD_LIBS) $(CCOLAMD_LIBS) $(CXSPARSE_LIBS) \
-  $(BLAS_LIBS) $(FFTW_LIBS) $(LIBREADLINE) $(LIBGLOB) $(LIBS) $(FLIBS)
+  $(ARPACK_LIBS) $(BLAS_LIBS) $(FFTW_LIBS) $(LIBREADLINE) $(LIBGLOB) $(REGEX_LIBS) $(LIBS) $(FLIBS)
 
 MATRIX_INC := Array.h Array2.h Array3.h ArrayN.h DiagArray2.h \
 	Array-util.h ArrayN-idx.h MArray-defs.h \

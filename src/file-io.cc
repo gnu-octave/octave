@@ -814,6 +814,7 @@ DEFUN (fprintf, args, nargout,
 @deftypefn {Built-in Function} {} fprintf (@var{fid}, @var{template}, @dots{})\n\
 This function is just like @code{printf}, except that the output is\n\
 written to the stream @var{fid} instead of @code{stdout}.\n\
+If @var{fid} is omitted, the output is written to @code{stdout}.\n\
 @seealso{printf, sprintf, fread, fscanf, fopen, fclose}\n\
 @end deftypefn")
 {

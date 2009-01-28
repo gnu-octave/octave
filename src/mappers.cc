@@ -175,15 +175,7 @@ DEFUN (arg, args, ,
 @deftypefn {Mapping Function} {} arg (@var{z})\n\
 @deftypefnx {Mapping Function} {} angle (@var{z})\n\
 Compute the argument of @var{z}, defined as\n\
-@iftex\n\
-@tex\n\
-$\\theta = \\tan^{-1}(y/x)$.\n\
-@end tex\n\
-@end iftex\n\
-@ifnottex\n\
-@var{theta} = @code{atan (@var{y}/@var{x})}.\n\
-@end ifnottex\n\
-@noindent\n\
+@var{theta} = @code{atan2 (@var{y}, @var{x})}.\n\
 in radians. \n\
 \n\
 For example,\n\

@@ -1,5 +1,10 @@
 2009-01-28  Jaroslav Hajek  <highegg@gmail.com>
 
+	* optimization/fsolve.m: Don't use pivoting at all (for the time
+	being).
+
+2009-01-28  Jaroslav Hajek  <highegg@gmail.com>
+
 	* optimization/fsolve.m: Use more adaptive rescaling.
 	Put back the default tolerances based on machine eps respecting
 	the used precision. Partially reflect this in the default optimset

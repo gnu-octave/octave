@@ -154,18 +154,12 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
     useqr = updating && m >= n && n > 10;
 
     if (useqr)
-      ## Get QR factorization of the jacobian, optionally with column pivoting.
-      ## TODO: pivoting is only done in the first step, to get invariance
-      ## w.r.t. permutations of variables. Maybe it could be beneficial to
-      ## repivot occassionally?
-      if (niter == 1)
-        [q, r, p] = qr (fjac, 0);
-        ## p is a column vector. Blame Matlab for the inconsistency.
-        ## Octave can handle permutation matrices gracefully.
-        p = eye (n)(:, p);
-      else
-        [q, r] = qr (fjac*p, 0);
-      endif
+      ## FIXME: Currently, pivoting is mostly useless because the \ operator
+      ## cannot exploit the resulting props of the triangular factor.
+      ## Unpivoted QR is significantly faster so it doesn't seem right to pivot
+      ## just to get invariance. Original MINPACK didn't pivot either, at least
+      ## when qr updating was used.
+      [q, r] = qr (fjac, 0);
     endif
 
     ## Get column norms, use them as scaling factors.
@@ -327,7 +321,6 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
       if (useqr)
         u = (fvec1 - q*w) / sn; 
         v = dg .* ((dg .* s) / sn);
-        v = p' * v;
 
         ## Update the QR factorization.
         [q, r] = qrupdate (q, r, u, v);

@@ -1,3 +1,7 @@
+2009-01-27  John W. Eaton  <jwe@octave.org>
+
+	* path/savepath.m: Call command_line_path instead of commandlinepath.
+
 2009-01-27  Jason Riedy  <jason@acm.org>
 
 	* miscellaneous/orderfields.m: Really fix the indexing for struct

@@ -1789,9 +1789,9 @@ Reinitialize Octave's load path directory cache.\n\
   return retval;
 }
 
-DEFUN (commandlinepath, , ,
+DEFUN (command_line_path, , ,
     "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} commandlinepath (@dots{})\n\
+@deftypefn {Built-in Function} {} command_line_path (@dots{})\n\
 Return the command line path variable.\n\
 \n\
 @seealso{path, addpath, rmpath, genpath, pathdef, savepath, pathsep}\n\

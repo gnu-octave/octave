@@ -1,3 +1,7 @@
+2009-01-27  John W. Eaton  <jwe@octave.org>
+
+	* load-path.cc (Fcommand_line_path): Rename from Fcommandlinepath.
+
 2009-01-27 Ben Abbott <bpabbott@mac.com>
 
 	* graphics.cc (convert_position): Handle character units.

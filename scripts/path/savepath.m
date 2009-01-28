@@ -116,7 +116,7 @@ function varargout = savepath (savefile)
     ## Remove the portion of the path defined via the command line
     ## and/or the environment.
     workingpath = parsepath (path);
-    command_line_path = parsepath (commandlinepath ());
+    command_line_path = parsepath (command_line_path ());
     octave_path = parsepath (getenv ("OCTAVE_PATH"));
     if (isempty (pathdef ()))
       ## This occurs when running octave via run-octave. In this instance

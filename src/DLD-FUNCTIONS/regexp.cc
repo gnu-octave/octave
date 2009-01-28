@@ -314,7 +314,7 @@ octregexp_list (const octave_value_list &args, const std::string &nm,
 
 		      for (; i < max_length + 1; i++)
 			{
-			  buf <<pattern.substr(new_pos, tmp_pos3 - new_pos)
+			  buf << pattern.substr(new_pos, tmp_pos3 - new_pos)
 			      << "{" << i << "}";
 			  buf << pattern.substr(tmp_pos3 + 1, 
 						tmp_pos1 - tmp_pos3 - 1);
@@ -421,7 +421,11 @@ octregexp_list (const octave_value_list &args, const std::string &nm,
 	  else if (matches == PCRE_ERROR_NOMATCH)
 	    break;
 	  else if (ovector[1] <= ovector[0])
-	    break;
+	    {
+	      // FIXME: Zero sized match!! Is this the right thing to do?
+	      idx = ovector[0] + 1;
+	      continue;
+	    }
 	  else
 	    {
 	      int pos_match = 0;
@@ -515,6 +519,9 @@ octregexp_list (const octave_value_list &args, const std::string &nm,
 	      int matches = 0;
 	      while (matches < subexpr && match[matches].rm_so >= 0) 
 		matches++;
+
+	      if (matches == 0 || match[0].rm_eo == 0)
+		break;
 
 	      s = double (match[0].rm_so+1+idx);
 	      e = double (match[0].rm_eo+idx);

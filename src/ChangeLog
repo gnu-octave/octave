@@ -3,6 +3,12 @@
 	* Makefile.in (install, uninstall): Handle SHLLIBPRE and SHLBINPRE
 	library prefixes.  From Marco Atzeri <marco_atzeri@yahoo.it>.
 
+2008-01-28  David Bateman  <dbateman@free.fr>
+
+	* DLD-FUNCTIONS/regexp.cc (octregexp_list): Don't break for zero
+	length match, but rather advance the index by one character and
+	try again.
+
 2009-01-28  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/lookup.cc (Flookup): Fix doc string.

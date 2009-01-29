@@ -1,3 +1,8 @@
+2009-01-29  Kai Habel <kai.habel@gmx.de>
+
+        * plot/Makefile.in (SOURCES): Include diffuse.m, specular.m, and
+	surfl.m in the list.
+
 2009-01-28  Ben Abbott <bpabbott@mac.com>
 
 	* plot/gnuplot_drawnow.m: Style fixes.

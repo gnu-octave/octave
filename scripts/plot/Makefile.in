@@ -96,6 +96,7 @@ SOURCES = \
   contourc.m \
   contourf.m \
   cylinder.m \
+  diffuse.m \
   gnuplot_drawnow.m \
   ellipsoid.m \
   errorbar.m \
@@ -169,6 +170,7 @@ SOURCES = \
   shg.m \
   slice.m \
   sombrero.m \
+  specular.m \
   sphere.m \
   spinmap.m \
   stairs.m \
@@ -178,6 +180,7 @@ SOURCES = \
   surf.m \
   surface.m \
   surfc.m \
+  surfl.m \
   surfnorm.m \
   text.m \
   title.m \

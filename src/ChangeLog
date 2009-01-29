@@ -1,3 +1,12 @@
+2009-01-29  John W. Eaton  <jwe@octave.org>
+
+	* ov-base-scalar.cc (octave_base_scalar<ST>::is_true (void) const):
+	Error if scalar is NaN.
+	* ov-base-mat.cc (octave_base_matrix<MT>::is_true (void) const):
+	Likewise, if any element of matrix is NaN.
+	* ov-cell.cc (octave_cell::is_true): New function.
+	* Cell.h (Cell::any_element_is_nan): New function.
+
 2009-01-29  Jaroslav Hajek  <highegg@gmail.com>
 
 	* pr-output.cc:

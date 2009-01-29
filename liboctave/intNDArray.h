@@ -63,6 +63,7 @@ public:
 
   boolNDArray operator ! (void) const;
 
+  bool any_element_is_nan (void) const { return false; }
   bool any_element_not_one_or_zero (void) const;
 
   intNDArray diag (octave_idx_type k = 0) const;

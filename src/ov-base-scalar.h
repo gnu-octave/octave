@@ -116,7 +116,7 @@ public:
 
   bool is_numeric_type (void) const { return true; }
 
-  bool is_true (void) const { return (scalar != ST ()); }
+  bool is_true (void) const;
 
   void print (std::ostream& os, bool pr_as_read_syntax = false) const;
 

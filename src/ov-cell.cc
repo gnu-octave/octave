@@ -360,6 +360,13 @@ octave_cell::byte_size (void) const
   return retval;
 }
 
+bool
+octave_cell::is_true (void) const
+{
+  error ("invalid conversion from cell array to logical value");
+  return false;
+}
+
 octave_value_list
 octave_cell::list_value (void) const
 {

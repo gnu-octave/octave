@@ -1,3 +1,9 @@
+2009-01-29  John W. Eaton  <jwe@octave.org>
+
+	* intNDArray.h (intNDArray<T>:any_element_is_nan): New function.
+	* boolNDArrah.h (boolNDArray::any_element_is_nan): New function.
+	* chNDArray.h (charNDArray::any_element_is_nan): New function.
+
 2009-01-28  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.in (LIBRARIES, install, uninstall): Use SHLLIBPRE

@@ -59,6 +59,8 @@ public:
 
   boolNDArray operator ! (void) const;
 
+  bool any_element_is_nan (void) const { return false; }
+
   // FIXME -- this is not quite the right thing.
 
   boolNDArray all (int dim = -1) const;

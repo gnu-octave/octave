@@ -102,6 +102,8 @@ public:
 
   bool is_cellstr (void) const { return matrix.is_cellstr (); }
 
+  bool is_true (void) const;
+
   Cell cell_value (void) const { return matrix; }
 
   octave_value_list list_value (void) const;

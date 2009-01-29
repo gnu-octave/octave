@@ -121,6 +121,7 @@ public:
   Cell& insert (const Cell& a, const Array<octave_idx_type>& ra_idx);
 
   // FIXME
+  bool any_element_is_nan (void) const { return false; }
   bool is_true (void) const { return false; }
 
   static octave_value resize_fill_value (void) { return Matrix (); }

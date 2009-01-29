@@ -101,6 +101,20 @@ octave_base_scalar<ST>::subsasgn (const std::string& type,
 }
 
 template <class ST>
+bool
+octave_base_scalar<ST>::is_true (void) const
+{
+  bool retval = false;
+
+  if (xisnan (scalar))
+    error ("invalid conversion from NaN to logical");
+  else
+    retval = (scalar != ST ());
+
+  return retval;
+}
+
+template <class ST>
 void
 octave_base_scalar<ST>::print (std::ostream& os, bool pr_as_read_syntax) const
 {

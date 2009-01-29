@@ -1272,25 +1272,37 @@ if (do_test (static_cast<unsigned T> (0), static_cast<signed T> (0))) \
 AC_LANG_POP(C++)])
 dnl
 dnl Check to see if the compiler and the linker can handle the flags
-dnl "-framework $1" for the given prologue $2 and the given body $3
-dnl of a source file.  Arguments 2 and 3 optionally can also be empty.
-dnl If this test is dnl successful then perform $4, otherwise do $5.
+dnl "-framework $1" for the given prologue $2 and the given body $3 of
+dnl a source file.  Arguments 2 and 3 optionally can also be empty.
+dnl Add options (lower case letters $1) "--with-framework-$1" and
+dnl "--without-framework-$1". If this test is successful then perform
+dnl $4, otherwise do $5.
 dnl
 dnl OCTAVE_HAVE_FRAMEWORK
 AC_DEFUN(OCTAVE_HAVE_FRAMEWORK, [
-  ac_safe=`echo "$1" | sed 'y%./+-:=%__p___%'`
   AC_MSG_CHECKING(whether ${LD-ld} accepts -framework $1)
-  AC_CACHE_VAL(octave_cv_framework_$ac_safe, [
+  AC_CACHE_VAL(octave_cv_framework_$1, [
     XLDFLAGS="$LDFLAGS"
     LDFLAGS="$LDFLAGS -framework $1"
+    AC_LANG_PUSH(C++)
     AC_LINK_IFELSE([AC_LANG_PROGRAM([$2], [$3])],
-      eval "octave_cv_framework_$ac_safe=yes",
-      eval "octave_cv_framework_$ac_safe=no")
+      eval "octave_cv_framework_$1=yes",
+      eval "octave_cv_framework_$1=no")
+    AC_LANG_POP(C++)
     LDFLAGS="$XLDFLAGS"
   ])
-  if eval "test \"`echo '$octave_cv_framework_'$ac_safe`\" = yes"; then
+  if test "$octave_cv_framework_$1" = "yes"; then
     AC_MSG_RESULT(yes)
-    [$4]
+    AC_ARG_WITH(framework-m4_tolower($1),
+      [AS_HELP_STRING([--without-framework-m4_tolower($1)], 
+        [don't use framework $1])],
+         with_have_framework=$withval, with_have_framework="yes")
+    if test "$with_have_framework" = "yes"; then
+      [$4]
+    else
+      AC_MSG_NOTICE([framework rejected by --without-framework-m4_tolower($1)])
+      [$5]
+    fi
   else
     AC_MSG_RESULT(no)
     [$5]

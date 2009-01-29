@@ -1,3 +1,10 @@
+2009-01-29  Thomas Treichl  <Thomas.Treichl@gmx.net>
+
+	* aclocal.m4 (OCTAVE_HAVE_FRAMEWORK): Add support for 
+	--with-framework-<name> and replace "$ac_safe" by "$1".
+	* configure.in: Change "have_carbon" with 
+	"have_framework_carbon".
+
 2009-01-28  John W. Eaton  <jwe@octave.org>
 
 	* configure.in: Check to see that pcre library has pcre_compile

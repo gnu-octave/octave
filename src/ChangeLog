@@ -68,7 +68,7 @@
 
 	* ov-struct.cc (octave_struct::subsasgn): Reshape cs-list on rhs 
 	according to the index expression.
-	* ov-cell.cc (octave_cell::subsasgn): Dtto.
+	* ov-cell.cc (octave_cell::subsasgn): Ditto.
 
 2008-12-25 Ben Abbott <bpabbott@mac.com>
 
@@ -163,7 +163,7 @@
 2009-01-22  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/qr.cc: Remove HAVE_QRUPDATE check.
-	* DLD-FUNCTIONS/chol.cc: Dtto.
+	* DLD-FUNCTIONS/chol.cc: Ditto.
 
 2009-01-21  John W. Eaton  <jwe@octave.org>
 
@@ -269,11 +269,11 @@
 	* ov-base-mat.h (octave_base_mat::maybe_economize): New override.
 	* oct-obj.cc (octave_value_list::normalize_null_values):
 	Rename to make_storable_values, use make_storable_value.
-	* oct-obj.h: Dtto.
+	* oct-obj.h: Ditto.
 	* ov-builtin.cc: non_null_value -> storable_value.
-	* ov-cell.cc: Dtto.
-	* ov-struct.cc: Dtto.
-	* pt-decl.h: Dtto.
+	* ov-cell.cc: Ditto.
+	* ov-struct.cc: Ditto.
+	* pt-decl.h: Ditto.
 
 2009-01-15  Søren Hauberg  <hauberg@gmail.com>
 
@@ -300,12 +300,12 @@
 2009-01-13  Jaroslav Hajek  <highegg@gmail.com>
 
 	* dirfns.cc (Freadddir): qsort -> sort.
-	* graphics.cc (maybe_set_children): Dtto.
-	* help.cc (simple_help): Dtto.
-	* input.cc (generate_possible_completions): Dtto.
-	* oct_map.cc (keys_ok): Dtto.
-	* ov-fcn-inline.cc (Finline): Dtto.
-	* variables.cc (Fisrawcommand): Dtto.
+	* graphics.cc (maybe_set_children): Ditto.
+	* help.cc (simple_help): Ditto.
+	* input.cc (generate_possible_completions): Ditto.
+	* oct_map.cc (keys_ok): Ditto.
+	* ov-fcn-inline.cc (Finline): Ditto.
+	* variables.cc (Fisrawcommand): Ditto.
 
 2009-01-12  John W. Eaton  <jwe@octave.org>
 
@@ -393,11 +393,11 @@
 2009-01-09  Jaroslav Hajek  <highegg@gmail.com>
 
 	* OPERATORS/op-cdm-cdm.cc: Install missing widening op.
-	* OPERATORS/op-dm-dm.cc: Dtto.
-	* OPERATORS/op-fcdm-fcdm.cc: Dtto.
-	* OPERATORS/op-fdm-fdm.cc: Dtto.
-	* OPERATORS/op-pm-pm.cc: Dtto.
-	* OPERATORS/op-fpm-fpm.cc: Dtto.
+	* OPERATORS/op-dm-dm.cc: Ditto.
+	* OPERATORS/op-fcdm-fcdm.cc: Ditto.
+	* OPERATORS/op-fdm-fdm.cc: Ditto.
+	* OPERATORS/op-pm-pm.cc: Ditto.
+	* OPERATORS/op-fpm-fpm.cc: Ditto.
 
 2009-01-09  Jaroslav Hajek  <highegg@gmail.com>
 
@@ -1131,7 +1131,7 @@
 
 	* Cell.cc (Cell::delete_elements): Don't pass second arg to
 	Array<T>::maybe_delete_elements.
-	* ov-base-mat.cc (octave_base_matrix<MT>::delete_elements): Dtto.
+	* ov-base-mat.cc (octave_base_matrix<MT>::delete_elements): Ditto.
 
 2008-10-02  Jaroslav Hajek  <highegg@gmail.com>
 
@@ -1218,29 +1218,29 @@
 	* OPERATORS/op-int.h (OCTAVE_INT_NULL_ASSIGN_OPS,
 	OCTAVE_INSTALL_INT_NULL_ASSIGN_OPS): New macros.
 	* OPERATORS/op-m-m.cc: Install & define assignment & conversion operators.
-	* OPERATORS/op-bm-bm.cc: Dtto.
-	* OPERATORS/op-cell.cc: Dtto.
-	* OPERATORS/op-cm-cm.cc: Dtto.
-	* OPERATORS/op-cs-cs.cc: Dtto.
-	* OPERATORS/op-fcm-fcm.cc: Dtto.
-	* OPERATORS/op-fcs-fcs.cc: Dtto.
-	* OPERATORS/op-fm-fm.cc: Dtto.
-	* OPERATORS/op-fs-fs.cc: Dtto.
-	* OPERATORS/op-int.h: Dtto.
-	* OPERATORS/op-m-m.cc: Dtto.
-	* OPERATORS/op-range.cc: Dtto.
-	* OPERATORS/op-s-s.cc: Dtto.
-	* OPERATORS/op-scm-scm.cc: Dtto.
-	* OPERATORS/op-sm-sm.cc: Dtto.
-	* OPERATORS/op-str-str.cc: Dtto.
-	* OPERATORS/op-i16-i16.cc: Dtto.
-	* OPERATORS/op-i32-i32.cc: Dtto.
-	* OPERATORS/op-i64-i64.cc: Dtto.
-	* OPERATORS/op-i8-i8.cc: Dtto.
-	* OPERATORS/op-ui16-ui16.cc: Dtto.
-	* OPERATORS/op-ui32-ui32.cc: Dtto.
-	* OPERATORS/op-ui64-ui64.cc: Dtto.
-	* OPERATORS/op-ui8-ui8.cc: Dtto.
+	* OPERATORS/op-bm-bm.cc: Ditto.
+	* OPERATORS/op-cell.cc: Ditto.
+	* OPERATORS/op-cm-cm.cc: Ditto.
+	* OPERATORS/op-cs-cs.cc: Ditto.
+	* OPERATORS/op-fcm-fcm.cc: Ditto.
+	* OPERATORS/op-fcs-fcs.cc: Ditto.
+	* OPERATORS/op-fm-fm.cc: Ditto.
+	* OPERATORS/op-fs-fs.cc: Ditto.
+	* OPERATORS/op-int.h: Ditto.
+	* OPERATORS/op-m-m.cc: Ditto.
+	* OPERATORS/op-range.cc: Ditto.
+	* OPERATORS/op-s-s.cc: Ditto.
+	* OPERATORS/op-scm-scm.cc: Ditto.
+	* OPERATORS/op-sm-sm.cc: Ditto.
+	* OPERATORS/op-str-str.cc: Ditto.
+	* OPERATORS/op-i16-i16.cc: Ditto.
+	* OPERATORS/op-i32-i32.cc: Ditto.
+	* OPERATORS/op-i64-i64.cc: Ditto.
+	* OPERATORS/op-i8-i8.cc: Ditto.
+	* OPERATORS/op-ui16-ui16.cc: Ditto.
+	* OPERATORS/op-ui32-ui32.cc: Ditto.
+	* OPERATORS/op-ui64-ui64.cc: Ditto.
+	* OPERATORS/op-ui8-ui8.cc: Ditto.
 
 2008-09-25  David Bateman  <dbateman@free.fr>
 
@@ -1642,13 +1642,13 @@
 
 	* pt-assign.h (tree_simple_assignment::first_execution): New
 	member field.
-	(tree_simple_assignment::first_execution): Dtto.
+	(tree_simple_assignment::first_execution): Ditto.
 	* pt-assign.cc (tree_simple_assignment::tree_simple_assignment):
 	Initialize first_execution.
-	(tree_multi_assignment::tree_multi_assignment): Dtto.
+	(tree_multi_assignment::tree_multi_assignment): Ditto.
 	(tree_simple_assignment::rvalue): Check for obsolete built-in
 	variables only at first execution.
-	(tree_multi_assignment::rvalue): Dtto.
+	(tree_multi_assignment::rvalue): Ditto.
 
 	* DLD-FUNCTIONS/__glpk__.cc (F__glpk__): Checks whether LB and UB are
 	of proper size.
@@ -1657,7 +1657,7 @@
 	Allow calling without fcn_name.
 	* load-save.cc (parse_save_options (const string_vector&, ...)): 
 	Return string_vector with parsed arguments removed instead.
-	(parse_save_options (const std::string&, ...)):	Dtto.
+	(parse_save_options (const std::string&, ...)):	Ditto.
 	(Fsave): Fix calls to parse_save_options.
 
 2008-08-19  John W. Eaton  <jwe@octave.org>

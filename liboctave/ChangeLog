@@ -13,27 +13,27 @@
 2009-01-28  Jaroslav Hajek  <highegg@gmail.com>
 
 	* dMatrix.cc (Matrix::Matrix (const RowVector&)): Use shallow copy.
-	(Matrix::Matrix (const ColumnVector&)): Dtto.
-	(Matrix::row): Dtto.
-	(Matrix::column): Dtto.
+	(Matrix::Matrix (const ColumnVector&)): Ditto.
+	(Matrix::row): Ditto.
+	(Matrix::column): Ditto.
 
 	* fMatrix.cc (FloatMatrix::FloatMatrix (const FloatRowVector&)): Use
 	shallow copy.
-	(FloatMatrix::FloatMatrix (const FloatColumnVector&)): Dtto.
-	(FloatMatrix::row): Dtto.
-	(FloatMatrix::column): Dtto.
+	(FloatMatrix::FloatMatrix (const FloatColumnVector&)): Ditto.
+	(FloatMatrix::row): Ditto.
+	(FloatMatrix::column): Ditto.
 
 	* CMatrix.cc (ComplexMatrix::ComplexMatrix (const ComplexRowVector&)):
 	Use shallow copy.
-	(ComplexMatrix::ComplexMatrix (const ComplexColumnVector&)): Dtto.
-	(ComplexMatrix::row): Dtto.
-	(ComplexMatrix::column): Dtto.
+	(ComplexMatrix::ComplexMatrix (const ComplexColumnVector&)): Ditto.
+	(ComplexMatrix::row): Ditto.
+	(ComplexMatrix::column): Ditto.
 
 	* fCMatrix.cc (FloatComplexMatrix::FloatComplexMatrix (const FloatComplexRowVector&)):
 	Use shallow copy.
-	(FloatComplexMatrix::FloatComplexMatrix (const FloatComplexColumnVector&)): Dtto.
-	(FloatComplexMatrix::row): Dtto.
-	(FloatComplexMatrix::column): Dtto.
+	(FloatComplexMatrix::FloatComplexMatrix (const FloatComplexColumnVector&)): Ditto.
+	(FloatComplexMatrix::row): Ditto.
+	(FloatComplexMatrix::column): Ditto.
 
 2009-01-27  Benjamin Lindner  <lindnerb@users.sourceforge.net>
 
@@ -80,7 +80,7 @@
 2009-01-22  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Array2.h (Array2<T>::index): Declare resize_ok as bool.
-	* ArrayN.h (ArrayN<T>::index): Dtto. Declare index vectors as const
+	* ArrayN.h (ArrayN<T>::index): Ditto. Declare index vectors as const
 	refs.
 
 2009-01-22  Jaroslav Hajek  <highegg@gmail.com>
@@ -206,7 +206,7 @@
 	
 	* Array.h (Array<T>::rep, Array<T>::dimensions): Make protected.
 	* Array.cc (Array<T>::make_unique): Move implementation here.
-	(Array<T>::fill): Dtto.
+	(Array<T>::fill): Ditto.
 	* DiagArray2.h (DiagArray2<T>): Reimplement without abusing
 	Array<T> internals.
 	(DiagArray2<T>::operator Array2<T>): New method.
@@ -302,7 +302,7 @@
 	* mx-inlines.cc (mx_inline_fill_vs): New template function.
 	* mx-op-defs.h (everywhere): Replace int by octave_idx_type.
 	(MDM_MULTIPLY_OP): Use mx_inline_mul_vs and mx_inline_fill_vs.
-	(DMM_MULTIPLY_OP): Dtto.
+	(DMM_MULTIPLY_OP): Ditto.
 	* fDiagMatrix.cc (operator *): Remove redundant ifs.
 	* fCDiagMatrix.cc (operator *): Remove redundant ifs.
 
@@ -574,9 +574,9 @@
 	(column_norms (const MArray2<T>&, ...)): Use std::vector instead of Array<T> for
 	accumulator containers. Use empty constructor instead of
 	Array<T>::resize.
-	(row_norms (const MArray2<T>&, ...)): Dtto.
-	(column_norms (const MSparse2<T>&, ...)): Dtto.
-	(row_norms (const MSparse2<T>&, ...)): Dtto.
+	(row_norms (const MArray2<T>&, ...)): Ditto.
+	(column_norms (const MSparse2<T>&, ...)): Ditto.
+	(row_norms (const MSparse2<T>&, ...)): Ditto.
 
 2008-10-31  Jaroslav Hajek  <highegg@gmail.com>
 
@@ -614,7 +614,7 @@
 	* oct-inttypes.h (octave_int_abs): New function.
 	(octave_int_arith_base<T, true>::div): Use octave_int_abs instead of
 	std::abs.
-	* oct-inttypes.cc (octave_int_arith_base<int64_t, true>): Dtto.
+	* oct-inttypes.cc (octave_int_arith_base<int64_t, true>): Ditto.
 
 2008-10-28  Jaroslav Hajek <highegg@gmail.com>
 

@@ -58,7 +58,7 @@
 
 	* optimization/fsolve.m: Provide default values on request.
 	Adjust some defaults.
-	* optimization/fzero.m: Dtto.
+	* optimization/fzero.m: Ditto.
 	* optimization/optimset.m: Query optimal values via the M*b way.
 
 2009-01-26  Jason Riedy  <jason@acm.org>
@@ -291,17 +291,17 @@
 2009-01-11  Jaroslav Hajek  <highegg@gmail.com>
 
 	* general/sortrows.m: Fix invalid `{x:y} = z' assignment.
-	* miscellaneous/orderfields.m: Dtto.
-	* miscellaneous/what.m: Dtto.
-	* pkg/pkg.m: Dtto.
-	* plot/ndgrid.m: Dtto.
-	* strings/strcat.m: Dtto.
+	* miscellaneous/orderfields.m: Ditto.
+	* miscellaneous/what.m: Ditto.
+	* pkg/pkg.m: Ditto.
+	* plot/ndgrid.m: Ditto.
+	* strings/strcat.m: Ditto.
 
 2009-01-09  Kai Habel <kai.habel@gmx.de>
 
         * plot/surfl.m: New function
-        * plot/diffuse.m: dito
-        * plot/specular.m: dito
+        * plot/diffuse.m: Ditto.
+        * plot/specular.m: Ditto.
 
 2009-01-05  John W. Eaton  <jwe@octave.org>
 

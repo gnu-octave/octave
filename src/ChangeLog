@@ -1,5 +1,9 @@
 2009-01-29  John W. Eaton  <jwe@octave.org>
 
+	* pt-stmt.cc (tree_statement::eval): Check
+	in_function_or_script_body instead of symbol_table::at_top_level ()
+	to decide whether to call octave_call_stack::set_statement.
+
 	* graphics.cc (properties::set_defaults): Also set
 	horizontalalignment, verticalalignmnt, and rotation properties for
 	new label objects here.

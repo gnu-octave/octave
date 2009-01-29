@@ -89,7 +89,7 @@ tree_statement::eval (bool silent, int nargout,
 
   if (cmd || expr)
     {
-      if (! symbol_table::at_top_level ())
+      if (in_function_or_script_body)
 	octave_call_stack::set_statement (this);
 
       maybe_echo_code (in_function_or_script_body);

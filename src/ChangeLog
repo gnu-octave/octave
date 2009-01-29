@@ -1,5 +1,9 @@
 2009-01-29  John W. Eaton  <jwe@octave.org>
 
+	* graphics.cc (properties::set_defaults): Also set
+	horizontalalignment, verticalalignmnt, and rotation properties for
+	new label objects here.
+
 	* ov-base-scalar.cc (octave_base_scalar<ST>::is_true (void) const):
 	Error if scalar is NaN.
 	* ov-base-mat.cc (octave_base_matrix<MT>::is_true (void) const):

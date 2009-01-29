@@ -2550,19 +2550,27 @@ axes::properties::set_defaults (base_graphics_object& obj,
   xlabel = gh_manager::make_graphics_handle ("text", __myhandle__, false);
   ylabel = gh_manager::make_graphics_handle ("text", __myhandle__, false);
   zlabel = gh_manager::make_graphics_handle ("text", __myhandle__, false);
-
   title = gh_manager::make_graphics_handle ("text", __myhandle__, false);
 
   xset (xlabel.handle_value (), "handlevisibility", "off");
   xset (ylabel.handle_value (), "handlevisibility", "off");
   xset (zlabel.handle_value (), "handlevisibility", "off");
-
   xset (title.handle_value (), "handlevisibility", "off");
+
+  xset (xlabel.handle_value (), "horizontalalignment", "center");
+  xset (ylabel.handle_value (), "horizontalalignment", "center");
+  xset (zlabel.handle_value (), "horizontalalignment", "right");
+  xset (title.handle_value (), "horizontalalignment", "center");
+
+  xset (xlabel.handle_value (), "verticalalignment", "cap");
+  xset (ylabel.handle_value (), "verticalalignment", "bottom");
+  xset (title.handle_value (), "verticalalignment", "bottom");
+
+  xset (ylabel.handle_value (), "rotation", 90.0);
 
   adopt (xlabel.handle_value ());
   adopt (ylabel.handle_value ());
   adopt (zlabel.handle_value ());
-
   adopt (title.handle_value ());
 
   update_transform ();

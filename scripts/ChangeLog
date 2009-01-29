@@ -1,3 +1,10 @@
+2009-01-29  Søren Hauberg  <hauberg@gmail.com>
+
+	* help/help.m, help/print_usage.m, help/get_first_help_sentence.m:
+	print sensible error message when function is found but not documented.
+
+	* help/help.m: Allow displaying 'Contents.m' files.
+
 2009-01-29  Kai Habel <kai.habel@gmx.de>
 
         * plot/Makefile.in (SOURCES): Include diffuse.m, specular.m, and
@@ -89,15 +96,6 @@
 2009-01-24 Ben Abbott <bpabbott@mac.com>
 
 	* sparse/svds.m: svds.m: skip tests if ARPACK is missing.
-
-2009-01-25  Søren Hauberg  <hauberg@gmail.com>
-
-	* help/help.m, help/print_usage.m, help/get_first_help_sentence.m:
-	print sensible error message when function is found but not documented.
-
-2009-01-25  Søren Hauberg  <hauberg@gmail.com>
-
-	* help/help.m: Allow displaying 'Contents.m' files.
 
 2009-01-23  Søren Hauberg  <hauberg@gmail.com>
 

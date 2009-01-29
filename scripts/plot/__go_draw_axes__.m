@@ -567,6 +567,10 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 
 	       if (mono)
 		 colorspec = "";
+               elseif (__gnuplot_has_feature__ ("transparent_patches")
+		       && isscalar (obj.facealpha))
+                 colorspec = sprintf ("lc rgb \"#%02x%02x%02x\" fillstyle transparent solid %f",
+				      round (255*color), obj.facealpha);
 	       else
 		 colorspec = sprintf ("lc rgb \"#%02x%02x%02x\"",
 				      round (255*color));
@@ -574,7 +578,8 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 	       withclause{data_idx} = sprintf ("with filledcurve %s",
 					       colorspec);
 	       data{data_idx} = [xcol, ycol]';
-	       usingclause{data_idx} = sprintf ("record=%d using ($1):($2)", numel (xcol));
+	       usingclause{data_idx} = sprintf ("record=%d using ($1):($2)",
+						numel (xcol));
 	     endif
 	   endif
 

@@ -1,3 +1,7 @@
+2009-01-29  Kai Habel <kai.habel@gmx.de>
+
+        * plot/__go_draw_axes__.m: Add support for transparent patches.
+
 2009-01-29  Søren Hauberg  <hauberg@gmail.com>
 
 	* help/help.m, help/print_usage.m, help/get_first_help_sentence.m:

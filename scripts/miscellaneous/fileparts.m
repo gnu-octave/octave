@@ -27,7 +27,10 @@ function [directory, name, extension, version] = fileparts (filename)
 
   if (nargin == 1)
     if (ischar (filename))
-      ds = rindex (filename, filesep);
+      ds = strchr (filename, filesep ("all"), 1, "last");
+      if (isempty (ds))
+	ds = 0;
+      endif
       es = rindex (filename, ".");
       ## These can be the same if they are both 0 (no dir or ext).
       if (es <= ds)

@@ -1,3 +1,7 @@
+2009-01-29  John W. Eaton  <jwe@octave.org>
+
+	* miscellaneous/fileparts.m: Match all possible file separators.
+
 2009-01-29  Kai Habel <kai.habel@gmx.de>
 
         * plot/__go_draw_axes__.m: Add support for transparent patches.

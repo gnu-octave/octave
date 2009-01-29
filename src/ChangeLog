@@ -1,3 +1,15 @@
+2009-01-29  Jaroslav Hajek  <highegg@gmail.com>
+
+	* pr-output.cc:
+	(void octave_print_internal (..., const DiagMatrix& m,...),
+	(void octave_print_internal (..., const ComplexDiagMatrix& m,...),
+	(void octave_print_internal (..., const FloatDiagMatrix& m,...),
+	(void octave_print_internal (..., const FloatComplexDiagMatrix& m,...)):
+	New functions.
+	* pr-output.h: Declare them.
+	* ov-base-diag.cc (octave_base_diag::print_raw): Call
+	octave_print_internal.
+
 2009-01-28  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.in (install, uninstall): Handle SHLLIBPRE and SHLBINPRE

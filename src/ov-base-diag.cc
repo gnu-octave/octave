@@ -489,7 +489,8 @@ void
 octave_base_diag<DMT, MT>::print_raw (std::ostream& os,
                                       bool pr_as_read_syntax) const
 {
-  return to_dense ().print_raw (os, pr_as_read_syntax);
+  return octave_print_internal (os, matrix, pr_as_read_syntax,
+                                current_print_indent_level ());
 }
 
 template <class DMT, class MT>

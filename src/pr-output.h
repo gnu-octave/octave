@@ -66,7 +66,17 @@ octave_print_internal (std::ostream& os, const Matrix& m,
 		       int extra_indent = 0);
 
 extern OCTINTERP_API void
+octave_print_internal (std::ostream& os, const DiagMatrix& m,
+		       bool pr_as_read_syntax = false,
+		       int extra_indent = 0);
+
+extern OCTINTERP_API void
 octave_print_internal (std::ostream& os, const FloatMatrix& m,
+		       bool pr_as_read_syntax = false,
+		       int extra_indent = 0);
+
+extern OCTINTERP_API void
+octave_print_internal (std::ostream& os, const FloatDiagMatrix& m,
 		       bool pr_as_read_syntax = false,
 		       int extra_indent = 0);
 
@@ -94,7 +104,17 @@ octave_print_internal (std::ostream& os, const ComplexMatrix& cm,
 		       int extra_indent = 0);
 
 extern OCTINTERP_API void
+octave_print_internal (std::ostream& os, const ComplexDiagMatrix& cm,
+		       bool pr_as_read_syntax = false,
+		       int extra_indent = 0);
+
+extern OCTINTERP_API void
 octave_print_internal (std::ostream& os, const FloatComplexMatrix& cm,
+		       bool pr_as_read_syntax = false,
+		       int extra_indent = 0);
+
+extern OCTINTERP_API void
+octave_print_internal (std::ostream& os, const FloatComplexDiagMatrix& cm,
 		       bool pr_as_read_syntax = false,
 		       int extra_indent = 0);
 

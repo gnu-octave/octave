@@ -1694,6 +1694,147 @@ octave_print_internal (std::ostream& os, const Matrix& m,
     }
 }
 
+void
+octave_print_internal (std::ostream& os, const DiagMatrix& m,
+		       bool pr_as_read_syntax, int extra_indent)
+{
+  octave_idx_type nr = m.rows ();
+  octave_idx_type nc = m.columns ();
+
+  if (nr == 0 || nc == 0)
+    print_empty_matrix (os, nr, nc, pr_as_read_syntax);
+  else if (plus_format && ! pr_as_read_syntax)
+    {
+      for (octave_idx_type i = 0; i < nr; i++)
+	{
+	  for (octave_idx_type j = 0; j < nc; j++)
+	    {
+	      OCTAVE_QUIT;
+
+	      pr_plus_format (os, m(i,j));
+	    }
+
+	  if (i < nr - 1)
+	    os << "\n";
+	}
+    }
+  else
+    {
+      int fw;
+      double scale = 1.0;
+      set_format (Matrix (m.diag ()), fw, scale);
+      int column_width = fw + 2;
+      octave_idx_type total_width = nc * column_width;
+      octave_idx_type max_width = command_editor::terminal_cols ();
+
+      if (pr_as_read_syntax)
+	max_width -= 4;
+      else
+	max_width -= extra_indent;
+
+      if (max_width < 0)
+	max_width = 0;
+
+      if (free_format)
+	{
+	  if (pr_as_read_syntax)
+	    os << "[\n";
+
+	  os << Matrix (m);
+
+	  if (pr_as_read_syntax)
+	    os << "]";
+
+	  return;
+	}
+
+      octave_idx_type inc = nc;
+      if (total_width > max_width && Vsplit_long_rows)
+	{
+	  inc = max_width / column_width;
+	  if (inc == 0)
+	    inc++;
+	}
+
+      if (pr_as_read_syntax)
+	{
+          os << "diag (";
+
+          octave_idx_type col = 0;
+          while (col < nc)
+            {
+              octave_idx_type lim = col + inc < nc ? col + inc : nc;
+
+              for (octave_idx_type j = col; j < lim; j++)
+                {
+                  OCTAVE_QUIT;
+
+                  if (j == 0)
+                    os << "[ ";
+                  else
+                    {
+                      if (j > col && j < lim)
+                        os << ", ";
+                      else
+                        os << "  ";
+                    }
+
+                  pr_float (os, m(j,j));
+                }
+
+              col += inc;
+
+              if (col >= nc)
+                  os << " ]";
+              else
+                os << " ...\n";
+            }
+          os << ")";
+	}
+      else
+	{
+	  pr_scale_header (os, scale);
+
+          // kluge. Get the true width of a number.
+          int zero_fw;
+
+            { 
+              std::ostringstream tmp_oss;
+              pr_float (tmp_oss, 0.0, fw, scale);
+              zero_fw = tmp_oss.str ().length ();
+            }
+
+	  for (octave_idx_type col = 0; col < nc; col += inc)
+	    {
+	      octave_idx_type lim = col + inc < nc ? col + inc : nc;
+
+	      pr_col_num_header (os, total_width, max_width, lim, col,
+				 extra_indent);
+
+	      for (octave_idx_type i = 0; i < nr; i++)
+		{
+		  os << std::setw (extra_indent) << "";
+
+		  for (octave_idx_type j = col; j < lim; j++)
+		    {
+		      OCTAVE_QUIT;
+
+		      os << "  ";
+
+                      if (i == j)
+                        pr_float (os, m(i,j), fw, scale);
+                      else
+                        os << std::setw (zero_fw) << '0';
+
+		    }
+
+		  if (i < nr - 1)
+		    os << "\n";
+		}
+	    }
+	}
+    }
+}
 #define PRINT_ND_ARRAY(os, nda, NDA_T, ELT_T, MAT_T) \
   do \
     { \
@@ -1954,6 +2095,149 @@ octave_print_internal (std::ostream& os, const ComplexMatrix& cm,
 }
 
 void
+octave_print_internal (std::ostream& os, const ComplexDiagMatrix& cm,
+		       bool pr_as_read_syntax, int extra_indent)
+{
+  octave_idx_type nr = cm.rows ();
+  octave_idx_type nc = cm.columns ();
+
+ if (nr == 0 || nc == 0)
+    print_empty_matrix (os, nr, nc, pr_as_read_syntax);
+  else if (plus_format && ! pr_as_read_syntax)
+    {
+      for (octave_idx_type i = 0; i < nr; i++)
+	{
+	  for (octave_idx_type j = 0; j < nc; j++)
+	    {
+	      OCTAVE_QUIT;
+
+	      pr_plus_format (os, cm(i,j));
+	    }
+
+	  if (i < nr - 1)
+	    os << "\n";
+	}
+    }
+  else
+    {
+      int r_fw, i_fw;
+      double scale = 1.0;
+      set_format (ComplexMatrix (cm.diag ()), r_fw, i_fw, scale);
+      int column_width = i_fw + r_fw;
+      column_width += (rat_format || bank_format || hex_format 
+		       || bit_format) ? 2 : 7;
+      octave_idx_type total_width = nc * column_width;
+      octave_idx_type max_width = command_editor::terminal_cols ();
+
+      if (pr_as_read_syntax)
+	max_width -= 4;
+      else
+	max_width -= extra_indent;
+
+      if (max_width < 0)
+	max_width = 0;
+
+      if (free_format)
+	{
+	  if (pr_as_read_syntax)
+	    os << "[\n";
+
+	  os << ComplexMatrix (cm);
+
+	  if (pr_as_read_syntax)
+	    os << "]";
+
+	  return;
+	}
+
+      octave_idx_type inc = nc;
+      if (total_width > max_width && Vsplit_long_rows)
+	{
+	  inc = max_width / column_width;
+	  if (inc == 0)
+	    inc++;
+	}
+
+      if (pr_as_read_syntax)
+	{
+          os << "diag (";
+
+          octave_idx_type col = 0;
+          while (col < nc)
+            {
+              octave_idx_type lim = col + inc < nc ? col + inc : nc;
+
+              for (octave_idx_type j = col; j < lim; j++)
+                {
+                  OCTAVE_QUIT;
+
+                  if (j == 0)
+                    os << "[ ";
+                  else
+                    {
+                      if (j > col && j < lim)
+                        os << ", ";
+                      else
+                        os << "  ";
+                    }
+
+                  pr_complex (os, cm(j,j));
+                }
+
+              col += inc;
+
+              if (col >= nc)
+                  os << " ]";
+              else
+                os << " ...\n";
+            }
+          os << ")";
+	}
+      else
+	{
+	  pr_scale_header (os, scale);
+
+          // kluge. Get the true width of a number.
+          int zero_fw;
+
+            { 
+              std::ostringstream tmp_oss;
+              pr_complex (tmp_oss, Complex (0.0), r_fw, i_fw, scale);
+              zero_fw = tmp_oss.str ().length ();
+            }
+
+	  for (octave_idx_type col = 0; col < nc; col += inc)
+	    {
+	      octave_idx_type lim = col + inc < nc ? col + inc : nc;
+
+	      pr_col_num_header (os, total_width, max_width, lim, col,
+				 extra_indent);
+
+	      for (octave_idx_type i = 0; i < nr; i++)
+		{
+		  os << std::setw (extra_indent) << "";
+
+		  for (octave_idx_type j = col; j < lim; j++)
+		    {
+		      OCTAVE_QUIT;
+
+		      os << "  ";
+
+                      if (i == j)
+                        pr_complex (os, cm(i,j), r_fw, i_fw, scale);
+                      else
+                        os << std::setw (zero_fw) << '0';
+		    }
+
+		  if (i < nr - 1) 
+		    os << "\n";
+		}
+	    }
+	}
+    }
+}
+
+void
 octave_print_internal (std::ostream& os, const ComplexNDArray& nda,
 		       bool pr_as_read_syntax, int extra_indent)
 {
@@ -1993,6 +2277,13 @@ octave_print_internal (std::ostream& os, const FloatMatrix& m,
 }
 
 void
+octave_print_internal (std::ostream& os, const FloatDiagMatrix& m,
+		       bool pr_as_read_syntax, int extra_indent)
+{ 
+  octave_print_internal (os, DiagMatrix (m), pr_as_read_syntax, extra_indent); 
+}
+
+void
 octave_print_internal (std::ostream& os, const FloatNDArray& nda,
 		       bool pr_as_read_syntax, int extra_indent)
 {
@@ -2011,6 +2302,13 @@ octave_print_internal (std::ostream& os, const FloatComplexMatrix& cm,
 		       bool pr_as_read_syntax, int extra_indent)
 {
   octave_print_internal (os, ComplexMatrix (cm), pr_as_read_syntax, extra_indent);
+}
+
+void
+octave_print_internal (std::ostream& os, const FloatComplexDiagMatrix& cm,
+		       bool pr_as_read_syntax, int extra_indent)
+{
+  octave_print_internal (os, ComplexDiagMatrix (cm), pr_as_read_syntax, extra_indent);
 }
 
 void

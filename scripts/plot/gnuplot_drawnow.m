@@ -34,7 +34,8 @@ function gnuplot_drawnow (h, term, file, mono, debug_file)
   endif
 
   if (nargin >= 3 && nargin <= 5)
-    ## Produce various output formats, or redirect gnuplot stream to a debug file
+    ## Produce various output formats, or redirect gnuplot stream to a
+    ## debug file.
     plot_stream = [];
     fid = [];
     unwind_protect
@@ -55,7 +56,7 @@ function gnuplot_drawnow (h, term, file, mono, debug_file)
       endif
     end_unwind_protect
   elseif (nargin == 1)
-    ##  Graphics terminal for display
+    ##  Graphics terminal for display.
     plot_stream = get (h, "__plot_stream__");
     if (isempty (plot_stream))
       plot_stream = open_gnuplot_stream (2, h);
@@ -87,24 +88,24 @@ function [plot_stream, enhanced] = open_gnuplot_stream (npipes, h)
   endif
 endfunction
 
-function [ enhanced ] = gnuplot_set_term (plot_stream, h, term, file)
-  ## Generate the gnuplot "set terminal <term> ..." command. Include the subset
-  ## of properties "position", "units", "paperposition", "paperunits", "name", 
-  ## and "numbertitle". When "term" originates from print.m, it may include
-  ## gnuplot terminal options.
+function enhanced = gnuplot_set_term (plot_stream, h, term, file)
+  ## Generate the gnuplot "set terminal <term> ..." command.  Include
+  ## the subset of properties "position", "units", "paperposition",
+  ## "paperunits", "name", and "numbertitle".  When "term" originates
+  ## from print.m, it may include gnuplot terminal options.
   if (nargin == 2)
-    ## This supports the gnuplot backend
+    ## This supports the gnuplot backend.
     term = gnuplot_term ();
     opts_str = "";
   else
-    ## Get the one word terminal id and save the remaining as options to be passed
-    ## on to gnuplot. The terminal may respect the backend.
+    ## Get the one word terminal id and save the remaining as options to
+    ## be passed on to gnuplot.  The terminal may respect the backend.
     [term, opts_str] = gnuplot_trim_term (term);
   endif
 
   enhanced = gnuplot_is_enhanced_term (term);
 
-  ## Set the terminal
+  ## Set the terminal.
   if (! isempty (term))
 
     if (enhanced)
@@ -115,7 +116,7 @@ function [ enhanced ] = gnuplot_set_term (plot_stream, h, term, file)
 
     if (! isempty (h) && isfigure (h))
 
-      ## Generate gnuoplot title string for backend plot windows
+      ## Generate gnuoplot title string for backend plot windows.
       if (isbackend (term))
         fig.numbertitle = get (h, "numbertitle");
         fig.name = get (h, "name");
@@ -150,20 +151,20 @@ function [ enhanced ] = gnuplot_set_term (plot_stream, h, term, file)
           endif
         endif
         if (all (gnuplot_size > 0))
-          ## Set terminal size
+          ## Set terminal size.
           terminals_with_size = {"emf", "gif", "jpeg", "latex", "pbm", ...
                                  "pdf", "png", "postscript", "svg", "wxt", ...
                                  "epslatex", "pstex", "pslatex"};
           if (any (strncmpi (term, terminals_with_size, 3)))
-            size_str = sprintf("size %d,%d", gnuplot_size(1), gnuplot_size(2));
+            size_str = sprintf ("size %d,%d", gnuplot_size(1), gnuplot_size(2));
           elseif (any (strncmpi (term, {"aqua", "fig"}, 3)))
             ## Aqua and Fig also have size, but the format is different.
-            size_str = sprintf("size %d %d", gnuplot_size(1), gnuplot_size(2));
+            size_str = sprintf ("size %d %d", gnuplot_size(1), gnuplot_size(2));
           elseif (any (strncmpi (term, {"corel", "hpgl"}, 3)))
-            ## The size for corel and hpgl are goes at the end (implicit)
-            size_str = sprintf("%d %d",gnuplot_size(1), gnuplot_size(2));
+            ## The size for corel and hpgl are goes at the end (implicit).
+            size_str = sprintf ("%d %d",gnuplot_size(1), gnuplot_size(2));
           elseif (any (strncmpi (term, {"dxf"}, 3)))
-            ## DXF uses autocad units
+            ## DXF uses autocad units.
             size_str = "";
           else
             size_str = "";
@@ -186,7 +187,7 @@ function [ enhanced ] = gnuplot_set_term (plot_stream, h, term, file)
       size_str = "";
     endif
 
-    ## Set the gnuplot terminal (type, enhanced?, title, & size)
+    ## Set the gnuplot terminal (type, enhanced?, title, & size).
     if (! isempty (term))
       term_str = sprintf ("set terminal %s", term);
       if (! isempty (enh_str))
@@ -197,11 +198,11 @@ function [ enhanced ] = gnuplot_set_term (plot_stream, h, term, file)
       endif
       if (! isempty (size_str))
         ## size_str goes last to permit specification of canvas size
-        ## for terminals cdr/corel
+        ## for terminals cdr/corel.
         term_str = sprintf ("%s %s", term_str, size_str);
       endif
       if (nargin > 2 && ischar (opts_str))
-        ## Options must go last
+        ## Options must go last.
         term_str = sprintf ("%s %s", term_str, opts_str);
       endif
       fprintf (plot_stream, sprintf ("%s\n", term_str));
@@ -282,7 +283,7 @@ function ret = isbitmap (term)
   ret = any (strcmpi ({"png", "jpeg", "gif", "pbm"}, term));
 endfunction
 
-function [ fig_size ] = get_figsize (h)
+function fig_size = get_figsize (h)
   ## Determine the size of the figure in pixels  
   possize = get (h, "position")(3:4);
   units = get (h, "units");
@@ -301,7 +302,7 @@ function [ fig_size ] = get_figsize (h)
   endif
 endfunction
 
-function [plotsize] = get_canvassize (h)
+function plotsize = get_canvassize (h)
   ## Returns the intended size of the plot on the page in inches. 
   ## "canvas size" is a gnuplot term. Gnuplot doesn't explicity plot to
   ## an area/position on a page. Instead it plots to a "canvas" of a 
@@ -319,7 +320,7 @@ function [plotsize] = get_canvassize (h)
   endif
 endfunction
 
-function [ papersize ] = get_papersize (h)
+function papersize = get_papersize (h)
   ## Returns the papersize in inches
   persistent papertypes papersizes
   if (isempty (papertypes))
@@ -329,31 +330,31 @@ function [ papersize ] = get_papersize (h)
                  "arch-a", "arch-b", "arch-c", "arch-d", "arch-e", ...
                  "a", "b", "c", "d", "e", ...
                  "tabloid", "<custom>"};
-    papersizes = [ 8.500, 11.000
-                   8.500, 14.000
-                  33.135, 46.847
-                  23.404, 33.135
-                  16.548, 23.404
-                  11.694, 16.528
-                   8.268, 11.693
-                   5.847,  8.264
-                  40.543, 57.366
-                  28.683, 40.503
-                  20.252, 28.683
-                  14.342, 20.252
-                  10.126, 14.342
-                   7.171, 10.126
-                   9.000, 12.000
-                  12.000, 18.000
-                  18.000, 24.000
-                  24.000, 36.000
-                  36.000, 48.000
-                   8.500, 11.000
-                  11.000, 17.000
-                  17.000, 22.000
-                  22.000, 34.000
-                  34.000, 44.000
-                  11.000, 17.000
+    papersizes = [ 8.500, 11.000;
+                   8.500, 14.000;
+                  33.135, 46.847;
+                  23.404, 33.135;
+                  16.548, 23.404;
+                  11.694, 16.528;
+                   8.268, 11.693;
+                   5.847,  8.264;
+                  40.543, 57.366;
+                  28.683, 40.503;
+                  20.252, 28.683;
+                  14.342, 20.252;
+                  10.126, 14.342;
+                   7.171, 10.126;
+                   9.000, 12.000;
+                  12.000, 18.000;
+                  18.000, 24.000;
+                  24.000, 36.000;
+                  36.000, 48.000;
+                   8.500, 11.000;
+                  11.000, 17.000;
+                  17.000, 22.000;
+                  22.000, 34.000;
+                  34.000, 44.000;
+                  11.000, 17.000;
                    8.500, 11.000];
     ## <custom> has a page size since we're not doing any checking here.
     papersizes = round (1000 * papersizes);
@@ -369,12 +370,15 @@ function [ papersize ] = get_papersize (h)
     t.points      = 72;
     t.centimeters = 2.54;
     t.inches      = 1.00;
-    ## FIXME - this papersize/type administration should be done at a lower level.
+    ## FIXME -- this papersize/type administration should be done at a
+    ## lower level.
     if (strcmpi (get (h, "papertype"), "<custom>"))
-      ## if the type is custom but the size is a standard, then set the standard type.
+      ## If the type is custom but the size is a standard, then set the
+      ## standard type.
       papersize = get (h "papersize");
       papersize = papersize * t.(paperunits);
-      n = find (all ((ones ([size(papersizes, 1), 1]) * round(1000*papersize) - papersizes) == 0, 2));
+      n = find (all ((ones ([size(papersizes, 1), 1])
+		      * round (1000*papersize) - papersizes) == 0, 2));
       if (! isempty (n))
         set (h, "papertype", papertypes{n});
       endif

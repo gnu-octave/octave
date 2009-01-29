@@ -1,4 +1,6 @@
-2009-01-28  Ben Abbott  <bpabbott@mac.com>
+2009-01-28  Ben Abbott <bpabbott@mac.com>
+
+	* plot/gnuplot_drawnow.m: Style fixes.
 
 	* plot/__gnuplot_has_feature__.m: New file, checks for supported
 	feature.

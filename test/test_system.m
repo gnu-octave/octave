@@ -175,16 +175,16 @@
 %! [s, err, msg] = stat (filesep);
 %! assert((err == 0
 %! && isstruct (s)
-%! && struct_contains (s, "dev")
-%! && struct_contains (s, "ino")
-%! && struct_contains (s, "modestr")
-%! && struct_contains (s, "nlink")
-%! && struct_contains (s, "uid")
-%! && struct_contains (s, "gid")
-%! && struct_contains (s, "size")
-%! && struct_contains (s, "atime")
-%! && struct_contains (s, "mtime")
-%! && struct_contains (s, "ctime")
+%! && isfield (s, "dev")
+%! && isfield (s, "ino")
+%! && isfield (s, "modestr")
+%! && isfield (s, "nlink")
+%! && isfield (s, "uid")
+%! && isfield (s, "gid")
+%! && isfield (s, "size")
+%! && isfield (s, "atime")
+%! && isfield (s, "mtime")
+%! && isfield (s, "ctime")
 %! && ischar (msg)));
 
 %% test/octave.test/system/stat-2.m
@@ -198,16 +198,16 @@
 %! [s, err, msg] = lstat (filesep);
 %! assert((err == 0
 %! && isstruct (s)
-%! && struct_contains (s, "dev")
-%! && struct_contains (s, "ino")
-%! && struct_contains (s, "modestr")
-%! && struct_contains (s, "nlink")
-%! && struct_contains (s, "uid")
-%! && struct_contains (s, "gid")
-%! && struct_contains (s, "size")
-%! && struct_contains (s, "atime")
-%! && struct_contains (s, "mtime")
-%! && struct_contains (s, "ctime")
+%! && isfield (s, "dev")
+%! && isfield (s, "ino")
+%! && isfield (s, "modestr")
+%! && isfield (s, "nlink")
+%! && isfield (s, "uid")
+%! && isfield (s, "gid")
+%! && isfield (s, "size")
+%! && isfield (s, "atime")
+%! && isfield (s, "mtime")
+%! && isfield (s, "ctime")
 %! && ischar (msg)));
 
 %% test/octave.test/system/lstat-2.m
@@ -370,13 +370,13 @@
 %! s = getpwent ();
 %! endpwent (); 
 %! assert((isstruct (s)
-%! && struct_contains (s, "name")
-%! && struct_contains (s, "passwd")
-%! && struct_contains (s, "uid")
-%! && struct_contains (s, "gid")
-%! && struct_contains (s, "gecos")
-%! && struct_contains (s, "dir")
-%! && struct_contains (s, "shell")));
+%! && isfield (s, "name")
+%! && isfield (s, "passwd")
+%! && isfield (s, "uid")
+%! && isfield (s, "gid")
+%! && isfield (s, "gecos")
+%! && isfield (s, "dir")
+%! && isfield (s, "shell")));
 
 %% test/octave.test/system/getpwent-2.m
 %!error <Invalid call to getpwent.*> getpwent (1);
@@ -426,10 +426,10 @@
 %! x = getgrent ();
 %! endgrent ();
 %! assert((isstruct (x)
-%! && struct_contains (x, "name")
-%! && struct_contains (x, "passwd")
-%! && struct_contains (x, "gid")
-%! && struct_contains (x, "mem")));
+%! && isfield (x, "name")
+%! && isfield (x, "passwd")
+%! && isfield (x, "gid")
+%! && isfield (x, "mem")));
 
 %% test/octave.test/system/getgrent-2.m
 %!error <Invalid call to getgrent.*> getgrent (1);

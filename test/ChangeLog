@@ -1,3 +1,7 @@
+2009-01-29  John W. Eaton  <jwe@octave.org>
+
+	* test_system.m: Use isfield instead of struct_contains.
+
 2009-01-25  Thorsten Meyer  <thorsten@hexe>
 
 	* test_struct.m: Add struct array tests.

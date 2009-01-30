@@ -1,3 +1,9 @@
+2009-01-30  Kai Habel  <kai.habel@gmx.de>
+
+	* plot/__go_draw_axes__.m: Add support for transparent surfaces.
+	* plot/__gnuplot_has_feature__.m: Add feature 'transparent_surface',
+	Require gnuplot 4.3 for transparent patches and surfaces.
+
 2009-01-30  Benjamin Lindner  <lindnerben@gmx.net>
 
 	* time/datestr.m: Convert YYYY to %Y instead of %C%y.

@@ -875,6 +875,12 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 		       interp_str, dord);
             elseif (!facecolor_none_or_white)
               if (strncmp (obj.edgecolor, "none", 4))
+                if (__gnuplot_has_feature__ ("transparent_surface") 
+                    && isscalar (obj.facealpha))
+                  fprintf (plot_stream,
+                           "set style fill transparent solid %f;\n",
+                           obj.facealpha);
+                endif
                 fprintf (plot_stream, "set pm3d explicit at s %s corners2color c3;\n", 
 			 interp_str, dord);
               else
@@ -894,6 +900,12 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
                 fprintf (plot_stream,
                          "set style line %d %s lw %f;\n",
                          data_idx, colorspec, obj.linewidth);
+                if (__gnuplot_has_feature__ ("transparent_surface") 
+                    && isscalar (obj.facealpha))
+                  fprintf (plot_stream,
+                           "set style fill transparent solid %f;\n",
+                           obj.facealpha);
+                endif
               endif
             endif
 	  endif

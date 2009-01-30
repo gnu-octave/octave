@@ -53,19 +53,19 @@ endfunction
 %!    mkdir(dirname);
 %!    entry = gzip(filename, dirname);
 %!    [path, basename, extension] = fileparts(filename);
-%!    if ! strcmp(entry, [dirname, "/", basename, extension, ".gz"])
+%!    if ! strcmp(entry, [dirname, filesep, basename, extension, ".gz"])
 %!      error("gzipped file does not match expected name!");
 %!    endif
 %!    if ! exist(entry, "file")
 %!      error("gzipped file cannot be found!");
 %!    endif 
 %!    gunzip(entry);
-%!    if (system(sprintf("diff %s %s/%s%s", filename, dirname, 
+%!    if (system(sprintf("diff %s %s%c%s%s", filename, dirname, filesep,
 %!                                          basename, extension)))
 %!      error("unzipped file not equal to original file!");
 %!    end
 %!  unwind_protect_cleanup
 %!    delete(filename);
-%!    delete([dirname, "/", basename, extension]);
+%!    delete([dirname, filesep, basename, extension]);
 %!    rmdir(dirname);
 %!  end_unwind_protect

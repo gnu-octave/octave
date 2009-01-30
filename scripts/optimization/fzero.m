@@ -59,6 +59,8 @@
 ## the need for external functions and error handling. The algorithm has
 ## also been slightly modified.
 
+## PKG_ADD: __all_opts__ ("fzero");
+
 function [x, fval, info, output] = fzero (fun, x0, options = struct ())
 
   ## Get default options if requested.

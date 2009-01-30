@@ -72,6 +72,8 @@
 ## @seealso{fzero, optimset}
 ## @end deftypefn
 
+## PKG_ADD: __all_opts__ ("fsolve");
+
 function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
 
   ## Get default options if requested.

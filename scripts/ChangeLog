@@ -1,3 +1,9 @@
+2009-01-30  John W. Eaton  <jwe@octave.org>
+
+	* optimization/PKG_ADD: Delete.
+	* optimization/fsolve.m, optimization/fzero.m,
+	optimization/lsqnonneg.m: Use PKG_ADD: comment to call __all_opts__.
+
 2009-01-30  Jaroslav Hajek  <highegg@gmail.com>
 
 	* optimization/__all_opts__.m: New source.

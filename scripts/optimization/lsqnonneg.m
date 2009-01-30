@@ -58,6 +58,8 @@
 ## @seealso{optimset}
 ## @end deftypefn
 
+## PKG_ADD: __all_opts__ ("lsqnonneg");
+
 ## This is implemented from Lawson and Hanson's 1973 algorithm on page
 ## 161 of Solving Least Squares Problems.
 

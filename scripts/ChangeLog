@@ -1,5 +1,8 @@
 2009-01-30  Ben Abbott  <bpabbott@mac.com>
 
+	* plot/print.m: Use __gnuplot_has_feature__ instead of
+	compare_versions.
+
 	* plot/gnuplot_drawnow.m: Respect x11 figure position property.
 
 2009-01-29  John W. Eaton  <jwe@octave.org>

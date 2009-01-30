@@ -221,7 +221,7 @@ function print (varargin)
     if (strcmp (dev, "tex"))
       dev = "epslatex";
       ## gnuplot 4.0 wants ".eps" in the output name    
-      if (compare_versions (__gnuplot_version__, "4.2", "<"))
+      if (! __gnuplot_has_feature__ ("epslatex_implies_eps_filesuffix"))
         name = cstrcat (name(1:dot), "eps");
       endif
     elseif (strcmp (dev, "ill"))
@@ -261,7 +261,7 @@ function print (varargin)
         termn = dev;
         options = "";
       elseif (strcmp (dev, "epslatexstandalone"))
-        if (compare_versions (__gnuplot_version__, "4.2", ">="))
+        if (__gnuplot_has_feature__ ("epslatexstandalone_terminal"))
 	termn = "epslatex";
 	options = "standalone ";
         else

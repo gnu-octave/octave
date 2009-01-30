@@ -259,7 +259,7 @@ For string lookup, 'i' indicates case-insensitive comparison.\n\
 
 
       // query just the first cell to verify it's a string
-      if (table(0).is_string ())
+      if (table.is_empty () || table(0).is_string ())
         {
           if (argy.is_cell ())
             {

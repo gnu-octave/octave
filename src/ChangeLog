@@ -1,3 +1,7 @@
+2009-01-30  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/lookup.cc (Flookup): Add missing check.
+
 2009-01-29  John W. Eaton  <jwe@octave.org>
 
 	* pt-stmt.cc (tree_statement::eval): Check

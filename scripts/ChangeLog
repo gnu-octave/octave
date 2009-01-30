@@ -1,3 +1,8 @@
+2009-01-30  Benjamin Lindner  <lindnerben@gmx.net>
+
+	* time/datestr.m: Convert YYYY to %Y instead of %C%y.
+	Convert [Dd][Dd] to %d instead of %e.
+
 2009-01-30  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/print.m: Use __gnuplot_has_feature__ instead of

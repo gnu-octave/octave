@@ -236,7 +236,7 @@ function retval = datestr (date, f, p)
       df = strrep (df, "HH", sprintf ("%2d", v(i,4)));
     endif  
 
-    df = regexprep (df, "[Yy][Yy][Yy][Yy]", "%C%y");
+    df = regexprep (df, "[Yy][Yy][Yy][Yy]", "%Y");
 
     df = regexprep (df, "[Yy][Yy]", "%y");
 
@@ -244,7 +244,7 @@ function retval = datestr (date, f, p)
 
     df = regexprep (df, "[Dd][Dd][Dd]", "%a");
 
-    df = regexprep (df, "[Dd][Dd]", "%e");
+    df = regexprep (df, "[Dd][Dd]", "%d");
 
     tmp = names_d{weekday (datenum (v(i,1), v(i,2), v(i,3)))};
     df = regexprep (df, "([^%])[Dd]", sprintf ("$1%s", tmp));

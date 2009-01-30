@@ -48,7 +48,7 @@ display_info::init (void)
 
   if (hdc)
     {
-      dp = GetDeviceCaps (hdc, BITSPIXEL)
+      dp = GetDeviceCaps (hdc, BITSPIXEL);
 
       ht = GetDeviceCaps (hdc, VERTRES);
       wd = GetDeviceCaps (hdc, HORZRES);

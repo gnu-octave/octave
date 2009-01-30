@@ -1,3 +1,11 @@
+2009-01-30  Jaroslav Hajek  <highegg@gmail.com>
+
+	* optimization/__all_opts__.m: New source.
+	* optimization/optimset.m: Implement checking for registered options.
+	* optimization/optimget.m: Ditto.
+	* optimization/fsolve.m: Fix misspelled option.
+	* optimization/PKG_ADD: New startup file.
+
 2009-01-30  Kai Habel  <kai.habel@gmx.de>
 
 	* plot/__go_draw_axes__.m: Add support for transparent surfaces.

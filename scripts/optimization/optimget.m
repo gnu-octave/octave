@@ -1,4 +1,5 @@
 ## Copyright (C) 2008 Jaroslav Hajek <highegg@gmail.com>
+## Copyright (C) 2009 VZLU Prague
 ##
 ## This file is part of Octave.
 ##
@@ -27,6 +28,18 @@
 
 function retval = optimget (options, parname, default)
 
+  if (nargin < 2 || nargin > 4 || ! isstruct (options) || ! ischar (parname))
+    print_usage ();
+  endif
+
+  opts = __all_opts__ ();
+  idx = lookup (opts, parname, "i");
+
+  if (idx > 0 && strcmpi (parname, opts{idx}))
+    parname = opts{idx};
+  else
+    warning ("unrecognized option: %s", parname)
+  endif
   if (isfield (options, parname))
     retval = options.(parname);
   elseif (nargin > 2)

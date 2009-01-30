@@ -1,4 +1,5 @@
 ## Copyright (C) 2007 John W. Eaton
+## Copyright (C) 2009 VZLU Prague
 ##
 ## This file is part of Octave.
 ##
@@ -29,21 +30,14 @@ function retval = optimset (varargin)
   nargs = nargin ();
 
   ## Add more as needed.
-  persistent opts = {
-    "Display", "\"off\"|\"iter\"|{\"final\"}|\"notify\"";
-    "FunValCheck", "{\"off\"}|\"on\"";
-    "MaxFunEvals", "positive integer";
-    "MaxIter", "positive integer";
-    "OutputFun", "function|{[]}";
-    "TolFun", "positive scalar";
-    "TolX", "positive scalar"
-  };
+  opts = __all_opts__ ();
 
   if (nargs == 0)
     if (nargout == 0)
       ## Display possibilities.
-      tmp = opts';
-      disp (struct (tmp{:}));
+      puts ("\nAll possible optimization options:\n\n");
+      printf ("  %s\n", opts{:});
+      puts ("\n");
     else
       ## Return empty structure.
       ## We're incompatible with Matlab at this point.
@@ -63,10 +57,19 @@ function retval = optimset (varargin)
     old = varargin{1};
     new = varargin{2};
     fnames = fieldnames (old);
+    ## skip validation if we're in the internal query
+    validation = ! isempty (opts);
     for [val, key] = new
-      mask = strcmpi (fnames, key);
-      if (any (mask))
-	key = fnames (mask);
+      if (validation)
+        ## Case insensitive lookup in all options.
+        i = lookup (opts, key, "i");
+        ## Validate option.
+        if (i > 0 && strcmpi (opts{i}, key))
+          ## Use correct case.
+          key = opts{i};
+        else
+          warning ("unrecognized option: %s", key);
+        endif
       endif
       old.(key) = val;
     endfor
@@ -83,3 +86,6 @@ function retval = optimset (varargin)
   endif
 
 endfunction
+
+%!assert (optimget (optimset ('tolx', 1e-2), 'tOLx'), 1e-2)
+%!assert (isfield (optimset ('tolFun', 1e-3), 'TolFun'))

@@ -1240,13 +1240,16 @@ case "$canonical_host_type" in
     case "$canonical_host_type" in
       *-*-cygwin*)
         LIBPRE=cyg
-	SHLLIBPRE=lib
-        SHLBINPRE=cyg
+	SHLLIBPRE=cyg
+        SHLBINPRE=lib
       ;;
     esac
+    SHLEXT=dll
+    SHLLIB=dll.a
+    SHLBIN=a    
     DL_LDFLAGS="-shared -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-runtime-pseudo-reloc"
     SH_LDFLAGS="-shared -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-auto-image-base"
-    SONAME_FLAGS='-Wl,--out-implib=$(SHLLIBPRE)$(basename $@)$(SHLLIB)'
+    SONAME_FLAGS='-Wl,--out-implib=$(patsubst $(SHLLIBPRE)%,$(SHLBINPRE)%,$@).a'
   ;;
 
   *-*-msdosmsvc)

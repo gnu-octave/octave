@@ -1,3 +1,9 @@
+2009-01-30  Marco Atzeri  <marco_atzeri@yahoo.it>
+
+	* configure.in (SHLLIBPRE, SHLBINPRE): Fix definitions for Cygwin.
+	(SHLEXT, SHLLIB, SHLBIN, SONAME_FLAGS): Fix definitions for Cygwin
+	and MinGW.
+
 2009-01-30  Benjamin Lindner  <lindnerb@users.sourceforge.net>
 
 	* configure.in: Add -lgdi32 to LIBS on *-*-msdosmsvc* and

@@ -1,3 +1,7 @@
+2009-01-30  Ben Abbott  <bpabbott@mac.com>
+
+	* plot/gnuplot_drawnow.m: Respect x11 figure position property.
+
 2009-01-29  John W. Eaton  <jwe@octave.org>
 
 	* miscellaneous/fileparts.m: Match all possible file separators.

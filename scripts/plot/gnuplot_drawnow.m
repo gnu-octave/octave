@@ -141,7 +141,7 @@ function enhanced = gnuplot_set_term (plot_stream, h, term, file)
         ## Convert position to units used by gnuplot.
         if (isbackend (term))
           ## Get figure size in pixels.
-          gnuplot_size = get_figsize (h);
+          [gnuplot_size, gnuplot_pos] = get_figsize (h);
         else
           ## Get size of the printed plot in inches.
           gnuplot_size = get_canvassize (h);
@@ -155,8 +155,22 @@ function enhanced = gnuplot_set_term (plot_stream, h, term, file)
           terminals_with_size = {"emf", "gif", "jpeg", "latex", "pbm", ...
                                  "pdf", "png", "postscript", "svg", "wxt", ...
                                  "epslatex", "pstex", "pslatex"};
+          if (__gnuplot_has_feature__("x11_figure_position"))
+            terminals_with_size{end+1} = "x11";
+          endif
           if (any (strncmpi (term, terminals_with_size, 3)))
             size_str = sprintf ("size %d,%d", gnuplot_size(1), gnuplot_size(2));
+            if (strncmpi (term, "X11", 3))
+              screen_size = get (0, "screensize")(3:4);
+              if (all (screen_size > 0))
+                ## For X11, set the figure positon as well as the size
+                ## gnuplot position is UL, Octave's is LL (same for screen/window)
+                gnuplot_pos(2) = screen_size(2) - gnuplot_pos(2) - gnuplot_size(2);
+                gnuplot_pos = max (gnuplot_pos, 1);
+                size_str = sprintf ("%s position %d,%d", size_str, 
+                                    gnuplot_pos(1), gnuplot_pos(2));
+              endif
+            endif
           elseif (any (strncmpi (term, {"aqua", "fig"}, 3)))
             ## Aqua and Fig also have size, but the format is different.
             size_str = sprintf ("size %d %d", gnuplot_size(1), gnuplot_size(2));
@@ -190,6 +204,12 @@ function enhanced = gnuplot_set_term (plot_stream, h, term, file)
     ## Set the gnuplot terminal (type, enhanced?, title, & size).
     if (! isempty (term))
       term_str = sprintf ("set terminal %s", term);
+      if (any (strncmpi (term, {"x11", "wxt"}, 3))
+	  && __gnuplot_has_feature__ ("x11_figure_position"))
+        ## The "close" is added to allow the figure position property
+        ## to remain active.
+        term_str = sprintf ("%s close", term_str);
+      endif
       if (! isempty (enh_str))
         term_str = sprintf ("%s %s", term_str, enh_str);
       endif
@@ -283,23 +303,23 @@ function ret = isbitmap (term)
   ret = any (strcmpi ({"png", "jpeg", "gif", "pbm"}, term));
 endfunction
 
-function fig_size = get_figsize (h)
-  ## Determine the size of the figure in pixels  
-  possize = get (h, "position")(3:4);
+function [fig_size, fig_pos] = get_figsize (h)
+  ## Determine the size of the figure in pixels.
+  position = get (h, "position");
   units = get (h, "units");
   t.inches      = 1;
   t.centimeters = 2.54;
   t.pixels      = get (0, "screenpixelsperinch");
-  ## gnuplot treats pixels/points the same
+  ## gnuplot treats pixels/points for the screen the same (?).
   t.points      = t.pixels;
-  t.normalized  = get (0, "screensize")(3:4) / t.pixels;
-  fig_size = possize * (t.pixels / t.(units));
-  if (prod (fig_size) > 1e8)
-    warning ("gnuplot_drawnow: figure size is excessive. Reducing to 1024x768.")
-    fig_size = [1024, 768];
-    position = get (h, "position");
-    set (h, "position", [position(1:2), fig_size], "units", "pixels");
-  endif
+  screensize    = get (0, "screensize")(3:4);
+  t.normalized  = screensize / t.pixels;
+  fig_size = position(3:4) * (t.pixels / t.(units));
+  fig_pos  = position(1:2) * (t.pixels / t.(units));
+  fig_pos(1) = max (min (fig_pos(1), screensize(1)), 10);
+  fig_pos(2) = max (min (fig_pos(2), screensize(2)), 10);
+  fig_size(1) = max (min (fig_size(1), screensize(1)), 10-fig_pos(1));
+  fig_size(2) = max (min (fig_size(2), screensize(2)), 10-fig_pos(2));
 endfunction
 
 function plotsize = get_canvassize (h)

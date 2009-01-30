@@ -1423,7 +1423,7 @@ case "$canonical_host_type" in
    LIBS="$LIBS -lwsock32"
   ;;
   *-*-msdosmsvc* | *-*-mingw*)
-  LIBS="$LIBS -lws2_32 -lkernel32"
+  LIBS="$LIBS -lgdi32 -lws2_32 -lkernel32"
   ;;
 esac
 

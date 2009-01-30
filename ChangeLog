@@ -1,3 +1,8 @@
+2009-01-30  Benjamin Lindner  <lindnerb@users.sourceforge.net>
+
+	* configure.in: Add -lgdi32 to LIBS on *-*-msdosmsvc* and
+	*-*-mingw* systems.
+
 2009-01-29  Thomas Treichl  <Thomas.Treichl@gmx.net>
 
 	* aclocal.m4 (OCTAVE_HAVE_FRAMEWORK): Add support for 

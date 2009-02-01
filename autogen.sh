@@ -39,10 +39,3 @@ for i in `find . -name configure.in -print`; do (
 ); done
 
 echo done
-
-if [ -f cvs.motd ]; then
-  echo "ATTENTION CVS Users!"
-  echo ""
-  cat cvs.motd
-  echo ""
-fi

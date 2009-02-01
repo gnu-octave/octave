@@ -1,3 +1,7 @@
+2009-02-01  Thorsten Meyer  <thorsten.meyier@gmx.de>
+
+	* autogen.sh: Remove printing of cvs motd.
+
 2009-01-30  Marco Atzeri  <marco_atzeri@yahoo.it>
 
 	* configure.in (SHLLIBPRE, SHLBINPRE): Fix definitions for Cygwin.

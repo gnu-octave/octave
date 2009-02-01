@@ -44,8 +44,6 @@ convergence is not guaranteed even if a solution exists.
 
 @DOCSTRING(fsolve)
 
-@DOCSTRING(fsolve_options)
-
 Here is a complete example.  To solve the set of equations
 @iftex
 @tex

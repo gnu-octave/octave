@@ -1,5 +1,9 @@
 2009-02-01  Soren Hauberg <hauberg@gmail.com>
 
+	* interpreter/nonlin.txi: Remove reference to 'fsolve_options'.
+
+2009-02-01  Soren Hauberg <hauberg@gmail.com>
+
 	* interpreter/system.txi: Remove reference to 'eomdate'.
 
 2009-01-24  Thorsten Meyer  <thorsten@hexe>

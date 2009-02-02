@@ -91,6 +91,8 @@ public:
   
   FloatNDArray abs (void) const;
 
+  friend FloatComplexNDArray conj (const FloatComplexNDArray& a);
+
   FloatComplexNDArray fourier (int dim = 1) const;
   FloatComplexNDArray ifourier (int dim = 1) const;
 
@@ -136,6 +138,8 @@ private:
   FloatComplexNDArray (FloatComplex *d, const dim_vector& dv)
     : MArrayN<FloatComplex> (d, dv) { }
 };
+
+extern OCTAVE_API FloatComplexNDArray conj (const FloatComplexNDArray& a);
 
 extern OCTAVE_API FloatComplexNDArray min (const FloatComplex& c, const FloatComplexNDArray& m);
 extern OCTAVE_API FloatComplexNDArray min (const FloatComplexNDArray& m, const FloatComplex& c);

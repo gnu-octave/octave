@@ -105,6 +105,8 @@ public:
   friend OCTAVE_API FloatMatrix real (const FloatComplexMatrix& a);
   friend OCTAVE_API FloatMatrix imag (const FloatComplexMatrix& a);
 
+  friend class FloatComplexMatrix;
+
   FloatMatrix transpose (void) const { return MArray2<float>::transpose (); }
 
   // resize is the destructive equivalent for this one

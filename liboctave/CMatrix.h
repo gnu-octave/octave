@@ -373,6 +373,8 @@ private:
   ComplexMatrix (Complex *d, octave_idx_type r, octave_idx_type c) : MArray2<Complex> (d, r, c) { }
 };
 
+extern OCTAVE_API ComplexMatrix conj (const ComplexMatrix& a);
+
 // column vector by row vector -> matrix operations
 
 extern OCTAVE_API ComplexMatrix

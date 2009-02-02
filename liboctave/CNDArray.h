@@ -91,6 +91,8 @@ public:
   
   NDArray abs (void) const;
 
+  friend ComplexNDArray conj (const ComplexNDArray& a);
+
   ComplexNDArray fourier (int dim = 1) const;
   ComplexNDArray ifourier (int dim = 1) const;
 
@@ -136,6 +138,8 @@ private:
   ComplexNDArray (Complex *d, const dim_vector& dv)
     : MArrayN<Complex> (d, dv) { }
 };
+
+extern OCTAVE_API ComplexNDArray conj (const ComplexNDArray& a);
 
 extern OCTAVE_API ComplexNDArray min (const Complex& c, const ComplexNDArray& m);
 extern OCTAVE_API ComplexNDArray min (const ComplexNDArray& m, const Complex& c);

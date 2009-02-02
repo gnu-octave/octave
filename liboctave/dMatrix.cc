@@ -583,23 +583,15 @@ Matrix::stack (const DiagMatrix& a) const
 Matrix
 real (const ComplexMatrix& a)
 {
-  octave_idx_type a_len = a.length ();
-  Matrix retval;
-  if (a_len > 0)
-    retval = Matrix (mx_inline_real_dup (a.data (), a_len),
-		     a.rows (), a.cols ());
-  return retval;
+  return Matrix (mx_inline_real_dup (a.data (), a.length ()),
+                 a.rows (), a.cols ());
 }
 
 Matrix
 imag (const ComplexMatrix& a)
 {
-  octave_idx_type a_len = a.length ();
-  Matrix retval;
-  if (a_len > 0)
-    retval = Matrix (mx_inline_imag_dup (a.data (), a_len),
-		     a.rows (), a.cols ());
-  return retval;
+  return Matrix (mx_inline_imag_dup (a.data (), a.length ()),
+                 a.rows (), a.cols ());
 }
 
 Matrix
@@ -2847,16 +2839,8 @@ Matrix::sumsq (int dim) const
 Matrix
 Matrix::abs (void) const
 {
-  octave_idx_type nr = rows ();
-  octave_idx_type nc = cols ();
-
-  Matrix retval (nr, nc);
-
-  for (octave_idx_type j = 0; j < nc; j++)
-    for (octave_idx_type i = 0; i < nr; i++)
-      retval (i, j) = fabs (elem (i, j));
-
-  return retval;
+  return Matrix (mx_inline_fabs_dup (data (), length ()),
+                 rows (), cols ());
 }
 
 Matrix

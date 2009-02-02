@@ -114,6 +114,8 @@ public:
   friend OCTAVE_API NDArray real (const ComplexNDArray& a);
   friend OCTAVE_API NDArray imag (const ComplexNDArray& a);
 
+  friend class ComplexNDArray;
+
   Matrix matrix_value (void) const;
 
   NDArray squeeze (void) const { return MArrayN<double>::squeeze (); }

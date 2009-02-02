@@ -111,7 +111,7 @@ octave_float_diag_matrix::conj (void) const
 octave_value
 octave_float_diag_matrix::imag (void) const
 {
-  return DiagMatrix (matrix.rows (), matrix.cols ());
+  return DiagMatrix (matrix.rows (), matrix.cols (), 0.0f);
 }
 
 bool 

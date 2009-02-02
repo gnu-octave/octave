@@ -769,17 +769,35 @@ any_element_greater_than (const NDArray& a, double val)
 	       : octave_value (matrix.map (dmap)))); \
   }
 
-static double
-xconj (double x)
+// The fast mappers.
+octave_value
+octave_matrix::abs (void) const
 {
-  return x;
+  return matrix.abs ();
+}
+
+octave_value
+octave_matrix::real (void) const
+{
+  return matrix;
+}
+
+octave_value
+octave_matrix::conj (void) const
+{
+  return matrix;
+}
+
+octave_value
+octave_matrix::imag (void) const
+{
+  return NDArray (matrix.dims (), 0.0);
 }
 
 ARRAY_MAPPER (erf, NDArray::dmapper, ::erf)
 ARRAY_MAPPER (erfc, NDArray::dmapper, ::erfc)
 ARRAY_MAPPER (gamma, NDArray::dmapper, xgamma)
 CD_ARRAY_MAPPER (lgamma, xlgamma, xlgamma, 0.0, octave_Inf)
-ARRAY_MAPPER (abs, NDArray::dmapper, ::fabs)
 ARRAY_MAPPER (acos, NDArray::dmapper, ::acos)
 CD_ARRAY_MAPPER (acosh, ::acosh, ::acosh, 1.0, octave_Inf)
 ARRAY_MAPPER (angle, NDArray::dmapper, ::arg)
@@ -789,19 +807,16 @@ ARRAY_MAPPER (asinh, NDArray::dmapper,::asinh)
 ARRAY_MAPPER (atan, NDArray::dmapper, ::atan)
 CD_ARRAY_MAPPER (atanh, ::atanh, ::atanh, -1.0, 1.0)
 ARRAY_MAPPER (ceil, NDArray::dmapper, ::ceil)
-ARRAY_MAPPER (conj, NDArray::dmapper, xconj)
 ARRAY_MAPPER (cos, NDArray::dmapper, ::cos)
 ARRAY_MAPPER (cosh, NDArray::dmapper, ::cosh)
 ARRAY_MAPPER (exp, NDArray::dmapper, ::exp)
 ARRAY_MAPPER (expm1, NDArray::dmapper, ::expm1)
 ARRAY_MAPPER (fix, NDArray::dmapper, ::fix)
 ARRAY_MAPPER (floor, NDArray::dmapper, ::floor)
-ARRAY_MAPPER (imag, NDArray::dmapper, ::imag)
 CD_ARRAY_MAPPER (log, ::log, std::log, 0.0, octave_Inf)
 CD_ARRAY_MAPPER (log2, xlog2, xlog2, 0.0, octave_Inf)
 CD_ARRAY_MAPPER (log10, ::log10, std::log10, 0.0, octave_Inf)
 CD_ARRAY_MAPPER (log1p, ::log1p, ::log1p, -1.0, octave_Inf)
-ARRAY_MAPPER (real, NDArray::dmapper, ::real)
 ARRAY_MAPPER (round, NDArray::dmapper, xround)
 ARRAY_MAPPER (roundb, NDArray::dmapper, xroundb)
 ARRAY_MAPPER (signum, NDArray::dmapper, ::signum)

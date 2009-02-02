@@ -902,12 +902,8 @@ FloatComplexMatrix::stack (const FloatComplexDiagMatrix& a) const
 FloatComplexMatrix
 conj (const FloatComplexMatrix& a)
 {
-  octave_idx_type a_len = a.length ();
-  FloatComplexMatrix retval;
-  if (a_len > 0)
-    retval = FloatComplexMatrix (mx_inline_conj_dup (a.data (), a_len),
-			    a.rows (), a.cols ());
-  return retval;
+  return FloatComplexMatrix (mx_inline_conj_dup (a.data (), a.length ()),
+                             a.rows (), a.cols ());
 }
 
 // resize is the destructive equivalent for this one
@@ -3342,16 +3338,8 @@ FloatComplexMatrix::sumsq (int dim) const
 
 FloatMatrix FloatComplexMatrix::abs (void) const
 {
-  octave_idx_type nr = rows ();
-  octave_idx_type nc = cols ();
-
-  FloatMatrix retval (nr, nc);
-
-  for (octave_idx_type j = 0; j < nc; j++)
-    for (octave_idx_type i = 0; i < nr; i++)
-      retval (i, j) = std::abs (elem (i, j));
-
-  return retval;
+  return FloatMatrix (mx_inline_cabs_dup (data (), length ()),
+                      rows (), cols ());
 }
 
 FloatComplexMatrix

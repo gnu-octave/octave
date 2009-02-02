@@ -908,12 +908,8 @@ ComplexMatrix::stack (const ComplexDiagMatrix& a) const
 ComplexMatrix
 conj (const ComplexMatrix& a)
 {
-  octave_idx_type a_len = a.length ();
-  ComplexMatrix retval;
-  if (a_len > 0)
-    retval = ComplexMatrix (mx_inline_conj_dup (a.data (), a_len),
-			    a.rows (), a.cols ());
-  return retval;
+  return ComplexMatrix (mx_inline_conj_dup (a.data (), a.length ()),
+                        a.rows (), a.cols ());
 }
 
 // resize is the destructive equivalent for this one
@@ -3308,16 +3304,8 @@ ComplexMatrix::sumsq (int dim) const
 
 Matrix ComplexMatrix::abs (void) const
 {
-  octave_idx_type nr = rows ();
-  octave_idx_type nc = cols ();
-
-  Matrix retval (nr, nc);
-
-  for (octave_idx_type j = 0; j < nc; j++)
-    for (octave_idx_type i = 0; i < nr; i++)
-      retval (i, j) = std::abs (elem (i, j));
-
-  return retval;
+  return Matrix (mx_inline_cabs_dup (data (), length ()),
+                 rows (), cols ());
 }
 
 ComplexMatrix

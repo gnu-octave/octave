@@ -1,3 +1,14 @@
+2009-02-02  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-re-mat.cc (octave_matrix::abs, octave_matrix::real,
+	octave_matrix::imag, octave_matrix::conj): Use special code.
+	* ov-flt-re-mat.cc (octave_float_matrix::abs, octave_float_matrix::real,
+	octave_float_matrix::imag, octave_float_matrix::conj): Use special code.
+	* ov-cx-mat.cc (octave_complex_matrix::abs, octave_complex_matrix::real,
+	octave_complex_matrix::imag, octave_complex_matrix::conj): Use special code.
+	* ov-flt-cx-mat.cc (octave_float_complex_matrix::abs, octave_float_complex_matrix::real,
+	octave_float_complex_matrix::imag, octave_float_complex_matrix::conj): Use special code.
+
 2009-01-30  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/lookup.cc (Flookup): Add missing check.

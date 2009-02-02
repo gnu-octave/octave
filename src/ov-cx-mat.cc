@@ -850,12 +850,36 @@ any_element_greater_than (const NDArray& a, double val)
       } \
   }
 
+// The fast mappers.
+octave_value
+octave_complex_matrix::abs (void) const
+{
+  return matrix.abs ();
+}
+
+octave_value
+octave_complex_matrix::real (void) const
+{
+  return ::real (matrix);
+}
+
+octave_value
+octave_complex_matrix::conj (void) const
+{
+  return ::conj (matrix);
+}
+
+octave_value
+octave_complex_matrix::imag (void) const
+{
+  return ::imag (matrix);
+}
+
 DARRAY_MAPPER (erf, NDArray::dmapper, ::erf)
 DARRAY_MAPPER (erfc, NDArray::dmapper, ::erfc)
 DARRAY_MAPPER (gamma, NDArray::dmapper, xgamma)
 CD_ARRAY_MAPPER (lgamma, xlgamma, xlgamma, 0.0, octave_Inf)
 
-ARRAY_MAPPER (abs, ComplexNDArray::dmapper, xabs)
 ARRAY_MAPPER (acos, ComplexNDArray::cmapper, ::acos)
 ARRAY_MAPPER (acosh, ComplexNDArray::cmapper, ::acosh)
 ARRAY_MAPPER (angle, ComplexNDArray::dmapper, std::arg)
@@ -865,19 +889,16 @@ ARRAY_MAPPER (asinh, ComplexNDArray::cmapper, ::asinh)
 ARRAY_MAPPER (atan, ComplexNDArray::cmapper, ::atan)
 ARRAY_MAPPER (atanh, ComplexNDArray::cmapper, ::atanh)
 ARRAY_MAPPER (ceil, ComplexNDArray::cmapper, ::ceil)
-ARRAY_MAPPER (conj, ComplexNDArray::cmapper, std::conj)
 ARRAY_MAPPER (cos, ComplexNDArray::cmapper, std::cos)
 ARRAY_MAPPER (cosh, ComplexNDArray::cmapper, std::cosh)
 ARRAY_MAPPER (exp, ComplexNDArray::cmapper, std::exp)
 ARRAY_MAPPER (expm1, ComplexNDArray::cmapper, ::expm1)
 ARRAY_MAPPER (fix, ComplexNDArray::cmapper, ::fix)
 ARRAY_MAPPER (floor, ComplexNDArray::cmapper, ::floor)
-ARRAY_MAPPER (imag, ComplexNDArray::dmapper, ximag)
 ARRAY_MAPPER (log, ComplexNDArray::cmapper, std::log)
 ARRAY_MAPPER (log2, ComplexNDArray::cmapper, xlog2)
 ARRAY_MAPPER (log10, ComplexNDArray::cmapper, std::log10)
 ARRAY_MAPPER (log1p, ComplexNDArray::cmapper, ::log1p)
-ARRAY_MAPPER (real, ComplexNDArray::dmapper, xreal)
 ARRAY_MAPPER (round, ComplexNDArray::cmapper, xround)
 ARRAY_MAPPER (roundb, ComplexNDArray::cmapper, xroundb)
 ARRAY_MAPPER (signum, ComplexNDArray::cmapper, ::signum)

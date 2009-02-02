@@ -25,6 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_mx_inlines_h 1
 
 #include <cstddef>
+#include <cmath>
 
 #include "quit.h"
 
@@ -261,6 +262,8 @@ OP_DUP_FCN (, mx_inline_make_complex, Complex, double)
 OP_DUP_FCN (-, mx_inline_change_sign, double,  double)
 OP_DUP_FCN (-, mx_inline_change_sign, Complex, Complex)
 
+OP_DUP_FCN (std::abs, mx_inline_fabs_dup, double,  double)
+OP_DUP_FCN (std::abs, mx_inline_cabs_dup, double,  Complex)
 OP_DUP_FCN (real, mx_inline_real_dup, double,  Complex)
 OP_DUP_FCN (imag, mx_inline_imag_dup, double,  Complex)
 OP_DUP_FCN (conj, mx_inline_conj_dup, Complex, Complex)
@@ -273,6 +276,8 @@ OP_DUP_FCN (, mx_inline_make_complex, FloatComplex, float)
 OP_DUP_FCN (-, mx_inline_change_sign, float,  float)
 OP_DUP_FCN (-, mx_inline_change_sign, FloatComplex, FloatComplex)
 
+OP_DUP_FCN (std::abs, mx_inline_fabs_dup, float,  float)
+OP_DUP_FCN (std::abs, mx_inline_cabs_dup, float,  FloatComplex)
 OP_DUP_FCN (real, mx_inline_real_dup, float,  FloatComplex)
 OP_DUP_FCN (imag, mx_inline_imag_dup, float,  FloatComplex)
 OP_DUP_FCN (conj, mx_inline_conj_dup, FloatComplex, FloatComplex)

@@ -373,6 +373,8 @@ private:
   FloatComplexMatrix (FloatComplex *d, octave_idx_type r, octave_idx_type c) : MArray2<FloatComplex> (d, r, c) { }
 };
 
+extern OCTAVE_API FloatComplexMatrix conj (const FloatComplexMatrix& a);
+
 // column vector by row vector -> matrix operations
 
 extern OCTAVE_API FloatComplexMatrix

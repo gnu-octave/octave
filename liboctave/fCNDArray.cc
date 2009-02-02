@@ -884,14 +884,15 @@ FloatComplexNDArray::min (ArrayN<octave_idx_type>& idx_arg, int dim) const
 FloatNDArray
 FloatComplexNDArray::abs (void) const
 {
-  FloatNDArray retval (dims ());
+  return FloatNDArray (mx_inline_cabs_dup (data (), length ()),
+                       dims ());
+}
 
-  octave_idx_type nel = nelem ();
-
-  for (octave_idx_type i = 0; i < nel; i++)
-    retval(i) = std::abs (elem (i));
-      
-  return retval;
+FloatComplexNDArray
+conj (const FloatComplexNDArray& a)
+{
+  return FloatComplexNDArray (mx_inline_conj_dup (a.data (), a.length ()),
+                              a.dims ());
 }
 
 FloatComplexNDArray&

@@ -104,6 +104,8 @@ public:
   friend OCTAVE_API Matrix real (const ComplexMatrix& a);
   friend OCTAVE_API Matrix imag (const ComplexMatrix& a);
 
+  friend class ComplexMatrix;
+
   Matrix transpose (void) const { return MArray2<double>::transpose (); }
 
   // resize is the destructive equivalent for this one

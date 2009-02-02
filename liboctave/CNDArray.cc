@@ -890,14 +890,15 @@ ComplexNDArray::min (ArrayN<octave_idx_type>& idx_arg, int dim) const
 NDArray
 ComplexNDArray::abs (void) const
 {
-  NDArray retval (dims ());
+  return NDArray (mx_inline_cabs_dup (data (), length ()),
+                  dims ());
+}
 
-  octave_idx_type nel = nelem ();
-
-  for (octave_idx_type i = 0; i < nel; i++)
-    retval(i) = std::abs (elem (i));
-      
-  return retval;
+ComplexNDArray
+conj (const ComplexNDArray& a)
+{
+  return ComplexNDArray (mx_inline_conj_dup (a.data (), a.length ()),
+                         a.dims ());
 }
 
 ComplexNDArray&

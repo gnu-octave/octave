@@ -817,12 +817,36 @@ any_element_greater_than (const FloatNDArray& a, float val)
       } \
   }
 
+// The fast mappers.
+octave_value
+octave_float_complex_matrix::abs (void) const
+{
+  return matrix.abs ();
+}
+
+octave_value
+octave_float_complex_matrix::real (void) const
+{
+  return ::real (matrix);
+}
+
+octave_value
+octave_float_complex_matrix::conj (void) const
+{
+  return ::conj (matrix);
+}
+
+octave_value
+octave_float_complex_matrix::imag (void) const
+{
+  return ::imag (matrix);
+}
+
 DARRAY_MAPPER (erf, FloatNDArray::dmapper, ::erff)
 DARRAY_MAPPER (erfc, FloatNDArray::dmapper, ::erfcf)
 DARRAY_MAPPER (gamma, FloatNDArray::dmapper, xgamma)
 CD_ARRAY_MAPPER (lgamma, xlgamma, xlgamma, 0.0, octave_Inf)
 
-ARRAY_MAPPER (abs, FloatComplexNDArray::dmapper, xabs)
 ARRAY_MAPPER (acos, FloatComplexNDArray::cmapper, ::acos)
 ARRAY_MAPPER (acosh, FloatComplexNDArray::cmapper, ::acosh)
 ARRAY_MAPPER (angle, FloatComplexNDArray::dmapper, std::arg)
@@ -832,19 +856,16 @@ ARRAY_MAPPER (asinh, FloatComplexNDArray::cmapper, ::asinh)
 ARRAY_MAPPER (atan, FloatComplexNDArray::cmapper, ::atan)
 ARRAY_MAPPER (atanh, FloatComplexNDArray::cmapper, ::atanh)
 ARRAY_MAPPER (ceil, FloatComplexNDArray::cmapper, ::ceil)
-ARRAY_MAPPER (conj, FloatComplexNDArray::cmapper, std::conj)
 ARRAY_MAPPER (cos, FloatComplexNDArray::cmapper, std::cos)
 ARRAY_MAPPER (cosh, FloatComplexNDArray::cmapper, std::cosh)
 ARRAY_MAPPER (exp, FloatComplexNDArray::cmapper, std::exp)
 ARRAY_MAPPER (expm1, FloatComplexNDArray::cmapper, ::expm1f)
 ARRAY_MAPPER (fix, FloatComplexNDArray::cmapper, ::fix)
 ARRAY_MAPPER (floor, FloatComplexNDArray::cmapper, ::floor)
-ARRAY_MAPPER (imag, FloatComplexNDArray::dmapper, ximag)
 ARRAY_MAPPER (log, FloatComplexNDArray::cmapper, std::log)
 ARRAY_MAPPER (log2, FloatComplexNDArray::cmapper, xlog2)
 ARRAY_MAPPER (log10, FloatComplexNDArray::cmapper, std::log10)
 ARRAY_MAPPER (log1p, FloatComplexNDArray::cmapper, ::log1pf)
-ARRAY_MAPPER (real, FloatComplexNDArray::dmapper, xreal)
 ARRAY_MAPPER (round, FloatComplexNDArray::cmapper, xround)
 ARRAY_MAPPER (roundb, FloatComplexNDArray::cmapper, xroundb)
 ARRAY_MAPPER (signum, FloatComplexNDArray::cmapper, ::signum)

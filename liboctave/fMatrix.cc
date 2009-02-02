@@ -582,23 +582,15 @@ FloatMatrix::stack (const FloatDiagMatrix& a) const
 FloatMatrix
 real (const FloatComplexMatrix& a)
 {
-  octave_idx_type a_len = a.length ();
-  FloatMatrix retval;
-  if (a_len > 0)
-    retval = FloatMatrix (mx_inline_real_dup (a.data (), a_len),
-		     a.rows (), a.cols ());
-  return retval;
+  return FloatMatrix (mx_inline_real_dup (a.data (), a.length ()),
+                      a.rows (), a.cols ());
 }
 
 FloatMatrix
 imag (const FloatComplexMatrix& a)
 {
-  octave_idx_type a_len = a.length ();
-  FloatMatrix retval;
-  if (a_len > 0)
-    retval = FloatMatrix (mx_inline_imag_dup (a.data (), a_len),
-		     a.rows (), a.cols ());
-  return retval;
+  return FloatMatrix (mx_inline_imag_dup (a.data (), a.length ()),
+                      a.rows (), a.cols ());
 }
 
 FloatMatrix
@@ -2846,16 +2838,8 @@ FloatMatrix::sumsq (int dim) const
 FloatMatrix
 FloatMatrix::abs (void) const
 {
-  octave_idx_type nr = rows ();
-  octave_idx_type nc = cols ();
-
-  FloatMatrix retval (nr, nc);
-
-  for (octave_idx_type j = 0; j < nc; j++)
-    for (octave_idx_type i = 0; i < nr; i++)
-      retval (i, j) = fabs (elem (i, j));
-
-  return retval;
+  return FloatMatrix (mx_inline_fabs_dup (data (), length ()),
+                      rows (), cols ());
 }
 
 FloatMatrix

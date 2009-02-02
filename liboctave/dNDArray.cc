@@ -942,21 +942,15 @@ NDArray::concat (const charNDArray& rb, const Array<octave_idx_type>& ra_idx)
 NDArray
 real (const ComplexNDArray& a)
 {
-  octave_idx_type a_len = a.length ();
-  NDArray retval;
-  if (a_len > 0)
-    retval = NDArray (mx_inline_real_dup (a.data (), a_len), a.dims ());
-  return retval;
+  return NDArray (mx_inline_real_dup (a.data (), a.length ()),
+                  a.dims ());
 }
 
 NDArray
 imag (const ComplexNDArray& a)
 {
-  octave_idx_type a_len = a.length ();
-  NDArray retval;
-  if (a_len > 0)
-    retval = NDArray (mx_inline_imag_dup (a.data (), a_len), a.dims ());
-  return retval;
+  return NDArray (mx_inline_imag_dup (a.data (), a.length ()),
+                  a.dims ());
 }
 
 NDArray&
@@ -976,14 +970,8 @@ NDArray::insert (const NDArray& a, const Array<octave_idx_type>& ra_idx)
 NDArray
 NDArray::abs (void) const
 {
-  NDArray retval (dims ());
-
-  octave_idx_type nel = nelem ();
-
-  for (octave_idx_type i = 0; i < nel; i++)
-    retval(i) = fabs (elem (i));
-
-  return retval;
+  return NDArray (mx_inline_fabs_dup (data (), length ()),
+                  dims ());
 }
 
 Matrix

@@ -1,3 +1,21 @@
+2009-02-02  Jaroslav Hajek  <highegg@gmail.com>
+
+	* mx-inlines.cc (mx_inline_fabs_dup, mx_inline_cabs_dup): New funcs.
+
+	* dMatrix.cc (real, imag, Matrix::abs): Simplify.
+	* fMatrix.cc (real, imag, FloatMatrix::abs): Simplify.
+	* CMatrix.cc (ComplexMatrix::abs, ComplexMatrix::conj): Simplify.
+	* fCMatrix.cc (FloatComplexMatrix::abs, FloatComplexMatrix::conj): Simplify.
+
+	* CMatrix.h, fCMatrix.h (conj): Add missing decl.
+
+	* dNDArray.cc (real, imag, NDArray::abs): Simplify.
+	* fNDArray.cc (real, imag, FloatNDArray::abs): Simplify.
+	* CNDArray.cc (ComplexNDArray::abs, ComplexNDArray::conj): Simplify.
+	* fCNDArray.cc (FloatComplexNDArray::abs, FloatComplexNDArray::conj): Simplify.
+
+	* CMatrix.h, fCMatrix.h (conj): New decl.
+
 2009-01-29  John W. Eaton  <jwe@octave.org>
 
 	* intNDArray.h (intNDArray<T>:any_element_is_nan): New function.

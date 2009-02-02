@@ -111,6 +111,8 @@ public:
   friend OCTAVE_API FloatNDArray real (const FloatComplexNDArray& a);
   friend OCTAVE_API FloatNDArray imag (const FloatComplexNDArray& a);
 
+  friend class FloatComplexNDArray;
+
   Matrix matrix_value (void) const;
 
   FloatNDArray squeeze (void) const { return MArrayN<float>::squeeze (); }

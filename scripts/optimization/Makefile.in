@@ -42,6 +42,7 @@ SOURCES = \
   lsqnonneg.m \
   optimset.m \
   optimget.m \
+  __all_opts__.m \
   qp.m \
   sqp.m
 

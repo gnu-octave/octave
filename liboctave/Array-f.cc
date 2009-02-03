@@ -60,9 +60,9 @@ ascending_compare (float a, float b)
 
 template <>
 bool
-ascending_compare (vec_index<float> *a, vec_index<float> *b)
+ascending_compare (const float *a, const float *b)
 {
-  return (xisnan (b->vec) || (a->vec < b->vec));
+  return (xisnan (*b) || (*a < *b));
 }
 
 template <>
@@ -74,9 +74,9 @@ descending_compare (float a, float b)
 
 template <>
 bool
-descending_compare (vec_index<float> *a, vec_index<float> *b)
+descending_compare (const float *a, const float *b)
 {
-  return (xisnan (b->vec) || (a->vec > b->vec));
+  return (xisnan (*b) || (*a > *b));
 }
 
 INSTANTIATE_ARRAY_SORT (uint32_t);
@@ -85,7 +85,7 @@ template <>
 Array<float>
 Array<float>::sort (octave_idx_type dim, sortmode mode) const
 {
-  Array<float> m = *this;
+  Array<float> m (dims ());
 
   dim_vector dv = m.dims ();
 
@@ -99,8 +99,10 @@ Array<float>::sort (octave_idx_type dim, sortmode mode) const
     stride *= dv(i);
 
   float *v = m.fortran_vec ();
+  const float *ov = data ();
 
   uint32_t *p = reinterpret_cast<uint32_t *> (v);
+  const uint32_t *op = reinterpret_cast<const uint32_t *> (ov);
 
   octave_sort<uint32_t> lsort;
 
@@ -119,7 +121,7 @@ Array<float>::sort (octave_idx_type dim, sortmode mode) const
 	  // IEEE754 give the correct ordering.
 
 	  for (octave_idx_type i = 0; i < ns; i++)
-	    p[i] = FloatFlip (p[i]);
+	    p[i] = FloatFlip (op[i]);
 	      
 	  lsort.sort (p, ns);
 
@@ -161,6 +163,7 @@ Array<float>::sort (octave_idx_type dim, sortmode mode) const
 	    }
 
 	  p += ns;
+          op += ns;
 	}
     }
   else
@@ -182,7 +185,7 @@ Array<float>::sort (octave_idx_type dim, sortmode mode) const
 	  // IEEE754 give the correct ordering.
 
 	  for (octave_idx_type i = 0; i < ns; i++)
-	    vi[i] = FloatFlip (p[i*stride + offset]);
+	    vi[i] = FloatFlip (op[i*stride + offset]);
 
 	  lsort.sort (vi, ns);
 
@@ -231,7 +234,7 @@ Array<float>
 Array<float>::sort (Array<octave_idx_type> &sidx, octave_idx_type dim, 
 		     sortmode mode) const
 {
-  Array<float> m = *this;
+  Array<float> m (dims ());
 
   dim_vector dv = m.dims ();
 
@@ -248,10 +251,12 @@ Array<float>::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
     stride *= dv(i);
 
   float *v = m.fortran_vec ();
+  const float *ov = data ();
 
   uint32_t *p = reinterpret_cast<uint32_t *> (v);
+  const uint32_t *op = reinterpret_cast<const uint32_t *> (ov);
 
-  octave_sort<vec_index<uint32_t> *> indexed_sort;
+  octave_sort<const uint32_t *> indexed_sort;
 
   if (mode == ASCENDING)
     indexed_sort.set_compare (ascending_compare);
@@ -260,12 +265,9 @@ Array<float>::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
   else
     abort ();
 
-  OCTAVE_LOCAL_BUFFER (vec_index<uint32_t> *, vi, ns);
-  OCTAVE_LOCAL_BUFFER (vec_index<uint32_t>, vix, ns);
+  OCTAVE_LOCAL_BUFFER (const uint32_t *, vi, ns);
+  OCTAVE_LOCAL_BUFFER (uint32_t, vix, ns);
   
-  for (octave_idx_type i = 0; i < ns; i++)
-    vi[i] = &vix[i];
-
   sidx = Array<octave_idx_type> (dv);
       
   for (octave_idx_type j = 0; j < iter; j++)
@@ -284,8 +286,8 @@ Array<float>::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
 
       for (octave_idx_type i = 0; i < ns; i++)
 	{
-	  vi[i]->vec = FloatFlip (p[i*stride + offset]);
-	  vi[i]->indx = i;
+	  vix[i] = FloatFlip (op[i*stride + offset]);
+	  vi[i] = vix + i;
 	}
 
       indexed_sort.sort (vi, ns);
@@ -295,8 +297,8 @@ Array<float>::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
 
       for (octave_idx_type i = 0; i < ns; i++)
 	{
-	  p[i*stride + offset] = IFloatFlip (vi[i]->vec);
-	  sidx(i*stride + offset) = vi[i]->indx;
+	  p[i*stride + offset] = IFloatFlip (*vi[i]);
+	  sidx(i*stride + offset) = vi[i] - vix;
 	}
 
       // There are two representations of NaN.  One will be sorted
@@ -362,10 +364,10 @@ ascending_compare (float a, float b)
 
 template <>
 bool
-ascending_compare (vec_index<float> *a, 
-		   vec_index<float> *b)
+ascending_compare (const float *a, 
+		   const float *b)
 {
-  return (xisnan (b->vec) || (a->vec < b->vec));
+  return (xisnan (*b) || (*a < *b));
 }
 
 template <>
@@ -377,10 +379,10 @@ descending_compare (float a, float b)
 
 template <>
 bool
-descending_compare (vec_index<float> *a, 
-		    vec_index<float> *b)
+descending_compare (const float *a, 
+		    const float *b)
 {
-  return (xisnan (b->vec) || (a->vec > b->vec));
+  return (xisnan (*b) || (*a > *b));
 }
 
 INSTANTIATE_ARRAY_SORT (float);

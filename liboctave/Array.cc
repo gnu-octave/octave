@@ -1991,23 +1991,23 @@ descending_compare (T a, T b)
 
 template <class T>
 bool 
-ascending_compare (vec_index<T> *a, vec_index<T> *b)
+ascending_compare (const T *a, const T *b)
 {
-  return (a->vec < b->vec);
+  return (*a < *b);
 }
 
 template <class T>
 bool 
-descending_compare (vec_index<T> *a, vec_index<T> *b)
+descending_compare (const T *a, const T *b)
 {
-  return (a->vec > b->vec);
+  return (*a > *b);
 }
 
 template <class T>
 Array<T>
 Array<T>::sort (octave_idx_type dim, sortmode mode) const
 {
-  Array<T> m = *this;
+  Array<T> m (dims ());
 
   dim_vector dv = m.dims ();
 
@@ -2022,6 +2022,8 @@ Array<T>::sort (octave_idx_type dim, sortmode mode) const
     stride *= dv(i);
 
   T *v = m.fortran_vec ();
+  const T *ov = data ();
+
   octave_sort<T> lsort;
   
   if (mode == ASCENDING) 
@@ -2035,8 +2037,10 @@ Array<T>::sort (octave_idx_type dim, sortmode mode) const
     {
       for (octave_idx_type j = 0; j < iter; j++)
 	{
+          std::copy (ov, ov + ns, v);
 	  lsort.sort (v, ns);
 	  v += ns;
+          ov += ns;
 	}
     }
   else
@@ -2057,7 +2061,7 @@ Array<T>::sort (octave_idx_type dim, sortmode mode) const
 	  offset += offset2 * stride * ns;
 	  
 	  for (octave_idx_type i = 0; i < ns; i++)
-	    pvi[i] = v[i*stride + offset];
+	    pvi[i] = ov[i*stride + offset];
 
 	  lsort.sort (pvi, ns);
 	      
@@ -2074,7 +2078,7 @@ Array<T>
 Array<T>::sort (Array<octave_idx_type> &sidx, octave_idx_type dim, 
 		sortmode mode) const
 {
-  Array<T> m = *this;
+  Array<T> m (dims ());
 
   dim_vector dv = m.dims ();
 
@@ -2092,7 +2096,9 @@ Array<T>::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
     stride *= dv(i);
 
   T *v = m.fortran_vec ();
-  octave_sort<vec_index<T> *> indexed_sort;
+  const T *ov = data ();
+
+  octave_sort<const T *> indexed_sort;
 
   if (mode == ASCENDING) 
     indexed_sort.set_compare (ascending_compare);
@@ -2101,11 +2107,7 @@ Array<T>::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
   else
     abort ();
 
-  OCTAVE_LOCAL_BUFFER (vec_index<T> *, vi, ns);
-  OCTAVE_LOCAL_BUFFER (vec_index<T>, vix, ns);
-
-  for (octave_idx_type i = 0; i < ns; i++)
-    vi[i] = &vix[i];
+  OCTAVE_LOCAL_BUFFER (const T *, vi, ns);
 
   sidx = Array<octave_idx_type> (dv);
       
@@ -2116,23 +2118,23 @@ Array<T>::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
 	   octave_idx_type offset = j * ns;
 
 	  for (octave_idx_type i = 0; i < ns; i++)
-	    {
-	      vi[i]->vec = v[i];
-	      vi[i]->indx = i;
-	    }
+            vi[i] = ov + i;
 
 	  indexed_sort.sort (vi, ns);
 
 	  for (octave_idx_type i = 0; i < ns; i++)
 	    {
-	      v[i] = vi[i]->vec;
-	      sidx(i + offset) = vi[i]->indx;
+	      v[i] = *vi[i];
+	      sidx(i + offset) = vi[i] - ov;
 	    }
 	  v += ns;
+          ov += ns;
 	}
     }
   else
     {
+      OCTAVE_LOCAL_BUFFER (T, vix, ns);
+
       for (octave_idx_type j = 0; j < iter; j++)
 	{
 	  octave_idx_type offset = j;
@@ -2148,16 +2150,16 @@ Array<T>::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
 	      
 	  for (octave_idx_type i = 0; i < ns; i++)
 	    {
-	      vi[i]->vec = v[i*stride + offset];
-	      vi[i]->indx = i;
+	      vix[i] = ov[i*stride + offset];
+	      vi[i] = vix + i;
 	    }
 
 	  indexed_sort.sort (vi, ns);
 	      
 	  for (octave_idx_type i = 0; i < ns; i++)
 	    {
-	      v[i*stride+offset] = vi[i]->vec;
-	      sidx(i*stride+offset) = vi[i]->indx;
+	      v[i*stride+offset] = *vi[i];
+	      sidx(i*stride+offset) = vi[i] - vix;
 	    }
 	}
     }
@@ -2170,11 +2172,11 @@ Array<T>::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
 template <>
 bool ascending_compare (double, double);
 template <>
-bool ascending_compare (vec_index<double>*, vec_index<double>*);
+bool ascending_compare (const double*, const double*);
 template <>
 bool descending_compare (double, double);
 template <>
-bool descending_compare (vec_index<double>*, vec_index<double>*);
+bool descending_compare (const double*, const double*);
 
 template <>
 Array<double> Array<double>::sort (octave_idx_type dim, sortmode mode) const;

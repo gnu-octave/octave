@@ -1,3 +1,20 @@
+2009-02-03  Jaroslav Hajek  <highegg@gmail.com>
+
+	* Array.cc (Array<T>::sort (octave_idx_type, sortmode)):
+	Copy array on-the-fly.
+	(Array<T>::sort (Array<octave_idx_type> &, octave_idx_type, sortmode)):
+	Copy array on-the-fly, use bare pointers rather than vec_index.
+
+	* Array-d.cc (Array<double>::sort (octave_idx_type, sortmode)):
+	Copy array on-the-fly.
+	(Array<double>::sort (Array<octave_idx_type> &, octave_idx_type, sortmode)):
+	Copy array on-the-fly, use bare pointers rather than vec_index.
+
+	* Array-f.cc (Array<float>::sort (octave_idx_type, sortmode)):
+	Copy array on-the-fly.
+	(Array<float>::sort (Array<octave_idx_type> &, octave_idx_type, sortmode)):
+	Copy array on-the-fly, use bare pointers rather than vec_index.
+
 2009-02-02  Jaroslav Hajek  <highegg@gmail.com>
 
 	* mx-inlines.cc (mx_inline_fabs_dup, mx_inline_cabs_dup): New funcs.

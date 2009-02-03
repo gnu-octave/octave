@@ -53,9 +53,9 @@ ascending_compare (octave_value a, octave_value b)
 
 template <>
 bool
-ascending_compare (vec_index<octave_value> *a, vec_index<octave_value> *b)
+ascending_compare (const octave_value *a, const octave_value *b)
 {
-  return (a->vec.string_value () < b->vec.string_value ());
+  return (a->string_value () < b->string_value ());
 }
 
 template <>
@@ -67,9 +67,9 @@ descending_compare (octave_value a, octave_value b)
 
 template <>
 bool
-descending_compare (vec_index<octave_value> *a, vec_index<octave_value> *b)
+descending_compare (const octave_value *a, const octave_value *b)
 {
-  return (a->vec.string_value () > b->vec.string_value ());
+  return (a->string_value () > b->string_value ());
 }
 
 INSTANTIATE_ARRAY_SORT (octave_value);

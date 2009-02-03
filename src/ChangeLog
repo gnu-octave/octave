@@ -1,3 +1,7 @@
+2009-02-03  Jaroslav Hajek  <highegg@gmail.com>
+
+	* TEMPLATE-INST/Array-tc.cc: Replace vec_index by pointers.
+
 2009-02-02  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-re-mat.cc (octave_matrix::abs, octave_matrix::real,

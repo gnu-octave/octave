@@ -26,14 +26,20 @@ function names = __all_opts__ (varargin)
   
   persistent saved_names = {};
 
+  ## do not clear this function
+  mlock ();
+
   ## guard against recursive calls.
   persistent recursive = false;
 
-  if (nargin == 0)
+  if (recursive)
+    names = {};
+  elseif (nargin == 0)
     names = saved_names;
   else
     ## query all options from all known functions. These will call optimset,
     ## which will in turn call us, but we won't answer.
+    recursive = true;
     names = saved_names;
     for i = 1:nargin
       try
@@ -52,6 +58,7 @@ function names = __all_opts__ (varargin)
       error ("__all_opts__: duplicate options with inconsistent case.");
     endif
     saved_names = names;
+    recursive = false;
   endif
 
 endfunction

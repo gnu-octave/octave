@@ -1,3 +1,7 @@
+2009-02-03  Benjamin Lindner  <lindnerben@gmx.net>
+	
+	* Makefile.in: Add missing library reference.
+
 2009-02-03  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Array.cc (Array<T>::sort (octave_idx_type, sortmode)):

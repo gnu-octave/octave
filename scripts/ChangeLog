@@ -1,3 +1,7 @@
+2009-02-02  Rob Mahurin <rob@utk.edu>
+
+	* general/interpft.m: Increase tolerance in tests, for FFTPACK.
+	
 2009-02-03  Jaroslav Hajek  <highegg@gmail.com>
 
 	* optimization/__all_opts__.m: Yield empty list in recursive calls.

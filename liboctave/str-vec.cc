@@ -84,18 +84,6 @@ string_vector::string_vector (const char * const *s, octave_idx_type n)
 }
 
 string_vector&
-string_vector::sort (bool make_uniq)
-{
-  // Don't use Array<std::string>::sort () to allow sorting in place.
-  octave_sort<std::string> lsort;
-  lsort.sort (Array<std::string>::fortran_vec (), length ());
-
-  if (make_uniq)
-    uniq ();
-
-  return *this;
-}
-string_vector&
 string_vector::uniq (void)
 {
   octave_idx_type len = length ();

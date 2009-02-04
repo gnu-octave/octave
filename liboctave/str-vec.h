@@ -84,7 +84,15 @@ public:
 
   std::string operator[] (octave_idx_type i) const { return Array<std::string>::elem (i); }
 
-  string_vector& sort (bool make_uniq = false);
+  string_vector& sort (bool make_uniq = false)
+  {
+    Array<std::string>::sort ();
+
+    if (make_uniq)
+      uniq ();
+
+    return *this;
+  }
 
   string_vector& uniq (void);
 

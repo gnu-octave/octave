@@ -1,3 +1,7 @@
+2009-02-04  Soren Hauberg  <hauberg@gmail.com>
+
+	* miscellaneous/Makefile.in (SOURCES): Add bzip2.m to the list.
+
 2009-02-04  Frederick Umminger  <Frederick_Umminger@playstation.sony.com>
 
 	* signal/freqz.m: Ensure causal phase response.

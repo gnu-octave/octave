@@ -1,3 +1,7 @@
+2009-02-04  John W. Eaton  <jwe@octave.org>
+
+	* help/which.m: Still print something sensible if type is empty.
+
 2009-02-04  Soren Hauberg  <hauberg@gmail.com>
             Thomas Treichl  <Thomas.Treichl@gmx.net>
 

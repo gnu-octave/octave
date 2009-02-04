@@ -66,6 +66,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "symtab.h"
 #include "syswait.h"
 #include "toplev.h"
+#include "unwind-prot.h"
 #include "utils.h"
 #include "variables.h"
 #include "version.h"
@@ -652,7 +653,13 @@ raw_help_from_file (const std::string& nm, std::string& h,
 {
   bool retval = false;
 
+  // FIXME -- this is a bit of a kluge...
+  unwind_protect_bool (reading_script_file);
+  reading_script_file = true;
+
   h = get_help_from_file (nm, symbol_found, file);
+
+  unwind_protect::run ();
 
   if (h.length () > 0)
     retval = true;
@@ -815,6 +822,12 @@ do_which (const std::string& name, std::string& type)
 	    type = val.is_user_script ()
 	      ? std::string ("script") : std::string ("function");
 	}
+    }
+  else
+    {
+      // We might find a file that contains only a doc string.
+
+      file = load_path::find_fcn_file (name);
     }
 
   return file;

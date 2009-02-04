@@ -1,5 +1,9 @@
 2009-02-04  John W. Eaton  <jwe@octave.org>
 
+	* help.cc (do_which): If NAME is not in the symbol table, look for
+	a function file in the load path.
+	(raw_help_from_file): Unwind-protect and set reading_script_file.
+
 	* pt-loop.h, pt-loop.cc (evaluating_looping_command):
 	Delete global variable and all uses.
 	* parse.y, parse.h (evaluating_function_body): Delete global

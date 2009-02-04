@@ -1243,20 +1243,28 @@ case "$canonical_host_type" in
     SONAME_FLAGS='-install_name $(octlibdir)/$@'
     library_path_var=DYLD_LIBRARY_PATH	
   ;;
-  *-*-mingw* | *-*-cygwin*)
-    case "$canonical_host_type" in
-      *-*-cygwin*)
-        LIBPRE=cyg
-	SHLLIBPRE=cyg
-        SHLBINPRE=lib
-      ;;
-    esac
+  *-*-cygwin*)
+    LIBPRE=cyg
+    SHLLIBPRE=cyg
+    SHLBINPRE=lib
     SHLEXT=dll
     SHLLIB=dll.a
     SHLBIN=a    
     DL_LDFLAGS="-shared -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-runtime-pseudo-reloc"
     SH_LDFLAGS="-shared -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-auto-image-base"
     SONAME_FLAGS='-Wl,--out-implib=$(patsubst $(SHLLIBPRE)%,$(SHLBINPRE)%,$@).a'
+  ;;
+  *-*-mingw*)
+    CPICFLAG=
+    CXXPICFLAG=
+    FPICFLAG=
+    SHLEXT=dll
+    SHLLIB=dll.a
+    SHLBIN=dll
+    DL_LDFLAGS="-shared -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-runtime-pseudo-reloc"
+    SH_LDFLAGS="-shared -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-auto-image-base"
+    SONAME_FLAGS='-Wl,--out-implib=$@.a'
+    library_path_var=PATH
   ;;
 
   *-*-msdosmsvc)

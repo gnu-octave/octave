@@ -820,7 +820,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 	    endif
 
 	    if (doing_interp_color)
-	      interp_str = "interpolate 4, 4";
+	      interp_str = "interpolate 0, 0";
 	    else
 	      ## No interpolation of facecolors.
 	      interp_str = "";

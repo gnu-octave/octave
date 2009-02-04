@@ -21,6 +21,10 @@
 	strings/dec2base.m, strings/strcat.m, strings/validatestring.m,
 	time/addtodate.m: Style fixes.
 
+2009-02-04  Petr Mikulik <mikulik@physics.muni.cz>
+
+	* plot/__go_draw_axes__.m: __go_draw_axes__.m: Improved gnuplot color interpolation.
+
 2009-02-04  Jaroslav Hajek  <highegg@gmail.com>
 
 	* optimization/fsolve.m: remove redundant line.

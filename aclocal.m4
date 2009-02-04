@@ -955,6 +955,44 @@ else
 fi
 ])
 dnl
+dnl Check whether QHull works (does not crash)
+dnl
+AC_DEFUN(AC_CHECK_QHULL_OK,
+[AC_MSG_CHECKING([whether the qhull library works])
+AC_CACHE_VAL(octave_cv_lib_qhull_ok,
+[
+  save_LIBS="$LIBS"
+  LIBS="$LIBS -lqhull -lm"
+AC_RUN_IFELSE([AC_LANG_SOURCE([[
+#include <stdio.h>
+#include <qhull/qhull.h>
+
+#ifdef NEED_QHULL_VERSION
+char *qh_version = "version";
+#endif
+int main()
+{
+  int dim = 2, n = 4;
+  coordT points[8] = { -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, 0.5 };
+  boolT ismalloc = 0;
+
+  return qh_new_qhull (dim, n, points, ismalloc, "qhull ", 0, stderr); 
+}
+]])],
+  [octave_cv_lib_qhull_ok=yes],
+  [octave_cv_lib_qhull_ok=no],
+  [octave_cv_lib_qhull_ok=yes])
+  LIBS="$save_LIBS"
+])
+if test "$octave_cv_lib_qhull_ok" = "yes"; then
+  AC_MSG_RESULT(yes)
+  ifelse([$1], , , [$1])
+else
+  AC_MSG_RESULT(no)
+  ifelse([$2], , , [$2])
+fi
+])
+dnl
 dnl Check for OpenGL. If found, define OPENGL_LIBS
 dnl
 dnl FIXME -- add tests for apple

@@ -1,3 +1,9 @@
+2009-02-03  Jaroslav Hajek  <highegg@gmail.com>
+
+	* aclocal.m4 (AC_CHECK_QHULL_OK): New macro, based on suggestion by
+	Petr Mikulik <mikulik@physics.muni.cz>.
+	* configure.in: Call it.
+
 2009-02-01  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
 	* autogen.sh: Remove printing of cvs motd.

@@ -425,13 +425,20 @@ if test "$have_qhull" = yes; then
     AC_CHECK_QHULL_VERSION(have_qhull=yes, have_qhull=no)
     AC_DEFINE(NEED_QHULL_VERSION, 1, [Define if the QHull library needs a wh_version variable defined.])
   fi
+  if test "$have_qhull" = yes; then
+    AC_CHECK_QHULL_OK(have_qhull=yes, have_qhull=bad)
+  fi
 fi
 if test "$have_qhull" = yes; then
   AC_DEFINE(HAVE_QHULL, 1, [Define if the QHull library is used.])
   QHULL_LIBS="-lqhull"
   TEXINFO_QHULL="@set HAVE_QHULL"
 else
-  warn_qhull="Qhull library not found --- This will result in loss of functionality of some geometry functions."
+  if test "$have_qhull" = bad; then
+    warn_qhull="Qhull library found, but seems not to work properly --- This will result in loss of functionality of some geometry functions. Please try recompiling the library with -fno-strict-aliasing."
+  else
+    warn_qhull="Qhull library not found --- This will result in loss of functionality of some geometry functions."
+  fi
   AC_MSG_WARN($warn_qhull)
 fi
 

@@ -1,3 +1,8 @@
+2009-02-04  Petr Mikulik  <mikulik@physics.muni.cz>
+
+	* plot/__go_draw_axes__.m: Pass "interpolate 0, 0" to gnuplot
+	instead of "interpolate 4, 4".
+
 2009-02-04  John W. Eaton  <jwe@octave.org>
 
 	* audio/wavwrite.m, deprecated/splu.m, general/bitcmp.m,
@@ -20,10 +25,6 @@
 	statistics/tests/kolmogorov_smirnov_test_2.m, strings/base2dec.m,
 	strings/dec2base.m, strings/strcat.m, strings/validatestring.m,
 	time/addtodate.m: Style fixes.
-
-2009-02-04  Petr Mikulik <mikulik@physics.muni.cz>
-
-	* plot/__go_draw_axes__.m: __go_draw_axes__.m: Improved gnuplot color interpolation.
 
 2009-02-04  Jaroslav Hajek  <highegg@gmail.com>
 

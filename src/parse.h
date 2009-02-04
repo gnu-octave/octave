@@ -62,11 +62,6 @@ extern bool reading_startup_message_printed;
 // TRUE means input is coming from startup file.
 extern bool input_from_startup_file;
 
-// TRUE means that we are in the process of evaluating a function
-// body.  The parser might be called in that case if we are looking at
-// an eval() statement.
-extern bool evaluating_function_body;
-
 // Keep track of symbol table information when parsing functions.
 extern std::stack<symbol_table::scope_id> symtab_context;
 

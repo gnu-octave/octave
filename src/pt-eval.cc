@@ -53,6 +53,10 @@ size_t tree_evaluator::current_frame = 0;
 
 bool tree_evaluator::debug_mode = false;
 
+bool tree_evaluator::in_fcn_or_script_body = false;
+
+bool tree_evaluator::in_loop_command = false;
+
 int tree_evaluator::db_line = -1;
 int tree_evaluator::db_column = -1;
 
@@ -266,9 +270,9 @@ tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
 
   unwind_protect::begin_frame ("tree_evaluator::visit_simple_for_command");
 
-  unwind_protect_bool (evaluating_looping_command);
+  unwind_protect_bool (in_loop_command);
 
-  evaluating_looping_command = true;
+  in_loop_command = true;
 
   tree_expression *expr = cmd.control_expr ();
 
@@ -395,9 +399,9 @@ tree_evaluator::visit_complex_for_command (tree_complex_for_command& cmd)
 
   unwind_protect::begin_frame ("tree_evaluator::visit_complex_for_command");
 
-  unwind_protect_bool (evaluating_looping_command);
+  unwind_protect_bool (in_loop_command);
 
-  evaluating_looping_command = true;
+  in_loop_command = true;
 
   tree_expression *expr = cmd.control_expr ();
 
@@ -638,10 +642,13 @@ tree_evaluator::visit_statement (tree_statement& stmt)
 
   if (cmd || expr)
     {
-      if (in_function_or_script_body)
-	octave_call_stack::set_statement (&stmt);
+      if (in_fcn_or_script_body)
+	{
+	  octave_call_stack::set_statement (&stmt);
 
-      stmt.maybe_echo_code (in_function_or_script_body);
+	  if (Vecho_executing_commands & ECHO_FUNCTIONS)
+	    stmt.echo_code ();
+	}
 
       try
 	{
@@ -649,7 +656,7 @@ tree_evaluator::visit_statement (tree_statement& stmt)
 	    cmd->accept (*this);
 	  else
 	    {
-	      if (in_function_or_script_body && Vsilent_functions)
+	      if (in_fcn_or_script_body && Vsilent_functions)
 		expr->set_print_flag (false);
 
 	      // FIXME -- maybe all of this should be packaged in
@@ -707,9 +714,6 @@ tree_evaluator::visit_statement_list (tree_statement_list& lst)
 	  if (elt)
 	    {
 	      OCTAVE_QUIT;
-
-	      in_function_or_script_body
-		= lst.is_function_body () || lst.is_script_body ();
 
 	      elt->accept (*this);
 
@@ -986,9 +990,9 @@ tree_evaluator::visit_while_command (tree_while_command& cmd)
 
   unwind_protect::begin_frame ("tree_evaluator::visit_while_command");
 
-  unwind_protect_bool (evaluating_looping_command);
+  unwind_protect_bool (in_loop_command);
 
-  evaluating_looping_command = true;
+  in_loop_command = true;
 
   tree_expression *expr = cmd.condition ();
 
@@ -1034,9 +1038,9 @@ tree_evaluator::visit_do_until_command (tree_do_until_command& cmd)
 
   unwind_protect::begin_frame ("tree_evaluator::visit_do_until_command");
 
-  unwind_protect_bool (evaluating_looping_command);
+  unwind_protect_bool (in_loop_command);
 
-  evaluating_looping_command = true;
+  in_loop_command = true;
 
   tree_expression *expr = cmd.condition ();
 

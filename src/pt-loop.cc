@@ -42,9 +42,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-walk.h"
 #include "unwind-prot.h"
 
-// TRUE means we are evaluating some kind of looping construct.
-bool evaluating_looping_command = false;
-
 // While.
 
 tree_while_command::~tree_while_command (void)

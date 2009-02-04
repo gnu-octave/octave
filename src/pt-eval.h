@@ -41,15 +41,9 @@ public:
 
   typedef void (*decl_elt_init_fcn) (tree_decl_elt&);
 
-  tree_evaluator (bool in_function_or_script_body_arg = false)
-    : in_function_or_script_body (in_function_or_script_body_arg) { }
+  tree_evaluator (void) { }
 
   ~tree_evaluator (void) { }
-
-  void reset (void)
-  {
-    in_function_or_script_body = false;
-  }
 
   void visit_anon_fcn_handle (tree_anon_fcn_handle&);
 
@@ -152,9 +146,13 @@ public:
 
   static bool debug_mode;
 
-private:
+  // TRUE means we are evaluating a function or script body.
+  static bool in_fcn_or_script_body;
 
-  bool in_function_or_script_body;
+  // TRUE means we are evaluating some kind of looping construct.
+  static bool in_loop_command;
+
+private:
 
   void do_decl_init_list (decl_elt_init_fcn fcn,
 			  tree_decl_init_list *init_list);

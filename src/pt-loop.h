@@ -37,9 +37,6 @@ class tree_walker;
 #include "pt-cmd.h"
 #include "symtab.h"
 
-// TRUE means we are evaluating some kind of looping construct.
-extern bool evaluating_looping_command;
-
 // While.
 
 class

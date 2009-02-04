@@ -73,7 +73,7 @@ public:
   int line (void) const;
   int column (void) const;
 
-  void maybe_echo_code (bool in_function_body);
+  void echo_code (void);
 
   tree_command *command (void) { return cmd; }
 

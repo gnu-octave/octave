@@ -83,15 +83,11 @@ tree_statement::column (void) const
 }
 
 void
-tree_statement::maybe_echo_code (bool in_function_or_script_body)
+tree_statement::echo_code (void)
 {
-  if (in_function_or_script_body
-      && (Vecho_executing_commands & ECHO_FUNCTIONS))
-    {
-      tree_print_code tpc (octave_stdout, VPS4);
+  tree_print_code tpc (octave_stdout, VPS4);
 
-      accept (tpc);
-    }
+  accept (tpc);
 }
 
 bool

@@ -128,6 +128,9 @@ octave_user_script::do_multi_index_op (int nargout,
 
 		  unwind_protect::add (octave_call_stack::unwind_pop, 0);
 
+		  unwind_protect_bool (tree_evaluator::in_fcn_or_script_body);
+		  tree_evaluator::in_fcn_or_script_body = true;
+
 		  cmd_list->accept (*current_evaluator);
 
 		  if (tree_return_command::returning)
@@ -430,8 +433,8 @@ octave_user_function::do_multi_index_op (int nargout,
 
     // Evaluate the commands that make up the function.
 
-    unwind_protect_bool (evaluating_function_body);
-    evaluating_function_body = true;
+    unwind_protect_bool (tree_evaluator::in_fcn_or_script_body);
+    tree_evaluator::in_fcn_or_script_body = true;
 
     bool special_expr = (is_inline_function ()
 			 || cmd_list->is_anon_function_body ());

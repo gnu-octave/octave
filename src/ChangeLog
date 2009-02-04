@@ -1,3 +1,38 @@
+2009-02-04  John W. Eaton  <jwe@octave.org>
+
+	* pt-loop.h, pt-loop.cc (evaluating_looping_command):
+	Delete global variable and all uses.
+	* parse.y, parse.h (evaluating_function_body): Delete global
+	variable and all uses.
+	(make_break_command, make_continue_command, make_return_command):
+	Use tree_evaluator::in_fcn_or_script_body and
+	tree_evaluator::in_loop_command instead of
+	evaluating_function_body and evaluating_looping_command.
+
+	* pt-eval.h (tree_evaluator::in_function_or_script_body):
+	Delete 	member variable and all uses.
+	(tree_evaluator::reset): Delete function and all uses.
+	
+	* pt-eval.cc, pt-eval.h (tree_evaluator::in_fcn_or_script_body,
+	tree_evaluator::in_loop_command): New static variables.
+	(tree_evaluator::visit_simple_for_command,
+	tree_evaluator::visit_complex_for_command,
+	tree_evaluator::visit_while_command,
+	tree_evaluator::visit_do_until_command): Unwind-protect and set
+	tree_evaluator::in_loop_command instead of
+	evaluating_looping_command.
+	(tree_evaluator::visit_statement): Only call echo_code if
+	evaluating function or script and (Vecho_executing_commands &
+	ECHO_FUNCTIONS).  Use tree_evaluator::in_fcn_or_script_body
+	instead of evaluating_function_body.  
+
+	* ov-usr-fcn.cc (octave_user_script::do_multi_index_op):
+	octave_user_function::do_multi_index_op): Unwind-protect and set
+	tree_evaluator::in_fcn_or_script_body.
+
+	* pt-stmt.cc, pt-stmt.h (tree_statement::echo_code):
+	Rename from maybe_echo_code.  Simplify.
+
 2009-02-04  Jaroslav Hajek  <highegg@gmail.com>
 
 	* pt-loop.h (tree_simple_for_command::do_for_loop_once,

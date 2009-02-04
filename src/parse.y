@@ -99,11 +99,6 @@ bool reading_startup_message_printed = false;
 // TRUE means input is coming from startup file.
 bool input_from_startup_file = false;
 
-// TRUE means that we are in the process of evaluating a function
-// body.  The parser might be called in that case if we are looking at
-// an eval() statement.
-bool evaluating_function_body = false;
-
 // Keep a count of how many END tokens we expect.
 int end_tokens_expected = 0;
 
@@ -2216,9 +2211,13 @@ make_break_command (token *break_tok)
   int l = break_tok->line ();
   int c = break_tok->column ();
 
+  // We check to see if we are evaluating a function, script, or loop
+  // so that we don't turn eval ("break;") inside a function, script,
+  // or loop into a no-op command.
+
   if (lexer_flags.looping || lexer_flags.defining_func
-      || reading_script_file || evaluating_function_body
-      || evaluating_looping_command)
+      || reading_script_file || tree_evaluator::in_fcn_or_script_body
+      || tree_evaluator::in_loop_command)
     retval = new tree_break_command (l, c);
   else
     retval = new tree_no_op_command ("break", l, c);
@@ -2236,7 +2235,10 @@ make_continue_command (token *continue_tok)
   int l = continue_tok->line ();
   int c = continue_tok->column ();
 
-  if (lexer_flags.looping || evaluating_looping_command)
+  // We check to see if we are evaluating a loop so that we don't turn
+  // eval ("continue;") into a no-op command inside a loop.
+
+  if (lexer_flags.looping || tree_evaluator::in_loop_command)
     retval = new tree_continue_command (l, c);
   else
     retval = new tree_no_op_command ("continue", l, c);
@@ -2262,8 +2264,12 @@ make_return_command (token *return_tok)
     }
   else
     {
+      // We check to see if we are evaluating a function or script so
+      // that we don't turn eval ("return;") inside a function, script,
+      // or loop into a no-op command.
+
       if (lexer_flags.defining_func || reading_script_file
-          || evaluating_function_body)
+          || tree_evaluator::in_fcn_or_script_body)
         retval = new tree_return_command (l, c);
       else
         retval = new tree_no_op_command ("return", l, c);

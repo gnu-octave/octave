@@ -556,8 +556,6 @@ main_loop (void)
 	    {
 	      if (global_command)
 		{
-		  current_evaluator->reset ();
-
 		  global_command->accept (*current_evaluator);
 
 		  delete global_command;

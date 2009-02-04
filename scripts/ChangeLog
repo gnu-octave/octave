@@ -1,3 +1,7 @@
+2009-02-04  Jaroslav Hajek  <highegg@gmail.com>
+
+	* optimization/fsolve.m: remove redundant line.
+
 2009-02-03  Jaroslav Hajek  <highegg@gmail.com>
 	
 	* optimization/Makefile.in: Add missing source.

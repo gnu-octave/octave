@@ -211,7 +211,6 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
         qtf = q'*fvec;
         s = - __dogleg__ (r, qtf, dg, delta);
         w = qtf + r * s;
-        s = p * s;
       else
         s = - __dogleg__ (fjac, fvec, dg, delta);
         w = fvec + fjac * s;

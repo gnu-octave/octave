@@ -1,3 +1,8 @@
+2009-02-04  Jaroslav Hajek  <highegg@gmail.com>
+
+	* oct-locbuf.h: Specialize OCTAVE_LOCAL_BUFFER to use chunked
+	allocation for pointers and const pointers.
+
 2009-02-03  Benjamin Lindner  <lindnerben@gmx.net>
 	
 	* Makefile.in: Add missing library reference.

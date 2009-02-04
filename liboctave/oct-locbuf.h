@@ -102,6 +102,23 @@ SPECIALIZE_POD_BUFFER (Complex);
 SPECIALIZE_POD_BUFFER (FloatComplex);
 // MORE ?
 
+// All pointers and const pointers are also POD types.
+template <class T>
+class octave_local_buffer<T *> : private octave_chunk_buffer
+{
+public:
+  octave_local_buffer (size_t size) : octave_chunk_buffer (size * sizeof (T *)) { }
+  operator T **() const { return reinterpret_cast<T **> (this->data ()); }
+};
+
+template <class T>
+class octave_local_buffer<const T *> : private octave_chunk_buffer
+{
+public:
+  octave_local_buffer (size_t size) : octave_chunk_buffer (size * sizeof (const T *)) { }
+  operator const T **() const { return reinterpret_cast<const T **> (this->data ()); }
+};
+
 // If the compiler supports dynamic stack arrays, we can use the attached hack
 // to place small buffer arrays on the stack. It may be even faster than our
 // obstack-like optimization, but is dangerous because stack is a very limited

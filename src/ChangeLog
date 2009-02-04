@@ -1,3 +1,12 @@
+2009-02-04  Jaroslav Hajek  <highegg@gmail.com>
+
+	* pt-loop.h (tree_simple_for_command::do_for_loop_once,
+	tree_complex_for_command::do_for_loop_once): Remove obsolete decls.
+	* pt-loop.cc (quit_loop_now): Remove obsolete method.
+	* pt-eval.cc (DO_ND_LOOP): Delete macro.
+	(tree_evaluator::visit_simple_for_command): Use the generic
+	do_index_op for iterating matrices.
+
 2009-02-04  John W. Eaton  <jwe@octave.org>
 
 	New evaluator and debugger derived from tree-walker class.

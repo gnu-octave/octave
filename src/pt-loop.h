@@ -194,9 +194,6 @@ private:
   // Comment preceding ENDFOR token.
   octave_comment_list *trail_comm;
 
-  void do_for_loop_once (octave_lvalue &ult, const octave_value& rhs,
-			 bool& quit);
-
   // No copying!
 
   tree_simple_for_command (const tree_simple_for_command&);
@@ -254,10 +251,6 @@ private:
 
   // Comment preceding ENDFOR token.
   octave_comment_list *trail_comm;
-
-  void do_for_loop_once (octave_lvalue &val_ref, octave_lvalue &key_ref,
-			 const octave_value& val, const octave_value& key,
-			 bool& quit);
 
   // No copying!
 

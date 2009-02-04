@@ -45,28 +45,6 @@ along with Octave; see the file COPYING.  If not, see
 // TRUE means we are evaluating some kind of looping construct.
 bool evaluating_looping_command = false;
 
-// Decide if it's time to quit a for or while loop.
-static inline bool
-quit_loop_now (void)
-{
-  OCTAVE_QUIT;
-
-  // Maybe handle `continue N' someday...
-
-  if (tree_continue_command::continuing)
-    tree_continue_command::continuing--;
-
-  bool quit = (error_state
-	       || tree_return_command::returning
-	       || tree_break_command::breaking
-	       || tree_continue_command::continuing);
-
-  if (tree_break_command::breaking)
-    tree_break_command::breaking--;
-
-  return quit;
-}
-
 // While.
 
 tree_while_command::~tree_while_command (void)

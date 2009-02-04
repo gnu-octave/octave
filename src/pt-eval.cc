@@ -258,83 +258,6 @@ quit_loop_now (void)
     } \
   while (0)
 
-#define DO_ND_LOOP(MTYPE, TYPE, CONV, ARG) \
-  do \
-    { \
-      dim_vector dv = ARG.dims (); \
- \
-      bool quit = false; \
- \
-      TYPE *atmp = ARG.fortran_vec (); \
- \
-      octave_idx_type steps = dv(1); \
- \
-      octave_idx_type nrows = dv(0); \
- \
-      int ndims = dv.length (); \
-      if (ndims > 2) \
-        { \
-          for (int i = 2; i < ndims; i++) \
-            steps *= dv(i); \
-          dv(1) = steps; \
-          dv.resize (2); \
-        } \
- \
-      if (steps > 0) \
-	{ \
-          if (nrows == 0) \
-            { \
-	      MTYPE tarray (dim_vector (0, 1)); \
- \
-	      octave_value val (tarray); \
- \
-	      for (octave_idx_type i = 0; i < steps; i++) \
-		{ \
-	          DO_SIMPLE_FOR_LOOP_ONCE (val); \
- \
-	          if (quit) \
-	            break; \
-	       } \
-            } \
-          else if (nrows == 1) \
-            { \
-	      for (octave_idx_type i = 0; i < steps; i++) \
-		{ \
-		  octave_value val (CONV (*atmp++)); \
- \
-	          DO_SIMPLE_FOR_LOOP_ONCE (val); \
- \
-	          if (quit) \
-	            break; \
-	       } \
-            } \
-          else \
-            { \
-              if (ndims > 2) \
-                ARG = ARG.reshape (dv); \
- \
-              MTYPE tmp (dim_vector (nrows, 1)); \
- \
-              TYPE *ftmp = tmp.fortran_vec (); \
- \
-              for (octave_idx_type i = 0; i < steps; i++) \
-	        { \
- 	          for (int j = 0; j < nrows; j++) \
-	            ftmp[j] = *atmp++;  \
- \
-                  octave_value val (tmp); \
- \
-                  DO_SIMPLE_FOR_LOOP_ONCE (val); \
-                  quit = (i == steps - 1 ? true : quit); \
- \
-	          if (quit) \
-	            break; \
-	        } \
-	    } \
-        } \
-    } \
-  while (0)
-
 void
 tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
 {
@@ -398,61 +321,39 @@ tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
 
 	DO_SIMPLE_FOR_LOOP_ONCE (rhs);
       }
-    else if (rhs.is_string ())
+    else if (rhs.is_matrix_type () 
+             || rhs.is_cell () || rhs.is_string ())
       {
-	charMatrix chm_tmp = rhs.char_matrix_value ();
-	octave_idx_type nr = chm_tmp.rows ();
-	octave_idx_type steps = chm_tmp.columns ();
-	bool quit = false;
+        // A matrix or cell is reshaped to 2 dimensions and iterated by
+        // columns.
 
-	if (error_state)
-	  goto cleanup;
+        bool quit = false;
 
-	if (nr == 1)
-	  {
-	    for (octave_idx_type i = 0; i < steps; i++)
-	      {
-		octave_value val (chm_tmp.xelem (0, i));
+        dim_vector dv = rhs.dims ().redim (2);
 
-		DO_SIMPLE_FOR_LOOP_ONCE (val);
+        octave_idx_type steps = dv(1);
 
-		if (quit)
-		  break;
-	      }
-	  }
-	else
-	  {
-	    for (octave_idx_type i = 0; i < steps; i++)
-	      {
-		octave_value val (chm_tmp.extract (0, i, nr-1, i), true);
+        if (steps > 0)
+          {
+            octave_value arg = rhs;
+            if (rhs.ndims () > 2)
+              arg = arg.reshape (dv);
 
-		DO_SIMPLE_FOR_LOOP_ONCE (val);
+            //octave_value_list idx(2, octave_value ());
+            octave_value_list idx(2, octave_value ());
+            idx(0) = octave_value::magic_colon_t;
 
-		if (quit)
-		  break;
-	      }
-	  }
-      }
-    else if (rhs.is_matrix_type ())
-      {
-	if (rhs.is_real_type ())
-	  {
-	    NDArray m_tmp = rhs.array_value ();
+            for (octave_idx_type i = 1; i <= steps; i++)
+              {
+                // do_index_op expects one-based indices.
+                idx(1) = i;
+                octave_value val = arg.do_index_op (idx);
+                DO_SIMPLE_FOR_LOOP_ONCE (val);
 
-	    if (error_state)
-	      goto cleanup;
-
-	    DO_ND_LOOP (NDArray, double, , m_tmp);
-	  }
-	else
-	  {
-	    ComplexNDArray cm_tmp = rhs.complex_array_value ();
-
-	    if (error_state)
-	      goto cleanup;
-
-	    DO_ND_LOOP (ComplexNDArray, Complex, , cm_tmp);
-	  }
+                if (quit)
+                  break;
+              }
+          }
       }
     else if (rhs.is_map ())
       {
@@ -474,12 +375,6 @@ tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
 	    if (quit)
 	      break;
 	  }
-      }
-    else if (rhs.is_cell ())
-      {
-	Cell c_tmp = rhs.cell_value ();
-
-	DO_ND_LOOP (Cell, octave_value, Cell, c_tmp);
       }
     else
       {

@@ -1,3 +1,11 @@
+2009-02-05  Jaroslav Hajek  <highegg@gmail.com>
+
+	* str-vec.h (string_vector::sort): Remove implementation.
+	* str-vec.cc (string_vector::sort): Move here. Use in-place sorting.
+	* Array-str.cc: Fix order of header files.
+	* oct-sort.cc (octave_sort<T>::merge_hi): std::copy ->
+	std::copy_backward where appropriate.
+
 2009-02-05  John W. Eaton  <jwe@octave.org>
 
 	* Array-util.cc (zero_dims_inquire): Eliminate unused variable MATCH.

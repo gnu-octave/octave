@@ -29,8 +29,9 @@ made are
   replacing PyObject* with the type of the class T.
 
 * replaced usages of malloc, free, memcpy and memmove by standard C++
-  new [], delete [] and std::copy. Note that replacing memmove by std::copy
-  is possible if the destination starts before the source.
+  new [], delete [] and std::copy and std::copy_backward. Note that replacing
+  memmove by std::copy is possible if the destination starts before the source.
+  If not, std::copy_backward needs to be used.
   
 
 The Python license is
@@ -733,7 +734,7 @@ octave_sort<T>::merge_hi (T *pa, octave_idx_type na, T *pb, octave_idx_type nb)
 	    {
 	      dest -= k;
 	      pa -= k;
-              std::copy (pa+1, pa+1 + k, dest+1);
+              std::copy_backward (pa+1, pa+1 + k, dest+1 + k);
 	      na -= k;
 	      if (na == 0)
 		goto Succeed;
@@ -784,7 +785,7 @@ CopyA:
   /* The first element of pb belongs at the front of the merge. */
   dest -= na;
   pa -= na;
-  std::copy (pa+1, pa+1 + na, dest+1);
+  std::copy_backward (pa+1, pa+1 + na, dest+1 + na);
   *dest = *pb;
 
   return 0;

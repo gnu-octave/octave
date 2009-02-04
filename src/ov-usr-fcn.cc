@@ -36,6 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-usr-fcn.h"
 #include "ov.h"
 #include "pager.h"
+#include "pt-eval.h"
 #include "pt-jump.h"
 #include "pt-misc.h"
 #include "pt-pr-code.h"
@@ -127,7 +128,7 @@ octave_user_script::do_multi_index_op (int nargout,
 
 		  unwind_protect::add (octave_call_stack::unwind_pop, 0);
 
-		  cmd_list->eval ();
+		  cmd_list->accept (*current_evaluator);
 
 		  if (tree_return_command::returning)
 		    tree_return_command::returning = 0;
@@ -432,14 +433,25 @@ octave_user_function::do_multi_index_op (int nargout,
     unwind_protect_bool (evaluating_function_body);
     evaluating_function_body = true;
 
-    if (is_inline_function ())
+    bool special_expr = (is_inline_function ()
+			 || cmd_list->is_anon_function_body ());
+
+    if (special_expr)
       {
 	assert (cmd_list->length () == 1);
 
-	retval = cmd_list->eval (false, nargout);
+	tree_statement *stmt = 0;
+
+	if ((stmt = cmd_list->front ())
+	    && stmt->is_expression ())
+	  {
+	    tree_expression *expr = stmt->expression ();
+
+	    retval = expr->rvalue (nargout);
+	  }
       }
     else
-      cmd_list->eval ();
+      cmd_list->accept (*current_evaluator);
 
     if (echo_commands)
       print_code_function_trailer ();
@@ -458,7 +470,7 @@ octave_user_function::do_multi_index_op (int nargout,
     
     // Copy return values out.
 
-    if (ret_list && ! is_inline_function ())
+    if (ret_list && ! special_expr)
       {
 	ret_list->initialize_undefined_elements (my_name, nargout, Matrix ());
 

@@ -45,8 +45,6 @@ public:
 
   virtual ~tree_command (void) { }
 
-  virtual void eval (void) = 0;
-
   virtual tree_command *dup (symbol_table::scope_id,
 			     symbol_table::context_id context) = 0;
 
@@ -70,8 +68,6 @@ public:
     : tree_command (l, c), orig_cmd (cmd) { }
 
   ~tree_no_op_command (void) { }
-
-  void eval (void) { MAYBE_DO_BREAKPOINT; }
 
   tree_command *dup (symbol_table::scope_id scope,
 		     symbol_table::context_id context);
@@ -103,14 +99,12 @@ public:
 
   ~tree_function_def (void) { }
 
-  void eval (void);
-
   tree_command *dup (symbol_table::scope_id scope,
 		     symbol_table::context_id context);
 
   void accept (tree_walker& tw);
 
-  octave_function *function (void) { return fcn.function_value (); }
+  octave_value function (void) { return fcn; }
 
 private:
 

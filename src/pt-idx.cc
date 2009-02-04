@@ -199,7 +199,7 @@ tree_index_expression::get_struct_index
 
       if (df)
 	{
-	  octave_value t = df->rvalue ();
+	  octave_value t = df->rvalue1 ();
 
 	  if (! error_state)
 	    {
@@ -300,7 +300,7 @@ tree_index_expression::rvalue (int nargout)
   if (! error_state)
     {
       if (first_expr_val.is_undefined ())
-	first_expr_val = expr->rvalue ();
+	first_expr_val = expr->rvalue1 ();
 
       octave_value tmp = first_expr_val;
       octave_idx_type tmpi = 0;
@@ -386,11 +386,11 @@ tree_index_expression::rvalue (int nargout)
 }
 
 octave_value
-tree_index_expression::rvalue (void)
+tree_index_expression::rvalue1 (int nargout)
 {
   octave_value retval;
 
-  const octave_value_list tmp = rvalue (1);
+  const octave_value_list tmp = rvalue (nargout);
 
   if (! tmp.empty ())
     retval = tmp(0);

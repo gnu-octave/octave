@@ -55,7 +55,7 @@ tree_decl_elt::eval (void)
     {
       octave_lvalue ult = id->lvalue ();
 
-      octave_value init_val = expr->rvalue ();
+      octave_value init_val = expr->rvalue1 ();
 
       if (! error_state)
 	{
@@ -83,20 +83,6 @@ tree_decl_elt::accept (tree_walker& tw)
 }
 
 // Initializer lists for declaration statements.
-
-void
-tree_decl_init_list::eval (tree_decl_elt::eval_fcn f)
-{
-  for (iterator p = begin (); p != end (); p++)
-    {
-      tree_decl_elt *elt = *p;
-
-      f (*elt);
-
-      if (error_state)
-	break;
-    }
-}
 
 tree_decl_init_list *
 tree_decl_init_list::dup (symbol_table::scope_id scope,
@@ -127,52 +113,7 @@ tree_decl_command::~tree_decl_command (void)
   delete init_list;
 }
 
-void
-tree_decl_command::accept (tree_walker& tw)
-{
-  tw.visit_decl_command (*this);
-}
-
 // Global.
-
-void
-tree_global_command::do_init (tree_decl_elt& elt)
-{
-  tree_identifier *id = elt.ident ();
-
-  if (id)
-    {
-      id->mark_global ();
-
-      if (! error_state)
-	{
-	  octave_lvalue ult = id->lvalue ();
-
-	  if (ult.is_undefined ())
-	    {
-	      tree_expression *expr = elt.expression ();
-
-	      octave_value init_val;
-
-	      if (expr)
-		init_val = expr->rvalue ();
-	      else
-		init_val = Matrix ();
-
-	      ult.assign (octave_value::op_asn_eq, init_val);
-	    }
-	}
-    }
-}
-
-void
-tree_global_command::eval (void)
-{
-  MAYBE_DO_BREAKPOINT;
-
-  if (init_list)
-    init_list->eval (do_init);
-}
 
 tree_command *
 tree_global_command::dup (symbol_table::scope_id scope,
@@ -183,45 +124,13 @@ tree_global_command::dup (symbol_table::scope_id scope,
 			     line (), column ());
 }
 
+void
+tree_global_command::accept (tree_walker& tw)
+{
+  tw.visit_global_command (*this);
+}
+
 // Static.
-
-void
-tree_static_command::do_init (tree_decl_elt& elt)
-{
-  tree_identifier *id = elt.ident ();
-
-  if (id)
-    {
-      id->mark_as_static ();
-
-      octave_lvalue ult = id->lvalue ();
-
-      if (ult.is_undefined ())
-	{
-	  tree_expression *expr = elt.expression ();
-
-	  octave_value init_val;
-
-	  if (expr)
-	    init_val = expr->rvalue ();
-	  else
-	    init_val = Matrix ();
-
-	  ult.assign (octave_value::op_asn_eq, init_val);
-	}
-    }
-}
-
-void
-tree_static_command::eval (void)
-{
-  MAYBE_DO_BREAKPOINT;
-
-  // Static variables only need to be marked and initialized once.
-
-  if (init_list)
-    init_list->eval (do_init);
-}
 
 tree_command *
 tree_static_command::dup (symbol_table::scope_id scope,
@@ -230,6 +139,12 @@ tree_static_command::dup (symbol_table::scope_id scope,
   return
     new tree_static_command (init_list ? init_list->dup (scope, context) : 0,
 			     line (), column ());
+}
+
+void
+tree_static_command::accept (tree_walker& tw)
+{
+  tw.visit_static_command (*this);
 }
 
 /*

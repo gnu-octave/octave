@@ -49,13 +49,10 @@ tree_fcn_handle::print_raw (std::ostream& os, bool pr_as_read_syntax,
 }
 
 octave_value
-tree_fcn_handle::rvalue (void)
+tree_fcn_handle::rvalue1 (int)
 {
-  MAYBE_DO_BREAKPOINT;
-
   return make_fcn_handle (nm);
 }
-
 
 octave_value_list
 tree_fcn_handle::rvalue (int nargout)
@@ -65,7 +62,7 @@ tree_fcn_handle::rvalue (int nargout)
   if (nargout > 1)
     error ("invalid number of output arguments for function handle expression");
   else
-    retval = rvalue ();
+    retval = rvalue1 (nargout);
 
   return retval;
 }
@@ -88,10 +85,8 @@ tree_fcn_handle::accept (tree_walker& tw)
 }
 
 octave_value
-tree_anon_fcn_handle::rvalue (void)
+tree_anon_fcn_handle::rvalue1 (int)
 {
-  MAYBE_DO_BREAKPOINT;
-
   tree_parameter_list *param_list = parameter_list ();
   tree_parameter_list *ret_list = return_list ();
   tree_statement_list *cmd_list = body ();
@@ -140,7 +135,7 @@ tree_anon_fcn_handle::rvalue (int nargout)
   if (nargout > 1)
     error ("invalid number of output arguments for anonymous function handle expression");
   else
-    retval = rvalue ();
+    retval = rvalue1 (nargout);
 
   return retval;
 }

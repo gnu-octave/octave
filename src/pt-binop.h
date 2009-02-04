@@ -70,7 +70,7 @@ public:
 
   bool rvalue_ok (void) const { return true; }
 
-  octave_value rvalue (void);
+  octave_value rvalue1 (int nargout = 1);
 
   octave_value_list rvalue (int nargout);
 
@@ -131,7 +131,7 @@ public:
 
   bool rvalue_ok (void) const { return true; }
 
-  octave_value rvalue (void);
+  octave_value rvalue1 (int nargout = 1);
 
   octave_value_list rvalue (int nargout);
 

@@ -38,47 +38,24 @@ tree
 {
 public:
 
-  tree (int l = -1, int c = -1) : break_point(false)
-    {
-      line_num = l;
-      column_num = c;
-    }
+  tree (int l = -1, int c = -1)
+    : line_num (l), column_num (c), bp (false) { }
 
   virtual ~tree (void) { }
 
-  virtual int line (void) const
-    { return line_num; }
+  virtual int line (void) const { return line_num; }
 
-  virtual int column (void) const
-    { return column_num; }
+  virtual int column (void) const { return column_num; }
 
-  virtual void accept (tree_walker& tw) = 0;
+  void set_breakpoint (void) { bp = true; }
+
+  void delete_breakpoint (void) { bp = false; }
+
+  bool is_breakpoint (void) const { return bp; }
 
   std::string str_print_code (void);
 
-  virtual void set_breakpoint (void)
-    { break_point = true; }
-  
-  virtual void delete_breakpoint (void)
-    { break_point = false; }
-
-  virtual bool is_breakpoint (void) const 
-    { return break_point; }
-
-  // If true, stop executing at the next possible point.
-  static int break_next;
-  
-  // The line where dbnext was executed.
-  static int last_line; 
-
-  // The function where the last breakpoint occurred.
-  static const octave_function *last_break_function;
-
-  // The function where the next breakpoint is request.
-  static const octave_function *break_function;
-
-  // The statement where the last breakpoint occurred.
-  static const tree *break_statement;
+  virtual void accept (tree_walker& tw) = 0;
 
 private:
 
@@ -87,8 +64,8 @@ private:
   int line_num;
   int column_num;
 
-  // Stop before executing this tree node
-  bool break_point;
+  // Breakpoint flag.
+  bool bp;
 
   // No copying!
 

@@ -41,11 +41,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "variables.h"
 
 octave_value
-tree_cell::rvalue (void)
+tree_cell::rvalue1 (int)
 {
   octave_value retval;
-
-  MAYBE_DO_BREAKPOINT;
 
   octave_idx_type nr = length ();
   octave_idx_type nc = -1;
@@ -99,7 +97,7 @@ tree_cell::rvalue (int nargout)
   if (nargout > 1)
     error ("invalid number of output arguments for cell array");
   else
-    retval = rvalue ();
+    retval = rvalue1 (nargout);
 
   return retval;
 }

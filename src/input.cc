@@ -48,6 +48,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "quit.h"
 #include "str-vec.h"
 
+#include "debug.h"
 #include "defun.h"
 #include "dirfns.h"
 #include "error.h"
@@ -64,6 +65,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "pathlen.h"
 #include "pt.h"
 #include "pt-const.h"
+#include "pt-eval.h"
 #include "pt-stmt.h"
 #include "sighandlers.h"
 #include "sysdep.h"
@@ -146,9 +148,6 @@ bool Vdrawnow_requested = false;
 
 // TRUE if we are in debugging mode.
 bool Vdebugging = false;
-
-// The current line that we are debugging
-int Vdebugging_current_line = -1;
 
 // TRUE if we are running in the Emacs GUD mode.
 static bool Vgud_mode = false;
@@ -576,17 +575,21 @@ get_debug_input (const std::string& prompt)
   octave_user_code *caller = octave_call_stack::caller_user_code ();
   std::string nm;
 
+  int curr_debug_line = tree_evaluator::debug_line ();
+
+  bool have_file = false;
+
   if (caller)
     {
       nm = caller->fcn_file_name ();
 
       if (nm.empty ())
 	nm = caller->name ();
-
-      Vdebugging_current_line = octave_call_stack::current_line ();
+      else
+	have_file = true;
     }
   else
-    Vdebugging_current_line = -1;
+    curr_debug_line = -1;
 
   std::ostringstream buf;
 
@@ -596,14 +599,27 @@ get_debug_input (const std::string& prompt)
 	{
 	  static char ctrl_z = 'Z' & 0x1f;
 
-	  buf << ctrl_z << ctrl_z << nm << ":" << Vdebugging_current_line;
+	  buf << ctrl_z << ctrl_z << nm << ":" << curr_debug_line;
 	}
       else
 	{
+	  // FIXME -- we should come up with a clean way to detect
+	  // that we are stopped on the no-op command that marks the
+	  // end of a function or script.
+
 	  buf << "stopped in " << nm;
 
-	  if (Vdebugging_current_line > 0)
-	    buf << " at line " << Vdebugging_current_line;
+	  if (curr_debug_line > 0)
+	    buf << " at line " << curr_debug_line;
+
+	  if (have_file)
+	    {
+	      std::string line_buf
+		= get_file_line (nm, curr_debug_line);
+
+	      if (! line_buf.empty ())
+		buf << "\n" << curr_debug_line << ": " << line_buf;
+	    }
 	}
     }
 
@@ -631,7 +647,7 @@ get_debug_input (const std::string& prompt)
 
       if (retval == 0 && global_command)
 	{
-	  global_command->eval ();
+	  global_command->accept (*current_evaluator);
 
 	  // FIXME -- To avoid a memory leak, global_command should be
 	  // deleted, I think.  But doing that here causes trouble if

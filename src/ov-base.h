@@ -622,10 +622,6 @@ private:
   DECLARE_OV_BASE_TYPEID_FUNCTIONS_AND_DATA
 };
 
-// If TRUE, turn off printing of results in functions (as if a
-// semicolon has been appended to each statement).
-extern bool Vsilent_functions;
-
 // TRUE means to perform automatic sparse to real mutation if there
 // is memory to be saved
 extern bool Vsparse_auto_mutate;

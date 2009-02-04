@@ -41,12 +41,14 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-syscalls.h"
 #include "quit.h"
 
+#include "debug.h"
 #include "defun.h"
 #include "error.h"
 #include "load-save.h"
 #include "oct-map.h"
 #include "pager.h"
 #include "pt-bp.h"
+#include "pt-eval.h"
 #include "sighandlers.h"
 #include "sysdep.h"
 #include "syswait.h"
@@ -356,8 +358,8 @@ sigwinch_handler (int /* sig */)
 // use the value of sig, instead of just assuming that it is called
 // for SIGINT only.
 
-static
-void user_abort (const char *sig_name, int sig_number)
+static void
+user_abort (const char *sig_name, int sig_number)
 {
   if (! octave_initialized)
     exit (1);
@@ -368,13 +370,18 @@ void user_abort (const char *sig_name, int sig_number)
 	{
 	  if (! octave_debug_on_interrupt_state)
 	    {
+	      tree_evaluator::debug_mode = true;
 	      octave_debug_on_interrupt_state = true;
 
 	      return;
 	    }
 	  else
-	    // Clear the flag and do normal interrupt stuff.
-	    octave_debug_on_interrupt_state = false;
+	    {
+	      // Clear the flag and do normal interrupt stuff.
+
+	      tree_evaluator::debug_mode = bp_table::have_breakpoints ();
+	      octave_debug_on_interrupt_state = false;
+	    }
 	}
 
       if (octave_interrupt_immediately)

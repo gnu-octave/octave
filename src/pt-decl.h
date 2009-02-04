@@ -44,8 +44,6 @@ tree_decl_elt
 {
 public:
 
-  typedef void (*eval_fcn) (tree_decl_elt &);
-
   tree_decl_elt (tree_identifier *i = 0, tree_expression *e = 0)
     : id (i), expr (e) { }
 
@@ -65,12 +63,22 @@ public:
 
   bool lvalue_ok (void) { return id ? id->lvalue_ok () : false; }
 
-  // Do not allow functions return null values
-  octave_value rvalue (void) { return id ? id->rvalue ().storable_value () : octave_value (); }
+  // Do not allow functions to return null values.
+  octave_value rvalue1 (int nargout = 1)
+  {
+    return id ? id->rvalue1 (nargout).storable_value () : octave_value ();
+  }
 
   octave_value_list rvalue (int nargout)
   {
-    return id ? id->rvalue (nargout) : octave_value_list ();
+    octave_value_list retval;
+
+    if (nargout > 1)
+      error ("invalid number of output arguments in declaration list");
+    else
+      retval = rvalue1 (nargout);
+
+    return retval;
   }
 
   octave_lvalue lvalue (void) { return id ? id->lvalue () : octave_lvalue (); }
@@ -118,8 +126,6 @@ public:
 	}
     }
 
-  void eval (tree_decl_elt::eval_fcn);
-
   tree_decl_init_list *dup (symbol_table::scope_id scope,
 			    symbol_table::context_id context);
 
@@ -151,8 +157,6 @@ public:
   ~tree_decl_command (void);
 
   tree_decl_init_list *initializer_list (void) { return init_list; }
-
-  void accept (tree_walker& tw);
 
   std::string name (void) { return cmd_name; }
 
@@ -188,10 +192,10 @@ public:
 
   ~tree_global_command (void) { }
 
-  void eval (void);
-
   tree_command *dup (symbol_table::scope_id scope,
 		     symbol_table::context_id context);
+
+  void accept (tree_walker& tw);
 
 private:
 
@@ -219,10 +223,10 @@ public:
 
   ~tree_static_command (void) { }
 
-  void eval (void);
-
   tree_command *dup (symbol_table::scope_id scope,
 		     symbol_table::context_id context);
+
+  void accept (tree_walker& tw);
 
 private:
 

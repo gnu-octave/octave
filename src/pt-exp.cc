@@ -40,7 +40,7 @@ tree_expression::is_logically_true (const char *warn_for)
 {
   bool expr_value = false;
 
-  octave_value t1 = rvalue ();
+  octave_value t1 = rvalue1 ();
 
   if (! error_state)
     {
@@ -55,7 +55,7 @@ tree_expression::is_logically_true (const char *warn_for)
 }
 
 octave_value
-tree_expression::rvalue (void)
+tree_expression::rvalue1 (int)
 {
   ::error ("invalid rvalue function called in expression");
   return octave_value ();

@@ -91,12 +91,24 @@ tree_checker::visit_continue_command (tree_continue_command&)
 }
 
 void
-tree_checker::visit_decl_command (tree_decl_command& cmd)
+tree_checker::do_decl_command (tree_decl_command& cmd)
 {
   tree_decl_init_list *init_list = cmd.initializer_list ();
 
   if (init_list)
     init_list->accept (*this);
+}
+
+void
+tree_checker::visit_global_command (tree_global_command& cmd)
+{
+  do_decl_command (cmd);
+}
+
+void
+tree_checker::visit_static_command (tree_static_command& cmd)
+{
+  do_decl_command (cmd);
 }
 
 void
@@ -201,10 +213,12 @@ tree_checker::visit_octave_user_function (octave_user_function& fcn)
 void
 tree_checker::visit_function_def (tree_function_def& fdef)
 {
-  octave_function *fcn = fdef.function ();
+  octave_value fcn = fdef.function ();
 
-  if (fcn)
-    fcn->accept (*this);
+  octave_function *f = fcn.function_value ();
+
+  if (f)
+    f->accept (*this);
 }
 
 void

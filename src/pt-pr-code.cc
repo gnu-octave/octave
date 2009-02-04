@@ -150,7 +150,7 @@ tree_print_code::visit_continue_command (tree_continue_command&)
 }
 
 void
-tree_print_code::visit_decl_command (tree_decl_command& cmd)
+tree_print_code::do_decl_command (tree_decl_command& cmd)
 {
   indent ();
 
@@ -160,6 +160,18 @@ tree_print_code::visit_decl_command (tree_decl_command& cmd)
 
   if (init_list)
     init_list->accept (*this);
+}
+
+void
+tree_print_code::visit_global_command (tree_global_command& cmd)
+{
+  do_decl_command (cmd);
+}
+
+void
+tree_print_code::visit_static_command (tree_static_command& cmd)
+{
+  do_decl_command (cmd);
 }
 
 void
@@ -422,10 +434,12 @@ tree_print_code::visit_function_def (tree_function_def& fdef)
 {
   indent ();
 
-  octave_function *fcn = fdef.function ();
+  octave_value fcn = fdef.function ();
 
-  if (fcn)
-    fcn->accept (*this);
+  octave_function *f = fcn.function_value ();
+
+  if (f)
+    f->accept (*this);
 }
 
 void

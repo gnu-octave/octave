@@ -218,7 +218,7 @@ tree_parameter_list::convert_to_const_vector (const Cell& varargout)
     {
       tree_decl_elt *elt = *p;
 
-      retval(i++) = elt->is_defined () ? elt->rvalue () : octave_value ();
+      retval(i++) = elt->is_defined () ? elt->rvalue1 () : octave_value ();
     }
 
   for (octave_idx_type j = 0; j < vlen; j++)

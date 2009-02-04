@@ -87,8 +87,6 @@ public:
   do_lookup (tree_argument_list *args, const string_vector& arg_names,
 	     octave_value_list& evaluated_args, bool& args_evaluated)
   {
-    MAYBE_DO_BREAKPOINT;
-
     return xsym().find (args, arg_names, evaluated_args, args_evaluated);
   }
 
@@ -103,7 +101,7 @@ public:
 
   bool lvalue_ok (void) const { return true; }
 
-  octave_value rvalue (void);
+  octave_value rvalue1 (int nargout = 1);
 
   octave_value_list rvalue (int nargout);
 

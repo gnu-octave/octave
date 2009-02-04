@@ -1,3 +1,289 @@
+2009-02-04  John W. Eaton  <jwe@octave.org>
+
+	New evaluator and debugger derived from tree-walker class.
+
+	* pt-eval.h, pt-eval.cc: New files.  Parse tree evaluator code
+	adapted from eval member functions in classes derived from
+	tree_command.
+	* Makefile.in (PT_INCLUDES, PT_SRC): Add them to the lists
+
+	* pt-cmd.cc (tree_function_def::eval): Delete.
+	* pt-cmd.h: Delete decl.
+	(tree_command::eval): Delete pure virtual function.
+	(tree_no_op_command::eval): Delete.
+	(tree_function_def::function): Return octave_value, instead of
+	pointer to octave_function.  Change all uses.
+
+	* pt-except.cc (do_catch_code, tree_try_catch_command::eval,
+	do_unwind_protect_cleanup_code,
+	tree_unwind_protect_command::eval): Delete.
+	* pt-except.h: Delete decls.
+
+	* pt-jump.cc (tree_break_command::eval, tree_return_command::eval,
+	tree_continue_command::eval): Delete.
+	* pt-jump.h: Delete decls.
+
+	* pt-loop.cc (DO_ND_LOOP): Delete macro.
+	(tree_while_command::eval, tree_do_until_command::eval,
+	tree_simple_for_command::do_for_loop_once,
+	tree_simple_for_command::eval,
+	tree_complex_for_command::do_for_loop_once,
+	tree_complex_for_command::eval):
+	* pt-loop.h: Delete decls.
+
+	* pt-select.cc (tree_if_clause::eval, tree_if_command_list::eval,
+	tree_if_command::eval, tree_switch_case::eval,
+	tree_switch_case_list::eval, tree_switch_command::eval): Delete.
+	* pt-select.h: Delete decls.
+	(class tree_if_clause, class tree_switch_case): Derive from tree.
+	Handle line and column in constructors.
+
+	* pt-stmt.cc (tree_statement::eval): Delete
+	* pt-stmt.h: Delete decl.
+
+	* pt-stmt.cc, pt-stmt.h (tree_statement::is_command,
+	tree_statement::is_expression, tree_statement::line,
+	tree_statement::column): Now const.
+	
+	* pt-stmt.cc (tree_statement::set_print_flag,
+	tree_statement::is_end_of_fcn_or_script): New functions.
+	* pt-stmt.h: Provide decl.
+	(set_breakpoint, delete_breakpoint, is_breakpoint): New function.
+	(bp): New member variable.
+	(print_result): Delete member variable.
+	(tree_statement_list::anon_function_body): New member variable.
+	(tree_statement_list::mark_as_anon_function_body,
+	tree_statement_list::is_anon_function_body,
+	tree_statement_list::is_script_body): New functions.
+
+	* pt-decl.cc (tree_decl_init_list::eval,
+	tree_decl_command::accept, tree_global_command::do_init,
+	tree_global_command::eval, tree_static_command::do_init,
+	tree_static_command::eval): Delete.
+	* pt-decl.h: Delete decls.
+	(tree_decl_elt::eval_fcn): Delete typedef.
+
+	* pt-decl.cc (tree_global_command::accept,
+	tree_static_command::accept): New functions.
+	
+	* pt-stmt.cc (tree_statement::print_result): Move here from
+	pt-stmt.h.  Return true if expr is printable.
+
+	* ov-base.cc (Vsilent_functions): Delete.
+	(octave_base_value::print_with_name): Don't check
+	evaluating_function_body && Vsilent_functions here.
+	* ov-class.cc (octave_class::print_with_name): Likewise.
+	* ov-base.h (Vsilent_functions): Delete decl.
+	* pt-eval.cc (Fsilent_functions): Move here from ov-base.cc.
+	(Vsilent_functions): New static variable.
+
+	* sighandlers.cc (user_abort): Set tree_evaluator::debug_mode here.
+
+	* pt.h (tree::bp): Rename from tree::break_point.
+	(tree::set_breakpoint, tree::delete_breakpoint, tree::is_breakpoint):
+	No longer virtual.
+
+	* input.cc (get_debug_input): Use current_evaluator and
+	tree-walker to evaluate command.
+	* ov-usr-fcn.cc (octave_user_script::do_multi_index_op): Likewise.
+	* toplev.cc (main_loop): Likewise.
+	* parse.y (eval_string):
+
+	* input.h, input.cc (Vdebugging_current_line): Delete.
+	(get_debug_input): Use tree_evaluator::debug_line instead of
+	Vdebugging_current_line.
+
+	* ov-usr-fcn.cc (octave_user_function::do_multi_index_op):
+	Handle inline functions and anonymous functions as single
+	expressions.
+	* parse.y (eval_string): Likewise.
+
+	* parse.y (make_do_until_command): Rename first argument from
+	do_tok to until_tok.
+	(loop_command): Pass UNTIL token instead of DO token to
+	make_do_until_command.
+	(make_elseif_clause): New arg, elseif_tok.  Pass line and column
+	info to tree_if_clause constructor.
+	(elseif_clause): Pass ELSEIF token to make_elseif_clause.
+	(make_switch_case): New arg, case_tok.  Pass line and column info
+	to tree_switch_case constructor.
+	(switch_case): Pass CASE token to make_switch_case.
+	(make_script): New arg end_script.  Append it to cmds.
+	(script): Create no-op command for end of script and pass it to
+	make_script.
+	(start_function): New arg, end_function. Append it to body.
+	(function2): Pass end_function to start_function.
+	(make_end): New function.
+	(function_end): Declare as tree_statement_type.
+	Create no-op command for end of script.
+	(make_anon_fcn_handle): Mark body as anonymous function.
+	(set_stmt_print_flag): Set print flag for all separator types
+
+	* parse.y (fold (tree_binary_expression*),
+	fold (tree_unary_expression *),	finish_colon_expression,
+	finish_matrix): Call rvalue1 instead of rvalue.
+	Stash line number in new tree_constant object.
+
+	* debug.h (bp_table::have_breakpoints): New static function.
+	(bp_table::do_have_breakpoints): New member function.
+	* debug.cc (bp_table::do_add_breakpoint,
+	bp_table::do_remove_breakpoint,
+	bp_table::do_remove_all_breakpoints_in_file,
+	bp_table::do_remove_all_breakpoints): Call
+	bp_table::have_breakpoints to set tree_evaluator::debug_mode.
+	(Fdbnext): Delete function.  Alias to dbstep.
+	(Fdbquit, Fdbcont): Set tree_evaluator::dbstep_flag to zero.
+	(Fdbstep): Rewrite to use tree_evaluator::dbstep_flag instead of
+	tree::break_next, tree::last_line, tree::break_function, and
+	tree::last_break_function.
+	(Fdbwhere): Use tree_evaluator::debug_line and
+	tree_evaluator::debug_column to get current line and column info.
+	Don't print column if it is less than zero.
+	* pt.cc, pt.h (tree::break_next, tree::last_line,
+	tree::last_break_function, tree::break_function,
+	tree::break_statement): Delete.
+
+	* pt-bp.cc (tree_breakpoint::visit_global_command,
+	tree_breakpoint::visit_static_command,
+	tree_breakpoint::take_action (tree_statement&)): New functions.
+	* pt-bp.h: Provide decls.
+
+	* pt-bp.h (tree_walker::visit_global_command,
+	tree_walker::visit_static_command): New pure virtual functions.
+	(tree_walker::visit_decl_command): Delete.
+
+	* pt-bp.cc (tree_breakpoint::visit_decl_command): Delete.
+	* pt-bp.h: Delete decl.
+	(MAYBE_DO_BREAKPOINT): Delete macro and all uses.
+
+	* pt-bp.cc (tree_breakpoint::visit_no_op_command): Do nothing.
+	(tree_breakpoint::visit_argument_list,
+	tree_breakpoint::visit_binary_expression,
+	tree_breakpoint::visit_colon_expression,
+	tree_breakpoint::visit_decl_elt,
+	tree_breakpoint::visit_decl_init_list,
+	tree_breakpoint::visit_octave_user_script,
+	tree_breakpoint::visit_octave_user_function,
+	tree_breakpoint::visit_octave_user_function_header,
+	tree_breakpoint::visit_octave_user_function_trailer,
+	tree_breakpoint::visit_identifier,
+	tree_breakpoint::visit_index_expression,
+	tree_breakpoint::visit_matrix, tree_breakpoint::visit_cell,
+	tree_breakpoint::visit_multi_assignment,
+	tree_breakpoint::visit_anon_fcn_handle,
+	tree_breakpoint::visit_constant,
+	tree_breakpoint::visit_fcn_handle,
+	tree_breakpoint::visit_parameter_list,
+	tree_breakpoint::visit_postfix_expression,
+	tree_breakpoint::visit_prefix_expression,
+	tree_breakpoint::visit_return_list,
+	tree_breakpoint::visit_simple_assignment): Call panic_impossible
+	since breakpoints aren't set on expressions.
+	(tree_breakpoint::visit_if_clause): Fold into visit_if_command_list.
+	(tree_breakpoint::visit_switch_case): Fold into visit_switch_case_list.
+	(tree_breakpoint::visit_try_catch_command,
+	tree_breakpoint::visit_unwind_protect_command):
+	Don't set breakpoint on command itself, the the statements it
+	contains.
+	(tree_breakpoint::visit_global_command,
+	tree_breakpoint::visit_static_command): Call do_decl_command to do
+	actual work.
+	(tree_breakpoint::visit_while_command,
+	tree_breakpoint::visit_do_until_command,
+	tree_breakpoint::visit_simple_for_command,
+	tree_breakpoint::visit_complex_for_command,
+	tree_breakpoint::visit_statement,
+	tree_breakpoint::visit_statement_list,
+	tree_breakpoint::visit_switch_case_list): Set breakpoints at
+	appropriate places.
+
+	* pt-pr-code.h, pt-pr-code.cc (tree_print_code::visit_global_command,
+	tree_print_code::visit_static_command,
+	tree_print_code::do_decl_command): New functions.
+	(tree_print_code::visit_decl_command): Delete.
+
+	* pt-check.h, pt-check.cc (tree_checker::visit_global_command,
+	tree_checker::visit_static_command, tree_checker::do_decl_command):
+	New functions. 
+	(tree_checker::visit_decl_command): Delete.
+
+	* pt-select.cc (tree_switch_case::label_matches): Call rvalue1
+	instead of rvalue.
+
+	* pt-exp.h, pt-exp.cc (tree_expression::rvalue1): New function.
+	(tree_expression::rvalue (void)): Delete.
+	(tree_expression::is_logically_true): Call rvalue1 instead of rvalue.
+
+	* pt-fcn-handle.h, pt-fcn-handle.cc (tree_fcn_handle::rvalue1,
+	tree_anon_fcn_handle::rvalue1): New functions.
+	(tree_fcn_handle:rvalue (void),
+	tree_anon_fcn_handle::rvalue1 (void)): Delete.
+	(tree_fcn_handle::rvalue (int), tree_anon_fcn_handle_rvalue (int)):
+	Call rvalue1 instead of rvalue.
+
+	* pt-idx.h, pt-idx.cc (tree_index_expression::rvalue1): New function.
+	(tree_index_expression::rvalue (void)): Delete.
+	(tree_index_expression::get_struct_index,
+	tree_index_expression::rvalue (int)): Call rvalue1 instead of rvalue.
+
+	* pt-mat.h, pt-mat.cc (tree_matrix::rvalue1): New function.
+	(tree_matrix::rvalue (void)): Delete.
+	(tm_row_const::tm_row_const_rep::init,
+	tree_matrix::rvalue (int)): Call rvalue1 instead of rvalue.
+
+	* pt-misc.cc (tree_parameter_list::convert_to_const_vector):
+	Call rvalue1 instead of rvalue.
+	* pt-arg-list.cc (tree_argument_list::convert_to_const_vector):
+	Likewise.
+
+	* pt-unop.h, pt-unop.cc (tree_prefix_expression::rvalue1,
+	tree_postfix_expression::rvalue1): New functions.
+	(tree_prefix_expression::rvalue (void),
+	tree_postfix_expression::rvalue (void)): Delete.
+	(tree_prefix_expression::rvalue (int),
+	tree_postfix_expression::rvalue (int)):
+	Call rvalue1 instead of rvalue.
+
+	* pt-id.h, pt-id.cc (tree_identifier::rvalue1): New function.
+	(tree_identifier::rvalue (void)): Delete.
+
+	* pt-assign.h, pt-assign.cc (tree_simple_assignment::rvalue1,
+	tree_multi_assignment::rvalue1): New functions.
+	(tree_simple_assignment::rvalue (void),
+	tree_multi_assignment::rvalue (void): Delete.
+	(tree_simple_assignment::rvalue (int)):
+	Call rvalue1 instead of rvalue.
+
+	* pt-binop.h, pt-binop.cc (tree_binary_expression::rvalue1,
+	tree_boolean_expression::rvalue1): New functions.
+	(tree_binary_expression::rvalue (void),
+	tree_boolean_expression::rvalue (void)): Delete.
+	(tree_binary_expression::rvalue (int),
+	tree_boolean_expression::rvalue (int)):
+	Call rvalue1 instead of rvalue.
+
+	* pt-cbinop.h, pt-cbinop.cc
+	(tree_compound_binary_expression::rvalue1): New function.
+	(tree_compound_binary_expression::rvalue (void)): Delete.
+
+	* pt-cell.h, pt-cell.cc (tree_cell::rvalue1): New function.
+	(tree_cell::rvalue (void)): Delete.
+	(tree_cell::rvalue (int)): Call rvalue1 instead of rvalue.
+
+	* pt-colon.h, pt-colon.cc (tree_colon_expression::rvalue1):
+	New function.
+	(tree_colon_expression::rvalue (void)): Delete.
+	(tree_colon_expression::rvalue (int)):
+	Call rvalue1 instead of rvalue.
+
+	* pt-const.h, pt-const.cc (tree_constant::rvalue1): New function.
+	(tree_constant::rvalue (void)): Delete.
+	(tree_constant::rvalue (int)): Call rvalue1 instead of rvalue.
+
+	* pt-decl.h, pt-decl.cc (tree_decl_elt::ravlue1): New function.
+	(tree_decl_elt::ravlue (void)): Delete.
+	(tree_decl_elt::eval): Call rvalue1 instead of rvalue.
+
 2009-02-03  Jaroslav Hajek  <highegg@gmail.com>
 
 	* TEMPLATE-INST/Array-tc.cc: Replace vec_index by pointers.

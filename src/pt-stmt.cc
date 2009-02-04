@@ -25,6 +25,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
+#include <typeinfo>
+
 #include "quit.h"
 
 #include "defun.h"
@@ -55,14 +57,27 @@ tree_statement::~tree_statement (void)
   delete comm;
 }
 
+void
+tree_statement::set_print_flag (bool print_flag)
+{
+  if (expr)
+    expr->set_print_flag (print_flag);
+}
+
+bool
+tree_statement::print_result (void)
+{
+  return expr && expr->print_result ();
+}
+
 int
-tree_statement::line (void)
+tree_statement::line (void) const
 {
   return cmd ? cmd->line () : (expr ? expr->line () : -1);
 }
 
 int
-tree_statement::column (void)
+tree_statement::column (void) const
 {
   return cmd ? cmd->column () : (expr ? expr->column () : -1);
 }
@@ -79,58 +94,21 @@ tree_statement::maybe_echo_code (bool in_function_or_script_body)
     }
 }
 
-octave_value_list
-tree_statement::eval (bool silent, int nargout,
-		      bool in_function_or_script_body)
+bool
+tree_statement::is_end_of_fcn_or_script (void) const
 {
-  octave_value_list retval;
+  bool retval = false;
 
-  bool pf = silent ? false : print_flag;
-
-  if (cmd || expr)
+  if (cmd)
     {
-      if (in_function_or_script_body)
-	octave_call_stack::set_statement (this);
+      tree_no_op_command *no_op_cmd
+	= dynamic_cast<tree_no_op_command *> (cmd);
 
-      maybe_echo_code (in_function_or_script_body);
-
-      try
+      if (no_op_cmd)
 	{
-	  if (cmd)
-	    cmd->eval ();
-	  else
-	    {
-	      expr->set_print_flag (pf);
+	  std::string type = no_op_cmd->original_command ();
 
-	      // FIXME -- maybe all of this should be packaged in
-	      // one virtual function that returns a flag saying whether
-	      // or not the expression will take care of binding ans and
-	      // printing the result.
-
-	      // FIXME -- it seems that we should just have to
-	      // call expr->rvalue () and that should take care of
-	      // everything, binding ans as necessary?
-
-	      bool do_bind_ans = false;
-
-	      if (expr->is_identifier ())
-		{
-		  tree_identifier *id = dynamic_cast<tree_identifier *> (expr);
-
-		  do_bind_ans = (! id->is_variable ());
-		}
-	      else
-		do_bind_ans = (! expr->is_assignment_expression ());
-
-	      retval = expr->rvalue (nargout);
-
-	      if (do_bind_ans && ! (error_state || retval.empty ()))
-		bind_ans (retval(0), pf);
-	    }
-	}
-      catch (octave_execution_exception)
-	{
-	  gripe_library_execution_error ();
+	  retval = (type == "endfunction" || type == "endscript");
 	}
     }
 
@@ -147,9 +125,9 @@ tree_statement::dup (symbol_table::scope_id scope,
 
   new_stmt->expr = expr ? expr->dup (scope, context) : 0;
 
-  new_stmt->comm = comm ? comm->dup () : 0;
+  new_stmt->bp = bp;
 
-  new_stmt->print_flag = print_flag;
+  new_stmt->comm = comm ? comm->dup () : 0;
 
   return new_stmt;
 }
@@ -158,69 +136,6 @@ void
 tree_statement::accept (tree_walker& tw)
 {
   tw.visit_statement (*this);
-}
-
-octave_value_list
-tree_statement_list::eval (bool silent, int nargout)
-{
-  octave_value_list retval;
-
-  static octave_value_list empty_list;
-
-  if (error_state)
-    return retval;
-
-  iterator p = begin ();
-
-  if (p != end ())
-    {
-      while (true)
-	{
-	  tree_statement *elt = *p++;
-
-	  if (elt)
-	    {
-	      OCTAVE_QUIT;
-
-	      retval = elt->eval (silent, nargout,
-				  function_body || script_body);
-
-	      if (error_state)
-		break;
-
-	      if (tree_break_command::breaking
-		  || tree_continue_command::continuing)
-		break;
-
-	      if (tree_return_command::returning)
-		break;
-
-	      if (p == end ())
-		break;
-	      else
-		{
-		  // Clear preivous values before next statement is
-		  // evaluated so that we aren't holding an extra
-		  // reference to a value that may be used next.  For
-		  // example, in code like this:
-		  //
-		  //   X = rand (N);  ## refcount for X should be 1
-		  //                  ## after this statement
-		  //
-		  //   X(idx) = val;  ## no extra copy of X should be
-		  //                  ## needed, but we will be faked
-		  //                  ## out if retval is not cleared
-		  //                  ## between statements here
-
-		  retval = empty_list;
-		}
-	    }
-	  else
-	    error ("invalid statement found in statement list!");
-	}
-    }
-
-  return retval;
 }
 
 int

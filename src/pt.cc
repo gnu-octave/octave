@@ -33,21 +33,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt.h"
 #include "pt-pr-code.h"
 
-// If zero, stop executing at the next possible point.
-int tree::break_next = -1;
-
-// The line where dbnext was executed.
-int tree::last_line = 0;
-
-// The function where the last breakpoint occurred.
-const octave_function *tree::last_break_function = 0;
-
-// The function where the next breakpoint is request.
-const octave_function *tree::break_function = 0;
-
-// The statement where the last breakpoint occurred.
-const tree *tree::break_statement = 0;
-
 // Hide the details of the string buffer so that we are less likely to
 // create a memory leak.
 

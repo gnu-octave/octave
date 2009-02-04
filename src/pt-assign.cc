@@ -176,12 +176,10 @@ tree_simple_assignment::rvalue (int nargout)
 {
   octave_value_list retval;
 
-  MAYBE_DO_BREAKPOINT;
-
   if (nargout > 1)
     error ("invalid number of output arguments for expression X = RHS");
   else
-    retval = rvalue ();
+    retval = rvalue1 (nargout);
 
   return retval;
 }
@@ -190,7 +188,7 @@ tree_simple_assignment::rvalue (int nargout)
 // it were broken up into a couple of separate functions.
 
 octave_value
-tree_simple_assignment::rvalue (void)
+tree_simple_assignment::rvalue1 (int)
 {
   octave_value retval;
 
@@ -202,7 +200,7 @@ tree_simple_assignment::rvalue (void)
 
   if (rhs)
     {
-      octave_value_list tmp = rhs->rvalue ();
+      octave_value_list tmp = rhs->rvalue1 ();
 
       if (! (error_state || tmp.empty ()))
 	{
@@ -311,11 +309,11 @@ tree_multi_assignment::~tree_multi_assignment (void)
 }
 
 octave_value
-tree_multi_assignment::rvalue (void)
+tree_multi_assignment::rvalue1 (int nargout)
 {
   octave_value retval;
 
-  const octave_value_list tmp = rvalue (1);
+  const octave_value_list tmp = rvalue (nargout);
 
   if (! tmp.empty ())
     retval = tmp(0);

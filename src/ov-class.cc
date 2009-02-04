@@ -660,24 +660,21 @@ void
 octave_class::print_with_name (std::ostream&, const std::string& name, 
 			       bool) const
 {
-  if (! (evaluating_function_body && Vsilent_functions))
+  octave_value fcn = symbol_table::find_method ("display", class_name ());
+
+  if (fcn.is_defined ())
     {
-      octave_value fcn = symbol_table::find_method ("display", class_name ());
+      octave_value_list args;
 
-      if (fcn.is_defined ())
-	{
-	  octave_value_list args;
-
-	  args(0) = octave_value (clone (), 1);
+      args(0) = octave_value (clone (), 1);
       
-	  string_vector arg_names (1);
+      string_vector arg_names (1);
 
-	  arg_names[0] = name;
+      arg_names[0] = name;
 
-	  args.stash_name_tags (arg_names);
+      args.stash_name_tags (arg_names);
 
-	  feval (fcn.function_value (), args);
-	}
+      feval (fcn.function_value (), args);
     }
 }
 

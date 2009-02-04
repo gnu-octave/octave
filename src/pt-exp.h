@@ -74,7 +74,7 @@ public:
 
   virtual bool rvalue_ok (void) const { return false; }
 
-  virtual octave_value rvalue (void);
+  virtual octave_value rvalue1 (int nargout = 1);
 
   virtual octave_value_list rvalue (int nargout);
 

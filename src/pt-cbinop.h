@@ -50,7 +50,7 @@ public:
     : tree_binary_expression (a, b, l, c, t), op_lhs (ca), op_rhs (cb),
       etype (ct) { }
 
-  octave_value rvalue (void);
+  octave_value rvalue1 (int nargout = 1);
 
   octave_value::compound_binary_op cop_type (void) const { return etype; }
 

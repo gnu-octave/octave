@@ -108,6 +108,12 @@ public:
       ? instance->do_get_breakpoint_list (fname_list) : fname_line_map ();
   }
 
+  static bool
+  have_breakpoints (void)
+  {
+    return instance_ok () ? instance->do_have_breakpoints () : 0;
+  }
+
 private:
 
   // Map from function names to function objects for functions
@@ -132,7 +138,10 @@ private:
 
   fname_line_map do_get_breakpoint_list (const octave_value_list& fname_list);
 
+  bool do_have_breakpoints (void) { return (! bp_map.empty ()); }
 };
+
+std::string get_file_line (const std::string& fname, size_t line);
 
 #endif
 

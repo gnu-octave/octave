@@ -40,8 +40,6 @@ public:
 
   ~tree_break_command (void) { }
 
-  void eval (void);
-
   tree_command *dup (symbol_table::scope_id scope,
 		     symbol_table::context_id context);
 
@@ -70,8 +68,6 @@ public:
 
   ~tree_continue_command (void) { }
 
-  void eval (void);
-
   tree_command *dup (symbol_table::scope_id scope,
 		     symbol_table::context_id context);
 
@@ -99,8 +95,6 @@ public:
     : tree_command (l, c) { }
 
   ~tree_return_command (void) { }
-
-  void eval (void);
 
   tree_command *dup (symbol_table::scope_id scope,
 		     symbol_table::context_id context);

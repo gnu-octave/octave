@@ -52,17 +52,15 @@ tree_prefix_expression::rvalue (int nargout)
     error ("prefix operator `%s': invalid number of output arguments",
 	   oper () . c_str ());
   else
-    retval = rvalue ();
+    retval = rvalue1 (nargout);
 
   return retval;
 }
 
 octave_value
-tree_prefix_expression::rvalue (void)
+tree_prefix_expression::rvalue1 (int)
 {
   octave_value retval;
-
-  MAYBE_DO_BREAKPOINT;
 
   if (error_state)
     return retval;
@@ -71,7 +69,7 @@ tree_prefix_expression::rvalue (void)
     {
       if (etype == octave_value::op_incr || etype == octave_value::op_decr)
 	{
-	  op->rvalue ();
+	  op->rvalue1 ();
 
 	  if (! error_state)
 	    {
@@ -87,7 +85,7 @@ tree_prefix_expression::rvalue (void)
 	}
       else
 	{
-	  octave_value val = op->rvalue ();
+	  octave_value val = op->rvalue1 ();
 
 	  if (! error_state && val.is_defined ())
 	    {
@@ -132,17 +130,15 @@ tree_postfix_expression::rvalue (int nargout)
     error ("postfix operator `%s': invalid number of output arguments",
 	   oper () . c_str ());
   else
-    retval = rvalue ();
+    retval = rvalue1 (nargout);
 
   return retval;
 }
 
 octave_value
-tree_postfix_expression::rvalue (void)
+tree_postfix_expression::rvalue1 (int)
 {
   octave_value retval;
-
-  MAYBE_DO_BREAKPOINT;
 
   if (error_state)
     return retval;
@@ -151,7 +147,7 @@ tree_postfix_expression::rvalue (void)
     {
       if (etype == octave_value::op_incr || etype == octave_value::op_decr)
 	{
-	  op->rvalue ();
+	  op->rvalue1 ();
 
 	  if (! error_state)
 	    {
@@ -167,7 +163,7 @@ tree_postfix_expression::rvalue (void)
 	}
       else
 	{
-	  octave_value val = op->rvalue ();
+	  octave_value val = op->rvalue1 ();
 
 	  if (! error_state && val.is_defined ())
 	    {

@@ -115,9 +115,9 @@ OV_SPARSE_INCLUDES := \
 
 PT_INCLUDES := pt.h pt-all.h pt-arg-list.h pt-assign.h pt-binop.h \
         pt-bp.h pt-cbinop.h pt-cell.h pt-check.h pt-cmd.h pt-colon.h \
-	pt-const.h pt-decl.h pt-except.h pt-exp.h pt-fcn-handle.h \
+	pt-const.h pt-decl.h pt-eval.h pt-except.h pt-exp.h pt-fcn-handle.h \
 	pt-id.h pt-idx.h pt-jump.h pt-loop.h pt-mat.h pt-misc.h \
-	pt-pr-code.h pt-select.h pt-stmt.h pt-unop.h pt-walk.h \
+	pt-pr-code.h pt-select.h pt-stmt.h pt-unop.h pt-walk.h
 
 INCLUDES := Cell.h base-list.h builtins.h c-file-ptr-stream.h \
 	comment-list.h debug.h defun-dld.h defun-int.h defun.h \
@@ -210,9 +210,10 @@ OV_SRC := ov-base.cc ov-ch-mat.cc \
 
 PT_SRC := pt.cc pt-arg-list.cc pt-assign.cc pt-bp.cc pt-binop.cc \
 	pt-cbinop.cc pt-cell.cc pt-check.cc pt-cmd.cc pt-colon.cc \
-	pt-const.cc pt-decl.cc pt-except.cc pt-exp.cc pt-fcn-handle.cc \
-	pt-id.cc pt-idx.cc pt-jump.cc pt-loop.cc pt-mat.cc pt-misc.cc \
-	pt-pr-code.cc pt-select.cc pt-stmt.cc pt-unop.cc
+	pt-const.cc pt-decl.cc pt-eval.cc pt-except.cc pt-exp.cc \
+	pt-fcn-handle.cc pt-id.cc pt-idx.cc pt-jump.cc pt-loop.cc \
+	pt-mat.cc pt-misc.cc pt-pr-code.cc pt-select.cc pt-stmt.cc \
+	pt-unop.cc
 
 DIST_SRC := Cell.cc bitfcns.cc c-file-ptr-stream.cc comment-list.cc \
 	cutils.c data.cc debug.cc defaults.cc defun.cc dirfns.cc \

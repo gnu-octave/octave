@@ -57,10 +57,6 @@ along with Octave; see the file COPYING.  If not, see
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_base_value,
 				     "<unknown type>", "unknown");
 
-// If TRUE, turn off printing of results in functions (as if a
-// semicolon has been appended to each statement).
-bool Vsilent_functions = false;
-
 // TRUE means to perform automatic sparse to real mutation if there
 // is memory to be saved
 bool Vsparse_auto_mutate = false;
@@ -357,15 +353,12 @@ octave_base_value::print_with_name (std::ostream& output_buf,
 				    const std::string& name, 
 				    bool print_padding) const
 {
-  if (! (evaluating_function_body && Vsilent_functions))
-    {
-      bool pad_after = print_name_tag (output_buf, name);
+  bool pad_after = print_name_tag (output_buf, name);
 
-      print (output_buf);
+  print (output_buf);
 
-      if (print_padding && pad_after)
-	newline (output_buf);
-    }
+  if (print_padding && pad_after)
+    newline (output_buf);
 }
 
 void
@@ -1320,19 +1313,6 @@ install_base_type_conversions (void)
   INSTALL_WIDENOP (octave_base_value, octave_complex_matrix, complex_matrix_conv);
   INSTALL_WIDENOP (octave_base_value, octave_char_matrix_str, string_conv);
   INSTALL_WIDENOP (octave_base_value, octave_cell, cell_conv);
-}
-
-DEFUN (silent_functions, args, nargout,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{val} =} silent_functions ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} silent_functions (@var{new_val})\n\
-Query or set the internal variable that controls whether internal\n\
-output from a function is suppressed.  If this option is disabled,\n\
-Octave will display the results produced by evaluating expressions\n\
-within a function body that are not terminated with a semicolon.\n\
-@end deftypefn")
-{
-  return SET_INTERNAL_VARIABLE (silent_functions);
 }
 
 DEFUN (sparse_auto_mutate, args, nargout,

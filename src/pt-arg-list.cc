@@ -192,7 +192,7 @@ tree_argument_list::convert_to_const_vector (const octave_value *object)
 
       if (elt)
 	{
-	  octave_value tmp = elt->rvalue ();
+	  octave_value tmp = elt->rvalue1 ();
 
 	  if (error_state)
 	    {

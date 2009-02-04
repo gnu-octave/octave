@@ -37,26 +37,25 @@ class tree_walker;
 // If.
 
 class
-tree_if_clause
+tree_if_clause : public tree
 {
 public:
 
-  tree_if_clause (void)
-    : expr (0), list (0), lead_comm (0) { }
+  tree_if_clause (int l = -1, int c = -1)
+    : tree (l, c), expr (0), list (0), lead_comm (0) { }
 
-  tree_if_clause (tree_statement_list *l, octave_comment_list *lc = 0)
-    : expr (0), list (l), lead_comm (lc) { }
+  tree_if_clause (tree_statement_list *sl, octave_comment_list *lc = 0,
+		  int l = -1, int c = -1)
+    : tree (l, c), expr (0), list (sl), lead_comm (lc) { }
 
-  tree_if_clause (tree_expression *e, tree_statement_list *l,
-		  octave_comment_list *lc = 0)
-    : expr (e), list (l), lead_comm (lc) { }
+  tree_if_clause (tree_expression *e, tree_statement_list *sl,
+		  octave_comment_list *lc = 0,
+		  int l = -1, int c = -1)
+    : tree (l, c), expr (e), list (sl), lead_comm (lc) { }
 
   ~tree_if_clause (void);
 
-  bool is_else_clause (void)
-    { return ! expr; }
-
-  int eval (void);
+  bool is_else_clause (void) { return ! expr; }
 
   tree_expression *condition (void) { return expr; }
 
@@ -106,8 +105,6 @@ public:
 	}
     }
 
-  void eval (void);
-
   tree_if_command_list *dup (symbol_table::scope_id scope,
 			     symbol_table::context_id context);
 
@@ -135,8 +132,6 @@ public:
     : tree_command (l, c), list (lst), lead_comm (lc), trail_comm (tc) { }
 
   ~tree_if_command (void);
-
-  void eval (void);
 
   tree_if_command_list *cmd_list (void) { return list; }
 
@@ -170,27 +165,27 @@ private:
 // Switch.
 
 class
-tree_switch_case
+tree_switch_case : public tree
 {
 public:
 
-  tree_switch_case (void)
-    : label (0), list (0), lead_comm (0) { }
+  tree_switch_case (int l = -1, int c = -1)
+    : tree (l, c), label (0), list (0), lead_comm (0) { }
 
-  tree_switch_case (tree_statement_list *l, octave_comment_list *lc = 0)
-    : label (0), list (l), lead_comm (lc) { }
+  tree_switch_case (tree_statement_list *sl, octave_comment_list *lc = 0,
+		    int l = -1, int c = -1)
+    : tree (l, c), label (0), list (sl), lead_comm (lc) { }
 
-  tree_switch_case (tree_expression *e, tree_statement_list *l,
-		    octave_comment_list *lc = 0)
-    : label (e), list (l), lead_comm (lc) { }
+  tree_switch_case (tree_expression *e, tree_statement_list *sl,
+		    octave_comment_list *lc = 0,
+		    int l = -1, int c = -1)
+    : tree (l, c), label (e), list (sl), lead_comm (lc) { }
 
   ~tree_switch_case (void);
 
   bool is_default_case (void) { return ! label; }
 
   bool label_matches (const octave_value& val);
-
-  int eval (const octave_value& val);
 
   tree_expression *case_label (void) { return label; }
 
@@ -240,8 +235,6 @@ public:
 	}
     }
 
-  void eval (const octave_value& val);
-
   tree_switch_case_list *dup (symbol_table::scope_id scope,
 			      symbol_table::context_id context);
 
@@ -272,8 +265,6 @@ public:
       trail_comm (tc) { }
 
   ~tree_switch_command (void);
-
-  void eval (void);
 
   tree_expression *switch_value (void) { return expr; }
 

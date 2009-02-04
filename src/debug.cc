@@ -24,10 +24,13 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#include <iostream>
+#include <deque>
 #include <fstream>
-#include <string>
+#include <iostream>
 #include <set>
+#include <string>
+
+#include "file-stat.h"
 
 #include "defun.h"
 #include "error.h"
@@ -45,8 +48,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-list.h"
 #include "ov-struct.h"
 #include "pt-pr-code.h"
-#include "pt.h"
 #include "pt-bp.h"
+#include "pt-eval.h"
 #include "pt-stmt.h"
 #include "toplev.h"
 #include "unwind-prot.h"
@@ -56,6 +59,108 @@ along with Octave; see the file COPYING.  If not, see
 
 // Initialize the singleton object
 bp_table *bp_table::instance = 0;
+
+static std::string
+snarf_file (const std::string& fname)
+{
+  std::string retval;
+
+  file_stat fs (fname);
+
+  if (fs)
+    {
+      size_t sz = fs.size ();
+
+      std::ifstream file (fname.c_str (), std::ios::in|std::ios::binary);
+
+      if (file)
+	{
+	  std::string buf (sz+1, 0);
+
+	  file.read (&buf[0], sz+1);
+
+	  if (file.eof ())
+	    {
+	      // Expected to read the entire file.
+
+	      retval = buf;
+	    }
+	  else
+	    error ("error reading file %s", fname.c_str ());
+	}
+    }
+
+  return retval;
+}
+
+static std::deque<size_t>
+get_line_offsets (const std::string& buf)
+{
+  // This could maybe be smarter.  Is deque the right thing to use
+  // here?
+
+  std::deque<size_t> offsets;
+
+  offsets.push_back (0);
+
+  size_t len = buf.length ();
+
+  for (size_t i = 0; i < len; i++)
+    {
+      char c = buf[i];
+
+      if (c == '\r' && ++i < len)
+	{
+	  c = buf[i];
+
+	  if (c == '\n')
+	    offsets.push_back (i+1);
+	  else
+	    offsets.push_back (i);
+	}
+      else if (c == '\n')
+	offsets.push_back (i+1);
+    }
+
+  offsets.push_back (len);
+
+  return offsets;
+}
+
+std::string
+get_file_line (const std::string& fname, size_t line)
+{
+  std::string retval;
+
+  static std::string last_fname;
+
+  static std::string buf;
+
+  static std::deque<size_t> offsets;
+
+  if (fname != last_fname)
+    {
+      buf = snarf_file (fname);
+
+      offsets = get_line_offsets (buf);
+    }
+
+  if (line > 0)
+    line--;
+
+  if (line < offsets.size () - 1)
+    {
+      size_t bol = offsets[line];
+      size_t eol = offsets[line+1];
+
+      while (eol > 0 && buf[eol-1] == '\n' || buf[eol-1] == '\r')
+	eol--;
+
+      retval = buf.substr (bol, eol - bol);
+    }
+
+  return retval;
+}
 
 // Return a pointer to the user-defined function FNAME.  If FNAME is
 // empty, search backward for the first user-defined function in the
@@ -180,6 +285,8 @@ bp_table::do_add_breakpoint (const std::string& fname,
   else
     error ("add_breakpoint: unable to find the function requested\n");
 
+  tree_evaluator::debug_mode = bp_table::have_breakpoints ();
+
   return retval;
 }
 
@@ -233,6 +340,9 @@ bp_table::do_remove_breakpoint (const std::string& fname,
       else
 	error ("remove_breakpoint: unable to find the function requested\n");
     }
+
+  tree_evaluator::debug_mode = bp_table::have_breakpoints ();
+
   return retval;
 }
 
@@ -270,6 +380,8 @@ bp_table::do_remove_all_breakpoints_in_file (const std::string& fname,
     error ("remove_all_breakpoint_in_file: "
 	   "unable to find the function requested\n");
 
+  tree_evaluator::debug_mode = bp_table::have_breakpoints ();
+
   return retval;
 }
 
@@ -279,6 +391,8 @@ bp_table::do_remove_all_breakpoints (void)
   for (const_breakpoint_map_iterator it = bp_map.begin ();
        it != bp_map.end (); it++)
     remove_all_breakpoints_in_file (it->first);
+
+  tree_evaluator::debug_mode = bp_table::have_breakpoints ();
 }
 
 std::string 
@@ -295,6 +409,7 @@ do_find_bkpt_list (octave_value_list slist,
 	  break;
 	}
     }
+
   return retval;
 }
 
@@ -544,16 +659,39 @@ Show where we are in the code\n\
 
   if (dbg_fcn)
     {
-      std::string name = dbg_fcn->name ();
+      bool have_file = true;
+
+      std::string name = dbg_fcn->fcn_file_name ();
+
+      if (name.empty ())
+	{
+	  have_file = false;
+
+	  name = dbg_fcn->name ();
+	}
 
       octave_stdout << name << ":";
 
-      const tree *dbg_stmt = tree::break_statement;
+      int l = tree_evaluator::debug_line ();
 
-      if (dbg_stmt)
+      if (l > 0)
 	{
-	  octave_stdout << " line " << dbg_stmt->line () << ", ";
-	  octave_stdout << "column " << dbg_stmt->column () << std::endl;
+	  octave_stdout << " line " << l;
+
+	  int c = tree_evaluator::debug_column ();
+
+	  if (c > 0)
+	    octave_stdout << ", column " << c;
+
+	  octave_stdout << std::endl;
+
+	  if (have_file)
+	    {
+	      std::string line = get_file_line (name, l);
+
+	      if (! line.empty ())
+		octave_stdout << l << ": " << line << std::endl;
+	    }
 	}
       else
 	octave_stdout << " (unknown line)\n";
@@ -872,71 +1010,49 @@ execution to continue until the current function returns.\n\
       
       if (nargin > 1)
 	print_usage ();
-      else if (nargin == 1 && args(0).is_string ())
+      else if (nargin == 1)
 	{
-	  std::string arg = args(0).string_value ();
-
-	  if (! error_state)
+	  if (args(0).is_string ())
 	    {
-	      if (arg == "in")
+	      std::string arg = args(0).string_value ();
+
+	      if (! error_state)
 		{
-		  Vdebugging = false;
+		  if (arg == "in")
+		    {
+		      Vdebugging = false;
 
-		  tree::break_next = 0;
+		      tree_evaluator::dbstep_flag = -1;
+		    }
+		  else if (arg == "out")
+		    {
+		      Vdebugging = false;
 
-		  tree::last_line = Vdebugging_current_line;
-
-		  tree::break_function = 0;
-
-		  tree::last_break_function = 
-		    octave_call_stack::caller_user_code ();
-		}
-	      else if (arg == "out")
-		{
-		  Vdebugging = false;
-
-		  tree::break_next = 0;
-
-		  tree::last_line = -1;
-
-		  tree::break_function = 
-		    octave_call_stack::caller_user_code (1);
-
-		  tree::last_break_function = 
-		    octave_call_stack::caller_user_code ();
-		}
-	      else
-		{
-		  int n = atoi (arg.c_str ());
-
-		  Vdebugging = false;
-
-		  if (n < 0)
-		    tree::break_next = 0;
+		      tree_evaluator::dbstep_flag = -2;
+		    }
 		  else
-		    tree::break_next = n;
+		    {
+		      int n = atoi (arg.c_str ());
 
-		  tree::last_line = Vdebugging_current_line;
-		  
-		  tree::break_function = octave_call_stack::caller_user_code ();
+		      if (n > 0)
+			{
+			  Vdebugging = false;
 
-		  tree::last_break_function = 
-		    octave_call_stack::caller_user_code ();
+			  tree_evaluator::dbstep_flag = n;
+			}
+		      else
+			error ("dbstep: invalid argument");
+		    }
 		}
 	    }
+	  else
+	    error ("dbstep: expecting character string as argument");
 	}
       else
 	{
 	  Vdebugging = false;
 
-	  tree::break_next = 0;
-
-	  tree::last_line = Vdebugging_current_line;
-		  
-	  tree::break_function = octave_call_stack::caller_user_code ();
-
-	  tree::last_break_function = 
-	    octave_call_stack::caller_user_code ();
+	  tree_evaluator::dbstep_flag = 1;
 	}
     }
   else
@@ -944,6 +1060,8 @@ execution to continue until the current function returns.\n\
 
   return octave_value_list ();
 }
+
+DEFALIAS (dbnext, dbstep);
 
 DEFCMD (dbcont, args, ,
   "-*- texinfo -*-\n\
@@ -953,10 +1071,16 @@ In debugging mode, quit debugging mode and continue execution.\n\
 @end deftypefn")
 {
   if (Vdebugging)
-    if (args.length() == 0)
-      Vdebugging = false;
-    else
-      print_usage ();
+    {
+      if (args.length () == 0)
+	{
+	  Vdebugging = false;
+
+	  tree_evaluator::dbstep_flag = 0;
+	}
+      else
+	print_usage ();
+    }
   else
     error ("dbcont: can only be called in debug mode");
 
@@ -971,43 +1095,18 @@ In debugging mode, quit debugging mode and return to the top level.\n\
 @end deftypefn")
 {
   if (Vdebugging)
-    if (args.length() == 0)
-      octave_throw_interrupt_exception ();
-    else
-      print_usage ();
-  else
-    error ("dbquit: can only be called in debug mode");
-
-  return octave_value_list ();
-}
-
-DEFCMD (dbnext, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn {Command} {} dbnext ()\n\
-In debugging mode, execute the next line of code without stepping in to\n\
-functions. This is synonymous with @code{dbstep}.\n\
-@seealso{dbstep, dbcont, dbquit}\n\
-@end deftypefn")
-{
-  if (Vdebugging)
     {
-    if (args.length() == 0)
-      {
-	Vdebugging = false;
+      if (args.length () == 0)
+	{
+	  tree_evaluator::dbstep_flag = 0;
 
-	tree::break_next = 0;
-
-	tree::last_line = Vdebugging_current_line;
-		  
-	tree::break_function = octave_call_stack::caller_user_code ();
-
-	tree::last_break_function = octave_call_stack::caller_user_code ();
-      }
-    else
-      print_usage ();
+	  octave_throw_interrupt_exception ();
+	}
+      else
+	print_usage ();
     }
   else
-    error ("dbnext: can only be called in debug mode");
+    error ("dbquit: can only be called in debug mode");
 
   return octave_value_list ();
 }
@@ -1021,8 +1120,8 @@ Return true if debug mode is on, otherwise false.\n\
 {
   octave_value retval;
 
-  if (args.length() == 0)
-      retval = Vdebugging;
+  if (args.length () == 0)
+    retval = Vdebugging;
   else
     print_usage ();
 

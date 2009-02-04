@@ -30,7 +30,8 @@ class tree_binary_expression;
 class tree_break_command;
 class tree_colon_expression;
 class tree_continue_command;
-class tree_decl_command;
+class tree_global_command;
+class tree_static_command;
 class tree_decl_elt;
 class tree_decl_init_list;
 class tree_simple_for_command;
@@ -89,7 +90,10 @@ public:
   visit_continue_command (tree_continue_command&) = 0;
 
   virtual void
-  visit_decl_command (tree_decl_command&) = 0;
+  visit_global_command (tree_global_command&) = 0;
+
+  virtual void
+  visit_static_command (tree_static_command&) = 0;
 
   virtual void
   visit_decl_elt (tree_decl_elt&) = 0;

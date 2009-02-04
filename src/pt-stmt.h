@@ -46,39 +46,44 @@ tree_statement
 public:
 
   tree_statement (void)
-    : cmd (0), expr (0), comm (0), print_flag (true) { }
+    : cmd (0), expr (0), bp (false), comm (0) { }
 
   tree_statement (tree_command *c, octave_comment_list *cl)
-    : cmd (c), expr (0), comm (cl), print_flag (true) { }
+    : cmd (c), expr (0), bp (false), comm (cl) { }
 
   tree_statement (tree_expression *e, octave_comment_list *cl)
-    : cmd (0), expr (e), comm (cl), print_flag (true) { }
+    : cmd (0), expr (e), bp (false), comm (cl) { }
 
   ~tree_statement (void);
 
-  void set_print_flag (bool print) { print_flag = print; }
+  void set_print_flag (bool print_flag);
 
-  bool is_command (void) { return cmd != 0; }
+  bool print_result (void);
 
-  bool is_expression (void) { return expr != 0; }
+  bool is_command (void) const { return cmd != 0; }
 
-  int line (void);
-  int column (void);
+  bool is_expression (void) const { return expr != 0; }
+
+  void set_breakpoint (void) { bp = true; }
+
+  void delete_breakpoint (void) { bp = false; }
+
+  bool is_breakpoint (void) const { return bp; }
+
+  int line (void) const;
+  int column (void) const;
 
   void maybe_echo_code (bool in_function_body);
 
-  bool print_result (void) { return print_flag; }
-
   tree_command *command (void) { return cmd; }
-
-  octave_value_list eval (bool silent, int nargout,
-			  bool in_function_or_script_body);
 
   tree_expression *expression (void) { return expr; }
 
   octave_comment_list *comment_text (void) { return comm; }
 
   bool is_null_statement (void) const { return ! (cmd || expr || comm); }
+
+  bool is_end_of_fcn_or_script (void) const;
 
   // Allow modification of this statement.  Note that there is no
   // checking.  If you use these, are you sure you knwo what you are
@@ -103,11 +108,11 @@ private:
   // Expression to evaluate.
   tree_expression *expr;
 
+  // Breakpoint flag.
+  bool bp;
+
   // Comment associated with this statement.
   octave_comment_list *comm;
-
-  // Print result of eval for this command?
-  bool print_flag;
 
   // No copying!
   tree_statement (const tree_statement&);
@@ -123,10 +128,12 @@ tree_statement_list : public octave_base_list<tree_statement *>
 public:
 
   tree_statement_list (void)
-    : function_body (false), script_body (false) { }
+    : function_body (false), anon_function_body (false),
+      script_body (false) { }
 
   tree_statement_list (tree_statement *s)
-    : function_body (false), script_body (false) { append (s); }
+    : function_body (false), anon_function_body (false),
+      script_body (false) { append (s); }
 
   ~tree_statement_list (void)
     {
@@ -140,9 +147,15 @@ public:
 
   void mark_as_function_body (void) { function_body = true; }
 
+  void mark_as_anon_function_body (void) { anon_function_body = true; }
+
   void mark_as_script_body (void) { script_body = true; }
 
-  octave_value_list eval (bool silent = false, int nargout = 0);
+  bool is_function_body (void) const { return function_body; }
+
+  bool is_anon_function_body (void) const { return anon_function_body; }
+
+  bool is_script_body (void) const { return script_body; }
 
   int set_breakpoint (int line);
 
@@ -159,6 +172,9 @@ private:
 
   // Does this list of statements make up the body of a function?
   bool function_body;
+
+  // Does this list of statements make up the body of a function?
+  bool anon_function_body;
 
   // Does this list of statements make up the body of a script?
   bool script_body;

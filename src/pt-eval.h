@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007 Ben Sapp
+Copyright (C) 2009 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,31 +20,38 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_tree_bp_h)
-#define octave_tree_bp_h 1
+#if !defined (octave_tree_eval_h)
+#define octave_tree_eval_h 1
 
-#include "input.h"
-#include "ov-usr-fcn.h"
+#include <stack>
+#include <string>
+
+#include "comment-list.h"
+#include "oct-obj.h"
 #include "pt-walk.h"
-#include "pt-pr-code.h"
-#include "toplev.h"
 
-class tree;
-class tree_decl_command;
+class tree_expression;
+
+// How to evaluate the code that the parse trees represent.
 
 class
-tree_breakpoint : public tree_walker
+tree_evaluator : public tree_walker
 {
- public:
+public:
 
-  enum action { set = 1, clear = 2, list = 3 };
+  typedef void (*decl_elt_init_fcn) (tree_decl_elt&);
 
-  tree_breakpoint (int l, action a)
-    : line (l), act (a), found (false), bp_list () { }
+  tree_evaluator (bool in_function_or_script_body_arg = false)
+    : in_function_or_script_body (in_function_or_script_body_arg) { }
 
-  ~tree_breakpoint (void) { }
+  ~tree_evaluator (void) { }
 
-  bool success (void) const { return found; }
+  void reset (void)
+  {
+    in_function_or_script_body = false;
+  }
+
+  void visit_anon_fcn_handle (tree_anon_fcn_handle&);
 
   void visit_argument_list (tree_argument_list&);
 
@@ -62,11 +69,7 @@ tree_breakpoint : public tree_walker
 
   void visit_decl_elt (tree_decl_elt&);
 
-  void visit_decl_init_list (tree_decl_init_list&);  
-
-  void visit_while_command (tree_while_command&);
-
-  void visit_do_until_command (tree_do_until_command&);
+  void visit_decl_init_list (tree_decl_init_list&);
 
   void visit_simple_for_command (tree_simple_for_command&);
 
@@ -100,8 +103,6 @@ tree_breakpoint : public tree_walker
 
   void visit_no_op_command (tree_no_op_command&);
 
-  void visit_anon_fcn_handle (tree_anon_fcn_handle&);
-
   void visit_constant (tree_constant&);
 
   void visit_fcn_handle (tree_fcn_handle&);
@@ -132,40 +133,48 @@ tree_breakpoint : public tree_walker
 
   void visit_unwind_protect_command (tree_unwind_protect_command&);
 
-  octave_value_list get_list (void) { return bp_list; }
-  
-  int get_line (void) { return line; }
+  void visit_while_command (tree_while_command&);
 
- private:
+  void visit_do_until_command (tree_do_until_command&);
 
-  void do_decl_command (tree_decl_command&);
+  static int debug_line (void) { return db_line; }
 
-  void take_action (tree& tr);
+  static int debug_column (void) { return db_column; }
 
-  void take_action (tree_statement& stmt);
+  // If > 0, stop executing at the (N-1)th stopping point, counting
+  //         from the the current execution point in the current frame.
+  //
+  // If < 0, stop executing at the next possible stopping point.
+  static int dbstep_flag;
 
-  // Statement line number we are looking for.
-  int line;
+  // The number of the stack frame we are currently debugging.
+  static size_t current_frame;
 
-  // What to do.
-  action act;
+  static bool debug_mode;
 
-  // Have we already found the line?
-  bool found;
+private:
 
-  // List of breakpoint line numbers.
-  octave_value_list bp_list;
+  bool in_function_or_script_body;
+
+  void do_decl_init_list (decl_elt_init_fcn fcn,
+			  tree_decl_init_list *init_list);
+
+  void do_breakpoint (tree_statement& stmt) const;
+
+  void do_breakpoint (bool is_breakpoint, int l, int c,
+		      bool is_end_of_fcn_or_script = false) const;
+
+  static int db_line;
+  static int db_column;
 
   // No copying!
 
-  tree_breakpoint (const tree_breakpoint&);
+  tree_evaluator (const tree_evaluator&);
 
-  tree_breakpoint& operator = (const tree_breakpoint&);
+  tree_evaluator& operator = (const tree_evaluator&);
 };
 
-// TRUE means SIGINT should put us in the debugger at the next
-// available breakpoint.
-extern bool octave_debug_on_interrupt_state;
+extern tree_evaluator *current_evaluator;
 
 #endif
 

@@ -45,20 +45,6 @@ tree_if_clause::~tree_if_clause (void)
   delete lead_comm;
 }
 
-int
-tree_if_clause::eval (void)
-{
-  if (is_else_clause () || expr->is_logically_true ("if"))
-    {
-      if (list)
-	list->eval ();
-
-      return 1;
-    }
-
-  return 0;
-}
-
 tree_if_clause *
 tree_if_clause::dup (symbol_table::scope_id scope,
 		     symbol_table::context_id context)
@@ -75,18 +61,6 @@ tree_if_clause::accept (tree_walker& tw)
 }
 
 // List of if commands.
-
-void
-tree_if_command_list::eval (void)
-{
-  for (iterator p = begin (); p != end (); p++)
-    {
-      tree_if_clause *t = *p;
-
-      if (t->eval () || error_state)
-	break;
-    }
-}
 
 tree_if_command_list *
 tree_if_command_list::dup (symbol_table::scope_id scope,
@@ -119,13 +93,6 @@ tree_if_command::~tree_if_command (void)
   delete trail_comm;
 }
 
-void
-tree_if_command::eval (void)
-{
-  if (list)
-    list->eval ();
-}
-
 tree_command *
 tree_if_command::dup (symbol_table::scope_id scope,
 		      symbol_table::context_id context)
@@ -155,7 +122,7 @@ tree_switch_case::~tree_switch_case (void)
 bool
 tree_switch_case::label_matches (const octave_value& val)
 {
-  octave_value label_value = label->rvalue ();
+  octave_value label_value = label->rvalue1 ();
 
   if (! error_state && label_value.is_defined() )
     {
@@ -190,22 +157,6 @@ tree_switch_case::label_matches (const octave_value& val)
   return false;
 }
 
-int
-tree_switch_case::eval (const octave_value& val)
-{
-  int retval = 0;
-
-  if (is_default_case () || label_matches (val))
-    {
-      if (list)
-	list->eval ();
-
-      retval = 1;
-    }
-
-  return retval;
-}
-
 tree_switch_case *
 tree_switch_case::dup (symbol_table::scope_id scope,
 		       symbol_table::context_id context)
@@ -222,18 +173,6 @@ tree_switch_case::accept (tree_walker& tw)
 }
 
 // List of switch cases.
-
-void
-tree_switch_case_list::eval (const octave_value& val)
-{
-  for (iterator p = begin (); p != end (); p++)
-    {
-      tree_switch_case *t = *p;
-
-      if (t->eval (val) || error_state)
-	break;
-    }
-}
 
 tree_switch_case_list *
 tree_switch_case_list::dup (symbol_table::scope_id scope,
@@ -265,21 +204,6 @@ tree_switch_command::~tree_switch_command (void)
   delete list;
   delete lead_comm;
   delete trail_comm;
-}
-
-void
-tree_switch_command::eval (void)
-{
-  if (expr)
-    {
-      octave_value val = expr->rvalue ();
-
-      if (! error_state && list)
-	list->eval (val);
-    }
-  else
-    ::error ("missing value in switch command near line %d, column %d",
-	     line (), column ());
 }
 
 tree_command *

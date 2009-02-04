@@ -65,7 +65,7 @@ tree_constant::rvalue (int nargout)
   if (nargout > 1)
     error ("invalid number of output arguments for constant expression");
   else
-    retval = rvalue ();
+    retval = rvalue1 (nargout);
 
   return retval;
 }

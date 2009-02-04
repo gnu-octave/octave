@@ -67,8 +67,6 @@ public:
 
   ~tree_while_command (void);
 
-  void eval (void);
-
   tree_expression *condition (void) { return expr; }
 
   tree_statement_list *body (void) { return list; }
@@ -129,8 +127,6 @@ public:
 
   ~tree_do_until_command (void) { }
 
-  void eval (void);
-
   tree_command *dup (symbol_table::scope_id scope,
 		     symbol_table::context_id context);
 
@@ -165,8 +161,6 @@ public:
       lead_comm (lc), trail_comm (tc) { }
 
   ~tree_simple_for_command (void);
-
-  void eval (void);
 
   tree_expression *left_hand_side (void) { return lhs; }
 
@@ -228,8 +222,6 @@ public:
       lead_comm (lc), trail_comm (tc) { }
 
   ~tree_complex_for_command (void);
-
-  void eval (void);
 
   tree_argument_list *left_hand_side (void) { return lhs; }
 

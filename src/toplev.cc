@@ -67,6 +67,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "pathsearch.h"
 #include "procstream.h"
 #include "ov.h"
+#include "pt-eval.h"
 #include "pt-jump.h"
 #include "pt-stmt.h"
 #include "sighandlers.h"
@@ -555,7 +556,9 @@ main_loop (void)
 	    {
 	      if (global_command)
 		{
-		  global_command->eval ();
+		  current_evaluator->reset ();
+
+		  global_command->accept (*current_evaluator);
 
 		  delete global_command;
 

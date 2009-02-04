@@ -70,6 +70,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "pager.h"
 #include "parse.h"
 #include "pt-all.h"
+#include "pt-eval.h"
 #include "symtab.h"
 #include "token.h"
 #include "unwind-prot.h"
@@ -209,7 +210,7 @@ make_while_command (token *while_tok, tree_expression *expr,
 
 // Build a do-until command.
 static tree_command *
-make_do_until_command (token *do_tok, tree_statement_list *body,
+make_do_until_command (token *until_tok, tree_statement_list *body,
 		       tree_expression *expr, octave_comment_list *lc);
 
 // Build a for command.
@@ -241,8 +242,8 @@ finish_if_command (token *if_tok, tree_if_command_list *list,
 
 // Build an elseif clause.
 static tree_if_clause *
-make_elseif_clause (tree_expression *expr, tree_statement_list *list,
-		    octave_comment_list *lc);
+make_elseif_clause (token *elseif_tok, tree_expression *expr,
+		    tree_statement_list *list, octave_comment_list *lc);
 
 // Finish a switch command.
 static tree_switch_command *
@@ -252,8 +253,8 @@ finish_switch_command (token *switch_tok, tree_expression *expr,
 
 // Build a switch case.
 static tree_switch_case *
-make_switch_case (tree_expression *expr, tree_statement_list *list,
-		  octave_comment_list *lc);
+make_switch_case (token *case_tok, tree_expression *expr,
+		  tree_statement_list *list, octave_comment_list *lc);
 
 // Build an assignment to a variable.
 static tree_expression *
@@ -262,11 +263,16 @@ make_assign_op (int op, tree_argument_list *lhs, token *eq_tok,
 
 // Define a script.
 static void
-make_script (tree_statement_list *cmds);
+make_script (tree_statement_list *cmds, tree_statement *end_script);
 
 // Begin defining a function.
 static octave_user_function *
-start_function (tree_parameter_list *param_list, tree_statement_list *body);
+start_function (tree_parameter_list *param_list, tree_statement_list *body,
+		tree_statement *end_function);
+
+// Create a no-op statement for end_function.
+static tree_statement *
+make_end (const std::string& type, int l, int c);
 
 // Do most of the work for defining a function.
 static octave_user_function *
@@ -457,7 +463,7 @@ make_statement (T *arg)
 %type <tree_decl_elt_type> decl2
 %type <tree_decl_init_list_type> decl1
 %type <tree_decl_command_type> declaration
-%type <tree_statement_type> statement
+%type <tree_statement_type> statement function_end
 %type <tree_statement_list_type> simple_list simple_list1 list list1
 %type <tree_statement_list_type> opt_list input1
 
@@ -995,13 +1001,11 @@ if_cmd_list1	: expression opt_sep opt_list
 		;
 
 elseif_clause	: ELSEIF stash_comment opt_sep expression opt_sep opt_list
-		  { $$ = make_elseif_clause ($4, $6, $2); }
+		  { $$ = make_elseif_clause ($1, $4, $6, $2); }
 		;
 
 else_clause	: ELSE stash_comment opt_sep opt_list
-		  {
-		    $$ = new tree_if_clause ($4, $2);
-		  }
+		  { $$ = new tree_if_clause ($4, $2); }
 		;
 
 // ================
@@ -1036,7 +1040,7 @@ case_list1	: switch_case
 		;
 
 switch_case	: CASE stash_comment opt_sep expression opt_sep opt_list
-		  { $$ = make_switch_case ($4, $6, $2); }
+		  { $$ = make_switch_case ($1, $4, $6, $2); }
 		;
 
 default_case	: OTHERWISE stash_comment opt_sep opt_list
@@ -1056,7 +1060,7 @@ loop_command	: WHILE stash_comment expression opt_sep opt_list END
 		  }
 		| DO stash_comment opt_sep opt_list UNTIL expression
 		  {
-		    if (! ($$ = make_do_until_command ($1, $4, $6, $2)))
+		    if (! ($$ = make_do_until_command ($5, $4, $6, $2)))
 		      ABORT_PARSE;
 		  }
 		| FOR stash_comment assign_lhs '=' expression opt_sep opt_list END
@@ -1226,7 +1230,12 @@ return_list1	: identifier
 
 script		: SCRIPT opt_list END_OF_INPUT
 		  {
-		    make_script ($2);
+		    tree_statement *end_of_script
+		      = make_end ("endscript", input_line_number,
+				  current_input_column);
+
+		    make_script ($2, end_of_script);
+
 		    $$ = 0;
 		  }
 		;
@@ -1278,14 +1287,16 @@ function1	: fcn_name function2
 		;
 
 function2	: param_list opt_sep opt_list function_end
-		  { $$ = start_function ($1, $3); }
+		  { $$ = start_function ($1, $3, $4); }
 		| opt_sep opt_list function_end
-		  { $$ = start_function (0, $2); }
+		  { $$ = start_function (0, $2, $3); }
 		;
 
 function_end	: END
 		  {
-		    if (! end_token_ok ($1, token::function_end))
+		    if (end_token_ok ($1, token::function_end))
+		      $$ = make_end ("endfunction", $1->line (), $1->column ());
+		    else
 		      ABORT_PARSE;
 		  }
 		| END_OF_INPUT
@@ -1293,8 +1304,11 @@ function_end	: END
 		    if (lexer_flags.parsing_nested_function)
 		      lexer_flags.parsing_nested_function = -1;
 
-		    if (! (reading_fcn_file || reading_script_file
-			   || get_input_from_eval_string))
+		    if (reading_fcn_file || reading_script_file
+			|| get_input_from_eval_string)
+		      $$ = make_end ("endfunction", input_line_number,
+				     current_input_column);
+		    else
 		      YYABORT;
 		  }
 		;
@@ -1554,11 +1568,12 @@ fold (tree_binary_expression *e)
 	     || (warning_enabled ("Octave:precedence-change")
 		 && (op_type == EXPR_OR || op_type == EXPR_OR_OR)))))
     {
-      octave_value tmp = e->rvalue ();
+      octave_value tmp = e->rvalue1 ();
 
       if (! (error_state || warning_state))
 	{
-	  tree_constant *tc_retval = new tree_constant (tmp);
+	  tree_constant *tc_retval
+	    = new tree_constant (tmp, op1->line (), op1->column ());
 
 	  std::ostringstream buf;
 
@@ -1599,11 +1614,12 @@ fold (tree_unary_expression *e)
 
   if (op->is_constant ())
     {
-      octave_value tmp = e->rvalue ();
+      octave_value tmp = e->rvalue1 ();
 
       if (! (error_state || warning_state))
 	{
-	  tree_constant *tc_retval = new tree_constant (tmp);
+	  tree_constant *tc_retval
+	    = new tree_constant (tmp, op->line (), op->column ());
 
 	  std::ostringstream buf;
 
@@ -1653,11 +1669,12 @@ finish_colon_expression (tree_colon_expression *e)
 	  if (base->is_constant () && limit->is_constant ()
 	      && (! incr || (incr && incr->is_constant ())))
 	    {
-	      octave_value tmp = e->rvalue ();
+	      octave_value tmp = e->rvalue1 ();
 
 	      if (! (error_state || warning_state))
 		{
-		  tree_constant *tc_retval = new tree_constant (tmp);
+		  tree_constant *tc_retval
+		    = new tree_constant (tmp, base->line (), base->column ());
 
 		  std::ostringstream buf;
 
@@ -1789,6 +1806,8 @@ make_anon_fcn_handle (tree_parameter_list *param_list, tree_statement *stmt)
   stmt->set_print_flag (false);
 
   tree_statement_list *body = new tree_statement_list (stmt);
+
+  body->mark_as_anon_function_body ();
 
   tree_anon_fcn_handle *retval
     = new tree_anon_fcn_handle (param_list, ret_list, body, fcn_scope, l, c);
@@ -2133,7 +2152,7 @@ make_while_command (token *while_tok, tree_expression *expr,
 // Build a do-until command.
 
 static tree_command *
-make_do_until_command (token *do_tok, tree_statement_list *body,
+make_do_until_command (token *until_tok, tree_statement_list *body,
 		       tree_expression *expr, octave_comment_list *lc)
 {
   tree_command *retval = 0;
@@ -2144,8 +2163,8 @@ make_do_until_command (token *do_tok, tree_statement_list *body,
 
   lexer_flags.looping--;
 
-  int l = do_tok->line ();
-  int c = do_tok->column ();
+  int l = until_tok->line ();
+  int c = until_tok->column ();
 
   retval = new tree_do_until_command (expr, body, lc, tc, l, c);
 
@@ -2289,12 +2308,15 @@ finish_if_command (token *if_tok, tree_if_command_list *list,
 // Build an elseif clause.
 
 static tree_if_clause *
-make_elseif_clause (tree_expression *expr, tree_statement_list *list,
-		    octave_comment_list *lc)
+make_elseif_clause (token *elseif_tok, tree_expression *expr,
+		    tree_statement_list *list, octave_comment_list *lc)
 {
   maybe_warn_assign_as_truth_value (expr);
 
-  return new tree_if_clause (expr, list, lc);
+  int l = elseif_tok->line ();
+  int c = elseif_tok->column ();
+
+  return new tree_if_clause (expr, list, lc, l, c);
 }
 
 // Finish a switch command.
@@ -2322,12 +2344,15 @@ finish_switch_command (token *switch_tok, tree_expression *expr,
 // Build a switch case.
 
 static tree_switch_case *
-make_switch_case (tree_expression *expr, tree_statement_list *list,
-		  octave_comment_list *lc)
+make_switch_case (token *case_tok, tree_expression *expr,
+		  tree_statement_list *list, octave_comment_list *lc)
 {
   maybe_warn_variable_switch_label (expr);
 
-  return new tree_switch_case (expr, list, lc);
+  int l = case_tok->line ();
+  int c = case_tok->column ();
+
+  return new tree_switch_case (expr, list, lc, l, c);
 }
 
 // Build an assignment to a variable.
@@ -2427,7 +2452,7 @@ make_assign_op (int op, tree_argument_list *lhs, token *eq_tok,
 // Define a function.
 
 static void
-make_script (tree_statement_list *cmds)
+make_script (tree_statement_list *cmds, tree_statement *end_script)
 {
   std::string doc_string;
 
@@ -2436,6 +2461,11 @@ make_script (tree_statement_list *cmds)
       doc_string = help_buf.top ();
       help_buf.pop ();
     }
+
+  if (! cmds)
+    cmds = new tree_statement_list ();
+
+  cmds->append (end_script);
 
   octave_user_script *script
     = new octave_user_script (curr_fcn_file_full_name, curr_fcn_file_name,
@@ -2451,9 +2481,15 @@ make_script (tree_statement_list *cmds)
 // Begin defining a function.
 
 static octave_user_function *
-start_function (tree_parameter_list *param_list, tree_statement_list *body)
+start_function (tree_parameter_list *param_list, tree_statement_list *body,
+		tree_statement *end_fcn_stmt)
 {
   // We'll fill in the return list later.
+
+  if (! body)
+    body = new tree_statement_list ();
+
+  body->append (end_fcn_stmt);
 
   octave_user_function *fcn
     = new octave_user_function (symbol_table::current_scope (),
@@ -2467,6 +2503,12 @@ start_function (tree_parameter_list *param_list, tree_statement_list *body)
     }
 
   return fcn;
+}
+
+static tree_statement *
+make_end (const std::string& type, int l, int c)
+{
+  return make_statement (new tree_no_op_command (type, l, c));
 }
 
 // Do most of the work for defining a function.
@@ -2773,11 +2815,12 @@ finish_matrix (tree_matrix *m)
 
   if (m->all_elements_are_constant ())
     {
-      octave_value tmp = m->rvalue ();
+      octave_value tmp = m->rvalue1 ();
 
       if (! (error_state || warning_state))
 	{
-	  tree_constant *tc_retval = new tree_constant (tmp);
+	  tree_constant *tc_retval
+	    = new tree_constant (tmp, m->line (), m->column ());
 
 	  std::ostringstream buf;
 
@@ -2830,12 +2873,13 @@ set_stmt_print_flag (tree_statement_list *list, char sep,
   switch (sep)
     {
     case ';':
-      tmp->set_print_flag (0);
+      tmp->set_print_flag (false);
       break;
 
     case 0:
     case ',':
     case '\n':
+      tmp->set_print_flag (true);
       if (warn_missing_semi)
 	maybe_warn_missing_semi (list);
       break;
@@ -3797,20 +3841,62 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
 
       parse_status = yyparse ();
 
-      tree_statement_list *command = global_command;
+      tree_statement_list *command_list = global_command;
 
       // Restore previous value of global_command.
       unwind_protect::run ();
 
       if (parse_status == 0)
         {
-	  if (command)
+	  if (command_list)
 	    {
-	      retval = command->eval (silent, nargout);
+	      tree_statement *stmt = 0;
 
-	      delete command;
+	      if (command_list->length () == 1
+		  && (stmt = command_list->front ())
+		  && stmt->is_expression ())
+		{
+		  tree_expression *expr = stmt->expression ();
 
-	      command = 0;
+		  if (silent)
+		    expr->set_print_flag (false);
+
+		  bool do_bind_ans = false;
+
+		  if (expr->is_identifier ())
+		    {
+		      tree_identifier *id
+			= dynamic_cast<tree_identifier *> (expr);
+
+		      do_bind_ans = (! id->is_variable ());
+		    }
+		  else
+		    do_bind_ans = (! expr->is_assignment_expression ());
+
+		  retval = expr->rvalue (nargout);
+
+		  if (do_bind_ans && ! (error_state || retval.empty ()))
+		    bind_ans (retval(0), expr->print_result ());
+
+		  if (nargout == 0)
+		    retval = octave_value_list ();
+		}
+	      else if (nargout == 0)
+		{
+		  tree_evaluator evaluator;
+
+		  unwind_protect_ptr (current_evaluator);
+
+		  current_evaluator = &evaluator;
+
+		  command_list->accept (evaluator);
+		}
+	      else
+		error ("eval: invalid use of statement list");
+
+	      delete command_list;
+
+	      command_list = 0;
 
 	      if (error_state
 		  || tree_return_command::returning

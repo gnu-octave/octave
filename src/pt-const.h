@@ -74,11 +74,7 @@ public:
 
   bool rvalue_ok (void) const { return true; }
 
-  octave_value rvalue (void)
-    {
-      MAYBE_DO_BREAKPOINT;
-      return val;
-    }
+  octave_value rvalue1 (int = 1) { return val; }
 
   octave_value_list rvalue (int nargout);
 

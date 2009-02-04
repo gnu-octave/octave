@@ -76,7 +76,7 @@ tree_colon_expression::rvalue (int nargout)
   if (nargout > 1)
     error ("invalid number of output arguments for colon expression");
   else
-    retval = rvalue ();
+    retval = rvalue1 (nargout);
 
   return retval;
 }
@@ -165,22 +165,20 @@ tree_colon_expression::make_range (const octave_value& ov_base,
 }
 
 octave_value
-tree_colon_expression::rvalue (void)
+tree_colon_expression::rvalue1 (int)
 {
   octave_value retval;
 
-  MAYBE_DO_BREAKPOINT;
-  
   if (error_state || ! op_base || ! op_limit)
     return retval;
 
-  octave_value ov_base = op_base->rvalue ();
+  octave_value ov_base = op_base->rvalue1 ();
 
   if (error_state || ov_base.is_undefined ())
     eval_error ("invalid base value in colon expression");
   else
     {
-      octave_value ov_limit = op_limit->rvalue ();
+      octave_value ov_limit = op_limit->rvalue1 ();
 
       if (error_state || ov_limit.is_undefined ())
 	eval_error ("invalid limit value in colon expression");
@@ -190,7 +188,7 @@ tree_colon_expression::rvalue (void)
 
 	  if (op_increment)
 	    {
-	      octave_value ov_increment = op_increment->rvalue ();
+	      octave_value ov_increment = op_increment->rvalue1 ();
 
 	      if (error_state || ov_increment.is_undefined ())
 		eval_error ("invalid increment value in colon expression");
@@ -228,7 +226,7 @@ tree_colon_expression::rvalue (void)
 
 	  if (op_increment)
 	    {
-	      ov_increment = op_increment->rvalue ();
+	      ov_increment = op_increment->rvalue1 ();
 
 	      if (error_state || ov_increment.is_undefined ())
 		eval_error ("invalid increment value in colon expression");

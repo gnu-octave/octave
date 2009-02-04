@@ -376,7 +376,7 @@ tm_row_const::tm_row_const_rep::init (const tree_argument_list& row)
 
       tree_expression *elt = *p;
 
-      octave_value tmp = elt->rvalue ();
+      octave_value tmp = elt->rvalue1 ();
 
       if (error_state || tmp.is_undefined ())
 	break;
@@ -703,12 +703,10 @@ tree_matrix::rvalue (int nargout)
 {
   octave_value_list retval;
 
-  MAYBE_DO_BREAKPOINT;
-
   if (nargout > 1)
     error ("invalid number of output arguments for matrix list");
   else
-    retval = rvalue ();
+    retval = rvalue1 (nargout);
 
   return retval;
 }
@@ -772,7 +770,7 @@ maybe_warn_string_concat (bool all_dq_strings_p, bool all_sq_strings_p)
   while (0)
 
 octave_value
-tree_matrix::rvalue (void)
+tree_matrix::rvalue1 (int)
 {
   octave_value retval = Matrix ();
 

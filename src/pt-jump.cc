@@ -38,16 +38,6 @@ class octave_value_list;
 // Nonzero means we're breaking out of a loop or function body.
 int tree_break_command::breaking = 0;
 
-void
-tree_break_command::eval (void)
-{
-  // Even if we have an error we should still enter debug mode.
-  MAYBE_DO_BREAKPOINT;
-
-  if (! error_state)
-    breaking = 1;
-}
-
 tree_command *
 tree_break_command::dup (symbol_table::scope_id,
 			 symbol_table::context_id /*context*/)
@@ -66,15 +56,6 @@ tree_break_command::accept (tree_walker& tw)
 // Nonzero means we're jumping to the end of a loop.
 int tree_continue_command::continuing = 0;
 
-void
-tree_continue_command::eval (void)
-{
-  MAYBE_DO_BREAKPOINT;
-
-  if (! error_state)
-    continuing = 1;
-}
-
 tree_command *
 tree_continue_command::dup (symbol_table::scope_id,
 			    symbol_table::context_id /*context*/)
@@ -92,15 +73,6 @@ tree_continue_command::accept (tree_walker& tw)
 
 // Nonzero means we're returning from a function.
 int tree_return_command::returning = 0;
-
-void
-tree_return_command::eval (void)
-{
-  MAYBE_DO_BREAKPOINT;
-
-  if (! error_state)
-    returning = 1;
-}
 
 tree_command *
 tree_return_command::dup (symbol_table::scope_id,

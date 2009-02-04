@@ -100,11 +100,11 @@ tree_identifier::rvalue (int nargout)
 }
 
 octave_value
-tree_identifier::rvalue (void)
+tree_identifier::rvalue1 (int nargout)
 {
   octave_value retval;
 
-  octave_value_list tmp = rvalue (1);
+  octave_value_list tmp = rvalue (nargout);
 
   if (! tmp.empty ())
     retval = tmp(0);

@@ -43,28 +43,26 @@ tree_binary_expression::rvalue (int nargout)
     error ("binary operator `%s': invalid number of output arguments",
 	   oper () . c_str ());
   else
-    retval = rvalue ();
+    retval = rvalue1 (nargout);
 
   return retval;
 }
 
 octave_value
-tree_binary_expression::rvalue (void)
+tree_binary_expression::rvalue1 (int)
 {
   octave_value retval;
-
-  MAYBE_DO_BREAKPOINT;
 
   if (error_state)
     return retval;
 
   if (op_lhs)
     {
-      octave_value a = op_lhs->rvalue ();
+      octave_value a = op_lhs->rvalue1 ();
 
       if (! error_state && a.is_defined () && op_rhs)
 	{
-	  octave_value b = op_rhs->rvalue ();
+	  octave_value b = op_rhs->rvalue1 ();
 
 	  if (! error_state && b.is_defined ())
 	    {
@@ -112,19 +110,17 @@ tree_boolean_expression::rvalue (int nargout)
 {
   octave_value_list retval;
 
-  MAYBE_DO_BREAKPOINT;
-
   if (nargout > 1)
     error ("binary operator `%s': invalid number of output arguments",
 	   oper () . c_str ());
   else
-    retval = rvalue ();
+    retval = rvalue1 (nargout);
 
   return retval;
 }
 
 octave_value
-tree_boolean_expression::rvalue (void)
+tree_boolean_expression::rvalue1 (int)
 {
   octave_value retval;
 
@@ -135,7 +131,7 @@ tree_boolean_expression::rvalue (void)
 
   if (op_lhs)
     {
-      octave_value a = op_lhs->rvalue ();
+      octave_value a = op_lhs->rvalue1 ();
 
       if (! error_state)
 	{
@@ -159,7 +155,7 @@ tree_boolean_expression::rvalue (void)
 
 	      if (op_rhs)
 		{
-		  octave_value b = op_rhs->rvalue ();
+		  octave_value b = op_rhs->rvalue1 ();
 
 		  if (! error_state)
 		    result = b.is_true ();

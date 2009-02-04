@@ -30,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "comment-list.h"
 #include "pt-walk.h"
 
+class tree_decl_command;
 class tree_expression;
 
 // How to print the code that the parse trees represent.
@@ -65,7 +66,9 @@ public:
 
   void visit_continue_command (tree_continue_command&);
 
-  void visit_decl_command (tree_decl_command&);
+  void visit_global_command (tree_global_command&);
+
+  void visit_static_command (tree_static_command&);
 
   void visit_decl_elt (tree_decl_elt&);
 
@@ -159,6 +162,8 @@ private:
 
   // TRUE means we are printing newlines and indenting.
   bool printing_newlines;
+
+  void do_decl_command (tree_decl_command& cmd);
 
   void reset_indent_level (void) { curr_print_indent_level = 0; }
 

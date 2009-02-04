@@ -53,8 +53,6 @@ public:
 
   ~tree_try_catch_command (void);
 
-  void eval (void);
-
   tree_statement_list *body (void) { return try_code; }
 
   tree_statement_list *cleanup (void) { return catch_code; }
@@ -115,8 +113,6 @@ public:
       lead_comm (cl), mid_comm (cm), trail_comm (ct) { }
 
   ~tree_unwind_protect_command (void);
-
-  void eval (void);
 
   tree_statement_list *body (void) { return unwind_protect_code; }
 

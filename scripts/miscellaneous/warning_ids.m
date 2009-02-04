@@ -235,3 +235,7 @@
 ## expression.  By default, the @code{Octave:variable-switch-label}
 ## warning is disabled.
 ## @end table
+
+function warning_ids ()
+  help ("warning_ids");
+endfunction

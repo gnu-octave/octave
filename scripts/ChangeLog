@@ -1,4 +1,5 @@
 2009-02-04  Soren Hauberg  <hauberg@gmail.com>
+            Thomas Treichl  <Thomas.Treichl@gmx.net>
 
 	* miscellaneous/Makefile.in (SOURCES): Add bzip2.m to the list.
 

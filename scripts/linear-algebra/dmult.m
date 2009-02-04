@@ -69,7 +69,7 @@ function m = dmult (a, b, ind)
       s = kron (ones (sat, 1), kron (b, ones (sal, 1)));
       m = reshape (s, sa) .* a;
     else
-      error ("dmult: dimensions mismatch or index out of range")
+      error ("dmult: dimensions mismatch or index out of range");
     endif
   else
     print_usage ();

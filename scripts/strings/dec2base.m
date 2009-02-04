@@ -55,7 +55,7 @@ function retval = dec2base (n, base, len)
   if (numel (n) != length (n))
     n = n(:);
   elseif (any (n < 0 | n != fix (n)))
-    error ("dec2base: can only convert non-negative integers")
+    error ("dec2base: can only convert non-negative integers");
   endif
 
   symbols = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";

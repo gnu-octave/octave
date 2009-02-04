@@ -38,7 +38,7 @@ function varargout = splu (varargin)
   for i = 2 : nargin
     arg = varargin {i};
     if (! isscalar (arg))
-      error ("splu: Can no longer treat input column permutations.");
+      error ("splu: Can no longer treat input column permutations");
     endif
   endfor
 

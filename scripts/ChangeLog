@@ -1,3 +1,26 @@
+2009-02-04  John W. Eaton  <jwe@octave.org>
+
+	* audio/wavwrite.m, deprecated/splu.m, general/bitcmp.m,
+	general/fliplr.m, general/flipud.m, general/genvarname.m,
+	general/nargchk.m, general/nargoutchk.m, general/quadgk.m,
+	general/rot90.m, geometry/griddata.m, geometry/rectint.m,
+	geometry/voronoi.m, geometry/voronoin.m,
+	help/__strip_html_tags__.m, image/brighten.m, image/imfinfo.m,
+	image/imread.m, linear-algebra/cond.m, linear-algebra/condest.m,
+	linear-algebra/dmult.m, linear-algebra/dot.m,
+	linear-algebra/expm.m, linear-algebra/housh.m,
+	linear-algebra/onenormest.m, linear-algebra/subspace.m,
+	miscellaneous/compare_versions.m, optimization/__all_opts__.m,
+	optimization/optimget.m, pkg/pkg.m, plot/__bar__.m,
+	plot/__plr2__.m, plot/ribbon.m, plot/slice.m, polynomial/pchip.m,
+	polynomial/roots.m, set/unique.m, signal/fractdiff.m,
+	signal/hurst.m, specfun/beta.m, specfun/legendre.m,
+	statistics/base/__quantile__.m, statistics/base/quantile.m,
+	statistics/tests/cor_test.m,
+	statistics/tests/kolmogorov_smirnov_test_2.m, strings/base2dec.m,
+	strings/dec2base.m, strings/strcat.m, strings/validatestring.m,
+	time/addtodate.m: Style fixes.
+
 2009-02-04  Jaroslav Hajek  <highegg@gmail.com>
 
 	* optimization/fsolve.m: remove redundant line.

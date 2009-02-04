@@ -79,7 +79,7 @@ function retval = __plr2__ (h, theta, rho, fmt)
       y = diag (sin (theta)) * rho;
       retval = __plt__ ("polar", h, x, y, fmt);
     else
-      error ("__plr2__: invalid data for plotting")
+      error ("__plr2__: invalid data for plotting");
     endif
   elseif (ismatrix (theta))
     if (isvector (rho))
@@ -112,10 +112,10 @@ function retval = __plr2__ (h, theta, rho, fmt)
       y = rho .* sin (theta);
       retval = __plt__ ("polar", h, x, y, fmt);
     else
-      error ("__plr2__: invalid data for plotting")
+      error ("__plr2__: invalid data for plotting");
     endif
   else
-    error ("__plr2__: invalid data for plotting")
+    error ("__plr2__: invalid data for plotting");
   endif
 
 endfunction

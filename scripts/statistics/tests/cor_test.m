@@ -68,7 +68,7 @@ function t = cor_test (X, Y, ALTERNATIVE, METHOD)
   endif
 
   if (!isvector (X) || !isvector (Y) || length (X) != length (Y))
-    error ("cor_test: X and Y must be vectors of the same length")
+    error ("cor_test: X and Y must be vectors of the same length");
   endif
 
   if (nargin < 3)
@@ -109,7 +109,7 @@ function t = cor_test (X, Y, ALTERNATIVE, METHOD)
     t.dist = "stdnormal";
     cdf = stdnormal_cdf (t.stat);
   else
-    error ("cor_test: method `%s' not recognized", METHOD)
+    error ("cor_test: method `%s' not recognized", METHOD);
   endif
 
   if (strcmp (ALTERNATIVE, "!=") || strcmp (ALTERNATIVE, "<>"))

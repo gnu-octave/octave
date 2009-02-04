@@ -38,7 +38,7 @@ function retval = optimget (options, parname, default)
   if (idx > 0 && strcmpi (parname, opts{idx}))
     parname = opts{idx};
   else
-    warning ("unrecognized option: %s", parname)
+    warning ("unrecognized option: %s", parname);
   endif
   if (isfield (options, parname))
     retval = options.(parname);

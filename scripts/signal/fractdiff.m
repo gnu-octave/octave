@@ -35,11 +35,11 @@ function retval = fractdiff (x, d)
   N = 100;
 
   if (! isvector (x))
-    error ("fractdiff: x must be a vector")
+    error ("fractdiff: x must be a vector");
   endif
 
   if (! isscalar (d))
-    error ("fractdiff: d must be a scalar")
+    error ("fractdiff: d must be a scalar");
   endif
 
 

@@ -74,21 +74,21 @@ function str = validatestring (str, strarray, varargin)
 
   ## Check the inputs
   if (! ischar (str))
-    error ("validatestring: str must be a character string")
+    error ("validatestring: str must be a character string");
   elseif (rows (str) != 1)
-    error ("validatestring: str must have only one row")
+    error ("validatestring: str must have only one row");
   elseif (! iscellstr (strarray))
-    error ("validatestring: strarray must be a cellstr")
+    error ("validatestring: strarray must be a cellstr");
   elseif (! ischar (funname))
-    error ("validatestring: funname must be a character string")
+    error ("validatestring: funname must be a character string");
   elseif (! isempty (funname) && (rows (funname) != 1))
-    error ("validatestring: funname must be exactly one row")
+    error ("validatestring: funname must be exactly one row");
   elseif (! ischar (varname))
-    error ("validatestring: varname must be a character string")
+    error ("validatestring: varname must be a character string");
   elseif (! isempty (varname) && (rows (varname) != 1))
-    error ("validatestring: varname must be exactly one row")
+    error ("validatestring: varname must be exactly one row");
   elseif (position < 0)
-    error ("validatestring: position must be >= 0")
+    error ("validatestring: position must be >= 0");
   endif
 
   ## make the part of the error that will use funname, varname, and

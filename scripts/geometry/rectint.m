@@ -44,7 +44,7 @@ function area = rectint (a, b)
   elseif (columns (b) != 4)
     error ("rectint: b must have 4 columns");
   elseif any ([a(:,3:4);b(:,3:4)](:) < 0)
-    error ("rectint: all widths and heights must be > 0")
+    error ("rectint: all widths and heights must be > 0");
   endif
 
   ## This runs faster if the number of rows of a is greater than the

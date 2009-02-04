@@ -102,7 +102,7 @@ function [est, v, w, iter] = onenormest (varargin)
   if (ismatrix (varargin{1}))
     n = size (varargin{1}, 1);
     if n != size (varargin{1}, 2),
-      error ("onenormest: matrix must be square.");
+      error ("onenormest: matrix must be square");
     endif
     apply = @(x) varargin{1} * x;
     apply_t = @(x) varargin{1}' * x;

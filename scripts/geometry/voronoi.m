@@ -161,7 +161,7 @@ function [vvx, vvy] = voronoi (varargin)
     vvx = vx;
     vvy = vy;
   else
-    error ("voronoi: only two or zero output arguments supported")
+    error ("voronoi: only two or zero output arguments supported");
   endif
 
 endfunction

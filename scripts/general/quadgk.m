@@ -166,7 +166,7 @@ function [q, err] = quadgk (f, a, b, varargin)
 	  endif
 	endwhile
 	if (idx != nargin - 2)
-	  error ("quadgk: expecting properties in pairs")
+	  error ("quadgk: expecting properties in pairs");
 	endif
       endif
     endif
@@ -285,7 +285,7 @@ function [q, err] = quadgk (f, a, b, varargin)
 
     unwind_protect
       ## Singularity will cause divide by zero warnings
-      warning ("off", "Octave:divide-by-zero")
+      warning ("off", "Octave:divide-by-zero");
 
       ## Initial evaluation of the integrand on the sub-intervals
       [q_subs, q_errs] = __quadgk_eval__ (f, subs);
@@ -371,7 +371,7 @@ function [q, err] = quadgk (f, a, b, varargin)
       endif
     unwind_protect_cleanup
       if (strcmp (warn_state.state, "on")) 
-	warning ("on", "Octave:divide-by-zero")
+	warning ("on", "Octave:divide-by-zero");
       endif
     end_unwind_protect
   endif

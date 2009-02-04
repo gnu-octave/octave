@@ -54,9 +54,9 @@ function [y, i, j] = unique (x, varargin)
       optlast = strmatch ('last', varargin) > 0;
       optrows = strmatch ('rows', varargin) > 0 && size (x, 2) > 1;
       if (optfirst && optlast)
-        error ("unique: cannot specify both 'last' and 'first'.");
+        error ("unique: cannot specify both \"last\" and \"first\"");
       elseif (optfirst + optlast + optrows != nargin-1)
-        error ("unique: invalid option.");
+        error ("unique: invalid option");
       endif
     else
       error ("unique: options must be strings");

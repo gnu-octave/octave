@@ -9,7 +9,7 @@ function p = polynomial (a)
       p.poly = a(:)';
       p = class (p, "polynomial");
     else
-      error ("polynomial: expecting real or complex vector")
+      error ("polynomial: expecting real or complex vector");
     endif
   else
     print_usage ();

@@ -877,7 +877,7 @@ function uninstall (pkgnames, handle_deps, verbose, local_list,
       endif
     else
       ## FIXME: We should have a better error message.
-      warning ("some of the packages you want to uninstall are not installed.");
+      warning ("some of the packages you want to uninstall are not installed");
     endif
   endif
 

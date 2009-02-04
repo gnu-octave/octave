@@ -50,13 +50,13 @@ function h = ribbon (x, y, width)
 
   if (isvector (x) && isvector (y))
     if (length (x) != length (y))
-      error ("ribbon: in case of vectors, X and Y must have same length")
+      error ("ribbon: in case of vectors, X and Y must have same length");
     else
       [x, y] = meshgrid (x, y);
     endif
   else
     if (! size_equal(x, y))
-      error ("ribbon: in case of matrices, X and Y must have same size")
+      error ("ribbon: in case of matrices, X and Y must have same size");
     endif
   endif
 

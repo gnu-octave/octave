@@ -46,11 +46,11 @@ function retval = beta (a, b)
   endif
 
   if (any (size (a) != size (b)) && numel (a) != 1 && numel (b) != 1)
-    error ("beta: inputs have inconsistent sizes.")
+    error ("beta: inputs have inconsistent sizes");
   endif
 
   if (! isreal (a) || ! isreal (b))
-    error ("beta: inputs must be real.")
+    error ("beta: inputs must be real");
   endif
 
   retval = real (exp (gammaln (a) + gammaln (b) - gammaln (a+b)));

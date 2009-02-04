@@ -45,14 +45,14 @@ function Rmap = brighten (m, beta)
       h = m;
       m = get (h, "colormap");
     elseif (! is_matrix (m) || size (m, 2) != 3)
-      error ("First argument must be a matrix of size nx3 or a handle.");
+      error ("brighten: first argument must be an Nx3 matrix or a handle");
     endif
   else
     print_usage ();
   endif
 
   if (! isscalar (beta) || beta <= -1 || beta >= 1)
-    error ("brighten(...,beta) beta must be a scalar in the range (-1,1).");
+    error ("brighten: beta must be a scalar in the range (-1,1)");
   endif
 
   if (beta > 0)

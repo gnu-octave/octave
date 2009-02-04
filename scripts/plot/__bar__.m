@@ -104,7 +104,7 @@ function varargout = __bar__ (vertical, func, varargin)
   ylen = size (y, 1);
 
   if (xlen != ylen)
-    error ("%s: length of x and y must be equal", func)
+    error ("%s: length of x and y must be equal", func);
   endif
   if (any (x(2:end) < x(1:end-1)))
     error ("%s: x vector values must be in ascending order", func);

@@ -101,7 +101,7 @@ function q = quantile (x, p, dim, method)
   endif
 
   if (dim > ndims(x))
-    error ("quantile: invalid dimension.")
+    error ("quantile: invalid dimension");
   endif
 
   ## Set the permutation vector.

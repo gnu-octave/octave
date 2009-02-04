@@ -119,7 +119,7 @@ function [est, v] = condest (varargin)
     A = varargin{1};
     n = issquare (A);
     if (! n)
-      error ("condest: matrix must be square.");
+      error ("condest: matrix must be square");
     endif
     have_A = true;
 
@@ -136,7 +136,7 @@ function [est, v] = condest (varargin)
 	  have_t = true;
 	endif
       else
-	error ("condest: must supply both solve and solve_t.");
+	error ("condest: must supply both solve and solve_t");
       endif
     endif
   elseif (nargin > 4)
@@ -147,14 +147,14 @@ function [est, v] = condest (varargin)
     have_solve = true;
     n = varargin{5};
     if (! isscalar (n))
-      error ("condest: dimension argument of implicit form must be scalar.");
+      error ("condest: dimension argument of implicit form must be scalar");
     endif
     if (nargin > 5)
       t = varargin{6};
       have_t = true;
     endif
   else
-    error ("condest: implicit form of condest requires at least 5 arguments.");
+    error ("condest: implicit form of condest requires at least 5 arguments");
   endif
 
   if (! have_t)

@@ -90,7 +90,7 @@ function info = imfinfo (filename)
   endif
 
   if (!ischar (filename))
-    error ("imfinfo: filename must be a string")
+    error ("imfinfo: filename must be a string");
   endif
 
   filename = tilde_expand (filename);

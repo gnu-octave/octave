@@ -41,12 +41,12 @@ function z = dot (x, y, dim)
       y = y(:);
     endif
     if (! size_equal (x, y))
-      error ("dot: sizes of arguments must match")
+      error ("dot: sizes of arguments must match");
     endif
     z = sum(x .* y);
   else
     if (! size_equal (x, y))
-      error ("dot: sizes of arguments must match")
+      error ("dot: sizes of arguments must match");
     endif
     z = sum(x .* y, dim);
   endif

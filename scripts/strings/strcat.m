@@ -73,7 +73,7 @@ function st = strcat (varargin)
         elseif (iscell (varargin{nv}))
           allchar = false;
         else
-          error ("strcat: inputs must be strings or cells of strings.")
+          error ("strcat: inputs must be strings or cells of strings");
         endif
         dims{nv} = size (varargin{nv});
         numstrs(nv) = numel (varargin{nv});
@@ -96,7 +96,7 @@ function st = strcat (varargin)
           if (size_equal (st, varargin{nv}))
             st{ns} = [st{ns}, varargin{nv}{ns}];
           else
-            error ("strcat: arguments must be the same size, or be scalars.");
+            error ("strcat: arguments must be the same size, or be scalars");
           endif
         endfor
       endfor

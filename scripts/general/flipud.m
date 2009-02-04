@@ -45,7 +45,7 @@ function y = flipud (x)
   endif
 
   if (ndims (x) > 2)
-    error ("flipud: Only works with 2-d arrays")
+    error ("flipud: Only works with 2-d arrays");
   endif
 
   nr = rows (x);

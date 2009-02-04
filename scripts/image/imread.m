@@ -42,7 +42,7 @@ function varargout = imread (filename, varargin)
   endif
 
   if (! ischar (filename))
-    error ("imread: filename must be a string")
+    error ("imread: filename must be a string");
   endif
 
   filename = tilde_expand (filename);
@@ -71,7 +71,7 @@ function varargout = imread (filename, varargin)
 	map_field = isfield (vars, "map");
       endif
     catch
-      error ("imread: invalid image file: %s", magick_error)
+      error ("imread: invalid image file: %s", magick_error);
     end_try_catch
 
     if (map_field && (img_field || x_field))

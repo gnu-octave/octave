@@ -186,7 +186,7 @@ function retval = legendre (n, x, normalization)
   endif
 
   if (overflow && ! warned_overflow)
-    warning ("legendre: overflow - results may be unstable for high orders.");
+    warning ("legendre: overflow - results may be unstable for high orders");
     warned_overflow = true;
   endif
 

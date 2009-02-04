@@ -33,8 +33,7 @@ function [text, status] = __strip_html_tags__ (html_text)
     text = strip_superfluous_endlines (text);
     status = 0;
   else
-    warning ("help: invalid HTML data");
-    warning ("Raw HTML source follows...");
+    warning ("help: invalid HTML data -- raw HTML source follows...");
     disp (html_text);
     text = "";
     status = 1;

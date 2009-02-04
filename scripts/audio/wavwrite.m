@@ -102,7 +102,7 @@ function wavwrite (y, varargin)
     
   [fid, msg] = fopen (filename, "wb");
   if (fid < 0)
-    error ("wavwrite: %s", msg)
+    error ("wavwrite: %s", msg);
   endif
   
   ## write RIFF/WAVE header

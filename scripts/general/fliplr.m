@@ -44,7 +44,7 @@ function y = fliplr (x)
   endif
 
   if (ndims (x) > 2)
-    error ("fliplr: Only works with 2-D arrays")
+    error ("fliplr: Only works with 2-D arrays");
   endif
 
   nc = columns (x);

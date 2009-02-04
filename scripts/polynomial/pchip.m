@@ -99,7 +99,7 @@ function ret = pchip (x, y, xi)
     h = diff (x);
     y = flipud (y);
   elseif (any (h <= 0))
-    error("pchip: x must be strictly monotonic")
+    error("pchip: x must be strictly monotonic");
   endif
 
   if (rows (y) != n)

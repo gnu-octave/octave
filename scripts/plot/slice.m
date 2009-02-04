@@ -102,7 +102,7 @@ function h = slice (varargin)
     elseif (ndims (x) == 3 && size_equal (x, y, z))
       ## Do nothing.
     else
-      error ("slice: X, Y, Z size mismatch")
+      error ("slice: X, Y, Z size mismatch");
     endif
     sx = varargin{5};
     sy = varargin{6};

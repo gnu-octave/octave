@@ -61,7 +61,7 @@ function y = rot90 (x, k)
     endif
 
     if (ndims (x) > 2)
-      error ("rot90: Only works with 2-D arrays")
+      error ("rot90: Only works with 2-D arrays");
     endif
 
     if (imag (k) != 0 || fix (k) != k)

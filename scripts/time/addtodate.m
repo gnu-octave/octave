@@ -34,7 +34,7 @@ function d = addtodate (d, q, f)
   elseif (! (ischar (f) && rows (f) == 1))
     ## FIXME: enhance the function so that it works with cellstrs of the
     ## same size as the output.
-    error ("addtodate: f must be a single row character string.")
+    error ("addtodate: f must be a single row character string");
   endif
 
   if (numel (d) == 1 && numel (q) > 1)
@@ -69,7 +69,7 @@ function d = addtodate (d, q, f)
     mult = struct ("day", 1, "hour", 1/24, "minute", 1/1440, "second", 1/86400);
     d += q.*mult.(f);
   else
-    error ("addtodate: Invalid time unit: %s", f)
+    error ("addtodate: Invalid time unit: %s", f);
   endif
 
 endfunction

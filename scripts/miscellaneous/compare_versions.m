@@ -78,7 +78,7 @@ function out = compare_versions (v1, v2, operator)
   if (! (ischar (v1) && ischar (v2)))
     error ("compare_versions: both version numbers must be strings");
   elseif (size (v1, 1) != 1 || size (v2, 1) != 1)
-    error ("compare_versions: version numbers must be a single row")
+    error ("compare_versions: version numbers must be a single row");
   endif
 
   ## check and make sure that the operator is valid

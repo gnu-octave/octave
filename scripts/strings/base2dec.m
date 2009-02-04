@@ -56,10 +56,10 @@ function out = base2dec (d, base)
     symbols = base;
     base = length (symbols);
     if (any (diff (sort (toascii (symbols))) == 0))
-      error ("base2dec: symbols representing digits must be unique.");
+      error ("base2dec: symbols representing digits must be unique");
     endif
   elseif (! isscalar (base))
-    error ("base2dec: cannot convert from several bases at once.");
+    error ("base2dec: cannot convert from several bases at once");
   elseif (base < 2 || base > length (symbols))
     error ("base2dec: base must be between 2 and 36 or a string of symbols");
   else

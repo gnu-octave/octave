@@ -68,7 +68,7 @@ function [rx, ry, rz] = griddata (x, y, z, xi, yi, method)
   zi = nan (size (xi));
   
   if (strcmp (method, "cubic"))
-    error ("griddata: cubic interpolation not yet implemented")
+    error ("griddata: cubic interpolation not yet implemented");
 
   elseif (strcmp (method, "nearest"))
     ## Search index of nearest point.

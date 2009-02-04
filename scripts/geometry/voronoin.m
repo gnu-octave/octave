@@ -54,6 +54,6 @@ function [C, F] = voronoin (pts, opt)
     endif
 
   else
-    error ("voronoin: number of points must be greater than their dimension")
+    error ("voronoin: number of points must be greater than their dimension");
   endif
 endfunction

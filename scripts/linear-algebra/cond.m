@@ -33,7 +33,7 @@ function retval = cond (a, p)
 
   if (nargin && nargin < 3)
     if (ndims (a) > 2)
-      error ("cond: only valid on 2-D objects")
+      error ("cond: only valid on 2-D objects");
     endif
 
     if (nargin <2)

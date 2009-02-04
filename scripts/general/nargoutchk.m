@@ -61,7 +61,7 @@ function msg = nargoutchk (mina, maxa, narg, outtype)
     endif
     ## FIXME: remove the error below if error is modified to accept
     ## struct inputs
-    error ("nargoutchk: error does not yet support struct inputs")
+    error ("nargoutchk: error does not yet support struct inputs");
   endif
 
 endfunction

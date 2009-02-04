@@ -127,19 +127,38 @@ function [h_r, f_r] = freqz (b, a, n, region, Fs)
     k = max (length (b), length (a));
     hb = polyval (postpad (b, k), exp (j*w));
     ha = polyval (postpad (a, k), exp (j*w));
-  elseif (strcmp (region, "whole"))
-    f = Fs * (0:n-1)' / n;
+  else
     ## polyval(fliplr(P),exp(jw)) is O(p n) and fft(x) is O(n log(n)),
     ## where p is the order of the polynomial P.  For small p it
     ## would be faster to use polyval but in practice the overhead for
     ## polyval is much higher and the little bit of time saved isn't
     ## worth the extra code.
-    hb = fft (postpad (b, n));
-    ha = fft (postpad (a, n));
-  else
-    f = Fs/2 * (0:n-1)' / n;
-    hb = fft (postpad (b, 2*n))(1:n);
-    ha = fft (postpad (a, 2*n))(1:n);
+    k = max (length (b), length (a));
+    if (k > n/2 && nargout == 0)
+      ## Ensure a causal phase response.
+      n = n * 2 .^ ceil (log2 (2*k/n));
+    endif
+
+    if (strcmp (region, "whole"))
+      N = n;
+    else
+      N = 2*n;
+    endif
+
+    f = Fs * (0:n-1).' / N;
+
+    pad_sz = N*ceil (k/N);
+    b = postpad (b, pad_sz);
+    a = postpad (a, pad_sz);
+
+    hb = zeros (n, 1);
+    ha = zeros (n, 1);
+
+    for i = 1:N:pad_sz
+      hb = hb + fft (postpad (b(i:i+N-1), N))(1:n);
+      ha = ha + fft (postpad (a(i:i+N-1), N))(1:n);
+    endfor
+
   endif
 
   h = hb ./ ha;

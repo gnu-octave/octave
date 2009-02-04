@@ -1,3 +1,8 @@
+2009-02-04  Frederick Umminger  <Frederick_Umminger@playstation.sony.com>
+
+	* signal/freqz.m: Ensure causal phase response.
+	Handle long input correctly.
+
 2009-02-04  Petr Mikulik  <mikulik@physics.muni.cz>
 
 	* plot/__go_draw_axes__.m: Pass "interpolate 0, 0" to gnuplot

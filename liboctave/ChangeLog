@@ -1,5 +1,11 @@
 2009-02-04  Jaroslav Hajek  <highegg@gmail.com>
 
+	* str-vec.h (string_vector::sort): Remove implementation.
+	* str-vec.cc (string_vector::sort): Move here. Use in-place sorting.
+	* Array-str.cc: Fix order of header files.
+
+2009-02-04  Jaroslav Hajek  <highegg@gmail.com>
+
 	* oct-locbuf.h: Specialize OCTAVE_LOCAL_BUFFER to use chunked
 	allocation for pointers and const pointers.
 

@@ -24,13 +24,13 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
+#include <string>
+
 // Instantiate Arrays of strings.
 
 #include "Array.h"
 #include "Array.cc"
 #include "oct-sort.cc"
-
-#include <string>
 
 INSTANTIATE_ARRAY_SORT (std::string);
 

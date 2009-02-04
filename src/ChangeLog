@@ -1,3 +1,10 @@
+2009-02-04  Kai Habel  <kai.habel@gmx.de>
+
+	* gl-render.cc (opengl_renderer::draw (surface::properties)):
+	Normalize surface normals. Correct calculation of diffuse lighting.
+	* gl-render.cc (opengl_renderer::draw (patch::properties)):
+	Correct calculation of diffuse lighting.
+
 2009-02-04  John W. Eaton  <jwe@octave.org>
 
 	* help.cc (do_which): If NAME is not in the symbol table, look for

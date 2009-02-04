@@ -1742,7 +1742,8 @@ opengl_renderer::draw (const surface::properties& props)
   float ds = props.get_diffusestrength ();
   float ss = props.get_specularstrength ();
   float se = props.get_specularexponent ();
-  float cb[4] = { 0, 0, 0, 1 };
+  float cb[4] = { 0.0, 0.0, 0.0, 1.0 };
+  double d = 1.0;
 
   opengl_texture tex;
 
@@ -1800,11 +1801,11 @@ opengl_renderer::draw (const surface::properties& props)
 	      if (fl_mode > 0)
 		{
 		  for (int i = 0; i < 3; i++)
-		    cb[i] = (as * fcolor(i));
+		    cb[i] = as * fcolor(i);
 		  glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
 
 		  for (int i = 0; i < 3; i++)
-		    cb[i] *= (ds / as);
+		    cb[i] = ds * fcolor(i);
 		  glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
 		}
 	    }
@@ -1855,12 +1856,17 @@ opengl_renderer::draw (const surface::properties& props)
 			  glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
 			  
 			  for (int k = 0; k < 3; k++)
-			    cb[k] *= (ds / as);
+			    cb[k] = ds * c(j-1, i-1, k);
 			  glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
 			}
 		    }
-		  if (fl_mode > 0)
-		    glNormal3d (n(j-1,i-1,0), n(j-1,i-1,1), n(j-1,i-1,2));
+                  if (fl_mode > 0)
+		    {
+		      d = sqrt (n(j-1,i-1,0) * n(j-1,i-1,0)
+				+ n(j-1,i-1,1) * n(j-1,i-1,1)
+				+ n(j-1,i-1,2) * n(j-1,i-1,2));
+		      glNormal3d (n(j-1,i-1,0)/d, n(j-1,i-1,1)/d, n(j-1,i-1,2)/d);
+		    }
 		  glVertex3d (x(j1,i-1), y(j-1,i1), z(j-1,i-1));
 
 		  // Vertex 2
@@ -1879,12 +1885,19 @@ opengl_renderer::draw (const surface::properties& props)
 			  glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
 			  
 			  for (int k = 0; k < 3; k++)
-			    cb[k] *= (ds / as);
+			    cb[k] = ds * c(j-1, i, k);
 			  glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
 			}
 		    }
-		  if (fl_mode == 2)
-		    glNormal3d (n(j-1,i,0), n(j-1,i,1), n(j-1,i,2));
+
+                  if (fl_mode == 2)
+		    {
+		      d = sqrt (n(j-1,i,0) * n(j-1,i,0)
+				+ n(j-1,i,1) * n(j-1,i,1)
+				+ n(j-1,i,2) * n(j-1,i,2));
+		      glNormal3d (n(j-1,i,0)/d, n(j-1,i,1)/d, n(j-1,i,2)/d);
+		    }
+
 		  glVertex3d (x(j1,i), y(j-1,i2), z(j-1,i));
 		  
 		  // Vertex 3
@@ -1903,14 +1916,19 @@ opengl_renderer::draw (const surface::properties& props)
 			  glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
 			  
 			  for (int k = 0; k < 3; k++)
-			    cb[k] *= (ds / as);
+			    cb[k] = ds * c(j, i, k);
 			  glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
 			}
 		    }
 		  if (fl_mode == 2)
-		    glNormal3d (n(j,i,0), n(j,i,1), n(j,i,2));
+		    {
+		      d = sqrt (n(j,i,0) * n(j,i,0)
+				+ n(j,i,1) * n(j,i,1)
+				+ n(j,i,2) * n(j,i,2));
+		      glNormal3d (n(j,i,0)/d, n(j,i,1)/d, n(j,i,2)/d);
+		    }
 		  glVertex3d (x(j2,i), y(j,i2), z(j,i));
-		  
+
 		  // Vertex 4
 		  if (fc_mode == 3)
 		    tex.tex_coord (double (i-1) / (zc-1), double (j) / (zr-1));
@@ -1927,12 +1945,17 @@ opengl_renderer::draw (const surface::properties& props)
 			  glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
 			  
 			  for (int k = 0; k < 3; k++)
-			    cb[k] *= (ds / as);
+			    cb[k] = ds * c(j, i-1, k);
 			  glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
 			}
 		    }
-		  if (fl_mode == 2)
-		    glNormal3d (n(j,i-1,0), n(j,i-1,1), n(j,i-1,2));
+                  if (fl_mode == 2)
+		    {
+		      d = sqrt (n(j,i-1,0) * n(j,i-1,0)
+				+ n(j,i-1,1) * n(j,i-1,1)
+				+ n(j,i-1,2) * n(j,i-1,2));
+		      glNormal3d (n(j,i-1,0)/d, n(j,i-1,1)/d, n(j,i-1,2)/d);
+		    }
 		  glVertex3d (x(j2,i-1), y(j,i1), z(j,i-1));
 
 		  glEnd ();
@@ -1962,11 +1985,11 @@ opengl_renderer::draw (const surface::properties& props)
 	      if (fl_mode > 0)
 		{
 		  for (int i = 0; i < 3; i++)
-		    cb[i] = (as * ecolor(i));
+		    cb[i] = as * ecolor(i);
 		  glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
 
 		  for (int i = 0; i < 3; i++)
-		    cb[i] *= (ds / as);
+		    cb[i] = ds * ecolor(i);
 		  glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
 		}
 	    }
@@ -2017,12 +2040,17 @@ opengl_renderer::draw (const surface::properties& props)
 			      glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
 
 			      for (int k = 0; k < 3; k++)
-				cb[k] *= (ds / as);
+				cb[k] = ds * c(j-1, i, k);
 			      glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
 			    }
 			}
 		      if (el_mode > 0)
-			glNormal3d (n(j-1,i,0), n(j-1,i,1), n(j-1,i,2));
+			{
+			  d = sqrt (n(j-1,i,0) * n(j-1,i,0)
+				    + n(j-1,i,1) * n(j-1,i,1)
+				    + n(j-1,i,2) * n(j-1,i,2));
+			  glNormal3d (n(j-1,i,0)/d, n(j-1,i,1)/d, n(j-1,i,2)/d);
+			}
 		      glVertex3d (x(j1,i), y(j-1,i2), z(j-1,i));
 
 		      // Vertex 2
@@ -2039,12 +2067,17 @@ opengl_renderer::draw (const surface::properties& props)
 			      glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
 
 			      for (int k = 0; k < 3; k++)
-				cb[k] *= (ds / as);
+				cb[k] = ds * c(j, i, k);
 			      glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
 			    }
 			}
 		      if (el_mode == 2)
-			glNormal3d (n(j,i,0), n(j,i,1), n(j,i,2));
+		        {
+			  d = sqrt (n(j,i,0) * n(j,i,0)
+				    + n(j,i,1) * n(j,i,1)
+				    + n(j,i,2) * n(j,i,2));
+			  glNormal3d (n(j,i,0)/d, n(j,i,1)/d, n(j,i,2)/d);
+			}
 		      glVertex3d (x(j2,i), y(j,i2), z(j,i));
 
 		      glEnd ();
@@ -2091,12 +2124,17 @@ opengl_renderer::draw (const surface::properties& props)
 			      glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
 
 			      for (int k = 0; k < 3; k++)
-				cb[k] *= (ds / as);
+				cb[k] = ds * c(j, i-1, k);
 			      glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
 			    }
 			}
 		      if (el_mode > 0)
-			glNormal3d (n(j,i-1,0), n(j,i-1,1), n(j,i-1,2));
+                        {
+			  d = sqrt (n(j,i-1,0) * n(j,i-1,0)
+				    + n(j,i-1,1) * n(j,i-1,1)
+				    + n(j,i-1,2) * n(j,i-1,2));
+			  glNormal3d (n(j,i-1,0)/d, n(j,i-1,1)/d, n(j,i-1,2)/d);
+			}
 		      glVertex3d (x(j2,i-1), y(j,i1), z(j,i-1));
 		      
 		      // Vertex 2
@@ -2113,12 +2151,17 @@ opengl_renderer::draw (const surface::properties& props)
 			      glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
 
 			      for (int k = 0; k < 3; k++)
-				cb[k] *= (ds / as);
+				cb[k] = ds * c(j, i, k);
 			      glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
 			    }
 			}
 		      if (el_mode == 2)
-			glNormal3d (n(j,i,0), n(j,i,1), n(j,i,2));
+		        {
+			  d = sqrt (n(j,i,0) * n(j,i,0)
+				    + n(j,i,1) * n(j,i,1)
+				    + n(j,i,2) * n(j,i,2));
+			  glNormal3d (n(j,i,0)/d, n(j,i,1)/d, n(j,i,2)/d);
+			}
 		      glVertex3d (x(j2,i), y(j,i2), z(j,i));
 		      
 		      glEnd ();
@@ -2364,7 +2407,7 @@ opengl_renderer::draw (const patch::properties &props)
 		  glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
 
 		  for (int i = 0; i < 3; i++)
-		    cb[i] *= (ds / as);
+		    cb[i] = ds * fcolor(i);
 		  glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
 		}
 	    }
@@ -2420,7 +2463,7 @@ opengl_renderer::draw (const patch::properties &props)
 		  glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
 
 		  for (int i = 0; i < 3; i++)
-		    cb[i] *= (ds / as);
+		    cb[i] = ds * ecolor(i);
 		  glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
 		}
 	    }

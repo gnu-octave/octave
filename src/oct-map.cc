@@ -475,23 +475,34 @@ Octave_map
 Octave_map::index (const octave_value_list& idx, bool resize_ok) const
 {
   Octave_map retval;
-
-  if (idx.length () > 0)
+  octave_idx_type n_idx = idx.length ();
+  if (n_idx > 0)
     {
-      for (const_iterator p = begin (); p != end (); p++)
-	{
-          // FIXME: this is sub-optimal: idx is converted multiple times.
-          // Need to convert here and use ArrayN<octave_value>::index.
-	  Cell tmp = contents(p).index (idx, resize_ok);
+      Array<idx_vector> ra_idx (n_idx);
+      for (octave_idx_type i = 0; i < n_idx; i++)
+        {
+          ra_idx(i) = idx(i).index_vector ();
+          if (error_state)
+            break;
+        }
 
-	  if (error_state)
-	    break;
+      if (! error_state)
+        {
+          for (const_iterator p = begin (); p != end (); p++)
+            {
 
-	  retval.assign (key(p), tmp);
-	}
+              Cell tmp = contents (p);
+              tmp = tmp.ArrayN<octave_value>::index (ra_idx, resize_ok);
 
-      // Preserve order of keys.
-      retval.key_list = key_list;
+              if (error_state)
+                break;
+
+              retval.assign (key(p), tmp);
+            }
+
+          // Preserve order of keys.
+          retval.key_list = key_list;
+        }
     }
   else
     retval = *this;

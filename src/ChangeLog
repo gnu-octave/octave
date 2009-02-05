@@ -1,5 +1,9 @@
 2009-02-05  Jaroslav Hajek  <highegg@gmail.com>
 
+	* oct-map.cc (Octave_map::index): Optimize.
+
+2009-02-05  Jaroslav Hajek  <highegg@gmail.com>
+
 	* OPERATORS/op-cm-cs.cc: Use scalar_value in scalar-to-matrix
 	indexed assignments.
 	* OPERATORS/op-fcm-fcs.cc: Ditto.

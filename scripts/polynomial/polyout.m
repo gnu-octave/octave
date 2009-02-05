@@ -48,13 +48,13 @@ function y = polyout (c, x)
   endif
 
   if (! isvector (c))
-    error("polyout: first argument must be a vector");
+    error ("polyout: first argument must be a vector");
   endif
 
   if (nargin == 1)
     x = "s";
   elseif (! ischar (x))
-    error("polyout: second argument must be a string");
+    error ("polyout: second argument must be a string");
   endif
 
   n = length (c);

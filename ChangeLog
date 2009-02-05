@@ -1,3 +1,8 @@
+2009-02-05  John W. Eaton  <jwe@octave.org>
+
+	* aclocal.m4 (OCTAVE_HDF5_HAS_REQUIRED_API): New macro.
+	* configure.in: Use it in HDF5 check.
+
 2009-02-04  Benjamin Lindner  <lindnerben@gmx.net>
 
 	* configure.in: Use separate cases for *-*-mingw* and *-*-cygwin*

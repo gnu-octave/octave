@@ -38,8 +38,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 #include <vector>
 
-#include <hdf5.h>
-
 #include "byte-swap.h"
 #include "data-conv.h"
 #include "file-ops.h"

@@ -30,10 +30,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <list>
 #include <string>
 
-#if defined (HAVE_HDF5)
-#include <hdf5.h>
-#endif
-
 #include "Range.h"
 #include "data-conv.h"
 #include "mxarray.h"
@@ -41,6 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "str-vec.h"
 
 #include "error.h"
+#include "oct-hdf5.h"
 
 class Cell;
 class Octave_map;

@@ -919,6 +919,25 @@ AC_DEFUN([OCTAVE_HDF5_DLL], [
     AC_DEFINE(_HDF5USEDLL_, 1, [Define if using HDF5 dll (Win32)])
   fi])
 dnl
+dnl Check whether HDF5 library has version 1.6 API functions.
+dnl
+AC_DEFUN([OCTAVE_HDF5_HAS_REQUIRED_API], [
+  AC_CACHE_CHECK([whether HDF5 library has required API],
+    octave_cv_hdf5_has_required_api, [
+    AC_TRY_LINK([
+#define H5_USE_16_API 1
+#include <hdf5.h>
+], [
+  H5Eset_auto (0, 0);], [
+      octave_cv_hdf5_has_required_api=yes], [
+      octave_cv_hdf5_has_required_api=no])])
+  if test "$octave_cv_hdf5_has_required_api" = "no"; then
+    WITH_HDF5=false
+    warn_hdf5="HDF5 library does not provide the version 1.6 API.  Octave will not be able to save or load HDF5 data files."
+    AC_MSG_WARN($warn_hdf5)
+  fi
+])
+dnl
 dnl Check for the QHull version.
 dnl
 AC_DEFUN(AC_CHECK_QHULL_VERSION,

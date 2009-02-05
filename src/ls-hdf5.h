@@ -25,6 +25,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #if defined (HAVE_HDF5)
 
+#include "oct-hdf5.h"
+
 // first, we need to define our own dummy stream subclass, since
 // HDF5 needs to do its own file i/o
 

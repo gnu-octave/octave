@@ -547,9 +547,12 @@ if $WITH_ZLIB; then
         WITH_HDF5=true
         HDF5_LIBS="-l$hdf5_lib"
         LIBS="$HDF5_LIBS $LIBS"
-        AC_DEFINE(HAVE_HDF5, 1, [Define if HDF5 is available.])
 	AC_CHECK_LIB($hdf5_lib, H5Gget_num_objs, [
-	  AC_DEFINE(HAVE_H5GGET_NUM_OBJS, 1, [Define if HDF5 has H5Gget_num_objs.])])])])
+          OCTAVE_HDF5_HAS_REQUIRED_API
+          if test $WITH_HDF5; then
+            AC_DEFINE(HAVE_HDF5, 1, [Define if HDF5 is available.])
+	    AC_DEFINE(HAVE_H5GGET_NUM_OBJS, 1, [Define if HDF5 has H5Gget_num_objs.])
+	  fi])])])
   fi
 
   if $WITH_HDF5; then
@@ -559,9 +562,6 @@ if $WITH_ZLIB; then
         ;;
     esac
     true
-  else
-    warn_hdf5="HDF5 library not found.  Octave will not be able to save or load HDF5 data files."
-    AC_MSG_WARN($warn_hdf5)
   fi
 else
   warn_zlib="ZLIB library not found.  Octave will not be able to save or load compressed data files or HDF5 files."

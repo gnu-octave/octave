@@ -30,10 +30,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 #include <list>
 
-#if defined (HAVE_HDF5)
-#include <hdf5.h>
-#endif
-
 #include "Range.h"
 #include "data-conv.h"
 #include "idx-vector.h"
@@ -44,6 +40,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-time.h"
 #include "str-vec.h"
 
+#include "oct-hdf5.h"
 #include "oct-sort.h"
 
 class Cell;

@@ -1,3 +1,12 @@
+2009-02-05  John W. Eaton  <jwe@octave.org>
+
+	* oct-hdf5.h: New file.
+	* ls-hdf5.cc, ov-base.h, ov.h: Include oct-hdf5.h instead of hdf5.h.
+	* ls-hdf5.h: Include oct-hdf5.h.
+	* load-save.cc: Include ls-hdf5.h instead of hdf5.h.
+	* ov-base-sparse.cc, load-save.cc:
+	Don't protect #include "ls-hdf5.h" with #ifdef.
+
 2009-02-04  Kai Habel  <kai.habel@gmx.de>
 
 	* gl-render.cc (opengl_renderer::draw (surface::properties)):

@@ -36,9 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "byte-swap.h"
 #include "ls-oct-ascii.h"
 #include "ls-utils.h"
-#if defined (HAVE_HDF5)
 #include "ls-hdf5.h"
-#endif
 
 #include "boolSparse.h"
 #include "ov-base-sparse.h"

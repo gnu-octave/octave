@@ -39,10 +39,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <sstream>
 #include <string>
 
-#ifdef HAVE_HDF5
-#include <hdf5.h>
-#endif
-
 #include "byte-swap.h"
 #include "data-conv.h"
 #include "file-ops.h"
@@ -75,9 +71,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "version.h"
 #include "dMatrix.h"
 
-#ifdef HAVE_HDF5
 #include "ls-hdf5.h"
-#endif
 #include "ls-mat-ascii.h"
 #include "ls-mat4.h"
 #include "ls-mat5.h"

@@ -60,6 +60,8 @@ gripe_index_out_of_range (void)
     ("internal error: idx_vector index out of range.");
 }
 
+DEFINE_OCTAVE_ALLOCATOR(idx_vector::idx_colon_rep);
+
 idx_vector::idx_colon_rep::idx_colon_rep (char c)
 {
   if (c != ':')
@@ -87,6 +89,8 @@ idx_vector::idx_colon_rep::print (std::ostream& os) const
 {
   return os << ":";
 }
+
+DEFINE_OCTAVE_ALLOCATOR(idx_vector::idx_range_rep);
 
 idx_vector::idx_range_rep::idx_range_rep (octave_idx_type _start, octave_idx_type _limit,
                                           octave_idx_type _step)
@@ -209,6 +213,8 @@ convert_index (octave_int<T> x, bool& conv_error,
   return convert_index (i, conv_error, ext);
 }
 
+DEFINE_OCTAVE_ALLOCATOR(idx_vector::idx_scalar_rep);
+
 template <class T>
 idx_vector::idx_scalar_rep::idx_scalar_rep (T x)
 {
@@ -238,6 +244,8 @@ std::ostream& idx_vector::idx_scalar_rep::print (std::ostream& os) const
 {
   return os << data;
 }
+
+DEFINE_OCTAVE_ALLOCATOR(idx_vector::idx_vector_rep);
 
 template <class T>
 idx_vector::idx_vector_rep::idx_vector_rep (const Array<T>& nda)

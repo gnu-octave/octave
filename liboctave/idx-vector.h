@@ -31,6 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "dim-vector.h"
 #include "oct-inttypes.h"
+#include "oct-alloc.h"
 
 template<class T> class Array;
 template<class T> class Sparse;
@@ -137,6 +138,8 @@ private:
 
   private:
 
+    DECLARE_OCTAVE_ALLOCATOR
+
     // No copying!
     idx_colon_rep (const idx_colon_rep& idx);
   };
@@ -190,6 +193,8 @@ private:
 
   private:
 
+    DECLARE_OCTAVE_ALLOCATOR
+
     // No copying!
     idx_range_rep (const idx_range_rep& idx);
 
@@ -240,6 +245,8 @@ private:
     std::ostream& print (std::ostream& os) const;
 
   private:
+
+    DECLARE_OCTAVE_ALLOCATOR
 
     // No copying!
     idx_scalar_rep (const idx_scalar_rep& idx);
@@ -298,6 +305,8 @@ private:
     std::ostream& print (std::ostream& os) const;
 
   private:
+
+    DECLARE_OCTAVE_ALLOCATOR
 
     // No copying!
     idx_vector_rep (const idx_vector_rep& idx);

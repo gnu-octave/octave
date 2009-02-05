@@ -111,27 +111,6 @@ octave_complex_matrix::try_narrowing_conversion (void)
   return retval;
 }
 
-void
-octave_complex_matrix::assign (const octave_value_list& idx,
-			       const ComplexNDArray& rhs)
-{
-  octave_base_matrix<ComplexNDArray>::assign (idx, rhs);
-}
-
-void
-octave_complex_matrix::assign (const octave_value_list& idx,
-			       const NDArray& rhs)
-{
-  octave_idx_type len = idx.length ();
-
-  Array<idx_vector> ra_idx (len);
-
-  for (octave_idx_type i = 0; i < len; i++)
-    ra_idx(i) = idx(i).index_vector ();
-
-  matrix.assign (ra_idx, rhs);
-}
-
 double
 octave_complex_matrix::double_value (bool force_conversion) const
 {

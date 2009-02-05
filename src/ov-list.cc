@@ -72,9 +72,7 @@ octave_list::subsref (const std::string& type,
 
 	if (tmp_idx.length () == 1)
 	  {
-	    idx_vector i = tmp_idx (0).index_vector ();
-
-	    Cell tmp = data.index (i);
+	    Cell tmp = data.index (tmp_idx (0));
 
 	    retval(0) = octave_value (new octave_list (tmp));
 	  }
@@ -89,9 +87,7 @@ octave_list::subsref (const std::string& type,
 
 	if (tmp_idx.length () == 1)
 	  {
-	    idx_vector i = tmp_idx (0).index_vector ();
-
-	    Cell tmp = data.index (i);
+	    Cell tmp = data.index (tmp_idx (0));
 
 	    if (tmp.length () == 1)
 	      retval(0) = tmp(0);
@@ -131,9 +127,7 @@ octave_list::do_index_op (const octave_value_list& idx, bool resize_ok)
 
   if (idx.length () == 1)
     {
-      idx_vector iidx = idx (0).index_vector ();
-
-      Cell tcell = data.index (iidx, resize_ok);
+      Cell tcell = data.index (idx (0), resize_ok);
 
       octave_value_list result;
 

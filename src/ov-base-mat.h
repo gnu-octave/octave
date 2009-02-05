@@ -92,6 +92,8 @@ public:
 
   void assign (const octave_value_list& idx, const MT& rhs);
 
+  void assign (const octave_value_list& idx, typename MT::element_type rhs);
+
   void delete_elements (const octave_value_list& idx);
 
   dim_vector dims (void) const { return matrix.dims (); }

@@ -88,10 +88,6 @@ public:
 
   octave_base_value *try_narrowing_conversion (void);
 
-  void assign (const octave_value_list& idx, const FloatComplexNDArray& rhs);
-
-  void assign (const octave_value_list& idx, const FloatNDArray& rhs);
-
   bool is_complex_matrix (void) const { return true; }
 
   bool is_complex_type (void) const { return true; }

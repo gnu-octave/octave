@@ -480,6 +480,8 @@ Octave_map::index (const octave_value_list& idx, bool resize_ok) const
     {
       for (const_iterator p = begin (); p != end (); p++)
 	{
+          // FIXME: this is sub-optimal: idx is converted multiple times.
+          // Need to convert here and use ArrayN<octave_value>::index.
 	  Cell tmp = contents(p).index (idx, resize_ok);
 
 	  if (error_state)
@@ -493,71 +495,6 @@ Octave_map::index (const octave_value_list& idx, bool resize_ok) const
     }
   else
     retval = *this;
-
-  return retval;
-}
-
-Octave_map
-Octave_map::index (idx_vector& i, int resize_ok, const octave_value& rfv) const
-{
-  Octave_map retval (dims ());
-
-  for (const_iterator p = begin (); p != end (); p++)
-    {
-      Cell tmp = contents (p).index (i, resize_ok, rfv);
-
-      if (error_state)
-	break;
-
-      retval.assign (key (p), tmp);
-    }
-
-  // Preserve order of keys.
-  retval.key_list = key_list;
-
-  return retval;
-}
-
-Octave_map
-Octave_map::index (idx_vector& i, idx_vector& j, int resize_ok,
-		   const octave_value& rfv) const
-{
-  Octave_map retval (dims ());
-
-  for (const_iterator p = begin (); p != end (); p++)
-    {
-      Cell tmp = contents (p).index (i, j, resize_ok, rfv);
-
-      if (error_state)
-	break;
-
-      retval.assign (key (p), tmp);
-    }
-
-  // Preserve order of keys.
-  retval.key_list = key_list;
-
-  return retval;
-}
-
-Octave_map
-Octave_map::index (Array<idx_vector>& ra_idx, int resize_ok,
-		   const octave_value& rfv) const
-{
-  Octave_map retval (dims ());
-
-  for (const_iterator p = begin (); p != end (); p++)
-    {
-      Cell tmp = contents (p).index (ra_idx, resize_ok, rfv);
-
-      if (error_state)
-	break;
-
-      retval.assign (key (p), tmp);
-    }
-
-  // Preserve order of keys.
-  retval.key_list = key_list;
 
   return retval;
 }

@@ -130,9 +130,9 @@ DEFNDCATOP_FN (fcm_cs, float_complex_matrix, complex,
 	       float_complex_array, float_complex_array, concat)
 
 DEFNDASSIGNOP_FN (assign, float_complex_matrix, float_complex, 
-		  float_complex_array, assign)
+		  float_complex, assign)
 DEFNDASSIGNOP_FN (dbl_assign, complex_matrix, float_complex, 
-		  complex_array, assign)
+		  complex, assign)
 
 void
 install_fcm_fcs_ops (void)

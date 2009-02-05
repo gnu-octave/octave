@@ -29,6 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-obj.h"
 #include "ov.h"
 #include "ov-cx-mat.h"
+#include "ov-flt-cx-mat.h"
 #include "ov-complex.h"
 #include "ov-typeinfo.h"
 #include "ops.h"
@@ -103,7 +104,8 @@ DEFNDBINOP_FN (el_or,  complex_matrix, complex, complex_array, complex, mx_el_or
 
 DEFNDCATOP_FN (cm_cs, complex_matrix, complex, complex_array, complex_array, concat)
 
-DEFNDASSIGNOP_FN (assign, complex_matrix, complex, complex_array, assign)
+DEFNDASSIGNOP_FN (assign, complex_matrix, complex, complex, assign)
+DEFNDASSIGNOP_FN (sgl_assign, float_complex_matrix, complex, float_complex, assign)
 
 void
 install_cm_cs_ops (void)
@@ -130,6 +132,7 @@ install_cm_cs_ops (void)
   INSTALL_CATOP (octave_complex_matrix, octave_complex, cm_cs);
 
   INSTALL_ASSIGNOP (op_asn_eq, octave_complex_matrix, octave_complex, assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_float_complex_matrix, octave_complex, sgl_assign);
 }
 
 /*

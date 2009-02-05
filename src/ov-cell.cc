@@ -55,6 +55,42 @@ along with Octave; see the file COPYING.  If not, see
 #include "ls-hdf5.h"
 #include "ls-utils.h"
 
+// Cell is able to handle octave_value indexing by itself, so just forward
+// everything.
+
+template <>
+octave_value
+octave_base_matrix<Cell>::do_index_op (const octave_value_list& idx,
+                                       bool resize_ok)
+{
+  return matrix.index (idx, resize_ok);
+}
+
+template <>
+void
+octave_base_matrix<Cell>::assign (const octave_value_list& idx, const Cell& rhs)
+{
+  matrix.assign (idx, rhs);
+}
+
+template <>
+void
+octave_base_matrix<Cell>::assign (const octave_value_list& idx, octave_value rhs)
+{
+  // FIXME: Really?
+  if (rhs.is_cell ())
+    matrix.assign (idx, rhs.cell_value ());
+  else
+    matrix.assign (idx, Cell (rhs));
+}
+
+template <>
+void
+octave_base_matrix<Cell>::delete_elements (const octave_value_list& idx)
+{
+  matrix.delete_elements (idx);
+}
+
 template class octave_base_matrix<Cell>;
 
 DEFINE_OCTAVE_ALLOCATOR (octave_cell);
@@ -338,15 +374,6 @@ octave_cell::subsasgn (const std::string& type,
     }
 
   return retval;
-}
-
-void
-octave_cell::assign (const octave_value_list& idx, const octave_value& rhs)
-{
-  if (rhs.is_cell ())
-    octave_base_matrix<Cell>::assign (idx, rhs.cell_value ());
-  else
-    octave_base_matrix<Cell>::assign (idx, Cell (rhs));
 }
 
 size_t

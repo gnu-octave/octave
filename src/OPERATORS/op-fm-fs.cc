@@ -119,8 +119,8 @@ DEFNDCATOP_FN (m_fs, matrix, float_scalar, float_array, float_array, concat)
 
 DEFNDCATOP_FN (fm_s, float_matrix, scalar, float_array, float_array, concat)
 
-DEFNDASSIGNOP_FN (assign, float_matrix, float_scalar, float_array, assign)
-DEFNDASSIGNOP_FN (dbl_assign, matrix, float_scalar, array, assign)
+DEFNDASSIGNOP_FN (assign, float_matrix, float_scalar, float_scalar, assign)
+DEFNDASSIGNOP_FN (dbl_assign, matrix, float_scalar, scalar, assign)
 
 void
 install_fm_fs_ops (void)

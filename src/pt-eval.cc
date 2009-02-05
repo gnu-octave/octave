@@ -335,7 +335,7 @@ tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
 
         dim_vector dv = rhs.dims ().redim (2);
 
-        octave_idx_type steps = dv(1);
+        octave_idx_type nrows = dv(0), steps = dv(1);
 
         if (steps > 0)
           {
@@ -343,14 +343,25 @@ tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
             if (rhs.ndims () > 2)
               arg = arg.reshape (dv);
 
-            //octave_value_list idx(2, octave_value ());
-            octave_value_list idx(2, octave_value ());
-            idx(0) = octave_value::magic_colon_t;
+            // for row vectors, use single index to speed things up.
+            octave_value_list idx;
+            octave_idx_type iidx;
+            if (nrows == 1)
+              {
+                idx.resize (1);
+                iidx = 0;
+              }
+            else
+              {
+                idx.resize (2);
+                idx(0) = octave_value::magic_colon_t;
+                iidx = 1;
+              }
 
             for (octave_idx_type i = 1; i <= steps; i++)
               {
                 // do_index_op expects one-based indices.
-                idx(1) = i;
+                idx(iidx) = i;
                 octave_value val = arg.do_index_op (idx);
                 DO_SIMPLE_FOR_LOOP_ONCE (val);
 

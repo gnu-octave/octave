@@ -105,8 +105,8 @@ DEFNDBINOP_FN (el_or, matrix, scalar, array, scalar, mx_el_or)
 
 DEFNDCATOP_FN (m_s, matrix, scalar, array, array, concat)
 
-DEFNDASSIGNOP_FN (assign, matrix, scalar, array, assign)
-DEFNDASSIGNOP_FN (sgl_assign, float_matrix, scalar, float_array, assign)
+DEFNDASSIGNOP_FN (assign, matrix, scalar, scalar, assign)
+DEFNDASSIGNOP_FN (sgl_assign, float_matrix, scalar, float_scalar, assign)
 
 void
 install_m_s_ops (void)

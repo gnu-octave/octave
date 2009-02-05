@@ -536,63 +536,8 @@ octave_struct::subsasgn (const std::string& type,
 octave_value
 octave_struct::do_index_op (const octave_value_list& idx, bool resize_ok)
 {
-  octave_value retval;
-
-  octave_idx_type n_idx = idx.length ();
-
-  int nd = map.ndims ();
-
-  switch (n_idx)
-    {
-    case 0:
-      retval = map;
-      break;
-
-    case 1:
-      {
-	idx_vector i = idx (0).index_vector ();
-
-	if (! error_state)
-	  retval = map.index (i, resize_ok, Cell::resize_fill_value ());
-      }
-      break;
-
-    default:
-      {
-	if (n_idx == 2 && nd == 2)
-	  {
-	    idx_vector i = idx (0).index_vector ();
-
-	    if (! error_state)
-	      {
-		idx_vector j = idx (1).index_vector ();
-
-		if (! error_state)
-		  retval = map.index (i, j, resize_ok,
-				      Cell::resize_fill_value ());
-	      }
-	  }
-	else
-	  {
-	    Array<idx_vector> idx_vec (n_idx);
-
-	    for (octave_idx_type i = 0; i < n_idx; i++)
-	      {
-		idx_vec(i) = idx(i).index_vector ();
-
-		if (error_state)
-		  break;
-	      }
-
-	    if (! error_state)
-	      retval = map.index (idx_vec, resize_ok,
-				  Cell::resize_fill_value ());
-	  }
-      }
-      break;
-    }
-
-  return retval;
+  // Octave_map handles indexing itself.
+  return map.index (idx, resize_ok);
 }
 
 size_t

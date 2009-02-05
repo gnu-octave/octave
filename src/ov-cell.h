@@ -61,8 +61,6 @@ public:
 
   ~octave_cell (void) { }
 
-  void assign (const octave_value_list& idx, const octave_value& rhs);
-
   octave_base_value *clone (void) const { return new octave_cell (*this); }
   octave_base_value *empty_clone (void) const { return new octave_cell (); }
 

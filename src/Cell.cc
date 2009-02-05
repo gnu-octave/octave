@@ -126,7 +126,7 @@ Cell::index (const octave_value_list& idx_arg, bool resize_ok) const
 	idx_vector i = idx_arg(0).index_vector ();
 
 	if (! error_state)
-	  retval = index (i, resize_ok);
+	  retval = ArrayN<octave_value>::index (i, resize_ok);
       }
       break;
 
@@ -139,7 +139,7 @@ Cell::index (const octave_value_list& idx_arg, bool resize_ok) const
 	    idx_vector j = idx_arg(1).index_vector ();
 
 	    if (! error_state)
-	      retval = index (i, j, resize_ok);
+	      retval = ArrayN<octave_value>::index (i, j, resize_ok);
 	  }
       }
       break;
@@ -157,7 +157,7 @@ Cell::index (const octave_value_list& idx_arg, bool resize_ok) const
 	  }
 
 	if (!error_state)
-	  retval = index (iv, resize_ok);
+	  retval = ArrayN<octave_value>::index (iv, resize_ok);
       }
       break;
     }

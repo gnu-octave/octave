@@ -1,3 +1,50 @@
+2009-02-05  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-base-mat.cc (
+	* ov-base-mat.h
+	* pt-eval.cc
+	* OPERATORS/op-cm-cs.cc: Use scalar_value in scalar-to-matrix
+	indexed assignments.
+	* OPERATORS/op-fcm-fcs.cc: Ditto.
+	* OPERATORS/op-fm-fs.cc: Ditto.
+	* OPERATORS/op-m-s.cc: Ditto.
+	* OPERATORS/op-int.h (OCTAVE_MS_INT_ASSIGN_OPS): Use homogeneous
+	integer scalar-to-matrix assignment.
+	(OCTAVE_MM_INT_ASSIGN_OPS): Use homogeneous integer matrix-to-matrix
+	assignment.
+
+	* Cell.h (Cell::index): Remove direct idx_vector overloads.
+	(Cell::assign): Remove direct idx_vector overloads.
+	(Cell::delete_elements): Remove direct idx_vector overloads.
+	* Cell.cc (Cell::index (const octave_value_list&)): Call
+	ArrayN<octave_value>::index.
+
+	* oct-map.h (Octave_map::index): Remove direct idx_vector overloads.
+	* oct-map.cc (Octave_map::index): Ditto.
+	* ov-base-mat.cc (octave_base_mat::do_index_op): Optimize scalar
+	indexing case.
+	(octave_base_mat::assign (const octave_value_list&, const MT&)):
+	Specialize variable argument number.
+	(octave_base_mat::assign (const octave_value_list&, const 
+	typename MT::element_type&)):
+	New method overload with optimized scalar indexing case.
+
+	* ov-cell.cc (octave_base_matrix<Cell>::do_index_op,
+	octave_base_matrix<Cell>::assign,
+	octave_base_matrix<Cell>::delete_elements): Specialize.
+	(octave_cell::assign (const_octave_value_list, const octave_value&):
+	Delete method.
+	* ov-cell.h: Reflect change.
+
+	* ov-cx-mat.cc (octave_complex_matrix::assign): Delete overloads.
+	* ov-cx-mat.h: Reflect changes.
+	* ov-flt-cx-mat.cc (octave_float_complex_matrix::assign): Delete overloads.
+	* ov-flt-cx-mat.h: Reflect changes.
+	* ov-list.cc (octave_list::do_index_op): Simplify.
+	* ov-struct.cc (octave_struct::do_index_op): Simplify.
+	* pt-eval.cc (tree_evaluator::visit_simple_for_command): Optimize
+	traversing a row vector.
+
 2009-02-05  John W. Eaton  <jwe@octave.org>
 
 	* variables.cc (Vignore_function_time_stamp):

@@ -179,15 +179,6 @@ Octave_map
   Octave_map index (const octave_value_list& idx, 
 		    bool resize_ok = false) const;
 
-  Octave_map index (idx_vector& i, int resize_ok = 0, 
-		    const octave_value& rfv = Cell::resize_fill_value ()) const;
-
-  Octave_map index (idx_vector& i, idx_vector& j, int resize_ok = 0,
-		    const octave_value& rfv = Cell::resize_fill_value ()) const;
-
-  Octave_map index (Array<idx_vector>& ra_idx, int resize_ok = 0,
-		    const octave_value& rfv = Cell::resize_fill_value ()) const;
-
 private:
 
   // The map of names to values.

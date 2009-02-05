@@ -578,7 +578,7 @@ along with Octave; see the file COPYING.  If not, see
   DEFNDBINOP_FN (PFX ## _el_or, TM ## matrix, TS ## scalar, TM ## array, TS ## scalar, mx_el_or)
 
 #define OCTAVE_MS_INT_ASSIGN_OPS(PFX, TM, TS, TE) \
-  DEFNDASSIGNOP_FN (PFX ## _assign, TM ## matrix, TS ## scalar, TE ## array, assign)
+  DEFNDASSIGNOP_FN (PFX ## _assign, TM ## matrix, TS ## scalar, TM ## scalar, assign)
 
 #define OCTAVE_MS_POW_OPS(T1, T2) \
 octave_value elem_xpow (T1 ## NDArray a, octave_ ## T2  b) \
@@ -737,7 +737,7 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
   DEFNDBINOP_FN (PFX ## _el_or,  T1 ## matrix, T2 ## matrix, T1 ## array, T2 ## array, mx_el_or)
 
 #define OCTAVE_MM_INT_ASSIGN_OPS(PFX, TLHS, TRHS, TE) \
-  DEFNDASSIGNOP_FN (PFX ## _assign, TLHS ## matrix, TRHS ## matrix, TE ## array, assign)
+  DEFNDASSIGNOP_FN (PFX ## _assign, TLHS ## matrix, TRHS ## matrix, TLHS ## array, assign)
 
 #define OCTAVE_MM_POW_OPS(T1, T2) \
   octave_value \

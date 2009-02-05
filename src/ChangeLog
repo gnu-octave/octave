@@ -1,5 +1,8 @@
 2009-02-05  John W. Eaton  <jwe@octave.org>
 
+	* graphics.cc (Fdrawnow): Return after errors.  Don't strip
+	trailing directory separator from name used in call to file_stat.
+
 	* DLD-FUNCTIONS/eigs.cc (Feigs): Avoid warnings about ambiguous
 	else.  Style fixes.  Return after errors.
 

@@ -4984,7 +4984,10 @@ Undocumented internal function.\n\
 	      if (! error_state && val.compare ("expose"))
 		do_events = false;
 	      else
-		error ("drawnow: invalid argument, expected `expose' as argument");
+		{
+		  error ("drawnow: invalid argument, expected `expose' as argument");
+		  return retval;
+		}
 	    }
 
 	  if (do_events)
@@ -5013,11 +5016,17 @@ Undocumented internal function.\n\
 
 		  if (pos != std::string::npos)
 		    {
-		      file_stat fs (file.substr (0, pos));
+		      std::string dirname = file.substr (0, pos+1);
+
+		      file_stat fs (dirname);
 
 		      if (! (fs && fs.is_dir ()))
-			error ("drawnow: nonexistent directory `%s'",
-			       file.substr (0, pos).c_str ());
+			{
+			  error ("drawnow: nonexistent directory `%s'",
+				 dirname.c_str ());
+
+			  return retval;
+			}
 		    }
 
 		  mono = (args.length () >= 3 ? args(2).bool_value () : false);

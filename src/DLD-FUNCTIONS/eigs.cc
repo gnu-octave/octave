@@ -362,8 +362,8 @@ K Maschhoff, D Sorensen and C Yang. For more information see\n\
 
   if (nargin == 0)
     print_usage ();
-  else if (args(0).is_function_handle () || args(0).is_inline_function () ||
-      args(0).is_string ())
+  else if (args(0).is_function_handle () || args(0).is_inline_function ()
+	   || args(0).is_string ())
     {
       if (args(0).is_string ())
 	{
@@ -379,10 +379,16 @@ K Maschhoff, D Sorensen and C Yang. For more information see\n\
 	eigs_fcn = args(0).function_value ();
 
       if (!eigs_fcn)
-	error ("eigs: unknown function");
+	{
+	  error ("eigs: unknown function");
+	  return retval;
+	}
 
       if (nargin < 2)
-	error ("eigs: incorrect number of arguments");
+	{
+	  error ("eigs: incorrect number of arguments");
+	  return retval;
+	}
       else
 	{
 	  n = args(1).nint_value ();
@@ -421,98 +427,110 @@ K Maschhoff, D Sorensen and C Yang. For more information see\n\
 
       // Note hold off reading B till later to avoid issues of double 
       // copies of the matrix if B is full/real while A is complex..
-      if (!error_state && nargin > 1 && 
-	  !(args(1).is_real_scalar ()))
-	if (args(1).is_complex_type ())
-	  {
-	    b_arg = 1+arg_offset;
-	    have_b = true;
-	    bmat = 'G';
-	    b_is_complex = true;
-	    arg_offset++;
-	  }
-	else
-	  {
-	    b_arg = 1+arg_offset;
-	    have_b = true;
-	    bmat = 'G';
-	    arg_offset++;
-	  }
+      if (!error_state && nargin > 1 && !(args(1).is_real_scalar ()))
+	{
+	  if (args(1).is_complex_type ())
+	    {
+	      b_arg = 1+arg_offset;
+	      have_b = true;
+	      bmat = 'G';
+	      b_is_complex = true;
+	      arg_offset++;
+	    }
+	  else
+	    {
+	      b_arg = 1+arg_offset;
+	      have_b = true;
+	      bmat = 'G';
+	      arg_offset++;
+	    }
+	}
     }
 
   if (!error_state && nargin > (1+arg_offset))
     k = args(1+arg_offset).nint_value ();
 
   if (!error_state && nargin > (2+arg_offset))
-    if (args(2+arg_offset).is_real_scalar () ||
-	args(2+arg_offset).is_complex_scalar ())
-      {
-	sigma = args(2+arg_offset).complex_value ();
-	have_sigma = true;
-      }
-    else if (args(2+arg_offset).is_string ())
-      {
-	typ = args(2+arg_offset).string_value ();
+    {
+      if (args(2+arg_offset).is_real_scalar ()
+	  || args(2+arg_offset).is_complex_scalar ())
+	{
+	  sigma = args(2+arg_offset).complex_value ();
+	  have_sigma = true;
+	}
+      else if (args(2+arg_offset).is_string ())
+	{
+	  typ = args(2+arg_offset).string_value ();
 
-	// Use STL function to convert to upper case
-	transform (typ.begin (), typ.end (), typ.begin (), toupper);
+	  // Use STL function to convert to upper case
+	  transform (typ.begin (), typ.end (), typ.begin (), toupper);
 
-	sigma = 0.;
-      }
-    else
-      error ("eigs: sigma must be a scalar or a string");
+	  sigma = 0.;
+	}
+      else
+	{
+	  error ("eigs: sigma must be a scalar or a string");
+	  return retval;
+	}
+    }
 
   sigmar = std::real (sigma);
   sigmai = std::imag (sigma);
 
   if (!error_state && nargin > (3+arg_offset))
-    if (args(3+arg_offset).is_map ())
-      {
-	Octave_map map = args(3+arg_offset).map_value ();
+    {
+      if (args(3+arg_offset).is_map ())
+	{
+	  Octave_map map = args(3+arg_offset).map_value ();
 
-	// issym is ignored if A is not a function
-	if (map.contains ("issym"))
-	  if (have_a_fun)
-	    symmetric = map.contents ("issym")(0).double_value () != 0.;
+	  // issym is ignored if A is not a function
+	  if (map.contains ("issym") && have_a_fun)
+	      symmetric = map.contents ("issym")(0).double_value () != 0.;
 
-	// isreal is ignored if A is not a function
-	if (map.contains ("isreal"))
-	  if (have_a_fun)
-	    a_is_complex = ! (map.contents ("isreal")(0).double_value () != 0.);
+	  // isreal is ignored if A is not a function
+	  if (map.contains ("isreal") && have_a_fun)
+	      a_is_complex = ! (map.contents ("isreal")(0).double_value () != 0.);
 
-	if (map.contains ("tol"))
-	  tol = map.contents ("tol")(0).double_value ();
+	  if (map.contains ("tol"))
+	    tol = map.contents ("tol")(0).double_value ();
 
-	if (map.contains ("maxit"))
-	  maxit = map.contents ("maxit")(0).nint_value ();
+	  if (map.contains ("maxit"))
+	    maxit = map.contents ("maxit")(0).nint_value ();
 
-	if (map.contains ("p"))
-	  p = map.contents ("p")(0).nint_value ();
+	  if (map.contains ("p"))
+	    p = map.contents ("p")(0).nint_value ();
 
-	if (map.contains ("v0"))
-	  {
-	    if (a_is_complex || b_is_complex)
-	      cresid = ComplexColumnVector 
-		(map.contents ("v0")(0).complex_vector_value());
-	    else
-	      resid = ColumnVector (map.contents ("v0")(0).vector_value());
-	  }
+	  if (map.contains ("v0"))
+	    {
+	      if (a_is_complex || b_is_complex)
+		cresid = ComplexColumnVector 
+		  (map.contents ("v0")(0).complex_vector_value());
+	      else
+		resid = ColumnVector (map.contents ("v0")(0).vector_value());
+	    }
 
-	if (map.contains ("disp"))
-	  disp = map.contents ("disp")(0).nint_value ();
+	  if (map.contains ("disp"))
+	    disp = map.contents ("disp")(0).nint_value ();
 
-	if (map.contains ("cholB"))
-	  cholB = map.contents ("cholB")(0).double_value () != 0.;
+	  if (map.contains ("cholB"))
+	    cholB = map.contents ("cholB")(0).double_value () != 0.;
 
-	if (map.contains ("permB"))
-	  permB = ColumnVector (map.contents ("permB")(0).vector_value ()) 
-	    - 1.0;
-      }
-    else
-      error ("eigs: options argument must be a structure");
+	  if (map.contains ("permB"))
+	    permB = ColumnVector (map.contents ("permB")(0).vector_value ()) 
+	      - 1.0;
+	}
+      else
+	{
+	  error ("eigs: options argument must be a structure");
+	  return retval;
+	}
+    }
 
   if (nargin > (4+arg_offset))
-    error ("eigs: incorrect number of arguments");
+    {
+      error ("eigs: incorrect number of arguments");
+      return retval;
+    }
 
   if (have_b)
     {
@@ -551,24 +569,28 @@ K Maschhoff, D Sorensen and C Yang. For more information see\n\
 	      (eigs_complex_func, n, typ, sigma, k, p, info, eig_vec, eig_val,
 	       cresid, octave_stdout, tol, (nargout > 1), cholB, disp, maxit);
 	  else if (have_sigma)
-	    if (a_is_sparse)
-	      nconv = EigsComplexNonSymmetricMatrixShift
-		(ascm, sigma, k, p, info, eig_vec, eig_val, bscm, permB,
-		 cresid, octave_stdout, tol, (nargout > 1), cholB, disp, 
-		 maxit);
-	    else
-	      nconv = EigsComplexNonSymmetricMatrixShift
-		(acm, sigma, k, p, info, eig_vec, eig_val, bcm, permB, cresid,
-		 octave_stdout, tol, (nargout > 1), cholB, disp, maxit);
+	    {
+	      if (a_is_sparse)
+		nconv = EigsComplexNonSymmetricMatrixShift
+		  (ascm, sigma, k, p, info, eig_vec, eig_val, bscm, permB,
+		   cresid, octave_stdout, tol, (nargout > 1), cholB, disp, 
+		   maxit);
+	      else
+		nconv = EigsComplexNonSymmetricMatrixShift
+		  (acm, sigma, k, p, info, eig_vec, eig_val, bcm, permB, cresid,
+		   octave_stdout, tol, (nargout > 1), cholB, disp, maxit);
+	    }
 	  else
-	    if (a_is_sparse)
-	      nconv = EigsComplexNonSymmetricMatrix
-		(ascm, typ, k, p, info, eig_vec, eig_val, bscm, permB, cresid,
-		 octave_stdout, tol, (nargout > 1), cholB, disp, maxit);
-	    else
-	      nconv = EigsComplexNonSymmetricMatrix
-		(acm, typ, k, p, info, eig_vec, eig_val, bcm, permB, cresid,
-		 octave_stdout, tol, (nargout > 1), cholB, disp, maxit);
+	    {
+	      if (a_is_sparse)
+		nconv = EigsComplexNonSymmetricMatrix
+		  (ascm, typ, k, p, info, eig_vec, eig_val, bscm, permB, cresid,
+		   octave_stdout, tol, (nargout > 1), cholB, disp, maxit);
+	      else
+		nconv = EigsComplexNonSymmetricMatrix
+		  (acm, typ, k, p, info, eig_vec, eig_val, bcm, permB, cresid,
+		   octave_stdout, tol, (nargout > 1), cholB, disp, maxit);
+	    }
 
 	  if (nargout < 2)
 	    retval (0) = eig_val;
@@ -590,16 +612,18 @@ K Maschhoff, D Sorensen and C Yang. For more information see\n\
 	      (eigs_complex_func, n, typ,  sigma, k, p, info, eig_vec, eig_val,
 	       cresid, octave_stdout, tol, (nargout > 1), cholB, disp, maxit);
 	  else
-	    if (a_is_sparse)
-	      nconv = EigsComplexNonSymmetricMatrixShift 
-		(SparseComplexMatrix (asmm), sigma, k, p, info, eig_vec,
-		 eig_val, SparseComplexMatrix (bsmm), permB, cresid,
-		 octave_stdout, tol, (nargout > 1), cholB, disp, maxit);
-	    else
-	      nconv = EigsComplexNonSymmetricMatrixShift 
-		(ComplexMatrix (amm), sigma, k, p, info, eig_vec,
-		 eig_val, ComplexMatrix (bmm), permB, cresid,
-		 octave_stdout, tol, (nargout > 1), cholB, disp, maxit);
+	    {
+	      if (a_is_sparse)
+		nconv = EigsComplexNonSymmetricMatrixShift 
+		  (SparseComplexMatrix (asmm), sigma, k, p, info, eig_vec,
+		   eig_val, SparseComplexMatrix (bsmm), permB, cresid,
+		   octave_stdout, tol, (nargout > 1), cholB, disp, maxit);
+	      else
+		nconv = EigsComplexNonSymmetricMatrixShift 
+		  (ComplexMatrix (amm), sigma, k, p, info, eig_vec,
+		   eig_val, ComplexMatrix (bmm), permB, cresid,
+		   octave_stdout, tol, (nargout > 1), cholB, disp, maxit);
+	    }
 
 	  if (nargout < 2)
 	    retval (0) = eig_val;
@@ -623,27 +647,31 @@ K Maschhoff, D Sorensen and C Yang. For more information see\n\
 		   resid, octave_stdout, tol, (nargout > 1), cholB, disp, 
 		   maxit);
 	      else if (have_sigma)
-		if (a_is_sparse)
-		  nconv = EigsRealSymmetricMatrixShift 
-		    (asmm, sigmar, k, p, info, eig_vec, eig_val, bsmm, permB,
-		     resid, octave_stdout, tol, (nargout > 1), cholB, disp, 
-		     maxit);
-		else
-		  nconv = EigsRealSymmetricMatrixShift 
-		    (amm, sigmar, k, p, info, eig_vec, eig_val, bmm, permB,
-		     resid, octave_stdout, tol, (nargout > 1), cholB, disp,
-		     maxit);
+		{
+		  if (a_is_sparse)
+		    nconv = EigsRealSymmetricMatrixShift 
+		      (asmm, sigmar, k, p, info, eig_vec, eig_val, bsmm, permB,
+		       resid, octave_stdout, tol, (nargout > 1), cholB, disp, 
+		       maxit);
+		  else
+		    nconv = EigsRealSymmetricMatrixShift 
+		      (amm, sigmar, k, p, info, eig_vec, eig_val, bmm, permB,
+		       resid, octave_stdout, tol, (nargout > 1), cholB, disp,
+		       maxit);
+		}
 	      else
-		if (a_is_sparse)
-		  nconv = EigsRealSymmetricMatrix 
-		    (asmm, typ, k, p, info, eig_vec, eig_val, bsmm, permB,
-		     resid, octave_stdout, tol, (nargout > 1), cholB, disp,
-		     maxit);
-		else
-		  nconv = EigsRealSymmetricMatrix 
-		    (amm, typ, k, p, info, eig_vec, eig_val, bmm, permB,
-		     resid, octave_stdout, tol, (nargout > 1), cholB, disp,
-		     maxit);
+		{
+		  if (a_is_sparse)
+		    nconv = EigsRealSymmetricMatrix 
+		      (asmm, typ, k, p, info, eig_vec, eig_val, bsmm, permB,
+		       resid, octave_stdout, tol, (nargout > 1), cholB, disp,
+		       maxit);
+		  else
+		    nconv = EigsRealSymmetricMatrix 
+		      (amm, typ, k, p, info, eig_vec, eig_val, bmm, permB,
+		       resid, octave_stdout, tol, (nargout > 1), cholB, disp,
+		       maxit);
+		}
 
 	      if (nargout < 2)
 		retval (0) = eig_val;
@@ -665,27 +693,31 @@ K Maschhoff, D Sorensen and C Yang. For more information see\n\
 		   resid, octave_stdout, tol, (nargout > 1), cholB, disp, 
 		   maxit);
 	      else if (have_sigma)
-		if (a_is_sparse)
-		  nconv = EigsRealNonSymmetricMatrixShift 
-		    (asmm, sigmar, k, p, info, eig_vec, eig_val, bsmm, permB,
-		     resid, octave_stdout, tol, (nargout > 1), cholB, disp, 
-		     maxit);
-		else
-		  nconv = EigsRealNonSymmetricMatrixShift 
-		    (amm, sigmar, k, p, info, eig_vec, eig_val, bmm, permB,
-		     resid, octave_stdout, tol, (nargout > 1), cholB, disp,
-		     maxit);
+		{
+		  if (a_is_sparse)
+		    nconv = EigsRealNonSymmetricMatrixShift 
+		      (asmm, sigmar, k, p, info, eig_vec, eig_val, bsmm, permB,
+		       resid, octave_stdout, tol, (nargout > 1), cholB, disp, 
+		       maxit);
+		  else
+		    nconv = EigsRealNonSymmetricMatrixShift 
+		      (amm, sigmar, k, p, info, eig_vec, eig_val, bmm, permB,
+		       resid, octave_stdout, tol, (nargout > 1), cholB, disp,
+		       maxit);
+		}
 	      else
-		if (a_is_sparse)
-		  nconv = EigsRealNonSymmetricMatrix 
-		    (asmm, typ, k, p, info, eig_vec, eig_val, bsmm, permB,
-		     resid, octave_stdout, tol, (nargout > 1), cholB, disp,
-		     maxit);
-		else
-		  nconv = EigsRealNonSymmetricMatrix 
-		    (amm, typ, k, p, info, eig_vec, eig_val, bmm, permB,
-		     resid, octave_stdout, tol, (nargout > 1), cholB, disp,
-		     maxit);
+		{
+		  if (a_is_sparse)
+		    nconv = EigsRealNonSymmetricMatrix 
+		      (asmm, typ, k, p, info, eig_vec, eig_val, bsmm, permB,
+		       resid, octave_stdout, tol, (nargout > 1), cholB, disp,
+		       maxit);
+		  else
+		    nconv = EigsRealNonSymmetricMatrix 
+		      (amm, typ, k, p, info, eig_vec, eig_val, bmm, permB,
+		       resid, octave_stdout, tol, (nargout > 1), cholB, disp,
+		       maxit);
+		}
 
 	      if (nargout < 2)
 		retval (0) = eig_val;

@@ -1,3 +1,7 @@
+2009-02-05  John W. Eaton  <jwe@octave.org>
+
+	* miscellaneous/news.m: Use puts instead of printf.
+
 2009-02-05  Thomas D. Dean  <tomdean@speakeasy.org>
 
 	* polynomial/polyout.m: Replace com2str with num2str, and minor

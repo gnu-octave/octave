@@ -29,7 +29,7 @@ function news ()
   if (exist (newsfile, "file"))
     f = fopen (newsfile, "r");
     while (ischar (line = fgets (f)))
-      printf (line);
+      puts (line);
     endwhile
   else
     error ("news: unable to locate NEWS file");

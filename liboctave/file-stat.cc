@@ -54,43 +54,43 @@ lstat (const char *name, struct stat *buf)
 bool
 base_file_stat::is_blk (void) const
 {
-  return is_blk (fs_mode);
+  return ok () && is_blk (fs_mode);
 }
 
 bool
 base_file_stat::is_chr (void) const
 {
-  return is_chr (fs_mode);
+  return ok () && is_chr (fs_mode);
 }
 
 bool
 base_file_stat::is_dir (void) const
 { 
-  return is_dir (fs_mode);
+  return ok () && is_dir (fs_mode);
 }
 
 bool
 base_file_stat::is_fifo (void) const
 { 
-  return is_fifo (fs_mode);
+  return ok () && is_fifo (fs_mode);
 }
 
 bool
 base_file_stat::is_lnk (void) const
 { 
-  return is_lnk (fs_mode);
+  return ok () && is_lnk (fs_mode);
 }
 
 bool
 base_file_stat::is_reg (void) const
 { 
-  return is_reg (fs_mode);
+  return ok () && is_reg (fs_mode);
 }
 
 bool
 base_file_stat::is_sock (void) const
 { 
-  return is_sock (fs_mode);
+  return ok () && is_sock (fs_mode);
 }
 
 bool

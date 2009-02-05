@@ -79,8 +79,10 @@ public:
 
   ~base_file_stat (void) { }
 
-  // File status and info.  These should only be called for objects
-  // that are already properly initialized.
+  // File status and info.  The is_XXX functions will return false for
+  // file_stat objects that are not properly initialized.  The others
+  // should all return 0 (or the equivalent, for the given object)
+  // which is likely not meaningful.
 
   bool is_blk (void) const;
   bool is_chr (void) const;

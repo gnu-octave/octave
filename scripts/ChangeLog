@@ -1,3 +1,8 @@
+2009-02-05  Thomas D. Dean  <tomdean@speakeasy.org>
+
+	* polynomial/polyout.m: Replace com2str with num2str, and minor
+	style changes.
+
 2009-02-04  John W. Eaton  <jwe@octave.org>
 
 	* help/which.m: Still print something sensible if type is empty.

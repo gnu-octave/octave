@@ -53,14 +53,13 @@ function y = polyout (c, x)
 
   if (nargin == 1)
     x = "s";
-  elseif (! ischar(x))
+  elseif (! ischar (x))
     error("polyout: second argument must be a string");
   endif
 
-  n = length(c);
+  n = length (c);
   if(n > 0)
     n1 = n+1;
-
 
     tmp = coeff (c(1));
     for ii = 2:n
@@ -79,21 +78,21 @@ function y = polyout (c, x)
   endif
 
   if(nargout == 0)
-    disp(tmp)
+    disp (tmp)
   else
     y = tmp;
   endif
 
 endfunction
 
-function str = coeff(c)
+function str = coeff (c)
   if (imag (c))
     if (real (c))
-      str = sprintf ("(%s)", com2str(c));
+      str = sprintf ("(%s)", num2str (c, 5));
     else
-      str = com2str(c);
+      str = num2str (c, 5);
     endif
   else
-    str = num2str(c);
+    str = num2str (c, 5);
   endif
-
+endfunction

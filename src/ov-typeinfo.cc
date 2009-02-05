@@ -211,7 +211,7 @@ octave_value_typeinfo::register_widening_op (int t, int t_result,
 
 int
 octave_value_typeinfo::do_register_type (const std::string& t_name,
-					 const std::string& c_name,
+					 const std::string& /* c_name */,
 					 const octave_value& val)
 {
   int i = 0;

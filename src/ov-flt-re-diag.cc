@@ -115,7 +115,8 @@ octave_float_diag_matrix::imag (void) const
 }
 
 bool 
-octave_float_diag_matrix::save_binary (std::ostream& os, bool& save_as_floats)
+octave_float_diag_matrix::save_binary (std::ostream& os,
+				       bool& /* save_as_floats*/)
 {
 
   int32_t r = matrix.rows (), c = matrix.cols ();

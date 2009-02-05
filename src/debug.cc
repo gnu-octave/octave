@@ -153,7 +153,7 @@ get_file_line (const std::string& fname, size_t line)
       size_t bol = offsets[line];
       size_t eol = offsets[line+1];
 
-      while (eol > 0 && buf[eol-1] == '\n' || buf[eol-1] == '\r')
+      while (eol > 0 && (buf[eol-1] == '\n' || buf[eol-1] == '\r'))
 	eol--;
 
       retval = buf.substr (bol, eol - bol);

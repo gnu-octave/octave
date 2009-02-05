@@ -35,7 +35,8 @@ const octave_value octave_null_matrix::instance (new octave_null_matrix ());
 static octave_base_value *
 default_null_matrix_numeric_conversion_function (const octave_base_value& a)
 {
-  CAST_CONV_ARG (const octave_null_matrix&);
+  // The cast is not necessary?
+  // CAST_CONV_ARG (const octave_null_matrix&);
 
   return a.empty_clone ();
 }
@@ -54,7 +55,8 @@ const octave_value octave_null_str::instance (new octave_null_str ());
 static octave_base_value *
 default_null_str_numeric_conversion_function (const octave_base_value& a)
 {
-  CAST_CONV_ARG (const octave_null_str&);
+  // The cast is not necessary?
+  // CAST_CONV_ARG (const octave_null_str&);
 
   return a.empty_clone ();
 }
@@ -73,7 +75,8 @@ const octave_value octave_null_sq_str::instance (new octave_null_sq_str ());
 static octave_base_value *
 default_null_sq_str_numeric_conversion_function (const octave_base_value& a)
 {
-  CAST_CONV_ARG (const octave_null_sq_str&);
+  // The cast is not necessary?
+  // CAST_CONV_ARG (const octave_null_sq_str&);
 
   return a.empty_clone ();
 }

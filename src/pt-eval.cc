@@ -510,7 +510,7 @@ tree_evaluator::visit_identifier (tree_identifier&)
 }
 
 void
-tree_evaluator::visit_if_clause (tree_if_clause& tic)
+tree_evaluator::visit_if_clause (tree_if_clause&)
 {
   panic_impossible ();
 }

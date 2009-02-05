@@ -61,10 +61,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 #include "variables.h"
 
-// Should Octave always check to see if function files have changed
-// since they were last compiled?
-static int Vignore_function_time_stamp = 1;
-
 // Defines layout for the whos/who -long command
 static std::string Vwhos_line_format
   = "  %a:4; %ln:6; %cs:16:6:1;  %rb:12;  %lc:-1;\n";

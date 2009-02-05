@@ -1,3 +1,17 @@
+2009-02-05  John W. Eaton  <jwe@octave.org>
+
+	* Array-util.cc (zero_dims_inquire): Eliminate unused variable MATCH.
+
+	* Sparse.cc (assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)):
+	Eliminate unused variable N.
+
+	* MArray-f.cc (MArray<float>::norm (float p) const,
+	MArray<FloatComplex>::norm (float p) const): Pass P to xnorm.
+
+	* eigs-base.cc (EigsRealNonSymmetricFunc, EigsRealSymmetricFunc)
+	(EigsComplexNonSymmetricFunc): Avoid unused parameter warning.
+	* idx-vector.cc (idx_vector::freeze): Likewise.
+
 2009-02-04  Jaroslav Hajek  <highegg@gmail.com>
 
 	* oct-locbuf.h: Specialize OCTAVE_LOCAL_BUFFER to use chunked

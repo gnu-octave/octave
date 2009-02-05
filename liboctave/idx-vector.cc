@@ -589,7 +589,7 @@ idx_vector::is_permutation (octave_idx_type n) const
 }
 
 octave_idx_type 
-idx_vector::freeze (octave_idx_type z_len, const char *tag, bool resize_ok)
+idx_vector::freeze (octave_idx_type z_len, const char *, bool resize_ok)
 {
   if (! resize_ok && extent (z_len) > z_len)
     {

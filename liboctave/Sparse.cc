@@ -3224,7 +3224,8 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 	{
 	  octave_idx_type lhs_len = lhs.length ();
 
-	  octave_idx_type n = idx_i.freeze (lhs_len, 0, true);
+	  // Called for side-effects on idx_i.
+	  idx_i.freeze (lhs_len, 0, true);
 
 	  if (idx_i)
             {

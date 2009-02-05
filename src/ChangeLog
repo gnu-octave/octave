@@ -1,5 +1,25 @@
 2009-02-05  John W. Eaton  <jwe@octave.org>
 
+	* variables.cc (Vignore_function_time_stamp):
+	Eliminate unused static variable.
+
+	* debug.cc (get_file_line): Override default precedence in logical
+	expression.
+
+	* ov-null-mat.cc (default_null_str_numeric_conversion_function,
+	default_null_sq_str_numeric_conversion_function,
+	default_null_matrix_numeric_conversion_function):
+	Avoid unused variable warning.
+
+	* ov-flt-re-diag.cc (octave_float_diag_matrix::save_binary):
+	Avoid unused parameter warning.
+	* pt-eval.cc (tree_evaluator::visit_if_clause): Likewise.
+	* ov-typeinfo.cc (octave_value_typeinfo::do_register_type): Likewise.
+	* ov-base.cc (octave_base_value::subsref (const std::string&,
+	const std::list<octave_value_list>&, bool): Likewise.
+	* ov-flt-cx-diag.cc (octave_float_complex_diag_matrix::save_binary): 
+	Likewise.
+
 	* oct-hdf5.h: New file.
 	* ls-hdf5.cc, ov-base.h, ov.h: Include oct-hdf5.h instead of hdf5.h.
 	* ls-hdf5.h: Include oct-hdf5.h.

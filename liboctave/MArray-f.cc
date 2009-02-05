@@ -36,7 +36,7 @@ template <>
 OCTAVE_API float
 MArray<float>::norm (float p) const
 {
-  return xnorm (FloatColumnVector (*this));
+  return xnorm (FloatColumnVector (*this), p);
 }
 
 template class OCTAVE_API MArray<float>;

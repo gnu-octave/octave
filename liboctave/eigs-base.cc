@@ -1384,8 +1384,8 @@ EigsRealSymmetricFunc (EigsFunc fun, octave_idx_type n,
 		       octave_idx_type k, octave_idx_type p, 
 		       octave_idx_type &info, Matrix &eig_vec, 
 		       ColumnVector &eig_val, ColumnVector &resid, 
-		       std::ostream& os, double tol, int rvec, bool cholB, 
-		       int disp, int maxit)
+		       std::ostream& os, double tol, int rvec,
+		       bool /* cholB */, int disp, int maxit)
 {
   std::string typ (_typ);
   bool have_sigma = (sigma ? true : false);
@@ -2362,8 +2362,8 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n,
 			  octave_idx_type k, octave_idx_type p, 
 			  octave_idx_type &info, ComplexMatrix &eig_vec, 
 			  ComplexColumnVector &eig_val, ColumnVector &resid, 
-			  std::ostream& os, double tol, int rvec, bool cholB, 
-			  int disp, int maxit)
+			  std::ostream& os, double tol, int rvec,
+			  bool /* cholB */, int disp, int maxit)
 {
   std::string typ (_typ);
   bool have_sigma = (sigmar ? true : false);
@@ -3302,8 +3302,8 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n,
 			     octave_idx_type &info, ComplexMatrix &eig_vec, 
 			     ComplexColumnVector &eig_val, 
 			     ComplexColumnVector &cresid, std::ostream& os, 
-			     double tol, int rvec, bool cholB, int disp, 
-			     int maxit)
+			     double tol, int rvec, bool /* cholB */,
+			     int disp, int maxit)
 {
   std::string typ (_typ);
   bool have_sigma = (std::abs(sigma) ? true : false);

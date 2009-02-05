@@ -388,8 +388,8 @@ get_ra_idx (octave_idx_type idx, const dim_vector& dims)
   return retval;
 }
 
-dim_vector zero_dims_inquire (const Array<idx_vector>& ia,
-                              const dim_vector& rhdv)
+dim_vector
+zero_dims_inquire (const Array<idx_vector>& ia, const dim_vector& rhdv)
 {
   int ial = ia.length (), rhdvl = rhdv.length ();
   dim_vector rdv;
@@ -408,7 +408,6 @@ dim_vector zero_dims_inquire (const Array<idx_vector>& ia,
       all_colons = all_colons && colon[i];
     }
 
-  bool match = false;
   // If the number of nonscalar indices matches the dimensionality of
   // RHS, we try an exact match, inquiring even singleton dimensions.
   if (all_colons)
@@ -444,8 +443,9 @@ dim_vector zero_dims_inquire (const Array<idx_vector>& ia,
   return rdv;
 }
 
-dim_vector zero_dims_inquire (const idx_vector& i, const idx_vector& j,
-                              const dim_vector& rhdv)
+dim_vector
+zero_dims_inquire (const idx_vector& i, const idx_vector& j,
+		   const dim_vector& rhdv)
 {
   bool icol = i.is_colon (), jcol = j.is_colon ();
   dim_vector rdv;

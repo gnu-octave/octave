@@ -145,7 +145,7 @@ octave_float_complex_diag_matrix::imag (void) const
 
 bool 
 octave_float_complex_diag_matrix::save_binary (std::ostream& os, 
-                                               bool& save_as_floats)
+                                               bool& /* save_as_floats */)
 {
 
   int32_t r = matrix.rows (), c = matrix.cols ();

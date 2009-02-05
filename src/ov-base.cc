@@ -97,7 +97,7 @@ octave_base_value::subsref (const std::string&,
 octave_value
 octave_base_value::subsref (const std::string& type,
 			    const std::list<octave_value_list>& idx,
-                            bool auto_add)
+                            bool /* auto_add */)
 {
   // This way we may get a more meaningful error message.
   return subsref (type, idx);

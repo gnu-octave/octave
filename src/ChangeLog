@@ -1,8 +1,5 @@
 2009-02-05  Jaroslav Hajek  <highegg@gmail.com>
 
-	* ov-base-mat.cc (
-	* ov-base-mat.h
-	* pt-eval.cc
 	* OPERATORS/op-cm-cs.cc: Use scalar_value in scalar-to-matrix
 	indexed assignments.
 	* OPERATORS/op-fcm-fcs.cc: Ditto.

@@ -1,4 +1,11 @@
 2009-02-05  Jaroslav Hajek  <highegg@gmail.com>
+	
+	* idx-vector.h (idx_vector::idx_colon_rep,
+	idx_vector::idx_scalar_rep, idx_vector::idx_range_rep,
+	idx_vector::idx_vector_rep): Declare allocators.
+	* idx-vector.cc: Define them.
+
+2009-02-05  Jaroslav Hajek  <highegg@gmail.com>
 
 	* str-vec.h (string_vector::sort): Remove implementation.
 	* str-vec.cc (string_vector::sort): Move here. Use in-place sorting.

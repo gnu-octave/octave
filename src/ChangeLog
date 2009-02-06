@@ -1,5 +1,7 @@
 2009-02-06  John W. Eaton  <jwe@octave.org>
 
+	* Makefile.in (INCLUDES): Include oct-hdf5.h in the list.
+
 	* Makefile.in (oct-gperf.h): Don't use pipeline to process gperf
 	output.
 

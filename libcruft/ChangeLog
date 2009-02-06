@@ -1,3 +1,8 @@
+2009-02-06  Jaroslav Hajek  <highegg@gmail.com>
+
+	* blas/ssymm.f, blas/dsymm.f, blas/chemm.f, blas/zhemm.f: New sources.
+	* blas/Makefile.in: Include them.
+
 2009-01-28  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.in (LIBRARIES, install, uninstall): use SHLLIBPRE and

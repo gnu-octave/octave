@@ -33,7 +33,7 @@
 ## Currently, @code{fsolve} recognizes these options:
 ## @code{"FunValCheck"}, @code{"OutputFcn"}, @code{"TolX"},
 ## @code{"TolFun"}, @code{"MaxIter"}, @code{"MaxFunEvals"}, 
-## @code{"Jacobian"} and @code{"Updating"}. 
+## @code{"Jacobian"}, @code{"Updating"} and @code{"ComplexEqn"}.
 ##
 ## If @code{"Jacobian"} is @code{"on"}, it specifies that @var{fcn},
 ## called with 2 output arguments, also returns the Jacobian matrix
@@ -48,6 +48,12 @@
 ## of output arguments), this option provides no advantage and should be set to
 ## false.
 ## 
+## @code{"ComplexEqn"} is @code{"on"}, @code{fsolve} will attempt to solve
+## complex equations in complex variables, assuming that the equations posess a
+## complex derivative (i.e. are holomorphic). If this is not what you want, 
+## should unpack the real and imaginary parts of the system to get a real
+## system.
+##
 ## For description of the other options, see @code{optimset}.
 ##
 ## On return, @var{fval} contains the value of the function @var{fcn}
@@ -80,7 +86,8 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
   if (nargin == 1 && ischar (fcn) && strcmp (fcn, 'defaults'))
     x = optimset ("MaxIter", 400, "MaxFunEvals", Inf, \
     "Jacobian", "off", "TolX", 1.5e-8, "TolFun", 1.5e-8,
-    "OutputFcn", [], "Updating", "on", "FunValCheck", "off");
+    "OutputFcn", [], "Updating", "on", "FunValCheck", "off",
+    "ComplexEqn", "off");
     return;
   endif
 
@@ -100,12 +107,13 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
   maxfev = optimget (options, "MaxFunEvals", Inf);
   outfcn = optimget (options, "OutputFcn");
   updating = strcmpi (optimget (options, "Updating", "on"), "on");
+  complexeqn = strcmpi (optimget (options, "ComplexEqn", "off"), "on");
 
   funvalchk = strcmpi (optimget (options, "FunValCheck", "off"), "on");
 
   if (funvalchk)
     ## Replace fcn with a guarded version.
-    fcn = @(x) guarded_eval (fcn, x);
+    fcn = @(x) guarded_eval (fcn, x, complexeqn);
   endif
 
   ## These defaults are rather stringent. I think that normally, user
@@ -346,11 +354,19 @@ endfunction
 
 ## An assistant function that evaluates a function handle and checks for
 ## bad results.
-function fx = guarded_eval (fun, x)
-  fx = fun (x);
-  if (! all (isreal (fx)))
+function [fx, jx] = guarded_eval (fun, x, complexeqn)
+  if (nargout > 1)
+    [fx, jx] = fun (x);
+  else
+    fx = fun (x);
+    jx = []
+  endif
+
+  if (! complexeqn && ! (all (isreal (fx(:))) && all (isreal (jx(:)))))
     error ("fsolve:notreal", "fsolve: non-real value encountered"); 
-  elseif (any (isnan (fx)))
+  elseif (complexeqn && ! (all (isnumeric (fx(:))) && all (isnumeric(jx(:)))))
+    error ("fsolve:notnum", "fsolve: non-numeric value encountered");
+  elseif (any (isnan (fx(:))))
     error ("fsolve:isnan", "fsolve: NaN value encountered"); 
   endif
 endfunction
@@ -442,4 +458,19 @@ endfunction
 %! assert (info > 0);
 %! assert (norm (c - c_opt, Inf) < tol);
 %! assert (norm (fval) < norm (noise));
+
+
+%!function y = cfun (x)
+%!  y(1) = (1+i)*x(1)^2 - (1-i)*x(2) - 2;
+%!  y(2) = sqrt (x(1)*x(2)) - (1-2i)*x(3) + (3-4i);
+%!  y(3) = x(1) * x(2) - x(3)^2 + (3+2i);
+
+%!test
+%! x_opt = [-1+i, 1-i, 2+i];
+%! x = [i, 1, 1+i];
+%! 
+%! [x, f, info] = fsolve (@cfun, x, optimset ("ComplexEqn", "on"));
+%! tol = 1e-5;
+%! assert (norm (f) < tol);
+%! assert (norm (x - x_opt, Inf) < tol);
 

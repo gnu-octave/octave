@@ -1,3 +1,8 @@
+2009-02-06  Jaroslav Hajek  <highegg@gmail.com>
+
+	* optimization/fsolve.m: Document support for complex holomorphic
+	systems. Improve guarded evaluation.
+
 2009-02-05  John W. Eaton  <jwe@octave.org>
 
 	* miscellaneous/news.m: Use puts instead of printf.

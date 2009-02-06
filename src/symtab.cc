@@ -488,8 +488,27 @@ symbol_table::fcn_info::fcn_info_rep::find
   (tree_argument_list *args, const string_vector& arg_names,
    octave_value_list& evaluated_args, bool& args_evaluated)
 {
-  static bool deja_vu = false;
+  octave_value retval = xfind (args, arg_names, evaluated_args, args_evaluated);
 
+  if (! retval.is_defined ())
+    {
+      // It is possible that the user created a file on the fly since
+      // the last prompt or chdir, so try updating the load path and
+      // searching again.
+
+      load_path::update ();
+
+      retval = xfind (args, arg_names, evaluated_args, args_evaluated);
+    }
+
+  return retval;
+}
+
+octave_value
+symbol_table::fcn_info::fcn_info_rep::xfind
+  (tree_argument_list *args, const string_vector& arg_names,
+   octave_value_list& evaluated_args, bool& args_evaluated)
+{
   // Subfunction.  I think it only makes sense to check for
   // subfunctions if we are currently executing a function defined
   // from a .m file.
@@ -672,29 +691,9 @@ symbol_table::fcn_info::fcn_info_rep::find
   if (fcn.is_defined ())
     return fcn;
 
-  // Built-in function.
+  // Built-in function (might be undefined).
 
-  if (built_in_function.is_defined ())
-    return built_in_function;
-
-  // At this point, we failed to find anything.  It is possible that
-  // the user created a file on the fly since the last prompt or
-  // chdir, so try updating the load path and searching again.
-
-  octave_value retval;
-
-  if (! deja_vu)
-    {
-      load_path::update ();
-
-      deja_vu = true;
-
-      retval = find (args, arg_names, evaluated_args, args_evaluated);
-    }
-
-  deja_vu = false;
-
-  return retval;
+  return built_in_function;
 }
 
 octave_value

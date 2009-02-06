@@ -702,6 +702,10 @@ public:
 
     private:
 
+      octave_value
+      xfind (tree_argument_list *args, const string_vector& arg_names,
+	     octave_value_list& evaluated_args, bool& args_evaluated);
+
       // No copying!
 
       fcn_info_rep (const fcn_info_rep&);

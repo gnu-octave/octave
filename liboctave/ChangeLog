@@ -1,5 +1,8 @@
 2009-02-05  John W. Eaton  <jwe@octave.org>
 
+	* file-stat.cc (base_file_stat::is_sock):
+	Use EXISTS instead of OK in previous change.
+
 	* file-stat.cc (base_file_stat::is_blk, base_file_stat::is_chr,
 	base_file_stat::is_dir, base_file_stat::is_fifo,
 	base_file_stat::is_lnk, base_file_stat::is_reg,

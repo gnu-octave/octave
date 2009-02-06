@@ -1,3 +1,8 @@
+2009-02-06  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.in (oct-gperf.h): Don't use pipeline to process gperf
+	output.
+
 2009-02-05  John W. Eaton  <jwe@octave.org>
 
 	* symtab.cc (symbol_table::fcn_info::cn_info_rep::xfind):

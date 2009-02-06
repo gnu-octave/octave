@@ -639,12 +639,15 @@ oct-errno.cc: oct-errno.cc.in ../Makeconf Makefile
 	fi
 	@mv $@-t $@
 
+## Don't use a pipeline to process gperf output since if gperf
+## is missing but sed is not, the exit status of the pipeline
+## will still be success and we will end up creating an empty
+## oct-gperf.h file.
 oct-gperf.h: octave.gperf
-	@echo "making $@ from $<"
-	@$(GPERF) -t -C -D -G -L C++ -Z octave_kw_hash $< | \
-	  $(SED) 's,lookup\[,gperf_lookup[,' > $@-t \
-	  || (rm -f $@-t; exit 1)
-	@mv $@-t $@
+	$(GPERF) -t -C -D -G -L C++ -Z octave_kw_hash $< > $@-t1
+	$(SED) 's,lookup\[,gperf_lookup[,' < $@-t1 > $@-t2
+	mv $@-t2 $@
+	rm -f $@-t1
 
 display.o: CPPFLAGS += $(X11_FLAGS)
 

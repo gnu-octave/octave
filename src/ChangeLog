@@ -1,3 +1,7 @@
+2009-02-07  John W. Eaton  <jwe@octave.org>
+
+	* parse.y (eval_string): Use the one true evaluator.
+
 2009-02-06  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.in (INCLUDES): Include oct-hdf5.h in the list.

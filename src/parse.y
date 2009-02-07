@@ -3888,15 +3888,7 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
 		    retval = octave_value_list ();
 		}
 	      else if (nargout == 0)
-		{
-		  tree_evaluator evaluator;
-
-		  unwind_protect_ptr (current_evaluator);
-
-		  current_evaluator = &evaluator;
-
-		  command_list->accept (evaluator);
-		}
+		command_list->accept (*current_evaluator);
 	      else
 		error ("eval: invalid use of statement list");
 

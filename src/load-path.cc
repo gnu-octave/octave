@@ -58,28 +58,38 @@ load_path::dir_info::update (void)
     {
       if (is_relative)
 	{
-	  std::string abs_name
-	    = octave_env::make_absolute (dir_name, octave_env::getcwd ());
-
-	  abs_dir_cache_iterator p = abs_dir_cache.find (abs_name);
-
-	  if (p != abs_dir_cache.end ())
+	  try
 	    {
-	      // The directory is in the cache of all directories we have
-	      // visited (indexed by its absolute name).  If it is out of
-	      // date, initialize it.  Otherwise, copy the info from the
-	      // cache.  By doing that, we avoid unnecessary calls to stat
-	      // that can slow things down tremendously for large
-	      // directories.
+	      std::string abs_name
+		= octave_env::make_absolute (dir_name, octave_env::getcwd ());
 
-	      const dir_info& di = p->second;
+	      abs_dir_cache_iterator p = abs_dir_cache.find (abs_name);
 
-	      if (fs.mtime () != di.dir_mtime)
-		initialize ();
-	      else
-		*this = di;
+	      if (p != abs_dir_cache.end ())
+		{
+		  // The directory is in the cache of all directories
+		  // we have visited (indexed by its absolute name).
+		  // If it is out of date, initialize it.  Otherwise,
+		  // copy the info from the cache.  By doing that, we
+		  // avoid unnecessary calls to stat that can slow
+		  // things down tremendously for large directories.
 
-	      return;
+		  const dir_info& di = p->second;
+
+		  if (fs.mtime () != di.dir_mtime)
+		    initialize ();
+		  else
+		    *this = di;
+
+		  return;
+		}
+	    }
+	  catch (octave_execution_exception)
+	    {
+	      // Skip updating if we don't know where we are, but
+	      // don't treat it as an error.
+
+	      error_state = 0;
 	    }
 	}
 
@@ -106,14 +116,21 @@ load_path::dir_info::initialize (void)
 
       get_file_list (dir_name);
 
-      std::string abs_name
-	= octave_env::make_absolute (dir_name, octave_env::getcwd ());
+      try
+	{
+	  std::string abs_name
+	    = octave_env::make_absolute (dir_name, octave_env::getcwd ());
 
-      // FIXME -- nothing is ever removed from this cache of directory
-      // information, so there could be some resource problems.
-      // Perhaps it should be pruned from time to time.
+	  // FIXME -- nothing is ever removed from this cache of
+	  // directory information, so there could be some resource
+	  // problems.  Perhaps it should be pruned from time to time.
 
-      abs_dir_cache[abs_name] = *this;      
+	  abs_dir_cache[abs_name] = *this;
+	}
+      catch (octave_execution_exception)
+	{
+	  // Skip updating if we don't know where we are.
+	}
     }
   else
     {

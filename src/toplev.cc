@@ -605,6 +605,13 @@ main_loop (void)
 	  recover_from_exception ();
 	  octave_stdout << "\n";
 	}
+      catch (octave_execution_exception)
+	{
+	  recover_from_exception ();
+	  std::cerr
+	    << "error: unhandled execution exception -- trying to return to prompt"
+	    << std::endl;
+	}
       catch (std::bad_alloc)
 	{
 	  recover_from_exception ();

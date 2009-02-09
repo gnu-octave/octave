@@ -1,5 +1,10 @@
 2009-02-09  John W. Eaton  <jwe@octave.org>
 
+	* load-path.cc (dir_info::update, dir_info::initialize):
+	Likewise, to allow some functionality if getcwd fails.
+
+	* toplev.cc (main_loop): Also catch octave_execution_exception.
+
 	* DLD-FUNCTIONS/dispatch.cc: Comment out troublesome tests.
 
 	* DLD-FUNCTIONS/eigs.cc: Increase tolerance to 1e-11 on all tests.

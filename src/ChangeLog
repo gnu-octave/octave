@@ -1,3 +1,12 @@
+2009-02-09  John W. Eaton  <jwe@octave.org>
+
+	* lex.l (lexical_feedback::looking_at_decl_list): New data member.
+	* lex.l (lexical_feedback::init): Initialize it.
+	(handle_identifier): Also force local variable if looking_at_decl_list.
+	* parse.y (parsing_decl_list): New non-terminal.
+	(declaration): Use it.  Set lexer_flags.looking_at_decl_list to
+	false after parsing the declaration.
+
 2009-02-09  Jaroslav Hajek  <highegg@gmail.com>
 
 	* TEMPLATE-INST/Array-tc.cc: Reflect changes in octave_sort.

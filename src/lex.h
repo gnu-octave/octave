@@ -92,6 +92,10 @@ public:
   // TRUE means we're parsing the parameter list for a function.
   bool looking_at_parameter_list;
 
+  // TRUE means we're parsing a declaration list (global or
+  // persistent).
+  bool looking_at_decl_list;
+
   // TRUE means we are looking at the initializer expression for a
   // parameter list element.
   bool looking_at_initializer_expression;

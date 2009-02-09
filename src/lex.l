@@ -2768,6 +2768,7 @@ handle_identifier (void)
   if (is_command_name (tok) && ! is_variable (tok))
     {
       if (next_tok_is_eq
+	  || lexer_flags.looking_at_decl_list
 	  || lexer_flags.looking_at_return_list
 	  || (lexer_flags.looking_at_parameter_list
 	      && ! lexer_flags.looking_at_initializer_expression))
@@ -2841,9 +2842,10 @@ lexical_feedback::init (void)
   // Not initiallly looking at a function handle.
   looking_at_function_handle = 0;
 
-  // Not parsing a function return or parameter list.
+  // Not parsing a function return, parameter, or declaration list.
   looking_at_return_list = false;
   looking_at_parameter_list = false;
+  looking_at_decl_list = false;
 
   // Not looking at an argument list initializer expression.
   looking_at_initializer_expression = false;

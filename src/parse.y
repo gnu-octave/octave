@@ -929,10 +929,20 @@ command		: declaration
 // Declaration statemnts
 // =====================
 
-declaration	: GLOBAL decl1
-		  { $$ = make_decl_command (GLOBAL, $1, $2); }
-		| STATIC decl1
-		  { $$ = make_decl_command (STATIC, $1, $2); }
+parsing_decl_list
+		: // empty
+		  { lexer_flags.looking_at_decl_list = true; }
+
+declaration	: GLOBAL parsing_decl_list decl1
+		  {
+		    $$ = make_decl_command (GLOBAL, $1, $3);
+		    lexer_flags.looking_at_decl_list = false;
+		  }
+		| STATIC parsing_decl_list decl1
+		  {
+		    $$ = make_decl_command (STATIC, $1, $3);
+		    lexer_flags.looking_at_decl_list = false;
+		  }
 		;
 
 decl1		: decl2

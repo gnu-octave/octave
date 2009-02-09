@@ -135,5 +135,5 @@ maintainer-clean: distclean
 
 dist:
 	ln $(DISTFILES) ../`cat ../.fname`/examples
-	for dir in $(DISTSUBDIRS); do mkdir ../`cat ../.fname`/scripts/$$dir; $(MAKE) -C $$dir $@; done
+	for dir in $(DISTSUBDIRS); do mkdir ../`cat ../.fname`/examples/$$dir; $(MAKE) -C $$dir $@; done
 .PHONY: dist

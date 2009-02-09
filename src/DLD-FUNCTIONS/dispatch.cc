@@ -227,40 +227,48 @@ for @var{f}.\n\
 %! evalin('base','assert(hanning(1),1)');
 %! dispatch('hanning','string');
 
-FIXME I would rather not create dispatch_x/dispatch_y
-in the current directory!  I don't want them installed accidentally.
-
-%!function echo_to_file (str, name)
-%!  fid = fopen (name, 'w');
-%!  if (fid != -1)
-%!    fprintf (fid, str);
-%!    fprintf (fid, '\n');
-%!    fclose (fid);
-%!  endif
-
-%!test # replace base m-file
-%! echo_to_file ('function a=dispatch_x(a)', "dispatch_x.m");
-%! dispatch('dispatch_x','length','string')
-%! assert(dispatch_x(3),3)
-%! assert(dispatch_x("a"),1)
-%! sleep (2);
-%! echo_to_file ('function a=dispatch_x(a),++a;', "dispatch_x.m");
-%! rehash();
-%! assert(dispatch_x(3),4)
-%! assert(dispatch_x("a"),1)
-%!test 
-%! unlink("dispatch_x.m");
-
-%!test # replace dispatch m-file
-%! echo_to_file ('function a=dispatch_y(a)', "dispatch_y.m");
-%! dispatch('hello','dispatch_y','complex scalar')
-%! assert(hello(3i),3i)
-%! sleep (2);
-%! echo_to_file ('function a=dispatch_y(a),++a;', "dispatch_y.m");
-%! rehash();
-%! assert(hello(3i),1+3i)
-%!test 
-%! unlink("dispatch_y.m");
+## The following tests have been disabled because creating functions
+## on the fly causes trouble (filesystem timestamp resolution?) and so
+## leads people to complain about the failed tests when the dispatch
+## mechanism is working fine, but it is really the creation of the
+## functions that is failing.  And anyway, this method of function
+## dispatch should be considered obsolete and probably removed from
+## Octave now that we have classes.
+##
+## FIXME I would rather not create dispatch_x/dispatch_y
+## in the current directory!  I don't want them installed accidentally.
+## 
+## %!function echo_to_file (str, name)
+## %!  fid = fopen (name, 'w');
+## %!  if (fid != -1)
+## %!    fprintf (fid, str);
+## %!    fprintf (fid, '\n');
+## %!    fclose (fid);
+## %!  endif
+## 
+## %!test # replace base m-file
+## %! echo_to_file ('function a=dispatch_x(a)', "dispatch_x.m");
+## %! dispatch('dispatch_x','length','string')
+## %! assert(dispatch_x(3),3)
+## %! assert(dispatch_x("a"),1)
+## %! sleep (2);
+## %! echo_to_file ('function a=dispatch_x(a),++a;', "dispatch_x.m");
+## %! rehash();
+## %! assert(dispatch_x(3),4)
+## %! assert(dispatch_x("a"),1)
+## %!test 
+## %! unlink("dispatch_x.m");
+## 
+## %!test # replace dispatch m-file
+## %! echo_to_file ('function a=dispatch_y(a)', "dispatch_y.m");
+## %! dispatch('hello','dispatch_y','complex scalar')
+## %! assert(hello(3i),3i)
+## %! sleep (2);
+## %! echo_to_file ('function a=dispatch_y(a),++a;', "dispatch_y.m");
+## %! rehash();
+## %! assert(hello(3i),1+3i)
+## %!test 
+## %! unlink("dispatch_y.m");
 
 FIXME add tests for preservation of mark_as_command status.
 

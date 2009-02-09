@@ -71,10 +71,14 @@ endfunction
 ## FIXME -- should we only try match the keyword at the start of a line?
 function y = hastests (f)
   fid = fopen (f);
-  str = fread (fid, "*char")';
-  fclose (fid);
-  y = (findstr (str, "%!test") || findstr (str, "%!assert")
-       || findstr (str, "%!error") || findstr (str, "%!warning"));
+  if (fid < 0)
+    error ("fopen failed: %s", f);
+  else
+    str = fread (fid, "*char")';
+    fclose (fid);
+    y = (findstr (str, "%!test") || findstr (str, "%!assert")
+	 || findstr (str, "%!error") || findstr (str, "%!warning"));
+  endif
 endfunction
 
 function [dp, dn, dxf, dsk] = run_test_dir (fid, d);

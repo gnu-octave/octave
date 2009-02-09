@@ -69,7 +69,11 @@ endfunction
 
 function retval = has_demos (f)
   fid = fopen (f);
-  str = fscanf (fid, "%s");
-  fclose (fid);
-  retval = findstr (str, "%!demo");
+  if (f < 0)
+    error ("fopen failed: %s", f);
+  else
+    str = fscanf (fid, "%s");
+    fclose (fid);
+    retval = findstr (str, "%!demo");
+  endif
 endfunction

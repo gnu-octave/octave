@@ -42,7 +42,7 @@ inline bool _sort_isnan (float x)
   return lo_ieee_isnan (x);
 }
 
-INSTANTIATE_ARRAY_SORT (double);
+INSTANTIATE_ARRAY_SORT (float);
 
 INSTANTIATE_ARRAY_AND_ASSIGN (float, OCTAVE_API);
 

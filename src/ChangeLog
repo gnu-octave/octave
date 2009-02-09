@@ -1,5 +1,9 @@
 2009-02-09  John W. Eaton  <jwe@octave.org>
 
+	* version.h (OCTAVE_VERSION): Now 3.1.52.
+	(OCTAVE_RELEASE_DATE): Now 2009-02-09.
+	(OCTAVE_COPYRIGHT): Update year.
+
 	* load-path.cc (dir_info::update, dir_info::initialize):
 	Likewise, to allow some functionality if getcwd fails.
 

@@ -1975,32 +1975,12 @@ Array<T>::maybe_delete_dims (void)
     dimensions = new_dims;
 }
 
+// Non-real types don't have NaNs.
 template <class T>
-bool 
-ascending_compare (T a, T b)
+inline
+bool _sort_isnan (T)
 {
-  return (a < b);
-}
-
-template <class T>
-bool 
-descending_compare (T a, T b)
-{
-  return (a > b);
-}
-
-template <class T>
-bool 
-ascending_compare (const T *a, const T *b)
-{
-  return (*a < *b);
-}
-
-template <class T>
-bool 
-descending_compare (const T *a, const T *b)
-{
-  return (*a > *b);
+  return false;
 }
 
 template <class T>
@@ -2027,9 +2007,9 @@ Array<T>::sort (octave_idx_type dim, sortmode mode) const
   octave_sort<T> lsort;
   
   if (mode == ASCENDING) 
-    lsort.set_compare (ascending_compare);
+    lsort.set_compare (octave_sort<T>::ascending_compare);
   else if (mode == DESCENDING)
-    lsort.set_compare (descending_compare);
+    lsort.set_compare (octave_sort<T>::descending_compare);
   else
     abort ();
 
@@ -2037,15 +2017,36 @@ Array<T>::sort (octave_idx_type dim, sortmode mode) const
     {
       for (octave_idx_type j = 0; j < iter; j++)
 	{
-          std::copy (ov, ov + ns, v);
-	  lsort.sort (v, ns);
+          // copy and partition out NaNs. 
+          // FIXME: impact on integer types noticeable?
+          octave_idx_type kl = 0, ku = ns;
+          for (octave_idx_type i = 0; i < ns; i++)
+            {
+              T tmp = ov[i];
+              if (_sort_isnan (tmp))
+                v[--ku] = tmp;
+              else
+                v[kl++] = tmp;
+            }
+
+          // sort.
+	  lsort.sort (v, kl);
+
+          if (ku < ns)
+            {
+              // NaNs are in reverse order
+              std::reverse (v + ku, v + ns);
+              if (mode == DESCENDING)
+                std::rotate (v, v + ku, v + ns);
+            }
+
 	  v += ns;
           ov += ns;
 	}
     }
   else
     {
-      OCTAVE_LOCAL_BUFFER (T, pvi, ns);
+      OCTAVE_LOCAL_BUFFER (T, buf, ns);
 
       for (octave_idx_type j = 0; j < iter; j++) 
 	{
@@ -2060,13 +2061,32 @@ Array<T>::sort (octave_idx_type dim, sortmode mode) const
 
 	  offset += offset2 * stride * ns;
 	  
-	  for (octave_idx_type i = 0; i < ns; i++)
-	    pvi[i] = ov[i*stride + offset];
+          // gather and partition out NaNs. 
+          // FIXME: impact on integer types noticeable?
+          octave_idx_type kl = 0, ku = ns;
+          for (octave_idx_type i = 0; i < ns; i++)
+            {
+              T tmp = ov[i*stride + offset];
+              if (_sort_isnan (tmp))
+                buf[--ku] = tmp;
+              else
+                buf[kl++] = tmp;
+            }
 
-	  lsort.sort (pvi, ns);
-	      
+          // sort.
+	  lsort.sort (buf, kl);
+
+          if (ku < ns)
+            {
+              // NaNs are in reverse order
+              std::reverse (buf + ku, buf + ns);
+              if (mode == DESCENDING)
+                std::rotate (buf, buf + ku, buf + ns);
+            }
+
+          // scatter.
 	  for (octave_idx_type i = 0; i < ns; i++)
-	    v[i*stride + offset] = pvi[i];
+	    v[i*stride + offset] = buf[i];
 	}
     }
 
@@ -2098,44 +2118,68 @@ Array<T>::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
   T *v = m.fortran_vec ();
   const T *ov = data ();
 
-  octave_sort<const T *> indexed_sort;
+  octave_sort<T> lsort;
 
+  sidx = Array<octave_idx_type> (dv);
+  octave_idx_type *vi = sidx.fortran_vec ();
+  
   if (mode == ASCENDING) 
-    indexed_sort.set_compare (ascending_compare);
+    lsort.set_compare (octave_sort<T>::ascending_compare);
   else if (mode == DESCENDING)
-    indexed_sort.set_compare (descending_compare);
+    lsort.set_compare (octave_sort<T>::descending_compare);
   else
     abort ();
 
-  OCTAVE_LOCAL_BUFFER (const T *, vi, ns);
-
-  sidx = Array<octave_idx_type> (dv);
-      
   if (stride == 1)
     {
       for (octave_idx_type j = 0; j < iter; j++)
 	{
-	   octave_idx_type offset = j * ns;
+          // copy and partition out NaNs. 
+          // FIXME: impact on integer types noticeable?
+          octave_idx_type kl = 0, ku = ns;
+          for (octave_idx_type i = 0; i < ns; i++)
+            {
+              T tmp = ov[i];
+              if (_sort_isnan (tmp))
+                {
+                  --ku;
+                  v[ku] = tmp;
+                  vi[ku] = i;
+                }
+              else
+                {
+                  v[kl] = tmp;
+                  vi[kl] = i;
+                  kl++;
+                }
+            }
 
-	  for (octave_idx_type i = 0; i < ns; i++)
-            vi[i] = ov + i;
+          // sort.
+	  lsort.sort (v, vi, kl);
 
-	  indexed_sort.sort (vi, ns);
+          if (ku < ns)
+            {
+              // NaNs are in reverse order
+              std::reverse (v + ku, v + ns);
+              std::reverse (vi + ku, vi + ns);
+              if (mode == DESCENDING)
+                {
+                  std::rotate (v, v + ku, v + ns);
+                  std::rotate (vi, vi + ku, vi + ns);
+                }
+            }
 
-	  for (octave_idx_type i = 0; i < ns; i++)
-	    {
-	      v[i] = *vi[i];
-	      sidx(i + offset) = vi[i] - ov;
-	    }
 	  v += ns;
+          vi += ns;
           ov += ns;
 	}
     }
   else
     {
-      OCTAVE_LOCAL_BUFFER (T, vix, ns);
+      OCTAVE_LOCAL_BUFFER (T, buf, ns);
+      OCTAVE_LOCAL_BUFFER (octave_idx_type, bufi, ns);
 
-      for (octave_idx_type j = 0; j < iter; j++)
+      for (octave_idx_type j = 0; j < iter; j++) 
 	{
 	  octave_idx_type offset = j;
 	  octave_idx_type offset2 = 0;
@@ -2147,44 +2191,52 @@ Array<T>::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
 	    }
 
 	  offset += offset2 * stride * ns;
-	      
-	  for (octave_idx_type i = 0; i < ns; i++)
-	    {
-	      vix[i] = ov[i*stride + offset];
-	      vi[i] = vix + i;
-	    }
+	  
+          // gather and partition out NaNs. 
+          // FIXME: impact on integer types noticeable?
+          octave_idx_type kl = 0, ku = ns;
+          for (octave_idx_type i = 0; i < ns; i++)
+            {
+              T tmp = ov[i*stride + offset];
+              if (_sort_isnan (tmp))
+                {
+                  --ku;
+                  buf[ku] = tmp;
+                  bufi[ku] = i;
+                }
+              else
+                {
+                  buf[kl] = tmp;
+                  bufi[kl] = i;
+                  kl++;
+                }
+            }
 
-	  indexed_sort.sort (vi, ns);
-	      
+          // sort.
+	  lsort.sort (buf, bufi, kl);
+
+          if (ku < ns)
+            {
+              // NaNs are in reverse order
+              std::reverse (buf + ku, buf + ns);
+              std::reverse (bufi + ku, bufi + ns);
+              if (mode == DESCENDING)
+                {
+                  std::rotate (buf, buf + ku, buf + ns);
+                  std::rotate (bufi, bufi + ku, bufi + ns);
+                }
+            }
+
+          // scatter.
 	  for (octave_idx_type i = 0; i < ns; i++)
-	    {
-	      v[i*stride+offset] = *vi[i];
-	      sidx(i*stride+offset) = vi[i] - vix;
-	    }
+	    v[i*stride + offset] = buf[i];
+	  for (octave_idx_type i = 0; i < ns; i++)
+	    vi[i*stride + offset] = bufi[i];
 	}
     }
 
   return m;
 }
-
-#if defined (HAVE_IEEE754_DATA_FORMAT)
-
-template <>
-bool ascending_compare (double, double);
-template <>
-bool ascending_compare (const double*, const double*);
-template <>
-bool descending_compare (double, double);
-template <>
-bool descending_compare (const double*, const double*);
-
-template <>
-Array<double> Array<double>::sort (octave_idx_type dim, sortmode mode) const;
-template <>
-Array<double> Array<double>::sort (Array<octave_idx_type> &sidx,
-				   octave_idx_type dim, sortmode mode) const;
-
-#endif
 
 template <class T>
 Array<T>

@@ -113,7 +113,12 @@ public:
 
   void set_compare (bool (*comp) (T, T)) { compare = comp; }
 
-  void sort (T *v, octave_idx_type elements);
+  void sort (T *data, octave_idx_type nel);
+
+  void sort (T *data, octave_idx_type *idx, octave_idx_type nel);
+
+  static bool ascending_compare (T, T);
+  static bool descending_compare (T, T);
 
 private:
 
@@ -127,8 +132,7 @@ private:
   
   struct s_slice 
   {
-    T *base;
-    octave_idx_type len;
+    octave_idx_type base, len;
   };
   
   struct MergeState 
@@ -142,6 +146,7 @@ private:
     // 'a' is temp storage to help with merges.  It contains room for
     // alloced entries.
     T *a;               // may point to temparray below
+    octave_idx_type *ia;
     octave_idx_type alloced;
     
     // A stack of n pending runs yet to be merged.  Run #i starts at
@@ -160,15 +165,25 @@ private:
   
   MergeState ms;
   
-  void reverse_slice (T *lo, T *hi);
-  
-  void binarysort (T *lo, T *hi, T *start);
     
-  octave_idx_type count_run (T *lo, T *hi, bool& descending);
+  template <class Comp>
+  void binarysort (T *data, octave_idx_type nel, 
+              octave_idx_type start, Comp comp);
+    
+  template <class Comp>
+  void binarysort (T *data, octave_idx_type *idx, octave_idx_type nel, 
+              octave_idx_type start, Comp comp);
+    
+  template <class Comp>
+  octave_idx_type count_run (T *lo, octave_idx_type n, bool& descending, Comp comp);
 
-  octave_idx_type gallop_left (T key, T *a, octave_idx_type n, octave_idx_type hint);
+  template <class Comp>
+  octave_idx_type gallop_left (T key, T *a, octave_idx_type n, octave_idx_type hint,
+                               Comp comp);
 
-  octave_idx_type gallop_right (T key, T *a, octave_idx_type n, octave_idx_type hint);
+  template <class Comp>
+  octave_idx_type gallop_right (T key, T *a, octave_idx_type n, octave_idx_type hint,
+                                Comp comp);
 
   void merge_init (void);
 
@@ -176,17 +191,56 @@ private:
 
   int merge_getmem (octave_idx_type need);
 
-  int merge_lo (T *pa, octave_idx_type na, T *pb, octave_idx_type nb);
+  int merge_getmemi (octave_idx_type need);
 
-  int merge_hi (T *pa, octave_idx_type na, T *pb, octave_idx_type nb);
+  template <class Comp>
+  int merge_lo (T *pa, octave_idx_type na, 
+                T *pb, octave_idx_type nb,
+                Comp comp);
 
-  int merge_at (octave_idx_type i);
+  template <class Comp>
+  int merge_lo (T *pa, octave_idx_type *ipa, octave_idx_type na, 
+                T *pb, octave_idx_type *ipb, octave_idx_type nb,
+                Comp comp);
 
-  int merge_collapse (void);
+  template <class Comp>
+  int merge_hi (T *pa, octave_idx_type na, 
+                T *pb, octave_idx_type nb,
+                Comp comp);
 
-  int merge_force_collapse (void);
+  template <class Comp>
+  int merge_hi (T *pa, octave_idx_type *ipa, octave_idx_type na, 
+                T *pb, octave_idx_type *ipb, octave_idx_type nb,
+                Comp comp);
+
+  template <class Comp>
+  int merge_at (octave_idx_type i, T *data,
+                Comp comp);
+
+  template <class Comp>
+  int merge_at (octave_idx_type i, T *data, octave_idx_type *idx,
+                Comp comp);
+
+  template <class Comp>
+  int merge_collapse (T *data, Comp comp);
+
+  template <class Comp>
+  int merge_collapse (T *data, octave_idx_type *idx, Comp comp);
+
+  template <class Comp>
+  int merge_force_collapse (T *data, Comp comp);
+
+  template <class Comp>
+  int merge_force_collapse (T *data, octave_idx_type *idx, Comp comp);
 
   octave_idx_type merge_compute_minrun (octave_idx_type n);
+
+  template <class Comp>
+  void sort (T *data, octave_idx_type nel, Comp comp);
+
+  template <class Comp>
+  void sort (T *data, octave_idx_type *idx, octave_idx_type nel, Comp comp);
+
 };
 
 template <class T>

@@ -31,6 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "Array.h"
 #include "Array.cc"
+#include "oct-sort.cc"
 
 static float
 xabs (const FloatComplex& x)
@@ -38,27 +39,9 @@ xabs (const FloatComplex& x)
   return (xisinf (x.real ()) || xisinf (x.imag ())) ? octave_Float_Inf : abs (x);
 }
 
-static bool
-operator < (const FloatComplex& a, const FloatComplex& b)
-{
-  return (xisnan (b) || (xabs (a) < xabs (b))
-	  || ((xabs (a) == xabs (b)) && (arg (a) < arg (b))));
-}
-
-static bool
-operator > (const FloatComplex& a, const FloatComplex& b)
-{
-  return (xisnan (a) || (xabs (a) > xabs (b))
-	  || ((xabs (a) == xabs (b)) && (arg (a) > arg (b))));
-}
-
-// This file must be included after the < and > operators are
-// defined to avoid errors with the Intel C++ compiler.
-#include "oct-sort.cc"
-
 template <>
 bool
-ascending_compare (FloatComplex a, FloatComplex b)
+octave_sort<FloatComplex>::ascending_compare (FloatComplex a, FloatComplex b)
 {
   return (xisnan (b) || (xabs (a) < xabs (b))
 	  || ((xabs (a) == xabs (b)) && (arg (a) < arg (b))));
@@ -66,30 +49,10 @@ ascending_compare (FloatComplex a, FloatComplex b)
 
 template <>
 bool
-ascending_compare (vec_index<FloatComplex> *a, vec_index<FloatComplex> *b)
-{
-  return (xisnan (b->vec)
-	  || (xabs (a->vec) < xabs (b->vec))
-	  || ((xabs (a->vec) == xabs (b->vec))
-	      && (arg (a->vec) < arg (b->vec))));
-}
-
-template <>
-bool
-descending_compare (FloatComplex a, FloatComplex b)
+octave_sort<FloatComplex>::descending_compare (FloatComplex a, FloatComplex b)
 {
   return (xisnan (a) || (xabs (a) > xabs (b))
 	  || ((xabs (a) == xabs (b)) && (arg (a) > arg (b))));
-}
-
-template <>
-bool
-descending_compare (vec_index<FloatComplex> *a, vec_index<FloatComplex> *b)
-{
-  return (xisnan (a->vec)
-	  || (xabs (a->vec) > xabs (b->vec))
-	  || ((xabs (a->vec) == xabs (b->vec))
-	      && (arg (a->vec) > arg (b->vec))));
 }
 
 INSTANTIATE_ARRAY_SORT (FloatComplex);

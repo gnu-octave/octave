@@ -1,3 +1,7 @@
+2009-02-09  Jaroslav Hajek  <highegg@gmail.com>
+
+	* TEMPLATE-INST/Array-tc.cc: Reflect changes in octave_sort.
+
 2009-02-08  John W. Eaton  <jwe@octave.org>
 
 	* octave.cc (initialize_pathsearch): Delete.

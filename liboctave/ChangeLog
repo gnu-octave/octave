@@ -1,3 +1,13 @@
+2009-02-09  Jaroslav Hajek  <highegg@gmail.com>
+
+	* oct-sort.cc (octave_sort<T>): Rewrite for optimizations. Allow
+	inlined comparison functor and by-the-way indexed sorting.
+	* oct-sort.h (octave_sort<T>): Update interface.
+	* Array.cc (Array<T>::sort): Reflect changes. Use copy & partition
+	mechanism.
+	* Array-d.cc, Array-f.cc, Array-C.cc, Array-fC.cc, Array-s.cc,
+	Array-i.cc: Reflect changes.
+
 2009-02-05  John W. Eaton  <jwe@octave.org>
 
 	* file-stat.cc (base_file_stat::is_sock):

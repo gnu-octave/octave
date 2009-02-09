@@ -594,16 +594,8 @@ public:
 
 #define INSTANTIATE_ARRAY_SORT(T) \
   template class octave_sort<T>; \
-  template class octave_sort<const T*>;
 
 #define NO_INSTANTIATE_ARRAY_SORT(T) \
-  template class vec_index<T>; \
-  template <> bool ascending_compare (T, T) { return true; } \
-  template <> bool ascending_compare (const T *, const T *) \
-    { return true; } \
-  template <> bool descending_compare (T, T) { return true; } \
-  template <> bool descending_compare (const T *, const T *) \
-    { return true; } \
   template <> Array<T> Array<T>::sort \
     (octave_idx_type, sortmode) const { return *this; } \
   template <> Array<T> Array<T>::sort (Array<octave_idx_type> &sidx, \

@@ -31,6 +31,9 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "Array.h"
 #include "Array.cc"
+
+#define INLINE_ASCENDING_SORT
+#define INLINE_DESCENDING_SORT
 #include "oct-sort.cc"
 
 INSTANTIATE_ARRAY_SORT (int);

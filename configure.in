@@ -2087,8 +2087,6 @@ AC_CONFIG_FILES([Makefile octMakefile Makeconf test/Makefile
   libcruft/blas-xtra/Makefile libcruft/lapack-xtra/Makefile])
 AC_OUTPUT
 
-AC_CONFIG_COMMANDS([default-1],[[chmod +x install-octave]],[[]])
-
 ### Print a summary so that important information isn't missed.
 
 if test -z "$F77"; then

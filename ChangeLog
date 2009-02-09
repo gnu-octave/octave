@@ -1,3 +1,9 @@
+2009-02-08  John W. Eaton  <jwe@octave.org>
+
+	* install-octave.in: Delete.
+	* configure.in: Delete AC_CONFIG_COMMANDS macro that was used to
+	make install-octave executable.
+
 2009-02-07  John W. Eaton  <jwe@octave.org>
 
 	* octMakefile.in (all): Display $(prefix) in summary message.

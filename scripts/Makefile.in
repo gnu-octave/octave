@@ -71,13 +71,6 @@ install install-strip uninstall clean mostlyclean distclean maintainer-clean::
 .PHONY: install install-strip uninstall
 .PHONY: clean mostlyclean distclean maintainer-clean
 
-install install-strip::
-	ls -LR $(DESTDIR)$(datadir)/octave > $(DESTDIR)$(datadir)/octave/ls-R
-	ls -LR $(DESTDIR)$(libexecdir)/octave > $(DESTDIR)$(libexecdir)/octave/ls-R
-
-uninstall::
-	rm -f $(DESTDIR)$(datadir)/octave/ls-R $(DESTDIR)$(libexecdir)/octave/ls-R
-
 tags TAGS:: $(SOURCES)
 	$(subdir-for-command)
 

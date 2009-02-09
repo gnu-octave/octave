@@ -1,3 +1,8 @@
+2009-02-08  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.in (install install-strip): Don't install ls-R file.
+	(uninstall): Don't uninstall ls-R file.
+
 2009-02-06  Jaroslav Hajek  <highegg@gmail.com>
 
 	* optimization/fsolve.m: Document support for complex holomorphic

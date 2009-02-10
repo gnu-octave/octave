@@ -28,6 +28,7 @@
 ## This will be faster than using regexp in most cases.
 ##
 ## @seealso{find}
+## @end deftypefn
 
 function varargout = strchr (str, chars, varargin)
   if (nargin < 2 || ! ischar (str) || ! ischar (chars))

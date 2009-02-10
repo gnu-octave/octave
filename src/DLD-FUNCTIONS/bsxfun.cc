@@ -127,7 +127,7 @@ update_index (Array<int>& idx, const dim_vector& dv, octave_idx_type i)
 }
 
 DEFUN_DLD (bsxfun, args, ,
-  " -*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} bsxfun (@var{f}, @var{a}, @var{b})\n\
 Applies a binary function @var{f} element-wise to two matrix arguments\n\
 @var{a} and @var{b}. The function @var{f} must be capable of accepting\n\

@@ -129,7 +129,7 @@ typecast (const T& x, std::string type)
 }
 
 DEFUN_DLD (typecast, args, ,
-  " -*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} typecast (@var{x}, @var{type})\n\
 Convert from one datatype to another without changing the underlying\n\
 data. The argument @var{type} defines the type of the return argument\n\

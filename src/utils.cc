@@ -803,7 +803,7 @@ Return the full name of the path element matching @var{dir}.  The\n\
 match is performed at the end of each path element.  For example, if\n\
 @var{dir} is @code{\"foo/bar\"}, it matches the path element\n\
 @code{\"/some/dir/foo/bar\"}, but not @code{\"/some/dir/foo/bar/baz\"}\n\
-or @code{\"/some/dir/allfoo/bar.\n\
+or @code{\"/some/dir/allfoo/bar\"}.\n\
 @end deftypefn")
 {
   octave_value retval = std::string ();

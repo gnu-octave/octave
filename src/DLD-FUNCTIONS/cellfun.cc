@@ -40,7 +40,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "unwind-prot.h"
 
 DEFUN_DLD (cellfun, args, nargout,
-  " -*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} cellfun (@var{name}, @var{c})\n\
 @deftypefnx {Loadable Function} {} cellfun (\"size\", @var{c}, @var{k})\n\
 @deftypefnx {Loadable Function} {} cellfun (\"isclass\", @var{c}, @var{class})\n\

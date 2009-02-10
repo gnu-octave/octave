@@ -21,9 +21,6 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-// Jaroslav Hajek, Feb 2008: handle row-wise derivatives,
-// use const pointers to avoid unnecessary copying.
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -85,7 +82,7 @@ Undocumented internal function.\n\
 
 	  octave_idx_type ierr;
           const octave_idx_type incfd = rows ? nyr : 1;
-          const octave_idx_type inc = rows ? 1 : nyc;
+          const octave_idx_type inc = rows ? 1 : nyr;
 
           for (octave_idx_type i = (rows ? nyr : nyc); i > 0; i--)
 	    {
@@ -125,7 +122,7 @@ Undocumented internal function.\n\
 
 	  octave_idx_type ierr;
           const octave_idx_type incfd = rows ? nyr : 1;
-          const octave_idx_type inc = rows ? 1 : nyc;
+          const octave_idx_type inc = rows ? 1 : nyr;
 
           for (octave_idx_type i = (rows ? nyr : nyc); i > 0; i--)
 	    {

@@ -149,7 +149,8 @@ MAN_SRC := $(addsuffix .1, $(MAN_BASE))
 # FIXME -- need to include generated figures here...
 DISTFILES = $(addprefix $(srcdir)/, Makefile.in contributors.in \
   mkcontrib.awk dir  munge-texi.cc $(MAN_SRC) $(SOURCES) $(MAIN_TEXINFO)) \
-  $(SUB_TEXINFO) contributors.texi $(FORMATTED) $(IMAGES)
+  $(SUB_TEXINFO) contributors.texi $(FORMATTED) $(IMAGES) mk_doc_cache.m \
+  DOC
 
 DISTDIRS = HTML
 
@@ -169,10 +170,13 @@ SPELL = $(patsubst %.texi, %.spell, $(TEXINFO))
 	$(SED) -e 's/@@/ at /g' -e 's/@[a-zA-Z]*//g' $< | spell > $@-t
 	mv $@-t $@
 
-all: octave.info octave.pdf octave-a4.pdf HTML/index.html
+all: octave.info octave.pdf octave-a4.pdf HTML/index.html DOC
 .PHONY: all
 
 DOCSTRING_FILES := $(TOPDIR)/src/DOCSTRINGS $(TOPDIR)/scripts/DOCSTRINGS
+
+DOC: $(DOCSTRING_FILES) mk_doc_cache.m
+	$(TOPDIR)/run-octave -f -q -H -p $(srcdir) $(srcdir)/mk_doc_cache.m DOC $(DOCSTRING_FILES)
 
 $(TEXINFO): $(DOCSTRING_FILES) munge-texi$(BUILD_EXEEXT)
 

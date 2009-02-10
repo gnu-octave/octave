@@ -1,4 +1,4 @@
-2008-03-14  Jaroslav Hajek <highegg@gmail.com>
+2009-02-09  Jaroslav Hajek  <highegg@gmail.com>
 
 	* general/interp2.m: Added support for pchip bicubic interpolation.
 	Also simplified code and added support for natural extrapolation via

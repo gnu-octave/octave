@@ -70,7 +70,7 @@ fwrite (fid, text, "char");
 
 fclose (fid);
 
-cmd = sprintf ("%s --no-headers --no-warn --force --no-validate %s",
+cmd = sprintf ("%s --no-headers --no-warn --force --no-validate --fill-column=1024 %s",
                makeinfo_program (), name);
 
 [status, formatted_text] = system (cmd);

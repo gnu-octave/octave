@@ -4,6 +4,7 @@
 	* Makeconf.in (octetcdir): New variable.
 	(do-subst-default-vals): Substitute octetcdir.
 	* octMakefile.in (install, uninstall): Use $(octetcdir) for NEWS.
+	(DIRS_TO_MAKE): Add $(octetcdir) to the list.
 
 2009-02-10  Rafael Laboissiere  <rafael@debian.org>
 

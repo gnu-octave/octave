@@ -2,7 +2,8 @@
 
 	* interpreter/Makefile.in (uninstall): Use $(DESTDIR) here too.
 	Uninstall Info dir file.  Uninstall DOC file.
-	(install): Install DOC file.
+	(install): Install DOC file.  Add $(DESTDIR)$(octetcdir) to the
+	list of directories to make.
 
 2009-02-10  John W. Eaton  <jwe@octave.org>
 

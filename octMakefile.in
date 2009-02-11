@@ -67,7 +67,7 @@ CLEANSUBDIRS = $(DISTSUBDIRS)
 
 DIRS_TO_MAKE = $(bindir) $(datadir) $(libdir) $(octincludedir)/octave \
   $(fcnfiledir) $(localfcnfiledir) $(localapifcnfiledir) \
-  $(localverfcnfiledir) $(octfiledir) $(localoctfiledir) \
+  $(localverfcnfiledir) $(octetcdir) $(octfiledir) $(localoctfiledir) \
   $(localapioctfiledir) $(localveroctfiledir) $(imagedir) $(archlibdir) \
   $(localarchlibdir) $(localapiarchlibdir) $(localverarchlibdir)
 

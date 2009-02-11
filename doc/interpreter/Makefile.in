@@ -292,7 +292,7 @@ check: all
 
 install install-strip: all
 	@$(subdir-for-command)
-	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(man1dir) $(DESTDIR)$(infodir)
+	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(man1dir) $(DESTDIR)$(infodir) $(DESTDIR)$(octetcdir)
 	@if test -d $(DESTDIR)$(man1dir); then \
 	  for f in $(MAN_BASE); do \
 	    rm -f $(DESTDIR)$(man1dir)/$$f$(man1ext); \

@@ -1239,6 +1239,7 @@ specified option.\n\
       { false, "man1ext", OCTAVE_MAN1EXT },
       { true, "mandir", OCTAVE_MANDIR },
       { true, "octfiledir", OCTAVE_OCTFILEDIR },
+      { true, "octetcdir", OCTAVE_OCTETCDIR },
       { true, "octincludedir", OCTAVE_OCTINCLUDEDIR },
       { true, "octlibdir", OCTAVE_OCTLIBDIR },
       { true, "prefix", OCTAVE_PREFIX },

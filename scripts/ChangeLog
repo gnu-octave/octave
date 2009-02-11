@@ -1,3 +1,7 @@
+2009-02-11  John W. Eaton  <jwe@octave.org>
+
+	* miscellaneous/news.m: Look in octetcdir for NEWS file.
+
 2009-02-09  Jaroslav Hajek  <highegg@gmail.com>
 
 	* general/interp2.m: Added support for pchip bicubic interpolation.

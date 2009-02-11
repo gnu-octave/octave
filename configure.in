@@ -95,6 +95,7 @@ OCTAVE_SET_DEFAULT(localfcnfiledir, '$(datadir)/octave/site/m')
 OCTAVE_SET_DEFAULT(localapifcnfiledir,
   '$(datadir)/octave/site/$(api_version)/m')
 OCTAVE_SET_DEFAULT(localverfcnfiledir, '$(datadir)/octave/$(version)/site/m')
+OCTAVE_SET_DEFAULT(octetcdir, '$(datadir)/octave/$(version)/etc')
 OCTAVE_SET_DEFAULT(octlibdir, '$(libdir)/octave-$(version)')
 OCTAVE_SET_DEFAULT(archlibdir,
   '$(libexecdir)/octave/$(version)/exec/$(canonical_host_type)')

@@ -145,6 +145,10 @@ along with Octave; see the file COPYING.  If not, see
 #define OCTAVE_OCTFILEDIR %OCTAVE_OCTFILEDIR%
 #endif
 
+#ifndef OCTAVE_OCTETCDIR
+#define OCTAVE_OCTETCDIR %OCTAVE_OCTETCDIR%
+#endif
+
 #ifndef OCTAVE_OCTINCLUDEDIR
 #define OCTAVE_OCTINCLUDEDIR %OCTAVE_OCTINCLUDEDIR%
 #endif

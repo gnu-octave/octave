@@ -1,3 +1,10 @@
+2009-02-11  John W. Eaton  <jwe@octave.org>
+
+	* configure.in (octetcdir): New default value.
+	* Makeconf.in (octetcdir): New variable.
+	(do-subst-default-vals): Substitute octetcdir.
+	* octMakefile.in (install, uninstall): Use $(octetcdir) for NEWS.
+
 2009-02-10  Rafael Laboissiere  <rafael@debian.org>
 
 	* examples/Makefile.in: Run some clean targets on sub-directory

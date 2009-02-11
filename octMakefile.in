@@ -132,7 +132,7 @@ install install-strip ::
 	$(INSTALL_SCRIPT) mkoctfile $(DESTDIR)$(bindir)/mkoctfile-$(version)
 	(cd $(DESTDIR)$(bindir); $(LN_S) mkoctfile-$(version) $(DESTDIR)$(bindir)/mkoctfile)
 	$(INSTALL_DATA) config.h $(DESTDIR)$(octincludedir)/octave/config.h
-	$(INSTALL_DATA) $(srcdir)/NEWS $(DESTDIR)$(datadir)/octave/$(version)/NEWS
+	$(INSTALL_DATA) $(srcdir)/NEWS $(DESTDIR)$(octetcdir)/NEWS
 
 uninstall::
 	rm -f $(DESTDIR)$(bindir)/octave-bug
@@ -142,7 +142,7 @@ uninstall::
 	rm -f $(DESTDIR)$(bindir)/mkoctfile
 	rm -f $(DESTDIR)$(bindir)/mkoctfile-$(version)
 	rm -f $(DESTDIR)$(octincludedir)/octave/config.h
-	rm -f $(DESTDIR)$(datadir)/octave/$(version)/NEWS
+	rm -f $(DESTDIR)$(octetcdir)/NEWS
 
 maintainer-clean::
 	@echo ""

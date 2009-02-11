@@ -330,11 +330,14 @@ install install-strip: all
 	    $(INSTALL_DATA) $(srcdir)/dir $(DESTDIR)$(infodir)/dir; \
 	  fi; \
 	fi
+	$(INSTALL_DATA) DOC $(DESTDIR)$(octetcdir)/DOC
 .PHONY: install install-strip
 
 uninstall:
 	@$(subdir-for-command)
-	rm -f $(infodir)/octave.info*
+	rm -f $(DESTDIR)$(infodir)/octave.info*
+	rm -f $(DESTDIR)$(infodir)/dir
+	rm -f $(DESTDIR)$(octetcdir)/DOC
 	for f in $(MAN_BASE); do rm -f $(DESTDIR)$(man1dir)/$$f$(man1ext); done
 .PHONY: uninstall
 

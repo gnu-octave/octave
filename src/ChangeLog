@@ -1,3 +1,8 @@
+2009-02-11  John W. Eaton  <jwe@octave.org>
+
+	* toplev.cc (octave_config_info): Add octetcdir to the struct.
+	* defaults.h.in (OCTAVE_OCTETCDIR): New macro.
+
 2009-02-10  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/__pchip_deriv__.cc (F__pchip_deriv__):

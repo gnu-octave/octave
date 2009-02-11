@@ -1,3 +1,9 @@
+2009-02-11  John W. Eaton  <jwe@octave.org>
+
+	* interpreter/Makefile.in (uninstall): Use $(DESTDIR) here too.
+	Uninstall Info dir file.  Uninstall DOC file.
+	(install): Install DOC file.
+
 2009-02-10  John W. Eaton  <jwe@octave.org>
 
 	* interpreter/Makefile.in (DOC): New target.

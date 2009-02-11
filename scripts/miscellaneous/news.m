@@ -23,8 +23,8 @@
 
 function news ()
 
-  datadir = octave_config_info ("datadir");
-  newsfile = fullfile (datadir, "octave", version (), "NEWS");
+  octetcdir = octave_config_info ("octetcdir");
+  newsfile = fullfile (octetcdir, "NEWS");
 
   if (exist (newsfile, "file"))
     f = fopen (newsfile, "r");

@@ -1987,6 +1987,13 @@ template <class T>
 Array<T>
 Array<T>::sort (octave_idx_type dim, sortmode mode) const
 {
+  if (dim < 0 || dim >= ndims ())
+    {
+      (*current_liboctave_error_handler)
+        ("sort: invalid dimension");
+      return Array<T> ();
+    }
+
   Array<T> m (dims ());
 
   dim_vector dv = m.dims ();
@@ -2006,12 +2013,10 @@ Array<T>::sort (octave_idx_type dim, sortmode mode) const
 
   octave_sort<T> lsort;
   
-  if (mode == ASCENDING) 
-    lsort.set_compare (octave_sort<T>::ascending_compare);
-  else if (mode == DESCENDING)
-    lsort.set_compare (octave_sort<T>::descending_compare);
+  if (mode) 
+    lsort.set_compare (mode);
   else
-    abort ();
+    return m;
 
   if (stride == 1)
     {
@@ -2098,6 +2103,13 @@ Array<T>
 Array<T>::sort (Array<octave_idx_type> &sidx, octave_idx_type dim, 
 		sortmode mode) const
 {
+  if (dim < 0 || dim >= ndims ())
+    {
+      (*current_liboctave_error_handler)
+        ("sort: invalid dimension");
+      return Array<T> ();
+    }
+
   Array<T> m (dims ());
 
   dim_vector dv = m.dims ();
@@ -2123,12 +2135,10 @@ Array<T>::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
   sidx = Array<octave_idx_type> (dv);
   octave_idx_type *vi = sidx.fortran_vec ();
   
-  if (mode == ASCENDING) 
-    lsort.set_compare (octave_sort<T>::ascending_compare);
-  else if (mode == DESCENDING)
-    lsort.set_compare (octave_sort<T>::descending_compare);
+  if (mode) 
+    lsort.set_compare (mode);
   else
-    abort ();
+    return m;
 
   if (stride == 1)
     {
@@ -2239,6 +2249,171 @@ Array<T>::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
 }
 
 template <class T>
+sortmode
+Array<T>::is_sorted (sortmode mode) const
+{
+  if (nelem () <= 1)
+    return ASCENDING;
+
+  const T *lo = data (), *hi = data () + nelem () - 1;
+
+  // Check for NaNs at the beginning and end.
+  if (mode != ASCENDING && _sort_isnan (*lo))
+    {
+      mode = DESCENDING;
+      do
+        ++lo;
+      while (lo < hi && _sort_isnan (*lo));
+    }
+  else if (mode != DESCENDING && _sort_isnan (*hi))
+    {
+      mode = ASCENDING;
+      do
+        --hi;
+      while (lo < hi && _sort_isnan (*hi));
+    }
+  
+  octave_sort<T> lsort;
+
+  // If mode is still unknown, compare lo and hi
+  if (! mode)
+    {
+      if (lsort.descending_compare (*lo, *hi))
+        mode = DESCENDING;
+      else if (lsort.ascending_compare (*lo, *hi))
+        mode = ASCENDING;
+      else
+        mode = ASCENDING;
+    }
+
+  lsort.set_compare (mode);
+
+  if (! lsort.is_sorted (lo, hi - lo + 1))
+    mode = UNSORTED;
+
+  return mode;
+}
+
+template <class T>
+bool (*_sortrows_comparator (sortmode mode, 
+                             const Array<T>& /* a */, bool /* allow_chk */)) (T, T)
+{
+  if (mode == ASCENDING)
+    return octave_sort<T>::ascending_compare;
+  else if (mode == DESCENDING)
+    return octave_sort<T>::descending_compare;
+  else
+    return 0;
+}
+
+template <class T>
+Array<octave_idx_type>
+Array<T>::sort_rows_idx (sortmode mode) const
+{
+  Array<octave_idx_type> idx;
+
+  octave_sort<T> lsort;
+
+  lsort.set_compare (_sortrows_comparator (mode, *this, true));
+
+  octave_idx_type r = rows (), c = cols ();
+
+  idx = Array<octave_idx_type> (r);
+
+  lsort.sort_rows (data (), idx.fortran_vec (), r, c);
+
+  return idx;
+}
+
+
+template <class T>
+sortmode 
+Array<T>::is_sorted_rows (sortmode mode) const
+{
+  octave_sort<T> lsort;
+
+  octave_idx_type r = rows (), c = cols ();
+
+  if (r <= 1 || c == 0)
+    return mode ? mode : ASCENDING;
+
+  if (! mode)
+    {
+      // Auto-detect mode.
+      bool (*compare) (T, T) = _sortrows_comparator (ASCENDING, *this, false);
+
+      octave_idx_type i;
+      for (i = 0; i < cols (); i++)
+        {
+          T l = elem (0, i), u = elem (rows () - 1, i);
+          if (compare (l, u))
+            {
+              if (mode == DESCENDING)
+                {
+                  mode = UNSORTED;
+                  break;
+                }
+              else
+                mode = ASCENDING;
+            }
+          else if (compare (u, l))
+            {
+              if (mode == ASCENDING)
+                {
+                  mode = UNSORTED;
+                  break;
+                }
+              else
+                mode = DESCENDING;
+            }
+        }
+      if (! mode && i == cols ())
+        mode = ASCENDING;
+    }
+
+  if (mode)
+    {
+      lsort.set_compare (_sortrows_comparator (mode, *this, false));
+
+      if (! lsort.is_sorted_rows (data (), r, c))
+        mode = UNSORTED;
+    }
+
+  return mode;
+
+}
+
+#define INSTANTIATE_ARRAY_SORT(T) template class octave_sort<T>;
+
+#define NO_INSTANTIATE_ARRAY_SORT(T) \
+ \
+template <> Array<T>  \
+Array<T>::sort (octave_idx_type, sortmode) const { return *this; } \
+ \
+template <> Array<T>  \
+Array<T>::sort (Array<octave_idx_type> &sidx, octave_idx_type, sortmode) const \
+{ sidx = Array<octave_idx_type> (); return *this; } \
+ \
+template <> sortmode  \
+Array<T>::is_sorted (sortmode) const  \
+{ return UNSORTED; } \
+ \
+template <> \
+bool (*_sortrows_comparator (sortmode,  \
+                             const Array<T>&, bool)) (T, T) \
+{ return 0; } \
+ \
+template <> Array<octave_idx_type>  \
+Array<T>::sort_rows_idx (sortmode) const  \
+{ return Array<octave_idx_type> (); } \
+ \
+template <> sortmode  \
+Array<T>::is_sorted_rows (sortmode) const \
+{ return UNSORTED; } \
+
+
+
+template <class T>
 Array<T>
 Array<T>::diag (octave_idx_type k) const
 {
@@ -2341,6 +2516,9 @@ Array<T>::print_info (std::ostream& os, const std::string& prefix) const
   //     << pefix << "rows: " << rows () << "\n"
   //     << prefix << "cols: " << cols () << "\n";
 }
+
+#define INSTANTIATE_ARRAY(T, API) \
+  template class API Array<T>
 
 /*
 ;;; Local Variables: ***

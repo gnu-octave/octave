@@ -28,41 +28,79 @@ along with Octave; see the file COPYING.  If not, see
 // Instantiate Arrays of FloatComplex values.
 
 #include "oct-cmplx.h"
+#include "lo-mappers.h"
 
 #include "Array.h"
 #include "Array.cc"
 #include "oct-sort.cc"
 
-static float
-xabs (const FloatComplex& x)
+template <>
+inline bool _sort_isnan (FloatComplex x)
 {
-  return (xisinf (x.real ()) || xisinf (x.imag ())) ? octave_Float_Inf : abs (x);
+  return xisnan (x);
 }
 
 template <>
 bool
 octave_sort<FloatComplex>::ascending_compare (FloatComplex a, FloatComplex b)
 {
-  return (xisnan (b) || (xabs (a) < xabs (b))
-	  || ((xabs (a) == xabs (b)) && (arg (a) < arg (b))));
+  return ((std::abs (a) < std::abs (b))
+	  || ((std::abs (a) == std::abs (b)) && (arg (a) < arg (b))));
 }
 
 template <>
 bool
 octave_sort<FloatComplex>::descending_compare (FloatComplex a, FloatComplex b)
 {
-  return (xisnan (a) || (xabs (a) > xabs (b))
-	  || ((xabs (a) == xabs (b)) && (arg (a) > arg (b))));
+  return ((std::abs (a) > std::abs (b))
+	  || ((std::abs (a) == std::abs (b)) && (arg (a) > arg (b))));
+}
+
+static bool nan_ascending_compare (FloatComplex x, FloatComplex y)
+{
+  return xisnan (y) ? ! xisnan (x) : ((std::abs (x) < std::abs (x))
+	  || ((std::abs (x) == std::abs (x)) && (arg (x) < arg (x))));
+}
+
+static bool nan_descending_compare (FloatComplex x, FloatComplex y)
+{
+  return xisnan (x) ? ! xisnan (y) : ((std::abs (x) > std::abs (x))
+	  || ((std::abs (x) == std::abs (x)) && (arg (x) > arg (x))));
+}
+
+bool (*_sortrows_comparator (sortmode mode, 
+                             const Array<FloatComplex>& a , bool allow_chk)) 
+(FloatComplex, FloatComplex)
+{
+  bool (*result) (FloatComplex, FloatComplex) = 0;
+
+  if (allow_chk)
+    {
+      octave_idx_type k = 0;
+      for (; k < a.numel () && ! xisnan (a(k)); k++) ;
+      if (k == a.numel ())
+        {
+          if (mode == ASCENDING)
+            result = octave_sort<FloatComplex>::ascending_compare;
+          else if (mode == DESCENDING)
+            result = octave_sort<FloatComplex>::descending_compare;
+        }
+    }
+
+  if (! result)
+    {
+      if (mode == ASCENDING)
+        result = nan_ascending_compare;
+      else if (mode == DESCENDING)
+        result = nan_descending_compare;
+    }
+
+  return result;
 }
 
 INSTANTIATE_ARRAY_SORT (FloatComplex);
 
-INSTANTIATE_ARRAY_AND_ASSIGN (FloatComplex, OCTAVE_API);
-
-INSTANTIATE_ARRAY_ASSIGN (FloatComplex, float, OCTAVE_API)
-INSTANTIATE_ARRAY_ASSIGN (FloatComplex, int, OCTAVE_API)
-INSTANTIATE_ARRAY_ASSIGN (FloatComplex, short, OCTAVE_API)
-INSTANTIATE_ARRAY_ASSIGN (FloatComplex, char, OCTAVE_API)
+INSTANTIATE_ARRAY (FloatComplex, OCTAVE_API);
 
 #include "Array2.h"
 

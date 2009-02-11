@@ -77,6 +77,8 @@ Range
   Range sort (Array<octave_idx_type>& sidx, octave_idx_type dim = 0,
 	      sortmode mode = ASCENDING) const;
 
+  sortmode is_sorted (sortmode mode = ASCENDING) const;
+
   void set_base (double b)
   {
     if (rng_base != b)

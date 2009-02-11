@@ -289,7 +289,7 @@ QR::insert_col (const Matrix& u, const Array<octave_idx_type>& j)
   octave_idx_type k = q.columns ();
 
   Array<octave_idx_type> jsi;
-  Array<octave_idx_type> js = j.sort (jsi, ASCENDING);
+  Array<octave_idx_type> js = j.sort (jsi, 0, ASCENDING);
   octave_idx_type nj = js.length ();
   bool dups = false;
   for (octave_idx_type i = 0; i < nj - 1; i++)
@@ -361,7 +361,7 @@ QR::delete_col (const Array<octave_idx_type>& j)
   octave_idx_type k = q.columns ();
 
   Array<octave_idx_type> jsi;
-  Array<octave_idx_type> js = j.sort (jsi, DESCENDING);
+  Array<octave_idx_type> js = j.sort (jsi, 0, DESCENDING);
   octave_idx_type nj = js.length ();
   bool dups = false;
   for (octave_idx_type i = 0; i < nj - 1; i++)
@@ -584,7 +584,7 @@ QR::insert_col (const Matrix& u, const Array<octave_idx_type>& j)
   octave_idx_type n = r.columns ();
 
   Array<octave_idx_type> jsi;
-  Array<octave_idx_type> js = j.sort (jsi, ASCENDING);
+  Array<octave_idx_type> js = j.sort (jsi, 0, ASCENDING);
   octave_idx_type nj = js.length ();
   bool dups = false;
   for (octave_idx_type i = 0; i < nj - 1; i++)
@@ -630,7 +630,7 @@ QR::delete_col (const Array<octave_idx_type>& j)
   octave_idx_type n = r.columns ();
 
   Array<octave_idx_type> jsi;
-  Array<octave_idx_type> js = j.sort (jsi, DESCENDING);
+  Array<octave_idx_type> js = j.sort (jsi, 0, DESCENDING);
   octave_idx_type nj = js.length ();
   bool dups = false;
   for (octave_idx_type i = 0; i < nj - 1; i++)

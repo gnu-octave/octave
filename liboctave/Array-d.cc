@@ -42,13 +42,49 @@ inline bool _sort_isnan (double x)
   return lo_ieee_isnan (x);
 }
 
+static bool nan_ascending_compare (double x, double y)
+{
+  return lo_ieee_isnan (y) ? ! lo_ieee_isnan (x) : x < y;
+}
+
+static bool nan_descending_compare (double x, double y)
+{
+  return lo_ieee_isnan (x) ? ! lo_ieee_isnan (y) : x > y;
+}
+
+bool (*_sortrows_comparator (sortmode mode, 
+                             const Array<double>& a , bool allow_chk)) 
+(double, double)
+{
+  bool (*result) (double, double) = 0;
+
+  if (allow_chk)
+    {
+      octave_idx_type k = 0;
+      for (; k < a.numel () && ! xisnan (a(k)); k++) ;
+      if (k == a.numel ())
+        {
+          if (mode == ASCENDING)
+            result = octave_sort<double>::ascending_compare;
+          else if (mode == DESCENDING)
+            result = octave_sort<double>::descending_compare;
+        }
+    }
+
+  if (! result)
+    {
+      if (mode == ASCENDING)
+        result = nan_ascending_compare;
+      else if (mode == DESCENDING)
+        result = nan_descending_compare;
+    }
+
+  return result;
+}
+
 INSTANTIATE_ARRAY_SORT (double);
 
-INSTANTIATE_ARRAY_AND_ASSIGN (double, OCTAVE_API);
-
-INSTANTIATE_ARRAY_ASSIGN (double, int, OCTAVE_API)
-INSTANTIATE_ARRAY_ASSIGN (double, short, OCTAVE_API)
-INSTANTIATE_ARRAY_ASSIGN (double, char, OCTAVE_API)
+INSTANTIATE_ARRAY (double, OCTAVE_API);
 
 #include "Array2.h"
 

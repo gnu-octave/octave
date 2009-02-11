@@ -503,6 +503,12 @@ public:
           return retval;
         }
     }
+
+  bool is_vector (void) const
+    {
+      return (length () == 2 && (elem (0) == 1 || elem (1) == 1));
+    }
+
 };
 
 static inline bool

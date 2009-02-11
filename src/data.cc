@@ -2,6 +2,7 @@
 
 Copyright (C) 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002,
               2003, 2004, 2005, 2006, 2007 John W. Eaton
+Copyright (C) 2009 Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -5572,6 +5573,106 @@ ordered lists.\n\
 %!error <Invalid call to sort.*> sort (1, 2, 3, 4);
 
 */
+
+DEFUN (__sortrows_idx__, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Function File} {} __sortrows_idx__ (@var{a}, @var{mode})\n\
+Sort the rows of the matrix @var{a} according to the order specified\n\
+by @var{mode}, which can either be `ascend' or `descend'.\n\
+Returns the index vector.\n\
+\n\
+This function does not yet support sparse matrices.\n\
+@end deftypefn\n")
+{
+  octave_value retval;
+
+  int nargin = args.length ();
+  sortmode smode = ASCENDING;
+
+  if (nargin < 1 || nargin > 2 || (nargin == 2 && ! args(1).is_string ()))
+    {
+      print_usage ();
+      return retval;
+    }
+
+  if (nargin > 1)
+    {
+      std::string mode = args(1).string_value();
+      if (mode == "ascend")
+        smode = ASCENDING;
+      else if (mode == "descend")
+        smode = DESCENDING;
+      else
+        {
+          error ("__sortrows_idx__: mode must be either \"ascend\" or \"descend\"");
+          return retval;
+        }
+    }
+
+  octave_value arg = args(0);
+
+  if (arg.is_sparse_type ())
+    error ("__sortrows_idx__: sparse matrices not yet supported");
+  if (arg.ndims () == 2)
+    {
+      Array<octave_idx_type> idx = arg.sortrows_idx (smode);
+
+      retval = NDArray (idx, true);
+    }
+  else
+    error ("__sortrows_idx__: needs a 2-dimensional object");
+
+  return retval;
+}
+
+DEFUN (issorted, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Function File} {} issorted (@var{a}, @var{rows})\n\
+Returns true if the array is sorted, ascending or descending.\n\
+NaNs are treated is by @code{sort}. If @var{rows} is supplied and\n\
+has the value \"rows\", checks whether the array is sorted by rows\n\
+as if output by @code{sortrows} (with no options).\n\
+\n\
+This function does not yet support sparse matrices.\n\
+@seealso{sortrows, sort}\n\
+@end deftypefn\n")
+{
+  octave_value retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 1)
+    {
+      octave_value arg = args(0);
+      if (arg.dims ().is_vector ())
+        retval = args(0).issorted () != UNSORTED;
+      else
+        error ("issorted: needs a vector");
+    }
+  else if (nargin == 2)
+    {
+      if (args(1).is_string () && args(1).string_value () == "rows")
+        {
+          octave_value arg = args(0);
+          sortmode smode = ASCENDING;
+
+          if (arg.is_sparse_type ())
+            error ("issorted: sparse matrices not yet supported");
+          if (arg.ndims () == 2)
+            retval = arg.issorted_rows (smode) != UNSORTED;
+          else
+            error ("issorted: needs a 2-dimensional object");
+        }
+      else
+        error ("issorted: second argument must be \"rows\"");
+    }
+  else
+    print_usage ();
+
+  return retval;
+}
+
+
 
 /*
 ;;; Local Variables: ***

@@ -97,7 +97,7 @@ The Python license is
 #define MERGESTATE_TEMP_SIZE 1024
 
 // Enum for type of sort function
-enum sortmode { ASCENDING, DESCENDING };
+enum sortmode { UNSORTED = 0, ASCENDING, DESCENDING };
 
 template <class T>
 class
@@ -113,9 +113,25 @@ public:
 
   void set_compare (bool (*comp) (T, T)) { compare = comp; }
 
+  void set_compare (sortmode mode);
+
+  // Sort an array in-place.
   void sort (T *data, octave_idx_type nel);
 
+  // Ditto, but also permute the passed indices (may not be valid indices).
   void sort (T *data, octave_idx_type *idx, octave_idx_type nel);
+
+  // Check whether an array is sorted.
+  bool is_sorted (const T *data, octave_idx_type nel);
+
+  // Sort a matrix by rows, return a permutation
+  // vector.
+  void sort_rows (const T *data, octave_idx_type *idx,
+                  octave_idx_type rows, octave_idx_type cols);
+
+  // Determine whether a matrix (as a contiguous block) is sorted by rows.
+  bool is_sorted_rows (const T *data, 
+                       octave_idx_type rows, octave_idx_type cols);
 
   static bool ascending_compare (T, T);
   static bool descending_compare (T, T);
@@ -240,6 +256,18 @@ private:
 
   template <class Comp>
   void sort (T *data, octave_idx_type *idx, octave_idx_type nel, Comp comp);
+
+  template <class Comp>
+  bool is_sorted (const T *data, octave_idx_type nel, Comp comp);
+
+  template <class Comp>
+  void sort_rows (const T *data, octave_idx_type *idx,
+                  octave_idx_type rows, octave_idx_type cols,
+                  Comp comp);
+
+  template <class Comp>
+  bool is_sorted_rows (const T *data, octave_idx_type rows, 
+                       octave_idx_type cols, Comp comp);
 
 };
 

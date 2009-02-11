@@ -124,6 +124,15 @@ public:
 		     sortmode mode = ASCENDING) const
     { return octave_value (matrix.sort (sidx, dim, mode)); }
 
+  sortmode issorted (sortmode mode = UNSORTED) const
+    { return matrix.is_sorted (mode); }
+
+  Array<octave_idx_type> sortrows_idx (sortmode mode = ASCENDING) const
+    { return matrix.sort_rows_idx (mode); }
+
+  sortmode issorted_rows (sortmode mode = UNSORTED) const
+    { return matrix.is_sorted_rows (mode); }
+
   bool is_matrix_type (void) const { return true; }
 
   bool is_numeric_type (void) const { return true; }

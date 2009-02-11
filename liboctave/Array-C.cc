@@ -28,41 +28,79 @@ along with Octave; see the file COPYING.  If not, see
 // Instantiate Arrays of Complex values.
 
 #include "oct-cmplx.h"
+#include "lo-mappers.h"
 
 #include "Array.h"
 #include "Array.cc"
 #include "oct-sort.cc"
 
-static double
-xabs (const Complex& x)
+template <>
+inline bool _sort_isnan (Complex x)
 {
-  return (xisinf (x.real ()) || xisinf (x.imag ())) ? octave_Inf : abs (x);
+  return xisnan (x);
 }
 
 template <>
 bool
 octave_sort<Complex>::ascending_compare (Complex a, Complex b)
 {
-  return (xisnan (b) || (xabs (a) < xabs (b))
-	  || ((xabs (a) == xabs (b)) && (arg (a) < arg (b))));
+  return ((std::abs (a) < std::abs (b))
+	  || ((std::abs (a) == std::abs (b)) && (arg (a) < arg (b))));
 }
 
 template <>
 bool
 octave_sort<Complex>::descending_compare (Complex a, Complex b)
 {
-  return (xisnan (a) || (xabs (a) > xabs (b))
-	  || ((xabs (a) == xabs (b)) && (arg (a) > arg (b))));
+  return ((std::abs (a) > std::abs (b))
+	  || ((std::abs (a) == std::abs (b)) && (arg (a) > arg (b))));
+}
+
+static bool nan_ascending_compare (Complex x, Complex y)
+{
+  return xisnan (y) ? ! xisnan (x) : ((std::abs (x) < std::abs (x))
+	  || ((std::abs (x) == std::abs (x)) && (arg (x) < arg (x))));
+}
+
+static bool nan_descending_compare (Complex x, Complex y)
+{
+  return xisnan (x) ? ! xisnan (y) : ((std::abs (x) > std::abs (x))
+	  || ((std::abs (x) == std::abs (x)) && (arg (x) > arg (x))));
+}
+
+bool (*_sortrows_comparator (sortmode mode, 
+                             const Array<Complex>& a , bool allow_chk)) 
+(Complex, Complex)
+{
+  bool (*result) (Complex, Complex) = 0;
+
+  if (allow_chk)
+    {
+      octave_idx_type k = 0;
+      for (; k < a.numel () && ! xisnan (a(k)); k++) ;
+      if (k == a.numel ())
+        {
+          if (mode == ASCENDING)
+            result = octave_sort<Complex>::ascending_compare;
+          else if (mode == DESCENDING)
+            result = octave_sort<Complex>::descending_compare;
+        }
+    }
+
+  if (! result)
+    {
+      if (mode == ASCENDING)
+        result = nan_ascending_compare;
+      else if (mode == DESCENDING)
+        result = nan_descending_compare;
+    }
+
+  return result;
 }
 
 INSTANTIATE_ARRAY_SORT (Complex);
 
-INSTANTIATE_ARRAY_AND_ASSIGN (Complex, OCTAVE_API);
-
-INSTANTIATE_ARRAY_ASSIGN (Complex, double, OCTAVE_API)
-INSTANTIATE_ARRAY_ASSIGN (Complex, int, OCTAVE_API)
-INSTANTIATE_ARRAY_ASSIGN (Complex, short, OCTAVE_API)
-INSTANTIATE_ARRAY_ASSIGN (Complex, char, OCTAVE_API)
+INSTANTIATE_ARRAY (Complex, OCTAVE_API);
 
 #include "Array2.h"
 

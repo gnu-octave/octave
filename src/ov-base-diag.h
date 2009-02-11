@@ -106,6 +106,15 @@ public:
 		     sortmode mode = ASCENDING) const
     { return to_dense ().sort (sidx, dim, mode); }
 
+  sortmode issorted (sortmode mode = UNSORTED) const
+    { return to_dense ().issorted (mode); }
+
+  Array<octave_idx_type> sortrows_idx (sortmode mode = ASCENDING) const
+    { return to_dense ().sortrows_idx (mode); }
+
+  sortmode issorted_rows (sortmode mode = UNSORTED) const
+    { return to_dense ().issorted_rows (mode); }
+
   bool is_matrix_type (void) const { return true; }
 
   bool is_numeric_type (void) const { return true; }

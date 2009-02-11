@@ -36,9 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 
 INSTANTIATE_ARRAY_SORT (short);
 
-INSTANTIATE_ARRAY_AND_ASSIGN (short, OCTAVE_API);
-
-INSTANTIATE_ARRAY_ASSIGN (short, char, OCTAVE_API)
+INSTANTIATE_ARRAY (short, OCTAVE_API);
 
 #include "Array2.h"
 

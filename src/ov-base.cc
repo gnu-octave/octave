@@ -978,6 +978,30 @@ octave_base_value::sort (Array<octave_idx_type> &,
   return octave_value();
 }
 
+sortmode
+octave_base_value::issorted (sortmode) const
+{
+  gripe_wrong_type_arg ("octave_base_value::issorted ()", type_name ());
+
+  return UNSORTED;
+}
+
+Array<octave_idx_type>
+octave_base_value::sortrows_idx (sortmode) const
+{
+  gripe_wrong_type_arg ("octave_base_value::sortrows_idx ()", type_name ());
+
+  return Array<octave_idx_type> ();
+}
+
+sortmode
+octave_base_value::issorted_rows (sortmode) const
+{
+  gripe_wrong_type_arg ("octave_base_value::issorted_rows ()", type_name ());
+
+  return UNSORTED;
+}
+
 #define UNDEFINED_MAPPER(F) \
   octave_value \
   octave_base_value::F (void) const \

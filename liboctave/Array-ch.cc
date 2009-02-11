@@ -33,7 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 
 INSTANTIATE_ARRAY_SORT (char);
 
-INSTANTIATE_ARRAY_AND_ASSIGN (char, OCTAVE_API);
+INSTANTIATE_ARRAY (char, OCTAVE_API);
 
 #include "Array2.h"
 

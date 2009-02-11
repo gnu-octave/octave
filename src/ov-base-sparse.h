@@ -126,6 +126,9 @@ octave_base_sparse : public octave_base_value
 		     sortmode mode = ASCENDING) const
     { return octave_value (matrix.sort (sidx, dim, mode)); }
 
+  sortmode issorted (sortmode mode = UNSORTED) const
+    { return full_value ().issorted (mode); }
+
   MatrixType matrix_type (void) const { return typ; }
   MatrixType matrix_type (const MatrixType& _typ) const
     { MatrixType ret = typ; typ = _typ; return ret; }

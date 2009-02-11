@@ -1,3 +1,23 @@
+2009-02-11  Jaroslav Hajek  <highegg@gmail.com>
+
+	* oct-sort.cc (octave_sort<T>::is_sorted, octave_sort<T>::sort_rows,
+	octave_sort<T>::is_sorted_rows): New methods.
+	* oct-sort.h: Declare them.
+
+	* Array.cc (Array<T>::is_sorted): New method.
+	(INSTANTIATE_ARRAY_SORT, NO_INSTANTIATE_ARRAY_SORT,
+	INSTANTIATE_ARRAY_AND_ASSIGN, INSTANTIATE_ARRAY): Move macros here.
+	* Array.h: Reflect changes.
+
+	* dim-vector.h (dim_vector::is_vector): New method.
+	* Array-C.cc, Array-fC.cc: Override _sort_isnan, don't check for 
+	NaN in default comparators. Provide NaN-safe comparators, override
+	_sortrows_comparator.
+	* Array-d.cc, Array-f.cc: Provide NaN-safe comparators, override
+	_sortrows_comparator.	
+	* Range.cc (Range::is_sorted): New method.
+	* Range.h: Declare it.
+
 2009-02-09  Jaroslav Hajek  <highegg@gmail.com>
 
 	* oct-sort.cc (octave_sort<T>): Rewrite for optimizations. Allow

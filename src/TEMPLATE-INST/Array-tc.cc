@@ -58,9 +58,7 @@ octave_sort<octave_value>::descending_compare (octave_value a, octave_value b)
 
 INSTANTIATE_ARRAY_SORT (octave_value);
 
-template class OCTINTERP_API Array<octave_value>;
-
-INSTANTIATE_ARRAY_ASSIGN (octave_value, octave_value, OCTINTERP_API);
+INSTANTIATE_ARRAY (octave_value, OCTINTERP_API);
 
 template class OCTINTERP_API Array2<octave_value>;
 

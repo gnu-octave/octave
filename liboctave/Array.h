@@ -554,6 +554,15 @@ public:
   Array<T> sort (Array<octave_idx_type> &sidx, octave_idx_type dim = 0,
 		 sortmode mode = ASCENDING) const;
 
+  // Ordering is auto-detected or can be specified.
+  sortmode is_sorted (sortmode mode = UNSORTED) const;
+
+  // Sort by rows returns only indices.
+  Array<octave_idx_type> sort_rows_idx (sortmode mode = ASCENDING) const;
+
+  // Ordering is auto-detected or can be specified.
+  sortmode is_sorted_rows (sortmode mode = UNSORTED) const;
+
   Array<T> diag (octave_idx_type k = 0) const;
 
   template <class U, class F>
@@ -577,30 +586,6 @@ public:
     return result;
   }
 };
-
-#define INSTANTIATE_ARRAY(T, API) \
-  template class API Array<T>
-
-// FIXME -- these are here for compatibility.  In the current
-// implementation, only homogeneous array assignments are actually
-// instantiated.  I think heterogeneous indexed assignments are rare
-// enough to be implemented via conversion first.  This decision may
-// still be revised, that's why these macros stay here.
-#define INSTANTIATE_ARRAY_AND_ASSIGN(T, API) \
-  INSTANTIATE_ARRAY(T, API)
-
-#define INSTANTIATE_ARRAY_ASSIGN(LT, RT, API)
-  // do nothing
-
-#define INSTANTIATE_ARRAY_SORT(T) \
-  template class octave_sort<T>; \
-
-#define NO_INSTANTIATE_ARRAY_SORT(T) \
-  template <> Array<T> Array<T>::sort \
-    (octave_idx_type, sortmode) const { return *this; } \
-  template <> Array<T> Array<T>::sort (Array<octave_idx_type> &sidx, \
-    octave_idx_type, sortmode) const \
-    { sidx = Array<octave_idx_type> (); return *this; }
 
 #endif
 

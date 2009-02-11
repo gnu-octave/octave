@@ -97,25 +97,37 @@ The Python license is
 #include <cassert>
 #include <algorithm>
 #include <cstring>
+#include <stack>
 
 #include "lo-mappers.h"
 #include "quit.h"
 #include "oct-sort.h"
+#include "oct-locbuf.h"
 
 template <class T>
 octave_sort<T>::octave_sort (void) : compare (ascending_compare)
 { 
   merge_init ();
-  merge_getmem (1024);
 }
 
 template <class T>
 octave_sort<T>::octave_sort (bool (*comp) (T, T)) : compare (comp) 
 { 
   merge_init (); 
-  merge_getmem (1024);
 }
-  
+
+template <class T>
+void
+octave_sort<T>::set_compare (sortmode mode)
+{
+  if (mode == ASCENDING)
+    compare = ascending_compare;
+  else if (mode == DESCENDING)
+    compare = descending_compare;
+  else
+    compare = 0;
+}
+
 template <class T>
 template <class Comp>
 void
@@ -1508,6 +1520,7 @@ template <class T>
 void
 octave_sort<T>::sort (T *data, octave_idx_type nel)
 {
+  merge_getmem (1024);
 #ifdef INLINE_ASCENDING_SORT
   if (compare == ascending_compare)
     sort (data, nel, std::less<T> ());
@@ -1515,7 +1528,7 @@ octave_sort<T>::sort (T *data, octave_idx_type nel)
 #endif
 #ifdef INLINE_DESCENDING_SORT    
     if (compare == descending_compare)
-    sort (data, nel, std::greater<T> ());
+      sort (data, nel, std::greater<T> ());
   else
 #endif
     if (compare)
@@ -1526,6 +1539,7 @@ template <class T>
 void
 octave_sort<T>::sort (T *data, octave_idx_type *idx, octave_idx_type nel)
 {
+  merge_getmemi (1024);
 #ifdef INLINE_ASCENDING_SORT
   if (compare == ascending_compare)
     sort (data, idx, nel, std::less<T> ());
@@ -1533,12 +1547,219 @@ octave_sort<T>::sort (T *data, octave_idx_type *idx, octave_idx_type nel)
 #endif
 #ifdef INLINE_DESCENDING_SORT    
     if (compare == descending_compare)
-    sort (data, idx, nel, std::greater<T> ());
+      sort (data, idx, nel, std::greater<T> ());
   else
 #endif
     if (compare)
       sort (data, idx, nel, compare);
 }
+
+template <class T> template <class Comp>
+bool 
+octave_sort<T>::is_sorted (const T *data, octave_idx_type nel, Comp comp)
+{
+  const T *end = data + nel;
+  if (data != end)
+    {
+      const T *next = data;
+      while (++next != end)
+        {
+          if (comp (*next, *data))
+            break;
+          data = next;
+        }
+      data = next;
+    }
+
+  return data == end;
+}
+
+template <class T> 
+bool 
+octave_sort<T>::is_sorted (const T *data, octave_idx_type nel)
+{
+  bool retval = false;
+#ifdef INLINE_ASCENDING_SORT
+  if (compare == ascending_compare)
+    retval = is_sorted (data, nel, std::less<T> ());
+  else
+#endif
+#ifdef INLINE_DESCENDING_SORT    
+    if (compare == descending_compare)
+      retval = is_sorted (data, nel, std::greater<T> ());
+  else
+#endif
+    if (compare)
+      retval = is_sorted (data, nel, compare);
+
+  return retval;
+}
+
+// FIXME: is there really no way to make this local to the following function?
+struct sortrows_run_t
+{
+  sortrows_run_t (octave_idx_type c, octave_idx_type o, octave_idx_type n)
+    : col (c), ofs (o), nel (n) { }
+  octave_idx_type col, ofs, nel;
+};
+
+
+template <class T> template <class Comp>
+void 
+octave_sort<T>::sort_rows (const T *data, octave_idx_type *idx,
+                           octave_idx_type rows, octave_idx_type cols,
+                           Comp comp)
+{
+  OCTAVE_LOCAL_BUFFER (T, buf, rows);
+  for (octave_idx_type i = 0; i < rows; i++)
+    idx[i] = i;
+
+  if (cols == 0 || rows <= 1)
+    return;
+
+
+  // This is a breadth-first traversal.
+  typedef sortrows_run_t run_t;
+  std::stack<run_t> runs;
+
+  runs.push (run_t (0, 0, rows));
+
+  while (! runs.empty ())
+    {
+      octave_idx_type col  = runs.top ().col;
+      octave_idx_type ofs  = runs.top ().ofs;
+      octave_idx_type nel  = runs.top ().nel;
+      runs.pop ();
+      assert (nel > 1);
+
+      T *lbuf = buf + ofs;
+      const T *ldata = data + rows*col;
+      octave_idx_type *lidx = idx + ofs;
+
+      // Gather.
+      for (octave_idx_type i = 0; i < nel; i++)
+        lbuf[i] = ldata[lidx[i]];
+
+      // Sort.
+      sort (lbuf, lidx, nel, comp);
+
+      // Identify constant runs and schedule subsorts.
+      if (col < cols-1)
+        {
+          octave_idx_type lst = 0;
+          for (octave_idx_type i = 0; i < nel; i++)
+            {
+              if (comp (lbuf[lst], lbuf[i]))
+                {
+                  if (i > lst + 1)
+                    runs.push (run_t (col+1, lst, i - lst));
+                  lst = i;
+                }
+            }
+          if (nel > lst + 1)
+            runs.push (run_t (col+1, lst, nel - lst));
+        }
+    }
+}
+
+template <class T>
+void 
+octave_sort<T>::sort_rows (const T *data, octave_idx_type *idx,
+                           octave_idx_type rows, octave_idx_type cols)
+{
+#ifdef INLINE_ASCENDING_SORT
+  if (compare == ascending_compare)
+    sort_rows (data, idx, rows, cols, std::less<T> ());
+  else
+#endif
+#ifdef INLINE_DESCENDING_SORT    
+    if (compare == descending_compare)
+      sort_rows (data, idx, rows, cols, std::greater<T> ());
+  else
+#endif
+    if (compare)
+      sort_rows (data, idx, rows, cols, compare);
+}
+
+template <class T> template <class Comp>
+bool 
+octave_sort<T>::is_sorted_rows (const T *data, octave_idx_type rows, 
+                                octave_idx_type cols, Comp comp)
+{
+  if (rows <= 1 || cols == 0)
+    return true;
+    
+  // This is a breadth-first traversal.
+  const T *lastrow = data + rows*(cols - 1);
+  typedef std::pair<const T *, octave_idx_type> run_t;
+  std::stack<run_t> runs;
+
+  bool sorted = true;
+  runs.push (run_t (data, rows));
+  while (sorted && ! runs.empty ())
+    {
+      const T *lo = runs.top ().first;
+      octave_idx_type n = runs.top ().second;
+      runs.pop ();
+      if (lo < lastrow)
+        {
+          // Not the final column.
+          assert (n > 1);
+          const T *hi = lo + n, *lst = lo;
+          for (lo++; lo < hi; lo++)
+            {
+              if (comp (*lst, *lo))
+                {
+                  if (lo > lst + 1)
+                      runs.push (run_t (lst + rows, lo - lst));
+                  lst = lo;
+                }
+              else if (comp (*lo, *lst))
+                break;
+
+            }
+          if (lo == hi)
+            {
+              if (lo > lst + 1)
+                runs.push (run_t (lst + rows, lo - lst));
+            }
+          else
+            {
+              sorted = false;
+              break;
+            }
+        }
+      else
+        // The final column - use fast code.
+        sorted = is_sorted (lo, n, comp);
+    }
+      
+  return sorted;
+}
+
+template <class T>
+bool 
+octave_sort<T>::is_sorted_rows (const T *data, octave_idx_type rows, 
+                                octave_idx_type cols)
+{
+  bool retval = false;
+
+#ifdef INLINE_ASCENDING_SORT
+  if (compare == ascending_compare)
+    retval = is_sorted_rows (data, rows, cols, std::less<T> ());
+  else
+#endif
+#ifdef INLINE_DESCENDING_SORT    
+    if (compare == descending_compare)
+      retval = is_sorted_rows (data, rows, cols, std::greater<T> ());
+  else
+#endif
+    if (compare)
+      retval = is_sorted_rows (data, rows, cols, compare);
+
+  return retval;
+}
+
 
 template <class T>
 bool 

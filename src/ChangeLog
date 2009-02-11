@@ -1,3 +1,25 @@
+2009-02-11  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov.h (octave_value::issorted, octave_value::sortrows_idx,
+	octave_value::issorted_rows): New methods.
+	* ov.cc (octave_base_value::issorted, octave_base_value::sortrows_idx,
+	octave_base_value::issorted_rows): New methods.
+	* ov.cc: Declare them.
+
+	* ov-base-mat.h (octave_base_matrix::issorted, octave_base_matrix::sortrows_idx,
+	octave_base_matrix::issorted_rows): New methods.
+
+	* ov-base-diag.h (octave_base_diag::issorted, octave_base_diag::sortrows_idx,
+	octave_base_diag::issorted_rows): New methods.
+
+	* ov-perm.h (octave_perm_matrix::issorted, octave_perm_matrix::sortrows_idx,
+	octave_perm_matrix::issorted_rows): New methods.
+
+	* ov-range.h (octave_range::issorted, octave_range::sortrows_idx,
+	octave_range::issorted_rows): New methods.
+
+	* data.cc (F__sortrows_idx__, Fissorted): New defuns.
+
 2009-02-11  John W. Eaton  <jwe@octave.org>
 
 	* toplev.cc (octave_config_info): Add octetcdir to the struct.

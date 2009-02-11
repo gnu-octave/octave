@@ -996,6 +996,15 @@ public:
 		 sortmode mode = ASCENDING) const
     { return rep->sort (sidx, dim, mode); } 
 
+  sortmode issorted (sortmode mode = UNSORTED) const
+    { return rep->issorted (mode); }
+
+  Array<octave_idx_type> sortrows_idx (sortmode mode = ASCENDING) const
+    { return rep->sortrows_idx (mode); }
+
+  sortmode issorted_rows (sortmode mode = UNSORTED) const
+    { return rep->issorted_rows (mode); }
+
   void lock (void) { rep->lock (); }
 
   void unlock (void) { rep->unlock (); }

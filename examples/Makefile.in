@@ -125,13 +125,16 @@ TAGS: $(SOURCES)
 clean mostlyclean:
 .PHONY: clean mostlyclean
 
-distclean:
+distclean::
 	rm -f Makefile octave.desktop
 .PHONY: distclean
 
-maintainer-clean: distclean
+maintainer-clean:: distclean
 	rm -f tags TAGS
 .PHONY: maintainer-clean
+
+distclean maintainer-clean::
+	@$(subdir-for-command)
 
 dist:
 	ln $(DISTFILES) ../`cat ../.fname`/examples

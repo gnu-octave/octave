@@ -143,9 +143,9 @@ function [retval, status] = makeinfo (text, output_type = "plain text", see_also
     [status, retval] = system (cmd);
    
   unwind_protect_cleanup
-    if (exist (name, "file"))
-      delete (name);
-    endif
+#    if (exist (name, "file"))
+#      delete (name);
+#    endif
   end_unwind_protect
 endfunction
 

@@ -39,84 +39,103 @@ function str = skip_newline (str)
   str = str(j:end);
 endfunction
 
-doc_cache = [];
+## Read the contents of all the DOCSTRINGS files into TEXT.
 
-for i = 1:numel (docstrings_files);
-
+text = "";
+nfiles = numel (docstrings_files);
+text = cell (1, nfiles+1);
+for i = 1:nfiles
   file = docstrings_files{i};
-
   fid = fopen (file, "r");
-
   if (fid < 0)
     error ("unable to open %s for reading", file);
   else
+    tmp = fread (fid, Inf, "*char")';
+    delim_idx = find (tmp == doc_delim, 1);
+    text{i} = tmp(delim_idx:end);
+  endif
+endfor
+text = [text{:}, doc_delim];
 
-    printf ("processing %s\n", file);
+text = regexprep (text, "@seealso *{([^}]*)}", "See also: $1.");
+text = regexprep (text, "-\\*- texinfo -\\*-[ \t]*[\r\n]*", "");
 
-    text = fread (fid, Inf, "*char")';
+[fid, name, msg] = mkstemp ("octave_doc_XXXXXX", true);
 
-    delim_idx = find (text == doc_delim);
-    eof = numel (text);
-    idx = [delim_idx, eof];
+if (fid < 0)
+  error ("%s: %s\n", name, msg);
+endif
 
-    n = numel (delim_idx);
+fwrite (fid, text, "char");
 
-    tmp_doc_cache = cell (3, n);
-    k = 1;
+fclose (fid);
 
-    for i = 1:n
+cmd = sprintf ("%s --no-headers --no-warn --force --no-validate %s",
+               makeinfo_program (), name);
 
-      tmp = text(idx(i)+1:idx(i+1)-1);
+[status, formatted_text] = system (cmd);
 
-      [symbol, doc] = strtok (tmp, "\r\n");
+## Did we get the help text?
+if (status != 0)
+  error ("makeinfo failed with exit status %d!", status);
+endif
 
-      doc = skip_newline (doc);
+if (isempty (formatted_text))
+  error ("makeinfo produced no output!");
+endif
 
-      ## Skip functions that start with __ as these shouldn't be
-      ## searched by lookfor.
-      if (numel (symbol) > 2 && regexp (symbol, "^__.+__$"))
-	continue;
-      endif
-  
-      printf ("  %s\n", symbol);
+delim_idx = find (formatted_text == doc_delim);
+n = numel (delim_idx);
 
-      if (strncmp (doc, "-*- texinfo -*-", 15))
-	doc = skip_newline (doc(16:end));
-      else
-	error ("doc string for %s is not in texinfo format", symbol);
-      endif
+cache = cell (3, n);
+k = 1;
 
-      [formatted_text, status] = makeinfo (doc, "plain text");
-    
-      ## Did we get the help text?
-      if (status != 0 || isempty (formatted_text))
-	error ("makeinfo failed for %s doc string", symbol);
-      endif
+for i = 2:n
 
-      ## Extract first line by searching for a period or a double
-      ## line-end.
+  block = formatted_text(delim_idx(i-1)+1:delim_idx(i)-1);
 
-      period_idx = find (formatted_text == ".", 1);
+  [symbol, doc] = strtok (block, "\r\n");
 
-      line_end_idx = strfind (formatted_text, "\n\n");
+  doc = skip_newline (doc);
 
-      max_first_sentence_len = 80;
-
-      first_sentence = formatted_text (1:min ([period_idx(:); line_end_idx(:); max_first_sentence_len; numel(formatted_text)]));
-
-      tmp_doc_cache{1,k} = symbol;
-      tmp_doc_cache{2,k} = formatted_text;
-      tmp_doc_cache{3,k} = first_sentence;
-      k++;
-
-    endfor
-
-    tmp_doc_cache(:,k:end) = [];
-
+  ## Skip functions that start with __ as these shouldn't be
+  ## searched by lookfor.
+  if (numel (symbol) > 2 && regexp (symbol, "^__.+__$"))
+    continue;
   endif
 
-  doc_cache = [doc_cache, tmp_doc_cache];
+  if (isempty (doc))
+    continue;
+  endif
 
-  save ("-text", output_file, "doc_cache");
+  [s, e] = regexp (doc, "^ -- [^\r\n]*[\r\n]", "lineanchors");
 
+  if (isempty (s))
+    continue;
+  endif
+
+  start_of_first_sentence = e(end);
+
+  tmp = doc(start_of_first_sentence:end);
+
+  end_of_first_sentence = regexp (tmp, '(\.|[\r\n][\r\n])');
+
+  if (isempty (end_of_first_sentence))
+    end_of_first_sentence = numel (tmp);
+  else
+    end_of_first_sentence = end_of_first_sentence(1);
+  endif
+
+  first_sentence = tmp(1:end_of_first_sentence);
+  first_sentence = regexprep (first_sentence, "([\r\n]|  *)", " ");
+  first_sentence = regexprep (first_sentence, "^ *", "");
+
+  cache{1,k} = symbol;
+  cache{2,k} = doc;
+  cache{3,k} = first_sentence;
+  k++;
 endfor
+
+cache(:,k:end) = [];
+
+save ("-text", output_file, "cache");

@@ -176,7 +176,7 @@ all: octave.info octave.pdf octave-a4.pdf HTML/index.html DOC
 DOCSTRING_FILES := $(TOPDIR)/src/DOCSTRINGS $(TOPDIR)/scripts/DOCSTRINGS
 
 DOC: $(DOCSTRING_FILES) mk_doc_cache.m
-	$(TOPDIR)/run-octave -f -q -H -p $(srcdir) $(srcdir)/mk_doc_cache.m DOC $(DOCSTRING_FILES)
+	$(TOPDIR)/run-octave -f -q -H $(srcdir)/mk_doc_cache.m DOC $(DOCSTRING_FILES) || rm -f DOC
 
 $(TEXINFO): $(DOCSTRING_FILES) munge-texi$(BUILD_EXEEXT)
 

@@ -23,6 +23,12 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_liboctave_traits_h)
 #define octave_liboctave_traits_h 1
 
+// Ideas for these classes taken from C++ Templates, The Complete
+// Guide by David Vandevoorde and Nicolai M. Josuttis, Addison-Wesley
+// (2003).
+
+// Select a type based on the value of a constant expression.
+
 template <bool cond, typename T1, typename T2>
 class if_then_else;
 
@@ -41,6 +47,8 @@ public:
 
   typedef T2 result;
 };
+
+// Determine whether a template paramter is a class type.
 
 template<typename T1>
 class is_class_type
@@ -61,6 +69,9 @@ public:
   enum { yes = sizeof (is_class_type_test<T1> (0)) == 1 };
   enum { no = ! yes };
 };
+
+// Define typename ref_param<T>::type as T const& if T is a class
+// type.  Otherwise, define it to be T.
 
 template<typename T>
 class ref_param

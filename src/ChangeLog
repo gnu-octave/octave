@@ -1,5 +1,8 @@
 2009-02-12  John W. Eaton  <jwe@octave.org>
 
+	* version.h (OCTAVE_VERSION): Now 3.1.52+.
+	(OCTAVE_API_VERSION): Now api-v34+.
+
 	* TEMPLATE-INST/Array-tc.cc
 	(octave_sort<octave_value>::ascending_compare,
 	octave_sort<octave_value>::descending_compare):

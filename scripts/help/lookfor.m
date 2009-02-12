@@ -54,70 +54,77 @@ function [out_fun, out_help_text] = lookfor (str, extra)
   endif
   str = lower (str);
 
-  ## Search operators, keywords, and built-ins
-  cache_file = fullfile (octave_config_info.datadir, "builtin_cache.mat");
+  ## Search functions, operators, and keywords that come with Octave
+  cache_file = fullfile (octave_config_info.datadir, "etc", "DOC");
   if (exist (cache_file, "file"))
     [fun, help_text] = search_cache (str, cache_file, search_type);
+    had_core_cache = true;
   else
     fun = help_text = {};
+    had_core_cache = false;
   endif
   
   ## Search functions in path
+  pathorig = __pathorig__ ();
   p = path ();
   idx = find (p == pathsep ());
   prev_idx = 1;
   for n = 1:length (idx)
     f = p (prev_idx:idx (n)-1);
-    cache_file = fullfile (f, "help_cache.mat");
-    if (exist (cache_file, "file"))
-      ## We have a cache. Read it and search it!
-      [funs, hts] = search_cache (str, cache_file, search_type);
-      fun (end+1:end+length (funs)) = funs;
-      help_text (end+1:end+length (hts)) = hts;
-    else
-      ## We don't have a cache. Search files
-      funs_in_f = __list_functions__ (f);
-      for m = 1:length (funs_in_f)
-        fn = funs_in_f {m};
-        
-        ## Skip files that start with __
-        if (length (fn) > 2 && strcmp (fn (1:2), "__"))
-          continue;
-        endif
-        
-        ## Extract first sentence
-        try
-          first_sentence = get_first_help_sentence (fn);
-          status = 0;
-        catch
-          status = 1;
-        end_try_catch
-
-        if (search_type == 2) # search entire help text
-          [text, format] = get_help_text (fn);
     
-          ## Take action depending on help text format
-          switch (lower (format))
-            case "plain text"
-              status = 0;
-            case "texinfo"
-              [text, status] = makeinfo (text, "plain text");
-            case "html"
-              [text, status] = strip_html_tags (text);
-            otherwise
-              status = 1;
-          endswitch
-
-        elseif (status == 0) # only search the first sentence of the help text
-          text = first_sentence;
-        endif
+    ## Should we search the directory or has it been covered by the cache?
+    if (!had_core_cache || isempty (findstr (f, pathorig)))
+      cache_file = fullfile (f, "DOC");
+      if (exist (cache_file, "file"))
+        ## We have a cache in the directory, then read it and search it!
+        [funs, hts] = search_cache (str, cache_file, search_type);
+        fun (end+1:end+length (funs)) = funs;
+        help_text (end+1:end+length (hts)) = hts;
+      else
+      ## We don't have a cache. Search files
+        funs_in_f = __list_functions__ (f);
+        for m = 1:length (funs_in_f)
+          fn = funs_in_f {m};
         
-        ## Search the help text, if we can
-        if (status == 0 && !isempty (strfind (text, str)))
-          fun (end+1) = fn;
-          help_text (end+1) = first_sentence;
-        endif
-      endfor
+          ## Skip files that start with __
+          if (length (fn) > 2 && strcmp (fn (1:2), "__"))
+            continue;
+          endif
+        
+          ## Extract first sentence
+          try
+            first_sentence = get_first_help_sentence (fn);
+            status = 0;
+          catch
+            status = 1;
+          end_try_catch
+
+          if (search_type == 2) # search entire help text
+            [text, format] = get_help_text (fn);
+    
+            ## Take action depending on help text format
+            switch (lower (format))
+              case "plain text"
+                status = 0;
+              case "texinfo"
+                [text, status] = makeinfo (text, "plain text");
+              case "html"
+                [text, status] = strip_html_tags (text);
+              otherwise
+                status = 1;
+            endswitch
+
+          elseif (status == 0) # only search the first sentence of the help text
+            text = first_sentence;
+          endif
+        
+          ## Search the help text, if we can
+          if (status == 0 && !isempty (strfind (text, str)))
+            fun (end+1) = fn;
+            help_text (end+1) = first_sentence;
+          endif
+        endfor
+      endif
     endif
     prev_idx = idx (n) + 1;
   endfor

@@ -1,3 +1,7 @@
+2009-02-12  Soren Hauberg  <hauberg@gmail.com>
+
+	* help/lookfor.m: Adapt to new cache scheme.
+
 2009-02-11  Jaroslav Hajek  <highegg@gmail.com>
 
 	* general/sortrows.m: Employ __sortrows_idx__ when applicable,

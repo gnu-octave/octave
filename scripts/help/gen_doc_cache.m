@@ -15,37 +15,36 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} gen_doc_cache ()
-## @deftypefnx{Function File} gen_doc_cache (@var{directory})
+## @deftypefn {Function File} gen_doc_cache (@var{out_file}, @var{directory})
 ## Generate documentation caches for all functions in a given directory.
 ##
 ## A documentation cache is generated for all functions in @var{directory}. The
-## resulting cache is saved in the file @code{help_cache.mat} in @var{directory}.
+## resulting cache is saved in the file @var{out_file}.
 ## The cache is used to speed up @code{lookfor}.
-## If no directory is given, all directories in the current path is traversed.
+##
+## If no directory is given (or it is the empty matrix), a cache for builtin
+## operators, etc. is generated.
 ##
 ## @seealso{lookfor, path}
 ## @end deftypefn
 
-function gen_doc_cache (p = path ())
-  if (!ischar (p))
+function gen_doc_cache (out_file = "DOC.gz", directory = [])
+  ## Check input
+  if (!ischar (out_file))
     print_usage ();
   endif
   
-  ## Generate caches for all directories in path
-  idx = find (p == pathsep ());
-  prev_idx = 1;
-  for n = 1:length (idx)
-    f = p (prev_idx:idx (n)-1);
-    gen_doc_cache_in_dir (f);
-    prev_idx = idx (n) + 1;
-  endfor
-    
-  ## Generate cache for keywords, operators, and builtins if we're handling the
-  ## entire path
-  if (nargin == 0)
-    gen_builtin_cache ();
+  ## Generate cache
+  if (isempty (directory))
+    cache = gen_builtin_cache ();
+  elseif (ischar (directory))
+    cache = gen_doc_cache_in_dir (directory);
+  else
+    error ("gen_doc_cache: second input argument must be a string");
   endif
+  
+  ## Save cache
+  save ("-text", "-z", out_file, "cache");
 endfunction
 
 function [text, first_sentence, status] = handle_function (f, text, format)
@@ -102,7 +101,7 @@ function cache = create_cache (list)
   endfor
 endfunction
 
-function gen_doc_cache_in_dir (directory)
+function cache = gen_doc_cache_in_dir (directory)
   ## If 'directory' is not in the current path, add it so we search it
   dir_in_path = false;
   p = path ();
@@ -125,27 +124,17 @@ function gen_doc_cache_in_dir (directory)
   list = __list_functions__ (directory);
   cache = create_cache (list);
   
-  ## Write the cache
-  fn = fullfile (directory, "help_cache.mat");
-  save ("-binary", fn, "cache"); # FIXME: Should we zip it ?
-  
   if (!dir_in_path)
     rmpath (directory);
   endif
 endfunction
 
-function gen_builtin_cache ()
+function cache = gen_builtin_cache ()
   operators = __operators__ ();
   keywords = __keywords__ ();
   builtins = __builtins__ ();
   list = {operators{:}, keywords{:}, builtins{:}};
 
   cache = create_cache (list);
-  
-  ## Write the cache
-  ## FIXME: Where should we store this cache?
-  ## FIXME: if we change it -- update 'lookfor'
-  fn = fullfile (octave_config_info.datadir, "builtin_cache.mat"); 
-  save ("-binary", fn, "cache"); # FIXME: Should we zip it ?
 endfunction
 

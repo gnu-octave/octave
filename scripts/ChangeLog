@@ -1,5 +1,10 @@
 2009-02-12  Soren Hauberg  <hauberg@gmail.com>
 
+	* help/gen_doc_cache.m: Change API so we only handle one directory per
+        call to this function.
+
+2009-02-12  Soren Hauberg  <hauberg@gmail.com>
+
 	* help/lookfor.m: Adapt to new cache scheme.
 
 2009-02-11  Jaroslav Hajek  <highegg@gmail.com>

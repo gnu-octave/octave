@@ -30,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <limits>
 #include <iostream>
 
+#include "lo-traits.h"
 #include "lo-math.h"
 #include "oct-types.h"
 #include "lo-ieee.h"
@@ -79,23 +80,6 @@ REGISTER_INT_TYPE (int32_t);
 REGISTER_INT_TYPE (uint32_t);
 REGISTER_INT_TYPE (int64_t);
 REGISTER_INT_TYPE (uint64_t);
-
-// Selects one of two types, according to a static bool.  May be useful in
-// general.
-
-template<bool cond, class TT, class FT>
-class if_else_type
-{
-public:
-  typedef FT type;
-};
-
-template<class TT, class FT>
-class if_else_type<true, TT, FT>
-{
-public:
-  typedef TT type;
-};
 
 // Rationale: Comparators have a single static method, rel(), that returns the
 // result of the binary relation. They also have two static boolean fields:
@@ -253,8 +237,8 @@ public:
       typedef octave_int_cmp_op::cf cf;
       typedef octave_int_cmp_op::lt lt;
       typedef octave_int_cmp_op::gt gt;
-      typedef typename if_else_type<omit_chk_min, cf, lt>::type chk_min;
-      typedef typename if_else_type<omit_chk_max, cf, gt>::type chk_max;
+      typedef typename if_then_else<omit_chk_min, cf, lt>::result chk_min;
+      typedef typename if_then_else<omit_chk_max, cf, gt>::result chk_max;
 
       // Efficiency of the following depends on inlining and dead code
       // elimination, but that should be a piece of cake for most compilers.

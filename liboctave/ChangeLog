@@ -1,3 +1,8 @@
+2009-02-12  Jaroslav Hajek  <highegg@gmail.com>
+
+	* oct-inttypes.h (if_else_type): Remove
+	(octave_int_base::truncate_int): Use if_then_else.
+
 2009-02-12  John W. Eaton  <jwe@octave.org>
 
 	* lo-traits.h: New file.

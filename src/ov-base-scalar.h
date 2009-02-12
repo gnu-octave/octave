@@ -111,7 +111,7 @@ public:
   sortmode issorted (sortmode mode = UNSORTED) const
     { return mode ? mode : ASCENDING; }
 
-  Array<octave_idx_type> sortrows_idx (sortmode) const
+  Array<octave_idx_type> sort_rows_idx (sortmode) const
     { return Array<octave_idx_type> (1, 0); }
 
   sortmode issorted_rows (sortmode mode = UNSORTED) const

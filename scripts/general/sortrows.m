@@ -40,11 +40,11 @@ function [s, i] = sortrows (m, c)
 
   ## If the sort is homogeneous, we use the built-in faster algorithm.
   if (nargin == 1)
-    i = __sortrows_idx__ (m, default_mode);
+    i = __sort_rows_idx__ (m, default_mode);
   elseif (all (c > 0))
-    i = __sortrows_idx__ (m(:,c), default_mode);
+    i = __sort_rows_idx__ (m(:,c), default_mode);
   elseif (all (c < 0))
-    i = __sortrows_idx__ (m(:,c), other_mode);
+    i = __sort_rows_idx__ (m(:,c), other_mode);
   else
     ## Otherwise, fall back to the old algorithm
     for ii = 1:length (c);

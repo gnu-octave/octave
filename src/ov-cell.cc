@@ -423,7 +423,7 @@ octave_cell::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
 }
 
 Array<octave_idx_type>
-octave_cell::sortrows_idx (sortmode mode) const
+octave_cell::sort_rows_idx (sortmode mode) const
 {
   Array<octave_idx_type> retval;
 

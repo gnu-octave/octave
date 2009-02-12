@@ -5574,9 +5574,9 @@ ordered lists.\n\
 
 */
 
-DEFUN (__sortrows_idx__, args, ,
+DEFUN (__sort_rows_idx__, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Function File} {} __sortrows_idx__ (@var{a}, @var{mode})\n\
+@deftypefn {Function File} {} __sort_rows_idx__ (@var{a}, @var{mode})\n\
 Sort the rows of the matrix @var{a} according to the order specified\n\
 by @var{mode}, which can either be `ascend' or `descend'.\n\
 Returns the index vector.\n\
@@ -5604,7 +5604,7 @@ This function does not yet support sparse matrices.\n\
         smode = DESCENDING;
       else
         {
-          error ("__sortrows_idx__: mode must be either \"ascend\" or \"descend\"");
+          error ("__sort_rows_idx__: mode must be either \"ascend\" or \"descend\"");
           return retval;
         }
     }
@@ -5612,15 +5612,15 @@ This function does not yet support sparse matrices.\n\
   octave_value arg = args(0);
 
   if (arg.is_sparse_type ())
-    error ("__sortrows_idx__: sparse matrices not yet supported");
+    error ("__sort_rows_idx__: sparse matrices not yet supported");
   if (arg.ndims () == 2)
     {
-      Array<octave_idx_type> idx = arg.sortrows_idx (smode);
+      Array<octave_idx_type> idx = arg.sort_rows_idx (smode);
 
       retval = NDArray (idx, true);
     }
   else
-    error ("__sortrows_idx__: needs a 2-dimensional object");
+    error ("__sort_rows_idx__: needs a 2-dimensional object");
 
   return retval;
 }

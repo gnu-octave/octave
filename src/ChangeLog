@@ -1,5 +1,9 @@
 2009-02-12  John W. Eaton  <jwe@octave.org>
 
+	* ov-base-diag.h, ov-base-mat.h, ov-base-scalar.h, ov-base.h,
+	ov-cell.h, ov-perm.h, ov-range.h, ov.h, data.cc, ov-base.cc,
+	ov-cell.cc: Rename all uses of sortrows_idx to sort_rows_idx.
+
 	* TEMPLATE-INST/Array-tc.cc: Don't instantiate sort functions for
 	Arrays of octave_value objects.
 	(octave_sort<octave_value>::ascending_compare,

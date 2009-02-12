@@ -93,7 +93,7 @@ public:
   octave_value sort (Array<octave_idx_type> &sidx, octave_idx_type dim = 0,
 		     sortmode mode = ASCENDING) const;
 
-  Array<octave_idx_type> sortrows_idx (sortmode mode = ASCENDING) const;
+  Array<octave_idx_type> sort_rows_idx (sortmode mode = ASCENDING) const;
 
   bool is_matrix_type (void) const { return false; }
 

@@ -1002,8 +1002,8 @@ public:
   sortmode issorted (sortmode mode = UNSORTED) const
     { return rep->issorted (mode); }
 
-  Array<octave_idx_type> sortrows_idx (sortmode mode = ASCENDING) const
-    { return rep->sortrows_idx (mode); }
+  Array<octave_idx_type> sort_rows_idx (sortmode mode = ASCENDING) const
+    { return rep->sort_rows_idx (mode); }
 
   sortmode issorted_rows (sortmode mode = UNSORTED) const
     { return rep->issorted_rows (mode); }

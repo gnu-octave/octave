@@ -996,9 +996,9 @@ octave_base_value::issorted (sortmode) const
 }
 
 Array<octave_idx_type>
-octave_base_value::sortrows_idx (sortmode) const
+octave_base_value::sort_rows_idx (sortmode) const
 {
-  gripe_wrong_type_arg ("octave_base_value::sortrows_idx ()", type_name ());
+  gripe_wrong_type_arg ("octave_base_value::sort_rows_idx ()", type_name ());
 
   return Array<octave_idx_type> ();
 }

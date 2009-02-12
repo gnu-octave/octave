@@ -1,3 +1,12 @@
+2009-02-12  John W. Eaton  <jwe@octave.org>
+
+	* TEMPLATE-INST/Array-tc.cc
+	(octave_sort<octave_value>::ascending_compare,
+	octave_sort<octave_value>::descending_compare):
+	Delete unused template specializations.
+	Use NO_INSTANTIATE_ARRAY_SORT instead of INSTANTIATE_ARRAY_SORT
+	for octave_values.
+
 2009-02-11  Thomas Treichl  <Thomas.Treichl@gmx.net>
 
 	* gl-render.h: Use HAVE_FRAMEWORK_OPENGL.

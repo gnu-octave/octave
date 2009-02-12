@@ -35,14 +35,16 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-sort.cc"
 
 template <>
-inline bool _sort_isnan (FloatComplex x)
+inline bool
+sort_isnan<FloatComplex> (const FloatComplex& x)
 {
   return xisnan (x);
 }
 
 template <>
 bool
-octave_sort<FloatComplex>::ascending_compare (FloatComplex a, FloatComplex b)
+octave_sort<FloatComplex>::ascending_compare (const FloatComplex& a,
+					      const FloatComplex& b)
 {
   return ((std::abs (a) < std::abs (b))
 	  || ((std::abs (a) == std::abs (b)) && (arg (a) < arg (b))));
@@ -50,29 +52,36 @@ octave_sort<FloatComplex>::ascending_compare (FloatComplex a, FloatComplex b)
 
 template <>
 bool
-octave_sort<FloatComplex>::descending_compare (FloatComplex a, FloatComplex b)
+octave_sort<FloatComplex>::descending_compare (const FloatComplex& a,
+					       const FloatComplex& b)
 {
   return ((std::abs (a) > std::abs (b))
 	  || ((std::abs (a) == std::abs (b)) && (arg (a) > arg (b))));
 }
 
-static bool nan_ascending_compare (FloatComplex x, FloatComplex y)
+static bool
+nan_ascending_compare (const FloatComplex& x, const FloatComplex& y)
 {
-  return xisnan (y) ? ! xisnan (x) : ((std::abs (x) < std::abs (x))
-	  || ((std::abs (x) == std::abs (x)) && (arg (x) < arg (x))));
+  return (xisnan (y)
+	  ? ! xisnan (x)
+	  : ((std::abs (x) < std::abs (x))
+	     || ((std::abs (x) == std::abs (x)) && (arg (x) < arg (x)))));
 }
 
-static bool nan_descending_compare (FloatComplex x, FloatComplex y)
+static bool
+nan_descending_compare (const FloatComplex& x, const FloatComplex& y)
 {
-  return xisnan (x) ? ! xisnan (y) : ((std::abs (x) > std::abs (x))
-	  || ((std::abs (x) == std::abs (x)) && (arg (x) > arg (x))));
+  return (xisnan (x)
+	  ? ! xisnan (y)
+	  : ((std::abs (x) > std::abs (x))
+	     || ((std::abs (x) == std::abs (x)) && (arg (x) > arg (x)))));
 }
 
-bool (*_sortrows_comparator (sortmode mode, 
-                             const Array<FloatComplex>& a , bool allow_chk)) 
-(FloatComplex, FloatComplex)
+Array<FloatComplex>::compare_fcn_type
+sortrows_comparator (sortmode mode, const Array<FloatComplex>& a,
+		     bool allow_chk)
 {
-  bool (*result) (FloatComplex, FloatComplex) = 0;
+  Array<FloatComplex>::compare_fcn_type result = 0;
 
   if (allow_chk)
     {

@@ -1,3 +1,32 @@
+2009-02-12  John W. Eaton  <jwe@octave.org>
+
+	* lo-traits.h: New file.
+	* Makefile.in (INCLUDES): Add it to the list.
+
+	* Array.h (compare_fcn_type): New typedef.
+	* oct-sort.h (compare_fcn_type): Ditto.
+
+	* oct-sort.h, oct-sort.cc (octave_sort<T>::octave_sort,
+	octave_sort<T>::set_compare, octave_sort<T>::compare): 
+	Use typedef to simplify decl.
+	(octave_sort<T>::ascending_compare,
+	octave_sort<T>::descending_compare):
+	Use ref_param<T>::type for parameter decl.
+
+	* Array.cc (sort_isnan): Use ref_param<T>::type for parameter decl.
+	(Array<T>::sort): Use explicit template parameter for sort_isnan calls.
+
+	* Array.cc, Array-C.cc, Array-fC.cc, Array-d.cc, Array-f.cc
+	(sortrows_comparator): Rename from _sortrows_comparator.  Change
+	all uses.  Use typedef for return value to simplify decl.
+	(sort_isnan): Rename from _sort_isnan.  Change all uses.
+	(NO_INSTANTIATE_ARRAY_SORT): Use typedef to simplify instantiation
+	of sortrows_comparator.
+
+	* Array-C.cc, Array-fC.cc (sort_isnan, ascending_compare,
+	descending_compare, nan_ascending_compare,
+	nan_descending_compare):
+
 2009-02-11  Jaroslav Hajek  <highegg@gmail.com>
 
 	* oct-sort.cc (octave_sort<T>::is_sorted, octave_sort<T>::sort_rows,

@@ -1977,8 +1977,8 @@ Array<T>::maybe_delete_dims (void)
 
 // Non-real types don't have NaNs.
 template <class T>
-inline
-bool _sort_isnan (T)
+inline bool
+sort_isnan (typename ref_param<T>::type)
 {
   return false;
 }
@@ -2028,7 +2028,7 @@ Array<T>::sort (octave_idx_type dim, sortmode mode) const
           for (octave_idx_type i = 0; i < ns; i++)
             {
               T tmp = ov[i];
-              if (_sort_isnan (tmp))
+              if (sort_isnan<T> (tmp))
                 v[--ku] = tmp;
               else
                 v[kl++] = tmp;
@@ -2072,7 +2072,7 @@ Array<T>::sort (octave_idx_type dim, sortmode mode) const
           for (octave_idx_type i = 0; i < ns; i++)
             {
               T tmp = ov[i*stride + offset];
-              if (_sort_isnan (tmp))
+              if (sort_isnan<T> (tmp))
                 buf[--ku] = tmp;
               else
                 buf[kl++] = tmp;
@@ -2150,7 +2150,7 @@ Array<T>::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
           for (octave_idx_type i = 0; i < ns; i++)
             {
               T tmp = ov[i];
-              if (_sort_isnan (tmp))
+              if (sort_isnan<T> (tmp))
                 {
                   --ku;
                   v[ku] = tmp;
@@ -2208,7 +2208,7 @@ Array<T>::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
           for (octave_idx_type i = 0; i < ns; i++)
             {
               T tmp = ov[i*stride + offset];
-              if (_sort_isnan (tmp))
+              if (sort_isnan<T> (tmp))
                 {
                   --ku;
                   buf[ku] = tmp;
@@ -2258,19 +2258,19 @@ Array<T>::is_sorted (sortmode mode) const
   const T *lo = data (), *hi = data () + nelem () - 1;
 
   // Check for NaNs at the beginning and end.
-  if (mode != ASCENDING && _sort_isnan (*lo))
+  if (mode != ASCENDING && sort_isnan<T> (*lo))
     {
       mode = DESCENDING;
       do
         ++lo;
-      while (lo < hi && _sort_isnan (*lo));
+      while (lo < hi && sort_isnan<T> (*lo));
     }
-  else if (mode != DESCENDING && _sort_isnan (*hi))
+  else if (mode != DESCENDING && sort_isnan<T> (*hi))
     {
       mode = ASCENDING;
       do
         --hi;
-      while (lo < hi && _sort_isnan (*hi));
+      while (lo < hi && sort_isnan<T> (*hi));
     }
   
   octave_sort<T> lsort;
@@ -2295,8 +2295,9 @@ Array<T>::is_sorted (sortmode mode) const
 }
 
 template <class T>
-bool (*_sortrows_comparator (sortmode mode, 
-                             const Array<T>& /* a */, bool /* allow_chk */)) (T, T)
+typename Array<T>::compare_fcn_type
+sortrows_comparator (sortmode mode, const Array<T>& /* a */,
+		     bool /* allow_chk */)
 {
   if (mode == ASCENDING)
     return octave_sort<T>::ascending_compare;
@@ -2314,7 +2315,7 @@ Array<T>::sort_rows_idx (sortmode mode) const
 
   octave_sort<T> lsort;
 
-  lsort.set_compare (_sortrows_comparator (mode, *this, true));
+  lsort.set_compare (sortrows_comparator (mode, *this, true));
 
   octave_idx_type r = rows (), c = cols ();
 
@@ -2340,7 +2341,8 @@ Array<T>::is_sorted_rows (sortmode mode) const
   if (! mode)
     {
       // Auto-detect mode.
-      bool (*compare) (T, T) = _sortrows_comparator (ASCENDING, *this, false);
+      compare_fcn_type compare
+	= sortrows_comparator (ASCENDING, *this, false);
 
       octave_idx_type i;
       for (i = 0; i < cols (); i++)
@@ -2373,7 +2375,7 @@ Array<T>::is_sorted_rows (sortmode mode) const
 
   if (mode)
     {
-      lsort.set_compare (_sortrows_comparator (mode, *this, false));
+      lsort.set_compare (sortrows_comparator (mode, *this, false));
 
       if (! lsort.is_sorted_rows (data (), r, c))
         mode = UNSORTED;
@@ -2398,9 +2400,8 @@ template <> sortmode  \
 Array<T>::is_sorted (sortmode) const  \
 { return UNSORTED; } \
  \
-template <> \
-bool (*_sortrows_comparator (sortmode,  \
-                             const Array<T>&, bool)) (T, T) \
+Array<T>::compare_fcn_type \
+sortrows_comparator (sortmode, const Array<T>&, bool) \
 { return 0; } \
  \
 template <> Array<octave_idx_type>  \

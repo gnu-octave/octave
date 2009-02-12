@@ -85,8 +85,8 @@ INCLUDES := Bounds.h CollocWt.h DAE.h DAEFunc.h DAERT.h \
 	base-de.h base-min.h byte-swap.h cmd-edit.h cmd-hist.h \
 	data-conv.h dir-ops.h file-ops.h file-stat.h functor.h getopt.h \
 	glob-match.h idx-vector.h kpse-xfns.h \
-	lo-ieee.h lo-mappers.h lo-math.h lo-specfun.h \
-	lo-sysdep.h lo-utils.h mach-info.h md5.h oct-alloc.h oct-cmplx.h \
+	lo-ieee.h lo-mappers.h lo-math.h lo-specfun.h lo-sysdep.h \
+	lo-traits.h lo-utils.h mach-info.h md5.h oct-alloc.h oct-cmplx.h \
 	oct-env.h oct-fftw.h oct-getopt.h oct-group.h oct-inttypes.h \
 	oct-locbuf.h oct-lookup.h oct-md5.h oct-mutex.h oct-norm.h \
         oct-passwd.h oct-rand.h oct-rl-edit.h oct-rl-hist.h oct-shlib.h \

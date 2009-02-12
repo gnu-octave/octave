@@ -35,14 +35,15 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-sort.cc"
 
 template <>
-inline bool _sort_isnan (Complex x)
+inline bool
+sort_isnan<Complex> (const Complex& x)
 {
   return xisnan (x);
 }
 
 template <>
 bool
-octave_sort<Complex>::ascending_compare (Complex a, Complex b)
+octave_sort<Complex>::ascending_compare (const Complex& a, const Complex& b)
 {
   return ((std::abs (a) < std::abs (b))
 	  || ((std::abs (a) == std::abs (b)) && (arg (a) < arg (b))));
@@ -50,29 +51,34 @@ octave_sort<Complex>::ascending_compare (Complex a, Complex b)
 
 template <>
 bool
-octave_sort<Complex>::descending_compare (Complex a, Complex b)
+octave_sort<Complex>::descending_compare (const Complex& a, const Complex& b)
 {
   return ((std::abs (a) > std::abs (b))
 	  || ((std::abs (a) == std::abs (b)) && (arg (a) > arg (b))));
 }
 
-static bool nan_ascending_compare (Complex x, Complex y)
+static bool
+nan_ascending_compare (const Complex& x, const Complex& y)
 {
-  return xisnan (y) ? ! xisnan (x) : ((std::abs (x) < std::abs (x))
-	  || ((std::abs (x) == std::abs (x)) && (arg (x) < arg (x))));
+  return (xisnan (y)
+	  ? ! xisnan (x)
+	  : ((std::abs (x) < std::abs (x))
+	     || ((std::abs (x) == std::abs (x)) && (arg (x) < arg (x)))));
 }
 
-static bool nan_descending_compare (Complex x, Complex y)
+static bool
+nan_descending_compare (const Complex& x, const Complex& y)
 {
-  return xisnan (x) ? ! xisnan (y) : ((std::abs (x) > std::abs (x))
-	  || ((std::abs (x) == std::abs (x)) && (arg (x) > arg (x))));
+  return (xisnan (x)
+	  ? ! xisnan (y)
+	  : ((std::abs (x) > std::abs (x))
+	     || ((std::abs (x) == std::abs (x)) && (arg (x) > arg (x)))));
 }
 
-bool (*_sortrows_comparator (sortmode mode, 
-                             const Array<Complex>& a , bool allow_chk)) 
-(Complex, Complex)
+Array<Complex>::compare_fcn_type
+sortrows_comparator (sortmode mode, const Array<Complex>& a , bool allow_chk)
 {
-  bool (*result) (Complex, Complex) = 0;
+  Array<Complex>::compare_fcn_type result = 0;
 
   if (allow_chk)
     {

@@ -37,26 +37,28 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-sort.cc"
 
 template <>
-inline bool _sort_isnan (double x)
+inline bool
+sort_isnan<double> (double x)
 {
   return lo_ieee_isnan (x);
 }
 
-static bool nan_ascending_compare (double x, double y)
+static bool
+nan_ascending_compare (double x, double y)
 {
   return lo_ieee_isnan (y) ? ! lo_ieee_isnan (x) : x < y;
 }
 
-static bool nan_descending_compare (double x, double y)
+static bool
+nan_descending_compare (double x, double y)
 {
   return lo_ieee_isnan (x) ? ! lo_ieee_isnan (y) : x > y;
 }
 
-bool (*_sortrows_comparator (sortmode mode, 
-                             const Array<double>& a , bool allow_chk)) 
-(double, double)
+Array<double>::compare_fcn_type
+sortrows_comparator (sortmode mode, const Array<double>& a , bool allow_chk)
 {
-  bool (*result) (double, double) = 0;
+  Array<double>::compare_fcn_type result = 0;
 
   if (allow_chk)
     {

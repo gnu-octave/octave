@@ -42,21 +42,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "oct-sort.cc"
 
-template <>
-bool
-octave_sort<octave_value>::ascending_compare (octave_value a, octave_value b)
-{
-  return (a.string_value () < b.string_value ());
-}
-
-template <>
-bool
-octave_sort<octave_value>::descending_compare (octave_value a, octave_value b)
-{
-  return (a.string_value () > b.string_value ());
-}
-
-INSTANTIATE_ARRAY_SORT (octave_value);
+NO_INSTANTIATE_ARRAY_SORT (octave_value);
 
 INSTANTIATE_ARRAY (octave_value, OCTINTERP_API);
 

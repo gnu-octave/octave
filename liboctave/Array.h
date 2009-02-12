@@ -34,6 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "dim-vector.h"
 #include "idx-vector.h"
+#include "lo-traits.h"
 #include "lo-utils.h"
 #include "oct-sort.h"
 #include "quit.h"
@@ -100,6 +101,9 @@ public:
   void make_unique (void);
 
   typedef T element_type;
+
+  typedef bool (*compare_fcn_type) (typename ref_param<T>::type,
+				    typename ref_param<T>::type);
 
 protected:
 

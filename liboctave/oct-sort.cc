@@ -111,7 +111,7 @@ octave_sort<T>::octave_sort (void) : compare (ascending_compare)
 }
 
 template <class T>
-octave_sort<T>::octave_sort (bool (*comp) (T, T)) : compare (comp) 
+octave_sort<T>::octave_sort (compare_fcn_type comp) : compare (comp) 
 { 
   merge_init (); 
 }
@@ -1763,14 +1763,16 @@ octave_sort<T>::is_sorted_rows (const T *data, octave_idx_type rows,
 
 template <class T>
 bool 
-octave_sort<T>::ascending_compare (T x, T y)
+octave_sort<T>::ascending_compare (typename ref_param<T>::type x,
+				   typename ref_param<T>::type y)
 {
   return x < y;
 }
 
 template <class T>
 bool 
-octave_sort<T>::descending_compare (T x, T y)
+octave_sort<T>::descending_compare (typename ref_param<T>::type x,
+				    typename ref_param<T>::type y)
 {
   return x > y;
 }

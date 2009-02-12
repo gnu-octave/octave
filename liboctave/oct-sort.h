@@ -82,6 +82,8 @@ The Python license is
 #if !defined (octave_sort_h)
 #define octave_sort_h 1
 
+#include "lo-traits.h"
+
 // The maximum number of entries in a MergeState's pending-runs stack.
 // This is enough to sort arrays of size up to about
 //     32 * phi ** MAX_MERGE_PENDING
@@ -105,13 +107,16 @@ octave_sort
 {
 public:
 
+  typedef bool (*compare_fcn_type) (typename ref_param<T>::type,
+				    typename ref_param<T>::type);
+
   octave_sort (void);
 
-  octave_sort (bool (*comp) (T, T));
+  octave_sort (compare_fcn_type);
   
   ~octave_sort (void) { merge_freemem (); }
 
-  void set_compare (bool (*comp) (T, T)) { compare = comp; }
+  void set_compare (compare_fcn_type comp) { compare = comp; }
 
   void set_compare (sortmode mode);
 
@@ -133,8 +138,11 @@ public:
   bool is_sorted_rows (const T *data, 
                        octave_idx_type rows, octave_idx_type cols);
 
-  static bool ascending_compare (T, T);
-  static bool descending_compare (T, T);
+  static bool ascending_compare (typename ref_param<T>::type,
+				 typename ref_param<T>::type);
+
+  static bool descending_compare (typename ref_param<T>::type,
+				  typename ref_param<T>::type);
 
 private:
 
@@ -177,7 +185,7 @@ private:
     struct s_slice pending[MAX_MERGE_PENDING];
   };
 
-  bool (*compare) (T, T);
+  compare_fcn_type compare;
   
   MergeState ms;
   

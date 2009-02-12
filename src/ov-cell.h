@@ -88,6 +88,13 @@ public:
 
   size_t byte_size (void) const;
 
+  octave_value sort (octave_idx_type dim = 0, sortmode mode = ASCENDING) const;
+
+  octave_value sort (Array<octave_idx_type> &sidx, octave_idx_type dim = 0,
+		     sortmode mode = ASCENDING) const;
+
+  Array<octave_idx_type> sortrows_idx (sortmode mode = ASCENDING) const;
+
   bool is_matrix_type (void) const { return false; }
 
   bool is_numeric_type (void) const { return false; }
@@ -110,6 +117,8 @@ public:
     { return octave_value (all_strings (pad), type); }
 
   string_vector all_strings (bool pad = false) const;
+
+  Array<std::string> cellstr_value (void) const;
 
   bool print_as_scalar (void) const;
 

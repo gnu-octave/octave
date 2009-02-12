@@ -387,6 +387,58 @@ octave_cell::byte_size (void) const
   return retval;
 }
 
+octave_value
+octave_cell::sort (octave_idx_type dim, sortmode mode) const
+{
+  octave_value retval;
+
+  if (is_cellstr ())
+    {
+      Array<std::string> tmp = cellstr_value ();
+
+      retval = Cell (tmp.sort (dim, mode));
+    }
+  else
+    error ("sort: only cell arrays of character strings may be sorted");
+  
+  return retval;
+}
+
+octave_value
+octave_cell::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
+		   sortmode mode) const
+{
+  octave_value retval;
+
+  if (is_cellstr ())
+    {
+      Array<std::string> tmp = cellstr_value ();
+
+      retval = Cell (tmp.sort (sidx, dim, mode));
+    }
+  else
+    error ("sort: only cell arrays of character strings may be sorted");
+  
+  return retval;
+}
+
+Array<octave_idx_type>
+octave_cell::sortrows_idx (sortmode mode) const
+{
+  Array<octave_idx_type> retval;
+
+  if (is_cellstr ())
+    {
+      Array<std::string> tmp = cellstr_value ();
+
+      retval = tmp.sort_rows_idx (mode);
+    }
+  else
+    error ("sortrows: only cell arrays of character strings may be sorted");
+  
+  return retval;
+}
+
 bool
 octave_cell::is_true (void) const
 {
@@ -456,6 +508,27 @@ octave_cell::all_strings (bool pad) const
       else
 	retval[k++] = std::string ();
     }
+
+  return retval;
+}
+
+Array<std::string>
+octave_cell::cellstr_value (void) const
+{
+  Array<std::string> retval (dims ());
+
+  if (is_cellstr ())
+    {
+      octave_idx_type n = numel ();
+
+      std::string *dst = retval.fortran_vec ();
+      const octave_value *src = matrix.data ();
+
+      for (octave_idx_type i = 0; i < n; i++)
+	dst[i] = src[i].string_value ();
+    }
+  else
+    error ("invalid conversion from cell array to Array<std::string>");
 
   return retval;
 }

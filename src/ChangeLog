@@ -1,5 +1,17 @@
 2009-02-12  John W. Eaton  <jwe@octave.org>
 
+	* TEMPLATE-INST/Array-tc.cc: Don't instantiate sort functions for
+	Arrays of octave_value objects.
+	(octave_sort<octave_value>::ascending_compare,
+	octave_sort<octave_value>::descending_compare): Delete.
+
+	* ov.h (octave_value::cellstr_value): New function.
+	* ov-base.cc, ov-base.h (octave_base_value::cellstr_value):
+	New function.
+	* ov-cell.h (octave_cell::cellstr_value, octave_cell::sort,
+	octave_cell::sortrows_idx): New functions
+	* Cell.h, Cell.cc (Cell::Cell (Array<std::string>)): New constructor.
+
 	* TEMPLATE-INST/Array-tc.cc: Undo previous change.
 	(octave_sort<octave_value>::ascending_compare,
 	octave_sort<octave_value>::descending_compare):

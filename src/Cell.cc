@@ -61,6 +61,18 @@ Cell::Cell (const string_vector& sv, bool trim)
     }
 }
 
+Cell::Cell (const Array<std::string>& sa)
+  : ArrayN<octave_value> (sa.dims ())
+{
+  octave_idx_type n = sa.numel ();
+
+  octave_value *dst = fortran_vec ();
+  const std::string *src = sa.data ();
+
+  for (octave_idx_type i = 0; i < n; i++)
+    dst[i] = src[i];
+}
+
 // Set size to DV, filling with [].  Then fill with as many elements of
 // SV as possible.
 

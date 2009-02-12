@@ -794,6 +794,9 @@ public:
   std::string string_value (bool force = false) const
     { return rep->string_value (force); }
 
+  Array<std::string> cellstr_value (void) const
+    { return rep->cellstr_value (); }
+
   Range range_value (void) const
     { return rep->range_value (); }
 

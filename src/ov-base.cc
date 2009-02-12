@@ -778,6 +778,15 @@ octave_base_value::string_value (bool force) const
   return retval;
 }
 
+Array<std::string>
+octave_base_value::cellstr_value (void) const
+{
+  Array<std::string> retval;
+  gripe_wrong_type_arg ("octave_base_value::cellstry_value()",
+			type_name ());
+  return retval;
+}
+
 Range
 octave_base_value::range_value (void) const
 {

@@ -432,6 +432,8 @@ public:
 
   virtual std::string string_value (bool force = false) const;
 
+  virtual Array<std::string> cellstr_value (void) const;
+
   virtual Range range_value (void) const;
 
   virtual Octave_map map_value (void) const;

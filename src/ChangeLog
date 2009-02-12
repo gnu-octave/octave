@@ -1,5 +1,10 @@
 2009-02-12  John W. Eaton  <jwe@octave.org>
 
+	* data.cc, ov-base-diag.h, ov-base-mat.h, ov-base-scalar.h,
+	ov-base-sparse.h, ov-base.cc, ov-base.h, ov-perm.h, ov-range.h,
+	ov.h: Rename internal issorted and issorted_rows functions to
+	is_sorted and is_sorted_rows.
+
 	* ov-base-diag.h, ov-base-mat.h, ov-base-scalar.h, ov-base.h,
 	ov-cell.h, ov-perm.h, ov-range.h, ov.h, data.cc, ov-base.cc,
 	ov-cell.cc: Rename all uses of sortrows_idx to sort_rows_idx.

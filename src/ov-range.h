@@ -140,13 +140,13 @@ public:
 		     sortmode mode = ASCENDING) const
     { return range.sort (sidx, dim, mode); }
 
-  sortmode issorted (sortmode mode = UNSORTED) const
+  sortmode is_sorted (sortmode mode = UNSORTED) const
     { return range.is_sorted (mode); }
 
   Array<octave_idx_type> sort_rows_idx (sortmode) const
     { return Array<octave_idx_type> (1, 0); }
 
-  sortmode issorted_rows (sortmode mode = UNSORTED) const
+  sortmode is_sorted_rows (sortmode mode = UNSORTED) const
     { return mode ? mode : ASCENDING; }
 
   bool is_real_type (void) const { return true; }

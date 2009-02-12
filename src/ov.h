@@ -999,14 +999,14 @@ public:
 		 sortmode mode = ASCENDING) const
     { return rep->sort (sidx, dim, mode); } 
 
-  sortmode issorted (sortmode mode = UNSORTED) const
-    { return rep->issorted (mode); }
+  sortmode is_sorted (sortmode mode = UNSORTED) const
+    { return rep->is_sorted (mode); }
 
   Array<octave_idx_type> sort_rows_idx (sortmode mode = ASCENDING) const
     { return rep->sort_rows_idx (mode); }
 
-  sortmode issorted_rows (sortmode mode = UNSORTED) const
-    { return rep->issorted_rows (mode); }
+  sortmode is_sorted_rows (sortmode mode = UNSORTED) const
+    { return rep->is_sorted_rows (mode); }
 
   void lock (void) { rep->lock (); }
 

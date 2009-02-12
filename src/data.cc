@@ -5645,7 +5645,7 @@ This function does not yet support sparse matrices.\n\
     {
       octave_value arg = args(0);
       if (arg.dims ().is_vector ())
-        retval = args(0).issorted () != UNSORTED;
+        retval = args(0).is_sorted () != UNSORTED;
       else
         error ("issorted: needs a vector");
     }
@@ -5659,7 +5659,7 @@ This function does not yet support sparse matrices.\n\
           if (arg.is_sparse_type ())
             error ("issorted: sparse matrices not yet supported");
           if (arg.ndims () == 2)
-            retval = arg.issorted_rows (smode) != UNSORTED;
+            retval = arg.is_sorted_rows (smode) != UNSORTED;
           else
             error ("issorted: needs a 2-dimensional object");
         }

@@ -93,14 +93,14 @@ public:
 		     sortmode mode = ASCENDING) const
     { return to_dense ().sort (sidx, dim, mode); }
 
-  sortmode issorted (sortmode mode = UNSORTED) const
-    { return to_dense ().issorted (mode); }
+  sortmode is_sorted (sortmode mode = UNSORTED) const
+    { return to_dense ().is_sorted (mode); }
 
   Array<octave_idx_type> sort_rows_idx (sortmode mode = ASCENDING) const
     { return to_dense ().sort_rows_idx (mode); }
 
-  sortmode issorted_rows (sortmode mode = UNSORTED) const
-    { return to_dense ().issorted_rows (mode); }
+  sortmode is_sorted_rows (sortmode mode = UNSORTED) const
+    { return to_dense ().is_sorted_rows (mode); }
 
   bool is_perm_matrix (void) const { return true; }
 

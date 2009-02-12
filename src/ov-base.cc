@@ -988,9 +988,9 @@ octave_base_value::sort (Array<octave_idx_type> &,
 }
 
 sortmode
-octave_base_value::issorted (sortmode) const
+octave_base_value::is_sorted (sortmode) const
 {
-  gripe_wrong_type_arg ("octave_base_value::issorted ()", type_name ());
+  gripe_wrong_type_arg ("octave_base_value::is_sorted ()", type_name ());
 
   return UNSORTED;
 }
@@ -1004,9 +1004,9 @@ octave_base_value::sort_rows_idx (sortmode) const
 }
 
 sortmode
-octave_base_value::issorted_rows (sortmode) const
+octave_base_value::is_sorted_rows (sortmode) const
 {
-  gripe_wrong_type_arg ("octave_base_value::issorted_rows ()", type_name ());
+  gripe_wrong_type_arg ("octave_base_value::is_sorted_rows ()", type_name ());
 
   return UNSORTED;
 }

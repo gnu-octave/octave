@@ -1,3 +1,8 @@
+2009-02-11 Ben Abbott <bpabbott@mac.com>
+
+	* configure.in: Include FTGLTextureFont.h when FTGL_UPPER_CASE is
+	not defined.
+
 2009-02-11  John W. Eaton  <jwe@octave.org>
 
 	* configure.in (octetcdir): New default value.

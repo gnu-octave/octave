@@ -708,17 +708,17 @@ if test -n "$OPENGL_LIBS"; then
 #ifdef HAVE_FTGL_FTGL_H
 #ifdef HAVE_FTGL_UPPERCASE
 #include <FTGL/FTGL.h>
-#include <FTGL/FTGLTextureFont.h>
 #else
 #include <FTGL/ftgl.h>
 #endif
+#include <FTGL/FTGLTextureFont.h>
 #elif HAVE_FTGL_H
 #ifdef HAVE_FTGL_UPPERCASE
 #include <FTGL.h>
-#include <FTGLTextureFont.h>
 #else
 #include <ftgl.h>
 #endif
+#include <FTGLTextureFont.h>
 #endif], [
 FTGLTextureFont font("");], [
           OPENGL_LIBS="$OPENGL_LIBS $FT2_LIBS -lftgl"

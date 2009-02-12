@@ -29,13 +29,13 @@ along with Octave; see the file COPYING.  If not, see
 
 #ifdef HAVE_GL_GL_H
 #include <GL/gl.h>
-#elif defined HAVE_OPENGL_GL_H
+#elif defined HAVE_OPENGL_GL_H || defined HAVE_FRAMEWORK_OPENGL
 #include <OpenGL/gl.h>
 #endif
 
 #ifdef HAVE_GL_GLU_H
 #include <GL/glu.h>
-#elif defined HAVE_OPENGL_GLU_H
+#elif defined HAVE_OPENGL_GLU_H || defined HAVE_FRAMEWORK_OPENGL
 #include <OpenGL/glu.h>
 #endif
 

@@ -1014,36 +1014,48 @@ fi
 dnl
 dnl Check for OpenGL. If found, define OPENGL_LIBS
 dnl
-dnl FIXME -- add tests for apple
-dnl
 AC_DEFUN([OCTAVE_OPENGL], [
 OPENGL_LIBS=
-case $canonical_host_type in
-   *-*-mingw32* | *-*-msdosmsvc)
-    AC_CHECK_HEADERS(windows.h)
-    ;;
-esac
-have_opengl_incs=no
-AC_CHECK_HEADERS([GL/gl.h OpenGL/gl.h], [
-  AC_CHECK_HEADERS([GL/glu.h OpenGL/glu.h], [
-    have_opengl_incs=yes; break], [], [
-#ifdef HAVE_WINDOWS_H
-#include <windows.h>
-#endif
-])
-break
-], [], [
-#ifdef HAVE_WINDOWS_H
-#include <windows.h>
-#endif
-])
-if test "$have_opengl_incs" = "yes"; then
+
+### On MacOSX systems the OpenGL framework can be used
+OCTAVE_HAVE_FRAMEWORK(OpenGL, [
+#include <OpenGL/gl.h>
+#include <OpenGL/glu.h> ], [GLint par; glGetIntegerv (GL_VIEWPORT, &par);],
+  [have_framework_opengl="yes"], [have_framework_opengl="no"])
+
+if test $have_framework_opengl = "yes"; then
+  AC_DEFINE(HAVE_FRAMEWORK_OPENGL, 1, [Define if framework OPENGL is available.])
+  OPENGL_LIBS="-Wl,-framework -Wl,OpenGL"
+  AC_MSG_NOTICE([adding -Wl,-framework -Wl,OpenGL to OPENGL_LIBS])
+  OCTAVE_GLUTESSCALLBACK_THREEDOTS
+else
   case $canonical_host_type in
     *-*-mingw32* | *-*-msdosmsvc)
-      save_LIBS="$LIBS"
-      LIBS="$LIBS -lopengl32"
-      AC_MSG_CHECKING([for glEnable in -lopengl32])
-      AC_TRY_LINK([
+      AC_CHECK_HEADERS(windows.h)
+    ;;
+  esac
+  have_opengl_incs=no
+  AC_CHECK_HEADERS([GL/gl.h OpenGL/gl.h], [
+    AC_CHECK_HEADERS([GL/glu.h OpenGL/glu.h], [
+      have_opengl_incs=yes; break], [], [
+#ifdef HAVE_WINDOWS_H
+#include <windows.h>
+#endif
+    ])
+    break
+    ], [], [
+#ifdef HAVE_WINDOWS_H
+#include <windows.h>
+#endif
+    ])
+
+  if test "$have_opengl_incs" = "yes"; then
+    case $canonical_host_type in
+      *-*-mingw32* | *-*-msdosmsvc)
+        save_LIBS="$LIBS"
+        LIBS="$LIBS -lopengl32"
+        AC_MSG_CHECKING([for glEnable in -lopengl32])
+        AC_TRY_LINK([
 #if HAVE_WINDOWS_H
 #include <windows.h>
 #endif
@@ -1052,24 +1064,46 @@ if test "$have_opengl_incs" = "yes"; then
 #elif defined (HAVE_OPENGL_GL_H)
 #include <OpenGL/gl.h>
 #endif
-], [
-glEnable(GL_SMOOTH);], OPENGL_LIBS="-lopengl32 -lglu32")
-      LIBS="$save_LIBS"
-      if test "x$OPENGL_LIBS" != "x"; then
-        AC_MSG_RESULT(yes)
-      else
-        AC_MSG_RESULT(no)
-      fi
-      ;;
-    *)
-      save_LDFLAGS="$LDFLAGS"
-      LDFLAGS="$LDFLAGS -L/usr/X11R6/lib"
-      AC_CHECK_LIB(GL, glEnable, OPENGL_LIBS="-L/usr/X11R6/lib -lGL -lGLU")
-      LDFLAGS="$save_LDFLAGS"
-      ;;
-  esac
+], [glEnable(GL_SMOOTH);], OPENGL_LIBS="-lopengl32 -lglu32")
+        LIBS="$save_LIBS"
+        if test "x$OPENGL_LIBS" != "x"; then
+          AC_MSG_RESULT(yes)
+        else
+          AC_MSG_RESULT(no)
+        fi
+        ;;
+      *)
+        save_LDFLAGS="$LDFLAGS"
+        LDFLAGS="$LDFLAGS -L/usr/X11R6/lib"
+        AC_CHECK_LIB(GL, glEnable, OPENGL_LIBS="-L/usr/X11R6/lib -lGL -lGLU")
+        LDFLAGS="$save_LDFLAGS"
+        ;;
+    esac
+  fi
 fi
 AC_SUBST(OPENGL_LIBS)
+])
+dnl
+dnl See if function gluTessCallback is called with "(...)"
+dnl
+dnl OCTAVE_GLUTESSCALLBACK_THREEDOTS
+AC_DEFUN(OCTAVE_GLUTESSCALLBACK_THREEDOTS,
+[AC_CACHE_CHECK([whether gluTessCallback is called with "(...)"],
+octave_cv_glutesscallback_threedots,
+[AC_LANG_PUSH(C++)
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+#ifdef HAVE_GL_GLU_H
+#include <GL/glu.h>
+#elif defined HAVE_OPENGL_GLU_H || defined HAVE_FRAMEWORK_OPENGL
+#include <OpenGL/glu.h>
+#endif]],
+[[GLvoid (*func)(...); gluTessCallback(0, 0, func);]])],
+octave_cv_glutesscallback_threedots="yes", octave_cv_glutesscallback_threedots="no")])
+AC_LANG_POP(C++)
+if test $octave_cv_glutesscallback_threedots = "yes"; then
+  AC_DEFINE(HAVE_GLUTESSCALLBACK_THREEDOTS, 1, 
+    [Define if gluTessCallback is called with (...)])
+fi
 ])
 dnl
 dnl Configure paths for FreeType2

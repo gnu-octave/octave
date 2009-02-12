@@ -1,3 +1,9 @@
+2009-02-11  Thomas Treichl  <Thomas.Treichl@gmx.net>
+
+	* gl-render.h: Use HAVE_FRAMEWORK_OPENGL.
+	* gl-render.cc (opengl_tesselator, opengl_renderer::draw, 
+	opengl_renderer::init_marker): Use HAVE_FRAMEWORK_OPENGL.
+	
 2009-02-11  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov.h (octave_value::issorted, octave_value::sortrows_idx,

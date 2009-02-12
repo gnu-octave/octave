@@ -1,3 +1,8 @@
+2009-02-11 Thomas Treichl <Thomas.Treichl@gmx.net>
+
+	* aclocal.m4 (OCTAVE_GLUTESSCALLBACK_THREEDOTS): New macro.
+	(OCTAVE_OPENGL): Use it in OpenGL check.
+
 2009-02-11 Ben Abbott <bpabbott@mac.com>
 
 	* configure.in: Include FTGLTextureFont.h when FTGL_UPPER_CASE is

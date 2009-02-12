@@ -221,7 +221,11 @@ class
 opengl_tesselator
 {
 public:
+#if defined (HAVE_FRAMEWORK_OPENGL) && defined (HAVE_GLUTESSCALLBACK_THREEDOTS)
+  typedef GLvoid (CALLBACK *fcn) (...);
+#else
   typedef void (CALLBACK *fcn) (void);
+#endif
 
 public:
 
@@ -591,7 +595,12 @@ opengl_renderer::draw (const axes::properties& props)
   xZ1 = x_zlim(0)-(x_zlim(1)-x_zlim(0))/2;
   xZ2 = x_zlim(1)+(x_zlim(1)-x_zlim(0))/2;
 
+#if defined (HAVE_FRAMEWORK_OPENGL)
+  GLint vw[4];
+#else
   int vw[4];
+#endif
+
   glGetIntegerv (GL_VIEWPORT, vw);
 
   glMatrixMode (GL_MODELVIEW);
@@ -2672,7 +2681,11 @@ opengl_renderer::set_clipping (bool enable)
 void
 opengl_renderer::init_marker (const std::string& m, double size, float width)
 {
+#if defined (HAVE_FRAMEWORK_OPENGL)
+  GLint vw[4];
+#else
   int vw[4];
+#endif
 
   glGetIntegerv (GL_VIEWPORT, vw);
 

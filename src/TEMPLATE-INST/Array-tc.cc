@@ -42,7 +42,24 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "oct-sort.cc"
 
-NO_INSTANTIATE_ARRAY_SORT (octave_value);
+// FIXME -- these comparisons don't look right.  Where do we sort
+// octave_value objects and expect them to be character strings?
+
+template <>
+bool
+octave_sort<octave_value>::ascending_compare (const octave_value& a, const octave_value& b)
+{
+  return (a.string_value () < b.string_value ());
+}
+
+template <>
+bool
+octave_sort<octave_value>::descending_compare (const octave_value& a, const octave_value& b)
+{
+  return (a.string_value () > b.string_value ());
+}
+
+INSTANTIATE_ARRAY_SORT (octave_value);
 
 INSTANTIATE_ARRAY (octave_value, OCTINTERP_API);
 

@@ -1,3 +1,7 @@
+2009-02-13  John W. Eaton  <jwe@octave.org>
+
+	* NEWS: Update for release.
+
 2009-02-11 Thomas Treichl <Thomas.Treichl@gmx.net>
 
 	* aclocal.m4 (OCTAVE_GLUTESSCALLBACK_THREEDOTS): New macro.

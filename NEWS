@@ -1,10 +1,10 @@
 Summary of important user-visible changes for version 3.2:
 ---------------------------------------------------------
 
- ** Compatibility with Matlab graphics is much better now.  
+ ** Compatibility with Matlab graphics has been improved.
 
     The hggroup object and associated listener callback functions have
-    been added allowing the inclusion of group objects. Data sources
+    been added allowing the inclusion of group objects.  Data sources
     have been added to these group objects such that
 
            x = 0:0.1:10;
@@ -16,14 +16,36 @@ Summary of important user-visible changes for version 3.2:
              refreshdata();
            endfor
 
-    works as expected. This capability has be used to introduce stem-series,
-    bar-series, etc objects for better Matlab compatibility.
+    works as expected.  This capability has be used to introduce
+    stem-series, bar-series, etc.  objects for better Matlab
+    compatibility.
 
- ** Experimental OpenGL/FLTK based backend to replace gnuplot
+ ** New graphics functions:
 
-    An experimental backend to replace the gnuplot backend has been
-    written based on FLTK. This backend is off by default. You can
-    switch to using this  with the command
+      addlistener         dellistener  ezsurf      ishghandle
+      addproperty         ezcontour    ezsurfc     linkprop
+      allchild            ezcontourf   findall     plotmatrix
+      available_backends  ezmesh       gcbf        refresh
+      backend             ezmeshc      gcbo        refreshdata
+      cla                 ezplot       ginput      surfl
+      clabel              ezplot3      gtext       waitforbuttonpress
+      comet               ezpolar      intwarning
+
+ ** Improvements to the debugger.
+
+    The interactive debugging features have been improved.  Stopping
+    on statements with dbstop should work correctly now.  Stepping
+    into and over functions, and stepping one statement at a time
+    (with dbstep) now works.  Moving up and down the call stack with
+    dbup and dbdown now works.  The dbstack function is now available
+    to print the current function call stack.  The new dbquit function
+    is available to exit the debugging mode.
+
+ ** New experimental OpenGL/FLTK based plotting system.
+
+    An experimental plotting system based on OpenGL and the FLTK
+    toolkit is now part of Octave.  This backend is disabled by
+    default.  You can switch to using it with the command
 
         backend ("fltk")
 
@@ -31,38 +53,47 @@ Summary of important user-visible changes for version 3.2:
 
         backend (h, "fltk")
 
-    where "h" is a valid figure handle.
+    where "h" is a valid figure handle.  Please note that this backend
+    does not yet support text objects.  Obviously, this is a necessary
+    feature before it can be considered usable.  We are looking for
+    volunteers to help implement this missing feature.
 
- ** Eliminate the functions for direct access to gnuplot from Octave.
+ ** Functions providing direct access to gnuplot have been removed.
+
     The functions __gnuplot_plot__, __gnuplot_set__, __gnuplot_raw__,
      __gnuplot_show__, __gnuplot_replot__, __gnuplot_splot__,
-     __gnuplot_save_data__  and __gnuplot_send_inline_data__ have been
-    removed from Octave. These function were incompatible with the high
-    level graphics handle code.
+     __gnuplot_save_data__ and __gnuplot_send_inline_data__ have been
+     removed from Octave.  These function were incompatible with the
+     high level graphics handle code.
 
- ** The fsolve function now accepts an option structure argument (see
-    also the optimset function).
-    The INFO values returned from fsolve have changed to be compatible
-    with Matlab's fsolve function.
+ ** Improvements to fsolve.
+
+    The fsolve function now accepts an option structure argument (see
+    also the optimset function).  The INFO values returned from fsolve
+    have changed to be compatible with Matlab's fsolve function.
     Additionally, fsolve is now able to solve overdetermined systems.
 
- ** The norm function is now able to compute row or column norms of a matrix
-    in a single call, as well as general matrix p-norms.
+ ** Object Oriented Programming.
 
- ** Object Oriented Programming
+    Octave now includes OOP features and the user can create their own
+    class objects and overloaded functions and operators.  For
+    example, all methods of a class called "myclass" will be found in
+    a directory "@myclass" on the users path.  The class specific
+    versions of functions and operators take precedence over the
+    generic versions of these functions.
 
-    Octave now includes OOP features and the user can create their 
-    own class objects and overloaded functions and operators. For
-    example, all methods of a class called "myclass" will be found in 
-    a directory "@myclass" on the users path. The class specific versions
-    of functions and operators take precedence over the generic versions
-    of these functions. See the Octave manual for more details.
+    New functions related to OOP include
 
- ** Block comments
+      class  inferiorto  isobject  loadobj  methods  superiorto
+
+    See the Octave manual for more details.
+
+ ** Block comments.
+
     Commented code can be between matching "%{" and "%}" markers, even
-    if the commented code spans several line. This allows blocks code
-    to be commented, without needing to comment each line. For
-    example, 
+    if the commented code spans several line.  This allows blocks code
+    to be commented, without needing to comment each line.  For
+    example,
 
     function y = func (x)
       y = 2 * x;
@@ -72,61 +103,140 @@ Summary of important user-visible changes for version 3.2:
     endfunction
 
     the line "y += 1;" will not be executed.
-  
- ** Removed the Control, Finance and Quaternions toolboxes
-    These toolboxes have been removed and ported to octave-forge, as
-    they are specialized toolboxes that not all users need. These
-    functions can be reinstalled using the Octave package manager (see
-    the pkg function) and the packages available at
 
-    http://octave.sourceforge.net/packages.html
+ ** The Control, Finance and Quaternion functions have been removed.
 
- ** The imwrite and imread function have been included in Octave based
-    on the GraphicsMagick library.
+    These functions are now available as separate packages from
 
- ** The eigs and svds functions have been included in Octave based on
-    the ARPACK library.
+      http://octave.sourceforge.net/packages.html
 
- ** Special treatment in the parser of expressions like "a' * b". In
-    these cases the transpose is no longer explicitly formed and BLAS
-    libraries are called with the transpose flagged. This significantly  
-    improves the speed.
+    and can be reinstalled using the Octave package manager (see
+    the pkg function).
 
- ** Single Precision data type
-    Octave now includes a single precision data type. Single precision
-    variables can be created with the "single" command, or from
-    function like ones, etc. For example
+ ** Special treatment in the parser of expressions like "a' * b".
 
-    single (1)
-    ones (2, 2, "single")
-    zeros (2, 2, "single")
-    eye (2, 2, "single")
-    Inf (2, 2, "single")
-    NaN (2, 2, "single")
-    NA (2, 2, "single")
+    In these cases the transpose is no longer explicitly formed and
+    BLAS libraries are called with the transpose flagged,
+    significantly improving performance for these kinds of
+    operations.
 
-    all create single precision variables. Mixed double/single
-    precision operators and functions return single precision
-    types. As a consequence of this addition to Octave the internal
+ ** Single Precision data type.
+
+    Octave now includes a single precision data type.  Single
+    precision variables can be created with the "single" command, or
+    from function like ones, etc.  For example
+
+      single (1)
+      ones (2, 2, "single")
+      zeros (2, 2, "single")
+      eye (2, 2, "single")
+      Inf (2, 2, "single")
+      NaN (2, 2, "single")
+      NA (2, 2, "single")
+
+    all create single precision variables.  For compatibility with
+    Matlab, mixed double/single precision operators and functions
+    return single precision types.
+
+    As a consequence of this addition to Octave the internal
     representation of the double precision NA value has changed, and
     so users that make use of data generated by Octave with R or
     visa-versa are warned that compatibility might not be assured.
 
- ** Improved array indexing
-    The underlying code used for indexing of arrays has been completely
-    rewritten and so the indexing of arrays is now significantly faster.
+ ** Improved array indexing.
 
- ** 64-bit integer arithmetic
-    Arithmetic with 64-bit integers (int64 and uint64 types) is fully supported,
-    with saturation semantics like the other integer types. Most of the integer
-    arithmetic operations was rewritten to exploit integer arithmetic in the CPU
-    efficiently. As a result, performance was significantly improved.
+    The underlying code used for indexing of arrays has been
+    completely rewritten and so the indexing of arrays is now
+    significantly faster.
 
- ** Diagonal and permutation matrices
-    The interpreter can now treat diagonal and permutation matrices as special
-    objects, rather than general full matrices. Therefore, it is now possible
-    to construct & use these matrices in linear algebra without suffering a 
-    performance penalty.
+ ** Diagonal and permutation matrices.
 
+    The interpreter can now treat diagonal and permutation matrices as
+    special objects that store only the non-zero elements, rather than
+    general full matrices.  Therefore, it is now possible to construct
+    and use these matrices in linear algebra without suffering a
+    performance penalty due to storing large numbers of zero elements.
+
+ ** 64-bit integer arithmetic.
+
+    Arithmetic with 64-bit integers (int64 and uint64 types) is fully
+    supported, with saturation semantics like the other integer types.
+    Performance of most integer arithmetic operations has been
+    improved by using integer arithmetic directly.  Previously, Octave
+    performed integer math with saturation semantics by converting the
+    operands to double precision, performing the operation, and then
+    converting the result back to an integer value, truncating if
+    necessary.
+
+ ** Improvements to the norm function.
+
+    The norm function is now able to compute row or column norms of a
+    matrix in a single call, as well as general matrix p-norms.
+
+ ** New functions for reading and writing images.
+
+    The imwrite and imread function have been included in Octave.
+    These functions require the GraphicsMagick library.  The new
+    function imfinfo provides information about an image file (size,
+    type, colors, etc.)
+
+ ** New functions for computing some eigenvalues or singular values.
+
+    The eigs and svds functions have been included in Octave.  These
+    functions require the ARPACK library (now distributed under a
+    GPL-compatible license).
+
+ ** Changes to strcat.
+
+    The strcat function is now compatible with Matlab's strcat
+    function, which removes trailing whitespace when concatenating
+    character strings.  For example
+
+      strcat ('foo ', 'bar')
+      ==> 'foobar'
+
+    The new function cstrcat provides the previous behavior of
+    Octave's strcat.
+
+ ** Specific sparse matrix functions removed.
+
+    The following functions, which handled only sparse matrices have
+    been removed.  Instead of calling these functions directly, you
+    should use the corresponding function without the "sp" prefix.
+
+      spatan2     spcumsum  spkron   spprod
+      spchol      spdet     splchol  spqr
+      spchol2inv  spdiag    splu     spsum
+      spcholinv   spfind    spmax    spsumsqk
+      spcumprod   spinv     spmin
+
+ ** New QR and Cholesky factorization updating functions.
+
+      choldelete  cholshift   qrdelete  qrshift
+      cholinsert  cholupdate  qrinsert  qrupdate
+
+ ** New quadrature functions.
+
+      dblquad  quadgk  quadv  triplequad
+
+ ** Other miscellaneous new functions.
+
+      addtodate          interp1q                    rectint
+      bicgstab           isdebugmode                 regexptranslate
+      cgs                isfloat                     restoredefaultpath
+      command_line_path  isstrprop                   roundb
+      contrast           log1p                       rundemos
+      convn              lsqnonneg                   runlength
+      datetick           matlabroot                  saveobj
+      display            namelengthmax               spaugment
+      expm1              nargoutchk                  strchr
+      filemarker         pathdef                     strvcat
+      fstat              perl                        subspace
+      full               prctile                     symvar
+      fzero              quantile                    treelayout
+      genvarname         re_read_readline_init_file  validatestring
+      hypot              reallog                     which
+      idivide            realpow
+      info               realsqrt
 
 See NEWS.3 for old news.

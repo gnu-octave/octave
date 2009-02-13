@@ -1,5 +1,7 @@
 2009-02-13  John W. Eaton  <jwe@octave.org>
 
+	* oct-stream.cc (octave_base_stream::do_gets): Handle CRLF and CR.
+
 	* toplev.cc (do_octave_atexit): Only save history if
 	Vsaving_history is true.
 

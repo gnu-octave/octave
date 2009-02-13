@@ -983,7 +983,31 @@ octave_base_stream::do_gets (octave_idx_type max_len, bool& err,
 	    {
 	      char_count++;
 
-	      if (c == '\n')
+	      // Handle CRLF, CR, or LF as line ending.
+
+	      if (c == '\r')
+		{
+		  if (! strip_newline)
+		    buf << static_cast<char> (c);
+
+		  c = is.get ();
+
+		  if (c != EOF)
+		    {
+		      if (c == '\n')
+			{
+			  char_count++;
+
+			  if (! strip_newline)
+			    buf << static_cast<char> (c);
+			}
+		      else
+			is.putback (c);
+		    }
+
+		  break;
+		}
+	      else if (c == '\n')
 		{
 		  if (! strip_newline)
 		    buf << static_cast<char> (c);

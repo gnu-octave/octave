@@ -1,3 +1,8 @@
+2009-02-13  John W. Eaton  <jwe@octave.org>
+
+	* toplev.cc (do_octave_atexit): Only save history if
+	Vsaving_history is true.
+
 2009-02-12  John W. Eaton  <jwe@octave.org>
 
 	* data.cc, ov-base-diag.h, ov-base-mat.h, ov-base-scalar.h,

@@ -984,7 +984,8 @@ do_octave_atexit (void)
 
       octave_history_write_timestamp ();
 
-      command_history::clean_up_and_save ();
+      if (Vsaving_history)
+	command_history::clean_up_and_save ();
 
       close_files ();
 

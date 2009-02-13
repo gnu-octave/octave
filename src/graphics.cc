@@ -201,6 +201,14 @@ default_axes_tick (void)
 }
 
 static Matrix
+default_axes_ticklength (void)
+{
+  Matrix m (1, 2, 0.01);
+  m(1) = 0.025;
+  return m;
+}
+
+static Matrix
 default_figure_position (void)
 {
   Matrix m (1, 4, 0.0);
@@ -2511,7 +2519,7 @@ axes::properties::set_defaults (base_graphics_object& obj,
   projection = "orthographic";
   tickdir = "in";
   tickdirmode = "auto";
-  ticklength = Matrix (1, 2, 0.1);
+  ticklength = default_axes_ticklength ();
   tightinset = Matrix (1, 4, 0.0);
 
   sx = "linear";

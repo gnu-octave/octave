@@ -1,3 +1,8 @@
+2009-02-13 Ben Abbott <bpabott@mac.com>
+
+	* graphics.h.in (class axes::properties): Initialize ticklength.
+	* graphics.cc (default_axes_ticklength): New function.
+
 2009-02-13  John W. Eaton  <jwe@octave.org>
 
 	* oct-stream.cc (octave_base_stream::do_gets): Handle CRLF and CR.

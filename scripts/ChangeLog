@@ -1,3 +1,7 @@
+2009-02-13 Ben Abbott <bpabott@mac.com>
+
+	* plot/__go_draw_axes__.m: Respect axes ticklength property.
+
 2009-02-12  John W. Eaton  <jwe@octave.org>
 
 	* general/sortrows.m: Call __sort_rows_idx__, not __sortrows_idx__.

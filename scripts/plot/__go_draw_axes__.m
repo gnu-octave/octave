@@ -1401,57 +1401,67 @@ function do_tics (obj, plot_stream, ymirror, mono)
 
   [fontname, fontsize] = get_fontname_and_size (obj);
 
+  ## A Gnuplot tic scale of 69 is equivalent to Octave's 0.5.
+  ticklength = sprintf ("scale %4.1f", (69/0.5)*obj.ticklength(1));
+
   if (strcmpi (obj.xaxislocation, "top"))
     do_tics_1 (obj.xtickmode, obj.xtick, obj.xminortick, obj.xticklabelmode,
 	       obj.xticklabel, obj.xcolor, "x2", plot_stream, true, mono,
-	       "border", obj.tickdir, fontname, fontsize, obj.interpreter);
+	       "border", obj.tickdir, ticklength, fontname, fontsize,
+	       obj.interpreter);
     do_tics_1 ("manual", [], "off", obj.xticklabelmode, obj.xticklabel,
 	       obj.xcolor, "x", plot_stream, true, mono, "border",
-	       "", fontname, fontsize, obj.interpreter);
+	       "", "", fontname, fontsize, obj.interpreter);
   elseif (strcmpi (obj.xaxislocation, "zero"))
     do_tics_1 (obj.xtickmode, obj.xtick, obj.xminortick, obj.xticklabelmode,
 	       obj.xticklabel, obj.xcolor, "x", plot_stream, true, mono,
-	       "axis", obj.tickdir, fontname, fontsize, obj.interpreter);
+	       "axis", obj.tickdir, ticklength, fontname, fontsize,
+	       obj.interpreter);
     do_tics_1 ("manual", [], "off", obj.xticklabelmode, obj.xticklabel,
 	       obj.xcolor, "x2", plot_stream, true, mono, "axis",
-	       "", fontname, fontsize, obj.interpreter);
+	       "", "", fontname, fontsize, obj.interpreter);
   else
     do_tics_1 (obj.xtickmode, obj.xtick, obj.xminortick, obj.xticklabelmode,
 	       obj.xticklabel, obj.xcolor, "x", plot_stream, true, mono,
-	       "border", obj.tickdir, fontname, fontsize, obj.interpreter);
+	       "border", obj.tickdir, ticklength, fontname, fontsize,
+	       obj.interpreter);
     do_tics_1 ("manual", [], "off", obj.xticklabelmode, obj.xticklabel,
 	       obj.xcolor, "x2", plot_stream, true, mono, "border",
-	       "", fontname, fontsize, obj.interpreter);
+	       "", "", fontname, fontsize, obj.interpreter);
   endif
   if (strcmpi (obj.yaxislocation, "right"))
     do_tics_1 (obj.ytickmode, obj.ytick, obj.yminortick, obj.yticklabelmode,
 	       obj.yticklabel, obj.ycolor, "y2", plot_stream, ymirror, mono,
-	       "border", obj.tickdir, fontname, fontsize, obj.interpreter);
+	       "border", obj.tickdir, ticklength, fontname, fontsize,
+	       obj.interpreter);
     do_tics_1 ("manual", [], "off", obj.yticklabelmode, obj.yticklabel,
 	       obj.ycolor, "y", plot_stream, ymirror, mono, "border",
-	       "", fontname, fontsize, obj.interpreter);
+	       "", "", fontname, fontsize, obj.interpreter);
   elseif (strcmpi (obj.xaxislocation, "zero"))
     do_tics_1 (obj.ytickmode, obj.ytick, obj.yminortick, obj.yticklabelmode,
 	       obj.yticklabel, obj.ycolor, "y", plot_stream, ymirror, mono,
-	       "axis", obj.tickdir, fontname, fontsize, obj.interpreter);
+	       "axis", obj.tickdir, ticklength, fontname, fontsize,
+	       obj.interpreter);
     do_tics_1 ("manual", [], "off", obj.yticklabelmode, obj.yticklabel,
 	       obj.ycolor, "y2", plot_stream, ymirror, mono, "axis",
-	       "", fontname, fontsize, obj.interpreter);
+	       "", "", fontname, fontsize, obj.interpreter);
   else
     do_tics_1 (obj.ytickmode, obj.ytick, obj.yminortick, obj.yticklabelmode,
 	       obj.yticklabel, obj.ycolor, "y", plot_stream, ymirror, mono,
-	       "border", obj.tickdir, fontname, fontsize, obj.interpreter);
+	       "border", obj.tickdir, ticklength, fontname, fontsize,
+	       obj.interpreter);
     do_tics_1 ("manual", [], "off", obj.yticklabelmode, obj.yticklabel,
 	       obj.ycolor, "y2", plot_stream, ymirror, mono, "border",
-	       "", fontname, fontsize, obj.interpreter);
+	       "", "", fontname, fontsize, obj.interpreter);
   endif
   do_tics_1 (obj.ztickmode, obj.ztick, obj.zminortick, obj.zticklabelmode,
 	     obj.zticklabel, obj.zcolor, "z", plot_stream, true, mono,
-	     "border", obj.tickdir, fontname, fontsize, obj.interpreter);
+	     "border", obj.tickdir, ticklength, fontname, fontsize,
+	     obj.interpreter);
 endfunction
 
 function do_tics_1 (ticmode, tics, mtics, labelmode, labels, color, ax,
-		    plot_stream, mirror, mono, axispos, tickdir,
+		    plot_stream, mirror, mono, axispos, tickdir, ticklength,
 		    fontname, fontsize, interpreter)
   persistent warned_latex = false;
   if (strcmpi (interpreter, "tex"))
@@ -1489,11 +1499,11 @@ function do_tics_1 (ticmode, tics, mtics, labelmode, labels, color, ax,
 	nlabels = numel (labels);
 	fprintf (plot_stream, "set format %s \"%%s\";\n", ax);
 	if (mirror)
-	  fprintf (plot_stream, "set %stics %s %s mirror (", ax, 
-		   tickdir, axispos);
+	  fprintf (plot_stream, "set %stics %s %s %s mirror (", ax, 
+		   tickdir, ticklength, axispos);
 	else
-	  fprintf (plot_stream, "set %stics %s %s nomirror (", ax,
-		   tickdir, axispos);
+	  fprintf (plot_stream, "set %stics %s %s %s nomirror (", ax,
+		   tickdir, ticklength, axispos);
 	endif
  
 	labels = regexprep(labels, "%", "%%");
@@ -1518,11 +1528,11 @@ function do_tics_1 (ticmode, tics, mtics, labelmode, labels, color, ax,
     else
       fprintf (plot_stream, "set format %s \"%%g\";\n", ax);
       if (mirror)
-	fprintf (plot_stream, "set %stics %s %s mirror (", ax, tickdir,
-		 axispos);
+	fprintf (plot_stream, "set %stics %s %s %s mirror (", ax, tickdir,
+		 ticklength, axispos);
       else
-	fprintf (plot_stream, "set %stics %s %s nomirror (", ax, tickdir,
-		 axispos);
+	fprintf (plot_stream, "set %stics %s %s %s nomirror (", ax, tickdir,
+		 ticklength, axispos);
       endif
       fprintf (plot_stream, " %.15g,", tics(1:end-1));
       fprintf (plot_stream, " %.15g) %s;\n", tics(end), fontspec);
@@ -1535,11 +1545,11 @@ function do_tics_1 (ticmode, tics, mtics, labelmode, labels, color, ax,
   else
     fprintf (plot_stream, "set format %s \"%%g\";\n", ax);
     if (mirror)
-      fprintf (plot_stream, "set %stics %s %s mirror %s %s;\n", ax, 
-	       axispos, tickdir, colorspec, fontspec);
+      fprintf (plot_stream, "set %stics %s %s %s mirror %s %s;\n", ax, 
+	       axispos, tickdir, ticklength, colorspec, fontspec);
     else
-      fprintf (plot_stream, "set %stics %s %s nomirror %s %s;\n", ax, 
-	       tickdir, axispos, colorspec, fontspec);
+      fprintf (plot_stream, "set %stics %s %s %s nomirror %s %s;\n", ax, 
+	       tickdir, ticklength, axispos, colorspec, fontspec);
     endif
     if (strcmp (mtics, "on"))
       fprintf (plot_stream, "set m%stics 5;\n", ax);

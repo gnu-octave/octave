@@ -2700,7 +2700,7 @@ public:
       radio_property projection , "{orthographic}|perpective"
       radio_property tickdir m , "{in}|out"
       radio_property tickdirmode , "{auto}|manual"
-      array_property ticklength , Matrix (1, 2, 0.1)
+      array_property ticklength , default_axes_ticklength ()
       array_property tightinset r , Matrix (1, 4, 0.0)
       // FIXME -- uicontextmenu should be moved here.
       radio_property units , "{normalized}|inches|centimeters|points|pixels|characters"

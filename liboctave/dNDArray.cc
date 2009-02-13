@@ -703,31 +703,31 @@ NDArray::any (int dim) const
 NDArray
 NDArray::cumprod (int dim) const
 {
-  MX_ND_CUMULATIVE_OP (NDArray, double, 1, *);
+  return do_mx_cum_op<NDArray> (*this, dim, mx_inline_cumprod);
 }
 
 NDArray
 NDArray::cumsum (int dim) const
 {
-  MX_ND_CUMULATIVE_OP (NDArray, double, 0, +);
+  return do_mx_cum_op<NDArray> (*this, dim, mx_inline_cumsum);
 }
 
 NDArray
 NDArray::prod (int dim) const
 {
-  MX_ND_REAL_OP_REDUCTION (*= elem (iter_idx), 1);
+  return do_mx_red_op<NDArray> (*this, dim, mx_inline_prod);
+}
+
+NDArray
+NDArray::sum (int dim) const
+{
+  return do_mx_red_op<NDArray> (*this, dim, mx_inline_sum);
 }
 
 NDArray
 NDArray::sumsq (int dim) const
 {
-  MX_ND_REAL_OP_REDUCTION (+= std::pow (elem (iter_idx), 2), 0);
-}
-
-NDArray 
-NDArray::sum (int dim) const
-{
-  MX_ND_REAL_OP_REDUCTION (+= elem (iter_idx), 0);
+  return do_mx_red_op<NDArray> (*this, dim, mx_inline_sumsq);
 }
 
 NDArray

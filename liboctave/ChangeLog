@@ -1,3 +1,24 @@
+2009-02-13  Jaroslav Hajek  <highegg@gmail.com>
+
+	* mx-inlines.cc (OP_RED_SUM, OP_RED_PROD, OP_RED_SUMSQ, OP_RED_SUMSQC,
+	OP_RED_FCN, OP_RED_FCN2, OP_RED_FCNN, OP_CUM_FCN, OP_CUM_FCN2,
+	OP_CUM_FCNN): New macros.
+	(mx_inline_sum, mx_inline_prod, mx_inline_sumsq, mx_inline_cumsum,
+	mx_inline_cumprod, get_extent_triplet, do_mx_red_op, do_mx_cum_op):
+	New template functions.
+	* dMatrix.cc (Matrix::cumprod, Matrix::cumsum, Matrix::prod,
+	Matrix::sum, Matrix::sumsq): Use do_mx_red_op and do_mx_cum_op.
+	* fMatrix.cc (FloatMatrix::cumprod, FloatMatrix::cumsum,
+	FloatMatrix::prod, FloatMatrix::sum, FloatMatrix::sumsq): Use
+	do_mx_red_op and do_mx_cum_op.
+	* CMatrix.cc (ComplexMatrix::cumprod, ComplexMatrix::cumsum,
+	ComplexMatrix::prod, ComplexMatrix::sum, ComplexMatrix::sumsq): Use
+	do_mx_red_op and do_mx_cum_op.
+	* fCMatrix.cc (FloatComplexMatrix::cumprod,
+	FloatComplexMatrix::cumsum, FloatComplexMatrix::prod,
+	FloatComplexMatrix::sum, FloatComplexMatrix::sumsq): Use do_mx_red_op
+	and do_mx_cum_op.
+
 2009-02-12  Jaroslav Hajek  <highegg@gmail.com>
 
 	* oct-inttypes.h (if_else_type): Remove

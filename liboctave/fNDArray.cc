@@ -658,31 +658,31 @@ FloatNDArray::any (int dim) const
 FloatNDArray
 FloatNDArray::cumprod (int dim) const
 {
-  MX_ND_CUMULATIVE_OP (FloatNDArray, float, 1, *);
+  return do_mx_cum_op<FloatNDArray> (*this, dim, mx_inline_cumprod);
 }
 
 FloatNDArray
 FloatNDArray::cumsum (int dim) const
 {
-  MX_ND_CUMULATIVE_OP (FloatNDArray, float, 0, +);
+  return do_mx_cum_op<FloatNDArray> (*this, dim, mx_inline_cumsum);
 }
 
 FloatNDArray
 FloatNDArray::prod (int dim) const
 {
-  MX_ND_REDUCTION (retval(result_idx) *= elem (iter_idx), 1, FloatNDArray);
+  return do_mx_red_op<FloatNDArray> (*this, dim, mx_inline_prod);
+}
+
+FloatNDArray
+FloatNDArray::sum (int dim) const
+{
+  return do_mx_red_op<FloatNDArray> (*this, dim, mx_inline_sum);
 }
 
 FloatNDArray
 FloatNDArray::sumsq (int dim) const
 {
-  MX_ND_REDUCTION (retval(result_idx) += std::pow (elem (iter_idx), 2), 0, FloatNDArray);
-}
-
-FloatNDArray 
-FloatNDArray::sum (int dim) const
-{
-  MX_ND_REDUCTION (retval(result_idx) += elem (iter_idx), 0, FloatNDArray);
+  return do_mx_red_op<FloatNDArray> (*this, dim, mx_inline_sumsq);
 }
 
 FloatNDArray

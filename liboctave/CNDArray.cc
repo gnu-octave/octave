@@ -639,34 +639,31 @@ ComplexNDArray::any (int dim) const
 ComplexNDArray
 ComplexNDArray::cumprod (int dim) const
 {
-  MX_ND_CUMULATIVE_OP (ComplexNDArray, Complex, Complex (1, 0), *);
+  return do_mx_cum_op<ComplexNDArray> (*this, dim, mx_inline_cumprod);
 }
 
 ComplexNDArray
 ComplexNDArray::cumsum (int dim) const
 {
-  MX_ND_CUMULATIVE_OP (ComplexNDArray, Complex, Complex (0, 0), +);
+  return do_mx_cum_op<ComplexNDArray> (*this, dim, mx_inline_cumsum);
 }
 
 ComplexNDArray
 ComplexNDArray::prod (int dim) const
 {
-  MX_ND_COMPLEX_OP_REDUCTION (*= elem (iter_idx), Complex (1, 0));
+  return do_mx_red_op<ComplexNDArray> (*this, dim, mx_inline_prod);
+}
+
+ComplexNDArray
+ComplexNDArray::sum (int dim) const
+{
+  return do_mx_red_op<ComplexNDArray> (*this, dim, mx_inline_sum);
 }
 
 ComplexNDArray
 ComplexNDArray::sumsq (int dim) const
 {
-  MX_ND_COMPLEX_OP_REDUCTION
-    (+= std::imag (elem (iter_idx))
-     ? elem (iter_idx) * conj (elem (iter_idx))
-     : std::pow (elem (iter_idx), 2), Complex (0, 0));
-}
-
-ComplexNDArray 
-ComplexNDArray::sum (int dim) const
-{
-  MX_ND_COMPLEX_OP_REDUCTION (+= elem (iter_idx), Complex (0, 0));
+  return do_mx_red_op<NDArray> (*this, dim, mx_inline_sumsq);
 }
 
 ComplexNDArray

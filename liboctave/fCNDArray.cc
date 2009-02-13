@@ -634,33 +634,31 @@ FloatComplexNDArray::any (int dim) const
 FloatComplexNDArray
 FloatComplexNDArray::cumprod (int dim) const
 {
-  MX_ND_CUMULATIVE_OP (FloatComplexNDArray, FloatComplex, FloatComplex (1, 0), *);
+  return do_mx_cum_op<FloatComplexNDArray> (*this, dim, mx_inline_cumprod);
 }
 
 FloatComplexNDArray
 FloatComplexNDArray::cumsum (int dim) const
 {
-  MX_ND_CUMULATIVE_OP (FloatComplexNDArray, FloatComplex, FloatComplex (0, 0), +);
+  return do_mx_cum_op<FloatComplexNDArray> (*this, dim, mx_inline_cumsum);
 }
 
 FloatComplexNDArray
 FloatComplexNDArray::prod (int dim) const
 {
-  MX_ND_REDUCTION (retval(result_idx) *= elem (iter_idx), FloatComplex (1, 0), FloatComplexNDArray);
+  return do_mx_red_op<FloatComplexNDArray> (*this, dim, mx_inline_prod);
+}
+
+FloatComplexNDArray
+FloatComplexNDArray::sum (int dim) const
+{
+  return do_mx_red_op<FloatComplexNDArray> (*this, dim, mx_inline_sum);
 }
 
 FloatComplexNDArray
 FloatComplexNDArray::sumsq (int dim) const
 {
-  MX_ND_REDUCTION (retval(result_idx) += std::imag (elem (iter_idx))
-     ? elem (iter_idx) * conj (elem (iter_idx))
-     : std::pow (elem (iter_idx), 2), FloatComplex (0, 0), FloatComplexNDArray);
-}
-
-FloatComplexNDArray 
-FloatComplexNDArray::sum (int dim) const
-{
-  MX_ND_REDUCTION (retval(result_idx) += elem (iter_idx), FloatComplex (0, 0), FloatComplexNDArray);
+  return do_mx_red_op<FloatNDArray> (*this, dim, mx_inline_sumsq);
 }
 
 FloatComplexNDArray

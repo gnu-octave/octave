@@ -2798,42 +2798,31 @@ Matrix::any (int dim) const
 Matrix
 Matrix::cumprod (int dim) const
 {
-  MX_CUMULATIVE_OP (Matrix, double, *=);
+  return do_mx_cum_op<Matrix> (*this, dim, mx_inline_cumprod);
 }
 
 Matrix
 Matrix::cumsum (int dim) const
 {
-  MX_CUMULATIVE_OP (Matrix, double, +=);
+  return do_mx_cum_op<Matrix> (*this, dim, mx_inline_cumsum);
 }
 
 Matrix
 Matrix::prod (int dim) const
 {
-  MX_REDUCTION_OP (Matrix, *=, 1.0, 1.0);
+  return do_mx_red_op<Matrix> (*this, dim, mx_inline_prod);
 }
 
 Matrix
 Matrix::sum (int dim) const
 {
-  MX_REDUCTION_OP (Matrix, +=, 0.0, 0.0);
+  return do_mx_red_op<Matrix> (*this, dim, mx_inline_sum);
 }
 
 Matrix
 Matrix::sumsq (int dim) const
 {
-#define ROW_EXPR \
-  double d = elem (i, j); \
-  retval.elem (i, 0) += d * d
-
-#define COL_EXPR \
-  double d = elem (i, j); \
-  retval.elem (0, j) += d * d
-
-  MX_BASE_REDUCTION_OP (Matrix, ROW_EXPR, COL_EXPR, 0.0, 0.0);
-
-#undef ROW_EXPR
-#undef COL_EXPR
+  return do_mx_red_op<Matrix> (*this, dim, mx_inline_sumsq);
 }
 
 Matrix

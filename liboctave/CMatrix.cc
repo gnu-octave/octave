@@ -3264,42 +3264,31 @@ ComplexMatrix::any (int dim) const
 ComplexMatrix
 ComplexMatrix::cumprod (int dim) const
 {
-  MX_CUMULATIVE_OP (ComplexMatrix, Complex, *=);
+  return do_mx_cum_op<ComplexMatrix> (*this, dim, mx_inline_cumprod);
 }
 
 ComplexMatrix
 ComplexMatrix::cumsum (int dim) const
 {
-  MX_CUMULATIVE_OP (ComplexMatrix, Complex, +=);
+  return do_mx_cum_op<ComplexMatrix> (*this, dim, mx_inline_cumsum);
 }
 
 ComplexMatrix
 ComplexMatrix::prod (int dim) const
 {
-  MX_REDUCTION_OP (ComplexMatrix, *=, 1.0, 1.0);
+  return do_mx_red_op<ComplexMatrix> (*this, dim, mx_inline_prod);
 }
 
 ComplexMatrix
 ComplexMatrix::sum (int dim) const
 {
-  MX_REDUCTION_OP (ComplexMatrix, +=, 0.0, 0.0);
+  return do_mx_red_op<ComplexMatrix> (*this, dim, mx_inline_sum);
 }
 
 ComplexMatrix
 ComplexMatrix::sumsq (int dim) const
 {
-#define ROW_EXPR \
-  Complex d = elem (i, j); \
-  retval.elem (i, 0) += d * conj (d)
-
-#define COL_EXPR \
-  Complex d = elem (i, j); \
-  retval.elem (0, j) += d * conj (d)
-
-  MX_BASE_REDUCTION_OP (ComplexMatrix, ROW_EXPR, COL_EXPR, 0.0, 0.0);
-
-#undef ROW_EXPR
-#undef COL_EXPR
+  return do_mx_red_op<Matrix> (*this, dim, mx_inline_sumsq);
 }
 
 Matrix ComplexMatrix::abs (void) const

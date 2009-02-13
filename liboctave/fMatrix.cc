@@ -2797,42 +2797,31 @@ FloatMatrix::any (int dim) const
 FloatMatrix
 FloatMatrix::cumprod (int dim) const
 {
-  MX_CUMULATIVE_OP (FloatMatrix, float, *=);
+  return do_mx_cum_op<FloatMatrix> (*this, dim, mx_inline_cumprod);
 }
 
 FloatMatrix
 FloatMatrix::cumsum (int dim) const
 {
-  MX_CUMULATIVE_OP (FloatMatrix, float, +=);
+  return do_mx_cum_op<FloatMatrix> (*this, dim, mx_inline_cumsum);
 }
 
 FloatMatrix
 FloatMatrix::prod (int dim) const
 {
-  MX_REDUCTION_OP (FloatMatrix, *=, 1.0, 1.0);
+  return do_mx_red_op<FloatMatrix> (*this, dim, mx_inline_prod);
 }
 
 FloatMatrix
 FloatMatrix::sum (int dim) const
 {
-  MX_REDUCTION_OP (FloatMatrix, +=, 0.0, 0.0);
+  return do_mx_red_op<FloatMatrix> (*this, dim, mx_inline_sum);
 }
 
 FloatMatrix
 FloatMatrix::sumsq (int dim) const
 {
-#define ROW_EXPR \
-  float d = elem (i, j); \
-  retval.elem (i, 0) += d * d
-
-#define COL_EXPR \
-  float d = elem (i, j); \
-  retval.elem (0, j) += d * d
-
-  MX_BASE_REDUCTION_OP (FloatMatrix, ROW_EXPR, COL_EXPR, 0.0, 0.0);
-
-#undef ROW_EXPR
-#undef COL_EXPR
+  return do_mx_red_op<FloatMatrix> (*this, dim, mx_inline_sumsq);
 }
 
 FloatMatrix

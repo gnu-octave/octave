@@ -3298,42 +3298,31 @@ FloatComplexMatrix::any (int dim) const
 FloatComplexMatrix
 FloatComplexMatrix::cumprod (int dim) const
 {
-  MX_CUMULATIVE_OP (FloatComplexMatrix, FloatComplex, *=);
+  return do_mx_cum_op<FloatComplexMatrix> (*this, dim, mx_inline_cumprod);
 }
 
 FloatComplexMatrix
 FloatComplexMatrix::cumsum (int dim) const
 {
-  MX_CUMULATIVE_OP (FloatComplexMatrix, FloatComplex, +=);
+  return do_mx_cum_op<FloatComplexMatrix> (*this, dim, mx_inline_cumsum);
 }
 
 FloatComplexMatrix
 FloatComplexMatrix::prod (int dim) const
 {
-  MX_REDUCTION_OP (FloatComplexMatrix, *=, 1.0, 1.0);
+  return do_mx_red_op<FloatComplexMatrix> (*this, dim, mx_inline_prod);
 }
 
 FloatComplexMatrix
 FloatComplexMatrix::sum (int dim) const
 {
-  MX_REDUCTION_OP (FloatComplexMatrix, +=, 0.0, 0.0);
+  return do_mx_red_op<FloatComplexMatrix> (*this, dim, mx_inline_sum);
 }
 
 FloatComplexMatrix
 FloatComplexMatrix::sumsq (int dim) const
 {
-#define ROW_EXPR \
-  FloatComplex d = elem (i, j); \
-  retval.elem (i, 0) += d * conj (d)
-
-#define COL_EXPR \
-  FloatComplex d = elem (i, j); \
-  retval.elem (0, j) += d * conj (d)
-
-  MX_BASE_REDUCTION_OP (FloatComplexMatrix, ROW_EXPR, COL_EXPR, 0.0, 0.0);
-
-#undef ROW_EXPR
-#undef COL_EXPR
+  return do_mx_red_op<FloatMatrix> (*this, dim, mx_inline_sumsq);
 }
 
 FloatMatrix FloatComplexMatrix::abs (void) const

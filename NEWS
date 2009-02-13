@@ -149,6 +149,11 @@ Summary of important user-visible changes for version 3.2:
     completely rewritten and so the indexing of arrays is now
     significantly faster.
 
+ ** Improved performance for reduction operations.
+
+    The performance of the sum, prod, sumsq, cumsum, and cumprod
+    functions has been significantly improved.
+
  ** Diagonal and permutation matrices.
 
     The interpreter can now treat diagonal and permutation matrices as

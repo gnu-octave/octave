@@ -258,6 +258,8 @@ Range::is_sorted (sortmode mode) const
     mode = (mode == DESCENDING) ? UNSORTED : ASCENDING;
   else
     mode = mode ? mode : ASCENDING;
+
+  return mode;
 }
 
 std::ostream&

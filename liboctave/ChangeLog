@@ -2,6 +2,7 @@
 
 	* intNDArray.cc: include mx-inlines.cc.
 	(intNDArray::sum): Use mx_do_red_op (..., mx_inline_sum).
+	* Range.cc (Range::is_sorted): Add missing return statement.
 
 2009-02-13  Jaroslav Hajek  <highegg@gmail.com>
 

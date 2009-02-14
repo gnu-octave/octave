@@ -689,15 +689,13 @@ NDArray::too_large_for_float (void) const
 boolNDArray
 NDArray::all (int dim) const
 {
-  MX_ND_ANY_ALL_REDUCTION (MX_ND_ALL_EVAL (MX_ND_ALL_EXPR), true);
+  return do_mx_red_op<boolNDArray> (*this, dim, mx_inline_all);
 }
 
 boolNDArray
 NDArray::any (int dim) const
 {
-  MX_ND_ANY_ALL_REDUCTION
-    (MX_ND_ANY_EVAL (elem (iter_idx) != 0
-		     && ! lo_ieee_isnan (elem (iter_idx))), false);
+  return do_mx_red_op<boolNDArray> (*this, dim, mx_inline_any);
 }
 
 NDArray

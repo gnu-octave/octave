@@ -1,5 +1,40 @@
 2009-02-14  Jaroslav Hajek  <highegg@gmail.com>
 
+	* mx-inlines.cc (OP_RED_FCN, OP_RED_FCN2, OP_RED_FCNN, OP_CUM_FCN,
+	OP_CUM_FCN2, OP_CUM_FCNN): Include TRET parameter.
+	(OP_RED_ANYC, OP_RED_ANYR, OP_RED_ALLC, OP_RED_ALLR): New macros.
+	(is_true, is_false): New template functions.
+	(mx_inline_any, mx_inline_all): New template functions.
+
+	* dMatrix.cc (Matrix::any, Matrix::all): Use do_mx_red_op and
+	do_mx_cum_op.
+	* fMatrix.cc (FloatMatrix::any, FloatMatrix::all): Use do_mx_red_op
+	and do_mx_cum_op.
+	* CMatrix.cc (ComplexMatrix::any, ComplexMatrix::all): Use
+	do_mx_red_op and do_mx_cum_op.
+	* fCMatrix.cc (FloatComplexMatrix::any, FloatComplexMatrix::all): Use
+	do_mx_red_op and do_mx_cum_op.
+
+	* dNDArray.cc (NDArray::any, NDArray::all): Use do_mx_red_op and
+	do_mx_cum_op.
+	* fNDArray.cc (FloatNDArray::any, FloatNDArray::all): Use do_mx_red_op
+	and do_mx_cum_op.
+	* CNDArray.cc (ComplexNDArray::any, ComplexNDArray::all): Use
+	do_mx_red_op and do_mx_cum_op.
+	* fCNDArray.cc (FloatComplexNDArray::any, FloatComplexNDArray::all):
+	Use do_mx_red_op and do_mx_cum_op.
+
+	* intNDArray.cc (intNDArray::any, intNDArray::all): Use do_mx_red_op and
+	do_mx_cum_op.
+
+	* boolNDArray.cc (boolNDArray::any, boolNDArray::all): Use do_mx_red_op and
+	do_mx_cum_op.
+
+	* boolMatrix.cc (boolMatrix::any, boolMatrix::all): Use do_mx_red_op and
+	do_mx_cum_op.
+
+2009-02-14  Jaroslav Hajek  <highegg@gmail.com>
+
 	* intNDArray.cc: include mx-inlines.cc.
 	(intNDArray::sum): Use mx_do_red_op (..., mx_inline_sum).
 	* Range.cc (Range::is_sorted): Add missing return statement.

@@ -284,7 +284,7 @@ OP_DUP_FCN (conj, mx_inline_conj_dup, FloatComplex, FloatComplex)
 
 // NOTE: std::norm is NOT equivalent
 template <class T>
-T cabsq (const std::complex<T>& c) 
+inline T cabsq (const std::complex<T>& c) 
 { return c.real () * c.real () + c.imag () * c.imag (); }
 
 #define OP_RED_SUM(ac, el) ac += el
@@ -292,26 +292,64 @@ T cabsq (const std::complex<T>& c)
 #define OP_RED_SUMSQ(ac, el) ac += el*el
 #define OP_RED_SUMSQC(ac, el) ac += cabsq (el)
 
-#define OP_RED_FCN(F, TSRC, OP, ZERO) \
+// default. works for integers and bool.
+template <class T>
+inline bool xis_true (T x) { return x; }
+template <class T>
+inline bool xis_false (T x) { return ! x; }
+// for octave_ints
+template <class T>
+inline bool xis_true (const octave_int<T>& x) { return x.value (); }
+template <class T>
+inline bool xis_false (const octave_int<T>& x) { return ! x.value (); }
+// for reals, we want to ignore NaNs.
+inline bool xis_true (double x) { return ! xisnan (x) && x != 0.0; }
+inline bool xis_false (double x) { return x == 0.0; }
+inline bool xis_true (float x) { return ! xisnan (x) && x != 0.0f; }
+inline bool xis_false (float x) { return x == 0.0f; }
+// Ditto for complex.
+inline bool xis_true (const Complex& x) { return ! xisnan (x) && x != 0.0; }
+inline bool xis_false (const Complex& x) { return x == 0.0; }
+inline bool xis_true (const FloatComplex& x) { return ! xisnan (x) && x != 0.0f; }
+inline bool xis_false (const FloatComplex& x) { return x == 0.0f; }
+
+// The following two implement a simple short-circuiting.
+#define OP_RED_ANYC(ac, el) if (xis_true (el)) { ac = true; break; } else continue
+#define OP_RED_ALLC(ac, el) if (xis_false (el)) { ac = false; break; } else continue
+
+// Row any/all reductions are a tradeoff - we traverse the array by
+// columns to gain cache coherence, but sacrifice short-circuiting for that.
+// For certain logical arrays, this could mean a significant loss.
+// A more sophisticated implementation could introduce a buffer of active
+// row indices to achieve both. Right now, I don't see the operation as
+// important enough.
+
+#define OP_RED_ANYR(ac, el) if (xis_true (el)) ac = true
+#define OP_RED_ALLR(ac, el) if (xis_false (el)) ac = false
+
+#define OP_RED_FCN(F, TSRC, TRES, OP, ZERO) \
 template <class T> \
-inline T \
+inline TRES \
 F (const TSRC* v, octave_idx_type n) \
 { \
-  T ac = ZERO; \
+  TRES ac = ZERO; \
   for (octave_idx_type i = 0; i < n; i++) \
     OP(ac, v[i]); \
   return ac; \
 }
 
-OP_RED_FCN (mx_inline_sum, T, OP_RED_SUM, 0)
-OP_RED_FCN (mx_inline_prod, T, OP_RED_PROD, 1)
-OP_RED_FCN (mx_inline_sumsq, T, OP_RED_SUMSQ, 0)
-OP_RED_FCN (mx_inline_sumsq, std::complex<T>, OP_RED_SUMSQC, 0)
+OP_RED_FCN (mx_inline_sum, T, T, OP_RED_SUM, 0)
+OP_RED_FCN (mx_inline_prod, T, T, OP_RED_PROD, 1)
+OP_RED_FCN (mx_inline_sumsq, T, T, OP_RED_SUMSQ, 0)
+OP_RED_FCN (mx_inline_sumsq, std::complex<T>, T, OP_RED_SUMSQC, 0)
+OP_RED_FCN (mx_inline_any, T, bool, OP_RED_ANYC, false)
+OP_RED_FCN (mx_inline_all, T, bool, OP_RED_ALLC, true)
 
-#define OP_RED_FCN2(F, TSRC, OP, ZERO) \
+
+#define OP_RED_FCN2(F, TSRC, TRES, OP, ZERO) \
 template <class T> \
 inline void \
-F (const TSRC* v, T *r, octave_idx_type m, octave_idx_type n) \
+F (const TSRC* v, TRES *r, octave_idx_type m, octave_idx_type n) \
 { \
   for (octave_idx_type i = 0; i < m; i++) \
     r[i] = ZERO; \
@@ -323,15 +361,17 @@ F (const TSRC* v, T *r, octave_idx_type m, octave_idx_type n) \
     } \
 }
 
-OP_RED_FCN2 (mx_inline_sum, T, OP_RED_SUM, 0)
-OP_RED_FCN2 (mx_inline_prod, T, OP_RED_PROD, 1)
-OP_RED_FCN2 (mx_inline_sumsq, T, OP_RED_SUMSQ, 0)
-OP_RED_FCN2 (mx_inline_sumsq, std::complex<T>, OP_RED_SUMSQC, 0)
+OP_RED_FCN2 (mx_inline_sum, T, T, OP_RED_SUM, 0)
+OP_RED_FCN2 (mx_inline_prod, T, T, OP_RED_PROD, 1)
+OP_RED_FCN2 (mx_inline_sumsq, T, T, OP_RED_SUMSQ, 0)
+OP_RED_FCN2 (mx_inline_sumsq, std::complex<T>, T, OP_RED_SUMSQC, 0)
+OP_RED_FCN2 (mx_inline_any, T, bool, OP_RED_ANYR, false)
+OP_RED_FCN2 (mx_inline_all, T, bool, OP_RED_ALLR, true)
 
-#define OP_RED_FCNN(F, TSRC) \
+#define OP_RED_FCNN(F, TSRC, TRES) \
 template <class T> \
 inline void \
-F (const TSRC *v, T *r, octave_idx_type l, \
+F (const TSRC *v, TRES *r, octave_idx_type l, \
    octave_idx_type n, octave_idx_type u) \
 { \
   if (l == 1) \
@@ -353,10 +393,12 @@ F (const TSRC *v, T *r, octave_idx_type l, \
     } \
 }
 
-OP_RED_FCNN (mx_inline_sum, T)
-OP_RED_FCNN (mx_inline_prod, T)
-OP_RED_FCNN (mx_inline_sumsq, T)
-OP_RED_FCNN (mx_inline_sumsq, std::complex<T>)
+OP_RED_FCNN (mx_inline_sum, T, T)
+OP_RED_FCNN (mx_inline_prod, T, T)
+OP_RED_FCNN (mx_inline_sumsq, T, T)
+OP_RED_FCNN (mx_inline_sumsq, std::complex<T>, T)
+OP_RED_FCNN (mx_inline_any, T, bool)
+OP_RED_FCNN (mx_inline_all, T, bool)
 
 #define OP_CUM_FCN(F, OP) \
 template <class T> \
@@ -467,6 +509,10 @@ do_mx_red_op (const Array<T>& src, int dim,
 {
   octave_idx_type l, n, u;
   dim_vector dims = src.dims ();
+  // M*b inconsistency: sum([]) = 0 etc.
+  if (dims.length () == 2 && dims(0) == 0 && dims(1) == 0)
+    dims (1) = 1;
+
   get_extent_triplet (dims, dim, l, n, u);
 
   // Reduction operation reduces the array size.

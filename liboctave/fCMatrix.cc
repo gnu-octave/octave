@@ -3246,53 +3246,13 @@ FloatComplexMatrix::too_large_for_float (void) const
 boolMatrix
 FloatComplexMatrix::all (int dim) const
 {
-  // FIXME Can't use MX_ALL_OP as need to static cast to float to the ROW 
-  // and COL expressions
-
-#define ROW_EXPR \
-  if (elem (i, j) == static_cast<float> (0.0)) \
-    { \
-      retval.elem (i, 0) = false; \
-      break; \
-    }
-
-#define COL_EXPR \
-  if (elem (i, j) == static_cast<float> (0.0)) \
-    { \
-      retval.elem (0, j) = false; \
-      break; \
-    }
-  
-  MX_BASE_REDUCTION_OP (boolMatrix, ROW_EXPR, COL_EXPR, true, true);
-
-#undef ROW_EXPR
-#undef COL_EXPR
+  return do_mx_red_op<boolMatrix> (*this, dim, mx_inline_all);
 }
 
 boolMatrix
 FloatComplexMatrix::any (int dim) const
 {
-  // FIXME Can't use MX_ANY_OP as need to static cast to float to the ROW 
-  // and COL expressions
-
-#define ROW_EXPR \
-  if (elem (i, j) != static_cast<float> (0.0)) \
-    { \
-      retval.elem (i, 0) = true; \
-      break; \
-    }
-
-#define COL_EXPR \
-  if (elem (i, j) != static_cast<float> (0.0)) \
-    { \
-      retval.elem (0, j) = true; \
-      break; \
-    }
-  
-  MX_BASE_REDUCTION_OP (boolMatrix, ROW_EXPR, COL_EXPR, false, false);
-
-#undef ROW_EXPR
-#undef COL_EXPR
+  return do_mx_red_op<boolMatrix> (*this, dim, mx_inline_any);
 }
 
 FloatComplexMatrix

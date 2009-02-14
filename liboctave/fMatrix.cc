@@ -2785,13 +2785,13 @@ FloatMatrix::too_large_for_float (void) const
 boolMatrix
 FloatMatrix::all (int dim) const
 {
-  MX_ALL_OP (dim);
+  return do_mx_red_op<boolMatrix> (*this, dim, mx_inline_all);
 }
 
 boolMatrix
 FloatMatrix::any (int dim) const
 {
-  MX_ANY_OP (dim);
+  return do_mx_red_op<boolMatrix> (*this, dim, mx_inline_any);
 }
 
 FloatMatrix

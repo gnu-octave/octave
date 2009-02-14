@@ -89,13 +89,13 @@ boolMatrix::diag (octave_idx_type k) const
 boolMatrix
 boolMatrix::all (int dim) const
 {
-  MX_ALL_OP (dim);
+  return do_mx_red_op<boolMatrix> (*this, dim, mx_inline_all);
 }
 
 boolMatrix
 boolMatrix::any (int dim) const
 {
-  MX_ANY_OP (dim);
+  return do_mx_red_op<boolMatrix> (*this, dim, mx_inline_any);
 }
 
 MM_CMP_OPS (boolMatrix, , boolMatrix, )

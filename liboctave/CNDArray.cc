@@ -622,18 +622,13 @@ ComplexNDArray::too_large_for_float (void) const
 boolNDArray
 ComplexNDArray::all (int dim) const
 {
-  MX_ND_ANY_ALL_REDUCTION
-    (MX_ND_ALL_EVAL (elem (iter_idx) == Complex (0, 0)), true);
+  return do_mx_red_op<boolNDArray> (*this, dim, mx_inline_all);
 }
 
 boolNDArray
 ComplexNDArray::any (int dim) const
 {
-  MX_ND_ANY_ALL_REDUCTION
-    (MX_ND_ANY_EVAL (elem (iter_idx) != Complex (0, 0)
-		     && ! (lo_ieee_isnan (std::real (elem (iter_idx)))
-			   || lo_ieee_isnan (std::imag (elem (iter_idx))))),
-		     false);
+  return do_mx_red_op<boolNDArray> (*this, dim, mx_inline_any);
 }
 
 ComplexNDArray

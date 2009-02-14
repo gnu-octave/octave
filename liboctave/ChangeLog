@@ -1,3 +1,8 @@
+2009-02-14  Jaroslav Hajek  <highegg@gmail.com>
+
+	* intNDArray.cc: include mx-inlines.cc.
+	(intNDArray::sum): Use mx_do_red_op (..., mx_inline_sum).
+
 2009-02-13  Jaroslav Hajek  <highegg@gmail.com>
 
 	* mx-inlines.cc (OP_RED_SUM, OP_RED_PROD, OP_RED_SUMSQ, OP_RED_SUMSQC,

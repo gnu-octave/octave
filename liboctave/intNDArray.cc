@@ -28,6 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "Array-util.h"
 #include "mx-base.h"
 #include "lo-ieee.h"
+#include "mx-inlines.cc"
 
 // unary operations
 
@@ -205,7 +206,7 @@ template <class T>
 intNDArray<T>
 intNDArray<T>::sum (int dim) const
 {
-  MX_ND_REDUCTION (retval(result_idx) += intNDArray<T>::elem (iter_idx), 0, intNDArray<T>);
+  return do_mx_red_op<intNDArray<T> > (*this, dim, mx_inline_sum);
 }
 
 template <class T>

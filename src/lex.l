@@ -164,6 +164,7 @@ along with Octave; see the file COPYING.  If not, see
       current_input_column += yyleng; \
       lexer_flags.quote_is_transpose = false; \
       lexer_flags.convert_spaces_to_comma = convert; \
+      lexer_flags.looking_for_object_index = false; \
       COUNT_TOK_AND_RETURN (tok); \
     } \
   while (0)
@@ -171,8 +172,8 @@ along with Octave; see the file COPYING.  If not, see
 #define XBIN_OP_RETURN(tok, convert) \
   do \
     { \
-	gripe_matlab_incompatible_operator (yytext); \
-        BIN_OP_RETURN (tok, convert); \
+      gripe_matlab_incompatible_operator (yytext); \
+      BIN_OP_RETURN (tok, convert); \
     } \
   while (0)
 
@@ -362,14 +363,19 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     BEGIN (INITIAL);
     input_line_number++;
     current_input_column = 1;
+
     lexer_flags.quote_is_transpose = false;
     lexer_flags.convert_spaces_to_comma = true;
     lexer_flags.doing_rawcommand = false;
+    lexer_flags.looking_for_object_index = false;
+
     COUNT_TOK_AND_RETURN ('\n');
   }
 
 <COMMAND_START>[\;\,] {
     LEXER_DEBUG ("<COMMAND_START>[\\;\\,]");
+
+    lexer_flags.looking_for_object_index = false;
 
     if (lexer_flags.doing_rawcommand)
       TOK_PUSH_AND_RETURN (yytext, SQ_STRING);
@@ -387,6 +393,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
     current_input_column++;
     int tok = handle_string (yytext[0], true);
+
     COUNT_TOK_AND_RETURN (tok);
   }
 
@@ -394,6 +401,9 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     LEXER_DEBUG ("<COMMAND_START>[^#% \\t\\r\\n\\;\\,\\\"\\'][^ \\t\\r\\n\\;\\,]*{S}*");
 
     std::string tok = strip_trailing_whitespace (yytext);
+
+    lexer_flags.looking_for_object_index = false;
+
     TOK_PUSH_AND_RETURN (tok, SQ_STRING);
   }
 
@@ -416,12 +426,19 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
     scan_for_comments (yytext);
     fixup_column_count (yytext);
+
+    lexer_flags.looking_at_object_index.pop_front ();
+
+    lexer_flags.looking_for_object_index = true;
+
     int c = yytext[yyleng-1];
     int cont_is_spc = eat_continuation ();
     bool spc_gobbled = (cont_is_spc || c == ' ' || c == '\t');
     int tok_to_return = handle_close_bracket (spc_gobbled, ']');
+
     if (spc_gobbled)
-      yyunput (' ', yytext);
+      xunput (' ', yytext);
+
     COUNT_TOK_AND_RETURN (tok_to_return);
   }
 
@@ -434,12 +451,19 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
     scan_for_comments (yytext);
     fixup_column_count (yytext);
+
+    lexer_flags.looking_at_object_index.pop_front ();
+
+    lexer_flags.looking_for_object_index = true;
+
     int c = yytext[yyleng-1];
     int cont_is_spc = eat_continuation ();
     bool spc_gobbled = (cont_is_spc || c == ' ' || c == '\t');
     int tok_to_return = handle_close_bracket (spc_gobbled, '}');
+
     if (spc_gobbled)
-      yyunput (' ', yytext);
+      xunput (' ', yytext);
+
     COUNT_TOK_AND_RETURN (tok_to_return);
   }
 
@@ -458,12 +482,16 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
     lexer_flags.quote_is_transpose = false;
     lexer_flags.convert_spaces_to_comma = true;
+    lexer_flags.looking_for_object_index = false;
 
-    if ((tmp & ATE_NEWLINE) == ATE_NEWLINE)
+    if (! lexer_flags.looking_at_object_index.front ())
       {
-	maybe_warn_separator_insert (';');
+	if ((tmp & ATE_NEWLINE) == ATE_NEWLINE)
+	  {
+	    maybe_warn_separator_insert (';');
 
-	yyunput (';', yytext);
+	    xunput (';', yytext);
+	  }
       }
 
     COUNT_TOK_AND_RETURN (',');
@@ -482,27 +510,31 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     current_input_column += yyleng;
 
     int tmp = eat_continuation ();
-    bool bin_op = next_token_is_bin_op (true);
-    bool postfix_un_op = next_token_is_postfix_unary_op (true);
-    bool sep_op = next_token_is_sep_op ();
 
-    if (! (postfix_un_op || bin_op || sep_op)
-	&& nesting_level.is_bracket_or_brace ()
-	&& lexer_flags.convert_spaces_to_comma)
+    if (! lexer_flags.looking_at_object_index.front ())
       {
-	if ((tmp & ATE_NEWLINE) == ATE_NEWLINE)
+	bool bin_op = next_token_is_bin_op (true);
+	bool postfix_un_op = next_token_is_postfix_unary_op (true);
+	bool sep_op = next_token_is_sep_op ();
+
+	if (! (postfix_un_op || bin_op || sep_op)
+	    && nesting_level.is_bracket_or_brace ()
+	    && lexer_flags.convert_spaces_to_comma)
 	  {
-	    maybe_warn_separator_insert (';');
+	    if ((tmp & ATE_NEWLINE) == ATE_NEWLINE)
+	      {
+		maybe_warn_separator_insert (';');
 
-	    yyunput (';', yytext);
+		xunput (';', yytext);
+	      }
+
+	    lexer_flags.quote_is_transpose = false;
+	    lexer_flags.convert_spaces_to_comma = true;
+
+	    maybe_warn_separator_insert (',');
+
+	    COUNT_TOK_AND_RETURN (',');
 	  }
-
-	lexer_flags.quote_is_transpose = false;
-	lexer_flags.convert_spaces_to_comma = true;
-
-	maybe_warn_separator_insert (',');
-
-	COUNT_TOK_AND_RETURN (',');
       }
   }
 
@@ -520,8 +552,11 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     scan_for_comments (yytext);
     fixup_column_count (yytext);
     eat_whitespace ();
+
     lexer_flags.quote_is_transpose = false;
     lexer_flags.convert_spaces_to_comma = true;
+    lexer_flags.looking_for_object_index = false;
+
     COUNT_TOK_AND_RETURN (';');
   }
 
@@ -547,7 +582,8 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     if (nesting_level.none ())
       return LEXICAL_ERROR;
 
-    if (nesting_level.is_bracket_or_brace ())
+    if (! lexer_flags.looking_at_object_index.front ()
+	&& nesting_level.is_bracket_or_brace ())
       {
 	maybe_warn_separator_insert (';');
 
@@ -560,9 +596,12 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
     nesting_level.bracket ();
 
+    lexer_flags.looking_at_object_index.push_front (false);
+
     current_input_column += yyleng;
     lexer_flags.quote_is_transpose = false;
     lexer_flags.convert_spaces_to_comma = true;
+    lexer_flags.looking_for_object_index = false;
 
     if (lexer_flags.defining_func && ! lexer_flags.parsed_function_name)
       lexer_flags.looking_at_return_list = true;
@@ -581,6 +620,10 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     LEXER_DEBUG ("\\]");
 
     nesting_level.remove ();
+
+    lexer_flags.looking_at_object_index.pop_front ();
+
+    lexer_flags.looking_for_object_index = true;
 
     TOK_RETURN (']');
   }
@@ -664,7 +707,11 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     int id_tok = handle_identifier ();
 
     if (id_tok >= 0)
-      COUNT_TOK_AND_RETURN (id_tok);
+      {
+        lexer_flags.looking_for_object_index = true;
+
+        COUNT_TOK_AND_RETURN (id_tok);
+      }
   }
 
 %{
@@ -675,9 +722,12 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     LEXER_DEBUG ("@");
 
     current_input_column++;
+
     lexer_flags.quote_is_transpose = false;
     lexer_flags.convert_spaces_to_comma = false;
     lexer_flags.looking_at_function_handle++;
+    lexer_flags.looking_for_object_index = false;
+
     COUNT_TOK_AND_RETURN ('@');
   }
 
@@ -734,6 +784,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
     current_input_column++;
     int tok = handle_string ('"');
+
     COUNT_TOK_AND_RETURN (tok);
 }
 
@@ -743,6 +794,8 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
 {CCHAR} {
     LEXER_DEBUG ("{CCHAR}");
+
+    lexer_flags.looking_for_object_index = false;
 
     xunput (yytext[0], yytext);
 
@@ -761,6 +814,8 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
 ^{S}*{CCHAR}\{{S}*{NL} {
     LEXER_DEBUG ("^{S}*{CCHAR}\\{{S}*{NL}");
+
+    lexer_flags.looking_for_object_index = false;
 
     input_line_number++;
     current_input_column = 1;
@@ -822,9 +877,20 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 "(" {
     LEXER_DEBUG ("(");
 
+    // If we are looking for an object index, then push TRUE for
+    // looking_at_object_index.  Otherwise, just push whatever state
+    // is current (so that we can pop it off the stack when we find
+    // the matching close paren).
+
+    lexer_flags.looking_at_object_index.push_front
+      (lexer_flags.looking_for_object_index);
+
     lexer_flags.looking_at_indirect_ref = false;
+    lexer_flags.looking_for_object_index = false;
+
     nesting_level.paren ();
     promptflag--;
+
     TOK_RETURN ('(');
   }
 
@@ -833,13 +899,25 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
     nesting_level.remove ();
     current_input_column++;
+
+    lexer_flags.looking_at_object_index.pop_front ();
+
     lexer_flags.quote_is_transpose = true;
     lexer_flags.convert_spaces_to_comma = nesting_level.is_bracket_or_brace ();
+    lexer_flags.looking_for_object_index = true;
+
     do_comma_insert_check ();
+
     COUNT_TOK_AND_RETURN (')');
   }
 
-"."     { LEXER_DEBUG ("."); TOK_RETURN ('.'); }
+"." {
+    LEXER_DEBUG (".");
+
+    lexer_flags.looking_for_object_index = false;
+
+    TOK_RETURN ('.');
+  }
 
 "+="	{ LEXER_DEBUG ("+="); XBIN_OP_RETURN (ADD_EQ, false); }
 "-="	{ LEXER_DEBUG ("-="); XBIN_OP_RETURN (SUB_EQ, false); }
@@ -863,9 +941,13 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
     nesting_level.brace ();
 
+    lexer_flags.looking_at_object_index.push_front
+      (lexer_flags.looking_for_object_index);
+
     current_input_column += yyleng;
     lexer_flags.quote_is_transpose = false;
     lexer_flags.convert_spaces_to_comma = true;
+    lexer_flags.looking_for_object_index = false;
 
     promptflag--;
     eat_whitespace ();
@@ -877,6 +959,10 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
 "}" {
     LEXER_DEBUG ("}");
+
+    lexer_flags.looking_at_object_index.pop_front ();
+
+    lexer_flags.looking_for_object_index = true;
 
     nesting_level.remove ();
 
@@ -927,9 +1013,10 @@ do_comma_insert_check (void)
   xunput (c, yytext);
 
   if (spc_gobbled)
-    yyunput (' ', yytext);
+    xunput (' ', yytext);
 
-  lexer_flags.do_comma_insert = (lexer_flags.bracketflag && c == '[');
+  lexer_flags.do_comma_insert = (! lexer_flags.looking_at_object_index.front ()
+				 && lexer_flags.bracketflag && c == '[');
 }
 
 // Fix things up for errors or interrupts.  The parser is never called
@@ -989,30 +1076,6 @@ reset_parser (void)
 
   // Reset other flags.
   lexer_flags.init ();
-}
-
-static int
-text_yyinput (void)
-{
-  int c = yyinput ();
-
-  // Convert CRLF into just LF and single CR into LF.
-
-  if (c == '\r')
-    {
-      c = yyinput ();
-
-      if (c != '\n')
-	{
-	  yyunput (c, yytext);
-	  c = '\n';
-	}
-    }
-
-  if (c == '\n')
-    input_line_number++;
-
-  return c;
 }
 
 static void
@@ -1160,6 +1223,45 @@ display_character (char c)
 	break;
       }
 }
+
+static int
+text_yyinput (void)
+{
+  int c = yyinput ();
+
+  if (lexer_debug_flag)
+    {
+      std::cerr << "I: ";
+      display_character (c);
+      std::cerr << std::endl;
+    }
+
+  // Convert CRLF into just LF and single CR into LF.
+
+  if (c == '\r')
+    {
+      c = yyinput ();
+
+      if (lexer_debug_flag)
+	{
+	  std::cerr << "I: ";
+	  display_character (c);
+	  std::cerr << std::endl;
+	}
+
+      if (c != '\n')
+	{
+	  xunput (c, yytext);
+	  c = '\n';
+	}
+    }
+
+  if (c == '\n')
+    input_line_number++;
+
+  return c;
+}
+
 static void
 xunput (char c, char *buf)
 {
@@ -1277,6 +1379,24 @@ prep_for_nested_function (void)
   token_stack.push (yylval.tok_val);
 }
 
+static bool
+inside_any_object_index (void)
+{
+  bool retval = false;
+
+  for (std::list<bool>::const_iterator i = lexer_flags.looking_at_object_index.begin ();
+       i != lexer_flags.looking_at_object_index.end (); i++)
+    {
+      if (*i)
+	{
+	  retval = true;
+	  break;
+	}
+    }
+
+  return retval;
+}
+
 // Handle keywords.  Return -1 if the keyword should be ignored.
 
 static int
@@ -1310,7 +1430,7 @@ is_keyword_token (const std::string& s)
  	  break;
 
 	case end_kw:
-	  if (lexer_flags.looking_at_object_index
+	  if (inside_any_object_index ()
 	      || (lexer_flags.defining_func
 		  && ! (lexer_flags.looking_at_return_list
 			|| lexer_flags.parsed_function_name)))
@@ -2211,6 +2331,7 @@ handle_number (void)
 
   lexer_flags.quote_is_transpose = true;
   lexer_flags.convert_spaces_to_comma = true;
+  lexer_flags.looking_for_object_index = true;
 
   yylval.tok_val = new token (value, yytext, input_line_number,
 			      current_input_column);
@@ -2446,6 +2567,8 @@ handle_string (char delim, int text_style)
 		  else if (delim == '\'')
 		    gripe_single_quote_string ();
 
+                  lexer_flags.looking_for_object_index = true;
+
 		  return delim == '"' ? DQ_STRING : SQ_STRING;
 		}
 	    }
@@ -2583,7 +2706,7 @@ handle_close_bracket (bool spc_gobbled, int bracket_type)
 	   && lexer_flags.convert_spaces_to_comma
 	   && (nesting_level.is_bracket ()
 	       || (nesting_level.is_brace ()
-		   && ! lexer_flags.looking_at_object_index)))
+		   && ! lexer_flags.looking_at_object_index.front ())))
     {
       bool index_op = next_token_is_index_op ();
 
@@ -2607,7 +2730,7 @@ handle_close_bracket (bool spc_gobbled, int bracket_type)
 	    {
 	      maybe_warn_separator_insert (',');
 
-	      yyunput (',', yytext);
+	      xunput (',', yytext);
 	      return retval;
 	    }
 	}
@@ -2624,7 +2747,7 @@ maybe_unput_comma (int spc_gobbled)
 {
   if (nesting_level.is_bracket ()
       || (nesting_level.is_brace ()
-	  && ! lexer_flags.looking_at_object_index))
+	  && ! lexer_flags.looking_at_object_index.front ()))
     {
       int bin_op = next_token_is_bin_op (spc_gobbled);
 
@@ -2654,7 +2777,7 @@ maybe_unput_comma (int spc_gobbled)
 
       maybe_warn_separator_insert (',');
 
-      yyunput (',', yytext);
+      xunput (',', yytext);
     }
 }
 
@@ -2779,12 +2902,14 @@ handle_identifier (void)
 	{
 	  lexer_flags.pending_local_variables.insert (tok);
 	}
-      else if (! (next_tok_is_paren || lexer_flags.looking_at_object_index))
+      else if (! (next_tok_is_paren
+		  || lexer_flags.looking_at_object_index.front ()))
 	{
 	  BEGIN (COMMAND_START);
 	}
 
-      if (is_rawcommand_name (tok) && ! lexer_flags.looking_at_object_index)
+      if (is_rawcommand_name (tok)
+	  && ! lexer_flags.looking_at_object_index.front ())
 	{
 	  lexer_flags.doing_rawcommand = true;
 	  BEGIN (COMMAND_START);
@@ -2855,7 +2980,13 @@ lexical_feedback::init (void)
   looking_at_matrix_or_assign_lhs = false;
 
   // Not parsing an object index.
-  looking_at_object_index = 0;
+  while (! looking_at_object_index.empty ())
+    looking_at_object_index.pop_front ();
+
+  looking_at_object_index.push_front (false);
+
+  // Object index not possible until we've seen something.
+  looking_for_object_index = false;
 
   // No need to do comma insert or convert spaces to comma at
   // beginning of input. 

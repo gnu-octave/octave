@@ -1,3 +1,16 @@
+2009-02-15  John W. Eaton  <jwe@octave.org>
+
+	* lex.h, lex.l (lexer_flags.looking_at_object_index): Now a
+	std::list<bool> object instead of an int.
+	Push TRUE to list at start of object index.  Push FALSE at
+	beginning of matrix list.  Pop value at end of object index or
+	matrix list.
+	(lexer_flags.looking_for_object_index): New data member.
+	Set it as needed in rules.
+	(inside_any_object_index): New function.
+	* parse.y (begin_obj_idx, cancel_obj_idx): Delete non-terminals
+	and all uses.
+
 2009-02-13 Ben Abbott <bpabott@mac.com>
 
 	* graphics.h.in (class axes::properties): Initialize ticklength.

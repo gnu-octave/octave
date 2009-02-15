@@ -24,6 +24,8 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_lex_h)
 #define octave_lex_h 1
 
+#include <list>
+
 // FIXME -- these input buffer things should be members of a
 // parser input stream class.
 
@@ -104,8 +106,12 @@ public:
   // multi-value assignment statement.
   bool looking_at_matrix_or_assign_lhs;
 
-  // Nonzero means we're parsing an indexing operation for an object.
-  int looking_at_object_index;
+  // If the front of the list is TRUE, the closest paren, brace, or
+  // bracket nesting is an index for an object.
+  std::list<bool> looking_at_object_index;
+
+  // Object index not possible until we've seen something.
+  bool looking_for_object_index;
 
   // GAG.  Stupid kludge so that [[1,2][3,4]] will work.
   bool do_comma_insert;

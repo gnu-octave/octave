@@ -1,3 +1,7 @@
+2009-02-16  John W. Eaton  <jwe@octave.org>
+
+	* help/help.m: Shorten default help text.
+
 2009-02-15  John W. Eaton  <jwe@octave.org>
 
 	* help/doc.m, help/help.m, help/lookfor.m, help/type.m,

@@ -30,23 +30,27 @@
 ## @end deftypefn
 
 function help (name)
+
   if (nargin == 0)
-    disp ("Help is available for the topics listed below.");
-    disp ("");
-    
-    disp ("*** operators:");
-    operators = __operators__ ();
-    disp (list_in_columns (operators (:, 1)));
 
-    disp ("*** reserved words:");
-    keywords = __keywords__ ();
-    disp (list_in_columns (keywords (:, 1)));
+    puts ("\n\
+  For help with individual commands and functions type\n\
+\n\
+    help NAME\n\
+\n\
+  (replace NAME with the name of the command or function you would\n\
+  like to learn more about).\n\
+\n\
+  For a more detailed introduction to GNU Octave, please consult the\n\
+  manual.  To read the manual from the prompt type\n\
+\n\
+    doc\n\
+\n\
+  GNU Octave is supported and developed by its user community.\n\
+  For more information visit http://www.octave.org.\n\n");
 
-    disp ("*** available functions:");
-    functions = __list_functions__ ();
-    disp (list_in_columns (functions));
-    
   elseif (nargin == 1 && ischar (name))
+
     ## Get help text
     [text, format] = get_help_text (name);
     
@@ -71,16 +75,16 @@ function help (name)
     
     ## Print text
     if (status != 0)
-      warning ("makeinfo: Texinfo formatting filter exited abnormally");
-      warning ("makeinfo: raw Texinfo source of help text follows...\n");
+      warning ("makeinfo: Texinfo formatting filter exited abnormally; raw Texinfo source of help text follows...\n");
     endif
 
     which (name);
     printf ("\n%s\n%s", text, __additional_help_message__ ());
-    
+
   else
     error ("help: invalid input\n");
   endif
+
 endfunction
 
 function [text, status] = do_contents (name)
@@ -110,4 +114,3 @@ function [text, status] = do_contents (name)
     end_unwind_protect
   endif
 endfunction
-

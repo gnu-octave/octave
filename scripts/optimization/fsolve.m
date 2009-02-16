@@ -156,11 +156,9 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
     m = length (fvec);
     n = length (x);
 
-    ## For square and overdetermined systems, we update a (pivoted) QR
+    ## For square and overdetermined systems, we update a QR
     ## factorization of the jacobian to avoid solving a full system in each
     ## step. In this case, we pass a triangular matrix to __dogleg__.
-    ## Pivoted QR is used for slightly better robustness and invariance
-    ## w.r.t. permutations of variables.
     useqr = updating && m >= n && n > 10;
 
     if (useqr)

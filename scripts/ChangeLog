@@ -2,6 +2,7 @@
 
 	* linear-algebra/expm.m: Fix invalid unscaling.
 	* help/which.m: Do not add "function" here.
+	* optimization/fsolve.m: Update comments.
 
 2009-02-16  John W. Eaton  <jwe@octave.org>
 

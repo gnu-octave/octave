@@ -1,4 +1,9 @@
 2009-02-16  Jaroslav Hajek  <highegg@gmail.com>
+
+	* Array.cc (Array<T>::assign (const idx_vector& i,
+	const idx_vector& j,...)): Fix invalid dimension inquiry.
+
+2009-02-16  Jaroslav Hajek  <highegg@gmail.com>
 	
 	* mx-inlines.cc (OP_ROW_SHORT_CIRCUIT): New macro.
 	(mx_inline_any, mx_inline_all): Override row-reduction case.

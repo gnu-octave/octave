@@ -1318,7 +1318,7 @@ Array<T>::assign (const idx_vector& i, const idx_vector& j,
           else
             {
               // The actual work.
-              octave_idx_type n = numel (), r = rows (), c = columns ();
+              octave_idx_type n = numel (), r = dv (0), c = dv (1);
               idx_vector ii (i);
 
               const T* src = rhs.data ();

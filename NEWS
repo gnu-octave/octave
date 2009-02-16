@@ -22,16 +22,17 @@ Summary of important user-visible changes for version 3.2:
 
  ** New graphics functions:
 
-      addlistener         dellistener  ezsurf      ishghandle
-      addproperty         ezcontour    ezsurfc     linkprop
-      allchild            ezcontourf   findall     plotmatrix
-      available_backends  ezmesh       gcbf        refresh
-      backend             ezmeshc      gcbo        refreshdata
-      cla                 ezplot       ginput      surfl
-      clabel              ezplot3      gtext       waitforbuttonpress
-      comet               ezpolar      intwarning
+      addlistener         diffuse     ezsurfc     plotmatrix
+      addproperty         ezcontour   findall     refresh
+      allchild            ezcontourf  gcbf        refreshdata
+      available_backends  ezmesh      gcbo        specular
+      backend             ezmeshc     ginput      surfl
+      cla                 ezplot      gtext       waitforbuttonpress
+      clabel              ezplot3     intwarning
+      comet               ezpolar     ishghandle
+      dellistener         ezsurf      linkprop
 
- ** Improvements to the debugger.
+** Improvements to the debugger.
 
     The interactive debugging features have been improved.  Stopping
     on statements with dbstop should work correctly now.  Stepping
@@ -88,21 +89,50 @@ Summary of important user-visible changes for version 3.2:
 
     See the Octave manual for more details.
 
+ ** Parsing of Command-style Functions.
+
+    Octave now parses command-style functions without needing to first
+    declare them with "mark_as_command".  The rules for recognizing a
+    command-style function calls are
+
+      * A command must appear as the first word in a statement,
+        followed by a space.
+
+      * The first character after the space must not be '=' or '('
+
+      * The next token after the space must not look like a binary
+        operator.
+
+    These rules should be mostly compatible with the way Matlab parses
+    command-style function calls and allow users to define commands in
+    .m files without having to mark them as commands.
+
+    Note that previous versions of Octave allowed expressions like
+
+      x = load -text foo.dat
+
+    but an expression like this will now generate a parse error.  In
+    order to assign the value returned by a function to a variable,
+    you must use the normal function call syntax:
+
+      x = load ("-text", "foo.dat");
+
  ** Block comments.
 
-    Commented code can be between matching "%{" and "%}" markers, even
-    if the commented code spans several line.  This allows blocks code
-    to be commented, without needing to comment each line.  For
-    example,
+    Commented code can be between matching "#{" and "#}" or "%{" and
+    "%}" markers, even if the commented code spans several line.  This
+    allows blocks code to be commented, without needing to comment
+    each line.  For example,
 
-    function y = func (x)
-      y = 2 * x;
-    %{
-      y += 1;
-    %}
+    function [s, t] = func (x, y)
+      s = 2 * x;
+    #{
+      s *= y;
+      t = y + x;
+    #}
     endfunction
 
-    the line "y += 1;" will not be executed.
+    the lines "s *= y;" and "t = y + x" will not be executed.
 
  ** The Control, Finance and Quaternion functions have been removed.
 
@@ -226,22 +256,21 @@ Summary of important user-visible changes for version 3.2:
 
  ** Other miscellaneous new functions.
 
-      addtodate          interp1q                    rectint
-      bicgstab           isdebugmode                 regexptranslate
-      cgs                isfloat                     restoredefaultpath
-      command_line_path  isstrprop                   roundb
-      contrast           log1p                       rundemos
-      convn              lsqnonneg                   runlength
-      datetick           matlabroot                  saveobj
-      display            namelengthmax               spaugment
-      expm1              nargoutchk                  strchr
-      filemarker         pathdef                     strvcat
-      fstat              perl                        subspace
-      full               prctile                     symvar
-      fzero              quantile                    treelayout
-      genvarname         re_read_readline_init_file  validatestring
-      hypot              reallog                     which
-      idivide            realpow
-      info               realsqrt
+      addtodate          info                        realpow
+      bicgstab           interp1q                    realsqrt
+      cgs                isdebugmode                 rectint
+      command_line_path  isfloat                     regexptranslate
+      contrast           isstrprop                   restoredefaultpath
+      convn              log1p                       roundb
+      datetick           lsqnonneg                   rundemos
+      display            matlabroot                  runlength
+      expm1              namelengthmax               saveobj
+      filemarker         nargoutchk                  spaugment
+      fstat              pathdef                     strchr
+      full               perl                        strvcat
+      fzero              prctile                     subspace
+      genvarname         quantile                    symvar
+      hypot              re_read_readline_init_file  treelayout
+      idivide            reallog                     validatestring
 
 See NEWS.3 for old news.

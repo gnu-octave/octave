@@ -163,6 +163,7 @@ function retval = surfl (varargin)
 endfunction
 
 %!demo
+%! clf
 %! [X,Y,Z]=sombrero;
 %! colormap(copper);
 %! surfl(X,Y,Z);

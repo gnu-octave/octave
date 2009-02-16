@@ -57,8 +57,8 @@ function print_usage (name)
   
   ## Raise the final error
   if (status != 0)
-    warning ("makeinfo: Texinfo formatting filter exited abnormally");
-    warning ("makeinfo: raw Texinfo source of help text follows...\n");
+    warning ("print_usage: Texinfo formatting filter exited abnormally");
+    warning ("print_usage: raw Texinfo source of help text follows...\n");
   endif
 
   error ("Invalid call to %s.  Correct usage is:\n\n%s\n%s",
@@ -101,7 +101,7 @@ function [retval, status] = get_usage_texinfo (help_text, max_len)
   endif
 
   ## Run makeinfo to generate plain text
-  [retval, status] = makeinfo (buffer, "plain text");
+  [retval, status] = __makeinfo__ (buffer, "plain text");
 endfunction
 
 function [retval, status] = get_usage_html (help_text, max_len)

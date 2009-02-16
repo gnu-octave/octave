@@ -16,11 +16,11 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{text}, @var{status}] =} __strip_html_tags__ (@var{html_text})
-## This function removes html tags from a text. This is used as a simple
-## html-to-text function.
-##
-## This is an internal function and should not be used directly.
+## Undocumented internal function.
 ## @end deftypefn
+
+## Remove HTML tags from text.  This is used as a simple HTML-to-text
+## function. 
 
 function [text, status] = __strip_html_tags__ (html_text)
   start = find (html_text == "<");

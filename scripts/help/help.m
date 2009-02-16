@@ -59,7 +59,7 @@ function help (name)
       case "plain text"
         status = 0;
       case "texinfo"
-        [text, status] = makeinfo (text, "plain text");
+        [text, status] = __makeinfo__ (text, "plain text");
       case "html"
         [text, status] = strip_html_tags (text);
       case "not documented"
@@ -75,7 +75,7 @@ function help (name)
     
     ## Print text
     if (status != 0)
-      warning ("makeinfo: Texinfo formatting filter exited abnormally; raw Texinfo source of help text follows...\n");
+      warning ("help: Texinfo formatting filter exited abnormally; raw Texinfo source of help text follows...\n");
     endif
 
     which (name);
@@ -104,7 +104,7 @@ function [text, status] = do_contents (name)
         case "plain text"
           status = 0;
         case "texinfo"
-          [text, status] = makeinfo (text, "plain text");
+          [text, status] = __makeinfo__ (text, "plain text");
         case "html"
           [text, status] = strip_html_tags (text);
       endswitch

@@ -34,13 +34,13 @@ INSTALL_DATA = @INSTALL_DATA@
 
 SOURCES = \
   __additional_help_message__.m \
+  __makeinfo__.m \
   __strip_html_tags__.m \
   doc.m \
   gen_doc_cache.m \
   get_first_help_sentence.m \
   help.m \
   lookfor.m \
-  makeinfo.m \
   print_usage.m \
   type.m \
   which.m

@@ -133,7 +133,7 @@ function [retval, status] = first_sentence_texinfo (help_text, max_len)
   endif
   
   ## Run makeinfo to generate plain text
-  [help_text, status] = makeinfo (help_text, "plain text");
+  [help_text, status] = __makeinfo__ (help_text, "plain text");
   
   ## Extract first line with plain text method.
   retval = first_sentence_plain_text (help_text, max_len);

@@ -1,3 +1,12 @@
+2009-02-16  John W. Eaton  <jwe@octave.org>
+
+	* help/__makeinfo__.m: Rename from help/makeinfo.m.  Delete tmp file.
+	* help/Makefile.in (SOURCES): Add __makeinfo__.m, delete makeinfo.m.
+	* help/get_first_help_sentence.m, help/help.m, help/lookfor.m,
+	help/print_usage.m: Call __makeinfo__ instead of makeinfo.
+	* help/__strip_html_tags__.m, help/__additional_help_message__.m:
+	Doc fix.
+
 2009-02-16  Ben Abbott <bpabbott@mac.com>
 
 	* plot/shading.m: No new figure windows for the demos.

@@ -15,15 +15,16 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{retval}, @var{status}] =} makeinfo (@var{text}, @
-## @var{output_type})
-## @deftypefnx{Function File} {[@var{retval}, @var{status}] =} makeinfo (@var{text}, @
-## @var{output_type}, @var{see_also})
+## @deftypefn {Function File} {[@var{retval}, @var{status}] =} __makeinfo__ (@var{text}, @var{output_type})
+## @deftypefnx{Function File} {[@var{retval}, @var{status}] =} __makeinfo__ (@var{text}, @var{output_type}, @var{see_also})
+## Undocumented internal function.
+## @end deftypefn
+
 ## Run @code{makeinfo} on a given text.
 ##
-## The string @var{text} is run through the @code{makeinfo} program to generate
-## output in various formats. This string must contain valid Texinfo formatted
-## text.
+## The string @var{text} is run through the @code{__makeinfo__} program
+## to generate output in various formats. This string must contain valid
+## Texinfo formatted text.
 ##
 ## The @var{output_type} selects the format of the output. This can be either
 ## @t{"html"}, @t{"texinfo"}, or @t{"plain text"}. By default this is
@@ -53,20 +54,20 @@
 ##
 ## The optional output argument @var{status} contains the exit status of the
 ## @code{makeinfo} program as returned by @code{system}.
-## @end deftypefn
 
-function [retval, status] = makeinfo (text, output_type = "plain text", see_also = [])
+function [retval, status] = __makeinfo__ (text, output_type = "plain text", see_also = [])
+
   ## Check input
   if (nargin == 0)
     print_usage ();
   endif
   
   if (!ischar (text))
-    error ("makeinfo: first input argument must be a string");
+    error ("__makeinfo__: first input argument must be a string");
   endif
   
   if (!ischar (output_type))
-    error ("makeinfo: second input argument must be a string");
+    error ("__makeinfo__: second input argument must be a string");
   endif
   
   ## Define the @seealso macro
@@ -79,7 +80,7 @@ function [retval, status] = makeinfo (text, output_type = "plain text", see_also
   endif
   
   if (!isa (see_also, "function_handle"))
-    error ("makeinfo: third input argument must be the empty matrix, or a function handle");
+    error ("__makeinfo__: third input argument must be the empty matrix, or a function handle");
   endif
   
   ## It seems like makeinfo sometimes gets angry if the character on a line is
@@ -136,16 +137,16 @@ function [retval, status] = makeinfo (text, output_type = "plain text", see_also
          cmd = sprintf ("%s --no-headers --html --no-warn --no-validate --force %s",
                         makeinfo_program (), name);
       otherwise
-        error ("makeinfo: unsupported output type: '%s'", output_type);
+        error ("__makeinfo__: unsupported output type: '%s'", output_type);
     endswitch
   
     ## Call makeinfo
     [status, retval] = system (cmd);
    
   unwind_protect_cleanup
-#    if (exist (name, "file"))
-#      delete (name);
-#    endif
+    if (exist (name, "file"))
+      delete (name);
+    endif
   end_unwind_protect
 endfunction
 

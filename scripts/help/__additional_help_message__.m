@@ -15,11 +15,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} __additional_help_message__ ()
-## Return additional help message.
-##
-## This is an internal function and should not be used directly.
-## @seealso{suppress_verbose_help_message}
+## @deftypefn {Function File} {} __additional_help_message__ ()
+## Undocumented internal function.
 ## @end deftypefn
 
 function msg = __additional_help_message__ ()

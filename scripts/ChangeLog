@@ -1,3 +1,7 @@
+2009-02-15  Ben Abbott <bpabbott@mac.com>
+
+	* plot/subplot.m: Compatible placement of subplots.
+
 2009-02-13 Ben Abbott <bpabott@mac.com>
 
 	* plot/__go_draw_axes__.m: Respect axes ticklength property.

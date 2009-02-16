@@ -395,7 +395,7 @@ function papersize = get_papersize (h)
     if (strcmpi (get (h, "papertype"), "<custom>"))
       ## If the type is custom but the size is a standard, then set the
       ## standard type.
-      papersize = get (h "papersize");
+      papersize = get (h, "papersize");
       papersize = papersize * t.(paperunits);
       n = find (all ((ones ([size(papersizes, 1), 1])
 		      * round (1000*papersize) - papersizes) == 0, 2));

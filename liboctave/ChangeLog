@@ -2,6 +2,11 @@
 	
 	* mx-inlines.cc (OP_ROW_SHORT_CIRCUIT): New macro.
 	(mx_inline_any, mx_inline_all): Override row-reduction case.
+	(MX_CUMULATIVE_OP, MX_BASE_REDUCTION_OP, MX_REDUCTION_OP,
+	MX_ANY_OP, MX_ALL_OP, MX_ND_ANY_ALL, MX_ND_REDUCTION,
+	MX_ND_COMPLEX_OP_REDUCTION, MX_ND_CUMULATIVE_OP,
+	MX_ND_ANY_EVAL, MX_ND_ALL_EVAL, MX_ND_REAL_OP_REDUCTION):
+	Remove unused macros.
 
 2009-02-16  Jaroslav Hajek  <highegg@gmail.com>
 	

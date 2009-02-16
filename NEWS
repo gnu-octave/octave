@@ -79,7 +79,10 @@ Summary of important user-visible changes for version 3.2:
     The fsolve function now accepts an option structure argument (see
     also the optimset function).  The INFO values returned from fsolve
     have changed to be compatible with Matlab's fsolve function.
-    Additionally, fsolve is now able to solve overdetermined systems.
+    Additionally, fsolve is now able to solve overdetermined systems,
+    complex-differentiable complex systems, systems with a sparse
+    jacobian and can work in single precision if given single precision
+    inputs. It can also be called recursively.
 
  ** Object Oriented Programming.
 
@@ -186,10 +189,17 @@ Summary of important user-visible changes for version 3.2:
     completely rewritten and so the indexing of arrays is now
     significantly faster.
 
+ ** Improved memory management.
+
+    Octave will now attempt to share data in some cases where previously
+    a copy would be made, such as certain array slicing operations or
+    conversions between cells, structs and cs-lists. This usually reduces
+    both time and memory consumption.
+
  ** Improved performance for reduction operations.
 
-    The performance of the sum, prod, sumsq, cumsum, and cumprod
-    functions has been significantly improved.
+    The performance of the sum, prod, sumsq, cumsum, cumprod, any, all,
+    max and min functions has been significantly improved.
 
  ** Diagonal and permutation matrices.
 

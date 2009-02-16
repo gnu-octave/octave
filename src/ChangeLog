@@ -1,7 +1,9 @@
 2009-02-16  Jaroslav Hajek  <highegg@gmail.com>
 
-	* ov-base-mat (octave_base_matrix<MT>::assign (const octave_value_list&,
+	* ov-base-mat.cc (octave_base_matrix<MT>::assign (const octave_value_list&,
 	typename MT::element_type): Fix invalid index.
+	* ov-re-mat.cc (default_numeric_demotion_function): Use
+	float_array_value instead of float_matrix_value.
 
 2009-02-16  John W. Eaton  <jwe@octave.org>
 

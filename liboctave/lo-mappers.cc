@@ -222,44 +222,18 @@ octave_is_NaN_or_NA (double x)
 
 // (double, double) -> double mappers.
 
-// FIXME -- need to handle NA too?
+// According to Matlab, is both args are NaN, the first one is returned.
 
 double
 xmin (double x, double y)
 {
-  if (x < y)
-    return x;
-
-  if (y <= x)
-    return y;
-
-  if (xisnan (x) && ! xisnan (y))
-    return y;
-  else if (xisnan (y) && ! xisnan (x))
-    return x;
-  else if (octave_is_NA (x) || octave_is_NA (y))
-    return octave_NA;
-  else
-    return octave_NaN;
+  return  xisnan (y) ? x : (x <= y ? x : y);
 }
 
 double
 xmax (double x, double y)
 {
-  if (x > y)
-    return x;
-
-  if (y >= x)
-    return y;
-
-  if (xisnan (x) && ! xisnan (y))
-    return y;
-  else if (xisnan (y) && ! xisnan (x))
-    return x;
-  else if (octave_is_NA (x) || octave_is_NA (y))
-    return octave_NA;
-  else
-    return octave_NaN;
+  return  xisnan (y) ? x : (x >= y ? x : y);
 }
 
 // complex -> complex mappers.

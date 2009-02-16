@@ -29,6 +29,24 @@ along with Octave; see the file COPYING.  If not, see
 typedef std::complex<double> Complex;
 typedef std::complex<float> FloatComplex;
 
+// The default comparison of complex number is to compare by abs, then by arg.
+// FIXME: this could be speeded up significantly.
+template <class T>
+inline bool operator < (const std::complex<T>& a,
+                        const std::complex<T>& b)
+{
+  T ax = std::abs (a), bx = std::abs (b);
+  return ax < bx || (ax == bx && std::arg (a) < std::arg (b));
+}
+
+template <class T>
+inline bool operator > (const std::complex<T>& a,
+                        const std::complex<T>& b)
+{
+  T ax = std::abs (a), bx = std::abs (b);
+  return ax > bx || (ax == bx && std::arg (a) > std::arg (b));
+}
+
 #endif
 
 /*

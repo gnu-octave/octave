@@ -467,6 +467,163 @@ F (const T *v, T *r, octave_idx_type l, \
 OP_CUM_FCNN (mx_inline_cumsum)
 OP_CUM_FCNN (mx_inline_cumprod)
 
+#define OP_MINMAX_FCN(F, OP) \
+template <class T> \
+void F (const T *v, T *r, octave_idx_type n) \
+{ \
+  if (! n) return; \
+  T tmp = v[0]; \
+  octave_idx_type i = 1; \
+  while (xisnan (tmp) && i < n) tmp = v[i++]; \
+  for (i = 1; i < n; i++) \
+    if (v[i] OP tmp) tmp = v[i]; \
+  *r = tmp; \
+} \
+template <class T> \
+void F (const T *v, T *r, octave_idx_type *ri, octave_idx_type n) \
+{ \
+  if (! n) return; \
+  T tmp = v[0]; \
+  octave_idx_type tmpi = 0; \
+  octave_idx_type i = 1; \
+  while (xisnan (tmp) && i < n) tmp = v[i++]; \
+  for (i = 1; i < n; i++) \
+    if (v[i] OP tmp) { tmp = v[i]; tmpi = i; }\
+  *r = tmp; \
+  *ri = tmpi; \
+}
+
+OP_MINMAX_FCN (mx_inline_min, <)
+OP_MINMAX_FCN (mx_inline_max, >)
+
+// Row reductions will be slightly complicated.  We will proceed with checks
+// for NaNs until we detect that no row will yield a NaN, in which case we
+// proceed to a faster code.
+
+#define OP_MINMAX_FCN2(F, OP) \
+template <class T> \
+inline void \
+F (const T *v, T *r, octave_idx_type m, octave_idx_type n) \
+{ \
+  if (! n) return; \
+  bool nan = false; \
+  octave_idx_type j = 0; \
+  for (octave_idx_type i = 0; i < m; i++) \
+    {  \
+      r[i] = v[i]; \
+      if (xisnan (v[i])) nan = true;  \
+    } \
+  j++; v += m; \
+  while (nan && j < n) \
+    { \
+      nan = false; \
+      for (octave_idx_type i = 0; i < m; i++) \
+        {  \
+          if (xisnan (v[i])) \
+            nan = true;  \
+          else if (xisnan (r[i]) || v[i] OP r[i]) \
+            r[i] = v[i]; \
+        } \
+      j++; v += m; \
+    } \
+  while (j < n) \
+    { \
+      for (octave_idx_type i = 0; i < m; i++) \
+        if (v[i] OP r[i]) r[i] = v[i]; \
+      j++; v += m; \
+    } \
+} \
+template <class T> \
+inline void \
+F (const T *v, T *r, octave_idx_type *ri, \
+   octave_idx_type m, octave_idx_type n) \
+{ \
+  if (! n) return; \
+  bool nan = false; \
+  octave_idx_type j = 0; \
+  for (octave_idx_type i = 0; i < m; i++) \
+    {  \
+      r[i] = v[i]; ri[i] = j; \
+      if (xisnan (v[i])) nan = true;  \
+    } \
+  j++; v += m; \
+  while (nan && j < n) \
+    { \
+      nan = false; \
+      for (octave_idx_type i = 0; i < m; i++) \
+        {  \
+          if (xisnan (v[i])) \
+            nan = true;  \
+          else if (xisnan (r[i]) || v[i] OP r[i]) \
+            { r[i] = v[i]; ri[i] = j; } \
+        } \
+      j++; v += m; \
+    } \
+  while (j < n) \
+    { \
+      for (octave_idx_type i = 0; i < m; i++) \
+        if (v[i] OP r[i]) \
+          { r[i] = v[i]; ri[i] = j; } \
+      j++; v += m; \
+    } \
+}
+
+OP_MINMAX_FCN2 (mx_inline_min, <)
+OP_MINMAX_FCN2 (mx_inline_max, >)
+
+#define OP_MINMAX_FCNN(F) \
+template <class T> \
+inline void \
+F (const T *v, T *r, octave_idx_type l, \
+   octave_idx_type n, octave_idx_type u) \
+{ \
+  if (! n) return; \
+  if (l == 1) \
+    { \
+      for (octave_idx_type i = 0; i < u; i++) \
+        { \
+          F (v, r, n); \
+          v += n; r++; \
+        } \
+    } \
+  else \
+    { \
+      for (octave_idx_type i = 0; i < u; i++) \
+        { \
+          F (v, r, l, n); \
+          v += l*n; \
+          r += l; \
+        } \
+    } \
+} \
+template <class T> \
+inline void \
+F (const T *v, T *r, octave_idx_type *ri, \
+   octave_idx_type l, octave_idx_type n, octave_idx_type u) \
+{ \
+  if (! n) return; \
+  if (l == 1) \
+    { \
+      for (octave_idx_type i = 0; i < u; i++) \
+        { \
+          F (v, r, ri, n); \
+          v += n; r++; ri++; \
+        } \
+    } \
+  else \
+    { \
+      for (octave_idx_type i = 0; i < u; i++) \
+        { \
+          F (v, r, ri, l, n); \
+          v += l*n; \
+          r += l; ri += l; \
+        } \
+    } \
+}
+
+OP_MINMAX_FCNN (mx_inline_min)
+OP_MINMAX_FCNN (mx_inline_max)
+
 // Assistant function
 
 inline void
@@ -538,6 +695,52 @@ do_mx_cum_op (const Array<T>& src, int dim,
   // Cumulative operation doesn't reduce the array size.
   ArrayType ret (dims);
   mx_cum_op (src.data (), ret.fortran_vec (), l, n, u);
+
+  return ret;
+}
+
+template <class ArrayType>
+inline ArrayType
+do_mx_minmax_op (const ArrayType& src, int dim,
+                 void (*mx_minmax_op) (const typename ArrayType::element_type *, 
+                                       typename ArrayType::element_type *,
+                                       octave_idx_type, octave_idx_type, octave_idx_type))
+{
+  octave_idx_type l, n, u;
+  dim_vector dims = src.dims ();
+  get_extent_triplet (dims, dim, l, n, u);
+
+  // If the dimension is zero, we don't do anything.
+  if (dim < dims.length () && dims(dim) != 0) dims(dim) = 1;
+  dims.chop_trailing_singletons ();
+
+  ArrayType ret (dims);
+  mx_minmax_op (src.data (), ret.fortran_vec (), l, n, u);
+
+  return ret;
+}
+
+template <class ArrayType>
+inline ArrayType
+do_mx_minmax_op (const ArrayType& src, Array<octave_idx_type>& idx, int dim,
+                 void (*mx_minmax_op) (const typename ArrayType::element_type *, 
+                                       typename ArrayType::element_type *,
+                                       octave_idx_type *,
+                                       octave_idx_type, octave_idx_type, octave_idx_type))
+{
+  octave_idx_type l, n, u;
+  dim_vector dims = src.dims ();
+  get_extent_triplet (dims, dim, l, n, u);
+
+  // If the dimension is zero, we don't do anything.
+  if (dim < dims.length () && dims(dim) != 0) dims(dim) = 1;
+  dims.chop_trailing_singletons ();
+
+  ArrayType ret (dims);
+  if (idx.dims () != dims) idx = Array<octave_idx_type> (dims);
+
+  mx_minmax_op (src.data (), ret.fortran_vec (), idx.fortran_vec (),
+                l, n, u);
 
   return ret;
 }

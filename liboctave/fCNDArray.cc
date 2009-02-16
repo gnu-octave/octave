@@ -687,191 +687,25 @@ static const FloatComplex FloatComplex_NaN_result (octave_Float_NaN, octave_Floa
 FloatComplexNDArray
 FloatComplexNDArray::max (int dim) const
 {
-  ArrayN<octave_idx_type> dummy_idx;
-  return max (dummy_idx, dim);
+  return do_mx_minmax_op<FloatComplexNDArray> (*this, dim, mx_inline_max);
 }
 
 FloatComplexNDArray
 FloatComplexNDArray::max (ArrayN<octave_idx_type>& idx_arg, int dim) const
 {
-  dim_vector dv = dims ();
-  dim_vector dr = dims ();
-
-  if (dv.numel () == 0 || dim > dv.length () || dim < 0)
-    return FloatComplexNDArray ();
-  
-  dr(dim) = 1;
-
-  FloatComplexNDArray result (dr);
-  idx_arg.resize (dr);
-
-  octave_idx_type x_stride = 1;
-  octave_idx_type x_len = dv(dim);
-  for (int i = 0; i < dim; i++)
-    x_stride *= dv(i);
-
-  for (octave_idx_type i = 0; i < dr.numel (); i++)
-    {
-      octave_idx_type x_offset;
-      if (x_stride == 1)
-	x_offset = i * x_len;
-      else
-	{
-	  octave_idx_type x_offset2 = 0;
-	  x_offset = i;
-	  while (x_offset >= x_stride)
-	    {
-	      x_offset -= x_stride;
-	      x_offset2++;
-	    }
-	  x_offset += x_offset2 * x_stride * x_len;
-	}
-
-      octave_idx_type idx_j;
-
-      FloatComplex tmp_max;
-
-      float abs_max = octave_Float_NaN;
-
-      for (idx_j = 0; idx_j < x_len; idx_j++)
-	{
-	  tmp_max = elem (idx_j * x_stride + x_offset);
-	  
-	  if (! xisnan (tmp_max))
-	    {
-	      abs_max = std::abs(tmp_max);
-	      break;
-	    }
-	}
-
-      for (octave_idx_type j = idx_j+1; j < x_len; j++)
-	{
-	  FloatComplex tmp = elem (j * x_stride + x_offset);
-
-	  if (xisnan (tmp))
-	    continue;
-
-	  float abs_tmp = std::abs (tmp);
-
-	  if (abs_tmp > abs_max)
-	    {
-	      idx_j = j;
-	      tmp_max = tmp;
-	      abs_max = abs_tmp;
-	    }
-	}
-
-      if (xisnan (tmp_max))
-	{
-	  result.elem (i) = FloatComplex_NaN_result;
-	  idx_arg.elem (i) = 0;
-	}
-      else
-	{
-	  result.elem (i) = tmp_max;
-	  idx_arg.elem (i) = idx_j;
-	}
-    }
-
-  result.chop_trailing_singletons ();
-  idx_arg.chop_trailing_singletons ();
-
-  return result;
+  return do_mx_minmax_op<FloatComplexNDArray> (*this, idx_arg, dim, mx_inline_max);
 }
 
 FloatComplexNDArray
 FloatComplexNDArray::min (int dim) const
 {
-  ArrayN<octave_idx_type> dummy_idx;
-  return min (dummy_idx, dim);
+  return do_mx_minmax_op<FloatComplexNDArray> (*this, dim, mx_inline_min);
 }
 
 FloatComplexNDArray
 FloatComplexNDArray::min (ArrayN<octave_idx_type>& idx_arg, int dim) const
 {
-  dim_vector dv = dims ();
-  dim_vector dr = dims ();
-
-  if (dv.numel () == 0 || dim > dv.length () || dim < 0)
-    return FloatComplexNDArray ();
-  
-  dr(dim) = 1;
-
-  FloatComplexNDArray result (dr);
-  idx_arg.resize (dr);
-
-  octave_idx_type x_stride = 1;
-  octave_idx_type x_len = dv(dim);
-  for (int i = 0; i < dim; i++)
-    x_stride *= dv(i);
-
-  for (octave_idx_type i = 0; i < dr.numel (); i++)
-    {
-      octave_idx_type x_offset;
-      if (x_stride == 1)
-	x_offset = i * x_len;
-      else
-	{
-	  octave_idx_type x_offset2 = 0;
-	  x_offset = i;
-	  while (x_offset >= x_stride)
-	    {
-	      x_offset -= x_stride;
-	      x_offset2++;
-	    }
-	  x_offset += x_offset2 * x_stride * x_len;
-	}
-
-      octave_idx_type idx_j;
-
-      FloatComplex tmp_min;
-
-      float abs_min = octave_Float_NaN;
-
-      for (idx_j = 0; idx_j < x_len; idx_j++)
-	{
-	  tmp_min = elem (idx_j * x_stride + x_offset);
-	  
-	  if (! xisnan (tmp_min))
-	    {
-	      abs_min = std::abs(tmp_min);
-	      break;
-	    }
-	}
-
-      for (octave_idx_type j = idx_j+1; j < x_len; j++)
-	{
-	  FloatComplex tmp = elem (j * x_stride + x_offset);
-
-	  if (xisnan (tmp))
-	    continue;
-
-	  float abs_tmp = std::abs (tmp);
-
-	  if (abs_tmp < abs_min)
-	    {
-	      idx_j = j;
-	      tmp_min = tmp;
-	      abs_min = abs_tmp;
-	    }
-	}
-
-      if (xisnan (tmp_min))
-	{
-	  result.elem (i) = FloatComplex_NaN_result;
-	  idx_arg.elem (i) = 0;
-	}
-      else
-	{
-	  result.elem (i) = tmp_min;
-	  idx_arg.elem (i) = idx_j;
-	}
-    }
-
-  result.chop_trailing_singletons ();
-  idx_arg.chop_trailing_singletons ();
-
-  return result;
+  return do_mx_minmax_op<FloatComplexNDArray> (*this, idx_arg, dim, mx_inline_min);
 }
 
 FloatNDArray

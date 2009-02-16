@@ -1,5 +1,18 @@
 2009-02-16  Jaroslav Hajek  <highegg@gmail.com>
 
+	* oct-cmplx.h (operator <, operator >): New operators.
+	* mx-inlines.cc (OP_MINMAX_FCN, OP_MINMAX_FCN2, OP_MINMAX_FCNN):
+	New macros.
+	(mx_inline_min, mx_inline_max, do_mx_minmax_op): New overloaded
+	template functions.
+	* dNDArray (NDArray::min, NDArray::max): Use do_mx_minmax_op.
+	* fNDArray (FloatNDArray::min, FloatNDArray::max): Ditto.
+	* CNDArray (ComplexNDArray::min, ComplexNDArray::max): Ditto.
+	* fCNDArray (FloatComplexNDArray::min, FloatComplexNDArray::max):
+	Ditto.
+
+2009-02-16  Jaroslav Hajek  <highegg@gmail.com>
+
 	* chMatrix.cc (charMatrix::all, charMatrix::any): Use do_mx_red_op.
 	* chNDArray.cc (charNDArray::all, charNDArray::any): Ditto.
 

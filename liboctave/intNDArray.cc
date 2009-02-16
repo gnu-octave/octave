@@ -213,140 +213,28 @@ template <class T>
 intNDArray<T>
 intNDArray<T>::max (int dim) const
 {
-  ArrayN<octave_idx_type> dummy_idx;
-  return max (dummy_idx, dim);
+  return do_mx_minmax_op<intNDArray<T> > (*this, dim, mx_inline_max);
 }
 
 template <class T>
 intNDArray<T>
 intNDArray<T>::max (ArrayN<octave_idx_type>& idx_arg, int dim) const
 {
-  dim_vector dv = this->dims ();
-  dim_vector dr = this->dims ();
-
-  if (dv.numel () == 0 || dim > dv.length () || dim < 0)
-    return intNDArray<T> ();
-  
-  dr(dim) = 1;
-
-  intNDArray<T> result (dr);
-  idx_arg.resize (dr);
-
-  octave_idx_type x_stride = 1;
-  octave_idx_type x_len = dv(dim);
-  for (int i = 0; i < dim; i++)
-    x_stride *= dv(i);
-
-  for (octave_idx_type i = 0; i < dr.numel (); i++)
-    {
-      octave_idx_type x_offset;
-      if (x_stride == 1)
-	x_offset = i * x_len;
-      else
-	{
-	  octave_idx_type x_offset2 = 0;
-	  x_offset = i;
-	  while (x_offset >= x_stride)
-	    {
-	      x_offset -= x_stride;
-	      x_offset2++;
-	    }
-	  x_offset += x_offset2 * x_stride * x_len;
-	}
-
-      octave_idx_type idx_j = 0;
-
-      T tmp_max = this->elem (x_offset);
-
-      for (octave_idx_type j = 1; j < x_len; j++)
-	{
-	  T tmp = this->elem (j * x_stride + x_offset);
-
-	  if (tmp > tmp_max)
-	    {
-	      idx_j = j;
-	      tmp_max = tmp;
-	    }
-	}
-
-      result.elem (i) = tmp_max;
-      idx_arg.elem (i) = idx_j;
-    }
-
-  result.chop_trailing_singletons ();
-  idx_arg.chop_trailing_singletons ();
-
-  return result;
+  return do_mx_minmax_op<intNDArray<T> > (*this, idx_arg, dim, mx_inline_max);
 }
 
 template <class T>
 intNDArray<T>
 intNDArray<T>::min (int dim) const
 {
-  ArrayN<octave_idx_type> dummy_idx;
-  return min (dummy_idx, dim);
+  return do_mx_minmax_op<intNDArray<T> > (*this, dim, mx_inline_min);
 }
 
 template <class T>
 intNDArray<T>
 intNDArray<T>::min (ArrayN<octave_idx_type>& idx_arg, int dim) const
 {
-  dim_vector dv = this->dims ();
-  dim_vector dr = this->dims ();
-
-  if (dv.numel () == 0 || dim > dv.length () || dim < 0)
-    return intNDArray<T> ();
-  
-  dr(dim) = 1;
-
-  intNDArray<T> result (dr);
-  idx_arg.resize (dr);
-
-  octave_idx_type x_stride = 1;
-  octave_idx_type x_len = dv(dim);
-  for (int i = 0; i < dim; i++)
-    x_stride *= dv(i);
-
-  for (octave_idx_type i = 0; i < dr.numel (); i++)
-    {
-      octave_idx_type x_offset;
-      if (x_stride == 1)
-	x_offset = i * x_len;
-      else
-	{
-	  octave_idx_type x_offset2 = 0;
-	  x_offset = i;
-	  while (x_offset >= x_stride)
-	    {
-	      x_offset -= x_stride;
-	      x_offset2++;
-	    }
-	  x_offset += x_offset2 * x_stride * x_len;
-	}
-
-      octave_idx_type idx_j = 0;
-
-      T tmp_min = this->elem (x_offset);
-
-      for (octave_idx_type j = 1; j < x_len; j++)
-	{
-	  T tmp = this->elem (j * x_stride + x_offset);
-
-	  if (tmp < tmp_min)
-	    {
-	      idx_j = j;
-	      tmp_min = tmp;
-	    }
-	}
-
-      result.elem (i) = tmp_min;
-      idx_arg.elem (i) = idx_j;
-    }
-
-  result.chop_trailing_singletons ();
-  idx_arg.chop_trailing_singletons ();
-
-  return result;
+  return do_mx_minmax_op<intNDArray<T> > (*this, idx_arg, dim, mx_inline_min);
 }
 
 /*

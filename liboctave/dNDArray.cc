@@ -731,157 +731,25 @@ NDArray::sumsq (int dim) const
 NDArray
 NDArray::max (int dim) const
 {
-  ArrayN<octave_idx_type> dummy_idx;
-  return max (dummy_idx, dim);
+  return do_mx_minmax_op<NDArray> (*this, dim, mx_inline_max);
 }
 
 NDArray
 NDArray::max (ArrayN<octave_idx_type>& idx_arg, int dim) const
 {
-  dim_vector dv = dims ();
-  dim_vector dr = dims ();
-
-  if (dv.numel () == 0 || dim > dv.length () || dim < 0)
-    return NDArray ();
-  
-  dr(dim) = 1;
-
-  NDArray result (dr);
-  idx_arg.resize (dr);
-
-  octave_idx_type x_stride = 1;
-  octave_idx_type x_len = dv(dim);
-  for (int i = 0; i < dim; i++)
-    x_stride *= dv(i);
-
-  for (octave_idx_type i = 0; i < dr.numel (); i++)
-    {
-      octave_idx_type x_offset;
-      if (x_stride == 1)
-	x_offset = i * x_len;
-      else
-	{
-	  octave_idx_type x_offset2 = 0;
-	  x_offset = i;
-	  while (x_offset >= x_stride)
-	    {
-	      x_offset -= x_stride;
-	      x_offset2++;
-	    }
-	  x_offset += x_offset2 * x_stride * x_len;
-	}
-
-      octave_idx_type idx_j;
-
-      double tmp_max = octave_NaN;
-
-      for (idx_j = 0; idx_j < x_len; idx_j++)
-	{
-	  tmp_max = elem (idx_j * x_stride + x_offset);
-	  
-	  if (! xisnan (tmp_max))
-	    break;
-	}
-
-      for (octave_idx_type j = idx_j+1; j < x_len; j++)
-	{
-	  double tmp = elem (j * x_stride + x_offset);
-
-	  if (xisnan (tmp))
-	    continue;
-	  else if (tmp > tmp_max)
-	    {
-	      idx_j = j;
-	      tmp_max = tmp;
-	    }
-	}
-
-      result.elem (i) = tmp_max;
-      idx_arg.elem (i) = xisnan (tmp_max) ? 0 : idx_j;
-    }
-
-  result.chop_trailing_singletons ();
-  idx_arg.chop_trailing_singletons ();
-
-  return result;
+  return do_mx_minmax_op<NDArray> (*this, idx_arg, dim, mx_inline_max);
 }
 
 NDArray
 NDArray::min (int dim) const
 {
-  ArrayN<octave_idx_type> dummy_idx;
-  return min (dummy_idx, dim);
+  return do_mx_minmax_op<NDArray> (*this, dim, mx_inline_min);
 }
 
 NDArray
 NDArray::min (ArrayN<octave_idx_type>& idx_arg, int dim) const
 {
-  dim_vector dv = dims ();
-  dim_vector dr = dims ();
-
-  if (dv.numel () == 0 || dim > dv.length () || dim < 0)
-    return NDArray ();
-  
-  dr(dim) = 1;
-
-  NDArray result (dr);
-  idx_arg.resize (dr);
-
-  octave_idx_type x_stride = 1;
-  octave_idx_type x_len = dv(dim);
-  for (int i = 0; i < dim; i++)
-    x_stride *= dv(i);
-
-  for (octave_idx_type i = 0; i < dr.numel (); i++)
-    {
-      octave_idx_type x_offset;
-      if (x_stride == 1)
-	x_offset = i * x_len;
-      else
-	{
-	  octave_idx_type x_offset2 = 0;
-	  x_offset = i;
-	  while (x_offset >= x_stride)
-	    {
-	      x_offset -= x_stride;
-	      x_offset2++;
-	    }
-	  x_offset += x_offset2 * x_stride * x_len;
-	}
-
-      octave_idx_type idx_j;
-
-      double tmp_min = octave_NaN;
-
-      for (idx_j = 0; idx_j < x_len; idx_j++)
-	{
-	  tmp_min = elem (idx_j * x_stride + x_offset);
-	  
-	  if (! xisnan (tmp_min))
-	    break;
-	}
-
-      for (octave_idx_type j = idx_j+1; j < x_len; j++)
-	{
-	  double tmp = elem (j * x_stride + x_offset);
-
-	  if (xisnan (tmp))
-	    continue;
-	  else if (tmp < tmp_min)
-	    {
-	      idx_j = j;
-	      tmp_min = tmp;
-	    }
-	}
-
-      result.elem (i) = tmp_min;
-      idx_arg.elem (i) = xisnan (tmp_min) ? 0 : idx_j;
-    }
-
-  result.chop_trailing_singletons ();
-  idx_arg.chop_trailing_singletons ();
-
-  return result;
+  return do_mx_minmax_op<NDArray> (*this, idx_arg, dim, mx_inline_min);
 }
 
 NDArray

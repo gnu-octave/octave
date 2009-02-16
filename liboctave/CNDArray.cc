@@ -692,191 +692,25 @@ static const Complex Complex_NaN_result (octave_NaN, octave_NaN);
 ComplexNDArray
 ComplexNDArray::max (int dim) const
 {
-  ArrayN<octave_idx_type> dummy_idx;
-  return max (dummy_idx, dim);
+  return do_mx_minmax_op<ComplexNDArray> (*this, dim, mx_inline_max);
 }
 
 ComplexNDArray
 ComplexNDArray::max (ArrayN<octave_idx_type>& idx_arg, int dim) const
 {
-  dim_vector dv = dims ();
-  dim_vector dr = dims ();
-
-  if (dv.numel () == 0 || dim > dv.length () || dim < 0)
-    return ComplexNDArray ();
-  
-  dr(dim) = 1;
-
-  ComplexNDArray result (dr);
-  idx_arg.resize (dr);
-
-  octave_idx_type x_stride = 1;
-  octave_idx_type x_len = dv(dim);
-  for (int i = 0; i < dim; i++)
-    x_stride *= dv(i);
-
-  for (octave_idx_type i = 0; i < dr.numel (); i++)
-    {
-      octave_idx_type x_offset;
-      if (x_stride == 1)
-	x_offset = i * x_len;
-      else
-	{
-	  octave_idx_type x_offset2 = 0;
-	  x_offset = i;
-	  while (x_offset >= x_stride)
-	    {
-	      x_offset -= x_stride;
-	      x_offset2++;
-	    }
-	  x_offset += x_offset2 * x_stride * x_len;
-	}
-
-      octave_idx_type idx_j;
-
-      Complex tmp_max;
-
-      double abs_max = octave_NaN;
-
-      for (idx_j = 0; idx_j < x_len; idx_j++)
-	{
-	  tmp_max = elem (idx_j * x_stride + x_offset);
-	  
-	  if (! xisnan (tmp_max))
-	    {
-	      abs_max = std::abs(tmp_max);
-	      break;
-	    }
-	}
-
-      for (octave_idx_type j = idx_j+1; j < x_len; j++)
-	{
-	  Complex tmp = elem (j * x_stride + x_offset);
-
-	  if (xisnan (tmp))
-	    continue;
-
-	  double abs_tmp = std::abs (tmp);
-
-	  if (abs_tmp > abs_max)
-	    {
-	      idx_j = j;
-	      tmp_max = tmp;
-	      abs_max = abs_tmp;
-	    }
-	}
-
-      if (xisnan (tmp_max))
-	{
-	  result.elem (i) = Complex_NaN_result;
-	  idx_arg.elem (i) = 0;
-	}
-      else
-	{
-	  result.elem (i) = tmp_max;
-	  idx_arg.elem (i) = idx_j;
-	}
-    }
-
-  result.chop_trailing_singletons ();
-  idx_arg.chop_trailing_singletons ();
-
-  return result;
+  return do_mx_minmax_op<ComplexNDArray> (*this, idx_arg, dim, mx_inline_max);
 }
 
 ComplexNDArray
 ComplexNDArray::min (int dim) const
 {
-  ArrayN<octave_idx_type> dummy_idx;
-  return min (dummy_idx, dim);
+  return do_mx_minmax_op<ComplexNDArray> (*this, dim, mx_inline_min);
 }
 
 ComplexNDArray
 ComplexNDArray::min (ArrayN<octave_idx_type>& idx_arg, int dim) const
 {
-  dim_vector dv = dims ();
-  dim_vector dr = dims ();
-
-  if (dv.numel () == 0 || dim > dv.length () || dim < 0)
-    return ComplexNDArray ();
-  
-  dr(dim) = 1;
-
-  ComplexNDArray result (dr);
-  idx_arg.resize (dr);
-
-  octave_idx_type x_stride = 1;
-  octave_idx_type x_len = dv(dim);
-  for (int i = 0; i < dim; i++)
-    x_stride *= dv(i);
-
-  for (octave_idx_type i = 0; i < dr.numel (); i++)
-    {
-      octave_idx_type x_offset;
-      if (x_stride == 1)
-	x_offset = i * x_len;
-      else
-	{
-	  octave_idx_type x_offset2 = 0;
-	  x_offset = i;
-	  while (x_offset >= x_stride)
-	    {
-	      x_offset -= x_stride;
-	      x_offset2++;
-	    }
-	  x_offset += x_offset2 * x_stride * x_len;
-	}
-
-      octave_idx_type idx_j;
-
-      Complex tmp_min;
-
-      double abs_min = octave_NaN;
-
-      for (idx_j = 0; idx_j < x_len; idx_j++)
-	{
-	  tmp_min = elem (idx_j * x_stride + x_offset);
-	  
-	  if (! xisnan (tmp_min))
-	    {
-	      abs_min = std::abs(tmp_min);
-	      break;
-	    }
-	}
-
-      for (octave_idx_type j = idx_j+1; j < x_len; j++)
-	{
-	  Complex tmp = elem (j * x_stride + x_offset);
-
-	  if (xisnan (tmp))
-	    continue;
-
-	  double abs_tmp = std::abs (tmp);
-
-	  if (abs_tmp < abs_min)
-	    {
-	      idx_j = j;
-	      tmp_min = tmp;
-	      abs_min = abs_tmp;
-	    }
-	}
-
-      if (xisnan (tmp_min))
-	{
-	  result.elem (i) = Complex_NaN_result;
-	  idx_arg.elem (i) = 0;
-	}
-      else
-	{
-	  result.elem (i) = tmp_min;
-	  idx_arg.elem (i) = idx_j;
-	}
-    }
-
-  result.chop_trailing_singletons ();
-  idx_arg.chop_trailing_singletons ();
-
-  return result;
+  return do_mx_minmax_op<ComplexNDArray> (*this, idx_arg, dim, mx_inline_min);
 }
 
 NDArray

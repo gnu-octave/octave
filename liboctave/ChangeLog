@@ -1,3 +1,8 @@
+2009-02-16  John W. Eaton  <jwe@octave.org>
+
+	* cmd-edit.cc (default_command_editor::do_readline):
+	Use fputs instead of fprintf.
+
 2009-02-14  Jaroslav Hajek  <highegg@gmail.com>
 
 	* mx-inlines.cc (OP_RED_FCN, OP_RED_FCN2, OP_RED_FCNN, OP_CUM_FCN,

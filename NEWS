@@ -32,7 +32,7 @@ Summary of important user-visible changes for version 3.2:
       comet               ezpolar     ishghandle
       dellistener         ezsurf      linkprop
 
-** Improvements to the debugger.
+ ** Improvements to the debugger.
 
     The interactive debugging features have been improved.  Stopping
     on statements with dbstop should work correctly now.  Stepping
@@ -41,6 +41,13 @@ Summary of important user-visible changes for version 3.2:
     dbup and dbdown now works.  The dbstack function is now available
     to print the current function call stack.  The new dbquit function
     is available to exit the debugging mode.
+
+ ** Improved traceback error messages.
+
+    Traceback error messages are much more concise and easier to
+    understand.  They now display information about the function call
+    stack instead of the stack of all statements that were active at
+    the point of the error.
 
  ** New experimental OpenGL/FLTK based plotting system.
 

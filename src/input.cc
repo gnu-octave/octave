@@ -206,7 +206,7 @@ gnu_readline (const std::string& s, bool force_readline)
 	{
 	  FILE *stream = command_editor::get_output_stream ();
 
-	  fprintf (stream, s.c_str ());
+	  fputs (s.c_str (), stream);
 	  fflush (stream);
 	}
 

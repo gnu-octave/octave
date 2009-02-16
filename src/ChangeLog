@@ -1,3 +1,7 @@
+2009-02-16  John W. Eaton  <jwe@octave.org>
+
+	* input.cc (gnu_readline): Use fputs instead of fprintf.
+
 2009-02-15  John W. Eaton  <jwe@octave.org>
 
 	* defun.cc, defun-int.h, defun-dld.h (DEFUN_INTERNAL,

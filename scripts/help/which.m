@@ -30,7 +30,7 @@ function varargout = which (varargin)
       for i = 1:nargin
 	if (isempty (m(i).file))
 	  if (! isempty (m(i).type))
-	    printf ("`%s' is a %s function\n",
+	    printf ("`%s' is a %s\n",
 		    m(i).name, m(i).type);
 	  endif
 	else

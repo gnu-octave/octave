@@ -1,6 +1,7 @@
 2009-02-16  Jaroslav Hajek  <highegg@gmail.com>
 
 	* linear-algebra/expm.m: Fix invalid unscaling.
+	* help/which.m: Do not add "function" here.
 
 2009-02-16  John W. Eaton  <jwe@octave.org>
 

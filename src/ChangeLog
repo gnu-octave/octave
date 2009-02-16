@@ -1,5 +1,10 @@
 2009-02-16  Jaroslav Hajek  <highegg@gmail.com>
 
+	* data.cc (NATIVE_REDUCTION): Use boolNDArray::any for native bool
+	summation, boolNDArray::sum for double-valued.
+
+2009-02-16  Jaroslav Hajek  <highegg@gmail.com>
+
 	* ov-base-mat.cc (octave_base_matrix<MT>::assign (const octave_value_list&,
 	typename MT::element_type): Fix invalid index.
 	* ov-re-mat.cc (default_numeric_demotion_function): Use

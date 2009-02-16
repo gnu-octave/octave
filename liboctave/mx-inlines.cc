@@ -339,6 +339,7 @@ F (const TSRC* v, octave_idx_type n) \
 }
 
 OP_RED_FCN (mx_inline_sum, T, T, OP_RED_SUM, 0)
+OP_RED_FCN (mx_inline_count, bool, T, OP_RED_SUM, 0)
 OP_RED_FCN (mx_inline_prod, T, T, OP_RED_PROD, 1)
 OP_RED_FCN (mx_inline_sumsq, T, T, OP_RED_SUMSQ, 0)
 OP_RED_FCN (mx_inline_sumsq, std::complex<T>, T, OP_RED_SUMSQC, 0)
@@ -362,6 +363,7 @@ F (const TSRC* v, TRES *r, octave_idx_type m, octave_idx_type n) \
 }
 
 OP_RED_FCN2 (mx_inline_sum, T, T, OP_RED_SUM, 0)
+OP_RED_FCN2 (mx_inline_count, bool, T, OP_RED_SUM, 0)
 OP_RED_FCN2 (mx_inline_prod, T, T, OP_RED_PROD, 1)
 OP_RED_FCN2 (mx_inline_sumsq, T, T, OP_RED_SUMSQ, 0)
 OP_RED_FCN2 (mx_inline_sumsq, std::complex<T>, T, OP_RED_SUMSQC, 0)
@@ -378,7 +380,7 @@ F (const TSRC *v, TRES *r, octave_idx_type l, \
     { \
       for (octave_idx_type i = 0; i < u; i++) \
         { \
-          r[i] = F (v, n); \
+          r[i] = F<T> (v, n); \
           v += n; \
         } \
     } \
@@ -394,6 +396,7 @@ F (const TSRC *v, TRES *r, octave_idx_type l, \
 }
 
 OP_RED_FCNN (mx_inline_sum, T, T)
+OP_RED_FCNN (mx_inline_count, bool, T)
 OP_RED_FCNN (mx_inline_prod, T, T)
 OP_RED_FCNN (mx_inline_sumsq, T, T)
 OP_RED_FCNN (mx_inline_sumsq, std::complex<T>, T)

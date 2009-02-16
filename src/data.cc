@@ -1335,7 +1335,13 @@ sign as @var{x}.  If @var{y} is zero, the result is implementation-defined.\n\
                       else if NATIVE_REDUCTION_1 (FCN, int16, dim) \
                       else if NATIVE_REDUCTION_1 (FCN, int32, dim) \
                       else if NATIVE_REDUCTION_1 (FCN, int64, dim) \
-                      else if NATIVE_REDUCTION_1 (FCN, bool, dim) \
+                      else if (arg.is_bool_type ()) \
+                        { \
+                          boolNDArray tmp = arg. bool_array_value (); \
+                          if (! error_state) \
+                            retval = tmp.any (dim); \
+                        } \
+                      \
                       else if (arg.is_char_matrix ()) \
                         { \
 			  error (#FCN, ": invalid char type"); \
@@ -1377,6 +1383,12 @@ sign as @var{x}.  If @var{y} is zero, the result is implementation-defined.\n\
 		          gripe_wrong_type_arg (#FCN, arg); \
 		          return retval; \
 		        } \
+                    } \
+                  else if (arg.is_bool_type ()) \
+                    { \
+                      boolNDArray tmp = arg.bool_array_value (); \
+                      if (! error_state) \
+                        retval = tmp.FCN (dim); \
                     } \
 		  else if (!isdouble && arg.is_single_type ()) \
 		    { \

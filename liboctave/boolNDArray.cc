@@ -57,10 +57,11 @@ boolNDArray::any (int dim) const
   return do_mx_red_op<boolNDArray> (*this, dim, mx_inline_any);
 }
 
-boolNDArray 
+NDArray 
 boolNDArray::sum (int dim) const
 {
-  MX_ND_REDUCTION (retval(result_idx) |= elem (iter_idx), true, boolNDArray);
+  // NOTE: going via octave_idx_type is faster even though it requires a conversion.
+  return do_mx_red_op<Array<octave_idx_type> > (*this, dim, mx_inline_count);
 }
 
 boolNDArray

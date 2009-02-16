@@ -1,3 +1,8 @@
+2009-02-16  Jaroslav Hajek  <highegg@gmail.com>
+
+	* chMatrix.cc (charMatrix::all, charMatrix::any): Use do_mx_red_op.
+	* chNDArray.cc (charNDArray::all, charNDArray::any): Ditto.
+
 2009-02-16  John W. Eaton  <jwe@octave.org>
 
 	* cmd-edit.cc (default_command_editor::do_readline):

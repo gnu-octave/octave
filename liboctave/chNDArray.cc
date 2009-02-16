@@ -36,13 +36,13 @@ along with Octave; see the file COPYING.  If not, see
 boolNDArray
 charNDArray::all (int dim) const
 {
-  MX_ND_ANY_ALL_REDUCTION (MX_ND_ALL_EVAL (elem (iter_idx) == '\0'), true);
+  return do_mx_red_op<boolMatrix> (*this, dim, mx_inline_all);
 }
 
 boolNDArray
 charNDArray::any (int dim) const
 {
-  MX_ND_ANY_ALL_REDUCTION (MX_ND_ANY_EVAL (elem (iter_idx) != '\0'), false);
+  return do_mx_red_op<boolMatrix> (*this, dim, mx_inline_any);
 }
 
 charNDArray

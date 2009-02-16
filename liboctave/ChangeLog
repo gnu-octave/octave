@@ -1,5 +1,14 @@
 2009-02-16  Jaroslav Hajek  <highegg@gmail.com>
 
+	* Array-C.cc, Array-fC.cc: Don't redefine complex comparison.
+	* Sparse.cc (Sparse::sort): Don't use vec_index.
+	* Sparse-C.cc, Sparse-d.cc, Sparse-b.cc: Don't reinstantiate
+	octave_sort, reflect changes.
+	* sparse-sort.cc: Explicitly instantiate octave_sort for requested
+	pointer types.
+
+2009-02-16  Jaroslav Hajek  <highegg@gmail.com>
+
 	* oct-cmplx.h (operator <, operator >): New operators.
 	* mx-inlines.cc (OP_MINMAX_FCN, OP_MINMAX_FCN2, OP_MINMAX_FCNN):
 	New macros.

@@ -41,22 +41,6 @@ sort_isnan<Complex> (const Complex& x)
   return xisnan (x);
 }
 
-template <>
-bool
-octave_sort<Complex>::ascending_compare (const Complex& a, const Complex& b)
-{
-  return ((std::abs (a) < std::abs (b))
-	  || ((std::abs (a) == std::abs (b)) && (arg (a) < arg (b))));
-}
-
-template <>
-bool
-octave_sort<Complex>::descending_compare (const Complex& a, const Complex& b)
-{
-  return ((std::abs (a) > std::abs (b))
-	  || ((std::abs (a) == std::abs (b)) && (arg (a) > arg (b))));
-}
-
 static bool
 nan_ascending_compare (const Complex& x, const Complex& y)
 {

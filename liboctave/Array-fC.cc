@@ -41,24 +41,6 @@ sort_isnan<FloatComplex> (const FloatComplex& x)
   return xisnan (x);
 }
 
-template <>
-bool
-octave_sort<FloatComplex>::ascending_compare (const FloatComplex& a,
-					      const FloatComplex& b)
-{
-  return ((std::abs (a) < std::abs (b))
-	  || ((std::abs (a) == std::abs (b)) && (arg (a) < arg (b))));
-}
-
-template <>
-bool
-octave_sort<FloatComplex>::descending_compare (const FloatComplex& a,
-					       const FloatComplex& b)
-{
-  return ((std::abs (a) > std::abs (b))
-	  || ((std::abs (a) == std::abs (b)) && (arg (a) > arg (b))));
-}
-
 static bool
 nan_ascending_compare (const FloatComplex& x, const FloatComplex& y)
 {

@@ -30,34 +30,19 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-mappers.h"
 #include "Sparse.h"
 #include "Sparse.cc"
-#include "oct-sort.cc"
 
 template <>
 bool
-sparse_ascending_compare (double a, double b)
+sparse_ascending_compare<double> (double a, double b)
 {
   return (xisnan (b) || (a < b));
 }
 
 template <>
 bool
-sparse_ascending_compare (vec_index<double> *a, vec_index<double> *b)
-{
-  return (xisnan (b->vec) || (a->vec < b->vec));
-}
-
-template <>
-bool
-sparse_descending_compare (double a, double b)
+sparse_descending_compare<double> (double a, double b)
 {
   return (xisnan (a) || (a > b));
-}
-
-template <>
-bool
-sparse_descending_compare (vec_index<double> *a, vec_index<double> *b)
-{
-  return (xisnan (b->vec) || (a->vec > b->vec));
 }
 
 INSTANTIATE_SPARSE_AND_ASSIGN (double, OCTAVE_API);

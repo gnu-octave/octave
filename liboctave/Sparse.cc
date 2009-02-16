@@ -2074,30 +2074,18 @@ Sparse<T>::index (Array<idx_vector>& ra_idx, int resize_ok) const
 // instantiations for Array<double and Sparse<double>, etc
 template <class T>
 bool 
-sparse_ascending_compare (T a, T b)
+sparse_ascending_compare (typename ref_param<T>::type a, 
+                          typename ref_param<T>::type b)
 {
   return (a < b);
 }
 
 template <class T>
 bool 
-sparse_descending_compare (T a, T b)
+sparse_descending_compare (typename ref_param<T>::type a, 
+                           typename ref_param<T>::type b)
 {
   return (a > b);
-}
-
-template <class T>
-bool 
-sparse_ascending_compare (vec_index<T> *a, vec_index<T> *b)
-{
-  return (a->vec < b->vec);
-}
-
-template <class T>
-bool 
-sparse_descending_compare (vec_index<T> *a, vec_index<T> *b)
-{
-  return (a->vec > b->vec);
 }
 
 template <class T>
@@ -2122,9 +2110,9 @@ Sparse<T>::sort (octave_idx_type dim, sortmode mode) const
   octave_sort<T> lsort;
 
   if (mode == ASCENDING) 
-    lsort.set_compare (sparse_ascending_compare);
+    lsort.set_compare (sparse_ascending_compare<T>);
   else if (mode == DESCENDING)
-    lsort.set_compare (sparse_descending_compare);
+    lsort.set_compare (sparse_descending_compare<T>);
   else
     abort ();
 
@@ -2141,13 +2129,13 @@ Sparse<T>::sort (octave_idx_type dim, sortmode mode) const
       if (mode == ASCENDING) 
 	{
 	  for (i = 0; i < ns; i++)
-	    if (sparse_ascending_compare (static_cast<T> (0), v [i]))
+	    if (sparse_ascending_compare<T> (static_cast<T> (0), v [i]))
 	      break;
 	}
       else
 	{
 	  for (i = 0; i < ns; i++)
-	    if (sparse_descending_compare (static_cast<T> (0), v [i]))
+	    if (sparse_descending_compare<T> (static_cast<T> (0), v [i]))
 	      break;
 	}
       for (octave_idx_type k = 0; k < i; k++)
@@ -2188,12 +2176,12 @@ Sparse<T>::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
       nc = m.columns ();
     }
 
-  octave_sort<vec_index<T> *> indexed_sort;
+  octave_sort<T> indexed_sort;
 
   if (mode == ASCENDING) 
-    indexed_sort.set_compare (sparse_ascending_compare);
+    indexed_sort.set_compare (sparse_ascending_compare<T>);
   else if (mode == DESCENDING)
-    indexed_sort.set_compare (sparse_descending_compare);
+    indexed_sort.set_compare (sparse_descending_compare<T>);
   else
     abort ();
 
@@ -2201,13 +2189,8 @@ Sparse<T>::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
   octave_idx_type *mcidx = m.cidx ();
   octave_idx_type *mridx = m.ridx ();
 
-  OCTAVE_LOCAL_BUFFER (vec_index<T> *, vi, nr);
-  OCTAVE_LOCAL_BUFFER (vec_index<T>, vix, nr);
-
-  for (octave_idx_type i = 0; i < nr; i++)
-    vi[i] = &vix[i];
-
   sidx = Array<octave_idx_type> (dim_vector (nr, nc));
+  OCTAVE_LOCAL_BUFFER (octave_idx_type, vi, nr);
 
   for (octave_idx_type j = 0; j < nc; j++)
     {
@@ -2222,26 +2205,21 @@ Sparse<T>::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
       else
 	{
 	  for (octave_idx_type i = 0; i < ns; i++)
-	    {
-	      vi[i]->vec = v[i];
-	      vi[i]->indx = mridx[i];
-	    }
+            vi[i] = mridx[i];
 
-	  indexed_sort.sort (vi, ns);
+	  indexed_sort.sort (v, vi, ns);
 
 	  octave_idx_type i;
 	  if (mode == ASCENDING) 
 	    {
 	      for (i = 0; i < ns; i++)
-		if (sparse_ascending_compare (static_cast<T> (0), 
-					      vi [i] -> vec))
+		if (sparse_ascending_compare<T> (static_cast<T> (0), v[i]))
 		  break;
 	    }
 	  else
 	    {
 	      for (i = 0; i < ns; i++)
-		if (sparse_descending_compare (static_cast<T> (0), 
-					       vi [i] -> vec))
+		if (sparse_descending_compare<T> (static_cast<T> (0), v[i]))
 		  break;
 	    }
 
@@ -2257,15 +2235,13 @@ Sparse<T>::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
 
 	  for (octave_idx_type k = 0; k < i; k++)
 	    {
-	      v [k] = vi [k] -> vec;
-	      sidx (k + offset) = vi [k] -> indx;
+	      sidx (k + offset) = vi [k];
 	      mridx [k] = k;
 	    }
 
 	  for (octave_idx_type k = i; k < ns; k++)
 	    {
-	      v [k] = vi [k] -> vec;
-	      sidx (k - ns + nr + offset) = vi [k] -> indx;
+	      sidx (k - ns + nr + offset) = vi [k];
 	      mridx [k] = k - ns + nr; 
 	    }
 

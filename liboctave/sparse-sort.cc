@@ -49,6 +49,8 @@ octave_sparse_sidxl_comp (octave_sparse_sort_idxl* i,
   return  (i->r < j->r);
 }
 
+template class octave_sort<octave_sparse_sort_idxl *>;
+
 // Need to know the original order of the sorted indexes in
 // sparse assignments, and this class does that
 bool
@@ -57,6 +59,8 @@ octave_idx_vector_comp (octave_idx_vector_sort* i,
 {
   return (i->i < j->i);
 }
+
+template class octave_sort<octave_idx_vector_sort *>;
 
 /*
 ;;; Local Variables: ***

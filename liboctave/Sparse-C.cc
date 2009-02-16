@@ -40,27 +40,10 @@ xabs (const Complex& x)
   return (xisinf (x.real ()) || xisinf (x.imag ())) ? octave_Inf : abs (x);
 }
 
-static bool
-operator < (const Complex& a, const Complex& b)
-{
-  return (xisnan (b) || (xabs (a) < xabs (b))
-	  || ((xabs (a) == xabs (b)) && (arg (a) < arg (b))));
-}
-
-static bool
-operator > (const Complex& a, const Complex& b)
-{
-  return (xisnan (a) || (xabs (a) > xabs (b))
-	  || ((xabs (a) == xabs (b)) && (arg (a) > arg (b))));
-}
-
-// This file must be included after the < and > operators are
-// defined to avoid errors with the Intel C++ compiler.
-#include "oct-sort.cc"
 
 template <>
 bool
-sparse_ascending_compare (Complex a, Complex b)
+sparse_ascending_compare<Complex> (const Complex& a, const Complex& b)
 {
   return (xisnan (b) || (xabs (a) < xabs (b))
 	  || ((xabs (a) == xabs (b)) && (arg (a) < arg (b))));
@@ -68,30 +51,10 @@ sparse_ascending_compare (Complex a, Complex b)
 
 template <>
 bool
-sparse_ascending_compare (vec_index<Complex> *a, vec_index<Complex> *b)
-{
-  return (xisnan (b->vec)
-	  || (xabs (a->vec) < xabs (b->vec))
-	  || ((xabs (a->vec) == xabs (b->vec))
-	      && (arg (a->vec) < arg (b->vec))));
-}
-
-template <>
-bool
-sparse_descending_compare (Complex a, Complex b)
+sparse_descending_compare<Complex> (const Complex& a, const Complex& b)
 {
   return (xisnan (a) || (xabs (a) > xabs (b))
 	  || ((xabs (a) == xabs (b)) && (arg (a) > arg (b))));
-}
-
-template <>
-bool
-sparse_descending_compare (vec_index<Complex> *a, vec_index<Complex> *b)
-{
-  return (xisnan (a->vec)
-	  || (xabs (a->vec) > xabs (b->vec))
-	  || ((xabs (a->vec) == xabs (b->vec))
-	      && (arg (a->vec) > arg (b->vec))));
 }
 
 INSTANTIATE_SPARSE_AND_ASSIGN (Complex, OCTAVE_API);

@@ -44,7 +44,7 @@ function [s, i] = sortrows (m, c)
   elseif (all (c > 0))
     i = __sort_rows_idx__ (m(:,c), default_mode);
   elseif (all (c < 0))
-    i = __sort_rows_idx__ (m(:,c), other_mode);
+    i = __sort_rows_idx__ (m(:,-c), other_mode);
   else
     ## Otherwise, fall back to the old algorithm
     for ii = 1:length (c);

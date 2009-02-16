@@ -359,7 +359,7 @@ octave_base_matrix<MT>::assign (const octave_value_list& idx,
                     j += i * k;
                     k *= dv (i);
                   }
-                matrix(k) = rhs;
+                matrix(j) = rhs;
               }
             else
               matrix.assign (idx_vec, mrhs);

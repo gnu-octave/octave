@@ -1,3 +1,8 @@
+2009-02-16  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-base-mat (octave_base_matrix<MT>::assign (const octave_value_list&,
+	typename MT::element_type): Fix invalid index.
+
 2009-02-16  John W. Eaton  <jwe@octave.org>
 
 	* input.cc (gnu_readline): Use fputs instead of fprintf.

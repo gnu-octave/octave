@@ -27,8 +27,6 @@
 ## @seealso{which}
 ## @end deftypefn
 
-## PKG_ADD: mark_as_command what
-
 function ret = what (d)
 
   if (nargin == 0)

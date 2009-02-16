@@ -48,8 +48,6 @@
 
 ## Author: Paul Kienzle <pkienzle@users.sf.net>
 
-## PKG_ADD mark_as_command fail
-
 function ret = fail (code, pattern, warning_pattern)
 
   if (nargin < 1 || nargin > 3)

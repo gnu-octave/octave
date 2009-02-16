@@ -1,7 +1,7 @@
 /*
 
 Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001,
-              2002, 2003, 2004, 2005, 2006, 2007 John W. Eaton
+              2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 John W. Eaton
 
 This file is part of Octave.
 
@@ -156,7 +156,7 @@ along with Octave; see the file COPYING.  If not, see
     } \
   while (0)
 
-#define BIN_OP_RETURN(tok, convert) \
+#define BIN_OP_RETURN(tok, convert, bos) \
   do \
     { \
       yylval.tok_val = new token (input_line_number, current_input_column); \
@@ -165,15 +165,16 @@ along with Octave; see the file COPYING.  If not, see
       lexer_flags.quote_is_transpose = false; \
       lexer_flags.convert_spaces_to_comma = convert; \
       lexer_flags.looking_for_object_index = false; \
+      lexer_flags.at_beginning_of_statement = bos; \
       COUNT_TOK_AND_RETURN (tok); \
     } \
   while (0)
 
-#define XBIN_OP_RETURN(tok, convert) \
+#define XBIN_OP_RETURN(tok, convert, bos) \
   do \
     { \
       gripe_matlab_incompatible_operator (yytext); \
-      BIN_OP_RETURN (tok, convert); \
+      BIN_OP_RETURN (tok, convert, bos); \
     } \
   while (0)
 
@@ -288,7 +289,7 @@ static bool next_token_is_bin_op (bool spc_prev);
 static bool next_token_is_postfix_unary_op (bool spc_prev);
 static std::string strip_trailing_whitespace (char *s);
 static void handle_number (void);
-static int handle_string (char delim, int text_style = 0);
+static int handle_string (char delim);
 static int handle_close_bracket (bool spc_gobbled, int bracket_type);
 static int handle_identifier (void);
 static bool have_continuation (bool trailing_comments_ok = true);
@@ -339,6 +340,9 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
     BEGIN (NESTED_FUNCTION_BEGIN);
     xunput (yytext[0], yytext);
+
+    lexer_flags.at_beginning_of_statement = true;
+
     COUNT_TOK_AND_RETURN (';');
   }
 
@@ -347,14 +351,14 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
     BEGIN (INITIAL);
     xunput (yytext[0], yytext);
+
     prep_for_nested_function ();
+
     COUNT_TOK_AND_RETURN (FCN);
   }
 
 %{
-// Help and other command-style functions are a pain in the ass.  This
-// stuff needs to be simplified.  May require some changes in the
-// parser too.
+// Help and other command-style functions.
 %}
 
 <COMMAND_START>{NL} {
@@ -366,8 +370,8 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
     lexer_flags.quote_is_transpose = false;
     lexer_flags.convert_spaces_to_comma = true;
-    lexer_flags.doing_rawcommand = false;
     lexer_flags.looking_for_object_index = false;
+    lexer_flags.at_beginning_of_statement = true;
 
     COUNT_TOK_AND_RETURN ('\n');
   }
@@ -376,9 +380,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     LEXER_DEBUG ("<COMMAND_START>[\\;\\,]");
 
     lexer_flags.looking_for_object_index = false;
-
-    if (lexer_flags.doing_rawcommand)
-      TOK_PUSH_AND_RETURN (yytext, SQ_STRING);
+    lexer_flags.at_beginning_of_statement = true;
 
     BEGIN (INITIAL);
 
@@ -391,8 +393,10 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 <COMMAND_START>[\"\'] {
     LEXER_DEBUG ("<COMMAND_START>[\\\"\\']");
 
+    lexer_flags.at_beginning_of_statement = false;
+
     current_input_column++;
-    int tok = handle_string (yytext[0], true);
+    int tok = handle_string (yytext[0]);
 
     COUNT_TOK_AND_RETURN (tok);
   }
@@ -403,6 +407,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     std::string tok = strip_trailing_whitespace (yytext);
 
     lexer_flags.looking_for_object_index = false;
+    lexer_flags.at_beginning_of_statement = false;
 
     TOK_PUSH_AND_RETURN (tok, SQ_STRING);
   }
@@ -430,6 +435,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     lexer_flags.looking_at_object_index.pop_front ();
 
     lexer_flags.looking_for_object_index = true;
+    lexer_flags.at_beginning_of_statement = false;
 
     int c = yytext[yyleng-1];
     int cont_is_spc = eat_continuation ();
@@ -455,6 +461,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     lexer_flags.looking_at_object_index.pop_front ();
 
     lexer_flags.looking_for_object_index = true;
+    lexer_flags.at_beginning_of_statement = false;
 
     int c = yytext[yyleng-1];
     int cont_is_spc = eat_continuation ();
@@ -483,6 +490,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     lexer_flags.quote_is_transpose = false;
     lexer_flags.convert_spaces_to_comma = true;
     lexer_flags.looking_for_object_index = false;
+    lexer_flags.at_beginning_of_statement = false;
 
     if (! lexer_flags.looking_at_object_index.front ())
       {
@@ -508,6 +516,8 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     LEXER_DEBUG ("<MATRIX_START>{S}+");
 
     current_input_column += yyleng;
+
+    lexer_flags.at_beginning_of_statement = false;
 
     int tmp = eat_continuation ();
 
@@ -556,6 +566,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     lexer_flags.quote_is_transpose = false;
     lexer_flags.convert_spaces_to_comma = true;
     lexer_flags.looking_for_object_index = false;
+    lexer_flags.at_beginning_of_statement = false;
 
     COUNT_TOK_AND_RETURN (';');
   }
@@ -578,6 +589,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
     lexer_flags.quote_is_transpose = false;
     lexer_flags.convert_spaces_to_comma = true;
+    lexer_flags.at_beginning_of_statement = false;
 
     if (nesting_level.none ())
       return LEXICAL_ERROR;
@@ -602,6 +614,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     lexer_flags.quote_is_transpose = false;
     lexer_flags.convert_spaces_to_comma = true;
     lexer_flags.looking_for_object_index = false;
+    lexer_flags.at_beginning_of_statement = false;
 
     if (lexer_flags.defining_func && ! lexer_flags.parsed_function_name)
       lexer_flags.looking_at_return_list = true;
@@ -624,6 +637,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     lexer_flags.looking_at_object_index.pop_front ();
 
     lexer_flags.looking_for_object_index = true;
+    lexer_flags.at_beginning_of_statement = false;
 
     TOK_RETURN (']');
   }
@@ -727,6 +741,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     lexer_flags.convert_spaces_to_comma = false;
     lexer_flags.looking_at_function_handle++;
     lexer_flags.looking_for_object_index = false;
+    lexer_flags.at_beginning_of_statement = false;
 
     COUNT_TOK_AND_RETURN ('@');
   }
@@ -742,12 +757,20 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
     input_line_number++;
     current_input_column = 1;
+
     lexer_flags.quote_is_transpose = false;
     lexer_flags.convert_spaces_to_comma = true;
+
     if (nesting_level.none ())
-      COUNT_TOK_AND_RETURN ('\n');
+      {
+	lexer_flags.at_beginning_of_statement = true;
+	COUNT_TOK_AND_RETURN ('\n');
+      }
     else if (nesting_level.is_paren ())
-      gripe_matlab_incompatible ("bare newline inside parentheses");
+      {
+	lexer_flags.at_beginning_of_statement = false;
+	gripe_matlab_incompatible ("bare newline inside parentheses");
+      }
     else if (nesting_level.is_bracket_or_brace ())
       return LEXICAL_ERROR;
   }
@@ -821,6 +844,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     current_input_column = 1;
     block_comment_nesting_level++;
     promptflag--;
+
     bool eof = false;
     process_comment (true, eof);
   }
@@ -829,49 +853,50 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 // Other operators.
 %}
 
-":"     { LEXER_DEBUG (":"); BIN_OP_RETURN (':', false); }
+":"     { LEXER_DEBUG (":"); BIN_OP_RETURN (':', false, false); }
 
-".+"	{ LEXER_DEBUG (".+"); XBIN_OP_RETURN (EPLUS, false); }
-".-"	{ LEXER_DEBUG (".-"); XBIN_OP_RETURN (EMINUS, false); }
-".*"	{ LEXER_DEBUG (".*"); BIN_OP_RETURN (EMUL, false); }
-"./"	{ LEXER_DEBUG ("./"); BIN_OP_RETURN (EDIV, false); }
-".\\"	{ LEXER_DEBUG (".\\"); BIN_OP_RETURN (ELEFTDIV, false); }
-".^"	{ LEXER_DEBUG (".^"); BIN_OP_RETURN (EPOW, false); }
-".**"	{ LEXER_DEBUG (".**"); XBIN_OP_RETURN (EPOW, false); }
-".'"	{ LEXER_DEBUG (".'"); do_comma_insert_check (); BIN_OP_RETURN (TRANSPOSE, true); }
-"++"	{ LEXER_DEBUG ("++"); do_comma_insert_check (); XBIN_OP_RETURN (PLUS_PLUS, true); }
-"--"	{ LEXER_DEBUG ("--"); do_comma_insert_check (); XBIN_OP_RETURN (MINUS_MINUS, true); }
-"<="	{ LEXER_DEBUG ("<="); BIN_OP_RETURN (EXPR_LE, false); }
-"=="	{ LEXER_DEBUG ("=="); BIN_OP_RETURN (EXPR_EQ, false); }
-"~="	{ LEXER_DEBUG ("~="); BIN_OP_RETURN (EXPR_NE, false); }
-"!="	{ LEXER_DEBUG ("!="); XBIN_OP_RETURN (EXPR_NE, false); }
-">="	{ LEXER_DEBUG (">="); BIN_OP_RETURN (EXPR_GE, false); }
-"&"	{ LEXER_DEBUG ("&"); BIN_OP_RETURN (EXPR_AND, false); }
-"|"	{ LEXER_DEBUG ("|"); BIN_OP_RETURN (EXPR_OR, false); }
-"<"	{ LEXER_DEBUG ("<"); BIN_OP_RETURN (EXPR_LT, false); }
-">"	{ LEXER_DEBUG (">"); BIN_OP_RETURN (EXPR_GT, false); }
-"+"     { LEXER_DEBUG ("+"); BIN_OP_RETURN ('+', false); }
-"-"     { LEXER_DEBUG ("-"); BIN_OP_RETURN ('-', false); }
-"*"	{ LEXER_DEBUG ("*"); BIN_OP_RETURN ('*', false); }
-"/"	{ LEXER_DEBUG ("/"); BIN_OP_RETURN ('/', false); }
-"\\"	{ LEXER_DEBUG ("\\"); BIN_OP_RETURN (LEFTDIV, false); }
-";"	{ LEXER_DEBUG (";"); BIN_OP_RETURN (';', true); }
-","	{ LEXER_DEBUG (","); BIN_OP_RETURN (',', true); }
-"^"	{ LEXER_DEBUG ("^"); BIN_OP_RETURN (POW, false); }
-"**"	{ LEXER_DEBUG ("**"); XBIN_OP_RETURN (POW, false); }
-"="	{ LEXER_DEBUG ("="); BIN_OP_RETURN ('=', true); }
-"&&"	{ LEXER_DEBUG ("&&"); BIN_OP_RETURN (EXPR_AND_AND, false); }
-"||"	{ LEXER_DEBUG ("||"); BIN_OP_RETURN (EXPR_OR_OR, false); }
-"<<"	{ LEXER_DEBUG ("<<"); XBIN_OP_RETURN (LSHIFT, false); }
-">>"	{ LEXER_DEBUG (">>"); XBIN_OP_RETURN (RSHIFT, false); }
+".+"	{ LEXER_DEBUG (".+"); XBIN_OP_RETURN (EPLUS, false, false); }
+".-"	{ LEXER_DEBUG (".-"); XBIN_OP_RETURN (EMINUS, false, false); }
+".*"	{ LEXER_DEBUG (".*"); BIN_OP_RETURN (EMUL, false, false); }
+"./"	{ LEXER_DEBUG ("./"); BIN_OP_RETURN (EDIV, false, false); }
+".\\"	{ LEXER_DEBUG (".\\"); BIN_OP_RETURN (ELEFTDIV, false, false); }
+".^"	{ LEXER_DEBUG (".^"); BIN_OP_RETURN (EPOW, false, false); }
+".**"	{ LEXER_DEBUG (".**"); XBIN_OP_RETURN (EPOW, false, false); }
+".'"	{ LEXER_DEBUG (".'"); do_comma_insert_check (); BIN_OP_RETURN (TRANSPOSE, true, false); }
+"++"	{ LEXER_DEBUG ("++"); do_comma_insert_check (); XBIN_OP_RETURN (PLUS_PLUS, true, false); }
+"--"	{ LEXER_DEBUG ("--"); do_comma_insert_check (); XBIN_OP_RETURN (MINUS_MINUS, true, false); }
+"<="	{ LEXER_DEBUG ("<="); BIN_OP_RETURN (EXPR_LE, false, false); }
+"=="	{ LEXER_DEBUG ("=="); BIN_OP_RETURN (EXPR_EQ, false, false); }
+"~="	{ LEXER_DEBUG ("~="); BIN_OP_RETURN (EXPR_NE, false, false); }
+"!="	{ LEXER_DEBUG ("!="); XBIN_OP_RETURN (EXPR_NE, false, false); }
+">="	{ LEXER_DEBUG (">="); BIN_OP_RETURN (EXPR_GE, false, false); }
+"&"	{ LEXER_DEBUG ("&"); BIN_OP_RETURN (EXPR_AND, false, false); }
+"|"	{ LEXER_DEBUG ("|"); BIN_OP_RETURN (EXPR_OR, false, false); }
+"<"	{ LEXER_DEBUG ("<"); BIN_OP_RETURN (EXPR_LT, false, false); }
+">"	{ LEXER_DEBUG (">"); BIN_OP_RETURN (EXPR_GT, false, false); }
+"+"     { LEXER_DEBUG ("+"); BIN_OP_RETURN ('+', false, false); }
+"-"     { LEXER_DEBUG ("-"); BIN_OP_RETURN ('-', false, false); }
+"*"	{ LEXER_DEBUG ("*"); BIN_OP_RETURN ('*', false, false); }
+"/"	{ LEXER_DEBUG ("/"); BIN_OP_RETURN ('/', false, false); }
+"\\"	{ LEXER_DEBUG ("\\"); BIN_OP_RETURN (LEFTDIV, false, false); }
+";"     { LEXER_DEBUG (";"); BIN_OP_RETURN (';', true, true); }
+","     { LEXER_DEBUG (","); BIN_OP_RETURN (',', true, ! lexer_flags.looking_at_object_index.front ()); }
+"^"	{ LEXER_DEBUG ("^"); BIN_OP_RETURN (POW, false, false); }
+"**"	{ LEXER_DEBUG ("**"); XBIN_OP_RETURN (POW, false, false); }
+"="	{ LEXER_DEBUG ("="); BIN_OP_RETURN ('=', true, false); }
+"&&"	{ LEXER_DEBUG ("&&"); BIN_OP_RETURN (EXPR_AND_AND, false, false); }
+"||"	{ LEXER_DEBUG ("||"); BIN_OP_RETURN (EXPR_OR_OR, false, false); }
+"<<"	{ LEXER_DEBUG ("<<"); XBIN_OP_RETURN (LSHIFT, false, false); }
+">>"	{ LEXER_DEBUG (">>"); XBIN_OP_RETURN (RSHIFT, false, false); }
+
 
 {NOT} {
     LEXER_DEBUG ("{NOT}");
 
     if (yytext[0] == '~')
-      BIN_OP_RETURN (EXPR_NOT, false);
+      BIN_OP_RETURN (EXPR_NOT, false, false);
     else
-      XBIN_OP_RETURN (EXPR_NOT, false);
+      XBIN_OP_RETURN (EXPR_NOT, false, false);
   }
 
 "(" {
@@ -887,6 +912,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
     lexer_flags.looking_at_indirect_ref = false;
     lexer_flags.looking_for_object_index = false;
+    lexer_flags.at_beginning_of_statement = false;
 
     nesting_level.paren ();
     promptflag--;
@@ -905,6 +931,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     lexer_flags.quote_is_transpose = true;
     lexer_flags.convert_spaces_to_comma = nesting_level.is_bracket_or_brace ();
     lexer_flags.looking_for_object_index = true;
+    lexer_flags.at_beginning_of_statement = false;
 
     do_comma_insert_check ();
 
@@ -915,26 +942,27 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     LEXER_DEBUG (".");
 
     lexer_flags.looking_for_object_index = false;
+    lexer_flags.at_beginning_of_statement = false;
 
     TOK_RETURN ('.');
   }
 
-"+="	{ LEXER_DEBUG ("+="); XBIN_OP_RETURN (ADD_EQ, false); }
-"-="	{ LEXER_DEBUG ("-="); XBIN_OP_RETURN (SUB_EQ, false); }
-"*="	{ LEXER_DEBUG ("*="); XBIN_OP_RETURN (MUL_EQ, false); }
-"/="	{ LEXER_DEBUG ("/="); XBIN_OP_RETURN (DIV_EQ, false); }
-"\\="	{ LEXER_DEBUG ("\\="); XBIN_OP_RETURN (LEFTDIV_EQ, false); }
-".+="	{ LEXER_DEBUG (".+="); XBIN_OP_RETURN (ADD_EQ, false); }
-".-="	{ LEXER_DEBUG (".-="); XBIN_OP_RETURN (SUB_EQ, false); }
-".*="	{ LEXER_DEBUG (".*="); XBIN_OP_RETURN (EMUL_EQ, false); }
-"./="	{ LEXER_DEBUG ("./="); XBIN_OP_RETURN (EDIV_EQ, false); }
-".\\="	{ LEXER_DEBUG (".\\="); XBIN_OP_RETURN (ELEFTDIV_EQ, false); }
-{POW}=  { LEXER_DEBUG ("{POW}="); XBIN_OP_RETURN (POW_EQ, false); }
-{EPOW}= { LEXER_DEBUG ("{EPOW}="); XBIN_OP_RETURN (EPOW_EQ, false); }
-"&="	{ LEXER_DEBUG ("&="); XBIN_OP_RETURN (AND_EQ, false); }
-"|="	{ LEXER_DEBUG ("|="); XBIN_OP_RETURN (OR_EQ, false); }
-"<<="	{ LEXER_DEBUG ("<<="); XBIN_OP_RETURN (LSHIFT_EQ, false); }
-">>="	{ LEXER_DEBUG (">>="); XBIN_OP_RETURN (RSHIFT_EQ, false); }
+"+="	{ LEXER_DEBUG ("+="); XBIN_OP_RETURN (ADD_EQ, false, false); }
+"-="	{ LEXER_DEBUG ("-="); XBIN_OP_RETURN (SUB_EQ, false, false); }
+"*="	{ LEXER_DEBUG ("*="); XBIN_OP_RETURN (MUL_EQ, false, false); }
+"/="	{ LEXER_DEBUG ("/="); XBIN_OP_RETURN (DIV_EQ, false, false); }
+"\\="	{ LEXER_DEBUG ("\\="); XBIN_OP_RETURN (LEFTDIV_EQ, false, false); }
+".+="	{ LEXER_DEBUG (".+="); XBIN_OP_RETURN (ADD_EQ, false, false); }
+".-="	{ LEXER_DEBUG (".-="); XBIN_OP_RETURN (SUB_EQ, false, false); }
+".*="	{ LEXER_DEBUG (".*="); XBIN_OP_RETURN (EMUL_EQ, false, false); }
+"./="	{ LEXER_DEBUG ("./="); XBIN_OP_RETURN (EDIV_EQ, false, false); }
+".\\="	{ LEXER_DEBUG (".\\="); XBIN_OP_RETURN (ELEFTDIV_EQ, false, false); }
+{POW}=  { LEXER_DEBUG ("{POW}="); XBIN_OP_RETURN (POW_EQ, false, false); }
+{EPOW}= { LEXER_DEBUG ("{EPOW}="); XBIN_OP_RETURN (EPOW_EQ, false, false); }
+"&="	{ LEXER_DEBUG ("&="); XBIN_OP_RETURN (AND_EQ, false, false); }
+"|="	{ LEXER_DEBUG ("|="); XBIN_OP_RETURN (OR_EQ, false, false); }
+"<<="	{ LEXER_DEBUG ("<<="); XBIN_OP_RETURN (LSHIFT_EQ, false, false); }
+">>="	{ LEXER_DEBUG (">>="); XBIN_OP_RETURN (RSHIFT_EQ, false, false); }
 
 \{{S}* {
     LEXER_DEBUG ("\\{{S}*");
@@ -948,6 +976,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     lexer_flags.quote_is_transpose = false;
     lexer_flags.convert_spaces_to_comma = true;
     lexer_flags.looking_for_object_index = false;
+    lexer_flags.at_beginning_of_statement = false;
 
     promptflag--;
     eat_whitespace ();
@@ -963,6 +992,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     lexer_flags.looking_at_object_index.pop_front ();
 
     lexer_flags.looking_for_object_index = true;
+    lexer_flags.at_beginning_of_statement = false;
 
     nesting_level.remove ();
 
@@ -1416,18 +1446,21 @@ is_keyword_token (const std::string& s)
       switch (kw->kw_id)
 	{
 	case break_kw:
-	case case_kw:
 	case catch_kw:
 	case continue_kw:
 	case else_kw:
-	case elseif_kw:
-	case global_kw:
 	case otherwise_kw:
 	case return_kw:
+	case unwind_protect_cleanup_kw:
+	  lexer_flags.at_beginning_of_statement = true;
+	  break;
+
+	case case_kw:
+	case elseif_kw:
+	case global_kw:
 	case static_kw:
 	case until_kw:
-	case unwind_protect_cleanup_kw:
- 	  break;
+	  break;
 
 	case end_kw:
 	  if (inside_any_object_index ()
@@ -1442,24 +1475,28 @@ is_keyword_token (const std::string& s)
 	      else
 		{
 		  yylval.tok_val = new token (token::simple_end, l, c);
+		  lexer_flags.at_beginning_of_statement = true;
 		  end_tokens_expected--;
 		}
 	    }
 	  break;
 
 	case end_try_catch_kw:
-	  end_tokens_expected--;
 	  yylval.tok_val = new token (token::try_catch_end, l, c);
+	  lexer_flags.at_beginning_of_statement = true;
+	  end_tokens_expected--;
 	  break;
 
 	case end_unwind_protect_kw:
-	  end_tokens_expected--;
 	  yylval.tok_val = new token (token::unwind_protect_end, l, c);
+	  lexer_flags.at_beginning_of_statement = true;
+	  end_tokens_expected--;
 	  break;
 
 	case endfor_kw:
-	  end_tokens_expected--;
 	  yylval.tok_val = new token (token::for_end, l, c);
+	  lexer_flags.at_beginning_of_statement = true;
+	  end_tokens_expected--;
 	  break;
 
 	case endfunction_kw:
@@ -1469,40 +1506,52 @@ is_keyword_token (const std::string& s)
 	    else
 	      {
 		yylval.tok_val = new token (token::function_end, l, c);
+		lexer_flags.at_beginning_of_statement = true;
 		end_tokens_expected--;
 	      }
 	  }
 	  break;
 
 	case endif_kw:
-	  end_tokens_expected--;
 	  yylval.tok_val = new token (token::if_end, l, c);
+	  lexer_flags.at_beginning_of_statement = true;
+	  end_tokens_expected--;
 	  break;
 
 	case endswitch_kw:
-	  end_tokens_expected--;
 	  yylval.tok_val = new token (token::switch_end, l, c);
+	  lexer_flags.at_beginning_of_statement = true;
+	  end_tokens_expected--;
 	  break;
 
 	case endwhile_kw:
-	  end_tokens_expected--;
 	  yylval.tok_val = new token (token::while_end, l, c);
+	  lexer_flags.at_beginning_of_statement = true;
+	  end_tokens_expected--;
 	  break;
 
 	case for_kw:
 	case while_kw:
 	  end_tokens_expected++;
-	  // Fall through...
-
-	case do_kw:
 	  promptflag--;
 	  lexer_flags.looping++;
 	  break;
 
-	case if_kw:
+	case do_kw:
+	  lexer_flags.at_beginning_of_statement = true;
+	  promptflag--;
+	  lexer_flags.looping++;
+	  break;
+
 	case try_kw:
-	case switch_kw:
 	case unwind_protect_kw:
+	  lexer_flags.at_beginning_of_statement = true;
+	  end_tokens_expected++;
+	  promptflag--;
+	  break;
+
+	case if_kw:
+	case switch_kw:
 	  end_tokens_expected++;
 	  promptflag--;
 	  break;
@@ -1519,6 +1568,8 @@ is_keyword_token (const std::string& s)
 
 			yylval.tok_val = new token (token::function_end, l, c);
 			token_stack.push (yylval.tok_val);
+
+			lexer_flags.at_beginning_of_statement = true;
 
 			return END;
 		      }
@@ -1888,15 +1939,13 @@ process_comment (bool start_in_block, bool& eof)
   current_input_column = 1;
   lexer_flags.quote_is_transpose = false;
   lexer_flags.convert_spaces_to_comma = true;
+  lexer_flags.at_beginning_of_statement = true;
 
   if (YY_START == COMMAND_START)
     BEGIN (INITIAL);
 
   if (nesting_level.none ())
-    {
-      lexer_flags.doing_rawcommand = false;
-      return '\n';
-    }
+    return '\n';
   else if (nesting_level.is_bracket_or_brace ())
     return ';';
   else
@@ -2332,6 +2381,7 @@ handle_number (void)
   lexer_flags.quote_is_transpose = true;
   lexer_flags.convert_spaces_to_comma = true;
   lexer_flags.looking_for_object_index = true;
+  lexer_flags.at_beginning_of_statement = false;
 
   yylval.tok_val = new token (value, yytext, input_line_number,
 			      current_input_column);
@@ -2485,7 +2535,7 @@ eat_continuation (void)
 }
 
 static int
-handle_string (char delim, int text_style)
+handle_string (char delim)
 {
   std::ostringstream buf;
 
@@ -2538,26 +2588,19 @@ handle_string (char delim, int text_style)
 	      if (c == delim)
 		{
 		  buf << static_cast<char> (c);		    
-		  if (lexer_flags.doing_rawcommand)
-		    buf << static_cast<char> (c);
 		}
 	      else
 		{
 		  std::string s;  
 		  xunput (c, yytext);
 
-		  if (lexer_flags.doing_rawcommand || delim == '\'')
+		  if (delim == '\'')
 		    s = buf.str ();
 		  else
 		    s = do_string_escapes (buf.str ());
 
-		  if (text_style && lexer_flags.doing_rawcommand)
-		    s = std::string (1, delim) + s + std::string (1, delim);
-		  else
-		    {
-		      lexer_flags.quote_is_transpose = true;
-		      lexer_flags.convert_spaces_to_comma = true;
-		    }
+		  lexer_flags.quote_is_transpose = true;
+		  lexer_flags.convert_spaces_to_comma = true;
 
 		  yylval.tok_val = new token (s, bos_line, bos_col);
 		  token_stack.push (yylval.tok_val);
@@ -2568,6 +2611,7 @@ handle_string (char delim, int text_style)
 		    gripe_single_quote_string ();
 
                   lexer_flags.looking_for_object_index = true;
+		  lexer_flags.at_beginning_of_statement = false;
 
 		  return delim == '"' ? DQ_STRING : SQ_STRING;
 		}
@@ -2781,6 +2825,257 @@ maybe_unput_comma (int spc_gobbled)
     }
 }
 
+static bool
+next_token_can_follow_bin_op (void)
+{
+  std::stack<char> buf;
+
+  int c = EOF;
+
+  // Skip whitespace in current statement on current line
+  while (true)
+    {
+      c = text_yyinput ();
+
+      if (! match_any (c, ",;\n") && (c == ' ' || c == '\t'))
+	buf.push (c);
+      else
+	break;
+    }
+
+  // Restore input.
+  while (! buf.empty ())
+    {
+      xunput (buf.top (), yytext);
+
+      buf.pop ();
+    }
+
+  return (isalnum (c) || match_any (c, "!\"'(-[_{~"));
+}
+
+static bool
+looks_like_command_arg (void)
+{
+  bool retval = true;
+
+  int c0 = text_yyinput ();
+
+  switch (c0)
+    {
+    // = ==
+    case '=':
+      {
+	int c1 = text_yyinput ();
+
+	if (c1 == '=')
+	  {
+	    int c2 = text_yyinput ();
+
+	    if (! match_any (c2, ",;\n") && (c2 == ' ' || c2 == '\t')
+		&& next_token_can_follow_bin_op ())
+	      retval = false;
+
+	    xunput (c2, yytext);
+	  }
+	else
+	  retval = false;
+
+	xunput (c1, yytext);
+      }
+      break;
+
+    case '(':
+    case '{':
+      // Indexing.
+      retval = false;
+      break;
+
+    case '\n':
+      // EOL.
+      break;
+
+    case '\'':
+    case '"':
+      // Beginning of a character string.
+      break;
+
+    // + - ++ -- += -=
+    case '+':
+    case '-':
+      {
+	int c1 = text_yyinput ();
+
+	switch (c1)
+	  {
+	  case '\n':
+	    // EOL.
+	  case '+':
+	  case '-':
+	    // Unary ops, spacing doesn't matter.
+	    break;
+
+	  case '\t':
+	  case ' ':
+	    {
+	      if (next_token_can_follow_bin_op ())
+		retval = false;
+	    }
+	    break;
+
+	  case '=':
+	    {
+	      int c2 = text_yyinput ();
+
+	      if (! match_any (c2, ",;\n") && (c2 == ' ' || c2 == '\t')
+		  && next_token_can_follow_bin_op ())
+		retval = false;
+
+	      xunput (c2, yytext);
+	    }
+	    break;
+	  }
+
+	xunput (c1, yytext);
+      }
+      break;
+
+    case ':':
+    case '/':
+    case '\\':
+    case '^':
+      {
+	int c1 = text_yyinput ();
+
+	if (! match_any (c1, ",;\n") && (c1 == ' ' || c1 == '\t')
+	    && next_token_can_follow_bin_op ())
+	  retval = false;
+
+	xunput (c1, yytext);
+      }
+      break;
+
+    // .+ .- ./ .\ .^ .* .**
+    case '.':
+      {
+	int c1 = text_yyinput ();
+
+	if (match_any (c1, "+-/\\^*"))
+	  {
+	    int c2 = text_yyinput ();
+
+	    if (c2 == '=')
+	      {
+		int c3 = text_yyinput ();
+
+		if (! match_any (c3, ",;\n") && (c3 == ' ' || c3 == '\t')
+		    && next_token_can_follow_bin_op ())
+		  retval = false;
+
+		xunput (c3, yytext);
+	      }
+	    else if (! match_any (c2, ",;\n") && (c2 == ' ' || c2 == '\t')
+		     && next_token_can_follow_bin_op ())
+	      retval = false;
+
+	    xunput (c2, yytext);
+	  }
+	else if (! match_any (c1, ",;\n")
+		 && (! isdigit (c1) && c1 != ' ' && c1 != '\t'
+		     && c1 != '.'))
+	  {
+	    // Structure reference.  FIXME -- is this a complete check?
+
+	    retval = false;
+	  }
+
+	xunput (c1, yytext);
+      }
+      break;
+
+    // & && | || * **
+    case '&':
+    case '|':
+    case '*':
+      {
+	int c1 = text_yyinput ();
+
+	if (c1 == c0)
+	  {
+	    int c2 = text_yyinput ();
+
+	    if (! match_any (c2, ",;\n") && (c2 == ' ' || c2 == '\t')
+		&& next_token_can_follow_bin_op ())
+	      retval = false;
+
+	    xunput (c2, yytext);
+	  }
+	else if (! match_any (c1, ",;\n") && (c1 == ' ' || c1 == '\t')
+		 && next_token_can_follow_bin_op ())
+	  retval = false;
+
+	xunput (c1, yytext);
+      }
+      break;
+
+    // < <= > >=
+    case '<':
+    case '>':
+      {
+	int c1 = text_yyinput ();
+
+	if (c1 == '=')
+	  {
+	    int c2 = text_yyinput ();
+
+	    if (! match_any (c2, ",;\n") && (c2 == ' ' || c2 == '\t')
+		&& next_token_can_follow_bin_op ())
+	      retval = false;
+
+	    xunput (c2, yytext);
+	  }
+	else if (! match_any (c1, ",;\n") && (c1 == ' ' || c1 == '\t')
+		 && next_token_can_follow_bin_op ())
+	  retval = false;
+
+	xunput (c1, yytext);
+      }
+      break;
+
+    // ~= !=
+    case '~':
+    case '!':
+      {
+	int c1 = text_yyinput ();
+
+	// ~ and ! can be unary ops, so require following =.
+	if (c1 == '=')
+	  {
+	    int c2 = text_yyinput ();
+
+	    if (! match_any (c2, ",;\n") && (c2 == ' ' || c2 == '\t')
+		&& next_token_can_follow_bin_op ())
+	      retval = false;
+
+	    xunput (c2, yytext);
+	  }
+	else if (! match_any (c1, ",;\n") && (c1 == ' ' || c1 == '\t')
+		 && next_token_can_follow_bin_op ())
+	  retval = false;
+
+	xunput (c1, yytext);
+      }
+      break;
+
+    default:
+      break;
+    }
+
+  xunput (c0, yytext);
+
+  return retval;
+}
+
 // Figure out exactly what kind of token to return when we have seen
 // an identifier.  Handles keywords.  Return -1 if the identifier
 // should be ignored.
@@ -2788,6 +3083,8 @@ maybe_unput_comma (int spc_gobbled)
 static int
 handle_identifier (void)
 {
+  bool at_bos = lexer_flags.at_beginning_of_statement;
+
   std::string tok = strip_trailing_whitespace (yytext);
 
   int c = yytext[yyleng-1];
@@ -2820,7 +3117,18 @@ handle_identifier (void)
       return STRUCT_ELT;
     }
 
+  lexer_flags.at_beginning_of_statement = false;
+
+  // The is_keyword_token may reset
+  // lexer_flags.at_beginning_of_statement.  For example, if it sees
+  // an else token, then the next token is at the beginning of a
+  // statement.
+
   int kw_token = is_keyword_token (tok);
+
+  // If we found a keyword token, then the beginning_of_statement flag
+  // is already set.  Otherwise, we won't be at the beginning of a
+  // statement.
 
   if (lexer_flags.looking_at_function_handle)
     {
@@ -2864,8 +3172,6 @@ handle_identifier (void)
 
   int c1 = text_yyinput ();
 
-  bool next_tok_is_paren = (c1 == '(');
-
   bool next_tok_is_eq = false;
   if (c1 == '=')
     {
@@ -2888,31 +3194,23 @@ handle_identifier (void)
   // something like [ab,cd] = foo (), force the symbol to be inserted
   // as a variable in the current symbol table.
 
-  if (is_command_name (tok) && ! is_variable (tok))
+  if (! is_variable (tok))
     {
-      if (next_tok_is_eq
-	  || lexer_flags.looking_at_decl_list
-	  || lexer_flags.looking_at_return_list
-	  || (lexer_flags.looking_at_parameter_list
-	      && ! lexer_flags.looking_at_initializer_expression))
+      if (at_bos && spc_gobbled && looks_like_command_arg ())
+	{
+	  BEGIN (COMMAND_START);
+	}
+      else if (next_tok_is_eq
+	       || lexer_flags.looking_at_decl_list
+	       || lexer_flags.looking_at_return_list
+	       || (lexer_flags.looking_at_parameter_list
+		   && ! lexer_flags.looking_at_initializer_expression))
 	{
 	  force_local_variable (tok);
 	}
       else if (lexer_flags.looking_at_matrix_or_assign_lhs)
 	{
 	  lexer_flags.pending_local_variables.insert (tok);
-	}
-      else if (! (next_tok_is_paren
-		  || lexer_flags.looking_at_object_index.front ()))
-	{
-	  BEGIN (COMMAND_START);
-	}
-
-      if (is_rawcommand_name (tok)
-	  && ! lexer_flags.looking_at_object_index.front ())
-	{
-	  lexer_flags.doing_rawcommand = true;
-	  BEGIN (COMMAND_START);
 	}
     }
 
@@ -2932,7 +3230,7 @@ handle_identifier (void)
 
   lexer_flags.convert_spaces_to_comma = true;
 
-  if (! next_tok_is_eq)
+  if (! (next_tok_is_eq || YY_START == COMMAND_START))
     {
       lexer_flags.quote_is_transpose = true;
 
@@ -2988,13 +3286,13 @@ lexical_feedback::init (void)
   // Object index not possible until we've seen something.
   looking_for_object_index = false;
 
+  // Yes, we are at the beginning of a statement.
+  at_beginning_of_statement = true;
+
   // No need to do comma insert or convert spaces to comma at
   // beginning of input. 
   convert_spaces_to_comma = true;
   do_comma_insert = false;
-
-  // Not initially doing any plotting or setting of plot attributes.
-  doing_rawcommand = false;
 
   // Not initially looking at indirect references.
   looking_at_indirect_ref = false;
@@ -3012,7 +3310,7 @@ is_keyword (const std::string& s)
   return octave_kw_hash::in_word_set (s.c_str (), s.length ()) != 0;
 }
 
-DEFCMD (iskeyword, args, ,
+DEFUN (iskeyword, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} iskeyword (@var{name})\n\
 Return true if @var{name} is an Octave keyword.  If @var{name}\n\

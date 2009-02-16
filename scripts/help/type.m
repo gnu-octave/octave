@@ -26,8 +26,6 @@
 ## each requested function.
 ## @end deftypefn
 
-## PKG_ADD: mark_as_command type
-
 function retval = type (varargin)
   ## Parse input
   if (nargin == 0)

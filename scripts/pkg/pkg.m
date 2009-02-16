@@ -195,8 +195,6 @@
 ## @end table
 ## @end deftypefn
 
-## PKG_ADD: mark_as_command pkg
-
 function [local_packages, global_packages] = pkg (varargin)
   ## Installation prefix (FIXME: what should these be on windows?)
   persistent user_prefix = false;

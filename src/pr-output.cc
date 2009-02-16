@@ -3398,7 +3398,7 @@ set_format_style (int argc, const string_vector& argv)
     }
 }
 
-DEFCMD (format, args, ,
+DEFUN (format, args, ,
   "-*- texinfo -*-\n\
 @deffn {Command} format options\n\
 Control the format of the output produced by @code{disp} and Octave's\n\

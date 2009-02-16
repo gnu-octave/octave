@@ -1,3 +1,28 @@
+2009-02-15  John W. Eaton  <jwe@octave.org>
+
+	* help/doc.m, help/help.m, help/lookfor.m, help/type.m,
+	help/which.m, image/colormap.m, miscellaneous/delete.m,
+	miscellaneous/dir.m, miscellaneous/edit.m,
+	miscellaneous/intwarning.m, miscellaneous/ls.m,
+	miscellaneous/mex.m, miscellaneous/mkoctfile.m,
+	miscellaneous/run.m, miscellaneous/what.m, path/savepath.m,
+	pkg/pkg.m, plot/axis.m, plot/box.m, plot/caxis.m, plot/cla.m,
+	plot/close.m, plot/colorbar.m, plot/grid.m, plot/hidden.m,
+	plot/hold.m, plot/legend.m, plot/orient.m, plot/print.m,
+	plot/shading.m, plot/title.m, plot/xlabel.m, plot/ylabel.m,
+	plot/zlabel.m, testfun/demo.m, testfun/example.m, testfun/fail.m,
+	testfun/rundemos.m, testfun/test.m:
+	Delete "PKG_ADD: mark_as_command" directive.
+
+	* scripts/edit.m: Avoid command-style function call syntax when
+	assigning results in tests.
+
+	* deprecated/mark_as_rawcommand.m, deprecated/unmark_rawcommand.m,
+	deprecated/israwcommand.m, deprecated/mark_as_command.m,
+	deprecated/unmark_command.m, deprecated/iscommand.m:
+	New functions.
+	* deprecated/Makefile.in (SOURCES): Add them to the list.
+
 2009-02-15  Ben Abbott <bpabbott@mac.com>
 
 	* plot/subplot.m: Compatible placement of subplots.

@@ -27,8 +27,6 @@
 
 ## Author: Bill Denney <bill@givebillmoney.com>
 
-##PKGADD: mark_as_command savepath
-
 function varargout = savepath (savefile)
 
   retval = 1;

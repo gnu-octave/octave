@@ -35,8 +35,6 @@
 
 ## Author: jwe
 
-## PKG_ADD: mark_as_command ls
-
 function retval = ls (varargin)
 
   global __ls_command__;

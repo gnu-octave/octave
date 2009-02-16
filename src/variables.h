@@ -44,16 +44,6 @@ class string_vector;
 
 extern OCTINTERP_API void clear_mex_functions (void);
 
-extern OCTINTERP_API void mark_as_command (const std::string&);
-extern OCTINTERP_API bool is_command_name (const std::string&);
-
-// The next three are here temporarily...
-extern OCTINTERP_API bool is_marked_as_rawcommand (const std::string& s);
-extern OCTINTERP_API void mark_as_rawcommand (const std::string& s);
-extern OCTINTERP_API void unmark_rawcommand (const std::string& s);
-
-extern OCTINTERP_API bool is_rawcommand_name (const std::string&);
-
 extern OCTINTERP_API octave_function *
 is_valid_function (const octave_value&, const std::string& = std::string (),
 		   bool warn = false); 

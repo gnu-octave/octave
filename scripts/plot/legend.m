@@ -76,8 +76,6 @@
 ## @end table
 ## @end deftypefn
 
-## PKG_ADD mark_as_command legend
-
 function legend (varargin)
 
   [ca, varargin, nargin] = __plt_get_axis_arg__ ("legend", varargin{:});

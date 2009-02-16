@@ -43,7 +43,7 @@ along with Octave; see the file COPYING.  If not, see
 #if defined (MAKE_BUILTINS)
 
 #define DEFUN_DLD(name, args_name, nargout_name, doc) \
-  DEFUN_DLD_INTERNAL (name, args_name, nargout_name, false, doc)
+  DEFUN_DLD_INTERNAL (name, args_name, nargout_name, doc)
 
 // This one can be used when `name' cannot be used directly (if it is
 // already defined as a macro).  In that case, name is already a
@@ -53,7 +53,7 @@ along with Octave; see the file COPYING.  If not, see
 // (the convention is to use a prefix of "G", so "foo" becomes "Gfoo").
 
 #define DEFUNX_DLD(name, fname, gname, args_name, nargout_name, doc) \
-  DEFUNX_DLD_INTERNAL (name, fname, args_name, nargout_name, false, doc)
+  DEFUNX_DLD_INTERNAL (name, fname, args_name, nargout_name, doc)
 
 #else
 

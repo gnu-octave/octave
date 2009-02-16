@@ -1,5 +1,4 @@
-## Copyright (C) 1995, 1996, 1997, 1999, 2000, 2002, 2003, 2005, 2006,
-##               2007 John W. Eaton
+## Copyright (C) 2009 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -18,31 +17,22 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} zlabel (@var{string})
-## @deftypefnx {Function File} {} zlabel (@var{h}, @var{string})
-## @seealso{xlabel}.
+## @deftypefn {Built-in Function} {} mark_as_command (@var{name})
+## This function is obsolete and will be removed from a future
+## version of Octave.
 ## @end deftypefn
 
 ## Author: jwe
 
-function retval = zlabel (varargin)
+## Deprecated in version 3.2
 
-  [h, varargin, nargin] = __plt_get_axis_arg__ ("zlabel", varargin{:});
+function mark_as_command ()
 
-  if (rem (nargin, 2) != 1)
-    print_usage ();
-  endif
-
-  oldh = gca ();
-  unwind_protect
-    axes (h);
-    tmp = __axis_label__ ("zlabel", varargin{:});
-  unwind_protect_cleanup
-    axes (oldh);
-  end_unwind_protect
-
-  if (nargout > 0)
-    retval = tmp;
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+             "mark_as_command is obsolete and will be removed from a future version of Octave");
   endif
 
 endfunction

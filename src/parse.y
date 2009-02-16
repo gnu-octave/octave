@@ -1,7 +1,7 @@
 /*
 
 Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001,
-              2002, 2003, 2004, 2005, 2006, 2007, 2008 John W. Eaton
+              2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 John W. Eaton
 
 This file is part of Octave.
 
@@ -544,6 +544,29 @@ statement	: expression
 		  { $$ = make_statement ($1); }
 		| command
 		  { $$ = make_statement ($1); }
+		| word_list_cmd
+		  { $$ = make_statement ($1); }
+		;
+
+// =================
+// Word-list command
+// =================
+
+// These are not really like expressions since they can't appear on
+// the RHS of an assignment.  But they are also not like commands (IF,
+// WHILE, etc.
+
+word_list_cmd	: identifier word_list
+		  { $$ = make_index_expression ($1, $2, '('); }
+		;
+
+word_list	: string
+		  { $$ = new tree_argument_list ($1); }
+		| word_list string
+		  {
+		    $1->append ($2);
+		    $$ = $1;
+		  }
 		;
 
 // ===========
@@ -855,22 +878,7 @@ assign_expr	: assign_lhs '=' expression
 		  { $$ = make_assign_op (OR_EQ, $1, $2, $3); }
 		;
 
-word_list_cmd	: identifier word_list
-		  { $$ = make_index_expression ($1, $2, '('); }
-		;
-
-word_list	: string
-		  { $$ = new tree_argument_list ($1); }
-		| word_list string
-		  {
-		    $1->append ($2);
-		    $$ = $1;
-		  }
-		;
-
 expression	: simple_expr
-		  { $$ = $1; }
-		| word_list_cmd
 		  { $$ = $1; }
 		| assign_expr
 		  { $$ = $1; }
@@ -3376,7 +3384,7 @@ load_fcn_from_file (const std::string& file_name, const std::string& dir_name,
   return retval;
 }
 
-DEFCMD (autoload, args, ,
+DEFUN (autoload, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} autoload (@var{function}, @var{file})\n\
 Define @var{function} to autoload from @var{file}.\n\

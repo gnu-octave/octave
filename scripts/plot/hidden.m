@@ -25,8 +25,6 @@
 ## @seealso{mesh, meshc, surf}
 ## @end deftypefn
 
-## PKG_ADD: mark_as_command hidden
-
 function retval = hidden (mode)
 
   if (nargin == 0)

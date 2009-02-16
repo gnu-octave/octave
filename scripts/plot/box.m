@@ -27,8 +27,6 @@
 
 ## Author: jwe
 
-## PKG_ADD: mark_as_command box
-
 function box (varargin)
 
   h = gca ();

@@ -35,8 +35,6 @@
 ## this axes rather than the current axes.
 ## @end deftypefn
 
-## PKG_ADD: mark_as_command caxis
-
 function varargout = caxis (varargin)
 
   [h, varargin, nargin] = __plt_get_axis_arg__ ("caxis", varargin{:});

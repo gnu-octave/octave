@@ -934,7 +934,7 @@ If @code{keyboard} is invoked without any arguments, a default prompt of\n\
   return retval;
 }
 
-DEFCMD (echo, args, ,
+DEFUN (echo, args, ,
   "-*- texinfo -*-\n\
 @deffn {Command} echo options\n\
 Control whether commands are displayed as they are executed.  Valid\n\

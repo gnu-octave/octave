@@ -23,8 +23,6 @@
 ## @seealso{mkoctfile}
 ## @end deftypefn
 
-## PKG_ADD: mark_as_command mex
-
 function mex (varargin)
   args = {"--mex", varargin{:}};
   mkoctfile (args{:});

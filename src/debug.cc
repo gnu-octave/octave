@@ -490,7 +490,7 @@ intmap_to_ov (const bp_table::intmap& line)
   return retval;
 }
 
-DEFCMD (dbstop, args, ,
+DEFUN (dbstop, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{rline} =} dbstop (@var{func}, @var{line}, @dots{})\n\
 Set a breakpoint in a function\n\
@@ -522,7 +522,7 @@ The rline returned is the real line that the breakpoint was set at.\n\
   return intmap_to_ov (retval);
 }
 
-DEFCMD (dbclear, args, ,
+DEFUN (dbclear, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} dbclear (@var{func}, @var{line}, @dots{})\n\
 Delete a breakpoint in a function\n\
@@ -551,7 +551,7 @@ a breakpoint. If you get the wrong line nothing will happen.\n\
   return retval;
 }
 
-DEFCMD (dbstatus, args, nargout,
+DEFUN (dbstatus, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {lst =} dbstatus (@var{func})\n\
 Return a vector containing the lines on which a function has \n\
@@ -646,7 +646,7 @@ mode this should be left out.\n\
     }
 }
 
-DEFCMD (dbwhere, , ,
+DEFUN (dbwhere, , ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} dbwhere ()\n\
 Show where we are in the code\n\
@@ -745,7 +745,7 @@ do_dbtype (std::ostream& os, const std::string& name, int start, int end)
   os.flush ();
 }
 
-DEFCMD (dbtype, args, ,
+DEFUN (dbtype, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} dbtype ()\n\
 List script file with line numbers.\n\
@@ -851,7 +851,7 @@ List script file with line numbers.\n\
   return retval;
 }
 
-DEFCMD (dbstack, args, nargout,
+DEFUN (dbstack, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {[@var{stack}, @var{idx}]} dbstack (@var{n})\n\
 Print or return current stack information.  With optional argument\n\
@@ -959,7 +959,7 @@ do_dbupdown (const octave_value_list& args, const std::string& who)
     }
 }
 
-DEFCMD (dbup, args, ,
+DEFUN (dbup, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} dbup (@var{n})\n\
 In debugging mode, move up the execution stack @var{n} frames.\n\
@@ -974,7 +974,7 @@ If @var{n} is omitted, move up one frame.\n\
   return retval;
 }
 
-DEFCMD (dbdown, args, ,
+DEFUN (dbdown, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} dbdown (@var{n})\n\
 In debugging mode, move down the execution stack @var{n} frames.\n\
@@ -989,7 +989,7 @@ If @var{n} is omitted, move down one frame.\n\
   return retval;
 }
 
-DEFCMD (dbstep, args, ,
+DEFUN (dbstep, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Command} {} dbstep @var{n}\n\
 @deftypefnx {Command} {} dbstep in\n\
@@ -1063,7 +1063,7 @@ execution to continue until the current function returns.\n\
 
 DEFALIAS (dbnext, dbstep);
 
-DEFCMD (dbcont, args, ,
+DEFUN (dbcont, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Command} {} dbcont ()\n\
 In debugging mode, quit debugging mode and continue execution.\n\
@@ -1087,7 +1087,7 @@ In debugging mode, quit debugging mode and continue execution.\n\
   return octave_value_list ();
 }
 
-DEFCMD (dbquit, args, ,
+DEFUN (dbquit, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Command} {} dbquit ()\n\
 In debugging mode, quit debugging mode and return to the top level.\n\
@@ -1111,7 +1111,7 @@ In debugging mode, quit debugging mode and return to the top level.\n\
   return octave_value_list ();
 }
 
-DEFCMD (isdebugmode, args, ,
+DEFUN (isdebugmode, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Command} {} isdebugmode ()\n\
 Return true if debug mode is on, otherwise false.\n\

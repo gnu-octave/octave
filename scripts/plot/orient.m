@@ -26,8 +26,6 @@
 ## Author: Paul Kienzle
 ## Adapted-By: jwe
 
-## PKG_ADD: mark_as_command orient
-
 function retval = orient (varargin)
 
   nargs = nargin;

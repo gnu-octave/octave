@@ -46,9 +46,6 @@
 ## as the axes handle on which to add the colorbar.
 ## @end deftypefn
 
-
-## PKG_ADD: mark_as_command colorbar
-
 function h = colorbar (varargin)
   ax = [];
   loc = "eastoutside";

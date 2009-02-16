@@ -82,6 +82,10 @@ public:
   // matrix definition.
   bool convert_spaces_to_comma;
 
+  // TRUE means we are at the beginning of a statement, where a
+  // command name is possible.
+  bool at_beginning_of_statement;
+
   // TRUE means we're in the middle of defining a function.
   bool defining_func;
 
@@ -116,9 +120,6 @@ public:
   // GAG.  Stupid kludge so that [[1,2][3,4]] will work.
   bool do_comma_insert;
 
-  // TRUE means we're doing a raw input command.
-  bool doing_rawcommand;
-    
   // TRUE means we're looking at an indirect reference to a
   // structure element.
   bool looking_at_indirect_ref;

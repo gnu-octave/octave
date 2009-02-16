@@ -134,8 +134,6 @@
 ## Original version by Paul Kienzle distributed as free software in the
 ## public domain.
 
-## PKG_ADD: mark_as_command edit
-
 function ret = edit (file, state)
 
   ## Pick up globals or default them.
@@ -498,13 +496,13 @@ function ret = default_user (long_form)
 endfunction
 
 %!test
-%! s.editor = edit get editor;
-%! s.home = edit get home;
-%! s.author = edit get author;
-%! s.email = edit get email;
-%! s.license = edit get license;
-%! s.editinplace = edit get editinplace;
-%! s.mode = edit get mode;
+%! s.editor = edit ("get", "editor");
+%! s.home = edit ("get", "home");
+%! s.author = edit ("get", "author");
+%! s.email = edit ("get", "email");
+%! s.license = edit ("get", "license");
+%! s.editinplace = edit ("get", "editinplace");
+%! s.mode = edit ("get", "mode");
 %! edit editor none
 %! edit home none
 %! edit author none

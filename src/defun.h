@@ -43,7 +43,7 @@ along with Octave; see the file COPYING.  If not, see
 //   doc is the simple help text for the function.
 
 #define DEFUN(name, args_name, nargout_name, doc) \
-  DEFUN_INTERNAL (name, args_name, nargout_name, false, doc)
+  DEFUN_INTERNAL (name, args_name, nargout_name, doc)
 
 // This one can be used when `name' cannot be used directly (if it is
 // already defined as a macro).  In that case, name is already a
@@ -51,24 +51,11 @@ along with Octave; see the file COPYING.  If not, see
 // too (the convention is to use a prefix of "F", so "foo" becomes "Ffoo").
 
 #define DEFUNX(name, fname, args_name, nargout_name, doc) \
-  DEFUNX_INTERNAL (name, fname, args_name, nargout_name, false, doc)
-
-// Define a builtin command-style function.
-//
-// This is like DEFUN, except that it defines a function that can be
-// called from the Octave language without using parenthesis to
-// surround the arguments). 
-
-#define DEFCMD(name, args_name, nargout_name, doc) \
-  DEFUN_INTERNAL (name, args_name, nargout_name, true, doc)
-
-// For backward compatibility.
-
-#define DEFUN_TEXT DEFCMD
+  DEFUNX_INTERNAL (name, fname, args_name, nargout_name, doc)
 
 // This is a function with a name that can't be hidden by a variable.
 #define DEFCONSTFUN(name, args_name, nargout_name, doc) \
-  DEFCONSTFUN_INTERNAL (name, args_name, nargout_name, true, doc)
+  DEFCONSTFUN_INTERNAL (name, args_name, nargout_name, doc)
 
 // Make alias another name for the existing function name.  This macro
 // must be used in the same file where name is defined, after the

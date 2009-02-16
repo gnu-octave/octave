@@ -37,8 +37,6 @@
 
 ## Author: jwe
 
-## PKG_ADD: mark_as_command grid
-
 function grid (varargin)
 
   persistent grid_on = false;

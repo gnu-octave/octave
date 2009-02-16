@@ -1033,7 +1033,7 @@ error: nargin != 1\n\
   return retval;
 }
 
-DEFCMD (warning, args, nargout,
+DEFUN (warning, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} warning (@var{template}, @dots{})\n\
 @deftypefnx {Built-in Function} {} warning (@var{id}, @var{template}, @dots{})\n\

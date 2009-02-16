@@ -73,8 +73,6 @@
 ## can include them in test sections which means that we can use
 ## octave flow control for both kinds of tests.
 
-## PKG_ADD: mark_as_command test
-
 function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
   ## Information from test will be introduced by "key".
   persistent __signal_fail =  "!!!!! ";

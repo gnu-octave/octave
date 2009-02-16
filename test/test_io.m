@@ -196,7 +196,7 @@
 %! STR.struct_fld.y = 1;
 %! 
 %! save struct.dat -struct STR;
-%! STR = load struct.dat ;
+%! STR = load ("struct.dat");
 %!
 %! assert(STR.scalar_fld == 1 && ...
 %! 	STR.matrix_fld == [1.1,2;3,4] && ...
@@ -206,7 +206,7 @@
 %!
 %!
 %! save -binary struct.dat -struct STR matrix_fld str*_fld;
-%! STR = load struct.dat ;
+%! STR = load ("struct.dat");
 %!
 %! assert(!isfield(STR,"scalar_fld") && ...
 %! 	STR.matrix_fld == [1.1,2;3,4] && ...

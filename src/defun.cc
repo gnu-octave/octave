@@ -80,21 +80,17 @@ check_version (const std::string& version, const std::string& fcn)
 
 void
 install_builtin_function (octave_builtin::fcn f, const std::string& name,
-			  const std::string& doc, bool is_text_fcn,
+			  const std::string& doc,
 			  bool /* can_hide_function -- not yet implemented */)
 {
   octave_value fcn (new octave_builtin (f, name, doc));
 
   symbol_table::install_built_in_function (name, fcn);
-
-  if (is_text_fcn)
-    mark_as_command (name);
 }
 
 void
 install_dld_function (octave_dld_function::fcn f, const std::string& name,
-		      const octave_shlib& shl,
-		      const std::string& doc, bool is_text_fcn,
+		      const octave_shlib& shl, const std::string& doc,
 		      bool relative)
 {
   octave_dld_function *fcn = new octave_dld_function (f, shl, name, doc);
@@ -105,15 +101,11 @@ install_dld_function (octave_dld_function::fcn f, const std::string& name,
   octave_value fval (fcn);
 
   symbol_table::install_built_in_function (name, fval);
-
-  if (is_text_fcn)
-    mark_as_command (name);
 }
 
 void
 install_mex_function (void *fptr, bool fmex, const std::string& name,
-		      const octave_shlib& shl, bool is_text_fcn,
-		      bool relative)
+		      const octave_shlib& shl, bool relative)
 {
   octave_mex_function *fcn = new octave_mex_function (fptr, fmex, shl, name);
 
@@ -123,9 +115,6 @@ install_mex_function (void *fptr, bool fmex, const std::string& name,
   octave_value fval (fcn);
 
   symbol_table::install_built_in_function (name, fval);
-
-  if (is_text_fcn)
-    mark_as_command (name);
 }
 
 void

@@ -42,22 +42,19 @@ cat << \EOF
 #include <iostream>
 #include <string>
 
-#define XDEFUN_DLD_INTERNAL(name, args_name, nargout_name, is_text_fcn, doc) \
+#define XDEFUN_DLD_INTERNAL(name, args_name, nargout_name, doc) \
   print_doc_string (#name, doc);
 
-#define XDEFUNX_DLD_INTERNAL(name, fname, args_name, nargout_name, \
-                             is_text_fcn, doc) \
+#define XDEFUNX_DLD_INTERNAL(name, fname, args_name, nargout_name, doc) \
   print_doc_string (name, doc);
 
-#define XDEFUN_INTERNAL(name, args_name, nargout_name, is_text_fcn, doc) \
+#define XDEFUN_INTERNAL(name, args_name, nargout_name, doc) \
   print_doc_string (#name, doc);
 
-#define XDEFCONSTFUN_INTERNAL(name, args_name, nargout_name, \
-			      is_text_fcn, doc) \
+#define XDEFCONSTFUN_INTERNAL(name, args_name, nargout_name, doc) \
   print_doc_string (#name, doc);
 
-#define XDEFUNX_INTERNAL(name, fname, args_name, nargout_name, \
-			 is_text_fcn, doc) \
+#define XDEFUNX_INTERNAL(name, fname, args_name, nargout_name, doc) \
   print_doc_string (name, doc);
 
 #define XDEFALIAS_INTERNAL(alias, name)

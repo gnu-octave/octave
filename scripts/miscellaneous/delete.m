@@ -22,8 +22,6 @@
 ## Delete the named file or graphics handle.
 ## @end deftypefn
 
-## PKG_ADD: mark_as_command delete
-
 ## Author: jwe
 
 function delete (arg)

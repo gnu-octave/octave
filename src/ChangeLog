@@ -1,5 +1,44 @@
 2009-02-15  John W. Eaton  <jwe@octave.org>
 
+	* defun.cc, defun-int.h, defun-dld.h (DEFUN_INTERNAL,
+	DEFCONSTFUN_INTERNAL, DEFUNX_INTERNAL, DEFUN_DLD_INTERNAL,
+	DEFUNX_DLD_INTERNAL, install_builtin_function,
+	install_dld_function, install_mex_function):
+	Delete IS_TEXT_FCN arg.  Fix all uses.
+	(DEFMD, DEFUN_TEXT): Delete.
+	* mkbuiltins, mkgendoc: Adapt to DEFUN macro changes.
+
+	* lex.h, lex.l (lexer_flags::at_beginning_of_statement):
+	New data member.  Set it as needed in rules.
+	(is_keyword_token):
+	Handle lexer_flags::at_beginning_of_statement.
+	(next_token_can_follow_bin_op, looks_like_command_arg): New functions.
+	(handle_identifier): Use them to determine 
+	Don't check is_command_name or is_rawcommand_name.
+	* parse.y (statement): Recognize word_list_cmd here.
+	(expression): Not here.
+
+	* lex.l (handle_string): Delete arg TEXT_STYLE.
+	(BIN_OP_RETURN, XBIN_OP_RETURN): New arg, BOS. Change all uses.
+
+	* lex.h, lex.l (lexer_flags::doing_raw_command): Delete data
+	member and all uses.
+
+	* debug.cc, dirfns.cc, error.cc, input.cc, lex.l, load-path.cc,
+	load-save.cc, oct-hist.cc, ov-class.cc, pager.cc, parse.y,
+	pr-output.cc, sysdep.cc, utils.cc, variables.cc:
+	Replace all uses of DEFCMD with DEFUN.
+
+	* variables.cc (command_set, rawcommand_set): Delete static variables.
+	(mark_as_command, unmark_command, is_command_name,
+	mark_as_rawcommand, unmark_raw_command, is_rawcommand_name): Delete.
+	(Fmark_as_command, Funmark_command, Fiscommand,
+	Fmark_as_rawcommand, Funmark_rawcommand, Fisrawcommand):
+	Convert to .m files and move to scripts/deprecated.
+	* variables.h (mark_as_command, is_command_name,
+	is_marked_as_rawcommand, mark_as_rawcommand, unmark_rawcommand,
+	is_rawcommand_name): Delete decls.
+
 	* lex.h, lex.l (lexer_flags.looking_at_object_index): Now a
 	std::list<bool> object instead of an int.
 	Push TRUE to list at start of object index.  Push FALSE at

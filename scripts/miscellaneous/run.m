@@ -26,8 +26,6 @@
 ## @seealso{system}
 ## @end deftypefn
 
-## PKG_ADD: mark_as_command run
-
 function run (s)
 
   if (nargin != 1)

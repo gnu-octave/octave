@@ -1,3 +1,8 @@
+2009-02-15  John W. Eaton  <jwe@octave.org>
+
+	* test_io.m, test_prefer.m: Avoid command-style function call
+	syntax when assigning results.
+
 2009-02-09  John W. Eaton  <jwe@octave.org>
 
 	* fntests.m (hastests): Error if fopen fails.

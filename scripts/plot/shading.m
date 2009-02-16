@@ -40,8 +40,6 @@
 
 ## Author: Kai Habel <kai.habel@gmx.de>
 
-## PKG_ADD: mark_as_command shading
-
 function shading (varargin)
 
   [ax, varargin] = __plt_get_axis_arg__ ("shading", varargin{:});

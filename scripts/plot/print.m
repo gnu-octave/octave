@@ -126,8 +126,6 @@
 ## Author: Daniel Heiserer <Daniel.heiserer@physik.tu-muenchen.de>
 ## Adapted-By: jwe
 
-## PKG_ADD: mark_as_command print
-
 function print (varargin)
 
   orientation = orient ();

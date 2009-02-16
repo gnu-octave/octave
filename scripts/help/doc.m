@@ -34,8 +34,6 @@
 ## Author: Soren Hauberg <soren@hauberg.org>
 ## Adapted-by: jwe
 
-## PKG_ADD: mark_as_command doc
-
 function retval = doc (fname)
 
   if (nargin == 0 || nargin == 1)

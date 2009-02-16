@@ -549,7 +549,7 @@ octave_history_write_timestamp (void)
     command_history::add (timestamp);
 }
 
-DEFCMD (edit_history, args, ,
+DEFUN (edit_history, args, ,
   "-*- texinfo -*-\n\
 @deffn {Command} edit_history options\n\
 If invoked with no arguments, @code{edit_history} allows you to edit the\n\
@@ -599,7 +599,7 @@ omitted, the previous command in the history list is used.\n\
   return retval;
 }
 
-DEFCMD (history, args, ,
+DEFUN (history, args, ,
   "-*- texinfo -*-\n\
 @deffn {Command} history options\n\
 If invoked with no arguments, @code{history} displays a list of commands\n\
@@ -642,7 +642,7 @@ typed without displaying line numbers, use the command\n\
   return retval;
 }
 
-DEFCMD (run_history, args, ,
+DEFUN (run_history, args, ,
   "-*- texinfo -*-\n\
 @deffn {Command} run_history [first] [last]\n\
 Similar to @code{edit_history}, except that the editor is not invoked,\n\

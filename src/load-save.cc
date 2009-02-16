@@ -542,7 +542,7 @@ HDF5 load and save are not available, as this Octave executable was\n\
 not linked with the HDF5 library."
 #endif /* ! HAVE HDF5 */
 
-DEFCMD (load, args, nargout,
+DEFUN (load, args, nargout,
   "-*- texinfo -*-\n\
 @deffn {Command} load options file v1 v2 @dots{}\n\
 Load the named variables @var{v1}, @var{v2}, @dots{}, from the file\n\
@@ -1446,7 +1446,7 @@ This option is not available, as this Octave executable was not linked with\n\
 the zlib library."
 #endif /* ! HAVE ZLIB */
 
-DEFCMD (save, args, ,
+DEFUN (save, args, ,
   "-*- texinfo -*-\n\
 @deffn {Command} save options file @var{v1} @var{v2} @dots{}\n\
 @deffnx {Command} save options file -struct @var{STR} @var{f1} @var{f2} @dots{}\n\

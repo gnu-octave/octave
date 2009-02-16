@@ -90,7 +90,7 @@ valid_identifier (const std::string& s)
   return valid_identifier (s.c_str ());
 }
 
-DEFCMD (isvarname, args, ,
+DEFUN (isvarname, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} isvarname (@var{name})\n\
 Return true if @var{name} is a valid variable name\n\

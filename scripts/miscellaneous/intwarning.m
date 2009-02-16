@@ -65,8 +65,6 @@
 ## @seealso{warning}
 ## @end deftypefn
 
-## PKG_ADD: mark_as_command intwarning
-
 function y = intwarning (x)
 
   if (nargin != 1)

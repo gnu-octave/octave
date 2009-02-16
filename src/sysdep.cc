@@ -905,7 +905,7 @@ tilde_expand (\"~/bin\")\n\
 
 #if defined (__EMX__) && defined (OS2)
 
-DEFCMD (extproc, , ,
+DEFUN (extproc, , ,
   "extproc: ignored by Octave")
 {
   return octave_value_list ();

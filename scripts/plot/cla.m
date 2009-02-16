@@ -29,8 +29,6 @@
 ## Author: Ben Abbott <bpabbott@mac.com>
 ## Created: 2008-10-03
 
-## PKG_ADD: mark_as_command cla
-
 function cla (varargin)
 
   if (nargin > 2)

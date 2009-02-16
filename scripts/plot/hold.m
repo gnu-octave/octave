@@ -40,8 +40,6 @@
 ## 
 ## @end deftypefn
 
-## PKG_ADD: mark_as_command hold
-
 function hold (varargin)
 
   if (nargin > 0 && numel (varargin{1}) == 1 && ishandle (varargin{1}(1))

@@ -1266,7 +1266,7 @@ is a method of this class.\n\
   return retval;
 }
 
-DEFCMD (methods, args, nargout,
+DEFUN (methods, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} methods (@var{x})\n\
 @deftypefnx {Built-in Function} {} methods (\"classname\")\n\

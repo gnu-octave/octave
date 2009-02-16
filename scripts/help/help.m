@@ -29,8 +29,6 @@
 ## @seealso{doc, which, lookfor}
 ## @end deftypefn
 
-## PKG_ADD: mark_as_command help
-
 function help (name)
   if (nargin == 0)
     disp ("Help is available for the topics listed below.");

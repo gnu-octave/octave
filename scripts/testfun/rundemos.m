@@ -20,8 +20,6 @@
 ## @deftypefn {Function File} {} rundemos (@var{directory})
 ## @end deftypefn
 
-## PKG_ADD: mark_as_command rundemos
-
 ## Author: jwe
 
 function rundemos (directory)

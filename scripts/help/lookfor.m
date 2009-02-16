@@ -39,8 +39,6 @@
 ## @seealso{help, which}
 ## @end deftypefn
 
-## PKG_ADD: mark_as_command lookfor
-
 function [out_fun, out_help_text] = lookfor (str, extra)
   if (strcmpi (str, "-all"))
     ## The difference between using '-all' and not, is which part of the caches

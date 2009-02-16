@@ -40,19 +40,17 @@ extern OCTINTERP_API void check_version (const std::string& version, const std::
 
 extern OCTINTERP_API void
 install_builtin_function (octave_builtin::fcn f, const std::string& name,
-			  const std::string& doc, bool is_text_fcn = false,
+			  const std::string& doc,
 			  bool can_hide_function = true);
 
 extern OCTINTERP_API void
 install_dld_function (octave_dld_function::fcn f, const std::string& name,
-		      const octave_shlib& shl,
-		      const std::string& doc, bool is_text_fcn = false,
+		      const octave_shlib& shl, const std::string& doc, 
 		      bool relative = false);
 
 extern OCTINTERP_API void
 install_mex_function (void *fptr, bool fmex, const std::string& name,
-		      const octave_shlib& shl, bool is_text_fcn = false,
-		      bool relative = false);
+		      const octave_shlib& shl, bool relative = false);
 
 extern OCTINTERP_API void
 alias_builtin (const std::string& alias, const std::string& name);
@@ -108,35 +106,33 @@ typedef octave_function * (*octave_dld_fcn_getter) (const octave_shlib&, bool re
 // mkdefs will create a .def file for every .cc file that uses DEFUN,
 // or DEFCMD.
 
-#define DEFUN_INTERNAL(name, args_name, nargout_name, is_text_fcn, doc) \
+#define DEFUN_INTERNAL(name, args_name, nargout_name, doc) \
   BEGIN_INSTALL_BUILTIN \
-    XDEFUN_INTERNAL (name, args_name, nargout_name, is_text_fcn, doc) \
+    XDEFUN_INTERNAL (name, args_name, nargout_name, doc) \
   END_INSTALL_BUILTIN
 
-#define DEFCONSTFUN_INTERNAL(name, args_name, nargout_name, is_text_fcn, doc) \
+#define DEFCONSTFUN_INTERNAL(name, args_name, nargout_name, doc) \
   BEGIN_INSTALL_BUILTIN \
-    XDEFCONSTFUN_INTERNAL (name, args_name, nargout_name, is_text_fcn, doc) \
+    XDEFCONSTFUN_INTERNAL (name, args_name, nargout_name, doc) \
   END_INSTALL_BUILTIN
 
-#define DEFUNX_INTERNAL(name, fname, args_name, nargout_name, \
-			is_text_fcn, doc) \
+#define DEFUNX_INTERNAL(name, fname, args_name, nargout_name, doc) \
   BEGIN_INSTALL_BUILTIN \
-    XDEFUNX_INTERNAL (name, fname, args_name, nargout_name, is_text_fcn, doc) \
+    XDEFUNX_INTERNAL (name, fname, args_name, nargout_name, doc) \
   END_INSTALL_BUILTIN
 
 // Generate code to install name in the symbol table.  The script
 // mkdefs will create a .def file for every .cc file that uses
 // DEFUN_DLD.
 
-#define DEFUN_DLD_INTERNAL(name, args_name, nargout_name, is_text_fcn, doc) \
+#define DEFUN_DLD_INTERNAL(name, args_name, nargout_name, doc) \
   BEGIN_INSTALL_BUILTIN \
-    XDEFUN_DLD_INTERNAL (name, args_name, nargout_name, is_text_fcn, doc) \
+    XDEFUN_DLD_INTERNAL (name, args_name, nargout_name, doc) \
   END_INSTALL_BUILTIN
 
-#define DEFUNX_DLD_INTERNAL(name, fname, args_name, nargout_name, \
-			    is_text_fcn, doc) \
+#define DEFUNX_DLD_INTERNAL(name, fname, args_name, nargout_name, doc) \
   BEGIN_INSTALL_BUILTIN \
-    XDEFUNX_DLD_INTERNAL (name, fname, args_name, nargout_name, is_text_fcn, doc) \
+    XDEFUNX_DLD_INTERNAL (name, fname, args_name, nargout_name, doc) \
   END_INSTALL_BUILTIN
 
 // Generate code for making another name for an existing function.
@@ -151,14 +147,13 @@ typedef octave_function * (*octave_dld_fcn_getter) (const octave_shlib&, bool re
 // Generate the first line of the function definition.  This ensures
 // that the internal functions all have the same signature.
 
-#define DEFUN_INTERNAL(name, args_name, nargout_name, is_text_fcn, doc) \
+#define DEFUN_INTERNAL(name, args_name, nargout_name, doc) \
   DECLARE_FUN (name, args_name, nargout_name)
 
-#define DEFCONSTFUN_INTERNAL(name, args_name, nargout_name, is_text_fcn, doc) \
+#define DEFCONSTFUN_INTERNAL(name, args_name, nargout_name, doc) \
   DECLARE_FUN (name, args_name, nargout_name)
 
-#define DEFUNX_INTERNAL(name, fname, args_name, nargout_name, \
-			is_text_fcn, doc) \
+#define DEFUNX_INTERNAL(name, fname, args_name, nargout_name, doc) \
   DECLARE_FUNX (fname, args_name, nargout_name)
 
 // No definition is required for an alias.

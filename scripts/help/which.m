@@ -21,8 +21,6 @@
 ## @seealso{help, lookfor}
 ## @end deffn
 
-## PKG_ADD: mark_as_command which
-
 function varargout = which (varargin)
 
   if (nargin > 0 && iscellstr (varargin))

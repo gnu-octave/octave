@@ -1897,7 +1897,7 @@ No checks are made for duplicate elements.\n\
   return retval;
 }
 
-DEFCMD (addpath, args, nargout,
+DEFUN (addpath, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} addpath (@var{dir1}, @dots{})\n\
 @deftypefnx {Built-in Function} {} addpath (@var{dir1}, @dots{}, @var{option})\n\
@@ -1993,7 +1993,7 @@ Directories added to the path must exist.\n\
   return retval;
 }
 
-DEFCMD (rmpath, args, nargout,
+DEFUN (rmpath, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} rmpath (@var{dir1}, @dots{})\n\
 Remove @var{dir1}, @dots{} from the current function search path.\n\

@@ -114,8 +114,6 @@
 
 ## Author: jwe
 
-## PKG_ADD: mark_as_command axis
-
 function varargout = axis (varargin)
 
   [h, varargin, nargin] = __plt_get_axis_arg__ ("axis", varargin{:});

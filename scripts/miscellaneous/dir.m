@@ -49,8 +49,6 @@
 
 ## Author: jwe
 
-## PKG_ADD: mark_as_command dir
-
 ## FIXME -- this is quite slow for large directories, so perhaps
 ## it should be converted to C++.
 

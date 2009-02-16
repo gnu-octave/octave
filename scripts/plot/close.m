@@ -29,8 +29,6 @@
 
 ## Author: jwe
 
-## PKG_ADD: mark_as_command close
-
 function retval = close (arg1, arg2)
 
   figs = [];

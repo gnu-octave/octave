@@ -32,8 +32,6 @@
 ## @seealso{demo, test}
 ## @end deftypefn
 
-## PKG_ADD: mark_as_command example
-
 function [code_r, idx_r] = example (name, n)
 
   if (nargin < 1 || nargin > 2)

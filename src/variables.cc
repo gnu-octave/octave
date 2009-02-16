@@ -91,278 +91,6 @@ clear_symbol (const std::string& nm)
 
 // Attributes of variables and functions.
 
-// Is this a command-style function?
-
-static std::set <std::string> command_set;
-
-void
-mark_as_command (const std::string& s)
-{
-  command_set.insert (s);
-}
-
-static inline void
-unmark_command (const std::string& s)
-{
-  command_set.erase (s);
-}
-
-DEFCMD (mark_as_command, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} mark_as_command (@var{name})\n\
-Enter @var{name} into the list of commands.\n\
-@seealso{unmark_command, iscommand}\n\
-@end deftypefn")
-{
-  octave_value_list retval;
-
-  if (symbol_table::at_top_level ())
-    {
-      int nargin = args.length ();
-
-      if (nargin > 0)
-	{
-	  int argc = nargin + 1;
-
-	  string_vector argv = args.make_argv ("mark_as_command");
-
-	  if (! error_state)
-	    {
-	      for (int i = 1; i < argc; i++)
-		mark_as_command (argv[i]);
-	    }
-	}
-      else
-	print_usage ();
-    }
-  else
-    warning ("mark_as_command: invalid use inside function body");
-
-  return retval;
-}
-
-DEFCMD (unmark_command, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} unmark_command (@var{name})\n\
-Remove @var{name} from the list of commands.\n\
-@seealso{mark_as_command, iscommand}\n\
-@end deftypefn")
-{
-  octave_value_list retval;
-
-  if (symbol_table::at_top_level ())
-    {
-      int nargin = args.length ();
-
-      if (nargin > 0)
-	{
-	  int argc = nargin + 1;
-
-	  string_vector argv = args.make_argv ("unmark_command");
-
-	  if (! error_state)
-	    {
-	      for (int i = 1; i < argc; i++)
-		unmark_command (argv[i]);
-	    }
-	}
-      else
-	print_usage ();
-    }
-  else
-    warning ("mark_as_command: invalid use inside function body");
-
-  return retval;
-}
-
-bool
-is_command_name (const std::string& s)
-{
-  return command_set.find (s) != command_set.end ();
-}
-
-
-DEFCMD (iscommand, args, ,
-"-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} iscommand (@var{name})\n\
-Return true if @var{name} is a command style function.  If @var{name}\n\
-is omitted, return a list of identifiers which are marked as commands with\n\
-@code{mark_as_command}.\n\
-@seealso{mark_as_command, unmark_command}\n\
-@end deftypefn")
-{
-  octave_value retval;
-
-  int nargin = args.length ();
-
-  if (nargin == 0)
-    {
-      string_vector lst (command_set.size ());
-
-      int i = 0;
-      for (std::set<std::string>::const_iterator p = command_set.begin ();
-	   p != command_set.end (); p++)
-	lst[i++] = *p;
-
-      retval = Cell (lst.sort ());
-    }
-  else if (nargin == 1)
-    {
-      string_vector argv = args.make_argv ("iscommand");
-	  
-      if (! error_state)
-	{
-	  std::string s = argv[1];
-	  retval = is_command_name(s);
-	}
-    }
-  else
-    print_usage ();
-
-  return retval;
-}
-
-// Is this a raw input command?
-
-static std::set <std::string> rawcommand_set;
-
-void
-mark_as_rawcommand (const std::string& s)
-{
-  command_set.insert (s);    
-  rawcommand_set.insert (s);
-}
-
-void
-unmark_rawcommand (const std::string& s)
-{
-  rawcommand_set.erase (s);
-}
-
-DEFCMD (mark_as_rawcommand, args, ,
-"-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} mark_as_rawcommand (@var{name})\n\
-Enter @var{name} into the list of raw input commands and to the list of\n\
-command style functions.\n\
-Raw input commands are like normal command style functions, but they\n\
-receive their input unprocessed (ie. strings still contain the quotes\n\
-and escapes they had when input). However, comments and continuations\n\
-are handled as usual, you cannot pass a token starting with a comment\n\
-character ('#' or '%') to your function, and the last token cannot be\n\
-a continuation token ('\\' or '...').\n\
-@seealso{unmark_rawcommand, israwcommand, iscommand, mark_as_command}\n\
-@end deftypefn")
-{
-  octave_value_list retval;
-
-  if (symbol_table::at_top_level ())
-    {
-      int nargin = args.length ();
-
-      if (nargin > 0)
-	{
-	  int argc = nargin + 1;
-
-	  string_vector argv = args.make_argv ("mark_as_rawcommand");
-
-	  if (! error_state)
-	    {
-	      for (int i = 1; i < argc; i++)
-		mark_as_rawcommand (argv[i]);
-	    }
-	}
-      else
-	print_usage ();
-    }
-  else
-    warning ("mark_as_rawcommand: invalid use inside function body");
-
-  return retval;
-}
-
-DEFCMD (unmark_rawcommand, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} unmark_rawcommand (@var{name})\n\
-Remove @var{name} from the list of raw input commands.\n\
-Note that this does not remove @var{name} from the list of command style\n\
-functions.\n\
-@seealso{mark_as_rawcommand, israwcommand, iscommand, unmark_command}\n\
-@end deftypefn")
-{
-  octave_value_list retval;
-
-  if (symbol_table::at_top_level ())
-    {
-      int nargin = args.length ();
-
-      if (nargin > 0)
-	{
-	  int argc = nargin + 1;
-
-	  string_vector argv = args.make_argv ("unmark_rawcommand");
-
-	  if (! error_state)
-	    {
-	      for (int i = 1; i < argc; i++)
-		unmark_rawcommand (argv[i]);
-	    }
-	}
-      else
-	print_usage ();
-    }
-  else
-    warning ("unmark_rawcommand: invalid use inside function body");
-
-  return retval;
-}
-
-bool
-is_rawcommand_name (const std::string& s)
-{
-  return rawcommand_set.find (s) != rawcommand_set.end ();
-}
-
-DEFCMD (israwcommand, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} israwcommand (@var{name})\n\
-Return true if @var{name} is a raw input command function.\n\
-If @var{name} is omitted, return a list of identifiers which are marked as\n\
-raw input commands with mark_as_rawcommand.\n\
-@seealso{mark_as_rawcommand, unmark_rawcommand}\n\
-@end deftypefn")
-{
-  octave_value retval;
-
-  int nargin = args.length ();
-
-  if (nargin == 0)
-    {
-      string_vector lst (rawcommand_set.size());
-      
-      int i = 0;
-      for (std::set<std::string>::const_iterator p = rawcommand_set.begin ();
-	   p != rawcommand_set.end ();
-	   p++)
-	lst[i++] = *p;
-
-      retval = Cell (lst.sort ());
-    }
-  else if (nargin == 1)
-    {
-      string_vector argv = args.make_argv ("israwcommand");
-	  
-      if (! error_state)
-	{
-	  std::string s = argv[1];
-	  retval = is_rawcommand_name(s);
-	}
-    }
-  else
-    print_usage ();
-
-  return retval;
-}
-
 // Is this octave_value a valid function?
 
 octave_function *
@@ -1823,7 +1551,7 @@ do_who (int argc, const string_vector& argv, bool return_list,
   return retval;
 }
 
-DEFCMD (who, args, nargout,
+DEFUN (who, args, nargout,
   "-*- texinfo -*-\n\
 @deffn {Command} who options pattern @dots{}\n\
 @deffnx {Command} whos options pattern @dots{}\n\
@@ -1869,7 +1597,7 @@ The command @kbd{whos} is equivalent to @kbd{who -long}.\n\
   return retval;
 }
 
-DEFCMD (whos, args, nargout,
+DEFUN (whos, args, nargout,
   "-*- texinfo -*-\n\
 @deffn {Command} whos options pattern @dots{}\n\
 See who.\n\
@@ -1971,7 +1699,7 @@ mislocked (const std::string& nm)
   return retval;
 }
 
-DEFCMD (mlock, args, ,
+DEFUN (mlock, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} mlock ()\n\
 Lock the current function into memory so that it can't be cleared.\n\
@@ -1995,7 +1723,7 @@ Lock the current function into memory so that it can't be cleared.\n\
   return retval;
 }
 
-DEFCMD (munlock, args, ,
+DEFUN (munlock, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} munlock (@var{fcn})\n\
 Unlock the named function.  If no function is named\n\
@@ -2030,7 +1758,7 @@ then unlock the current function.\n\
 }
 
 
-DEFCMD (mislocked, args, ,
+DEFUN (mislocked, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} mislocked (@var{fcn})\n\
 Return true if the named function is locked.  If no function is named\n\
@@ -2282,7 +2010,7 @@ do_matlab_compatible_clear (const string_vector& argv, int argc, int idx)
     } \
   while (0)
 
-DEFCMD (clear, args, ,
+DEFUN (clear, args, ,
   "-*- texinfo -*-\n\
 @deffn {Command} clear [options] pattern @dots{}\n\
 Delete the names matching the given patterns from the symbol table.  The\n\

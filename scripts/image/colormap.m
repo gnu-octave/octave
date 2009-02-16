@@ -38,8 +38,6 @@
 ## Created: July 1994
 ## Adapted-By: jwe
 
-## PKG_ADD: mark_as_command colormap
-
 function cmap = colormap (map)
 
   if (nargin > 1)

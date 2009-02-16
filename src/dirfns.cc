@@ -96,7 +96,7 @@ octave_change_to_directory (const std::string& newdir)
   return cd_ok;
 }
 
-DEFCMD (cd, args, ,
+DEFUN (cd, args, ,
   "-*- texinfo -*-\n\
 @deffn {Command} cd dir\n\
 @deffnx {Command} chdir dir\n\
@@ -206,7 +206,7 @@ system-dependent error message.\n\
 // FIXME -- should maybe also allow second arg to specify
 // mode?  OTOH, that might cause trouble with compatibility later...
 
-DEFCMD (mkdir, args, ,
+DEFUN (mkdir, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{status}, @var{msg}, @var{msgid}] =} mkdir (@var{dir})\n\
 @deftypefnx {Built-in Function} {[@var{status}, @var{msg}, @var{msgid}] =} mkdir (@var{parent}, @var{dir})\n\
@@ -289,7 +289,7 @@ message identifier.\n\
   return retval;
 }
 
-DEFCMD (rmdir, args, ,
+DEFUN (rmdir, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{status}, @var{msg}, @var{msgid}] =} rmdir (@var{dir})\n\
 @deftypefnx {Built-in Function} {[@var{status}, @var{msg}, @var{msgid}] =} rmdir (@var{dir}, @code{\"s\"})\n\

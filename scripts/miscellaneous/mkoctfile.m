@@ -117,8 +117,6 @@
 ## @end table
 ## @end deftypefn
 
-## PKG_ADD: mark_as_command mkoctfile
-
 function mkoctfile (varargin)
 
   bindir = octave_config_info ("bindir");

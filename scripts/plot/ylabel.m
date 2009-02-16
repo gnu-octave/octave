@@ -23,8 +23,6 @@
 ## @seealso{xlabel}.
 ## @end deftypefn
 
-## PKG_ADD: mark_as_command ylabel
-
 ## Author: jwe
 
 function retval = ylabel (varargin)

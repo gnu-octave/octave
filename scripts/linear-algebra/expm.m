@@ -149,8 +149,8 @@ function r = expm (a)
   endfor
 
   ## inverse balancing.
-  ds = diag (s);
-  r = ds * r / ds;
+  d = diag (d);
+  r = d * r / d;
   r = r(p, p);
   ## Inverse trace reduction.
   if (trshift >0)

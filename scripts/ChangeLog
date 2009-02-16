@@ -1,3 +1,7 @@
+2009-02-16  Jaroslav Hajek  <highegg@gmail.com>
+
+	* linear-algebra/expm.m: Fix invalid unscaling.
+
 2009-02-16  John W. Eaton  <jwe@octave.org>
 
 	* help/help.m: Shorten default help text.

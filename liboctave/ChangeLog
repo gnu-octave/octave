@@ -1,5 +1,10 @@
 2009-02-16  Jaroslav Hajek  <highegg@gmail.com>
 	
+	* mx-inlines.cc (OP_ROW_SHORT_CIRCUIT): New macro.
+	(mx_inline_any, mx_inline_all): Override row-reduction case.
+
+2009-02-16  Jaroslav Hajek  <highegg@gmail.com>
+	
 	* mx-inlines.cc (OP_RED_FCNN): Use explicit type qualification.
 	(mx_inline_count): New overloaded template function.
 	* boolNDArray.h (boolNDArray::sum): Return NDArray.

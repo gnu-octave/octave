@@ -30,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "quit.h"
 
 #include "oct-cmplx.h"
+#include "oct-locbuf.h"
 
 template <class R, class S>
 inline void
@@ -317,16 +318,6 @@ inline bool xis_false (const FloatComplex& x) { return x == 0.0f; }
 #define OP_RED_ANYC(ac, el) if (xis_true (el)) { ac = true; break; } else continue
 #define OP_RED_ALLC(ac, el) if (xis_false (el)) { ac = false; break; } else continue
 
-// Row any/all reductions are a tradeoff - we traverse the array by
-// columns to gain cache coherence, but sacrifice short-circuiting for that.
-// For certain logical arrays, this could mean a significant loss.
-// A more sophisticated implementation could introduce a buffer of active
-// row indices to achieve both. Right now, I don't see the operation as
-// important enough.
-
-#define OP_RED_ANYR(ac, el) if (xis_true (el)) ac = true
-#define OP_RED_ALLR(ac, el) if (xis_false (el)) ac = false
-
 #define OP_RED_FCN(F, TSRC, TRES, OP, ZERO) \
 template <class T> \
 inline TRES \
@@ -367,8 +358,38 @@ OP_RED_FCN2 (mx_inline_count, bool, T, OP_RED_SUM, 0)
 OP_RED_FCN2 (mx_inline_prod, T, T, OP_RED_PROD, 1)
 OP_RED_FCN2 (mx_inline_sumsq, T, T, OP_RED_SUMSQ, 0)
 OP_RED_FCN2 (mx_inline_sumsq, std::complex<T>, T, OP_RED_SUMSQC, 0)
-OP_RED_FCN2 (mx_inline_any, T, bool, OP_RED_ANYR, false)
-OP_RED_FCN2 (mx_inline_all, T, bool, OP_RED_ALLR, true)
+
+// Using the general code for any/all would sacrifice short-circuiting.
+// OTOH, going by rows would sacrifice cache-coherence. The following algorithm
+// will achieve both, at the cost of a temporary octave_idx_type array.
+
+#define OP_ROW_SHORT_CIRCUIT(F, PRED, ZERO) \
+template <class T> \
+inline void \
+F (const T* v, bool *r, octave_idx_type m, octave_idx_type n) \
+{ \
+  /* FIXME: it may be sub-optimal to allocate the buffer here. */ \
+  OCTAVE_LOCAL_BUFFER (octave_idx_type, iact, m); \
+  for (octave_idx_type i = 0; i < m; i++) iact[i] = i; \
+  octave_idx_type nact = m; \
+  for (octave_idx_type j = 0; j < n; j++) \
+    { \
+      octave_idx_type k = 0; \
+      for (octave_idx_type i = 0; i < nact; i++) \
+        { \
+          octave_idx_type ia = iact[i]; \
+          if (! PRED (v[ia])) \
+            iact[k++] = ia; \
+        } \
+      nact = k; \
+      v += m; \
+    } \
+  for (octave_idx_type i = 0; i < m; i++) r[i] = ! ZERO; \
+  for (octave_idx_type i = 0; i < nact; i++) r[iact[i]] = ZERO; \
+}
+
+OP_ROW_SHORT_CIRCUIT (mx_inline_any, xis_true, false)
+OP_ROW_SHORT_CIRCUIT (mx_inline_all, xis_false, true)
 
 #define OP_RED_FCNN(F, TSRC, TRES) \
 template <class T> \

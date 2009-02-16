@@ -2837,9 +2837,9 @@ next_token_can_follow_bin_op (void)
     {
       c = text_yyinput ();
 
-      if (! match_any (c, ",;\n") && (c == ' ' || c == '\t'))
-	buf.push (c);
-      else
+      buf.push (c);
+
+      if (match_any (c, ",;\n") || (c != ' ' && c != '\t'))
 	break;
     }
 

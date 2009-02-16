@@ -1,3 +1,7 @@
+2009-02-16  John W. Eaton  <jwe@octave.org>
+
+	* genprops.awk (emit_source): Don't use + to concatenate strings.
+
 2009-02-16  Jaroslav Hajek  <highegg@gmail.com>
 
 	* data.cc (NATIVE_REDUCTION): Use boolNDArray::any for native bool

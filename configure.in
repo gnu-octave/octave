@@ -283,8 +283,9 @@ OCTAVE_HAVE_FRAMEWORK(Carbon, [#include <Carbon/Carbon.h>], [CGMainDisplayID ()]
   [have_framework_carbon="yes"], [have_framework_carbon="no"])
 if test $have_framework_carbon = "yes"; then
   AC_DEFINE(HAVE_FRAMEWORK_CARBON, 1, [Define if framework CARBON is available.])
-  LIBS="$LIBS -Wl,-framework -Wl,Carbon"
-  AC_MSG_NOTICE([adding -Wl,-framework -Wl,Carbon to LIBS])
+  CARBON_LIBS="-Wl,-framework -Wl,Carbon"
+  AC_MSG_NOTICE([adding -Wl,-framework -Wl,Carbon to CARBON_LIBS])
+  AC_SUBST(CARBON_LIBS)
 fi
 
 ### On Intel systems with gcc, we may need to compile with -mieee-fp
@@ -2133,6 +2134,7 @@ Octave is now configured for $canonical_host_type
   FLTK backend libs:    $GRAPHICS_LIBS
   X11 include flags:    $X11_INCFLAGS
   X11 libraries:        $X11_LIBS
+  CARBON libraries:     $CARBON_LIBS
   LIBS:                 $LIBS
   Default pager:        $DEFAULT_PAGER
   gnuplot:              $GNUPLOT

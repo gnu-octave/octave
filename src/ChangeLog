@@ -1,3 +1,7 @@
+2009-02-17  Thomas Treichl  <Thomas.Treichl@gmx.net>
+
+	* Makefile.in (octave$(EXEEXT)): Link with CARBON_LIBS.
+
 2009-02-16  John W. Eaton  <jwe@octave.org>
 
 	* lex.l (next_token_can_follow_bin_op):

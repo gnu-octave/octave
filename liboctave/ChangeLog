@@ -1,5 +1,9 @@
 2009-02-17  Jaroslav Hajek  <highegg@gmail.com>
 
+	* mx-inlines.cc (OP_MINMAX_FCN): Correct behaviour with NaNs.
+
+2009-02-17  Jaroslav Hajek  <highegg@gmail.com>
+
 	* MArray-defs.h: Move declarative part to MArray-decl.h
 	* MArray-decl.h: New source.
 

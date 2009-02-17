@@ -498,8 +498,12 @@ void F (const T *v, T *r, octave_idx_type n) \
   if (! n) return; \
   T tmp = v[0]; \
   octave_idx_type i = 1; \
-  while (xisnan (tmp) && i < n) tmp = v[i++]; \
-  for (i = 1; i < n; i++) \
+  if (xisnan (tmp)) \
+    { \
+      for (; i < n && xisnan (v[i]); i++) ; \
+      if (i < n) tmp = v[i]; \
+    } \
+  for (; i < n; i++) \
     if (v[i] OP tmp) tmp = v[i]; \
   *r = tmp; \
 } \
@@ -510,8 +514,12 @@ void F (const T *v, T *r, octave_idx_type *ri, octave_idx_type n) \
   T tmp = v[0]; \
   octave_idx_type tmpi = 0; \
   octave_idx_type i = 1; \
-  while (xisnan (tmp) && i < n) tmp = v[i++]; \
-  for (i = 1; i < n; i++) \
+  if (xisnan (tmp)) \
+    { \
+      for (; i < n && xisnan (v[i]); i++) ; \
+      if (i < n) { tmp = v[i]; tmpi = i; } \
+    } \
+  for (; i < n; i++) \
     if (v[i] OP tmp) { tmp = v[i]; tmpi = i; }\
   *r = tmp; \
   *ri = tmpi; \

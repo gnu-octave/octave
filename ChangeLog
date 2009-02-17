@@ -1,5 +1,7 @@
 2009-02-17  John W. Eaton  <jwe@octave.org>
 
+	* aclocal.m4 (OCTAVE_PROG_GPERF): Don't run gperf.
+
 	* Makeconf.in (do-subst-config-vals): Substitute CARBON_LIBS,
 	X11_INCFLAGS, and X11_LIBS.
 

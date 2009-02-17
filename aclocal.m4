@@ -521,20 +521,7 @@ dnl
 dnl OCTAVE_PROG_GPERF
 AC_DEFUN(OCTAVE_PROG_GPERF, [
   AC_CHECK_PROG(GPERF, gperf, gperf, [])
-  if test -n "$GPERF"; then
-    if echo "%{
-enum octave_kw_id { a_kw };
-%}
-struct octave_kw { const char *name; int tok; octave_kw_id kw_id; };
-%%
-foo" | $GPERF -t -C -D -E -G -L C++ -H octave_kw_hash -N octave_kw_lookup > /dev/null 2>&1; then
-      true
-    else
-      GPERF=""
-      warn_gperf="I found gperf, but it does not support all of the following options: -t -C -D -E -G -L C++ -H -N; you need gperf 3.0.1 or a more recent version"
-      AC_MSG_WARN($warn_gperf)
-    fi
-  else
+  if test -z "$GPERF"; then
     GPERF='$(top_srcdir)/missing gperf'
     warn_gperf="I didn't find gperf, but it's only a problem if you need to reconstruct oct-gperf.h"
     AC_MSG_WARN($warn_gperf)

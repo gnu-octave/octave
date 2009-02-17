@@ -1,5 +1,7 @@
 2009-02-17  John W. Eaton  <jwe@octave.org>
 
+	* octave.gperf: Eliminate whitespace to allow gperf 2.7.2 to work.
+
 	* file-io.cc (Ffscanf, Fsscanf): Check error_state after call to
 	octave_stream::scanf.
 	(Ffgetl): Check error state after call to octave_stream::getl.

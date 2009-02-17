@@ -273,21 +273,22 @@ Summary of important user-visible changes for version 3.2:
 
  ** Other miscellaneous new functions.
 
-      addtodate          info                        realpow
-      bicgstab           interp1q                    realsqrt
-      cgs                isdebugmode                 rectint
-      command_line_path  isfloat                     regexptranslate
-      contrast           isstrprop                   restoredefaultpath
-      convn              log1p                       roundb
-      datetick           lsqnonneg                   rundemos
-      display            matlabroot                  runlength
-      expm1              namelengthmax               saveobj
-      filemarker         nargoutchk                  spaugment
-      fstat              pathdef                     strchr
-      full               perl                        strvcat
-      fzero              prctile                     subspace
-      genvarname         quantile                    symvar
-      hypot              re_read_readline_init_file  treelayout
-      idivide            reallog                     validatestring
+      addtodate          idivide                     realpow
+      bicgstab           info                        realsqrt
+      cgs                interp1q                    rectint
+      command_line_path  isdebugmode                 regexptranslate
+      contrast           isfloat                     restoredefaultpath
+      convn              isstrprop                   roundb
+      cummin             log1p                       rundemos
+      cummax             lsqnonneg                   runlength
+      datetick           matlabroot                  saveobj
+      display            namelengthmax               spaugment
+      expm1              nargoutchk                  strchr
+      filemarker         pathdef                     strvcat
+      fstat              perl                        subspace
+      full               prctile                     symvar
+      fzero              quantile                    treelayout
+      genvarname         re_read_readline_init_file  validatestring
+      hypot              reallog
 
 See NEWS.3 for old news.

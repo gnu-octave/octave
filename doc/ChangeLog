@@ -1,3 +1,7 @@
+2009-02-17  Jaroslav Hajek  <highegg@gmail.com>
+
+	* interpreter/arith.txi: Add reference to "cummin" and "cummax".
+
 2009-02-11  John W. Eaton  <jwe@octave.org>
 
 	* interpreter/Makefile.in (uninstall): Use $(DESTDIR) here too.

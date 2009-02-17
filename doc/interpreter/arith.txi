@@ -80,6 +80,10 @@ each element of the matrix.
 
 @DOCSTRING(min)
 
+@DOCSTRING(cummax)
+
+@DOCSTRING(cummin)
+
 @DOCSTRING(mod)
 
 @DOCSTRING(nextpow2)

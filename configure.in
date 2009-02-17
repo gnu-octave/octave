@@ -264,10 +264,17 @@ AC_PATH_X
 if test "$have_x"; then
   AC_DEFINE(HAVE_X_WINDOWS, 1, [Define if you have X11])
 
-  X11_INCFLAGS="$x_includes"
+  if test $x_includes != "NONE"; then
+    X11_INCFLAGS="$x_includes"
+  fi
   AC_SUBST(X11_INCFLAGS)
 
-  AC_CHECK_LIB(X11, XrmInitialize, [X11_LIBS=-lX11], [X11_LIBS=])
+  if test -z $x_libraries; then
+    AC_CHECK_LIB(X11, XrmInitialize, [X11_LIBS=-lX11], [X11_LIBS=])
+  elif test $x_libraries != "NONE"; then
+    AC_CHECK_LIB(X11, XrmInitialize, 
+      [X11_LIBS="-L$x_libraries -lX11"], [X11_LIBS=], "-L$x_libraries")
+  fi
   AC_SUBST(X11_LIBS)
 fi
 

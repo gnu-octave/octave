@@ -1,3 +1,7 @@
+2009-02-17  Thomas Treichl  <Thomas.Treichl@gmx.net>
+
+	* configure.in: Fix test for X11 if "--without-x" is given.
+
 2009-02-16  Jaroslav Hajek  <highegg@gmail.com>
 
 	* NEWS: Yet more updates.

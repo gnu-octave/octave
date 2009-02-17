@@ -296,7 +296,7 @@ symbol_table::fcn_info::fcn_info_rep::load_private_function
 
   if (! file_name.empty ())
     {
-      octave_function *fcn = load_fcn_from_file (file_name);
+      octave_function *fcn = load_fcn_from_file (file_name, dir_name);
 
       if (fcn)
 	{

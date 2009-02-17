@@ -1,3 +1,9 @@
+2009-02-17  John W. Eaton  <jwe@octave.org>
+
+	* symtab.cc
+	(symbol_table::fcn_info::fcn_info_rep::load_private_function):
+	Pass dir_name to load_fcn_from_file.
+	
 2009-02-17  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/data.cc (NATIVE_REDUCTION): Add BOOL_FCN argument.

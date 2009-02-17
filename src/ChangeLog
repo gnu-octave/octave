@@ -1,5 +1,8 @@
 2009-02-17  John W. Eaton  <jwe@octave.org>
 
+	* ov-class.cc (octave_class::subsref): If indexing directly and
+	result is map, return class object, not simple struct.
+
 	* symtab.cc
 	(symbol_table::fcn_info::fcn_info_rep::load_private_function):
 	Pass dir_name to load_fcn_from_file.

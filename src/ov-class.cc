@@ -235,7 +235,8 @@ octave_class::subsref (const std::string& type,
 		  }
 	      }
 	    else
-	      retval(0) = map.index (idx.front ());
+	      retval(0) = octave_value (map.index (idx.front ()),
+					class_name ());
 	  }
 	  break;
 

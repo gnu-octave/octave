@@ -476,6 +476,7 @@ $(SED) < $< \
   -e "s|%OCTAVE_CONF_ARFLAGS%|\"${ARFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_BLAS_LIBS%|\"${BLAS_LIBS}\"|" \
   -e "s|%OCTAVE_CONF_CANONICAL_HOST_TYPE%|\"${canonical_host_type}\"|" \
+  -e "s|%OCTAVE_CONF_CARBON_LIBS%|\"${CARBON_LIBS}\"|" \
   -e "s|%OCTAVE_CONF_CC%|\"${CC}\"|" \
   -e "s|%OCTAVE_CONF_CC_VERSION%|\"${CC_VERSION}\"|" \
   -e "s|%OCTAVE_CONF_CFLAGS%|\"${CFLAGS}\"|" \
@@ -544,6 +545,8 @@ $(SED) < $< \
   -e "s|%OCTAVE_CONF_USE_64_BIT_IDX_T%|\"${USE_64_BIT_IDX_T}\"|" \
   -e "s|%OCTAVE_CONF_VERSION%|\"${version}\"|" \
   -e "s|%OCTAVE_CONF_ENABLE_DYNAMIC_LINKING%|\"${ENABLE_DYNAMIC_LINKING}\"|" \
+  -e "s|%OCTAVE_CONF_X11_INCFLAGS%|\"${X11_INCFLAGS}\"|" \
+  -e "s|%OCTAVE_CONF_X11_LIBS%|\"${X11_LIBS}\"|" \
   -e "s|%OCTAVE_CONF_XTRA_CFLAGS%|\"${XTRA_CFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_XTRA_CXXFLAGS%|\"${XTRA_CXXFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_YACC%|\"${YACC}\"|" \

@@ -1,3 +1,8 @@
+2009-02-17  John W. Eaton  <jwe@octave.org>
+
+	* Makeconf.in (do-subst-config-vals): Substitute CARBON_LIBS,
+	X11_INCFLAGS, and X11_LIBS.
+
 2009-02-17  Thomas Treichl  <Thomas.Treichl@gmx.net>
 
 	* Makeconf.in: Substitute CARBON_LIBS.

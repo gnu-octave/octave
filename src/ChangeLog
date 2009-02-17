@@ -1,3 +1,10 @@
+2009-02-17  John W. Eaton  <jwe@octave.org>
+
+	* toplev.cc (octave_config_info): Add CARBON_LIBS, X11_INCFLAGS,
+	and X11_LIBS to the struct.
+	* oct-conf.h.in (OCTAVE_CONF_CARBON_LIBS,
+	OCTAVE_CONF_X11_INCFLAGS, OCTAVE_CONF_X11_LIBS): New macros.
+
 2009-02-17  Thomas Treichl  <Thomas.Treichl@gmx.net>
 
 	* Makefile.in (octave$(EXEEXT)): Link with CARBON_LIBS.

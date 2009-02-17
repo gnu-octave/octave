@@ -908,14 +908,15 @@ DEFUN_DLD (cummin, args, nargout,
 @cindex Utility Functions\n\
 Return the cumulative minimum values. That means, the call\n\
 @example\n\
-  [@var{w}, @var{iw}] = cummin (@var{x}, @var{dim})}\n\
+  [@var{w}, @var{iw}] = cummin (@var{x}, @var{dim})\n\
 @end example\n\
 \n\
 @noindent\n\
 is equivalent to the following code:\n\
 @example\n\
   for i = 1:size (x, dim)\n\
-    [w(i), iw(i)] = min(x(:,@dots{},i,:,@dots{}), dim);\n\
+    [@var{w}(:,@dots{},i:,@dots{},), @var{iw}(:,@dots{},i:,@dots{},)] =\
+ min(@var{x}(:,@dots{},i,:,@dots{}), @var{dim});\n\
   endfor\n\
 @end example\n\
 \n\
@@ -935,14 +936,15 @@ DEFUN_DLD (cummax, args, nargout,
 @cindex Utility Functions\n\
 Return the cumulative maximum values. That means, the call\n\
 @example\n\
-  [@var{w}, @var{iw}] = cummax (@var{x}, @var{dim})}\n\
+  [@var{w}, @var{iw}] = cummax (@var{x}, @var{dim})\n\
 @end example\n\
 \n\
 @noindent\n\
 is equivalent to the following code:\n\
 @example\n\
   for i = 1:size (x, dim)\n\
-    [w(i), iw(i)] = max(x(:,@dots{},i,:,@dots{}), dim);\n\
+    [@var{w}(:,@dots{},i:,@dots{},), @var{iw}(:,@dots{},i:,@dots{},)] =\
+ max(@var{x}(:,@dots{},i,:,@dots{}), @var{dim});\n\
   endfor\n\
 @end example\n\
 \n\

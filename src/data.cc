@@ -1268,10 +1268,19 @@ sign as @var{x}.  If @var{y} is zero, the result is implementation-defined.\n\
       TYPE ## NDArray tmp = arg. TYPE ##_array_value (); \
       \
       if (! error_state) \
-        retval = tmp.FCN (DIM); \
+        { \
+          octave_ ## TYPE::clear_conv_flags (); \
+          retval = tmp.FCN (DIM); \
+          if (octave_ ## TYPE::get_trunc_flag ()) \
+            { \
+              gripe_native_integer_math_truncated (#FCN, \
+                                                   octave_ ## TYPE::type_name ()); \
+              octave_ ## TYPE::clear_conv_flags (); \
+            } \
+        } \
     }
 
-#define NATIVE_REDUCTION(FCN) \
+#define NATIVE_REDUCTION(FCN, BOOL_FCN) \
  \
   octave_value retval; \
  \
@@ -1337,11 +1346,10 @@ sign as @var{x}.  If @var{y} is zero, the result is implementation-defined.\n\
                       else if NATIVE_REDUCTION_1 (FCN, int64, dim) \
                       else if (arg.is_bool_type ()) \
                         { \
-                          boolNDArray tmp = arg. bool_array_value (); \
+                          boolNDArray tmp = arg.bool_array_value (); \
                           if (! error_state) \
-                            retval = tmp.any (dim); \
+                            retval = boolNDArray (tmp.BOOL_FCN (dim)); \
                         } \
-                      \
                       else if (arg.is_char_matrix ()) \
                         { \
 			  error (#FCN, ": invalid char type"); \
@@ -1558,15 +1566,19 @@ same orientation as @var{x}.\n\
 DEFUN (cumsum, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} cumsum (@var{x}, @var{dim})\n\
+@deftypefnx {Built-in Function} {} cumsum (@dots{}, 'native')\n\
 Cumulative sum of elements along dimension @var{dim}.  If @var{dim}\n\
 is omitted, it defaults to 1 (column-wise cumulative sums).\n\
 \n\
 As a special case, if @var{x} is a vector and @var{dim} is omitted,\n\
 return the cumulative sum of the elements as a vector with the\n\
 same orientation as @var{x}.\n\
+\n\
+The \"native\" argument implies the summation is performed in native type,\n\
+analogously to @code{sum}.\n\
 @end deftypefn")
 {
-  DATA_REDUCTION (cumsum);
+  NATIVE_REDUCTION (cumsum, cumsum);
 }
 
 /*
@@ -2549,7 +2561,7 @@ sum ([true, true], 'native')\n\
 @end example\n\
 @end deftypefn")
 {
-  NATIVE_REDUCTION (sum);
+  NATIVE_REDUCTION (sum, any);
 }
 
 /*

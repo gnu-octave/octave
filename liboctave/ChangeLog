@@ -1,5 +1,15 @@
 2009-02-17  Jaroslav Hajek  <highegg@gmail.com>
 
+	* mx-inlines.cc (OP_CUM_FCN, OP_CUM_FCN2, OP_CUM_FCNN):
+	Add TSRC/TRES parameters.
+	(mx_inline_cumcount): New function.
+	* intNDArray.cc (intNDArray::cumsum): New method.
+	* intNDArray.h: Declare it.
+	* boolNDArray.cc (boolNDArray::cumsum): New method.
+	* boolNDArray.h: Declare it.
+
+2009-02-17  Jaroslav Hajek  <highegg@gmail.com>
+
 	* mx-inlines.cc (OP_CUMMINMAX_FCN, OP_CUMMINMAX_FCN2,
 	OP_CUMMINMAX_FCNN): New macros.
 	(mx_inline_cummax, mx_inline_cummin, do_mx_cumminmax_op):

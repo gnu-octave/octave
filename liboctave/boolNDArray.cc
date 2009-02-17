@@ -65,6 +65,13 @@ boolNDArray::sum (int dim) const
   return do_mx_red_op<Array<octave_idx_type> > (*this, dim, mx_inline_count);
 }
 
+NDArray 
+boolNDArray::cumsum (int dim) const
+{
+  // NOTE: going via octave_idx_type is faster even though it requires a conversion.
+  return do_mx_cum_op<Array<octave_idx_type> > (*this, dim, mx_inline_cumcount);
+}
+
 boolNDArray
 boolNDArray::concat (const boolNDArray& rb, const Array<octave_idx_type>& ra_idx)
 {

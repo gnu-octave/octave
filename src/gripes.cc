@@ -221,6 +221,14 @@ gripe_binop_integer_math_truncated (const char *op, const char *type1, const cha
 }
 
 void
+gripe_native_integer_math_truncated (const char *fcn, const char *type)
+{
+  warning_with_id ("Octave:int-math-overflow",
+                   "data truncated for %s native %s operation",
+                   type, fcn);
+}
+
+void
 gripe_unop_integer_math_truncated (const char* op, const char *type)
 {
   warning_with_id ("Octave:int-math-overflow",

@@ -1,5 +1,13 @@
 2009-02-17  Jaroslav Hajek  <highegg@gmail.com>
 
+	* DLD-FUNCTIONS/data.cc (NATIVE_REDUCTION): Add BOOL_FCN argument.
+	(NATIVE_REDUCTION_1): Check integer overflow flags and possibly gripe.
+	(Fsum): Reflect change.
+	(Fcumsum): USE NATIVE_REDUCTION.
+	* gripes.cc (gripe_native_integer_math_truncated): New function.
+
+2009-02-17  Jaroslav Hajek  <highegg@gmail.com>
+
 	* DLD-FUNCTIONS/max.cc (Fcummin, Fcummax): Improve inline docs.
 
 2009-02-17  Jaroslav Hajek  <highegg@gmail.com>

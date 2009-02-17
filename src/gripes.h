@@ -114,6 +114,9 @@ extern OCTINTERP_API void
 gripe_binop_integer_math_truncated (const char *op, const char *type1, const char *type2);
 
 extern OCTINTERP_API void
+gripe_native_integer_math_truncated (const char *fcn, const char *type);
+
+extern OCTINTERP_API void
 gripe_unop_integer_math_truncated (const char *op, const char *type);
 
 extern OCTINTERP_API void

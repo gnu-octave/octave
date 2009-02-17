@@ -67,6 +67,7 @@ public:
   boolNDArray any (int dim = -1) const;
 
   NDArray sum (int dim = -1) const;
+  NDArray cumsum (int dim = -1) const;
 
   boolNDArray concat (const boolNDArray& rb, const Array<octave_idx_type>& ra_idx);
 

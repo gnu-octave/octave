@@ -211,6 +211,13 @@ intNDArray<T>::sum (int dim) const
 
 template <class T>
 intNDArray<T>
+intNDArray<T>::cumsum (int dim) const
+{
+  return do_mx_cum_op<intNDArray<T> > (*this, dim, mx_inline_cumsum);
+}
+
+template <class T>
+intNDArray<T>
 intNDArray<T>::max (int dim) const
 {
   return do_mx_minmax_op<intNDArray<T> > (*this, dim, mx_inline_max);

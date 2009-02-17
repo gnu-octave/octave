@@ -426,26 +426,27 @@ OP_RED_FCNN (mx_inline_sumsq, std::complex<T>, T)
 OP_RED_FCNN (mx_inline_any, T, bool)
 OP_RED_FCNN (mx_inline_all, T, bool)
 
-#define OP_CUM_FCN(F, OP) \
+#define OP_CUM_FCN(F, TSRC, TRES, OP) \
 template <class T> \
 inline void \
-F (const T *v, T *r, octave_idx_type n) \
+F (const TSRC *v, TRES *r, octave_idx_type n) \
 { \
   if (n) \
     { \
-      T t = r[0] = v[0]; \
+      TRES t = r[0] = v[0]; \
       for (octave_idx_type i = 1; i < n; i++) \
         r[i] = t = t OP v[i]; \
     } \
 }
 
-OP_CUM_FCN (mx_inline_cumsum, +)
-OP_CUM_FCN (mx_inline_cumprod, *)
+OP_CUM_FCN (mx_inline_cumsum, T, T, +)
+OP_CUM_FCN (mx_inline_cumprod, T, T, *)
+OP_CUM_FCN (mx_inline_cumcount, bool, T, +)
 
-#define OP_CUM_FCN2(F, OP) \
+#define OP_CUM_FCN2(F, TSRC, TRES, OP) \
 template <class T> \
 inline void \
-F (const T *v, T *r, octave_idx_type m, octave_idx_type n) \
+F (const TSRC *v, TRES *r, octave_idx_type m, octave_idx_type n) \
 { \
   if (n) \
     { \
@@ -456,19 +457,20 @@ F (const T *v, T *r, octave_idx_type m, octave_idx_type n) \
         { \
           r += m; v += m; \
           for (octave_idx_type i = 0; i < m; i++) \
-            r[i] = v[i] OP r0[i]; \
+            r[i] = r0[i] OP v[i]; \
           r0 += m; \
         } \
     } \
 }
 
-OP_CUM_FCN2 (mx_inline_cumsum, +)
-OP_CUM_FCN2 (mx_inline_cumprod, *)
+OP_CUM_FCN2 (mx_inline_cumsum, T, T, +)
+OP_CUM_FCN2 (mx_inline_cumprod, T, T, *)
+OP_CUM_FCN2 (mx_inline_cumcount, bool, T, *)
 
-#define OP_CUM_FCNN(F) \
+#define OP_CUM_FCNN(F, TSRC, TRES) \
 template <class T> \
 inline void \
-F (const T *v, T *r, octave_idx_type l, \
+F (const TSRC *v, TRES *r, octave_idx_type l, \
    octave_idx_type n, octave_idx_type u) \
 { \
   if (l == 1) \
@@ -490,8 +492,9 @@ F (const T *v, T *r, octave_idx_type l, \
     } \
 }
 
-OP_CUM_FCNN (mx_inline_cumsum)
-OP_CUM_FCNN (mx_inline_cumprod)
+OP_CUM_FCNN (mx_inline_cumsum, T, T)
+OP_CUM_FCNN (mx_inline_cumprod, T, T)
+OP_CUM_FCNN (mx_inline_cumcount, bool, T)
 
 #define OP_MINMAX_FCN(F, OP) \
 template <class T> \

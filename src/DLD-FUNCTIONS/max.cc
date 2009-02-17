@@ -686,8 +686,8 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUN_DLD (min, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Mapping Function} {} min (@var{x}, @var{y}, @var{dim})\n\
-@deftypefnx {Mapping Function} {[@var{w}, @var{iw}] =} min (@var{x})\n\
+@deftypefn {Loadable Function} {} min (@var{x}, @var{y}, @var{dim})\n\
+@deftypefnx {Loadable Function} {[@var{w}, @var{iw}] =} min (@var{x})\n\
 @cindex Utility Functions\n\
 For a vector argument, return the minimum value.  For a matrix\n\
 argument, return the minimum value from each column, as a row\n\
@@ -760,8 +760,8 @@ minimum value(s). Thus,\n\
 
 DEFUN_DLD (max, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Mapping Function} {} max (@var{x}, @var{y}, @var{dim})\n\
-@deftypefnx {Mapping Function} {[@var{w}, @var{iw}] =} max (@var{x})\n\
+@deftypefn {Loadable Function} {} max (@var{x}, @var{y}, @var{dim})\n\
+@deftypefnx {Loadable Function} {[@var{w}, @var{iw}] =} max (@var{x})\n\
 @cindex Utility Functions\n\
 For a vector argument, return the maximum value.  For a matrix\n\
 argument, return the maximum value from each column, as a row\n\
@@ -903,8 +903,8 @@ maximum value(s). Thus,\n\
 
 DEFUN_DLD (cummin, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Mapping Function} {} cummin (@var{x}, @var{dim})\n\
-@deftypefnx {Mapping Function} {[@var{w}, @var{iw}] =} cummin (@var{x})\n\
+@deftypefn {Loadable Function} {} cummin (@var{x}, @var{dim})\n\
+@deftypefnx {Loadable Function} {[@var{w}, @var{iw}] =} cummin (@var{x})\n\
 @cindex Utility Functions\n\
 Return the cumulative minimum values. That means, the call\n\
 @example\n\
@@ -915,8 +915,8 @@ Return the cumulative minimum values. That means, the call\n\
 is equivalent to the following code:\n\
 @example\n\
   for i = 1:size (x, dim)\n\
-    [@var{w}(:,@dots{},i:,@dots{},), @var{iw}(:,@dots{},i:,@dots{},)] =\
- min(@var{x}(:,@dots{},i,:,@dots{}), @var{dim});\n\
+    [@var{w}(:,@dots{},i,:,@dots{}), @var{iw}(:,@dots{},i,:,@dots{})] =\
+ min(@var{x}(:,@dots{},1:i,:,@dots{}), @var{dim});\n\
   endfor\n\
 @end example\n\
 \n\
@@ -931,8 +931,8 @@ to @code{min}.\n\
 
 DEFUN_DLD (cummax, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Mapping Function} {} cummax (@var{x}, @var{dim})\n\
-@deftypefnx {Mapping Function} {[@var{w}, @var{iw}] =} cummax (@var{x})\n\
+@deftypefn {Loadable Function} {} cummax (@var{x}, @var{dim})\n\
+@deftypefnx {Loadable Function} {[@var{w}, @var{iw}] =} cummax (@var{x})\n\
 @cindex Utility Functions\n\
 Return the cumulative maximum values. That means, the call\n\
 @example\n\
@@ -943,8 +943,8 @@ Return the cumulative maximum values. That means, the call\n\
 is equivalent to the following code:\n\
 @example\n\
   for i = 1:size (x, dim)\n\
-    [@var{w}(:,@dots{},i:,@dots{},), @var{iw}(:,@dots{},i:,@dots{},)] =\
- max(@var{x}(:,@dots{},i,:,@dots{}), @var{dim});\n\
+    [@var{w}(:,@dots{},i,:,@dots{}), @var{iw}(:,@dots{},i,:,@dots{})] =\
+ max(@var{x}(:,@dots{},1:i,:,@dots{}), @var{dim});\n\
   endfor\n\
 @end example\n\
 \n\

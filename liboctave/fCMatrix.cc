@@ -55,6 +55,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "mx-fdm-fcm.h"
 #include "mx-fcm-fs.h"
 #include "mx-inlines.cc"
+#include "mx-op-defs.h"
 #include "oct-cmplx.h"
 #include "oct-norm.h"
 

@@ -26,7 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "uint16NDArray.h"
-
+#include "mx-op-defs.h"
 #include "intNDArray.cc"
 
 template class OCTAVE_API intNDArray<octave_uint16>;

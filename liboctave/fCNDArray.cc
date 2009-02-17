@@ -37,6 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-ieee.h"
 #include "lo-mappers.h"
 #include "oct-locbuf.h"
+#include "mx-op-defs.h"
 
 #if defined (HAVE_FFTW3)
 #include "oct-fftw.h"

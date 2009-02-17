@@ -162,7 +162,7 @@ BEGIN {
 	        printf ("#include \"%s\"\n", rhs_header) >> h_file;
 	    }
 
-          printf ("#include \"mx-op-defs.h\"\n") >> h_file;
+          printf ("#include \"mx-op-decl.h\"\n") >> h_file;
 
           if (bin_ops)
             printf ("%s%s_BIN_OP_DECLS (%s, %s, %s, OCTAVE_API)\n", lhs_class,
@@ -191,6 +191,8 @@ BEGIN {
 	  print "#include \"Array-util.h\"" >> cc_file;
 
 	  printf ("#include \"%s\"\n", h_file) >> cc_file;
+
+          printf ("#include \"mx-op-defs.h\"\n") >> cc_file;
 
 	  for (i in bool_headers)
 	    {

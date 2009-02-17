@@ -29,7 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "MatrixType.h"
 
 #include "mx-defs.h"
-#include "mx-op-defs.h"
+#include "mx-op-decl.h"
 #include "oct-cmplx.h"
 #include "DET.h"
 

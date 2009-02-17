@@ -41,11 +41,11 @@ LINK_DEPS = \
   $(ARPACK_LIBS) $(QRUPDATE_LIBS) $(BLAS_LIBS) $(FFTW_LIBS) $(LIBREADLINE) $(LIBGLOB) $(REGEX_LIBS) $(LIBS) $(FLIBS)
 
 MATRIX_INC := Array.h Array2.h Array3.h ArrayN.h DiagArray2.h \
-	Array-util.h ArrayN-idx.h MArray-defs.h \
+	Array-util.h ArrayN-idx.h MArray-decl.h MArray-defs.h \
 	MArray.h MArray2.h MDiagArray2.h Matrix.h MArrayN.h \
-	base-lu.h base-aepbal.h dim-vector.h mx-base.h mx-op-defs.h \
-	mx-defs.h mx-ext.h CColVector.h CDiagMatrix.h CMatrix.h \
-	CNDArray.h CRowVector.h CmplxAEPBAL.h CmplxCHOL.h \
+	base-lu.h base-aepbal.h dim-vector.h mx-base.h mx-op-decl.h \
+	mx-op-defs.h mx-defs.h mx-ext.h CColVector.h CDiagMatrix.h \
+	CMatrix.h CNDArray.h CRowVector.h CmplxAEPBAL.h CmplxCHOL.h \
 	CmplxGEPBAL.h CmplxHESS.h CmplxLU.h CmplxQR.h CmplxQRP.h \
 	CmplxSCHUR.h CmplxSVD.h EIG.h fEIG.h boolMatrix.h boolNDArray.h \
 	chMatrix.h chNDArray.h dColVector.h dDiagMatrix.h dMatrix.h \

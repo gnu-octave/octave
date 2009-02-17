@@ -33,6 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "str-vec.h"
 #include "mx-base.h"
 #include "mx-inlines.cc"
+#include "mx-op-defs.h"
 
 // boolMatrix class.
 

@@ -33,7 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 
 // But first, some preprocessor abuse...
 
-#include "MArray-defs.h"
+#include "MArray-decl.h"
 
 MDIAGARRAY2_OPS_FORWARD_DECLS (MDiagArray2, )
 

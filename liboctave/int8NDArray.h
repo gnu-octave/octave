@@ -24,7 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_int8NDArray_h 1
 
 #include "intNDArray.h"
-#include "mx-op-defs.h"
+#include "mx-op-decl.h"
 #include "oct-inttypes.h"
 
 typedef intNDArray<octave_int8> int8NDArray;

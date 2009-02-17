@@ -26,7 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "int8NDArray.h"
-
+#include "mx-op-defs.h"
 #include "intNDArray.cc"
 
 template class OCTAVE_API intNDArray<octave_int8>;

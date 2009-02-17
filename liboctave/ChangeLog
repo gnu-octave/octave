@@ -1,3 +1,26 @@
+2009-02-17  Jaroslav Hajek  <highegg@gmail.com>
+
+	* MArray-defs.h: Move declarative part to MArray-decl.h
+	* MArray-decl.h: New source.
+
+	* mx-op-defs.h: Move declarative part to mx-op-decl.h.
+	* mx-op-decl.h: New source.
+
+	* Makefile.in: Include new sources in build.
+	* mk-ops.awk: Include mx-op-decl.h in headers, mx-op-defs in .cc
+	files.
+
+	* CMatrix.cc, CMatrix.h, CNDArray.cc, CNDArray.h, MArray.h, MArray2.h,
+	MArrayN.h, MDiagArray2.h, boolMatrix.cc, boolMatrix.h, boolNDArray.cc,
+	boolNDArray.h, chMatrix.cc, chMatrix.h, chNDArray.cc, chNDArray.h,
+	dMatrix.cc, dMatrix.h, dNDArray.cc, dNDArray.h, fCMatrix.cc,
+	fCMatrix.h, fCNDArray.cc, fCNDArray.h, fMatrix.cc, fMatrix.h,
+	fNDArray.cc, fNDArray.h, int16NDArray.cc, int16NDArray.h,
+	int32NDArray.cc, int32NDArray.h, int64NDArray.cc, int64NDArray.h,
+	int8NDArray.cc, int8NDArray.h, uint16NDArray.cc, uint16NDArray.h,
+	uint32NDArray.cc, uint32NDArray.h, uint64NDArray.cc, uint64NDArray.h,
+	uint8NDArray.cc, uint8NDArray.h: Ditto.
+
 2009-02-16  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Array.cc (Array<T>::assign (const idx_vector& i,

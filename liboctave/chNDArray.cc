@@ -30,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "mx-base.h"
 #include "lo-ieee.h"
 #include "lo-mappers.h"
+#include "mx-op-defs.h"
 
 // FIXME -- this is not quite the right thing.
 

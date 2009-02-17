@@ -1,3 +1,7 @@
+2009-02-17  John W. Eaton  <jwe@octave.org>
+
+	* plot/plotyy.m: Handle case of existing figure with no axes.
+
 2009-02-16  John W. Eaton  <jwe@octave.org>
 
 	* help/__makeinfo__.m: Rename from help/makeinfo.m.  Delete tmp file.

@@ -84,6 +84,9 @@ function [Ax, H1, H2] = plotyy (varargin)
 	ax = ax(1:2);
       elseif (length (ax) == 1)
         ax(2) = axes ();
+      elseif (isempty (ax))
+	ax(1) = axes ();
+	ax(2) = axes ();
       endif
     endif
     if (nargin < 2)

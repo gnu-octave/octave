@@ -1089,9 +1089,7 @@ void
 Array<T>::resize_fill (const dim_vector& dv, const T& rfv)
 {
   int dvl = dv.length ();
-  if (dvl == 1)
-    resize (dv(0), rfv);
-  else if (dvl == 2)
+  if (dvl == 2)
     resize (dv(0), dv(1), rfv);
   else if (dimensions != dv)
     {

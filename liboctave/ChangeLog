@@ -1,5 +1,9 @@
 2009-02-17  Jaroslav Hajek  <highegg@gmail.com>
 
+	* Array.cc (Array<T>::resize (const dim_vector&)): Remove dead branch.
+
+2009-02-17  Jaroslav Hajek  <highegg@gmail.com>
+
 	* mx-inlines.cc (OP_CUM_FCN, OP_CUM_FCN2, OP_CUM_FCNN):
 	Add TSRC/TRES parameters.
 	(mx_inline_cumcount): New function.

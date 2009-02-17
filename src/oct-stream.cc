@@ -964,6 +964,14 @@ octave_base_stream::do_gets (octave_idx_type max_len, bool& err,
 {
   std::string retval;
 
+  if ((interactive || forced_interactive) && file_number () == 0)
+    {
+      ::error ("%s: unable to read from stdin while running interactively",
+	       who.c_str ());
+	     
+      return retval;
+    }
+
   err = false;
 
   std::istream *isp = input_stream ();
@@ -1651,13 +1659,21 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 			      octave_idx_type nr, octave_idx_type nc, bool one_elt_size_spec,
 			      octave_idx_type& conversion_count, const std::string& who)
 {
+  octave_value retval = Matrix ();
+
+  if ((interactive || forced_interactive) && file_number () == 0)
+    {
+      ::error ("%s: unable to read from stdin while running interactively",
+	       who.c_str ());
+	     
+      return retval;
+    }
+
   conversion_count = 0;
 
   int nconv = fmt_list.num_conversions ();
 
   octave_idx_type data_index = 0;
-
-  octave_value retval = Matrix ();
 
   if (nr == 0 || nc == 0)
     {

@@ -1,5 +1,14 @@
 2009-02-17  John W. Eaton  <jwe@octave.org>
 
+	* file-io.cc (Ffscanf, Fsscanf): Check error_state after call to
+	octave_stream::scanf.
+	(Ffgetl): Check error state after call to octave_stream::getl.
+	(Ffgets): Check error state after call to octave_stream::gets.
+
+	* oct-stream.cc (octave_base_stream::do_gets,
+	octave_base_stream::do_scanf):
+	Disallow reading from stdin when running interactively.
+
 	* toplev.cc (octave_config_info): Add CARBON_LIBS, X11_INCFLAGS,
 	and X11_LIBS to the struct.
 	* oct-conf.h.in (OCTAVE_CONF_CARBON_LIBS,

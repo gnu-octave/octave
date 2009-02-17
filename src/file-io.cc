@@ -335,7 +335,7 @@ If there are no more characters to read, @code{fgetl} returns @minus{}1.\n\
 
 	  std::string tmp = os.getl (len_arg, err, who);
 
-	  if (! err)
+	  if (! (error_state || err))
 	    {
 	      retval(1) = tmp.length ();
 	      retval(0) = tmp;
@@ -383,7 +383,7 @@ If there are no more characters to read, @code{fgets} returns @minus{}1.\n\
 
 	  std::string tmp = os.gets (len_arg, err, who);
 
-	  if (! err)
+	  if (! (error_state || err))
 	    {
 	      retval(1) = tmp.length ();
 	      retval(0) = tmp;
@@ -1118,8 +1118,11 @@ complete description of the syntax of the template string.\n\
 		    {
 		      octave_value tmp = os.scanf (args(1), size, count, who);
 
-		      retval(1) = count;
-		      retval(0) = tmp;
+		      if (! error_state)
+			{
+			  retval(1) = count;
+			  retval(0) = tmp;
+			}
 		    }
 		}
 	      else
@@ -1198,15 +1201,18 @@ string is treated as an end-of-file condition.\n\
 
 		      octave_value tmp = os.scanf (args(1), size, count, who);
 
-		      // FIXME -- is this the right thing to do?
-		      // Extract error message first, because getting
-		      // position will clear it.
-		      std::string errmsg = os.error ();
+		      if (! error_state)
+			{
+			  // FIXME -- is this the right thing to do?
+			  // Extract error message first, because getting
+			  // position will clear it.
+			  std::string errmsg = os.error ();
 
-		      retval(3) = os.tell () + 1;
-		      retval(2) = errmsg;
-		      retval(1) = count;
-		      retval(0) = tmp;
+			  retval(3) = os.tell () + 1;
+			  retval(2) = errmsg;
+			  retval(1) = count;
+			  retval(0) = tmp;
+			}
 		    }
 		  else
 		    ::error ("%s: format must be a string", who.c_str ());

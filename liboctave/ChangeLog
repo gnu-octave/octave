@@ -1,5 +1,30 @@
 2009-02-17  Jaroslav Hajek  <highegg@gmail.com>
 
+	* mx-inlines.cc (OP_CUMMINMAX_FCN, OP_CUMMINMAX_FCN2,
+	OP_CUMMINMAX_FCNN): New macros.
+	(mx_inline_cummax, mx_inline_cummin, do_mx_cumminmax_op):
+	New overloaded template functions.
+
+	* dNDArray.cc (NDArray::cummin, NDArray::cummax): New methods.
+	* dNDArray.h: Declare them.
+
+	* fNDArray.cc (FloatNDArray::cummin, FloatNDArray::cummax): New
+	methods.
+	* fNDArray.h: Declare them.
+
+	* CNDArray.cc (ComplexNDArray::cummin, ComplexNDArray::cummax): New
+	methods.
+	* CNDArray.h: Declare them.
+
+	* fCNDArray.cc (FloatComplexNDArray::cummin,
+	FloatComplexNDArray::cummax): New methods.
+	* fCNDArray.h: Declare them.
+
+	* intNDArray.cc (intNDArray::cummin, intNDArray::cummax): New methods.
+	* intNDArray.h: Declare them.
+
+2009-02-17  Jaroslav Hajek  <highegg@gmail.com>
+
 	* mx-inlines.cc (OP_MINMAX_FCN): Correct behaviour with NaNs.
 
 2009-02-17  Jaroslav Hajek  <highegg@gmail.com>

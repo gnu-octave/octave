@@ -2,6 +2,7 @@
 
 Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004,
               2005, 2006, 2007 John W. Eaton
+Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
 
@@ -41,11 +42,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-re-sparse.h"
 #include "ov-cx-sparse.h"
 
-#define MINMAX_DOUBLE_BODY(FCN) \
+#define MINMAX_DOUBLE_SBODY(FCN) \
 { \
-  bool single_arg = (nargin == 1) || (arg2.is_empty() && nargin == 3);	\
- \
-  if (single_arg && (nargout == 1 || nargout == 0)) \
+  if (nargout == 1 || nargout == 0) \
     { \
       if (arg1.is_real_type ()) \
 	{ \
@@ -70,7 +69,7 @@ along with Octave; see the file COPYING.  If not, see
       else \
 	gripe_wrong_type_arg (#FCN, arg1); \
     } \
-  else if (single_arg && nargout == 2) \
+  else if (nargout == 2) \
     { \
       ArrayN<octave_idx_type> index; \
  \
@@ -104,6 +103,13 @@ along with Octave; see the file COPYING.  If not, see
       else \
 	retval(1) = NDArray (); \
     } \
+}
+
+#define MINMAX_DOUBLE_BODY(FCN) \
+{ \
+  bool single_arg = (nargin == 1) || (arg2.is_empty() && nargin == 3);	\
+  if (single_arg) \
+    MINMAX_DOUBLE_SBODY (FCN) \
   else \
     { \
       int arg1_is_scalar = arg1.is_scalar_type (); \
@@ -203,11 +209,9 @@ along with Octave; see the file COPYING.  If not, see
     } \
 }
 
-#define MINMAX_SINGLE_BODY(FCN) \
+#define MINMAX_SINGLE_SBODY(FCN) \
 { \
-  bool single_arg = (nargin == 1) || (arg2.is_empty() && nargin == 3);	\
- \
-  if (single_arg && (nargout == 1 || nargout == 0)) \
+  if (nargout == 1 || nargout == 0) \
     { \
       if (arg1.is_real_type ()) \
 	{ \
@@ -232,7 +236,7 @@ along with Octave; see the file COPYING.  If not, see
       else \
 	gripe_wrong_type_arg (#FCN, arg1); \
     } \
-  else if (single_arg && nargout == 2) \
+  else if (nargout == 2) \
     { \
       ArrayN<octave_idx_type> index; \
  \
@@ -266,6 +270,13 @@ along with Octave; see the file COPYING.  If not, see
       else \
 	retval(1) = NDArray (); \
     } \
+}
+
+#define MINMAX_SINGLE_BODY(FCN) \
+{ \
+  bool single_arg = (nargin == 1) || (arg2.is_empty() && nargin == 3);	\
+  if (single_arg) \
+    MINMAX_SINGLE_SBODY(FCN) \
   else \
     { \
       int arg1_is_scalar = arg1.is_scalar_type (); \
@@ -365,12 +376,9 @@ along with Octave; see the file COPYING.  If not, see
     } \
 }
 
-
-#define MINMAX_INT_BODY(FCN, TYP) \
- { \
-  bool single_arg = (nargin == 1) || (arg2.is_empty() && nargin == 3);	\
- \
-  if (single_arg && (nargout == 1 || nargout == 0)) \
+#define MINMAX_INT_SBODY(FCN, TYP) \
+{ \
+  if (nargout == 1 || nargout == 0) \
     { \
       TYP ## NDArray m = arg1. TYP ## _array_value (); \
  \
@@ -380,7 +388,7 @@ along with Octave; see the file COPYING.  If not, see
 	  retval(0) = n; \
 	} \
     } \
-  else if (single_arg && nargout == 2) \
+  else if (nargout == 2) \
     { \
       ArrayN<octave_idx_type> index; \
  \
@@ -399,6 +407,13 @@ along with Octave; see the file COPYING.  If not, see
       else \
 	retval(1) = NDArray (); \
     } \
+}
+
+#define MINMAX_INT_BODY(FCN, TYP) \
+ { \
+  bool single_arg = (nargin == 1) || (arg2.is_empty() && nargin == 3);	\
+  if (single_arg) \
+    MINMAX_INT_SBODY (FCN, TYP) \
   else \
     { \
       int arg1_is_scalar = arg1.is_scalar_type (); \
@@ -817,6 +832,128 @@ maximum value(s). Thus,\n\
 
 
 */
+
+#define CUMMINMAX_BODY(FCN) \
+ \
+  octave_value_list retval;  \
+ \
+  int nargin = args.length (); \
+ \
+  if (nargin < 1 || nargin > 2 || nargout > 2) \
+    { \
+      print_usage (); \
+      return retval; \
+    } \
+ \
+  octave_value arg1; \
+  octave_value arg2; \
+ \
+  switch (nargin) \
+    { \
+    case 2: \
+      arg2 = args(1); \
+ \
+    case 1: \
+      arg1 = args(0); \
+      break; \
+ \
+    default: \
+      panic_impossible (); \
+      break; \
+    } \
+ \
+  dim_vector dv = arg1.dims (); \
+  if (error_state) \
+    { \
+      gripe_wrong_type_arg (#FCN, arg1);  \
+      return retval; \
+    } \
+ \
+  int dim = 0; \
+  while ((dim < dv.length ()) && (dv (dim) <= 1)) \
+    dim++; \
+  if (dim == dv.length ()) \
+    dim = 0; \
+ \
+  if (arg1.is_integer_type ()) \
+    { \
+      if (arg1.is_uint8_type ()) \
+        MINMAX_INT_SBODY (FCN, uint8) \
+      else if (arg1.is_uint16_type ()) \
+        MINMAX_INT_SBODY (FCN, uint16) \
+      else if (arg1.is_uint32_type ()) \
+        MINMAX_INT_SBODY (FCN, uint32) \
+      else if (arg1.is_uint64_type ()) \
+        MINMAX_INT_SBODY (FCN, uint64) \
+      else if (arg1.is_int8_type ()) \
+        MINMAX_INT_SBODY (FCN, int8) \
+      else if (arg1.is_int16_type ()) \
+        MINMAX_INT_SBODY (FCN, int16) \
+      else if (arg1.is_int32_type ()) \
+        MINMAX_INT_SBODY (FCN, int32) \
+      else if (arg1.is_int64_type ()) \
+        MINMAX_INT_SBODY (FCN, int64) \
+    } \
+  else if (arg1.is_single_type ()) \
+    MINMAX_SINGLE_SBODY (FCN) \
+  else \
+    MINMAX_DOUBLE_SBODY (FCN) \
+ \
+ return retval;
+
+DEFUN_DLD (cummin, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Mapping Function} {} cummin (@var{x}, @var{dim})\n\
+@deftypefnx {Mapping Function} {[@var{w}, @var{iw}] =} cummin (@var{x})\n\
+@cindex Utility Functions\n\
+Return the cumulative minimum values. That means, the call\n\
+@example\n\
+  [@var{w}, @var{iw}] = cummin (@var{x}, @var{dim})}\n\
+@end example\n\
+\n\
+@noindent\n\
+is equivalent to the following code:\n\
+@example\n\
+  for i = 1:size (x, dim)\n\
+    [w(i), iw(i)] = min(x(:,@dots{},i,:,@dots{}), dim);\n\
+  endfor\n\
+@end example\n\
+\n\
+@noindent\n\
+but computed in a much faster manner.\n\
+The behaviour if @var{dim} or @var{iw} is unspecified is analogous\n\
+to @code{min}.\n\
+@end deftypefn")
+{
+  CUMMINMAX_BODY (cummin);
+}
+
+DEFUN_DLD (cummax, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Mapping Function} {} cummax (@var{x}, @var{dim})\n\
+@deftypefnx {Mapping Function} {[@var{w}, @var{iw}] =} cummax (@var{x})\n\
+@cindex Utility Functions\n\
+Return the cumulative maximum values. That means, the call\n\
+@example\n\
+  [@var{w}, @var{iw}] = cummax (@var{x}, @var{dim})}\n\
+@end example\n\
+\n\
+@noindent\n\
+is equivalent to the following code:\n\
+@example\n\
+  for i = 1:size (x, dim)\n\
+    [w(i), iw(i)] = max(x(:,@dots{},i,:,@dots{}), dim);\n\
+  endfor\n\
+@end example\n\
+\n\
+@noindent\n\
+but computed in a much faster manner.\n\
+The behaviour if @var{dim} or @var{iw} is unspecified is analogous\n\
+to @code{max}.\n\
+@end deftypefn")
+{
+  CUMMINMAX_BODY (cummax);
+}
 
 /*
 ;;; Local Variables: ***

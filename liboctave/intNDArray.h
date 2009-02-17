@@ -78,6 +78,11 @@ public:
   intNDArray min (int dim = 0) const;
   intNDArray min (ArrayN<octave_idx_type>& index, int dim = 0) const;
   
+  intNDArray cummax (int dim = 0) const;
+  intNDArray cummax (ArrayN<octave_idx_type>& index, int dim = 0) const;
+  intNDArray cummin (int dim = 0) const;
+  intNDArray cummin (ArrayN<octave_idx_type>& index, int dim = 0) const;
+  
   intNDArray sum (int dim) const;
 
   intNDArray abs (void) const;

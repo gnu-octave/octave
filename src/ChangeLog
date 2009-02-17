@@ -1,3 +1,14 @@
+2009-02-17  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/max.cc (MINMAX_DOUBLE_SBODY): New macro.
+	(MINMAX_DOUBLE_BODY): Move part of code to MINMAX_DOUBLE_SBODY.
+	(MINMAX_SINGLE_SBODY): New macro.
+	(MINMAX_SINGLE_BODY): Move part of code to MINMAX_DOUBLE_SBODY.
+	(MINMAX_INT_SBODY): New macro.
+	(MINMAX_INT_BODY): Move part of code to MINMAX_DOUBLE_SBODY.
+	(CUMMINMAX_BODY): New macro.
+	(Fcummin, Fcummax): New DLD functions.
+
 2009-02-17  John W. Eaton  <jwe@octave.org>
 
 	* octave.gperf: Eliminate whitespace to allow gperf 2.7.2 to work.

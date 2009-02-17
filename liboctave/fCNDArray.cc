@@ -709,6 +709,30 @@ FloatComplexNDArray::min (ArrayN<octave_idx_type>& idx_arg, int dim) const
   return do_mx_minmax_op<FloatComplexNDArray> (*this, idx_arg, dim, mx_inline_min);
 }
 
+FloatComplexNDArray
+FloatComplexNDArray::cummax (int dim) const
+{
+  return do_mx_cumminmax_op<FloatComplexNDArray> (*this, dim, mx_inline_cummax);
+}
+
+FloatComplexNDArray
+FloatComplexNDArray::cummax (ArrayN<octave_idx_type>& idx_arg, int dim) const
+{
+  return do_mx_cumminmax_op<FloatComplexNDArray> (*this, idx_arg, dim, mx_inline_cummax);
+}
+
+FloatComplexNDArray
+FloatComplexNDArray::cummin (int dim) const
+{
+  return do_mx_cumminmax_op<FloatComplexNDArray> (*this, dim, mx_inline_cummin);
+}
+
+FloatComplexNDArray
+FloatComplexNDArray::cummin (ArrayN<octave_idx_type>& idx_arg, int dim) const
+{
+  return do_mx_cumminmax_op<FloatComplexNDArray> (*this, idx_arg, dim, mx_inline_cummin);
+}
+
 FloatNDArray
 FloatComplexNDArray::abs (void) const
 {

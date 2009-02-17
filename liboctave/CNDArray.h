@@ -85,6 +85,12 @@ public:
   ComplexNDArray max (ArrayN<octave_idx_type>& index, int dim = 0) const;
   ComplexNDArray min (int dim = 0) const;
   ComplexNDArray min (ArrayN<octave_idx_type>& index, int dim = 0) const;
+
+  ComplexNDArray cummax (int dim = 0) const;
+  ComplexNDArray cummax (ArrayN<octave_idx_type>& index, int dim = 0) const;
+  ComplexNDArray cummin (int dim = 0) const;
+  ComplexNDArray cummin (ArrayN<octave_idx_type>& index, int dim = 0) const;
+
   ComplexNDArray& insert (const NDArray& a, octave_idx_type r, octave_idx_type c);
   ComplexNDArray& insert (const ComplexNDArray& a, octave_idx_type r, octave_idx_type c);
   ComplexNDArray& insert (const ComplexNDArray& a, const Array<octave_idx_type>& ra_idx);

@@ -237,6 +237,34 @@ intNDArray<T>::min (ArrayN<octave_idx_type>& idx_arg, int dim) const
   return do_mx_minmax_op<intNDArray<T> > (*this, idx_arg, dim, mx_inline_min);
 }
 
+template <class T>
+intNDArray<T>
+intNDArray<T>::cummax (int dim) const
+{
+  return do_mx_cumminmax_op<intNDArray<T> > (*this, dim, mx_inline_cummax);
+}
+
+template <class T>
+intNDArray<T>
+intNDArray<T>::cummax (ArrayN<octave_idx_type>& idx_arg, int dim) const
+{
+  return do_mx_cumminmax_op<intNDArray<T> > (*this, idx_arg, dim, mx_inline_cummax);
+}
+
+template <class T>
+intNDArray<T>
+intNDArray<T>::cummin (int dim) const
+{
+  return do_mx_cumminmax_op<intNDArray<T> > (*this, dim, mx_inline_cummin);
+}
+
+template <class T>
+intNDArray<T>
+intNDArray<T>::cummin (ArrayN<octave_idx_type>& idx_arg, int dim) const
+{
+  return do_mx_cumminmax_op<intNDArray<T> > (*this, idx_arg, dim, mx_inline_cummin);
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

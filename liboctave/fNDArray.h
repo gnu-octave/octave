@@ -94,6 +94,11 @@ public:
   FloatNDArray min (int dim = 0) const;
   FloatNDArray min (ArrayN<octave_idx_type>& index, int dim = 0) const;
   
+  FloatNDArray cummax (int dim = 0) const;
+  FloatNDArray cummax (ArrayN<octave_idx_type>& index, int dim = 0) const;
+  FloatNDArray cummin (int dim = 0) const;
+  FloatNDArray cummin (ArrayN<octave_idx_type>& index, int dim = 0) const;
+
   FloatNDArray& insert (const FloatNDArray& a, octave_idx_type r, octave_idx_type c);
   FloatNDArray& insert (const FloatNDArray& a, const Array<octave_idx_type>& ra_idx);
 

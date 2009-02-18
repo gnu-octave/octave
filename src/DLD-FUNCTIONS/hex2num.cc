@@ -68,24 +68,29 @@ hex2num ([\"4005bf0a8b145769\";\"4024000000000000\"])\n\
 
 	  for (octave_idx_type i = 0; i < nr; i++)
 	    {
-	      uint64_t num = 0;
+	      union
+	      {
+		uint64_t ival;
+		double dval;
+	      } num;
+
 	      for (octave_idx_type j = 0; j < nc; j++)
 		{
 		  unsigned char ch = cmat.elem (i, j);
 
 		  if (isxdigit (ch))
 		    {
-		      num <<= 4;
+		      num.ival <<= 4;
 		      if (ch >= 'a')
-			num += static_cast<uint64_t> (ch - 'a' + 10);
+			num.ival += static_cast<uint64_t> (ch - 'a' + 10);
 		      else if (ch >= 'A')
-			num += static_cast<uint64_t> (ch - 'A' + 10);
+			num.ival += static_cast<uint64_t> (ch - 'A' + 10);
 		      else
-			num += static_cast<uint64_t> (ch - '0');
+			num.ival += static_cast<uint64_t> (ch - '0');
 		    }
 		  else
 		    {
-		      error ("hex2num: invalid character found in string");
+		      error ("hex2num: illegal character found in string");
 		      break;
 		    }
 		}
@@ -95,10 +100,9 @@ hex2num ([\"4005bf0a8b145769\";\"4024000000000000\"])\n\
 	      else
 		{
 		  if (nc < 16)
-		    num <<= (16 - nc) * 4;
+		    num.ival <<= (16 - nc) * 4;
 
-		  m (i) = *reinterpret_cast<double *>(&num);
-
+		  m(i) = num.dval;
 		}
 	    }
 
@@ -111,12 +115,8 @@ hex2num ([\"4005bf0a8b145769\";\"4024000000000000\"])\n\
 }
 
 /*
-
 %!assert (hex2num(['c00';'bff';'000';'3ff';'400']),[-2:2]')
-
- */
-
-
+*/
 
 DEFUN_DLD (num2hex, args, ,
   "-*- texinfo -*-\n\
@@ -153,11 +153,18 @@ num2hex ([-1, 1, e, Inf, NaN, NA]);\n\
 
 	  for (octave_idx_type i = 0; i < nr; i++)
 	    {
-	      const uint64_t num = *reinterpret_cast<const uint64_t *> (pv++);
+	      union
+	      {
+		uint64_t ival;
+		double dval;
+	      } num;
+
+	      num.dval = *pv++;
+
 	      for (octave_idx_type j = 0; j < 16; j++)
 		{
 		  unsigned char ch = 
-		    static_cast<char> (num >> ((15 - j) * 4) & 0xF);
+		    static_cast<char> (num.ival >> ((15 - j) * 4) & 0xF);
 		  if (ch >= 10)
 		    ch += 'a' - 10;
 		  else
@@ -175,9 +182,5 @@ num2hex ([-1, 1, e, Inf, NaN, NA]);\n\
 }
 
 /*
-
 %!assert (num2hex (-2:2),['c000000000000000';'bff0000000000000';'0000000000000000';'3ff0000000000000';'4000000000000000'])
-
- */
-
-
+*/

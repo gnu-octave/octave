@@ -1,5 +1,8 @@
 2009-02-18  John W. Eaton  <jwe@octave.org>
 
+	* DLD-FUNCTIONS/hex2num.cc (Fhex2num, Fnum2hex):
+	Use union to avoid reinterpret_cast and GCC warning.
+
 	* mex.cc (call_mex): Declare local nargout variable volatile to
 	avoid "maybe clobbered by vfork" warning from GCC.
 

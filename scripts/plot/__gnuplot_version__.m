@@ -35,15 +35,11 @@ function version = __gnuplot_version__ ()
       ## asking us why plotting fails when gnuplot is not found.
       error ("you must have gnuplot installed to display graphics; if you have gnuplot installed in a non-standard location, see the 'gnuplot_binary' function\n");
     endif
-    pattern = "^[^\\s]*\\s*([0-9]+\\.[0-9]+)\\s*[^\\s]*\\s*([^\\s]*)";
-    [d1, d2, d3, d4, matches] = regexp (output, pattern);
-    if (iscell (matches) && numel (matches) > 0 && iscellstr (matches{1}))
-      if (numel (matches{1}) == 2)
-	__version__ = sprintf ("%s.%s", matches{1}{:});
-      else
-	__version__ = matches{1}{1};
-      endif
-    endif
+    output = strrep (output, "gnuplot", "");
+    output = strrep (output, "patchlevel", ".");
+    output = strrep (output, "\n", "");
+    output = strrep (output, "\r", "");
+    __version__ = strrep (output, " ", "");
   endif
 
   version = __version__;

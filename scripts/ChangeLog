@@ -1,5 +1,10 @@
 2009-02-18  John W. Eaton  <jwe@octave.org>
 
+	* plot/__gnuplot_version__.m: Don't use regexp to extract version
+	number.
+
+2009-02-18  John W. Eaton  <jwe@octave.org>
+
 	* plot/gnuplot_drawnow.m (gnuplot_set_term):
 	Adjust nargin checks for new signature.
 

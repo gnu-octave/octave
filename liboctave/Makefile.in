@@ -153,7 +153,6 @@ LIBOCTAVE_CXX_SOURCES := oct-locbuf.cc Bounds.cc CollocWt.cc DASPK.cc DASRT.cc \
 	oct-shlib.cc oct-spparms.cc oct-syscalls.cc oct-time.cc oct-uname.cc \
 	prog-args.cc regex-match.cc \
 	sparse-sort.cc sparse-util.cc str-vec.cc \
-	$(TEMPLATE_SRC) \
 	$(TI_SRC) \
 	$(MATRIX_SRC)
 
@@ -195,6 +194,7 @@ INCLUDES_FOR_INSTALL := $(INCLUDES) $(BUILT_INCLUDES) $(TEMPLATE_SRC) $(EXTRAS)
 
 DISTFILES := $(addprefix $(srcdir)/, Makefile.in ChangeLog mk-ops.awk \
 	mx-ops vx-ops sparse-mk-ops.awk sparse-mx-ops oct-types.h.in \
+	$(TEMPLATE_SRC) \
 	$(LIBOCTAVE_CXX_SOURCES) \
 	$(LIBOCT_READLINE_SOURCES) \
 	$(LIBOCT_PATHSEARCH_SOURCES) \

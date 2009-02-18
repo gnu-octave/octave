@@ -1,3 +1,8 @@
+2009-02-18  John W. Eaton  <jwe@octave.org>
+
+	* plot/gnuplot_drawnow.m (gnuplot_set_term):
+	Adjust nargin checks for new signature.
+
 2009-02-17  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/contourc.m: Convert demo to test.

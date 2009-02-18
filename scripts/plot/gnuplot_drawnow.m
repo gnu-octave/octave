@@ -120,7 +120,7 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
   ## the subset of properties "position", "units", "paperposition",
   ## "paperunits", "name", and "numbertitle".  When "term" originates
   ## from print.m, it may include gnuplot terminal options.
-  if (nargin == 3)
+  if (nargin < 4)
     ## This supports the gnuplot backend.
     term = gnuplot_term ();
     opts_str = "";
@@ -248,7 +248,7 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
         ## for terminals cdr/corel.
         term_str = sprintf ("%s %s", term_str, size_str);
       endif
-      if (nargin > 2 && ischar (opts_str))
+      if (nargin > 3 && ischar (opts_str))
         ## Options must go last.
         term_str = sprintf ("%s %s", term_str, opts_str);
       endif
@@ -260,7 +260,7 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
     endif
   endif
 
-  if (nargin == 4)
+  if (nargin == 5)
     if (! isempty (file))
       fprintf (plot_stream, "set output \"%s\";\n", file);
     endif

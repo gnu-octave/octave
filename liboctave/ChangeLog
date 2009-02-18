@@ -1,5 +1,10 @@
 2009-02-18  Jaroslav Hajek  <highegg@gmail.com>
 
+	* Array.cc (Array<T>::resize (const dim_vector&)): Check for negative
+	dimensions.
+
+2009-02-18  Jaroslav Hajek  <highegg@gmail.com>
+
 	* oct-inttypes.cc (pow (const octave_int<T>&, const octave_int<T>&)):
 	Use octave_int comparisons to avoid warning for unsigned types.
 

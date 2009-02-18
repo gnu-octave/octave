@@ -1,3 +1,8 @@
+2009-02-18  Jaroslav Hajek  <highegg@gmail.com>
+
+	* data.cc (Fresize): Allow arbitrary number of parameters. Improve
+	documentation.
+
 2009-02-17  Benjamin Lindner  <lindnerb@users.sourceforge.net>
 
 	* file-io.cc: (Fmkstemp): Use mkstemps if it is available and

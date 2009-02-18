@@ -4385,16 +4385,41 @@ DEFUN (resize, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} resize (@var{x}, @var{m})\n\
 @deftypefnx {Built-in Function} {} resize (@var{x}, @var{m}, @var{n})\n\
-Destructively resize @var{x}.\n\
+@deftypefnx {Built-in Function} {} resize (@var{x}, @var{m}, @var{n}, @dots{})\n\
+Resize @var{x} cutting off elements as necessary.\n\
 \n\
-@strong{Values in @var{x} are not preserved as they are with\n\
-@code{reshape}.}\n\
+In the result, element with certain indices is equal to the corresponding\n\
+element of @var{x} if the indices are within the bounds of @var{x};\n\
+otherwise, the element is set to zero.\n\
+\n\
+In other words, the statement\n\
+\n\
+@example\n\
+  y = resize (x, dv);\n\
+@end example\n\
+\n\
+@noindent\n\
+is equivalent to the following code:\n\
+\n\
+@example\n\
+  y = zeros (dv, class (x));\n\
+  sz = min (dv, size (x));\n\
+  for i = 1:length (sz), idx@{i@} = 1:sz(i); endfor\n\
+  y(idx@{:@}) = x(idx@{:@});\n\
+@end example\n\
+\n\
+@noindent\n\
+but is performed more efficiently.\n\
 \n\
 If only @var{m} is supplied and it is a scalar, the dimension of the\n\
 result is @var{m}-by-@var{m}.  If @var{m} is a vector, then the\n\
 dimensions of the result are given by the elements of @var{m}.\n\
 If both @var{m} and @var{n} are scalars, then the dimensions of\n\
 the result are @var{m}-by-@var{n}.\n\
+\n\
+An object can be resized to more dimensions than it has;\n\
+in such case the missing dimensions are assumed to be 1.\n\
+Resizing an object to fewer dimensions is not possible.\n\
 @seealso{reshape, postpad}\n\
 @end deftypefn")
 {
@@ -4421,17 +4446,18 @@ the result are @var{m}-by-@var{n}.\n\
 	  retval = retval.resize (dv, true);
 	}
     }
-  else if (nargin == 3)
+  else if (nargin > 2)
     {
-      octave_idx_type m = static_cast<octave_idx_type> 
-	(args(1).scalar_value());
-      octave_idx_type n = static_cast<octave_idx_type> 
-	(args(2).scalar_value());
+      dim_vector dv;
+      dv.resize (nargin - 1);
+      for (octave_idx_type i = 1; i < nargin; i++)
+        dv(i-1) = static_cast<octave_idx_type> (args(i).scalar_value ());
       if (!error_state)
 	{
 	  retval = args(0);
-	  retval = retval.resize (dim_vector (m, n), true);
+	  retval = retval.resize (dv, true);
 	}
+
     }
   else
     print_usage ();

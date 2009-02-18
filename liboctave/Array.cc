@@ -1093,7 +1093,7 @@ Array<T>::resize_fill (const dim_vector& dv, const T& rfv)
     resize (dv(0), dv(1), rfv);
   else if (dimensions != dv)
     {
-      if (dimensions.length () <= dvl)
+      if (dimensions.length () <= dvl && ! dv.any_neg ())
         {
           Array<T> tmp (dv);
           // Prepare for recursive resizing.

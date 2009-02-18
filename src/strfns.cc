@@ -192,7 +192,7 @@ strvcat ([97, 98, 99], \"\", @{\"98\", \"99\", 100@}, [\"num\", \"bers\"])\n\
     {
       int n_elts = 0;
 
-      int max_len = 0;
+      size_t max_len = 0;
 
       std::queue<string_vector> args_as_strings;
 
@@ -206,19 +206,19 @@ strvcat ([97, 98, 99], \"\", @{\"98\", \"99\", 100@}, [\"num\", \"bers\"])\n\
 	      return retval;
 	    }
 
-          int n = s.length ();
+          size_t n = s.length ();
 
           // do not count empty strings in calculation of number of elements
           if (n > 0)
             {
-              for (int j = 0; j < n; j++)
+              for (size_t j = 0; j < n; j++)
                 {
                   if (s[j].length () > 0)
                     n_elts++;
                 }
             }
 
-	  int s_max_len = s.max_length ();
+	  size_t s_max_len = s.max_length ();
 
 	  if (s_max_len > max_len)
 	    max_len = s_max_len;
@@ -228,23 +228,23 @@ strvcat ([97, 98, 99], \"\", @{\"98\", \"99\", 100@}, [\"num\", \"bers\"])\n\
 
       string_vector result (n_elts);
 
-      int k = 0;
+      octave_idx_type k = 0;
 
       for (int i = 0; i < nargin; i++)
 	{
 	  string_vector s = args_as_strings.front ();
 	  args_as_strings.pop ();
 
-	  int n = s.length ();
+	  size_t n = s.length ();
 
           if (n > 0)
             {
-	      for (int j = 0; j < n; j++)
+	      for (size_t j = 0; j < n; j++)
 	        {
 	          std::string t = s[j];
                   if (t.length () > 0)
                     {
-                      int t_len = t.length ();
+                      size_t t_len = t.length ();
 
                       if (max_len > t_len)
                         t += std::string (max_len - t_len, ' ');
@@ -343,7 +343,7 @@ This is just the opposite of the corresponding C library function.\n\
 
 	  if (dv1.length () == dv2.length ())
 	    {
-	      for (int i = 0; i < dv1.length (); i++)
+	      for (octave_idx_type i = 0; i < dv1.length (); i++)
 		{
 		  if (dv1(i) != dv2(i))
 		    {
@@ -359,7 +359,7 @@ This is just the opposite of the corresponding C library function.\n\
 		  charNDArray s1 = args(0).char_array_value ();
 		  charNDArray s2 = args(1).char_array_value ();
 
-		  for (int i = 0; i < dv1.numel (); i++)
+		  for (octave_idx_type i = 0; i < dv1.numel (); i++)
 		    {
 		      if (s1(i) != s2(i))
 			{
@@ -376,7 +376,7 @@ This is just the opposite of the corresponding C library function.\n\
 	{
 	  string_vector str;
 	  Cell cell;
-	  int r;
+	  octave_idx_type r;
 
 	  if (s1_string)
 	    {
@@ -399,7 +399,7 @@ This is just the opposite of the corresponding C library function.\n\
 
 	      std::string s = r == 0 ? std::string () : str[0];
 
-	      for (int i = 0; i < cell.length (); i++)
+	      for (octave_idx_type i = 0; i < cell.length (); i++)
 		{
 		  if (cell(i).is_string ())
 		    output(i) = (cell(i).string_value () == s);
@@ -420,7 +420,7 @@ This is just the opposite of the corresponding C library function.\n\
 		    {
 		      const std::string str2 = cell(0).string_value ();
 
-		      for (int i = 0; i < r; i++)
+		      for (octave_idx_type i = 0; i < r; i++)
 			output(i) = (str[i] == str2);
 		    }
 
@@ -434,7 +434,7 @@ This is just the opposite of the corresponding C library function.\n\
 
 		  if (cell.length () == r)
 		    {
-		      for (int i = 0; i < r; i++)
+		      for (octave_idx_type i = 0; i < r; i++)
 			{
 			  if (cell(i).is_string ())
 			    output(i) = (str[i] == cell(i).string_value ());
@@ -452,8 +452,8 @@ This is just the opposite of the corresponding C library function.\n\
 	  Cell cell1;
 	  Cell cell2;
 
-	  int r1 = args(0).numel ();
-	  int r2;
+	  octave_idx_type r1 = args(0).numel ();
+	  octave_idx_type r2;
 
 	  if (r1 == 1)
 	    {
@@ -484,7 +484,7 @@ This is just the opposite of the corresponding C library function.\n\
 		{
 		  const std::string str2 = cell2(0).string_value ();
 
-		  for (int i = 0; i < r1; i++)
+		  for (octave_idx_type i = 0; i < r1; i++)
 		    {
 		      if (cell1(i).is_string ())
 			{
@@ -502,7 +502,7 @@ This is just the opposite of the corresponding C library function.\n\
 		  return retval;
 		}
 
-	      for (int i = 0; i < r1; i++)
+	      for (octave_idx_type i = 0; i < r1; i++)
 		{
 		  if (cell1(i).is_string () && cell2(i).is_string ())
 		    {
@@ -609,7 +609,7 @@ This is just the opposite of the corresponding C library function.\n\
       bool s2_cell = args(1).is_cell ();
 
       // Match only first n strings.
-      int  n = args(2).int_value ();
+      int n = args(2).int_value ();
 
       if (n <= 0)
 	{
@@ -650,7 +650,7 @@ This is just the opposite of the corresponding C library function.\n\
 	{
 	  string_vector str;
 	  Cell cell;
-	  int r, c;
+	  octave_idx_type r, c;
 
 	  if (s1_string)
 	    {
@@ -675,18 +675,18 @@ This is just the opposite of the corresponding C library function.\n\
 
 	      if (c < n)
 		{
-		  for (int i = 0; i < cell.length (); i++)
+		  for (octave_idx_type i = 0; i < cell.length (); i++)
 		    output(i) = false;
 		}
 	      else
 		{
-		  for (int i = 0; i < cell.length (); i++)
+		  for (octave_idx_type i = 0; i < cell.length (); i++)
 		    {
 		      if (cell(i).is_string ())
 			{
 			  const std::string str2 = cell(i).string_value ();
 
-			  if (str2.length() >= n
+			  if (str2.length () >= n
 			      && str2.compare (0, n, str[0], 0, n) == 0)
 				output(i) = true;
 			}
@@ -710,7 +710,7 @@ This is just the opposite of the corresponding C library function.\n\
 		      
 		      if (str2.length () >= n)
 			{
-			  for (int i = 0; i < r; i++)
+			  for (octave_idx_type i = 0; i < r; i++)
 			    {
 			      if (str[i].compare (0, n, str2, 0, n) == 0)
 				output(i) = true;
@@ -728,7 +728,7 @@ This is just the opposite of the corresponding C library function.\n\
 
 		  if (cell.numel () == r)
 		    {
-		      for (int i = 0; i < r; i++)
+		      for (octave_idx_type i = 0; i < r; i++)
 			{
 			  if (cell(i).is_string () && c >= n)
 			    {
@@ -755,8 +755,8 @@ This is just the opposite of the corresponding C library function.\n\
 	  Cell cell1;
 	  Cell cell2;
 
-	  int r1 = args(0).numel ();
-	  int r2;
+	  octave_idx_type r1 = args(0).numel ();
+	  octave_idx_type r2;
 
 	  if (r1 == 1)
 	    {
@@ -787,7 +787,7 @@ This is just the opposite of the corresponding C library function.\n\
 		{
 		  const std::string str2 = cell2(0).string_value ();
 
-		  for (int i = 0; i < r1; i++)
+		  for (octave_idx_type i = 0; i < r1; i++)
 		    {
 		      if (cell1(i).is_string ())
 			{
@@ -808,7 +808,7 @@ This is just the opposite of the corresponding C library function.\n\
 		  return retval;
 		}
 
-	      for (int i = 0; i < r1; i++)
+	      for (octave_idx_type i = 0; i < r1; i++)
 		{
 		  if (cell1(i).is_string () && cell2(i).is_string ())
 		    {

@@ -1,5 +1,9 @@
 2009-02-18  John W. Eaton  <jwe@octave.org>
 
+	* strfns.cc (Fstrvcat): Use octave_idx_type and size_t instead of
+	int as needed.
+	(Fstrcmp, Fstrncmp): Use octave_idx_type instead of int as needed.
+
 	* DLD-FUNCTIONS/hex2num.cc (Fhex2num, Fnum2hex):
 	Use union to avoid reinterpret_cast and GCC warning.
 

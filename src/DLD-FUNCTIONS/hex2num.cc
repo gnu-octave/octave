@@ -85,7 +85,7 @@ hex2num ([\"4005bf0a8b145769\";\"4024000000000000\"])\n\
 		    }
 		  else
 		    {
-		      error ("hex2num: illegal character found in string");
+		      error ("hex2num: invalid character found in string");
 		      break;
 		    }
 		}

@@ -285,7 +285,7 @@ LSODE::do_integrate (double tout)
 
     case -1:  // excess work done on this call (perhaps wrong mf).
     case -2:  // excess accuracy requested (tolerances too small).
-    case -3:  // illegal input detected (see printed message).
+    case -3:  // invalid input detected (see printed message).
     case -4:  // repeated error test failures (check all inputs).
     case -5:  // repeated convergence failures (perhaps bad jacobian
 	      // supplied or wrong choice of mf or tolerances).

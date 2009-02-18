@@ -249,9 +249,9 @@ integration.  If the stopping condition is met, the vector\n\
 @var{t_out} will be the point at which the stopping condition was met,\n\
 and may not correspond to any element of the vector @var{t}.\n\
 \n\
-The first argument, @var{fcn}, is a string, or cell array of strings or\n\
-inline or function handles, that names the function to call to compute\n\
-the vector of residuals for the set of equations. It must have the form\n\
+The first argument, @var{fcn}, is a string, inline, or function handle\n\
+that names the function @math{f} to call to compute the vector of\n\
+residuals for the set of equations.  It must have the form\n\
 \n\
 @example\n\
 @var{res} = f (@var{x}, @var{xdot}, @var{t})\n\
@@ -261,9 +261,10 @@ the vector of residuals for the set of equations. It must have the form\n\
 in which @var{x}, @var{xdot}, and @var{res} are vectors, and @var{t} is a\n\
 scalar.\n\
 \n\
-If @var{fcn} is a two-element string array, or two element cell array,\n\
-the first element names the function @math{f} described above, and the\n\
-second element names a function to compute the modified Jacobian\n\
+If @var{fcn} is a two-element string array or a two-element cell array\n\
+of strings, inlines, or function handles, the first element names\n\
+the function @math{f} described above, and the second element names a\n\
+function to compute the modified Jacobian\n\
 \n\
 @tex\n\
 $$\n\

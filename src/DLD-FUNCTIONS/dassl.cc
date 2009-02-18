@@ -209,10 +209,9 @@ system @var{x_0} and its derivative @var{xdot_0}, so that the first\n\
 row of the output @var{x} is @var{x_0} and the first row\n\
 of the output @var{xdot} is @var{xdot_0}.\n\
 \n\
-The first argument, @var{fcn}, is a string or a two element cell array\n\
-of strings, inline or function handle, that names the function, to call\n\
-to compute the vector of residuals for the set of equations. It must\n\
-have the form\n\
+The first argument, @var{fcn}, is a string, inline, or function handle\n\
+that names the function @math{f} to call to compute the vector of\n\
+residuals for the set of equations.  It must have the form\n\
 \n\
 @example\n\
 @var{res} = f (@var{x}, @var{xdot}, @var{t})\n\
@@ -222,9 +221,10 @@ have the form\n\
 in which @var{x}, @var{xdot}, and @var{res} are vectors, and @var{t} is a\n\
 scalar.\n\
 \n\
-If @var{fcn} is a two-element string array, the first element names\n\
-the function @math{f} described above, and the second element names\n\
-a function to compute the modified Jacobian\n\
+If @var{fcn} is a two-element string array or a two-element cell array\n\
+of strings, inlines, or function handles, the first element names\n\
+the function @math{f} described above, and the second element names a\n\
+function to compute the modified Jacobian\n\
 \n\
 @iftex\n\
 @tex\n\

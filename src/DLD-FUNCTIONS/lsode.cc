@@ -192,10 +192,9 @@ of @var{t} should be @math{t_0} and should correspond to the initial\n\
 state of the system @var{x_0}, so that the first row of the output\n\
 is @var{x_0}.\n\
 \n\
-The first argument, @var{fcn}, is a string, or cell array of strings,\n\
-inline or function handles, that names the function to call to compute\n\
-the vector of right hand sides for the set of equations. The function\n\
-must have the form\n\
+The first argument, @var{fcn}, is a string, inline, or function handle\n\
+that names the function @math{f} to call to compute the vector of right\n\
+hand sides for the set of equations.  The function must have the form\n\
 \n\
 @example\n\
 @var{xdot} = f (@var{x}, @var{t})\n\
@@ -204,10 +203,11 @@ must have the form\n\
 @noindent\n\
 in which @var{xdot} and @var{x} are vectors and @var{t} is a scalar.\n\
 \n\
-If @var{fcn} is a two-element string array, the first element names the\n\
-function @math{f} described above, and the second element names a function\n\
-to compute the Jacobian of @math{f}.  The Jacobian function must have the\n\
-form\n\
+If @var{fcn} is a two-element string array or a two-element cell array\n\
+of strings, inlines, or function handles, the first element names\n\
+the function @math{f} described above, and the second element names a\n\
+function to compute the Jacobian of @math{f}.  The Jacobian function\n\
+must have the form\n\
 \n\
 @example\n\
 @var{jac} = j (@var{x}, @var{t})\n\

@@ -1,3 +1,8 @@
+2009-02-17  Olaf Till  <olaf.till@uni-jena.de>
+
+	* DLD-FUNCTIONS/lsode.cc, DLD-FUNCTIONS/daspk.cc, 
+	DLD-FUNCTIONS/dassl.cc, DLD-FUNCTIONS/dasrt.cc: Documentation fixes.
+
 2009-02-17  Kai Habel  <kai.habel@gmx.de>
 
 	* DLD-FUNCTIONS/convhulln.cc (Fconvhulln): Compute convex hull

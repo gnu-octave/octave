@@ -126,7 +126,8 @@ seekdir_to_whence (std::ios::seekdir dir)
 }
 
 std::streampos
-c_file_ptr_buf::seekoff (std::streamoff offset, std::ios::seekdir dir,
+c_file_ptr_buf::seekoff (std::streamoff /* offset */,
+			 std::ios::seekdir /* dir */,
 			 std::ios::openmode)
 {
   // FIXME
@@ -144,7 +145,7 @@ c_file_ptr_buf::seekoff (std::streamoff offset, std::ios::seekdir dir,
 }
 
 std::streampos
-c_file_ptr_buf::seekpos (std::streampos offset, std::ios::openmode)
+c_file_ptr_buf::seekpos (std::streampos /* offset */, std::ios::openmode)
 {
   // FIXME
 #if 0  
@@ -270,8 +271,9 @@ c_zfile_ptr_buf::xsgetn (char *s, std::streamsize n)
 }
 
 std::streampos
-c_zfile_ptr_buf::seekoff (std::streamoff offset, std::ios::seekdir dir,
-			 std::ios::openmode)
+c_zfile_ptr_buf::seekoff (std::streamoff /* offset */,
+			  std::ios::seekdir /* dir */,
+			  std::ios::openmode)
 {
   // FIXME
 #if 0
@@ -288,7 +290,7 @@ c_zfile_ptr_buf::seekoff (std::streamoff offset, std::ios::seekdir dir,
 }
 
 std::streampos
-c_zfile_ptr_buf::seekpos (std::streampos offset, std::ios::openmode)
+c_zfile_ptr_buf::seekpos (std::streampos /* offset */, std::ios::openmode)
 {
   // FIXME
 #if 0  

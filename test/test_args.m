@@ -194,12 +194,16 @@
 
 ## Function handle (builtin)
 %!function f (x = @sin)
-%!  assert (x, @sin)
-%!xtest
+%!  finfo = functions (x);
+%!  fname = finfo.function;
+%!  assert (isa (x, "function_handle") && strcmp (fname, "sin"));
+%!test
 %!  f()
 
 ## Function handle (anonymous)
 %!function f (x = @(x) x.^2)
-%!  assert (x, @(x) x.^2)
-%!xtest
+%!  finfo = functions (x);
+%!  ftype = finfo.type;
+%!  assert (isa (x, "function_handle") && strcmp (ftype, "anonymous"));
+%!test
 %!  f()

@@ -742,7 +742,7 @@ bool check_qr_dims (const octave_value& q, const octave_value& r,
                     bool allow_ecf = false)
 {
   octave_idx_type m = q.rows (), k = r.rows (), n = r.columns ();
-  return ((q.ndims () == 2 || r.ndims () == 2 && k == q.columns ())
+  return ((q.ndims () == 2 && r.ndims () == 2 && k == q.columns ())
             && (m == k || (allow_ecf && k == n && k < m)));
 }
 

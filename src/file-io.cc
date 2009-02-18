@@ -1907,6 +1907,11 @@ system-dependent error message.\n\
   return retval;
 }
 
+#if defined (HAVE_MKSTEMPS)
+// Prototype for mkstemps in libiberty
+extern "C" int mkstemps (char *pattern, int suffix_len);
+#endif
+
 DEFUN (mkstemp, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{fid}, @var{name}, @var{msg}] =} mkstemp (@var{template}, @var{delete})\n\
@@ -1935,7 +1940,7 @@ error message.\n\
   retval(1) = std::string ();
   retval(0) = -1;
 
-#if defined (HAVE_MKSTEMP)
+#if defined (HAVE_MKSTEMP) || defined (HAVE_MKSTEMPS)
 
   int nargin = args.length ();
 
@@ -1948,7 +1953,11 @@ error message.\n\
 	  OCTAVE_LOCAL_BUFFER (char, tmp, tmpl8.size () + 1);
 	  strcpy (tmp, tmpl8.c_str ());
 
+#if defined (HAVE_MKSTEMP)
 	  int fd = mkstemp (tmp);
+#else
+	  int fd = mkstemps (tmp, 0);
+#endif
 
 	  if (fd < 0)
 	    {

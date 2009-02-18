@@ -1580,6 +1580,28 @@ AC_CHECK_FUNCS(atexit basename bcopy bzero canonicalize_file_name \
   _chmod _snprintf x_utime _utime32)
 
 case "$canonical_host_type" in
+  *-*-mingw*)
+    ## MinGW does not provide a mkstemp function.  However, it provides
+    ## the mkstemps function in libiberty.
+    AC_MSG_CHECKING(for mkstemps in libiberty)
+    save_LIBS="$LIBS"
+    LIBS="-liberty $LIBS"
+    AC_LINK_IFELSE([
+      AC_LANG_PROGRAM([[int mkstemps (char *pattern, int suffix_len);]], 
+       [[mkstemps ("XXXXXX", 0);]]
+    )],
+    [AC_MSG_RESULT(yes)
+     HAVE_MKSTEMPS=yes
+     AC_DEFINE(HAVE_MKSTEMPS, 1, [Define if mkstemps is available in libiberty.])
+    ],
+    [AC_MSG_RESULT(no)
+     HAVE_MKSTEMPS=no
+     LIBS="$save_LIBS"
+    ])
+   ;;
+esac
+
+case "$canonical_host_type" in
   *-*-msdosmsvc)
     ## The %T format specifier for strftime is reportedly broken,
     ## so use our version.  We could use an actual configure test

@@ -1,3 +1,8 @@
+2009-02-17  Benjamin Lindner  <lindnerb@users.sourceforge.net>
+
+	* file-io.cc: (Fmkstemp): Use mkstemps if it is available and
+	mkstemp is missing.
+
 2009-02-17  Olaf Till  <olaf.till@uni-jena.de>
 
 	* DLD-FUNCTIONS/lsode.cc, DLD-FUNCTIONS/daspk.cc, 

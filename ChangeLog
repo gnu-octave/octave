@@ -1,3 +1,8 @@
+2009-02-17  Benjamin Lindner  <lindnerb@users.sourceforge.net>
+
+	* configure.in: Check for mkstemps on MinGW platform
+	(HAVE_MKSTEMPS): Define if mkstsmps is avilable in libiberty.
+
 2009-02-17  Jaroslav Hajek  <highegg@gmail.com>
 
 	* NEWS: Mention cummin and cummax

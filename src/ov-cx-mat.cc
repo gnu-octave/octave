@@ -724,11 +724,13 @@ octave_complex_matrix::as_mxArray (void) const
   return retval;
 }
 
+#if 0
 static double
 xabs (const Complex& x)
 {
   return (xisinf (x.real ()) || xisinf (x.imag ())) ? octave_Inf : abs (x);
 }
+#endif
 
 static double
 ximag (const Complex& x)

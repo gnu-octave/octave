@@ -691,11 +691,13 @@ octave_float_complex_matrix::as_mxArray (void) const
   return retval;
 }
 
+#if 0
 static float
 xabs (const FloatComplex& x)
 {
   return (xisinf (x.real ()) || xisinf (x.imag ())) ? octave_Inf : abs (x);
 }
+#endif
 
 static float
 ximag (const FloatComplex& x)

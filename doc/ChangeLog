@@ -1,3 +1,8 @@
+2009-02-17  Thomas Treichl  <Thomas.Treichl@gmx.net>
+
+	* interpreter/install.txi: Add documentation for configure options
+	"--without-framework-carbon" and "--without-framework-opengl".
+
 2009-02-17  Jaroslav Hajek  <highegg@gmail.com>
 
 	* interpreter/arith.txi: Add reference to "cummin" and "cummax".

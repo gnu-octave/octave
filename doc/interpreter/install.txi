@@ -149,6 +149,19 @@ libraries that cause problems for some reason.  You can also use
 @code{--with-blas=lib} to specify a particular BLAS library
 @code{-llib} that configure doesn't check for automatically.
 
+@item --without-framework-carbon
+Don't use framework Carbon headers, libraries and specific source code
+for compilation even if the configure test succeeds (the default value
+is @code{--with-framework-carbon}). This is a platform specific configure
+option for Mac systems.
+
+@item --without-framework-opengl
+Don't use framework OpenGL headers, libraries and specific source code
+for compilation even if the configure test succeeds. If this option is
+given then OpenGL headers and libraries in standard system locations are
+tested (the default value is @code{--with-framework-opengl}). This is a
+platform specific configure option for Mac systems.
+
 @item --help
 Print a summary of the options recognized by the configure script.
 @end table

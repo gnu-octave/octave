@@ -55,36 +55,55 @@ function [y, samples_per_sec, bits_per_sample] = wavread (filename, param)
     error ("wavwrite: expecting filename to be a character string");
   endif
 
-  # open file for binary reading
+  # Open file for binary reading.
   [fid, msg] = fopen (filename, "rb");
   if (fid < 0)
     error ("wavread: %s", msg);
   endif
-  
-  ## Check for RIFF/WAVE header.
-  ck_id = char (fread (fid, 4))';
-  fseek (fid, 4, SEEK_CUR);
-  wave_id = char (fread (fid, 4))';
-  if (ck_id != "RIFF" || wave_id != "WAVE")
+
+  ## Get file size.
+  fseek (fid, 0, "eof");
+  file_size = ftell (fid);
+  fseek (fid, 0, "bof");
+
+  ## Find RIFF chunk.
+  riff_size = find_chunk (fid, "RIFF", file_size);
+  riff_pos = ftell (fid);
+  if (riff_size == -1)
     fclose (fid);
-    error ("wavread: file contains no RIFF/WAVE signature");
+    error ("wavread: file contains no RIFF chunk");
+  endif
+
+  riff_type = char (fread (fid, 4))';
+  if(! strcmp (riff_type, "WAVE"))
+    fclose (fid);
+    error ("wavread: file contains no WAVE signature");
+  endif
+  riff_pos = riff_pos + 4;
+  riff_size = riff_size - 4; 
+
+  ## Find format chunk inside the RIFF chunk.
+  fseek (fid, riff_pos, "bof");
+  fmt_size = find_chunk (fid, "fmt ", riff_size);
+  fmt_pos = ftell(fid);
+  if (fmt_size == -1)
+    fclose (fid);
+    error ("wavread: file contains no format chunk");
+  endif
+ 
+  ## Find data chunk inside the RIFF chunk.
+  ## We don't assume that it comes after the format chunk.
+  fseek (fid, riff_pos, "bof");
+  data_size = find_chunk (fid, "data", riff_size);
+  data_pos = ftell (fid);
+  if (data_size == -1)
+    fclose (fid);
+    error ("wavread: file contains no data chunk");
   endif
   
-  ## Find format chunk within the next 256 (4*64) bytes.
-  i = 1;
-  while (true)
-    if (char (fread (fid, 4))' == "fmt ");
-      break;
-    endif
-    if (i++ == 64)
-      fclose (fid);
-      error ("wavread: file contains no format chunk");
-    endif
-  endwhile
-
-  ## Format chunk size.
-  ck_size = fread (fid, 1, "uint32", 0, BYTEORDER);         
-  
+  ### Read format chunk.
+  fseek (fid, fmt_pos, "bof");
+ 
   ## Sample format code.
   format_tag = fread (fid, 1, "uint16", 0, BYTEORDER);
   if (format_tag != FORMAT_PCM && format_tag != FORMAT_IEEE_FLOAT)
@@ -99,26 +118,11 @@ function [y, samples_per_sec, bits_per_sample] = wavread (filename, param)
   samples_per_sec = fread (fid, 1, "uint32", 0, BYTEORDER);
 
   ## Bits per sample.
-  fseek (fid, 6, SEEK_CUR);
+  fseek (fid, 6, "cof");
   bits_per_sample = fread (fid, 1, "uint16", 0, BYTEORDER);
 
-  ## Ignore the rest of the chunk.
-  fseek (fid, ck_size-16, SEEK_CUR);
-  
-  ## Find data chunk.
-  i = 1;
-  while (true)
-    if (char (fread (fid, 4))' == "data")
-      break;
-    endif
-    if (i++ == 64)
-      fclose (fid);
-      error ("wavread: file contains no data chunk");
-    endif
-  endwhile
-
-  ## Data chunk size.
-  ck_size = fread (fid, 1, "uint32", 0, BYTEORDER);
+  ### Read data chunk.
+  fseek (fid, data_pos, "bof");
   
   ## Determine sample data type.
   if (format_tag == FORMAT_PCM)
@@ -151,14 +155,14 @@ function [y, samples_per_sec, bits_per_sample] = wavread (filename, param)
   
   ## Parse arguments.
   if (nargin == 1)
-    length = 8 * ck_size / bits_per_sample;
+    length = 8 * data_size / bits_per_sample;
   else
     if (size (param, 2) == 1)
       ## Number of samples is given.
       length = param * channels;
     elseif (size (param, 2) == 2)
       ## Sample range is given.
-      if (fseek (fid, (param(1)-1) * channels * (bits_per_sample/8), SEEK_CUR) < 0)
+      if (fseek (fid, (param(1)-1) * channels * (bits_per_sample/8), "cof") < 0)
         warning ("wavread: seeking failed");
       endif
       length = (param(2)-param(1)+1) * channels;
@@ -210,4 +214,25 @@ function [y, samples_per_sec, bits_per_sample] = wavread (filename, param)
   nr = numel (yi) / channels;
   y = reshape (yi, channels, nr)';
   
+endfunction
+
+## Given a chunk_id, scan through chunks from the current file position
+## though at most size bytes.  Return the size of the found chunk, with
+## file position pointing to the start of the chunk data.  Return -1 for
+## size if chunk is not found.
+
+function chunk_size = find_chunk (fid, chunk_id, size)
+  id = "";
+  offset = 8;
+  chunk_size = 0;
+
+  while (! strcmp (id, chunk_id) && (offset < size))
+    fseek (fid, chunk_size, "cof");
+    id = char (fread (fid, 4))';
+    chunk_size = fread (fid, 1, "uint32", 0, "ieee-le");
+    offset = offset + 8 + chunk_size;
+  endwhile
+  if (! strcmp (id, chunk_id))
+    chunk_size = -1;
+  endif
 endfunction

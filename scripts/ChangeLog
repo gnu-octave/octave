@@ -1,3 +1,7 @@
+2009-02-18  Frederick Umminger  <Frederick_Umminger@playstation.sony.com>
+
+	* audio/wavread.m: Improve search for data chunks.
+
 2009-02-18  Ivan Sutoris  <ivan.sutoris@gmail.com>
 
 	* miscellaneous/edit.m: Expand documentation about editor mode.

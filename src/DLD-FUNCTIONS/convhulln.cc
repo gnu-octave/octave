@@ -51,16 +51,19 @@ char qh_version[] = "convhulln.oct 2007-07-24";
 #endif
 #endif
 
-DEFUN_DLD (convhulln, args, ,
-	"-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{H} =} convhulln (@var{p})\n\
-@deftypefnx {Loadable Function} {@var{H} =} convhulln (@var{p}, @var{opt})\n\
-Returns an index vector to the points of the enclosing convex hull.\n\
+DEFUN_DLD (convhulln, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{h} =} convhulln (@var{p})\n\
+@deftypefnx {Loadable Function} {@var{h} =} convhulln (@var{p}, @var{opt})\n\
+@deftypefnx {Loadable Function} {[@var{h}, @{v}] =} convhulln (@dots{})\n\
+Return an index vector to the points of the enclosing convex hull.\n\
 The input matrix of size [n, dim] contains n points of dimension dim.\n\n\
 If a second optional argument is given, it must be a string or cell array\n\
 of strings containing options for the underlying qhull command.  (See\n\
 the Qhull documentation for the available options.)  The default options\n\
-are \"s Qci Tcv\".\n\n\
+are \"s Qci Tcv\".\n\
+If the second output @var{V} is requested the volume of the convex hull is\n\
+calculated.\n\n\
 @seealso{convhull, delaunayn}\n\
 @end deftypefn")
 {
@@ -166,6 +169,41 @@ are \"s Qci Tcv\".\n\n\
 	    warning ("facet %d only has %d vertices", i, j);
 	  i++;
 	}
+
+      if (nargout == 2)
+        // calculate volume of convex hull
+        // taken from qhull src/geom2.c
+        {
+          realT area;
+          realT dist;
+
+          FORALLfacets
+	    {
+	      if (! facet->normal)
+		continue;
+
+	      if (facet->upperdelaunay && qh ATinfinity)
+		continue;
+
+	      facet->f.area = area = qh_facetarea (facet);
+	      facet->isarea = True;
+
+	      if (qh DELAUNAY)
+		{
+		  if (facet->upperdelaunay == qh UPPERdelaunay)
+		    qh totarea += area;
+		}
+	      else
+		{
+		  qh totarea += area;
+		  qh_distplane (qh interior_point, facet, &dist);
+		  qh totvol += -dist * area/ qh hull_dim;
+		}
+	    }
+
+          retval(1) = octave_value (qh totvol);
+        }
+
       retval(0) = octave_value (idx);
     }
 
@@ -185,3 +223,14 @@ are \"s Qci Tcv\".\n\n\
 
   return retval;
 }
+
+/*
+%!test
+%! cube = [0 0 0;1 0 0;1 1 0;0 1 0;0 0 1;1 0 1;1 1 1;0 1 1];
+%! [h, v] = convhulln(cube,'Pp');
+%! assert (v, 1.0, 1e6*eps);
+%!test
+%! tetrahedron = [1 1 1;-1 -1 1;-1 1 -1;1 -1 -1];
+%! [h, v] = convhulln(tetrahedron,'Pp');
+%! assert (v, 8/3, 1e6*eps);
+*/

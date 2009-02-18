@@ -1,3 +1,8 @@
+2009-02-17  Kai Habel  <kai.habel@gmx.de>
+
+	* DLD-FUNCTIONS/convhulln.cc (Fconvhulln): Compute convex hull
+	volume and return it as second output.  New tests.
+
 2009-02-17  John W. Eaton  <jwe@octave.org>
 
 	* ov-fcn.h (octave_function::octave_function): Initialize data members.

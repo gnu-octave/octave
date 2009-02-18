@@ -40,11 +40,11 @@ function gnuplot_drawnow (h, term, file, mono, debug_file)
     fid = [];
     unwind_protect
       plot_stream = open_gnuplot_stream (1, []);
-      enhanced = gnuplot_set_term (plot_stream (1), h, term, file);
+      enhanced = gnuplot_set_term (plot_stream (1), true, h, term, file);
       __go_draw_figure__ (h, plot_stream, enhanced, mono);
       if (nargin == 5)
         fid = fopen (debug_file, "wb");
-        enhanced = gnuplot_set_term (fid, h, term, file);
+        enhanced = gnuplot_set_term (fid, true, h, term, file);
         __go_draw_figure__ (h, fid, enhanced, mono);
       endif
     unwind_protect_cleanup
@@ -58,10 +58,37 @@ function gnuplot_drawnow (h, term, file, mono, debug_file)
   elseif (nargin == 1)
     ##  Graphics terminal for display.
     plot_stream = get (h, "__plot_stream__");
+    tag = "gnuplot_drawnow";
     if (isempty (plot_stream))
       plot_stream = open_gnuplot_stream (2, h);
+      new_stream = true;
+      ha = axes ("tag", tag, "visible", "off");
+      set (ha, "userdata", get (h, "position"));
+    else
+      new_stream = false;
+      unwind_protect
+	set (0, "showhiddenhandles", "on");
+	ha = findobj (h, "type", "axes", "tag", tag);
+        position = get (h, "position");
+	if (! isempty (ha))
+	  prior_position = get (ha, "userdata");
+	  if (! all (position == prior_position))
+	    new_stream = true;
+	  else
+	    ## FIXME -- Obtain the x11 window id from gnuplot and
+	    ## determine the current position via xwininfo.  The
+	    ## "position" property may then be updated to reflect
+	    ## changes in window position/size made by the mouse.
+	  endif
+	else
+          ha = axes ("tag", tag, "visible", "off");
+	endif
+        set (ha, "userdata", position);
+      unwind_protect_cleanup
+	set (0, "showhiddenhandles", "off");
+      end_unwind_protect
     endif
-    enhanced = gnuplot_set_term (plot_stream (1), h);
+    enhanced = gnuplot_set_term (plot_stream (1), new_stream, h);
     __go_draw_figure__ (h, plot_stream (1), enhanced, mono);
     fflush (plot_stream (1));
   else
@@ -70,7 +97,7 @@ function gnuplot_drawnow (h, term, file, mono, debug_file)
 
 endfunction
 
-function [plot_stream, enhanced] = open_gnuplot_stream (npipes, h)
+function plot_stream = open_gnuplot_stream (npipes, h)
   cmd = gnuplot_binary ();
   if (npipes > 1)
     [plot_stream(1), plot_stream(2), pid] = popen2 (cmd);
@@ -88,12 +115,12 @@ function [plot_stream, enhanced] = open_gnuplot_stream (npipes, h)
   endif
 endfunction
 
-function enhanced = gnuplot_set_term (plot_stream, h, term, file)
+function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
   ## Generate the gnuplot "set terminal <term> ..." command.  Include
   ## the subset of properties "position", "units", "paperposition",
   ## "paperunits", "name", and "numbertitle".  When "term" originates
   ## from print.m, it may include gnuplot terminal options.
-  if (nargin == 2)
+  if (nargin == 3)
     ## This supports the gnuplot backend.
     term = gnuplot_term ();
     opts_str = "";
@@ -204,7 +231,7 @@ function enhanced = gnuplot_set_term (plot_stream, h, term, file)
     ## Set the gnuplot terminal (type, enhanced?, title, & size).
     if (! isempty (term))
       term_str = sprintf ("set terminal %s", term);
-      if (any (strncmpi (term, {"x11", "wxt"}, 3))
+      if (any (strncmpi (term, {"x11", "wxt"}, 3)) && new_stream
 	  && __gnuplot_has_feature__ ("x11_figure_position"))
         ## The "close" is added to allow the figure position property
         ## to remain active.
@@ -216,7 +243,7 @@ function enhanced = gnuplot_set_term (plot_stream, h, term, file)
       if (! isempty (title_str))
         term_str = sprintf ("%s %s", term_str, title_str);
       endif
-      if (! isempty (size_str))
+      if (! isempty (size_str) && new_stream)
         ## size_str goes last to permit specification of canvas size
         ## for terminals cdr/corel.
         term_str = sprintf ("%s %s", term_str, size_str);

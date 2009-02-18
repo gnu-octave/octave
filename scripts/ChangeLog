@@ -1,3 +1,10 @@
+2009-02-17  Ben Abbott <bpabbott@mac.com>
+
+	* plot/gnuplot_drawnow.m: Only close the gnuplot window and send
+	position/size info when the figure's position property has changed.
+	(gnuplot_set_term): New arg, NEW_STREAM.  Change all uses.
+	(open_gnuplot_stream): Delete unused output ENHANCED.
+
 2009-02-17  John W. Eaton  <jwe@octave.org>
 
 	* plot/plotyy.m: Handle case of existing figure with no axes.

@@ -2875,28 +2875,6 @@ ComplexMatrix::lssolve (const ComplexColumnVector& b, octave_idx_type& info,
   return retval;
 }
 
-// Constants for matrix exponential calculation.
-
-static double padec [] =
-{
-  5.0000000000000000e-1,
-  1.1666666666666667e-1,
-  1.6666666666666667e-2,
-  1.6025641025641026e-3,
-  1.0683760683760684e-4,
-  4.8562548562548563e-6,
-  1.3875013875013875e-7,
-  1.9270852604185938e-9,
-};
-
-static void
-solve_singularity_warning (double rcon)
-{
-  (*current_liboctave_warning_handler) 
-    ("singular matrix encountered in expm calculation, rcond = %g",
-     rcon);
-}
-
 // column vector by row vector -> matrix operations
 
 ComplexMatrix

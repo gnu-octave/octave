@@ -1,3 +1,11 @@
+2009-02-18  John W. Eaton  <jwe@octave.org>
+
+	* dMatrix.cc (padec, solve_singularity_warning): Delete unused
+	static variable and function.
+	* CMatrix.cc (padec, solve_singularity_warning): Ditto.
+	* fMatrix.cc (padec, solve_singularity_warning): Ditto.
+	* fCMatrix.cc (padec, solve_singularity_warning): Ditto.
+
 2009-02-18  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Array.cc (Array<T>::resize (const dim_vector&)): Check for negative

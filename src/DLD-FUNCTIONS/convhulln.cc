@@ -55,7 +55,7 @@ DEFUN_DLD (convhulln, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{h} =} convhulln (@var{p})\n\
 @deftypefnx {Loadable Function} {@var{h} =} convhulln (@var{p}, @var{opt})\n\
-@deftypefnx {Loadable Function} {[@var{h}, @{v}] =} convhulln (@dots{})\n\
+@deftypefnx {Loadable Function} {[@var{h}, @var{v}] =} convhulln (@dots{})\n\
 Return an index vector to the points of the enclosing convex hull.\n\
 The input matrix of size [n, dim] contains n points of dimension dim.\n\n\
 If a second optional argument is given, it must be a string or cell array\n\

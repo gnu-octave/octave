@@ -352,8 +352,8 @@ cannot be called recursively.\n\
 	    }
 
 	  retval(3) = abserr;
-	  retval(2) = static_cast<double> (nfun);
-	  retval(1) = static_cast<double> (ier);
+	  retval(2) = nfun;
+	  retval(1) = ier;
 	  retval(0) = val;
 
 	}
@@ -460,8 +460,8 @@ cannot be called recursively.\n\
 	    }
 
 	  retval(3) = abserr;
-	  retval(2) = static_cast<double> (nfun);
-	  retval(1) = static_cast<double> (ier);
+	  retval(2) = nfun;
+	  retval(1) = ier;
 	  retval(0) = val;
 	}
 

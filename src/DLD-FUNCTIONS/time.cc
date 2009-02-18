@@ -505,7 +505,7 @@ you're absolutely sure the date string will be parsed correctly.\n\
 	    {
 	      octave_strptime t (str, fmt);
 
-	      retval(1) = static_cast<double> (t.characters_converted ());
+	      retval(1) = t.characters_converted ();
 	      retval(0) = octave_value (mk_tm_map (t));
 	    }
 	  else

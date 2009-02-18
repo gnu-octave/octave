@@ -778,7 +778,7 @@ run_command_and_return_output (const std::string& cmd_str)
 	  else
 	    cmd_status = 127;
 
-	  retval(0) = (double) cmd_status;
+	  retval(0) = cmd_status;
 	  retval(1) = output_buf.str ();
 	}
 

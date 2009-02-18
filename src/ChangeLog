@@ -1,4 +1,9 @@
 2009-02-18  John W. Eaton  <jwe@octave.org>
+ 
+	* DLD-FUNCTIONS/find.cc (find_nonzero_elem_idx): Likewise.
+	* DLD-FUNCTIONS/time.cc (strptime): Likewise.
+	* DLD-FUNCTIONS/quad.cc (Fquad): Eliminate unnecessary cast.
+	* toplev.cc (run_command_and_return_output): Likewise.
 
 	* strfns.cc (Fstrvcat): Use octave_idx_type and size_t instead of
 	int as needed.

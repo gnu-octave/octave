@@ -62,7 +62,7 @@ find_nonzero_elem_idx (const Array<T>& nda, int nargout,
     {
       OCTAVE_QUIT;
 
-      if (nda(k) != static_cast<T> (0.0))
+      if (nda(k) != T ())
 	{
 	  end_el = k;
 	  if (start_el == -1)
@@ -125,7 +125,7 @@ find_nonzero_elem_idx (const Array<T>& nda, int nargout,
 	{
 	  OCTAVE_QUIT;
 
-	  if (nda(k) != static_cast<T> (0.0))
+	  if (nda(k) != T ())
 	    {
 	      idx(count) = k + 1;
 
@@ -276,10 +276,10 @@ find_nonzero_elem_idx (const Sparse<T>& v, int nargout,
 	    OCTAVE_QUIT;
 	    if (direction < 0 && i < nz - count)
 	      continue;
-	    i_idx (cx) = static_cast<double> (v.ridx(i) + 1);
-	    j_idx (cx) = static_cast<double> (j + 1);
-	    idx (cx) = j * nr + v.ridx(i) + 1; 
-	    val (cx) = v.data(i);
+	    i_idx(cx) = static_cast<double> (v.ridx(i) + 1);
+	    j_idx(cx) = static_cast<double> (j + 1);
+	    idx(cx) = j * nr + v.ridx(i) + 1; 
+	    val(cx) = v.data(i);
 	    cx++;
 	    if (cx == count)
 	      break;

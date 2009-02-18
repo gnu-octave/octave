@@ -3022,10 +3022,12 @@ typedef F77_RET_T (*fmex_fptr) (int& nlhs, mxArray **plhs, int& nrhs, mxArray **
 
 octave_value_list
 call_mex (bool have_fmex, void *f, const octave_value_list& args,
-	  int nargout, octave_mex_function *curr_mex_fcn)
+	  int nargout_arg, octave_mex_function *curr_mex_fcn)
 {
   // Use at least 1 for nargout since even for zero specified args,
   // still want to be able to return an ans.
+
+  volatile int nargout = nargout_arg;
 
   int nargin = args.length ();
   OCTAVE_LOCAL_BUFFER (mxArray *, argin, nargin);

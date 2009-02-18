@@ -243,7 +243,7 @@ ComplexQR::update (const ComplexMatrix& u, const ComplexMatrix& v)
     {
       OCTAVE_LOCAL_BUFFER (Complex, w, k);
       OCTAVE_LOCAL_BUFFER (double, rw, k);
-      for (octave_idx_type i = 0; i < u.cols (); i++)
+      for (volatile octave_idx_type i = 0; i < u.cols (); i++)
         {
           ComplexColumnVector utmp = u.column (i), vtmp = v.column (i);
           F77_XFCN (zqr1up, ZQR1UP, (m, n, k, q.fortran_vec (), m, r.fortran_vec (), k,
@@ -319,7 +319,7 @@ ComplexQR::insert_col (const ComplexMatrix& u, const Array<octave_idx_type>& j)
         }
 
       OCTAVE_LOCAL_BUFFER (double, rw, kmax);
-      for (octave_idx_type i = 0; i < js.length (); i++)
+      for (volatile octave_idx_type i = 0; i < js.length (); i++)
         {
           ComplexColumnVector utmp = u.column (jsi(i));
           F77_XFCN (zqrinc, ZQRINC, (m, n + i, std::min (kmax, k + i), 
@@ -378,7 +378,7 @@ ComplexQR::delete_col (const Array<octave_idx_type>& j)
   else if (nj > 0)
     {
       OCTAVE_LOCAL_BUFFER (double, rw, k);
-      for (octave_idx_type i = 0; i < js.length (); i++)
+      for (volatile octave_idx_type i = 0; i < js.length (); i++)
         {
           F77_XFCN (zqrdec, ZQRDEC, (m, n - i, k == m ? k : k - i, 
                                      q.fortran_vec (), q.rows (),

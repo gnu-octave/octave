@@ -1,5 +1,8 @@
 2009-02-18  John W. Eaton  <jwe@octave.org>
 
+	* mex.cc (call_mex): Declare local nargout variable volatile to
+	avoid "maybe clobbered by vfork" warning from GCC.
+
 	* ov-cx-mat.cc (xabs): Comment out unused static function.
 	* ov-flt-cx-mat.cc (xabs): Ditto.
 

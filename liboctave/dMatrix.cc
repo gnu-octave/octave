@@ -1239,7 +1239,7 @@ Matrix::determinant (MatrixType& mattype,
     (*current_liboctave_error_handler) ("matrix must be square");
   else
     {
-      int typ = mattype.type ();
+      volatile int typ = mattype.type ();
 
       if (typ == MatrixType::Unknown)
         typ = mattype.type (*this);

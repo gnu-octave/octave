@@ -239,7 +239,7 @@ QR::update (const Matrix& u, const Matrix& v)
   if (u.rows () == m && v.rows () == n && u.cols () == v.cols ())
     {
       OCTAVE_LOCAL_BUFFER (double, w, 2*k);
-      for (octave_idx_type i = 0; i < u.cols (); i++)
+      for (volatile octave_idx_type i = 0; i < u.cols (); i++)
         {
           ColumnVector utmp = u.column (i), vtmp = v.column (i);
           F77_XFCN (dqr1up, DQR1UP, (m, n, k, q.fortran_vec (), m, r.fortran_vec (), k,
@@ -315,7 +315,7 @@ QR::insert_col (const Matrix& u, const Array<octave_idx_type>& j)
         }
 
       OCTAVE_LOCAL_BUFFER (double, w, kmax);
-      for (octave_idx_type i = 0; i < js.length (); i++)
+      for (volatile octave_idx_type i = 0; i < js.length (); i++)
         {
           ColumnVector utmp = u.column (jsi(i));
           F77_XFCN (dqrinc, DQRINC, (m, n + i, std::min (kmax, k + i), 
@@ -374,7 +374,7 @@ QR::delete_col (const Array<octave_idx_type>& j)
   else if (nj > 0)
     {
       OCTAVE_LOCAL_BUFFER (double, w, k);
-      for (octave_idx_type i = 0; i < js.length (); i++)
+      for (volatile octave_idx_type i = 0; i < js.length (); i++)
         {
           F77_XFCN (dqrdec, DQRDEC, (m, n - i, k == m ? k : k - i, 
                                      q.fortran_vec (), q.rows (),

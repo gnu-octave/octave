@@ -243,7 +243,7 @@ FloatComplexQR::update (const FloatComplexMatrix& u, const FloatComplexMatrix& v
     {
       OCTAVE_LOCAL_BUFFER (FloatComplex, w, k);
       OCTAVE_LOCAL_BUFFER (float, rw, k);
-      for (octave_idx_type i = 0; i < u.cols (); i++)
+      for (volatile octave_idx_type i = 0; i < u.cols (); i++)
         {
           FloatComplexColumnVector utmp = u.column (i), vtmp = v.column (i);
           F77_XFCN (cqr1up, CQR1UP, (m, n, k, q.fortran_vec (), m, r.fortran_vec (), k,
@@ -319,7 +319,7 @@ FloatComplexQR::insert_col (const FloatComplexMatrix& u, const Array<octave_idx_
         }
 
       OCTAVE_LOCAL_BUFFER (float, rw, kmax);
-      for (octave_idx_type i = 0; i < js.length (); i++)
+      for (volatile octave_idx_type i = 0; i < js.length (); i++)
         {
           F77_XFCN (cqrinc, CQRINC, (m, n + i, std::min (kmax, k + i), 
                                      q.fortran_vec (), q.rows (),
@@ -377,7 +377,7 @@ FloatComplexQR::delete_col (const Array<octave_idx_type>& j)
   else if (nj > 0)
     {
       OCTAVE_LOCAL_BUFFER (float, rw, k);
-      for (octave_idx_type i = 0; i < js.length (); i++)
+      for (volatile octave_idx_type i = 0; i < js.length (); i++)
         {
           F77_XFCN (cqrdec, CQRDEC, (m, n - i, k == m ? k : k - i, 
                                      q.fortran_vec (), q.rows (),

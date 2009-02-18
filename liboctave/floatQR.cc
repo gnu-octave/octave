@@ -239,7 +239,7 @@ FloatQR::update (const FloatMatrix& u, const FloatMatrix& v)
   if (u.rows () == m && v.rows () == n && u.cols () == v.cols ())
     {
       OCTAVE_LOCAL_BUFFER (float, w, 2*k);
-      for (octave_idx_type i = 0; i < u.cols (); i++)
+      for (volatile octave_idx_type i = 0; i < u.cols (); i++)
         {
           FloatColumnVector utmp = u.column (i), vtmp = v.column (i);
           F77_XFCN (sqr1up, SQR1UP, (m, n, k, q.fortran_vec (), m, r.fortran_vec (), k,
@@ -315,7 +315,7 @@ FloatQR::insert_col (const FloatMatrix& u, const Array<octave_idx_type>& j)
         }
 
       OCTAVE_LOCAL_BUFFER (float, w, kmax);
-      for (octave_idx_type i = 0; i < js.length (); i++)
+      for (volatile octave_idx_type i = 0; i < js.length (); i++)
         {
           FloatColumnVector utmp = u.column (jsi(i));
           F77_XFCN (sqrinc, SQRINC, (m, n + i, std::min (kmax, k + i), 
@@ -374,7 +374,7 @@ FloatQR::delete_col (const Array<octave_idx_type>& j)
   else if (nj > 0)
     {
       OCTAVE_LOCAL_BUFFER (float, w, k);
-      for (octave_idx_type i = 0; i < js.length (); i++)
+      for (volatile octave_idx_type i = 0; i < js.length (); i++)
         {
           F77_XFCN (sqrdec, SQRDEC, (m, n - i, k == m ? k : k - i, 
                                      q.fortran_vec (), q.rows (),

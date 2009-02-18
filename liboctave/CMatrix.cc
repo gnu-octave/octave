@@ -1553,7 +1553,8 @@ ComplexMatrix::determinant (octave_idx_type& info, double& rcon, int calc_cond) 
 
 ComplexDET
 ComplexMatrix::determinant (MatrixType& mattype,
-                            octave_idx_type& info, double& rcon, int calc_cond) const
+                            octave_idx_type& info, double& rcon,
+			    int calc_cond) const
 {
   ComplexDET retval (1.0);
 
@@ -1564,7 +1565,7 @@ ComplexMatrix::determinant (MatrixType& mattype,
     (*current_liboctave_error_handler) ("matrix must be square");
   else
     {
-      int typ = mattype.type ();
+      volatile int typ = mattype.type ();
 
       if (typ == MatrixType::Unknown)
         typ = mattype.type (*this);

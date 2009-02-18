@@ -1,5 +1,19 @@
 2009-02-18  John W. Eaton  <jwe@octave.org>
 
+	* dMatrix.cc (Matrix::determinant):
+	Declare local variables volatile as needed to avoid "maybe
+	clobbered by vfork" warning from GCC.
+	* fMatrix.cc (FloatMatrix::determinant): Likewise.
+	* CMatrix.cc (ComplexMatrix::determinant): Likewise.
+	* fCMatrix.cc (FloatComplexMatrix::determinant): Likewise.
+	* dbleQR.cc (QR::update, QR::insert_col, QR::delete_col): Likewise.
+	* floatQR.cc (FloatQR::update, FloatQR::insert_col,
+	FloatQR::delete_col): Likewise.
+	* CmplxQR.cc (ComplexQR::update, ComplexQR::insert_col,
+	ComplexQR::delete_col): Likewise.
+	* fCmplxQR.cc (FloatComplexQR::update, FloatComplexQR::insert_col,
+	FloatComplexQR::delete_col): Likewise.
+
 	* dMatrix.cc (padec, solve_singularity_warning): Delete unused
 	static variable and function.
 	* CMatrix.cc (padec, solve_singularity_warning): Ditto.

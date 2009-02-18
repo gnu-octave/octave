@@ -121,6 +121,7 @@ octave_mex_function::subsref (const std::string& type,
   return retval;
 }
 
+// FIXME -- shouldn't this declaration be a header file somewhere?
 extern octave_value_list
 call_mex (bool have_fmex, void *f, const octave_value_list& args,
 	  int nargout, octave_mex_function *curr_mex_fcn);

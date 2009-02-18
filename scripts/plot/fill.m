@@ -108,7 +108,7 @@ function iargs = __find_patches__ (varargin)
 endfunction
 
 %!demo
-%! close all;
+%! clf
 %! t1 = (1/16:1/8:1)'*2*pi;
 %! t2 = ((1/16:1/8:1)' + 1/32)*2*pi;
 %! x1 = sin(t1) - 0.8;

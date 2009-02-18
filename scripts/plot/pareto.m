@@ -100,13 +100,14 @@ function h = pareto (varargin)
 endfunction
 
 %!demo
-%! close
+%! clf
+%! colormap (jet (64))
 %! Cheese = {"Cheddar", "Swiss", "Camembert", "Munster", "Stilton", "Blue"};
 %! Sold = [105, 30, 70, 10, 15, 20];
 %! pareto(Sold, Cheese);
 
 %!demo
-%! close
+%! clf
 %! % Suppose that we want establish which products makes 80 % of turnover.
 %! Codes = {"AB4","BD7","CF8","CC5","AD11","BB5","BB3","AD8","DF3","DE7"};
 %! Value = [2.35 7.9 2.45 1.1 0.15 13.45 5.4 2.05 0.85  1.65]';

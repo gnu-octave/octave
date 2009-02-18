@@ -59,7 +59,7 @@ endfunction
 
 %!demo
 %! ## Patches with same number of vertices
-%! close all;
+%! clf
 %! t1 = (1/16:1/8:1)'*2*pi;
 %! t2 = ((1/16:1/8:1)' + 1/32)*2*pi;
 %! x1 = sin(t1) - 0.8;
@@ -70,7 +70,7 @@ endfunction
 
 %!demo
 %! ## Unclosed patch
-%! close all;
+%! clf
 %! t1 = (1/16:1/8:1)'*2*pi;
 %! t2 = ((1/16:1/16:1)' + 1/32)*2*pi;
 %! x1 = sin(t1) - 0.8;
@@ -81,7 +81,7 @@ endfunction
 
 %!demo
 %! ## Specify vertices and faces separately
-%! close all;
+%! clf
 %! t1 = (1/16:1/8:1)'*2*pi;
 %! t2 = ((1/16:1/16:1)' + 1/32)*2*pi;
 %! x1 = sin(t1) - 0.8;
@@ -94,7 +94,7 @@ endfunction
 
 %!demo
 %! ## Property change on multiple patches
-%! close all;
+%! clf
 %! t1 = (1/16:1/8:1)'*2*pi;
 %! t2 = ((1/16:1/8:1)' + 1/32)*2*pi;
 %! x1 = sin(t1) - 0.8;

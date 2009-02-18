@@ -228,19 +228,19 @@ function legend (varargin)
 endfunction
 
 %!demo
-%! close all;
+%! clf
 %! plot(1:10, 1:10, 1:10, fliplr(1:10));
 %! title("incline is blue and decline is green");
 %! legend({"I'm blue", "I'm green"}, "location", "east")
 
 %!demo
-%! close all;
+%! clf
 %! plot(1:10, 1:10);
 %! title("a very long label can sometimes cause problems");
 %! legend({"hello world"}, "location", "northeastoutside")
 
 %!demo
-%! close all;
+%! clf
 %! labels = {};
 %! for i = 1:5
 %!     plot(1:100, i + rand(100,1)); hold on;

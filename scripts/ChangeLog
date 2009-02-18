@@ -1,4 +1,13 @@
-2009-02-17  Ben Abbott <bpabbott@mac.com>
+2009-02-17  Ben Abbott  <bpabbott@mac.com>
+
+	* plot/contourc.m: Convert demo to test.
+	* plot/surfnorm.m: Add another demo.
+	* plot/surfnorm.m, plot/pareto.m: Add "colormap(jet)" to 1st demo.
+	* plot/plotyy.m, plot/patch.m, plot/pareto.m, plot/legend.m,
+	plot/fill.m, plot/comet.m, plot/colorbar.m, plot/clabel.m:
+	Replace "close all" with "clf" in demo.
+
+2009-02-17  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/gnuplot_drawnow.m: Only close the gnuplot window and send
 	position/size info when the figure's position property has changed.
@@ -18,7 +27,7 @@
 	* help/__strip_html_tags__.m, help/__additional_help_message__.m:
 	Doc fix.
 
-2009-02-16  Ben Abbott <bpabbott@mac.com>
+2009-02-16  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/shading.m: No new figure windows for the demos.
 	* plot/surfl.m: Clear figure before running demos.
@@ -58,11 +67,11 @@
 	New functions.
 	* deprecated/Makefile.in (SOURCES): Add them to the list.
 
-2009-02-15  Ben Abbott <bpabbott@mac.com>
+2009-02-15  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/subplot.m: Compatible placement of subplots.
 
-2009-02-13 Ben Abbott <bpabott@mac.com>
+2009-02-13 Ben Abbott  <bpabott@mac.com>
 
 	* plot/__go_draw_axes__.m: Respect axes ticklength property.
 
@@ -230,7 +239,7 @@
         * plot/Makefile.in (SOURCES): Include diffuse.m, specular.m, and
 	surfl.m in the list.
 
-2009-01-28  Ben Abbott <bpabbott@mac.com>
+2009-01-28  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/gnuplot_drawnow.m: Style fixes.
 
@@ -309,11 +318,11 @@
 	first step. Simplify options. Adjust defaults - make TR radius
 	tolerance less stringent. Support DisplayFcn.
 
-2008-12-24 Ben Abbott <bpabbott@mac.com>
+2008-12-24 Ben Abbott  <bpabbott@mac.com>
 
 	* path/savepath.m: Respect cmd-line and env paths.
 
-2009-01-24 Ben Abbott <bpabbott@mac.com>
+2009-01-24 Ben Abbott  <bpabbott@mac.com>
 
 	* sparse/svds.m: svds.m: skip tests if ARPACK is missing.
 
@@ -386,7 +395,7 @@
 
 	* testfun/assert.m: Use isfield instead of struct_contains.
 
-2009-01-17 Ben Abbott <bpabbott@mac.com>
+2009-01-17 Ben Abbott  <bpabbott@mac.com>
 
 	* general/cart2sph.m, cart2pol.m, sph2cart.m pol2cart.m:
 	Permit scalars when transforming coordinates.
@@ -575,11 +584,11 @@
 	* plot/hist.m: Doc string now mentions matrix input argument.
 	Correct error message.
 
-2008-12-30  Ben Abbott <bpabbott@mac.com>
+2008-12-30  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/__contour__.m: __contour__.m: correct order of patches
 
-2008-12-30  Ben Abbott <bpabbott@mac.com>
+2008-12-30  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/__contour__.m: __contour__.m: correct order of patches
 
@@ -667,11 +676,11 @@
           miscellaneous/__xzip__.m: Improve error messages, fix cleanup
           of temporary directories, remove tab characters
 
-2008-11-24  Ben Abbott <bpabbott@mac.com>
+2008-11-24  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/legend.m: Correct ording of legend labels.
 
-2008-11-24  Ben Abbott <bpabbott@mac.com>
+2008-11-24  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/__go_draw_axes__.m: Correct order for rendering children.
 
@@ -685,7 +694,7 @@
 	* plot/__go_draw_axes__.m (do_tics_1): Support the minorick properties
 	of the axis object.
 
-2008-11-14  Ben Abbott <bpabbott@mac.com>
+2008-11-14  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/gnuplot_drawnow.m: Add support of properites to gp backend.
 
@@ -719,7 +728,7 @@
         * miscellaneous/unpack.m: return directly after recursive handling
           of cell-strings
           
-2008-11-03  Ben Abbott <bpabbott@mac.com>
+2008-11-03  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/__go_draw_axes__.m: xticklabel should accept a numeric vector.
 
@@ -810,7 +819,7 @@
 
 	* plot/ellipsoid.m: Check nargin == 6, not nargin == 5.
 
-2008-10-22  Ben Abbott <bpabbott@mac.com>
+2008-10-22  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/cla.m: Fix error when no children to clear.
 

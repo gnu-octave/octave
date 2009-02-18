@@ -60,7 +60,11 @@ public:
   ~octave_class (void) { }
 
   octave_base_value *clone (void) const { return new octave_class (*this); }
-  octave_base_value *empty_clone (void) const { return new octave_class (); }
+
+  octave_base_value *empty_clone (void) const
+  {
+    return new octave_class (Octave_map (map.keys ()), class_name ());
+  }
 
   Cell dotref (const octave_value_list& idx);
 

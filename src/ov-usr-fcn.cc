@@ -183,8 +183,8 @@ octave_user_function::octave_user_function
     system_fcn_file (false), call_depth (-1),
     num_named_args (param_list ? param_list->length () : 0),
     nested_function (false), inline_function (false),
-    class_constructor (false), class_method (false), xdispatch_class (),
-    args_passed (), num_args_passed (0), parent_scope (-1), local_scope (sid)
+    class_constructor (false), class_method (false), args_passed (),
+    num_args_passed (0), parent_scope (-1), local_scope (sid)
 {
   if (cmd_list)
     cmd_list->mark_as_function_body ();

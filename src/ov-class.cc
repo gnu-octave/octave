@@ -321,211 +321,7 @@ octave_class::subsasgn (const std::string& type,
 {
   octave_value retval;
 
-  if (in_class_method () && ! rhs.is_object ())
-    {
-      // FIXME -- this block of code is the same as the body of
-      // octave_struct::subsasgn.  Maybe it could be shared instead of
-      // duplicated.
-
-      int n = type.length ();
-
-      octave_value t_rhs = rhs;
-
-      if (n > 1 && ! (type.length () == 2 && type[0] == '(' && type[1] == '.'))
-	{
-	  switch (type[0])
-	    {
-	    case '(':
-	      {
-		if (type.length () > 1 && type[1] == '.')
-		  {
-		    std::list<octave_value_list>::const_iterator p = idx.begin ();
-		    octave_value_list t_idx = *p;
-
-		    octave_value_list key_idx = *++p;
-
-		    assert (key_idx.length () == 1);
-
-		    std::string key = key_idx(0).string_value ();
-
-		    octave_value u;
-
-		    if (! map.contains (key))
-		      u = octave_value::empty_conv (type.substr (2), rhs);
-		    else
-		      {
-			Cell map_val = map.contents (key);
-
-			Cell map_elt = map_val.index (idx.front (), true);
-
-			u = numeric_conv (map_elt, type.substr (2));
-		      }
-
-		    if (! error_state)
-		      {
-			std::list<octave_value_list> next_idx (idx);
-
-			// We handled two index elements, so subsasgn to
-			// needs to skip both of them.
-
-			next_idx.erase (next_idx.begin ());
-			next_idx.erase (next_idx.begin ());
-
-			u.make_unique ();
-
-			t_rhs = u.subsasgn (type.substr (2), next_idx, rhs);
-		      }
-		  }
-		else
-		  gripe_invalid_index_for_assignment ();
-	      }
-	      break;
-
-	    case '.':
-	      {
-		octave_value_list key_idx = idx.front ();
-
-		assert (key_idx.length () == 1);
-
-		std::string key = key_idx(0).string_value ();
-
-		octave_value u;
-
-		if (! map.contains (key))
-		  u = octave_value::empty_conv (type.substr (1), rhs);
-		else
-		  {
-		    Cell map_val = map.contents (key);
-
-		    u = numeric_conv (map_val, type.substr (1));
-		  }
-
-		if (! error_state)
-		  {
-		    std::list<octave_value_list> next_idx (idx);
-
-		    next_idx.erase (next_idx.begin ());
-
-		    u.make_unique ();
-
-		    t_rhs = u.subsasgn (type.substr (1), next_idx, rhs);
-		  }
-	      }
-	      break;
-
-	    case '{':
-	      gripe_invalid_index_type (type_name (), type[0]);
-	      break;
-
-	    default:
-	      panic_impossible ();
-	    }
-	}
-
-      if (! error_state)
-	{
-	  switch (type[0])
-	    {
-	    case '(':
-	      {
-		if (n > 1 && type[1] == '.')
-		  {
-		    std::list<octave_value_list>::const_iterator p = idx.begin ();
-		    octave_value_list key_idx = *++p;
-
-		    assert (key_idx.length () == 1);
-
-		    std::string key = key_idx(0).string_value ();
-
-		    if (! error_state)
-		      {
-			map.assign (idx.front (), key, t_rhs);
-
-			if (! error_state)
-			  {
-			    count++;
-			    retval = octave_value (this);
-			  }
-			else
-			  gripe_failed_assignment ();
-		      }
-		    else
-		      gripe_failed_assignment ();
-		  }
-		else
-		  {
-		    if (t_rhs.is_map())
-		      {
-			Octave_map rhs_map = t_rhs.map_value ();
-
-			if (! error_state)
-			  {
-			    map.assign (idx.front (), rhs_map);
-
-			    if (! error_state)
-			      {
-				count++;
-				retval = octave_value (this);
-			      }
-			    else
-			      gripe_failed_assignment ();
-			  }
-			else
-			  error ("invalid class assignment");
-		      }
-		    else
-		      {
-			if (t_rhs.is_empty()) 
-			  {
-			    map.maybe_delete_elements (idx.front());
-
-			    if (! error_state)
-			      {
-				count++;
-				retval = octave_value (this);
-			      }
-			    else
-			      gripe_failed_assignment ();
-			  }
-			else
-			  error ("invalid class assignment");
-		      }
-		  }
-	      }
-	      break;
-
-	    case '.':
-	      {
-		octave_value_list key_idx = idx.front ();
-
-		assert (key_idx.length () == 1);
-
-		std::string key = key_idx(0).string_value ();
-
-		map.assign (key, t_rhs);
-
-		if (! error_state)
-		  {
-		    count++;
-		    retval = octave_value (this);
-		  }
-		else
-		  gripe_failed_assignment ();
-	      }
-	      break;
-
-	    case '{':
-	      gripe_invalid_index_type (type_name (), type[0]);
-	      break;
-
-	    default:
-	      panic_impossible ();
-	    }
-	}
-      else
-	gripe_failed_assignment ();
-    }
-  else
+  if (! in_class_method ())
     {
       octave_value meth = symbol_table::find_method ("subsasgn", class_name ());
 
@@ -551,14 +347,215 @@ octave_class::subsasgn (const std::string& type,
 	  if (tmp.length () > 1)
 	    error ("expecting single return value from @%s/subsasgn",
 		   class_name().c_str ());
+
 	  else
 	    retval = tmp(0);
 
+	  return retval;
 	}
-      else
-	error ("no subsasgn method defined for class %s",
-	       class_name().c_str ());
     }
+
+  // FIXME -- this block of code is the same as the body of
+  // octave_struct::subsasgn.  Maybe it could be shared instead of
+  // duplicated.
+
+  int n = type.length ();
+
+  octave_value t_rhs = rhs;
+
+  if (n > 1 && ! (type.length () == 2 && type[0] == '(' && type[1] == '.'))
+    {
+      switch (type[0])
+	{
+	case '(':
+	  {
+	    if (type.length () > 1 && type[1] == '.')
+	      {
+		std::list<octave_value_list>::const_iterator p = idx.begin ();
+		octave_value_list t_idx = *p;
+
+		octave_value_list key_idx = *++p;
+
+		assert (key_idx.length () == 1);
+
+		std::string key = key_idx(0).string_value ();
+
+		octave_value u;
+
+		if (! map.contains (key))
+		  u = octave_value::empty_conv (type.substr (2), rhs);
+		else
+		  {
+		    Cell map_val = map.contents (key);
+
+		    Cell map_elt = map_val.index (idx.front (), true);
+
+		    u = numeric_conv (map_elt, type.substr (2));
+		  }
+
+		if (! error_state)
+		  {
+		    std::list<octave_value_list> next_idx (idx);
+
+		    // We handled two index elements, so subsasgn to
+		    // needs to skip both of them.
+
+		    next_idx.erase (next_idx.begin ());
+		    next_idx.erase (next_idx.begin ());
+
+		    u.make_unique ();
+
+		    t_rhs = u.subsasgn (type.substr (2), next_idx, rhs);
+		  }
+	      }
+	    else
+	      gripe_invalid_index_for_assignment ();
+	  }
+	  break;
+
+	case '.':
+	  {
+	    octave_value_list key_idx = idx.front ();
+
+	    assert (key_idx.length () == 1);
+
+	    std::string key = key_idx(0).string_value ();
+
+	    octave_value u;
+
+	    if (! map.contains (key))
+	      u = octave_value::empty_conv (type.substr (1), rhs);
+	    else
+	      {
+		Cell map_val = map.contents (key);
+
+		u = numeric_conv (map_val, type.substr (1));
+	      }
+
+	    if (! error_state)
+	      {
+		std::list<octave_value_list> next_idx (idx);
+
+		next_idx.erase (next_idx.begin ());
+
+		u.make_unique ();
+
+		t_rhs = u.subsasgn (type.substr (1), next_idx, rhs);
+	      }
+	  }
+	  break;
+
+	case '{':
+	  gripe_invalid_index_type (type_name (), type[0]);
+	  break;
+
+	default:
+	  panic_impossible ();
+	}
+    }
+
+  if (! error_state)
+    {
+      switch (type[0])
+	{
+	case '(':
+	  {
+	    if (n > 1 && type[1] == '.')
+	      {
+		std::list<octave_value_list>::const_iterator p = idx.begin ();
+		octave_value_list key_idx = *++p;
+
+		assert (key_idx.length () == 1);
+
+		std::string key = key_idx(0).string_value ();
+
+		if (! error_state)
+		  {
+		    map.assign (idx.front (), key, t_rhs);
+
+		    if (! error_state)
+		      {
+			count++;
+			retval = octave_value (this);
+		      }
+		    else
+		      gripe_failed_assignment ();
+		  }
+		else
+		  gripe_failed_assignment ();
+	      }
+	    else
+	      {
+		if (t_rhs.is_object () || t_rhs.is_map ())
+		  {
+		    Octave_map rhs_map = t_rhs.map_value ();
+
+		    if (! error_state)
+		      {
+			map.assign (idx.front (), rhs_map);
+
+			if (! error_state)
+			  {
+			    count++;
+			    retval = octave_value (this);
+			  }
+			else
+			  gripe_failed_assignment ();
+		      }
+		    else
+		      error ("invalid class assignment");
+		  }
+		else
+		  {
+		    if (t_rhs.is_empty ())
+		      {
+			map.maybe_delete_elements (idx.front());
+
+			if (! error_state)
+			  {
+			    count++;
+			    retval = octave_value (this);
+			  }
+			else
+			  gripe_failed_assignment ();
+		      }
+		    else
+		      error ("invalid class assignment");
+		  }
+	      }
+	  }
+	  break;
+
+	case '.':
+	  {
+	    octave_value_list key_idx = idx.front ();
+
+	    assert (key_idx.length () == 1);
+
+	    std::string key = key_idx(0).string_value ();
+
+	    map.assign (key, t_rhs);
+
+	    if (! error_state)
+	      {
+		count++;
+		retval = octave_value (this);
+	      }
+	    else
+	      gripe_failed_assignment ();
+	  }
+	  break;
+
+	case '{':
+	  gripe_invalid_index_type (type_name (), type[0]);
+	  break;
+
+	default:
+	  panic_impossible ();
+	}
+    }
+  else
+    gripe_failed_assignment ();
 
   return retval;
 }
@@ -1161,7 +1158,9 @@ octave_class::in_class_method (void) const
   octave_function *fcn = octave_call_stack::current ();
 
   return (fcn
-	  && (fcn->is_class_method () || fcn->is_class_constructor ())
+	  && (fcn->is_class_method ()
+	      || fcn->is_class_constructor ()
+	      || fcn->is_private_function_of_class (class_name ()))
 	  && fcn->dispatch_class () == class_name ());
 }
 

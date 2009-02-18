@@ -56,6 +56,17 @@ Octave_map
     key_list.push_back (k);
   }
 
+  Octave_map (const string_vector& sv)
+    : map (), key_list (), dimensions (0, 0)
+  {
+    for (octave_idx_type i = 0; i < sv.length (); i++)
+      {
+	std::string k = sv[i];
+	map[k] = Cell ();
+	key_list.push_back (k);
+      }
+  }
+
   Octave_map (const std::string& k, const Cell& vals)
     : map (), key_list (), dimensions (vals.dims ())
   {

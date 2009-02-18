@@ -300,6 +300,20 @@ symbol_table::fcn_info::fcn_info_rep::load_private_function
 
       if (fcn)
 	{
+	  std::string class_name;
+
+	  size_t pos = dir_name.find_last_of (file_ops::dir_sep_chars ());
+
+	  if (pos != std::string::npos)
+	    {
+	      std::string tmp = dir_name.substr (pos+1);
+
+	      if (tmp[0] == '@')
+		class_name = tmp.substr (1);
+	    }
+
+	  fcn->mark_as_private_function (class_name);
+
 	  retval = octave_value (fcn);
 
 	  private_functions[dir_name] = retval;

@@ -45,7 +45,9 @@ octave_function : public octave_base_value
 {
 public:
 
-  octave_function (void) { }
+  octave_function (void)
+    : relative (false), locked (false), private_function (false),
+      xdispatch_class (), my_name (), my_dir_name (), doc () { }
 
   ~octave_function (void) { }
 
@@ -80,11 +82,24 @@ public:
 
   virtual bool is_class_method (void) const { return false; }
 
-  virtual std::string dispatch_class (void) const { return std::string (); }
-
   virtual bool takes_varargs (void) const { return false; }
 
   virtual bool takes_var_return (void) const { return false; }
+
+  void stash_dispatch_class (const std::string& nm) { xdispatch_class = nm; }
+
+  std::string dispatch_class (void) const { return xdispatch_class; }
+
+  void mark_as_private_function (const std::string& cname = std::string ())
+  {
+    private_function = true;
+    xdispatch_class = cname;
+  }
+
+  bool is_private_function (void) const { return private_function; }
+
+  bool is_private_function_of_class (const std::string& nm)
+    { return private_function && xdispatch_class == nm; }
 
   std::string dir_name (void) const { return my_dir_name; }
 
@@ -133,6 +148,14 @@ protected:
 
   // TRUE if this function is tagged so that it can't be cleared.
   bool locked;
+
+  // TRUE means this is a private function.
+  bool private_function;
+
+  // If this object is a class method or constructor, or a private
+  // function inside a class directory, this is the name of the class
+  // to which the method belongs. 
+  std::string xdispatch_class;
 
   // The name of this function.
   std::string my_name;

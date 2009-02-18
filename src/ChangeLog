@@ -1,5 +1,36 @@
 2009-02-17  John W. Eaton  <jwe@octave.org>
 
+	* ov-fcn.h (octave_function::octave_function): Initialize data members.
+	(octave_function::dispatch_class): No longer virtual.
+	Replace with version from ov-usr-fcn.h.
+	(octave_function::xdispatch_class,
+	octave_function::stash_dispatch_class): Move here from ov-usr-fcn.h.
+	(octave_function::mark_as_private_function,
+	octave_function::is_private_function,
+	octave_function::is_private_function_of_class): New functions.
+	(octave_function::private_function): New data member.
+	* ov-usr-fcn.h (octave_user_function::xdispatch_class,
+	octave_user_function::stash_dispatch_class,
+	octave_user_function::dispatch_class): Delete.
+	* ov-usr-fcn.cc (octave_user_function::octave_user_function):
+	Don't initialize xdispatch_type.
+
+	* symtab.cc
+	(symbol_table::fcn_info::fcn_info_rep::load_private_function):
+	If private directory is subdirectory of class directory, qmark
+	function as a private directory of the class.
+
+	* ov-class.cc (octave_class::in_class_method): Also return true
+	for functions that are private to a class.
+	(octave_class::subsasgn): If not in class method, look for
+	subsasgn method.  If not found, or if not in a class method,
+	perform default struct-style subscripted indexing.
+
+	* ov-class.h (octave_class::empty_clone):
+	Preserve fields and class name.
+	* oct-map.h (Octave_map::Octave_map (const string_vector&):
+	New constructor.
+
 	* ov-class.cc (octave_class::subsref): If indexing directly and
 	result is map, return class object, not simple struct.
 

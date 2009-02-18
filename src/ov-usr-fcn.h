@@ -260,10 +260,6 @@ public:
 
   bool is_class_method (void) const { return class_method; }
 
-  void stash_dispatch_class (const std::string& nm) { xdispatch_class = nm; }
-
-  std::string dispatch_class (void) const { return xdispatch_class; }
-
   void save_args_passed (const octave_value_list& args)
     {
       if (call_depth > 0)
@@ -366,10 +362,6 @@ private:
 
   // TRUE means this function is a method for a class.
   bool class_method;
-
-  // If this object is a class method or constructor, this is the name
-  // of the class to which the method belongs.
-  std::string xdispatch_class;
 
   // The values that were passed as arguments.
   octave_value_list args_passed;

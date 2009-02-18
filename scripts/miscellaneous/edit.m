@@ -83,6 +83,8 @@
 ## Send it to current Emacs; must have @code{(gnuserv-start)} in @file{.emacs}.
 ## @end table
 ##
+## See also field 'mode', which controls how the editor is run by Octave.
+## 
 ## On cygwin, you will need to convert the cygwin path to a windows
 ## path if you are using a native Windows editor.  For example
 ## @example
@@ -120,8 +122,9 @@
 ## 
 ## @item mode
 ## This value determines whether the editor should be started in async mode
-## or sync mode. Set it to "async" to start the editor in async mode. The
-## default is "sync" (see also "system").
+## (editor is started in the background and Octave continues) or sync mode
+## (Octave waits until the editor exits). Set it to "async" to start the editor
+## in async mode. The default is "sync" (see also "system").
 ##
 ## @item editinplace
 ## Determines whether files should be edited in place, without regard to 

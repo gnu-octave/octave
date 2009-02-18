@@ -1,3 +1,7 @@
+2009-02-18  Ivan Sutoris  <ivan.sutoris@gmail.com>
+
+	* miscellaneous/edit.m: Expand documentation about editor mode.
+
 2009-02-18  John W. Eaton  <jwe@octave.org>
 
 	* plot/__gnuplot_version__.m: Don't use regexp to extract version

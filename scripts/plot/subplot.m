@@ -103,7 +103,7 @@ function h = subplot (rows, columns, index)
   units = get (0, "defaultaxesunits");
   unwind_protect
     set (0, "defaultaxesunits", "normalized")
-    pos = subplot_position (rows, columns, index, "outerposition", units);
+    pos = subplot_position (rows, columns, index, "position", units);
 
     cf = gcf ();
 
@@ -125,7 +125,7 @@ function h = subplot (rows, columns, index)
 	    strcmp (get (child, "tag"), "colorbar"))
           continue;
         endif
-        objpos = get (child, "outerposition");
+        objpos = get (child, "position");
         if (all (objpos == pos))
 	  ## If the new axes are in exactly the same position as an
 	  ## existing axes object, use the existing axes.
@@ -152,6 +152,7 @@ function h = subplot (rows, columns, index)
     if (found)
       set (cf, "currentaxes", tmp);
     else
+      pos = subplot_position (rows, columns, index, "outerposition", units);
       pos2 = subplot_position (rows, columns, index, "position", units);
       tmp = axes ("outerposition", pos, "position", pos2);
     endif
@@ -198,7 +199,7 @@ function pos = subplot_position (rows, columns, index, position_property, units)
     ## Calculate the outerposition/position inset
     if (rows > 1)
       inset.top    = 8/420;
-      inset.bottom = max (polyval ([0.1382,-0.0026], width), 16/420);
+      inset.bottom = max (polyval ([0.1382,-0.0026], height), 16/420);
     else
       inset.bottom = margins.bottom;
       inset.top = margins.top;
@@ -227,6 +228,11 @@ function pos = subplot_position (rows, columns, index, position_property, units)
 
   x0 = xp .* (width + margins.column) + margins.left;
   y0 = yp .* (height + margins.row) + margins.bottom;
+
+  if (strcmp (position_property, "outerposition") )
+    x0 = x0 - inset.left;
+    y0 = y0 - inset.bottom;
+  endif
 
   if (numel(x0) > 1)
     x1 = max (x0) + width;

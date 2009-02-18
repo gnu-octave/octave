@@ -1,3 +1,7 @@
+2009-02-18  Ben Abbott  <bpabbott@mac.com>
+
+	* plot/subplot.m: Fix unintended deletion of axes.
+
 2009-02-18  Frederick Umminger  <Frederick_Umminger@playstation.sony.com>
 
 	* audio/wavread.m: Improve search for data chunks.

@@ -538,7 +538,7 @@ pow (const octave_int<T>& a, const octave_int<T>& b)
   // the is_signed check is inserted twice to avoid compiler warnings
   else if (std::numeric_limits<T>::is_signed && b < zero)
     {
-      if (std::numeric_limits<T>::is_signed && a.value () == -1)
+      if (a == octave_int<int> (-1))
         retval = (b.value () % 2) ? a : one;
       else
         retval = zero;

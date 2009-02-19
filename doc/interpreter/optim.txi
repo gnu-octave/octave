@@ -140,3 +140,5 @@ the @code{gls} is needed.
 @DOCSTRING(lsqnonneg)
 
 @DOCSTRING(optimset)
+
+@DOCSTRING(optimget)

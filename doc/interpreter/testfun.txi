@@ -301,11 +301,8 @@ them in plain files with no extension rather than in script files.
 
 @DOCSTRING(demo)
 
+@DOCSTRING(rundemos)
+
 @DOCSTRING(example)
 
 @DOCSTRING(speed)
-
-
-@c Local Variables: ***
-@c Mode: texinfo ***
-@c End: ***

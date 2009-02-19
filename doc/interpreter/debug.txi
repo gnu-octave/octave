@@ -162,12 +162,14 @@ Octave entered debug mode.
 
 @DOCSTRING(dbtype)
 
+You may also use @code{isdebugmode} to determine whether the debugger is
+currently active.
+
+@DOCSTRING(isdebugmode)
+
 Debug mode equally allows single line stepping through a function using
 the commands @code{dbstep}.
 
-@c leave dbnext undocumented
-
-@anchor{doc-dbnext}
 @DOCSTRING(dbstep)
 
 @node Call Stack

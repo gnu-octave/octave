@@ -29,8 +29,6 @@
 ##
 ## If @var{ax} is specified the animition is produced in that axis rather than
 ## the @code{gca}.
-## 
-## @seealso{comet3}
 ## @end deftypefn
 
 ## Author: Ben Abbott bpabbott@mac.com

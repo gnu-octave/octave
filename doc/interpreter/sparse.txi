@@ -27,13 +27,13 @@
 @chapter Sparse Matrices
 
 @menu
-* Basics:: The Creation and Manipulation of Sparse Matrices
-* Sparse Linear Algebra:: Linear Algebra on Sparse Matrices
-* Iterative Techniques:: Iterative Techniques applied to Sparse Matrices
-* Real Life Example:: Real Life Example of the use of Sparse Matrices
+* Basics::                      Creation and Manipulation of Sparse Matrices
+* Sparse Linear Algebra::       Linear Algebra on Sparse Matrices
+* Iterative Techniques::        Iterative Techniques
+* Real Life Example::           Using Sparse Matrices
 @end menu
 
-@node Basics, Sparse Linear Algebra, Sparse Matrices, Sparse Matrices
+@node Basics
 @section The Creation and Manipulation of Sparse Matrices
 
 The size of mathematical problems that can be treated at any particular
@@ -56,13 +56,13 @@ storage and creation of sparse matrices and the fundamental operations
 on them.
 
 @menu
-* Storage:: Storage of Sparse Matrices
-* Creation:: Creating Sparse Matrices
-* Information:: Finding out Information about Sparse Matrices
-* Operators and Functions:: Basic Operators and Functions on Sparse Matrices
+* Storage of Sparse Matrices::
+* Creating Sparse Matrices::
+* Information::
+* Operators and Functions::
 @end menu
 
-@node Storage, Creation, Basics, Basics
+@node Storage of Sparse Matrices
 @subsection Storage of Sparse Matrices
 
 It is not strictly speaking necessary for the user to understand how
@@ -166,7 +166,7 @@ disordered elements is potentially an advantage in that it makes operations
 such as concatenating two sparse matrices together easier and faster, however
 it adds complexity and speed problems elsewhere.
 
-@node Creation, Information, Storage, Basics
+@node Creating Sparse Matrices
 @subsection Creating Sparse Matrices
 
 There are several means to create sparse matrix.
@@ -303,7 +303,7 @@ is more complex than can be discussed in this brief introduction, and
 you are referred to chapter @ref{Dynamically Linked Functions}, to have
 a full description of the techniques involved.
 
-@node Information, Operators and Functions, Creation, Basics
+@node Information
 @subsection Finding out Information about Sparse Matrices
 
 There are a number of functions that allow information concerning
@@ -421,16 +421,18 @@ symmetric or @code{treeplot(etree(A+A'))} otherwise.
 
 @DOCSTRING(treeplot)
 
-@node Operators and Functions, , Information, Basics
+@DOCSTRING(treelayout)
+
+@node Operators and Functions
 @subsection Basic Operators and Functions on Sparse Matrices
 
 @menu
-* Functions:: Sparse Functions
-* ReturnType:: The Return Types of Operators and Functions
-* MathConsiderations:: Mathematical Considerations
+* Sparse Functions::            
+* Return Types of Operators and Functions::  
+* Mathematical Considerations::  
 @end menu
 
-@node Functions, ReturnType, Operators and Functions, Operators and Functions
+@node Sparse Functions
 @subsubsection Sparse Functions
 
 An important consideration in the use of the sparse functions of
@@ -491,7 +493,7 @@ can accept sparse matrices. The reader is referred to the documentation
 supplied with these functions within Octave itself for further
 details.
 
-@node ReturnType, MathConsiderations, Functions, Operators and Functions
+@node Return Types of Operators and Functions
 @subsubsection The Return Types of Operators and Functions
 
 The two basic reasons to use sparse matrices are to reduce the memory 
@@ -550,7 +552,7 @@ than its full representation.
 Note that the @code{sparse_auto_mutate} option is incompatible with
 @sc{Matlab}, and so it is off by default.
 
-@node MathConsiderations, , ReturnType, Operators and Functions
+@node Mathematical Considerations
 @subsubsection Mathematical Considerations
 
 The attempt has been made to make sparse matrices behave in exactly the
@@ -722,7 +724,7 @@ reorder the matrix to maximize performance.
 
 @DOCSTRING(symrcm)
 
-@node Sparse Linear Algebra, Iterative Techniques, Basics, Sparse Matrices
+@node Sparse Linear Algebra
 @section Linear Algebra on Sparse Matrices
 
 Octave includes a polymorphic solver for sparse matrices, where 
@@ -840,7 +842,7 @@ singular values and vectors.
 
 @DOCSTRING(svds)
 
-@node Iterative Techniques, Real Life Example, Sparse Linear Algebra, Sparse Matrices
+@node Iterative Techniques
 @section Iterative Techniques applied to sparse matrices
 
 The left division @code{\} and right division @code{/} operators,
@@ -861,7 +863,7 @@ are partial factorizations of the original matrix.
 
 @DOCSTRING(luinc)
 
-@node Real Life Example, , Iterative Techniques, Sparse Matrices
+@node Real Life Example
 @section Real Life Example of the use of Sparse Matrices
 
 A common application for sparse matrices is in the solution of Finite

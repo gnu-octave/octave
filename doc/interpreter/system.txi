@@ -212,6 +212,12 @@ about the status of files.
 
 @DOCSTRING(P_tmpdir)
 
+@DOCSTRING(is_absolute_filename)
+
+@DOCSTRING(is_rooted_relative_filename)
+
+@DOCSTRING(make_absolute_filename)
+
 @node File Archiving Utilities
 @section File Archiving Utilities
 

@@ -503,7 +503,3 @@ this case, set @code{INFO_PROGRAM} to @code{"info-emacs-octave-help"}.
 If you use Octave from within Emacs, these settings are best done in the
 @file{~/.emacs-octave} startup file (or the file pointed to by the Emacs
 variable @code{inferior-octave-startup-file}).
-
-@c Local Variables:
-@c TeX-command-default: "Texinfo"
-@c End:

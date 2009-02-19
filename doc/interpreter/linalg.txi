@@ -29,6 +29,7 @@ Golub and Van Loan, @cite{Matrix Computations, 2nd Ed.}, Johns Hopkins,
 * Basic Matrix Functions::      
 * Matrix Factorizations::       
 * Functions of a Matrix::       
+* Specialized Solvers::
 @end menu
 
 @node Techniques used for Linear Algebra
@@ -128,6 +129,12 @@ flag a non-Hermitian matrix.
 
 @DOCSTRING(cholupdate)
 
+@DOCSTRING(cholinsert)
+
+@DOCSTRING(choldelete)
+
+@DOCSTRING(cholshift)
+
 @DOCSTRING(hess)
 
 @DOCSTRING(lu)
@@ -139,6 +146,8 @@ flag a non-Hermitian matrix.
 @DOCSTRING(qrinsert)
 
 @DOCSTRING(qrdelete)
+
+@DOCSTRING(qrshift)
 
 @DOCSTRING(qz)
 
@@ -168,3 +177,10 @@ flag a non-Hermitian matrix.
 @DOCSTRING(kron)
 
 @DOCSTRING(syl)
+
+@node Specialized Solvers
+@section Specialized Solvers
+
+@DOCSTRING(bicgstab)
+
+@DOCSTRING(cgs)

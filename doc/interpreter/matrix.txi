@@ -118,6 +118,8 @@ Note that in conditional contexts (like the test clause of @code{if} and
 
 @DOCSTRING(sortrows)
 
+@DOCSTRING(issorted)
+
 Since the @code{sort} function does not allow sort keys to be specified,
 it can't be used to order the rows of a matrix according to the values
 of the elements in various columns@footnote{For example, to first sort

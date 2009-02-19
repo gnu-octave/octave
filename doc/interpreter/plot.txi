@@ -70,6 +70,11 @@ command will open a separate plot window to display the graph.
 
 @DOCSTRING(plot)
 
+The @code{plotyy} function may be used to create a plot with two
+independent y axes.
+
+@DOCSTRING(plotyy)
+
 The functions @code{semilogx}, @code{semilogy}, and @code{loglog} are
 similar to the @code{plot} function, but produce plots in which one or
 both of the axes use log scales.
@@ -108,6 +113,18 @@ shown in @ref{fig:hist}.
 
 @DOCSTRING(stem)
 
+@DOCSTRING(stem3)
+
+@DOCSTRING(scatter)
+
+@DOCSTRING(scatter3)
+
+@DOCSTRING(plotmatrix)
+
+@DOCSTRING(pareto)
+
+@DOCSTRING(rose)
+
 The @code{contour}, @code{contourf} and @code{contourc} functions
 produce two-dimensional contour plots from three dimensional data.
 
@@ -116,6 +133,8 @@ produce two-dimensional contour plots from three dimensional data.
 @DOCSTRING(contourf)
 
 @DOCSTRING(contourc)
+
+@DOCSTRING(contour3)
 
 The @code{errorbar}, @code{semilogxerr}, @code{semilogyerr}, and
 @code{loglogerr} functions produce plots with error bar markers.  For
@@ -167,9 +186,17 @@ produces the spiral plot shown in @ref{fig:polar}.
 
 @DOCSTRING(quiver)
 
+@DOCSTRING(quiver3)
+
+@DOCSTRING(compass)
+
+@DOCSTRING(feather)
+
 @DOCSTRING(pcolor)
 
 @DOCSTRING(area)
+
+@DOCSTRING(comet)
 
 The axis function may be used to change the axis limits of an existing
 plot and various other axis properties, such as the aspect ratio and the
@@ -181,6 +208,13 @@ Similarly the axis limits of the colormap can be changed with the caxis
 function.
 
 @DOCSTRING(caxis)
+
+The @code{xlim}, @code{ylim}, and @code{zlim} functions may be used to
+get or set individual axis limits.  Each has the same form.
+
+@anchor{doc-ylim}
+@anchor{doc-zlim}
+@DOCSTRING(xlim)
 
 @menu
 * Two-dimensional Function Plotting::
@@ -276,11 +310,21 @@ three-dimensional plots.
 
 @DOCSTRING(meshc)
 
+@DOCSTRING(meshz)
+
 @DOCSTRING(hidden)
 
 @DOCSTRING(surf)
 
 @DOCSTRING(surfc)
+
+@DOCSTRING(surfl)
+
+@DOCSTRING(surfnorm)
+
+@DOCSTRING(diffuse)
+
+@DOCSTRING(specular)
 
 @DOCSTRING(meshgrid)
 
@@ -290,10 +334,15 @@ three-dimensional plots.
 
 @DOCSTRING(view)
 
+@DOCSTRING(slice)
+
+@DOCSTRING(ribbon)
+
 @DOCSTRING(shading)
 
 @menu
 * Three-dimensional Function Plotting::
+* Three-dimensional Geometric Shapes::
 @end menu
 
 @node Three-dimensional Function Plotting
@@ -308,6 +357,15 @@ three-dimensional plots.
 @DOCSTRING(ezsurf)
 
 @DOCSTRING(ezsurfc)
+
+@node Three-dimensional Geometric Shapes
+@subsubsection Three-dimensional Geometric Shapes
+
+@DOCSTRING(cylinder)
+
+@DOCSTRING(sphere)
+
+@DOCSTRING(ellipsoid)
 
 @node Plot Annotations
 @subsection Plot Annotations
@@ -342,6 +400,8 @@ See @ref{Text Properties} for the properties that you can set.
 @anchor{doc-ylabel}
 @anchor{doc-zlabel}
 @DOCSTRING(xlabel)
+
+@DOCSTRING(clabel)
 
 @DOCSTRING(box)
 
@@ -508,6 +568,8 @@ index, use the functions @code{ishandle} and @code{isfigure}.
 
 @DOCSTRING(ishandle)
 
+@DOCSTRING(ishghandle)
+
 @DOCSTRING(isfigure)
 
 The function @code{gcf} returns an index to the current figure object,
@@ -595,6 +657,8 @@ become children of the current axes object.
 @DOCSTRING(line)
 
 @DOCSTRING(patch)
+
+@DOCSTRING(fill)
 
 @DOCSTRING(surface)
 
@@ -1507,6 +1571,8 @@ property is used, the @code{addlistener} function is used to define a
 callback function that is executed when the property is altered.
 
 @DOCSTRING(addlistener)
+
+@DOCSTRING(dellistener)
 
 An example of the use of these two functions might be
 

@@ -193,6 +193,7 @@ It corresponds to GNU Octave version @value{VERSION}.
 * Function Index::              An item for each documented function.
 * Operator Index::              An item for each documented operator.
 
+@c FIXME -- is the detailed node listing up to date?
 @detailmenu
  --- The Detailed Node Listing ---
 

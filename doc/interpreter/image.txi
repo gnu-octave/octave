@@ -139,6 +139,8 @@ between 0 and 1.
 
 @DOCSTRING(copper)
 
+@DOCSTRING(flag)
+
 @DOCSTRING(gray)
 
 @DOCSTRING(hot)
@@ -173,6 +175,11 @@ gnuplot 4.0 users, and in particular in conjunction with the @var{bar},
 @var{barh} or @var{contour} functions.
 
 @DOCSTRING(gmap40)
+
+You may use the @code{spinmap} function to cycle through the colors in
+the current colormap, displaying the changes for the current figure.
+
+@DOCSTRING(spinmap)
 
 @node Plotting on top of Images
 @section Plotting on top of Images

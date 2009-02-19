@@ -1,3 +1,18 @@
+2009-02-19  John W. Eaton  <jwe@octave.org>
+
+	* doc/interperter: Include @DOCSTRING commands for the following
+	functions: bicgstab, cgs, choldelete, cholinsert, cholshift,
+	clabel, comet, command_line_path, compass, contour3, ctranspose,
+	cylinder, dellistener, diffuse, edit, ellipsoid, fclear, feather,
+	fill, find_dir_in_path, finite, flag, info, is_absolute_filename,
+	is_rooted_relative_filename, isdebugmode, ishghandle, isnull,
+	issorted, make_absolute_filename, meshz, news,
+	octave_tmp_file_name, optimget, pareto, plotmatrix, plotyy,
+	qrshift, quiver3, re_read_readline_init_file, ribbon, rose,
+	rundemos, scatter, scatter3, slice, specular, sphere, spinmap,
+	stem3, strchr, strtrim, surfl, surfnorm, times, transpose,
+	treelayout, uminus, uplus, warranty, what, xlim, yes_or_no.
+
 2009-02-17  Thomas Treichl  <Thomas.Treichl@gmx.net>
 
 	* interpreter/install.txi: Add documentation for configure options

@@ -617,6 +617,8 @@ ignore the time stamps for all function files.  Passing
 
 @c FIXME -- note about time stamps on files in NFS environments?
 
+@DOCSTRING(edit)
+
 @DOCSTRING(mfilename)
 
 @DOCSTRING(ignore_function_time_stamp)
@@ -670,6 +672,10 @@ After this the directory @samp{~/Octave} will be searched for functions.
 @DOCSTRING(file_in_loadpath)
 
 @DOCSTRING(restoredefaultpath)
+
+@DOCSTRING(command_line_path)
+
+@DOCSTRING(find_dir_in_path)
 
 @node Subfunctions
 @subsection Subfunctions

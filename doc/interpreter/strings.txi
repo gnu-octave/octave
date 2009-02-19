@@ -412,9 +412,13 @@ general regular expressions, the following functions come with Octave.
 
 @DOCSTRING(deblank)
 
+@DOCSTRING(strtrim)
+
 @DOCSTRING(strtrunc)
 
 @DOCSTRING(findstr)
+
+@DOCSTRING(strchr)
 
 @DOCSTRING(index)
 

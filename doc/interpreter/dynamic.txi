@@ -615,9 +615,10 @@ SparseMatrix sm (data, ridx, cidx, nr, nc);
 @end example
 
 @noindent
-which creates the matrix given in section @ref{Storage}.  Note that
-the compressed matrix format is not used at the time of the creation
-of the matrix itself, however it is used internally.
+which creates the matrix given in section
+@ref{Storage of Sparse Matrices}.  Note that the compressed matrix
+format is not used at the time of the creation of the matrix itself,
+however it is used internally.
 
 As previously mentioned, the values of the sparse matrix are stored
 in increasing column-major ordering.  Although the data passed by the

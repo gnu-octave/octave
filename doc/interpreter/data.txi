@@ -191,6 +191,8 @@ data structure type doesn't have rows or columns, so the @code{rows} and
 
 @DOCSTRING(isempty)
 
+@DOCSTRING(isnull)
+
 @DOCSTRING(sizeof)
 
 @DOCSTRING(size_equal)

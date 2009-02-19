@@ -125,6 +125,8 @@ used for managing an interactive dialog with a user, and the
 
 @DOCSTRING(menu)
 
+@DOCSTRING(yes_or_no)
+
 For @code{input}, the normal command line history and editing functions
 are available at the prompt.
 
@@ -975,7 +977,9 @@ files will be deleted, so this step need not be executed manually.
 
 @DOCSTRING(tmpnam)
 
-@node EOF and Errors
+@DOCSTRING(octave_tmp_file_name)
+
+@node EOF and Errors, File Positioning, Temporary Files, C-Style I/O Functions
 @subsection End of File and Errors
 
 Once a file has been opened its status can be acquired.  As an example
@@ -1002,6 +1006,8 @@ above code.
 @DOCSTRING(feof)
 
 @DOCSTRING(ferror)
+
+@DOCSTRING(fclear)
 
 @DOCSTRING(freport)
 

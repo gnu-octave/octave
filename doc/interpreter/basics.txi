@@ -332,6 +332,15 @@ about how to document the functions you write.
 
 @DOCSTRING(lookfor)
 
+To see what is new in the current release of Octave, use the @code{news}
+function.
+
+@DOCSTRING(news)
+
+@DOCSTRING(info)
+
+@DOCSTRING(warranty)
+
 The following function can be used to change which programs are used
 for displaying the documentation, and where the documentation can be
 found.
@@ -632,6 +641,8 @@ customize how readline works through a configuration file.
 @c FIXME -- need a brief description of the ~/.inputrc file here.
 
 @DOCSTRING(read_readline_init_file)
+
+@DOCSTRING(re_read_readline_init_file)
 
 @node Customizing the Prompt
 @subsection Customizing the Prompt

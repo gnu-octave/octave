@@ -1,5 +1,24 @@
 2009-02-18  John W. Eaton  <jwe@octave.org>
 
+	* dbleQR.cc (QR::init, QR::form): Cast int to octave_idx_type in
+	call to std::max.
+	* floatQR.cc (FloatQR::init, FloatQR::form): Ditto.
+	* CmplxQR.cc (ComplexQR::init, ComplexQR::form): Ditto.
+	* fCmplxQR.cc (FloatComplexQR::init, FloatComplexQR::form): Ditto.
+
+	* dbleQRP.cc (QRP::init): Cast int to octave_idx_type in call to
+	std::max and as operand to -= operator.
+	* CmplxQRP.cc (ComplexQRP::init): Ditto.
+	* floatQRP.cc (FloatQRP::init): Ditto.
+	* fCmplxQRP.cc (FloatComplexQRP::init): Ditto.
+
+	* CDiagMatrix.cc, CDiagMatrix.h (ComplexDiagMatrix::inverse):
+	Declare info as octave_idx_type, not int.
+	* dDiagMatrix.cc, dDiagMatrix.h (DiagMatrix::inverse): Ditto.
+	* fDiagMatrix.cc, fCDiagMatrix.h (FloatDiagMatrix::inverse): Ditto.
+	* fCDiagMatrix.cc, fCDiagMatrix.h (FloatComplexDiagMatrix::inverse):
+	Ditto.
+
 	* dMatrix.cc (Matrix::determinant):
 	Declare local variables volatile as needed to avoid "maybe
 	clobbered by vfork" warning from GCC.

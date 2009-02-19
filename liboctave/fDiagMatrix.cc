@@ -270,12 +270,12 @@ FloatDiagMatrix::column (char *s) const
 FloatDiagMatrix
 FloatDiagMatrix::inverse (void) const
 {
-  int info;
+  octave_idx_type info;
   return inverse (info);
 }
 
 FloatDiagMatrix
-FloatDiagMatrix::inverse (int &info) const
+FloatDiagMatrix::inverse (octave_idx_type &info) const
 {
   octave_idx_type r = rows ();
   octave_idx_type c = cols ();

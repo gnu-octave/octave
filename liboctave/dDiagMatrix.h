@@ -93,7 +93,7 @@ public:
   ColumnVector column (char *s) const;
 
   DiagMatrix inverse (void) const;
-  DiagMatrix inverse (int& info) const;
+  DiagMatrix inverse (octave_idx_type& info) const;
 
   // other operations
 

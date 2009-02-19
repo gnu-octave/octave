@@ -108,7 +108,8 @@ FloatQR::init (const FloatMatrix& a, QR::type qr_type)
       F77_XFCN (sgeqrf, SGEQRF, (m, n, afact.fortran_vec (), m, tau, &rlwork, -1, info));
 
       // allocate buffer and do the job.
-      octave_idx_type lwork = rlwork; lwork = std::max (lwork, 1);
+      octave_idx_type lwork = rlwork;
+      lwork = std::max (lwork, static_cast<octave_idx_type> (1));
       OCTAVE_LOCAL_BUFFER (float, work, lwork);
       F77_XFCN (sgeqrf, SGEQRF, (m, n, afact.fortran_vec (), m, tau, work, lwork, info));
     }
@@ -175,7 +176,8 @@ void FloatQR::form (octave_idx_type n, FloatMatrix& afact,
                                      &rlwork, -1, info));
 
           // allocate buffer and do the job.
-          octave_idx_type lwork = rlwork; lwork = std::max (lwork, 1);
+          octave_idx_type lwork = rlwork;
+	  lwork = std::max (lwork, static_cast<octave_idx_type> (1));
           OCTAVE_LOCAL_BUFFER (float, work, lwork);
           F77_XFCN (sorgqr, SORGQR, (m, k, min_mn, q.fortran_vec (), m, tau,
                                      work, lwork, info));

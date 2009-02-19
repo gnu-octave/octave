@@ -1,5 +1,11 @@
 2009-02-18  John W. Eaton  <jwe@octave.org>
- 
+
+	* ov.cc (convert_to_octave_idx_type_array): New static function.
+	(octave_value::octave_idx_type_vector_value): New function.
+	* ov.h (octave_value::octave_idx_type_vector_value): Provide decl.
+	* DLD-FUNCTIONS/qr.cc (Fqrdelete, Fqrinsert): Use it to convert
+	octave_value object to array of octave_idx_type values.
+
 	* DLD-FUNCTIONS/find.cc (find_nonzero_elem_idx): Likewise.
 	* DLD-FUNCTIONS/time.cc (strptime): Likewise.
 	* DLD-FUNCTIONS/quad.cc (Fquad): Eliminate unnecessary cast.

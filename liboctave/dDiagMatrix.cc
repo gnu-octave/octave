@@ -270,12 +270,12 @@ DiagMatrix::column (char *s) const
 DiagMatrix
 DiagMatrix::inverse (void) const
 {
-  int info;
+  octave_idx_type info;
   return inverse (info);
 }
 
 DiagMatrix
-DiagMatrix::inverse (int &info) const
+DiagMatrix::inverse (octave_idx_type &info) const
 {
   octave_idx_type r = rows ();
   octave_idx_type c = cols ();

@@ -1494,6 +1494,88 @@ octave_value::int_vector_value (bool force_string_conv, bool require_int,
                                              type_name (), "integer vector"));
 }
 
+template <class T>
+static Array<octave_idx_type>
+convert_to_octave_idx_type_array (const Array<octave_int<T> >& A)
+{
+  Array<octave_idx_type> retval (A.dims ());
+  octave_idx_type n = A.numel ();
+
+  octave_int<int>::clear_conv_flag ();
+  for (octave_idx_type i = 0; i < n; i++)
+    retval.xelem (i) = octave_int<octave_idx_type> (A.xelem (i));
+
+  if (octave_int<int>::get_trunc_flag ())
+    gripe_truncated_conversion (octave_int<T>::type_name (), "int");
+
+  octave_int<int>::clear_conv_flag ();
+
+  return retval;
+}
+
+Array<octave_idx_type>
+octave_value::octave_idx_type_vector_value (bool force_string_conv,
+					    bool require_int,
+					    bool force_vector_conversion) const
+{
+  Array<octave_idx_type> retval;
+
+  if (is_integer_type ())
+    {
+      if (is_int32_type ())
+        retval = convert_to_octave_idx_type_array (int32_array_value ());
+      else if (is_int64_type ())
+        retval = convert_to_octave_idx_type_array (int64_array_value ());
+      else if (is_int16_type ())
+        retval = convert_to_octave_idx_type_array (int16_array_value ());
+      else if (is_int8_type ())
+        retval = convert_to_octave_idx_type_array (int8_array_value ());
+      else if (is_uint32_type ())
+        retval = convert_to_octave_idx_type_array (uint32_array_value ());
+      else if (is_uint64_type ())
+        retval = convert_to_octave_idx_type_array (uint64_array_value ());
+      else if (is_uint16_type ())
+        retval = convert_to_octave_idx_type_array (uint16_array_value ());
+      else if (is_uint8_type ())
+        retval = convert_to_octave_idx_type_array (uint8_array_value ());
+      else
+        retval = array_value (force_string_conv);
+    }
+  else 
+    {
+      const NDArray a = array_value (force_string_conv);
+      if (! error_state)
+        {
+          if (require_int)
+            {
+              retval.resize (a.dims ());
+              for (octave_idx_type i = 0; i < a.numel (); i++)
+                {
+                  double ai = a.elem (i);
+                  octave_idx_type v = static_cast<octave_idx_type> (ai);
+                  if (ai == v)
+                    retval.xelem (i) = v;
+                  else
+                    {
+                      error ("conversion to integer value failed");
+                      break;
+                    }
+                }
+            }
+          else
+            retval = Array<octave_idx_type> (a);
+        }
+    }
+
+
+  if (error_state)
+    return retval;
+  else
+    return retval.reshape (make_vector_dims (retval.dims (),
+                                             force_vector_conversion,
+                                             type_name (), "integer vector"));
+}
+
 Array<Complex>
 octave_value::complex_vector_value (bool force_string_conv,
                                     bool force_vector_conversion) const

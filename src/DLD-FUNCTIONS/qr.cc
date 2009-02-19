@@ -989,7 +989,8 @@ If @var{orient} is @code{\"row\"}, full factorization is needed.\n\
           {
             if (check_index (argj, col))
               {
-                MArray<octave_idx_type> j = argj.int_vector_value ();
+                MArray<octave_idx_type> j
+		  = argj.octave_idx_type_vector_value ();
 
                 if (argq.is_real_type () 
 		    && argr.is_real_type () 
@@ -1202,7 +1203,8 @@ If @var{orient} is @code{\"row\"}, full factorization is needed.\n\
           {
             if (check_index (argj, col))
               {
-                MArray<octave_idx_type> j = argj.int_vector_value ();
+                MArray<octave_idx_type> j
+		  = argj.octave_idx_type_vector_value ();
 
                 if (argq.is_real_type ()
 		    && argr.is_real_type ())

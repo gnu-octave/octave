@@ -110,7 +110,7 @@ public:
   ComplexColumnVector column (octave_idx_type i) const;
   ComplexColumnVector column (char *s) const;
 
-  ComplexDiagMatrix inverse (int& info) const;
+  ComplexDiagMatrix inverse (octave_idx_type& info) const;
   ComplexDiagMatrix inverse (void) const;
 
   bool all_elements_are_real (void) const;

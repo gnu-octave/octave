@@ -110,7 +110,8 @@ ComplexQR::init (const ComplexMatrix& a, QR::type qr_type)
       F77_XFCN (zgeqrf, ZGEQRF, (m, n, afact.fortran_vec (), m, tau, &clwork, -1, info));
 
       // allocate buffer and do the job.
-      octave_idx_type lwork = clwork.real (); lwork = std::max (lwork, 1);
+      octave_idx_type lwork = clwork.real ();
+      lwork = std::max (lwork, static_cast<octave_idx_type> (1));
       OCTAVE_LOCAL_BUFFER (Complex, work, lwork);
       F77_XFCN (zgeqrf, ZGEQRF, (m, n, afact.fortran_vec (), m, tau, work, lwork, info));
     }
@@ -177,7 +178,8 @@ void ComplexQR::form (octave_idx_type n, ComplexMatrix& afact,
                                      &clwork, -1, info));
 
           // allocate buffer and do the job.
-          octave_idx_type lwork = clwork.real (); lwork = std::max (lwork, 1);
+          octave_idx_type lwork = clwork.real ();
+	  lwork = std::max (lwork, static_cast<octave_idx_type> (1));
           OCTAVE_LOCAL_BUFFER (Complex, work, lwork);
           F77_XFCN (zungqr, ZUNGQR, (m, k, min_mn, q.fortran_vec (), m, tau,
                                      work, lwork, info));

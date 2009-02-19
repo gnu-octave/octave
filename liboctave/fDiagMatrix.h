@@ -93,7 +93,7 @@ public:
   FloatColumnVector column (char *s) const;
 
   FloatDiagMatrix inverse (void) const;
-  FloatDiagMatrix inverse (int& info) const;
+  FloatDiagMatrix inverse (octave_idx_type& info) const;
 
   // other operations
 

@@ -108,7 +108,8 @@ QR::init (const Matrix& a, QR::type qr_type)
       F77_XFCN (dgeqrf, DGEQRF, (m, n, afact.fortran_vec (), m, tau, &rlwork, -1, info));
 
       // allocate buffer and do the job.
-      octave_idx_type lwork = rlwork; lwork = std::max (lwork, 1);
+      octave_idx_type lwork = rlwork;
+      lwork = std::max (lwork, static_cast<octave_idx_type> (1));
       OCTAVE_LOCAL_BUFFER (double, work, lwork);
       F77_XFCN (dgeqrf, DGEQRF, (m, n, afact.fortran_vec (), m, tau, work, lwork, info));
     }
@@ -175,7 +176,8 @@ void QR::form (octave_idx_type n, Matrix& afact,
                                      &rlwork, -1, info));
 
           // allocate buffer and do the job.
-          octave_idx_type lwork = rlwork; lwork = std::max (lwork, 1);
+          octave_idx_type lwork = rlwork;
+	  lwork = std::max (lwork, static_cast<octave_idx_type> (1));
           OCTAVE_LOCAL_BUFFER (double, work, lwork);
           F77_XFCN (dorgqr, DORGQR, (m, k, min_mn, q.fortran_vec (), m, tau,
                                      work, lwork, info));

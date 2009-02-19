@@ -75,7 +75,8 @@ QRP::init (const Matrix& a, QR::type qr_type)
                                  tau, &rlwork, -1, info));
 
       // allocate buffer and do the job.
-      octave_idx_type lwork = rlwork; lwork = std::max (lwork, 1);
+      octave_idx_type lwork = rlwork;
+      lwork = std::max (lwork, static_cast<octave_idx_type> (1));
       OCTAVE_LOCAL_BUFFER (double, work, lwork);
       F77_XFCN (dgeqp3, DGEQP3, (m, n, afact.fortran_vec (), m, jpvt.fortran_vec (),
                                  tau, work, lwork, info));
@@ -86,7 +87,7 @@ QRP::init (const Matrix& a, QR::type qr_type)
   // Form Permutation matrix (if economy is requested, return the
   // indices only!)
 
-  jpvt -= 1;
+  jpvt -= static_cast<octave_idx_type> (1);
   p = PermMatrix (jpvt, true);
 
 

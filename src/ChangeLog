@@ -1,5 +1,16 @@
 2009-02-19  Jaroslav Hajek  <highegg@gmail.com>
 
+	* ov-cell.h (octave_cell::cellstr_cache): New field.
+	(octave_cell::clear_cellstr_cache, octave_cell::make_cellstr_cache,
+	octave_cell::assign, octave_cell::delete_elements,
+	octave_cell::mex_get_data): New methods.
+	(octave_cell::is_cellstr): Reuse cellstr cache if possible, create if
+	successful.
+	(octave_cell::cellstr_value): Reuse cellstr cache if possible.
+	(octave_cell::subsasgn): Clear cellstr cache.
+
+2009-02-19  Jaroslav Hajek  <highegg@gmail.com>
+
 	* DLD-FUNCTIONS/lookup.cc (Flookup): Use Array<T>::lookup if possible.
 	Do not compare octave_values directly. Properly check for iscellstr.
 

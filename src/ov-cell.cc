@@ -214,6 +214,8 @@ octave_cell::subsasgn (const std::string& type,
 
   octave_value t_rhs = rhs;
 
+  clear_cellstr_cache ();
+
   if (n > 1)
     {
       switch (type[0])
@@ -376,6 +378,65 @@ octave_cell::subsasgn (const std::string& type,
   return retval;
 }
 
+void 
+octave_cell::clear_cellstr_cache (void) const
+{
+  cellstr_cache = Array<std::string> ();
+}
+
+void 
+octave_cell::make_cellstr_cache (void) const
+{
+  cellstr_cache = Array<std::string> (matrix.dims ());
+
+  octave_idx_type n = numel ();
+
+  std::string *dst = cellstr_cache.fortran_vec ();
+  const octave_value *src = matrix.data ();
+
+  for (octave_idx_type i = 0; i < n; i++)
+    dst[i] = src[i].string_value ();
+}
+
+bool 
+octave_cell::is_cellstr (void) const
+{
+  bool retval;
+  if (! cellstr_cache.is_empty ())
+    retval = true;
+  else
+    {
+      retval = matrix.is_cellstr ();
+      // force cache to be created here
+      if (retval)
+        make_cellstr_cache ();
+    }
+
+  return retval;
+}
+
+void 
+octave_cell::assign (const octave_value_list& idx, const Cell& rhs)
+{
+  clear_cellstr_cache ();
+  octave_base_matrix<Cell>::assign (idx, rhs);
+}
+
+void 
+octave_cell::assign (const octave_value_list& idx, const octave_value& rhs)
+{
+  clear_cellstr_cache ();
+  octave_base_matrix<Cell>::assign (idx, rhs);
+}
+
+
+void 
+octave_cell::delete_elements (const octave_value_list& idx)
+{
+  clear_cellstr_cache ();
+  octave_base_matrix<Cell>::delete_elements (idx);
+}
+
 size_t
 octave_cell::byte_size (void) const
 {
@@ -515,20 +576,14 @@ octave_cell::all_strings (bool pad) const
 Array<std::string>
 octave_cell::cellstr_value (void) const
 {
-  Array<std::string> retval (dims ());
+  Array<std::string> retval;
 
   if (is_cellstr ())
     {
-      octave_idx_type n = numel ();
-
-      std::string *dst = retval.fortran_vec ();
-      const octave_value *src = matrix.data ();
-
-      for (octave_idx_type i = 0; i < n; i++)
-	dst[i] = src[i].string_value ();
+      retval = cellstr_cache;
     }
   else
-    error ("invalid conversion from cell array to Array<std::string>");
+    error ("invalid conversion from cell array to array of strings");
 
   return retval;
 }
@@ -661,6 +716,8 @@ bool
 octave_cell::load_ascii (std::istream& is)
 {
   bool success = true;
+
+  clear_cellstr_cache ();
 
   string_vector keywords(2);
 
@@ -826,8 +883,10 @@ octave_cell::save_binary (std::ostream& os, bool& save_as_floats)
 
 bool 
 octave_cell::load_binary (std::istream& is, bool swap,
-				 oct_mach_info::float_format fmt)
+                          oct_mach_info::float_format fmt)
 {
+  clear_cellstr_cache ();
+
   bool success = true;
   int32_t mdims;
   if (! is.read (reinterpret_cast<char *> (&mdims), 4))
@@ -898,6 +957,13 @@ octave_cell::load_binary (std::istream& is, bool swap,
     }
 
   return success;
+}
+
+void *
+octave_cell::mex_get_data (void) const
+{
+  clear_cellstr_cache ();
+  return matrix.mex_get_data ();
 }
 
 #if defined (HAVE_HDF5)
@@ -986,6 +1052,8 @@ bool
 octave_cell::load_hdf5 (hid_t loc_id, const char *name,
 			bool have_h5giterate_bug)
 {
+  clear_cellstr_cache ();
+
   bool retval = false;
 
   dim_vector dv;

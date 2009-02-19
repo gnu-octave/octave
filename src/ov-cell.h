@@ -86,6 +86,12 @@ public:
 			 const std::list<octave_value_list>& idx,
 			 const octave_value& rhs);
 
+  void assign (const octave_value_list& idx, const Cell& rhs);
+
+  void assign (const octave_value_list& idx, const octave_value& rhs);
+
+  void delete_elements (const octave_value_list& idx);
+
   size_t byte_size (void) const;
 
   octave_value sort (octave_idx_type dim = 0, sortmode mode = ASCENDING) const;
@@ -105,7 +111,7 @@ public:
 
   bool is_cell (void) const { return true; }
 
-  bool is_cellstr (void) const { return matrix.is_cellstr (); }
+  bool is_cellstr (void) const;
 
   bool is_true (void) const;
 
@@ -160,7 +166,17 @@ public:
 
   mxArray *as_mxArray (void) const;
 
+  // Unsafe.  This function exists to support the MEX interface.
+  // You should not use it anywhere else.
+  void *mex_get_data (void) const; 
+
 private:
+
+  void clear_cellstr_cache (void) const;
+
+  mutable Array<std::string> cellstr_cache;
+
+  void make_cellstr_cache (void) const;
 
   DECLARE_OCTAVE_ALLOCATOR
 

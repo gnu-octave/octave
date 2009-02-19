@@ -32,7 +32,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "dNDArray.h"
 #include "CNDArray.h"
-#include "oct-lookup.h"
 
 #include "Cell.h"
 #include "defun-dld.h"
@@ -49,20 +48,6 @@ contains_char (const std::string& str, char c)
 	  || str.find (std::toupper (c)) != std::string::npos);
 }
 
-// normal ascending comparator
-static bool
-ov_str_less (const octave_value& a, const octave_value& b)
-{
-  return a.string_value () < b.string_value ();
-}
-
-// normal descending comparator
-static bool
-ov_str_greater (const octave_value& a, const octave_value& b)
-{
-  return a.string_value () > b.string_value ();
-}
-
 // case-insensitive character comparison functors
 struct icmp_char_lt : public std::binary_function<char, char, bool>
 {
@@ -76,29 +61,46 @@ struct icmp_char_gt : public std::binary_function<char, char, bool>
     { return std::toupper (x) > std::toupper (y); }
 };
 
+// FIXME: maybe these should go elsewhere?
 // case-insensitive ascending comparator
 static bool
-ov_stri_less (const octave_value& a, const octave_value& b)
+stri_comp_lt (const std::string& a, const std::string& b)
 {
-  std::string as = a.string_value ();
-  std::string bs = b.string_value ();
-
-  return std::lexicographical_compare (as.begin (), as.end (), 
-                                       bs.begin (), bs.end (),
+  return std::lexicographical_compare (a.begin (), a.end (), 
+                                       b.begin (), b.end (),
                                        icmp_char_lt());
 }
 
 // case-insensitive descending comparator
 static bool
-ov_stri_greater (const octave_value& a, const octave_value& b)
+stri_comp_gt (const std::string& a, const std::string& b)
 {
-  std::string as = a.string_value ();
-  std::string bs = b.string_value ();
-
-  return std::lexicographical_compare (as.begin (), as.end (), 
-                                       bs.begin (), bs.end (),
+  return std::lexicographical_compare (a.begin (), a.end (), 
+                                       b.begin (), b.end (),
                                        icmp_char_gt());
 }
+
+template <class T>
+inline sortmode 
+get_sort_mode (const Array<T>& array,
+               typename octave_sort<T>::compare_fcn_type desc_comp
+               = octave_sort<T>::descending_compare)
+{
+  octave_idx_type n = array.numel ();
+  if (n > 1 && desc_comp (array (0), array (n-1)))
+    return DESCENDING;
+  else
+    return ASCENDING;
+}
+
+// FIXME: perhaps there should be octave_value::lookup?
+// The question is, how should it behave w.r.t. the second argument's type. 
+// We'd need a dispatch on two arguments. Hmmm...
+
+#define INT_ARRAY_LOOKUP(TYPE) \
+  (table.is_ ## TYPE ## _type () && y.is_ ## TYPE ## _type ()) \
+    idx = table.TYPE ## _array_value ().lookup (y.TYPE ## _array_value (), \
+                                                UNSORTED, left_inf, right_inf);
 
 DEFUN_DLD (lookup, args, ,
   "-*- texinfo -*-\n\
@@ -118,14 +120,15 @@ strictly monotonic.\n\
 \n\
 The algorithm used by lookup is standard binary search, with optimizations\n\
 to speed up the case of partially ordered arrays (dense downsampling).\n\
-In particular, looking up a single entry is of binary complexity.\n\
+In particular, looking up a single entry is of logarithmic complexity\n\
+(unless a conversion occurs due to non-numeric or unequal types).\n\
 \n\
-@var{table} and @var{y} can also be a cell array of strings\n\
+@var{table} and @var{y} can also be cell arrays of strings\n\
 (or @var{y} can be a single string). In this case, string lookup\n\
 is performed using lexicographical comparison.\n\
+\n\
 If @var{opts} is specified, it shall be a string with letters indicating\n\
 additional options.\n\
-\n\
 For numeric lookup, 'l' in @var{opts} indicates that\n\
 the leftmost subinterval shall be extended to infinity (i.e. all indices\n\
 at least 1), and 'r' indicates that the rightmost subinterval shall be\n\
@@ -144,12 +147,12 @@ For string lookup, 'i' indicates case-insensitive comparison.\n\
       return retval;
     }
 
-  octave_value argtable = args(0), argy = args(1);
-  if (argtable.ndims () > 2 || (argtable.columns () > 1 && argtable.rows () > 1))
+  octave_value table = args(0), y = args(1);
+  if (table.ndims () > 2 || (table.columns () > 1 && table.rows () > 1))
     warning ("lookup: table is not a vector");
 
-  bool num_case = argtable.is_numeric_type () && argy.is_numeric_type ();
-  bool str_case = argtable.is_cell () && (argy.is_cell () || argy.is_string ());
+  bool num_case = table.is_numeric_type () && y.is_numeric_type ();
+  bool str_case = table.is_cellstr () && (y.is_string () || y.is_cellstr ());
 
   if (num_case) 
     {
@@ -163,74 +166,42 @@ For string lookup, 'i' indicates case-insensitive comparison.\n\
           right_inf = contains_char (opt, 'r');
         }
 
-      // in the case of a complex array, absolute values will be used for compatibility
+      // In the case of a complex array, absolute values will be used for compatibility
       // (though it's not too meaningful).
-      ArrayN<octave_idx_type> idx;
+      
+      if (table.is_complex_type ())
+        table = table.abs ();
 
-      if (argtable.is_single_type () || argy.is_single_type ())
-	{
-	  FloatNDArray table = (argtable.is_complex_type ()) 
-	    ? argtable.float_complex_array_value ().abs ()
-	    : argtable.float_array_value ();
+      if (y.is_complex_type ())
+        y = y.abs ();
 
-	  FloatNDArray y = (argy.is_complex_type ()) 
-	    ? argy.float_complex_array_value ().abs ()
-	    : argy.float_array_value ();
+      Array<octave_idx_type> idx;
 
-	  idx = ArrayN<octave_idx_type> (y.dims ());
-
-	  // determine whether the array is descending. 
-	  bool desc = is_descending (table.data (), table.length ());
-	  octave_idx_type offset = left_inf ? 1 : 0;
-	  octave_idx_type size = table.length () - offset - (right_inf ? 1 : 0);
-	  if (size < 0) 
-	    size = 0;
-
-	  if (desc)
-	    seq_lookup (table.data (), offset, size, 
-			y.data (), y.length (), idx.fortran_vec (),
-			std::greater<float> ());
-	  else
-	    seq_lookup (table.data (), offset, size, 
-			y.data (), y.length (), idx.fortran_vec (),
-			std::less<float> ());
-	}
+      // PS: I learned this from data.cc
+      if INT_ARRAY_LOOKUP (int8)
+      else if INT_ARRAY_LOOKUP (int16)
+      else if INT_ARRAY_LOOKUP (int32)
+      else if INT_ARRAY_LOOKUP (int64)
+      else if INT_ARRAY_LOOKUP (uint8)
+      else if INT_ARRAY_LOOKUP (uint16)
+      else if INT_ARRAY_LOOKUP (uint32)
+      else if INT_ARRAY_LOOKUP (uint64)
+      else if (table.is_single_type () || y.is_single_type ())
+        idx = table.float_array_value ().lookup (y.float_array_value (), 
+                                                 UNSORTED, left_inf, right_inf);
       else
-	{
-	  NDArray table = (argtable.is_complex_type ()) 
-	    ? argtable.complex_array_value ().abs ()
-	    : argtable.array_value ();
-
-	  NDArray y = (argy.is_complex_type ()) 
-	    ? argy.complex_array_value ().abs ()
-	    : argy.array_value ();
-
-	  idx = ArrayN<octave_idx_type> (y.dims ());
-
-	  // determine whether the array is descending. 
-	  bool desc = is_descending (table.data (), table.length ());
-	  octave_idx_type offset = left_inf ? 1 : 0;
-	  octave_idx_type size = table.length () - offset - (right_inf ? 1 : 0);
-	  if (size < 0) 
-	    size = 0;
-
-	  if (desc)
-	    seq_lookup (table.data (), offset, size, 
-			y.data (), y.length (), idx.fortran_vec (),
-			std::greater<double> ());
-	  else
-	    seq_lookup (table.data (), offset, size, 
-			y.data (), y.length (), idx.fortran_vec (),
-			std::less<double> ());
-	}
+        idx = table.array_value ().lookup (y.array_value (), 
+                                           UNSORTED, left_inf, right_inf);
 
       retval(0) = NDArray (idx);
+
     }
   else if (str_case)
     {
-      Cell table = argtable.cell_value ();
+      Array<std::string> str_table = table.cellstr_value ();
       
-      bool (*ov_str_comp) (const octave_value&, const octave_value&);
+      // Here we'll use octave_sort directly to avoid converting the array
+      // for case-insensitive comparison.
 
       bool icase = false;
 
@@ -241,51 +212,40 @@ For string lookup, 'i' indicates case-insensitive comparison.\n\
           icase = contains_char (opt, 'i');
         }
 
+      sortmode mode = (icase ? get_sort_mode (str_table, stri_comp_gt)
+                       : get_sort_mode (str_table));
+
+      bool (*str_comp) (const std::string&, const std::string&);
+
       // pick the correct comparator
-      if (icase)
-        {
-          if (is_descending (table.data (), table.length (), ov_stri_less))
-            ov_str_comp = ov_stri_greater;
-          else
-            ov_str_comp = ov_stri_less;
-        }
+      if (mode == DESCENDING)
+        str_comp = icase ? stri_comp_gt : octave_sort<std::string>::descending_compare;
       else
+        str_comp = icase ? stri_comp_lt : octave_sort<std::string>::ascending_compare;
+
+      octave_sort<std::string> lsort (str_comp);
+      if (y.is_cellstr ())
         {
-          if (is_descending (table.data (), table.length (), ov_str_less))
-            ov_str_comp = ov_str_greater;
-          else
-            ov_str_comp = ov_str_less;
+          Array<std::string> str_y = y.cellstr_value ();
+
+          Array<octave_idx_type> idx (str_y.dims ());
+
+          lsort.lookup (str_table.data (), str_table.nelem (), str_y.data (),
+                        str_y.nelem (), idx.fortran_vec ());
+
+          retval(0) = NDArray (idx);
         }
-
-
-      // query just the first cell to verify it's a string
-      if (table.is_empty () || table(0).is_string ())
+      else if (y.is_string ())
         {
-          if (argy.is_cell ())
-            {
-              Cell y = argy.cell_value ();
-              ArrayN<octave_idx_type> idx (y.dims ());
+          std::string str_y = y.string_value ();
 
+          octave_idx_type idx;
 
+          lsort.lookup (str_table.data (), str_table.nelem (), &str_y,
+                        1, &idx);
 
-              for (int i = 0; i < y.numel (); i++)
-                  idx(i) = bin_lookup (table.data (), table.length (), y(i), 
-                                       std::ptr_fun (ov_str_comp));
-
-              retval(0) = NDArray (idx);
-            }
-          else
-            {
-              octave_idx_type idx;
-
-              idx = bin_lookup (table.data (), table.length (), argy, 
-                                std::ptr_fun (ov_str_comp));
-
-              retval(0) = static_cast<double> (idx);
-            }
+          retval(0) = idx;
         }
-      else
-        error("lookup: table is not a cell array of strings.");
     }
   else
     print_usage ();

@@ -1,3 +1,16 @@
+2009-02-19  Jaroslav Hajek  <highegg@gmail.com>
+
+	* oct-types.h (sortmode): Move enum here.
+	* oct-sort.h (octave_sort<T>::ms): Declare as pointer.
+	(octave_sort<T>::lookup): New overloaded method.
+	* oct-sort.cc: Reflect change to ms.
+	(octave_sort<T>::lookup): New overloaded method.
+	(out_of_range_pred): New helper class.
+	(out_of_range): New helper function.
+	* oct-lookup.h: Remove file.
+	* Array.cc (Array<T>::lookup): New overloaded method.
+	* Array.h: Declare it.
+
 2009-02-18  John W. Eaton  <jwe@octave.org>
 
 	* dbleQR.cc (QR::init, QR::form): Cast int to octave_idx_type in

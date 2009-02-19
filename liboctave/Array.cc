@@ -2383,6 +2383,67 @@ Array<T>::is_sorted_rows (sortmode mode) const
 
 }
 
+// Do a binary lookup in a sorted array.
+template <class T>
+octave_idx_type 
+Array<T>::lookup (const T& value, sortmode mode) const
+{
+  octave_idx_type n = numel ();
+  octave_sort<T> lsort;
+
+  if (mode == UNSORTED)
+    {
+      // auto-detect mode
+      if (n > 1 && lsort.descending_compare (elem (0), elem (n-1)))
+        mode = DESCENDING;
+      else
+        mode = ASCENDING;
+    }
+
+  lsort.set_compare (mode);
+
+  return lsort.lookup (data (), n, value);
+}
+
+// Ditto, but for an array of values, specializing on long runs.
+// Adds optional offset to all indices.
+template <class T>
+Array<octave_idx_type> 
+Array<T>::lookup (const Array<T>& values, sortmode mode, 
+                  bool linf, bool rinf) const
+{
+  octave_idx_type n = numel ();
+  octave_sort<T> lsort;
+  Array<octave_idx_type> idx (values.dims ());
+
+  if (mode == UNSORTED)
+    {
+      // auto-detect mode
+      if (n > 1 && lsort.descending_compare (elem (0), elem (n-1)))
+        mode = DESCENDING;
+      else
+        mode = ASCENDING;
+    }
+
+  lsort.set_compare (mode);
+
+  // set offset and shift size.
+  octave_idx_type offset = 0;
+
+  if (linf && n > 0)
+    {
+      offset++;
+      n--;
+    }
+  if (rinf && n > 0)
+    n--;
+
+  lsort.lookup (data () + offset, n, values.data (), values.numel (),
+                idx.fortran_vec (), offset);
+
+  return idx;
+}
+
 #define INSTANTIATE_ARRAY_SORT(T) template class octave_sort<T>;
 
 #define NO_INSTANTIATE_ARRAY_SORT(T) \
@@ -2409,6 +2470,13 @@ Array<T>::sort_rows_idx (sortmode) const  \
 template <> sortmode  \
 Array<T>::is_sorted_rows (sortmode) const \
 { return UNSORTED; } \
+ \
+template <> octave_idx_type  \
+Array<T>::lookup (const T&, sortmode) const \
+{ return 0; } \
+template <> Array<octave_idx_type>  \
+Array<T>::lookup (const Array<T>&, sortmode, bool, bool) const \
+{ return Array<octave_idx_type> (); } \
 
 
 

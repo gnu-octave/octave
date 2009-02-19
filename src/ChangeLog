@@ -1,3 +1,8 @@
+2009-02-19  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/lookup.cc (Flookup): Use Array<T>::lookup if possible.
+	Do not compare octave_values directly. Properly check for iscellstr.
+
 2009-02-19  John W. Eaton  <jwe@octave.org>
 
 	* data.cc, graphics.cc, help.cc, lex.l, load-path.cc, parse.y:

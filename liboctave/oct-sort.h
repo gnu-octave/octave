@@ -114,7 +114,7 @@ public:
 
   octave_sort (compare_fcn_type);
   
-  ~octave_sort (void) { merge_freemem (); }
+  ~octave_sort (void); 
 
   void set_compare (compare_fcn_type comp) { compare = comp; }
 
@@ -137,6 +137,16 @@ public:
   // Determine whether a matrix (as a contiguous block) is sorted by rows.
   bool is_sorted_rows (const T *data, 
                        octave_idx_type rows, octave_idx_type cols);
+
+  // Do a binary lookup in a sorted array.
+  octave_idx_type lookup (const T *data, octave_idx_type nel,
+                          const T& value);
+
+  // Ditto, but for an array of values, specializing on long runs.
+  // Adds offset to all indices.
+  void lookup (const T *data, octave_idx_type nel,
+               const T* values, octave_idx_type nvalues,
+               octave_idx_type *idx, octave_idx_type offset = 0);
 
   static bool ascending_compare (typename ref_param<T>::type,
 				 typename ref_param<T>::type);
@@ -187,7 +197,7 @@ private:
 
   compare_fcn_type compare;
   
-  MergeState ms;
+  MergeState *ms;
   
     
   template <class Comp>
@@ -276,6 +286,15 @@ private:
   template <class Comp>
   bool is_sorted_rows (const T *data, octave_idx_type rows, 
                        octave_idx_type cols, Comp comp);
+
+  template <class Comp>
+  octave_idx_type lookup (const T *data, octave_idx_type nel,
+                          const T& value, Comp comp);
+
+  template <class Comp>
+  void lookup (const T *data, octave_idx_type nel,
+               const T* values, octave_idx_type nvalues,
+               octave_idx_type *idx, octave_idx_type offset, Comp comp);
 
 };
 

@@ -567,6 +567,18 @@ public:
   // Ordering is auto-detected or can be specified.
   sortmode is_sorted_rows (sortmode mode = UNSORTED) const;
 
+  // Do a binary lookup in a sorted array.
+  // Mode can be specified or is auto-detected by comparing 1st and last element.
+  octave_idx_type lookup (const T& value, sortmode mode = UNSORTED) const;
+
+  // Ditto, but for an array of values, specializing on long runs.
+  // If linf is true, the leftmost interval is extended to infinity 
+  // (indices will be >= 1).
+  // If rinf is true, the rightmost interval is extended to infinity 
+  // (indices will be <= length ()-1).
+  Array<octave_idx_type> lookup (const Array<T>& values, sortmode mode = UNSORTED, 
+                                 bool linf = false, bool rinf = false) const;
+
   Array<T> diag (octave_idx_type k = 0) const;
 
   template <class U, class F>

@@ -506,6 +506,7 @@ octave_sort<T>::merge_freemem (void)
       delete [] ms->ia;
       ms->alloced = 0;
       ms->a = 0;
+      ms->ia = 0;
     }
 }
 
@@ -1700,6 +1701,17 @@ void
 octave_sort<T>::sort_rows (const T *data, octave_idx_type *idx,
                            octave_idx_type rows, octave_idx_type cols)
 {
+  /* Re-initialize the Mergestate as this might be the second time called */
+  if (ms)
+    {
+      ms->n = 0;
+      ms->min_gallop = MIN_GALLOP;
+    }
+  else
+    merge_init ();
+
+  merge_getmemi (1024);
+
 #ifdef INLINE_ASCENDING_SORT
   if (compare == ascending_compare)
     sort_rows (data, idx, rows, cols, std::less<T> ());

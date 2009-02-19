@@ -24,7 +24,7 @@
 ## instead.
 ## @end deftypefn
 
-## Deprecated in version 3.1
+## Deprecated in version 3.2
 
 function varargout = splchol (varargin)
   persistent warned = false;

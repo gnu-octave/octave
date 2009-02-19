@@ -21,7 +21,7 @@
 ## This function has been deprecated.  Use @code{atan2} instead.
 ## @end deftypefn
 
-## Deprecated in version 3.1
+## Deprecated in version 3.2
 
 function retval = spatan2 (varargin)
   persistent warned = false;

@@ -21,7 +21,7 @@
 ## This function has been deprecated.  Use @code{cumprod} instead.
 ## @end deftypefn
 
-## Deprecated in version 3.1
+## Deprecated in version 3.2
 
 function retval = spcumprod (varargin)
   persistent warned = false;

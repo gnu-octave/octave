@@ -21,7 +21,7 @@
 ## This function has been deprecated.  Use @code{prod} instead.
 ## @end deftypefn
 
-## Deprecated in version 3.1
+## Deprecated in version 3.2
 
 function retval = spprod (varargin)
   persistent warned = false;

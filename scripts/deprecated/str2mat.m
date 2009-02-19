@@ -31,6 +31,8 @@
 ## Author: Kurt Hornik <Kurt.Hornik@wu-wien.ac.at>
 ## Adapted-By: jwe
 
+## Deprecated in version 3.2
+
 function retval = str2mat (varargin)
   persistent warned = false;
   if (! warned)

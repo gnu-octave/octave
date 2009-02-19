@@ -28,6 +28,8 @@
 ## Created: July 1994
 ## Adapted-By: jwe
 
+## Deprecated in version 3.2
+
 function [img_retval, map_retval] = loadimage (varargin)
 
   persistent warned = false;

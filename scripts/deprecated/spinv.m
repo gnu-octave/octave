@@ -21,7 +21,7 @@
 ## This function has been deprecated.  Use @code{inv} instead.
 ## @end deftypefn
 
-## Deprecated in version 3.1
+## Deprecated in version 3.2
 
 function varargout = spinv (varargin)
   persistent warned = false;

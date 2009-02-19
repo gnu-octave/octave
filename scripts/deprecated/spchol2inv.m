@@ -21,7 +21,7 @@
 ## This function has been deprecated.  Use @code{chol2inv} instead.
 ## @end deftypefn
 
-## Deprecated in version 3.1
+## Deprecated in version 3.2
 
 function retval = spchol2inv (varargin)
   persistent warned = false;

@@ -23,7 +23,7 @@
 
 ## Author: jwe
 
-## Deprecated in version 3.1
+## Deprecated in version 3.2
 
 function retval = spkron (varargin)
   persistent warned = false;

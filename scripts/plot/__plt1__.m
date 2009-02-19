@@ -17,7 +17,10 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
+## -*- texinfo -*-
+## @deftypefn {Function File} {} __plt1__ (@var{h}, @var{x1}, @var{options}, @var{properties})
 ## Undocumented internal function.
+## @end deftypefn
 
 ## Author: jwe
 

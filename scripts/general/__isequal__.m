@@ -20,12 +20,13 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} __isequal__ (@var{nans_compare_equal}, @var{x1}, @var{x2}, @dots{})
+## Undocumented internal function.
+## @end deftypefn
+
 ## Return true if @var{x1}, @var{x2}, @dots{} are all equal and
 ## @var{nans_compare_equal} evaluates to false.
 ##
 ## If @var{nans_compare_equal} evaluates to true, then assume NaN == NaN.
-## @seealso{isequal, isequalwithequalnans}
-## @end deftypefn
 
 ## Modified by: William Poetra Yoga Hadisoeseno
 

@@ -16,7 +16,10 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
+## -*- texinfo -*-
+## @deftypefn {Function File} {[@var{c}, @var{hg}] =} __contour__ (@dots{})
 ## Undocumented internal function.
+## @end deftypefn
 
 function [c, hg] = __contour__ (varargin)
   ax = varargin{1};

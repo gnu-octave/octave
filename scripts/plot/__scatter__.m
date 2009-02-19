@@ -16,7 +16,10 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
+## -*- texinfo -*-
+## @deftypefn {Function File} {@var{hg} =} __scatter__ (@dots{})
 ## Undocumented internal function.
+## @end deftypefn
 
 function hg = __scatter__ (varargin)
 

@@ -16,7 +16,10 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
+## -*- texinfo -*-
+## @deftypefn {Function File} {@var{options} =} __default_plot_options__ ()
 ## Undocumented internal function.
+## @end deftypefn
 
 ## Author: jwe
 

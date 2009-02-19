@@ -16,7 +16,10 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-## Undocumented internal function
+## -*- texinfo -*-
+## @deftypefn {Function File} {[@var{h}, @var{needusage}] =} __ezplot__ (@var{pfunc}, @var{varargin})
+## Undocumented internal function.
+## @end deftypefn
 
 function [h, needusage] = __ezplot__ (pfunc, varargin)
 

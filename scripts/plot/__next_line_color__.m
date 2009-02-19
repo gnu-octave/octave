@@ -16,7 +16,10 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
+## -*- texinfo -*-
+## @deftypefn {Function File} {@var{rgb} =} __next_line_color__ (@var{reset})
 ## Undocumented internal function.
+## @end deftypefn
 
 ## Return the next line color in the rotation.
 

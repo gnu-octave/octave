@@ -17,10 +17,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} __all_opts__ ()
-## internal function. Queries all options from all known optimization
-## functions and returns a list of possible values.
+## @deftypefn {Function File} {@var{names} =} __all_opts__ (@dots{})
+## Undocumented internal function.
 ## @end deftypefn
+
+## Query all options from all known optimization functions and return a
+## list of possible values.
 
 function names = __all_opts__ (varargin)
   

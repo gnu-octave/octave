@@ -16,7 +16,10 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-## Undocumented internal function
+## -*- texinfo -*-
+## @deftypefn {Function File} {@var{h} =} __stem__ (@var{have_z}, @var{varargin})
+## Undocumented internal function.
+## @end deftypefn
 
 ## Author: Michel D. Schmid <michaelschmid@users.sourceforge.net>
 ## Adapted-by: jwe

@@ -1830,14 +1830,15 @@ Restore Octave's path to it's initial state at startup.\n\
   return octave_value (load_path::system_path ());
 }
 
+// Return Octave's original default list of directories in which to
+// search for function files.  This corresponds to the path that
+// exists prior to running the system's octaverc file or the user's
+// ~/.octaverc file
+
 DEFUN (__pathorig__, , ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{val} =} __pathorig__ ()\n\
-Return Octave's original default list of directories in which to search\n\
-for function files. This corresponds to the path that exists prior to\n\
-running the system's @file{octaverc}, or the users' @file{~/.octaverc}\n\
-@seealso{path, addpath, rmpath, genpath, savepath, pathsep, \n\
-restoredefaultpath}\n\
+Undocumented internal function.\n\
 @end deftypefn")
 {
   return octave_value (load_path::system_path ());

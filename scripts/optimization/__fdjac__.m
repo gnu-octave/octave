@@ -18,6 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn{Function File} {[@var{fval}, @var{fjac}]} =  __fdjac__ (@var{fcn}, @var{x}, @var{err})
+## Undocumented internal function.
 ## @end deftypefn
 
 function [fvec, fjac] = __fdjac__ (fcn, x, err = 0)

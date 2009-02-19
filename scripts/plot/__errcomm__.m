@@ -16,7 +16,10 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
+## -*- texinfo -*-
+## @deftypefn {Function File} {} __errcomm__ (@var{caller}, @var{p}, @dots{})
 ## Undocumented internal function.
+## @end deftypefn
 
 ## Created: 20.02.2001
 ## Author: Teemu Ikonen <tpikonen@pcu.helsinki.fi>

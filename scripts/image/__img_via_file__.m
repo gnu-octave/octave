@@ -19,7 +19,10 @@
 ## Undocumented internal function.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} __img_via_file__(@var{x}, @var{y}, @var{im}, @var{zoom}, @var{command})
+## @deftypefn {Function File} {} __img_via_file__ (@var{x}, @var{y}, @var{im}, @var{zoom}, @var{command})
+## Undocumented internal function.
+## @end deftypefn
+
 ## Display an image by saving it to a file in PPM format and launching
 ## @var{command}.
 ##
@@ -27,8 +30,6 @@
 ## possibly @code{%f}.  The @code{%s} will be replaced by the filename
 ## of the image, and the @code{%f} will be replaced by @var{zoom}. The
 ## @var{x} and @var{y} arguments are ignored.
-## @seealso{image, imshow, __img__, __img_via_file__, image_viewer}
-## @end deftypefn
 
 function __img_via_file__ (x, y, im, zoom, command)
 

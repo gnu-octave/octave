@@ -4207,7 +4207,10 @@ context @var{context}, which may be either @code{\"caller\"} or\n\
 }
 
 DEFUN (__parser_debug_flag__, args, nargout,
-  "Undocumented internal function.")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{old_val} =} __parser_debug_flag__ (@var{new_val}))\n\
+Undocumented internal function.\n\
+@end deftypefn")
 {
   octave_value retval;
 

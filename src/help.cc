@@ -735,7 +735,7 @@ is a string that can be either @t{\"texinfo\"}, @t{\"html\"}, or\n\
 To convert the help text to other formats, use the @code{makeinfo} function.\n\
 \n\
 @seealso{makeinfo}\n\
-@end deftypefn\n")
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -762,32 +762,38 @@ To convert the help text to other formats, use the @code{makeinfo} function.\n\
   return retval;
 }
 
-DEFUN (__operators__, , , "-*- texinfo -*-\n\
+// Return a cell array of strings containing the names of all
+// operators.
+
+DEFUN (__operators__, , ,
+  "-*- texinfo -*-\n\
 @deftypefn {Function File} __operators__ ()\n\
-Return a cell array of strings containing the names of all operators.\n\
-\n\
-This is an internal function and should not be used directly.\n\
-@end deftypefn\n")
+Undocumented internal function.\n\
+@end deftypefn")
 {
   return octave_value (Cell (names (operators_map)));
 }
 
-DEFUN (__keywords__, , , "-*- texinfo -*-\n\
+// Return a cell array of strings containing the names of all
+// keywords.
+
+DEFUN (__keywords__, , ,
+  "-*- texinfo -*-\n\
 @deftypefn {Function File} __keywords__ ()\n\
-Return a cell array of strings containing the names of all keywords.\n\
-\n\
-This is an internal function and should not be used directly.\n\
-@end deftypefn\n")
+Undocumented internal function.\n\
+@end deftypefn")
 {
   return octave_value (Cell (names (keywords_map)));
 }
 
-DEFUN (__builtins__, , , "-*- texinfo -*-\n\
+// Return a cell array of strings containing the names of all builtin
+// functions.
+
+DEFUN (__builtins__, , ,
+  "-*- texinfo -*-\n\
 @deftypefn {Function File} __builtins__ ()\n\
-Return a cell array of strings containing the names of all builtin functions.\n\
-\n\
-This is an internal function and should not be used directly.\n\
-@end deftypefn\n")
+Undocumented internal function.\n\
+@end deftypefn")
 {
   const string_vector bif = symbol_table::built_in_function_names ();
 
@@ -914,18 +920,16 @@ file_is_in_dir (const std::string filename, const std::string dir)
     return false;
 }
 
-DEFUN (__list_functions__, args, , "-*- texinfo -*-\n\
+// Return a cell array of strings containing the names of all
+// functions available in DIRECTORY.  If no directory is given, search
+// the current path.
+
+DEFUN (__list_functions__, args, ,
+  "-*- texinfo -*-\n\
 @deftypefn {Function File} {@var{retval} =} __list_functions__ ()\n\
 @deftypefnx{Function File} {@var{retval} =} __list_functions__ (@var{directory})\n\
-Return the functions available in a given directory.\n\
-\n\
-The function returns a cell array of strings containing the names of all\n\
-functions available in said directory. If no directory is given, the current\n\
-path is searched.\n\
-\n\
-This is an internal function and should not be used directly.\n\
-@seealso{path}\n\
-@end deftypefn\n")
+Undocumented internal function.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 

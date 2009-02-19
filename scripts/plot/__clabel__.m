@@ -16,7 +16,10 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
+## -*- texinfo -*-
+## @deftypefn {Function File} {@var{h} =} __clabel__ (@var{c}, @var{v}, @var{hparent}, @var{label_spacing}, @var{z}, @var{varargin})
 ## Undocumented internal function.
+## @end deftypefn
 
 function h = __clabel__ (c, v, hparent, label_spacing, z, varargin)
   ## FIXME

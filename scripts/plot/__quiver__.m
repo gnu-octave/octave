@@ -16,7 +16,10 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-## Undocumented internal function
+## -*- texinfo -*-
+## @deftypefn {Function File} {@var{hg} =} __quiver__ (@dots{})
+## Undocumented internal function.
+## @end deftypefn
 
 function hg = __quiver__ (varargin)
 

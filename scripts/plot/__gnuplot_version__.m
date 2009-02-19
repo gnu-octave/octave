@@ -16,7 +16,10 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
+## -*- texinfo -*-
+## @deftypefn {Function File} {@var{version} =} __gnuplot_version__ ()
 ## Undocumented internal function.
+## @end deftypefn
 
 ## Return the version of gnuplot we are using.  Note that we do not
 ## attempt to handle the case of the user switching to different

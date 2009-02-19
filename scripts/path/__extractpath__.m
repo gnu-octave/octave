@@ -19,12 +19,13 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{val} =} __extractpath__ (@var{file})
+## Undocumented internal function.
+## @end deftypefn
+
 ## Extact the path information from the script/function @var{file},
 ## created by @file{savepath.m}. If @var{file} is omitted, 
 ## @file{~/.octaverc} is used.  If successful, @code{__extractpath__}
 ## returns the path specified in @var{file}.
-## @seealso{path, addpath, rmpath, genpath, pathdef, savepath, pathsep}
-## @end deftypefn
 
 ## Author: Ben Abbott <bpabbott@mac.com>
 

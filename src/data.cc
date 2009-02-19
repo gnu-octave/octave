@@ -5624,14 +5624,16 @@ ordered lists.\n\
 
 */
 
+// Sort the rows of the matrix @var{a} according to the order
+// specified by @var{mode}, which can either be `ascend' or `descend'
+// and return the index vector corresponding to the sort order.
+//
+// This function does not yet support sparse matrices.
+
 DEFUN (__sort_rows_idx__, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Function File} {} __sort_rows_idx__ (@var{a}, @var{mode})\n\
-Sort the rows of the matrix @var{a} according to the order specified\n\
-by @var{mode}, which can either be `ascend' or `descend'.\n\
-Returns the index vector.\n\
-\n\
-This function does not yet support sparse matrices.\n\
+Undocumented internal function.\n\
 @end deftypefn\n")
 {
   octave_value retval;

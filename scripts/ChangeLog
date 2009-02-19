@@ -1,3 +1,27 @@
+2009-02-19  John W. Eaton  <jwe@octave.org>
+
+	* general/__isequal__.m, general/__splinen__.m, image/__img__.m,
+	image/__img_via_file__.m, miscellaneous/__xzip__.m,
+	optimization/__all_opts__.m, optimization/__dogleg__.m,
+	optimization/__fdjac__.m, path/__extractpath__.m,
+	plot/__add_datasource__.m, plot/__area__.m,
+	plot/__axes_limits__.m, plot/__axis_label__.m, plot/__bar__.m,
+	plot/__bars__.m, plot/__clabel__.m, plot/__contour__.m,
+	plot/__default_plot_options__.m, plot/__errcomm__.m,
+	plot/__errplot__.m, plot/__ezplot__.m,
+	plot/__gnuplot_has_feature__.m, plot/__gnuplot_version__.m,
+	plot/__go_close_all__.m, plot/__go_draw_axes__.m,
+	plot/__go_draw_figure__.m, plot/__line__.m,
+	plot/__next_line_color__.m, plot/__patch__.m, plot/__plr1__.m,
+	plot/__plr2__.m, plot/__plt1__.m, plot/__plt2__.m,
+	plot/__plt2mm__.m, plot/__plt2mv__.m, plot/__plt2ss__.m,
+	plot/__plt2sv__.m, plot/__plt2vm__.m, plot/__plt2vs__.m,
+	plot/__plt2vv__.m, plot/__plt__.m, plot/__plt_get_axis_arg__.m,
+	plot/__pltopt1__.m, plot/__pltopt__.m, plot/__quiver__.m,
+	plot/__scatter__.m, plot/__stem__.m, startup/__finish__.m,
+	statistics/base/__quantile__.m: Consistent doc strings for
+	internal fucntions.
+
 2009-02-18  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/subplot.m: Fix unintended deletion of axes.

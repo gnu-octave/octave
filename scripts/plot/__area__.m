@@ -16,7 +16,10 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
+## -*- texinfo -*-
+## @deftypefn {Function File} {} __area__ (@var{ax}, @var{x}, @var{y}, @var{bv}, @dots{})
 ## Undocumented internal function.
+## @end deftypefn
 
 function retval = __area__ (ax, x, y, bv, varargin)
 

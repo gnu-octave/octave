@@ -19,6 +19,9 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{q} =} __quantile__ (@var{x}, @var{p})
 ## @deftypefnx {Function File} {@var{q} =} __quantile__ (@var{x}, @var{p}, @var{method})
+## Undocumented internal function.
+## @end deftypefn
+
 ## For the cumulative probability values in @var{p}, compute the 
 ## quantiles, @var{q} (the inverse of the cdf), for the sample, @var{x}.
 ##
@@ -26,7 +29,6 @@
 ## (http://www.r-project.org/). The default is @var{method} = 7. For more 
 ## detail, see `help quantile'.
 ## @seealso{prctile, quantile, statistics}
-## @end deftypefn
 
 ## Author: Ben Abbott <bpabbott@mac.com>
 ## Vectorized version: Jaroslav Hajek <highegg@gmail.com>

@@ -16,7 +16,10 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
+## -*- texinfo -*-
+## @deftypefn {Function File} {[@var{h}, @var{fail}] =} __patch__ (@var{p}, @dots{})
 ## Undocumented internal function.
+## @end deftypefn
 
 ## __patch__ (p, x, y, c)
 ## Create patch object from x and y with color c and parent p.

@@ -20,7 +20,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{yi} =} __splinen__ (@var{x}, @var{y}, @var{xi})
-## Internal support function for multi-dimensional splines.
+## Undocumented internal function.
 ## @end deftypefn
 
 ## FIXME: Allow arbitrary grids..

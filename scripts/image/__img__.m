@@ -19,14 +19,15 @@
 ## Undocumented internal function.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} __img__ (@var{img})
-## @deftypefnx {Function File} {} __img__ (@var{x}, @var{y}, @var{img})
+## @deftypefnx {Function File} {} __img__ (@var{x}, @var{y}, @var{img}, @dots{})
+## Undocumented internal function.
+## @end deftypefn
+
 ## Generic image creation.
 ##
 ## The axis values corresponding to the matrix elements are specified in
 ## @var{x} and @var{y}. If you're not using gnuplot 4.2 or later, these
 ## variables are ignored.
-## @end deftypefn
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>
 ## Created: July 1994

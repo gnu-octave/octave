@@ -17,7 +17,10 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
+## -*- texinfo -*-
+## @deftypefn {Function File} {@var{h} =} __errplot__ (@var{fstr}, @var{p}, @dots{})
 ## Undocumented internal function.
+## @end deftypefn
 
 ## Created: 18.7.2000
 ## Author: Teemu Ikonen <tpikonen@pcu.helsinki.fi>

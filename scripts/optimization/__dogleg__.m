@@ -18,10 +18,12 @@
 
 ## -*- texinfo -*-
 ## @deftypefn{Function File} {@var{x}} = __dogleg__ (@var{r}, @var{b}, @var{x}, @var{d}, @var{delta})
-## Solves the double dogleg trust-region problem:
+## Undocumented internal function.
+## @end deftypefn
+
+## Solve the double dogleg trust-region problem:
 ## Minimize norm(r*x-b) subject to the constraint norm(d.*x) <= delta,
 ## x being a convex combination of the gauss-newton and scaled gradient.
-## @end deftypefn
 
 ## TODO: error checks
 ## TODO: handle singularity, or leave it up to mldivide?

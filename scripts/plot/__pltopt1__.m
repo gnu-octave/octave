@@ -17,7 +17,10 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
+## -*- texinfo -*-
+## @deftypefn {Function File} {[@var{options}, @var{valid}] =} __pltopt1__ (@var{caller}, @var{opt}, @var{err_on_invalid})
 ## Undocumented internal function.
+## @end deftypefn
 
 ## Really decode plot option strings.
 

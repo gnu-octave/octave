@@ -1,3 +1,8 @@
+2009-02-19  John W. Eaton  <jwe@octave.org>
+
+	* data.cc, graphics.cc, help.cc, lex.l, load-path.cc, parse.y:
+	Consistent doc strings for internal functions.
+
 2009-02-18  John W. Eaton  <jwe@octave.org>
 
 	* ov.cc (convert_to_octave_idx_type_array): New static function.

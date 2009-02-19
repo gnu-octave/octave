@@ -16,7 +16,10 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
+## -*- texinfo -*-
+## @deftypefn {Function File} {} __go_draw_axes__ (@var{h}, @var{plot_stream}, @var{enhanced}, @var{mono})
 ## Undocumented internal function.
+## @end deftypefn
 
 ## Author: jwe
 

@@ -16,7 +16,10 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-## Undocumented internal function
+## -*- texinfo -*-
+## @deftypefn {Function File} {@var{newargs} =} __add_datasource__ (@var{fcn}, @var{h}, @var{data}, @var{varargin})
+## Undocumented internal function.
+## @end deftypefn
 
 function newargs = __add_datasource__ (fcn, h, data, varargin)
 

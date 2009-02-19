@@ -18,16 +18,17 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{entries} =} _xzip_ (@var{commandname}, @var{extension}, @var{commandtemplate}, @var{files}, @var{outdir})
-## Compresses the list of files and/or directories specified in @var{files} 
+## @deftypefn {Function File} {@var{entries} =} __xzip__ (@var{commandname}, @var{extension}, @var{commandtemplate}, @var{files}, @var{outdir})
+## Undocumented internal function.
+## @end deftypefn
+
+## Compress the list of files and/or directories specified in @var{files} 
 ## with the external compression command @var{commandname}. The template 
 ## @var{commandtemplate} is used to actually start the command. Each file
 ## is compressed separately and a new file with the extension @var{extension} 
 ## is created and placed into the directory @var{outdir}. The original files 
 ## are not touched. Existing compressed files are silently overwritten. 
 ## This is an internal function. Do not use directly.
-## @seealso{gzip, bzip2}
-## @end deftypefn
 
 function entries = __xzip__ (commandname, extension, 
                              commandtemplate, files, outdir)

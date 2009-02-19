@@ -3557,7 +3557,7 @@ lexer_debug (const char *pattern, const char *text)
 
 DEFUN (__display_tokens__, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __display_tokens__\n\
+@deftypefn {Built-in Function} {} __display_tokens__ ()\n\
 Query or set the internal variable that determines whether Octave's\n\
 lexer displays tokens as they are read.\n\
 @end deftypefn")
@@ -3567,7 +3567,7 @@ lexer displays tokens as they are read.\n\
 
 DEFUN (__token_count__, , ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __token_count__\n\
+@deftypefn {Built-in Function} {} __token_count__ ()\n\
 Number of language tokens processed since Octave startup.\n\
 @end deftypefn")
 {
@@ -3575,7 +3575,10 @@ Number of language tokens processed since Octave startup.\n\
 }
 
 DEFUN (__lexer_debug_flag__, args, nargout,
-  "Undocumented internal function.")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{old_val} =} __lexer_debug_flag__ (@var{new_val}))\n\
+Undocumented internal function.\n\
+@end deftypefn")
 {
   octave_value retval;
 

@@ -4452,12 +4452,14 @@ values or lists respectively.\n\
   return retval;
 }
 
+// Return all properties from the graphics handle @var{h}.
+// If @var{h} is a vector, return a cell array including the
+// property values or lists respectively.
+
 DEFUN (__get__, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __get__ (@var{h})\n\
-Return all properties from the graphics handle @var{h}.\n\
-If @var{h} is a vector, return a cell array including the property\n\
-values or lists respectively.\n\
+Undocumented internal function.\n\
 @end deftypefn")
 {
   gh_manager::autolock guard;

@@ -16,7 +16,10 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
+## -*- texinfo -*-
+## @deftypefn {Function File} {} __bar__ (@var{vertical}, @var{func}, @dots{})
 ## Undocumented internal function.
+## @end deftypefn
 
 ## Author: jwe
 

@@ -16,7 +16,10 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
+## -*- texinfo -*-
+## @deftypefn {Function File} {} __axis_label__ (@var{caller}, @var{txt}, @dots{})
 ## Undocumented internal function.
+## @end deftypefn
 
 ## Author: jwe
 

@@ -58,35 +58,11 @@ function gnuplot_drawnow (h, term, file, mono, debug_file)
   elseif (nargin == 1)
     ##  Graphics terminal for display.
     plot_stream = get (h, "__plot_stream__");
-    tag = "gnuplot_drawnow";
     if (isempty (plot_stream))
       plot_stream = open_gnuplot_stream (2, h);
       new_stream = true;
-      ha = axes ("tag", tag, "visible", "off");
-      set (ha, "userdata", get (h, "position"));
     else
       new_stream = false;
-      unwind_protect
-	set (0, "showhiddenhandles", "on");
-	ha = findobj (h, "type", "axes", "tag", tag);
-        position = get (h, "position");
-	if (! isempty (ha))
-	  prior_position = get (ha, "userdata");
-	  if (! all (position == prior_position))
-	    new_stream = true;
-	  else
-	    ## FIXME -- Obtain the x11 window id from gnuplot and
-	    ## determine the current position via xwininfo.  The
-	    ## "position" property may then be updated to reflect
-	    ## changes in window position/size made by the mouse.
-	  endif
-	else
-          ha = axes ("tag", tag, "visible", "off");
-	endif
-        set (ha, "userdata", position);
-      unwind_protect_cleanup
-	set (0, "showhiddenhandles", "off");
-      end_unwind_protect
     endif
     enhanced = gnuplot_set_term (plot_stream (1), new_stream, h);
     __go_draw_figure__ (h, plot_stream (1), enhanced, mono);

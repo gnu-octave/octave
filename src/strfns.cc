@@ -356,8 +356,8 @@ This is just the opposite of the corresponding C library function.\n\
 		retval = true;
 	      else
 		{
-		  charNDArray s1 = args(0).char_array_value ();
-		  charNDArray s2 = args(1).char_array_value ();
+		  const charNDArray s1 = args(0).char_array_value ();
+		  const charNDArray s2 = args(1).char_array_value ();
 
 		  for (octave_idx_type i = 0; i < dv1.numel (); i++)
 		    {
@@ -374,36 +374,46 @@ This is just the opposite of the corresponding C library function.\n\
 	}
       else if ((s1_string && s2_cell) || (s1_cell && s2_string))
 	{
-	  string_vector str;
-	  Cell cell;
-	  octave_idx_type r;
+          octave_value str_val, cell_val;
 
 	  if (s1_string)
 	    {
-	      str = args(0).all_strings ();
-	      r = args(0).rows ();
-	      cell = args(1).cell_value ();
+	      str_val = args (0);
+              cell_val = args (1);
 	    }
 	  else
 	    {
-	      str = args(1).all_strings ();
-	      r = args(1).rows ();
-	      cell = args(0).cell_value ();
+	      str_val = args (1);
+              cell_val = args (0);
 	    }
+
+          const Cell cell = cell_val.cell_value ();
+	  const string_vector str = str_val.all_strings ();
+	  octave_idx_type r = str.rows ();
 
 	  if (r == 0 || r == 1)
 	    {
 	      // Broadcast the string.
 
-	      boolNDArray output (cell.dims (), false);
+	      boolNDArray output (cell_val.dims (), false);
 
 	      std::string s = r == 0 ? std::string () : str[0];
 
-	      for (octave_idx_type i = 0; i < cell.length (); i++)
-		{
-		  if (cell(i).is_string ())
-		    output(i) = (cell(i).string_value () == s);
-		}
+              if (cell_val.is_cellstr ())
+                {
+                  const Array<std::string> cellstr = cell_val.cellstr_value ();
+                  for (octave_idx_type i = 0; i < cellstr.length (); i++)
+                    output(i) = cellstr(i) == s;
+                }
+              else
+                {
+                  // FIXME: should we warn here?
+                  for (octave_idx_type i = 0; i < cell.length (); i++)
+                    {
+                      if (cell(i).is_string ())
+                        output(i) = (cell(i).string_value () == s);
+                    }
+                }
 
 	      retval = output;
 	    }
@@ -434,11 +444,21 @@ This is just the opposite of the corresponding C library function.\n\
 
 		  if (cell.length () == r)
 		    {
-		      for (octave_idx_type i = 0; i < r; i++)
-			{
-			  if (cell(i).is_string ())
-			    output(i) = (str[i] == cell(i).string_value ());
-			}
+                      if (cell_val.is_cellstr ())
+                        {
+                          const Array<std::string> cellstr = cell_val.cellstr_value ();
+                          for (octave_idx_type i = 0; i < cellstr.length (); i++)
+                            output(i) = str[i] == cellstr(i);
+                        }
+                      else
+                        {
+                          // FIXME: should we warn here?
+                          for (octave_idx_type i = 0; i < r; i++)
+                            {
+                              if (cell(i).is_string ())
+                                output(i) = (str[i] == cell(i).string_value ());
+                            }
+                        }
 
 		      retval = output;
 		    }
@@ -449,27 +469,26 @@ This is just the opposite of the corresponding C library function.\n\
 	}
       else if (s1_cell && s2_cell)
 	{
-	  Cell cell1;
-	  Cell cell2;
-
-	  octave_idx_type r1 = args(0).numel ();
-	  octave_idx_type r2;
+          octave_value cell1_val, cell2_val;
+	  octave_idx_type r1 = args(0).numel (), r2;
 
 	  if (r1 == 1)
 	    {
 	      // Make the singleton cell2.
 
-	      cell1 = args(1).cell_value ();
-	      cell2 = args(0).cell_value ();
-	      r1 = cell1.length ();
-	      r2 = 1;
+	      cell1_val = args(1);
+	      cell2_val = args(0);
 	    }
 	  else
 	    {
-	      cell1 = args(0).cell_value ();
-	      cell2 = args(1).cell_value ();
-	      r2 = cell2.length ();
+	      cell1_val = args(0);
+	      cell2_val = args(1);
 	    }
+
+	  const Cell cell1 = cell1_val.cell_value ();
+	  const Cell cell2 = cell2_val.cell_value ();
+          r1 = cell1.numel ();
+          r2 = cell2.numel ();
 
 	  const dim_vector size1 = cell1.dims ();
 	  const dim_vector size2 = cell2.dims ();
@@ -484,14 +503,24 @@ This is just the opposite of the corresponding C library function.\n\
 		{
 		  const std::string str2 = cell2(0).string_value ();
 
-		  for (octave_idx_type i = 0; i < r1; i++)
-		    {
-		      if (cell1(i).is_string ())
-			{
-			  const std::string str1 = cell1(i).string_value ();
-			  output(i) = (str1 == str2);
-			}
-		    }
+                  if (cell1_val.is_cellstr ())
+                    {
+                      const Array<std::string> cellstr = cell1_val.cellstr_value ();
+                      for (octave_idx_type i = 0; i < cellstr.length (); i++)
+                        output(i) = cellstr(i) == str2;
+                    }
+                  else
+                    {
+                      // FIXME: should we warn here?
+                      for (octave_idx_type i = 0; i < r1; i++)
+                        {
+                          if (cell1(i).is_string ())
+                            {
+                              const std::string str1 = cell1(i).string_value ();
+                              output(i) = (str1 == str2);
+                            }
+                        }
+                    }
 		}
 	    }
 	  else
@@ -502,15 +531,26 @@ This is just the opposite of the corresponding C library function.\n\
 		  return retval;
 		}
 
-	      for (octave_idx_type i = 0; i < r1; i++)
-		{
-		  if (cell1(i).is_string () && cell2(i).is_string ())
-		    {
-		      const std::string str1 = cell1(i).string_value ();
-		      const std::string str2 = cell2(i).string_value ();
-		      output(i) = (str1 == str2);
-		    }
-		}
+              if (cell1.is_cellstr () && cell2.is_cellstr ())
+                {
+                  const Array<std::string> cellstr1 = cell1_val.cellstr_value ();
+                  const Array<std::string> cellstr2 = cell2_val.cellstr_value ();
+                  for (octave_idx_type i = 0; i < r1; i++)
+                    output (i) = cellstr1(i) == cellstr2(i);
+                }
+              else
+                {
+                  // FIXME: should we warn here?
+                  for (octave_idx_type i = 0; i < r1; i++)
+                    {
+                      if (cell1(i).is_string () && cell2(i).is_string ())
+                        {
+                          const std::string str1 = cell1(i).string_value ();
+                          const std::string str2 = cell2(i).string_value ();
+                          output(i) = (str1 == str2);
+                        }
+                    }
+                }
 	    }
 
 	  retval = output;

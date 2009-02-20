@@ -459,11 +459,8 @@ octave_cell::sort (octave_idx_type dim, sortmode mode) const
 
       tmp = tmp.sort (dim, mode);
 
-      // We do it the hard way to auto-create the result's cache
-      octave_cell *result = new octave_cell (Cell (tmp));
-      result->cellstr_cache = tmp;
-
-      retval = result;
+      // We already have the cache.
+      retval = new octave_cell (tmp);
     }
   else
     error ("sort: only cell arrays of character strings may be sorted");

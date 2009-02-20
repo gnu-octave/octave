@@ -56,6 +56,9 @@ public:
   octave_cell (const Cell& c)
     : octave_base_matrix<Cell> (c) { }
 
+  octave_cell (const Array<std::string>& str)
+    : octave_base_matrix<Cell> (Cell (str)), cellstr_cache (str) { }
+
   octave_cell (const octave_cell& c)
     : octave_base_matrix<Cell> (c) { }
 

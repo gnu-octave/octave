@@ -4,9 +4,13 @@
 	Correctly compute all-scalar index.
 	* ov-cell.cc (octave_cell::is_sorted, octave_cell::is_sorted_rows):
 	New methods.
+	(octave_cell::octave_cell (const Array<std::string>&)): New
+	constructor.
 	* ov-cell.h: Declare them.
 	* ov-cell.cc (octave_cell::sort): Create result already with
 	cellstr_cache.
+	* strfns.cc (Fstrcmp): Use special code when dealing with
+	cellstr arrays.
 
 2009-02-20  John W. Eaton  <jwe@octave.org>
 

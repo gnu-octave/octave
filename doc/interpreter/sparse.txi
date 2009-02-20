@@ -626,7 +626,7 @@ then @dfn{symamd} or @dfn{csymamd} should be used. Otherwise
 the reordering functions @dfn{colperm} and @dfn{randperm} are
 also available.
 
-@xref{fig:simplematrix} for an example of the structure of a simple 
+@xref{fig:simplematrix}, for an example of the structure of a simple 
 positive definite matrix.
 
 @float Figure,fig:simplematrix

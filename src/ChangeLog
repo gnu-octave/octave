@@ -1,5 +1,8 @@
 2009-02-20  John W. Eaton  <jwe@octave.org>
 
+	* ov-base-mat.cc (octave_base_matrix<MT>::assign):
+	Correctly compute all-scalar index.
+
 	* symbtab.cc (symbol_table::stash_dir_name_for_subfunctions):
 	New function.
 	* symtab.h: Provide decl.

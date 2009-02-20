@@ -1,3 +1,12 @@
+2009-02-20  Jaroslav Hajek  <highegg@gmail.com>
+
+	* linear-algebra/dmult.m: Remove.
+	* linear-algebra/Makefile.in: Update.
+	* deprecated/dmult.m: Move here; revert to the 3.0.x version.
+	* deprecated/Makefile.in: Update.
+	* statistics/models/logistic_regression_derivatives.m: Replace dmult
+	by diagonal matrices.
+
 2009-02-19  Ben Abbott <bpabbott@mac.com>
 
 	* plot/gnuplot_drawnow.m: Only send figure position info to gnuplot

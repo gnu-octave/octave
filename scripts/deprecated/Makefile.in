@@ -35,7 +35,7 @@ INSTALL_DATA = @INSTALL_DATA@
 SOURCES = beta_cdf.m beta_inv.m beta_pdf.m beta_rnd.m \
   binomial_cdf.m binomial_inv.m binomial_pdf.m binomial_rnd.m \
   chisquare_cdf.m chisquare_inv.m chisquare_pdf.m chisquare_rnd.m \
-  clearplot.m clg.m com2str.m exponential_cdf.m exponential_inv.m \
+  clearplot.m clg.m com2str.m dmult.m exponential_cdf.m exponential_inv.m \
   exponential_pdf.m exponential_rnd.m f_cdf.m f_inv.m f_pdf.m \
   f_rnd.m gamma_cdf.m gamma_inv.m gamma_pdf.m gamma_rnd.m \
   geometric_cdf.m geometric_inv.m geometric_pdf.m geometric_rnd.m \

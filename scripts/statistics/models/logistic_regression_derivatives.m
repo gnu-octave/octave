@@ -35,12 +35,12 @@ function [dl, d2l] = logistic_regression_derivatives (x, z, z1, g, g1, p)
 
   ## first derivative
   v = g .* (1 - g) ./ p; v1 = g1 .* (1 - g1) ./ p;
-  dlogp = [(dmult (v, z) - dmult (v1, z1)), (dmult (v - v1, x))];
+  dlogp = [(diag (v) * z - diag (v1) * z1), (diag (v - v1) * x)];
   dl = sum (dlogp)';
 
   ## second derivative
   w = v .* (1 - 2 * g); w1 = v1 .* (1 - 2 * g1);
-  d2l = [z, x]' * dmult (w, [z, x]) - [z1, x]' * dmult (w1, [z1, x]) ...
+  d2l = [z, x]' * diag (w) * [z, x] - [z1, x]' * diag (w1) * [z1, x] ...
       - dlogp' * dlogp;
 
 endfunction

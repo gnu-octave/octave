@@ -2,6 +2,9 @@
 
 	* ov-base-mat.cc (octave_base_matrix<MT>::do_index_op):
 	Correctly compute all-scalar index.
+	* ov-cell.cc (octave_cell::is_sorted, octave_cell::is_sorted_rows):
+	New methods.
+	* ov-cell.h: Declare them.
 
 2009-02-20  John W. Eaton  <jwe@octave.org>
 

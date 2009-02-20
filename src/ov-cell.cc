@@ -483,6 +483,24 @@ octave_cell::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
   return retval;
 }
 
+sortmode 
+octave_cell::is_sorted (sortmode mode) const
+{
+  sortmode retval = UNSORTED;
+
+  if (is_cellstr ())
+    {
+      Array<std::string> tmp = cellstr_value ();
+
+      retval = tmp.is_sorted (mode);
+    }
+  else
+    error ("issorted: not a cell array of strings");
+  
+  return retval;
+}
+
+
 Array<octave_idx_type>
 octave_cell::sort_rows_idx (sortmode mode) const
 {
@@ -496,6 +514,23 @@ octave_cell::sort_rows_idx (sortmode mode) const
     }
   else
     error ("sortrows: only cell arrays of character strings may be sorted");
+  
+  return retval;
+}
+
+sortmode 
+octave_cell::is_sorted_rows (sortmode mode) const
+{
+  sortmode retval = UNSORTED;
+
+  if (is_cellstr ())
+    {
+      Array<std::string> tmp = cellstr_value ();
+
+      retval = tmp.is_sorted_rows (mode);
+    }
+  else
+    error ("issorted: not a cell array of strings");
   
   return retval;
 }

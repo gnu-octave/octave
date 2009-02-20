@@ -26,6 +26,8 @@
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Rescale the rows of a matrix
 
+## Deprecated in version 3.2
+
 function M = dmult (a, B)
 
   persistent warned = false;

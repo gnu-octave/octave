@@ -1,3 +1,9 @@
+2009-02-20  John W. Eaton  <jwe@octave.org>
+
+	* pt-bp.cc (tree_breakpoint::visit_octave_user_script,
+	tree_breakpoint::visit_octave_user_function):
+	Don't panic.  Call accept on command list if it exists.
+
 2009-02-20  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-base-mat.cc (octave_base_matrix<MT>::do_index_op):

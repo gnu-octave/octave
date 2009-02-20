@@ -160,15 +160,21 @@ tree_breakpoint::visit_complex_for_command (tree_complex_for_command& cmd)
 }
 
 void
-tree_breakpoint::visit_octave_user_script (octave_user_script&)
+tree_breakpoint::visit_octave_user_script (octave_user_script& fcn)
 {
-  panic_impossible ();
+  tree_statement_list *cmd_list = fcn.body ();
+
+  if (cmd_list)
+    cmd_list->accept (*this);
 }
 
 void
-tree_breakpoint::visit_octave_user_function (octave_user_function&)
+tree_breakpoint::visit_octave_user_function (octave_user_function& fcn)
 {
-  panic_impossible ();
+  tree_statement_list *cmd_list = fcn.body ();
+
+  if (cmd_list)
+    cmd_list->accept (*this);
 }
 
 void

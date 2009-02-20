@@ -39,7 +39,7 @@ contains three observations from a two-dimensional distribution.
 While this is the default data arrangement, most functions support
 different arrangements.
 
-It should be noted that the statistics functions don't handle data
+It should be noted that the statistics functions don't test for data
 containing NaN, NA, or Inf.  Such values need to be handled explicitly.
 
 @menu
@@ -136,7 +136,7 @@ Octave can create Quantile Plots (QQ-Plots), and Probability Plots
 (PP-Plots).  These are simple graphical tests for determining if a
 data set comes from a certain distribution.
 
-It is worth noticing that Octave can also show histograms of data
+Note that Octave can also show histograms of data
 using the @code{hist} function as described in
 @ref{Two-Dimensional Plots}.
 

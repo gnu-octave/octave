@@ -299,7 +299,7 @@ number of memory allocations.
 
 The above problem of memory reallocation can be avoided in
 oct-files. However, the construction of a sparse matrix from an oct-file
-is more complex than can be discussed in this brief introduction, and
+is more complex than can be discussed here, and
 you are referred to chapter @ref{Dynamically Linked Functions}, to have
 a full description of the techniques involved.
 
@@ -626,7 +626,7 @@ then @dfn{symamd} or @dfn{csymamd} should be used. Otherwise
 the reordering functions @dfn{colperm} and @dfn{randperm} are
 also available.
 
-@xref{fig:simplematrix}, for an example of the structure of a simple 
+@xref{fig:simplematrix} for an example of the structure of a simple 
 positive definite matrix.
 
 @float Figure,fig:simplematrix

@@ -21,7 +21,7 @@
 
 Octave has built-in functions for solving ordinary differential equations,
 and differential-algebraic equations.
-All solvers are based on reliable ODE solvers written in Fortran.
+All solvers are based on reliable ODE routines written in Fortran.
 
 @menu
 * Ordinary Differential Equations::  

@@ -91,7 +91,7 @@ cellfun (@@atan2, @{1, 0@}, @{0, 1@})\n\
 Note that the default output argument is an array of the same size as the\n\
 input arguments.\n\
 \n\
-If the param 'UniformOutput' is set to true (the default), then the function\n\
+If the parameter 'UniformOutput' is set to true (the default), then the function\n\
 must return a single element which will be concatenated into the\n\
 return value. If 'UniformOutput' is false, the outputs are concatenated in\n\
 a cell array. For example\n\

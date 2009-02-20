@@ -128,7 +128,7 @@ $$
                -4 x_1 x_2                     \cr }\right]
 $$
 @end tex
-which is computed with the following Octave function
+and compute it with the following Octave function
 @end iftex
 
 @example
@@ -141,7 +141,7 @@ endfunction
 @end example
 
 @noindent
-Using this Jacobian is done with the following code
+The Jacobian can then be used with the following call to @code{fsolve}:
 
 @example
 [x, fval, info] = fsolve (@{@@f, @@jacobian@}, [1; 2]);

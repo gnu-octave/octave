@@ -514,7 +514,7 @@ integer values to double precision values, performing the operation, and
 then re-casting the values back to the original integer type. As the
 double precision type of Octave is only capable of representing integers
 with up to 53 bits of precision, it is not possible to perform
-arithmetic of the 64 bit integer types.
+arithmetic with 64 bit integer types.
 
 When doing integer arithmetic one should consider the possibility of
 underflow and overflow. This happens when the result of the computation
@@ -566,7 +566,7 @@ example for @code{bitset} above passes the floating point value
 @code{10}, it is treated as the bits @code{[1, 0, 1, 0]} rather than the
 bits of the native floating point format representation of @code{10}.
 
-As the maximum number that can be represented by a number is important
+As the maximum value that can be represented by a number is important
 for bit manipulation, particularly when forming masks, Octave supplies
 the function @code{bitmax}.
 
@@ -622,7 +622,7 @@ not the comparison is true.
 
 The basic logical operations are @code{&}, @code{|}, and @code{!},
 which correspond to ``Logical And'', ``Logical Or'', and ``Logical
-Negation''. These operations all follow the rules of logic.
+Negation''. These operations all follow the usual rules of logic.
 
 It is also possible to use logical values as part of standard numerical
 calculations. In this case @code{true} is converted to @code{1}, and
@@ -645,7 +645,7 @@ data(idx)
 Instead of creating the @code{idx} array it is possible to replace
 @code{data(idx)} with @code{data( data <= 2 )} in the above code.
 
-Besides when doing comparisons, logical values can be constructed by
+Logical values can also be constructed by
 casting numeric objects to logical values, or by using the @code{true}
 or @code{false} functions.
 

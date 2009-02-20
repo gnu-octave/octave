@@ -113,6 +113,7 @@ legend ('sin(4t+0.3)cos(3t-0.1','spline','interpft','data');
 @end group
 @end example
 
+@noindent
 @ifinfo
 which demonstrates the poor behavior of Fourier interpolation for non-periodic functions.
 @end ifinfo

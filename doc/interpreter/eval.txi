@@ -123,7 +123,7 @@ function create_data
 endfunction
 @end example
 
-With @code{evalin}, you could write save as follows:
+With @code{evalin}, you could write @code{save} as follows:
 
 @example
 function save (file, name1, name2)

@@ -33,7 +33,7 @@
 ## a string value. If the function returns more than one argument, they are
 ## returned as separate output variables.
 ##
-## If the param "UniformOutput" is set to true (the default), then the function
+## If the parameter "UniformOutput" is set to true (the default), then the function
 ## must return a single element which will be concatenated into the
 ## return value. If "UniformOutput" is false, the outputs placed in a structure
 ## with the same fieldnames as the input structure.

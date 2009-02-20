@@ -49,7 +49,7 @@
 ## @end table
 ##
 ## The variable @var{method} defines the method to use for the
-## interpolation. It can take one of the values
+## interpolation. It can take one of the following values 
 ##
 ## @table @asis
 ## @item 'nearest'

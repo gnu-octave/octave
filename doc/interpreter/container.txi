@@ -532,7 +532,7 @@ currently available variables. In many situations, however, it is useful
 to create a cell array and then fill it with data.
 
 The @code{cell} function returns a cell array of a given size, containing
-empty matrices. This function works very similar to the @code{zeros}
+empty matrices. This function is similar to the @code{zeros}
 function for creating new numerical arrays. The following example creates
 a 2-by-2 cell array containing empty matrices
 
@@ -660,7 +660,7 @@ c = cellstr (a)
          @}
 @end example
 
-One further advantage of using cell arrays to store multiple strings, is
+One further advantage of using cell arrays to store multiple strings is
 that most functions for string manipulations included with Octave
 support this representation. As an example, it is possible to compare
 one string with many others using the @code{strcmp} function. If one of
@@ -691,9 +691,9 @@ strings, @code{strcmp}, @code{strcmpi}, @code{strncmp}, @code{strncmpi},
 @subsection Processing Data in Cell Arrays
 
 Data that is stored in a cell array can be processed in several ways
-depending on the actual data. The most simple way to process that data
+depending on the actual data. The simplest way to process that data
 is to iterate through it using one or more @code{for} loops. The same
-idea can be implemented easier through the use of the @code{cellfun}
+idea can be implemented more easily through the use of the @code{cellfun}
 function that calls a user-specified function on all elements of a cell
 array.
 
@@ -765,7 +765,7 @@ printf ("%s ", c@{:@});
 Just like it is possible to create a numerical array from selected
 elements of a cell array, it is possible to create a new cell array
 containing the selected elements. By surrounding the list with 
-@samp{@{} and @samp{@}} a new cell array will be created, like the
+@samp{@{} and @samp{@}} a new cell array will be created, as the
 following example illustrates
 
 @example

@@ -365,8 +365,8 @@ data as strings is the @code{sprintf} function (@pxref{Formatted Output},
 @node Comparing Strings
 @section Comparing Strings
 
-Since a string is a character array comparison between strings works
-element by element as the following example shows.
+Since a string is a character array, comparisons between strings work
+element by element as the following example shows:
 
 @example
 GNU = "GNU's Not UNIX";

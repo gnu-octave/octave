@@ -20,7 +20,7 @@
 @chapter Input and Output
 
 Octave supports several ways of reading and writing data to or from the
-prompt or a file.  The most simple functions for data Input and Output
+prompt or a file.  The simplest functions for data Input and Output
 (I/O) are easy to use, but only provides limited control of how
 data is processed.  For more control, a set of functions modelled
 after the C standard library are also provided by Octave.
@@ -181,7 +181,7 @@ There are three functions that modify the behavior of @code{save}.
 
 @DOCSTRING(native_float_format)
 
-It is possible to write data to a file in a way much similar to the
+It is possible to write data to a file in a similar way to the
 @code{disp} function for writing data to the screen.  The @code{fdisp}
 works just like @code{disp} except its first argument is a file pointer
 as created by @code{fopen}.  As an example, the following code writes

@@ -20,7 +20,7 @@
 @chapter Arithmetic
 
 Unless otherwise noted, all of the functions described in this chapter
-will work for real and complex scalar or matrix arguments.
+will work for real and complex scalar or matrix arguments. Functions described as @dfn{mapping functions} apply the given operation to each element when given a matrix argument.
 
 @menu
 * Utility Functions::           

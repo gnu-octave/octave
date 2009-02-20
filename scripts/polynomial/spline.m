@@ -50,7 +50,7 @@
 ## or
 ## @iftex
 ## @tex
-## $$[s_1, s_2, \cdots, s_k, n + 2]$$.
+## $$[s_1, s_2, \cdots, s_k, n + 2].$$
 ## @end tex
 ## @end iftex
 ## @ifnottex

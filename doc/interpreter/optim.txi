@@ -127,7 +127,7 @@ $y = xb$
 @ifnottex
 @math{y = x*b}
 @end ifnottex
-fits data @math{(x,y)} as good as possible, assuming zero-mean
+fits data @math{(x,y)} as well as possible, assuming zero-mean
 Gaussian noise.  If the noise is assumed to be isotropic the problem
 can be solved using the @samp{\} or @samp{/} operators, or the @code{ols}
 function.  In the general case where the noise is assumed to be anisotropic

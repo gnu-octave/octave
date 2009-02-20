@@ -265,7 +265,7 @@ DEFUN (bitand, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} bitand (@var{x}, @var{y})\n\
 Return the bitwise AND of nonnegative integers.\n\
-@var{x}, @var{y} must be in range [0..bitmax]\n\
+@var{x}, @var{y} must be in the range [0,bitmax]\n\
 @seealso{bitor, bitxor, bitset, bitget, bitcmp, bitshift, bitmax}\n\
 @end deftypefn")
 {
@@ -276,7 +276,7 @@ DEFUN (bitor, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} bitor (@var{x}, @var{y})\n\
 Return the bitwise OR of nonnegative integers.\n\
-@var{x}, @var{y} must be in range [0..bitmax]\n\
+@var{x}, @var{y} must be in the range [0,bitmax]\n\
 @seealso{bitor, bitxor, bitset, bitget, bitcmp, bitshift, bitmax}\n\
 @end deftypefn")
 {
@@ -287,7 +287,7 @@ DEFUN (bitxor, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} bitxor (@var{x}, @var{y})\n\
 Return the bitwise XOR of nonnegative integers.\n\
-@var{x}, @var{y} must be in range [0..bitmax]\n\
+@var{x}, @var{y} must be in the range [0,bitmax]\n\
 @seealso{bitand, bitor, bitset, bitget, bitcmp, bitshift, bitmax}\n\
 @end deftypefn")
 {

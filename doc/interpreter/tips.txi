@@ -484,7 +484,7 @@ The @code{@@group} block prevents the example from being split across a
 page boundary, while the @code{@@result@{@}} macro produces a right
 arrow signifying the result of a command. 
 
-In many cases a function has multiple means in which it can be called,
+In many cases a function has multiple ways in which it can be called,
 and the @code{@@deftypefnx} macro can be used to give alternatives. For
 example
 

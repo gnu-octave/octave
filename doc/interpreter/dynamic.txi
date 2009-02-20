@@ -37,7 +37,7 @@
 
 Octave has the possibility of including compiled code as dynamically
 linked extensions and then using these extensions as if they were part
-of Octave itself.  Octave has the option of directly calling C++ code
+of Octave itself.  Octave can call C++ code
 through its native oct-file interface or C code through its mex
 interface.  It can also indirectly call functions written in any other
 language through a simple wrapper.  The reasons to write code in a
@@ -58,7 +58,7 @@ Is it thoroughly optimized Octave code?  Vectorization of Octave code,
 doesn't just make it concise, it generally significantly improves its
 performance.  Above all, if loops must be used, make sure that the
 allocation of space for variables takes place outside the loops using an
-assignment to a like matrix or zeros.
+assignment to a matrix of the right size, or zeros.
 @item
 Does it make as much use as possible of existing built-in library
 routines?  These are highly optimized and many do not carry the overhead
@@ -147,7 +147,7 @@ compiled to an oct-file using the command
 mkoctfile helloworld.cc
 @end example
 
-This will create a file call helloworld.oct, that is the compiled
+This will create a file called @file{helloworld.oct}, that is the compiled
 version of the function.  It should be noted that it is perfectly
 acceptable to have more than one @code{DEFUN_DLD} function in a source
 file.  However, there must either be a symbolic link to the oct-file for

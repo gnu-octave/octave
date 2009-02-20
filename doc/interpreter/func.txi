@@ -635,7 +635,7 @@ ignore the time stamps for all function files.  Passing
 @node Manipulating the load path
 @subsection Manipulating the load path
 
-When a function is called Octave searches a list of directories for
+When a function is called, Octave searches a list of directories for
 a file that contains the function declaration. This list of directories
 is known as the load path. By default the load path contains
 a list of directories distributed with Octave plus the current
@@ -775,7 +775,7 @@ original file for each of the functions which it contains.
 
 However, there is at least one well known operating system that doesn't
 support symbolic links. Making copies of the original file for each of
-the functions is also possible, but is undesirable as it multiples the
+the functions is undesirable as it increases the
 amount of disk space used by Octave. Instead Octave supplies the
 @code{autoload} function, that permits the user to define in which
 file a certain function will be found.
@@ -815,7 +815,7 @@ mislocked ("my_function")
 @end example
 
 A common use of @code{mlock} is to prevent persistent variables from
-being removed from memory, as the following example shows.
+being removed from memory, as the following example shows:
 
 @example
 @group

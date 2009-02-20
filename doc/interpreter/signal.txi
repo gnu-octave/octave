@@ -19,6 +19,14 @@
 @node Signal Processing
 @chapter Signal Processing
 
+
+This chapter describes the signal processing and fast fourier
+transform functions available in Octave.  Fast fourier transforms are
+computed with the @sc{fftw} or @sc{Fftpack} libraries depending on how
+Octave is built.
+ 
+
+
 @DOCSTRING(detrend)
 
 @DOCSTRING(fft)

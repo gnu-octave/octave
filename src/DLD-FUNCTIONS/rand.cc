@@ -866,7 +866,7 @@ DEFUN_DLD (randp, args, ,
 @deftypefnx {Loadable Function} {} randp (@var{l}, @var{n}, @var{m})\n\
 @deftypefnx {Loadable Function} {} randp (\"state\", @var{x})\n\
 @deftypefnx {Loadable Function} {} randp (\"seed\", @var{x})\n\
-Return a matrix with Poisson distributed random elements. The arguments\n\
+Return a matrix with Poisson distributed random elements with mean value parameter given by the first argument, @var{l}. The arguments\n\
 are handled the same as the arguments for @code{rand}, except for the\n\
 argument @var{l}.\n\
 \n\

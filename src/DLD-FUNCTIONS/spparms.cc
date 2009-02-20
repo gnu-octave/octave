@@ -47,9 +47,9 @@ Sets or displays the parameters used by the sparse solvers and factorization\n\
 functions. The first four calls above get information about the current\n\
 settings, while the others change the current settings. The parameters are\n\
 stored as pairs of keys and values, where the values are all floats and the\n\
-keys are one of the strings\n\
+keys are one of the following strings:\n\
 \n\
-@itemize\n\
+@table @code\n\
 @item spumoni\n\
 Printing level of debugging information of the solvers (default 0)\n\
 @item ths_rel\n\
@@ -80,7 +80,7 @@ by the LAPACK banded solvers (default 0.5)\n\
 @item umfpack\n\
 Flag whether the UMFPACK or mmd solvers are used for the LU, '\\' and\n\
 '/' operations (default 1)\n\
-@end itemize\n\
+@end table\n\
 \n\
 The value of individual keys can be set with @code{spparms (@var{key},\n\
 @var{val})}. The default values can be restored with the special keyword\n\

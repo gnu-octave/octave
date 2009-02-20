@@ -41,7 +41,7 @@ debug mode.
 @section Entering Debug Mode
 
 There are two basic means of interrupting the execution of an Octave
-script. These are breakpoints @ref{Breakpoints}, discussed in the next
+script. These are breakpoints @pxref{Breakpoints}, discussed in the next
 section and interruption based on some condition.
 
 Octave supports three means to stop execution based on the values set in
@@ -57,7 +57,7 @@ the functions @code{debug_on_interrupt}, @code{debug_on_warning} and
 @node Leaving Debug Mode
 @section Leavinging Debug Mode
 
-To leave the debug mode, you should simply type either @code{dbcont} 
+To leave the debug mode, use either @code{dbcont} 
 or @code{return}.
 
 @DOCSTRING(dbcont)
@@ -107,8 +107,7 @@ Taking the above as an example, @code{dbstatus ("asind")} should return
 @DOCSTRING(dbclear)
 
 @noindent
-To clear all of the breakpoints in a function the recommended means,
-following the above example, is then
+These functions can be used to clear all the breakpoints in a function.  For example,
 
 @example
 dbclear ("asind", dbstatus ("asind"));
@@ -140,7 +139,7 @@ dbstop (["func1", filemarker(), "func2"])
 Note that @code{filemarker} returns a character that marks the
 subfunctions from the file containing them.
 
-Another simple means of setting a breakpoint in an Octave script is the
+Another simple way of setting a breakpoint in an Octave script is the
 use of the @code{keyboard} function.
 
 @DOCSTRING(keyboard)
@@ -167,7 +166,7 @@ currently active.
 
 @DOCSTRING(isdebugmode)
 
-Debug mode equally allows single line stepping through a function using
+Debug mode also allows single line stepping through a function using
 the commands @code{dbstep}.
 
 @DOCSTRING(dbstep)

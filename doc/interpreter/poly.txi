@@ -51,7 +51,7 @@ p(x) = @var{c}(1) x^@var{N} + ... + @var{c}(@var{N}) x + @var{c}(@var{N}+1).
 @section Evaluating Polynomials
 
 The value of a polynomial represented by the vector @var{c} can be evaluated
-at the point @var{x} very easily, as the following example shows.
+at the point @var{x} very easily, as the following example shows:
 
 @example
 N = length(c)-1;

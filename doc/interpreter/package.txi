@@ -41,7 +41,7 @@ website for an updated reference.
 @section Installing and Removing Packages
 
 Assuming a package is available in the file @code{image-1.0.0.tar.gz}
-it can be installed from the Octave prompt by writing
+it can be installed from the Octave prompt with the command
 
 @example
 pkg install image-1.0.0.tar.gz

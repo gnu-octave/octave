@@ -3957,7 +3957,7 @@ eval(\"a = acos(-1);\");\n\
 @end example\n\
 \n\
 If an error occurs during the evaluation of @var{try} the @var{catch}\n\
-string is evaluated, as the following example shows.\n\
+string is evaluated, as the following example shows:\n\
 \n\
 @example\n\
 eval ('error (\"This is a bad example\");',\n\

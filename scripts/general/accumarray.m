@@ -91,6 +91,7 @@ function A = accumarray (subs, val, sz, fun, fillval, isspar)
   endif
 
   [subs, idx] = sortrows (subs);
+
   if (isscalar (val))
     val = val * ones (size (idx));
   else

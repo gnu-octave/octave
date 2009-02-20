@@ -1,3 +1,15 @@
+2009-02-20  Jaroslav Hajek  <highegg@gmail.com>
+
+	* oct-sort.h (octave_sort<T>::MergeState::MergeState): New
+	constructor.
+	(octave_sort<T>::MergeState::~MergeState): New destructor.
+	(octave_sort<T>::MergeState::reset, 
+	octave_sort<T>::MergeState::getmem,
+	octave_sort<T>::MergeState::getmemi): New methods.
+	(octave_sort<T>::sort,
+	octave_sort<T>::merge_lo, octave_sort<T>::merge_hi
+	octave_sort<T>::merge_at): Reflect change.
+
 2009-02-19  Jaroslav Hajek  <highegg@gmail.com>
 
 	* oct-types.h (sortmode): Move enum here.

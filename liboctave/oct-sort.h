@@ -171,6 +171,20 @@ private:
   
   struct MergeState 
   {
+    MergeState (void) 
+      : a (0), ia (0), alloced (0) 
+      { reset (); }
+    
+    ~MergeState (void) 
+      { delete [] a; delete [] ia; }
+    
+    void reset (void) 
+      { min_gallop = MIN_GALLOP; n = 0; }
+
+    void getmem (octave_idx_type need);
+
+    void getmemi (octave_idx_type need);
+
     // This controls when we get *into* galloping mode.  It's
     // initialized to MIN_GALLOP.  merge_lo and merge_hi tend to nudge
     // it higher for random data, and lower for highly structured
@@ -218,14 +232,6 @@ private:
   template <class Comp>
   octave_idx_type gallop_right (T key, T *a, octave_idx_type n, octave_idx_type hint,
                                 Comp comp);
-
-  void merge_init (void);
-
-  void merge_freemem (void);
-
-  int merge_getmem (octave_idx_type need);
-
-  int merge_getmemi (octave_idx_type need);
 
   template <class Comp>
   int merge_lo (T *pa, octave_idx_type na, 

@@ -1,3 +1,7 @@
+2009-02-20  Steffen Groot  <steffen.groot@technolution.eu>
+
+	* plot/__patch__.m: Correct indexing of varargin.
+
 2009-02-20  Jaroslav Hajek  <highegg@gmail.com>
 
 	* linear-algebra/dmult.m: Remove.

@@ -69,7 +69,7 @@ function [h, fail] = __patch__ (p, varargin)
 	vert = varargin{4};
 	have_faces = true;
       endif
-    elseif (strcmpi (varargin{3}, "vertices"))
+    elseif (strcmpi (varargin{1}, "vertices"))
       vert = varargin{2};
       if (strcmpi (varargin{3}, "faces"))
 	faces = varargin{4};

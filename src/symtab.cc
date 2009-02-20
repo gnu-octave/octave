@@ -36,6 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "load-path.h"
 #include "symtab.h"
 #include "ov-fcn.h"
+#include "ov-usr-fcn.h"
 #include "pager.h"
 #include "parse.h"
 #include "pt-arg-list.h"
@@ -1075,6 +1076,34 @@ symbol_table::dump_functions (std::ostream& os)
 	p->second.dump (os, "  ");
 
       os << "\n";
+    }
+}
+
+void
+symbol_table::stash_dir_name_for_subfunctions (scope_id scope,
+					       const std::string& dir_name)
+{
+  // FIXME -- is this the best way to do this?  Maybe it would be
+  // better if we had a map from scope to list of subfunctions
+  // stored with the function.  Do we?
+
+  for (fcn_table_const_iterator p = fcn_table.begin ();
+       p != fcn_table.end (); p++)
+    {
+      std::pair<std::string, octave_value> tmp
+	= p->second.subfunction_defined_in_scope (scope);
+
+      std::string nm = tmp.first;
+
+      if (! nm.empty ())
+	{
+	  octave_value& fcn = tmp.second;
+
+	  octave_user_function *f = fcn.user_function_value ();
+
+	  if (f)
+	    f->stash_dir_name (dir_name);
+	}
     }
 }
 

@@ -1788,6 +1788,9 @@ public:
       symbol_table::scope_id_cache::free (scope);
   }
 
+  static void stash_dir_name_for_subfunctions (scope_id scope,
+					       const std::string& dir_name);
+
 private:
 
   typedef std::map<std::string, symbol_record>::const_iterator table_const_iterator;

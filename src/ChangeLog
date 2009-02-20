@@ -1,3 +1,10 @@
+2009-02-20  John W. Eaton  <jwe@octave.org>
+
+	* symbtab.cc (symbol_table::stash_dir_name_for_subfunctions):
+	New function.
+	* symtab.h: Provide decl.
+	* parse.y (load_fcn_from_file): Call it after parsing a function.
+
 2009-02-19  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-cell.h (octave_cell::cellstr_cache): New field.

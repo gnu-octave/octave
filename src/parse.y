@@ -3377,7 +3377,16 @@ load_fcn_from_file (const std::string& file_name, const std::string& dir_name,
     }
 
   if (retval)
-    retval->stash_dir_name (dir_name);
+    {
+      retval->stash_dir_name (dir_name);
+
+      if (retval->is_user_function ())
+	{
+	  symbol_table::scope_id id = retval->scope ();
+
+	  symbol_table::stash_dir_name_for_subfunctions (id, dir_name);
+	}
+    }
 
   unwind_protect::run_frame ("load_fcn_from_file");
 

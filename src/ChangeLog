@@ -1,3 +1,8 @@
+2009-02-20  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-base-mat.cc (octave_base_matrix<MT>::do_index_op):
+	Correctly compute all-scalar index.
+
 2009-02-20  John W. Eaton  <jwe@octave.org>
 
 	* ov-base-mat.cc (octave_base_matrix<MT>::assign):

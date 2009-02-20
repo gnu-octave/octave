@@ -5,6 +5,8 @@
 	* ov-cell.cc (octave_cell::is_sorted, octave_cell::is_sorted_rows):
 	New methods.
 	* ov-cell.h: Declare them.
+	* ov-cell.cc (octave_cell::sort): Create result already with
+	cellstr_cache.
 
 2009-02-20  John W. Eaton  <jwe@octave.org>
 

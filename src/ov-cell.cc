@@ -457,7 +457,13 @@ octave_cell::sort (octave_idx_type dim, sortmode mode) const
     {
       Array<std::string> tmp = cellstr_value ();
 
-      retval = Cell (tmp.sort (dim, mode));
+      tmp = tmp.sort (dim, mode);
+
+      // We do it the hard way to auto-create the result's cache
+      octave_cell *result = new octave_cell (Cell (tmp));
+      result->cellstr_cache = tmp;
+
+      retval = result;
     }
   else
     error ("sort: only cell arrays of character strings may be sorted");
@@ -475,7 +481,13 @@ octave_cell::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
     {
       Array<std::string> tmp = cellstr_value ();
 
-      retval = Cell (tmp.sort (sidx, dim, mode));
+      tmp = tmp.sort (sidx, dim, mode);
+
+      // We do it the hard way to auto-create the result's cache
+      octave_cell *result = new octave_cell (Cell (tmp));
+      result->cellstr_cache = tmp;
+
+      retval = result;
     }
   else
     error ("sort: only cell arrays of character strings may be sorted");

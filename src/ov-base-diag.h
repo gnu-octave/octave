@@ -216,7 +216,7 @@ public:
 
   void print_info (std::ostream& os, const std::string& prefix) const;
 
-  // We forward everything except abs, real, imag, conj.
+  // We forward everything except abs, real, imag, conj, sqrt.
   octave_value erf (void) const;
   octave_value erfc (void) const;
   octave_value gamma (void) const;
@@ -245,7 +245,6 @@ public:
   octave_value signum (void) const;
   octave_value sin (void) const;
   octave_value sinh (void) const;
-  octave_value sqrt (void) const;
   octave_value tan (void) const;
   octave_value tanh (void) const;
   octave_value finite (void) const;

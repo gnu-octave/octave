@@ -82,6 +82,7 @@ public:
   octave_value conj (void) const;
   octave_value imag (void) const;
   octave_value real (void) const;
+  octave_value sqrt (void) const;
 
 private:
 

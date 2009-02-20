@@ -143,6 +143,21 @@ octave_float_complex_diag_matrix::imag (void) const
   return ::imag (matrix);
 }
 
+octave_value
+octave_float_complex_diag_matrix::sqrt (void) const
+{    
+  octave_value retval;
+
+  static FloatComplexNDArray::cmapper csqrt = std::sqrt;
+
+  FloatComplexColumnVector dvec = matrix.diag ();
+  retval = FloatComplexDiagMatrix (dvec.map (csqrt));
+
+  retval.resize (dims ());
+
+  return retval;
+}
+
 bool 
 octave_float_complex_diag_matrix::save_binary (std::ostream& os, 
                                                bool& /* save_as_floats */)

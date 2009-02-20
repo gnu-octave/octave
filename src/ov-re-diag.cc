@@ -129,6 +129,25 @@ octave_diag_matrix::imag (void) const
   return DiagMatrix (matrix.rows (), matrix.cols (), 0.0);
 }
 
+octave_value
+octave_diag_matrix::sqrt (void) const
+{    
+  octave_value retval;
+
+  static NDArray::dmapper dsqrt = ::sqrt;
+  static NDArray::cmapper csqrt = std::sqrt;
+
+  ColumnVector dvec = matrix.diag ();
+  if (Matrix (dvec).any_element_is_negative ())
+    retval = ComplexDiagMatrix (dvec.map (csqrt));
+  else
+    retval = DiagMatrix (dvec.map (dsqrt));
+
+  retval.resize (dims ());
+
+  return retval;
+}
+
 bool 
 octave_diag_matrix::save_binary (std::ostream& os, bool& save_as_floats)
 {

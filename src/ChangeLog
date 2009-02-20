@@ -1,3 +1,15 @@
+2009-02-20  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-base-diag.h (octave_base_diag::sqrt): Remove.
+	* ov-re-diag.cc (octave_diag_matrix::sqrt): New method.
+	* ov-re-diag.h: Declare it.
+	* ov-flt-re-diag.cc (octave_float_diag_matrix::sqrt): New method.
+	* ov-flt-re-diag.h: Declare it.
+	* ov-cx-diag.cc (octave_complex_diag_matrix::sqrt): New method.
+	* ov-cx-diag.h: Declare it.
+	* ov-flt-cx-diag.cc (octave_float_complex_diag_matrix::sqrt): New method.
+	* ov-flt-cx-diag.h: Declare it.
+
 2009-02-20  John W. Eaton  <jwe@octave.org>
 
 	* dynamic-ld.cc (octave_dynamic_loader::do_load_mex): Clear and

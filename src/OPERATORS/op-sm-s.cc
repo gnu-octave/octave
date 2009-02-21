@@ -51,13 +51,9 @@ DEFBINOP (div, sparse_matrix, scalar)
   octave_value retval;
 
   if (d == 0.0)
-    {
-      gripe_divide_by_zero ();
+    gripe_divide_by_zero ();
 
-      retval = octave_value (v1.matrix_value () / d);
-    }
-  else
-    retval = octave_value (v1.sparse_matrix_value () / d);
+  retval = octave_value (v1.sparse_matrix_value () / d);
 
   return retval;
 }
@@ -84,7 +80,7 @@ DEFBINOP (ldiv, sparse_matrix, scalar)
       if (d == 0.0)
 	gripe_divide_by_zero ();
 
-      return octave_value (v2.scalar_value () / d);
+      return octave_value (SparseMatrix(1, 1, v2.scalar_value () / d));
     }
   else
     {
@@ -114,13 +110,9 @@ DEFBINOP (el_div, sparse_matrix, scalar)
   octave_value retval;
 
   if (d == 0.0)
-    {
-      gripe_divide_by_zero ();
+    gripe_divide_by_zero ();
 
-      retval = octave_value (v1.matrix_value () / d);
-    }
-  else
-    retval = octave_value (v1.sparse_matrix_value () / d);
+  retval = octave_value (v1.sparse_matrix_value () / d);
 
   return retval;
 }

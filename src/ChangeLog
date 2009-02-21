@@ -1,3 +1,10 @@
+2008-02-21  David Bateman  <dbateman@free.fr>
+
+	* OPERATORS/op-cs-scm.cc, OPERATORS/op-cs-sm.cc, OPERATORS/op-s-scm.cc,
+	OPERATORS/op-s-sm.cc, OPERATORS/op-scm-cs.cc, OPERATORS/op-scm-s.cc,
+	OPERATORS/op-sm-cs.cc, OPERATORS/op-sm-s.cc: Don't perform any 
+	narrowing to full matrices.
+
 2009-02-20  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-base-diag.h (octave_base_diag::sqrt): Remove.

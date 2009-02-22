@@ -1,3 +1,7 @@
+2009-02-22  John W. Eaton  <jwe@octave.org>
+
+	* build_sparse_tests.sh: Fix diag matrix divide by zero test.
+
 2009-02-18  John W. Eaton  <jwe@octave.org>
 
 	* test_args.m: Don't use assert to test for function handles.

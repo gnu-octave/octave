@@ -216,7 +216,7 @@ gen_specific_tests() {
 %!test
 %! wdbz = warning ("query", "Octave:divide-by-zero");
 %! warning ("off", "Octave:divide-by-zero");
-%! assert(full(sparse(eye(3))/0),full(eye(3))/0);
+%! assert(full(sparse(eye(3))/0),full(eye(3)/0));
 %! warning (wdbz.state, "Octave:divide-by-zero");
 
 EOF

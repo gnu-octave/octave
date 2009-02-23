@@ -40,7 +40,7 @@
 ## Author: Paul Kienzle <pkienzle@users.sf.net>
 
 function fplot (fn, limits, n, linespec)
-  if (nargin < 2 || nargin > 3)
+  if (nargin < 2 || nargin > 4)
     print_usage ();
   endif
 

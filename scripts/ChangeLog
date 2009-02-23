@@ -1,3 +1,8 @@
+2009-02-23  John W. Eaton  <jwe@octave.org>
+
+	* plot/fplot.m: Fix nargin check.
+	From Joel Parker <Joel.Parker@radiancetech.com>.
+
 2009-02-20  Steffen Groot  <steffen.groot@technolution.eu>
 
 	* plot/__patch__.m: Correct indexing of varargin.

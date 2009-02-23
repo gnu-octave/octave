@@ -1,3 +1,7 @@
+2009-02-23  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/pinv.cc: Support diagonal and permutation matrices.
+
 2008-02-21  David Bateman  <dbateman@free.fr>
 
 	* OPERATORS/op-cs-scm.cc, OPERATORS/op-cs-sm.cc, OPERATORS/op-s-scm.cc,

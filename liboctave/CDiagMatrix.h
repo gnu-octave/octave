@@ -112,6 +112,7 @@ public:
 
   ComplexDiagMatrix inverse (octave_idx_type& info) const;
   ComplexDiagMatrix inverse (void) const;
+  ComplexDiagMatrix pseudo_inverse (void) const;
 
   bool all_elements_are_real (void) const;
 

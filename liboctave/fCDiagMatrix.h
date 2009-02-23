@@ -112,6 +112,7 @@ public:
 
   FloatComplexDiagMatrix inverse (octave_idx_type& info) const;
   FloatComplexDiagMatrix inverse (void) const;
+  FloatComplexDiagMatrix pseudo_inverse (void) const;
 
   bool all_elements_are_real (void) const;
 

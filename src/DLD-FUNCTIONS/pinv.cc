@@ -29,6 +29,13 @@ along with Octave; see the file COPYING.  If not, see
 #include "gripes.h"
 #include "oct-obj.h"
 #include "utils.h"
+#include "ops.h"
+#include "ov-re-diag.h"
+#include "ov-cx-diag.h"
+#include "ov-flt-re-diag.h"
+#include "ov-flt-cx-diag.h"
+#include "ov-perm.h"
+#include "ov-flt-perm.h"
 
 DEFUN_DLD (pinv, args, ,
   "-*- texinfo -*-\n\
@@ -65,7 +72,56 @@ where @code{sigma_max (@var{x})} is the maximal singular value of @var{x}.\n\
   else if (arg_is_empty > 0)
     return octave_value (Matrix ());
 
-  if (arg.is_single_type ())
+  bool isfloat = arg.is_single_type ();
+
+  if (arg.is_diag_matrix ())
+    {
+      if (nargin == 2)
+        warning ("pinv: tol is ignored for diagonal matrices");
+
+      const octave_base_value& a = arg.get_rep ();
+      if (arg.is_complex_type ())
+        {
+          if (isfloat)
+            {
+              CAST_CONV_ARG (const octave_float_complex_diag_matrix&);
+              retval = v.float_complex_diag_matrix_value ().pseudo_inverse ();
+            }
+          else
+            {
+              CAST_CONV_ARG (const octave_complex_diag_matrix&);
+              retval = v.complex_diag_matrix_value ().pseudo_inverse ();
+            }
+        }
+      else
+        {
+          if (isfloat)
+            {
+              CAST_CONV_ARG (const octave_float_diag_matrix&);
+              retval = v.float_diag_matrix_value ().pseudo_inverse ();
+            }
+          else
+            {
+              CAST_CONV_ARG (const octave_diag_matrix&);
+              retval = v.diag_matrix_value ().pseudo_inverse ();
+            }
+        }
+    }
+  else if (arg.is_perm_matrix ())
+    {
+      const octave_base_value& a = arg.get_rep ();
+      if (isfloat)
+        {
+          CAST_CONV_ARG (const octave_float_perm_matrix&);
+          retval = v.perm_matrix_value ().inverse ();
+        }
+      else
+        {
+          CAST_CONV_ARG (const octave_perm_matrix&);
+          retval = v.perm_matrix_value ().inverse ();
+        }
+    }
+  else if (isfloat)
     {
       float tol = 0.0;
       if (nargin == 2)

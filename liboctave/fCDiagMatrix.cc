@@ -387,6 +387,26 @@ FloatComplexDiagMatrix::inverse (octave_idx_type& info) const
   return retval;
 }
 
+FloatComplexDiagMatrix
+FloatComplexDiagMatrix::pseudo_inverse (void) const
+{
+  octave_idx_type r = rows ();
+  octave_idx_type c = cols ();
+  octave_idx_type len = length ();
+
+  FloatComplexDiagMatrix retval (c, r);
+
+  for (octave_idx_type i = 0; i < len; i++)
+    {
+      if (elem (i, i) != 0.0f)
+        retval.elem (i, i) = 1.0f / elem (i, i);
+      else
+        retval.elem (i, i) = 0.0f;
+    }
+
+  return retval;
+}
+
 bool
 FloatComplexDiagMatrix::all_elements_are_real (void) const
 {

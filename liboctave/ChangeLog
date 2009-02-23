@@ -1,3 +1,14 @@
+2009-02-23  Jaroslav Hajek  <highegg@gmail.com>
+
+	* dDiagMatrix.cc (DiagMatrix::pseudo_inverse): New method.
+	* dDiagMatrix.h: Declare it.
+	* fDiagMatrix.cc (FloatDiagMatrix::pseudo_inverse): New method.
+	* fDiagMatrix.h: Declare it.
+	* CDiagMatrix.cc (ComplexDiagMatrix::pseudo_inverse): New method.
+	* CDiagMatrix.h: Declare it.
+	* fCDiagMatrix.cc (FloatComplexDiagMatrix::pseudo_inverse): New method.
+	* fCDiagMatrix.h: Declare it.
+
 2009-02-20  Jaroslav Hajek  <highegg@gmail.com>
 
 	* oct-sort.h (octave_sort<T>::MergeState::MergeState): New

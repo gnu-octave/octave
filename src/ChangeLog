@@ -1,5 +1,12 @@
 2009-02-23  John W. Eaton  <jwe@octave.org>
 
+	* pt-cmd.h (tree_no_op_command::eof): New data member
+	(tree_no_op_command::tree_no_op_command): Initialize it.
+	(tree_no_op_command::is_end_of_fcn_or_script): New function.
+	* pt-stmt.cc (tree_statement::is_end_of_fcn_or_script):
+	Call is_end_of_fcn_or_script instead of looking at original text
+	of no-op command.
+
 	* pt-select.h, pt-select.cc (tree_if_command::set_breakpoint,
 	tree_if_command::delete_breakpoint): New functions.
 	(tree_switch_command::set_breakpoint,

@@ -65,7 +65,8 @@ tree_no_op_command : public tree_command
 public:
 
   tree_no_op_command (const std::string& cmd = "no_op", int l = -1, int c = -1)
-    : tree_command (l, c), orig_cmd (cmd) { }
+    : tree_command (l, c), eof (cmd == "endfunction" || cmd == "endscript"),
+      orig_cmd (cmd) { }
 
   ~tree_no_op_command (void) { }
 
@@ -74,9 +75,13 @@ public:
 
   void accept (tree_walker& tw);
 
+  bool is_end_of_fcn_or_script (void) const { return eof; }
+
   std::string original_command (void) { return orig_cmd; }
 
 private:
+
+  bool eof;
 
   std::string orig_cmd;
 

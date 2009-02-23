@@ -125,11 +125,7 @@ tree_statement::is_end_of_fcn_or_script (void) const
 	= dynamic_cast<tree_no_op_command *> (cmd);
 
       if (no_op_cmd)
-	{
-	  std::string type = no_op_cmd->original_command ();
-
-	  retval = (type == "endfunction" || type == "endscript");
-	}
+	retval = no_op_cmd->is_end_of_fcn_or_script ();
     }
 
   return retval;

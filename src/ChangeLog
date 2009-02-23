@@ -1,5 +1,29 @@
 2009-02-23  John W. Eaton  <jwe@octave.org>
 
+	* DLD-FUNCTIONS/eigs.cc (Feigs): If sigma argument is not a
+	string, try extraction as complex value and check for error
+	instead of inquiring about type first.
+
+	* pt-eval.cc (tree_evaluator::visit_break_command,
+	tree_evaluator::visit_return_command,
+	tree_evaluator::visit_global_command,
+	tree_evaluator::visit_static_command): Handle breakpoint.
+	(tree_evaluator::visit_simple_for_command,
+	tree_evaluator::visit_complex_for_command): Handle breakpoint once
+	at beginning of loop.
+	(tree_evaluator::visit_if_command_list): Don't call do_breakpoint
+	for else clauses.
+	(tree_evaluator::visit_no_op_command): Handle breakpoint if no-op
+	command is end of function or script.
+	(tree_evaluator::visit_statement): Handle breakpoint for
+	expressions but not commands.
+	(tree_evaluator::visit_while_command,
+	tree_evaluator::visit_do_until_command):
+	Check for breakpoint set on cmd, not expr.
+	(tree_evaluator::visit_do_until_command): Handle breakpoint
+	between check for breaking out of loop and loop control
+	expression.
+
 	* pt-cmd.h (tree_no_op_command::eof): New data member
 	(tree_no_op_command::tree_no_op_command): Initialize it.
 	(tree_no_op_command::is_end_of_fcn_or_script): New function.

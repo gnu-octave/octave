@@ -85,10 +85,15 @@ tree_evaluator::visit_binary_expression (tree_binary_expression&)
 }
 
 void
-tree_evaluator::visit_break_command (tree_break_command&)
+tree_evaluator::visit_break_command (tree_break_command& cmd)
 {
   if (! error_state)
-    tree_break_command::breaking = 1;
+    {
+      if (debug_mode)
+	do_breakpoint (cmd.is_breakpoint (), cmd.line (), cmd.column ());
+
+      tree_break_command::breaking = 1;
+    }
 }
 
 void
@@ -183,12 +188,18 @@ tree_evaluator::do_decl_init_list (decl_elt_init_fcn fcn,
 void
 tree_evaluator::visit_global_command (tree_global_command& cmd)
 {
+  if (debug_mode)
+    do_breakpoint (cmd.is_breakpoint (), cmd.line (), cmd.column ());
+
   do_decl_init_list (do_global_init, cmd.initializer_list ());
 }
 
 void
 tree_evaluator::visit_static_command (tree_static_command& cmd)
 {
+  if (debug_mode)
+    do_breakpoint (cmd.is_breakpoint (), cmd.line (), cmd.column ());
+
   do_decl_init_list (do_static_init, cmd.initializer_list ());
 }
 
@@ -267,6 +278,9 @@ tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
 {
   if (error_state)
     return;
+
+  if (debug_mode)
+    do_breakpoint (cmd.is_breakpoint (), cmd.line (), cmd.column ());
 
   unwind_protect::begin_frame ("tree_evaluator::visit_simple_for_command");
 
@@ -408,6 +422,9 @@ tree_evaluator::visit_complex_for_command (tree_complex_for_command& cmd)
   if (error_state)
     return;
 
+  if (debug_mode)
+    do_breakpoint (cmd.is_breakpoint (), cmd.line (), cmd.column ());
+
   unwind_protect::begin_frame ("tree_evaluator::visit_complex_for_command");
 
   unwind_protect_bool (in_loop_command);
@@ -544,9 +561,8 @@ tree_evaluator::visit_if_command_list (tree_if_command_list& lst)
 
       tree_expression *expr = tic->condition ();
 
-      if (debug_mode)
-	do_breakpoint (! tic->is_else_clause () && tic->is_breakpoint (),
-		       tic->line (), tic->column ());
+      if (debug_mode && ! tic->is_else_clause ())
+	do_breakpoint (tic->is_breakpoint (), tic->line (), tic->column ());
 
       if (tic->is_else_clause () || expr->is_logically_true ("if"))
 	{
@@ -588,9 +604,10 @@ tree_evaluator::visit_multi_assignment (tree_multi_assignment&)
 }
 
 void
-tree_evaluator::visit_no_op_command (tree_no_op_command&)
+tree_evaluator::visit_no_op_command (tree_no_op_command& cmd)
 {
-  // Do nothing.
+  if (debug_mode && cmd.is_end_of_fcn_or_script ())
+    do_breakpoint (cmd.is_breakpoint (), cmd.line (), cmd.column (), true);
 }
 
 void
@@ -624,10 +641,15 @@ tree_evaluator::visit_prefix_expression (tree_prefix_expression&)
 }
 
 void
-tree_evaluator::visit_return_command (tree_return_command&)
+tree_evaluator::visit_return_command (tree_return_command& cmd)
 {
   if (! error_state)
-    tree_return_command::returning = 1;
+    {
+      if (debug_mode)
+	do_breakpoint (cmd.is_breakpoint (), cmd.line (), cmd.column ());
+
+      tree_return_command::returning = 1;
+    }
 }
 
 void
@@ -645,9 +667,6 @@ tree_evaluator::visit_simple_assignment (tree_simple_assignment&)
 void
 tree_evaluator::visit_statement (tree_statement& stmt)
 {
-  if (debug_mode)
-    do_breakpoint (stmt);
-
   tree_command *cmd = stmt.command ();
   tree_expression *expr = stmt.expression ();
 
@@ -667,6 +686,10 @@ tree_evaluator::visit_statement (tree_statement& stmt)
 	    cmd->accept (*this);
 	  else
 	    {
+	      if (debug_mode)
+		do_breakpoint (expr->is_breakpoint (), expr->line (),
+			       expr->column ());
+
 	      if (in_fcn_or_script_body && Vsilent_functions)
 		expr->set_print_flag (false);
 
@@ -794,9 +817,8 @@ tree_evaluator::visit_switch_command (tree_switch_command& cmd)
 	    {
 	      tree_switch_case *t = *p;
 
-	      if (debug_mode)
-		do_breakpoint (! t->is_default_case () && t->is_breakpoint (),
-			       t->line (), t->column ());
+	      if (debug_mode && ! t->is_default_case ())
+		do_breakpoint (t->is_breakpoint (), t->line (), t->column ());
 
 	      if (t->is_default_case () || t->label_matches (val))
 		{
@@ -1016,7 +1038,7 @@ tree_evaluator::visit_while_command (tree_while_command& cmd)
   for (;;)
     {
       if (debug_mode)
-	do_breakpoint (expr->is_breakpoint (), l, c);
+	do_breakpoint (cmd.is_breakpoint (), l, c);
 
       if (expr->is_logically_true ("while"))
 	{
@@ -1073,10 +1095,13 @@ tree_evaluator::visit_do_until_command (tree_do_until_command& cmd)
 	    goto cleanup;
 	}
 
-      if (debug_mode)
-	do_breakpoint (expr->is_breakpoint (), l, c);
+      if (quit_loop_now ())
+	break;
 
-      if (quit_loop_now () || expr->is_logically_true ("do-until"))
+      if (debug_mode)
+	do_breakpoint (cmd.is_breakpoint (), l, c);
+
+      if (expr->is_logically_true ("do-until"))
 	break;
     }
 

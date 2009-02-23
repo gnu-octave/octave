@@ -452,13 +452,7 @@ K Maschhoff, D Sorensen and C Yang. For more information see\n\
 
   if (!error_state && nargin > (2+arg_offset))
     {
-      if (args(2+arg_offset).is_real_scalar ()
-	  || args(2+arg_offset).is_complex_scalar ())
-	{
-	  sigma = args(2+arg_offset).complex_value ();
-	  have_sigma = true;
-	}
-      else if (args(2+arg_offset).is_string ())
+      if (args(2+arg_offset).is_string ())
 	{
 	  typ = args(2+arg_offset).string_value ();
 
@@ -469,8 +463,15 @@ K Maschhoff, D Sorensen and C Yang. For more information see\n\
 	}
       else
 	{
-	  error ("eigs: sigma must be a scalar or a string");
-	  return retval;
+	  sigma = args(2+arg_offset).complex_value ();
+
+	  if (! error_state)
+	    have_sigma = true;
+	  else
+	    {
+	      error ("eigs: sigma must be a scalar or a string");
+	      return retval;
+	    }
 	}
     }
 

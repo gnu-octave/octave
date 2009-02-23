@@ -1,5 +1,19 @@
 2009-02-23  John W. Eaton  <jwe@octave.org>
 
+	* pt-select.h, pt-select.cc (tree_if_command::set_breakpoint,
+	tree_if_command::delete_breakpoint): New functions.
+	(tree_switch_command::set_breakpoint,
+	tree_switch_command::delete_breakpoint): New functions.
+	* pt-stmt.h, pt-stmt.cc (tree_statement::set_breakpoint,
+	tree_statement::delete_breakpoint, tree_statement::is_breakpoint):
+	Delegate real work to cmd or expr.
+	(tree_statement::bp): Delete data member.
+	(tree_statement::tree_statement): Don't initialize bp.
+	(tree_statement::dup): Don't copy bp.
+
+	* pt.h (tree::line (int), tree:column (int)): New functions.
+	(tree:set_breakpoint, tree::delete_breakpoint): Now virtual.
+
 	* parse.y (finish_if_command): Also store line and column info for
 	if statement in first element of list.
 	(finish_switch_command): Likewise, for switch.

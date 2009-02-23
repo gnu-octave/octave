@@ -46,13 +46,13 @@ tree_statement
 public:
 
   tree_statement (void)
-    : cmd (0), expr (0), bp (false), comm (0) { }
+    : cmd (0), expr (0), comm (0) { }
 
   tree_statement (tree_command *c, octave_comment_list *cl)
-    : cmd (c), expr (0), bp (false), comm (cl) { }
+    : cmd (c), expr (0), comm (cl) { }
 
   tree_statement (tree_expression *e, octave_comment_list *cl)
-    : cmd (0), expr (e), bp (false), comm (cl) { }
+    : cmd (0), expr (e), comm (cl) { }
 
   ~tree_statement (void);
 
@@ -64,11 +64,11 @@ public:
 
   bool is_expression (void) const { return expr != 0; }
 
-  void set_breakpoint (void) { bp = true; }
+  void set_breakpoint (void);
 
-  void delete_breakpoint (void) { bp = false; }
+  void delete_breakpoint (void);
 
-  bool is_breakpoint (void) const { return bp; }
+  bool is_breakpoint (void) const;
 
   int line (void) const;
   int column (void) const;
@@ -107,9 +107,6 @@ private:
 
   // Expression to evaluate.
   tree_expression *expr;
-
-  // Breakpoint flag.
-  bool bp;
 
   // Comment associated with this statement.
   octave_comment_list *comm;

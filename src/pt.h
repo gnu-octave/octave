@@ -47,9 +47,13 @@ public:
 
   virtual int column (void) const { return column_num; }
 
-  void set_breakpoint (void) { bp = true; }
+  void line (int l) { line_num = l; }
 
-  void delete_breakpoint (void) { bp = false; }
+  void column (int c) { column_num = c; }
+
+  virtual void set_breakpoint (void) { bp = true; }
+
+  virtual void delete_breakpoint (void) { bp = false; }
 
   bool is_breakpoint (void) const { return bp; }
 

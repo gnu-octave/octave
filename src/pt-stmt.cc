@@ -70,6 +70,30 @@ tree_statement::print_result (void)
   return expr && expr->print_result ();
 }
 
+void
+tree_statement::set_breakpoint (void)
+{
+  if (cmd)
+    cmd->set_breakpoint ();
+  else if (expr)
+    expr->set_breakpoint ();
+}
+
+void
+tree_statement::delete_breakpoint (void)
+{
+  if (cmd)
+    cmd->delete_breakpoint ();
+  else if (expr)
+    expr->delete_breakpoint ();
+}
+
+bool
+tree_statement::is_breakpoint (void) const
+{
+  return cmd ? cmd->is_breakpoint () : (expr ? expr->is_breakpoint () : false);
+}
+
 int
 tree_statement::line (void) const
 {
@@ -120,8 +144,6 @@ tree_statement::dup (symbol_table::scope_id scope,
   new_stmt->cmd = cmd ? cmd->dup (scope, context) : 0;
 
   new_stmt->expr = expr ? expr->dup (scope, context) : 0;
-
-  new_stmt->bp = bp;
 
   new_stmt->comm = comm ? comm->dup () : 0;
 

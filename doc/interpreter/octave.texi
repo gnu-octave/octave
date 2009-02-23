@@ -165,6 +165,7 @@ It corresponds to GNU Octave version @value{VERSION}.
 * Arithmetic::                  
 * Linear Algebra::              
 * Nonlinear Equations::         
+* Diagonal and Permutation Matrices::
 * Sparse Matrices::
 * Numerical Integration::                  
 * Differential Equations::      
@@ -419,6 +420,14 @@ Linear Algebra
 * Matrix Factorizations::       
 * Functions of a Matrix::       
 
+Diagonal and Permutation Matrices
+
+* Basic Usage::
+* Matrix Algebra::
+* Function Support::
+* Example Codes::
+* Zeros Treatment::
+
 Sparse Matrices
 
 * Basics::
@@ -594,6 +603,7 @@ Emacs Octave Support
 @include arith.texi
 @include linalg.texi
 @include nonlin.texi
+@include diagperm.texi
 @include sparse.texi
 @include quad.texi
 @include diffeq.texi

@@ -1,3 +1,11 @@
+2009-02-23  Jaroslav Hajek  <highegg@gmail.com>
+
+	* interpreter/diagperm.txi: New file.
+	* interpreter/octave.texi: Reference it.
+	* intepreter/Makefile.in: Include it.
+	* interpreter/matrix.txi: Move @DOCSTRING(diag) to diagperm.txi.
+
+
 2009-02-19  John W. Eaton  <jwe@octave.org>
 
 	* doc/interperter: Include @DOCSTRING commands for the following

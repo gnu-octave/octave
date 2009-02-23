@@ -212,6 +212,7 @@ endfunction
 %! s = s(idx);
 %! u = u(:,idx);
 %! v = v(:,idx);
+%! randn('state',42)
 %!testif HAVE_ARPACK
 %! [u2,s2,v2,flag] = svds(a,k);
 %! s2 = diag(s2);

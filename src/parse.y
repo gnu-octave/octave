@@ -2296,6 +2296,17 @@ finish_if_command (token *if_tok, tree_if_command_list *list,
       int l = if_tok->line ();
       int c = if_tok->column ();
 
+      if (list && ! list->empty ())
+	{
+	  tree_if_clause *elt = list->front ();
+
+	  if (elt)
+	    {
+	      elt->line (l);
+	      elt->column (c);
+	    }
+	}
+
       retval = new tree_if_command (list, lc, tc, l, c);
     }
 
@@ -2331,6 +2342,17 @@ finish_switch_command (token *switch_tok, tree_expression *expr,
 
       int l = switch_tok->line ();
       int c = switch_tok->column ();
+
+      if (list && ! list->empty ())
+	{
+	  tree_switch_case *elt = list->front ();
+
+	  if (elt)
+	    {
+	      elt->line (l);
+	      elt->column (c);
+	    }
+	}
 
       retval = new tree_switch_command (expr, list, lc, tc, l, c);
     }

@@ -1,5 +1,9 @@
 2009-02-23  John W. Eaton  <jwe@octave.org>
 
+	* parse.y (finish_if_command): Also store line and column info for
+	if statement in first element of list.
+	(finish_switch_command): Likewise, for switch.
+
 	* input.cc (last_debugging_command): New static variable.
 	(octave_gets): Set it here.  Don't insert repeated debugging
 	commands in the history list.

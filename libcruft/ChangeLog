@@ -1,6 +1,7 @@
 2009-02-23  Jaroslav Hajek  <highegg@gmail.com>
 
 	* misc/quit.h (octave_signal_caught): Declare as volatile.
+	* misc/cquit.cc (octave_signal_caught): Likewise.
 
 2009-02-06  Jaroslav Hajek  <highegg@gmail.com>
 

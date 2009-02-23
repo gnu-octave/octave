@@ -1,3 +1,7 @@
+2009-02-23  Jaroslav Hajek  <highegg@gmail.com>
+
+	* misc/quit.h (octave_signal_caught): Declare as volatile.
+
 2009-02-06  Jaroslav Hajek  <highegg@gmail.com>
 
 	* blas/ssymm.f, blas/dsymm.f, blas/chemm.f, blas/zhemm.f: New sources.

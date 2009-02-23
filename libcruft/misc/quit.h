@@ -102,7 +102,7 @@ CRUFT_API extern sig_atomic_t octave_interrupt_state;
 
 CRUFT_API extern sig_atomic_t octave_exception_state;
 
-CRUFT_API extern sig_atomic_t octave_signal_caught;
+CRUFT_API extern volatile sig_atomic_t octave_signal_caught;
 
 CRUFT_API extern void octave_handle_signal (void);
 

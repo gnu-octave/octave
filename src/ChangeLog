@@ -1,3 +1,9 @@
+2009-02-23  John W. Eaton  <jwe@octave.org>
+
+	* input.cc (last_debugging_command): New static variable.
+	(octave_gets): Set it here.  Don't insert repeated debugging
+	commands in the history list.
+
 2009-02-23  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/pinv.cc: Support diagonal and permutation matrices.

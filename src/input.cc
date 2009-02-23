@@ -149,6 +149,10 @@ bool Vdrawnow_requested = false;
 // TRUE if we are in debugging mode.
 bool Vdebugging = false;
 
+// If we are in debugging mode, this is the last command entered, so
+// that we can repeat the previous command if the user just types RET.
+static std::string last_debugging_command;
+
 // TRUE if we are running in the Emacs GUD mode.
 static bool Vgud_mode = false;
 
@@ -251,6 +255,8 @@ octave_gets (void)
 
   std::string retval;
 
+  bool history_skip_auto_repeated_debugging_command = false;
+
   if ((interactive || forced_interactive)
       && (! (reading_fcn_file
 	     || reading_script_file
@@ -273,7 +279,19 @@ octave_gets (void)
       // user input.
       if (! retval.empty ()
 	  && retval.find_first_not_of (" \t\n\r") != std::string::npos)
-	load_path::update ();
+	{
+	  load_path::update ();
+
+	  if (Vdebugging)
+	    last_debugging_command = retval;
+	  else
+	    last_debugging_command = std::string ();
+	}
+      else if (Vdebugging)
+	{
+	  retval = last_debugging_command;
+	  history_skip_auto_repeated_debugging_command = true;
+	}
     }
   else
     retval = gnu_readline ("");
@@ -282,7 +300,8 @@ octave_gets (void)
 
   if (! current_input_line.empty ())
     {
-      if (! (input_from_startup_file || input_from_command_line_file))
+      if (! (input_from_startup_file || input_from_command_line_file
+	     || history_skip_auto_repeated_debugging_command))
 	command_history::add (current_input_line);
 
       if (! (reading_fcn_file || reading_script_file))

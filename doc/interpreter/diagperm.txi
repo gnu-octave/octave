@@ -16,13 +16,6 @@
 @c along with Octave; see the file COPYING.  If not, see
 @c <http://www.gnu.org/licenses/>.
 
-@ifhtml
-@set htmltex
-@end ifhtml
-@iftex
-@set htmltex
-@end iftex
-
 @node Diagonal and Permutation Matrices 
 @chapter Diagonal and Permutation Matrices
 
@@ -38,16 +31,30 @@
 @section The Creation and Manipulation of Diagonal and Permutation Matrices
 
 A diagonal matrix is defined as a matrix that has zero entries outside the main diagonal;
-that is, @code{D(i,j) == 0} if @code{i != j}.
+that is, 
+@iftex
+$D_{ij} = 0$ if $i \neq j$
+@end iftex
+@ifnottex
+@code{D(i,j) == 0} if @code{i != j}.
+@end ifnottex
 Most often, square diagonal matrices are considered; however, the definition can equally
 be applied to nonsquare matrices, in which case we usually speak of a rectangular diagonal 
 matrix. For more information, see @url{http://en.wikipedia.org/wiki/Diagonal_matrix}.
 
 A permutation matrix is defined as a square matrix that has a single element equal to unity
 in each row and each column; all other elements are zero. That is, there exists a 
-permutation (vector) @code{p} such that @code{P(i,j) == 1} if @code{j == p(i)} and
-@code{P(i,j) == 0} otherwise.  For more information, see 
-@url{http://en.wikipedia.org/wiki/Permutation_matrix}.
+permutation (vector) 
+@iftex
+$p$ such that $P_{ij}=1$ if $j = p_i$ and
+$P_{ij}=0$ otherwise.  
+@end iftex
+@ifnottex
+@code{p} such that @code{P(i,j) == 1} if @code{j == p(i)} and 
+@code{P(i,j) == 0} otherwise.  
+@end ifnottex
+
+For more information, see @url{http://en.wikipedia.org/wiki/Permutation_matrix}.
 
 Octave provides special treatment of real and complex rectangular diagonal matrices,
 as well as permutation matrices. They are stored as special objects, using efficient 
@@ -74,14 +81,13 @@ than a general matrix object.
 Some other built-in functions can also return diagonal matrices. Examples include
 @dfn{balance} or @dfn{inv}.
 
-@DOCSTRING(diag)
-
 @node Creating Permutation Matrices
 @subsection Creating Permutation Matrices
 
 For creating permutation matrices, Octave does not introduce a new function, but
-rather overrides an existing syntax. That is, if @var{q} is a permutation vector
-of length @var{n}, the expression
+rather overrides an existing syntax: permutation matrices can be conveniently
+created by indexing an identity matrix by permutation vectors.
+That is, if @var{q} is a permutation vector of length @var{n}, the expression
 @example
   @var{P} = eye (@var{n}) (:, @var{q});
 @end example
@@ -89,12 +95,17 @@ will create a permutation matrix - a special matrix object.
 @example
 eye (@var{n}) (@var{q}, :) 
 @end example
-will also work (a row permutation matrix), as well as 
+will also work (and create a row permutation matrix), as well as 
 @example
 eye (@var{n}) (@var{q1}, @var{q2}).
 @end example
-Note that the identity, @code{eye (@var{n})}, is a diagonal matrix by definition,
-but should work in any place where a permutation matrix is requested.
+
+Mathematically, an identity matrix is both diagonal and permutation matrix.
+In Octave, @code{eye (@var{n})} returns a diagonal matrix, because a matrix
+can only have one class. You can convert this diagonal matrix to a permutation
+matrix by indexing it by an identity permutation, as shown above.
+This is a special property of the identity matrix; indexing other diagonal
+matrices generall produces a full matrix.
 
 Some other built-in functions can also return permutation matrices. Examples include
 @dfn{inv} or @dfn{lu}.
@@ -141,9 +152,14 @@ Assume @var{D} is a diagonal matrix. If @var{M} is a full matrix,
 then @code{@var{D}*@var{M}} will scale the rows of @var{M}. That means,
 if @code{@var{S} = @var{D}*@var{M}}, then for each pair of indices
 i,j it holds 
+@iftex
+$$S_{ij} = D_{ii} M_{ij}$$
+@end iftex
+@ifnottex
 @example
 S(i,j) = D(i,i) * M(i,j).
 @end example
+@end ifnottex
 Similarly, @code{M*D} will do a column scaling.
 
 The matrix @var{D} may also be rectangular, m-by-n where @code{m != n}.
@@ -295,15 +311,18 @@ in earlier versions of Octave, but slowly.
 @end example
 
 Finally, here's how you solve a linear system @code{A*x = b} 
-with Tikhonov regularization using SVD (a skeleton only):
+with Tikhonov regularization (ridge regression) using SVD (a skeleton only):
 @example
   m = rows (A); n = columns (A);
   [U, S, V] = svd (A);
   ## determine the regularization factor alpha
-  ## ...
-  ## and solve
+  ## alpha = ...
+  ## transform to orthogonal basis
   x = U'*b;
-  x = (S + alpha*eye (m, n)) \ x; ## this will be very efficient
+  ## Use the standard formula, replacing A with S. We work with 
+  ## diagonal matrices, so this will be plausibly efficient.
+  x = (S'*S + alpha^2 * eye (n)) \ (S' * x);
+  ## transform to solution basis
   x = V*x;
 @end example
 

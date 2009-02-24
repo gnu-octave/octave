@@ -151,6 +151,8 @@ a (i, :)
 @anchor{doc-postpad}
 @DOCSTRING(prepad)
 
+@DOCSTRING(diag)
+
 @DOCSTRING(blkdiag)
 
 @node Applying a Function to an Array

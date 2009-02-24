@@ -1,5 +1,10 @@
 2009-02-23  Jaroslav Hajek  <highegg@gmail.com>
 
+	* interpreter/diagperm.txi: Use TeX alternatives in some
+	formulas, improve examples, delete superfluous defs.
+
+2009-02-23  Jaroslav Hajek  <highegg@gmail.com>
+
 	* interpreter/diagperm.txi: New file.
 	* interpreter/octave.texi: Reference it.
 	* intepreter/Makefile.in: Include it.

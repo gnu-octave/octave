@@ -40,7 +40,7 @@ $D_{ij} = 0$ if $i \neq j$
 @end ifnottex
 Most often, square diagonal matrices are considered; however, the definition can equally
 be applied to nonsquare matrices, in which case we usually speak of a rectangular diagonal 
-matrix. For more information, see @url{http://en.wikipedia.org/wiki/Diagonal_matrix}.
+matrix.
 
 A permutation matrix is defined as a square matrix that has a single element equal to unity
 in each row and each column; all other elements are zero. That is, there exists a 
@@ -53,8 +53,6 @@ $P_{ij}=0$ otherwise.
 @code{p} such that @code{P(i,j) == 1} if @code{j == p(i)} and 
 @code{P(i,j) == 0} otherwise.  
 @end ifnottex
-
-For more information, see @url{http://en.wikipedia.org/wiki/Permutation_matrix}.
 
 Octave provides special treatment of real and complex rectangular diagonal matrices,
 as well as permutation matrices. They are stored as special objects, using efficient 

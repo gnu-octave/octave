@@ -1,3 +1,7 @@
+2009-02-24  Jaroslav Hajek  <highegg@gmail.com>
+
+	* interpreter/diagperm.txi: Remove redundant url references.
+
 2009-02-23  Jaroslav Hajek  <highegg@gmail.com>
 
 	* interpreter/diagperm.txi: Use TeX alternatives in some

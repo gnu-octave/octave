@@ -1,3 +1,11 @@
+2009-02-24  John W. Eaton  <jwe@octave.org>
+
+	* help.cc, help.h (Vdoc_cache_file): New global variable.
+	(Fdoc_cache_file): New function.
+	* octave.cc (DOC_CACHE_FILE_OPTION): New option tag.
+	(long_opts): Include doc-cache-file in the list.
+	(octave_main): Handle DOC_CACHE_FILE_OPTION.
+
 2009-02-24  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-scalar.h 

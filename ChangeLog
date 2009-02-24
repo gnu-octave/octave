@@ -1,5 +1,8 @@
 2009-02-24  John W. Eaton  <jwe@octave.org>
 
+	* run-octave.in (DOCFILE): New variable.  Pass --doc-cache-file
+	option to Octave.
+
 	* configure.in: Copy Makefile to build directory if not building
 	in srcdir.
 

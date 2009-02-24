@@ -143,22 +143,24 @@ static bool persist = false;
 
 // Long options.  See the comments in getopt.h for the meanings of the
 // fields in this structure.
-#define EVAL_OPTION 1
-#define EXEC_PATH_OPTION 2
-#define IMAGE_PATH_OPTION 3
-#define INFO_FILE_OPTION 4
-#define INFO_PROG_OPTION 5
-#define NO_INIT_FILE_OPTION 6
-#define NO_LINE_EDITING_OPTION 7
-#define NO_SITE_FILE_OPTION 8
-#define NO_INITIAL_PATH_OPTION 9
-#define PERSIST_OPTION 10
-#define TRADITIONAL_OPTION 11
-#define LINE_EDITING_OPTION 12
+#define DOC_CACHE_FILE_OPTION 1
+#define EVAL_OPTION 2
+#define EXEC_PATH_OPTION 3
+#define IMAGE_PATH_OPTION 4
+#define INFO_FILE_OPTION 5
+#define INFO_PROG_OPTION 6
+#define NO_INIT_FILE_OPTION 7
+#define NO_LINE_EDITING_OPTION 8
+#define NO_SITE_FILE_OPTION 9
+#define NO_INITIAL_PATH_OPTION 10
+#define PERSIST_OPTION 11
+#define TRADITIONAL_OPTION 12
+#define LINE_EDITING_OPTION 13
 long_options long_opts[] =
   {
     { "debug",            prog_args::no_arg,       0, 'd' },
     { "braindead",        prog_args::no_arg,       0, TRADITIONAL_OPTION },
+    { "doc-cache-file",   prog_args::required_arg, 0, DOC_CACHE_FILE_OPTION },
     { "echo-commands",    prog_args::no_arg,       0, 'x' },
     { "eval",             prog_args::required_arg, 0, EVAL_OPTION },
     { "exec-path",        prog_args::required_arg, 0, EXEC_PATH_OPTION },
@@ -682,6 +684,11 @@ octave_main (int argc, char **argv, int embedded)
 
 	case 'v':
 	  print_version_and_exit ();
+	  break;
+
+	case DOC_CACHE_FILE_OPTION:
+	  if (args.optarg ())
+	    bind_internal_variable ("doc_cache_file", args.optarg ());
 	  break;
 
 	case EVAL_OPTION:

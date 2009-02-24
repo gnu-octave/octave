@@ -28,7 +28,7 @@
 ## @seealso{lookfor, path}
 ## @end deftypefn
 
-function gen_doc_cache (out_file = "DOC.gz", directory = [])
+function gen_doc_cache (out_file = "DOC", directory = [])
   ## Check input
   if (!ischar (out_file))
     print_usage ();
@@ -44,7 +44,7 @@ function gen_doc_cache (out_file = "DOC.gz", directory = [])
   endif
   
   ## Save cache
-  save ("-text", "-z", out_file, "cache");
+  save ("-text", out_file, "cache");
 endfunction
 
 function [text, first_sentence, status] = handle_function (f, text, format)

@@ -33,6 +33,10 @@ extern string_vector make_name_list (void);
 
 extern OCTINTERP_API std::string raw_help (const std::string&, bool&);
 
+// Name of the doc cache file specified on the command line.
+// (--doc-cache-file file)
+extern std::string Vdoc_cache_file;
+
 // Name of the info file specified on command line.
 // (--info-file file)
 extern std::string Vinfo_file;

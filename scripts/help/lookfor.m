@@ -53,7 +53,7 @@ function [out_fun, out_help_text] = lookfor (str, extra)
   str = lower (str);
 
   ## Search functions, operators, and keywords that come with Octave
-  cache_file = fullfile (octave_config_info.datadir, "etc", "DOC");
+  cache_file = doc_cache_file ();
   if (exist (cache_file, "file"))
     [fun, help_text] = search_cache (str, cache_file, search_type);
     had_core_cache = true;

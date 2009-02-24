@@ -72,6 +72,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "version.h"
 #include "quit.h"
 
+// Name of the doc cache file specified on the command line.
+// (--doc-cache-file file)
+std::string Vdoc_cache_file;
+
 // Name of the info file specified on command line.
 // (--info-file file)
 std::string Vinfo_file;
@@ -988,6 +992,18 @@ Undocumented internal function.\n\
     }  
 
   return retval;
+}
+
+DEFUN (doc_cache_file, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{val} =} doc_cache_file ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} doc_cache_file (@var{new_val})\n\
+Query or set the internal variable that specifies the name of the\n\
+Octave DOC file.  The default value is @code{\"@var{octetcdir}/DOC\"}.\n\
+@seealso{info_program, doc, help, makeinfo_program}\n\
+@end deftypefn")
+{
+  return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (doc_cache_file);
 }
 
 DEFUN (info_file, args, nargout,

@@ -1,5 +1,8 @@
 2009-02-23  John W. Eaton  <jwe@octave.org>
 
+	* ov-base-sparse.cc (octave_base_sparse<T>::print_raw):
+	Remove extra ")" from output.
+
 	* DLD-FUNCTIONS/eigs.cc (Feigs): If sigma argument is not a
 	string, try extraction as complex value and check for error
 	instead of inquiring about type first.

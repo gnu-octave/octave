@@ -286,7 +286,7 @@ octave_base_sparse<T>::print_raw (std::ostream& os,
   double dnel = matrix.numel ();
 
   if (dnel > 0)
-    os << " [" << std::setprecision (2) << (nz / dnel * 100) << "%])\n";
+    os << " [" << std::setprecision (2) << (nz / dnel * 100) << "%]";
 
   os << ")\n";
 

@@ -33,14 +33,12 @@ INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_DATA = @INSTALL_DATA@
 
-BUILT_CONF_DISTFILES = Makefile
-
-CONF_DISTFILES = Makefile.in octMakefile.in Makeconf.in \
+CONF_DISTFILES = Makefile octMakefile.in Makeconf.in \
 	configure configure.in config.guess config.sub aclocal.m4 \
 	acx_blas.m4 acx_lapack.m4 acx_blas_f77_func.m4 \
 	config.h.in install-sh autogen.sh
 
-BUILT_DISTFILES = $(BUILT_CONF_DISTFILES) BUGS INSTALL.OCTAVE
+BUILT_DISTFILES = BUGS INSTALL.OCTAVE
 
 DISTFILES = $(CONF_DISTFILES) \
 	COPYING INSTALL NEWS \
@@ -163,7 +161,7 @@ clean mostlyclean distclean maintainer-clean::
 .PHONY: clean mostlyclean distclean maintainer-clean
 
 maintainer-clean distclean::
-	rm -f octMakefile Makefile Makeconf
+	rm -f octMakefile Makeconf
 	rm -f config.cache config.h config.log config.status
 	rm -rf autom4te.cache
 	rm -f $(SHELL_SCRIPTS)
@@ -239,7 +237,6 @@ conf-dist:
 	rm -rf `cat .fname`
 	mkdir `cat .fname`
 	ln $(CONF_DISTFILES) `cat .fname`
-	ln $(BUILT_CONF_DISTFILES) `cat .fname`
 	for dir in $(CONF_DISTSUBDIRS); do \
 	  mkdir `cat .fname`/$$dir; \
 	  $(MAKE) -C $$dir conf-dist; \

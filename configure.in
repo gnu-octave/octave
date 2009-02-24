@@ -2102,7 +2102,7 @@ typedef int sig_atomic_t;
 
 ### Do the substitutions in all the Makefiles.
 
-AC_CONFIG_FILES([Makefile octMakefile Makeconf test/Makefile
+AC_CONFIG_FILES([octMakefile Makeconf test/Makefile
   doc/Makefile doc/faq/Makefile doc/interpreter/Makefile
   doc/liboctave/Makefile doc/refcard/Makefile emacs/Makefile
   examples/Makefile examples/@polynomial/Makefile liboctave/Makefile

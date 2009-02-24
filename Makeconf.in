@@ -260,6 +260,8 @@ TEXINFO_QHULL = @TEXINFO_QHULL@
 # The arguments passed to configure.
 config_opts = @config_opts@
 
+CONFIG_SUBDIRS = @subdirs@
+
 # ==================== Where To Install Things ====================
 
 # The default location for installation.  Everything is placed in

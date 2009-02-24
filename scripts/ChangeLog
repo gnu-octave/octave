@@ -1,3 +1,10 @@
+2009-02-08  Thorsten Meyer  <thorsten.meyier@gmx.de>
+
+	* configure.in: AC_SUBST ac_config_files
+
+	* Makefile.in:  Add make targets for configuration files
+	and config.status.
+
 2009-02-23  John W. Eaton  <jwe@octave.org>
 
 	* plot/fplot.m: Fix nargin check.

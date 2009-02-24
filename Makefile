@@ -30,6 +30,9 @@ NO_DEP_TARGETS = clean mostlyclean distclean maintainer-clean
 all: header-msg config-check
 	$(MAKE) -f octMakefile all
 
+configfiles: FORCE
+	$(MAKE) -f octMakefile configfiles
+
 $(TARGETS): FORCE
 	$(MAKE) -f octMakefile $@
 
@@ -102,6 +105,8 @@ help: header-msg
 	@echo "  liboctave            make all in subdirectory liboctave"
 	@echo "  scripts              make all in subdirectory scripts"
 	@echo "  src                  make all in subdirectory src"
+	@echo ""
+	@echo "  configfiles          update the configuration files"
 	@echo ""
 	@echo "  help                 print this message"
 	@echo ""

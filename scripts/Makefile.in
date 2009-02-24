@@ -52,8 +52,23 @@ DISTSUBDIRS = $(SUBDIRS)
 FCN_FILES = # $(wildcard $(srcdir)/*.m)
 FCN_FILES_NO_DIR = # $(notdir $(FCN_FILES))
 
+CONFIG_FILES = @ac_config_files@
+
 all: $(SUBDIRS) DOCSTRINGS
 .PHONY: all
+
+configfiles: $(CONFIG_FILES)
+.PHONY: configfiles
+
+$(CONFIG_FILES): %: %.in config.status
+	./config.status $@
+
+config.status: configure
+	./config.status --recheck
+
+configure: configure.in
+	if [ ! -f skip-autoconf ]; then autoconf --force; fi
+	if [ ! -f skip-autoheader ]; then autoheader --force; fi
 
 $(SUBDIRS):
 	$(MAKE) -C $@ all

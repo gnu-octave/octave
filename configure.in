@@ -2102,6 +2102,12 @@ typedef int sig_atomic_t;
 
 ### Do the substitutions in all the Makefiles.
 
+AC_CONFIG_COMMANDS([Makefile], [if test "$ac_srcdir" != "."; then
+  cp $srcdir/Makefile .
+fi])
+
+AC_SUBST(ac_config_files)
+
 AC_CONFIG_FILES([octMakefile Makeconf test/Makefile
   doc/Makefile doc/faq/Makefile doc/interpreter/Makefile
   doc/liboctave/Makefile doc/refcard/Makefile emacs/Makefile
@@ -2116,6 +2122,7 @@ AC_CONFIG_FILES([octMakefile Makeconf test/Makefile
   libcruft/ranlib/Makefile libcruft/slatec-fn/Makefile
   libcruft/slatec-err/Makefile libcruft/villad/Makefile
   libcruft/blas-xtra/Makefile libcruft/lapack-xtra/Makefile])
+
 AC_OUTPUT
 
 ### Print a summary so that important information isn't missed.

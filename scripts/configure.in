@@ -28,6 +28,7 @@ AC_CONFIG_SRCDIR([startup/inputrc])
 
 AC_PROG_INSTALL
 
+AC_SUBST(ac_config_files)
 AC_CONFIG_FILES([Makefile audio/Makefile deprecated/Makefile elfun/Makefile \
 	  general/Makefile geometry/Makefile help/Makefile image/Makefile \
 	  io/Makefile linear-algebra/Makefile miscellaneous/Makefile \

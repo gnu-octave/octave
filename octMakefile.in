@@ -71,6 +71,10 @@ DIRS_TO_MAKE = $(bindir) $(datadir) $(libdir) $(octincludedir)/octave \
 
 SHELL_SCRIPTS = octave-bug octave-config mkoctfile run-octave
 
+CONFIG_FILES = @ac_config_files@
+
+M4_FILES = $(wildcard *.m4)
+
 all: $(SHELL_SCRIPTS) $(filter-out libcruft liboctave, $(SUBDIRS)) dist-info-files
 	@echo ""
 	@echo "Octave successfully built.  Now choose from the following:"
@@ -80,6 +84,22 @@ all: $(SHELL_SCRIPTS) $(filter-out libcruft liboctave, $(SUBDIRS)) dist-info-fil
 	@echo "   make install    - to install (PREFIX=$(prefix))"
 	@echo ""
 .PHONY: all
+
+configfiles: $(CONFIG_FILES)
+	for dir in $(CONFIG_SUBDIRS); do \
+	  $(MAKE) -C $$dir configfiles; \
+	done
+.PHONY: configfiles
+
+$(CONFIG_FILES): %: %.in config.status
+	./config.status $@
+
+config.status: configure
+	./config.status --recheck
+
+configure: configure.in $(M4_FILES)
+	(cd $(top_srcdir); autoconf --force)
+	(cd $(top_srcdir); autoheader --force)
 
 src: liboctave
 

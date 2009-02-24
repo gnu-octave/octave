@@ -122,6 +122,22 @@ public:
   uint64_array_value (void) const
     { return uint64NDArray (dim_vector (1, 1), scalar); }
 
+#define DEFINE_INT_SCALAR_VALUE(TYPE) \
+  octave_ ## TYPE \
+  TYPE ## _scalar_value (void) const \
+    { return octave_ ## TYPE (scalar); }
+
+  DEFINE_INT_SCALAR_VALUE (int8)
+  DEFINE_INT_SCALAR_VALUE (int16)
+  DEFINE_INT_SCALAR_VALUE (int32)
+  DEFINE_INT_SCALAR_VALUE (int64)
+  DEFINE_INT_SCALAR_VALUE (uint8)
+  DEFINE_INT_SCALAR_VALUE (uint16)
+  DEFINE_INT_SCALAR_VALUE (uint32)
+  DEFINE_INT_SCALAR_VALUE (uint64)
+
+#undef DEFINE_INT_SCALAR_VALUE
+
   double double_value (bool = false) const { return static_cast<double> (scalar); }
 
   float float_value (bool = false) const { return scalar; }

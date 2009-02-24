@@ -1,3 +1,25 @@
+2009-02-24  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-scalar.h 
+	(octave_scalar::int8_scalar_value): New method.
+	(octave_scalar::int16_scalar_value): New method.
+	(octave_scalar::int32_scalar_value): New method.
+	(octave_scalar::int64_scalar_value): New method.
+	(octave_scalar::uint8_scalar_value): New method.
+	(octave_scalar::uint16_scalar_value): New method.
+	(octave_scalar::uint32_scalar_value): New method.
+	(octave_scalar::uint64_scalar_value): New method.
+
+	* ov-float.h 
+	(octave_float_scalar::int8_scalar_value): New method.
+	(octave_float_scalar::int16_scalar_value): New method.
+	(octave_float_scalar::int32_scalar_value): New method.
+	(octave_float_scalar::int64_scalar_value): New method.
+	(octave_float_scalar::uint8_scalar_value): New method.
+	(octave_float_scalar::uint16_scalar_value): New method.
+	(octave_float_scalar::uint32_scalar_value): New method.
+	(octave_float_scalar::uint64_scalar_value): New method.
+
 2009-02-24  John W. Eaton  <jwe@octave.org>
 
 	* OPERATORS/op-float-conv.cc: New file.

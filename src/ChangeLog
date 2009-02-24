@@ -20,6 +20,9 @@
 	(octave_float_scalar::uint32_scalar_value): New method.
 	(octave_float_scalar::uint64_scalar_value): New method.
 
+	* OPERATORS/op-s-s.cc (scalar_to_float): Remove duplicate conversion.
+	* OPERATORS/op-range.cc (range_to_float_matrix): Ditto.
+
 2009-02-24  John W. Eaton  <jwe@octave.org>
 
 	* OPERATORS/op-float-conv.cc: New file.

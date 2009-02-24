@@ -121,13 +121,6 @@ DEFSCALARBOOLOP_OP (el_or, scalar, scalar, ||)
 
 DEFNDCATOP_FN (s_s, scalar, scalar, array, array, concat)
 
-CONVDECL (scalar_to_float)
-{
-  CAST_CONV_ARG (const octave_scalar&);
-
-  return new octave_float_matrix (FloatMatrix (1, 1, static_cast<float>(v.double_value ())));
-}
-
 void
 install_s_s_ops (void)
 {
@@ -167,8 +160,6 @@ install_s_s_ops (void)
   INSTALL_ASSIGNCONV (octave_scalar, octave_null_matrix, octave_matrix);
   INSTALL_ASSIGNCONV (octave_scalar, octave_null_str, octave_matrix);
   INSTALL_ASSIGNCONV (octave_scalar, octave_null_sq_str, octave_matrix);
-
-  INSTALL_CONVOP (octave_scalar, octave_float_matrix, scalar_to_float);
 }
 
 /*

@@ -56,7 +56,7 @@ DECLARE_OCTAVE_INT_TYPENAME (uint64_t, "uint64")
 
 template <class xop> 
 OCTAVE_API bool 
-octave_int_cmp_op::mop (uint64_t x, double y)
+octave_int_cmp_op::emulate_mop (uint64_t x, double y)
 {
   static const double xxup = std::numeric_limits<uint64_t>::max ();
   // This converts to the nearest double. Unless there's an equality, the
@@ -76,7 +76,7 @@ octave_int_cmp_op::mop (uint64_t x, double y)
 
 template <class xop> 
 OCTAVE_API bool 
-octave_int_cmp_op::mop (int64_t x, double y)
+octave_int_cmp_op::emulate_mop (int64_t x, double y)
 {
   static const double xxup = std::numeric_limits<int64_t>::max ();
   static const double xxlo = std::numeric_limits<int64_t>::min ();
@@ -123,7 +123,7 @@ DEFINE_REVERTED_OPERATOR(ge,le);
 
 template <class xop> 
 OCTAVE_API bool 
-octave_int_cmp_op::mop (double x, uint64_t y)
+octave_int_cmp_op::emulate_mop (double x, uint64_t y)
 {
   typedef typename rev_op<xop>::op rop;
   return mop<rop> (y, x);
@@ -131,7 +131,7 @@ octave_int_cmp_op::mop (double x, uint64_t y)
 
 template <class xop> 
 OCTAVE_API bool 
-octave_int_cmp_op::mop (double x, int64_t y)
+octave_int_cmp_op::emulate_mop (double x, int64_t y)
 {
   typedef typename rev_op<xop>::op rop;
   return mop<rop> (y, x);
@@ -499,8 +499,8 @@ INT_DOUBLE_BINOP_DECL (/, int64)
 }
 
 #define INSTANTIATE_INT64_DOUBLE_CMP_OP0(OP,T1,T2) \
-  template OCTAVE_API bool \
-  octave_int_cmp_op::mop<octave_int_cmp_op::OP> (T1 x, T2 y)
+  template bool \
+  octave_int_cmp_op::emulate_mop<octave_int_cmp_op::OP> (T1 x, T2 y)
 
 #define INSTANTIATE_INT64_DOUBLE_CMP_OP(OP) \
   INSTANTIATE_INT64_DOUBLE_CMP_OP0(OP, double, int64_t); \

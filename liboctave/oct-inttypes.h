@@ -192,20 +192,29 @@ public:
       return xop::op (static_cast<long double> (x), \
                       static_cast<long double> (y)); \
     }
+#else 
+  // ... otherwise, use external handlers
+
+  // FIXME: We could declare directly the mop methods as external,
+  // but we can't do this because bugs in gcc (<= 4.3) prevent
+  // explicit instantiations later in that case.
+#define DEFINE_LONG_DOUBLE_CMP_OP(T1, T2) \
+  template <class xop> static OCTAVE_API bool \
+  emulate_mop (T1, T2); \
+  template <class xop> \
+  static bool \
+  mop (T1 x, T2 y) \
+    { \
+      return emulate_mop<xop> (x, y); \
+    }
+#endif
+
   DEFINE_LONG_DOUBLE_CMP_OP(double, uint64_t)
   DEFINE_LONG_DOUBLE_CMP_OP(double, int64_t)
   DEFINE_LONG_DOUBLE_CMP_OP(int64_t, double)
   DEFINE_LONG_DOUBLE_CMP_OP(uint64_t, double)
+
 #undef DEFINE_LONG_DOUBLE_CMP_OP
-
-#else
-  // ... otherwise, use external handlers
-  template <class xop> static OCTAVE_API bool mop (uint64_t, double);
-  template <class xop> static OCTAVE_API bool mop (int64_t, double);
-  template <class xop> static OCTAVE_API bool mop (double, uint64_t);
-  template <class xop> static OCTAVE_API bool mop (double, int64_t);
-#endif
-
 };
 
 // Base integer class. No data, just conversion methods and exception flags.

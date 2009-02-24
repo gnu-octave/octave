@@ -1,5 +1,16 @@
 2009-02-23  Jaroslav Hajek  <highegg@gmail.com>
 
+	* oct-inttypes.h (octave_int_cmp_op::mop): Implement as simple
+	forwarders when OCTAVE_INT_USE_LONG_DOUBLE is not defined.
+	(octave_int_cmp_op::emulate_mop): New static overloaded template
+	member function.
+	* oct-inttypes.cc: Turn the octave_int_cmp_op::mop definitions into
+	defs for octave_int_cmp_op::emulate_mop. 
+	(INSTANTIATE_INT64_DOUBLE_CMP_OP0): Instantiate
+	octave_int_cmp_op::emulate_op instead.
+
+2009-02-23  Jaroslav Hajek  <highegg@gmail.com>
+
 	* dDiagMatrix.cc (DiagMatrix::pseudo_inverse): New method.
 	* dDiagMatrix.h: Declare it.
 	* fDiagMatrix.cc (FloatDiagMatrix::pseudo_inverse): New method.

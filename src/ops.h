@@ -245,11 +245,22 @@ extern void install_ops (void);
     return new octave_matrix (NDArray (v.CONCAT2(e, _value) ())); \
   }
 
+#define DEFFLTCONVFN(name, ovtfrom, e) \
+  CONVDECL (name) \
+  { \
+    CAST_CONV_ARG (const CONCAT2(octave_, ovtfrom)&); \
+ \
+    return new octave_float_matrix (FloatNDArray (v.CONCAT2(e, _value) ())); \
+  }
+
 #define DEFSTRINTCONVFN(name, tto) \
   DEFCONVFNX(name, char_matrix_str, CONCAT2(tto, _matrix), tto, char_)
 
 #define DEFSTRDBLCONVFN(name, tfrom) \
   DEFCONVFNX(name, tfrom, matrix, , char_)
+
+#define DEFSTRFLTCONVFN(name, tfrom) \
+  DEFCONVFNX(name, tfrom, float_matrix, Float, char_)
 
 #define DEFCONVFN(name, tfrom, tto) \
   DEFCONVFNX2 (name, tfrom, CONCAT2(tto, _matrix), CONCAT2(tto, _))

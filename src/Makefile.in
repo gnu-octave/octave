@@ -140,7 +140,7 @@ TI_XSRC := Array-os.cc Array-tc.cc
 
 TI_SRC := $(addprefix TEMPLATE-INST/, $(TI_XSRC))
 
-INTTYPE_OP_XSRC := op-int-concat.cc op-int-conv.cc op-double-conv.cc \
+INTTYPE_OP_XSRC := op-int-concat.cc op-int-conv.cc \
 	op-i8-i8.cc op-i16-i16.cc op-i32-i32.cc op-i64-i64.cc \
 	op-ui8-ui8.cc op-ui16-ui16.cc op-ui32-ui32.cc op-ui64-ui64.cc
 
@@ -151,13 +151,13 @@ SPARSE_OP_XSRC := op-bm-sbm.cc op-b-sbm.cc op-cm-scm.cc op-cm-sm.cc \
 	op-sm-cs.cc op-sm-m.cc op-sm-s.cc op-sm-scm.cc op-sm-sm.cc \
 	op-s-scm.cc op-s-sm.cc
 
-DOUBLE_OP_XSRC := op-cm-cm.cc op-cm-cs.cc op-cm-m.cc \
+DOUBLE_OP_XSRC := op-double-conv.cc op-cm-cm.cc op-cm-cs.cc op-cm-m.cc \
 	op-cm-s.cc op-cs-cm.cc op-cs-cs.cc op-cs-m.cc \
 	op-cs-s.cc op-m-cm.cc \
 	op-m-cs.cc op-m-m.cc op-m-s.cc op-s-cm.cc \
 	op-s-cs.cc op-s-m.cc op-s-s.cc 
 
-FLOAT_OP_XSRC := op-fcm-fcm.cc op-fcm-fcs.cc op-fcm-fm.cc \
+FLOAT_OP_XSRC := op-float-conv.cc op-fcm-fcm.cc op-fcm-fcs.cc op-fcm-fm.cc \
 	op-fcm-fs.cc op-fcs-fcm.cc op-fcs-fcs.cc op-fcs-fm.cc \
 	op-fcs-fs.cc op-fm-fcm.cc \
 	op-fm-fcs.cc op-fm-fm.cc op-fm-fs.cc op-fs-fcm.cc \

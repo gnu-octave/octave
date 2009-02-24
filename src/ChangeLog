@@ -1,3 +1,10 @@
+2009-02-24  John W. Eaton  <jwe@octave.org>
+
+	* OPERATORS/op-float-conv.cc: New file.
+	* Makefile.in (FLOAT_OP_XSRC): Add it to the list.
+	(DOUBLE_OP_XSRC): Move op-double-conv.cc here from INTTYPE_OP_XSRC.
+	* ops.h (DEFFLTCONVFN, DEFSTRFLTCONVFN): New macros.
+
 2009-02-23  John W. Eaton  <jwe@octave.org>
 
 	* ov-base-sparse.cc (octave_base_sparse<T>::print_raw):

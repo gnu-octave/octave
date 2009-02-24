@@ -1,3 +1,7 @@
+2009-02-24  Jason Riedy  <jason@acm.org>
+
+	* help/gen_doc_cache.m: Call __makeinfo__, not makeinfo.
+
 2009-02-24  Jaroslav Hajek  <highegg@gmail.com>
 
 	* optimization/fsolve.m: Update niter after each iteration, not just

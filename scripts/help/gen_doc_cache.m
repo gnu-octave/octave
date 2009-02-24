@@ -60,7 +60,7 @@ function [text, first_sentence, status] = handle_function (f, text, format)
     case "plain text"
       status = 0;
     case "texinfo"
-      [text, status] = makeinfo (text, "plain text");
+      [text, status] = __makeinfo__ (text, "plain text");
     case "html"
       [text, status] = strip_html_tags (text);
     otherwise

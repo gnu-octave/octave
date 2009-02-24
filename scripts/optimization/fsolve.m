@@ -274,8 +274,9 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
         xn = norm (dg .* x);
         fvec = fvec1;
         fn = fn1;
-        niter ++;
       endif
+
+      niter ++;
 
       ## FIXME: should outputfcn be only called after a successful iteration?
       if (! isempty (outfcn))

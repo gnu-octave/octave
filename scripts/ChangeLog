@@ -1,3 +1,8 @@
+2009-02-24  Jaroslav Hajek  <highegg@gmail.com>
+
+	* optimization/fsolve.m: Update niter after each iteration, not just
+	a succesful one.
+
 2009-02-08  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
 	* configure.in: AC_SUBST ac_config_files

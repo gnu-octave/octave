@@ -227,7 +227,7 @@ Summary of important user-visible changes for version 3.2:
 
  ** New functions for reading and writing images.
 
-    The imwrite and imread function have been included in Octave.
+    The imwrite and imread functions have been included in Octave.
     These functions require the GraphicsMagick library.  The new
     function imfinfo provides information about an image file (size,
     type, colors, etc.)

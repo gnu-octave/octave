@@ -1190,9 +1190,9 @@ tree_evaluator::do_breakpoint (bool is_breakpoint, int l, int c,
       octave_function *xfcn = octave_call_stack::current ();
 
       if (xfcn)
-	octave_stdout << xfcn->name () << ": "; 
+	std::cerr << xfcn->name () << ": "; 
 
-      octave_stdout << "line " << l << ", " << "column " << c << std::endl;
+      std::cerr << "line " << l << ", " << "column " << c << std::endl;
 
       db_line = l;
       db_column = c;

@@ -1,5 +1,10 @@
 2009-02-25  John W. Eaton  <jwe@octave.org>
 
+	* input.cc (get_debug_input): Write debugging location info
+	directly to std::cerr instead of calling message.
+	* pt-eval.cc (tree_evaluator::do_breakpoint): Write debugging
+	location info directly to std::cerr, not octave_stdout.
+
 	* defaults.h.in (OCTAVE_DOC_CACHE_FILE): New macro.
 	* defaults.cc (set_default_doc_cache_file): New function.
 	(install_defaults): Call it.

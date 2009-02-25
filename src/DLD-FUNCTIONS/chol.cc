@@ -195,7 +195,7 @@ sparse matrices.\n\
 		      else
 			retval(0) = fact.R();
 		    }
-p		  else
+		  else
 		    error ("chol: matrix not positive definite");
 		}
 	    }

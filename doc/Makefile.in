@@ -67,11 +67,11 @@ tags::
 TAGS:: $(SOURCES)
 	etags $(SOURCES)
 
-distclean::
-	rm -f Makefile
+distclean maintainer-clean::
+	rm -f tags TAGS Makefile
 
 maintainer-clean::
-	rm -f tags TAGS Makefile
+	rm -f conf.texi
 
 dist: conf.texi
 	ln $(DISTFILES) ../`cat ../.fname`/doc

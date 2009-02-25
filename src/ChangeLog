@@ -1,5 +1,9 @@
 2009-02-25  John W. Eaton  <jwe@octave.org>
 
+	* Makefile.in (distclean): Remove tags TAGS y.tab.h y.output
+	yy.lex.c here, not in maintainer-clean target.  Also remove
+	parse.output.
+
 	* DLD-FUNCTIONS/rand.cc: Note that the tests for the old random
 	number generator will fail if using 64-bit indexing.
 

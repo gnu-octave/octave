@@ -356,13 +356,10 @@ clean:
 mostlyclean: clean
 .PHONY: mostlyclean
 
-distclean: clean
-	rm -f Makefile so_locations oct-types.h $(PREREQ)
-.PHONY: distclean
-
-maintainer-clean: distclean
+distclean maintainer-clean: clean
 	rm -f tags TAGS
-.PHONY: maintainer-clean
+	rm -f Makefile so_locations oct-types.h $(PREREQ)
+.PHONY: distclean maintainer-clean
 
 dist: $(PREREQ)
 	ln $(DISTFILES) ../`cat ../.fname`/liboctave

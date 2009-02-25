@@ -1,3 +1,7 @@
+2009-02-25  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.in: Make maintainer-clean and distclean the same.
+
 2009-02-25  Jaroslav Hajek  <highegg@gmail.com>
 
 	* oct-inttypes.cc (pow (const octave_int<T>&, const octave_int<T>&)):

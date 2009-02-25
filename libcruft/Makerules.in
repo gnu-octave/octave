@@ -137,12 +137,8 @@ clean mostlyclean distclean maintainer-clean::
 .PHONY: clean mostlyclean
 
 distclean maintainer-clean::
-	rm -f Makefile
-.PHONY: distclean
-	
-maintainer-clean::
-	rm -f tags TAGS
-.PHONY: maintainer-clean
+	rm -f tags TAGS Makefile
+.PHONY: distclean maintainer-clean
 
 dist:
 	ln $(EXTERNAL_DISTFILES) ../../`cat ../../.fname`/libcruft/$(THISDIR)

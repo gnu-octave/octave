@@ -186,7 +186,7 @@ tags::
 TAGS:: $(SOURCES)
 	etags $(SOURCES)
 
-clean mostlyclean distclean::
+clean mostlyclean distclean maintainer-clean::
 	rm -f $(LIBPRE)cruft.$(LIBEXT)
 	rm -f $(SHLLIBPRE)cruft.$(SHLEXT_VER) $(SHLLIBPRE)cruft.$(SHLEXT)
 	rm -f $(SHLBINPRE)cruft.$(SHLBIN_VER) $(SHLBINPRE)cruft.$(SHLBIN)

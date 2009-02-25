@@ -1,3 +1,9 @@
+2009-02-25  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.in (maintainer-clean): Also remove libraries.
+
+	* Makerules.in: Make maintainer-clean and distclean the same.
+
 2009-02-23  Jaroslav Hajek  <highegg@gmail.com>
 
 	* misc/quit.h (octave_signal_caught): Declare as volatile.

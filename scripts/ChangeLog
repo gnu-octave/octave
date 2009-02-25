@@ -1,3 +1,8 @@
+2009-02-25  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.in (distclean maintainer-clean): Remove tags and TAGS
+	in distclean target.
+
 2009-02-25  Jaroslav Hajek  <highegg@gmail.com>
 
 	* help/lookfor.m: Vectorize the path splitting using mat2cell.

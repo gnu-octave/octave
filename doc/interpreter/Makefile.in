@@ -150,7 +150,7 @@ MAN_SRC := $(addsuffix .1, $(MAN_BASE))
 DISTFILES = $(addprefix $(srcdir)/, Makefile.in contributors.in \
   mkcontrib.awk dir  munge-texi.cc $(MAN_SRC) $(SOURCES) $(MAIN_TEXINFO)) \
   $(SUB_TEXINFO) contributors.texi $(FORMATTED) $(IMAGES) mk_doc_cache.m \
-  DOC
+  DOC stmp-html
 
 DISTDIRS = HTML
 
@@ -372,11 +372,11 @@ mostlyclean clean:
 
 distclean: clean
 	@$(subdir-for-command)
-	rm -f Makefile 
+	rm -f tags TAGS Makefile
 .PHONY: distclean
 
-maintainer-clean: clean clean-texi
-	rm -f Makefile tags TAGS $(FORMATTED) $(IMAGES)
+maintainer-clean: distclean clean-texi
+	rm -f DOC stmp-html $(FORMATTED) $(IMAGES)
 	rm -rf HTML
 .PHONY: maintainer-clean
 

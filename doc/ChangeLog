@@ -1,3 +1,13 @@
+2009-02-25  John W. Eaton  <jwe@octave.org>
+
+	* interpreter/Makefile.in (distclean): Remove tags and TAGS here
+	instead of in maintainer-clean target.
+	(maintainer-clean): Depend on distclean, not clean.  Remove DOC.
+	(DISTFILES): Add stmp-html to the list.
+
+	* Makefile.in: Remove conf.texi in maintainer-clean target but not
+	distclean target.
+
 2009-02-24  Jaroslav Hajek  <highegg@gmail.com>
 
 	* interpreter/diagperm.txi: Remove redundant url references.

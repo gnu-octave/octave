@@ -99,11 +99,11 @@ clean distclean maintainer-clean::
 	rm -f gethelp$(BUILD_EXEEXT)
 
 distclean maintainer-clean::
-	rm -f Makefile config.log config.status DOCSTRINGS
+	rm -f tags TAGS Makefile config.log config.status DOCSTRINGS
 	rm -rf autom4te.cache
 
 maintainer-clean::
-	rm -f tags TAGS configure
+	rm -f configure
 
 dist:
 	ln $(DISTFILES) ../`cat ../.fname`/scripts

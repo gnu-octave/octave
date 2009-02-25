@@ -562,12 +562,13 @@ mostlyclean: clean
 
 distclean: clean
 	rm -f Makefile octave$(EXEEXT) .fname so_locations oct-errno.cc
+	rm -f tags TAGS y.tab.h y.output yy.lex.c parse.output
 	rm -f stamp-liboctave-prereq
 	rm -f doc-files gendoc.cc graphics.h graphics-props.cc mxarray.h DOCSTRINGS
 .PHONY: distclean
 
 maintainer-clean: distclean
-	rm -f tags TAGS y.tab.h y.output yy.lex.c lex.cc parse.cc
+	rm -f lex.cc parse.cc
 	rm -f oct-gperf.h $(OPT_HANDLERS)
 .PHONY: maintainer-clean
 

@@ -1,3 +1,10 @@
+2009-02-25  John W. Eaton  <jwe@octave.org>
+
+	* input.cc (get_debug_input): Don't pass arbitrary input to
+	message as a format string.
+
+	* help.cc (__list_functions__): Simplify
+
 2009-02-24  John W. Eaton  <jwe@octave.org>
 
 	* help.cc, help.h (Vdoc_cache_file): New global variable.

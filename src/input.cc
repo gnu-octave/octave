@@ -645,7 +645,7 @@ get_debug_input (const std::string& prompt)
   std::string msg = buf.str ();
 
   if (! msg.empty ())
-    message (Vgud_mode ? 0 : "keyboard", msg.c_str ());
+    message (Vgud_mode ? 0 : "keyboard", "%s", msg.c_str ());
 
   unwind_protect::begin_frame ("get_debug_input");
 

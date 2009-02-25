@@ -85,7 +85,7 @@ function hlist = __pie__ (varargin)
     if (iscell (arg))
       labels = arg;
       have_labels = true;
-      if (! size_equal (x, labels))
+      if (numel (x) != numel (labels))
 	error ("pie: mismatch in number of labels and data");
       endif
     elseif (isnumeric (arg))

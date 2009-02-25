@@ -1,5 +1,8 @@
 2009-02-25  John W. Eaton  <jwe@octave.org>
 
+	* plot/pie.m: Use numel to check sizes of X and LABELS instead of
+	using size_equal.  From Andy Buckle <andybuckle@gmail.com>.
+
 	* help/lookfor.m: Split original path into cell array and compare
 	elements with strcmp.  Suppress warnings and errors when getting
 	help text from function files.

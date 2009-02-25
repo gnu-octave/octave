@@ -62,96 +62,86 @@ function [out_fun, out_help_text] = lookfor (str, extra)
     had_core_cache = false;
   endif
   
-  ## Search functions in path
-  p = __pathorig__ ();
-  idx = find (p == pathsep ());
-  idx(end+1) = numel (p) + 1;
-  prev_idx = 1;
-  nelts = numel (idx);
-  orig_path = cell (nelts, 1);
-  for n = 1:nelts
-    orig_path{n} = p(prev_idx:idx(n)-1);
-    prev_idx = idx(n) + 1;
-  endfor
+  ## Search functions in new path dirs.
+  orig_path = split_str (__pathorig__ (), pathsep ());
 
-  p = path ();
-  idx = find (p == pathsep ());
-  idx(end+1) = numel (p);
-  prev_idx = 1;
-  for n = 1:numel (idx)
-    elt = p(prev_idx:idx(n)-1);
-    prev_idx = idx(n) + 1;
-    
-    ## Should we search the directory or has it been covered by the cache?
-    if (!had_core_cache || ! any (strcmp (elt, orig_path)))
-      cache_file = fullfile (elt, "DOC");
-      if (exist (cache_file, "file"))
-        ## We have a cache in the directory, then read it and search it!
-        [funs, hts] = search_cache (str, cache_file, search_type);
-        fun (end+1:end+length (funs)) = funs;
-        help_text (end+1:end+length (hts)) = hts;
-      else
-      ## We don't have a cache. Search files
-        funs_in_f = __list_functions__ (elt);
-        for m = 1:length (funs_in_f)
-          fn = funs_in_f {m};
-        
-          ## Skip files that start with __
-          if (length (fn) > 2 && strcmp (fn (1:2), "__"))
-            continue;
-          endif
-        
-          ## Extract first sentence
+  ## ditto for path.
+  new_path = split_str (path (), pathsep ());
+
+  ## scratch out directories already covered by orig_path.
+  if (had_core_cache)
+    new_path = setdiff (new_path, orig_path);
+  endif
+
+  for n = 1:numel (new_path)
+    elt = new_path{n};
+    cache_file = fullfile (elt, "DOC");
+    if (exist (cache_file, "file"))
+      ## We have a cache in the directory, then read it and search it!
+      [funs, hts] = search_cache (str, cache_file, search_type);
+      fun (end+1:end+length (funs)) = funs;
+      help_text (end+1:end+length (hts)) = hts;
+    else
+    ## We don't have a cache. Search files
+      funs_in_f = __list_functions__ (elt);
+      for m = 1:length (funs_in_f)
+        fn = funs_in_f {m};
+      
+        ## Skip files that start with __
+        if (length (fn) > 2 && strcmp (fn (1:2), "__"))
+          continue;
+        endif
+      
+        ## Extract first sentence
+        try
+          warn_state = warning ();
+          unwind_protect
+            warning ("off");
+            first_sentence = get_first_help_sentence (fn);
+            status = 0;
+          unwind_protect_cleanup
+            warning (warn_state);
+          end_unwind_protect
+        catch
+          status = 1;
+        end_try_catch
+
+        if (search_type == 2) # search entire help text
           try
-	    warn_state = warning ();
-	    unwind_protect
-	      warning ("off");
-              first_sentence = get_first_help_sentence (fn);
+            warn_state = warning ();
+            unwind_protect
+              warning ("off");
+              [text, fmt] = get_help_text (fn);
               status = 0;
-	    unwind_protect_cleanup
-	      warning (warn_state);
-	    end_unwind_protect
+            unwind_protect_cleanup
+              warning (warn_state);
+            end_unwind_protect
           catch
             status = 1;
           end_try_catch
+  
+          ## Take action depending on help text fmt
+          switch (lower (fmt))
+            case "plain text"
+              status = 0;
+            case "texinfo"
+              [text, status] = __makeinfo__ (text, "plain text");
+            case "html"
+              [text, status] = strip_html_tags (text);
+            otherwise
+              status = 1;
+          endswitch
 
-          if (search_type == 2) # search entire help text
-	    try
-	      warn_state = warning ();
-	      unwind_protect
-		warning ("off");
-		[text, fmt] = get_help_text (fn);
-		status = 0;
-	      unwind_protect_cleanup
-		warning (warn_state);
-	      end_unwind_protect
-	    catch
-	      status = 1;
-	    end_try_catch
-    
-            ## Take action depending on help text fmt
-            switch (lower (fmt))
-              case "plain text"
-                status = 0;
-              case "texinfo"
-                [text, status] = __makeinfo__ (text, "plain text");
-              case "html"
-                [text, status] = strip_html_tags (text);
-              otherwise
-                status = 1;
-            endswitch
-
-          elseif (status == 0) # only search the first sentence of the help text
-            text = first_sentence;
-          endif
-        
-          ## Search the help text, if we can
-          if (status == 0 && !isempty (strfind (text, str)))
-            fun (end+1) = fn;
-            help_text (end+1) = first_sentence;
-          endif
-        endfor
-      endif
+        elseif (status == 0) # only search the first sentence of the help text
+          text = first_sentence;
+        endif
+      
+        ## Search the help text, if we can
+        if (status == 0 && !isempty (strfind (text, str)))
+          fun (end+1) = fn;
+          help_text (end+1) = first_sentence;
+        endif
+      endfor
     endif
   endfor
   
@@ -190,5 +180,33 @@ function [funs, help_texts] = search_cache (str, cache_file, search_type)
     help_texts = cache (3, cache_idx);
   else
     funs = help_texts = {};
+  endif
+endfunction
+
+## split string using a separator (or more separators)
+## FIXME: maybe this function should be available to users?
+function s = split_str (p, sep)
+  if (isempty (p))
+    s = cell (size (p));
+  else
+    ## split p according to delimiter.
+    if (isscalar (sep))
+      ## single separator
+      idx = find (p == sep);
+    else
+      ## multiple separators
+      idx = strchr (p, sep);
+    endif
+
+    ## get substring sizes.
+    if (isempty (idx))
+      sizes = numel (p);
+    else
+      sizes = [idx(1)-1, diff(idx)-1, numel(p)-idx(end)];
+    endif
+    ## remove separators.
+    p(idx) = []; 
+    ## convert!
+    s = mat2cell (p, 1, sizes);
   endif
 endfunction

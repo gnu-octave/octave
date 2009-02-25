@@ -1,3 +1,8 @@
+2009-02-25  Jaroslav Hajek  <highegg@gmail.com>
+
+	* help/lookfor.m: Vectorize the path splitting using mat2cell.
+	Extract new path elements using setdiff.
+
 2009-02-25  John W. Eaton  <jwe@octave.org>
 
 	* plot/pie.m: Use numel to check sizes of X and LABELS instead of

@@ -935,60 +935,27 @@ DEFUN (__list_functions__, args, ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-  octave_value_list retval;
+  octave_value retval;
 
   // Get list of functions
-  const string_vector ffl = load_path::fcn_names ();
-  const int ffl_len = ffl.length ();
-  const string_vector afl = autoloaded_functions ();
-  const int afl_len = afl.length ();
+  string_vector ffl = load_path::fcn_names ();
+  string_vector afl = autoloaded_functions ();
   
   if (args.length () == 0)
-    {
-      Cell C (ffl_len + afl_len, 1);
-      int j = 0;
-      for (int i = 0; i < ffl_len; i++)
-        C (j++, 0) = octave_value (ffl [i]);
-      for (int i = 0; i < afl_len; i++)
-        C (j++, 0) = octave_value (afl [i]);
-            
-      retval.append (octave_value (C));
-    }
+    retval = Cell (ffl.append (afl));
   else
     {
-      // Get input
       std::string dir = args (0).string_value ();
-      if (error_state)
-        error ("__list_functions__: input must be a string");
-      else
-        {
-          dir = file_ops::canonicalize_file_name (dir);
-          
-          // FIXME -- This seems very inefficient. Is there a better way?
-          std::list<std::string> list;
-          for (int i = 0; i < ffl_len; i++)
-            {
-              const std::string filename = do_which (ffl [i]);
-              if (file_is_in_dir (filename, dir))
-                list.push_back (ffl [i]);
-            }
-          for (int i = 0; i < afl_len; i++)
-            {
-              const std::string filename = do_which (afl [i]);
-              if (file_is_in_dir (filename, dir))
-                list.push_back (afl [i]);
-            }
-            
-          Cell C (list.size (), 1);
-          int j = 0;
-          for (std::list<std::string>::const_iterator iter = list.begin ();
-               iter != list.end (); iter++)
-            {
-              C (j++, 0) = octave_value (*iter);
-            }
 
-          retval.append (octave_value (C));
-        }
+      if (! error_state)
+	{
+	  string_vector fl = load_path::files (dir);
+
+	  if (! error_state)
+	    retval = Cell (fl);
+	}
+      else
+        error ("__list_functions__: input must be a string");
     }  
 
   return retval;

@@ -1585,7 +1585,10 @@ function finish_installation (desc, packdir, global_install)
 endfunction
 
 function generate_lookfor_cache (desc)
-  gen_doc_cache (genpath (desc.dir));
+  dirs = split_by (genpath (desc.dir), pathsep ());
+  for i = 1 : length (dirs)
+    gen_doc_cache (fullfile (dirs{i}, "DOC"), dirs{i});
+  endfor
 endfunction
 
 ## Make sure the package contains the essential files.

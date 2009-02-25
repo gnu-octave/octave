@@ -44,7 +44,9 @@ function gen_doc_cache (out_file = "DOC", directory = [])
   endif
   
   ## Save cache
-  save ("-text", out_file, "cache");
+  if (! isempty (cache))
+    save ("-text", out_file, "cache");
+  endif
 endfunction
 
 function [text, first_sentence, status] = handle_function (f, text, format)

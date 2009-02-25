@@ -1,10 +1,14 @@
 2009-02-24  John W. Eaton  <jwe@octave.org>
 
 	* help/gen_doc_cache.m: Don't compress output file.  By default,
-	write to DOC, not DOC.gz.
+	write to DOC, not DOC.gz.  Don't save empty cache.
+
 	* help/lookfor.m: Use doc_cache_file to get location of DOC file.
 
 2009-02-24  Jason Riedy  <jason@acm.org>
+
+	* pkg/pkg.m (generate_lookfor_cache): Generate a DOC file for each
+	directory.
 
 	* help/gen_doc_cache.m: Call __makeinfo__, not makeinfo.
 

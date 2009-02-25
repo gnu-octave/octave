@@ -278,6 +278,16 @@ set_image_path (const std::string& path)
 }
 
 static void
+set_default_doc_cache_file (void)
+{
+  std::string def_file = subst_octave_home (OCTAVE_DOC_CACHE_FILE);
+
+  std::string env_file = octave_env::getenv ("OCTAVE_DOC_CACHE_FILE");
+
+  Vdoc_cache_file = env_file.empty () ? def_file : env_file;
+}
+
+static void
 set_default_info_file (void)
 {
   std::string std_info_file = subst_octave_home (OCTAVE_INFOFILE);
@@ -374,6 +384,8 @@ install_defaults (void)
   set_exec_path ();
 
   set_image_path ();
+
+  set_default_doc_cache_file ();
 
   set_default_info_file ();
 

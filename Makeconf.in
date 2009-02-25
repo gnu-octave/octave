@@ -312,10 +312,13 @@ mandir = @mandir@
 man1dir = @man1dir@
 man1ext = @man1ext@
 
+# The full path to the default doc cache file.
+doc_cache_file = @doc_cache_file@
+
 # Where to install and expect the info files describing Octave..
 infodir = @infodir@
 
-# The fill path to the default info file.
+# The full path to the default info file.
 infofile = @infofile@
 
 # ==================== Octave-specific directories ====================
@@ -567,6 +570,7 @@ $(SED) < $< > $@-t \
   -e "s|%OCTAVE_DATADIR%|\"${datadir}\"|" \
   -e "s|%OCTAVE_DATAROOTDIR%|\"${datarootdir}\"|" \
   -e "s|%OCTAVE_DEFAULT_PAGER%|\"${DEFAULT_PAGER}\"|" \
+  -e "s|%OCTAVE_DOC_CACHE_FILE%|\"${doc_cache_file}\"|" \
   -e "s|%OCTAVE_EXEC_PREFIX%|\"${exec_prefix}\"|" \
   -e "s|%OCTAVE_FCNFILEDIR%|\"${fcnfiledir}\"|" \
   -e "s|%OCTAVE_IMAGEDIR%|\"${imagedir}\"|" \

@@ -1,3 +1,8 @@
+2009-02-25  John W. Eaton  <jwe@octave.org>
+
+	* configure.in (doc_cache_file): New default variable
+	* Makeconf.in (@doc_cache_file, do-subst-default-vals): Substitute it.
+
 2009-02-24  John W. Eaton  <jwe@octave.org>
 
 	* run-octave.in (DOCFILE): New variable.  Pass --doc-cache-file

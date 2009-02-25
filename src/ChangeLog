@@ -1,5 +1,9 @@
 2009-02-25  John W. Eaton  <jwe@octave.org>
 
+	* defaults.h.in (OCTAVE_DOC_CACHE_FILE): New macro.
+	* defaults.cc (set_default_doc_cache_file): New function.
+	(install_defaults): Call it.
+
 	* help.cc (__list_functions__): Simplify
 
 	* input.cc (get_debug_input): Don't pass arbitrary input to

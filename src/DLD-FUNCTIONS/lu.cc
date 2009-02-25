@@ -40,6 +40,29 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-re-sparse.h"
 #include "ov-cx-sparse.h"
 
+template <class MT>
+static octave_value
+maybe_set_triangular (const MT& m, MatrixType::matrix_type t = MatrixType::Upper)
+{
+  typedef typename MT::element_type T;
+  octave_value retval;
+  octave_idx_type r = m.rows (), c = m.columns ();
+  if (r == c)
+    {
+      const T zero = T();
+      octave_idx_type i = 0;
+      for (;i != r && m(i,i) != zero; i++) ;
+      if (i == r)
+        retval = octave_value (m, MatrixType (t));
+      else
+        retval = m;
+    }
+  else
+    retval = m;
+
+  return retval;
+}
+
 DEFUN_DLD (lu, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {[@var{l}, @var{u}, @var{p}] =} lu (@var{a})\n\
@@ -358,7 +381,7 @@ information.\n\
 		      {
 			PermMatrix P = fact.P ();
 			FloatMatrix L = P.transpose () * fact.L ();
-			retval(1) = fact.U ();
+			retval(1) = maybe_set_triangular (fact.U (), MatrixType::Upper);
 			retval(0) = L;
 		      }
 		      break;
@@ -370,8 +393,8 @@ information.\n\
 			  retval(2) = fact.P_vec ();
 			else
 			  retval(2) = fact.P ();
-			retval(1) = fact.U ();
-			retval(0) = fact.L ();
+			retval(1) = maybe_set_triangular (fact.U (), MatrixType::Upper);
+			retval(0) = maybe_set_triangular (fact.L (), MatrixType::Lower);
 		      }
 		      break;
 		    }
@@ -396,7 +419,7 @@ information.\n\
 		      {
 			PermMatrix P = fact.P ();
 			Matrix L = P.transpose () * fact.L ();
-			retval(1) = fact.U ();
+			retval(1) = maybe_set_triangular (fact.U (), MatrixType::Upper);
 			retval(0) = L;
 		      }
 		      break;
@@ -408,8 +431,8 @@ information.\n\
 			  retval(2) = fact.P_vec ();
 			else
 			  retval(2) = fact.P ();
-			retval(1) = fact.U ();
-			retval(0) = fact.L ();
+			retval(1) = maybe_set_triangular (fact.U (), MatrixType::Upper);
+			retval(0) = maybe_set_triangular (fact.L (), MatrixType::Lower);
 		      }
 		      break;
 		    }
@@ -437,7 +460,7 @@ information.\n\
 		      {
 			PermMatrix P = fact.P ();
 			FloatComplexMatrix L = P.transpose () * fact.L ();
-			retval(1) = fact.U ();
+			retval(1) = maybe_set_triangular (fact.U (), MatrixType::Upper);
 			retval(0) = L;
 		      }
 		      break;
@@ -449,8 +472,8 @@ information.\n\
 			  retval(2) = fact.P_vec ();
 			else
 			  retval(2) = fact.P ();
-			retval(1) = fact.U ();
-			retval(0) = fact.L ();
+			retval(1) = maybe_set_triangular (fact.U (), MatrixType::Upper);
+			retval(0) = maybe_set_triangular (fact.L (), MatrixType::Lower);
 		      }
 		      break;
 		    }
@@ -475,7 +498,7 @@ information.\n\
 		      {
 			PermMatrix P = fact.P ();
 			ComplexMatrix L = P.transpose () * fact.L ();
-			retval(1) = fact.U ();
+			retval(1) = maybe_set_triangular (fact.U (), MatrixType::Upper);
 			retval(0) = L;
 		      }
 		      break;
@@ -487,8 +510,8 @@ information.\n\
 			  retval(2) = fact.P_vec ();
 			else
 			  retval(2) = fact.P ();
-			retval(1) = fact.U ();
-			retval(0) = fact.L ();
+			retval(1) = maybe_set_triangular (fact.U (), MatrixType::Upper);
+			retval(0) = maybe_set_triangular (fact.L (), MatrixType::Lower);
 		      }
 		      break;
 		    }

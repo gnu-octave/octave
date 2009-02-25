@@ -1,3 +1,10 @@
+2009-02-25  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/lu.cc (maybe_set_triangular): New function.
+	(Flu): Use it.
+	* DLD-FUNCTIONS/qr.cc (maybe_set_triangular): New function.
+	(Fqr): Use it.
+
 2009-02-25  John W. Eaton  <jwe@octave.org>
 
 	* input.cc (get_debug_input): Write debugging location info

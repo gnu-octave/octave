@@ -44,6 +44,29 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-obj.h"
 #include "utils.h"
 
+template <class MT>
+static octave_value
+maybe_set_triangular (const MT& m, MatrixType::matrix_type t = MatrixType::Upper)
+{
+  typedef typename MT::element_type T;
+  octave_value retval;
+  octave_idx_type r = m.rows (), c = m.columns ();
+  if (r == c)
+    {
+      const T zero = T();
+      octave_idx_type i = 0;
+      for (;i != r && m(i,i) != zero; i++) ;
+      if (i == r)
+        retval = octave_value (m, MatrixType (t));
+      else
+        retval = m;
+    }
+  else
+    retval = m;
+
+  return retval;
+}
+
 // [Q, R] = qr (X):      form Q unitary and R upper triangular such
 //                        that Q * R = X
 //
@@ -296,7 +319,7 @@ as\n\
 		    case 2:
 		      {
 			FloatQR fact (m, type);
-			retval(1) = fact.R ();
+			retval(1) = maybe_set_triangular (fact.R ());
 			retval(0) = fact.Q ();
 		      }
 		      break;
@@ -308,7 +331,7 @@ as\n\
                           retval(2) = fact.Pvec ();
                         else
                           retval(2) = fact.P ();
-			retval(1) = fact.R ();
+			retval(1) = maybe_set_triangular (fact.R ());
 			retval(0) = fact.Q ();
 		      }
 		      break;
@@ -334,7 +357,7 @@ as\n\
 		    case 2:
 		      {
 			FloatComplexQR fact (m, type);
-			retval(1) = fact.R ();
+			retval(1) = maybe_set_triangular (fact.R ());
 			retval(0) = fact.Q ();
 		      }
 		      break;
@@ -346,7 +369,7 @@ as\n\
                           retval(2) = fact.Pvec ();
                         else
                           retval(2) = fact.P ();
-			retval(1) = fact.R ();
+			retval(1) = maybe_set_triangular (fact.R ());
 			retval(0) = fact.Q ();
 		      }
 		      break;
@@ -375,7 +398,7 @@ as\n\
 		    case 2:
 		      {
 			QR fact (m, type);
-			retval(1) = fact.R ();
+			retval(1) = maybe_set_triangular (fact.R ());
 			retval(0) = fact.Q ();
 		      }
 		      break;
@@ -387,7 +410,7 @@ as\n\
                           retval(2) = fact.Pvec ();
                         else
                           retval(2) = fact.P ();
-			retval(1) = fact.R ();
+			retval(1) = maybe_set_triangular (fact.R ());
 			retval(0) = fact.Q ();
 		      }
 		      break;
@@ -413,7 +436,7 @@ as\n\
 		    case 2:
 		      {
 			ComplexQR fact (m, type);
-			retval(1) = fact.R ();
+			retval(1) = maybe_set_triangular (fact.R ());
 			retval(0) = fact.Q ();
 		      }
 		      break;
@@ -425,7 +448,7 @@ as\n\
                           retval(2) = fact.Pvec ();
                         else
                           retval(2) = fact.P ();
-			retval(1) = fact.R ();
+			retval(1) = maybe_set_triangular (fact.R ());
 			retval(0) = fact.Q ();
 		      }
 		      break;

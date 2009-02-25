@@ -1,3 +1,8 @@
+2009-02-25  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/rand.cc: Note that the tests for the old random
+	number generator will fail if using 64-bit indexing.
+
 2009-02-25  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/lu.cc (maybe_set_triangular): New function.
@@ -6,6 +11,8 @@
 	(Fqr): Use it.
 
 2009-02-25  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/chol.cc: Fix tests for missing cholmod.
 
 	* input.cc (get_debug_input): Write debugging location info
 	directly to std::cerr instead of calling message.

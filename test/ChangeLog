@@ -1,3 +1,8 @@
+2009-02-25  John W. Eaton  <jwe@octave.org>
+
+	* build_sparse_tests.sh: Note that saving sparse matrices to MAT
+	files fails when using 64-bit indexing.
+
 2009-02-22  John W. Eaton  <jwe@octave.org>
 
 	* build_sparse_tests.sh: Fix diag matrix divide by zero test.

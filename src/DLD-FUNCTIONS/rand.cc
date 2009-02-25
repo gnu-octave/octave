@@ -386,6 +386,9 @@ keyword \"state\" should be used to reset the state of the @code{rand}.\n\
   return retval;
 }
 
+// FIXME -- The old generator (selected when "seed" is set) will not
+// work properly if compiled to use 64-bit integers.
+
 /*
 %!test # 'state' can be a scalar
 %! rand('state',12); x = rand(1,4);

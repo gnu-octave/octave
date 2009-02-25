@@ -195,7 +195,7 @@ sparse matrices.\n\
 		      else
 			retval(0) = fact.R();
 		    }
-		  else
+p		  else
 		    error ("chol: matrix not positive definite");
 		}
 	    }
@@ -470,16 +470,20 @@ symmetric positive definite matrix @var{a}.\n\
 
 /*
 
-%!test
+%!shared A, Ainv
 %! A = [2,0.2;0.2,1];
 %! Ainv = inv(A);
+%!test
 %! Ainv1 = cholinv(A);
-%! Ainv2 = inv(sparse(A));
-%! Ainv3 = cholinv(sparse(A));
-%! Ainv4 = spcholinv(sparse(A));
 %! assert (norm(Ainv-Ainv1),0,1e-10)
+%!testif HAVE_CHOLMOD
+%! Ainv2 = inv(sparse(A));
 %! assert (norm(Ainv-Ainv2),0,1e-10)
+%!testif HAVE_CHOLDMOD
+%! Ainv3 = cholinv(sparse(A));
 %! assert (norm(Ainv-Ainv3),0,1e-10)
+%!testif HAVE_CHOLDMOD
+%! Ainv4 = spcholinv(sparse(A));
 %! assert (norm(Ainv-Ainv4),0,1e-10)
 
 */

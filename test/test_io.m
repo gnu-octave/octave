@@ -18,6 +18,10 @@
 
 %% Automatically generated from DejaGNU files
 
+## FIXME -- we should skip (or mark as an expected failure) the test for
+## saving sparse matrices to MAT files when using 64-bit indexing since
+## that is not implemented yet.
+
 %% test/octave.test/io/load-save.m
 %!function [ret, files] = testls (input)
 %!  ## flag a1 global so as to test the storage of global flags

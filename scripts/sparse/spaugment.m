@@ -87,7 +87,7 @@ function s = spaugment (a, c)
   s = [ c * speye(m, m), a; a', sparse(n, n)];
 endfunction
 
-%!test
+%!testif HAVE_UMFPACK
 %! m = 11; n = 10; mn = max(m ,n);
 %! a = spdiags ([ones(mn,1), 10*ones(mn,1), -ones(mn,1)],[-1,0,1], m, n);
 %! x0 = a \ ones (m,1);

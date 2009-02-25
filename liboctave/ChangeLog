@@ -1,3 +1,8 @@
+2009-02-25  Jaroslav Hajek  <highegg@gmail.com>
+
+	* oct-inttypes.cc (pow (const octave_int<T>&, const octave_int<T>&)):
+	Simplify.
+
 2009-02-23  Jaroslav Hajek  <highegg@gmail.com>
 
 	* oct-inttypes.h (octave_int_cmp_op::mop): Implement as simple

@@ -63,16 +63,28 @@ function [out_fun, out_help_text] = lookfor (str, extra)
   endif
   
   ## Search functions in path
-  pathorig = __pathorig__ ();
+  p = __pathorig__ ();
+  idx = find (p == pathsep ());
+  idx(end+1) = numel (p) + 1;
+  prev_idx = 1;
+  nelts = numel (idx);
+  orig_path = cell (nelts, 1);
+  for n = 1:nelts
+    orig_path{n} = p(prev_idx:idx(n)-1);
+    prev_idx = idx(n) + 1;
+  endfor
+
   p = path ();
   idx = find (p == pathsep ());
+  idx(end+1) = numel (p);
   prev_idx = 1;
-  for n = 1:length (idx)
-    f = p (prev_idx:idx (n)-1);
+  for n = 1:numel (idx)
+    elt = p(prev_idx:idx(n)-1);
+    prev_idx = idx(n) + 1;
     
     ## Should we search the directory or has it been covered by the cache?
-    if (!had_core_cache || isempty (findstr (f, pathorig)))
-      cache_file = fullfile (f, "DOC");
+    if (!had_core_cache || ! any (strcmp (elt, orig_path)))
+      cache_file = fullfile (elt, "DOC");
       if (exist (cache_file, "file"))
         ## We have a cache in the directory, then read it and search it!
         [funs, hts] = search_cache (str, cache_file, search_type);
@@ -80,7 +92,7 @@ function [out_fun, out_help_text] = lookfor (str, extra)
         help_text (end+1:end+length (hts)) = hts;
       else
       ## We don't have a cache. Search files
-        funs_in_f = __list_functions__ (f);
+        funs_in_f = __list_functions__ (elt);
         for m = 1:length (funs_in_f)
           fn = funs_in_f {m};
         
@@ -91,17 +103,34 @@ function [out_fun, out_help_text] = lookfor (str, extra)
         
           ## Extract first sentence
           try
-            first_sentence = get_first_help_sentence (fn);
-            status = 0;
+	    warn_state = warning ();
+	    unwind_protect
+	      warning ("off");
+              first_sentence = get_first_help_sentence (fn);
+              status = 0;
+	    unwind_protect_cleanup
+	      warning (warn_state);
+	    end_unwind_protect
           catch
             status = 1;
           end_try_catch
 
           if (search_type == 2) # search entire help text
-            [text, format] = get_help_text (fn);
+	    try
+	      warn_state = warning ();
+	      unwind_protect
+		warning ("off");
+		[text, fmt] = get_help_text (fn);
+		status = 0;
+	      unwind_protect_cleanup
+		warning (warn_state);
+	      end_unwind_protect
+	    catch
+	      status = 1;
+	    end_try_catch
     
-            ## Take action depending on help text format
-            switch (lower (format))
+            ## Take action depending on help text fmt
+            switch (lower (fmt))
               case "plain text"
                 status = 0;
               case "texinfo"
@@ -124,7 +153,6 @@ function [out_fun, out_help_text] = lookfor (str, extra)
         endfor
       endif
     endif
-    prev_idx = idx (n) + 1;
   endfor
   
   if (nargout == 0)
@@ -164,4 +192,3 @@ function [funs, help_texts] = search_cache (str, cache_file, search_type)
     funs = help_texts = {};
   endif
 endfunction
-

@@ -1,3 +1,9 @@
+2009-02-25  John W. Eaton  <jwe@octave.org>
+
+	* help/lookfor.m: Split original path into cell array and compare
+	elements with strcmp.  Suppress warnings and errors when getting
+	help text from function files.
+
 2009-02-24  John W. Eaton  <jwe@octave.org>
 
 	* help/gen_doc_cache.m: Don't compress output file.  By default,

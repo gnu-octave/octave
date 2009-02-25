@@ -1,5 +1,10 @@
 2009-02-25  John W. Eaton  <jwe@octave.org>
 
+	* version.h (OCTAVE_VERSION): Now 3.1.53.
+	(OCTAVE_API_VERSION): Now api-v35.
+	(OCTAVE_RELEASE_DATE): Now 2009-02-25.
+	(OCTAVE_COPYRIGHT): Update year.
+
 	* Makefile.in (distclean): Remove tags TAGS y.tab.h y.output
 	yy.lex.c here, not in maintainer-clean target.  Also remove
 	parse.output.

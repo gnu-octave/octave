@@ -1,7 +1,7 @@
 /*
 
 Copyright (C) 1992, 1993, 1994, 1996, 1997, 1998, 1999, 2000, 2001,
-              2002, 2003, 2004, 2005, 2006, 2007, 2008 John W. Eaton
+              2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 John W. Eaton
 
 This file is part of Octave.
 
@@ -24,13 +24,13 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_version_h)
 #define octave_version_h 1
 
-#define OCTAVE_VERSION "3.1.52+"
+#define OCTAVE_VERSION "3.1.53"
 
-#define OCTAVE_API_VERSION "api-v34+"
+#define OCTAVE_API_VERSION "api-v35"
 
-#define OCTAVE_RELEASE_DATE "2008-02-09"
+#define OCTAVE_RELEASE_DATE "2009-02-25"
 
-#define OCTAVE_COPYRIGHT "Copyright (C) 2008 John W. Eaton and others."
+#define OCTAVE_COPYRIGHT "Copyright (C) 2009 John W. Eaton and others."
 
 // This is the first line printed by --version.  The GNU coding
 // standards say that the version number should follow the last space

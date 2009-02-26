@@ -430,7 +430,7 @@ general regular expressions, the following functions come with Octave.
 
 @DOCSTRING(strtok)
 
-@DOCSTRING(split)
+@DOCSTRING(strsplit)
 
 @DOCSTRING(strrep)
 

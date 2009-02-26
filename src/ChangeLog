@@ -1,5 +1,7 @@
 2009-02-26  John W. Eaton  <jwe@octave.org>
 
+	* DLD-FUNCTIONS/chol.cc: Correct spelling of CHOLMOD in tests.
+
 	* version.h (OCTAVE_VERSION): Now 3.1.53+.
 	(OCTAVE_API_VERSION): Now api-v35+.
 

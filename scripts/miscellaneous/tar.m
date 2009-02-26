@@ -56,7 +56,7 @@ function entries = tar (tarfile, files, root)
 	  if (output(end) == "\n")
 	    output(end) = [];
 	  endif
-          entries = cellstr (split (output, "\n"));
+          entries = strsplit (output, "\n");
 	  entries = entries';
 	endif
       else

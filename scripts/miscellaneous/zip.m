@@ -56,7 +56,7 @@ function entries = zip (zipfile, files, rootdir)
 	    if (entries(end) == "\n")
 	      entries(end) = [];
 	    endif
-            entries = cellstr (split (entries, "\n"))';
+            entries = strsplit (entries, "\n");
 	  else
 	    error ("zip: zipinfo failed with exit status = %d", status);
 	  endif

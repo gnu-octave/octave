@@ -1,3 +1,23 @@
+2009-02-26  Jaroslav Hajek  <highegg@gmail.com>
+
+	* strings/strsplit.m: New function.
+	* strings/split.m: Move to deprecated/.
+	* strings/Makefile.in: Update.
+	* deprecated/Makefile.in: Update.
+
+	* general/int2str.m: Use strsplit instead of split.
+	* general/num2str.m: Ditto.
+	* help/__makeinfo__.m: Ditto.
+	* help/lookfor.m: Ditto.
+	* miscellaneous/compare_versions.m: Ditto.
+	* miscellaneous/tar.m: Ditto.
+	* miscellaneous/unpack.m: Ditto.
+	* miscellaneous/what.m: Ditto.
+	* miscellaneous/zip.m: Ditto.
+	* pkg/pkg.m: Ditto.
+	* strings/strtok.m: Ditto.
+	* testfun/rundemos.m: Ditto.
+
 2009-02-25  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.in (distclean maintainer-clean): Remove tags and TAGS

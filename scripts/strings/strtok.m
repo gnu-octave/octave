@@ -36,7 +36,7 @@
 ##         rem = *27+31
 ## @end group
 ## @end example
-## @seealso{index, split}
+## @seealso{index, strsplit}
 ## @end deftypefn
 
 ## FIXME: check what to do for a null delimiter

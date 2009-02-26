@@ -1754,12 +1754,7 @@ endfunction
 ## Split the text into a cell array of strings by sep.
 ## Example: "A, B" => {"A", "B"} (with sep = ",")
 function out = split_by (text, sep)
-  text_matrix = split (text, sep);
-  num_words = size (text_matrix, 1);
-  out = cell (num_words, 1);
-  for i = 1:num_words
-    out{i} = strip (text_matrix(i, :));
-  endfor
+  out = strtrim (strsplit (text, sep));
 endfunction
 
 ## Create an INDEX file for a package that doesn't provide one.

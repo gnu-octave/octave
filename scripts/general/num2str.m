@@ -142,7 +142,7 @@ function retval = num2str (x, arg)
     endwhile
 
     tmp(length (tmp)) = "";
-    retval = strtrim (split (tmp, "\n"));
+    retval = char (strtrim (strsplit (tmp, "\n")));
   else
     if (nargin == 2)
       if (ischar (arg))

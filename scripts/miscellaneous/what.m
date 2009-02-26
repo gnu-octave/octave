@@ -33,9 +33,7 @@ function ret = what (d)
     d = pwd ();
   elseif (isempty (strfind (d, filesep ())))
     ## Find the appropriate directory on the path.
-    p = split (path (), pathsep());
-    p = cellfun (@(x) deblank (x), mat2cell (p, ones (1, size (p, 1)), ...
-		size (p, 2)), "UniformOutput", false);
+    p = strtrim (strsplit (path (), pathsep()));
     d = p{find (cellfun (@(x) ! isempty (strfind (x, d)), p))(end)};
   else
     [status, msg, msgid] = fileattrib (d);

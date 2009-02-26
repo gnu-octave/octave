@@ -63,10 +63,10 @@ function [out_fun, out_help_text] = lookfor (str, extra)
   endif
   
   ## Search functions in new path dirs.
-  orig_path = split_str (__pathorig__ (), pathsep ());
+  orig_path = strsplit (__pathorig__ (), pathsep ());
 
   ## ditto for path.
-  new_path = split_str (path (), pathsep ());
+  new_path = strsplit (path (), pathsep ());
 
   ## scratch out directories already covered by orig_path.
   if (had_core_cache)
@@ -183,30 +183,3 @@ function [funs, help_texts] = search_cache (str, cache_file, search_type)
   endif
 endfunction
 
-## split string using a separator (or more separators)
-## FIXME: maybe this function should be available to users?
-function s = split_str (p, sep)
-  if (isempty (p))
-    s = cell (size (p));
-  else
-    ## split p according to delimiter.
-    if (isscalar (sep))
-      ## single separator
-      idx = find (p == sep);
-    else
-      ## multiple separators
-      idx = strchr (p, sep);
-    endif
-
-    ## get substring sizes.
-    if (isempty (idx))
-      sizes = numel (p);
-    else
-      sizes = [idx(1)-1, diff(idx)-1, numel(p)-idx(end)];
-    endif
-    ## remove separators.
-    p(idx) = []; 
-    ## convert!
-    s = mat2cell (p, 1, sizes);
-  endif
-endfunction

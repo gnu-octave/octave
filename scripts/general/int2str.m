@@ -70,7 +70,7 @@ function retval = int2str (x)
     endif
     tmp = sprintf (fmt, permute (x, [2, 1, 3 : nd]));
     tmp(end) = "";
-    retval = split (tmp, "\n");
+    retval = char (strsplit (tmp, "\n"));
   else
     print_usage ();
   endif

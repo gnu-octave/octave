@@ -107,7 +107,7 @@ function [retval, status] = __makeinfo__ (text, output_type = "plain text", see_
         endif
       endif
       see_also_args = text (bracket_start+1:(stop-1));
-      see_also_args = strtrim (cellstr (split (see_also_args, ",")));
+      see_also_args = strtrim (strsplit (see_also_args, ","));
       expanded = see_also (see_also_args);
       text = strcat (text (1:start-1), expanded, text (stop+1:end));
     endif

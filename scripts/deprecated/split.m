@@ -18,6 +18,10 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} split (@var{s}, @var{t}, @var{n})
+## This function has been deprecated. Use @code{char (strsplit (s, t))}
+## instead.
+## @end deftypefn
+
 ## Divides the string @var{s} into pieces separated by @var{t}, returning
 ## the result in a string array (padded with blanks to form a valid
 ## matrix).  If the optional input @var{n} is supplied, split @var{s}

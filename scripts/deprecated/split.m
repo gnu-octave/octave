@@ -49,7 +49,16 @@
 ## Author: Kurt Hornik <Kurt.Hornik@wu-wien.ac.at>
 ## Adapted-By: jwe
 
+## Deprecated in version 3.2
+
 function m = split (s, t, n)
+
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+             "split is obsolete and will be removed from a future version of Octave; please use strsplit instead");
+  endif
 
   if (nargin == 2 || nargin == 3)
     if (nargin == 2)

@@ -54,8 +54,6 @@ extern bool is_keyword (const std::string& s);
 
 extern void prep_lexer_for_script (void);
 
-extern void force_local_variable (const std::string& name);
-
 // For communication between the lexer and parser.
 
 class

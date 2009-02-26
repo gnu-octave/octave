@@ -840,7 +840,7 @@ assign_lhs	: simple_expr
 			 p != lexer_flags.pending_local_variables.end ();
 			 p++)
 		      {
-			force_local_variable (*p);
+			symbol_table::force_variable (*p);
 		      }
 		    lexer_flags.pending_local_variables.clear ();
 		  }
@@ -2495,6 +2495,8 @@ make_script (tree_statement_list *cmds, tree_statement *end_script)
   script->stash_fcn_file_time (now);
 
   curr_fcn_ptr = script;
+
+  symbol_table::clear_forced_variables ();
 }
 
 // Begin defining a function.
@@ -2677,7 +2679,7 @@ finish_function (tree_parameter_list *ret_list,
       // Clear any local variables that may have been added while
       // parsing (for example, by force_local_variable in lex.l). 
 
-      symbol_table::clear_variables (fcn->scope ());
+      symbol_table::clear_forced_variables (fcn->scope ());
     }
 
   return retval;

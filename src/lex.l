@@ -1636,15 +1636,6 @@ is_variable (const std::string& name)
 	      != lexer_flags.pending_local_variables.end ()));
 }
 
-void
-force_local_variable (const std::string& name)
-{
-  octave_value& val = symbol_table::varref (name);
-
-  if (! val.is_defined ())
-    val = Matrix ();
-}
-
 static std::string
 grab_block_comment (stream_reader& reader, bool& eof)
 {
@@ -3206,7 +3197,7 @@ handle_identifier (void)
 	       || (lexer_flags.looking_at_parameter_list
 		   && ! lexer_flags.looking_at_initializer_expression))
 	{
-	  force_local_variable (tok);
+	  symbol_table::force_variable (tok);
 	}
       else if (lexer_flags.looking_at_matrix_or_assign_lhs)
 	{

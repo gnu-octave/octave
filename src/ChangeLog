@@ -1,5 +1,25 @@
 2009-02-26  John W. Eaton  <jwe@octave.org>
 
+	* symtab.h (symbol_table::symbol_record::symbol_record_rep::forced):
+	New static constant.
+	(symbol_table::symbol_record::symbol_record_rep::force_variable,
+	symbol_table::symbol_record::force_variable): New functions.
+	(symbol_table::symbol_record::symbol_record_rep::is_forced,
+	symbol_table::symbol_record::symbol_record_rep::mark_forced,
+	symbol_table::symbol_record::symbol_record_rep::unmark_forced,
+	symbol_table::symbol_record::symbol_record_rep::clear_forced,
+	symbol_table::symbol_record::is_forced,
+	symbol_table::symbol_record::mark_forced,
+	symbol_table::symbol_record::clear_forced,
+	symbol_table::symbol_record::unmark_forced): New fucntions.
+	* lex.h, lex.l (force_local_variable): Delete.
+	(handle_identifier): Call symbol_table::force_variable instead of
+	force_local_variable.
+	* parse.y (make_script): Call symbol_table:clear_forced_variables
+	after defining script.
+	(finish_function): Call symbol_table::clear_forced_variables
+	instead of symbol_table::clear_variables.
+	
 	* DLD-FUNCTIONS/chol.cc: Correct spelling of CHOLMOD in tests.
 
 	* version.h (OCTAVE_VERSION): Now 3.1.53+.

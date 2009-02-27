@@ -1,3 +1,7 @@
+2009-02-27  Jaroslav Hajek  <highegg@gmail.com>
+
+	* strings/strsplit.m: Check also nargin.
+
 2009-02-26  John W. Eaton  <jwe@octave.org>
 
 	* deprecated/split.m: Add warning, not about version.

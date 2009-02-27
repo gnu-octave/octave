@@ -23,7 +23,8 @@
 ## @end deftypefn
 
 function s = strsplit (p, sep, strip_empty = false)
-  if (! ischar (p) || rows (p) > 1 || ! ischar (sep) || ! islogical (strip_empty))
+  if (nargin < 2 || nargin > 3 || ! ischar (p) || rows (p) > 1 \
+    || ! ischar (sep) || ! islogical (strip_empty))
     print_usage ();
   endif
 

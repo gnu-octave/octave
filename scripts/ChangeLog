@@ -1,5 +1,12 @@
 2009-02-27  John W. Eaton  <jwe@octave.org>
 
+	* set/complement.m: Call unique, not create_set.
+	* set/unique.m: Style fix for docstring.
+	* deprecated/create_set.m: Move here from set/create_set.m.
+	Always return a row vector, as documented.
+	* set/Makefile.in (SOURCES): Remove create_set.m from the list.
+	* deprecated/Makefile.in (SOURCES): Add create_set.m to the list.
+
 	* general/num2str.m: Call strsplit instead of split.
 
 	* strings/strsplit.m: Style fixes.

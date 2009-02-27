@@ -19,23 +19,24 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} unique (@var{x})
-##
+## @deftypefnx {Function File} {} unique (@var{x}, "rows")
+## @deftypefnx {Function File} {} unique (@dots{}, "first")
+## @deftypefnx {Function File} {} unique (@dots{}, "last")
+## @deftypefnx {Function File} {[@var{y}, @var{i}, @var{j}] =} unique (@dots{})
 ## Return the unique elements of @var{x}, sorted in ascending order.
 ## If @var{x} is a row vector, return a row vector, but if @var{x}
 ## is a column vector or a matrix return a column vector.
 ##
-## @deftypefnx {Function File} {} unique (@var{A}, 'rows')
+## If the optional argument @code{"rows"} is supplied, return the unique
+## rows of @var{x}, sorted in ascending order.
 ##
-## Return the unique rows of @var{A}, sorted in ascending order.
+## If requested, return index vectors @var{i} and @var{j} such that
+## @code{x(i)==y} and @code{y(j)==x}.
 ##
-## @deftypefnx {Function File} {[@var{y}, @var{i}, @var{j}] =} unique (@var{x})
-##
-## Return index vectors @var{i} and @var{j} such that @code{x(i)==y} and
-## @code{y(j)==x}.
-## 
-## Additionally, one of 'first' or 'last' can be given as an argument.
-## 'last' (default) specifies that the highest possible indices are returned
-## in @var{i}, while 'first' means the lowest.
+## Additionally, one of @code{"first"} or @code{"last"} may be given as
+## an argument.  If @code{"last"} is specified, return the highest
+## possible indices in @var{i}, otherwise, if @code{"first"} is
+## specified, return the lowest.  The default is @code{"last"}.
 ## @seealso{union, intersect, setdiff, setxor, ismember}
 ## @end deftypefn
 
@@ -50,9 +51,9 @@ function [y, i, j] = unique (x, varargin)
     ## parse options
     if (iscellstr (varargin))
       varargin = unique (varargin);
-      optfirst = strmatch ('first', varargin) > 0;
-      optlast = strmatch ('last', varargin) > 0;
-      optrows = strmatch ('rows', varargin) > 0 && size (x, 2) > 1;
+      optfirst = strmatch ("first", varargin) > 0;
+      optlast = strmatch ("last", varargin) > 0;
+      optrows = strmatch ("rows", varargin) > 0 && size (x, 2) > 1;
       if (optfirst && optlast)
         error ("unique: cannot specify both \"last\" and \"first\"");
       elseif (optfirst + optlast + optrows != nargin-1)

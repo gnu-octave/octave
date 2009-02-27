@@ -20,6 +20,9 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} create_set (@var{x})
 ## @deftypefnx{Function File} {} create_set (@var{x}, "rows")
+## This function has been deprecated.  Use unique instead.
+## @end deftypefn
+
 ## Return a row vector containing the unique values in @var{x}, sorted in
 ## ascending order.  For example,
 ##
@@ -41,18 +44,26 @@
 ## @end group
 ## @end example
 ## @seealso{union, intersect, complement, unique}
-## @end deftypefn
 
 ## Author: jwe
 
+## Deprecated in version 3.0
+
 function y = create_set (x, rows_opt)
+
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+             "create_set is obsolete and will be removed from a future version of Octave, please use unique instead");
+  endif
 
   if (nargin < 1 || nargin > 2)
     print_usage ();
   endif
   
   if (nargin == 1)
-    y = unique (x).';
+    y = unique (x)(:)';
   elseif (strcmpi (rows_opt, "rows"))
     y = unique (x, "rows");
   else
@@ -61,11 +72,9 @@ function y = create_set (x, rows_opt)
 
 endfunction
 
+%!assert(all (all (create_set ([1, 2, 3, 4, 2, 4]) == [1, 2, 3, 4])));
 %!assert(all (all (create_set ([1, 2; 3, 4; 2, 4]) == [1, 2, 3, 4])));
-
 %!assert(all (all (create_set ([1; 2; 3; 4; 2; 4]) == [1, 2, 3, 4])));
-
 %!assert(isempty (create_set ([])));
-
 %!error create_set (1, 2);
 

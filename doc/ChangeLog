@@ -1,3 +1,7 @@
+2009-02-27  John W. Eaton  <jwe@octave.org>
+
+	* interpreter/set.txi (Sets): Don't document create_set.
+
 2009-02-26  John W. Eaton  <jwe@octave.org>
 
 	* interpreter/strings.txi (Manipulating Strings):

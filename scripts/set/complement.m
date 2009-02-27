@@ -40,12 +40,12 @@ function y = complement (a, b)
   endif
 
   if (isempty (a))
-    y = create_set(b);
+    y = unique (b);
   elseif (isempty (b))
     y = [];
   else
-    a = create_set (a);
-    b = create_set (b);
+    a = unique (a);
+    b = unique (b);
     yindex = 1;
     y = zeros (1, length (b));
     for index = 1:length (b)

@@ -33,7 +33,7 @@ INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
-SOURCES = complement.m create_set.m intersect.m ismember.m \
+SOURCES = complement.m intersect.m ismember.m \
   setdiff.m setxor.m union.m unique.m
 
 DISTFILES = $(addprefix $(srcdir)/, Makefile.in $(SOURCES))

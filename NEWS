@@ -32,23 +32,6 @@ Summary of important user-visible changes for version 3.2:
       comet               ezpolar     ishghandle
       dellistener         ezsurf      linkprop
 
- ** Improvements to the debugger.
-
-    The interactive debugging features have been improved.  Stopping
-    on statements with dbstop should work correctly now.  Stepping
-    into and over functions, and stepping one statement at a time
-    (with dbstep) now works.  Moving up and down the call stack with
-    dbup and dbdown now works.  The dbstack function is now available
-    to print the current function call stack.  The new dbquit function
-    is available to exit the debugging mode.
-
- ** Improved traceback error messages.
-
-    Traceback error messages are much more concise and easier to
-    understand.  They now display information about the function call
-    stack instead of the stack of all statements that were active at
-    the point of the error.
-
  ** New experimental OpenGL/FLTK based plotting system.
 
     An experimental plotting system based on OpenGL and the FLTK
@@ -74,15 +57,43 @@ Summary of important user-visible changes for version 3.2:
      removed from Octave.  These function were incompatible with the
      high level graphics handle code.
 
- ** Improvements to fsolve.
+ ** The Control, Finance and Quaternion functions have been removed.
 
-    The fsolve function now accepts an option structure argument (see
-    also the optimset function).  The INFO values returned from fsolve
-    have changed to be compatible with Matlab's fsolve function.
-    Additionally, fsolve is now able to solve overdetermined systems,
-    complex-differentiable complex systems, systems with a sparse
-    jacobian and can work in single precision if given single precision
-    inputs. It can also be called recursively.
+    These functions are now available as separate packages from
+
+      http://octave.sourceforge.net/packages.html
+
+    and can be reinstalled using the Octave package manager (see
+    the pkg function).
+
+ ** Specific sparse matrix functions removed.
+
+    The following functions, which handled only sparse matrices have
+    been removed.  Instead of calling these functions directly, you
+    should use the corresponding function without the "sp" prefix.
+
+      spatan2     spcumsum  spkron   spprod
+      spchol      spdet     splchol  spqr
+      spchol2inv  spdiag    splu     spsum
+      spcholinv   spfind    spmax    spsumsqk
+      spcumprod   spinv     spmin
+
+ ** Improvements to the debugger.
+
+    The interactive debugging features have been improved.  Stopping
+    on statements with dbstop should work correctly now.  Stepping
+    into and over functions, and stepping one statement at a time
+    (with dbstep) now works.  Moving up and down the call stack with
+    dbup and dbdown now works.  The dbstack function is now available
+    to print the current function call stack.  The new dbquit function
+    is available to exit the debugging mode.
+
+ ** Improved traceback error messages.
+
+    Traceback error messages are much more concise and easier to
+    understand.  They now display information about the function call
+    stack instead of the stack of all statements that were active at
+    the point of the error.
 
  ** Object Oriented Programming.
 
@@ -144,15 +155,6 @@ Summary of important user-visible changes for version 3.2:
 
     the lines "s *= y;" and "t = y + x" will not be executed.
 
- ** The Control, Finance and Quaternion functions have been removed.
-
-    These functions are now available as separate packages from
-
-      http://octave.sourceforge.net/packages.html
-
-    and can be reinstalled using the Octave package manager (see
-    the pkg function).
-
  ** Special treatment in the parser of expressions like "a' * b".
 
     In these cases the transpose is no longer explicitly formed and
@@ -201,14 +203,6 @@ Summary of important user-visible changes for version 3.2:
     The performance of the sum, prod, sumsq, cumsum, cumprod, any, all,
     max and min functions has been significantly improved.
 
- ** Diagonal and permutation matrices.
-
-    The interpreter can now treat diagonal and permutation matrices as
-    special objects that store only the non-zero elements, rather than
-    general full matrices.  Therefore, it is now possible to construct
-    and use these matrices in linear algebra without suffering a
-    performance penalty due to storing large numbers of zero elements.
-
  ** 64-bit integer arithmetic.
 
     Arithmetic with 64-bit integers (int64 and uint64 types) is fully
@@ -220,47 +214,34 @@ Summary of important user-visible changes for version 3.2:
     converting the result back to an integer value, truncating if
     necessary.
 
+ ** Diagonal and permutation matrices.
+
+    The interpreter can now treat diagonal and permutation matrices as
+    special objects that store only the non-zero elements, rather than
+    general full matrices.  Therefore, it is now possible to construct
+    and use these matrices in linear algebra without suffering a
+    performance penalty due to storing large numbers of zero elements.
+
+ ** Improvements to fsolve.
+
+    The fsolve function now accepts an option structure argument (see
+    also the optimset function).  The INFO values returned from fsolve
+    have changed to be compatible with Matlab's fsolve function.
+    Additionally, fsolve is now able to solve overdetermined systems,
+    complex-differentiable complex systems, systems with a sparse
+    jacobian and can work in single precision if given single precision
+    inputs. It can also be called recursively.
+
  ** Improvements to the norm function.
 
     The norm function is now able to compute row or column norms of a
     matrix in a single call, as well as general matrix p-norms.
-
- ** New functions for reading and writing images.
-
-    The imwrite and imread functions have been included in Octave.
-    These functions require the GraphicsMagick library.  The new
-    function imfinfo provides information about an image file (size,
-    type, colors, etc.)
 
  ** New functions for computing some eigenvalues or singular values.
 
     The eigs and svds functions have been included in Octave.  These
     functions require the ARPACK library (now distributed under a
     GPL-compatible license).
-
- ** Changes to strcat.
-
-    The strcat function is now compatible with Matlab's strcat
-    function, which removes trailing whitespace when concatenating
-    character strings.  For example
-
-      strcat ('foo ', 'bar')
-      ==> 'foobar'
-
-    The new function cstrcat provides the previous behavior of
-    Octave's strcat.
-
- ** Specific sparse matrix functions removed.
-
-    The following functions, which handled only sparse matrices have
-    been removed.  Instead of calling these functions directly, you
-    should use the corresponding function without the "sp" prefix.
-
-      spatan2     spcumsum  spkron   spprod
-      spchol      spdet     splchol  spqr
-      spchol2inv  spdiag    splu     spsum
-      spcholinv   spfind    spmax    spsumsqk
-      spcumprod   spinv     spmin
 
  ** New QR and Cholesky factorization updating functions.
 
@@ -270,6 +251,13 @@ Summary of important user-visible changes for version 3.2:
  ** New quadrature functions.
 
       dblquad  quadgk  quadv  triplequad
+
+ ** New functions for reading and writing images.
+
+    The imwrite and imread functions have been included in Octave.
+    These functions require the GraphicsMagick library.  The new
+    function imfinfo provides information about an image file (size,
+    type, colors, etc.)
 
  ** Other miscellaneous new functions.
 
@@ -290,5 +278,26 @@ Summary of important user-visible changes for version 3.2:
       fzero              quantile                    treelayout
       genvarname         re_read_readline_init_file  validatestring
       hypot              reallog
+
+ ** Changes to strcat.
+
+    The strcat function is now compatible with Matlab's strcat
+    function, which removes trailing whitespace when concatenating
+    character strings.  For example
+
+      strcat ('foo ', 'bar')
+      ==> 'foobar'
+
+    The new function cstrcat provides the previous behavior of
+    Octave's strcat.
+
+ ** Improvements to the help functions.
+
+    The help system has been reimplemented mostly in .m files to make
+    it easier to modify.  Performance of the lookfor function has been
+    greatly improved by caching the help text from all functions that
+    are distributed with Octave.  The pkg function has been modified
+    to generate cache files for external packages when they are
+    installed.
 
 See NEWS.3 for old news.

@@ -47,7 +47,7 @@
 
 ## Author: jwe
 
-## Deprecated in version 3.0
+## Deprecated in version 3.2
 
 function y = create_set (x, rows_opt)
 

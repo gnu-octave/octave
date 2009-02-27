@@ -1,3 +1,9 @@
+2009-02-27  Jaroslav Hajek  <highegg@gmail.com>
+
+	* OPERATORS/op-dms-template.cc (gripe_if_zero): New template static
+	function.
+	(dmsdiv, sdmldiv): Call it.
+
 2009-02-26  John W. Eaton  <jwe@octave.org>
 
 	* symtab.h (symbol_table::symbol_record::symbol_record_rep::forced):

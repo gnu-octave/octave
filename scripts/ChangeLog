@@ -1,3 +1,7 @@
+2009-02-27  John W. Eaton  <jwe@octave.org>
+
+	* strings/strsplit.m: Style fixes.
+
 2009-02-27  Jaroslav Hajek  <highegg@gmail.com>
 
 	* strings/strsplit.m: Check also nargin.

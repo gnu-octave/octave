@@ -16,45 +16,48 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{s}] =} strsplit (@var{p}, @var{sep}, @var{strip_empty})
-## Splits a single string using one or more delimiters.
-## The result is returned as a cell array of strings. Consecutive delimiters
-## and delimiters at boundaries result in empty strings, unless @var{strip_empty} is true.
+## Split a single string using one or more delimiters and return a cell
+## array of strings.  Consecutive delimiters and delimiters at
+## boundaries result in empty strings, unless @var{strip_empty} is true.
 ## The default value of @var{strip_empty} is false.
+## @seealso{strtok}
 ## @end deftypefn
 
 function s = strsplit (p, sep, strip_empty = false)
-  if (nargin < 2 || nargin > 3 || ! ischar (p) || rows (p) > 1 \
-    || ! ischar (sep) || ! islogical (strip_empty))
+
+  if (nargin < 2 || nargin > 3 || ! ischar (p) || rows (p) > 1
+      || ! ischar (sep) || ! islogical (strip_empty))
     print_usage ();
   endif
 
   if (isempty (p))
     s = cell (size (p));
   else
-    ## split p according to delimiter.
+    ## Split p according to delimiter.
     if (isscalar (sep))
-      ## single separator
+      ## Single separator.
       idx = find (p == sep);
     else
-      ## multiple separators
+      ## Multiple separators.
       idx = strchr (p, sep);
     endif
 
-    ## get substring sizes.
+    ## Get substring sizes.
     if (isempty (idx))
       sizes = numel (p);
     else
       sizes = [idx(1)-1, diff(idx)-1, numel(p)-idx(end)];
     endif
-    ## remove separators.
+    ## Remove separators.
     p(idx) = []; 
     if (strip_empty)
-      ## omit zero lengths.
+      ## Omit zero lengths.
       sizes = sizes (sizes != 0); 
     endif
-    ## convert!
+    ## Convert!
     s = mat2cell (p, 1, sizes);
   endif
+
 endfunction
 
 %!assert (all (strcmp (strsplit ("road to hell", " "), {"road", "to", "hell"})))

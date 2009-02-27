@@ -2064,6 +2064,8 @@ private:
 
 	sr.force_variable (context);
       }
+    else
+      p->second.force_variable (context);
   }
 
   octave_value& do_varref (const std::string& name, context_id context)

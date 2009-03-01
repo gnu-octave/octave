@@ -1,5 +1,10 @@
 2009-03-01  Ben Abbott <bpabbott@mac.com>
 
+	* general/num2str.m: Trivial bug fix. Recent switch from split()
+	to strsplit() produced cells rather than character data.
+
+2009-03-01  Ben Abbott <bpabbott@mac.com>
+
 	* plot/colorbar.m: Bug fix. Allow hidden colorbars to be deleted,
 	and replace existing colorbar when a new one is created. Additional
 	demos are included to verify these behaviors.

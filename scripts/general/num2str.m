@@ -176,7 +176,7 @@ function retval = num2str (x, arg)
     nd = ndims (x);
     tmp = sprintf (fmt, permute (x, [2, 1, 3:nd]));
     tmp(length (tmp)) = "";
-    retval = strtrim (strsplit (tmp, "\n"));
+    retval = strtrim (char (strsplit (tmp, "\n")));
   endif
 
 endfunction

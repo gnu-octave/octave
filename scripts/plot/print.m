@@ -105,6 +105,9 @@
 ##   If the device is omitted, it is inferred from the file extension,
 ##   or if there is no filename it is sent to the printer as postscript.
 ##
+## @itemx -r@var{NUM}
+##   Resolution of bitmaps in pixels per inch.
+##
 ## @itemx -S@var{xsize},@var{ysize}
 ##   Plot size in pixels for PNG and SVG.  If using the command form of
 ##   the print function, you must quote the @var{xsize},@var{ysize}
@@ -140,6 +143,7 @@ function print (varargin)
   debug = false;
   debug_file = "octave-print-commands.log";
   special_flag = "textnormal";
+  resolution = "";
 
   old_fig = get (0, "currentfigure");
   unwind_protect
@@ -183,6 +187,8 @@ function print (varargin)
 	  endif
         elseif (length (arg) > 2 && arg(1:2) == "-S")
 	  size = arg(3:length(arg));
+        elseif (length (arg) > 2 && arg(1:2) == "-r")
+	  resolution = arg(3:length(arg));
         elseif (length (arg) >= 1 && arg(1) == "-")
 	  error ("print: unknown option `%s'", arg);
 	elseif (length (arg) > 0)
@@ -363,16 +369,12 @@ function print (varargin)
       ## that one perhaps has to write a separate printpng.m function.
       ## DAS
 
-      ## if (use_color >= 0)
-      ##	eval (sprintf ("__gnuplot_set__ term %s color medium", dev));
-      ##else
-      ##eval (sprintf ("__gnuplot_set__ term %s mono medium", dev));
-      ##endif
-
-      if (isempty (size))
+      if (isempty (size) && isempty (resolution))
         options = " large";
-      else
+      elseif (! isempty (size))
         options = cstrcat (" size ", size);
+      else
+	options = "";
       endif
       new_terminal = cstrcat (dev, options);
 
@@ -413,6 +415,17 @@ function print (varargin)
     endif
 
     mono = use_color < 0;
+
+    if (isempty (resolution))
+      resolution = get (0, "screenpixelsperinch");
+    else
+      resolution = str2num (resolution);
+    endif
+    figure_properties = get (gcf);
+    if (! isfield (figure_properties, "__pixels_per_inch__"))
+      addproperty ("__pixels_per_inch__", gcf, "double", resolution);
+    endif
+    set (gcf, "__pixels_per_inch__", resolution)
 
     if (debug)
       drawnow (new_terminal, name, mono, debug_file);

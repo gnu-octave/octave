@@ -34,6 +34,7 @@ INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
 SOURCES = \
+  __actual_axis_position__.m \
   __add_datasource__.m \
   __area__.m \
   __axes_limits__.m \

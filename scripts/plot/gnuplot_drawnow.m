@@ -38,14 +38,15 @@ function gnuplot_drawnow (h, term, file, mono, debug_file)
     ## debug file.
     plot_stream = [];
     fid = [];
+    printing = ! output_to_screen (gnuplot_trim_term (term));
     unwind_protect
       plot_stream = open_gnuplot_stream (1, []);
-      enhanced = gnuplot_set_term (plot_stream (1), true, h, term, file);
-      __go_draw_figure__ (h, plot_stream, enhanced, mono);
+      [enhanced, implicit_margin] = gnuplot_set_term (plot_stream (1), true, h, term, file);
+      __go_draw_figure__ (h, plot_stream, enhanced, mono, printing, implicit_margin);
       if (nargin == 5)
         fid = fopen (debug_file, "wb");
         enhanced = gnuplot_set_term (fid, true, h, term, file);
-        __go_draw_figure__ (h, fid, enhanced, mono);
+        __go_draw_figure__ (h, fid, enhanced, mono, printing, implicit_margin);
       endif
     unwind_protect_cleanup
       if (! isempty (plot_stream))
@@ -65,12 +66,21 @@ function gnuplot_drawnow (h, term, file, mono, debug_file)
       new_stream = false;
     endif
     enhanced = gnuplot_set_term (plot_stream (1), new_stream, h);
-    __go_draw_figure__ (h, plot_stream (1), enhanced, mono);
+    __go_draw_figure__ (h, plot_stream (1), enhanced, mono, 0);
     fflush (plot_stream (1));
   else
     print_usage ();
   endif
 
+endfunction
+
+function implicit_margin = gnuplot_implicit_margin (term, opts_str)
+  ## gnuplot has an implicit margin of 50pts for PS output.
+  if (strcmpi (term, "postscript") && isempty (strfind (opts_str, "eps")))
+    implicit_margin = 50/72;
+  else
+    implicit_margin = 0.0;
+  endif
 endfunction
 
 function plot_stream = open_gnuplot_stream (npipes, h)
@@ -91,20 +101,26 @@ function plot_stream = open_gnuplot_stream (npipes, h)
   endif
 endfunction
 
-function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
+function [enhanced, implicit_margin] = gnuplot_set_term (plot_stream, new_stream, h, term, file)
   ## Generate the gnuplot "set terminal <term> ..." command.  Include
   ## the subset of properties "position", "units", "paperposition",
   ## "paperunits", "name", and "numbertitle".  When "term" originates
   ## from print.m, it may include gnuplot terminal options.
   if (nargin < 4)
     ## This supports the gnuplot backend.
-    term = gnuplot_term ();
+    term = gnuplot_default_term ();
     opts_str = "";
   else
     ## Get the one word terminal id and save the remaining as options to
     ## be passed on to gnuplot.  The terminal may respect the backend.
     [term, opts_str] = gnuplot_trim_term (term);
+    if (strcmpi (term, "pdf") && strcmpi (opts_str, "color"))
+      ## FIXME -- "color" for the pdf terminal produces a gnuplot error.
+      opts_str = "";
+    endif
   endif
+
+  implicit_margin = gnuplot_implicit_margin (term, opts_str);
 
   enhanced = gnuplot_is_enhanced_term (term);
 
@@ -120,7 +136,7 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
     if (! isempty (h) && isfigure (h))
 
       ## Generate gnuoplot title string for backend plot windows.
-      if (isbackend (term))
+      if (output_to_screen (term))
         fig.numbertitle = get (h, "numbertitle");
         fig.name = get (h, "name");
         if (strcmpi (get (h, "numbertitle"), "on"))
@@ -139,31 +155,44 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
       else
         title_str = "";
       endif
-
-      if (isempty (strfind (opts_str, " size ")))
+      if (! (any (strfind (opts_str, " size ") > 0) 
+	  || any (strfind (opts_str, "size ") == 1)))
         ## Convert position to units used by gnuplot.
-        if (isbackend (term))
+        if (output_to_screen (term))
           ## Get figure size in pixels.
           [gnuplot_size, gnuplot_pos] = get_figsize (h);
         else
           ## Get size of the printed plot in inches.
-          gnuplot_size = get_canvassize (h);
-          ## If the output is a bitmap, convert to pixels.
-          if (isbitmap (term) || strcmpi (term, "svg"))
-            gnuplot_size = gnuplot_size * get (0, "screenpixelsperinch");
+          gnuplot_size = get_papersize (h);
+          if (term_units_are_pixels (term))
+ 	    ## Convert to inches using the property set by print().
+	    gnuplot_size = gnuplot_size * get (h, "__pixels_per_inch__");
+	  else
+	    ## Implicit margins are in units of "inches"
+	    gnuplot_size = gnuplot_size - implicit_margin;
           endif
         endif
+	[begin_match, end_match, te, match] = regexp (opts_str, "(\\s-r\\d+)|(^-r\\d+)");
+	if (! isempty (begin_match))
+	  error ("gnuplot_drawnow.m: specifying resultion, '%s', not supported for terminal '%s'",
+	         strtrim (match{1}), term)
+	endif
         if (all (gnuplot_size > 0))
           ## Set terminal size.
           terminals_with_size = {"emf", "gif", "jpeg", "latex", "pbm", ...
                                  "pdf", "png", "postscript", "svg", "wxt", ...
                                  "epslatex", "pstex", "pslatex"};
-          if (__gnuplot_has_feature__("x11_figure_position"))
+          if (__gnuplot_has_feature__ ("x11_figure_position"))
             terminals_with_size{end+1} = "x11";
           endif
           if (any (strncmpi (term, terminals_with_size, 3)))
-            size_str = sprintf ("size %d,%d", gnuplot_size(1), gnuplot_size(2));
-            if (strncmpi (term, "X11", 3))
+	    if (term_units_are_pixels (term))
+              size_str = sprintf ("size %d,%d", gnuplot_size(1), gnuplot_size(2));
+	    else
+              size_str = sprintf ("size %.15g,%.15g", gnuplot_size(1), gnuplot_size(2));
+	    endif
+            if (strncmpi (term, "X11", 3) && __gnuplot_has_feature__ ("x11_figure_position"))
+	      ## X11 allows the window to be positioned as well.
               screen_size = get (0, "screensize")(3:4);
               if (all (screen_size > 0))
                 ## For X11, set the figure positon as well as the size
@@ -174,12 +203,15 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
                                     gnuplot_pos(1), gnuplot_pos(2));
               endif
             endif
-          elseif (any (strncmpi (term, {"aqua", "fig"}, 3)))
-            ## Aqua and Fig also have size, but the format is different.
+          elseif (strncmpi (term, "aqua", 3))
+            ## Aqua has size, but the format is different.
             size_str = sprintf ("size %d %d", gnuplot_size(1), gnuplot_size(2));
+          elseif (strncmpi (term, "fig", 3))
+            ## Fig also has size, but the format is different.
+            size_str = sprintf ("size %.15g %.15g", gnuplot_size(1), gnuplot_size(2));
           elseif (any (strncmpi (term, {"corel", "hpgl"}, 3)))
             ## The size for corel and hpgl are goes at the end (implicit).
-            size_str = sprintf ("%d %d",gnuplot_size(1), gnuplot_size(2));
+            size_str = sprintf ("%.15g %.15g",gnuplot_size(1), gnuplot_size(2));
           elseif (any (strncmpi (term, {"dxf"}, 3)))
             ## DXF uses autocad units.
             size_str = "";
@@ -228,7 +260,7 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
         ## Options must go last.
         term_str = sprintf ("%s %s", term_str, opts_str);
       endif
-      fprintf (plot_stream, sprintf ("%s\n", term_str));
+      fprintf (plot_stream, sprintf ("%s;\n", term_str));
     else
       ## gnuplot will pick up the GNUTERM environment variable itself
       ## so no need to set the terminal type if not also setting the
@@ -241,9 +273,10 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
       fprintf (plot_stream, "set output \"%s\";\n", file);
     endif
   endif
+
 endfunction
 
-function term = gnuplot_term ()
+function term = gnuplot_default_term ()
   term = getenv ("GNUTERM");
   ## If not specified, guess the terminal type.
   if (isempty (term))
@@ -280,7 +313,7 @@ function have_enhanced = gnuplot_is_enhanced_term (term)
   endif
   if (nargin < 1)
     ## Determine the default gnuplot terminal.
-    term = gnuplot_term ();
+    term = gnuplot_default_term ();
   endif
   have_enhanced = false;
   for n = 1 : length (enhanced_terminals)
@@ -292,18 +325,12 @@ function have_enhanced = gnuplot_is_enhanced_term (term)
   endfor
 endfunction
 
-function ret = isbackend (term)
-  if (nargin == 0)
-    term = gnuplot_term ();
-  endif
+function ret = output_to_screen (term)
   ret = any (strcmpi ({"aqua", "wxt", "x11", "windows", "pm"}, term));
 endfunction
 
-function ret = isbitmap (term)
-  if (nargin == 0)
-    term = gnuplot_term ();
-  endif
-  ret = any (strcmpi ({"png", "jpeg", "gif", "pbm"}, term));
+function ret = term_units_are_pixels (term)
+  ret = any (strcmpi ({"png", "jpeg", "gif", "pbm", "svg"}, term));
 endfunction
 
 function [fig_size, fig_pos] = get_figsize (h)
@@ -325,26 +352,9 @@ function [fig_size, fig_pos] = get_figsize (h)
   fig_size(2) = max (min (fig_size(2), screensize(2)), 10-fig_pos(2));
 endfunction
 
-function plotsize = get_canvassize (h)
-  ## Returns the intended size of the plot on the page in inches. 
-  ## "canvas size" is a gnuplot term. Gnuplot doesn't explicity plot to
-  ## an area/position on a page. Instead it plots to a "canvas" of a 
-  ## explicit or implicit size.
-  t.points      = get (0, "screenpixelsperinch");
-  t.centimeters = 2.54;
-  t.inches      = 1.00;
-  papersize = get_papersize (h);
-  paperunits = get (h, "paperunits");
-  paperposition = get (h, "paperposition") / t.(paperunits);
-  if (strcmpi (paperunits, "normalized"))
-    plotsize = papersize .* paperposition(3:4);
-  else
-    plotsize = paperposition(3:4);
-  endif
-endfunction
-
 function papersize = get_papersize (h)
   ## Returns the papersize in inches
+  ## FIXME - a listener should hanlde this.
   persistent papertypes papersizes
   if (isempty (papertypes))
     papertypes = {"usletter", "uslegal", ...

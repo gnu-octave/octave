@@ -1,3 +1,38 @@
+2009-02-28  Ben Abbott <bpabbott@mac.com>
+
+	* plot/print.m, plot/gnuplot_drawnow.m: Add compatible support for
+	specificying resolution of bitmap terminals, "-r<num>".
+
+	* plot/gnuplot_drawnow.m: Check that canvas size is only specified
+	one time.
+
+	* plot/gnuplot_drawnow.m, plot/__go_draw_figure__.m: Support papersize,
+	paperposition properties. Accommodate gnuplot's implicit margins for
+	postscript terminals. Remove internal function get_canvassize().
+
+	* plot/gnuplot_drawnow.m:
+	Terminate gnuplot "set term ..." with semicolon.
+	Specify vector terminals sizes in floating point.
+	Rename internal function isbackend() to output_to_screen().
+	Rename internal function gnuplot_term() to gnuplot_default_term().
+	Rename internal function isbitmap() to term_units_are_pixels().
+	Minor changes for coding conventions.
+
+	* plot/__actual_axis_position__.m, Makefile.in: New function to
+	determine position of rendered axes, including the effect of the
+	aspect ratio.
+	* plot/__gnuplot_has_feature__.m: Add new feature
+	"screen_coordinates_for_{lrtb}margin".
+	* plot/__go_draw_axes__.m, plot/colorbar.m: Enable axes to be positioned
+	using {lrtb}margins.
+	* plot/colorbar.m: Add to, and modify, demos.
+
+	* plot/print.m: Remove non-functional/commented code.
+	* plot/__go_draw_figure__.m: Remove non-functional code.
+	* plot/__gnuplot_has_feature__.m: Remove non-functional code.
+
+	* plot/quiver3.m: Add "clf" and "colormap(jet(64))" to demo.
+
 2009-02-27  John W. Eaton  <jwe@octave.org>
 
 	* set/complement.m: Call unique, not create_set.

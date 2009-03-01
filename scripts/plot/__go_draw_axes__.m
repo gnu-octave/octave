@@ -23,19 +23,13 @@
 
 ## Author: jwe
 
-function __go_draw_axes__ (h, plot_stream, enhanced, mono)
+function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
 
-  if (nargin == 4)
+  if (nargin >= 4 && nargin <= 5)
 
     axis_obj = __get__ (h);
 
     parent_figure_obj = get (axis_obj.parent);
-
-    pos = axis_obj.position;
-    fprintf (plot_stream, "set tmargin 0;\n");
-    fprintf (plot_stream, "set bmargin 0;\n");
-    fprintf (plot_stream, "set lmargin 0;\n");
-    fprintf (plot_stream, "set rmargin 0;\n");
 
     ## Set to false for plotyy axes.
     if (strcmp (axis_obj.tag, "plotyy"))
@@ -44,14 +38,39 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
       ymirror = true;
     endif
 
-    fprintf (plot_stream, "set origin %.15g, %.15g;\n", pos(1), pos(2));
-    fprintf (plot_stream, "set size %.15g, %.15g;\n", pos(3), pos(4));
-
-    if (strcmpi (axis_obj.dataaspectratiomode, "manual"))
-      r = axis_obj.dataaspectratio;
-      fprintf (plot_stream, "set size ratio %.15g;\n", -r(2)/r(1));
+    nd = __calc_dimensions__ (axis_obj);
+    pos = axis_obj.position;
+    pos = pos - implicit_margin([1, 2, 1, 2]).*[1, 1, -0.5, -0.5];
+    if (__gnuplot_has_feature__ ("screen_coordinates_for_{lrtb}margin"))
+      if (strcmpi (axis_obj.dataaspectratiomode, "manual"))
+	pos = __actual_axis_position__ (axis_obj);
+      endif
+      if (nd == 2)
+	x = [1, 1];
+      else
+	## 3D plots need to be sized down to fit in the window.
+	x = 1.0 ./ sqrt([2, 2.5]);
+      endif
+      fprintf (plot_stream, "set tmargin screen %.15g;\n", pos(2)+pos(4)/2+x(2)*pos(4)/2);
+      fprintf (plot_stream, "set bmargin screen %.15g;\n", pos(2)+pos(4)/2-x(2)*pos(4)/2);
+      fprintf (plot_stream, "set lmargin screen %.15g;\n", pos(1)+pos(3)/2-x(1)*pos(3)/2);
+      fprintf (plot_stream, "set rmargin screen %.15g;\n", pos(1)+pos(3)/2+x(1)*pos(3)/2);
     else
-      fputs (plot_stream, "set size noratio;\n");
+      ## FIXME -- nothing should change for gnuplot 4.2.x.
+      fprintf (plot_stream, "set tmargin 0;\n");
+      fprintf (plot_stream, "set bmargin 0;\n");
+      fprintf (plot_stream, "set lmargin 0;\n");
+      fprintf (plot_stream, "set rmargin 0;\n");
+
+      fprintf (plot_stream, "set origin %.15g, %.15g;\n", pos(1), pos(2));
+      fprintf (plot_stream, "set size %.15g, %.15g;\n", pos(3), pos(4));
+
+      if (strcmpi (axis_obj.dataaspectratiomode, "manual"))
+        r = axis_obj.dataaspectratio;
+        fprintf (plot_stream, "set size ratio %.15g;\n", -r(2)/r(1));
+      else
+        fputs (plot_stream, "set size noratio;\n");
+      endif
     endif
 
     fputs (plot_stream, "unset label;\n");
@@ -269,8 +288,6 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
     fputs (plot_stream, "set clip two;\n");
 
     kids = axis_obj.children;
-
-    nd = __calc_dimensions__ (axis_obj);
 
     if (nd == 3)
       fputs (plot_stream, "set parametric;\n");
@@ -1975,3 +1992,4 @@ function typ = get_old_gnuplot_color (color)
     typ = -1;
   endif
 endfunction
+

@@ -23,27 +23,43 @@
 
 ## Author: jwe
 
-function __go_draw_figure__ (h, plot_stream, enhanced, mono)
+function __go_draw_figure__ (h, plot_stream, enhanced, mono, output_to_paper, implicit_margin)
 
-  if (nargin == 4)
+  if (nargin < 5)
+    output_to_paper = false;
+  elseif (nargin < 6)
+    ## Gnuplot has implicit margins for some output. For example, for postscript
+    ## the margin is 50pts. If not specified asssume 0.
+    implicit_margin = 0;
+  endif
+
+  if (nargin >= 4 && nargin <= 6)
     htype = get (h, "type");
     if (strcmp (htype, "figure"))
 
       ## Set figure properties here?
+
+      ## For output, determine the normalized paperposition.
+      if (output_to_paper)
+	orig_paper_units = get (h, "paperunits");
+	unwind_protect
+	  set (h, "paperunits", "inches");
+          paper_size = get (h, "papersize");
+          paper_position = get (h, "paperposition");
+          paper_position = paper_position ./ paper_size([1, 2, 1, 2]);
+	  implicit_margin = implicit_margin ./ paper_size([1, 2]);
+	unwind_protect_cleanup
+	  set (h, "paperunits", orig_paper_units);
+	end_unwind_protect
+      else
+	implicit_margin = implicit_margin * [1 1];
+      endif
 
       ## Get complete list of children.
       kids = allchild (h);
       nkids = length (kids);
 
       if (nkids > 0)
-	axes_count = 0;
-	for i = 1:nkids
-	  obj = __get__ (kids(i));
-	  switch (obj.type)
-	    case "axes"
-	      axes_count++;
-	  endswitch
-	endfor
 
 	fputs (plot_stream, "\nreset;\n");
 	fputs (plot_stream, "set autoscale fix;\n");
@@ -52,13 +68,29 @@ function __go_draw_figure__ (h, plot_stream, enhanced, mono)
 	fputs (plot_stream, "set size 1, 1\n");
 
 	for i = 1:nkids
-	  obj = get (kids(i));
-	  switch (obj.type)
+	  type = get (kids(i), "type");
+	  switch (type)
 	    case "axes"
-	      __go_draw_axes__ (kids (i), plot_stream, enhanced, mono);
+	      ## Rely upon listener to convert axes position to "normalized" units.
+	      orig_axes_units = get (kids(i), "units");
+  	      orig_axes_position = get (kids(i), "position");
+	      unwind_protect
+		set (kids(i), "units", "normalized");
+		if (output_to_paper)
+	 	  axes_position_on_page = orig_axes_position .* paper_position([3, 4, 3 ,4]);
+		  axes_position_on_page(1:2) = axes_position_on_page(1:2) +  paper_position(1:2);
+		  set (kids(i), "position", axes_position_on_page);
+		  __go_draw_axes__ (kids(i), plot_stream, enhanced, mono, implicit_margin);
+		else
+		  ## Return axes "units" and "position" back to their original values.
+		  __go_draw_axes__ (kids(i), plot_stream, enhanced, mono, implicit_margin);
+		endif
+	      unwind_protect_cleanup
+		set (kids(i), "units", orig_axes_units);
+		set (kids(i), "position", orig_axes_position);
+	      end_unwind_protect
 	    otherwise
-	      error ("__go_draw_figure__: unknown object class, %s",
-		     obj.type);
+	      error ("__go_draw_figure__: unknown object class, %s", type);
 	  endswitch
 	endfor
 

@@ -1,5 +1,11 @@
 2009-03-01  Ben Abbott <bpabbott@mac.com>
 
+	* plot/__go_draw_axes__.m: Do not render axis labels twice when
+	their handles are visible, but do render objects with hidden
+	handles.
+
+2009-03-01  Ben Abbott <bpabbott@mac.com>
+
 	* general/num2str.m: Trivial bug fix. Recent switch from split()
 	to strsplit() produced cells rather than character data.
 

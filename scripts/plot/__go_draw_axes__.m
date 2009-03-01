@@ -27,7 +27,13 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
 
   if (nargin >= 4 && nargin <= 5)
 
-    axis_obj = __get__ (h);
+    showhiddenhandles = get (0, "showhiddenhandles");
+    unwind_protect
+      set (0, "showhiddenhandles", "on");
+      axis_obj = __get__ (h);
+    unwind_protect_cleanup
+      set (0, "showhiddenhandles", showhiddenhandles);
+    end_unwind_protect
 
     parent_figure_obj = get (axis_obj.parent);
 
@@ -288,6 +294,8 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
     fputs (plot_stream, "set clip two;\n");
 
     kids = axis_obj.children;
+    kids = setdiff (kids, [axis_obj.xlabel, axis_obj.ylabel, ...
+                           axis_obj.zlabel, axis_obj.title]);
 
     if (nd == 3)
       fputs (plot_stream, "set parametric;\n");

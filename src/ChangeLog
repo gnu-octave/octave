@@ -1,3 +1,14 @@
+2009-03-01  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-perm.cc (octave_perm_matrix::print_raw): Call
+	octave_print_internal.
+	(octave_perm_matrix::print_raw): Call print_raw.
+	* pr-output.cc (octave_print_internal (...,const DiagMatrix&,...)):
+	Indicate diagonal matrix.
+	(octave_print_internal (...,const ComplexDiagMatrix&,...)): Ditto.
+	(octave_print_internal (...,const PermMatrix&,...)): New function.
+	* pr-output.h: Declare it.
+
 2009-02-27  Jaroslav Hajek  <highegg@gmail.com>
 
 	* OPERATORS/op-dms-template.cc (gripe_if_zero): New template static

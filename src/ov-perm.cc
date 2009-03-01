@@ -33,6 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "gripes.h"
 #include "ops.h"
+#include "pr-output.h"
 
 #include "ls-oct-ascii.h"
 
@@ -352,7 +353,8 @@ void
 octave_perm_matrix::print_raw (std::ostream& os,
                                bool pr_as_read_syntax) const
 {
-  return to_dense ().print_raw (os, pr_as_read_syntax);
+  return octave_print_internal (os, matrix, pr_as_read_syntax,
+                                current_print_indent_level ());
 }
 
 mxArray *
@@ -372,7 +374,8 @@ octave_perm_matrix::print_as_scalar (void) const
 void
 octave_perm_matrix::print (std::ostream& os, bool pr_as_read_syntax) const
 {
-  to_dense ().print (os, pr_as_read_syntax);
+  print_raw (os, pr_as_read_syntax);
+  newline (os);
 }
 
 int

@@ -31,10 +31,14 @@ along with Octave; see the file COPYING.  If not, see
 template <typename T> class ArrayN;
 class ComplexMatrix;
 class FloatComplexMatrix;
+class ComplexDiagMatrix;
+class FloatComplexDiagMatrix;
 class ComplexNDArray;
 class FloatComplexNDArray;
 class Matrix;
 class FloatMatrix;
+class DiagMatrix;
+class FloatDiagMatrix;
 class NDArray;
 class FloatNDArray;
 class Range;
@@ -42,6 +46,7 @@ class boolMatrix;
 class boolNDArray;
 class charMatrix;
 class charNDArray;
+class PermMatrix;
 class Cell;
 
 #include "intNDArray.h"
@@ -125,6 +130,11 @@ octave_print_internal (std::ostream& os, const ComplexNDArray& nda,
 
 extern OCTINTERP_API void
 octave_print_internal (std::ostream& os, const FloatComplexNDArray& nda,
+		       bool pr_as_read_syntax = false,
+		       int extra_indent = 0);
+
+extern OCTINTERP_API void
+octave_print_internal (std::ostream& os, const PermMatrix& m,
 		       bool pr_as_read_syntax = false,
 		       int extra_indent = 0);
 

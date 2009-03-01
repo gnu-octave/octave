@@ -1793,6 +1793,7 @@ octave_print_internal (std::ostream& os, const DiagMatrix& m,
 	}
       else
 	{
+          os << "Diagonal Matrix\n\n";
 	  pr_scale_header (os, scale);
 
           // kluge. Get the true width of a number.
@@ -2195,6 +2196,7 @@ octave_print_internal (std::ostream& os, const ComplexDiagMatrix& cm,
 	}
       else
 	{
+          os << "Diagonal Matrix\n\n";
 	  pr_scale_header (os, scale);
 
           // kluge. Get the true width of a number.
@@ -2230,6 +2232,139 @@ octave_print_internal (std::ostream& os, const ComplexDiagMatrix& cm,
 		    }
 
 		  if (i < nr - 1) 
+		    os << "\n";
+		}
+	    }
+	}
+    }
+}
+
+void
+octave_print_internal (std::ostream& os, const PermMatrix& m,
+		       bool pr_as_read_syntax, int extra_indent)
+{
+  octave_idx_type nr = m.rows ();
+  octave_idx_type nc = m.columns ();
+
+  if (nr == 0 || nc == 0)
+    print_empty_matrix (os, nr, nc, pr_as_read_syntax);
+  else if (plus_format && ! pr_as_read_syntax)
+    {
+      for (octave_idx_type i = 0; i < nr; i++)
+	{
+	  for (octave_idx_type j = 0; j < nc; j++)
+	    {
+	      OCTAVE_QUIT;
+
+	      pr_plus_format (os, m(i,j));
+	    }
+
+	  if (i < nr - 1)
+	    os << "\n";
+	}
+    }
+  else
+    {
+      int fw = 2;
+      double scale = 1.0;
+      int column_width = fw + 2;
+      octave_idx_type total_width = nc * column_width;
+      octave_idx_type max_width = command_editor::terminal_cols ();
+
+      if (pr_as_read_syntax)
+	max_width -= 4;
+      else
+	max_width -= extra_indent;
+
+      if (max_width < 0)
+	max_width = 0;
+
+      if (free_format)
+	{
+	  if (pr_as_read_syntax)
+	    os << "[\n";
+
+	  os << Matrix (m);
+
+	  if (pr_as_read_syntax)
+	    os << "]";
+
+	  return;
+	}
+
+      octave_idx_type inc = nc;
+      if (total_width > max_width && Vsplit_long_rows)
+	{
+	  inc = max_width / column_width;
+	  if (inc == 0)
+	    inc++;
+	}
+
+      if (pr_as_read_syntax)
+        {
+          Array<octave_idx_type> pvec = m.pvec ();
+          bool colp = m.is_col_perm ();
+
+          os << "eye (";
+          if (colp) os << ":, ";
+
+          octave_idx_type col = 0;
+          while (col < nc)
+            {
+              octave_idx_type lim = col + inc < nc ? col + inc : nc;
+
+              for (octave_idx_type j = col; j < lim; j++)
+                {
+                  OCTAVE_QUIT;
+
+                  if (j == 0)
+                    os << "[ ";
+                  else
+                    {
+                      if (j > col && j < lim)
+                        os << ", ";
+                      else
+                        os << "  ";
+                    }
+
+                  os << pvec (j);
+                }
+
+              col += inc;
+
+              if (col >= nc)
+                  os << " ]";
+              else
+                os << " ...\n";
+            }
+          if (! colp) os << ", :";
+          os << ")";
+	}
+      else
+	{
+          os << "Permutation Matrix\n\n";
+
+	  for (octave_idx_type col = 0; col < nc; col += inc)
+	    {
+	      octave_idx_type lim = col + inc < nc ? col + inc : nc;
+
+	      pr_col_num_header (os, total_width, max_width, lim, col,
+				 extra_indent);
+
+	      for (octave_idx_type i = 0; i < nr; i++)
+		{
+		  os << std::setw (extra_indent) << "";
+
+		  for (octave_idx_type j = col; j < lim; j++)
+		    {
+		      OCTAVE_QUIT;
+
+		      os << "  ";
+
+                      os << std::setw (fw) << m(i,j);
+		    }
+
+		  if (i < nr - 1)
 		    os << "\n";
 		}
 	    }

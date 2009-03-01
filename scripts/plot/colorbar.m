@@ -85,17 +85,20 @@ function h = colorbar (varargin)
   if (isempty (ax))
     ax = gca ();
   endif
-  obj = get (ax);
 
-  if (deleting)
-    objs = findobj (get (ax, "parent"), "type", "axes");
-    for i = 1 : length (objs)
-      if (strcmp (get (objs(i), "tag"), "colorbar") &&
-	  get (objs(i), "axes") == ax)
-	delete (objs(i));
-      endif
-    endfor
-    else
+  showhiddenhandles = get (0, "showhiddenhandles");
+  unwind_protect
+    set (0, "showhiddenhandles", "on")
+    cax = findobj (get (ax, "parent"), "tag", "colorbar", "type", "axes", "axes", ax);
+    if (! isempty (cax))
+      delete (cax);
+    endif
+  unwind_protect_cleanup
+    set (0, "showhiddenhandles", showhiddenhandles)
+  end_unwind_protect
+
+  if (! deleting)
+    obj = get (ax);
     position = obj.position;
     clen = rows (get (get (ax, "parent"), "colormap"));
     cext = get (ax, "clim");
@@ -110,7 +113,7 @@ function h = colorbar (varargin)
     set (ax, "activepositionproperty", "position", "position", pos);
 
     cax = __go_axes__ (get (ax, "parent"), "tag", "colorbar", 
-		       "handlevisibility", "off", 
+    		       "handlevisibility", "off", 
 		       "activepositionproperty", "position", 
 		       "position", cpos);
     addproperty ("location", cax, "radio",
@@ -498,39 +501,6 @@ endfunction
 
 %!demo
 %! clf
-%! locations = {"northoutside", "north", "southoutside", "south",
-%!              "westoutside", "west", "eastoutside", "east"};
-%! n = 64;
-%! x = kron (1:n,ones(n,1)); x = abs(x - x.'); 
-%! x = x .* fliplr (x) / 32^2;
-%! for r = 1:2
-%!   for c = 1:4
-%!     n = 2*(c-1) + r;
-%!     subplot (2, 4, n)
-%!     contour (x)
-%!     xlim ([1, 64])
-%!     ylim ([1, 64])
-%!     set (gca, "clim", [0, 1])
-%!     colorbar (locations{n});
-%!   endfor
-%! endfor
-
-%!demo
-%! clf
-%! n = 64; x = kron (1:n,ones(n,1)); x = abs(x - x.'); 
-%! subplot(1,2,1)
-%! contour(x)
-%! axis square;
-%! colorbar("east");
-%! xlim ([1, 64])
-%! ylim ([1, 64])
-%! subplot(1,2,2)
-%! imagesc(x)
-%! axis square;
-%! colorbar()
-
-%!demo
-%! clf
 %! n = 64; x = kron (1:n,ones(n,1)); x = abs(x - x.'); 
 %! subplot(1,2,1)
 %! contour(x)
@@ -543,4 +513,22 @@ endfunction
 %! colorbar("west");
 %! xlim ([1, 64])
 %! ylim ([1, 64])
+
+%!demo
+%! clf
+%! n = 64; x = kron (1:n,ones(n,1)); x = abs(x - x.'); 
+%! contour (x)
+%! xlim ([1, 64])
+%! ylim ([1, 64])
+%! colorbar ();
+%! colorbar off
+
+%!demo
+%! clf
+%! n = 64; x = kron (1:n,ones(n,1)); x = abs(x - x.'); 
+%! contour (x)
+%! xlim ([1, 64])
+%! ylim ([1, 64])
+%! colorbar ();
+%! colorbar ();
 

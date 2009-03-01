@@ -1,5 +1,10 @@
 2009-02-28  Ben Abbott <bpabbott@mac.com>
 
+	* plot/__actual_axis_position__.m: Include file missed in prior
+	changeset.
+
+2009-02-28  Ben Abbott <bpabbott@mac.com>
+
 	* plot/print.m, plot/gnuplot_drawnow.m: Add compatible support for
 	specificying resolution of bitmap terminals, "-r<num>".
 

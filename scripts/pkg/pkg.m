@@ -1696,23 +1696,16 @@ function deps_cell = fix_depends (depends)
     if (length (lpar) == 1 && length (rpar) == 1)
       package = tolower (strip (dep(1:lpar-1)));
       sub = dep(lpar(1)+1:rpar(1)-1);
-      parts = split_by (sub, " ");
-      idx = [];
-      for r = 1:size (parts, 1)
-	if (length (parts{r}) > 0)
-	  idx(end+1) = r;
-	endif
-      endfor
-
-      if (length (idx) != 2)
+      parts = strsplit (sub, " ", true);
+      if (length (parts) != 2)
 	error ("incorrect syntax for dependency `%s' in the DESCRIPTION file\n",
 	       dep);
       endif
-      operator = parts{idx(1)};
+      operator = parts{1};
       if (! any (strcmp (operator, {">", ">=", "<=", "<", "=="})))
 	error ("unsupported operator: %s", operator);
       endif
-      version  = fix_version (parts{idx(2)});
+      version  = fix_version (parts{2});
 
   ## If no version is specified for the dependency
   ## we say that the version should be greater than 

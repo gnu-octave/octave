@@ -1,3 +1,7 @@
+2009-03-02  Jaroslav Hajek  <highegg@gmail.com>
+
+	* pkg/pkg.m (fix_depends): Fix & simplify splitting the string.
+
 2009-03-02  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
 	* set/complement.m, set/union.m: Remove reference to deprecated

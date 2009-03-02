@@ -632,43 +632,43 @@ ComplexNDArray::too_large_for_float (void) const
 boolNDArray
 ComplexNDArray::all (int dim) const
 {
-  return do_mx_red_op<boolNDArray> (*this, dim, mx_inline_all);
+  return do_mx_red_op<boolNDArray, Complex> (*this, dim, mx_inline_all);
 }
 
 boolNDArray
 ComplexNDArray::any (int dim) const
 {
-  return do_mx_red_op<boolNDArray> (*this, dim, mx_inline_any);
+  return do_mx_red_op<boolNDArray, Complex> (*this, dim, mx_inline_any);
 }
 
 ComplexNDArray
 ComplexNDArray::cumprod (int dim) const
 {
-  return do_mx_cum_op<ComplexNDArray> (*this, dim, mx_inline_cumprod);
+  return do_mx_cum_op<ComplexNDArray, Complex> (*this, dim, mx_inline_cumprod);
 }
 
 ComplexNDArray
 ComplexNDArray::cumsum (int dim) const
 {
-  return do_mx_cum_op<ComplexNDArray> (*this, dim, mx_inline_cumsum);
+  return do_mx_cum_op<ComplexNDArray, Complex> (*this, dim, mx_inline_cumsum);
 }
 
 ComplexNDArray
 ComplexNDArray::prod (int dim) const
 {
-  return do_mx_red_op<ComplexNDArray> (*this, dim, mx_inline_prod);
+  return do_mx_red_op<ComplexNDArray, Complex> (*this, dim, mx_inline_prod);
 }
 
 ComplexNDArray
 ComplexNDArray::sum (int dim) const
 {
-  return do_mx_red_op<ComplexNDArray> (*this, dim, mx_inline_sum);
+  return do_mx_red_op<ComplexNDArray, Complex> (*this, dim, mx_inline_sum);
 }
 
 ComplexNDArray
 ComplexNDArray::sumsq (int dim) const
 {
-  return do_mx_red_op<NDArray> (*this, dim, mx_inline_sumsq);
+  return do_mx_red_op<NDArray, Complex> (*this, dim, mx_inline_sumsq);
 }
 
 ComplexNDArray

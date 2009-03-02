@@ -2765,43 +2765,43 @@ Matrix::too_large_for_float (void) const
 boolMatrix
 Matrix::all (int dim) const
 {
-  return do_mx_red_op<boolMatrix> (*this, dim, mx_inline_all);
+  return do_mx_red_op<boolMatrix, double> (*this, dim, mx_inline_all);
 }
 
 boolMatrix
 Matrix::any (int dim) const
 {
-  return do_mx_red_op<boolMatrix> (*this, dim, mx_inline_any);
+  return do_mx_red_op<boolMatrix, double> (*this, dim, mx_inline_any);
 }
 
 Matrix
 Matrix::cumprod (int dim) const
 {
-  return do_mx_cum_op<Matrix> (*this, dim, mx_inline_cumprod);
+  return do_mx_cum_op<Matrix, double> (*this, dim, mx_inline_cumprod);
 }
 
 Matrix
 Matrix::cumsum (int dim) const
 {
-  return do_mx_cum_op<Matrix> (*this, dim, mx_inline_cumsum);
+  return do_mx_cum_op<Matrix, double> (*this, dim, mx_inline_cumsum);
 }
 
 Matrix
 Matrix::prod (int dim) const
 {
-  return do_mx_red_op<Matrix> (*this, dim, mx_inline_prod);
+  return do_mx_red_op<Matrix, double> (*this, dim, mx_inline_prod);
 }
 
 Matrix
 Matrix::sum (int dim) const
 {
-  return do_mx_red_op<Matrix> (*this, dim, mx_inline_sum);
+  return do_mx_red_op<Matrix, double> (*this, dim, mx_inline_sum);
 }
 
 Matrix
 Matrix::sumsq (int dim) const
 {
-  return do_mx_red_op<Matrix> (*this, dim, mx_inline_sumsq);
+  return do_mx_red_op<Matrix, double> (*this, dim, mx_inline_sumsq);
 }
 
 Matrix

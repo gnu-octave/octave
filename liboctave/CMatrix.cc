@@ -3232,43 +3232,43 @@ ComplexMatrix::too_large_for_float (void) const
 boolMatrix
 ComplexMatrix::all (int dim) const
 {
-  return do_mx_red_op<boolMatrix> (*this, dim, mx_inline_all);
+  return do_mx_red_op<boolMatrix, Complex> (*this, dim, mx_inline_all);
 }
 
 boolMatrix
 ComplexMatrix::any (int dim) const
 {
-  return do_mx_red_op<boolMatrix> (*this, dim, mx_inline_any);
+  return do_mx_red_op<boolMatrix, Complex> (*this, dim, mx_inline_any);
 }
 
 ComplexMatrix
 ComplexMatrix::cumprod (int dim) const
 {
-  return do_mx_cum_op<ComplexMatrix> (*this, dim, mx_inline_cumprod);
+  return do_mx_cum_op<ComplexMatrix, Complex> (*this, dim, mx_inline_cumprod);
 }
 
 ComplexMatrix
 ComplexMatrix::cumsum (int dim) const
 {
-  return do_mx_cum_op<ComplexMatrix> (*this, dim, mx_inline_cumsum);
+  return do_mx_cum_op<ComplexMatrix, Complex> (*this, dim, mx_inline_cumsum);
 }
 
 ComplexMatrix
 ComplexMatrix::prod (int dim) const
 {
-  return do_mx_red_op<ComplexMatrix> (*this, dim, mx_inline_prod);
+  return do_mx_red_op<ComplexMatrix, Complex> (*this, dim, mx_inline_prod);
 }
 
 ComplexMatrix
 ComplexMatrix::sum (int dim) const
 {
-  return do_mx_red_op<ComplexMatrix> (*this, dim, mx_inline_sum);
+  return do_mx_red_op<ComplexMatrix, Complex> (*this, dim, mx_inline_sum);
 }
 
 ComplexMatrix
 ComplexMatrix::sumsq (int dim) const
 {
-  return do_mx_red_op<Matrix> (*this, dim, mx_inline_sumsq);
+  return do_mx_red_op<Matrix, Complex> (*this, dim, mx_inline_sumsq);
 }
 
 Matrix ComplexMatrix::abs (void) const

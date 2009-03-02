@@ -1,3 +1,9 @@
+2009-03-01  John W. Eaton  <jwe@octave.org>
+
+	* OPERATORS/op-fcm-fcm.cc (DEFNDASSIGNOP_FN (dbl_assign)):
+	LHS type is float_complex_matrix, not complex_matrix.  RHS value
+	function is float_complex_array, not complex_array.
+
 2009-03-01  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-perm.cc (octave_perm_matrix::print_raw): Call

@@ -184,8 +184,8 @@ DEFNDCATOP_FN (fcm_cm, float_complex_matrix, complex_matrix,
 
 DEFNDASSIGNOP_FN (assign, float_complex_matrix, float_complex_matrix, 
 		  float_complex_array, assign)
-DEFNDASSIGNOP_FN (dbl_assign, complex_matrix, float_complex_matrix, 
-		  complex_array, assign)
+DEFNDASSIGNOP_FN (dbl_assign, float_complex_matrix, complex_matrix, 
+		  float_complex_array, assign)
 
 DEFNULLASSIGNOP_FN (null_assign, float_complex_matrix, delete_elements)
 

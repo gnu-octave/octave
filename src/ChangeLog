@@ -1,3 +1,8 @@
+2009-03-02  John W. Eaton  <jwe@octave.org>
+
+	* graphics.cc (Fget, F__get__): Return a column vector of property
+	values, not a row vector.
+
 2009-03-01  John W. Eaton  <jwe@octave.org>
 
 	* OPERATORS/op-fcm-fcm.cc (DEFNDASSIGNOP_FN (dbl_assign)):

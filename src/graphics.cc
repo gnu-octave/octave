@@ -4391,7 +4391,8 @@ values or lists respectively.\n\
   gh_manager::autolock guard;
 
   octave_value retval;
-  octave_value_list vlist;
+
+  Cell vals;
 
   int nargin = args.length ();
 
@@ -4403,7 +4404,7 @@ values or lists respectively.\n\
         {
 	  octave_idx_type len = hcv.length ();
 
-	  vlist.resize (len);
+	  vals.resize (dim_vector (len, 1));
 
           for (octave_idx_type n = 0; n < len; n++)
             {
@@ -4412,13 +4413,13 @@ values or lists respectively.\n\
               if (obj)
                 {
                   if (nargin == 1)
-                    vlist(n) = obj.get ();
+                    vals(n) = obj.get ();
                   else
                     {
                       caseless_str property = args(1).string_value ();
 
                       if (! error_state)
-                        vlist(n) = obj.get (property);
+                        vals(n) = obj.get (property);
                       else
 			{
 			  error ("get: expecting property name as second argument");
@@ -4441,12 +4442,12 @@ values or lists respectively.\n\
 
   if (! error_state)
     {
-      octave_idx_type len = vlist.length ();
+      octave_idx_type len = vals.numel ();
 
       if (len > 1)
-	retval = Cell (vlist);
+	retval = vals;
       else if (len == 1)
-	retval = vlist(0);
+	retval = vals(0);
     }
 
   return retval;
@@ -4465,7 +4466,8 @@ Undocumented internal function.\n\
   gh_manager::autolock guard;
 
   octave_value retval;
-  octave_value_list vlist;
+
+  Cell vals;
 
   int nargin = args.length ();
 
@@ -4477,14 +4479,14 @@ Undocumented internal function.\n\
         {
           octave_idx_type len = hcv.length ();
 
-          vlist.resize (len);
+          vals.resize (dim_vector (len, 1));
 
           for (octave_idx_type n = 0; n < len; n++)
             {
               graphics_object obj = gh_manager::get_object (hcv(n));
 
               if (obj)
-                vlist(n) = obj.get (true);
+                vals(n) = obj.get (true);
               else
                 {
                   error ("get: invalid handle (= %g)", hcv(n));
@@ -4500,12 +4502,12 @@ Undocumented internal function.\n\
 
   if (! error_state)
     {
-      octave_idx_type len = vlist.length ();
+      octave_idx_type len = vals.numel ();
 
       if (len > 1)
-        retval = Cell (vlist);
+        retval = vals;
       else if (len == 1)
-        retval = vlist(0);
+        retval = vals(0);
     }
 
   return retval;

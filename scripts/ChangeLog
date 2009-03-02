@@ -1,3 +1,8 @@
+2009-03-02  Thorsten Meyer  <thorsten.meyier@gmx.de>
+
+	* set/complement.m, set/union.m: Remove reference to deprecated
+	function create_set.
+
 2009-03-01  Ben Abbott <bpabbott@mac.com>
 
 	* plot/__go_draw_axes__.m: Do not render axis labels twice when

@@ -48,7 +48,7 @@
 ## Return index vectors @var{ia} and @var{ib} such that @code{a == c(ia)} and
 ## @code{b == c(ib)}.
 ## 
-## @seealso{create_set, intersect, complement}
+## @seealso{intersect, complement, unique}
 ## @end deftypefn
 
 ## Author: jwe

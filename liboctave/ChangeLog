@@ -1,3 +1,7 @@
+2009-03-02  Jaroslav Hajek  <highegg@gmail.com>
+
+	* mx-inlines.cc: Add missing #include.
+
 2009-02-25  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.in: Make maintainer-clean and distclean the same.

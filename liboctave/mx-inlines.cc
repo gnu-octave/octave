@@ -286,7 +286,9 @@ OP_DUP_FCN (real, mx_inline_real_dup, float,  FloatComplex)
 OP_DUP_FCN (imag, mx_inline_imag_dup, float,  FloatComplex)
 OP_DUP_FCN (conj, mx_inline_conj_dup, FloatComplex, FloatComplex)
 
-// NOTE: std::norm is NOT equivalent
+// FIXME: Due to a performance defect in g++ (<= 4.3), std::norm is slow unless
+// ffast-math is on (not by default even with -O3). The following helper function
+// gives the expected straightforward implementation of std::norm.
 template <class T>
 inline T cabsq (const std::complex<T>& c) 
 { return c.real () * c.real () + c.imag () * c.imag (); }

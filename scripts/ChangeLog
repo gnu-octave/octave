@@ -1,3 +1,7 @@
+2009-03-03  Jaroslav Hajek  <highegg@gmail.com>
+
+	* polynomial/polyval.m: Implement using Horner scheme.
+
 2009-03-03  Ben Abbott <bpabbott@mac.com>
 
 	* plot/gnuplot_drawnow.m: Fix unintended shift of plot image for

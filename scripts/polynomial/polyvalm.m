@@ -1,5 +1,6 @@
 ## Copyright (C) 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2002, 2004,
 ##               2005, 2006, 2007 John W. Eaton
+## Copyright (C) 2009 Jaroslav Hajek
 ##
 ## This file is part of Octave.
 ##
@@ -48,22 +49,22 @@ function y = polyvalm (c, x)
     error ("polyvalm: second argument must be a square matrix");
   endif
 
-  if (isempty (c))
-    y = [];
-    return;
-  endif
-
-  [v, d] = eig (x);
-
-  if (issymmetric (x))
-    y = v * diag (polyval (c, diag (d))) * v';
+  n = length (c);
+  if (n == 0)
+    y = zeros (rows (x), class (x));
   else
-    y = v * (diag (polyval (c, diag (d))) / v);
+    id = eye (rows (x), class (x));
+    y = c(1) * id;
+    for i = 2:n
+      y = y * x + c(i) * id;
+    endfor
   endif
 
 endfunction
 
-%!assert(isempty (polyvalm ([], [1, 2; 3, 4])));
+
+%!assert(! any (polyvalm ([], [1, 2; 3, 4]))(:));
+%!assert(polyvalm ([1, 2, 3, 4], [3, -4, 1; -2, 0, 2; -1, 4, -3]), [117, -124, 11; -70, 36, 38; -43, 92, -45])
 
 %!error polyvalm ([1, 1, 1], [1, 2; 3, 4; 5, 6]);
 

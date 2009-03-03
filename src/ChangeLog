@@ -1,3 +1,13 @@
+2009-03-03  Jaroslav Hajek  <highegg@gmail.com>
+
+	* oct-stream.h (octave_stream_list::lookup_cache): New member field.
+	(octave_stream_list::octave_stream_list): Initialize it.
+	(octave_stream_list::do_lookup): Use it.
+	(octave_stream_list::clear): Make flush optional. Do physically erase
+	entries from the map. Close files.
+	(octave_stream_list::do_remove): Call clear on "all". Do erase deleted
+	entry from the map.
+
 2009-03-02  John W. Eaton  <jwe@octave.org>
 
 	* graphics.cc (Fget, F__get__): Return a column vector of property

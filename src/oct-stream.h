@@ -629,7 +629,7 @@ octave_stream_list
 {
 protected:
 
-  octave_stream_list (void) : list () { }
+  octave_stream_list (void) : list (), lookup_cache (list.end ()) { }
 
 public:
 
@@ -649,7 +649,7 @@ public:
   static int remove (const octave_value& fid,
 		     const std::string& who = std::string ());
 
-  static void clear (void);
+  static void clear (bool flush = true);
 
   static string_vector get_info (int fid);
   static string_vector get_info (const octave_value& fid);
@@ -666,6 +666,8 @@ private:
 
   ostrl_map list;
 
+  mutable ostrl_map::const_iterator lookup_cache;
+
   static octave_stream_list *instance;
 
   int do_insert (octave_stream& os);
@@ -677,7 +679,7 @@ private:
   int do_remove (int fid, const std::string& who = std::string ());
   int do_remove (const octave_value& fid, const std::string& who = std::string ());
 
-  void do_clear (void);
+  void do_clear (bool flush = true);
 
   string_vector do_get_info (int fid) const;
   string_vector do_get_info (const octave_value& fid) const;

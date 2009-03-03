@@ -3983,10 +3983,10 @@ octave_stream_list::remove (const octave_value& fid, const std::string& who)
 }
 
 void
-octave_stream_list::clear (void)
+octave_stream_list::clear (bool flush)
 {
   if (instance)
-    instance->do_clear ();
+    instance->do_clear (flush);
 }
 
 string_vector
@@ -4068,12 +4068,20 @@ octave_stream_list::do_lookup (int fid, const std::string& who) const
 
   if (fid >= 0)
     {
-      ostrl_map::const_iterator iter = list.find (fid);
-
-      if (iter != list.end ())
-	retval = iter->second;
+      if (lookup_cache != list.end () && lookup_cache->first == fid)
+        retval = lookup_cache->second;
       else
-	gripe_invalid_file_id (fid, who);
+        {
+          ostrl_map::const_iterator iter = list.find (fid);
+
+          if (iter != list.end ())
+            {
+              retval = iter->second;
+              lookup_cache = iter;
+            }
+          else
+            gripe_invalid_file_id (fid, who);
+        }
     }
   else
     gripe_invalid_file_id (fid, who);
@@ -4110,11 +4118,13 @@ octave_stream_list::do_remove (int fid, const std::string& who)
       if (iter != list.end ())
 	{
 	  octave_stream os = iter->second;
+          list.erase (iter);
+          lookup_cache = list.end ();
 
+          // FIXME: is this check redundant?
 	  if (os.is_valid ())
 	    {
 	      os.close ();
-	      iter->second = octave_stream ();
 	      retval = 0;
 	    }
 	  else
@@ -4136,18 +4146,7 @@ octave_stream_list::do_remove (const octave_value& fid, const std::string& who)
 
   if (fid.is_string () && fid.string_value () == "all")
     {
-      for (ostrl_map::iterator p = list.begin (); p != list.end (); p++)
-	{
-	  // Skip stdin, stdout, and stderr.
-
-	  if (p->first > 2)
-	    {
-	      octave_stream os = p->second;
-
-	      if (os.is_valid ())
-		do_remove (p->first, who);
-	    }
-	}
+      do_clear (false);
 
       retval = 0;
     }
@@ -4163,22 +4162,30 @@ octave_stream_list::do_remove (const octave_value& fid, const std::string& who)
 }
 
 void
-octave_stream_list::do_clear (void)
+octave_stream_list::do_clear (bool flush)
 {
-  // Do flush stdout and stderr.
-
-  list[0].flush ();
-  list[1].flush ();
-
-  // But don't delete them or stdin.
-
-  for (ostrl_map::iterator p = list.begin (); p != list.end (); p++)
+  if (flush)
     {
-      // Skip stdin, stdout, and stderr.
+      // Do flush stdout and stderr.
 
-      if (p->first > 2)
-	p->second = octave_stream ();
+      list[0].flush ();
+      list[1].flush ();
     }
+
+  octave_stream saved_os[3];
+  // But don't delete them or stdin.
+  for (ostrl_map::iterator iter = list.begin (); iter != list.end (); iter++)
+    {
+      int fid = iter->first;
+      octave_stream os = iter->second;
+      if (fid < 3)
+        saved_os[fid] = os;
+      else if (os.is_valid ())
+        os.close ();
+    }
+  list.clear ();
+  for (int fid = 0; fid < 3; fid++) list[fid] = saved_os[fid];
+  lookup_cache = list.end ();
 }
 
 string_vector

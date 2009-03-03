@@ -1,5 +1,16 @@
 2009-03-03  John W. Eaton  <jwe@octave.org>
 
+	* symtab.h (symbol_table::do_inherit): Only inherit values for
+	symbols from the donor_scope that already exist in the table.
+	(symbol_table::symbol_record::symbol_record_rep::dup): Now const.
+	(symbol_table::symbol_record::operator=): Decrement rep->count and
+	maybe delete rep.
+	(symbol_table::fcn_info::operator=): Likewise.
+
+	* pt-fcn-handle.cc: (tree_anon_fcn_handle::dup): Transform
+	tree_anon_fcn_handle objects to tree_constant objects containing
+	octave_fcn_handle objects.  New tests.
+
 	* pt-assign.cc (tree_simple_assignment::rvalue1): Assign result of
 	call to rhs->rvalue1() to an octave_value object, not an
 	octave_value_list object.

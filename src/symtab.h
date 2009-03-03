@@ -370,7 +370,7 @@ public:
 	symbol_table::erase_persistent (name);
       }
 
-      symbol_record_rep *dup (void)
+      symbol_record_rep *dup (void) const
       {
 	return new symbol_record_rep (name, varval (xcurrent_context),
 				      storage_class);
@@ -412,6 +412,9 @@ public:
     {
       if (this != &sr)
 	{
+	  if (--rep->count == 0)
+	    delete rep;
+
 	  rep = sr.rep;
 	  rep->count++;
 	}
@@ -754,16 +757,19 @@ public:
     fcn_info (const std::string& nm = std::string ())
       : rep (new fcn_info_rep (nm)) { }
 
-    fcn_info (const fcn_info& ov) : rep (ov.rep)
+    fcn_info (const fcn_info& fi) : rep (fi.rep)
     { 
       rep->count++;
     }
 
-    fcn_info& operator = (const fcn_info& ov)
+    fcn_info& operator = (const fcn_info& fi)
     {
-      if (this != &ov)
+      if (this != &fi)
 	{
-	  rep = ov.rep;
+	  if (--rep->count == 0)
+	    delete rep;
+
+	  rep = fi.rep;
 	  rep->count++;
 	}
 
@@ -1991,50 +1997,26 @@ private:
       return p->second;
   }
 
-  void do_inherit (symbol_table& donor_symbol_table, context_id donor_context)
+  void do_inherit (symbol_table& donor_table, context_id donor_context)
   {
-    // Copy all variables from the donor scope in case they are needed
-    // in a subsequent anonymous function.  For example, to allow
-    //
-    //   function r = f2 (f, x)
-    //     r = f (x);
-    //   end
-    //
-    //   function f = f1 (k)
-    //     f = @(x) f2 (@(y) y-k, x);
-    //   end
-    //
-    //   f = f1 (3)  ==>  @(x) fcn2 (@(y) y - k, x)
-    //   f (10)      ==>  7
-    //
-    // to work as expected.
-    //
-    // FIXME -- is there a better way to accomplish this?
-
-    std::map<std::string, symbol_record> donor_table = donor_symbol_table.table;
-
-    for (table_iterator p = donor_table.begin (); p != donor_table.end (); p++)
+    for (table_iterator p = table.begin (); p != table.end (); p++)
       {
-	symbol_record& donor_sr = p->second;
+	symbol_record& sr = p->second;
 
-	std::string nm = donor_sr.name ();
-
-	symbol_record& sr = do_insert (nm);
-
-	if (! (sr.is_automatic () || sr.is_formal () || nm == "__retval__"))
+	if (! (sr.is_automatic () || sr.is_formal ()))
 	  {
-	    octave_value val = donor_sr.varval (donor_context);
+	    std::string nm = sr.name ();
 
-	    if (val.is_defined ())
+	    if (nm != "__retval__")
 	      {
-		// Currently, inherit is always called when creating a
-		// new table, so it only makes sense to copy values into
-		// the base context (== 0), but maybe the context
-		// should be passed in as a parameter instead?
+		octave_value val = donor_table.do_varval (nm, donor_context);
 
-		sr.varref (0) = val;
+		if (val.is_defined ())
+		  {
+		    sr.varref (0) = val;
 
-		sr.mark_inherited ();
+		    sr.mark_inherited ();
+		  }
 	      }
 	  }
       }

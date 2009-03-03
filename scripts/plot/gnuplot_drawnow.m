@@ -76,8 +76,14 @@ endfunction
 
 function implicit_margin = gnuplot_implicit_margin (term, opts_str)
   ## gnuplot has an implicit margin of 50pts for PS output.
-  if (strcmpi (term, "postscript") && isempty (strfind (opts_str, "eps")))
-    implicit_margin = 50/72;
+  if (strcmpi (term, "postscript"))
+    if (isempty (strfind (opts_str, " eps"))
+        && isempty (strfind (opts_str, "eps ")))
+      implicit_margin = 50/72;
+    else
+      ## When zero, the behavior of gnuplot changes.
+      implicit_margin = 1/72;
+    endif
   else
     implicit_margin = 0.0;
   endif

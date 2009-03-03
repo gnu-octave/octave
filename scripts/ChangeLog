@@ -1,3 +1,8 @@
+2009-03-03  Ben Abbott <bpabbott@mac.com>
+
+	* plot/gnuplot_drawnow.m: Fix unintended shift of plot image for
+	the gnuplot postscript+eps terminal.
+
 2009-03-02  Jaroslav Hajek  <highegg@gmail.com>
 
 	* pkg/pkg.m (fix_depends): Fix & simplify splitting the string.

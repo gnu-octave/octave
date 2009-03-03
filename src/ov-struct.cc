@@ -1202,19 +1202,25 @@ bool
 octave_struct::save_ascii (std::ostream& os)
 {
   Octave_map m = map_value ();
-  os << "# length: " << m.nfields () << "\n";
 
-  Octave_map::iterator i = m.begin ();
-  while (i != m.end ())
+  octave_idx_type nf = m.nfields ();
+
+  os << "# length: " << nf << "\n";
+
+  // Iterating over the list of keys will preserve the order of the
+  // fields.
+  string_vector keys = m.keys ();
+
+  for (octave_idx_type i = 0; i < nf; i++)
     {
-      octave_value val = map.contents (i);
+      std::string key = keys(i);
 
-      bool b = save_ascii_data (os, val, m.key (i), false, 0);
+      octave_value val = map.contents (key);
+
+      bool b = save_ascii_data (os, val, key, false, 0);
       
       if (! b)
 	return os;
-
-      i++;
     }
 
   return true;
@@ -1281,20 +1287,25 @@ octave_struct::save_binary (std::ostream& os, bool& save_as_floats)
 {
   Octave_map m = map_value ();
 
-  int32_t len = m.nfields ();
-  os.write (reinterpret_cast<char *> (&len), 4);
-  
-  Octave_map::iterator i = m.begin ();
-  while (i != m.end ())
-    {
-      octave_value val = map.contents (i);
+  octave_idx_type nf = m.nfields ();
 
-      bool b = save_binary_data (os, val, m.key (i), "", 0, save_as_floats);
+  int32_t len = nf;
+  os.write (reinterpret_cast<char *> (&len), 4);
+
+  // Iterating over the list of keys will preserve the order of the
+  // fields.
+  string_vector keys = m.keys ();
+
+  for (octave_idx_type i = 0; i < nf; i++)
+    {
+      std::string key = keys(i);
+
+      octave_value val = map.contents (key);
+
+      bool b = save_binary_data (os, val, key, "", 0, save_as_floats);
       
       if (! b)
 	return os;
-
-      i++;
     }
 
   return true;
@@ -1367,18 +1378,24 @@ octave_struct::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
 
   // recursively add each element of the structure to this group
   Octave_map m = map_value ();
-  Octave_map::iterator i = m.begin ();
-  while (i != m.end ())
-    {
-      octave_value val = map.contents (i);
 
-      bool retval2 = add_hdf5_data (data_hid, val, m.key (i), "", false, 
+  octave_idx_type nf = m.nfields ();
+
+  // Iterating over the list of keys will preserve the order of the
+  // fields.
+  string_vector keys = m.keys ();
+
+  for (octave_idx_type i = 0; i < nf; i++)
+    {
+      std::string key = keys(i);
+
+      octave_value val = map.contents (key);
+
+      bool retval2 = add_hdf5_data (data_hid, val, key, "", false, 
 				    save_as_floats);
 
       if (! retval2)
 	break;
-
-      i++;
     }
 
   H5Gclose (data_hid);
@@ -1402,6 +1419,9 @@ octave_struct::load_hdf5 (hid_t loc_id, const char *name,
   hid_t group_id = H5Gopen (loc_id, name); 
   H5Gget_num_objs (group_id, &num_obj);
   H5Gclose (group_id);
+
+  // FIXME -- fields appear to be sorted alphabetically on loading.
+  // Why is that happening?
 
   while (current_item < static_cast<int> (num_obj)
 	 && (retval2 = H5Giterate (loc_id, name, &current_item,

@@ -2187,21 +2187,27 @@ save_mat5_binary_element (std::ostream& os,
       {
 	char buf[64];
 	int32_t maxfieldnamelength = max_namelen + 1;
-	int fieldcnt = 0;
 
-	for (Octave_map::const_iterator i = m.begin (); i != m.end (); i++)
-	  fieldcnt++;
+	octave_idx_type nf = m.nfields ();
+
+	int fieldcnt = nf;
 
 	write_mat5_tag (os, miINT32, 4);
 	os.write (reinterpret_cast<char *> (&maxfieldnamelength), 4);
 	write_mat5_tag (os, miINT8, fieldcnt*maxfieldnamelength);
 
-	for (Octave_map::const_iterator i = m.begin (); i != m.end (); i++)
+	// Iterating over the list of keys will preserve the order of
+	// the fields.
+	string_vector keys = m.keys ();
+
+	for (octave_idx_type i = 0; i < nf; i++)
 	  {
+	    std::string key = keys(i);
+
 	    // write the name of each element
-	    std::string tstr = m.key (i);
 	    memset (buf, 0, max_namelen + 1);
-	    strncpy (buf, tstr.c_str (), max_namelen); // only 31 or 63 char names permitted
+	    // only 31 or 63 char names permitted
+	    strncpy (buf, key.c_str (), max_namelen);
 	    os.write (buf, max_namelen + 1);
 	  }
 
@@ -2211,9 +2217,11 @@ save_mat5_binary_element (std::ostream& os,
 	  {
 	    // write the data of each element
 
-	    for (Octave_map::const_iterator i = m.begin (); i != m.end (); i++)
+	    // Iterating over the list of keys will preserve the order
+	    // of the fields.
+	    for (octave_idx_type i = 0; i < nf; i++)
 	      {
-		Cell elts = m.contents (i);
+		Cell elts = m.contents (keys(i));
 
 		bool retval2 = save_mat5_binary_element (os, elts(j), "",
 							 mark_as_global,

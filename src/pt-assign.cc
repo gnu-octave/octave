@@ -184,9 +184,6 @@ tree_simple_assignment::rvalue (int nargout)
   return retval;
 }
 
-// FIXME -- this works, but it would look a little better if
-// it were broken up into a couple of separate functions.
-
 octave_value
 tree_simple_assignment::rvalue1 (int)
 {
@@ -200,12 +197,10 @@ tree_simple_assignment::rvalue1 (int)
 
   if (rhs)
     {
-      octave_value_list tmp = rhs->rvalue1 ();
+      octave_value rhs_val = rhs->rvalue1 ();
 
-      if (! (error_state || tmp.empty ()))
+      if (! error_state)
 	{
-	  octave_value rhs_val = tmp(0);
-
 	  if (rhs_val.is_undefined ())
 	    {
 	      error ("value on right hand side of assignment is undefined");

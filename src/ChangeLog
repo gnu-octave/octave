@@ -1,3 +1,9 @@
+2009-03-03  John W. Eaton  <jwe@octave.org>
+
+	* pt-assign.cc (tree_simple_assignment::rvalue1): Assign result of
+	call to rhs->rvalue1() to an octave_value object, not an
+	octave_value_list object.
+
 2009-03-03  Jaroslav Hajek  <highegg@gmail.com>
 
 	* oct-stream.h (octave_stream_list::lookup_cache): New member field.

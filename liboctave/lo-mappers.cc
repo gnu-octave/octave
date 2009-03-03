@@ -561,39 +561,13 @@ octave_is_NaN_or_NA (float x)
 float
 xmin (float x, float y)
 {
-  if (x < y)
-    return x;
-
-  if (y <= x)
-    return y;
-
-  if (xisnan (x) && ! xisnan (y))
-    return y;
-  else if (xisnan (y) && ! xisnan (x))
-    return x;
-  else if (octave_is_NA (x) || octave_is_NA (y))
-    return octave_Float_NA;
-  else
-    return octave_Float_NaN;
+  return  xisnan (y) ? x : (x <= y ? x : y);
 }
 
 float
 xmax (float x, float y)
 {
-  if (x > y)
-    return x;
-
-  if (y >= x)
-    return y;
-
-  if (xisnan (x) && ! xisnan (y))
-    return y;
-  else if (xisnan (y) && ! xisnan (x))
-    return x;
-  else if (octave_is_NA (x) || octave_is_NA (y))
-    return octave_Float_NA;
-  else
-    return octave_Float_NaN;
+  return  xisnan (y) ? x : (x >= y ? x : y);
 }
 
 // complex -> complex mappers.

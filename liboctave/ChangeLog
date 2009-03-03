@@ -1,3 +1,7 @@
+2009-03-03  Jaroslav Hajek  <highegg@gmail.com>
+
+	* lo-mappers.cc (xmin (float, float), xmax (float, float)): Simplify.
+
 2009-03-02  Jaroslav Hajek  <highegg@gmail.com>
 
 	* mx-inlines.cc: Add missing #include.

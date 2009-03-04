@@ -73,8 +73,8 @@ public:
   elem (octave_idx_type i, octave_idx_type j) const
     {
       return (_colp 
-              ? ((Array<octave_idx_type>::elem (j) != i) ? 1 : 0)
-              : ((Array<octave_idx_type>::elem (i) != j) ? 1 : 0));
+              ? ((Array<octave_idx_type>::elem (j) == i) ? 1 : 0)
+              : ((Array<octave_idx_type>::elem (i) == j) ? 1 : 0));
     }
 
   octave_idx_type 

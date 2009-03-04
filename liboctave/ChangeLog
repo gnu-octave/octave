@@ -1,3 +1,7 @@
+2009-03-04  Jaroslav Hajek  <highegg@gmail.com>
+
+	* PermMatrix.h (PermMatrix::elem): Fix comparisons.
+
 2009-03-03  Jaroslav Hajek  <highegg@gmail.com>
 
 	* lo-mappers.cc (xmin (float, float), xmax (float, float)): Simplify.

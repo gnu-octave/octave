@@ -1,3 +1,7 @@
+2009-03-05  John W. Eaton  <jwe@octave.org>
+
+	* deprecated/spdiag.m: Ensure sparse result.
+
 2009-03-05  Ben Abbott <bpabbott@mac.com>
 
 	* plot/__go_draw_axes__.m: Preserve column vector orientation for

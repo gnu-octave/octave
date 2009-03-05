@@ -212,6 +212,18 @@ octave_perm_matrix::PREFIX ## _value (bool frc_str_conv) const \
   return to_dense ().PREFIX ## _value (frc_str_conv); \
 }
 
+SparseMatrix
+octave_perm_matrix::sparse_matrix_value (bool) const
+{
+  return SparseMatrix (matrix);
+}
+
+SparseComplexMatrix
+octave_perm_matrix::sparse_complex_matrix_value (bool) const
+{
+  return SparseComplexMatrix (sparse_matrix_value ());
+}
+
 FORWARD_MATRIX_VALUE (Matrix, matrix)
 FORWARD_MATRIX_VALUE (FloatMatrix, float_matrix)
 FORWARD_MATRIX_VALUE (ComplexMatrix, complex_matrix)
@@ -224,9 +236,6 @@ FORWARD_MATRIX_VALUE (FloatComplexNDArray, float_complex_array)
 
 FORWARD_MATRIX_VALUE (boolNDArray, bool_array)
 FORWARD_MATRIX_VALUE (charNDArray, char_array)
-
-FORWARD_MATRIX_VALUE (SparseMatrix, sparse_matrix)
-FORWARD_MATRIX_VALUE (SparseComplexMatrix, sparse_complex_matrix)
 
 idx_vector
 octave_perm_matrix::index_vector (void) const

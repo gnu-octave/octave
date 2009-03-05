@@ -1,3 +1,11 @@
+2009-03-05  Jaroslav Hajek  <highegg@gmail.com>
+
+	* dSparse.h (SparseMatrix::SparseMatrix(const PermMatrix&)): New
+	constructor.
+	(SparseMatrix::SparseMatrix(const DiagMatrix&)): Fix implementation.
+	* CSparse.h (SparseComplexMatrix::SparseComplexMatrix(const ComplexDiagMatrix&)): 
+	Fix implementation.
+
 2009-03-04  Jaroslav Hajek  <highegg@gmail.com>
 
 	* PermMatrix.h (PermMatrix::elem): Fix comparisons.

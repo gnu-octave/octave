@@ -141,20 +141,41 @@ SparseMatrix::SparseMatrix (const SparseBoolMatrix &a)
 }
 
 SparseMatrix::SparseMatrix (const DiagMatrix& a)
-  : MSparse<double> (a.rows (), a.cols (), a.nnz ())
+  : MSparse<double> (a.rows (), a.cols (), a.length ())
 {
-  octave_idx_type nz = a.nnz (), l = a.length ();
-  for (octave_idx_type i = 0, j = 0; i < l; i++)
+  octave_idx_type j = 0, l = a.length ();
+  for (octave_idx_type i = 0; i < l; i++)
     {
+      cidx (i) = j;
       if (a(i, i) != 0.0)
         {
           data (j) = a(i, i);
           ridx (j) = i;
-          cidx (j) = j;
           j++;
         }
     }
-  cidx (nz) = nz;
+  for (octave_idx_type i = l; i <= a.cols (); i++)
+    cidx(i) = j;
+}
+
+SparseMatrix::SparseMatrix (const PermMatrix& a)
+  : MSparse<double> (a.rows (), a.cols (), a.rows ())
+{
+  octave_idx_type n = a.rows ();
+  for (octave_idx_type i = 0; i <= n; i++) 
+    cidx (i) = i;
+  const Array<octave_idx_type> pv = a.pvec ();
+
+  if (a.is_row_perm ())
+    {
+      for (octave_idx_type i = 0; i < n; i++)
+        ridx (i) = pv (i);
+    }
+  else
+    {
+      for (octave_idx_type i = 0; i < n; i++)
+        ridx (pv (i)) = i;
+    }
 }
 
 bool

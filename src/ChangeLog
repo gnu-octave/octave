@@ -1,3 +1,8 @@
+2009-03-05  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/sparse.cc (Fsparse): Handle diagonal and permutation
+	matrices.
+
 2009-03-03  John W. Eaton  <jwe@octave.org>
 
 	* ov-struct.cc (octave_struct::save_ascii,

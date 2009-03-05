@@ -146,6 +146,24 @@ to have a common size.\n\
 	       retval = new octave_sparse_matrix (sm);
 	     }
 	 }
+       else if (arg.is_diag_matrix ())
+         {
+           if (arg.is_complex_type ())
+             {
+	       SparseComplexMatrix sm = arg.sparse_complex_matrix_value ();
+	       retval = new octave_sparse_complex_matrix (sm);
+             }
+           else
+             {
+	       SparseMatrix sm = arg.sparse_matrix_value ();
+	       retval = new octave_sparse_matrix (sm);
+             }
+         }
+       else if (arg.is_perm_matrix ())
+         {
+           SparseMatrix sm = arg.sparse_matrix_value ();
+           retval = new octave_sparse_matrix (sm);
+         }
        else
 	 {
 	   if (use_complex) 

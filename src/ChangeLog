@@ -1,3 +1,7 @@
+2009-03-05  Jaroslav Hajek  <highegg@gmail.com>
+	
+	* ls-hdf5.cc (add_hdf5_data): Handle diag & perm matrices.
+
 2009-03-05  John W. Eaton  <jwe@octave.org>
 
 	* pt-cell.cc, pt-cell.h (tree_cell::dup): Now const.

@@ -749,7 +749,7 @@ add_hdf5_data (hid_t loc_id, const octave_value& tc,
   // themselves, so we convert them first to normal matrices using A = A(:,:).
   // This is a temporary hack.
   if (val.is_diag_matrix () || val.is_perm_matrix ())
-    val = val.do_index_op (octave_value_list (2, octave_value::magic_colon_t));
+    val = val.full_value ();
 
   std::string t = val.type_name();
 

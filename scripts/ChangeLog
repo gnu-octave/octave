@@ -1,3 +1,8 @@
+2009-03-05  Jaroslav Hajek  <highegg@gmail.com>
+
+	* linear-algebra/condest.m: Use lu rather than splu. Use relative tols
+	for tests.
+
 2009-03-05  John W. Eaton  <jwe@octave.org>
 
 	* deprecated/spdiag.m: Ensure sparse result.

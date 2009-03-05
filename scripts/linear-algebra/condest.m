@@ -163,7 +163,7 @@ function [est, v] = condest (varargin)
 
   if (! have_solve)
     if (issparse (A))
-      [L, U, P, Pc] = splu (A);
+      [L, U, P, Pc] = lu (A);
       solve = @(x) Pc' * (U \ (L \ (P * x)));
       solve_t = @(x) P' * (L' \ (U' \ (Pc * x)));
     else
@@ -203,7 +203,7 @@ endfunction
 %!  A = hilb (N);
 %!  cA = condest (A);
 %!  cA_test = norm (inv (A), 1) * norm (A, 1);
-%!  assert (cA, cA_test, 2^-8);
+%!  assert (cA, cA_test, -2^-8);
 
 %!test
 %!  N = 6;
@@ -211,7 +211,7 @@ endfunction
 %!  solve = @(x) A\x; solve_t = @(x) A'\x;
 %!  cA = condest (A, solve, solve_t);
 %!  cA_test = norm (inv (A), 1) * norm (A, 1);
-%!  assert (cA, cA_test, 2^-8);
+%!  assert (cA, cA_test, -2^-8);
 
 %!test
 %!  N = 6;
@@ -220,7 +220,7 @@ endfunction
 %!  solve = @(x) A\x; solve_t = @(x) A'\x;
 %!  cA = condest (apply, apply_t, solve, solve_t, N);
 %!  cA_test = norm (inv (A), 1) * norm (A, 1);
-%!  assert (cA, cA_test, 2^-6);
+%!  assert (cA, cA_test, -2^-6);
 
 %!test
 %!  N = 12;

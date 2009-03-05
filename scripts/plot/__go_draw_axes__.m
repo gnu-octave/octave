@@ -294,8 +294,8 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
     fputs (plot_stream, "set clip two;\n");
 
     kids = axis_obj.children;
-    kids = setdiff (kids, [axis_obj.xlabel, axis_obj.ylabel, ...
-                           axis_obj.zlabel, axis_obj.title]);
+    kids = setdiff (kids, [axis_obj.xlabel; axis_obj.ylabel; ...
+                           axis_obj.zlabel; axis_obj.title]);
 
     if (nd == 3)
       fputs (plot_stream, "set parametric;\n");

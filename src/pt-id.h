@@ -110,7 +110,7 @@ public:
   void eval_undefined_error (void);
 
   tree_identifier *dup (symbol_table::scope_id scope,
-			symbol_table::context_id context);
+			symbol_table::context_id context) const;
 
   void accept (tree_walker& tw);
 

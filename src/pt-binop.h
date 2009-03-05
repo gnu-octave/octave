@@ -82,7 +82,7 @@ public:
   tree_expression *rhs (void) { return op_rhs; }
 
   tree_expression *dup (symbol_table::scope_id scope,
-			symbol_table::context_id context);
+			symbol_table::context_id context) const;
 
   void accept (tree_walker& tw);
 
@@ -140,7 +140,7 @@ public:
   type op_type (void) const { return etype; }
 
   tree_expression *dup (symbol_table::scope_id scope,
-			symbol_table::context_id context);
+			symbol_table::context_id context) const;
 
 private:
 

@@ -88,7 +88,7 @@ public:
   tree_expression *expression (void) { return expr; }
 
   tree_decl_elt *dup (symbol_table::scope_id scope,
-		      symbol_table::context_id context);
+		      symbol_table::context_id context) const;
 
   void accept (tree_walker& tw);
 
@@ -127,7 +127,7 @@ public:
     }
 
   tree_decl_init_list *dup (symbol_table::scope_id scope,
-			    symbol_table::context_id context);
+			    symbol_table::context_id context) const;
 
   void accept (tree_walker& tw);
 
@@ -193,7 +193,7 @@ public:
   ~tree_global_command (void) { }
 
   tree_command *dup (symbol_table::scope_id scope,
-		     symbol_table::context_id context);
+		     symbol_table::context_id context) const;
 
   void accept (tree_walker& tw);
 
@@ -224,7 +224,7 @@ public:
   ~tree_static_command (void) { }
 
   tree_command *dup (symbol_table::scope_id scope,
-		     symbol_table::context_id context);
+		     symbol_table::context_id context) const;
 
   void accept (tree_walker& tw);
 

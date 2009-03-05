@@ -685,7 +685,7 @@ tree_index_expression::lvalue (void)
 
 tree_index_expression *
 tree_index_expression::dup (symbol_table::scope_id scope,
-			    symbol_table::context_id context)
+			    symbol_table::context_id context) const
 {
   tree_index_expression *new_idx_expr
     = new tree_index_expression (line (), column ());
@@ -694,11 +694,11 @@ tree_index_expression::dup (symbol_table::scope_id scope,
 
   std::list<tree_argument_list *> new_args;
 
-  for (std::list<tree_argument_list *>::iterator p = args.begin ();
+  for (std::list<tree_argument_list *>::const_iterator p = args.begin ();
        p != args.end ();
        p++)
     {
-      tree_argument_list *elt = *p;
+      const tree_argument_list *elt = *p;
 
       new_args.push_back (elt ? elt->dup (scope, context) : 0);
     }
@@ -711,11 +711,11 @@ tree_index_expression::dup (symbol_table::scope_id scope,
 
   std::list<tree_expression *> new_dyn_field;
 
-  for (std::list<tree_expression *>::iterator p = dyn_field.begin ();
+  for (std::list<tree_expression *>::const_iterator p = dyn_field.begin ();
        p != dyn_field.end ();
        p++)
     {
-      tree_expression *elt = *p;
+      const tree_expression *elt = *p;
 
       new_dyn_field.push_back (elt ? elt->dup (scope, context) : 0);
     }

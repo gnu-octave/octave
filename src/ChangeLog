@@ -1,3 +1,44 @@
+2009-03-05  John W. Eaton  <jwe@octave.org>
+
+	* pt-cell.cc, pt-cell.h (tree_cell::dup): Now const.
+	* comment-list.cc, comment-list.h (octave_comment_list::dup): Ditto.
+	* pt-arg-list.cc, pt-arg-list.h (tree_argument_list::dup): Ditto.
+	* pt-assign.cc, pt-assign.h (tree_simple_assignment::dup,
+	tree_multi_assignment::dup): Ditto.
+	* pt-binop.cc, pt-binop.h (tree_binary_expression::dup,
+	tree_boolean_expression::dup): Ditto.
+	* pt-cmd.cc, pt-cmd.h (tree_no_op_command::dup,
+	tree_function_def::dup): Ditto.
+	* pt-colon.cc, pt-colon.h (tree_colon_expression::dup): Ditto.
+	* pt-const.cc, pt-const.h (tree_constant::dup): Ditto.
+	* pt-decl.cc, pt-decl.h (tree_decl_elt::dup, tree_decl_init_list::dup,
+	tree_global_command::dup, tree_static_command::dup): Ditto.
+	* pt-except.cc, pt-except.h (tree_try_catch_command::dup,
+	tree_unwind_protect_command::dup): Ditto.
+	* pt-fcn-handle.cc, pt-fcn-handle.h (tree_fcn_handle::dup,
+	tree_anon_fcn_handle::dup): Ditto.
+	* pt-id.cc, pt-id.h (tree_identifier::dup): Ditto.
+	* pt-idx.cc, pt-idx.h (tree_index_expression::dup): Ditto.
+	* pt-jump.cc, pt-jump.h (tree_break_command::dup,
+	tree_continue_command::dup, tree_return_command::dup): Ditto.
+	* pt-loop.cc, pt-loop.h (tree_while_command::dup,
+	tree_do_until_command::dup, tree_simple_for_command::dup,
+	tree_complex_for_command::dup): Ditto.
+	* pt-mat.cc, pt-mat.h (tree_matrix::dup): Ditto.
+	* pt-misc.cc, pt-misc.h (tree_parameter_list::dup,
+	tree_return_list::dup): Ditto.
+	* pt-select.cc, pt-select.h (tree_if_clause::dup,
+	tree_if_command_list::dup, tree_if_command::dup,
+	tree_switch_case::dup, tree_switch_case_list::dup,
+	tree_switch_command::dup): Ditto.
+	* pt-stmt.cc, pt-stmt.h (tree_statement::dup,
+	tree_statement_list::dup): Ditto.
+	* pt-unop.cc, pt-unop.h (tree_prefix_expression::dup,
+	tree_postfix_expression::dup): Ditto.
+	* pt-fcn-handle.h (tree_anon_fcn_handle::parameter_list,
+	tree_anon_fcn_handle::return_list, tree_anon_fcn_handle::body,
+	tree_anon_fcn_handle::scope): Ditto.
+
 2009-03-05  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/sparse.cc (Fsparse): Handle diagonal and permutation

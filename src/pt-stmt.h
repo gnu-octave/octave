@@ -94,7 +94,7 @@ public:
   void set_expression (tree_expression *e) { expr = e; }
 
   tree_statement *dup (symbol_table::scope_id scope,
-		       symbol_table::context_id context);
+		       symbol_table::context_id context) const;
 
   void accept (tree_walker& tw);
 
@@ -161,7 +161,7 @@ public:
   octave_value_list list_breakpoints (void);
 
   tree_statement_list *dup (symbol_table::scope_id scope,
-			    symbol_table::context_id context);
+			    symbol_table::context_id context) const;
 
   void accept (tree_walker& tw);
 

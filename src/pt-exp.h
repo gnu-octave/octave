@@ -48,7 +48,7 @@ public:
   virtual bool has_magic_end (void) const = 0;
 
   virtual tree_expression *dup (symbol_table::scope_id,
-				symbol_table::context_id context) = 0;
+				symbol_table::context_id context) const = 0;
 
   virtual bool is_constant (void) const { return false; }
 
@@ -110,7 +110,7 @@ public:
       return this;
     }
 
-  virtual void copy_base (tree_expression& e)
+  virtual void copy_base (const tree_expression& e)
     {
       num_parens = e.num_parens;
       postfix_indexed = e.postfix_indexed;

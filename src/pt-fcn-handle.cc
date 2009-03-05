@@ -70,7 +70,7 @@ tree_fcn_handle::rvalue (int nargout)
 
 tree_expression *
 tree_fcn_handle::dup (symbol_table::scope_id,
-		      symbol_table::context_id)
+		      symbol_table::context_id) const
 {
   tree_fcn_handle *new_fh = new tree_fcn_handle (nm, line (), column ());
 
@@ -162,7 +162,7 @@ tree_anon_fcn_handle::rvalue (int nargout)
 #if 0
 tree_expression *
 tree_anon_fcn_handle::dup (symbol_table::scope_id parent_scope,
-			   symbol_table::context_id parent_context)
+			   symbol_table::context_id parent_context) const
 {
   tree_parameter_list *param_list = parameter_list ();
   tree_parameter_list *ret_list = return_list ();
@@ -187,7 +187,8 @@ tree_anon_fcn_handle::dup (symbol_table::scope_id parent_scope,
 #endif
 
 tree_expression *
-tree_anon_fcn_handle::dup (symbol_table::scope_id, symbol_table::context_id)
+tree_anon_fcn_handle::dup (symbol_table::scope_id,
+			   symbol_table::context_id) const
 {
   // Instead of simply duplicating, transform to a tree_constant
   // object that contains an octave_fcn_handle object with the symbol

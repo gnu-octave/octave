@@ -248,16 +248,16 @@ tree_parameter_list::is_defined (void)
 
 tree_parameter_list *
 tree_parameter_list::dup (symbol_table::scope_id scope,
-			  symbol_table::context_id context)
+			  symbol_table::context_id context) const
 {
   tree_parameter_list *new_list = new tree_parameter_list ();
 
   if (takes_varargs ())
     new_list->mark_varargs ();
 
-  for (iterator p = begin (); p != end (); p++)
+  for (const_iterator p = begin (); p != end (); p++)
     {
-      tree_decl_elt *elt = *p;
+      const tree_decl_elt *elt = *p;
 
       new_list->append (elt->dup (scope, context));
     }
@@ -285,13 +285,13 @@ tree_return_list::~tree_return_list (void)
 
 tree_return_list *
 tree_return_list::dup (symbol_table::scope_id scope,
-		       symbol_table::context_id context)
+		       symbol_table::context_id context) const
 {
   tree_return_list *new_list = new tree_return_list ();
 
-  for (iterator p = begin (); p != end (); p++)
+  for (const_iterator p = begin (); p != end (); p++)
     {
-      tree_index_expression *elt = *p;
+      const tree_index_expression *elt = *p;
 
       new_list->append (elt->dup (scope, context));
     }

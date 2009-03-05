@@ -266,7 +266,7 @@ tree_colon_expression::column (void) const
 
 tree_expression *
 tree_colon_expression::dup (symbol_table::scope_id scope,
-			    symbol_table::context_id context)
+			    symbol_table::context_id context) const
 {
   tree_colon_expression *new_ce = new
     tree_colon_expression (op_base ? op_base->dup (scope, context) : 0,

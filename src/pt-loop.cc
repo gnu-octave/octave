@@ -54,7 +54,7 @@ tree_while_command::~tree_while_command (void)
 
 tree_command *
 tree_while_command::dup (symbol_table::scope_id scope,
-			 symbol_table::context_id context)
+			 symbol_table::context_id context) const
 {
   return new tree_while_command (expr ? expr->dup (scope, context) : 0,
 				 list ? list->dup (scope, context) : 0,
@@ -73,7 +73,7 @@ tree_while_command::accept (tree_walker& tw)
 
 tree_command *
 tree_do_until_command::dup (symbol_table::scope_id scope,
-			    symbol_table::context_id context)
+			    symbol_table::context_id context) const
 {
   return new tree_do_until_command (expr ? expr->dup (scope, context) : 0,
 				    list ? list->dup (scope, context) : 0,
@@ -100,7 +100,7 @@ tree_simple_for_command::~tree_simple_for_command (void)
 
 tree_command *
 tree_simple_for_command::dup (symbol_table::scope_id scope,
-			      symbol_table::context_id context)
+			      symbol_table::context_id context) const
 {
   return new tree_simple_for_command (lhs ? lhs->dup (scope, context) : 0,
 				      expr ? expr->dup (scope, context) : 0,
@@ -126,7 +126,7 @@ tree_complex_for_command::~tree_complex_for_command (void)
 
 tree_command *
 tree_complex_for_command::dup (symbol_table::scope_id scope,
-			       symbol_table::context_id context)
+			       symbol_table::context_id context) const
 {
   return new tree_complex_for_command (lhs ? lhs->dup (scope, context) : 0,
 				       expr ? expr->dup (scope, context) : 0,

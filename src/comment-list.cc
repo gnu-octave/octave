@@ -32,13 +32,13 @@ along with Octave; see the file COPYING.  If not, see
 octave_comment_buffer *octave_comment_buffer::instance = 0;
 
 octave_comment_list *
-octave_comment_list::dup (void)
+octave_comment_list::dup (void) const
 {
   octave_comment_list *new_cl = new octave_comment_list ();
 
-  for (iterator p = begin (); p != end (); p++)
+  for (const_iterator p = begin (); p != end (); p++)
     {
-      octave_comment_elt elt = *p;
+      const octave_comment_elt elt = *p;
 
       new_cl->append (elt);
     }

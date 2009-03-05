@@ -133,7 +133,7 @@ tree_statement::is_end_of_fcn_or_script (void) const
 
 tree_statement *
 tree_statement::dup (symbol_table::scope_id scope,
-		     symbol_table::context_id context)
+		     symbol_table::context_id context) const
 {
   tree_statement *new_stmt = new tree_statement ();
 
@@ -194,15 +194,15 @@ tree_statement_list::list_breakpoints (void)
 
 tree_statement_list *
 tree_statement_list::dup (symbol_table::scope_id scope,
-			  symbol_table::context_id context)
+			  symbol_table::context_id context) const
 {
   tree_statement_list *new_list = new tree_statement_list ();
 
   new_list->function_body = function_body;
 
-  for (iterator p = begin (); p != end (); p++)
+  for (const_iterator p = begin (); p != end (); p++)
     {
-      tree_statement *elt = *p;
+      const tree_statement *elt = *p;
 
       new_list->append (elt ? elt->dup (scope, context) : 0);
     }

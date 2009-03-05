@@ -94,7 +94,7 @@ public:
 	       octave_comment_elt::comment_type t = octave_comment_elt::unknown)
     { append (octave_comment_elt (s, t)); }
 
-  octave_comment_list *dup (void);
+  octave_comment_list *dup (void) const;
 };
 
 class

@@ -73,7 +73,7 @@ public:
   octave_comment_list *trailing_comment (void) { return trail_comm; }
 
   tree_command *dup (symbol_table::scope_id scope,
-		     symbol_table::context_id context);
+		     symbol_table::context_id context) const;
 
   void accept (tree_walker& tw);
 
@@ -125,7 +125,7 @@ public:
   ~tree_do_until_command (void) { }
 
   tree_command *dup (symbol_table::scope_id scope,
-		     symbol_table::context_id context);
+		     symbol_table::context_id context) const;
 
   void accept (tree_walker& tw);
 
@@ -170,7 +170,7 @@ public:
   octave_comment_list *trailing_comment (void) { return trail_comm; }
 
   tree_command *dup (symbol_table::scope_id scope,
-		     symbol_table::context_id context);
+		     symbol_table::context_id context) const;
 
   void accept (tree_walker& tw);
 
@@ -228,7 +228,7 @@ public:
   octave_comment_list *trailing_comment (void) { return trail_comm; }
 
   tree_command *dup (symbol_table::scope_id scope,
-		     symbol_table::context_id context);
+		     symbol_table::context_id context) const;
 
   void accept (tree_walker& tw);
 

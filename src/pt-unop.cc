@@ -102,7 +102,7 @@ tree_prefix_expression::rvalue1 (int)
 
 tree_expression *
 tree_prefix_expression::dup (symbol_table::scope_id scope,
-			     symbol_table::context_id context)
+			     symbol_table::context_id context) const
 {
   tree_prefix_expression *new_pe
     = new tree_prefix_expression (op ? op->dup (scope, context) : 0,
@@ -180,7 +180,7 @@ tree_postfix_expression::rvalue1 (int)
 
 tree_expression *
 tree_postfix_expression::dup (symbol_table::scope_id scope,
-			      symbol_table::context_id context)
+			      symbol_table::context_id context) const
 {
   tree_postfix_expression *new_pe
     = new tree_postfix_expression (op ? op->dup (scope, context) : 0,

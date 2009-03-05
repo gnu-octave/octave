@@ -120,14 +120,14 @@ tree_identifier::lvalue (void)
 
 tree_identifier *
 tree_identifier::dup (symbol_table::scope_id sc,
-		      symbol_table::context_id /*context*/)
+		      symbol_table::context_id) const
 {
   // The new tree_identifier object contains a symbol_record
   // entry from the duplicated scope.
 
   // FIXME -- is this the best way?
   symbol_table::symbol_record new_sym
-    = symbol_table::find_symbol (xsym().name (), sc);
+    = symbol_table::find_symbol (name (), sc);
 
   tree_identifier *new_id
     = new tree_identifier (new_sym, line (), column ());

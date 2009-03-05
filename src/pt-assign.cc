@@ -269,7 +269,7 @@ tree_simple_assignment::oper (void) const
 
 tree_expression *
 tree_simple_assignment::dup (symbol_table::scope_id scope,
-			     symbol_table::context_id context)
+			     symbol_table::context_id context) const
 {
   tree_simple_assignment *new_sa
     = new tree_simple_assignment (lhs ? lhs->dup (scope, context) : 0,
@@ -479,7 +479,7 @@ tree_multi_assignment::oper (void) const
 
 tree_expression *
 tree_multi_assignment::dup (symbol_table::scope_id scope,
-			    symbol_table::context_id context)
+			    symbol_table::context_id context) const
 {
   tree_multi_assignment *new_ma
     = new tree_multi_assignment (lhs ? lhs->dup (scope, context) : 0,

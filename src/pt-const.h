@@ -79,7 +79,7 @@ public:
   octave_value_list rvalue (int nargout);
 
   tree_expression *dup (symbol_table::scope_id scope,
-			symbol_table::context_id context);
+			symbol_table::context_id context) const;
 
   void accept (tree_walker& tw);
 

@@ -47,7 +47,7 @@ tree_if_clause::~tree_if_clause (void)
 
 tree_if_clause *
 tree_if_clause::dup (symbol_table::scope_id scope,
-		     symbol_table::context_id context)
+		     symbol_table::context_id context) const
 {
   return new tree_if_clause (expr ? expr->dup (scope, context) : 0,
 			     list ? list->dup (scope, context) : 0,
@@ -64,13 +64,13 @@ tree_if_clause::accept (tree_walker& tw)
 
 tree_if_command_list *
 tree_if_command_list::dup (symbol_table::scope_id scope,
-			   symbol_table::context_id context)
+			   symbol_table::context_id context) const
 {
   tree_if_command_list *new_icl = new tree_if_command_list ();
 
-  for (iterator p = begin (); p != end (); p++)
+  for (const_iterator p = begin (); p != end (); p++)
     {
-      tree_if_clause *elt = *p;
+      const tree_if_clause *elt = *p;
 
       new_icl->append (elt ? elt->dup (scope, context) : 0);
     }
@@ -119,7 +119,7 @@ tree_if_command::delete_breakpoint (void)
 
 tree_command *
 tree_if_command::dup (symbol_table::scope_id scope,
-		      symbol_table::context_id context)
+		      symbol_table::context_id context) const
 {
   return new tree_if_command (list ? list->dup (scope, context) : 0,
 			      lead_comm ? lead_comm->dup () : 0,
@@ -183,7 +183,7 @@ tree_switch_case::label_matches (const octave_value& val)
 
 tree_switch_case *
 tree_switch_case::dup (symbol_table::scope_id scope,
-		       symbol_table::context_id context)
+		       symbol_table::context_id context) const
 {
   return new tree_switch_case (label ? label->dup (scope, context) : 0,
 			       list ? list->dup (scope, context) : 0,
@@ -200,13 +200,13 @@ tree_switch_case::accept (tree_walker& tw)
 
 tree_switch_case_list *
 tree_switch_case_list::dup (symbol_table::scope_id scope,
-			    symbol_table::context_id context)
+			    symbol_table::context_id context) const
 {
   tree_switch_case_list *new_scl = new tree_switch_case_list ();
 
-  for (iterator p = begin (); p != end (); p++)
+  for (const_iterator p = begin (); p != end (); p++)
     {
-      tree_switch_case *elt = *p;
+      const tree_switch_case *elt = *p;
 
       new_scl->append (elt ? elt->dup (scope, context) : 0);
     }
@@ -256,7 +256,7 @@ tree_switch_command::delete_breakpoint (void)
 
 tree_command *
 tree_switch_command::dup (symbol_table::scope_id scope,
-			  symbol_table::context_id context)
+			  symbol_table::context_id context) const
 {
   return new tree_switch_command (expr ? expr->dup (scope, context) : 0,
 				  list ? list->dup (scope, context) : 0,

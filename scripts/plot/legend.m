@@ -243,7 +243,8 @@ endfunction
 %! clf
 %! labels = {};
 %! for i = 1:5
-%!     plot(1:100, i + rand(100,1)); hold on;
+%!     h = plot(1:100, i + rand(100,1)); hold on;
+%!     set (h, "color", get (gca, "colororder")(i,:))
 %!     labels = {labels{:}, cstrcat("Signal ", num2str(i))};
 %! endfor; hold off;
 %! title("Signals with random offset and uniform noise")

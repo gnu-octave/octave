@@ -1,3 +1,10 @@
+2009-03-06  Ben Abbott <bpabbott@mac.com>
+
+	* plot/__go_draw_axes__.m: Preserve the order of axes' children
+	when pruning the handles for the {x,y,z}labels and title.
+	* plot/legend.m: Change demo to add colors to lines. This change
+	reveals the problem (above) with the ordering of the axes' children.
+
 2009-03-05  Jaroslav Hajek  <highegg@gmail.com>
 
 	* linear-algebra/condest.m: Use lu rather than splu. Use relative tols

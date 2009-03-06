@@ -94,7 +94,7 @@ protected:
 
 public:
 
-  typedef T element_type;
+  using Array<T>::element_type;
 
   DiagArray2 (void) 
     : Array<T> (), d1 (0), d2 (0) { }

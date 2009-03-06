@@ -1,3 +1,14 @@
+2009-03-05  Jason Riedy  <jason@acm.org>
+
+	* Sparse.h (Sparse<T>::elt_type): Remove typedef, replace with:
+	* Sparse.h (Sparse<T>::element_type): Add typedef to be consistent
+	with Array.h
+	* DiagArray2.h (DiagArray2<T>::elt_type): Likewise, removed.
+	* DiagArray2.h (DiagArray2<T>::element_type): Define by using
+	Array<T>::element_type.
+	* intNDArray.h (intNDArray<T>::element_type): Remove, inherited
+	from MArrayN<T>.
+
 2009-03-05  Jaroslav Hajek  <highegg@gmail.com>
 
 	* dSparse.h (SparseMatrix::SparseMatrix(const PermMatrix&)): New

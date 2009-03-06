@@ -145,9 +145,9 @@ octave_base_int_matrix<T>::convert_to_str_internal (bool, bool, char type) const
     {
       OCTAVE_QUIT;
 
-      typename T::elt_type tmp = this->matrix(i);
+      typename T::element_type tmp = this->matrix(i);
 
-      typedef typename T::elt_type::val_type val_type;
+      typedef typename T::element_type::val_type val_type;
 
       val_type ival = tmp.value ();
 

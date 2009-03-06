@@ -48,7 +48,7 @@ Sparse
 {
 public:
 
-  typedef T elt_type;
+  typedef T element_type;
 
 protected:
   //--------------------------------------------------------------------

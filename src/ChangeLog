@@ -69,6 +69,11 @@
 	tree_anon_fcn_handle::return_list, tree_anon_fcn_handle::body,
 	tree_anon_fcn_handle::scope): Ditto.
 
+2009-03-05  Jason Riedy  <jason@acm.org>
+
+	* ov-base-int.cc (convert_to_str_internal): Replace elt_type with
+	element_type throughout.
+
 2009-03-05  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/sparse.cc (Fsparse): Handle diagonal and permutation

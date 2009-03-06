@@ -32,7 +32,7 @@ intNDArray : public MArrayN<T>
 {
 public:
 
-  typedef T elt_type;
+  using MArrayN<T>::element_type;
   
   intNDArray (void) : MArrayN<T> () { }
 

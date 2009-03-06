@@ -79,47 +79,27 @@ where @code{sigma_max (@var{x})} is the maximal singular value of @var{x}.\n\
       if (nargin == 2)
         warning ("pinv: tol is ignored for diagonal matrices");
 
-      const octave_base_value& a = arg.get_rep ();
       if (arg.is_complex_type ())
         {
           if (isfloat)
-            {
-              CAST_CONV_ARG (const octave_float_complex_diag_matrix&);
-              retval = v.float_complex_diag_matrix_value ().pseudo_inverse ();
-            }
+            retval = arg.float_complex_diag_matrix_value ().pseudo_inverse ();
           else
-            {
-              CAST_CONV_ARG (const octave_complex_diag_matrix&);
-              retval = v.complex_diag_matrix_value ().pseudo_inverse ();
-            }
+            retval = arg.complex_diag_matrix_value ().pseudo_inverse ();
         }
       else
         {
           if (isfloat)
-            {
-              CAST_CONV_ARG (const octave_float_diag_matrix&);
-              retval = v.float_diag_matrix_value ().pseudo_inverse ();
-            }
+            retval = arg.float_diag_matrix_value ().pseudo_inverse ();
           else
-            {
-              CAST_CONV_ARG (const octave_diag_matrix&);
-              retval = v.diag_matrix_value ().pseudo_inverse ();
-            }
+            retval = arg.diag_matrix_value ().pseudo_inverse ();
         }
     }
   else if (arg.is_perm_matrix ())
     {
-      const octave_base_value& a = arg.get_rep ();
       if (isfloat)
-        {
-          CAST_CONV_ARG (const octave_float_perm_matrix&);
-          retval = v.perm_matrix_value ().inverse ();
-        }
+        retval = octave_value (arg.perm_matrix_value ().inverse (), true);
       else
-        {
-          CAST_CONV_ARG (const octave_perm_matrix&);
-          retval = v.perm_matrix_value ().inverse ();
-        }
+        retval = arg.perm_matrix_value ().inverse ();
     }
   else if (isfloat)
     {

@@ -608,6 +608,46 @@ octave_base_value::sparse_bool_matrix_value (bool) const
   return retval;
 }
 
+DiagMatrix
+octave_base_value::diag_matrix_value (bool) const
+{
+  DiagMatrix retval;
+  gripe_wrong_type_arg ("octave_base_value::diag_matrix_value()", type_name ());
+  return retval;
+}
+
+FloatDiagMatrix
+octave_base_value::float_diag_matrix_value (bool) const
+{
+  FloatDiagMatrix retval;
+  gripe_wrong_type_arg ("octave_base_value::float_diag_matrix_value()", type_name ());
+  return retval;
+}
+
+ComplexDiagMatrix
+octave_base_value::complex_diag_matrix_value (bool) const
+{
+  ComplexDiagMatrix retval;
+  gripe_wrong_type_arg ("octave_base_value::complex_diag_matrix_value()", type_name ());
+  return retval;
+}
+
+FloatComplexDiagMatrix
+octave_base_value::float_complex_diag_matrix_value (bool) const
+{
+  FloatComplexDiagMatrix retval;
+  gripe_wrong_type_arg ("octave_base_value::float_complex_diag_matrix_value()", type_name ());
+  return retval;
+}
+
+PermMatrix
+octave_base_value::perm_matrix_value (void) const
+{
+  PermMatrix retval;
+  gripe_wrong_type_arg ("octave_base_value::perm_matrix_value()", type_name ());
+  return retval;
+}
+
 octave_int8
 octave_base_value::int8_scalar_value (void) const
 {

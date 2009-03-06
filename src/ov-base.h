@@ -396,6 +396,16 @@ public:
 
   virtual SparseBoolMatrix sparse_bool_matrix_value (bool = false) const;
 
+  virtual DiagMatrix diag_matrix_value (bool = false) const;
+
+  virtual FloatDiagMatrix float_diag_matrix_value (bool = false) const;
+  
+  virtual ComplexDiagMatrix complex_diag_matrix_value (bool = false) const;
+  
+  virtual FloatComplexDiagMatrix float_complex_diag_matrix_value (bool = false) const;
+  
+  virtual PermMatrix perm_matrix_value (void) const;
+
   virtual octave_int8 int8_scalar_value (void) const;
 
   virtual octave_int16 int16_scalar_value (void) const;

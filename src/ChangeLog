@@ -1,3 +1,29 @@
+2009-03-06  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov.h (octave_value::diag_matrix_value,
+	octave_value::complex_diag_matrix_value,
+	octave_value::float_diag_matrix_value,
+	octave_value::float_complex_diag_matrix_value,
+	octave_value::perm_matrix_value): New methods.
+
+	* ov-base.cc (octave_base_value::diag_matrix_value,
+	octave_base_value::complex_diag_matrix_value,
+	octave_base_value::float_diag_matrix_value,
+	octave_base_value::float_complex_diag_matrix_value,
+	octave_base_value::perm_matrix_value): New virtual methods.
+	
+	* ov-base.h: Declare them.
+
+	* ov-base-diag.h (octave_base_diag::diag_matrix_value,
+	octave_base_diag::complex_diag_matrix_value,
+	octave_base_diag::float_diag_matrix_value,
+	octave_base_diag::float_complex_diag_matrix_value,
+	octave_base_diag::perm_matrix_value): Remove declarations.
+
+	* DLD-FUNCTIONS/inv.cc (Finv): Simplify handling diag & perm matrices.
+	* DLD-FUNCTIONS/pinv.cc (Fpinv): Ditto.
+	* DLD-FUNCTIONS/det.cc (Fdet): Ditto.
+
 2009-03-05  Jaroslav Hajek  <highegg@gmail.com>
 	
 	* ls-hdf5.cc (add_hdf5_data): Handle diag & perm matrices.

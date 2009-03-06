@@ -95,56 +95,48 @@ if requested.\n\
 
   if (arg.is_diag_matrix ())
     {
-      const octave_base_value& a = arg.get_rep ();
       if (arg.is_complex_type ())
         {
           if (isfloat)
             {
-              CAST_CONV_ARG (const octave_float_complex_diag_matrix&);
-              retval(0) = v.float_complex_diag_matrix_value ().determinant ().value ();
+              retval(0) = arg.float_complex_diag_matrix_value ().determinant ().value ();
               if (nargout > 1)
-                retval(1) = v.float_complex_diag_matrix_value ().rcond ();
+                retval(1) = arg.float_complex_diag_matrix_value ().rcond ();
             }
           else
             {
-              CAST_CONV_ARG (const octave_complex_diag_matrix&);
-              retval(0) = v.complex_diag_matrix_value ().determinant ().value ();
+              retval(0) = arg.complex_diag_matrix_value ().determinant ().value ();
               if (nargout > 1)
-                retval(1) = v.complex_diag_matrix_value ().rcond ();
+                retval(1) = arg.complex_diag_matrix_value ().rcond ();
             }
         }
       else
         {
           if (isfloat)
             {
-              CAST_CONV_ARG (const octave_float_diag_matrix&);
-              retval(0) = v.float_diag_matrix_value ().determinant ().value ();
+              retval(0) = arg.float_diag_matrix_value ().determinant ().value ();
               if (nargout > 1)
-                retval(1) = v.float_diag_matrix_value ().rcond ();
+                retval(1) = arg.float_diag_matrix_value ().rcond ();
             }
           else
             {
-              CAST_CONV_ARG (const octave_diag_matrix&);
-              retval(0) = v.diag_matrix_value ().determinant ().value ();
+              retval(0) = arg.diag_matrix_value ().determinant ().value ();
               if (nargout > 1)
-                retval(1) = v.diag_matrix_value ().rcond ();
+                retval(1) = arg.diag_matrix_value ().rcond ();
             }
         }
     }
   else if (arg.is_perm_matrix ())
     {
-      const octave_base_value& a = arg.get_rep ();
       if (isfloat)
         {
-          CAST_CONV_ARG (const octave_float_perm_matrix&);
-          retval(0) = static_cast<float> (v.perm_matrix_value ().determinant ());
+          retval(0) = static_cast<float> (arg.perm_matrix_value ().determinant ());
           if (nargout > 1)
             retval(1) = 1.0;
         }
       else
         {
-          CAST_CONV_ARG (const octave_perm_matrix&);
-          retval(0) = static_cast<double> (v.perm_matrix_value ().determinant ());
+          retval(0) = static_cast<double> (arg.perm_matrix_value ().determinant ());
           if (nargout > 1)
             retval(1) = 1.0f;
         }

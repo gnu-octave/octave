@@ -740,6 +740,21 @@ public:
   SparseBoolMatrix sparse_bool_matrix_value (bool frc_str_conv = false) const
     { return rep->sparse_bool_matrix_value (frc_str_conv); }
 
+  DiagMatrix diag_matrix_value (bool force = false) const
+    { return rep->diag_matrix_value (force); }
+  
+  FloatDiagMatrix float_diag_matrix_value (bool force = false) const
+    { return rep->float_diag_matrix_value (force); }
+  
+  ComplexDiagMatrix complex_diag_matrix_value (bool force = false) const
+    { return rep->complex_diag_matrix_value (force); }
+  
+  FloatComplexDiagMatrix float_complex_diag_matrix_value (bool force = false) const
+    { return rep->float_complex_diag_matrix_value (force); }
+
+  PermMatrix perm_matrix_value (void) const
+    { return rep->perm_matrix_value (); }
+  
   octave_int8 int8_scalar_value (void) const
     { return rep->int8_scalar_value (); }
 

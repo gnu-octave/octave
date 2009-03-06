@@ -136,14 +136,6 @@ public:
 
   idx_vector index_vector (void) const;
 
-  virtual DiagMatrix diag_matrix_value (bool = false) const = 0;
-
-  virtual FloatDiagMatrix float_diag_matrix_value (bool = false) const = 0;
-
-  virtual ComplexDiagMatrix complex_diag_matrix_value (bool = false) const = 0;
-
-  virtual FloatComplexDiagMatrix float_complex_diag_matrix_value (bool = false) const = 0;
-
   Matrix matrix_value (bool = false) const;
 
   FloatMatrix float_matrix_value (bool = false) const;

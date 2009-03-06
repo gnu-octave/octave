@@ -91,39 +91,34 @@ be avoided. It is significantly more accurate and faster to do\n\
     {
       rcond = 1.0;
       frcond = 1.0f;
-      const octave_base_value& a = arg.get_rep ();
       if (arg.is_complex_type ())
         {
           if (isfloat)
             {
-              CAST_CONV_ARG (const octave_float_complex_diag_matrix&);
-              result = v.float_complex_diag_matrix_value ().inverse (info);
+              result = arg.float_complex_diag_matrix_value ().inverse (info);
               if (nargout > 1)
-                frcond = v.float_complex_diag_matrix_value ().rcond ();
+                frcond = arg.float_complex_diag_matrix_value ().rcond ();
             }
           else
             {
-              CAST_CONV_ARG (const octave_complex_diag_matrix&);
-              result = v.complex_diag_matrix_value ().inverse (info);
+              result = arg.complex_diag_matrix_value ().inverse (info);
               if (nargout > 1)
-                rcond = v.complex_diag_matrix_value ().rcond ();
+                rcond = arg.complex_diag_matrix_value ().rcond ();
             }
         }
       else
         {
           if (isfloat)
             {
-              CAST_CONV_ARG (const octave_float_diag_matrix&);
-              result = v.float_diag_matrix_value ().inverse (info);
+              result = arg.float_diag_matrix_value ().inverse (info);
               if (nargout > 1)
-                frcond = v.float_diag_matrix_value ().rcond ();
+                frcond = arg.float_diag_matrix_value ().rcond ();
             }
           else
             {
-              CAST_CONV_ARG (const octave_diag_matrix&);
-              result = v.diag_matrix_value ().inverse (info);
+              result = arg.diag_matrix_value ().inverse (info);
               if (nargout > 1)
-                rcond = v.diag_matrix_value ().rcond ();
+                rcond = arg.diag_matrix_value ().rcond ();
             }
         }
     }
@@ -132,17 +127,10 @@ be avoided. It is significantly more accurate and faster to do\n\
       rcond = 1.0;
       frcond = 1.0f;
       info = 0;
-      const octave_base_value& a = arg.get_rep ();
       if (isfloat)
-        {
-          CAST_CONV_ARG (const octave_float_perm_matrix&);
-          result = v.perm_matrix_value ().inverse ();
-        }
+        result = octave_value (arg.perm_matrix_value ().inverse (), true);
       else
-        {
-          CAST_CONV_ARG (const octave_perm_matrix&);
-          result = v.perm_matrix_value ().inverse ();
-        }
+        result = arg.perm_matrix_value ().inverse ();
     }
   else if (isfloat)
     {

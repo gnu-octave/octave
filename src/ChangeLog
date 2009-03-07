@@ -1,5 +1,8 @@
 2009-03-07  John W. Eaton  <jwe@octave.org>
 
+	* pr-output.cc (octave_print_internal (std::ostream&,
+	const PermMatrix&, bool, int)): Delete unused variable SCALE.
+
 	* utils.cc (octave_vsnprintf): Avoid uninitialized variable
 	warning from GCC.
 

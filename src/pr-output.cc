@@ -2266,7 +2266,6 @@ octave_print_internal (std::ostream& os, const PermMatrix& m,
   else
     {
       int fw = 2;
-      double scale = 1.0;
       int column_width = fw + 2;
       octave_idx_type total_width = nc * column_width;
       octave_idx_type max_width = command_editor::terminal_cols ();

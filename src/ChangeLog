@@ -1,5 +1,8 @@
 2009-03-07  John W. Eaton  <jwe@octave.org>
 
+	* utils.cc (octave_vsnprintf): Avoid uninitialized variable
+	warning from GCC.
+
 	* DLD-FUNCTIONS/qz.cc (Fqz): Avoid "maybe clobbered by vfork"
 	warning from GCC.
 

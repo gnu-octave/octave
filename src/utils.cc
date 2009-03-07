@@ -1116,9 +1116,9 @@ octave_vsnprintf (const char *fmt, va_list args)
   static char *buf = 0;
 
 #if defined (HAVE_C99_VSNPRINTF)
-  size_t nchars;
+  size_t nchars = 0;
 #else
-  int nchars;
+  int nchars = 0;
 #endif
 
   if (! buf)

@@ -76,6 +76,14 @@ Enter parser debugging mode.  Using this option will cause Octave's
 parser to print a lot of information about the commands it reads, and is
 probably only useful if you are actually trying to debug the parser.
 
+@item --doc-cache-file
+@cindex @code{--doc-cache-file} @var{filename}
+Specify the name of the doc cache file to use.  The value of @var{filename}
+specified on the command line will override any value of
+@code{OCTAVE_DOC_CACHE_FILE} found in the environment, but not any commands
+in the system or user startup files that use the @code{doc_file_cache}
+function.
+
 @item --echo-commands
 @itemx -x
 @cindex @code{--echo-commands}

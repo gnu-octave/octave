@@ -487,6 +487,7 @@ Usage: octave [options]\n\
 Options:\n\
 \n\
   --debug, -d             Enter parser debugging mode.\n\
+  --doc-cache-file FILE   Use doc cache file FILE.\n\
   --echo-commands, -x     Echo commands as they are executed.\n\
   --eval CODE             Evaluate CODE.  Exit when done unless --persist.\n\
   --exec-path PATH        Set path for executing subprograms.\n\

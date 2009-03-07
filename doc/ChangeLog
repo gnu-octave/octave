@@ -1,3 +1,8 @@
+2009-03-07  John W. Eaton  <jwe@octave.org>
+
+	* interpreter/basics.txi (Command Line Options):
+	Document --doc-cache-file command-line option.
+
 2009-03-06  Jaroslav Hajek  <highegg@gmail.com>
 
 	* interpreter/diagperm.txi: Various improvements.

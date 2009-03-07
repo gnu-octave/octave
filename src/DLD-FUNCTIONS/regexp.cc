@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2005, 2006, 2007 David Bateman
+Copyright (C) 2005, 2006, 2007, 2008, 2009 David Bateman
 Copyright (C) 2002, 2003, 2004, 2005 Paul Kienzle
 
 This file is part of Octave.

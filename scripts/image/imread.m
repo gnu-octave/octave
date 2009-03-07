@@ -1,8 +1,8 @@
-## Copyright (C) 2002 Andy Adler
-## Copyright (C) 2005 Stefan van der Walt <stefan@sun.ac.za>
-## Copyright (C) 2006 Thomas Weber <thomas.weber.mail@gmail.com>
+## Copyright (C) 2008, 2009 Thomas L. Scofield <scofield@calvin.edu>
 ## Copyright (C) 2008 Kristian Rumberg <kristianrumberg@gmail.com>
-## Copyright (C) 2008 Thomas L. Scofield <scofield@calvin.edu>
+## Copyright (C) 2006 Thomas Weber <thomas.weber.mail@gmail.com>
+## Copyright (C) 2005 Stefan van der Walt <stefan@sun.ac.za>
+## Copyright (C) 2002 Andy Adler
 ##
 ## This file is part of Octave.
 ##

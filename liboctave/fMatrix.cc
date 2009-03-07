@@ -1,9 +1,9 @@
 // Matrix manipulations.
 /*
 
+Copyright (C) 2008, 2009 Jaroslav Hajek
 Copyright (C) 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002,
               2003, 2004, 2005, 2006, 2007 John W. Eaton
-Copyright (C) 2008 Jaroslav Hajek
 
 This file is part of Octave.
 

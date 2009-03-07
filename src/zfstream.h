@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2005, 2007 Ludwig Schwardt, Kevin Ruland 
+Copyright (C) 2005, 2007, 2008 Ludwig Schwardt, Kevin Ruland 
 
 This file is part of Octave.
 

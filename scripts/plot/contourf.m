@@ -1,4 +1,4 @@
-## Copyright (C) 2007 Kai Habel
+## Copyright (C) 2007, 2008 Kai Habel
 ## Copyright (C) 2003 Shai Ayal
 ##
 ## This file is part of Octave.

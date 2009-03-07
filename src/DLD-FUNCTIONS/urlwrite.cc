@@ -1,7 +1,7 @@
 // urlwrite and urlread, a curl front-end for octave
 /*
 
-Copyright (C) 2006, 2007 Alexander Barth
+Copyright (C) 2006, 2007, 2008 Alexander Barth
 
 This file is part of Octave.
 

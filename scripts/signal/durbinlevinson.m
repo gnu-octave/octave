@@ -1,4 +1,4 @@
-## Copyright (C) 1995, 1998, 2000, 2002, 2005, 2006, 2007
+## Copyright (C) 1995, 1998, 2000, 2002, 2005, 2006, 2007, 2009
 ##               Friedrich Leisch
 ##
 ## This file is part of Octave.

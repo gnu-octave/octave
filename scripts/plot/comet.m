@@ -1,4 +1,4 @@
-## Copyright (C) 2008 Ben Abbott
+## Copyright (C) 2008, 2009 Ben Abbott
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by

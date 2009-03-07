@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2007, 2008  John Swensen
+Copyright (C) 2007, 2008, 2009 John Swensen
 Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006 Ben Sapp
 
 This file is part of Octave.

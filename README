@@ -1,6 +1,6 @@
 GNU Octave -- a high-level language for numerical computations.
 
-Copyright (C) 1996, 1997, 1998, 2002, 2007 John W. Eaton
+Copyright (C) 1996, 1997, 1998, 2002, 2007, 2009 John W. Eaton
 
 Overview
 --------
@@ -23,19 +23,18 @@ Availability
 ------------
 
 The latest released version of Octave is always available via
-anonymous ftp from ftp.octave.org in the directory /pub/octave.
-Complete source and binaries for several popular systems are
-available.  Source distributions of Octave are also available from
-ftp.gnu.org in the directory /pub/gnu, as well as many mirror
-sites around the world.
+anonymous ftp from ftp.gnu.org and its many mirror sites around the
+world.  You may also find links to binary distributions at
+http://www.octave.org/download.html.  The current development sources
+may be found on Savannah (http://savannah.gnu.org).
 
 Installation and Bugs
 ---------------------
 
-Octave requires approximately 925MB of disk storage to unpack and
+Octave requires approximately 1.5GB of disk storage to unpack and
 compile from source (significantly less if you don't compile with
 debugging symbols).  Once installed, Octave requires approximately
-350MB of disk space (again, considerably less if you don't build
+450GB of disk space (again, considerably less if you don't build
 shared libraries or the binaries and libraries do not include
 debugging symbols).
 
@@ -53,8 +52,7 @@ See the notes in the files INSTALL and INSTALL.OCTAVE for more
 specific installation instructions, including directions for
 installing Octave from a binary distribution.
 
-The file BUGS contains a recommended procedure for reporting bugs, as
-well as a list of known problems and possible fixes.
+The file BUGS explains the recommended procedure for reporting bugs.
 
 Documentation
 -------------
@@ -75,9 +73,4 @@ URL http://www.octave.org, including archives of the help, bug, and
 maintainers mailing lists.
 
 
-John W. Eaton
-jwe@bevo.che.wisc.edu
-University of Wisconsin-Madison
-Department of Chemical & Biological Engineering
-
-Last updated: Thu, 11 Oct 2007 19:26:42 EDT
+Last updated: Sat, 07 Mar 2009 11:18:14 EST

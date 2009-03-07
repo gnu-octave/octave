@@ -112,7 +112,7 @@ CRUFT_API extern void octave_throw_execution_exception (void) GCC_ATTR_NORETURN;
 
 CRUFT_API extern void octave_throw_bad_alloc (void) GCC_ATTR_NORETURN;
 
-CRUFT_API extern void octave_rethrow_exception (void) GCC_ATTR_NORETURN;
+CRUFT_API extern void octave_rethrow_exception (void);
 
 #define OCTAVE_QUIT \
   do \

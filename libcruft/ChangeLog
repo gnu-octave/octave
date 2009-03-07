@@ -1,3 +1,8 @@
+2009-03-07  John W. Eaton  <jwe@octave.org>
+
+	* misc/quit.h (octave_rethrow_exception):
+	Don't tag with GCC_ATTR_NORETURN.
+
 2009-02-25  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.in (maintainer-clean): Also remove libraries.

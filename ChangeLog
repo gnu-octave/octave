@@ -1,3 +1,7 @@
+2009-03-07  John W. Eaton  <jwe@octave.org>
+
+	* config.guess, config.sub: Update from FSF sources.
+
 2009-02-25  John W. Eaton  <jwe@octave.org>
 
 	* configure.in (doc_cache_file): New default variable

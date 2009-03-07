@@ -306,11 +306,11 @@ Order of output arguments was selected for compatibility with MATLAB\n\
 #endif
 
   // Determine ordering option
-  std::string ord_job;
+  volatile char ord_job = 0;
   static double safmin;
 
   if (nargin == 2)
-    ord_job = "N";
+    ord_job = 'N';
   else if (!args(2).is_string ())
     {
       error ("qz: argument 3 must be a string");
@@ -318,13 +318,15 @@ Order of output arguments was selected for compatibility with MATLAB\n\
     }
   else
     {
-      ord_job = args(2).string_value ();
+      std::string tmp = args(2).string_value ();
 
-      if (ord_job[0] != 'N'
-	  && ord_job[0] != 'S'
-	  && ord_job[0] != 'B'
-	  && ord_job[0] != '+'
-	  && ord_job[0] != '-')
+      if (! tmp.empty ())
+	ord_job = tmp[0];
+
+      if (! (ord_job == 'N' || ord_job == 'n'
+	     || ord_job == 'S' || ord_job == 's'
+	     || ord_job == 'B' || ord_job == 'b'
+	     || ord_job == '+' || ord_job == '-'))
 	{
 	  error ("qz: invalid order option");
 	  return retval;
@@ -603,7 +605,7 @@ Order of output arguments was selected for compatibility with MATLAB\n\
     }
 
   // order the QZ decomposition?
-  if (ord_job[0] != 'N')
+  if (! (ord_job == 'N' || ord_job == 'n'))
     {
       if (complex_case)
 	{
@@ -614,20 +616,23 @@ Order of output arguments was selected for compatibility with MATLAB\n\
       else
 	{
 #ifdef DEBUG_SORT
-	  std::cout << "qz: ordering eigenvalues: ord_job = " << ord_job[0] << std::endl;
+	  std::cout << "qz: ordering eigenvalues: ord_job = "
+		    << ord_job << std::endl;
 #endif
 
 	  // declared static to avoid vfork/long jump compiler complaints
 	  static sort_function sort_test;
 	  sort_test = 0;
 
-	  switch (ord_job[0])
+	  switch (ord_job)
 	    {
 	    case 'S':
+	    case 's':
 	      sort_test = &fin;
 	      break;
 
 	    case 'B':
+	    case 'b':
 	      sort_test = &fout;
 	      break;
 

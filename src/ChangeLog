@@ -1,5 +1,8 @@
 2009-03-07  John W. Eaton  <jwe@octave.org>
 
+	* DLD-FUNCTIONS/qz.cc (Fqz): Avoid "maybe clobbered by vfork"
+	warning from GCC.
+
 	* version.h (OCTAVE_VERSION): Now 3.1.54.
 	(OCTAVE_API_VERSION): Now api-v36.
 	(OCTAVE_RELEASE_DATE): Now 2009-03-07.

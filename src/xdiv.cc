@@ -736,23 +736,28 @@ mdm_div_impl (const MT& a, const DMT& d)
   if (! mx_div_conform (a, d))
     return MT ();
 
-  octave_idx_type m = a.rows (), n = d.rows (), k = d.cols ();
+  octave_idx_type m = a.rows (), n = d.rows (), l = d.length ();
   MT x (m, n);
-  const typename DMT::element_type zero = typename DMT::element_type ();
+  typedef typename DMT::element_type S;
+  typedef typename MT::element_type T;
+  const T *aa = a.data ();
+  const S *dd = d.data ();
+  T *xx = x.fortran_vec ();
 
-  for (octave_idx_type j = 0; j < n; j++)
+  for (octave_idx_type j = 0; j < l; j++)
     {
-      if (j < k && d(j, j) != zero)
-        {
-          for (octave_idx_type i = 0; i < m; i++)
-            x(i, j) = a(i, j) / d(j, j);
-        }
+      const S del = dd[j];
+      if (del != S ())
+        for (octave_idx_type i = 0; i < m; i++)
+          xx[i] = aa[i] / del;
       else
-        {
-          for (octave_idx_type i = 0; i < m; i++)
-            x(i, j) = zero;
-        }
+        for (octave_idx_type i = 0; i < m; i++)
+          xx[i] = T ();
+      aa += m; xx += m;
     }
+
+  for (octave_idx_type i = l*m; i < n*m; i++)
+    xx[i] = T ();
 
   return x;
 }
@@ -812,17 +817,21 @@ dmm_leftdiv_impl (const DMT& d, const MT& a)
   if (! mx_leftdiv_conform (d, a))
     return MT ();
 
-  octave_idx_type m = d.cols (), n = a.cols (), k = d.rows ();
-  octave_idx_type mk = m < k ? m : k;
+  octave_idx_type m = d.cols (), n = a.cols (), k = a.rows (), l = d.length ();
   MT x (m, n);
-  const typename DMT::element_type zero = typename DMT::element_type ();
+  typedef typename DMT::element_type S;
+  typedef typename MT::element_type T;
+  const T *aa = a.data ();
+  const S *dd = d.data ();
+  T *xx = x.fortran_vec ();
 
   for (octave_idx_type j = 0; j < n; j++)
     {
-      for (octave_idx_type i = 0; i < mk; i++)
-        x(i, j) = d(i, i) != zero ? a(i, j) / d(i, i) : 0;
-      for (octave_idx_type i = mk; i < m; i++)
-        x(i, j) = zero;
+      for (octave_idx_type i = 0; i < l; i++)
+        xx[i] = dd[i] != S () ? aa[i] / dd[i] : T ();
+      for (octave_idx_type i = l; i < m; i++)
+        xx[i] = T ();
+      aa += k; xx += m;
     }
 
   return x;
@@ -886,17 +895,18 @@ dmdm_div_impl (const MT& a, const DMT& d)
     return MT ();
 
   octave_idx_type m = a.rows (), n = d.rows (), k = d.cols ();
-  octave_idx_type mn = m < n ? m : n;
+  octave_idx_type l = std::min (m, n), lk = std::min (l, k);
   MT x (m, n);
-  const typename DMT::element_type zero = typename DMT::element_type ();
+  typedef typename DMT::element_type S;
+  typedef typename MT::element_type T;
+  const T *aa = a.data ();
+  const S *dd = d.data ();
+  T *xx = x.fortran_vec ();
 
-  for (octave_idx_type j = 0; j < mn; j++)
-    {
-      if (j < k && d(j, j) != zero)
-        x(j, j) = a(j, j) / d(j, j);
-      else
-        x(j, j) = zero;
-    }
+  for (octave_idx_type i = 0; i < lk; i++)
+    xx[i] = dd[i] != S () ? aa[i] / dd[i] : T ();
+  for (octave_idx_type i = lk; i < l; i++)
+    xx[i] = T ();
 
   return x;
 }
@@ -957,17 +967,18 @@ dmdm_leftdiv_impl (const DMT& d, const MT& a)
     return MT ();
 
   octave_idx_type m = d.cols (), n = a.cols (), k = d.rows ();
-  octave_idx_type mn = m < n ? m : n;
+  octave_idx_type l = std::min (m, n), lk = std::min (l, k);
   MT x (m, n);
-  const typename DMT::element_type zero = typename DMT::element_type ();
+  typedef typename DMT::element_type S;
+  typedef typename MT::element_type T;
+  const T *aa = a.data ();
+  const S *dd = d.data ();
+  T *xx = x.fortran_vec ();
 
-  for (octave_idx_type j = 0; j < mn; j++)
-    {
-      if (j < k && d(j, j) != zero)
-        x(j, j) = a(j, j) / d(j, j);
-      else
-        x(j, j) = zero;
-    }
+  for (octave_idx_type i = 0; i < lk; i++)
+    xx[i] = dd[i] != S () ? aa[i] / dd[i] : T ();
+  for (octave_idx_type i = lk; i < l; i++)
+    xx[i] = T ();
 
   return x;
 }

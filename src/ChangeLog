@@ -1,3 +1,8 @@
+2009-03-07  Jaroslav Hajek  <highegg@gmail.com>
+
+	* xdiv.cc (mdm_div_impl, dmm_lelftdiv_impl, dmdm_div_impl,
+	dmdm_leftdiv_impl): Optimize.
+
 2009-03-07  John W. Eaton  <jwe@octave.org>
 
 	* pr-output.cc (octave_print_internal (std::ostream&,

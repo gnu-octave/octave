@@ -3,14 +3,18 @@
 Octave PROJECTS                                          -*- text -*-
 ===============
 
-Check with maintainers@octave.org for a possibly more current copy.
-Also, if you start working steadily on a project, please let
-maintainers@octave.org know.  We might have information that could
-help you; we'd also like to send you the GNU coding standards.
+Look in the Octave source archive on Savannah for a possibly more
+current copy.  Also, if you start working steadily on a project,
+please let maintainers@octave.org know.  We might have information
+that could help you.  You should also read the Contributing Guidelines
+chapter in the Octave manual.
 
 This list is not exclusive -- there are many other things that might
-be good projects, but it might instead be something we already have,
-so check with maintainers@octave.org before you start.
+be good projects, but it might instead be something we already have.
+Also, some of the following items may not actually be considered good
+ideas now.  So please check with maintainers@octave.org before you
+start working on some large project.
+
 
 ---------
 Numerical:
@@ -26,10 +30,6 @@ Numerical:
 
   * Make functions like gamma() return the right IEEE Inf or NaN
     values for extreme args or other undefined cases.
-
-  * Handle complex values in fread and fwrite.
-
-  * Support for lp_solve for linear programming problems.
 
   * Improve sqp.
 
@@ -48,25 +48,11 @@ Numerical:
   * Use octave_allocator for memory management in Array classes once
     g++ supports static member templates.
 
-  * When constructing NLConst (and other) objects, make sure that
-    there are sufficient checks to ensure that the dimensions all
-    conform.
-
   * Improve design of ODE, DAE, classes.
-
-  * Extend meaning of .* to include v .* M or M .* v (where v is a
-    column vector with the same number of rows as M) to scale rows of
-    M by elements of v.  Similarly, if w is a row vector with as many
-    columns as M, then either w .* M or M .* w scales the columns of
-    M.
 
   * Make QR more memory efficient for large matrices when not all the
     columns of Q are required (apparently this is not handled by the
     lapack code yet).
-
-  * Consider making the behavior of the / and \ operators for
-    non-square systems compatible with Matlab.  Currently, they return
-    the minimum norm solution from DGELSD, which behaves differently.
 
 ---------------
 Sparse Matrices:
@@ -81,10 +67,10 @@ Sparse Matrices:
   * Sparse logical indexing in idx_vector class so that something like
     "a=sprandn(1e6,1e6,1e-6); a(a<1) = 0" won't cause a memory overflow.
 
-  * Make spalloc(r,c,n) actually create an empty sparse with n non-zero 
-    elements? This allows something like
+  * Make spalloc (r, c, n) actually create an empty sparse with n
+    non-zero elements?  This allows something like
 
-    sm = spalloc (r,c,n)
+    sm = spalloc (r, c, n)
     for j=1:c
       for i=1:r
         tmp = foo (i,j);
@@ -100,17 +86,15 @@ Sparse Matrices:
     The fact is that this doesn't make sense in any case as the assign
     function makes another copy of the sparse matrix. So although spalloc
     might easily be made to have the correct behaviour, the first assign
-    will cause the matrix to be resized !!! There seems to be no simple
+    will cause the matrix to be resized!  There seems to be no simple
     way to treat this but a complete rewrite of the sparse assignment
     functions...
 
   * Other missing Functions
       - symmmd      Superseded by symamd
       - colmmd      Superseded by colamd
-      - treelayout
       - cholinc
       - bicg        Can this be taken from octave-forge?
-      - bicgstab
       - cgs
       - gmres
       - lsqr
@@ -124,8 +108,6 @@ Strings:
 
   * Improve performance of string functions, particularly for
     searching and replacing.
-
-  * Convert string functions to work on string arrays.
 
   * Make find work for strings.
 
@@ -143,7 +125,7 @@ Other Data Types:
   * Template functions for mixed-type ops.
 
   * Convert other functions for use with the floating point type
-  including quad, dasrt, daspk, etc.
+    including quad, dasrt, daspk, etc.
 
 ------------
 Input/Output:
@@ -158,10 +140,6 @@ Input/Output:
 
   * Make the cutoff point for changing to packed storage a
     user-preference variable with default value 8192.
-
-  * Make it possible to load other image formats (ppm, pbm, etc. would
-    probably be best since there are already filters to convert to
-    these formats from others.)
 
   * Complain if there is not enough disk space available (I think
     there is simply not enough error checking in the code that handles
@@ -265,10 +243,6 @@ Interpreter:
 
   * Is Matrix::fortran_vec() really necessary?
 
-  * Add a command that works like bash's `builtin' command.
-
-  * It would be nice to have an interactive debugger.
-
   * Rewrite whos and the symbol_record_info class.  Write a built-in
     function that gives all the basic information, then write who and
     whos as M-files.
@@ -308,13 +282,13 @@ History:
 Configuration and Installation:
 ------------------------------
 
-  * Add an --enable-pathsearch option to configure to make it possible
-    to configure and run without kpathsea. 
+  * Split config.h into a part for Octave-specific configuration
+  things (this part can be installed) and the generic HAVE_X type of
+  configure information that should not be installed.
 
   * Makefile changes:
       -- eliminate for loops
       -- define shell commands or eliminate them
-      -- verify distclean
       -- consolidate targets
 
   * Make it possible to configure so that installed binaries and
@@ -327,8 +301,6 @@ Documentation and On-Line Help:
 ------------------------------
 
   * Document new features.
-      -- history-search-{back,for}ward.
-      -- Other stuff mentioned in the NEWS file.
 
   * Improve the Texinfo Documentation for the interpreter.  It would
     be useful to have lots more examples, to not have so many forward
@@ -346,23 +318,6 @@ Documentation and On-Line Help:
   * Clean up help stuff.
 
   * Demo files.
-
-  * As the number of m-files with octave grows perhaps a 'Contents.m'
-    file for each toolbox (directory) would be appropriate so one
-    knows exactly what functions are in a toolbox with a quick look.
-    It would be best to generate information for each function directly
-    from the M-files, so that the information doesn't have to be
-    duplicated, and will remain current if the M-files change.  It
-    would also be best to do as much of this as possible in an M-file,
-    though I wouldn't mind adding some basic support for listing the
-    names of all the directories in the load path, and the names of all
-    the M-files in a given directory if that is needed.
-
-    Also make it possible to recursively search for Contents files:
-
-      help dir        -- Contents from dir
-      help dir//      -- Contents from dir and all its subdirectories
-      help dir1/dir2  -- Contents from dir2 which is under dir1
 
 -----
 Tests:
@@ -393,6 +348,8 @@ Tests:
 -----------
 Programming:
 -----------
+
+  * C++ namespace for Octave library functions.
 
   * Better error messages for missing operators?
 

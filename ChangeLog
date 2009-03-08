@@ -1,3 +1,7 @@
+2009-03-08  Søren Hauberg  <hauberg@gmail.com>
+
+	* NEWS: Mention 'histc'.
+
 2009-03-07  John W. Eaton  <jwe@octave.org>
 
 	* config.guess, config.sub: Update from FSF sources.

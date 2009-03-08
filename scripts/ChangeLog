@@ -1,3 +1,7 @@
+2009-03-08  Søren Hauberg <hauberg@gmail.com>
+
+	* statistics/base/histc.m: New function.
+
 2009-03-06  Ben Abbott <bpabbott@mac.com>
 
 	* plot/__go_draw_axes__.m: Preserve the order of axes' children

@@ -100,6 +100,8 @@ Octave also supports various helpful statistical functions.
 
 @DOCSTRING(nchoosek)
 
+@DOCSTRING(histc)
+
 @DOCSTRING(perms)
 
 @DOCSTRING(values)

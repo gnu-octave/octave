@@ -33,8 +33,8 @@ INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
 SOURCES = __quantile__.m center.m cloglog.m cor.m corrcoef.m cov.m \
-  cut.m gls.m iqr.m kendall.m kurtosis.m logit.m mahalanobis.m mean.m \
-  meansq.m median.m mode.m moment.m ols.m ppplot.m prctile.m probit.m \
+  cut.m gls.m histc.m iqr.m kendall.m kurtosis.m logit.m mahalanobis.m \
+  mean.m meansq.m median.m mode.m moment.m ols.m ppplot.m prctile.m probit.m \
   qqplot.m quantile.m range.m ranks.m run_count.m skewness.m spearman.m \
   statistics.m std.m studentize.m table.m values.m var.m
 

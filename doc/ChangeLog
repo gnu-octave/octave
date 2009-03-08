@@ -1,3 +1,8 @@
+2009-03-08  Søren Hauberg  <hauberg@gmail.com>
+
+	* interpreter/stats.txi (Basic Statistical Functions):
+	Add the 'histc' function.
+
 2009-03-07  John W. Eaton  <jwe@octave.org>
 
 	* interpreter/basics.txi (Command Line Options):

@@ -261,23 +261,23 @@ Summary of important user-visible changes for version 3.2:
 
  ** Other miscellaneous new functions.
 
-      addtodate          idivide                     realpow
-      bicgstab           info                        realsqrt
-      cgs                interp1q                    rectint
-      command_line_path  isdebugmode                 regexptranslate
-      contrast           isfloat                     restoredefaultpath
-      convn              isstrprop                   roundb
-      cummin             log1p                       rundemos
-      cummax             lsqnonneg                   runlength
-      datetick           matlabroot                  saveobj
-      display            namelengthmax               spaugment
-      expm1              nargoutchk                  strchr
-      filemarker         pathdef                     strvcat
-      fstat              perl                        subspace
-      full               prctile                     symvar
-      fzero              quantile                    treelayout
-      genvarname         re_read_readline_init_file  validatestring
-      hypot              reallog
+      addtodate          hypot                       reallog
+      bicgstab           idivide                     realpow
+      cgs                info                        realsqrt
+      command_line_path  interp1q                    rectint
+      contrast           isdebugmode                 regexptranslate
+      convn              isfloat                     restoredefaultpath
+      cummin             isstrprop                   roundb
+      cummax             log1p                       rundemos
+      datetick           lsqnonneg                   runlength
+      display            matlabroot                  saveobj
+      expm1              namelengthmax               spaugment
+      filemarker         nargoutchk                  strchr
+      fstat              pathdef                     strvcat
+      full               perl                        subspace
+      fzero              prctile                     symvar
+      genvarname         quantile                    treelayout
+      histc              re_read_readline_init_file  validatestring
 
  ** Changes to strcat.
 

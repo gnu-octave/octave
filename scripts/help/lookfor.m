@@ -173,13 +173,13 @@ endfunction
 
 function [funs, help_texts] = search_cache (str, cache_file, search_type)
   load (cache_file);
-  if (! isempty(cache))
-    tmp = strfind (cache (search_type, :), str);
-    cache_idx = find (!cellfun ("isempty", tmp));
+  if (! isempty (cache))
+    t1 = strfind (cache (1, :), str);
+    t2 = strfind (cache (search_type, :), str);
+    cache_idx = find (! (cellfun ("isempty", t1) & cellfun ("isempty", t2)));
     funs = cache (1, cache_idx);
     help_texts = cache (3, cache_idx);
   else
     funs = help_texts = {};
   endif
 endfunction
-

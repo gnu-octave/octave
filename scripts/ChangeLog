@@ -1,5 +1,7 @@
 2009-03-09  John W. Eaton  <jwe@octave.org>
 
+	* help/lookfor.m (search_cache): Also match function names.
+
 	* help/gen_doc_cache.m, help/lookfor.m: Use doc-cache instead of
 	DOC for doc cache file.
 

@@ -7622,6 +7622,68 @@ operator * (const SparseComplexMatrix& a, const ComplexDiagMatrix& d)
   return octave_impl::do_mul_sm_dm<SparseComplexMatrix> (a, d);
 }
 
+SparseComplexMatrix
+operator + (const ComplexDiagMatrix& d, const SparseMatrix& a)
+{
+  return octave_impl::do_add_dm_sm<SparseComplexMatrix> (d, a);
+}
+SparseComplexMatrix
+operator + (const DiagMatrix& d, const SparseComplexMatrix& a)
+{
+  return octave_impl::do_add_dm_sm<SparseComplexMatrix> (d, a);
+}
+SparseComplexMatrix
+operator + (const ComplexDiagMatrix& d, const SparseComplexMatrix& a)
+{
+  return octave_impl::do_add_dm_sm<SparseComplexMatrix> (d, a);
+}
+SparseComplexMatrix
+operator + (const SparseMatrix& a, const ComplexDiagMatrix& d)
+{
+  return octave_impl::do_add_sm_dm<SparseComplexMatrix> (a, d);
+}
+SparseComplexMatrix
+operator + (const SparseComplexMatrix& a, const DiagMatrix& d)
+{
+  return octave_impl::do_add_sm_dm<SparseComplexMatrix> (a, d);
+}
+SparseComplexMatrix
+operator + (const SparseComplexMatrix&a, const ComplexDiagMatrix& d)
+{
+  return octave_impl::do_add_sm_dm<SparseComplexMatrix> (a, d);
+}
+
+SparseComplexMatrix
+operator - (const ComplexDiagMatrix& d, const SparseMatrix& a)
+{
+  return octave_impl::do_sub_dm_sm<SparseComplexMatrix> (d, a);
+}
+SparseComplexMatrix
+operator - (const DiagMatrix& d, const SparseComplexMatrix& a)
+{
+  return octave_impl::do_sub_dm_sm<SparseComplexMatrix> (d, a);
+}
+SparseComplexMatrix
+operator - (const ComplexDiagMatrix& d, const SparseComplexMatrix& a)
+{
+  return octave_impl::do_sub_dm_sm<SparseComplexMatrix> (d, a);
+}
+SparseComplexMatrix
+operator - (const SparseMatrix& a, const ComplexDiagMatrix& d)
+{
+  return octave_impl::do_sub_sm_dm<SparseComplexMatrix> (a, d);
+}
+SparseComplexMatrix
+operator - (const SparseComplexMatrix& a, const DiagMatrix& d)
+{
+  return octave_impl::do_sub_sm_dm<SparseComplexMatrix> (a, d);
+}
+SparseComplexMatrix
+operator - (const SparseComplexMatrix&a, const ComplexDiagMatrix& d)
+{
+  return octave_impl::do_sub_sm_dm<SparseComplexMatrix> (a, d);
+}
+
 // FIXME -- it would be nice to share code among the min/max
 // functions below.
 

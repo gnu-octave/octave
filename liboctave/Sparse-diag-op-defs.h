@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_sparse_diag_op_defs_h)
 #define octave_sparse_diag_op_defs_h 1
 
+// Matrix multiplication
+
 template <typename RT, typename DM, typename SM>
 RT do_mul_dm_sm (const DM& d, const SM& a)
 {
@@ -101,6 +103,124 @@ RT do_mul_sm_dm (const SM& a, const DM& d)
      r.maybe_compress (true);
      return r;
    }
+}
+
+// FIXME: functors such as this should be gathered somewhere
+template <typename T>
+struct identity_val
+  : public std::unary_function <T, T>
+{
+  T operator () (const T x) { return x; }
+};
+
+// Matrix addition
+
+template <typename RT, typename SM, typename DM, typename OpA, typename OpD>
+RT inner_do_add_sm_dm (const SM& a, const DM& d, OpA opa, OpD opd)
+{
+  using std::min;
+  const octave_idx_type nr = d.rows ();
+  const octave_idx_type nc = d.cols ();
+  const octave_idx_type n = min (nr, nc);
+
+  const octave_idx_type a_nr = a.rows ();
+  const octave_idx_type a_nc = a.cols ();
+
+  const octave_idx_type nz = a.nnz ();
+  const typename SM::element_type zero = typename SM::element_type ();
+  const typename DM::element_type dzero = typename DM::element_type ();
+  RT r (a_nr, a_nc, nz + n);
+  octave_idx_type k = 0;
+
+  for (octave_idx_type j = 0; j < nc; ++j)
+    {
+      OCTAVE_QUIT;
+      const octave_idx_type colend = a.cidx (j+1);
+      bool found_diag = false;
+      r.xcidx (j) = k;
+      for (octave_idx_type k_src = a.cidx (j); k_src < colend; ++k_src, ++k)
+	{
+	  const octave_idx_type i = a.ridx (k_src);
+	  r.xridx (k) = i;
+	  if (i != j)
+	    r.xdata (k) = opa (a.data (k_src));
+	  else
+	    {
+	      r.xdata (k) = opa (a.data (k_src)) + opd (d.dgelem (j));
+	      found_diag = true;
+	    }
+	}
+      if (!found_diag)
+	{
+	  r.xridx (k) = j;
+	  r.xdata (k) = opd (d.dgelem (j));
+	  ++k;
+	}
+    }
+  r.xcidx (nc) = k;
+
+  r.maybe_compress (true);
+  return r;
+}
+
+template <typename RT, typename DM, typename SM>
+RT do_commutative_add_dm_sm (const DM& d, const SM& a)
+{
+  // Extra function to ensure this is only emitted once.
+  return inner_do_add_sm_dm<RT> (a, d,
+				 identity_val<typename SM::element_type> (),
+				 identity_val<typename DM::element_type> ());
+}
+
+template <typename RT, typename DM, typename SM>
+RT do_add_dm_sm (const DM& d, const SM& a)
+{
+  if (a.rows () != d.rows () || a.cols () != d.cols ())
+    {
+      gripe_nonconformant ("operator +", d.rows (), d.cols (), a.rows (), a.cols ());
+      return RT ();
+    }
+  else
+    return do_commutative_add_dm_sm<RT> (d, a);
+}
+
+template <typename RT, typename DM, typename SM>
+RT do_sub_dm_sm (const DM& d, const SM& a)
+{
+  if (a.rows () != d.rows () || a.cols () != d.cols ())
+    {
+      gripe_nonconformant ("operator -", d.rows (), d.cols (), a.rows (), a.cols ());
+      return RT ();
+    }
+  else
+    return inner_do_add_sm_dm<RT> (a, d, std::negate<typename SM::element_type> (),
+				   identity_val<typename DM::element_type> ());
+}
+
+template <typename RT, typename SM, typename DM>
+RT do_add_sm_dm (const SM& a, const DM& d)
+{
+  if (a.rows () != d.rows () || a.cols () != d.cols ())
+    {
+      gripe_nonconformant ("operator +", a.rows (), a.cols (), d.rows (), d.cols ());
+      return RT ();
+    }
+  else
+    return do_commutative_add_dm_sm<RT> (d, a);
+}
+
+template <typename RT, typename SM, typename DM>
+RT do_sub_sm_dm (const SM& a, const DM& d)
+{
+  if (a.rows () != d.rows () || a.cols () != d.cols ())
+    {
+      gripe_nonconformant ("operator -", a.rows (), a.cols (), d.rows (), d.cols ());
+      return RT ();
+    }
+  else
+    return inner_do_add_sm_dm<RT> (a, d,
+				   identity_val<typename SM::element_type> (),
+				   std::negate<typename DM::element_type> ());
 }
 
 #endif // octave_sparse_diag_op_defs_h

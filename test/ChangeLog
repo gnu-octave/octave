@@ -6,6 +6,10 @@
 
 	* test_diag_perm.m: Add a test for conversion to sparse form.
 
+2009-03-09  Jason Riedy  <jason@acm.org>
+
+	* test_diag_perm.m: Add tests for diag + sparse.
+
 2009-03-08  Jason Riedy  <jason@acm.org>
 
 	* test_diag_perm.m: Add tests for inverse scaling and sparse structure.

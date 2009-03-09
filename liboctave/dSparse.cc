@@ -7716,6 +7716,30 @@ operator * (const SparseMatrix& a, const DiagMatrix& d)
   return octave_impl::do_mul_sm_dm<SparseMatrix> (a, d);
 }
 
+SparseMatrix
+operator + (const DiagMatrix& d, const SparseMatrix& a)
+{
+  return octave_impl::do_add_dm_sm<SparseMatrix> (d, a);
+}
+
+SparseMatrix
+operator - (const DiagMatrix& d, const SparseMatrix& a)
+{
+  return octave_impl::do_sub_dm_sm<SparseMatrix> (d, a);
+}
+
+SparseMatrix
+operator + (const SparseMatrix& a, const DiagMatrix& d)
+{
+  return octave_impl::do_add_sm_dm<SparseMatrix> (a, d);
+}
+
+SparseMatrix
+operator - (const SparseMatrix& a, const DiagMatrix& d)
+{
+  return octave_impl::do_sub_sm_dm<SparseMatrix> (a, d);
+}
+
 // FIXME -- it would be nice to share code among the min/max
 // functions below.
 

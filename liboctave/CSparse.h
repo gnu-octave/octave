@@ -484,6 +484,20 @@ extern OCTAVE_API SparseComplexMatrix operator * (const SparseMatrix&, const Com
 extern OCTAVE_API SparseComplexMatrix operator * (const ComplexDiagMatrix&, const SparseComplexMatrix&);
 extern OCTAVE_API SparseComplexMatrix operator * (const SparseComplexMatrix&, const ComplexDiagMatrix&);
 
+extern OCTAVE_API SparseComplexMatrix operator + (const ComplexDiagMatrix&, const SparseMatrix&);
+extern OCTAVE_API SparseComplexMatrix operator + (const DiagMatrix&, const SparseComplexMatrix&);
+extern OCTAVE_API SparseComplexMatrix operator + (const ComplexDiagMatrix&, const SparseComplexMatrix&);
+extern OCTAVE_API SparseComplexMatrix operator + (const SparseMatrix&, const ComplexDiagMatrix&);
+extern OCTAVE_API SparseComplexMatrix operator + (const SparseComplexMatrix&, const DiagMatrix&);
+extern OCTAVE_API SparseComplexMatrix operator + (const SparseComplexMatrix&, const ComplexDiagMatrix&);
+
+extern OCTAVE_API SparseComplexMatrix operator - (const ComplexDiagMatrix&, const SparseMatrix&);
+extern OCTAVE_API SparseComplexMatrix operator - (const DiagMatrix&, const SparseComplexMatrix&);
+extern OCTAVE_API SparseComplexMatrix operator - (const ComplexDiagMatrix&, const SparseComplexMatrix&);
+extern OCTAVE_API SparseComplexMatrix operator - (const SparseMatrix&, const ComplexDiagMatrix&);
+extern OCTAVE_API SparseComplexMatrix operator - (const SparseComplexMatrix&, const DiagMatrix&);
+extern OCTAVE_API SparseComplexMatrix operator - (const SparseComplexMatrix&, const ComplexDiagMatrix&);
+
 extern OCTAVE_API SparseComplexMatrix min (const Complex& c, 
 				const SparseComplexMatrix& m);
 extern OCTAVE_API SparseComplexMatrix min (const SparseComplexMatrix& m, 

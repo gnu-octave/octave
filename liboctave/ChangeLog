@@ -1,3 +1,40 @@
+2009-03-09  Jason Riedy  <jason@acm.org>
+
+	* Sparse-diag-op-defs.h (octave_impl::inner_do_add_sm_dm): New
+	template function.  Implementation for adding sparse and diagonal
+	matrices.  Takes two functional arguments, opa and opd, to
+	generate both subtraction variants.
+	(octave_impl::do_commutative_add_dm_sm): New template function.
+	Ensure A+D and D+A use the same generated code.
+	(octave_impl::do_add_dm_sm): New template function.  Check
+	arguments for diag + sparse and call inner routine.
+	(octave_impl::do_sub_dm_sm): New template function.  Check
+	arguments for diag - sparse and call inner routine.
+	(octave_impl::do_add_sm_dm): New template function.  Check
+	arguments for sparse + diag and call inner routine.
+	(octave_impl::do_sub_sm_dm): New template function.  Check
+	arguments for sparse - diag and call inner routine.
+
+	* dSparse.h (operator +): Declare overrides for real diag +
+	sparse.
+	(operator -): Declare overrides for real diag - sparse, sparse -
+	diag.
+
+	* dSparse.cc (operator +): Define overrides for real diag +
+	sparse.
+	(operator -): Define overrides for real diag - sparse, sparse -
+	diag.
+
+	* CSparse.h (operator +): Declare overrides for complex and real
+	combinations of diag + sparse.
+	(operator -): Declare overrides for complex and real combinations
+	of diag - sparse, sparse - diag.
+
+	* CSparse.cc (operator +): Define overrides for complex and real
+	combinations of diag + sparse.
+	(operator -): Define overrides for complex and real combinations
+	of diag - sparse, sparse - diag.
+
 2009-03-08  Jason Riedy  <jason@acm.org>
 
 	* Sparse-diag-op-defs.h (octave_impl::do_mul_dm_sm)

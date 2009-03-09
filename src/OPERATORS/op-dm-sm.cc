@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2009 Jason Riedy
+Copyright (C) 2009 Jason Riedy, Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -68,6 +68,38 @@ DEFBINOP (ldiv_dm_sm, diag_matrix, sparse_matrix)
   return xleftdiv (v1.diag_matrix_value (), v2.sparse_matrix_value (), typ);
 }
 
+DEFBINOP_OP (add_dm_sm, diag_matrix, sparse_matrix)
+{
+  CAST_BINOP_ARGS (const octave_diag_matrix&, const octave_sparse_matrix&);
+
+  if (v2.rows() == 1 && v2.columns() == 1)
+    // If v2 is a scalar in disguise, return a diagonal matrix rather than
+    // a sparse matrix.
+    {
+      double d = v2.scalar_value ();
+
+      return octave_value (v1.diag_matrix_value () + d);
+    }
+  else
+    return v1.diag_matrix_value () + v2.sparse_matrix_value ();
+}
+
+DEFBINOP (sub_dm_sm, diag_matrix, sparse_matrix)
+{
+  CAST_BINOP_ARGS (const octave_diag_matrix&, const octave_sparse_matrix&);
+
+  if (v2.rows() == 1 && v2.columns() == 1)
+    // If v2 is a scalar in disguise, return a diagonal matrix rather than
+    // a sparse matrix.
+    {
+      double d = v2.scalar_value ();
+
+      return octave_value (v1.diag_matrix_value () - d);
+    }
+  else
+    return v1.diag_matrix_value () - v2.sparse_matrix_value ();
+}
+
 // sparse matrix by diagonal matrix ops
 
 DEFBINOP (mul_sm_dm, sparse_matrix, diag_matrix)
@@ -113,16 +145,52 @@ DEFBINOP (div_sm_dm, sparse_matrix, diag_matrix)
     }
 }
 
+DEFBINOP (add_sm_dm, sparse_matrix, diag_matrix)
+{
+  CAST_BINOP_ARGS (const octave_sparse_matrix&, const octave_diag_matrix&);
+
+  if (v1.rows() == 1 && v1.columns() == 1)
+    // If v1 is a scalar in disguise, return a diagonal matrix rather than
+    // a sparse matrix.
+    {
+      double d = v1.scalar_value ();
+
+      return octave_value (d + v2.diag_matrix_value ());
+    }
+  else
+    return v1.sparse_matrix_value () + v2.diag_matrix_value ();
+}
+
+DEFBINOP (sub_sm_dm, sparse_matrix, diag_matrix)
+{
+  CAST_BINOP_ARGS (const octave_sparse_matrix&, const octave_diag_matrix&);
+
+  if (v1.rows() == 1 && v1.columns() == 1)
+    // If v1 is a scalar in disguise, return a diagonal matrix rather than
+    // a sparse matrix.
+    {
+      double d = v1.scalar_value ();
+
+      return octave_value (d - v2.diag_matrix_value ());
+    }
+  else
+    return v1.sparse_matrix_value () - v2.diag_matrix_value ();
+}
+
 void
 install_dm_sm_ops (void)
 {
   INSTALL_BINOP (op_mul, octave_diag_matrix, octave_sparse_matrix,
 		 mul_dm_sm);
 
+  INSTALL_BINOP (op_add, octave_diag_matrix, octave_sparse_matrix, add_dm_sm);
+  INSTALL_BINOP (op_sub, octave_diag_matrix, octave_sparse_matrix, sub_dm_sm);
   INSTALL_BINOP (op_ldiv, octave_diag_matrix, octave_sparse_matrix, ldiv_dm_sm);
 
   INSTALL_BINOP (op_mul, octave_sparse_matrix, octave_diag_matrix,
 		 mul_sm_dm);
 
+  INSTALL_BINOP (op_add, octave_sparse_matrix, octave_diag_matrix, add_sm_dm);
+  INSTALL_BINOP (op_sub, octave_sparse_matrix, octave_diag_matrix, sub_sm_dm);
   INSTALL_BINOP (op_div, octave_sparse_matrix, octave_diag_matrix, div_sm_dm);
 }

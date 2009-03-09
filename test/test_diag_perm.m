@@ -192,3 +192,28 @@
 %! scalefact = rand (1, n-2) + I () * rand(1, n-2);
 %! Dc = diag (scalefact, n-2, n);
 %! assert (full (A / Dc), full(A) / Dc)
+
+## adding sparse and diagonal stays sparse
+%!test
+%! n = 9;
+%! A = sprand (n, n, .5);
+%! D = 2 * eye (n);
+%! assert (typeinfo (A + D), "sparse matrix")
+%! assert (typeinfo (A - D), "sparse matrix")
+%! D = D * I () + D;
+%! assert (typeinfo (A - D), "sparse complex matrix")
+%! A = A * I () + A;
+%! assert (typeinfo (D - A), "sparse complex matrix")
+
+## adding sparse and diagonal stays sparse
+%!test
+%! n = 9;
+%! A = sprand (n, n, .5);
+%! D = 2 * eye (n);
+%! assert (full (A + D), full (A) + D)
+%! assert (full (A - D), full (A) - D)
+%! D = D * I () + D;
+%! assert (full (D + A), D + full (A))
+%! A = A * I () + A;
+%! A(6, 4) = nan ();
+%! assert (full (D - A), D - full (A))

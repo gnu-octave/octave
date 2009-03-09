@@ -99,6 +99,28 @@
 	* Makefile.in (maintainer-clean): Remove y.tab.h here.
 	(distclean): Not here.
 
+2009-03-09  Jason Riedy  <jason@acm.org>
+
+	* OPERATORS/op-dm-sm.cc (add_dm_sm): Octave binding for diag + sparse.
+	(sub_dm_sm): Octave binding for diag - sparse.
+	(add_sm_dm): Octave binding for diag + sparse.
+	(sub_sm_dm): Octave binding for diag - sparse.
+	(install_dm_sm_ops): Install above bindings.
+
+	* OPERATORS/op-dm-scm.cc (add_cdm_sm): Octave binding for diag + sparse.
+	(add_dm_scm): Octave binding for diag + sparse.
+	(add_cdm_scm): Octave binding for diag + sparse.
+	(sub_cdm_sm): Octave binding for diag - sparse.
+	(sub_dm_scm): Octave binding for diag - sparse.
+	(sub_cdm_csm): Octave binding for diag - sparse.
+	(add_sm_cdm): Octave binding for diag + sparse.
+	(add_scm_dm): Octave binding for diag + sparse.
+	(add_scm_cdm): Octave binding for diag + sparse.
+	(sub_sm_cdm): Octave binding for diag - sparse.
+	(sub_scm_dm): Octave binding for diag - sparse.
+	(sub_scm_cdm): Octave binding for diag - sparse.
+	(install_dm_scm_ops): Install above bindings.
+
 2009-03-08  Jason Riedy  <jason@acm.org>
 
 	* sparse-xdiv.h (xleftdiv): Declare overrides for

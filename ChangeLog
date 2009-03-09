@@ -1,3 +1,10 @@
+2009-03-09  John W. Eaton  <jwe@octave.org>
+
+	* configure.in (--enable-extra-warning-flags): New option to
+	control extra compiler warning flags.
+	(--enable-strict-warning-flags): Rename from --enable-picky-flags.
+	(GXX_STRICT_FLAGS): Remove -Wenum-clash from the list.
+
 2009-03-08  Søren Hauberg  <hauberg@gmail.com>
 
 	* NEWS: Mention 'histc'.

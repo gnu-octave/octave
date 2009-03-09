@@ -1925,19 +1925,25 @@ AC_SUBST(UGLY_DEFS)
 ### Maybe add -Wall, -W, and -Wshadow to compiler flags now that we're
 ### done feature testing. 
 
-if test -z "$EXTERN_CFLAGS"; then
-  OCTAVE_CC_FLAG(-Wall, [
-	WARN_CFLAGS="$WARN_CFLAGS -Wall";
-	AC_MSG_RESULT([adding -Wall to WARN_CFLAGS])])
-  OCTAVE_CC_FLAG(-W, [
-	WARN_CFLAGS="$WARN_CFLAGS -W";
-	AC_MSG_RESULT([adding -W to WARN_CFLAGS])])
-  OCTAVE_CC_FLAG(-Wshadow, [
-	WARN_CFLAGS="$WARN_CFLAGS -Wshadow";
-	AC_MSG_RESULT([adding -Wshadow to WARN_CFLAGS])])
-fi
+try_extra_warning_flags=true
+AC_ARG_ENABLE(extra-warning-flags,
+  [AS_HELP_STRING([--enable-extra-warning-flags],
+     [add -Wall, -W, -Wshadow, and -Wold-style-cast options to CFLAGS and CXXFLAGS  (on by default, but only if the compiler appears to accept them)])],
+  [if test "$enableval" = no; then
+     try_extra_warning_flags=false
+   fi], [])
 
-if test -z "$EXTERN_CXXFLAGS"; then
+if $try_extra_warning_flags; then
+  OCTAVE_CC_FLAG(-Wall, [
+    WARN_CFLAGS="$WARN_CFLAGS -Wall";
+    AC_MSG_RESULT([adding -Wall to WARN_CFLAGS])])
+  OCTAVE_CC_FLAG(-W, [
+    WARN_CFLAGS="$WARN_CFLAGS -W";
+    AC_MSG_RESULT([adding -W to WARN_CFLAGS])])
+  OCTAVE_CC_FLAG(-Wshadow, [
+    WARN_CFLAGS="$WARN_CFLAGS -Wshadow";
+    AC_MSG_RESULT([adding -Wshadow to WARN_CFLAGS])])
+
   OCTAVE_CXX_FLAG(-Wall, [
     WARN_CXXFLAGS="$WARN_CXXFLAGS -Wall";
     AC_MSG_RESULT([adding -Wall to WARN_CXXFLAGS])])
@@ -1952,33 +1958,33 @@ if test -z "$EXTERN_CXXFLAGS"; then
     AC_MSG_RESULT([adding -Wold-style-cast to WARN_CXXFLAGS])])
 fi
 
-GCC_PICKY_FLAGS="-Wcast-align -Wcast-qual -Wmissing-prototypes \
+GCC_STRICT_FLAGS="-Wcast-align -Wcast-qual -Wmissing-prototypes \
   -Wpointer-arith -Wstrict-prototypes -Wwrite-strings"
 
-GXX_PICKY_FLAGS="-Wcast-align -Wcast-qual -Wpointer-arith \
-  -Wwrite-strings -Weffc++ -Wenum-clash"
+GXX_STRICT_FLAGS="-Wcast-align -Wcast-qual -Wpointer-arith \
+  -Wwrite-strings -Weffc++"
 
-AC_ARG_ENABLE(picky-flags,
-  [AS_HELP_STRING([--enable-picky-flags],
-     [add extra warning options to CFLAGS, CXXFLAGS, FFLAGS])],
-  [if test "$enableval" = no; then
-     true
-   elif test "$enableval" = yes; then
-     if test -z "$EXTERN_CFLAGS"; then
-       for flag in $GCC_PICKY_FLAGS; do
-	 OCTAVE_CC_FLAG($flag, [
-	   WARN_CFLAGS="$WARN_CFLAGS $flag";
-	   AC_MSG_RESULT([adding $flag to WARN_CFLAGS])])
-       done
-     fi
-     if test -z "$EXTERN_CXXFLAGS"; then
-       for flag in $GXX_PICKY_FLAGS; do
-	 OCTAVE_CXX_FLAG($flag, [
-	   WARN_CXXFLAGS="$WARN_CXXFLAGS $flag";
-	   AC_MSG_RESULT([adding $flag to WARN_CXXFLAGS])])
-       done
-     fi
+try_strict_warning_flags=false
+
+AC_ARG_ENABLE(strict-warning-flags,
+  [AS_HELP_STRING([--enable-strict-warning-flags],
+     [add extra strict warning options to CFLAGS and CXXFLAGS (off by default)])],
+  [if test "$enableval" = yes; then
+     try_strict_warning_flags=true
    fi], [])
+
+if $try_strict_warning_flags; then
+  for flag in $GCC_STRICT_FLAGS; do
+    OCTAVE_CC_FLAG($flag, [
+      WARN_CFLAGS="$WARN_CFLAGS $flag";
+      AC_MSG_RESULT([adding $flag to WARN_CFLAGS])])
+  done
+  for flag in $GXX_STRICT_FLAGS; do
+    OCTAVE_CXX_FLAG($flag, [
+      WARN_CXXFLAGS="$WARN_CXXFLAGS $flag";
+      AC_MSG_RESULT([adding $flag to WARN_CXXFLAGS])])
+  done
+fi
 
 AC_SUBST(WARN_CFLAGS)
 AC_SUBST(WARN_CXXFLAGS)

@@ -1,3 +1,8 @@
+2009-03-09  Rafael Laboissiere  <rafael@debian.org>
+
+	* Makefile.in (maintainer-clean): Remove y.tab.h here.
+	(distclean): Not here.
+
 2009-03-09  Jaroslav Hajek  <highegg@gmail.com>
 
 	* data.cc (F__accumarray_sum__): New function.

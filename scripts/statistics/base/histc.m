@@ -1,4 +1,5 @@
 ## Copyright (C) 2009, Søren Hauberg
+## Copyright (C) 2009 VZLU Prague
 ##
 ## This file is part of Octave.
 ##
@@ -51,6 +52,9 @@ function [n, idx] = histc (data, edges, dim)
   sz = size (data);
   if (nargin < 3)
     dim = find (sz > 1, 1);
+    if (isempty (dim))
+      dim = 1;
+    endif
   endif
 
   if (!isreal (data))
@@ -59,12 +63,15 @@ function [n, idx] = histc (data, edges, dim)
   
   ## Make sure 'edges' is sorted
   num_edges = numel (edges);
+  if (num_edges == 0)
+    error ("histc: edges must not be empty")
+  endif
+
   if (isreal (edges))
     edges = edges (:);
-    tmp = sort (edges);
-    if (any (tmp != edges))
+    if (! issorted (edges) || edges(1) > edges(end))
       warning ("histc: edge values not sorted on input");
-      edges = tmp;
+      edges = sort (edges);
     endif
   else
     error ("histc: second argument must be a vector");
@@ -75,33 +82,74 @@ function [n, idx] = histc (data, edges, dim)
   nsz (dim) = num_edges;
   n = zeros (nsz);
   
-  ## Allocate 'idx'
-  if (nargout > 1)
-    idx = zeros (sz);
-  endif
-  
-  ## Prepare indices
-  idx1 = cell (1, dim-1);
-  for k = 1:length (idx1)
-    idx1 {k} = 1:sz (k);
-  endfor
-  idx2 = cell (length (sz) - dim);
-  for k = 1:length (idx2)
-    idx2 {k} = 1:sz (k+dim);
-  endfor
-  
-  ## Compute the histograms
-  for k = 1:num_edges-1
-    b = (edges (k) <= data & data < edges (k+1));
-    n (idx1 {:}, k, idx2 {:}) = sum (b, dim);
+  ## the splitting point is 3 bins
+
+  if (num_edges <= 3)
+
+    ## This is the O(M*N) algorithm.
+
+    ## Allocate 'idx'
     if (nargout > 1)
-      idx (b) = k;
+      idx = zeros (sz);
     endif
-  endfor
-  b = (data == edges (end));
-  n (idx1 {:}, num_edges, idx2 {:}) = sum (b, dim);
-  if (nargout > 1)
-    idx (b) = num_edges;
+    
+    ## Prepare indices
+    idx1 = cell (1, dim-1);
+    for k = 1:length (idx1)
+      idx1 {k} = 1:sz (k);
+    endfor
+    idx2 = cell (length (sz) - dim);
+    for k = 1:length (idx2)
+      idx2 {k} = 1:sz (k+dim);
+    endfor
+    
+    ## Compute the histograms
+    for k = 1:num_edges-1
+      b = (edges (k) <= data & data < edges (k+1));
+      n (idx1 {:}, k, idx2 {:}) = sum (b, dim);
+      if (nargout > 1)
+        idx (b) = k;
+      endif
+    endfor
+    b = (data == edges (end));
+    n (idx1 {:}, num_edges, idx2 {:}) = sum (b, dim);
+    if (nargout > 1)
+      idx (b) = num_edges;
+    endif
+
+  else
+
+    ## This is the O(M*log(N) + N) algorithm.
+
+    ## Look-up indices.
+    idx = lookup (edges, data);
+    ## Zero invalid ones (including NaNs). data < edges(1) are already zero. 
+    idx(! (data <= edges(end))) = 0;
+
+    iidx = idx;
+
+    ## In case of matrix input, we adjust the indices.
+    if (! isvector (data))
+      nl = prod (sz(1:dim-1));
+      nn = sz(dim);
+      nu = prod (sz(dim+1:end));
+      if (nl != 1)
+        iidx = (iidx-1) * nl;
+        iidx += reshape (kron (ones (1, nn*nu), 1:nl), sz);
+      endif
+      if (nu != 1)
+        ne =length (edges);
+        iidx += reshape (kron (nl*ne*(0:nu-1), ones (1, nl*nn)), sz);
+      endif
+    endif
+
+    ## Select valid elements.
+    iidx = iidx(idx != 0);
+
+    ## Call accumarray to sum the indexed elements.
+    sz(dim) = length (edges);
+    n = accumarray (iidx(:), 1, sz);
+
   endif
 
 endfunction

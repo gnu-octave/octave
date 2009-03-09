@@ -2,6 +2,7 @@
 
 	* general/accumarray.m: Reorder tests. Call either "sparse" or
 	__accumarray_sum__ for the default summation case.
+	* statistics/base/histc.m: Reimplement using lookup & accumarray.
 
 2009-03-08  Søren Hauberg <hauberg@gmail.com>
 

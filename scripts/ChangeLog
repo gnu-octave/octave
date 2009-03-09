@@ -2,8 +2,8 @@
 
 	* help/lookfor.m (search_cache): Also match function names.
 
-	* help/gen_doc_cache.m, help/lookfor.m: Use doc-cache instead of
-	DOC for doc cache file.
+	* pkg/pkg.m, help/gen_doc_cache.m, help/lookfor.m:
+	Use doc-cache instead of DOC for doc cache file.
 
 2009-03-09  Jaroslav Hajek  <highegg@gmail.com>
 

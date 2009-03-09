@@ -1587,7 +1587,7 @@ endfunction
 function generate_lookfor_cache (desc)
   dirs = split_by (genpath (desc.dir), pathsep ());
   for i = 1 : length (dirs)
-    gen_doc_cache (fullfile (dirs{i}, "DOC"), dirs{i});
+    gen_doc_cache (fullfile (dirs{i}, "doc-cache"), dirs{i});
   endfor
 endfunction
 

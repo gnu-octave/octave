@@ -657,19 +657,70 @@ public:
       return len;
     }
 
+  // Generic non-breakable indexed loop. The loop body should be encapsulated in a
+  // single functor body. 
+  // This is equivalent to the following loop (but faster, at least for simple
+  // inlined bodies):
+  //
+  // for (octave_idx_type i = 0; i < idx->length (n); i++) body (idx(i));
+  // 
+
+  template <class Functor>
+  void
+  loop (octave_idx_type n, Functor body) const
+    {
+      octave_idx_type len = rep->length (n);
+      switch (rep->idx_class ())
+        {
+        case class_colon:
+          for (octave_idx_type i = 0; i < len; i++) body (i);
+          break;
+        case class_range:
+          {
+            idx_range_rep * r = dynamic_cast<idx_range_rep *> (rep);
+            octave_idx_type start = r->get_start (), step = r->get_step ();
+            octave_idx_type i, j;
+            if (step == 1)
+              for (i = start, j = start + len; i < j; i++) body (i);
+            else if (step == -1)
+              for (i = start, j = start - len; i > j; i--) body (i);
+            else
+              for (i = 0, j = start; i < len; i++, j += step) body (j);
+          }
+          break;
+        case class_scalar:
+          {
+            idx_scalar_rep * r = dynamic_cast<idx_scalar_rep *> (rep);
+            body (r->get_data ());
+          }
+          break;
+        case class_vector:
+          {
+            idx_vector_rep * r = dynamic_cast<idx_vector_rep *> (rep);
+            const octave_idx_type *data = r->get_data ();
+            for (octave_idx_type i = 0; i < len; i++) body (data[i]);
+          }
+          break;
+        default:
+          assert (false);
+          break;
+        }
+
+    }
+
   // Generic breakable indexed loop. The loop body should be encapsulated in a
   // single functor body. 
   // This is equivalent to the following loop (but faster, at least for simple
   // inlined bodies):
   //
   // for (octave_idx_type i = 0; i < idx->length (n); i++)
-  //   if (body (i, idx(i))) break;
+  //   if (body (idx(i))) break;
   // return i;
   // 
 
   template <class Functor>
   octave_idx_type
-  loop (octave_idx_type n, const Functor& body) const
+  bloop (octave_idx_type n, Functor body) const
     {
       octave_idx_type len = rep->length (n), ret;
       switch (rep->idx_class ())
@@ -704,7 +755,7 @@ public:
         case class_vector:
           {
             idx_vector_rep * r = dynamic_cast<idx_vector_rep *> (rep);
-            octave_idx_type *data = r->get_data ();
+            const octave_idx_type *data = r->get_data ();
             octave_idx_type i;
             for (i = 0; i < len && body (data[i]); i++) ;
             ret = i;

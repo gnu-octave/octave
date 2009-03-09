@@ -92,6 +92,12 @@ public:
     return Array<T>::template map<U> (fcn);
   }
 
+  // Performs indexed accumulative addition.
+
+  void idx_add (const idx_vector& idx, T val);
+
+  void idx_add (const idx_vector& idx, const MArray<T>& vals);
+
   // Currently, the OPS functions don't need to be friends, but that
   // may change.
 

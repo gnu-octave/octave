@@ -1,3 +1,8 @@
+2009-03-09  Jaroslav Hajek  <highegg@gmail.com>
+
+	* general/accumarray.m: Reorder tests. Call either "sparse" or
+	__accumarray_sum__ for the default summation case.
+
 2009-03-08  Søren Hauberg <hauberg@gmail.com>
 
 	* statistics/base/histc.m: New function.

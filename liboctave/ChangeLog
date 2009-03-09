@@ -1,3 +1,11 @@
+2009-03-08  Jaroslav Hajek  <highegg@gmail.com>
+
+	* idx-vector.h (idx_vector::bloop): loop --> bloop.
+	(idx_vector::loop): New method.
+	* MArray.cc (MArray<T>::idx_add (cons idx_vector&, T))
+	(MArray<T>::idx_add (cons idx_vector&, const MArray<T>&)): New methods.
+	* MArray.h: Declare them.
+
 2009-03-05  Jason Riedy  <jason@acm.org>
 
 	* Sparse.h (Sparse<T>::elt_type): Remove typedef, replace with:

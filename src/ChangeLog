@@ -1,3 +1,9 @@
+2009-03-09  John W. Eaton  <jwe@octave.org>
+
+	* graphics.h.in (OCTAVE_DEFAULT_FONTNAME): New macro, defaults to "*".
+	(axes::properties, text::properties): Use it to set default fontname.
+	* graphics.cc (axes::properties::set_defaults): Likewise.
+
 2009-03-09  Rafael Laboissiere  <rafael@debian.org>
 
 	* Makefile.in (maintainer-clean): Remove y.tab.h here.
@@ -7,12 +13,6 @@
 
 	* data.cc (F__accumarray_sum__): New function.
 	(do_accumarray_sum): New helper template function.
-
-2009-03-07  John W. Eaton  <jwe@octave.org>
-
-	* graphics.h.in (OCTAVE_DEFAULT_FONTNAME): New macro, defaults to "*".
-	(axes::properties, text::properties): Use it to set default fontname.
-	* graphics.cc (axes::properties::set_defaults): Likewise.
 
 2009-03-07  Jaroslav Hajek  <highegg@gmail.com>
 

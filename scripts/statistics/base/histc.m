@@ -77,16 +77,17 @@ function [n, idx] = histc (data, edges, dim)
     error ("histc: second argument must be a vector");
   endif
 
-  ## Allocate the histogram
   nsz = sz;
   nsz (dim) = num_edges;
-  n = zeros (nsz);
   
   ## the splitting point is 3 bins
 
   if (num_edges <= 3)
 
     ## This is the O(M*N) algorithm.
+
+    ## Allocate the histogram
+    n = zeros (nsz);
 
     ## Allocate 'idx'
     if (nargout > 1)
@@ -147,8 +148,7 @@ function [n, idx] = histc (data, edges, dim)
     iidx = iidx(idx != 0);
 
     ## Call accumarray to sum the indexed elements.
-    sz(dim) = length (edges);
-    n = accumarray (iidx(:), 1, sz);
+    n = accumarray (iidx(:), 1, nsz);
 
   endif
 

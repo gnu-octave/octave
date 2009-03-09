@@ -1,3 +1,8 @@
+2009-03-09  Ben Abbott  <bpabbott@mac.com>
+
+	* plot/__go_draw_axes__.m (do_tics): Fix typo (xaxislocation ->
+	yaxislocation).
+
 2009-03-09  John W. Eaton  <jwe@octave.org>
 
 	* help/lookfor.m (search_cache): Also match function names.
@@ -15,7 +20,7 @@
 
 	* statistics/base/histc.m: New function.
 
-2009-03-06  Ben Abbott <bpabbott@mac.com>
+2009-03-06  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/__go_draw_axes__.m: Preserve the order of axes' children
 	when pruning the handles for the {x,y,z}labels and title.
@@ -31,7 +36,7 @@
 
 	* deprecated/spdiag.m: Ensure sparse result.
 
-2009-03-05  Ben Abbott <bpabbott@mac.com>
+2009-03-05  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/__go_draw_axes__.m: Preserve column vector orientation for
 	the axes children while removing the axis label & title handles.
@@ -40,7 +45,7 @@
 
 	* polynomial/polyval.m: Implement using Horner scheme.
 
-2009-03-03  Ben Abbott <bpabbott@mac.com>
+2009-03-03  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/gnuplot_drawnow.m: Fix unintended shift of plot image for
 	the gnuplot postscript+eps terminal.
@@ -54,29 +59,29 @@
 	* set/complement.m, set/union.m: Remove reference to deprecated
 	function create_set.
 
-2009-03-01  Ben Abbott <bpabbott@mac.com>
+2009-03-01  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/__go_draw_axes__.m: Do not render axis labels twice when
 	their handles are visible, but do render objects with hidden
 	handles.
 
-2009-03-01  Ben Abbott <bpabbott@mac.com>
+2009-03-01  Ben Abbott  <bpabbott@mac.com>
 
 	* general/num2str.m: Trivial bug fix. Recent switch from split()
 	to strsplit() produced cells rather than character data.
 
-2009-03-01  Ben Abbott <bpabbott@mac.com>
+2009-03-01  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/colorbar.m: Bug fix. Allow hidden colorbars to be deleted,
 	and replace existing colorbar when a new one is created. Additional
 	demos are included to verify these behaviors.
 
-2009-02-28  Ben Abbott <bpabbott@mac.com>
+2009-02-28  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/__actual_axis_position__.m: Include file missed in prior
 	changeset.
 
-2009-02-28  Ben Abbott <bpabbott@mac.com>
+2009-02-28  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/print.m, plot/gnuplot_drawnow.m: Add compatible support for
 	specificying resolution of bitmap terminals, "-r<num>".
@@ -216,7 +221,7 @@
 	* statistics/models/logistic_regression_derivatives.m: Replace dmult
 	by diagonal matrices.
 
-2009-02-19  Ben Abbott <bpabbott@mac.com>
+2009-02-19  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/gnuplot_drawnow.m: Only send figure position info to gnuplot
 	when the plot stream is first opened. Revert usage of hidden axes 

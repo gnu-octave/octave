@@ -1468,7 +1468,7 @@ function do_tics (obj, plot_stream, ymirror, mono)
     do_tics_1 ("manual", [], "off", obj.yticklabelmode, obj.yticklabel,
 	       obj.ycolor, "y", plot_stream, ymirror, mono, "border",
 	       "", "", fontname, fontsize, obj.interpreter);
-  elseif (strcmpi (obj.xaxislocation, "zero"))
+  elseif (strcmpi (obj.yaxislocation, "zero"))
     do_tics_1 (obj.ytickmode, obj.ytick, obj.yminortick, obj.yticklabelmode,
 	       obj.yticklabel, obj.ycolor, "y", plot_stream, ymirror, mono,
 	       "axis", obj.tickdir, ticklength, fontname, fontsize,

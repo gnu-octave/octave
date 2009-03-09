@@ -2536,7 +2536,7 @@ axes::properties::set_defaults (base_graphics_object& obj,
   if (mode != "replace")
     {
       fontangle = "normal";
-      fontname = "Helvetica";
+      fontname = OCTAVE_DEFAULT_FONTNAME;
       fontsize = 12;
       fontunits = "points";
       fontweight = "normal";

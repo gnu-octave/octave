@@ -40,6 +40,13 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-mutex.h"
 #include "ov.h"
 
+// FIXME -- maybe this should be a configure option?
+// Matlab defaults to "Helvetica", but that causes problems for many
+// gnuplot users.
+#if !defined (OCTAVE_DEFAULT_FONTNAME)
+#define OCTAVE_DEFAULT_FONTNAME "*"
+#endif
+
 class caseless_str : public std::string
 {
 public:
@@ -2686,7 +2693,7 @@ public:
       array_property currentpoint , Matrix (2, 3, 0.0)
       radio_property drawmode , "{normal}|fast"
       radio_property fontangle , "{normal}|italic|oblique"
-      string_property fontname , "Helvetica"
+      string_property fontname , OCTAVE_DEFAULT_FONTNAME
       double_property fontsize , 12
       radio_property fontunits , "{points}|normalized|inches|centimeters|pixels"
       radio_property fontweight , "{normal}|light|demi|bold"
@@ -2966,7 +2973,7 @@ public:
       double_property rotation , 0
       radio_property horizontalalignment , "{left}|center|right"
       color_property color , color_values (0, 0, 0)
-      string_property fontname , "Helvetica"
+      string_property fontname , OCTAVE_DEFAULT_FONTNAME
       double_property fontsize , 10
       radio_property fontangle , "{normal}|italic|oblique"
       radio_property fontweight , "light|{normal}|demi|bold"

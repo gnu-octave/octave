@@ -166,7 +166,7 @@ FLOAT_OP_XSRC := op-float-conv.cc op-fcm-fcm.cc op-fcm-fcs.cc op-fcm-fm.cc \
 DIAG_OP_XSRC := op-cdm-cdm.cc op-cdm-cm.cc op-cdm-cs.cc op-cdm-dm.cc \
 	op-cdm-m.cc op-cdm-s.cc op-cm-cdm.cc op-cm-dm.cc op-dm-cdm.cc \
 	op-dm-cm.cc op-dm-cs.cc op-dm-dm.cc op-dm-m.cc op-dm-s.cc \
-	op-m-cdm.cc op-m-dm.cc
+	op-m-cdm.cc op-m-dm.cc op-dm-sm.cc op-dm-scm.cc
 
 FDIAG_OP_XSRC := op-fcdm-fcdm.cc op-fcdm-fcm.cc op-fcdm-fcs.cc op-fcdm-fdm.cc \
 	op-fcdm-fm.cc op-fcdm-fs.cc op-fcm-fcdm.cc op-fcm-fdm.cc \

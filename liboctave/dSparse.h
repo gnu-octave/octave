@@ -29,7 +29,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "CMatrix.h"
 #include "dColVector.h"
 #include "CColVector.h"
-#include "dDiagMatrix.h"
 
 #include "DET.h"
 #include "MSparse.h"
@@ -37,6 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "Sparse-op-defs.h"
 #include "MatrixType.h"
 
+class DiagMatrix;
 class SparseComplexMatrix;
 class SparseBoolMatrix;
 
@@ -450,6 +450,9 @@ extern OCTAVE_API Matrix operator * (const SparseMatrix& a,
 				const Matrix& b);
 extern OCTAVE_API Matrix trans_mul (const SparseMatrix& a, 
 				const Matrix& b);
+
+extern OCTAVE_API SparseMatrix operator * (const DiagMatrix&, const SparseMatrix&);
+extern OCTAVE_API SparseMatrix operator * (const SparseMatrix&, const DiagMatrix&);
 
 extern OCTAVE_API SparseMatrix min (double d, const SparseMatrix& m);
 extern OCTAVE_API SparseMatrix min (const SparseMatrix& m, double d);

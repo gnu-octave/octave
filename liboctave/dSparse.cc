@@ -29,6 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <iostream>
 #include <vector>
+#include <functional>
 
 #include "quit.h"
 #include "lo-ieee.h"
@@ -37,6 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "dRowVector.h"
 #include "oct-locbuf.h"
 
+#include "dDiagMatrix.h"
 #include "CSparse.h"
 #include "boolSparse.h"
 #include "dSparse.h"
@@ -48,6 +50,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "sparse-util.h"
 #include "SparsedbleCHOL.h"
 #include "SparseQR.h"
+
+#include "Sparse-diag-op-defs.h"
 
 // Define whether to use a basic QR solver or one that uses a Dulmange
 // Mendelsohn factorization to seperate the problem into under-determined,
@@ -7696,6 +7700,20 @@ Matrix
 trans_mul (const SparseMatrix& m, const Matrix& a)
 {
   SPARSE_FULL_TRANS_MUL (Matrix, double, 0., );
+}
+
+// diag * sparse and sparse * diag
+
+SparseMatrix
+operator * (const DiagMatrix& d, const SparseMatrix& a)
+{
+  return octave_impl::do_mul_dm_sm<SparseMatrix> (d, a);
+}
+
+SparseMatrix
+operator * (const SparseMatrix& a, const DiagMatrix& d)
+{
+  return octave_impl::do_mul_sm_dm<SparseMatrix> (a, d);
 }
 
 // FIXME -- it would be nice to share code among the min/max

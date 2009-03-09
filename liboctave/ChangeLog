@@ -1,3 +1,18 @@
+2009-03-08  Jason Riedy  <jason@acm.org>
+
+	* Sparse-diag-op-defs.h (octave_impl::do_mul_dm_sm)
+	(octave_impl::do_mul_sm_dm): New template
+	functions. Implementations for sparse * diag and diag * sparse.
+
+	* CSparse.h (operator *, trans_mul, herm_mul): Add overloads for
+	DiagMatrix and ComplexDiagMatrix.
+	* CSparse.cc (operator *, trans_mul, herm_mul): Implement
+	operations by calling approprate functions in
+	Sparse-diag-op-defs.h.
+	* dSparse.h (operator *, trans_mul): Add overloads for DiagMatrix.
+	* dSparse.cc (operator *, trans_mul): Implement operations by
+	calling approprate functions in Sparse-diag-op-defs.h.
+
 2009-03-12  John W. Eaton  <jwe@octave.org>
 
 	* oct-inttypes.h (bitshift): Apply mask even if not shifting.

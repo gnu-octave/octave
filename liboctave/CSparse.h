@@ -37,6 +37,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "Sparse-op-defs.h"
 #include "MatrixType.h"
 
+class DiagMatrix;
+class ComplexDiagMatrix;
 class SparseMatrix;
 class SparseBoolMatrix;
 
@@ -472,6 +474,15 @@ extern OCTAVE_API ComplexMatrix trans_mul (const SparseComplexMatrix&,
 				       const ComplexMatrix&);
 extern OCTAVE_API ComplexMatrix herm_mul (const SparseComplexMatrix&, 
 				       const ComplexMatrix&);
+
+extern OCTAVE_API SparseComplexMatrix operator * (const DiagMatrix&, const SparseComplexMatrix&);
+extern OCTAVE_API SparseComplexMatrix operator * (const SparseComplexMatrix&, const DiagMatrix&);
+
+extern OCTAVE_API SparseComplexMatrix operator * (const ComplexDiagMatrix&, const SparseMatrix&);
+extern OCTAVE_API SparseComplexMatrix operator * (const SparseMatrix&, const ComplexDiagMatrix&);
+
+extern OCTAVE_API SparseComplexMatrix operator * (const ComplexDiagMatrix&, const SparseComplexMatrix&);
+extern OCTAVE_API SparseComplexMatrix operator * (const SparseComplexMatrix&, const ComplexDiagMatrix&);
 
 extern OCTAVE_API SparseComplexMatrix min (const Complex& c, 
 				const SparseComplexMatrix& m);

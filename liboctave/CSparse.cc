@@ -37,6 +37,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "dRowVector.h"
 #include "oct-locbuf.h"
 
+#include "dDiagMatrix.h"
+#include "CDiagMatrix.h"
 #include "CSparse.h"
 #include "boolSparse.h"
 #include "dSparse.h"
@@ -47,6 +49,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "sparse-util.h"
 #include "SparseCmplxCHOL.h"
 #include "SparseCmplxQR.h"
+
+#include "Sparse-diag-op-defs.h"
 
 // Define whether to use a basic QR solver or one that uses a Dulmange
 // Mendelsohn factorization to seperate the problem into under-determined,
@@ -7582,6 +7586,40 @@ ComplexMatrix
 herm_mul (const SparseComplexMatrix& m, const ComplexMatrix& a)
 {
   SPARSE_FULL_TRANS_MUL (ComplexMatrix, Complex, Complex (0.,0.), conj);
+}
+
+// diag * sparse and sparse * diag
+SparseComplexMatrix
+operator * (const DiagMatrix& d, const SparseComplexMatrix& a)
+{
+  return octave_impl::do_mul_dm_sm<SparseComplexMatrix> (d, a);
+}
+SparseComplexMatrix
+operator * (const SparseComplexMatrix& a, const DiagMatrix& d)
+{
+  return octave_impl::do_mul_sm_dm<SparseComplexMatrix> (a, d);
+}
+
+SparseComplexMatrix
+operator * (const ComplexDiagMatrix& d, const SparseMatrix& a)
+{
+  return octave_impl::do_mul_dm_sm<SparseComplexMatrix> (d, a);
+}
+SparseComplexMatrix
+operator * (const SparseMatrix& a, const ComplexDiagMatrix& d)
+{
+  return octave_impl::do_mul_sm_dm<SparseComplexMatrix> (a, d);
+}
+
+SparseComplexMatrix
+operator * (const ComplexDiagMatrix& d, const SparseComplexMatrix& a)
+{
+  return octave_impl::do_mul_dm_sm<SparseComplexMatrix> (d, a);
+}
+SparseComplexMatrix
+operator * (const SparseComplexMatrix& a, const ComplexDiagMatrix& d)
+{
+  return octave_impl::do_mul_sm_dm<SparseComplexMatrix> (a, d);
 }
 
 // FIXME -- it would be nice to share code among the min/max

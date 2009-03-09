@@ -99,6 +99,15 @@
 	* Makefile.in (maintainer-clean): Remove y.tab.h here.
 	(distclean): Not here.
 
+2009-03-08  Jason Riedy  <jason@acm.org>
+
+	* OPERATORS/op-dm-scm.cc: New file.  Implement multiplication
+	between diagonal matrices (both real and complex) and complex
+	sparse matrices.
+	* OPERATORS/op-dm-sm.cc: New file.  Implement multiplication
+	between diagonal matrices and sparse matrices, all real.
+	* Makefile.in (DIAG_OP_XSRC): Add op-dm-sm.cc and op-dm-scm.cc.
+
 2009-03-09  Jaroslav Hajek  <highegg@gmail.com>
 
 	* data.cc (F__accumarray_sum__): New function.

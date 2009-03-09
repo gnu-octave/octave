@@ -101,6 +101,37 @@
 
 2009-03-08  Jason Riedy  <jason@acm.org>
 
+	* sparse-xdiv.h (xleftdiv): Declare overrides for
+	xleftdiv (diagonal, sparse), both real and complex.
+	(xdiv): Declare overrides for xdiv (sparse, diagonal), both real
+	and complex.
+
+	* sparse-xdiv.cc (do_rightdiv_sm_dm): New template function.
+	Implementation for xdiv (sparse, diagonal).
+	(xdiv): Call do_rightdiv_sm_dm to implement overrides, real and
+	complex.
+	(do_leftdiv_dm_sm): New template function.  Implementation for
+	xleftdiv (diagonal, sparse).
+	(xleftdiv): Call do_leftdiv_dm_sm to implement overrides, real and
+	complex.
+
+	* OPERATORS/op-dm-sm.cc (ldiv_dm_sm): Octave binding for real left
+	division, diagonal into sparse.
+	(div_sm_dm): Octave binding for real right division, sparse by
+	diagonal.
+	(install_dm_sm_ops): Install above bindings.
+
+	* OPERATORS/op-dm-scm.cc (ldiv_dm_scm): Octave binding for real
+	diagonal \ complex sparse.
+	(ldiv_cdm_sm): Octave binding for complex diagonal \ real sparse.
+	(ldiv_cdm_scm): Octave binding for complex diagonal \ complex sparse.
+	(div_scm_dm): Octave binding for complex sparse / real diagonal.
+	(div_sm_cdm): Octave binding for real sparse / complex diagonal.
+	(div_scm_cdm): Octave binding for complex sparse / complex diagonal.
+	(install_dm_scm_ops): Install above bindings.
+
+2009-03-08  Jason Riedy  <jason@acm.org>
+
 	* OPERATORS/op-dm-scm.cc: New file.  Implement multiplication
 	between diagonal matrices (both real and complex) and complex
 	sparse matrices.

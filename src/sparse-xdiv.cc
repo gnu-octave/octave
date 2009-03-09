@@ -33,7 +33,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 
 #include "dSparse.h"
+#include "dDiagMatrix.h"
 #include "CSparse.h"
+#include "CDiagMatrix.h"
 #include "oct-spparms.h"
 #include "sparse-xdiv.h"
 
@@ -74,6 +76,10 @@ INSTANTIATE_MX_LEFTDIV_CONFORM (SparseMatrix, Matrix);
 INSTANTIATE_MX_LEFTDIV_CONFORM (SparseMatrix, ComplexMatrix);
 INSTANTIATE_MX_LEFTDIV_CONFORM (SparseComplexMatrix, Matrix);
 INSTANTIATE_MX_LEFTDIV_CONFORM (SparseComplexMatrix, ComplexMatrix);
+INSTANTIATE_MX_LEFTDIV_CONFORM (DiagMatrix, SparseMatrix);
+INSTANTIATE_MX_LEFTDIV_CONFORM (DiagMatrix, SparseComplexMatrix);
+INSTANTIATE_MX_LEFTDIV_CONFORM (ComplexDiagMatrix, SparseMatrix);
+INSTANTIATE_MX_LEFTDIV_CONFORM (ComplexDiagMatrix, SparseComplexMatrix);
 
 template <class T1, class T2>
 bool
@@ -105,15 +111,23 @@ INSTANTIATE_MX_DIV_CONFORM (Matrix, SparseMatrix);
 INSTANTIATE_MX_DIV_CONFORM (Matrix, SparseComplexMatrix);
 INSTANTIATE_MX_DIV_CONFORM (ComplexMatrix, SparseMatrix);
 INSTANTIATE_MX_DIV_CONFORM (ComplexMatrix, SparseComplexMatrix);
+INSTANTIATE_MX_DIV_CONFORM (SparseMatrix, DiagMatrix);
+INSTANTIATE_MX_DIV_CONFORM (SparseMatrix, ComplexDiagMatrix);
+INSTANTIATE_MX_DIV_CONFORM (SparseComplexMatrix, DiagMatrix);
+INSTANTIATE_MX_DIV_CONFORM (SparseComplexMatrix, ComplexDiagMatrix);
 
-// Right division functions.
+// Right division functions.  X / Y = X * inv(Y) = (inv (Y') * X')'
 //
-//              op2 / op1:   m   cm   sm  scm
+//                  Y / X:   m   cm   sm  scm
 //                   +--   +---+----+----+----+
 //   sparse matrix         | 1 |  3 |  5 |  7 |
 //                         +---+----+----+----+
 //   sparse complex_matrix | 2 |  4 |  6 |  8 |
 //                         +---+----+----+----+
+//   diagonal matrix                |  9 | 11 |
+//                                  +----+----+
+//   complex diag. matrix           | 10 | 12 |
+//                                  +----+----+
 
 // -*- 1 -*-
 Matrix
@@ -275,6 +289,74 @@ xdiv (const SparseComplexMatrix& a, const SparseComplexMatrix& b, MatrixType &ty
   return result.hermitian ();
 }
 
+template <typename RT, typename SM, typename DM>
+RT do_rightdiv_sm_dm (const SM& a, const DM& d)
+{
+  const octave_idx_type d_nr = d.rows ();
+
+  const octave_idx_type a_nr = a.rows ();
+  const octave_idx_type a_nc = a.cols ();
+
+  using std::min;
+  const octave_idx_type nc = min (d_nr, a_nc);
+
+  if ( ! mx_div_conform (a, d))
+    return RT ();
+
+  const octave_idx_type nz = a.nnz ();
+  RT r (a_nr, nc, nz);
+
+  const typename DM::element_type zero = typename DM::element_type ();
+
+  octave_idx_type k_result = 0;
+  for (octave_idx_type j = 0; j < nc; ++j)
+    {
+      OCTAVE_QUIT;
+      const typename DM::element_type s = d.dgelem (j);
+      const octave_idx_type colend = a.cidx (j+1);
+      r.xcidx (j) = k_result;
+      if (s != zero)
+	for (octave_idx_type k = a.cidx (j); k < colend; ++k)
+	  {
+	    r.xdata (k_result) = a.data (k) / s;
+	    r.xridx (k_result) = a.ridx (k);
+	    ++k_result;
+	  }
+    }
+  r.xcidx (nc) = k_result;
+
+  r.maybe_compress (true);
+  return r;
+}
+
+// -*- 9 -*-
+SparseMatrix
+xdiv (const SparseMatrix& a, const DiagMatrix& b, MatrixType &)
+{
+  return do_rightdiv_sm_dm<SparseMatrix> (a, b);
+}
+
+// -*- 10 -*-
+SparseComplexMatrix
+xdiv (const SparseMatrix& a, const ComplexDiagMatrix& b, MatrixType &)
+{
+  return do_rightdiv_sm_dm<SparseComplexMatrix> (a, b);
+}
+
+// -*- 11 -*-
+SparseComplexMatrix
+xdiv (const SparseComplexMatrix& a, const DiagMatrix& b, MatrixType &)
+{
+  return do_rightdiv_sm_dm<SparseComplexMatrix> (a, b);
+}
+
+// -*- 12 -*-
+SparseComplexMatrix
+xdiv (const SparseComplexMatrix& a, const ComplexDiagMatrix& b, MatrixType &)
+{
+  return do_rightdiv_sm_dm<SparseComplexMatrix> (a, b);
+}
+
 // Funny element by element division operations.
 //
 //       op2 \ op1:   s   cs
@@ -363,18 +445,18 @@ x_el_div (const Complex a, const SparseComplexMatrix& b)
   return result;
 }
 
-// Left division functions.
+// Left division functions.  X \ Y = inv(X) * Y
 //
-//              op2 \ op1:   m   cm
+//               Y  \  X :   sm  scm  dm  dcm
 //                   +--   +---+----+
 //   matrix                | 1 |  5 |
 //                         +---+----+
 //   complex_matrix        | 2 |  6 |
-//                         +---+----+
-//   sparse matrix         | 3 |  7 |
-//                         +---+----+
-//   sparse complex_matrix | 4 |  8 |
-//                         +---+----+
+//                         +---+----+----+----+
+//   sparse matrix         | 3 |  7 |  9 | 11 |
+//                         +---+----+----+----+
+//   sparse complex_matrix | 4 |  8 | 10 | 12 |
+//                         +---+----+----+----+
 
 // -*- 1 -*-
 Matrix
@@ -471,6 +553,80 @@ xleftdiv (const SparseComplexMatrix& a, const SparseComplexMatrix& b,
   octave_idx_type info;
   double rcond = 0.0;
   return a.solve (typ, b, info, rcond, solve_singularity_warning);
+}
+
+template <typename RT, typename DM, typename SM>
+RT do_leftdiv_dm_sm (const DM& d, const SM& a)
+{
+  const octave_idx_type a_nr = a.rows ();
+  const octave_idx_type a_nc = a.cols ();
+
+  const octave_idx_type d_nc = d.cols ();
+
+  using std::min;
+  const octave_idx_type nr = min (d_nc, a_nr);
+
+  if ( ! mx_leftdiv_conform (d, a))
+    return RT ();
+
+  const octave_idx_type nz = a.nnz ();
+  RT r (nr, a_nc, nz);
+
+  const typename DM::element_type zero = typename DM::element_type ();
+
+  octave_idx_type k_result = 0;
+  for (octave_idx_type j = 0; j < a_nc; ++j)
+    {
+      OCTAVE_QUIT;
+      const octave_idx_type colend = a.cidx (j+1);
+      r.xcidx (j) = k_result;
+      for (octave_idx_type k = a.cidx (j); k < colend; ++k)
+	{
+	  const octave_idx_type i = a.ridx (k);
+	  if (i < nr)
+	    {
+	      const typename DM::element_type s = d.dgelem (i);
+	      if (s != zero)
+		{
+		  r.xdata (k_result) = a.data (k) / s;
+		  r.xridx (k_result) = i;
+		  ++k_result;
+		}
+	    }
+	}
+    }
+  r.xcidx (a_nc) = k_result;
+
+  r.maybe_compress (true);
+  return r;
+}
+
+// -*- 9 -*-
+SparseMatrix
+xleftdiv (const DiagMatrix& d, const SparseMatrix& a,  MatrixType&)
+{
+  return do_leftdiv_dm_sm<SparseMatrix> (d, a);
+}
+
+// -*- 10 -*-
+SparseComplexMatrix
+xleftdiv (const DiagMatrix& d, const SparseComplexMatrix& a,  MatrixType&)
+{
+  return do_leftdiv_dm_sm<SparseComplexMatrix> (d, a);
+}
+
+// -*- 11 -*-
+SparseComplexMatrix
+xleftdiv (const ComplexDiagMatrix& d, const SparseMatrix& a,  MatrixType&)
+{
+  return do_leftdiv_dm_sm<SparseComplexMatrix> (d, a);
+}
+
+// -*- 12 -*-
+SparseComplexMatrix
+xleftdiv (const ComplexDiagMatrix& d, const SparseComplexMatrix& a,  MatrixType&)
+{
+  return do_leftdiv_dm_sm<SparseComplexMatrix> (d, a);
 }
 
 /*

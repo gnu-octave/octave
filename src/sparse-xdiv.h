@@ -27,6 +27,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-cmplx.h"
 #include "MatrixType.h"
 
+class DiagMatrix;
+class ComplexDiagMatrix;
 class SparseMatrix;
 class SparseComplexMatrix;
 
@@ -46,6 +48,15 @@ extern SparseComplexMatrix xdiv (const SparseComplexMatrix& a,
 				 const SparseMatrix& b, MatrixType &typ);
 extern SparseComplexMatrix xdiv (const SparseComplexMatrix& a, 
 				 const SparseComplexMatrix& b, MatrixType &typ);
+
+extern SparseMatrix xdiv (const SparseMatrix& a, 
+			  const DiagMatrix& b, MatrixType &typ);
+extern SparseComplexMatrix xdiv (const SparseMatrix& a, 
+				 const ComplexDiagMatrix& b, MatrixType &typ);
+extern SparseComplexMatrix xdiv (const SparseComplexMatrix& a, 
+				 const DiagMatrix& b, MatrixType &typ);
+extern SparseComplexMatrix xdiv (const SparseComplexMatrix& a, 
+				 const ComplexDiagMatrix& b, MatrixType &typ);
 
 extern Matrix x_el_div (double a, const SparseMatrix& b);
 extern ComplexMatrix x_el_div (double a, const SparseComplexMatrix& b);
@@ -70,6 +81,14 @@ extern SparseComplexMatrix xleftdiv (const SparseComplexMatrix& a,
 				     const SparseMatrix& b, MatrixType &typ);
 extern SparseComplexMatrix xleftdiv (const SparseComplexMatrix& a, 
 				     const SparseComplexMatrix& b, MatrixType &typ);
+
+extern SparseMatrix xleftdiv (const DiagMatrix&, const SparseMatrix&, MatrixType&);
+extern SparseComplexMatrix xleftdiv (const ComplexDiagMatrix&, const SparseMatrix&, 
+				     MatrixType&);
+extern SparseComplexMatrix xleftdiv (const DiagMatrix&, const SparseComplexMatrix&, 
+				     MatrixType&);
+extern SparseComplexMatrix xleftdiv (const ComplexDiagMatrix&, const SparseComplexMatrix&, 
+				     MatrixType&);
 
 #endif
 

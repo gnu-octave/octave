@@ -157,3 +157,38 @@
 %! A(4, 1) = Inf;
 %! assert (Dr * A * Dc, A .* kron (dr, dc), eps);
 
+## sparse inverse row scaling with a zero factor
+%!test
+%! n = 8;
+%! A = sprand (n, n, .5);
+%! scalefact = rand (n, 1);
+%! Dr = diag (scalefact);
+%! scalefact(n-1) = Inf;
+%! Dr(n-1, n-1) = 0;
+%! assert (full (Dr \ A), full (A) ./ repmat (scalefact, 1, n));
+
+## narrow sparse inverse row scaling
+%!test
+%! n = 8;
+%! A = sprand (n, n, .5);
+%! scalefact = rand (n-2, 1);
+%! Dr = diag (scalefact, n, n-2);
+%! assert (full (Dr \ A), Dr \ full(A))
+
+## sparse inverse column scaling with a zero factor
+%!test
+%! n = 11;
+%! A = sprand (n, n, .5);
+%! scalefact = rand (1, n);
+%! Dc = diag (scalefact);
+%! scalefact(n-1) = Inf;
+%! Dc(n-1, n-1) = 0;
+%! assert (full (A / Dc), full(A) / Dc)
+
+## short sparse inverse column scaling
+%!test
+%! n = 7;
+%! A = sprand (n, n, .5);
+%! scalefact = rand (1, n-2) + I () * rand(1, n-2);
+%! Dc = diag (scalefact, n-2, n);
+%! assert (full (A / Dc), full(A) / Dc)

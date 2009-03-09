@@ -35,6 +35,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-re-sparse.h"
 #include "ov-cx-sparse.h"
 
+#include "sparse-xdiv.h"
+
 // diagonal matrix by sparse matrix ops
 
 DEFBINOP (mul_dm_scm, diag_matrix, sparse_complex_matrix)
@@ -104,6 +106,36 @@ DEFBINOP (mul_cdm_scm, complex_diag_matrix, sparse_complex_matrix)
       out.matrix_type (typ);
       return out;
     }
+}
+
+DEFBINOP (ldiv_dm_scm, diag_matrix, sparse_complex_matrix)
+{
+  CAST_BINOP_ARGS (const octave_diag_matrix&,
+		   const octave_sparse_complex_matrix&);
+
+  MatrixType typ = v2.matrix_type ();
+  return xleftdiv (v1.diag_matrix_value (), v2.sparse_complex_matrix_value (),
+		   typ);
+}
+
+DEFBINOP (ldiv_cdm_sm, complex_diag_matrix, sparse_matrix)
+{
+  CAST_BINOP_ARGS (const octave_complex_diag_matrix&,
+		   const octave_sparse_matrix&);
+
+  MatrixType typ = v2.matrix_type ();
+  return xleftdiv (v1.complex_diag_matrix_value (), v2.sparse_matrix_value (),
+		   typ);
+}
+
+DEFBINOP (ldiv_cdm_scm, complex_diag_matrix, sparse_complex_matrix)
+{
+  CAST_BINOP_ARGS (const octave_complex_diag_matrix&,
+		   const octave_sparse_complex_matrix&);
+
+  MatrixType typ = v2.matrix_type ();
+  return xleftdiv (v1.complex_diag_matrix_value (), v2.sparse_complex_matrix_value (),
+		   typ);
 }
 
 // sparse matrix by diagonal matrix ops
@@ -184,6 +216,66 @@ DEFBINOP (mul_scm_cdm, sparse_complex_matrix, complex_diag_matrix)
     }
 }
 
+DEFBINOP (div_scm_dm, sparse_complex_matrix, diag_matrix)
+{
+  CAST_BINOP_ARGS (const octave_sparse_complex_matrix&, const octave_diag_matrix&);
+
+  if (v2.rows() == 1 && v2.columns() == 1)
+    {
+      double d = v2.scalar_value ();
+
+      if (d == 0.0)
+	gripe_divide_by_zero ();
+
+      return octave_value (v1.sparse_complex_matrix_value () / d);
+    }
+  else
+    {
+      MatrixType typ = v2.matrix_type ();
+      return xdiv (v1.sparse_complex_matrix_value (), v2.diag_matrix_value (), typ);
+    }
+}
+
+DEFBINOP (div_sm_cdm, sparse_matrix, complex_diag_matrix)
+{
+  CAST_BINOP_ARGS (const octave_sparse_matrix&, const octave_complex_diag_matrix&);
+
+  if (v2.rows() == 1 && v2.columns() == 1)
+    {
+      std::complex<double> d = v2.complex_value ();
+
+      if (d == 0.0)
+	gripe_divide_by_zero ();
+
+      return octave_value (v1.sparse_matrix_value () / d);
+    }
+  else
+    {
+      MatrixType typ = v2.matrix_type ();
+      return xdiv (v1.sparse_matrix_value (), v2.complex_diag_matrix_value (), typ);
+    }
+}
+
+DEFBINOP (div_scm_cdm, sparse_complex_matrix, complex_diag_matrix)
+{
+  CAST_BINOP_ARGS (const octave_sparse_complex_matrix&, const octave_complex_diag_matrix&);
+
+  if (v2.rows() == 1 && v2.columns() == 1)
+    {
+      std::complex<double> d = v2.complex_value ();
+
+      if (d == 0.0)
+	gripe_divide_by_zero ();
+
+      return octave_value (v1.sparse_complex_matrix_value () / d);
+    }
+  else
+    {
+      MatrixType typ = v2.matrix_type ();
+      return xdiv (v1.sparse_complex_matrix_value (), v2.complex_diag_matrix_value (), typ);
+    }
+}
+
 void
 install_dm_scm_ops (void)
 {
@@ -193,10 +285,19 @@ install_dm_scm_ops (void)
 		 mul_cdm_sm);
   INSTALL_BINOP (op_mul, octave_complex_diag_matrix, octave_sparse_complex_matrix,
 		 mul_cdm_scm);
+  INSTALL_BINOP (op_ldiv, octave_diag_matrix, octave_sparse_complex_matrix, ldiv_dm_scm);
+  INSTALL_BINOP (op_ldiv, octave_complex_diag_matrix, octave_sparse_matrix, ldiv_cdm_sm);
+  INSTALL_BINOP (op_ldiv, octave_complex_diag_matrix, octave_sparse_complex_matrix,
+		 ldiv_cdm_scm);
+
   INSTALL_BINOP (op_mul, octave_sparse_complex_matrix, octave_diag_matrix,
 		 mul_scm_dm);
   INSTALL_BINOP (op_mul, octave_sparse_matrix, octave_complex_diag_matrix,
 		 mul_sm_cdm);
   INSTALL_BINOP (op_mul, octave_sparse_complex_matrix, octave_complex_diag_matrix,
 		 mul_scm_cdm);
+
+  INSTALL_BINOP (op_div, octave_sparse_complex_matrix, octave_diag_matrix, div_scm_dm);
+  INSTALL_BINOP (op_div, octave_sparse_matrix, octave_complex_diag_matrix, div_sm_cdm);
+  INSTALL_BINOP (op_div, octave_sparse_complex_matrix, octave_complex_diag_matrix, div_scm_cdm);
 }

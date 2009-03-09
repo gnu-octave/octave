@@ -8,6 +8,10 @@
 
 2009-03-08  Jason Riedy  <jason@acm.org>
 
+	* test_diag_perm.m: Add tests for inverse scaling and sparse structure.
+
+2009-03-08  Jason Riedy  <jason@acm.org>
+
 	* test_diag_perm.m: Add tests for preserving sparse structure when scaling.
 
 2009-02-25  John W. Eaton  <jwe@octave.org>

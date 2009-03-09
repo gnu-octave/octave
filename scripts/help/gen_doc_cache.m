@@ -28,7 +28,7 @@
 ## @seealso{lookfor, path}
 ## @end deftypefn
 
-function gen_doc_cache (out_file = "DOC", directory = [])
+function gen_doc_cache (out_file = "doc-cache", directory = [])
   ## Check input
   if (!ischar (out_file))
     print_usage ();

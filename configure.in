@@ -89,7 +89,7 @@ AC_DEFINE_UNQUOTED(SEPCHAR_STR, ["$sepchar"], [Define this to the path separator
 
 OCTAVE_SET_DEFAULT(man1dir, '$(mandir)/man1')
 OCTAVE_SET_DEFAULT(man1ext, '.1')
-OCTAVE_SET_DEFAULT(doc_cache_file, '$(octetcdir)/DOC')
+OCTAVE_SET_DEFAULT(doc_cache_file, '$(octetcdir)/doc-cache')
 OCTAVE_SET_DEFAULT(infofile, '$(infodir)/octave.info')
 OCTAVE_SET_DEFAULT(octincludedir, '$(includedir)/octave-$(version)')
 OCTAVE_SET_DEFAULT(fcnfiledir, '$(datadir)/octave/$(version)/m')

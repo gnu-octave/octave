@@ -75,7 +75,7 @@ function [out_fun, out_help_text] = lookfor (str, extra)
 
   for n = 1:numel (new_path)
     elt = new_path{n};
-    cache_file = fullfile (elt, "DOC");
+    cache_file = fullfile (elt, "doc-cache");
     if (exist (cache_file, "file"))
       ## We have a cache in the directory, then read it and search it!
       [funs, hts] = search_cache (str, cache_file, search_type);

@@ -1,5 +1,8 @@
 2009-03-09  John W. Eaton  <jwe@octave.org>
 
+	* run-octave.in: Use doc-cache instead of DOC for doc cache file.
+	* configure.in: Likewise.
+
 	* configure.in (--enable-extra-warning-flags): New option to
 	control extra compiler warning flags.
 	(--enable-strict-warning-flags): Rename from --enable-picky-flags.

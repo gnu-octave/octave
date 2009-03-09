@@ -291,7 +291,7 @@ datadir = @datadir@
 
 libdir = @libdir@
 
-# Where to install and expect extra files like NEWS and DOC.
+# Where to install and expect extra files like NEWS and doc-cache.
 octetcdir = @octetcdir@
 
 # Where to install and expect libraries like libcruft.a, liboctave.a,

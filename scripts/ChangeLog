@@ -1,3 +1,8 @@
+2009-03-09  John W. Eaton  <jwe@octave.org>
+
+	* help/gen_doc_cache.m, help/lookfor.m: Use doc-cache instead of
+	DOC for doc cache file.
+
 2009-03-09  Jaroslav Hajek  <highegg@gmail.com>
 
 	* general/accumarray.m: Reorder tests. Call either "sparse" or

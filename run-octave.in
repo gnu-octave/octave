@@ -51,7 +51,7 @@ d4_path=`echo "$d4_list" | $AWK '{ t = (s $0); s = t; } END { sub (/:$/, "", s);
 
 LOADPATH="$d1_path:$d2_path:$d3_path:$d4_path"
 IMAGEPATH="$top_srcdir/scripts/image"
-DOCFILE="$builddir/doc/interpreter/DOC"
+DOCFILE="$builddir/doc/interpreter/doc-cache"
 INFOFILE="$builddir/doc/interpreter/octave.info"
 
 if [ $# -gt 0 ]; then

@@ -150,7 +150,7 @@ MAN_SRC := $(addsuffix .1, $(MAN_BASE))
 DISTFILES = $(addprefix $(srcdir)/, Makefile.in contributors.in \
   mkcontrib.awk dir  munge-texi.cc $(MAN_SRC) $(SOURCES) $(MAIN_TEXINFO)) \
   $(SUB_TEXINFO) contributors.texi $(FORMATTED) $(IMAGES) mk_doc_cache.m \
-  DOC stmp-html
+  doc-cache stmp-html
 
 DISTDIRS = HTML
 
@@ -170,13 +170,13 @@ SPELL = $(patsubst %.texi, %.spell, $(TEXINFO))
 	$(SED) -e 's/@@/ at /g' -e 's/@[a-zA-Z]*//g' $< | spell > $@-t
 	mv $@-t $@
 
-all: octave.info octave.pdf octave-a4.pdf HTML/index.html DOC
+all: octave.info octave.pdf octave-a4.pdf HTML/index.html doc-cache
 .PHONY: all
 
 DOCSTRING_FILES := $(TOPDIR)/src/DOCSTRINGS $(TOPDIR)/scripts/DOCSTRINGS
 
-DOC: $(DOCSTRING_FILES) mk_doc_cache.m
-	$(TOPDIR)/run-octave -f -q -H $(srcdir)/mk_doc_cache.m DOC $(DOCSTRING_FILES) || rm -f DOC
+doc-cache: $(DOCSTRING_FILES) mk_doc_cache.m
+	$(TOPDIR)/run-octave -f -q -H $(srcdir)/mk_doc_cache.m doc-cache $(DOCSTRING_FILES) || rm -f doc-cache
 
 $(TEXINFO): $(DOCSTRING_FILES) munge-texi$(BUILD_EXEEXT)
 
@@ -330,14 +330,14 @@ install install-strip: all
 	    $(INSTALL_DATA) $(srcdir)/dir $(DESTDIR)$(infodir)/dir; \
 	  fi; \
 	fi
-	$(INSTALL_DATA) DOC $(DESTDIR)$(octetcdir)/DOC
+	$(INSTALL_DATA) doc-cache $(DESTDIR)$(octetcdir)/doc-cache
 .PHONY: install install-strip
 
 uninstall:
 	@$(subdir-for-command)
 	rm -f $(DESTDIR)$(infodir)/octave.info*
 	rm -f $(DESTDIR)$(infodir)/dir
-	rm -f $(DESTDIR)$(octetcdir)/DOC
+	rm -f $(DESTDIR)$(octetcdir)/doc-cache
 	for f in $(MAN_BASE); do rm -f $(DESTDIR)$(man1dir)/$$f$(man1ext); done
 .PHONY: uninstall
 
@@ -376,7 +376,7 @@ distclean: clean
 .PHONY: distclean
 
 maintainer-clean: distclean clean-texi
-	rm -f DOC stmp-html $(FORMATTED) $(IMAGES)
+	rm -f doc-cache stmp-html $(FORMATTED) $(IMAGES)
 	rm -rf HTML
 .PHONY: maintainer-clean
 

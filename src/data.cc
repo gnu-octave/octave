@@ -2435,6 +2435,7 @@ DEFUN (size_equal, args, ,
 @deftypefn {Built-in Function} {} size_equal (@var{a}, @var{b}, @dots{})\n\
 Return true if the dimensions of all arguments agree.\n\
 Trailing singleton dimensions are ignored.\n\
+Called with a single argument, size_equal returns true.\n\
 @seealso{size, numel}\n\
 @end deftypefn")
 {
@@ -2442,7 +2443,7 @@ Trailing singleton dimensions are ignored.\n\
 
   int nargin = args.length ();
 
-  if (nargin >= 2)
+  if (nargin >= 1)
     {
       retval = true;
 

@@ -1,3 +1,7 @@
+2009-03-10  Jaroslav Hajek  <highegg@gmail.com>
+
+	* data.cc (Fsize_equal): Allow single argument call.
+
 2009-03-09  Benjamin Lindner  <lindnerb@users.sourceforge.net>
 
 	* ls-ascii-helper.h, ls-ascii-helper.cc: New files.

@@ -791,16 +791,9 @@ Force Octave to assume the file is in Octave's text format.\n\
 	{
 	  i++;
 
-	  std::ios::openmode mode = std::ios::in;
-
-	  if (format == LS_BINARY
-#ifdef HAVE_HDF5
-	      || format == LS_HDF5
-#endif
-	      || format == LS_MAT_BINARY
-	      || format == LS_MAT5_BINARY
-	      || format == LS_MAT7_BINARY)
-	    mode |= std::ios::binary;
+	  // Always open in binary mode and handle various
+	  // line-endings explicitly.
+	  std::ios::openmode mode = std::ios::in | std::ios::binary;
 
 #ifdef HAVE_ZLIB
 	  if (use_zlib)

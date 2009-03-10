@@ -39,6 +39,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "pr-output.h"
 
 #include "byte-swap.h"
+#include "ls-ascii-helper.h"
 #include "ls-hdf5.h"
 #include "ls-utils.h"
 
@@ -326,14 +327,7 @@ skip_comments (std::istream& is)
 	break;
     }
 
-  for (;;)
-    {
-      if (is && (c == '%' || c == '#'))
-	while (is.get (c) && c != '\n')
-	  ; // Skip to beginning of next line, ignoring everything.
-      else
-	break;
-    }
+  skip_until_newline (is, false);
 }
 
 bool 

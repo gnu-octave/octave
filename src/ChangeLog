@@ -1,3 +1,16 @@
+2009-03-09  Benjamin Lindner  <lindnerb@users.sourceforge.net>
+
+	* ls-ascii-helper.h, ls-ascii-helper.cc: New files.
+	* Makefile.in: Add them to the appropriate lists.
+	* load-save.cc (Fload): Open all files in binary mode.
+	* ov-range.cc (load_ascii): Explicitly handle CR and CRLF line endings.
+	* ov-fcn-handle.cc (load_ascii): Likewise.
+	* ov-fcn-inline.cc (load_ascii): Likewise.
+	* ov-str-mat.cc (load_ascii): Likewise.
+	* ls-mat-ascii.cc (get_mat_data_input_line): Likewise.
+	* ls-oct-ascii.cc (extract_keyword, read_ascii_data): Likewise.
+	* ls-oct-ascii.h (extract_keyword): Likewise.
+	
 2009-03-09  John W. Eaton  <jwe@octave.org>
 
 	* graphics.h.in (OCTAVE_DEFAULT_FONTNAME): New macro, defaults to "*".

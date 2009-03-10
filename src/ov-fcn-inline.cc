@@ -48,6 +48,7 @@ Open Source Initiative (www.opensource.org)
 #include "toplev.h"
 
 #include "byte-swap.h"
+#include "ls-ascii-helper.h"
 #include "ls-oct-ascii.h"
 #include "ls-hdf5.h"
 #include "ls-utils.h"
@@ -162,29 +163,19 @@ octave_fcn_inline::load_ascii (std::istream& is)
       if (nm == "0")
 	nm = "";
 
-      char c;
-      std::ostringstream buf;
+      skip_preceeding_newline (is);
 
-      // Skip preceeding newline(s)
-      while (is.get (c) && c == '\n')
-	/* do nothing */;
+      std::string buf;
 
       if (is)
 	{
-	  buf << c;
 
-	  // Get a line of text whitespace characters included, leaving
-	  // newline in the stream
-	  while (is.peek () != '\n')
-	    {
-	      is.get (c);
-	      if (! is)
-		break;
-	      buf << c;
-	    }
+	  // Get a line of text whitespace characters included,
+	  // leaving newline in the stream.
+	  buf = read_until_newline (is, true);
 	}
 
-      iftext = buf.str ();
+      iftext = buf;
 
       octave_fcn_inline tmp (iftext, ifargs, nm);
       fcn = tmp.fcn;

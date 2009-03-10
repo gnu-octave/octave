@@ -36,11 +36,12 @@ along with Octave; see the file COPYING.  If not, see
 #include "mx-base.h"
 #include "oct-locbuf.h"
 
-#include "defun.h"
 #include "byte-swap.h"
+#include "defun.h"
 #include "gripes.h"
-#include "ls-oct-ascii.h"
+#include "ls-ascii-helper.h"
 #include "ls-hdf5.h"
+#include "ls-oct-ascii.h"
 #include "ls-utils.h"
 #include "oct-obj.h"
 #include "oct-stream.h"
@@ -316,9 +317,7 @@ octave_char_matrix_str::load_ascii (std::istream& is)
 		    {
 		      char *ftmp = tmp.fortran_vec ();
 
-		      // Skip the return line
-		      if (! is.read (ftmp, 1))
-			return false;
+		      skip_preceeding_newline (is);
 
 		      if (! is.read (ftmp, dv.numel ()) || !is)
 			{

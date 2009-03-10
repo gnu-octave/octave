@@ -51,6 +51,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "gripes.h"
 #include "lex.h"
 #include "load-save.h"
+#include "ls-ascii-helper.h"
+#include "ls-mat-ascii.h"
 #include "oct-obj.h"
 #include "oct-map.h"
 #include "ov-cell.h"
@@ -62,8 +64,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "variables.h"
 #include "version.h"
 #include "dMatrix.h"
-
-#include "ls-mat-ascii.h"
 
 static std::string
 get_mat_data_input_line (std::istream& is)
@@ -80,15 +80,14 @@ get_mat_data_input_line (std::istream& is)
       while (is.get (c))
 	{
 	  if (c == '\n' || c == '\r')
-	    break;
+	    {
+	      skip_until_newline (is, false);
+	      break;
+	    }
 
 	  if (c == '%' || c == '#')
 	    {
-	      // skip to end of line
-	      while (is.get (c))
-		if (c == '\n' || c == '\r')
-		  break;
-
+	      skip_until_newline (is, false);
 	      break;
 	    }
 

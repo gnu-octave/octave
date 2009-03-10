@@ -51,6 +51,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "gripes.h"
 #include "load-save.h"
+#include "ls-ascii-helper.h"
+#include "ls-oct-ascii.h"
 #include "oct-obj.h"
 #include "oct-map.h"
 #include "ov-cell.h"
@@ -61,8 +63,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "variables.h"
 #include "version.h"
 #include "dMatrix.h"
-
-#include "ls-oct-ascii.h"
 
 // The number of decimal digits to use when writing ascii data.
 static int Vsave_precision = 16;
@@ -123,10 +123,7 @@ extract_keyword (std::istream& is, const char *keyword, const bool next_only)
 	  else if (next_only)
 	    break;
 	  else
-	    {
-	      while (is.get (c) && c != '\n' && c != '\r')
-		; // Skip to end of line.
-	    }
+	    skip_until_newline (is, false);
 	}
     }
 

@@ -123,7 +123,7 @@ INCLUDES := Cell.h base-list.h builtins.h c-file-ptr-stream.h \
 	comment-list.h debug.h defun-dld.h defun-int.h defun.h \
 	dirfns.h display.h dynamic-ld.h error.h file-io.h gl-render.h \
 	gripes.h help.h input.h lex.h load-path.h load-save.h ls-hdf5.h \
-	ls-mat-ascii.h ls-mat4.h ls-mat5.h ls-oct-ascii.h \
+	ls-mat-ascii.h ls-mat4.h ls-mat5.h ls-oct-ascii.h ls-ascii-helper.h \
 	ls-oct-binary.h ls-utils.h mex.h mexproto.h oct-errno.h \
 	oct-fstrm.h oct-hdf5.h oct-hist.h oct-iostrm.h oct-map.h oct-obj.h \
 	oct-prcstrm.h oct-procbuf.h oct-stdstrm.h oct-stream.h \
@@ -217,9 +217,10 @@ PT_SRC := pt.cc pt-arg-list.cc pt-assign.cc pt-bp.cc pt-binop.cc \
 
 DIST_SRC := Cell.cc bitfcns.cc c-file-ptr-stream.cc comment-list.cc \
 	cutils.c data.cc debug.cc defaults.cc defun.cc dirfns.cc \
-	display.cc dynamic-ld.cc error.cc file-io.cc gl-render.cc graphics.cc \
-	gripes.cc help.cc input.cc lex.l load-path.cc load-save.cc \
-	ls-hdf5.cc ls-mat-ascii.cc ls-mat4.cc ls-mat5.cc ls-oct-ascii.cc \
+	display.cc dynamic-ld.cc error.cc file-io.cc gl-render.cc \
+	graphics.cc gripes.cc help.cc input.cc lex.l load-path.cc \
+	load-save.cc ls-hdf5.cc ls-mat-ascii.cc ls-mat4.cc \
+	ls-mat5.cc ls-oct-ascii.cc ls-ascii-helper.cc \
 	ls-oct-binary.cc ls-utils.cc main.c mappers.cc matherr.c \
 	mex.cc oct-fstrm.cc oct-hist.cc oct-iostrm.cc oct-map.cc \
 	oct-obj.cc oct-prcstrm.cc oct-procbuf.cc oct-stream.cc \

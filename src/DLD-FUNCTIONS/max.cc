@@ -908,15 +908,18 @@ DEFUN_DLD (cummin, args, nargout,
 @cindex Utility Functions\n\
 Return the cumulative minimum values. That means, the call\n\
 @example\n\
-  [@var{w}, @var{iw}] = cummin (@var{x}, @var{dim})\n\
+  [w, iw] = cummin (x, dim)\n\
 @end example\n\
 \n\
 @noindent\n\
 is equivalent to the following code:\n\
 @example\n\
+  colons(1:ndims (x)) = @{':'@};\n\
   for i = 1:size (x, dim)\n\
-    [@var{w}(:,@dots{},i,:,@dots{}), @var{iw}(:,@dots{},i,:,@dots{})] =\
- min(@var{x}(:,@dots{},1:i,:,@dots{}), @var{dim});\n\
+    idxw = idxx = colons;\n\
+    idxw@{i@} = i; idxx@{i@} = 1:i;\n\
+    [w(idxw@{:@}), iw(idxw@{:@})] =\
+ min(x(idxx@{:@}), dim);\n\
   endfor\n\
 @end example\n\
 \n\
@@ -936,15 +939,18 @@ DEFUN_DLD (cummax, args, nargout,
 @cindex Utility Functions\n\
 Return the cumulative maximum values. That means, the call\n\
 @example\n\
-  [@var{w}, @var{iw}] = cummax (@var{x}, @var{dim})\n\
+  [w, iw] = cummax (x, dim)\n\
 @end example\n\
 \n\
 @noindent\n\
 is equivalent to the following code:\n\
 @example\n\
+  colons(1:ndims (x)) = @{':'@};\n\
   for i = 1:size (x, dim)\n\
-    [@var{w}(:,@dots{},i,:,@dots{}), @var{iw}(:,@dots{},i,:,@dots{})] =\
- max(@var{x}(:,@dots{},1:i,:,@dots{}), @var{dim});\n\
+    idxw = idxx = colons;\n\
+    idxw@{i@} = i; idxx@{i@} = 1:i;\n\
+    [w(idxw@{:@}), iw(idxw@{:@})] =\
+ max(x(idxx@{:@}), dim);\n\
   endfor\n\
 @end example\n\
 \n\

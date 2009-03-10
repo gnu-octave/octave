@@ -76,6 +76,8 @@
 %! sP = sparse (P);
 %! assert (full (sP), full (P));
 %! assert (size (find (sP), 1), n);
+%! [I, J, V] = find (sP);
+%! assert (all (V == 1));
 
 ########################################
 ## Diagonal matrices

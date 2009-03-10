@@ -23,7 +23,7 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_fcn_inline_h)
 #define octave_fcn_inline_h 1
 
-#include <iostream>
+#include <iosfwd>
 #include <string>
 
 #include "oct-alloc.h"

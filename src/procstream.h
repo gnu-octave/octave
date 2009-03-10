@@ -24,7 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_procstream_h)
 #define octave_procstream_h 1
 
-#include <iostream>
+#include <iosfwd>
 #include <string>
 
 #ifdef HAVE_SYS_TYPES_H

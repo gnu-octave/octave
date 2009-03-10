@@ -29,8 +29,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <cassert>
 #include <cstddef>
 
-#include <iostream>
 #include <algorithm>
+#include <iosfwd>
 
 #include "dim-vector.h"
 #include "idx-vector.h"

@@ -24,8 +24,9 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_c_file_ptr_stream_h)
 #define octave_c_file_ptr_stream_h 1
 
-#include <iostream>
 #include <cstdio>
+
+#include <iosfwd>
 
 class
 c_file_ptr_buf : public std::streambuf

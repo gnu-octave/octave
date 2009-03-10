@@ -25,7 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_QR_h)
 #define octave_QR_h 1
 
-#include <iostream>
+#include <iosfwd>
 
 #include "dMatrix.h"
 #include "dColVector.h"

@@ -24,7 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_tree_mat_h)
 #define octave_tree_mat_h 1
 
-#include <iostream>
+#include <iosfwd>
 
 class octave_value;
 class octave_value_list;

@@ -25,7 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_FloatAEPBALANCE_h)
 #define octave_FloatAEPBALANCE_h 1
 
-#include <iostream>
+#include <iosfwd>
 #include <string>
 
 #include "base-aepbal.h"

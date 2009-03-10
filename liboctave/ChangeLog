@@ -1,3 +1,17 @@
+2009-03-10  John W. Eaton  <jwe@octave.org>
+
+	* Array.h, ArrayN.h, Bounds.h, CmplxAEPBAL.h, CmplxCHOL.h,
+	CmplxGEPBAL.h, CmplxHESS.h, CmplxQR.h, CmplxQRP.h, CmplxSCHUR.h,
+	CmplxSVD.h, CollocWt.h, EIG.h, FEGrid.h, LinConst.h, Range.h,
+	Sparse.h, SparseCmplxQR.h, SparseQR.h, dbleAEPBAL.h, dbleCHOL.h,
+	dbleGEPBAL.h, dbleHESS.h, dbleQR.h, dbleQRP.h, dbleSCHUR.h,
+	dbleSVD.h, dim-vector.h, fCmplxAEPBAL.h, fCmplxCHOL.h,
+	fCmplxGEPBAL.h, fCmplxHESS.h, fCmplxQR.h, fCmplxQRP.h,
+	fCmplxSCHUR.h, fCmplxSVD.h, fEIG.h, floatAEPBAL.h, floatCHOL.h,
+	floatGEPBAL.h, floatHESS.h, floatQR.h, floatQRP.h, floatSCHUR.h,
+	floatSVD.h, idx-vector.h, lo-utils.h, oct-inttypes.h,
+	oct-spparms.h, str-vec.h: Include <iosfwd> instead of <iosstream>.
+
 2009-03-10  Jaroslav Hajek  <highegg@gmail.com>
 
 	* mx-inlines.cc (OP_CUMMINMAX_FCN2): r -> r0 where appropriate.

@@ -25,7 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_CHOL_h)
 #define octave_CHOL_h 1
 
-#include <iostream>
+#include <iosfwd>
 
 #include "dMatrix.h"
 #include "dColVector.h"

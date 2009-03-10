@@ -29,7 +29,7 @@ class string_vector;
 class octave_value;
 class octave_value_list;
 
-#include <iostream>
+#include <iosfwd>
 #include <sstream>
 #include <string>
 #include <map>

@@ -27,7 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <cassert>
 #include <cstddef>
 
-#include <iostream>
+#include <iosfwd>
 
 #include "str-vec.h"
 #include "dColVector.h"

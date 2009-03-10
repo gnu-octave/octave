@@ -26,7 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <cstdlib>
 
-#include <iostream>
+#include <iosfwd>
 #include <string>
 
 #include "lo-mappers.h"

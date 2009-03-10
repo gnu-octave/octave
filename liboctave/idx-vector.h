@@ -25,9 +25,10 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_idx_vector_h)
 #define octave_idx_vector_h 1
 
-#include <iostream>
-#include <algorithm>
 #include <cassert>
+
+#include <algorithm>
+#include <iosfwd>
 
 #include "dim-vector.h"
 #include "oct-inttypes.h"

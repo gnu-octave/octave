@@ -1,3 +1,21 @@
+2009-03-10  John W. Eaton  <jwe@octave.org>
+
+	* c-file-ptr-stream.cc, dynamic-ld.cc, error.cc, lex.l, pager.cc,
+	zfstream.cc: Include <iostream>.
+	* zfstream.h: Include <iosfwd> instead of <istream> and <ostream>.
+	* c-file-ptr-stream.h, help.h, load-path.h, load-save.h,
+	ls-ascii-helper.h, oct-iostrm.h, oct-stream.h, ov-base-diag.h,
+	ov-base-int.h, ov-base-mat.h, ov-base-scalar.h, ov-base-sparse.h,
+	ov-base.h, ov-bool-mat.h, ov-bool-sparse.h, ov-bool.h, ov-cell.h,
+	ov-ch-mat.h, ov-class.h, ov-colon.h, ov-complex.h, ov-cs-list.h,
+	ov-cx-mat.h, ov-cx-sparse.h, ov-fcn-handle.h, ov-fcn-inline.h,
+	ov-float.h, ov-flt-complex.h, ov-flt-cx-mat.h, ov-flt-re-mat.h,
+	ov-intx.h, ov-list.h, ov-range.h, ov-re-mat.h, ov-re-sparse.h,
+	ov-scalar.h, ov-str-mat.h, ov-struct.h, ov.h, pager.h,
+	pr-output.h, procstream.h, pt-assign.h, pt-cell.h, pt-const.h,
+	pt-fcn-handle.h, pt-id.h, pt-mat.h, pt.h, utils.h:
+	Include <iosfwd> instead of <iosstream>.
+
 2009-03-10  Jaroslav Hajek  <highegg@gmail.com>
 
 	* data.cc (Fsize_equal): Allow single argument call.

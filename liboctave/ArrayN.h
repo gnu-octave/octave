@@ -25,11 +25,11 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_ArrayN_h)
 #define octave_ArrayN_h 1
 
-#include <iostream>
-
 #include <cassert>
 #include <climits>
 #include <cstdlib>
+
+#include <iosfwd>
 
 #include "Array.h"
 #include "Array2.h"

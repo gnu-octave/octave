@@ -24,7 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_SVD_h)
 #define octave_SVD_h 1
 
-#include <iostream>
+#include <iosfwd>
 
 #include "dDiagMatrix.h"
 #include "dMatrix.h"

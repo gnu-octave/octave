@@ -28,6 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <cstdarg>
 #include <cstring>
 
+#include <iostream>
 #include <sstream>
 #include <string>
 

@@ -26,6 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <fstream>
+#include <iostream>
 #include <string>
 
 #include "cmd-edit.h"

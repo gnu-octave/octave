@@ -23,7 +23,7 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (sparse_QR_h)
 #define sparse_QR_h 1
 
-#include <iostream>
+#include <iosfwd>
 
 #include "dMatrix.h"
 #include "CMatrix.h"

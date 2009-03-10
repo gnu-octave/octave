@@ -40,6 +40,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <cctype>
 #include <cstring>
 
+#include <iostream>
 #include <set>
 #include <sstream>
 #include <string>

@@ -25,7 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_ComplexCHOL_h)
 #define octave_ComplexCHOL_h 1
 
-#include <iostream>
+#include <iosfwd>
 
 #include "CMatrix.h"
 #include "CColVector.h"

@@ -24,6 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_dim_vector_h 1
 
 #include <cassert>
+
 #include <sstream>
 #include <string>
 

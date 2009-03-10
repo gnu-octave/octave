@@ -26,7 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <string>
 
-#include <iostream>
+#include <iosfwd>
 
 class octave_function;
 class tree_walker;

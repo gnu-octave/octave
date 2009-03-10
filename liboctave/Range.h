@@ -24,7 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_Range_h)
 #define octave_Range_h 1
 
-#include <iostream>
+#include <iosfwd>
 
 #include "dMatrix.h"
 #include "oct-sort.h"

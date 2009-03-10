@@ -28,7 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <cstdlib>
 
 #include <limits>
-#include <iostream>
+#include <iosfwd>
 
 #include "lo-traits.h"
 #include "lo-math.h"

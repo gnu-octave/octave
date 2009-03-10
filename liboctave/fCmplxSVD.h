@@ -24,7 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_FloatComplexSVD_h)
 #define octave_FloatComplexSVD_h 1
 
-#include <iostream>
+#include <iosfwd>
 
 #include "fDiagMatrix.h"
 #include "fCMatrix.h"

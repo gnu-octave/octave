@@ -24,7 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_octave_iostream_h)
 #define octave_octave_iostream_h 1
 
-#include <iostream>
+#include <iosfwd>
 
 #include "oct-stream.h"
 

@@ -27,7 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_FloatComplexQR_h)
 #define octave_FloatComplexQR_h 1
 
-#include <iostream>
+#include <iosfwd>
 
 #include "fCMatrix.h"
 #include "fCColVector.h"

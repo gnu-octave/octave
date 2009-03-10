@@ -24,7 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_Bounds_h)
 #define octave_Bounds_h 1
 
-#include <iostream>
+#include <iosfwd>
 
 #include "dColVector.h"
 

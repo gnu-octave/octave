@@ -24,7 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_tree_const_h)
 #define octave_tree_const_h 1
 
-#include <iostream>
+#include <iosfwd>
 #include <string>
 
 #include "oct-alloc.h"

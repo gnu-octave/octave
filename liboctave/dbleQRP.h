@@ -24,7 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_QRP_h)
 #define octave_QRP_h 1
 
-#include <iostream>
+#include <iosfwd>
 
 #include "dbleQR.h"
 #include "PermMatrix.h"

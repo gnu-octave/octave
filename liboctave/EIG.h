@@ -24,7 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_EIG_h)
 #define octave_EIG_h 1
 
-#include <iostream>
+#include <iosfwd>
 
 #include "dMatrix.h"
 #include "CMatrix.h"

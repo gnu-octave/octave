@@ -35,8 +35,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #ifdef HAVE_ZLIB
 
-#include <istream>  // not iostream, since we don't need cin/cout
-#include <ostream>
+#include <iosfwd>
+
 #include "zlib.h"
 
 /*****************************************************************************/

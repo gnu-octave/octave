@@ -24,7 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_LinConst_h)
 #define octave_LinConst_h 1
 
-#include <iostream>
+#include <iosfwd>
 
 class ColumnVector;
 

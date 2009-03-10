@@ -24,7 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_FloatHESS_h)
 #define octave_FloatHESS_h 1
 
-#include <iostream>
+#include <iosfwd>
 
 #include "fMatrix.h"
 

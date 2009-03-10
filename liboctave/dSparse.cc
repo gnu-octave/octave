@@ -169,13 +169,16 @@ SparseMatrix::SparseMatrix (const PermMatrix& a)
   if (a.is_row_perm ())
     {
       for (octave_idx_type i = 0; i < n; i++)
-        ridx (i) = pv (i);
+        ridx (pv (i)) = i;
     }
   else
     {
       for (octave_idx_type i = 0; i < n; i++)
-        ridx (pv (i)) = i;
+        ridx (i) = pv (i);
     }
+
+  for (octave_idx_type i = 0; i < n; i++)
+    data (i) = 1.0;
 }
 
 bool

@@ -69,6 +69,14 @@
 %! A(3, 1) = Inf;
 %! assert (Pr * A * Pc, A(pr, pc));
 
+## conversion to sparse form
+%!test
+%! n = 7;
+%! P = eye (n) (:, randperm (n));
+%! sP = sparse (P);
+%! assert (full (sP), full (P));
+%! assert (size (find (sP), 1), n);
+
 ########################################
 ## Diagonal matrices
 

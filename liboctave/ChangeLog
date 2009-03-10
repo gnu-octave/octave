@@ -1,3 +1,9 @@
+2009-03-10  Jason Riedy  <jason@acm.org>
+
+	* dSparse.cc (SparseMatrix::SparseMatrix (const PermMatrix&)):
+	Fix conversion to add values to the matrix as well as getting
+	structure correct.
+
 2009-03-10  John W. Eaton  <jwe@octave.org>
 
 	* Array.h, ArrayN.h, Bounds.h, CmplxAEPBAL.h, CmplxCHOL.h,

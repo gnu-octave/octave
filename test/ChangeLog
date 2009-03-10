@@ -1,3 +1,7 @@
+2009-03-10  Jason Riedy  <jason@acm.org>
+
+	* test_diag_perm.m: Add a test for conversion to sparse form.
+
 2009-02-25  John W. Eaton  <jwe@octave.org>
 
 	* build_sparse_tests.sh: Note that saving sparse matrices to MAT

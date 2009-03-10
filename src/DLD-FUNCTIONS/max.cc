@@ -862,6 +862,7 @@ maximum value(s). Thus,\n\
       break; \
     } \
  \
+  int dim; \
   dim_vector dv = arg1.dims (); \
   if (error_state) \
     { \
@@ -869,11 +870,23 @@ maximum value(s). Thus,\n\
       return retval; \
     } \
  \
-  int dim = 0; \
-  while ((dim < dv.length ()) && (dv (dim) <= 1)) \
-    dim++; \
-  if (dim == dv.length ()) \
-    dim = 0; \
+  if (nargin == 2) \
+    { \
+      dim = arg2.nint_value () - 1;  \
+      if (dim < 0 || dim >= dv.length ()) \
+        { \
+	  error ("%s: invalid dimension", #FCN); \
+	  return retval; \
+	} \
+    } \
+  else \
+    { \
+      dim = 0; \
+      while ((dim < dv.length ()) && (dv (dim) <= 1)) \
+	dim++; \
+      if (dim == dv.length ()) \
+	dim = 0; \
+    } \
  \
   if (arg1.is_integer_type ()) \
     { \
@@ -914,12 +927,12 @@ Return the cumulative minimum values. That means, the call\n\
 @noindent\n\
 is equivalent to the following code:\n\
 @example\n\
-  colons(1:ndims (x)) = @{':'@};\n\
+  w = iw = zeros (size (x));\n\
+  idxw = idxx = repmat (@{':'@}, 1, ndims (x));\n\
   for i = 1:size (x, dim)\n\
-    idxw = idxx = colons;\n\
-    idxw@{i@} = i; idxx@{i@} = 1:i;\n\
+    idxw@{dim@} = i; idxx@{dim@} = 1:i;\n\
     [w(idxw@{:@}), iw(idxw@{:@})] =\
- min(x(idxx@{:@}), dim);\n\
+ min(x(idxx@{:@}), [], dim);\n\
   endfor\n\
 @end example\n\
 \n\
@@ -945,12 +958,12 @@ Return the cumulative maximum values. That means, the call\n\
 @noindent\n\
 is equivalent to the following code:\n\
 @example\n\
-  colons(1:ndims (x)) = @{':'@};\n\
+  w = iw = zeros (size (x));\n\
+  idxw = idxx = repmat (@{':'@}, 1, ndims (x));\n\
   for i = 1:size (x, dim)\n\
-    idxw = idxx = colons;\n\
-    idxw@{i@} = i; idxx@{i@} = 1:i;\n\
+    idxw@{dim@} = i; idxx@{dim@} = 1:i;\n\
     [w(idxw@{:@}), iw(idxw@{:@})] =\
- max(x(idxx@{:@}), dim);\n\
+ max(x(idxx@{:@}), [], dim);\n\
   endfor\n\
 @end example\n\
 \n\

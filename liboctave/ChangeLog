@@ -1,3 +1,7 @@
+2009-03-10  Jaroslav Hajek  <highegg@gmail.com>
+
+	* mx-inlines.cc (OP_CUMMINMAX_FCN2): r -> r0 where appropriate.
+
 2009-03-08  Jaroslav Hajek  <highegg@gmail.com>
 
 	* idx-vector.h (idx_vector::bloop): loop --> bloop.

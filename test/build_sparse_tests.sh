@@ -665,8 +665,8 @@ gen_square_tests() {
 %! assert(j-i>=0);
 
 %!testif HAVE_UMFPACK ;# LU with vector permutations
-%! [L,U,P] = lu(bs,'vector');
-%! assert(L(P,:)*U,bs,1e-10);
+%! [L,U,P,Q] = lu(bs,'vector');
+%! assert(L(P,:)*U(:,Q),bs,1e-10);
 %! # triangularity
 %! [i,j,v]=find(L);
 %! assert(i-j>=0);
@@ -745,6 +745,48 @@ gen_rectangular_tests() {
     # gen_divop_tests # Disable rectangular \ and / for now
     gen_matrixdiag_tests
     gen_matrixreshape_tests
+    cat >>$TESTS <<EOF
+%!testif HAVE_UMFPACK ;# permuted LU
+%! [L,U] = lu(bs);
+%! assert(L*U,bs,1e-10);
+
+%!testif HAVE_UMFPACK ;# simple LU + row permutations
+%! [L,U,P] = lu(bs);
+%! assert(P'*L*U,bs,1e-10);
+%! # triangularity
+%! [i,j,v]=find(L);
+%! assert(i-j>=0);
+%! [i,j,v]=find(U);
+%! assert(j-i>=0);
+
+%!testif HAVE_UMFPACK ;# simple LU + row/col permutations
+%! [L,U,P,Q] = lu(bs);
+%! assert(P'*L*U*Q',bs,1e-10);
+%! # triangularity
+%! [i,j,v]=find(L);
+%! assert(i-j>=0);
+%! [i,j,v]=find(U);
+%! assert(j-i>=0);
+
+%!testif HAVE_UMFPACK ;# LU with vector permutations
+%! [L,U,P,Q] = lu(bs,'vector');
+%! assert(L(P,:)*U(:,Q),bs,1e-10);
+%! # triangularity
+%! [i,j,v]=find(L);
+%! assert(i-j>=0);
+%! [i,j,v]=find(U);
+%! assert(j-i>=0);
+
+%!testif HAVE_UMFPACK ;# LU with scaling
+%! [L,U,P,Q,R] = lu(bs);
+%! assert(R*P'*L*U*Q',bs,1e-10);
+%! # triangularity
+%! [i,j,v]=find(L);
+%! assert(i-j>=0);
+%! [i,j,v]=find(U);
+%! assert(j-i>=0);
+
+EOF
 }
 
 

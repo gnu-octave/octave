@@ -121,11 +121,11 @@ ColumnVector
 sparse_base_lu <lu_type, lu_elt_type, p_type, p_elt_type> :: Pc_vec (void) const
 {
 
-  octave_idx_type nr = Lfact.rows ();
+  octave_idx_type nc = Ufact.cols ();
 
-  ColumnVector Pout (nr);
+  ColumnVector Pout (nc);
 
-  for (octave_idx_type i = 0; i < nr; i++)
+  for (octave_idx_type i = 0; i < nc; i++)
     Pout.xelem (i) = static_cast<double> (Q(i) + 1);
 
   return Pout;

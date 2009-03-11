@@ -79,7 +79,15 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
       endif
     endif
 
+    ## Reset all labels, axis-labels, tick-labels, and title
+    ## FIXME - We should have an function to initialize the axis.
+    ##         Presently, this is dispersed in this function.
     fputs (plot_stream, "unset label;\n");
+    fputs (plot_stream, "unset xtics;\n");
+    fputs (plot_stream, "unset ytics;\n");
+    fputs (plot_stream, "unset ztics;\n");
+    fputs (plot_stream, "unset x2tics;\n");
+    fputs (plot_stream, "unset x2tics;\n");
 
     if (! isempty (axis_obj.title))
       t = get (axis_obj.title);
@@ -1514,7 +1522,7 @@ function do_tics_1 (ticmode, tics, mtics, labelmode, labels, color, ax,
   if (strcmpi (ticmode, "manual") || strcmpi (labelmode, "manual"))
     if (isempty (tics))
       fprintf (plot_stream, "unset %stics;\nunset m%stics;\n", ax, ax);
-    elseif (strcmpi (labelmode, "manual") && ! isempty (labels))
+    elseif (strcmpi (labelmode, "manual"))
       if (ischar (labels))
 	labels = cellstr (labels);
       endif

@@ -1,3 +1,15 @@
+2009-03-11  Ben Abbott  <bpabbott@mac.com>
+
+	* plot/__go_draw_axes__.m: Unset the {x,y,z}ticks when initializing
+	each axis. Set ticklabels when the ticklabels are empty and when
+	ticklabelmode=="manual".
+
+2009-03-11  Marco Caliari  <marco.caliari@univr.it>
+
+	* plot/axis.m: Implement "square" and "equal" options, conditional
+	on how octave positions gnuplot axes. Place the "title()" and
+	"axis()" commands after "plot()" in the demos.
+
 2009-03-09  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/__go_draw_axes__.m (do_tics): Fix typo (xaxislocation ->

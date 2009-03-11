@@ -156,10 +156,24 @@ function curr_axis = __axis__ (ca, ax, varargin)
 
       ## aspect ratio
     elseif (strcmpi (ax, "image"))
-      set (ca, "dataaspectratio", [1, 1, 1]);
+      __axis__ (ca, "equal")
       __do_tight_option__ (ca);
-    elseif (strcmpi (ax, "equal") || strcmpi (ax, "square"))
-      set (ca, "dataaspectratio", [1, 1, 1]);
+    elseif (strcmpi (ax, "square"))
+      if (__gnuplot_has_feature__ ("screen_coordinates_for_{lrtb}margin"))
+        set (ca, "dataaspectratio", [1, 1, 1]);
+      else
+        x = xlim;
+        y = ylim;
+        set (ca, "dataaspectratio", [(y(2)-y(1)), (x(2)-x(1)), 1]);
+      endif
+    elseif  (strcmp (ax, "equal"))
+      if (__gnuplot_has_feature__ ("screen_coordinates_for_{lrtb}margin"))
+        x = xlim;
+        y = ylim;
+        set (ca, "dataaspectratio", [(x(2)-x(1)), (y(2)-y(1)), 1]);
+      else
+        set (ca, "dataaspectratio", [1, 1, 1]);
+      endif
     elseif (strcmpi (ax, "normal"))
       set (ca, "dataaspectratiomode", "auto");
 
@@ -184,12 +198,13 @@ function curr_axis = __axis__ (ca, ax, varargin)
     elseif (strcmpi (ax, "tight"))
       ## sets the axis limits to the min and max of all data.
       __do_tight_option__ (ca);
-
       ## tic marks
     elseif (strcmpi (ax, "on") || strcmpi (ax, "tic"))
       set (ca, "xtickmode", "auto", "ytickmode", "auto", "ztickmode", "auto");
-      set (ca, "xticklabelmode", "auto", "yticklabelmode", "auto",
+      if (strcmpi (ax, "on"))
+        set (ca, "xticklabelmode", "auto", "yticklabelmode", "auto",
 	   "zticklabelmode", "auto");
+      endif
       set (ca, "visible", "on");
     elseif (strcmpi (ax, "off"))
       set (ca, "xtick", [], "ytick", [], "ztick", []);
@@ -302,84 +317,129 @@ function __do_tight_option__ (ca)
 
 endfunction
 
-
 %!demo
 %! t=0:0.01:2*pi; x=sin(t);
 %!
-%! subplot(221);    title("normal plot");
+%! subplot(221);
 %! plot(t, x);
+%! title("normal plot");
 %!
-%! subplot(222);    title("square plot");
-%! axis("square");  plot(t, x);
+%! subplot(222);
+%! plot(t, x);
+%! title("square plot");
+%! axis("square");
 %!
-%! subplot(223);    title("equal plot");
-%! axis("equal");   plot(t, x);
+%! subplot(223);
+%! plot(t, x);
+%! title("equal plot");
+%! axis("equal");
 %! 
-%! subplot(224);    title("normal plot again");
-%! axis("normal");  plot(t, x);
+%! subplot(224);
+%! plot(t, x);
+%! title("normal plot again");
+%! axis("normal");
 
 %!demo
 %! t=0:0.01:2*pi; x=sin(t);
 %!
-%! subplot(121);   title("ij plot");
-%! axis("ij");     plot(t, x);
+%! subplot(121);
+%! plot(t, x);
+%! title("ij plot");
+%! axis("ij");
 %!
-%! subplot(122);   title("xy plot");
-%! axis("xy");     plot(t, x);
+%! subplot(122);
+%! plot(t, x);
+%! title("xy plot");
+%! axis("xy");
 
 %!demo
 %! t=0:0.01:2*pi; x=sin(t);
 %!
-%! subplot(331);   title("x tics & labels");
-%! axis("ticx");   plot(t, x);
+%! subplot(331);
+%! plot(t, x);
+%! title("x tics and labels");
+%! axis("ticx");
 %!
-%! subplot(332);   title("y tics & labels");
-%! axis("ticy");   plot(t, x);
+%! subplot(332);
+%! plot(t, x);
+%! title("y tics and labels");
+%! axis("ticy");
 %!
-%! subplot(334);     title("x & y tics, x labels");
-%! axis("labelx","tic");   plot(t, x);
+%! subplot(333);
+%! plot(t, x);
+%! title("axis off");
+%! axis("off");
 %!
-%! subplot(335);     title("x & y tics, y labels");
-%! axis("labely","tic");   plot(t, x);
+%! subplot(334);
+%! plot(t, x);
+%! title("x and y tics, x labels");
+%! axis("labelx","tic");
 %!
-%! subplot(337);     title("x tics, no labels");
-%! axis("nolabel","ticx");   plot(t, x);
+%! subplot(335);
+%! plot(t, x);
+%! title("x and y tics, y labels");
+%! axis("labely","tic");
 %!
-%! subplot(338);     title("y tics, no labels");
-%! axis("nolabel","ticy");   plot(t, x);
+%! subplot(336);
+%! plot(t, x);
+%! title("all tics but no labels");
+%! axis("nolabel","tic");
 %!
-%! subplot(333);     title("no tics or labels");
-%! axis("off");    plot(t, x);
+%! subplot(337);
+%! plot(t, x);
+%! title("x tics, no labels");
+%! axis("nolabel","ticx");
 %!
-%! subplot(336);     title("all tics but no labels");
-%! axis("nolabel","tic");    plot(t, x);
+%! subplot(338);
+%! plot(t, x);
+%! title("y tics, no labels");
+%! axis("nolabel","ticy");
 %!
-%! subplot(339);     title("all tics & labels");
-%! axis("on");       plot(t, x);
+%! subplot(339);
+%! plot(t, x);
+%! title("all tics and labels");
+%! axis("on");
 
 %!demo
 %! t=0:0.01:2*pi; x=sin(t);
 %!
-%! subplot(321);    title("axes at [0 3 0 1]")
-%! axis([0,3,0,1]); plot(t, x);
+%! subplot(321);
+%! plot(t, x);
+%! title("axes at [0 3 0 1]")
+%! axis([0,3,0,1]);
 %!
-%! subplot(322);    title("auto");
-%! axis("auto");    plot(t, x);
+%! subplot(322);
+%! plot(t, x);
+%! title("auto");
+%! axis("auto");
 %!
-%! subplot(323);    title("manual");
+%! subplot(323);
 %! plot(t, x, ";sine [0:2pi];"); hold on;
-%! axis("manual");
 %! plot(-3:3,-3:3, ";line (-3,-3)->(3,3);"); hold off;
+%! title("manual");
+%! axis("manual");
 %!
-%! subplot(324);    title("axes at [0 3 0 1], then autox");
-%! axis([0,3,0,1]); axis("autox");
+%! subplot(324);
 %! plot(t, x, ";sine [0:2pi];");
+%! title("axes at [0 3 0 1], then autox");
+%! axis([0,3,0,1]); axis("autox");
 %!
-%! subplot(325);    title("axes at [3 6 0 1], then autoy");
-%! axis([3,6,0,1]); axis("autoy");
+%! subplot(325);
 %! plot(t, x, ";sine [0:2p];");
+%! axis([3,6,0,1]); axis("autoy");
+%! title("axes at [3 6 0 1], then autoy");
 %!
-%! subplot(326);    title("tight");
-%! axis("tight");   plot(t, x);
-%! % The last plot should not have any whitespace outside the data
-%! % limits, but "tight" isn't implemented yet.
+%! subplot(326);
+%! plot(t, x);
+%! axis("tight");
+%! title("tight");
+
+%!demo
+%! clf
+%! axis image
+%! x=0:0.1:10;
+%! plot(x,sin(x))
+%! axis image
+%! title("image")
+
+

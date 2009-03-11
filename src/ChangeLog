@@ -1,3 +1,10 @@
+2009-03-10  Jason Riedy  <jason@acm.org>
+
+	* DLD-FUNCTIONS/find.cc (find_nonzero_elem_idx): New override
+	for find on PermMatrix.
+	(find): Add a branch testing arg.is_perm_matrix () and calling the
+	above override.
+
 2009-03-10  John W. Eaton  <jwe@octave.org>
 
 	* c-file-ptr-stream.cc, dynamic-ld.cc, error.cc, lex.l, pager.cc,

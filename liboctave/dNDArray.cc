@@ -87,6 +87,14 @@ NDArray::NDArray (const Array<octave_idx_type>& a, bool zero_based,
     }
 }
 
+NDArray::NDArray (const charNDArray& a)
+  : MArrayN<double> (a.dims ())
+{
+  octave_idx_type n = a.numel ();
+  for (octave_idx_type i = 0; i < n; i++)
+    xelem (i) = static_cast<unsigned char> (a(i));
+}
+
 #if defined (HAVE_FFTW3)
 
 ComplexNDArray

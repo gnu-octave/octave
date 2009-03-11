@@ -1,3 +1,30 @@
+2009-03-11  Jaroslav Hajek  <highegg@gmail.com>
+
+	* dNDArray.cc (NDArray::NDArray (const charNDArray&)): New
+	constructor.
+	* fNDArray.cc (FloatNDArray::FloatNDArray (const charNDArray&)):
+	Ditto.
+	* CNDArray.cc (ComplexNDArray::ComplexNDArray (const charNDArray&)):
+	Ditto.
+	* fCNDArray.cc (FloatComplexNDArray::FloatComplexNDArray 
+	(const charNDArray&)): Ditto.
+
+	* dNDArray.h (NDArray::NDArray (const charNDArray&)): Declare.
+	* fNDArray.h (FloatNDArray::FloatNDArray (const charNDArray&)):
+	Ditto.
+	* CNDArray.h (ComplexNDArray::ComplexNDArray (const charNDArray&)):
+	Ditto.
+	* fCNDArray.h (FloatComplexNDArray::FloatComplexNDArray 
+	(const charNDArray&)): Ditto.
+
+	* dMatrix.cc (Matrix::Matrix (const charMatrix&)): Cast to unsigned
+	chars.
+	* fMatrix.cc (FloatMatrix::FloatMatrix (const charMatrix&)): Likewise.
+	* CMatrix.cc (ComplexMatrix::ComplexMatrix (const charMatrix&)):
+	Likewise.
+	* fCMatrix.cc (FloatComplexMatrix::FloatComplexMatrix 
+	(const charMatrix&)): Likewise.
+
 2009-03-10  Jason Riedy  <jason@acm.org>
 
 	* sparse-base-lu.cc (Pc_vec): The column permutation should be

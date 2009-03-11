@@ -274,7 +274,7 @@ FloatMatrix::FloatMatrix (const charMatrix& a)
 {
   for (octave_idx_type i = 0; i < a.rows (); i++)
     for (octave_idx_type j = 0; j < a.cols (); j++)
-      elem (i, j) = a.elem (i, j);
+      elem (i, j) = static_cast<unsigned char> (a.elem (i, j));
 }
 
 bool

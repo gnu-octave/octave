@@ -64,7 +64,7 @@ octave_char_matrix::double_value (bool) const
       gripe_implicit_conversion ("Octave:array-as-scalar",
 				 "character matrix", "real scalar");
 
-      retval = matrix (0, 0);
+      retval = static_cast<unsigned char> (matrix (0, 0));
     }
   else
     gripe_invalid_conversion ("character matrix", "real scalar");
@@ -82,7 +82,7 @@ octave_char_matrix::float_value (bool) const
       gripe_implicit_conversion ("Octave:array-as-scalar",
 				 "character matrix", "real scalar");
 
-      retval = matrix (0, 0);
+      retval = static_cast<unsigned char> (matrix (0, 0));
     }
   else
     gripe_invalid_conversion ("character matrix", "real scalar");
@@ -102,7 +102,7 @@ octave_char_matrix::complex_value (bool) const
       gripe_implicit_conversion ("Octave:array-as-scalar",
 				 "character matrix", "complex scalar");
 
-      retval = matrix (0, 0);
+      retval = static_cast<unsigned char> (matrix (0, 0));
     }
   else
     gripe_invalid_conversion ("character matrix", "complex scalar");
@@ -122,7 +122,7 @@ octave_char_matrix::float_complex_value (bool) const
       gripe_implicit_conversion ("Octave:array-as-scalar",
 				 "character matrix", "complex scalar");
 
-      retval = matrix (0, 0);
+      retval = static_cast<unsigned char> (matrix (0, 0));
     }
   else
     gripe_invalid_conversion ("character matrix", "complex scalar");

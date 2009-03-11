@@ -52,6 +52,8 @@ public:
   template <class U>
   ComplexNDArray (const ArrayN<U>& a) : MArrayN<Complex> (a) { }
 
+  ComplexNDArray (const charNDArray&); 
+
   ComplexNDArray& operator = (const ComplexNDArray& a)
     {
       MArrayN<Complex>::operator = (a);

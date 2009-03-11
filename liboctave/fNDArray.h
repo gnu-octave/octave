@@ -57,6 +57,8 @@ public:
   template <class U>
   explicit FloatNDArray (const intNDArray<U>& a) : MArrayN<float> (a) { }
 
+  FloatNDArray (const charNDArray&); 
+
   FloatNDArray& operator = (const FloatNDArray& a)
     {
       MArrayN<float>::operator = (a);

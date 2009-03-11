@@ -52,6 +52,8 @@ public:
   template <class U>
   FloatComplexNDArray (const ArrayN<U>& a) : MArrayN<FloatComplex> (a) { }
 
+  FloatComplexNDArray (const charNDArray&); 
+
   FloatComplexNDArray& operator = (const FloatComplexNDArray& a)
     {
       MArrayN<FloatComplex>::operator = (a);

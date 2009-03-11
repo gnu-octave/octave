@@ -1,3 +1,9 @@
+2009-03-11  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-ch-mat.cc (octave_char_matrix::double_value, 
+	octave_char_matrix::float_value, octave_char_matrix::complex_value,
+	octave_char_matrix::float_complex_value): Cast to unsigned char.
+
 2009-03-10  Jason Riedy  <jason@acm.org>
 
 	* DLD-FUNCTIONS/find.cc (find_nonzero_elem_idx): New override

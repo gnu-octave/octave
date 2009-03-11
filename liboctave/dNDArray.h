@@ -60,6 +60,8 @@ public:
   template <class U>
   explicit NDArray (const intNDArray<U>& a) : MArrayN<double> (a) { }
 
+  NDArray (const charNDArray&); 
+
   NDArray& operator = (const NDArray& a)
     {
       MArrayN<double>::operator = (a);

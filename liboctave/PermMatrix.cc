@@ -118,6 +118,53 @@ PermMatrix::determinant (void) const
 }
 
 PermMatrix 
+PermMatrix::power (octave_idx_type m) const
+{
+  octave_idx_type n = rows ();
+  bool res_colp = _colp;
+  if (m < 0)
+    {
+      res_colp = ! res_colp;
+      m = -m;
+    }
+  else if (m == 0)
+    return PermMatrix (n);
+
+  const octave_idx_type *p = data ();
+  Array<octave_idx_type> res_pvec (n, -1);
+  octave_idx_type *q = res_pvec.fortran_vec ();
+
+  for (octave_idx_type ics = 0; ics < n; ics++)
+    {
+      if (q[ics] > 0)
+        continue;
+
+      // go forward m steps or until a cycle is found.
+      octave_idx_type ic, j;
+      for (j = 1, ic = p[ics]; j != m && ic != ics; j++, ic = p[ic]) ;
+      if (ic == ics)
+        {
+          // reduce power.
+          octave_idx_type mm = m % j;
+          // go forward mm steps.
+          for (j = 0, ic = ics; j != mm; j++, ic = p[ic]) ;
+        }
+
+      // now ic = p^m[ics]. Loop through the whole cycle.
+      octave_idx_type jcs = ics;
+      do
+        {
+          q[jcs] = ic;
+          jcs = p[jcs]; ic = p[ic];
+        }
+      while (jcs != ics);
+
+    }
+
+  return PermMatrix (res_pvec, res_colp, false);
+}
+
+PermMatrix 
 operator *(const PermMatrix& a, const PermMatrix& b)
 {
   const Array<octave_idx_type> ia = a.pvec (), ib = b.pvec ();

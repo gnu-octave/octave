@@ -38,6 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "dDiagMatrix.h"
 #include "fDiagMatrix.h"
 #include "dMatrix.h"
+#include "PermMatrix.h"
 #include "mx-cm-cdm.h"
 #include "oct-cmplx.h"
 #include "quit.h"
@@ -294,6 +295,18 @@ xpow (const DiagMatrix& a, double b)
     }
 
   return retval;
+}
+
+// -*- 5p -*-
+octave_value
+xpow (const PermMatrix& a, double b)
+{
+  octave_value retval;
+  int btmp = static_cast<int> (b);
+  if (btmp == b)
+    return a.power (btmp);
+  else
+    return xpow (Matrix (a), b);
 }
 
 // -*- 6 -*-
@@ -1574,6 +1587,18 @@ xpow (const FloatDiagMatrix& a, float b)
     }
 
   return retval;
+}
+
+// -*- 5p -*-
+octave_value
+xpow (const PermMatrix& a, float b)
+{
+  octave_value retval;
+  int btmp = static_cast<int> (b);
+  if (btmp == b)
+    return octave_value (a.power (btmp), true);
+  else
+    return xpow (FloatMatrix (a), b);
 }
 
 // -*- 6 -*-

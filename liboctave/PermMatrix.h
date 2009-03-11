@@ -97,6 +97,9 @@ public:
   // Determinant, i.e. the sign of permutation.
   octave_idx_type determinant (void) const;
 
+  // Efficient integer power of a permutation.
+  PermMatrix power (octave_idx_type n) const;
+
   bool is_col_perm (void) const { return _colp; }
   bool is_row_perm (void) const { return !_colp; }
 

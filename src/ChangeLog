@@ -1,4 +1,12 @@
 2009-03-11  Jaroslav Hajek  <highegg@gmail.com>
+	
+	* xpow.cc (xpow (const PermMatrix&, double), xpow (const PermMatrix&,
+	float)): New functions.
+	* xpow.h: Declare them.
+	* DLD-FUNCTIONS/op-pm-pm.cc: Support permutation matrix ^ scalar.
+	* DLD-FUNCTIONS/op-fpm-fpm.cc: Ditto.
+
+2009-03-11  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-ch-mat.cc (octave_char_matrix::double_value, 
 	octave_char_matrix::float_value, octave_char_matrix::complex_value,

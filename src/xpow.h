@@ -34,6 +34,7 @@ class DiagMatrix;
 class ComplexDiagMatrix;
 class FloatDiagMatrix;
 class FloatComplexDiagMatrix;
+class PermMatrix;
 class NDArray;
 class FloatNDArray;
 class ComplexNDArray;
@@ -50,6 +51,8 @@ extern octave_value xpow (const Matrix& a, const Complex& b);
 
 extern octave_value xpow (const DiagMatrix& a, double b);
 extern octave_value xpow (const DiagMatrix& a, const Complex& b);
+
+extern octave_value xpow (const PermMatrix& a, double b);
 
 extern octave_value xpow (const Complex& a, double b);
 extern octave_value xpow (const Complex& a, const Matrix& b);
@@ -105,6 +108,8 @@ extern octave_value xpow (const FloatMatrix& a, const FloatComplex& b);
 
 extern octave_value xpow (const FloatDiagMatrix& a, float b);
 extern octave_value xpow (const FloatDiagMatrix& a, const FloatComplex& b);
+
+extern octave_value xpow (const PermMatrix& a, float b);
 
 extern octave_value xpow (const FloatComplex& a, float b);
 extern octave_value xpow (const FloatComplex& a, const FloatMatrix& b);

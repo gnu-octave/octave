@@ -30,8 +30,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-perm.h"
 #include "ov-flt-perm.h"
 #include "ov-re-mat.h"
+#include "ov-scalar.h"
 #include "ov-typeinfo.h"
 #include "ops.h"
+#include "xpow.h"
 
 DEFUNOP (transpose, perm_matrix)
 {
@@ -53,6 +55,13 @@ DEFBINOP (ldiv, perm_matrix, perm_matrix)
   CAST_BINOP_ARGS (const octave_perm_matrix&, const octave_perm_matrix&);
   
   return (v1.perm_matrix_value ().inverse () * v2.perm_matrix_value ());
+}
+
+DEFBINOP (pow, perm_matrix, scalar)
+{
+  CAST_BINOP_ARGS (const octave_perm_matrix&, const octave_scalar&);
+
+  return xpow (v1.perm_matrix_value (), v2.scalar_value ());
 }
 
 CONVDECL (perm_matrix_to_matrix)
@@ -78,6 +87,7 @@ install_pm_pm_ops (void)
   INSTALL_BINOP (op_mul, octave_perm_matrix, octave_perm_matrix, mul);
   INSTALL_BINOP (op_div, octave_perm_matrix, octave_perm_matrix, div);
   INSTALL_BINOP (op_ldiv, octave_perm_matrix, octave_perm_matrix, ldiv);
+  INSTALL_BINOP (op_pow, octave_perm_matrix, octave_scalar, pow);
 
   INSTALL_CONVOP (octave_perm_matrix, octave_matrix, perm_matrix_to_matrix);
   INSTALL_CONVOP (octave_perm_matrix, octave_float_perm_matrix, perm_matrix_to_float_perm_matrix);

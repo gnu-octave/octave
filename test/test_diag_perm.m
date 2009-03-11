@@ -57,6 +57,52 @@
 %! assert (typeinfo (rand (n) * Pc), "matrix");
 %! assert (typeinfo (Pr * rand (n)), "matrix");
 
+## preserve sparse matrix structure
+%!test
+%! n = 7;
+%! Pc = eye (n) (:, randperm (n));
+%! Ac = sprand (n-3, n, .5) + I () * sprand (n-3, n, .5);
+%! Pr = eye (n) (randperm (n), :);
+%! Ar = sprand (n, n+2, .5);
+%! assert (typeinfo (Ac * Pc), "sparse complex matrix");
+%! assert (full (Ac * Pc), full (Ac) * Pc);
+%! assert (full (Ac / Pc), full (Ac) / Pc);
+%! assert (typeinfo (Pr * Ar), "sparse matrix");
+%! assert (full (Pr * Ar), Pr * full (Ar));
+%! assert (full (Pr \ Ar), Pr \ full (Ar));
+
+## structure rules for 1x1 dense / scalar and 1x1 perm
+%!test
+%! n = 7;
+%! P1 = eye (1) (:, [1]);
+%! A1 = 1;
+%! P = eye (n) (:, randperm (n));
+%! A = rand (n-3, n, .5);
+%! assert (typeinfo (A * P1), "matrix");
+%! assert (full (A * P1), full (A) * P1);
+%! assert (typeinfo (P1 * A), "matrix");
+%! assert (full (P1 * A), P1 * full (A));
+%! assert (typeinfo (A1 * P), "matrix");
+%! assert (full (A1 * P), full (A1) * P);
+%! assert (typeinfo (P * A1), "matrix");
+%! assert (full (P * A1), P * full (A1));
+
+## structure rules for 1x1 sparse and 1x1 perm
+%!test
+%! n = 7;
+%! P1 = eye (1) (:, [1]);
+%! A1 = sparse (1, 1, 2);
+%! P = eye (n) (:, randperm (n));
+%! A = sprand (n-3, n, .5);
+%! assert (typeinfo (A * P1), "sparse matrix");
+%! assert (full (A * P1), full (A) * P1);
+%! assert (typeinfo (P1 * A), "sparse matrix");
+%! assert (full (P1 * A), P1 * full (A));
+%! assert (typeinfo (A1 * P), "sparse matrix");
+%! assert (full (A1 * P), full (A1) * P);
+%! assert (typeinfo (P * A1), "sparse matrix");
+%! assert (full (P * A1), P * full (A1));
+
 ## permuting a matrix with exceptional values does not introduce new ones.
 %!test
 %! n = 5;

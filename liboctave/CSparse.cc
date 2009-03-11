@@ -52,6 +52,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "Sparse-diag-op-defs.h"
 
+#include "Sparse-perm-op-defs.h"
+
 // Define whether to use a basic QR solver or one that uses a Dulmange
 // Mendelsohn factorization to seperate the problem into under-determined,
 // well-determined and over-determined parts and solves them seperately
@@ -7682,6 +7684,20 @@ SparseComplexMatrix
 operator - (const SparseComplexMatrix&a, const ComplexDiagMatrix& d)
 {
   return do_sub_sm_dm<SparseComplexMatrix> (a, d);
+}
+
+// perm * sparse and sparse * perm
+
+SparseComplexMatrix
+operator * (const PermMatrix& p, const SparseComplexMatrix& a)
+{
+  return octinternal_do_mul_pm_sm (p, a);
+}
+
+SparseComplexMatrix
+operator * (const SparseComplexMatrix& a, const PermMatrix& p)
+{
+  return octinternal_do_mul_sm_pm (a, p);
 }
 
 // FIXME -- it would be nice to share code among the min/max

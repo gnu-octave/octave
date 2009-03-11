@@ -89,6 +89,32 @@
 
 2009-03-10  Jason Riedy  <jason@acm.org>
 
+	* Sparse-perm-op-defs.h (octinternal_do_mul_colpm_sm): New
+	template function.  Logic for the column permutation * sparse
+	matrix operator.
+	(octinternal_do_mul_pm_sm): New template function.  Logic for the
+	permutation matrix * sparse matrix operator.  Note that there is
+	no special row perm * sparse routine; the permutation is inverted
+	and the col perm routine is called.
+	(octinternal_do_mul_sm_rowpm): New template function.  Logic for
+	the sparse matrix * row permutation operator.
+	(octinternal_do_mul_sm_colpm): New template function.  Logic for
+	the sparse matrix * column permutation operator.
+	(octinternal_do_mul_sm_pm): New template function.  Logic for the
+	sparse matrix * permutation matrix operator.
+
+	* dSparse.h (operator *): Declare sparse * permutation and
+	permutation * sparse.
+	* dSparse.cc (operator *): Define sparse * permutation and
+	permutation * sparse.
+
+	* CSparse.h (operator *): Declare sparse * permutation and
+	permutation * sparse.
+	* CSparse.cc (operator *): Define sparse * permutation and
+	permutation * sparse.
+
+2009-03-10  Jason Riedy  <jason@acm.org>
+
 	* sparse-base-lu.cc (Pc_vec): The column permutation should be
 	Ufact.cols ()-long, not Lfact.rows ()-long.
 

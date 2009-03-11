@@ -1,5 +1,11 @@
 2009-03-10  Jason Riedy  <jason@acm.org>
 
+	* test_diag_perm.m: Add tests for permuting sparse matrices and
+	for the correct types from interactions between
+	pseudo-scalars (1x1 matrices).
+
+2009-03-10  Jason Riedy  <jason@acm.org>
+
 	* build_sparse_tests.sh: Add LU tests to the rectangular tests.
 
 2009-03-10  Jason Riedy  <jason@acm.org>

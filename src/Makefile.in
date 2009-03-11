@@ -174,7 +174,8 @@ FDIAG_OP_XSRC := op-fcdm-fcdm.cc op-fcdm-fcm.cc op-fcdm-fcs.cc op-fcdm-fdm.cc \
 	op-fdm-fm.cc op-fdm-fs.cc op-fm-fcdm.cc op-fm-fdm.cc
 
 PERM_OP_XSRC := op-cm-pm.cc op-fcm-pm.cc op-fm-pm.cc op-pm-fcm.cc \
-	op-pm-fm.cc op-m-pm.cc op-pm-cm.cc op-pm-m.cc op-pm-pm.cc
+	op-pm-fm.cc op-m-pm.cc op-pm-cm.cc op-pm-m.cc op-pm-pm.cc \
+	op-pm-sm.cc op-pm-scm.cc
 
 OP_XSRC :=  op-b-b.cc op-b-bm.cc op-bm-b.cc op-bm-bm.cc op-cell.cc \
 	op-chm.cc op-class.cc op-list.cc op-range.cc op-str-m.cc \

@@ -47,6 +47,25 @@
 
 2009-03-10  Jason Riedy  <jason@acm.org>
 
+	* OPERATORS/op-pm-sm.cc (mul_pm_sm): New Octave binding for
+	perm * sparse.
+	(ldiv_pm_sm): New Octave binding for perm \ sparse.
+	(mul_sm_pm): New Octave binding for sparse * perm.
+	(div_sm_pm): New Octave binding for sparse / perm.
+	(install_pm_sm_ops): Install the above bindings.
+
+	* OPERATORS/op-pm-scm.cc (mul_pm_scm): New Octave binding for
+	perm * sparse complex.
+	(ldiv_pm_scm): New Octave binding for perm \ sparse complex.
+	(mul_scm_pm): New Octave binding for sparse complex * perm.
+	(div_scm_pm): New Octave binding for sparse complex / perm.
+	(install_pm_scm_ops): Install the above bindings.
+
+	* Makefile.in (PERM_OP_XSRC): Add op-pm-sm.cc and op-pm-scm.cc for
+	operations between permutations and sparse matrices.
+
+2009-03-10  Jason Riedy  <jason@acm.org>
+
 	* DLD-FUNCTIONS/find.cc (find_nonzero_elem_idx): New override
 	for find on PermMatrix.
 	(find): Add a branch testing arg.is_perm_matrix () and calling the

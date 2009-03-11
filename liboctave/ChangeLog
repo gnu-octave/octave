@@ -1,3 +1,13 @@
+2009-03-10  Jason Riedy  <jason@acm.org>
+
+	* sparse-base-lu.cc (Pr_mat): New member function.  Return the row
+	permutation as a PermMatrix.
+	(Pc_mat): New member function.  Return the col permutation as a
+	PermMatrix.
+
+	* sparse-base-lu.h (sparse_base_lu): Declare Pc_mat and Pr_mat
+	member functions.
+
 2009-03-09  Jason Riedy  <jason@acm.org>
 
 	* Sparse-diag-op-defs.h (octave_impl::inner_do_add_sm_dm): New

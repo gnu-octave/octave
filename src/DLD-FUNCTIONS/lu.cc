@@ -226,7 +226,7 @@ information.\n\
 		  retval (0) = fact.Y ();
 		else
 		  {
-		    SparseMatrix P = fact.Pr ();
+		    PermMatrix P = fact.Pr_mat ();
 		    SparseMatrix L = P.transpose () * fact.L ();
 		    retval(1) = octave_value (fact.U (), 
 					      MatrixType (MatrixType::Upper));
@@ -245,7 +245,7 @@ information.\n\
 		if (vecout)
 		  retval (2) = fact.Pr_vec ();
 		else
-		  retval(2) = fact.Pr ();
+		  retval(2) = fact.Pr_mat ();
 
 		retval(1) = octave_value (fact.U (), 
 					  MatrixType (MatrixType::Upper));
@@ -269,8 +269,8 @@ information.\n\
 		  }
 		else
 		  {
-		    retval(3) = fact.Pc ();
-		    retval(2) = fact.Pr ();
+		    retval(3) = fact.Pc_mat ();
+		    retval(2) = fact.Pr_mat ();
 		  }
 		retval(1) = octave_value (fact.U (), 
 					  MatrixType (MatrixType::Upper));
@@ -296,7 +296,7 @@ information.\n\
 		  retval (0) = fact.Y ();
 		else
 		  {
-		    SparseMatrix P = fact.Pr ();
+		    PermMatrix P = fact.Pr_mat ();
 		    SparseComplexMatrix L = P.transpose () * fact.L ();
 		    retval(1) = octave_value (fact.U (), 
 					      MatrixType (MatrixType::Upper));
@@ -315,7 +315,7 @@ information.\n\
 		if (vecout)
 		  retval (2) = fact.Pr_vec ();
 		else
-		  retval(2) = fact.Pr ();
+		  retval(2) = fact.Pr_mat ();
 
 		retval(1) = octave_value (fact.U (), 
 					  MatrixType (MatrixType::Upper));
@@ -339,8 +339,8 @@ information.\n\
 		  }
 		else
 		  {
-		    retval(3) = fact.Pc ();
-		    retval(2) = fact.Pr ();
+		    retval(3) = fact.Pc_mat ();
+		    retval(2) = fact.Pr_mat ();
 		  }
 		retval(1) = octave_value (fact.U (), 
 					  MatrixType (MatrixType::Upper));

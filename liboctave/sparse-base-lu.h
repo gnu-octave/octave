@@ -70,6 +70,10 @@ public:
 
   ColumnVector Pr_vec (void) const;
 
+  PermMatrix Pc_mat (void) const;
+
+  PermMatrix Pr_mat (void) const;
+
   const octave_idx_type * row_perm (void) const { return P.fortran_vec (); }
 
   const octave_idx_type * col_perm (void) const { return Q.fortran_vec (); }

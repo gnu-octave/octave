@@ -98,6 +98,13 @@ sparse_base_lu <lu_type, lu_elt_type, p_type, p_elt_type> :: Pr_vec (void) const
 }
 
 template <class lu_type, class lu_elt_type, class p_type, class p_elt_type>
+PermMatrix
+sparse_base_lu <lu_type, lu_elt_type, p_type, p_elt_type> :: Pr_mat (void) const
+{
+  return PermMatrix (P, false);
+}
+
+template <class lu_type, class lu_elt_type, class p_type, class p_elt_type>
 p_type
 sparse_base_lu <lu_type, lu_elt_type, p_type, p_elt_type> :: Pc (void) const
 {
@@ -129,6 +136,13 @@ sparse_base_lu <lu_type, lu_elt_type, p_type, p_elt_type> :: Pc_vec (void) const
     Pout.xelem (i) = static_cast<double> (Q(i) + 1);
 
   return Pout;
+}
+
+template <class lu_type, class lu_elt_type, class p_type, class p_elt_type>
+PermMatrix
+sparse_base_lu <lu_type, lu_elt_type, p_type, p_elt_type> :: Pc_mat (void) const
+{
+  return PermMatrix (Q, true);
 }
 
 /*

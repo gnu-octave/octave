@@ -1,3 +1,8 @@
+2009-03-10  Jason Riedy  <jason@acm.org>
+
+	* DLD-FUNCTIONS/lu.cc (lu): Call fact.Pr_mat () and fact.Pc_mat ()
+	to return permutation matrices in the sparse case.
+
 2009-03-12  John W. Eaton  <jwe@octave.org>
 
 	* ls-mat-ascii.cc (get_mat_data_input_line): If we are looking at

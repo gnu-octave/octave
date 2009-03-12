@@ -224,7 +224,7 @@ default_figure_papersize (void)
 {
   Matrix m (1, 2, 0.0);
   m(0) = 8.5;
-  m(1) = 11.5;
+  m(1) = 11.0;
   return m;
 }
 

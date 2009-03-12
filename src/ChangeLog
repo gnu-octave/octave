@@ -1,3 +1,9 @@
+2009-03-12  John W. Eaton  <jwe@octave.org>
+
+	* ls-mat-ascii.cc (get_mat_data_input_line): If we are looking at
+	'\r' or '\n', skip current line ending instead of skipping until
+	the next.
+
 2009-03-12  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-flt-perm.h, ov-flt-perm.cc: Remove sources.

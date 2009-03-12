@@ -81,7 +81,8 @@ get_mat_data_input_line (std::istream& is)
 	{
 	  if (c == '\n' || c == '\r')
 	    {
-	      skip_until_newline (is, false);
+	      is.putback (c);
+	      skip_preceeding_newline (is);
 	      break;
 	    }
 

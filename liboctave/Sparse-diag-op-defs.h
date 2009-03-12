@@ -127,8 +127,6 @@ RT inner_do_add_sm_dm (const SM& a, const DM& d, OpA opa, OpD opd)
   const octave_idx_type a_nc = a.cols ();
 
   const octave_idx_type nz = a.nnz ();
-  const typename SM::element_type zero = typename SM::element_type ();
-  const typename DM::element_type dzero = typename DM::element_type ();
   RT r (a_nr, a_nc, nz + n);
   octave_idx_type k = 0;
 

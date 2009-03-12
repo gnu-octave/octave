@@ -68,7 +68,7 @@ DEFBINOP (ldiv_dm_sm, diag_matrix, sparse_matrix)
   return xleftdiv (v1.diag_matrix_value (), v2.sparse_matrix_value (), typ);
 }
 
-DEFBINOP_OP (add_dm_sm, diag_matrix, sparse_matrix)
+DEFBINOP (add_dm_sm, diag_matrix, sparse_matrix)
 {
   CAST_BINOP_ARGS (const octave_diag_matrix&, const octave_sparse_matrix&);
 

@@ -28,7 +28,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-obj.h"
 #include "ov.h"
 #include "ov-perm.h"
-#include "ov-flt-perm.h"
 #include "ov-re-mat.h"
 #include "ov-scalar.h"
 #include "ov-typeinfo.h"
@@ -71,13 +70,6 @@ CONVDECL (perm_matrix_to_matrix)
   return new octave_matrix (v.matrix_value ());
 }
 
-CONVDECL (perm_matrix_to_float_perm_matrix)
-{
-  CAST_CONV_ARG (const octave_perm_matrix&);
-
-  return new octave_float_perm_matrix (v.perm_matrix_value ());
-}
-
 void
 install_pm_pm_ops (void)
 {
@@ -90,7 +82,6 @@ install_pm_pm_ops (void)
   INSTALL_BINOP (op_pow, octave_perm_matrix, octave_scalar, pow);
 
   INSTALL_CONVOP (octave_perm_matrix, octave_matrix, perm_matrix_to_matrix);
-  INSTALL_CONVOP (octave_perm_matrix, octave_float_perm_matrix, perm_matrix_to_float_perm_matrix);
   INSTALL_ASSIGNCONV (octave_perm_matrix, octave_matrix, octave_matrix);
   INSTALL_WIDENOP (octave_perm_matrix, octave_matrix, perm_matrix_to_matrix);
 }

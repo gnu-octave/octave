@@ -25,7 +25,6 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "ov-perm.h"
-#include "ov-flt-perm.h"
 #include MINCLUDE
 #include "ops.h"
 

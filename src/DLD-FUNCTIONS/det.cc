@@ -43,7 +43,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-flt-re-diag.h"
 #include "ov-flt-cx-diag.h"
 #include "ov-perm.h"
-#include "ov-flt-perm.h"
 
 #define MAYBE_CAST(VAR, CLASS) \
   const CLASS *VAR = arg.type_id () == CLASS::static_type_id () ? \
@@ -128,18 +127,9 @@ if requested.\n\
     }
   else if (arg.is_perm_matrix ())
     {
-      if (isfloat)
-        {
-          retval(0) = static_cast<float> (arg.perm_matrix_value ().determinant ());
-          if (nargout > 1)
-            retval(1) = 1.0;
-        }
-      else
-        {
-          retval(0) = static_cast<double> (arg.perm_matrix_value ().determinant ());
-          if (nargout > 1)
-            retval(1) = 1.0f;
-        }
+      retval(0) = static_cast<double> (arg.perm_matrix_value ().determinant ());
+      if (nargout > 1)
+        retval(1) = 1.0;
     }
   else if (arg.is_single_type ())
     {

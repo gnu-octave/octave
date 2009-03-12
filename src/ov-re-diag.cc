@@ -81,6 +81,51 @@ octave_diag_matrix::try_narrowing_conversion (void)
   return retval;
 }
 
+octave_value
+octave_diag_matrix::do_index_op (const octave_value_list& idx,
+                                 bool resize_ok)
+{
+  octave_value retval;
+
+  // This hack is to allow constructing permutation matrices using
+  // eye(n)(p,:), eye(n)(:,q) && eye(n)(p,q) where p & q are permutation
+  // vectors. 
+  if (! resize_ok && idx.length () == 2 && matrix.is_multiple_of_identity (1))
+    {
+      idx_vector idx0 = idx(0).index_vector ();
+      idx_vector idx1 = idx(1).index_vector ();
+      
+      if (! error_state)
+        {
+          bool left = idx0.is_permutation (matrix.rows ());
+          bool right = idx1.is_permutation (matrix.cols ());
+
+          if (left && right)
+            {
+              if (idx0.is_colon ()) left = false;
+              if (idx1.is_colon ()) right = false;
+              if (left && right)
+                retval = PermMatrix (idx0, false) * PermMatrix (idx1, true);
+              else if (left)
+                retval = PermMatrix (idx0, false);
+              else if (right)
+                retval = PermMatrix (idx1, true);
+              else
+                {
+                  retval = this;
+                  this->count++;
+                }
+            }
+        }
+    }
+
+  // if error_state is set, we've already griped.
+  if (! error_state && retval.is_undefined ())
+    retval = octave_base_diag<DiagMatrix, Matrix>::do_index_op (idx, resize_ok);
+
+  return retval;
+}
+
 DiagMatrix
 octave_diag_matrix::diag_matrix_value (bool) const
 {

@@ -43,7 +43,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-re-diag.h"
 #include "ov-flt-re-diag.h"
 #include "ov-perm.h"
-#include "ov-flt-perm.h"
 #include "ov-bool-sparse.h"
 #include "ov-cx-sparse.h"
 #include "ov-re-sparse.h"
@@ -693,13 +692,10 @@ octave_value::octave_value (const FloatComplexColumnVector& v)
   maybe_mutate ();
 }
 
-octave_value::octave_value (const PermMatrix& p, bool single)
-  : rep ()
+octave_value::octave_value (const PermMatrix& p)
+  : rep (new octave_perm_matrix (p))
 {
-  if (single)
-    rep = new octave_float_perm_matrix (p);
-  else
-    rep = new octave_perm_matrix (p);
+  maybe_mutate ();
 }
 
 octave_value::octave_value (bool b)
@@ -2481,7 +2477,6 @@ install_types (void)
   octave_float_complex_matrix::register_type ();
   octave_float_complex_diag_matrix::register_type ();
   octave_perm_matrix::register_type ();
-  octave_float_perm_matrix::register_type ();
   octave_null_matrix::register_type ();
   octave_null_str::register_type ();
   octave_null_sq_str::register_type ();

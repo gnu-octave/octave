@@ -22,12 +22,12 @@ along with Octave; see the file COPYING.  If not, see
 
 #define MINCLUDE "ov-flt-re-mat.h"
 
-#define LMATRIX float_matrix
-#define RMATRIX float_perm_matrix
+#define LMATRIX perm_matrix
+#define RMATRIX float_matrix
 
-#define LSHORT fm
-#define RSHORT fpm
+#define LSHORT pm
+#define RSHORT fm
 
-#define RIGHT
+#define LEFT
 
 #include "op-pm-template.cc"

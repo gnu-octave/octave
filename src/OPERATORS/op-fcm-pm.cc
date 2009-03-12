@@ -20,14 +20,14 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#define MINCLUDE "ov-flt-re-mat.h"
+#define MINCLUDE "ov-flt-cx-mat.h"
 
-#define LMATRIX float_perm_matrix
-#define RMATRIX float_matrix
+#define LMATRIX float_complex_matrix
+#define RMATRIX perm_matrix
 
-#define LSHORT fpm
-#define RSHORT fm
+#define LSHORT fcm
+#define RSHORT pm
 
-#define LEFT
+#define RIGHT
 
 #include "op-pm-template.cc"

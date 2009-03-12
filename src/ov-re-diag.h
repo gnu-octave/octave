@@ -57,6 +57,9 @@ public:
 
   octave_base_value *try_narrowing_conversion (void);
 
+  octave_value do_index_op (const octave_value_list& idx,
+			    bool resize_ok = false);
+
   bool is_real_matrix (void) const { return true; }
 
   bool is_real_type (void) const { return true; }

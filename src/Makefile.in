@@ -102,8 +102,8 @@ OV_INCLUDES := ov-re-mat.h ov-cx-mat.h ov-ch-mat.h ov-cs-list.h ov-list.h \
 	ov-struct.h ov-scalar.h ov-range.h ov-complex.h \
 	ov-colon.h ov-base.h ov-base-mat.h ov-base-scalar.h \
 	ov-str-mat.h ov-bool-mat.h ov-null-mat.h ov-bool.h \
-	ov-base-diag.h ov-re-diag.h ov-flt-re-diag.h ov-cx-diag.h ov-flt-cx-diag.h \
-	ov-perm.h ov-flt-perm.h \
+	ov-base-diag.h ov-re-diag.h ov-flt-re-diag.h ov-cx-diag.h \
+	ov-flt-cx-diag.h ov-perm.h \
 	ov-cell.h ov.h ov-fcn.h ov-builtin.h ov-dld-fcn.h \
 	ov-mex-fcn.h ov-usr-fcn.h ov-fcn-handle.h \
 	ov-fcn-inline.h ov-class.h ov-typeinfo.h ov-type-conv.h \
@@ -173,8 +173,8 @@ FDIAG_OP_XSRC := op-fcdm-fcdm.cc op-fcdm-fcm.cc op-fcdm-fcs.cc op-fcdm-fdm.cc \
 	op-fdm-fcdm.cc op-fdm-fcm.cc op-fdm-fcs.cc op-fdm-fdm.cc \
 	op-fdm-fm.cc op-fdm-fs.cc op-fm-fcdm.cc op-fm-fdm.cc
 
-PERM_OP_XSRC := op-cm-pm.cc op-fcm-fpm.cc op-fm-fpm.cc op-fpm-fcm.cc \
-	op-fpm-fm.cc op-fpm-fpm.cc op-m-pm.cc op-pm-cm.cc op-pm-m.cc op-pm-pm.cc
+PERM_OP_XSRC := op-cm-pm.cc op-fcm-pm.cc op-fm-pm.cc op-pm-fcm.cc \
+	op-pm-fm.cc op-m-pm.cc op-pm-cm.cc op-pm-m.cc op-pm-pm.cc
 
 OP_XSRC :=  op-b-b.cc op-b-bm.cc op-bm-b.cc op-bm-bm.cc op-cell.cc \
 	op-chm.cc op-class.cc op-list.cc op-range.cc op-str-m.cc \
@@ -204,7 +204,7 @@ OV_SRC := ov-base.cc ov-ch-mat.cc \
 	ov-class.cc ov-typeinfo.cc \
 	ov-flt-re-mat.cc ov-flt-cx-mat.cc ov-float.cc ov-flt-complex.cc \
 	ov-re-diag.cc ov-flt-re-diag.cc ov-cx-diag.cc ov-flt-cx-diag.cc \
-	ov-perm.cc ov-flt-perm.cc \
+	ov-perm.cc \
 	$(OV_INTTYPE_SRC) \
 	$(OV_SPARSE_SRC)
 

@@ -35,7 +35,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-flt-re-diag.h"
 #include "ov-flt-cx-diag.h"
 #include "ov-perm.h"
-#include "ov-flt-perm.h"
 #include "utils.h"
 
 DEFUN_DLD (inv, args, nargout,
@@ -125,12 +124,8 @@ be avoided. It is significantly more accurate and faster to do\n\
   else if (arg.is_perm_matrix ())
     {
       rcond = 1.0;
-      frcond = 1.0f;
       info = 0;
-      if (isfloat)
-        result = octave_value (arg.perm_matrix_value ().inverse (), true);
-      else
-        result = arg.perm_matrix_value ().inverse ();
+      result = arg.perm_matrix_value ().inverse ();
     }
   else if (isfloat)
     {

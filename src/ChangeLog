@@ -1,3 +1,30 @@
+2009-03-12  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-flt-perm.h, ov-flt-perm.cc: Remove sources.
+	* ov.h, ov.cc (octave_value::octave_value (const PermMatrix&)): Remove
+	use "single" argument.
+	* ov.cc (install_types): Update.
+	* xpow.cc, xpow.h (xpow (PermMatrix, float)): Remove.
+	* ov-base-diag.cc (octave_base_diag::do_index_op): Remove permutation
+	creating block.
+	* ov-re-diag.cc (octave_diag_matrix::do_index_op): Move it here.
+	* ov-re-diag.h (octave_diag_matrix::do_index_op): New decl.
+
+	* DLD-FUNCTIONS/det.cc (Fdet): Update.
+	* DLD-FUNCTIONS/inv.cc (Finv): Update.
+	* DLD-FUNCTIONS/pinv.cc (Fpinv): Update.
+
+	* OPERATORS/op-fcm-pm.cc <-- OPERATORS/op-fcm-fpm.cc
+	* OPERATORS/op-fcm-pm.cc: Update.
+	* OPERATORS/op-fm-pm.cc <-- OPERATORS/op-fm-fpm.cc
+	* OPERATORS/op-fm-pm.cc: Update.
+	* OPERATORS/op-pm-fcm.cc <-- OPERATORS/op-fpm-fcm.cc
+	* OPERATORS/op-pm-fcm.cc: Update.
+	* OPERATORS/op-pm-fm.cc <-- OPERATORS/op-fpm-fm.cc
+	* OPERATORS/op-pm-fm.cc: Update.
+	* OPERATORS/op-pm-pm.cc: Update.
+	* OPERATORS/op-pm-template.cc: Update.
+
 2009-03-11  Jaroslav Hajek  <highegg@gmail.com>
 	
 	* xpow.cc (xpow (const PermMatrix&, double), xpow (const PermMatrix&,

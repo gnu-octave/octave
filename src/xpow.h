@@ -109,8 +109,6 @@ extern octave_value xpow (const FloatMatrix& a, const FloatComplex& b);
 extern octave_value xpow (const FloatDiagMatrix& a, float b);
 extern octave_value xpow (const FloatDiagMatrix& a, const FloatComplex& b);
 
-extern octave_value xpow (const PermMatrix& a, float b);
-
 extern octave_value xpow (const FloatComplex& a, float b);
 extern octave_value xpow (const FloatComplex& a, const FloatMatrix& b);
 extern octave_value xpow (const FloatComplex& a, const FloatComplex& b);

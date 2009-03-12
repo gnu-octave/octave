@@ -1589,18 +1589,6 @@ xpow (const FloatDiagMatrix& a, float b)
   return retval;
 }
 
-// -*- 5p -*-
-octave_value
-xpow (const PermMatrix& a, float b)
-{
-  octave_value retval;
-  int btmp = static_cast<int> (b);
-  if (btmp == b)
-    return octave_value (a.power (btmp), true);
-  else
-    return xpow (FloatMatrix (a), b);
-}
-
 // -*- 6 -*-
 octave_value
 xpow (const FloatMatrix& a, const FloatComplex& b)

@@ -27,7 +27,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "byte-swap.h"
 
 #include "ov-perm.h"
-#include "ov-flt-perm.h"
 #include "ov-re-mat.h"
 #include "ov-scalar.h"
 #include "error.h"
@@ -98,7 +97,7 @@ octave_perm_matrix::do_index_op (const octave_value_list& idx,
                 p = PermMatrix (idx0, false) * p;
               if (right)
                 p = p * PermMatrix (idx1, true);
-              retval = octave_value (p, is_single_type ());
+              retval = p;
             }
           else
             {
@@ -477,21 +476,6 @@ octave_perm_matrix::numeric_conversion_function (void) const
 {
   return octave_base_value::type_conv_info (default_numeric_conversion_function,
                                             octave_matrix::static_type_id ());
-}
-
-static octave_base_value *
-default_numeric_demotion_function (const octave_base_value& a)
-{
-  CAST_CONV_ARG (const octave_perm_matrix&);
-
-  return new octave_float_perm_matrix (v.perm_matrix_value ());
-}
-
-octave_base_value::type_conv_info
-octave_perm_matrix::numeric_demotion_function (void) const
-{
-  return octave_base_value::type_conv_info (default_numeric_demotion_function,
-                                            octave_float_perm_matrix::static_type_id ());
 }
 
 octave_base_value *

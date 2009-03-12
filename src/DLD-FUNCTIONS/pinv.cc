@@ -36,7 +36,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-flt-re-diag.h"
 #include "ov-flt-cx-diag.h"
 #include "ov-perm.h"
-#include "ov-flt-perm.h"
 
 DEFUN_DLD (pinv, args, ,
   "-*- texinfo -*-\n\
@@ -97,10 +96,7 @@ where @code{sigma_max (@var{x})} is the maximal singular value of @var{x}.\n\
     }
   else if (arg.is_perm_matrix ())
     {
-      if (isfloat)
-        retval = octave_value (arg.perm_matrix_value ().inverse (), true);
-      else
-        retval = arg.perm_matrix_value ().inverse ();
+      retval = arg.perm_matrix_value ().inverse ();
     }
   else if (isfloat)
     {

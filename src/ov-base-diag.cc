@@ -73,57 +73,18 @@ octave_base_diag<DMT, MT>::do_index_op (const octave_value_list& idx,
 {
   octave_value retval;
   typedef typename DMT::element_type el_type;
-  el_type one = 1;
 
-  octave_idx_type nidx = idx.length ();
-  idx_vector idx0, idx1;
-  if (nidx == 2)
+  if (idx.length () == 2 && ! resize_ok)
     {
-      idx0 = idx(0).index_vector ();
-      idx1 = idx(1).index_vector ();
-    }
+      idx_vector idx0 = idx(0).index_vector ();
+      idx_vector idx1 = idx(1).index_vector ();
 
-  // This hack is to allow constructing permutation matrices using
-  // eye(n)(p,:), eye(n)(:,q) && eye(n)(p,q) where p & q are permutation
-  // vectors. 
-  // FIXME: This check is probably unnecessary for complex matrices. 
-  if (! error_state && nidx == 2 && matrix.is_multiple_of_identity (one))
-    {
-      
-      bool left = idx0.is_permutation (matrix.rows ());
-      bool right = idx1.is_permutation (matrix.cols ());
-
-      if (left && right)
-        {
-          if (idx0.is_colon ()) left = false;
-          if (idx1.is_colon ()) right = false;
-          if (left && right)
-              retval = octave_value (PermMatrix (idx0, false) * PermMatrix (idx1, true),
-                                     is_single_type ());
-          else if (left)
-              retval = octave_value (PermMatrix (idx0, false),
-                                     is_single_type ());
-          else if (right)
-              retval = octave_value (PermMatrix (idx1, true),
-                                     is_single_type ());
-          else
-            {
-              retval = this;
-              this->count++;
-            }
-        }
-    }
-
-  // if error_state is set, we've already griped.
-  if (! error_state && ! retval.is_defined ())
-    {
-      if (nidx == 2 && ! resize_ok &&
-          idx0.is_scalar () && idx1.is_scalar ())
+      if (idx0.is_scalar () && idx1.is_scalar ())
         {
           // FIXME: the proxy mechanism of DiagArray2 causes problems here.
           retval = el_type (matrix.checkelem (idx0(0), idx1(0)));
         }
-      else if (nidx == 2 && ! resize_ok)
+      else
         {
           octave_idx_type m = idx0.length (matrix.rows ());
           octave_idx_type n = idx1.length (matrix.columns ());
@@ -137,9 +98,9 @@ octave_base_diag<DMT, MT>::do_index_op (const octave_value_list& idx,
           else
             retval = to_dense ().do_index_op (idx, resize_ok);
         }
-      else
-        retval = to_dense ().do_index_op (idx, resize_ok);
     }
+  else
+    retval = to_dense ().do_index_op (idx, resize_ok);
 
   return retval;
 }

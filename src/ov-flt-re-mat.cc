@@ -58,7 +58,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-re-sparse.h"
 #include "ov-flt-re-diag.h"
 #include "ov-flt-cx-diag.h"
-#include "ov-flt-perm.h"
 #include "ov-type-conv.h"
 #include "pr-output.h"
 #include "variables.h"
@@ -815,11 +814,7 @@ Convert @var{x} to single precision type.\n\
 
   if (args.length () == 1)
     {
-      if (args(0).is_perm_matrix ())
-        {
-          OCTAVE_TYPE_CONV_BODY3 (single, octave_float_perm_matrix, octave_float_scalar);
-        }
-      else if (args(0).is_diag_matrix ())
+      if (args(0).is_diag_matrix ())
         {
 	  if (args(0).is_complex_type ())
 	    {

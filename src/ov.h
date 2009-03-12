@@ -204,7 +204,7 @@ public:
   octave_value (const FloatComplexRowVector& v);
   octave_value (const ComplexColumnVector& v);
   octave_value (const FloatComplexColumnVector& v);
-  octave_value (const PermMatrix& p, bool single = false);
+  octave_value (const PermMatrix& p);
   octave_value (bool b);
   octave_value (const boolMatrix& bm, const MatrixType& t = MatrixType());
   octave_value (const boolNDArray& bnda);

@@ -963,7 +963,7 @@ bitshift (const octave_int<T>& a, int n,
   else if (n < 0)
     return (a >> -n) & mask;
   else
-    return a;
+    return a & mask;
 }
 
 typedef octave_int<int8_t> octave_int8;

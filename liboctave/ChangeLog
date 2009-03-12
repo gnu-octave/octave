@@ -1,3 +1,8 @@
+2009-03-12  John W. Eaton  <jwe@octave.org>
+
+	* oct-inttypes.h (bitshift): Apply mask even if not shifting.
+	From Seb Astien <se6astien2@googlemail.com>.
+
 2009-03-11  Jaroslav Hajek  <highegg@gmail.com>
 
 	* PermMatrix.cc (PermMatrix::power): New method.

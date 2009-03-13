@@ -74,17 +74,21 @@ function x = repmat (a, m, n)
       x = reshape (x, m*p, n*q);
     endif
   else
-    aidx = size(a);
-    if (length(aidx) > length(idx))
-      idx = [idx, ones(1,length(aidx)-length(idx))];
-    elseif (length(aidx) < length(idx))
-      aidx = [aidx, ones(1,length(idx)-length(aidx))];
-    endif
-    cidx = cell (1, length (aidx));
+    aidx = size (a);
+    ## ensure matching size
+    idx(end+1:length (aidx)) = 1;
+    aidx(end+1:length (idx)) = 1;
+    ## create subscript array
+    cidx = cell (2, length (aidx));
     for i = 1:length (aidx)
-      cidx{i} = kron (ones (1, idx(i)), 1:aidx(i));
+      cidx{1,i} = ':';
+      cidx{2,i} = ones (1, idx (i));
     endfor
-    x = a (cidx{:});
+    aaidx = aidx;
+    # add singleton dims
+    aaidx(2,:) = 1;
+    a = reshape (a, aaidx(:));
+    x = reshape (a (cidx{:}), idx .* aidx);
   endif
 
 endfunction

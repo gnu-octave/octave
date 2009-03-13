@@ -1,3 +1,8 @@
+2009-03-13  Jaroslav Hajek  <highegg@gmail.com>
+
+	* general/repmat.m: Use subscript pairs rather than forming Kronecker
+	products.
+
 2009-03-11  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/__go_draw_axes__.m: Unset the {x,y,z}ticks when initializing

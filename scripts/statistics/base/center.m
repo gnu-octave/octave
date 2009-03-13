@@ -29,30 +29,34 @@
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Center by subtracting means
 
-function retval = center (x, varargin)
+function retval = center (x, dim)
 
   if (nargin != 1 && nargin != 2)
     print_usage ();
   endif
 
-  if (isvector (x))
-    retval = x - mean (x, varargin{:});
-  elseif (ismatrix (x))
-    if nargin < 2
-      dim = find (size (x) > 1, 1);
-      if (isempty (dim))
-	dim = 1; 
-      endif;
+  if (nargin < 2)
+    t = find (size (x) != 1);
+    if (isempty (t))
+      dim = 1;
     else
-      dim = varargin{1};
+      dim = t(1);
     endif
-    sz = ones (1, ndims (x));
-    sz (dim) = size (x, dim);
-    retval = x - repmat (mean (x, dim), sz);
-  elseif (isempty (x))
-    retval = x;
-  else
-    error ("center: x must be a vector or a matrix");
   endif
+  n = size (x, dim);
 
+  if (n == 1)
+    retval = zeros (size (x));
+  elseif (n > 0)
+    if (isvector (x))
+      retval = x - sum (x) / n;
+    else
+      mx = sum (x, dim) / n;
+      idx(1:ndims (x)) = {':'}; 
+      idx{dim} = ones (1, n);
+      retval = x - mx(idx{:});
+    endif
+  else
+    retval = x;
+  endif
 endfunction

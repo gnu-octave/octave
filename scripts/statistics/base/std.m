@@ -76,19 +76,13 @@ function retval = std (a, opt, dim)
     opt = 0;
   endif
 
-  sz = size(a);
-  if (sz (dim) == 1)
-    retval = zeros(sz);
+  n = size (a, dim);
+  if (n == 1)
+    retval = zeros (sz);
   elseif (numel (a) > 0)
-    rng = ones (1, length (sz));
-    rng (dim) = sz (dim);
-    if (opt == 0)
-      retval = sqrt (sumsq (a - repmat(mean (a, dim), rng), dim) / (sz(dim) - 1));
-    else
-      retval = sqrt (sumsq (a - repmat(mean (a, dim), rng), dim) / sz(dim));
-    endif
+    retval = sqrt (sumsq (center (a, dim), dim) / (n + opt - 1));
   else
-    error ("std: invalid matrix argument");
+    error ("std: x must not be empty");
   endif
 
 endfunction

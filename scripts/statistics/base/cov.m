@@ -57,11 +57,11 @@ function c = cov (x, y)
     if (rows (y) != n)
       error ("cov: x and y must have the same number of observations");
     endif
-    x = x - ones (n, 1) * sum (x) / n;
-    y = y - ones (n, 1) * sum (y) / n;
+    x = center (x, 1);
+    y = center (y, 1);
     c = conj (x' * y / (n - 1));
   elseif (nargin == 1)
-    x = x - ones (n, 1) * sum (x) / n;
+    x = center (x, 1);
     c = conj (x' * x / (n - 1));
   endif
 

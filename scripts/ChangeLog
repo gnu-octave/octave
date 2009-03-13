@@ -2,6 +2,10 @@
 
 	* statistics/base/mean.m: Simplify.
 	* statistics/base/meansq.m: Optimize.
+	* statistics/base/center.m: Fix behvaior with vectors, simplify.
+	* statistics/base/std.m: Simplify using `center'.
+	* statistics/base/var.m: Ditto.
+	* statistics/base/cov.m: Ditto.
 
 2009-03-13  Jaroslav Hajek  <highegg@gmail.com>
 

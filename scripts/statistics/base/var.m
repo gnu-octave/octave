@@ -56,19 +56,13 @@ function y = var (x, opt, dim)
     opt = 0;
   endif
 
-  sz = size (x);
-  if (prod (sz) < 1)
-    error ("var: x must not be empty");
-  elseif (sz(dim) == 1)
-    y = 0;
+  n = size (a, dim);
+  if (n == 1)
+    retval = zeros (sz);
+  elseif (numel (a) > 0)
+    retval = sumsq (center (a, dim), dim) / (n + opt - 1);
   else
-    rng = ones (1, length (sz));
-    rng (dim) = sz (dim);
-    if (opt == 0)
-      y = sumsq (x - repmat(mean (x, dim), rng), dim) / (sz(dim) - 1);
-    else
-      y = sumsq (x - repmat(mean (x, dim), rng), dim) / sz(dim);
-    endif
+    error ("var: x must not be empty");
   endif
 
 endfunction

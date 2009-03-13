@@ -3377,9 +3377,16 @@ gripe_single_quote_string (void)
 static void
 gripe_matlab_incompatible (const std::string& msg)
 {
-  warning_with_id ("Octave:matlab-incompatible",
-		   "potential Matlab compatibility problem: %s",
-		   msg.c_str ());
+  std::string nm = curr_fcn_file_full_name;
+
+  if (nm.empty ())
+    warning_with_id ("Octave:matlab-incompatible",
+		     "potential Matlab compatibility problem: %s",
+		     msg.c_str ());
+  else
+    warning_with_id ("Octave:matlab-incompatible",
+		     "potential Matlab compatibility problem: %s near line %d offile %s",
+		     msg.c_str (), input_line_number, nm.c_str ());
 }
 
 static void

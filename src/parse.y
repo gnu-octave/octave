@@ -1512,9 +1512,15 @@ maybe_warn_assign_as_truth_value (tree_expression *expr)
   if (expr->is_assignment_expression ()
       && expr->paren_count () < 2)
     {
-      warning_with_id
-        ("Octave:assign-as-truth-value",
-         "suggest parenthesis around assignment used as truth value");
+      if (curr_fcn_file_full_name.empty ())
+	warning_with_id
+	  ("Octave:assign-as-truth-value",
+	   "suggest parenthesis around assignment used as truth value");
+      else
+	warning_with_id
+	  ("Octave:assign-as-truth-value",
+	   "suggest parenthesis around assignment used as truth value near line %d, column %d in file `%s'",
+	   expr->line (), expr->column (), curr_fcn_file_full_name.c_str ());
     }
 }
 
@@ -1524,8 +1530,16 @@ static void
 maybe_warn_variable_switch_label (tree_expression *expr)
 {
   if (! expr->is_constant ())
-    warning_with_id ("Octave:variable-switch-label",
-    		     "variable switch label");
+    {
+      if (curr_fcn_file_full_name.empty ())
+	warning_with_id ("Octave:variable-switch-label",
+			 "variable switch label");
+      else
+	warning_with_id
+	  ("Octave:variable-switch-label",
+	   "variable switch label near line %d, column %d in file `%s'",
+	   expr->line (), expr->column (), curr_fcn_file_full_name.c_str ());
+    }
 }
 
 static tree_expression *
@@ -1817,10 +1831,18 @@ maybe_warn_associativity_change (tree_expression *op)
 	{
 	  std::string op_str = octave_value::binary_op_as_string (op_type);
 
-	  warning_with_id
-	    ("Octave:associativity-change",
-	     "meaning may have changed due to change in associativity for %s operator", op_str.c_str ());
-        }
+	  if (curr_fcn_file_full_name.empty ())
+	    warning_with_id
+	      ("Octave:associativity-change",
+	       "meaning may have changed due to change in associativity for %s operator",
+	       op_str.c_str ());
+	  else
+	    warning_with_id
+	      ("Octave:associativity-change",
+	       "meaning may have changed due to change in associativity for %s operator near line %d, column %d in file `%s'",
+	       op_str.c_str (), op->line (), op->column (),
+	       curr_fcn_file_full_name.c_str ());
+	}
     }
 }
 
@@ -1920,9 +1942,18 @@ make_binary_op (int op, tree_expression *op1, token *tok_val,
 	    = dynamic_cast<tree_binary_expression *> (op2);
 
 	  if (e->op_type () == octave_value::op_el_and)
-	    warning_with_id
-	      ("Octave:precedence-change",
-	       "meaning may have changed due to change in precedence for & and | operators");
+	    {
+	      if (curr_fcn_file_full_name.empty ())
+		warning_with_id
+		  ("Octave:precedence-change",
+		   "meaning may have changed due to change in precedence for & and | operators");
+	      else
+		warning_with_id
+		  ("Octave:precedence-change",
+		   "meaning may have changed due to change in precedence for & and | operators near line %d, column %d in file `%s'",
+		   op2->line (), op2->column (),
+		   curr_fcn_file_full_name.c_str ());
+	    }
         }
       break;
 

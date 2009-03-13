@@ -1,3 +1,16 @@
+2009-03-13  John W. Eaton  <jwe@octave.org>
+
+	* parse.y (maybe_warn_assign_as_truth_value, make_binary_op,
+	maybe_warn_variable_switch_label, maybe_warn_associativity_change): 
+	Print file and line number info if available.
+	* lex.l (gripe_matlab_incompatible): Likewise.
+
+	* error.cc (pr_where): Use octave_call_stack::backtrace to print
+	complete stack trace at once.  Don't attempt to print code.
+	(error_2): Set error_state to 0 before calling pr_where.
+	(warning_1): Switch sense of test on symbol_table::at_top_level.
+	Call pr_where after printing primary warning message.
+
 2009-03-13  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-range.h (octave_range::octave_range (const Range&)): Allow
@@ -6,14 +19,6 @@
 	invalid range op results.
 	* data.cc (fill_matrix): Return packed form (zero-step range) if
 	possible.
-
-2009-03-13  John W. Eaton  <jwe@octave.org>
-
-	* error.cc (pr_where): Use octave_call_stack::backtrace to print
-	complete stack trace at once.  Don't attempt to print code.
-	(error_2): Set error_state to 0 before calling pr_where.
-	(warning_1): Switch sense of test on symbol_table::at_top_level.
-	Call pr_where after printing primary warning message.
 
 2009-03-10  Jason Riedy  <jason@acm.org>
 

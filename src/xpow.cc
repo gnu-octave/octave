@@ -1123,6 +1123,11 @@ elem_xpow (const NDArray& a, double b)
           for (octave_idx_type i = 0; i < a.length (); i++)
             result.xelem (i) = a(i) * a(i);
         }
+      else if (ib == -1)
+        {
+          for (octave_idx_type i = 0; i < a.length (); i++)
+            result.xelem (i) = 1.0 / a(i);
+        }
       else
         {
           for (octave_idx_type i = 0; i < a.length (); i++)
@@ -1282,11 +1287,19 @@ elem_xpow (const ComplexNDArray& a, double b)
 
   if (xisint (b))
     {
-      for (octave_idx_type i = 0; i < a.length (); i++)
-	{
-	  OCTAVE_QUIT;
-	  result(i) = std::pow (a(i), static_cast<int> (b));
-	}
+      if (b == -1)
+        {
+          for (octave_idx_type i = 0; i < a.length (); i++)
+            result.xelem (i) = std::conj (a(i)) / std::norm (a(i));
+        }
+      else
+        {
+          for (octave_idx_type i = 0; i < a.length (); i++)
+            {
+              OCTAVE_QUIT;
+              result(i) = std::pow (a(i), static_cast<int> (b));
+            }
+        }
     }
   else
     {
@@ -2425,6 +2438,11 @@ elem_xpow (const FloatNDArray& a, float b)
           for (octave_idx_type i = 0; i < a.length (); i++)
             result.xelem (i) = a(i) * a(i);
         }
+      else if (ib == -1)
+        {
+          for (octave_idx_type i = 0; i < a.length (); i++)
+            result.xelem (i) = 1.0f / a(i);
+        }
       else
         {
           for (octave_idx_type i = 0; i < a.length (); i++)
@@ -2584,11 +2602,19 @@ elem_xpow (const FloatComplexNDArray& a, float b)
 
   if (xisint (b))
     {
-      for (octave_idx_type i = 0; i < a.length (); i++)
-	{
-	  OCTAVE_QUIT;
-	  result(i) = std::pow (a(i), static_cast<int> (b));
-	}
+      if (b == -1)
+        {
+          for (octave_idx_type i = 0; i < a.length (); i++)
+            result.xelem (i) = std::conj (a(i)) / std::norm (a(i));
+        }
+      else
+        {
+          for (octave_idx_type i = 0; i < a.length (); i++)
+            {
+              OCTAVE_QUIT;
+              result(i) = std::pow (a(i), static_cast<int> (b));
+            }
+        }
     }
   else
     {

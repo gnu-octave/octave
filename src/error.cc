@@ -405,66 +405,32 @@ pr_where_1 (const char *fmt, ...)
 }
 
 static void
-pr_where (const char *name, bool print_code = true)
+pr_where (const char *who)
 {
-  if (octave_call_stack::current_statement ())
+  octave_idx_type curr_frame = -1;
+
+  Octave_map stk = octave_call_stack::backtrace (0, curr_frame);
+
+  octave_idx_type nframes_to_display = stk.numel ();
+
+  if (nframes_to_display > 0)
     {
-      std::string nm;
+      pr_where_1 ("%s: called from\n", who);
 
-      int l = -1;
-      int c = -1;
+      Cell names = stk.contents ("name");
+      Cell lines = stk.contents ("line");
+      Cell columns = stk.contents ("column");
 
-      octave_user_code *fcn = octave_call_stack::caller_user_code ();
-
-      if (fcn)
+      for (octave_idx_type i = 0; i < nframes_to_display; i++)
 	{
-	  nm = fcn->fcn_file_name ();
+	  octave_value name = names(i);
+	  octave_value line = lines(i);
+	  octave_value column = columns(i);
 
-	  if (nm.empty ())
-	    nm = fcn->name ();
+	  std::string nm = name.string_value ();
 
-	  l = octave_call_stack::current_line ();
-	  c = octave_call_stack::current_column ();
-	}
-
-      if (nm.empty ())
-	{
-	  if (l > 0 && c > 0)
-	    pr_where_1 ("%s: near line %d, column %d:", name, l, c);
-	}
-      else
-	{
-	  if (l > 0 && c > 0)
-	    pr_where_1 ("%s: in %s near line %d, column %d:",
-			name, nm.c_str (), l, c);
-	  else
-	    pr_where_1 ("%s: in %s", name, nm.c_str ());
-	}
-
-      if (print_code)
-	{
-	  // FIXME -- Note that the column number is probably
-	  // not going to mean much here since the code is being
-	  // reproduced from the parse tree, and we are only showing
-	  // one statement even if there were multiple statements on
-	  // the original source line.
-
-	  std::ostringstream output_buf;
-
-	  output_buf << std::endl;
-
-	  tree_print_code tpc (output_buf, ">>> ");
-
-	  tree_statement *curr_stmt = octave_call_stack::current_statement ();
-
-	  if (curr_stmt)
-	    curr_stmt->accept (tpc);
-
-	  output_buf << std::endl;
-
-	  std::string msg = output_buf.str ();
-
-	  pr_where_1 ("%s", msg.c_str ());
+	  pr_where_1 ("    %s at line %d column %d\n", nm.c_str (),
+		      line.int_value (), column.int_value ());
 	}
     }
 }
@@ -483,9 +449,9 @@ error_2 (const char *id, const char *fmt, va_list args)
       unwind_protect_bool (Vdebug_on_error);
       Vdebug_on_error = false;
 
-      pr_where ("error");
-
       error_state = 0;
+
+      pr_where ("error");
 
       do_keyboard (octave_value_list ());
 
@@ -627,13 +593,13 @@ warning_1 (const char *id, const char *fmt, va_list args)
     }
   else if (warn_opt == 1)
     {
-      if (symbol_table::at_top_level ()
+      vwarning ("warning", id, fmt, args);
+
+      if (! symbol_table::at_top_level ()
 	  && Vbacktrace_on_warning
 	  && ! warning_state
 	  && ! discard_warning_messages)
-	pr_where ("warning", false);
-
-      vwarning ("warning", id, fmt, args);
+	pr_where ("warning");
 
       warning_state = 1;
 

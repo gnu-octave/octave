@@ -7,6 +7,14 @@
 	* data.cc (fill_matrix): Return packed form (zero-step range) if
 	possible.
 
+2009-03-13  John W. Eaton  <jwe@octave.org>
+
+	* error.cc (pr_where): Use octave_call_stack::backtrace to print
+	complete stack trace at once.  Don't attempt to print code.
+	(error_2): Set error_state to 0 before calling pr_where.
+	(warning_1): Switch sense of test on symbol_table::at_top_level.
+	Call pr_where after printing primary warning message.
+
 2009-03-10  Jason Riedy  <jason@acm.org>
 
 	* DLD-FUNCTIONS/lu.cc (lu): Call fact.Pr_mat () and fact.Pc_mat ()

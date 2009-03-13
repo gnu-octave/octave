@@ -1,5 +1,6 @@
 ## Copyright (C) 1995, 1996, 1997, 1998, 2000, 2002, 2004, 2005, 2006,
 ##               2007 Kurt Hornik
+## Copyright (C) 2009 Jaroslav Hajek
 ##
 ## This file is part of Octave.
 ##
@@ -29,12 +30,21 @@
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Compute mean square
 
-function y = meansq (x, varargin)
+function y = meansq (x, dim)
 
   if (nargin != 1 && nargin != 2)
     print_usage ();
   endif
 
-  y = mean (x.^2, varargin{:});
+  if (nargin < 2)
+    t = find (size (x) != 1);
+    if (isempty (t))
+      dim = 1;
+    else
+      dim = t(1);
+    endif
+  endif
+
+  y = sumsq (x, dim) / size (x, dim);
 
 endfunction

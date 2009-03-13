@@ -1,5 +1,10 @@
 2009-03-13  Jaroslav Hajek  <highegg@gmail.com>
 
+	* statistics/base/mean.m: Simplify.
+	* statistics/base/meansq.m: Optimize.
+
+2009-03-13  Jaroslav Hajek  <highegg@gmail.com>
+
 	* general/repmat.m: Use subscript pairs rather than forming Kronecker
 	products.
 

@@ -106,10 +106,8 @@ function y = mean (x, opt1, opt2)
   if (strcmp (opt, "a"))
     y = sum (x, dim) / n;
   elseif (strcmp (opt, "g"))
-    x(x <= 0) = NaN;
-    y = exp (sum (log (x), dim) / n);
+    y = prod (x, dim) .^ (1/n);
   elseif (strcmp (opt, "h"))
-    x(x == 0) = NaN;
     y = n ./ sum (1 ./ x, dim);
   else
     error ("mean: option `%s' not recognized", opt);

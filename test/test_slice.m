@@ -118,30 +118,30 @@
 %!assert(set_slice([2 1], 33, 3), reshape([1 1 0 0 2 2],[2 1 3]));
 
 ## size = [1 2]
-%!assert(set_slice([1 2], 11, []), ones([1 2]));
+%!assert(set_slice([1 2], 11, []), full(ones([1 2])));
 %!assert(set_slice([1 2], 11, 1), [2 1]);
 %!assert(set_slice([1 2], 11, 2), [1 2]);
 %!assert(set_slice([1 2], 11, 3), [1 1 2]);
 %!assert(set_slice([1 2], 11, 4), [1 1 0 2]);
-%!assert(set_slice([1 2], 21, []), ones([1 2]));
+%!assert(set_slice([1 2], 21, []), full(ones([1 2])));
 %!assert(set_slice([1 2], 21, 1), [2 2]);
 %!assert(set_slice([1 2], 21, 2), [1 1;2 2]);
 %!assert(set_slice([1 2], 21, 3), [1 1;0 0;2 2]);
-%!assert(set_slice([1 2], 22, []), ones([1 2]));
+%!assert(set_slice([1 2], 22, []), full(ones([1 2])));
 %!assert(set_slice([1 2], 22, 1), [2 1]);
 %!assert(set_slice([1 2], 22, 2), [1 2]);
 %!assert(set_slice([1 2], 22, 3), [1 1 2]);
 %!assert(set_slice([1 2], 22, 4), [1 1 0 2]);
-%!assert(set_slice([1 2], 31, []), ones([1 2]));
+%!assert(set_slice([1 2], 31, []), full(ones([1 2])));
 %!assert(set_slice([1 2], 31, 1), [2 2]);
 %!assert(set_slice([1 2], 31, 2), [1 1;2 2]);
 %!assert(set_slice([1 2], 31, 3), [1 1;0 0;2 2]);
-%!assert(set_slice([1 2], 32, []), ones([1 2]));
+%!assert(set_slice([1 2], 32, []), full(ones([1 2])));
 %!assert(set_slice([1 2], 32, 1), [2 1]);
 %!assert(set_slice([1 2], 32, 2), [1 2]);
 %!assert(set_slice([1 2], 32, 3), [1 1 2]);
 %!assert(set_slice([1 2], 32, 4), [1 1 0 2]);
-%!assert(set_slice([1 2], 33, []), ones([1 2]));
+%!assert(set_slice([1 2], 33, []), full(ones([1 2])));
 %!assert(set_slice([1 2], 33, 1), [2 2]);
 %!assert(set_slice([1 2], 33, 2), reshape([1 1 2 2],[1 2 2]));
 %!assert(set_slice([1 2], 33, 3), reshape([1 1 0 0 2 2],[1 2 3]));

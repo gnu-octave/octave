@@ -234,4 +234,4 @@ endfunction
 
 %!test
 %! result = legendre (0, 0:0.1:1);
-%! assert (result, ones(1,11))
+%! assert (result, full(ones(1,11)))

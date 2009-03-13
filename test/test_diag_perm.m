@@ -46,8 +46,8 @@
 %! n = 4;
 %! P1 = eye (n) (:, randperm (n));
 %! A = zeros (n) + P1;
-%! assert (sum (A), ones (1, n));
-%! assert (sum (A, 2), ones (n, 1));
+%! assert (sum (A), full (ones (1, n)));
+%! assert (sum (A, 2), full (ones (n, 1)));
 
 ## preserve dense matrix structure
 %!test

@@ -1,3 +1,9 @@
+2009-03-13  Jaroslav Hajek  <highegg@gmail.com>
+
+	* xpow.cc (xpow (const NDArray&, double), xpow (const ComplexNDArray&, double),
+	xpow (const FloatNDArray&, float), xpow (const FloatComplexNDArray&,
+	float)): Use xisint for testing ints. Optimize w.r.t int exponents.
+
 2009-03-13  John W. Eaton  <jwe@octave.org>
 
 	* parse.y (maybe_warn_assign_as_truth_value, make_binary_op,

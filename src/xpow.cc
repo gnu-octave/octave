@@ -79,7 +79,7 @@ xpow (double a, double b)
 {
   double retval;
 
-  if (a < 0.0 && static_cast<int> (b) != b)
+  if (a < 0.0 && ! xisint (b))
     {
       Complex atmp (a);
 
@@ -700,7 +700,7 @@ elem_xpow (const Matrix& a, double b)
   octave_idx_type nr = a.rows ();
   octave_idx_type nc = a.cols ();
 
-  if (static_cast<int> (b) != b && a.any_element_is_negative ())
+  if (! xisint (b) && a.any_element_is_negative ())
     {
       ComplexMatrix result (nr, nc);
 
@@ -1084,30 +1084,53 @@ elem_xpow (const NDArray& a, double b)
 {
   octave_value retval;
 
-  if (static_cast<int> (b) != b && a.any_element_is_negative ())
+  if (! xisint (b))
     {
-      ComplexNDArray result (a.dims ());
+      if (a.any_element_is_negative ())
+        {
+          ComplexNDArray result (a.dims ());
 
-      for (octave_idx_type i = 0; i < a.length (); i++)
-	{
-	  OCTAVE_QUIT;
+          for (octave_idx_type i = 0; i < a.length (); i++)
+            {
+              OCTAVE_QUIT;
 
-	  Complex atmp (a (i));
+              Complex atmp (a (i));
 
-	  result(i) = std::pow (atmp, b);
-	}
+              result(i) = std::pow (atmp, b);
+            }
 
-      retval = result;
+          retval = result;
+        }
+      else
+        {
+          NDArray result (a.dims ());
+          for (octave_idx_type i = 0; i < a.length (); i++)
+            {
+              OCTAVE_QUIT;
+              result(i) = std::pow (a(i), b);
+            }
+
+          retval = result;
+        }
     }
   else
     {
       NDArray result (a.dims ());
 
-      for (octave_idx_type i = 0; i < a.length (); i++)
-	{
-	  OCTAVE_QUIT;
-	  result(i) = std::pow (a(i), b);
-	}
+      int ib = static_cast<int> (b);
+      if (ib == 2)
+        {
+          for (octave_idx_type i = 0; i < a.length (); i++)
+            result.xelem (i) = a(i) * a(i);
+        }
+      else
+        {
+          for (octave_idx_type i = 0; i < a.length (); i++)
+            {
+              OCTAVE_QUIT;
+              result(i) = std::pow (a(i), ib);
+            }
+        }
 
       retval = result;
     }
@@ -1371,7 +1394,7 @@ xpow (float a, float b)
 {
   float retval;
 
-  if (a < 0.0 && static_cast<int> (b) != b)
+  if (a < 0.0 && ! xisint (b))
     {
       FloatComplex atmp (a);
 
@@ -1979,7 +2002,7 @@ elem_xpow (const FloatMatrix& a, float b)
   octave_idx_type nr = a.rows ();
   octave_idx_type nc = a.cols ();
 
-  if (static_cast<int> (b) != b && a.any_element_is_negative ())
+  if (! xisint (b) && a.any_element_is_negative ())
     {
       FloatComplexMatrix result (nr, nc);
 
@@ -2363,30 +2386,53 @@ elem_xpow (const FloatNDArray& a, float b)
 {
   octave_value retval;
 
-  if (static_cast<int> (b) != b && a.any_element_is_negative ())
+  if (! xisint (b))
     {
-      FloatComplexNDArray result (a.dims ());
+      if (a.any_element_is_negative ())
+        {
+          FloatComplexNDArray result (a.dims ());
 
-      for (octave_idx_type i = 0; i < a.length (); i++)
-	{
-	  OCTAVE_QUIT;
+          for (octave_idx_type i = 0; i < a.length (); i++)
+            {
+              OCTAVE_QUIT;
 
-	  FloatComplex atmp (a (i));
+              FloatComplex atmp (a (i));
 
-	  result(i) = std::pow (atmp, b);
-	}
+              result(i) = std::pow (atmp, b);
+            }
 
-      retval = result;
+          retval = result;
+        }
+      else
+        {
+          FloatNDArray result (a.dims ());
+          for (octave_idx_type i = 0; i < a.length (); i++)
+            {
+              OCTAVE_QUIT;
+              result(i) = std::pow (a(i), b);
+            }
+
+          retval = result;
+        }
     }
   else
     {
       FloatNDArray result (a.dims ());
 
-      for (octave_idx_type i = 0; i < a.length (); i++)
-	{
-	  OCTAVE_QUIT;
-	  result(i) = std::pow (a(i), b);
-	}
+      int ib = static_cast<int> (b);
+      if (ib == 2)
+        {
+          for (octave_idx_type i = 0; i < a.length (); i++)
+            result.xelem (i) = a(i) * a(i);
+        }
+      else
+        {
+          for (octave_idx_type i = 0; i < a.length (); i++)
+            {
+              OCTAVE_QUIT;
+              result(i) = std::pow (a(i), ib);
+            }
+        }
 
       retval = result;
     }

@@ -1,3 +1,10 @@
+2009-03-13  Jaroslav Hajek  <highegg@gmail.com>
+
+	* Range.h (Range::Range (double, double, octave_idx_type)): Remove
+	constructor body.
+	* Range.cc: Move it here. Check for invalid range op results.
+	(all operators): Validate cache for invalid range op results.
+
 2009-03-10  Jason Riedy  <jason@acm.org>
 
 	* sparse-base-lu.cc (Pr_mat): New member function.  Return the row

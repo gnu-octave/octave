@@ -68,7 +68,7 @@ public:
   octave_range (const Range& r)
     : octave_base_value (), range (r)
       {
-	if (range.nelem () < 0)
+	if (range.nelem () < 0 && range.nelem () != -2)
 	  ::error ("invalid range");
       }
 

@@ -1,3 +1,10 @@
+2009-03-13  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-range.h (octave_range::octave_range (const Range&)): Allow
+	constructing from invalid range op result.
+	* ov-range.cc (octave_range::try_narrowing_conversion): Validate
+	invalid range op results.
+
 2009-03-10  Jason Riedy  <jason@acm.org>
 
 	* DLD-FUNCTIONS/lu.cc (lu): Call fact.Pr_mat () and fact.Pc_mat ()

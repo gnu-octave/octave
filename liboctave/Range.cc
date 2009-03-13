@@ -36,6 +36,14 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-math.h"
 #include "lo-utils.h"
 
+Range::Range (double b, double i, octave_idx_type n)
+  : rng_base (b), rng_limit (b + n * i), rng_inc (i), 
+  rng_nelem (n), cache ()
+{
+  if (! xfinite (b) || ! xfinite (i))
+    rng_nelem = -2;
+}
+
 bool
 Range::all_elements_are_ints (void) const
 {
@@ -51,7 +59,7 @@ Range::all_elements_are_ints (void) const
 Matrix
 Range::matrix_value (void) const
 {
-  if (rng_nelem > 0 && cache.rows () == 0)
+  if (rng_nelem > 0 && cache.nelem () == 0)
     {
       cache.resize (1, rng_nelem);
       double b = rng_base;
@@ -181,35 +189,7 @@ Range::sort_internal (Array<octave_idx_type>& sidx, bool ascending)
 Matrix 
 Range::diag (octave_idx_type k) const
 {
-  octave_idx_type nnr = 1;
-  octave_idx_type nnc = nelem ();
-  Matrix d;
-
-  if  (nnr != 0)
-    {
-      octave_idx_type roff = 0;
-      octave_idx_type coff = 0;
-      if (k > 0)
-	{
-	  roff = 0;
-	  coff = k;
-	}
-      else if (k < 0)
-	{
-	  roff = -k;
-	  coff = 0;
-	}
-
-      // Force cached matrix to be created
-      matrix_value ();
-
-      octave_idx_type n = nnc + std::abs (k);
-      d = Matrix (n, n, Matrix::resize_fill_value ());
-      for (octave_idx_type i = 0; i < nnc; i++)
-	d.xelem (i+roff, i+coff) = cache.xelem (i);
-    }
-
-  return d;
+  return matrix_value ().diag (k);
 }
 
 Range
@@ -305,32 +285,56 @@ operator - (const Range& r)
 
 Range operator + (double x, const Range& r)
 {
-  return Range (x + r.base (), r.inc (), r.nelem ());
+  Range result (x + r.base (), r.inc (), r.nelem ());
+  if (result.rng_nelem < 0)
+    result.cache = x + r.matrix_value ();
+
+  return result;
 }
 
 Range operator + (const Range& r, double x)
 {
-  return Range (r.base () + x, r.inc (), r.nelem ());
+  Range result (r.base () + x, r.inc (), r.nelem ());
+  if (result.rng_nelem < 0)
+    result.cache = r.matrix_value () + x;
+
+  return result;
 }
 
 Range operator - (double x, const Range& r)
 {
-  return Range (x - r.base (), -r.inc (), r.nelem ());
+  Range result (x - r.base (), -r.inc (), r.nelem ());
+  if (result.rng_nelem < 0)
+    result.cache = x - r.matrix_value ();
+
+  return result;
 }
 
 Range operator - (const Range& r, double x)
 {
-  return Range (r.base () - x, r.inc (), r.nelem ());
+  Range result (r.base () - x, r.inc (), r.nelem ());
+  if (result.rng_nelem < 0)
+    result.cache = r.matrix_value () - x;
+
+  return result;
 }
 
 Range operator * (double x, const Range& r)
 {
-  return Range (x * r.base (), x * r.inc (), r.nelem ());
+  Range result (x * r.base (), x * r.inc (), r.nelem ());
+  if (result.rng_nelem < 0)
+    result.cache = x * r.matrix_value ();
+
+  return result;
 }
 
 Range operator * (const Range& r, double x)
 {
-  return Range (r.base () * x, r.inc () * x, r.nelem ());
+  Range result (r.base () * x, r.inc () * x, r.nelem ());
+  if (result.rng_nelem < 0)
+    result.cache = r.matrix_value () * x;
+
+  return result;
 }
 
 

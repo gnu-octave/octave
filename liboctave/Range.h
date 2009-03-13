@@ -40,7 +40,7 @@ Range
 
   Range (const Range& r)
     : rng_base (r.rng_base), rng_limit (r.rng_limit), rng_inc (r.rng_inc),
-      rng_nelem (r.rng_nelem), cache () { }
+      rng_nelem (r.rng_nelem), cache (r.cache) { }
 
   Range (double b, double l)
     : rng_base (b), rng_limit (l), rng_inc (1),
@@ -51,9 +51,7 @@ Range
       rng_nelem (nelem_internal ()), cache () { }
 
   // For operators' usage (to preserve element count).
-  Range (double b, double i, octave_idx_type n)
-    : rng_base (b), rng_limit (b + n * i), rng_inc (i), 
-      rng_nelem (n), cache () { }
+  Range (double b, double i, octave_idx_type n);
 
   double base (void) const { return rng_base; }
   double limit (void) const { return rng_limit; }
@@ -109,6 +107,14 @@ Range
   friend OCTAVE_API std::ostream& operator << (std::ostream& os, const Range& r);
   friend OCTAVE_API std::istream& operator >> (std::istream& is, Range& r);
 
+  friend OCTAVE_API Range operator - (const Range& r);
+  friend OCTAVE_API Range operator + (double x, const Range& r);
+  friend OCTAVE_API Range operator + (const Range& r, double x);
+  friend OCTAVE_API Range operator - (double x, const Range& r);
+  friend OCTAVE_API Range operator - (const Range& r, double x);
+  friend OCTAVE_API Range operator * (double x, const Range& r);
+  friend OCTAVE_API Range operator * (const Range& r, double x);
+
   void print_range (void);
 
  private:
@@ -124,6 +130,7 @@ Range
   octave_idx_type nelem_internal (void) const;
 
   void clear_cache (void) const { cache.resize (0, 0); }
+
 };
 
 extern OCTAVE_API Range operator - (const Range& r);

@@ -4,6 +4,9 @@
 	constructor body.
 	* Range.cc: Move it here. Check for invalid range op results.
 	(all operators): Validate cache for invalid range op results.
+	* idx-vector.h (idx_vector::index): Optimize zero-step range case.
+	* idx-vector.cc (idx_vector::maybe_reduce): Always reduce colon in
+	singleton dimension.
 
 2009-03-10  Jason Riedy  <jason@acm.org>
 

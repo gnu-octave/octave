@@ -4,6 +4,8 @@
 	constructing from invalid range op result.
 	* ov-range.cc (octave_range::try_narrowing_conversion): Validate
 	invalid range op results.
+	* data.cc (fill_matrix): Return packed form (zero-step range) if
+	possible.
 
 2009-03-10  Jason Riedy  <jason@acm.org>
 

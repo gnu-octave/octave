@@ -517,6 +517,8 @@ public:
               std::copy (ssrc, ssrc + len, dest);
             else if (step == -1)
               std::reverse_copy (ssrc - len + 1, ssrc + 1, dest);
+            else if (step == 0)
+              std::fill_n (dest, len, *ssrc);
             else
               {
                 for (octave_idx_type i = 0, j = 0; i < len; i++, j += step)

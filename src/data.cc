@@ -3248,7 +3248,12 @@ fill_matrix (const octave_value_list& args, int val, const char *fcn)
 	      break;
 
 	    case oct_data_conv::dt_double:
-	      retval = NDArray (dims, val);
+              {
+                if (val == 1 && dims.length () == 2 && dims (0) == 1)
+                  retval = Range (1.0, 0.0, dims (1)); // packed form
+                else
+                  retval = NDArray (dims, val);
+              }
 	      break;
 
 	    case oct_data_conv::dt_logical:

@@ -416,6 +416,16 @@ bool idx_vector::maybe_reduce (octave_idx_type n, const idx_vector& j,
       return true;
     }
 
+  // Possibly skip singleton dims.
+  if (n == 1 && rep->is_colon_equiv (n))
+    {
+      *this = j;
+      return true;
+    }
+
+  if (nj == 1 && j.is_colon_equiv (nj))
+    return true;
+
   switch (j.idx_class ())
     {
     case class_colon:

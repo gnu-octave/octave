@@ -1,7 +1,8 @@
 2009-03-14  Jaroslav Hajek  <highegg@gmail.com>
 
-	* mx-op-decl.h (*BOOL_OP_DECLS): Support compound binary ops.
-	* mx-op-defs.h (*BOOL_OP): Ditto. Optimize.
+	* mx-op-decl.h (NDS_BOOL_OP_DECLS, SND_BOOL_OP_DECLS, NDND_BOOL_OP_DECLS): Support compound binary ops.
+	* mx-op-defs.h (NDS_BOOL_OPS, SND_BOOL_OPS, NDND_BOOL_OPS): Ditto. Optimize.
+	* mx-op-defs.h (NDS_CMP_OP, SND_CMP_OP, NDND_CMP_OP): Optimize.
 
 2009-03-14  Jaroslav Hajek  <highegg@gmail.com>
 

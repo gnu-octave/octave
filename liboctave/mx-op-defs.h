@@ -424,14 +424,20 @@ along with Octave; see the file COPYING.  If not, see
   boolNDArray \
   F (const ND& m, const S& s) \
   { \
-    boolNDArray r; \
+    boolNDArray r (m.dims ()); \
  \
     octave_idx_type len = m.length (); \
  \
-    r.resize (m.dims ()); \
- \
-    for (octave_idx_type i = 0; i < len; i++) \
-      r.elem(i) = NDC (m.elem(i)) OP SC (s); \
+    if (s == S ()) \
+      { \
+        for (octave_idx_type i = 0; i < len; i++) \
+        r.xelem(i) = NDC (m.elem(i)) OP SC (S ()); \
+      } \
+    else \
+      { \
+        for (octave_idx_type i = 0; i < len; i++) \
+          r.xelem(i) = NDC (m.elem(i)) OP SC (s); \
+      } \
  \
     return r; \
   }
@@ -448,11 +454,9 @@ along with Octave; see the file COPYING.  If not, see
   boolNDArray \
   F (const ND& m, const S& s) \
   { \
-    boolNDArray r; \
+    boolNDArray r (m.dims ()); \
  \
     octave_idx_type len = m.length (); \
- \
-    r.resize (m.dims ()); \
  \
     for (octave_idx_type i = 0; i < len; i++) \
       r.elem(i) = operator OP <SPEC> (NDC (m.elem(i)), SC (s)); \
@@ -555,14 +559,20 @@ along with Octave; see the file COPYING.  If not, see
   boolNDArray \
   F (const S& s, const ND& m) \
   { \
-    boolNDArray r; \
+    boolNDArray r (m.dims ()); \
  \
     octave_idx_type len = m.length (); \
  \
-    r.resize (m.dims ()); \
- \
-    for (octave_idx_type i = 0; i < len; i++) \
-      r.elem(i) = SC (s) OP NDC (m.elem(i)); \
+    if (s == S ()) \
+      { \
+        for (octave_idx_type i = 0; i < len; i++) \
+        r.xelem(i) = SC (S ()) OP NDC (m.elem(i)); \
+      } \
+    else \
+      { \
+        for (octave_idx_type i = 0; i < len; i++) \
+          r.xelem(i) = SC (s) OP NDC (m.elem(i)); \
+      } \
  \
     return r; \
   }
@@ -579,11 +589,9 @@ along with Octave; see the file COPYING.  If not, see
   boolNDArray \
   F (const S& s, const ND& m) \
   { \
-    boolNDArray r; \
+    boolNDArray r (m.dims ()); \
  \
     octave_idx_type len = m.length (); \
- \
-    r.resize (m.dims ()); \
  \
     for (octave_idx_type i = 0; i < len; i++) \
       r.elem(i) = operator OP <SPEC> (SC (s), NDC (m.elem(i))); \
@@ -603,11 +611,9 @@ along with Octave; see the file COPYING.  If not, see
   boolNDArray \
   F (const S& s, const ND& m) \
   { \
-    boolNDArray r; \
+    boolNDArray r (m.dims ()); \
  \
     octave_idx_type len = m.length (); \
- \
-    r.resize (m.dims ()); \
  \
     for (octave_idx_type i = 0; i < len; i++) \
       r.elem(i) = operator OP <SPEC1, SPEC2> (SC (s), NDC (m.elem(i))); \
@@ -675,7 +681,7 @@ along with Octave; see the file COPYING.  If not, see
       gripe_nonconformant (#OP, m1_dims, m2_dims); \
     else \
       { \
-	r.resize (m1_dims); \
+	r = R (m1_dims); \
  \
 	octave_idx_type len = m1.length (); \
  \
@@ -703,10 +709,10 @@ along with Octave; see the file COPYING.  If not, see
  \
     if (m1_dims == m2_dims) \
       { \
-	r.resize (m1_dims); \
+	r = boolNDArray (m1_dims); \
  \
 	for (octave_idx_type i = 0; i < m1.length (); i++) \
-	  r.elem(i) = C1 (m1.elem(i)) OP C2 (m2.elem(i)); \
+	  r.xelem(i) = C1 (m1.elem(i)) OP C2 (m2.elem(i)); \
       } \
     else \
       gripe_nonconformant (#F, m1_dims, m2_dims); \

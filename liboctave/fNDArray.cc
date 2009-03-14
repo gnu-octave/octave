@@ -829,28 +829,16 @@ FloatNDArray::abs (void) const
                        dims ());
 }
 
-Matrix
+FloatMatrix
 FloatNDArray::matrix_value (void) const
 {
-  Matrix retval;
+  FloatMatrix retval;
 
-  int nd = ndims ();
-
-  switch (nd)
-    {
-    case 1:
-      retval = Matrix (Array2<float> (*this, dimensions(0), 1));
-      break;
-
-    case 2:
-      retval = Matrix (Array2<float> (*this, dimensions(0), dimensions(1)));
-      break;
-
-    default:
-      (*current_liboctave_error_handler)
-	("invalid conversion of FloatNDArray to Matrix");
-      break;
-    }
+  if (ndims () == 2)
+      retval = FloatMatrix (Array2<float> (*this));
+  else
+    (*current_liboctave_error_handler)
+      ("invalid conversion of FloatNDArray to FloatMatrix");
 
   return retval;
 }

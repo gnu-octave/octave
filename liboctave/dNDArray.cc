@@ -879,23 +879,11 @@ NDArray::matrix_value (void) const
 {
   Matrix retval;
 
-  int nd = ndims ();
-
-  switch (nd)
-    {
-    case 1:
-      retval = Matrix (Array2<double> (*this, dimensions(0), 1));
-      break;
-
-    case 2:
-      retval = Matrix (Array2<double> (*this, dimensions(0), dimensions(1)));
-      break;
-
-    default:
-      (*current_liboctave_error_handler)
-	("invalid conversion of NDArray to Matrix");
-      break;
-    }
+  if (ndims () == 2)
+      retval = Matrix (Array2<double> (*this));
+  else
+    (*current_liboctave_error_handler)
+      ("invalid conversion of NDArray to Matrix");
 
   return retval;
 }

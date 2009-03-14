@@ -825,24 +825,11 @@ FloatComplexNDArray::matrix_value (void) const
 {
   FloatComplexMatrix retval;
 
-  int nd = ndims ();
-
-  switch (nd)
-    {
-    case 1:
-      retval = FloatComplexMatrix (Array2<FloatComplex> (*this, dimensions(0), 1));
-      break;
-
-    case 2:
-      retval = FloatComplexMatrix (Array2<FloatComplex> (*this, dimensions(0),
-					       dimensions(1)));
-      break;
-
-    default:
-      (*current_liboctave_error_handler)
-	("invalid conversion of FloatComplexNDArray to FloatComplexMatrix");
-      break;
-    }
+  if (ndims () == 2)
+      retval = FloatComplexMatrix (Array2<FloatComplex> (*this));
+  else
+    (*current_liboctave_error_handler)
+      ("invalid conversion of FloatComplexNDArray to FloatComplexMatrix");
 
   return retval;
 }

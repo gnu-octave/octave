@@ -830,24 +830,11 @@ ComplexNDArray::matrix_value (void) const
 {
   ComplexMatrix retval;
 
-  int nd = ndims ();
-
-  switch (nd)
-    {
-    case 1:
-      retval = ComplexMatrix (Array2<Complex> (*this, dimensions(0), 1));
-      break;
-
-    case 2:
-      retval = ComplexMatrix (Array2<Complex> (*this, dimensions(0),
-					       dimensions(1)));
-      break;
-
-    default:
-      (*current_liboctave_error_handler)
-	("invalid conversion of ComplexNDArray to ComplexMatrix");
-      break;
-    }
+  if (ndims () == 2)
+      retval = ComplexMatrix (Array2<Complex> (*this));
+  else
+    (*current_liboctave_error_handler)
+      ("invalid conversion of ComplexNDArray to ComplexMatrix");
 
   return retval;
 }

@@ -121,7 +121,7 @@ public:
 
   friend class FloatComplexNDArray;
 
-  Matrix matrix_value (void) const;
+  FloatMatrix matrix_value (void) const;
 
   FloatNDArray squeeze (void) const { return MArrayN<float>::squeeze (); }
 

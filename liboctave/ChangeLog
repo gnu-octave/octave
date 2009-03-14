@@ -1,3 +1,11 @@
+2009-03-14  Jaroslav Hajek  <highegg@gmail.com>
+
+	* fNDArray.h (FloatMatrix::matrix_value): Fix return type.
+	* dNDArray.cc (Matrix::matrix_value): Simplify.
+	* fNDArray.cc (FloatMatrix::matrix_value): Simplify.
+	* CNDArray.cc (ComplexMatrix::matrix_value): Simplify.
+	* fCNDArray.cc (FloatComplexMatrix::matrix_value): Simplify.
+
 2009-03-13  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Range.h (Range::Range (double, double, octave_idx_type)): Remove

@@ -43,6 +43,9 @@ along with Octave; see the file COPYING.  If not, see
 DEFNDBINOP_FN (el_and, bool, bool_matrix, bool, bool_array, mx_el_and)
 DEFNDBINOP_FN (el_or, bool, bool_matrix, bool, bool_array, mx_el_or)
 
+DEFNDBINOP_FN (el_and_not, bool, bool_matrix, bool, bool_array, mx_el_and_not)
+DEFNDBINOP_FN (el_or_not, bool, bool_matrix, bool, bool_array, mx_el_or_not)
+
 DEFNDCATOP_FN (b_bm, bool, bool_matrix, bool_array, bool_array, concat)
 DEFNDCATOP_FN (b_m, bool, matrix, array, array, concat)
 DEFNDCATOP_FN (s_bm, scalar, bool_matrix, array, array, concat)

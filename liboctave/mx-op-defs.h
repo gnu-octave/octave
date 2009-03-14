@@ -492,18 +492,16 @@ along with Octave; see the file COPYING.  If not, see
   NDS_CMP_OP2 (mx_el_eq, ==, ND,    , S,   , SPEC1, SPEC2) \
   NDS_CMP_OP2 (mx_el_ne, !=, ND,    , S,   , SPEC1, SPEC2)
 
-#define NDS_BOOL_OP(F, OP, ND, S, LHS_ZERO, RHS_ZERO) \
+#define NDS_BOOL_OP(F, EQ, OP, ND, S, LHS_ZERO, RHS_ZERO) \
   boolNDArray \
   F (const ND& m, const S& s) \
   { \
-    boolNDArray r; \
+    boolNDArray r (m.dims ()); \
  \
     octave_idx_type len = m.length (); \
  \
     if (len > 0) \
       { \
-        r.resize (m.dims ()); \
- \
 	if (xisnan (s)) \
 	  gripe_nan_to_logical_conversion (); \
 	else \
@@ -515,7 +513,7 @@ along with Octave; see the file COPYING.  If not, see
 		  return r; \
 		} \
 	      else \
-		r.elem(i) = (m.elem(i) != LHS_ZERO) OP (s != RHS_ZERO); \
+		r.xelem(i) = (m.elem(i) EQ LHS_ZERO) OP (s != RHS_ZERO); \
 	  } \
       } \
  \
@@ -523,8 +521,10 @@ along with Octave; see the file COPYING.  If not, see
   }
 
 #define NDS_BOOL_OPS2(ND, S, LHS_ZERO, RHS_ZERO) \
-  NDS_BOOL_OP (mx_el_and, &&, ND, S, LHS_ZERO, RHS_ZERO) \
-  NDS_BOOL_OP (mx_el_or,  ||, ND, S, LHS_ZERO, RHS_ZERO)
+  NDS_BOOL_OP (mx_el_and, !=, &&, ND, S, LHS_ZERO, RHS_ZERO) \
+  NDS_BOOL_OP (mx_el_or,  !=, ||, ND, S, LHS_ZERO, RHS_ZERO) \
+  NDS_BOOL_OP (mx_el_not_and, ==, &&, ND, S, LHS_ZERO, RHS_ZERO) \
+  NDS_BOOL_OP (mx_el_not_or,  ==, ||, ND, S, LHS_ZERO, RHS_ZERO)
 
 #define NDS_BOOL_OPS(ND, S, ZERO) \
   NDS_BOOL_OPS2(ND, S, ZERO, ZERO)
@@ -623,18 +623,16 @@ along with Octave; see the file COPYING.  If not, see
   SND_CMP_OP2 (mx_el_eq, ==, S,   , ND,    , SPEC1, SPEC2) \
   SND_CMP_OP2 (mx_el_ne, !=, S,   , ND,    , SPEC1, SPEC2)
 
-#define SND_BOOL_OP(F, OP, S, ND, LHS_ZERO, RHS_ZERO) \
+#define SND_BOOL_OP(F, OP, EQ, S, ND, LHS_ZERO, RHS_ZERO) \
   boolNDArray \
   F (const S& s, const ND& m) \
   { \
-    boolNDArray r; \
+    boolNDArray r (m.dims ()); \
  \
     octave_idx_type len = m.length (); \
  \
     if (len > 0) \
       { \
-        r.resize (m.dims ()); \
- \
 	if (xisnan (s)) \
 	  gripe_nan_to_logical_conversion (); \
 	else \
@@ -646,7 +644,7 @@ along with Octave; see the file COPYING.  If not, see
 		  return r; \
 		} \
 	      else \
-		r.elem(i) = (s != LHS_ZERO) OP (m.elem(i) != RHS_ZERO); \
+		r.xelem(i) = (s != LHS_ZERO) OP (m.elem(i) EQ RHS_ZERO); \
 	    } \
       } \
  \
@@ -654,8 +652,10 @@ along with Octave; see the file COPYING.  If not, see
   }
 
 #define SND_BOOL_OPS2(S, ND, LHS_ZERO, RHS_ZERO) \
-  SND_BOOL_OP (mx_el_and, &&, S, ND, LHS_ZERO, RHS_ZERO) \
-  SND_BOOL_OP (mx_el_or,  ||, S, ND, LHS_ZERO, RHS_ZERO)
+  SND_BOOL_OP (mx_el_and, &&, !=, S, ND, LHS_ZERO, RHS_ZERO) \
+  SND_BOOL_OP (mx_el_or,  ||, !=, S, ND, LHS_ZERO, RHS_ZERO) \
+  SND_BOOL_OP (mx_el_and_not, &&, ==, S, ND, LHS_ZERO, RHS_ZERO) \
+  SND_BOOL_OP (mx_el_or_not,  ||, ==, S, ND, LHS_ZERO, RHS_ZERO)
 
 #define SND_BOOL_OPS(S, ND, ZERO) \
   SND_BOOL_OPS2(S, ND, ZERO, ZERO)
@@ -722,7 +722,7 @@ along with Octave; see the file COPYING.  If not, see
   NDND_CMP_OP (mx_el_eq, ==, ND1,   , ND2,   ) \
   NDND_CMP_OP (mx_el_ne, !=, ND1,   , ND2,   )
 
-#define NDND_BOOL_OP(F, OP, ND1, ND2, LHS_ZERO, RHS_ZERO) \
+#define NDND_BOOL_OP(F, EQ1, OP, EQ2, ND1, ND2, LHS_ZERO, RHS_ZERO) \
   boolNDArray \
   F (const ND1& m1, const ND2& m2) \
   { \
@@ -735,7 +735,7 @@ along with Octave; see the file COPYING.  If not, see
       { \
 	if (! m1_dims.all_zero ()) \
 	  { \
-	    r.resize (m1_dims); \
+	    r = boolNDArray (m1_dims); \
  \
 	    for (octave_idx_type i = 0; i < m1.length (); i++) \
 	      if (xisnan (m1.elem(i)) || xisnan (m2.elem(i))) \
@@ -744,7 +744,7 @@ along with Octave; see the file COPYING.  If not, see
 		  return r; \
 		} \
 	      else \
-		r.elem(i) = (m1.elem(i) != LHS_ZERO) OP (m2.elem(i) != RHS_ZERO); \
+		r.xelem(i) = (m1.elem(i) EQ1 LHS_ZERO) OP (m2.elem(i) EQ2 RHS_ZERO); \
 	  } \
       } \
     else \
@@ -754,8 +754,12 @@ along with Octave; see the file COPYING.  If not, see
   }
 
 #define NDND_BOOL_OPS2(ND1, ND2, LHS_ZERO, RHS_ZERO) \
-  NDND_BOOL_OP (mx_el_and, &&, ND1, ND2, LHS_ZERO, RHS_ZERO) \
-  NDND_BOOL_OP (mx_el_or,  ||, ND1, ND2, LHS_ZERO, RHS_ZERO)
+  NDND_BOOL_OP (mx_el_and, !=, &&, !=, ND1, ND2, LHS_ZERO, RHS_ZERO) \
+  NDND_BOOL_OP (mx_el_or,  !=, ||, !=, ND1, ND2, LHS_ZERO, RHS_ZERO) \
+  NDND_BOOL_OP (mx_el_and_not, != , &&, ==, ND1, ND2, LHS_ZERO, RHS_ZERO) \
+  NDND_BOOL_OP (mx_el_or_not, !=, ||, ==, ND1, ND2, LHS_ZERO, RHS_ZERO) \
+  NDND_BOOL_OP (mx_el_not_and, ==, &&, !=, ND1, ND2, LHS_ZERO, RHS_ZERO) \
+  NDND_BOOL_OP (mx_el_not_or,  ==, ||, !=, ND1, ND2, LHS_ZERO, RHS_ZERO)
 
 #define NDND_BOOL_OPS(ND1, ND2, ZERO) \
   NDND_BOOL_OPS2(ND1, ND2, ZERO, ZERO)

@@ -1,5 +1,19 @@
 2009-03-13  Jaroslav Hajek  <highegg@gmail.com>
 
+	* ov.h (octave_value::compound_binary_op): Support bool compound ops.
+	* ov.cc (do_binary_op, decompose_binary_op, binary_op_fcn_name):
+	Ditto.
+	* pt-cbinop.cc (strip_not, simplify_and_or_op): New funcs.
+	(maybe_compound_binary_expression): Support bool compound ops.
+	* OPERATORS/op-int.h: Support bool compound ops.
+	* OPERATORS/op-b-bm.cc: Ditto.
+	* OPERATORS/op-bm-b.cc: Ditto.
+	* OPERATORS/op-bm-bm.cc: Ditto.
+	* OPERATORS/op-fm-fm.cc: Ditto.
+	* OPERATORS/op-m-m.cc: Ditto.
+
+2009-03-13  Jaroslav Hajek  <highegg@gmail.com>
+
 	* xpow.cc (xpow (const NDArray&, double), xpow (const ComplexNDArray&, double),
 	xpow (const FloatNDArray&, float), xpow (const FloatComplexNDArray&,
 	float)): Use xisint for testing ints. Optimize w.r.t int exponents.

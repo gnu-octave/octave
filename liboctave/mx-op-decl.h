@@ -171,7 +171,9 @@ class boolNDArray;
 
 #define NDS_BOOL_OP_DECLS(ND, S, API) \
   NDBOOL_OP_DECL (mx_el_and, ND, S, API); \
-  NDBOOL_OP_DECL (mx_el_or,  ND, S, API);
+  NDBOOL_OP_DECL (mx_el_or,  ND, S, API); \
+  NDBOOL_OP_DECL (mx_el_not_and, ND, S, API); \
+  NDBOOL_OP_DECL (mx_el_not_or,  ND, S, API);
 
 #define NDS_OP_DECLS(R, ND, S, API) \
   NDS_BIN_OP_DECLS (R, ND, S, API) \
@@ -196,7 +198,9 @@ class boolNDArray;
 
 #define SND_BOOL_OP_DECLS(S, ND, API) \
   NDBOOL_OP_DECL (mx_el_and, S, ND, API); \
-  NDBOOL_OP_DECL (mx_el_or,  S, ND, API);
+  NDBOOL_OP_DECL (mx_el_or,  S, ND, API); \
+  NDBOOL_OP_DECL (mx_el_and_not, S, ND, API); \
+  NDBOOL_OP_DECL (mx_el_or_not,  S, ND, API);
 
 #define SND_OP_DECLS(R, S, ND, API) \
   SND_BIN_OP_DECLS (R, S, ND, API) \
@@ -221,7 +225,11 @@ class boolNDArray;
 
 #define NDND_BOOL_OP_DECLS(ND1, ND2, API) \
   NDBOOL_OP_DECL (mx_el_and, ND1, ND2, API); \
-  NDBOOL_OP_DECL (mx_el_or,  ND1, ND2, API);
+  NDBOOL_OP_DECL (mx_el_or,  ND1, ND2, API); \
+  NDBOOL_OP_DECL (mx_el_and_not, ND1, ND2, API); \
+  NDBOOL_OP_DECL (mx_el_or_not,  ND1, ND2, API); \
+  NDBOOL_OP_DECL (mx_el_not_and, ND1, ND2, API); \
+  NDBOOL_OP_DECL (mx_el_not_or,  ND1, ND2, API);
 
 #define NDND_OP_DECLS(R, ND1, ND2, API) \
   NDND_BIN_OP_DECLS (R, ND1, ND2, API) \

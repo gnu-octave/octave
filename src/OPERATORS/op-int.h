@@ -407,7 +407,9 @@ along with Octave; see the file COPYING.  If not, see
 
 #define OCTAVE_SM_INT_BOOL_OPS(PFX, TS, TM) \
   DEFNDBINOP_FN (PFX ## _el_and, TS ## scalar, TM ## matrix, TS ## scalar, TM ## array, mx_el_and) \
-  DEFNDBINOP_FN (PFX ## _el_or,  TS ## scalar, TM ## matrix, TS ## scalar, TM ## array, mx_el_or)
+  DEFNDBINOP_FN (PFX ## _el_or,  TS ## scalar, TM ## matrix, TS ## scalar, TM ## array, mx_el_or) \
+  DEFNDBINOP_FN (PFX ## _el_and_not, TS ## scalar, TM ## matrix, TS ## scalar, TM ## array, mx_el_and_not) \
+  DEFNDBINOP_FN (PFX ## _el_or_not,  TS ## scalar, TM ## matrix, TS ## scalar, TM ## array, mx_el_or_not)
 
 #define OCTAVE_SM_POW_OPS(T1, T2) \
   octave_value \
@@ -575,7 +577,9 @@ along with Octave; see the file COPYING.  If not, see
 
 #define OCTAVE_MS_INT_BOOL_OPS(PFX, TM, TS) \
   DEFNDBINOP_FN (PFX ## _el_and, TM ## matrix, TS ## scalar, TM ## array, TS ## scalar, mx_el_and) \
-  DEFNDBINOP_FN (PFX ## _el_or, TM ## matrix, TS ## scalar, TM ## array, TS ## scalar, mx_el_or)
+  DEFNDBINOP_FN (PFX ## _el_or, TM ## matrix, TS ## scalar, TM ## array, TS ## scalar, mx_el_or) \
+  DEFNDBINOP_FN (PFX ## _el_not_and, TM ## matrix, TS ## scalar, TM ## array, TS ## scalar, mx_el_not_and) \
+  DEFNDBINOP_FN (PFX ## _el_not_or,  TM ## matrix, TS ## scalar, TM ## array, TS ## scalar, mx_el_not_or)
 
 #define OCTAVE_MS_INT_ASSIGN_OPS(PFX, TM, TS, TE) \
   DEFNDASSIGNOP_FN (PFX ## _assign, TM ## matrix, TS ## scalar, TM ## scalar, assign)
@@ -734,7 +738,11 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
 
 #define OCTAVE_MM_INT_BOOL_OPS(PFX, T1, T2) \
   DEFNDBINOP_FN (PFX ## _el_and, T1 ## matrix, T2 ## matrix, T1 ## array, T2 ## array, mx_el_and) \
-  DEFNDBINOP_FN (PFX ## _el_or,  T1 ## matrix, T2 ## matrix, T1 ## array, T2 ## array, mx_el_or)
+  DEFNDBINOP_FN (PFX ## _el_or,  T1 ## matrix, T2 ## matrix, T1 ## array, T2 ## array, mx_el_or) \
+  DEFNDBINOP_FN (PFX ## _el_not_and, T1 ## matrix, T2 ## matrix, T1 ## array, T2 ## array, mx_el_not_and) \
+  DEFNDBINOP_FN (PFX ## _el_not_or,  T1 ## matrix, T2 ## matrix, T1 ## array, T2 ## array, mx_el_not_or) \
+  DEFNDBINOP_FN (PFX ## _el_and_not, T1 ## matrix, T2 ## matrix, T1 ## array, T2 ## array, mx_el_and_not) \
+  DEFNDBINOP_FN (PFX ## _el_or_not,  T1 ## matrix, T2 ## matrix, T1 ## array, T2 ## array, mx_el_or_not)
 
 #define OCTAVE_MM_INT_ASSIGN_OPS(PFX, TLHS, TRHS, TE) \
   DEFNDASSIGNOP_FN (PFX ## _assign, TLHS ## matrix, TRHS ## matrix, TLHS ## array, assign)
@@ -978,7 +986,9 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
 
 #define OCTAVE_INSTALL_SM_INT_BOOL_OPS(PFX, T1, T2) \
   INSTALL_BINOP (op_el_and, octave_ ## T1 ## scalar, octave_ ## T2 ## matrix, PFX ## _el_and); \
-  INSTALL_BINOP (op_el_or, octave_ ## T1 ## scalar, octave_ ## T2 ## matrix, PFX ## _el_or);
+  INSTALL_BINOP (op_el_or, octave_ ## T1 ## scalar, octave_ ## T2 ## matrix, PFX ## _el_or); \
+  INSTALL_BINOP (op_el_and_not, octave_ ## T1 ## scalar, octave_ ## T2 ## matrix, PFX ## _el_and_not); \
+  INSTALL_BINOP (op_el_or_not, octave_ ## T1 ## scalar, octave_ ## T2 ## matrix, PFX ## _el_or_not);
 
 #define OCTAVE_INSTALL_SM_INT_OPS(TYPE) \
   OCTAVE_INSTALL_SM_INT_ARITH_OPS (sm, TYPE ## _, TYPE ## _) \
@@ -1028,7 +1038,9 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
 
 #define OCTAVE_INSTALL_MS_INT_BOOL_OPS(PFX, T1, T2) \
   INSTALL_BINOP (op_el_and, octave_ ## T1 ## matrix, octave_ ## T2 ## scalar, PFX ## _el_and); \
-  INSTALL_BINOP (op_el_or, octave_ ## T1 ## matrix, octave_ ## T2 ## scalar, PFX ## _el_or);
+  INSTALL_BINOP (op_el_or, octave_ ## T1 ## matrix, octave_ ## T2 ## scalar, PFX ## _el_or); \
+  INSTALL_BINOP (op_el_not_and, octave_ ## T1 ## matrix, octave_ ## T2 ## scalar, PFX ## _el_not_and); \
+  INSTALL_BINOP (op_el_not_or, octave_ ## T1 ## matrix, octave_ ## T2 ## scalar, PFX ## _el_not_or);
 
 #define OCTAVE_INSTALL_MS_INT_ASSIGN_OPS(PFX, TLHS, TRHS) \
   INSTALL_ASSIGNOP (op_asn_eq, octave_ ## TLHS ## matrix, octave_ ## TRHS ## scalar, PFX ## _assign)
@@ -1087,7 +1099,11 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
 
 #define OCTAVE_INSTALL_MM_INT_BOOL_OPS(PFX, T1, T2) \
   INSTALL_BINOP (op_el_and, octave_ ## T1 ## matrix, octave_ ## T2 ## matrix, PFX ## _el_and); \
-  INSTALL_BINOP (op_el_or, octave_ ## T1 ## matrix, octave_ ## T2 ## matrix, PFX ## _el_or);
+  INSTALL_BINOP (op_el_or, octave_ ## T1 ## matrix, octave_ ## T2 ## matrix, PFX ## _el_or); \
+  INSTALL_BINOP (op_el_not_and, octave_ ## T1 ## matrix, octave_ ## T2 ## matrix, PFX ## _el_not_and); \
+  INSTALL_BINOP (op_el_not_or, octave_ ## T1 ## matrix, octave_ ## T2 ## matrix, PFX ## _el_not_or); \
+  INSTALL_BINOP (op_el_and_not, octave_ ## T1 ## matrix, octave_ ## T2 ## matrix, PFX ## _el_and_not); \
+  INSTALL_BINOP (op_el_or_not, octave_ ## T1 ## matrix, octave_ ## T2 ## matrix, PFX ## _el_or_not);
 
 #define OCTAVE_INSTALL_MM_INT_ASSIGN_OPS(PFX, TLHS, TRHS) \
   INSTALL_ASSIGNOP (op_asn_eq, octave_ ## TLHS ## matrix, octave_ ## TRHS ## matrix, PFX ## _assign)

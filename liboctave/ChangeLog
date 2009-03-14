@@ -1,5 +1,10 @@
 2009-03-14  Jaroslav Hajek  <highegg@gmail.com>
 
+	* mx-op-decl.h (*BOOL_OP_DECLS): Support compound binary ops.
+	* mx-op-defs.h (*BOOL_OP): Ditto. Optimize.
+
+2009-03-14  Jaroslav Hajek  <highegg@gmail.com>
+
 	* fNDArray.h (FloatMatrix::matrix_value): Fix return type.
 	* dNDArray.cc (Matrix::matrix_value): Simplify.
 	* fNDArray.cc (FloatMatrix::matrix_value): Simplify.

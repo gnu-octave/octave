@@ -79,6 +79,18 @@ DEFNDBINOP_FN (el_and, bool_matrix, bool_matrix, bool_array, bool_array,
 DEFNDBINOP_FN (el_or,  bool_matrix, bool_matrix, bool_array, bool_array,
 	       mx_el_or)
 
+DEFNDBINOP_FN (el_not_and, bool_matrix, bool_matrix, bool_array, bool_array,
+	       mx_el_not_and)
+
+DEFNDBINOP_FN (el_not_or,  bool_matrix, bool_matrix, bool_array, bool_array,
+	       mx_el_not_or)
+
+DEFNDBINOP_FN (el_and_not, bool_matrix, bool_matrix, bool_array, bool_array,
+	       mx_el_and_not)
+
+DEFNDBINOP_FN (el_or_not,  bool_matrix, bool_matrix, bool_array, bool_array,
+	       mx_el_or_not)
+
 DEFNDCATOP_FN (bm_bm, bool_matrix, bool_matrix, bool_array, bool_array, concat)
 DEFNDCATOP_FN (bm_m, bool_matrix, matrix, array, array, concat)
 DEFNDCATOP_FN (m_bm, matrix, bool_matrix, array, array, concat)
@@ -124,6 +136,10 @@ install_bm_bm_ops (void)
 
   INSTALL_BINOP (op_el_and, octave_bool_matrix, octave_bool_matrix, el_and);
   INSTALL_BINOP (op_el_or, octave_bool_matrix, octave_bool_matrix, el_or);
+  INSTALL_BINOP (op_el_not_and, octave_bool_matrix, octave_bool_matrix, el_not_and);
+  INSTALL_BINOP (op_el_not_or, octave_bool_matrix, octave_bool_matrix, el_not_or);
+  INSTALL_BINOP (op_el_and_not, octave_bool_matrix, octave_bool_matrix, el_and_not);
+  INSTALL_BINOP (op_el_or_not, octave_bool_matrix, octave_bool_matrix, el_or_not);
 
   INSTALL_CATOP (octave_bool_matrix, octave_bool_matrix, bm_bm);
   INSTALL_CATOP (octave_bool_matrix, octave_matrix, bm_m);

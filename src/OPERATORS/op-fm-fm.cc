@@ -141,6 +141,16 @@ DEFNDBINOP_FN (el_and, float_matrix, float_matrix, float_array,
 	       float_array, mx_el_and)
 DEFNDBINOP_FN (el_or,  float_matrix, float_matrix, float_array, 
 	       float_array, mx_el_or)
+DEFNDBINOP_FN (el_not_and, float_matrix, float_matrix, float_array, 
+	       float_array, mx_el_not_and)
+DEFNDBINOP_FN (el_not_or,  float_matrix, float_matrix, float_array, 
+	       float_array, mx_el_not_or)
+DEFNDBINOP_FN (el_and_not, float_matrix, float_matrix, float_array, 
+	       float_array, mx_el_and_not)
+DEFNDBINOP_FN (el_or_not,  float_matrix, float_matrix, float_array, 
+	       float_array, mx_el_or_not)
+
+
 
 DEFNDCATOP_FN (fm_fm, float_matrix, float_matrix, float_array, 
 	       float_array, concat)

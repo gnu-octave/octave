@@ -112,6 +112,10 @@ public:
     op_mul_trans,
     op_herm_mul,      
     op_mul_herm,
+    op_el_not_and,
+    op_el_not_or,
+    op_el_and_not,
+    op_el_or_not,
     num_compound_binary_ops,
     unknown_compound_binary_op
   };

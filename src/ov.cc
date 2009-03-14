@@ -377,6 +377,22 @@ octave_value::binary_op_fcn_name (compound_binary_op op)
       retval = "timesherm";
       break;
 
+    case op_el_and_not:
+      retval = "andnot";
+      break;
+
+    case op_el_or_not:
+      retval = "ornot";
+      break;
+
+    case op_el_not_and:
+      retval = "notand";
+      break;
+
+    case op_el_not_or:
+      retval = "notor";
+      break;
+
     default:
       break;
     }
@@ -1902,6 +1918,26 @@ decompose_binary_op (octave_value::compound_binary_op op,
       retval = do_binary_op (octave_value::op_mul,
                              v1,
                              do_unary_op (octave_value::op_hermitian, v2));
+      break;
+    case octave_value::op_el_not_and:
+      retval = do_binary_op (octave_value::op_el_and,
+                             do_unary_op (octave_value::op_not, v1),
+                             v2);
+      break;
+    case octave_value::op_el_not_or:
+      retval = do_binary_op (octave_value::op_el_or,
+                             do_unary_op (octave_value::op_not, v1),
+                             v2);
+      break;
+    case octave_value::op_el_and_not:
+      retval = do_binary_op (octave_value::op_el_and,
+                             v1,
+                             do_unary_op (octave_value::op_not, v2));
+      break;
+    case octave_value::op_el_or_not:
+      retval = do_binary_op (octave_value::op_el_or,
+                             v1,
+                             do_unary_op (octave_value::op_not, v2));
       break;
     default:
       error ("invalid compound operator");

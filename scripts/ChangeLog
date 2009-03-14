@@ -1,3 +1,7 @@
+2009-03-14  Jaroslav Hajek  <highegg@gmail.com>
+
+	* statistics/base/var.m: a -> x.
+
 2009-03-13  Jaroslav Hajek  <highegg@gmail.com>
 
 	* statistics/base/mean.m: Simplify.

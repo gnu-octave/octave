@@ -41,7 +41,7 @@
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Compute variance
 
-function y = var (x, opt, dim)
+function retval = var (x, opt, dim)
 
   if (nargin < 1 || nargin > 3)
     print_usage ();
@@ -56,11 +56,11 @@ function y = var (x, opt, dim)
     opt = 0;
   endif
 
-  n = size (a, dim);
+  n = size (x, dim);
   if (n == 1)
     retval = zeros (sz);
-  elseif (numel (a) > 0)
-    retval = sumsq (center (a, dim), dim) / (n + opt - 1);
+  elseif (numel (x) > 0)
+    retval = sumsq (center (x, dim), dim) / (n + opt - 1);
   else
     error ("var: x must not be empty");
   endif

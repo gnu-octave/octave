@@ -1,7 +1,3 @@
-2009-03-12  Ben Abbott <bpabbott@mac.com>
-
-	* src/graphics.cc: Fix default "papersize" property value.
-
 2009-03-09  John W. Eaton  <jwe@octave.org>
 
 	* run-octave.in: Use doc-cache instead of DOC for doc cache file.

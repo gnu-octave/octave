@@ -51,6 +51,10 @@
 	'\r' or '\n', skip current line ending instead of skipping until
 	the next.
 
+2009-03-12  Ben Abbott <bpabbott@mac.com>
+
+	* graphics.cc: Fix default "papersize" property value.
+
 2009-03-12  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-flt-perm.h, ov-flt-perm.cc: Remove sources.

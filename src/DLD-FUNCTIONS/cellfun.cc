@@ -1,6 +1,7 @@
 /*
 
 Copyright (C) 2005, 2006, 2007, 2008, 2009 Mohamed Kamoun
+Copyright (C) 2009 Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -1069,6 +1070,97 @@ mat2cell (reshape(1:16,4,4),[3,1],[3,1])\n\
 %! assert(c,{empty1by0str,'abcd','ef',empty1by0str,'ghij',empty1by0str})
 
 */
+
+template <class NDA>
+Cell 
+do_cellslices_nda (const NDA& array, const idx_vector& lb, const idx_vector& ub)
+{
+  octave_idx_type n = lb.length (0);
+  Cell retval (1, n);
+  for (octave_idx_type i = 0; i < n && ! error_state; i++)
+    retval(i) = array.index (idx_vector (lb(i), ub(i) + 1));
+  return retval;
+}
+
+DEFUN_DLD (cellslices, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{sl} =} cellslices (@var{x}, @var{lb}, @var{ub})\n\
+Given a vector @var{x}, this function produces a cell array of slices from the vector\n\
+determined by the index vectors @var{lb}, @var{ub}, for lower and upper bounds, respectively.\n\
+In other words, it is equivalent to the following code:\n\
+\n\
+@example\n\
+n = length (lb);\n\
+sl = cell (1, n);\n\
+for i = 1:length (lb)\n\
+  sl@{i@} = x(lb(i):ub(i));\n\
+endfor\n\
+@end example\n\
+\n\
+If @var{X} is a matrix, linear indexing will be used.\n\
+@seealso{mat2cell}\n\
+@end deftypefn")
+{
+  octave_value retval;
+  int nargin = args.length ();
+  if (nargin == 3)
+    {
+      octave_value x = args(0);
+      idx_vector lb = args(1).index_vector (), ub = args(2).index_vector ();
+      if (! error_state)
+        {
+          if (lb.is_colon () || ub.is_colon ())
+            error ("cellslices: invalid use of colon");
+          else if (lb.length (0) != ub.length (0))
+            error ("cellslices: the lengths of lb and ub must match");
+          else
+            {
+              Cell retcell;
+              if (! x.is_sparse_type () && x.is_matrix_type ())
+                {
+                  // specialize for some dense arrays.
+                  if (x.is_bool_type ())
+                    retcell = do_cellslices_nda (x.bool_array_value (), lb, ub);
+                  else if (x.is_char_matrix ())
+                    retcell = do_cellslices_nda (x.char_array_value (), lb, ub);
+                  else if (x.is_complex_type ())
+                    {
+                      if (x.is_single_type ())
+                        retcell = do_cellslices_nda (x.float_complex_array_value (), lb, ub);
+                      else
+                        retcell = do_cellslices_nda (x.complex_array_value (), lb, ub);
+                    }
+                  else
+                    {
+                      if (x.is_single_type ())
+                        retcell = do_cellslices_nda (x.float_array_value (), lb, ub);
+                      else
+                        retcell = do_cellslices_nda (x.array_value (), lb, ub);
+                    }
+                }
+              else
+                {
+                  // generic code.
+                  octave_idx_type n = lb.length (0);
+                  retcell = Cell (1, n);
+                  octave_value_list idx (1, octave_value ());
+                  for (octave_idx_type i = 0; i < n && ! error_state; i++)
+                    {
+                      idx(0) = Range (static_cast<double> (lb(i)) + 1,
+                                      static_cast<double> (ub(i)) + 1);
+                      retcell(i) = x.do_index_op (idx);
+                    }
+                }
+              if (! error_state)
+                retval = retcell;
+            }
+        }
+    }
+  else
+    print_usage ();
+
+  return retval;
+}
 	  
 /*
 ;;; Local Variables: ***

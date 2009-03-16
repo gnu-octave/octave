@@ -1,3 +1,10 @@
+2009-03-16  Jason Riedy  <jason@acm.org>
+
+	* Sparse.cc (transpose): Eliminate the workspace by computing in
+	retval.xcidx.
+	* CSparse.cc (hermitian): Eliminate the workspace by computing in
+	retval.xcidx.
+
 2009-03-14  Jaroslav Hajek  <highegg@gmail.com>
 
 	* mx-op-decl.h (NDS_BOOL_OP_DECLS, SND_BOOL_OP_DECLS, NDND_BOOL_OP_DECLS): Support compound binary ops.

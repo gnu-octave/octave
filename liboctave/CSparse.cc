@@ -646,28 +646,28 @@ SparseComplexMatrix::hermitian (void) const
   octave_idx_type nz = nnz ();
   SparseComplexMatrix retval (nc, nr, nz);
 
-  OCTAVE_LOCAL_BUFFER (octave_idx_type, w, nr + 1);
-  for (octave_idx_type i = 0; i < nr; i++)
-    w[i] = 0;
   for (octave_idx_type i = 0; i < nz; i++)
-    w[ridx(i)]++;
+    retval.xcidx (ridx (i) + 1)++;
+  // retval.xcidx[1:nr] holds the row degrees for rows 0:(nr-1)
   nz = 0;
-  for (octave_idx_type i = 0; i < nr; i++)
+  for (octave_idx_type i = 1; i <= nr; i++)
     {
-      retval.xcidx(i) = nz;
-      nz += w[i];
-      w[i] = retval.xcidx(i);
+      const octave_idx_type tmp = retval.xcidx (i);
+      retval.xcidx (i) = nz;
+      nz += tmp;
     }
-  retval.xcidx(nr) = nz;
-  w[nr] = nz;
+  // retval.xcidx[1:nr] holds row entry *start* offsets for rows 0:(nr-1)
 
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type k = cidx(j); k < cidx(j+1); k++)
       {
-	octave_idx_type q = w [ridx(k)]++;
+	octave_idx_type q = retval.xcidx (ridx (k) + 1)++;
 	retval.xridx (q) = j;
 	retval.xdata (q) = conj (data (k));
       }
+  assert (nnz () == retval.xcidx (nr));
+  // retval.xcidx[1:nr] holds row entry *end* offsets for rows 0:(nr-1)
+  // and retval.xcidx[0:(nr-1)] holds their row entry *start* offsets
 
   return retval;
 }

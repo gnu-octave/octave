@@ -72,10 +72,48 @@
 ## @item -3
 ## The trust region radius became excessively small. 
 ## @end table
-##
+## 
 ## Note: If you only have a single nonlinear equation of one variable, using 
 ## @code{fzero} is usually a much better idea.
 ## @seealso{fzero, optimset}
+##
+## Note about user-supplied jacobians:
+## As an inherent property of the algorithm, jacobian is always requested for a
+## solution vector whose residual vector is already known, and it is the last
+## accepted successful step. Often this will be one of the last two calls, but
+## not always. If the savings by reusing intermediate results from residual
+## calculation in jacobian calculation are significant, the best strategy is to
+## employ OutputFcn: After a vector is evaluated for residuals, if OutputFcn is
+## called with that vector, then the intermediate results should be saved for
+## future jacobian evaluation, and should be kept until a jacobian evaluation
+## is requested or until outputfcn is called with a different vector, in which
+## case they should be dropped in favor of this most recent vector. A short
+## example how this can be achieved follows:
+## @example
+## function [fvec, fjac] = my_optim_func (x, optimvalues, state)
+## persistent sav = [], sav0 = [];
+## if (nargin == 1)
+##   ## evaluation call
+##   if (nargout == 1)
+##     sav0.x = x; # mark saved vector
+##     ## calculate fvec, save results to sav0.
+##   elseif (nargout == 2)
+##     ## calculate fjac using sav.
+##   endif
+## else
+##   ## outputfcn call.
+##   if (all (x == sav0.x))
+##     sav = sav0;
+##   endif
+##   ## maybe output iteration status etc.
+## endif
+## endfunction
+##
+## ## ....
+## 
+## fsolve (@my_optim_func, x0, optimset ("OutputFcn", @my_optim_func, @dots{}))
+## @end example
+###
 ## @end deftypefn
 
 ## PKG_ADD: __all_opts__ ("fsolve");
@@ -129,10 +167,33 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
   autodg = true;
 
   niter = 1;
-  nfev = 0;
+  nfev = 1;
 
   x = x0(:);
   info = 0;
+
+  ## Initial evaluation.
+  fvec = fcn (reshape (x, xsiz));
+  fsiz = size (fvec);
+  fvec = fvec(:);
+  fn = norm (fvec);
+  m = length (fvec);
+  n = length (x);
+
+  if (! isempty (outfcn))
+    optimvalues.iter = niter;
+    optimvalues.funccount = nfev;
+    optimvalues.fval = fn;
+    optimvalues.searchdirection = zeros (n, 1);
+    state = 'init';
+    stop = outfcn (x, optimvalues, state);
+    if (stop)
+      info = -1;
+      break;
+    endif
+  endif
+
+  nsuciter = 0;
 
   ## Outer loop.
   while (niter < maxiter && nfev < maxfev && ! info)
@@ -145,16 +206,12 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
       if (issparse (fjac))
         updating = false;
       endif
+      fvec = fvec(:);
       nfev ++;
     else
-      [fvec, fjac] = __fdjac__ (fcn, reshape (x, xsiz));
-      nfev += 1 + length (x);
+      fjac = __fdjac__ (fcn, reshape (x, xsiz), fvec);
+      nfev += length (x);
     endif
-    fsiz = size (fvec);
-    fvec = fvec(:);
-    fn = norm (fvec);
-    m = length (fvec);
-    n = length (x);
 
     ## For square and overdetermined systems, we update a QR
     ## factorization of the jacobian to avoid solving a full system in each
@@ -199,6 +256,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
       ## of course, how to define the above terms :)
     endif
 
+    lastratio = 0;
     nfail = 0;
     nsuc = 0;
     ## Inner loop.
@@ -249,7 +307,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
       endif
 
       ## Update delta.
-      if (ratio < 0.1)
+      if (ratio < min(max(0.1, lastratio), 0.9))
         nsuc = 0;
         nfail ++;
         delta *= 0.5;
@@ -259,6 +317,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
           break;
         endif
       else
+        lastratio = ratio;
         nfail = 0;
         nsuc ++;
         if (abs (1-ratio) <= 0.1)
@@ -274,6 +333,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
         xn = norm (dg .* x);
         fvec = fvec1;
         fn = fn1;
+        nsuciter ++;
       endif
 
       niter ++;
@@ -321,7 +381,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
       endif
 
       ## Criterion for recalculating jacobian.
-      if (! updating || nfail == 2)
+      if (! updating || nfail == 2 || nsuciter < 2)
         break;
       endif
 
@@ -347,6 +407,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
   fvec = reshape (fvec, fsiz);
 
   output.iterations = niter;
+  output.successful = nsuciter;
   output.funcCount = nfev;
 
 endfunction

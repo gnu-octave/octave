@@ -1,3 +1,13 @@
+2009-03-17  Jaroslav Hajek  <highegg@gmail.com>
+
+	* optimization/__fdjac__.m: Pass in fvec to save one evaluation.
+	* optimization/fsolve.m: Avoid redundant reevaluation when using
+	FD jacobians. Document how it can be done with user jacobians.  Make
+	first iteration special and call outputfcn after it. Skip updates
+	unless two successful iterations have occured.
+	* optimization/__dogleg__.m: Add missing alpha in the zero-gradient
+	case.
+
 2009-03-14  Jaroslav Hajek  <highegg@gmail.com>
 
 	* statistics/base/var.m: a -> x.

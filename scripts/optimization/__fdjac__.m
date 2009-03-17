@@ -17,21 +17,19 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn{Function File} {[@var{fval}, @var{fjac}]} =  __fdjac__ (@var{fcn}, @var{x}, @var{err})
+## @deftypefn{Function File} {} __fdjac__ (@var{fcn}, @var{x}, @var{fvec}, @var{err})
 ## Undocumented internal function.
 ## @end deftypefn
 
-function [fvec, fjac] = __fdjac__ (fcn, x, err = 0)
+function fjac = __fdjac__ (fcn, x, fvec, err = 0)
   err = sqrt (max (eps, err));
-  fvec = fcn (x);
-  fv = fvec(:);
   h = abs (x(:))*err;
   h(h == 0) = err;
-  fjac = zeros (length (fv), numel (x));
+  fjac = zeros (length (fvec), numel (x));
   for i = 1:numel (x)
     x1 = x;
     x1(i) += h(i);
-    fjac(:,i) = (fcn (x1)(:) - fv) / h(i);
+    fjac(:,i) = (fcn (x1)(:) - fvec) / h(i);
   endfor
 endfunction
 

@@ -53,6 +53,7 @@ function x = __dogleg__ (r, b, d, delta)
         alpha = 0;
       endif
     else
+      alpha = delta / xn;
       snm = 0;
     endif
     ## Form the appropriate convex combination.

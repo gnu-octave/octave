@@ -1,5 +1,12 @@
 2009-03-17  Jaroslav Hajek  <highegg@gmail.com>
 
+	* OPERATORS/op-b-bm.cc: Add missing INSTALL_BINOPs.
+	* OPERATORS/op-bm-b.cc: Ditto.
+	* OPERATORS/op-fm-fm.cc: Ditto.
+	* OPERATORS/op-m-m.cc: Ditto.
+
+2009-03-17  Jaroslav Hajek  <highegg@gmail.com>
+
 	* ov.cc (octave_value::octave_value): Move to ov.h
 	* ov.h (octave_value::octave_value): Implement fast inline constructor
 	using a static rep.

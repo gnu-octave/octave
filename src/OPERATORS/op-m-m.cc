@@ -175,6 +175,10 @@ install_m_m_ops (void)
   INSTALL_BINOP (op_el_ldiv, octave_matrix, octave_matrix, el_ldiv);
   INSTALL_BINOP (op_el_and, octave_matrix, octave_matrix, el_and);
   INSTALL_BINOP (op_el_or, octave_matrix, octave_matrix, el_or);
+  INSTALL_BINOP (op_el_and_not, octave_matrix, octave_matrix, el_and_not);
+  INSTALL_BINOP (op_el_or_not, octave_matrix, octave_matrix, el_or_not);
+  INSTALL_BINOP (op_el_not_and, octave_matrix, octave_matrix, el_not_and);
+  INSTALL_BINOP (op_el_not_or, octave_matrix, octave_matrix, el_not_or);
   INSTALL_BINOP (op_trans_mul, octave_matrix, octave_matrix, trans_mul);
   INSTALL_BINOP (op_mul_trans, octave_matrix, octave_matrix, mul_trans);
   INSTALL_BINOP (op_herm_mul, octave_matrix, octave_matrix, trans_mul);

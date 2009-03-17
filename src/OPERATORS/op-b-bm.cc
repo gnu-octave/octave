@@ -65,6 +65,8 @@ install_b_bm_ops (void)
 {
   INSTALL_BINOP (op_el_and, octave_bool, octave_bool_matrix, el_and);
   INSTALL_BINOP (op_el_or, octave_bool, octave_bool_matrix, el_or);
+  INSTALL_BINOP (op_el_and_not, octave_bool, octave_bool_matrix, el_and_not);
+  INSTALL_BINOP (op_el_or_not, octave_bool, octave_bool_matrix, el_or_not);
 
   INSTALL_CATOP (octave_bool, octave_bool_matrix, b_bm);
   INSTALL_CATOP (octave_bool, octave_matrix, b_m);

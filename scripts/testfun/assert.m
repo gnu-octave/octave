@@ -141,7 +141,7 @@ function assert (cond, varargin)
       iserror = 1;
       coda = "Dimensions don't match";
 
-    elseif (tol == 0 && ! strcmp (typeinfo (cond), typeinfo (expected)))
+    elseif (nargin < 3 && ! strcmp (typeinfo (cond), typeinfo (expected)))
       iserror = 1;
       coda = cstrcat ("Type ", typeinfo (cond), " != ", typeinfo (expected));
 

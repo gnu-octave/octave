@@ -164,8 +164,6 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
   tolf = optimget (options, "TolFun", sqrt (macheps));
 
   factor = 100;
-  ## FIXME: TypicalX corresponds to user scaling (???)
-  autodg = true;
 
   niter = 1;
   nfev = 1;
@@ -174,6 +172,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
   info = 0;
 
   ## Initial evaluation.
+  ## Handle arbitrary shapes of x and f and remember them.
   fvec = fcn (reshape (x, xsiz));
   fsiz = size (fvec);
   fvec = fvec(:);
@@ -200,7 +199,6 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
   while (niter < maxiter && nfev < maxfev && ! info)
 
     ## Calculate function value and Jacobian (possibly via FD).
-    ## Handle arbitrary shapes of x and f and remember them.
     if (has_jac)
       [fvec, fjac] = fcn (reshape (x, xsiz));
       ## If the jacobian is sparse, disable Broyden updating.
@@ -231,31 +229,27 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
     ## Get column norms, use them as scaling factors.
     jcn = norm (fjac, 'columns').';
     if (niter == 1)
-      if (autodg)
-        dg = jcn;
-        dg(dg == 0) = 1;
-      endif
+      dg = jcn;
+      dg(dg == 0) = 1;
       xn = norm (dg .* x);
       ## FIXME: something better?
       delta = max (factor * xn, 1);
     endif
 
-    ## Rescale if necessary.
-    if (autodg)
-      ## FIXME: the original minpack used the following rescaling strategy:
-      ##   dg = max (dg, jcn);
-      ## but it seems not good if we start with a bad guess yielding jacobian
-      ## columns with large norms that later decrease, because the corresponding
-      ## variable will still be overscaled. So instead, we only give the old
-      ## scaling a small momentum, but do not honor it.
+    ## Rescale adaptively.
+    ## FIXME: the original minpack used the following rescaling strategy:
+    ##   dg = max (dg, jcn);
+    ## but it seems not good if we start with a bad guess yielding jacobian
+    ## columns with large norms that later decrease, because the corresponding
+    ## variable will still be overscaled. So instead, we only give the old
+    ## scaling a small momentum, but do not honor it.
 
-      dg = max (0.1*dg, jcn);
+    dg = max (0.1*dg, jcn);
 
-      ## It also seems that in the case of fast (and inhomogeneously) changing
-      ## jacobian, the Broyden updates are of little use, so maybe we could
-      ## skip them if a big disproportional change is expected. The question is,
-      ## of course, how to define the above terms :)
-    endif
+    ## It also seems that in the case of fast (and inhomogeneously) changing
+    ## jacobian, the Broyden updates are of little use, so maybe we could
+    ## skip them if a big disproportional change is expected. The question is,
+    ## of course, how to define the above terms :)
 
     lastratio = 0;
     nfail = 0;

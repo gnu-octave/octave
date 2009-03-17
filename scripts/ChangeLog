@@ -7,6 +7,7 @@
 	unless two successful iterations have occured.
 	* optimization/__dogleg__.m: Add missing alpha in the zero-gradient
 	case.
+	* optimization/fsolve.m: Remove autodg (not used), simplify.
 
 2009-03-14  Jaroslav Hajek  <highegg@gmail.com>
 

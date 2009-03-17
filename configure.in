@@ -1537,7 +1537,7 @@ AC_CHECK_HEADERS(sstream)
 AC_LANG_POP(C++)
 
 have_termios_h=no
-AC_CHECK_HEADERS($TERMIOS_H, have_termios_h=yes)
+AC_CHECK_HEADERS(termios.h, have_termios_h=yes)
 AC_CHECK_HEADERS(termio.h, have_termio_h=yes, have_termio_h=no)
 AC_CHECK_HEADERS(sgtty.h, have_sgtty_h=yes, have_sgtty_h=no)
 AC_CHECK_HEADERS(glob.h, have_glob_h=yes, have_glob_h=no)

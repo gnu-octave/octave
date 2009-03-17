@@ -257,14 +257,6 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
     ## Inner loop.
     while (niter <= maxiter && nfev < maxfev && ! info)
 
-      if (useqr)
-        tr_mat = r;
-        tr_vec = q'*fvec;
-      else
-        tr_mat = fjac;
-        tr_vec = fvec;
-      endif
-
       ## Get trust-region model (dogleg) minimizer.
       if (useqr)
         qtf = q'*fvec;

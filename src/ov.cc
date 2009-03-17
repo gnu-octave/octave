@@ -474,11 +474,6 @@ octave_value::assign_op_as_string (assign_op op)
   return retval;
 }
 
-octave_value::octave_value (void)
-  : rep (new octave_base_value ())
-{
-}
-
 octave_value::octave_value (short int i)
   : rep (new octave_scalar (i))
 {

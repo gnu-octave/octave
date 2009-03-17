@@ -1,3 +1,9 @@
+2009-03-17  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov.cc (octave_value::octave_value): Move to ov.h
+	* ov.h (octave_value::octave_value): Implement fast inline constructor
+	using a static rep.
+
 2009-03-15  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/cellfun.cc (Fcellslices): New DLD function.

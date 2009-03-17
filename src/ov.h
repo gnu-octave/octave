@@ -156,7 +156,13 @@ public:
 
   enum magic_colon { magic_colon_t };
 
-  octave_value (void);
+  octave_value (void)
+    {
+      static octave_base_value nil_rep;
+      rep = &nil_rep;
+      rep->count++;
+    }
+
   octave_value (short int i);
   octave_value (unsigned short int i);
   octave_value (int i);

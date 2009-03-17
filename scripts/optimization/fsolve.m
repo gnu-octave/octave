@@ -89,6 +89,7 @@
 ## is requested or until outputfcn is called with a different vector, in which
 ## case they should be dropped in favor of this most recent vector. A short
 ## example how this can be achieved follows:
+##
 ## @example
 ## function [fvec, fjac] = my_optim_func (x, optimvalues, state)
 ## persistent sav = [], sav0 = [];
@@ -111,7 +112,7 @@
 ##
 ## ## ....
 ## 
-## fsolve (@my_optim_func, x0, optimset ("OutputFcn", @my_optim_func, @dots{}))
+## fsolve (@@my_optim_func, x0, optimset ("OutputFcn", @@my_optim_func, @dots{}))
 ## @end example
 ###
 ## @end deftypefn

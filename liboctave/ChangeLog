@@ -1,3 +1,9 @@
+2009-03-18  Jaroslav Hajek <highegg@gmail.com>
+
+	* oct-norm.cc (get_eps): Remove that hack.
+	(higham): Use std::numeric_limits instead.
+	Include OCTAVE_QUIT.
+
 2009-03-16  Jason Riedy  <jason@acm.org>
 
 	* Sparse.cc (transpose): Eliminate the workspace by computing in

@@ -413,6 +413,7 @@ R higham (const MatrixT& m, R p, R tol, int maxiter,
   RR lambda = 0, mu = 0;
   for (octave_idx_type k = 0; k < m.columns (); k++)
     {
+      OCTAVE_QUIT;
       VectorT col (m.column (k));
       if (k > 0)
         higham_subp (y, col, 4*k, p, lambda, mu);
@@ -430,6 +431,7 @@ R higham (const MatrixT& m, R p, R tol, int maxiter,
   int iter = 0;
   while (iter < maxiter)
     {
+      OCTAVE_QUIT;
       y = m*x;
       gamma1 = gamma;
       gamma = vector_norm (y, p);
@@ -449,9 +451,6 @@ R higham (const MatrixT& m, R p, R tol, int maxiter,
   return gamma;
 }
 
-// TODO: is there a better way?
-inline float get_eps (float) { return FLT_EPSILON; }
-inline double get_eps (double) { return DBL_EPSILON; }
 // derive column vector and SVD types 
 
 static const char *p_less1_gripe = "xnorm: p must be at least 1";
@@ -477,7 +476,8 @@ R matrix_norm (const MatrixT& m, R p, VectorT, SVDT)
   else if (p > 1)
     {
       VectorT x;
-      res = higham (m, p, std::sqrt (get_eps (p)), max_norm_iter, x);
+      const R sqrteps = std::sqrt (std::numeric_limits<R>::epsilon ());
+      res = higham (m, p, sqrteps, max_norm_iter, x);
     }
   else
     (*current_liboctave_error_handler) (p_less1_gripe); 
@@ -497,7 +497,8 @@ R matrix_norm (const MatrixT& m, R p, VectorT)
   else if (p > 1)
     {
       VectorT x;
-      res = higham (m, p, std::sqrt (get_eps (p)), max_norm_iter, x);
+      const R sqrteps = std::sqrt (std::numeric_limits<R>::epsilon ());
+      res = higham (m, p, sqrteps, max_norm_iter, x);
     }
   else
     (*current_liboctave_error_handler) (p_less1_gripe); 

@@ -1,3 +1,12 @@
+2009-03-18  Jaroslav Hajek <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/cellfun.cc
+	(scalar_col_helper, scalar_col_helper_def, scalar_col_helper_nda,
+	scalar_query_helper): New classes.
+	(make_col_helper): New function.
+	(Fcellfun): Use col_helper classes for UniformOutput. Avoid copying by
+	using const variables.
+
 2009-03-17  Jaroslav Hajek  <highegg@gmail.com>
 
 	* OPERATORS/op-b-bm.cc: Add missing INSTALL_BINOPs.

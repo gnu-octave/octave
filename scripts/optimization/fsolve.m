@@ -406,12 +406,12 @@ function [fx, jx] = guarded_eval (fun, x, complexeqn)
     [fx, jx] = fun (x);
   else
     fx = fun (x);
-    jx = []
+    jx = [];
   endif
 
-  if (! complexeqn && ! (all (isreal (fx(:))) && all (isreal (jx(:)))))
+  if (! complexeqn && ! (isreal (fx) && isreal (jx)))
     error ("fsolve:notreal", "fsolve: non-real value encountered"); 
-  elseif (complexeqn && ! (all (isnumeric (fx(:))) && all (isnumeric(jx(:)))))
+  elseif (complexeqn && ! (isnumeric (fx) && isnumeric(jx)))
     error ("fsolve:notnum", "fsolve: non-numeric value encountered");
   elseif (any (isnan (fx(:))))
     error ("fsolve:isnan", "fsolve: NaN value encountered"); 

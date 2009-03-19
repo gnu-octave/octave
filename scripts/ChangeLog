@@ -1,3 +1,8 @@
+2009-03-19  Jaroslav Hajek <highegg@gmail.com>
+
+	* optimization/fsolve.m (guarded_eval): Simplify & fix missing
+	semicolon.
+
 2009-03-17  Jaroslav Hajek  <highegg@gmail.com>
 
 	* optimization/__fdjac__.m: Pass in fvec to save one evaluation.

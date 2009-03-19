@@ -1,0 +1,340 @@
+## Copyright (C) 2008, 2009 VZLU Prague, a.s.
+##
+## This file is part of Octave.
+##
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 3 of the License, or (at
+## your option) any later version.
+##
+## Octave is distributed in the hope that it will be useful, but
+## WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+## General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, see
+## <http://www.gnu.org/licenses/>.
+##
+## Author: Jaroslav Hajek <highegg@gmail.com>
+
+## -*- texinfo -*-
+## @deftypefn{Function File} {} fminunc (@var{fcn}, @var{x0}, @var{options})
+## @deftypefnx{Function File} {[@var{x}, @var{fvec}, @var{info}, @var{output}, @var{fjac}]} = fminunc (@var{fcn}, @dots{})
+## Solve a unconstrained optimization problem defined by the function @var{fcn}.
+## @var{fcn} should accepts a vector (array) defining the unknown variables,
+## and return the objective function value, optionally with gradient.
+## In other words, this function attempts to determine a vector @var{x} such 
+## that @code{@var{fcn} (@var{x})} is a local minimum.
+## @var{x0} determines a starting guess. The shape of @var{x0} is preserved
+## in all calls to @var{fcn}, but otherwise it is treated as a column vector.
+## @var{options} is a structure specifying additional options.
+## Currently, @code{fsolve} recognizes these options:
+## @code{"FunValCheck"}, @code{"OutputFcn"}, @code{"TolX"},
+## @code{"TolFun"}, @code{"MaxIter"}, @code{"MaxFunEvals"}, 
+## @code{"GradObj"}.
+##
+## If @code{"GradObj"} is @code{"on"}, it specifies that @var{fcn},
+## called with 2 output arguments, also returns the Jacobian matrix
+## of right-hand sides at the requested point.  @code{"TolX"} specifies
+## the termination tolerance in the unknown variables, while 
+## @code{"TolFun"} is a tolerance for equations. Default is @code{1e-7}
+## for both @code{"TolX"} and @code{"TolFun"}.
+## 
+## For description of the other options, see @code{optimset}.
+##
+## On return, @var{fval} contains the value of the function @var{fcn}
+## evaluated at @var{x}, and @var{info} may be one of the following values:
+## 
+## @table @asis
+## @item 1
+## Converged to a solution point. Relative gradient error is less than specified
+## by TolFun.
+## @item 2
+## Last relative step size was less that TolX.
+## @item 3
+## Last relative decrease in func value was less than TolF. 
+## @item 0
+## Iteration limit exceeded.
+## @item -3
+## The trust region radius became excessively small. 
+## @end table
+##
+## Note: If you only have a single nonlinear equation of one variable, using 
+## @code{fminbnd} is usually a much better idea.
+## @seealso{fminbnd, optimset}
+## @end deftypefn
+
+## PKG_ADD: __all_opts__ ("fminunc");
+
+function [x, fval, info, output, grad, hess] = fminunc (fcn, x0, options = struct ())
+
+  ## Get default options if requested.
+  if (nargin == 1 && ischar (fcn) && strcmp (fcn, 'defaults'))
+    x = optimset ("MaxIter", 400, "MaxFunEvals", Inf, \
+    "GradObj", "off", "TolX", 1.5e-8, "TolFun", 1.5e-8,
+    "OutputFcn", [], "FunValCheck", "off",
+    "ComplexEqn", "off");
+    return;
+  endif
+
+  if (nargin < 2 || nargin > 3 || ! ismatrix (x0))
+    print_usage ();
+  endif    
+
+  if (ischar (fcn))
+    fcn = str2func (fcn);
+  endif
+
+  xsiz = size (x0);
+  n = numel (x0);
+
+  has_grad = strcmpi (optimget (options, "GradObj", "off"), "on");
+  maxiter = optimget (options, "MaxIter", 400);
+  maxfev = optimget (options, "MaxFunEvals", Inf);
+  outfcn = optimget (options, "OutputFcn");
+
+  funvalchk = strcmpi (optimget (options, "FunValCheck", "off"), "on");
+
+  if (funvalchk)
+    ## Replace fcn with a guarded version.
+    fcn = @(x) guarded_eval (fcn, x);
+  endif
+
+  ## These defaults are rather stringent. I think that normally, user
+  ## prefers accuracy to performance.
+
+  macheps = eps (class (x0));
+
+  tolx = optimget (options, "TolX", sqrt (macheps));
+  tolf = optimget (options, "TolFun", sqrt (macheps));
+
+  factor = 100;
+  ## FIXME: TypicalX corresponds to user scaling (???)
+  autodg = true;
+
+  niter = 1;
+  nfev = 0;
+
+  x = x0(:);
+  info = 0;
+
+  ## Initial evaluation.
+  fval = fcn (reshape (x, xsiz));
+  n = length (x);
+
+  if (! isempty (outfcn))
+    optimvalues.iter = niter;
+    optimvalues.funccount = nfev;
+    optimvalues.fval = fval;
+    optimvalues.searchdirection = zeros (n, 1);
+    state = 'init';
+    stop = outfcn (x, optimvalues, state);
+    if (stop)
+      info = -1;
+      break;
+    endif
+  endif
+
+  nsuciter = 0;
+
+  grad = [];
+
+  ## Outer loop.
+  while (niter < maxiter && nfev < maxfev && ! info)
+
+    grad0 = grad;
+
+    ## Calculate function value and gradient (possibly via FD).
+    if (has_grad)
+      [fval, grad] = fcn (reshape (x, xsiz));
+      grad = grad(:);
+      nfev ++;
+    else
+      grad = __fdjac__ (fcn, reshape (x, xsiz), fval)(:);
+      nfev += length (x);
+    endif
+
+    if (niter == 1)
+      ## Initialize by identity matrix. 
+      hesr = eye (n);
+    else
+      ## Use the damped BFGS formula.
+      y = grad - grad0;
+      sBs = sumsq (w);
+      Bs = hesr'*w;
+      sy = y'*s;
+      if (sy >= 0.2*sBs)
+        theta = 1;
+      else
+        theta = 0.8*sBs / (sBs - sy);
+      endif
+      r = theta * y + (1-theta) * Bs;
+      hesr = cholupdate (hesr, r / sqrt (s'*r), "+");
+      [hesr, info] = cholupdate (hesr, Bs / sqrt (sBs), "-");
+      if (info)
+        hesr = eye (n);
+      endif
+    endif
+
+    ## Second derivatives approximate the hessian.
+    d2f = norm (hesr, 'columns').';
+    if (niter == 1)
+      dg = d2f;
+      xn = norm (dg .* x);
+      ## FIXME: something better?
+      delta = max (factor * xn, 1);
+    endif
+
+    ## FIXME: maybe fixed lower and upper bounds?
+    dg = max (0.1*dg, d2f);
+
+    ## FIXME -- why tolf*n*xn? If abs (e) ~ abs(x) * eps is a vector
+    ## of perturbations of x, then norm (hesr*e) <= eps*xn, i.e. by
+    ## tolf ~ eps we demand as much accuracy as we can expect.
+    if (norm (grad) <= tolf*n*xn)
+      info = 1;
+      break;
+    endif
+
+    suc = false;
+    ## Inner loop.
+    while (! suc && niter <= maxiter && nfev < maxfev && ! info)
+
+      s = - __dogleg__ (hesr, grad, dg, delta, true);
+
+      sn = norm (dg .* s);
+      if (niter == 1)
+        delta = min (delta, sn);
+      endif
+
+      fval1 = fcn (reshape (x + s, xsiz)) (:);
+      nfev ++;
+
+      if (fval1 < fval)
+        ## Scaled actual reduction.
+        actred =  (fval - fval1) / (abs (fval1) + abs (fval));
+      else
+        actred = -1;
+      endif
+
+      w = hesr*s;
+      ## Scaled predicted reduction, and ratio.
+      t = 1/2 * sumsq (w) + grad'*s;
+      if (t < 0)
+        prered = -t/(abs (fval) + abs (fval + t));
+        ratio = actred / prered;
+      else
+        prered = 0;
+        ratio = 0;
+      endif
+
+      ## Update delta.
+      if (ratio < 0.1)
+        delta *= 0.5;
+        if (delta <= 1e1*macheps*xn)
+          ## Trust region became uselessly small.
+          info = -3;
+          break;
+        endif
+      else
+        if (abs (1-ratio) <= 0.1)
+          delta = 2*sn;
+        elseif (ratio >= 0.5)
+          delta = max (delta, 2*sn);
+        endif
+      endif
+
+      if (ratio >= 1e-4)
+        ## Successful iteration.
+        x += s;
+        xn = norm (dg .* x);
+        fval = fval1;
+        nsuciter ++;
+        suc = true;
+      endif
+
+      niter ++;
+
+      ## FIXME: should outputfcn be only called after a successful iteration?
+      if (! isempty (outfcn))
+        optimvalues.iter = niter;
+        optimvalues.funccount = nfev;
+        optimvalues.fval = fval;
+        optimvalues.searchdirection = s;
+        state = 'iter';
+        stop = outfcn (x, optimvalues, state);
+        if (stop)
+          info = -1;
+          break;
+        endif
+      endif
+
+      ## Tests for termination conditions. A mysterious place, anything
+      ## can happen if you change something here...
+      
+      ## The rule of thumb (which I'm not sure M*b is quite following)
+      ## is that for a tolerance that depends on scaling, only 0 makes
+      ## sense as a default value. But 0 usually means uselessly long
+      ## iterations, so we need scaling-independent tolerances wherever
+      ## possible.
+
+      ## The following tests done only after successful step.
+      if (ratio >= 1e-4)
+        ## This one is classic. Note that we use scaled variables again,
+        ## but compare to scaled step, so nothing bad.
+        if (sn <= tolx*xn)
+          info = 2;
+          ## Again a classic one.
+        elseif (actred < tolf)
+          info = 3;
+        endif
+      endif
+
+    endwhile
+  endwhile
+
+  ## Restore original shapes.
+  x = reshape (x, xsiz);
+
+  output.iterations = niter;
+  output.successful = nsuciter;
+  output.funcCount = nfev;
+
+endfunction
+
+## An assistant function that evaluates a function handle and checks for
+## bad results.
+function [fx, gx] = guarded_eval (fun, x)
+  if (nargout > 1)
+    [fx, gx] = fun (x);
+  else
+    fx = fun (x);
+    gx = [];
+  endif
+
+  if (! (isreal (fx) && isreal (jx)))
+    error ("fminunc:notreal", "fminunc: non-real value encountered"); 
+  elseif (complexeqn && ! (isnumeric (fx) && isnumeric(jx)))
+    error ("fminunc:notnum", "fminunc: non-numeric value encountered");
+  elseif (any (isnan (fx(:))))
+    error ("fminunc:isnan", "fminunc: NaN value encountered"); 
+  endif
+endfunction
+
+%!function f = rosenb (x)
+%!  n = length (x);
+%!  f = sumsq (1 - x(1:n-1)) + 100 * sumsq (x(2:n) - x(1:n-1).^2);
+%!test
+%! [x, fval, info, out] = fminunc (@rosenb, [5, -5]);
+%! tol = 2e-5;
+%! assert (info > 0);
+%! assert (x, ones (1, 2), tol);
+%! assert (fval, 0, tol);
+%!test
+%! [x, fval, info, out] = fminunc (@rosenb, zeros (1, 4));
+%! tol = 2e-5;
+%! assert (info > 0);
+%! assert (x, ones (1, 4), tol);
+%! assert (fval, 0, tol);
+

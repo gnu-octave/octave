@@ -37,6 +37,7 @@ SOURCES = \
   __fdjac__.m \
   __dogleg__.m \
   fsolve.m \
+  fminunc.m \
   glpk.m \
   glpkmex.m \
   lsqnonneg.m \

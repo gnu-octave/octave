@@ -17,24 +17,42 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn{Function File} {@var{x}} = __dogleg__ (@var{r}, @var{b}, @var{x}, @var{d}, @var{delta})
-## Undocumented internal function.
+## @deftypefn{Function File} {@var{x}} = __dogleg__ (@var{r}, @var{b}, @var{x}, @var{d}, @var{delta}, @var{ismin})
+## Solve the double dogleg trust-region problem:
+## Minimize 
+## @example
+## norm(@var{r}*@var{x}-@var{b}) 
+## @end example
+## subject to the constraint 
+## @example
+## norm(@var{d}.*@var{x}) <= @var{delta} ,
+## @end example
+## x being a convex combination of the gauss-newton and scaled gradient.
+## If @var{ismin} is true (default false), minimizes instead
+## @example
+## norm(@var{r}*@var{x})^2-2*@var{b}'*@var{x} 
+## @end example
 ## @end deftypefn
 
-## Solve the double dogleg trust-region problem:
-## Minimize norm(r*x-b) subject to the constraint norm(d.*x) <= delta,
-## x being a convex combination of the gauss-newton and scaled gradient.
 
 ## TODO: error checks
 ## TODO: handle singularity, or leave it up to mldivide?
 
-function x = __dogleg__ (r, b, d, delta)
+function x = __dogleg__ (r, b, d, delta, ismin = false)
   ## Get Gauss-Newton direction.
+  if (ismin)
+    g = b;
+    b = r' \ g;
+  endif
   x = r \ b;
   xn = norm (d .* x);
   if (xn > delta)
     ## GN is too big, get scaled gradient.
-    s = (r' * b) ./ d;
+    if (ismin)
+      s = g ./ d;
+    else
+      s = (r' * b) ./ d;
+    endif
     sn = norm (s);
     if (sn > 0)
       ## Normalize and rescale.

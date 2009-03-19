@@ -1,3 +1,9 @@
+2009-03-19  Benjamin Lindner  <lindnerb@users.sourceforge.net>
+
+	* ls-oct-ascii.cc (extract_keyword): Replace loop with call to
+	read_until_newline to avoid leaving stray '\r' in stream when
+	reading files with CRLF line endings.
+
 2009-03-18  Jaroslav Hajek <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/cellfun.cc

@@ -1285,6 +1285,41 @@ main()
    AC_SUBST([FT2_LIBS])])
 dnl end of freetype2.m4
 
+dnl Check whether a math mapper function is available in <cmath>.
+dnl Will define HAVE_CMATH_FUNC if there is a double variant and
+dnl HAVE_CMATH_FUNCF if there is a float variant.
+dnl Currently capable of checking for functions with single 
+dnl argument and returning bool/int/real.
+AC_DEFUN([OCTAVE_CMATH_FUNC],[
+AC_MSG_CHECKING([for std::$1 in <cmath>])
+AC_LANG_PUSH(C++)
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+#include <cmath>
+void take_func (bool (*func) (double x));
+void take_func (int (*func) (double x));
+void take_func (double (*func) (double x));
+]],
+[[
+take_func(std::$1);
+]])],
+[AC_MSG_RESULT([yes])
+ AC_DEFINE(HAVE_CMATH_[]AS_TR_CPP($1),1,[Define if <cmath> provides $1])],
+[AC_MSG_RESULT([no])])
+AC_MSG_CHECKING([for std::$1 (float variant) in <cmath>])
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+#include <cmath>
+void take_func (bool (*func) (float x));
+void take_func (int (*func) (float x));
+void take_func (float (*func) (float x));
+]],
+[[
+take_func(std::$1);
+]])],
+[AC_MSG_RESULT([yes])
+ AC_DEFINE(HAVE_CMATH_[]AS_TR_CPP($1)F,1,[Define if <cmath> provides float variant of $1])],
+[AC_MSG_RESULT([no])])
+])
+
 dnl Check whether fast signed integer arithmetics using bit tricks
 dnl can be used in oct-inttypes.h. Defines HAVE_FAST_INT_OPS if
 dnl the following conditions hold:

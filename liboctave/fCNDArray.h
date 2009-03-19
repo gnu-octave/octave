@@ -98,6 +98,9 @@ public:
   FloatComplexNDArray& insert (const FloatComplexNDArray& a, const Array<octave_idx_type>& ra_idx);
   
   FloatNDArray abs (void) const;
+  boolNDArray isnan (void) const;
+  boolNDArray isinf (void) const;
+  boolNDArray isfinite (void) const;
 
   friend FloatComplexNDArray conj (const FloatComplexNDArray& a);
 

@@ -829,6 +829,24 @@ FloatNDArray::abs (void) const
                        dims ());
 }
 
+boolNDArray
+FloatNDArray::isnan (void) const
+{
+  return ArrayN<bool> (fastmap<bool> (xisnan));
+}
+
+boolNDArray
+FloatNDArray::isinf (void) const
+{
+  return ArrayN<bool> (fastmap<bool> (xisinf));
+}
+
+boolNDArray
+FloatNDArray::isfinite (void) const
+{
+  return ArrayN<bool> (fastmap<bool> (xfinite));
+}
+
 FloatMatrix
 FloatNDArray::matrix_value (void) const
 {

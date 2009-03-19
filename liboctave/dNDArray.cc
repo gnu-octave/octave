@@ -874,6 +874,24 @@ NDArray::abs (void) const
                   dims ());
 }
 
+boolNDArray
+NDArray::isnan (void) const
+{
+  return ArrayN<bool> (fastmap<bool> (xisnan));
+}
+
+boolNDArray
+NDArray::isinf (void) const
+{
+  return ArrayN<bool> (fastmap<bool> (xisinf));
+}
+
+boolNDArray
+NDArray::isfinite (void) const
+{
+  return ArrayN<bool> (fastmap<bool> (xfinite));
+}
+
 Matrix
 NDArray::matrix_value (void) const
 {

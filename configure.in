@@ -1776,6 +1776,12 @@ AC_LINK_IFELSE([AC_LANG_PROGRAM([[#ifdef TIME_WITH_SYS_TIME
      [Define if your system has a single-arg prototype for gettimeofday.])])
 fi
 
+dnl Maybe <cmath> defines the IEEE functions we need.
+
+OCTAVE_CMATH_FUNC(isnan)
+OCTAVE_CMATH_FUNC(isinf)
+OCTAVE_CMATH_FUNC(isfinite)
+
 dnl Would like to get rid of this cruft, and just have
 dnl
 dnl   AC_CHECK_FUNCS(finite isnan isinf)

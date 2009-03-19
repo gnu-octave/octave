@@ -25,6 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_liboctave_mappers_h 1
 
 #include "oct-cmplx.h"
+#include "lo-math.h"
 
 // Double Precision 
 extern OCTAVE_API double arg (double x);
@@ -46,9 +47,24 @@ extern OCTAVE_API double xexp2 (double x);
 inline bool xisnan (bool) { return false; }
 inline bool xisnan (char) { return false; }
 
+#if defined (HAVE_CMATH_ISNAN)
+inline bool xisnan (double x)
+{ return std::isnan (x); }
+#else
 extern OCTAVE_API bool xisnan (double x);
+#endif
+#if defined (HAVE_CMATH_ISFINITE)
+inline bool xfinite (double x)
+{ return std::isfinite (x); }
+#else
 extern OCTAVE_API bool xfinite (double x);
+#endif
+#if defined (HAVE_CMATH_ISINF)
+inline bool xisinf (double x)
+{ return std::isinf (x); }
+#else
 extern OCTAVE_API bool xisinf (double x);
+#endif
 
 extern OCTAVE_API bool octave_is_NA (double x);
 extern OCTAVE_API bool octave_is_NaN_or_NA (double x) GCC_ATTR_DEPRECATED;
@@ -70,9 +86,15 @@ extern OCTAVE_API Complex xround (const Complex& x);
 extern OCTAVE_API Complex xroundb (const Complex& x);
 extern OCTAVE_API Complex signum (const Complex& x);
 
-extern OCTAVE_API bool xisnan (const Complex& x);
-extern OCTAVE_API bool xfinite (const Complex& x);
-extern OCTAVE_API bool xisinf (const Complex& x);
+inline bool
+xisnan (const Complex& x)
+{ return (xisnan (real (x)) || xisnan (imag (x))); }
+inline bool
+xfinite (const Complex& x)
+{ return (xfinite (real (x)) && xfinite (imag (x))); }
+inline bool
+xisinf (const Complex& x)
+{ return (xisinf (real (x)) || xisinf (imag (x))); }
 
 extern OCTAVE_API bool octave_is_NA (const Complex& x);
 extern OCTAVE_API bool octave_is_NaN_or_NA (const Complex& x);
@@ -96,9 +118,25 @@ extern OCTAVE_API float xlog2 (float x, int& exp);
 extern OCTAVE_API FloatComplex xlog2 (const FloatComplex& x, int& exp);
 extern OCTAVE_API float xexp2 (float x);
 
+#if defined (HAVE_CMATH_ISNANF)
+inline bool xisnan (float x)
+{ return std::isnan (x); }
+#else
 extern OCTAVE_API bool xisnan (float x);
+#endif
+#if defined (HAVE_CMATH_ISFINITEF)
+inline bool xfinite (float x)
+{ return std::isfinite (x); }
+#else
 extern OCTAVE_API bool xfinite (float x);
+#endif
+#if defined (HAVE_CMATH_ISINFF)
+inline bool xisinf (float x)
+{ return std::isinf (x); }
+#else
 extern OCTAVE_API bool xisinf (float x);
+#endif
+
 
 extern OCTAVE_API bool octave_is_NA (float x);
 extern OCTAVE_API bool octave_is_NaN_or_NA (float x) GCC_ATTR_DEPRECATED;
@@ -120,9 +158,15 @@ extern OCTAVE_API FloatComplex xround (const FloatComplex& x);
 extern OCTAVE_API FloatComplex xroundb (const FloatComplex& x);
 extern OCTAVE_API FloatComplex signum (const FloatComplex& x);
 
-extern OCTAVE_API bool xisnan (const FloatComplex& x);
-extern OCTAVE_API bool xfinite (const FloatComplex& x);
-extern OCTAVE_API bool xisinf (const FloatComplex& x);
+inline bool
+xisnan (const FloatComplex& x)
+{ return (xisnan (real (x)) || xisnan (imag (x))); }
+inline bool
+xfinite (const FloatComplex& x)
+{ return (xfinite (real (x)) && xfinite (imag (x))); }
+inline bool
+xisinf (const FloatComplex& x)
+{ return (xisinf (real (x)) || xisinf (imag (x))); }
 
 extern OCTAVE_API bool octave_is_NA (const FloatComplex& x);
 extern OCTAVE_API bool octave_is_NaN_or_NA (const FloatComplex& x);

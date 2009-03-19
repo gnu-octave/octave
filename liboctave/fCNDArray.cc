@@ -749,6 +749,24 @@ FloatComplexNDArray::abs (void) const
                        dims ());
 }
 
+boolNDArray
+FloatComplexNDArray::isnan (void) const
+{
+  return ArrayN<bool> (fastmap<bool> (xisnan));
+}
+
+boolNDArray
+FloatComplexNDArray::isinf (void) const
+{
+  return ArrayN<bool> (fastmap<bool> (xisinf));
+}
+
+boolNDArray
+FloatComplexNDArray::isfinite (void) const
+{
+  return ArrayN<bool> (fastmap<bool> (xfinite));
+}
+
 FloatComplexNDArray
 conj (const FloatComplexNDArray& a)
 {

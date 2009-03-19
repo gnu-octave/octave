@@ -190,23 +190,29 @@ xlog2 (const Complex& x, int& exp)
 
 // double -> bool mappers.
 
+#if ! defined(HAVE_CMATH_ISNAN)
 bool
 xisnan (double x)
 {
   return lo_ieee_isnan (x);
 }
+#endif
 
+#if ! defined(HAVE_CMATH_ISFINITE)
 bool
 xfinite (double x)
 {
   return lo_ieee_finite (x);
 }
+#endif
 
+#if ! defined(HAVE_CMATH_ISINF)
 bool
 xisinf (double x)
 {
   return lo_ieee_isinf (x);
 }
+#endif
 
 bool
 octave_is_NA (double x)
@@ -319,28 +325,6 @@ signum (const Complex& x)
 }
 
 // complex -> bool mappers.
-
-bool
-xisnan (const Complex& x)
-{
-  return (xisnan (real (x)) || xisnan (imag (x)));
-}
-
-bool
-xfinite (const Complex& x)
-{
-  double rx = real (x);
-  double ix = imag (x);
-
-  return (xfinite (rx) && ! xisnan (rx)
-	  && xfinite (ix) && ! xisnan (ix));
-}
-
-bool
-xisinf (const Complex& x)
-{
-  return (xisinf (real (x)) || xisinf (imag (x)));
-}
 
 bool
 octave_is_NA (const Complex& x)
@@ -524,23 +508,29 @@ xlog2 (const FloatComplex& x, int& exp)
 
 // float -> bool mappers.
 
+#if ! defined(HAVE_CMATH_ISNANF)
 bool
 xisnan (float x)
 {
   return lo_ieee_isnan (x);
 }
+#endif
 
+#if ! defined(HAVE_CMATH_ISFINITEF)
 bool
 xfinite (float x)
 {
   return lo_ieee_finite (x);
 }
+#endif
 
+#if ! defined(HAVE_CMATH_ISINFF)
 bool
 xisinf (float x)
 {
   return lo_ieee_isinf (x);
 }
+#endif
 
 bool
 octave_is_NA (float x)
@@ -653,28 +643,6 @@ signum (const FloatComplex& x)
 }
 
 // complex -> bool mappers.
-
-bool
-xisnan (const FloatComplex& x)
-{
-  return (xisnan (real (x)) || xisnan (imag (x)));
-}
-
-bool
-xfinite (const FloatComplex& x)
-{
-  float rx = real (x);
-  float ix = imag (x);
-
-  return (xfinite (rx) && ! xisnan (rx)
-	  && xfinite (ix) && ! xisnan (ix));
-}
-
-bool
-xisinf (const FloatComplex& x)
-{
-  return (xisinf (real (x)) || xisinf (imag (x)));
-}
 
 bool
 octave_is_NA (const FloatComplex& x)

@@ -856,6 +856,24 @@ octave_complex_matrix::imag (void) const
   return ::imag (matrix);
 }
 
+octave_value
+octave_complex_matrix::isnan (void) const
+{
+  return matrix.isnan ();
+}
+
+octave_value
+octave_complex_matrix::isinf (void) const
+{
+  return matrix.isinf ();
+}
+
+octave_value
+octave_complex_matrix::finite (void) const
+{
+  return matrix.isfinite ();
+}
+
 DARRAY_MAPPER (erf, NDArray::dmapper, ::erf)
 DARRAY_MAPPER (erfc, NDArray::dmapper, ::erfc)
 DARRAY_MAPPER (gamma, NDArray::dmapper, xgamma)
@@ -888,10 +906,7 @@ ARRAY_MAPPER (sinh, ComplexNDArray::cmapper, std::sinh)
 ARRAY_MAPPER (sqrt, ComplexNDArray::cmapper, std::sqrt)
 ARRAY_MAPPER (tan, ComplexNDArray::cmapper, std::tan)
 ARRAY_MAPPER (tanh, ComplexNDArray::cmapper, std::tanh)
-ARRAY_MAPPER (finite, ComplexNDArray::bmapper, xfinite)
-ARRAY_MAPPER (isinf, ComplexNDArray::bmapper, xisinf)
 ARRAY_MAPPER (isna, ComplexNDArray::bmapper, octave_is_NA)
-ARRAY_MAPPER (isnan, ComplexNDArray::bmapper, xisnan)
 
 /*
 ;;; Local Variables: ***

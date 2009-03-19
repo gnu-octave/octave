@@ -106,6 +106,9 @@ public:
   FloatNDArray& insert (const FloatNDArray& a, const Array<octave_idx_type>& ra_idx);
 
   FloatNDArray abs (void) const;
+  boolNDArray isnan (void) const;
+  boolNDArray isinf (void) const;
+  boolNDArray isfinite (void) const;
 
   FloatComplexNDArray fourier (int dim = 1) const;
   FloatComplexNDArray ifourier (int dim = 1) const;

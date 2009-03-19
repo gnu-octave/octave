@@ -109,6 +109,9 @@ public:
   NDArray& insert (const NDArray& a, const Array<octave_idx_type>& ra_idx);
 
   NDArray abs (void) const;
+  boolNDArray isnan (void) const;
+  boolNDArray isinf (void) const;
+  boolNDArray isfinite (void) const;
 
   ComplexNDArray fourier (int dim = 1) const;
   ComplexNDArray ifourier (int dim = 1) const;

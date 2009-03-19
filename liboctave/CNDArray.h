@@ -98,6 +98,9 @@ public:
   ComplexNDArray& insert (const ComplexNDArray& a, const Array<octave_idx_type>& ra_idx);
   
   NDArray abs (void) const;
+  boolNDArray isnan (void) const;
+  boolNDArray isinf (void) const;
+  boolNDArray isfinite (void) const;
 
   friend ComplexNDArray conj (const ComplexNDArray& a);
 

@@ -766,6 +766,24 @@ octave_float_matrix::imag (void) const
   return FloatNDArray (matrix.dims (), 0.0);
 }
 
+octave_value
+octave_float_matrix::isnan (void) const
+{
+  return matrix.isnan ();
+}
+
+octave_value
+octave_float_matrix::isinf (void) const
+{
+  return matrix.isinf ();
+}
+
+octave_value
+octave_float_matrix::finite (void) const
+{
+  return matrix.isfinite ();
+}
+
 ARRAY_MAPPER (erf, FloatNDArray::dmapper, ::erff)
 ARRAY_MAPPER (erfc, FloatNDArray::dmapper, ::erfcf)
 ARRAY_MAPPER (gamma, FloatNDArray::dmapper, xgamma)
@@ -797,10 +815,7 @@ ARRAY_MAPPER (sinh, FloatNDArray::dmapper, ::sinhf)
 CD_ARRAY_MAPPER (sqrt, ::sqrtf, std::sqrt, 0.0, octave_Float_Inf)
 ARRAY_MAPPER (tan, FloatNDArray::dmapper, ::tanf)
 ARRAY_MAPPER (tanh, FloatNDArray::dmapper, ::tanhf)
-ARRAY_MAPPER (finite, FloatNDArray::bmapper, xfinite)
-ARRAY_MAPPER (isinf, FloatNDArray::bmapper, xisinf)
 ARRAY_MAPPER (isna, FloatNDArray::bmapper, octave_is_NA)
-ARRAY_MAPPER (isnan, FloatNDArray::bmapper, xisnan)
 
 DEFUN (single, args, ,
   "-*- texinfo -*-\n\

@@ -754,6 +754,24 @@ ComplexNDArray::abs (void) const
                   dims ());
 }
 
+boolNDArray
+ComplexNDArray::isnan (void) const
+{
+  return ArrayN<bool> (fastmap<bool> (xisnan));
+}
+
+boolNDArray
+ComplexNDArray::isinf (void) const
+{
+  return ArrayN<bool> (fastmap<bool> (xisinf));
+}
+
+boolNDArray
+ComplexNDArray::isfinite (void) const
+{
+  return ArrayN<bool> (fastmap<bool> (xfinite));
+}
+
 ComplexNDArray
 conj (const ComplexNDArray& a)
 {

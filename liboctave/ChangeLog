@@ -1,3 +1,21 @@
+2009-03-20  Jaroslav Hajek  <highegg@gmail.com>
+
+	* Array.h (Array<T>::fastmap): New method.
+	* dNDArray.cc (NDArray::isnan, NDArray::isinf, NDArray::isfinite):
+	New methods.
+	* dNDArray.h: Declare them.
+	* fNDArray.cc (FloatNDArray::isnan, FloatNDArray::isinf,
+	FloatNDArray::isfinite): New methods.
+	* fNDArray.h: Declare them.
+	* CNDArray.cc (ComplexNDArray::isnan, ComplexNDArray::isinf,
+	ComplexNDArray::isfinite): New methods.
+	* CNDArray.h: Declare them.
+	* fCNDArray.cc (FloatComplexNDArray::isnan, FloatComplexNDArray::isinf,
+	FloatComplexNDArray::isfinite): New methods.
+	* fCNDArray.h: Declare them.
+	* lo-mappers.h (xisnan, xisinf, xfinite): If possible, use definitions
+	from <cmath>.
+
 2009-03-18  Jaroslav Hajek <highegg@gmail.com>
 
 	* oct-norm.cc (get_eps): Remove that hack.

@@ -1120,6 +1120,13 @@ M operator * (const M& x, const PM& p) \
 #define MPM_BIN_OPS(R, M, PM) \
   MPM_MULTIPLY_OP(M, PM);
 
+#define NDND_MAPPER_BODY(R, NAME) \
+  R retval (dims ()); \
+  octave_idx_type n = numel (); \
+  for (octave_idx_type i = 0; i < n; i++) \
+    retval.xelem (i) = NAME (elem (i)); \
+  return retval;
+
 #endif
 
 

@@ -138,7 +138,7 @@ commands in the system or user startup files that use the
 @cindex @code{-i}
 Force interactive behavior.  This can be useful for running Octave via a
 remote shell command or inside an Emacs shell buffer.  For another way
-to run Octave within Emacs, see @ref{Emacs}.
+to run Octave within Emacs, see @ref{Emacs Octave Support}.
 
 @item --no-history
 @itemx -H

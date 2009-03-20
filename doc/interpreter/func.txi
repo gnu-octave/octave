@@ -17,7 +17,7 @@
 @c <http://www.gnu.org/licenses/>.
 
 @node Functions and Scripts
-@chapter Functions and Script Files
+@chapter Functions and Scripts
 @cindex defining functions
 @cindex user-defined functions
 @cindex functions, user-defined

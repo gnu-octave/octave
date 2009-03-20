@@ -23,8 +23,8 @@
 @cindex graphics
 
 @menu
-* Plotting Basics::             
-* Advanced Plotting::           
+* Plotting Basics::
+* Advanced Plotting::
 @end menu
 
 @node Plotting Basics

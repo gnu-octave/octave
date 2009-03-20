@@ -30,7 +30,10 @@
 @vskip 2pt
 @end iftex
 @ifnottex
-@sp 1
+@c Texinfo @sp should work but in practice produces ugly results for HTML.
+@c A simple blank line produces the correct behavior. 
+@c @sp 1
+
 @end ifnottex
 @noindent
 @strong{See also:} \args\.
@@ -153,7 +156,7 @@ It corresponds to GNU Octave version @value{VERSION}.
 * Strings::                     
 * Data Containers::             
 * Variables::                   
-* Expressions::                 Expressions.
+* Expressions::                 
 * Evaluation::                  
 * Statements::                  Looping and program flow control.
 * Functions and Scripts::       
@@ -183,18 +186,17 @@ It corresponds to GNU Octave version @value{VERSION}.
 * Packages:: 
 * Dynamically Linked Functions::
 * Test and Demo Functions::
-* Tips::                        
+* Tips and Standards::                        
 * Contributing Guidelines::
 * Trouble::                     If you have trouble installing Octave.
 * Installation::                How to configure, compile and install Octave.
-* Emacs::                       
+* Emacs Octave Support::                       
 @c * Grammar::                     
 * Copying::                     The GNU General Public License.
 * Concept Index::               An item for each concept.
 * Function Index::              An item for each documented function.
 * Operator Index::              An item for each documented operator.
 
-@c FIXME -- is the detailed node listing up to date?
 @detailmenu
  --- The Detailed Node Listing ---
 
@@ -204,7 +206,7 @@ Preface
 * How You Can Contribute to Octave::  
 * Distribution::                
 
-A Brief Introduction to Octave
+Introduction
 
 * Running Octave::              
 * Simple Examples::             
@@ -259,8 +261,10 @@ Data Types
 Built-in Data Types
 
 * Numeric Objects::             
+* Missing Data::                
 * String Objects::              
 * Data Structure Objects::      
+* Cell Array Objects::          
 
 Numeric Data Types
 
@@ -277,19 +281,50 @@ Matrices
 
 * Empty Matrices::              
 
+Integer Data Types
+
+* Integer Arithmetic::
+
 Strings
 
-* Creating Strings::            
-* Comparing Strings::
+* Escape Sequences in string constants::
+* Character Arrays::
+* Creating Strings:: 
+* Comparing Strings::           
 * Manipulating Strings::     
 * String Conversions::          
 * Character Class Functions::   
+
+Creating Strings
+
+* Concatenating Strings:: 
+* Conversion of Numerical Data to Strings::
 
 Data Containers
 
 * Data Structures::
 * Cell Arrays::
 * Comma Separated Lists::
+
+Data Structures
+
+* Structure Arrays::
+* Creating Structures::
+* Manipulating Structures::
+* Processing Data in Structures::
+
+Cell Arrays
+
+* Creating Cell Arrays::                 
+* Indexing Cell Arrays::
+* Cell Arrays of Strings::
+* Processing Data in Cell Arrays::
+
+Variables
+
+* Global Variables::            
+* Persistent Variables::        
+* Status of Variables::         
 
 Expressions
 
@@ -304,11 +339,6 @@ Expressions
 
 Calling Functions
 
-Variables
-
-* Global Variables::            
-* Status of Variables::         
-
 * Call by Value::               
 * Recursion::                   
 
@@ -316,6 +346,11 @@ Boolean Expressions
 
 * Element-by-element Boolean Operators::  
 * Short-circuit Boolean Operators::  
+
+Evaluation
+
+* Calling a Function by its Name::
+* Evaluation in a Different Context::
 
 Statements
 
@@ -330,25 +365,57 @@ Statements
 * The try Statement::           
 * Continuation Lines::          
 
+The @code{switch} Statement
+
+* Notes for the C programmer::  
+
 The @code{for} Statement
 
 * Looping Over Structure Elements::  
 
-Functions and Script Files
+Functions and Scripts
 
 * Defining Functions::          
 * Multiple Return Values::      
 * Variable-length Argument Lists::  
 * Variable-length Return Lists::  
 * Returning From a Function::   
+* Default Arguments::   
 * Function Files::              
 * Script Files::                
+* Function Handles Inline Functions and Anonymous Functions::
+* Commands::
 * Organization of Functions::   
+
+Function Files
+
+* Manipulating the load path::
+* Subfunctions::
+* Private Functions::
+* Overloading and Autoloading::
+* Function Locking::
+* Function Precedence::
+
+Function Handles Inline Functions and Anonymous Functions
+
+* Function Handles::
+* Anonymous Functions::
+* Inline Functions::
 
 Errors and Warnings
 
 * Handling Errors::
 * Handling Warnings::
+
+Handling Errors
+
+* Raising Errors::
+* Catching Errors::
+
+Handling Warnings
+
+* Issuing Warnings::
+* Enabling and Disabling Warnings::
 
 Debugging
 
@@ -368,6 +435,15 @@ Basic Input and Output
 * Terminal Output::             
 * Terminal Input::              
 * Simple File I/O::             
+* Rational Approximations::
+
+Terminal Output
+
+* Paging Screen Output::
+
+Simple File I/O
+
+* Saving Data on Unexpected Exits::
 
 C-Style I/O Functions
 
@@ -396,6 +472,68 @@ Plotting
 * Plotting Basics::
 * Advanced Plotting::
 
+Plotting Basics
+
+* Two-Dimensional Plots::       
+* Three-Dimensional Plotting::  
+* Plot Annotations::            
+* Multiple Plots on One Page::  
+* Multiple Plot Windows::       
+* Printing Plots::              
+* Interacting with plots::
+* Test Plotting Functions::     
+
+Two-Dimensional Plots
+
+* Two-dimensional Function Plotting::
+
+Three-Dimensional Plotting
+
+* Three-dimensional Function Plotting::
+* Three-dimensional Geometric Shapes::
+
+Advanced Plotting
+
+* Graphics Objects::
+* Graphics Object Properties::  
+* Managing Default Properties::  
+* Colors::
+* Line Styles::
+* Marker Styles::
+* Callbacks::
+* Object Groups::
+* Graphics backends::
+
+Graphics Object Properties
+
+* Root Figure Properties::      
+* Figure Properties::           
+* Axes Properties::             
+* Line Properties::             
+* Text Properties::             
+* Image Properties::            
+* Patch Properties::            
+* Surface Properties::          
+* Searching Properties::
+
+Object Groups
+
+* Data sources in object groups::
+* Area series::
+* Bar series::
+* Contour groups::
+* Error bar series::
+* Line series::
+* Quiver group::
+* Scatter group::
+* Stair group::
+* Stem Series::
+* Surface group::
+
+Graphics backends
+
+* Interaction with gnuplot::
+
 Matrix Manipulation
 
 * Finding Elements and Checking Conditions::  
@@ -411,6 +549,7 @@ Arithmetic
 * Trigonometry::                
 * Sums and Products::           
 * Special Functions::           
+* Coordinate Transformations::
 * Mathematical Constants::      
 
 Linear Algebra
@@ -419,27 +558,57 @@ Linear Algebra
 * Basic Matrix Functions::      
 * Matrix Factorizations::       
 * Functions of a Matrix::       
+* Specialized Solvers::
 
 Diagonal and Permutation Matrices
 
-* Basic Usage::
-* Matrix Algebra::
-* Function Support::
-* Example Codes::
-* Zeros Treatment::
+* Basic Usage::          Creation and Manipulation of Diagonal and Permutation Matrices
+* Matrix Algebra::       Linear Algebra with Diagonal and Permutation Matrices
+* Function Support::     Functions That Are Aware of These Matrices
+* Example Codes::        Some Examples of Usage
+* Zeros Treatment::      The Differences in Treatment of Zero Elements
+
+Basic Usage
+
+* Creating Diagonal Matrices::
+* Creating Permutation Matrices::
+* Explicit and Implicit Conversions::
+
+Matrix Algebra
+
+* Expressions Involving Diagonal Matrices::
+* Expressions Involving Permutation Matrices::
+
+Function Support
+
+* Diagonal Matrix Functions::
+* Permutation Matrix Functions::
 
 Sparse Matrices
 
-* Basics::
-* Sparse Linear Algebra::
-* Iterative Techniques::
-* Real Life Example::
+* Basics::                      Creation and Manipulation of Sparse Matrices
+* Sparse Linear Algebra::       Linear Algebra on Sparse Matrices
+* Iterative Techniques::        Iterative Techniques
+* Real Life Example::           Using Sparse Matrices
+
+Basics
+
+* Storage of Sparse Matrices::
+* Creating Sparse Matrices::
+* Information::
+* Operators and Functions::
+
+Operators and Functions
+
+* Sparse Functions::            
+* Return Types of Operators and Functions::  
+* Mathematical Considerations::  
 
 Numerical Integration
 
-* Functions of One Variable::   
-* Orthogonal Collocation::      
+* Functions of One Variable:: 
 * Functions of Multiple Variables:: 
+* Orthogonal Collocation::      
 
 Differential Equations
 
@@ -448,6 +617,7 @@ Differential Equations
 
 Optimization
 
+* Linear Programming::       
 * Quadratic Programming::       
 * Nonlinear Programming::       
 * Linear Least Squares::        
@@ -487,6 +657,11 @@ Geometry
 * Convex Hull::
 * Interpolation on Scattered Data::
 
+Delaunay Triangulation
+
+* Plotting the Triangulation::
+* Identifying points in Triangulation::
+
 Image Processing
 
 * Loading and Saving Images::   
@@ -497,10 +672,16 @@ Image Processing
 
 Object Oriented Programming
 
-* Creating a Class:
+* Creating a Class::
 * Manipulating Classes::
 * Indexing Objects::
 * Overloading Objects::
+
+Overloading Objects
+
+* Function Overloading::
+* Operator Overloading::
+* Precedence of Objects::
 
 System Utilities
 
@@ -519,19 +700,54 @@ System Utilities
 
 Packages
 
-* Installing and Removing Packages::
-* Using Packages::
-* Administrating Packages::
-* Creating Packages::
+* Installing and Removing Packages::  
+* Using Packages::              
+* Administrating Packages::     
+* Creating Packages::           
+
+Creating Packages
+
 * The DESCRIPTION File::        
 * The INDEX file::              
 * PKG_ADD and PKG_DEL directives::  
 
 Dynamically Linked Functions
 
-* Oct-Files::
-* Mex-Files::
-* Standalone Programs::
+* Oct-Files::                   
+* Mex-Files::                   
+* Standalone Programs::         
+
+Oct-Files
+
+* Getting Started with Oct-Files::  
+* Matrices and Arrays in Oct-Files::  
+* Character Strings in Oct-Files::  
+* Cell Arrays in Oct-Files::    
+* Structures in Oct-Files::  
+* Sparse Matrices in Oct-Files::  
+* Accessing Global Variables in Oct-Files::  
+* Calling Octave Functions from Oct-Files::  
+* Calling External Code from Oct-Files::  
+* Allocating Local Memory in Oct-Files::  
+* Input Parameter Checking in Oct-Files::  
+* Exception and Error Handling in Oct-Files::  
+* Documentation and Test of Oct-Files::  
+
+Sparse Matrices in Oct-Files
+
+* Array and Sparse Differences::  
+* Creating Sparse Matrices in Oct-Files::  
+* Using Sparse Matrices in Oct-Files::  
+
+Mex-Files
+
+* Getting Started with Mex-Files::  
+* Working with Matrices and Arrays in Mex-Files::  
+* Character Strings in Mex-Files::  
+* Cell Arrays with Mex-Files::  
+* Structures with Mex-Files::  
+* Sparse Matrices with Mex-Files::  
+* Calling Other Functions in Mex-Files::  
 
 Test and Demo Functions
 
@@ -542,11 +758,19 @@ Tips and Standards
 
 * Style Tips::                  Writing clean and robust programs.
 * Coding Tips::                 Making code run faster.
-* Documentation Tips::          Writing readable documentation strings.
 * Comment Tips::                Conventions for writing comments.
 * Function Headers::            Standard headers for functions.
+* Documentation Tips::          Writing readable documentation strings.
 
-Known Causes of Trouble with Octave
+Contributing Guidelines
+
+* How to Contribute::
+* General Guidelines::
+* Octave Sources (m-files)::
+* C++ Sources::
+* Other Sources::	
+
+Trouble
 
 * Actual Bugs::                 Bugs we will fix later.
 * Reporting Bugs::              
@@ -563,7 +787,7 @@ Reporting Bugs
 * Reporting: Bug Reporting.     How to report a bug effectively.
 * Patches: Sending Patches.     How to send a patch for Octave.
 
-Installing Octave
+Installation
 
 * Installation Problems::       
 
@@ -573,11 +797,6 @@ Emacs Octave Support
 * Using Octave Mode::           
 * Running Octave From Within Emacs::  
 * Using the Emacs Info Reader for Octave::  
-
-@c Grammar
-@c 
-@c * Keywords::                    
-
 @end detailmenu
 @end menu
 
@@ -625,10 +844,8 @@ Emacs Octave Support
 @c
 @c @include amuse.texi
 
-@c Appendices start here.  Installation and bugs have to go before the
-@c readline and Info appendices because we want to have separate indices
-@c for them, and there appears to be no way to go back to the original
-@c set of indices once a redirection has taken place.
+@c ------------------------------------------------------------------------
+@c Appendices start here. 
 
 @include dynamic.texi
 @include testfun.texi
@@ -639,6 +856,9 @@ Emacs Octave Support
 @include emacs.texi
 @c @include grammar.texi
 @include gpl.texi
+
+@c ------------------------------------------------------------------------
+@c Indices start here. 
 
 @include cp-idx.texi
 @c @include vr-idx.texi

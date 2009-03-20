@@ -17,7 +17,7 @@
 @c along with Octave; see the file COPYING.  If not, see
 @c <http://www.gnu.org/licenses/>.
 
-@node Tips
+@node Tips and Standards
 @appendix Tips and Standards
 @cindex tips
 @cindex standards of coding style

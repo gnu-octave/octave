@@ -12,13 +12,13 @@ tried.
 	--without-blas --without-lapack --disable-readline
 
     The last to arguments tell Octave to use the reference blas and
-    lapack implmentation in Fortran and to not require the readline
+    lapack implementation in Fortran and to not require the readline
     library.  If you have the readline library, you can omit the last
     option.  You can also try to use a vendor library for LAPACK and
     BLAS, but how are those compiled?  You will need a version of the
     library that is compiled for 64-bit double precision values, but
     that uses the D and Z names (I'm not sure that this is the case
-    with the Cray librararies).
+    with the Cray libraries).
 
     I'm using -O0 in an effort to speed up compilation.  If you want
     an optimized version and have time to wait for the build to

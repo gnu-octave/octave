@@ -17,7 +17,7 @@ Summary of important user-visible changes for version 3.2:
            endfor
 
     works as expected.  This capability has be used to introduce
-    stem-series, bar-series, etc.  objects for better Matlab
+    stem-series, bar-series, etc., objects for better Matlab
     compatibility.
 
  ** New graphics functions:
@@ -195,7 +195,7 @@ Summary of important user-visible changes for version 3.2:
 
     Octave will now attempt to share data in some cases where previously
     a copy would be made, such as certain array slicing operations or
-    conversions between cells, structs and cs-lists. This usually reduces
+    conversions between cells, structs and cs-lists.  This usually reduces
     both time and memory consumption.
 
  ** Improved performance for reduction operations.
@@ -230,7 +230,7 @@ Summary of important user-visible changes for version 3.2:
     Additionally, fsolve is now able to solve overdetermined systems,
     complex-differentiable complex systems, systems with a sparse
     jacobian and can work in single precision if given single precision
-    inputs. It can also be called recursively.
+    inputs.  It can also be called recursively.
 
  ** Improvements to the norm function.
 

@@ -266,9 +266,9 @@ should work around most problems:
 3. Installation
 ===============
 
-The compiled Octave is relocatable.   This means that whetever
+The compiled Octave is relocatable.  This means that whatever
 installation dir you chose at configure time, you can move the whole
-installation directory to another location without any problem.   Octave
+installation directory to another location without any problem.  Octave
 should still run OK.
 
 

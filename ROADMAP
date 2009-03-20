@@ -64,7 +64,7 @@ Octave's source files.
 
   test          -- tests for the interpreter
     config         * configuration files for DejaGnu
-    octave.test    * subdirectories contianing actual tests are here
+    octave.test    * subdirectories containing actual tests are here
 
 
 John W. Eaton

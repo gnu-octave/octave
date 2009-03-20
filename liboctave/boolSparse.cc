@@ -184,9 +184,7 @@ operator >> (std::istream& is, SparseBoolMatrix& a)
   octave_idx_type nc = a.cols ();
   octave_idx_type nz = a.nzmax ();
 
-  if (nr < 1 || nc < 1)
-    is.clear (std::ios::badbit);
-  else
+  if (nr > 0 && nc > 0)
     {
       octave_idx_type itmp, jtmp, jold = 0;
       bool tmp;

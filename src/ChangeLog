@@ -1,5 +1,12 @@
 2009-03-20  Jaroslav Hajek  <highegg@gmail.com>
 
+	* ov-re-mat.cc (octave_matrix::load_ascii): Simplify.
+	* ov-flt-re-mat.cc (octave_float_matrix::load_ascii): Simplify.
+	* ov-cx-mat.cc (octave_complex_matrix::load_ascii): Simplify.
+	* ov-flt-cx-mat.cc (octave_float_complex_matrix::load_ascii): Simplify.
+
+2009-03-20  Jaroslav Hajek  <highegg@gmail.com>
+
 	* ov-re-mat.cc (octave_matrix::isnan, octave_matrix::isinf,
 	octave_matrix::finite): Simplify.
 	* ov-flt-re-mat.cc (octave_float_matrix::isnan,

@@ -3058,9 +3058,7 @@ operator >> (std::istream& is, Matrix& a)
   octave_idx_type nr = a.rows ();
   octave_idx_type nc = a.cols ();
 
-  if (nr < 1 || nc < 1)
-    is.clear (std::ios::badbit);
-  else
+  if (nr > 0 && nc > 0)
     {
       double tmp;
       for (octave_idx_type i = 0; i < nr; i++)

@@ -321,9 +321,7 @@ operator >> (std::istream& is, ColumnVector& a)
 {
   octave_idx_type len = a.length();
 
-  if (len < 1)
-    is.clear (std::ios::badbit);
-  else
+  if (len > 0)
     {
       double tmp;
       for (octave_idx_type i = 0; i < len; i++)

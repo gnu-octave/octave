@@ -372,20 +372,15 @@ octave_float_matrix::load_ascii (std::istream& is)
 		{
 		  FloatNDArray tmp(dv);
 
-		  if (tmp.is_empty ())
-		    matrix = tmp;
-		  else
-		    {
-		      is >> tmp;
+                  is >> tmp;
 
-		      if (is)
-			matrix = tmp;
-		      else
-			{
-			  error ("load: failed to load matrix constant");
-			  success = false;
-			}
-		    }
+                  if (is)
+                    matrix = tmp;
+                  else
+                    {
+                      error ("load: failed to load matrix constant");
+                      success = false;
+                    }
 		}
 	      else
 		{

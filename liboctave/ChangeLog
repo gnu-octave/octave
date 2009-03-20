@@ -1,5 +1,14 @@
 2009-03-20  Jaroslav Hajek  <highegg@gmail.com>
 
+	
+	* CColVector.cc, CMatrix.cc, CNDArray.cc, CRowVector.cc, CSparse.cc,
+	boolSparse.cc, dColVector.cc, dMatrix.cc, dNDArray.cc, dRowVector.cc,
+	dSparse.cc, fCColVector.cc, fCMatrix.cc, fCNDArray.cc, fCRowVector.cc,
+	fColVector.cc, fMatrix.cc, fNDArray.cc, fRowVector.cc, intNDArray.cc:
+	Allow empty arrays in stream input operators.
+
+2009-03-20  Jaroslav Hajek  <highegg@gmail.com>
+
 	* Array.h (Array<T>::fastmap): New method.
 	* dNDArray.cc (NDArray::isnan, NDArray::isinf, NDArray::isfinite):
 	New methods.

@@ -146,9 +146,7 @@ operator >> (std::istream& is, intNDArray<T>& a)
 {
   octave_idx_type nel = a.nelem ();
 
-  if (nel < 1 )
-    is.clear (std::ios::badbit);
-  else
+  if (nel > 0)
     {
       T tmp;
 

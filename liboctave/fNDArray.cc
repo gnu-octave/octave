@@ -920,9 +920,7 @@ operator >> (std::istream& is, FloatNDArray& a)
 {
   octave_idx_type nel = a.nelem ();
 
-  if (nel < 1 )
-    is.clear (std::ios::badbit);
-  else
+  if (nel > 0)
     {
       float tmp;
       for (octave_idx_type i = 0; i < nel; i++)

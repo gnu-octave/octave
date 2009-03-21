@@ -40,13 +40,20 @@ function gnuplot_drawnow (h, term, file, mono, debug_file)
     fid = [];
     printing = ! output_to_screen (gnuplot_trim_term (term));
     unwind_protect
-      plot_stream = open_gnuplot_stream (1, []);
-      [enhanced, implicit_margin] = gnuplot_set_term (plot_stream (1), true, h, term, file);
-      __go_draw_figure__ (h, plot_stream, enhanced, mono, printing, implicit_margin);
-      if (nargin == 5)
-        fid = fopen (debug_file, "wb");
-        enhanced = gnuplot_set_term (fid, true, h, term, file);
-        __go_draw_figure__ (h, fid, enhanced, mono, printing, implicit_margin);
+      plot_stream = open_gnuplot_stream (2, []);
+      available_terminals = __gnuplot_get_var__ (plot_stream, "GPVAL_TERMINALS");
+      available_terminals = regexp (available_terminals, "\\b\\w+\\b", "match");
+      if (any (strcmpi (available_terminals, gnuplot_trim_term (term))))
+        [enhanced, implicit_margin] = gnuplot_set_term (plot_stream (1), true, h, term, file);
+        __go_draw_figure__ (h, plot_stream, enhanced, mono, printing, implicit_margin);
+        if (nargin == 5)
+          fid = fopen (debug_file, "wb");
+          [enhanced, implicit_margin] = gnuplot_set_term (fid, true, h, term, file);
+          __go_draw_figure__ (h, fid, enhanced, mono, printing, implicit_margin);
+        endif
+      else
+        error ("gnuplot_drawnow: the gnuplot terminal, \"%s\", is not available.",
+               gnuplot_trim_term (term))
       endif
     unwind_protect_cleanup
       if (! isempty (plot_stream))

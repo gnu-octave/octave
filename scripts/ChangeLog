@@ -1,5 +1,6 @@
 2009-03-21  Ben Abbott <bpabbott@mac.com>
 
+	* plot/gnuplot_drawnow.m: Verify the gnuplot terminal is supported.
 	* plot/__gnuplot_get_var__.m: Add function to get gnuplot variables.
 	* plot/print.m: Restore the behavior for option -S<num>,<num>.
 

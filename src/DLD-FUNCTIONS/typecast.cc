@@ -132,7 +132,7 @@ DEFUN_DLD (typecast, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} typecast (@var{x}, @var{type})\n\
 Convert from one datatype to another without changing the underlying\n\
-data. The argument @var{type} defines the type of the return argument\n\
+data.  The argument @var{type} defines the type of the return argument\n\
 and must be one of 'uint8', 'uint16', 'uint32', 'uint64', 'int8', 'int16',\n\
 'int32', 'int64', 'single' or 'double'.\n\
 \n\

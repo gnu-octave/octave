@@ -21,7 +21,7 @@
 ## Remove leading and trailing blanks and nulls from @var{s}.  If
 ## @var{s} is a matrix, @var{strtrim} trims each row to the length of
 ## longest string.  If @var{s} is a cell array, operate recursively on
-## each element of the cell array. For example:
+## each element of the cell array.  For example:
 ##
 ## @example
 ## @group

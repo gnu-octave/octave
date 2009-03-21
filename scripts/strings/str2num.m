@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} str2num (@var{s})
 ## Convert the string (or character array) @var{s} to a number (or an
-## array). Examples:  
+## array).  Examples:  
 ##
 ## @example
 ## @group

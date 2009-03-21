@@ -314,7 +314,7 @@ strcat(@{"abc"; "ghi"@}, @{"def"; "jkl"@})
 
 @item @code{strcat} removes trailing white space in the arguments (except
 within cell arrays), while @code{cstrcat} leaves white space untouched.  Both
-kinds of behaviour can be useful as can be seen in the examples:
+kinds of behavior can be useful as can be seen in the examples:
 
 @example
 @group
@@ -377,7 +377,7 @@ spaces = (GNU == " ")
 
 @noindent To determine if two strings are identical it is necessary to use the
 @code{strcmp} function.  It compares complete strings and is case
-sensistive.  @code{strncmp} compares only the first @code{N} characters (with
+sensitive.  @code{strncmp} compares only the first @code{N} characters (with
 @code{N} given as a parameter).  @code{strcmpi} and @code{strncmpi} are the
 corresponding functions for case-insensitive comparison.
 
@@ -396,15 +396,17 @@ corresponding functions for case-insensitive comparison.
 
 Octave supports a wide range of functions for manipulating strings.
 Since a string is just a matrix, simple manipulations can be accomplished
-using standard operators. The following example shows how to replace
+using standard operators.  The following example shows how to replace
 all blank characters with underscores.
 
 @example
-quote = ...
+@group
+quote = @dots{}
   "First things first, but not necessarily in that order";
 quote( quote == " " ) = "_"
 @result{} quote = 
     First_things_first,_but_not_necessarily_in_that_order
+@end group
 @end example
 
 For more complex manipulations, such as searching, replacing, and

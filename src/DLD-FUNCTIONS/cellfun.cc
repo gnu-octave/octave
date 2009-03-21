@@ -75,11 +75,11 @@ Return 1 for elements of @var{class}.\n\
 \n\
 Additionally, @code{cellfun} accepts an arbitrary function @var{func}\n\
 in the form of an inline function, function handle, or the name of a\n\
-function (in a character string). In the case of a character string\n\
+function (in a character string).  In the case of a character string\n\
 argument, the function must accept a single argument named @var{x}, and\n\
-it must return a string value. The function can take one or more arguments,\n\
-with the inputs args given by @var{c}, @var{d}, etc. Equally the function\n\
-can return one or more output arguments. For example\n\
+it must return a string value.  The function can take one or more arguments,\n\
+with the inputs args given by @var{c}, @var{d}, etc.  Equally the function\n\
+can return one or more output arguments.  For example\n\
 \n\
 @example\n\
 @group\n\
@@ -93,8 +93,8 @@ input arguments.\n\
 \n\
 If the parameter 'UniformOutput' is set to true (the default), then the function\n\
 must return a single element which will be concatenated into the\n\
-return value. If 'UniformOutput' is false, the outputs are concatenated in\n\
-a cell array. For example\n\
+return value.  If 'UniformOutput' is false, the outputs are concatenated in\n\
+a cell array.  For example\n\
 \n\
 @example\n\
 @group\n\
@@ -105,17 +105,17 @@ cellfun (\"tolower(x)\", @{\"Foo\", \"Bar\", \"FooBar\"@},\n\
 @end example\n\
 \n\
 Given the parameter 'ErrorHandler', then @var{errfunc} defines a function to\n\
-call in case @var{func} generates an error. The form of the function is\n\
+call in case @var{func} generates an error.  The form of the function is\n\
 \n\
 @example\n\
 function [@dots{}] = errfunc (@var{s}, @dots{})\n\
 @end example\n\
 \n\
 where there is an additional input argument to @var{errfunc} relative to\n\
-@var{func}, given by @var{s}. This is a structure with the elements\n\
+@var{func}, given by @var{s}.  This is a structure with the elements\n\
 'identifier', 'message' and 'index', giving respectively the error\n\
 identifier, the error message, and the index into the input arguments\n\
-of the element that caused the error. For example\n\
+of the element that caused the error.  For example\n\
 \n\
 @example\n\
 @group\n\
@@ -754,7 +754,7 @@ DEFUN_DLD (num2cell, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{c} =} num2cell (@var{m})\n\
 @deftypefnx {Loadable Function} {@var{c} =} num2cell (@var{m}, @var{dim})\n\
-Convert the matrix @var{m} into a cell array. If @var{dim} is defined, the\n\
+Convert the matrix @var{m} into a cell array.  If @var{dim} is defined, the\n\
 value @var{c} is of dimension 1 in this dimension and the elements of\n\
 @var{m} are placed in slices in @var{c}.\n\
 @seealso{mat2cell}\n\
@@ -851,9 +851,9 @@ DEFUN_DLD (mat2cell, args, ,
 @deftypefn {Loadable Function} {@var{b} =} mat2cell (@var{a}, @var{m}, @var{n})\n\
 @deftypefnx {Loadable Function} {@var{b} =} mat2cell (@var{a}, @var{d1}, @var{d2}, @dots{})\n\
 @deftypefnx {Loadable Function} {@var{b} =} mat2cell (@var{a}, @var{r})\n\
-Convert the matrix @var{a} to a cell array. If @var{a} is 2-D, then\n\
+Convert the matrix @var{a} to a cell array.  If @var{a} is 2-D, then\n\
 it is required that @code{sum (@var{m}) == size (@var{a}, 1)} and\n\
-@code{sum (@var{n}) == size (@var{a}, 2)}. Similarly, if @var{a} is\n\
+@code{sum (@var{n}) == size (@var{a}, 2)}.  Similarly, if @var{a} is\n\
 a multi-dimensional and the number of dimensional arguments is equal\n\
 to the dimensions of @var{a}, then it is required that @code{sum (@var{di})\n\
 == size (@var{a}, i)}.\n\

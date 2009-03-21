@@ -20,15 +20,15 @@
 ## @deftypefn {Function File} {@var{s} =} mat2str (@var{x}, @var{n})
 ## @deftypefnx {Function File} {@var{s} =} mat2str (@dots{}, 'class')
 ##
-## Format real/complex numerical matrices as strings. This function
+## Format real/complex numerical matrices as strings.  This function
 ## returns values that are suitable for the use of the @code{eval}
 ## function.
 ##
-## The precision of the values is given by @var{n}. If @var{n} is a
+## The precision of the values is given by @var{n}.  If @var{n} is a
 ## scalar then both real and imaginary parts of the matrix are printed
-## to the same precision. Otherwise @code{@var{n} (1)} defines the
+## to the same precision.  Otherwise @code{@var{n} (1)} defines the
 ## precision of the real part and @code{@var{n} (2)} defines the
-## precision of the imaginary part. The default for @var{n} is 17.
+## precision of the imaginary part.  The default for @var{n} is 17.
 ##
 ## If the argument 'class' is given, then the class of @var{x} is
 ## included in the string in such a way that the eval will result in the

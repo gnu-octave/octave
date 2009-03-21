@@ -32,7 +32,7 @@
 ## converting so that trailing spaces are ignored.
 ##
 ## If @var{b} is a string, the characters of @var{b} are used as the
-## symbols for the digits of @var{s}. Space (' ') may not be used as a
+## symbols for the digits of @var{s}.  Space (' ') may not be used as a
 ## symbol.
 ##
 ## @example

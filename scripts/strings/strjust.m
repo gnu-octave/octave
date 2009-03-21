@@ -21,7 +21,7 @@
 ## Shift the non-blank text of @var{s} to the left, right or center of
 ## the string.  If @var{s} is a string array, justify each string in the
 ## array.  Null characters are replaced by blanks.  If no justification
-## is specified, then all rows are right-justified. For example:
+## is specified, then all rows are right-justified.  For example:
 ##
 ## @example
 ## @group

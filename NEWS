@@ -166,7 +166,7 @@ Summary of important user-visible changes for version 3.2:
 
     Octave now includes a single precision data type.  Single
     precision variables can be created with the "single" command, or
-    from function like ones, etc.  For example
+    from functions like ones, eye, etc.  For example,
 
       single (1)
       ones (2, 2, "single")
@@ -188,8 +188,7 @@ Summary of important user-visible changes for version 3.2:
  ** Improved array indexing.
 
     The underlying code used for indexing of arrays has been
-    completely rewritten and so the indexing of arrays is now
-    significantly faster.
+    completely rewritten and indexing is now significantly faster.
 
  ** Improved memory management.
 
@@ -293,7 +292,7 @@ Summary of important user-visible changes for version 3.2:
 
  ** Improvements to the help functions.
 
-    The help system has been reimplemented mostly in .m files to make
+    The help system has been mostly re-implemented in .m files to make
     it easier to modify.  Performance of the lookfor function has been
     greatly improved by caching the help text from all functions that
     are distributed with Octave.  The pkg function has been modified

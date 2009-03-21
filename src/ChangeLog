@@ -1,3 +1,11 @@
+2009-03-21  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-base-diag.cc: Add missing include.
+	* sparse-xdiv.cc: Ditto.
+	* DLD-FUNCTIONS/__glpk__.cc: Ditto.
+	* DLD-FUNCTIONS/__lin_interpn__.cc: Ditto.
+	* DLD-FUNCTIONS/__voronoi__.cc: Ditto.
+
 2009-03-20  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-re-mat.cc (octave_matrix::load_ascii): Simplify.

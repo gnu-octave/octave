@@ -27,6 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <iostream>
 
 #include "mach-info.h"
+#include "lo-ieee.h"
 
 #include "ov-base.h"
 #include "ov-base-mat.h"

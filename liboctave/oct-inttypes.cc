@@ -407,7 +407,7 @@ INT_DOUBLE_BINOP_DECL (*, uint64)
     {
       return x / octave_uint64 (static_cast<uint64_t> (2));
     }
-  else if (y < 0 || lo_ieee_isnan (x) || lo_ieee_isinf (x))
+  else if (y < 0 || xisnan (x) || xisinf (x))
     {
       return octave_uint64 (x.value () * y); 
     }
@@ -442,7 +442,7 @@ INT_DOUBLE_BINOP_DECL (*, int64)
     {
       return x / octave_int64 (static_cast<uint64_t> (4*y));
     }
-  else if (lo_ieee_isnan (x) || lo_ieee_isinf (x))
+  else if (xisnan (x) || xisinf (x))
     {
       return octave_int64 (x.value () * y); 
     }

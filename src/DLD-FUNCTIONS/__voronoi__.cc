@@ -34,6 +34,7 @@ qhull command
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
+#include "lo-ieee.h"
 #include "oct.h"
 #include "Cell.h"
 

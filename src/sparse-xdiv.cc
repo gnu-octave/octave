@@ -31,6 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-cmplx.h"
 #include "quit.h"
 #include "error.h"
+#include "lo-ieee.h"
 
 #include "dSparse.h"
 #include "dDiagMatrix.h"

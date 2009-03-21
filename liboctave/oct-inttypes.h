@@ -33,11 +33,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-traits.h"
 #include "lo-math.h"
 #include "oct-types.h"
-#include "lo-ieee.h"
 #include "lo-mappers.h"
 
 #ifdef OCTAVE_INT_USE_LONG_DOUBLE
 inline long double xround (long double x) { return roundl (x); }
+inline long double xisnan (long double x) { return xisnan (static_cast<double> (x)); }
 #endif
 
 // Undefine min/max if needed (this may happen under Windows)
@@ -289,7 +289,7 @@ public:
       // Compute proper thresholds.
       static const S thmin = compute_threshold (static_cast<S> (min_val ()), min_val ());
       static const S thmax = compute_threshold (static_cast<S> (max_val ()), max_val ());
-      if (lo_ieee_isnan (value))
+      if (xisnan (value))
         {
           fnan = true;
           return static_cast<T> (0);

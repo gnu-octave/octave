@@ -30,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "Array-util.h"
 #include "lo-error.h"
+#include "lo-ieee.h"
 #include "mx-base.h"
 #include "mx-inlines.cc"
 #include "oct-cmplx.h"

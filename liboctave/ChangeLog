@@ -1,3 +1,12 @@
+2009-03-21  Jaroslav Hajek  <highegg@gmail.com>
+
+	* Array-d.cc: lo_ieee_isnan -> xisnan.
+	* Array-f.cc: Ditto.
+	* oct-inttypes.cc: Ditto.
+	* oct-inttypes.h: Ditto.
+	* CDiagMatrix.cc: Add missing include.
+	* fCDiagMatrix.cc: Ditto.
+
 2009-03-20  Jaroslav Hajek  <highegg@gmail.com>
 
 	

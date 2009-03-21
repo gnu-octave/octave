@@ -28,6 +28,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <csetjmp>
 #include <ctime>
 
+#include "lo-ieee.h"
+
 #include "defun-dld.h"
 #include "error.h"
 #include "gripes.h"

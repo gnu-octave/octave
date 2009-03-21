@@ -27,7 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 
 // Instantiate Arrays of double values.
 
-#include "lo-ieee.h"
+#include "lo-mappers.h"
 #include "Array.h"
 #include "Array.cc"
 #include "oct-locbuf.h"
@@ -40,19 +40,19 @@ template <>
 inline bool
 sort_isnan<double> (double x)
 {
-  return lo_ieee_isnan (x);
+  return xisnan (x);
 }
 
 static bool
 nan_ascending_compare (double x, double y)
 {
-  return lo_ieee_isnan (y) ? ! lo_ieee_isnan (x) : x < y;
+  return xisnan (y) ? ! xisnan (x) : x < y;
 }
 
 static bool
 nan_descending_compare (double x, double y)
 {
-  return lo_ieee_isnan (x) ? ! lo_ieee_isnan (y) : x > y;
+  return xisnan (x) ? ! xisnan (y) : x > y;
 }
 
 Array<double>::compare_fcn_type

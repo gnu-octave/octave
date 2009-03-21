@@ -1,3 +1,7 @@
+2009-03-21  Ben Abbott <bpabbott@mac.com>
+
+	* plot/print.m: Restore the behavior for option -S<num>,<num>.
+
 2009-03-19  Jaroslav Hajek <highegg@gmail.com>
 
 	* optimization/fsolve.m (guarded_eval): Simplify & fix missing

@@ -427,11 +427,36 @@ function print (varargin)
     endif
     set (gcf, "__pixels_per_inch__", resolution)
 
-    if (debug)
-      drawnow (new_terminal, name, mono, debug_file);
-    else
-      drawnow (new_terminal, name, mono);
-    endif
+    unwind_protect
+      if (! isempty (size))
+        size_in_pixels = sscanf (size ,"%d, %d");
+        size_in_pixels = reshape (size_in_pixels, [1, numel(size_in_pixels)]);
+        size_in_inches = size_in_pixels ./ resolution;
+        p.paperunits = get (gcf, "paperunits");
+        p.papertype = get (gcf, "papertype");
+        p.papersize = get (gcf, "papersize");
+        p.paperposition = get (gcf, "paperposition");
+        p.paperpositionmode = get (gcf, "paperpositionmode");
+        set (gcf, "paperunits", "inches");
+        set (gcf, "papertype", "<custom>");
+        set (gcf, "papersize", size_in_inches);
+        set (gcf, "paperposition", [0, 0, size_in_inches]);
+        set (gcf, "paperpositionmode", "manual");
+      endif
+      if (debug)
+        drawnow (new_terminal, name, mono, debug_file);
+      else
+        drawnow (new_terminal, name, mono);
+      endif
+    unwind_protect_cleanup
+      ## FIXME - it would be preferred to delete the added properties here.
+      if (! isempty (size))
+        props = fieldnames (p);
+        for n = 1:numel(props)
+          set (gcf, props{n}, p.(props{n}))
+        endfor
+      endif
+    end_unwind_protect
 
     if (! isempty (convertname))
       command = sprintf ("convert '%s' '%s'", name, convertname);

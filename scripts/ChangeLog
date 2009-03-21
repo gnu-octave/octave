@@ -1,5 +1,6 @@
 2009-03-21  Ben Abbott <bpabbott@mac.com>
 
+	* plot/__gnuplot_get_var__.m: Add function to get gnuplot variables.
 	* plot/print.m: Restore the behavior for option -S<num>,<num>.
 
 2009-03-19  Jaroslav Hajek <highegg@gmail.com>

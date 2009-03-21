@@ -252,6 +252,12 @@ Command Line Editing
 * Customizing the Prompt::      
 * Diary and Echo Commands::     
 
+Comments
+
+* Single Line Comments::
+* Block Comments::
+* Comments and the Help System::                    
+
 Data Types
 
 * Built-in Data Types::         

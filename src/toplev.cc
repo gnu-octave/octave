@@ -1038,10 +1038,10 @@ Register a function to be called when Octave exits.  For example,\n\
 \n\
 @example\n\
 @group\n\
-function bye_bye ()\n\
+function last_words ()\n\
   disp (\"Bye bye\");\n\
 endfunction\n\
-atexit (\"bye_bye\");\n\
+atexit (\"last_words\");\n\
 @end group\n\
 @end example\n\
 \n\
@@ -1052,15 +1052,15 @@ will print the message \"Bye bye\" when Octave exits.\n\
 Register or unregister a function to be called when Octave exits,\n\
 depending on @var{flag}.  If @var{flag} is true, the function is\n\
 registered, if @var{flag} is false, it is unregistered.  For example,\n\
-after registering the function @code{bye_bye} as above,\n\
+after registering the function @code{last_words} as above,\n\
 \n\
 @example\n\
-atexit (\"bye_bye\", false);\n\
+atexit (\"last_words\", false);\n\
 @end example\n\
 \n\
 @noindent\n\
 will remove the function from the list and Octave will not call\n\
-the function @code{bye_by} when it exits.\n\
+the function @code{last_words} when it exits.\n\
 \n\
 Note that @code{atexit} only removes the first occurrence of a function\n\
 from the list, so if a function was placed in the list multiple\n\

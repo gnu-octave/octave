@@ -24,10 +24,10 @@
 ## @deftypefnx {Function File} {} scatter (@var{h}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} scatter (@dots{})
 ##
-## Plot a scatter plot of the data. A marker is ploted at each point 
-## defined by the points in the vectors @var{x} and @var{y}. The size of
+## Plot a scatter plot of the data.  A marker is plotted at each point 
+## defined by the points in the vectors @var{x} and @var{y}.  The size of
 ## the markers used is determined by the @var{s}, which can be a scalar, 
-## a vector of the same length of @var{x} and @var{y}. If @var{s} is not 
+## a vector of the same length of @var{x} and @var{y}.  If @var{s} is not 
 ## given or is an empty matrix, then the default value of 8 points is used.
 ##
 ## The color of the markers is determined by @var{c}, which can be a string
@@ -38,7 +38,7 @@
 ##
 ## The marker to use can be changed with the @var{style} argument, that is a 
 ## string defining a marker in the same manner as the @code{plot} command. 
-## If the argument 'filled' is given then the markers as filled. All 
+## If the argument 'filled' is given then the markers as filled.  All 
 ## additional arguments are passed to the underlying patch command.
 ##
 ## The optional return value @var{h} provides a handle to the patch object

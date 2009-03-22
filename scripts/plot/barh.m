@@ -31,13 +31,13 @@
 ## The default width of 0.8 for the bars can be changed using @var{w}. 
 ##
 ## If @var{y} is a matrix, then each column of @var{y} is taken to be a
-## separate bar graph plotted on the same graph. By default the columns
-## are plotted side-by-side. This behavior can be changed by the @var{style}
+## separate bar graph plotted on the same graph.  By default the columns
+## are plotted side-by-side.  This behavior can be changed by the @var{style}
 ## argument, which can take the values @code{"grouped"} (the default),
 ## or @code{"stacked"}.
 ##
 ## The optional return value @var{h} provides a handle to the bar series
-## object. See @code{bar} for a description of the use of the bar series.
+## object.  See @code{bar} for a description of the use of the bar series.
 ##
 ## The optional input handle @var{h} allows an axis handle to be passed.
 ## Properties of the patch graphics object can be changed using

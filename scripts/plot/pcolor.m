@@ -21,7 +21,7 @@
 ## @deftypefnx {Function File} {} pcolor (@var{c})
 ## Density plot for given matrices @var{x}, and @var{y} from @code{meshgrid} and
 ## a matrix @var{c} corresponding to the @var{x} and @var{y} coordinates of
-## the mesh's vertices. If @var{x} and @var{y} are vectors, then a typical vertex
+## the mesh's vertices.  If @var{x} and @var{y} are vectors, then a typical vertex
 ## is (@var{x}(j), @var{y}(i), @var{c}(i,j)).  Thus, columns of @var{c}
 ## correspond to different @var{x} values and rows of @var{c} correspond
 ## to different @var{y} values.
@@ -32,12 +32,12 @@
 ## parent axis.
 ##
 ## The face color of each cell of the mesh is determined by interpolating
-## the values of @var{c} for the cell's vertices. Contrast this with 
+## the values of @var{c} for the cell's vertices.  Contrast this with 
 ## @code{imagesc} which renders one cell for each element of @var{c}.
 ##
 ## @code{shading} modifies an attribute determining the manner by which the
 ## face color of each cell is interpolated from the values of @var{c},
-## and the visibility of the cells' edges. By default the attribute is
+## and the visibility of the cells' edges.  By default the attribute is
 ## "faceted", which renders a single color for each cell's face with the edge
 ## visible.
 ##

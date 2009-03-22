@@ -27,7 +27,7 @@
 ## Plot level curves (contour lines) of the matrix @var{z}, using the
 ## contour matrix @var{c} computed by @code{contourc} from the same
 ## arguments; see the latter for their interpretation.  The contours are
-## ploted at the Z level corresponding to their contour. The set of
+## plotted at the Z level corresponding to their contour.  The set of
 ## contour levels, @var{c}, is only returned if requested.  For example:
 ##
 ## @example

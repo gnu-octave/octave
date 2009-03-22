@@ -24,7 +24,7 @@
 ## @deftypefnx {Function File} {@var{h} =} compass (@dots{})
 ##
 ## Plot the @code{(@var{u}, @var{v})} components of a vector field emanating
-## from the origin of a polar polt. If a single complex argument @var{z} is 
+## from the origin of a polar plot.  If a single complex argument @var{z} is 
 ## given, then @code{@var{u} = real (@var{z})} and @code{@var{v} = imag 
 ## (@var{z})}.
 ##

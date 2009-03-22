@@ -134,7 +134,7 @@
 ##
 ## The @var{fmt} argument may also be used to assign key titles.
 ## To do so, include the desired title between semi-colons after the
-## formatting sequence described above, e.g. "+3;Key Title;"
+## formatting sequence described above, e.g., "+3;Key Title;"
 ## Note that the last semi-colon is required and will generate an error if
 ## it is left out.
 ##

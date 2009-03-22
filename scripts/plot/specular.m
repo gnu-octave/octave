@@ -23,7 +23,7 @@
 ## vector elements @var{sx}, @var{sy}, @var{sz} using Phong's approximation. 
 ## The light and view vectors can be specified using parameter @var{L} and @var{V} respectively.
 ## Both can be given as 2-element vectors [azimuth, elevation] in degrees or as 3-element
-## vector [x, y, z]. An optional 6th argument describes the specular exponent (spread) @var{se}.
+## vector [x, y, z].  An optional 6th argument describes the specular exponent (spread) @var{se}.
 ## @seealso{surfl, diffuse}
 ## @end deftypefn
 

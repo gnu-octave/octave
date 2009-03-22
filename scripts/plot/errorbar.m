@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} errorbar (@var{args})
-## This function produces two-dimensional plots with errorbars. Many
+## This function produces two-dimensional plots with errorbars.  Many
 ## different combinations of arguments are possible.  The simplest form is
 ##
 ## @example
@@ -28,7 +28,7 @@
 ## @noindent
 ## where the first argument is taken as the set of @var{y} coordinates
 ## and the second argument @var{ey} is taken as the errors of the
-## @var{y} values. @var{x} coordinates are taken to be the indices
+## @var{y} values.  @var{x} coordinates are taken to be the indices
 ## of the elements, starting with 1.
 ##
 ## If more than two arguments are given, they are interpreted as
@@ -40,18 +40,18 @@
 ## @noindent
 ## where after @var{x} and @var{y} there can be up to four error
 ## parameters such as @var{ey}, @var{ex}, @var{ly}, @var{uy} etc.,
-## depending on the plot type. Any number of argument sets may appear,
+## depending on the plot type.  Any number of argument sets may appear,
 ## as long as they are separated with a format string @var{fmt}.
 ##
 ## If @var{y} is a matrix, @var{x} and error parameters must also be matrices
-## having same dimensions. The columns of @var{y} are plotted versus the
+## having same dimensions.  The columns of @var{y} are plotted versus the
 ## corresponding columns of @var{x} and errorbars are drawn from
 ## the corresponding columns of error parameters.
 ##
 ## If @var{fmt} is missing, yerrorbars ("~") plot style is assumed.
 ##
 ## If the @var{fmt} argument is supplied, it is interpreted as in
-## normal plots. In addition the following plot styles are supported by
+## normal plots.  In addition the following plot styles are supported by
 ## errorbar:
 ##
 ## @table @samp

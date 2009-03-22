@@ -19,11 +19,11 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} colorbar (@var{s})
 ## @deftypefnx {Function File} {} colorbar ("peer", @var{h}, @dots{})
-## Adds a colorbar to the current axes. Valid values for @var{s} are
+## Adds a colorbar to the current axes.  Valid values for @var{s} are
 ##
 ## @table @asis
 ## @item "EastOutside"
-## Place the colorbar outside the plot to the right. This is the default.
+## Place the colorbar outside the plot to the right.  This is the default.
 ## @item "East"
 ## Place the colorbar inside the plot to the right.
 ## @item "WestOutside"

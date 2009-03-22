@@ -32,16 +32,16 @@
 ## The default width of 0.8 for the bars can be changed using @var{w}. 
 ##
 ## If @var{y} is a matrix, then each column of @var{y} is taken to be a
-## separate bar graph plotted on the same graph. By default the columns
-## are plotted side-by-side. This behavior can be changed by the @var{style}
+## separate bar graph plotted on the same graph.  By default the columns
+## are plotted side-by-side.  This behavior can be changed by the @var{style}
 ## argument, which can take the values @code{"grouped"} (the default),
 ## or @code{"stacked"}.
 ##
 ## The optional return value @var{h} provides a handle to the "bar series"
-## object with one handle per column of the variable @var{y}. This
+## object with one handle per column of the variable @var{y}.  This
 ## series allows common elements of the group of bar series objects to
 ## be changed in a single bar series and the same properties are changed
-## in the other "bar series". For example
+## in the other "bar series".  For example
 ##
 ## @example
 ## @group

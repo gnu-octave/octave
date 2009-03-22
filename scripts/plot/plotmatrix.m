@@ -22,7 +22,7 @@
 ## @deftypefnx {Function File} {} plotmatrix (@dots{}, @var{style})
 ## @deftypefnx {Function File} {} plotmatrix (@var{h}, @dots{})
 ## @deftypefnx {Function File} {[@var{h}, @var{ax}, @var{bigax}, @var{p}, @var{pax}] =} plotmatrix (@dots{})
-## Scatter plot of the columns of one matrix against another. Given the
+## Scatter plot of the columns of one matrix against another.  Given the
 ## arguments @var{x} and @var{y}, that have a matching number of rows,
 ## @code{plotmatrix} plots a set of axes corresponding to
 ##
@@ -42,15 +42,15 @@
 ##
 ## The marker to use can be changed with the @var{style} argument, that is a 
 ## string defining a marker in the same manner as the @code{plot}
-## command. If a leading axes handle @var{h} is passed to
+## command.  If a leading axes handle @var{h} is passed to
 ## @code{plotmatrix}, then this axis will be used for the plot.
 ##
 ## The optional return value @var{h} provides handles to the individual
 ## graphics objects in the scatter plots, whereas @var{ax} returns the
-## handles to the scatter plot axis objects. @var{bigax} is a hidden
+## handles to the scatter plot axis objects.  @var{bigax} is a hidden
 ## axis object that surrounds the other axes, such that the commands 
 ## @code{xlabel}, @code{title}, etc, will be associated with this hidden
-## axis. Finally @var{p} returns the graphics objects associated with
+## axis.  Finally @var{p} returns the graphics objects associated with
 ## the histogram and @var{pax} the corresponding axes objects.
 ##
 ## @example

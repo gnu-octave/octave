@@ -22,10 +22,10 @@
 ## @deftypefnx {Function File} {} pareto (@var{x}, @var{y})
 ## @deftypefnx {Function File} {} pareto (@var{h}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} pareto (@dots{})
-## Draw a Pareto chart, also called ABC chart. A Pareto chart is a bar graph 
+## Draw a Pareto chart, also called ABC chart.  A Pareto chart is a bar graph 
 ## used to arrange information in such a way that priorities for process 
-## improvement can be established. It organizes and displays information 
-## to show the relative importance of data. The chart is similar to the 
+## improvement can be established.  It organizes and displays information 
+## to show the relative importance of data.  The chart is similar to the 
 ## histogram or bar chart, except that the bars are arranged in decreasing 
 ## order from left to right along the abscissa.
 ## 
@@ -33,10 +33,10 @@
 ## diagrams is that the majority of an effect is due to a small subset of the
 ## causes, so for quality improvement the first few (as presented on the 
 ## diagram) contributing causes to a problem usually account for the majority 
-## of the result. Thus, targeting these "major causes" for elimination 
+## of the result.  Thus, targeting these "major causes" for elimination 
 ## results in the most cost-effective improvement scheme.
 ##
-## The data are passed as @var{x} and the abscissa as @var{y}. If @var{y} is
+## The data are passed as @var{x} and the abscissa as @var{y}.  If @var{y} is
 ## absent, then the abscissa are assumed to be @code{1 : length (@var{x})}.
 ## @var{y} can be a string array, a cell array of strings or a numerical
 ## vector.
@@ -45,7 +45,7 @@
 ##
 ## @example
 ## @group
-## Cheese = @{"Cheddar", "Swiss", "Camembert", "Munster", "Stilton", ...
+## Cheese = @{"Cheddar", "Swiss", "Camembert", "Munster", "Stilton", @dots{}
 ##    "Blue"@};
 ## Sold = [105, 30, 70, 10, 15, 20];
 ## pareto(Sold, Cheese);

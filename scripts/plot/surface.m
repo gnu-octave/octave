@@ -30,7 +30,7 @@
 ## @var{y} coordinates of the surface.  If @var{x} and @var{y} are vectors,
 ## then a typical vertex  is (@var{x}(j), @var{y}(i), @var{z}(i,j)).  Thus, 
 ## columns of @var{z} correspond to different @var{x} values and rows of 
-## @var{z} correspond to different @var{y} values. If @var{x} and @var{y}
+## @var{z} correspond to different @var{y} values.  If @var{x} and @var{y}
 ## are missing, they are constructed from size of the matrix @var{z}.
 ##
 ## Any additional properties passed are assigned to the surface.

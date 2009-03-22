@@ -27,8 +27,8 @@
 ##
 ## @noindent
 ## in which the arguments are taken to be the vertices of the points to
-## be plotted in three dimensions. If all arguments are vectors of the
-## same length, then a single continuous line is drawn. If all arguments
+## be plotted in three dimensions.  If all arguments are vectors of the
+## same length, then a single continuous line is drawn.  If all arguments
 ## are matrices, then each column of the matrices is treated as a
 ## separate line.  No attempt is made to transpose the arguments to make
 ## the number of rows match.

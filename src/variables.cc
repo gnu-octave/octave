@@ -1564,7 +1564,7 @@ may not be combined.\n\
 List the variables in the global scope rather than the current scope.\n\
 @item -regexp\n\
 The patterns are considered as regular expressions and will be used\n\
-for matching the variables to display. The same pattern syntax as for\n\
+for matching the variables to display.  The same pattern syntax as for\n\
 the @code{regexp} function is used.\n\
 @item -file\n\
 The following argument is treated as a filename, and the variables that\n\

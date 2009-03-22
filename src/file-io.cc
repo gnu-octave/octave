@@ -754,7 +754,7 @@ Set the file pointer to any location within the file @var{fid}.\n\
 The pointer is positioned @var{offset} characters from the @var{origin},\n\
 which may be one of the predefined variables @code{SEEK_CUR} (current\n\
 position), @code{SEEK_SET} (beginning), or @code{SEEK_END} (end of\n\
-file) or strings \"cof\", \"bof\" or \"eof\". If @var{origin} is omitted,\n\
+file) or strings \"cof\", \"bof\" or \"eof\".  If @var{origin} is omitted,\n\
 @code{SEEK_SET} is assumed.  The offset must be zero, or a value returned\n\
 by @code{ftell} (in which case @var{origin} must be @code{SEEK_SET}).\n\
 \n\

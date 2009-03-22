@@ -660,7 +660,7 @@ DEFALIAS (setenv, putenv);
 DEFUN (kbhit, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} kbhit ()\n\
-Read a single keystroke from the keyboard. If called with one\n\
+Read a single keystroke from the keyboard.  If called with one\n\
 argument, don't wait for a keypress.  For example,\n\
 \n\
 @example\n\

@@ -3190,7 +3190,7 @@ You can convert the string back into a matrix as follows:\n\
 @end example\n\
 \n\
 The optional second argument defines the maximum length of the string\n\
-representing the elements of @var{x}. By default @var{len} is 9.\n\
+representing the elements of @var{x}.  By default @var{len} is 9.\n\
 @seealso{format, rat}\n\
 @end deftypefn")
 {
@@ -3675,7 +3675,7 @@ Remove extra blank space around column number labels.\n\
 Insert blank lines above and below column number labels (this is the\n\
 default).\n\
 @item rat\n\
-Print a rational approximation. That is the values are approximated\n\
+Print a rational approximation.  That is the values are approximated\n\
 by one small integer divided by another.\n\
 @end table\n\
 \n\

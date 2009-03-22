@@ -154,17 +154,17 @@ DEFUN_DLD (dlmread, args, ,
 @deftypefnx {Loadable Function} {@var{data} =} dlmread (@var{file}, @var{sep})\n\
 @deftypefnx {Loadable Function} {@var{data} =} dlmread (@var{file}, @var{sep}, @var{r0}, @var{c0})\n\
 @deftypefnx {Loadable Function} {@var{data} =} dlmread (@var{file}, @var{sep}, @var{range})\n\
-Read the matrix @var{data} from a text file. If not defined the separator\n\
-between fields is determined from the file itself. Otherwise the\n\
+Read the matrix @var{data} from a text file.  If not defined the separator\n\
+between fields is determined from the file itself.  Otherwise the\n\
 separation character is defined by @var{sep}.\n\
 \n\
 Given two scalar arguments @var{r0} and @var{c0}, these define the starting\n\
-row and column of the data to be read. These values are indexed from zero,\n\
+row and column of the data to be read.  These values are indexed from zero,\n\
 such that the first row corresponds to an index of zero.\n\
 \n\
 The @var{range} parameter must be a 4 element vector containing  the upper\n\
 left and lower right corner @code{[@var{R0},@var{C0},@var{R1},@var{C1}]} or\n\
-a spreadsheet style range such as 'A2..Q15'. The lowest index value is zero.\n\
+a spreadsheet style range such as 'A2..Q15'.  The lowest index value is zero.\n\
 @end deftypefn")
 {
   octave_value_list retval;

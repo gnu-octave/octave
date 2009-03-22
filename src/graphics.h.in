@@ -35,6 +35,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <set>
 #include <string>
 
+#include "lo-ieee.h"
+
 #include "gripes.h"
 #include "oct-map.h"
 #include "oct-mutex.h"

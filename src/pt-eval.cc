@@ -339,8 +339,8 @@ tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
 
 	DO_SIMPLE_FOR_LOOP_ONCE (rhs);
       }
-    else if (rhs.is_matrix_type () 
-             || rhs.is_cell () || rhs.is_string ())
+    else if (rhs.is_matrix_type () || rhs.is_cell () || rhs.is_string ()
+             || rhs.is_map ())
       {
         // A matrix or cell is reshaped to 2 dimensions and iterated by
         // columns.
@@ -383,27 +383,6 @@ tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
                   break;
               }
           }
-      }
-    else if (rhs.is_map ())
-      {
-	Octave_map tmp_val (rhs.map_value ());
-
-	bool quit = false;
-
-	for (Octave_map::iterator p = tmp_val.begin ();
-	     p != tmp_val.end ();
-	     p++)
-	  {
-	    Cell val_lst = tmp_val.contents (p);
-
-	    octave_value val
-	      = (val_lst.length () == 1) ? val_lst(0) : octave_value (val_lst);
-
-	    DO_SIMPLE_FOR_LOOP_ONCE (val);
-
-	    if (quit)
-	      break;
-	  }
       }
     else
       {
@@ -456,15 +435,15 @@ tree_evaluator::visit_complex_for_command (tree_complex_for_command& cmd)
 
       octave_lvalue key_ref = elt->lvalue ();
 
-      Octave_map tmp_val (rhs.map_value ());
+      const Octave_map tmp_val (rhs.map_value ());
 
       tree_statement_list *loop_body = cmd.body ();
 
-      for (Octave_map::iterator q = tmp_val.begin (); q != tmp_val.end (); q++)
+      for (Octave_map::const_iterator q = tmp_val.begin (); q != tmp_val.end (); q++)
 	{
 	  octave_value key = tmp_val.key (q);
 
-	  Cell val_lst = tmp_val.contents (q);
+	  const Cell val_lst = tmp_val.contents (q);
 
 	  octave_idx_type n = tmp_val.numel ();
 

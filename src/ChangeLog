@@ -1,3 +1,10 @@
+2009-03-22  Jaroslav Hajek  <highegg@gmail.com>
+
+	* pt-eval.cc (tree_evaluator::visit_simple_for_command):
+	Remove struct branch, handle structs by the generic code.
+	(tree_evaluator::visit_complex_for_command):
+	Add missing const qualifiers.
+
 2009-03-21  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-base-diag.cc: Add missing include.

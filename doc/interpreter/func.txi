@@ -362,7 +362,7 @@ endfunction
 
 @noindent
 and then use the value of @code{nargin} to determine which of the input
-arguments should be considered. The problem with this approach is
+arguments should be considered.  The problem with this approach is
 that it can only handle a limited number of input arguments.
 
 If the special parameter name @code{varargin} appears at the end of a
@@ -378,9 +378,9 @@ endfunction
 
 @noindent
 In the function body the input arguments can be accessed through the
-variable @code{varargin}. This variable is a cell array containing
-all the input arguments. @xref{Cell Arrays}, for details on working
-with cell arrays. The @code{smallest} function can now be defined
+variable @code{varargin}.  This variable is a cell array containing
+all the input arguments.  @xref{Cell Arrays}, for details on working
+with cell arrays.  The @code{smallest} function can now be defined
 like this
 
 @example
@@ -504,7 +504,7 @@ does contain a nonzero element.
 
 @deffn {Keyword} return
 When Octave encounters the keyword @code{return} inside a function or
-script, it returns control to the caller immediately. At the top level,
+script, it returns control to the caller immediately.  At the top level,
 the return statement is ignored.  A @code{return} statement is assumed
 at the end of every function definition.
 @end deffn
@@ -514,7 +514,7 @@ at the end of every function definition.
 @cindex default arguments
 
 Since Octave supports variable number of input arguments, it is very useful
-to assign default values to some input arguments. When an input argument
+to assign default values to some input arguments.  When an input argument
 is declared in the argument list it is possible to assign a default
 value to the argument like this
 
@@ -636,14 +636,14 @@ ignore the time stamps for all function files.  Passing
 @subsection Manipulating the load path
 
 When a function is called, Octave searches a list of directories for
-a file that contains the function declaration. This list of directories
-is known as the load path. By default the load path contains
+a file that contains the function declaration.  This list of directories
+is known as the load path.  By default the load path contains
 a list of directories distributed with Octave plus the current
-working directory. To see your current load path call the @code{path}
+working directory.  To see your current load path call the @code{path}
 function without any input or output arguments.
 
 It is possible to add or remove directories to or from the load path
-using @code{addpath} and @code{rmpath}. As an example, the following
+using @code{addpath} and @code{rmpath}.  As an example, the following
 code adds @samp{~/Octave} to the load path.
 
 @example
@@ -712,14 +712,14 @@ the file @file{f.m}.
 
 In many cases one function needs to access one or more helper
 functions.  If the helper function is limited to the scope of a single
-function, then subfunctions as discussed above might be used. However,
+function, then subfunctions as discussed above might be used.  However,
 if a single helper function is used by more than one function, then
 this is no longer possible.  In this case the helper functions might
 be placed in a subdirectory, called "private", of the directory in which
 the functions needing access to this helper function are found.
 
 As a simple example, consider a function @code{func1}, that calls a helper
-function @code{func2} to do much of the work. For example
+function @code{func2} to do much of the work.  For example
 
 @example
 @group
@@ -739,9 +739,9 @@ then @code{func2} is only available for use of the functions, like
 @subsection Overloading and Autoloading
 
 The @code{dispatch} function can be used to alias one function name to
-another. It can be used to alias all calls to a particular function name
+another.  It can be used to alias all calls to a particular function name
 to another function, or the alias can be limited to only a particular
-variable type. Consider the example
+variable type.  Consider the example
 
 @example
 @group
@@ -759,7 +759,7 @@ y1 = sin(speye(3));
 
 @noindent
 which aliases the user-defined function @code{spsin} to @code{sin}, but only for real sparse
-matrices. Note that the builtin @code{sin} already  correctly treats
+matrices.  Note that the builtin @code{sin} already  correctly treats
 sparse matrices and so this example is only illustrative.
 
 @DOCSTRING(dispatch)
@@ -767,16 +767,16 @@ sparse matrices and so this example is only illustrative.
 @DOCSTRING(builtin)
 
 A single dynamically linked file might define several
-functions. However, as Octave searches for functions based on the
+functions.  However, as Octave searches for functions based on the
 functions filename, Octave needs a manner in which to find each of the
-functions in the dynamically linked file. On operating systems that
+functions in the dynamically linked file.  On operating systems that
 support symbolic links, it is possible to create a symbolic link to the
 original file for each of the functions which it contains.
 
 However, there is at least one well known operating system that doesn't
-support symbolic links. Making copies of the original file for each of
+support symbolic links.  Making copies of the original file for each of
 the functions is undesirable as it increases the
-amount of disk space used by Octave. Instead Octave supplies the
+amount of disk space used by Octave.  Instead Octave supplies the
 @code{autoload} function, that permits the user to define in which
 file a certain function will be found.
 
@@ -786,7 +786,7 @@ file a certain function will be found.
 @subsection Function Locking
 
 It is sometime desirable to lock a function into memory with the
-@code{mlock} function. This is typically used for dynamically linked
+@code{mlock} function.  This is typically used for dynamically linked
 functions in Oct-files or mex-files that contain some initialization,
 and it is desirable that calling @code{clear} does not remove this
 initialization.
@@ -864,9 +864,9 @@ effect in Octave, though a similar effect can be had with the
 @node Function Precedence
 @subsection Function Precedence
 
-Given the numereous different ways that Octave can define a function, it
+Given the numerous different ways that Octave can define a function, it
 is possible and even likely that multiple versions of a function, might be
-defined within a particular scope. The precedence of which function will be
+defined within a particular scope.  The precedence of which function will be
 used within a particular scope is given by
 
 @enumerate 1
@@ -895,7 +895,7 @@ A function that has been defined on the command-line.
 A function that is marked as autoloaded with @xref{doc-autoload}.
 
 @item A Function on the Path
-A function that can be found on the users load-path. There can also be
+A function that can be found on the users load-path.  There can also be
 Oct-file, mex-file or m-file versions of this function and the precedence
 between these versions are in that order.
 
@@ -939,7 +939,7 @@ effect, like this:
 # Define function one:
 
 function one ()
-  ...
+  @dots{}
 @end group
 @end example
 
@@ -1015,9 +1015,9 @@ execute commands from any file.
 @cindex anonymous functions
 
 It can be very convenient store a function in a variable so that it
-can be passed to a different function. For example, a function that
-performs numerical minimisation needs access to the function that 
-should be minimised.
+can be passed to a different function.  For example, a function that
+performs numerical minimization needs access to the function that 
+should be minimized.
 
 @menu
 * Function Handles::
@@ -1126,7 +1126,7 @@ environment.
 @subsection Inline Functions
 
 An inline function is created from a string containing the function
-body using the @code{inline} function. The following code defines the
+body using the @code{inline} function.  The following code defines the
 function @math{f(x) = x^2 + 2}.
 
 @example
@@ -1151,7 +1151,7 @@ writing @code{f(x)}.
 @section Commands
 
 Commands are a special class of functions that only accept string
-input arguments. A command can be called as an ordinary function, but
+input arguments.  A command can be called as an ordinary function, but
 it can also be called without the parentheses like the following example
 shows
 
@@ -1191,9 +1191,9 @@ mark_as_command name
 where @code{name} is the function to be marked as a command.
 
 One difficulty of commands occurs when one of the string input arguments
-are stored in a variable. Since Octave can't tell the difference between
+are stored in a variable.  Since Octave can't tell the difference between
 a variable name, and an ordinary string, it is not possible to pass a
-variable as input to a command. In such a situation a command must be
+variable as input to a command.  In such a situation a command must be
 called as a function.
 
 @DOCSTRING(mark_as_command)

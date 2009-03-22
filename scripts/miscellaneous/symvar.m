@@ -20,8 +20,8 @@
 ## @deftypefn {Function File} {} symvar (@var{s})
 ## Identifies the argument names in the function defined by a string.
 ## Common constant names such as @code{pi}, @code{NaN}, @code{Inf},
-## @code{eps}, @code{i} or @code{j} are ignored. The arguments that are
-## found are returned in a cell array of strings. If no variables are
+## @code{eps}, @code{i} or @code{j} are ignored.  The arguments that are
+## found are returned in a cell array of strings.  If no variables are
 ## found then the returned cell array is empty.
 ## @end deftypefn
 

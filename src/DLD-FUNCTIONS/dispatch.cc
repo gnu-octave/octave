@@ -81,7 +81,7 @@ DEFUN_DLD (dispatch, args, nargout,
 \n\
 Replace the function @var{f} with a dispatch so that function @var{r}\n\
 is called when @var{f} is called with the first argument of the named\n\
-@var{type}. If the type is @var{any} then call @var{r} if no other type\n\
+@var{type}.  If the type is @var{any} then call @var{r} if no other type\n\
 matches.  The original function @var{f} is accessible using\n\
 @code{builtin (@var{f}, @dots{})}.\n\
 \n\

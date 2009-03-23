@@ -1,3 +1,7 @@
+2009-03-23  Jaroslav Hajek  <highegg@gmail.com>
+
+	* NEWS: More updates.
+
 2009-03-20  Jaroslav Hajek  <highegg@gmail.com>
 
 	* aclocal.m4 (OCTAVE_CMATH_FUNC): New macro.

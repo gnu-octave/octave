@@ -182,18 +182,9 @@ convert_index (octave_idx_type i, bool& conv_error,
 inline octave_idx_type
 convert_index (double x, bool& conv_error, octave_idx_type& ext)
 {
-  octave_idx_type i;
-  if (xisnan (x) || xisinf (x))
-    {
-      i = 0;
-      conv_error = true;
-    }
-  else
-    {
-      i = static_cast<octave_idx_type> (x);
-      if (static_cast<double> (i) != x)
-        conv_error = true;
-    }
+  octave_idx_type i = static_cast<octave_idx_type> (x);
+  if (static_cast<double> (i) != x)
+    conv_error = true;
 
   return convert_index (i, conv_error, ext);
 }

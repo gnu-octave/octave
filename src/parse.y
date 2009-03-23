@@ -2528,7 +2528,10 @@ make_script (tree_statement_list *cmds, tree_statement *end_script)
 
   curr_fcn_ptr = script;
 
-  symbol_table::clear_forced_variables ();
+  // Unmark any symbols that may have been tagged as local variables
+  // while parsing (for example, by force_local_variable in lex.l).
+
+  symbol_table::unmark_forced_variables ();
 }
 
 // Begin defining a function.
@@ -2708,10 +2711,11 @@ finish_function (tree_parameter_list *ret_list,
 	  retval = new tree_function_def (fcn);
 	}
 
-      // Clear any local variables that may have been added while
-      // parsing (for example, by force_local_variable in lex.l). 
+      // Unmark any symbols that may have been tagged as local
+      // variables while parsing (for example, by force_local_variable
+      // in lex.l).
 
-      symbol_table::clear_forced_variables (fcn->scope ());
+      symbol_table::unmark_forced_variables (fcn->scope ());
     }
 
   return retval;

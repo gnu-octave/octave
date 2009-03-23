@@ -204,10 +204,7 @@ public:
 	octave_value& val = varref (context);
 
 	if (! val.is_defined ())
-	  {
-	    val = Matrix ();
-	    mark_forced ();
-	  }
+	  mark_forced ();
       }
 
       octave_value& varref (context_id context)
@@ -293,15 +290,6 @@ public:
 	  }
       }
 
-      void clear_forced (void)
-      {
-	if (is_forced ())
-	  {
-	    varref (xcurrent_context) = octave_value ();
-	    unmark_forced ();
-	  }
-      }
-
       bool is_defined (context_id context) const
       {
 	return varval (context).is_defined ();
@@ -309,7 +297,7 @@ public:
 
       bool is_variable (context_id context) const
       {
-	return (storage_class != local || is_defined (context));
+	return (storage_class != local || is_defined (context) || is_forced ());
       }
 
       bool is_local (void) const { return storage_class & local; }
@@ -457,8 +445,6 @@ public:
 
     void clear (void) { rep->clear (); }
 
-    void clear_forced (void) { rep->clear_forced (); }
-    
     bool is_defined (context_id context = xcurrent_context) const
     {
       return rep->is_defined (context);
@@ -1353,12 +1339,12 @@ public:
       inst->do_clear_variables ();
   }
 
-  static void clear_forced_variables (scope_id scope = xcurrent_scope)
+  static void unmark_forced_variables (scope_id scope = xcurrent_scope)
   {
     symbol_table *inst = get_instance (scope);
 
     if (inst)
-      inst->do_clear_forced_variables ();
+      inst->do_unmark_forced_variables ();
   }
 
   // For unwind_protect.
@@ -2133,10 +2119,10 @@ private:
       p->second.clear ();
   }
 
-  void do_clear_forced_variables (void)
+  void do_unmark_forced_variables (void)
   {
     for (table_iterator p = table.begin (); p != table.end (); p++)
-      p->second.clear_forced ();
+      p->second.unmark_forced ();
   }
 
   void do_clear_global (const std::string& name)

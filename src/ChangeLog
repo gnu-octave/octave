@@ -1,3 +1,22 @@
+2009-03-23  John W. Eaton  <jwe@octave.org>
+
+	* symtab.h
+	(symbol_table::symbol_record::symobl_recoord_rep::is_variable):
+	Also return true if symbol is tagged as a variable.
+	(symbol_table::symbol_record::symobl_recoord_rep::force_variable):
+	Don't set variable value.
+	(symbol_table::symbol_record::symobl_recoord_rep::clear_forced,
+	symbol_table::symbol_record::clear_forced): Delete.
+	(symbol_table::unmark_forced_variables): Rename from
+	symbol_table::clear_forced_variables.
+	(symbol_table::do_unmark_forced_variables): Rename from
+	symbol_table::do_clear_forced_variables.
+	* parse.y (make_script, finish_function): Call
+	symbol_table::unmark_forced_variables instead of
+	symbol_table::clear_forced_variables.
+	* octave.cc (unmark_forced_vars): New function.
+	(execute_eval_option_code): Add it to the unwind-protect stack.
+
 2009-03-22  Jaroslav Hajek  <highegg@gmail.com>
 
 	* pt-eval.cc (tree_evaluator::visit_simple_for_command):

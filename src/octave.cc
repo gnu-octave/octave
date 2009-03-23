@@ -367,6 +367,18 @@ execute_startup_files (void)
   unwind_protect::run_frame ("execute_startup_files");
 }
 
+static void
+unmark_forced_vars (void *arg)
+{
+  // Unmark any symbols that may have been tagged as local variables
+  // while parsing (for example, by force_local_variable in lex.l).
+
+  symbol_table::scope_id *pscope = static_cast <symbol_table::scope_id *> (arg);
+
+  if (pscope)
+    symbol_table::unmark_forced_variables (*pscope);
+}
+
 static int
 execute_eval_option_code (const std::string& code)
 {
@@ -385,6 +397,11 @@ execute_eval_option_code (const std::string& code)
   octave_initialized = true;
 
   unwind_protect_bool (interactive);
+
+  // Do this with an unwind-protect cleanup function so that the
+  // forced variables will be unmarked in the event of an interrupt.
+  symbol_table::scope_id scope = symbol_table::top_scope ();
+  unwind_protect::add (unmark_forced_vars, &scope);
 
   interactive = false;
 

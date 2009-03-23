@@ -41,10 +41,17 @@ function gnuplot_drawnow (h, term, file, mono, debug_file)
     printing = ! output_to_screen (gnuplot_trim_term (term));
     unwind_protect
       plot_stream = open_gnuplot_stream (2, []);
-      available_terminals = __gnuplot_get_var__ (plot_stream, "GPVAL_TERMINALS");
-      available_terminals = regexp (available_terminals, "\\b\\w+\\b", "match");
-      if (any (strcmpi (available_terminals, gnuplot_trim_term (term))))
-        [enhanced, implicit_margin] = gnuplot_set_term (plot_stream (1), true, h, term, file);
+      if (__gnuplot_has_feature__ ("variable_GPVAL_TERMINALS"))
+        available_terminals = __gnuplot_get_var__ (plot_stream, "GPVAL_TERMINALS");
+        available_terminals = regexp (available_terminals, "\\b\\w+\\b", "match");
+        gnuplot_supports_term = any (strcmpi (available_terminals,
+                                              gnuplot_trim_term (term)));
+      else
+        gnuplot_supports_term = true;
+      endif
+      if (gnuplot_supports_term)
+        [enhanced, implicit_margin] = gnuplot_set_term (plot_stream (1), true,
+                                                        h, term, file);
         __go_draw_figure__ (h, plot_stream, enhanced, mono, printing, implicit_margin);
         if (nargin == 5)
           fid = fopen (debug_file, "wb");

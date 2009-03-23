@@ -1,3 +1,9 @@
+2009-03-23  Ben Abbott <bpabbott@mac.com>
+
+	* plot/gnuplot_drawnow.m: Check that gnuplot has internal variable
+	"GPVAL_TERMINALS".
+	* plot/__gnuplot_has_feature__.m: Add "variable_GPVAL_TERMINALS".
+
 2009-03-21  Ben Abbott <bpabbott@mac.com>
 
 	* plot/gnuplot_drawnow.m: Verify the gnuplot terminal is supported.

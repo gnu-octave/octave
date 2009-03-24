@@ -52,7 +52,7 @@ function gnuplot_drawnow (h, term, file, mono, debug_file)
       if (gnuplot_supports_term)
         [enhanced, implicit_margin] = gnuplot_set_term (plot_stream (1), true,
                                                         h, term, file);
-        __go_draw_figure__ (h, plot_stream, enhanced, mono, printing, implicit_margin);
+        __go_draw_figure__ (h, plot_stream(1), enhanced, mono, printing, implicit_margin);
         if (nargin == 5)
           fid = fopen (debug_file, "wb");
           [enhanced, implicit_margin] = gnuplot_set_term (fid, true, h, term, file);
@@ -64,7 +64,10 @@ function gnuplot_drawnow (h, term, file, mono, debug_file)
       endif
     unwind_protect_cleanup
       if (! isempty (plot_stream))
-        pclose (plot_stream);
+        pclose (plot_stream(1));
+        if (numel (plot_stream) == 2)
+          pclose (plot_stream(2));
+        endif
       endif
       if (! isempty (fid))
         fclose (fid);

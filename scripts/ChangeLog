@@ -1,3 +1,8 @@
+2009-03-24  Ben Abbott <bpabbott@mac.com>
+
+	* plot/gnuplot_drawnow.m: When printing, pass scalar plot_stream
+	to __gnuplot_draw_figure__, and close all plot streams when done.
+
 2009-03-24  John W. Eaton  <jwe@octave.org>
 
 	* general/isa.m: Handle parent classes.

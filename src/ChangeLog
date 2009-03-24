@@ -1,3 +1,27 @@
+2009-03-24  John W. Eaton  <jwe@octave.org>
+
+	* ov-class.cc (F__parent_classes__): New function.
+
+2009-03-24  Robert T. Short  <octave@phaselockedsystems.com>
+
+	* ov-class.h, ov-class.cc (octave_class::octave_class (const
+	Octave_map&, const std::string&, const octave_value_list&)):
+	New constructor.
+	(octave_class::find_parent_class, octave_class::parent_classes):
+	New functions.
+	(octave_class::dotref): Also look in parent class.
+	(Fclass): Handle parent class arguments.
+
+	* ov-base.h (octave_base_value::get_parent_list,
+	octave_base_value::parent_classes): New virtual functions.
+
+	* load-path.h, load-path.cc (load_path::parent_map): New data member. 
+	(load_path::add_to_parent_map): New static function.
+	(load_path::do_add_to_parent_map): New member function.
+	(load_path::do_find_method): Also look in parent classes for methods.
+	(load_path::parent_map_type, load_path::const_parent_map_iterator,
+	load_path::parent_map_iterator): New typedefs.
+
 2009-03-23  John W. Eaton  <jwe@octave.org>
 
 	* symtab.h

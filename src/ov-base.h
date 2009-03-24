@@ -450,6 +450,13 @@ public:
 
   virtual string_vector map_keys (void) const;
 
+  virtual string_vector parent_class_names (void) const
+    { return string_vector (); }
+
+  // FIXME -- should this warn if called for a non-class type?
+  virtual octave_base_value *find_parent_class (const std::string&)
+    { return 0; }
+
   virtual octave_function *function_value (bool silent = false);
 
   virtual const octave_function *function_value (bool silent = false) const;

@@ -1,3 +1,7 @@
+2009-03-24  John W. Eaton  <jwe@octave.org>
+
+	* general/isa.m: Handle parent classes.
+
 2009-03-23  Ben Abbott <bpabbott@mac.com>
 
 	* plot/gnuplot_drawnow.m: Check that gnuplot has internal variable

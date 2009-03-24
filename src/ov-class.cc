@@ -62,6 +62,85 @@ octave_class::register_type (void)
     (octave_class::t_name, "<unknown>", octave_value (new octave_class ()));
 }
 
+octave_class::octave_class (const Octave_map& m, const std::string& id, 
+			    const octave_value_list& parents)
+  : octave_base_value (), map (m), c_name (id)
+{
+  octave_idx_type n = parents.length ();
+
+  for (octave_idx_type idx = 0; idx < n; idx++)
+    {
+      octave_value parent = parents(idx);
+
+      if (! parent.is_object ())
+	error ("parents must be objects");
+      else
+	{
+	  std::string cnm = parent.class_name ();
+
+	  parent_list.push_back (cnm);
+
+	  map.assign (cnm, parent);
+	}
+    }
+
+  load_path::add_to_parent_map (id, parent_list);
+}
+
+octave_base_value *
+octave_class::find_parent_class (const std::string& parent_class_name)
+{
+  octave_base_value* retval = 0;
+  std::string dbg_clsnm = class_name ();
+
+  if (parent_class_name == class_name ())
+    retval = this;
+  else
+    {
+      // Search in the list of immediate parents first, then in the
+      // ancestor tree.
+
+      std::list<std::string>::iterator 
+	p = find (parent_list.begin (), parent_list.end (), parent_class_name);
+
+      if (p != parent_list.end ())
+	{
+	  Octave_map::const_iterator pmap = map.seek (parent_class_name);
+
+	  if (pmap != map.end ())
+	    {
+	      const Cell& tmp = pmap->second;
+
+	      octave_value vtmp = tmp(0);
+
+	      retval = vtmp.internal_rep ();
+	    }
+	}
+      else
+	{
+	  for (std::list<std::string>::iterator pit = parent_list.begin ();
+	       pit != parent_list.end ();
+	       pit++)
+	    {
+	      Octave_map::const_iterator smap = map.seek (*pit);
+
+	      const Cell& tmp = smap->second;
+
+	      octave_value vtmp = tmp(0);
+
+	      octave_base_value *obvp = vtmp.internal_rep ();
+
+	      retval = obvp->find_parent_class (parent_class_name);
+
+	      if (retval)
+		break;
+	    }
+	}
+    }
+
+  return retval;
+}
+
 Cell
 octave_class::dotref (const octave_value_list& idx)
 {
@@ -69,12 +148,27 @@ octave_class::dotref (const octave_value_list& idx)
 
   assert (idx.length () == 1);
 
+  // FIXME -- Is there a "proper" way to do this?
+  octave_function* fcn = octave_call_stack::current ();
+  std::string my_dir = fcn->dir_name ();
+  int ipos = my_dir.find_last_of ("@");
+  std::string method_class = my_dir.substr (ipos+1);
+
+  // Find the class in which this method resides before attempting to access
+  // the requested field.
+
+  octave_base_value *obvp = find_parent_class (method_class);
+
+  Octave_map my_map;
+
+  my_map = obvp ? obvp->map_value () : map;
+
   std::string nm = idx(0).string_value ();
 
-  Octave_map::const_iterator p = map.seek (nm);
+  Octave_map::const_iterator p = my_map.seek (nm);
 
-  if (p != map.end ())
-    retval = map.contents (p);
+  if (p != my_map.end ())
+    retval = my_map.contents (p);
   else
     error ("class has no member `%s'", nm.c_str ());
 
@@ -1168,18 +1262,22 @@ DEFUN (class, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} class (@var{expr})\n\
 @deftypefnx {Built-in Function} {} class (@var{s}, @var{id})\n\
-\n\
-Return the class of the expression @var{expr}, as a string or\n\
-create a class object from the structure @var{s} with name @var{id}.\n\
+@deftypefnx {Built-in Function} {} class (@var{s}, @var{id}, @var{p}, @dots{})\n\
+Return the class of the expression @var{expr} or create a class with\n\
+fields from structure @var{s} and name (string) @var{id}.  Additional\n\
+arguments name a list of parent classes from which the new class is\n\
+derived.\n\
 @end deftypefn")
 {
   octave_value retval;
 
   int nargin = args.length ();
 
-  if (nargin == 1)
+  if (nargin == 0)
+    print_usage ();
+  else if (nargin == 1)
     retval = args(0).class_name ();
-  else if (nargin == 2)
+  else
     {
       Octave_map m = args(0).map_value ();
 
@@ -1192,7 +1290,16 @@ create a class object from the structure @var{s} with name @var{id}.\n\
 	      octave_function *fcn = octave_call_stack::caller ();
 
 	      if (fcn && fcn->is_class_constructor ())
-		retval = octave_value (new octave_class (m, id));
+		{
+		  if (nargin == 2)
+		    retval = octave_value (new octave_class (m, id));
+		  else
+		    {
+		      octave_value_list parents = args.slice (2, nargin-2);
+
+		      retval = octave_value (new octave_class (m, id, parents));
+		    }
+		}
 	      else
 		error ("class: invalid call from outside class constructor");
 	    }
@@ -1202,12 +1309,30 @@ create a class object from the structure @var{s} with name @var{id}.\n\
       else
 	error ("class: expecting structure as first argument");
     }
+
+  return retval;
+}
+
+DEFUN (__parent_classes__, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} __parent_classes__ (@var{x})\n\
+Undocumented internal function.\n\
+@end deftypefn")
+{
+  octave_value retval = Cell ();
+
+  if (args.length () == 1)
+    {
+      octave_value arg = args(0);
+
+      if (arg.is_object ())
+	retval = Cell (arg.parent_class_names ());
+    }
   else
     print_usage ();
 
   return retval;
 }
-
 
 DEFUN (isobject, args, ,
   "-*- texinfo -*-\n\

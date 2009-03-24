@@ -512,6 +512,7 @@ load_path::do_clear (void)
   fcn_map.clear ();
   private_fcn_map.clear ();
   method_map.clear ();
+  parent_map.clear ();
 
   do_append (".", false);
 }
@@ -1016,7 +1017,29 @@ load_path::do_find_method (const std::string& class_name,
 
       const_fcn_map_iterator p = m.find (meth);
 
-      if (p != m.end ())
+      if (p == m.end ())
+	{
+	  // Look in parent classes.
+
+	  const_parent_map_iterator r = parent_map.find (class_name);
+
+	  if (r != parent_map.end ())
+	    {
+	      const std::list<std::string>& plist = r->second;
+	      std::list<std::string>::const_iterator it = plist.begin ();
+
+	      while (it != plist.end ())
+		{
+		  retval = do_find_method (*it, meth, dir_name, type);
+
+		  if (retval != "")
+		    break;
+
+		  it++;
+		}
+	    }
+	}
+      else
 	{
 	  const file_info_list_type& file_info_list = p->second;
 
@@ -1535,6 +1558,13 @@ load_path::do_display (std::ostream& os) const
   os << "\n";
 
 #endif
+}
+
+void
+load_path::do_add_to_parent_map (const std::string& classname,
+				 const std::list<std::string>& parent_list) const
+{
+  parent_map[classname] = parent_list;
 }
 
 void

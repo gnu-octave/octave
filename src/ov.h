@@ -830,6 +830,13 @@ public:
   string_vector map_keys (void) const
     { return rep->map_keys (); }
 
+  string_vector parent_class_names (void) const
+    { return rep->parent_class_names (); }
+
+  octave_base_value *
+  find_parent_class (const std::string& parent_class_name)
+    { return rep->find_parent_class (parent_class_name); }
+
   octave_function *function_value (bool silent = false);
 
   const octave_function *function_value (bool silent = false) const;

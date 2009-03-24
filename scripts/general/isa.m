@@ -41,7 +41,14 @@ function retval = isa (x, cname)
   elseif (strcmp (cname, "numeric"))
     retval = any (strcmp (class (x), fnum_classes));
   else
-    retval = strcmp (class (x), cname);
+    class_of_x = class (x);
+    retval = strcmp (class_of_x, cname);
+    if (! retval && isobject (x))
+      parent_classes_of_x = __parent_classes__ (x);
+      if (! isempty (parent_classes_of_x))
+	retval = any (strcmp (parent_classes_of_x, cname));
+      endif
+    endif
   endif
 
 endfunction

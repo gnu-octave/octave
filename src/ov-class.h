@@ -55,7 +55,11 @@ public:
     : octave_base_value (), map (m), c_name (id) { }
 
   octave_class (const octave_class& s)
-    : octave_base_value (s), map (s.map), c_name (s.c_name) { }
+    : octave_base_value (s), map (s.map), c_name (s.c_name),
+      parent_list (s.parent_list) { }
+
+  octave_class (const Octave_map& m, const std::string& id, 
+                const octave_value_list& parents);
 
   ~octave_class (void) { }
 
@@ -118,6 +122,11 @@ public:
 
   string_vector map_keys (void) const;
 
+  string_vector parent_class_names (void) const
+    { return string_vector (parent_list); }
+
+  octave_base_value *find_parent_class (const std::string&);
+
   void print (std::ostream& os, bool pr_as_read_syntax = false) const;
 
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
@@ -165,6 +174,7 @@ private:
 
   static const std::string t_name;
   std::string c_name;
+  std::list<std::string> parent_list;
 
   bool in_class_method (void) const;
 };

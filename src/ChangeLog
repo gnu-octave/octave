@@ -1,5 +1,8 @@
 2009-03-25  John W. Eaton  <jwe@octave.org>
 
+	* DLD-FUNCTIONS/find.cc (find_nonzero_elem_idx): Also return
+	[](0x0) if the array has 0 rows and it is not a column vector.
+
 	* oct-stream.cc (octave_stream::write (const Array<T>&,
 	octave_idx_type, oct_data_conv::data_type, octave_idx_type,
 	oct_mach_info::float_format)): Seek to skip if still inside bounds

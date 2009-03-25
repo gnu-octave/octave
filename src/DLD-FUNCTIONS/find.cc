@@ -89,14 +89,23 @@ find_nonzero_elem_idx (const Array<T>& nda, int nargout,
   octave_idx_type result_nr = count;
   octave_idx_type result_nc = 1;
 
+  bool column_vector_arg = false;
   bool scalar_arg = false;
 
-  if (nda.ndims () == 2 && nda.rows () == 1)
+  if (nda.ndims () == 2)
     {
-      result_nr = 1;
-      result_nc = count;
+      octave_idx_type nr = nda.rows ();
+      octave_idx_type nc = nda.columns ();
 
-      scalar_arg = (nda.columns () == 1);
+      if (nr == 1)
+	{
+	  result_nr = 1;
+	  result_nc = count;
+
+	  scalar_arg = (nc == 1);
+	}
+      else if (nc == 1)
+	column_vector_arg = true;
     }
 
   Matrix idx (result_nr, result_nc);
@@ -141,7 +150,7 @@ find_nonzero_elem_idx (const Array<T>& nda, int nargout,
 	  i++;
 	}
     }
-  else if (scalar_arg)
+  else if (scalar_arg || (nda.rows () == 0 && ! column_vector_arg))
     {
       idx.resize (0, 0);
 

@@ -4475,7 +4475,7 @@ Resizing an object to fewer dimensions is not possible.\n\
 DEFUN (reshape, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} reshape (@var{a}, @var{m}, @var{n}, @dots{})\n\
-@deftypefnx {Built-in Function} {} reshape (@var{a}, @var{siz})\n\
+@deftypefnx {Built-in Function} {} reshape (@var{a}, @var{size})\n\
 Return a matrix with the given dimensions whose elements are taken\n\
 from the matrix @var{a}.  The elements of the matrix are accessed in\n\
 column-major order (like Fortran arrays are stored).\n\
@@ -5341,8 +5341,8 @@ matrix.  For example,\n\
 @end example\n\
 \n\
 If the optional argument @var{dim} is given, then the matrix is sorted\n\
-along the dimension defined by @var{dim}. The optional argument @code{mode}\n\
-defines the order in which the values will be sorted. Valid values of\n\
+along the dimension defined by @var{dim}.  The optional argument @code{mode}\n\
+defines the order in which the values will be sorted.  Valid values of\n\
 @code{mode} are `ascend' or `descend'.\n\
 \n\
 For equal elements, the indices are such that the equal elements are listed\n\

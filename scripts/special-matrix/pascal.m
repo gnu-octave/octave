@@ -25,7 +25,7 @@
 ## inverse, that is @code{pascal (@var{n}, 1) ^ 2 == eye (@var{n})}.
 ## If @code{@var{t} = 2}, return a transposed and  permuted version of
 ## @code{pascal (@var{n}, 1)}, which is the cube-root of the identity
-## matrix. That is @code{pascal (@var{n}, 2) ^ 3 == eye (@var{n})}.
+## matrix.  That is @code{pascal (@var{n}, 2) ^ 3 == eye (@var{n})}.
 ##
 ## @seealso{hankel, vander, sylvester_matrix, hilb, invhilb, toeplitz
 ##           hadamard, wilkinson, compan, rosser}

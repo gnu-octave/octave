@@ -633,7 +633,7 @@ DEFUN (finite, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} finite (@var{x})\n\
 Return 1 for elements of @var{x} that are finite values and zero\n\
-otherwise. For example,\n\
+otherwise.  For example,\n\
 \n\
 @example\n\
 @group\n\
@@ -893,7 +893,7 @@ DEFUN (isinf, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} isinf (@var{x})\n\
 Return 1 for elements of @var{x} that are infinite and zero\n\
-otherwise. For example,\n\
+otherwise.  For example,\n\
 \n\
 @example\n\
 @group\n\

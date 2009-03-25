@@ -53,9 +53,9 @@ MATRIX_INC := Array.h Array2.h Array3.h ArrayN.h DiagArray2.h \
 	dbleGEPBAL.h dbleHESS.h dbleLU.h dbleQR.h dbleQRP.h dbleSCHUR.h \
 	dbleSVD.h boolSparse.h CSparse.h dSparse.h MSparse-defs.h MSparse.h \
 	Sparse.h sparse-base-lu.h SparseCmplxLU.h SparsedbleLU.h \
-	sparse-base-chol.h SparseCmplxCHOL.h \
-	SparsedbleCHOL.h SparseCmplxQR.h SparseQR.h Sparse-op-defs.h \
-	MatrixType.h PermMatrix.h \
+	sparse-base-chol.h SparseCmplxCHOL.h SparsedbleCHOL.h \
+	SparseCmplxQR.h SparseQR.h Sparse-op-defs.h Sparse-diag-op-defs.h \
+	Sparse-perm-op-defs.h MatrixType.h PermMatrix.h \
 	int8NDArray.h uint8NDArray.h int16NDArray.h uint16NDArray.h \
 	int32NDArray.h uint32NDArray.h int64NDArray.h uint64NDArray.h \
 	intNDArray.h \

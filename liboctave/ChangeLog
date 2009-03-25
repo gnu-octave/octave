@@ -1,3 +1,8 @@
+2009-03-25  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.in (MATRIX_INC): Add Sparse-diag-op-defs.h and
+	Sparse-perm-op-defs.h to the list.
+
 2009-03-25  Jaroslav Hajek  <highegg@gmail.com>
 	
 	* oct-inttypes.cc (INT_DOUBLE_BINOP_DECL (*, uint64),
@@ -25,7 +30,6 @@
 	* fCDiagMatrix.cc: Ditto.
 
 2009-03-20  Jaroslav Hajek  <highegg@gmail.com>
-
 	
 	* CColVector.cc, CMatrix.cc, CNDArray.cc, CRowVector.cc, CSparse.cc,
 	boolSparse.cc, dColVector.cc, dMatrix.cc, dNDArray.cc, dRowVector.cc,

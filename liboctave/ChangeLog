@@ -1,4 +1,9 @@
 2009-03-25  Jaroslav Hajek  <highegg@gmail.com>
+	
+	* oct-inttypes.cc (INT_DOUBLE_BINOP_DECL (*, uint64),
+	INT_DOUBLE_BINOP_DECL (*, int64)): x -> y where appropriate.
+
+2009-03-25  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Array.cc (rec_permute_helper::use_blk): New field.
 	(rec_permute_helper::blk_trans): New method.

@@ -1,5 +1,10 @@
 2009-03-25  John W. Eaton  <jwe@octave.org>
 
+	* oct-stream.cc (octave_stream::write (const Array<T>&,
+	octave_idx_type, oct_data_conv::data_type, octave_idx_type,
+	oct_mach_info::float_format)): Seek to skip if still inside bounds
+	of existing file.  Otherwise, write NUL to skip.
+
 	* Makefile.in (%.df : %.cc): Write source file name to output,
 	wrapped in XDEFUN_FILE_NAME macro.
 	* mkbuiltins: Provide definition for XDEFUN_FILE_NAME.

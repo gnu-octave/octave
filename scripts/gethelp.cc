@@ -135,20 +135,26 @@ int
 main (int argc, char **argv)
 {
   std::string name;
+  std::string file_name;
 
-  if (argc != 2)
+  if (argc != 3)
     {
-      std::cerr << "usage: gethelp name\n";
+      std::cerr << "usage: gethelp name file-name\n";
       return 1;
     }
   else
-    name = argv[1];
+    {
+      name = argv[1];
+      file_name = argv[2];
+    }
 
   std::string help_text = extract_help_text ();  
 
   if (! help_text.empty ())
     {
-      std::cout << "" << name << "\n" << help_text;
+      std::cout << "" << name << "\n"
+		<< "@c " << file_name << "\n"
+		<< help_text;
 
       if (help_text[help_text.length () - 1] != '\n')
 	std::cout << "\n";

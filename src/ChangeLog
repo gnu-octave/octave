@@ -1,3 +1,15 @@
+2009-03-25  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.in (%.df : %.cc): Write source file name to output,
+	wrapped in XDEFUN_FILE_NAME macro.
+	* mkbuiltins: Provide definition for XDEFUN_FILE_NAME.
+	* mkgendoc: Likeiwse.
+	(XDEFUN_DLD_INTERNAL, XDEFUNX_DLD_INTERNAL, XDEFUN_INTERNAL,
+	XDEFCONSTFUN_INTERNAL, XDEFUNX_INTERNAL, XDEFVAR_INTERNAL,
+	XDEFCONST_INTERNAL): Pass file_name to print_doc_string.
+	(print_doc_string): New arg, FILE_NAME.  Print file name as
+	comment.
+
 2009-03-24  John W. Eaton  <jwe@octave.org>
 
 	* ov-class.cc (F__parent_classes__): New function.

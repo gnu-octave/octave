@@ -1,3 +1,9 @@
+2009-03-25  John W. Eaton  <jwe@octave.org>
+
+	* mkdoc: Pass full file name to gethelp.
+	* gethelp.cc (main): Handle second argument.  Write comment with
+	full file name to output.
+
 2009-03-24  Ben Abbott <bpabbott@mac.com>
 
 	* plot/gnuplot_drawnow.m: When printing, pass scalar plot_stream

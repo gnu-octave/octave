@@ -245,7 +245,23 @@ process_texi_input_file (std::istream& is, std::ostream& os)
 		    {
 		      std::string doc_string = help_text[symbol_name];
 
+		      size_t len = doc_string.length ();
+
 		      int j = 0;
+
+		      // If there is a leading comment with the file
+		      // name, copy it to the output.
+		      if (len > 1
+			  && doc_string[j] == '@'
+			  && doc_string[j+1] == 'c')
+			{
+			  j = 2;
+			  while (doc_string[j++] != '\n')
+			    /* find eol */;
+
+			  os << doc_string.substr (0, j);
+			}
+
 		      while (doc_string[j] == ' ')
 			j++;
 

@@ -461,6 +461,7 @@ Array<T>::reshape (const dim_vector& new_dims) const
 class rec_permute_helper
 {
   octave_idx_type *dim, *stride;
+  bool use_blk;
   int top;
 
 public:
@@ -472,37 +473,78 @@ public:
       dim = new octave_idx_type [2*n];
       // A hack to avoid double allocation
       stride = dim + n;
-      top = 0;
 
       // Get cumulative dimensions.
       OCTAVE_LOCAL_BUFFER (octave_idx_type, cdim, n+1);
       cdim[0] = 1;
       for (int i = 1; i < n+1; i++) cdim[i] = cdim[i-1] * dv(i-1);
 
-      int k = 0;
-      // Reduce leading identity
-      for (; k < n && perm(k) == k; k++) ;
-      if (k > 0)
-        {
-          dim[0] = cdim[k];
-          stride[0] = 1;
-        }
-      else
-        top = -1;
-
       // Setup the permuted strides.
-      for (; k < n; k++)
+      for (int k = 0; k < n; k++)
         {
-          ++top;
           int kk = perm(k);
-          dim[top] = dv(kk);
-          stride[top] = cdim[kk];
+          dim[k] = dv(kk);
+          stride[k] = cdim[kk];
         }
+
+      // Reduce contiguous runs.
+      top = 0;
+      for (int k = 1; k < n; k++)
+        {
+          if (stride[k] == stride[top]*dim[top])
+            dim[top] *= dim[k];
+          else
+            {
+              top++;
+              dim[top] = dim[k];
+              stride[top] = stride[k];
+            }
+        }
+
+      // Determine whether we can use block transposes.
+      use_blk = top >= 1 && stride[1] == 1 && stride[0] == dim[1];
 
     }
 
   ~rec_permute_helper (void) { delete [] dim; }
 
+  // Helper method for fast blocked transpose.
+  template <class T>
+  T *blk_trans (const T *src, T *dest, octave_idx_type nr, octave_idx_type nc) const
+    {
+      static const octave_idx_type m = 8;
+      OCTAVE_LOCAL_BUFFER (T, blk, m*m);
+      for (octave_idx_type kr = 0; kr < nr; kr += m)
+        for (octave_idx_type kc = 0; kc < nc; kc += m)
+          {
+            octave_idx_type lr = std::min (m, nr - kr);
+            octave_idx_type lc = std::min (m, nc - kc);
+            if (lr == m && lc == m)
+              {
+                const T *ss = src + kc * nr + kr;
+                for (octave_idx_type j = 0; j < m; j++)
+                  for (octave_idx_type i = 0; i < m; i++)
+                    blk[j*m+i] = ss[j*nr + i];
+                T *dd = dest + kr * nc + kc;
+                for (octave_idx_type j = 0; j < m; j++)
+                  for (octave_idx_type i = 0; i < m; i++)
+                    dd[j*nc+i] = blk[i*m+j];
+              }
+            else
+              {
+                const T *ss = src + kc * nr + kr;
+                for (octave_idx_type j = 0; j < lc; j++)
+                  for (octave_idx_type i = 0; i < lr; i++)
+                    blk[j*m+i] = ss[j*nr + i];
+                T *dd = dest + kr * nc + kc;
+                for (octave_idx_type j = 0; j < lr; j++)
+                  for (octave_idx_type i = 0; i < lc; i++)
+                    dd[j*nc+i] = blk[i*m+j];
+              }
+          }
+
+      return dest + nr*nc;
+    }
 private:
 
   // Recursive N-d generalized transpose
@@ -521,8 +563,9 @@ private:
 
               dest += len;
             }
-
         }
+      else if (use_blk && lev == 1)
+        dest = blk_trans (src, dest, dim[1], dim[0]);
       else
         {
           octave_idx_type step = stride[lev], len = dim[lev];

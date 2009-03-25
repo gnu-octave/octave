@@ -1,3 +1,11 @@
+2009-03-25  Jaroslav Hajek  <highegg@gmail.com>
+
+	* Array.cc (rec_permute_helper::use_blk): New field.
+	(rec_permute_helper::blk_trans): New method.
+	(rec_permute_helper::rec_permute_helper): Use smart reductions,
+	detect possibility of using blocked transpose.
+	(rec_permute_helper::do_permute): Use blocked transpose if possible.
+
 2009-03-23  Jaroslav Hajek  <highegg@gmail.com>
 
 	* idx-vector.cc (convert_index(double,...)): Simplify.

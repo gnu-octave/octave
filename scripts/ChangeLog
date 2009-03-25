@@ -2,7 +2,7 @@
 
 	* general/gradient.m: Fix calculation for more than two
 	dimensions.  Change interpretation of vector arguments from
-	spacing to coordinates.  Newtests.
+	spacing to coordinates.  New tests.
 
 2009-03-25  John W. Eaton  <jwe@octave.org>
 

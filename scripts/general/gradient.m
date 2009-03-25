@@ -17,36 +17,36 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{x} =} gradient (@var{m})
-## @deftypefnx {Function File} {[@var{x}, @var{y}, @dots{}] =} gradient (@var{m})
+## @deftypefn {Function File} {@var{dx} =} gradient (@var{m})
+## @deftypefnx {Function File} {[@var{dx}, @var{dy}, @var{dz}, @dots{}] =} gradient (@var{m})
 ## @deftypefnx {Function File} {[@dots{}] =} gradient (@var{m}, @var{s})
-## @deftypefnx {Function File} {[@dots{}] =} gradient (@var{m}, @var{dx}, @var{dy}, @dots{})
+## @deftypefnx {Function File} {[@dots{}] =} gradient (@var{m}, @var{x}, @var{y}, @var{z}, @dots{})
 ## @deftypefnx {Function File} {[@dots{}] =} gradient (@var{f}, @var{x0})
 ## @deftypefnx {Function File} {[@dots{}] =} gradient (@var{f}, @var{x0}, @var{s})
-## @deftypefnx {Function File} {[@dots{}] =} gradient (@var{f}, @var{x0}, @var{dx}, @var{dy}, @dots{})
+## @deftypefnx {Function File} {[@dots{}] =} gradient (@var{f}, @var{x0}, @var{x}, @var{y}, @dots{})
 ##
 ## Calculate the gradient of sampled data, or of a function.  If @var{m}
 ## is a vector, calculate the one dimensional gradient of @var{m}. If
-## @var{m} is a matrix the gradient is calculated for each row.
+## @var{m} is a matrix the gradient is calculated for each dimension.
 ##
-## @code{[@var{x}, @var{y}] = gradient (@var{m})} calculates the one
-## dimensional gradient for each direction if @var{m} if @var{m} is a
+## @code{[@var{dx}, @var{dy}] = gradient (@var{m})} calculates the one
+## dimensional gradient for @var{x} and @var{y} direction if @var{m} is a
 ## matrix. Additional return arguments can be use for multi-dimensional
 ## matrices.
 ##
-## Spacing values between two points can be provided by the
-## @var{dx}, @var{dy} or @var{h} parameters. If @var{h} is supplied it
-## is assumed to be the spacing in all directions. Otherwise, separate
-## values of the spacing can be supplied by the @var{dx}, etc variables.
-## A scalar value specifies an equidistant spacing, while a vector value
-## can be used to specify a variable spacing. The length must match
-## their respective dimension of @var{m}.
+## A constant spacing between two points can be provided by the
+## @var{s} parameter. If @var{s} is a scalar, it is assumed to be the spacing
+## for all dimensions. 
+## Otherwise, separate values of the spacing can be supplied by
+## the @var{x}, @dots{} arguments. Scalar values specify an equidistant spacing.
+## Vector values for the @var{x}, @dots{} arguments specify the coordinate for that
+## dimension. The length must match their respective dimension of @var{m}.
 ## 
 ## At boundary points a linear extrapolation is applied. Interior points
 ## are calculated with the first approximation of the numerical gradient
 ##
 ## @example
-## y'(i) = 1/(x(i+1)-x(i-1)) *(y(i-1)-y(i+1)).
+## y'(i) = 1/(x(i+1)-x(i-1)) * (y(i-1)-y(i+1)).
 ## @end example
 ## 
 ## If the first argument @var{f} is a function handle, the gradient of the
@@ -83,80 +83,84 @@ endfunction
 function varargout = matrix_gradient (m, varargin)
   transposed = false;
   if (isvector (m))
-    ## make a column vector.
+    ## make a row vector.
     transposed = (size (m, 2) == 1);
     m = m(:)';
   endif
 
   nd = ndims (m);
   sz = size (m);
+  if (length(sz) > 1)
+    tmp = sz(1); sz(1) = sz(2); sz(2) = tmp;
+  endif
+
   if (nargin > 2 && nargin != nd + 1)
     print_usage ()
   endif
-    
+  
+  ## cell d stores a spacing vector for each dimension
   d = cell (1, nd);
   if (nargin == 1)
+    ## no spacing given - assume 1.0 for all dimensions
     for i = 1:nd
-      d{i} = ones (sz(i), 1);
+      d{i} = ones (sz(i) - 1, 1);
     endfor
   elseif (nargin == 2)
     if (isscalar (varargin{1}))
+      ## single scalar value for all dimensions
       for i = 1:nd
-	d{i} = varargin{1} * ones (sz(i), 1);
+        d{i} = varargin{1} * ones (sz(i) - 1, 1);
       endfor
     else
-      for i = 1:nd
-	d{i} = varargin{1};
-      endfor
+      ## vector for one-dimensional derivative
+      d{1} = diff (varargin{1}(:));
     endif
   else
+    ## have spacing value for each dimension
+    if (length(varargin) != nd)
+      error ("dimensions and number of spacing values do not match.");
+    end
     for i = 1:nd
       if (isscalar (varargin{i}))
-	## Why the hell did Matlab decide to swap these two values?
-	if (i == 1)
-	  d{2} = varargin{1} * ones (sz(2), 1);
-	elseif (i == 2)
-	  d{1} = varargin{2} * ones (sz(1), 1);
-	else
-	  d{i} = varargin{i} * ones (sz(i), 1);
-	endif
+        d{i} = varargin{i} * ones (sz(i) - 1, 1);
       else
-	## Why the hell did Matlab decide to swap these two values?
-	if (i == 1)
-	  d{2} = varargin{1};
-	elseif (i == 2)
-	  d{1} = varargin{2};
-	else
-	  d{i} = varargin{i};
-	endif
+        d{i} = diff (varargin{i}(:));
       endif
     endfor
   endif
 
-  for i = 1:max (2, min (nd, nargout))
-    mr = sz(i);
-    mc = prod ([sz(1:i-1), sz(i+1:nd)]);
+  m = shiftdim (m, 1);
+  for i = 1:min (nd, nargout)
+    mr = rows (m);
+    mc = numel (m) / mr;
     Y = zeros (size (m), class (m));
-
+	
     if (mr > 1)
       ## Top and bottom boundary.
-      Y(1,:) = diff (m(1:2,:)) / d{i}(1);
-      Y(mr,:) = diff (m(mr-1:mr,:)) / d{i}(mr-1);
+      Y(1,:) = diff (m(1:2, :)) / d{i}(1);
+      Y(mr,:) = diff (m(mr-1:mr, :) / d{i}(mr - 1));
     endif
 
     if (mr > 2)
       ## Interior points.
       Y(2:mr-1,:) = ((m(3:mr,:) - m(1:mr-2,:))
-		     ./ kron (d{i}(1:mr-2) + d{i}(2:mr-1), ones (1, mc)));
+          ./ kron (d{i}(1:mr-2) + d{i}(2:mr-1), ones (1, mc)));
     endif
-    varargout{i} = ipermute (Y, [i:nd,1:i-1]);
-    m = permute (m, [2:nd,1]);
-  endfor
 
-  ## Why the hell did Matlab decide to swap these two values?
-  tmp = varargout{1};
-  varargout{1} = varargout{2};
-  varargout{2} = tmp;
+    ## turn multi-dimensional matrix in a way, that gradient
+    ## along x-direction is calculated first then y, z, ...
+
+    if (i == 1)
+      varargout{i} = shiftdim (Y, nd - 1);
+      m = shiftdim (m, nd - 1);
+    elseif (i == 2)
+      varargout{i} = Y;
+      m = shiftdim (m, 2);
+    else
+      varargout{i} = shiftdim (Y, nd - i + 1);
+      m = shiftdim (m, 1);
+    endif
+  endfor
 
   if (transposed)
     varargout{1} = varargout{1}.';
@@ -200,7 +204,7 @@ function varargout = handle_gradient (f, p0, varargin)
   
   ## Calculate the gradient
   p0 = mat2cell (p0, num_points, ones (1, dim));
-  varargout = cell (1,dim);
+  varargout = cell (1, dim);
   for d = 1:dim
     s = delta (d);
     df_dx = (f (p0{1:d-1}, p0{d}+s, p0{d+1:end})
@@ -216,7 +220,40 @@ endfunction
 %!test
 %! data = [1, 2, 4, 2];
 %! dx = gradient (data);
+%! dx2 = gradient (data, 0.25);
+%! dx3 = gradient (data, [0.25, 0.5, 1, 3]);
 %! assert (dx, [1, 3/2, 0, -2]);
+%! assert (dx2, [4, 6, 0, -8]);
+%! assert (dx3, [4, 4, 0, -1]);
+%! assert (size_equal(data, dx));
+
+%!test
+%! [Y,X,Z,U] = ndgrid (2:2:8,1:5,4:4:12,3:5:30);
+%! [dX,dY,dZ,dU] = gradient (X);
+%! assert (all(dX(:)==1));
+%! assert (all(dY(:)==0));
+%! assert (all(dZ(:)==0));
+%! assert (all(dU(:)==0));
+%! [dX,dY,dZ,dU] = gradient (Y);
+%! assert (all(dX(:)==0));
+%! assert (all(dY(:)==2));
+%! assert (all(dZ(:)==0));
+%! assert (all(dU(:)==0));
+%! [dX,dY,dZ,dU] = gradient (Z);
+%! assert (all(dX(:)==0));
+%! assert (all(dY(:)==0));
+%! assert (all(dZ(:)==4));
+%! assert (all(dU(:)==0));
+%! [dX,dY,dZ,dU] = gradient (U);
+%! assert (all(dX(:)==0));
+%! assert (all(dY(:)==0));
+%! assert (all(dZ(:)==0));
+%! assert (all(dU(:)==5));
+%! assert (size_equal(dX, dY, dZ, dU, X, Y, Z, U));
+%! [dX,dY,dZ,dU] = gradient (U, 5.0);
+%! assert (all(dU(:)==1));
+%! [dX,dY,dZ,dU] = gradient (U, 1.0, 2.0, 3.0, 2.5);
+%! assert (all(dU(:)==2));
 
 %!test
 %! x = 0:10;

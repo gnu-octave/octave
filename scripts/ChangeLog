@@ -1,3 +1,9 @@
+2009-03-25  Kai Habel  <kai.habel@gmx.de>
+
+	* general/gradient.m: Fix calculation for more than two
+	dimensions.  Change interpretation of vector arguments from
+	spacing to coordinates.  Newtests.
+
 2009-03-25  John W. Eaton  <jwe@octave.org>
 
 	* mkdoc: Pass full file name to gethelp.

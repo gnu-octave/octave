@@ -2487,6 +2487,69 @@ Array<T>::lookup (const Array<T>& values, sortmode mode,
   return idx;
 }
 
+template <class T>
+Array<octave_idx_type> 
+Array<T>::find (octave_idx_type n, bool backward) const
+{
+  Array<octave_idx_type> retval;
+  const T *src = data ();
+  octave_idx_type nel = nelem ();
+  const T zero = T ();
+  if (n < 0)
+    {
+      // We want all elements, which means we'll almost surely need
+      // to resize. So count first, then allocate array of exact size.
+      octave_idx_type cnt = 0;
+      for (octave_idx_type i = 0; i < nel; i++)
+        cnt += src[i] != zero;
+
+      retval = Array<octave_idx_type> (cnt);
+      octave_idx_type *dest = retval.fortran_vec ();
+      for (octave_idx_type i = 0; i < nel; i++)
+        if (src[i] != zero) *dest++ = i;
+    }
+  else
+    {
+      // We want a fixed max number of elements, usually small. So be
+      // optimistic, alloc the array in advance, and then resize if
+      // needed.
+      retval = Array<octave_idx_type> (n);
+      if (backward)
+        {
+          // Do the search as a series of successive single-element searches.
+          octave_idx_type k = 0, l = nel - 1;
+          for (; k < n; k++)
+            {
+              for (;l >= 0 && src[l] == zero; l--) ;
+              if (l >= 0)
+                retval(k) = l--;
+              else
+                break;
+            }
+          if (k < n)
+            retval.resize (k);
+        }
+      else
+        {
+          // Do the search as a series of successive single-element searches.
+          octave_idx_type k = 0, l = 0;
+          for (; k < n; k++)
+            {
+              for (;l != nel && src[l] == zero; l++) ;
+              if (l != n)
+                retval(k) = l++;
+              else
+                break;
+            }
+          if (k < n)
+            retval.resize (k);
+        }
+    }
+
+  return retval;
+}
+
+
 #define INSTANTIATE_ARRAY_SORT(T) template class octave_sort<T>;
 
 #define NO_INSTANTIATE_ARRAY_SORT(T) \
@@ -2520,7 +2583,9 @@ Array<T>::lookup (const T&, sortmode) const \
 template <> Array<octave_idx_type>  \
 Array<T>::lookup (const Array<T>&, sortmode, bool, bool) const \
 { return Array<octave_idx_type> (); } \
-
+template <> Array<octave_idx_type> \
+Array<T>::find (octave_idx_type, bool) const\
+{ return Array<octave_idx_type> (); } \
 
 
 template <class T>

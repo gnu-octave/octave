@@ -1,5 +1,10 @@
 2009-03-26  Jaroslav Hajek  <highegg@gmail.com>
 
+	* Array.h (Array<T>::dims): Return a const reference.
+	(Array<T>::is_vector): New method.
+
+2009-03-26  Jaroslav Hajek  <highegg@gmail.com>
+
 	* Array.cc (Array<T>::find): New method.
 	* Array.h: Declare it.
 

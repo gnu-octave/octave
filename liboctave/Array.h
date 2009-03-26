@@ -255,7 +255,8 @@ public:
 
   size_t byte_size (void) const { return numel () * sizeof (T); }
 
-  dim_vector dims (void) const { return dimensions; }
+  // Return a const-reference so that dims ()(i) works efficiently.
+  const dim_vector& dims (void) const { return dimensions; }
 
   Array<T> squeeze (void) const;
   
@@ -427,6 +428,8 @@ public:
   bool is_square (void) const { return (dim1 () == dim2 ()); }
 
   bool is_empty (void) const { return numel () == 0; }
+
+  bool is_vector (void) const { return dimensions.is_vector (); }
 
   Array<T> transpose (void) const;
   Array<T> hermitian (T (*fcn) (const T&) = 0) const;

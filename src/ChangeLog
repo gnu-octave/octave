@@ -1,5 +1,9 @@
 2009-03-25  John W. Eaton  <jwe@octave.org>
 
+	* version.h (OCTAVE_VERSION): Now 3.1.5.
+	(OCTAVE_API_VERSION): Now api-v37.
+	(OCTAVE_RELEASE_DATE): Now 2009-03-25.
+
 	* DLD-FUNCTIONS/find.cc (find_nonzero_elem_idx): Also return
 	[](0x0) if the array has 0 rows and it is not a column vector.
 

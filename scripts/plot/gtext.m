@@ -19,8 +19,8 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} gtext (@var{s})
 ## @deftypefnx {Function File} {} gtext (@dots{}, @var{prop}, @var{val})
-## Place text on the current figure. The text can be defined by the
-## string @var{s}. If @var{s} is a cell array, each element of the cell
+## Place text on the current figure.  The text can be defined by the
+## string @var{s}.  If @var{s} is a cell array, each element of the cell
 ## array is written to a separate line.
 ##
 ## Additional arguments are passed to the underlying text object as

@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} rosser ()
 ##
-## Returns the Rosser matrix. This is a difficult test case used to test
+## Returns the Rosser matrix.  This is a difficult test case used to test
 ## eigenvalue algorithms.
 ##
 ## @seealso{hankel, vander, sylvester_matrix, hilb, invhilb, toeplitz

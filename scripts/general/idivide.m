@@ -18,12 +18,12 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} idivide (@var{x}, @var{y}, @var{op})
-## Integer division with different round rules. The standard behavior of
+## Integer division with different round rules.  The standard behavior of
 ## the an integer division such as @code{@var{a} ./ @var{b}} is to round
-## the result to the nearest integer. This is not always the desired
+## the result to the nearest integer.  This is not always the desired
 ## behavior and @code{idivide} permits integer element-by-element
 ## division to be performed with different treatment for the fractional
-## part of the division as determined by the @var{op} flag. @var{op} is
+## part of the division as determined by the @var{op} flag.  @var{op} is
 ## a string with one of the values: 
 ##
 ## @table @asis

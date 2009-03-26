@@ -36,12 +36,12 @@
 ##
 ## @example
 ## @group
-## c(1)^(n-1) ... c(1)^2  c(1)  1
-## c(2)^(n-1) ... c(2)^2  c(2)  1
+## c(1)^(n-1) @dots{} c(1)^2  c(1)  1
+## c(2)^(n-1) @dots{} c(2)^2  c(2)  1
 ##     .     .      .      .    .
 ##     .       .    .      .    .
 ##     .         .  .      .    .
-## c(n)^(n-1) ... c(n)^2  c(n)  1
+## c(n)^(n-1) @dots{} c(n)^2  c(n)  1
 ## @end group
 ## @end example
 ## @end ifnottex

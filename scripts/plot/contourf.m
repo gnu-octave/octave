@@ -35,10 +35,10 @@
 ## The return value @var{h} is handle-vector to the patch objects creating
 ## the filled contours.
 ##
-## If @var{x} and @var{y} are ommited they are taken as the row/column
+## If @var{x} and @var{y} are omitted they are taken as the row/column
 ## index of @var{z}.  @var{n} is a scalar denoting the number of lines
 ## to compute.  Alternatively @var{lvl} is a vector containing the
-## contour levels. If only one value (e.g. lvl0) is wanted, set
+## contour levels.  If only one value (e.g., lvl0) is wanted, set
 ## @var{lvl} to [lvl0, lvl0].  If both @var{n} or @var{lvl} are omitted
 ## a default value of 10 contour level is assumed.
 ##

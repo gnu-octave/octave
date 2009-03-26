@@ -18,8 +18,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} celldisp (@var{c}, @var{name})
-## Recursively display the contents of a cell array. By default the values
-## are displayed with the name of the variable @var{c}. However, this name
+## Recursively display the contents of a cell array.  By default the values
+## are displayed with the name of the variable @var{c}.  However, this name
 ## can be replaced with the variable @var{name}.
 ## @seealso{disp}
 ## @end deftypefn

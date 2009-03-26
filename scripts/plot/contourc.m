@@ -26,8 +26,8 @@
 ## contour lines in the following format
 ##
 ## @example
-## @var{c} = [lev1, x1, x2, ..., levn, x1, x2, ... 
-##      len1, y1, y2, ..., lenn, y1, y2, ...]
+## @var{c} = [lev1, x1, x2, @dots{}, levn, x1, x2, @dots{} 
+##      len1, y1, y2, @dots{}, lenn, y1, y2, @dots{}]
 ## @end example
 ##
 ## @noindent
@@ -36,7 +36,7 @@
 ## 
 ## If @var{x} and @var{y} are omitted they are taken as the row/column 
 ## index of @var{z}.  @var{vn} is either a scalar denoting the number of lines 
-## to compute or a vector containing the values of the lines. If only one 
+## to compute or a vector containing the values of the lines.  If only one 
 ## value is wanted, set @code{@var{vn} = [val, val]};
 ## If @var{vn} is omitted it defaults to 10.
 ##

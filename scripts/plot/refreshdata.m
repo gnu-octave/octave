@@ -21,8 +21,8 @@
 ## @deftypefnx {Function File} {} refreshdata (@var{h})
 ## @deftypefnx {Function File} {} refreshdata (@var{h}, @var{ws})
 ## Evaluates any datasource properties of the current figure and updates
-## the corresponding data. If call with one or more arguments @var{h} is
-## a scalar or array of figure handles which to refresh. The data
+## the corresponding data.  If call with one or more arguments @var{h} is
+## a scalar or array of figure handles which to refresh.  The data
 ## sources are by default evaluated in the "base" workspace but can also
 ## be set in the "caller" workspace.
 ##

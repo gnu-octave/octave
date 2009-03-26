@@ -551,7 +551,7 @@ octave_history_write_timestamp (void)
 
 DEFUN (edit_history, args, ,
   "-*- texinfo -*-\n\
-@deffn {Command} edit_history options\n\
+@deffn {Command} edit_history [@var{first}] [@var{last}]\n\
 If invoked with no arguments, @code{edit_history} allows you to edit the\n\
 history list using the editor named by the variable @code{EDITOR}.  The\n\
 commands to be edited are first copied to a temporary file.  When you\n\
@@ -583,6 +583,7 @@ only extracts commands 13 through 169.  Specifying a larger number for\n\
 the first command than the last command reverses the list of commands\n\
 before placing them in the buffer to be edited.  If both arguments are\n\
 omitted, the previous command in the history list is used.\n\
+@seealso{run_history}\n\
 @end deffn")
 {
   octave_value_list retval;
@@ -616,11 +617,11 @@ contents.  If the name is omitted, use the default history file\n\
 (normally @file{~/.octave_hist}).\n\
 \n\
 @item @var{n}\n\
-Only display the most recent @var{n} lines of history.\n\
+Display only the most recent @var{n} lines of history.\n\
 \n\
 @item -q\n\
 Don't number the displayed lines of history.  This is useful for cutting\n\
-and pasting commands if you are using the X Window System.\n\
+and pasting commands using the X Window System.\n\
 @end table\n\
 \n\
 For example, to display the five most recent commands that you have\n\
@@ -644,9 +645,10 @@ typed without displaying line numbers, use the command\n\
 
 DEFUN (run_history, args, ,
   "-*- texinfo -*-\n\
-@deffn {Command} run_history [first] [last]\n\
+@deffn {Command} run_history [@var{first}] [@var{last}]\n\
 Similar to @code{edit_history}, except that the editor is not invoked,\n\
 and the commands are simply executed as they appear in the history list.\n\
+@seealso{edit_history}\n\
 @end deffn")
 {
   octave_value_list retval;

@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} namelengthmax ()
-## Returns the matlab compatible maximum variable name length. Octave is
+## Returns the @sc{Matlab} compatible maximum variable name length.  Octave is
 ## capable of storing strings up to 
 ## @iftex
 ## @tex
@@ -28,9 +28,9 @@
 ## @ifnottex
 ## @code{2 ^ 31 - 1}
 ## @end ifnottex
-## in length. However for matlab compatibility all variable, function
+## in length.  However for @sc{Matlab} compatibility all variable, function
 ## and structure field names should be shorter than the length supplied by
-## @code{namelengthmax}. In particular variables stored to a matlab file
+## @code{namelengthmax}.  In particular variables stored to a @sc{Matlab} file
 ## format will have their names truncated to this length.
 ## @end deftypefn
 

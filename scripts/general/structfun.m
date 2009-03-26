@@ -23,19 +23,19 @@
 ## @deftypefnx {Function File} {} structfun (@dots{}, "UniformOutput", @var{val})
 ## 
 ## Evaluate the function named @var{name} on the fields of the structure
-## @var{s}. The fields of @var{s} are passed to the function @var{func}
+## @var{s}.  The fields of @var{s} are passed to the function @var{func}
 ## individually.
 ##
 ## @code{structfun} accepts an arbitrary function @var{func} in the form of 
 ## an inline function, function handle, or the name of a function (in a 
-## character string). In the case of a character string argument, the 
+## character string).  In the case of a character string argument, the 
 ## function must accept a single argument named @var{x}, and it must return 
-## a string value. If the function returns more than one argument, they are
+## a string value.  If the function returns more than one argument, they are
 ## returned as separate output variables.
 ##
 ## If the parameter "UniformOutput" is set to true (the default), then the function
 ## must return a single element which will be concatenated into the
-## return value. If "UniformOutput" is false, the outputs placed in a structure
+## return value.  If "UniformOutput" is false, the outputs placed in a structure
 ## with the same fieldnames as the input structure.
 ## 
 ## @example
@@ -48,14 +48,14 @@
 ## @end example
 ## 
 ## Given the parameter "ErrorHandler", then @var{errfunc} defines a function to
-## call in case @var{func} generates an error. The form of the function is
+## call in case @var{func} generates an error.  The form of the function is
 ## 
 ## @example
 ## function [@dots{}] = errfunc (@var{se}, @dots{})
 ## @end example
 ## 
 ## where there is an additional input argument to @var{errfunc} relative to
-## @var{func}, given by @var{se}. This is a structure with the elements
+## @var{func}, given by @var{se}.  This is a structure with the elements
 ## "identifier", "message" and "index", giving respectively the error
 ## identifier, the error message, and the index into the input arguments
 ## of the element that caused the error.

@@ -22,10 +22,10 @@
 ## @deftypefnx {Function File} {} print (@var{h}, @var{filename}, @var{options})
 ## Print a graph, or save it to a file
 ##
-## @var{filename} defines the file name of the output file. If no
+## @var{filename} defines the file name of the output file.  If no
 ## filename is specified, output is sent to the printer.
 ##
-## @var{h} specifies the figure handle. If no handle is specified
+## @var{h} specifies the figure handle.  If no handle is specified
 ## the handle for the current figure is used.
 ##
 ## @var{options}:
@@ -35,7 +35,7 @@
 ##   @var{filename} is specified.
 ## @item -color
 ## @itemx -mono
-##   Monochrome or colour lines.
+##   Monochrome or color lines.
 ## @item -solid
 ## @itemx -dashed
 ##   Solid or dashed lines.
@@ -117,9 +117,9 @@
 ## @itemx -F@var{fontname}:@var{size}
 ## @itemx -F:@var{size}
 ##   @var{fontname} set the postscript font (for use with postscript,
-##   aifm, corel and fig). By default, 'Helvetica' is set for PS/Aifm,
-##   and 'SwitzerlandLight' for Corel. It can also be 'Times-Roman'.
-##   @var{size} is given in points. @var{fontname} is ignored for the
+##   aifm, corel and fig).  By default, 'Helvetica' is set for PS/Aifm,
+##   and 'SwitzerlandLight' for Corel.  It can also be 'Times-Roman'.
+##   @var{size} is given in points.  @var{fontname} is ignored for the
 ##   fig device.
 ## @end table
 ##

@@ -20,7 +20,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} repmat (@var{A}, @var{m}, @var{n})
 ## @deftypefnx {Function File} {} repmat (@var{A}, [@var{m} @var{n}])
-## @deftypefnx {Function File} {} repmat (@var{A}, [@var{m} @var{n} @var{p} ...])
+## @deftypefnx {Function File} {} repmat (@var{A}, [@var{m} @var{n} @var{p} @dots{}])
 ## Form a block matrix of size @var{m} by @var{n}, with a copy of matrix
 ## @var{A} as each element.  If @var{n} is not specified, form an 
 ## @var{m} by @var{m} block matrix.

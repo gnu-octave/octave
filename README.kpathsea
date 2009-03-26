@@ -60,10 +60,10 @@ somebody's numbers.  (Sorry.)  To set more than one option, just sum
 the corresponding numbers.
 
 `KPSE_DEBUG_STAT (1)'
-     Report `stat'(2) calls. This is useful for verifying that your
+     Report `stat'(2) calls.  This is useful for verifying that your
      directory structure is not forcing Kpathsea to do many additional
      file tests (*note Slow path searching::., and *note Subdirectory
-     expansion::.). If you are using an up-to-date `ls-R' database
+     expansion::.).  If you are using an up-to-date `ls-R' database
      (*note Filename database::.), this should produce no output unless
      a nonexistent file that must exist is searched for.
 
@@ -75,15 +75,15 @@ the corresponding numbers.
      instead of using `ls-R'.
 
 `KPSE_DEBUG_FOPEN (4)'
-     Report file openings and closings. Especially useful when your
+     Report file openings and closings.  Especially useful when your
      system's file table is full, for seeing which files have been
-     opened but never closed. In case you want to set breakpoints in a
+     opened but never closed.  In case you want to set breakpoints in a
      debugger: this works by redefining `fopen' (`fclose') to be
      `kpse_fopen_trace' (`kpse_fclose_trace').
 
 `KPSE_DEBUG_PATHS (8)'
      Report general path information for each file type Kpathsea is
-     asked to search. This is useful when you are trying to track down
+     asked to search.  This is useful when you are trying to track down
      how a particular path got defined--from `texmf.cnf', `config.ps',
      an environment variable, the compile-time default, etc.  This is
      the contents of the `kpse_format_info_type' structure defined in
@@ -91,7 +91,7 @@ the corresponding numbers.
 
 `KPSE_DEBUG_EXPAND (16)'
      Report the directory list corresponding to each path element
-     Kpathsea searches. This is only relevant when Kpathsea searches
+     Kpathsea searches.  This is only relevant when Kpathsea searches
      the disk, since `ls-R' searches don't look through directory lists
      in this way.
 
@@ -127,9 +127,9 @@ the corresponding numbers.
      programs.
 
   Debugging output from Kpathsea is always written to standard error,
-and begins with the string `kdebug:'. (Except for hash table buckets,
+and begins with the string `kdebug:'.  (Except for hash table buckets,
 which just start with the number, but you can only get that output
-running under a debugger. See comments at the `hash_summary_only'
+running under a debugger.  See comments at the `hash_summary_only'
 variable in `kpathsea/db.c'.)
 
 Logging
@@ -145,7 +145,7 @@ information to.  The file is created if it doesn't exist, and appended
 to if it does.
 
   Each successful search turns into one line in the log file: two words
-separated by a space. The first word is the time of the search, as the
+separated by a space.  The first word is the time of the search, as the
 integer number of seconds since "the epoch", i.e., UTC midnight 1
 January 1970 (more precisely, the result of the `time' system call).
 The second word is the filename.

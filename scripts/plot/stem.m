@@ -19,19 +19,19 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{h} =} stem (@var{x}, @var{y}, @var{linespec})
 ## @deftypefnx {Function File} {@var{h} =} stem (@dots{}, "filled")
-## Plot a stem graph from two vectors of x-y data. If only one argument
+## Plot a stem graph from two vectors of x-y data.  If only one argument
 ## is given, it is taken as the y-values and the x coordinates are taken
-## from the indicies of the elements.
+## from the indices of the elements.
 ##
 ## If @var{y} is a matrix, then each column of the matrix is plotted as
-## a separate stem graph. In this case @var{x} can either be a vector,
+## a separate stem graph.  In this case @var{x} can either be a vector,
 ## the same length as the number of rows in @var{y}, or it can be a
 ## matrix of the same size as @var{y}.
 ##
-## The default color is @code{"r"} (red). The default line style is
-## @code{"-"} and the default marker is @code{"o"}. The line style can
+## The default color is @code{"r"} (red).  The default line style is
+## @code{"-"} and the default marker is @code{"o"}.  The line style can
 ## be altered by the @code{linespec} argument in the same manner as the
-## @code{plot} command. For example
+## @code{plot} command.  For example
 ##
 ## @example
 ## @group
@@ -45,10 +45,10 @@
 ## plots 10 stems with heights from 2 to 20 in blue;
 ## 
 ## The return value of @code{stem} is a vector if "stem series" graphics
-## handles, with one handle per column of the variable @var{y}. This
+## handles, with one handle per column of the variable @var{y}.  This
 ## handle regroups the elements of the stem graph together as the
 ## children of the "stem series" handle, allowing them to be altered
-## together. For example
+## together.  For example
 ##
 ## @example
 ## @group

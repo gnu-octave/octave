@@ -23,7 +23,7 @@
 ##
 ## With one vector input argument, plot a histogram of the values with
 ## 10 bins.  The range of the histogram bins is determined by the range
-## of the data.  With one matrix input argument, plot a hystogram where
+## of the data.  With one matrix input argument, plot a histogram where
 ## each bin contains a bar per input column.
 ##
 ## Given a second scalar argument, use that as the number of bins.
@@ -32,7 +32,7 @@
 ## with the width of the bins determined from the adjacent values in
 ## the vector.
 ##
-## If third argument is provided, the histogram is normalised such that
+## If third argument is provided, the histogram is normalized such that
 ## the sum of the bars is equal to @var{norm}.
 ##
 ## Extreme values are lumped in the first and last bins.

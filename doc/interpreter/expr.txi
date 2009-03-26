@@ -127,7 +127,7 @@ use the function @code{ones} to generate a matrix of the appropriate
 size whose elements are all one, and then to scale it to produce the
 desired result.  @xref{Special Utility Matrices}.
 
-It is also possible to create a matrix with different values. The
+It is also possible to create a matrix with different values.  The
 following example creates a 10 dimensional row vector @math{a} containing
 the values
 @iftex
@@ -206,7 +206,7 @@ these.  In addition, you can define your own functions.
 @cindex arguments in function call
 The way to use a function is with a @dfn{function call} expression,
 which consists of the function name followed by a list of
-@dfn{arguments} in parentheses. The arguments are expressions which give
+@dfn{arguments} in parentheses.  The arguments are expressions which give
 the raw materials for the calculation that the function will do.  When
 there is more than one argument, they are separated by commas.  If there
 are no arguments, you can omit the parentheses, but it is a good idea to
@@ -709,7 +709,7 @@ is 1.  Otherwise, the result of the overall expression is 0.
 
 @strong{Warning:} there is one exception to the rule of evaluating
 @code{all (@var{boolean1}(:))}, which is when @code{boolean1} is the
-empty matrix. The truth value of an empty matrix is always @code{false}
+empty matrix.  The truth value of an empty matrix is always @code{false}
 so @code{[] && true} evaluates to @code{false} even though
 @code{all ([])} is @code{true}.
 
@@ -936,7 +936,7 @@ b = s
 
 @noindent
 The number of values on the left side of the expression can, however,
-not exceed the number of values on the right side. For example, the
+not exceed the number of values on the right side.  For example, the
 following will produce an error.
 
 @c Using 'smallexample' to make text fit on page when creating smallbook.
@@ -966,7 +966,7 @@ a += 2;
 @opindex *=
 @opindex /=
 Similar operators also exist for subtraction (@code{-=}),
-multiplication (@code{*=}), and division (@code{/=}). An expression
+multiplication (@code{*=}), and division (@code{/=}).  An expression
 of the form
 
 @example

@@ -22,13 +22,13 @@
 ## @deftypefnx {Function File} {@var{m} =} ylim ('mode')
 ## @deftypefnx {Function File} {} ylim (@var{m})
 ## @deftypefnx {Function File} {} ylim (@var{h}, @dots{})
-## Get or set the limits of the y axis of the current plot. Called without
+## Get or set the limits of the y axis of the current plot.  Called without
 ## arguments @code{ylim} returns the y axis limits of the current plot.
 ## If passed a two element vector @var{xl}, the limits of the y axis are set
 ## to this value.
 ##
 ## The current mode for calculation of the y axis can be returned with a
-## call @code{ylim ('mode')}, and can be either 'auto' or 'manual'. The 
+## call @code{ylim ('mode')}, and can be either 'auto' or 'manual'.  The 
 ## current plotting mode can be set by passing either 'auto' or 'manual' 
 ## as the argument.
 ##

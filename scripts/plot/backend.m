@@ -19,11 +19,11 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} backend (@var{name})
 ## @deftypefnx {Function File} backend (@var{hlist}, @var{name})
-## Change the default graphics backend to @var{name}. If the backend is
+## Change the default graphics backend to @var{name}.  If the backend is
 ## not already loaded, it is first initialized (initialization is done
 ## through the execution of __init_@var{name}__).
 ##
-## @var{hlist} is a list of figure handles. When given, this function
+## @var{hlist} is a list of figure handles.  When given, this function
 ## only switches the default backend for the corresponding figures.
 ## @seealso{available_backends}
 ## @end deftypefn

@@ -20,8 +20,8 @@
 ## @deftypefn {Function File} {} hggroup ()
 ## @deftypefnx {Function File} {} hggroup (@var{h})
 ## @deftypefnx {Function File} {} hggroup (@dots{}, @var{property}, @var{value}, @dots{})
-## Create group object with parent @var{h}. If no parent is specified,
-## the group is created in the current axes. Return the handle of the
+## Create group object with parent @var{h}.  If no parent is specified,
+## the group is created in the current axes.  Return the handle of the
 ## group object created.
 ##
 ## Multiple property-value pairs may be specified for the group, but they

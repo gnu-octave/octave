@@ -24,7 +24,7 @@
 ## @deftypefnx {Function File} {@var{h} =} findobj ('flat', @dots{})
 ## @deftypefnx {Function File} {@var{h} =} findobj (@var{h}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} findobj (@var{h}, '-depth', @var{d}, @dots{})
-## Find object with specified property values. The simplest form is
+## Find object with specified property values.  The simplest form is
 ##
 ## @example
 ## findobj (@var{prop_name}, @var{prop_Value})
@@ -32,13 +32,13 @@
 ##
 ## @noindent
 ## which returns all of the handles to the objects with the name 
-## @var{prop_name} and the name @var{prop_Value}. The search can be limited
+## @var{prop_name} and the name @var{prop_Value}.  The search can be limited
 ## to a particular object or set of objects and their descendants by 
 ## passing a handle or set of handles @var{h} as the first argument to 
 ## @code{findobj}.
 ##
 ## The depth of hierarchy of objects to which to search to can be limited
-## with the '-depth' argument. To limit the number depth of the hierarchy
+## with the '-depth' argument.  To limit the number depth of the hierarchy
 ## to search to @var{d} generations of children, and example is
 ##
 ## @example
@@ -46,11 +46,11 @@
 ## @end example
 ##
 ## Specifying a depth @var{d} of 0, limits the search to the set of object
-## passed in @var{h}. A depth @var{d} of 0 is equivalent to the '-flat'
+## passed in @var{h}.  A depth @var{d} of 0 is equivalent to the '-flat'
 ## argument. 
 ##
 ## A specified logical operator may be applied to the pairs of @var{prop_Name}
-## and @var{prop_Value}. The supported logical operators are '-and', '-or', 
+## and @var{prop_Value}.  The supported logical operators are '-and', '-or', 
 ## '-xor', '-not'.
 ##
 ## The objects may also be matched by comparing a regular expression to the 

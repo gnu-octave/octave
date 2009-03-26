@@ -55,10 +55,10 @@ variable's current value.  Variables are given new values with
 @dfn{assignment operators} and @dfn{increment operators}.
 @xref{Assignment Ops, ,Assignment Expressions}.
 
-There is one built-in variable with a special meaning. The @code{ans} variable
+There is one built-in variable with a special meaning.  The @code{ans} variable
 always contains the result of the last computation, where the output wasn't
-assigned to any variable. The code @code{a = cos (pi)} will assign the value -1
-to the variable @code{a}, but will not change the value of @code{ans}. However,
+assigned to any variable.  The code @code{a = cos (pi)} will assign the value -1
+to the variable @code{a}, but will not change the value of @code{ans}.  However,
 the code @code{cos (pi)} will set the value of @code{ans} to -1.
 
 Variables in Octave do not have fixed types, so it is possible to first
@@ -186,7 +186,7 @@ the function works with a @emph{copy} of its argument.
 
 A variable that has been declared @dfn{persistent} within a function
 will retain its contents in memory between subsequent calls to the
-same function. The difference between persistent variables and global
+same function.  The difference between persistent variables and global
 variables is that persistent variables are local in scope to a
 particular function and are not visible elsewhere.
 
@@ -225,7 +225,7 @@ persistent d = 3 e f = 5
 @end example
 
 The behavior of persistent variables is equivalent to the behavior of
-static variables in C. The command @code{static} in Octave is also
+static variables in C.  The command @code{static} in Octave is also
 recognized and is equivalent to @code{persistent}.
 
 Like global variables, a persistent variable may only be initialized once.
@@ -265,7 +265,7 @@ implementation of @code{count_calls}.
 
 The value of a persistent variable is kept in memory until it is
 explicitly cleared.  Assuming that the implementation of @code{count_calls}
-is saved on disc, we get the following behaviour.
+is saved on disc, we get the following behavior.
 
 @example
 @group
@@ -312,7 +312,7 @@ cleared, you should use the @code{mlock} function as described in
 @section Status of Variables
 
 When creating simple one-shot programs it can be very convenient to
-see which variables are available at the prompt. The function @code{who}
+see which variables are available at the prompt.  The function @code{who}
 and its siblings @code{whos} and @code{whos_line_format} will show
 different information about what is in memory, as the following shows.
 
@@ -331,9 +331,9 @@ who -variables
 @DOCSTRING(whos_line_format)
 
 Instead of displaying which variables are in memory, it is possible
-to determine if a given variable is available. That way it is possible
-to alter the behaviour of a program depending on the existence of a
-variable. The following example illustrates this.
+to determine if a given variable is available.  That way it is possible
+to alter the behavior of a program depending on the existence of a
+variable.  The following example illustrates this.
 
 @example
 if (! exist ("meaning", "var"))
@@ -344,7 +344,7 @@ endif
 @DOCSTRING(exist)
 
 Usually Octave will manage the memory, but sometimes it can be practical
-to remove variables from memory manually. This is usually needed when
+to remove variables from memory manually.  This is usually needed when
 working with large variables that fill a substantial part of the memory.
 On a computer that uses the IEEE floating point format, the following
 program allocates a matrix that requires around 128 MB memory.
@@ -355,13 +355,13 @@ large_matrix = zeros (4000, 4000);
 
 @noindent
 Since having this variable in memory might slow down other computations,
-it can be necessary to remove it manually from memory. The @code{clear}
+it can be necessary to remove it manually from memory.  The @code{clear}
 function allows this.
 
 @DOCSTRING(clear)
 
 Information about a function or variable such as its location in the
-file system can also be acquired from within Octave. This is usually
+file system can also be acquired from within Octave.  This is usually
 only useful during development of programs, and not within a program.
 
 @DOCSTRING(type)

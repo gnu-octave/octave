@@ -23,11 +23,11 @@
 ## @deftypefnx {Function File} {} slice (@var{v}, @var{xi}, @var{yi}, @var{zi})
 ## @deftypefnx {Function File} {@var{h} =} slice (@dots{})
 ## @deftypefnx {Function File} {@var{h} =} slice (@dots{}, @var{method})
-## Plot slices of 3D data/scalar fields. Each element of the 3-dimensional 
+## Plot slices of 3D data/scalar fields.  Each element of the 3-dimensional 
 ## array @var{v} represents a scalar value at a location given by the
-## parameters @var{x}, @var{y}, and @var{z}. The parameters @var{x},
+## parameters @var{x}, @var{y}, and @var{z}.  The parameters @var{x},
 ## @var{x}, and @var{z} are either 3-dimensional arrays of the same size
-## as the array @var{v} in the "meshgrid" format or vectors. The
+## as the array @var{v} in the "meshgrid" format or vectors.  The
 ## parameters @var{xi}, etc respect a similar format to @var{x}, etc,
 ## and they represent the points at which the array @var{vi} is
 ## interpolated using interp3. The vectors @var{sx}, @var{sy}, and
@@ -41,11 +41,11 @@
 ##
 ## @table @code
 ## @item "nearest"
-## Return the nearest neighbour.
+## Return the nearest neighbor.
 ## @item "linear"
-## Linear interpolation from nearest neighbours.
+## Linear interpolation from nearest neighbors.
 ## @item "cubic"
-## Cubic interpolation from four nearest neighbours (not implemented yet).
+## Cubic interpolation from four nearest neighbors (not implemented yet).
 ## @item "spline"
 ## Cubic spline interpolation---smooth first and second derivatives
 ## throughout the curve.

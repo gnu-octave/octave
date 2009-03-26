@@ -26,7 +26,7 @@ represented as a vector of numbers.
 @DOCSTRING(unique)
 
 @menu
-* Set Operations:: 
+* Set Operations::
 @end menu
 
 @node Set Operations

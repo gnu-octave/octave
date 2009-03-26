@@ -20,12 +20,12 @@
 ## @deftypefn {Function File} {@var{h} =} gcbo ()
 ## @deftypefnx {Function File} {[@var{h}, @var{fig}] =} gcbo ()
 ## Return a handle to the object whose callback is currently
-## executing. If no callback is executing, this function returns the
-## empty matrix. This handle is obtained from the root object property
+## executing.  If no callback is executing, this function returns the
+## empty matrix.  This handle is obtained from the root object property
 ## "CallbackObject".
 ##
 ## Additionally return the handle of the figure containing the
-## object whose callback is currently executing. If no callback is
+## object whose callback is currently executing.  If no callback is
 ## executing, the second output is also set to the empty matrix.
 ##
 ##@seealso{gcf, gca, gcbf}

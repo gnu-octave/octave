@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} strtrunc (@var{s}, @var{n})
-## Truncate the character string @var{s} to length @var{n}. If @var{s}
+## Truncate the character string @var{s} to length @var{n}.  If @var{s}
 ## is a char matrix, then the number of columns is adjusted.
 ##
 ## If @var{s} is a cell array of strings, then the operation is performed

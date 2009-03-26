@@ -23,17 +23,17 @@
 ## @deftypefnx {Function File} {} area (@var{y}, @dots{})
 ## @deftypefnx {Function File} {} area (@var{h}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} area (@dots{})
-## Area plot of cumulative sum of the columns of @var{y}. This shows the
+## Area plot of cumulative sum of the columns of @var{y}.  This shows the
 ## contributions of a value to a sum, and is functionally similar to 
 ## @code{plot (@var{x}, cumsum (@var{y}, 2))}, except that the area under 
 ## the curve is shaded.
 ##
 ## If the @var{x} argument is omitted it is assumed to be given by
-## @code{1 : rows (@var{y})}. A value @var{lvl} can be defined that determines
+## @code{1 : rows (@var{y})}.  A value @var{lvl} can be defined that determines
 ## where the base level of the shading under the curve should be defined.
 ##
 ## Additional arguments to the @code{area} function are passed to the 
-## @code{patch}. The optional return value @var{h} provides a handle to 
+## @code{patch}.  The optional return value @var{h} provides a handle to 
 ## area series object representing the patches of the areas.
 ## @seealso{plot, patch}
 ## @end deftypefn

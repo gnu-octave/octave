@@ -17,24 +17,24 @@
 ## -*- texinfo -*-
 ## @deftypefn {Command} lookfor @var{str}
 ## @deftypefnx {Command} lookfor -all @var{str}
-## @deftypefnx {Function} {[@var{fun}, @var{helpstring}] = } lookfor (@var{str})
-## @deftypefnx {Function} {[@var{fun}, @var{helpstring}] = } lookfor ('-all', @var{str})
+## @deftypefnx {Function} {[@var{fun}, @var{helpstring}] =} lookfor (@var{str})
+## @deftypefnx {Function} {[@var{fun}, @var{helpstring}] =} lookfor ('-all', @var{str})
 ## Search for the string @var{str} in all of the functions found in the
 ## function search path.  By default @code{lookfor} searches for @var{str}
-## in the first sentence of the help string of each function found. The entire
+## in the first sentence of the help string of each function found.  The entire
 ## help string of each function found in the path can be searched if
-## the '-all' argument is supplied. All searches are case insensitive.
+## the '-all' argument is supplied.  All searches are case insensitive.
 ## 
 ## Called with no output arguments, @code{lookfor} prints the list of matching
-## functions to the terminal. Otherwise the output arguments @var{fun} and
+## functions to the terminal.  Otherwise the output arguments @var{fun} and
 ## @var{helpstring} define the matching functions and the first sentence of
 ## each of their help strings.
 ## 
 ## Note that the ability of @code{lookfor} to correctly identify the first
 ## sentence of the help of the functions is dependent on the format of the
-## functions help. All of the functions in Octave itself will correctly
+## functions help.  All of the functions in Octave itself will correctly
 ## find the first sentence, but the same can not be guaranteed for other
-## functions. Therefore the use of the '-all' argument might be necessary
+## functions.  Therefore the use of the '-all' argument might be necessary
 ## to find related functions that are not part of Octave.
 ## @seealso{help, which}
 ## @end deftypefn

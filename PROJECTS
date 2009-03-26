@@ -80,12 +80,12 @@ Sparse Matrices:
       endfor
     endfor
 
-    actually make sense. Otherwise the above will cause massive amounts
+    actually make sense.  Otherwise the above will cause massive amounts
     of memory reallocation.
 
     The fact is that this doesn't make sense in any case as the assign
-    function makes another copy of the sparse matrix. So although spalloc
-    might easily be made to have the correct behaviour, the first assign
+    function makes another copy of the sparse matrix.  So although spalloc
+    might easily be made to have the correct behavior, the first assign
     will cause the matrix to be resized!  There seems to be no simple
     way to treat this but a complete rewrite of the sparse assignment
     functions...
@@ -409,7 +409,7 @@ Miscellaneous:
       programs will become hard to program.
 
       If possible, I would like to have the virtual memory system in
-      Octave i.e. the all big files, the user see as one big array or
+      Octave i.e., the all big files, the user see as one big array or
       such.  There could be several user selectable models to do the
       virtual memory depending on what kind of data the user have (1d,
       2d) and in what order they are processed (stream or random
@@ -422,16 +422,16 @@ Miscellaneous:
     Michael Smolsky <fnsiguc@weizmann.weizmann.ac.il> wrote:
 
       I was thinking about a tool, which could be very useful for me
-      in my numerical simulation work. It is an interconnection
-      between gdb and octave. We are often managing very large arrays
+      in my numerical simulation work.  It is an interconnection
+      between gdb and octave.  We are often managing very large arrays
       of data in our fortran or c codes, which might be studied with
-      the help of octave at the algorithm development stages. Assume
+      the help of octave at the algorithm development stages.  Assume
       you're coding, say, wave equation.  And want to debug the
-      code. It would be great to pick some array from the memory of
-      the code you're develloping, fft it and see the image as a
-      log-log plot of the spectral density. I'm facing similar
+      code.  It would be great to pick some array from the memory of
+      the code you're developing, fft it and see the image as a
+      log-log plot of the spectral density.  I'm facing similar
       problems now.  To avoid high c-development cost, I develop in
-      matlab/octave, and then rewrite into c. It might be so much
+      matlab/octave, and then rewrite into c.  It might be so much
       easier, if I could off-load a c array right from the debugger
       into octave, study it, and, perhaps, change some [many] values
       with a convenient matlab/octave syntax, similar to

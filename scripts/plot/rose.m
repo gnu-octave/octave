@@ -22,12 +22,12 @@
 ## @deftypefnx {Function File} {@var{h} =} rose (@dots{})
 ## @deftypefnx {Function File} {[@var{r}, @var{th}] =} rose (@dots{})
 ##
-## Plot an angular histogram. With one vector argument @var{th}, plots the
-## histogram with 20 angular bins. If @var{th} is a matrix, then each column
+## Plot an angular histogram.  With one vector argument @var{th}, plots the
+## histogram with 20 angular bins.  If @var{th} is a matrix, then each column
 ## of @var{th} produces a separate histogram.
 ##
 ## If @var{r} is given and is a scalar, then the histogram is produced with
-## @var{r} bins. If @var{r} is a vector, then the center of each bin are 
+## @var{r} bins.  If @var{r} is a vector, then the center of each bin are 
 ## defined by the values of @var{r}.
 ##
 ## The optional return value @var{h} provides a list of handles to the 

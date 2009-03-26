@@ -19,11 +19,11 @@
 ## Display the definition of each @var{name} that refers to a function.
 ## 
 ## Normally also displays whether each @var{name} is user-defined or built-in;
-## the @code{-q} option suppresses this behaviour.
+## the @code{-q} option suppresses this behavior.
 ##
-## If an output argument is requested nothing is displayed. Instead a cell array
-## of strings is returned, where each element corresponds to the definition of
-## each requested function.
+## If an output argument is requested nothing is displayed.  Instead, a cell 
+## array of strings is returned, where each element corresponds to the 
+## definition of each requested function.
 ## @end deftypefn
 
 function retval = type (varargin)

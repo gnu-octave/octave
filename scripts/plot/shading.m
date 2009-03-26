@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} shading (@var{type})
 ## @deftypefnx {Function File} {} shading (@var{ax}, @dots{})
-## Set the shading of surface or patch graphic objects. Valid arguments
+## Set the shading of surface or patch graphic objects.  Valid arguments
 ## for @var{type} are
 ##
 ## @table @code

@@ -36,7 +36,7 @@ DEFUN_DLD (hex2num, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{n} =} hex2num (@var{s})\n\
 Typecast the 16 character hexadecimal character matrix to an IEEE 754\n\
-double precision number. If fewer than 16 characters are given the\n\
+double precision number.  If fewer than 16 characters are given the\n\
 strings are right padded with '0' characters.\n\
 \n\
 Given a string matrix, @code{hex2num} treats each row as a separate\n\
@@ -122,7 +122,7 @@ DEFUN_DLD (num2hex, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{s} =} num2hex (@var{n})\n\
 Typecast a double precision number or vector to a 16 character hexadecimal\n\
-string of the IEEE 754 representation of the number. For example\n\
+string of the IEEE 754 representation of the number.  For example\n\
 \n\
 @example\n\
 num2hex ([-1, 1, e, Inf, NaN, NA]);\n\

@@ -20,8 +20,8 @@
 @chapter Debugging
 
 Octave includes a built-in debugger to aid in the development of
-scripts. This can be used to interrupt the execution of an Octave script
-at a certain point, or when certain conditions are met. Once execution
+scripts.  This can be used to interrupt the execution of an Octave script
+at a certain point, or when certain conditions are met.  Once execution
 has stopped, and debug mode is entered, the symbol table at the point
 where execution has stopped can be examined and modified to check for
 errors.
@@ -41,7 +41,7 @@ debug mode.
 @section Entering Debug Mode
 
 There are two basic means of interrupting the execution of an Octave
-script. These are breakpoints @pxref{Breakpoints}, discussed in the next
+script.  These are breakpoints @pxref{Breakpoints}, discussed in the next
 section and interruption based on some condition.
 
 Octave supports three means to stop execution based on the values set in
@@ -80,11 +80,11 @@ function.
 
 @noindent
 Note that breakpoints cannot be set in built-in functions
-(eg. @code{sin}, etc) or dynamically loaded function (ie. oct-files). To
+(e.g., @code{sin}, etc) or dynamically loaded function (i.e., oct-files).  To
 set a breakpoint immediately on entering a function, the breakpoint
 should be set to line 1. The leading comment block will be ignored and
 the breakpoint will be set to the first executable statement in the
-function. For example
+function.  For example
 
 @example
 @group
@@ -113,7 +113,7 @@ These functions can be used to clear all the breakpoints in a function.  For exa
 dbclear ("asind", dbstatus ("asind"));
 @end example
 
-A breakpoint can be set in a subfunction. For example if a file contains
+A breakpoint can be set in a subfunction.  For example if a file contains
 the functions
 
 @example
@@ -146,7 +146,7 @@ use of the @code{keyboard} function.
 
 @noindent
 The @code{keyboard} function is typically placed in a script at the
-point where the user desires that the execution is stopped. It
+point where the user desires that the execution is stopped.  It
 automatically sets the running script into the debug mode.
 
 @node Debug Mode

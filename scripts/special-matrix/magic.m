@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} magic (@var{n})
 ##
-## Create an @var{n}-by-@var{n} magic square. Note that @code{magic
+## Create an @var{n}-by-@var{n} magic square.  Note that @code{magic
 ## (@var{2})} is undefined since there is no 2-by-2 magic square.
 ##
 ## @end deftypefn

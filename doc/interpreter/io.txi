@@ -221,7 +221,7 @@ separated lists.
 If Octave for some reason exits unexpectedly it will by default save the
 variables available in the workspace to a file in the current directory.
 By default this file is named @samp{octave-core} and can be loaded
-into memory with the @code{load} command.  While the default behaviour
+into memory with the @code{load} command.  While the default behavior
 most often is reasonable it can be changed through the following
 functions.
 
@@ -275,7 +275,7 @@ make your programs easier to understand.
 * Output Conversion Syntax::    
 * Table of Output Conversions::  
 * Integer Conversions::         
-* Floating-Point Conversions::  Other Output Conversions::    
+* Floating-Point Conversions::
 * Other Output Conversions::    
 * Formatted Input::             
 * Input Conversion Syntax::     
@@ -302,7 +302,7 @@ used when reading a file.
 @example
 filename = "myfile.txt";
 fid = fopen (filename, "w");
-# Do the actual I/O here...
+# Do the actual I/O here@dots{}
 fclose (fid);
 @end example
 

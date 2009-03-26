@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File}  spinmap (@var{t}, @var{inc})
 ## Cycle the colormap for @var{t} seconds with an increment
-## of @var{inc}.  Both parameters are optional.   The default cycle time
+## of @var{inc}.  Both parameters are optional.  The default cycle time
 ## is 5 seconds and the default increment is 2.
 ##
 ## A higher value of @var{inc} causes a faster cycle through the

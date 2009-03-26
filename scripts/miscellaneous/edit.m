@@ -32,7 +32,7 @@
 ## is a system function, then it will first be copied to the directory
 ## @code{HOME} (see further down) and then edited.  
 ## If no file is found, then the m-file 
-## variant, ending with ".m", will be considered. If still no file
+## variant, ending with ".m", will be considered.  If still no file
 ## is found, then variants with a leading "@@" and then with both a
 ## leading "@@" and trailing ".m" will be considered.
 ##
@@ -49,7 +49,7 @@
 ## function will be inserted into the .cc file as a comment.
 ##
 ## @item
-## If @var{name.ext} is on your path then it will be editted, otherwise
+## If @var{name.ext} is on your path then it will be edited, otherwise
 ## the editor will be started with @file{HOME/name.ext} as the
 ## filename.  If @file{name.ext} is not modifiable, it will be copied to
 ## @code{HOME} before editing.
@@ -64,7 +64,7 @@
 ## If an output argument is requested and the first argument is @code{get}
 ## then @code{edit} will return the value of the control field @var{field}.
 ## If the control field does not exist, edit will return a structure 
-## containing all fields and values. Thus, @code{edit get all} returns
+## containing all fields and values.  Thus, @code{edit get all} returns
 ## a complete control structure.
 ## The following control fields are used:
 ##
@@ -85,15 +85,15 @@
 ##
 ## See also field 'mode', which controls how the editor is run by Octave.
 ## 
-## On cygwin, you will need to convert the cygwin path to a windows
+## On Cygwin, you will need to convert the Cygwin path to a Windows
 ## path if you are using a native Windows editor.  For example
 ## @example
 ## '"C:/Program Files/Good Editor/Editor.exe" "$(cygpath -wa %s)"'
 ## @end example
 ##
 ## @item home
-## This is the location of user local m-files. Be be sure it is in your
-## path. The default is @file{~/octave}.
+## This is the location of user local m-files.  Be be sure it is in your
+## path.  The default is @file{~/octave}.
 ##
 ## @item author
 ## This is the name to put after the "## Author:" field of new functions.
@@ -123,12 +123,12 @@
 ## @item mode
 ## This value determines whether the editor should be started in async mode
 ## (editor is started in the background and Octave continues) or sync mode
-## (Octave waits until the editor exits). Set it to "async" to start the editor
-## in async mode. The default is "sync" (see also "system").
+## (Octave waits until the editor exits).  Set it to "async" to start the editor
+## in async mode.  The default is "sync" (see also "system").
 ##
 ## @item editinplace
 ## Determines whether files should be edited in place, without regard to 
-## whether they are modifiable or not. The default is @code{false}.
+## whether they are modifiable or not.  The default is @code{false}.
 ## @end table
 ## @end deftypefn
 

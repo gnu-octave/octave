@@ -26,7 +26,7 @@
 ## @deftypefnx {Function File} {@var{h} =} quiver3 (@dots{})
 ##
 ## Plot the @code{(@var{u}, @var{v}, @var{w})} components of a vector field in 
-## an @code{(@var{x}, @var{y}), @var{z}} meshgrid. If the grid is uniform, you 
+## an @code{(@var{x}, @var{y}), @var{z}} meshgrid.  If the grid is uniform, you 
 ## can specify @var{x}, @var{y} @var{z} as vectors.
 ##
 ## If @var{x}, @var{y} and @var{z} are undefined they are assumed to be
@@ -34,13 +34,13 @@
 ## size(@var{u})} and @code{@var{p} = max (size (@var{w}))}.
 ##
 ## The variable @var{s} is a scalar defining a scaling factor to use for
-##  the arrows of the field relative to the mesh spacing. A value of 0 
-## disables all scaling. The default value is 1.
+##  the arrows of the field relative to the mesh spacing.  A value of 0 
+## disables all scaling.  The default value is 1.
 ##
 ## The style to use for the plot can be defined with a line style @var{style}
 ## in a similar manner to the line styles used with the @code{plot} command.
 ## If a marker is specified then markers at the grid points of the vectors are
-## printed rather than arrows. If the argument 'filled' is given then the
+## printed rather than arrows.  If the argument 'filled' is given then the
 ## markers as filled.
 ##
 ## The optional return value @var{h} provides a quiver group that

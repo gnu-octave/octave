@@ -49,8 +49,8 @@
 ## @end example
 ##
 ## Note that the result is a char array/cell array of strings, not the
-## variables themselves. To define a variable, @code{eval()} can be
-## used. The following trivial example sets @code{x} to @code{42}.
+## variables themselves.  To define a variable, @code{eval()} can be
+## used.  The following trivial example sets @code{x} to @code{42}.
 ##
 ## @example
 ## @group
@@ -80,7 +80,7 @@
 ##
 ## Since variable names may only contain letters, digits and underscores,
 ## genvarname replaces any sequence of disallowed characters with
-## an underscore. Also, variables may not begin with a digit; in this
+## an underscore.  Also, variables may not begin with a digit; in this
 ## case an underscore is added before the variable name.
 ##
 ## Variable names beginning and ending with two underscores "__" are valid but
@@ -88,9 +88,9 @@
 ## genvarname will not generate such names.
 ##
 ## genvarname will also make sure that returned names do not clash with
-## keywords such as "for" and "if". A number will be appended if necessary.
+## keywords such as "for" and "if".  A number will be appended if necessary.
 ## Note, however, that this does @strong{not} include function names,
-## such as "sin". Such names should be included in @var{avoid} if necessary.
+## such as "sin".  Such names should be included in @var{avoid} if necessary.
 ## @seealso{isvarname, exist, tmpnam, eval}
 ## @end deftypefn
 

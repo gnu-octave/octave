@@ -22,13 +22,13 @@
 ## @deftypefnx {Function File} {@var{m} =} zlim ('mode')
 ## @deftypefnx {Function File} {} zlim (@var{m})
 ## @deftypefnx {Function File} {} zlim (@var{h}, @dots{})
-## Get or set the limits of the z axis of the current plot. Called without
+## Get or set the limits of the z axis of the current plot.  Called without
 ## arguments @code{zlim} returns the z axis limits of the current plot.
 ## If passed a two element vector @var{xl}, the limits of the z axis are set
 ## to this value.
 ##
 ## The current mode for calculation of the z axis can be returned with a
-## call @code{zlim ('mode')}, and can be either 'auto' or 'manual'. The 
+## call @code{zlim ('mode')}, and can be either 'auto' or 'manual'.  The 
 ## current plotting mode can be set by passing either 'auto' or 'manual' 
 ## as the argument.
 ##

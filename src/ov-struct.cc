@@ -964,7 +964,7 @@ cell2struct_construct_idx (Array<octave_idx_type>& ra_idx1,
 DEFUN (cell2struct, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} cell2struct (@var{cell}, @var{fields}, @var{dim})\n\
-Convert @var{cell} to a structure. The number of fields in @var{fields}\n\
+Convert @var{cell} to a structure.  The number of fields in @var{fields}\n\
 must match the number of elements in @var{cell} along dimension @var{dim},\n\
 that is @code{numel (@var{fields}) == size (@var{cell}, @var{dim})}.\n\
 \n\

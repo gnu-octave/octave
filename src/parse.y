@@ -3460,7 +3460,7 @@ Define @var{function} to autoload from @var{file}.\n\
 \n\
 The second argument, @var{file}, should be an absolute file name or\n\
 a file name in the same directory as the function or script from which\n\
-the autoload command was run. @var{file} should not depend on the\n\
+the autoload command was run.  @var{file} should not depend on the\n\
 Octave load path.\n\
 \n\
 Normally, calls to @code{autoload} appear in PKG_ADD script files that\n\
@@ -3472,7 +3472,7 @@ is in the same directory as the PKG_ADD script then\n\
 autoload (\"foo\", \"bar.oct\");\n\
 @end example\n\
 \n\
-will load the function @code{foo} from the file @code{bar.oct}. The above\n\
+will load the function @code{foo} from the file @code{bar.oct}.  The above\n\
 when @code{bar.oct} is not in the same directory or uses like\n\
 \n\
 @example\n\

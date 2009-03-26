@@ -26,7 +26,7 @@
 ##
 ## If the cell array of strings @var{cellstr} is specified instead of the
 ## string @var{str}, then @var{idx} is a cell array of vectors, as specified
-## above. Examples:
+## above.  Examples:
 ##
 ## @example
 ## @group

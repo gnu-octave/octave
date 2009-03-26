@@ -21,7 +21,7 @@
 ## 
 ## Find all characters up to but not including the first character which
 ## is in the string delim.  If @var{rem} is requested, it contains the
-## remainder of the string, starting at the first deliminator. Leading
+## remainder of the string, starting at the first delimiter.  Leading
 ## delimiters are ignored.  If @var{delim} is not specified, space is
 ## assumed.  For example: 
 ##

@@ -780,10 +780,10 @@ handle_message (error_fun f, const char *id, const char *msg,
 DEFUN (rethrow, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} rethrow (@var{err})\n\
-Reissues a previous error as defined by @var{err}. @var{err} is a structure\n\
-that must contain at least the 'message' and 'identifier' fields. @var{err}\n\
+Reissues a previous error as defined by @var{err}.  @var{err} is a structure\n\
+that must contain at least the 'message' and 'identifier' fields.  @var{err}\n\
 can also contain a field 'stack' that gives information on the assumed\n\
-location of the error. Typically @var{err} is returned from\n\
+location of the error.  Typically @var{err} is returned from\n\
 @code{lasterror}.\n\
 @seealso{lasterror, lasterr, error}\n\
 @end deftypefn")
@@ -1373,9 +1373,9 @@ DEFUN (lasterror, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{err} =} lasterror (@var{err})\n\
 @deftypefnx {Built-in Function} {} lasterror ('reset')\n\
-Returns or sets the last error message. Called without any arguments\n\
+Returns or sets the last error message.  Called without any arguments\n\
 returns a structure containing the last error message, as well as other\n\
-information related to this error. The elements of this structure are:\n\
+information related to this error.  The elements of this structure are:\n\
 \n\
 @table @asis\n\
 @item 'message'\n\
@@ -1383,9 +1383,9 @@ The text of the last error message\n\
 @item 'identifier'\n\
 The message identifier of this error message\n\
 @item 'stack'\n\
-A structure containing information on where the message occurred. This might\n\
+A structure containing information on where the message occurred.  This might\n\
 be an empty structure if this in the case where this information cannot\n\
-be obtained. The fields of this structure are:\n\
+be obtained.  The fields of this structure are:\n\
 \n\
 @table @asis\n\
 @item 'file'\n\
@@ -1400,8 +1400,8 @@ An optional field with the column number at which the error occurred\n\
 @end table\n\
 \n\
 The @var{err} structure may also be passed to @code{lasterror} to set the\n\
-information about the last error. The only constraint on @var{err} in that\n\
-case is that it is a scalar structure. Any fields of @var{err} that match\n\
+information about the last error.  The only constraint on @var{err} in that\n\
+case is that it is a scalar structure.  Any fields of @var{err} that match\n\
 the above are set to the value passed in @var{err}, while other fields are\n\
 set to their default values.\n\
 \n\

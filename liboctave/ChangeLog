@@ -1,5 +1,9 @@
 2009-03-25  John W. Eaton  <jwe@octave.org>
 
+	* EIG.cc (EIG::init (const Matrix&, bool),
+	EIG::init (const Matrix&, const Matrix&, bool)):
+	Avoid volaatile declaration for tmp variable.
+
 	* Makefile.in (MATRIX_INC): Add Sparse-diag-op-defs.h and
 	Sparse-perm-op-defs.h to the list.
 

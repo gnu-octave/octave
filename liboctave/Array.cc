@@ -2536,7 +2536,7 @@ Array<T>::find (octave_idx_type n, bool backward) const
           for (; k < n; k++)
             {
               for (;l != nel && src[l] == zero; l++) ;
-              if (l != n)
+              if (l != nel)
                 retval(k) = l++;
               else
                 break;

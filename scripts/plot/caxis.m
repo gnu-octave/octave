@@ -23,7 +23,7 @@
 ##
 ## The argument @var{limits} should be a 2 element vector specifying the 
 ## lower and upper limits to assign to the first and last value in the
-## colormap. Values outside this range are clamped to the first and last
+## colormap.  Values outside this range are clamped to the first and last
 ## colormap entries. 
 ##
 ## If @var{limits} is 'auto', then automatic colormap scaling is applied,

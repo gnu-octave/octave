@@ -74,7 +74,7 @@ GNU gzip.  You can ftp gzip from ftp.octave.org in the directory
 /pub/gnu.
 
 Even though the snapshots are available in a public place, we ask that
-recipients not widely publicise the availability of the snapshots.
+recipients not widely publicize the availability of the snapshots.
 The motivation for this request is not to hoard them, but to avoid the
 situation where the general Octave user base naively attempts to use
 the snapshots, has trouble with them, complains publicly, and the

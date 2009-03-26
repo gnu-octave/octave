@@ -36,11 +36,6 @@ included in this manual in @ref{Copying}.
 
 This document corresponds to Octave version @value{VERSION}.
 
-@c FIXME -- add explanation about how and why Octave was written.
-@c
-@c FIXME -- add a sentence or two explaining that we could
-@c                  always use more funding.
-
 @menu
 * Running Octave::              
 * Simple Examples::             
@@ -56,7 +51,7 @@ indicating it is ready to accept input.  You can begin typing Octave
 commands immediately afterward.
 
 If you get into trouble, you can usually interrupt Octave by typing
-@kbd{Control-C} (usually written @kbd{C-c} for short).  @kbd{C-c} gets
+@kbd{Control-C} (written @kbd{C-c} for short).  @kbd{C-c} gets
 its name from the fact that you type it by holding down @key{CTRL} and
 then pressing @key{c}.  Doing this will normally return you to Octave's
 prompt.
@@ -82,7 +77,7 @@ respond with an answer, or by displaying a graph.
 
 @subsection Creating a Matrix
 
-To create a new matrix and store it in a variable so that it you can
+To create a new matrix and store it in a variable so that you can
 refer to it later, type the command
 
 @example
@@ -91,8 +86,8 @@ octave:1> A = [ 1, 1, 2; 3, 5, 8; 13, 21, 34 ]
 
 @noindent
 Octave will respond by printing the matrix in neatly aligned columns.
-Ending a command with a semicolon tells Octave to not print the result
-of a command.  For example
+Ending a command with a semicolon tells Octave not to print the result
+of the command.  For example
 
 @example
 octave:2> B = rand (3, 2);
@@ -102,9 +97,9 @@ octave:2> B = rand (3, 2);
 will create a 3 row, 2 column matrix with each element set to a random
 value between zero and one.
 
-To display the value of any variable, simply type the name of the
-variable.  For example, to display the value stored in the matrix
-@code{B}, type the command
+To display the value of a variable, simply type the name of the
+variable at the prompt.  For example, to display the value stored in the 
+matrix @code{B}, type the command
 
 @example
 octave:3> B
@@ -209,7 +204,7 @@ $f (x, t)$.
 @end ifnottex
 This is straightforward, and may be accomplished by entering the
 function body directly on the command line.  For example, the following
-commands define the right hand side function for an interesting pair of
+commands define the right-hand side function for an interesting pair of
 nonlinear differential equations.  Note that while you are entering a
 function, Octave responds with a different prompt, to indicate that it
 is waiting for you to complete your input.
@@ -297,8 +292,8 @@ of additional output file formats.
 At the Octave prompt, you can recall, edit, and reissue previous
 commands using Emacs- or vi-style editing commands.  The default
 keybindings use Emacs-style commands.  For example, to recall the
-previous command, press @kbd{Control-p} (usually written @kbd{C-p} for
-short). Doing this will normally bring back the previous line of input.
+previous command, press @kbd{Control-p} (written @kbd{C-p} for
+short).  Doing this will normally bring back the previous line of input.
 @kbd{C-n} will bring up the next line of input, @kbd{C-b} will move
 the cursor backward on the line, @kbd{C-f} will move the cursor forward
 on the line, etc.
@@ -317,8 +312,8 @@ In order to get good help you first need to know the name of the command
 that you want to use.  This name of the function may not always be
 obvious, but a good place to start is to just type @code{help}.
 This will show you all the operators, reserved words, functions,
-built-in variables, and function files. An alternative is to search the
-documentation using the @code{lookfor} function. This function is
+built-in variables, and function files.  An alternative is to search the
+documentation using the @code{lookfor} function.  This function is
 described in @ref{Getting Help}.
 
 Once you know the name of the function you wish to use, you can get more
@@ -519,7 +514,7 @@ foo (@var{w}, @var{x}, @var{y}, @dots{})
 @end deftypefn
 
 Any parameter whose name contains the name of a type (e.g.,
-@var{integer}, @var{integer1} or @var{matrix}) is expected to be of that
+@var{integer} or @var{matrix}) is expected to be of that
 type.  Parameters named @var{object} may be of any type.  Parameters
 with other sorts of names (e.g., @var{new_file}) are discussed
 specifically in the description of the function.  In some sections,
@@ -559,7 +554,7 @@ arguments.
 @cindex command descriptions
 
 Command descriptions have a format similar to function descriptions,
-except that the word `Function' is replaced by `Command.  Commands are
+except that the word `Function' is replaced by `Command'.  Commands are
 functions that may be called without surrounding their arguments in
 parentheses.  For example, here is the description for Octave's
 @code{cd} command:

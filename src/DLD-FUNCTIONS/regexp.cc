@@ -876,7 +876,7 @@ DEFUN_DLD (regexp, args, nargout,
 @deftypefn {Loadable Function} {[@var{s}, @var{e}, @var{te}, @var{m}, @var{t}, @var{nm}] =} regexp (@var{str}, @var{pat})\n\
 @deftypefnx {Loadable Function} {[@dots{}] =} regexp (@var{str}, @var{pat}, @var{opts}, @dots{})\n\
 \n\
-Regular expression string matching. Matches @var{pat} in @var{str} and\n\
+Regular expression string matching.  Matches @var{pat} in @var{str} and\n\
 returns the position and matching substrings or empty values if there are\n\
 none.\n\
 \n\
@@ -905,14 +905,14 @@ List operators, where for example @code{[ab]c} matches @code{ac} and @code{bc}\n
 @item ()\n\
 Grouping operator\n\
 @item |\n\
-Alternation operator. Match one of a choice of regular expressions. The\n\
+Alternation operator.  Match one of a choice of regular expressions.  The\n\
 alternatives must be delimited by the grouping operator @code{()} above\n\
 @item ^ $\n\
-Anchoring operator. @code{^} matches the start of the string @var{str} and\n\
+Anchoring operator.  @code{^} matches the start of the string @var{str} and\n\
 @code{$} the end\n\
 @end table\n\
 \n\
-In addition the following escaped characters have special meaning. It should\n\
+In addition the following escaped characters have special meaning.  It should\n\
 be noted that it is recommended to quote @var{pat} in single quotes rather\n\
 than double quotes, to avoid the escape sequences being interpreted by Octave\n\
 before being passed to @code{regexp}.\n\
@@ -961,12 +961,12 @@ A cell array of the text of each token matched.\n\
 \n\
 @item @var{nm}\n\
 A structure containing the text of each matched named token, with the name\n\
-being used as the fieldname. A named token is denoted as\n\
+being used as the fieldname.  A named token is denoted as\n\
 @code{(?<name>@dots{})}\n\
 @end table\n\
 \n\
 Particular output arguments or the order of the output arguments can be\n\
-selected by additional @var{opts} arguments. These are strings and the\n\
+selected by additional @var{opts} arguments.  These are strings and the\n\
 correspondence between the output arguments and the optional argument\n\
 are\n\
 \n\
@@ -980,7 +980,7 @@ are\n\
 @end multitable\n\
 \n\
 A further optional argument is 'once', that limits the number of returned\n\
-matches to the first match. Additional arguments are\n\
+matches to the first match.  Additional arguments are\n\
 \n\
 @table @asis\n\
 @item matchcase\n\
@@ -1192,7 +1192,7 @@ DEFUN_DLD (regexpi, args, nargout,
 @deftypefn {Loadable Function} {[@var{s}, @var{e}, @var{te}, @var{m}, @var{t}, @var{nm}] =} regexpi (@var{str}, @var{pat})\n\
 @deftypefnx {Loadable Function} {[@dots{}] =} regexpi (@var{str}, @var{pat}, @var{opts}, @dots{})\n\
 \n\
-Case insensitive regular expression string matching. Matches @var{pat} in\n\
+Case insensitive regular expression string matching.  Matches @var{pat} in\n\
 @var{str} and returns the position and matching substrings or empty values\n\
 if there are none.  @xref{doc-regexp,,regexp}, for more details\n\
 @end deftypefn")

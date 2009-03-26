@@ -44,7 +44,7 @@ input arguments.
 Since an error can occur during the evaluation of a program, it is
 very convenient to be able to detect that an error occurred, so that
 the error can be fixed.  This is possible with the @code{try} statement
-described in @ref{The try Statement}.
+described in @ref{The @code{try} Statement}.
 
 @menu
 * Raising Errors::
@@ -105,7 +105,7 @@ f ()
 Invalid call to f.  Correct usage is:
 
      @print{}  -- Function File: f (ARG1)
-     @print{}      Function help text goes here...
+     @print{}      Function help text goes here@dots{}
      @print{} 
      @print{} 
      @print{} 
@@ -126,7 +126,7 @@ Invalid call to f.  Correct usage is:
 @subsection Catching Errors
 
 When an error occurs, it can be detected and handled using the
-@code{try} statement as described in @ref{The try Statement}.
+@code{try} statement as described in @ref{The @code{try} Statement}.
 As an example, the following piece of code counts the number of errors
 that occurs during a @code{for} loop.
 
@@ -191,7 +191,7 @@ endfor
 
 @DOCSTRING(rethrow)
 
-@c XXX: I have no idea what the rest of the functions are used for...
+@c FIXME: I have no idea what the rest of the functions are used for...
 
 @DOCSTRING(errno)
 
@@ -221,18 +221,18 @@ a = 1/0
 @subsection Issuing Warnings
 
 It is possible to issue warnings from any code using the @code{warning}
-function. In its most simple form, the @code{warning} function takes a
-string describing the warning as its input argument. As an example,
+function.  In its most simple form, the @code{warning} function takes a
+string describing the warning as its input argument.  As an example,
 the following code controls if the variable @samp{a} is non-negative,
 and if not issues a warning and sets @samp{a} to zero.
 
 @example
 a = -1;
 if (a < 0)
-  warning ("'a' must be non-negative. Setting 'a' to zero.");
+  warning ("'a' must be non-negative.  Setting 'a' to zero.");
   a = 0;
 endif
-     @print{} 'a' must be non-negative. Setting 'a' to zero.
+     @print{} 'a' must be non-negative.  Setting 'a' to zero.
 @end example
 
 Since warnings aren't fatal to a running program, it is not possible
@@ -263,7 +263,7 @@ their string identifications.  The following code will issue a warning
 
 @example
 warning ("non-negative-variable", 
-         "'a' must be non-negative. Setting 'a' to zero.");
+         "'a' must be non-negative.  Setting 'a' to zero.");
 @end example
 
 @noindent
@@ -272,7 +272,7 @@ while the following won't issue a warning
 @example
 warning ("off", "non-negative-variable");
 warning ("non-negative-variable", 
-         "'a' must be non-negative. Setting 'a' to zero.");
+         "'a' must be non-negative.  Setting 'a' to zero.");
 @end example
 
 The functions distributed with Octave can issue one of the following

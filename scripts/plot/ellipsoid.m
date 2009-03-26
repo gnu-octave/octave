@@ -20,9 +20,9 @@
 ## @deftypefn {Function File} {[@var{x}, @var{y}, @var{z}] =} ellipsoid (@var{xc},@var{yc}, @var{zc}, @var{xr}, @var{yr}, @var{zr}, @var{n})
 ## @deftypefnx {Function File} {} ellipsoid (@var{h}, @dots{})
 ## Generate three matrices in @code{meshgrid} format that define an
-## ellipsoid.   Called with no return arguments, @code{ellipsoid} calls
+## ellipsoid.  Called with no return arguments, @code{ellipsoid} calls
 ## directly @code{surf (@var{x}, @var{y}, @var{z})}.  If an axes handle
-## is passed as the first argument, the the surface is plotted to this
+## is passed as the first argument, the surface is plotted to this
 ## set of axes.
 ## @seealso{sphere}
 ## @end deftypefn

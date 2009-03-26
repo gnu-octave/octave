@@ -24,8 +24,8 @@
 This chapter is dedicated to those who wish to contribute code to Octave.
 
 @menu 
-* How to Contribute::		How you may start contributing code.
-* General Guidelines::		Advices applicable to any type of source.
+* How to Contribute::
+* General Guidelines::
 * Octave Sources (m-files)::
 * C++ Sources::
 * Other Sources::	

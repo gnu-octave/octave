@@ -23,8 +23,8 @@
 @cindex graphics
 
 @menu
-* Plotting Basics::             
-* Advanced Plotting::           
+* Plotting Basics::
+* Advanced Plotting::
 @end menu
 
 @node Plotting Basics
@@ -225,7 +225,7 @@ get or set individual axis limits.  Each has the same form.
 
 Octave can plot a function from a function handle inline function or
 string defining the function without the user needing to explicitly
-create the data to be plotted. The function @code{fplot} also generates
+create the data to be plotted.  The function @code{fplot} also generates
 two-dimensional plots with linear axes using a function name and limits
 for the range of the x-coordinate instead of the x and y data.  For
 example,
@@ -476,7 +476,7 @@ writes the current figure to an encapsulated PostScript file called
 @subsection Interacting with plots
 
 The user can select points on a plot with the @code{ginput} function or
-selction the position at which to place text on the plot with the
+selection the position at which to place text on the plot with the
 @code{gtext} function using the mouse.
 
 @DOCSTRING(ginput)
@@ -668,7 +668,7 @@ or when waiting for input.  To force an update at other times, call the
 
 @DOCSTRING(drawnow)
 
-Only figures that are modified will be updated. The @code{refresh}
+Only figures that are modified will be updated.  The @code{refresh}
 function can also be to force an update of the current figure, even if
 it is nor modified.
 
@@ -702,7 +702,7 @@ plot.
 @DOCSTRING(ishold)
 
 To clear the current figure, call the @code{clf} function.  To clear the
-current axis, call the @code{cla} function. To bring the current fingure
+current axis, call the @code{cla} function.  To bring the current figure
 to the top of the window stack, call the @code{shg} function.  To delete
 a graphics object, call @code{delete} on its index.  To close the
 figure window, call the @code{close} function.
@@ -983,28 +983,28 @@ The font used for the text.
 The size of the font, in points to use.
 
 @item fontangle
-Flag whether the font is italic or normal. Valid values are 'normal',
+Flag whether the font is italic or normal.  Valid values are 'normal',
 'italic' and 'oblique'.
 
 @item fontweight
-Flag whether the font is bold, etc. Valid values are 'normal', 'bold',
+Flag whether the font is bold, etc.  Valid values are 'normal', 'bold',
 'demi' or 'light'.
 
 @item interpreter
-Determines how the text is rendered. Valid values are 'none', 'tex' or
+Determines how the text is rendered.  Valid values are 'none', 'tex' or
 'latex'.
 @end table
 
 All text objects, including titles, labels, legends, and text, include
 the property 'interpreter', this property determines the manner in which
-special control sequences in the text are rendered. If the interpreter
-is set to 'none', then no rendering occurs. At this point the 'latex'
+special control sequences in the text are rendered.  If the interpreter
+is set to 'none', then no rendering occurs.  At this point the 'latex'
 option is not implemented and so the 'latex' interpreter also does not
 interpret the text.
 
 The 'tex' option implements a subset of @sc{TeX} functionality in the
-rendering of the text. This allows the insertion of special characters
-such as Greek or mathematical symbols within the text. The special
+rendering of the text.  This allows the insertion of special characters
+such as Greek or mathematical symbols within the text.  The special
 characters are also inserted with a code starting with the back-slash
 (\) character, as in the table @ref{tab:extended}. 
 
@@ -1019,13 +1019,13 @@ with the codes
 @end multitable
 
 These are be used in conjunction with the @{ and @} characters to limit
-the change in the font to part of the string. For example
+the change in the font to part of the string.  For example
 
 @example
 xlabel ('@{\bf H@} = a @{\bf V@}')
 @end example
 
-where the character 'a' will not appear in a bold font. Note that to
+where the character 'a' will not appear in a bold font.  Note that to
 avoid having Octave interpret the backslash characters in the strings,
 the strings should be in single quotes.
 
@@ -1038,9 +1038,9 @@ use @tab
 @end multitable
 
 Finally, the superscript and subscripting can be controlled with the '^'
-and '_' characters. If the '^' or '_' is followed by a @{ character,
+and '_' characters.  If the '^' or '_' is followed by a @{ character,
 then all of the block surrounded by the @{ @} pair is super- or
-sub-scripted. Without the @{ @} pair, only the character immediately
+sub-scripted.  Without the @{ @} pair, only the character immediately
 following the '^' or '_' is super- or sub-scripted.
 
 @float Table,tab:extended
@@ -1464,7 +1464,7 @@ of 2 is twice as large as the default, etc.
 @cindex callbacks
 
 Callback functions can be associated with graphics objects and triggered
-after certain events occur. The basic structure of all callback function
+after certain events occur.  The basic structure of all callback function
 is 
 
 @example
@@ -1476,9 +1476,9 @@ endfunction
 @end example
 
 where @code{src} gives a handle to the source of the callback, and
-@code{code} gives some event specific data. This can then be associated
+@code{code} gives some event specific data.  This can then be associated
 with an object either at the objects creation or later with the
-@code{set} function. For example
+@code{set} function.  For example
 
 @example
 plot (x, "DeleteFcn", @@(s, e) disp("Window Deleted"))
@@ -1489,7 +1489,7 @@ where at the moment that the plot is deleted, the message "Window
 Deleted" will be displayed.
 
 Additional user arguments can be passed to callback functions, and will
-be passed after the 2 default arguments. For example
+be passed after the 2 default arguments.  For example
 
 @example
 plot (x, "DeleteFcn", @{@@mycallback, "1"@})
@@ -1505,9 +1505,9 @@ are
 @itemize @bullet
 @item CreateFcn
 This is the callback that is called at the moment of the objects
-creation. It is not called if the object is altered in any way, and so
+creation.  It is not called if the object is altered in any way, and so
 it only makes sense to define this callback in the function call that
-defines the object. Callbacks that are added to @code{CreateFcn} later with
+defines the object.  Callbacks that are added to @code{CreateFcn} later with
 the @code{set} function will never be executed.
 
 @item DeleteFcn
@@ -1515,7 +1515,7 @@ This is the callback that is called at the moment an object is deleted.
 
 @item ButtonDownFcn
 This is the callback that is called if a mouse button is pressed while
-the pointer is over this object. Note, that the gnuplot interface does
+the pointer is over this object.  Note, that the gnuplot interface does
 not respect this callback.
 @end itemize
 
@@ -1537,7 +1537,7 @@ function described below.
 A number of Octave high level plot functions return groups of other
 graphics objects or they return graphics objects that are have their
 properties linked in such a way that changes to one of the properties
-results in changes in the others. A graphic object that groups other
+results in changes in the others.  A graphic object that groups other
 objects is an @code{hggroup}
 
 @DOCSTRING(hggroup)
@@ -1556,17 +1556,17 @@ set (hg, "visible", "off");
 @end example
 
 @noindent
-which groups the two plots into a single object and contols their
-visiblity directly. The default properties of an @code{hggroup} are
+which groups the two plots into a single object and controls their
+visibility directly.  The default properties of an @code{hggroup} are
 the same as the set of common properties for the other graphics
-objects. Additional properties can be added with the @code{addproperty}
+objects.  Additional properties can be added with the @code{addproperty}
 function. 
 
 @DOCSTRING(addproperty)
 
 Once a property in added to an @code{hggroup}, it is not linked to any
 other property of either the children of the group, or any other
-graphics object. Add so to control the way in which this newly added
+graphics object.  Add so to control the way in which this newly added
 property is used, the @code{addlistener} function is used to define a
 callback function that is executed when the property is altered.
 
@@ -1594,7 +1594,7 @@ endfunction
 
 @noindent
 that adds a @code{linestyle} property to the @code{hggroup} and
-propagating any changes its its value to the children of the group. The
+propagating any changes its value to the children of the group.  The
 @code{linkprop} function can be used to simplify the above to be
 
 @example
@@ -1624,9 +1624,9 @@ one or more graphics object and are used to:
 @noindent
 For example the @code{stem} function creates a stem series where each
 @code{hggroup} of the stem series contains two line objects representing
-the body and head of the stem. The @code{ydata} property of the
+the body and head of the stem.  The @code{ydata} property of the
 @code{hggroup} of the stem series represents the head of the stem,
-whereas the body of the stem is between the baseline and this value. For
+whereas the body of the stem is between the baseline and this value.  For
 example
 
 @example
@@ -1640,17 +1640,17 @@ get (get (h, "children")(1), "xdata")
 @end example
 
 @noindent
-shows the the difference between the @code{xdata} of the @code{hggroup}
+shows the difference between the @code{xdata} of the @code{hggroup}
 of a stem series object and the underlying line.
 
 The basic properties of such group objects is that they consist of one 
 or more linked @code{hggroup}, and that changes in certain properties of
-these groups are propagated to other members of the group. Whereas,
+these groups are propagated to other members of the group.  Whereas,
 certain properties of the members of the group only apply to the current
 member.
 
 In addition the members of the group can also be linked to other
-graphics objects through callback functions. For example the baseline of
+graphics objects through callback functions.  For example the baseline of
 the @code{bar} or @code{stem} functions is a line object, whose length
 and position are automatically adjusted, based on changes to the
 corresponding hggroup elements.
@@ -1673,7 +1673,7 @@ corresponding hggroup elements.
 @subsubsection Data sources in object groups
 @cindex data sources in object groups
 
-All of the group objects contain data source parameters. There are
+All of the group objects contain data source parameters.  There are
 string parameters that contain an expression that is evaluated to update
 the relevant data property of the group when the @code{refreshdata}
 function is called. 
@@ -1690,8 +1690,8 @@ function is called.
 @cindex series objects
 @cindex area series
 
-Area series objects are created by the @code{area} function. Each of the
-@code{hggroup} elements contains a single patch object. The properties
+Area series objects are created by the @code{area} function.  Each of the
+@code{hggroup} elements contains a single patch object.  The properties
 of the area series are
 
 @table @code
@@ -1701,11 +1701,11 @@ The value where the base of the area plot is drawn.
 @item linewidth
 @itemx linestyle
 The line width and style of the edge of the patch objects making up the
-areas. @xref{Line Styles}.
+areas.  @xref{Line Styles}.
 
 @item edgecolor
 @itemx facecolor
-The line and fill color of the patch objects making up the areas. @xref{Colors}.
+The line and fill color of the patch objects making up the areas.  @xref{Colors}.
 
 @item xdata
 @itemx ydata
@@ -1724,7 +1724,7 @@ Data source variables.
 @cindex bar series
 
 Bar series objects are created by the @code{bar} or @code{barh}
-functions. Each @code{hgrroup} element contains a single patch object. 
+functions.  Each @code{hggroup} element contains a single patch object. 
 The properties of the bar series are
 
 @table @code
@@ -1732,12 +1732,12 @@ The properties of the bar series are
 @itemx baseline
 @itemx basevalue
 The property @code{showbaseline} flags whether the baseline of the bar
-series is displayed (default is "on"). The handle of the graphics object
+series is displayed (default is "on").  The handle of the graphics object
 representing the baseline is given by the @code{baseline} property and
 the y-value of the baseline by the @code{basevalue} property. 
 
 Changes to any of these property are propagated to the other members of
-the bar series and to the baseline itself. Equally changes in the
+the bar series and to the baseline itself.  Equally changes in the
 properties of the base line itself are propagated to the members of the
 corresponding bar series.
 
@@ -1745,7 +1745,7 @@ corresponding bar series.
 @itemx barlayout
 @itemx horizontal
 The property @code{barwidth} is the width of the bar corresponding to
-the @var{width} variable passed to @code{bar} or @var{barh}. Whether the
+the @var{width} variable passed to @code{bar} or @var{barh}.  Whether the
 bar series is "grouped" or "stacked" is determined by the
 @code{barlayout} property and whether the bars are horizontal or
 vertical by the @code{horizontal} property.
@@ -1756,14 +1756,14 @@ the bar series.
 @item linewidth
 @itemx linestyle
 The line width and style of the edge of the patch objects making up the
-bars. @xref{Line Styles}.
+bars.  @xref{Line Styles}.
 
 @item edgecolor
 @itemx facecolor
-The line and fill color of the patch objects making up the bars. @xref{Colors}.
+The line and fill color of the patch objects making up the bars.  @xref{Colors}.
 
 @item xdata
-The nominal x positions of the bars. Changes in this property and
+The nominal x positions of the bars.  Changes in this property and
 propagated to the other members of the bar series. 
 
 @item ydata
@@ -1780,8 +1780,8 @@ Data source variables.
 @cindex contour series
 
 Contour group objects are created by the @code{contour}, @code{contourf}
-and @code{contour3} functions. The are equally one of the handles returned
-by the @code{surfc} and @code{meshc} functions. The properties of the contour
+and @code{contour3} functions.  The are equally one of the handles returned
+by the @code{surfc} and @code{meshc} functions.  The properties of the contour
 group are
 
 @table @code
@@ -1796,9 +1796,9 @@ contours to plot are to be filled.
 @item zlevelmode
 @itemx zlevel
 The radio property @code{zlevelmode} can have the values "none", "auto" or 
-"manual". When its value is "none" there is no z component to the plotted
-contours. When its value is "auto" the z value of the plotted contours is 
-at the same value as the contour itself. If the value is "manual", then the
+"manual".  When its value is "none" there is no z component to the plotted
+contours.  When its value is "auto" the z value of the plotted contours is 
+at the same value as the contour itself.  If the value is "manual", then the
 z value at which to plot the contour is determined by the @code{zlevel}
 property.
 
@@ -1806,10 +1806,10 @@ property.
 @itemx levellist
 @itemx levelstepmode
 @itemx levelstep
-If @code{levellistmode} is "manual", then the levels at whch to plot the 
-contours is determined by @code{levellist}. If @code{levellistmode} is
+If @code{levellistmode} is "manual", then the levels at which to plot the 
+contours is determined by @code{levellist}.  If @code{levellistmode} is
 set to "auto", then the distance between contours is determined by 
-@code{levelstep}. If both @code{levellistmode} and @code{levelstepmode}
+@code{levelstep}.  If both @code{levellistmode} and @code{levelstepmode}
 are set to "auto", then there are assumed to be 10 equal spaced contours.
 
 @item textlistmode
@@ -1817,9 +1817,9 @@ are set to "auto", then there are assumed to be 10 equal spaced contours.
 @itemx textstepmode
 @itemx textstep
 If @code{textlistmode} is "manual", then the labelled contours 
-is determined by @code{textlist}. If @code{textlistmode} is set to 
+is determined by @code{textlist}.  If @code{textlistmode} is set to 
 "auto", then the distance between labelled contours is determined by 
-@code{textstep}. If both @code{textlistmode} and @code{textstepmode}
+@code{textstep}.  If both @code{textlistmode} and @code{textstepmode}
 are set to "auto", then there are assumed to be 10 equal spaced 
 labelled contours.
 
@@ -1832,11 +1832,11 @@ The distance between labels on a single contour in points.
 @item linewidth
 @item linestyle
 @item linecolor
-The properties of the contour lines. The properties @code{linewidth} and
-@code{linestyle} are similar to the correponding properties for lines. The
+The properties of the contour lines.  The properties @code{linewidth} and
+@code{linestyle} are similar to the corresponding properties for lines.  The
 property @code{linecolor} is a color property (@pxref{Colors}), that can also
-have the values of "none" or "auto". If @code{linecolor} is "none", then no
-contour line is drawn. If @code{linecolor} is "auto" then the line color is
+have the values of "none" or "auto".  If @code{linecolor} is "none", then no
+contour line is drawn.  If @code{linecolor} is "auto" then the line color is
 determined by the colormap.
 
 @item xdata
@@ -1855,23 +1855,23 @@ Data source variables.
 @cindex series objects
 @cindex error bar series
 
-Error bar series are created by the @code{errorbar} function. Each 
-@code{hgrroup} element contains two line objects represnting the data and
-the errorbars separately. The properties of the error bar series are
+Error bar series are created by the @code{errorbar} function.  Each 
+@code{hggroup} element contains two line objects representing the data and
+the errorbars separately.  The properties of the error bar series are
 
 @table @code
 @item color
-The RGB color or color name of the line objects of the error bars. @xref{Colors}.
+The RGB color or color name of the line objects of the error bars.  @xref{Colors}.
 
 @item linewidth
 @itemx linestyle
-The line width and style of the line objects of the error bars. @xref{Line Styles}.
+The line width and style of the line objects of the error bars.  @xref{Line Styles}.
 
 @item marker
 @itemx markeredgecolor
 @itemx markerfacecolor
 @itemx markersize
-The line and fill color of the markers on the error bars. @xref{Colors}.
+The line and fill color of the markers on the error bars.  @xref{Colors}.
 
 @item xdata
 @itemx ydata
@@ -1896,22 +1896,22 @@ Data source variables.
 @cindex line series
 
 Line series objects are created by the @code{plot}  and @code{plot3}
-functions and are of the type @code{line}. The properties of the
+functions and are of the type @code{line}.  The properties of the
 line series with the ability to add data sources.
 
 @table @code
 @item color
-The RGB color or color name of the line objects. @xref{Colors}.
+The RGB color or color name of the line objects.  @xref{Colors}.
 
 @item linewidth
 @itemx linestyle
-The line width and style of the line objects. @xref{Line Styles}.
+The line width and style of the line objects.  @xref{Line Styles}.
 
 @item marker
 @itemx markeredgecolor
 @itemx markerfacecolor
 @itemx markersize
-The line and fill color of the markers. @xref{Colors}.
+The line and fill color of the markers.  @xref{Colors}.
 
 @item xdata
 @itemx ydata
@@ -1930,38 +1930,38 @@ Data source variables.
 @cindex quiver group
 
 Quiver series objects are created by the @code{quiver} or @code{quiver3}
-functions. Each @code{hggroup} element of the series contains three line
+functions.  Each @code{hggroup} element of the series contains three line
 objects as children representing the body and head of the arrow,
-together with a marker as the point of original of the arrows. The 
+together with a marker as the point of original of the arrows.  The 
 properties of the quiver series are
 
 @table @code
 @item autoscale
 @itemx autoscalefactor
 Flag whether the length of the arrows is scaled or defined directly from
-the @var{u}, @var{v} and @var{w} data. If the arrow length is falgged
+the @var{u}, @var{v} and @var{w} data.  If the arrow length is flagged
 as being scaled by the @code{autoscale} property, then the length of the
 autoscaled arrow is controlled by the @code{autoscalefactor}. 
 
 @item maxheadsize
 This property controls the size of the head of the arrows in the quiver
-series. The default value is 0.2.
+series.  The default value is 0.2.
 
 @item showarrowhead
 Flag whether the arrow heads are displayed in the quiver plot.
 
 @item color
-The RGB color or color name of the line objects of the quiver. @xref{Colors}.
+The RGB color or color name of the line objects of the quiver.  @xref{Colors}.
 
 @item linewidth
 @itemx linestyle
-The line width and style of the line objects of the quiver. @xref{Line Styles}.
+The line width and style of the line objects of the quiver.  @xref{Line Styles}.
 
 @item marker
 @itemx markerfacecolor
 @itemx markersize
 The line and fill color of the marker objects at the original of the
-arrows. @xref{Colors}.
+arrows.  @xref{Colors}.
 
 @item xdata
 @itemx ydata
@@ -1988,18 +1988,18 @@ Data source variables.
 @cindex scatter group
 
 Scatter series objects are created by the @code{scatter} or @code{scatter3}
-functions. A single hggroup element contains as many children as there are
+functions.  A single hggroup element contains as many children as there are
 points in the scatter plot, with each child representing one of the points.
 The properties of the stem series are
 
 @table @code
 @item linewidth
-The line width of the line objects of the points. @xref{Line Styles}.
+The line width of the line objects of the points.  @xref{Line Styles}.
 
 @item marker
 @itemx markeredgecolor
 @itemx markerfacecolor
-The line and fill color of the markers of the points. @xref{Colors}.
+The line and fill color of the markers of the points.  @xref{Colors}.
 
 @item xdata
 @itemx ydata
@@ -2007,11 +2007,11 @@ The line and fill color of the markers of the points. @xref{Colors}.
 The original x, y and z data of the stems.
 
 @item cdata
-The color data for the points of the plot. Each point can have a separate
+The color data for the points of the plot.  Each point can have a separate
 color, or a unique color can be specified.
 
 @item sizedata
-The size data for the points of the plot. Each point can its own size or a 
+The size data for the points of the plot.  Each point can its own size or a 
 unique size can be specified.
 
 @item xdatasource
@@ -2027,23 +2027,23 @@ Data source variables.
 @cindex group objects
 @cindex stair group
 
-Stair series objects are created by the @code{stair} function. Each
+Stair series objects are created by the @code{stair} function.  Each
 @code{hggroup} element of the series contains a single line object as a
-child representing the stair. The properties of the stair series are
+child representing the stair.  The properties of the stair series are
 
 @table @code
 @item color
-The RGB color or color name of the line objects of the stairs. @xref{Colors}.
+The RGB color or color name of the line objects of the stairs.  @xref{Colors}.
 
 @item linewidth
 @itemx linestyle
-The line width and style of the line objects of the stairs. @xref{Line Styles}.
+The line width and style of the line objects of the stairs.  @xref{Line Styles}.
 
 @item marker
 @itemx markeredgecolor
 @itemx markerfacecolor
 @itemx markersize
-The line and fill color of the markers on the stairs. @xref{Colors}.
+The line and fill color of the markers on the stairs.  @xref{Colors}.
 
 @item xdata
 @itemx ydata
@@ -2060,8 +2060,8 @@ Data source variables.
 @cindex stem series
 
 Stem series objects are created by the @code{stem} or @code{stem3}
-functions. Each @code{hgrroup} element contains a single line object
-as a child respresenting the stems. The properties of the stem series
+functions.  Each @code{hggroup} element contains a single line object
+as a child representing the stems.  The properties of the stem series
 are
 
 @table @code
@@ -2069,28 +2069,28 @@ are
 @itemx baseline
 @itemx basevalue
 The property @code{showbaseline} flags whether the baseline of the
-stem series is displayed (default is "on"). The handle of the graphics
+stem series is displayed (default is "on").  The handle of the graphics
 object representing the baseline is given by the @code{baseline}
 property and the y-value (or z-value for @code{stem3}) of the baseline
 by the @code{basevalue} property.
 
 Changes to any of these property are propagated to the other members of
-the stem series and to the baseline itself. Equally changes in the
+the stem series and to the baseline itself.  Equally changes in the
 properties of the base line itself are propagated to the members of the
 corresponding stem series.
 
 @item color
-The RGB color or color name of the line objects of the stems. @xref{Colors}.
+The RGB color or color name of the line objects of the stems.  @xref{Colors}.
 
 @item linewidth
 @itemx linestyle
-The line width and style of the line objects of the stems. @xref{Line Styles}.
+The line width and style of the line objects of the stems.  @xref{Line Styles}.
 
 @item marker
 @itemx markeredgecolor
 @itemx markerfacecolor
 @itemx markersize
-The line and fill color of the markers on the stems. @xref{Colors}.
+The line and fill color of the markers on the stems.  @xref{Colors}.
 
 @item xdata
 @itemx ydata
@@ -2110,24 +2110,24 @@ Data source variables.
 
 Surface group objects are created by the @code{surf} or @code{mesh}
 functions, but are equally one of the handles returned by the @code{surfc}
-or @code{meshc} functions. The surface group is of the type @code{surface}.
+or @code{meshc} functions.  The surface group is of the type @code{surface}.
 
 The properties of the surface group are
 
 @table @code
 @item edgecolor
 @item facecolor
-The RGB color or color name of the edges or faces of the surface. @xref{Colors}.
+The RGB color or color name of the edges or faces of the surface.  @xref{Colors}.
 
 @item linewidth
 @itemx linestyle
-The line width and style of the lines on the surface. @xref{Line Styles}.
+The line width and style of the lines on the surface.  @xref{Line Styles}.
 
 @item marker
 @itemx markeredgecolor
 @itemx markerfacecolor
 @itemx markersize
-The line and fill color of the markers on the surface. @xref{Colors}.
+The line and fill color of the markers on the surface.  @xref{Colors}.
 
 @item xdata
 @itemx ydata

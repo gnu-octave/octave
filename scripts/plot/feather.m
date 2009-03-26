@@ -24,7 +24,7 @@
 ## @deftypefnx {Function File} {@var{h} =} feather (@dots{})
 ##
 ## Plot the @code{(@var{u}, @var{v})} components of a vector field emanating
-## from equidistant points on the x-axis. If a single complex argument
+## from equidistant points on the x-axis.  If a single complex argument
 ## @var{z} is given, then @code{@var{u} = real (@var{z})} and
 ## @code{@var{v} = imag (@var{z})}.
 ##

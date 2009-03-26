@@ -1280,7 +1280,7 @@ DEFUN (PS2, args, nargout,
 @deftypefnx {Built-in Function} {@var{old_val} =} PS2 (@var{new_val})\n\
 Query or set the secondary prompt string.  The secondary prompt is\n\
 printed when Octave is expecting additional input to complete a\n\
-command.  For example, if you are typing a for loop that spans several\n\
+command.  For example, if you are typing a @code{for} loop that spans several\n\
 lines, Octave will print the secondary prompt at the beginning of\n\
 each line after the first.  The default value of the secondary prompt\n\
 string is @code{\"> \"}.\n\

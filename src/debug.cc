@@ -499,7 +499,7 @@ Set a breakpoint in a function\n\
 String representing the function name.  When already in debug\n\
 mode this should be left out and only the line should be given.\n\
 @item line\n\
-Line number you would like the breakpoint to be set on. Multiple\n\
+Line number you would like the breakpoint to be set on.  Multiple\n\
 lines might be given as separate arguments or as a vector.\n\
 @end table\n\
 \n\
@@ -531,11 +531,11 @@ Delete a breakpoint in a function\n\
 String representing the function name.  When already in debug\n\
 mode this should be left out and only the line should be given.\n\
 @item line\n\
-Line number where you would like to remove the breakpoint. Multiple\n\
+Line number where you would like to remove the breakpoint.  Multiple\n\
 lines might be given as separate arguments or as a vector.\n\
 @end table\n\
 No checking is done to make sure that the line you requested is really\n\
-a breakpoint. If you get the wrong line nothing will happen.\n\
+a breakpoint.  If you get the wrong line nothing will happen.\n\
 @seealso{dbstop, dbstatus, dbwhere}\n\
 @end deftypefn")
 {
@@ -994,12 +994,12 @@ DEFUN (dbstep, args, ,
 @deftypefn {Command} {} dbstep @var{n}\n\
 @deftypefnx {Command} {} dbstep in\n\
 @deftypefnx {Command} {} dbstep out\n\
-In debugging mode, execute the next @var{n} lines of code. If @var{n} is\n\
-omitted execute the next line of code. If the next line of code is itself\n\
+In debugging mode, execute the next @var{n} lines of code.  If @var{n} is\n\
+omitted execute the next line of code.  If the next line of code is itself\n\
 defined in terms of an m-file remain in the existing function.\n\
 \n\
 Using @code{dbstep in} will cause execution of the next line to step into\n\
-any m-files defined on the next line. Using @code{dbstep out} with cause\n\
+any m-files defined on the next line.  Using @code{dbstep out} with cause\n\
 execution to continue until the current function returns.\n\
 @seealso{dbcont, dbquit}\n\
 @end deftypefn")

@@ -29,7 +29,7 @@
 ## @noindent
 ## which produces a double logarithm plot of @var{y} versus @var{x} 
 ## with errors in the @var{y}-scale defined by @var{ey} and the plot
-## format defined by @var{fmt}. See errorbar for available formats and 
+## format defined by @var{fmt}.  See errorbar for available formats and 
 ## additional information.
 ## @seealso{errorbar, semilogxerr, semilogyerr}
 ## @end deftypefn

@@ -24,23 +24,23 @@
 ## @deftypefnx {Function File} {} clabel (@var{c}, @var{h})
 ## @deftypefnx {Function File} {} clabel (@dots{}, @var{prop}, @var{val}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} clabel (@dots{})
-## Adds labels to the contours of a contour plot. The contour plot is specified
+## Adds labels to the contours of a contour plot.  The contour plot is specified
 ## by the contour matrix @var{c} and optionally the contourgroup object @var{h}
 ## that are returned by @code{contour}, @code{contourf} and @code{contour3}.
 ## The contour labels are rotated and placed in the contour itself.
 ##
-## By default, all contours are labelled. However, the contours to label can be
-## specified by the vector @var{v}. If the "manual" argument is given then
+## By default, all contours are labelled.  However, the contours to label can be
+## specified by the vector @var{v}.  If the "manual" argument is given then
 ## the contours to label can be selected with the mouse.
 ##
 ## Additional property/value pairs that are valid properties of text objects
-## can be given and are passed to the underlying text objects. Additionally,
+## can be given and are passed to the underlying text objects.  Additionally,
 ## the property "LabelSpacing" is available allowing the spacing between labels
-## on a contour (in points) to be specified. The default is 144 points, or 2
+## on a contour (in points) to be specified.  The default is 144 points, or 2
 ## inches.
 ##
 ## The returned value @var{h} is the set of text object that represent the
-## contour labels. The "userdata" property of the text objects contains the
+## contour labels.  The "userdata" property of the text objects contains the
 ## numerical value of the contour label.
 ##
 ## An example of the use of @code{clabel} is

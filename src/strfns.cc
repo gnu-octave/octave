@@ -315,7 +315,7 @@ and 0 otherwise.\n\
 \n\
 If either @var{s1} or @var{s2} is a cell array of strings, then an array\n\
 of the same size is returned, containing the values described above for\n\
-every member of the cell array. The other argument may also be a cell\n\
+every member of the cell array.  The other argument may also be a cell\n\
 array of strings (of the same size or with only one element), char matrix\n\
 or character string.\n\
 \n\
@@ -622,7 +622,7 @@ strncmp (\"abce\", \"abcd\", 3)\n\
 \n\
 If either @var{s1} or @var{s2} is a cell array of strings, then an array\n\
 of the same size is returned, containing the values described above for\n\
-every member of the cell array. The other argument may also be a cell\n\
+every member of the cell array.  The other argument may also be a cell\n\
 array of strings (of the same size or with only one element), char matrix\n\
 or character string.\n\
 \n\

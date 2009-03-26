@@ -20,8 +20,8 @@
 ## @deftypefn {Function File} {@var{s} =} rat (@var{x}, @var{tol})
 ## @deftypefnx {Function File} {[@var{n}, @var{d}] =} rat (@var{x}, @var{tol})
 ##
-## Find a rational approximation to @var{x} within tolerance defined
-## by @var{tol} using a continued fraction expansion. E.g,
+## Find a rational approximation to @var{x} within the tolerance defined
+## by @var{tol} using a continued fraction expansion.  For example,
 ##
 ## @example
 ## rat(pi) = 3 + 1/(7 + 1/16) = 355/113

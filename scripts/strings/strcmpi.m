@@ -23,7 +23,7 @@
 ##
 ## If either @var{s1} or @var{s2} is a cell array of strings, then an array
 ## of the same size is returned, containing the values described above for
-## every member of the cell array. The other argument may also be a cell
+## every member of the cell array.  The other argument may also be a cell
 ## array of strings (of the same size or with only one element), char matrix
 ## or character string.
 ##

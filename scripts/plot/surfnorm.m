@@ -21,8 +21,8 @@
 ## @deftypefnx {Function File} {} surfnorm (@var{z})
 ## @deftypefnx {Function File} {[@var{nx}, @var{ny}, @var{nz}] =} surfnorm (@dots{})
 ## @deftypefnx {Function File} {} surfnorm (@var{h}, @dots{})
-## Find the vectors normal to a meshgridded surface. The meshed gridded 
-## surface is defined by @var{x}, @var{y}, and @var{z}. If @var{x} and 
+## Find the vectors normal to a meshgridded surface.  The meshed gridded 
+## surface is defined by @var{x}, @var{y}, and @var{z}.  If @var{x} and 
 ## @var{y} are not defined, then it is assumed that they are given by
 ##
 ## @example
@@ -31,13 +31,13 @@
 ## @end example
 ##
 ## If no return arguments are requested, a surface plot with the normal 
-## vectors to the surface is plotted. Otherwise the componets of the normal
+## vectors to the surface is plotted.  Otherwise the components of the normal
 ## vectors at the mesh gridded points are returned in @var{nx}, @var{ny},
 ## and @var{nz}.
 ##
 ## The normal vectors are calculated by taking the cross product of the 
-## diagonals of eash of teh quadrilaterals in the meshgrid to find the 
-## normal vectors of the centers of these quadrilaterals. The four nearest
+## diagonals of each of the quadrilaterals in the meshgrid to find the 
+## normal vectors of the centers of these quadrilaterals.  The four nearest
 ## normal vectors to the meshgrid points are then averaged to obtain the 
 ## normal to the surface at the meshgridded points.
 ##

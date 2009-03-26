@@ -353,9 +353,9 @@ can be learned after reading 624 consecutive values.\n\
 Older versions of Octave used a different random number generator.\n\
 The new generator is used by default\n\
 as it is significantly faster than the old generator, and produces\n\
-random numbers with a significantly longer cycle time. However, in\n\
+random numbers with a significantly longer cycle time.  However, in\n\
 some circumstances it might be desirable to obtain the same random\n\
-sequences as used by the old generators. To do this the keyword\n\
+sequences as used by the old generators.  To do this the keyword\n\
 \"seed\" is used to specify that the old generators should be use,\n\
 as in\n\
 \n\
@@ -474,11 +474,11 @@ DEFUN_DLD (randn, args, ,
 @deftypefnx {Loadable Function} {} randn (\"state\", @var{x})\n\
 @deftypefnx {Loadable Function} {} randn (\"seed\", @var{x})\n\
 Return a matrix with normally distributed pseudo-random\n\
-elements having zero mean and variance one. The arguments are\n\
+elements having zero mean and variance one.  The arguments are\n\
 handled the same as the arguments for @code{rand}.\n\
 \n\
 By default, @code{randn} uses the Marsaglia and Tsang ``Ziggurat technique'' to\n\
-transform from a uniform to a normal distribution. (G. Marsaglia and\n\
+transform from a uniform to a normal distribution.  (G. Marsaglia and\n\
 W.W. Tsang, @cite{Ziggurat method for generating random variables},\n\
 J. Statistical Software, vol 5, 2000,\n\
 @url{http://www.jstatsoft.org/v05/i08/})\n\
@@ -548,11 +548,11 @@ DEFUN_DLD (rande, args, ,
 @deftypefnx {Loadable Function} {} rande (@var{n}, @var{m})\n\
 @deftypefnx {Loadable Function} {} rande (\"state\", @var{x})\n\
 @deftypefnx {Loadable Function} {} rande (\"seed\", @var{x})\n\
-Return a matrix with exponentially distributed random elements. The\n\
+Return a matrix with exponentially distributed random elements.  The\n\
 arguments are handled the same as the arguments for @code{rand}.\n\
 \n\
 By default, @code{randn} uses the Marsaglia and Tsang ``Ziggurat technique'' to\n\
-transform from a uniform to a exponential distribution. (G. Marsaglia and\n\
+transform from a uniform to a exponential distribution.  (G. Marsaglia and\n\
 W.W. Tsang, @cite{Ziggurat method for generating random variables},\n\
 J. Statistical Software, vol 5, 2000,\n\
 @url{http://www.jstatsoft.org/v05/i08/})\n\
@@ -672,9 +672,9 @@ r = randp (L / 2)\n\
 r(r > 0) = 2 * randg (r(r > 0))\n\
 r(df > 0) += 2 * randg (df(df > 0)/2)\n\
 @end example\n\
-@item @code{Dirichlet (a1, ..., ak)}\n\
+@item @code{Dirichlet (a1, @dots{} ak)}\n\
 @example\n\
-r = (randg (a1), ..., randg (ak))\n\
+r = (randg (a1), @dots{}, randg (ak))\n\
 r = r / sum (r)\n\
 @end example\n\
 @end table\n\

@@ -35,8 +35,8 @@
 ##
 ## The second argument is optional.  If supplied, @code{diff (@var{x},
 ## @var{k})}, where @var{k} is a nonnegative integer, returns the
-## @var{k}-th differences. It is possible that @var{k} is larger than
-## then first non-singleton dimension of the matrix. In this case,
+## @var{k}-th differences.  It is possible that @var{k} is larger than
+## then first non-singleton dimension of the matrix.  In this case,
 ## @code{diff} continues to take the differences along the next
 ## non-singleton dimension.
 ##

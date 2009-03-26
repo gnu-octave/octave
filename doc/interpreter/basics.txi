@@ -138,7 +138,7 @@ commands in the system or user startup files that use the
 @cindex @code{-i}
 Force interactive behavior.  This can be useful for running Octave via a
 remote shell command or inside an Emacs shell buffer.  For another way
-to run Octave within Emacs, see @ref{Emacs}.
+to run Octave within Emacs, see @ref{Emacs Octave Support}.
 
 @item --no-history
 @itemx -H
@@ -191,7 +191,7 @@ Don't print the usual greeting and version message at startup.
 @cindex @code{--traditional}
 @cindex @code{--braindead}
 For compatibility with @sc{Matlab}, set initial values for
-user-preferences to the following values
+user preferences to the following values
 
 @example
 @group
@@ -268,7 +268,7 @@ for information about the variable @code{nargin}.
 @cindex startup
 
 When Octave starts, it looks for commands to execute from the files in
-the following list. These files may contain any valid Octave commands,
+the following list.  These files may contain any valid Octave commands,
 including function definitions.
 
 @cindex startup files
@@ -293,7 +293,7 @@ affected.
 
 @item ~/.octaverc
 @cindex @code{~/.octaverc}
-This file is normally used to make personal changes to the default
+This file is used to make personal changes to the default 
 Octave environment.
 
 @item .octaverc
@@ -301,8 +301,8 @@ Octave environment.
 This file can be used to make changes to the default Octave environment
 for a particular project.  Octave searches for this file in the current
 directory after it reads @file{~/.octaverc}.  Any use of the @code{cd}
-command in the @file{~/.octaverc} file will affect the directory that
-Octave searches for the file @file{.octaverc}.
+command in the @file{~/.octaverc} file will affect the directory where
+Octave searches for @file{.octaverc}.
 
 If you start Octave in your home directory, commands from the file
 @file{~/.octaverc} will only be executed once.
@@ -386,7 +386,7 @@ some terminals, you type @kbd{M-u} by holding down @key{META} and
 pressing @key{u}.  If your terminal does not have a @key{META} key, you
 can still type Meta characters using two-character sequences starting
 with @kbd{ESC}.  Thus, to enter @kbd{M-u}, you could type
-@key{ESC}@key{u}.  The @kbd{ESC} character sequences are also allowed on
+@key{ESC} @key{u}.  The @kbd{ESC} character sequences are also allowed on
 terminals with real Meta keys.  In the following sections, Meta
 characters such as @kbd{Meta-u} are written as @kbd{M-u}.
 
@@ -514,7 +514,7 @@ another line.
 @subsection Commands For Changing Text
 
 The following commands can be used for entering characters that would
-otherwise have a special meaning (e.g., @kbd{TAB}, @kbd{C-q}, etc.), or
+otherwise have a special meaning (e.g., @key{TAB}, @kbd{C-q}, etc.), or
 for quickly correcting typing mistakes.
 
 @table @kbd
@@ -588,8 +588,8 @@ list.
 @table @kbd
 @item @key{LFD}
 @itemx @key{RET}
-Accept the line regardless of where the cursor is.  If this line is
-non-empty, add it to the history list.  If this line was a history
+Accept the current line regardless of where the cursor is.  If the line is
+non-empty, add it to the history list.  If the line was a history
 line, then restore the history line to its original state.
 
 @item C-p
@@ -643,7 +643,7 @@ is saved.
 @subsection Customizing @code{readline}
 
 As mentioned earlier Octave uses the GNU readline library for
-command-line editing and history features. It is possible to
+command-line editing and history features.  It is possible to
 customize how readline works through a configuration file.
 
 @c FIXME -- need a brief description of the ~/.inputrc file here.
@@ -773,7 +773,7 @@ itself was accepted as valid input.
 
 Another class of error message occurs at evaluation time.  These
 errors are called @dfn{run-time errors}, or sometimes
-@dfn{evaluation errors} because they occur when your program is being
+@dfn{evaluation errors}, because they occur when your program is being
 @dfn{run}, or @dfn{evaluated}.  For example, if after correcting the
 mistake in the previous function definition, you type
 
@@ -808,7 +808,7 @@ indicates the input line number, which is usually displayed in the
 prompt string.
 
 The second and third lines in the error message indicates that the error occurred
-within the function @code{f}. If the function @code{f} had been called from
+within the function @code{f}.  If the function @code{f} had been called from
 another function, for example, @code{g}, the list of errors would have ended with
 one more line:
 
@@ -816,7 +816,7 @@ one more line:
 error:   g at line 1, column 17
 @end example
 
-These lists of function calls usually make it fairly easy to trace the
+These lists of function calls make it fairly easy to trace the
 path your program took before the error occurred, and to correct the
 error before trying again.
 
@@ -852,7 +852,7 @@ printf ("Hello, world!\n");
 @noindent
 (where @var{octave-interpreter-name} should be replaced with the full
 file name for your Octave binary).  Note that this will only work if
-@samp{#!} appears at the very beginning of the file. After making this
+@samp{#!} appears at the very beginning of the file.  After making this
 file executable
 (with the @code{chmod} command), you can simply type:
 
@@ -873,7 +873,7 @@ interpreter to be run, and an optional initial command line argument to
 pass to that interpreter.  The operating system then runs the
 interpreter with the given argument and the full argument list of the
 executed program.  The first argument in the list is the full file name
-of the Octave program. The rest of the argument list will either be
+of the Octave program.  The rest of the argument list will either be
 options to Octave, or data files, or both.  The @samp{-qf} option is
 usually specified in stand-alone Octave programs to prevent them from
 printing the normal startup message, and to keep them from behaving
@@ -929,32 +929,90 @@ printf ("\n");
 
 @node Comments
 @section Comments in Octave Programs
-@cindex @samp{#}
-@cindex @samp{%}
 @cindex comments
 @cindex use of comments
 @cindex documenting Octave programs
 @cindex programs
 
 A @dfn{comment} is some text that is included in a program for the sake
-of human readers, and that is not really part of the program.  Comments
-can explain what the program does, and how it works.  Nearly all
+of human readers, and that is not an executable part of the program.  
+Comments can explain what the program does, and how it works.  Nearly all
 programming languages have provisions for comments, because programs are
 typically hard to understand without them.
 
+@menu
+* Single Line Comments::
+* Block Comments::
+* Comments and the Help System::                    
+@end menu
+
+@node Single Line Comments
+@subsection Single Line Comments
+@cindex @samp{#}
+@cindex @samp{%}
+
 In the Octave language, a comment starts with either the sharp sign
 character, @samp{#}, or the percent symbol @samp{%} and continues to the
-end of the line.  The Octave interpreter ignores the rest of a
-line following a sharp sign or percent symbol.  For example, we could
-have put the following into the function @code{f}:
+end of the line.  Any text following the sharp sign or percent symbol is
+ignored by the Octave interpreter and not executed.  The following example
+shows whole line and partial line comments.
+@example
+@group
+function countdown
+  # Count down for main rocket engines 
+  disp(3);
+  disp(2);
+  disp(1);
+  disp("Blast Off!");  # Rocket leaves pad
+endfunction
+@end group
+@end example
 
+@node Block Comments
+@subsection Block Comments
+@cindex multi-line comments
+@cindex @samp{#@{}
+@cindex @samp{%@{}
+
+Entire blocks of code can be commented by enclosing the code between 
+matching @samp{#@{} and @samp{#@}} or @samp{%@{} and @samp{%@}} markers.  
+For example,
+@example
+@group
+function quick_countdown
+  # Count down for main rocket engines 
+  disp(3);
+ #@{
+  disp(2);
+  disp(1);
+ #@}
+  disp("Blast Off!");  # Rocket leaves pad
+endfunction
+@end group
+@end example
+
+@noindent
+will produce a very quick countdown from '3' to 'Blast Off' as the
+lines "@code{disp(2);}" and "@code{disp(3);}" won't be executed.
+
+@node Comments and the Help System
+@subsection Comments and the Help System
+@cindex documenting functions
+@cindex documenting user scripts
+@cindex help, user-defined functions
+
+The @code{help} command (@pxref{Getting Help}) is able to find the first
+block of comments in a function (even those that are composed directly
+on the command line).  This means that the same commands used to get help
+on built-in functions are available for user-defined functions.  For 
+example, after defining the function @code{f} below,
 @example
 @group
 function xdot = f (x, t)
 
 # usage: f (x, t)
 #
-# This function defines the right hand
+# This function defines the right-hand
 # side functions for a set of nonlinear
 # differential equations.
 
@@ -964,18 +1022,13 @@ endfunction
 @end group
 @end example
 
-The @code{help} command (@pxref{Getting Help}) is able to find the first
-block of comments in a function (even those that are composed directly
-on the command line).  This means that users of Octave can use the same
-commands to get help for built-in functions, and for functions that you
-have defined.  For example, after defining the function @code{f} above,
 the command @kbd{help f} produces the output
 
 @example
 @group
  usage: f (x, t)
 
- This function defines the right hand
+ This function defines the right-hand
  side functions for a set of nonlinear
  differential equations.
 @end group
@@ -986,3 +1039,6 @@ throw-away Octave programs, it usually isn't very useful, because the
 purpose of a comment is to help you or another person understand the
 program at a later time.
 
+The @code{help} parser currently only recognizes single line comments
+(@pxref{Single Line Comments}) and not block comments for the initial 
+help text. 

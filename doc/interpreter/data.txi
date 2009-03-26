@@ -47,7 +47,7 @@ to define a new data type for Octave.
 
 The standard built-in data types are real and complex scalars and
 matrices, ranges, character strings, a data structure type, and cell
-arrays. Additional built-in data types may be added in future versions.
+arrays.  Additional built-in data types may be added in future versions.
 If you need a specialized data type that is not currently provided as a
 built-in type, you are encouraged to write your own user-defined data
 type and contribute it for distribution in a future release of Octave.
@@ -113,8 +113,8 @@ using a variety of powerful indexing features.  @xref{Index Expressions}.
 @cindex missing data
 
 It is possible to represent missing data explicitly in Octave using
-@code{NA} (short for ``Not Available''). Missing data can only be
-represented when data is represented as floating point numbers. In this
+@code{NA} (short for ``Not Available'').  Missing data can only be
+represented when data is represented as floating point numbers.  In this
 case missing data is represented as a special case of the representation
 of @code{NaN}.
 

@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} regexptranslate (@var{op}, @var{s})
-## Translate a string for use in a regular expression. This might
+## Translate a string for use in a regular expression.  This might
 ## include either wildcard replacement or special character escaping.
 ## The behavior can be controlled by the @var{op} that can have the
 ## values
@@ -26,7 +26,8 @@
 ## @table @asis
 ## @item "wildcard"
 ## The wildcard characters @code{.}, @code{*} and @code{?} are replaced
-## with wildcards that are appropriate for a regular expression. For example:
+## with wildcards that are appropriate for a regular expression. 
+## For example:
 ## @example
 ## @group
 ## regexptranslate ("wildcard", "*.m")
@@ -36,7 +37,7 @@
 ## 
 ## @item "escape"
 ## The characters @code{$.?[]}, that have special meaning for regular
-## expressions are escaped so that they are treated literally. For example:
+## expressions are escaped so that they are treated literally.  For example:
 ## @example
 ## @group
 ## regexptranslate ("escape", "12.5")

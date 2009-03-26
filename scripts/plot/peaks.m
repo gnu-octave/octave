@@ -22,7 +22,7 @@
 ## @deftypefnx {Function File} {} peaks (@var{x}, @var{y})
 ## @deftypefnx {Function File} {@var{z} =} peaks (@dots{})
 ## @deftypefnx {Function File} {[@var{x}, @var{y}, @var{z}] =} peaks (@dots{})
-## Generate a function with lots of local maxima and minima. The function
+## Generate a function with lots of local maxima and minima.  The function
 ## has the form
 ##
 ## @iftex
@@ -39,12 +39,12 @@
 ## @end ifnottex
 ##
 ## Called without a return argument, @code{peaks} plots the surface of the 
-## above function using @code{mesh}. If @var{n} is a scalar, the @code{peaks}
+## above function using @code{mesh}.  If @var{n} is a scalar, the @code{peaks}
 ## returns the values of the above function on a @var{n}-by-@var{n} mesh over
-## the range @code{[-3,3]}. The default value for @var{n} is 49.
+## the range @code{[-3,3]}.  The default value for @var{n} is 49.
 ##
 ## If @var{n} is a vector, then it represents the @var{x} and @var{y} values
-## of the grid on which to calculate the above function. The @var{x} and 
+## of the grid on which to calculate the above function.  The @var{x} and 
 ## @var{y} values can be specified separately.
 ## @seealso{surf, mesh, meshgrid}
 ## @end deftypefn

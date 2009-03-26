@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} savepath (@var{file})
-## Save the the portion of the current function search path, that is
+## Save the portion of the current function search path, that is
 ## not set during Octave's initialization process, to @var{file}.
 ## If @var{file} is omitted, @file{~/.octaverc} is used.  If successful,
 ## @code{savepath} returns 0.

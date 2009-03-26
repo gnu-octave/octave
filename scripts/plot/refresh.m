@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} refresh ()
 ## @deftypefnx {Function File} {} refresh (@var{h})
-## Refresh a figure, forcing it to be redrawn. Called without an
+## Refresh a figure, forcing it to be redrawn.  Called without an
 ## argument the current figure is redrawn, otherwise the figure pointed
 ## to by @var{h} is redrawn.
 ## @seealso{drawnow}

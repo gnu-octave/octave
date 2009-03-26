@@ -30,7 +30,7 @@
 ## are assumed.
 ##
 ## Called with no return arguments, @code{cylinder} calls directly
-## @code{surf (@var{x}, @var{y}, @var{z})}. If an axes handle @var{ax}
+## @code{surf (@var{x}, @var{y}, @var{z})}.  If an axes handle @var{ax}
 ## is passed as the first argument, the surface is plotted to this set
 ## of axes.
 ##

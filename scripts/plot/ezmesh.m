@@ -25,13 +25,13 @@
 ## @deftypefnx {Function File} {} ezmesh (@var{h}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} ezmesh (@dots{})
 ##
-## Plots the mesh defined by a function. @var{f} is a string, inline
-## function or function handle with two arguments defining the function. By 
+## Plots the mesh defined by a function.  @var{f} is a string, inline
+## function or function handle with two arguments defining the function.  By 
 ## default the plot is over the domain @code{-2*pi < @var{x} < 2*pi} and
 ## @code{-2*pi < @var{y} < 2*pi} with 60 points in each dimension. 
 ##
 ## If @var{dom} is a two element vector, it represents the minimum and maximum
-## value of both @var{x} and @var{y}. If @var{dom} is a four element vector,
+## value of both @var{x} and @var{y}.  If @var{dom} is a four element vector,
 ## then the minimum and maximum value of @var{x} and @var{y} are specify
 ## separately.
 ##

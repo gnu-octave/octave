@@ -21,7 +21,7 @@
 ## @deftypefnx {Function File} {} surfl (@var{z})
 ## @deftypefnx {Function File} {} surfl (@var{x}, @var{y}, @var{z}, @var{L})
 ## @deftypefnx {Function File} {} surfl (@var{x}, @var{y}, @var{z}, @var{L}, @var{P})
-## @deftypefnx {Function File} {} surfl (...,"light")
+## @deftypefnx {Function File} {} surfl (@dots{},"light")
 ## Plot a lighted surface given matrices @var{x}, and @var{y} from @code{meshgrid} and
 ## a matrix @var{z} corresponding to the @var{x} and @var{y} coordinates of
 ## the mesh.  If @var{x} and @var{y} are vectors, then a typical vertex
@@ -29,7 +29,7 @@
 ## correspond to different @var{x} values and rows of @var{z} correspond
 ## to different @var{y} values.
 ##
-## The light direction can be specified using @var{L}. It can be
+## The light direction can be specified using @var{L}.  It can be
 ## given as 2-element vector [azimuth, elevation] in degrees or as 3-element vector [lx, ly, lz].
 ## The default value is rotated 45° counter-clockwise from the current view.
 ##
@@ -44,8 +44,8 @@
 ## @end table
 ## 
 ## The default lighting mode "cdata", changes the cdata property to give the impression
-## of a lighted surface. Please note: the alternative "light" mode, which creates a light
-## object to iluminate the the surface is not implemented (yet).
+## of a lighted surface.  Please note: the alternative "light" mode, which creates a light
+## object to illuminate the surface is not implemented (yet).
 ##
 ## Example:
 ##

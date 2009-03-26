@@ -425,7 +425,7 @@ first or last element.\n\
 \n\
 Note that this function is particularly useful for sparse matrices, as\n\
 it extracts the non-zero elements as vectors, which can then be used to\n\
-create the original matrix. For example,\n\
+create the original matrix.  For example,\n\
 \n\
 @example\n\
 @group\n\

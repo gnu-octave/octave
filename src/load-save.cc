@@ -591,7 +591,7 @@ Valid options for @code{load} are listed in the following table.\n\
 @table @code\n\
 @item -force\n\
 The @samp{-force} option is accepted but ignored for backward\n\
-compatibility. Octave now overwrites variables currently in memory with\n\
+compatibility.  Octave now overwrites variables currently in memory with\n\
 the same name as those found in the file.\n\
 \n\
 @item -ascii\n\
@@ -1513,7 +1513,7 @@ values to be saved can be represented in single precision.\n\
 \n\
 @item -zip\n\
 @itemx -z\n\
-Use the gzip algorithm to compress the file. This works equally on files that\n\
+Use the gzip algorithm to compress the file.  This works equally on files that\n\
 are compressed with gzip outside of octave, and gzip can equally be used to\n\
 convert the files for backward compatibility.\n"
 
@@ -1800,7 +1800,7 @@ DEFUN (octave_core_file_options, args, nargout,
 Query or set the internal variable that specifies the options used for\n\
 saving the workspace data if Octave aborts.  The value of\n\
 @code{octave_core_file_options} should follow the same format as the\n\
-options for the @code{save} function. The default value is Octave's binary\n\
+options for the @code{save} function.  The default value is Octave's binary\n\
 format.\n\
 @seealso{crash_dumps_octave_core, octave_core_file_name, octave_core_file_limit}\n\
 @end deftypefn")

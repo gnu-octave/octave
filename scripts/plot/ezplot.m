@@ -24,15 +24,15 @@
 ## @deftypefnx {Function File} {} ezplot (@var{h}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} ezplot (@dots{})
 ##
-## Plots in two-dimensions the curve defined by @var{f}. The function
+## Plots in two-dimensions the curve defined by @var{f}.  The function
 ## @var{f} may be a string, inline function or function handle and can
-## have either one or two variables. If @var{f} has one variable, then 
+## have either one or two variables.  If @var{f} has one variable, then 
 ## the function is plotted over the domain @code{-2*pi < @var{x} < 2*pi}  
 ## with 500 points. 
 ##
 ## If @var{f} has two variables then @code{@var{f}(@var{x},@var{y}) = 0}
 ## is calculated over the meshed domain @code{-2*pi < @var{x} | @var{y}
-## < 2*pi} with 60 by 60 in the mesh. For example
+## < 2*pi} with 60 by 60 in the mesh.  For example
 ##
 ## @example
 ## ezplot (@@(@var{x}, @var{y}) @var{x} .^ 2 - @var{y} .^ 2 - 1)
@@ -52,7 +52,7 @@
 ## points. 
 ##
 ## If @var{dom} is a two element vector, it represents the minimum and maximum
-## value of @var{x}, @var{y} and @var{t}. If it is a four element
+## value of @var{x}, @var{y} and @var{t}.  If it is a four element
 ## vector, then the minimum and maximum values of @var{x} and @var{t}
 ## are determined by the first two elements and the minimum and maximum
 ## of @var{y} by the second pair of elements.

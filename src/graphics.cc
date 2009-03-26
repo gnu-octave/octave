@@ -5093,19 +5093,19 @@ DEFUN (addlistener, args, ,
    "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} addlistener (@var{h}, @var{prop}, @var{fcn})\n\
 Register @var{fcn} as listener for the property @var{prop} of the graphics\n\
-object @var{h}. Property listeners are executed (in order of registration)\n\
-when the property is set. The new value is already available when the\n\
+object @var{h}.  Property listeners are executed (in order of registration)\n\
+when the property is set.  The new value is already available when the\n\
 listeners are executed.\n\
 \n\
 @var{prop} must be a string naming a valid property in @var{h}.\n\
 \n\
 @var{fcn} can be a function handle, a string or a cell array whose first\n\
-element is a function handle. If @var{fcn} is a function handle, the\n\
+element is a function handle.  If @var{fcn} is a function handle, the\n\
 corresponding function should accept at least 2 arguments, that will be\n\
-set to the object handle and the empty matrix respectively. If @var{fcn}\n\
-is a string, it must be any valid octave expression. If @var{fcn} is a cell\n\
+set to the object handle and the empty matrix respectively.  If @var{fcn}\n\
+is a string, it must be any valid octave expression.  If @var{fcn} is a cell\n\
 array, the first element must be a function handle with the same signature\n\
-as described above. The next elements of the cell array are passed\n\
+as described above.  The next elements of the cell array are passed\n\
 as additional arguments to the function.\n\
 \n\
 Example:\n\
@@ -5162,7 +5162,7 @@ DEFUN (dellistener, args, ,
    "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} dellistener (@var{h}, @var{prop}, @var{fcn})\n\
 Remove the registration of @var{fcn} as a listener for the property\n\
-@var{prop} of the graphics object @var{h}. The function @var{fcn} must\n\
+@var{prop} of the graphics object @var{h}.  The function @var{fcn} must\n\
 be the same variable (not just the same value), as was passed to the\n\
 original call to @code{addlistener}.\n\
 \n\
@@ -5228,7 +5228,7 @@ DEFUN (addproperty, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} addproperty (@var{name}, @var{h}, @var{type}, [@var{arg}, @dots{}])\n\
 Create a new property named @var{name} in graphics object @var{h}.\n\
-@var{type} determines the type of the property to create. @var{args}\n\
+@var{type} determines the type of the property to create.  @var{args}\n\
 usually contains the default value of the property, but additional\n\
 arguments might be given, depending on the type of the property.\n\
 \n\
@@ -5236,42 +5236,42 @@ The supported property types are:\n\
 \n\
 @table @code\n\
 @item string\n\
-A string property. @var{arg} contains the default string value.\n\
+A string property.  @var{arg} contains the default string value.\n\
 @item any\n\
-An un-typed property. This kind of property can hold any octave\n\
-value. @var{args} contains the default value.\n\
+An un-typed property.  This kind of property can hold any octave\n\
+value.  @var{args} contains the default value.\n\
 @item radio\n\
-A string property with a limited set of accepted values. The first\n\
+A string property with a limited set of accepted values.  The first\n\
 argument must be a string with all accepted values separated by\n\
-a vertical bar ('|'). The default value can be marked by enclosing\n\
-it with a '@{' '@}' pair. The default value may also be given as\n\
+a vertical bar ('|').  The default value can be marked by enclosing\n\
+it with a '@{' '@}' pair.  The default value may also be given as\n\
 an optional second string argument.\n\
 @item boolean\n\
-A boolean property. This property type is equivalent to a radio\n\
-property with \"on|off\" as accepted values. @var{arg} contains\n\
+A boolean property.  This property type is equivalent to a radio\n\
+property with \"on|off\" as accepted values.  @var{arg} contains\n\
 the default property value.\n\
 @item double\n\
-A scalar double property. @var{arg} contains the default value.\n\
+A scalar double property.  @var{arg} contains the default value.\n\
 @item handle\n\
-A handle property. This kind of property holds the handle of a\n\
-graphics object. @var{arg} contains the default handle value.\n\
+A handle property.  This kind of property holds the handle of a\n\
+graphics object.  @var{arg} contains the default handle value.\n\
 When no default value is given, the property is initialized to\n\
 the empty matrix.\n\
 @item data\n\
-A data (matrix) property. @var{arg} contains the default data\n\
-value. When no default value is given, the data is initialized to\n\
+A data (matrix) property.  @var{arg} contains the default data\n\
+value.  When no default value is given, the data is initialized to\n\
 the empty matrix.\n\
 @item color\n\
-A color property. @var{arg} contains the default color value.\n\
+A color property.  @var{arg} contains the default color value.\n\
 When no default color is given, the property is set to black.\n\
 An optional second string argument may be given to specify an\n\
 additional set of accepted string values (like a radio property).\n\
 @end table\n\
 \n\
 @var{type} may also be the concatenation of a core object type and\n\
-a valid property name for that object type. The property created\n\
+a valid property name for that object type.  The property created\n\
 then has the same characteristics as the referenced property (type,\n\
-possible values, hidden state@dots{}). This allows to clone an existing\n\
+possible values, hidden state@dots{}).  This allows to clone an existing\n\
 property into the graphics object @var{h}.\n\
 \n\
 Examples:\n\

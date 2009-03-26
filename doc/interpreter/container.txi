@@ -21,7 +21,7 @@
 @cindex containers
 
 Octave includes support for two different mechanisms to contain
-arbitrary data types in the same variable. Structures, which are C-like,
+arbitrary data types in the same variable.  Structures, which are C-like,
 and are indexed with named fields, and cell arrays, where each element
 of the array can have a different data type and or shape.
 
@@ -221,8 +221,8 @@ a loop, using a special form of the @code{for} statement
 @subsection Structure Arrays
 
 A structure array is a particular instance of a structure, where each of
-the fields of the structure is represented by a cell array. Each of
-these cell arrays has the same dimensions. An example of the creation of
+the fields of the structure is represented by a cell array.  Each of
+these cell arrays has the same dimensions.  An example of the creation of
 a structure array is
 
 @example
@@ -235,7 +235,7 @@ x(2).b = 2
 @end example
 
 @noindent
-which creates a 2-by-1 structure array with two fields. As previously,
+which creates a 2-by-1 structure array with two fields.  As previously,
 to print the value of the structure array, you can type its name:
 
 @example
@@ -268,7 +268,7 @@ ans =
 
 Furthermore, the structure array can return a comma separated list
 (@pxref{Comma Separated Lists}), if indexed by one of its own field
-names. For example
+names.  For example
 
 @example
 @group
@@ -305,7 +305,7 @@ ans = new string2
 @end group
 @end example
 
-The function @code{size} will return the size of the structure. For
+The function @code{size} will return the size of the structure.  For
 the example above
 
 @example
@@ -318,7 +318,7 @@ ans =
 @end example
 
 Elements can be deleted from a structure array in a similar manner to a
-numerical array, by assigning the elements to an empty matrix. For
+numerical array, by assigning the elements to an empty matrix.  For
 example
 
 @example
@@ -350,10 +350,10 @@ in (1, :) = []
 @subsection Creating Structures
 
 As well as indexing a structure with ".", Octave can create a structure
-with the @code{struct} command. @code{struct} takes pairs of arguments,
+with the @code{struct} command.  @code{struct} takes pairs of arguments,
 where the first argument in the pair is the fieldname to include in the
 structure and the second is a scalar or cell array, representing the
-values to include in the structure or structure array. For example
+values to include in the structure or structure array.  For example
 
 @example
 @group
@@ -368,7 +368,7 @@ struct ("field1", 1, "field2", 2)
 
 If the values passed to @code{struct} are a mix of scalar and cell
 arrays, then the scalar arguments are expanded to create a 
-structure array with a consistent dimension. For example
+structure array with a consistent dimension.  For example
 
 @example
 @group
@@ -431,7 +431,7 @@ Other functions that can manipulate the fields of a structure are given below.
 @subsection Processing Data in Structures
 
 The simplest way to process data in a structure is within a @code{for}
-loop (@pxref{Looping Over Structure Elements}). A similar effect can be
+loop (@pxref{Looping Over Structure Elements}).  A similar effect can be
 achieved with the @code{structfun} function, where a user defined
 function is applied to each field of the structure.
 
@@ -447,8 +447,8 @@ be converted to another type of container before being treated.
 @cindex cell arrays
 
 It can be both necessary and convenient to store several variables of
-different size or type in one variable. A cell array is a container
-class able to do just that. In general cell arrays work just like
+different size or type in one variable.  A cell array is a container
+class able to do just that.  In general cell arrays work just like
 @math{N}-dimensional arrays, with the exception of the use of @samp{@{}
 and @samp{@}} as allocation and indexing operators.
 
@@ -491,7 +491,7 @@ c@{1:2@}
 @end example
 
 The indexing operators can also be used to insert or overwrite elements
-of a cell array. The following code inserts the scalar 3 on the
+of a cell array.  The following code inserts the scalar 3 on the
 third place of the previously created cell array
 
 @example
@@ -511,7 +511,7 @@ c@{3@} = 3
 @end group
 @end example
 
-In general nested cell arrays are displayed hierarchically as above. In
+In general nested cell arrays are displayed hierarchically as above.  In
 some circumstances it makes sense to reference them by their index, and
 this can be performed by the @code{celldisp} function.
 
@@ -528,12 +528,12 @@ this can be performed by the @code{celldisp} function.
 @subsection Creating Cell Array
 
 The introductory example showed how to create a cell array containing
-currently available variables. In many situations, however, it is useful
+currently available variables.  In many situations, however, it is useful
 to create a cell array and then fill it with data.
 
 The @code{cell} function returns a cell array of a given size, containing
-empty matrices. This function is similar to the @code{zeros}
-function for creating new numerical arrays. The following example creates
+empty matrices.  This function is similar to the @code{zeros}
+function for creating new numerical arrays.  The following example creates
 a 2-by-2 cell array containing empty matrices
 
 @example
@@ -550,10 +550,10 @@ c = cell(2,2)
 @end group
 @end example
 
-Just like numerical arrays, cell arrays can be multidimensional. The
+Just like numerical arrays, cell arrays can be multidimensional.  The
 @code{cell} function accepts any number of positive integers to describe
-the size of the returned cell array. It is also possible to set the size
-of the cell array through a vector of positive integers. In the
+the size of the returned cell array.  It is also possible to set the size
+of the cell array through a vector of positive integers.  In the
 following example two cell arrays of equal size are created, and the size
 of the first one is displayed
 
@@ -566,7 +566,7 @@ size(c1)
 @end example
 
 @noindent
-As can be seen, the @code{size} function also works for cell arrays. As
+As can be seen, the @code{size} function also works for cell arrays.  As
 do the other functions describing the size of an object, such as
 @code{length}, @code{numel}, @code{rows}, and @code{columns}.
 
@@ -586,7 +586,7 @@ is possible to convert numerical arrays into cell arrays using the
 @subsection Indexing Cell Arrays
 
 As shown in the introductory example elements can be inserted from cell
-arrays using the @samp{@{} and @samp{@}} operators. Besides the change
+arrays using the @samp{@{} and @samp{@}} operators.  Besides the change
 of operators, indexing works for cell arrays like for multidimensional
 arrays.  As an example, all the rows of the first and third column of a
 cell array can be set to @code{0} with the following code
@@ -596,7 +596,7 @@ c@{:, [1, 3]@} = 0;
 @end example
 
 Accessing values in a cell array is, however, different from the same
-operation for numerical arrays. Accessing a single element of a cell
+operation for numerical arrays.  Accessing a single element of a cell
 array is very similar to numerical arrays, for example
 
 @example
@@ -613,10 +613,10 @@ Accessing multiple elements of a cell array with the @samp{@{} and
 Separated Lists}) of all the requested elements as discussed later. 
 
 One distinction between @samp{@{} and @samp{(} to index cell arrays is
-in the deletion of elements from the cell array. In a similar manner to
+in the deletion of elements from the cell array.  In a similar manner to
 a numerical array the @samp{()} operator can be used to delete elements
-from the cell array. The @samp{@{@}} operator however will remove the
-elements of the cell array, but not delete the space for them. For example
+from the cell array.  The @samp{@{@}} operator however will remove the
+elements of the cell array, but not delete the space for them.  For example
 
 @example
 @group
@@ -643,10 +643,10 @@ x(1, :) = []
 @subsection Cell Arrays of Strings
 
 One common use of cell arrays is to store multiple strings in the same
-variable. It is possible to store multiple strings in a character matrix
-by letting each row be a string. This, however, introduces the problem
-that all strings must be of equal length. Therefore it is recommended to
-use cell arrays to store multiple strings. If, however, the character
+variable.  It is possible to store multiple strings in a character matrix
+by letting each row be a string.  This, however, introduces the problem
+that all strings must be of equal length.  Therefore it is recommended to
+use cell arrays to store multiple strings.  If, however, the character
 matrix representation is required for an operation, it can be converted
 to a cell array of strings using the @code{cellstr} function
 
@@ -662,8 +662,8 @@ c = cellstr (a)
 
 One further advantage of using cell arrays to store multiple strings is
 that most functions for string manipulations included with Octave
-support this representation. As an example, it is possible to compare
-one string with many others using the @code{strcmp} function. If one of
+support this representation.  As an example, it is possible to compare
+one string with many others using the @code{strcmp} function.  If one of
 the arguments to this function is a string and the other is a cell array
 of strings, each element of the cell array will be compared the string
 argument,
@@ -691,8 +691,8 @@ strings, @code{strcmp}, @code{strcmpi}, @code{strncmp}, @code{strncmpi},
 @subsection Processing Data in Cell Arrays
 
 Data that is stored in a cell array can be processed in several ways
-depending on the actual data. The simplest way to process that data
-is to iterate through it using one or more @code{for} loops. The same
+depending on the actual data.  The simplest way to process that data
+is to iterate through it using one or more @code{for} loops.  The same
 idea can be implemented more easily through the use of the @code{cellfun}
 function that calls a user-specified function on all elements of a cell
 array.
@@ -714,15 +714,15 @@ using the @code{cell2mat} and @code{cell2struct} functions.
 
 Comma separated lists@footnote{Comma-separated lists are also sometimes
 informally referred to as @dfn{cs-lists}.} are the basic argument type
-to all Octave functions. In the example
+to all Octave functions.  In the example
 
 @example
 max (@var{a}, @var{b})
 @end example
 
 @noindent
-@code{@var{a}, @var{b}} is a comma separated list. Comma separated lists
-can appear on both the right and left hand side of an equation. For
+@code{@var{a}, @var{b}} is a comma separated list.  Comma separated lists
+can appear on both the right and left hand side of an equation.  For
 example
 
 @example
@@ -730,12 +730,12 @@ example
 @end example
 
 @noindent
-where @code{@var{i}, @var{j}} is equally a comma separated list. Comma
-separated lists cannot be directly manipulated by the user. However,
+where @code{@var{i}, @var{j}} is equally a comma separated list.  Comma
+separated lists cannot be directly manipulated by the user.  However,
 both structures and cell arrays can be converted into comma
 separated lists, which makes them useful to keep the input arguments and
-return values of functions organized. Another example of where a comma
-separated list can be used is in the creation of a new array. If all the
+return values of functions organized.  Another example of where a comma
+separated list can be used is in the creation of a new array.  If all the
 accessed elements of a cell array are scalars or column vectors, they
 can be concatenated into a new column vector containing the elements, by
 surrounding the list with @code{[} and @code{]} as in the following
@@ -764,7 +764,7 @@ printf ("%s ", c@{:@});
 
 Just like it is possible to create a numerical array from selected
 elements of a cell array, it is possible to create a new cell array
-containing the selected elements. By surrounding the list with 
+containing the selected elements.  By surrounding the list with 
 @samp{@{} and @samp{@}} a new cell array will be created, as the
 following example illustrates
 
@@ -781,9 +781,9 @@ b = @{ a@{ [1, 3] @} @}
 @noindent
 This syntax is however a bit cumbersome, and since this is a common
 operation, it is possible to achieve the same using the @samp{(}
-and @samp{)} operators for indexing. When a cell array is indexed
+and @samp{)} operators for indexing.  When a cell array is indexed
 using the @samp{(} and @samp{)} operators a new cell array containing
-the selected elements will be created. Using this syntax, the previous 
+the selected elements will be created.  Using this syntax, the previous 
 example can be simplified into the following
 
 @example
@@ -797,7 +797,7 @@ b = a( [1, 3] )
 @end example
 
 A comma separated list can equally appear on the left-hand side of an
-assignment. An example is 
+assignment.  An example is 
 
 @example
 @group
@@ -812,8 +812,8 @@ out = cell (4, 1);
 @end example
 
 Structure arrays can equally be used to create comma separated
-lists. This is done by addressing one of the fields of a structure
-array. For example
+lists.  This is done by addressing one of the fields of a structure
+array.  For example
 
 @example
 @group

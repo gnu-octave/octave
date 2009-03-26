@@ -47,19 +47,19 @@ The list of statements contained between keywords like @code{if} or
 @dfn{body} of a control statement.
 
 @menu
-* The if Statement::            
-* The switch Statement::        
-* The while Statement::         
-* The do-until Statement::      
-* The for Statement::           
-* The break Statement::         
-* The continue Statement::      
-* The unwind_protect Statement::  
-* The try Statement::           
+* The @code{if} Statement::            
+* The @code{switch} Statement::        
+* The @code{while} Statement::         
+* The @code{do-until} Statement::      
+* The @code{for} Statement::           
+* The @code{break} Statement::         
+* The @code{continue} Statement::      
+* The @code{unwind_protect} Statement::  
+* The @code{try} Statement::           
 * Continuation Lines::          
 @end menu
 
-@node The if Statement
+@node The @code{if} Statement
 @section The @code{if} Statement
 @cindex @code{if} statement
 @cindex @code{else} statement
@@ -208,7 +208,7 @@ else
 using the indentation to show how Octave groups the statements.
 @xref{Functions and Scripts}.
 
-@node The switch Statement
+@node The @code{switch} Statement
 @section The @code{switch} Statement
 @cindex @code{switch} statement
 @cindex @code{case} statement
@@ -216,7 +216,7 @@ using the indentation to show how Octave groups the statements.
 @cindex @code{endswitch} statement
 
 It is very common to take different actions depending on the value of
-one variable. This is possible using the @code{if} statement in the
+one variable.  This is possible using the @code{if} statement in the
 following way
 
 @example
@@ -231,8 +231,8 @@ endif
 
 @noindent
 This kind of code can however be very cumbersome to both write and
-maintain. To overcome this problem Octave supports the @code{switch}
-statement. Using this statement, the above example becomes
+maintain.  To overcome this problem Octave supports the @code{switch}
+statement.  Using this statement, the above example becomes
 
 @example
 switch (X)
@@ -247,7 +247,7 @@ endswitch
 
 @noindent
 This code makes the repetitive structure of the problem more explicit,
-making the code easier to read, and hence maintain. Also, if the
+making the code easier to read, and hence maintain.  Also, if the
 variable @code{X} should change its name, only one line would need
 changing compared to one line per case when @code{if} statements are
 used.
@@ -270,16 +270,16 @@ endswitch
 @end example
 
 @noindent
-where @var{label} can be any expression. However, duplicate
+where @var{label} can be any expression.  However, duplicate
 @var{label} values are not detected, and only the @var{command_list}
-corresponding to the first match will be executed. For the
+corresponding to the first match will be executed.  For the
 @code{switch} statement to be meaningful at least one
 @code{case @var{label} @var{command_list}} clause must be present,
 while the @code{otherwise @var{command_list}} clause is optional.
 
 If @var{label} is a cell array the corresponding @var{command_list}
 is executed if @emph{any} of the elements of the cell array match
-@var{expression}. As an example, the following program will print
+@var{expression}.  As an example, the following program will print
 @samp{Variable is either 6 or 7}.
 
 @example
@@ -299,7 +299,7 @@ the specific forms.
 @c Strings can be matched
 
 One advantage of using the @code{switch} statement compared to using
-@code{if} statements is that the @var{label}s can be strings. If an
+@code{if} statements is that the @var{label}s can be strings.  If an
 @code{if} statement is used it is @emph{not} possible to write
 
 @example
@@ -328,7 +328,7 @@ endswitch
 @subsection Notes for the C programmer
 
 The @code{switch} statement is also available in the widely used C
-programming language. There are, however, some differences
+programming language.  There are, however, some differences
 between the statement in Octave and C
 
 @itemize @bullet
@@ -363,7 +363,7 @@ switch (foo)
 @end example
 
 @noindent
-particularly for C programmers. If @code{doit()} should be executed if
+particularly for C programmers.  If @code{doit()} should be executed if
 @var{foo} is either @code{1} or @code{2}, the above code should be
 written with a cell array like this
 
@@ -377,7 +377,7 @@ switch (foo)
 @end example
 @end itemize
 
-@node The while Statement
+@node The @code{while} Statement
 @section The @code{while} Statement
 @cindex @code{while} statement
 @cindex @code{endwhile} statement
@@ -446,7 +446,7 @@ A newline is not required between the condition and the
 body; but using one makes the program clearer unless the body is very
 simple.
 
-@node The do-until Statement
+@node The @code{do-until} Statement
 @section The @code{do-until} Statement
 @cindex @code{do-until} statement
 
@@ -493,7 +493,7 @@ A newline is not required between the @code{do} keyword and the
 body; but using one makes the program clearer unless the body is very
 simple.
 
-@node The for Statement
+@node The @code{for} Statement
 @section The @code{for} Statement
 @cindex @code{for} statement
 @cindex @code{endfor} statement
@@ -548,7 +548,7 @@ loop body is executed again.  This process continues until there are no
 more elements to assign.
 
 Within Octave is it also possible to iterate over matrices or cell arrays
-using the @code{for} statement. For example consider
+using the @code{for} statement.  For example consider
 
 @example
 @group
@@ -565,10 +565,10 @@ endfor
 
 @noindent
 In this case the variable @code{i} takes on the value of the columns of
-the matrix or cell matrix. So the first loop iterates twice, producing
+the matrix or cell matrix.  So the first loop iterates twice, producing
 two column vectors @code{[1;2]}, followed by @code{[3;4]}, and likewise
-for the loop over the cell array. This can be extended to loops over
-multidimensional arrays. For example
+for the loop over the cell array.  This can be extended to loops over
+multidimensional arrays.  For example
 
 @example
 @group
@@ -616,7 +616,7 @@ endfor
 In this form of the @code{for} statement, the value of @var{expression}
 must be a structure.  If it is, @var{key} and @var{val} are set to the
 name of the element and the corresponding value in turn, until there are
-no more elements. For example,
+no more elements.  For example,
 
 @example
 @group
@@ -650,7 +650,7 @@ also optional.  This is useful for cycling through the values of all the
 structure elements when the names of the elements do not need to be
 known.
 
-@node The break Statement
+@node The @code{break} Statement
 @section The @code{break} Statement
 @cindex @code{break} statement
 
@@ -705,7 +705,7 @@ endwhile
 @end group
 @end example
 
-@node The continue Statement
+@node The @code{continue} Statement
 @section The @code{continue} Statement
 @cindex @code{continue} statement
 
@@ -754,7 +754,7 @@ endfor
 @end group
 @end example
 
-@node The unwind_protect Statement
+@node The @code{unwind_protect} Statement
 @section The @code{unwind_protect} Statement
 @cindex @code{unwind_protect} statement
 @cindex @code{unwind_protect_cleanup}
@@ -782,7 +782,7 @@ guaranteed to be executed regardless of how control exits @var{body}.
 
 This is useful to protect temporary changes to global variables from
 possible errors.  For example, the following code will always restore
-the original value of the global variable @code{frobnositcate}
+the original value of the global variable @code{frobnosticate}
 even if an error occurs in the first part of the @code{unwind_protect}
 block.
 
@@ -805,7 +805,7 @@ of the @code{unwind_protect} block because evaluation would stop at the
 point of the error and the statement to restore the value would not be
 executed.
 
-@node The try Statement
+@node The @code{try} Statement
 @section The @code{try} Statement
 @cindex @code{try} statement
 @cindex @code{catch}

@@ -36,7 +36,7 @@
 ## 
 ## @example
 ## if (s = t)
-##   ...
+##   @dots{}
 ## @end example
 ## 
 ## @noindent
@@ -45,7 +45,7 @@
 ## 
 ## @example
 ## if (s == t)
-##   ...
+##   @dots{}
 ## @end example
 ## 
 ## @noindent
@@ -57,7 +57,7 @@
 ## 
 ## @example
 ## while (c = getc())
-##   ...
+##   @dots{}
 ## @end example
 ## 
 ## @noindent
@@ -69,7 +69,7 @@
 ## 
 ## @example
 ## if (x = 1)  # intended to test (x == 1)!
-##   ...
+##   @dots{}
 ## @end example
 ## 
 ## @noindent
@@ -81,7 +81,7 @@
 ## 
 ## @example
 ## while ((c = getc()))
-##   ...
+##   @dots{}
 ## @end example
 ## 
 ## @noindent

@@ -310,13 +310,13 @@ public:
   // vector would have, NOT the number of dimensions (elements in the
   // dimension vector).
 
-  octave_idx_type numel (void) const
+  octave_idx_type numel (int n = 0) const
   {
     int n_dims = length ();
 
-    octave_idx_type retval = n_dims > 0 ? elem (0) : 0;
+    octave_idx_type retval = 1;
 
-    for (int i = 1; i < n_dims; i++)
+    for (int i = n; i < n_dims; i++)
       retval *= elem (i);
 
     return retval;

@@ -161,8 +161,8 @@ EIG::init (const Matrix& a, bool calc_ev)
   Array<double> wi (n);
   double *pwi = wi.fortran_vec ();
 
-  volatile octave_idx_type nvr = calc_ev ? n : 0;
-  Matrix vr (nvr, nvr);
+  octave_idx_type tnvr = calc_ev ? n : 0;
+  Matrix vr (tnvr, tnvr);
   double *pvr = vr.fortran_vec ();
 
   octave_idx_type lwork = -1;
@@ -204,6 +204,7 @@ EIG::init (const Matrix& a, bool calc_ev)
 	}
 
       lambda.resize (n);
+      octave_idx_type nvr = calc_ev ? n : 0;
       v.resize (nvr, nvr);
 
       for (octave_idx_type j = 0; j < n; j++)
@@ -507,8 +508,8 @@ EIG::init (const Matrix& a, const Matrix& b, bool calc_ev)
   Array<double> beta (n);
   double *pbeta = beta.fortran_vec ();
 
-  volatile octave_idx_type nvr = calc_ev ? n : 0;
-  Matrix vr (nvr, nvr);
+  octave_idx_type tnvr = calc_ev ? n : 0;
+  Matrix vr (tnvr, tnvr);
   double *pvr = vr.fortran_vec ();
 
   octave_idx_type lwork = -1;
@@ -554,6 +555,7 @@ EIG::init (const Matrix& a, const Matrix& b, bool calc_ev)
 	}
 
       lambda.resize (n);
+      octave_idx_type nvr = calc_ev ? n : 0;
       v.resize (nvr, nvr);
 
       for (octave_idx_type j = 0; j < n; j++)

@@ -25,11 +25,11 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_version_h)
 #define octave_version_h 1
 
-#define OCTAVE_VERSION "3.1.54+"
+#define OCTAVE_VERSION "3.1.55"
 
-#define OCTAVE_API_VERSION "api-v36+"
+#define OCTAVE_API_VERSION "api-v37"
 
-#define OCTAVE_RELEASE_DATE "2009-03-07"
+#define OCTAVE_RELEASE_DATE "2009-03-25"
 
 #define OCTAVE_COPYRIGHT "Copyright (C) 2009 John W. Eaton and others."
 

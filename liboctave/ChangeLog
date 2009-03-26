@@ -1,4 +1,22 @@
+2009-03-26  Jaroslav Hajek  <highegg@gmail.com>
+
+	* dim-vector.h (dim_vector::numel): Add optional argument, simplify.
+
+2009-03-26  Jaroslav Hajek  <highegg@gmail.com>
+
+	* Array.h (Array<T>::dims): Return a const reference.
+	(Array<T>::is_vector): New method.
+
+2009-03-26  Jaroslav Hajek  <highegg@gmail.com>
+
+	* Array.cc (Array<T>::find): New method.
+	* Array.h: Declare it.
+
 2009-03-25  John W. Eaton  <jwe@octave.org>
+
+	* EIG.cc (EIG::init (const Matrix&, bool),
+	EIG::init (const Matrix&, const Matrix&, bool)):
+	Avoid volatile declaration for tmp variable.
 
 	* Makefile.in (MATRIX_INC): Add Sparse-diag-op-defs.h and
 	Sparse-perm-op-defs.h to the list.

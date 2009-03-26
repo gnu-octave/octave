@@ -255,7 +255,8 @@ public:
 
   size_t byte_size (void) const { return numel () * sizeof (T); }
 
-  dim_vector dims (void) const { return dimensions; }
+  // Return a const-reference so that dims ()(i) works efficiently.
+  const dim_vector& dims (void) const { return dimensions; }
 
   Array<T> squeeze (void) const;
   
@@ -428,6 +429,8 @@ public:
 
   bool is_empty (void) const { return numel () == 0; }
 
+  bool is_vector (void) const { return dimensions.is_vector (); }
+
   Array<T> transpose (void) const;
   Array<T> hermitian (T (*fcn) (const T&) = 0) const;
 
@@ -578,6 +581,10 @@ public:
   // (indices will be <= length ()-1).
   Array<octave_idx_type> lookup (const Array<T>& values, sortmode mode = UNSORTED, 
                                  bool linf = false, bool rinf = false) const;
+
+  // Find indices of (at most n) nonzero elements. If n is specified, backward
+  // specifies search from backward.
+  Array<octave_idx_type> find (octave_idx_type n = -1, bool backward = false) const;
 
   Array<T> diag (octave_idx_type k = 0) const;
 

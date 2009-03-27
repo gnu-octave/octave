@@ -49,23 +49,6 @@ find_nonzero_elem_idx (const Array<T>& nda, int nargout,
   else
     idx = nda.find ();
 
-  // Fixup idx dimensions, for Matlab compatibility.
-  // find(zeros(0,0)) -> zeros(0,0)
-  // find(zeros(1,0)) -> zeros(1,0)
-  // find(zeros(0,1)) -> zeros(0,1)
-  // find(zeros(0,X)) -> zeros(0,1)
-  // find(zeros(1,1)) -> zeros(0,0) !!!! WHY?
-  // find(zeros(0,1,0)) -> zeros(0,0)
-  // find(zeros(0,1,0,1)) -> zeros(0,0) etc
-  // FIXME: I don't believe this is right. Matlab seems to violate its own docs
-  // here, because a scalar *is* a row vector.
-
-  if ((nda.numel () == 1 && idx.is_empty ())
-      || (nda.rows () == 0 && nda.dims ().numel (1) == 0))
-    idx = idx.reshape (dim_vector (0, 0));
-  else if (nda.rows () == 1 && nda.ndims () == 2)
-    idx = idx.reshape (dim_vector (1, idx.length ()));
-
   switch (nargout)
     {
     default:

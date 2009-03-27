@@ -1,3 +1,8 @@
+2009-03-26  Jaroslav Hajek  <highegg@gmail.com>
+
+	* Array.cc (Array<T>::find): Reshape result for Matlab compatibility.
+	* Array.h (Array<T>): Add friend template declaration.
+
 2009-03-27  Jaroslav Hajek  <highegg@gmail.com>
 
 	* idx-vector.cc (idx_vector::idx_vector_rep::idx_vector_rep (const

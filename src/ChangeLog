@@ -1,6 +1,12 @@
 2009-03-26  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/find.cc 
+	(find_nonzero_elem_idx (const Array<T>&, ...)): Move dimensions
+	fixup to liboctave.
+
+2009-03-26  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/find.cc 
 	(find_nonzero_elem_idx (const Array<T>&, ...)): Simplify.
 	Instantiate for bool and octave_int types.
 	(find_nonzero_elem_idx (const Sparse<T>&, ...)): 

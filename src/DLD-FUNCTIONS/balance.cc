@@ -51,7 +51,7 @@ DEFUN_DLD (balance, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{aa} =} balance (@var{a}, @var{opt})\n\
 @deftypefnx {Loadable Function} {[@var{dd}, @var{aa}] =} balance (@var{a}, @var{opt})\n\
-@deftypefnx {Loadable Function} {[@var{p}, @var{d}, @var{aa}] =} balance (@var{a}, @var{opt})\n\
+@deftypefnx {Loadable Function} {[@var{d}, @var{p}, @var{aa}] =} balance (@var{a}, @var{opt})\n\
 @deftypefnx {Loadable Function} {[@var{cc}, @var{dd}, @var{aa}, @var{bb}] =} balance (@var{a}, @var{b}, @var{opt})\n\
 \n\
 Compute @code{aa = dd \\ a * dd} in which @code{aa} is a matrix whose\n\
@@ -62,7 +62,7 @@ the equilibration to be computed without roundoff.  Results of\n\
 eigenvalue calculation are typically improved by balancing first.\n\
 \n\
 If two output values are requested, @code{balance} returns \n\
-the permutation @code{p} and the diagonal @code{d} separately as vectors. \n\
+the diagonal @code{d} and the permutation @code{p} separately as vectors. \n\
 In this case, @code{dd = eye(n)(p,:) * diag (d)}, where @code{n} is the matrix \n\
 size. \n\
 \n\
@@ -169,8 +169,8 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
               else
                 {
                   retval(2) = result.balanced_matrix ();
-                  retval(1) = result.scaling_vector ();
-                  retval(0) = result.permuting_vector ();
+                  retval(0) = result.scaling_vector ();
+                  retval(1) = result.permuting_vector ();
                 }
 
 	    }
@@ -188,8 +188,8 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
               else
                 {
                   retval(2) = result.balanced_matrix ();
-                  retval(1) = result.scaling_vector ();
-                  retval(0) = result.permuting_vector ();
+                  retval(0) = result.scaling_vector ();
+                  retval(1) = result.permuting_vector ();
                 }
 	    }
 	}
@@ -209,8 +209,8 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
               else
                 {
                   retval(2) = result.balanced_matrix ();
-                  retval(1) = result.scaling_vector ();
-                  retval(0) = result.permuting_vector ();
+                  retval(0) = result.scaling_vector ();
+                  retval(1) = result.permuting_vector ();
                 }
 	    }
 	  else
@@ -227,8 +227,8 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
               else
                 {
                   retval(2) = result.balanced_matrix ();
-                  retval(1) = result.scaling_vector ();
-                  retval(0) = result.permuting_vector ();
+                  retval(0) = result.scaling_vector ();
+                  retval(1) = result.permuting_vector ();
                 }
 	    }
 	}

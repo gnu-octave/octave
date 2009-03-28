@@ -23,7 +23,7 @@
 ## @var{dir}.  If @var{file} is a cellstr, then all files will be
 ## handled individually.  If @var{dir} is not specified, it defaults to
 ## the current directory.  It returns a list of @var{files}
-## unpacked. If a directory is in the file list, then the
+## unpacked.  If a directory is in the file list, then the
 ## @var{filetype} to unpack must also be specified.
 ##
 ## The @var{files} includes the entire path to the output files.

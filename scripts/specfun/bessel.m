@@ -26,10 +26,10 @@
 ## 
 ## @table @code
 ## @item besselj
-## Bessel functions of the first kind. If the argument @var{opt} is supplied, 
+## Bessel functions of the first kind.  If the argument @var{opt} is supplied, 
 ## the result is multiplied by @code{exp(-abs(imag(x)))}.
 ## @item bessely
-## Bessel functions of the second kind. If the argument @var{opt} is supplied,
+## Bessel functions of the second kind.  If the argument @var{opt} is supplied,
 ## the result is multiplied by @code{exp(-abs(imag(x)))}.
 ## @item besseli
 ## Modified Bessel functions of the first kind.  If the argument @var{opt} is supplied,
@@ -39,7 +39,7 @@
 ## the result is multiplied by @code{exp(x)}.
 ## @item besselh
 ## Compute Hankel functions of the first (@var{k} = 1) or second (@var{k}
-## = 2) kind. If the argument @var{opt} is supplied, the result is multiplied by
+## = 2) kind.  If the argument @var{opt} is supplied, the result is multiplied by
 ## @code{exp (-I*@var{x})} for @var{k} = 1 or @code{exp (I*@var{x})} for
 ## @var{k} = 2.
 ## @end table
@@ -51,7 +51,7 @@
 ## @code{length (@var{alpha})} columns.  Otherwise, @var{alpha} and
 ## @var{x} must conform and the result will be the same size.
 ## 
-## The value of @var{alpha} must be real. The value of @var{x} may be
+## The value of @var{alpha} must be real.  The value of @var{x} may be
 ## complex.
 ## 
 ## If requested, @var{ierr} contains the following status information

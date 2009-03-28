@@ -32,7 +32,7 @@
 ## @code{"pearson"} (default), the (usual) Pearson's product moment
 ## correlation coefficient is used.  In this case, the data should come
 ## from a bivariate normal distribution.  Otherwise, the other two
-## methods offer nonparametric alternatives. If @var{method} is
+## methods offer nonparametric alternatives.  If @var{method} is
 ## @code{"kendall"}, then Kendall's rank correlation tau is used.  If
 ## @var{method} is @code{"spearman"}, then Spearman's rank correlation
 ## rho is used.  Only the first character is necessary.

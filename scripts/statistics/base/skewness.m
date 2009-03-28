@@ -37,7 +37,7 @@
 ##
 ## @noindent
 ## of @var{x}.  If @var{x} is a matrix, return the skewness along the
-## first non-singleton dimension of the matrix. If the optional
+## first non-singleton dimension of the matrix.  If the optional
 ## @var{dim} argument is given, operate along this dimension.
 ## @end deftypefn
 

@@ -47,7 +47,7 @@
 ## Check out a license for @var{feature}, returning 1 on success and 0
 ## on failure.
 ##
-## This function is provided for compatibility with @sc{Matlab}.
+## This function is provided for compatibility with @sc{matlab}.
 ## @seealso{ver, version}
 ## @end deftypefn
 

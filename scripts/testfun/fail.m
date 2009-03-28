@@ -24,7 +24,7 @@
 ## @deftypefnx {Function File} {} fail (@var{code},'warning',@var{pattern})
 ##
 ## Return true if @var{code} fails with an error message matching
-## @var{pattern}, otherwise produce an error. Note that @var{code}
+## @var{pattern}, otherwise produce an error.  Note that @var{code}
 ## is a string and if @var{code} runs successfully, the error produced is:
 ##
 ## @example
@@ -34,8 +34,10 @@
 ## If the code fails with a different error, the message produced is:
 ##
 ## @example
+## @group
 ##           expected <pattern>
 ##           but got <text of actual error>
+## @end group
 ## @end example
 ##
 ## The angle brackets are not part of the output.

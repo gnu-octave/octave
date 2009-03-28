@@ -22,7 +22,7 @@
 ## @deftypefnx {Function File} {[@var{c}, @var{ia}, @var{ib}] =} intersect (@var{a}, @var{b})
 ##
 ## Return the elements in both @var{a} and @var{b}, sorted in ascending
-## order. If @var{a} and @var{b} are both column vectors return a column
+## order.  If @var{a} and @var{b} are both column vectors return a column
 ## vector, otherwise return a row vector.
 ##
 ## Return index vectors @var{ia} and @var{ib} such that @code{a(ia)==c} and

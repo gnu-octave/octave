@@ -37,7 +37,7 @@
 ## @example
 ## @group
 ##  /   \
-##  | n |    n (n-1) (n-2) ... (n-k+1)       n!
+##  | n |    n (n-1) (n-2) @dots{} (n-k+1)       n!
 ##  |   |  = ------------------------- =  ---------
 ##  | k |               k!                k! (n-k)!
 ##  \   /
@@ -46,7 +46,7 @@
 ## @end ifnottex
 ##
 ## If @var{n} is a vector generate all combinations of the elements
-## of @var{n}, taken @var{k} at a time, one row per combination. The 
+## of @var{n}, taken @var{k} at a time, one row per combination.  The 
 ## resulting @var{c} has size @code{[nchoosek (length (@var{n}), 
 ## @var{k}), @var{k}]}.
 ##

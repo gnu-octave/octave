@@ -20,13 +20,13 @@
 ## @deftypefn {Function File} {@var{y} =} speye (@var{m})
 ## @deftypefnx {Function File} {@var{y} =} speye (@var{m}, @var{n})
 ## @deftypefnx {Function File} {@var{y} =} speye (@var{sz})
-## Returns a sparse identity matrix. This is significantly more
+## Returns a sparse identity matrix.  This is significantly more
 ## efficient than @code{sparse (eye (@var{m}))} as the full matrix
 ## is not constructed.
 ##
 ## Called with a single argument a square matrix of size @var{m} by
-## @var{m} is created. Otherwise a matrix of @var{m} by @var{n} is
-## created. If called with a single vector argument, this argument 
+## @var{m} is created.  Otherwise a matrix of @var{m} by @var{n} is
+## created.  If called with a single vector argument, this argument 
 ## is taken to be the size of the matrix to create.
 ## @end deftypefn
 

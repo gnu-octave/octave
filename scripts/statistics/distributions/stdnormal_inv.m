@@ -19,7 +19,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} stdnormal_inv (@var{x})
-## For each component of @var{x}, compute compute the quantile (the
+## For each component of @var{x}, compute the quantile (the
 ## inverse of the CDF) at @var{x} of the standard normal distribution.
 ## @end deftypefn
 

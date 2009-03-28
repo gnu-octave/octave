@@ -19,7 +19,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} manova (@var{y}, @var{g})
-## Perform a one-way multivariate analysis of variance (MANOVA). The
+## Perform a one-way multivariate analysis of variance (MANOVA).  The
 ## goal is to test whether the p-dimensional population means of data
 ## taken from @var{k} different groups are all equal.  All data are
 ## assumed drawn independently from p-dimensional normal distributions

@@ -20,7 +20,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{pval}, @var{ks}] =} kolmogorov_smirnov_test (@var{x}, @var{dist}, @var{params}, @var{alt})
 ## Perform a Kolmogorov-Smirnov test of the null hypothesis that the
-## sample @var{x} comes from the (continuous) distribution dist. I.e.,
+## sample @var{x} comes from the (continuous) distribution dist.  I.e.,
 ## if F and G are the CDFs corresponding to the sample and dist,
 ## respectively, then the null is that F == G.
 ##

@@ -22,7 +22,7 @@
 ## Construct an orthogonal basis @var{u} of block Krylov subspace
 ##
 ## @example
-## [v a*v a^2*v ... a^(k+1)*v]
+## [v a*v a^2*v @dots{} a^(k+1)*v]
 ## @end example
 ##
 ## @noindent

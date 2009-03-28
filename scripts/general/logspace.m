@@ -57,7 +57,7 @@
 ## @ifnottex
 ## 10^base and 10^pi,
 ## @end ifnottex
-## in order to  be compatible with the corresponding @sc{Matlab}
+## in order to be compatible with the corresponding @sc{matlab}
 ## function.
 ##
 ## Also for compatibility, return the second argument if fewer than two

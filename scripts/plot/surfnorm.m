@@ -26,8 +26,10 @@
 ## @var{y} are not defined, then it is assumed that they are given by
 ##
 ## @example
+## @group
 ## [@var{x}, @var{y}] = meshgrid (1:size(@var{z}, 1), 
 ##                      1:size(@var{z}, 2));
+## @end group
 ## @end example
 ##
 ## If no return arguments are requested, a surface plot with the normal 

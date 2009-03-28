@@ -26,8 +26,10 @@
 ## contour lines in the following format
 ##
 ## @example
+## @group
 ## @var{c} = [lev1, x1, x2, @dots{}, levn, x1, x2, @dots{} 
 ##      len1, y1, y2, @dots{}, lenn, y1, y2, @dots{}]
+## @end group
 ## @end example
 ##
 ## @noindent

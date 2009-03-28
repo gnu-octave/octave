@@ -22,7 +22,7 @@
 ## @deftypefnx {Function File} {@var{d} =} del2 (@var{m}, @var{h})
 ## @deftypefnx {Function File} {@var{d} =} del2 (@var{m}, @var{dx}, @var{dy}, @dots{})
 ##
-## Calculates the discrete Laplace operator. If @var{m} is a matrix this is
+## Calculates the discrete Laplace operator.  If @var{m} is a matrix this is
 ## defined as
 ##
 ## @iftex
@@ -44,14 +44,14 @@
 ## derivative over the higher dimensions.
 ##
 ## The spacing between evaluation points may be defined by @var{h}, which is a
-## scalar defining the spacing in all dimensions. Or alternatively, the spacing
+## scalar defining the spacing in all dimensions.  Or alternatively, the spacing
 ## in each dimension may be defined separately by @var{dx}, @var{dy}, etc. 
 ## Scalar spacing values give equidistant spacing, whereas vector spacing 
-## values can be used to specify variable spacing. The length of the vectors
-## must match the respective dimension of @var{m}. The default spacing value
+## values can be used to specify variable spacing.  The length of the vectors
+## must match the respective dimension of @var{m}.  The default spacing value
 ## is 1.
 ##
-## You need at least 3 data points for each dimension. Boundary points are
+## You need at least 3 data points for each dimension.  Boundary points are
 ## calculated as the linear extrapolation of the interior points.
 ##
 ## @seealso{gradient, diff}

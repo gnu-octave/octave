@@ -24,13 +24,13 @@
 ##
 ## Numerically evaluate integral using adaptive Lobatto rule.
 ## @code{quadl (@var{f}, @var{a}, @var{b})} approximates the integral of
-## @code{@var{f}(@var{x})} to machine precision. @var{f} is either a
+## @code{@var{f}(@var{x})} to machine precision.  @var{f} is either a
 ## function handle, inline function or string containing the name of
-## the function to evaluate. The function @var{f} must return a vector
+## the function to evaluate.  The function @var{f} must return a vector
 ## of output values if given a vector of input values.
 ##
 ## If defined, @var{tol} defines the relative tolerance to which to
-## which to integrate @code{@var{f}(@var{x})}. While if @var{trace} is
+## which to integrate @code{@var{f}(@var{x})}.  While if @var{trace} is
 ## defined, displays the left end point of the current interval, the 
 ## interval length, and the partial integral.
 ##

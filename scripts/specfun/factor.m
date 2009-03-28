@@ -20,11 +20,11 @@
 ## @deftypefn {Function File} {@var{p} =} factor (@var{q})
 ## @deftypefnx {Function File} {[@var{p}, @var{n}] =} factor (@var{q})
 ##
-## Return prime factorization of @var{q}. That is @code{prod (@var{p})
-## == @var{q}}. If @code{@var{q} == 1}, returns 1. 
+## Return prime factorization of @var{q}.  That is @code{prod (@var{p})
+## == @var{q}}.  If @code{@var{q} == 1}, returns 1. 
 ##
 ## With two output arguments, returns the unique primes @var{p} and
-## their multiplicities. That is @code{prod (@var{p} .^ @var{n}) ==
+## their multiplicities.  That is @code{prod (@var{p} .^ @var{n}) ==
 ## @var{q}}.
 ## 
 ## @end deftypefn

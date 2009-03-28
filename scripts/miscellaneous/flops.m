@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} flops ()
-## This function is provided for @sc{Matlab} compatibility, but it doesn't
+## This function is provided for @sc{matlab} compatibility, but it doesn't
 ## actually do anything.
 ## @end deftypefn
 

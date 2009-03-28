@@ -22,9 +22,9 @@
 ## @deftypefnx {Function File} {@var{yi} =} interp1 (@dots{}, @var{extrap})
 ## @deftypefnx {Function File} {@var{pp} =} interp1 (@dots{}, 'pp')
 ##
-## One-dimensional interpolation. Interpolate @var{y}, defined at the
-## points @var{x}, at the points @var{xi}. The sample points @var{x} 
-## must be strictly monotonic. If @var{y} is an array, treat the columns
+## One-dimensional interpolation.  Interpolate @var{y}, defined at the
+## points @var{x}, at the points @var{xi}.  The sample points @var{x} 
+## must be strictly monotonic.  If @var{y} is an array, treat the columns
 ## of @var{y} separately.
 ##
 ## Method is one of:
@@ -45,8 +45,8 @@
 ##
 ## Appending '*' to the start of the above method forces @code{interp1}
 ## to assume that @var{x} is uniformly spaced, and only @code{@var{x}
-## (1)} and @code{@var{x} (2)} are referenced. This is usually faster,
-## and is never slower. The default method is 'linear'.
+## (1)} and @code{@var{x} (2)} are referenced.  This is usually faster,
+## and is never slower.  The default method is 'linear'.
 ##
 ## If @var{extrap} is the string 'extrap', then extrapolate values beyond
 ## the endpoints.  If @var{extrap} is a number, replace values beyond the

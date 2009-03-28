@@ -20,7 +20,7 @@
 ## @deftypefn {Function File} {[@var{tf}, @var{a_idx}] =} ismember (@var{A}, @var{S}) 
 ## @deftypefnx {Function File} {[@var{tf}, @var{a_idx}] =} ismember (@var{A}, @var{S}, "rows")
 ## Return a matrix @var{tf} the same shape as @var{A} which has 1 if 
-## @code{A(i,j)} is in @var{S} or 0 if it isn't. If a second output argument 
+## @code{A(i,j)} is in @var{S} or 0 if it isn't.  If a second output argument 
 ## is requested, the indexes into @var{S} of the matching elements are
 ## also returned. 
 ##

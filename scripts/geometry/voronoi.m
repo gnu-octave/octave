@@ -23,7 +23,7 @@
 ## @deftypefnx {Function File} {[@var{vx}, @var{vy}] =} voronoi (@dots{})
 ## plots voronoi diagram of points @code{(@var{x}, @var{y})}.
 ## The voronoi facets with points at infinity are not drawn.
-## [@var{vx}, @var{vy}] = voronoi(...) returns the vertices instead of plotting the
+## [@var{vx}, @var{vy}] = voronoi(@dots{}) returns the vertices instead of plotting the
 ## diagram. plot (@var{vx}, @var{vy}) shows the voronoi diagram.
 ##
 ## A fourth optional argument, which must be a string, contains extra options

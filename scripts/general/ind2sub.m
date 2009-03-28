@@ -24,9 +24,11 @@
 ## in a 3-by-3 matrix into a subscript.  The matrix is linearly indexed
 ## moving from one column to next, filling up all rows in each column.
 ## @example
+## @group
 ## [r, c] = ind2sub ([3, 3], 8)
 ## @result{} r =  2
 ## c =  3
+## @end group
 ## @end example
 ## @seealso{sub2ind}
 ## @end deftypefn

@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{y} =} spones (@var{x})
-## Replace the non-zero entries of @var{x} with ones. This creates a
+## Replace the non-zero entries of @var{x} with ones.  This creates a
 ## sparse matrix with the same structure as @var{x}.
 ## @end deftypefn
 

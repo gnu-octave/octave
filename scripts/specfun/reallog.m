@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} reallog (@var{x})
-## Return the real natural logarithm of @var{x}. If any element results in the
+## Return the real natural logarithm of @var{x}.  If any element results in the
 ## return value being complex @code{reallog} produces an error.
 ## @seealso{log, realsqrt, realpow}
 ## @end deftypefn

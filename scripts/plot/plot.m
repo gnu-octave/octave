@@ -156,8 +156,10 @@
 ## with points displayed as @samp{*} with a marker size of 3.
 ##
 ## @example
+## @group
 ## t = 0:0.1:6.3;
 ## plot (t, cos(t), "-;cos(t);", t, sin(t), "+3;sin(t);");
+## @end group
 ## @end example
 ##
 ## This will plot the cosine and sine functions and label them accordingly

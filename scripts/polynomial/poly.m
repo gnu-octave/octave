@@ -24,10 +24,12 @@
 ## the characteristic polynomial of @var{a}.  As an example we can use
 ## this to find the eigenvalues of @var{a} as the roots of @code{poly (@var{a})}.
 ## @example
+## @group
 ## roots(poly(eye(3)))
 ## @result{} 1.00000 + 0.00000i
 ## @result{} 1.00000 - 0.00000i
 ## @result{} 1.00000 + 0.00000i
+## @end group
 ## @end example
 ## In real-life examples you should, however, use the @code{eig} function
 ## for computing eigenvalues.

@@ -22,7 +22,7 @@
 ## Return the filter coefficients of a Bartlett (triangular) window of
 ## length @var{m}.
 ##
-## For a definition of the Bartlett window, see e.g. A. V. Oppenheim &
+## For a definition of the Bartlett window, see e.g., A. V. Oppenheim &
 ## R. W. Schafer, @cite{Discrete-Time Signal Processing}.
 ## @end deftypefn
 

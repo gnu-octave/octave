@@ -20,7 +20,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} rank (@var{a}, @var{tol})
 ## Compute the rank of @var{a}, using the singular value decomposition.
-## The rank is taken to be the number  of singular values of @var{a} that
+## The rank is taken to be the number of singular values of @var{a} that
 ## are greater than the specified tolerance @var{tol}.  If the second
 ## argument is omitted, it is taken to be
 ##

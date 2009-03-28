@@ -22,8 +22,10 @@
 ## the nonnegative integer @var{n}.
 ##
 ## @example
+## @group
 ## dec2base (123, 3)
 ##      @result{} "11120"
+## @end group
 ## @end example
 ##
 ## If @var{n} is a vector, return a string matrix with one row per value,
@@ -34,8 +36,10 @@
 ## as a symbol.
 ##
 ## @example
+## @group
 ## dec2base (123, "aei")
 ##      @result{} "eeeia"
+## @end group
 ## @end example
 ##
 ## The optional third argument, @var{len}, specifies the minimum

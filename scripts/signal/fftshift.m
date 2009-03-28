@@ -32,7 +32,7 @@
 ## f = ((1:N) - ceil(N/2)) / N / Dt
 ## @end example
 ##
-## If @var{v} is a matrix, the same holds for rows and columns. If 
+## If @var{v} is a matrix, the same holds for rows and columns.  If 
 ## @var{v} is an array, then the same holds along each dimension.
 ##
 ## The optional @var{dim} argument can be used to limit the dimension

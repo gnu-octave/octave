@@ -20,10 +20,10 @@
 ## @deftypefn {Function File} {} interpft (@var{x}, @var{n})
 ## @deftypefnx {Function File} {} interpft (@var{x}, @var{n}, @var{dim})
 ##
-## Fourier interpolation. If @var{x} is a vector, then @var{x} is
-## resampled with @var{n} points. The data in @var{x} is assumed to be
-## equispaced. If @var{x} is an array, then operate along each column of
-## the array separately. If @var{dim} is specified, then interpolate
+## Fourier interpolation.  If @var{x} is a vector, then @var{x} is
+## resampled with @var{n} points.  The data in @var{x} is assumed to be
+## equispaced.  If @var{x} is an array, then operate along each column of
+## the array separately.  If @var{dim} is specified, then interpolate
 ## along the dimension @var{dim}.
 ##
 ## @code{interpft} assumes that the interpolated function is periodic,

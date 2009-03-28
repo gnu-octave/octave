@@ -58,9 +58,11 @@
 ## @code{intwarning}.  For example
 ##
 ## @example
+## @group
 ## s = intwarning ("off");
 ## @dots{}
 ## intwarning (s);
+## @end group
 ## @end example
 ## @seealso{warning}
 ## @end deftypefn

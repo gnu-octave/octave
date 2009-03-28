@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} winter (@var{n})
-## Create color colormap. This colormap is blue to green.
+## Create color colormap.  This colormap is blue to green.
 ## The argument @var{n} should be a scalar.  If it
 ## is omitted, the length of the current colormap or 64 is assumed.
 ## @seealso{colormap}

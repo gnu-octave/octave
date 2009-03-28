@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{y} =} spvcat (@var{a1}, @var{a2}, @dots{}, @var{aN})
-## Return the vertical concatenation of sparse matrices. This function
+## Return the vertical concatenation of sparse matrices.  This function
 ## is obselete and @code{vertcat} should be used
 ## @seealso{sphcat, vertcat, horzcat, cat}
 ## @end deftypefn

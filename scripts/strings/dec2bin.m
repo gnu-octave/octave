@@ -23,8 +23,10 @@
 ## @var{n}, as a string of ones and zeros.  For example,
 ##
 ## @example
+## @group
 ## dec2bin (14)
 ##      @result{} "1110"
+## @end group
 ## @end example
 ##
 ## If @var{n} is a vector, returns a string matrix, one row per value,

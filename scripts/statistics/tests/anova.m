@@ -25,7 +25,7 @@
 ##
 ## Data may be given in a single vector @var{y} with groups specified by
 ## a corresponding vector of group labels @var{g} (e.g., numbers from 1
-## to @var{k}). This is the general form which does not impose any
+## to @var{k}).  This is the general form which does not impose any
 ## restriction on the number of data in each group or the group labels.
 ##
 ## If @var{y} is a matrix and @var{g} is omitted, each column of @var{y}

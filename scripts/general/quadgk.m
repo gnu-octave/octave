@@ -22,10 +22,10 @@
 ## @deftypefnx {Function File} {[@var{q}, @var{err}] =} quadgk (@dots{})
 ## Numerically evaluate integral using adaptive Guass-Konrod quadrature.
 ## The formulation is based on a proposal by L.F. Shampine,
-## @cite{"Vectorized adaptive quadrature in MATLAB", Journal of
+## @cite{"Vectorized adaptive quadrature in @sc{matlab}", Journal of
 ## Computational and Applied Mathematics, pp131-140, Vol 211, Issue 2,
 ## Feb 2008} where all function evalutions at an iteration are
-## calculated with a single call to @var{f}. Therefore the function
+## calculated with a single call to @var{f}.  Therefore the function
 ## @var{f} must be of the form @code{@var{f} (@var{x})} and accept
 ## vector values of @var{x} and return a vector of the same length
 ## representing the function evalutaions at the given values of @var{x}.
@@ -33,9 +33,9 @@
 ## inline function or string.
 ##
 ## The bounds of the quadrature @code{[@var{a}, @var{b}]} can be finite
-## or infinite and contain weak end singularities. Variable
+## or infinite and contain weak end singularities.  Variable
 ## transformation will be used to treat infinite intervals and weaken
-## the singularities. For example
+## the singularities.  For example
 ##
 ## @example
 ## quadgk(@@(x) 1 ./ (sqrt (x) .* (x + 1)), 0, Inf)
@@ -47,35 +47,35 @@
 ## @code{quadgk} should do the same.
 ##
 ## The absolute tolerance can be passed as a fourth argument in a manner
-## compatible with @code{quadv}. Equally the user can request that
+## compatible with @code{quadv}.  Equally the user can request that
 ## information on the convergence can be printed is the fifth argument
 ## is logicallly true.
 ##
 ## Alternatively, certain properties of @code{quadgk} can be passed as
-## pairs @code{@var{prop}, @var{val}}. Valid properties are
+## pairs @code{@var{prop}, @var{val}}.  Valid properties are
 ##
 ## @table @code
 ## @item AbsTol
-## Defines the absolute error tolerance for the quadrature. The default
+## Defines the absolute error tolerance for the quadrature.  The default
 ## absolute tolerance is 1e-10.
 ##
 ## @item RelTol
-## Defines the relative error tolerance for the quadrature. The default
+## Defines the relative error tolerance for the quadrature.  The default
 ## relative tolerance is 1e-5.
 ##
 ## @item MaxIntervalCount
 ## @code{quadgk} initially subdivides the interval on which to perform
-## the quadrature into 10 intervals. Sub-intervals that have an
-## unacceptable error are sub-divided and re-evaluated. If the number of
+## the quadrature into 10 intervals.  Sub-intervals that have an
+## unacceptable error are sub-divided and re-evaluated.  If the number of
 ## sub-intervals exceeds at any point 650 sub-intervals then a poor
 ## convergence is signaled and the current estimate of the integral is
-## returned. The property 'MaxIntervalCount' can be used to alter the
+## returned.  The property 'MaxIntervalCount' can be used to alter the
 ## number of sub-intervals that can exist before exiting.
 ##
 ## @item WayPoints
 ## If there exists discontinuities in the first derivative of the
 ## function to integrate, then these can be flagged with the
-## @code{"WayPoints"} property. This forces the ends of a sub-interval
+## @code{"WayPoints"} property.  This forces the ends of a sub-interval
 ## to fall on the breakpoints of the function and can result in
 ## significantly improved estimated of the error in the integral, faster
 ## computation or both.  For example,
@@ -94,12 +94,14 @@
 ##
 ## If any of @var{a}, @var{b} or @var{waypoints} is complex, then the
 ## quadrature is treated as a contour integral along a piecewise
-## continuous path defined by the above. In this case the integral is
-## assuemd to have no edge singularities. For example
+## continuous path defined by the above.  In this case the integral is
+## assuemd to have no edge singularities.  For example
 ##
 ## @example
+## @group
 ## quadgk (@@(z) log (z), 1+1i, 1+1i, "WayPoints",
 ##         [1-1i, -1,-1i, -1+1i])
+## @end group
 ## @end example
 ##
 ## @noindent

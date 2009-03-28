@@ -20,7 +20,7 @@
 ## @deftypefnx {Function File} {@var{s} =} svds (@var{a}, @var{k}, @var{sigma}, @var{opts})
 ## @deftypefnx {Function File} {[@var{u}, @var{s}, @var{v}, @var{flag}] =} svds (@dots{})
 ##
-## Find a few singular values of the matrix @var{a}. The singular values
+## Find a few singular values of the matrix @var{a}.  The singular values
 ## are calculated using 
 ##
 ## @example
@@ -32,39 +32,39 @@
 ## @end example
 ##
 ## The eigenvalues returned by @code{eigs} correspond to the singular
-## values of @var{a}. The number of singular values to calculate is given
+## values of @var{a}.  The number of singular values to calculate is given
 ## by @var{k}, whose default value is 6.
 ## 
 ## The argument @var{sigma} can be used to specify which singular values
-## to find. @var{sigma} can be either the string 'L', the default, in 
-## which case the largest singular values of @var{a} are found. Otherwise
+## to find.  @var{sigma} can be either the string 'L', the default, in 
+## which case the largest singular values of @var{a} are found.  Otherwise
 ## @var{sigma} should be a real scalar, in which case the singular values
-## closest to @var{sigma} are found. Note that for relatively small values
+## closest to @var{sigma} are found.  Note that for relatively small values
 ## of @var{sigma}, there is the chance that the requested number of singular
-## values are not returned. In that case @var{sigma} should be increased.
+## values are not returned.  In that case @var{sigma} should be increased.
 ##
 ## If @var{opts} is given, then it is a structure that defines options
-## that @code{svds} will pass to @var{eigs}. The possible fields of this
-## structure are therefore determined by @code{eigs}. By default three
+## that @code{svds} will pass to @var{eigs}.  The possible fields of this
+## structure are therefore determined by @code{eigs}.  By default three
 ## fields of this structure are set by @code{svds}.
 ##
 ## @table @code
 ## @item tol
-## The required convergence tolerance for the singular values. @code{eigs}
-## is passed @var{tol} divided by @code{sqrt(2)}. The default value is 
+## The required convergence tolerance for the singular values.  @code{eigs}
+## is passed @var{tol} divided by @code{sqrt(2)}.  The default value is 
 ## 1e-10.
 ##
 ## @item maxit
-## The maximum number of iterations. The defaut is 300.
+## The maximum number of iterations.  The defaut is 300.
 ##
 ## @item disp
-## The level of diagnostic printout. If @code{disp} is 0 then there is no
-## printout. The default value is 0.
+## The level of diagnostic printout.  If @code{disp} is 0 then there is no
+## printout.  The default value is 0.
 ## @end table
 ##
 ## If more than one output argument is given, then @code{svds} also
-## calculates the left and right singular vectors of @var{a}. @var{flag}
-## is used to signal the convergence of @code{svds}. If @code{svds} 
+## calculates the left and right singular vectors of @var{a}.  @var{flag}
+## is used to signal the convergence of @code{svds}.  If @code{svds} 
 ## converges to the desired tolerance, then @var{flag} given by
 ##
 ## @example

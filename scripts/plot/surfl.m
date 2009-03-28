@@ -50,9 +50,11 @@
 ## Example:
 ##
 ## @example
+## @group
 ## colormap(bone);
 ## surfl(peaks);
 ## shading interp;
+## @end group
 ## @end example
 ## @seealso{surf, diffuse, specular, surface}
 ## @end deftypefn

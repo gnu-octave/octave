@@ -22,10 +22,12 @@
 ## in the string @var{s}.  For example,
 ##
 ## @example
+## @group
 ## hex2dec ("12B")
 ##      @result{} 299
 ## hex2dec ("12b")
 ##      @result{} 299
+## @end group
 ## @end example
 ##
 ## If @var{s} is a string matrix, returns a column vector of converted

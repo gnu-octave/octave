@@ -20,23 +20,23 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{n} =} histc (@var{y}, @var{edges})
 ## @deftypefnx {Function File} {@var{n} =} histc (@var{y}, @var{edges}, @var{dim})
-## @deftypefnx {Function File} {[@var{n}, @var{idx}] =} histc (...)
+## @deftypefnx {Function File} {[@var{n}, @var{idx}] =} histc (@dots{})
 ## Produce histogram counts.
 ##
 ## When @var{y} is a vector, the function counts the number of elements of
-## @var{y} that fall in the histogram bins defined by @var{edges}. This must be
+## @var{y} that fall in the histogram bins defined by @var{edges}.  This must be
 ## a vector of monotonically non-decreasing values that define the edges of the
-## histogram bins. So, @code{@var{n} (k)} contains the number of elements in
+## histogram bins.  So, @code{@var{n} (k)} contains the number of elements in
 ## @var{y} for which @code{@var{edges} (k) <= @var{y} < @var{edges} (k+1)}.
 ## The final element of @var{n} contains the number of elements of @var{y}
 ## that was equal to the last element of @var{edges}.
 ##
 ## When @var{y} is a @math{N}-dimensional array, the same operation as above is
-## repeated along dimension @var{dim}. If this argument is given, the operation
+## repeated along dimension @var{dim}.  If this argument is given, the operation
 ## is performed along the first non-singleton dimension.
 ##
 ## If a second output argument is requested an index matrix is also returned.
-## The @var{idx} matrix has same size as @var{y}. Each element of @var{idx}
+## The @var{idx} matrix has same size as @var{y}.  Each element of @var{idx}
 ## contains the index of the histogram bin in which the corresponding element
 ## of @var{y} was counted.
 ##

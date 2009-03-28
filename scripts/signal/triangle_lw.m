@@ -19,7 +19,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} triangle_lw (@var{n}, @var{b})
-## Triangular lag window. Subfunction used for spectral density
+## Triangular lag window.  Subfunction used for spectral density
 ## estimation.
 ## @end deftypefn
 

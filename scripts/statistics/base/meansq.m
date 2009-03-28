@@ -23,7 +23,7 @@
 ## @deftypefnx {Function File} {} meansq (@var{x}, @var{dim})
 ## For vector arguments, return the mean square of the values.
 ## For matrix arguments, return a row vector containing the mean square
-## of each column. With the optional @var{dim} argument, returns the
+## of each column.  With the optional @var{dim} argument, returns the
 ## mean squared of the values along this dimension.
 ## @end deftypefn
 

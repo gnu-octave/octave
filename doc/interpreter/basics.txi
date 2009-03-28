@@ -190,7 +190,7 @@ Don't print the usual greeting and version message at startup.
 @itemx --braindead
 @cindex @code{--traditional}
 @cindex @code{--braindead}
-For compatibility with @sc{Matlab}, set initial values for
+For compatibility with @sc{matlab}, set initial values for
 user preferences to the following values
 
 @example

@@ -30,7 +30,7 @@
 ## as the array @var{v} in the "meshgrid" format or vectors.  The
 ## parameters @var{xi}, etc respect a similar format to @var{x}, etc,
 ## and they represent the points at which the array @var{vi} is
-## interpolated using interp3. The vectors @var{sx}, @var{sy}, and
+## interpolated using interp3.  The vectors @var{sx}, @var{sy}, and
 ## @var{sz} contain points of orthogonal slices of the respective axes.
 ##
 ## If @var{x}, @var{y}, @var{z} are omitted, they are assumed to be 
@@ -57,12 +57,14 @@
 ##
 ## Examples:
 ## @example
+## @group
 ## [x, y, z] = meshgrid (linspace (-8, 8, 32));
 ## v = sin (sqrt (x.^2 + y.^2 + z.^2)) ./ (sqrt (x.^2 + y.^2 + z.^2));
 ## slice (x, y, z, v, [], 0, []);
 ## [xi, yi] = meshgrid (linspace (-7, 7));
 ## zi = xi + yi;
 ## slice (x, y, z, v, xi, yi, zi);
+## @end group
 ## @end example
 ## @seealso{interp3, surface, pcolor}
 ## @end deftypefn

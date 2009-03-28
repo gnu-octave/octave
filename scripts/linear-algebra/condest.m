@@ -25,7 +25,7 @@
 ## using @var{t} test vectors using a randomized 1-norm estimator.
 ## If @var{t} exceeds 5, then only 5 test vectors are used.
 ##
-## If the matrix is not explicit, e.g. when  estimating the condition 
+## If the matrix is not explicit, e.g., when estimating the condition 
 ## number of @var{a} given an LU factorization, @code{condest} uses the 
 ## following functions:
 ##
@@ -47,7 +47,7 @@
 ##
 ## @code{condest} returns the 1-norm condition estimate @var{est} and
 ## a vector @var{v} satisfying @code{norm (A*v, 1) == norm (A, 1) * norm
-## (@var{v}, 1) / @var{est}}. When @var{est} is large, @var{v} is an
+## (@var{v}, 1) / @var{est}}.  When @var{est} is large, @var{v} is an
 ## approximate null vector.
 ##
 ## References: 

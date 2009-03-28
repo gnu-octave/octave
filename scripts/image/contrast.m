@@ -18,8 +18,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} contrast (@var{x}, @var{n})
-## Return a gray colormap that maximizes the contrast in an image. The
-## returned colormap will have @var{n} rows. If @var{n} is not defined
+## Return a gray colormap that maximizes the contrast in an image.  The
+## returned colormap will have @var{n} rows.  If @var{n} is not defined
 ## then the size of the current colormap is used instead.
 ## @seealso{colormap}
 ## @end deftypefn

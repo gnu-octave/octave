@@ -20,7 +20,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} median (@var{x}, @var{dim})
 ## If @var{x} is a vector, compute the median value of the elements of
-## @var{x}. If the elements of @var{x} are sorted, the median is defined
+## @var{x}.  If the elements of @var{x} are sorted, the median is defined
 ## as
 ## @iftex
 ## @tex
@@ -42,7 +42,7 @@
 ## @end example
 ## @end ifnottex
 ## If @var{x} is a matrix, compute the median value for each
-## column and return them in a row vector. If the optional @var{dim}
+## column and return them in a row vector.  If the optional @var{dim}
 ## argument is given, operate along this dimension.
 ## @seealso{std, mean}
 ## @end deftypefn

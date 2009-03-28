@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{zi}=} bicubic (@var{x}, @var{y}, @var{z}, @var{xi}, @var{yi}, @var{extrapval})
+## @deftypefn {Function File} {@var{zi} =} bicubic (@var{x}, @var{y}, @var{z}, @var{xi}, @var{yi}, @var{extrapval})
 ##
 ## Return a matrix @var{zi} corresponding to the bicubic
 ## interpolations at @var{xi} and @var{yi} of the data supplied
-## as @var{x}, @var{y} and @var{z}. Points outside the grid are set
+## as @var{x}, @var{y} and @var{z}.  Points outside the grid are set
 ## to @var{extrapval}.
 ##
 ## See @url{http://wiki.woodpecker.org.cn/moin/Octave/Bicubic}

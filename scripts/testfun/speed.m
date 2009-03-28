@@ -33,7 +33,7 @@
 ## The expression to evaluate.
 ##
 ## @item @var{max_n}
-## The maximum test length to run. Default value is 100.  Alternatively,
+## The maximum test length to run.  Default value is 100.  Alternatively,
 ## use @code{[min_n,max_n]} or for complete control, @code{[n1,n2,@dots{},nk]}.
 ##
 ## @item @var{init}
@@ -41,21 +41,21 @@
 ## for the test number and @var{n} for the size of the test.  This should
 ## compute values for all variables listed in args.  Note that init will
 ## be evaluated first for @math{k = 0}, so things which are constant throughout
-## the test can be computed then. The default value is @code{@var{x} =
+## the test can be computed then.  The default value is @code{@var{x} =
 ## randn (@var{n}, 1);}.
 ##
 ## @item @var{f2}
 ## An alternative expression to evaluate, so the speed of the two
-## can be compared. Default is @code{[]}.
+## can be compared.  Default is @code{[]}.
 ##
 ## @item @var{tol}
 ## If @var{tol} is @code{Inf}, then no comparison will be made between the
 ## results of expression @var{f} and expression @var{f2}.  Otherwise,
 ## expression @var{f} should produce a value @var{v} and expression @var{f2} 
 ## should produce a value @var{v2}, and these shall be compared using 
-## @code{assert(@var{v},@var{v2},@var{tol})}. If @var{tol} is positive,
-## the tolerance is assumed to be absolute. If @var{tol} is negative,
-## the tolerance is assumed to be relative. The default is @code{eps}.
+## @code{assert(@var{v},@var{v2},@var{tol})}.  If @var{tol} is positive,
+## the tolerance is assumed to be absolute.  If @var{tol} is negative,
+## the tolerance is assumed to be relative.  The default is @code{eps}.
 ##
 ## @item @var{order}
 ## The time complexity of the expression @code{O(a n^p)}.  This
@@ -93,8 +93,10 @@
 ## but it is if you preallocate the cell array @code{y}:
 ##
 ## @example
+## @group
 ## speed ("for i = 1:n, y@{i@} = x(i); end", ...
 ##        "x = rand (n, 1); y = cell (size (x));", [1000, 10000])
+## @end group
 ## @end example
 ##
 ## An attempt is made to approximate the cost of the individual 
@@ -114,8 +116,10 @@
 ## example:
 ##
 ## @example
+## @group
 ## speed ("v = sum (x)", "", [10000, 100000], ...
 ##        "v = 0; for i = 1:length (x), v += x(i); end")
+## @end group
 ## @end example
 ## 
 ## A more complex example, if you had an original version of @code{xcorr}
@@ -124,10 +128,12 @@
 ## vector lengths as follows:
 ##
 ## @example
+## @group
 ## speed ("v = xcorr (x, n)", "x = rand (128, 1);", 100,
 ##        "v2 = xcorr_orig (x, n)", -100*eps)
 ## speed ("v = xcorr (x, 15)", "x = rand (20+n, 1);", 100,
 ##        "v2 = xcorr_orig (x, n)", -100*eps)
+## @end group
 ## @end example
 ##
 ## Assuming one of the two versions is in @var{xcorr_orig}, this
@@ -137,9 +143,9 @@
 ## relatively, as @code{abs((@var{x} - @var{y})./@var{y})} rather than 
 ## absolutely as @code{abs(@var{x} - @var{y})}.
 ##
-## Type @code{example('speed')} to see some real examples. Note for 
+## Type @code{example('speed')} to see some real examples.  Note for 
 ## obscure reasons, you can't run examples 1 and 2 directly using 
-## @code{demo('speed')}. Instead use, @code{eval(example('speed',1))}
+## @code{demo('speed')}.  Instead use, @code{eval(example('speed',1))}
 ## and @code{eval(example('speed',2))}.
 ## @end deftypefn
 

@@ -24,7 +24,7 @@
 ## @var{x} and coefficients @var{p}.  The i-th row of @var{p},
 ## @code{@var{p} (@var{i},:)}, contains the coefficients for the polynomial
 ## over the @var{i}-th interval, ordered from highest to 
-## lowest. There must be one row for each interval in @var{x}, so 
+## lowest.  There must be one row for each interval in @var{x}, so 
 ## @code{rows (@var{p}) == length (@var{x}) - 1}.  
 ##
 ## You can concatenate multiple polynomials of the same order over the 
@@ -33,7 +33,7 @@
 ## * (length (@var{x}) - 1)}.
 ##
 ## @var{d} specifies the shape of the matrix @var{p} for all except the
-## last dimension. If @var{d} is not specified it will be computed as
+## last dimension.  If @var{d} is not specified it will be computed as
 ## @code{round (rows (@var{p}) / (length (@var{x}) - 1))} instead.
 ##
 ## @seealso{unmkpp, ppval, spline}

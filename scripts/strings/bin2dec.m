@@ -22,8 +22,10 @@
 ## in the string @var{s}.  For example,
 ##
 ## @example
+## @group
 ## bin2dec ("1110")
 ##      @result{} 14
+## @end group
 ## @end example
 ##
 ## If @var{s} is a string matrix, returns a column vector of converted

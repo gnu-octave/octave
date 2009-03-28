@@ -40,9 +40,11 @@
 ## @end iftex
 ## @ifnottex
 ## @example
+## @group
 ##          1    
 ## tau = -------   SUM sign (q(i) - q(j)) * sign (r(i) - r(j))
 ##       n (n-1)   i,j
+## @end group
 ## @end example
 ## @end ifnottex
 ##

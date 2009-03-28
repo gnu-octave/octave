@@ -22,17 +22,19 @@
 ## Runs any examples associated with the function '@var{name}'.  
 ## Examples are stored in the script file, or in a file with the same 
 ## name but no extension somewhere on your path.  To keep them separate 
-## from the usual script code, all lines are prefixed by @code{%!}. Each
+## from the usual script code, all lines are prefixed by @code{%!}.  Each
 ## example is introduced by the keyword 'demo' flush left to the prefix,
 ## with no intervening spaces.  The remainder of the example can contain 
-## arbitrary Octave code. For example:
+## arbitrary Octave code.  For example:
 ##
 ## @example
+## @group
 ##    %!demo
 ##    %! t=0:0.01:2*pi; x = sin(t);
 ##    %! plot(t,x)
 ##    %! %-------------------------------------------------
 ##    %! % the figure window shows one cycle of a sine wave
+## @end group
 ## @end example
 ##
 ## Note that the code is displayed before it is executed, so a simple
@@ -40,8 +42,8 @@
 ## disp or printf within the demo.
 ##
 ## Demos are run in a function environment with no access to external
-## variables. This means that all demos in your function must use
-## separate initialization code. Alternatively, you can combine your
+## variables.  This means that all demos in your function must use
+## separate initialization code.  Alternatively, you can combine your
 ## demos into one huge demo, with the code:
 ##
 ## @example
@@ -57,15 +59,17 @@
 ## use @code{eval(example('function',n))} to see them.  Because eval only
 ## evaluates one line, or one statement if the statement crosses
 ## multiple lines, you must wrap your demo in "if 1 <demo stuff> endif"
-## with the 'if' on the same line as 'demo'. For example,
+## with the 'if' on the same line as 'demo'.  For example,
 ##
 ## @example
+## @group
 ##   %!demo if 1
 ##   %!  function y=f(x)
 ##   %!    y=x;
 ##   %!  endfunction
 ##   %!  f(3)
 ##   %! endif
+## @end group
 ## @end example
 ## @seealso{test, example}
 ## @end deftypefn

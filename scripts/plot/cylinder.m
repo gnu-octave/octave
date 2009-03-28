@@ -36,9 +36,11 @@
 ##
 ## Examples:
 ## @example
+## @group
 ## disp ("plotting a cone")
 ## [x, y, z] = cylinder (10:-1:0,50);
 ## surf (x, y, z);
+## @end group
 ## @end example
 ## @seealso{sphere}
 ## @end deftypefn

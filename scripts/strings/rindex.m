@@ -24,8 +24,10 @@
 ## found.  For example,
 ##
 ## @example
+## @group
 ## rindex ("Teststring", "t")
 ##      @result{} 6
+## @end group
 ## @end example
 ##
 ## @strong{Caution:}  This function does not work for arrays of

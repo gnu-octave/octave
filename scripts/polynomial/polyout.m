@@ -27,7 +27,7 @@
 ## @end iftex
 ## @ifnottex
 ## @example
-##    c(x) = c(1) * x^n + ... + c(n) x + c(n+1)
+##    c(x) = c(1) * x^n + @dots{} + c(n) x + c(n+1)
 ## @end example
 ## @end ifnottex
 ##  and return it as a string or write it to the screen (if

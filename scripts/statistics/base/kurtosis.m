@@ -37,7 +37,7 @@
 ##
 ## @noindent
 ## of @var{x}.  If @var{x} is a matrix, return the kurtosis over the
-## first non-singleton dimension. The optional argument @var{dim}
+## first non-singleton dimension.  The optional argument @var{dim}
 ## can be given to force the kurtosis to be given over that 
 ## dimension.
 ## @end deftypefn

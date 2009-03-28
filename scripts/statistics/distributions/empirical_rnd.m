@@ -25,7 +25,7 @@
 ## distribution obtained from the univariate sample @var{data}.
 ##
 ## If @var{r} and @var{c} are given create a matrix with @var{r} rows and
-## @var{c} columns. Or if @var{sz} is a vector, create a matrix of size
+## @var{c} columns.  Or if @var{sz} is a vector, create a matrix of size
 ## @var{sz}.
 ## @end deftypefn
 

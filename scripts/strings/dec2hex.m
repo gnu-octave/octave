@@ -23,8 +23,10 @@
 ## integer @var{n}.  For example,
 ##
 ## @example
+## @group
 ## dec2hex (2748)
 ##      @result{} "ABC"
+## @end group
 ## @end example
 ##
 ## If @var{n} is a vector, returns a string matrix, one row per value,

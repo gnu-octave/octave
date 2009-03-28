@@ -18,8 +18,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} bone (@var{n})
-## Create color colormap. This colormap is a gray colormap with a light 
-## blue tone. The argument @var{n} should be a scalar.  If it
+## Create color colormap.  This colormap is a gray colormap with a light 
+## blue tone.  The argument @var{n} should be a scalar.  If it
 ## is omitted, the length of the current colormap or 64 is assumed.
 ## @seealso{colormap}
 ## @end deftypefn

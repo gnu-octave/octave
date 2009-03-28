@@ -21,7 +21,7 @@
 ## @deftypefn {Function File} {} lognrnd (@var{mu}, @var{sigma}, @var{r}, @var{c})
 ## @deftypefnx {Function File} {} lognrnd (@var{mu}, @var{sigma}, @var{sz})
 ## Return an @var{r} by @var{c} matrix of random samples from the
-## lognormal distribution with parameters @var{mu} and @var{sigma}. Both
+## lognormal distribution with parameters @var{mu} and @var{sigma}.  Both
 ## @var{mu} and @var{sigma} must be scalar or of size @var{r} by @var{c}.
 ## Or if @var{sz} is a vector, create a matrix of size @var{sz}.
 ##

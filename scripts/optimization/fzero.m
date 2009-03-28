@@ -20,9 +20,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn{Function File}{[@var{x}, @var{fval}, @var{info}, @var{output}] =} fzero (@var{fun}, @var{x0}, @var{options})
-## Find a zero point of a univariate function. @var{fun} should be a function
-## handle or name. @var{x0} specifies a starting point. @var{options} is a
-## structure specifying additional options. Currently, @code{fzero}
+## Find a zero point of a univariate function.  @var{fun} should be a function
+## handle or name.  @var{x0} specifies a starting point.  @var{options} is a
+## structure specifying additional options.  Currently, @code{fzero}
 ## recognizes these options: @code{"FunValCheck"}, @code{"OutputFcn"},
 ## @code{"TolX"}, @code{"MaxIter"}, @code{"MaxFunEvals"}. 
 ## For description of these options, see @ref{doc-optimset,,optimset}.

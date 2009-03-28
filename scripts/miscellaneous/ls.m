@@ -21,10 +21,12 @@
 ## List directory contents.  For example,
 ## 
 ## @example
+## @group
 ## ls -l
 ##      @print{} total 12
 ##      @print{} -rw-r--r--   1 jwe  users  4488 Aug 19 04:02 foo.m
 ##      @print{} -rw-r--r--   1 jwe  users  1315 Aug 17 23:14 bar.m
+## @end group
 ## @end example
 ## 
 ## The @code{dir} and @code{ls} commands are implemented by calling your

@@ -20,7 +20,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} setdiff (@var{a}, @var{b})
 ## @deftypefnx {Function File} {} setdiff (@var{a}, @var{b}, "rows")
-## @deftypefnx {Function File} {[@var{c}, @var{i}] = } setdiff (@var{a}, @var{b})
+## @deftypefnx {Function File} {[@var{c}, @var{i}] =} setdiff (@var{a}, @var{b})
 ## Return the elements in @var{a} that are not in @var{b}, sorted in
 ## ascending order.  If @var{a} and @var{b} are both column vectors
 ## return a column vector, otherwise return a row vector.

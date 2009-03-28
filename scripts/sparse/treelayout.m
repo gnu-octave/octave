@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} treelayout (@var{Tree})
 ## @deftypefnx {Function File} {} treelayout (@var{Tree}, @var{permutation})
-## treelayout lays out a tree or a forest. The first argument @var{Tree} is a vector of
+## treelayout lays out a tree or a forest.  The first argument @var{Tree} is a vector of
 ## predecessors, optional parameter @var{permutation} is an optional postorder permutation.
 ## The complexity of the algorithm is O(n) in
 ## terms of time and memory requirements.

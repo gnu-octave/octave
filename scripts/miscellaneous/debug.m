@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} debug ()
-## Summary of the debugging commands. The debugging commands that are
+## Summary of the debugging commands.  The debugging commands that are
 ## available in Octave are
 ##
 ## @table @code
@@ -69,7 +69,7 @@
 ##
 ## @noindent
 ## when Octave encounters a breakpoint or other reason to enter debug
-## mode, the prompt changes to @code{"debug>"}. The workspace of the function
+## mode, the prompt changes to @code{"debug>"}.  The workspace of the function
 ## where the breakpoint was encountered becomes available and any Octave
 ## command that works within that workspace may be executed.
 ##

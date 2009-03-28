@@ -72,7 +72,7 @@
 ## @iftex
 ## @tex
 ## $$
-##  Ax [ = | \leq | \geq ] b \qquad  LB \leq x \leq UB
+##  Ax [ = | \leq | \geq ] b \qquad LB \leq x \leq UB
 ## $$
 ## @end tex
 ## @end iftex
@@ -256,9 +256,9 @@
 ## 
 ## @table @code
 ## @item relax (@code{LPX_K_RELAX}, default: 0.07)
-## Relaxation parameter used in the ratio test. If it is zero, the textbook
-## ratio test is used. If it is non-zero (should be positive), Harris'
-## two-pass ratio test is used. In the latter case on the first pass of the
+## Relaxation parameter used in the ratio test.  If it is zero, the textbook
+## ratio test is used.  If it is non-zero (should be positive), Harris'
+## two-pass ratio test is used.  In the latter case on the first pass of the
 ## ratio test basic variables (in the case of primal simplex) or reduced
 ## costs of non-basic variables (in the case of dual simplex) are allowed
 ## to slightly violate their bounds, but not more than
@@ -286,20 +286,20 @@
 ## the search.  This parameter is used in the dual simplex method only.
 ## 
 ## @item objul (@code{LPX_K_OBJUL}, default: +DBL_MAX)
-## Upper limit of the objective function. If on the phase II the objective
+## Upper limit of the objective function.  If on the phase II the objective
 ## function reaches this limit and continues increasing, the solver stops
 ## the search.  This parameter is used in the dual simplex only.
 ## 
 ## @item tmlim (@code{LPX_K_TMLIM}, default: -1.0)
-## Searching time limit, in seconds. If this value is positive, it is
+## Searching time limit, in seconds.  If this value is positive, it is
 ## decreased each time when one simplex iteration has been performed by the
 ## amount of time spent for the iteration, and reaching zero value signals
 ## the solver to stop the search.  Negative value means no time limit.
 ## 
 ## @item outdly (@code{LPX_K_OUTDLY}, default: 0.0)
-## Output delay, in seconds. This parameter specifies how long the solver
+## Output delay, in seconds.  This parameter specifies how long the solver
 ## should delay sending information about the solution to the standard
-## output. Non-positive value means no delay.
+## output.  Non-positive value means no delay.
 ## 
 ## @item tolint (@code{LPX_K_TOLINT}, default: 10e-5)
 ## Relative tolerance used to check if the current basic solution is integer
@@ -418,7 +418,7 @@
 ## param.msglev = 1;
 ## param.itlim = 100;
 ## 
-## [xmin, fmin, status, extra] = ...
+## [xmin, fmin, status, extra] = @dots{}
 ##    glpk (c, a, b, lb, ub, ctype, vartype, s, param);
 ## @end group
 ## @end example

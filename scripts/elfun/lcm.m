@@ -23,14 +23,14 @@
 ## the list of all the arguments.  For example,
 ##
 ## @example
-## lcm (a1, ..., ak)
+## lcm (a1, @dots{}, ak)
 ## @end example
 ##
 ## @noindent
 ## is the same as
 ##
 ## @example
-## lcm ([a1, ..., ak]).
+## lcm ([a1, @dots{}, ak]).
 ## @end example
 ##
 ## All elements must be the same size or scalar.

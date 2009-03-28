@@ -21,7 +21,7 @@
 ## @deftypefnx {Function File} {@var{q} =} quantile (@var{x}, @var{p}, @var{dim})
 ## @deftypefnx {Function File} {@var{q} =} quantile (@var{x}, @var{p}, @var{dim}, @var{method})
 ## For a sample, @var{x}, calculate the quantiles, @var{q}, corresponding to
-## the cumulative probability values in @var{p}. All non-numeric values (NaNs) of
+## the cumulative probability values in @var{p}.  All non-numeric values (NaNs) of
 ## @var{x} are ignored.
 ##
 ## If @var{x} is a matrix, compute the quantiles for each column and
@@ -29,13 +29,13 @@
 ## the @var{p}(i)th quantiles of each column of @var{x}.
 ## 
 ## The optional argument @var{dim} determines the dimension along which 
-## the percentiles are calculated. If @var{dim} is omitted, and @var{x} is
-## a vector or matrix, it defaults to 1 (column wise quantiles). In the 
+## the percentiles are calculated.  If @var{dim} is omitted, and @var{x} is
+## a vector or matrix, it defaults to 1 (column wise quantiles).  In the 
 ## instance that @var{x} is a N-d array, @var{dim} defaults to the first 
 ## dimension whose size greater than unity.
 ## 
 ## The methods available to calculate sample quantiles are the nine methods
-## used by R (http://www.r-project.org/). The default value is METHOD = 5.
+## used by R (http://www.r-project.org/).  The default value is METHOD = 5.
 ## 
 ## Discontinuous sample quantile methods 1, 2, and 3
 ## 
@@ -54,16 +54,16 @@
 ## the knots are the values midway through the steps of the empirical cdf. 
 ## @item Method 6: p(k) = k / (n + 1).
 ## @item Method 7: p(k) = (k - 1) / (n - 1).
-## @item Method 8: p(k) = (k - 1/3) / (n + 1/3). The resulting quantile estimates 
+## @item Method 8: p(k) = (k - 1/3) / (n + 1/3).  The resulting quantile estimates 
 ## are approximately median-unbiased regardless of the distribution of @var{x}.
-## @item Method 9: p(k) = (k - 3/8) / (n + 1/4). The resulting quantile estimates 
+## @item Method 9: p(k) = (k - 3/8) / (n + 1/4).  The resulting quantile estimates 
 ## are approximately unbiased for the expected order statistics if @var{x} is 
 ## normally distributed.
 ## @end enumerate
 ## 
 ## Hyndman and Fan (1996) recommend method 8.  Maxima, S, and R
 ## (versions prior to 2.0.0) use 7 as their default.  Minitab and SPSS
-## use method 6.  Matlab uses method 5.
+## use method 6.  @sc{matlab} uses method 5.
 ## 
 ## References:
 ## 

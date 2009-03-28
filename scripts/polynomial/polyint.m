@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} polyint (@var{c}, @var{k})
 ## Return the coefficients of the integral of the polynomial whose
-## coefficients are represented by the vector @var{c}. The variable
+## coefficients are represented by the vector @var{c}.  The variable
 ## @var{k} is the constant of integration, which by default is set to zero.
 ## @seealso{poly, polyderiv, polyreduce, roots, conv, deconv, residue,
 ## filter, polyval, polyvalm}

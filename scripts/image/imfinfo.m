@@ -22,7 +22,7 @@
 ## Read image information from a file.
 ##
 ## @code{imfinfo} returns a structure containing information about the image
-## stored in the file @var{filename}. The output structure contains the
+## stored in the file @var{filename}.  The output structure contains the
 ## following fields.
 ##
 ## @table @samp
@@ -39,7 +39,7 @@
 ## @item BitDepth
 ## Number of bits per channel per pixel.
 ## @item Format
-## Image format (e.g. @code{"jpeg"}).
+## Image format (e.g., @code{"jpeg"}).
 ## @item LongFormat
 ## Long form image format description.
 ## @item XResolution
@@ -54,13 +54,13 @@
 ## Time in 1/100ths of a second (0 to 65535) which must expire before displaying
 ## the next image in an animated sequence.
 ## @item AnimationIterations
-## Number of iterations to loop an animation (e.g. Netscape loop extension) for.
+## Number of iterations to loop an animation (e.g., Netscape loop extension) for.
 ## @item ByteOrder
-## Endian option for formats that support it. Is either @code{"little-endian"},
+## Endian option for formats that support it.  Is either @code{"little-endian"},
 ## @code{"big-endian"}, or @code{"undefined"}.
 ## @item Gamma
-## Gamma level of the image. The same color image displayed on two different
-## workstations  may  look  different due to differences in the display monitor.
+## Gamma level of the image.  The same color image displayed on two different
+## workstations may look different due to differences in the display monitor.
 ## @item Matte
 ## @code{true} if the image has transparency.
 ## @item ModulusDepth
@@ -71,10 +71,10 @@
 ## @item QuantizeColors
 ## Preferred number of colors in the image.
 ## @item ResolutionUnits
-## Units of image resolution. Is either @code{"pixels per inch"},
+## Units of image resolution.  Is either @code{"pixels per inch"},
 ## @code{"pixels per centimeter"}, or @code{"undefined"}.
 ## @item ColorType
-## Image type. Is either @code{"grayscale"}, @code{"indexed"}, @code{"truecolor"},
+## Image type.  Is either @code{"grayscale"}, @code{"indexed"}, @code{"truecolor"},
 ## or @code{"undefined"}.
 ## @item View
 ## FlashPix viewing parameters.

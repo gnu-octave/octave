@@ -27,7 +27,7 @@
 ## @code{quadv (@var{f}, @var{a}, @var{b})} approximates the integral of
 ## @code{@var{f}(@var{x})} to the default absolute tolerance of @code{1e-6}. 
 ## @var{f} is either a function handle, inline function or string
-## containing the name of the function to evaluate. The function @var{f}
+## containing the name of the function to evaluate.  The function @var{f}
 ## must accept a string, and can return a vector representing the
 ## approximation to @var{n} different sub-functions.
 ##

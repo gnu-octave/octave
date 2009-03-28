@@ -18,8 +18,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} gunzip (@var{gzfile}, @var{dir})
-## Unpack the gzip archive @var{gzfile} to the directory @var{dir}. If
-## @var{dir} is not specified, it defaults to the current directory. If
+## Unpack the gzip archive @var{gzfile} to the directory @var{dir}.  If
+## @var{dir} is not specified, it defaults to the current directory.  If
 ## the @var{gzfile} is a directory, all files in the directory will be
 ## recursively gunzipped.
 ## @seealso{unpack, bunzip2, tar, untar, gzip, gunzip, zip, unzip}

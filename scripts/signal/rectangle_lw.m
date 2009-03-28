@@ -19,7 +19,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} rectangle_lw (@var{n}, @var{b})
-## Rectangular lag window. Subfunction used for spectral density
+## Rectangular lag window.  Subfunction used for spectral density
 ## estimation.
 ## @end deftypefn
 

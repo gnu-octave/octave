@@ -24,7 +24,7 @@
 ## or of size @var{r} by @var{c}.
 ##
 ## If @var{r} and @var{c} are given create a matrix with @var{r} rows and
-## @var{c} columns. Or if @var{sz} is a vector, create a matrix of size
+## @var{c} columns.  Or if @var{sz} is a vector, create a matrix of size
 ## @var{sz}.
 ## @end deftypefn
 

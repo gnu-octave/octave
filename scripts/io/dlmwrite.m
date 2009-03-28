@@ -18,9 +18,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} dlmwrite (@var{file}, @var{a})
-## @deftypefnx {Function File} {} dmlwrite (@var{file}, @var{a}, @var{delim}, @var{r}, @var{c})
-## @deftypefnx {Function File} {} dmlwrite (@var{file}, @var{a}, @var{key}, @var{val} @dots{})
-## @deftypefnx {Function File} {} dmlwrite (@var{file}, @var{a}, "-append", @dots{})
+## @deftypefnx {Function File} {} dlmwrite (@var{file}, @var{a}, @var{delim}, @var{r}, @var{c})
+## @deftypefnx {Function File} {} dlmwrite (@var{file}, @var{a}, @var{key}, @var{val} @dots{})
+## @deftypefnx {Function File} {} dlmwrite (@var{file}, @var{a}, "-append", @dots{})
 ## Write the matrix @var{a} to the named file using delimiters.
 ##
 ## The parameter @var{delim} specifies the delimiter to use to separate

@@ -20,15 +20,15 @@
 ## @deftypefn {Function File} {@var{pp} =} pchip (@var{x}, @var{y})
 ## @deftypefnx {Function File} {@var{yi} =} pchip (@var{x}, @var{y}, @var{xi})
 ##
-## Piecewise Cubic Hermite interpolating polynomial. Called with two
+## Piecewise Cubic Hermite interpolating polynomial.  Called with two
 ## arguments, the piece-wise polynomial @var{pp} is returned, that may
 ## later be used with @code{ppval} to evaluate the polynomial at
 ## specific points.
 ##
 ## The variable @var{x} must be a strictly monotonic vector (either
-## increasing or decreasing). While @var{y} can be either a vector or
-## array. In the case where @var{y} is a vector, it must have a length
-## of @var{n}. If @var{y} is an array, then the size of @var{y} must
+## increasing or decreasing).  While @var{y} can be either a vector or
+## array.  In the case where @var{y} is a vector, it must have a length
+## of @var{n}.  If @var{y} is an array, then the size of @var{y} must
 ## have the form
 ## @iftex
 ## @tex
@@ -48,12 +48,12 @@
 ## @ifnottex
 ## @code{@var{s1} * @var{s2} * @dots{} * @var{sk}}
 ## @end ifnottex
-## and each row in this matrix is then treated separately. Note that this
+## and each row in this matrix is then treated separately.  Note that this
 ## is exactly the opposite treatment than @code{interp1} and is done
 ## for compatibility.
 ##
 ## Called with a third input argument, @code{pchip} evaluates the 
-## piece-wise polynomial at the points @var{xi}. There is an equivalence
+## piece-wise polynomial at the points @var{xi}.  There is an equivalence
 ## between @code{ppval (pchip (@var{x}, @var{y}), @var{xi})} and
 ## @code{pchip (@var{x}, @var{y}, @var{xi})}.
 ##

@@ -1,4 +1,4 @@
-## Copyright (C) 2009 Søren Hauberg
+## Copyright (C) 2009 Sï¿½ren Hauberg
 ##
 ## This program is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
@@ -19,20 +19,22 @@
 ## Return the first sentence of a function help text.
 ##
 ## The function reads the first sentence of the help text of the function
-## @var{name}. The first sentence is defined as the text after the function
+## @var{name}.  The first sentence is defined as the text after the function
 ## declaration until either the first period (".") or the first appearance of
-## two consecutive end-lines ("\n\n"). The text is truncated to a maximum length
+## two consecutive end-lines ("\n\n").  The text is truncated to a maximum length
 ## of @var{max_len}, which defaults to 80.
 ##
 ## The optional output argument @var{status} returns the status reported by
-## @code{makeinfo}. If only one output argument is requested, and @var{status}
+## @code{makeinfo}.  If only one output argument is requested, and @var{status}
 ## is non-zero, a warning is displayed.
 ##
 ## As an example, the first sentence of this help text is
 ##
 ## @example
+## @group
 ## get_first_help_sentence ("get_first_help_sentence")
 ## @print{} ans = Return the first sentence of a function help text.
+## @end group
 ## @end example
 ## @end deftypefn
 

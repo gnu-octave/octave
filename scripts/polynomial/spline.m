@@ -26,15 +26,15 @@
 ## polynomial @var{pp} that may later be used with @code{ppval} to
 ## evaluate the polynomial at specific points.
 ## If called with a third input argument, @code{spline} evaluates the 
-## spline at the points @var{xi}. There is an equivalence
+## spline at the points @var{xi}.  There is an equivalence
 ## between @code{ppval (spline (@var{x}, @var{y}), @var{xi})} and
 ## @code{spline (@var{x}, @var{y}, @var{xi})}.
 ##
 ## The variable @var{x} must be a vector of length @var{n}, and @var{y}
-## can be either a vector or array. In the case where @var{y} is a
+## can be either a vector or array.  In the case where @var{y} is a
 ## vector, it can have a length of either @var{n} or @code{@var{n} + 2}.
 ## If the length of @var{y} is @var{n}, then the 'not-a-knot' end
-## condition is used. If the length of @var{y} is @code{@var{n} + 2},
+## condition is used.  If the length of @var{y} is @code{@var{n} + 2},
 ## then the first and last values of the vector @var{y} are the values
 ## of the first derivative of the cubic spline at the end-points.
 ##
@@ -66,7 +66,7 @@
 ## @ifnottex
 ## @code{@var{s1} * @var{s2} * @dots{} * @var{sk}}
 ## @end ifnottex
-## and each row of this matrix is then treated separately. Note that this
+## and each row of this matrix is then treated separately.  Note that this
 ## is exactly the opposite treatment than @code{interp1} and is done
 ## for compatibility.
 ## @seealso{ppval, mkpp, unmkpp}

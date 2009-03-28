@@ -24,21 +24,21 @@
 ## points such that no n-sphere defined by the n-triangles contains
 ## any other points from the set.
 ## The input matrix @var{P} of size @code{[n, dim]} contains @var{n}
-## points in a space of dimension dim. The return matrix @var{T} has the
+## points in a space of dimension dim.  The return matrix @var{T} has the
 ## size @code{[m, dim+1]}.  It contains for each row a set of indices to
 ## the points, which describes a simplex of dimension dim.  For example,
 ## a 2d simplex is a triangle and 3d simplex is a tetrahedron.
 ## 
 ## Extra options for the underlying Qhull command can be specified by the
-## second argument. This argument is a cell array of strings. The default
+## second argument.  This argument is a cell array of strings.  The default
 ## options depend on the dimension of the input: 
 ## 
 ## @itemize 
-## @item  2D and 3D: @var{opt} = @code{@{"Qt", "Qbb", "Qc"@}}
-## @item  4D and higher: @var{opt} = @code{@{"Qt", "Qbb", "Qc", "Qz"@}} 
+## @item 2D and 3D: @var{opt} = @code{@{"Qt", "Qbb", "Qc"@}}
+## @item 4D and higher: @var{opt} = @code{@{"Qt", "Qbb", "Qc", "Qz"@}} 
 ## @end itemize
 ## 
-## If @var{opt} is [], then the default arguments are used. If @var{opt}
+## If @var{opt} is [], then the default arguments are used.  If @var{opt}
 ## is @code{@{"@w{}"@}}, then none of the default arguments are used by Qhull. 
 ## See the Qhull documentation for the available options. 
 ## 

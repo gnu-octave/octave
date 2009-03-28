@@ -32,8 +32,10 @@
 ## Note that this function could be written
 ##
 ## @example
+## @group
 ## i1 = @{1,2@}; i2 = "fd"; i3 = @{3@}; i4 = "b";
 ## oo(i1@{:@}).(i2)(i3@{:@}).(i4) == 6;
+## @end group
 ## @end example
 ## @seealso{getfield, rmfield, isfield, isstruct, fieldnames, struct}
 ## @end deftypefn

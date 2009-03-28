@@ -23,7 +23,7 @@
 ## @deftypefnx {Function File} {} assert (@var{observed},@var{expected})
 ## @deftypefnx {Function File} {} assert (@var{observed},@var{expected},@var{tol})
 ##
-## Produces an error if the condition is not met. @code{assert} can be
+## Produces an error if the condition is not met.  @code{assert} can be
 ## called in three different ways.
 ##
 ## @table @code
@@ -31,12 +31,12 @@
 ## @itemx assert (@var{cond}, @var{errmsg}, @dots{})
 ## @itemx assert (@var{cond}, @var{msg_id}, @var{errmsg}, @dots{})
 ## Called with a single argument @var{cond}, @code{assert} produces an
-## error if @var{cond} is zero. If called with a single argument a
-## generic error message. With more than one argument, the additional
+## error if @var{cond} is zero.  If called with a single argument a
+## generic error message.  With more than one argument, the additional
 ## arguments are passed to the @code{error} function.
 ##
 ## @item assert (@var{observed}, @var{expected})
-## Produce an error if observed is not the same as expected. Note that 
+## Produce an error if observed is not the same as expected.  Note that 
 ## observed and expected can be strings, scalars, vectors, matrices, 
 ## lists or structures.
 ##

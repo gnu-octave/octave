@@ -19,17 +19,17 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{y} =} prctile (@var{x}, @var{p})
 ## @deftypefnx {Function File} {@var{q} =} prctile (@var{x}, @var{p}, @var{dim})
-## For a sample @var{x}, compute the the quantiles, @var{y}, corresponding
-## to the cumulative probability values, P, in percent. All non-numeric
+## For a sample @var{x}, compute the quantiles, @var{y}, corresponding
+## to the cumulative probability values, P, in percent.  All non-numeric
 ## values (NaNs) of X are ignored.
 ## 
-## If @var{x} is a matrix, compute the the percentiles for each column and
+## If @var{x} is a matrix, compute the percentiles for each column and
 ## return them in a matrix, such that the i-th row of @var{y} contains the 
 ## @var{p}(i)th percentiles of each column of @var{x}.
 ## 
 ## The optional argument @var{dim} determines the dimension along which
-## the percentiles are calculated. If @var{dim} is omitted, and @var{x} is
-## a vector or matrix, it defaults to 1 (column wise quantiles). In the 
+## the percentiles are calculated.  If @var{dim} is omitted, and @var{x} is
+## a vector or matrix, it defaults to 1 (column wise quantiles).  In the 
 ## instance that @var{x} is a N-d array, @var{dim} defaults to the first 
 ## dimension whose size greater than unity.
 ## 

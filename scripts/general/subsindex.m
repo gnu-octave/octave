@@ -18,12 +18,12 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{idx} =} subsindex (@var{a})
-## Convert an object to an index vector. When @var{a} is a class object 
+## Convert an object to an index vector.  When @var{a} is a class object 
 ## defined with a class constructor, then @code{subsindex} is the
 ## overloading method that allows the conversion of this class object to
-## a valid indexing vector. It is important to note that
+## a valid indexing vector.  It is important to note that
 ## @code{subsindex} must return a zero-based real integer vector of the
-## class "double". For example, if the class constructor
+## class "double".  For example, if the class constructor
 ##
 ## @example
 ## @group

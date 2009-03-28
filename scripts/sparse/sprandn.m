@@ -22,12 +22,12 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} sprandn (@var{m}, @var{n}, @var{d})
 ## @deftypefnx {Function File} {} sprandn (@var{s})
-## Generate a random sparse matrix. The size of the matrix will be
+## Generate a random sparse matrix.  The size of the matrix will be
 ## @var{m} by @var{n}, with a density of values given by @var{d}.
 ## @var{d} should be between 0 and 1. Values will be normally
 ## distributed with mean of zero and variance 1.
 ##
-## Note: sometimes the actual density  may be a bit smaller than @var{d}. 
+## Note: sometimes the actual density may be a bit smaller than @var{d}. 
 ## This is unlikely to happen for large really sparse matrices.
 ##
 ## If called with a single matrix argument, a random sparse matrix is

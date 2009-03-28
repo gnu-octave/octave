@@ -27,8 +27,10 @@
 ## all rows in each column.
 ##
 ## @example
+## @group
 ## linear_index = sub2ind ([3, 3], 2, 3)
 ## @result{} 8
+## @end group
 ## @end example
 ## @seealso{ind2sub}
 ## @end deftypefn

@@ -23,7 +23,7 @@
 ## deviation.
 ##
 ## If @var{x} is a matrix, do the above along the first non-singleton
-## dimension. If the optional argument @var{dim} is given then operate
+## dimension.  If the optional argument @var{dim} is given then operate
 ## along this dimension.
 ## @end deftypefn
 

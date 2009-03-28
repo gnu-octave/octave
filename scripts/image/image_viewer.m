@@ -1,4 +1,4 @@
-## Copyright (C) 2006, 2007, 2008 Søren Hauberg
+## Copyright (C) 2006, 2007, 2008 Sï¿½ren Hauberg
 ##
 ## This file is part of Octave.
 ##
@@ -31,7 +31,7 @@
 ## When called with one input argument images will be displayed by saving
 ## the image to a file and the system command @var{command} will be called
 ## to view the image.  The @var{command} must be a string containing
-## @code{%s} and possibly @code{%f}. The @code{%s} will be replaced by
+## @code{%s} and possibly @code{%f}.  The @code{%s} will be replaced by
 ## the filename of the image, and the @code{%f} will (if present) be
 ## replaced by the zoom factor given to the @code{image} function.
 ## For example,
@@ -56,7 +56,7 @@
 ##
 ## With three input arguments it is possible to change the zooming.
 ## Some programs (like @code{xloadimage}) require the zoom factor to be
-## between 0 and 100, and not 0 and 1 like Octave assumes. This is
+## between 0 and 100, and not 0 and 1 like Octave assumes.  This is
 ## solved by setting the third argument to 100.
 ##
 ## @seealso{image, imshow}

@@ -21,14 +21,14 @@
 ## @deftypefnx {Function File} {[@var{x}, @var{flag}, @var{relres}, @var{iter}, @var{resvec}, @var{eigest}] =} pcg (@dots{})
 ##
 ## Solves the linear system of equations @code{@var{a} * @var{x} =
-## @var{b}} by means of the  Preconditioned Conjugate Gradient iterative
-## method. The input arguments are
+## @var{b}} by means of the Preconditioned Conjugate Gradient iterative
+## method.  The input arguments are
 ##
 ## @itemize
 ## @item
 ## @var{a} can be either a square (preferably sparse) matrix or a
 ## function handle, inline function or string containing the name
-## of a function which computes @code{@var{a} * @var{x}}. In principle
+## of a function which computes @code{@var{a} * @var{x}}.  In principle
 ## @var{a} should be symmetric and positive definite; if @code{pcg}
 ## finds @var{a} to not be positive definite, you will get a warning
 ## message and the @var{flag} output parameter will be set.
@@ -38,9 +38,9 @@
 ## 
 ## @item
 ## @var{tol} is the required relative tolerance for the residual error,
-## @code{@var{b} - @var{a} * @var{x}}. The iteration stops if @code{norm
+## @code{@var{b} - @var{a} * @var{x}}.  The iteration stops if @code{norm
 ## (@var{b} - @var{a} * @var{x}) <= @var{tol} * norm (@var{b} - @var{a} *
-## @var{x0})}. If @var{tol} is empty or is omitted, the function sets
+## @var{x0})}.  If @var{tol} is empty or is omitted, the function sets
 ## @code{@var{tol} = 1e-6} by default.
 ## 
 ## @item
@@ -53,23 +53,23 @@
 ## (theoretically) equivalent to solving by @code{pcg} @code{@var{P} *
 ## @var{x} = @var{m} \ @var{b}}, with @code{@var{P} = @var{m} \ @var{a}}.
 ## Note that a proper choice of the preconditioner may dramatically
-## improve the overall performance of the method. Instead of matrices
+## improve the overall performance of the method.  Instead of matrices
 ## @var{m1} and @var{m2}, the user may pass two functions which return 
 ## the results of applying the inverse of @var{m1} and @var{m2} to 
 ## a vector (usually this is the preferred way of using the preconditioner). 
 ## If @code{[]} is supplied for @var{m1}, or @var{m1} is omitted, no 
-## preconditioning is applied. If @var{m2} is omitted, @var{m} = @var{m1}
+## preconditioning is applied.  If @var{m2} is omitted, @var{m} = @var{m1}
 ## will be used as preconditioner.
 ## 
 ## @item
-## @var{x0} is the initial guess. If @var{x0} is empty or omitted, the 
+## @var{x0} is the initial guess.  If @var{x0} is empty or omitted, the 
 ## function sets @var{x0} to a zero vector by default.
 ## @end itemize
 ## 
 ## The arguments which follow @var{x0} are treated as parameters, and
 ## passed in a proper way to any of the functions (@var{a} or @var{m})
-## which are passed to @code{pcg}. See the examples below for further
-## details. The output arguments are
+## which are passed to @code{pcg}.  See the examples below for further
+## details.  The output arguments are
 ##
 ## @itemize
 ## @item
@@ -77,10 +77,10 @@
 ## @code{@var{a} * @var{x} = @var{b}}.
 ## 
 ## @item
-## @var{flag} reports on the convergence. @code{@var{flag} = 0} means
+## @var{flag} reports on the convergence.  @code{@var{flag} = 0} means
 ## the solution converged and the tolerance criterion given by @var{tol}
-## is satisfied. @code{@var{flag} = 1} means that the @var{maxit} limit
-## for the iteration count was reached. @code{@var{flag} = 3} reports that
+## is satisfied.  @code{@var{flag} = 1} means that the @var{maxit} limit
+## for the iteration count was reached.  @code{@var{flag} = 3} reports that
 ## the (preconditioned) matrix was found not positive definite.
 ## 
 ## @item
@@ -95,19 +95,19 @@
 ## @code{@var{resvec} (i,1)} is the Euclidean norm of the residual, and
 ## @code{@var{resvec} (i,2)} is the preconditioned residual norm,
 ## after the (@var{i}-1)-th iteration, @code{@var{i} =
-## 1, 2, @dots{}, @var{iter}+1}. The preconditioned residual norm
+## 1, 2, @dots{}, @var{iter}+1}.  The preconditioned residual norm
 ## is defined as
 ## @code{norm (@var{r}) ^ 2 = @var{r}' * (@var{m} \ @var{r})} where
 ## @code{@var{r} = @var{b} - @var{a} * @var{x}}, see also the
-## description of @var{m}. If @var{eigest} is not required, only
+## description of @var{m}.  If @var{eigest} is not required, only
 ## @code{@var{resvec} (:,1)} is returned.
 ## 
 ## @item
 ## @var{eigest} returns the estimate for the smallest @code{@var{eigest}
 ## (1)} and largest @code{@var{eigest} (2)} eigenvalues of the
-## preconditioned matrix @code{@var{P} = @var{m} \ @var{a}}. In 
+## preconditioned matrix @code{@var{P} = @var{m} \ @var{a}}.  In 
 ## particular, if no preconditioning is used, the estimates for the
-## extreme eigenvalues of @var{a} are returned. @code{@var{eigest} (1)}
+## extreme eigenvalues of @var{a} are returned.  @code{@var{eigest} (1)}
 ## is an overestimate and @code{@var{eigest} (2)} is an underestimate, 
 ## so that @code{@var{eigest} (2) / @var{eigest} (1)} is a lower bound
 ## for @code{cond (@var{P}, 2)}, which nevertheless in the limit should
@@ -162,7 +162,7 @@
 ## x = pcg (a, b, 1.e-6, 500, l, u);
 ## @end example
 ##
-## @sc{Example 5:} Preconditioned iteration, with full diagnostics. The
+## @sc{Example 5:} Preconditioned iteration, with full diagnostics.  The
 ## preconditioner (quite strange, because even the original matrix
 ## @var{a} is trivial) is defined as a function
 ## 

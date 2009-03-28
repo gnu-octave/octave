@@ -18,16 +18,16 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{zi}=} interp2 (@var{x}, @var{y}, @var{z}, @var{xi}, @var{yi})
-## @deftypefnx {Function File} {@var{zi}=} interp2 (@var{Z}, @var{xi}, @var{yi})
-## @deftypefnx {Function File} {@var{zi}=} interp2 (@var{Z}, @var{n})
-## @deftypefnx {Function File} {@var{zi}=} interp2 (@dots{}, @var{method})
-## @deftypefnx {Function File} {@var{zi}=} interp2 (@dots{}, @var{method}, @var{extrapval})
+## @deftypefn {Function File} {@var{zi} =} interp2 (@var{x}, @var{y}, @var{z}, @var{xi}, @var{yi})
+## @deftypefnx {Function File} {@var{zi} =} interp2 (@var{Z}, @var{xi}, @var{yi})
+## @deftypefnx {Function File} {@var{zi} =} interp2 (@var{Z}, @var{n})
+## @deftypefnx {Function File} {@var{zi} =} interp2 (@dots{}, @var{method})
+## @deftypefnx {Function File} {@var{zi} =} interp2 (@dots{}, @var{method}, @var{extrapval})
 ##
-## Two-dimensional interpolation. @var{x}, @var{y} and @var{z} describe a
-## surface function. If @var{x} and @var{y} are vectors their length
-## must correspondent to the size of @var{z}. @var{x} and @var{y} must be
-## monotonic. If they are matrices they  must have the @code{meshgrid} 
+## Two-dimensional interpolation.  @var{x}, @var{y} and @var{z} describe a
+## surface function.  If @var{x} and @var{y} are vectors their length
+## must correspondent to the size of @var{z}.  @var{x} and @var{y} must be
+## monotonic.  If they are matrices they must have the @code{meshgrid} 
 ## format. 
 ##
 ## @table @code
@@ -36,20 +36,20 @@
 ## matrices @var{xi}, @var{yi}.  
 ##
 ## If the last argument is a string, the interpolation method can
-## be specified. The method can be 'linear', 'nearest' or 'cubic'.
-## If it is omitted 'linear' interpolation  is assumed.
+## be specified.  The method can be 'linear', 'nearest' or 'cubic'.
+## If it is omitted 'linear' interpolation is assumed.
 ##
-## @item  interp2 (@var{z}, @var{xi}, @var{yi})
+## @item interp2 (@var{z}, @var{xi}, @var{yi})
 ## Assumes @code{@var{x} = 1:rows (@var{z})} and @code{@var{y} = 
 ## 1:columns (@var{z})}
 ## 
 ## @item interp2 (@var{z}, @var{n}) 
-## Interleaves the matrix @var{z} n-times. If @var{n} is omitted a value
+## Interleaves the matrix @var{z} n-times.  If @var{n} is omitted a value
 ## of @code{@var{n} = 1} is assumed.
 ## @end table
 ##
 ## The variable @var{method} defines the method to use for the
-## interpolation. It can take one of the following values 
+## interpolation.  It can take one of the following values 
 ##
 ## @table @asis
 ## @item 'nearest'
@@ -66,8 +66,8 @@
 ## @end table
 ##
 ## If a scalar value @var{extrapval} is defined as the final value, then
-## values outside the mesh as set to this value. Note that in this case 
-## @var{method} must be defined as well. If @var{extrapval} is not
+## values outside the mesh as set to this value.  Note that in this case 
+## @var{method} must be defined as well.  If @var{extrapval} is not
 ## defined then NA is assumed. 
 ##
 ## @seealso{interp1}

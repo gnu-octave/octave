@@ -20,7 +20,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{str} =} datestr (@var{date}, [@var{f}, [@var{p}]])
 ## Format the given date/time according to the format @code{f} and return
-## the result in @var{str}. @var{date} is a serial date number (see
+## the result in @var{str}.  @var{date} is a serial date number (see
 ## @code{datenum}) or a date vector (see @code{datevec}).  The value of
 ## @var{date} may also be a string or cell array of strings.
 ##
@@ -28,7 +28,7 @@
 ## the table below, or a date format string.
 ##
 ## @var{p} is the year at the start of the century in which two-digit years
-## are to be interpreted in. If not specified, it defaults to the current
+## are to be interpreted in.  If not specified, it defaults to the current
 ## year minus 50.
 ##
 ## For example, the date 730736.65149 (2000-09-07 15:38:09.0934) would be

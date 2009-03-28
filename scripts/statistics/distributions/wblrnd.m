@@ -21,7 +21,7 @@
 ## @deftypefnx {Function File} {} wblrnd (@var{scale}, @var{shape}, @var{sz})
 ## Return an @var{r} by @var{c} matrix of random samples from the
 ## Weibull distribution with parameters @var{scale} and @var{shape}
-## which must be scalar or of size @var{r} by @var{c}. Or if @var{sz}
+## which must be scalar or of size @var{r} by @var{c}.  Or if @var{sz}
 ## is a vector return a matrix of size @var{sz}.
 ##
 ## If @var{r} and @var{c} are omitted, the size of the result matrix is

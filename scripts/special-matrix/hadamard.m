@@ -22,9 +22,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} hadamard (@var{n})
-## Construct a Hadamard matrix @var{Hn} of size @var{n}-by-@var{n}. The 
+## Construct a Hadamard matrix @var{Hn} of size @var{n}-by-@var{n}.  The 
 ## size @var{n} must be of the form @code{2 ^ @var{k} * @var{p}} in which
-## @var{p} is one of 1, 12, 20 or 28. The returned matrix is normalized,
+## @var{p} is one of 1, 12, 20 or 28.  The returned matrix is normalized,
 ## meaning @code{Hn(:,1) == 1} and @code{H(1,:) == 1}.
 ##
 ## Some of the properties of Hadamard matrices are:

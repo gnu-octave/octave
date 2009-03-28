@@ -18,11 +18,13 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{s} =} spaugment (@var{a}, @var{c})
-## Creates the augmented matrix of @var{a}. This is given by
+## Creates the augmented matrix of @var{a}.  This is given by
 ##
 ## @example
+## @group
 ## [@var{c} * eye(@var{m}, @var{m}),@var{a}; @var{a}', zeros(@var{n},
 ## @var{n})]
+## @end group
 ## @end example
 ##
 ## @noindent
@@ -30,8 +32,10 @@
 ## @code{@var{a} \\ @var{b}}, by
 ## 
 ## @example
+## @group
 ## @var{s} * [ @var{r} / @var{c}; x] = [@var{b}, zeros(@var{n},
 ## columns(@var{b})]
+## @end group
 ## @end example
 ##
 ## @noindent
@@ -43,7 +47,7 @@
 ##
 ## As the matrix @var{s} is symmetric indefinite it can be factorized
 ## with @code{lu}, and the minimum norm solution can therefore be found
-## without the need for a @code{qr} factorization. As the residual
+## without the need for a @code{qr} factorization.  As the residual
 ## error will be @code{zeros (@var{m}, @var{m})} for under determined
 ## problems, and example can be 
 ##

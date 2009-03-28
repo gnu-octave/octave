@@ -23,11 +23,11 @@
 ## @deftypefnx{Function File} {[@var{x}, @var{fvec}, @var{info}, @var{output}, @var{fjac}]} = fsolve (@var{fcn}, @dots{})
 ## Solve a system of nonlinear equations defined by the function @var{fcn}.
 ## @var{fcn} should accepts a vector (array) defining the unknown variables,
-## and return a vector of left-hand sides of the equations. Right-hand sides
+## and return a vector of left-hand sides of the equations.  Right-hand sides
 ## are defined to be zeros.
 ## In other words, this function attempts to determine a vector @var{x} such 
 ## that @code{@var{fcn} (@var{x})} gives (approximately) all zeros.
-## @var{x0} determines a starting guess. The shape of @var{x0} is preserved
+## @var{x0} determines a starting guess.  The shape of @var{x0} is preserved
 ## in all calls to @var{fcn}, but otherwise it is treated as a column vector.
 ## @var{options} is a structure specifying additional options.
 ## Currently, @code{fsolve} recognizes these options:
@@ -39,7 +39,7 @@
 ## called with 2 output arguments, also returns the Jacobian matrix
 ## of right-hand sides at the requested point.  @code{"TolX"} specifies
 ## the termination tolerance in the unknown variables, while 
-## @code{"TolFun"} is a tolerance for equations. Default is @code{1e-7}
+## @code{"TolFun"} is a tolerance for equations.  Default is @code{1e-7}
 ## for both @code{"TolX"} and @code{"TolFun"}.
 ## If @code{"Updating"} is "on", the function will attempt to use Broyden
 ## updates to update the Jacobian, in order to reduce the amount of jacobian
@@ -50,7 +50,7 @@
 ## 
 ## @code{"ComplexEqn"} is @code{"on"}, @code{fsolve} will attempt to solve
 ## complex equations in complex variables, assuming that the equations posess a
-## complex derivative (i.e. are holomorphic). If this is not what you want, 
+## complex derivative (i.e., are holomorphic).  If this is not what you want, 
 ## should unpack the real and imaginary parts of the system to get a real
 ## system.
 ##
@@ -61,7 +61,7 @@
 ## 
 ## @table @asis
 ## @item 1
-## Converged to a solution point. Relative residual error is less than specified
+## Converged to a solution point.  Relative residual error is less than specified
 ## by TolFun.
 ## @item 2
 ## Last relative step size was less that TolX.
@@ -80,17 +80,18 @@
 ## Note about user-supplied jacobians:
 ## As an inherent property of the algorithm, jacobian is always requested for a
 ## solution vector whose residual vector is already known, and it is the last
-## accepted successful step. Often this will be one of the last two calls, but
-## not always. If the savings by reusing intermediate results from residual
+## accepted successful step.  Often this will be one of the last two calls, but
+## not always.  If the savings by reusing intermediate results from residual
 ## calculation in jacobian calculation are significant, the best strategy is to
 ## employ OutputFcn: After a vector is evaluated for residuals, if OutputFcn is
 ## called with that vector, then the intermediate results should be saved for
 ## future jacobian evaluation, and should be kept until a jacobian evaluation
 ## is requested or until outputfcn is called with a different vector, in which
-## case they should be dropped in favor of this most recent vector. A short
+## case they should be dropped in favor of this most recent vector.  A short
 ## example how this can be achieved follows:
 ##
 ## @example
+## @group
 ## function [fvec, fjac] = my_optim_func (x, optimvalues, state)
 ## persistent sav = [], sav0 = [];
 ## if (nargin == 1)
@@ -110,9 +111,10 @@
 ## endif
 ## endfunction
 ##
-## ## ....
+## ## @dots{}.
 ## 
 ## fsolve (@@my_optim_func, x0, optimset ("OutputFcn", @@my_optim_func, @dots{}))
+## @end group
 ## @end example
 ###
 ## @end deftypefn

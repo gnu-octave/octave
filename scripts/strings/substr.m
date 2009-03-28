@@ -29,8 +29,10 @@
 ## For example,
 ##
 ## @example
+## @group
 ## substr ("This is a test string", 6, 9)
 ##      @result{} "is a test"
+## @end group
 ## @end example
 ##
 ## This function is patterned after AWK.  You can get the same result by

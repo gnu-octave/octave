@@ -18,9 +18,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{y}=} polyval (@var{p}, @var{x})
-## @deftypefnx {Function File} {@var{y}=} polyval (@var{p}, @var{x}, [], @var{mu})
-## Evaluate the polynomial at of the specified values for @var{x}. When @var{mu}
+## @deftypefn {Function File} {@var{y} =} polyval (@var{p}, @var{x})
+## @deftypefnx {Function File} {@var{y} =} polyval (@var{p}, @var{x}, [], @var{mu})
+## Evaluate the polynomial at of the specified values for @var{x}.  When @var{mu}
 ## is present evaluate the polynomial for (@var{x}-@var{mu}(1))/@var{mu}(2).
 ## If @var{x} is a vector or matrix, the polynomial is evaluated for each of
 ## the elements of @var{x}.
@@ -28,7 +28,7 @@
 ## @deftypefnx {Function File} {[@var{y}, @var{dy}] =} polyval (@var{p}, @var{x}, @var{s}, @var{mu})
 ## In addition to evaluating the polynomial, the second output 
 ## represents the prediction interval, @var{y} +/- @var{dy}, which
-## contains at least 50% of the future predictions. To calculate the
+## contains at least 50% of the future predictions.  To calculate the
 ## prediction interval, the structured variable @var{s}, originating
 ## form `polyfit', must be present.
 ## @seealso{polyfit, polyvalm, poly, roots, conv, deconv, residue, filter,

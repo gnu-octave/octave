@@ -22,25 +22,25 @@
 ## @deftypefnx {Function File} {} accumarray (@var{csubs}, @var{vals}, @dots{})
 ##
 ## Create an array by accumulating the elements of a vector into the
-## positions defined by their subscripts. The subscripts are defined by
-## the rows of the matrix @var{subs} and the values by @var{vals}. Each row
+## positions defined by their subscripts.  The subscripts are defined by
+## the rows of the matrix @var{subs} and the values by @var{vals}.  Each row
 ## of @var{subs} corresponds to one of the values in @var{vals}.
 ##
 ## The size of the matrix will be determined by the subscripts themselves.
-## However, if @var{sz} is defined it determines the matrix size. The length
+## However, if @var{sz} is defined it determines the matrix size.  The length
 ## of @var{sz} must correspond to the number of columns in @var{subs}.
 ##
 ## The default action of @code{accumarray} is to sum the elements with the
-## same subscripts. This behavior can be modified by defining the @var{fun}
-## function. This should be a function or function handle that accepts a 
-## column vector and returns a scalar. The result of the function should not
+## same subscripts.  This behavior can be modified by defining the @var{fun}
+## function.  This should be a function or function handle that accepts a 
+## column vector and returns a scalar.  The result of the function should not
 ## depend on the order of the subscripts.
 ##
 ## The elements of the returned array that have no subscripts associated with
-## them are set to zero. Defining @var{fillval} to some other value allows
+## them are set to zero.  Defining @var{fillval} to some other value allows
 ## these values to be defined.
 ##
-## By default @code{accumarray} returns a full matrix. If @var{issparse} is
+## By default @code{accumarray} returns a full matrix.  If @var{issparse} is
 ## logically true, then a sparse matrix is returned instead.
 ##
 ## An example of the use of @code{accumarray} is:

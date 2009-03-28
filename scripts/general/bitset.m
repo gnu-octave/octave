@@ -24,8 +24,10 @@
 ## The lowest significant bit is: @var{n} = 1
 ##
 ## @example
+## @group
 ## dec2bin (bitset (10, 1))
 ## @result{} 1011
+## @end group
 ## @end example
 ## @seealso{bitand, bitor, bitxor, bitget, bitcmp, bitshift, bitmax}
 ## @end deftypefn

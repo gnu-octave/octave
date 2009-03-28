@@ -25,13 +25,13 @@
 ##
 ## @table @asis
 ## @item "full"
-## The full convolution result is returned. The size out of the output is
-## @code{size (@var{a}) + size (@var{b})-1}. This is the default behaviour.
+## The full convolution result is returned.  The size out of the output is
+## @code{size (@var{a}) + size (@var{b})-1}.  This is the default behaviour.
 ## @item "same"
-## The central part of the convolution result is returned. The size out of the
+## The central part of the convolution result is returned.  The size out of the
 ## output is the same as @var{a}.
 ## @item "valid"
-## The valid part of the convolution is returned. The size of the result is
+## The valid part of the convolution is returned.  The size of the result is
 ## @code{max (size (@var{a}) - size (@var{b})+1, 0)}.
 ## @end table
 ##

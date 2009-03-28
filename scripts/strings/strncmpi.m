@@ -28,7 +28,7 @@
 ## array of strings (of the same size or with only one element), char matrix
 ## or character string.
 ##
-## @strong{Caution:} For compatibility with @sc{Matlab}, Octave's strncmpi
+## @strong{Caution:} For compatibility with @sc{matlab}, Octave's strncmpi
 ## function returns 1 if the character strings are equal, and 0 otherwise.
 ## This is just the opposite of the corresponding C library function.
 ## @seealso{strcmp, strcmpi, strncmp}

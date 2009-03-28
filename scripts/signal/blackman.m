@@ -21,7 +21,7 @@
 ## @deftypefn {Function File} {} blackman (@var{m})
 ## Return the filter coefficients of a Blackman window of length @var{m}.
 ##
-## For a definition of the  Blackman window, see e.g. A. V. Oppenheim &
+## For a definition of the Blackman window, see e.g., A. V. Oppenheim &
 ## R. W. Schafer, @cite{Discrete-Time Signal Processing}.
 ## @end deftypefn
 

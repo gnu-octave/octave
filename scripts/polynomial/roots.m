@@ -32,7 +32,7 @@
 ## @ifnottex
 ##
 ## @example
-## v(1) * z^(N-1) + ... + v(N-1) * z + v(N)
+## v(1) * z^(N-1) + @dots{} + v(N-1) * z + v(N)
 ## @end example
 ## @end ifnottex
 ##
@@ -49,10 +49,12 @@
 ## @end example
 ## @end ifnottex
 ## @example
+## @group
 ## c = [1, 0, -5];
 ## roots(c)
 ## @result{}  2.2361
 ## @result{} -2.2361
+## @end group
 ## @end example
 ## Note that the true result is
 ## @iftex

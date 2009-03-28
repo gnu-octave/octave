@@ -32,7 +32,7 @@
 ## (see @code{datestr}).
 ##
 ## @var{p} is the year at the start of the century in which two-digit years
-## are to be interpreted in. If not specified, it defaults to the current
+## are to be interpreted in.  If not specified, it defaults to the current
 ## year minus 50.
 ## @seealso{datenum, datestr, date, clock, now}
 ## @end deftypefn

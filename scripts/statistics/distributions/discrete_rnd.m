@@ -23,10 +23,10 @@
 ## @deftypefnx {Function File} {} discrete_rnd (@var{v}, @var{p}, @var{sz})
 ## Generate a row vector containing a random sample of size @var{n} from
 ## the univariate distribution which assumes the values in @var{v} with
-## probabilities @var{p}. @var{n} must be a scalar.
+## probabilities @var{p}.  @var{n} must be a scalar.
 ##
 ## If @var{r} and @var{c} are given create a matrix with @var{r} rows and
-## @var{c} columns. Or if @var{sz} is a vector, create a matrix of size
+## @var{c} columns.  Or if @var{sz} is a vector, create a matrix of size
 ## @var{sz}.
 ## @end deftypefn
 

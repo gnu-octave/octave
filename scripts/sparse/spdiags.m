@@ -21,14 +21,14 @@
 ## @deftypefnx {Function File} {@var{b} =} spdiags (@var{a}, @var{c})
 ## @deftypefnx {Function File} {@var{b} =} spdiags (@var{v}, @var{c}, @var{a})
 ## @deftypefnx {Function File} {@var{b} =} spdiags (@var{v}, @var{c}, @var{m}, @var{n})
-## A generalization of the function @code{diag}. Called with a single
+## A generalization of the function @code{diag}.  Called with a single
 ## input argument, the non-zero diagonals @var{c} of @var{A} are extracted.
 ## With two arguments the diagonals to extract are given by the vector 
 ## @var{c}.
 ##
 ## The other two forms of @code{spdiags} modify the input matrix by
-## replacing the diagonals. They use the columns of @var{v} to replace
-## the columns represented by the vector @var{c}. If the sparse matrix
+## replacing the diagonals.  They use the columns of @var{v} to replace
+## the columns represented by the vector @var{c}.  If the sparse matrix
 ## @var{a} is defined then the diagonals of this matrix are replaced.
 ## Otherwise a matrix of @var{m} by @var{n} is created with the
 ## diagonals given by @var{v}.

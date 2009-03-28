@@ -23,8 +23,10 @@
 ## with the string @var{y} and return the result.  For example,
 ##
 ## @example
+## @group
 ## strrep ("This is a test string", "is", "&%$")
 ##      @result{} "Th&%$ &%$ a test string"
+## @end group
 ## @end example
 ## @seealso{regexprep, strfind, findstr}
 ## @end deftypefn

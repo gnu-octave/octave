@@ -22,9 +22,11 @@
 ## @code{clock}.  For example:
 ##
 ## @example
+## @group
 ## t0 = clock ();
-## # many computations later...
+## # many computations later@dots{}
 ## elapsed_time = etime (clock (), t0);
+## @end group
 ## @end example
 ##
 ## @noindent

@@ -35,8 +35,10 @@
 ## enabled, a warning is issued for statements like
 ## 
 ## @example
+## @group
 ## if (s = t)
 ##   @dots{}
+## @end group
 ## @end example
 ## 
 ## @noindent
@@ -44,8 +46,10 @@
 ## was to write
 ## 
 ## @example
+## @group
 ## if (s == t)
 ##   @dots{}
+## @end group
 ## @end example
 ## 
 ## @noindent
@@ -56,8 +60,10 @@
 ## statement.  For example, statements like
 ## 
 ## @example
+## @group
 ## while (c = getc())
 ##   @dots{}
+## @end group
 ## @end example
 ## 
 ## @noindent
@@ -68,8 +74,10 @@
 ## but that may also let real errors like
 ## 
 ## @example
+## @group
 ## if (x = 1)  # intended to test (x == 1)!
 ##   @dots{}
+## @end group
 ## @end example
 ## 
 ## @noindent
@@ -80,8 +88,10 @@
 ## previous example as
 ## 
 ## @example
+## @group
 ## while ((c = getc()))
 ##   @dots{}
+## @end group
 ## @end example
 ## 
 ## @noindent
@@ -95,7 +105,7 @@
 ## If the @code{Octave:associativity-change} warning is
 ## enabled, Octave will warn about possible changes in the meaning of
 ## some code due to changes in associativity for some operators.
-## Associativity changes have typically been made for @sc{Matlab}
+## Associativity changes have typically been made for @sc{matlab}
 ## compatibility.  By default, the @code{Octave:associativity-change}
 ## warning is enabled.
 ## 
@@ -142,7 +152,7 @@
 ## 
 ## @item Octave:matlab-incompatible
 ## Print warnings for Octave language features that may cause
-## compatibility problems with @sc{Matlab}.
+## compatibility problems with @sc{matlab}.
 ## 
 ## @item Octave:missing-semicolon
 ## If the @code{Octave:missing-semicolon} warning is enabled, Octave
@@ -180,7 +190,7 @@
 ## If the @code{Octave:precedence-change} warning is enabled, Octave
 ## will warn about possible changes in the meaning of some code due to
 ## changes in precedence for some operators.  Precedence changes have
-## typically been made for @sc{Matlab} compatibility.  By default, the
+## typically been made for @sc{matlab} compatibility.  By default, the
 ## @code{Octave:precedence-change} warning is enabled.
 ## 
 ## @item Octave:reload-forces-clear

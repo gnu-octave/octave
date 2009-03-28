@@ -20,7 +20,7 @@
 ## @deftypefn {Function File} {[@var{status}, @var{msg}, @var{msgid}] =} copyfile (@var{f1}, @var{f2}, @var{force})
 ## Copy the file @var{f1} to the new name @var{f2}.  The name @var{f1}
 ## may contain globbing patterns.  If @var{f1} expands to multiple file
-## names, @var{f2} must be a directory. If @var{force} is given and equals
+## names, @var{f2} must be a directory.  If @var{force} is given and equals
 ## the string "f" the copy operation will be forced.
 ##
 ## If successful, @var{status} is 1, with @var{msg} and @var{msgid} empty\n\

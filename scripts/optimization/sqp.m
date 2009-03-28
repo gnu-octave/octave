@@ -29,8 +29,10 @@
 ## @ifnottex
 ##
 ## @example
+## @group
 ##      min phi (x)
 ##       x
+## @end group
 ## @end example
 ##
 ## @end ifnottex
@@ -45,9 +47,11 @@
 ## @ifnottex
 ##
 ## @example
+## @group
 ##      g(x)  = 0
 ##      h(x) >= 0
 ##      lb <= x <= ub
+## @end group
 ## @end example
 ## @end ifnottex
 ##
@@ -126,26 +130,29 @@
 ## @end iftex
 ## @ifnottex
 ## @example
+## @group
 ##                 [ d f(x)   d f(x)        d f(x) ]
 ##     transpose ( [ ------   -----   ...   ------ ] )
 ##                 [  dx_1     dx_2          dx_N  ]
+## @end group
 ## @end example
 ## @end ifnottex
 ##
 ## The fifth and sixth arguments are vectors containing lower and upper bounds
-## on @var{x}. These must be consistent with equality and inequality
-## constraints @var{g} and @var{h}. If the bounds are not specified, or are
+## on @var{x}.  These must be consistent with equality and inequality
+## constraints @var{g} and @var{h}.  If the bounds are not specified, or are
 ## empty, they are set to -@var{realmax} and @var{realmax} by default.
 ##
-## The seventh argument is max. number of iterations. If not specified,
+## The seventh argument is max. number of iterations.  If not specified,
 ## the default value is 100.
 ##
-## The eighth argument is tolerance for stopping criteria. If not specified,
+## The eighth argument is tolerance for stopping criteria.  If not specified,
 ## the default value is @var{eps}.
 ##
 ## Here is an example of calling @code{sqp}:
 ##
 ## @example
+## @group
 ## function r = g (x)
 ##   r = [ sumsq(x)-10;
 ##         x(2)*x(3)-5*x(4)*x(5); 
@@ -177,6 +184,7 @@
 ##   -0.0401627
 ##    0.0379578
 ##   -0.0052227
+## @end group
 ## @end example
 ##
 ## The value returned in @var{info} may be one of the following:

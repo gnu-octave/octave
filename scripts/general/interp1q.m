@@ -20,9 +20,9 @@
 ## @deftypefn {Function File} {@var{yi} =} interp1q (@var{x}, @var{y}, @var{xi})
 ## One-dimensional linear interpolation without error checking.
 ## Interpolates @var{y}, defined at the points @var{x}, at the points
-## @var{xi}. The sample points @var{x} must be a strictly monotonically
-## increasing column vector. If @var{y} is an array, treat the columns
-## of @var{y} separately. If @var{y} is a vector, it must be a column
+## @var{xi}.  The sample points @var{x} must be a strictly monotonically
+## increasing column vector.  If @var{y} is an array, treat the columns
+## of @var{y} separately.  If @var{y} is a vector, it must be a column
 ## vector of the same length as @var{x}.
 ##
 ## Values of @var{xi} beyond the endpoints of the interpolation result
@@ -30,7 +30,7 @@
 ##
 ## Note that the error checking is only a significant portion of the
 ## execution time of this @code{interp1} if the size of the input arguments
-## is relatively small. Therefore, the benefit of using @code{interp1q}
+## is relatively small.  Therefore, the benefit of using @code{interp1q}
 ## is relatively small.
 ## @seealso{interp1}
 ## @end deftypefn

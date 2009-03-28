@@ -19,10 +19,10 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} cond (@var{a},@var{p})
-## Compute the @var{p}-norm condition number of a matrix. @code{cond (@var{a})} is
+## Compute the @var{p}-norm condition number of a matrix.  @code{cond (@var{a})} is
 ## defined as @code{norm (@var{a}, @var{p}) * norm (inv (@var{a}), @var{p})}.
 ## By default @code{@var{p}=2} is used which implies a (relatively slow)
-## singular value decomposition. Other possible selections are 
+## singular value decomposition.  Other possible selections are 
 ## @code{@var{p}= 1, Inf, inf, 'Inf', 'fro'} which are generally faster.
 ## @seealso{norm, inv, det, svd, rank}
 ## @end deftypefn

@@ -22,8 +22,10 @@
 ## integer.
 ##
 ## @example
+## @group
 ## base2dec ("11120", 3)
 ##      @result{} 123
+## @end group
 ## @end example
 ##
 ## If @var{s} is a matrix, returns a column vector with one value per
@@ -36,8 +38,10 @@
 ## symbol.
 ##
 ## @example
+## @group
 ## base2dec ("yyyzx", "xyz")
 ##      @result{} 123
+## @end group
 ## @end example
 ## @seealso{dec2base, dec2bin, bin2dec, hex2dec, dec2hex}
 ## @end deftypefn

@@ -1,4 +1,4 @@
-## Copyright (C) 2005, 2006, 2007, 2008, 2009 Søren Hauberg
+## Copyright (C) 2005, 2006, 2007, 2008, 2009 Sï¿½ren Hauberg
 ## 
 ## This file is part of Octave.
 ##
@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Command} pkg @var{command} @var{pkg_name}
 ## @deftypefnx {Command} pkg @var{command} @var{option} @var{pkg_name}
-## This command interacts with the package manager. Different actions will
+## This command interacts with the package manager.  Different actions will
 ## be taken depending on the value of @var{command}.
 ##
 ## @table @samp
@@ -32,13 +32,13 @@
 ## installs the package found in the file @code{image-1.0.0.tar.gz}.
 ##
 ## The @var{option} variable can contain options that affect the manner
-## in which a package is installed. These options can be one or more of
+## in which a package is installed.  These options can be one or more of
 ##
 ## @table @code
 ## @item -nodeps
-## The package manager will disable the dependency checking. That way it 
+## The package manager will disable the dependency checking.  That way it 
 ## is possible to install a package even if it depends on another package 
-## that's not installed on the system. @strong{Use this option with care.}
+## that's not installed on the system.  @strong{Use this option with care.}
 ##
 ## @item -noauto
 ## The package manager will not automatically load the installed package 
@@ -66,29 +66,29 @@
 ## pkg uninstall image
 ## @end example
 ## @noindent
-## removes the @code{image} package from the system. If another installed
+## removes the @code{image} package from the system.  If another installed
 ## package depends on the @code{image} package an error will be issued.
 ## The package can be uninstalled anyway by using the @code{-nodeps} option.
 ## @item load
-## Add named packages to the path. After loading a package it is
-## possible to use the functions provided by the package. For example,
+## Add named packages to the path.  After loading a package it is
+## possible to use the functions provided by the package.  For example,
 ## @example
 ## pkg load image
 ## @end example
 ## @noindent
-## adds the @code{image} package to the path. It is possible to load all
+## adds the @code{image} package to the path.  It is possible to load all
 ## installed packages at once with the command
 ## @example
 ## pkg load all
 ## @end example
 ## @item unload
-## Removes named packages from the path. After unloading a package it is
+## Removes named packages from the path.  After unloading a package it is
 ## no longer possible to use the functions provided by the package.
 ## This command behaves like the @code{load} command.
 ## @item list
-## Show a list of the currently installed packages. By requesting one or two
+## Show a list of the currently installed packages.  By requesting one or two
 ## output argument it is possible to get a list of the currently installed
-## packages. For example,
+## packages.  For example,
 ## @example
 ## installed_packages = pkg list;
 ## @end example
@@ -125,7 +125,7 @@
 ## @var{flag} will take one of the values "Not installed", "Loaded" or
 ## "Not loaded" for each of the named packages.
 ## @item prefix
-## Set the installation prefix directory. For example,
+## Set the installation prefix directory.  For example,
 ## @example
 ## pkg prefix ~/my_octave_packages
 ## @end example
@@ -140,15 +140,15 @@
 ## @end example
 ##
 ## The location in which to install the architecture dependent files can be
-## independent specified with an addition argument. For example
+## independent specified with an addition argument.  For example
 ##
 ## @example
 ## pkg prefix ~/my_octave_packages ~/my_octave_packages_for_my_pc
 ## @end example
 ## @item local_list
 ## Set the file in which to look for information on the locally
-## installed packages. Locally installed packages are those that are
-## typically available only to the current user. For example
+## installed packages.  Locally installed packages are those that are
+## typically available only to the current user.  For example
 ## @example
 ## pkg local_list ~/.octave_packages
 ## @end example
@@ -158,8 +158,8 @@
 ## @end example
 ## @item global_list
 ## Set the file in which to look for, for information on the globally
-## installed packages. Globally installed packages are those that are
-## typically available to all users. For example
+## installed packages.  Globally installed packages are those that are
+## typically available to all users.  For example
 ## @example
 ## pkg global_list /usr/share/octave/octave_packages
 ## @end example
@@ -168,10 +168,10 @@
 ## pkg global_list
 ## @end example
 ## @item rebuild
-## Rebuilds the package database from the installed directories. This can 
+## Rebuilds the package database from the installed directories.  This can 
 ## be used in cases where for some reason the package database is corrupted.
 ## It can also take the @code{-auto} and @code{-noauto} options to allow the
-## autolaoding state of a package to be changed. For example
+## autolaoding state of a package to be changed.  For example
 ##
 ## @example
 ## pkg rebuild -noauto image
@@ -179,9 +179,9 @@
 ##
 ## will remove the autoloading status of the image package.
 ## @item build
-## Builds a binary form of a package or packages. The binary file produced
+## Builds a binary form of a package or packages.  The binary file produced
 ## will itself be an Octave package that can be installed normally with
-## @code{pkg}. The form of the command to build a binary package is
+## @code{pkg}.  The form of the command to build a binary package is
 ##
 ## @example
 ## pkg build builddir image-1.0.0.tar.gz @dots{}

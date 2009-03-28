@@ -29,14 +29,14 @@
 ## at a location given by the parameters @var{x1}, @var{x2}, @dots{}, @var{xn}. 
 ## The parameters @var{x1}, @var{x2}, @dots{}, @var{xn} are either 
 ## @var{n}-dimensional arrays of the same size as the array @var{v} in 
-## the 'ndgrid' format or vectors. The parameters @var{y1}, etc respect a 
+## the 'ndgrid' format or vectors.  The parameters @var{y1}, etc respect a 
 ## similar format to @var{x1}, etc, and they represent the points at which
 ## the array @var{vi} is interpolated.
 ##
 ## If @var{x1}, @dots{}, @var{xn} are omitted, they are assumed to be 
-## @code{x1 = 1 : size (@var{v}, 1)}, etc. If @var{m} is specified, then
+## @code{x1 = 1 : size (@var{v}, 1)}, etc.  If @var{m} is specified, then
 ## the interpolation adds a point half way between each of the interpolation 
-## points. This process is performed @var{m} times. If only @var{v} is 
+## points.  This process is performed @var{m} times.  If only @var{v} is 
 ## specified, then @var{m} is assumed to be @code{1}.
 ##
 ## Method is one of:
@@ -56,7 +56,7 @@
 ## The default method is 'linear'.
 ##
 ## If @var{extrapval} is the scalar value, use it to replace the values
-## beyond the endpoints with that number. If @var{extrapval} is missing,
+## beyond the endpoints with that number.  If @var{extrapval} is missing,
 ## assume NA.
 ## @seealso{interp1, interp2, spline, ndgrid}
 ## @end deftypefn

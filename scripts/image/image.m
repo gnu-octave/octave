@@ -30,7 +30,7 @@
 ## function.
 ##
 ## The axis values corresponding to the matrix elements are specified in
-## @var{x} and @var{y}. If you're not using gnuplot 4.2 or later, these
+## @var{x} and @var{y}.  If you're not using gnuplot 4.2 or later, these
 ## variables are ignored.
 ## @seealso{imshow, imagesc, colormap, image_viewer}
 ## @end deftypefn

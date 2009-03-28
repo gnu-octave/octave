@@ -23,7 +23,7 @@
 ## Evaluate a polynomial in the matrix sense.
 ##
 ## @code{polyvalm (@var{c}, @var{x})} will evaluate the polynomial in the
-## matrix sense, i.e. matrix multiplication is used instead of element by
+## matrix sense, i.e., matrix multiplication is used instead of element by
 ## element multiplication as is used in polyval.
 ##
 ## The argument @var{x} must be a square matrix.

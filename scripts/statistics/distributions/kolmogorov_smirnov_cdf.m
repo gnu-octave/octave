@@ -27,9 +27,11 @@
 ## @end iftex
 ## @ifnottex
 ## @example
+## @group
 ##          Inf
 ## Q(x) =   SUM    (-1)^k exp(-2 k^2 x^2)
 ##        k = -Inf
+## @end group
 ## @end example
 ## @end ifnottex
 ##

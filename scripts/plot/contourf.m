@@ -48,8 +48,10 @@
 ## The following example plots filled contours of the @code{peaks}
 ## function.
 ## @example
+## @group
 ## [x, y, z] = peaks (50);
 ## contourf (x, y, z, -7:9)
+## @end group
 ## @end example
 ## @seealso{contour, contourc, patch}
 ## @end deftypefn

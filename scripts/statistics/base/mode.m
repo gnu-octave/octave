@@ -18,14 +18,14 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{m}, @var{f}, @var{c}] =} mode (@var{x}, @var{dim})
-## Count the most frequently appearing value. @code{mode} counts the 
+## Count the most frequently appearing value.  @code{mode} counts the 
 ## frequency along the first non-singleton dimension and if two or more
 ## values have te same frequency returns the smallest of the two in
-## @var{m}. The dimension along which to count can be specified by the
+## @var{m}.  The dimension along which to count can be specified by the
 ## @var{dim} parameter.
 ##
 ## The variable @var{f} counts the frequency of each of the most frequently 
-## occurring elements. The cell array @var{c} contains all of the elements
+## occurring elements.  The cell array @var{c} contains all of the elements
 ## with the maximum frequency .
 ## @end deftypefn
 

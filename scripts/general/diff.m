@@ -41,7 +41,7 @@
 ## non-singleton dimension.
 ##
 ## The dimension along which to take the difference can be explicitly
-## stated with the optional variable @var{dim}. In this case the 
+## stated with the optional variable @var{dim}.  In this case the 
 ## @var{k}-th order differences are calculated along this dimension.
 ## In the case where @var{k} exceeds @code{size (@var{x}, @var{dim})}
 ## then an empty matrix is returned.

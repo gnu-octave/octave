@@ -30,7 +30,7 @@
 ## @end example
 ##
 ## If @var{x} and @var{y} are matrices, the cross product is applied 
-## along the first dimension with 3 elements. The optional argument 
+## along the first dimension with 3 elements.  The optional argument 
 ## @var{dim} is used to force the cross product to be calculated along
 ## the dimension defined by @var{dim}.
 ## @end deftypefn

@@ -25,8 +25,10 @@
 ##
 ## For example,
 ## @example
+## @group
 ## theta = 0:0.2:6; 
 ## stem3 (cos (theta), sin (theta), theta) 
+## @end group
 ## @end example
 ##
 ## @noindent

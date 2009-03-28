@@ -26,7 +26,7 @@
 ## @deftypefnx {Function File} {[@var{code}, @var{idx}] =} test ('@var{name}','grabdemo')
 ##
 ## Perform tests from the first file in the loadpath matching @var{name}.
-## @code{test} can be called as a command or as a function. Called with 
+## @code{test} can be called as a command or as a function.  Called with 
 ## a single argument @var{name}, the tests are run interactively and stop
 ## after the first error is encountered.
 ##
@@ -45,21 +45,21 @@
 ## Do tests which require user interaction.
 ## @end table
 ##
-## The argument @var{fid} can be used to allow batch processing. Errors
+## The argument @var{fid} can be used to allow batch processing.  Errors
 ## can be written to the already open file defined by @var{fid}, and 
 ## hopefully when Octave crashes this file will tell you what was happening
-## when it did. You can use @code{stdout} if you want to see the results as
+## when it did.  You can use @code{stdout} if you want to see the results as
 ## they happen.  You can also give a file name rather than an @var{fid}, in
 ## which case the contents of the file will be replaced with the log from 
 ## the current test.
 ##
 ## Called with a single output argument @var{success}, @code{test} returns
-## true if all of the tests were successful. Called with two output arguments
+## true if all of the tests were successful.  Called with two output arguments
 ## @var{n} and @var{max}, the number of successful tests and the total number
 ## of tests in the file @var{name} are returned.
 ##
 ## If the second argument is the string 'grabdemo', the contents of the demo
-## blocks are extracted but not executed. Code for all code blocks is
+## blocks are extracted but not executed.  Code for all code blocks is
 ## concatenated and returned as @var{code} with @var{idx} being a vector of
 ## positions of the ends of the demo blocks.
 ##

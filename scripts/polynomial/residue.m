@@ -34,9 +34,11 @@
 ## @ifnottex
 ##
 ## @example
+## @group
 ##  B(s)    M       r(m)         N
 ##  ---- = SUM -------------  + SUM k(i)*s^(N-i)
 ##  A(s)   m=1 (s-p(m))^e(m)    i=1
+## @end group
 ## @end example
 ## @end ifnottex
 ##
@@ -72,9 +74,11 @@
 ## @ifnottex
 ##
 ## @example
+## @group
 ##         s^2 + s + 1       -2        7        3
 ##    ------------------- = ----- + ------- + -----
 ##    s^3 - 5s^2 + 8s - 4   (s-2)   (s-2)^2   (s-1)
+## @end group
 ## @end example
 ##
 ## @end ifnottex
@@ -131,9 +135,11 @@
 ## @ifnottex
 ##
 ## @example
+## @group
 ##     -2        7        3         s^4 - 5s^3 + 9s^2 - 3s + 1
 ##    ----- + ------- + ----- + s = --------------------------
 ##    (s-2)   (s-2)^2   (s-1)          s^3 - 5s^2 + 8s - 4
+## @end group
 ## @end example
 ## @end ifnottex
 ## @seealso{poly, roots, conv, deconv, mpoles, polyval, polyderiv, polyinteg}

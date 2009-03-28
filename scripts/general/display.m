@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} display (@var{a})
-## Display the contents of an object. If @var{a} is an object of the
+## Display the contents of an object.  If @var{a} is an object of the
 ## class "myclass", then @code{display} is called in a case like
 ##
 ## @example

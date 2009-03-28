@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{r} =} colon (@var{a}, @var{b})
 ## @deftypefnx {Function File} {@var{r} =} colon (@var{a}, @var{b}, @var{c})
-## Method of a class to construct a range with the @code{:} operator. For
+## Method of a class to construct a range with the @code{:} operator.  For
 ## example.
 ##
 ## @example

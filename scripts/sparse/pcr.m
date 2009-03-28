@@ -21,14 +21,14 @@
 ## @deftypefnx {Function File} {[@var{x}, @var{flag}, @var{relres}, @var{iter}, @var{resvec}] =} pcr (@dots{})
 ## 
 ## Solves the linear system of equations @code{@var{a} * @var{x} =
-## @var{b}} by means of the  Preconditioned Conjugate Residuals iterative
-## method. The input arguments are
+## @var{b}} by means of the Preconditioned Conjugate Residuals iterative
+## method.  The input arguments are
 ##
 ## @itemize
 ## @item
 ## @var{a} can be either a square (preferably sparse) matrix or a
 ## function handle, inline function or string containing the name
-## of a function which computes @code{@var{a} * @var{x}}. In principle
+## of a function which computes @code{@var{a} * @var{x}}.  In principle
 ## @var{a} should be symmetric and non-singular; if @code{pcr}
 ## finds @var{a} to be numerically singular, you will get a warning
 ## message and the @var{flag} output parameter will be set.
@@ -38,9 +38,9 @@
 ## 
 ## @item
 ## @var{tol} is the required relative tolerance for the residual error,
-## @code{@var{b} - @var{a} * @var{x}}. The iteration stops if @code{norm
+## @code{@var{b} - @var{a} * @var{x}}.  The iteration stops if @code{norm
 ## (@var{b} - @var{a} * @var{x}) <= @var{tol} * norm (@var{b} - @var{a} *
-## @var{x0})}. If @var{tol} is empty or is omitted, the function sets
+## @var{x0})}.  If @var{tol} is empty or is omitted, the function sets
 ## @code{@var{tol} = 1e-6} by default.
 ## 
 ## @item
@@ -53,21 +53,21 @@
 ## (theoretically) equivalent to solving by @code{pcr} @code{@var{P} *
 ## @var{x} = @var{m} \ @var{b}}, with @code{@var{P} = @var{m} \ @var{a}}.
 ## Note that a proper choice of the preconditioner may dramatically
-## improve the overall performance of the method. Instead of matrix
+## improve the overall performance of the method.  Instead of matrix
 ## @var{m}, the user may pass a function which returns the results of 
 ## applying the inverse of @var{m} to a vector (usually this is the
-## preferred way of using the preconditioner). If @code{[]} is supplied
+## preferred way of using the preconditioner).  If @code{[]} is supplied
 ## for @var{m}, or @var{m} is omitted, no preconditioning is applied.
 ## 
 ## @item
-## @var{x0} is the initial guess. If @var{x0} is empty or omitted, the 
+## @var{x0} is the initial guess.  If @var{x0} is empty or omitted, the 
 ## function sets @var{x0} to a zero vector by default.
 ## @end itemize
 ## 
 ## The arguments which follow @var{x0} are treated as parameters, and
 ## passed in a proper way to any of the functions (@var{a} or @var{m})
-## which are passed to @code{pcr}. See the examples below for further
-## details. The output arguments are
+## which are passed to @code{pcr}.  See the examples below for further
+## details.  The output arguments are
 ##
 ## @itemize
 ## @item
@@ -75,10 +75,10 @@
 ## @code{@var{a} * @var{x} = @var{b}}.
 ## 
 ## @item
-## @var{flag} reports on the convergence. @code{@var{flag} = 0} means
+## @var{flag} reports on the convergence.  @code{@var{flag} = 0} means
 ## the solution converged and the tolerance criterion given by @var{tol}
-## is satisfied. @code{@var{flag} = 1} means that the @var{maxit} limit
-## for the iteration count was reached. @code{@var{flag} = 3} reports t
+## is satisfied.  @code{@var{flag} = 1} means that the @var{maxit} limit
+## for the iteration count was reached.  @code{@var{flag} = 3} reports t
 ## @code{pcr} breakdown, see [1] for details.
 ## 
 ## @item
@@ -125,7 +125,7 @@
 ## @end group
 ## @end example
 ## 
-## @sc{Example 3:}  Preconditioned iteration, with full diagnostics. The
+## @sc{Example 3:}  Preconditioned iteration, with full diagnostics.  The
 ## preconditioner (quite strange, because even the original matrix
 ## @var{a} is trivial) is defined as a function
 ## 

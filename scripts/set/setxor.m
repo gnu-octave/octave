@@ -22,7 +22,7 @@
 ## @deftypefnx {Function File} {} setxor (@var{a}, @var{b}, 'rows')
 ##
 ## Return the elements exclusive to @var{a} or @var{b}, sorted in ascending
-## order. If @var{a} and @var{b} are both column vectors return a column
+## order.  If @var{a} and @var{b} are both column vectors return a column
 ## vector, otherwise return a row vector.
 ##
 ## @deftypefnx {Function File} {[@var{c}, @var{ia}, @var{ib}] =} setxor (@var{a}, @var{b})

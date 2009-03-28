@@ -24,8 +24,10 @@
 ## string @var{s}, or 0 if no occurrence is found.  For example,
 ##
 ## @example
+## @group
 ## index ("Teststring", "t")
 ##      @result{} 4
+## @end group
 ## @end example
 ##
 ## If @var{direction} is @samp{"first"}, return the first element found.

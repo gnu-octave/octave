@@ -18,16 +18,16 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} dblquad (@var{f}, @var{xa}, @var{xb}, @var{ya}, @var{yb}, @var{tol}, @var{quadf}, @dots{})
-## Numerically evaluate a double integral. The function over with to
+## Numerically evaluate a double integral.  The function over with to
 ## integrate is defined by @code{@var{f}}, and the interval for the
 ## integration is defined by @code{[@var{xa}, @var{xb}, @var{ya},
-## @var{yb}]}. The function @var{f} must accept a vector @var{x} and a
+## @var{yb}]}.  The function @var{f} must accept a vector @var{x} and a
 ## scalar @var{y}, and return a vector of the same length as @var{x}. 
 ##
 ## If defined, @var{tol} defines the absolute tolerance to which to
 ## which to integrate each sub-integral.
 ##
-## Additional arguments, are passed directly to @var{f}. To use the default
+## Additional arguments, are passed directly to @var{f}.  To use the default
 ## value for @var{tol} one may pass an empty matrix.
 ## @seealso{triplequad, quad, quadv, quadl, quadgk, trapz}
 ## @end deftypefn

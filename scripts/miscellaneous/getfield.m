@@ -32,8 +32,10 @@
 ## the expression
 ##
 ## @example
+## @group
 ## i1 = @{1,2@}; i2 = "fd"; i3 = @{3@}; i4= "b";
 ## ss(i1@{:@}).(i2)(i3@{:@}).(i4)
+## @end group
 ## @end example
 ## @seealso{setfield, rmfield, isfield, isstruct, fieldnames, struct}
 ## @end deftypefn

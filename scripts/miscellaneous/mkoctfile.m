@@ -64,6 +64,7 @@
 ## Print the configuration variable VAR.  Recognized variables are: 
 ##
 ## @example             
+## @group
 ##    ALL_CFLAGS                FFTW_LIBS     
 ##    ALL_CXXFLAGS              FLIBS       
 ##    ALL_FFLAGS                FPICFLAG      
@@ -84,6 +85,7 @@
 ##    F2CFLAGS                  XTRA_CFLAGS   
 ##    F77                       XTRA_CXXFLAGS 
 ##    FFLAGS
+## @end group
 ## @end example
 ##
 ## @item --link-stand-alone
@@ -102,9 +104,10 @@
 ## Echo commands as they are executed.
 ##
 ## @item file
-## The file to compile or link. Recognised file types are
+## The file to compile or link.  Recognised file types are
 ##
 ## @example
+## @group
 ##                   .c    C source
 ##                   .cc   C++ source
 ##                   .C    C++ source
@@ -112,6 +115,7 @@
 ##                   .f    Fortran source
 ##                   .F    Fortran source
 ##                   .o    object file
+## @end group
 ## @end example
 ##
 ## @end table

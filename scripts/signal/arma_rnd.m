@@ -22,8 +22,10 @@
 ## Return a simulation of the ARMA model
 ##
 ## @example
-## x(n) = a(1) * x(n-1) + ... + a(k) * x(n-k)
-##      + e(n) + b(1) * e(n-1) + ... + b(l) * e(n-l)
+## @group
+## x(n) = a(1) * x(n-1) + @dots{} + a(k) * x(n-k)
+##      + e(n) + b(1) * e(n-1) + @dots{} + b(l) * e(n-l)
+## @end group
 ## @end example
 ##
 ## @noindent

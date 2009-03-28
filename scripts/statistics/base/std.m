@@ -42,7 +42,7 @@
 ## If @var{x} is a matrix, compute the standard deviation for
 ## each column and return them in a row vector.
 ##
-## The argument @var{opt} determines the type of normalization to use. Valid values
+## The argument @var{opt} determines the type of normalization to use.  Valid values
 ## are
 ##
 ## @table @asis 

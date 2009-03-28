@@ -38,8 +38,10 @@
 ## returned.
 ##
 ## @example
+## @group
 ## [r, t] = rose ([2*randn(1e5,1), pi + 2 * randn(1e5,1)]);
 ## polar (r, t);
+## @end group
 ## @end example
 ##
 ##

@@ -1,5 +1,5 @@
 ## Copyright (C) 2006, 2007, 2008, 2009 Frederick (Rick) A Niles
-##               and Søren Hauberg
+##               and Sï¿½ren Hauberg
 ##
 ## This file is part of Octave.
 ##
@@ -22,7 +22,7 @@
 ##
 ## For a polygon defined by @code{(@var{xv}, @var{yv})} points, determine
 ## if the points @code{(@var{x}, @var{y})} are inside or outside the polygon.
-## The variables @var{x}, @var{y}, must have the same dimension. The optional
+## The variables @var{x}, @var{y}, must have the same dimension.  The optional
 ## output @var{on} gives the points that are on the polygon.
 ##
 ## @end deftypefn
@@ -30,7 +30,7 @@
 ## Author: Frederick (Rick) A Niles <niles@rickniles.com>
 ## Created: 14 November 2006
 
-## Vectorized by Søren Hauberg <soren@hauberg.org>
+## Vectorized by Sï¿½ren Hauberg <soren@hauberg.org>
 
 ## The method for determining if a point is in in a polygon is based on
 ## the algorithm shown on

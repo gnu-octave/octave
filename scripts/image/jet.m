@@ -18,8 +18,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} jet (@var{n})
-## Create color colormap. This colormap is dark blue through blue, cyan, 
-## green, yellow, red to dark red. The argument @var{n} should be a scalar. 
+## Create color colormap.  This colormap is dark blue through blue, cyan, 
+## green, yellow, red to dark red.  The argument @var{n} should be a scalar. 
 ## If it is omitted, the length of the current colormap or 64 is assumed.
 ## @seealso{colormap}
 ## @end deftypefn

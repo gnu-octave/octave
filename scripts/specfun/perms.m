@@ -19,18 +19,20 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} perms (@var{v})
 ##
-## Generate all permutations of @var{v}, one row per permutation. The
+## Generate all permutations of @var{v}, one row per permutation.  The
 ## result has size @code{factorial (@var{n}) * @var{n}}, where @var{n}
 ## is the length of @var{v}.
 ##
 ## As an example, @code{perms([1, 2, 3])} returns the matrix
 ## @example
+## @group
 ##   1   2   3
 ##   2   1   3
 ##   1   3   2
 ##   2   3   1
 ##   3   1   2
 ##   3   2   1
+## @end group
 ## @end example
 ## @end deftypefn
 

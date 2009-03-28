@@ -21,10 +21,10 @@
 ## @deftypefnx {Function File} {@var{z} =} trapz (@var{x}, @var{y})
 ## @deftypefnx {Function File} {@var{z} =} trapz (@dots{}, @var{dim})
 ## 
-## Numerical integration using trapezoidal method. @code{trapz
+## Numerical integration using trapezoidal method.  @code{trapz
 ## (@var{y})} computes the integral of the @var{y} along the first
-## non-singleton dimension. If the argument @var{x} is omitted a 
-## equally spaced vector is assumed. @code{trapz (@var{x}, @var{y})} 
+## non-singleton dimension.  If the argument @var{x} is omitted a 
+## equally spaced vector is assumed.  @code{trapz (@var{x}, @var{y})} 
 ## evaluates the integral with respect to @var{x}.
 ##  
 ## @seealso{cumtrapz}

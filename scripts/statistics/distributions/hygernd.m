@@ -28,7 +28,7 @@
 ## with @var{m} and @var{n} not greater than @var{t}.
 ##
 ## The parameter @var{sz} must be scalar or a vector of matrix
-## dimensions. If @var{sz} is scalar, then a @var{sz} by @var{sz}
+## dimensions.  If @var{sz} is scalar, then a @var{sz} by @var{sz}
 ## matrix of random samples is generated.
 ## @end deftypefn
 

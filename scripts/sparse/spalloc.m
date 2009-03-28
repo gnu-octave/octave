@@ -18,14 +18,15 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{s} =} spalloc (@var{r}, @var{c}, @var{nz})
-## Returns an empty sparse matrix of size @var{r}-by-@var{c}. As Octave
+## Returns an empty sparse matrix of size @var{r}-by-@var{c}.  As Octave
 ## resizes sparse matrices at the first opportunity, so that no additional 
-## space is needed, the argument @var{nz} is ignored. This function is 
+## space is needed, the argument @var{nz} is ignored.  This function is 
 ## provided only for compatibility reasons.
 ##
 ## It should be noted that this means that code like
 ##
 ## @example
+## @group
 ## k = 5;
 ## nz = r * k;
 ## s = spalloc (r, c, nz)
@@ -33,9 +34,10 @@
 ##   idx = randperm (r);
 ##   s (:, j) = [zeros(r - k, 1); rand(k, 1)] (idx);
 ## endfor
+## @end group
 ## @end example
 ##
-## will reallocate memory at each step. It is therefore vitally important
+## will reallocate memory at each step.  It is therefore vitally important
 ## that code like this is vectorized as much as possible.
 ## @seealso{sparse, nzmax}
 ## @end deftypefn

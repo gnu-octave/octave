@@ -19,9 +19,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} dot (@var{x}, @var{y}, @var{dim})
-## Computes the dot product of two vectors. If @var{x} and @var{y}
+## Computes the dot product of two vectors.  If @var{x} and @var{y}
 ## are matrices, calculate the dot-product along the first 
-## non-singleton dimension. If the optional argument @var{dim} is
+## non-singleton dimension.  If the optional argument @var{dim} is
 ## given, calculate the dot-product along this dimension.
 ## @end deftypefn
 

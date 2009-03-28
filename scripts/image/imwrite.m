@@ -24,12 +24,12 @@
 ## If @var{fmt} is missing, the file extension (if any) of
 ## @var{filename} is used to determine the format.
 ##
-## The parameter-value pairs (@var{p1}, @var{v1}, @dots{}) are optional. Currently
+## The parameter-value pairs (@var{p1}, @var{v1}, @dots{}) are optional.  Currently
 ## the following options are supported for @t{JPEG} images
 ##
 ## @table @samp
 ## @item Quality
-## Sets the quality of the compression. The corresponding value should be an
+## Sets the quality of the compression.  The corresponding value should be an
 ## integer between 0 and 100, with larger values meaning higher visual quality
 ## and less compression.
 ## @end table

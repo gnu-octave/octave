@@ -21,14 +21,14 @@
 ## @deftypefnx {Function File} {[@var{est}, @var{v}, @var{w}, @var{iter}] =} onenormest (@var{apply}, @var{apply_t}, @var{n}, @var{t})
 ##
 ## Apply Higham and Tisseur's randomized block 1-norm estimator to
-## matrix @var{a} using @var{t} test vectors. If @var{t} exceeds 5, then
+## matrix @var{a} using @var{t} test vectors.  If @var{t} exceeds 5, then
 ## only 5 test vectors are used.
 ##
-## If the matrix is not explicit, e.g. when estimating the norm of 
+## If the matrix is not explicit, e.g., when estimating the norm of 
 ## @code{inv (@var{A})} given an LU factorization, @code{onenormest} applies 
 ## @var{A} and its conjugate transpose through a pair of functions 
 ## @var{apply} and @var{apply_t}, respectively, to a dense matrix of size 
-## @var{n} by @var{t}. The implicit version requires an explicit dimension 
+## @var{n} by @var{t}.  The implicit version requires an explicit dimension 
 ## @var{n}.
 ##
 ## Returns the norm estimate @var{est}, two vectors @var{v} and

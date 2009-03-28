@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{r}, @var{k}] =} rref (@var{a}, @var{tol})
 ##
-## Returns the reduced row echelon form of @var{a}. @var{tol} defaults
+## Returns the reduced row echelon form of @var{a}.  @var{tol} defaults
 ## to @code{eps * max (size (@var{a})) * norm (@var{a}, inf)}.
 ##
 ## Called with two return arguments, @var{k} returns the vector of

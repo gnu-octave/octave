@@ -46,6 +46,7 @@
 ## An example demonstrating these rounding rules is
 ##
 ## @example
+## @group
 ## idivide (int8 ([-3, 3]), int8 (4), "fix")
 ## @result{} int8 ([0, 0])
 ## idivide (int8 ([-3, 3]), int8 (4), "round")
@@ -54,6 +55,7 @@
 ## @result{} int8 ([0, 1])
 ## idivide (int8 ([-3, 3]), int8 (4), "floor")
 ## @result{} int8 ([-1, 0])
+## @end group
 ## @end example
 ##
 ## @seealso{ldivide, rdivide}

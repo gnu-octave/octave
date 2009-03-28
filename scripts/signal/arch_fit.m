@@ -23,8 +23,10 @@
 ## scoring algorithm in Engle's original ARCH paper.  The model is
 ##
 ## @example
-## y(t) = b(1) * x(t,1) + ... + b(k) * x(t,k) + e(t),
-## h(t) = a(1) + a(2) * e(t-1)^2 + ... + a(p+1) * e(t-p)^2
+## @group
+## y(t) = b(1) * x(t,1) + @dots{} + b(k) * x(t,k) + e(t),
+## h(t) = a(1) + a(2) * e(t-1)^2 + @dots{} + a(p+1) * e(t-p)^2
+## @end group
 ## @end example
 ##
 ## @noindent
@@ -38,7 +40,7 @@
 ## i.e., do the above with the @math{t}-th row of @var{x} given by
 ##
 ## @example
-## [1, y(t-1), ..., y(t-k)]
+## [1, y(t-1), @dots{}, y(t-k)]
 ## @end example
 ##
 ## Optionally, one can specify the number of iterations @var{iter}, the

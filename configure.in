@@ -1255,7 +1255,10 @@ case "$canonical_host_type" in
     library_path_var=DYLD_LIBRARY_PATH	
   ;;
   *-*-cygwin*)
-    LIBPRE=cyg
+    CPICFLAG=
+    CXXPICFLAG=
+    FPICFLAG=
+    LIBPRE=lib
     SHLLIBPRE=cyg
     SHLBINPRE=lib
     SHLEXT=dll

@@ -1318,6 +1318,7 @@ take_func(std::$1);
 [AC_MSG_RESULT([yes])
  AC_DEFINE(HAVE_CMATH_[]AS_TR_CPP($1)F,1,[Define if <cmath> provides float variant of $1])],
 [AC_MSG_RESULT([no])])
+AC_LANG_POP(C++)
 ])
 
 dnl Check whether fast signed integer arithmetics using bit tricks

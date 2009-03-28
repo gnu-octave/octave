@@ -1,3 +1,13 @@
+2009-03-27  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/balance.cc (Fbalance): Fix order of output args.
+
+2009-03-26  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/find.cc 
+	(find_nonzero_elem_idx (const Array<T>&, ...)): Move dimensions
+	fixup to liboctave.
+
 2009-03-26  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/find.cc 

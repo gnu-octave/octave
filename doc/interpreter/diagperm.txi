@@ -258,6 +258,12 @@ is typically consistent with linear algebra needs. A full matrix that only
 happens to be diagonal (an is thus not a special object) is of course treated
 normally.
 
+Multiplication and division by diagonal matrices works efficiently also when
+combined with sparse matrices, i.e. @code{D*S}, where @var{D} is a diagonal
+matrix and @var{S} is a sparse matrix scales the rows of the sparse matrix and
+returns a sparse matrix. The expressions @code{S*D}, @code{D\S}, @code{S/D} work
+analogically.
+
 If @var{D1} and @var{D2} are both diagonal matrices, then the expressions
 @example
 D1 + D2
@@ -320,6 +326,12 @@ permutation matrix (or inverse) is a constant-time operation, flipping only a
 flag internally, and thus the choice between the two above equivalent
 expressions for inverse permuting is completely up to the user's taste.
 
+Multiplication and division by permutation matrices works efficiently also when
+combined with sparse matrices, i.e. @code{P*S}, where @var{P} is a permutation
+matrix and @var{S} is a sparse matrix permutes the rows of the sparse matrix and
+returns a sparse matrix. The expressions @code{S*P}, @code{P\S}, @code{S/P} work
+analogically.
+
 Two permutation matrices can be multiplied or divided (if their sizes match), performing
 a composition of permutations. Also a permutation matrix can be indexed by a permutation
 vector (or two vectors), giving again a permutation matrix.
@@ -351,6 +363,8 @@ without converting it to a full one:
 @dfn{abs}, @dfn{real}, @dfn{imag}, @dfn{conj}, @dfn{sqrt}. 
 A diagonal matrix can also be returned from the @dfn{balance}
 and @dfn{svd} functions.
+The @dfn{sparse} function will convert a diagonal matrix efficiently to a
+sparse matrix.
 
 @node Permutation Matrix Functions
 @subsection Permutation Matrix Functions
@@ -361,6 +375,11 @@ calculating the sign of the permutation (which is equal to the determinant).
 
 A permutation matrix can also be returned from the built-in functions
 @dfn{lu} and @dfn{qr}, if a pivoted factorization is requested.
+
+The @dfn{sparse} function will convert a permutation matrix efficiently to a
+sparse matrix.
+The @dfn{find} function will also work efficiently with a permutation matrix,
+making it possible to conveniently obtain the permutation indices.
 
 @node Example Codes
 @section Some Examples of Usage

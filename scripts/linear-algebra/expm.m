@@ -115,12 +115,12 @@ function r = expm (a)
     a -= trshift*eye (n);
   endif
   ## Balancing.
-  [p, d, aa] = balance (a);
+  [d, p, aa] = balance (a);
   ## FIXME: can we both permute and scale at once? Or should we rather do
   ## this:
   ##
-  ##   [p, xx, aa] = balance (a, "noscal");
-  ##   [xx, d, aa] = balance (aa, "noperm");
+  ##   [d, xx, aa] = balance (a, "noperm");
+  ##   [xx, p, aa] = balance (aa, "noscal");
   [f, e] = log2 (norm (aa, "inf"));
   s = max (0, e);
   s = min (s, 1023);

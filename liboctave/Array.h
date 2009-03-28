@@ -628,6 +628,7 @@ public:
     return result;
   }
 
+  template <class U> friend class Array;
 };
 
 #endif

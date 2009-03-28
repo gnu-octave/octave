@@ -100,9 +100,14 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
 	else
 	  fontspec = sprintf ("font \"%s,%d\"", f, s);
 	endif
-	fprintf (plot_stream, "set title \"%s\" %s %s;\n",
+	fprintf (plot_stream, "set title \"%s\" %s %s",
 		 undo_string_escapes (tt), fontspec,
 		 __do_enhanced_option__ (enhanced, t));
+	if (nd == 3)
+	  fprintf (plot_stream, " offset screen 0, screen %.3f;\n", pos(4)/5);
+	else
+	  fprintf (plot_stream, ";\n");
+	endif
       endif
     endif
 

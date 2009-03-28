@@ -295,10 +295,11 @@ idx_vector::idx_vector_rep::idx_vector_rep (const Array<bool>& bnda)
   for (octave_idx_type i = 0, l = bnda.numel (); i < l; i++)
     if (bnda.xelem (i)) len++;
 
-  dim_vector dv = bnda.dims ();
+  const dim_vector dv = bnda.dims ();
 
-  orig_dims = ((dv.length () == 2 && dv(0) == 1)
-	       ? dim_vector (1, len) : orig_dims = dim_vector (len, 1));
+  if (! dv.all_zero ())
+    orig_dims = ((dv.length () == 2 && dv(0) == 1) 
+                 ? dim_vector (1, len) : dim_vector (len, 1));
 
   if (len != 0)
     {

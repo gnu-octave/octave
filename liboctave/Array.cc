@@ -2546,6 +2546,21 @@ Array<T>::find (octave_idx_type n, bool backward) const
         }
     }
 
+  // Fixup return dimensions, for Matlab compatibility.
+  // find(zeros(0,0)) -> zeros(0,0)
+  // find(zeros(1,0)) -> zeros(1,0)
+  // find(zeros(0,1)) -> zeros(0,1)
+  // find(zeros(0,X)) -> zeros(0,1)
+  // find(zeros(1,1)) -> zeros(0,0) !!!! WHY?
+  // find(zeros(0,1,0)) -> zeros(0,0)
+  // find(zeros(0,1,0,1)) -> zeros(0,0) etc
+
+  if ((numel () == 1 && retval.is_empty ())
+      || (rows () == 0 && dims ().numel (1) == 0))
+    retval.dimensions = dim_vector ();
+  else if (rows () == 1 && ndims () == 2)
+    retval.dimensions = dim_vector (1, retval.length ());
+
   return retval;
 }
 

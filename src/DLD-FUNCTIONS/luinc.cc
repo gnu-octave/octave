@@ -48,47 +48,47 @@ Two types of incomplete factorization are possible, and the type\n\
 is determined by the second argument to @dfn{luinc}.\n\
 \n\
 Called with a second argument of '0', the zero-level incomplete\n\
-LU factorization is produced. This creates a factorization of @var{a}\n\
+LU factorization is produced.  This creates a factorization of @var{a}\n\
 where the position of the non-zero arguments correspond to the same\n\
 positions as in the matrix @var{a}.\n\
 \n\
 Alternatively, the fill-in of the incomplete LU factorization can\n\
 be controlled through the variable @var{droptol} or the structure\n\
-@var{opts}. The UMFPACK multifrontal factorization code by Tim A.\n\
+@var{opts}.  The UMFPACK multifrontal factorization code by Tim A.\n\
 Davis is used for the incomplete LU factorization, (availability\n\
 @url{http://www.cise.ufl.edu/research/sparse/umfpack/})\n\
 \n\
 @var{droptol} determines the values below which the values in the LU\n\
-factorization are dropped and replaced by zero. It must be a positive\n\
+factorization are dropped and replaced by zero.  It must be a positive\n\
 scalar, and any values in the factorization whose absolute value are\n\
 less than this value are dropped, expect if leaving them increase the\n\
-sparsity of the matrix. Setting @var{droptol} to zero results in a\n\
+sparsity of the matrix.  Setting @var{droptol} to zero results in a\n\
 complete LU factorization which is the default.\n\
 \n\
 @var{opts} is a structure containing one or more of the fields\n\
 \n\
 @table @code\n\
 @item droptol\n\
-The drop tolerance as above. If @var{opts} only contains @code{droptol}\n\
+The drop tolerance as above.  If @var{opts} only contains @code{droptol}\n\
 then this is equivalent to using the variable @var{droptol}.\n\
 \n\
 @item milu\n\
 A logical variable flagging whether to use the modified incomplete LU\n\
-factorization. In the case that @code{milu} is true, the dropped values\n\
+factorization.  In the case that @code{milu} is true, the dropped values\n\
 are subtracted from the diagonal of the matrix U of the factorization.\n\
 The default is @code{false}.\n\
 \n\
 @item udiag\n\
 A logical variable that flags whether zero elements on the diagonal of U\n\
 should be replaced with @var{droptol} to attempt to avoid singular\n\
-factors. The default is @code{false}.\n\
+factors.  The default is @code{false}.\n\
 \n\
 @item thresh\n\
-Defines the pivot threshold in the interval [0,1]. Values outside that\n\
+Defines the pivot threshold in the interval [0,1].  Values outside that\n\
 range are ignored.\n\
 @end table\n\
 \n\
-All other fields in @var{opts} are ignored. The outputs from @dfn{luinc}\n\
+All other fields in @var{opts} are ignored.  The outputs from @dfn{luinc}\n\
 are the same as for @dfn{lu}.\n\
 \n\
 Given the string argument 'vector', @dfn{luinc} returns the values of @var{p}\n\

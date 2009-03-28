@@ -275,9 +275,11 @@ $$\n\
 @ifnottex\n\
 \n\
 @example\n\
+@group\n\
       df       df\n\
 jac = -- + c ------\n\
       dx     d xdot\n\
+@end group\n\
 @end example\n\
 \n\
 @end ifnottex\n\
@@ -285,9 +287,11 @@ jac = -- + c ------\n\
 The modified Jacobian function must have the form\n\
 \n\
 @example\n\
+@group\n\
 \n\
 @var{jac} = j (@var{x}, @var{xdot}, @var{t}, @var{c})\n\
 \n\
+@end group\n\
 @end example\n\
 \n\
 The optional second argument names a function that defines the\n\

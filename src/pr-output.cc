@@ -3185,8 +3185,10 @@ Convert @var{x} into a rational approximation represented as a string.\n\
 You can convert the string back into a matrix as follows:\n\
 \n\
 @example\n\
+@group\n\
    r = rats(hilb(4));\n\
    x = str2num(r)\n\
+@end group\n\
 @end example\n\
 \n\
 The optional second argument defines the maximum length of the string\n\
@@ -3264,10 +3266,12 @@ DEFUN (disp, args, nargout,
 Display the value of @var{x}.  For example,\n\
 \n\
 @example\n\
+@group\n\
 disp (\"The value of pi is:\"), disp (pi)\n\
 \n\
      @print{} the value of pi is:\n\
      @print{} 3.1416\n\
+@end group\n\
 @end example\n\
 \n\
 @noindent\n\
@@ -3306,10 +3310,12 @@ DEFUN (fdisp, args, ,
 Display the value of @var{x} on the stream @var{fid}.  For example,\n\
 \n\
 @example\n\
+@group\n\
 fdisp (stdout, \"The value of pi is:\"), fdisp (stdout, pi)\n\
 \n\
      @print{} the value of pi is:\n\
      @print{} 3.1416\n\
+@end group\n\
 @end example\n\
 \n\
 @noindent\n\

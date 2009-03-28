@@ -415,6 +415,7 @@ to log2(bitmax)+1.\n\
 @var{n} must be in the range [1,log2(bitmax)+1] usually [1,33]\n\
 \n\
 @example\n\
+@group\n\
 bitshift (eye (3), 1)\n\
 @result{}\n\
 @group\n\
@@ -430,6 +431,7 @@ bitshift (10, [-2, -1, 0, 1, 2])\n\
 @c \n\
 @c bitshift ([1, 10], 2, [3,4])\n\
 @c @result{} 4  8\n\
+@end group\n\
 @end example\n\
 @seealso{bitand, bitor, bitxor, bitset, bitget, bitcmp, bitmax}\n\
 @end deftypefn")

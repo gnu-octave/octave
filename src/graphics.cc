@@ -5111,11 +5111,13 @@ as additional arguments to the function.\n\
 Example:\n\
 \n\
 @example\n\
+@group\n\
 function my_listener (h, dummy, p1)\n\
   fprintf (\"my_listener called with p1=%s\\n\", p1);\n\
 endfunction\n\
 \n\
 addlistener (gcf, \"position\", @{@@my_listener, \"my string\"@})\n\
+@end group\n\
 @end example\n\
 \n\
 @end deftypefn")
@@ -5172,6 +5174,7 @@ are removed.\n\
 Example:\n\
 \n\
 @example\n\
+@group\n\
 function my_listener (h, dummy, p1)\n\
   fprintf (\"my_listener called with p1=%s\\n\", p1);\n\
 endfunction\n\
@@ -5179,6 +5182,7 @@ endfunction\n\
 c = @{@@my_listener, \"my string\"@};\n\
 addlistener (gcf, \"position\", c);\n\
 dellistener (gcf, \"position\", c);\n\
+@end group\n\
 @end example\n\
 \n\
 @end deftypefn")
@@ -5277,9 +5281,11 @@ property into the graphics object @var{h}.\n\
 Examples:\n\
 \n\
 @example\n\
+@group\n\
 addproperty (\"my_property\", gcf, \"string\", \"a string value\");\n\
 addproperty (\"my_radio\", gcf, \"radio\", \"val_1|val_2|@{val_3@}\");\n\
 addproperty (\"my_style\", gcf, \"linelinestyle\", \"--\");\n\
+@end group\n\
 @end example\n\
 \n\
 @end deftypefn")

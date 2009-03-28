@@ -324,7 +324,7 @@ form\n\
 v = rand (\"state\")\n\
 @end example\n\
 \n\
-This returns a column vector @var{v} of length 625. Later, you can\n\
+This returns a column vector @var{v} of length 625.  Later, you can\n\
 restore the random number generator to the state @var{v}\n\
 using the form\n\
 \n\
@@ -363,7 +363,7 @@ as in\n\
 rand (\"seed\", val)\n\
 @end example\n\
 \n\
-which sets the seed of the generator to @var{val}. The seed of the\n\
+which sets the seed of the generator to @var{val}.  The seed of the\n\
 generator can be queried with\n\
 \n\
 @example\n\
@@ -636,8 +636,10 @@ r = b * randg (a)\n\
 @end example\n\
 @item @code{beta (a, b)} for @code{a > -1}, @code{b > -1}\n\
 @example\n\
+@group\n\
 r1 = randg (a, 1)\n\
 r = r1 / (r1 + randg (b, 1))\n\
+@end group\n\
 @end example\n\
 @item @code{Erlang (a, n)}\n\
 @example\n\
@@ -668,14 +670,18 @@ r = randp ((1 - p) / p * randg (n))\n\
 @item non-central @code{chisq (df, L)}, for @code{df >= 0} and @code{L > 0}\n\
 (use chisq if @code{L = 0})\n\
 @example\n\
+@group\n\
 r = randp (L / 2)\n\
 r(r > 0) = 2 * randg (r(r > 0))\n\
 r(df > 0) += 2 * randg (df(df > 0)/2)\n\
+@end group\n\
 @end example\n\
 @item @code{Dirichlet (a1, @dots{} ak)}\n\
 @example\n\
+@group\n\
 r = (randg (a1), @dots{}, randg (ak))\n\
 r = r / sum (r)\n\
+@end group\n\
 @end example\n\
 @end table\n\
 @seealso{rand, randn, rande, randp}\n\
@@ -869,7 +875,7 @@ DEFUN_DLD (randp, args, ,
 @deftypefnx {Loadable Function} {} randp (@var{l}, @var{n}, @var{m})\n\
 @deftypefnx {Loadable Function} {} randp (\"state\", @var{x})\n\
 @deftypefnx {Loadable Function} {} randp (\"seed\", @var{x})\n\
-Return a matrix with Poisson distributed random elements with mean value parameter given by the first argument, @var{l}. The arguments\n\
+Return a matrix with Poisson distributed random elements with mean value parameter given by the first argument, @var{l}.  The arguments\n\
 are handled the same as the arguments for @code{rand}, except for the\n\
 argument @var{l}.\n\
 \n\

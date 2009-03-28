@@ -174,9 +174,11 @@ $$ x(t_0) = x_0 $$\n\
 @ifnottex\n\
 \n\
 @example\n\
+@group\n\
 dx\n\
 -- = f(x, t)\n\
 dt\n\
+@end group\n\
 @end example\n\
 \n\
 with\n\
@@ -233,6 +235,7 @@ $$ J = {\\partial f_i \\over \\partial x_j} = \\left[\\matrix{\n\
 @ifnottex\n\
 \n\
 @example\n\
+@group\n\
              | df_1  df_1       df_1 |\n\
              | ----  ----  ...  ---- |\n\
              | dx_1  dx_2       dx_N |\n\
@@ -248,6 +251,7 @@ jac = ---- = |                       |\n\
              | df_N  df_N       df_N |\n\
              | ----  ----  ...  ---- |\n\
              | dx_1  dx_2       dx_N |\n\
+@end group\n\
 @end example\n\
 \n\
 @end ifnottex\n\

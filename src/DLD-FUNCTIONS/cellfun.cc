@@ -1253,11 +1253,13 @@ determined by the index vectors @var{lb}, @var{ub}, for lower and upper bounds, 
 In other words, it is equivalent to the following code:\n\
 \n\
 @example\n\
+@group\n\
 n = length (lb);\n\
 sl = cell (1, n);\n\
 for i = 1:length (lb)\n\
   sl@{i@} = x(lb(i):ub(i));\n\
 endfor\n\
+@end group\n\
 @end example\n\
 \n\
 If @var{X} is a matrix or array, indexing is done along the last dimension.\n\

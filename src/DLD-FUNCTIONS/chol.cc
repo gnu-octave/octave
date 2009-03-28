@@ -68,13 +68,13 @@ $ R^T R = A $.\n\
 @end ifnottex\n\
 \n\
 Called with one output argument @code{chol} fails if @var{a} or @var{s} is\n\
-not positive definite. With two or more output arguments @var{p} flags\n\
-whether the matrix was positive definite and @code{chol} does not fail. A\n\
+not positive definite.  With two or more output arguments @var{p} flags\n\
+whether the matrix was positive definite and @code{chol} does not fail.  A\n\
 zero value indicated that the matrix was positive definite and the @var{r}\n\
 gives the factorization, annd @var{p} will have a positive value otherwise.\n\
 \n\
 If called with 3 outputs then a sparsity preserving row/column permutation\n\
-is applied to @var{a} prior to the factorization. That is @var{r}\n\
+is applied to @var{a} prior to the factorization.  That is @var{r}\n\
 is the factorization of @code{@var{a}(@var{q},@var{q})} such that\n\
 @iftex\n\
 @tex\n\
@@ -804,7 +804,7 @@ Given a Cholesky@tie{}factorization of a real symmetric or complex hermitian\n\
 positive definite matrix @w{@var{A} = @var{R}'*@var{R}}, @var{R}@tie{}upper triangular,\n\
 return the Cholesky@tie{}factorization of\n\
 @var{A1}, where @w{A1(p,p) = A}, @w{A1(:,j) = A1(j,:)' = u} and\n\
-@w{p = [1:j-1,j+1:n+1]}. @w{u(j)} should be positive.\n\
+@w{p = [1:j-1,j+1:n+1]}.  @w{u(j)} should be positive.\n\
 On return, @var{info} is set to\n\
 @itemize\n\
 @item 0 if the insertion was successful,\n\
@@ -1122,7 +1122,7 @@ return the Cholesky@tie{}factorization of\n\
 @w{@var{A}(p,p)}, where @w{p} is the permutation @*\n\
 @code{p = [1:i-1, shift(i:j, 1), j+1:n]} if @w{@var{i} < @var{j}} @*\n\
  or @*\n\
-@code{p = [1:j-1, shift(j:i,-1), i+1:n]} if @w{@var{j} < @var{i}}. @*\n\
+@code{p = [1:j-1, shift(j:i,-1), i+1:n]} if @w{@var{j} < @var{i}}.  @*\n\
 \n\
 @seealso{chol, cholinsert, choldelete}\n\
 @end deftypefn")

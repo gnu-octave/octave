@@ -725,7 +725,7 @@ Return 0 if successful, otherwise return -1.\n\
 DEFUN (fstat, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{info}, @var{err}, @var{msg}] =} fstat (@var{fid})\n\
-Return information about about the open file @var{fid}.  See @code{stat}\n\
+Return information about the open file @var{fid}.  See @code{stat}\n\
 for a description of the contents of @var{info}.\n\
 @end deftypefn")
 {
@@ -1463,7 +1463,7 @@ DEFUNX ("WTERMSIG", FWTERMSIG, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} WTERMSIG (@var{status})\n\
 Given @var{status} from a call to @code{waitpid}, return the number of\n\
-the signal that caused the child process to terminate. This function\n\
+the signal that caused the child process to terminate.  This function\n\
 should only be employed if @code{WIFSIGNALED} returned true.\n\
 @seealso{waitpid, WIFEXITED, WEXITSTATUS, WIFSIGNALED, WCOREDUMP, WIFSTOPPED, WSTOPSIG, WIFCONTINUED}\n\
 @end deftypefn")
@@ -1722,7 +1722,7 @@ DEFUNX ("O_APPEND", FO_APPEND, args, ,
 @deftypefn {Built-in Function} {} O_APPEND ()\n\
 Return the numerical value of the file status flag that may be\n\
 returned by @code{fcntl} to indicate each write operation appends,\n\
-or that may be passed to @code{fcntl} to set the write mode to append.\
+or that may be passed to @code{fcntl} to set the write mode to append.\\n\
 @seealso{fcntl, O_ASYNC, O_CREAT, O_EXCL, O_NONBLOCK, O_RDONLY, O_RDWR, O_SYNC, O_TRUNC, O_WRONLY}\n\
 @end deftypefn")
 {

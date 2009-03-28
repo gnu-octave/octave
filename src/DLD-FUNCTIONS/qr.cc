@@ -100,6 +100,7 @@ subroutines.  For example, given the matrix @code{a = [1, 2; 3, 4]},\n\
 returns\n\
 \n\
 @example\n\
+@group\n\
 q =\n\
 \n\
   -0.31623  -0.94868\n\
@@ -109,6 +110,7 @@ r =\n\
 \n\
   -3.16228  -4.42719\n\
    0.00000  -0.63246\n\
+@end group\n\
 @end example\n\
 \n\
 The @code{qr} factorization has applications in the solution of least\n\
@@ -164,6 +166,7 @@ order.  For example,given the matrix @code{a = [1, 2; 3, 4]},\n\
 returns\n\
 \n\
 @example\n\
+@group\n\
 q = \n\
 \n\
   -0.44721  -0.89443\n\
@@ -178,6 +181,7 @@ p =\n\
 \n\
    0  1\n\
    1  0\n\
+@end group\n\
 @end example\n\
 \n\
 The permuted @code{qr} factorization @code{[q, r, p] = qr (a)}\n\
@@ -185,22 +189,24 @@ factorization allows the construction of an orthogonal basis of\n\
 @code{span (a)}.\n\
 \n\
 If the matrix @var{a} is sparse, then compute the sparse QR factorization\n\
-of @var{a}, using @sc{CSparse}. As the matrix @var{Q} is in general a full\n\
+of @var{a}, using @sc{CSparse}.  As the matrix @var{Q} is in general a full\n\
 matrix, this function returns the @var{Q}-less factorization @var{r} of\n\
 @var{a}, such that @code{@var{r} = chol (@var{a}' * @var{a})}.\n\
 \n\
 If the final argument is the scalar @code{0} and the number of rows is\n\
 larger than the number of columns, then an economy factorization is\n\
-returned. That is @var{r} will have only @code{size (@var{a},1)} rows.\n\
+returned.  That is @var{r} will have only @code{size (@var{a},1)} rows.\n\
 \n\
 If an additional matrix @var{b} is supplied, then @code{qr} returns\n\
-@var{c}, where @code{@var{c} = @var{q}' * @var{b}}. This allows the\n\
+@var{c}, where @code{@var{c} = @var{q}' * @var{b}}.  This allows the\n\
 least squares approximation of @code{@var{a} \\ @var{b}} to be calculated\n\
 as\n\
 \n\
 @example\n\
+@group\n\
 [@var{c},@var{r}] = spqr (@var{a},@var{b})\n\
 @var{x} = @var{r} \\ @var{c}\n\
+@end group\n\
 @end example\n\
 @end deftypefn")
 {
@@ -784,7 +790,7 @@ Given a QR@tie{}factorization of a real or complex matrix\n\
 @var{R}@tie{}upper trapezoidal, return the QR@tie{}factorization\n\
 of @w{@var{A} + @var{u}*@var{v}'}, where @var{u} and @var{v} are\n\
 column vectors (rank-1 update) or matrices with equal number of columns\n\
-(rank-k update). Notice that the latter case is done as a sequence of rank-1 updates;\n\
+(rank-k update).  Notice that the latter case is done as a sequence of rank-1 updates;\n\
 thus, for k large enough, it will be both faster and more accurate to recompute\n\
 the factorization from scratch.\n\
 \n\
@@ -1178,9 +1184,9 @@ DEFUN_DLD (qrdelete, args, ,
 Given a QR@tie{}factorization of a real or complex matrix\n\
 @w{@var{A} = @var{Q}*@var{R}}, @var{Q}@tie{}unitary and\n\
 @var{R}@tie{}upper trapezoidal, return the QR@tie{}factorization of\n\
-@w{[A(:,1:j-1) A(:,j+1:n)]}, i.e. @var{A} with one column deleted\n\
+@w{[A(:,1:j-1) A(:,j+1:n)]}, i.e., @var{A} with one column deleted\n\
 (if @var{orient} is \"col\"), or the QR@tie{}factorization of\n\
-@w{[A(1:j-1,:);A(:,j+1:n)]}, i.e. @var{A} with one row deleted (if\n\
+@w{[A(1:j-1,:);A(:,j+1:n)]}, i.e., @var{A} with one row deleted (if\n\
 @var{orient} is \"row\").\n\
 \n\
 The default value of @var{orient} is \"col\".\n\
@@ -1431,7 +1437,7 @@ Given a QR@tie{}factorization of a real or complex matrix\n\
 of @w{@var{A}(:,p)}, where @w{p} is the permutation @*\n\
 @code{p = [1:i-1, shift(i:j, 1), j+1:n]} if @w{@var{i} < @var{j}} @*\n\
  or @*\n\
-@code{p = [1:j-1, shift(j:i,-1), i+1:n]} if @w{@var{j} < @var{i}}. @*\n\
+@code{p = [1:j-1, shift(j:i,-1), i+1:n]} if @w{@var{j} < @var{i}}.  @*\n\
 \n\
 @seealso{qr, qrinsert, qrdelete}\n\
 @end deftypefn")

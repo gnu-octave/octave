@@ -77,11 +77,13 @@ svd (hilb (3))\n\
 returns\n\
 \n\
 @example\n\
+@group\n\
 ans =\n\
 \n\
   1.4083189\n\
   0.1223271\n\
   0.0026873\n\
+@end group\n\
 @end example\n\
 \n\
 @noindent\n\
@@ -95,6 +97,7 @@ and\n\
 returns\n\
 \n\
 @example\n\
+@group\n\
 u =\n\
 \n\
   -0.82704   0.54745   0.12766\n\
@@ -112,6 +115,7 @@ v =\n\
   -0.82704   0.54745   0.12766\n\
   -0.45986  -0.52829  -0.71375\n\
   -0.32330  -0.64901   0.68867\n\
+@end group\n\
 @end example\n\
 \n\
 If given a second argument, @code{svd} returns an economy-sized\n\

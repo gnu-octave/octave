@@ -737,7 +737,7 @@ DEFUN (hypot, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} hypot (@var{x}, @var{y})\n\
 Compute square-root of the squares of @var{x} and @var{y}\n\
-element-by-element. This equivalent to @code{sqrt (@var{x}.^ 2 + @var{y}\n\
+element-by-element.  This equivalent to @code{sqrt (@var{x}.^ 2 + @var{y}\n\
 .^ 2)}, but calculated in a manner that avoids overflows for large\n\
 values of @var{x} or @var{y}.\n\
 @end deftypefn")
@@ -992,11 +992,11 @@ map_2_xlog2 (const Array<T>& x, Array<T>& f, Array<ET>& e)
 DEFUN (log2, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} log2 (@var{x})\n\
-@deftypefnx {Mapping Function} {[@var{f}, @var{e}] = } log2 (@var{x})\n\
+@deftypefnx {Mapping Function} {[@var{f}, @var{e}] =} log2 (@var{x})\n\
 Compute the base-2 logarithm for each element of @var{x}.\n\
 If called with two output arguments, split @var{x} to\n\
 binary mantissa and exponent so that @code{1/2 <= abs(f) < 1} and\n\
-@var{e} is an integer. If @code{x = 0}, @code{f = e = 0}.\n\
+@var{e} is an integer.  If @code{x = 0}, @code{f = e = 0}.\n\
 @seealso{log, log10, log2, exp}\n\
 @end deftypefn")
 {
@@ -2263,7 +2263,7 @@ DEFUN (length, args, ,
 @deftypefn {Built-in Function} {} length (@var{a})\n\
 Return the `length' of the object @var{a}.  For matrix objects, the\n\
 length is the number of rows or columns, whichever is greater (this\n\
-odd definition is used for compatibility with @sc{Matlab}).\n\
+odd definition is used for compatibility with @sc{matlab}).\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -2356,8 +2356,10 @@ If given a second argument, @code{size} will return the size of the\n\
 corresponding dimension.  For example\n\
 \n\
 @example\n\
+@group\n\
 size ([1, 2; 3, 4; 5, 6], 2)\n\
      @result{} 2\n\
+@end group\n\
 @end example\n\
 \n\
 @noindent\n\
@@ -2490,7 +2492,7 @@ DEFUN (nzmax, args, ,
 @deftypefn {Built-in Function} {@var{scalar} =} nzmax (@var{SM})\n\
 Return the amount of storage allocated to the sparse matrix @var{SM}.\n\
 Note that Octave tends to crop unused memory at the first opportunity\n\
-for sparse objects. There are some cases of user created sparse objects\n\
+for sparse objects.  There are some cases of user created sparse objects\n\
 where the value returned by @dfn{nzmaz} will not be the same as @dfn{nnz},\n\
 but in general they will give the same result.\n\
 @seealso{sparse, spalloc}\n\
@@ -2552,13 +2554,15 @@ return the sum of the elements.\n\
 \n\
 If the optional argument 'native' is given, then the sum is performed\n\
 in the same type as the original argument, rather than in the default\n\
-double type. For example\n\
+double type.  For example\n\
 \n\
 @example\n\
+@group\n\
 sum ([true, true])\n\
   @result{} 2\n\
 sum ([true, true], 'native')\n\
   @result{} true\n\
+@end group\n\
 @end example\n\
 @end deftypefn")
 {
@@ -3802,7 +3806,7 @@ for double precision and\n\
  $1.1921\\times10^{-7}$.\n\
 @end tex\n\
 @end iftex\n\
-for single precision. Given a single argument @var{x}, return the\n\
+for single precision.  Given a single argument @var{x}, return the\n\
 distance between @var{x} and the next largest value.\n\
 @end deftypefn")
 {
@@ -4189,7 +4193,7 @@ val = zeros (n,m, \"uint8\")\n\
 \n\
 Calling @code{eye} with no arguments is equivalent to calling it\n\
 with an argument of 1.  This odd definition is for compatibility\n\
-with @sc{Matlab}.\n\
+with @sc{matlab}.\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -4273,7 +4277,7 @@ value of 100 is used.\n\
 \n\
 The @code{linspace} function always returns a row vector.\n\
 \n\
-For compatibility with @sc{Matlab}, return the second argument if\n\
+For compatibility with @sc{matlab}, return the second argument if\n\
 fewer than two values are requested.\n\
 @end deftypefn")
 {
@@ -4408,10 +4412,12 @@ In other words, the statement\n\
 is equivalent to the following code:\n\
 \n\
 @example\n\
+@group\n\
   y = zeros (dv, class (x));\n\
   sz = min (dv, size (x));\n\
   for i = 1:length (sz), idx@{i@} = 1:sz(i); endfor\n\
   y(idx@{:@}) = x(idx@{:@});\n\
+@end group\n\
 @end example\n\
 \n\
 @noindent\n\
@@ -4635,7 +4641,7 @@ DEFUN (squeeze, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} squeeze (@var{x})\n\
 Remove singleton dimensions from @var{x} and return the result.\n\
-Note that for compatibility with @sc{Matlab}, all objects have\n\
+Note that for compatibility with @sc{matlab}, all objects have\n\
 a minimum of two dimensions and row vectors are left unchanged.\n\
 @end deftypefn")
 {
@@ -4719,7 +4725,7 @@ the p-pseudonorm defined as above.\n\
 @end table\n\
 \n\
 If @code{\"rows\"} is given as @var{opt}, the norms of all rows of the matrix @var{a} are\n\
-returned as a column vector. Similarly, if @code{\"columns\"} or @code{\"cols\"} is passed\n\
+returned as a column vector.  Similarly, if @code{\"columns\"} or @code{\"cols\"} is passed\n\
 column norms are computed.\n\
 @seealso{cond, svd}\n\
 @end deftypefn")
@@ -5129,9 +5135,11 @@ output argument sets the timer.  Subsequent calls to @code{toc}\n\
 return the number of seconds since the timer was set.  For example,\n\
 \n\
 @example\n\
+@group\n\
 tic ();\n\
-# many computations later...\n\
+# many computations later@dots{}\n\
 elapsed_time = toc ();\n\
+@end group\n\
 @end example\n\
 \n\
 @noindent\n\
@@ -5687,7 +5695,7 @@ DEFUN (issorted, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Function File} {} issorted (@var{a}, @var{rows})\n\
 Returns true if the array is sorted, ascending or descending.\n\
-NaNs are treated is by @code{sort}. If @var{rows} is supplied and\n\
+NaNs are treated is by @code{sort}.  If @var{rows} is supplied and\n\
 has the value \"rows\", checks whether the array is sorted by rows\n\
 as if output by @code{sortrows} (with no options).\n\
 \n\

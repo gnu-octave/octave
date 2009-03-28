@@ -641,7 +641,7 @@ DEFUN (filesep, args, ,
 Return the system-dependent character used to separate directory names.\n\
 \n\
 If 'all' is given, the function return all valid file separators in\n\
-the form of a string. The list of file separators is system-dependent.\n\
+the form of a string.  The list of file separators is system-dependent.\n\
 It is / (forward slash) under UNIX or Mac OS X, / and \\ (forward and\n\
 backward slashes) under Windows.\n\
 @seealso{pathsep, dir, ls}\n\

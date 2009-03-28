@@ -178,7 +178,7 @@ DEFUN_DLD (quad, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {[@var{v}, @var{ier}, @var{nfun}, @var{err}] =} quad (@var{f}, @var{a}, @var{b}, @var{tol}, @var{sing})\n\
 Integrate a nonlinear function of one variable using Quadpack.\n\
-The first argument is the name of the  function, the function handle or\n\
+The first argument is the name of the function, the function handle or\n\
 the inline function to call to compute the value of the integrand.  It\n\
 must have the form\n\
 \n\
@@ -197,7 +197,7 @@ accuracy of the result.  The first element of the vector is the desired\n\
 absolute tolerance, and the second element is the desired relative\n\
 tolerance.  To choose a relative test only, set the absolute\n\
 tolerance to zero.  To choose an absolute test only, set the relative\n\
-tolerance to zero. \n\
+tolerance to zero.  \n\
 \n\
 The optional argument @var{sing} is a vector of values at which the\n\
 integrand is known to be singular.\n\

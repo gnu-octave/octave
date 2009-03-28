@@ -398,9 +398,11 @@ Return a new list created by appending @var{a1}, @var{a2}, @dots{}, to\n\
 elements are appended individually.  For example,\n\
 \n\
 @example\n\
+@group\n\
 x = list (1, 2);\n\
 y = list (3, 4);\n\
 append (x, y);\n\
+@end group\n\
 @end example\n\
 \n\
 @noindent\n\

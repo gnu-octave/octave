@@ -72,7 +72,7 @@ DEFUN_DLD (lu, args, nargout,
 @deftypefnx {Loadable Function} {@var{y} =} lu (@dots{})\n\
 @deftypefnx {Loadable Function} {[@dots{}] =} lu (@dots{}, 'vector')\n\
 @cindex LU decomposition\n\
-Compute the LU decomposition of @var{a}. If @var{a} is full subroutines from\n\
+Compute the LU decomposition of @var{a}.  If @var{a} is full subroutines from\n\
 @sc{Lapack} are used and if @var{a} is sparse then UMFPACK is used.  The\n\
 result is returned in a permuted form, according to the optional return\n\
 value @var{p}.  For example, given the matrix @code{a = [1, 2; 3, 4]},\n\
@@ -85,6 +85,7 @@ value @var{p}.  For example, given the matrix @code{a = [1, 2; 3, 4]},\n\
 returns\n\
 \n\
 @example\n\
+@group\n\
 l =\n\
 \n\
   1.00000  0.00000\n\
@@ -99,13 +100,14 @@ p =\n\
 \n\
   0  1\n\
   1  0\n\
+@end group\n\
 @end example\n\
 \n\
 The matrix is not required to be square.\n\
 \n\
 Called with two or three output arguments and a spare input matrix,\n\
 then @dfn{lu} does not attempt to perform sparsity preserving column\n\
-permutations. Called with a fourth output argument, the sparsity\n\
+permutations.  Called with a fourth output argument, the sparsity\n\
 preserving column transformation @var{Q} is returned, such that\n\
 @code{@var{p} * @var{a} * @var{q} = @var{l} * @var{u}}.\n\
 \n\
@@ -115,11 +117,11 @@ such that @code{@var{p} * (@var{r} \\ @var{a}) * @var{q} = @var{l} * @var{u}}.\n
 This typically leads to a sparser and more stable factorsation.\n\
 \n\
 An additional input argument @var{thres}, that defines the pivoting\n\
-threshold can be given. @var{thres} can be a scalar, in which case\n\
+threshold can be given.  @var{thres} can be a scalar, in which case\n\
 it defines UMFPACK pivoting tolerance for both symmetric and unsymmetric\n\
-cases. If @var{thres} is a two element vector, then the first element\n\
+cases.  If @var{thres} is a two element vector, then the first element\n\
 defines the pivoting tolerance for the unsymmetric UMFPACK pivoting\n\
-strategy and the second the symmetric strategy. By default, the values\n\
+strategy and the second the symmetric strategy.  By default, the values\n\
 defined by @code{spparms} are used and are by default @code{[0.1, 0.001]}.\n\
 \n\
 Given the string argument 'vector', @dfn{lu} returns the values of @var{p}\n\
@@ -130,7 +132,7 @@ Given the string argument 'vector', @dfn{lu} returns the values of @var{p}\n\
 With two output arguments, returns the permuted forms of the upper and\n\
 lower triangular matrices, such that @code{@var{a} = @var{l} * @var{u}}.\n\
 With one output argument @var{y}, then the matrix returned by the @sc{Lapack}\n\
-routines is returned. If the input matrix is sparse then the matrix @var{l}\n\
+routines is returned.  If the input matrix is sparse then the matrix @var{l}\n\
 is embedded into @var{u} to give a return value similar to the full case.\n\
 For both full and sparse matrices, @dfn{lu} looses the permutation\n\
 information.\n\

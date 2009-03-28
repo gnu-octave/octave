@@ -388,10 +388,10 @@ Compute Bessel or Hankel functions of various kinds:\n\
 \n\
 @table @code\n\
 @item besselj\n\
-Bessel functions of the first kind. If the argument @var{opt} is supplied, \n\
+Bessel functions of the first kind.  If the argument @var{opt} is supplied, \n\
 the result is multiplied by @code{exp(-abs(imag(x)))}.\n\
 @item bessely\n\
-Bessel functions of the second kind. If the argument @var{opt} is supplied,\n\
+Bessel functions of the second kind.  If the argument @var{opt} is supplied,\n\
 the result is multiplied by @code{exp(-abs(imag(x)))}.\n\
 @item besseli\n\
 Modified Bessel functions of the first kind.  If the argument @var{opt} is supplied,\n\
@@ -401,7 +401,7 @@ Modified Bessel functions of the second kind.  If the argument @var{opt} is supp
 the result is multiplied by @code{exp(x)}.\n\
 @item besselh\n\
 Compute Hankel functions of the first (@var{k} = 1) or second (@var{k}\n\
-= 2) kind. If the argument @var{opt} is supplied, the result is multiplied by\n\
+= 2) kind.  If the argument @var{opt} is supplied, the result is multiplied by\n\
 @code{exp (-I*@var{x})} for @var{k} = 1 or @code{exp (I*@var{x})} for\n\
 @var{k} = 2.\n\
 @end table\n\
@@ -518,12 +518,14 @@ Compute Airy functions of the first and second kind, and their\n\
 derivatives.\n\
 \n\
 @example\n\
+@group\n\
  K   Function   Scale factor (if 'opt' is supplied)\n\
 ---  --------   ---------------------------------------\n\
  0   Ai (Z)     exp ((2/3) * Z * sqrt (Z))\n\
  1   dAi(Z)/dZ  exp ((2/3) * Z * sqrt (Z))\n\
  2   Bi (Z)     exp (-abs (real ((2/3) * Z *sqrt (Z))))\n\
  3   dBi(Z)/dZ  exp (-abs (real ((2/3) * Z *sqrt (Z))))\n\
+@end group\n\
 @end example\n\
 \n\
 The function call @code{airy (@var{z})} is equivalent to\n\

@@ -580,7 +580,7 @@ returned.  Otherwise, @code{load} returns a structure with members\n\
  corresponding to the names of the variables in the file.\n\
 \n\
 The @code{load} command can read data stored in Octave's text and\n\
-binary formats, and @sc{Matlab}'s binary format.  If compiled with zlib\n\
+binary formats, and @sc{matlab}'s binary format.  If compiled with zlib\n\
 support, it can load gzip-compressed files as well.  It will automatically\n\
 detect the type of file and do conversion from different floating point\n\
 formats (currently only IEEE big and little endian, though other formats\n\
@@ -609,7 +609,7 @@ Force Octave to assume the file is in Octave's binary format.\n\
 @itemx -v6\n\
 @itemx -7\n\
 @itemx -v7\n\
-Force Octave to assume the file is in @sc{Matlab}'s version 6 or 7 binary\n\
+Force Octave to assume the file is in @sc{matlab}'s version 6 or 7 binary\n\
 format.\n\
 \n\
 @item -V4\n\
@@ -617,7 +617,7 @@ format.\n\
 @itemx -4\n\
 @itemx -mat4-binary\n\
 Force Octave to assume the file is in the binary format written by\n\
-@sc{Matlab} version 4.\n\
+@sc{matlab} version 4.\n\
 \n\
 @item -hdf5\n\
 Force Octave to assume the file is in HDF5 format.\n\
@@ -1480,7 +1480,7 @@ values to be saved can be represented in single precision.\n\
 @itemx -v7\n\
 @itemx -7\n\
 @itemx -mat7-binary\n\
-Save the data in @sc{Matlab}'s v7 binary data format.\n"
+Save the data in @sc{matlab}'s v7 binary data format.\n"
 
 HAVE_ZLIB_HELP_STRING
 
@@ -1490,13 +1490,13 @@ HAVE_ZLIB_HELP_STRING
 @itemx -6\n\
 @itemx -mat\n\
 @itemx -mat-binary\n\
-Save the data in @sc{Matlab}'s v6 binary data format.\n\
+Save the data in @sc{matlab}'s v6 binary data format.\n\
 \n\
 @item -V4\n\
 @itemx -v4\n\
 @itemx -4\n\
 @itemx -mat4-binary\n\
-Save the data in the binary format written by @sc{Matlab} version 4.\n\
+Save the data in the binary format written by @sc{matlab} version 4.\n\
 \n\
 @item -hdf5\n\
 Save the data in HDF5 format.\n\
@@ -1534,7 +1534,7 @@ Match zero or more characters.\n\
 Match the list of characters specified by @var{list}.  If the first\n\
 character is @code{!} or @code{^}, match all characters except those\n\
 specified by @var{list}.  For example, the pattern @samp{[a-zA-Z]} will\n\
-match all lower and upper case alphabetic characters. \n\
+match all lower and upper case alphabetic characters.  \n\
 \n\
 Wildcards may also be used in the field names specifications when using\n\
 the @code{-struct} modifier (but not in the struct name itself).\n\
@@ -1543,7 +1543,7 @@ the @code{-struct} modifier (but not in the struct name itself).\n\
 Save the data in Octave's text data format.\n\
 @end table\n\
 \n\
-Except when using the @sc{Matlab} binary data file format, saving global\n\
+Except when using the @sc{matlab} binary data file format, saving global\n\
 variables also saves the global status of the variable, so that if it is\n\
 restored at a later time using @samp{load}, it will be restored as a\n\
 global variable.\n\

@@ -314,7 +314,7 @@ where\n\
 @end tex\n\
 @end iftex\n\
 over the first non-singleton dimension of @var{x} or over @var{dim} if\n\
-supplied. An equivalent form of this equation is:\n\
+supplied.  An equivalent form of this equation is:\n\
 @iftex\n\
 @tex\n\
 $$\n\
@@ -364,6 +364,7 @@ $$\n\
 @ifnottex\n\
 \n\
 @example\n\
+@group\n\
              M\n\
             SUM d(k+1) z^(-k)\n\
             k=0\n\
@@ -371,6 +372,7 @@ $$\n\
                N\n\
           1 + SUM c(k+1) z^(-k)\n\
               k=1\n\
+@end group\n\
 @end example\n\
 @end ifnottex\n\
 @end deftypefn")

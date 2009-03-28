@@ -231,18 +231,22 @@ $$\n\
 @ifnottex\n\
 \n\
 @example\n\
+@group\n\
       df       df\n\
 jac = -- + c ------\n\
       dx     d xdot\n\
+@end group\n\
 @end example\n\
 @end ifnottex\n\
 \n\
 The modified Jacobian function must have the form\n\
 \n\
 @example\n\
+@group\n\
 \n\
 @var{jac} = j (@var{x}, @var{xdot}, @var{t}, @var{c})\n\
 \n\
+@end group\n\
 @end example\n\
 \n\
 The second and third arguments to @code{daspk} specify the initial\n\

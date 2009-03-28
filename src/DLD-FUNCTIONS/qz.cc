@@ -208,7 +208,7 @@ DEFUN_DLD (qz, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{lambda} =} qz (@var{a}, @var{b})\n\
 Generalized eigenvalue problem @math{A x = s B x},\n\
-@var{QZ} decomposition. There are three ways to call this function:\n\
+@var{QZ} decomposition.  There are three ways to call this function:\n\
 @enumerate\n\
 @item @code{lambda = qz(A,B)}\n\
 \n\
@@ -254,7 +254,7 @@ Form 3 is not available for complex matrices, and does not compute\n\
 the generalized eigenvectors @var{V}, @var{W}, nor the orthogonal matrix @var{Q}.\n\
 @table @var\n\
 @item opt\n\
-for ordering eigenvalues of the GEP pencil.  The leading  block\n\
+for ordering eigenvalues of the GEP pencil.  The leading block\n\
 of the revised pencil contains all eigenvalues that satisfy:\n\
 @table @code\n\
 @item \"N\"\n\
@@ -273,12 +273,12 @@ in the open left half-plane\n\
 @item \"+\"\n\
 = nonnegative real part: leading block has all eigenvalues\n\
 in the closed right half-plane\n\
-@end  table\n\
+@end table\n\
 @end table\n\
 @end enumerate\n\
 \n\
 Note: qz performs permutation balancing, but not scaling (see balance).\n\
-Order of output arguments was selected for compatibility with MATLAB\n\
+Order of output arguments was selected for compatibility with @sc{matlab}\n\
 \n\
 @seealso{balance, eig, schur}\n\
 @end deftypefn")

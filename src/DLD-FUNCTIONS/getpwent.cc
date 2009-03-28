@@ -72,7 +72,7 @@ DEFUN_DLD (getpwent, args, ,
  "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{pw_struct} =} getpwent ()\n\
 Return a structure containing an entry from the password database,\n\
-opening it if necessary. Once the end of the data has been reached,\n\
+opening it if necessary.  Once the end of the data has been reached,\n\
 @code{getpwent} returns 0.\n\
 @end deftypefn")
 {

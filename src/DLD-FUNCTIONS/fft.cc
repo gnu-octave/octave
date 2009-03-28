@@ -203,15 +203,15 @@ DEFUN_DLD (fft, args, ,
 @deftypefn {Loadable Function} {} fft (@var{a}, @var{n}, @var{dim})\n\
 Compute the FFT of @var{a} using subroutines from\n"
 FFTSRC
-". The FFT is calculated along the first non-singleton dimension of the\n\
-array. Thus if @var{a} is a matrix, @code{fft (@var{a})} computes the\n\
+".  The FFT is calculated along the first non-singleton dimension of the\n\
+array.  Thus if @var{a} is a matrix, @code{fft (@var{a})} computes the\n\
 FFT for each column of @var{a}.\n\
 \n\
 If called with two arguments, @var{n} is expected to be an integer\n\
 specifying the number of elements of @var{a} to use, or an empty\n\
-matrix to specify that its value should be ignored. If @var{n} is\n\
+matrix to specify that its value should be ignored.  If @var{n} is\n\
 larger than the dimension along which the FFT is calculated, then\n\
-@var{a} is resized and padded with zeros. Otherwise, if @var{n} is\n\
+@var{a} is resized and padded with zeros.  Otherwise, if @var{n} is\n\
 smaller than the dimension along which the FFT is calculated, then\n\
 @var{a} is truncated.\n\
 \n\
@@ -229,15 +229,15 @@ DEFUN_DLD (ifft, args, ,
 @deftypefn {Loadable Function} {} ifft (@var{a}, @var{n}, @var{dim})\n\
 Compute the inverse FFT of @var{a} using subroutines from\n"
 FFTSRC
-". The inverse FFT is calculated along the first non-singleton dimension\n\
-of the array. Thus if @var{a} is a matrix, @code{fft (@var{a})} computes\n\
+".  The inverse FFT is calculated along the first non-singleton dimension\n\
+of the array.  Thus if @var{a} is a matrix, @code{fft (@var{a})} computes\n\
 the inverse FFT for each column of @var{a}.\n\
 \n\
 If called with two arguments, @var{n} is expected to be an integer\n\
 specifying the number of elements of @var{a} to use, or an empty\n\
-matrix to specify that its value should be ignored. If @var{n} is\n\
+matrix to specify that its value should be ignored.  If @var{n} is\n\
 larger than the dimension along which the inverse FFT is calculated, then\n\
-@var{a} is resized and padded with zeros. Otherwise, if@var{n} is\n\
+@var{a} is resized and padded with zeros.  Otherwise, if@var{n} is\n\
 smaller than the dimension along which the inverse FFT is calculated,\n\
 then @var{a} is truncated.\n\
 \n\

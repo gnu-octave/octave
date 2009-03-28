@@ -209,8 +209,10 @@ Download a remote file specified by its @var{URL} and save it as\n\
 @var{localfile}.  For example,\n\
 \n\
 @example\n\
+@group\n\
 urlwrite (\"ftp://ftp.octave.org/pub/octave/README\", \n\
           \"README.txt\");\n\
+@end group\n\
 @end example\n\
 \n\
 The full path of the downloaded file is returned in @var{f}.  The\n\
@@ -224,8 +226,10 @@ FTP and FILE protocols.  Username and password may be specified in\n\
 the URL, for example:\n\
 \n\
 @example\n\
+@group\n\
 urlwrite (\"http://username:password@@example.com/file.txt\",\n\
           \"file.txt\");\n\
+@end group\n\
 @end example\n\
 \n\
 GET and POST requests can be specified by @var{method} and @var{param}.\n\
@@ -234,8 +238,10 @@ and @var{param} is a cell array of parameter and value pairs.\n\
 For example:\n\
 \n\
 @example\n\
+@group\n\
 urlwrite (\"http://www.google.com/search\", \"search.html\",\n\
           \"get\", @{\"query\", \"octave\"@});\n\
+@end group\n\
 @end example\n\
 @seealso{urlread}\n\
 @end deftypefn")
@@ -391,8 +397,10 @@ and @var{param} is a cell array of parameter and value pairs.\n\
 For example,\n\
 \n\
 @example\n\
+@group\n\
 s = urlread (\"http://www.google.com/search\", \"get\",\n\
              @{\"query\", \"octave\"@});\n\
+@end group\n\
 @end example\n\
 @seealso{urlwrite}\n\
 @end deftypefn")

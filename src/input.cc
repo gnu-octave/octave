@@ -1390,8 +1390,8 @@ DEFUN (filemarker, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} filemarker ()\n\
 Returns or sets the character used to separate filename from the\n\
-the subfunction names contained within the file. This can be used in\n\
-a generic manner to interact with subfunctions. For example\n\
+the subfunction names contained within the file.  This can be used in\n\
+a generic manner to interact with subfunctions.  For example\n\
 \n\
 @example\n\
 help ([\"myfunc\", filemarker, \"mysubfunc\"])\n\
@@ -1399,7 +1399,7 @@ help ([\"myfunc\", filemarker, \"mysubfunc\"])\n\
 \n\
 @noindent\n\
 returns the help string associated with the sub-function @code{mysubfunc}\n\
-of the function @code{myfunc}. Another use of @code{filemarker} is when\n\
+of the function @code{myfunc}.  Another use of @code{filemarker} is when\n\
 debugging it allows easier placement of breakpoints within sub-functions.\n\
 For example\n\
 \n\

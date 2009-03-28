@@ -68,7 +68,7 @@ removing all zero values in the process.\n\
 Given the integer index vectors @var{i} and @var{j}, a 1-by-@code{nnz} vector\n\
 of real of complex values @var{sv}, overall dimensions @var{m} and @var{n}\n\
 of the sparse matrix.  The argument @code{nzmax} is ignored but accepted for\n\
-compatibility with @sc{Matlab}. If @var{m} or @var{n} are not specified their\n\
+compatibility with @sc{matlab}.  If @var{m} or @var{n} are not specified their\n\
 values are derived from the maximum index in the vectors @var{i} and @var{j}\n\
 as given by @code{@var{m} = max (@var{i})}, @code{@var{n} = max (@var{j})}.\n\
 \n\

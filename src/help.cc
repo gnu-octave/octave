@@ -245,8 +245,8 @@ Exit the innermost enclosing do, while or for loop.\n\
   pair_type ("case",
     "-*- texinfo -*-\n\
 @deffn Keyword case @{@var{value}@}\n\
-A case statement in an switch. Octave cases are exclusive and do not\n\
-fall-through as do C-language cases. A switch statement must have at least\n\
+A case statement in an switch.  Octave cases are exclusive and do not\n\
+fall-through as do C-language cases.  A switch statement must have at least\n\
 one case.  See @code{switch} for an example.\n\
 @seealso{switch}\n\
 @end deffn"),
@@ -268,7 +268,7 @@ Jump to the end of the innermost enclosing do, while or for loop.\n\
   pair_type ("do",
     "-*- texinfo -*-\n\
 @deffn Keyword do\n\
-Begin a do-until loop. This differs from a do-while loop in that the\n\
+Begin a do-until loop.  This differs from a do-while loop in that the\n\
 body of the loop is executed at least once.\n\
 @seealso{while}\n\
 @end deffn"),
@@ -348,17 +348,19 @@ Mark the end of a while loop.  See @code{while} for an example.\n\
 @deffn Keyword for @var{i} = @var{range}\n\
 Begin a for loop.\n\
 @example\n\
+@group\n\
 for i = 1:10\n\
   i\n\
 endfor\n\
+@end group\n\
 @end example\n\
 @seealso{do, while}\n\
 @end deffn"),
 
   pair_type ("function",
     "-*- texinfo -*-\n\
-@deffn Keyword function @var{outputs} = function (@var{input}, ...)\n\
-@deffnx Keyword function {} function (@var{input}, ...)\n\
+@deffn Keyword function @var{outputs} = function (@var{input}, @dots{})\n\
+@deffnx Keyword function {} function (@var{input}, @dots{})\n\
 @deffnx Keyword function @var{outputs} = function\n\
 Begin a function body with @var{outputs} as results and @var{inputs} as\n\
 parameters.\n\
@@ -370,10 +372,12 @@ parameters.\n\
 @deffn Keyword global\n\
 Declare variables to have global scope.\n\
 @example\n\
+@group\n\
 global @var{x};\n\
 if isempty (@var{x})\n\
   x = 1;\n\
 endif\n\
+@end group\n\
 @end example\n\
 @seealso{persistent}\n\
 @end deffn"),
@@ -386,6 +390,7 @@ endif\n\
 @deffnx Keyword if (@var{cond}) @dots{} elseif (@var{cond}) @dots{} else @dots{} endif\n\
 Begin an if block.\n\
 @example\n\
+@group\n\
 x = 1;\n\
 if (x == 1)\n\
   disp (\"one\");\n\
@@ -394,6 +399,7 @@ elseif (x == 2)\n\
 else\n\
   disp (\"not one or two\");\n\
 endif\n\
+@end group\n\
 @end example\n\
 @seealso{switch}\n\
 @end deffn"),
@@ -442,6 +448,7 @@ This function has been deprecated in favor of persistent.\n\
 @deffn Keyword switch @var{statement}\n\
 Begin a switch block.\n\
 @example\n\
+@group\n\
 yesno = \"yes\"\n\
 \n\
 switch yesno\n\
@@ -452,6 +459,7 @@ switch yesno\n\
   otherwise\n\
     error (\"invalid value\");\n\
 endswitch\n\
+@end group\n\
 @end example\n\
 @seealso{if, case, otherwise}\n\
 @end deffn"),
@@ -732,7 +740,7 @@ DEFUN (get_help_text, args, , "-*- texinfo -*-\n\
 Returns the help text of a given function.\n\
 \n\
 This function returns the raw help text @var{text} and an indication of\n\
-its format for the function @var{name}. The format indication @var{format}\n\
+its format for the function @var{name}.  The format indication @var{format}\n\
 is a string that can be either @t{\"texinfo\"}, @t{\"html\"}, or\n\
 @t{\"plain text\"}.\n\
 \n\

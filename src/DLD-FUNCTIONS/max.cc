@@ -691,7 +691,7 @@ DEFUN_DLD (min, args, nargout,
 @cindex Utility Functions\n\
 For a vector argument, return the minimum value.  For a matrix\n\
 argument, return the minimum value from each column, as a row\n\
-vector, or over the dimension @var{dim} if defined. For two matrices\n\
+vector, or over the dimension @var{dim} if defined.  For two matrices\n\
 (or a matrix and scalar), return the pair-wise minimum.\n\
 Thus,\n\
 \n\
@@ -717,7 +717,7 @@ comparison.\n\
 \n\
 If called with one input and two output arguments,\n\
 @code{min} also returns the first index of the\n\
-minimum value(s). Thus,\n\
+minimum value(s).  Thus,\n\
 \n\
 @example\n\
 @group\n\
@@ -765,7 +765,7 @@ DEFUN_DLD (max, args, nargout,
 @cindex Utility Functions\n\
 For a vector argument, return the maximum value.  For a matrix\n\
 argument, return the maximum value from each column, as a row\n\
-vector, or over the dimension @var{dim} if defined. For two matrices\n\
+vector, or over the dimension @var{dim} if defined.  For two matrices\n\
 (or a matrix and scalar), return the pair-wise maximum.\n\
 Thus,\n\
 \n\
@@ -791,7 +791,7 @@ comparison.\n\
 \n\
 If called with one input and two output arguments,\n\
 @code{max} also returns the first index of the\n\
-maximum value(s). Thus,\n\
+maximum value(s).  Thus,\n\
 \n\
 @example\n\
 @group\n\
@@ -919,7 +919,7 @@ DEFUN_DLD (cummin, args, nargout,
 @deftypefn {Loadable Function} {} cummin (@var{x}, @var{dim})\n\
 @deftypefnx {Loadable Function} {[@var{w}, @var{iw}] =} cummin (@var{x})\n\
 @cindex Utility Functions\n\
-Return the cumulative minimum values. That means, the call\n\
+Return the cumulative minimum values.  That means, the call\n\
 @example\n\
   [w, iw] = cummin (x, dim)\n\
 @end example\n\
@@ -927,13 +927,15 @@ Return the cumulative minimum values. That means, the call\n\
 @noindent\n\
 is equivalent to the following code:\n\
 @example\n\
+@group\n\
   w = iw = zeros (size (x));\n\
   idxw = idxx = repmat (@{':'@}, 1, ndims (x));\n\
   for i = 1:size (x, dim)\n\
     idxw@{dim@} = i; idxx@{dim@} = 1:i;\n\
-    [w(idxw@{:@}), iw(idxw@{:@})] =\
+    [w(idxw@{:@}), iw(idxw@{:@})] =\\n\
  min(x(idxx@{:@}), [], dim);\n\
   endfor\n\
+@end group\n\
 @end example\n\
 \n\
 @noindent\n\
@@ -950,7 +952,7 @@ DEFUN_DLD (cummax, args, nargout,
 @deftypefn {Loadable Function} {} cummax (@var{x}, @var{dim})\n\
 @deftypefnx {Loadable Function} {[@var{w}, @var{iw}] =} cummax (@var{x})\n\
 @cindex Utility Functions\n\
-Return the cumulative maximum values. That means, the call\n\
+Return the cumulative maximum values.  That means, the call\n\
 @example\n\
   [w, iw] = cummax (x, dim)\n\
 @end example\n\
@@ -958,13 +960,15 @@ Return the cumulative maximum values. That means, the call\n\
 @noindent\n\
 is equivalent to the following code:\n\
 @example\n\
+@group\n\
   w = iw = zeros (size (x));\n\
   idxw = idxx = repmat (@{':'@}, 1, ndims (x));\n\
   for i = 1:size (x, dim)\n\
     idxw@{dim@} = i; idxx@{dim@} = 1:i;\n\
-    [w(idxw@{:@}), iw(idxw@{:@})] =\
+    [w(idxw@{:@}), iw(idxw@{:@})] =\\n\
  max(x(idxx@{:@}), [], dim);\n\
   endfor\n\
+@end group\n\
 @end example\n\
 \n\
 @noindent\n\

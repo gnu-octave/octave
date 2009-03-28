@@ -124,15 +124,15 @@ In particular, looking up a single entry is of logarithmic complexity\n\
 (unless a conversion occurs due to non-numeric or unequal types).\n\
 \n\
 @var{table} and @var{y} can also be cell arrays of strings\n\
-(or @var{y} can be a single string). In this case, string lookup\n\
+(or @var{y} can be a single string).  In this case, string lookup\n\
 is performed using lexicographical comparison.\n\
 \n\
 If @var{opts} is specified, it shall be a string with letters indicating\n\
 additional options.\n\
 For numeric lookup, 'l' in @var{opts} indicates that\n\
-the leftmost subinterval shall be extended to infinity (i.e. all indices\n\
+the leftmost subinterval shall be extended to infinity (i.e., all indices\n\
 at least 1), and 'r' indicates that the rightmost subinterval shall be\n\
-extended to infinity (i.e. all indices at most n-1).\n\
+extended to infinity (i.e., all indices at most n-1).\n\
 \n\
 For string lookup, 'i' indicates case-insensitive comparison.\n\
 @end deftypefn") 

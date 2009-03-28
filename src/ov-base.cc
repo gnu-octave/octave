@@ -1397,6 +1397,7 @@ automatically mutate sparse matrices to real matrices to save memory.\n\
 For example,\n\
 \n\
 @example\n\
+@group\n\
 s = speye(3);\n\
 sparse_auto_mutate (false)\n\
 s (:, 1) = 1;\n\
@@ -1406,6 +1407,7 @@ sparse_auto_mutate (true)\n\
 s (1, :) = 1;\n\
 typeinfo (s)\n\
 @result{} matrix\n\
+@end group\n\
 @end example\n\
 @end deftypefn")
 {

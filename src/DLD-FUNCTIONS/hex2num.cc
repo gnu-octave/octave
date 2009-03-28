@@ -43,8 +43,10 @@ Given a string matrix, @code{hex2num} treats each row as a separate\n\
 number.\n\
 \n\
 @example\n\
+@group\n\
 hex2num ([\"4005bf0a8b145769\";\"4024000000000000\"])\n\
 @result{} [2.7183; 10.000]\n\
+@end group\n\
 @end example\n\
 @seealso{num2hex, hex2dec, dec2hex}\n\
 @end deftypefn")
@@ -125,6 +127,7 @@ Typecast a double precision number or vector to a 16 character hexadecimal\n\
 string of the IEEE 754 representation of the number.  For example\n\
 \n\
 @example\n\
+@group\n\
 num2hex ([-1, 1, e, Inf, NaN, NA]);\n\
 @result{} \"bff0000000000000\n\
     3ff0000000000000\n\
@@ -132,6 +135,7 @@ num2hex ([-1, 1, e, Inf, NaN, NA]);\n\
     7ff0000000000000\n\
     fff8000000000000\n\
     7ff00000000007a2\"\n\
+@end group\n\
 @end example\n\
 @seealso{hex2num, hex2dec, dec2hex}\n\
 @end deftypefn")

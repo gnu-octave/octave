@@ -55,10 +55,10 @@ DEFUN_DLD (gcd, args, nargout,
 @deftypefnx {Loadable Function} {[@var{g}, @var{v1}, @dots{}] =} gcd (@var{a1}, @dots{})\n\
 \n\
 If a single argument is given then compute the greatest common divisor of\n\
-the elements of this argument. Otherwise if more than one argument is\n\
-given all arguments must be the same size or scalar. In this case the\n\
-greatest common divisor is calculated for element individually. All\n\
-elements must be integers. For example,\n\
+the elements of this argument.  Otherwise if more than one argument is\n\
+given all arguments must be the same size or scalar.  In this case the\n\
+greatest common divisor is calculated for element individually.  All\n\
+elements must be integers.  For example,\n\
 \n\
 @example\n\
 @group\n\

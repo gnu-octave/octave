@@ -55,7 +55,7 @@ Is the type of the factorization and can be one of\n\
 \n\
 @table @code\n\
 @item sym\n\
-Factorize @var{s}. This is the default.\n\
+Factorize @var{s}.  This is the default.\n\
 \n\
 @item col\n\
 Factorize @code{@var{s}' * @var{s}}.\n\
@@ -68,7 +68,7 @@ Factorize @code{@var{s}'}\n\
 @item @var{mode}\n\
 The default is to return the Cholesky factorization for @var{r}, and if\n\
 @var{mode} is 'L', the conjugate transpose of the Cholesky factorization\n\
-is returned. The conjugate transpose version is faster and uses less\n\
+is returned.  The conjugate transpose version is faster and uses less\n\
 memory, but returns the same values for @var{count}, @var{h}, @var{parent}\n\
 and @var{post} outputs.\n\
 @end table\n\

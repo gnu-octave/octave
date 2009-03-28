@@ -266,7 +266,7 @@ same size as a. 'central' part of convolution\n\
 only parts which do not include zero-padded edges\n\
 @end table\n\
 \n\
-By default @var{shape} is 'full'. When the third argument is a matrix\n\
+By default @var{shape} is 'full'.  When the third argument is a matrix\n\
 returns the convolution of the matrix @var{M} by the vector @var{v1}\n\
 in the column direction and by vector @var{v2} in the row direction\n\
 @end deftypefn")

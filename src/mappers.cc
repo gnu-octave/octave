@@ -176,7 +176,7 @@ DEFUN (arg, args, ,
 @deftypefnx {Mapping Function} {} angle (@var{z})\n\
 Compute the argument of @var{z}, defined as\n\
 @var{theta} = @code{atan2 (@var{y}, @var{x})}.\n\
-in radians. \n\
+in radians.  \n\
 \n\
 For example,\n\
 \n\
@@ -734,11 +734,13 @@ $$\n\
 @ifnottex\n\
 \n\
 @example\n\
+@group\n\
             infinity\n\
             /\n\
 gamma (z) = | t^(z-1) exp (-t) dt.\n\
             /\n\
          t=0\n\
+@end group\n\
 @end example\n\
 @end ifnottex\n\
 @seealso{gammainc, lgamma}\n\
@@ -1301,8 +1303,8 @@ Return the integer nearest to @var{x}.  If @var{x} is complex, return\n\
 DEFUN (roundb, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} roundb (@var{x})\n\
-Return the integer nearest to @var{x}. If there are two nearest\n\
-integers, return the even one (banker's rounding). If @var{x} is complex,\n\
+Return the integer nearest to @var{x}.  If there are two nearest\n\
+integers, return the even one (banker's rounding).  If @var{x} is complex,\n\
 return @code{roundb (real (@var{x})) + roundb (imag (@var{x})) * I}.\n\
 @seealso{rem}\n\
 @end deftypefn")
@@ -1330,9 +1332,11 @@ $$\n\
 @ifnottex\n\
 \n\
 @example\n\
+@group\n\
            -1, x < 0;\n\
 sign (x) =  0, x = 0;\n\
             1, x > 0.\n\
+@end group\n\
 @end example\n\
 @end ifnottex\n\
 \n\
@@ -1568,8 +1572,10 @@ character replaced by the corresponding lower-case one; nonalphabetic\n\
 characters are left unchanged.  For example,\n\
 \n\
 @example\n\
+@group\n\
 tolower (\"MiXeD cAsE 123\")\n\
      @result{} \"mixed case 123\"\n\
+@end group\n\
 @end example\n\
 @seealso{toupper}\n\
 @end deftypefn")
@@ -1607,7 +1613,7 @@ DEFUNX ("toupper", Ftoupper, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} toupper (@var{s})\n\
 @deftypefnx {Built-in Function} {} upper (@var{s})\n\
-Return a copy of the string or cell string @var{s}, with each  lower-case\n\
+Return a copy of the string or cell string @var{s}, with each lower-case\n\
 character replaced by the corresponding upper-case one; nonalphabetic\n\
 characters are left unchanged.  For example,\n\
 \n\

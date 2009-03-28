@@ -349,7 +349,7 @@ DEFUN_DLD (__magick_read__, args, nargout,
 @deftypefn {Function File} {@var{m} =} __magick_read__(@var{fname}, @var{index})\n\
 @deftypefnx{Function File} {[@var{m}, @var{colormap}] =} __magick_read__(@var{fname}, @var{index})\n\
 @deftypefnx{Function File} {[@var{m}, @var{colormap}, @var{alpha}] =} __magick_read__(@var{fname}, @var{index})\n\
-Read images with ImageMagick++. In general you should not be using this function.\n\
+Read images with ImageMagick++.  In general you should not be using this function.\n\
 Instead you should use @code{imread}.\n\
 @seealso{imread}\n\
 @end deftypefn")
@@ -752,7 +752,7 @@ DEFUN_DLD (__magick_write__, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Function File} {} __magick_write__(@var{fname}, @var{fmt}, @var{img})\n\
 @deftypefnx {Function File} {} __magick_write__(@var{fname}, @var{fmt}, @var{img}, @var{map})\n\
-Write images with ImageMagick++. In general you should not be using this function.\n\
+Write images with ImageMagick++.  In general you should not be using this function.\n\
 Instead you should use @code{imwrite}.\n\
 @seealso{imread}\n\
 @end deftypefn")
@@ -880,7 +880,7 @@ magick_to_octave_value (const Magick::ImageType magick)
 DEFUN_DLD (__magick_finfo__, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable File} {} __magick_finfo__(@var{fname})\n\
-Read image information with GraphicsMagick++. In general you should\n\
+Read image information with GraphicsMagick++.  In general you should\n\
 not be using this function.  Instead you should use @code{imfinfo}.\n\
 @seealso{imfinfo, imread}\n\
 @end deftypefn")

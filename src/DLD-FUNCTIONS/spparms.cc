@@ -44,8 +44,8 @@ DEFUN_DLD (spparms, args, nargout,
 @deftypefnx {Loadable Function} { } spparms ('tight')\n\
 @deftypefnx {Loadable Function} { } spparms (@var{key}, @var{val})\n\
 Sets or displays the parameters used by the sparse solvers and factorization\n\
-functions. The first four calls above get information about the current\n\
-settings, while the others change the current settings. The parameters are\n\
+functions.  The first four calls above get information about the current\n\
+settings, while the others change the current settings.  The parameters are\n\
 stored as pairs of keys and values, where the values are all floats and the\n\
 keys are one of the following strings:\n\
 \n\
@@ -53,17 +53,17 @@ keys are one of the following strings:\n\
 @item spumoni\n\
 Printing level of debugging information of the solvers (default 0)\n\
 @item ths_rel\n\
-Included for compatibility. Not used. (default 1)\n\
+Included for compatibility.  Not used.  (default 1)\n\
 @item ths_abs\n\
-Included for compatibility. Not used. (default 1)\n\
+Included for compatibility.  Not used.  (default 1)\n\
 @item exact_d\n\
-Included for compatibility. Not used. (default 0)\n\
+Included for compatibility.  Not used.  (default 0)\n\
 @item supernd\n\
-Included for compatibility. Not used. (default 3)\n\
+Included for compatibility.  Not used.  (default 3)\n\
 @item rreduce\n\
-Included for compatibility. Not used. (default 3)\n\
+Included for compatibility.  Not used.  (default 3)\n\
 @item wh_frac\n\
-Included for compatibility. Not used. (default 0.5)\n\
+Included for compatibility.  Not used.  (default 0.5)\n\
 @item autommd\n\
 Flag whether the LU/QR and the '\\' and '/' operators will automatically\n\
 use the sparsity preserving mmd functions (default 1)\n\
@@ -83,8 +83,8 @@ Flag whether the UMFPACK or mmd solvers are used for the LU, '\\' and\n\
 @end table\n\
 \n\
 The value of individual keys can be set with @code{spparms (@var{key},\n\
-@var{val})}. The default values can be restored with the special keyword\n\
-'defaults'. The special keyword 'tight' can be used to set the mmd solvers\n\
+@var{val})}.  The default values can be restored with the special keyword\n\
+'defaults'.  The special keyword 'tight' can be used to set the mmd solvers\n\
 to attempt for a sparser solution at the potential cost of longer running\n\
 time.\n\
 @end deftypefn")

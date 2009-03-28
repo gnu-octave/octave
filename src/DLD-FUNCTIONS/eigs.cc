@@ -152,7 +152,7 @@ DEFUN_DLD (eigs, args, nargout,
 @deftypefnx {Loadable Function} {[@var{v}, @var{d}, @var{flag}]} = eigs (@var{a}, @dots{})\n\
 @deftypefnx {Loadable Function} {[@var{v}, @var{d}, @var{flag}]} = eigs (@var{af}, @var{n}, @dots{})\n\
 Calculate a limited number of eigenvalues and eigenvectors of @var{a},\n\
-based on a selection criteria. The number eigenvalues and eigenvectors to\n\
+based on a selection criteria.  The number eigenvalues and eigenvectors to\n\
 calculate is given by @var{k} whose default value is 6.\n\
 \n\
 By default @code{eigs} solve the equation\n\
@@ -173,7 +173,7 @@ $\\lambda$ is a scalar representing one of the eigenvalues, and $\\nu$\n\
 @ifinfo\n\
 @code{lambda} is a scalar representing one of the eigenvalues, and @code{v}\n\
 @end ifinfo\n\
-is the corresponding eigenvector. If given the positive definite matrix\n\
+is the corresponding eigenvector.  If given the positive definite matrix\n\
 @var{B} then @code{eigs} solves the general eigenvalue equation\n\
 @iftex\n\
 @tex\n\
@@ -186,8 +186,8 @@ $A \\nu = \\lambda B \\nu$\n\
 .\n\
 \n\
 The argument @var{sigma} determines which eigenvalues are returned.\n\
-@var{sigma} can be either a scalar or a string. When @var{sigma} is a scalar,\n\
-the @var{k} eigenvalues closest to @var{sigma} are returned. If @var{sigma}\n\
+@var{sigma} can be either a scalar or a string.  When @var{sigma} is a scalar,\n\
+the @var{k} eigenvalues closest to @var{sigma} are returned.  If @var{sigma}\n\
 is a string, it must have one of the values\n\
 \n\
 @table @asis\n\
@@ -221,53 +221,53 @@ Smallest imaginary part (valid only for complex or unsymmetric problems).\n\
 @end table\n\
 \n\
 If @var{opts} is given, it is a structure defining some of the options that\n\
-@code{eigs} should use. The fields of the structure @var{opts} are\n\
+@code{eigs} should use.  The fields of the structure @var{opts} are\n\
 \n\
 @table @code\n\
 @item issym\n\
 If @var{af} is given, then flags whether the function @var{af} defines a\n\
-symmetric problem. It is ignored if @var{a} is given. The default is false.\n\
+symmetric problem.  It is ignored if @var{a} is given.  The default is false.\n\
 \n\
 @item isreal\n\
 If @var{af} is given, then flags whether the function @var{af} defines a\n\
-real problem. It is ignored if @var{a} is given. The default is true.\n\
+real problem.  It is ignored if @var{a} is given.  The default is true.\n\
 \n\
 @item tol\n\
 Defines the required convergence tolerance, given as @code{tol * norm (A)}.\n\
 The default is @code{eps}.\n\
 \n\
 @item maxit\n\
-The maximum number of iterations. The default is 300.\n\
+The maximum number of iterations.  The default is 300.\n\
 \n\
 @item p\n\
-The number of Lanzcos basis vectors to use. More vectors will result in\n\
-faster convergence, but a larger amount of memory. The optimal value of 'p'\n\
-is problem dependent and should be in the range @var{k} to @var{n}. The\n\
+The number of Lanzcos basis vectors to use.  More vectors will result in\n\
+faster convergence, but a larger amount of memory.  The optimal value of 'p'\n\
+is problem dependent and should be in the range @var{k} to @var{n}.  The\n\
 default value is @code{2 * @var{k}}.\n\
 \n\
 @item v0\n\
-The starting vector for the computation. The default is to have @sc{Arpack}\n\
+The starting vector for the computation.  The default is to have @sc{Arpack}\n\
 randomly generate a starting vector.\n\
 \n\
 @item disp\n\
-The level of diagnostic printout. If @code{disp} is 0 then there is no\n\
-printout. The default value is 1.\n\
+The level of diagnostic printout.  If @code{disp} is 0 then there is no\n\
+printout.  The default value is 1.\n\
 \n\
 @item cholB\n\
-Flag if @code{chol (@var{b})} is passed rather than @var{b}. The default is\n\
+Flag if @code{chol (@var{b})} is passed rather than @var{b}.  The default is\n\
 false.\n\
 \n\
 @item permB\n\
 The permutation vector of the Cholesky factorization of @var{b} if\n\
-@code{cholB} is true. That is @code{chol ( @var{b} (permB, permB))}. The\n\
+@code{cholB} is true.  That is @code{chol ( @var{b} (permB, permB))}.  The\n\
 default is @code{1:@var{n}}.\n\
 \n\
 @end table\n\
 \n\
 It is also possible to represent @var{a} by a function denoted @var{af}.\n\
 @var{af} must be followed by a scalar argument @var{n} defining the length\n\
-of the vector argument accepted by @var{af}. @var{af} can be passed either\n\
-as an inline function, function handle or as a string. In the case where\n\
+of the vector argument accepted by @var{af}.  @var{af} can be passed either\n\
+as an inline function, function handle or as a string.  In the case where\n\
 @var{af} is passed as a string, the name of the string defines the function\n\
 to use.\n\
 \n\
@@ -284,7 +284,7 @@ If @var{sigma} is 'sm'.\n\
 \n\
 @item (A - sigma * I) \\ x\n\
 for standard eigenvalue problem, where @code{I} is the identity matrix of\n\
-the same size as @code{A}. If @var{sigma} is zero, this reduces the\n\
+the same size as @code{A}.  If @var{sigma} is zero, this reduces the\n\
 @code{A \\ x}.\n\
 \n\
 @item (A - sigma * B) \\ x\n\
@@ -292,20 +292,20 @@ for the general eigenvalue problem.\n\
 @end table\n\
 \n\
 The return arguments of @code{eigs} depends on the number of return\n\
-arguments. With a single return argument, a vector @var{d} of length @var{k}\n\
-is returned, represent the @var{k} eigenvalues that have been found. With two\n\
+arguments.  With a single return argument, a vector @var{d} of length @var{k}\n\
+is returned, represent the @var{k} eigenvalues that have been found.  With two\n\
 return arguments, @var{v} is a @var{n}-by-@var{k} matrix whose columns are\n\
-the @var{k} eigenvectors corresponding to the returned eigenvalues. The\n\
+the @var{k} eigenvectors corresponding to the returned eigenvalues.  The\n\
 eigenvalues themselves are then returned in @var{d} in the form of a\n\
 @var{n}-by-@var{k} matrix, where the elements on the diagonal are the\n\
 eigenvalues.\n\
 \n\
 Given a third return argument @var{flag}, @code{eigs} also returns the status\n\
-of the convergence. If @var{flag} is 0, then all eigenvalues have converged,\n\
+of the convergence.  If @var{flag} is 0, then all eigenvalues have converged,\n\
 otherwise not.\n\
 \n\
 This function is based on the @sc{Arpack} package, written by R Lehoucq,\n\
-K Maschhoff, D Sorensen and C Yang. For more information see\n\
+K Maschhoff, D Sorensen and C Yang.  For more information see\n\
 @url{http://www.caam.rice.edu/software/ARPACK/}.\n\
 \n\
 @end deftypefn\n\

@@ -55,26 +55,26 @@ DEFUN_DLD (amd, args, nargout,
 @deftypefn {Loadable Function} {@var{p} =} amd (@var{s})\n\
 @deftypefnx {Loadable Function} {@var{p} =} amd (@var{s}, @var{opts})\n\
 \n\
-Returns the approximate minimum degree permutation of a matrix. This\n\
+Returns the approximate minimum degree permutation of a matrix.  This\n\
 permutation such that the Cholesky factorization of @code{@var{s} (@var{p},\n\
 @var{p})} tends to be sparser than the Cholesky factorization of @var{s}\n\
-itself. @code{amd} is typically faster than @code{symamd} but serves a\n\
+itself.  @code{amd} is typically faster than @code{symamd} but serves a\n\
 similar purpose.\n\
 \n\
 The optional parameter @var{opts} is a structure that controls the\n\
-behavior of @code{amd}. The fields of these structure are\n\
+behavior of @code{amd}.  The fields of these structure are\n\
 \n\
 @table @asis\n\
 @item opts.dense\n\
 Determines what @code{amd} considers to be a dense row or column of the\n\
-input matrix. Rows or columns with more that @code{max(16, (dense *\n\
+input matrix.  Rows or columns with more that @code{max(16, (dense *\n\
 sqrt (@var{n})} entries, where @var{n} is the order of the matrix @var{s},\n\
 are igorned by @code{amd} during the calculation of the permutation\n\
 The value of dense must be a positive scalar and its default value is 10.0\n\
 \n\
 @item opts.aggressive\n\
 If this value is a non zero scalar, then @code{amd} performs agressive\n\
-absorption. The default is not to perform agressive absorption.\n\
+absorption.  The default is not to perform agressive absorption.\n\
 @end table\n\
 \n\
 The author of the code itself is Timothy A. Davis (davis@@cise.ufl.edu),\n\

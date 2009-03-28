@@ -47,7 +47,7 @@ ill-conditioned matrix if the reciprocal condition number is small.\n\
 \n\
 If called with a sparse matrix, then in general @var{x} will be a full\n\
 matrix, and so if possible forming the inverse of a sparse matrix should\n\
-be avoided. It is significantly more accurate and faster to do\n\
+be avoided.  It is significantly more accurate and faster to do\n\
 @code{@var{y} = @var{a} \\ @var{b}}, rather than\n\
 @code{@var{y} = inv (@var{a}) * @var{b}}.\n\
 @end deftypefn")

@@ -1545,9 +1545,11 @@ Replace matches of @var{pat} in  @var{string} with @var{repstr}.\n\
 The replacement can contain @code{$i}, which substitutes\n\
 for the ith set of parentheses in the match string.  E.g.,\n\
 @example\n\
+@group\n\
 \n\
    regexprep(\"Bill Dunn\",'(\\w+) (\\w+)','$2, $1')\n\
 \n\
+@end group\n\
 @end example\n\
 returns \"Dunn, Bill\"\n\
 \n\

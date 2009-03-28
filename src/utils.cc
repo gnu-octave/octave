@@ -342,8 +342,10 @@ directories in the format described for @code{path}.  If no file\n\
 is found, return an empty matrix.  For example,\n\
 \n\
 @example\n\
+@group\n\
 file_in_path (EXEC_PATH, \"sh\")\n\
      @result{} \"/bin/sh\"\n\
+@end group\n\
 @end example\n\
 \n\
 If the second argument is a cell array of strings, search each\n\
@@ -713,8 +715,10 @@ able to print the original representation of the string, with the\n\
 special characters replaced by their escape sequences.  For example,\n\
 \n\
 @example\n\
+@group\n\
 octave:13> undo_string_escapes (bell)\n\
 ans = \\a\n\
+@end group\n\
 @end example\n\
 \n\
 @noindent\n\

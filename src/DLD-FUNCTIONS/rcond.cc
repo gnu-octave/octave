@@ -34,10 +34,10 @@ DEFUN_DLD (rcond, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{c} =} rcond (@var{a})\n\
 Compute the 1-norm estimate of the reciprocal condition as returned\n\
-by LAPACK. If the matrix is well-conditioned then @var{c} will be near\n\
+by LAPACK.  If the matrix is well-conditioned then @var{c} will be near\n\
 1 and if the matrix is poorly conditioned it will be close to zero.\n\
 \n\
-The matrix @var{a} must not be sparse. If the matrix is sparse then\n\
+The matrix @var{a} must not be sparse.  If the matrix is sparse then\n\
 @code{condest (@var{a})} or @code{rcond (full (@var{a}))} should be used\n\
 instead.\n\
 @seealso{inv}\n\

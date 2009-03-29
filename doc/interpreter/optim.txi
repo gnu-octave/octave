@@ -20,7 +20,7 @@
 @chapter Optimization
 
 Octave comes with support for solving various kinds of optimization
-problems. Specifically Octave can solve problems in Linear Programming,
+problems.  Specifically Octave can solve problems in Linear Programming,
 Quadratic Programming, Nonlinear Programming, and Linear Least Squares
 Minimization.
 
@@ -98,9 +98,11 @@ $$
 @end iftex
 @ifnottex
 @example
+@group
      A*x = b
      lb <= x <= ub
      A_lb <= A_in*x <= A_ub
+@end group
 @end example
 @end ifnottex
 

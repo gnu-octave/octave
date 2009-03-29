@@ -1,5 +1,10 @@
 2009-03-29  Jaroslav Hajek  <highegg@gmail.com>
 
+	* pt-eval.cc (do_unwind_protect_cleanup_code): Protect also
+	octave_interrupt_state.
+
+2009-03-29  Jaroslav Hajek  <highegg@gmail.com>
+
 	* DLD-FUNCTIONS/cellfun.cc (Fcellslices): Index n-d arrays along the
 	last dimension.
 

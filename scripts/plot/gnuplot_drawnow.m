@@ -39,8 +39,10 @@ function gnuplot_drawnow (h, term, file, mono, debug_file)
     plot_stream = [];
     fid = [];
     printing = ! output_to_screen (gnuplot_trim_term (term));
+    default_plot_stream = get (h, "__plot_stream__");
     unwind_protect
       plot_stream = open_gnuplot_stream (2, []);
+      set (h, "__plot_stream__", plot_stream);
       if (__gnuplot_has_feature__ ("variable_GPVAL_TERMINALS"))
         available_terminals = __gnuplot_get_var__ (plot_stream, "GPVAL_TERMINALS");
         available_terminals = regexp (available_terminals, "\\b\\w+\\b", "match");
@@ -63,6 +65,7 @@ function gnuplot_drawnow (h, term, file, mono, debug_file)
                gnuplot_trim_term (term))
       endif
     unwind_protect_cleanup
+      set (h, "__plot_stream__", default_plot_stream);
       if (! isempty (plot_stream))
         pclose (plot_stream(1));
         if (numel (plot_stream) == 2)

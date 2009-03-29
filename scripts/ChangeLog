@@ -1,3 +1,9 @@
+2009-03-28  Ben Abbott <bpabbott@mac.com>
+
+	* plot/gnuplot_drawnow.m: Always set figure property "__plot_stream__"
+	to the active gnuplot steam. Permits __gnuplot_get_var__ to return to
+	proper result for all gnuplot streams.
+
 2009-03-27  Ben Abbott <bpabbott@mac.com>
 
 	* plot/__go_draw_axes__.m: Properly position the title for 3D plots

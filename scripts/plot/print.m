@@ -428,19 +428,26 @@ function print (varargin)
     set (gcf, "__pixels_per_inch__", resolution)
 
     unwind_protect
-      if (! isempty (size))
-        size_in_pixels = sscanf (size ,"%d, %d");
-        size_in_pixels = reshape (size_in_pixels, [1, numel(size_in_pixels)]);
-        size_in_inches = size_in_pixels ./ resolution;
+      if (! isempty (size) || any (strfind (dev, "eps") == 1))
         p.paperunits = get (gcf, "paperunits");
         p.papertype = get (gcf, "papertype");
         p.papersize = get (gcf, "papersize");
         p.paperposition = get (gcf, "paperposition");
         p.paperpositionmode = get (gcf, "paperpositionmode");
         set (gcf, "paperunits", "inches");
+        if (any (strfind (dev, "eps") == 1))
+          paperposition_in_inches = get (gcf, "paperposition") + 1/72;
+          paperposition_in_inches(1:2) = 0;
+          papersize_in_inches = paperposition_in_inches(3:4);
+        else
+          size_in_pixels = sscanf (size ,"%d, %d");
+          size_in_pixels = reshape (size_in_pixels, [1, numel(size_in_pixels)]);
+          papersize_in_inches = size_in_pixels ./ resolution;
+          paperposition_in_inches = [0, 0, papersize_in_inches];
+        endif
         set (gcf, "papertype", "<custom>");
-        set (gcf, "papersize", size_in_inches);
-        set (gcf, "paperposition", [0, 0, size_in_inches]);
+        set (gcf, "papersize", papersize_in_inches);
+        set (gcf, "paperposition", paperposition_in_inches);
         set (gcf, "paperpositionmode", "manual");
       endif
       if (debug)
@@ -449,8 +456,8 @@ function print (varargin)
         drawnow (new_terminal, name, mono);
       endif
     unwind_protect_cleanup
-      ## FIXME - it would be preferred to delete the added properties here.
-      if (! isempty (size))
+      ## FIXME - it would be nice to delete "__pixels_per_inch__" property here.
+      if (! isempty (size) || any (strfind (dev, "eps") == 1))
         props = fieldnames (p);
         for n = 1:numel(props)
           set (gcf, props{n}, p.(props{n}))

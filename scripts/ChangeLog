@@ -1,3 +1,8 @@
+2009-03-29  Ben Abbott <bpabbott@mac.com>
+
+	* plot/print.m: For eps output the bounding box should represent the
+	figure's position.
+
 2009-03-28  Ben Abbott <bpabbott@mac.com>
 
 	* plot/gnuplot_drawnow.m: Always set figure property "__plot_stream__"

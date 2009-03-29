@@ -1,3 +1,8 @@
+2009-03-29  Jaroslav Hajek  <highegg@gmail.com>
+
+	* Array.cc (Array<T>::assign): Remove redundant checks after invalid
+	resize.
+
 2009-03-26  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Array.cc (Array<T>::find): Reshape result for Matlab compatibility.

@@ -1272,24 +1272,20 @@ Array<T>::assign (const idx_vector& i, const Array<T>& rhs, const T& rfv)
           n = numel ();
         }
 
-      // If the resizing was ambiguous, resize has already griped.
-      if (nx == n)
+      if (i.is_colon ())
         {
-          if (i.is_colon ())
-            {
-              // A(:) = X makes a full fill or a shallow copy.
-              if (rhl == 1)
-                fill (rhs(0));
-              else
-                *this = rhs.reshape (dimensions);
-            }
+          // A(:) = X makes a full fill or a shallow copy.
+          if (rhl == 1)
+            fill (rhs(0));
           else
-            {
-              if (rhl == 1)
-                i.fill (rhs(0), n, fortran_vec ());
-              else
-                i.assign (rhs.data (), n, fortran_vec ());
-            }
+            *this = rhs.reshape (dimensions);
+        }
+      else
+        {
+          if (rhl == 1)
+            i.fill (rhs(0), n, fortran_vec ());
+          else
+            i.assign (rhs.data (), n, fortran_vec ());
         }
     }
   else
@@ -1345,51 +1341,45 @@ Array<T>::assign (const idx_vector& i, const idx_vector& j,
           dv = dimensions;
         }
 
-      // If the resizing was invalid, resize has already griped.
-      if (dv == rdv)
+      if (i.is_colon () && j.is_colon ())
         {
-          if (i.is_colon () && j.is_colon ())
+          // A(:,:) = X makes a full fill or a shallow copy
+          if (isfill)
+            fill (rhs(0));
+          else
+            *this = rhs.reshape (dimensions);
+        }
+      else
+        {
+          // The actual work.
+          octave_idx_type n = numel (), r = dv (0), c = dv (1);
+          idx_vector ii (i);
+
+          const T* src = rhs.data ();
+          T *dest = fortran_vec ();
+
+          // Try reduction first.
+          if (ii.maybe_reduce (r, j, c))
             {
-              // A(:,:) = X makes a full fill or a shallow copy
               if (isfill)
-                fill (rhs(0));
+                ii.fill (*src, n, dest);
               else
-                *this = rhs.reshape (dimensions);
+                ii.assign (src, n, dest);
             }
           else
             {
-              // The actual work.
-              octave_idx_type n = numel (), r = dv (0), c = dv (1);
-              idx_vector ii (i);
-
-              const T* src = rhs.data ();
-              T *dest = fortran_vec ();
-
-              // Try reduction first.
-              if (ii.maybe_reduce (r, j, c))
+              if (isfill)
                 {
-                  if (isfill)
-                    ii.fill (*src, n, dest);
-                  else
-                    ii.assign (src, n, dest);
+                  for (octave_idx_type k = 0; k < jl; k++)
+                    i.fill (*src, r, dest + r * j.xelem (k));
                 }
               else
                 {
-                  if (isfill)
-                    {
-                      for (octave_idx_type k = 0; k < jl; k++)
-                        i.fill (*src, r, dest + r * j.xelem (k));
-                    }
-                  else
-                    {
-                      for (octave_idx_type k = 0; k < jl; k++)
-                        src += i.assign (src, r, dest + r * j.xelem (k));
-                    }
+                  for (octave_idx_type k = 0; k < jl; k++)
+                    src += i.assign (src, r, dest + r * j.xelem (k));
                 }
             }
-          
         }
-
     }
   else
     gripe_assignment_dimension_mismatch ();
@@ -1456,30 +1446,26 @@ Array<T>::assign (const Array<idx_vector>& ia,
               chop_trailing_singletons ();
             }
 
-          // If the resizing was invalid, resize has already griped.
-          if (dv == rdv)
+          if (all_colons)
             {
-              if (all_colons)
-                {
-                  // A(:,:,...,:) = X makes a full fill or a shallow copy.
-                  if (isfill)
-                    fill (rhs(0));
-                  else
-                    *this = rhs.reshape (dimensions);
-                }
+              // A(:,:,...,:) = X makes a full fill or a shallow copy.
+              if (isfill)
+                fill (rhs(0));
               else
-                {
-                  // Do the actual work.
+                *this = rhs.reshape (dimensions);
+            }
+          else
+            {
+              // Do the actual work.
 
-                  // Prepare for recursive indexing
-                  rec_index_helper rh (dv, ia);
+              // Prepare for recursive indexing
+              rec_index_helper rh (dv, ia);
 
-                  // Do it.
-                  if (isfill)
-                    rh.fill (rhs(0), fortran_vec ());
-                  else
-                    rh.assign (rhs.data (), fortran_vec ());
-                }
+              // Do it.
+              if (isfill)
+                rh.fill (rhs(0), fortran_vec ());
+              else
+                rh.assign (rhs.data (), fortran_vec ());
             }
         }
       else 

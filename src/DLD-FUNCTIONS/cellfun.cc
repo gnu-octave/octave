@@ -1224,8 +1224,24 @@ do_cellslices_nda (const NDA& array, const idx_vector& lb, const idx_vector& ub)
 {
   octave_idx_type n = lb.length (0);
   Cell retval (1, n);
-  for (octave_idx_type i = 0; i < n && ! error_state; i++)
-    retval(i) = array.index (idx_vector (lb(i), ub(i) + 1));
+  if (array.is_vector ())
+    {
+      for (octave_idx_type i = 0; i < n && ! error_state; i++)
+        retval(i) = array.index (idx_vector (lb(i), ub(i) + 1));
+    }
+  else
+    {
+      dim_vector dv = array.dims ();
+      octave_idx_type nl = 1;
+      for (int i = 0; i < dv.length () - 1; i++) nl *= dv(i);
+      for (octave_idx_type i = 0; i < n && ! error_state; i++)
+        {
+          // Do it with a single index to speed things up.
+          dv(dv.length () - 1) = ub(i) + 1 - lb(i);
+          retval(i) = array.index (idx_vector (nl*lb(i), nl*(ub(i) + 1))).reshape (dv);
+        }
+    }
+
   return retval;
 }
 
@@ -1244,7 +1260,7 @@ for i = 1:length (lb)\n\
 endfor\n\
 @end example\n\
 \n\
-If @var{X} is a matrix, linear indexing will be used.\n\
+If @var{X} is a matrix or array, indexing is done along the last dimension.\n\
 @seealso{mat2cell}\n\
 @end deftypefn")
 {
@@ -1290,11 +1306,12 @@ If @var{X} is a matrix, linear indexing will be used.\n\
                   // generic code.
                   octave_idx_type n = lb.length (0);
                   retcell = Cell (1, n);
-                  octave_value_list idx (1, octave_value ());
+                  octave_idx_type nind = x.dims ().is_vector () ? 1 : x.ndims ();
+                  octave_value_list idx (nind, octave_value::magic_colon_t);
                   for (octave_idx_type i = 0; i < n && ! error_state; i++)
                     {
-                      idx(0) = Range (static_cast<double> (lb(i)) + 1,
-                                      static_cast<double> (ub(i)) + 1);
+                      idx(nind-1) = Range (static_cast<double> (lb(i)) + 1,
+                                           static_cast<double> (ub(i)) + 1);
                       retcell(i) = x.do_index_op (idx);
                     }
                 }

@@ -20,15 +20,15 @@
 ## @deftypefn {Function File} {} quadgk (@var{f}, @var{a}, @var{b}, @var{abstol}, @var{trace})
 ## @deftypefnx {Function File} {} quadgk (@var{f}, @var{a}, @var{b}, @var{prop}, @var{val}, @dots{})
 ## @deftypefnx {Function File} {[@var{q}, @var{err}] =} quadgk (@dots{})
-## Numerically evaluate integral using adaptive Guass-Konrod quadrature.
+## Numerically evaluate integral using adaptive Gauss-Konrod quadrature.
 ## The formulation is based on a proposal by L.F. Shampine,
 ## @cite{"Vectorized adaptive quadrature in @sc{matlab}", Journal of
 ## Computational and Applied Mathematics, pp131-140, Vol 211, Issue 2,
-## Feb 2008} where all function evalutions at an iteration are
+## Feb 2008} where all function evaluations at an iteration are
 ## calculated with a single call to @var{f}.  Therefore the function
 ## @var{f} must be of the form @code{@var{f} (@var{x})} and accept
 ## vector values of @var{x} and return a vector of the same length
-## representing the function evalutaions at the given values of @var{x}.
+## representing the function evaluations at the given values of @var{x}.
 ## The function @var{f} can be defined in terms of a function handle,
 ## inline function or string.
 ##
@@ -49,7 +49,7 @@
 ## The absolute tolerance can be passed as a fourth argument in a manner
 ## compatible with @code{quadv}.  Equally the user can request that
 ## information on the convergence can be printed is the fifth argument
-## is logicallly true.
+## is logically true.
 ##
 ## Alternatively, certain properties of @code{quadgk} can be passed as
 ## pairs @code{@var{prop}, @var{val}}.  Valid properties are
@@ -95,7 +95,7 @@
 ## If any of @var{a}, @var{b} or @var{waypoints} is complex, then the
 ## quadrature is treated as a contour integral along a piecewise
 ## continuous path defined by the above.  In this case the integral is
-## assuemd to have no edge singularities.  For example
+## assumed to have no edge singularities.  For example
 ##
 ## @example
 ## @group
@@ -277,7 +277,7 @@ function [q, err] = quadgk (f, a, b, varargin)
     endif
 
     ## Split interval into at least 10 sub-interval with a 15 point
-    ## Guass-Kronrod rule giving a minimum of 150 function evaluations
+    ## Gauss-Kronrod rule giving a minimum of 150 function evaluations
     while (length (subs) < 11)
       subs = [subs' ; subs(1:end-1)' + diff(subs') ./ 2, NaN](:)(1 : end - 1);
     endwhile
@@ -380,7 +380,7 @@ function [q, err] = quadgk (f, a, b, varargin)
 endfunction
 
 function [q, err] = __quadgk_eval__ (f, subs)
-  ## A (15,7) point pair of Guass-Konrod quadrature rules. The abscissa
+  ## A (15,7) point pair of Gauss-Konrod quadrature rules. The abscissa
   ## and weights are copied directly from dqk15w.f from quadpack
 
   persistent abscissa = [-0.9914553711208126e+00, -0.9491079123427585e+00, ...

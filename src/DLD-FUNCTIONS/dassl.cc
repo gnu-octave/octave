@@ -222,7 +222,7 @@ in which @var{x}, @var{xdot}, and @var{res} are vectors, and @var{t} is a\n\
 scalar.\n\
 \n\
 If @var{fcn} is a two-element string array or a two-element cell array\n\
-of strings, inlines, or function handles, the first element names\n\
+of strings, inline functions, or function handles, the first element names\n\
 the function @math{f} described above, and the second element names a\n\
 function to compute the modified Jacobian\n\
 \n\

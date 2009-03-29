@@ -46,9 +46,11 @@ $$
 @ifinfo
 
 @example
+@group
 dx
 -- = f (x, t)
 dt
+@end group
 @end example
 @end ifinfo
 
@@ -136,7 +138,7 @@ $\dot{x} = {dx \over dt}$
 @ifnottex
 @math{x-dot}
 @end ifnottex
-is the derivative of @math{x}. The equation is solved using Petzold's
+is the derivative of @math{x}.  The equation is solved using Petzold's
 DAE solver @sc{Daspk}.
 
 @DOCSTRING(daspk)

@@ -56,8 +56,10 @@ tolerance must also be a vector of the same length.
 The local error test applied at each integration step is
 
 @example
+@group
   abs (local error in x(i))
        <= rtol(i) * abs (Y(i)) + atol(i)
+@end group
 @end example
   END_DOC_ITEM
   TYPE = "Array<double>"
@@ -94,7 +96,7 @@ one of two initialization problems:
 In either case, initial values for the given components are input, and
 initial guesses for the unknown components must also be provided as
 input.  Set this option to 1 to solve the first problem, or 2 to solve
-the second (the default default is 0, so you must provide a set of
+the second (the default is 0, so you must provide a set of
 initial conditions that are consistent).
 
 If this option is set to a nonzero value, you must also set the
@@ -148,7 +150,7 @@ applied to the residual vector, premultiplied by the approximate
 Jacobian.  For convergence, the weighted RMS norm of this vector
 (scaled by the error weights) must be less than @code{EPINIT*EPCON},
 where @code{EPCON} = 0.33 is the analogous test constant used in the
-time steps. The default is @code{EPINIT} = 0.01.
+time steps.  The default is @code{EPINIT} = 0.01.
 @end table
   END_DOC_ITEM
   TYPE = "Array<double>"

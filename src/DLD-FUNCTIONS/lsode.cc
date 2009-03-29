@@ -206,7 +206,7 @@ hand sides for the set of equations.  The function must have the form\n\
 in which @var{xdot} and @var{x} are vectors and @var{t} is a scalar.\n\
 \n\
 If @var{fcn} is a two-element string array or a two-element cell array\n\
-of strings, inlines, or function handles, the first element names\n\
+of strings, inline functions, or function handles, the first element names\n\
 the function @math{f} described above, and the second element names a\n\
 function to compute the Jacobian of @math{f}.  The Jacobian function\n\
 must have the form\n\

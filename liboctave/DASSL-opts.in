@@ -56,8 +56,10 @@ tolerance must also be a vector of the same length.
 The local error test applied at each integration step is
 
 @example
+@group
   abs (local error in x(i))
        <= rtol(i) * abs (Y(i)) + atol(i)
+@end group
 @end example
   END_DOC_ITEM
   TYPE = "Array<double>"

@@ -51,7 +51,7 @@ Numerical integration based on Gaussian quadrature.
 Numerical integration using an adaptive Lobatto rule.
 
 @item quadgk
-Numerical integration using an adaptive Guass-Konrod rule.
+Numerical integration using an adaptive Gauss-Konrod rule.
 
 @item quadv
 Numerical integration using an adaptive vectorized Simpson's rule.
@@ -176,8 +176,10 @@ rhs = alpha * b(2:n-1,n) - a(2:n-1,n);
 Then the solution at the roots @var{r} is
 
 @example
+@group
 u = [ 0; (at - alpha * bt) \ rhs; 1]
      @result{} [ 0.00; 0.004; 0.01 0.00; 0.12; 0.62; 1.00 ]
+@end group
 @end example
 
 @node Functions of Multiple Variables
@@ -213,6 +215,7 @@ integration.  It is however possible with @code{quadl}, which is what
 the following code does.
 
 @example
+@group
 function I = g(y)
   I = ones(1, length(y));
   for i = 1:length(y)
@@ -223,15 +226,18 @@ endfunction
 
 I = quadl("g", 0, 1)
       @result{} 0.30022
+@end group
 @end example
 
 The above process can be simplified with the @code{dblquad} and
 @code{triplequad} functions for integrals over two and three
-variables. For example
+variables.  For example
 
 @example
+@group
 I =  dblquad (@@(x, y) sin(pi.*x.*y).*sqrt(x.*y), 0, 1, 0, 1)
       @result{} 0.30022
+@end group
 @end example
 
 @DOCSTRING(dblquad)
@@ -255,15 +261,17 @@ $$
 the sum over @code{i=1:n} and @code{j=1:n} of @code{q(i)*q(j)*f(r(i),r(j))},
 @end ifnottex
 where @math{q} and @math{r} is as returned by @code{colloc(n)}.  The
-generalisation to more than two variables is straight forward.  The
+generalization to more than two variables is straight forward.  The
 following code computes the studied integral using @math{n=7} points.
 
 @example
+@group
 f = @@(x,y) sin(pi*x*y').*sqrt(x*y');
 n = 7;
 [t, A, B, q] = colloc(n);
 I = q'*f(t,t)*q;
       @result{} 0.30022
+@end group
 @end example
 
 @noindent

@@ -62,13 +62,13 @@ attempt Cholesky factorization using the @sc{Lapack} xPOTRF function.
 hermitian with a real positive diagonal, and the matrix is square, factorize 
 using the @sc{Lapack} xGETRF function.
 
-@item  If the matrix is not square, or any of the previous solvers flags
+@item If the matrix is not square, or any of the previous solvers flags
 a singular or near singular matrix, find a least squares solution using
 the @sc{Lapack} xGELSD function.
 @end enumerate
 
 The user can force the type of the matrix with the @code{matrix_type}
-function. This overcomes the cost of discovering the type of the matrix.
+function.  This overcomes the cost of discovering the type of the matrix.
 However, it should be noted that identifying the type of the matrix incorrectly
 will lead to unpredictable results, and so @code{matrix_type} should be
 used with care.
@@ -76,7 +76,7 @@ used with care.
 It should be noted that the test for whether a matrix is a candidate for
 Cholesky factorization, performed above and by the @code{matrix_type}
 function, does not give a certainty that the matrix is
-Hermitian. However, the attempt to factorize the matrix will quickly
+Hermitian.  However, the attempt to factorize the matrix will quickly
 flag a non-Hermitian matrix.
 
 @node Basic Matrix Functions

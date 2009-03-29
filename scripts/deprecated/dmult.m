@@ -19,7 +19,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} dmult (@var{a}, @var{b})
-## This function has been deprecated. Use the direct syntax @code{diag(A)*B}
+## This function has been deprecated.  Use the direct syntax @code{diag(A)*B}
 ## which is more readable and now also more efficient.
 ## @end deftypefn
 

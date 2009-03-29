@@ -56,8 +56,10 @@ $$
 @ifinfo
 
 @example
+@group
 -2x^2 + 3xy   + 4 sin(y) = 6
  3x^2 - 2xy^2 + 3 cos(x) = -4
+@end group
 @end example
 @end ifinfo
 
@@ -66,10 +68,12 @@ you first need to write a function to compute the value of the given
 function.  For example:
 
 @example
+@group
 function y = f (x)
   y(1) = -2*x(1)^2 + 3*x(1)*x(2)   + 4*sin(x(2)) - 6;
   y(2) =  3*x(1)^2 - 2*x(1)*x(2)^2 + 3*cos(x(1)) + 4;
 endfunction
+@end group
 @end example
 
 Then, call @code{fsolve} with a specified initial condition to find the
@@ -84,6 +88,7 @@ roots of the system of equations.  For example, given the function
 results in the solution
 
 @example
+@group
 x =
 
   0.57983
@@ -95,6 +100,7 @@ fval =
    5.5460e-10
 
 info = 1
+@end group
 @end example
 
 @noindent
@@ -132,12 +138,14 @@ and compute it with the following Octave function
 @end iftex
 
 @example
+@group
 function J = jacobian(x)
   J(1,1) =  3*x(2) - 4*x(1);
   J(1,2) =  4*cos(x(2)) + 3*x(1);
   J(2,1) = -2*x(2)^2 - 3*sin(x(1)) + 6*x(1);
   J(2,2) = -4*x(1)*x(2);
 endfunction
+@end group
 @end example
 
 @noindent

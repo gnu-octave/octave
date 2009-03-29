@@ -49,7 +49,7 @@
 ## false.
 ## 
 ## @code{"ComplexEqn"} is @code{"on"}, @code{fsolve} will attempt to solve
-## complex equations in complex variables, assuming that the equations posess a
+## complex equations in complex variables, assuming that the equations possess a
 ## complex derivative (i.e., are holomorphic).  If this is not what you want, 
 ## should unpack the real and imaginary parts of the system to get a real
 ## system.

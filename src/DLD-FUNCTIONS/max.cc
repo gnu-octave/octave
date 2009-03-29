@@ -940,7 +940,7 @@ is equivalent to the following code:\n\
 \n\
 @noindent\n\
 but computed in a much faster manner.\n\
-The behaviour if @var{dim} or @var{iw} is unspecified is analogous\n\
+The behavior if @var{dim} or @var{iw} is unspecified is analogous\n\
 to @code{min}.\n\
 @end deftypefn")
 {
@@ -973,7 +973,7 @@ is equivalent to the following code:\n\
 \n\
 @noindent\n\
 but computed in a much faster manner.\n\
-The behaviour if @var{dim} or @var{iw} is unspecified is analogous\n\
+The behavior if @var{dim} or @var{iw} is unspecified is analogous\n\
 to @code{max}.\n\
 @end deftypefn")
 {

@@ -114,7 +114,7 @@ preserving column transformation @var{Q} is returned, such that\n\
 Called with a fifth output argument and a sparse input matrix, then\n\
 @dfn{lu} attempts to use a scaling factor @var{r} on the input matrix\n\
 such that @code{@var{p} * (@var{r} \\ @var{a}) * @var{q} = @var{l} * @var{u}}.\n\
-This typically leads to a sparser and more stable factorsation.\n\
+This typically leads to a sparser and more stable factorization.\n\
 \n\
 An additional input argument @var{thres}, that defines the pivoting\n\
 threshold can be given.  @var{thres} can be a scalar, in which case\n\

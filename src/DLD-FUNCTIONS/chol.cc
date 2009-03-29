@@ -71,7 +71,7 @@ Called with one output argument @code{chol} fails if @var{a} or @var{s} is\n\
 not positive definite.  With two or more output arguments @var{p} flags\n\
 whether the matrix was positive definite and @code{chol} does not fail.  A\n\
 zero value indicated that the matrix was positive definite and the @var{r}\n\
-gives the factorization, annd @var{p} will have a positive value otherwise.\n\
+gives the factorization, and @var{p} will have a positive value otherwise.\n\
 \n\
 If called with 3 outputs then a sparsity preserving row/column permutation\n\
 is applied to @var{a} prior to the factorization.  That is @var{r}\n\
@@ -103,7 +103,7 @@ $ R^T R = A (Q, Q)$.\n\
 @end example\n\
 @end ifnottex\n\
 \n\
-Called with either a sparse or full matrix and uing the 'lower' flag,\n\
+Called with either a sparse or full matrix and using the 'lower' flag,\n\
 @code{chol} returns the lower triangular factorization such that\n\
 @iftex\n\
 @tex\n\
@@ -117,7 +117,7 @@ $ L L^T = A $.\n\
 @end example\n\
 @end ifnottex\n\
 \n\
-In general the lower trinagular factorization is significantly faster for\n\
+In general the lower triangular factorization is significantly faster for\n\
 sparse matrices.\n\
 @seealso{cholinv, chol2inv}\n\
 @end deftypefn")

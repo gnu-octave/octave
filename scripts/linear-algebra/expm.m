@@ -16,7 +16,7 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-##-*- texinfo -*-
+## -*- texinfo -*-
 ## @deftypefn {Function File} {} expm (@var{a})
 ## Return the exponential of a matrix, defined as the infinite Taylor
 ## series
@@ -30,7 +30,7 @@
 ## @ifnottex
 ## 
 ## @example
-## expm(a) = I + a + a^2/2! + a^3/3! + ...
+## expm(a) = I + a + a^2/2! + a^3/3! + @dots{}
 ## @end example
 ## 
 ## @end ifnottex
@@ -65,8 +65,10 @@
 ## @ifnottex
 ## 
 ## @example
+## @group
 ##      -1
 ## D (a)   N (a)
+## @end group
 ## @end example
 ## 
 ## @end ifnottex

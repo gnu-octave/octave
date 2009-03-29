@@ -617,7 +617,7 @@ see @ref{Linear Algebra}.\n\
 DEFUN (expm1, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} expm1 (@var{x})\n\
-Compute exp (@var{x}) - 1 accurately in neighbourhood of zero.\n\
+Compute exp (@var{x}) - 1 accurately in neighborhood of zero.\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1215,7 +1215,7 @@ Compute the base-10 logarithm for each element of @var{x}.\n\
 DEFUN (log1p, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} log1p (@var{x})\n\
-Compute log (1 + @var{x}) accurately in neighbourhood of zero.\n\
+Compute log (1 + @var{x}) accurately in neighborhood of zero.\n\
 @end deftypefn")
 {
   octave_value retval;

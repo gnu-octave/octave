@@ -34,12 +34,12 @@ and @ref{Interpolation on Scattered Data} describe further methods.
 @DOCSTRING(interp1)
 
 There are some important differences between the various interpolation
-methods. The 'spline' method enforces that both the first and second
+methods.  The 'spline' method enforces that both the first and second
 derivatives of the interpolated values have a continuous derivative,
-whereas the other methods do not. This means that the results of the
-'spline' method are generally smoother. If the function to be
+whereas the other methods do not.  This means that the results of the
+'spline' method are generally smoother.  If the function to be
 interpolated is in fact smooth, then 'spline' will give excellent
-results. However, if the function to be evaluated is in some manner
+results.  However, if the function to be evaluated is in some manner
 discontinuous, then 'pchip' interpolation might give better results.
 
 This can be demonstrated by the code
@@ -71,19 +71,19 @@ The result of which can be seen in @ref{fig:interpderiv1} and
 
 @float Figure,fig:interpderiv1
 @image{interpderiv1,8cm}
-@caption{Comparison of 'phcip' and 'spline' interpolation methods for a 
+@caption{Comparison of 'pchip' and 'spline' interpolation methods for a 
 step function}
 @end float
 
 @float Figure,fig:interpderiv2
 @image{interpderiv2,8cm}
-@caption{Comparison of the second derivative of the 'phcip' and 'spline' 
+@caption{Comparison of the second derivative of the 'pchip' and 'spline' 
 interpolation methods for a step function}
 @end float
 @end ifnotinfo
 
 A simplified version of @code{interp1} that performs only linear
-interpolation is available in @code{interp1q}. This argument is slightly
+interpolation is available in @code{interp1q}.  This argument is slightly
 faster than @code{interp1} as to performs little error checking.
 
 @DOCSTRING(interp1q)
@@ -94,11 +94,11 @@ reconverted to the time domain.
 
 @DOCSTRING(interpft)
 
-There are two significant limitations on Fourier interpolation. Firstly,
+There are two significant limitations on Fourier interpolation.  Firstly,
 the function signal is assumed to be periodic, and so non-periodic
-signals will be poorly represented at the edges. Secondly, both the
+signals will be poorly represented at the edges.  Secondly, both the
 signal and its interpolation are required to be sampled at equispaced
-points. An example of the use of @code{interpft} is
+points.  An example of the use of @code{interpft} is
 
 @example
 @group
@@ -152,9 +152,9 @@ in @ref{Interpolation on Scattered Data}.
 
 A significant difference between @code{interpn} and the other two
 multidimensional interpolation functions is the fashion in which the
-dimensions are treated. For @code{interp2} and @code{interp3}, the 'y'
+dimensions are treated.  For @code{interp2} and @code{interp3}, the 'y'
 axis is considered to be the columns of the matrix, whereas the 'x'
-axis corresponds to the rows of the array. As Octave indexes arrays in
+axis corresponds to the rows of the array.  As Octave indexes arrays in
 column major order, the first dimension of any array is the columns, and
 so @code{interpn} effectively reverses the 'x' and 'y' dimensions. 
 Consider the example
@@ -175,7 +175,7 @@ mesh (zi, yi, squeeze (vi2(1,:,:)));
 @end example
 
 @noindent
-where @code{vi} and @code{vi2} are identical. The reversal of the
+where @code{vi} and @code{vi2} are identical.  The reversal of the
 dimensions is treated in the @code{meshgrid} and @code{ndgrid} functions
 respectively.
 @ifnotinfo

@@ -21,7 +21,7 @@
 ## Searches for the enclosing Delaunay convex hull.  For @code{@var{t} =
 ## delaunayn (@var{x})}, finds the index in @var{t} containing the
 ## points @var{xi}.  For points outside the convex hull, @var{idx} is NaN.
-## If requested @code{tsearchn} also returns the barycentric coordinates @var{p}
+## If requested @code{tsearchn} also returns the Barycentric coordinates @var{p}
 ## of the enclosing triangles.
 ## @seealso{delaunay, delaunayn}
 ## @end deftypefn

@@ -21,8 +21,8 @@
 ## @deftypefnx {Function File} {@var{tri} =} delaunay (@var{x}, @var{y}, @var{opt})
 ## The return matrix of size [n, 3] contains a set triangles which are
 ## described by the indices to the data point x and y vector.
-## The triangulation satisfies the Delaunay circumcircle criterion.
-## No other data point is in the circumcircle of the defining triangle.
+## The triangulation satisfies the Delaunay circum-circle criterion.
+## No other data point is in the circum-circle of the defining triangle.
 ##
 ## A third optional argument, which must be a string, contains extra options
 ## passed to the underlying qhull command.  See the documentation for the 

@@ -34,7 +34,7 @@ $$
  @var{N}
 
 @example
-p(x) = @var{c}(1) x^@var{N} + ... + @var{c}(@var{N}) x + @var{c}(@var{N}+1).
+p(x) = @var{c}(1) x^@var{N} + @dots{} + @var{c}(@var{N}) x + @var{c}(@var{N}+1).
 @end example
 @end ifinfo
 
@@ -54,8 +54,10 @@ The value of a polynomial represented by the vector @var{c} can be evaluated
 at the point @var{x} very easily, as the following example shows:
 
 @example
+@group
 N = length(c)-1;
 val = dot( x.^(N:-1:0), c );
+@end group
 @end example
 
 @noindent
@@ -111,10 +113,12 @@ both return new polynomials describing the result.  As an example we'll
 compute the definite integral of @math{p(x) = x^2 + 1} from 0 to 3.
 
 @example
+@group
 c = [1, 0, 1];
 integral = polyint(c);
 area = polyval(integral, 3) - polyval(integral, 0)
 @result{} 12
+@end group
 @end example
 
 @DOCSTRING(polyderiv)
@@ -149,6 +153,7 @@ quadratic into one function.  Each of these functions is expressed
 on adjoined intervals.
 
 @example
+@group
 x = [-2, -1, 1, 2];
 p = [ 0,  1, 0;
       1, -2, 1;
@@ -157,6 +162,7 @@ pp = mkpp(x, p);
 xi = linspace(-2, 2, 50);
 yi = ppval(pp, xi);
 plot(xi, yi);
+@end group
 @end example
 
 @DOCSTRING(ppval)

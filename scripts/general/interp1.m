@@ -31,13 +31,13 @@
 ##
 ## @table @asis
 ## @item 'nearest'
-## Return the nearest neighbour.
+## Return the nearest neighbor.
 ## @item 'linear'
-## Linear interpolation from nearest neighbours
+## Linear interpolation from nearest neighbors
 ## @item 'pchip'
 ## Piece-wise cubic hermite interpolating polynomial
 ## @item 'cubic'
-## Cubic interpolation from four nearest neighbours
+## Cubic interpolation from four nearest neighbors
 ## @item 'spline'
 ## Cubic spline interpolation--smooth first and second derivatives
 ## throughout the curve

@@ -29,9 +29,11 @@ is arranged in a matrix where each row is an observation, and each
 column is a variable.  So, the matrix defined by
 
 @example
+@group
 a = [ 0.9, 0.7;
       0.1, 0.1;
       0.5, 0.4 ];
+@end group
 @end example
 
 @noindent
@@ -403,7 +405,7 @@ alphabetical order).
   @tab @code{tpdf}
   @tab @code{tcdf}
   @tab @code{tinv}
-@item  Univariate Discrete Distribution
+@item Univariate Discrete Distribution
   @tab @code{unidpdf}
   @tab @code{unidcdf}
   @tab @code{unidinv}

@@ -21,7 +21,7 @@
 ## For each probability value @var{x}, compute the inverse of the
 ## cumulative distribution function (CDF) of the t (Student)
 ## distribution with degrees of freedom @var{n}.  This function is
-## analagous to looking in a table for the t-value of a single-tailed
+## analogous to looking in a table for the t-value of a single-tailed
 ## distribution.
 ## @end deftypefn
 

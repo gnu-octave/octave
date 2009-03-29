@@ -20,7 +20,7 @@
 ## @deftypefn {Function File} {[@var{m}, @var{f}, @var{c}] =} mode (@var{x}, @var{dim})
 ## Count the most frequently appearing value.  @code{mode} counts the 
 ## frequency along the first non-singleton dimension and if two or more
-## values have te same frequency returns the smallest of the two in
+## values have the same frequency returns the smallest of the two in
 ## @var{m}.  The dimension along which to count can be specified by the
 ## @var{dim} parameter.
 ##

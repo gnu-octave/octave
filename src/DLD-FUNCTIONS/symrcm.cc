@@ -430,7 +430,7 @@ bandwidth minimization problem.  The implementation is based in the\n\
 descriptions found in\n\
 \n\
 E. Cuthill, J. McKee: Reducing the Bandwidth of Sparse Symmetric\n\
-Matrices. Proceedings of the 24th ACM National Conference, 157-172\n\
+Matrices. Proceedings of the 24th ACM National Conference, 157--172\n\
 1969, Brandon Press, New Jersey.\n\
 \n\
 Alan George, Joseph W. H. Liu: Computer Solution of Large Sparse\n\

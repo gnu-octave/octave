@@ -2493,7 +2493,7 @@ DEFUN (nzmax, args, ,
 Return the amount of storage allocated to the sparse matrix @var{SM}.\n\
 Note that Octave tends to crop unused memory at the first opportunity\n\
 for sparse objects.  There are some cases of user created sparse objects\n\
-where the value returned by @dfn{nzmaz} will not be the same as @dfn{nnz},\n\
+where the value returned by @dfn{nzmax} will not be the same as @dfn{nnz},\n\
 but in general they will give the same result.\n\
 @seealso{sparse, spalloc}\n\
 @end deftypefn")

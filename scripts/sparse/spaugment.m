@@ -28,7 +28,7 @@
 ## @end example
 ##
 ## @noindent
-## This is related to the leasted squared solution of 
+## This is related to the least squares solution of 
 ## @code{@var{a} \\ @var{b}}, by
 ## 
 ## @example

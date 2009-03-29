@@ -55,7 +55,7 @@
 ## 1e-10.
 ##
 ## @item maxit
-## The maximum number of iterations.  The defaut is 300.
+## The maximum number of iterations.  The default is 300.
 ##
 ## @item disp
 ## The level of diagnostic printout.  If @code{disp} is 0 then there is no

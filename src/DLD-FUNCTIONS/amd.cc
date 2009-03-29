@@ -67,14 +67,14 @@ behavior of @code{amd}.  The fields of these structure are\n\
 @table @asis\n\
 @item opts.dense\n\
 Determines what @code{amd} considers to be a dense row or column of the\n\
-input matrix.  Rows or columns with more that @code{max(16, (dense *\n\
+input matrix.  Rows or columns with more than @code{max(16, (dense *\n\
 sqrt (@var{n})} entries, where @var{n} is the order of the matrix @var{s},\n\
-are igorned by @code{amd} during the calculation of the permutation\n\
+are ignored by @code{amd} during the calculation of the permutation\n\
 The value of dense must be a positive scalar and its default value is 10.0\n\
 \n\
 @item opts.aggressive\n\
-If this value is a non zero scalar, then @code{amd} performs agressive\n\
-absorption.  The default is not to perform agressive absorption.\n\
+If this value is a non zero scalar, then @code{amd} performs aggressive\n\
+absorption.  The default is not to perform aggressive absorption.\n\
 @end table\n\
 \n\
 The author of the code itself is Timothy A. Davis (davis@@cise.ufl.edu),\n\

@@ -45,7 +45,7 @@ be applied to nonsquare matrices, in which case we usually speak of a rectangula
 matrix.
 
 A permutation matrix is defined as a square matrix that has a single element equal to unity
-in each row and each column; all other elements are zero. That is, there exists a 
+in each row and each column; all other elements are zero.  That is, there exists a 
 permutation (vector) 
 @iftex
 @tex
@@ -59,7 +59,7 @@ $P_{ij}=0$ otherwise.
 @end ifnottex
 
 Octave provides special treatment of real and complex rectangular diagonal matrices,
-as well as permutation matrices. They are stored as special objects, using efficient 
+as well as permutation matrices.  They are stored as special objects, using efficient 
 storage and algorithms, facilitating writing both readable and efficient matrix algebra
 expressions in the Octave language.
 
@@ -73,7 +73,7 @@ expressions in the Octave language.
 @subsection Creating Diagonal Matrices
 
 The most common and easiest way to create a diagonal matrix is using the built-in
-function @dfn{diag}. The expression @code{diag (v)}, with @var{v} a vector,
+function @dfn{diag}.  The expression @code{diag (v)}, with @var{v} a vector,
 will create a square diagonal matrix with elements on the main diagonal given
 by the elements of @var{v}, and size equal to the length of @var{v}.
 @code{diag (v, m, n)} can be used to construct a rectangular diagonal matrix.
@@ -81,11 +81,12 @@ The result of these expressions will be a special diagonal matrix object, rather
 than a general matrix object.
 
 Diagonal matrix with unit elements can be created using @dfn{eye}.
-Some other built-in functions can also return diagonal matrices. Examples include
+Some other built-in functions can also return diagonal matrices.  Examples include
 @dfn{balance} or @dfn{inv}.
 
 Example:
 @example
+@group
   diag (1:4)
 @result{}
 Diagonal Matrix
@@ -105,6 +106,7 @@ Diagonal Matrix
    0   0   3
    0   0   0
    0   0   0
+@end group
 @end example  
 
 @node Creating Permutation Matrices
@@ -128,6 +130,7 @@ eye (n) (q1, q2).
 
 For example:
 @example
+@group
   eye (4) ([1,3,2,4],:)
 @result{}
 Permutation Matrix
@@ -145,16 +148,18 @@ Permutation Matrix
    0   0   1   0
    0   1   0   0
    0   0   0   1
+@end group
 @end example
 
 Mathematically, an identity matrix is both diagonal and permutation matrix.
 In Octave, @code{eye (n)} returns a diagonal matrix, because a matrix
-can only have one class. You can convert this diagonal matrix to a permutation
+can only have one class.  You can convert this diagonal matrix to a permutation
 matrix by indexing it by an identity permutation, as shown below.
 This is a special property of the identity matrix; indexing other diagonal
 matrices generally produces a full matrix.
 
 @example
+@group
   eye (3)
 @result{}
 Diagonal Matrix
@@ -170,21 +175,22 @@ Permutation Matrix
    1   0   0
    0   1   0
    0   0   1
+@end group
 @end example
 
-Some other built-in functions can also return permutation matrices. Examples include
+Some other built-in functions can also return permutation matrices.  Examples include
 @dfn{inv} or @dfn{lu}.
 
 @node Explicit and Implicit Conversions
 @subsection Explicit and Implicit Conversions
 
-The diagonal and permutation matrices are special objects in their own right. A number
+The diagonal and permutation matrices are special objects in their own right.  A number
 of operations and built-in functions are defined for these matrices to use special,
-more efficient code than would be used for a full matrix in the same place. Examples
+more efficient code than would be used for a full matrix in the same place.  Examples
 are given in further sections.
 
 To facilitate smooth mixing with full matrices, backward compatibility, and
-compatibility with Matlab, the diagonal and permutation matrices should allow
+compatibility with @sc{matlab}, the diagonal and permutation matrices should allow
 any operation that works on full matrices, and will either treat it specially,
 or implicitly convert themselves to full matrices.
 
@@ -193,7 +199,7 @@ a leading submatrix, indexed assignment, or applying most mapper functions,
 such as @dfn{exp}.
 
 An explicit conversion to a full matrix can be requested using the built-in
-function @dfn{full}. It should also be noted that the diagonal and permutation
+function @dfn{full}.  It should also be noted that the diagonal and permutation
 matrix objects will cache the result of the conversion after it is first
 requested (explicitly or implicitly), so that subsequent conversions will
 be very cheap.
@@ -203,7 +209,7 @@ be very cheap.
 
 As has been already said, diagonal and permutation matrices make it
 possible to use efficient algorithms while preserving natural linear
-algebra syntax. This section describes in detail the operations that
+algebra syntax.  This section describes in detail the operations that
 are treated specially when performed on these special matrix objects.
 
 @menu
@@ -214,8 +220,8 @@ are treated specially when performed on these special matrix objects.
 @node Expressions Involving Diagonal Matrices
 @subsection Expressions Involving Diagonal Matrices
 
-Assume @var{D} is a diagonal matrix. If @var{M} is a full matrix,
-then @code{D*M} will scale the rows of @var{M}. That means,
+Assume @var{D} is a diagonal matrix.  If @var{M} is a full matrix,
+then @code{D*M} will scale the rows of @var{M}.  That means,
 if @code{S = D*M}, then for each pair of indices
 i,j it holds 
 @iftex
@@ -235,77 +241,79 @@ If @code{m < n}, then the expression @code{D*M} is equivalent to
 @example
 D(:,1:m) * M(1:m,:),
 @end example
-i.e. trailing @code{n-m} rows of @var{M} are ignored. If @code{m > n}, 
+i.e., trailing @code{n-m} rows of @var{M} are ignored.  If @code{m > n}, 
 then @code{D*M} is equivalent to 
 @example
 [D(1:n,n) * M; zeros(m-n, columns (M))],
 @end example
-i.e. null rows are appended to the result.
+i.e., null rows are appended to the result.
 The situation for right-multiplication @code{M*D} is analogous.
 
 The expressions @code{D \ M} and @code{M / D} perform inverse scaling.
 They are equivalent to solving a diagonal (or rectangular diagonal)
-in a least-squares minimum-norm sense. In exact arithmetics, this is
-equivalent to multiplying by a pseudoinverse. The pseudoinverse of
+in a least-squares minimum-norm sense.  In exact arithmetics, this is
+equivalent to multiplying by a pseudoinverse.  The pseudoinverse of
 a rectangular diagonal matrix is again a rectangular diagonal matrix
 with swapped dimensions, where each nonzero diagonal element is replaced
 by its reciprocal.
 The matrix division algorithms do, in fact, use division rather than 
 multiplication by reciprocals for better numerical accuracy; otherwise, they
 honor the above definition.  Note that a diagonal matrix is never truncated due
-to ill-conditioning; otherwise, it would not be much useful for scaling. This
-is typically consistent with linear algebra needs. A full matrix that only
+to ill-conditioning; otherwise, it would not be much useful for scaling.  This
+is typically consistent with linear algebra needs.  A full matrix that only
 happens to be diagonal (an is thus not a special object) is of course treated
 normally.
 
 Multiplication and division by diagonal matrices works efficiently also when
-combined with sparse matrices, i.e. @code{D*S}, where @var{D} is a diagonal
+combined with sparse matrices, i.e., @code{D*S}, where @var{D} is a diagonal
 matrix and @var{S} is a sparse matrix scales the rows of the sparse matrix and
-returns a sparse matrix. The expressions @code{S*D}, @code{D\S}, @code{S/D} work
+returns a sparse matrix.  The expressions @code{S*D}, @code{D\S}, @code{S/D} work
 analogically.
 
 If @var{D1} and @var{D2} are both diagonal matrices, then the expressions
 @example
+@group
 D1 + D2
 D1 - D2 
 D1 * D2 
 D1 / D2 
 D1 \ D2
+@end group
 @end example
 again produce diagonal matrices, provided that normal
-dimension matching rules are obeyed. The relations used are same as described above.
+dimension matching rules are obeyed.  The relations used are same as described above.
 
 Also, a diagonal matrix @var{D} can be multiplied or divided by a scalar, or raised
 to a scalar power if it is square, producing diagonal matrix result in all cases. 
 
 A diagonal matrix can also be transposed or conjugate-transposed, giving the expected
-result. Extracting a leading submatrix of a diagonal matrix, i.e. @code{D(1:m,1:n)},
+result.  Extracting a leading submatrix of a diagonal matrix, i.e., @code{D(1:m,1:n)},
 will produce a diagonal matrix, other indexing expressions will implicitly convert to
 full matrix.
 
-Adding a diagonal matrix to a full matrix only operates on the diagonal elements. Thus,
+Adding a diagonal matrix to a full matrix only operates on the diagonal elements.  Thus,
 @example
 A = A + eps * eye (n)
 @end example
-is an efficient method of augmenting the diagonal of a matrix. Subtraction works
+is an efficient method of augmenting the diagonal of a matrix.  Subtraction works
 analogically.
 
 When involved in expressions with other element-by-element operators, @code{.*},
 @code{./}, @code{.\} or @code{.^}, an implicit conversion to full matrix will
-take place. This is not always strictly necessary but chosen to facilitate
-better consistency with Matlab.
+take place.  This is not always strictly necessary but chosen to facilitate
+better consistency with @sc{matlab}.
 
 @node Expressions Involving Permutation Matrices
 @subsection Expressions Involving Permutation Matrices
 
 If @var{P} is a permutation matrix and @var{M} a matrix, the expression
-@code{P*M} will permute the rows of @var{M}. Similarly, @code{M*P} will
+@code{P*M} will permute the rows of @var{M}.  Similarly, @code{M*P} will
 yield a column permutation. 
 Matrix division @code{P\M} and @code{M/P} can be used to do inverse permutation.
 
 The previously described syntax for creating permutation matrices can actually
 help an user to understand the connection between a permutation matrix and
-a permuting vector. Namely, the following holds, where @code{I = eye (n)}
+a permuting vector.  Namely, the following holds, where @code{I = eye (n)}
 is an identity matrix:
 @example
   I(p,:) * M = (I*M) (p,:) = M(p,:)
@@ -320,20 +328,20 @@ The expressions @code{I(p,:)} and @code{I(:,p)} are permutation matrices.
 A permutation matrix can be transposed (or conjugate-transposed, which is the
 same, because a permutation matrix is never complex), inverting the
 permutation, or equivalently, turning a row-permutation matrix into a
-column-permutation one. For permutation matrices, transpose is equivalent to
+column-permutation one.  For permutation matrices, transpose is equivalent to
 inversion, thus @code{P\M} is equivalent to @code{P'*M}.  Transpose of a
 permutation matrix (or inverse) is a constant-time operation, flipping only a
 flag internally, and thus the choice between the two above equivalent
 expressions for inverse permuting is completely up to the user's taste.
 
 Multiplication and division by permutation matrices works efficiently also when
-combined with sparse matrices, i.e. @code{P*S}, where @var{P} is a permutation
+combined with sparse matrices, i.e., @code{P*S}, where @var{P} is a permutation
 matrix and @var{S} is a sparse matrix permutes the rows of the sparse matrix and
-returns a sparse matrix. The expressions @code{S*P}, @code{P\S}, @code{S/P} work
+returns a sparse matrix.  The expressions @code{S*P}, @code{P\S}, @code{S/P} work
 analogically.
 
 Two permutation matrices can be multiplied or divided (if their sizes match), performing
-a composition of permutations. Also a permutation matrix can be indexed by a permutation
+a composition of permutations.  Also a permutation matrix can be indexed by a permutation
 vector (or two vectors), giving again a permutation matrix.
 Any other operations do not generally yield a permutation matrix and will thus
 trigger the implicit conversion.
@@ -342,7 +350,7 @@ trigger the implicit conversion.
 @section Functions That Are Aware of These Matrices
 
 This section lists the built-in functions that are aware of diagonal and
-permutation matrices on input, or can return them as output. Passed to other
+permutation matrices on input, or can return them as output.  Passed to other
 functions, these matrices will in general trigger an implicit conversion.
 (Of course, user-defined dynamically linked functions may also work with
 diagonal or permutation matrices).
@@ -356,7 +364,7 @@ diagonal or permutation matrices).
 @subsection Diagonal Matrix Functions
 
 @dfn{inv} and @dfn{pinv} can be applied to a diagonal matrix, yielding again
-a diagonal matrix. @dfn{det} will use an efficient straightforward calculation
+a diagonal matrix.  @dfn{det} will use an efficient straightforward calculation
 when given a diagonal matrix, as well as @dfn{cond}.
 The following mapper functions can be applied to a diagonal matrix
 without converting it to a full one:
@@ -370,7 +378,7 @@ sparse matrix.
 @subsection Permutation Matrix Functions
 
 @dfn{inv} and @dfn{pinv} will invert a permutation matrix, preserving its
-specialness. @dfn{det} can be applied to a permutation matrix, efficiently
+specialness.  @dfn{det} can be applied to a permutation matrix, efficiently
 calculating the sign of the permutation (which is equal to the determinant).
 
 A permutation matrix can also be returned from the built-in functions
@@ -387,20 +395,24 @@ making it possible to conveniently obtain the permutation indices.
 The following can be used to solve a linear system @code{A*x = b}
 using the pivoted LU factorization:
 @example
+@group
   [L, U, P] = lu (A); ## now L*U = P*A
   x = U \ L \ P*b;
+@end group
 @end example
 
 @noindent
 This is how you normalize columns of a matrix @var{X} to unit norm:
 @example
+@group
   s = norm (X, "columns");
   X = diag (s) \ X;
+@end group
 @end example
 
 @noindent
 The following expression is a way to efficiently calculate the sign of a
-permutation, given by a permutation vector @var{p}. It will also work
+permutation, given by a permutation vector @var{p}.  It will also work
 in earlier versions of Octave, but slowly.
 @example
   det (eye (length (p))(p, :))
@@ -410,10 +422,11 @@ in earlier versions of Octave, but slowly.
 Finally, here's how you solve a linear system @code{A*x = b} 
 with Tikhonov regularization (ridge regression) using SVD (a skeleton only):
 @example
+@group
   m = rows (A); n = columns (A);
   [U, S, V] = svd (A);
   ## determine the regularization factor alpha
-  ## alpha = ...
+  ## alpha = @dots{}
   ## transform to orthogonal basis
   b = U'*b;
   ## Use the standard formula, replacing A with S.
@@ -421,6 +434,7 @@ with Tikhonov regularization (ridge regression) using SVD (a skeleton only):
   x = (S'*S + alpha^2 * eye (n)) \ (S' * b);
   ## transform to solution basis
   x = V*x;
+@end group
 @end example
 
 
@@ -439,8 +453,8 @@ best compromise.
 Numerical software dealing with structured and sparse matrices (including
 Octave) however, almost always makes a distinction between a "numerical zero"
 and an "assumed zero". 
-A "numerical zero" is a zero value occuring in a place where any floating-point
-value could occur. It is normally stored somewhere in memory as an explicit
+A "numerical zero" is a zero value occurring in a place where any floating-point
+value could occur.  It is normally stored somewhere in memory as an explicit
 value. 
 An "assumed zero", on the contrary, is a zero matrix element implied by the
 matrix structure (diagonal, triangular) or a sparsity pattern; its value is
@@ -453,7 +467,7 @@ yields *always* a zero, even when, e.g., multiplied by @code{Inf}
 or divided by @code{NaN}.
 The reason for this behavior is that the numerical multiplication is not
 actually performed anywhere by the underlying algorithm; the result is
-just assumed to be zero. Equivalently, one can say that the part of the
+just assumed to be zero.  Equivalently, one can say that the part of the
 computation involving assumed zeros is performed symbolically, not numerically.
 
 This behavior not only facilitates the most straightforward and efficient
@@ -469,11 +483,12 @@ assumed zeros as numerical ones.
 
 Note that certain competing software does not strictly follow this principle
 and converts assumed zeros to numerical zeros in certain cases, while not doing
-so in other cases. As of today, there are no intentions to mimick such behavior 
+so in other cases.  As of today, there are no intentions to mimic such behavior 
 in Octave.
 
 Examples of effects of assumed zeros vs. numerical zeros:
 @example
+@group
 Inf * eye (3)
 @result{}
    Inf     0     0
@@ -494,9 +509,11 @@ Inf * full (eye (3))
    NaN   Inf   NaN
    NaN   NaN   Inf
 
+@end group
 @end example
 
 @example
+@group
 diag(1:3) * [NaN; 1; 1]
 @result{}
    NaN
@@ -513,5 +530,6 @@ sparse(1:3,1:3,1:3) * [NaN; 1; 1]
    NaN
    NaN
    NaN
+@end group
 @end example
 

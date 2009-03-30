@@ -1,3 +1,10 @@
+2009-03-30  Ben Abbott <bpabbott@mac.com>
+
+	* plot/__gnuplot_default_font__.m: New function: determine gnuplot's
+	terminal dependent default font.
+	* plot/__go_draw_figure__.m: Substitute gnuplot default font when
+	"fontname" = "*".
+
 2009-03-29  John W. Eaton  <jwe@octave.org>
 
 	* testfun/Makefile.in (SOURCES): Add rundemos.m to the list.

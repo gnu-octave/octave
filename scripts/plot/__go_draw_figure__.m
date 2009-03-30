@@ -37,9 +37,7 @@ function __go_draw_figure__ (h, plot_stream, enhanced, mono, output_to_paper, im
     htype = get (h, "type");
     if (strcmp (htype, "figure"))
 
-      ## Set figure properties here?
-
-      ## For output, determine the normalized paperposition.
+      ## When printing, determine the paperposition in inches.
       if (output_to_paper)
 	orig_paper_units = get (h, "paperunits");
 	unwind_protect
@@ -55,50 +53,60 @@ function __go_draw_figure__ (h, plot_stream, enhanced, mono, output_to_paper, im
 	implicit_margin = implicit_margin * [1 1];
       endif
 
-      ## Get complete list of children.
-      kids = allchild (h);
-      nkids = length (kids);
+      ## Substitute the gnuplot default font for objects with fontname == "*"
+      show_hidden_handles = get (0, "showhiddenhandles");
+      default_font_name = __gnuplot_default_font__ (h);
+      term = __gnuplot_get_var__ (h, "GPVAL_TERM");
+      unwind_protect
+	set (0, "showhiddenhandles", "on");
+        h_default_font_name = findobj (h, "fontname", "*");
+        set (h_default_font_name, "fontname", default_font_name);
 
-      if (nkids > 0)
+        ## Get complete list of children.
+        kids = allchild (h);
+        nkids = length (kids);
 
-	fputs (plot_stream, "\nreset;\n");
-	fputs (plot_stream, "set autoscale fix;\n");
-	fputs (plot_stream, "set multiplot;\n");
-	fputs (plot_stream, "set origin 0, 0\n");
-	fputs (plot_stream, "set size 1, 1\n");
-
-	for i = 1:nkids
-	  type = get (kids(i), "type");
-	  switch (type)
-	    case "axes"
-	      ## Rely upon listener to convert axes position to "normalized" units.
-	      orig_axes_units = get (kids(i), "units");
-  	      orig_axes_position = get (kids(i), "position");
-	      unwind_protect
-		set (kids(i), "units", "normalized");
-		if (output_to_paper)
-	 	  axes_position_on_page = orig_axes_position .* paper_position([3, 4, 3 ,4]);
-		  axes_position_on_page(1:2) = axes_position_on_page(1:2) +  paper_position(1:2);
-		  set (kids(i), "position", axes_position_on_page);
-		  __go_draw_axes__ (kids(i), plot_stream, enhanced, mono, implicit_margin);
-		else
-		  ## Return axes "units" and "position" back to their original values.
-		  __go_draw_axes__ (kids(i), plot_stream, enhanced, mono, implicit_margin);
-		endif
-	      unwind_protect_cleanup
-		set (kids(i), "units", orig_axes_units);
-		set (kids(i), "position", orig_axes_position);
-	      end_unwind_protect
-	    otherwise
-	      error ("__go_draw_figure__: unknown object class, %s", type);
-	  endswitch
-	endfor
-
-	fputs (plot_stream, "unset multiplot;\n");
-      else
-	fputs (plot_stream, "\nreset; clear;\n");
-	fflush (plot_stream);
-      endif
+        if (nkids > 0)
+	  fputs (plot_stream, "\nreset;\n");
+	  fputs (plot_stream, "set autoscale fix;\n");
+	  fputs (plot_stream, "set multiplot;\n");
+	  fputs (plot_stream, "set origin 0, 0\n");
+	  fputs (plot_stream, "set size 1, 1\n");
+	  for i = 1:nkids
+	    type = get (kids(i), "type");
+	    switch (type)
+	      case "axes"
+	        ## Rely upon listener to convert axes position to "normalized" units.
+	        orig_axes_units = get (kids(i), "units");
+  	        orig_axes_position = get (kids(i), "position");
+	        unwind_protect
+		  set (kids(i), "units", "normalized");
+		  if (output_to_paper)
+	 	    axes_position_on_page = orig_axes_position .* paper_position([3, 4, 3 ,4]);
+		    axes_position_on_page(1:2) = axes_position_on_page(1:2) +  paper_position(1:2);
+		    set (kids(i), "position", axes_position_on_page);
+		    __go_draw_axes__ (kids(i), plot_stream, enhanced, mono, implicit_margin);
+		  else
+		    ## Return axes "units" and "position" back to their original values.
+		    __go_draw_axes__ (kids(i), plot_stream, enhanced, mono, implicit_margin);
+		  endif
+	        unwind_protect_cleanup
+		  set (kids(i), "units", orig_axes_units);
+		  set (kids(i), "position", orig_axes_position);
+	        end_unwind_protect
+	      otherwise
+	        error ("__go_draw_figure__: unknown object class, %s", type);
+	    endswitch
+	  endfor
+	  fputs (plot_stream, "unset multiplot;\n");
+        else
+	  fputs (plot_stream, "\nreset; clear;\n");
+	  fflush (plot_stream);
+        endif
+      unwind_protect_cleanup
+	set (h_default_font_name, "fontname", "*");
+	set (0, "showhiddenhandles", show_hidden_handles);
+      end_unwind_protect
     else
       error ("__go_draw_figure__: expecting figure object, found `%s'",
 	     htype);

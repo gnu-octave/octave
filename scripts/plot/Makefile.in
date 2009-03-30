@@ -47,6 +47,7 @@ SOURCES = \
   __errcomm__.m \
   __errplot__.m \
   __ezplot__.m \
+  __gnuplot_default_font__.m \
   __gnuplot_get_var__.m \
   __gnuplot_has_feature__.m \
   __go_close_all__.m \

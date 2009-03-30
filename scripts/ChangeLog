@@ -1,3 +1,7 @@
+2009-03-29  John W. Eaton  <jwe@octave.org>
+
+	* testfun/Makefile.in (SOURCES): Add rundemos.m to the list.
+
 2009-03-29  Ben Abbott <bpabbott@mac.com>
 
 	* plot/print.m: For eps output the bounding box should represent the

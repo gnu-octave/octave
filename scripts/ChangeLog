@@ -1,5 +1,10 @@
 2009-03-30  Ben Abbott <bpabbott@mac.com>
 
+	* plot/__go_draw_axes__.m: New subfunction create_fontspec(). Allow
+	fontsize to be specified when the fontname is anonymous.
+
+2009-03-30  Ben Abbott <bpabbott@mac.com>
+
 	* plot/__gnuplot_default_font__.m: New function: determine gnuplot's
 	terminal dependent default font.
 	* plot/__go_draw_figure__.m: Substitute gnuplot default font when

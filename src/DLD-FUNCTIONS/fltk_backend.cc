@@ -296,7 +296,7 @@ private:
       toggle_grid ();
 
     if (widg == help)
-      fl_message (help_text);
+      fl_message ("%s", help_text);
   }
 
   OpenGL_fltk* canvas;

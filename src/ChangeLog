@@ -1,3 +1,8 @@
+2009-04-01  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-str-mat.cc (default_numeric_conversion_function):
+	Create an octave_scalar if possible.
+
 2009-03-29  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/fltk_backend.cc (plot_window::button_press):

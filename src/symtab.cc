@@ -186,7 +186,7 @@ out_of_date_check_internal (octave_function *fcn, octave_value& function,
 		  if (octave_env::absolute_pathname (nm)
 		      && ((nm_len > 4 && (nm.substr (nm_len-4) == ".oct"
 					  || nm.substr (nm_len-4) == ".mex"))
-			  || (nm_len > 2 && nm.substr (nm_len-4) == ".m")))
+			  || (nm_len > 2 && nm.substr (nm_len-2) == ".m")))
 		    file = nm;
 		  else
 		    {

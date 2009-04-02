@@ -56,6 +56,7 @@ you should first check to see if the topic is covered in the manual.
 
 @menu
 * What is Octave?::  
+* Licensing Issues::
 * How can I cite Octave?::  
 * Series 3.0.N::  
 * Octave Features::  
@@ -170,6 +171,77 @@ you have the free Fortran to C translator f2c.
 Octave is also free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
 Free Software Foundation.
+
+@node Licensing Issues
+@chapter Licensing Issues
+
+@menu
+* If I write code using Octave do I have to release it under the GPL?: GPL
+* Since the MEX interface allows plugins to be distributed under terms that are incompatible with the GPL, does this mean that you are encouraging people to to write non-free software for Octave?: Licensing MEX Files
+* I wrote a program that links with Octave libraries and I don't want to release it under the terms of the GPL.  Will you change the license of the Octave libraries for me?: Requesting License Changes
+@end menu
+
+@node GPL
+@section If I write code using Octave do I have to release it under the GPL?
+
+The answer depends on precisely how the code is written and how it works.
+
+Code written entirely in the scripting language of Octave
+(interpreted code in .m files) may be released under the terms of
+whatever license you choose.
+
+Code written using Octave's native plug-in interface (also known
+as a .oct file) necessarily links with Octave internals and is
+considered a derivative work of Octave and therefore must be
+released under terms that are compatible with the GPL.
+
+Code written using Octave's implementation of the Matlab MEX
+interface may be released under the terms of whatever license you
+choose, provided that the following conditions are met:
+
+@enumerate
+@item
+The plugin should not use any bindings that are specific to Octave.  In
+other words, the MEX file must use the MEX interface only, and not also
+call on other Octave internals.  It should be possible in principle to
+use the MEX file with other programs that implement the MEX interface
+(e.g., Matlab).
+
+@item
+The MEX file should not be distributed together with Octave in such a
+way that they effectively create a single work.  For example, you should
+not distribute the MEX file and Octave together in a single package such
+that Octave automatically loads and runs the MEX file when it starts up.
+There are other possible ways that you might effectively create a single
+work; this is just one example.
+@end enumerate
+
+A program that embeds the Octave interpreter (e.g., by calling the
+"octave_main" function), or that calls functions from Octave's
+libraries (e.g., liboctinterp, liboctave, or libcruft) is
+considered a derivative work of Octave and therefore must be
+released under terms that are compatible with the GPL.
+
+@node Licensing MEX Files
+@section Since the MEX interface allows plugins to be distributed under terms that are incompatible with the GPL, does this mean that you are encouraging people to to write non-free software for Octave?
+
+No.  The original reason for implementing the MEX interface for Octave
+was to allow Octave to run free software that uses MEX files (the
+particular goal was to run SundialsTB in Octave).  The intent was to
+liberate that software from Matlab and increase the amount of free
+software available to Octave users, not to enable people to write
+proprietary code for Octave.  For the good of the community, we strongly
+encourage users of Octave to release the code they write for Octave
+under terms that are compatible with the GPL.
+
+@node Requesting License Changes
+@section I wrote a program that links with Octave libraries and I don't want to release it under the terms of the GPL.  Will you change the license of the Octave libraries for me?
+
+No.  Instead of asking us to change the licensing terms for Octave, we
+recommend that you release your program under terms that are compatible
+with the GPL so that the free software community can benefit from your
+work the same as you have benefitted from the work of all the people who
+have contributed to Octave.
 
 @node How can I cite Octave?
 @chapter How can I cite Octave?

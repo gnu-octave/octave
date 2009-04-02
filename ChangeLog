@@ -1,3 +1,8 @@
+2009-04-02  John W. Eaton  <jwe@octave.org>
+
+	* Makeconf.in (do-script-install): Use $(INSTALL_DATA) instead of
+	mv to install PKG_ADD file.
+
 2009-04-02  Marco Atzeri  <marco_atzeri@yahoo.it>
 
 	* Makeconf.in (do-subst-script-vals): Use SHLLIBPRE instead of

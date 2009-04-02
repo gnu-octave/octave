@@ -37,9 +37,9 @@ along with Octave; see the file COPYING.  If not, see
 // This function should be merged with Fifft.
 
 #if defined (HAVE_FFTW3)
-#define FFTSRC "@sc{Fftw}"
+#define FFTSRC "@sc{fftw}"
 #else
-#define FFTSRC "@sc{Fftpack}"
+#define FFTSRC "@sc{fftpack}"
 #endif
 
 static octave_value
@@ -173,7 +173,7 @@ DEFUN_DLD (fft2, args, ,
 @deftypefn {Loadable Function} {} fft2 (@var{a}, @var{n}, @var{m})\n\
 Compute the two-dimensional FFT of @var{a} using subroutines from\n"
 FFTSRC
-". The optional arguments @var{n} and @var{m} may be used specify the\n\
+".  The optional arguments @var{n} and @var{m} may be used specify the\n\
 number of rows and columns of @var{a} to use.  If either of these is\n\
 larger than the size of @var{a}, @var{a} is resized and padded with\n\
 zeros.\n\
@@ -192,7 +192,7 @@ DEFUN_DLD (ifft2, args, ,
 @deftypefn {Loadable Function} {} fft2 (@var{a}, @var{n}, @var{m})\n\
 Compute the inverse two-dimensional FFT of @var{a} using subroutines from\n"
 FFTSRC
-". The optional arguments @var{n} and @var{m} may be used specify the\n\
+".  The optional arguments @var{n} and @var{m} may be used specify the\n\
 number of rows and columns of @var{a} to use.  If either of these is\n\
 larger than the size of @var{a}, @var{a} is resized and padded with\n\
 zeros.\n\

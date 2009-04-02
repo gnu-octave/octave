@@ -19,7 +19,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{y}, @var{c}] =} stft (@var{x}, @var{win_size}, @var{inc}, @var{num_coef}, @var{w_type})
-## Compute the short-term Fourier transform of the vector @var{x} with
+## Compute the short-time Fourier transform of the vector @var{x} with
 ## @var{num_coef} coefficients by applying a window of @var{win_size} data
 ## points and an increment of @var{inc} points.
 ##
@@ -52,7 +52,7 @@
 ## @end deftypefn
 
 ## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>
-## Description: Short-term Fourier transform
+## Description: Short-Time Fourier Transform
 
 function [Y, c] = stft(X, win, inc, coef, w_type)
 

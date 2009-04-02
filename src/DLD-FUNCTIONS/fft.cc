@@ -34,9 +34,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 
 #if defined (HAVE_FFTW3)
-#define FFTSRC "@sc{Fftw}"
+#define FFTSRC "@sc{fftw}"
 #else
-#define FFTSRC "@sc{Fftpack}"
+#define FFTSRC "@sc{fftpack}"
 #endif
 
 static octave_value

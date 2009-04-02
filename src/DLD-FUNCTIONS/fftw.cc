@@ -40,9 +40,9 @@ DEFUN_DLD (fftw, args, ,
 @deftypefnx {Loadable Function} {@var{wisdom} =} fftw ('dwisdom')\n\
 @deftypefnx {Loadable Function} {@var{wisdom} =} fftw ('dwisdom', @var{wisdom})\n\
 \n\
-Manage FFTW wisdom data.  Wisdom data can be used to significantly\n\
+Manage @sc{fftw} wisdom data.  Wisdom data can be used to significantly\n\
 accelerate the calculation of the FFTs but implies an initial cost\n\
-in its calculation.  When the FFTW libraries are initialized, they read\n\
+in its calculation.  When the @sc{fftw} libraries are initialized, they read\n\
 a system wide wisdom file (typically in @file{/etc/fftw/wisdom}), allowing wisdom\n\
 to be shared between applications other than Octave.  Alternatively, the\n\
 @code{fftw} function can be used to import wisdom.  For example\n\
@@ -62,7 +62,7 @@ fftw ('dwisdom', @var{wisdom})\n\
 \n\
 If @var{wisdom} is an empty matrix, then the wisdom used is cleared.\n\
 \n\
-During the calculation of fourier transforms further wisdom is generated.\n\
+During the calculation of Fourier transforms further wisdom is generated.\n\
 The fashion in which this wisdom is generated is equally controlled by\n\
 the @code{fftw} function.  There are five different manners in which the\n\
 wisdom can be treated, these being\n\
@@ -73,7 +73,7 @@ This specifies that no run-time measurement of the optimal means of\n\
 calculating a particular is performed, and a simple heuristic is used\n\
 to pick a (probably sub-optimal) plan.  The advantage of this method is\n\
 that there is little or no overhead in the generation of the plan, which\n\
-is appropriate for a fourier transform that will be calculated once.\n\
+is appropriate for a Fourier transform that will be calculated once.\n\
 \n\
 @item 'measure'\n\
 In this case a range of algorithms to perform the transform is considered\n\

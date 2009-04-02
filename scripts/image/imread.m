@@ -25,12 +25,12 @@
 ## Read images from various file formats.
 ##
 ## The size and numeric class of the output depends on the
-## format of the image.  A colour image is returned as an
+## format of the image.  A color image is returned as an
 ## MxNx3 matrix.  Grey-level and black-and-white images are
 ## of size MxN.
-## The colour depth of the image determines the numeric
+## The color depth of the image determines the numeric
 ## class of the output: "uint8" or "uint16" for grey
-## and colour, and "logical" for black and white.
+## and color, and "logical" for black and white.
 ##
 ## @seealso{imwrite, imfinfo}
 ## @end deftypefn

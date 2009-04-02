@@ -35,9 +35,9 @@ along with Octave; see the file COPYING.  If not, see
 // This function should be merged with Fifft.
 
 #if defined (HAVE_FFTW3)
-#define FFTSRC "@sc{Fftw}"
+#define FFTSRC "@sc{fftw}"
 #else
-#define FFTSRC "@sc{Fftpack}"
+#define FFTSRC "@sc{fftpack}"
 #endif
 
 static octave_value
@@ -154,7 +154,7 @@ DEFUN_DLD (fftn, args, ,
 @deftypefn {Loadable Function} {} fftn (@var{a}, @var{size})\n\
 Compute the N-dimensional FFT of @var{a} using subroutines from\n"
 FFTSRC
-". The optional vector argument @var{size} may be used specify the\n\
+".  The optional vector argument @var{size} may be used specify the\n\
 dimensions of the array to be used.  If an element of @var{size} is\n\
 smaller than the corresponding dimension, then the dimension is\n\
 truncated prior to performing the FFT.  Otherwise if an element\n\
@@ -171,7 +171,7 @@ DEFUN_DLD (ifftn, args, ,
 @deftypefn {Loadable Function} {} ifftn (@var{a}, @var{size})\n\
 Compute the inverse N-dimensional FFT of @var{a} using subroutines from\n"
 FFTSRC
-". The optional vector argument @var{size} may be used specify the\n\
+".  The optional vector argument @var{size} may be used specify the\n\
 dimensions of the array to be used.  If an element of @var{size} is\n\
 smaller than the corresponding dimension, then the dimension is\n\
 truncated prior to performing the inverse FFT.  Otherwise if an element\n\

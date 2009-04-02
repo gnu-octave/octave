@@ -22,11 +22,11 @@
 ## previous values.
 ##
 ## When the @code{image} or @code{imshow} function is called it will
-## launch an external program to display the image.  The default behaviour
+## launch an external program to display the image.  The default behavior
 ## is to use gnuplot if the installed version supports image viewing,
 ## and otherwise try the programs @code{display}, @code{xv}, and
 ## @code{xloadimage}.  Using this function it is possible to change that
-## behaviour.
+## behavior.
 ##
 ## When called with one input argument images will be displayed by saving
 ## the image to a file and the system command @var{command} will be called

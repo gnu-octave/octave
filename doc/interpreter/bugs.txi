@@ -204,11 +204,13 @@ be on the mailing list.
 As a last resort, send bug reports on paper to:
 
 @example
+@group
 Octave Bugs c/o John W. Eaton
 University of Wisconsin-Madison
 Department of Chemical Engineering
 1415 Engineering Drive
 Madison, Wisconsin 53706  USA
+@end group
 @end example
 
 @node Bug Reporting
@@ -232,7 +234,7 @@ of that location would fool the interpreter into doing the right thing
 despite the bug.  Play it safe and give a specific, complete example.
 
 Keep in mind that the purpose of a bug report is to enable someone to
-fix the bug if it is not known. Always write your bug reports on
+fix the bug if it is not known.  Always write your bug reports on
 the assumption that the bug is not known.
 
 Sometimes people give a few sketchy facts and ask, ``Does this ring a
@@ -335,7 +337,7 @@ will not affect it.  Such information is usually not necessary to enable
 us to fix bugs in Octave, but if you can find a simpler example to
 report @emph{instead} of the original one, that is a convenience.
 Errors in the output will be easier to spot, running under the debugger
-will take less time, etc. Most Octave bugs involve just one function, so
+will take less time, etc.  Most Octave bugs involve just one function, so
 the most straightforward way to simplify an example is to delete all the
 function definitions except the one in which the bug occurs.
 
@@ -408,7 +410,7 @@ specific about what functions you changed; in large functions, it's
 often helpful to indicate where within the function the change was made.
 
 On the other hand, once you have shown people where to find the change,
-you need not explain its purpose. Thus, if you add a new function, all
+you need not explain its purpose.  Thus, if you add a new function, all
 you need to say about it is that it is new.  If you feel that the
 purpose needs explaining, it probably does---but the explanation will be
 much more useful if you put it in comments in the code.

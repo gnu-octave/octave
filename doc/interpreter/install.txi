@@ -78,7 +78,7 @@ doing.
 
 If you use @code{--enable-64}, you must ensure that your Fortran
 compiler generates code with 8 byte signed @code{INTEGER} values, and
-that your BLAS and LAPACK libraries are compiled to use 8 byte
+that your @sc{blas} and @sc{lapack} libraries are compiled to use 8 byte
 signed integers for array dimensions and indexing.
 
 @item --enable-shared
@@ -100,15 +100,15 @@ should probably also use @code{--enable-shared} to reduce the size of
 your @file{.oct} files.
 
 @item --without-blas
-Compile and use the generic BLAS and LAPACK versions included with
-Octave.  By default, configure first looks for BLAS and LAPACK matrix
-libraries on your system, including optimized BLAS implementations such
+Compile and use the generic @sc{blas} and @sc{lapack} versions included with
+Octave.  By default, configure first looks for @sc{blas} and @sc{lapack} matrix
+libraries on your system, including optimized @sc{blas} implementations such
 as the free ATLAS 3.0, as well as vendor-tuned libraries.  (The use of
-an optimized BLAS will generally result in several-times faster matrix
-operations.)  Only use this option if your system has BLAS/LAPACK
+an optimized @sc{blas} will generally result in several-times faster matrix
+operations.)  Only use this option if your system has @sc{blas}/@sc{lapack}
 libraries that cause problems for some reason.  You can also use
-@code{--with-blas=lib} to specify a particular BLAS library
-@code{-llib} that configure doesn't check for automatically.
+@code{--with-blas=lib} to specify a particular @sc{blas} library
+ that configure doesn't check for automatically.
 
 @item --without-ccolamd
 Don't use CCOLAMD, disable some sparse matrix functionality.
@@ -127,7 +127,7 @@ Don't use CXSPARSE, disable some sparse matrix functionality.
 Don't use UMFPACK, disable some sparse matrix functionality.
 
 @item --without-fftw
-Use the included fftpack library instead of the FFTW library.
+Use the included @sc{fftpack} library instead of the @sc{fftw} library.
 
 @item --without-glpk
 Don't use the GLPK library for linear programming.
@@ -140,20 +140,20 @@ Don't use the zlib library, disable data file compression and support
 for recent MAT file formats.
 
 @item --without-lapack
-Compile and use the generic BLAS and LAPACK versions included with
-Octave.  By default, configure first looks for BLAS and LAPACK matrix
-libraries on your system, including optimized BLAS implementations such
+Compile and use the generic @sc{blas} and @sc{lapack} versions included with
+Octave.  By default, configure first looks for @sc{blas} and @sc{lapack} matrix
+libraries on your system, including optimized @sc{blas} implementations such
 as the free ATLAS 3.0, as well as vendor-tuned libraries.  (The use of
-an optimized BLAS will generally result in several-times faster matrix
-operations.)  Only use this option if your system has BLAS/LAPACK
+an optimized @sc{blas} will generally result in several-times faster matrix
+operations.)  Only use this option if your system has @sc{blas}/@sc{lapack}
 libraries that cause problems for some reason.  You can also use
-@code{--with-blas=lib} to specify a particular BLAS library
-@code{-llib} that configure doesn't check for automatically.
+@code{--with-blas=lib} to specify a particular @sc{blas} library
+ that configure doesn't check for automatically.
 
 @item --without-framework-carbon
 Don't use framework Carbon headers, libraries and specific source code
 for compilation even if the configure test succeeds (the default value
-is @code{--with-framework-carbon}). This is a platform specific configure
+is @code{--with-framework-carbon}).  This is a platform specific configure
 option for Mac systems.
 
 @item --without-framework-opengl
@@ -346,8 +346,10 @@ passing `void (*)()' as argument 2 of
 or
 
 @example
+@group
 warning: ANSI C++ prohibits conversion from `(int)' 
          to `(...)'
+@end group
 @end example
 
 @noindent
@@ -397,6 +399,7 @@ Some of the Fortran subroutines may fail to compile with older versions
 of the Sun Fortran compiler.  If you get errors like
 
 @example
+@group
 zgemm.f:
 	zgemm:
 warning: unexpected parent of complex expression subtree
@@ -410,6 +413,7 @@ zgemm.f, line 327: warning: unexpected parent of complex
   expression subtree
 pcc_binval: missing IR_CONV in complex op
 make[2]: *** [zgemm.o] Error 1
+@end group
 @end example
 
 @noindent
@@ -421,10 +425,12 @@ with optimization turned off.
 On NeXT systems, if you get errors like this:
 
 @example
+@group
 /usr/tmp/cc007458.s:unknown:Undefined local 
       symbol LBB7656
 /usr/tmp/cc007458.s:unknown:Undefined local
       symbol LBE7656
+@end group
 @end example
 
 @noindent
@@ -442,9 +448,11 @@ On NeXT systems, linking to @file{libsys_s.a} may fail to resolve the
 following functions
 
 @example
+@group
 _tcgetattr
 _tcsetattr
 _tcflow
+@end group
 @end example
 
 @noindent
@@ -452,6 +460,7 @@ which are part of @file{libposix.a}.  Unfortunately, linking Octave with
 @code{-posix} results in the following undefined symbols.
 
 @example
+@group
 .destructors_used
 .constructors_used
 _objc_msgSend
@@ -459,6 +468,7 @@ _NXGetDefaultValue
 _NXRegisterDefaults
 .objc_class_name_NXStringTable
 .objc_class_name_NXBundle
+@end group
 @end example
 
 One kluge around this problem is to extract @file{termios.o} from

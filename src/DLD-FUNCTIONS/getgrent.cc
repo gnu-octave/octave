@@ -137,7 +137,7 @@ DEFUN_DLD (getgrnam, args, ,
 @deftypefn {Loadable Function} {@var{grp_struct} =} getgrnam (@var{name})\n\
 Return the first entry from the group database with the group name\n\
 @var{name}.  If the group name does not exist in the database,\n\
-@code{getgrname} returns 0.\n\
+@code{getgrnam} returns 0.\n\
 @end deftypefn")
 {
   octave_value_list retval;

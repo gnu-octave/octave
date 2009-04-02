@@ -108,7 +108,7 @@ referred to as a @var{tm_struct}.
 
 Most of the remaining functions described in this section are not
 patterned after the standard C library.  Some are available for
-compatibility with @sc{Matlab} and others are provided because they are
+compatibility with @sc{matlab} and others are provided because they are
 useful.
 
 @DOCSTRING(clock)
@@ -464,18 +464,18 @@ referred to as a @var{grp_struct}.
 @section Hashing Functions
 
 It is often necessary to find if two strings or files are
-identical. This might be done by comparing them character by character
-and looking for differences. However, this can be slow, and so comparing
+identical.  This might be done by comparing them character by character
+and looking for differences.  However, this can be slow, and so comparing
 a hash of the string or file can be a rapid way of finding if the files
 differ.
 
-Another use of the hashing function is to check for file integrity. The
+Another use of the hashing function is to check for file integrity.  The
 user can check the hash of the file against a known value and find if
 the file they have is the same as the one that the original hash was
 produced with.
 
 Octave supplies the @code{md5sum} function to perform MD5 hashes on
-strings and files. An example of the use of @code{md5sum} function might
+strings and files.  An example of the use of @code{md5sum} function might
 be
 
 @example

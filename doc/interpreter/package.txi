@@ -1,4 +1,4 @@
-@c Copyright (C) 2007, 2008, 2009 Søren Hauberg
+@c Copyright (C) 2007, 2008, 2009 Sï¿½ren Hauberg
 @c
 @c This file is part of Octave.
 @c
@@ -20,13 +20,13 @@
 @chapter Packages
 
 Since Octave is Free Software users are encouraged to share their
-programs amongst each other. To aid this sharing Octave supports the
-installation of extra packages. The `Octave-Forge' project is a
+programs amongst each other.  To aid this sharing Octave supports the
+installation of extra packages.  The `Octave-Forge' project is a
 community-maintained set of packages that can be downloaded and
-installed in Octave. At the time of writing the `Octave-Forge' project
+installed in Octave.  At the time of writing the `Octave-Forge' project
 can be found on-line at @uref{http://octave.sourceforge.net}, but
 since the Internet is an ever-changing place this may not be true at
-the time of reading. Therefore it is recommended to see the Octave
+the time of reading.  Therefore it is recommended to see the Octave
 website for an updated reference.
 
 @menu
@@ -50,10 +50,10 @@ pkg install image-1.0.0.tar.gz
 @noindent
 If the package is installed successfully nothing will be printed on
 the prompt, but if an error occurred during installation it will be
-reported. It is possible to install several packages at once by
+reported.  It is possible to install several packages at once by
 writing several package files after the @code{pkg install} command.
 If a different version of the package is already installed it will
-be removed prior to installing the new package. This makes it easy to
+be removed prior to installing the new package.  This makes it easy to
 upgrade and downgrade the version of a package, but makes it
 impossible to have several versions of the same package installed at
 once.
@@ -71,7 +71,7 @@ pkg list
 
 @noindent
 In this case only version 1.0.0 of the @code{image} package is
-installed. The '*' character next to the package name shows that the
+installed.  The '*' character next to the package name shows that the
 image package is loaded and ready for use.
 
 It is possible to remove a package from the system using the
@@ -83,18 +83,18 @@ pkg uninstall image
 
 @noindent
 If the package is removed successfully nothing will be printed in the
-prompt, but if an error occurred it will be reported. It should be
+prompt, but if an error occurred it will be reported.  It should be
 noted that the package file used for installation is not needed for
 removal, and that only the package name as reported by @code{pkg list}
-should be used when removing a package. It is possible to remove
+should be used when removing a package.  It is possible to remove
 several packages at once by writing several package names after the
 @code{pkg uninstall} command.
 
 To minimize the amount of code duplication between packages it is
-possible that one package depends on another one. If a package
+possible that one package depends on another one.  If a package
 depends on another, it will check if that package is installed
-during installation. If it is not, an error will be reported and
-the package will not be installed. This behaviour can be disabled
+during installation.  If it is not, an error will be reported and
+the package will not be installed.  This behavior can be disabled
 by passing the @code{-nodeps} flag to the @code{pkg install}
 command
 
@@ -104,7 +104,7 @@ pkg install -nodeps my_package_with_dependencies.tar.gz
 
 @noindent
 Since the installed package expects its dependencies to be installed
-it may not function correctly. Because of this it is not recommended
+it may not function correctly.  Because of this it is not recommended
 to disable dependency checking.
 
 @DOCSTRING(pkg)
@@ -114,7 +114,7 @@ to disable dependency checking.
 
 By default installed packages are available from the Octave prompt,
 but it is possible to control this using the @code{pkg load} and 
-@code{pkg unload} commands. The functions from a package can be 
+@code{pkg unload} commands.  The functions from a package can be 
 removed from the Octave path by typing
 
 @example
@@ -136,13 +136,13 @@ pkg load package_name
 @section Administrating Packages
 
 On UNIX-like systems it is possible to make both per-user and
-system-wide installations of a package. If the user performing the
+system-wide installations of a package.  If the user performing the
 installation is @code{root} the packages will be installed in a
 system-wide directory that defaults to 
-@code{OCTAVE_HOME/share/octave/packages/}. If the user is not 
+@code{OCTAVE_HOME/share/octave/packages/}.  If the user is not 
 @code{root} the default installation directory is
-@code{~/octave/}. Packages will be installed in a subdirectory of the
-installation directory that will be named after the package. It is
+@code{~/octave/}.  Packages will be installed in a subdirectory of the
+installation directory that will be named after the package.  It is
 possible to change the installation directory by using the
 @code{pkg prefix} command
 
@@ -158,10 +158,10 @@ current_installation_directory = pkg prefix
 @end example
 
 To function properly the package manager needs to keep some
-information about the installed packages. For per-user packages this
+information about the installed packages.  For per-user packages this
 information is by default stored in the file @code{~/.octave_packages}
 and for system-wide installations it is stored in
-@code{OCTAVE_HOME/share/octave/octave_packages}. The path to the
+@code{OCTAVE_HOME/share/octave/octave_packages}.  The path to the
 per-user file can be changed with the @code{pkg local_list} command
 
 @example
@@ -170,14 +170,14 @@ pkg local_list /path/to/new_file
 
 @noindent
 For system-wide installations this can be changed in the same way
-using the @code{pkg global_list} command. If these commands are
+using the @code{pkg global_list} command.  If these commands are
 called without a new path, the current path will be returned.
 
 @node Creating Packages
 @section Creating Packages
 
 Internally a package is simply a gzipped tar file that contains a
-top level directory of any given name. This directory will in the
+top level directory of any given name.  This directory will in the
 following be referred to as @code{package} and may contain the
 following files
 
@@ -188,14 +188,14 @@ This is a required file containing information about the package.
 @xref{The DESCRIPTION File}, for details on this file.
 
 @item package/COPYING
-This is a required file containing the license of the package. No
-restrictions is made on the license in general. If however the
+This is a required file containing the license of the package.  No
+restrictions is made on the license in general.  If however the
 package contains dynamically linked functions the license must be
 compatible with the GNU General Public License.
 
 @item package/INDEX
 This is an optional file describing the functions provided by the
-package. If this file is not given then one with be created
+package.  If this file is not given then one with be created
 automatically from the functions in the package and the
 @code{Categories} keyword in the @code{DESCRIPTION} file.
 @xref{The INDEX file}, for details on this file.
@@ -203,9 +203,9 @@ automatically from the functions in the package and the
 @anchor{doc-PKG_ADD}
 @item package/PKG_ADD
 An optional file that includes commands that are run when the package
-is added to the users path. Note that @code{PKG_ADD} directives in the
+is added to the users path.  Note that @code{PKG_ADD} directives in the
 source code of the package will also be added to this file by the
-Octave package manager. Note that symbolic links are to be avoided in
+Octave package manager.  Note that symbolic links are to be avoided in
 packages, as symbolic links do not exist on some file systems, and so
 a typical use for this file is the replacement of the symbolic link
 
@@ -226,7 +226,7 @@ directives.
 
 @item package/PKG_DEL
 An optional file that includes commands that are run when the package
-is removed from the users path. Note that @code{PKG_DEL} directives in
+is removed from the users path.  Note that @code{PKG_DEL} directives in
 the source code of the package will also be added to this file by the
 Octave package manager. 
 @xref{PKG_ADD and PKG_DEL directives}, for details on @code{PKG_DEL}
@@ -252,28 +252,28 @@ more of the following directories
 @table @code
 @item package/inst
 An optional directory containing any files that are directly installed
-by the package. Typically this will include any @code{m}-files. 
+by the package.  Typically this will include any @code{m}-files. 
 
 @item package/src
 An optional directory containing code that must be built prior to the
-packages installation. The Octave package manager will execute
+packages installation.  The Octave package manager will execute
 @code{./configure} in this directory if this script exists, and will
 then call @code{make} if a file @code{Makefile} exists in this
-directory. @code{make install} will however not be called. If a file
+directory.  @code{make install} will however not be called.  If a file
 called @code{FILES} exist all files listed there will be copied to the
-@code{inst} directory, so they also will be installed. If the
+@code{inst} directory, so they also will be installed.  If the
 @code{FILES} file doesn't exist, @code{src/*.m} and @code{src/*.oct}
 will be copied to the @code{inst} directory.
 
 @item package/doc
-An optional directory containing documentation for the package. The
+An optional directory containing documentation for the package.  The
 files in this directory will be directly installed in a sub-directory
 of the installed package for future reference.
 
 @item package/bin
 An optional directory containing files that will be added to the
-Octave @code{EXEC_PATH} when the package is loaded. This might contain
-external scripts, etc, called by functions within the package.
+Octave @code{EXEC_PATH} when the package is loaded.  This might contain
+external scripts, etc., called by functions within the package.
 @end table
 
 @menu
@@ -286,7 +286,7 @@ external scripts, etc, called by functions within the package.
 @subsection The DESCRIPTION File
 
 The @code{DESCRIPTION} file contains various information about the
-package, such as its name, author, and version. This file has a very
+package, such as its name, author, and version.  This file has a very
 simple format
 
 @noindent
@@ -306,6 +306,7 @@ Everything else is of the form @code{NameOfOption: ValueOfOption}.
 The following is a simple example of a @code{DESCRIPTION} file
 
 @example
+@group
 Name: The name of my package
 Version: 1.0.0
 Date: 2007-18-04
@@ -313,11 +314,12 @@ Author: The name (and possibly email) of the package author.
 Maintainer: The name (and possibly email) of the current
  package maintainer.
 Title: The title of the package
-Description: A short description of the package. If this
+Description: A short description of the package.  If this
  description gets too long for one line it can continue
  on the next by adding a space to the beginning of the
  following lines.
 License: GPL version 3 or later
+@end group
 @end example
 
 The package manager currently recognizes the following keywords
@@ -358,12 +360,12 @@ Optional list of homepages related to the package.
 @item Autoload
 Optional field that sets the default loading behavior for the package.
 If set to @code{yes}, @code{true} or @code{on}, then Octave will
-automatically load the package when starting. Otherwise the package
-must be manually loaded with the pkg load command. This default
+automatically load the package when starting.  Otherwise the package
+must be manually loaded with the pkg load command.  This default
 behavior can be overridden when the package is installed.
 
 @item Depends
-A list of other Octave packages that this package depends on. This can
+A list of other Octave packages that this package depends on.  This can
 include dependencies on particular versions, with a format
 
 @example
@@ -372,26 +374,26 @@ Depends: package (>= 1.0.0)
 
 @noindent
 Possible operators are @code{<}, @code{<=}, @code{==}, @code{>=} or
-@code{>}. If the part of the dependency in @code{()} is missing, any
-version of the package is acceptable. Multiple dependencies can be
+@code{>}.  If the part of the dependency in @code{()} is missing, any
+version of the package is acceptable.  Multiple dependencies can be
 defined either as a comma separated list or on separate @code{Depends}
 lines.
 
 @item License
-An optional short description of the used license (e.g. GPL version 3
-or newer). This is optional since the file @code{COPYING} is mandatory.
+An optional short description of the used license (e.g., GPL version 3
+or newer).  This is optional since the file @code{COPYING} is mandatory.
 
 @item SystemRequirements
 These are the external install dependencies of the package and are not
-checked by the package manager. This is here as a hint to the
-distribution packager. They follow the same conventions as the
+checked by the package manager.  This is here as a hint to the
+distribution packager.  They follow the same conventions as the
 @code{Depends} keyword.
 
 @item BuildRequires
 These are the external build dependencies of the package and are not
-checked by the package manager. This is here as a hint to the
-distribution packager. They follow the same conventions as the 
-@code{Depends} keyword. Note that in general, packaging systems such
+checked by the package manager.  This is here as a hint to the
+distribution packager.  They follow the same conventions as the 
+@code{Depends} keyword.  Note that in general, packaging systems such
 as @code{rpm} or @code{deb} and autoprobe the install dependencies
 from the build dependencies, and therefore the often a
 @code{BuildRequires} dependency removes the need for a
@@ -401,10 +403,10 @@ from the build dependencies, and therefore the often a
 
 @noindent
 The developer is free to add additional arguments to the 
-@code{DESCRIPTION} file for their own purposes. One further detail to
+@code{DESCRIPTION} file for their own purposes.  One further detail to
 aid the packager is that the @code{SystemRequirements} and
 @code{BuildRequires} keywords can have a distribution dependent section,
-and the automatic build process will use these. An example of the
+and the automatic build process will use these.  An example of the
 format of this is
 
 @example
@@ -420,7 +422,7 @@ name will be used instead.
 @subsection The INDEX file
 
 The optional @code{INDEX} file provides a categorical view of the
-functions in the package. This file has a very simple format
+functions in the package.  This file has a very simple format
 
 @noindent
 @itemize
@@ -443,6 +445,7 @@ function names on the line belong to the last mentioned category.
 The format can be summarized with the following example
 
 @example
+@group
 # A comment
 toolbox >> Toolbox name
 Category Name 1
@@ -450,11 +453,12 @@ Category Name 1
  function4
 Category Name 2
  function2 function5
+@end group
 @end example
 
 If you wish to refer to a function that users might expect
 to find in your package but is not there, providing a work around or 
-ponting out that  the function is available elsewhere, you can use:
+pointing out that the function is available elsewhere, you can use:
 
 @example
 fn = workaround description
@@ -482,7 +486,7 @@ fn = use <a href="someothersite.html"><code>fn</code></a>
 
 @noindent
 Sometimes functions are only partially compatible, in which
-case you can list the non-compatible cases separately. To
+case you can list the non-compatible cases separately.  To
 refer to another function in the package, use @code{<f>fn</f>}.
 For example,
 
@@ -503,8 +507,10 @@ defines the macro id.  You can use @code{$id} anywhere in the
 description and it will be expanded.  For example,
 
 @example
+@group
 $TSA = see <a href="link_to_spctools">SPC Tools</a>
 arcov = $TSA <code>armcv</code>
+@end group
 @end example
 
 @noindent
@@ -515,9 +521,9 @@ id is any string of letters, numbers and @code{_}.
 
 If the package contains files called @code{PKG_ADD} or @code{PKG_DEL}
 the commands in these files will be executed when the package is
-added or removed from the users path. In some situations such files
+added or removed from the users path.  In some situations such files
 are a bit cumbersome to maintain, so the package manager supports
-automatic creation of such files. If a source file in the package
+automatic creation of such files.  If a source file in the package
 contains a @code{PKG_ADD} or @code{PKG_DEL} directive they will be
 added to either the @code{PKG_ADD} or @code{PKG_DEL} files.
 

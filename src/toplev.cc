@@ -818,7 +818,7 @@ disp (system (cmd, 1));\n\
 or\n\
 \n\
 @example\n\
-printf (\"%s\n\", system (cmd, 1));\n\
+printf (\"%s\\n\", system (cmd, 1));\n\
 @end example\n\
 \n\
 The @code{system} function can return two values.  The first is the\n\

@@ -171,7 +171,7 @@
 ## Rebuilds the package database from the installed directories.  This can 
 ## be used in cases where for some reason the package database is corrupted.
 ## It can also take the @code{-auto} and @code{-noauto} options to allow the
-## autolaoding state of a package to be changed.  For example
+## autoloading state of a package to be changed.  For example
 ##
 ## @example
 ## pkg rebuild -noauto image
@@ -188,7 +188,7 @@
 ## @end example
 ##
 ## @noindent
-## where @code{buiddir} is the name of a directory where the temporary
+## where @code{builddir} is the name of a directory where the temporary
 ## installation will be produced and the binary packages will be found.
 ## The options @code{-verbose} and @code{-nodeps} are respected, while 
 ## the other options are ignored.

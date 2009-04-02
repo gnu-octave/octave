@@ -70,7 +70,7 @@
 ## @item 31 @tab yyyy-mm-dd HH:MM:SS    @tab 1047-03-13 13:26:03
 ## @end multitable
 ##
-## If @var{f} is a format string, the following symbols are recognised:
+## If @var{f} is a format string, the following symbols are recognized:
 ##
 ## @multitable @columnfractions 0.1 0.7 0.2
 ## @headitem Symbol @tab Meaning @tab Example

@@ -1,3 +1,8 @@
+2009-04-02  Marco Atzeri  <marco_atzeri@yahoo.it>
+
+	* Makeconf.in (do-subst-script-vals): Use SHLLIBPRE instead of
+	LIBPRE for names for shared libraries.
+
 2009-03-28  Marco Atzeri  <marco_atzeri@yahoo.it>
 
 	* configure.in: For cygwin, set LIBPRE=lib and clear CPICFLAG,

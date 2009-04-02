@@ -289,9 +289,9 @@ names---they have no standard meanings, so they can't do any harm.
 @section Tips for Documentation Strings
 
 As noted above, documentation is typically in a commented header block
-on an Octave function following the copyright statement. The help string
+on an Octave function following the copyright statement.  The help string
 shown above is an unformatted string and will be displayed as is by
-Octave. Here are some tips for the writing of documentation strings.
+Octave.  Here are some tips for the writing of documentation strings.
 
 @itemize @bullet
 @item
@@ -452,14 +452,14 @@ text for TeX only
 @end example
 
 Note that often TeX output can be used in html documents and so often
-the @code{@@ifhtml} blocks are unnecessary. If no specific output
+the @code{@@ifhtml} blocks are unnecessary.  If no specific output
 processor is chosen, by default, the text goes into all output
-processors. It is usual to have the above blocks in pairs to allow the
+processors.  It is usual to have the above blocks in pairs to allow the
 same information to be conveyed in all output formats, but with a
 different markup.
 
 Another important feature of Texinfo that is often used in Octave help
-strings is the @code{@@example} environment. An example of its use is
+strings is the @code{@@example} environment.  An example of its use is
 
 @example
 @group
@@ -486,7 +486,7 @@ page boundary, while the @code{@@result@{@}} macro produces a right
 arrow signifying the result of a command. 
 
 In many cases a function has multiple ways in which it can be called,
-and the @code{@@deftypefnx} macro can be used to give alternatives. For
+and the @code{@@deftypefnx} macro can be used to give alternatives.  For
 example
 
 @example
@@ -500,8 +500,8 @@ Help text in Texinfo format.
 @end example
 
 Many complete examples of Texinfo documentation can be taken from the
-help strings for the Octave functions themselves. A relatively complete
-example of which is the @code{nchoosek} function. The Texinfo
+help strings for the Octave functions themselves.  A relatively complete
+example of which is the @code{nchoosek} function.  The Texinfo
 documentation string of @code{nchoosek} is
 
 @example
@@ -510,7 +510,7 @@ documentation string of @code{nchoosek} is
 @@deftypefn @{Function File@} @{@} nchoosek (@@var@{n@}, @@var@{k@})
 
 Compute the binomial coefficient or all combinations of 
-@@var@{n@}. If @@var@{n@} is a scalar then, calculate the
+@@var@{n@}.  If @@var@{n@} is a scalar then, calculate the
 binomial coefficient of @@var@{n@} and @@var@{k@}, defined as
 
 @@iftex
@@ -525,7 +525,7 @@ $$
 @@example
 @@group
  /   \
- | n |    n (n-1) (n-2) ... (n-k+1)
+ | n |    n (n-1) (n-2) @dots{} (n-k+1)
  |   |  = -------------------------
  | k |               k!
  \   /
@@ -535,7 +535,7 @@ $$
 
 If @@var@{n@} is a vector, this generates all combinations
 of the elements of @@var@{n@}, taken @@var@{k@} at a time,
-one row per combination. The resulting @@var@{c@} has size
+one row per combination.  The resulting @@var@{c@} has size
 @@code@{[nchoosek (length (@@var@{n@}),@@var@{k@}), @@var@{k@}]@}.
 
 @@seealso@{bincoeff@}
@@ -558,14 +558,14 @@ This documentation string renders as
      coefficient of N and K, defined as
 
            /   \
-           | n |    n (n-1) (n-2) ... (n-k+1)       n!
+           | n |    n (n-1) (n-2) @dots{} (n-k+1)       n!
            |   |  = ------------------------- =  ---------
            | k |               k!                k! (n-k)!
            \   /
 
      If N is a vector generate all combinations of the
      elements of N, taken K at a time, one row per
-     combination. The resulting C has size `[nchoosek
+     combination.  The resulting C has size `[nchoosek
      (length (N), K), K]'.
 
 
@@ -589,7 +589,7 @@ $$
 @end tex
 
 If @var{n} is a vector generate all combinations of the elements
-of @var{n}, taken @var{k} at a time, one row per combination. The 
+of @var{n}, taken @var{k} at a time, one row per combination.  The 
 resulting @var{c} has size @code{[nchoosek (length (@var{n}), 
 @var{k}), @var{k}]}.
 

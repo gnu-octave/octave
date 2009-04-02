@@ -35,8 +35,8 @@ and demonstration code in the source code of the functions themselves.
 @DOCSTRING(test)
 
 @code{test} scans the named script file looking for lines which
-start with @code{%!}. The prefix is stripped off and the rest of the
-line is processed through the Octave interpreter. If the code
+start with @code{%!}.  The prefix is stripped off and the rest of the
+line is processed through the Octave interpreter.  If the code
 generates an error, then the test is said to fail.
 
 Since @code{eval()} will stop at the first error it encounters, you must
@@ -91,7 +91,7 @@ with @code{assert} the previous test is reduced to:
 @end example
 
 @code{assert} can accept a tolerance so that you can compare results
-absolutely or relatively. For example, the following all succeed:
+absolutely or relatively.  For example, the following all succeed:
 
 @example
 @group
@@ -130,8 +130,10 @@ fix it immediately.  To avoid unnecessary bug reports for these known
 failures, mark the block with @code{xtest} rather than @code{test}:
 
 @example
+@group
    %!xtest assert (1==0)
    %!xtest fail ('success=1','error'))
+@end group
 @end example
 
 Another use of @code{xtest} is for statistical tests which should
@@ -182,7 +184,7 @@ For example:
    %!error <passes!> error('this test passes!');
 @end example
 
-If the code doesn't generate an error, the test fails. For example,
+If the code doesn't generate an error, the test fails.  For example,
 
 @example
    %!error "this is an error because it succeeds.";
@@ -200,8 +202,8 @@ produces
 It is important to automate the tests as much as possible, however
 some tests require user interaction.  These can be isolated into
 demo blocks, which if you are in batch mode, are only run when 
-called with @code{demo} or @code{verbose}. The code is displayed before
-it is executed. For example,
+called with @code{demo} or @code{verbose}.  The code is displayed before
+it is executed.  For example,
 
 @example
 @group
@@ -261,7 +263,7 @@ shorthand for %!test assert (x, y, tol)
 @end table
 
 You can also create test scripts for builtins and your own C++
-functions. Just put a file of the function name on your path without
+functions.  Just put a file of the function name on your path without
 any extension and it will be picked up by the test procedure.  You
 can even embed tests directly in your C++ code:
 

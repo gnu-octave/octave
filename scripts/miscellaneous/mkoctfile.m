@@ -104,7 +104,7 @@
 ## Echo commands as they are executed.
 ##
 ## @item file
-## The file to compile or link.  Recognised file types are
+## The file to compile or link.  Recognized file types are
 ##
 ## @example
 ## @group

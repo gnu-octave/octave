@@ -355,7 +355,7 @@ Consider the example
 
 @longexamplefile{stringdemo.cc}
 
-An example of the of the use of this function is
+An example of the use of this function is
 
 @example
 @group
@@ -941,7 +941,7 @@ consistent behavior across a number of compilers.
 The underlying Fortran code should use the @code{XSTOPX} function to
 replace the Fortran @code{STOP} function.  @code{XSTOPX} uses the Octave
 exception handler to treat failing cases in the fortran code
-explicitly.  Note that Octave supplies its own replacement blas
+explicitly.  Note that Octave supplies its own replacement @sc{blas}
 @code{XERBLA} function, which uses @code{XSTOPX}.
 
 If the underlying code calls @code{XSTOPX}, then the @code{F77_XFCN}
@@ -1018,7 +1018,7 @@ need additional input parameter checking.
 
 There are several functions within Octave that might be useful for the
 purposes of parameter checking.  These include the methods of the
-octave_value class like @code{is_real_matrix}, etc, but equally include
+octave_value class like @code{is_real_matrix}, etc., but equally include
 more specialized functions.  Some of the more common ones are
 demonstrated in the following example
 
@@ -1088,7 +1088,7 @@ fortran_vec method or the @code{OCTAVE_LOCAL_BUFFER} macro.
 The Octave unwind_protect mechanism (@ref{The @code{unwind_protect} Statement})
 can also be used in oct-files.  In conjunction with the exception
 handling of Octave, it is important to enforce that certain code is run
-to allow variables, etc to be restored even if an exception occurs.  An
+to allow variables, etc. to be restored even if an exception occurs.  An
 example of the use of this mechanism is
 
 @longexamplefile{unwinddemo.cc}
@@ -1294,7 +1294,7 @@ the behavior of the mex-file can be altered depending on the functions
 name.
 
 Allow the user should only include @code{mex.h} in their code, Octave
-declares additional functions, typedefs, etc, available to the user to
+declares additional functions, typedefs, etc., available to the user to
 write mex-files in the headers @code{mexproto.h} and @code{mxarray.h}.
 
 @node Working with Matrices and Arrays in Mex-Files
@@ -1336,14 +1336,14 @@ pr =  = (UINT32_T *) mxGetData (m);
 @end group
 @end example
 
-There are also the functions @code{mxSetPr}, etc, that perform the
+There are also the functions @code{mxSetPr}, etc., that perform the
 inverse, and set the data of an Array to use the block of memory pointed
 to by the argument of @code{mxSetPr}.
 
 Note the type @code{mwSize} used above, and @code{mwIndex} are defined
 as the native precision of the indexing in Octave on the platform on
-which the mex-file is built. This allows both 32- and 64-bit platforms
-to support mex-files. @code{mwSize} is used to define array dimension
+which the mex-file is built.  This allows both 32- and 64-bit platforms
+to support mex-files.  @code{mwSize} is used to define array dimension
 and maximum number or elements, while @code{mwIndex} is used to define
 indexing into arrays.
 
@@ -1427,7 +1427,7 @@ b3 = test
 @end group
 @end example
 
-Note in the example the use of the @code{mxDuplicateArry} function.  This
+Note in the example the use of the @code{mxDuplicateArray} function.  This
 is needed as the @code{mxArray} pointer returned by @code{mxGetCell}
 might be deallocated.  The inverse function to @code{mxGetCell} is
 @code{mcSetCell} and is defined as
@@ -1640,11 +1640,11 @@ $
 @end example
 
 Note that the application @code{hello} will be dynamically linked
-against the octave libraries and any octave support libraries. The above
-allows the Octave math libraries to be used by an application. It does
+against the octave libraries and any octave support libraries.  The above
+allows the Octave math libraries to be used by an application.  It does
 not however allow the script files, oct-files or builtin functions of
-Octave to be used by the application. To do that the Octave interpreter
-needs to be initialized first. An example of how to do this can then be
+Octave to be used by the application.  To do that the Octave interpreter
+needs to be initialized first.  An example of how to do this can then be
 seen in the code
 
 @examplefile{embedded.cc}

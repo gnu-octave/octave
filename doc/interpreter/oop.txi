@@ -36,7 +36,7 @@
 @chapter Object Oriented Programming
 
 Octave includes the capability to include user classes, including the
-features of operator and function overloading. Equally a user class
+features of operator and function overloading.  Equally a user class
 can be used to encapsulate certain properties of the class so that
 they cannot be altered accidentally and can be set up to address the
 issue of class precedence in mixed class operations.
@@ -57,15 +57,16 @@ functions.
 @section Creating a Class
 
 We use in the following text a polynomial class to demonstrate the use
-of object oriented programming within Octave. This class was chosen as
+of object oriented programming within Octave.  This class was chosen as
 it is simple, and so doesn't distract unnecessarily from the
-discussion of the programming features of Octave. However, even still
+discussion of the programming features of Octave.  However, even still
 a small understand of the polynomial class itself is necessary to
 fully grasp the techniques described.
 
 The polynomial class is used to represent polynomials of the form
 
 @example
+@group
 @iftex
 @tex
 $a_0 + a_1 x + a_2 x^2 + \ldots a_n x^n$
@@ -74,17 +75,18 @@ $a_0 + a_1 x + a_2 x^2 + \ldots a_n x^n$
 @ifnottex
 a0 + a1 * x + a2 * x^2 + @dots{} + an * x^n
 @end ifnottex
+@end group
 @end example
 
 @noindent
 where
 @iftex
 @tex
-$a_0$, $a_1$, etc are elements of $\Re$.
+$a_0$, $a_1$, etc. are elements of $\Re$.
 @end tex
 @end iftex
 @ifnottex
-a0, a1, etc are real scalars.
+a0, a1, etc. are real scalars.
 @end ifnottex
 Thus the polynomial can be represented by a vector
 
@@ -93,39 +95,39 @@ a = [a0, a1, a2, @dots{}, an];
 @end example
 
 We therefore now have sufficient information about the requirements of
-the class constructor for our polynomial class to write it. All object
+the class constructor for our polynomial class to write it.  All object
 oriented classes in Octave, must be contained with a directory taking
-the name of the class, prepended with the @@ symbol. For example, with
+the name of the class, prepended with the @@ symbol.  For example, with
 our polynomial class, we would place the methods defining the class in
 the @@polynomial directory.
 
 The constructor of the class, must have the name of the class itself
 and so in our example the constructor with have the name
-@file{@@polynomial/polynomial.m}. Also ideally when the constructor is
-called with no arguments to should return a value object. So for example
+@file{@@polynomial/polynomial.m}.  Also ideally when the constructor is
+called with no arguments to should return a value object.  So for example
 our polynomial might look like
 
 @polynomialfile{polynomial.m}
 
 Note that the return value of the constructor must be the output of
 the @code{class} function called with the first argument being a
-structure and the second argument being the class name. An example of
+structure and the second argument being the class name.  An example of
 the call to this constructor function is then
 
 @example
 p = polynomial ([1, 0, 1]);
 @end example
 
-Note that methods of a class can be documented. The help for the
+Note that methods of a class can be documented.  The help for the
 constructor itself can be obtained with the constructor name, that is
 for the polynomial constructor @code{help polynomial} will return the
-help string. Also the help can be obtained by restricting the search
+help string.  Also the help can be obtained by restricting the search
 for the help to a particular class, for example @code{help
-@@polynomial/polynomial}. This second method is the only means of
+@@polynomial/polynomial}.  This second method is the only means of
 getting help for the overloaded methods and functions of the class.
 
 The same is true for other Octave functions that take a function name
-as an argument. For example @code{type @@polynomial/display} will
+as an argument.  For example @code{type @@polynomial/display} will
 print the code of the display method of the polynomial class to the
 screen, and @code{dbstop @@polynomial/display} will set a breakpoint
 at the first executable line of the display method of the polynomial
@@ -173,10 +175,10 @@ ismethod (p, "roots")
 @section Manipulating Classes
 
 There are a number of basic classes methods that can be defined to allow
-the contents of the classes to be queried and set. The most basic of
-these is the @code{display} method. The @code{display} method is used
+the contents of the classes to be queried and set.  The most basic of
+these is the @code{display} method.  The @code{display} method is used
 by Octave when displaying a class on the screen, due to an expression
-that is not terminated with a semicolon. If this method is not defined,
+that is not terminated with a semicolon.  If this method is not defined,
 then Octave will printed nothing when displaying the contents of a class.
 
 @DOCSTRING(display)
@@ -193,10 +195,10 @@ with the rest of Octave and print the variable name to be displayed
 when displaying the class. 
 
 To be consistent with the Octave graphic handle classes, a class
-should also define the @code{get} and @code{set} methods. The
+should also define the @code{get} and @code{set} methods.  The
 @code{get} method should accept one or two arguments, and given one
 argument of the appropriate class it should return a structure with
-all of the properties of the class. For example
+all of the properties of the class.  For example
 
 @polynomialfile{get.m}
 
@@ -217,12 +219,12 @@ p = set (p, "a", [1, 0, 0, 0, 1]);
 
 @noindent
 Also the @code{set} method makes use of the @code{subsasgn} method of
-the class, and this method must be defined. The @code{subsasgn} method
+the class, and this method must be defined.  The @code{subsasgn} method
 is discussed in the next section.
 
 Finally, user classes can be considered as a special type of a
 structure, and so they can be saved to a file in the same manner as a
-structure. For example
+structure.  For example
 
 @example
 @group
@@ -235,16 +237,16 @@ load userclass.mat
 
 @noindent
 All of the file formats supported by @code{save} and @code{load} are
-supported. In certain circumstances, a user class might either contain
+supported.  In certain circumstances, a user class might either contain
 a field that it makes no sense to save or a field that needs to be
-initialized before it is saved. This can be done with the
+initialized before it is saved.  This can be done with the
 @code{saveobj} method of the class
 
 @DOCSTRING(saveobj)
 
 @noindent
 @code{saveobj} is called just prior to saving the class to a
-file. Likely, the @code{loadobj} method is called just after a class
+file.  Likely, the @code{loadobj} method is called just after a class
 is loaded from a file, and can be used to ensure that any removed
 fields are reinserted into the user object.
 
@@ -253,13 +255,13 @@ fields are reinserted into the user object.
 @node Indexing Objects
 @section Indexing Objects
 
-Objects in can be indexed with parenthesises, either like 
+Objects in can be indexed with parentheses, either like 
 @code{@var{a} (@var{idx})} or like @code{@var{a} @{@var{idx}@}}, or even
-like @code{@var{a} (@var{idx}).@var{field}}. However, it is up to the user
-to decide what this indexing actually means. In the case of our polynomial
+like @code{@var{a} (@var{idx}).@var{field}}.  However, it is up to the user
+to decide what this indexing actually means.  In the case of our polynomial
 class @code{@var{p} (@var{n})} might mean either the coefficient of the 
 @var{n}-th power of the polynomial, or it might be the evaluation of the 
-polynomial at @var{n}. The meaning of this subscripted referencing is 
+polynomial at @var{n}.  The meaning of this subscripted referencing is 
 determined by the @code{subsref} method.
 
 @DOCSTRING(subsref)
@@ -270,13 +272,13 @@ In this case the @code{subsref} method of our polynomial class might look like
 
 @polynomialfile{subsref.m}
 
-The equivalent functionality for subscripted asignments uses the 
+The equivalent functionality for subscripted assignments uses the 
 @code{subsasgn} method.
 
 @DOCSTRING(subsasgn)
 
 If you wish to use the @code{end} keyword in subscripted expressions
-of an object. Then the user needs to define the @code{end} method for 
+of an object.  Then the user needs to define the @code{end} method for 
 the class.
 
 @DOCSTRING(end)
@@ -287,7 +289,7 @@ For example the @code{end} method for our polynomial class might look like
 
 @noindent
 which is a fairly generic @code{end} method that has a behavior similar to
-the @code{end} keyword for Octave Array classes. It can then be used for
+the @code{end} keyword for Octave Array classes.  It can then be used for
 example like
 
 @example
@@ -321,14 +323,14 @@ method
 @subsection Function Overloading
 
 Any Octave function can be overloaded, and allows a object specific
-version of this function to be called as needed. A pertinent example
+version of this function to be called as needed.  A pertinent example
 for our polynomial class might be to overload the @code{polyval} function
 like
 
 @polynomialfile{polyval.m}
 
 This function just hands off the work to the normal Octave @code{polyval}
-function. Another interesting example for an overloaded function for our
+function.  Another interesting example for an overloaded function for our
 polynomial class is the @code{plot} function.
 
 @polynomialfile{plot.m}
@@ -338,9 +340,9 @@ which allows polynomials to be plotted in the domain near the region
 of the roots of the polynomial.
 
 Functions that are of particular interest to be overloaded are the class
-conversion functions such as @code{double}. Overloading these functions 
+conversion functions such as @code{double}.  Overloading these functions 
 allows the @code{cast} function to work with the user class and can aid 
-in the use of methods of other classes with the user class. An example
+in the use of methods of other classes with the user class.  An example
 @code{double} function for our polynomial class might look like.
 
 @polynomialfile{double.m}
@@ -393,8 +395,8 @@ width 0.6pt \tabskip=0pt\cr
 & $a.'$ && transpose (a) && Transpose operator &\cr
 & $a : b$ && colon (a, b) && Two element range operator &\cr
 & $a : b : c$ && colon (a, b, c) && Three element range operator &\cr
-& $[a, b]$ && horzcat (a, b) && Horizontal concatenation opertaor &\cr
-& $[a; b]$ && vertcat (a, b) && Vertical concatenation opertaor &\cr
+& $[a, b]$ && horzcat (a, b) && Horizontal concatenation operator &\cr
+& $[a; b]$ && vertcat (a, b) && Vertical concatenation operator &\cr
 & $a(s_1, \ldots, s_n)$ && subsref (a, s) && Subscripted reference &\cr
 & $a(s_1, \ldots, s_n) = b$ && subsasgn (a, s, b) && Subscripted assignment &\cr
 & $b (a)$ && subsindex (a) && Convert to zero-based index &\cr
@@ -411,7 +413,7 @@ width 0.6pt \tabskip=0pt\cr
 @item @tab + a$ @tab uplus (a) @tab Unary addition operator @tab
 @item @tab - a$ @tab uminus (a) @tab Unary subtraction operator @tab
 @item @tab a .* b$ @tab times (a, b) @tab Element-wise multiplication operator @tab
-@item @tab a * b$ @tab mtimes (a, b) @tab Matirx multiplication operator @tab
+@item @tab a * b$ @tab mtimes (a, b) @tab Matrix multiplication operator @tab
 @item @tab a ./ b$ @tab rdivide (a, b) @tab Element-wise right division operator @tab
 @item @tab a / b$ @tab mrdivide (a, b) @tab Matrix right division operator @tab
 @item @tab a .\ b$ @tab ldivide (a, b) @tab Element-wise left division operator @tab
@@ -431,8 +433,8 @@ width 0.6pt \tabskip=0pt\cr
 @item @tab a.'$ @tab transpose (a) @tab Transpose operator @tab
 @item @tab a : b$ @tab colon (a, b) @tab Two element range operator @tab
 @item @tab a : b : c$ @tab colon (a, b, c) @tab Three element range operator @tab
-@item @tab [a, b]$ @tab horzcat (a, b) @tab Horizontal concatenation opertaor @tab
-@item @tab [a; b]$ @tab vertcat (a, b) @tab Vertical concatenation opertaor @tab
+@item @tab [a, b]$ @tab horzcat (a, b) @tab Horizontal concatenation operator @tab
+@item @tab [a; b]$ @tab vertcat (a, b) @tab Vertical concatenation operator @tab
 @item @tab a(s_1, \ldots, s_n)$ @tab subsref (a, s) @tab Subscripted reference @tab
 @item @tab a(s_1, \ldots, s_n) = b$ @tab subsasgn (a, s, b) @tab Subscripted assignment @tab
 @item @tab b (a)$ @tab subsindex (a) @tab Convert to zero-based index @tab
@@ -451,9 +453,9 @@ An example @code{mtimes} method for our polynomial class might look like
 
 Many functions and operators take two or more arguments and so the
 case can easily arise that these functions are called with objects of
-different classes. It is therefore necessary to determine the precedence
+different classes.  It is therefore necessary to determine the precedence
 of which method of which class to call when there are mixed objects given
-to a function or operator. To do this the @code{superiorto} and
+to a function or operator.  To do this the @code{superiorto} and
 @code{inferiorto} functions can be used
 
 @DOCSTRING(superiorto)
@@ -468,15 +470,15 @@ For example with our polynomial class consider the case
 
 @noindent
 That mixes an object of the class "double" with an object of the class
-"polynomial". In this case we like to ensure that the return type of
+"polynomial".  In this case we like to ensure that the return type of
 the above is of the type "polynomial" and so we use the
-@code{superiorto} function in the class constructor. In particular our
+@code{superiorto} function in the class constructor.  In particular our
 polynomial class constructor would be modified to be
 
 @polynomialfile{polynomial_superiorto.m}
 
 Note that user classes always have higher precedence than built-in
-Octave types. So in fact marking our polynomial class higher than the 
+Octave types.  So in fact marking our polynomial class higher than the 
 "double" class is in fact not necessary.
 
 

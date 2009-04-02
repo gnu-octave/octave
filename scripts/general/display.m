@@ -26,7 +26,7 @@
 ## @end example
 ##
 ## @noindent
-## where Octave is requried to display the contents of a variable of the
+## where Octave is required to display the contents of a variable of the
 ## type "myclass".
 ##
 ## @seealso{class, subsref, subsasgn}

@@ -356,7 +356,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
       if (fn <= tolf*n*xn)
         info = 1;
 	## The following tests done only after successful step.
-      elseif (actred > 0)
+      elseif (ratio >= 1e-4)
         ## This one is classic. Note that we use scaled variables again,
 	## but compare to scaled step, so nothing bad.
         if (sn <= tolx*xn)

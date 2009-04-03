@@ -390,7 +390,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
 	    titlespec{data_idx} = "title \"\"";
 	    usingclause{data_idx} = sprintf ("binary array=%dx%d scan=yx origin=(%.15g,%.15g) dx=%.15g dy=%.15g using %s",
 		x_dim, y_dim, x_origin, y_origin, dx, dy, format);
-	    withclause{data_idx} = sprintf ("with %s", imagetype);
+	    withclause{data_idx} = sprintf ("with %s;", imagetype);
 
 	  else
 	    ximg_data{++ximg_data_idx} = img_data;

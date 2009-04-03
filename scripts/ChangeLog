@@ -1,3 +1,7 @@
+2009-04-02  Ben Abbott <bpabbott@mac.com>
+
+	* plot/__go_draw_axes__.m: Fix title placement for gnuplot 4.2.x.
+
 2009-04-02  Jaroslav Hajek  <highegg@gmail.com>
 
 	* optimization/fsolve.m: Fix test.

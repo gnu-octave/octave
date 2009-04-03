@@ -100,7 +100,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
 	fprintf (plot_stream, "set title \"%s\" %s %s",
 		 undo_string_escapes (tt), fontspec,
 		 __do_enhanced_option__ (enhanced, t));
-	if (nd == 3)
+	if (nd == 3 && __gnuplot_has_feature__ ("screen_coordinates_for_{lrtb}margin"))
 	  fprintf (plot_stream, " offset screen 0, screen %.3f;\n", pos(4)/5);
 	else
 	  fprintf (plot_stream, ";\n");

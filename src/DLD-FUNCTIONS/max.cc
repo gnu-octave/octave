@@ -468,10 +468,9 @@ along with Octave; see the file COPYING.  If not, see
  \
   if (single_arg && (nargout == 1 || nargout == 0)) \
     { \
-      if (arg1.type_id () == octave_sparse_matrix::static_type_id ()) \
+      if (arg1.is_real_type ()) \
 	retval(0) = arg1.sparse_matrix_value () .FCN (dim); \
-      else if (arg1.type_id () == \
-	       octave_sparse_complex_matrix::static_type_id ()) \
+      else if (arg1.is_complex_type ()) \
 	retval(0) = arg1.sparse_complex_matrix_value () .FCN (dim); \
       else \
 	gripe_wrong_type_arg (#FCN, arg1); \
@@ -480,10 +479,9 @@ along with Octave; see the file COPYING.  If not, see
     { \
       Array2<octave_idx_type> index; \
  \
-      if (arg1.type_id () == octave_sparse_matrix::static_type_id ()) \
+      if (arg1.is_real_type ()) \
 	retval(0) = arg1.sparse_matrix_value () .FCN (index, dim); \
-      else if (arg1.type_id () == \
-	       octave_sparse_complex_matrix::static_type_id ()) \
+      else if (arg1.is_complex_type ()) \
 	retval(0) = arg1.sparse_complex_matrix_value () .FCN (index, dim); \
       else \
 	gripe_wrong_type_arg (#FCN, arg1); \

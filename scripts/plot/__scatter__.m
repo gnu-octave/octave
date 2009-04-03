@@ -149,7 +149,8 @@ function hg = __scatter__ (varargin)
       h = __go_patch__ (hg, "xdata", x(i), "ydata", y(i), "zdata", z(i,:),
 			"faces", 1, "vertices", [x(i), y(i), z(i,:)], 
 			"facecolor", "none", "edgecolor", "flat", 
-			"cdata", c(i), "marker", marker, "markersize", s(i), 
+			"cdata", reshape(c(i,:),[1,size(c)(2:end)]), 
+			"marker", marker, "markersize", s(i), 
 			"linestyle", "none");
       if (filled)
 	set(h, "markerfacecolor", "flat"); 
@@ -215,14 +216,28 @@ function update_data (h, d)
   endif
   hlist = get (h, "children");
   if (ischar (c1))
-    for i = 1 : length (hlist)
-      set (hlist(i), "vertices", [x1(i), y1(i), y2(i)], "cdata", c1,
-	   "markersize", size1(i));
-    endfor
+    if (isempty (z1))
+      for i = 1 : length (hlist)
+	set (hlist(i), "vertices", [x1(i), y1(i)], "cdata", c1,
+	     "markersize", size1(i));
+      endfor
+    else
+      for i = 1 : length (hlist)
+	set (hlist(i), "vertices", [x1(i), y1(i), z1(i)], "cdata", c1,
+	     "markersize", size1(i));
+      endfor
+    endif
   else
-    for i = 1 : length (hlist)
-      set (hlist(i), "vertices", [x1(i), y1(i), y2(i)], "cdata", c1(i,:),
-	   "markersize", size1(i));
-    endfor
+    if (isempty (z1))
+      for i = 1 : length (hlist)
+	set (hlist(i), "vertices", [x1(i), y1(i)], "cdata", 
+	     reshape(c1(i,:),[1, size(c1)(2:end)]), "markersize", size1(i));
+      endfor
+    else
+      for i = 1 : length (hlist)
+	set (hlist(i), "vertices", [x1(i), y1(i), z1(i)], "cdata", 
+	     reshape(c1(i,:),[1, size(c1)(2:end)]), "markersize", size1(i));
+      endfor
+    endif
   endif
 endfunction

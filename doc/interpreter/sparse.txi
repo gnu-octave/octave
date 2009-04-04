@@ -382,7 +382,7 @@ matrix.  @xref{fig:spmatrix}, for an example of the use of
 @dfn{treeplot}, @dfn{etreeplot} and @dfn{gplot} commands.
 
 @float Figure,fig:spmatrix
-@image{spmatrix,8cm}
+@center @image{spmatrix,4in}
 @caption{Structure of simple sparse matrix.}
 @end float
 
@@ -413,7 +413,7 @@ the nodes are given in the n-by-2 matrix @code{xy}.
 @xref{fig:gplot}.
 
 @float Figure,fig:gplot
-@image{gplot,8cm}
+@center @image{gplot,4in}
 @caption{Simple use of the @dfn{gplot} command.}
 @end float
 @end ifset
@@ -502,7 +502,7 @@ used.
 @end table
 
 In addition all of the standard Octave mapper functions (i.e., basic
-math functions that take a single argument) such as @dfn{abs}, etc
+math functions that take a single argument) such as @dfn{abs}, etc.
 can accept sparse matrices.  The reader is referred to the documentation
 supplied with these functions within Octave itself for further
 details.
@@ -650,7 +650,7 @@ also available.
 positive definite matrix.
 
 @float Figure,fig:simplematrix
-@image{spmatrix,8cm}
+@center @image{spmatrix,4in}
 @caption{Structure of simple sparse matrix.}
 @end float
 
@@ -708,12 +708,12 @@ arguments as r@code{[r, p, q] = chol(A); spy(r)}.
 @ifset HAVE_CHOLMOD
 @ifset HAVE_COLAMD
 @float Figure,fig:simplechol
-@image{spchol,8cm}
+@center @image{spchol,4in}
 @caption{Structure of the un-permuted Cholesky factorization of the above matrix.}
 @end float
 
 @float Figure,fig:simplecholperm
-@image{spcholperm,8cm}
+@center @image{spcholperm,4in}
 @caption{Structure of the permuted Cholesky factorization of the above matrix.}
 @end float
 @end ifset
@@ -771,19 +771,19 @@ continue, else goto 3b.
 
 @enumerate
 @item If the matrix is hermitian, with a positive real diagonal, attempt
-      Cholesky factorization using @sc{Lapack} xPTSV.
+      Cholesky factorization using @sc{lapack} xPTSV.
 
 @item If the above failed or the matrix is not hermitian with a positive
       real diagonal use Gaussian elimination with pivoting using 
-      @sc{Lapack} xGTSV, and goto 8.
+      @sc{lapack} xGTSV, and goto 8.
 @end enumerate
 
 @item If the matrix is hermitian with a positive real diagonal, attempt
-      Cholesky factorization using @sc{Lapack} xPBTRF.
+      Cholesky factorization using @sc{lapack} xPBTRF.
 
 @item if the above failed or the matrix is not hermitian with a positive
       real diagonal use Gaussian elimination with pivoting using 
-      @sc{Lapack} xGBTRF, and goto 8.
+      @sc{lapack} xGBTRF, and goto 8.
 @end enumerate
 
 @item If the matrix is upper or lower triangular perform a sparse forward
@@ -827,7 +827,7 @@ narrow banded, triangular or diagonal matrices, the cost of
 calculating the condition number is significant, and can in fact
 exceed the cost of factoring the matrix.  Therefore the condition
 number is not calculated in these cases, and Octave relies on simpler
-techniques to detect singular matrices or the underlying LAPACK code in
+techniques to detect singular matrices or the underlying @sc{lapack} code in
 the case of banded matrices.
 
 The user can force the type of the matrix with the @code{matrix_type}
@@ -1150,7 +1150,7 @@ value in the z-axis for each simplex vertex.
 @ifset HAVE_UMFPACK
 @ifset HAVE_COLAMD
 @float Figure,fig:femmodel
-@image{grid,8cm}
+@center @image{grid,4in}
 @caption{Example finite element model the showing triangular elements. 
 The height of each vertex corresponds to the solution value.}
 @end float

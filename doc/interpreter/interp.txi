@@ -70,13 +70,13 @@ The result of which can be seen in @ref{fig:interpderiv1} and
 @ref{fig:interpderiv2}.
 
 @float Figure,fig:interpderiv1
-@image{interpderiv1,8cm}
+@center @image{interpderiv1,4in}
 @caption{Comparison of 'pchip' and 'spline' interpolation methods for a 
 step function}
 @end float
 
 @float Figure,fig:interpderiv2
-@image{interpderiv2,8cm}
+@center @image{interpderiv2,4in}
 @caption{Comparison of the second derivative of the 'pchip' and 'spline' 
 interpolation methods for a step function}
 @end float
@@ -121,7 +121,7 @@ which demonstrates the poor behavior of Fourier interpolation for non-periodic f
 which demonstrates the poor behavior of Fourier interpolation for non-periodic functions, as can be seen in @ref{fig:interpft}.
 
 @float Figure,fig:interpft
-@image{interpft,8cm}
+@center @image{interpft,4in}
 @caption{Comparison of @code{interp1} and @code{interpft} for non-periodic data}
 @end float
 @end ifnotinfo
@@ -182,7 +182,7 @@ respectively.
 The result of this code can be seen in @ref{fig:interpn}.
 
 @float Figure,fig:interpn
-@image{interpn,8cm}
+@center @image{interpn,4in}
 @caption{Demonstration of the use of @code{interpn}}
 @end float
 @end ifnotinfo

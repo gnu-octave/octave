@@ -82,7 +82,7 @@ plot(X, Y, "b", x, y, "r*");
 The result of which can be seen in @ref{fig:delaunay}.
 
 @float Figure,fig:delaunay
-@image{delaunay,8cm}
+@center @image{delaunay,4in}
 @caption{Delaunay triangulation of a random set of points}
 @end float
 @end ifnotinfo
@@ -124,7 +124,7 @@ that plot the Delaunay triangulation of a set of random points in
 The output of the above can be seen in @ref{fig:triplot}.
 
 @float Figure,fig:triplot
-@image{triplot,8cm}
+@center @image{triplot,4in}
 @caption{Delaunay triangulation of a random set of points}
 @end float
 @end ifnotinfo
@@ -314,7 +314,7 @@ make the relationship between the Delaunay tessellation and the Voronoi
 diagram clearer.
 
 @float Figure,fig:voronoi
-@image{voronoi,8cm}
+@center @image{voronoi,4in}
 @caption{Delaunay triangulation and Voronoi diagram of a random set of points}
 @end float
 @end ifnotinfo
@@ -369,7 +369,7 @@ axis ([-2, 2, -2, 2]);
 The result of which can be seen in @ref{fig:inpolygon}.
 
 @float Figure,fig:inpolygon
-@image{inpolygon,8cm}
+@center @image{inpolygon,4in}
 @caption{Demonstration of the @code{inpolygon} function to determine the
 points inside a polygon}
 @end float
@@ -405,7 +405,7 @@ axis ([-3.05, 3.05, -0.05, 1.05]);
 The output of the above can be seen in @ref{fig:convhull}.
 
 @float Figure,fig:convhull
-@image{convhull,8cm}
+@center @image{convhull,4in}
 @caption{The convex hull of a simple set of points}
 @end float
 @end ifnotinfo
@@ -451,7 +451,7 @@ grid.
 The output of the above can be seen in @ref{fig:griddata}.
 
 @float Figure,fig:griddata
-@image{griddata,8cm}
+@center @image{griddata,4in}
 @caption{Interpolation from a scattered data to a regular grid}
 @end float
 @end ifnotinfo

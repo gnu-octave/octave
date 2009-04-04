@@ -1,3 +1,8 @@
+2009-04-04  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-struct.cc (octave_struct::subsasgn): Fix reference counting
+	optimization.
+
 2008-04-03  David Bateman  <dbateman@free.fr>
 
 	* DLD-FUNCTIONS/max.cc (MINMAX_SPARSE_BODY): Allow sparse boolean 

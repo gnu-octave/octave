@@ -264,9 +264,6 @@ octave_struct::subsasgn (const std::string& type,
 
   octave_value t_rhs = rhs;
 
-  // This is handy for calling const methods of map.
-  const Octave_map& cmap = const_cast<const Octave_map &> (map);
-
   if (n > 1 && ! (type.length () == 2 && type[0] == '(' && type[1] == '.'))
     {
       switch (type[0])
@@ -294,16 +291,20 @@ octave_struct::subsasgn (const std::string& type,
 
                 std::string next_type = type.substr (2);
 
-                // cast map to const reference to avoid forced key insertion.
-                Cell tmpc = cmap.contents (key).index (idx.front (), true);
+                Cell tmpc (1, 1);
+                Octave_map::iterator pkey = map.seek (key);
+                if (pkey != map.end ())
+                  {
+                    pkey->second.make_unique ();
+                    tmpc = pkey->second.index (idx.front (), true);
+                  }
 
                 // FIXME: better code reuse? cf. octave_cell::subsasgn and the case below.
 		if (! error_state)
 		  {
                     if (tmpc.numel () == 1)
                       {
-                        octave_value tmp = tmpc(0);
-                        tmpc = Cell ();
+                        octave_value& tmp = tmpc(0);
 
                         if (! tmp.is_defined () || tmp.is_zero_by_zero ())
                           {
@@ -341,15 +342,19 @@ octave_struct::subsasgn (const std::string& type,
             std::string next_type = type.substr (1);
 
             Cell tmpc (1, 1);
-            if (map.contains (key)) tmpc = cmap.contents (key);
+            Octave_map::iterator pkey = map.seek (key);
+            if (pkey != map.end ())
+              {
+                pkey->second.make_unique ();
+                tmpc = pkey->second;
+              }
 
             // FIXME: better code reuse?
             if (! error_state)
               {
                 if (tmpc.numel () == 1)
                   {
-                    octave_value tmp = tmpc(0);
-                    tmpc = Cell ();
+                    octave_value& tmp = tmpc(0);
 
                     if (! tmp.is_defined () || tmp.is_zero_by_zero ())
                       {
@@ -422,6 +427,7 @@ octave_struct::subsasgn (const std::string& type,
                       }
                     else 
                       {
+                        const Octave_map& cmap = const_cast<const Octave_map &> (map);
                         // cast map to const reference to avoid forced key insertion.
                         if (idxf.all_scalars () 
                             || cmap.contents (key).index (idxf, true).numel () == 1)

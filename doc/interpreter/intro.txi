@@ -20,19 +20,20 @@
 @chapter A Brief Introduction to Octave
 @cindex introduction
 
-This manual documents how to install, run, and use GNU Octave, and how
-to report bugs.
-
 GNU Octave is a high-level language, primarily intended for numerical
-computations.  It provides a convenient command line interface for
-solving linear and nonlinear problems numerically, and for performing
-other numerical experiments.  It may also be used as a batch-oriented
-language.
+computations.  It provides a convenient interactive command line 
+interface for solving linear and nonlinear problems numerically, and 
+for performing other numerical experiments.  It may also be used as a 
+batch-oriented language for data processing.
 
-GNU Octave is also freely redistributable software.  You may
-redistribute it and/or modify it under the terms of the GNU General
-Public License as published by the Free Software Foundation.  The GPL is
-included in this manual in @ref{Copying}.
+GNU Octave is freely redistributable software.  You may redistribute 
+it and/or modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation.  The GPL is included in 
+this manual in @ref{Copying}.
+
+This manual provides comprehensive documentation on how to install, 
+run, use, and extend GNU Octave.  Additional chapters describe how 
+to report bugs and help contribute code.
 
 This document corresponds to Octave version @value{VERSION}.
 
@@ -45,7 +46,7 @@ This document corresponds to Octave version @value{VERSION}.
 @node Running Octave
 @section Running Octave
 
-On most systems, the way to invoke Octave is with the shell command
+On most systems, Octave is started with the shell command 
 @samp{octave}.  Octave displays an initial message and then a prompt
 indicating it is ready to accept input.  You can begin typing Octave
 commands immediately afterward.
@@ -75,8 +76,42 @@ begin learning Octave by using it.  Lines marked with @samp{octave:13>}
 are lines you type, ending each with a carriage return.  Octave will
 respond with an answer, or by displaying a graph.
 
+@subsection Elementary Calculations
+
+Octave can easily be used for basic numerical calculations.  Octave 
+knows about arithmetic operations (+,-,*,/), exponentiation (^), 
+natural logarithms/exponents (log, exp), and the trigonometric 
+functions (sin, cos, @dots{}).  Moreover, Octave calculations work 
+on real or imaginary numbers (i,j).  In addition, some mathematical 
+constants such as the base of the natural logarithm (e) and the ratio 
+of a circle's circumference to its diameter (pi) are pre-defined.
+
+@noindent
+For example, to verify Euler's Identity,
+@iftex
+@tex
+$$e^{\imath\pi} = -1$$
+@end tex
+@end iftex
+@ifnottex
+@display
+
+ i*pi
+e     = -1
+@end display
+@end ifnottex
+
+@noindent
+type the following which will evaluate to @code{-1} within the
+tolerance of the calculation. 
+
+@example
+octave:1> exp(i*pi)
+@end example
+
 @subsection Creating a Matrix
 
+Vectors and matrices are the basic building blocks for numerical analysis.  
 To create a new matrix and store it in a variable so that you can
 refer to it later, type the command
 
@@ -85,9 +120,11 @@ octave:1> A = [ 1, 1, 2; 3, 5, 8; 13, 21, 34 ]
 @end example
 
 @noindent
-Octave will respond by printing the matrix in neatly aligned columns.
+Octave will respond by printing the matrix in neatly aligned columns.  
+Octave uses a comma or space to separate entries in a row, and a 
+semicolon or carriage return to separate one row from the next.  
 Ending a command with a semicolon tells Octave not to print the result
-of the command.  For example
+of the command.  For example,
 
 @example
 octave:2> B = rand (3, 2);
@@ -138,13 +175,14 @@ type the command
 octave:6> A' * A
 @end example
 
-@subsection Solving Linear Equations
+@subsection Solving Systems of Linear Equations
 
+Systems of linear equations are ubiquitous in numerical analysis.
 To solve the set of linear equations @code{A@var{x} = b},
 use the left division operator, @samp{\}:
 
 @example
-octave:7> A \ b
+@var{x} = A \ b
 @end example
 
 @noindent
@@ -161,6 +199,57 @@ but avoids computing the inverse of a matrix directly.
 
 If the coefficient matrix is singular, Octave will print a warning
 message and compute a minimum norm solution.
+
+A simple example comes from chemistry and the need to obtain balanced 
+chemical equations.  Consider the burning of hydrogen and oxygen to 
+produce water.
+
+@iftex
+@tex
+$$ {\rm H_{2}} + {\rm O_{2}} \rightarrow {\rm H_{2}O} $$
+@end tex
+@end iftex
+@ifnottex
+@example
+H2 + O2 --> H2O
+@end example
+@end ifnottex
+
+@noindent
+The equation above is not accurate.  The Law of Conservation of Mass requires 
+that the number of molecules of each type balance on the left- and right-hand 
+sides of the equation.  Writing the variable overall reaction with 
+individual equations for hydrogen and oxygen one finds:
+
+@iftex
+@tex
+\vbox{
+$$ x_{1}{\rm H_{2}} + x_{2}{\rm O_{2}} \rightarrow {\rm H_{2}O} $$
+$$ {\rm H:}\quad 2x_{1} + 0x_{2} \rightarrow 2 $$
+$$ {\rm O:}\quad 0x_{1} + 2x_{2} \rightarrow 1 $$
+}
+@end tex
+@end iftex
+@ifnottex
+@example
+@group
+x1*H2 + x2*O2 --> H2O
+H: 2*x1 + 0*x2 --> 2
+O: 0*x1 + 2*x2 --> 1
+@end group
+@end example
+@end ifnottex
+
+@noindent
+The solution in Octave is found in just three steps.
+
+@example
+@group
+octave:1> A = [ 2, 0; 0, 2 ];
+octave:2> b = [ 2; 1 ];
+octave:3> x = A \ b
+@end group
+@end example
 
 @subsection Integrating Differential Equations
 
@@ -211,7 +300,7 @@ is waiting for you to complete your input.
 
 @example
 @group
-octave:8> function xdot = f (x, t) 
+octave:1> function xdot = f (x, t) 
 >
 >  r = 0.25;
 >  k = 1.4;
@@ -231,7 +320,7 @@ octave:8> function xdot = f (x, t)
 Given the initial condition
 
 @example
-x0 = [1; 2];
+octave:2> x0 = [1; 2];
 @end example
 
 @noindent
@@ -239,14 +328,14 @@ and the set of output times as a column vector (note that the first
 output time corresponds to the initial condition given above)
 
 @example
-t = linspace (0, 50, 200)';
+octave:3> t = linspace (0, 50, 200)';
 @end example
 
 @noindent
 it is easy to integrate the set of differential equations:
 
 @example
-x = lsode ("f", x0, t);
+octave:4> x = lsode ("f", x0, t);
 @end example
 
 @noindent
@@ -261,7 +350,7 @@ To display the solution of the previous example graphically, use the
 command
 
 @example
-plot (t, x)
+octave:1> plot (t, x)
 @end example
 
 @noindent
@@ -277,7 +366,7 @@ print -deps foo.eps
 
 @noindent
 will create a file called @file{foo.eps} that contains a rendering of
-the current plot.  The command
+the current plot in Encapsulated PostScript format.  The command
 
 @example
 help print
@@ -353,16 +442,15 @@ manual.  You may want to skip this section and refer back to it later.
 
 @node Fonts
 @subsection Fonts
-@cindex fonts
+@cindex documentation fonts
 
 Examples of Octave code appear in this font or form: @code{svd (a)}.
-Names that represent arguments or metasyntactic variables appear
+Names that represent variables or function arguments appear
 in this font or form: @var{first-number}.  Commands that you type at the
-shell prompt sometimes appear in this font or form:
-@samp{octave --no-init-file}.  Commands that you type at the Octave
-prompt sometimes appear in this font or form: @kbd{foo --bar --baz}.
-Specific keys on your keyboard appear in this font or form: @key{ANY}.
-@cindex any key
+shell prompt appear in this font or form: @samp{octave --no-init-file}.  
+Commands that you type at the Octave prompt sometimes appear in this font 
+or form: @kbd{foo --bar --baz}.  Specific keys on your keyboard appear 
+in this font or form: @key{ANY}.
 
 @node Evaluation Notation
 @subsection Evaluation Notation
@@ -426,10 +514,10 @@ rot90 ([1, 2; 3, 4], 7)
 @cindex printing notation
 
 Many of the examples in this manual print text when they are
-evaluated.  Examples in this manual indicate printed text with
-@samp{@print{}}.  The value that is returned by evaluating the
-expression (here @code{1}) is displayed with @samp{@result{}} and
-follows on a separate line.
+evaluated.  In this manual the printed text resulting from an example 
+is indicated by @samp{@print{}}.  The value that is returned by 
+evaluating the expression is displayed with @samp{@result{}} 
+(@code{1} in the next example) and follows on a separate line.
 
 @example
 @group
@@ -444,7 +532,7 @@ printf ("foo %s\n", "bar")
 @cindex error message notation
 
 Some examples signal errors.  This normally displays an error message
-on your terminal.  Error messages are shown on a line starting with
+on your terminal.  Error messages are shown on a line beginning with
 @code{error:}.
 
 @example

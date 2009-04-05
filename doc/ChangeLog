@@ -1,3 +1,8 @@
+2009-03-27  Rik  <rdrider0-list@yahoo.com>
+
+	* interpreter/intro.txi: Add new sample section on elementary 
+	calculations.  Add new example of solving systems of equations
+
 2009-03-27  Jaroslav Hajek  <highegg@gmail.com>
 
 	* interpreter/diagperm.txi: Mention mixing with sparse matrices.

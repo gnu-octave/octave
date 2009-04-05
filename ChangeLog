@@ -1,5 +1,9 @@
 2009-04-05  John W. Eaton  <jwe@octave.org>
 
+	* configure.in: Use AC_USE_SYSTEM_EXTENSIONS instead of
+	AC_GNU_SOURCE, AC_AIX, AC_MINIX, and AC_ISC_POSIX.
+	Require Autoconf 2.60.
+
 	* configure.in: Add -Wformat to extra warning flags.  Add
 	-Wconversion to strict warning flags.
 

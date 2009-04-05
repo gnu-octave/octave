@@ -31,7 +31,7 @@ EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
 AC_REVISION($Revision: 1.603 $)
-AC_PREREQ(2.57)
+AC_PREREQ(2.60)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
 
@@ -55,11 +55,7 @@ EOF
     ;;
 esac
 
-AC_GNU_SOURCE
-
-AC_AIX
-AC_MINIX
-AC_ISC_POSIX
+AC_USE_SYSTEM_EXTENSIONS
 
 ### Path separator.
 sepchar=:

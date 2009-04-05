@@ -1952,6 +1952,9 @@ if $try_extra_warning_flags; then
   OCTAVE_CC_FLAG(-Wshadow, [
     WARN_CFLAGS="$WARN_CFLAGS -Wshadow";
     AC_MSG_RESULT([adding -Wshadow to WARN_CFLAGS])])
+  OCTAVE_CC_FLAG(-Wformat, [
+    WARN_CFLAGS="$WARN_CFLAGS -Wformat";
+    AC_MSG_RESULT([adding -Wformat to WARN_CFLAGS])])
 
   OCTAVE_CXX_FLAG(-Wall, [
     WARN_CXXFLAGS="$WARN_CXXFLAGS -Wall";
@@ -1965,12 +1968,15 @@ if $try_extra_warning_flags; then
   OCTAVE_CXX_FLAG(-Wold-style-cast, [
     WARN_CXXFLAGS="$WARN_CXXFLAGS -Wold-style-cast";
     AC_MSG_RESULT([adding -Wold-style-cast to WARN_CXXFLAGS])])
+  OCTAVE_CXX_FLAG(-Wformat, [
+    WARN_CXXFLAGS="$WARN_CXXFLAGS -Wformat";
+    AC_MSG_RESULT([adding -Wformat to WARN_CXXFLAGS])])
 fi
 
-GCC_STRICT_FLAGS="-Wcast-align -Wcast-qual -Wmissing-prototypes \
+GCC_STRICT_FLAGS="-Wcast-align -Wcast-qual -Wconversion -Wmissing-prototypes \
   -Wpointer-arith -Wstrict-prototypes -Wwrite-strings"
 
-GXX_STRICT_FLAGS="-Wcast-align -Wcast-qual -Wpointer-arith \
+GXX_STRICT_FLAGS="-Wcast-align -Wcast-qual -Wconversion -Wpointer-arith \
   -Wwrite-strings -Weffc++"
 
 try_strict_warning_flags=false

@@ -1,3 +1,8 @@
+2009-04-05  John W. Eaton  <jwe@octave.org>
+
+	* configure.in: Add -Wformat to extra warning flags.  Add
+	-Wconversion to strict warning flags.
+
 2009-04-02  John W. Eaton  <jwe@octave.org>
 
 	* Makeconf.in (do-script-install): Use $(INSTALL_DATA) instead of

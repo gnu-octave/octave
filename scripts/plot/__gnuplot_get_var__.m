@@ -43,7 +43,7 @@ function gp_var_value = __gnuplot_get_var__ (h, gp_var_name, fmt)
   endif
   if (numel (ostream) < 1)
     error ("__gnuplot_get_var__: stream to gnuplot not open");
-  elseif (ispc ()) # || true
+  elseif (ispc ())
     if (numel (ostream) == 1)
       error ("__gnuplot_get_var__: Need mkfifo that is not implemented under Windows");
     endif
@@ -62,7 +62,7 @@ function gp_var_value = __gnuplot_get_var__ (h, gp_var_name, fmt)
     [err, msg] = mkfifo (gpin_name, 6*8*8);
 
     if (err != 0)
-      error ("__gnuplot_get_var__: Can not open fifo (%s)", msg);
+      error ("__gnuplot_get_var__: Can not make fifo (%s)", msg);
     endif
   endif
 
@@ -82,7 +82,7 @@ function gp_var_value = __gnuplot_get_var__ (h, gp_var_name, fmt)
       fflush (ostream);
       [gpin, err] = fopen (gpin_name, "r");
       if (err != 0)
-        error ("__gnuplot_get_var__: Can not open fifo (%s)", msg);
+        error ("__gnuplot_get_var__: Can not open fifo.");
       endif
       gp_cmd = sprintf ("\nif (exists(\"%s\")) print %s; else print NaN\n",
                         gp_var_name(1:n), gp_var_name);

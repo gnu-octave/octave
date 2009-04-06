@@ -55,11 +55,11 @@ function retval = pascal (n, t)
   retval(:,1) = 1;
 
   if (t == -1)
-    for j = 2:n-1
+    for j = 2:n
       retval(j:n,j) = cumsum (retval (j-1:n-1,j-1));
     endfor
   else
-    for j = 2:n-1
+    for j = 2:n
       retval(j:n,j) = -cumsum (retval (j-1:n-1,j-1));
     endfor
   endif

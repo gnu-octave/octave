@@ -1,3 +1,7 @@
+2009-04-06  Jaroslav Hajek  <highegg@gmail.com>
+
+	* special-matrix/toeplitz.m: Optimize.
+
 2008-04-03  David Bateman  <dbateman@free.fr>
 
 	* plot/__scatter__.m: correct indexing of cdata.x

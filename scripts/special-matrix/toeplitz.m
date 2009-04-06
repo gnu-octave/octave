@@ -1,5 +1,6 @@
 ## Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2004,
 ##               2005, 2006, 2007, 2008, 2009 John W. Eaton
+## Copyright (C) 2009 VZLU Prague
 ##
 ## This file is part of Octave.
 ##
@@ -54,7 +55,7 @@
 ## @seealso{hankel, vander, sylvester_matrix, hilb, invhilb}
 ## @end deftypefn
 
-## Author: jwe
+## Author: jwe && jh
 
 function retval = toeplitz (c, r)
 
@@ -64,19 +65,17 @@ function retval = toeplitz (c, r)
     print_usage ();
   endif
 
-  [c_nr, c_nc] = size (c);
-  [r_nr, r_nc] = size (r);
-
-  if ((c_nr != 1 && c_nc != 1) || (r_nr != 1 && r_nc != 1))
+  if (! (isvector (c) && isvector (r)))
     error ("toeplitz: expecting vector arguments");
   endif
 
-  if (c_nc != 1)
-    c = c.';
-  endif
+  nc = length (r);
+  nr = length (c);
 
-  if (r_nr != 1)
-    r = r.';
+  if (nr == 0 || nc == 0)
+    ## Empty matrix.
+    retval = zeros (nr, nc, class (c));
+    return;
   endif
 
   if (r (1) != c (1))
@@ -87,25 +86,19 @@ function retval = toeplitz (c, r)
   ## Hermitian-symmetric matrix (actually, this will really only be
   ## Hermitian-symmetric if the first element of the vector is real).
 
-  if (nargin == 1)
+  if (nargin == 1 && iscomplex (c))
     c = conj (c);
     c(1) = conj (c(1));
   endif
 
-  ## This should probably be done with the colon operator...
+  ## Concatenate data into a single column vector.
+  data = [r(end:-1:2)(:); c(:)];
 
-  nc = length (r);
-  nr = length (c);
+  ## Get slices.
+  slices = cellslices (data, nc:-1:1, nc+nr-1:-1:nr);
 
-  retval = resize (resize (c, 0), nr, nc);
-
-  for i = 1:min (nc, nr)
-    retval (i:nr, i) = c (1:nr-i+1);
-  endfor
-
-  for i = 1:min (nr, nc-1)
-    retval (i, i+1:nc) = r (2:nc-i+1);
-  endfor
+  ## Form matrix.
+  retval = horzcat (slices{:});
 
 endfunction
 

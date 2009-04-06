@@ -36,7 +36,6 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
     end_unwind_protect
 
     parent_figure_obj = get (axis_obj.parent);
-    term = __gnuplot_get_var__ (axis_obj.parent, "GPVAL_TERM");
 
     ## Set to false for plotyy axes.
     if (strcmp (axis_obj.tag, "plotyy"))
@@ -96,7 +95,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
 	fputs (plot_stream, "unset title;\n");
       else
 	[tt, f, s] = __maybe_munge_text__ (enhanced, t, "string");
-	fontspec = create_fontspec (f, s, term);
+	fontspec = create_fontspec (f, s);
 	fprintf (plot_stream, "set title \"%s\" %s %s",
 		 undo_string_escapes (tt), fontspec,
 		 __do_enhanced_option__ (enhanced, t));
@@ -117,7 +116,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
 	fprintf (plot_stream, "unset x2label;\n");
       else
 	[tt, f, s] = __maybe_munge_text__ (enhanced, t, "string");
-	fontspec = create_fontspec (f, s, term);
+	fontspec = create_fontspec (f, s);
 	if (strcmpi (axis_obj.xaxislocation, "top"))
 	  fprintf (plot_stream, "set x2label \"%s\" %s %s %s",
 		   undo_string_escapes (tt), colorspec, fontspec,
@@ -145,7 +144,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
 	fprintf (plot_stream, "unset y2label;\n");
       else
 	[tt, f, s] = __maybe_munge_text__ (enhanced, t, "string");
-	fontspec = create_fontspec (f, s, term);
+	fontspec = create_fontspec (f, s);
 	if (strcmpi (axis_obj.yaxislocation, "right"))
 	  fprintf (plot_stream, "set y2label \"%s\" %s %s %s",
 		   undo_string_escapes (tt), colorspec, fontspec,
@@ -172,7 +171,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
 	fputs (plot_stream, "unset zlabel;\n");
       else
 	[tt, f, s] = __maybe_munge_text__ (enhanced, t, "string");
-	fontspec = create_fontspec (f, s, term);
+	fontspec = create_fontspec (f, s);
 	fprintf (plot_stream, "set zlabel \"%s\" %s %s %s",
 		 undo_string_escapes (tt), colorspec, fontspec,
 		 __do_enhanced_option__ (enhanced, t));
@@ -941,7 +940,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
 
 	case "text"
 	  [label, f, s] = __maybe_munge_text__ (enhanced, obj, "string");
-	  fontspec = create_fontspec (f, s, term);
+	  fontspec = create_fontspec (f, s);
 	  lpos = obj.position;
 	  halign = obj.horizontalalignment;
 	  angle = obj.rotation;
@@ -1233,16 +1232,11 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
 
 endfunction
 
-function fontspec = create_fontspec (f, s, term)
-  if (nargin > 3 || any (strcmp (term, {"x11", "wxt"})))
-    include_size_with_anonymous_fontname = true;
+function fontspec = create_fontspec (f, s)
+  if (strcmp (f, "*"))
+    fontspec = sprintf ("font \",%d\"", s);
   else
-    include_size_with_anonymous_fontname = false;
-  endif
-  if (! strcmp (f, "*") || include_size_with_anonymous_fontname)
     fontspec = sprintf ("font \"%s,%d\"", f, s);
-  else
-    fontspec = "";
   endif
 endfunction
 
@@ -1438,8 +1432,7 @@ function do_tics (obj, plot_stream, ymirror, mono)
   obj.zticklabel = ticklabel_to_cell (obj.zticklabel);
 
   [fontname, fontsize] = get_fontname_and_size (obj);
-  term = __gnuplot_get_var__ (obj.parent, "GPVAL_TERM");
-  fontspec = create_fontspec (fontname, fontsize, term);
+  fontspec = create_fontspec (fontname, fontsize);
 
   ## A Gnuplot tic scale of 69 is equivalent to Octave's 0.5.
   ticklength = sprintf ("scale %4.1f", (69/0.5)*obj.ticklength(1));

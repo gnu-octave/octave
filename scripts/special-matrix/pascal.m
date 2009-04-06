@@ -1,4 +1,5 @@
 ## Copyright (C) 1999, 2006, 2007 Peter Ekberg
+## Copyright (C) 2009 VZLU Prague
 ##
 ## This file is part of Octave.
 ##
@@ -23,6 +24,8 @@
 ## @var{t} defaults to 0. Return lower triangular Cholesky factor of 
 ## the Pascal matrix if @code{@var{t} = 1}.  This matrix is its own
 ## inverse, that is @code{pascal (@var{n}, 1) ^ 2 == eye (@var{n})}.
+## If @code{@var{t} = -1}, return its absolute value. This is the
+## standard pascal triangle as a lower-triangular matrix.
 ## If @code{@var{t} = 2}, return a transposed and permuted version of
 ## @code{pascal (@var{n}, 1)}, which is the cube-root of the identity
 ## matrix.  That is @code{pascal (@var{n}, 2) ^ 3 == eye (@var{n})}.
@@ -44,18 +47,22 @@ function retval = pascal (n, t)
     t = 0;
   endif
 
-  if (! is_scalar (n) || ! is_scalar (t))
+  if (! isscalar (n) || ! isscalar (t))
     error ("pascal: expecting scalar arguments, found something else");
   endif
 
-  retval = diag ((-1).^[0:n-1]);
-  retval(:,1) = ones (n, 1);
+  retval = zeros (n);
+  retval(:,1) = 1;
 
-  for j = 2:n-1
-    for i = j+1:n
-      retval(i,j) = retval(i-1,j) - retval(i-1,j-1);
+  if (t == -1)
+    for j = 2:n-1
+      retval(j:n,j) = cumsum (retval (j-1:n-1,j-1));
     endfor
-  endfor
+  else
+    for j = 2:n-1
+      retval(j:n,j) = -cumsum (retval (j-1:n-1,j-1));
+    endfor
+  endif
 
   if (t == 0)
     retval = retval*retval';

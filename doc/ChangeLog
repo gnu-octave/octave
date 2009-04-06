@@ -1,3 +1,7 @@
+2009-04-06  John W. Eaton  <jwe@octave.org>
+
+	* texinfo.tex: Prefer PDF image files if generating PDF output.
+
 2009-03-27  Rik  <rdrider0-list@yahoo.com>
 
 	* interpreter/intro.txi: Add new sample section on elementary 

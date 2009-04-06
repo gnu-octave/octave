@@ -3,7 +3,7 @@
 % Load plain if necessary, i.e., if running under initex.
 \expandafter\ifx\csname fmtname\endcsname\relax\input plain\fi
 %
-\def\texinfoversion{2009-03-07.09}
+\def\texinfoversion{2009-04-06.11}
 %
 % Copyright (C) 1985, 1986, 1988, 1990, 1991, 1992, 1993, 1994, 1995,
 % 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006,
@@ -1375,26 +1375,26 @@ output) for that.)}
     % others).  Let's try in that order.
     \let\pdfimgext=\empty
     \begingroup
-      \openin 1 #1.png \ifeof 1
-        \openin 1 #1.jpg \ifeof 1
-          \openin 1 #1.jpeg \ifeof 1
-            \openin 1 #1.JPG \ifeof 1
-              \openin 1 #1.pdf \ifeof 1
-                \openin 1 #1.PDF \ifeof 1
+      \openin 1 #1.pdf \ifeof 1
+        \openin 1 #1.PDF \ifeof 1
+          \openin 1 #1.png \ifeof 1
+            \openin 1 #1.jpg \ifeof 1
+              \openin 1 #1.jpeg \ifeof 1
+                \openin 1 #1.JPG \ifeof 1
                   \errhelp = \nopdfimagehelp
                   \errmessage{Could not find image file #1 for pdf}%
-                \else \gdef\pdfimgext{PDF}%
+                 \else \gdef\pdfimgext{JPG}%
+                 \fi
+                \else \gdef\pdfimgext{jpeg}%
                 \fi
-              \else \gdef\pdfimgext{pdf}%
+              \else \gdef\pdfimgext{jpg}%
               \fi
-            \else \gdef\pdfimgext{JPG}%
+            \else \gdef\pdfimgext{png}%
             \fi
-          \else \gdef\pdfimgext{jpeg}%
+          \else \gdef\pdfimgext{PDF}%
           \fi
-        \else \gdef\pdfimgext{jpg}%
+        \else \gdef\pdfimgext{pdf}%
         \fi
-      \else \gdef\pdfimgext{png}%
-      \fi
       \closein 1
     \endgroup
     %

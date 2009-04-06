@@ -1,3 +1,8 @@
+2009-04-06  Jaroslav Hajek <highegg@gmail.com>
+
+	* polynomial/polyscale.m: New function.
+	* polynomial/polytrans.m: New function.
+
 2009-04-06  Jaroslav Hajek  <highegg@gmail.com>
 
 	* special-matrix/pascal.m: Fix, optimize & extend.

@@ -1,5 +1,6 @@
 ## Copyright (C) 1995, 1996, 1997, 1999, 2000, 2002, 2005, 2006, 2007, 2008
 ##               Kurt Hornik
+## Copyright (C) 2009 VZLU Prague
 ##
 ## This file is part of Octave.
 ##
@@ -41,16 +42,9 @@ function v = vech (x)
     error ("vech: x must be square");
   endif
 
-  ## This should be quicker than having an inner `for' loop as well.
-  ## Ideally, vech should be written in C++.
   n = rows (x);
-  v = zeros ((n+1)*n/2, 1);
-  count = 0;
-  for j = 1 : n
-    i = j : n;
-    v (count + i) = x (i, j);
-    count = count + n - j;
-  endfor
+  slices = cellslices (x(:), (1:n) + n*(0:n-1), n*(1:n));
+  v = vertcat (slices{:});
 
 endfunction
 

@@ -1,5 +1,9 @@
 2009-04-06  Jaroslav Hajek  <highegg@gmail.com>
 
+	* linear-algebra/vech.m: Optimize.
+
+2009-04-06  Jaroslav Hajek  <highegg@gmail.com>
+
 	* special-matrix/toeplitz.m: Optimize.
 
 2008-04-03  David Bateman  <dbateman@free.fr>

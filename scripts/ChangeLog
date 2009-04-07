@@ -1,3 +1,7 @@
+2009-04-07  Ben Abbott <bpabbott@mac.com>
+
+	* plot/Makefile.in: Remove __gnuplot_default_font__.m from SOURCES.
+
 2009-04-06  Ben Abbott <bpabbott@mac.com>
 
 	* plot/__gnuplot_get_var__.m: Correct misleading error messages, and

@@ -1,3 +1,11 @@
+2009-04-04  Jaroslav Hajek  <highegg@gmail.com>
+
+	* Array.cc (Array<T>::make_unique): Don't economize when unique.
+	(Array<T>::resize_fill (octave_idx_type, const T&)): Optimize push &
+	pop operations.
+	(Array<T>::delete_elements (const idx_vector&)): Do pop operation
+	using resize.
+
 2009-03-29  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Array.cc (Array<T>::assign): Remove redundant checks after invalid

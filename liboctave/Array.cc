@@ -55,14 +55,6 @@ Array<T>::make_unique (void)
       rep = new ArrayRep (slice_data, slice_len, true);
       slice_data = rep->data;
     }
-  else if (slice_len != rep->len)
-    {
-      // Possibly economize here.
-      ArrayRep *new_rep = new ArrayRep (slice_data, slice_len, true);
-      delete rep;
-      rep = new_rep;
-      slice_data = rep->data;
-    }
 }
 
 template <class T>
@@ -1072,7 +1064,36 @@ Array<T>::resize_fill (octave_idx_type n, const T& rfv)
       else
         {
           octave_idx_type nx = numel ();
-          if (n != nx)
+          if (n == nx - 1 && n > 0)
+            {
+              // Stack "pop" operation.
+              if (rep->count == 1)
+                slice_data[slice_len-1] = T ();
+              slice_len--;
+              dimensions = dv;
+            }
+          else if (n == nx + 1 && nx > 0)
+            {
+              // Stack "push" operation.
+              if (rep->count == 1 && slice_data + slice_len < rep->data + rep->len)
+                {
+                  slice_data[slice_len++] = rfv;
+                  dimensions = dv;
+                }
+              else
+                {
+                  static const octave_idx_type max_stack_chunk = 1024;
+                  octave_idx_type nn = n + std::min (nx, max_stack_chunk);
+                  Array<T> tmp (Array<T> (nn), dv, 0, n);
+                  T *dest = tmp.fortran_vec ();
+
+                  std::copy (data (), data () + nx, dest);
+                  dest[nx] = rfv;
+
+                  *this = tmp;
+                }
+            }
+          else if (n != nx)
             {
               Array<T> tmp = Array<T> (dv);
               T *dest = tmp.fortran_vec ();
@@ -1489,9 +1510,13 @@ Array<T>::delete_elements (const idx_vector& i)
   else if (i.length (n) != 0)
     {
       octave_idx_type l, u;
-
       bool col_vec = ndims () == 2 && columns () == 1 && rows () != 1;
-      if (i.is_cont_range (n, l, u))
+      if (i.is_scalar () && i(0) == n-1)
+        {
+          // Stack "pop" operation.
+          resize (n-1);
+        }
+      else if (i.is_cont_range (n, l, u))
         {
           // Special case deleting a contiguous range.
           octave_idx_type m = n + l - u;

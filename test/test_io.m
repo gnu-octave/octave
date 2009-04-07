@@ -220,6 +220,13 @@
 %!
 %! delete struct.dat;
 %!
+%!test
+%! matrix1 = rand(100, 2);
+%! save -ascii matrix.ascii matrix1
+%! matrix2 = load ("matrix.ascii");
+%! assert (matrix1, matrix2, 1e-9)
+%!
+%! delete matrix.ascii;
 
 %% FIXME Disable this test as it writes to stdout and there is no easy
 %% way to recover output. Need to spawn new octave process and pipe stdout

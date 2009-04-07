@@ -1,3 +1,8 @@
+2009-04-07  Carlo de Falco  <kingcrimson@tiscali.it>
+
+	* test_io.m: Add a test for saving and reading a matrix with the
+	"-ascii" format.
+
 2009-03-10  Jason Riedy  <jason@acm.org>
 
 	* test_diag_perm.m: Add tests for permuting sparse matrices and

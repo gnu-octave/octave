@@ -41,6 +41,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "PermMatrix.h"
 #include "mx-cm-cdm.h"
 #include "oct-cmplx.h"
+#include "Range.h"
 #include "quit.h"
 
 #include "error.h"
@@ -691,6 +692,43 @@ elem_xpow (double a, const ComplexMatrix& b)
   return result;
 }
 
+octave_value
+elem_xpow (double a, const Range& r)
+{
+  octave_value retval;
+
+  if (r.nelem () <= 0)
+    retval = Matrix ();
+  else if (a < 0.0 && ! r.all_elements_are_ints ())
+    {
+      ComplexMatrix mat (1, r.nelem ());
+      Complex atmp (a);
+      Complex *pmat = mat.fortran_vec ();
+
+      pmat[0] = std::pow (atmp, r.base ());
+      Complex mul = std::pow (atmp, r.inc ());
+      for (octave_idx_type i = 1; i < r.nelem (); i++)
+        pmat[i] = pmat[i-1] * mul;
+
+      retval = mat;
+    }
+  else
+    {
+      Matrix mat (1, r.nelem ());
+      double *pmat = mat.fortran_vec ();
+
+      double base = std::pow (a, r.base ());
+      pmat[0] = base;
+      double mul = std::pow (a, r.inc ());
+      for (octave_idx_type i = 1; i < r.nelem (); i++)
+        pmat[i] = (base *= mul);
+
+      retval = mat;
+    }
+
+  return retval;
+}
+
 // -*- 3 -*-
 octave_value
 elem_xpow (const Matrix& a, double b)
@@ -886,6 +924,29 @@ elem_xpow (const Complex& a, const ComplexMatrix& b)
       }
 
   return result;
+}
+
+octave_value
+elem_xpow (const Complex& a, const Range& r)
+{
+  octave_value retval;
+
+  if (r.nelem () <= 0)
+    retval = Matrix ();
+  else
+    {
+      ComplexMatrix mat (1, r.nelem ());
+      Complex *pmat = mat.fortran_vec ();
+
+      pmat[0] = std::pow (a, r.base ());
+      Complex mul = std::pow (a, r.inc ());
+      for (octave_idx_type i = 1; i < r.nelem (); i++)
+        pmat[i] = pmat[i-1] * mul;
+
+      retval = mat;
+    }
+
+  return retval;
 }
 
 // -*- 9 -*-

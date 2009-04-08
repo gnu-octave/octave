@@ -1,3 +1,11 @@
+2009-04-08  Jaroslav Hajek  <highegg@gmail.com>
+
+	* xpow.cc (elem_xpow (double, const Range&),
+	elem_xpow (const Complex&, const Range&)): New functions.
+	* xpow.h: Declare them.
+	* OPERATORS/op-range.cc: Define scalar .^ range and complex .^ range &
+	install them.
+
 2009-04-04  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-struct.cc (octave_struct::subsasgn): Fix reference counting

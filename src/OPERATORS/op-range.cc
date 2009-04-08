@@ -40,6 +40,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-typeinfo.h"
 #include "ov-null-mat.h"
 #include "ops.h"
+#include "xpow.h"
 
 // range unary ops.
 
@@ -66,6 +67,9 @@ DEFBINOP_OP (subrs, range, scalar, -)
 DEFBINOP_OP (subsr, scalar, range, -)
 DEFBINOP_OP (mulrs, range, scalar, *)
 DEFBINOP_OP (mulsr, scalar, range, *)
+
+DEFBINOP_FN (el_powsr, scalar, range, elem_xpow)
+DEFBINOP_FN (el_powcsr, complex, range, elem_xpow)
 
 DEFNDCATOP_FN (r_r, range, range, array, array, concat)
 DEFNDCATOP_FN (r_s, range, scalar, array, array, concat)
@@ -105,6 +109,9 @@ install_range_ops (void)
   INSTALL_BINOP (op_sub, octave_scalar, octave_range, subsr);
   INSTALL_BINOP (op_mul, octave_range, octave_scalar, mulrs);
   INSTALL_BINOP (op_mul, octave_scalar, octave_range, mulsr);
+
+  INSTALL_BINOP (op_el_pow, octave_scalar, octave_range, el_powsr);
+  INSTALL_BINOP (op_el_pow, octave_complex, octave_range, el_powcsr);
 
   INSTALL_CATOP (octave_range, octave_range, r_r);
   INSTALL_CATOP (octave_range, octave_scalar, r_s);

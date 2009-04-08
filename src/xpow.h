@@ -40,6 +40,7 @@ class FloatNDArray;
 class ComplexNDArray;
 class FloatComplexNDArray;
 class octave_value;
+class Range;
 
 extern octave_value xpow (double a, double b);
 extern octave_value xpow (double a, const Matrix& b);
@@ -67,6 +68,7 @@ extern octave_value xpow (const ComplexDiagMatrix& a, const Complex& b);
 
 extern octave_value elem_xpow (double a, const Matrix& b);
 extern octave_value elem_xpow (double a, const ComplexMatrix& b);
+extern octave_value elem_xpow (double a, const Range& r);
 
 extern octave_value elem_xpow (const Matrix& a, double b);
 extern octave_value elem_xpow (const Matrix& a, const Matrix& b);
@@ -75,6 +77,7 @@ extern octave_value elem_xpow (const Matrix& a, const ComplexMatrix& b);
 
 extern octave_value elem_xpow (const Complex& a, const Matrix& b);
 extern octave_value elem_xpow (const Complex& a, const ComplexMatrix& b);
+extern octave_value elem_xpow (const Complex& a, const Range& r);
 
 extern octave_value elem_xpow (const ComplexMatrix& a, double b);
 extern octave_value elem_xpow (const ComplexMatrix& a, const Matrix& b);

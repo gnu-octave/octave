@@ -1,3 +1,7 @@
+2009-04-08  Jaroslav Hajek  <highegg@gmail.com>
+
+	* special-matrix/vander.m: Optimize.
+
 2009-04-07  Ben Abbott <bpabbott@mac.com>
 
 	* plot/Makefile.in: Remove __gnuplot_default_font__.m from SOURCES.

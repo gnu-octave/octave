@@ -1,5 +1,6 @@
 ## Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2002,
 ##               2004, 2005, 2006, 2007, 2008, 2009 John W. Eaton
+## Copyright (C) 2009 VZLU Prague
 ##
 ## This file is part of Octave.
 ##
@@ -58,7 +59,14 @@ function retval = vander (c)
 
   if (isvector (c))
     n = length (c);
-    retval = (c(:) * ones (1, n)) .^ (ones (n, 1) * (n-1:-1:0));
+    retval = zeros (n, n, class (c));
+    ## avoiding many ^s appears to be faster for n >= 100.
+    d = 1;
+    c = c(:);
+    for i = n:-1:1
+      retval(:,i) = d;
+      d = c .* d;
+    endfor
   else
     error ("vander: argument must be a vector");
   endif

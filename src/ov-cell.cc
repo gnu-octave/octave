@@ -256,6 +256,7 @@ octave_cell::subsasgn (const std::string& type,
 
 	case '{':
 	  {
+            matrix.make_unique ();
 	    Cell tmpc = matrix.index (idx.front (), true);
 
 	    if (! error_state)

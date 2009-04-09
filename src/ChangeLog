@@ -1,3 +1,8 @@
+2009-04-09  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-cell.cc (octave_cell::subsasgn): Fix reference counting
+	optimization.
+
 2009-04-08  John W. Eaton  <jwe@octave.org>
 
 	* load-path.cc (rehash_internal): New function.

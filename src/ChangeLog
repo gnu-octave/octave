@@ -1,3 +1,9 @@
+2009-04-08  John W. Eaton  <jwe@octave.org>
+
+	* load-path.cc (rehash_internal): New function.
+	(Frehash): Use it.
+	(Fpath, Faddpath, Frmpath): Call rehash_internal if path is modified.
+
 2009-04-08  Jaroslav Hajek  <highegg@gmail.com>
 
 	* xpow.cc (elem_xpow (double, const Range&),

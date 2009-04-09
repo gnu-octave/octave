@@ -1817,6 +1817,18 @@ Return a path constructed from @var{dir} and all its subdirectories.\n\
   return retval;
 }
 
+static void
+rehash_internal (void)
+{
+  load_path::update ();
+
+  // FIXME -- maybe we should rename this variable since it is being
+  // used for more than keeping track of the prompt time.
+
+  // This will force updated functions to be found.
+  Vlast_prompt_time.stamp ();
+}
+
 DEFUN (rehash, , ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} rehash ()\n\
@@ -1825,13 +1837,7 @@ Reinitialize Octave's load path directory cache.\n\
 {
   octave_value_list retval;
 
-  load_path::update ();
-
-  // FIXME -- maybe we should rename this variable since it is being
-  // used for more than keeping track of the prompt time.
-
-  // This will force updated functions to be found.
-  Vlast_prompt_time.stamp ();
+  rehash_internal ();
 
   return retval;
 }
@@ -1909,6 +1915,8 @@ No checks are made for duplicate elements.\n\
 	    path += dir_path::path_sep_str () + argv[i];
 
 	  load_path::set (path, true);
+
+	  rehash_internal ();
 	}
 
       if (nargout > 0)
@@ -1991,6 +1999,8 @@ Directories added to the path must exist.\n\
 	    }
 	}
 
+      bool need_to_update = false;
+
       for (int i = 0; i < nargin; i++)
 	{
 	  std::string arg = args(i).string_value ();
@@ -2012,11 +2022,16 @@ Directories added to the path must exist.\n\
 		    load_path::append (dir, true);
 		  else
 		    load_path::prepend (dir, true);
+
+		  need_to_update = true;
 		}
 	    }
 	  else
 	    error ("addpath: expecting all args to be character strings");
 	}
+
+      if (need_to_update)
+	rehash_internal ();
     }
   else
     print_usage ();
@@ -2044,6 +2059,8 @@ Remove @var{dir1}, @dots{} from the current function search path.\n\
 
   if (nargin > 0)
     {
+      bool need_to_update = false;
+
       for (int i = 0; i < nargin; i++)
 	{
 	  std::string arg = args(i).string_value ();
@@ -2063,11 +2080,16 @@ Remove @var{dir1}, @dots{} from the current function search path.\n\
 
 		  if (! load_path::remove (dir))
 		    warning ("rmpath: %s: not found", dir.c_str ());
+		  else
+		    need_to_update = true;
 		}
 	    }
 	  else
 	    error ("addpath: expecting all args to be character strings");
 	}
+
+      if (need_to_update)
+	rehash_internal ();
     }
   else
     print_usage ();

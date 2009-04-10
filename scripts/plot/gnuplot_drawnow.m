@@ -41,8 +41,7 @@ function gnuplot_drawnow (h, term, file, mono, debug_file)
     printing = ! output_to_screen (gnuplot_trim_term (term));
     default_plot_stream = get (h, "__plot_stream__");
     unwind_protect
-      plot_stream = open_gnuplot_stream (2, []);
-      set (h, "__plot_stream__", plot_stream);
+      plot_stream = open_gnuplot_stream (2, h);
       if (__gnuplot_has_feature__ ("variable_GPVAL_TERMINALS"))
         available_terminals = __gnuplot_get_var__ (plot_stream, "GPVAL_TERMINALS");
         available_terminals = regexp (available_terminals, "\\b\\w+\\b", "match");
@@ -191,7 +190,7 @@ function [enhanced, implicit_margin] = gnuplot_set_term (plot_stream, new_stream
           ## Get size of the printed plot in inches.
           gnuplot_size = get_papersize (h);
           if (term_units_are_pixels (term))
- 	    ## Convert to inches using the property set by print().
+	    ## Convert to inches using the property set by print().
 	    gnuplot_size = gnuplot_size * get (h, "__pixels_per_inch__");
 	  else
 	    ## Implicit margins are in units of "inches"
@@ -277,16 +276,16 @@ function [enhanced, implicit_margin] = gnuplot_set_term (plot_stream, new_stream
       if (! isempty (title_str))
         term_str = sprintf ("%s %s", term_str, title_str);
       endif
+      if (nargin > 3 && ischar (opts_str))
+        ## Options must go last.
+        term_str = sprintf ("%s %s", term_str, opts_str);
+      endif
       if (! isempty (size_str) && new_stream)
         ## size_str goes last to permit specification of canvas size
         ## for terminals cdr/corel.
         term_str = sprintf ("%s %s", term_str, size_str);
       endif
-      if (nargin > 3 && ischar (opts_str))
-        ## Options must go last.
-        term_str = sprintf ("%s %s", term_str, opts_str);
-      endif
-      fprintf (plot_stream, sprintf ("%s;\n", term_str));
+      fprintf (plot_stream, "%s\n", term_str);
     else
       ## gnuplot will pick up the GNUTERM environment variable itself
       ## so no need to set the terminal type if not also setting the
@@ -356,7 +355,7 @@ function ret = output_to_screen (term)
 endfunction
 
 function ret = term_units_are_pixels (term)
-  ret = any (strcmpi ({"png", "jpeg", "gif", "pbm", "svg"}, term));
+  ret = any (strcmpi ({"emf", "gif", "jpeg", "pbm", "png", "svg"}, term));
 endfunction
 
 function [fig_size, fig_pos] = get_figsize (h)

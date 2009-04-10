@@ -61,10 +61,10 @@
 ##   @itemx pstex
 ##   @itemx pslatex
 ##     Generate a LaTeX (or TeX) file for labels, and eps/ps for
-##     graphics.  The file produced by @code{epslatexstandalone} can be
-##     processed directly by LaTeX.  The other formats are intended to
-##     be included in a LaTeX (or TeX) document.  The @code{tex} device
-##     is the same as the @code{epslatex} device.
+## graphics.  The file produced by @code{epslatexstandalone} can be
+## processed directly by LaTeX.  The other formats are intended to
+## be included in a LaTeX (or TeX) document.  The @code{tex} device
+## is the same as the @code{epslatex} device.
 ##   @item ill
 ##   @itemx aifm
 ##     Adobe Illustrator
@@ -74,12 +74,13 @@
 ##   @item dxf
 ##     AutoCAD
 ##   @item emf
+##   @itemx meta
 ##     Microsoft Enhanced Metafile
 ##   @item fig
 ##     XFig.  If this format is selected the additional options
 ##     @code{-textspecial} or @code{-textnormal} can be used to control
-##     whether the special flag should be set for the text in the figure
-##     (default is @code{-textnormal}). 
+##     whether the special flag should be set for the text in
+##     the figure (default is @code{-textnormal}). 
 ##   @item hpgl
 ##     HP plotter language
 ##   @item mf
@@ -100,27 +101,31 @@
 ##   @end table
 ##
 ##   Other devices are supported by "convert" from ImageMagick.  Type
-##   system("convert") to see what formats are available.
+## system("convert") to see what formats are available.
 ##
 ##   If the device is omitted, it is inferred from the file extension,
-##   or if there is no filename it is sent to the printer as postscript.
+## or if there is no filename it is sent to the printer as postscript.
 ##
 ## @itemx -r@var{NUM}
-##   Resolution of bitmaps in pixels per inch.
+##   Resolution of bitmaps in pixels per inch. For both metafiles and 
+## SVG the default is the screen resolution, for other it is 150 dpi.
+## To specify screen resolution, use "-r0".
 ##
 ## @itemx -S@var{xsize},@var{ysize}
-##   Plot size in pixels for PNG and SVG.  If using the command form of
-##   the print function, you must quote the @var{xsize},@var{ysize}
-##   option.  For example, by writing @code{"-S640,480"}.
+##   Plot size in pixels for EMF, GIF, JPEG, PBM, PNG and SVG. If
+## using the command form of the print function, you must quote the
+## @var{xsize},@var{ysize} option.  For example, by writing
+## @code{"-S640,480"}.  The size defaults to that specified by the
+## figure's paperposition property.
 ##
 ## @item -F@var{fontname}
 ## @itemx -F@var{fontname}:@var{size}
 ## @itemx -F:@var{size}
 ##   @var{fontname} set the postscript font (for use with postscript,
-##   aifm, corel and fig).  By default, 'Helvetica' is set for PS/Aifm,
-##   and 'SwitzerlandLight' for Corel.  It can also be 'Times-Roman'.
-##   @var{size} is given in points.  @var{fontname} is ignored for the
-##   fig device.
+## aifm, corel and fig).  By default, 'Helvetica' is set for PS/Aifm,
+## and 'SwitzerlandLight' for Corel.  It can also be 'Times-Roman'.
+## @var{size} is given in points.  @var{fontname} is ignored for the
+## fig device.
 ## @end table
 ##
 ## The filename and options can be given in any order.
@@ -136,7 +141,7 @@ function print (varargin)
   force_solid = 0; # 0=default, -1=dashed, +1=solid
   fontsize = "";
   font = "";
-  size = "";
+  canvas_size = "";
   name = "";
   devopt = "";
   printer = "";
@@ -155,7 +160,7 @@ function print (varargin)
       arg = varargin{i};
       if (ischar (arg))
         if (strcmp (arg, "-color"))
-	use_color = 1;
+	  use_color = 1;
         elseif (strcmp (arg, "-mono"))
 	  use_color = -1;
         elseif (strcmp (arg, "-solid"))
@@ -174,7 +179,7 @@ function print (varargin)
 	    debug_file = arg(8:end);
 	  endif
         elseif (length (arg) > 2 && arg(1:2) == "-d")
-	  devopt = arg(3:end);
+	  devopt = tolower(arg(3:end));
         elseif (length (arg) > 2 && arg(1:2) == "-P")
 	  printer = arg;
         elseif (length (arg) > 2 && arg(1:2) == "-F")
@@ -186,7 +191,7 @@ function print (varargin)
 	    font = arg(3:length(arg));
 	  endif
         elseif (length (arg) > 2 && arg(1:2) == "-S")
-	  size = arg(3:length(arg));
+	  canvas_size = arg(3:length(arg));
         elseif (length (arg) > 2 && arg(1:2) == "-r")
 	  resolution = arg(3:length(arg));
         elseif (length (arg) >= 1 && arg(1) == "-")
@@ -232,50 +237,59 @@ function print (varargin)
       dev = "aifm";
     elseif (strcmp (dev, "cdr"))
       dev = "corel";
+    elseif (strcmp (dev, "meta"))
+      dev = "emf";
+    elseif (strcmp (dev, "jpg"))
+      dev = "jpeg";
     endif
 
-    ## check if we have to use convert
-    dev_list = {"aifm", "corel", "fig", "png", "jpg", "jpeg", ...
-	      "gif", "pbm", "dxf", "mf", "svg", "hpgl", ...
-	      "ps", "ps2", "psc", "psc2", "eps", "eps2", ...
-	      "epsc", "epsc2", "emf", "pdf", "pslatex", ...
-	      "epslatex", "epslatexstandalone", "pstex"};
-    convertname = "";
-    [idx, errmsg] = cellidx (dev_list, dev);
-    if (! idx)
+    ## Check if the specified device is one that is supported by
+    ## gnuplot. If not assume it is one supported by ImageMagick's
+    ## "convert" utility.
+    dev_list = {"aifm", "corel", "fig", "png", "jpeg", ...
+		"gif", "pbm", "dxf", "mf", "svg", "hpgl", ...
+		"ps", "ps2", "psc", "psc2", "eps", "eps2", ...
+		"epsc", "epsc2", "emf", "pdf", "pslatex", ...
+		"epslatex", "epslatexstandalone", "pstex"};
+    if (! any (strcmp (dev, dev_list)))
       if (! isempty (devopt))
-        convertname = cstrcat (devopt, ":", name);
+	## Device has been specified but is not supported by gnuplot.
+        convert_name = cstrcat (devopt, ":", name);
       else
-        convertname = name;
+	## Device has *not* been specified and is not supported by gnuplot.
+        convert_name = name;
       endif
       dev = "epsc";
       name = cstrcat (tmpnam, ".eps");
+    else
+      convert_name = "";
     endif
 
-    if (strcmp (dev, "ps") || strcmp (dev, "ps2")
-        || strcmp (dev, "psc")  || strcmp (dev, "psc2")
-        || strcmp (dev, "epsc") || strcmp (dev, "epsc2")
-        || strcmp (dev, "eps")  || strcmp (dev, "eps2")
-        || strcmp (dev, "pstex")|| strcmp (dev, "pslatex")
-        || strcmp (dev, "epslatex") || strcmp (dev, "epslatexstandalone"))
+    termn = dev;
+
+    ## SVG isn't actually a bitmap, but gnuplot treats its size option as it
+    ## does the bitmap terminals.
+    bitmap_devices = {"emf", "gif", "jpeg", "pbm", "png", "svg"};
+
+    if (any (strcmp (dev, {"ps", "ps2", "psc", "psc2", "epsc", "epsc2", ...
+                           "eps", "eps2", "pstex", "pslatex", "epslatex", ...
+                           "epslatexstandalone"})))
 
       ## Various postscript options
-      if (strcmp (dev, "pstex")|| strcmp (dev, "pslatex")
-	|| strcmp (dev, "epslatex"))
-        termn = dev;
+      if (any (strcmp (dev, {"pstex", "pslatex", "epslatex"})))
         options = "";
       elseif (strcmp (dev, "epslatexstandalone"))
         if (__gnuplot_has_feature__ ("epslatexstandalone_terminal"))
-	termn = "epslatex";
-	options = "standalone ";
+	  termn = "epslatex";
+	  options = "standalone ";
         else
-	error ("print: epslatexstandalone needs gnuplot 4.2 or higher");
+	  error ("print: epslatexstandalone needs gnuplot 4.2 or higher");
         endif
       else
         if (dev(1) == "e")
-	options = "eps ";
+	  options = "eps ";
         else
-	options = cstrcat (orientation, " ");
+	  options = cstrcat (orientation, " ");
         endif
         termn = "postscript";
       endif
@@ -317,8 +331,6 @@ function print (varargin)
         options = cstrcat (options, " ", fontsize);
       endif
 
-      new_terminal = cstrcat (dev, " ", options);
-
     elseif (strcmp (dev, "fig"))
       ## XFig
       options = orientation;
@@ -331,8 +343,6 @@ function print (varargin)
       if (! isempty (fontsize))
         options = cstrcat (options, " fontsize ", fontsize);
       endif
-
-      new_terminal = cstrcat ("fig ", options);
 
     elseif (strcmp (dev, "emf"))
       ## Enhanced Metafile format
@@ -352,44 +362,25 @@ function print (varargin)
         options = cstrcat (options, " ", fontsize);
       endif
 
-      new_terminal = cstrcat ("emf ", options);
+    elseif (any (strcmp (dev, bitmap_devices)))
 
-    elseif (strcmp (dev, "png") || strcmp (dev, "gif")
-	  || strcmp (dev, "jpg") || strcmp (dev, "jpeg")
-	  || strcmp (dev, "pbm"))
-      if (strcmp (dev, "jpg"))
-        dev = "jpeg";
-      endif
-      ## Portable network graphics, PBMplus
-
-      ## FIXME -- New PNG interface takes color as "xRRGGBB"
-      ## where x is the literal character 'x' and 'RRGGBB' are the red,
-      ## green and blue components in hex.  For now we just ignore it
-      ## and use default.  The png terminal now is so rich with options,
-      ## that one perhaps has to write a separate printpng.m function.
-      ## DAS
-
-      if (isempty (size) && isempty (resolution))
-        options = " large";
-      elseif (! isempty (size))
-        options = cstrcat (" size ", size);
+      if (isempty (canvas_size) && isempty (resolution) 
+	  && any (strcmp (dev, {"pbm", "gif", "jpeg", "png"})))
+        options = "large";
+      elseif (strcmp (dev, "svg"))
+	## Referring to size, either "dynamic" or "fixed"
+	options = "fixed";
       else
 	options = "";
+      end
+      if (! isempty (canvas_size))
+        options = cstrcat (options, " size ", canvas_size);
       endif
-      new_terminal = cstrcat (dev, options);
 
-    elseif (strcmp (dev, "dxf") || strcmp (dev, "mf") || strcmp (dev, "hpgl"))
+    elseif (any (strcmp (dev, {"dxf", "mf", "hpgl"})))
       ## AutoCad DXF, METAFONT, HPGL
-      new_terminal = dev;
-
-    elseif (strcmp (dev, "svg"))
-      ## SVG
       options = "";
-      if (! isempty (size))
-        options = cstrcat (" size ", size);
-      endif
-      new_terminal = cstrcat ("svg", options);
-      
+
     elseif (strcmp (dev, "pdf"))
       ## Portable Document format
       options = " ";
@@ -398,8 +389,8 @@ function print (varargin)
       else
         options = "mono";
       endif
-      if (force_solid > 0)
-         options = cstrcat (options, " solid");
+      if (force_solid >= 0)
+        options = cstrcat (options, " solid");
       elseif (force_solid < 0)
         options = cstrcat (options, " dashed");
       endif
@@ -410,16 +401,58 @@ function print (varargin)
         options = cstrcat (options, " ", fontsize);
       endif
 
-      new_terminal = cstrcat ("pdf ", options);
-
     endif
+ 
+    if (__gnuplot_has_feature__ ("variable_GPVAL_TERMINALS"))
+        available_terminals = __gnuplot_get_var__ (gcf, "GPVAL_TERMINALS");
+        available_terminals = regexp (available_terminals, "\\b\\w+\\b", "match");
+        gnuplot_supports_term = any (strcmp (available_terminals, termn));
+    elseif (isunix () && strcmp (termn, "pdf"))
+      ## Some Linux variants do not include a "pdf" capable gnuplot.
+      ## To be safe, use "convert".
+      [status, output] = system ("which convert");
+      have_convert = (status == 0);
+      if (have_convert)
+        gnuplot_supports_term = false;
+      else
+        gnuplot_supports_term = true;
+      endif
+    else
+      gnuplot_supports_term = true;
+    endif
+
+    if (! gnuplot_supports_term)
+      ## If the terminal is not supported by the local gnuplot, try "convert".
+      if (strcmp (termn, "pdf"))
+	if (strfind (name, ".pdf") == numel (name) - 3)
+          convert_name = name;
+	else
+	  convert_name = strcat (name, ".pdf");
+	endif
+        name = cstrcat (tmpnam, ".ps");
+        termn = "postscript";
+	options = cstrcat (options, " portrait");
+	## All "options" for pdf work for postscript as well.
+      else
+        error ("print: the gnuplot terminal, \"%s\", is not available.", termn)
+      endif
+    endif
+
+    new_terminal = cstrcat (termn, " ", options);
 
     mono = use_color < 0;
 
     if (isempty (resolution))
-      resolution = get (0, "screenpixelsperinch");
+      if (any (strcmp (termn, {"emf", "svg"})))
+        resolution = get (0, "screenpixelsperinch");
+      else
+        resolution = 150;
+      endif
     else
       resolution = str2num (resolution);
+      if (resolution == 0)
+        resolution = get (0, "screenpixelsperinch");
+      endif
     endif
     figure_properties = get (gcf);
     if (! isfield (figure_properties, "__pixels_per_inch__"))
@@ -428,22 +461,29 @@ function print (varargin)
     set (gcf, "__pixels_per_inch__", resolution)
 
     unwind_protect
-      if (! isempty (size) || any (strfind (dev, "eps") == 1))
+      paper_position_mode = get (gcf, "paperpositionmode");
+      term_for_prn = {"postscript", "pdf"};
+      restore_properties = false;
+      if (! any (strncmp (termn, term_for_prn, numel(termn)))
+	  || strncmp (dev, "eps", 3))
+	## If not pdf and not plain postscript, render an image the size of
+	## the paperposition box.
+        restore_properties = true;
         p.paperunits = get (gcf, "paperunits");
         p.papertype = get (gcf, "papertype");
         p.papersize = get (gcf, "papersize");
         p.paperposition = get (gcf, "paperposition");
         p.paperpositionmode = get (gcf, "paperpositionmode");
         set (gcf, "paperunits", "inches");
-        if (any (strfind (dev, "eps") == 1))
-          paperposition_in_inches = get (gcf, "paperposition") + 1/72;
-          paperposition_in_inches(1:2) = 0;
-          papersize_in_inches = paperposition_in_inches(3:4);
-        else
-          size_in_pixels = sscanf (size ,"%d, %d");
+	if (! isempty (canvas_size))
+          size_in_pixels = sscanf (canvas_size ,"%d, %d");
           size_in_pixels = reshape (size_in_pixels, [1, numel(size_in_pixels)]);
           papersize_in_inches = size_in_pixels ./ resolution;
           paperposition_in_inches = [0, 0, papersize_in_inches];
+	else
+          paperposition_in_inches = get (gcf, "paperposition");
+          paperposition_in_inches(1:2) = 0;
+          papersize_in_inches = paperposition_in_inches(3:4);
         endif
         set (gcf, "papertype", "<custom>");
         set (gcf, "papersize", papersize_in_inches);
@@ -457,7 +497,7 @@ function print (varargin)
       endif
     unwind_protect_cleanup
       ## FIXME - it would be nice to delete "__pixels_per_inch__" property here.
-      if (! isempty (size) || any (strfind (dev, "eps") == 1))
+      if (restore_properties)
         props = fieldnames (p);
         for n = 1:numel(props)
           set (gcf, props{n}, p.(props{n}))
@@ -465,12 +505,12 @@ function print (varargin)
       endif
     end_unwind_protect
 
-    if (! isempty (convertname))
-      command = sprintf ("convert '%s' '%s'", name, convertname);
+    if (! isempty (convert_name))
+      command = sprintf ("convert '%s' '%s'", name, convert_name);
       [errcode, output] = system (command);
       unlink (name);
       if (errcode)
-        error ("print: could not convert");
+        error ("print: could not convert; %s -> %s.", name, convert_name);
       endif
     endif
 

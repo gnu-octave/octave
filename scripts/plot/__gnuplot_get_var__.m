@@ -82,6 +82,10 @@ function gp_var_value = __gnuplot_get_var__ (h, gp_var_name, fmt)
       fflush (ostream);
       [gpin, err] = fopen (gpin_name, "r");
       if (err != 0)
+        ## Try a second time, and then give an error.
+        [gpin, err] = fopen (gpin_name, "r");
+      endif
+      if (err != 0)
         error ("__gnuplot_get_var__: Can not open fifo.");
       endif
       gp_cmd = sprintf ("\nif (exists(\"%s\")) print %s; else print NaN\n",

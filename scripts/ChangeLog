@@ -1,3 +1,14 @@
+2009-04-10  Ben Abbott <bpabbott@mac.com>
+
+	* plot/print.m: If no pdf support in gnuplot, then "convert" from
+	postscript to pdf. For gnuplot 4.2.x use "convert", if it is present,
+	to produce pdf output. Only render a full page for ps/pdf output.
+	Rename variable, "size" to "canvas_size". Reformat help text to
+	eliminate unintended spaces. Minor improvements to the code.
+	* plot/gnuplot_drawnow.m: Place canvas size at the end of the terminal
+	spec, and remove trailing semicolon. Minor improvments to the code.
+	* plot/__gnuplot_get_var__.m: If fifo fails to open, try 2nd time.
+
 2009-04-08  Jaroslav Hajek  <highegg@gmail.com>
 
 	* special-matrix/vander.m: Optimize.

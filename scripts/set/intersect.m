@@ -49,6 +49,9 @@ function [c, ia, ib] = intersect (a, b, varargin)
     if (nargout > 1)
       [a, ja] = unique (a, varargin{:});
       [b, jb] = unique (b, varargin{:});
+    else
+      a = unique (a, varargin{:});
+      b = unique (b, varargin{:});
     endif
 
     if (nargin > 2)

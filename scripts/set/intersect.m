@@ -104,3 +104,8 @@ endfunction
 %! assert(ib,[3;1]);
 %! assert(a(ia,:),c);
 %! assert(b(ib,:),c);
+%!test
+%! a = [1 1 1 2 2 2];
+%! b = [1 2 3 4 5 6];
+%! c = intersect(a,b);
+%! assert(c, [1,2]);

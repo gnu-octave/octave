@@ -22,15 +22,16 @@ Summary of important user-visible changes for version 3.2:
 
  ** New graphics functions:
 
-      addlistener         diffuse     ezsurfc     plotmatrix
-      addproperty         ezcontour   findall     refresh
-      allchild            ezcontourf  gcbf        refreshdata
-      available_backends  ezmesh      gcbo        specular
-      backend             ezmeshc     ginput      surfl
-      cla                 ezplot      gtext       waitforbuttonpress
-      clabel              ezplot3     intwarning
-      comet               ezpolar     ishghandle
-      dellistener         ezsurf      linkprop
+      addlistener         ezcontour   gcbo         refresh  
+      addproperty         ezcontourf  ginput       refreshdata
+      allchild            ezmesh      gtext        specular
+      available_backends  ezmeshc     intwarning   surfl
+      backend             ezplot      ishghandle   trisurf
+      cla                 ezplot3     isocolors    waitforbuttonpress
+      clabel              ezpolar     isonormals  
+      comet               ezsurf      isosurface  
+      dellistener         findall     linkprop   
+      diffuse             gcbf        plotmatrix
 
  ** New experimental OpenGL/FLTK based plotting system.
 

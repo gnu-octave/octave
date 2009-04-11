@@ -19,7 +19,8 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} patch ()
 ## @deftypefnx {Function File} {} patch (@var{x}, @var{y}, @var{c})
-## @deftypefnx {Function File} {} patch (@var{x}, @var{y}, @var{c}, @var{opts})
+## @deftypefnx {Function File} {} patch (@var{x}, @var{y}, @var{z}, @var{c})
+## @deftypefnx {Function File} {} patch (@var{fv})
 ## @deftypefnx {Function File} {} patch ('Faces', @var{f}, 'Vertices', @var{v}, @dots{})
 ## @deftypefnx {Function File} {} patch (@dots{}, @var{prop}, @var{val})
 ## @deftypefnx {Function File} {} patch (@var{h}, @dots{})
@@ -29,7 +30,11 @@
 ##
 ## For a uniform colored patch, @var{c} can be given as an RGB vector,
 ## scalar value referring to the current colormap, or string value (for
-## example, "r" or "red"). 
+## example, "r" or "red").
+##
+## If passed a structure @var{fv} contain the fields "vertices", "faces"
+## and optionally "facevertexcdata", create the patch based on these 
+## properties.
 ## @end deftypefn
 
 ## Author: jwe
@@ -42,14 +47,13 @@ function retval = patch (varargin)
 
   unwind_protect
     axes (h);
-    [tmp, fail] = __patch__ (h, varargin{:});
+    [tmp, failed] = __patch__ (h, varargin{:});
+    if (failed)
+      print_usage ();
+    endif
   unwind_protect_cleanup
     axes (oldh);
   end_unwind_protect
-
-  if (fail)
-    print_usage ();
-  endif
 
   if (nargout > 0)
     retval = tmp;
@@ -93,6 +97,19 @@ endfunction
 %! patch('Faces',fac,'Vertices',vert,'FaceColor','r');
 
 %!demo
+%! ## Specify vertices and faces separately
+%! clf
+%! t1 = (1/16:1/8:1)'*2*pi;
+%! t2 = ((1/16:1/16:1)' + 1/32)*2*pi;
+%! x1 = sin(t1) - 0.8;
+%! y1 = cos(t1);
+%! x2 = sin(t2) + 0.8;
+%! y2 = cos(t2);
+%! vert = [x1, y1; x2, y2];
+%! fac = [1:8,NaN(1,8);9:24];
+%! patch('Faces',fac,'Vertices',vert,'FaceVertexCData', [0, 1, 0; 0, 0, 1]);
+
+%!demo
 %! ## Property change on multiple patches
 %! clf
 %! t1 = (1/16:1/8:1)'*2*pi;
@@ -104,3 +121,18 @@ endfunction
 %! h = patch([x1,x2],[y1,y2],cat (3,[0,0],[1,0],[0,1]));
 %! pause (1);
 %! set (h, 'FaceColor', 'r');
+
+%!demo
+%! clf
+%! vertices = [0, 0, 0;
+%!             1, 0, 0;
+%!             1, 1, 0;
+%!             0, 1, 0;
+%!             0.5, 0.5, 1];
+%! faces = [1, 2, 5;
+%!          2, 3, 5;
+%!          3, 4, 5;
+%!          4, 1, 5];
+%! patch('Vertices', vertices, 'Faces', faces, ...
+%!       'FaceVertexCData', jet(4), 'FaceColor', 'flat')
+%! view (-37.5, 30)

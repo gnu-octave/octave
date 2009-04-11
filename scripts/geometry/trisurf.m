@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} trimesh (@var{tri}, @var{x}, @var{y}, @var{z})
-## @deftypefnx {Function File} {@var{h} =} trimesh (@dots{})
-## Plot a triangular mesh in 3D.  The variable @var{tri} is the triangular
+## @deftypefn {Function File} {} trisurf (@var{tri}, @var{x}, @var{y}, @var{z})
+## @deftypefnx {Function File} {@var{h} =} trisurf (@dots{})
+## Plot a triangular surface in 3D.  The variable @var{tri} is the triangular
 ## meshing of the points @code{(@var{x}, @var{y})} which is returned 
 ## from @code{delaunay}.  The variable @var{z} is value at the point 
 ## @code{(@var{x}, @var{y})}.  The output argument @var{h} is the graphic 
@@ -27,7 +27,7 @@
 ## @seealso{triplot, delaunay3}
 ## @end deftypefn
 
-function h = trimesh (tri, x, y, z, varargin)
+function h = trisurf (tri, x, y, z, varargin)
 
   if (nargin < 3)
     print_usage ();
@@ -38,14 +38,23 @@ function h = trimesh (tri, x, y, z, varargin)
   elseif (ischar (z))
     triplot (tri, x, y, z, varargin{:});
   else
+    if (nargin > 4 && isnumeric (varargin{1}))
+      c = varargin{1};
+      varargin(1) = [];
+    else
+      c = z;
+    endif
+
     newplot ();
     if (nargout > 0)
-      h = patch ("Vertices", [x(:), y(:), z(:)], "Faces", tri, 
-		 "FaceColor", "none", "EdgeColor", __next_line_color__(), 
-		 varargin{:});
+      h = patch ("Faces", tri, "Vertices", [x(:), y(:), z(:)],  
+	     "FaceVertexCData", reshape (c, numel (c), 1), 
+	     "FaceColor", "flat", "EdgeColor", "none",
+	     varargin{:});
     else
-      patch ("Vertices", [x(:), y(:), z(:)], "Faces", tri, 
-	     "FaceColor", "none", "EdgeColor", __next_line_color__(), 
+      patch ("Faces", tri, "Vertices", [x(:), y(:), z(:)],  
+	     "FaceVertexCData", reshape (c, numel (c), 1), 
+	     "FaceColor", "flat", "EdgeColor", "none",
 	     varargin{:});
     endif
 
@@ -63,4 +72,4 @@ endfunction
 %! y = 3 - 6 * rand (N, N);
 %! z = peaks (x, y);
 %! tri = delaunay (x(:), y(:));
-%! trimesh (tri, x(:), y(:), z(:));
+%! trisurf (tri, x(:), y(:), z(:));

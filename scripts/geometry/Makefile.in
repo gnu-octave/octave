@@ -46,6 +46,7 @@ SOURCES = \
   rectint.m \
   trimesh.m \
   triplot.m \
+  trisurf.m \
   tsearchn.m \
   voronoi.m \
   voronoin.m

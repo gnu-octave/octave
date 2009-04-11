@@ -1,3 +1,7 @@
+2009-04-11  David Bateman  <dbateman@free.fr>
+
+	* interpreter/contributors.in: Add Martin Helm.
+
 2009-04-06  John W. Eaton  <jwe@octave.org>
 
 	* texinfo.tex: Prefer PDF image files if generating PDF output.

@@ -54,7 +54,9 @@ SOURCES = \
   __go_draw_figure__.m \
   __gnuplot_ginput__.m \
   __gnuplot_version__.m \
+  __interp_cube__.m \
   __line__.m \
+  __marching_cube__.m \
   __next_line_color__.m \
   __patch__.m \
   __plr1__.m \
@@ -131,6 +133,9 @@ SOURCES = \
   isfigure.m \
   ishghandle.m \
   ishold.m \
+  isocolors.m \
+  isonormals.m \
+  isosurface.m \
   legend.m \
   line.m \
   linkprop.m \

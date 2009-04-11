@@ -318,6 +318,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
     if (! cautoscale && clim(1) == clim(2))
       clim(2)++;
     endif
+    addedcmap = [];
 
     [view_cmd, view_fcn, view_zoom] = image_viewer ();
     use_gnuplot_for_images = (ischar (view_fcn)
@@ -357,6 +358,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
 	    is_image_data(data_idx) = true;
 	    parametric(data_idx) = false;
 	    have_cdata(data_idx) = false;
+	    have_3d_patch(data_idx) = false;
 
 	    [y_dim, x_dim] = size (img_data(:,:,1));
 	    if (x_dim > 1)
@@ -406,6 +408,8 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
 	  is_image_data(data_idx) = false;
 	  parametric(data_idx) = true;
 	  have_cdata(data_idx) = false;
+	  have_3d_patch(data_idx) = false;
+
 	  if (isempty (obj.keylabel))
 	    titlespec{data_idx} = "title \"\"";
 	  else
@@ -517,6 +521,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
 	   cdat = [];
 	 endif
 
+	 data_3d_idx = NaN;
 	 for i = 1:nc
 	   xcol = obj.xdata(:,i);
 	   ycol = obj.ydata(:,i);
@@ -533,22 +538,42 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
 	     if (strncmp (obj.facecolor, "none", 4)) 
 	       hidden_removal = false;
 	     else
+
 	       if (isnan (hidden_removal))
 		 hidden_removal = true;
 	       endif
 	       if (nd == 3)
-		 error ("gnuplot (as of v4.2) only supports 2D filled patches");
+		 if (numel (xcol) > 3)
+		   error ("gnuplot (as of v4.2) only supports 3D filled triangular patches");
+		 else
+		   if (isnan (data_3d_idx))
+		     data_idx++;
+		     data_3d_idx = data_idx; 
+		     is_image_data(data_idx) = false;
+		     parametric(data_idx) = false;
+		     have_cdata(data_idx) = true;
+		     have_3d_patch(data_idx) = true;
+		     withclause{data_3d_idx} = sprintf ("with pm3d");
+		     usingclause{data_3d_idx} =  "using 1:2:3:4";
+		     data{data_3d_idx} = [];
+		   endif
+		   local_idx = data_3d_idx;
+		   ccdat = NaN;
+		 endif
+	       else
+		 data_idx++;
+		 local_idx = data_idx;
+		 is_image_data(data_idx) = false;
+		 parametric(data_idx) = false;
+		 have_cdata(data_idx) = false;
+		 have_3d_patch(data_idx) = false;
 	       endif
 
-	       data_idx++;
-	       is_image_data(data_idx) = false;
-	       parametric(data_idx) = false;
-	       have_cdata(data_idx) = false;
 	       if (i > 1 || isempty (obj.keylabel))
-		 titlespec{data_idx} = "title \"\"";
+		 titlespec{local_idx} = "title \"\"";
 	       else
 		 tmp = undo_string_escapes (__maybe_munge_text__ (enhanced, obj, "keylabel"));
-		 titlespec{data_idx} = cstrcat ("title \"", tmp, "\"");
+		 titlespec{local_idx} = cstrcat ("title \"", tmp, "\"");
 	       endif
                if (isfield (obj, "facecolor"))
 		 if ((strncmp (obj.facecolor, "flat", 4)
@@ -572,6 +597,8 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
 		   if (strncmp (obj.facecolor, "flat", 4))
 		     if (numel(ccol) == 3)
 		       color = ccol;
+		     elseif (nd == 3 && numel (xcol) == 3)
+		       ccdat = ccol * ones (3,1);
 		     else
 		       r = 1 + round ((size (cmap, 1) - 1)
 				      * (ccol - clim(1))/(clim(2) - clim(1)));
@@ -579,10 +606,22 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
 		       color = cmap(r, :);
 		     endif
 		   elseif (strncmp (obj.facecolor, "interp", 6))
-		     warning ("\"interp\" not supported, using 1st entry of cdata");
-		     r = 1 + round ((size (cmap, 1) - 1) * ccol(1));
-		     r = max (1, min (r, size (cmap, 1)));
-		     color = cmap(r,:);
+		     if (nd == 3 && numel (xcol) == 3)
+		       ccdat = ccol;
+		       if (! isvector (ccdat))
+			 tmp = rows(cmap) + rows(addedcmap) + ... 
+			      [1 : rows(ccdat)];
+			 addedcmap = [addedcmap; ccdat];
+			 ccdat = tmp(:);
+		       else
+			 ccdat = ccdat(:);
+		       endif
+		     else
+		       warning ("\"interp\" not supported, using 1st entry of cdata");
+		       r = 1 + round ((size (cmap, 1) - 1) * ccol(1));
+		       r = max (1, min (r, size (cmap, 1)));
+		       color = cmap(r,:);
+		     endif
 		   endif
 		 elseif (isnumeric (obj.facecolor))
 		   color = obj.facecolor;
@@ -593,21 +632,32 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
 		 color = [0, 1, 0];
                endif
 
-	       if (mono)
-		 colorspec = "";
-               elseif (__gnuplot_has_feature__ ("transparent_patches")
-		       && isscalar (obj.facealpha))
-                 colorspec = sprintf ("lc rgb \"#%02x%02x%02x\" fillstyle transparent solid %f",
-				      round (255*color), obj.facealpha);
+	       if (nd == 3 && numel (xcol) == 3)
+		 if (isnan (ccdat))
+		   ccdat = (rows (cmap) + rows(addedcmap) + 1) * ones(3, 1);
+		   addedcmap = [addedcmap; reshape(color, 1, 3)];
+		 endif
+		 data{data_3d_idx} = [data{data_3d_idx}, ...
+				      [[xcol; xcol(end)], [ycol; ycol(end)], ...
+				      [zcol; zcol(end)], [ccdat; ccdat(end)]]'];
 	       else
-		 colorspec = sprintf ("lc rgb \"#%02x%02x%02x\"",
-				      round (255*color));
-	       endif
-	       withclause{data_idx} = sprintf ("with filledcurve %s",
+		 if (mono)
+		   colorspec = "";
+		 elseif (__gnuplot_has_feature__ ("transparent_patches")
+			 && isscalar (obj.facealpha))
+                   colorspec = sprintf ("lc rgb \"#%02x%02x%02x\" fillstyle transparent solid %f",
+				      round (255*color), obj.facealpha);
+		 else
+		   colorspec = sprintf ("lc rgb \"#%02x%02x%02x\"",
+					round (255*color));
+		 endif
+
+		 withclause{data_idx} = sprintf ("with filledcurve %s",
 					       colorspec);
-	       data{data_idx} = [xcol, ycol]';
-	       usingclause{data_idx} = sprintf ("record=%d using ($1):($2)",
-						numel (xcol));
+		 data{data_idx} = [xcol, ycol]';
+		 usingclause{data_idx} = sprintf ("record=%d using ($1):($2)",
+						  numel (xcol));
+	       endif
 	     endif
 	   endif
 
@@ -618,6 +668,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
              is_image_data(data_idx) = false;
              parametric(data_idx) = false;
 	     have_cdata(data_idx) = false;
+	     have_3d_patch(data_idx) = false;
              titlespec{data_idx} = "title \"\"";
 	     usingclause{data_idx} = sprintf ("record=%d", numel (obj.xdata));
 
@@ -793,6 +844,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
 	    is_image_data(data_idx) = false;
 	    parametric(data_idx) = false;
 	    have_cdata(data_idx) = true;
+	    have_3d_patch(data_idx) = false;
 	    [style, typ, with] = do_linestyle_command (obj, data_idx,
 						       mono, plot_stream);
 	    if (isempty (obj.keylabel))
@@ -1037,12 +1089,22 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
 
     cmap = parent_figure_obj.colormap;    
     cmap_sz = rows(cmap);
-
     if (! any (isinf (clim)))
       if (truecolor || ! cdatadirect)
-	fprintf (plot_stream, "set cbrange [%g:%g];\n", clim);
+	if (rows(addedcmap) > 0)
+	  for i = 1:data_idx
+	    if (have_3d_patch(i))
+	      data{i}(end,:) = clim(2) * (data{i}(end, :) - 0.5) / cmap_sz;
+	     endif
+	  endfor
+	  fprintf (plot_stream, "set cbrange [%g:%g];\n", clim(1), clim(2) * 
+		   (cmap_sz + rows(addedcmap)) / cmap_sz);
+	else
+	  fprintf (plot_stream, "set cbrange [%g:%g];\n", clim);
+	endif
       else
-	fprintf (plot_stream, "set cbrange [1:%d];\n", cmap_sz);
+	fprintf (plot_stream, "set cbrange [1:%d];\n", cmap_sz + 
+		 rows (addedcmap));
       endif
     endif
 
@@ -1160,6 +1222,8 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
       endfor
     endif
 
+    cmap = [cmap; addedcmap];
+    cmap_sz = cmap_sz + rows(addedcmap);
     if (length(cmap) > 0)
       fprintf (plot_stream,
 	       "set palette positive color model RGB maxcolors %i;\n",
@@ -1190,7 +1254,11 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
 	  fprintf (plot_stream, "set view %.15g, %.15g;\n", rot_x, rot_z);
 	endif
       endif
-      if (is_image_data (1))
+      if (have_3d_patch (1))
+	fputs (plot_stream, "set pm3d depthorder\n");
+	fprintf (plot_stream, "%s \"-\" %s %s %s \\\n", plot_cmd,
+		 usingclause{1}, titlespec{1}, withclause{1});
+      elseif (is_image_data (1))
 	fprintf (plot_stream, "%s \"-\" %s %s %s \\\n", plot_cmd,
 		 usingclause{1}, titlespec{1}, withclause{1});
       else
@@ -1198,8 +1266,11 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
 		 usingclause{1}, titlespec{1}, withclause{1});
       endif
       for i = 2:data_idx
-	if (is_image_data (i))
-	  fprintf (plot_stream, "%s \"-\" %s %s %s \\\n", plot_cmd,
+	if (have_3d_patch (i))
+	  fprintf (plot_stream, ", \"-\" %s %s %s \\\n",
+		   usingclause{i}, titlespec{i}, withclause{i});
+	elseif (is_image_data (i))
+          fprintf (plot_stream, "%s \"-\" %s %s %s \\\n", plot_cmd,
 		   usingclause{i}, titlespec{i}, withclause{i});
 	else
 	  fprintf (plot_stream, ", \"-\" binary format='%%float64' %s %s %s \\\n",
@@ -1208,7 +1279,21 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
       endfor
       fputs (plot_stream, ";\n");
       for i = 1:data_idx
-	if (is_image_data(i))
+	if (have_3d_patch (i))
+	  ## Can't write 3d patch data as binary as can't plot more than 
+	  ## a single patch at a time and have to plot all patches together
+	  ## so that the gnuplot depth ordering is done correctly
+	  for j = 1 : 4 : columns(data{i})
+	    if (j != 1)
+	      fputs (plot_stream, "\n\n");
+	    endif
+	    fprintf (plot_stream, "%.15g %.15g %.15g %.15g\n", data{i}(:,j).');
+	    fprintf (plot_stream, "%.15g %.15g %.15g %.15g\n\n", data{i}(:,j+1).');
+	    fprintf (plot_stream, "%.15g %.15g %.15g %.15g\n", data{i}(:,j+2).');
+	    fprintf (plot_stream, "%.15g %.15g %.15g %.15g\n", data{i}(:,j+3).');
+	  endfor
+	  fputs (plot_stream, "e\n");
+	elseif (is_image_data(i))
 	  fwrite (plot_stream, data{i}, "float32");
 	else
 	  __gnuplot_write_data__ (plot_stream, data{i}, nd, parametric(i), 

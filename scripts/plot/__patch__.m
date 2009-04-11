@@ -27,165 +27,280 @@
 
 ## Author: Kai Habel
 
-function [h, fail] = __patch__ (p, varargin)
+function [h, failed] = __patch__ (p, varargin)
 
-  fail = false;
+  failed = false;
 
-  if (nargin < 3)
-    fail = true;
-    return;
-  endif
-
-  iarg = 1;
-  have_x = have_z = have_c = have_faces = false;
-  if (isnumeric (varargin{1}))
-    if (! isnumeric (varargin{2}))
-      fail = true;
-      return;
-    endif
-
-    x = varargin{1};
-    y = varargin{2};
-    have_x = true;
-    iarg += 2;
-
-    if (nargin > 3 && ndims (varargin{3}) == 2 && ndims (x) == 2
-	&& size_equal(x, varargin{3}) && !ischar(varargin{3}))
-      z = varargin{3};
-      have_z = true;
-      iarg++;
-    endif
-  elseif (ischar (varargin{1})
-	  && (strcmpi (varargin{1}, "faces")
-	      || strcmpi (varargin{1}, "vertices")))
-    if (! isnumeric (varargin{2}))
-      fail = true;
-      return;
-    endif
-    
-    if (strcmpi (varargin{1}, "faces"))
-      faces = varargin{2};
-      if (strcmpi (varargin{3}, "vertices"))
-	vert = varargin{4};
-	have_faces = true;
+  if (isstruct (varargin{1}))
+    if (isfield (varargin{1}, "vertices") && isfield (varargin{1}, "faces"))
+      args{1} = "faces";
+      args{2} = field(varargin{1}, "faces");
+      args{3} = "vertices";
+      args{4} = field(varargin{1}, "vertices");
+      args{5} = "facevertexcdata";
+      if (isfield (varargin{1}, "facevertexcdata"))
+	args{6} = field(varargin{1}, "facevertexcdata");
+      else
+	args{6} = [];
       endif
-    elseif (strcmpi (varargin{1}, "vertices"))
-      vert = varargin{2};
-      if (strcmpi (varargin{3}, "faces"))
-	faces = varargin{4};
-	have_faces = true;
-      endif
-    endif
-    if (!have_faces)
-      fail = true;
-      return;
+      args = [args; varargin(2:end)];
+      args = setdata (args);
     else
-      iarg += 4;
+      failed = true;
     endif
-  endif
+  elseif (isnumeric (varargin{1}))
+    if (nargin < 3 || ! isnumeric (varargin{2}))
+      failed = true;
+    else
+      x = varargin{1};
+      y = varargin{2};
+      iarg = 3;
 
-  if ((have_x || have_faces) && nargin > iarg)
-    if (isnumeric (varargin{iarg}))
-      c = varargin{iarg};
-      have_c = true;
-      iarg++;
-
-      if (ndims (c) == 3 && size (c, 2) == 1)
-	c = permute (c, [1, 3, 2]);
+      if (nargin > 3 && ndims (varargin{3}) == 2 && ndims (x) == 2
+	  && size_equal(x, varargin{3}) && !ischar(varargin{3}))
+	z = varargin{3};
+	iarg++;
+      else
+	z = [];
       endif
-    elseif (ischar (varargin{iarg}) && rem (nargin - iarg, 2) != 0)
-      ## Assume that any additional argument over an even number is
-      ## color string.
-      c = tolower (varargin{iarg});
-      have_c = true;
-      iarg++;
-    endif
-  endif
 
-  if (rem (nargin - iarg, 2) != 0)
-    fail = true;
-    return;
-  endif
-
-  if (have_x)
-    if (isvector (x))
-      x = x(:);
-      y = y(:);
-      if (have_z)
+      if (isvector (x))
+	x = x(:);
+	y = y(:);
 	z = z(:);
       endif
+      args{1} = "xdata";
+      args{2} = x;
+      args{3} = "ydata";
+      args{4} = y;
+      args{5} = "zdata";
+      args{6} = z;
+
+      if (isnumeric (varargin{iarg}))
+	c = varargin{iarg};
+	iarg++;
+
+	if (ndims (c) == 3 && size (c, 2) == 1)
+	  c = permute (c, [1, 3, 2]);
+	endif
+
+	if (isvector (c) && numel (c) == columns (x))
+	  if (isnan (c))
+	    args{7} = "facecolor";
+	    args{8} = [1, 1, 1];
+	    args{9} = "cdata";
+	    args{10} = c;
+	  elseif (isnumeric (c))
+	    args{7} = "facecolor";
+	    args{8} = "flat";
+	    args{9} = "cdata";
+	    args{10} = c;
+	  else
+	    error ("patch: color value not valid");
+	  endif
+	elseif (size (c, ndims (c)) == 3)
+	  args{7} = "facecolor";
+	  args{8} = "flat";
+	  args{9} = "cdata";
+	  args{10} = c;
+	else
+	  ## Color Vectors
+	  if (rows (c) != rows (x) || rows (c) != length (y))
+	    error ("patch: size of x, y, and c must be equal")
+	  else
+	    args{7} = "facecolor";
+	    args{8} = "interp";
+	    args{9} = "cdata";
+	    args{10} = [];
+	  endif
+	endif
+      elseif (ischar (varargin{iarg}) && rem (nargin - iarg, 2) != 0)
+	## Assume that any additional argument over an even number is
+	## color string.
+	args{7} = "facecolor";
+	args{8} =  tolower (varargin{iarg});
+	args{9} = "cdata";
+	args{10} = [];
+	iarg++;
+      else
+	args{7} = "facecolor";
+	args{8} = [0, 1, 0];
+	args{9} = "cdata";
+	args{10} = [];
+      endif
+
+      args = [args, varargin(iarg:end)];
+      args = setvertexdata (args);
     endif
-    [nr, nc] = size (x);
-    if (have_z)
-      vert = [x(:), y(:), z(:)];
+  else
+    args = varargin;
+    if (any(cellfun (@(x) strcmpi(x,"faces") || strcmpi(x, "vertices"), args)))
+      args = setdata (args);
     else
-      vert = [x(:), y(:)];
+      args = setvertexdata (args);
     endif
-    faces = reshape (1:numel(x), rows (x), columns (x));
-    faces = faces';
-  elseif (have_faces)
-    nr = size (faces, 2);
-    nc = size (faces, 1);
-    idx = faces .';
-    t1 = isnan (idx);
-    if (any (t1(:)))
-      t2 = find (t1 != t1([2:end,end],:));
-      idx (t1) = idx (t2 (cell2mat (cellfun (@(x) x(1)*ones(1,x(2)),
+  endif
+
+  if (!failed)
+    h = __go_patch__ (p, args {:});
+
+    ## Setup listener functions
+    addlistener (h, "xdata", @update_data);
+    addlistener (h, "ydata", @update_data);
+    addlistener (h, "zdata", @update_data);
+    addlistener (h, "cdata", @update_data);
+
+    addlistener (h, "faces", @update_fvc);
+    addlistener (h, "vertices", @update_fvc);
+    addlistener (h, "facevertexcdata", @update_fvc);
+  endif
+endfunction
+
+function args = delfields(args, flds)
+  idx = cellfun (@(x) any (strcmpi (x, flds)), args);
+  idx = idx | [false, idx(1:end-1)];
+  args (idx) = [];
+endfunction
+
+function args = setdata (args)
+  args = delfields (args, {"xdata", "ydata", "zdata", "cdata"});
+  nargs = length (args);
+  idx = find (cellfun (@(x) strcmpi (x, "faces"), args)) + 1;
+  if (idx > nargs)
+    faces = [];
+  else
+    faces = args {idx};
+  endif
+  idx = find (cellfun (@(x) strcmpi (x, "vertices"), args)) + 1;
+  if (idx > nargs)
+    vert = [];
+  else
+    vert = args {idx};
+  endif
+  idx = find (cellfun (@(x) strcmpi (x, "facecolor"), args)) + 1;
+  if (isempty(idx) || idx > nargs)
+    fc = "flat";
+  else
+    fc = args {idx};
+  endif
+  idx = find (cellfun (@(x) strcmpi (x, "facevertexcdata"), args)) + 1;
+  if (isempty(idx) || idx > nargs)
+    fvc = [];
+  else
+    fvc = args {idx};
+  endif
+
+  nr = size (faces, 2);
+  nc = size (faces, 1);
+  idx = faces .';
+  t1 = isnan (idx);
+  if (any (t1(:)))
+    t2 = find (t1 != t1([2:end,end],:));
+    idx (t1) = idx (t2 (cell2mat (cellfun (@(x) x(1)*ones(1,x(2)),
 		mat2cell ([1 : nc; sum(t1)], 2, ones(1,nc)), 
-					     "UniformOutput", false))));
-    endif
-    x = reshape (vert(:,1)(idx), size (idx));
-    y = reshape (vert(:,2)(idx), size (idx));
-    if (size(vert,2) > 2)
-      have_z = true;
-      z = reshape (vert(:,3)(idx), size (idx));
-    endif
+					   "UniformOutput", false))));
+  endif
+  x = reshape (vert(:,1)(idx), size (idx));
+  y = reshape (vert(:,2)(idx), size (idx));
+  if (size(vert,2) > 2)
+    z = reshape (vert(:,3)(idx), size (idx));
   else
-    error ("patch: not supported");
+    z = [];
   endif
 
-  cargs = {};
-  if (have_c)
-    if (ischar (c))
-      cargs{1} = "facecolor";
-      cargs{2} = c;
-    elseif (isvector (c) && numel (c) == nc)
-      if (isnan (c))
-	cargs{1} = "facecolor";
-	cargs{2} = [1, 1, 1];
-	cargs{3} = "cdata";
-	cargs{4} = c;
-      elseif (isnumeric (c))
-	cargs{1} = "facecolor";
-	cargs{2} = "flat";
-	cargs{3} = "cdata";
-	cargs{4} = c;
-      else
-	error ("patch: color value not valid");
-      endif
-    elseif (size (c, ndims (c)) == 3)
-      cargs{1} = "facecolor";
-      cargs{2} = "flat";
-      cargs{3} = "cdata";
-      cargs{4} = c;
+  if (ischar (fc) && (strcmpi (fc, "flat") || strcmpi (fc, "interp")))
+    if (size(fvc, 1) == nc || size (fvc, 1) == 1)
+      c = reshape (fvc, [1, size(fvc)]);
     else
-      ## Color Vectors
-      if (rows (c2) != rows (x) || rows (c2) != length (y))
-	error ("patch: size of x, y, and c must be equal")
+      if (size(fvc, 2) == 3)
+	c = cat(3, reshape (fvc(idx, 1), size(idx)),
+		reshape (fvc(idx, 2), size(idx)),
+		reshape (fvc(idx, 3), size(idx)));
       else
-	cargs{1} = "facecolor";
-	cargs{2} = "interp";
+	c = reshape (fvc(idx), size(idx));
       endif
     endif
   else
-    cargs{1} = "facecolor";
-    cargs{2} = [0, 1, 0];
+    c = [];
+  endif
+  args = {"xdata", x, "ydata", y, "zdata", z, "cdata", c, args{:}};
+endfunction
+
+function args = setvertexdata (args)
+  args = delfields (args, {"vertices", "faces", "facevertexcdata"});
+  nargs = length (args);
+  idx = find (cellfun (@(x) strcmpi (x, "xdata"), args)) + 1;
+  if (idx > nargs)
+    x = [];
+  else
+    x = args {idx};
+  endif
+  idx = find (cellfun (@(x) strcmpi (x, "ydata"), args)) + 1;
+  if (idx > nargs)
+    y = [];
+  else
+    y = args {idx};
+  endif
+  idx = find (cellfun (@(x) strcmpi (x, "zdata"), args)) + 1;
+  if (isempty(idx) || idx > nargs)
+    z = [];
+  else
+    z = args {idx};
+  endif
+  idx = find (cellfun (@(x) strcmpi (x, "facecolor"), args)) + 1;
+  if (isempty(idx) || idx > nargs)
+    fc = "flat";
+  else
+    fc = args {idx};
+  endif
+  idx = find (cellfun (@(x) strcmpi (x, "cdata"), args)) + 1;
+  if (isempty(idx) || idx > nargs)
+    c = [];
+  else
+    c = args {idx};
   endif
 
-  h = __go_patch__ (p, "xdata", x, "ydata", y, "faces", faces, 
-		    "vertices", vert, cargs{:}, varargin{iarg:end});
-  if (have_z)
-    set (h, "zdata", z);
+  [nr, nc] = size (x);
+  if (!isempty (z))
+    vert = [x(:), y(:), z(:)];
+  else
+    vert = [x(:), y(:)];
   endif
- 
+  faces = reshape (1:numel(x), rows (x), columns (x));
+  faces = faces';
+
+  if (ischar (fc) && (strcmpi (fc, "flat") || strcmpi (fc, "interp")))
+    if (ndims (c) == 3)
+      fvc = reshape (c, size (c, 1) * size (c, 2), size(c, 3));
+    else
+      fvc = c(:);
+    endif
+  else
+    fvc = [];
+  endif
+
+  args = {"faces", faces, "vertices", vert, "facevertexcdata", fvc, args{:}};
+endfunction
+
+function update_data (h, d)
+  update_handle (h, false);
+endfunction
+
+function update_fvc (h, d)
+  update_handle (h, true);
+endfunction
+
+function update_handle (h, isfv)
+  persistent recursive = false;
+
+  if (! recursive)
+    recursive = true;
+    f = get (h);
+    if (isfvc)
+      set (h, setvertexdata ([fieldnames(f), struct2cell(f)].'(:)){:});
+    else
+      set (h, setdata ([fieldnames(f), struct2cell(f)].'(:)){:});
+    endif
+    recursive = false;
+  endif
 endfunction

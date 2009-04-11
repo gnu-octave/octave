@@ -1,3 +1,8 @@
+2008-04-11  David Bateman  <dbateman@free.fr>
+
+	* ov-cell.cc (Fstruct2cell): Treat possible trailing singleton for
+	creation of cell array from column structure vector.
+
 2009-04-09  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-cell.cc (octave_cell::subsasgn): Fix reference counting

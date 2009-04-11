@@ -1358,9 +1358,13 @@ cell array will have a dimension vector corresponding to\n\
 
 	  // The resulting dim_vector should have dimensions:
 	  // [numel(fields) size(struct)]
+	  // except if the struct is a column vector.
 
 	  dim_vector result_dv;
-	  result_dv.resize (m_dv.length () + 1); // Add 1 for the fields.
+	  if (m_dv (m_dv.length () - 1) == 1)
+	      result_dv.resize (m_dv.length ());
+	  else
+	      result_dv.resize (m_dv.length () + 1); // Add 1 for the fields.
 
 	  result_dv(0) = num_fields;
 

@@ -16,8 +16,6 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-%% Automatically generated from DejaGNU files
-
 %% test/octave.test/system/cputime-1.m
 %!test
 %! [t1, u1, s1] = cputime ();

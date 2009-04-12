@@ -16,8 +16,6 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-%% Automatically generated from DejaGNU files
-
 %% test/octave.test/eval-catch/eval-catch-1.m
 %!test
 %! eval ("clear a; a;", "");

@@ -16,8 +16,6 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-%% Automatically generated from DejaGNU files
-
 %% test/octave.test/contin/contin-1.m
 %!test
 %! x = [1,2];

@@ -16,8 +16,6 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-%% Automatically generated from DejaGNU files
-
 %% test/octave.test/struct/fieldnames-1.m
 %!test
 %! s.a = 1;

@@ -1,3 +1,13 @@
+2009-04-12  Thorsten Meyer  <thorsten.meyier@gmx.de>
+
+	* test_contin.m, test_error.m, test_eval-catch.m, test_for.m,
+        test_global.m,  test_if.m, test_index-wfi-f.m,
+        /test_index-wfi-t.m, test_io.m, test_logical-wfi-f.m,
+        test_logical-wfi-t.m, test_prefer.m, test_recursion.m,
+        test_return.m, test_string.m, test_struct.m, test_switch.m,
+        test_system.m, test_transpose.m, test_try.m, test_unwind.m,
+        test_while.m: Remove obsolete comments.
+
 2009-04-07  Carlo de Falco  <kingcrimson@tiscali.it>
 
 	* test_io.m: Add a test for saving and reading a matrix with the

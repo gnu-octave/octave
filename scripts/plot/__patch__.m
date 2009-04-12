@@ -34,12 +34,12 @@ function [h, failed] = __patch__ (p, varargin)
   if (isstruct (varargin{1}))
     if (isfield (varargin{1}, "vertices") && isfield (varargin{1}, "faces"))
       args{1} = "faces";
-      args{2} = field(varargin{1}, "faces");
+      args{2} = getfield(varargin{1}, "faces");
       args{3} = "vertices";
-      args{4} = field(varargin{1}, "vertices");
+      args{4} = getfield(varargin{1}, "vertices");
       args{5} = "facevertexcdata";
       if (isfield (varargin{1}, "facevertexcdata"))
-	args{6} = field(varargin{1}, "facevertexcdata");
+	args{6} = getfield(varargin{1}, "facevertexcdata");
       else
 	args{6} = [];
       endif

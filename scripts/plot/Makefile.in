@@ -49,6 +49,7 @@ SOURCES = \
   __ezplot__.m \
   __gnuplot_get_var__.m \
   __gnuplot_has_feature__.m \
+  __gnuplot_open_stream__.m \
   __go_close_all__.m \
   __go_draw_axes__.m \
   __go_draw_figure__.m \

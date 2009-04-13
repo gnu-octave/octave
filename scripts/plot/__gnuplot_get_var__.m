@@ -37,7 +37,11 @@ function gp_var_value = __gnuplot_get_var__ (h, gp_var_name, fmt)
   endif
 
   if (numel (h) == 1 && isfigure (h))
-    ostream = get (h, "__plot_stream__");
+    if (isempty (get (gcf, "__plot_stream__")))
+      ostream = __gnuplot_open_stream__ (2, h);
+    else
+      ostream = get (h, "__plot_stream__");
+    endif
   else
     ostream = h;
   endif

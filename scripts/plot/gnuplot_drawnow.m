@@ -41,7 +41,7 @@ function gnuplot_drawnow (h, term, file, mono, debug_file)
     printing = ! output_to_screen (gnuplot_trim_term (term));
     default_plot_stream = get (h, "__plot_stream__");
     unwind_protect
-      plot_stream = open_gnuplot_stream (2, h);
+      plot_stream = __gnuplot_open_stream__ (2, h);
       if (__gnuplot_has_feature__ ("variable_GPVAL_TERMINALS"))
         available_terminals = __gnuplot_get_var__ (plot_stream, "GPVAL_TERMINALS");
         available_terminals = regexp (available_terminals, "\\b\\w+\\b", "match");
@@ -79,7 +79,7 @@ function gnuplot_drawnow (h, term, file, mono, debug_file)
     ##  Graphics terminal for display.
     plot_stream = get (h, "__plot_stream__");
     if (isempty (plot_stream))
-      plot_stream = open_gnuplot_stream (2, h);
+      plot_stream = __gnuplot_open_stream__ (2, h);
       new_stream = true;
     else
       new_stream = false;
@@ -105,24 +105,6 @@ function implicit_margin = gnuplot_implicit_margin (term, opts_str)
     endif
   else
     implicit_margin = 0.0;
-  endif
-endfunction
-
-function plot_stream = open_gnuplot_stream (npipes, h)
-  cmd = gnuplot_binary ();
-  if (npipes > 1)
-    [plot_stream(1), plot_stream(2), pid] = popen2 (cmd);
-    if (pid < 0)
-      error ("drawnow: failed to open connection to gnuplot");
-    endif
-  else
-    plot_stream = popen (cmd, "w");
-    if (plot_stream < 0)
-      error ("drawnow: failed to open connection to gnuplot");
-    endif
-  endif
-  if (! isempty (h))
-    set (h, "__plot_stream__", plot_stream);
   endif
 endfunction
 

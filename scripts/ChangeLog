@@ -1,3 +1,10 @@
+2009-04-12  Ben Abbott <bpabbott@mac.com>
+
+	* plot/__gnuplot_open_stream__.m: New function.
+	* plot/__gnuplot_get_var__.m: If not open, open the gnuplot plot stream.
+	* plot/gnuplot_drawnow.m: Replace internal function open_gnuplot_stream
+	with new __gnuplot_open_stream__.
+
 2009-04-11  David Bateman  <dbateman@free.fr>
 
 	* geometry/trisurf.m: New file.

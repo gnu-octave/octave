@@ -12,52 +12,63 @@
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with this program; if not, see http://www.gnu.org/licenses/gpl.html.
-##
-## Author: Martin Helm <martin@mhelm.de>
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{t}, @var{p}, @var{col}] =} __marching_cube__ (@var{x}, @var{y}, @var{z}, @var{c}, @var{iso}, @var{color})
-## Undocumented internal function.
+## @deftypefn  {Function File} {[@var{t}, @var{p}] =} __marching_cube__ (@var{x}, @var{y}, @var{z}, @var{val}, @var{iso})
+## @deftypefn  {Function File} {[@var{t}, @var{p}, @var{c}] =} __marching_cube__ (@var{x}, @var{y}, @var{z}, @var{val}, @var{iso}, @var{col})
+##
+## Return the triangulation information @var{t} at points @var{p} for
+## the isosurface values resp. the volume data @var{val} and the iso
+## level @var{iso}.  It is considered that the volume data @var{val} is
+## given at the points @var{x}, @var{y} and @var{z} which are of type
+## three--dimensional numeric arrays.  The orientation of the triangles
+## is choosen such that the normals point from the higher values to the
+## lower values.
+##
+## Optionally the color data @var{col} can be passed to this function
+## whereas computed vertices color data @var{c} is returned as third
+## argument.
+##
+## The marching cube algorithm is well known and described eg. at
+## Wikipedia. The triangulation lookup table and the edge table used
+## here are based on Cory Gene Bloyd's implementation and can be found
+## beyond other surface and geometry stuff at Paul Bourke's website
+## @uref{http://local.wasp.uwa.edu.au/~pbourke/geometry/polygonise}.
+##
+## For example,
+## @example
+## N = 20;
+## lin = linspace(0, 2, N);
+## [x, y, z] = meshgrid (lin, lin, lin);
+##
+## c = (x-.5).^2 + (y-.5).^2 + (z-.5).^2;
+## [t, p] = __marching_cube__ (x, y, z, c, .5);
+##
+## figure ();
+## trimesh (t, p(:,1), p(:,2), p(:,3));
+## @end example
+##
+## Instead of the @command{trimesh} function the @command{patch}
+## function can be used to visualize the geometry. For example,
+##
+## @example
+## figure (); view (-38, 20);
+## pa = patch ("Faces", t, "Vertices", p, "FaceVertexCData", p, \
+##             "FaceColor", "interp", "EdgeColor", "none");
+##
+## ## Revert normals
+## set (pa, "VertexNormals", -get(pa, "VertexNormals"));
+##
+## ## Set lightning (available with the JHandles package)
+## # set (pa, "FaceLighting", "gouraud");
+## # light( "Position", [1 1 5]);
+## @end example
+##
 ## @end deftypefn
 
-## usage: [T, P] = marching_cube( XX, YY, ZZ, C, ISO)
-## usage: [T, P, COL] = marching_cube( XX, YY, ZZ, C, ISO, COLOR)
-##
-## Calculates the triangulation T with points P for the isosurface
-## with level ISO. XX, YY, ZZ are meshgrid like values for the
-## cube and C holds the scalar values of the field,
-## COLOR holds additinal scalar values for coloring the surface.
-## The orientation of the triangles is choosen such that the
-## normals point from the lower values to the higher values.
-##
-## edgeTable and triTable are taken from Paul Bourke
-## (http://local.wasp.uwa.edu.au/~pbourke/geometry/polygonise/)
-## Based on tables by Cory Gene Bloyd
-##
-## Example:
-##
-## x = linspace(0, 2, 20);
-## y = linspace(0, 2, 20);
-## z = linspace(0, 2, 20);
-##
-## [ xx, yy, zz ] = meshgrid(x, y, z);
-##
-## c = (xx-.5).^2 + (yy-.5).^2 + (zz-.5).^2;
-## [T, p] = marching_cube(xx, yy, zz, c, 0.5);
-## trimesh(T, p(:, 1), p(:, 2), p(:, 3));
-##
-## with jhandles you can also use the patch function to visualize
-## 
-## clf
-## pa = patch('Faces',T,'Vertices',p,'FaceVertexCData',p, ...
-## 'FaceColor','interp', 'EdgeColor', 'none');
-## set(pa, "VertexNormals", -get(pa, "VertexNormals")) # revert normals
-## view(-30, 30)
-## set(pa, "FaceLighting", "gouraud")
-## light( "Position", [1 1 5])
-##
+## Author: Martin Helm <martin@mhelm.de>
 
-function [T, p, col] = __marching_cube__( xx, yy, zz, c, iso, colors)
+function [T, p, col] = __marching_cube__ (xx, yy, zz, c, iso, colors)
   
   persistent edge_table=[];
   persistent tri_table=[];

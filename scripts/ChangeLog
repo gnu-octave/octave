@@ -1,4 +1,9 @@
-2009-04-11  David Bateman  <dbateman@free.fr>
+2009-04-14  Thomas Treichl  <Thomas.Treichl@gmx.net>
+
+	* plot/__marching_cube__.m: Add help text.
+	* plot/isonormals.m: Add help text and tests.
+
+2009-04-14  David Bateman  <dbateman@free.fr>
 
 	* plot/__patch__.m: Set default facecolor to [0,1,0].
 	

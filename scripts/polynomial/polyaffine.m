@@ -18,24 +18,11 @@
 ## Return the coefficients of the polynomial whose coefficients are given by
 ## vector @var{f} after an affine tranformation. If @var{f} is the vector
 ## representing the polynomial f(x), then @var{g} = polytrans (@var{f},
-## @var{a}) is the vector representing g(x) = f((x-@var{mu}(1))/@var{mu}(2)).
+## @var{mu}) is the vector representing 
+## @example
+## g(x) = f((x-@var{mu}(1))/@var{mu}(2)).
+## @end example
 ## 
-## Here is a simple example that will plot both the original and
-## transformed polynomials.  f is a third order polynomial.
-## g is a polynomial obtained after shifting f one unit to the right
-## and stretching the x axis by 1.2:
-##
-## f = [1/5 4/5 -7/5 -2];
-##
-## g = polyaffine(f, [1, 1.2]);
-##
-## x = linspace(-4,4,100);
-##
-## plot(x,polyval(f,x),x,polyval(g,x));
-##
-## axis([-4 4 -3 5]);
-##
-## grid("on");
 ## @seealso{polyval}
 ## @end deftypefn
 
@@ -61,19 +48,42 @@ function g = polyaffine (f, mu)
       f = f.';
    endif
 
-   ## Translate.
-   if (mu(1) != 0)
-     w = (-mu(1)) .^ (0:lf-1);
-     ii = lf:-1:1;
-     g = f(ii) * (toeplitz (w) .* pascal (lf, -1));
-     g = g(ii);
-   else
-     g = f;
-   endif
+   g = f;
 
    ## Scale.
    if (mu(2) != 1)
      g = g ./ (mu(2) .^ (lf-1:-1:0));
    endif
 
+   ## Translate.
+   if (mu(1) != 0)
+     w = (-mu(1)) .^ (0:lf-1);
+     ii = lf:-1:1;
+     g = g(ii) * (toeplitz (w) .* pascal (lf, -1));
+     g = g(ii);
+   endif
+
 endfunction
+
+%!test
+%! f = [1/5 4/5 -7/5 -2];
+%!
+%! mu = [1, 1.2];
+%!
+%! g = polyaffine (f, mu);
+%!
+%! x = linspace (-4, 4, 100);
+%!
+%! assert (polyval(f, x, [], mu), polyval (g, x), 1e-10);
+%!
+%!demo
+%! f = [1/5 4/5 -7/5 -2];
+%!
+%! g = polyaffine (f, [1, 1.2]);
+%!
+%! x = linspace (-4, 4, 100);
+%!
+%! plot(x, polyval (f, x), x, polyval (g, x));
+%!
+%! axis ([-4 4 -3 5]);
+%! grid ("on");

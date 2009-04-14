@@ -1,3 +1,7 @@
+2009-04-11  David Bateman  <dbateman@free.fr>
+
+	* plot/__patch__.m: Set default facecolor to [0,1,0].
+	
 2009-04-12  Aravindh Krishnamoorthy <aravindh.k.dev@gmail.com>
        * special-matrix/hadamard.m: Fix a documentation mistake.
 

@@ -177,17 +177,22 @@ function args = setdata (args)
   else
     vert = args {idx};
   endif
-  idx = find (cellfun (@(x) strcmpi (x, "facecolor"), args)) + 1;
-  if (isempty(idx) || idx > nargs)
-    fc = "flat";
-  else
-    fc = args {idx};
-  endif
   idx = find (cellfun (@(x) strcmpi (x, "facevertexcdata"), args)) + 1;
   if (isempty(idx) || idx > nargs)
     fvc = [];
   else
     fvc = args {idx};
+  endif
+  idx = find (cellfun (@(x) strcmpi (x, "facecolor"), args)) + 1;
+  if (isempty(idx) || idx > nargs)
+    if (!isempty (fvc))
+      fc = "flat";
+    else
+      fc = [0, 1, 0];
+    endif
+    args = {"facecolor", fc, args{:}};
+  else
+    fc = args {idx};
   endif
 
   nr = size (faces, 2);
@@ -247,17 +252,22 @@ function args = setvertexdata (args)
   else
     z = args {idx};
   endif
-  idx = find (cellfun (@(x) strcmpi (x, "facecolor"), args)) + 1;
-  if (isempty(idx) || idx > nargs)
-    fc = "flat";
-  else
-    fc = args {idx};
-  endif
   idx = find (cellfun (@(x) strcmpi (x, "cdata"), args)) + 1;
   if (isempty(idx) || idx > nargs)
     c = [];
   else
     c = args {idx};
+  endif
+  idx = find (cellfun (@(x) strcmpi (x, "facecolor"), args)) + 1;
+  if (isempty(idx) || idx > nargs)
+    if (!isempty (c))
+      fc = "flat";
+    else
+      fc = [0, 1, 0];
+    endif
+    args = {"facecolor", fc, args{:}};
+  else
+    fc = args {idx};
   endif
 
   [nr, nc] = size (x);

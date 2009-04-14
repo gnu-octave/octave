@@ -1,3 +1,6 @@
+2009-04-12  Aravindh Krishnamoorthy <aravindh.k.dev@gmail.com>
+       * special-matrix/hadamard.m: Fix a documentation mistake.
+
 2009-04-14  Jaroslav Hajek  <highegg@gmail.com>
 
 	* polynomial/polyaffine.m: New function.

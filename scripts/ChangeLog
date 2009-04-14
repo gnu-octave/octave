@@ -1,3 +1,9 @@
+2009-04-14  Jaroslav Hajek  <highegg@gmail.com>
+
+	* polynomial/polyaffine.m: New function.
+	* polynomial/polyscale.m: Remove.
+	* polynomial/polytrans.m: Remove.
+
 2009-04-12  Ben Abbott <bpabbott@mac.com>
 
 	* plot/__gnuplot_open_stream__.m: New function.

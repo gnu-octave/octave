@@ -16,6 +16,12 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {[@var{t}, @var{p}] =} __marching_cube__ (@var{x}, @var{y}, @var{z}, @var{val}, @var{iso})
 ## @deftypefn  {Function File} {[@var{t}, @var{p}, @var{c}] =} __marching_cube__ (@var{x}, @var{y}, @var{z}, @var{val}, @var{iso}, @var{col})
+## Undocumented internal function.
+## @end deftyefn
+
+## -*- texinfo -*-
+## @deftypefn  {Function File} {[@var{t}, @var{p}] =} __marching_cube__ (@var{x}, @var{y}, @var{z}, @var{val}, @var{iso})
+## @deftypefn  {Function File} {[@var{t}, @var{p}, @var{c}] =} __marching_cube__ (@var{x}, @var{y}, @var{z}, @var{val}, @var{iso}, @var{col})
 ##
 ## Return the triangulation information @var{t} at points @var{p} for
 ## the isosurface values resp. the volume data @var{val} and the iso

@@ -1,3 +1,8 @@
+2009-04-15  Thorsten Meyer  <thorsten.meyier@gmx.de>
+
+	* test_struct.m: Add tests for lazy copying in nested assignments
+	of struct elements.
+
 2009-04-12  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
 	* test_contin.m, test_error.m, test_eval-catch.m, test_for.m,

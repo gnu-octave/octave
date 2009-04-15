@@ -197,3 +197,57 @@
 %!  c(3, 3, 3, 3).value = 1;
 %!  c([1, 3], 2, :, [3, 4]).value = 1;
 
+## test lazy copying in structs: nested assignment to self
+%!test
+%!  a.a = 1;
+%!  a.b = a;
+%!  a.b.c = a;
+%!  assert (a.b.c.b, struct ("a", 1));
+
+## test lazy copying in structs: indirect nested assignment to self
+%!test
+%!  a.a = 1;
+%!  a.b = 2;
+%!  b.c = a;
+%!  b.d = 3;
+%!  c.d = b;
+%!  c.e = 4;
+%!  a.b = c;
+%!  a.b.e = a;
+%!  assert (a.b.e.b.d.c, struct ("a", 1, "b", 2));
+
+## test lazy copying in structs: nested assignment via function
+%!function aa = do_nest (a);
+%!  aa   = a;
+%!  aa.b = a;
+%! endfunction
+%!test
+%!  a.c = 1;
+%!  a = do_nest (a);
+%!  a = do_nest (a);
+%!  a = do_nest (a);
+%!  assert (a.b.b.b, struct ("c", 1));
+
+## test lazy copying in structs: nested assignment via function
+%!function aa = do_nest (a);
+%!  aa   = a;
+%!  aa.b = a;
+%!  aa.b.c = aa;
+%! endfunction
+%!test
+%!  a.c = 1;
+%!  a = do_nest (a);
+%!  a = do_nest (a);
+%!  a = do_nest (a);
+%!  assert (a.b.c.b.b.c.b.b.c.b, struct ("c", 1));
+
+## test lazy copying in structs: nested assignment on different levels.
+%!test
+%!  a.b = 1;
+%!  b.c = a;
+%!  b.d.e = a;
+%!  b.f.g.h = a;
+%!  b.i.j.k.l = a;
+%!  a.m = b;
+%!  a.m.c.b = a;
+%!  assert (a.m.c.b.m.i.j.k.l, struct ("b", 1));

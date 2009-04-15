@@ -1,3 +1,8 @@
+2009-04-15  Jaroslav Hajek  <highegg@gmail.com>
+
+	* Array.cc (rec_permute_helper::blk_trans): Declare as static.
+	(Array<T>::transpose): Reuse it.
+
 2009-04-04  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Array.cc (Array<T>::make_unique): Don't economize when unique.

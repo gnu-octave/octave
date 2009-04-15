@@ -502,7 +502,8 @@ public:
 
   // Helper method for fast blocked transpose.
   template <class T>
-  T *blk_trans (const T *src, T *dest, octave_idx_type nr, octave_idx_type nc) const
+  static T *
+  blk_trans (const T *src, T *dest, octave_idx_type nr, octave_idx_type nc)
     {
       static const octave_idx_type m = 8;
       OCTAVE_LOCAL_BUFFER (T, blk, m*m);
@@ -1829,40 +1830,9 @@ Array<T>::transpose (void) const
     {
       Array<T> result (dim_vector (nc, nr));
 
-      // Blocked transpose to attempt to avoid cache misses.
+      // Reuse the implementation used for permuting.
 
-      // Don't use OCTAVE_LOCAL_BUFFER here as it doesn't work with bool
-      // on some compilers.
-      T buf[64];
-
-      octave_idx_type ii = 0, jj;
-      for (jj = 0; jj < (nc - 8 + 1); jj += 8)
-	{
-	  for (ii = 0; ii < (nr - 8 + 1); ii += 8)
-	    {
-	      // Copy to buffer
-	      for (octave_idx_type j = jj, k = 0, idxj = jj * nr; 
-		   j < jj + 8; j++, idxj += nr)
-		for (octave_idx_type i = ii; i < ii + 8; i++)
-		  buf[k++] = xelem (i + idxj);
-
-	      // Copy from buffer
-	      for (octave_idx_type i = ii, idxi = ii * nc; i < ii + 8; 
-		   i++, idxi += nc)
-		for (octave_idx_type j = jj, k = i - ii; j < jj + 8; 
-		     j++, k+=8)
-		  result.xelem (j + idxi) = buf[k];
-	    }
-
-	  if (ii < nr)
-	    for (octave_idx_type j = jj; j < jj + 8; j++)
-	      for (octave_idx_type i = ii; i < nr; i++)
-		result.xelem (j, i) = xelem (i, j);
-	} 
-
-      for (octave_idx_type j = jj; j < nc; j++)
-	for (octave_idx_type i = 0; i < nr; i++)
-	  result.xelem (j, i) = xelem (i, j);
+      rec_permute_helper::blk_trans (data (), result.fortran_vec (), nr, nc);
 
       return result;
     }

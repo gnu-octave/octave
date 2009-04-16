@@ -173,7 +173,12 @@ make_value_list (tree_argument_list *args, const string_vector& arg_nm,
   octave_value_list retval;
 
   if (args)
-    retval = args->convert_to_const_vector (object);
+    {
+      if (object && args->has_magic_end () && object->is_undefined ())
+        gripe_invalid_inquiry_subscript ();
+      else
+        retval = args->convert_to_const_vector (object);
+    }
 
   if (! error_state)
     {

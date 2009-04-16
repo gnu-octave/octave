@@ -1,5 +1,10 @@
 2009-04-16  Jaroslav Hajek  <highegg@gmail.com>
 
+	* pt-idx.cc (make_value_list): Gripe on magic end query for undefined
+	variables.
+
+2009-04-16  Jaroslav Hajek  <highegg@gmail.com>
+
 	* xpow.cc (same_sign): New helper function.
 	(elem_xpow (double, const Range&), elem_xpow (const Complex&, const Range&)): 
 	Only optimize monotonic-magnitude integer ranges, start always from

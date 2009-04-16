@@ -108,13 +108,6 @@ idx_vector::idx_range_rep::idx_range_rep (octave_idx_type _start, octave_idx_typ
     }
 }
 
-static void
-gripe_non_int_range (void)
-{
-  (*current_liboctave_error_handler)
-    ("If a range is used as subscript, all elements are expected to be integers.");
-}
-
 idx_vector::idx_range_rep::idx_range_rep (const Range& r)
   : start (0), len (r.nelem ()), step (1)
 {
@@ -129,10 +122,15 @@ idx_vector::idx_range_rep::idx_range_rep (const Range& r)
         {    
           start = static_cast<octave_idx_type> (r.base ()) - 1;
           step = static_cast<octave_idx_type> (r.inc ());
+          if (start < 0 || (step < 0 && start + (len-1)*step < 0))
+            {
+              gripe_invalid_index ();
+              err = true;
+            }
         }
       else
         {
-          gripe_non_int_range ();
+          gripe_invalid_index ();
           err = true;
         }
     }

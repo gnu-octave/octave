@@ -1,3 +1,8 @@
+2009-04-16  Jaroslav Hajek  <highegg@gmail.com>
+
+	* idx-vector.cc (idx_vector::idx_range_rep::idx_range_rep (const
+	Range&)): Check for positive integer indices. Unify gripes.
+
 2009-04-15  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Array.cc (rec_permute_helper::blk_trans): Declare as static.

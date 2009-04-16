@@ -692,39 +692,46 @@ elem_xpow (double a, const ComplexMatrix& b)
   return result;
 }
 
+static inline bool 
+same_sign (double a, double b)
+{
+  return (a >= 0 && b >= 0) || (a <= 0 && b <= 0);
+}
+
 octave_value
 elem_xpow (double a, const Range& r)
 {
   octave_value retval;
 
-  if (r.nelem () <= 0)
-    retval = Matrix ();
-  else if (a < 0.0 && ! r.all_elements_are_ints ())
+  // Only optimize powers with ranges that are integer and monotonic in
+  // magnitude.
+  if (r.nelem () > 1 && r.all_elements_are_ints ()
+      && same_sign (r.base (), r.limit ()))
     {
-      ComplexMatrix mat (1, r.nelem ());
-      Complex atmp (a);
-      Complex *pmat = mat.fortran_vec ();
+      octave_idx_type n = r.nelem ();
+      Matrix result (1, n);
+      if (same_sign (r.base (), r.inc ()))
+        {
+          double base = std::pow (a, r.base ());
+          double inc = std::pow (a, r.inc ());
+          result(0) = base;
+          for (octave_idx_type i = 1; i < n; i++)
+            result(i) = (base *= inc);
+        }
+      else
+        {
+          // Don't use Range::limit () here.
+          double limit = std::pow (a, r.base () + (n-1) * r.inc ());
+          double inc = std::pow (a, -r.inc ());
+          result(n-1) = limit;
+          for (octave_idx_type i = n-2; i >= 0; i--)
+            result(i) = (limit *= inc);
+        }
 
-      pmat[0] = std::pow (atmp, r.base ());
-      Complex mul = std::pow (atmp, r.inc ());
-      for (octave_idx_type i = 1; i < r.nelem (); i++)
-        pmat[i] = pmat[i-1] * mul;
-
-      retval = mat;
-    }
+      retval = result;
+    }  
   else
-    {
-      Matrix mat (1, r.nelem ());
-      double *pmat = mat.fortran_vec ();
-
-      double base = std::pow (a, r.base ());
-      pmat[0] = base;
-      double mul = std::pow (a, r.inc ());
-      for (octave_idx_type i = 1; i < r.nelem (); i++)
-        pmat[i] = (base *= mul);
-
-      retval = mat;
-    }
+    retval = elem_xpow (a, r.matrix_value ());
 
   return retval;
 }
@@ -931,20 +938,37 @@ elem_xpow (const Complex& a, const Range& r)
 {
   octave_value retval;
 
-  if (r.nelem () <= 0)
-    retval = Matrix ();
-  else
+  // Only optimize powers with ranges that are integer and monotonic in
+  // magnitude.
+  if (r.nelem () > 1 && r.all_elements_are_ints ()
+      && same_sign (r.base (), r.limit ()))
     {
-      ComplexMatrix mat (1, r.nelem ());
-      Complex *pmat = mat.fortran_vec ();
+      octave_idx_type n = r.nelem ();
+      ComplexMatrix result (1, n);
 
-      pmat[0] = std::pow (a, r.base ());
-      Complex mul = std::pow (a, r.inc ());
-      for (octave_idx_type i = 1; i < r.nelem (); i++)
-        pmat[i] = pmat[i-1] * mul;
+      if (same_sign (r.base (), r.inc ()))
+        {
+          Complex base = std::pow (a, r.base ());
+          Complex inc = std::pow (a, r.inc ());
+          result(0) = base;
+          for (octave_idx_type i = 1; i < n; i++)
+            result(i) = (base *= inc);
+        }
+      else
+        {
+          // Don't use Range::limit () here.
+          Complex limit = std::pow (a, r.base () + (n-1) * r.inc ());
+          Complex inc = std::pow (a, -r.inc ());
+          result(n-1) = limit;
+          for (octave_idx_type i = n-2; i >= 0; i--)
+            result(i) = (limit *= inc);
+        }
 
-      retval = mat;
-    }
+      retval = result;
+    }  
+  else
+    retval = elem_xpow (a, r.matrix_value ());
+
 
   return retval;
 }

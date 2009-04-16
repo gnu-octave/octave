@@ -1,3 +1,10 @@
+2009-04-16  Jaroslav Hajek  <highegg@gmail.com>
+
+	* xpow.cc (same_sign): New helper function.
+	(elem_xpow (double, const Range&), elem_xpow (const Complex&, const Range&)): 
+	Only optimize monotonic-magnitude integer ranges, start always from
+	the smaller end.
+
 2008-04-11  David Bateman  <dbateman@free.fr>
 
 	* ov-cell.cc (Fstruct2cell): Treat possible trailing singleton for

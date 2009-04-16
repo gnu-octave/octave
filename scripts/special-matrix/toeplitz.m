@@ -91,15 +91,28 @@ function retval = toeplitz (c, r)
     c(1) = conj (c(1));
   endif
 
-  ## Concatenate data into a single column vector.
-  data = [r(end:-1:2)(:); c(:)];
+  if (issparse(c) && issparse(r))
+    c = c(:).';
+    r = r(:).';
+    cidx = find(c);
+    ridx = find(r);
 
-  ## Get slices.
-  slices = cellslices (data, nc:-1:1, nc+nr-1:-1:nr);
+    ## Ignore the first element in r.
+    ridx = ridx(ridx > 1);
 
-  ## Form matrix.
-  retval = horzcat (slices{:});
+    ## Form matrix.
+    retval = spdiags(repmat(c(cidx),nr,1),1-cidx,nr,nc)+...
+	spdiags(repmat(r(ridx),nr,1),ridx-1,nr,nc);
+  else  
+    ## Concatenate data into a single column vector.
+    data = [r(end:-1:2)(:); c(:)];
 
+    ## Get slices.
+    slices = cellslices (data, nc:-1:1, nc+nr-1:-1:nr);
+
+    ## Form matrix.
+    retval = horzcat (slices{:});
+  endif
 endfunction
 
 %!assert((toeplitz (1) == 1

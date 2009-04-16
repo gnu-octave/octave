@@ -1,3 +1,7 @@
+2009-04-16  Marco Caliari <marco.caliari@univr.it>
+
+	* toeplitz.m: Treat separately the sparse case.
+
 2009-04-14  Thomas Treichl  <Thomas.Treichl@gmx.net>
 
 	* plot/__marching_cube__.m: Add help text.

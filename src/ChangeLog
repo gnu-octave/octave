@@ -1,3 +1,9 @@
+2009-04-17  Jaroslav Hajek  <highegg@gmail.com>
+
+	* oct-map.cc (Octave_map::assign (const octave_value_list&, const
+	std::string&, const Cell&)): Fix & simplify.
+	(common_size): Remove.
+
 2009-04-16  Jaroslav Hajek  <highegg@gmail.com>
 
 	* pt-idx.cc (make_value_list): Gripe on magic end query for undefined

@@ -345,36 +345,6 @@ Octave_map::assign (const octave_value_list& idx, const Octave_map& rhs)
   return *this;
 }
 
-static dim_vector
-common_size (const dim_vector& a, const dim_vector& b)
-{
-  dim_vector retval;
-
-  octave_idx_type a_len = a.length ();
-  octave_idx_type b_len = b.length ();
-
-  octave_idx_type new_len = std::max (a_len, b_len);
-  octave_idx_type min_len = std::min (a_len, b_len);
-
-  retval.resize (new_len);
-
-  for (octave_idx_type i = 0; i < min_len; i++)
-    retval(i) = std::max (a(i), b(i));
-
-  if (a_len < b_len)
-    {
-      for (octave_idx_type i = min_len; i < b_len; i++)
-	retval(i) = b(i);
-    }
-  else if (a_len > b_len)
-    {
-      for (octave_idx_type i = min_len; i < a_len; i++)
-	retval(i) = a(i);
-    }
-
-  return retval;
-}
-
 Octave_map&
 Octave_map::assign (const octave_value_list& idx, const std::string& k,
 		    const Cell& rhs)
@@ -383,31 +353,22 @@ Octave_map::assign (const octave_value_list& idx, const std::string& k,
 
   if (contains (k))
     tmp = map[k];
+  else
+    tmp = Cell (dimensions);
 
-  octave_value fill_value = Matrix ();
-
-  tmp.assign (idx, rhs, fill_value);
+  tmp.assign (idx, rhs);
 
   if (! error_state)
     {
-      dim_vector rhs_dims = tmp.dims ();
+      dim_vector tmp_dims = tmp.dims ();
 
-      dim_vector curr_dims = dims ();
-
-      dim_vector new_dims = common_size (rhs_dims, curr_dims);
-
-      if (new_dims != rhs_dims)
-	{
-	  tmp.resize (new_dims, fill_value);
-	}
-
-      if (new_dims != curr_dims)
+      if (tmp_dims != dimensions)
 	{
 	  for (iterator p = begin (); p != end (); p++)
-	    contents(p).resize (new_dims, fill_value);
-	}
+	    contents(p).resize (tmp_dims, Cell::resize_fill_value ());
 
-      dimensions = new_dims;
+          dimensions = tmp_dims;
+	}
 
       maybe_add_to_key_list (k);
 

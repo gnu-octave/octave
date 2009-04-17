@@ -1,3 +1,7 @@
+2009-04-16  Rik  <rdrider0-list@yahoo.com>
+
+	* interpreter/basics.txi: Update help strings for command line options
+
 2009-04-11  David Bateman  <dbateman@free.fr>
 
 	* interpreter/contributors.in: Add Martin Helm.

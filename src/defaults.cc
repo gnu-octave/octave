@@ -322,7 +322,7 @@ set_default_editor (void)
 static void
 set_local_site_defaults_file (void)
 {
-  std::string lsf = octave_env::getenv ("OCTAVE_LOCAL_SITE_INITFILE");
+  std::string lsf = octave_env::getenv ("OCTAVE_SITE_INITFILE");
 
   if (lsf.empty ())
     {
@@ -336,7 +336,7 @@ set_local_site_defaults_file (void)
 static void
 set_site_defaults_file (void)
 {
-  std::string sf = octave_env::getenv ("OCTAVE_SITE_INITFILE");
+  std::string sf = octave_env::getenv ("OCTAVE_VERSION_INITFILE");
 
   if (sf.empty ())
     {

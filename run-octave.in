@@ -70,5 +70,5 @@ fi
 OCTAVE_SITE_INITFILE="$top_srcdir/scripts/startup/main-rcfile" \
 LD_PRELOAD="$liboctinterp $liboctave $libcruft" \
 %library_path_var%="$builddir/src:$builddir/liboctave:$builddir/libcruft:$%library_path_var%" \
-  exec $driver "$builddir/src/octave" --no-initial-path --path="$LOADPATH" --image-path="$IMAGEPATH" --doc-cache-file="$DOCFILE" --info-file="$INFOFILE" "$@"
+  exec $driver "$builddir/src/octave" --no-init-path --path="$LOADPATH" --image-path="$IMAGEPATH" --doc-cache-file="$DOCFILE" --info-file="$INFOFILE" "$@"
 

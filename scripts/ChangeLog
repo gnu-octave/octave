@@ -1,3 +1,7 @@
+2009-04-17  Rik  <rdrider0-list@yahoo.com>
+
+	* plot/__marching_cube__.m: Correct help Texinfo so manual will compile
+
 2009-04-16  Marco Caliari <marco.caliari@univr.it>
 
 	* toeplitz.m: Treat separately the sparse case.

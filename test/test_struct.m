@@ -251,3 +251,14 @@
 %!  a.m = b;
 %!  a.m.c.b = a;
 %!  assert (a.m.c.b.m.i.j.k.l, struct ("b", 1));
+
+## test indexed assignment into empty struct array
+%!test
+%!  s = resize(struct(),3,2);
+%!  s(3).foo = 42;
+%!  assert (s(3), struct ("foo", 42));
+
+%!error <Index exceeds matrix dimension>
+%!  s = resize(struct(),3,2);
+%!  s(3).foo = 42;
+%!  s(7);

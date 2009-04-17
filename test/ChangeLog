@@ -1,3 +1,8 @@
+2009-04-17  Thorsten Meyer  <thorsten.meyier@gmx.de>
+
+	* test_struct.m: Add tests to prevent regression of bug with
+	indexed assignment into empty struct array.
+
 2009-04-15  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
 	* test_struct.m: Add tests for lazy copying in nested assignments

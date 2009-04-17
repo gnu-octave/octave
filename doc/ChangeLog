@@ -1,4 +1,9 @@
-2009-04-16  Rik  <rdrider0-list@yahoo.com>
+2009-04-17  Rik  <rdrider0-list@yahoo.com>
+
+	* interpreter/basics.txi: Update help text for sections 2.2 
+	and 2.3 of basics.txi
+
+2009-04-17  Rik  <rdrider0-list@yahoo.com>
 
 	* interpreter/basics.txi: Update help strings for command line options
 

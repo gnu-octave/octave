@@ -24,7 +24,7 @@
 ## any arguments, the manual is shown from the beginning.
 ##
 ## For example, the command @kbd{doc rand} starts the GNU Info browser
-## at this node in the on-line version of the manual.
+## at the @code{rand} node in the on-line version of the manual.
 ##
 ## Once the GNU Info browser is running, help for using it is available
 ## using the command @kbd{C-h}.

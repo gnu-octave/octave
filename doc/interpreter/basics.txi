@@ -80,7 +80,7 @@ probably only useful if you are actually trying to debug the parser.
 @cindex @code{--doc-cache-file @var{filename}}
 Specify the name of the doc cache file to use.  The value of @var{filename}
 specified on the command line will override any value of
-@code{OCTAVE_DOC_CACHE_FILE} found in the environment, but not any commands
+@w{@code{OCTAVE_DOC_CACHE_FILE}} found in the environment, but not any commands
 in the system or user startup files that use the @code{doc_cache_file}
 function.
 
@@ -98,9 +98,9 @@ specified.
 @cindex @code{--exec-path @var{path}}
 Specify the path to search for programs to run.  The value of @var{path}
 specified on the command line will override any value of
-@code{OCTAVE_EXEC_PATH} found in the environment, but not any commands
+@w{@code{OCTAVE_EXEC_PATH}} found in the environment, but not any commands
 in the system or user startup files that set the built-in variable
-@code{EXEC_PATH}.
+@w{@code{EXEC_PATH}}.
 
 @item  --help
 @itemx -h
@@ -114,15 +114,15 @@ Print short help message and exit.
 @cindex @code{--image-path @var{path}}
 Add path to the head of the search path for images.  The value of 
 @var{path} specified on the command line will override any value of 
-@code{OCTAVE_IMAGE_PATH} found in the environment, but not any commands 
+@w{@code{OCTAVE_IMAGE_PATH}} found in the environment, but not any commands 
 in the system or user startup files that set the built-in variable 
-@code{IMAGE_PATH}.
+@w{@code{IMAGE_PATH}}.
 
 @item --info-file @var{filename}
 @cindex @code{--info-file @var{filename}}
 Specify the name of the info file to use.  The value of @var{filename}
 specified on the command line will override any value of
-@code{OCTAVE_INFO_FILE} found in the environment, but not any commands
+@w{@code{OCTAVE_INFO_FILE}} found in the environment, but not any commands
 in the system or user startup files that use the @code{info_file}
 function.
 
@@ -130,7 +130,7 @@ function.
 @cindex @code{--info-program @var{program}}
 Specify the name of the info program to use.  The value of @var{program}
 specified on the command line will override any value of
-@code{OCTAVE_INFO_PROGRAM} found in the environment, but not any
+@w{@code{OCTAVE_INFO_PROGRAM}} found in the environment, but not any
 commands in the system or user startup files that use the
 @code{info_program} function.
 
@@ -183,7 +183,7 @@ and @code{--no-site-file}.
 @cindex @code{-p @var{path}}
 Add path to the head of the search path for function files.  The 
 value of @var{path} specified on the command line will override any value
-of @code{OCTAVE_PATH} found in the environment, but not any commands in the
+of @w{@code{OCTAVE_PATH}} found in the environment, but not any commands in the
 system or user startup files that set the internal load path through one
 of the path functions.
 
@@ -372,7 +372,7 @@ function.
 
 @DOCSTRING(warranty)
 
-The following function can be used to change which programs are used
+The following functions can be used to change which programs are used
 for displaying the documentation, and where the documentation can be
 found.
 
@@ -381,6 +381,8 @@ found.
 @DOCSTRING(info_program)
 
 @DOCSTRING(makeinfo_program)
+
+@DOCSTRING(doc_cache_file)
 
 @DOCSTRING(suppress_verbose_help_message)
 

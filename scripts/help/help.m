@@ -26,7 +26,7 @@
 ## The help command can give you information about operators, but not the
 ## comma and semicolons that are used as command separators.  To get help
 ## for those, you must type @kbd{help comma} or @kbd{help semicolon}.
-## @seealso{doc, which, lookfor}
+## @seealso{doc, lookfor, which}
 ## @end deftypefn
 
 function help (name)

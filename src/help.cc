@@ -974,8 +974,15 @@ DEFUN (doc_cache_file, args, nargout,
 @deftypefn {Built-in Function} {@var{val} =} doc_cache_file ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} doc_cache_file (@var{new_val})\n\
 Query or set the internal variable that specifies the name of the\n\
-Octave DOC file.  The default value is @code{\"@var{octetcdir}/DOC\"}.\n\
-@seealso{info_program, doc, help, makeinfo_program}\n\
+Octave documentation cache file.  A cache file significantly improves\n\
+the performance of the @code{lookfor} command.  The default value is \n\
+@file{@var{octave-home}/share/octave/@var{version}/etc/doc-cache},\n\
+in which @var{octave-home} is the root directory of the Octave installation,\n\
+and @var{version} is the Octave version number.\n\
+The default value may be overridden by the environment variable\n\
+@w{@code{OCTAVE_DOC_CACHE_FILE}}, or the command line argument\n\
+@samp{--doc-cache-file NAME}.\n\
+@seealso{lookfor, info_program, doc, help, makeinfo_program}\n\
 @end deftypefn")
 {
   return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (doc_cache_file);
@@ -987,8 +994,11 @@ DEFUN (info_file, args, nargout,
 @deftypefnx {Built-in Function} {@var{old_val} =} info_file (@var{new_val})\n\
 Query or set the internal variable that specifies the name of the\n\
 Octave info file.  The default value is\n\
-@code{\"@var{octave-home}/info/octave.info\"}, in\n\
-which @var{octave-home} is the directory where all of Octave is installed.\n\
+@file{@var{octave-home}/info/octave.info}, in\n\
+which @var{octave-home} is the root directory of the Octave installation.\n\
+The default value may be overridden by the environment variable\n\
+@w{@code{OCTAVE_INFO_FILE}}, or the command line argument\n\
+@samp{--info-file NAME}.\n\
 @seealso{info_program, doc, help, makeinfo_program}\n\
 @end deftypefn")
 {
@@ -1001,13 +1011,13 @@ DEFUN (info_program, args, nargout,
 @deftypefnx {Built-in Function} {@var{old_val} =} info_program (@var{new_val})\n\
 Query or set the internal variable that specifies the name of the\n\
 info program to run.  The default value is\n\
-@code{\"@var{octave-home}/libexec/octave/@var{version}/exec/@var{arch}/info\"}\n\
-in which @var{octave-home} is the directory where all of Octave is\n\
-installed, @var{version} is the Octave version number, and @var{arch}\n\
+@file{@var{octave-home}/libexec/octave/@var{version}/exec/@var{arch}/info}\n\
+in which @var{octave-home} is the root directory of the Octave installation,\n\
+@var{version} is the Octave version number, and @var{arch}\n\
 is the system type (for example, @code{i686-pc-linux-gnu}).  The\n\
-default initial value may be overridden by the environment variable\n\
-@code{OCTAVE_INFO_PROGRAM}, or the command line argument\n\
-@code{--info-program NAME}.\n\
+default value may be overridden by the environment variable\n\
+@w{@code{OCTAVE_INFO_PROGRAM}}, or the command line argument\n\
+@samp{--info-program NAME}.\n\
 @seealso{info_file, doc, help, makeinfo_program}\n\
 @end deftypefn")
 {
@@ -1019,8 +1029,8 @@ DEFUN (makeinfo_program, args, nargout,
 @deftypefn {Built-in Function} {@var{val} =} makeinfo_program ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} makeinfo_program (@var{new_val})\n\
 Query or set the internal variable that specifies the name of the\n\
-makeinfo program that Octave runs to format help text containing\n\
-Texinfo markup commands.  The default initial value is @code{\"makeinfo\"}.\n\
+program that Octave runs to format help text containing\n\
+Texinfo markup commands.  The default value is @code{makeinfo}.\n\
 @seealso{info_file, info_program, doc, help}\n\
 @end deftypefn")
 {

@@ -1034,6 +1034,7 @@ octave_remove_atexit_function (const std::string& fname)
 DEFUN (atexit, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} atexit (@var{fcn})\n\
+@deftypefnx {Built-in Function} {} atexit (@var{fcn}, @var{flag})\n\
 Register a function to be called when Octave exits.  For example,\n\
 \n\
 @example\n\
@@ -1048,11 +1049,11 @@ atexit (\"last_words\");\n\
 @noindent\n\
 will print the message \"Bye bye\" when Octave exits.\n\
 \n\
-@deftypefnx {Built-in Function} {} atexit (@var{fcn}, @var{flag})\n\
-Register or unregister a function to be called when Octave exits,\n\
-depending on @var{flag}.  If @var{flag} is true, the function is\n\
-registered, if @var{flag} is false, it is unregistered.  For example,\n\
-after registering the function @code{last_words} as above,\n\
+The additional argument @var{flag} will register or unregister\n\
+@var{fcn} from the list of functions to be called when Octave\n\
+exits.  If @var{flag} is true, the function is registered, and if\n\
+@var{flag} is false, it is unregistered.  For example,\n\
+after registering the function @code{last_words} above,\n\
 \n\
 @example\n\
 atexit (\"last_words\", false);\n\
@@ -1060,7 +1061,7 @@ atexit (\"last_words\", false);\n\
 \n\
 @noindent\n\
 will remove the function from the list and Octave will not call\n\
-the function @code{last_words} when it exits.\n\
+@code{last_words} when it exits.\n\
 \n\
 Note that @code{atexit} only removes the first occurrence of a function\n\
 from the list, so if a function was placed in the list multiple\n\

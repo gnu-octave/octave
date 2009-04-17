@@ -422,7 +422,7 @@ open_diary_file (void)
 DEFUN (diary, args, ,
   "-*- texinfo -*-\n\
 @deffn {Command} diary options\n\
-Create a list of all commands @emph{and} the output they produce, mixed\n\
+Record a list of all commands @emph{and} the output they produce, mixed\n\
 together just as you see them on your terminal.  Valid options are:\n\
 \n\
 @table @code\n\
@@ -437,7 +437,7 @@ Stop recording your session in the diary file.\n\
 Record your session in the file named @var{file}.\n\
 @end table\n\
 \n\
-Without any arguments, @code{diary} toggles the current diary state.\n\
+With no arguments, @code{diary} toggles the current diary state.\n\
 @end deffn")
 {
   octave_value_list retval;

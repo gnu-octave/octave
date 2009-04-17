@@ -981,8 +981,7 @@ functions.\n\
 @end table\n\
 \n\
 @noindent\n\
-If invoked without any arguments, @code{echo} toggles the current echo\n\
-state.\n\
+With no arguments, @code{echo} toggles the current echo state.\n\
 @end deffn")
 {
   octave_value_list retval;
@@ -1295,11 +1294,10 @@ DEFUN (PS4, args, nargout,
 @deftypefn {Built-in Function} {@var{val} =} PS4 ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} PS4 (@var{new_val})\n\
 Query or set the character string used to prefix output produced\n\
-when echoing commands when @code{echo_executing_commands} is enabled.\n\
+when echoing commands is enabled.\n\
 The default value is @code{\"+ \"}.\n\
-@xref{Invoking Octave from the Command Line}, for a description of\n\
-@code{--echo-commands}.\n\
-@seealso{echo_executing_commands, PS1, PS2}\n\
+@xref{Diary and Echo Commands}, for a description of echoing commands.\n\
+@seealso{echo, echo_executing_commands, PS1, PS2}\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (PS4);
@@ -1338,8 +1336,8 @@ Echo commands read from command line.\n\
 More than one state can be active at once.  For example, a value of 3 is\n\
 equivalent to the command @kbd{echo on all}.\n\
 \n\
-The value of @code{echo_executing_commands} is set by the @kbd{echo}\n\
-command and the command line option @code{--echo-input}.\n\
+The value of @code{echo_executing_commands} may be set by the @kbd{echo}\n\
+command or the command line option @code{--echo-commands}.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (echo_executing_commands);

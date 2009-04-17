@@ -391,10 +391,13 @@ found.
 @cindex command-line editing
 @cindex editing the command line
 
-Octave uses the GNU readline library to provide an extensive set of
+Octave uses the GNU Readline library to provide an extensive set of
 command-line editing and history features.  Only the most common
-features are described in this manual.  Please see The GNU Readline
-Library manual for more information.
+features are described in this manual.  In addition, all of the editing
+functions can be bound to different key strokes at the user's discretion.  
+This manual assumes no changes from the default Emacs bindings.  See the GNU 
+Readline Library manual for more information on customizing Readline and 
+for a complete feature list.
 
 To insert printing characters (letters, digits, symbols, etc.), simply
 type the character.  Octave will insert the character at the cursor and
@@ -406,11 +409,12 @@ to the beginning of the line.  To type @kbd{C-a}, hold down @key{CTRL}
 and then press @key{a}.  In the following sections, control characters
 such as @kbd{Control-a} are written as @kbd{C-a}.
 
-Another set of command-line editing functions use Meta characters.  On
-some terminals, you type @kbd{M-u} by holding down @key{META} and
-pressing @key{u}.  If your terminal does not have a @key{META} key, you
+Another set of command-line editing functions use Meta characters.  To 
+type @kbd{M-u}, hold down the @key{META} key and press @key{u}.  Depending
+on the keyboard, the @key{META} key may be labeled @key{ALT} or
+even @key{WINDOWS}.  If your terminal does not have a @key{META} key, you
 can still type Meta characters using two-character sequences starting
-with @kbd{ESC}.  Thus, to enter @kbd{M-u}, you could type
+with @kbd{ESC}.  Thus, to enter @kbd{M-u}, you would type
 @key{ESC} @key{u}.  The @kbd{ESC} character sequences are also allowed on
 terminals with real Meta keys.  In the following sections, Meta
 characters such as @kbd{Meta-u} are written as @kbd{M-u}.
@@ -462,8 +466,7 @@ Clear the screen, reprinting the current line at the top.
 
 @item C-_
 @itemx C-/
-Undo the last thing that you did.  You can undo all the way back to an
-empty line.
+Undo the last action.  You can undo all the way back to an empty line.
 
 @item M-r
 Undo all changes made to this line.  This is like typing the `undo'
@@ -472,8 +475,8 @@ command enough times to get back to the beginning.
 
 The above table describes the most basic possible keystrokes that you need
 in order to do editing of the input line.  On most terminals, you can
-also use the arrow keys in place of @kbd{C-f} and @kbd{C-b} to move
-forward and backward.
+also use the left and right arrow keys in place of @kbd{C-f} and @kbd{C-b}
+to move forward and backward.
 
 Notice how @kbd{C-f} moves forward a character, while @kbd{M-f} moves
 forward a word.  It is a loose convention that control keystrokes
@@ -484,9 +487,7 @@ operate on characters while meta keystrokes operate on words.
 The function @code{clc} will allow you to clear the screen from within
 Octave programs.
 
-@ifinfo
 @DOCSTRING(clc)
-@end ifinfo
 
 @node Killing and Yanking
 @subsection Killing and Yanking
@@ -638,8 +639,8 @@ Search forward starting at the current line and moving `down' through
 the history as necessary.
 @end table
 
-On most terminals, you can also use the arrow keys in place of @kbd{C-p}
-and @kbd{C-n} to move through the history list.
+On most terminals, you can also use the up and down arrow keys in place 
+of @kbd{C-p} and @kbd{C-n} to move through the history list.
 
 In addition to the keyboard commands for moving through the history
 list, Octave provides three functions for viewing, editing, and
@@ -651,14 +652,15 @@ re-running chunks of commands from the history list.
 
 @DOCSTRING(run_history)
 
-Octave also allows you customize the details of how and where the history
+@noindent
+Octave also allows you customize the details of when, where, and how history
 is saved.
+
+@DOCSTRING(saving_history)
 
 @DOCSTRING(history_file)
 
 @DOCSTRING(history_size)
-
-@DOCSTRING(saving_history)
 
 @DOCSTRING(history_timestamp_format_string)
 
@@ -666,12 +668,18 @@ is saved.
 
 @node Customizing readline
 @subsection Customizing @code{readline}
+@cindex @file{~/.inputrc}
+@cindex customizing @code{readline}
+@cindex @code{readline} customization
 
-As mentioned earlier Octave uses the GNU readline library for
-command-line editing and history features.  It is possible to
-customize how readline works through a configuration file.
+Octave uses the GNU Readline library for command-line editing and
+history features.  Readline is very flexible and can be modified through
+a configuration file of commands (See the GNU Readline library for the
+exact command syntax).  The default configuration file is normally
+@file{~/.inputrc}.
 
-@c FIXME -- need a brief description of the ~/.inputrc file here.
+Octave provides two commands for initializing Readline and thereby changing
+the command line behavior.
 
 @DOCSTRING(read_readline_init_file)
 

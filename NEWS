@@ -197,6 +197,9 @@ Summary of important user-visible changes for version 3.2:
     a copy would be made, such as certain array slicing operations or
     conversions between cells, structs and cs-lists.  This usually reduces
     both time and memory consumption.
+    Also, Octave will now attempt to detect and optimize usage of a vector 
+    as a stack, when elements are being repeatedly inserted at/removed from 
+    the end of the vector.
 
  ** Improved performance for reduction operations.
 

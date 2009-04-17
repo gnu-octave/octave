@@ -1,5 +1,10 @@
 2009-04-17  Jaroslav Hajek  <highegg@gmail.com>
 
+	* oct-map.h (Octave_map::contents (const_iterator) const,
+	Octave_map::contents (iterator)): Simplify.
+
+2009-04-17  Jaroslav Hajek  <highegg@gmail.com>
+
 	* oct-map.cc (Octave_map::assign (const octave_value_list&, const
 	std::string&, const Cell&)): Fix & simplify.
 	(common_size): Remove.

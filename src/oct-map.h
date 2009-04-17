@@ -133,11 +133,11 @@ Octave_map
   Cell& contents (const std::string& k);
   Cell contents (const std::string& k) const;
 
-  Cell& contents (const_iterator p)
-    { return contents (key(p)); }
+  Cell& contents (iterator p)
+    { return p->second; }
 
   Cell contents (const_iterator p) const
-    { return contents (key(p)); }
+    { return p->second; }
 
   int intfield (const std::string& k, int def_val = 0) const;
 

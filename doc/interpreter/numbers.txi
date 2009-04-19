@@ -638,7 +638,7 @@ The following example illustrates this.
 data = [ 1, 2; 3, 4 ];
 idx = (data <= 2);
 data(idx)
-     @result{} ans = [ 1; 4 ]
+     @result{} ans = [ 1; 2 ]
 @end example
 
 @noindent

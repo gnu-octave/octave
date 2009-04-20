@@ -19,8 +19,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} vander (@var{c})
+## @deftypefn {Function File} {} vander (@var{c}, @var{n})
 ## Return the Vandermonde matrix whose next to last column is @var{c}.
+## If @var{n} is specified, it determines the number of columns;
+## otherwise, @var{n} is taken to be equal to the length of @var{c}.
 ##
 ## A Vandermonde matrix has the form:
 ## @iftex
@@ -51,15 +53,16 @@
 
 ## Author: jwe
 
-function retval = vander (c)
+function retval = vander (c, n)
 
-  if (nargin != 1)
+  if (nargin == 1)
+    n = length (c);
+  elseif (nargin != 2)
     print_usage ();
   endif
 
   if (isvector (c))
-    n = length (c);
-    retval = zeros (n, n, class (c));
+    retval = zeros (length (c), n, class (c));
     ## avoiding many ^s appears to be faster for n >= 100.
     d = 1;
     c = c(:);

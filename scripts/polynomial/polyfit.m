@@ -79,15 +79,15 @@ function [p, s, mu] = polyfit (x, y, n)
 
   ## Reshape x & y into column vectors.
   l = numel (x);
-  x = reshape (x, l, 1);
-  y = reshape (y, l, 1);
+  x = x(:);
+  y = y(:);
 
   ## Construct the Vandermonde matrix.
-  v = (x * ones (1, n+1)) .^ (ones (l, 1) * (n : -1 : 0));
+  v = vander (x, n+1);
 
   ## Solve by QR decomposition.
   [q, r, k] = qr (v, 0);
-  p = r \ (y' * q)';
+  p = r \ (q' * y);
   p(k) = p;
 
   if (nargout > 1)

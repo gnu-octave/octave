@@ -1,6 +1,7 @@
 2009-04-20  Jaroslav Hajek  <highegg@gmail.com>
 
 	* special-matrix/vander.m: Allow second argument.
+	* special-matrix/polyfit.m: Simplify.
 
 2009-04-17  Rik  <rdrider0-list@yahoo.com>
 

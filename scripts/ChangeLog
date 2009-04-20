@@ -1,3 +1,7 @@
+2009-04-20  John W. Eaton  <jwe@octave.org>
+
+	* special-matrix/vander.m: Update tests.
+
 2009-04-20  Jaroslav Hajek  <highegg@gmail.com>
 
 	* special-matrix/vander.m: Allow second argument.

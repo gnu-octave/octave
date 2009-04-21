@@ -1003,7 +1003,7 @@ ${1 \\over 2} \\le \\left| f \\right| < 1$\n\
 @end tex\n\
 @end iftex\n\
 @ifnottex\n\
-@code{1/2 <= abs(f) < 1}\n\ 
+@code{1/2 <= abs(f) < 1}\n\
 @end ifnottex\n\
 and @var{e} is an integer.  If @code{x = 0}, @code{f = e = 0}.\n\
 @seealso{pow2, log, log10, exp}\n\

@@ -404,7 +404,7 @@ DEFUN (EDITOR, args, nargout,
 @deftypefnx {Built-in Function} {@var{old_val} =} EDITOR (@var{new_val})\n\
 Query or set the internal variable that specifies the editor to\n\
 use with the @code{edit_history} command.  The default value is taken from\n\
-the environment variable @w{@code{EDITOR}} when Octave starts.  If the\n\ 
+the environment variable @w{@code{EDITOR}} when Octave starts.  If the\n\
 environment variable is not initialized, @w{@code{EDITOR}} will be set to\n\
 @code{\"emacs\"}.\n\
 @seealso{edit_history}\n\

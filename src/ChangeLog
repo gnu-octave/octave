@@ -1,3 +1,30 @@
+2009-04-21  John W. Eaton  <jwe@octave.org>
+
+	* parse.y (Fassignin): Add missing unwind_protect frame.
+
+	* toplev.h (push (symbol_table::scope_id, symbol_table::context_id)):
+	New function.
+
+	* toplev.cc (main_loop): Don't call symbol_table::reset_scope.
+
+	* mex.cc (mexGetVariable, mexPutVariable): Use unwind_protect to
+	restore call stack and scope.
+
+	* ov-usr-fcn.cc (octave_user_function::do_multi_index_op):
+	Don't use symbol_table::push_scope.
+	* variablees.cc (do_who): Likewise.  Use octave_call_stack and
+	unwind_protect to manage change in scope.
+	* ov-fcn-handle.cc (octave_fcn_handle::load_ascii,
+	octave_fcn_handle::load_binary, octave_fcn_handle::load_hdf5):
+	Likewise.
+	* ls-mat5.cc (read_mat5_binary_element): Likewise.
+
+	* symtab.h (erase_scope (void*)): New function, for unwind_protect.
+	(symbol_table::push_scope, symbol_table::pop_scope,
+	symbol_table::reset_scope): Delete.
+	(symbol_table::scope_stack): Delete static member.
+	* symtab.cc (symbol_table::scope_stack): Delete definition.
+
 2009-04-17  Jaroslav Hajek  <highegg@gmail.com>
 
 	* oct-map.h (Octave_map::contents (const_iterator) const,

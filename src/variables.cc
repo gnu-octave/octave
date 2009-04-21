@@ -1381,14 +1381,16 @@ do_who (int argc, const string_vector& argv, bool return_list,
 	    {
 	      std::string nm = argv [i + 1];
 
-	      symbol_table::scope_id tmp_scope = symbol_table::alloc_scope ();
-
 	      unwind_protect::begin_frame ("do_who_file");
 
-	      symbol_table::push_scope (tmp_scope);
-	      symbol_table::push_context ();
-	      octave_call_stack::push (0);
+	      // Set up temporary scope.
 
+	      symbol_table::scope_id tmp_scope = symbol_table::alloc_scope ();
+	      unwind_protect::add (symbol_table::erase_scope, &tmp_scope);
+
+	      symbol_table::set_scope (tmp_scope);
+
+	      octave_call_stack::push (tmp_scope, 0);
 	      unwind_protect::add (octave_call_stack::unwind_pop, 0);
 
 	      unwind_protect::add (symbol_table::clear_variables);
@@ -1404,8 +1406,6 @@ do_who (int argc, const string_vector& argv, bool return_list,
 		}
 
 	      unwind_protect::run_frame ("do_who_file");
-
-	      symbol_table::erase_scope (tmp_scope);
 	    }
 
 	  return retval;

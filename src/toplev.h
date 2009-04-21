@@ -205,6 +205,14 @@ public:
       instance->do_push (f, scope, context);
   }
 
+  static void
+  push (symbol_table::scope_id scope = symbol_table::current_scope (),
+	symbol_table::context_id context = symbol_table::current_context ())
+  {
+    if (instance_ok ())
+      instance->do_push (0, scope, context);
+  }
+
   static octave_function *top (void)
   {
     return instance_ok () ? instance->do_top (): 0;

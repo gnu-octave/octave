@@ -4171,6 +4171,8 @@ may be either @code{\"base\"} or @code{\"caller\"}.\n\
 
       if (! error_state)
         {
+	  unwind_protect::begin_frame ("Fassignin");
+
 	  if (context == "caller")
 	    octave_call_stack::goto_caller_frame ();
 	  else if (context == "base")
@@ -4194,6 +4196,8 @@ may be either @code{\"base\"} or @code{\"caller\"}.\n\
 	      else
 		error ("assignin: expecting variable name as second argument");
 	    }
+
+	  unwind_protect::run_frame ("Fassignin");
 	}
       else
         error ("assignin: expecting string as first argument");

@@ -3263,14 +3263,16 @@ mexGetVariable (const char *space, const char *name)
 {
   mxArray *retval = 0;
 
-  // FIXME -- should this be in variables.cc?
-
   octave_value val;
 
   if (! strcmp (space, "global"))
     val = get_global_value (name);
   else
     {
+      // FIXME -- should this be in variables.cc?
+
+      unwind_protect::begin_frame ("mexGetVariable");
+
       bool caller = ! strcmp (space, "caller");
       bool base = ! strcmp (space, "base");
 
@@ -3281,12 +3283,15 @@ mexGetVariable (const char *space, const char *name)
 	  else
 	    octave_call_stack::goto_base_frame ();
 
-	  val = symbol_table::varval (name);
+	  if (! error_state)
+	    unwind_protect::add (octave_call_stack::unwind_pop);
 
-	  octave_call_stack::pop ();
+	  val = symbol_table::varval (name);
 	}
       else
 	mexErrMsgTxt ("mexGetVariable: symbol table does not exist");
+
+      unwind_protect::run_frame ("mexGetVariable");
     }
 
   if (val.is_defined ())
@@ -3326,6 +3331,8 @@ mexPutVariable (const char *space, const char *name, mxArray *ptr)
     {
       // FIXME -- should this be in variables.cc?
 
+      unwind_protect::begin_frame ("mexPutVariable");
+
       bool caller = ! strcmp (space, "caller");
       bool base = ! strcmp (space, "base");
 
@@ -3336,12 +3343,15 @@ mexPutVariable (const char *space, const char *name, mxArray *ptr)
 	  else
 	    octave_call_stack::goto_base_frame ();
 
-	  symbol_table::varref (name) = mxArray::as_octave_value (ptr);
+	  if (! error_state)
+	    unwind_protect::add (octave_call_stack::unwind_pop);
 
-	  octave_call_stack::pop ();
+	  symbol_table::varref (name) = mxArray::as_octave_value (ptr);
 	}
       else
 	mexErrMsgTxt ("mexPutVariable: symbol table does not exist");
+
+      unwind_protect::run_frame ("mexPutVariable");
     }
 
   return 0;

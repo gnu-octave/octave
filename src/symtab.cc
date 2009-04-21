@@ -64,8 +64,6 @@ symbol_table::scope_id symbol_table::xcurrent_scope = 1;
 
 symbol_table::scope_id symbol_table::xparent_scope = -1;
 
-std::deque<symbol_table::scope_id> symbol_table::scope_stack;
-
 symbol_table::context_id symbol_table::xcurrent_context = 0;
 
 // Should Octave always check to see if function files have changed

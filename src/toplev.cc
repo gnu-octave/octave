@@ -543,8 +543,6 @@ main_loop (void)
     {
       try
 	{
-	  symbol_table::reset_scope ();
-
 	  reset_error_handler ();
 
 	  reset_parser ();

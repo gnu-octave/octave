@@ -313,7 +313,18 @@ octave_fcn_handle::load_ascii (std::istream& is)
 
       pos = is.tellg ();
 
+      unwind_protect::begin_frame ("anon_ascii_load");
+
+      // Set up temporary scope to use for evaluating the text that
+      // defines the anonymous function.
+
       symbol_table::scope_id local_scope = symbol_table::alloc_scope ();
+      unwind_protect::add (symbol_table::erase_scope, &local_scope);
+
+      symbol_table::set_scope (local_scope);
+
+      octave_call_stack::push (local_scope, 0);
+      unwind_protect::add (octave_call_stack::unwind_pop, 0);
 
       octave_idx_type len = 0;
 
@@ -347,12 +358,6 @@ octave_fcn_handle::load_ascii (std::istream& is)
 
       if (is && success)
 	{
-	  unwind_protect::begin_frame ("anon_ascii_load");
-
-	  symbol_table::push_scope (local_scope);
-
-	  unwind_protect::add (symbol_table::pop_scope);
-
 	  int parse_status;
 	  octave_value anon_fcn_handle = 
 	    eval_string (buf, true, parse_status);
@@ -376,13 +381,11 @@ octave_fcn_handle::load_ascii (std::istream& is)
 	    }
 	  else
 	    success = false;
-
-	  unwind_protect::run_frame ("anon_ascii_load");
 	}
       else
 	success = false;
 
-      symbol_table::erase_scope (local_scope);
+      unwind_protect::run_frame ("anon_ascii_load");
     }
   else
     success = set_fcn (octaveroot, fpath);
@@ -491,8 +494,19 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
       OCTAVE_LOCAL_BUFFER (char, ctmp2, tmp+1);
       is.get (ctmp2, tmp+1, 0);
 
+      unwind_protect::begin_frame ("anon_binary_load");
+
+      // Set up temporary scope to use for evaluating the text that
+      // defines the anonymous function.
+
       symbol_table::scope_id local_scope = symbol_table::alloc_scope ();
-	      
+      unwind_protect::add (symbol_table::erase_scope, &local_scope);	      
+
+      symbol_table::set_scope (local_scope);
+
+      octave_call_stack::push (local_scope, 0);
+      unwind_protect::add (octave_call_stack::unwind_pop, 0);
+
       if (len > 0)
 	{
 	  for (octave_idx_type i = 0; i < len; i++)
@@ -517,12 +531,6 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
 
       if (is && success)
 	{
-	  unwind_protect::begin_frame ("anon_binary_load");
-
-	  symbol_table::push_scope (local_scope);
-
-	  unwind_protect::add (symbol_table::pop_scope);
-
 	  int parse_status;
 	  octave_value anon_fcn_handle = 
 	    eval_string (ctmp2, true, parse_status);
@@ -545,11 +553,9 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
 	    }
 	  else
 	    success = false;
-
-	  unwind_protect::run_frame ("anon_binary_load");
 	}
 
-      symbol_table::erase_scope (local_scope);
+      unwind_protect::run_frame ("anon_binary_load");
     }
   else
     {
@@ -933,7 +939,18 @@ octave_fcn_handle::load_hdf5 (hid_t loc_id, const char *name,
       // restore error reporting:
       H5Eset_auto (err_func, err_func_data);
 
+      unwind_protect::begin_frame ("anon_hdf5_load");
+
+      // Set up temporary scope to use for evaluating the text that
+      // defines the anonymous function.
+
       symbol_table::scope_id local_scope = symbol_table::alloc_scope ();
+      unwind_protect::add (symbol_table::erase_scope, &local_scope);
+
+      symbol_table::set_scope (local_scope);
+
+      octave_call_stack::push (local_scope, 0);
+      unwind_protect::add (octave_call_stack::unwind_pop, 0);
 
       if (len > 0 && success)
 	{
@@ -974,12 +991,6 @@ octave_fcn_handle::load_hdf5 (hid_t loc_id, const char *name,
 
       if (success)
 	{
-	  unwind_protect::begin_frame ("anon_hdf5_load");
-
-	  symbol_table::push_scope (local_scope);
-
-	  unwind_protect::add (symbol_table::pop_scope);
-
 	  int parse_status;
 	  octave_value anon_fcn_handle = 
 	    eval_string (fcn_tmp, true, parse_status);
@@ -1002,11 +1013,9 @@ octave_fcn_handle::load_hdf5 (hid_t loc_id, const char *name,
 	    }
 	  else
 	    success = false;
-
-	  unwind_protect::run_frame ("anon_hdf5_load");
 	}
 
-      symbol_table::erase_scope (local_scope);
+      unwind_protect::run_frame ("anon_hdf5_load");
     }
   else
     {

@@ -947,34 +947,6 @@ public:
       }
   }
 
-  static void push_scope (scope_id scope)
-  {
-    if (scope_stack.empty ())
-      scope_stack.push_front (xtop_scope);
-
-    set_scope (scope);
-
-    scope_stack.push_front (scope);
-  }
-
-  static void pop_scope (void)
-  {
-    scope_stack.pop_front ();
-
-    set_scope (scope_stack[0]);
-  }
-
-  static void pop_scope (void *) { pop_scope (); }
-
-  static void reset_scope (void)
-  {
-    scope_stack.clear ();
-
-    scope_stack.push_front (xtop_scope);
-
-    set_scope (xtop_scope);
-  }
-
   static void set_parent_scope (scope_id scope)
   {
     xparent_scope = scope;
@@ -983,6 +955,13 @@ public:
   static void reset_parent_scope (void)
   {
     set_parent_scope (-1);
+  }
+
+  static void erase_scope (void *ptr)
+  {
+    scope_id *pscope = static_cast<scope_id *> (ptr);
+
+    erase_scope (*pscope);
   }
 
   static void erase_scope (scope_id scope)
@@ -1895,8 +1874,6 @@ private:
   static scope_id xparent_scope;
 
   static context_id xcurrent_context;
-
-  static std::deque<scope_id> scope_stack;
 
   symbol_table (void)
     : table_name (), table () { }

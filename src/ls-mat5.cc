@@ -65,6 +65,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "pager.h"
 #include "pt-exp.h"
 #include "sysdep.h"
+#include "toplev.h"
 #include "unwind-prot.h"
 #include "utils.h"
 #include "variables.h"
@@ -868,7 +869,18 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 	    tc2 = m2.contents("MCOS")(0).cell_value()(1 + off).cell_value()(1);
 	    m2 = tc2.map_value();
 
+	    unwind_protect::begin_frame ("anon_mat5_load");
+
+	    // Set up temporary scope to use for evaluating the text
+	    // that defines the anonymous function.
+
 	    symbol_table::scope_id local_scope = symbol_table::alloc_scope ();
+	    unwind_protect::add (symbol_table::erase_scope, &local_scope);
+
+	    symbol_table::set_scope (local_scope);
+
+	    octave_call_stack::push (local_scope, 0);
+	    unwind_protect::add (octave_call_stack::unwind_pop, 0);
 
 	    if (m2.nfields() > 0)
 	      {
@@ -884,12 +896,6 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                   }
 	      }
 	    
-	    unwind_protect::begin_frame ("anon_mat5_load");
-	    
-	    symbol_table::push_scope (local_scope);
-
-	    unwind_protect::add (symbol_table::pop_scope);
-
 	    int parse_status;
 	    octave_value anon_fcn_handle = 
 	      eval_string (fname.substr (4), true, parse_status);
@@ -914,8 +920,6 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 	      }
 
 	    unwind_protect::run_frame ("anon_mat5_load");
-
-	    symbol_table::erase_scope (local_scope);
 	  }
 	else
 	  {

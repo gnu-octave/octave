@@ -361,9 +361,6 @@ octave_user_function::do_multi_index_op (int nargout,
   // Save old and set current symbol table context, for
   // eval_undefined_error().
 
-  symbol_table::push_scope (local_scope);
-  unwind_protect::add (symbol_table::pop_scope);
-
   octave_call_stack::push (this, local_scope, call_depth);
   unwind_protect::add (octave_call_stack::unwind_pop, 0);
 

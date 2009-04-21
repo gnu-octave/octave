@@ -17,21 +17,23 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} cplxpair (@var{z}, @var{tol}, @var{dim})
+## @deftypefn  {Function File} {} cplxpair (@var{z})
+## @deftypefnx {Function File} {} cplxpair (@var{z}, @var{tol})
+## @deftypefnx {Function File} {} cplxpair (@var{z}, @var{tol}, @var{dim})
 ## Sort the numbers @var{z} into complex conjugate pairs ordered by 
-## increasing real part.  With identical real parts, order by increasing
-## imaginary magnitude.  Place the negative imaginary complex number
-## first within each pair.  Place all the real numbers after all the 
-## complex pairs (those with @code{abs (imag (@var{z}) / @var{z}) < 
-## @var{tol})}, where the default value of @var{tol} is @code{100 * 
-## @var{eps}}.
+## increasing real part.  Place the negative imaginary complex number
+## first within each pair.  Place all the real numbers (those with
+## @code{abs (imag (@var{z}) / @var{z}) < @var{tol})}) after the
+## complex pairs.
+##
+## If @var{tol} is unspecified the default value is 100*@var{eps}.
 ##
 ## By default the complex pairs are sorted along the first non-singleton
 ## dimension of @var{z}.  If @var{dim} is specified, then the complex
 ## pairs are sorted along this dimension.
 ##
 ## Signal an error if some complex numbers could not be paired.  Requires
-## all complex numbers to be exact conjugates within tol, or signals an 
+## all complex numbers to be exact conjugates within @var{tol}, or signals an 
 ## error.  Note that there are no guarantees on the order of the returned
 ## pairs with identical real parts but differing imaginary parts.
 ##

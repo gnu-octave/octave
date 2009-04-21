@@ -51,14 +51,14 @@ is_integer_value (float x)
 
 DEFUN_DLD (gcd, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{g} =} gcd (@var{a1}, @dots{})\n\
-@deftypefnx {Loadable Function} {[@var{g}, @var{v1}, @dots{}] =} gcd (@var{a1}, @dots{})\n\
+@deftypefn  {Loadable Function} {@var{g} =} gcd (@var{a})\n\
+@deftypefnx {Loadable Function} {@var{g} =} gcd (@var{a1}, @var{a2}, @dots{})\n\
+@deftypefnx {Loadable Function} {[@var{g}, @var{v1}, @dots{}] =} gcd (@var{a1}, @var{a2}, @dots{})\n\
 \n\
-If a single argument is given then compute the greatest common divisor of\n\
-the elements of this argument.  Otherwise if more than one argument is\n\
-given all arguments must be the same size or scalar.  In this case the\n\
-greatest common divisor is calculated for element individually.  All\n\
-elements must be integers.  For example,\n\
+Compute the greatest common divisor of the elements of @var{a}.  If more\n\
+than one argument is given all arguments must be the same size or scalar.\n\
+  In this case the greatest common divisor is calculated for each element\n\
+individually.  All elements must be integers.  For example,\n\
 \n\
 @example\n\
 @group\n\
@@ -72,12 +72,12 @@ and\n\
 \n\
 @example\n\
 @group\n\
-gcd ([15, 9], [20 18])\n\
+gcd ([15, 9], [20, 18])\n\
     @result{}  5  9\n\
 @end group\n\
 @end example\n\
 \n\
-Optional return arguments @var{v1}, etc, contain integer vectors such\n\
+Optional return arguments @var{v1}, etc., contain integer vectors such\n\
 that,\n\
 \n\
 @ifnottex\n\
@@ -94,7 +94,7 @@ $g = v_1 a_1 + v_2 a_2 + \\cdots$\n\
 For backward compatibility with previous versions of this function, when\n\
 all arguments are scalar, a single return argument @var{v1} containing\n\
 all of the values of @var{v1}, @dots{} is acceptable.\n\
-@seealso{lcm, min, max, ceil, floor}\n\
+@seealso{lcm, factor}\n\
 @end deftypefn")
 {
   octave_value_list retval;

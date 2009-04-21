@@ -345,8 +345,16 @@ Compute the inverse hyperbolic tangent of each element of @var{x}.\n\
 DEFUN (ceil, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} ceil (@var{x})\n\
-Return the smallest integer not less than @var{x}.  If @var{x} is\n\
+Return the smallest integer not less than @var{x}.  This is equivalent to\n\
+rounding towards positive infinity.  If @var{x} is\n\
 complex, return @code{ceil (real (@var{x})) + ceil (imag (@var{x})) * I}.\n\
+@example\n\
+@group\n\
+ceil ([-2.7, 2.7])\n\
+   @result{}  -2   3\n\
+@end group\n\
+@end example\n\
+@seealso{floor, round, fix}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -586,8 +594,18 @@ $1 - {\\rm erf} (z)$.\n\
 DEFUN (exp, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} exp (@var{x})\n\
-Compute the exponential of @var{x}.  To compute the matrix exponential,\n\
-see @ref{Linear Algebra}.\n\
+Compute\n\
+@iftex\n\
+@tex\n\
+$e^{x}$\n\
+@end tex\n\
+@end iftex\n\
+@ifnottex\n\
+@code{e^x}\n\
+@end ifnottex\n\
+for each element of @var{x}.  To compute the matrix\n\
+exponential, see @ref{Linear Algebra}.\n\
+@seealso{log}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -617,7 +635,17 @@ see @ref{Linear Algebra}.\n\
 DEFUN (expm1, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} expm1 (@var{x})\n\
-Compute exp (@var{x}) - 1 accurately in neighborhood of zero.\n\
+Compute \n\
+@iftex\n\
+@tex\n\
+$ e^{x} - 1 $\n\
+@end tex\n\
+@end iftex\n\
+@ifnottex\n\
+@code{exp (@var{x}) - 1}\n\
+@end ifnottex\n\
+accurately in the neighborhood of zero.\n\
+@seealso{exp}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -667,8 +695,16 @@ finite ([13, Inf, NA, NaN])\n\
 DEFUN (fix, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} fix (@var{x})\n\
-Truncate @var{x} toward zero.  If @var{x} is complex, return\n\
+Truncate fractional portion of @var{x} and return integer portion.  This\n\
+is equivalent to rounding towards zero.  If @var{x} is complex, return\n\
 @code{fix (real (@var{x})) + fix (imag (@var{x})) * I}.\n\
+@example\n\
+@group\n\
+fix ([-2.7, 2.7])\n\
+   @result{} -2   2\n\
+@end group\n\
+@end example\n\
+@seealso{ceil, floor, round}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -695,8 +731,16 @@ Truncate @var{x} toward zero.  If @var{x} is complex, return\n\
 DEFUN (floor, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} floor (@var{x})\n\
-Return the largest integer not greater than @var{x}.  If @var{x} is\n\
+Return the largest integer not greater than @var{x}.  This is equivalent to\n\
+rounding towards negative infinity.  If @var{x} is\n\
 complex, return @code{floor (real (@var{x})) + floor (imag (@var{x})) * I}.\n\
+@example\n\
+@group\n\
+floor ([-2.7, 2.7])\n\
+     @result{} -3   2\n\
+@end group\n\
+@end example\n\
+@seealso{ceil, round, fix}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1159,9 +1203,18 @@ Return the natural logarithm of the gamma function of @var{x}.\n\
 DEFUN (log, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} log (@var{x})\n\
-Compute the natural logarithm for each element of @var{x}.  To compute the\n\
+Compute the natural logarithm,\n\
+@iftex\n\
+@tex\n\
+$\\ln{(x)},$\n\
+@end tex\n\
+@end iftex\n\
+@ifnottex\n\
+@code{ln (@var{x})},\n\
+@end ifnottex\n\
+for each element of @var{x}.  To compute the\n\
 matrix logarithm, see @ref{Linear Algebra}.\n\
-@seealso{log2, log10, logspace, exp}\n\
+@seealso{exp, log1p, log2, log10, logspace}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1189,7 +1242,7 @@ matrix logarithm, see @ref{Linear Algebra}.\n\
 DEFUN (log10, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} log10 (@var{x})\n\
-Compute the base-10 logarithm for each element of @var{x}.\n\
+Compute the base-10 logarithm of each element of @var{x}.\n\
 @seealso{log, log2, logspace, exp}\n\
 @end deftypefn")
 {
@@ -1215,7 +1268,17 @@ Compute the base-10 logarithm for each element of @var{x}.\n\
 DEFUN (log1p, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} log1p (@var{x})\n\
-Compute log (1 + @var{x}) accurately in neighborhood of zero.\n\
+Compute\n\
+@iftex\n\
+@tex\n\
+$\\ln{(1 + x)}$\n\
+@end tex\n\
+@end iftex\n\
+@ifnottex\n\
+@code{log (1 + @var{x})}\n\
+@end ifnottex\n\
+accurately in the neighborhood of zero.\n\
+@seealso{log, exp, expm1}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1265,7 +1328,13 @@ DEFUN (round, args, ,
 @deftypefn {Mapping Function} {} round (@var{x})\n\
 Return the integer nearest to @var{x}.  If @var{x} is complex, return\n\
 @code{round (real (@var{x})) + round (imag (@var{x})) * I}.\n\
-@seealso{rem}\n\
+@example\n\
+@group\n\
+round ([-2.7, 2.7])\n\
+     @result{} -3   3\n\
+@end group\n\
+@end example\n\
+@seealso{ceil, floor, fix}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1306,7 +1375,7 @@ DEFUN (roundb, args, ,
 Return the integer nearest to @var{x}.  If there are two nearest\n\
 integers, return the even one (banker's rounding).  If @var{x} is complex,\n\
 return @code{roundb (real (@var{x})) + roundb (imag (@var{x})) * I}.\n\
-@seealso{rem}\n\
+@seealso{round}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1440,9 +1509,10 @@ Compute the hyperbolic sine of each element of @var{x}.\n\
 DEFUN (sqrt, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} sqrt (@var{x})\n\
-Compute the square root of @var{x}.  If @var{x} is negative, a complex\n\
-result is returned.  To compute the matrix square root, see\n\
+Compute the square root of each element of @var{x}.  If @var{x} is negative,\n\
+a complex result is returned.  To compute the matrix square root, see\n\
 @ref{Linear Algebra}.\n\
+@seealso{realsqrt}\n\
 @end deftypefn")
 {
   octave_value retval;

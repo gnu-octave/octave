@@ -18,9 +18,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} realpow (@var{x}, @var{y})
-## Return the element by element power operator.  This is equivalent to
-## @code{@var{x} .^ @var{y}}, except that if the return value
-## is complex @code{realpow} produces an error.
+## Compute the real-valued, element-by-element power operator.  This is 
+## equivalent to @w{@code{@var{x} .^ @var{y}}}, except that @code{realpow}
+## reports an error if any return value is complex.
 ## @seealso{reallog, realsqrt}
 ## @end deftypefn
 

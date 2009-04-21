@@ -19,8 +19,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Mapping Function} {} rem (@var{x}, @var{y})
-## Return the remainder of @code{@var{x} / @var{y}}, computed using the
-## expression
+## Return the remainder of the division @code{@var{x} / @var{y}}, computed 
+## using the expression
 ##
 ## @example
 ## x - y .* fix (x ./ y)
@@ -28,7 +28,7 @@
 ##
 ## An error message is printed if the dimensions of the arguments do not
 ## agree, or if either of the arguments is complex.
-## @seealso{mod, round}
+## @seealso{mod, fmod}
 ## @end deftypefn
 
 ## Author: jwe

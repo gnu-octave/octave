@@ -18,9 +18,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} factorial (@var{n})
-## Return the factorial of @var{n}.  If @var{n} is scalar, this is
-## equivalent to @code{prod (1:@var{n})}.  If @var{n} is an array,
-## the factorial of the elements of the array are returned.
+## Return the factorial of @var{n}.  If @var{n} is a scalar, this is
+## equivalent to @code{prod (1:@var{n})}.  For vector or matrix arguments,
+## return the factorial of each element in the array.
 ## @end deftypefn
 
 function x = factorial (n)

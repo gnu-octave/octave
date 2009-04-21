@@ -18,9 +18,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} realsqrt (@var{x})
-## Return the real sqrt of @var{x}.  If any element results in the
-## return value being complex @code{realsqrt} produces an error.
-## @seealso{sqrt, reallog, realpow}
+## Return the real-valued square root of each element of @var{x}.  Report an
+## error if any element results in a complex return value.
+## @seealso{sqrt, realpow, reallog}
 ## @end deftypefn
 
 function y = realsqrt (x)

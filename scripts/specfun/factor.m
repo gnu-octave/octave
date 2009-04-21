@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{p} =} factor (@var{q})
+## @deftypefn  {Function File} {@var{p} =} factor (@var{q})
 ## @deftypefnx {Function File} {[@var{p}, @var{n}] =} factor (@var{q})
 ##
 ## Return prime factorization of @var{q}.  That is @code{prod (@var{p})
@@ -26,7 +26,7 @@
 ## With two output arguments, returns the unique primes @var{p} and
 ## their multiplicities.  That is @code{prod (@var{p} .^ @var{n}) ==
 ## @var{q}}.
-## 
+## @seealso{gcd, lcm}
 ## @end deftypefn
 
 ## Author: Paul Kienzle

@@ -19,7 +19,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} nextpow2 (@var{x})
-## If @var{x} is a scalar, returns the first integer @var{n} such that
+## If @var{x} is a scalar, return the first integer @var{n} such that
 ## @iftex
 ## @tex
 ##  $2^n \ge |x|$.
@@ -30,7 +30,7 @@
 ## @end ifnottex
 ##
 ## If @var{x} is a vector, return @code{nextpow2 (length (@var{x}))}.
-## @seealso{pow2}
+## @seealso{pow2, log2}
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>

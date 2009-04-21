@@ -550,10 +550,11 @@ Matrix Manipulation
 
 Arithmetic
 
-* Utility Functions::           
+* Exponents and Logarithms::
 * Complex Arithmetic::          
 * Trigonometry::                
 * Sums and Products::           
+* Utility Functions::           
 * Special Functions::           
 * Coordinate Transformations::
 * Mathematical Constants::      

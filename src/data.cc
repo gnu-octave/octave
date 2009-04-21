@@ -735,9 +735,9 @@ and @var{x}.  The result is in the range -pi to pi.\n\
 
 DEFUN (hypot, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Mapping Function} {} hypot (@var{x}, @var{y})\n\
-Compute square-root of the squares of @var{x} and @var{y}\n\
-element-by-element.  This equivalent to @code{sqrt (@var{x}.^ 2 + @var{y}\n\
+@deftypefn {Built-in Function} {} hypot (@var{x}, @var{y})\n\
+Compute the element-by-element square root of the squares of @var{x} and\n\
+@var{y}.  This is equivalent to @code{sqrt (@var{x}.^ 2 + @var{y}\n\
 .^ 2)}, but calculated in a manner that avoids overflows for large\n\
 values of @var{x} or @var{y}.\n\
 @end deftypefn")
@@ -993,11 +993,20 @@ DEFUN (log2, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} log2 (@var{x})\n\
 @deftypefnx {Mapping Function} {[@var{f}, @var{e}] =} log2 (@var{x})\n\
-Compute the base-2 logarithm for each element of @var{x}.\n\
-If called with two output arguments, split @var{x} to\n\
-binary mantissa and exponent so that @code{1/2 <= abs(f) < 1} and\n\
-@var{e} is an integer.  If @code{x = 0}, @code{f = e = 0}.\n\
-@seealso{log, log10, log2, exp}\n\
+Compute the base-2 logarithm of each element of @var{x}.\n\
+\n\
+If called with two output arguments, split @var{x} into\n\
+binary mantissa and exponent so that\n\
+@iftex\n\
+@tex\n\
+${1 \\over 2} \\le \\left| f \\right| < 1$\n\
+@end tex\n\
+@end iftex\n\
+@ifnottex\n\
+@code{1/2 <= abs(f) < 1}\n\ 
+@end ifnottex\n\
+and @var{e} is an integer.  If @code{x = 0}, @code{f = e = 0}.\n\
+@seealso{pow2, log, log10, exp}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -1081,7 +1090,8 @@ DEFUN (fmod, args, ,
 @deftypefn {Mapping Function} {} fmod (@var{x}, @var{y})\n\
 Compute the floating point remainder of dividing @var{x} by @var{y}\n\
 using the C library function @code{fmod}.  The result has the same\n\
-sign as @var{x}.  If @var{y} is zero, the result is implementation-defined.\n\
+sign as @var{x}.  If @var{y} is zero, the result is implementation-dependent.\n\
+@seealso{mod, rem}\n\
 @end deftypefn")
 {
   octave_value retval;

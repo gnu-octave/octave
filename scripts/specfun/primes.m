@@ -21,12 +21,12 @@
 ##
 ## Return all primes up to @var{n}.  
 ##
+## The algorithm used is the Sieve of Erastothenes.
+##
 ## Note that if you need a specific number of primes, you can use the
 ## fact the distance from one prime to the next is on average
 ## proportional to the logarithm of the prime.  Integrating, you find
 ## that there are about @math{k} primes less than @math{k \log (5 k)}.
-##
-## The algorithm used is called the Sieve of Erastothenes.
 ## @end deftypefn
 
 ## Author: Paul Kienzle

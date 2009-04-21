@@ -18,20 +18,20 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Mapping Function} {} mod (@var{x}, @var{y})
-## Compute modulo function.  Conceptually this is given by
+## Compute the modulo of @var{x} and @var{y}.  Conceptually this is given by
 ##
 ## @example
 ## x - y .* floor (x ./ y)
 ## @end example
 ##
-## and is written in a manner that the correct modulus is returned for
-##integer types.  This function handles negative values correctly.  That
-##is @code{mod (-1, 3)} is 2, not -1 as @code{rem (-1, 3)} returns.
-## Also, @code{mod (@var{x}, 0)} returns @var{x}.
+## and is written such that the correct modulus is returned for
+## integer types.  This function handles negative values correctly.  That
+## is, @code{mod (-1, 3)} is 2, not -1, as @code{rem (-1, 3)} returns.
+## @code{mod (@var{x}, 0)} returns @var{x}.
 ##
-## An error message is printed if the dimensions of the arguments do not
-## agree, or if either of the arguments is complex.
-## @seealso{rem, round}
+## An error results if the dimensions of the arguments do not agree, or if
+## either of the arguments is complex.
+## @seealso{rem, fmod}
 ## @end deftypefn
 
 ## Author: Paul Kienzle <pkienzle@kienzle.powernet.co.uk>

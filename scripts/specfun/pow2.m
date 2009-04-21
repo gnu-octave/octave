@@ -29,7 +29,9 @@
 ## @ifnottex
 ##  2 .^ x
 ## @end ifnottex
-## for each element of @var{x}.  With two arguments, returns
+## for each element of @var{x}.
+##
+## With two arguments, returns
 ## @iftex
 ## @tex
 ##  $f \cdot 2^e$.
@@ -38,7 +40,7 @@
 ## @ifnottex
 ##  f .* (2 .^ e).
 ## @end ifnottex
-## @seealso{nextpow2}
+## @seealso{log2, nextpow2}
 ## @end deftypefn
 
 ## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>

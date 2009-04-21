@@ -684,9 +684,10 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUN_DLD (min, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} min (@var{x}, @var{y}, @var{dim})\n\
+@deftypefn  {Loadable Function} {} min (@var{x})\n\
+@deftypefnx {Loadable Function} {} min (@var{x}, @var{y})\n\
+@deftypefnx {Loadable Function} {} min (@var{x}, @var{y}, @var{dim})\n\
 @deftypefnx {Loadable Function} {[@var{w}, @var{iw}] =} min (@var{x})\n\
-@cindex Utility Functions\n\
 For a vector argument, return the minimum value.  For a matrix\n\
 argument, return the minimum value from each column, as a row\n\
 vector, or over the dimension @var{dim} if defined.  For two matrices\n\
@@ -724,6 +725,7 @@ minimum value(s).  Thus,\n\
         ix = 3\n\
 @end group\n\
 @end example\n\
+@seealso{max, cummin, cummax}\n\
 @end deftypefn")
 {
   MINMAX_BODY (min);
@@ -758,9 +760,10 @@ minimum value(s).  Thus,\n\
 
 DEFUN_DLD (max, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} max (@var{x}, @var{y}, @var{dim})\n\
+@deftypefn  {Loadable Function} {} max (@var{x})\n\
+@deftypefnx {Loadable Function} {} max (@var{x}, @var{y})\n\
+@deftypefnx {Loadable Function} {} max (@var{x}, @var{y}, @var{dim})\n\
 @deftypefnx {Loadable Function} {[@var{w}, @var{iw}] =} max (@var{x})\n\
-@cindex Utility Functions\n\
 For a vector argument, return the maximum value.  For a matrix\n\
 argument, return the maximum value from each column, as a row\n\
 vector, or over the dimension @var{dim} if defined.  For two matrices\n\
@@ -772,7 +775,7 @@ max (max (@var{x}))\n\
 @end example\n\
 \n\
 @noindent\n\
-returns the largest element of @var{x}, and\n\
+returns the largest element of the matrix @var{x}, and\n\
 \n\
 @example\n\
 @group\n\
@@ -798,6 +801,7 @@ maximum value(s).  Thus,\n\
         ix = 3\n\
 @end group\n\
 @end example\n\
+@seealso{min, cummax, cummin}\n\
 @end deftypefn")
 {
   MINMAX_BODY (max);
@@ -914,10 +918,21 @@ maximum value(s).  Thus,\n\
 
 DEFUN_DLD (cummin, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} cummin (@var{x}, @var{dim})\n\
+@deftypefn  {Loadable Function} {} cummin (@var{x})\n\
+@deftypefnx {Loadable Function} {} cummin (@var{x}, @var{dim})\n\
 @deftypefnx {Loadable Function} {[@var{w}, @var{iw}] =} cummin (@var{x})\n\
-@cindex Utility Functions\n\
-Return the cumulative minimum values.  That means, the call\n\
+Return the cumulative minimum values along dimension @var{dim}.  If @var{dim}\n\
+is unspecified it defaults to column-wise operation.  For example,\n\
+\n\
+@example\n\
+@group\n\
+cummin ([5 4 6 2 3 1])\n\
+    @result{}  5  4  4  2  2  1\n\
+@end group\n\
+@end example\n\
+\n\
+\n\
+The call\n\
 @example\n\
   [w, iw] = cummin (x, dim)\n\
 @end example\n\
@@ -926,20 +941,18 @@ Return the cumulative minimum values.  That means, the call\n\
 is equivalent to the following code:\n\
 @example\n\
 @group\n\
-  w = iw = zeros (size (x));\n\
-  idxw = idxx = repmat (@{':'@}, 1, ndims (x));\n\
-  for i = 1:size (x, dim)\n\
-    idxw@{dim@} = i; idxx@{dim@} = 1:i;\n\
-    [w(idxw@{:@}), iw(idxw@{:@})] =\\n\
- min(x(idxx@{:@}), [], dim);\n\
-  endfor\n\
+w = iw = zeros (size (x));\n\
+idxw = idxx = repmat (@{':'@}, 1, ndims (x));\n\
+for i = 1:size (x, dim)\n\
+  idxw@{dim@} = i; idxx@{dim@} = 1:i;\n\
+  [w(idxw@{:@}), iw(idxw@{:@})] = min(x(idxx@{:@}), [], dim);\n\
+endfor\n\
 @end group\n\
 @end example\n\
 \n\
 @noindent\n\
 but computed in a much faster manner.\n\
-The behavior if @var{dim} or @var{iw} is unspecified is analogous\n\
-to @code{min}.\n\
+@seealso{cummax, min, max}\n\
 @end deftypefn")
 {
   CUMMINMAX_BODY (cummin);
@@ -947,32 +960,40 @@ to @code{min}.\n\
 
 DEFUN_DLD (cummax, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} cummax (@var{x}, @var{dim})\n\
+@deftypefn  {Loadable Function} {} cummax (@var{x})\n\
+@deftypefnx {Loadable Function} {} cummax (@var{x}, @var{dim})\n\
 @deftypefnx {Loadable Function} {[@var{w}, @var{iw}] =} cummax (@var{x})\n\
-@cindex Utility Functions\n\
-Return the cumulative maximum values.  That means, the call\n\
+Return the cumulative maximum values along dimension @var{dim}.  If @var{dim}\n\
+is unspecified it defaults to column-wise operation.  For example,\n\
+\n\
 @example\n\
-  [w, iw] = cummax (x, dim)\n\
+@group\n\
+cummax ([1 3 2 6 4 5])\n\
+    @result{}  1  3  3  6  6  6\n\
+@end group\n\
+@end example\n\
+\n\
+The call\n\
+@example\n\
+[w, iw] = cummax (x, dim)\n\
 @end example\n\
 \n\
 @noindent\n\
 is equivalent to the following code:\n\
 @example\n\
 @group\n\
-  w = iw = zeros (size (x));\n\
-  idxw = idxx = repmat (@{':'@}, 1, ndims (x));\n\
-  for i = 1:size (x, dim)\n\
-    idxw@{dim@} = i; idxx@{dim@} = 1:i;\n\
-    [w(idxw@{:@}), iw(idxw@{:@})] =\\n\
- max(x(idxx@{:@}), [], dim);\n\
-  endfor\n\
+w = iw = zeros (size (x));\n\
+idxw = idxx = repmat (@{':'@}, 1, ndims (x));\n\
+for i = 1:size (x, dim)\n\
+  idxw@{dim@} = i; idxx@{dim@} = 1:i;\n\
+  [w(idxw@{:@}), iw(idxw@{:@})] = max(x(idxx@{:@}), [], dim);\n\
+endfor\n\
 @end group\n\
 @end example\n\
 \n\
 @noindent\n\
 but computed in a much faster manner.\n\
-The behavior if @var{dim} or @var{iw} is unspecified is analogous\n\
-to @code{max}.\n\
+@seealso{cummin, max, min}\n\
 @end deftypefn")
 {
   CUMMINMAX_BODY (cummax);

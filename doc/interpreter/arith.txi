@@ -21,53 +21,35 @@
 @chapter Arithmetic
 
 Unless otherwise noted, all of the functions described in this chapter
-will work for real and complex scalar or matrix arguments.  Functions described as @dfn{mapping functions} apply the given operation to each element when given a matrix argument.
+will work for real and complex scalar, vector, or matrix arguments.  Functions
+described as @dfn{mapping functions} apply the given operation individually to 
+each element when given a matrix argument.  For example,
+
+@example
+@group
+sin ([1, 2; 3, 4])
+     @result{}  0.84147   0.90930
+         0.14112  -0.75680
+@end group
+@end example
 
 @menu
-* Utility Functions::           
+* Exponents and Logarithms::
 * Complex Arithmetic::          
 * Trigonometry::                
 * Sums and Products::           
+* Utility Functions::           
 * Special Functions::           
 * Coordinate Transformations::
 * Mathematical Constants::      
 @end menu
 
-@node Utility Functions
-@section Utility Functions
-
-The following functions are available for working with complex numbers.
-Each expects a single argument.  They are called @dfn{mapping functions}
-because when given a matrix argument, they apply the given function to
-each element of the matrix.
-
-@DOCSTRING(ceil)
-
-@DOCSTRING(cplxpair)
-
-@DOCSTRING(del2)
+@node Exponents and Logarithms
+@section Exponents and Logarithms
 
 @DOCSTRING(exp)
 
 @DOCSTRING(expm1)
-
-@DOCSTRING(factor)
-
-@DOCSTRING(factorial)
-
-@DOCSTRING(fix)
-
-@DOCSTRING(floor)
-
-@DOCSTRING(fmod)
-
-@DOCSTRING(gcd)
-
-@DOCSTRING(gradient)
-
-@DOCSTRING(hypot)
-
-@DOCSTRING(lcm)
 
 @DOCSTRING(log)
 
@@ -77,37 +59,17 @@ each element of the matrix.
 
 @DOCSTRING(log2)
 
-@DOCSTRING(max)
-
-@DOCSTRING(min)
-
-@DOCSTRING(cummax)
-
-@DOCSTRING(cummin)
-
-@DOCSTRING(mod)
-
 @DOCSTRING(nextpow2)
 
 @DOCSTRING(nthroot)
 
 @DOCSTRING(pow2)
 
-@DOCSTRING(primes)
-
 @DOCSTRING(reallog)
 
 @DOCSTRING(realpow)
 
 @DOCSTRING(realsqrt)
-
-@DOCSTRING(rem)
-
-@DOCSTRING(round)
-
-@DOCSTRING(roundb)
-
-@DOCSTRING(sign)
 
 @DOCSTRING(sqrt)
 
@@ -134,6 +96,8 @@ defined as @code{sqrt (-1)}.
 @DOCSTRING(arg)
 
 @DOCSTRING(conj)
+
+@DOCSTRING(cplxpair)
 
 @DOCSTRING(imag)
 
@@ -226,6 +190,51 @@ Octave also provides the following functions which work with degrees.
 @DOCSTRING(sumsq)
 
 @DOCSTRING(accumarray)
+
+@node Utility Functions
+@section Utility Functions
+
+@DOCSTRING(ceil)
+
+@DOCSTRING(del2)
+
+@DOCSTRING(factor)
+
+@DOCSTRING(factorial)
+
+@DOCSTRING(fix)
+
+@DOCSTRING(floor)
+
+@DOCSTRING(fmod)
+
+@DOCSTRING(gcd)
+
+@DOCSTRING(gradient)
+
+@DOCSTRING(hypot)
+
+@DOCSTRING(lcm)
+
+@DOCSTRING(max)
+
+@DOCSTRING(min)
+
+@DOCSTRING(cummax)
+
+@DOCSTRING(cummin)
+
+@DOCSTRING(mod)
+
+@DOCSTRING(primes)
+
+@DOCSTRING(rem)
+
+@DOCSTRING(round)
+
+@DOCSTRING(roundb)
+
+@DOCSTRING(sign)
 
 @node Special Functions
 @section Special Functions

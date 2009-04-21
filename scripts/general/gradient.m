@@ -25,7 +25,7 @@
 ## @deftypefnx {Function File} {[@dots{}] =} gradient (@var{f}, @var{x0}, @var{s})
 ## @deftypefnx {Function File} {[@dots{}] =} gradient (@var{f}, @var{x0}, @var{x}, @var{y}, @dots{})
 ##
-## Calculate the gradient of sampled data, or of a function.  If @var{m}
+## Calculate the gradient of sampled data or of a function.  If @var{m}
 ## is a vector, calculate the one dimensional gradient of @var{m}.  If
 ## @var{m} is a matrix the gradient is calculated for each dimension.
 ##
@@ -56,6 +56,7 @@
 ## sampled data, the spacing values between the points from which the
 ## gradient is estimated can be set via the @var{s} or @var{dx},
 ## @var{dy}, @dots{} arguments.  By default a spacing of 1 is used.
+## @seealso{diff, del2}
 ## @end deftypefn
 
 ## Author:  Kai Habel <kai.habel@gmx.de>

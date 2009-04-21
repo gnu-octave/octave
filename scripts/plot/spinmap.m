@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File}  spinmap (@var{t}, @var{inc})
+## @deftypefn {Function File} {} spinmap (@var{t}, @var{inc})
 ## Cycle the colormap for @var{t} seconds with an increment
 ## of @var{inc}.  Both parameters are optional.  The default cycle time
 ## is 5 seconds and the default increment is 2.

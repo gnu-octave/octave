@@ -19,7 +19,7 @@
 ## Author: Jaroslav Hajek <highegg@gmail.com>
 
 ## -*- texinfo -*-
-## @deftypefn{Function File}{[@var{x}, @var{fval}, @var{info}, @var{output}] =} fzero (@var{fun}, @var{x0}, @var{options})
+## @deftypefn {Function File} {[@var{x}, @var{fval}, @var{info}, @var{output}] =} fzero (@var{fun}, @var{x0}, @var{options})
 ## Find a zero point of a univariate function.  @var{fun} should be a function
 ## handle or name.  @var{x0} specifies a starting point.  @var{options} is a
 ## structure specifying additional options.  Currently, @code{fzero}

@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} backend (@var{name})
-## @deftypefnx {Function File} backend (@var{hlist}, @var{name})
+## @deftypefn  {Function File} {} backend (@var{name})
+## @deftypefnx {Function File} {} backend (@var{hlist}, @var{name})
 ## Change the default graphics backend to @var{name}.  If the backend is
 ## not already loaded, it is first initialized (initialization is done
 ## through the execution of __init_@var{name}__).

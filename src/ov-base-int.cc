@@ -71,7 +71,7 @@ struct octave_base_int_helper
 template <class T>
 struct octave_base_int_helper<T, false, false>
 {
-  static bool char_value_out_of_range (T) { return true; }
+  static bool char_value_out_of_range (T) { return false; }
 };
 
 template <class T>

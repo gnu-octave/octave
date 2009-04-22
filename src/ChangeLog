@@ -1,5 +1,8 @@
 2009-04-22  John W. Eaton  <jwe@octave.org>
 
+	* ov-base-int.cc (octave_base_int_helper<T, false,
+	false>::char_value_out_of_range): Correct result for specialization.
+
 	* ov-class.cc (octave_class::dotref, octave_class::subsasgn):
 	Protect against possibly invalid octave_value -> string conversions.
 

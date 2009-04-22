@@ -195,6 +195,8 @@ get_concat_class (const std::string& c1, const std::string& c2)
 
   if (c1 == c2)
     retval = c1;
+  else if (c1 == retval)
+    retval = c2;
   else
     {
       bool c1_is_int = (c1 == "int8" || c1 == "uint8"
@@ -263,6 +265,9 @@ tm_row_const::tm_row_const_rep::do_init_element (tree_expression *elt,
 
   dim_vector this_elt_dv = val.dims ();
 
+  class_nm = get_concat_class (class_nm, this_elt_class_nm);
+
+
   if (! this_elt_dv.all_zero ())
     {
       all_mt = false;
@@ -270,8 +275,6 @@ tm_row_const::tm_row_const_rep::do_init_element (tree_expression *elt,
       if (first_elem)
 	{
 	  first_elem = false;
-
-	  class_nm = this_elt_class_nm;
 
 	  dv.resize (this_elt_dv.length ());
 	  for (int i = 2; i < dv.length (); i++)
@@ -283,8 +286,6 @@ tm_row_const::tm_row_const_rep::do_init_element (tree_expression *elt,
 	}
       else
 	{
-	  class_nm = get_concat_class (class_nm, this_elt_class_nm);
-
 	  int len = (this_elt_dv.length () < dv.length ()
 		     ? this_elt_dv.length () : dv.length ());
 

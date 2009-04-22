@@ -1,3 +1,9 @@
+2009-04-22  Jaroslav Hajek  <highegg@gmail.com>
+
+	* pt-mat.cc (tm_row_const::tm_row_const_rep::do_init_element):
+	Update class name even for all-zeros elements.
+	(get_concat_class): Update the default value if possible.
+
 2009-04-21  John W. Eaton  <jwe@octave.org>
 
 	* parse.y (Fassignin): Add missing unwind_protect frame.

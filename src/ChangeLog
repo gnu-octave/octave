@@ -1,3 +1,16 @@
+2009-04-22  Robert T. Short  <octave@phaselockedsystems.com>
+
+	* variables.cc (symbol_exist): Also return 1 for objects.
+	* ov-base.h (octave_base_value::assign): New virtual function.
+	* ov-class.h (octave_class::assign): New function.
+	* ov-class.cc (octave_class::find_parent_class): Simplify.
+	(octave_class::octave_class): Don't allow duplicate parent classes.
+	(octave_class::subsasgn): Allow cls = method (cls, value) to work
+	properly when method is a parent-class method.
+	(get_method_class): New static function.
+	(octave_class:subsasgn, octave_class::dotref): Use it.
+	(F__isa_parent__): New function.
+
 2009-04-22  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-range.cc (octave_range::char_array_value): New virtual function

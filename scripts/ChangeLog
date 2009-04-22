@@ -1,3 +1,7 @@
+2009-04-22  Robert T. Short  <octave@phaselockedsystems.com>
+
+	* general/isa.m: Correctly report multiple layers of class hierarchy.
+
 2009-04-20  John W. Eaton  <jwe@octave.org>
 
 	* special-matrix/vander.m: Update tests.

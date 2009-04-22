@@ -78,67 +78,65 @@ octave_class::octave_class (const Octave_map& m, const std::string& id,
 	{
 	  std::string cnm = parent.class_name ();
 
-	  parent_list.push_back (cnm);
+	  if (find_parent_class (cnm))
+	    error ("duplicate class in parent tree");
+	  else
+	    {
+	      parent_list.push_back (cnm);
 
-	  map.assign (cnm, parent);
+	      map.assign (cnm, parent);
+	    }
 	}
     }
 
-  load_path::add_to_parent_map (id, parent_list);
+  if (! error_state)
+    load_path::add_to_parent_map (id, parent_list);
 }
 
 octave_base_value *
 octave_class::find_parent_class (const std::string& parent_class_name)
 {
   octave_base_value* retval = 0;
-  std::string dbg_clsnm = class_name ();
 
   if (parent_class_name == class_name ())
     retval = this;
   else
     {
-      // Search in the list of immediate parents first, then in the
-      // ancestor tree.
-
-      std::list<std::string>::iterator 
-	p = find (parent_list.begin (), parent_list.end (), parent_class_name);
-
-      if (p != parent_list.end ())
+      for (std::list<std::string>::iterator pit = parent_list.begin ();
+	   pit != parent_list.end ();
+	   pit++)
 	{
-	  Octave_map::const_iterator pmap = map.seek (parent_class_name);
+	  Octave_map::const_iterator smap = map.seek (*pit);
 
-	  if (pmap != map.end ())
-	    {
-	      const Cell& tmp = pmap->second;
+	  const Cell& tmp = smap->second;
 
-	      octave_value vtmp = tmp(0);
+	  octave_value vtmp = tmp(0);
 
-	      retval = vtmp.internal_rep ();
-	    }
-	}
-      else
-	{
-	  for (std::list<std::string>::iterator pit = parent_list.begin ();
-	       pit != parent_list.end ();
-	       pit++)
-	    {
-	      Octave_map::const_iterator smap = map.seek (*pit);
+	  octave_base_value *obvp = vtmp.internal_rep ();
 
-	      const Cell& tmp = smap->second;
+	  retval = obvp->find_parent_class (parent_class_name);
 
-	      octave_value vtmp = tmp(0);
-
-	      octave_base_value *obvp = vtmp.internal_rep ();
-
-	      retval = obvp->find_parent_class (parent_class_name);
-
-	      if (retval)
-		break;
-	    }
+	  if (retval)
+	    break;
 	}
     }
 
   return retval;
+}
+
+static std::string
+get_current_method_class (void)
+{
+  // FIXME -- is there a better way to do this?
+  octave_function *fcn = octave_call_stack::current ();
+
+  std::string my_dir = fcn->dir_name ();
+
+  size_t ipos = my_dir.find_last_of ("@");
+
+  assert (ipos != std::string::npos);
+
+  return my_dir.substr (ipos+1);
 }
 
 Cell
@@ -148,11 +146,7 @@ octave_class::dotref (const octave_value_list& idx)
 
   assert (idx.length () == 1);
 
-  // FIXME -- Is there a "proper" way to do this?
-  octave_function* fcn = octave_call_stack::current ();
-  std::string my_dir = fcn->dir_name ();
-  int ipos = my_dir.find_last_of ("@");
-  std::string method_class = my_dir.substr (ipos+1);
+  std::string method_class = get_current_method_class ();
 
   // Find the class in which this method resides before attempting to access
   // the requested field.
@@ -628,15 +622,27 @@ octave_class::subsasgn (const std::string& type,
 
 	    std::string key = key_idx(0).string_value ();
 
-	    map.assign (key, t_rhs);
+	    // Find the class in which this method resides before 
+	    // attempting to access the requested field.
 
-	    if (! error_state)
+	    std::string method_class = get_current_method_class ();
+
+	    octave_base_value *obvp = find_parent_class (method_class);
+
+	    if (obvp)
 	      {
-		count++;
-		retval = octave_value (this);
+		obvp->assign (key, t_rhs);
+
+		if (! error_state)
+		  {
+		    count++;
+		    retval = octave_value (this);
+		  }
+		else
+		  gripe_failed_assignment ();
 	      }
 	    else
-	      gripe_failed_assignment ();
+	      error ("malformed class");
 	  }
 	  break;
 
@@ -1309,6 +1315,33 @@ derived.\n\
       else
 	error ("class: expecting structure as first argument");
     }
+
+  return retval;
+}
+
+DEFUN (__isa_parent__, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} __isa_parent__ (@var{class}, @var{name})\n\
+Undocumented internal function.\n\
+@end deftypefn")
+{
+  octave_value retval = false;
+
+  if (args.length () == 2)
+    {
+      octave_value cls = args(0);
+      octave_value nm = args(1);
+
+      if (! error_state)
+	{
+	  if (cls.find_parent_class (nm.string_value ()))
+	    retval = true;
+	}
+      else
+	error ("__isa_parent__: expecting arguments to be character strings");
+    }
+  else
+    print_usage ();
 
   return retval;
 }

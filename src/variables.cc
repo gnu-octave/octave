@@ -408,7 +408,7 @@ symbol_exist (const std::string& name, const std::string& type)
       if (! retval
 	  && var_ok
 	  && (type == "any" || type == "var")
-	  && val.is_constant ())
+	  && (val.is_constant () || val.is_object ()))
 	{
 	  retval = 1;
 	}

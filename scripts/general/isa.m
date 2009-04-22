@@ -44,10 +44,7 @@ function retval = isa (x, cname)
     class_of_x = class (x);
     retval = strcmp (class_of_x, cname);
     if (! retval && isobject (x))
-      parent_classes_of_x = __parent_classes__ (x);
-      if (! isempty (parent_classes_of_x))
-	retval = any (strcmp (parent_classes_of_x, cname));
-      endif
+      retval = __isa_parent__ (x, cname);
     endif
   endif
 

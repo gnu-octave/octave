@@ -171,6 +171,8 @@ public:
   virtual octave_value_list
   do_multi_index_op (int nargout, const octave_value_list& idx);
 
+  virtual void assign (const std::string&, const octave_value&) { }
+
   virtual octave_value
   subsasgn (const std::string& type,
 	    const std::list<octave_value_list>& idx,

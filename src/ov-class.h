@@ -86,6 +86,9 @@ public:
   static octave_value numeric_conv (const Cell& val,
 				    const std::string& type);
 
+  void assign(const std::string& k, const octave_value& rhs)
+  { map.assign (k, rhs); };
+
   octave_value subsasgn (const std::string& type,
 			 const std::list<octave_value_list>& idx,
 			 const octave_value& rhs);

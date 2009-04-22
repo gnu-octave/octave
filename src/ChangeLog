@@ -1,3 +1,8 @@
+2009-04-22  John W. Eaton  <jwe@octave.org>
+
+	* ov-class.cc (octave_class::dotref, octave_class::subsasgn):
+	Protect against possibly invalid octave_value -> string conversions.
+
 2009-04-22  Robert T. Short  <octave@phaselockedsystems.com>
 
 	* variables.cc (symbol_exist): Also return 1 for objects.

@@ -93,37 +93,6 @@ octave_class::octave_class (const Octave_map& m, const std::string& id,
     load_path::add_to_parent_map (id, parent_list);
 }
 
-octave_base_value *
-octave_class::find_parent_class (const std::string& parent_class_name)
-{
-  octave_base_value* retval = 0;
-
-  if (parent_class_name == class_name ())
-    retval = this;
-  else
-    {
-      for (std::list<std::string>::iterator pit = parent_list.begin ();
-	   pit != parent_list.end ();
-	   pit++)
-	{
-	  Octave_map::const_iterator smap = map.seek (*pit);
-
-	  const Cell& tmp = smap->second;
-
-	  octave_value vtmp = tmp(0);
-
-	  octave_base_value *obvp = vtmp.internal_rep ();
-
-	  retval = obvp->find_parent_class (parent_class_name);
-
-	  if (retval)
-	    break;
-	}
-    }
-
-  return retval;
-}
-
 static std::string
 get_current_method_class (void)
 {
@@ -137,36 +106,6 @@ get_current_method_class (void)
   assert (ipos != std::string::npos);
 
   return my_dir.substr (ipos+1);
-}
-
-Cell
-octave_class::dotref (const octave_value_list& idx)
-{
-  Cell retval;
-
-  assert (idx.length () == 1);
-
-  std::string method_class = get_current_method_class ();
-
-  // Find the class in which this method resides before attempting to access
-  // the requested field.
-
-  octave_base_value *obvp = find_parent_class (method_class);
-
-  Octave_map my_map;
-
-  my_map = obvp ? obvp->map_value () : map;
-
-  std::string nm = idx(0).string_value ();
-
-  Octave_map::const_iterator p = my_map.seek (nm);
-
-  if (p != my_map.end ())
-    retval = my_map.contents (p);
-  else
-    error ("class has no member `%s'", nm.c_str ());
-
-  return retval;
 }
 
 static void
@@ -280,6 +219,41 @@ make_idx_args (const std::string& type,
     }
   else
     error ("invalid index for %s", who.c_str ());
+
+  return retval;
+}
+
+Cell
+octave_class::dotref (const octave_value_list& idx)
+{
+  Cell retval;
+
+  assert (idx.length () == 1);
+
+  std::string method_class = get_current_method_class ();
+
+  // Find the class in which this method resides before attempting to access
+  // the requested field.
+
+  octave_base_value *obvp = find_parent_class (method_class);
+
+  Octave_map my_map;
+
+  my_map = obvp ? obvp->map_value () : map;
+
+  std::string nm = idx(0).string_value ();
+
+  if (! error_state)
+    {
+      Octave_map::const_iterator p = my_map.seek (nm);
+
+      if (p != my_map.end ())
+	retval = my_map.contents (p);
+      else
+	error ("class has no member `%s'", nm.c_str ());
+    }
+  else
+    gripe_invalid_index ();
 
   return retval;
 }
@@ -468,33 +442,38 @@ octave_class::subsasgn (const std::string& type,
 
 		std::string key = key_idx(0).string_value ();
 
-		octave_value u;
-
-		if (! map.contains (key))
-		  u = octave_value::empty_conv (type.substr (2), rhs);
-		else
-		  {
-		    Cell map_val = map.contents (key);
-
-		    Cell map_elt = map_val.index (idx.front (), true);
-
-		    u = numeric_conv (map_elt, type.substr (2));
-		  }
-
 		if (! error_state)
 		  {
-		    std::list<octave_value_list> next_idx (idx);
+		    octave_value u;
 
-		    // We handled two index elements, so subsasgn to
-		    // needs to skip both of them.
+		    if (! map.contains (key))
+		      u = octave_value::empty_conv (type.substr (2), rhs);
+		    else
+		      {
+			Cell map_val = map.contents (key);
 
-		    next_idx.erase (next_idx.begin ());
-		    next_idx.erase (next_idx.begin ());
+			Cell map_elt = map_val.index (idx.front (), true);
 
-		    u.make_unique ();
+			u = numeric_conv (map_elt, type.substr (2));
+		      }
 
-		    t_rhs = u.subsasgn (type.substr (2), next_idx, rhs);
+		    if (! error_state)
+		      {
+			std::list<octave_value_list> next_idx (idx);
+
+			// We handled two index elements, so subsasgn to
+			// needs to skip both of them.
+
+			next_idx.erase (next_idx.begin ());
+			next_idx.erase (next_idx.begin ());
+
+			u.make_unique ();
+
+			t_rhs = u.subsasgn (type.substr (2), next_idx, rhs);
+		      }
 		  }
+		else
+		  gripe_invalid_index_for_assignment ();
 	      }
 	    else
 	      gripe_invalid_index_for_assignment ();
@@ -509,27 +488,32 @@ octave_class::subsasgn (const std::string& type,
 
 	    std::string key = key_idx(0).string_value ();
 
-	    octave_value u;
-
-	    if (! map.contains (key))
-	      u = octave_value::empty_conv (type.substr (1), rhs);
-	    else
-	      {
-		Cell map_val = map.contents (key);
-
-		u = numeric_conv (map_val, type.substr (1));
-	      }
-
 	    if (! error_state)
 	      {
-		std::list<octave_value_list> next_idx (idx);
+		octave_value u;
 
-		next_idx.erase (next_idx.begin ());
+		if (! map.contains (key))
+		  u = octave_value::empty_conv (type.substr (1), rhs);
+		else
+		  {
+		    Cell map_val = map.contents (key);
 
-		u.make_unique ();
+		    u = numeric_conv (map_val, type.substr (1));
+		  }
 
-		t_rhs = u.subsasgn (type.substr (1), next_idx, rhs);
+		if (! error_state)
+		  {
+		    std::list<octave_value_list> next_idx (idx);
+
+		    next_idx.erase (next_idx.begin ());
+
+		    u.make_unique ();
+
+		    t_rhs = u.subsasgn (type.substr (1), next_idx, rhs);
+		  }
 	      }
+	    else
+	      gripe_invalid_index_for_assignment ();
 	  }
 	  break;
 
@@ -616,12 +600,6 @@ octave_class::subsasgn (const std::string& type,
 
 	case '.':
 	  {
-	    octave_value_list key_idx = idx.front ();
-
-	    assert (key_idx.length () == 1);
-
-	    std::string key = key_idx(0).string_value ();
-
 	    // Find the class in which this method resides before 
 	    // attempting to access the requested field.
 
@@ -631,12 +609,23 @@ octave_class::subsasgn (const std::string& type,
 
 	    if (obvp)
 	      {
-		obvp->assign (key, t_rhs);
+		octave_value_list key_idx = idx.front ();
+
+		assert (key_idx.length () == 1);
+
+		std::string key = key_idx(0).string_value ();
 
 		if (! error_state)
 		  {
-		    count++;
-		    retval = octave_value (this);
+		    obvp->assign (key, t_rhs);
+
+		    if (! error_state)
+		      {
+			count++;
+			retval = octave_value (this);
+		      }
+		    else
+		      gripe_failed_assignment ();
 		  }
 		else
 		  gripe_failed_assignment ();
@@ -718,6 +707,37 @@ octave_class::map_keys (void) const
 {
   string_vector retval;
   gripe_wrong_type_arg ("octave_class::map_keys()", type_name ());
+  return retval;
+}
+
+octave_base_value *
+octave_class::find_parent_class (const std::string& parent_class_name)
+{
+  octave_base_value* retval = 0;
+
+  if (parent_class_name == class_name ())
+    retval = this;
+  else
+    {
+      for (std::list<std::string>::iterator pit = parent_list.begin ();
+	   pit != parent_list.end ();
+	   pit++)
+	{
+	  Octave_map::const_iterator smap = map.seek (*pit);
+
+	  const Cell& tmp = smap->second;
+
+	  octave_value vtmp = tmp(0);
+
+	  octave_base_value *obvp = vtmp.internal_rep ();
+
+	  retval = obvp->find_parent_class (parent_class_name);
+
+	  if (retval)
+	    break;
+	}
+    }
+
   return retval;
 }
 

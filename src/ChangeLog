@@ -1,5 +1,11 @@
 2009-04-22  Jaroslav Hajek  <highegg@gmail.com>
 
+	* ov-range.cc (octave_range::char_array_value): New virtual function
+	override.
+	* ov-range.h: Declare it.
+
+2009-04-22  Jaroslav Hajek  <highegg@gmail.com>
+
 	* pt-mat.cc (tm_row_const::tm_row_const_rep::do_init_element):
 	Update class name even for all-zeros elements.
 	(get_concat_class): Update the default value if possible.

@@ -173,6 +173,20 @@ octave_range::float_value (bool) const
   return retval;
 }
 
+charNDArray
+octave_range::char_array_value (bool) const
+{
+  const Matrix matrix = range.matrix_value ();
+  charNDArray retval (dims ());
+
+  octave_idx_type nel = numel ();
+  
+  for (octave_idx_type i = 0; i < nel; i++)
+    retval.elem (i) = static_cast<char>(matrix.elem (i));
+
+  return retval;
+}
+  
 octave_value
 octave_range::all (int dim) const
 {

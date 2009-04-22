@@ -181,6 +181,8 @@ public:
   FloatNDArray float_array_value (bool = false) const
     { return FloatMatrix (range.matrix_value ()); }
 
+  charNDArray char_array_value (bool = false) const;
+  
   // FIXME -- it would be better to have Range::intXNDArray_value
   // functions to avoid the intermediate conversion to a matrix
   // object.

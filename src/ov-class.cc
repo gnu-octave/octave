@@ -1284,6 +1284,87 @@ octave_class::in_class_method (void) const
 	  && fcn->dispatch_class () == class_name ());
 }
 
+octave_class::exemplar_info::exemplar_info (const octave_value& obj)
+  : field_names (), parent_class_names ()
+{
+  if (obj.is_object ())
+    {
+      Octave_map m = obj.map_value ();
+      field_names = m.keys ();
+
+      parent_class_names = obj.parent_class_name_list ();
+    }
+  else
+    error ("invalid call to exmplar_info constructor");
+}
+
+
+// A map from class names to lists of fields.
+std::map<std::string, octave_class::exemplar_info> octave_class::exemplar_map;
+
+bool
+octave_class::exemplar_info::compare (const octave_value& obj) const
+{
+  bool retval = true;
+
+  if (obj.is_object ())
+    {
+      if (nfields () == obj.nfields ())
+	{
+	  Octave_map obj_map = obj.map_value ();
+	  string_vector obj_fnames = obj_map.keys ();
+	  string_vector fnames = fields ();
+
+	  for (octave_idx_type i = 0; i < nfields (); i++)
+	    {
+	      if (obj_fnames[i] != fnames[i])
+		{
+		  retval = false;
+		  error ("mismatch in field names");
+		  break;
+		}
+	    }
+
+	  if (nparents () == obj.nparents ())
+	    {
+	      std::list<std::string> obj_parents
+		= obj.parent_class_name_list ();
+	      std::list<std::string> pnames = parents ();
+
+	      std::list<std::string>::const_iterator p = obj_parents.begin ();
+	      std::list<std::string>::const_iterator q = pnames.begin ();
+
+	      while (p != obj_parents.end ())
+		{
+		  if (*p++ != *q++)
+		    {
+		      retval = false;
+		      error ("mismatch in parent classes");
+		      break;
+		    }
+		}
+	    }
+	  else
+	    {
+	      retval = false;
+	      error ("mismatch in number of parent classes");
+	    }
+	}
+      else
+	{
+	  retval = false;
+	  error ("mismatch in number of fields");
+	}
+    }
+  else
+    {
+      retval = false;
+      error ("inavlid comparison of class exemplar to non-class object");
+    }
+
+  return retval;
+}
+
 DEFUN (class, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} class (@var{expr})\n\
@@ -1324,6 +1405,18 @@ derived.\n\
 		      octave_value_list parents = args.slice (2, nargin-2);
 
 		      retval = octave_value (new octave_class (m, id, parents));
+		    }
+
+		  if (! error_state)
+		    {
+		      octave_class::exemplar_const_iterator it
+			= octave_class::exemplar_map.find (id);
+
+		      if (it == octave_class::exemplar_map.end ())
+			octave_class::exemplar_map[id]
+			  = octave_class::exemplar_info (retval);
+		      else if (! it->second.compare (retval))
+			error ("class: object of class `%s' does not match previously constructed objects", id.c_str ());
 		    }
 		}
 	      else

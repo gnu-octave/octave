@@ -132,11 +132,12 @@ symbol_table::symbol_record::find (tree_argument_list *args,
 
 static inline bool
 load_out_of_date_fcn (const std::string& ff, const std::string& dir_name,
-		      octave_value& function)
+		      octave_value& function,
+		      const std::string& dispatch_type = std::string ())
 {
   bool retval = false;
 
-  octave_function *fcn = load_fcn_from_file (ff, dir_name);
+  octave_function *fcn = load_fcn_from_file (ff, dir_name, dispatch_type);
 
   if (fcn)
     {
@@ -229,7 +230,8 @@ out_of_date_check_internal (octave_function *fcn, octave_value& function,
 			      if (fs.is_newer (tp))
 				{
 				  retval = load_out_of_date_fcn (ff, dir_name,
-								 function);
+								 function,
+								 dispatch_type);
 
 				  clear_breakpoints = true;
 				}
@@ -247,7 +249,8 @@ out_of_date_check_internal (octave_function *fcn, octave_value& function,
 		      // Not the same file, so load the new file in
 		      // place of the old.
 
-		      retval = load_out_of_date_fcn (file, dir_name, function);
+		      retval = load_out_of_date_fcn (file, dir_name, function,
+						     dispatch_type);
 
 		      clear_breakpoints = true;
 		    }

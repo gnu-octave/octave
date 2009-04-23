@@ -851,6 +851,32 @@ octave_base_value::map_keys (void) const
   return retval;
 }
 
+size_t
+octave_base_value::nparents (void) const
+{
+  size_t retval = 0;
+  gripe_wrong_type_arg ("octave_base_value::nparents()", type_name ());
+  return retval;
+}
+
+std::list<std::string>
+octave_base_value::parent_class_name_list (void) const
+{
+  std::list<std::string> retval;
+  gripe_wrong_type_arg ("octave_base_value::parent_class_name_list()",
+			type_name ());
+  return retval;
+}
+
+string_vector
+octave_base_value::parent_class_names (void) const
+{
+  string_vector retval;
+  gripe_wrong_type_arg ("octave_base_value::parent_class_names()",
+			type_name ());
+  return retval;
+}
+
 octave_function *
 octave_base_value::function_value (bool silent)
 {

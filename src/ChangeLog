@@ -1,3 +1,24 @@
+2009-04-23  John W. Eaton  <jwe@octave.org>
+
+	* ov-class.cc (Fclass): Check newly constructed classes against
+	the first constructed object of the class.
+
+	* ov-class.h, ov-class.cc (octave_class::exmplar_info): New class.
+	(exemplar_map): New static data member.
+	(exemplar_iterator, exemplar_const_iterator): New typedefs.
+
+	* ov-class.h (octave_class::nparents,
+	octave_class::parent_class_name_list): New functions.
+	* ov.h (octave_base_value::nparents,
+	octave_base_value::parent_class_name_list): New functions.
+	* ov-base.h, ov-base.cc (octave_base_value::nparents,
+	octave_base_value::parent_class_name_list): New functions.
+	(parent_class_names): Error if called for wrong type argument.
+
+	* symtab.cc (load_out_of_date_fcn): New arg, dispatch_type.
+	(out_of_date_check_internal): Pass dispatch type to
+	load_out_of_date_fcn.
+
 2009-04-22  John W. Eaton  <jwe@octave.org>
 
 	* ov-base-int.cc (octave_base_int_helper<T, false,

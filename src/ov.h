@@ -830,6 +830,12 @@ public:
   string_vector map_keys (void) const
     { return rep->map_keys (); }
 
+  size_t nparents (void) const
+    { return rep->nparents (); }
+
+  std::list<std::string> parent_class_name_list (void) const
+    { return rep->parent_class_name_list (); }
+
   string_vector parent_class_names (void) const
     { return rep->parent_class_names (); }
 

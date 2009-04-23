@@ -109,6 +109,8 @@ public:
 
   octave_idx_type nfields (void) const { return map.nfields (); }
 
+  size_t nparents (void) const { return parent_list.size (); }
+
   octave_value reshape (const dim_vector& new_dims) const
     { return map.reshape (new_dims); }
 
@@ -124,6 +126,9 @@ public:
   Octave_map map_value (void) const { return map; }
 
   string_vector map_keys (void) const;
+
+  std::list<std::string> parent_class_name_list (void) const
+    { return parent_list; }
 
   string_vector parent_class_names (void) const
     { return string_vector (parent_list); }
@@ -180,6 +185,53 @@ private:
   std::list<std::string> parent_list;
 
   bool in_class_method (void) const;
+
+public:
+  // The list of field names and parent classes defines a class.  We
+  // keep track of each class that has been created so that we know
+  class exemplar_info
+  {
+  public:
+
+    exemplar_info (void) : field_names (), parent_class_names () { }
+
+    exemplar_info (const octave_value& obj);
+
+    exemplar_info (const exemplar_info& x)
+      : field_names (x.field_names),
+	parent_class_names (x.parent_class_names) { }
+
+    exemplar_info& operator = (const exemplar_info& x)
+    {
+      if (&x != this)
+	{
+	  field_names = x.field_names;
+	  parent_class_names = x.parent_class_names;
+	}
+      return *this;
+    }
+
+    octave_idx_type nfields (void) const { return field_names.length (); }
+
+    size_t nparents (void) const { return parent_class_names.size (); }
+
+    string_vector fields (void) const { return field_names; }
+
+    std::list<std::string> parents (void) const { return parent_class_names; }
+
+    bool compare (const octave_value& obj) const;
+
+  private:
+
+    string_vector field_names;
+    std::list<std::string> parent_class_names;
+  };
+
+  // A map from class names to lists of fields.
+  static std::map<std::string, exemplar_info> exemplar_map;
+
+  typedef std::map<std::string, exemplar_info>::iterator exemplar_iterator;
+  typedef std::map<std::string, exemplar_info>::const_iterator exemplar_const_iterator;
 };
 
 #endif

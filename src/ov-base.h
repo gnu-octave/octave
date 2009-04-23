@@ -452,8 +452,11 @@ public:
 
   virtual string_vector map_keys (void) const;
 
-  virtual string_vector parent_class_names (void) const
-    { return string_vector (); }
+  virtual size_t nparents (void) const;
+
+  virtual std::list<std::string> parent_class_name_list (void) const;
+
+  virtual string_vector parent_class_names (void) const;
 
   // FIXME -- should this warn if called for a non-class type?
   virtual octave_base_value *find_parent_class (const std::string&)

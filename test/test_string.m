@@ -448,3 +448,7 @@
 %% test/octave.test/string/isxdigit-3.m
 %!error isxdigit ();
 
+%% test concatenation with all zero matrices
+%!assert([ '' 65*ones(1,10) ], 'AAAAAAAAAA');
+%!assert([ 65*ones(1,10) '' ], 'AAAAAAAAAA');
+

@@ -1,3 +1,10 @@
+2009-04-23  Ben Abbott <bpabbott@mac.com>
+
+	* plot/print.m: Use Ghostscript rather than ImageMagick's 'convert'.
+	Support printing to non-postscript printers. Do not change the output
+	filename when using Ghostscript. When using lpr to print the output,
+	send it without filtering (unix), or as if it were binary (pc).
+
 2009-04-22  Robert T. Short  <octave@phaselockedsystems.com>
 
 	* general/isa.m: Correctly report multiple layers of class hierarchy.

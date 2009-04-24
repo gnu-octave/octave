@@ -33,6 +33,9 @@
 ## @item -P@var{printer}
 ##   Set the @var{printer} name to which the graph is sent if no
 ##   @var{filename} is specified.
+## @item -G@var{ghostscript_command}
+##   Specify the command for calling Ghostscript. For Unix and Windows,
+## the defaults are 'gs' and 'gswin32c', respectively.
 ## @item -color
 ## @itemx -mono
 ##   Monochrome or color lines.
@@ -100,11 +103,36 @@
 ##     Portable document format
 ##   @end table
 ##
-##   Other devices are supported by "convert" from ImageMagick.  Type
-## system("convert") to see what formats are available.
-##
 ##   If the device is omitted, it is inferred from the file extension,
 ## or if there is no filename it is sent to the printer as postscript.
+##
+## @item -d@var{gs_device}
+##   Additional devices are supported by Ghostscript.
+## Some examples are;
+##
+##   @table @code
+##   @item ljet2p 
+##     HP LaserJet IIP
+##   @item ljet3 
+##     HP LaserJet III
+##   @item deskjet
+##     HP DeskJet and DeskJet Plus
+##   @item cdj550
+##     HP DeskJet 550C
+##   @item paintjet
+##     HP PointJet
+##   @item pcx24b
+##     24-bit color PCX file format
+##   @item ppm
+##     Portable Pixel Map file format
+##   @end table
+##
+##   For a complete list, type `system ("gs -h")' to see what formats
+## and devices are available.
+##
+##   For output sent to a printer, the size is determined by the
+## figure's "papersize" property. For output to a file the, size
+## is determined by the "paperposition" property.
 ##
 ## @itemx -r@var{NUM}
 ##   Resolution of bitmaps in pixels per inch. For both metafiles and 
@@ -149,6 +177,11 @@ function print (varargin)
   debug_file = "octave-print-commands.log";
   special_flag = "textnormal";
   resolution = "";
+  if (isunix ())
+    ghostscript_binary = "gs";
+  elseif (ispc ())
+    ghostscript_binary = "gswin23c";
+  endif 
 
   old_fig = get (0, "currentfigure");
   unwind_protect
@@ -182,6 +215,8 @@ function print (varargin)
 	  devopt = tolower(arg(3:end));
         elseif (length (arg) > 2 && arg(1:2) == "-P")
 	  printer = arg;
+	elseif ((length (arg) > 2) && arg(1:2) == "-G")
+	  ghostscript_binary = arg(3:end);
         elseif (length (arg) > 2 && arg(1:2) == "-F")
 	  idx = rindex (arg, ":");
 	  if (idx)
@@ -209,7 +244,13 @@ function print (varargin)
     doprint = isempty (name);
     if (doprint)
       if (isempty (devopt))
-        printname = cstrcat (tmpnam, ".ps");
+	if (use_color < 0)
+	  devopt = "ps";
+          printname = cstrcat (tmpnam, ".ps");
+	else
+	  devopt = "psc";
+          printname = cstrcat (tmpnam, ".psc");
+	endif
       else
         printname = cstrcat (tmpnam, ".", devopt);
       endif
@@ -243,26 +284,20 @@ function print (varargin)
       dev = "jpeg";
     endif
 
-    ## Check if the specified device is one that is supported by
-    ## gnuplot. If not assume it is one supported by ImageMagick's
-    ## "convert" utility.
+    ## Check if the specified device is one that is supported by gnuplot.
+    ## If not, assume it is a device/format supported by Ghostscript.
     dev_list = {"aifm", "corel", "fig", "png", "jpeg", ...
 		"gif", "pbm", "dxf", "mf", "svg", "hpgl", ...
 		"ps", "ps2", "psc", "psc2", "eps", "eps2", ...
 		"epsc", "epsc2", "emf", "pdf", "pslatex", ...
 		"epslatex", "epslatexstandalone", "pstex"};
     if (! any (strcmp (dev, dev_list)))
-      if (! isempty (devopt))
-	## Device has been specified but is not supported by gnuplot.
-        convert_name = cstrcat (devopt, ":", name);
-      else
-	## Device has *not* been specified and is not supported by gnuplot.
-        convert_name = name;
-      endif
+      ghostscript_output = name;
+      ghostscript_device = dev;
       dev = "epsc";
       name = cstrcat (tmpnam, ".eps");
     else
-      convert_name = "";
+      ghostscript_output = "";
     endif
 
     termn = dev;
@@ -407,13 +442,18 @@ function print (varargin)
         available_terminals = __gnuplot_get_var__ (gcf, "GPVAL_TERMINALS");
         available_terminals = regexp (available_terminals, "\\b\\w+\\b", "match");
         gnuplot_supports_term = any (strcmp (available_terminals, termn));
-    elseif (isunix () && strcmp (termn, "pdf"))
+    elseif (strcmp (termn, "pdf"))
       ## Some Linux variants do not include a "pdf" capable gnuplot.
-      ## To be safe, use "convert".
-      [status, output] = system ("which convert");
-      have_convert = (status == 0);
-      if (have_convert)
+      ## To be safe, use Ghostscript.
+      if (isunix ())
+        [status, output] = system (sprintf ("which %s", ghostscript_binary));
+      elseif (ispc ())
+	status = 0;
+      endif
+      have_ghostscript = (status == 0);
+      if (have_ghostscript)
         gnuplot_supports_term = false;
+        ghostscript_device = "pdfwrite";
       else
         gnuplot_supports_term = true;
       endif
@@ -422,12 +462,13 @@ function print (varargin)
     endif
 
     if (! gnuplot_supports_term)
-      ## If the terminal is not supported by the local gnuplot, try "convert".
       if (strcmp (termn, "pdf"))
+	## If there the installed gnuplot does not support pdf, use Ghostscript.
+        ghostscript_device = "pdfwrite";
 	if (strfind (name, ".pdf") == numel (name) - 3)
-          convert_name = name;
+          ghostscript_output = name;
 	else
-	  convert_name = strcat (name, ".pdf");
+	  ghostscript_output = strcat (name, ".pdf");
 	endif
         name = cstrcat (tmpnam, ".ps");
         termn = "postscript";
@@ -462,12 +503,12 @@ function print (varargin)
 
     unwind_protect
       paper_position_mode = get (gcf, "paperpositionmode");
-      term_for_prn = {"postscript", "pdf"};
+      terminals_for_prn = {"postscript", "pdf"};
       restore_properties = false;
-      if (! any (strncmp (termn, term_for_prn, numel(termn)))
-	  || strncmp (dev, "eps", 3))
-	## If not pdf and not plain postscript, render an image the size of
-	## the paperposition box.
+      if ((! any (strncmp (termn, terminals_for_prn, numel(termn)))
+	  || strncmp (dev, "eps", 3)) && ! doprint)
+	## If not PDF or PostScript, and the result is not being sent to a printer,
+        ## render an image the size of the paperposition box.
         restore_properties = true;
         p.paperunits = get (gcf, "paperunits");
         p.papertype = get (gcf, "papertype");
@@ -505,20 +546,53 @@ function print (varargin)
       endif
     end_unwind_protect
 
-    if (! isempty (convert_name))
-      command = sprintf ("convert '%s' '%s'", name, convert_name);
+    if (! isempty (ghostscript_output))
+      ghostscript_options = "-q -dBATCH -dSAFER -dNOPAUSE -dTextAlphaBits=4";
+      if (! isempty (strfind (options, "eps")))
+	## If gnuplot's output is an eps-file then crop at the bouding box.
+	ghostscript_options = sprintf ("%s -dEPSCrop", ghostscript_options);
+      end
+      if (isempty (strfind (lower (ghostscript_device), "write")))
+	## If output is a bitmap then include the resolution
+	ghostscript_options = sprintf ("%s -r%d", ghostscript_options, resolution);
+      endif
+      ghostscript_options = sprintf ("%s -sDEVICE=%s", ghostscript_options,
+                                     ghostscript_device);
+      command = sprintf ("%s %s -sOutputFile='%s' '%s'", ghostscript_binary,
+                          ghostscript_options, ghostscript_output, name);
       [errcode, output] = system (command);
       unlink (name);
       if (errcode)
-        error ("print: could not convert; %s -> %s.", name, convert_name);
+	fprintf ("$ %s\n", command)
+	disp(output)
+        error ("print: could not convert; %s -> %s.", name, ghostscript_output);
       endif
     endif
 
-    ## FIXME -- This looks like a dirty, Unix-specific hack.
-    ## DAS
     if (doprint)
-      system (sprintf ("lpr %s '%s'", printer, printname));
-      unlink (printname);
+      if (isunix ())
+	prn_opt = "-l";
+      elseif (ispc ())
+	prn_opt = "-o l";
+      else
+	## FIXME - besides Unix and Windows, what other OS's might be considered.
+	prn_opt = "";
+      endif
+      if (isempty (printer))
+        prn_cmd = sprintf ("lpr %s '%s'", prn_opt, printname);
+      else
+        prn_cmd = sprintf ("lpr %s -P %s '%s'", prn_opt, printer, printname);
+      endif
+      [status, output] = system (prn_cmd);
+      if (status != 0)
+	disp (output)
+	warning ("print.m: printing failed.")
+      endif
+      [status, output] = unlink (printname);
+      if (status != 0)
+	disp (output)
+	warning ("print.m: failed to delete temporay file, '%s'.", printname)
+      endif
     endif
 
   unwind_protect_cleanup
@@ -528,3 +602,4 @@ function print (varargin)
   end_unwind_protect
 
 endfunction
+

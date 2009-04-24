@@ -2226,6 +2226,7 @@ Centered (may only be applied to command %s).\n\
 \n\
 A command is composed like this:\n\
 \n\
+@c Set example in small font to prevent overfull line\n\
 @smallexample\n\
 %[modifier]<command>[:size_of_parameter[:center-specific[:balance]]];\n\
 @end smallexample\n\

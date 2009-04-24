@@ -92,7 +92,7 @@
 ##
 ## @example
 ## @group
-## function [fvec, fjac] = my_optim_func (x, optimvalues, state)
+## function [fvec, fjac] = user_func (x, optimvalues, state)
 ## persistent sav = [], sav0 = [];
 ## if (nargin == 1)
 ##   ## evaluation call
@@ -113,7 +113,7 @@
 ##
 ## ## @dots{}.
 ## 
-## fsolve (@@my_optim_func, x0, optimset ("OutputFcn", @@my_optim_func, @dots{}))
+## fsolve (@@user_func, x0, optimset ("OutputFcn", @@user_func, @dots{}))
 ## @end group
 ## @end example
 ###

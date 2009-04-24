@@ -1,3 +1,10 @@
+2009-04-24  Rik  <rdrider0-list@yahoo.com>
+	* interpreter/octave.pdf: 
+	Eliminate most overfull errors when running texi2pdf for generating 
+	pdf documentation.
+	Use @smallexample when necessary to reduce font for long lines.
+	Reword variables or phrases so that Tex can break them at a better spot.
+
 2009-04-21  Rik  <rdrider0-list@yahoo.com>
 	* interpreter/octave.pdf: Eliminate 'unbalanced parentheses in @def...'
 	error during texi2pdf.  Fixed four .m files incorrectly using @deftypefn 

@@ -46,6 +46,7 @@ $$\n\
 @end iftex\n\
 @ifnottex\n\
 \n\
+@c Set example in small font to prevent overfull line\n\
 @smallexample\n\
                                       x\n\
                                      /\n\

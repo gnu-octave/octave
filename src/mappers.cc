@@ -509,13 +509,13 @@ $$\n\
 @end iftex\n\
 @ifnottex\n\
 \n\
-@smallexample\n\
+@example\n\
                          z\n\
                         /\n\
 erf (z) = (2/sqrt (pi)) | e^(-t^2) dt\n\
                         /\n\
                      t=0\n\
-@end smallexample\n\
+@end example\n\
 @end ifnottex\n\
 @seealso{erfc, erfinv}\n\
 @end deftypefn")

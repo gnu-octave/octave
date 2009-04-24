@@ -143,7 +143,7 @@
 ## independent specified with an addition argument.  For example
 ##
 ## @example
-## pkg prefix ~/my_octave_packages ~/my_octave_packages_for_my_pc
+## pkg prefix ~/my_octave_packages ~/my_arch_dep_pkgs
 ## @end example
 ## @item local_list
 ## Set the file in which to look for information on the locally

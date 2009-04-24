@@ -45,8 +45,8 @@
 ##
 ## @example
 ## @group
-## Cheese = @{"Cheddar", "Swiss", "Camembert", "Munster", "Stilton", @dots{}
-##    "Blue"@};
+## Cheese = @{"Cheddar", "Swiss", "Camembert", ...
+##           "Munster", "Stilton", "Blue"@};
 ## Sold = [105, 30, 70, 10, 15, 20];
 ## pareto(Sold, Cheese);
 ## @end group

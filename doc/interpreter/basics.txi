@@ -818,14 +818,13 @@ octave:13> f ()
 @noindent
 Octave will respond with
 
-@c Using 'smallexample' to make text fit on page when creating smallbook.
-@smallexample
+@example
 @group
 error: `x' undefined near line 1 column 24
 error: called from:
 error:   f at line 1, column 22
 @end group
-@end smallexample
+@end example
 
 @noindent
 This error message has several parts, and gives quite a bit of

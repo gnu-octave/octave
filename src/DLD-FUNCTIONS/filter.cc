@@ -296,6 +296,7 @@ $$\n\
 @end iftex\n\
 @ifnottex\n\
 \n\
+@c Set example in small font to prevent overfull line\n\
 @smallexample\n\
    N                   M\n\
   SUM a(k+1) y(n-k) = SUM b(k+1) x(n-k)      for 1<=n<=length(x)\n\
@@ -325,6 +326,7 @@ $$\n\
 @end iftex\n\
 @ifnottex\n\
 \n\
+@c Set example in small font to prevent overfull line\n\
 @smallexample\n\
             N                   M\n\
   y(n) = - SUM c(k+1) y(n-k) + SUM d(k+1) x(n-k)  for 1<=n<=length(x)\n\

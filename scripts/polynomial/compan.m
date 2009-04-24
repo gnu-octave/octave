@@ -37,6 +37,7 @@
 ## @end iftex
 ## @ifnottex
 ##
+## @c Set example in small font to prevent overfull line
 ## @smallexample
 ##      _                                                        _
 ##     |  -c(2)/c(1)   -c(3)/c(1)  @dots{}  -c(N)/c(1)  -c(N+1)/c(1)  |

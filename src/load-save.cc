@@ -1821,6 +1821,7 @@ passed to @code{strftime} and should begin with the character\n\
 the header comment is omitted from text-format data files.  The\n\
 default value is\n\
 \n\
+@c Set example in small font to prevent overfull line\n\
 @smallexample\n\
 \"# Created by Octave VERSION, %a %b %d %H:%M:%S %Y %Z <USER@@HOST>\"\n\
 @end smallexample\n\

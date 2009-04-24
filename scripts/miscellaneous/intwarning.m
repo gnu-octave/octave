@@ -30,6 +30,7 @@
 ## Otherwise it is returned in a structure with the fields "identifier"
 ## and "state".
 ##
+## @c Set example in small font to prevent overfull line
 ## @smallexample
 ## @group
 ## intwarning ("query")

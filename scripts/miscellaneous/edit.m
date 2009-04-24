@@ -87,9 +87,10 @@
 ## 
 ## On Cygwin, you will need to convert the Cygwin path to a Windows
 ## path if you are using a native Windows editor.  For example
-## @example
+## @c Set example in small font to prevent overfull line
+## @smallexample
 ## '"C:/Program Files/Good Editor/Editor.exe" "$(cygpath -wa %s)"'
-## @end example
+## @end smallexample
 ##
 ## @item home
 ## This is the location of user local m-files.  Be be sure it is in your

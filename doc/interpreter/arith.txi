@@ -76,10 +76,7 @@ sin ([1, 2; 3, 4])
 @node Complex Arithmetic
 @section Complex Arithmetic
 
-The following functions are available for working with complex
-numbers.  Each expects a single argument.  Given a matrix they work on
-an element by element basis.  In the descriptions of the following
-functions,
+In the descriptions of the following functions,
 @iftex
 @tex
 $z$ is the complex number $x + iy$, where $i$ is defined as

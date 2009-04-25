@@ -26,16 +26,16 @@
 ## @code{abs (imag (@var{z}) / @var{z}) < @var{tol})}) after the
 ## complex pairs.
 ##
-## If @var{tol} is unspecified the default value is 100*@var{eps}.
+## If @var{tol} is unspecified the default value is 100*@code{eps}.
 ##
 ## By default the complex pairs are sorted along the first non-singleton
 ## dimension of @var{z}.  If @var{dim} is specified, then the complex
 ## pairs are sorted along this dimension.
 ##
-## Signal an error if some complex numbers could not be paired.  Requires
-## all complex numbers to be exact conjugates within @var{tol}, or signals an 
-## error.  Note that there are no guarantees on the order of the returned
-## pairs with identical real parts but differing imaginary parts.
+## Signal an error if some complex numbers could not be paired.  Signal an
+## error if all complex numbers are not exact conjugates (to within
+## @var{tol}).  Note that there is no defined order for pairs with identical
+## real parts but differing imaginary parts.
 ##
 ## @c Set example in small font to prevent overfull line
 ## @smallexample

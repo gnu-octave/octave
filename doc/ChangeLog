@@ -1,4 +1,9 @@
 2009-04-24  Rik  <rdrider0-list@yahoo.com>
+	* interpreter/arith.txi: Update section 17.2 (Complex Arithmetic) of
+	arith.txi
+	Use Tex in more of the doc strings for pretty printing in pdf format.
+
+2009-04-24  Rik  <rdrider0-list@yahoo.com>
 	* interpreter/octave.pdf: 
 	Eliminate most overfull errors when running texi2pdf for generating 
 	pdf documentation.

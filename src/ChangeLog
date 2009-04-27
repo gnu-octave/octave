@@ -1,3 +1,10 @@
+2009-04-27  John W. Eaton  <jwe@octave.org>
+
+	* ov-class.cc (octave_class::dotref): Handle empty parent class.
+	(octave_class::get_current_method_class): Allow result to be empty.
+	(called_from_builtin): New static function.
+	(octave_class::subsref, octave_class::subsasgn): Use it.
+
 2009-04-23  John W. Eaton  <jwe@octave.org>
 
 	* ov-class.cc (Fclass): Check newly constructed classes against

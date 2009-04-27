@@ -96,6 +96,8 @@ octave_class::octave_class (const Octave_map& m, const std::string& id,
 static std::string
 get_current_method_class (void)
 {
+  std::string retval;
+
   // FIXME -- is there a better way to do this?
   octave_function *fcn = octave_call_stack::current ();
 
@@ -103,9 +105,10 @@ get_current_method_class (void)
 
   size_t ipos = my_dir.find_last_of ("@");
 
-  assert (ipos != std::string::npos);
+  if (ipos != std::string::npos)
+    retval = my_dir.substr (ipos+1);
 
-  return my_dir.substr (ipos+1);
+  return retval;
 }
 
 static void
@@ -235,7 +238,8 @@ octave_class::dotref (const octave_value_list& idx)
   // Find the class in which this method resides before attempting to access
   // the requested field.
 
-  octave_base_value *obvp = find_parent_class (method_class);
+  octave_base_value *obvp
+    = method_class.empty () ? 0 : find_parent_class (method_class);
 
   Octave_map my_map;
 
@@ -258,6 +262,20 @@ octave_class::dotref (const octave_value_list& idx)
   return retval;
 }
 
+static bool
+called_from_builtin (void)
+{
+  octave_function *fcn = octave_call_stack::caller ();
+
+  // FIXME -- we probably need a better check here, or some other
+  // mechanism to avoid overloaded functions when builtin is used.
+  // For example, what if someone overloads the builtin function?
+  // Also, are there other places where using builtin is not properly
+  // avoiding dispatch?
+
+  return (fcn && fcn->name () == "builtin");
+}
+
 octave_value_list
 octave_class::subsref (const std::string& type,
 		       const std::list<octave_value_list>& idx,
@@ -265,7 +283,7 @@ octave_class::subsref (const std::string& type,
 {
   octave_value_list retval;
 
-  if (in_class_method ())
+  if (in_class_method () || called_from_builtin ())
     {
       // FIXME -- this block of code is the same as the body of
       // octave_struct::subsref.  Maybe it could be shared instead of
@@ -383,7 +401,7 @@ octave_class::subsasgn (const std::string& type,
 {
   octave_value retval;
 
-  if (! in_class_method ())
+  if (! (in_class_method () || called_from_builtin ()))
     {
       octave_value meth = symbol_table::find_method ("subsasgn", class_name ());
 

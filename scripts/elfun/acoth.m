@@ -20,6 +20,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Mapping Function} {} acoth (@var{x})
 ## Compute the inverse hyperbolic cotangent of each element of @var{x}.
+## @seealso{coth}
 ## @end deftypefn
 
 ## Author: jwe

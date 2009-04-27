@@ -18,8 +18,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} cotd (@var{x})
-## Compute the cotangent of an angle in degrees.
-## @seealso{cot, tand}
+## Compute the cotangent for each element of @var{x} in degrees.
+## @seealso{acotd, cot}
 ## @end deftypefn
 
 ## Author: David Bateman <dbateman@free.fr>

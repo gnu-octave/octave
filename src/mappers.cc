@@ -90,7 +90,8 @@ abs (3 + 4i)\n\
 DEFUN (acos, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} acos (@var{x})\n\
-Compute the inverse cosine of each element of @var{x}.\n\
+Compute the inverse cosine in radians for each element of @var{x}.\n\
+@seealso{cos, acosd}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -126,7 +127,8 @@ Compute the inverse cosine of each element of @var{x}.\n\
 DEFUN (acosh, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} acosh (@var{x})\n\
-Compute the inverse hyperbolic cosine of each element of @var{x}.\n\
+Compute the inverse hyperbolic cosine for each element of @var{x}.\n\
+@seealso{cosh}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -226,7 +228,8 @@ arg (3 + 4i)\n\
 DEFUN (asin, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} asin (@var{x})\n\
-Compute the inverse sine of each element of @var{x}.\n\
+Compute the inverse sine in radians for each element of @var{x}.\n\
+@seealso{sin, asind}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -252,7 +255,8 @@ Compute the inverse sine of each element of @var{x}.\n\
 DEFUN (asinh, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} asinh (@var{x})\n\
-Compute the inverse hyperbolic sine of each element of @var{x}.\n\
+Compute the inverse hyperbolic sine for each element of @var{x}.\n\
+@seealso{sinh}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -284,7 +288,8 @@ Compute the inverse hyperbolic sine of each element of @var{x}.\n\
 DEFUN (atan, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} atan (@var{x})\n\
-Compute the inverse tangent of each element of @var{x}.\n\
+Compute the inverse tangent in radians for each element of @var{x}.\n\
+@seealso{tan, atand}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -320,7 +325,8 @@ Compute the inverse tangent of each element of @var{x}.\n\
 DEFUN (atanh, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} atanh (@var{x})\n\
-Compute the inverse hyperbolic tangent of each element of @var{x}.\n\
+Compute the inverse hyperbolic tangent for each element of @var{x}.\n\
+@seealso{tanh}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -438,7 +444,8 @@ $\\bar{z} = x - iy$.\n\
 DEFUN (cos, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} cos (@var{x})\n\
-Compute the cosine of each element of @var{x}.\n\
+Compute the cosine for each element of @var{x} in radians.\n\
+@seealso{acos, cosd, cosh}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -474,7 +481,8 @@ Compute the cosine of each element of @var{x}.\n\
 DEFUN (cosh, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} cosh (@var{x})\n\
-Compute the hyperbolic cosine of each element of @var{x}.\n\
+Compute the hyperbolic cosine for each element of @var{x}.\n\
+@seealso{acosh, sinh, tanh}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -517,11 +525,13 @@ $$\n\
 @ifnottex\n\
 \n\
 @example\n\
+@group\n\
                          z\n\
                         /\n\
 erf (z) = (2/sqrt (pi)) | e^(-t^2) dt\n\
                         /\n\
                      t=0\n\
+@end group\n\
 @end example\n\
 @end ifnottex\n\
 @seealso{erfc, erfinv}\n\
@@ -1448,7 +1458,8 @@ For complex arguments, @code{sign} returns @code{x ./ abs (@var{x})}.\n\
 DEFUN (sin, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} sin (@var{x})\n\
-Compute the sine of each element of @var{x}.\n\
+Compute the sine for each element of @var{x} in radians.\n\
+@seealso{asin, sind, sinh}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1484,7 +1495,8 @@ Compute the sine of each element of @var{x}.\n\
 DEFUN (sinh, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} sinh (@var{x})\n\
-Compute the hyperbolic sine of each element of @var{x}.\n\
+Compute the hyperbolic sine for each element of @var{x}.\n\
+@seealso{asinh, cosh, tanh}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1551,7 +1563,8 @@ a complex result is returned.  To compute the matrix square root, see\n\
 DEFUN (tan, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} tan (@var{z})\n\
-Compute tangent of each element of @var{x}.\n\
+Compute the tangent for each element of @var{x} in radians.\n\
+@seealso{atan, tand, tanh}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1587,7 +1600,8 @@ Compute tangent of each element of @var{x}.\n\
 DEFUN (tanh, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} tanh (@var{x})\n\
-Compute hyperbolic tangent of each element of @var{x}.\n\
+Compute hyperbolic tangent for each element of @var{x}.\n\
+@seealso{atanh, sinh, cosh}\n\
 @end deftypefn")
 {
   octave_value retval;

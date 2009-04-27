@@ -18,8 +18,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} asind (@var{x})
-## Compute the inverse sine of an angle in degrees.
-## @seealso{asin, sind, acosd}
+## Compute the inverse sine in degrees for each element of @var{x}.
+## @seealso{sind, asin}
 ## @end deftypefn
 
 ## Author: David Bateman <dbateman@free.fr>

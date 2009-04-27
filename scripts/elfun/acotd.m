@@ -18,8 +18,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} acotd (@var{x})
-## Compute the inverse cotangent of an angle in degrees.
-## @seealso{atan, tand}
+## Compute the inverse cotangent in degrees for each element of @var{x}.
+## @seealso{cotd, acot}
 ## @end deftypefn
 
 ## Author: David Bateman <dbateman@free.fr>

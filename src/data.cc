@@ -534,7 +534,8 @@ DEFUN (atan2, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} atan2 (@var{y}, @var{x})\n\
 Compute atan (@var{y} / @var{x}) for corresponding elements of @var{y}\n\
-and @var{x}.  The result is in the range -pi to pi.\n\
+and @var{x}.  Signal an error if @var{y} and @var{x} do not match in size\n\
+and orientation.\n\
 @end deftypefn")
 {
   octave_value retval;

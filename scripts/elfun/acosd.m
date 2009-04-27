@@ -18,8 +18,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} acosd (@var{x})
-## Compute the inverse cosine of an angle in degrees.
-## @seealso{acos, cosd, asecd}
+## Compute the inverse cosine in degrees for each element of @var{x}.
+## @seealso{cosd, acos}
 ## @end deftypefn
 
 ## Author: David Bateman <dbateman@free.fr>

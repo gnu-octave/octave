@@ -103,7 +103,7 @@ defined as @code{sqrt (-1)}.
 @node Trigonometry
 @section Trigonometry
 
-Octave provides the following trigonometric functions.  Angles are
+Octave provides the following trigonometric functions where angles are
 specified in radians.  To convert from degrees to radians multiply by
 @iftex
 @tex
@@ -113,7 +113,12 @@ $\pi/180$
 @ifinfo
 @code{pi/180}
 @end ifinfo
- (e.g., @code{sin (30 * pi/180)} returns the sine of 30 degrees).
+(e.g., @code{sin (30 * pi/180)} returns the sine of 30 degrees).  As
+an alternative, Octave provides a number of trigonometric functions
+which work directly on an argument specified in degrees.  These functions
+are named after the base trigonometric function with a @samp{d} suffix.  For
+example, @code{sin} expects an angle in radians while @code{sind} expects an
+angle in degrees.
 
 @DOCSTRING(sin)
 @DOCSTRING(cos)
@@ -143,21 +148,20 @@ $\pi/180$
 @DOCSTRING(acsch)
 @DOCSTRING(acoth)
 
-Each of these functions expects a single argument.  For matrix arguments,
-they work on an element by element basis.  For example,
-
-@example
-@group
-sin ([1, 2; 3, 4])
-     @result{}  0.84147   0.90930
-         0.14112  -0.75680
-@end group
-@end example
-
 @DOCSTRING(atan2)
 
-In addition to the trigonometric functions that work with radians,
-Octave also provides the following functions which work with degrees.
+Octave provides the following trigonometric functions where angles are
+specified in degrees.  These functions produce true zeros at the appropriate
+intervals rather than the small roundoff error that occurs when using
+radians.  For example:
+@example
+@group
+cosd (90)
+     @result{} 0
+cos (pi/2)
+     @result{} 6.1230e-17
+@end group
+@end example
 
 @DOCSTRING(sind)
 @DOCSTRING(cosd)
@@ -192,6 +196,8 @@ Octave also provides the following functions which work with degrees.
 @section Utility Functions
 
 @DOCSTRING(ceil)
+
+@DOCSTRING(cross)
 
 @DOCSTRING(del2)
 
@@ -236,9 +242,9 @@ Octave also provides the following functions which work with degrees.
 @node Special Functions
 @section Special Functions
 
-@DOCSTRING(besselj)
-
 @DOCSTRING(airy)
+
+@DOCSTRING(besselj)
 
 @DOCSTRING(beta)
 
@@ -247,6 +253,10 @@ Octave also provides the following functions which work with degrees.
 @DOCSTRING(betaln)
 
 @DOCSTRING(bincoeff)
+
+@DOCSTRING(commutation_matrix)
+
+@DOCSTRING(duplication_matrix)
 
 @DOCSTRING(erf)
 
@@ -263,12 +273,6 @@ Octave also provides the following functions which work with degrees.
 @anchor{doc-gammaln}
 @DOCSTRING(lgamma)
 
-@DOCSTRING(cross)
-
-@DOCSTRING(commutation_matrix)
-
-@DOCSTRING(duplication_matrix)
-
 @node Coordinate Transformations
 @section Coordinate Transformations
 
@@ -283,15 +287,15 @@ Octave also provides the following functions which work with degrees.
 @node Mathematical Constants
 @section Mathematical Constants
 
+@DOCSTRING(e)
+
+@DOCSTRING(pi)
+
 @DOCSTRING(I)
 
 @DOCSTRING(Inf)
 
 @DOCSTRING(NaN)
-
-@DOCSTRING(pi)
-
-@DOCSTRING(e)
 
 @DOCSTRING(eps)
 

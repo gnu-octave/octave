@@ -18,8 +18,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} asecd (@var{x})
-## Compute inverse secant in degrees.
-## @seealso{asec, secd, acscd}
+## Compute the inverse secant in degrees for each element of @var{x}.
+## @seealso{secd, asec}
 ## @end deftypefn
 
 ## Author: David Bateman <dbateman@free.fr>

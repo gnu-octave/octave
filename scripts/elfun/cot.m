@@ -19,7 +19,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Mapping Function} {} cot (@var{x})
-## Compute the cotangent of each element of @var{x}.
+## Compute the cotangent for each element of @var{x} in radians.
+## @seealso{acot, cotd, coth}
 ## @end deftypefn
 
 ## Author: jwe

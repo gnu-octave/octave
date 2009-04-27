@@ -18,8 +18,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} secd (@var{x})
-## Compute the secant of an angle in degrees.
-## @seealso{sec, cscd, sind, cosd}
+## Compute the secant for each element of @var{x} in degrees.
+## @seealso{asecd, sec}
 ## @end deftypefn
 
 ## Author: David Bateman <dbateman@free.fr>

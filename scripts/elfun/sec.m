@@ -19,7 +19,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Mapping Function} {} sec (@var{x})
-## Compute the secant of each element of @var{x}.
+## Compute the secant for each element of @var{x} in radians.
+## @seealso{asec, secd, sech}
 ## @end deftypefn
 
 ## Author: jwe

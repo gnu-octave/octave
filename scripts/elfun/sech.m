@@ -20,6 +20,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Mapping Function} {} sech (@var{x})
 ## Compute the hyperbolic secant of each element of @var{x}.
+## @seealso{asech}
 ## @end deftypefn
 
 ## Author: jwe

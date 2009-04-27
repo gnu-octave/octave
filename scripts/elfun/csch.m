@@ -20,6 +20,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Mapping Function} {} csch (@var{x})
 ## Compute the hyperbolic cosecant of each element of @var{x}.
+## @seealso{acsch}
 ## @end deftypefn
 
 ## Author: jwe

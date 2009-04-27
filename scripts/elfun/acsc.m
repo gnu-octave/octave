@@ -19,7 +19,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Mapping Function} {} acsc (@var{x})
-## Compute the inverse cosecant of each element of @var{x}.
+## Compute the inverse cosecant in radians for each element of @var{x}.
+## @seealso{csc, acscd}
 ## @end deftypefn
 
 ## Author: jwe

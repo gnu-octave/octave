@@ -18,8 +18,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} cscd (@var{x})
-## Compute the cosecant of an angle in degrees.
-## @seealso{csc, secd, sind, cosd}
+## Compute the cosecant for each element of @var{x} in degrees.
+## @seealso{acscd, csc}
 ## @end deftypefn
 
 ## Author: David Bateman <dbateman@free.fr>

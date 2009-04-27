@@ -18,8 +18,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} acscd (@var{x})
-## Compute the inverse cosecant of an angle in degrees.
-## @seealso{acsc, cscd, asecd}
+## Compute the inverse cosecant in degrees for each element of @var{x}.
+## @seealso{cscd, acsc}
 ## @end deftypefn
 
 ## Author: David Bateman <dbateman@free.fr>

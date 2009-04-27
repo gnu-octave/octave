@@ -19,7 +19,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Mapping Function} {} acot (@var{x})
-## Compute the inverse cotangent of each element of @var{x}.
+## Compute the inverse cotangent in radians for each element of @var{x}.
+## @seealso{cot, acotd}
 ## @end deftypefn
 
 ## Author: jwe

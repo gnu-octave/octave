@@ -19,7 +19,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Mapping Function} {} csc (@var{x})
-## Compute the cosecant of each element of @var{x}.
+## Compute the cosecant for each element of @var{x} in radians.
+## @seealso{acsc, cscd, csch}
 ## @end deftypefn
 
 ## Author: jwe

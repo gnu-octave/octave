@@ -139,6 +139,11 @@
 ## SVG the default is the screen resolution, for other it is 150 dpi.
 ## To specify screen resolution, use "-r0".
 ##
+## @item -tight
+##   Forces a tight bounding box for eps-files. Since the ghostscript
+## devices are conversion of an eps-file, this option works the those
+## devices as well.
+##
 ## @itemx -S@var{xsize},@var{ysize}
 ##   Plot size in pixels for EMF, GIF, JPEG, PBM, PNG and SVG. If
 ## using the command form of the print function, you must quote the
@@ -176,12 +181,13 @@ function print (varargin)
   debug = false;
   debug_file = "octave-print-commands.log";
   special_flag = "textnormal";
+  tight_flag = false;
   resolution = "";
   if (isunix ())
-    ghostscript_binary = "gs";
+    persistent ghostscript_binary = "gs";
   elseif (ispc ())
-    ghostscript_binary = "gswin23c";
-  endif 
+    persistent ghostscript_binary = "gswin32c";
+  endif
 
   old_fig = get (0, "currentfigure");
   unwind_protect
@@ -204,6 +210,8 @@ function print (varargin)
 	  orientation = "portrait";
         elseif (strcmp (arg, "-landscape"))
 	  orientation = "landscape";
+        elseif (strcmp (arg, "-tight"))
+	  tight_flag = true;
         elseif (strcmp (arg, "-textspecial"))
 	  special_flag = "textspecial";
         elseif (strncmp (arg, "-debug", 6))
@@ -240,6 +248,13 @@ function print (varargin)
         error ("print: expecting inputs to be character string options or a figure handle");
       endif
     endfor
+
+    if (isunix ())
+      [status, output] = system (sprintf ("which %s 2>&1", ghostscript_binary));
+      have_ghostscript = (status == 0);
+    elseif (ispc ())
+      have_ghostscript = true;
+    endif
 
     doprint = isempty (name);
     if (doprint)
@@ -445,12 +460,6 @@ function print (varargin)
     elseif (strcmp (termn, "pdf"))
       ## Some Linux variants do not include a "pdf" capable gnuplot.
       ## To be safe, use Ghostscript.
-      if (isunix ())
-        [status, output] = system (sprintf ("which %s", ghostscript_binary));
-      elseif (ispc ())
-	status = 0;
-      endif
-      have_ghostscript = (status == 0);
       if (have_ghostscript)
         gnuplot_supports_term = false;
         ghostscript_device = "pdfwrite";
@@ -505,8 +514,9 @@ function print (varargin)
       paper_position_mode = get (gcf, "paperpositionmode");
       terminals_for_prn = {"postscript", "pdf"};
       restore_properties = false;
-      if ((! any (strncmp (termn, terminals_for_prn, numel(termn)))
-	  || strncmp (dev, "eps", 3)) && ! doprint)
+      is_eps_file = strncmp (dev, "eps", 3);
+      output_for_printer = any (strncmp (termn, terminals_for_prn, numel(termn)));
+      if ((! output_for_printer || is_eps_file) && ! doprint)
 	## If not PDF or PostScript, and the result is not being sent to a printer,
         ## render an image the size of the paperposition box.
         restore_properties = true;
@@ -547,26 +557,31 @@ function print (varargin)
     end_unwind_protect
 
     if (! isempty (ghostscript_output))
+      if (is_eps_file && tight_flag)
+	## If gnuplot's output is an eps-file then crop at the bounding box.
+        fix_eps_bbox (name, ghostscript_binary);
+      endif
       ghostscript_options = "-q -dBATCH -dSAFER -dNOPAUSE -dTextAlphaBits=4";
-      if (! isempty (strfind (options, "eps")))
-	## If gnuplot's output is an eps-file then crop at the bouding box.
+      if (is_eps_file)
 	ghostscript_options = sprintf ("%s -dEPSCrop", ghostscript_options);
-      end
+      endif
       if (isempty (strfind (lower (ghostscript_device), "write")))
 	## If output is a bitmap then include the resolution
 	ghostscript_options = sprintf ("%s -r%d", ghostscript_options, resolution);
       endif
       ghostscript_options = sprintf ("%s -sDEVICE=%s", ghostscript_options,
                                      ghostscript_device);
-      command = sprintf ("%s %s -sOutputFile='%s' '%s'", ghostscript_binary,
+      command = sprintf ("%s %s -sOutputFile='%s' '%s' 2>&1", ghostscript_binary,
                           ghostscript_options, ghostscript_output, name);
       [errcode, output] = system (command);
       unlink (name);
       if (errcode)
-	fprintf ("$ %s\n", command)
-	disp(output)
-        error ("print: could not convert; %s -> %s.", name, ghostscript_output);
+        error ("print: Conversion failed, %s -> %s.", name, ghostscript_output);
       endif
+    elseif (is_eps_file && tight_flag && ! doprint)
+      ## If the saved output file is an eps file, use ghostscript to set a tight bbox.
+      ## This may result in a smaller or larger bbox geometry.
+      fix_eps_bbox (name, ghostscript_binary);
     endif
 
     if (doprint)
@@ -579,9 +594,9 @@ function print (varargin)
 	prn_opt = "";
       endif
       if (isempty (printer))
-        prn_cmd = sprintf ("lpr %s '%s'", prn_opt, printname);
+        prn_cmd = sprintf ("lpr %s '%s' 2>&1", prn_opt, printname);
       else
-        prn_cmd = sprintf ("lpr %s -P %s '%s'", prn_opt, printer, printname);
+        prn_cmd = sprintf ("lpr %s -P %s '%s' 2>&1", prn_opt, printer, printname);
       endif
       [status, output] = system (prn_cmd);
       if (status != 0)
@@ -600,6 +615,65 @@ function print (varargin)
       figure (old_fig)
     endif
   end_unwind_protect
+
+endfunction
+
+function bb = fix_eps_bbox (eps_file_name, ghostscript_binary)
+
+  persistent warn_on_no_ghostscript = true
+
+  box_string = "%%BoundingBox:";
+
+  ghostscript_options = "-q -dBATCH -dSAFER -dNOPAUSE -dTextAlphaBits=4 -sDEVICE=bbox";
+  cmd = sprintf ("%s %s '%s' 2>&1", ghostscript_binary, ghostscript_options, eps_file_name);
+  [status, output] = system (cmd);
+
+  if (status == 0)
+
+    pattern = strcat (box_string, "[^%]*");
+    pattern = pattern(1:find(double(pattern)>32, 1, "last"));
+    bbox_line = regexp (output, pattern, "match");
+    if (iscell (bbox_line))
+      bbox_line = bbox_line{1};
+    endif
+    ## Remore the EOL characters.
+    bbox_line(double(bbox_line)<32) = "";
+
+    fid = fopen (eps_file_name, "r+");
+    unwind_protect
+      bbox_replaced = false;
+      while (! bbox_replaced)
+        current_line = fgetl (fid);
+        if (strncmpi (current_line, box_string, numel(box_string)))
+          line_length = numel (current_line);
+          num_spaces = line_length - numel (bbox_line);
+          if (numel (current_line) < numel (bbox_line))
+	    ## If there new line is longer, continue with the current line.
+            new_line = current_line;
+          else
+	    new_line = bbox_line;
+	    new_line(end+1:numel(current_line)) = " ";
+          endif
+          ## Back up to the beginning of the line (include EOL characters).
+          if (ispc ())
+            fseek (fid, -line_length-2, "cof");
+          else
+            fseek (fid, -line_length-1, "cof");
+          endif
+          count = fprintf (fid, "%s", new_line);
+          bbox_replaced = true;
+        elseif (! ischar (current_line))
+          bbox_replaced = true;
+          warning ("print.m: no bounding box found in '%s'.", eps_file_name)
+        endif
+      endwhile
+    unwind_protect_cleanup
+      fclose (fid);
+    end_unwind_protect
+  elseif (warn_on_no_ghostscript)
+    warn_on_no_ghostscript = false;
+    warning ("print.m: Ghostscript could not be used to adjust bounding box.")
+  endif
 
 endfunction
 

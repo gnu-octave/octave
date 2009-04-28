@@ -1,3 +1,9 @@
+2009-04-28  Ben Abbott <bpabbott@mac.com>
+
+	* plot/print.m: Fix typo: 'gswin23c' -> 'gswin32c'. Suppress stderr
+	when printing. New sub-function: fix_eps_bbox(). Add option, "-tight",
+	to replace the gnuplot bbox with a tight bbox for eps-files.
+
 2009-04-23  Ben Abbott <bpabbott@mac.com>
 
 	* plot/print.m: Use Ghostscript rather than ImageMagick's 'convert'.

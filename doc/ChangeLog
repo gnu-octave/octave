@@ -1,6 +1,7 @@
 2009-04-29  Jaroslav Hajek  <highegg@gmail.com>
 
 	* interpreter/numbers.txi: Update info on ranges.
+	* interpreter/expr.txi: Update some info on indexing.
 
 2009-04-26  Rik  <rdrider0-list@yahoo.com>
 	* interpreter/arith.txi: Update section 17.3 (Trigonometry) of arith.txi

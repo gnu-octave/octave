@@ -1,3 +1,7 @@
+2009-04-30  Ben Abbott <bpabbott@mac.com>
+
+	* plot/gnuplot_drawnow.m: For figure position, treat 'wxt' as 'x11'.
+
 2009-04-30  Jaroslav Hajek <highegg@gmail.com>
 
 	* statistics/base/range.m: Fix behavior when dim is specified.

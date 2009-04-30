@@ -187,10 +187,11 @@ function [enhanced, implicit_margin] = gnuplot_set_term (plot_stream, new_stream
         if (all (gnuplot_size > 0))
           ## Set terminal size.
           terminals_with_size = {"emf", "gif", "jpeg", "latex", "pbm", ...
-                                 "pdf", "png", "postscript", "svg", "wxt", ...
+                                 "pdf", "png", "postscript", "svg", ...
                                  "epslatex", "pstex", "pslatex"};
           if (__gnuplot_has_feature__ ("x11_figure_position"))
             terminals_with_size{end+1} = "x11";
+            terminals_with_size{end+1} = "wxt";
           endif
           if (any (strncmpi (term, terminals_with_size, 3)))
 	    if (term_units_are_pixels (term))

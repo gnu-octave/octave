@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} accumarray (@var{subs}, @var{vals}, @var{sz}, @var{fun}, @var{fillval}, @var{issparse})
+## @deftypefn {Function File} {} accumarray (@var{subs}, @var{vals}, @var{sz}, @var{func}, @var{fillval}, @var{issparse})
 ## @deftypefnx {Function File} {} accumarray (@var{csubs}, @var{vals}, @dots{})
 ##
 ## Create an array by accumulating the elements of a vector into the
@@ -31,7 +31,7 @@
 ## of @var{sz} must correspond to the number of columns in @var{subs}.
 ##
 ## The default action of @code{accumarray} is to sum the elements with the
-## same subscripts.  This behavior can be modified by defining the @var{fun}
+## same subscripts.  This behavior can be modified by defining the @var{func}
 ## function.  This should be a function or function handle that accepts a 
 ## column vector and returns a scalar.  The result of the function should not
 ## depend on the order of the subscripts.
@@ -54,7 +54,7 @@
 ## @end example
 ## @end deftypefn
 
-function A = accumarray (subs, val, sz, fun, fillval, isspar)  
+function A = accumarray (subs, val, sz, func, fillval, isspar)  
 
   if (nargin < 2 || nargin > 6)
     print_usage ();
@@ -77,8 +77,8 @@ function A = accumarray (subs, val, sz, fun, fillval, isspar)
     error ("accumarray: sparse matrices limited to 2 dimensions");
   endif
 
-  if (nargin < 4 || isempty (fun))
-    fun = @sum;
+  if (nargin < 4 || isempty (func))
+    func = @sum;
     ## This is the fast summation case. Unlike the general case,
     ## this case will be handled using an O(N) algorithm.
 
@@ -154,7 +154,7 @@ function A = accumarray (subs, val, sz, fun, fillval, isspar)
   for i = 1:ndims
     idx{i} = subs (cidx, i);
   endfor
-  x = cellfun (fun, mat2cell (val(:), diff ([cidx; length(val) + 1])));
+  x = cellfun (func, mat2cell (val(:), diff ([cidx; length(val) + 1])));
   if (isspar && fillval == 0)
     A = sparse (idx{1}, idx{2}, x, sz(1), sz(2));
   else

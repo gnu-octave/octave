@@ -1539,7 +1539,8 @@ sign as @var{x}.  If @var{y} is zero, the result is implementation-dependent.\n\
 
 DEFUN (cumprod, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} cumprod (@var{x}, @var{dim})\n\
+@deftypefn  {Built-in Function} {} cumprod (@var{x})\n\
+@deftypefnx {Built-in Function} {} cumprod (@var{x}, @var{dim})\n\
 Cumulative product of elements along dimension @var{dim}.  If\n\
 @var{dim} is omitted, it defaults to 1 (column-wise cumulative\n\
 products).\n\
@@ -1547,6 +1548,7 @@ products).\n\
 As a special case, if @var{x} is a vector and @var{dim} is omitted,\n\
 return the cumulative product of the elements as a vector with the\n\
 same orientation as @var{x}.\n\
+@seealso{prod, cumsum}\n\
 @end deftypefn")
 {
   DATA_REDUCTION (cumprod);
@@ -1576,7 +1578,8 @@ same orientation as @var{x}.\n\
 
 DEFUN (cumsum, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} cumsum (@var{x}, @var{dim})\n\
+@deftypefn  {Built-in Function} {} cumsum (@var{x})\n\
+@deftypefnx {Built-in Function} {} cumsum (@var{x}, @var{dim})\n\
 @deftypefnx {Built-in Function} {} cumsum (@dots{}, 'native')\n\
 Cumulative sum of elements along dimension @var{dim}.  If @var{dim}\n\
 is omitted, it defaults to 1 (column-wise cumulative sums).\n\
@@ -1585,8 +1588,10 @@ As a special case, if @var{x} is a vector and @var{dim} is omitted,\n\
 return the cumulative sum of the elements as a vector with the\n\
 same orientation as @var{x}.\n\
 \n\
-The \"native\" argument implies the summation is performed in native type,\n\
-analogously to @code{sum}.\n\
+The \"native\" argument implies the summation is performed in native type.\n\
+ See @code{sum} for a complete description and example of the use of\n\
+\"native\".\n\
+@seealso{sum, cumprod}\n\
 @end deftypefn")
 {
   NATIVE_REDUCTION (cumsum, cumsum);
@@ -1711,12 +1716,14 @@ Given a matrix argument, instead of a vector, @code{diag} extracts the\n\
 
 DEFUN (prod, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} prod (@var{x}, @var{dim})\n\
+@deftypefn  {Built-in Function} {} prod (@var{x})\n\
+@deftypefnx {Built-in Function} {} prod (@var{x}, @var{dim})\n\
 Product of elements along dimension @var{dim}.  If @var{dim} is\n\
 omitted, it defaults to 1 (column-wise products).\n\
 \n\
 As a special case, if @var{x} is a vector and @var{dim} is omitted,\n\
 return the product of the elements.\n\
+@seealso{cumprod, sum}\n\
 @end deftypefn")
 {
   DATA_REDUCTION (prod);
@@ -2555,7 +2562,8 @@ Return the number of columns of @var{a}.\n\
 
 DEFUN (sum, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} sum (@var{x}, @var{dim})\n\
+@deftypefn  {Built-in Function} {} sum (@var{x})\n\
+@deftypefnx {Built-in Function} {} sum (@var{x}, @var{dim})\n\
 @deftypefnx {Built-in Function} {} sum (@dots{}, 'native')\n\
 Sum of elements along dimension @var{dim}.  If @var{dim} is\n\
 omitted, it defaults to 1 (column-wise sum).\n\
@@ -2575,6 +2583,7 @@ sum ([true, true], 'native')\n\
   @result{} true\n\
 @end group\n\
 @end example\n\
+@seealso{cumsum, sumsq, prod}\n\
 @end deftypefn")
 {
   NATIVE_REDUCTION (sum, any);
@@ -2643,7 +2652,8 @@ sum ([true, true], 'native')\n\
 
 DEFUN (sumsq, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} sumsq (@var{x}, @var{dim})\n\
+@deftypefn  {Built-in Function} {} sumsq (@var{x})\n\
+@deftypefnx {Built-in Function} {} sumsq (@var{x}, @var{dim})\n\
 Sum of squares of elements along dimension @var{dim}.  If @var{dim}\n\
 is omitted, it defaults to 1 (column-wise sum of squares).\n\
 \n\
@@ -2654,7 +2664,8 @@ This function is conceptually equivalent to computing\n\
 @example\n\
 sum (x .* conj (x), dim)\n\
 @end example\n\
-but it uses less memory and avoids calling conj if @var{x} is real.\n\
+but it uses less memory and avoids calling @code{conj} if @var{x} is real.\n\
+@seealso{sum}\n\
 @end deftypefn")
 {
   DATA_REDUCTION (sumsq);

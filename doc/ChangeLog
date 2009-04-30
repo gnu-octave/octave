@@ -1,3 +1,6 @@
+2009-04-26  Rik  <rdrider0-list@yahoo.com>
+	* interpreter/arith.txi: Update section 17.4 (Sums and Products) of arith.txi
+
 2009-04-29  Jaroslav Hajek  <highegg@gmail.com>
 
 	* interpreter/numbers.txi: Update info on ranges.
@@ -77,7 +80,7 @@
 	* interpreter/Makefile.in (DISTFILES): Use doc-cache instead of
 	DOC for doc cache file.
 
-2009-03-08  Søren Hauberg  <hauberg@gmail.com>
+2009-03-08  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
 	* interpreter/stats.txi (Basic Statistical Functions):
 	Add the 'histc' function.
@@ -183,7 +186,7 @@
 	* vr-idx.txi: Delete.
 	* interpreter/Makefile.in (SUB_SOURCE): Remove it from the list.
 
-2009-01-22  Søren Hauberg  <hauberg@gmail.com>
+2009-01-22  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
 	* interpreter/func.txi: Put varargin and varargout in concept index.
 	* interpreter/var.txi: Put ans in concept index.
@@ -304,12 +307,12 @@
         * interpreter/contrib.txi: correction of the mercurial example
         * interpreter/container.txi: minor correction of the text
 
-2008-09-25  Søren Hauberg  <hauberg@gmail.com>
+2008-09-25  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
 	* interpreter/image.txi: Update for imread and imwrite instead of
 	loadimge and saveimage.
 
-2008-09-24  Søren Hauberg  <hauberg@gmail.com>
+2008-09-24  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
 	* interpreter/image.txi: Document imfinfo.
 
@@ -358,7 +361,7 @@
 
 	* interpreter/numbers.txi: Document intwarning.
 
-2008-08-06  Søren Hauberg  <hauberg@gmail.com>
+2008-08-06  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
 	* interpreter/basics.txi, interpreter/errors.txi,
 	interpreter/expr.txi, interpreter/func.txi,
@@ -575,7 +578,7 @@
 
 	* refcard/refcard.tex: Update for 3.0.
 
-2007-10-15  Søren Hauberg  <hauberg@gmail.com>
+2007-10-15  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
 	* interpreter/preface.txi, interpreter/basics.txi,
 	interpreter/strings.txi, interpreter/container.txi,
@@ -607,7 +610,7 @@
 
 2007-10-06  John W. Eaton  <jwe@octave.org>
 
-	* interpreter/octave.texi: Add David Bateman and Søren Hauberg as
+	* interpreter/octave.texi: Add David Bateman and Sï¿½ren Hauberg as
 	authors.
 
 2006-09-28  Henry Mollet  mollet@pacbell.net
@@ -639,7 +642,7 @@
 	* interpreter/geometry.txi: Check whether TEXINFO_QHULL is set
 	before including certain figures.
 
-2007-08-31  Søren Hauberg  <hauberg@gmail.com>
+2007-08-31  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
         * interpreter/nonlin.txi: Extended the example.
 
@@ -722,7 +725,7 @@
 	* interpreter/interp.txi: Also change figures here.
 	* interpreter/Makefile.in: and here.
 	
-2007-06-18  Søren Hauberg  <hauberg@gmail.com>
+2007-06-18  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
         * interpreter/optim.txi: Added some introductory text to each
 	section.
@@ -769,7 +772,7 @@
 	and subsections for hashing to system utilities chapter.
 
 
-2007-06-12  2007-06-10  Søren Hauberg  <hauberg@gmail.com>
+2007-06-12  2007-06-10  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
         * interpreter/diffeq.txi: Note that x-dot is the derivative of x.
 
@@ -797,7 +800,7 @@
 	* interpreter/Makefile.in ($(HTML_IMAGES_PNG)): Use cp instead of
 	INSTALL_DATA to copy files to the HTML directory.
 
-2007-05-28  Søren Hauberg  <hauberg@gmail.com>
+2007-05-28  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
         * interpreter/errors.txi: Add new sections and some more detailed
 	descriptions on errors and warnings.
@@ -805,7 +808,7 @@
 	interpreter/var.txi: Add references to the new sections in
 	errors.txi.
 
-2007-05-28  Søren Hauberg  <hauberg@gmail.com>
+2007-05-28  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
         * interpreter/io.txi: Rearrange some sections, and add
         a few examples.
@@ -839,7 +842,7 @@
 
 	* interpreter/debug.txi, io.txi, octave.txi: Doc fixes.
 
-2007-05-21  Søren Hauberg  <hauberg@gmail.com>
+2007-05-21  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
         * interpreter/expr.txi: Describe +=, -=, *=, and /= operators.
 	Add new example.
@@ -861,7 +864,7 @@
 	* interpreter/func.txi: Additional documentation for function
 	locking, dispatch and autoloading.
 
-2007-05-16  Søren Hauberg  <hauberg@gmail.com>
+2007-05-16  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
 	* interpreter/expr.txi: Improve docs.
 
@@ -871,7 +874,7 @@
 	interpreter/intro.txi, interpreter/numbers.txi,
 	interpreter/octave.texi, interpreter/preface.txi: Doc fixes.
 
-2007-04-18  Søren Hauberg  <hauberg@gmail.com>
+2007-04-18  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
 	* interpreter/package.texi: Document "*" flag for loaded packages.
 
@@ -954,7 +957,7 @@
 
 	* Makefile.in (SUB_SOURCE): Include dynamic.txi in the list.
 
-2007-04-18  Søren Hauberg  <hauberg@gmail.com>
+2007-04-18  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
 	* interpreter/package.texi: New file.
 	* octave/texi: @include it, add it to the menus.
@@ -979,7 +982,7 @@
 	* interpreter/stream.txi: Delete.
 	* interpreter/Makefile.in (SUB_SOURCE): Remove it from the list.
 
-2007-04-16  Søren Hauberg  <hauberg@gmail.com>
+2007-04-16  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
 	* intrepreter/stmt.txi: Improve documentation of switch statement.
 
@@ -991,15 +994,15 @@
 
 	* interpreter/image.txi: Update docs.
 
-2007-04-11  Søren Hauberg  <hauberg@gmail.com>
+2007-04-11  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
 	* interpreter/container.txi: Document indexing with ().
 
-2007-04-11  Søren Hauberg  <hauberg@gmail.com>
+2007-04-11  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
 	* interpreter/container.txi: Improve cell array documentation.
 
-2007-04-09  Søren Hauberg  <hauberg@gmail.com>
+2007-04-09  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
 	* interpreter/func.txi: Document varargin, varargout, and default
 	argument values.

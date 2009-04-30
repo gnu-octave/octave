@@ -1,5 +1,10 @@
 2009-04-30  Ben Abbott <bpabbott@mac.com>
 
+	* plot/__gnuplot_has_feature__.m: Change version for 
+	"x11_figure_position", >4.2.4 to >=4.3.0.
+
+2009-04-30  Ben Abbott <bpabbott@mac.com>
+
 	* plot/gnuplot_drawnow.m: For figure position, treat 'wxt' as 'x11'.
 
 2009-04-30  Jaroslav Hajek <highegg@gmail.com>

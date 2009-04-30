@@ -1,5 +1,6 @@
 ## Copyright (C) 1995, 1996, 1997, 1998, 2000, 2002, 2004, 2005, 2006,
 ##               2007 Kurt Hornik
+## Copyright (C) 2009 Jaroslav Hajek
 ##
 ## This file is part of Octave.
 ##
@@ -32,12 +33,14 @@
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Compute range
 
-function y = range (x, varargin)
+function y = range (x, dim)
 
-  if (nargin != 1 && nargin != 2)
+  if (nargin == 1)
+    y = max (x) - min (x);
+  elseif (nargin == 2)
+    y = max (x, dim) - min (x, dim);
+  else
     print_usage ();
   endif
-
-  y = max (x, varargin{:}) - min (x, varargin{:});
 
 endfunction

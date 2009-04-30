@@ -1,3 +1,7 @@
+2009-04-30  Jaroslav Hajek <highegg@gmail.com>
+
+	* statistics/base/range.m: Fix behavior when dim is specified.
+
 2009-04-28  Ben Abbott <bpabbott@mac.com>
 
 	* plot/print.m: Fix typo: 'gswin23c' -> 'gswin32c'. Suppress stderr

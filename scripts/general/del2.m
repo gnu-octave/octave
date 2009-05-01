@@ -22,14 +22,18 @@
 ## @deftypefnx {Function File} {@var{d} =} del2 (@var{m}, @var{h})
 ## @deftypefnx {Function File} {@var{d} =} del2 (@var{m}, @var{dx}, @var{dy}, @dots{})
 ##
-## Calculate the discrete Laplace operator.  If @var{m} is a matrix this is
-## defined as
+## Calculate the discrete Laplace
+## @tex
+## operator $( \nabla^2 )$.
+## @end tex
+## @ifnottex
+## operator.
+## @end ifnottex
+##  For a 2-dimensional matrix @var{m} this is defined as
 ##
-## @iftex
 ## @tex
 ## $$d = {1 \over 4} \left( {d^2 \over dx^2} M(x,y) + {d^2 \over dy^2} M(x,y) \right)$$
 ## @end tex
-## @end iftex
 ## @ifnottex
 ## @example
 ## @group
@@ -40,15 +44,14 @@
 ## @end example
 ## @end ifnottex
 ##
-## The above to continued to N-dimensional arrays calculating the second
-## derivative over the higher dimensions.
+## For N-dimensional arrays the sum in parentheses is expanded to include second derivatives 
+## over the additional higher dimensions.
 ##
 ## The spacing between evaluation points may be defined by @var{h}, which is a
 ## scalar defining the equidistant spacing in all dimensions.  Alternatively, 
-## the spacing
-## in each dimension may be defined separately by @var{dx}, @var{dy}, etc. 
-## Scalar spacing values give equidistant spacing, whereas vector spacing 
-## values can be used to specify variable spacing.  The length of the vectors
+## the spacing in each dimension may be defined separately by @var{dx}, @var{dy},
+## etc.  A scalar spacing argument defines equidistant spacing, whereas a vector
+## argument can be used to specify variable spacing.  The length of the spacing vectors
 ## must match the respective dimension of @var{m}.  The default spacing value
 ## is 1.
 ##

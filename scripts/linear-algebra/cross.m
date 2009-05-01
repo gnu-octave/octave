@@ -18,8 +18,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} cross (@var{x}, @var{y}, @var{dim})
-## Computes the vector cross product of the two 3-dimensional vectors
+## @deftypefn  {Function File} {} cross (@var{x}, @var{y})
+## @deftypefnx {Function File} {} cross (@var{x}, @var{y}, @var{dim})
+## Compute the vector cross product of two 3-dimensional vectors
 ## @var{x} and @var{y}.
 ##
 ## @example
@@ -31,8 +32,9 @@
 ##
 ## If @var{x} and @var{y} are matrices, the cross product is applied 
 ## along the first dimension with 3 elements.  The optional argument 
-## @var{dim} is used to force the cross product to be calculated along
-## the dimension defined by @var{dim}.
+## @var{dim} forces the cross product to be calculated along
+## the specified dimension.
+## @seealso{dot}
 ## @end deftypefn
 
 ## Author: Kurt Hornik <Kurt.Hornik@wu-wien.ac.at>

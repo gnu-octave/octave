@@ -18,7 +18,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Mapping Function} {} lcm (@var{x}, @dots{})
+## @deftypefn  {Mapping Function} {} lcm (@var{x})
+## @deftypefnx {Mapping Function} {} lcm (@var{x}, @dots{})
 ## Compute the least common multiple of the elements of @var{x}, or
 ## of the list of all arguments.  For example,
 ##

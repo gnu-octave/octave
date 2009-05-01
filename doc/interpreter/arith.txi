@@ -219,6 +219,8 @@ cos (pi/2)
 
 @DOCSTRING(lcm)
 
+@DOCSTRING(list_primes)
+
 @DOCSTRING(max)
 
 @DOCSTRING(min)

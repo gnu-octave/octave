@@ -20,17 +20,10 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} list_primes (@var{n})
 ## List the first @var{n} primes.  If @var{n} is unspecified, the first
-## 30 primes are listed.
+## 25 primes are listed.
 ##
-## The algorithm used is from page 218 of the
-## @iftex
-## @tex
-##  {\TeX}book.
-## @end tex
-## @end iftex
-## @ifnottex
-##  TeXbook.
-## @end ifnottex
+## The algorithm used is from page 218 of the @TeX{}book.
+## @seealso{primes, isprime}
 ## @end deftypefn
 
 ## Author: jwe
@@ -44,7 +37,7 @@ function retval = list_primes (n)
   endif
 
   if (nargin == 0)
-    n = 30;
+    n = 25;
   endif
 
   if (n == 1)

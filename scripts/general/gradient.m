@@ -25,8 +25,8 @@
 ## @deftypefnx {Function File} {[@dots{}] =} gradient (@var{f}, @var{x0}, @var{s})
 ## @deftypefnx {Function File} {[@dots{}] =} gradient (@var{f}, @var{x0}, @var{x}, @var{y}, @dots{})
 ##
-## Calculate the gradient of sampled data or of a function.  If @var{m}
-## is a vector, calculate the one dimensional gradient of @var{m}.  If
+## Calculate the gradient of sampled data or a function.  If @var{m}
+## is a vector, calculate the one-dimensional gradient of @var{m}.  If
 ## @var{m} is a matrix the gradient is calculated for each dimension.
 ##
 ## @code{[@var{dx}, @var{dy}] = gradient (@var{m})} calculates the one

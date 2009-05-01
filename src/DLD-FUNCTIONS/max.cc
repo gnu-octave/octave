@@ -720,7 +720,7 @@ minimum value(s).  Thus,\n\
 \n\
 @example\n\
 @group\n\
-[x, ix] = min ([1, 3, 0, 2, 5])\n\
+[x, ix] = min ([1, 3, 0, 2, 0])\n\
     @result{}  x = 0\n\
         ix = 3\n\
 @end group\n\

@@ -737,10 +737,10 @@ and orientation.\n\
 DEFUN (hypot, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} hypot (@var{x}, @var{y})\n\
-Compute the element-by-element square root of the squares of @var{x} and\n\
-@var{y}.  This is equivalent to @code{sqrt (@var{x}.^ 2 + @var{y}\n\
-.^ 2)}, but calculated in a manner that avoids overflows for large\n\
-values of @var{x} or @var{y}.\n\
+Compute the element-by-element square root of the sum of the squares of\n\
+@var{x} and @var{y}.  This is equivalent to\n\
+@code{sqrt (@var{x}.^2 + @var{y}.^2)}, but calculated in a manner that\n\
+avoids overflows for large values of @var{x} or @var{y}.\n\
 @end deftypefn")
 {
   octave_value retval;

@@ -23,10 +23,17 @@
 ##
 ## The algorithm used is the Sieve of Erastothenes.
 ##
-## Note that if you need a specific number of primes, you can use the
-## fact the distance from one prime to the next is on average
-## proportional to the logarithm of the prime.  Integrating, you find
-## that there are about @math{k} primes less than @math{k \log (5 k)}.
+## Note that if you need a specific number of primes you can use the
+## fact the distance from one prime to the next is, on average,
+## proportional to the logarithm of the prime.  Integrating, one finds
+## that there are about @math{k} primes less than
+## @tex
+## $k \log (5 k)$.
+## @end tex
+## @ifnottex
+## k*log(5*k).
+## @end ifnottex
+## @seealso{list_primes, isprime}
 ## @end deftypefn
 
 ## Author: Paul Kienzle

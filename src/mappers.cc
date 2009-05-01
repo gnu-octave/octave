@@ -712,7 +712,7 @@ finite ([13, Inf, NA, NaN])\n\
 DEFUN (fix, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} fix (@var{x})\n\
-Truncate fractional portion of @var{x} and return integer portion.  This\n\
+Truncate fractional portion of @var{x} and return the integer portion.  This\n\
 is equivalent to rounding towards zero.  If @var{x} is complex, return\n\
 @code{fix (real (@var{x})) + fix (imag (@var{x})) * I}.\n\
 @example\n\

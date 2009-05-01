@@ -87,16 +87,7 @@ static std::string Vlast_warning_id;
 static std::string Vlast_error_id;
 
 // The last file in which an error occured
-static std::string Vlast_error_file;
-
-// The last function in which an error occured
-static std::string Vlast_error_name;
-
-// The last line in a function at which an error occured
-static int Vlast_error_line = -1;
-
-// The last column in a function at which an error occured
-static int Vlast_error_column = -1;
+static Octave_map Vlast_error_stack;
 
 // Current error state.
 //
@@ -148,6 +139,26 @@ initialize_warning_options (const std::string& state)
 
   warning_options.assign ("identifier", "all");
   warning_options.assign ("state", state);
+}
+
+static Octave_map
+initialize_last_error_stack (void)
+{
+  static bool initialized = false;
+
+  static string_vector sv (4);
+
+  if (! initialized)
+    {
+      sv[0] = "file";
+      sv[1] = "name";
+      sv[2] = "line";
+      sv[3] = "column";
+
+      initialized = true;
+    }
+
+  return Octave_map (dim_vector (0, 1), sv);
 }
 
 // Warning messages are never buffered.
@@ -230,20 +241,16 @@ verror (bool save_last_error, std::ostream& os,
       Vlast_error_id = id;
       Vlast_error_message = base_msg;
 
-      Vlast_error_line = -1;
-      Vlast_error_column = -1;
-      Vlast_error_name = std::string ();
-      Vlast_error_file = std::string ();
-
       octave_user_code *fcn = octave_call_stack::caller_user_code ();
 
       if (fcn)
 	{
-	  Vlast_error_file = fcn->fcn_file_name ();
-	  Vlast_error_name = fcn->name ();
-	  Vlast_error_line = octave_call_stack::caller_user_code_line ();
-	  Vlast_error_column = octave_call_stack::caller_user_code_column ();
+	  octave_idx_type curr_frame = -1;
+
+	  Vlast_error_stack = octave_call_stack::backtrace (0, curr_frame);
 	}
+      else
+	Vlast_error_stack = initialize_last_error_stack ();
     }
 
   if (buffer_error_messages)
@@ -804,14 +811,17 @@ location of the error.  Typically @var{err} is returned from\n\
 	      std::string msg = err.contents("message")(0).string_value ();
 	      std::string id = err.contents("identifier")(0).string_value ();
 	      int len = msg.length();
+
 	      std::string file;
 	      std::string nm;
 	      int l = -1;
 	      int c = -1;
 
+	      Octave_map err_stack = initialize_last_error_stack ();
+
 	      if (err.contains ("stack"))
 		{
-		  Octave_map err_stack = err.contents("stack")(0).map_value ();
+		  err_stack = err.contents("stack")(0).map_value ();
 
 		  if (err_stack.numel () > 0)
 		    {
@@ -843,11 +853,11 @@ location of the error.  Typically @var{err} is returned from\n\
 		rethrow_error (id.c_str (), "%s", tmp_msg);
 	      delete [] tmp_msg;
 
-	      // FIXME -- Need to restore the stack as rethrow_error sets it?
-	      Vlast_error_file = file;
-	      Vlast_error_name = nm;
-	      Vlast_error_line = l;
-	      Vlast_error_column = c;
+	      // FIXME -- is this the right thing to do for
+	      // Vlast_error_stack?  Should it be saved and restored
+	      // with unwind_protect?
+
+	      Vlast_error_stack = err_stack;
 
 	      if (err.contains ("stack"))
 		{
@@ -1424,28 +1434,7 @@ their default values.\n\
       err.assign ("message", Vlast_error_message);
       err.assign ("identifier", Vlast_error_id);
 
-      if (! (Vlast_error_file.empty() && Vlast_error_name.empty() &&
-	     Vlast_error_line < 0 && Vlast_error_column < 0))
-	{
-	  Octave_map err_stack;
-
-	  err_stack.assign ("file", Vlast_error_file);
-	  err_stack.assign ("name", Vlast_error_name);
-	  err_stack.assign ("line", Vlast_error_line);
-	  err_stack.assign ("column", Vlast_error_column);
-
-	  err.assign ("stack", octave_value (err_stack));
-	}
-      else
-	{
-	  string_vector sv(4);
-	  sv[0] = "file"; 
-	  sv[1] = "name";
-	  sv[2] = "line";
-	  sv[3] = "column";
-	  err.assign ("stack", octave_value (Octave_map (dim_vector (0,1), 
-							 sv)));
-	}
+      err.assign ("stack", octave_value (Vlast_error_stack));
 
       if (nargin == 1)
 	{
@@ -1455,10 +1444,8 @@ their default values.\n\
 		{
 		  Vlast_error_message = std::string();
 		  Vlast_error_id = std::string();
-		  Vlast_error_file = std::string();
-		  Vlast_error_name = std::string();
-		  Vlast_error_line = -1;
-		  Vlast_error_column = -1;
+
+		  Vlast_error_stack = initialize_last_error_stack ();
 		}
 	      else
 		error("lasterror: unrecognized string argument");
@@ -1525,10 +1512,11 @@ their default values.\n\
 		{
 		  Vlast_error_message = new_error_message;
 		  Vlast_error_id = new_error_id;
-		  Vlast_error_file = new_error_file;
-		  Vlast_error_name = new_error_name;
-		  Vlast_error_line = new_error_line;
-		  Vlast_error_column = new_error_column;
+
+		  octave_idx_type curr_frame = -1;
+
+		  Vlast_error_stack
+		    = octave_call_stack::backtrace (0, curr_frame);
 		}
 	    }
 	  else

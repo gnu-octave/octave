@@ -1,3 +1,12 @@
+2009-05-01  John W. Eaton  <jwe@octave.org>
+
+	* error.cc (Vlast_error_file, Vlast_error_name, Vlast_error_line,
+	Vlast_error_column): Delete.
+	(Vlast_error_stack): New static variable.
+	(initialize_last_error_stack): New static function.
+	(verror, Frethrow, Flasterror): Set or use Vlast_error_stack, not
+	Vlast_error_file, etc.
+
 2009-04-27  John W. Eaton  <jwe@octave.org>
 
 	* ov-class.cc (octave_class::dotref): Handle empty parent class.

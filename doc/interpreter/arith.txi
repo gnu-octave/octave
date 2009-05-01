@@ -105,14 +105,12 @@ defined as @code{sqrt (-1)}.
 
 Octave provides the following trigonometric functions where angles are
 specified in radians.  To convert from degrees to radians multiply by
-@iftex
 @tex
 $\pi/180$
 @end tex
-@end iftex
-@ifinfo
+@ifnottex
 @code{pi/180}
-@end ifinfo
+@end ifnottex
 (e.g., @code{sin (30 * pi/180)} returns the sine of 30 degrees).  As
 an alternative, Octave provides a number of trigonometric functions
 which work directly on an argument specified in degrees.  These functions

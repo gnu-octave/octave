@@ -40,11 +40,9 @@ DEFUN (abs, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} abs (@var{z})\n\
 Compute the magnitude of @var{z}, defined as\n\
-@iftex\n\
 @tex\n\
 $|z| = \\sqrt{x^2 + y^2}$.\n\
 @end tex\n\
-@end iftex\n\
 @ifnottex\n\
 |@var{z}| = @code{sqrt (x^2 + y^2)}.\n\
 @end ifnottex\n\
@@ -177,11 +175,9 @@ DEFUN (arg, args, ,
 @deftypefn {Mapping Function} {} arg (@var{z})\n\
 @deftypefnx {Mapping Function} {} angle (@var{z})\n\
 Compute the argument of @var{z}, defined as,\n\
-@iftex\n\
 @tex\n\
 $\\theta = atan2 (y, x),$\n\
 @end tex\n\
-@end iftex\n\
 @ifnottex\n\
 @var{theta} = @code{atan2 (@var{y}, @var{x})},\n\
 @end ifnottex\n\
@@ -402,11 +398,9 @@ DEFUN (conj, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} conj (@var{z})\n\
 Return the complex conjugate of @var{z}, defined as\n\
-@iftex\n\
 @tex\n\
 $\\bar{z} = x - iy$.\n\
 @end tex\n\
-@end iftex\n\
 @ifnottex\n\
 @code{conj (@var{z})} = @var{x} - @var{i}@var{y}.\n\
 @end ifnottex\n\
@@ -612,11 +606,9 @@ DEFUN (exp, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} exp (@var{x})\n\
 Compute\n\
-@iftex\n\
 @tex\n\
 $e^{x}$\n\
 @end tex\n\
-@end iftex\n\
 @ifnottex\n\
 @code{e^x}\n\
 @end ifnottex\n\
@@ -652,12 +644,10 @@ exponential, see @ref{Linear Algebra}.\n\
 DEFUN (expm1, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} expm1 (@var{x})\n\
-Compute \n\
-@iftex\n\
+Compute\n\
 @tex\n\
 $ e^{x} - 1 $\n\
 @end tex\n\
-@end iftex\n\
 @ifnottex\n\
 @code{exp (@var{x}) - 1}\n\
 @end ifnottex\n\
@@ -1221,11 +1211,9 @@ DEFUN (log, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} log (@var{x})\n\
 Compute the natural logarithm,\n\
-@iftex\n\
 @tex\n\
 $\\ln{(x)},$\n\
 @end tex\n\
-@end iftex\n\
 @ifnottex\n\
 @code{ln (@var{x})},\n\
 @end ifnottex\n\
@@ -1286,11 +1274,9 @@ DEFUN (log1p, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} log1p (@var{x})\n\
 Compute\n\
-@iftex\n\
 @tex\n\
 $\\ln{(1 + x)}$\n\
 @end tex\n\
-@end iftex\n\
 @ifnottex\n\
 @code{log (1 + @var{x})}\n\
 @end ifnottex\n\
@@ -1408,13 +1394,11 @@ DEFUN (sign, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} sign (@var{x})\n\
 Compute the @dfn{signum} function, which is defined as\n\
-@iftex\n\
 @tex\n\
 $$\n\
 {\\rm sign} (@var{x}) = \\cases{1,&$x>0$;\\cr 0,&$x=0$;\\cr -1,&$x<0$.\\cr}\n\
 $$\n\
 @end tex\n\
-@end iftex\n\
 @ifnottex\n\
 \n\
 @example\n\

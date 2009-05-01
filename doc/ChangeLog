@@ -1,7 +1,10 @@
-2009-04-26  Rik  <rdrider0-list@yahoo.com>
+2009-05-01  Rik  <rdrider0-list@yahoo.com>
+	* interpreter/arith.txi: Simplify TeXinfo and eliminate use of @iftex in arith.txi
+
+2009-05-01  Rik  <rdrider0-list@yahoo.com>
 	* interpreter/arith.txi: Update section 17.5 (Utility Functions) of arith.txi
 
-2009-04-26  Rik  <rdrider0-list@yahoo.com>
+2009-04-30  Rik  <rdrider0-list@yahoo.com>
 	* interpreter/arith.txi: Update section 17.4 (Sums and Products) of arith.txi
 
 2009-04-29  Jaroslav Hajek  <highegg@gmail.com>

@@ -20,13 +20,11 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} nextpow2 (@var{x})
 ## If @var{x} is a scalar, return the first integer @var{n} such that
-## @iftex
 ## @tex
-##  $2^n \ge |x|$.
+## $2^n \ge |x|$.
 ## @end tex
-## @end iftex
 ## @ifnottex
-##  2^n >= abs (x).
+## 2^n >= abs (x).
 ## @end ifnottex
 ##
 ## If @var{x} is a vector, return @code{nextpow2 (length (@var{x}))}.

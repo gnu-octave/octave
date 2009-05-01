@@ -21,24 +21,20 @@
 ## @deftypefn {Mapping Function} {} pow2 (@var{x})
 ## @deftypefnx {Mapping Function} {} pow2 (@var{f}, @var{e})
 ## With one argument, computes
-## @iftex
 ## @tex
-##  $2^x$
+## $2^x$
 ## @end tex
-## @end iftex
 ## @ifnottex
-##  2 .^ x
+## 2 .^ x
 ## @end ifnottex
 ## for each element of @var{x}.
 ##
 ## With two arguments, returns
-## @iftex
 ## @tex
-##  $f \cdot 2^e$.
+## $f \cdot 2^e$.
 ## @end tex
-## @end iftex
 ## @ifnottex
-##  f .* (2 .^ e).
+## f .* (2 .^ e).
 ## @end ifnottex
 ## @seealso{log2, nextpow2}
 ## @end deftypefn

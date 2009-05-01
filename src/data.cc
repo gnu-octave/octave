@@ -998,15 +998,19 @@ Compute the base-2 logarithm of each element of @var{x}.\n\
 \n\
 If called with two output arguments, split @var{x} into\n\
 binary mantissa and exponent so that\n\
-@iftex\n\
 @tex\n\
 ${1 \\over 2} \\le \\left| f \\right| < 1$\n\
 @end tex\n\
-@end iftex\n\
 @ifnottex\n\
 @code{1/2 <= abs(f) < 1}\n\
 @end ifnottex\n\
-and @var{e} is an integer.  If @code{x = 0}, @code{f = e = 0}.\n\
+and @var{e} is an integer.  If\n\
+@tex\n\
+$x = 0$, $f = e = 0$.\n\
+@end tex\n\
+@ifnottex\n\
+@code{x = 0}, @code{f = e = 0}.\n\
+@end ifnottex\n\
 @seealso{pow2, log, log10, exp}\n\
 @end deftypefn")
 {

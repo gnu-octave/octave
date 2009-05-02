@@ -18,9 +18,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{theta}, @var{phi}, @var{r}] =} cart2sph (@var{x}, @var{y}, @var{z})
-## Transform cartesian to spherical coordinates.
-## @var{x}, @var{y} and @var{z} must be of same shape, or scalar.
-## @var{theta} describes the angle relative to the x-axis.
+## Transform Cartesian to spherical coordinates.
+## @var{x}, @var{y} and @var{z} must be the same shape, or scalar.
+## @var{theta} describes the angle relative to the positive x-axis.
 ## @var{phi} is the angle relative to the xy-plane.
 ## @var{r} is the distance to the origin (0, 0, 0).
 ## @seealso{pol2cart, cart2pol, sph2cart}

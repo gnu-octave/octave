@@ -19,9 +19,9 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{x}, @var{y}] =} pol2cart (@var{theta}, @var{r})
 ## @deftypefnx {Function File} {[@var{x}, @var{y}, @var{z}] =} pol2cart (@var{theta}, @var{r}, @var{z})
-## Transform polar or cylindrical to cartesian coordinates.
-## @var{theta}, @var{r} (and @var{z}) must be of same shape, or scalar.
-## @var{theta} describes the angle relative to the x-axis.
+## Transform polar or cylindrical to Cartesian coordinates.
+## @var{theta}, @var{r} (and @var{z}) must be the same shape, or scalar.
+## @var{theta} describes the angle relative to the positive x-axis.
 ## @var{r} is the distance to the z-axis (0, 0, z).
 ## @seealso{cart2pol, cart2sph, sph2cart}
 ## @end deftypefn

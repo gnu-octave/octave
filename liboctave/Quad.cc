@@ -106,21 +106,9 @@ float_user_function (float *x, int& ierr, float *result)
 {
   BEGIN_INTERRUPT_WITH_EXCEPTIONS;
 
-#if defined (sun) && defined (__GNUC__)
-  float xx = access_float (x);
-#else
-  float xx = *x;
-#endif
-
   quad_integration_error = 0;
 
-  float xresult = (*float_user_fcn) (xx);
-
-#if defined (sun) && defined (__GNUC__)
-  assign_float (result, xresult);
-#else
-  *result = xresult;
-#endif
+  *result = (*float_user_fcn) (*x);
 
   if (quad_integration_error)
     ierr = -1;

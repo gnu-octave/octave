@@ -1,5 +1,10 @@
 2009-05-04  Peter O'Gorman  <pogma@thewrittenword.com>
 
+	* configure.in (rs6000-ibm-aix* | powerpc-ibm-aix*): Set
+	library_path_var to LIBPATH.
+	(hppa*-hp-hpux*): Set library_path_var to SHLIB_PATH.
+	(ia64*-hp-hpux*): New case for shared library variables.
+
 	* configure.in: Provide decls for exp2, round, and tgamma if they
 	are missing.
 

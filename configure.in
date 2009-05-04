@@ -1316,6 +1316,7 @@ case "$canonical_host_type" in
     CPICFLAG=
     CXXPICFLAG=
     FPICFLAG=
+    library_path_var=LIBPATH
   ;;
   hppa*-hp-hpux*)
     if test "$ac_cv_f77_compiler_gnu" = yes; then
@@ -1324,6 +1325,16 @@ case "$canonical_host_type" in
       FPICFLAG=+Z
     fi
     SHLEXT=sl
+    SH_LDFLAGS="-shared -fPIC"
+    RLD_FLAG='-Wl,+b -Wl,$(octlibdir)'
+    library_path_var=SHLIB_PATH
+  ;;
+  ia64*-hp-hpux*)
+    if test "$ac_cv_f77_compiler_gnu" = yes; then
+      FPICFLAG=-fPIC
+    else
+      FPICFLAG=+Z
+    fi
     SH_LDFLAGS="-shared -fPIC"
     RLD_FLAG='-Wl,+b -Wl,$(octlibdir)'
   ;;

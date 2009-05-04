@@ -1,15 +1,22 @@
 2009-05-01  Rik  <rdrider0-list@yahoo.com>
-	* interpreter/arith.txi: Update section 17.7 (Coordinate Transformations)
-	of arith.txi
+
+	* interpreter/arith.txi: Update section 17.7 (Coordinate
+	Transformations) of arith.txi.
 
 2009-05-01  Rik  <rdrider0-list@yahoo.com>
-	* interpreter/arith.txi: Simplify TeXinfo and eliminate use of @iftex in arith.txi
+
+	* interpreter/arith.txi: Simplify TeXinfo and eliminate use of
+	@iftex in arith.txi.
 
 2009-05-01  Rik  <rdrider0-list@yahoo.com>
-	* interpreter/arith.txi: Update section 17.5 (Utility Functions) of arith.txi
+
+	* interpreter/arith.txi: Update section 17.5 (Utility Functions)
+	of arith.txi.
 
 2009-04-30  Rik  <rdrider0-list@yahoo.com>
-	* interpreter/arith.txi: Update section 17.4 (Sums and Products) of arith.txi
+
+	* interpreter/arith.txi: Update section 17.4 (Sums and Products)
+	of arith.txi.
 
 2009-04-29  Jaroslav Hajek  <highegg@gmail.com>
 
@@ -17,33 +24,40 @@
 	* interpreter/expr.txi: Update some info on indexing.
 
 2009-04-26  Rik  <rdrider0-list@yahoo.com>
-	* interpreter/arith.txi: Update section 17.3 (Trigonometry) of arith.txi
+
+	* interpreter/arith.txi: Update section 17.3 (Trigonometry) of
+	arith.txi.
 
 2009-04-24  Rik  <rdrider0-list@yahoo.com>
-	* interpreter/arith.txi: Update section 17.2 (Complex Arithmetic) of
-	arith.txi
-	Use Tex in more of the doc strings for pretty printing in pdf format.
+
+	* interpreter/arith.txi: Update section 17.2 (Complex Arithmetic)
+	of arith.txi.  Use Tex in more of the doc strings for pretty
+	printing in pdf format.
 
 2009-04-24  Rik  <rdrider0-list@yahoo.com>
-	* interpreter/octave.pdf: 
-	Eliminate most overfull errors when running texi2pdf for generating 
-	pdf documentation.
-	Use @smallexample when necessary to reduce font for long lines.
-	Reword variables or phrases so that Tex can break them at a better spot.
+
+	* interpreter/octave.pdf: Eliminate most overfull errors when
+	running texi2pdf for generating pdf documentation.  Use
+	@smallexample when necessary to reduce font for long lines.
+	Reword variables or phrases so that Tex can break them at a better
+	spot.
 
 2009-04-21  Rik  <rdrider0-list@yahoo.com>
-	* interpreter/octave.pdf: Eliminate 'unbalanced parentheses in @def...'
-	error during texi2pdf.  Fixed four .m files incorrectly using @deftypefn 
-	macro.
+
+	* interpreter/octave.pdf: Eliminate 'unbalanced parentheses in
+	@def...' error during texi2pdf.  Fixed four .m files incorrectly
+	using @deftypefn macro.
 
 2009-04-19  Ansgar Burchardt  <ansgar@43-1.org>
 
 	* interpreter/numbers.txi: Fix small mistake in example.
 
 2009-04-17  Rik  <rdrider0-list@yahoo.com>
-	* interpreter/arith.txi: Update section 17.1 (Utility Functions) of arith.txi
-	Split section into "Exponents and Logarithms" and "Utility Functions"
-	Use Tex in many more of the doc strings for pretty printing in pdf format.
+
+	* interpreter/arith.txi: Update section 17.1 (Utility Functions)
+	of arith.txi.  Split section into "Exponents and Logarithms" and
+	"Utility Functions" Use Tex in many more of the doc strings for
+	pretty printing in pdf format.
 
 2009-04-17  Rik  <rdrider0-list@yahoo.com>
 
@@ -52,16 +66,17 @@
 
 2009-04-17  Rik  <rdrider0-list@yahoo.com>
 
-	* interpreter/basics.txi: Update help text for sections 2.4 of basics.txi 
+	* interpreter/basics.txi: Update help text for sections 2.4 of
+	basics.txi.
 
 2009-04-17  Rik  <rdrider0-list@yahoo.com>
 
 	* interpreter/basics.txi: Update help text for sections 2.2 
-	and 2.3 of basics.txi
+	and 2.3 of basics.txi.
 
 2009-04-17  Rik  <rdrider0-list@yahoo.com>
 
-	* interpreter/basics.txi: Update help strings for command line options
+	* interpreter/basics.txi: Update help strings for command line options.
 
 2009-04-11  David Bateman  <dbateman@free.fr>
 

@@ -1,5 +1,8 @@
 2009-05-04  Peter O'Gorman  <pogma@thewrittenword.com>
 
+	* aclocal.m4 (OCTAVE_HAVE_C99_VSNPRINTF): New macro.
+	* configure.in: Use it.
+
 	* configure.in (rs6000-ibm-aix* | powerpc-ibm-aix*): Set
 	library_path_var to LIBPATH.
 	(hppa*-hp-hpux*): Set library_path_var to SHLIB_PATH.

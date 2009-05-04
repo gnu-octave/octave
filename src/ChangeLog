@@ -1,3 +1,7 @@
+2009-05-04  Peter O'Gorman  <pogma@thewrittenword.com>
+
+	* utils.cc: Don't define HAVE_C99_VSNPRINTF here.
+
 2009-05-01  John W. Eaton  <jwe@octave.org>
 
 	* error.cc (Vlast_error_file, Vlast_error_name, Vlast_error_line,

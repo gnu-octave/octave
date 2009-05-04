@@ -1081,12 +1081,6 @@ octave_vformat (std::ostream& os, const char *fmt, va_list args)
   return retval;
 }
 
-/* FIXME -- we really need a configure test for this.  */
-
-#if defined __GNUC__ && __GNUC__ >= 3 && ! defined __MINGW32__
-#define HAVE_C99_VSNPRINTF 1
-#endif
-
 // We manage storage.  User should not free it, and its contents are
 // only valid until next call to vsnprintf.
 

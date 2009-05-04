@@ -1573,12 +1573,34 @@ AC_CHECK_FUNCS(atexit basename bcopy bzero canonicalize_file_name \
   getppid getpwent getpwuid gettimeofday getuid getwd _kbhit kill \
   lgamma lgammaf lgamma_r lgammaf_r link localtime_r log1p log1pf lstat \
   memmove mkdir mkfifo mkstemp on_exit pipe poll putenv raise readlink \
-  realpath rename resolvepath rindex rmdir round roundl select setgrent setlocale \
+  realpath rename resolvepath rindex rmdir roundl select setgrent setlocale \
   setpwent setvbuf sigaction siglongjmp sigpending sigprocmask sigsuspend \
   snprintf stat strcasecmp strdup strerror stricmp strncasecmp \
-  strnicmp strptime strsignal symlink tempnam tgamma tgammaf trunc umask \
+  strnicmp strptime strsignal symlink tempnam tgammaf trunc umask \
   uname unlink usleep utime vfprintf vsprintf vsnprintf waitpid \
   _chmod _snprintf x_utime _utime32)
+
+AC_LANG_PUSH(C++)
+AC_CHECK_DECLS([exp2, round, tgamma], [], [], [[#include <cmath>]])
+AC_CHECK_FUNCS([exp2 round tgamma])
+AH_VERBATIM([Z_FUNCS_AND_DECLS], [
+#if defined (__cplusplus)
+extern "C" {
+#endif
+#if HAVE_EXP2 && ! HAVE_DECL_EXP2
+double exp2 (double );
+#endif
+#if HAVE_ROUND && ! HAVE_DECL_ROUND
+double round (double);
+#endif
+#if HAVE_TGAMMA && ! HAVE_DECL_TGAMMA
+double tgamma (double);
+#endif
+#if defined (__cplusplus)
+}
+#endif
+])
+AC_LANG_POP(C++)
 
 case "$canonical_host_type" in
   *-*-mingw*)
@@ -1816,7 +1838,7 @@ esac
 
 ### Check for nonstandard but common math functions that we need.
 
-AC_CHECK_FUNCS(acosh acoshf asinh asinhf atanh atanhf erf erff erfc erfcf exp2 exp2f log2 log2f)
+AC_CHECK_FUNCS(acosh acoshf asinh asinhf atanh atanhf erf erff erfc erfcf exp2f log2 log2f)
 AC_CHECK_FUNCS(hypotf _hypotf)
 
 ### Checks for OS specific cruft.

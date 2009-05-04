@@ -1,3 +1,8 @@
+2009-05-04  Peter O'Gorman  <pogma@thewrittenword.com>
+
+	* configure.in: Provide decls for exp2, round, and tgamma if they
+	are missing.
+
 2009-04-11  David Bateman  <dbateman@free.fr>
 
 	* NEWS: Add new graphics functions.

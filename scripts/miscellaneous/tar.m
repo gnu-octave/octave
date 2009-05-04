@@ -46,7 +46,7 @@ function entries = tar (tarfile, files, root)
 
     if (ischar (tarfile) && iscellstr (files) && ischar (root))
 
-      cmd = sprintf ("tar -c -v -f %s -C %s %s", tarfile, root,
+      cmd = sprintf ("tar cvf %s -C %s %s", tarfile, root,
 		     sprintf (" %s", files{:}));
 
       [status, output] = system (cmd);

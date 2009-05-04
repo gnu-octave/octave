@@ -1,3 +1,8 @@
+2009-05-04  Peter O'Gorman  <pogma@thewrittenword.com>
+
+	* miscellaneous/tar.m, miscellaneous/unpack.m:
+	Pass "xvf" to tar instead of "-x -v -f".
+
 2009-04-30  Ben Abbott <bpabbott@mac.com>
 
 	* plot/__gnuplot_has_feature__.m: Change version for 

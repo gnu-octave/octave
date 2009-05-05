@@ -1,3 +1,7 @@
+2009-05-05  Robert T. Short  <octave@phaselockedsystems.com>
+
+	* file-ops.h (file_ops::tail) New function.
+
 2009-05-05  Carsten Clark  <tantumquantum+gnuoctave@gmail.com>
 
 	* Quad.cc (user_function): Use access_double and assign_double on

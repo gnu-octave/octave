@@ -109,6 +109,19 @@ public:
     return static_members::dir_sep_chars ();
   }
 
+  // Return the tail member of a path.
+  static std::string tail (std::string path)
+  {
+    size_t ipos = path.find_last_of (dir_sep_chars ());
+
+    if (ipos != std::string::npos)
+      ipos++;
+    else
+      ipos = 0;
+
+    return path.substr (ipos);
+  }
+
 private:
 
   // Use a singleton class for these data members instead of just

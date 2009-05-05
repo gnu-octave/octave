@@ -144,6 +144,8 @@ public:
   void print_with_name (std::ostream& os, const std::string& name, 
 			bool print_padding = true) const;
 
+  bool reconstruct_parents (void);
+
   bool save_ascii (std::ostream& os);
 
   bool load_ascii (std::istream& is);

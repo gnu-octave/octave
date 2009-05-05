@@ -33,6 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "Cell.h"
 #include "defun.h"
 #include "error.h"
+#include "file-ops.h"
 #include "gripes.h"
 #include "load-path.h"
 #include "ls-hdf5.h"
@@ -98,15 +99,13 @@ get_current_method_class (void)
 {
   std::string retval;
 
-  // FIXME -- is there a better way to do this?
   octave_function *fcn = octave_call_stack::current ();
 
   std::string my_dir = fcn->dir_name ();
 
-  size_t ipos = my_dir.find_last_of ("@");
+  std::string method_class = file_ops::tail (my_dir);
 
-  if (ipos != std::string::npos)
-    retval = my_dir.substr (ipos+1);
+  retval = method_class.substr (1);
 
   return retval;
 }
@@ -814,12 +813,71 @@ octave_class::print_with_name (std::ostream&, const std::string& name,
     }
 }
 
+//  Load/save does not provide enough information to reconstruct the
+//  class inheritance structure.  reconstruct_parents () attempts to
+//  do so.  If successful, a "true" value is returned.
+//
+//  Note that we don't check the loaded object structure against the
+//  class structure here so the user's loadobj method has a chance
+//  to do its magic.
+bool
+octave_class::reconstruct_parents (void)
+{
+  bool retval = true, might_have_inheritance = false;
+  std::string dbgstr = "dork";
+
+  // First, check to see if there might be an issue with inheritance.
+  for (Octave_map::const_iterator p = map.begin (); p != map.end (); p++)
+    {
+      std::string  key = map.key (p);
+      Cell         val = map.contents (p);
+      if ( val(0).is_object() )
+	{
+	  dbgstr = "blork";
+	  if( key == val(0).class_name() )
+	    {
+	      might_have_inheritance = true;
+	      dbgstr = "cork";
+	      break;
+	    }
+	}
+    }
+  
+  if (might_have_inheritance)
+    {
+      octave_class::exemplar_const_iterator it
+	= octave_class::exemplar_map.find (c_name);
+
+      if (it == octave_class::exemplar_map.end ())
+	retval = false;
+      else
+	{
+	  octave_class::exemplar_info exmplr = it->second;
+	  parent_list = exmplr.parents ();
+	  for (std::list<std::string>::iterator pit = parent_list.begin ();
+	       pit != parent_list.end ();
+	       pit++)
+	    {
+	      dbgstr = *pit;
+	      bool dbgbool = map.contains (*pit);
+	      if (!dbgbool)
+		{
+		  retval = false;
+		  break;
+		}
+	    }
+	}
+    }
+
+  return retval;
+}
+
 bool
 octave_class::save_ascii (std::ostream& os)
 {
   os << "# classname: " << class_name () << "\n";
   Octave_map m;
-  if (load_path::find_method (class_name (), "saveobj") != std::string())
+  if (load_path::find_method (class_name (), "saveobj") != std::string ())
     {
       octave_value in = new octave_class (*this);
       octave_value_list tmp = feval ("saveobj", in, 1);
@@ -873,7 +931,7 @@ octave_class::load_ascii (std::istream& is)
 		  std::string nm
 		    = read_ascii_data (is, std::string (), dummy, t2, j);
 
-		  if (!is)
+		  if (! is)
 		    break;
 
 		  Cell tcell = t2.is_cell () ? t2.cell_value () : Cell (t2);
@@ -892,8 +950,8 @@ octave_class::load_ascii (std::istream& is)
 		  map = m;
 		  c_name = classname;
 
-		  if (load_path::find_method (classname, "loadobj") != 
-		      std::string())
+		  if (load_path::find_method (classname, "loadobj")
+		      != std::string ())
 		    {
 		      octave_value in = new octave_class (*this);
 		      octave_value_list tmp = feval ("loadobj", in, 1);
@@ -942,7 +1000,7 @@ octave_class::save_binary (std::ostream& os, bool& save_as_floats)
   os << class_name ();
 
   Octave_map m;
-  if (load_path::find_method (class_name (), "saveobj") != std::string())
+  if (load_path::find_method (class_name (), "saveobj") != std::string ())
     {
       octave_value in = new octave_class (*this);
       octave_value_list tmp = feval ("saveobj", in, 1);
@@ -1015,7 +1073,7 @@ octave_class::load_binary (std::istream& is, bool swap,
 	  std::string nm = read_binary_data (is, swap, fmt, std::string (), 
 					     dummy, t2, doc);
 
-	  if (!is)
+	  if (! is)
 	    break;
 
 	  Cell tcell = t2.is_cell () ? t2.cell_value () : Cell (t2);
@@ -1033,15 +1091,20 @@ octave_class::load_binary (std::istream& is, bool swap,
 	{
 	  map = m;
 
-	  if (load_path::find_method (class_name(), "loadobj") != std::string())
+	  if (! reconstruct_parents ())
+	    error ("load: unable to reconstruct object inheritance");
+	  else
 	    {
-	      octave_value in = new octave_class (*this);
-	      octave_value_list tmp = feval ("loadobj", in, 1);
+	      if (load_path::find_method (c_name, "loadobj") != std::string ())
+		{
+		  octave_value in = new octave_class (*this);
+		  octave_value_list tmp = feval ("loadobj", in, 1);
 
-	      if (! error_state)
-		map = tmp(0).map_value ();
-	      else
-		success = false;
+		  if (! error_state)
+		    map = tmp(0).map_value ();
+		  else
+		    success = false;
+		}
 	    }
 	}
       else
@@ -1096,7 +1159,7 @@ octave_class::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
   if (data_hid < 0)
     goto error_cleanup;
 
-  if (load_path::find_method (class_name (), "saveobj") != std::string())
+  if (load_path::find_method (class_name (), "saveobj") != std::string ())
     {
       octave_value in = new octave_class (*this);
       octave_value_list tmp = feval ("saveobj", in, 1);
@@ -1253,21 +1316,26 @@ octave_class::load_hdf5 (hid_t loc_id, const char *name,
     {
       map = m;
 
-      if (load_path::find_method (class_name(), "loadobj") != std::string())
+      if (!reconstruct_parents ())
+	error ("load: unable to reconstruct object inheritance");
+      else
 	{
-	  octave_value in = new octave_class (*this);
-	  octave_value_list tmp = feval ("loadobj", in, 1);
-
-	  if (! error_state)
+	  if (load_path::find_method (c_name, "loadobj") != std::string ())
 	    {
-	      map = tmp(0).map_value ();
-	      retval = true;
+	      octave_value in = new octave_class (*this);
+	      octave_value_list tmp = feval ("loadobj", in, 1);
+
+	      if (! error_state)
+		{
+		  map = tmp(0).map_value ();
+		  retval = true;
+		}
+	      else
+		retval = false;
 	    }
 	  else
-	    retval = false;
+	    retval = true;
 	}
-      else
-	retval = true;
     }
   
  error_cleanup:

@@ -458,7 +458,6 @@ public:
 
   virtual string_vector parent_class_names (void) const;
 
-  // FIXME -- should this warn if called for a non-class type?
   virtual octave_base_value *find_parent_class (const std::string&)
     { return 0; }
 

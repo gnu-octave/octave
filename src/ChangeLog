@@ -1,3 +1,11 @@
+2009-05-05  Robert T. Short  <octave@phaselockedsystems.com>
+
+	* ov-class.h, ov-class.cc (octave_class::reconstruct_parents):
+	New function.
+	* ov-class.cc (octave_class::load_binary, octave_class::load_hdf5):
+	Contstruct parent list.
+	(get_current_method_class): Clean up method class extraction.
+
 2009-05-05  John W. Eaton  <jwe@octave.org>
 
 	* graphics.cc (array_property::validate): Require object to be any

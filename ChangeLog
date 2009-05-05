@@ -1,3 +1,8 @@
+2009-05-05  Jaroslav Hajek  <highegg@gmail.com>
+
+	* configure.in: Include the whole 3.x g++ series as problematic.
+	* Makefile: Don't mention that g++-3.x might work.
+
 2009-05-04  John W. Eaton  <jwe@octave.org>
 
 	* configure.in: Put -lftgl ahead of $FT2_LIBS, and $FT2_LIBS ahead

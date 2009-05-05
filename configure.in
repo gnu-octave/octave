@@ -184,13 +184,9 @@ gxx_version=`$CXX -v 2>&1 | grep "^.*g.. version" | \
   sed -e 's/^.*g.. version *//' -e 's/cygnus-//' -e 's/egcs-//' -e 's/ .*//'`
 
 case "$gxx_version" in
-  1.* | 2.[[012345678]].*)
+  1.* | 2.[[0123456789]].* | 3.[[01234]].*)
     AC_MSG_ERROR([g++ version $gxx_version will probably fail to compile Octave]
 )
-  ;;
-  2.9*)
-    warn_gxx_version="g++ version $gxx_version is likely to cause problems"
-    AC_MSG_WARN($warn_gxx_version)
   ;;
 esac
 

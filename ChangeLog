@@ -1,3 +1,8 @@
+2009-05-04  John W. Eaton  <jwe@octave.org>
+
+	* configure.in: Put -lftgl ahead of $FT2_LIBS, and $FT2_LIBS ahead
+	of $OPENGL_LIBS.
+
 2009-05-04  Peter O'Gorman  <pogma@thewrittenword.com>
 
 	* aclocal.m4 (OCTAVE_HAVE_C99_VSNPRINTF): New macro.

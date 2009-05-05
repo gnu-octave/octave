@@ -1,3 +1,7 @@
+2009-05-05  John W. Eaton  <jwe@octave.org>
+
+	* variables.cc (set_internal_variable): Pass NM in call to error.
+
 2009-05-04  Peter O'Gorman  <pogma@thewrittenword.com>
 
 	* utils.cc: Don't define HAVE_C99_VSNPRINTF here.

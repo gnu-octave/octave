@@ -683,9 +683,10 @@ set_internal_variable (int& var, const octave_value_list& args,
       if (! error_state)
 	{
 	  if (ival < minval)
-	    error ("%s: expecting arg to be greater than %d", minval);
+	    error ("%s: expecting arg to be greater than %d", nm, minval);
 	  else if (ival > maxval)
-	    error ("%s: expecting arg to be less than or equal to %d", maxval);
+	    error ("%s: expecting arg to be less than or equal to %d",
+		   nm, maxval);
 	  else
 	    var = ival;
 	}

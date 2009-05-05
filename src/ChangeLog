@@ -1,5 +1,8 @@
 2009-05-05  John W. Eaton  <jwe@octave.org>
 
+	* graphics.cc (array_property::validate): Require object to be any
+	numeric type, not necessarily a double precision value.
+
 	* variables.cc (set_internal_variable): Pass NM in call to error.
 
 2009-05-04  Peter O'Gorman  <pogma@thewrittenword.com>

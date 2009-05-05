@@ -776,7 +776,7 @@ array_property::validate (const octave_value& v)
   bool xok = false;
 
   // FIXME -- should we always support []?
-  if (v.is_empty () && v.is_double_type ())
+  if (v.is_empty () && v.is_numeric_type ())
     return true;
 
   // check value type
@@ -788,7 +788,7 @@ array_property::validate (const octave_value& v)
           xok = true;
     }
   else
-    xok = v.is_double_type ();
+    xok = v.is_numeric_type ();
 
   if (xok)
     {

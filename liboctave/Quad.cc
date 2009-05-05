@@ -77,7 +77,7 @@ user_function (double *x, int& ierr, double *result)
 {
   BEGIN_INTERRUPT_WITH_EXCEPTIONS;
 
-#if defined (sun) && defined (__GNUC__)
+#if defined (__sparc) && defined (__GNUC__)
   double xx = access_double (x);
 #else
   double xx = *x;
@@ -87,7 +87,7 @@ user_function (double *x, int& ierr, double *result)
 
   double xresult = (*user_fcn) (xx);
 
-#if defined (sun) && defined (__GNUC__)
+#if defined (__sparc) && defined (__GNUC__)
   assign_double (result, xresult);
 #else
   *result = xresult;

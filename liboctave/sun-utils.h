@@ -24,12 +24,12 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_sun_utils_h 1
 
 // This is only needed to dereference pointers to doubles if mixing
-// GCC and Sun f77/cc compiled code.  See the GCC manual (where the
+// GCC and Sun SPARC f77/cc compiled code.  See the GCC manual (where the
 // function access_double() is described) and the Sun f77 manual,
 // which explains that doubles are not always aligned on 8 byte
 // boundaries.
 
-#if defined (sun) && defined (__GNUC__)
+#if defined (__sparc) && defined (__GNUC__)
 
 inline double
 access_double (double *unaligned_ptr)

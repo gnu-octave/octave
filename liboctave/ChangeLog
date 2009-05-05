@@ -1,3 +1,9 @@
+2009-05-05  Carsten Clark  <tantumquantum+gnuoctave@gmail.com>
+
+	* Quad.cc (user_function): Use access_double and assign_double on
+	SPARC only, not on all Sun systems.
+	* sun-utils.h: Likewise, define these functions on SPARC only.
+
 2009-05-05  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Sparse.cc (assign1): Fix an old indexing bug.

@@ -2715,13 +2715,17 @@ assign1 (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 		      i++;
 		      while (ii < nc && c_lhs.cidx(ii+1) <= i)
 			ii++;
+                      tmp.xridx (kk++) = 0;
 		    }
 		  else
 		    {
 		      while (ic <= jj)
 			tmp.xcidx (ic++) = kk;
 		      if (scalar_non_zero)
-			tmp.xdata (kk) = scalar;
+                        {
+                          tmp.xdata (kk) = scalar;
+                          tmp.xridx (kk++) = 0;
+                        }
 		      if (ii == jj)
 			{
 			  i++;
@@ -2732,7 +2736,6 @@ assign1 (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 		      if (j < n)
 			jj = lhs_idx.elem(j);
 		    }
-		  tmp.xridx (kk++) = 0;
 		}
 
 	      for (octave_idx_type iidx = ic; iidx < max_idx+1; iidx++)

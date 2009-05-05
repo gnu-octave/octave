@@ -1,3 +1,7 @@
+2009-05-05  Jaroslav Hajek  <highegg@gmail.com>
+
+	* Sparse.cc (assign1): Fix an old indexing bug.
+
 2009-05-04  Carsten Clark  <tantumquantum+gnuoctave@gmail.com>
 
 	* Quad.cc (float_user_function): Remove Sun/GCC special case.

@@ -1,3 +1,9 @@
+2009-05-05  John Swensen  <jpswensen@comcast.net>
+
+	* debug.h, debug.cc (breakpoints): Rename from bp_map, use a
+	std::set instead of a std::map object.  Change all uses.
+	(bp_table::do_get_breakpoint_list): Simplify.
+
 2009-05-05  Robert T. Short  <octave@phaselockedsystems.com>
 
 	* ov-class.h, ov-class.cc (octave_class::reconstruct_parents):

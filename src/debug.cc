@@ -277,7 +277,9 @@ bp_table::do_add_breakpoint (const std::string& fname,
 		  retval[i] = cmds->set_breakpoint (lineno);
 
 		  if (retval[i] != 0)
-		    bp_map[fname] = dbg_fcn;
+		    {
+		      bp_set.insert (fname);
+		    }
 		}
 	    }
 	}
@@ -328,10 +330,10 @@ bp_table::do_remove_breakpoint (const std::string& fname,
 
 		  results = cmds->list_breakpoints ();
 
-		  breakpoint_map_iterator it = bp_map.find (fname);
+		  bp_set_iterator it = bp_set.find (fname);
+		  if (results.length () == 0 && it != bp_set.end ())
+		    bp_set.erase (it);
 
-		  if (results.length () == 0 && it != bp_map.end ())
-		    bp_map.erase (it);
 		}
 
 	      retval = results.length ();
@@ -370,10 +372,10 @@ bp_table::do_remove_all_breakpoints_in_file (const std::string& fname,
 	      retval[i] = lineno;
 	    }
 
-	  breakpoint_map_iterator it = bp_map.find (fname);
+	  bp_set_iterator it = bp_set.find (fname);
+	  if (it != bp_set.end ())
+	    bp_set.erase (it);
 
-	  if (it != bp_map.end ())
-	    bp_map.erase (it);
 	}
     }
   else if (! silent)
@@ -388,9 +390,9 @@ bp_table::do_remove_all_breakpoints_in_file (const std::string& fname,
 void 
 bp_table::do_remove_all_breakpoints (void)
 {
-  for (const_breakpoint_map_iterator it = bp_map.begin ();
-       it != bp_map.end (); it++)
-    remove_all_breakpoints_in_file (it->first);
+  for (const_bp_set_iterator it = bp_set.begin (); it != bp_set.end (); it++)
+    remove_all_breakpoints_in_file (*it);
+
 
   tree_evaluator::debug_mode = bp_table::have_breakpoints ();
 }
@@ -419,46 +421,33 @@ bp_table::do_get_breakpoint_list (const octave_value_list& fname_list)
 {
   fname_line_map retval;
 
-  // Clear the breakpoints in the function if it has been updated.
-  // FIXME:  This is a bad way of doing this, but I can't think of another.  The
-  // problem is due to the fact that out_of_date_check(...) calls 
-  // remove_breakpoints_in_file(...), which in turn modifies bp_map while we are
-  // in the middle of iterating through it.
-
-  std::list<octave_user_code*> usercode_list;
-
-  for (breakpoint_map_iterator it = bp_map.begin (); it != bp_map.end (); it++)
-    usercode_list.push_back (it->second);
-
-  for (std::list<octave_user_code*>::iterator it = usercode_list.begin ();
-       it != usercode_list.end (); it++)
-    out_of_date_check (*it);
-
-
-  // Iterate through each of the files in the map and get the 
-  // name and list of breakpoints.
-  for (breakpoint_map_iterator it = bp_map.begin (); it != bp_map.end (); it++)
+  for (bp_set_iterator it = bp_set.begin (); it != bp_set.end (); it++)
     {
       if (fname_list.length () == 0
-	  || do_find_bkpt_list (fname_list, it->first) != "")
+	  || do_find_bkpt_list (fname_list, *it) != "")
 	{
-	  octave_user_code *f = it->second;
-	  tree_statement_list *cmds = f->body ();
+	  octave_user_code *f = get_user_code (*it);
 
-	  if (cmds)
+	  if (f)
 	    {
-	      octave_value_list bkpts = cmds->list_breakpoints ();
+	      tree_statement_list *cmds = f->body ();
 
-	      octave_idx_type len = bkpts.length (); 
-
-	      if (len > 0)
+	      if (cmds)
 		{
-		  bp_table::intmap bkpts_vec;
+		  octave_value_list bkpts = cmds->list_breakpoints ();
+		  octave_idx_type len = bkpts.length (); 
 
-		  for (int i = 0; i < len; i++)
-		    bkpts_vec[i] = bkpts (i).double_value ();
+		  if (len > 0)
+		    {
+		      bp_table::intmap bkpts_vec;
+		      
+		      for (int i = 0; i < len; i++)
+			bkpts_vec[i] = bkpts (i).double_value ();
+		      
+		      std::string symbol_name = f->name ();
 
-		  retval[it->first] = bkpts_vec;
+		      retval[symbol_name] = bkpts_vec;
+		    }
 		}
 	    }
 	}

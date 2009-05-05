@@ -24,6 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_debug_h 1
 
 #include <map>
+#include <set>
 #include "ov.h"
 #include "dRowVector.h"
 
@@ -116,14 +117,11 @@ public:
 
 private:
 
-  // Map from function names to function objects for functions
-  // containing at least one breakpoint.
-  typedef std::map<std::string, octave_user_code *> breakpoint_map;
+  typedef std::set<std::string>::const_iterator const_bp_set_iterator;
+  typedef std::set<std::string>::iterator bp_set_iterator;
 
-  typedef breakpoint_map::const_iterator const_breakpoint_map_iterator;
-  typedef breakpoint_map::iterator breakpoint_map_iterator;
-
-  breakpoint_map bp_map;
+  // Set of function names containing at least one breakpoint.
+  std::set<std::string> bp_set;
 
   static bp_table *instance;
 
@@ -138,7 +136,7 @@ private:
 
   fname_line_map do_get_breakpoint_list (const octave_value_list& fname_list);
 
-  bool do_have_breakpoints (void) { return (! bp_map.empty ()); }
+  bool do_have_breakpoints (void) { return (! bp_set.empty ()); }
 };
 
 std::string get_file_line (const std::string& fname, size_t line);

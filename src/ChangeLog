@@ -1,3 +1,7 @@
+2009-05-06  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-re-mat.cc (Fdouble): Fix order of branches.
+
 2009-05-05  John Swensen  <jpswensen@comcast.net>
 
 	* debug.h, debug.cc (breakpoints): Rename from bp_map, use a

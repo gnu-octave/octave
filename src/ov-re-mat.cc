@@ -850,13 +850,13 @@ Convert @var{x} to double precision type.\n\
   // inside their own scopes, and we don't declare retval here to
   // avoid a shadowed declaration warning.
 
-  if (args(0).is_perm_matrix ())
+  if (args.length () == 1)
     {
-      OCTAVE_TYPE_CONV_BODY3 (double, octave_perm_matrix, octave_scalar);
-    }
-  else if (args.length () == 1)
-    {
-      if (args(0).is_diag_matrix ())
+      if (args(0).is_perm_matrix ())
+        {
+          OCTAVE_TYPE_CONV_BODY3 (double, octave_perm_matrix, octave_scalar);
+        }
+      else if (args(0).is_diag_matrix ())
         {
 	  if (args(0).is_complex_type ())
 	    {

@@ -249,9 +249,9 @@ PREREQ := $(OPT_INC) $(VX_OP_INC) $(VX_OP_SRC) \
 
 ifeq ($(SHARED_LIBS), true)
   ifeq ($(STATIC_LIBS), true)
-    LIBRARIES = $(LIBPRE)octave.$(LIBEXT) $(SHLLIBPRE)octave.$(SHLEXT_VER)
+    LIBRARIES = $(LIBPRE)octave.$(LIBEXT) $(SHLPRE)octave.$(SHLEXT_VER)
   else
-    LIBRARIES = $(SHLLIBPRE)octave.$(SHLEXT_VER)
+    LIBRARIES = $(SHLPRE)octave.$(SHLEXT_VER)
   endif
 else
   ifeq ($(STATIC_LIBS), true)
@@ -269,11 +269,11 @@ $(LIBPRE)octave.$(LIBEXT): $(LIBOCTAVE_OBJECTS)
 	$(TEMPLATE_AR) $(TEMPLATE_ARFLAGS) $@ $(LIBOCTAVE_OBJECTS)
 	$(RANLIB) $@
 
-$(SHLLIBPRE)octave.$(SHLEXT_VER): $(SHLLIBPRE)octave.$(SHLEXT)
+$(SHLPRE)octave.$(SHLEXT_VER): $(SHLPRE)octave.$(SHLEXT)
 	rm -f $@
 	$(LN_S) $< $@
 
-$(SHLLIBPRE)octave.$(SHLEXT): $(LIBOCTAVE_PICOBJ)
+$(SHLPRE)octave.$(SHLEXT): $(LIBOCTAVE_PICOBJ)
 	rm -f $@
 	$(SH_LD) $(SH_LDFLAGS) $(SONAME_FLAGS) -o $@ \
 	$(LIBOCTAVE_PICOBJ) $(LINK_DEPS)
@@ -303,11 +303,11 @@ install-lib:
 	  $(RANLIB) $(DESTDIR)$(octlibdir)/$(LIBPRE)octave.$(LIBEXT); \
 	fi
 	if $(SHARED_LIBS); then \
-	  rm -f $(DESTDIR)$(octlibdir)/$(SHLLIBPRE)octave.$(SHLLIB_VER); \
+	  rm -f $(DESTDIR)$(octlibdir)/$(SHLPRE)octave.$(SHLLIB_VER); \
 	  $(INSTALL) \
-	    $(SHLLIBPRE)octave.$(SHLLIB) $(DESTDIR)$(octlibdir)/$(SHLLIBPRE)octave.$(SHLLIB_VER); \
-	  rm -f $(DESTDIR)$(octlibdir)/$(SHLLIBPRE)octave.$(SHLLIB); \
-	  (cd $(DESTDIR)$(octlibdir) ; $(LN_S) $(SHLLIBPRE)octave.$(SHLLIB_VER) $(DESTDIR)$(octlibdir)/$(SHLLIBPRE)octave.$(SHLLIB)); \
+	    $(SHLPRE)octave.$(SHLLIB) $(DESTDIR)$(octlibdir)/$(SHLPRE)octave.$(SHLLIB_VER); \
+	  rm -f $(DESTDIR)$(octlibdir)/$(SHLPRE)octave.$(SHLLIB); \
+	  (cd $(DESTDIR)$(octlibdir) ; $(LN_S) $(SHLPRE)octave.$(SHLLIB_VER) $(DESTDIR)$(octlibdir)/$(SHLPRE)octave.$(SHLLIB)); \
 	  if  test x$(SHLBIN) != x ; then \
 	    rm -f $(DESTDIR)$(bindir)/$(SHLBINPRE)octave.$(SHLBIN); \
 	    $(INSTALL_PROGRAM) \
@@ -330,8 +330,8 @@ install-inc:
 
 uninstall:
 	rm -f $(DESTDIR)$(octlibdir)/$(LIBPRE)octave.$(LIBEXT)
-	rm -f $(DESTDIR)$(octlibdir)/$(SHLLIBPRE)octave.$(SHLLIB)
-	rm -f $(DESTDIR)$(octlibdir)/$(SHLLIBPRE)octave.$(SHLLIB_VER)
+	rm -f $(DESTDIR)$(octlibdir)/$(SHLPRE)octave.$(SHLLIB)
+	rm -f $(DESTDIR)$(octlibdir)/$(SHLPRE)octave.$(SHLLIB_VER)
 	if test x$(SHLBIN) != x; then \
 	  rm -f $(DESTDIR)$(bindir)/$(SHLBINPRE)octave.$(SHLBIN); \
 	  rm -f $(DESTDIR)$(bindir)/$(SHLBINPRE)octave.$(SHLBIN_VER); \
@@ -347,7 +347,7 @@ TAGS: $(SOURCES)
 
 clean:
 	rm -f $(LIBPRE)octave.$(LIBEXT)
-	rm -f $(SHLLIBPRE)octave.$(SHLEXT_VER) $(SHLLIBPRE)octave.$(SHLEXT)
+	rm -f $(SHLPRE)octave.$(SHLEXT_VER) $(SHLPRE)octave.$(SHLEXT)
 	rm -f $(SHLBINPRE)octave.$(SHLBIN_VER) $(SHLBINPRE)octave.$(SHLBIN)
 	rm -f $(LIBOCTAVE_OBJECTS) $(MAKEDEPS) $(LIBOCTAVE_PICOBJ) stmp-pic
 	-rmdir pic

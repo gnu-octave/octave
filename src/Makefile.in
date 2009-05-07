@@ -339,9 +339,9 @@ endif
 
 ifeq ($(SHARED_LIBS), true)
   ifeq ($(STATIC_LIBS), true)
-    LIBRARIES = $(LIBPRE)octinterp.$(LIBEXT) $(SHLLIBPRE)octinterp.$(SHLEXT_VER)
+    LIBRARIES = $(LIBPRE)octinterp.$(LIBEXT) $(SHLPRE)octinterp.$(SHLEXT_VER)
   else
-    LIBRARIES = $(SHLLIBPRE)octinterp.$(SHLEXT_VER)
+    LIBRARIES = $(SHLPRE)octinterp.$(SHLEXT_VER)
   endif
 else
   ifeq ($(STATIC_LIBS), true)
@@ -360,11 +360,11 @@ $(LIBPRE)octinterp.$(LIBEXT): $(OBJECTS) $(XERBLA)
 	$(TEMPLATE_AR) $(TEMPLATE_ARFLAGS) $@ $^
 	$(RANLIB) $@
 
-$(SHLLIBPRE)octinterp.$(SHLEXT_VER): $(SHLLIBPRE)octinterp.$(SHLEXT)
+$(SHLPRE)octinterp.$(SHLEXT_VER): $(SHLPRE)octinterp.$(SHLEXT)
 	rm -f $@
 	$(LN_S) $< $@
 
-$(SHLLIBPRE)octinterp.$(SHLEXT): $(PICOBJ) $(PIC_XERBLA)
+$(SHLPRE)octinterp.$(SHLEXT): $(PICOBJ) $(PIC_XERBLA)
 	rm -f $@
 	$(SH_LD) $(SH_LDFLAGS) $(SONAME_FLAGS) -o $@ $^ $(OCTINTERP_LINK_DEPS)
 
@@ -484,11 +484,11 @@ install-lib:
 	  $(RANLIB) $(DESTDIR)$(octlibdir)/$(LIBPRE)octinterp.$(LIBEXT); \
 	fi
 	if $(SHARED_LIBS); then \
-	  rm -f $(DESTDIR)$(octlibdir)/$(SHLLIBPRE)octinterp.$(SHLEXT_VER); \
-	  $(INSTALL) $(SHLLIBPRE)octinterp.$(SHLLIB) \
-	    $(DESTDIR)$(octlibdir)/$(SHLLIBPRE)octinterp.$(SHLLIB_VER); \
-	  rm -f $(DESTDIR)$(octlibdir)/$(SHLLIBPRE)octinterp.$(SHLLIB); \
-	  (cd $(DESTDIR)$(octlibdir) ; $(LN_S) $(SHLLIBPRE)octinterp.$(SHLLIB_VER) $(DESTDIR)$(octlibdir)/$(SHLLIBPRE)octinterp.$(SHLLIB)); \
+	  rm -f $(DESTDIR)$(octlibdir)/$(SHLPRE)octinterp.$(SHLEXT_VER); \
+	  $(INSTALL) $(SHLPRE)octinterp.$(SHLLIB) \
+	    $(DESTDIR)$(octlibdir)/$(SHLPRE)octinterp.$(SHLLIB_VER); \
+	  rm -f $(DESTDIR)$(octlibdir)/$(SHLPRE)octinterp.$(SHLLIB); \
+	  (cd $(DESTDIR)$(octlibdir) ; $(LN_S) $(SHLPRE)octinterp.$(SHLLIB_VER) $(DESTDIR)$(octlibdir)/$(SHLPRE)octinterp.$(SHLLIB)); \
 	  if  test x$(SHLBIN) != x ; then \
 	    rm -f $(DESTDIR)$(bindir)/$(SHLBINPRE)octinterp.$(SHLBIN); \
 	    $(INSTALL_PROGRAM) \
@@ -521,8 +521,8 @@ uninstall:
 	rm -f $(DESTDIR)$(bindir)/octave$(EXEEXT)
 	rm -f $(DESTDIR)$(bindir)/octave-$(version)$(EXEEXT)
 	rm -f $(DESTDIR)$(octlibdir)/$(LIBPRE)octinterp.$(LIBEXT)
-	rm -f $(DESTDIR)$(octlibdir)/$(SHLLIBPRE)octinterp.$(SHLLIB)
-	rm -f $(DESTDIR)$(octlibdir)/$(SHLLIBPRE)octinterp.$(SHLLIB_VER)
+	rm -f $(DESTDIR)$(octlibdir)/$(SHLPRE)octinterp.$(SHLLIB)
+	rm -f $(DESTDIR)$(octlibdir)/$(SHLPRE)octinterp.$(SHLLIB_VER)
 	if test x$(SHLBIN) != x ; then \
 	  rm -f $(DESTDIR)$(bindir)/$(SHLBINPRE)octinterp.$(SHLBIN); \
 	  rm -f $(DESTDIR)$(bindir)/$(SHLBINPRE)octinterp.$(SHLBIN_VER); \
@@ -551,7 +551,7 @@ TAGS: $(SOURCES) $(DLD_SRC)
 
 clean:
 	rm -f $(LIBPRE)octinterp.$(LIBEXT)
-	rm -f $(SHLLIBPRE)octinterp.$(SHLEXT_VER) $(SHLLIBPRE)octinterp.$(SHLEXT)
+	rm -f $(SHLPRE)octinterp.$(SHLEXT_VER) $(SHLPRE)octinterp.$(SHLEXT)
 	rm -f $(SHLBINPRE)octinterp.$(SHLBIN_VER) $(SHLBINPRE)octinterp.$(SHLBIN)
 	rm -f $(OBJECTS) $(DLD_OBJ) $(MAKEDEPS) $(DOC_FILES) $(OCT_FILES)
 	rm -f $(PICOBJ) $(DLD_PICOBJ) stmp-pic gendoc$(EXEEXT)

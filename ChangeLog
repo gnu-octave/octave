@@ -1,3 +1,7 @@
+2009-05-07  Marco Atzeri  <marco_atzeri@yahoo.it>
+
+	* configure.in, Makeconf.in: (SHLPRE): Rename from SHLLIBPRE.
+
 2009-05-05  Jaroslav Hajek  <highegg@gmail.com>
 
 	* configure.in: Include the whole 3.x g++ series as problematic.

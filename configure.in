@@ -1191,7 +1191,7 @@ SHLLIB_VER='$(SHLLIB).$(version)'
 SHLBIN_VER='$(SHLBIN).$(version)'
 SHLLINKEXT=
 LIBPRE=lib
-SHLLIBPRE=lib
+SHLPRE=lib
 SHLBINPRE=lib
 SH_LD='$(CXX)'
 SH_LDFLAGS=-shared
@@ -1251,14 +1251,13 @@ case "$canonical_host_type" in
     CXXPICFLAG=
     FPICFLAG=
     LIBPRE=lib
-    SHLLIBPRE=cyg
-    SHLBINPRE=lib
+    SHLPRE=cyg
     SHLEXT=dll
     SHLLIB=dll.a
     SHLBIN=a    
     DL_LDFLAGS="-shared -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-runtime-pseudo-reloc"
     SH_LDFLAGS="-shared -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-auto-image-base"
-    SONAME_FLAGS='-Wl,--out-implib=$(patsubst $(SHLLIBPRE)%,$(SHLBINPRE)%,$@).a'
+    SONAME_FLAGS='-Wl,--out-implib=$(patsubst $(SHLPRE)%,$(SHLBINPRE)%,$@).a'
   ;;
   *-*-mingw*)
     CPICFLAG=
@@ -1282,7 +1281,7 @@ case "$canonical_host_type" in
     SHLLIB=lib
     SHLBIN=dll
     LIBPRE=
-    SHLLIBPRE=
+    SHLPRE=
     SHLBINPRE=
     SH_LDFLAGS="-shared"
       if test -n "`echo $CFLAGS | grep -e '-g'`" -o -n "`echo $CXXFLAGS | grep -e '-g'`"; then
@@ -1398,7 +1397,7 @@ AC_MSG_NOTICE([defining SHLLIB_VER to be $SHLLIB_VER])
 AC_MSG_NOTICE([defining SHLBIN_VER to be $SHLBIN_VER])
 AC_MSG_NOTICE([defining SHLLINKEXT to be $SHLLINKEXT])
 AC_MSG_NOTICE([defining LIBPRE to be $LIBPRE])
-AC_MSG_NOTICE([defining SHLLIBPRE to be $SHLLIBPRE])
+AC_MSG_NOTICE([defining SHLPRE to be $SHLPRE])
 AC_MSG_NOTICE([defining SHLBINPRE to be $SHLBINPRE])
 AC_MSG_NOTICE([defining SH_LD to be $SH_LD])
 AC_MSG_NOTICE([defining SH_LDFLAGS to be $SH_LDFLAGS])
@@ -1426,7 +1425,7 @@ AC_SUBST(SHLLIB_VER)
 AC_SUBST(SHLBIN_VER)
 AC_SUBST(SHLLINKEXT)
 AC_SUBST(LIBPRE)
-AC_SUBST(SHLLIBPRE)
+AC_SUBST(SHLPRE)
 AC_SUBST(SHLBINPRE)
 AC_SUBST(SH_LD)
 AC_SUBST(SH_LDFLAGS)

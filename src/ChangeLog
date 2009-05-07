@@ -1,3 +1,7 @@
+2009-05-07  Marco Atzeri  <marco_atzeri@yahoo.it>
+
+        * Makefile.in: (SHLPRE): Rename from SHLLIBPRE.
+
 2009-05-07  John W. Eaton  <jwe@octave.org>
 
 	* genprops.awk (emit_declarations): Emit decls for static

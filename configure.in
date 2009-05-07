@@ -1192,6 +1192,7 @@ SHLBIN_VER='$(SHLBIN).$(version)'
 SHLLINKEXT=
 LIBPRE=lib
 SHLPRE=lib
+SHLLIBPRE=lib
 SHLBINPRE=lib
 SH_LD='$(CXX)'
 SH_LDFLAGS=-shared
@@ -1282,6 +1283,7 @@ case "$canonical_host_type" in
     SHLBIN=dll
     LIBPRE=
     SHLPRE=
+    SHLLIBPRE=
     SHLBINPRE=
     SH_LDFLAGS="-shared"
       if test -n "`echo $CFLAGS | grep -e '-g'`" -o -n "`echo $CXXFLAGS | grep -e '-g'`"; then
@@ -1398,6 +1400,7 @@ AC_MSG_NOTICE([defining SHLBIN_VER to be $SHLBIN_VER])
 AC_MSG_NOTICE([defining SHLLINKEXT to be $SHLLINKEXT])
 AC_MSG_NOTICE([defining LIBPRE to be $LIBPRE])
 AC_MSG_NOTICE([defining SHLPRE to be $SHLPRE])
+AC_MSG_NOTICE([defining SHLLIBPRE to be $SHLLIBPRE])
 AC_MSG_NOTICE([defining SHLBINPRE to be $SHLBINPRE])
 AC_MSG_NOTICE([defining SH_LD to be $SH_LD])
 AC_MSG_NOTICE([defining SH_LDFLAGS to be $SH_LDFLAGS])
@@ -1426,6 +1429,7 @@ AC_SUBST(SHLBIN_VER)
 AC_SUBST(SHLLINKEXT)
 AC_SUBST(LIBPRE)
 AC_SUBST(SHLPRE)
+AC_SUBST(SHLLIBPRE)
 AC_SUBST(SHLBINPRE)
 AC_SUBST(SH_LD)
 AC_SUBST(SH_LDFLAGS)

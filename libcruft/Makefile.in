@@ -152,12 +152,12 @@ install::
 	  $(RANLIB) $(DESTDIR)$(octlibdir)/$(LIBPRE)cruft.$(LIBEXT) ; \
 	fi
 	if $(SHARED_LIBS); then \
-	  rm -f $(DESTDIR)$(octlibdir)/$(SHLPRE)cruft.$(SHLLIB_VER); \
+	  rm -f $(DESTDIR)$(octlibdir)/$(SHLLIBPRE)cruft.$(SHLLIB_VER); \
 	  $(INSTALL) \
-	    $(SHLPRE)cruft.$(SHLLIB) $(DESTDIR)$(octlibdir)/$(SHLPRE)cruft.$(SHLLIB_VER); \
-	  rm -f $(DESTDIR)$(octlibdir)/$(SHLPRE)cruft.$(SHLLIB); \
+	    $(SHLLIBPRE)cruft.$(SHLLIB) $(DESTDIR)$(octlibdir)/$(SHLLIBPRE)cruft.$(SHLLIB_VER); \
+	  rm -f $(DESTDIR)$(octlibdir)/$(SHLLIBPRE)cruft.$(SHLLIB); \
 	  (cd $(DESTDIR)$(octlibdir); \
-	  $(LN_S) $(SHLPRE)cruft.$(SHLLIB_VER) $(DESTDIR)$(octlibdir)/$(SHLPRE)cruft.$(SHLLIB)); \
+	  $(LN_S) $(SHLLIBPRE)cruft.$(SHLLIB_VER) $(DESTDIR)$(octlibdir)/$(SHLLIBPRE)cruft.$(SHLLIB)); \
 	  if  test x$(SHLBIN) != x ; then \
 	    rm -f $(DESTDIR)$(bindir)/$(SHLBINPRE)cruft.$(SHLBIN); \
 	    $(INSTALL_PROGRAM) \
@@ -170,8 +170,8 @@ install-strip::
 
 uninstall::
 	rm -f $(DESTDIR)$(octlibdir)/$(LIBPRE)cruft.$(LIBEXT)
-	rm -f $(DESTDIR)$(octlibdir)/$(SHLPRE)cruft.$(SHLLIB)
-	rm -f $(DESTDIR)$(octlibdir)/$(SHLPRE)cruft.$(SHLLIB_VER)
+	rm -f $(DESTDIR)$(octlibdir)/$(SHLLIBPRE)cruft.$(SHLLIB)
+	rm -f $(DESTDIR)$(octlibdir)/$(SHLLIBPRE)cruft.$(SHLLIB_VER)
 	if test x$(SHLBIN) != x; then \
 	  rm -f $(DESTDIR)$(bindir)/$(SHLBINPRE)cruft.$(SHLBIN); \
 	  rm -f $(DESTDIR)$(bindir)/$(SHLBINPRE)cruft.$(SHLBIN_VER); \

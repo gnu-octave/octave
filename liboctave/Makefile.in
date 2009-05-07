@@ -303,11 +303,11 @@ install-lib:
 	  $(RANLIB) $(DESTDIR)$(octlibdir)/$(LIBPRE)octave.$(LIBEXT); \
 	fi
 	if $(SHARED_LIBS); then \
-	  rm -f $(DESTDIR)$(octlibdir)/$(SHLPRE)octave.$(SHLLIB_VER); \
+	  rm -f $(DESTDIR)$(octlibdir)/$(SHLLIBPRE)octave.$(SHLLIB_VER); \
 	  $(INSTALL) \
-	    $(SHLPRE)octave.$(SHLLIB) $(DESTDIR)$(octlibdir)/$(SHLPRE)octave.$(SHLLIB_VER); \
-	  rm -f $(DESTDIR)$(octlibdir)/$(SHLPRE)octave.$(SHLLIB); \
-	  (cd $(DESTDIR)$(octlibdir) ; $(LN_S) $(SHLPRE)octave.$(SHLLIB_VER) $(DESTDIR)$(octlibdir)/$(SHLPRE)octave.$(SHLLIB)); \
+	    $(SHLLIBPRE)octave.$(SHLLIB) $(DESTDIR)$(octlibdir)/$(SHLLIBPRE)octave.$(SHLLIB_VER); \
+	  rm -f $(DESTDIR)$(octlibdir)/$(SHLLIBPRE)octave.$(SHLLIB); \
+	  (cd $(DESTDIR)$(octlibdir) ; $(LN_S) $(SHLLIBPRE)octave.$(SHLLIB_VER) $(DESTDIR)$(octlibdir)/$(SHLLIBPRE)octave.$(SHLLIB)); \
 	  if  test x$(SHLBIN) != x ; then \
 	    rm -f $(DESTDIR)$(bindir)/$(SHLBINPRE)octave.$(SHLBIN); \
 	    $(INSTALL_PROGRAM) \
@@ -330,8 +330,8 @@ install-inc:
 
 uninstall:
 	rm -f $(DESTDIR)$(octlibdir)/$(LIBPRE)octave.$(LIBEXT)
-	rm -f $(DESTDIR)$(octlibdir)/$(SHLPRE)octave.$(SHLLIB)
-	rm -f $(DESTDIR)$(octlibdir)/$(SHLPRE)octave.$(SHLLIB_VER)
+	rm -f $(DESTDIR)$(octlibdir)/$(SHLLIBPRE)octave.$(SHLLIB)
+	rm -f $(DESTDIR)$(octlibdir)/$(SHLLIBPRE)octave.$(SHLLIB_VER)
 	if test x$(SHLBIN) != x; then \
 	  rm -f $(DESTDIR)$(bindir)/$(SHLBINPRE)octave.$(SHLBIN); \
 	  rm -f $(DESTDIR)$(bindir)/$(SHLBINPRE)octave.$(SHLBIN_VER); \

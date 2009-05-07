@@ -485,10 +485,10 @@ install-lib:
 	fi
 	if $(SHARED_LIBS); then \
 	  rm -f $(DESTDIR)$(octlibdir)/$(SHLPRE)octinterp.$(SHLEXT_VER); \
-	  $(INSTALL) $(SHLPRE)octinterp.$(SHLLIB) \
-	    $(DESTDIR)$(octlibdir)/$(SHLPRE)octinterp.$(SHLLIB_VER); \
-	  rm -f $(DESTDIR)$(octlibdir)/$(SHLPRE)octinterp.$(SHLLIB); \
-	  (cd $(DESTDIR)$(octlibdir) ; $(LN_S) $(SHLPRE)octinterp.$(SHLLIB_VER) $(DESTDIR)$(octlibdir)/$(SHLPRE)octinterp.$(SHLLIB)); \
+	  $(INSTALL) $(SHLLIBPRE)octinterp.$(SHLLIB) \
+	    $(DESTDIR)$(octlibdir)/$(SHLLIBPRE)octinterp.$(SHLLIB_VER); \
+	  rm -f $(DESTDIR)$(octlibdir)/$(SHLLIBPRE)octinterp.$(SHLLIB); \
+	  (cd $(DESTDIR)$(octlibdir) ; $(LN_S) $(SHLLIBPRE)octinterp.$(SHLLIB_VER) $(DESTDIR)$(octlibdir)/$(SHLLIBPRE)octinterp.$(SHLLIB)); \
 	  if  test x$(SHLBIN) != x ; then \
 	    rm -f $(DESTDIR)$(bindir)/$(SHLBINPRE)octinterp.$(SHLBIN); \
 	    $(INSTALL_PROGRAM) \
@@ -521,8 +521,8 @@ uninstall:
 	rm -f $(DESTDIR)$(bindir)/octave$(EXEEXT)
 	rm -f $(DESTDIR)$(bindir)/octave-$(version)$(EXEEXT)
 	rm -f $(DESTDIR)$(octlibdir)/$(LIBPRE)octinterp.$(LIBEXT)
-	rm -f $(DESTDIR)$(octlibdir)/$(SHLPRE)octinterp.$(SHLLIB)
-	rm -f $(DESTDIR)$(octlibdir)/$(SHLPRE)octinterp.$(SHLLIB_VER)
+	rm -f $(DESTDIR)$(octlibdir)/$(SHLLIBPRE)octinterp.$(SHLLIB)
+	rm -f $(DESTDIR)$(octlibdir)/$(SHLLIBPRE)octinterp.$(SHLLIB_VER)
 	if test x$(SHLBIN) != x ; then \
 	  rm -f $(DESTDIR)$(bindir)/$(SHLBINPRE)octinterp.$(SHLBIN); \
 	  rm -f $(DESTDIR)$(bindir)/$(SHLBINPRE)octinterp.$(SHLBIN_VER); \

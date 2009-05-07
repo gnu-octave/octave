@@ -1170,29 +1170,52 @@ property_list::set (const caseless_str& name, const octave_value& val)
 	  std::transform (pfx.begin (), pfx.end (), pfx.begin (), tolower);
 	  std::transform (pname.begin (), pname.end (), pname.begin (), tolower);
 
-	  bool remove = false;
-	  if (val.is_string ())
+	  bool has_property = false;
+	  if (pfx == "axes")
+	    has_property = axes::properties::has_property (pname);
+	  else if (pfx == "line")
+	    has_property = line::properties::has_property (pname);
+	  else if (pfx == "text")
+	    has_property = text::properties::has_property (pname);
+	  else if (pfx == "image")
+	    has_property = image::properties::has_property (pname);
+	  else if (pfx == "patch")
+	    has_property = patch::properties::has_property (pname);
+	  else if (pfx == "figure")
+	    has_property = figure::properties::has_property (pname);
+	  else if (pfx == "surface")
+	    has_property = surface::properties::has_property (pname);
+	  else if (pfx == "hggroup")
+	    has_property = hggroup::properties::has_property (pname);
+
+	  if (has_property)
 	    {
-	      caseless_str tval = val.string_value ();
+	      bool remove = false;
+	      if (val.is_string ())
+		{
+		  caseless_str tval = val.string_value ();
 
-	      remove = tval.compare ("remove");
-	    }
+		  remove = tval.compare ("remove");
+		}
 
-	  pval_map_type& pval_map = plist_map[pfx];
+	      pval_map_type& pval_map = plist_map[pfx];
 
-	  if (remove)
-	    {
-	      pval_map_iterator p = pval_map.find (pname);
+	      if (remove)
+		{
+		  pval_map_iterator p = pval_map.find (pname);
 
-	      if (p != pval_map.end ())
-		pval_map.erase (p);
+		  if (p != pval_map.end ())
+		    pval_map.erase (p);
+		}
+	      else
+		pval_map[pname] = val;
 	    }
 	  else
-	    pval_map[pname] = val;
+	    error ("invalid %s property `%s'", pfx.c_str (), pname.c_str ());
 	}
     }
 
-  if (offset == 0)
+  if (! error_state && offset == 0)
     error ("invalid default property specification");
 }
 
@@ -1703,18 +1726,41 @@ base_properties::get_dynamic (bool all) const
   return m;
 }
 
-void
-base_properties::set_dynamic (const caseless_str& name, const octave_value& val)
+std::map<std::string, std::set<std::string> > base_properties::all_dynamic_properties;
+
+bool
+base_properties::has_dynamic_property (const std::string& pname,
+				       const std::string& cname)
 {
-  std::map<caseless_str, property, cmp_caseless_str>::iterator it = all_props.find (name);
+  // FIXME -- we need to maintain a static map of class names to sets
+  // of dynamic property names, then look up the set for the given
+  // cname, then see if the set contains the given pname.  Doing that
+  // implies changes to set_dynamic, I think.  Where is set_dynamic
+  // ever used?
+
+  std::set<std::string>& dynprops = all_dynamic_properties[cname];
+
+  return dynprops.find (pname) != dynprops.end ();
+}
+
+void
+base_properties::set_dynamic (const caseless_str& pname,
+			      const std::string& cname,
+			      const octave_value& val)
+{
+  std::map<caseless_str, property, cmp_caseless_str>::iterator it = all_props.find (pname);
 
   if (it != all_props.end ())
     it->second.set (val);
   else
-    error ("set: unknown property \"%s\"", name.c_str ());
+    error ("set: unknown property \"%s\"", pname.c_str ());
 
   if (! error_state)
-    mark_modified ();
+    {
+      all_dynamic_properties[cname].insert (pname);
+
+      mark_modified ();
+    }
 }
 
 property

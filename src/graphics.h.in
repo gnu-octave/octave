@@ -1642,15 +1642,16 @@ public:
       all_props[name] = p;
     }
 
-  virtual void set (const caseless_str&, const octave_value&);
+  virtual void set (const caseless_str& pname, const std::string& cname,
+		    const octave_value& val);
 
-  virtual octave_value get (const caseless_str&) const;
+  virtual octave_value get (const caseless_str& pname) const;
 
   virtual octave_value get (bool all = false) const;
 
-  virtual property get_property (const caseless_str&);
+  virtual property get_property (const caseless_str& pname);
 
-  bool has_property (const caseless_str&);
+  bool has_property (const caseless_str& pname);
 
   bool is_modified (void) const { return is___modified__ (); }
  
@@ -1723,15 +1724,21 @@ public:
   {
     return ! handlevisibility.is ("off");
   }
- 
-protected:
-  void set_dynamic (const caseless_str&, const octave_value&);
 
-  octave_value get_dynamic (const caseless_str&) const;
+  static std::map<std::string, std::set<std::string> > all_dynamic_properties;
+ 
+  static bool has_dynamic_property (const std::string& pname,
+				    const std::string& cname);
+
+protected:
+  void set_dynamic (const caseless_str& pname, const std::string& cname,
+		    const octave_value& val);
+
+  octave_value get_dynamic (const caseless_str& pname) const;
 
   octave_value get_dynamic (bool all = false) const;
 
-  property get_property_dynamic (const caseless_str&);
+  property get_property_dynamic (const caseless_str& pname);
 
   BEGIN_BASE_PROPERTIES
     // properties common to all objects
@@ -1821,7 +1828,7 @@ public:
   virtual void set (const caseless_str& pname, const octave_value& pval)
   {
     if (valid_object ())
-      get_properties ().set (pname, pval);
+      get_properties ().set (pname, type (), pval);
     else
       error ("base_graphics_object::set: invalid graphics object");
   }

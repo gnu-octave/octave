@@ -257,6 +257,12 @@ function emit_declarations ()
   if (class_name && ! base)
     emit_common_declarations();
 
+  printf ("public:\n\n");
+  if (base)
+    printf ("\n  static bool has_property (const std::string& pname, const std::string& cname);\n\n");
+  else
+    printf ("\n  static bool has_property (const std::string& pname);\n\n");
+
   if (idx > 0)
     print (base ? "protected:\n" : "private:\n");
 
@@ -422,7 +428,7 @@ function emit_source ()
     ## set method
 
     if (base)
-      printf ("void\nbase_properties::set (const caseless_str& pname, const octave_value& val)\n{\n") >> filename;
+      printf ("void\nbase_properties::set (const caseless_str& pname, const std::string& cname, const octave_value& val)\n{\n") >> filename;
     else
       printf ("void\n%s::properties::set (const caseless_str& pname, const octave_value& val)\n{\n",
               class_name) >> filename;
@@ -440,9 +446,9 @@ function emit_source ()
     }
 
     if (base)
-      printf ("  else\n    set_dynamic (pname, val);\n}\n\n") >> filename;
+      printf ("  else\n    set_dynamic (pname, cname, val);\n}\n\n") >> filename;
     else
-      printf ("  else\n    base_properties::set (pname, val);\n}\n\n") >> filename;
+      printf ("  else\n    base_properties::set (pname, \"%s\", val);\n}\n\n", class_name) >> filename;
 
     ## get "all" method
 
@@ -559,6 +565,19 @@ function emit_source ()
     if (! base)
       printf ("std::string %s::properties::go_name (\"%s\");\n\n",
               class_name, object_name) >> filename;
+
+    if (base)
+      printf ("bool base_properties::has_property (const std::string& pname, const std::string& cname") >> filename;
+    else
+    printf ("bool %s::properties::has_property (const std::string& pname", class_name) >> filename;
+    printf (")\n{\n  static std::set<std::string> all_properties;\n\n  static bool initialized = false;\n\n  if (! initialized)\n    {\n") >> filename;
+    for (i = 1; i <= idx; i++)
+      printf ("      all_properties.insert (\"%s\");\n", name[i]) >> filename;
+    printf ("\n      initialized = true;\n    }\n\n") >> filename;
+    if (base)
+	printf ("  return all_properties.find (pname) != all_properties.end () || has_dynamic_property (pname, cname);\n}\n\n") >> filename;
+    else
+      printf ("  return all_properties.find (pname) != all_properties.end () || base_properties::has_property (pname, \"%s\");\n}\n\n", class_name) >> filename;
   }
 }
 

@@ -1,3 +1,20 @@
+2009-05-07  John W. Eaton  <jwe@octave.org>
+
+	* genprops.awk (emit_declarations): Emit decls for static
+	has_property functions.
+	(emit_source): Add class name argument to base_properties::set
+	function.  Pass class name to set_dynamic and
+	base_properties::set.  Emit definitions for has_property
+	functions.
+	* graphics.h.in, graphics.cc
+	(base_properties::set, base_properties::set_dynamic):
+	New argument CNAME.
+	(base_properties::all_dynamic_properties): New static data member.
+	(base_properties::has_dynamic_property): New static function.
+	(base_graphics_object::set): Pass class name to
+	base_properties::set function.
+	(property_list::set): Check for invalid property names.
+
 2009-05-06  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-re-mat.cc (Fdouble): Fix order of branches.

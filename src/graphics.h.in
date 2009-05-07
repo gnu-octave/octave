@@ -1642,8 +1642,13 @@ public:
       all_props[name] = p;
     }
 
-  virtual void set (const caseless_str& pname, const std::string& cname,
-		    const octave_value& val);
+  virtual void set (const caseless_str&, const octave_value&)
+  {
+    panic_impossible ();
+  }
+
+  void set (const caseless_str& pname, const std::string& cname,
+	    const octave_value& val);
 
   virtual octave_value get (const caseless_str& pname) const;
 
@@ -1828,7 +1833,7 @@ public:
   virtual void set (const caseless_str& pname, const octave_value& pval)
   {
     if (valid_object ())
-      get_properties ().set (pname, type (), pval);
+      get_properties ().set (pname, pval);
     else
       error ("base_graphics_object::set: invalid graphics object");
   }

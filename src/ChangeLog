@@ -1,5 +1,11 @@
 2009-05-07  John W. Eaton  <jwe@octave.org>
 
+	* graphics.h.in (base_graphics_object::set): Undo previous change.
+	(base_properties::set (const caseless_str&, const octave_value&):
+	New virtual function.
+	(base_properties::set (const caseless_str&, const std::string&,
+	const octave_value&)): No longer virtual.
+
 	* toplev.cc (octave_config_info): Remove F2C and F2CFLAGS from the
 	config infor struct.
 	* oct-conf.h.in (OCTAVE_CONF_F2CFLAGS, OCTAVE_CONF_F2C):

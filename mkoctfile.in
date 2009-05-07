@@ -7,17 +7,17 @@
 ##               2006, 2007 John W. Eaton
 ##
 ## This file is part of Octave.
-## 
+##
 ## Octave is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by the
 ## Free Software Foundation; either version 3 of the License, or (at
 ## your option) any later version.
-## 
+##
 ## Octave is distributed in the hope that it will be useful, but WITHOUT
 ## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 ## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-## 
+##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
@@ -62,14 +62,12 @@ if [ "$LIBDIR" != /usr/lib ]; then
 fi
 
 # Default values for these variables are filled in when Octave is
-# compiled. 
+# compiled.
 
 : ${EXEEXT=%OCTAVE_CONF_EXEEXT%}
 
 : ${CPPFLAGS=%OCTAVE_CONF_CPPFLAGS%}
 : ${INCFLAGS=$DEFAULT_INCFLAGS}
-: ${F2C=%OCTAVE_CONF_F2C%}
-: ${F2CFLAGS=%OCTAVE_CONF_F2CFLAGS%}
 : ${F77=%OCTAVE_CONF_F77%}
 : ${FFLAGS=%OCTAVE_CONF_FFLAGS%}
 : ${FPICFLAG=%OCTAVE_CONF_FPICFLAG%}
@@ -218,26 +216,25 @@ Options:
   -p VAR, --print VAR     Print configuration variable VAR.  Recognized
                           variables are:
 
-			    ALL_CFLAGS                FFTW_LIBS     
-			    ALL_CXXFLAGS              FLIBS       
-			    ALL_FFLAGS                FPICFLAG      
-			    ALL_LDFLAGS               INCFLAGS      
-			    BLAS_LIBS                 LDFLAGS             
-			    CC                        LD_CXX              
-			    CFLAGS                    LD_STATIC_FLAG
-			    CPICFLAG                  LFLAGS              
-			    CPPFLAGS                  LIBCRUFT      
-			    CXX                       LIBOCTAVE     
-			    CXXFLAGS                  LIBOCTINTERP  
-			    CXXPICFLAG                LIBREADLINE   
-			    DEPEND_EXTRA_SED_PATTERN  LIBS        
-			    DEPEND_FLAGS              OCTAVE_LIBS   
-			    DL_LD                     RDYNAMIC_FLAG 
-			    DL_LDFLAGS                RLD_FLAG      
-			    F2C                       SED         
-			    F2CFLAGS                  XTRA_CFLAGS   
-			    F77                       XTRA_CXXFLAGS 
-			    FFLAGS
+			    ALL_CFLAGS                FLIBS
+			    ALL_CXXFLAGS              FPICFLAG
+			    ALL_FFLAGS                INCFLAGS
+			    ALL_LDFLAGS               LDFLAGS
+			    BLAS_LIBS                 LD_CXX
+			    CC                        LD_STATIC_FLAG
+			    CFLAGS                    LFLAGS
+			    CPICFLAG                  LIBCRUFT
+			    CPPFLAGS                  LIBOCTAVE
+			    CXX                       LIBOCTINTERP
+			    CXXFLAGS                  LIBREADLINE
+			    CXXPICFLAG                LIBS
+			    DEPEND_EXTRA_SED_PATTERN  OCTAVE_LIBS
+			    DEPEND_FLAGS              RDYNAMIC_FLAG
+			    DL_LD                     RLD_FLAG
+			    DL_LDFLAGS                SED
+			    F77                       XTRA_CFLAGS
+			    FFLAGS                    XTRA_CXXFLAGS
+			    FFTW_LIBS
 
   --link-stand-alone      Link a stand-alone executable file.
 
@@ -417,7 +414,7 @@ if [ -n "$f77files" ]; then
     esac
     if [ -n "$F77" ]; then
       if [ -n "$outputfile" ]; then
-	if $link; then 
+	if $link; then
 	  o=$b.o
 	else
 	  o=$outputfile
@@ -427,12 +424,6 @@ if [ -n "$f77files" ]; then
       fi
       objfiles="$objfiles $o"
       cmd="$F77 -c $FPICFLAG $ALL_FFLAGS $incflags $defs $pass_on_options $f -o $o"
-      $dbg $cmd
-      eval $cmd
-    elif [ -n "$F2C" ]; then
-      c=$b.c
-      cfiles="$cfiles $c"
-      cmd="$F2C $F2CFLAGS < $f > $c"
       $dbg $cmd
       eval $cmd
     else

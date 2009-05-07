@@ -121,14 +121,6 @@ along with Octave; see the file COPYING.  If not, see
 #define OCTAVE_CONF_EXEEXT %OCTAVE_CONF_EXEEXT%
 #endif
 
-#ifndef OCTAVE_CONF_F2CFLAGS
-#define OCTAVE_CONF_F2CFLAGS %OCTAVE_CONF_F2CFLAGS%
-#endif
-
-#ifndef OCTAVE_CONF_F2C
-#define OCTAVE_CONF_F2C %OCTAVE_CONF_F2C%
-#endif
-
 #ifndef OCTAVE_CONF_F77
 #define OCTAVE_CONF_F77 %OCTAVE_CONF_F77%
 #endif

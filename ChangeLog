@@ -1,3 +1,8 @@
+2009-05-07  John W. Eaton  <jwe@octave.org>
+
+	* configure.in, mkoctfile.in, mkoctfile.cc.in, octave-bug.in,
+	octave-bug.cc.in: Eliminate last remnants of f2c goop.
+
 2009-05-07  Marco Atzeri  <marco_atzeri@yahoo.it>
 
 	* configure.in, Makeconf.in: (SHLPRE): Rename from SHLLIBPRE.

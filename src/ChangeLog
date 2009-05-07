@@ -1,3 +1,10 @@
+2009-05-07  John W. Eaton  <jwe@octave.org>
+
+	* toplev.cc (octave_config_info): Remove F2C and F2CFLAGS from the
+	config infor struct.
+	* oct-conf.h.in (OCTAVE_CONF_F2CFLAGS, OCTAVE_CONF_F2C):
+	Delete definitions.
+
 2009-05-07  Marco Atzeri  <marco_atzeri@yahoo.it>
 
         * Makefile.in: (SHLPRE): Rename from SHLLIBPRE.

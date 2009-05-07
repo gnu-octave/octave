@@ -83,8 +83,6 @@ main (int argc, char **argv)
   vars["FFLAGS"] = %OCTAVE_CONF_FFLAGS%;
   vars["FPICFLAG"] = %OCTAVE_CONF_FPICFLAG%;
   vars["FLIBS"] = %OCTAVE_CONF_FLIBS%;
-  vars["F2C"] = %OCTAVE_CONF_F2C%;
-  vars["F2CFLAGS"] = %OCTAVE_CONF_F2CFLAGS%;
   vars["CPPFLAGS"] = %OCTAVE_CONF_CPPFLAGS%;
   vars["INCFLAGS"] = %OCTAVE_CONF_INCFLAGS%;
   vars["CC"] = %OCTAVE_CONF_CC%;
@@ -168,8 +166,6 @@ main (int argc, char **argv)
   os << "configure opts:   " << vars["config_opts"] << endl;
   os << "Fortran compiler: " << vars["F77"] << endl;
   os << "FFLAGS:           " << vars["FFLAGS"] << endl;
-  os << "F2C:              " << vars["F2C"] << endl;
-  os << "F2CFLAGS:         " << vars["F2CFLAGS"] << endl;
   os << "FLIBS:            " << vars["FLIBS"] << endl;
   os << "CPPFLAGS:         " << vars["CPPFLAGS"] << endl;
   os << "INCFLAGS:         " << vars["INCFLAGS"] << endl;

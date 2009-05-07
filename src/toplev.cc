@@ -1165,8 +1165,6 @@ specified option.\n\
       { false, "DL_LDFLAGS", OCTAVE_CONF_DL_LDFLAGS },
       { false, "ENABLE_DYNAMIC_LINKING", OCTAVE_CONF_ENABLE_DYNAMIC_LINKING },
       { false, "EXEEXT", OCTAVE_CONF_EXEEXT },
-      { false, "F2C", OCTAVE_CONF_F2C },
-      { false, "F2CFLAGS", OCTAVE_CONF_F2CFLAGS },
       { false, "F77", OCTAVE_CONF_F77 },
       { false, "F77_FLOAT_STORE_FLAG", OCTAVE_CONF_F77_FLOAT_STORE_FLAG },
       { false, "FC", OCTAVE_CONF_FC },

@@ -199,8 +199,6 @@ initialize (void)
 
   vars["CPPFLAGS"] = get_variable ("CPPFLAGS", %OCTAVE_CONF_CPPFLAGS%);
   vars["INCFLAGS"] = get_variable ("INCFLAGS", DEFAULT_INCFLAGS);
-  vars["F2C"] = get_variable ("F2C", %OCTAVE_CONF_F2C%);
-  vars["F2CFLAGS"] = get_variable ("F2CFLAGS", %OCTAVE_CONF_F2CFLAGS%);
   vars["F77"] = get_variable ("F77", %OCTAVE_CONF_F77%);
   vars["FFLAGS"] = get_variable ("FFLAGS", %OCTAVE_CONF_FFLAGS%);
   vars["FPICFLAG"] = get_variable ("FPICFLAG", %OCTAVE_CONF_FPICFLAG%);
@@ -288,26 +286,25 @@ static string help_msg =
 "  -p VAR, --print VAR     Print configuration variable VAR.  Recognized\n"
 "                          variables are:\n"
 "\n"
-"			    ALL_CFLAGS                FFTW_LIBS     \n"
-"			    ALL_CXXFLAGS              FLIBS       \n"
-"			    ALL_FFLAGS                FPICFLAG      \n"
-"			    ALL_LDFLAGS               INCFLAGS      \n"
-"			    BLAS_LIBS                 LDFLAGS             \n"
-"			    CC                        LD_CXX              \n"
-"			    CFLAGS                    LD_STATIC_FLAG\n"
-"			    CPICFLAG                  LFLAGS              \n"
-"			    CPPFLAGS                  LIBCRUFT      \n"
-"			    CXX                       LIBOCTAVE     \n"
-"			    CXXFLAGS                  LIBOCTINTERP  \n"
-"			    CXXPICFLAG                LIBREADLINE   \n"
-"			    DEPEND_EXTRA_SED_PATTERN  LIBS        \n"
-"			    DEPEND_FLAGS              OCTAVE_LIBS   \n"
-"			    DL_LD                     RDYNAMIC_FLAG \n"
-"			    DL_LDFLAGS                RLD_FLAG      \n"
-"			    F2C                       SED         \n"
-"			    F2CFLAGS                  XTRA_CFLAGS   \n"
-"			    F77                       XTRA_CXXFLAGS \n"
-"			    FFLAGS\n"
+"			    ALL_CFLAGS                FLIBS\n"
+"			    ALL_CXXFLAGS              FPICFLAG\n"
+"			    ALL_FFLAGS                INCFLAGS\n"
+"			    ALL_LDFLAGS               LDFLAGS\n"
+"			    BLAS_LIBS                 LD_CXX\n"
+"			    CC                        LD_STATIC_FLAG\n"
+"			    CFLAGS                    LFLAGS\n"
+"			    CPICFLAG                  LIBCRUFT\n"
+"			    CPPFLAGS                  LIBOCTAVE\n"
+"			    CXX                       LIBOCTINTERP\n"
+"			    CXXFLAGS                  LIBREADLINE\n"
+"			    CXXPICFLAG                LIBS\n"
+"			    DEPEND_EXTRA_SED_PATTERN  OCTAVE_LIBS\n"
+"			    DEPEND_FLAGS              RDYNAMIC_FLAG\n"
+"			    DL_LD                     RLD_FLAG\n"
+"			    DL_LDFLAGS                SED\n"
+"			    F77                       XTRA_CFLAGS\n"
+"			    FFLAGS                    XTRA_CXXFLAGS\n"
+"			    FFTW_LIBS\n"
 "\n"
 "  --link-stand-alone      Link a stand-alone executable file.\n"
 "\n"
@@ -632,15 +629,7 @@ main (int argc, char **argv)
   for (it = f77files.begin (); it != f77files.end (); ++it)
     {
       string f = *it, b = basename (f);
-      if (!vars["F2C"].empty () && vars["F2C"] != "@F2C@")
-	{
-	  string c = b + ".c";
-	  cfiles.push_back (c);
-	  string cmd = vars["F2C"] + " " + vars["F2CFLAGS"]
-	    + " < " + f + " > " + c;
-	  result = run_command (cmd);
-	}
-      else if (!vars["F77"].empty ())
+      if (!vars["F77"].empty ())
 	{
 	  string o;
 	  if (!outputfile.empty ())

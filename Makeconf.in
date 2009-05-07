@@ -104,11 +104,6 @@ LIBPRE = @LIBPRE@
 SHLPRE = @SHLPRE@
 SHLBINPRE = @SHLBINPRE@
 
-# Fortran to C translator and associated flags.
-
-F2C = @F2C@
-F2CFLAGS = @F2CFLAGS@
-
 # Fortran compiler flags.
 
 FC = @FC@
@@ -499,8 +494,6 @@ $(SED) < $< \
   -e "s|%OCTAVE_CONF_DL_LD%|\"${DL_LD}\"|" \
   -e "s|%OCTAVE_CONF_DL_LDFLAGS%|\"${DL_LDFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_EXEEXT%|\"${EXEEXT}\"|" \
-  -e "s|%OCTAVE_CONF_F2C%|\"${F2C}\"|" \
-  -e "s|%OCTAVE_CONF_F2CFLAGS%|\"${F2CFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_F77%|\"${F77}\"|" \
   -e "s|%OCTAVE_CONF_F77_FLOAT_STORE_FLAG%|\"${F77_FLOAT_STORE_FLAG}\"|" \
   -e "s|%OCTAVE_CONF_FC%|\"${FC}\"|" \

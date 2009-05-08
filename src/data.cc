@@ -5721,7 +5721,7 @@ DEFUN (issorted, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Function File} {} issorted (@var{a}, @var{rows})\n\
 Returns true if the array is sorted, ascending or descending.\n\
-NaNs are treated is by @code{sort}.  If @var{rows} is supplied and\n\
+NaNs are treated as by @code{sort}.  If @var{rows} is supplied and\n\
 has the value \"rows\", checks whether the array is sorted by rows\n\
 as if output by @code{sortrows} (with no options).\n\
 \n\

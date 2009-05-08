@@ -1,3 +1,7 @@
+2009-05-08  Carsten Clark <tantumquantum+gnuoctave@gmail.com>
+
+	* data.cc (Fissorted): Fix typo in documentation entry.
+
 2009-05-07  Robert T. Short  <octave@phaselockedsystems.com>
 
 	* ov-class.h, ov-class.cc (octave_class::reconstruct_exemplar):

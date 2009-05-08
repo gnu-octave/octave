@@ -1,3 +1,12 @@
+2009-05-07  Robert T. Short  <octave@phaselockedsystems.com>
+
+	* ov-class.h, ov-class.cc (octave_class::reconstruct_exemplar):
+	New function.
+	* ov-class.cc (octave_class::load_binary, octave_class::load_hdf5,
+	octave_class::load_ascii): Construct exemplar table and ensure
+	inheritance is correct.
+        * ov-struct.cc (struct): Return struct from object.
+
 2009-05-07  John W. Eaton  <jwe@octave.org>
 
 	* graphics.h.in (base_graphics_object::set): Undo previous change.

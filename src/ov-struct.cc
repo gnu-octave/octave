@@ -701,6 +701,8 @@ its values.  The dimensions of each cell array of values must match.\n\
 Singleton cells and non-cell values are repeated so that they fill\n\
 the entire array.  If the cells are empty, create an empty structure\n\
 array with the specified field names.\n\
+\n\
+If the argument is an object, return the underlying struct.\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -714,6 +716,14 @@ array with the specified field names.\n\
 
   // Note that struct () creates a 1x1 struct with no fields for
   // compatibility with Matlab.
+
+  if (nargin == 1 && args(0).is_object ())
+    {
+      Octave_map m = args(0).map_value ();
+      retval = octave_value (new octave_struct (m));
+
+      return retval;
+    }
 
   if ((nargin == 1 || nargin == 2)
       && args(0).is_empty () && args(0).is_real_matrix ())

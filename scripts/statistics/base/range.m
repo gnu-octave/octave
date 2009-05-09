@@ -38,7 +38,7 @@ function y = range (x, dim)
   if (nargin == 1)
     y = max (x) - min (x);
   elseif (nargin == 2)
-    y = max (x, dim) - min (x, dim);
+    y = max (x, [], dim) - min (x, [], dim);
   else
     print_usage ();
   endif

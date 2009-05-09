@@ -421,7 +421,8 @@ zero_dims_inquire (const Array<idx_vector>& ia, const dim_vector& rhdv)
         {
           if (scalar[i]) continue;
           if (colon[i])
-            rdv(i) = rhdv(j++);
+            rdv(i) = rhdv(j);
+          j++;
         }
     }
   else

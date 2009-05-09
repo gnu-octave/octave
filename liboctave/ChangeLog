@@ -1,3 +1,7 @@
+2009-05-09  Jaroslav Hajek  <highegg@gmail.com>
+
+	* Array-util.cc (zero_dims_inquire): Move j++ out of branch.
+
 2009-05-07  Marco Atzeri  <marco_atzeri@yahoo.it>
 
         * Makefile.in: (SHLPRE): Rename from SHLLIBPRE.

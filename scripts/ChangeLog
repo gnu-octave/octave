@@ -1,3 +1,8 @@
+2009-05-08  Ben Abbott <bpabbott@mac.com>
+
+	* plot/__gnuplot_has_feature__.m: Add feature "key_has_font_properties".
+	* plot/__go_draw_axes__.m: Have legend inherit the axis font-name/size.
+
 2009-05-04  Peter O'Gorman  <pogma@thewrittenword.com>
 
 	* miscellaneous/tar.m, miscellaneous/unpack.m:

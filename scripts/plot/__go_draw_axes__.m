@@ -1209,7 +1209,13 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
 	otherwise
 	  pos = "";
       endswitch
-      fprintf (plot_stream, "set key %s %s %s %s;\n", inout, pos, box, reverse);
+      if (__gnuplot_has_feature__ ("key_has_font_properties"))
+        fontspec = create_fontspec (axis_obj.fontname, axis_obj.fontsize);
+      else
+	fontspec = "";
+      endif
+      fprintf (plot_stream, "set key %s %s %s %s %s;\n", inout, pos, box,
+               reverse, fontspec);
     else
       fputs (plot_stream, "unset key;\n");
     endif

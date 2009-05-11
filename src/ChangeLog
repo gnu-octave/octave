@@ -1,5 +1,8 @@
 2009-05-11  John W. Eaton  <jwe@octave.org>
 
+	* sparse-xdiv.cc (do_rightdiv_sm_dm, do_leftdiv_dm_sm):
+	Avoid apparent MSVC bug with typedef.
+
 	* Makefile.in (install-lib): Remove
 	$(DESTDIR)$(octlibdir)/$(SHLLIBPRE)octinterp.$(SHLLIB_VER), not
 	$(DESTDIR)$(octlibdir)/$(SHLPRE)octinterp.$(SHLEXT_VER).

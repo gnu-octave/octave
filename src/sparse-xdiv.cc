@@ -307,13 +307,14 @@ RT do_rightdiv_sm_dm (const SM& a, const DM& d)
   const octave_idx_type nz = a.nnz ();
   RT r (a_nr, nc, nz);
 
-  const typename DM::element_type zero = typename DM::element_type ();
+  typedef typename DM::element_type DM_elt_type;
+  const DM_elt_type zero = DM_elt_type ();
 
   octave_idx_type k_result = 0;
   for (octave_idx_type j = 0; j < nc; ++j)
     {
       OCTAVE_QUIT;
-      const typename DM::element_type s = d.dgelem (j);
+      const DM_elt_type s = d.dgelem (j);
       const octave_idx_type colend = a.cidx (j+1);
       r.xcidx (j) = k_result;
       if (s != zero)
@@ -573,7 +574,8 @@ RT do_leftdiv_dm_sm (const DM& d, const SM& a)
   const octave_idx_type nz = a.nnz ();
   RT r (nr, a_nc, nz);
 
-  const typename DM::element_type zero = typename DM::element_type ();
+  typedef typename DM::element_type DM_elt_type;
+  const DM_elt_type zero = DM_elt_type ();
 
   octave_idx_type k_result = 0;
   for (octave_idx_type j = 0; j < a_nc; ++j)
@@ -586,7 +588,7 @@ RT do_leftdiv_dm_sm (const DM& d, const SM& a)
 	  const octave_idx_type i = a.ridx (k);
 	  if (i < nr)
 	    {
-	      const typename DM::element_type s = d.dgelem (i);
+	      const DM_elt_type s = d.dgelem (i);
 	      if (s != zero)
 		{
 		  r.xdata (k_result) = a.data (k) / s;

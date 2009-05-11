@@ -484,7 +484,7 @@ install-lib:
 	  $(RANLIB) $(DESTDIR)$(octlibdir)/$(LIBPRE)octinterp.$(LIBEXT); \
 	fi
 	if $(SHARED_LIBS); then \
-	  rm -f $(DESTDIR)$(octlibdir)/$(SHLPRE)octinterp.$(SHLEXT_VER); \
+	  rm -f $(DESTDIR)$(octlibdir)/$(SHLLIBPRE)octinterp.$(SHLLIB_VER); \
 	  $(INSTALL) $(SHLLIBPRE)octinterp.$(SHLLIB) \
 	    $(DESTDIR)$(octlibdir)/$(SHLLIBPRE)octinterp.$(SHLLIB_VER); \
 	  rm -f $(DESTDIR)$(octlibdir)/$(SHLLIBPRE)octinterp.$(SHLLIB); \

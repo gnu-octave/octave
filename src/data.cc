@@ -3681,14 +3681,32 @@ val = zeros (n,m, \"uint8\")\n\
 
 DEFUN (Inf, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} Inf (@var{x})\n\
+@deftypefn  {Built-in Function} {} Inf\n\
+@deftypefnx {Built-in Function} {} Inf (@var{n})\n\
 @deftypefnx {Built-in Function} {} Inf (@var{n}, @var{m})\n\
 @deftypefnx {Built-in Function} {} Inf (@var{n}, @var{m}, @var{k}, @dots{})\n\
 @deftypefnx {Built-in Function} {} Inf (@dots{}, @var{class})\n\
-Return a matrix or N-dimensional array whose elements are all Infinity.\n\
-The arguments are handled the same as the arguments for @code{eye}.\n\
-The optional argument @var{class} may be either @samp{\"single\"} or\n\
-@samp{\"double\"}.  The default is @samp{\"double\"}.\n\
+Return a scalar, matrix or N-dimensional array whose elements are all equal\n\
+to the IEEE representation for positive infinity.\n\
+\n\
+Infinity is produced when results are too large to be represented using the\n\
+the IEEE floating point format for numbers.  Two common examples which\n\
+produce infinity are division by zero and overflow.\n\
+@example\n\
+@group\n\
+[1/0 e^800]\n\
+@result{}\n\
+Inf   Inf\n\
+@end group\n\
+@end example\n\
+\n\
+When called with no arguments, return a scalar with the value @samp{Inf}.\n\
+When called with a single argument, return a square matrix with the dimension\n\
+specified.  When called with more than one scalar argument the first two\n\
+arguments are taken as the number of rows and columns and any further\n\
+arguments specify additional matrix dimensions.\n\
+The optional argument @var{class} specifies the return type and may be\n\
+either \"double\" or \"single\".\n\
 @end deftypefn")
 {
   return fill_matrix (args, lo_ieee_inf_value (), 
@@ -3718,29 +3736,35 @@ DEFALIAS (inf, Inf);
 
 DEFUN (NaN, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} NaN (@var{x})\n\
+@deftypefn  {Built-in Function} {} NaN\n\
+@deftypefnx {Built-in Function} {} NaN (@var{n})\n\
 @deftypefnx {Built-in Function} {} NaN (@var{n}, @var{m})\n\
 @deftypefnx {Built-in Function} {} NaN (@var{n}, @var{m}, @var{k}, @dots{})\n\
 @deftypefnx {Built-in Function} {} NaN (@dots{}, @var{class})\n\
-Return a matrix or N-dimensional array whose elements are all NaN\n\
-(Not a Number).  The value NaN is the result of an operation like\n\
-@iftex\n\
+Return a scalar, matrix, or N-dimensional array whose elements are all equal\n\
+to the IEEE symbol NaN (Not a Number).\n\
+NaN is the result of operations which do not produce a well defined numerical\n\
+result.  Common operations which produce a NaN are arithmetic with infinity\n\
 @tex\n\
-$0/0$, or $\\infty - \\infty$,\n\
+($\\infty - \\infty$), zero divided by zero ($0/0$),\n\
 @end tex\n\
-@end iftex\n\
 @ifnottex\n\
-0/0, or @samp{Inf - Inf},\n\
+(Inf - Inf), zero divided by zero (0/0),\n\
 @end ifnottex\n\
-or any operation with a NaN.\n\
+and any operation involving another NaN value (5 + NaN).\n\
 \n\
-Note that NaN always compares not equal to NaN.  This behavior is\n\
-specified by the IEEE standard for floating point arithmetic.  To\n\
-find NaN values, you must use the @code{isnan} function.\n\
+Note that NaN always compares not equal to NaN (NaN != NaN).  This behavior\n\
+is specified by the IEEE standard for floating point arithmetic.  To\n\
+find NaN values, use the @code{isnan} function.\n\
 \n\
-The arguments are handled the same as the arguments for @code{eye}.\n\
-The optional argument @var{class} may be either @samp{\"single\"} or\n\
-@samp{\"double\"}.  The default is @samp{\"double\"}.\n\
+When called with no arguments, return a scalar with the value @samp{NaN}.\n\
+When called with a single argument, return a square matrix with the dimension\n\
+specified.  When called with more than one scalar argument the first two\n\
+arguments are taken as the number of rows and columns and any further\n\
+arguments specify additional matrix dimensions.\n\
+The optional argument @var{class} specifies the return type and may be\n\
+either \"double\" or \"single\".\n\
+@seealso{isnan}\n\
 @end deftypefn")
 {
   return fill_matrix (args, lo_ieee_nan_value (), 
@@ -3769,29 +3793,27 @@ DEFALIAS (nan, NaN);
 
 DEFUN (e, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} e (@var{x})\n\
+@deftypefn  {Built-in Function} {} e\n\
+@deftypefnx {Built-in Function} {} e (@var{n})\n\
 @deftypefnx {Built-in Function} {} e (@var{n}, @var{m})\n\
 @deftypefnx {Built-in Function} {} e (@var{n}, @var{m}, @var{k}, @dots{})\n\
 @deftypefnx {Built-in Function} {} e (@dots{}, @var{class})\n\
-Return a matrix or N-dimensional array whose elements are all equal\n\
+Return a scalar, matrix, or N-dimensional array whose elements are all equal\n\
 to the base of natural logarithms.  The constant\n\
-@iftex\n\
 @tex\n\
- $e$\n\
+$e$ satisfies the equation $\\log (e) = 1$.\n\
 @end tex\n\
-@end iftex\n\
 @ifnottex\n\
- @var{e}\n\
+@samp{e} satisfies the equation @code{log} (e) = 1.\n\
 @end ifnottex\n\
- satisfies the equation\n\
-@iftex\n\
-@tex\n\
- $\\log (e) = 1$.\n\
-@end tex\n\
-@end iftex\n\
-@ifnottex\n\
- @code{log} (@var{e}) = 1.\n\
-@end ifnottex\n\
+\n\
+When called with no arguments, return a scalar with the value @math{e}.  When\n\
+called with a single argument, return a square matrix with the dimension\n\
+specified.  When called with more than one scalar argument the first two\n\
+arguments are taken as the number of rows and columns and any further\n\
+arguments specify additional matrix dimensions.\n\
+The optional argument @var{class} specifies the return type and may be\n\
+either \"double\" or \"single\".\n\
 @end deftypefn")
 {
 #if defined (M_E)
@@ -3805,35 +3827,33 @@ to the base of natural logarithms.  The constant\n\
 
 DEFUN (eps, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} eps (@var{x})\n\
+@deftypefn  {Built-in Function} {} eps\n\
+@deftypefnx {Built-in Function} {} eps (@var{x})\n\
 @deftypefnx {Built-in Function} {} eps (@var{n}, @var{m})\n\
 @deftypefnx {Built-in Function} {} eps (@var{n}, @var{m}, @var{k}, @dots{})\n\
 @deftypefnx {Built-in Function} {} eps (@dots{}, @var{class})\n\
-Return a matrix or N-dimensional array whose elements are all eps,\n\
-the machine precision.  More precisely, @code{eps} is the largest\n\
-relative spacing between any two adjacent numbers in the machine's\n\
-floating point system.  This number is obviously system-dependent.  On\n\
-machines that support 64-bit IEEE floating point arithmetic, @code{eps}\n\
-is approximately\n\
-@ifnottex\n\
- 2.2204e-16.\n\
-@end ifnottex\n\
-@iftex\n\
+Return a scalar, matrix or N-dimensional array whose elements are all eps,\n\
+the machine precision.  More precisely, @code{eps} is the relative spacing\n\
+between any two adjacent numbers in the machine's floating point system.\n\
+This number is obviously system dependent.  On machines that support IEEE\n\
+floating point arithmetic, @code{eps} is approximately\n\
 @tex\n\
- $2.2204\\times10^{-16}$.\n\
+$2.2204\\times10^{-16}$ for double precision and $1.1921\\times10^{-7}$\n\
 @end tex\n\
-@end iftex\n\
-for double precision and\n\
 @ifnottex\n\
- 1.1921e-07.\n\
+2.2204e-16 for double precision and 1.1921e-07\n\
 @end ifnottex\n\
-@iftex\n\
-@tex\n\
- $1.1921\\times10^{-7}$.\n\
-@end tex\n\
-@end iftex\n\
-for single precision.  Given a single argument @var{x}, return the\n\
-distance between @var{x} and the next largest value.\n\
+for single precision.\n\
+\n\
+When called with no arguments, return a scalar with the value\n\
+@code{eps(1.0)}.\n\
+Given a single argument @var{x}, return the distance between @var{x} and\n\
+the next largest value.\n\
+When called with more than one argument the first two arguments are taken as\n\
+the number of rows and columns and any further\n\
+arguments specify additional matrix dimensions.\n\
+The optional argument @var{class} specifies the return type and may be\n\
+either \"double\" or \"single\".\n\
 @end deftypefn")
 {
   int nargin = args.length ();
@@ -3924,13 +3944,34 @@ distance between @var{x} and the next largest value.\n\
 
 DEFUN (pi, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} pi (@var{x})\n\
+@deftypefn  {Built-in Function} {} pi\n\
+@deftypefnx {Built-in Function} {} pi (@var{n})\n\
 @deftypefnx {Built-in Function} {} pi (@var{n}, @var{m})\n\
 @deftypefnx {Built-in Function} {} pi (@var{n}, @var{m}, @var{k}, @dots{})\n\
 @deftypefnx {Built-in Function} {} pi (@dots{}, @var{class})\n\
-Return a matrix or N-dimensional array whose elements are all equal\n\
-to the ratio of the circumference of a circle to its diameter.\n\
+Return a scalar, matrix, or N-dimensional array whose elements are all equal\n\
+to the ratio of the circumference of a circle to its\n\
+@tex\n\
+diameter($\\pi$).\n\
+@end tex\n\
+@ifnottex\n\
+diameter.\n\
+@end ifnottex\n\
 Internally, @code{pi} is computed as @samp{4.0 * atan (1.0)}.\n\
+\n\
+When called with no arguments, return a scalar with the value of\n\
+@tex\n\
+$\\pi$.\n\
+@end tex\n\
+@ifnottex\n\
+pi.\n\
+@end ifnottex\n\
+When called with a single argument, return a square matrix with the dimension\n\
+specified.  When called with more than one scalar argument the first two\n\
+arguments are taken as the number of rows and columns and any further\n\
+arguments specify additional matrix dimensions.\n\
+The optional argument @var{class} specifies the return type and may be\n\
+either \"double\" or \"single\".\n\
 @end deftypefn")
 {
 #if defined (M_PI)
@@ -3944,23 +3985,32 @@ Internally, @code{pi} is computed as @samp{4.0 * atan (1.0)}.\n\
 
 DEFUN (realmax, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} realmax (@var{x})\n\
+@deftypefn  {Built-in Function} {} realmax\n\
+@deftypefnx {Built-in Function} {} realmax (@var{n})\n\
 @deftypefnx {Built-in Function} {} realmax (@var{n}, @var{m})\n\
 @deftypefnx {Built-in Function} {} realmax (@var{n}, @var{m}, @var{k}, @dots{})\n\
 @deftypefnx {Built-in Function} {} realmax (@dots{}, @var{class})\n\
-Return a matrix or N-dimensional array whose elements are all equal\n\
+Return a scalar, matrix or N-dimensional array whose elements are all equal\n\
 to the largest floating point number that is representable.  The actual\n\
-value is system-dependent.  On machines that support 64-bit IEEE\n\
+value is system dependent.  On machines that support IEEE\n\
 floating point arithmetic, @code{realmax} is approximately\n\
-@ifnottex\n\
- 1.7977e+308\n\
-@end ifnottex\n\
-@iftex\n\
 @tex\n\
- $1.7977\\times10^{308}$.\n\
+$1.7977\\times10^{308}$ for double precision and $3.4028\\times10^{38}$\n\
 @end tex\n\
-@end iftex\n\
-@seealso{realmin}\n\
+@ifnottex\n\
+1.7977e+308 for double precision and 3.4028e+38\n\
+@end ifnottex\n\
+for single precision.\n\
+\n\
+When called with no arguments, return a scalar with the value\n\
+@code{realmax(\"double\")}.\n\
+When called with a single argument, return a square matrix with the dimension\n\
+specified.  When called with more than one scalar argument the first two\n\
+arguments are taken as the number of rows and columns and any further\n\
+arguments specify additional matrix dimensions.\n\
+The optional argument @var{class} specifies the return type and may be\n\
+either \"double\" or \"single\".\n\
+@seealso{realmin, intmax, bitmax}\n\
 @end deftypefn")
 {
   return fill_matrix (args, DBL_MAX, FLT_MAX, "realmax");
@@ -3968,23 +4018,32 @@ floating point arithmetic, @code{realmax} is approximately\n\
 
 DEFUN (realmin, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} realmin (@var{x})\n\
+@deftypefn  {Built-in Function} {} realmin\n\
+@deftypefnx {Built-in Function} {} realmin (@var{n})\n\
 @deftypefnx {Built-in Function} {} realmin (@var{n}, @var{m})\n\
 @deftypefnx {Built-in Function} {} realmin (@var{n}, @var{m}, @var{k}, @dots{})\n\
 @deftypefnx {Built-in Function} {} realmin (@dots{}, @var{class})\n\
-Return a matrix or N-dimensional array whose elements are all equal\n\
+Return a scalar, matrix or N-dimensional array whose elements are all equal\n\
 to the smallest normalized floating point number that is representable.\n\
-The actual value is system-dependent.  On machines that support\n\
-64-bit IEEE floating point arithmetic, @code{realmin} is approximately\n\
-@ifnottex\n\
- 2.2251e-308\n\
-@end ifnottex\n\
-@iftex\n\
+The actual value is system dependent.  On machines that support\n\
+IEEE floating point arithmetic, @code{realmin} is approximately\n\
 @tex\n\
- $2.2251\\times10^{-308}$.\n\
+$2.2251\\times10^{-308}$ for double precision and $1.1755\\times10^{-38}$\n\
 @end tex\n\
-@end iftex\n\
-@seealso{realmax}\n\
+@ifnottex\n\
+2.2251e-308 for double precision and 1.1755e-38\n\
+@end ifnottex\n\
+for single precision.\n\
+\n\
+When called with no arguments, return a scalar with the value\n\
+@code{realmin(\"double\")}.\n\
+When called with a single argument, return a square matrix with the dimension\n\
+specified.  When called with more than one scalar argument the first two\n\
+arguments are taken as the number of rows and columns and any further\n\
+arguments specify additional matrix dimensions.\n\
+The optional argument @var{class} specifies the return type and may be\n\
+either \"double\" or \"single\".\n\
+@seealso{realmax, intmin}\n\
 @end deftypefn")
 {
   return fill_matrix (args, DBL_MIN, FLT_MIN, "realmin");
@@ -3992,22 +4051,29 @@ The actual value is system-dependent.  On machines that support\n\
 
 DEFUN (I, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} I (@var{x})\n\
+@deftypefn  {Built-in Function} {} I\n\
+@deftypefnx {Built-in Function} {} I (@var{n})\n\
 @deftypefnx {Built-in Function} {} I (@var{n}, @var{m})\n\
 @deftypefnx {Built-in Function} {} I (@var{n}, @var{m}, @var{k}, @dots{})\n\
 @deftypefnx {Built-in Function} {} I (@dots{}, @var{class})\n\
-Return a matrix or N-dimensional array whose elements are all equal\n\
+Return a scalar, matrix, or N-dimensional array whose elements are all equal\n\
 to the pure imaginary unit, defined as\n\
-@iftex\n\
 @tex\n\
-  $\\sqrt{-1}$.\n\
+$\\sqrt{-1}$.\n\
 @end tex\n\
-@end iftex\n\
 @ifnottex\n\
-  @code{sqrt (-1)}.\n\
+@code{sqrt (-1)}.\n\
 @end ifnottex\n\
-Since I (also i, J, and j) is a function, you can use the name(s) for\n\
-other purposes.\n\
+ I, and its equivalents i, J, and j, are functions so any of the names may\n\
+be reused for other purposes (such as i for a counter variable).\n\
+\n\
+When called with no arguments, return a scalar with the value @math{i}.  When\n\
+called with a single argument, return a square matrix with the dimension\n\
+specified.  When called with more than one scalar argument the first two\n\
+arguments are taken as the number of rows and columns and any further\n\
+arguments specify additional matrix dimensions.\n\
+The optional argument @var{class} specifies the return type and may be\n\
+either \"double\" or \"single\".\n\
 @end deftypefn")
 {
   return fill_matrix (args, Complex (0.0, 1.0), "I");

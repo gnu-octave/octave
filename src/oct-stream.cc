@@ -30,15 +30,12 @@ along with Octave; see the file COPYING.  If not, see
 #include <cstring>
 
 #include <iomanip>
+#include <iostream>
 #include <fstream>
 #include <sstream>
 #include <string>
 
 #include <Array.h>
-#include <Array2.h>
-#include <Array3.h>
-
-#include <Array.cc>
 
 #include "byte-swap.h"
 #include "lo-ieee.h"
@@ -3270,25 +3267,21 @@ INSTANTIATE_DO_READ (boolNDArray);
 typedef octave_value (*read_fptr) (octave_stream&, octave_idx_type, octave_idx_type, octave_idx_type, octave_idx_type, bool, bool,
 				   oct_mach_info::float_format ffmt, octave_idx_type&);
 
-NO_INSTANTIATE_ARRAY_SORT (read_fptr);
-INSTANTIATE_ARRAY (read_fptr,);
-template class Array2<read_fptr>;
-
 #define FILL_TABLE_ROW(R, VAL_T) \
-  read_fptr_table(R,oct_data_conv::dt_int8) = do_read<VAL_T, octave_int8>; \
-  read_fptr_table(R,oct_data_conv::dt_uint8) = do_read<VAL_T, octave_uint8>; \
-  read_fptr_table(R,oct_data_conv::dt_int16) = do_read<VAL_T, octave_int16>; \
-  read_fptr_table(R,oct_data_conv::dt_uint16) = do_read<VAL_T, octave_uint16>; \
-  read_fptr_table(R,oct_data_conv::dt_int32) = do_read<VAL_T, octave_int32>; \
-  read_fptr_table(R,oct_data_conv::dt_uint32) = do_read<VAL_T, octave_uint32>; \
-  read_fptr_table(R,oct_data_conv::dt_int64) = do_read<VAL_T, octave_int64>; \
-  read_fptr_table(R,oct_data_conv::dt_uint64) = do_read<VAL_T, octave_uint64>; \
-  read_fptr_table(R,oct_data_conv::dt_single) = do_read<VAL_T, float>; \
-  read_fptr_table(R,oct_data_conv::dt_double) = do_read<VAL_T, double>; \
-  read_fptr_table(R,oct_data_conv::dt_char) = do_read<VAL_T, char>; \
-  read_fptr_table(R,oct_data_conv::dt_schar) = do_read<VAL_T, signed char>; \
-  read_fptr_table(R,oct_data_conv::dt_uchar) = do_read<VAL_T, unsigned char>; \
-  read_fptr_table(R,oct_data_conv::dt_logical) = do_read<VAL_T, unsigned char>
+  read_fptr_table[R][oct_data_conv::dt_int8] = do_read<VAL_T, octave_int8>; \
+  read_fptr_table[R][oct_data_conv::dt_uint8] = do_read<VAL_T, octave_uint8>; \
+  read_fptr_table[R][oct_data_conv::dt_int16] = do_read<VAL_T, octave_int16>; \
+  read_fptr_table[R][oct_data_conv::dt_uint16] = do_read<VAL_T, octave_uint16>; \
+  read_fptr_table[R][oct_data_conv::dt_int32] = do_read<VAL_T, octave_int32>; \
+  read_fptr_table[R][oct_data_conv::dt_uint32] = do_read<VAL_T, octave_uint32>; \
+  read_fptr_table[R][oct_data_conv::dt_int64] = do_read<VAL_T, octave_int64>; \
+  read_fptr_table[R][oct_data_conv::dt_uint64] = do_read<VAL_T, octave_uint64>; \
+  read_fptr_table[R][oct_data_conv::dt_single] = do_read<VAL_T, float>; \
+  read_fptr_table[R][oct_data_conv::dt_double] = do_read<VAL_T, double>; \
+  read_fptr_table[R][oct_data_conv::dt_char] = do_read<VAL_T, char>; \
+  read_fptr_table[R][oct_data_conv::dt_schar] = do_read<VAL_T, signed char>; \
+  read_fptr_table[R][oct_data_conv::dt_uchar] = do_read<VAL_T, unsigned char>; \
+  read_fptr_table[R][oct_data_conv::dt_logical] = do_read<VAL_T, unsigned char>
 
 octave_value
 octave_stream::read (const Array<double>& size, octave_idx_type block_size,
@@ -3301,10 +3294,14 @@ octave_stream::read (const Array<double>& size, octave_idx_type block_size,
 
   // Table function pointers for return types x read types.
 
-  static Array2<read_fptr> read_fptr_table (oct_data_conv::dt_unknown, 14, 0);
+  static read_fptr read_fptr_table[oct_data_conv::dt_unknown][14];
 
   if (! initialized)
     {
+      for (int i = 0; i < oct_data_conv::dt_unknown; i++)
+        for (int j = 0; j < 14; j++)
+          read_fptr_table[i][j] = 0;
+
       FILL_TABLE_ROW (oct_data_conv::dt_int8, int8NDArray);
       FILL_TABLE_ROW (oct_data_conv::dt_uint8, uint8NDArray);
       FILL_TABLE_ROW (oct_data_conv::dt_int16, int16NDArray);
@@ -3351,7 +3348,7 @@ octave_stream::read (const Array<double>& size, octave_idx_type block_size,
 	      if (ffmt == oct_mach_info::flt_fmt_unknown)
 		ffmt = float_format ();
 
-	      read_fptr fcn = read_fptr_table (output_type, input_type);
+	      read_fptr fcn = read_fptr_table[output_type][input_type];
 
 	      bool do_float_fmt_conv = ((input_type == oct_data_conv::dt_double
 					 || input_type == oct_data_conv::dt_single)

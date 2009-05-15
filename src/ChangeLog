@@ -1,3 +1,9 @@
+2009-05-15  Jaroslav Hajek  <highegg@gmail.com>
+
+	* oct-stream.cc: Don't instantiate Array2<read_fptr>.
+	(octave_stream::read): Make read_fptr_table a static 2d array.
+	(FILL_TABLE_ROW): Update.
+
 2009-05-12  Jaroslav Hajek  <highegg@gmail.com>
 
 	* data.cc (F__accumarray_sum__): Optimize the constant range case.

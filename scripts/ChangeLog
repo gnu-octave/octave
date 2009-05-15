@@ -1,3 +1,8 @@
+2009-05-14  Jaroslav Hajek  <highegg@gmail.com>
+
+	* optimization/fminunc.m: Import the step adaptation strategy
+	improvements from fsolve.
+
 2009-05-08  Ben Abbott <bpabbott@mac.com>
 
 	* plot/__gnuplot_has_feature__.m: Add feature "key_has_font_properties".

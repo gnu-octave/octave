@@ -137,6 +137,7 @@ function [x, fval, info, output, grad, hess] = fminunc (fcn, x0, options = struc
   endif
 
   nsuciter = 0;
+  lastratio = 0;
 
   grad = [];
 
@@ -230,7 +231,7 @@ function [x, fval, info, output, grad, hess] = fminunc (fcn, x0, options = struc
       endif
 
       ## Update delta.
-      if (ratio < 0.1)
+      if (ratio < min(max(0.1, lastratio), 0.9))
         delta *= 0.5;
         if (delta <= 1e1*macheps*xn)
           ## Trust region became uselessly small.
@@ -238,6 +239,7 @@ function [x, fval, info, output, grad, hess] = fminunc (fcn, x0, options = struc
           break;
         endif
       else
+        lastratio = ratio;
         if (abs (1-ratio) <= 0.1)
           delta = 2*sn;
         elseif (ratio >= 0.5)

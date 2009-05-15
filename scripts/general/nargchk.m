@@ -38,7 +38,7 @@ function msg = nargchk (mina, maxa, narg, outtype)
     error ("nargchk: minargs must be <= maxargs");
   elseif (nargin == 3)
     outtype = "string";
-  elseif (! any (strcmpi (outtype, {"string" "struct"})))
+  elseif (! any (strcmpi (outtype, {"string", "struct"})))
     error ("nargchk: output type must be either string or struct");
   elseif (! (isscalar (mina) && isscalar (maxa) && isscalar (narg)))
     error ("nargchk: mina, maxa, and narg must be scalars");
@@ -55,13 +55,8 @@ function msg = nargchk (mina, maxa, narg, outtype)
 
   if (strcmpi (outtype, "string"))
     msg = msg.message;
-  else
-    if (isempty (msg.message))
-      msg = struct ([]);
-    endif
-    ## FIXME: remove the error below if error is modified to accept
-    ## struct inputs
-    error ("nargchk: error does not yet support struct inputs");
+  elseif (isempty (msg.message))
+    msg = struct ([]);
   endif
 
 endfunction
@@ -78,7 +73,7 @@ endfunction
 %!assert (nargchk (0, 1, 2), "too many input arguments")
 %!assert (nargchk (0, 1, 2, "string"), "too many input arguments")
 ## Struct outputs
-#%!assert (nargchk (0, 1, 0, "struct"), struct([]))
-#%!assert (nargchk (0, 1, 1, "struct"), struct([]))
-#%!assert (nargchk (1, 1, 0, "struct"), stmin)
-#%!assert (nargchk (0, 1, 2, "struct"), stmax)
+%!assert (nargchk (0, 1, 0, "struct"), struct([]))
+%!assert (nargchk (0, 1, 1, "struct"), struct([]))
+%!assert (nargchk (1, 1, 0, "struct"), stmin)
+%!assert (nargchk (0, 1, 2, "struct"), stmax)

@@ -1,3 +1,9 @@
+2009-05-15  John W. Eaton  <jwe@octave.org>
+
+	* general/nargchk.m: Don't generate error if output is struct.
+	Uncomment some additional tests.
+	From Alois Schloegl <alois.schloegl@tugraz.at>
+
 2009-05-14  Jaroslav Hajek  <highegg@gmail.com>
 
 	* optimization/fminunc.m: Import the step adaptation strategy

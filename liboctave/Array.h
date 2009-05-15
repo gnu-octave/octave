@@ -629,6 +629,9 @@ public:
   }
 
   template <class U> friend class Array;
+
+private:
+  static void instantiation_guard ();
 };
 
 #endif

@@ -1,4 +1,10 @@
 2009-05-15  Jaroslav Hajek  <highegg@gmail.com>
+	
+	* Array.cc (Array<T>::instantiation_guard): New function
+	(INSTANTIATE_ARRAY): Always override it here.
+	* Array.h: Declare it.
+
+2009-05-15  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ArrayN-idx.h: Remove file.
 	* ArrayN.cc: Don't include it.

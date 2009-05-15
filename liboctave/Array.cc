@@ -2688,7 +2688,16 @@ Array<T>::print_info (std::ostream& os, const std::string& prefix) const
   //     << prefix << "cols: " << cols () << "\n";
 }
 
+template <class T>
+void Array<T>::instantiation_guard ()
+{
+  // This guards against accidental implicit instantiations.
+  // Array<T> instances should always be explicit and use INSTANTIATE_ARRAY.
+  T::__xXxXx__();
+}
+
 #define INSTANTIATE_ARRAY(T, API) \
+  template <> void Array<T>::instantiation_guard () { } \
   template class API Array<T>
 
 /*

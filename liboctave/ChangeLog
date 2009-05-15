@@ -1,3 +1,9 @@
+2009-05-15  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ArrayN-idx.h: Remove file.
+	* ArrayN.cc: Don't include it.
+	* MArrayN.cc: Dtto.
+
 2009-05-09  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Array-util.cc (zero_dims_inquire): Move j++ out of branch.

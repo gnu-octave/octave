@@ -26,7 +26,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "MArrayN.h"
 #include "Array-util.h"
-#include "ArrayN-idx.h"
 #include "lo-error.h"
 
 #include "MArray-defs.h"

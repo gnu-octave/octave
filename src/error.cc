@@ -1004,6 +1004,35 @@ error: nargin != 1\n\
       else
 	return retval;
     }
+  else if (nargin == 1 && args(0).is_map ())
+    {
+      octave_value_list tmp;
+
+      Octave_map m = args(0).map_value ();
+
+      if (m.numel () == 1)
+	{
+	  if (m.contains ("message"))
+	    {
+	      Cell c = m.contents ("message");
+
+	      if (! c.is_empty () && c(0).is_string ())
+		nargs(0) = c(0).string_value ();
+	    }
+
+	  if (m.contains ("identifier"))
+	    {
+	      Cell c = m.contents ("identifier");
+
+	      if (! c.is_empty () && c(0).is_string ())
+		id = c(0).string_value ();
+	    }
+
+	  // FIXME -- also need to handle "stack" field in error
+	  // structure, but that will require some more significant
+	  // surgery on handle_message, error_with_id, etc.
+	}
+    }
 
   handle_message (error_with_id, id.c_str (), "unspecified error", nargs);
 

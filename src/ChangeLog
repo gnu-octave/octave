@@ -1,5 +1,7 @@
 2009-05-15  John W. Eaton  <jwe@octave.org>
 
+	* error.cc (Ferror): Handle error struct argument.
+
 	* ls-mat5.cc (save_mat5_binary_element): Avoid multiple calls to
 	contents method.  From David Bateman <dbateman@free.fr>.
 	(save_mat5_element_length): Use const Cell to avoid making copies

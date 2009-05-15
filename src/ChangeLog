@@ -1,3 +1,10 @@
+2009-05-15  John W. Eaton  <jwe@octave.org>
+
+	* ls-mat5.cc (save_mat5_binary_element): Avoid multiple calls to
+	contents method.  From David Bateman <dbateman@free.fr>.
+	(save_mat5_element_length): Use const Cell to avoid making copies
+	when indexing.
+
 2009-05-15  Jaroslav Hajek  <highegg@gmail.com>
 
 	* oct-stream.cc: Don't instantiate Array2<read_fptr>.

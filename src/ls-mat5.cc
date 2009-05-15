@@ -1838,9 +1838,9 @@ save_mat5_element_length (const octave_value& tc, const std::string& name,
 
 	  for (Octave_map::const_iterator i = m.begin (); i != m.end (); i++)
 	    {
-	      Cell elts = m.contents (i);
+	      const Cell elts = m.contents (i);
 
-	      ret += 8 + save_mat5_element_length (elts (j), "", 
+	      ret += 8 + save_mat5_element_length (elts(j), "", 
 					       save_as_floats, mat7_format);
 	    }
 	}
@@ -2218,6 +2218,12 @@ save_mat5_binary_element (std::ostream& os,
 
 	int len = m.numel ();
 
+	// Create temporary copy of structure contents to avoid
+	// multiple calls of the contents method.
+	std::vector<const octave_value *> elts (nf);
+	for (octave_idx_type i = 0; i < nf; i++)
+	  elts[i] = m.contents (keys(i)).data ();
+
 	for (int j = 0; j < len; j++)
 	  {
 	    // write the data of each element
@@ -2226,9 +2232,7 @@ save_mat5_binary_element (std::ostream& os,
 	    // of the fields.
 	    for (octave_idx_type i = 0; i < nf; i++)
 	      {
-		Cell elts = m.contents (keys(i));
-
-		bool retval2 = save_mat5_binary_element (os, elts(j), "",
+		bool retval2 = save_mat5_binary_element (os, elts[i][j], "",
 							 mark_as_global,
 							 false, 
 							 save_as_floats);

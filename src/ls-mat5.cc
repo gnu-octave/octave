@@ -1106,8 +1106,13 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 	      }
 	    else
 	      {
-		tc = new octave_class (m, classname);
+		octave_class* cls = new octave_class (m, classname);
+		cls->reconstruct_exemplar ();
 
+		if (! cls->reconstruct_parents ())
+		  warning ("load: unable to reconstruct object inheritance");
+
+		tc = cls; 
 		if (load_path::find_method (classname, "loadobj") != 
 		    std::string())
 		  {

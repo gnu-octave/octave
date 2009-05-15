@@ -1,3 +1,10 @@
+2009-05-15  Robert T. Short  <octave@phaselockedsystems.com>
+
+	* ov-class.cc (octave_class::exemplar_info): Fix typo in error message.
+	* ov-class.cc (Fmethods): Methods returns cell array.
+	* ls-mat5.cc (read_mat5_binary_element):
+	Construct exemplar array and ensure inheritance is correct.
+
 2009-05-15  John W. Eaton  <jwe@octave.org>
 
 	* error.cc (Ferror): Handle error struct argument.

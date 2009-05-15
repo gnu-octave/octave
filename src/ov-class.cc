@@ -1487,7 +1487,7 @@ octave_class::exemplar_info::compare (const octave_value& obj) const
   else
     {
       retval = false;
-      error ("inavlid comparison of class exemplar to non-class object");
+      error ("invalid comparison of class exemplar to non-class object");
     }
 
   return retval;
@@ -1701,7 +1701,7 @@ object @var{x} or the named class.\n\
 	      octave_stdout << std::endl;
 	    }
 	  else
-	    retval = sv;
+	    retval = Cell (sv);
 	}	  
     }
   else

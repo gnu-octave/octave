@@ -5879,6 +5879,13 @@ Undocumented internal function.\n\
       if (! error_state)
         {
           octave_value vals = args(1);
+          if (vals.is_range ())
+            {
+              Range r = vals.range_value ();
+              if (r.inc () == 0)
+                vals = r.base ();
+            }
+
           if (vals.is_single_type ())
             {
               if (vals.is_complex_type ())

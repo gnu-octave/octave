@@ -23,7 +23,6 @@
 ## vector @var{c}.
 ##
 ## The companion matrix is
-## @iftex
 ## @tex
 ## $$
 ## A = \left[\matrix{
@@ -34,7 +33,6 @@
 ##      0    &     0    & \cdots &     1    &         0}\right].
 ## $$
 ## @end tex
-## @end iftex
 ## @ifnottex
 ##
 ## @c Set example in small font to prevent overfull line

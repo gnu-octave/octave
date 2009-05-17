@@ -20,11 +20,9 @@
 ## @deftypefn {Function File} {} namelengthmax ()
 ## Returns the @sc{matlab} compatible maximum variable name length.  Octave is
 ## capable of storing strings up to 
-## @iftex
 ## @tex
 ## $2^{31} - 1$
 ## @end tex
-## @end iftex
 ## @ifnottex
 ## @code{2 ^ 31 - 1}
 ## @end ifnottex

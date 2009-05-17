@@ -20,14 +20,12 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} kurtosis (@var{x}, @var{dim})
 ## If @var{x} is a vector of length @math{N}, return the kurtosis
-## @iftex
 ## @tex
 ## $$
 ##  {\rm kurtosis} (x) = {1\over N \sigma(x)^4} \sum_{i=1}^N (x_i-\bar{x})^4 - 3
 ## $$
 ## where $\bar{x}$ is the mean value of $x$.
 ## @end tex
-## @end iftex
 ## @ifnottex
 ##
 ## @example

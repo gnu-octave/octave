@@ -20,13 +20,11 @@
 ## -*- texinfo -*-
 ## @deftypefn {Mapping Function} {} bincoeff (@var{n}, @var{k})
 ## Return the binomial coefficient of @var{n} and @var{k}, defined as
-## @iftex
 ## @tex
 ## $$
 ##  {n \choose k} = {n (n-1) (n-2) \cdots (n-k+1) \over k!}
 ## $$
 ## @end tex
-## @end iftex
 ## @ifnottex
 ##
 ## @example

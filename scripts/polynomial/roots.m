@@ -22,13 +22,11 @@
 ##
 ## For a vector @var{v} with @math{N} components, return
 ## the roots of the polynomial
-## @iftex
 ## @tex
 ## $$
 ## v_1 z^{N-1} + \cdots + v_{N-1} z + v_N.
 ## $$
 ## @end tex
-## @end iftex
 ## @ifnottex
 ##
 ## @example
@@ -38,11 +36,9 @@
 ##
 ## As an example, the following code finds the roots of the quadratic
 ## polynomial
-## @iftex
 ## @tex
 ## $$ p(x) = x^2 - 5. $$
 ## @end tex
-## @end iftex
 ## @ifnottex
 ## @example
 ## p(x) = x^2 - 5.
@@ -57,20 +53,16 @@
 ## @end group
 ## @end example
 ## Note that the true result is
-## @iftex
 ## @tex
 ## $\pm \sqrt{5}$
 ## @end tex
-## @end iftex
 ## @ifnottex
 ## @math{+/- sqrt(5)}
 ## @end ifnottex
 ## which is roughly
-## @iftex
 ## @tex
 ## $\pm 2.2361$.
 ## @end tex
-## @end iftex
 ## @ifnottex
 ## @math{+/- 2.2361}.
 ## @end ifnottex

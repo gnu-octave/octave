@@ -20,13 +20,11 @@
 ## -*- texinfo -*-
 ## @deftypefn {Mapping Function} {} beta (@var{a}, @var{b})
 ## For real inputs, return the Beta function,
-## @iftex
 ## @tex
 ## $$
 ##  B (a, b) = {\Gamma (a) \Gamma (b) \over \Gamma (a + b)}.
 ## $$
 ## @end tex
-## @end iftex
 ## @ifnottex
 ##
 ## @example

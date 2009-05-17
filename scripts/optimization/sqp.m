@@ -19,13 +19,11 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{x}, @var{obj}, @var{info}, @var{iter}, @var{nf}, @var{lambda}] =} sqp (@var{x}, @var{phi}, @var{g}, @var{h}, @var{lb}, @var{ub}, @var{maxiter}, @var{tolerance})
 ## Solve the nonlinear program
-## @iftex
 ## @tex
 ## $$
 ## \min_x \phi (x)
 ## $$
 ## @end tex
-## @end iftex
 ## @ifnottex
 ##
 ## @example
@@ -37,13 +35,11 @@
 ##
 ## @end ifnottex
 ## subject to
-## @iftex
 ## @tex
 ## $$
 ##  g(x) = 0 \qquad h(x) \geq 0 \qquad lb \leq x \leq ub
 ## $$
 ## @end tex
-## @end iftex
 ## @ifnottex
 ##
 ## @example
@@ -119,7 +115,6 @@
 ## function and the second should point to a function that computes the
 ## gradient of the constraint function:
 ##
-## @iftex
 ## @tex
 ## $$
 ##  \Bigg( {\partial f(x) \over \partial x_1}, 
@@ -127,7 +122,6 @@
 ##         {\partial f(x) \over \partial x_N} \Bigg)^T
 ## $$
 ## @end tex
-## @end iftex
 ## @ifnottex
 ## @example
 ## @group

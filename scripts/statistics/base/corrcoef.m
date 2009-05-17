@@ -26,13 +26,11 @@
 ## @code{corrcoef (@var{x}, @var{y})} is the correlation between the
 ## @var{i}-th variable in @var{x} and the @var{j}-th variable in @var{y}.
 ##
-## @iftex
 ## @tex
 ## $$
 ## {\rm corrcoef}(x,y) = {{\rm cov}(x,y) \over {\rm std}(x) {\rm std}(y)}
 ## $$
 ## @end tex
-## @end iftex
 ## @ifnottex
 ## @example
 ## corrcoef(x,y) = cov(x,y)/(std(x)*std(y))

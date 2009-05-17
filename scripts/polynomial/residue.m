@@ -23,14 +23,12 @@
 ## Compute the partial fraction expansion for the quotient of the
 ## polynomials, @var{b} and @var{a}.
 ##
-## @iftex
 ## @tex
 ## $$
 ## {B(s)\over A(s)} = \sum_{m=1}^M {r_m\over (s-p_m)^e_m}
 ##   + \sum_{i=1}^N k_i s^{N-i}.
 ## $$
 ## @end tex
-## @end iftex
 ## @ifnottex
 ##
 ## @example
@@ -64,13 +62,11 @@
 ##
 ## @noindent
 ## which represents the following partial fraction expansion
-## @iftex
 ## @tex
 ## $$
 ## {s^2+s+1\over s^3-5s^2+8s-4} = {-2\over s-2} + {7\over (s-2)^2} + {3\over s-1}
 ## $$
 ## @end tex
-## @end iftex
 ## @ifnottex
 ##
 ## @example
@@ -125,13 +121,11 @@
 ##
 ## @noindent
 ## which represents the following partial fraction expansion
-## @iftex
 ## @tex
 ## $$
 ## {-2\over s-2} + {7\over (s-2)^2} + {3\over s-1} + s = {s^4-5s^3+9s^2-3s+1\over s^3-5s^2+8s-4}
 ## $$
 ## @end tex
-## @end iftex
 ## @ifnottex
 ##
 ## @example

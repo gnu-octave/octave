@@ -23,14 +23,12 @@
 ## @deftypefnx {Function File} {} std (@var{x}, @var{opt}, @var{dim})
 ## If @var{x} is a vector, compute the standard deviation of the elements
 ## of @var{x}.
-## @iftex
 ## @tex
 ## $$
 ## {\rm std} (x) = \sigma (x) = \sqrt{{\sum_{i=1}^N (x_i - \bar{x})^2 \over N - 1}}
 ## $$
 ## where $\bar{x}$ is the mean value of $x$.
 ## @end tex
-## @end iftex
 ## @ifnottex
 ##
 ## @example

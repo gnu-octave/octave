@@ -19,11 +19,9 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{g}, @var{y}] =} planerot (@var{x})
 ## Given a two-element column vector, returns the
-## @iftex
 ## @tex
 ## $2 \times 2$ orthogonal matrix
 ## @end tex
-## @end iftex
 ## @ifnottex
 ## 2 by 2 orthogonal matrix
 ## @end ifnottex

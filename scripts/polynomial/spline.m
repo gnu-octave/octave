@@ -39,30 +39,24 @@
 ## of the first derivative of the cubic spline at the end-points.
 ##
 ## If @var{y} is an array, then the size of @var{y} must have the form
-## @iftex
 ## @tex
 ## $$[s_1, s_2, \cdots, s_k, n]$$
 ## @end tex
-## @end iftex
 ## @ifnottex
 ## @code{[@var{s1}, @var{s2}, @dots{}, @var{sk}, @var{n}]}
 ## @end ifnottex
 ## or
-## @iftex
 ## @tex
 ## $$[s_1, s_2, \cdots, s_k, n + 2].$$
 ## @end tex
-## @end iftex
 ## @ifnottex
 ## @code{[@var{s1}, @var{s2}, @dots{}, @var{sk}, @var{n} + 2]}.
 ## @end ifnottex
 ## The array is then reshaped internally to a matrix where the leading
 ## dimension is given by 
-## @iftex
 ## @tex
 ## $$s_1 s_2 \cdots s_k$$
 ## @end tex
-## @end iftex
 ## @ifnottex
 ## @code{@var{s1} * @var{s2} * @dots{} * @var{sk}}
 ## @end ifnottex

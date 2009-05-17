@@ -33,11 +33,9 @@
 ## differences of @var{x} and @var{y};  i.e., if both @var{x} and
 ## @var{y} have distinct entries, then
 ##
-## @iftex
 ## @tex
 ## $$ \tau = {1 \over n(n-1)} \sum_{i,j} {\rm sign}(q_i-q_j) {\rm sign}(r_i-r_j) $$
 ## @end tex
-## @end iftex
 ## @ifnottex
 ## @example
 ## @group
@@ -50,11 +48,9 @@
 ##
 ## @noindent
 ## in which the
-## @iftex
 ## @tex
 ## $q_i$ and $r_i$
 ## @end tex
-## @end iftex
 ## @ifnottex
 ## @var{q}(@var{i}) and @var{r}(@var{i})
 ## @end ifnottex
@@ -63,11 +59,9 @@
 ##
 ## If @var{x} and @var{y} are drawn from independent distributions,
 ## Kendall's @var{tau} is asymptotically normal with mean 0 and variance
-## @iftex
 ## @tex
 ## ${2 (2n+5) \over 9n(n-1)}$.
 ## @end tex
-## @end iftex
 ## @ifnottex
 ## @code{(2 * (2@var{n}+5)) / (9 * @var{n} * (@var{n}-1))}.
 ## @end ifnottex

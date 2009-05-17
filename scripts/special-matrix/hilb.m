@@ -20,22 +20,18 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} hilb (@var{n})
 ## Return the Hilbert matrix of order @var{n}.  The
-## @iftex
 ## @tex
 ## $i,\,j$
 ## @end tex
-## @end iftex
 ## @ifnottex
 ## i, j
 ## @end ifnottex
 ## element of a Hilbert matrix is defined as
-## @iftex
 ## @tex
 ## $$
 ## H (i, j) = {1 \over (i + j - 1)}
 ## $$
 ## @end tex
-## @end iftex
 ## @ifnottex
 ##
 ## @example

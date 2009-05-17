@@ -30,21 +30,17 @@
 ## array.  In the case where @var{y} is a vector, it must have a length
 ## of @var{n}.  If @var{y} is an array, then the size of @var{y} must
 ## have the form
-## @iftex
 ## @tex
 ## $$[s_1, s_2, \cdots, s_k, n]$$
 ## @end tex
-## @end iftex
 ## @ifnottex
 ## @code{[@var{s1}, @var{s2}, @dots{}, @var{sk}, @var{n}]}
 ## @end ifnottex
 ## The array is then reshaped internally to a matrix where the leading
 ## dimension is given by 
-## @iftex
 ## @tex
 ## $$s_1 s_2 \cdots s_k$$
 ## @end tex
-## @end iftex
 ## @ifnottex
 ## @code{@var{s1} * @var{s2} * @dots{} * @var{sk}}
 ## @end ifnottex

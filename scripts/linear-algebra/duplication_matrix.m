@@ -20,47 +20,37 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} duplication_matrix (@var{n})
 ## Return the duplication matrix
-## @iftex
 ## @tex
 ##  $D_n$
 ## @end tex
-## @end iftex
 ## @ifnottex
 ##  @math{Dn}
 ## @end ifnottex
 ##  which is the unique
-## @iftex
 ## @tex
 ##  $n^2 \times n(n+1)/2$
 ## @end tex
-## @end iftex
 ## @ifnottex
 ##  @math{n^2} by @math{n*(n+1)/2}
 ## @end ifnottex
 ##  matrix such that
-## @iftex
 ## @tex
 ##  $D_n * {\rm vech} (A) = {\rm vec} (A)$
 ## @end tex
-## @end iftex
 ## @ifnottex
 ##  @math{Dn vech (A) = vec (A)}
 ## @end ifnottex
 ##  for all symmetric
-## @iftex
 ## @tex
 ##  $n \times n$
 ## @end tex
-## @end iftex
 ## @ifnottex
 ##  @math{n} by @math{n}
 ## @end ifnottex
 ##  matrices
-## @iftex
 ## @tex
 ##  $A$.
 ## @end tex
-## @end iftex
 ## @ifnottex
 ##  @math{A}.
 ## @end ifnottex

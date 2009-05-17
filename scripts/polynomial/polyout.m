@@ -20,11 +20,9 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} polyout (@var{c}, @var{x})
 ## Write formatted polynomial
-## @iftex
 ## @tex
 ## $$ c(x) = c_1 x^n + \ldots + c_n x + c_{n+1} $$
 ## @end tex
-## @end iftex
 ## @ifnottex
 ## @example
 ##    c(x) = c(1) * x^n + @dots{} + c(n) x + c(n+1)

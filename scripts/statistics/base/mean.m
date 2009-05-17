@@ -20,11 +20,9 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} mean (@var{x}, @var{dim}, @var{opt})
 ## If @var{x} is a vector, compute the mean of the elements of @var{x}
-## @iftex
 ## @tex
 ## $$ {\rm mean}(x) = \bar{x} = {1\over N} \sum_{i=1}^N x_i $$
 ## @end tex
-## @end iftex
 ## @ifnottex
 ##
 ## @example

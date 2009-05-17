@@ -25,7 +25,6 @@
 ## otherwise, @var{n} is taken to be equal to the length of @var{c}.
 ##
 ## A Vandermonde matrix has the form:
-## @iftex
 ## @tex
 ## $$
 ## \left[\matrix{c_1^{n-1}  & \cdots & c_1^2  & c_1    & 1      \cr
@@ -34,7 +33,6 @@
 ##               c_n^{n-1}  & \cdots & c_n^2  & c_n    & 1      }\right]
 ## $$
 ## @end tex
-## @end iftex
 ## @ifnottex
 ##
 ## @example

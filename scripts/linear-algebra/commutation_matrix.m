@@ -20,57 +20,45 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} commutation_matrix (@var{m}, @var{n})
 ## Return the commutation matrix
-## @iftex
 ## @tex
 ##  $K_{m,n}$
 ## @end tex
-## @end iftex
 ## @ifnottex
 ##  K(m,n)
 ## @end ifnottex
 ##  which is the unique
-## @iftex
 ## @tex
 ##  $m n \times m n$
 ## @end tex
-## @end iftex
 ## @ifnottex
 ##  @var{m}*@var{n} by @var{m}*@var{n}
 ## @end ifnottex
 ##  matrix such that
-## @iftex
 ## @tex
 ##  $K_{m,n} \cdot {\rm vec} (A) = {\rm vec} (A^T)$
 ## @end tex
-## @end iftex
 ## @ifnottex
 ##  @math{K(m,n) * vec(A) = vec(A')}
 ## @end ifnottex
 ##  for all
-## @iftex
 ## @tex
 ##  $m\times n$
 ## @end tex
-## @end iftex
 ## @ifnottex
 ##  @math{m} by @math{n}
 ## @end ifnottex
 ##  matrices
-## @iftex
 ## @tex
 ##  $A$.
 ## @end tex
-## @end iftex
 ## @ifnottex
 ##  @math{A}.
 ## @end ifnottex
 ##
 ## If only one argument @var{m} is given,
-## @iftex
 ## @tex
 ##  $K_{m,m}$
 ## @end tex
-## @end iftex
 ## @ifnottex
 ##  @math{K(m,m)}
 ## @end ifnottex

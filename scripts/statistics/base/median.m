@@ -22,7 +22,6 @@
 ## If @var{x} is a vector, compute the median value of the elements of
 ## @var{x}.  If the elements of @var{x} are sorted, the median is defined
 ## as
-## @iftex
 ## @tex
 ## $$
 ## {\rm median} (x) =
@@ -30,7 +29,6 @@
 ##           (x(N/2)+x(N/2+1))/2, & $N$ even.}
 ## $$
 ## @end tex
-## @end iftex
 ## @ifnottex
 ##
 ## @example

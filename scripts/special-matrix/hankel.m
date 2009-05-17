@@ -27,13 +27,11 @@
 ##
 ## A Hankel matrix formed from an m-vector @var{c}, and an n-vector
 ## @var{r}, has the elements
-## @iftex
 ## @tex
 ## $$
 ## H (i, j) = \cases{c_{i+j-1},&$i+j-1\le m$;\cr r_{i+j-m},&otherwise.\cr}
 ## $$
 ## @end tex
-## @end iftex
 ## @ifnottex
 ##
 ## @example

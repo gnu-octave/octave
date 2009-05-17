@@ -20,24 +20,20 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{beta}, @var{sigma}, @var{r}] =} ols (@var{y}, @var{x})
 ## Ordinary least squares estimation for the multivariate model
-## @iftex
 ## @tex
 ## $y = x b + e$
 ## with
 ## $\bar{e} = 0$, and cov(vec($e$)) = kron ($s, I$)
 ## @end tex
-## @end iftex
 ## @ifnottex
 ## @math{y = x b + e} with
 ## @math{mean (e) = 0} and @math{cov (vec (e)) = kron (s, I)}.
 ## @end ifnottex
 ##  where
-## @iftex
 ## @tex
 ## $y$ is a $t \times p$ matrix, $x$ is a $t \times k$ matrix,
 ## $b$ is a $k \times p$ matrix, and $e$ is a $t \times p$ matrix.
 ## @end tex
-## @end iftex
 ## @ifnottex
 ## @math{y} is a @math{t} by @math{p} matrix, @math{x} is a @math{t} by
 ## @math{k} matrix, @math{b} is a @math{k} by @math{p} matrix, and

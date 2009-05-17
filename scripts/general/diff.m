@@ -21,11 +21,9 @@
 ## @deftypefn {Function File} {} diff (@var{x}, @var{k}, @var{dim})
 ## If @var{x} is a vector of length @var{n}, @code{diff (@var{x})} is the
 ## vector of first differences
-## @iftex
 ## @tex
 ##  $x_2 - x_1, \ldots{}, x_n - x_{n-1}$.
 ## @end tex
-## @end iftex
 ## @ifnottex
 ##  @var{x}(2) - @var{x}(1), @dots{}, @var{x}(n) - @var{x}(n-1).
 ## @end ifnottex

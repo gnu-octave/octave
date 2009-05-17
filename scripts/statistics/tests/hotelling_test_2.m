@@ -26,13 +26,11 @@
 ##
 ## Hotelling's two-sample @math{T^2} is returned in @var{tsq}.  Under the null,
 ##
-## @iftex
 ## @tex
 ## $$
 ## {n_x+n_y-p-1) T^2 \over p(n_x+n_y-2)}
 ## $$
 ## @end tex
-## @end iftex
 ## @ifnottex
 ## @example
 ## (n_x+n_y-p-1) T^2 / (p(n_x+n_y-2))

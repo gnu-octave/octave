@@ -21,39 +21,31 @@
 ## @deftypefn {Function File} {} logspace (@var{base}, @var{limit}, @var{n})
 ## Similar to @code{linspace} except that the values are logarithmically
 ## spaced from
-## @iftex
 ## @tex
 ## $10^{base}$ to $10^{limit}$.
 ## @end tex
-## @end iftex
 ## @ifnottex
 ## 10^base to 10^limit.
 ## @end ifnottex
 ##
 ## If @var{limit} is equal to
-## @iftex
 ## @tex
 ## $\pi$,
 ## @end tex
-## @end iftex
 ## @ifnottex
 ## pi,
 ## @end ifnottex
 ## the points are between
-## @iftex
 ## @tex
 ## $10^{base}$ and $\pi$,
 ## @end tex
-## @end iftex
 ## @ifnottex
 ## 10^base and pi,
 ## @end ifnottex
 ## @emph{not}
-## @iftex
 ## @tex
 ## $10^{base}$ and $10^{\pi}$,
 ## @end tex
-## @end iftex
 ## @ifnottex
 ## 10^base and 10^pi,
 ## @end ifnottex

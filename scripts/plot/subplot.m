@@ -32,7 +32,6 @@
 ##
 ## For example, a plot with 2 by 3 grid will have plot indices running as
 ## follows:
-## @iftex
 ## @tex
 ## \vskip 10pt
 ## \hfil\vbox{\offinterlineskip\hrule
@@ -42,7 +41,6 @@
 ## \hfil
 ## \vskip 10pt
 ## @end tex
-## @end iftex
 ## @ifnottex
 ## @display
 ## @example

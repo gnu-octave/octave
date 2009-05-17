@@ -1,3 +1,8 @@
+2009-05-17  Rik Wehbring  <rdrider0-list@yahoo.com>
+
+	* *.m: Simplify Texinfo documentation in .m scripts by removing 
+	redundant @iftex calls
+
 2009-05-17  Jaroslav Hajek  <highegg@gmail.com>
 
 	* optimization/fminunc.m: Improve TR updating strategy.

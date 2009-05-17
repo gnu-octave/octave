@@ -20,11 +20,9 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} sylvester_matrix (@var{k})
 ## Return the Sylvester matrix of order
-## @iftex
 ## @tex
 ## $n = 2^k$.
 ## @end tex
-## @end iftex
 ## @ifnottex
 ## n = 2^k.
 ## @end ifnottex

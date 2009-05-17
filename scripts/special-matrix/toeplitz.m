@@ -27,7 +27,6 @@
 ## taken to be the same as the first column.
 ##
 ## A square Toeplitz matrix has the form:
-## @iftex
 ## @tex
 ## $$
 ## \left[\matrix{c_0    & r_1     & r_2      & \cdots & r_n\cr
@@ -37,7 +36,6 @@
 ##               c_n    & c_{n-1} & c_{n-2} & \ldots & c_0}\right]
 ## $$
 ## @end tex
-## @end iftex
 ## @ifnottex
 ##
 ## @example

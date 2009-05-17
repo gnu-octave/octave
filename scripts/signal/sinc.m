@@ -20,11 +20,9 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} sinc (@var{x})
 ## Return
-## @iftex
 ## @tex
 ## $ \sin (\pi x)/(\pi x)$.
 ## @end tex
-## @end iftex
 ## @ifnottex
 ##  sin(pi*x)/(pi*x).
 ## @end ifnottex

@@ -19,13 +19,11 @@
 ## -*- texinfo -*-
 ## @deftypefn {Mapping Function} {} betaln (@var{a}, @var{b})
 ## Return the log of the Beta function,
-## @iftex
 ## @tex
 ## $$
 ##  B (a, b) = \log {\Gamma (a) \Gamma (b) \over \Gamma (a + b)}.
 ## $$
 ## @end tex
-## @end iftex
 ## @ifnottex
 ##
 ## @example

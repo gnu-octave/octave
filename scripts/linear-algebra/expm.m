@@ -20,13 +20,11 @@
 ## @deftypefn {Function File} {} expm (@var{a})
 ## Return the exponential of a matrix, defined as the infinite Taylor
 ## series
-## @iftex
 ## @tex
 ## $$
 ##  \exp (A) = I + A + {A^2 \over 2!} + {A^3 \over 3!} + \cdots
 ## $$
 ## @end tex
-## @end iftex
 ## @ifnottex
 ## 
 ## @example
@@ -38,30 +36,24 @@
 ## exponential; see Moler and Van Loan, @cite{Nineteen Dubious Ways to
 ## Compute the Exponential of a Matrix}, SIAM Review, 1978.  This routine
 ## uses Ward's diagonal
-## @iftex
 ## @tex
 ## Pad\'e
 ## @end tex
-## @end iftex
 ## @ifnottex
 ## Pade'
 ## @end ifnottex
 ## approximation method with three step preconditioning (SIAM Journal on
 ## Numerical Analysis, 1977).  Diagonal
-## @iftex
 ## @tex
 ## Pad\'e
 ## @end tex
-## @end iftex
 ## @ifnottex
 ## Pade'
 ## @end ifnottex
 ##  approximations are rational polynomials of matrices
-## @iftex
 ## @tex
 ## $D_q(a)^{-1}N_q(a)$
 ## @end tex
-## @end iftex
 ## @ifnottex
 ## 
 ## @example
@@ -73,30 +65,24 @@
 ## 
 ## @end ifnottex
 ##  whose Taylor series matches the first
-## @iftex
 ## @tex
 ## $2 q + 1 $
 ## @end tex
-## @end iftex
 ## @ifnottex
 ## @code{2q+1}
 ## @end ifnottex
 ## terms of the Taylor series above; direct evaluation of the Taylor series
 ## (with the same preconditioning steps) may be desirable in lieu of the
-## @iftex
 ## @tex
 ## Pad\'e
 ## @end tex
-## @end iftex
 ## @ifnottex
 ## Pade'
 ## @end ifnottex
 ## approximation when
-## @iftex
 ## @tex
 ## $D_q(a)$
 ## @end tex
-## @end iftex
 ## @ifnottex
 ## @code{Dq(a)}
 ## @end ifnottex

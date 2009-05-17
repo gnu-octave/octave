@@ -21,13 +21,11 @@
 ## Solve a linear program using the GNU GLPK library.  Given three
 ## arguments, @code{glpk} solves the following standard LP:
 ## 
-## @iftex
 ## @tex
 ## $$
 ##   \min_x C^T x
 ## $$
 ## @end tex
-## @end iftex
 ## @ifnottex
 ## @example
 ## min C'*x
@@ -36,13 +34,11 @@
 ## 
 ## subject to
 ## 
-## @iftex
 ## @tex
 ## $$
 ##   Ax = b \qquad x \geq 0
 ## $$
 ## @end tex
-## @end iftex
 ## @ifnottex
 ## @example
 ## @group
@@ -54,13 +50,11 @@
 ## 
 ## but may also solve problems of the form
 ## 
-## @iftex
 ## @tex
 ## $$
 ##   [ \min_x | \max_x ] C^T x
 ## $$
 ## @end tex
-## @end iftex
 ## @ifnottex
 ## @example
 ## [ min | max ] C'*x
@@ -69,13 +63,11 @@
 ## 
 ## subject to
 ## 
-## @iftex
 ## @tex
 ## $$
 ##  Ax [ = | \leq | \geq ] b \qquad LB \leq x \leq UB
 ## $$
 ## @end tex
-## @end iftex
 ## @ifnottex
 ## @example
 ## @group

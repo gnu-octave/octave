@@ -26,11 +26,9 @@
 ## @ifnottex
 ##  2*pi.
 ## @end ifnottex
-## @iftex
 ## @tex
 ##  $2\pi$.
 ## @end tex
-## @end iftex
 ##
 ## @noindent
 ## The output value @var{w} is a vector of the frequencies.
@@ -40,11 +38,9 @@
 ## @ifnottex
 ##  pi.
 ## @end ifnottex
-## @iftex
 ## @tex
 ##  $\pi$.
 ## @end tex
-## @end iftex
 ##
 ## If @var{n} is omitted, a value of 512 is assumed.
 ##

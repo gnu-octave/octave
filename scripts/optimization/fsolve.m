@@ -256,6 +256,8 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
     lastratio = 0;
     nfail = 0;
     nsuc = 0;
+    decfac = 0.5;
+
     ## Inner loop.
     while (niter <= maxiter && nfev < maxfev && ! info)
 
@@ -296,10 +298,11 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
       endif
 
       ## Update delta.
-      if (ratio < min(max(0.1, lastratio), 0.9))
+      if (ratio < min(max(0.1, 0.8*lastratio), 0.9))
         nsuc = 0;
         nfail ++;
-        delta *= 0.5;
+        delta *= decfac;
+        decfac ^= 1.4142;
         if (delta <= 1e1*macheps*xn)
           ## Trust region became uselessly small.
           info = -3;
@@ -307,12 +310,13 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
         endif
       else
         lastratio = ratio;
+        decfac = 0.5;
         nfail = 0;
         nsuc ++;
         if (abs (1-ratio) <= 0.1)
-          delta = 2*sn;
+          delta = 1.4142*sn;
         elseif (ratio >= 0.5 || nsuc > 1)
-          delta = max (delta, 2*sn);
+          delta = max (delta, 1.4142*sn);
         endif
       endif
 

@@ -24,14 +24,12 @@
 ## If @var{n} is a scalar then, calculate the binomial coefficient
 ## of @var{n} and @var{k}, defined as
 ##
-## @iftex
 ## @tex
 ## $$
 ##  {n \choose k} = {n (n-1) (n-2) \cdots (n-k+1) \over k!}
 ##                = {n! \over k! (n-k)!}
 ## $$
 ## @end tex
-## @end iftex
 ## @ifnottex
 ##
 ## @example

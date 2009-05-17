@@ -35,7 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ArrayN.h"
 #include "ArrayN.cc"
 
-#include "oct-obj.h"
+#include "ov.h"
 
 #include "oct-sort.cc"
 

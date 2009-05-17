@@ -1,3 +1,7 @@
+2009-05-17  Jaroslav Hajek  <highegg@gmail.com>
+
+	* TEMPLATE-INST/Array-tc.cc: Change #include.
+
 2009-05-15  Robert T. Short  <octave@phaselockedsystems.com>
 
 	* ov-class.cc (octave_class::exemplar_info): Fix typo in error message.

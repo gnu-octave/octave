@@ -28,7 +28,7 @@
 ## parameters @var{x}, @var{y}, and @var{z}.  The parameters @var{x},
 ## @var{x}, and @var{z} are either 3-dimensional arrays of the same size
 ## as the array @var{v} in the "meshgrid" format or vectors.  The
-## parameters @var{xi}, etc respect a similar format to @var{x}, etc,
+## parameters @var{xi}, etc. respect a similar format to @var{x}, etc.,
 ## and they represent the points at which the array @var{vi} is
 ## interpolated using interp3.  The vectors @var{sx}, @var{sy}, and
 ## @var{sz} contain points of orthogonal slices of the respective axes.

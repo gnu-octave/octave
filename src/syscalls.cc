@@ -235,7 +235,6 @@ contains the process ID of the subprocess.  Otherwise, @var{pid} is\n\
 For example,\n\
 \n\
 @example\n\
-@group\n\
 [in, out, pid] = popen2 (\"sort\", \"-r\");\n\
 fputs (in, \"these\\nare\\nsome\\nstrings\\n\");\n\
 fclose (in);\n\
@@ -257,7 +256,6 @@ fclose (out);\n\
      @print{} some\n\
      @print{} strings\n\
      @print{} these\n\
-@end group\n\
 @end example\n\
 @end deftypefn")
 {
@@ -439,8 +437,8 @@ Asynchronous I/O.\n\
 \n\
 @item F_SETFL\n\
 Set the file status flags for @var{fid} to the value specified by\n\
-@var{arg}.  The only flags that can be changed are @code{O_APPEND} and\n\
-@code{O_NONBLOCK}.\n\
+@var{arg}.  The only flags that can be changed are @w{@code{O_APPEND}} and\n\
+@w{@code{O_NONBLOCK}}.\n\
 @end vtable\n\
 \n\
 If successful, @var{err} is 0 and @var{msg} is an empty string.\n\
@@ -920,9 +918,9 @@ ID of device containing a directory entry for this file.\n\
 File number of the file.\n\
 \n\
 @item mode\n\
-File mode, as an integer.  Use the functions @code{S_ISREG},\n\
-@code{S_ISDIR}, @code{S_ISCHR}, @code{S_ISBLK}, @code{S_ISFIFO},\n\
-@code{S_ISLNK}, or @code{S_ISSOCK} to extract information from this\n\
+File mode, as an integer.  Use the functions @w{@code{S_ISREG}},\n\
+@w{@code{S_ISDIR}}, @w{@code{S_ISCHR}}, @w{@code{S_ISBLK}}, @w{@code{S_ISFIFO}},\n\
+@w{@code{S_ISLNK}}, or @w{@code{S_ISSOCK}} to extract information from this\n\
 value.\n\
 \n\
 @item modestr\n\
@@ -975,7 +973,6 @@ if you want information about the symbolic link itself.\n\
 For example,\n\
 \n\
 @example\n\
-@group\n\
 [s, err, msg] = stat (\"/vmlinuz\")\n\
       @result{} s =\n\
         @{\n\
@@ -996,7 +993,6 @@ For example,\n\
         @}\n\
      @result{} err = 0\n\
      @result{} msg = \n\
-@end group\n\
 @end example\n\
 @end deftypefn")
 {

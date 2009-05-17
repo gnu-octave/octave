@@ -59,11 +59,13 @@ functions.  The following example calls the @code{error} function if
 the function @code{f} is called without any input arguments.
 
 @example
+@group
 function f (arg1)
   if (nargin == 0)
     error("not enough input arguments");
   endif
 endfunction
+@end group
 @end example
 
 When the @code{error} function is called, it prints the given message
@@ -84,6 +86,7 @@ message.
 
 Consider the following function.
 @example
+@group
 ## -*- texinfo -*-
 ## @@deftypefn @{Function File@} f (@@var@{arg1@})
 ## Function help text goes here@dots{}
@@ -93,6 +96,7 @@ function f (arg1)
     print_usage ();
   endif
 endfunction
+@end group
 @end example
 
 @noindent
@@ -100,6 +104,7 @@ When it is called with no input arguments it produces the following
 error.
 
 @example
+@group
 f ()
 
 Invalid call to f.  Correct usage is:
@@ -112,6 +117,7 @@ Invalid call to f.  Correct usage is:
      @print{} error: called from:
      @print{} error:   print_usage at line -1, column -1
      @print{} error:   /home/jwe/octave/f.m at line 7, column 5
+@end group
 @end example
 
 @DOCSTRING(print_usage)
@@ -131,6 +137,7 @@ As an example, the following piece of code counts the number of errors
 that occurs during a @code{for} loop.
 
 @example
+@group
 number_of_errors = 0;
 for n = 1:100
   try
@@ -139,6 +146,7 @@ for n = 1:100
     number_of_errors++;
   end_try_catch
 endfor
+@end group
 @end example
 
 The above example treats all errors the same.  In many situations it
@@ -149,6 +157,7 @@ error that occurred.  As an example, the code above could be changed
 to count the number of errors related to the @samp{*} operator.
 
 @example
+@group
 number_of_errors = 0;
 for n = 1:100
   try
@@ -160,6 +169,7 @@ for n = 1:100
     endif
   end_try_catch
 endfor
+@end group
 @end example
 
 @DOCSTRING(lasterror)
@@ -174,6 +184,7 @@ related to the @samp{*} operator, but still abort if another kind of
 error occurs.
 
 @example
+@group
 number_of_errors = 0;
 for n = 1:100
   try
@@ -187,6 +198,7 @@ for n = 1:100
     endif
   end_try_catch
 endfor
+@end group
 @end example
 
 @DOCSTRING(rethrow)
@@ -207,9 +219,11 @@ this case Octave will issue a warning and assign the value @code{Inf}
 to the result.
 
 @example
+@group
 a = 1/0
      @print{} warning: division by zero
      @result{} a = Inf
+@end group
 @end example
 
 @menu
@@ -227,12 +241,14 @@ the following code controls if the variable @samp{a} is non-negative,
 and if not issues a warning and sets @samp{a} to zero.
 
 @example
+@group
 a = -1;
 if (a < 0)
   warning ("'a' must be non-negative.  Setting 'a' to zero.");
   a = 0;
 endif
      @print{} 'a' must be non-negative.  Setting 'a' to zero.
+@end group
 @end example
 
 Since warnings aren't fatal to a running program, it is not possible
@@ -262,17 +278,21 @@ It is also possible to enable and disable individual warnings through
 their string identifications.  The following code will issue a warning
 
 @example
+@group
 warning ("non-negative-variable", 
          "'a' must be non-negative.  Setting 'a' to zero.");
+@end group
 @end example
 
 @noindent
 while the following won't issue a warning
 
 @example
+@group
 warning ("off", "non-negative-variable");
 warning ("non-negative-variable", 
          "'a' must be non-negative.  Setting 'a' to zero.");
+@end group
 @end example
 
 The functions distributed with Octave can issue one of the following

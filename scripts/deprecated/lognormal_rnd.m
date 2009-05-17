@@ -20,7 +20,7 @@
 ## @deftypefn {Function File} {} lognormal_rnd (@var{a}, @var{v}, @var{r}, @var{c})
 ## @deftypefnx {Function File} {} lognormal_rnd (@var{a}, @var{v}, @var{sz})
 ## Return an @var{r} by @var{c} matrix of random samples from the
-## lognormal distribution with parameters @var{a} and @var{v}. Both
+## lognormal distribution with parameters @var{a} and @var{v}.  Both
 ## @var{a} and @var{v} must be scalar or of size @var{r} by @var{c}.
 ## Or if @var{sz} is a vector, create a matrix of size @var{sz}.
 ##

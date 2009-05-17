@@ -39,7 +39,7 @@
 ##
 ## @noindent
 ## where after @var{x} and @var{y} there can be up to four error
-## parameters such as @var{ey}, @var{ex}, @var{ly}, @var{uy} etc.,
+## parameters such as @var{ey}, @var{ex}, @var{ly}, @var{uy}, etc.,
 ## depending on the plot type.  Any number of argument sets may appear,
 ## as long as they are separated with a format string @var{fmt}.
 ##

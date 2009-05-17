@@ -22,13 +22,11 @@
 @cindex equations, nonlinear
 
 Octave can solve sets of nonlinear equations of the form
-@iftex
 @tex
 $$
  f (x) = 0
 $$
 @end tex
-@end iftex
 @ifnottex
 
 @example
@@ -45,14 +43,12 @@ convergence is not guaranteed even if a solution exists.
 @DOCSTRING(fsolve)
 
 Here is a complete example.  To solve the set of equations
-@iftex
 @tex
 $$
  \eqalign{-2x^2 + 3xy + 4\sin(y) - 6 &= 0\cr
            3x^2 - 2xy^2 + 3\cos(x) + 4 &= 0}
 $$
 @end tex
-@end iftex
 @ifinfo
 
 @example

@@ -22,7 +22,7 @@
 ## @deftypefnx {Function File} {[@var{xx}, @var{yy}] =} meshgrid (@var{x}, @var{y})
 ## @deftypefnx {Function File} {[@var{xx}, @var{yy}] =} meshgrid (@var{x})
 ## Given vectors of @var{x} and @var{y} and @var{z} coordinates, and
-## returning 3 arguments, return three dimensional arrays corresponding
+## returning 3 arguments, return three-dimensional arrays corresponding
 ## to the @var{x}, @var{y}, and @var{z} coordinates of a mesh.  When
 ## returning only 2 arguments, return matrices corresponding to the
 ## @var{x} and @var{y} coordinates of a mesh.  The rows of @var{xx} are

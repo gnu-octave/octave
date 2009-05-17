@@ -82,20 +82,16 @@ Octave's built-in numeric objects include real, complex, and integer
 scalars and matrices.  All built-in floating point numeric data is
 currently stored as double precision numbers.  On systems that use the
 IEEE floating point format, values in the range of approximately
-@iftex
 @tex
  $2.2251\times10^{-308}$ to $1.7977\times10^{308}$
 @end tex
-@end iftex
 @ifnottex
  2.2251e-308 to 1.7977e+308
 @end ifnottex
  can be stored, and the relative precision is approximately
-@iftex
 @tex
  $2.2204\times10^{-16}$.
 @end tex
-@end iftex
 @ifnottex
  2.2204e-16.
 @end ifnottex

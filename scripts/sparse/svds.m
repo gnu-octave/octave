@@ -26,7 +26,7 @@
 ## @example
 ## @group
 ## [@var{m}, @var{n}] = size(@var{a})
-## @var{s} = eigs([sparse(@var{m}, @var{m}), @var{a}; @dots{}
+## @var{s} = eigs([sparse(@var{m}, @var{m}), @var{a}; ...
 ##                 @var{a}', sparse(@var{n}, @var{n})])
 ## @end group
 ## @end example
@@ -69,7 +69,7 @@
 ##
 ## @example
 ## @group
-## norm (@var{a} * @var{v} - @var{u} * @var{s}, 1) <= @dots{}
+## norm (@var{a} * @var{v} - @var{u} * @var{s}, 1) <= ...
 ##         @var{tol} * norm (@var{a}, 1)
 ## @end group
 ## @end example

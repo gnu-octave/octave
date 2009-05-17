@@ -307,7 +307,7 @@ statements - use nested @code{if} statements if possible.
 @node Other Sources
 @section Other Sources
 Apart from C++ and Octave language (m-files), Octave's sources include files
-written in C, Fortran, M4, perl, unix shell, AWK, texinfo and TeX.  There are
+written in C, Fortran, M4, perl, unix shell, AWK, texinfo and @TeX{}.  There are
 not many rules to follow when using these other languages; some of them are
 summarized below.  In any case, the golden rule is: if you modify a source
 file, try to follow any conventions you can detect in the file or other similar

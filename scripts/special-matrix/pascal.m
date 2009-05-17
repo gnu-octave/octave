@@ -24,7 +24,7 @@
 ## @var{t} defaults to 0. Return lower triangular Cholesky factor of 
 ## the Pascal matrix if @code{@var{t} = 1}.  This matrix is its own
 ## inverse, that is @code{pascal (@var{n}, 1) ^ 2 == eye (@var{n})}.
-## If @code{@var{t} = -1}, return its absolute value. This is the
+## If @code{@var{t} = -1}, return its absolute value.  This is the
 ## standard pascal triangle as a lower-triangular matrix.
 ## If @code{@var{t} = 2}, return a transposed and permuted version of
 ## @code{pascal (@var{n}, 1)}, which is the cube-root of the identity

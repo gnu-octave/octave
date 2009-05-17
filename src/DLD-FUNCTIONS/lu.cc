@@ -73,7 +73,7 @@ DEFUN_DLD (lu, args, nargout,
 @deftypefnx {Loadable Function} {[@dots{}] =} lu (@dots{}, 'vector')\n\
 @cindex LU decomposition\n\
 Compute the LU decomposition of @var{a}.  If @var{a} is full subroutines from\n\
-@sc{Lapack} are used and if @var{a} is sparse then UMFPACK is used.  The\n\
+@sc{lapack} are used and if @var{a} is sparse then UMFPACK is used.  The\n\
 result is returned in a permuted form, according to the optional return\n\
 value @var{p}.  For example, given the matrix @code{a = [1, 2; 3, 4]},\n\
 \n\
@@ -131,7 +131,7 @@ Given the string argument 'vector', @dfn{lu} returns the values of @var{p}\n\
 \n\
 With two output arguments, returns the permuted forms of the upper and\n\
 lower triangular matrices, such that @code{@var{a} = @var{l} * @var{u}}.\n\
-With one output argument @var{y}, then the matrix returned by the @sc{Lapack}\n\
+With one output argument @var{y}, then the matrix returned by the @sc{lapack}\n\
 routines is returned.  If the input matrix is sparse then the matrix @var{l}\n\
 is embedded into @var{u} to give a return value similar to the full case.\n\
 For both full and sparse matrices, @dfn{lu} looses the permutation\n\

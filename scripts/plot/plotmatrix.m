@@ -49,7 +49,7 @@
 ## graphics objects in the scatter plots, whereas @var{ax} returns the
 ## handles to the scatter plot axis objects.  @var{bigax} is a hidden
 ## axis object that surrounds the other axes, such that the commands 
-## @code{xlabel}, @code{title}, etc, will be associated with this hidden
+## @code{xlabel}, @code{title}, etc., will be associated with this hidden
 ## axis.  Finally @var{p} returns the graphics objects associated with
 ## the histogram and @var{pax} the corresponding axes objects.
 ##

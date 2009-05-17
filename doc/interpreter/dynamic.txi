@@ -121,7 +121,7 @@ oct-file in Octave is to use the @code{#include <octave/oct.h>}
 header.
 
 The macro that defines the entry point into the dynamically loaded
-function is @code{DEFUN_DLD}.  This macro takes four arguments, these being
+function is @w{@code{DEFUN_DLD}}.  This macro takes four arguments, these being
 
 @enumerate 1
 @item The function name as it will be seen in Octave,
@@ -131,14 +131,14 @@ not used, and
 @item The string that will be seen as the help text of the function.
 @end enumerate
 
-The return type of functions defined with @code{DEFUN_DLD} is always
+The return type of functions defined with @w{@code{DEFUN_DLD}} is always
 @code{octave_value_list}.
 
 There are a couple of important considerations in the choice of function
 name.  Firstly, it must be a valid Octave function name and so must be a
 sequence of letters, digits and underscores, not starting with a
 digit.  Secondly, as Octave uses the function name to define the filename
-it attempts to find the function in, the function name in the @code{DEFUN_DLD}
+it attempts to find the function in, the function name in the @w{@code{DEFUN_DLD}}
 macro must match the filename of the oct-file.  Therefore, the above
 function should be in a file @file{helloworld.cc}, and it should be
 compiled to an oct-file using the command
@@ -149,9 +149,9 @@ mkoctfile helloworld.cc
 
 This will create a file called @file{helloworld.oct}, that is the compiled
 version of the function.  It should be noted that it is perfectly
-acceptable to have more than one @code{DEFUN_DLD} function in a source
+acceptable to have more than one @w{@code{DEFUN_DLD}} function in a source
 file.  However, there must either be a symbolic link to the oct-file for
-each of the functions defined in the source code with the @code{DEFUN_DLD}
+each of the functions defined in the source code with the @w{@code{DEFUN_DLD}}
 macro or the autoload (@ref{Function Files}) function should be used.
 
 The rest of this function then shows how to find the number of input
@@ -292,7 +292,7 @@ that are of interest only for matrices such as @code{transpose},
 @code{hermitian}, @code{solve}, etc.
 
 The typical way to extract a matrix or array from the input arguments of
-@code{DEFUN_DLD} function is as follows
+@w{@code{DEFUN_DLD}} function is as follows
 
 @examplefile{addtwomatrices.cc}
 
@@ -711,7 +711,6 @@ be
 @c { with @{, etc
 
 @example
-@group
 octave_value arg;
 @dots{}
 int nz = 6, nr = 3, nc = 4;   // Assume we know the max no nz
@@ -736,7 +735,6 @@ for (int j = 1; j < nc; j++)
  @}
 sm.maybe_compress ();  // If don't know a-priori 
                        // the final no of nz.
-@end group
 @end example
 
 @noindent
@@ -748,7 +746,6 @@ the method @code{change_capacity} exists to reallocate the sparse memory.
 The above example would then be modified as
 
 @example
-@group
 octave_value arg;
 @dots{}
 int nz = 6, nr = 3, nc = 4;   // Assume we know the max no nz
@@ -778,7 +775,6 @@ for (int j = 1; j < nc; j++)
  @}
 sm.maybe_mutate ();  // If don't know a-priori 
                      // the final no of nz.
-@end group
 @end example
 
 Note that both increasing and decreasing the number of non-zero elements in
@@ -944,16 +940,16 @@ exception handler to treat failing cases in the fortran code
 explicitly.  Note that Octave supplies its own replacement @sc{blas}
 @code{XERBLA} function, which uses @code{XSTOPX}.
 
-If the underlying code calls @code{XSTOPX}, then the @code{F77_XFCN}
+If the underlying code calls @code{XSTOPX}, then the @w{@code{F77_XFCN}}
 macro should be used to call the underlying fortran function.  The Fortran
 exception state can then be checked with the global variable
 @code{f77_exception_encountered}.  If @code{XSTOPX} will not be called,
-then the @code{F77_FCN} macro should be used instead to call the Fortran
+then the @w{@code{F77_FCN}} macro should be used instead to call the Fortran
 code.
 
-There is no harm in using @code{F77_XFCN} in all cases, except that for
+There is no harm in using @w{@code{F77_XFCN}} in all cases, except that for
 Fortran code that is short running and executes a large number of times,
-there is potentially an overhead in doing so.  However, if @code{F77_FCN}
+there is potentially an overhead in doing so.  However, if @w{@code{F77_FCN}}
 is used with code that calls @code{XSTOP}, Octave can generate a
 segmentation fault.
 
@@ -990,7 +986,7 @@ error: fortdemo: error in fortran
 Allocating memory within an oct-file might seem easy as the C++
 new/delete operators can be used.  However, in that case care must be
 taken to avoid memory leaks.  The preferred manner in which to allocate
-memory for use locally is to use the @code{OCTAVE_LOCAL_BUFFER} macro.
+memory for use locally is to use the @w{@code{OCTAVE_LOCAL_BUFFER}} macro.
 An example of its use is
 
 @example
@@ -1045,7 +1041,7 @@ typing @kbd{Control-C} even during calculations.  This ability is based on the
 C++ exception handler, where memory allocated by the C++ new/delete
 methods are automatically released when the exception is treated.  When
 writing an oct-file, to allow Octave to treat the user typing @kbd{Control-C},
-the @code{OCTAVE_QUIT} macro is supplied.  For example
+the @w{@code{OCTAVE_QUIT}} macro is supplied.  For example
 
 @example
 @group
@@ -1057,18 +1053,18 @@ for (octave_idx_type i = 0; i < a.nelem (); i++)
 @end group
 @end example
 
-The presence of the @code{OCTAVE_QUIT} macro in the inner loop allows Octave to
+The presence of the @w{@code{OCTAVE_QUIT}} macro in the inner loop allows Octave to
 treat the user request with the @kbd{Control-C}.  Without this macro, the user
 must either wait for the function to return before the interrupt is
 processed, or press @kbd{Control-C} three times to force Octave to exit.
 
-The @code{OCTAVE_QUIT} macro does impose a very small speed penalty, and so for
+The @w{@code{OCTAVE_QUIT}} macro does impose a very small speed penalty, and so for
 loops that are known to be small it might not make sense to include
-@code{OCTAVE_QUIT}.
+@w{@code{OCTAVE_QUIT}}.
 
 When creating an oct-file that uses an external libraries, the function
 might spend a significant portion of its time in the external
-library.  It is not generally possible to use the @code{OCTAVE_QUIT} macro in
+library.  It is not generally possible to use the @w{@code{OCTAVE_QUIT}} macro in
 this case.  The alternative in this case is
 
 @example
@@ -1083,7 +1079,7 @@ The disadvantage of this is that if the foreign code allocates any
 memory internally, then this memory might be lost during an interrupt,
 without being deallocated.  Therefore, ideally Octave itself should
 allocate any memory that is needed by the foreign code, with either the
-fortran_vec method or the @code{OCTAVE_LOCAL_BUFFER} macro.
+fortran_vec method or the @w{@code{OCTAVE_LOCAL_BUFFER}} macro.
 
 The Octave unwind_protect mechanism (@ref{The @code{unwind_protect} Statement})
 can also be used in oct-files.  In conjunction with the exception
@@ -1112,7 +1108,7 @@ The division by zero (and in fact all warnings) is disabled in the
 @subsection Documentation and Test of Oct-Files
 
 The documentation of an oct-file is the fourth string parameter of the
-@code{DEFUN_DLD} macro.  This string can be formatted in the same manner
+@w{@code{DEFUN_DLD}} macro.  This string can be formatted in the same manner
 as the help strings for user functions (@ref{Documentation Tips}),
 however there are some issue that are particular to the formatting of
 help strings within oct-files.
@@ -1494,7 +1490,6 @@ found in the file @file{mystruct.c}, as seen below
 An example of the behavior of this function within Octave is then
 
 @example
-@group
 a(1).f1 = "f11"; a(1).f2 = "f12"; 
 a(2).f1 = "f21"; a(2).f2 = "f22";
 b = mystruct(a)
@@ -1523,7 +1518,6 @@ b = mystruct(a)
       ,)
     
     @}
-@end group
 @end example
 
 @node Sparse Matrices with Mex-Files
@@ -1531,7 +1525,7 @@ b = mystruct(a)
 
 The Octave format for sparse matrices is identical to the mex format in
 that it is a compressed column sparse format.  Also in both, sparse
-matrices are required to be two dimensional.  The only difference is that
+matrices are required to be two-dimensional.  The only difference is that
 the real and imaginary parts of the matrix are stored separately.
 
 The mex-file interface, as well as using @code{mxGetM}, @code{mxGetN},

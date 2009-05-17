@@ -894,38 +894,30 @@ typically because of the complex shape of the domain.
 In order to motivate this application, we consider the boundary value
 Laplace equation.  This system can model scalar potential fields, such
 as heat or electrical potential.  Given a medium 
-@iftex
 @tex
 $\Omega$ 
 @end tex
-@end iftex
 @ifinfo
 Omega
 @end ifinfo
 with boundary
-@iftex
 @tex
 $\partial\Omega$ 
 @end tex
-@end iftex
 @ifinfo
 dOmega
 @end ifinfo
 . At all points on the 
-@iftex
 @tex
 $\partial\Omega$ 
 @end tex
-@end iftex
 @ifinfo
 dOmega
 @end ifinfo
 the boundary conditions are known, and we wish to calculate the potential in
-@iftex
 @tex
 $\Omega$ 
 @end tex
-@end iftex
 @ifinfo
 Omega
 @end ifinfo
@@ -935,11 +927,9 @@ boundary condition), its normal derivative across the boundary
 its derivative (Cauchy boundary condition).
 
 In a thermal model, we want to calculate the temperature in
-@iftex
 @tex
 $\Omega$ 
 @end tex
-@end iftex
 @ifinfo
 Omega
 @end ifinfo
@@ -947,11 +937,9 @@ and know the boundary temperature (Dirichlet condition)
 or heat flux (from which we can calculate the Neumann condition
 by dividing by the thermal conductivity at the boundary).  Similarly, 
 in an electrical model, we want to calculate the voltage in
-@iftex
 @tex
 $\Omega$ 
 @end tex
-@end iftex
 @ifinfo
 Omega
 @end ifinfo
@@ -962,11 +950,9 @@ to be electrically isolated; this is a Neumann boundary condition
 with the current equal to zero.
 
 The simplest finite element models will divide 
-@iftex
 @tex
 $\Omega$ 
 @end tex
-@end iftex
 @ifinfo
 Omega
 @end ifinfo
@@ -1027,11 +1013,9 @@ This creates a N-by-2 matrix @code{nodes} and a E-by-3 matrix
 
 Using a first order FEM, we approximate the electrical conductivity 
 distribution in 
-@iftex
 @tex
 $\Omega$ 
 @end tex
-@end iftex
 @ifinfo
 Omega
 @end ifinfo
@@ -1044,7 +1028,6 @@ between simplices and vertices, the global connectivity matrix @code{S} is
 calculated.
 
 @example
-@group
   # Element conductivity
   conductivity= [1*ones(1,16), ...
          2*ones(1,48), 1*ones(1,16)];
@@ -1071,24 +1054,19 @@ calculated.
   SE= sparse(Siidx,Sjidx,Sdata);
   # Global system matrix
   S= C'* SE *C;
-@end group
 @end example
 
 The system matrix acts like the conductivity 
-@iftex
 @tex
 $S$ 
 @end tex
-@end iftex
 @ifinfo
 @code{S}
 @end ifinfo
 in Ohm's law 
-@iftex
 @tex
 $SV = I$. 
 @end tex
-@end iftex
 @ifinfo
 @code{S * V = I}.
 @end ifinfo
@@ -1096,7 +1074,6 @@ Based on the Dirichlet and Neumann boundary conditions, we are able to
 solve for the voltages at each vertex @code{V}. 
 
 @example
-@group
   # Dirichlet boundary conditions
   D_nodes=[1:5, 51:55]; 
   D_value=[10*ones(1,5), 20*ones(1,5)]; 
@@ -1118,7 +1095,6 @@ solve for the voltages at each vertex @code{V}.
 
   V(idx) = S(idx,idx) \ ( Q(idx) - ...
             S(idx,D_nodes) * V(D_nodes));
-@end group
 @end example
 
 Finally, in order to display the solution, we show each solved voltage 

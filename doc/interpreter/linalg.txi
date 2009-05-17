@@ -22,7 +22,7 @@
 This chapter documents the linear algebra functions of Octave.
 Reference material for many of these functions may be found in
 Golub and Van Loan, @cite{Matrix Computations, 2nd Ed.}, Johns Hopkins,
-1989, and in the @cite{@sc{Lapack} Users' Guide}, SIAM, 1992.
+1989, and in the @cite{@sc{lapack} Users' Guide}, SIAM, 1992.
 
 @menu
 * Techniques used for Linear Algebra::
@@ -47,7 +47,7 @@ inverse is form is given by
 
 @enumerate 1
 @item If the matrix is upper or lower triangular sparse a forward or
-backward substitution using the @sc{Lapack} xTRTRS function, and goto 4.
+backward substitution using the @sc{lapack} xTRTRS function, and goto 4.
 
 @c Permuted triangular matrices currently disabled in the code
 @c
@@ -56,15 +56,15 @@ backward substitution using the @sc{Lapack} xTRTRS function, and goto 4.
 @c backward substitution, and goto 5.
 
 @item If the matrix is square, hermitian with a real positive diagonal,
-attempt Cholesky factorization using the @sc{Lapack} xPOTRF function.
+attempt Cholesky factorization using the @sc{lapack} xPOTRF function.
 
 @item If the Cholesky factorization failed or the matrix is not
 hermitian with a real positive diagonal, and the matrix is square, factorize 
-using the @sc{Lapack} xGETRF function.
+using the @sc{lapack} xGETRF function.
 
 @item If the matrix is not square, or any of the previous solvers flags
 a singular or near singular matrix, find a least squares solution using
-the @sc{Lapack} xGELSD function.
+the @sc{lapack} xGELSD function.
 @end enumerate
 
 The user can force the type of the matrix with the @code{matrix_type}

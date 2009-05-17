@@ -203,7 +203,7 @@ automatically from the functions in the package and the
 @anchor{doc-PKG_ADD}
 @item package/PKG_ADD
 An optional file that includes commands that are run when the package
-is added to the users path.  Note that @code{PKG_ADD} directives in the
+is added to the users path.  Note that @w{@code{PKG_ADD}} directives in the
 source code of the package will also be added to this file by the
 Octave package manager.  Note that symbolic links are to be avoided in
 packages, as symbolic links do not exist on some file systems, and so
@@ -221,15 +221,15 @@ autoload ('bar', which ('foo'));
 @end example
 
 @noindent
-@xref{PKG_ADD and PKG_DEL directives}, for details on @code{PKG_ADD}
+@xref{PKG_ADD and PKG_DEL directives}, for details on @w{@code{PKG_ADD}}
 directives.
 
 @item package/PKG_DEL
 An optional file that includes commands that are run when the package
-is removed from the users path.  Note that @code{PKG_DEL} directives in
+is removed from the users path.  Note that @w{@code{PKG_DEL}} directives in
 the source code of the package will also be added to this file by the
 Octave package manager. 
-@xref{PKG_ADD and PKG_DEL directives}, for details on @code{PKG_DEL}
+@xref{PKG_ADD and PKG_DEL directives}, for details on @w{@code{PKG_DEL}}
 directives.
 
 @item package/pre_install.m
@@ -272,7 +272,7 @@ of the installed package for future reference.
 
 @item package/bin
 An optional directory containing files that will be added to the
-Octave @code{EXEC_PATH} when the package is loaded.  This might contain
+Octave @w{@code{EXEC_PATH}} when the package is loaded.  This might contain
 external scripts, etc., called by functions within the package.
 @end table
 
@@ -519,15 +519,15 @@ id is any string of letters, numbers and @code{_}.
 @node PKG_ADD and PKG_DEL directives
 @subsection PKG_ADD and PKG_DEL directives
 
-If the package contains files called @code{PKG_ADD} or @code{PKG_DEL}
+If the package contains files called @w{@code{PKG_ADD}} or @w{@code{PKG_DEL}}
 the commands in these files will be executed when the package is
 added or removed from the users path.  In some situations such files
 are a bit cumbersome to maintain, so the package manager supports
 automatic creation of such files.  If a source file in the package
-contains a @code{PKG_ADD} or @code{PKG_DEL} directive they will be
-added to either the @code{PKG_ADD} or @code{PKG_DEL} files.
+contains a @w{@code{PKG_ADD}} or @w{@code{PKG_DEL}} directive they will be
+added to either the @w{@code{PKG_ADD}} or @w{@code{PKG_DEL}} files.
 
-In @code{m}-files a @code{PKG_ADD} directive looks like this
+In @code{m}-files a @w{@code{PKG_ADD}} directive looks like this
 
 @example
 ## PKG_ADD: some_octave_command
@@ -535,7 +535,7 @@ In @code{m}-files a @code{PKG_ADD} directive looks like this
 
 @noindent
 Such lines should be added before the @code{function} keyword.
-In C++ files a @code{PKG_ADD} directive looks like this
+In C++ files a @w{@code{PKG_ADD}} directive looks like this
 
 @example
 // PKG_ADD: some_octave_command
@@ -543,7 +543,7 @@ In C++ files a @code{PKG_ADD} directive looks like this
 
 @noindent
 In both cases @code{some_octave_command} should be replaced by the
-command that should be placed in the @code{PKG_ADD} file.
-@code{PKG_DEL} directives work in the same way, except the @code{PKG_ADD}
-keyword is replaced with @code{PKG_DEL} and the commands get added
-to the @code{PKG_DEL} file.
+command that should be placed in the @w{@code{PKG_ADD}} file.
+@w{@code{PKG_DEL}} directives work in the same way, except the @w{@code{PKG_ADD}}
+keyword is replaced with @w{@code{PKG_DEL}} and the commands get added
+to the @w{@code{PKG_DEL}} file.

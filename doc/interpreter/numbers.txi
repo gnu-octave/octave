@@ -55,11 +55,9 @@ To specify complex constants, you can write an expression of the form
 @noindent
 all of which are equivalent.  The letter @samp{i} in the previous example
 stands for the pure imaginary constant, defined as
-@iftex
 @tex
   $\sqrt{-1}$.
 @end tex
-@end iftex
 @ifnottex
   @code{sqrt (-1)}.
 @end ifnottex
@@ -119,11 +117,9 @@ a = [1, 2; 3, 4]
 
 @noindent
 results in the matrix
-@iftex
 @tex
 $$ a = \left[ \matrix{ 1 & 2 \cr 3 & 4 } \right] $$
 @end tex
-@end iftex
 @ifnottex
 
 @example
@@ -251,12 +247,14 @@ expression
 produces the error message
 
 @example
+@group
 parse error:
 
   syntax error
 
 >>> [ 1 a ' ]
               ^
+@end group
 @end example
 
 @noindent
@@ -310,7 +308,6 @@ Exercise}, SIGNUM, Volume 25, pages 2-6, 1990 and C. N. Nett and W. M.
 Haddad, in @cite{A System-Theoretic Appropriate Realization of the Empty
 Matrix Concept}, IEEE Transactions on Automatic Control, Volume 38,
 Number 5, May 1993.
-@iftex
 @tex
 Briefly, given a scalar $s$, an $m\times n$ matrix $M_{m\times n}$,
 and an $m\times n$ empty matrix $[\,]_{m\times n}$ (with either one or
@@ -319,12 +316,11 @@ $$
 \eqalign{%
 s \cdot [\,]_{m\times n} = [\,]_{m\times n} \cdot s &= [\,]_{m\times n}\cr
 [\,]_{m\times n} + [\,]_{m\times n} &= [\,]_{m\times n}\cr
-[\,]_{0\times m} \cdot  M_{m\times n} &= [\,]_{0\times n}\cr
+[\,]_{0\times m} \cdot M_{m\times n} &= [\,]_{0\times n}\cr
 M_{m\times n} \cdot [\,]_{n\times 0} &= [\,]_{m\times 0}\cr
 [\,]_{m\times 0} \cdot [\,]_{0\times n} &=  0_{m\times n}}
 $$
 @end tex
-@end iftex
 @ifnottex
 Briefly, given a scalar @var{s}, an @var{m} by
 @var{n} matrix @code{M(mxn)}, and an @var{m} by @var{n} empty matrix
@@ -406,7 +402,7 @@ instead (@pxref{Special Utility Matrices}).
 When adding a scalar to a range, subtracting a scalar from it (or subtracting a
 range from a scalar) and multiplying by scalar, Octave will attempt to avoid
 unpacking the range and keep the result as a range, too, if it can determine
-that it is safe to do so. For instance, doing
+that it is safe to do so.  For instance, doing
 
 @example
 a = 2*(1:1e7) - 1;
@@ -417,9 +413,9 @@ vector with ten million elements.
 
 Using zero as an increment in the colon notation, as @samp{1:0:1} is not
 allowed, because a division by zero would occur in determining the number of
-range elements. However, ranges with zero increment (i.e. all elements equal)
+range elements.  However, ranges with zero increment (i.e., all elements equal)
 are useful, especially in indexing, and Octave allows them to be constructed
-using the built-in function @dfn{ones}. Note that because a range must be a row
+using the built-in function @dfn{ones}.  Note that because a range must be a row
 vector, @samp{ones (1, 10)} produces a range, while @samp{ones (10, 1)} does not.
 
 When Octave parses a range expression, it examines the elements of the
@@ -439,18 +435,21 @@ precision answers.  A single precision variable is created with the
 for example
 
 @example
+@group
 sngl = single (rand (2, 2))
      @result{} sngl = 
         0.37569   0.92982
         0.11962   0.50876
 class (sngl)
     @result{} single
+@end group
 @end example
 
 Many functions can also return single precision values directly.  For
 example
 
 @example
+@group
 ones (2, 2, "single")
 zeros (2, 2, "single")
 eye (2, 2,  "single")
@@ -458,6 +457,7 @@ rand (2, 2, "single")
 NaN (2, 2, "single")
 NA (2, 2, "single")
 Inf (2, 2, "single")
+@end group
 @end example
 
 @noindent
@@ -479,12 +479,14 @@ existing matrices to integers.  The following example shows how to cast
 a matrix into 32 bit integers.
 
 @example
+@group
 float = rand (2, 2)
      @result{} float = 0.37569   0.92982
                 0.11962   0.50876
 integer = int32 (float)
      @result{} integer = 0  1
                   0  1
+@end group
 @end example
 
 @noindent
@@ -594,7 +596,7 @@ the function @code{bitmax}.
 This is the double precision version of the functions @code{intmax},
 previously discussed.
 
-Octave also includes the basic  bitwise 'and', 'or' and 'exclusive or'
+Octave also includes the basic bitwise 'and', 'or' and 'exclusive or'
 operators.
 
 @DOCSTRING(bitand)
@@ -654,10 +656,12 @@ the values corresponding to @code{true} parts of the logical array.
 The following example illustrates this.
 
 @example
+@group
 data = [ 1, 2; 3, 4 ];
 idx = (data <= 2);
 data(idx)
      @result{} ans = [ 1; 2 ]
+@end group
 @end example
 
 @noindent
@@ -680,8 +684,10 @@ or @code{false} functions.
 Many operators and functions can work with mixed data types.  For example
 
 @example
+@group
 uint8 (1) + 1
     @result{} 2
+@end group
 @end example
 
 @noindent
@@ -693,8 +699,10 @@ expressions like the above with all numerical constants would need to be
 explicitly cast to the appropriate data type like
 
 @example
+@group
 uint8 (1) + uint8 (1)
     @result{} 2
+@end group
 @end example
 
 @noindent
@@ -703,8 +711,10 @@ hard to find bugs to be introduced.  The same applies to single precision
 values where a mixed operation such as
 
 @example
+@group
 single (1) + 1
     @result{} 2
+@end group
 @end example
 
 @noindent
@@ -712,7 +722,7 @@ returns a single precision value.  The mixed operations that are valid
 and their returned data types are
 
 @multitable @columnfractions .2 .3 .3 .2
-@item @tab Mixed Operation @tab  Result @tab 
+@item @tab Mixed Operation @tab Result @tab 
 @item @tab double OP single @tab single @tab
 @item @tab double OP integer @tab integer @tab
 @item @tab double OP char @tab double @tab
@@ -725,8 +735,10 @@ and their returned data types are
 The same logic applies to functions with mixed arguments such as
 
 @example
+@group
 min (single (1), 0)
    @result{} 0
+@end group
 @end example
 
 @noindent
@@ -736,10 +748,12 @@ In the case of mixed type indexed assignments, the type is not
 changed.  For example
 
 @example
+@group
 x = ones (2, 2);
 x (1, 1) = single (2)
     @result{} x = 2   1
            1   1
+@end group
 @end example
 
 @noindent
@@ -756,6 +770,7 @@ returns the absolute value of the input if it is a real number, and the
 length of the input if it is a complex number.
 
 @example
+@group
 function a = abs (x)
   if (isreal (x))
     a = sign (x) .* x;
@@ -763,6 +778,7 @@ function a = abs (x)
     a = sqrt (real(x).^2 + imag(x).^2);
   endif
 endfunction
+@end group
 @end example
 
 The following functions are available for determining the type of a

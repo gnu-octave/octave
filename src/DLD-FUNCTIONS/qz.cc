@@ -271,7 +271,7 @@ of the revised pencil contains all eigenvalues that satisfy:\n\
 in the open left half-plane\n\
 \n\
 @item \"+\"\n\
-= nonnegative real part: leading block has all eigenvalues\n\
+= non-negative real part: leading block has all eigenvalues\n\
 in the closed right half-plane\n\
 @end table\n\
 @end table\n\

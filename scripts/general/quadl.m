@@ -34,7 +34,7 @@
 ## defined, displays the left end point of the current interval, the 
 ## interval length, and the partial integral.
 ##
-## Additional arguments @var{p1}, etc, are passed directly to @var{f}.
+## Additional arguments @var{p1}, etc., are passed directly to @var{f}.
 ## To use default values for @var{tol} and @var{trace}, one may pass
 ## empty matrices.
 ##

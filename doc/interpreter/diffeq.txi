@@ -36,13 +36,11 @@ All solvers are based on reliable ODE routines written in Fortran.
 @section Ordinary Differential Equations
 
 The function @code{lsode} can be used to solve ODEs of the form
-@iftex
 @tex
 $$
  {dx\over dt} = f (x, t)
 $$
 @end tex
-@end iftex
 @ifinfo
 
 @example
@@ -114,13 +112,11 @@ more information about the inner workings of @code{lsode}.
 @section Differential-Algebraic Equations
 
 The function @code{daspk} can be used to solve DAEs of the form
-@iftex
 @tex
 $$
  0 = f (\dot{x}, x, t), \qquad x(t=0) = x_0, \dot{x}(t=0) = \dot{x}_0
 $$
 @end tex
-@end iftex
 @ifnottex
 
 @example
@@ -130,11 +126,9 @@ $$
 
 @noindent
 where
-@iftex
 @tex
 $\dot{x} = {dx \over dt}$
 @end tex
-@end iftex
 @ifnottex
 @math{x-dot}
 @end ifnottex

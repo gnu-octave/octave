@@ -394,7 +394,7 @@ as @@var@{variable@}.
 @end example
 
 This help string must be commented in user functions, or in the help
-string of the @code{DEFUN_DLD} macro for dynamically loadable
+string of the @w{@code{DEFUN_DLD}} macro for dynamically loadable
 functions.  The important aspects of the documentation string are
 
 @table @asis
@@ -423,7 +423,7 @@ Texinfo format has been designed to generate output for online viewing
 with text-terminals as well as generating high-quality printed output.
 To these ends, Texinfo has commands which control the diversion of parts
 of the document into a particular output processor.  Three formats are
-of importance: info, html and TeX.  These are selected with
+of importance: info, html and @TeX{}.  These are selected with
 
 @example
 @group
@@ -451,7 +451,7 @@ text for TeX only
 @end group
 @end example
 
-Note that often TeX output can be used in html documents and so often
+Note that often @TeX{} output can be used in html documents and so often
 the @code{@@ifhtml} blocks are unnecessary.  If no specific output
 processor is chosen, by default, the text goes into all output
 processors.  It is usual to have the above blocks in pairs to allow the
@@ -505,7 +505,6 @@ example of which is the @code{nchoosek} function.  The Texinfo
 documentation string of @code{nchoosek} is
 
 @example
-@group
 -*- texinfo -*-
 @@deftypefn @{Function File@} @{@} nchoosek (@@var@{n@}, @@var@{k@})
 
@@ -540,7 +539,6 @@ one row per combination.  The resulting @@var@{c@} has size
 
 @@seealso@{bincoeff@}
 @@end deftypefn
-@end group
 @end example
 
 which demonstrates most of the concepts discussed above.
@@ -573,7 +571,7 @@ This documentation string renders as
 @end group
 @end example
 
-using info, whereas in a printed documentation using TeX it will appear
+using info, whereas in a printed documentation using @TeX{} it will appear
 as
 
 @deftypefn {Function File} {@var{c} =} nchoosek (@var{n}, @var{k})

@@ -126,7 +126,7 @@ shown in @ref{fig:hist}.
 @DOCSTRING(rose)
 
 The @code{contour}, @code{contourf} and @code{contourc} functions
-produce two-dimensional contour plots from three dimensional data.
+produce two-dimensional contour plots from three-dimensional data.
 
 @DOCSTRING(contour)
 
@@ -494,7 +494,7 @@ selection the position at which to place text on the plot with the
 
 The functions @code{sombrero} and @code{peaks} provide a way to check
 that plotting is working.  Typing either @code{sombrero} or @code{peaks}
-at the Octave prompt should display a three dimensional plot.
+at the Octave prompt should display a three-dimensional plot.
 
 @DOCSTRING(sombrero)
 
@@ -823,8 +823,8 @@ Octave.
 @item dataaspectratio
 A two-element vector specifying the relative height and width of the
 data displayed in the axes.  Setting @code{dataaspectratio} to @samp{1,
-2]} causes the length of one unit as displayed on the y axis to be the
-same as the length of 2 units on the x axis.  Setting
+2]} causes the length of one unit as displayed on the y-axis to be the
+same as the length of 2 units on the x-axis.  Setting
 @code{dataaspectratio} also forces the @code{dataaspectratiomode}
 property to be set to @code{"manual"}.
 
@@ -894,8 +894,8 @@ Either @code{"forward"} or @code{"reverse"}.
 
 @item xaxislocation
 @itemx yaxislocation
-Either @code{"top"} or @code{"bottom"} for the x axis and @code{"left"}
-or @code{"right"} for the y axis.
+Either @code{"top"} or @code{"bottom"} for the x-axis and @code{"left"}
+or @code{"right"} for the y-axis.
 
 @item view
 A three element vector specifying the view point for three-dimensional plots.
@@ -1048,7 +1048,6 @@ sub-scripted.  Without the @{ @} pair, only the character immediately
 following the '^' or '_' is super- or sub-scripted.
 
 @float Table,tab:extended
-@iftex
 @tex
 \vskip 6pt
 {\hbox to \hsize {\hfill\vbox{\offinterlineskip \tabskip=0pt 
@@ -1172,7 +1171,6 @@ width 0.6pt \tabskip=0pt\cr
 \noalign{\hrule height 0.6pt}
 }}\hfill}}
 @end tex
-@end iftex
 @ifnottex
 @multitable @columnfractions .125 .25 .25 .25 .125
 @item @tab  \forall     @tab  \exists     @tab  \ni      @tab

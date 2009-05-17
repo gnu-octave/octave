@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} split (@var{s}, @var{t}, @var{n})
-## This function has been deprecated. Use @code{char (strsplit (s, t))}
+## This function has been deprecated.  Use @code{char (strsplit (s, t))}
 ## instead.
 ## @end deftypefn
 

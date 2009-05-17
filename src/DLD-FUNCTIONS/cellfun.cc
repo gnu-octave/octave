@@ -1012,7 +1012,6 @@ arguments are assumed to equal @code{size (@var{a},@var{i})}.\n\
 An example of the use of mat2cell is\n\
 \n\
 @example\n\
-@group\n\
 mat2cell (reshape(1:16,4,4),[3,1],[3,1])\n\
 @result{} @{\n\
   [1,1] =\n\
@@ -1033,7 +1032,6 @@ mat2cell (reshape(1:16,4,4),[3,1],[3,1])\n\
 \n\
   [2,2] = 16\n\
 @}\n\
-@end group\n\
 @end example\n\
 @seealso{num2cell, cell2mat}\n\
 @end deftypefn")

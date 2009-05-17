@@ -154,7 +154,6 @@ using the @code{hist} function as described in
 Octave can perform several different statistical tests.  The following
 table summarizes the available tests.
 
-@iftex
 @tex
 \vskip 6pt
 {\hbox to \hsize {\hfill\vbox{\offinterlineskip \tabskip=0pt 
@@ -181,7 +180,6 @@ table summarizes the available tests.
 \noalign{\hrule height 0.6pt}
 }}\hfill}}
 @end tex
-@end iftex
 @ifnottex
 @multitable @columnfractions .4 .5
 @item @strong{Hypothesis}
@@ -285,7 +283,6 @@ The following table summarizes the supported distributions (in
 alphabetical order).
 
 @c Do the table explicitly in TeX if possible to get a better layout.
-@iftex
 @tex
 \vskip 6pt
 {\hbox to \hsize {\hfill\vbox{\offinterlineskip \tabskip=0pt 
@@ -322,7 +319,6 @@ alphabetical order).
 \noalign{\hrule height 0.6pt}
 }}\hfill}}
 @end tex
-@end iftex
 @ifnottex
 @multitable @columnfractions .31 .23 .23 .23
 @item @strong{Distribution}
@@ -559,7 +555,6 @@ described in @ref{Special Utility Matrices}.
 The following table summarizes the available random number generators
 (in alphabetical order).
 
-@iftex
 @tex
 \vskip 6pt
 {\hbox to \hsize {\hfill\vbox{\offinterlineskip \tabskip=0pt 
@@ -594,7 +589,6 @@ The following table summarizes the available random number generators
 \noalign{\hrule height 0.6pt}
 }}\hfill}}
 @end tex
-@end iftex
 @ifnottex
 @multitable @columnfractions .4 .3
 @item @strong{Distribution}             @tab @strong{Function}

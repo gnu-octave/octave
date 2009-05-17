@@ -220,6 +220,7 @@ one variable.  This is possible using the @code{if} statement in the
 following way
 
 @example
+@group
 if (X == 1)
   do_something ();
 elseif (X == 2)
@@ -227,6 +228,7 @@ elseif (X == 2)
 else
   do_something_completely_different ();
 endif
+@end group
 @end example
 
 @noindent
@@ -235,6 +237,7 @@ maintain.  To overcome this problem Octave supports the @code{switch}
 statement.  Using this statement, the above example becomes
 
 @example
+@group
 switch (X)
   case 1
     do_something ();
@@ -243,6 +246,7 @@ switch (X)
   otherwise
     do_something_completely_different ();
 endswitch
+@end group
 @end example
 
 @noindent
@@ -283,6 +287,7 @@ is executed if @emph{any} of the elements of the cell array match
 @samp{Variable is either 6 or 7}.
 
 @example
+@group
 A = 7;
 switch A
   case @{ 6, 7 @}
@@ -290,6 +295,7 @@ switch A
   otherwise
     printf ("variable is neither 6 nor 7\n");
 endswitch
+@end group
 @end example
 
 As with all other specific @code{end} keywords, @code{endswitch} may be
@@ -313,11 +319,13 @@ This special-case is handled by the @code{switch} statement, and it
 is possible to write programs that look like this
 
 @example
+@group
 switch (X)
   case "a string"
     do_something
   @dots{}
 endswitch
+@end group
 @end example
 
 @menu
@@ -581,7 +589,7 @@ endfor
 
 @noindent
 In the above case, the multidimensional matrix @var{c} is reshaped to a
-two dimensional matrix as @code{reshape (c, rows(c),
+two-dimensional matrix as @code{reshape (c, rows(c),
 prod(size(c)(2:end)))} and then the same behavior as a loop over a two
 dimensional matrix is produced.
 

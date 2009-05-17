@@ -34,7 +34,7 @@
 ##   Set the @var{printer} name to which the graph is sent if no
 ##   @var{filename} is specified.
 ## @item -G@var{ghostscript_command}
-##   Specify the command for calling Ghostscript. For Unix and Windows,
+##   Specify the command for calling Ghostscript.  For Unix and Windows,
 ## the defaults are 'gs' and 'gswin32c', respectively.
 ## @item -color
 ## @itemx -mono
@@ -63,10 +63,10 @@
 ##   @itemx epslatexstandalone
 ##   @itemx pstex
 ##   @itemx pslatex
-##     Generate a LaTeX (or TeX) file for labels, and eps/ps for
+##     Generate a @LaTeX{} (or @TeX{}) file for labels, and eps/ps for
 ## graphics.  The file produced by @code{epslatexstandalone} can be
-## processed directly by LaTeX.  The other formats are intended to
-## be included in a LaTeX (or TeX) document.  The @code{tex} device
+## processed directly by @LaTeX{}.  The other formats are intended to
+## be included in a @LaTeX{} (or @TeX{}) document.  The @code{tex} device
 ## is the same as the @code{epslatex} device.
 ##   @item ill
 ##   @itemx aifm
@@ -131,24 +131,24 @@
 ## and devices are available.
 ##
 ##   For output sent to a printer, the size is determined by the
-## figure's "papersize" property. For output to a file the, size
+## figure's "papersize" property.  For output to a file the, size
 ## is determined by the "paperposition" property.
 ##
 ## @itemx -r@var{NUM}
-##   Resolution of bitmaps in pixels per inch. For both metafiles and 
+##   Resolution of bitmaps in pixels per inch.  For both metafiles and 
 ## SVG the default is the screen resolution, for other it is 150 dpi.
 ## To specify screen resolution, use "-r0".
 ##
 ## @item -tight
-##   Forces a tight bounding box for eps-files. Since the ghostscript
+##   Forces a tight bounding box for eps-files.  Since the ghostscript
 ## devices are conversion of an eps-file, this option works the those
 ## devices as well.
 ##
 ## @itemx -S@var{xsize},@var{ysize}
-##   Plot size in pixels for EMF, GIF, JPEG, PBM, PNG and SVG. If
+##   Plot size in pixels for EMF, GIF, JPEG, PBM, PNG and SVG.  If
 ## using the command form of the print function, you must quote the
 ## @var{xsize},@var{ysize} option.  For example, by writing
-## @code{"-S640,480"}.  The size defaults to that specified by the
+## @w{@code{"-S640,480"}}.  The size defaults to that specified by the
 ## figure's paperposition property.
 ##
 ## @item -F@var{fontname}

@@ -1643,7 +1643,7 @@ DEFUNX ("tolower", Ftolower, args, ,
 @deftypefn {Mapping Function} {} tolower (@var{s})\n\
 @deftypefnx {Mapping Function} {} lower (@var{s})\n\
 Return a copy of the string or cell string @var{s}, with each upper-case\n\
-character replaced by the corresponding lower-case one; nonalphabetic\n\
+character replaced by the corresponding lower-case one; non-alphabetic\n\
 characters are left unchanged.  For example,\n\
 \n\
 @example\n\
@@ -1689,7 +1689,7 @@ DEFUNX ("toupper", Ftoupper, args, ,
 @deftypefn {Built-in Function} {} toupper (@var{s})\n\
 @deftypefnx {Built-in Function} {} upper (@var{s})\n\
 Return a copy of the string or cell string @var{s}, with each lower-case\n\
-character replaced by the corresponding upper-case one; nonalphabetic\n\
+character replaced by the corresponding upper-case one; non-alphabetic\n\
 characters are left unchanged.  For example,\n\
 \n\
 @example\n\

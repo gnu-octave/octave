@@ -33,13 +33,11 @@ integration problems.
 @section Functions of One Variable
 
 Octave supports three different algorithms for computing the integral
-@iftex
 @tex
 $$
  \int_a^b f(x) d x
 $$
 @end tex
-@end iftex
 of a function @math{f} over the interval from @math{a} to @math{b}.
 These are
 
@@ -70,14 +68,12 @@ numerical integration using the trapezoidal method through the
 @DOCSTRING(quad_options)
 
 Here is an example of using @code{quad} to integrate the function
-@iftex
 @tex
 $$
  f(x) = x \sin (1/x) \sqrt {|1 - x|}
 $$
 from $x = 0$ to $x = 3$.
 @end tex
-@end iftex
 @ifnottex
 
 @example
@@ -139,12 +135,10 @@ if you move the lower bound to 0.1, then 0.01, then 0.001, etc.).
 
 Here is an example of using @code{colloc} to generate weight matrices
 for solving the second order differential equation
-@iftex
 @tex
 $u^\prime - \alpha u^{\prime\prime} = 0$ with the boundary conditions
 $u(0) = 0$ and $u(1) = 1$.
 @end tex
-@end iftex
 @ifnottex
 @var{u}' - @var{alpha} * @var{u}'' = 0 with the boundary conditions
 @var{u}(0) = 0 and @var{u}(1) = 1.
@@ -153,11 +147,9 @@ $u(0) = 0$ and $u(1) = 1$.
 First, we can generate the weight matrices for @var{n} points (including
 the endpoints of the interval), and incorporate the boundary conditions
 in the right hand side (for a specific value of
-@iftex
 @tex
 $\alpha$).
 @end tex
-@end iftex
 @ifnottex
 @var{alpha}).
 @end ifnottex
@@ -192,13 +184,11 @@ functions for one-dimensional integrals.
 
 To illustrate how the integration can be performed, we will integrate
 the function
-@iftex
 @tex
 $$
   f(x, y) = \sin(\pi x y)\sqrt{x y}
 $$
 @end tex
-@end iftex
 @ifnottex
 @example
 f(x, y) = sin(pi*x*y)*sqrt(x*y)
@@ -250,13 +240,11 @@ possible solution is to use Orthogonal Collocation as described in the
 previous section.  The integral of a function @math{f(x,y)} for
 @math{x} and @math{y} between 0 and 1 can be approximated using @math{n}
 points by
-@iftex
 @tex
 $$
  \int_0^1 \int_0^1 f(x,y) d x d y \approx \sum_{i=1}^n \sum_{j=1}^n q_i q_j f(r_i, r_j),
 $$
 @end tex
-@end iftex
 @ifnottex
 the sum over @code{i=1:n} and @code{j=1:n} of @code{q(i)*q(j)*f(r(i),r(j))},
 @end ifnottex

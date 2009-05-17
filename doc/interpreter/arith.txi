@@ -77,12 +77,10 @@ sin ([1, 2; 3, 4])
 @section Complex Arithmetic
 
 In the descriptions of the following functions,
-@iftex
 @tex
 $z$ is the complex number $x + iy$, where $i$ is defined as
 $\sqrt{-1}$.
 @end tex
-@end iftex
 @ifinfo
 @var{z} is the complex number @var{x} + @var{i}@var{y}, where @var{i} is
 defined as @code{sqrt (-1)}.

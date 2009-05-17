@@ -48,7 +48,6 @@ that finds the root of a user-supplied function of one variable using
 Newton's method.
 
 @example
-@group
 @cindex Fordyce, A. P.
 @findex newtroot
 function result = newtroot (fname, x)
@@ -76,7 +75,6 @@ function result = newtroot (fname, x)
   result = x;
 
 endfunction
-@end group
 @end example
 
 Note that this is only meant to be an example of calling user-supplied
@@ -116,21 +114,25 @@ Consider how you might write @code{save} and @code{load} as
 m-files.  For example,
 
 @example
+@group
 function create_data
   x = linspace (0, 10, 10);
   y = sin (x);
   save mydata x y
 endfunction
+@end group
 @end example
 
 With @code{evalin}, you could write @code{save} as follows:
 
 @example
+@group
 function save (file, name1, name2)
   f = open_save_file (file);
   save_var(f, name1, evalin ("caller", name1));
   save_var(f, name2, evalin ("caller", name2));
 endfunction
+@end group
 @end example
 
 @noindent
@@ -141,16 +143,19 @@ You later want to load the values back from @code{mydata}
 in a different context:
 
 @example
+@group
 function process_data
   load mydata
   @dots{} do work @dots{}
 endfunction
+@end group
 @end example
 
 @noindent
 With @code{assignin}, you could write @code{load} as follows:
 
 @example
+@group
 function load (file)
   f = open_load_file (file);
   [name, val] = load_var (f);
@@ -158,6 +163,7 @@ function load (file)
   [name, val] = load_var (f);
   assignin ("caller", name, val);
 endfunction
+@end group
 @end example
 
 @noindent

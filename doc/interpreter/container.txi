@@ -322,7 +322,6 @@ numerical array, by assigning the elements to an empty matrix.  For
 example
 
 @example
-@group
 in = struct ("call1", @{x, Inf, "last"@}, 
              "call2", @{x, Inf, "first"@});
 in (1, :) = []
@@ -343,7 +342,6 @@ in (1, :) = []
         ,)
       
       @}
-@end group
 @end example
 
 @node Creating Structures
@@ -371,7 +369,6 @@ arrays, then the scalar arguments are expanded to create a
 structure array with a consistent dimension.  For example
 
 @example
-@group
 struct ("field1", @{1, "one"@}, "field2", @{2, "two"@},
         "field3", 3)
 @result{} ans =
@@ -398,7 +395,6 @@ struct ("field1", @{1, "one"@}, "field2", @{2, "two"@},
         ,)
       
       @}
-@end group
 @end example
 
 @DOCSTRING(struct)
@@ -558,11 +554,13 @@ following example two cell arrays of equal size are created, and the size
 of the first one is displayed
 
 @example
+@group
 c1 = cell(3, 4, 5);
 c2 = cell( [3, 4, 5] );
 size(c1)
      @result{} ans =
          3   4   5
+@end group
 @end example
 
 @noindent
@@ -570,7 +568,7 @@ As can be seen, the @code{size} function also works for cell arrays.  As
 do the other functions describing the size of an object, such as
 @code{length}, @code{numel}, @code{rows}, and @code{columns}.
 
-As an alternative to creating empty cell arrays, and then filling them,  it
+As an alternative to creating empty cell arrays, and then filling them, it
 is possible to convert numerical arrays into cell arrays using the
 @code{num2cell} and @code{mat2cell} functions.
 
@@ -651,6 +649,7 @@ matrix representation is required for an operation, it can be converted
 to a cell array of strings using the @code{cellstr} function
 
 @example
+@group
 a = ["hello"; "world"];
 c = cellstr (a)
      @result{} c =
@@ -658,6 +657,7 @@ c = cellstr (a)
            [1,1] = hello
            [2,1] = world
          @}
+@end group
 @end example
 
 One further advantage of using cell arrays to store multiple strings is
@@ -669,10 +669,12 @@ of strings, each element of the cell array will be compared the string
 argument,
 
 @example
+@group
 c = @{"hello", "world"@};
 strcmp ("hello", c)
      @result{} ans =
         1   0
+@end group
 @end example
 
 @noindent
@@ -742,10 +744,12 @@ surrounding the list with @code{[} and @code{]} as in the following
 example
 
 @example
+@group
 a = @{1, [2, 3], 4@};
 b = [a@{:@}]
      @result{} b =
          1   2   3   4
+@end group
 @end example
 
 It is also possible to pass the accessed elements directly to a
@@ -755,11 +759,13 @@ arguments.  The two calls to @code{printf} in the following example are
 identical but the latter is simpler and handles more situations
 
 @example
+@group
 c = @{"GNU", "Octave", "is", "Free", "Software"@};
 printf ("%s ", c@{1@}, c@{2@}, c@{3@}, c@{4@}, c@{5@});
      @print{} GNU Octave is Free Software 
 printf ("%s ", c@{:@});
      @print{} GNU Octave is Free Software 
+@end group
 @end example
 
 Just like it is possible to create a numerical array from selected
@@ -769,6 +775,7 @@ containing the selected elements.  By surrounding the list with
 following example illustrates
 
 @example
+@group
 a = @{1, rand(2, 2), "three"@};
 b = @{ a@{ [1, 3] @} @}
      @result{} b =
@@ -776,6 +783,7 @@ b = @{ a@{ [1, 3] @} @}
            [1,1] =  1
            [1,2] = three
          @}
+@end group
 @end example
 
 @noindent
@@ -787,6 +795,7 @@ the selected elements will be created.  Using this syntax, the previous
 example can be simplified into the following
 
 @example
+@group
 a = @{1, rand(2, 2), "three"@};
 b = a( [1, 3] )
      @result{} b =
@@ -794,6 +803,7 @@ b = a( [1, 3] )
            [1,1] =  1
            [1,2] = three
          @}
+@end group
 @end example
 
 A comma separated list can equally appear on the left-hand side of an

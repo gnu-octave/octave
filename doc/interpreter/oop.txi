@@ -67,11 +67,9 @@ The polynomial class is used to represent polynomials of the form
 
 @example
 @group
-@iftex
 @tex
 $a_0 + a_1 x + a_2 x^2 + \ldots a_n x^n$
 @end tex
-@end iftex
 @ifnottex
 a0 + a1 * x + a2 * x^2 + @dots{} + an * x^n
 @end ifnottex
@@ -80,11 +78,9 @@ a0 + a1 * x + a2 * x^2 + @dots{} + an * x^n
 
 @noindent
 where
-@iftex
 @tex
 $a_0$, $a_1$, etc. are elements of $\Re$.
 @end tex
-@end iftex
 @ifnottex
 a0, a1, etc. are real scalars.
 @end ifnottex
@@ -359,7 +355,6 @@ in the use of methods of other classes with the user class.  An example
 @anchor{doc-ge} @anchor{doc-eq} @anchor{doc-ne} @anchor{doc-and}
 @anchor{doc-or} @anchor{doc-not} @anchor{doc-ctranspose} @anchor{doc-transpose}
 
-@iftex
 @tex
 \vskip 6pt
 {\hbox to \hsize {\hfill\vbox{\offinterlineskip \tabskip=0pt 
@@ -404,7 +399,6 @@ width 0.6pt \tabskip=0pt\cr
 \noalign{\hrule height 0.6pt}
 }}\hfill}}
 @end tex
-@end iftex
 @ifnottex
 @multitable @columnfractions .1 .20 .20 .40 .1
 @item @tab Operation @tab Method @tab Description @tab

@@ -51,8 +51,10 @@ expression.  For example, the following expression will display the
 value of @samp{pi}
 
 @example
+@group
 pi
      @print{} pi = 3.1416
+@end group
 @end example
 
 This works well as long as it is acceptable to have the name of the
@@ -150,14 +152,17 @@ As an example the following code creates a 3-by-3 matrix and saves it
 to the file @samp{myfile.mat}.
 
 @example
+@group
 A = [ 1:3; 4:6; 7:9 ];
 save myfile.mat A
+@end group
 @end example
 
 Once one or more variables have been saved to a file, they can be
 read into memory using the @code{load} command.
 
 @example
+@group
 load myfile.mat
 A
      @print{} A =
@@ -165,6 +170,7 @@ A
      @print{}    1   2   3
      @print{}    4   5   6
      @print{}    7   8   9
+@end group
 @end example
 
 @DOCSTRING(save)
@@ -188,10 +194,12 @@ as created by @code{fopen}.  As an example, the following code writes
 to data @samp{myfile.txt}.
 
 @example
+@group
 fid = fopen ("myfile.txt", "w");
 fdisp (fid, "3/8 is ");
 fdisp (fid, 3/8);
 fclose (fid);
+@end group
 @end example
 
 @noindent
@@ -300,10 +308,12 @@ the basic pattern for writing to a file, but a very similar pattern is
 used when reading a file.
 
 @example
+@group
 filename = "myfile.txt";
 fid = fopen (filename, "w");
 # Do the actual I/O here@dots{}
 fclose (fid);
+@end group
 @end example
 
 @DOCSTRING(fopen)
@@ -319,10 +329,12 @@ how to write the string @samp{Free Software is needed for Free Science}
 to the file @samp{free.txt}.
 
 @example
+@group
 filename = "free.txt";
 fid = fopen (filename, "w");
 fputs (fid, "Free Software is needed for Free Science");
 fclose (fid);
+@end group
 @end example
 
 @DOCSTRING(fputs)
@@ -341,10 +353,12 @@ Then a line can be read from the file using @code{fgetl} as the following
 code illustrates
 
 @example
+@group
 fid = fopen ("free.txt");
 txt = fgetl (fid)
      @print{} Free Software is needed for Free Science
 fclose (fid);
+@end group
 @end example
 
 @noindent
@@ -383,18 +397,22 @@ formatted and written to the output stream.  For example,
 @cindex conversion specifications (@code{printf})
 
 @example
+@group
 pct = 37;
 filename = "foo.txt";
 printf ("Processed %d%% of `%s'.\nPlease be patient.\n",
         pct, filename);
+@end group
 @end example
 
 @noindent
 produces output like
 
 @example
+@group
 Processed 37% of `foo.txt'.
 Please be patient.
+@end group
 @end example
 
 This example shows the use of the @samp{%d} conversion to specify that a
@@ -989,12 +1007,14 @@ at a time.  The following example shows how to read one line at a time
 from a file until the end has been reached.
 
 @example
+@group
 filename = "myfile.txt";
 fid = fopen (filename, "r");
 while (! feof (fid) )
   text_line = fgetl (fid);
 endwhile
 fclose (fid);
+@end group
 @end example
 
 @noindent
@@ -1030,9 +1050,11 @@ The following example stores the current file position in the variable
 four characters, and then returns to the original position.
 
 @example
+@group
 marker = ftell (myfile);
 frewind (myfile);
 fourch = fgets (myfile, 4);
 fseek (myfile, marker, SEEK_SET);
+@end group
 @end example
 

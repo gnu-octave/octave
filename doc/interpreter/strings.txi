@@ -155,7 +155,7 @@ example,
 The string representation used by Octave is an array of characters, so
 internally the string "dddddddddd" is actually a row vector of length 10
 containing the value 100 in all places (100 is the ASCII code of "d").  This
-lends itself to the obvious generalisation to character matrices.  Using a
+lends itself to the obvious generalization to character matrices.  Using a
 matrix of characters, it is possible to represent a collection of same-length
 strings in one variable.  The convention used in Octave is that each row in a
 character matrix is a separate string, but letting each column represent a
@@ -369,10 +369,12 @@ Since a string is a character array, comparisons between strings work
 element by element as the following example shows:
 
 @example
+@group
 GNU = "GNU's Not UNIX";
 spaces = (GNU == " ")
      @result{} spaces =
        0   0   0   0   0   1   0   0   0   1   0   0   0   0
+@end group
 @end example
 
 @noindent To determine if two strings are identical it is necessary to use the
@@ -401,7 +403,7 @@ all blank characters with underscores.
 
 @example
 @group
-quote = @dots{}
+quote = ...
   "First things first, but not necessarily in that order";
 quote( quote == " " ) = "_"
 @result{} quote = 
@@ -454,8 +456,10 @@ numbers.  As an example, it is possible to convert a string containing
 a hexadecimal number to a floating point number.
 
 @example
+@group
 hex2dec ("FF")
      @result{} ans = 255
+@end group
 @end example
 
 @DOCSTRING(bin2dec)

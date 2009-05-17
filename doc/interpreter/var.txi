@@ -268,7 +268,6 @@ explicitly cleared.  Assuming that the implementation of @code{count_calls}
 is saved on disc, we get the following behavior.
 
 @example
-@group
 for i = 1:2
   count_calls ();
 endfor
@@ -295,7 +294,6 @@ for i = 1:2
 endfor
 @print{} 'count_calls' has been called 1 times
 @print{} 'count_calls' has been called 2 times
-@end group
 @end example
 
 @noindent
@@ -317,11 +315,13 @@ and its siblings @code{whos} and @code{whos_line_format} will show
 different information about what is in memory, as the following shows.
 
 @example
+@group
 str = "A random string";
 who -variables
      @print{} *** local user variables:
      @print{} 
      @print{} __nargin__  str
+@end group
 @end example
 
 @DOCSTRING(who)
@@ -336,9 +336,11 @@ to alter the behavior of a program depending on the existence of a
 variable.  The following example illustrates this.
 
 @example
+@group
 if (! exist ("meaning", "var"))
   disp ("The program has no 'meaning'");
 endif
+@end group
 @end example
 
 @DOCSTRING(exist)

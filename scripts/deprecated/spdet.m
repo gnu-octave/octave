@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Loadable Function} {[@var{d}, @var{rcond}] = } spdet (@var{a})
+## @deftypefn {Loadable Function} {[@var{d}, @var{rcond}] =} spdet (@var{a})
 ## This function has been deprecated.  Use @code{det} instead.
 ## @end deftypefn
 

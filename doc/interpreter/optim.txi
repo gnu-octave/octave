@@ -45,24 +45,20 @@ Minimization.
 Octave can solve Linear Programming problems using the @code{glpk}
 function.  That is, Octave can solve
 
-@iftex
 @tex
 $$
   \min_x c^T x
 $$
 @end tex
-@end iftex
 @ifnottex
 @example
 min C'*x
 @end example
 @end ifnottex
 subject to the linear constraints
-@iftex
 @tex
 $Ax = b$ where $x \geq 0$.
 @end tex
-@end iftex
 @ifnottex
 @math{A*x = b} where @math{x >= 0}.
 @end ifnottex
@@ -76,26 +72,22 @@ The @code{glpk} function also supports variations of this problem.
 @section Quadratic Programming
 
 Octave can also solve Quadratic Programming problems, this is
-@iftex
 @tex
 $$
  \min_x {1 \over 2} x^T H x + x^T q
 $$
 @end tex
-@end iftex
 @ifnottex
 @example
 min 0.5 x'*H*x + x'*q
 @end example
 @end ifnottex
 subject to
-@iftex
 @tex
 $$
  Ax = b \qquad lb \leq x \leq ub \qquad A_{lb} \leq A_{in} \leq A_{ub}
 $$
 @end tex
-@end iftex
 @ifnottex
 @example
 @group
@@ -121,11 +113,9 @@ successive quadratic programming solver.
 
 Octave also supports linear least squares minimization.  That is,
 Octave can find the parameter @math{b} such that the model
-@iftex
 @tex
 $y = xb$
 @end tex
-@end iftex
 @ifnottex
 @math{y = x*b}
 @end ifnottex

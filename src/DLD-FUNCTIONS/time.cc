@@ -105,7 +105,7 @@ value returned by @code{time} was 856163706.\n\
 DEFUN_DLD (gmtime, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} gmtime (@var{t})\n\
-Given a value returned from time (or any nonnegative integer),\n\
+Given a value returned from time (or any non-negative integer),\n\
 return a time structure corresponding to CUT.  For example,\n\
 \n\
 @example\n\
@@ -169,7 +169,7 @@ gmtime (time ())\n\
 DEFUN_DLD (localtime, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} localtime (@var{t})\n\
-Given a value returned from time (or any nonnegative integer),\n\
+Given a value returned from time (or any non-negative integer),\n\
 return a time structure corresponding to the local time zone.\n\
 \n\
 @example\n\

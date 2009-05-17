@@ -20,7 +20,7 @@
 ## @deftypefn {Function File} {} hypergeometric_pdf (@var{x}, @var{m}, @var{t}, @var{n})
 ## Compute the probability density function (PDF) at @var{x} of the
 ## hypergeometric distribution with parameters @var{m}, @var{t}, and
-## @var{n}. This is the probability of obtaining @var{x} marked items
+## @var{n}.  This is the probability of obtaining @var{x} marked items
 ## when randomly drawing a sample of size @var{n} without replacement
 ## from a population of total size @var{t} containing @var{m} marked items.
 ##

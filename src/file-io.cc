@@ -752,11 +752,11 @@ DEFUN (fseek, args, ,
 Set the file pointer to any location within the file @var{fid}.\n\
 \n\
 The pointer is positioned @var{offset} characters from the @var{origin},\n\
-which may be one of the predefined variables @code{SEEK_CUR} (current\n\
-position), @code{SEEK_SET} (beginning), or @code{SEEK_END} (end of\n\
+which may be one of the predefined variables @w{@code{SEEK_CUR}} (current\n\
+position), @w{@code{SEEK_SET}} (beginning), or @w{@code{SEEK_END}} (end of\n\
 file) or strings \"cof\", \"bof\" or \"eof\".  If @var{origin} is omitted,\n\
-@code{SEEK_SET} is assumed.  The offset must be zero, or a value returned\n\
-by @code{ftell} (in which case @var{origin} must be @code{SEEK_SET}).\n\
+@w{@code{SEEK_SET}} is assumed.  The offset must be zero, or a value returned\n\
+by @code{ftell} (in which case @var{origin} must be @w{@code{SEEK_SET}}).\n\
 \n\
 Return 0 on success and -1 on error.\n\
 @seealso{ftell, fopen, fclose}\n\
@@ -1921,7 +1921,7 @@ must be @code{XXXXXX} and these are replaced with a string that makes the\n\
 filename unique.  The file is then created with mode read/write and\n\
 permissions that are system dependent (on GNU/Linux systems, the permissions\n\
 will be 0600 for versions of glibc 2.0.7 and later).  The file is opened\n\
-with the @code{O_EXCL} flag.\n\
+with the @w{@code{O_EXCL}} flag.\n\
 \n\
 If the optional argument @var{delete} is supplied and is true,\n\
 the file will be deleted automatically when Octave exits, or when\n\

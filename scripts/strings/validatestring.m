@@ -18,8 +18,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{validstr} =} validatestring (@var{str}, @var{strarray})
-## @deftypefnx {Function File} {@var{validstr} =} validatestring (@var{str}, @var{strarray}, @var{funname})
-## @deftypefnx {Function File} {@var{validstr} =} validatestring (@var{str}, @var{strarray}, @var{funname}, @var{varname})
+## @deftypefnx {Function File} {@var{validstr} =} validatestring (@var{str}, @var{strarray}, @var{funcname})
+## @deftypefnx {Function File} {@var{validstr} =} validatestring (@var{str}, @var{strarray}, @var{funcname}, @var{varname})
 ## @deftypefnx {Function File} {@var{validstr} =} validatestring (@dots{}, @var{position})
 ## Verify that @var{str} is a string or substring of an element of
 ## @var{strarray}.
@@ -45,7 +45,7 @@ function str = validatestring (str, strarray, varargin)
   endif
 
   ## set the defaults
-  funname = "";
+  funcname = "";
   varname = "";
   position = 0;
   ## set the actual values
@@ -55,19 +55,19 @@ function str = validatestring (str, strarray, varargin)
       varargin(end) = [];
     endif
   endif
-  funnameset = false;
+  funcnameset = false;
   varnameset = false;
   for i = 1:numel (varargin)
     if (ischar (varargin{i}))
       if (varnameset)
         error ("validatestring: invalid number of character inputs: %d",
                numel (varargin));
-      elseif (funnameset)
+      elseif (funcnameset)
         varname = varargin{i};
         varnameset = true;
       else
-        funname = varargin{i};
-        funnameset = true;
+        funcname = varargin{i};
+        funcnameset = true;
       endif
     endif
   endfor
@@ -79,10 +79,10 @@ function str = validatestring (str, strarray, varargin)
     error ("validatestring: str must have only one row");
   elseif (! iscellstr (strarray))
     error ("validatestring: strarray must be a cellstr");
-  elseif (! ischar (funname))
-    error ("validatestring: funname must be a character string");
-  elseif (! isempty (funname) && (rows (funname) != 1))
-    error ("validatestring: funname must be exactly one row");
+  elseif (! ischar (funcname))
+    error ("validatestring: funcname must be a character string");
+  elseif (! isempty (funcname) && (rows (funcname) != 1))
+    error ("validatestring: funcname must be exactly one row");
   elseif (! ischar (varname))
     error ("validatestring: varname must be a character string");
   elseif (! isempty (varname) && (rows (varname) != 1))
@@ -91,11 +91,11 @@ function str = validatestring (str, strarray, varargin)
     error ("validatestring: position must be >= 0");
   endif
 
-  ## make the part of the error that will use funname, varname, and
+  ## make the part of the error that will use funcname, varname, and
   ## position
   errstr = "";
-  if (! isempty (funname))
-    errstr = sprintf ("Function: %s ", funname);
+  if (! isempty (funcname))
+    errstr = sprintf ("Function: %s ", funcname);
   endif
   if (! isempty (varname))
     errstr = sprintf ("%sVariable: %s ", errstr, varname);

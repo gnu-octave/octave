@@ -152,7 +152,6 @@
 ## Here is an example of calling @code{sqp}:
 ##
 ## @example
-## @group
 ## function r = g (x)
 ##   r = [ sumsq(x)-10;
 ##         x(2)*x(3)-5*x(4)*x(5); 
@@ -184,7 +183,6 @@
 ##   -0.0401627
 ##    0.0379578
 ##   -0.0052227
-## @end group
 ## @end example
 ##
 ## The value returned in @var{info} may be one of the following:

@@ -32,11 +32,9 @@
 
 A diagonal matrix is defined as a matrix that has zero entries outside the main diagonal;
 that is, 
-@iftex
 @tex
 $D_{ij} = 0$ if $i \neq j$
 @end tex
-@end iftex
 @ifnottex
 @code{D(i,j) == 0} if @code{i != j}.
 @end ifnottex
@@ -47,12 +45,10 @@ matrix.
 A permutation matrix is defined as a square matrix that has a single element equal to unity
 in each row and each column; all other elements are zero.  That is, there exists a 
 permutation (vector) 
-@iftex
 @tex
 $p$ such that $P_{ij}=1$ if $j = p_i$ and
 $P_{ij}=0$ otherwise.  
 @end tex
-@end iftex
 @ifnottex
 @code{p} such that @code{P(i,j) == 1} if @code{j == p(i)} and 
 @code{P(i,j) == 0} otherwise.  
@@ -86,7 +82,6 @@ Some other built-in functions can also return diagonal matrices.  Examples inclu
 
 Example:
 @example
-@group
   diag (1:4)
 @result{}
 Diagonal Matrix
@@ -106,7 +101,6 @@ Diagonal Matrix
    0   0   3
    0   0   0
    0   0   0
-@end group
 @end example  
 
 @node Creating Permutation Matrices
@@ -224,11 +218,9 @@ Assume @var{D} is a diagonal matrix.  If @var{M} is a full matrix,
 then @code{D*M} will scale the rows of @var{M}.  That means,
 if @code{S = D*M}, then for each pair of indices
 i,j it holds 
-@iftex
 @tex
 $$S_{ij} = D_{ii} M_{ij}$$
 @end tex
-@end iftex
 @ifnottex
 @example
 S(i,j) = D(i,i) * M(i,j).
@@ -488,7 +480,6 @@ in Octave.
 
 Examples of effects of assumed zeros vs. numerical zeros:
 @example
-@group
 Inf * eye (3)
 @result{}
    Inf     0     0
@@ -509,7 +500,6 @@ Inf * full (eye (3))
    NaN   Inf   NaN
    NaN   NaN   Inf
 
-@end group
 @end example
 
 @example

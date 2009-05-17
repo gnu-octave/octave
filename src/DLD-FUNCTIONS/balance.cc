@@ -82,7 +82,7 @@ Scale only; do not permute.\n\
 Permute only; do not scale.\n\
 @end table\n\
 \n\
-Algebraic eigenvalue balancing uses standard @sc{Lapack} routines.\n\
+Algebraic eigenvalue balancing uses standard @sc{lapack} routines.\n\
 \n\
 Generalized eigenvalue problem balancing uses Ward's algorithm\n\
 (SIAM Journal on Scientific and Statistical Computing, 1981).\n\

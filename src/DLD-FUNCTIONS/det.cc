@@ -51,7 +51,7 @@ along with Octave; see the file COPYING.  If not, see
 DEFUN_DLD (det, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {[@var{d}, @var{rcond}] =} det (@var{a})\n\
-Compute the determinant of @var{a} using @sc{Lapack} for full and UMFPACK\n\
+Compute the determinant of @var{a} using @sc{lapack} for full and UMFPACK\n\
 for sparse matrices.  Return an estimate of the reciprocal condition number\n\
 if requested.\n\
 @end deftypefn")

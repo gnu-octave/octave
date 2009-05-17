@@ -23,8 +23,8 @@
 ##
 ## The argument @var{limits} should be a 2, 4, or 6 element vector.  The
 ## first and second elements specify the lower and upper limits for the x
-## axis.  The third and fourth specify the limits for the y axis, and the
-## fifth and sixth specify the limits for the z axis.
+## axis.  The third and fourth specify the limits for the y-axis, and the
+## fifth and sixth specify the limits for the z-axis.
 ##
 ## Without any arguments, @code{axis} turns autoscaling on.  
 ##

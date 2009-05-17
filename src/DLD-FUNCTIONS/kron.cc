@@ -127,7 +127,7 @@ template void
 kron (const Sparse<Complex>&, const Sparse<Complex>&, Sparse<Complex>&);
 
 
-DEFUN_DLD (kron, args,  nargout, "-*- texinfo -*-\n\
+DEFUN_DLD (kron, args, nargout, "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} kron (@var{a}, @var{b})\n\
 Form the kronecker product of two matrices, defined block by block as\n\
 \n\

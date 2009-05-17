@@ -91,7 +91,6 @@
 ## example how this can be achieved follows:
 ##
 ## @example
-## @group
 ## function [fvec, fjac] = user_func (x, optimvalues, state)
 ## persistent sav = [], sav0 = [];
 ## if (nargin == 1)
@@ -107,14 +106,13 @@
 ##   if (all (x == sav0.x))
 ##     sav = sav0;
 ##   endif
-##   ## maybe output iteration status etc.
+##   ## maybe output iteration status, etc.
 ## endif
 ## endfunction
 ##
 ## ## @dots{}.
 ## 
 ## fsolve (@@user_func, x0, optimset ("OutputFcn", @@user_func, @dots{}))
-## @end group
 ## @end example
 ###
 ## @end deftypefn

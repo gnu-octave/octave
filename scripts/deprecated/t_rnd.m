@@ -21,7 +21,7 @@
 ## @deftypefnx {Function File} {} t_rnd (@var{n}, @var{sz})
 ## Return an @var{r} by @var{c} matrix of random samples from the t
 ## (Student) distribution with @var{n} degrees of freedom.  @var{n} must
-## be a scalar or of size @var{r} by @var{c}. Or if @var{sz} is a
+## be a scalar or of size @var{r} by @var{c}.  Or if @var{sz} is a
 ## vector create a matrix of size @var{sz}.
 ##
 ## If @var{r} and @var{c} are omitted, the size of the result matrix is

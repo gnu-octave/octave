@@ -61,9 +61,11 @@ expression, the elements of the matrix are taken in column-first order;
 the dimensions of the output match those of the index expression.  For
 example,
 @example
+@group
 a (2)       # a scalar
 a (1:2)     # a row vector
 a ([1; 2])  # a column vector
+@end group
 @end example
 
 As a special case, when a colon is used as a single index, the output
@@ -95,7 +97,7 @@ and select the first row of the matrix.
 
 In general, an array with @samp{n} dimensions can be indexed using @samp{m}
 indices.  If @code{n == m}, each index corresponds to its respective dimension.
-The set of index tuples determining the result is formed by the cartesian product
+The set of index tuples determining the result is formed by the Cartesian product
 of the index vectors (or ranges or scalars).
 If @code{n < m}, then the array is padded by trailing singleton dimensions.
 If @code{n > m}, the last @code{n-m+1} dimensions are folded into a single
@@ -140,7 +142,7 @@ The last example could also be written as
 
 It should be, noted that @code{ones (1, n)} (a row vector of ones) results in a
 range (with zero increment), and is therefore more efficient when used in index
-expression than other forms of @dfn{ones}. In particular, when @samp{r} is a row
+expression than other forms of @dfn{ones}.  In particular, when @samp{r} is a row
 vector, the expressions
 
 @example
@@ -151,8 +153,8 @@ vector, the expressions
   r(ones (n, 1), :)
 @end example
 
-will produce indentical results, but the first one will be significantly
-faster, at least for @samp{r} and @samp{n} large enough. The reason is that
+will produce identical results, but the first one will be significantly
+faster, at least for @samp{r} and @samp{n} large enough.  The reason is that
 in the first case the index is kept in a compressed form, which allows Octave
 to choose a more efficient algorithm to handle the expression.
 
@@ -162,19 +164,19 @@ the function @dfn{repmat} for spreading arrays into bigger ones.
 It is also possible to create a matrix with different values.  The
 following example creates a 10 dimensional row vector @math{a} containing
 the values
-@iftex
 @tex
 $a_i = \sqrt{i}$.
 @end tex
-@end iftex
 @ifnottex
 a(i) = sqrt(i).
 @end ifnottex
 
 @example
+@group
 for i = 1:10
   a(i) = sqrt (i);
 endfor
+@end group
 @end example
 
 @noindent
@@ -656,7 +658,7 @@ considered to be false if it is zero, and true otherwise.
 
 Element-by-element boolean expressions can be used wherever comparison
 expressions can be used.  They can be used in @code{if} and @code{while}
-statements.  However,  a matrix value used as the condition in an
+statements.  However, a matrix value used as the condition in an
 @code{if} or @code{while} statement is only true if @emph{all} of its
 elements are nonzero.
 
@@ -972,8 +974,10 @@ not exceed the number of values on the right side.  For example, the
 following will produce an error.
 
 @example
+@group
 [a, b, c, d] = [u, s, v] = svd (a);
 @print{} error: element number 4 undefined in return list
+@end group
 @end example
 
 @opindex +=

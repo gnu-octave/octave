@@ -88,11 +88,9 @@ of a circle's circumference to its diameter (pi) are pre-defined.
 
 @noindent
 For example, to verify Euler's Identity,
-@iftex
 @tex
 $$e^{\imath\pi} = -1$$
 @end tex
-@end iftex
 @ifnottex
 @display
 
@@ -161,11 +159,9 @@ octave:5> A * B
 
 @noindent
 and to form the matrix product
-@iftex
 @tex
 $@code{A}^T@code{A}$,
 @end tex
-@end iftex
 @ifnottex
 @code{transpose (A) * A},
 @end ifnottex
@@ -187,11 +183,9 @@ use the left division operator, @samp{\}:
 
 @noindent
 This is conceptually equivalent to
-@iftex
 @tex
 $@code{A}^{-1}@code{b}$,
 @end tex
-@end iftex
 @ifnottex
 @code{inv (a) * b},
 @end ifnottex
@@ -204,11 +198,9 @@ A simple example comes from chemistry and the need to obtain balanced
 chemical equations.  Consider the burning of hydrogen and oxygen to 
 produce water.
 
-@iftex
 @tex
 $$ {\rm H_{2}} + {\rm O_{2}} \rightarrow {\rm H_{2}O} $$
 @end tex
-@end iftex
 @ifnottex
 @example
 H2 + O2 --> H2O
@@ -221,7 +213,6 @@ that the number of molecules of each type balance on the left- and right-hand
 sides of the equation.  Writing the variable overall reaction with 
 individual equations for hydrogen and oxygen one finds:
 
-@iftex
 @tex
 \vbox{
 $$ x_{1}{\rm H_{2}} + x_{2}{\rm O_{2}} \rightarrow {\rm H_{2}O} $$
@@ -229,7 +220,6 @@ $$ {\rm H:}\quad 2x_{1} + 0x_{2} \rightarrow 2 $$
 $$ {\rm O:}\quad 0x_{1} + 2x_{2} \rightarrow 1 $$
 }
 @end tex
-@end iftex
 @ifnottex
 @example
 @group
@@ -255,13 +245,11 @@ octave:3> x = A \ b
 
 Octave has built-in functions for solving nonlinear differential
 equations of the form
-@iftex
 @tex
 $$
  {dx \over dt} = f(x,t), \qquad x(t=t_0) = x_0
 $$
 @end tex
-@end iftex
 @ifnottex
 
 @example
@@ -283,11 +271,9 @@ x(t = t0) = x0
 @noindent
 For Octave to integrate equations of this form, you must first provide a
 definition of the function
-@iftex
 @tex
 $f (x, t)$.
 @end tex
-@end iftex
 @ifnottex
 @code{f(x,t)}.
 @end ifnottex

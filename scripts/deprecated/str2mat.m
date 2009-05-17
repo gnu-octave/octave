@@ -23,7 +23,7 @@
 ## its rows.  Each string is padded with blanks in order to form a valid
 ## matrix.
 ##
-## This function is modelled after @sc{Matlab}.  In Octave, you can create
+## This function is modelled after @sc{matlab}.  In Octave, you can create
 ## a matrix of strings by @code{[@var{s_1}; @dots{}; @var{s_n}]} even if
 ## the strings are not all the same length.
 ## @end deftypefn

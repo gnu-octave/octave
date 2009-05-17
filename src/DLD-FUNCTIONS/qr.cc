@@ -89,7 +89,7 @@ DEFUN_DLD (qr, args, nargout,
 @deftypefn {Loadable Function} {[@var{q}, @var{r}, @var{p}] =} qr (@var{a})\n\
 @deftypefnx {Loadable Function} {[@var{q}, @var{r}, @var{p}] =} qr (@var{a}, '0')\n\
 @cindex QR factorization\n\
-Compute the QR factorization of @var{a}, using standard @sc{Lapack}\n\
+Compute the QR factorization of @var{a}, using standard @sc{lapack}\n\
 subroutines.  For example, given the matrix @code{a = [1, 2; 3, 4]},\n\
 \n\
 @example\n\

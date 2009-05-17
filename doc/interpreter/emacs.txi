@@ -291,7 +291,7 @@ solution is
 to know the particular binding of @key{RET} in that mode!).  Similar
 considerations apply for using @key{M-RET} as @key{M-LFD}.  As Barry
 A. Warsaw <bwarsaw@@cnri.reston.va.us> says in the documentation for his
-@code{cc-mode}, ``This is a very common question. @code{:-)} If you want
+@code{cc-mode}, ``This is a very common question.  @code{:-)} If you want
 this to be the default behavior, don't lobby me, lobby RMS!''
 
 The following variables can be used to customize Octave mode.

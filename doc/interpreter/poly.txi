@@ -22,14 +22,12 @@
 In Octave, a polynomial is represented by its coefficients (arranged
 in descending order).  For example, a vector @var{c} of length
 @math{N+1} corresponds to the following polynomial of order
-@iftex
 @tex
  $N$
 $$
  p (x) = c_1 x^N + \ldots + c_N x + c_{N+1}.
 $$
 @end tex
-@end iftex
 @ifinfo
  @var{N}
 

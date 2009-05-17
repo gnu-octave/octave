@@ -29,8 +29,8 @@
 ## at a location given by the parameters @var{x1}, @var{x2}, @dots{}, @var{xn}. 
 ## The parameters @var{x1}, @var{x2}, @dots{}, @var{xn} are either 
 ## @var{n}-dimensional arrays of the same size as the array @var{v} in 
-## the 'ndgrid' format or vectors.  The parameters @var{y1}, etc respect a 
-## similar format to @var{x1}, etc, and they represent the points at which
+## the 'ndgrid' format or vectors.  The parameters @var{y1}, etc. respect a 
+## similar format to @var{x1}, etc., and they represent the points at which
 ## the array @var{vi} is interpolated.
 ##
 ## If @var{x1}, @dots{}, @var{xn} are omitted, they are assumed to be 

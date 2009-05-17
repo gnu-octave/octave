@@ -1,3 +1,8 @@
+2009-05-17  Rik  <rdrider0-list@yahoo.com>
+
+	* interpreter/*.txi: Simplify TeXinfo files by eliminating redundant @iftex
+	followed by @tex construction.  Also, spellchecked all .txi and .texi files.
+
 2009-05-14  Rik  <rdrider0-list@yahoo.com>
 
 	* interpreter/arith.txi: Update section 17.8 (Mathematical Consants)

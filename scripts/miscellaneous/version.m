@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} version ()
 ## Return Octave's version number as a string.  This is also the value of
-## the built-in variable @code{OCTAVE_VERSION}.
+## the built-in variable @w{@code{OCTAVE_VERSION}}.
 ## @end deftypefn
 
 ## Author: jwe

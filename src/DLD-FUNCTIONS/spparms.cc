@@ -76,7 +76,7 @@ The pivot tolerance of the UMFPACK solvers (default 0.1)\n\
 The pivot tolerance of the UMFPACK symmetric solvers (default 0.001)\n\
 @item bandden\n\
 The density of non-zero elements in a banded matrix before it is treated\n\
-by the LAPACK banded solvers (default 0.5)\n\
+by the @sc{lapack} banded solvers (default 0.5)\n\
 @item umfpack\n\
 Flag whether the UMFPACK or mmd solvers are used for the LU, '\\' and\n\
 '/' operations (default 1)\n\

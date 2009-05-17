@@ -50,7 +50,7 @@
 ## resulting @var{c} has size @code{[nchoosek (length (@var{n}), 
 ## @var{k}), @var{k}]}.
 ##
-## @code{nchoosek} works only for nonnegative integer arguments; use
+## @code{nchoosek} works only for non-negative integer arguments; use
 ## @code{bincoeff} for non-integer scalar arguments and for using vector
 ## arguments to compute many coefficients at once.
 ##

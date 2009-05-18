@@ -259,6 +259,16 @@ Interpreter:
   * Use nanosleep instead of usleep if it is available?  Apparently
     nanosleep is to be preferred over usleep on Solaris systems.
 
+--------
+Graphics:
+--------
+
+  * Correctly handle case where DISPLAY is unset.  Provide
+  --no-window-system or --nodisplay (?) option.  Provide
+  --display=DISPLAY option?  How will this work with gnuplot (i.e.,
+  how do we know whether gnuplot requires an X display to display
+  graphics)?
+
 -------
 History:
 -------

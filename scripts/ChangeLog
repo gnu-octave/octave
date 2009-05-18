@@ -1,3 +1,10 @@
+2009-05-14  Jaroslav Hajek  <highegg@gmail.com>
+
+	* optimization/__fdjac__.m: Support central differences.
+	* optimization/fsolve.m: Support central differences. Add FinDiffType
+	option.
+	* optimization/fminunc.m: Ditto.
+
 2009-05-17  Rik Wehbring  <rdrider0-list@yahoo.com>
 
 	* *.m: Simplify Texinfo documentation in .m scripts by removing 

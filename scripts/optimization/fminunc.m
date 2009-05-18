@@ -29,10 +29,10 @@
 ## @var{x0} determines a starting guess. The shape of @var{x0} is preserved
 ## in all calls to @var{fcn}, but otherwise it is treated as a column vector.
 ## @var{options} is a structure specifying additional options.
-## Currently, @code{fsolve} recognizes these options:
+## Currently, @code{fminunc} recognizes these options:
 ## @code{"FunValCheck"}, @code{"OutputFcn"}, @code{"TolX"},
 ## @code{"TolFun"}, @code{"MaxIter"}, @code{"MaxFunEvals"}, 
-## @code{"GradObj"}.
+## @code{"GradObj"}, @code{"FinDiffType"}.
 ##
 ## If @code{"GradObj"} is @code{"on"}, it specifies that @var{fcn},
 ## called with 2 output arguments, also returns the Jacobian matrix
@@ -74,7 +74,7 @@ function [x, fval, info, output, grad, hess] = fminunc (fcn, x0, options = struc
     x = optimset ("MaxIter", 400, "MaxFunEvals", Inf, \
     "GradObj", "off", "TolX", 1.5e-8, "TolFun", 1.5e-8,
     "OutputFcn", [], "FunValCheck", "off",
-    "ComplexEqn", "off");
+    "FinDiffType", "central");
     return;
   endif
 
@@ -90,6 +90,7 @@ function [x, fval, info, output, grad, hess] = fminunc (fcn, x0, options = struc
   n = numel (x0);
 
   has_grad = strcmpi (optimget (options, "GradObj", "off"), "on");
+  cdif = strcmpi (optimget (options, "FinDiffType", "central"), "central");
   maxiter = optimget (options, "MaxIter", 400);
   maxfev = optimget (options, "MaxFunEvals", Inf);
   outfcn = optimget (options, "OutputFcn");
@@ -152,8 +153,8 @@ function [x, fval, info, output, grad, hess] = fminunc (fcn, x0, options = struc
       grad = grad(:);
       nfev ++;
     else
-      grad = __fdjac__ (fcn, reshape (x, xsiz), fval)(:);
-      nfev += length (x);
+      grad = __fdjac__ (fcn, reshape (x, xsiz), fval, cdif)(:);
+      nfev += (1 + cdif) * length (x);
     endif
 
     if (niter == 1)

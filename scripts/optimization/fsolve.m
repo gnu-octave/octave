@@ -126,7 +126,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
     x = optimset ("MaxIter", 400, "MaxFunEvals", Inf, \
     "Jacobian", "off", "TolX", 1.5e-8, "TolFun", 1.5e-8,
     "OutputFcn", [], "Updating", "on", "FunValCheck", "off",
-    "ComplexEqn", "off");
+    "ComplexEqn", "off", "FinDiffType", "central");
     return;
   endif
 
@@ -142,6 +142,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
   n = numel (x0);
 
   has_jac = strcmpi (optimget (options, "Jacobian", "off"), "on");
+  cdif = strcmpi (optimget (options, "FinDiffType", "central"), "central");
   maxiter = optimget (options, "MaxIter", 400);
   maxfev = optimget (options, "MaxFunEvals", Inf);
   outfcn = optimget (options, "OutputFcn");
@@ -208,8 +209,8 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
       fvec = fvec(:);
       nfev ++;
     else
-      fjac = __fdjac__ (fcn, reshape (x, xsiz), fvec);
-      nfev += length (x);
+      fjac = __fdjac__ (fcn, reshape (x, xsiz), fvec, cdif);
+      nfev += (1 + cdif) * length (x);
     endif
 
     ## For square and overdetermined systems, we update a QR

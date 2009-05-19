@@ -1,5 +1,13 @@
 2009-05-19  John W. Eaton  <jwe@octave.org>
 
+	* DLD-FUNCTIONS/fltk_backend.cc (F__fltk_redraw__): New function.
+	(F__init_fltk__): Call add_input_event_hook with feval to add
+	__fltk_redraw__ to the list of even hook functions to call.
+	Call mlock when initializing.
+	(F__remove_fltk__): Call remove_input_event_hook with feval to
+	remove __fltk_redraw__ from the list of event hook functions.
+	Unlock __init_fltk__ when shutting down.
+
 	* input.cc (Finput_event_hook): Delete.
 	(input_event_hook): Handle set of functions instead of just one.
 	(Fadd_input_event_hook, Fremove_input_event_hook): New functions.

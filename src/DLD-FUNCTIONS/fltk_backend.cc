@@ -60,6 +60,7 @@ To initialize:
 #include "gl-render.h"
 #include "graphics.h"
 #include "parse.h"
+#include "variables.h"
 
 #define FLTK_BACKEND_NAME "fltk"
 
@@ -836,15 +837,26 @@ __fltk_redraw__ (void)
   return 0;
 }
 
+DEFUN_DLD (__fltk_redraw__, , , "")
+{
+  __fltk_redraw__ ();
+
+  return octave_value ();
+}
+
 // call this to init the fltk backend
 DEFUN_DLD (__init_fltk__, , , "")
 {
   if (! backend_registered)
     {
+      mlock ();
+
       graphics_backend::register_backend (new fltk_backend);
       backend_registered = true;
       
-      command_editor::add_event_hook (__fltk_redraw__);
+      octave_value_list args;
+      args(0) = "__fltk_redraw__";
+      feval ("add_input_event_hook", args, 0);
     }
 
   octave_value retval;
@@ -857,11 +869,15 @@ DEFUN_DLD (__remove_fltk__, , , "")
 {
   if (backend_registered)
     {
+      munlock ("__init_fltk__");
+
       figure_manager::close_all ();
       graphics_backend::unregister_backend (FLTK_BACKEND_NAME);
       backend_registered = false;
 
-      command_editor::remove_event_hook (__fltk_redraw__);
+      octave_value_list args;
+      args(0) = "__fltk_redraw__";
+      feval ("remove_input_event_hook", args, 0);
 
       // FIXME ???
       // give FLTK 10 seconds to wrap it up
@@ -872,7 +888,6 @@ DEFUN_DLD (__remove_fltk__, , , "")
   return retval;	
 }
 
-// call this to delete the fltk backend
 DEFUN_DLD (__fltk_maxtime__, args, ,"")
 {
   octave_value retval = fltk_maxtime;

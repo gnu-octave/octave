@@ -295,6 +295,10 @@ Summary of important user-visible changes for version 3.2:
     function imfinfo provides information about an image file (size,
     type, colors, etc.)
 
+ ** The input_event_hook function has been replaced by the pair of
+    functions add_input_event_hook and remove_input_event_hook so that
+    more than one hook function may be installed at a time.
+
  ** Other miscellaneous new functions.
 
       addtodate          hypot                       reallog

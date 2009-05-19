@@ -1,3 +1,9 @@
+2009-05-19  John W. Eaton  <jwe@octave.org>
+
+	* input.cc (Finput_event_hook): Delete.
+	(input_event_hook): Handle set of functions instead of just one.
+	(Fadd_input_event_hook, Fremove_input_event_hook): New functions.
+
 2009-05-19  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Makefile.in: Add X11_LIBS to OCTINTERP_LINK_DEPS.

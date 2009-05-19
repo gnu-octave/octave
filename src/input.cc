@@ -1166,83 +1166,117 @@ for details.\n\
   return retval;
 }
 
-static std::string hook_fcn;
-static octave_value user_data;
+typedef std::map<std::string, octave_value> hook_fcn_map_type;
+
+static hook_fcn_map_type hook_fcn_map;
 
 static int
 input_event_hook (void)
 {
-  if (is_valid_function (hook_fcn))
-    {
-      if (user_data.is_defined ())
-	feval (hook_fcn, user_data, 0);
-      else
-	feval (hook_fcn, octave_value_list (), 0);
-    }
-  else
-    {
-      hook_fcn = std::string ();
-      user_data = octave_value ();
+  hook_fcn_map_type::iterator p = hook_fcn_map.begin ();
 
-      command_editor::remove_event_hook (input_event_hook);
+  while (p != hook_fcn_map.end ())
+    {
+      std::string hook_fcn = p->first;
+      octave_value user_data = p->second;
+
+      p++;
+
+      if (is_valid_function (hook_fcn))
+	{
+	  if (user_data.is_defined ())
+	    feval (hook_fcn, user_data, 0);
+	  else
+	    feval (hook_fcn, octave_value_list (), 0);
+	}
+      else
+	hook_fcn_map.erase (p);
     }
+
+  if (hook_fcn_map.empty ())
+    command_editor::remove_event_hook (input_event_hook);
 
   return 0;
 }
 
-DEFUN (input_event_hook, args, ,
+DEFUN (add_input_event_hook, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {[@var{ofcn}, @var{odata}] =} input_event_hook (@var{fcn}, @var{data})\n\
-Given the name of a function as a string and any Octave value object,\n\
-install @var{fcn} as a function to call periodically, when Octave is\n\
-waiting for input.  The function should have the form\n\
+@deftypefn {Built-in Function} {} add_input_event_hook (@var{fcn}, @var{data})\n\
+Add the named function @var{fcn} to the list of functions to call\n\
+periodically when Octave is waiting for input.  The function should\n\
+have the form\n\
 @example\n\
 @var{fcn} (@var{data})\n\
 @end example\n\
 \n\
 If @var{data} is omitted, Octave calls the function without any\n\
-arguments.  If both @var{fcn} and @var{data} are omitted, Octave\n\
-clears the hook.  In all cases, the name of the previous hook function\n\
-and the user data are returned.\n\
+arguments.\n\
+@seealso{remove_input_event_hook}\n\
 @end deftypefn")
 {
   octave_value_list retval;
 
   int nargin = args.length ();
 
-  if (nargin > 2)
-    print_usage ();
-  else
+  if (nargin == 1 || nargin == 2)
     {
-      octave_value tmp_user_data;
+      octave_value user_data;
 
-      std::string tmp_hook_fcn;
+      if (nargin == 2)
+	user_data = args(1);
 
-      if (nargin > 1)
-	tmp_user_data = args(1);
+      std::string hook_fcn = args(0).string_value ();
 
-      if (nargin > 0)
+      if (! error_state)
 	{
-	  tmp_hook_fcn = args(0).string_value ();
+	  if (hook_fcn_map.empty ())
+	    command_editor::add_event_hook (input_event_hook);
 
-	  if (error_state)
-	    {
-	      error ("input_event_hook: expecting string as first arg");
-	      return retval;
-	    }
-
-	  command_editor::add_event_hook (input_event_hook);
+	  hook_fcn_map[hook_fcn] = user_data;
 	}
-
-      if (nargin == 0)
-	command_editor::remove_event_hook (input_event_hook);
-
-      retval(1) = user_data;
-      retval(0) = hook_fcn;
-
-      hook_fcn = tmp_hook_fcn;
-      user_data = tmp_user_data;
+      else
+	error ("add_input_event_hook: expecting string as first arg");
     }
+  else
+    print_usage ();
+
+  return retval;
+}
+
+DEFUN (remove_input_event_hook, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} remove_input_event_hook (@var{fcn})\n\
+Remove the named function @var{fcn} to the list of functions to call\n\
+periodically when Octave is waiting for input.\n\
+@seealso{add_input_event_hook}\n\
+@end deftypefn")
+{
+  octave_value_list retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 1)
+    {
+      std::string hook_fcn = args(0).string_value ();
+
+      if (! error_state)
+	{
+	  hook_fcn_map_type::iterator p = hook_fcn_map.find (hook_fcn);
+
+	  if (p != hook_fcn_map.end ())
+	    hook_fcn_map.erase (p);
+	  else
+	    error ("remove_input_event_hook: %s not found in list",
+		   hook_fcn.c_str ());
+
+	  if (hook_fcn_map.empty ())
+	    command_editor::remove_event_hook (input_event_hook);
+	}
+      else
+	error ("remove_input_event_hook: expecting string as first arg");
+    }
+  else
+    print_usage ();
 
   return retval;
 }

@@ -299,7 +299,7 @@ endif
 
 OCTINTERP_LINK_DEPS = \
   -L../liboctave $(LIBOCTAVE) -L../libcruft $(LIBCRUFT) $(LIBS) $(FLIBS) \
-  $(OPENGL_LIBS)
+  $(X11_LIBS) $(OPENGL_LIBS)
 
 OCT_LINK_DEPS = \
   -L../libcruft $(LIBCRUFT) -L../liboctave $(LIBOCTAVE) \

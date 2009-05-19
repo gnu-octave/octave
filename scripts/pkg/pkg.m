@@ -1000,9 +1000,14 @@ function [pkg_desc_list, flag] = describe (pkgnames, verbose,
   endfor
 
   non_inst = find (strcmp (flag, "Not installed"));
-  if (! isempty (non_inst) && nargout < 2)
-    non_inst_str = sprintf (" %s ", pkgnames{non_inst});
-    error ("some packages are not installed: %s", non_inst_str);
+  if (! isempty (non_inst))
+    if (nargout < 2)
+      non_inst_str = sprintf (" %s ", pkgnames{non_inst});
+      error ("some packages are not installed: %s", non_inst_str);
+    else
+      pkg_desc_list{non_inst} = struct ("name", {}, "description",  
+					{}, "provides", {});
+    endif
   endif
 
   if (nargout == 0)

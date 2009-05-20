@@ -1,3 +1,9 @@
+2009-05-20  John W. Eaton  <jwe@octave.org>
+
+	* pt-assign.cc (maybe_warn_former_built_in_variable):
+	Set initialized to true when done initializing vars set.
+	From Michael Goffioul  <michael.goffioul@gmail.com>.
+
 2009-05-20  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-typeinfo.h

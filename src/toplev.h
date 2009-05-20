@@ -43,7 +43,8 @@ class charMatrix;
 #include "oct-map.h"
 
 
-extern OCTINTERP_API void (*octave_exit) (int);
+typedef void (*octave_exit_func) (int);
+extern OCTINTERP_API octave_exit_func octave_exit;
 
 // quit is a lot like an interrupt, so we subclass it to simplify possible
 // handling.

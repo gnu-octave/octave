@@ -1,4 +1,9 @@
 2009-05-20  Jaroslav Hajek  <highegg@gmail.com>
+
+	* toplev.h (octave_exit_func): New typedef.
+	(octave_exit): Change to octave_exit_func.
+	
+2009-05-20  Jaroslav Hajek  <highegg@gmail.com>
 	
 	* ov-typeinfo.cc: Don't include oct-obj.h.
 

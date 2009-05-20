@@ -109,7 +109,7 @@ TEMPLATE_SRC := Array.cc ArrayN.cc eigs-base.cc DiagArray2.cc \
 	sparse-base-chol.cc sparse-dmsolve.cc
 
 TI_SRC := Array-C.cc Array-b.cc Array-ch.cc Array-i.cc Array-d.cc \
-	Array-f.cc Array-fC.cc Array-s.cc Array-str.cc \
+	Array-f.cc Array-fC.cc Array-s.cc Array-str.cc Array-voidp.cc \
 	Array-idx-vec.cc MArray-C.cc MArray-ch.cc MArray-i.cc MArray-d.cc \
 	MArray-f.cc MArray-fC.cc MArray-s.cc MSparse-C.cc MSparse-d.cc \
 	Sparse-C.cc Sparse-b.cc Sparse-d.cc oct-inttypes.cc

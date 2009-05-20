@@ -2574,7 +2574,7 @@ Array<T>::is_sorted_rows (sortmode) const \
 { return UNSORTED; } \
  \
 template <> octave_idx_type  \
-Array<T>::lookup (const T&, sortmode) const \
+Array<T>::lookup (T const &, sortmode) const \
 { return 0; } \
 template <> Array<octave_idx_type>  \
 Array<T>::lookup (const Array<T>&, sortmode, bool, bool) const \

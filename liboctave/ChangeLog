@@ -1,3 +1,9 @@
+2009-05-20  Jaroslav Hajek  <highegg@gmail.com>
+
+	* Array-voidp.cc: New source.
+	* Array.cc (NO_INSTANTIATE_ARRAY_SORT): const T& -> T const &
+	* Makefile.in: Include it.
+
 2009-05-15  Jaroslav Hajek  <highegg@gmail.com>
 	
 	* Array.cc (Array<T>::instantiation_guard): New function

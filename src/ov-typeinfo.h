@@ -220,31 +220,31 @@ private:
 
   Array<octave_value> vals;
 
-  Array<unary_class_op_fcn> unary_class_ops;
+  Array<void *> unary_class_ops;
 
-  Array2<unary_op_fcn> unary_ops;
+  Array2<void *> unary_ops;
 
-  Array2<non_const_unary_op_fcn> non_const_unary_ops;
+  Array2<void *> non_const_unary_ops;
 
-  Array<binary_class_op_fcn> binary_class_ops;
+  Array<void *> binary_class_ops;
 
-  Array3<binary_op_fcn> binary_ops;
+  Array3<void *> binary_ops;
 
-  Array<binary_class_op_fcn> compound_binary_class_ops;
+  Array<void *> compound_binary_class_ops;
 
-  Array3<binary_op_fcn> compound_binary_ops;
+  Array3<void *> compound_binary_ops;
 
-  Array2<cat_op_fcn> cat_ops;
+  Array2<void *> cat_ops;
 
-  Array3<assign_op_fcn> assign_ops;
+  Array3<void *> assign_ops;
 
-  Array2<assignany_op_fcn> assignany_ops;
+  Array2<void *> assignany_ops;
 
   Array2<int> pref_assign_conv;
 
-  Array2<octave_base_value::type_conv_fcn> type_conv_ops;
+  Array2<void *> type_conv_ops;
 
-  Array2<octave_base_value::type_conv_fcn> widening_ops;
+  Array2<void *> widening_ops;
 
   int do_register_type (const std::string&, const std::string&,
 			const octave_value&);

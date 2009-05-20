@@ -1,5 +1,23 @@
 2009-05-20  Jaroslav Hajek  <highegg@gmail.com>
 
+	* ov-typeinfo.h
+	(octave_value_typeinfo::unary_class_ops,
+	octave_value_typeinfo::unary_ops,
+	octave_value_typeinfo::non_const_unary_ops,
+	octave_value_typeinfo::binary_class_ops,
+	octave_value_typeinfo::binary_ops,
+	octave_value_typeinfo::compound_binary_class_ops,
+	octave_value_typeinfo::compound_binary_ops,
+	octave_value_typeinfo::cat_ops,
+	octave_value_typeinfo::assign_ops,
+	octave_value_typeinfo::assignany_ops,
+	octave_value_typeinfo::pref_assign_conv,
+	octave_value_typeinfo::type_conv_ops,
+	octave_value_typeinfo::widening_ops): Declare as Array<void *>.
+	* ov-typeinfo.cc: Reflect changes.
+
+2009-05-20  Jaroslav Hajek  <highegg@gmail.com>
+
 	* toplev.h (octave_exit_func): New typedef.
 	(octave_exit): Change to octave_exit_func.
 	

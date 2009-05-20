@@ -40,38 +40,6 @@ octave_value_typeinfo::instance (0);
 #include <Array2.h>
 #include <Array3.h>
 
-#include <Array.cc>
-
-NO_INSTANTIATE_ARRAY_SORT (octave_value_typeinfo::unary_op_fcn);
-INSTANTIATE_ARRAY (octave_value_typeinfo::unary_op_fcn, );
-template class Array2<octave_value_typeinfo::unary_op_fcn>;
-
-NO_INSTANTIATE_ARRAY_SORT (octave_value_typeinfo::non_const_unary_op_fcn);
-INSTANTIATE_ARRAY (octave_value_typeinfo::non_const_unary_op_fcn, );
-template class Array2<octave_value_typeinfo::non_const_unary_op_fcn>;
-
-NO_INSTANTIATE_ARRAY_SORT (octave_value_typeinfo::binary_op_fcn);
-INSTANTIATE_ARRAY (octave_value_typeinfo::binary_op_fcn, );
-template class Array2<octave_value_typeinfo::binary_op_fcn>;
-template class Array3<octave_value_typeinfo::binary_op_fcn>;
-
-NO_INSTANTIATE_ARRAY_SORT (octave_value_typeinfo::cat_op_fcn);
-INSTANTIATE_ARRAY (octave_value_typeinfo::cat_op_fcn, );
-template class Array2<octave_value_typeinfo::cat_op_fcn>;
-
-NO_INSTANTIATE_ARRAY_SORT (octave_value_typeinfo::assign_op_fcn);
-INSTANTIATE_ARRAY (octave_value_typeinfo::assign_op_fcn, );
-template class Array2<octave_value_typeinfo::assign_op_fcn>;
-template class Array3<octave_value_typeinfo::assign_op_fcn>;
-
-NO_INSTANTIATE_ARRAY_SORT (octave_value_typeinfo::assignany_op_fcn);
-INSTANTIATE_ARRAY (octave_value_typeinfo::assignany_op_fcn, );
-template class Array2<octave_value_typeinfo::assignany_op_fcn>;
-
-NO_INSTANTIATE_ARRAY_SORT (octave_base_value::type_conv_fcn);
-INSTANTIATE_ARRAY (octave_base_value::type_conv_fcn, );
-template class Array2<octave_base_value::type_conv_fcn>;
-
 bool
 octave_value_typeinfo::instance_ok (void)
 {
@@ -229,32 +197,28 @@ octave_value_typeinfo::do_register_type (const std::string& t_name,
 
       vals.resize (len, octave_value ());
 
-      unary_ops.resize (static_cast<int> (octave_value::num_unary_ops),
-			len, static_cast<octave_value_typeinfo::unary_op_fcn> (0));
+      unary_ops.resize (static_cast<int> (octave_value::num_unary_ops), len, 0);
 
       non_const_unary_ops.resize
-	(static_cast<int> (octave_value::num_unary_ops),
-	 len, static_cast<octave_value_typeinfo::non_const_unary_op_fcn> (0));
+	(static_cast<int> (octave_value::num_unary_ops), len, 0);
 
       binary_ops.resize (static_cast<int> (octave_value::num_binary_ops),
-			 len, len, static_cast<octave_value_typeinfo::binary_op_fcn> (0));
+			 len, len, 0);
 
       compound_binary_ops.resize (static_cast<int> (octave_value::num_compound_binary_ops),
-                                  len, len, static_cast<octave_value_typeinfo::binary_op_fcn> (0));
+                                  len, len, 0);
 
-      cat_ops.resize (len, len, static_cast<octave_value_typeinfo::cat_op_fcn> (0));
+      cat_ops.resize (len, len, 0);
 
-      assign_ops.resize (static_cast<int> (octave_value::num_assign_ops),
-			 len, len, static_cast<octave_value_typeinfo::assign_op_fcn> (0));
+      assign_ops.resize (static_cast<int> (octave_value::num_assign_ops), len, len, 0);
 
-      assignany_ops.resize (static_cast<int> (octave_value::num_assign_ops),
-			    len, static_cast<octave_value_typeinfo::assignany_op_fcn> (0));
+      assignany_ops.resize (static_cast<int> (octave_value::num_assign_ops), len, 0);
 
       pref_assign_conv.resize (len, len, -1);
 
-      type_conv_ops.resize (len, len, static_cast<octave_base_value::type_conv_fcn> (0));
+      type_conv_ops.resize (len, len, 0);
 
-      widening_ops.resize (len, len, static_cast<octave_base_value::type_conv_fcn> (0));
+      widening_ops.resize (len, len, 0);
     }
 
   types (i) = t_name;
@@ -278,7 +242,7 @@ octave_value_typeinfo::do_register_unary_class_op (octave_value::unary_op op,
 	       op_name.c_str ());
     }
 
-  unary_class_ops.checkelem (static_cast<int> (op)) = f;
+  unary_class_ops.checkelem (static_cast<int> (op)) = reinterpret_cast<void *> (f);
 
   return false;
 }
@@ -296,7 +260,7 @@ octave_value_typeinfo::do_register_unary_op (octave_value::unary_op op,
 	       op_name.c_str (), type_name.c_str ());
     }
 
-  unary_ops.checkelem (static_cast<int> (op), t) = f;
+  unary_ops.checkelem (static_cast<int> (op), t) = reinterpret_cast<void *> (f);
 
   return false;
 }
@@ -314,7 +278,7 @@ octave_value_typeinfo::do_register_non_const_unary_op
 	       op_name.c_str (), type_name.c_str ());
     }
 
-  non_const_unary_ops.checkelem (static_cast<int> (op), t) = f;
+  non_const_unary_ops.checkelem (static_cast<int> (op), t) = reinterpret_cast<void *> (f);
 
   return false;
 }
@@ -331,7 +295,7 @@ octave_value_typeinfo::do_register_binary_class_op (octave_value::binary_op op,
 	       op_name.c_str ());
     }
 
-  binary_class_ops.checkelem (static_cast<int> (op)) = f;
+  binary_class_ops.checkelem (static_cast<int> (op)) = reinterpret_cast<void *> (f);
 
   return false;
 }
@@ -351,7 +315,7 @@ octave_value_typeinfo::do_register_binary_op (octave_value::binary_op op,
 	       op_name.c_str (), t1_name.c_str (), t1_name.c_str ());
     }
 
-  binary_ops.checkelem (static_cast<int> (op), t1, t2) = f;
+  binary_ops.checkelem (static_cast<int> (op), t1, t2) = reinterpret_cast<void *> (f);
 
   return false;
 }
@@ -368,7 +332,7 @@ octave_value_typeinfo::do_register_binary_class_op (octave_value::compound_binar
 	       op_name.c_str ());
     }
 
-  compound_binary_class_ops.checkelem (static_cast<int> (op)) = f;
+  compound_binary_class_ops.checkelem (static_cast<int> (op)) = reinterpret_cast<void *> (f);
 
   return false;
 }
@@ -388,7 +352,7 @@ octave_value_typeinfo::do_register_binary_op (octave_value::compound_binary_op o
 	       op_name.c_str (), t1_name.c_str (), t1_name.c_str ());
     }
 
-  compound_binary_ops.checkelem (static_cast<int> (op), t1, t2) = f;
+  compound_binary_ops.checkelem (static_cast<int> (op), t1, t2) = reinterpret_cast<void *> (f);
 
   return false;
 }
@@ -405,7 +369,7 @@ octave_value_typeinfo::do_register_cat_op (int t1, int t2, octave_value_typeinfo
 	       t1_name.c_str (), t1_name.c_str ());
     }
 
-  cat_ops.checkelem (t1, t2) = f;
+  cat_ops.checkelem (t1, t2) = reinterpret_cast<void *> (f);
 
   return false;
 }
@@ -425,7 +389,7 @@ octave_value_typeinfo::do_register_assign_op (octave_value::assign_op op,
 	       op_name.c_str (), t_lhs_name.c_str (), t_rhs_name.c_str ());
     }
 
-  assign_ops.checkelem (static_cast<int> (op), t_lhs, t_rhs) = f;
+  assign_ops.checkelem (static_cast<int> (op), t_lhs, t_rhs) = reinterpret_cast<void *> (f);
 
   return false;
 }
@@ -443,7 +407,7 @@ octave_value_typeinfo::do_register_assignany_op (octave_value::assign_op op,
 	       op_name.c_str (), t_lhs_name.c_str ());
     }
 
-  assignany_ops.checkelem (static_cast<int> (op), t_lhs) = f;
+  assignany_ops.checkelem (static_cast<int> (op), t_lhs) = reinterpret_cast<void *> (f);
 
   return false;
 }
@@ -479,7 +443,7 @@ octave_value_typeinfo::do_register_type_conv_op
 	       t_name.c_str (), t_result_name.c_str ());
     }
 
-  type_conv_ops.checkelem (t, t_result) = f;
+  type_conv_ops.checkelem (t, t_result) = reinterpret_cast<void *> (f);
 
   return false;
 }
@@ -497,7 +461,7 @@ octave_value_typeinfo::do_register_widening_op
 	       t_name.c_str (), t_result_name.c_str ());
     }
 
-  widening_ops.checkelem (t, t_result) = f;
+  widening_ops.checkelem (t, t_result) = reinterpret_cast<void *> (f);
 
   return false;
 }
@@ -523,66 +487,76 @@ octave_value_typeinfo::do_lookup_type (const std::string& nm)
 octave_value_typeinfo::unary_class_op_fcn
 octave_value_typeinfo::do_lookup_unary_class_op (octave_value::unary_op op)
 {
-  return unary_class_ops.checkelem (static_cast<int> (op));
+  void *f = unary_class_ops.checkelem (static_cast<int> (op));
+  return reinterpret_cast<octave_value_typeinfo::unary_class_op_fcn> (f);
 }
 
 octave_value_typeinfo::unary_op_fcn
 octave_value_typeinfo::do_lookup_unary_op (octave_value::unary_op op, int t)
 {
-  return unary_ops.checkelem (static_cast<int> (op), t);
+  void *f = unary_ops.checkelem (static_cast<int> (op), t);
+  return reinterpret_cast<octave_value_typeinfo::unary_op_fcn> (f);
 }
 
 octave_value_typeinfo::non_const_unary_op_fcn
 octave_value_typeinfo::do_lookup_non_const_unary_op
   (octave_value::unary_op op, int t)
 {
-  return non_const_unary_ops.checkelem (static_cast<int> (op), t);
+  void *f = non_const_unary_ops.checkelem (static_cast<int> (op), t);
+  return reinterpret_cast<octave_value_typeinfo::non_const_unary_op_fcn> (f);
 }
 
 octave_value_typeinfo::binary_class_op_fcn
 octave_value_typeinfo::do_lookup_binary_class_op (octave_value::binary_op op)
 {
-  return binary_class_ops.checkelem (static_cast<int> (op));
+  void *f = binary_class_ops.checkelem (static_cast<int> (op));
+  return reinterpret_cast<octave_value_typeinfo::binary_class_op_fcn> (f);
 }
 
 octave_value_typeinfo::binary_op_fcn
 octave_value_typeinfo::do_lookup_binary_op (octave_value::binary_op op,
 					    int t1, int t2)
 {
-  return binary_ops.checkelem (static_cast<int> (op), t1, t2);
+  void *f = binary_ops.checkelem (static_cast<int> (op), t1, t2);
+  return reinterpret_cast<octave_value_typeinfo::binary_op_fcn> (f);
 }
 
 octave_value_typeinfo::binary_class_op_fcn
 octave_value_typeinfo::do_lookup_binary_class_op (octave_value::compound_binary_op op)
 {
-  return compound_binary_class_ops.checkelem (static_cast<int> (op));
+  void *f = compound_binary_class_ops.checkelem (static_cast<int> (op));
+  return reinterpret_cast<octave_value_typeinfo::binary_class_op_fcn> (f);
 }
 
 octave_value_typeinfo::binary_op_fcn
 octave_value_typeinfo::do_lookup_binary_op (octave_value::compound_binary_op op,
 					    int t1, int t2)
 {
-  return compound_binary_ops.checkelem (static_cast<int> (op), t1, t2);
+  void *f = compound_binary_ops.checkelem (static_cast<int> (op), t1, t2);
+  return reinterpret_cast<octave_value_typeinfo::binary_op_fcn> (f);
 }
 
 octave_value_typeinfo::cat_op_fcn
 octave_value_typeinfo::do_lookup_cat_op (int t1, int t2)
 {
-  return cat_ops.checkelem (t1, t2);
+  void *f = cat_ops.checkelem (t1, t2);
+  return reinterpret_cast<octave_value_typeinfo::cat_op_fcn> (f);
 }
 
 octave_value_typeinfo::assign_op_fcn
 octave_value_typeinfo::do_lookup_assign_op (octave_value::assign_op op,
 					    int t_lhs, int t_rhs)
 {
-  return assign_ops.checkelem (static_cast<int> (op), t_lhs, t_rhs);
+  void *f = assign_ops.checkelem (static_cast<int> (op), t_lhs, t_rhs);
+  return reinterpret_cast<octave_value_typeinfo::assign_op_fcn> (f);
 }
 
 octave_value_typeinfo::assignany_op_fcn
 octave_value_typeinfo::do_lookup_assignany_op (octave_value::assign_op op,
 					       int t_lhs)
 {
-  return assignany_ops.checkelem (static_cast<int> (op), t_lhs);
+  void *f = assignany_ops.checkelem (static_cast<int> (op), t_lhs);
+  return reinterpret_cast<octave_value_typeinfo::assignany_op_fcn> (f);
 }
 
 int
@@ -594,13 +568,15 @@ octave_value_typeinfo::do_lookup_pref_assign_conv (int t_lhs, int t_rhs)
 octave_base_value::type_conv_fcn
 octave_value_typeinfo::do_lookup_type_conv_op (int t, int t_result)
 {
-  return type_conv_ops.checkelem (t, t_result);
+  void *f = type_conv_ops.checkelem (t, t_result);
+  return reinterpret_cast<octave_base_value::type_conv_fcn> (f);
 }
 
 octave_base_value::type_conv_fcn
 octave_value_typeinfo::do_lookup_widening_op (int t, int t_result)
 {
-  return widening_ops.checkelem (t, t_result);
+  void *f = widening_ops.checkelem (t, t_result);
+  return reinterpret_cast<octave_base_value::type_conv_fcn> (f);
 }
 
 string_vector

@@ -29,7 +29,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "defun.h"
 #include "error.h"
-#include "oct-obj.h"
 
 const int
 octave_value_typeinfo::init_tab_sz (16);

@@ -1,4 +1,8 @@
 2009-05-20  Jaroslav Hajek  <highegg@gmail.com>
+	
+	* ov-typeinfo.cc: Don't include oct-obj.h.
+
+2009-05-20  Jaroslav Hajek  <highegg@gmail.com>
 
 	* toplev.h (octave_quit_exception): New class.
 	(octave_exit): New global variable.

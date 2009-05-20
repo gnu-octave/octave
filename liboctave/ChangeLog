@@ -1,5 +1,9 @@
 2009-05-20  Jaroslav Hajek  <highegg@gmail.com>
 
+	* Makefile.in: Remove reference to ArrayN-idx.h.
+
+2009-05-20  Jaroslav Hajek  <highegg@gmail.com>
+
 	* Array-voidp.cc: New source.
 	* Array.cc (NO_INSTANTIATE_ARRAY_SORT): const T& -> T const &
 	* Makefile.in: Include it.

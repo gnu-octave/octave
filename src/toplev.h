@@ -37,11 +37,26 @@ class tree_statement;
 class tree_statement_list;
 class charMatrix;
 
+#include "quit.h"
+
 #include "input.h"
 #include "oct-map.h"
 
+
+extern void (*octave_exit) (int);
+
+// quit is a lot like an interrupt, so we subclass it to simplify possible
+// handling.
+class octave_quit_exception 
+: public octave_interrupt_exception
+{
+public:
+  int status;
+  octave_quit_exception (int s) : status (s) { }
+};
+
 extern OCTINTERP_API void
-clean_up_and_exit (int) GCC_ATTR_NORETURN;
+clean_up_and_exit (int);
 
 extern OCTINTERP_API void recover_from_exception (void);
 

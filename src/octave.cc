@@ -411,6 +411,11 @@ execute_eval_option_code (const std::string& code)
     {
       eval_string (code, false, parse_status, 0);
     }
+  catch (octave_quit_exception e)
+    {
+      unwind_protect::run_frame ("execute_eval_option_code");
+      clean_up_and_exit (e.status);
+    }
   catch (octave_interrupt_exception)
     {
       recover_from_exception ();
@@ -477,6 +482,11 @@ execute_command_line_file (const std::string& fname)
       bool require_file = true;
 
       source_file (fname, context, verbose, require_file, "octave");
+    }
+  catch (octave_quit_exception e)
+    {
+      unwind_protect::run_frame ("execute_command_line_file");
+      clean_up_and_exit (e.status);
     }
   catch (octave_interrupt_exception)
     {

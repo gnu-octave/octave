@@ -79,6 +79,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "variables.h"
 #include <version.h>
 
+void (*octave_exit) (int) = ::exit;
+
 // TRUE means we are exiting via the builtin exit or quit functions.
 static bool quitting_gracefully = false;
 
@@ -598,6 +600,11 @@ main_loop (void)
 		break;
 	    }
 	}
+      catch (octave_quit_exception e)
+        {
+          unwind_protect::run_all ();
+          clean_up_and_exit (e.status);
+        }
       catch (octave_interrupt_exception)
 	{
 	  recover_from_exception ();
@@ -632,7 +639,8 @@ clean_up_and_exit (int retval)
 
   sysdep_cleanup ();
 
-  exit (retval == EOF ? 0 : retval);
+  if (octave_exit)
+    (*octave_exit) (retval == EOF ? 0 : retval);
 }
 
 DEFUN (quit, args, nargout,
@@ -660,7 +668,7 @@ Octave's exit status.  The default value is zero.\n\
 	    exit_status = tmp;
 	}
 
-      clean_up_and_exit (exit_status);
+      throw octave_quit_exception (exit_status);
     }
   else
     error ("quit: invalid number of output arguments");

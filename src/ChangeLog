@@ -1,3 +1,14 @@
+2009-05-20  Jaroslav Hajek  <highegg@gmail.com>
+
+	* toplev.h (octave_quit_exception): New class.
+	(octave_exit): New global variable.
+	* toplev.cc (octave_exit): Initialize to ::exit.
+	(clean_up_and_exit): Call octave_exit if set.
+	(Fquit): Raise octave_quit_exception to quit.
+	(main_loop): Catch octave_quit_exception.
+	* octave.cc (execute_command_line_file): Ditto.
+	(execute_eval_option_code): Ditto.
+
 2009-05-19  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/fltk_backend.cc (F__fltk_redraw__): New function.

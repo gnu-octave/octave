@@ -52,6 +52,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-map.h"
 #include "oct-obj.h"
 #include "ov.h"
+#include "ov-class.h"
 #include "ov-usr-fcn.h"
 #include "pager.h"
 #include "parse.h"
@@ -1993,6 +1994,12 @@ do_matlab_compatible_clear (const string_vector& argv, int argc, int idx)
 	{
 	  symbol_table::clear_variables ();
 	}
+      else if (argv[idx] == "classes"
+	       && ! symbol_table::is_local_variable ("classes"))
+	{
+	  symbol_table::clear_objects ();
+	  octave_class::clear_exemplar_map ();
+	}
       else
 	{
 	  symbol_table::clear_symbol_pattern (argv[idx]);
@@ -2066,6 +2073,8 @@ Clears the function names and the built-in symbols names.\n\
 Clears the global symbol names.\n\
 @item -variables, -v\n\
 Clears the local variable names.\n\
+@item -classes, -c\n\
+Clears the class structure table and clears all objects.\n\
 @item -regexp, -r\n\
 The arguments are treated as regular expressions as any variables that\n\
 match will be cleared.\n\
@@ -2094,6 +2103,7 @@ without the dash as well.\n\
 	  bool clear_functions = false;
 	  bool clear_globals = false;
 	  bool clear_variables = false;
+          bool clear_objects = false;
 	  bool exclusive = false;
 	  bool have_regexp = false;
 	  bool have_dash_option = false;
@@ -2132,6 +2142,13 @@ without the dash as well.\n\
 
 		  have_dash_option = true;
 		  clear_variables = true;
+		}
+	      else if (argv[idx] == "-classes" || argv[idx] == "-c")
+		{
+		  CLEAR_OPTION_ERROR (have_dash_option && ! exclusive);
+
+		  have_dash_option = true;
+		  clear_objects = true;
 		}
 	      else if (argv[idx] == "-regexp" || argv[idx] == "-r")
 		{
@@ -2177,6 +2194,11 @@ without the dash as well.\n\
 		  else if (clear_variables)
 		    {
 		      do_clear_variables (argv, argc, idx, exclusive);
+		    }
+		  else if (clear_objects)
+		    {
+		      symbol_table::clear_objects ();
+		      octave_class::clear_exemplar_map ();
 		    }
 		  else
 		    {

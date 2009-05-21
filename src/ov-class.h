@@ -146,6 +146,8 @@ public:
 
   bool reconstruct_exemplar (void);
 
+  static void clear_exemplar_map (void);
+
   bool reconstruct_parents (void);
 
   bool save_ascii (std::ostream& os);

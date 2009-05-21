@@ -1318,6 +1318,14 @@ public:
       inst->do_clear_variables ();
   }
 
+  static void clear_objects (scope_id scope = xcurrent_scope)
+  {
+    symbol_table *inst = get_instance (scope);
+
+    if (inst)
+      inst->do_clear_objects ();
+  }
+
   static void unmark_forced_variables (scope_id scope = xcurrent_scope)
   {
     symbol_table *inst = get_instance (scope);
@@ -2096,7 +2104,18 @@ private:
       p->second.clear ();
   }
 
-  void do_unmark_forced_variables (void)
+  void do_clear_objects (void)
+  {
+    for (table_iterator p = table.begin (); p != table.end (); p++)
+      {
+	symbol_record& sr = p->second;
+	octave_value& val = sr.varref ();
+	if (val.is_object())
+	  p->second.clear ();
+      }
+  }
+
+ void do_unmark_forced_variables (void)
   {
     for (table_iterator p = table.begin (); p != table.end (); p++)
       p->second.unmark_forced ();

@@ -846,6 +846,12 @@ octave_class::reconstruct_exemplar (void)
   return retval;
 }
 
+void
+octave_class::clear_exemplar_map (void)
+{
+  exemplar_map.clear ();
+}
+
 //  Load/save does not provide enough information to reconstruct the
 //  class inheritance structure.  reconstruct_parents () attempts to
 //  do so.  If successful, a "true" value is returned.

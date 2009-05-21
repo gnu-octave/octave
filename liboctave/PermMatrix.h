@@ -29,7 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 // Array<T> is inherited privately so that some methods, like index, don't
 // produce unexpected results.
 
-class PermMatrix : protected Array<octave_idx_type>
+class OCTAVE_API PermMatrix : protected Array<octave_idx_type>
 {
 
 public:
@@ -103,7 +103,7 @@ public:
   bool is_col_perm (void) const { return _colp; }
   bool is_row_perm (void) const { return !_colp; }
 
-  friend PermMatrix operator *(const PermMatrix& a, const PermMatrix& b);
+  friend OCTAVE_API PermMatrix operator *(const PermMatrix& a, const PermMatrix& b);
 
   const octave_idx_type *data (void) const 
     { return Array<octave_idx_type>::data (); }
@@ -123,6 +123,7 @@ private:
 
 // Multiplying permutations together.
 PermMatrix 
+OCTAVE_API
 operator *(const PermMatrix& a, const PermMatrix& b);
 
 #endif

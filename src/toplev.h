@@ -83,6 +83,7 @@ extern OCTINTERP_API bool octave_interpreter_ready;
 extern OCTINTERP_API bool octave_initialized;
 
 class
+OCTINTERP_API
 octave_call_stack
 {
 private:

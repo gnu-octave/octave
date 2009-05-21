@@ -29,7 +29,6 @@ along with Octave; see the file COPYING.  If not, see
 
 template <class T>
 class
-OCTAVE_API
 base_det
 {
 public:

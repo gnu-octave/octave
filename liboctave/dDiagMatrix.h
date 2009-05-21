@@ -118,7 +118,7 @@ OCTAVE_API DiagMatrix imag (const ComplexDiagMatrix& a);
 
 // diagonal matrix by diagonal matrix -> diagonal matrix operations
 
-DiagMatrix
+OCTAVE_API DiagMatrix
 operator * (const DiagMatrix& a, const DiagMatrix& b);
 
 MDIAGARRAY2_FORWARD_DEFS (MDiagArray2, DiagMatrix, double)

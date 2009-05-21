@@ -89,7 +89,7 @@ extern bool octave_completion_matches_called;
 extern OCTINTERP_API bool Vdrawnow_requested;
 
 // TRUE if we are in debugging mode.
-extern bool Vdebugging;
+extern OCTINTERP_API bool Vdebugging;
 
 extern std::string gnu_readline (const std::string& s, bool force_readline = false);
 

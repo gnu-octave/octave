@@ -33,7 +33,9 @@ class octave_user_code;
 
 // Interface to breakpoints,.
 
-class bp_table
+class
+OCTINTERP_API
+bp_table
 {
 private:
 

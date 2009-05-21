@@ -75,7 +75,7 @@ public:
   FloatComplexRowVector hermitian (void) const;
   FloatComplexRowVector transpose (void) const;
 
-  friend FloatComplexColumnVector conj (const FloatComplexColumnVector& a);
+  friend OCTAVE_API FloatComplexColumnVector conj (const FloatComplexColumnVector& a);
 
   // resize is the destructive equivalent for this one
 
@@ -90,26 +90,26 @@ public:
 
   // matrix by column vector -> column vector operations
 
-  friend FloatComplexColumnVector operator * (const FloatComplexMatrix& a,
+  friend OCTAVE_API FloatComplexColumnVector operator * (const FloatComplexMatrix& a,
 					 const FloatColumnVector& b);
 
-  friend FloatComplexColumnVector operator * (const FloatComplexMatrix& a,
+  friend OCTAVE_API FloatComplexColumnVector operator * (const FloatComplexMatrix& a,
 					 const FloatComplexColumnVector& b);
 
   // matrix by column vector -> column vector operations
 
-  friend FloatComplexColumnVector operator * (const FloatMatrix& a,
+  friend OCTAVE_API FloatComplexColumnVector operator * (const FloatMatrix& a,
 					 const FloatComplexColumnVector& b);
 
   // diagonal matrix by column vector -> column vector operations
 
-  friend FloatComplexColumnVector operator * (const FloatDiagMatrix& a,
+  friend OCTAVE_API FloatComplexColumnVector operator * (const FloatDiagMatrix& a,
 					 const FloatComplexColumnVector& b);
 
-  friend FloatComplexColumnVector operator * (const FloatComplexDiagMatrix& a,
+  friend OCTAVE_API FloatComplexColumnVector operator * (const FloatComplexDiagMatrix& a,
 					 const ColumnVector& b);
 
-  friend FloatComplexColumnVector operator * (const FloatComplexDiagMatrix& a,
+  friend OCTAVE_API FloatComplexColumnVector operator * (const FloatComplexDiagMatrix& a,
 					 const FloatComplexColumnVector& b);
 
   // other operations
@@ -125,8 +125,8 @@ public:
 
   // i/o
 
-  friend std::ostream& operator << (std::ostream& os, const FloatComplexColumnVector& a);
-  friend std::istream& operator >> (std::istream& is, FloatComplexColumnVector& a);
+  friend OCTAVE_API std::ostream& operator << (std::ostream& os, const FloatComplexColumnVector& a);
+  friend OCTAVE_API std::istream& operator >> (std::istream& is, FloatComplexColumnVector& a);
 
 private:
 

@@ -69,9 +69,9 @@ class octave_chunk_buffer
 
 public:
 
-  octave_chunk_buffer (size_t size);
+  OCTAVE_API octave_chunk_buffer (size_t size);
 
-  ~octave_chunk_buffer (void);
+  OCTAVE_API ~octave_chunk_buffer (void);
 
   char *data (void) const { return dat; }
 };

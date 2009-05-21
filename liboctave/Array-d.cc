@@ -102,6 +102,7 @@ template OCTAVE_API std::ostream& operator << (std::ostream&, const ArrayN<doubl
 #include "DiagArray2.h"
 #include "DiagArray2.cc"
 
+template class OCTAVE_API DiagArray2<double>::Proxy;
 template class OCTAVE_API DiagArray2<double>;
 
 /*

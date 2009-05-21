@@ -35,6 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "mx-defs.h"
 
 class
+OCTAVE_API
 ComplexDiagMatrix : public MDiagArray2<Complex>
 {
 public:
@@ -96,7 +97,7 @@ public:
   ComplexDiagMatrix transpose (void) const { return MDiagArray2<Complex>::transpose(); }
   DiagMatrix abs (void) const; 
 
-  friend ComplexDiagMatrix conj (const ComplexDiagMatrix& a);
+  friend OCTAVE_API ComplexDiagMatrix conj (const ComplexDiagMatrix& a);
 
   // resize is the destructive analog for this one
 
@@ -139,17 +140,17 @@ private:
     : MDiagArray2<Complex> (d, nr, nc) { }
 };
 
-ComplexDiagMatrix conj (const ComplexDiagMatrix& a);
+OCTAVE_API ComplexDiagMatrix conj (const ComplexDiagMatrix& a);
 
 // diagonal matrix by diagonal matrix -> diagonal matrix operations
 
-ComplexDiagMatrix
+OCTAVE_API ComplexDiagMatrix
 operator * (const ComplexDiagMatrix& a, const ComplexDiagMatrix& b);
 
-ComplexDiagMatrix
+OCTAVE_API ComplexDiagMatrix
 operator * (const ComplexDiagMatrix& a, const DiagMatrix& b);
 
-ComplexDiagMatrix
+OCTAVE_API ComplexDiagMatrix
 operator * (const DiagMatrix& a, const ComplexDiagMatrix& b);
 
 MDIAGARRAY2_FORWARD_DEFS (MDiagArray2, ComplexDiagMatrix, Complex)

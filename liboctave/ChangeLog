@@ -1,5 +1,29 @@
 2009-05-21  Michael Goffioul  <michael.goffioul@gmail.com>
 
+	* Array-C.cc (class DiagArray2<Complex>::Proxy): Tag with OCTAVE_API.
+	* Array-d.cc (class DiagArray2<double>::Proxy): Ditto.
+	* Array-f.cc (class DiagArray2<float>::Proxy): Ditto.
+	* Array-fC.cc (class DiagArray2<FloatComplex>::Proxy): Ditto.
+	* Array.cc (class octave_sort<T>): Ditto.
+	* CColVector.h (conj, operator*, operator>>, operator<<): Ditto.
+	* CDiagMatrix.h (class ComplexDiagMatrix, conj, operator*): Ditto.
+	* CMatrix.h (conj): Ditto.
+	* CNDArray.h (conj): Ditto.
+	* PermMatrix.h (class PermMatrix, operator*): Ditto.
+	* dDiagMatrix.h (class DiagMatrix): Ditto.
+	* fCColVector.h (conj, operator*, operator>>, operator<<): Ditto.
+	* fCDiagMatrix.h (class FloatComplexDiagMatrix, conj, operator*):
+	Ditto.
+	* fCMatrix.h (conj): Ditto.
+	* fCNDArray.h (conj): Ditto.
+	* fDiagMatrix.h (operator*): Ditto.
+	* oct-locbuf.h (octave_chunk_buffer::octave_chunk_buffer,
+	octave_chunk_buffer::~octave_chunk_buffer): Ditto.
+	* oct-inttypes.cc (octave_int_cmp_op::emulate_op): Ditto.
+	* DET.h (class base_det<T>): Remove OCTAVE_API (cannot be applied on
+	templates).
+	* oct-inttypes.cc (octave_int_cmp_op::emulate_op<class xop>): Ditto.
+
 	* CmplxQR.cc (ComplexQR::insert_col, ComplexQR::delete_col): Copy
 	volatile variable to avoid MSVC compilation error (cannot pass
 	volatile variable as const& argument).

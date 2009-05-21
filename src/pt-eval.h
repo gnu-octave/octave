@@ -35,6 +35,7 @@ class tree_expression;
 // How to evaluate the code that the parse trees represent.
 
 class
+OCTINTERP_API
 tree_evaluator : public tree_walker
 {
 public:

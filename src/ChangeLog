@@ -1,5 +1,10 @@
 2009-05-21  Michael Goffioul  <michael.goffioul@gmail.com>
 
+	* debug.h (class bp_table): Tag with OCTINTERP_API.
+	* input.h (Vdebugging): Ditto.
+	* pt-eval.h (class tree_evaluator): Ditto.
+	* toplev.h (class octave_call_stack): Ditto.
+
 	* file-io.cc (mkstemp): Add mktemp-based implementation of mkstemp on
 	platforms that do not have it (mkstemp is required by the new help
 	system).

@@ -102,7 +102,7 @@ public:
   boolNDArray isinf (void) const;
   boolNDArray isfinite (void) const;
 
-  friend ComplexNDArray conj (const ComplexNDArray& a);
+  friend OCTAVE_API ComplexNDArray conj (const ComplexNDArray& a);
 
   ComplexNDArray fourier (int dim = 1) const;
   ComplexNDArray ifourier (int dim = 1) const;

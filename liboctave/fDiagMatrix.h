@@ -118,7 +118,7 @@ OCTAVE_API FloatDiagMatrix imag (const FloatComplexDiagMatrix& a);
 
 // diagonal matrix by diagonal matrix -> diagonal matrix operations
 
-FloatDiagMatrix
+OCTAVE_API FloatDiagMatrix
 operator * (const FloatDiagMatrix& a, const FloatDiagMatrix& b);
 
 MDIAGARRAY2_FORWARD_DEFS (MDiagArray2, FloatDiagMatrix, float)

@@ -75,7 +75,7 @@ public:
   ComplexRowVector hermitian (void) const;
   ComplexRowVector transpose (void) const;
 
-  friend ComplexColumnVector conj (const ComplexColumnVector& a);
+  friend OCTAVE_API ComplexColumnVector conj (const ComplexColumnVector& a);
 
   // resize is the destructive equivalent for this one
 
@@ -90,26 +90,26 @@ public:
 
   // matrix by column vector -> column vector operations
 
-  friend ComplexColumnVector operator * (const ComplexMatrix& a,
+  friend OCTAVE_API ComplexColumnVector operator * (const ComplexMatrix& a,
 					 const ColumnVector& b);
 
-  friend ComplexColumnVector operator * (const ComplexMatrix& a,
+  friend OCTAVE_API ComplexColumnVector operator * (const ComplexMatrix& a,
 					 const ComplexColumnVector& b);
 
   // matrix by column vector -> column vector operations
 
-  friend ComplexColumnVector operator * (const Matrix& a,
+  friend OCTAVE_API ComplexColumnVector operator * (const Matrix& a,
 					 const ComplexColumnVector& b);
 
   // diagonal matrix by column vector -> column vector operations
 
-  friend ComplexColumnVector operator * (const DiagMatrix& a,
+  friend OCTAVE_API ComplexColumnVector operator * (const DiagMatrix& a,
 					 const ComplexColumnVector& b);
 
-  friend ComplexColumnVector operator * (const ComplexDiagMatrix& a,
+  friend OCTAVE_API ComplexColumnVector operator * (const ComplexDiagMatrix& a,
 					 const ColumnVector& b);
 
-  friend ComplexColumnVector operator * (const ComplexDiagMatrix& a,
+  friend OCTAVE_API ComplexColumnVector operator * (const ComplexDiagMatrix& a,
 					 const ComplexColumnVector& b);
 
   // other operations
@@ -125,8 +125,8 @@ public:
 
   // i/o
 
-  friend std::ostream& operator << (std::ostream& os, const ComplexColumnVector& a);
-  friend std::istream& operator >> (std::istream& is, ComplexColumnVector& a);
+  friend OCTAVE_API std::ostream& operator << (std::ostream& os, const ComplexColumnVector& a);
+  friend OCTAVE_API std::istream& operator >> (std::istream& is, ComplexColumnVector& a);
 
 private:
 

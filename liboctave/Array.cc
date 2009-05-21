@@ -2546,7 +2546,7 @@ Array<T>::find (octave_idx_type n, bool backward) const
 }
 
 
-#define INSTANTIATE_ARRAY_SORT(T) template class octave_sort<T>;
+#define INSTANTIATE_ARRAY_SORT(T) template class OCTAVE_API octave_sort<T>;
 
 #define NO_INSTANTIATE_ARRAY_SORT(T) \
  \

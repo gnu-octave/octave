@@ -132,7 +132,7 @@ public:
   FloatComplexMatrix transpose (void) const
     { return MArray2<FloatComplex>::transpose (); }
 
-  friend FloatComplexMatrix conj (const FloatComplexMatrix& a);
+  friend OCTAVE_API FloatComplexMatrix conj (const FloatComplexMatrix& a);
 
   // resize is the destructive equivalent for this one
 

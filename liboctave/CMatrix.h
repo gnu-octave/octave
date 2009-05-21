@@ -132,7 +132,7 @@ public:
   ComplexMatrix transpose (void) const
     { return MArray2<Complex>::transpose (); }
 
-  friend ComplexMatrix conj (const ComplexMatrix& a);
+  friend OCTAVE_API ComplexMatrix conj (const ComplexMatrix& a);
 
   // resize is the destructive equivalent for this one
 

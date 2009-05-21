@@ -1209,6 +1209,7 @@ OCTAVE_DLL_DEFS=
 OCTINTERP_DLL_DEFS=
 OCTGRAPHICS_DLL_DEFS=
 library_path_var=LD_LIBRARY_PATH
+SCRIPTS_EXE_SUFFIX=
 case "$canonical_host_type" in
   *-*-386bsd* | *-*-netbsd*)
     SH_LD=ld
@@ -1298,6 +1299,7 @@ case "$canonical_host_type" in
     OCTAVE_DLL_DEFS="-DOCTAVE_DLL"
     OCTINTERP_DLL_DEFS="-DOCTINTERP_DLL"
     OCTGRAPHICS_DLL_DEFS="-DOCTGRAPHICS_DLL"
+    SCRIPTS_EXE_SUFFIX='$(EXEEXT)'
   ;;
   *-*-linux* | *-*-gnu*)
     MKOCTFILE_DL_LDFLAGS="-shared -Wl,-Bsymbolic"
@@ -1446,6 +1448,7 @@ AC_SUBST(OCTAVE_DLL_DEFS)
 AC_SUBST(OCTINTERP_DLL_DEFS)
 AC_SUBST(OCTGRAPHICS_DLL_DEFS)
 AC_SUBST(library_path_var)
+AC_SUBST(SCRIPTS_EXE_SUFFIX)
 
 ### special checks for odd OS specific things.
 ###

@@ -26,6 +26,8 @@ top_srcdir = @top_srcdir@
 abs_top_srcdir = @abs_top_srcdir@
 VPATH = @srcdir@
 
+SCRIPTS_EXE_SUFFIX = @SCRIPTS_EXE_SUFFIX@
+
 include $(TOPDIR)/Makeconf
 
 INSTALL = @INSTALL@
@@ -44,9 +46,9 @@ DISTFILES = $(CONF_DISTFILES) \
 	COPYING INSTALL NEWS \
 	NEWS.[0-9] PROJECTS README README.Linux README.Windows \
 	README.Cygwin README.MSVC README.kpathsea ROADMAP SENDING-PATCHES \
-	move-if-change octave-sh octave-bug.in \
-	octave-config.in missing mk-opts.pl mkinstalldirs \
-	mkoctfile.in run-octave.in ChangeLog ChangeLog.[0-9]
+	move-if-change octave-sh octave-bug.in octave-bug.cc.in \
+	octave-config.in octave-config.cc.in missing mk-opts.pl mkinstalldirs \
+	mkoctfile.in mkoctfile.cc.in run-octave.in ChangeLog ChangeLog.[0-9]
 
 # Subdirectories in which to run `make all'.
 SUBDIRS = libcruft liboctave src scripts doc examples
@@ -69,7 +71,8 @@ DIRS_TO_MAKE = $(bindir) $(datadir) $(libdir) $(octincludedir)/octave \
   $(localapioctfiledir) $(localveroctfiledir) $(imagedir) $(archlibdir) \
   $(localarchlibdir) $(localapiarchlibdir) $(localverarchlibdir)
 
-SHELL_SCRIPTS = octave-bug octave-config mkoctfile run-octave
+SHELL_SCRIPTS = octave-bug$(SCRIPTS_EXE_SUFFIX) octave-config$(SCRIPTS_EXE_SUFFIX) \
+		mkoctfile$(SCRIPTS_EXE_SUFFIX)  run-octave
 
 CONFIG_FILES = @ac_config_files@
 
@@ -113,13 +116,40 @@ octave-bug: octave-bug.in Makeconf octMakefile $(top_srcdir)/src/version.h
 	@$(do-subst-config-vals)
 	chmod a+rx $@
 
+octave-bug.cc: octave-bug.cc.in Makeconf octMakefile
+	@$(do-subst-config-vals)
+
+ifneq ($(EXEEXT),)
+octave-bug$(EXEEXT): octave-bug.o
+	$(LD_CXX) $(CPPFLAGS) $(ALL_CXXFLAGS) $(RDYNAMIC_FLAG) \
+	    $(ALL_LDFLAGS) -o $@ octave-bug.o
+endif
+
 octave-config: octave-config.in Makeconf octMakefile $(top_srcdir)/src/version.h
 	@$(do-subst-default-vals)
 	chmod a+rx $@
 
+octave-config.cc: octave-config.cc.in Makeconf octMakefile
+	@$(do-subst-default-vals)
+
+ifneq ($(EXEEXT),)
+octave-config$(EXEEXT): octave-config.o
+	$(LD_CXX) $(CPPFLAGS) $(ALL_CXXFLAGS) $(RDYNAMIC_FLAG) \
+	    $(ALL_LDFLAGS) -o $@ octave-config.o
+endif
+
 mkoctfile: mkoctfile.in Makeconf octMakefile $(top_srcdir)/src/version.h
 	@$(do-subst-config-vals)
 	chmod a+rx $@
+
+mkoctfile.cc: mkoctfile.cc.in Makeconf octMakefile
+	@$(do-subst-config-vals)
+
+ifneq ($(EXEEXT),)
+mkoctfile$(EXEEXT): mkoctfile.o
+	$(LD_CXX) $(CPPFLAGS) $(ALL_CXXFLAGS) $(RDYNAMIC_FLAG) \
+	    $(ALL_LDFLAGS) -o $@ mkoctfile.o
+endif
 
 run-octave: run-octave.in Makeconf octMakefile
 	@$(do-subst-script-vals)
@@ -139,26 +169,31 @@ BUGS INSTALL.OCTAVE:
 
 install install-strip ::
 	$(top_srcdir)/mkinstalldirs $(addprefix $(DESTDIR), $(DIRS_TO_MAKE))
-	rm -f $(DESTDIR)$(bindir)/octave-bug
-	$(INSTALL_SCRIPT) octave-bug $(DESTDIR)$(bindir)/octave-bug-$(version)
-	(cd $(DESTDIR)$(bindir); $(LN_S) octave-bug-$(version) $(DESTDIR)$(bindir)/octave-bug)
-	rm -f $(DESTDIR)$(bindir)/octave-config
+	rm -f $(DESTDIR)$(bindir)/octave-bug$(SCRIPTS_EXE_SUFFIX)
+	$(INSTALL_SCRIPT) octave-bug$(SCRIPTS_EXE_SUFFIX) \
+	    $(DESTDIR)$(bindir)/octave-bug-$(version)$(SCRIPTS_EXE_SUFFIX)
+	(cd $(DESTDIR)$(bindir); $(LN_S) octave-bug-$(version)$(SCRIPTS_EXE_SUFFIX) \
+	    $(DESTDIR)$(bindir)/octave-bug$(SCRIPTS_EXE_SUFFIX))
+	rm -f $(DESTDIR)$(bindir)/octave-config$(SCRIPTS_EXE_SUFFIX)
 	$(INSTALL_SCRIPT) \
-	  octave-config $(DESTDIR)$(bindir)/octave-config-$(version)
-	(cd $(DESTDIR)$(bindir); $(LN_S) octave-config-$(version) $(DESTDIR)$(bindir)/octave-config)
-	rm -f $(DESTDIR)$(bindir)/mkoctfile
-	$(INSTALL_SCRIPT) mkoctfile $(DESTDIR)$(bindir)/mkoctfile-$(version)
-	(cd $(DESTDIR)$(bindir); $(LN_S) mkoctfile-$(version) $(DESTDIR)$(bindir)/mkoctfile)
+	  octave-config$(SCRIPTS_EXE_SUFFIX) $(DESTDIR)$(bindir)/octave-config-$(version)$(SCRIPTS_EXE_SUFFIX)
+	(cd $(DESTDIR)$(bindir); $(LN_S) octave-config-$(version)$(SCRIPTS_EXE_SUFFIX) \
+	    $(DESTDIR)$(bindir)/octave-config$(SCRIPTS_EXE_SUFFIX))
+	rm -f $(DESTDIR)$(bindir)/mkoctfile$(SCRIPTS_EXE_SUFFIX)
+	$(INSTALL_SCRIPT) mkoctfile$(SCRIPTS_EXE_SUFFIX) \
+	    $(DESTDIR)$(bindir)/mkoctfile-$(version)$(SCRIPTS_EXE_SUFFIX)
+	(cd $(DESTDIR)$(bindir); $(LN_S) mkoctfile-$(version)$(SCRIPTS_EXE_SUFFIX) \
+	    $(DESTDIR)$(bindir)/mkoctfile$(SCRIPTS_EXE_SUFFIX))
 	$(INSTALL_DATA) config.h $(DESTDIR)$(octincludedir)/octave/config.h
 	$(INSTALL_DATA) $(srcdir)/NEWS $(DESTDIR)$(octetcdir)/NEWS
 
 uninstall::
-	rm -f $(DESTDIR)$(bindir)/octave-bug
-	rm -f $(DESTDIR)$(bindir)/octave-bug-$(version)
-	rm -f $(DESTDIR)$(bindir)/octave-config
-	rm -f $(DESTDIR)$(bindir)/octave-config-$(version)
-	rm -f $(DESTDIR)$(bindir)/mkoctfile
-	rm -f $(DESTDIR)$(bindir)/mkoctfile-$(version)
+	rm -f $(DESTDIR)$(bindir)/octave-bug$(SCRIPTS_EXE_SUFFIX)
+	rm -f $(DESTDIR)$(bindir)/octave-bug-$(version)$(SCRIPTS_EXE_SUFFIX)
+	rm -f $(DESTDIR)$(bindir)/octave-config$(SCRIPTS_EXE_SUFFIX)
+	rm -f $(DESTDIR)$(bindir)/octave-config-$(version)$(SCRIPTS_EXE_SUFFIX)
+	rm -f $(DESTDIR)$(bindir)/mkoctfile$(SCRIPTS_EXE_SUFFIX)
+	rm -f $(DESTDIR)$(bindir)/mkoctfile-$(version)$(SCRIPTS_EXE_SUFFIX)
 	rm -f $(DESTDIR)$(octincludedir)/octave/config.h
 	rm -f $(DESTDIR)$(octetcdir)/NEWS
 
@@ -185,10 +220,15 @@ maintainer-clean distclean::
 	rm -f config.cache config.h config.log config.status
 	rm -rf autom4te.cache
 	rm -f $(SHELL_SCRIPTS)
+	rm -f mkoctfile.cc octave-config.cc octave-bug.cc
 	rm -f unistd.h
 
 maintainer-clean::
 	rm -f configure config.h.in BUGS INSTALL.OCTAVE
+
+maintainer-clean distclean clean::
+	rm -f mkoctfile$(EXEEXT) octave-config$(EXEEXT) octave-bug$(EXEEXT)
+	rm -f mkoctfile.o octave-config.o octave-bug.o
 
 # Rules for making a source distribution.
 

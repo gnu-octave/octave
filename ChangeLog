@@ -1,3 +1,20 @@
+2008-05-21  Michael Goffioul <michael.goffioul@gmail.com>
+
+	* configure.in (SCRIPTS_EXE_SUFFIX): New substituted
+	variable. Define to ".exe" for MSVC compilation.
+	* octMakefile.in (SCRIPTS_EXE_SUFFIX): New variable.
+	(DISTFILES): Add mkoctfile.cc.in, octave-config.cc.in and
+	octave-bug.cc.in.
+	(SHELL_SCRIPTS): Use SCRIPTS_EXE_SUFFIX.
+	(mkoctfile.cc, mkoctfile$(EXEEXT)): New build rules.
+	(octave-config.cc, octave-config$(EXEEXT)): Likewise.
+	(octave-bug.cc, octave-bug$(EXEEXT)): Likewise.
+	(install, install-strip, uninstall): Use SCRIPTS_EXE_SUFFIX.
+	(maintainer-clean, distclean): Remove mkoctfile.[cc|o|exe],
+	octave-config.[cc|o|exe] and octave-bug.[cc|o|exe].
+	(clean): Remove mkoctfile$(EXEEXT), octave-config$(EXEEXT),
+	octave-bug$(EXEEXT) and the corresponding object files.
+
 2009-05-07  John W. Eaton  <jwe@octave.org>
 
 	* configure.in, mkoctfile.in, mkoctfile.cc.in, octave-bug.in,

@@ -30,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "Array.cc"
 
 extern template class OCTAVE_API Array<bool>;
+extern template class OCTAVE_API Array<octave_idx_type>;
 
 #include "oct-stream.h"
 

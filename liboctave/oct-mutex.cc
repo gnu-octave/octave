@@ -27,12 +27,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-mutex.h"
 #include "lo-error.h"
 
-#if defined (HAVE_PTHREAD_H)
-#include <pthread.h>
-#endif
-
 #if defined (__WIN32__) && ! defined (__CYGWIN__)
 #include <windows.h>
+#elif defined (HAVE_PTHREAD_H)
+#include <pthread.h>
 #endif
 
 void

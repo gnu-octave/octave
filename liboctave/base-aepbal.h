@@ -50,6 +50,7 @@ public:
       ilo = a.ilo;
       ihi = a.ihi;
       job = a.job;
+      return *this;
     }
 
   MatrixT balanced_matrix (void) const { return balanced_mat; }

@@ -784,6 +784,13 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
       octave_rand::distribution(rand_dist);
     }
 
+  if (n < 3)
+    {
+      (*current_liboctave_error_handler)
+	("eigs: n must be at least 3");
+      return -1;
+    }
+
   if (p < 0)
     {
       p = k * 2;
@@ -794,18 +801,19 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
       if (p > n - 1)
 	p = n - 1 ;
     }
-  else if (p <= k || p > n)
+  
+  if (k < 1 || k > n - 2)
     {
       (*current_liboctave_error_handler) 
-	("eigs: opts.p must be between k and n");
+	("eigs: Invalid number of eigenvalues to extract (must be 0 < k < n-1-1).\n"
+	 "      Use 'eig(full(A))' instead");
       return -1;
     }
 
-  if (k > n )
+  if (p <= k || p >= n)
     {
       (*current_liboctave_error_handler) 
-	("eigs: Too many eigenvalues to extract (k >= n).\n"
-	 "      Use 'eig(full(A))' instead");
+	("eigs: opts.p must be greater than k and less than n");
       return -1;
     }
 
@@ -1100,6 +1108,21 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
       octave_rand::distribution(rand_dist);
     }
 
+  if (n < 3)
+    {
+      (*current_liboctave_error_handler)
+	("eigs: n must be at least 3");
+      return -1;
+    }
+
+  if (k <= 0 || k >= n - 1)
+    {
+      (*current_liboctave_error_handler) 
+	("eigs: Invalid number of eigenvalues to extract (must be 0 < k < n-1-1).\n"
+	     "      Use 'eig(full(A))' instead");
+      return -1;
+    }
+
   if (p < 0)
     {
       p = k * 2;
@@ -1110,18 +1133,11 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
       if (p > n - 1)
 	p = n - 1 ;
     }
-  else if (p <= k || p > n)
+  
+  if (p <= k || p >= n)
     {
       (*current_liboctave_error_handler) 
-	("eigs: opts.p must be between k and n");
-      return -1;
-    }
-
-  if (k > n )
-    {
-      (*current_liboctave_error_handler) 
-	("eigs: Too many eigenvalues to extract (k >= n).\n"
-	     "      Use 'eig(full(A))' instead");
+	("eigs: opts.p must be greater than k and less than n");
       return -1;
     }
 
@@ -1401,6 +1417,13 @@ EigsRealSymmetricFunc (EigsFunc fun, octave_idx_type n,
       octave_rand::distribution(rand_dist);
     }
 
+  if (n < 3)
+    {
+      (*current_liboctave_error_handler)
+	("eigs: n must be at least 3");
+      return -1;
+    }
+
   if (p < 0)
     {
       p = k * 2;
@@ -1411,18 +1434,19 @@ EigsRealSymmetricFunc (EigsFunc fun, octave_idx_type n,
       if (p > n - 1)
 	p = n - 1 ;
     }
-  else if (p <= k || p > n)
+  
+  if (k <= 0 || k >= n - 1)
     {
       (*current_liboctave_error_handler)
-	("eigs: opts.p must be between k and n");
+	("eigs: Invalid number of eigenvalues to extract (must be 0 < k < n-1).\n"
+	     "      Use 'eig(full(A))' instead");
       return -1;
     }
 
-  if (k > n )
+  if (p <= k || p >= n)
     {
       (*current_liboctave_error_handler)
-	("eigs: Too many eigenvalues to extract (k >= n).\n"
-	     "      Use 'eig(full(A))' instead");
+	("eigs: opts.p must be greater than k and less than n");
       return -1;
     }
 
@@ -1674,6 +1698,13 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
       octave_rand::distribution(rand_dist);
     }
 
+  if (n < 3)
+    {
+      (*current_liboctave_error_handler)
+	("eigs: n must be at least 3");
+      return -1;
+    }
+
   if (p < 0)
     {
       p = k * 2 + 1;
@@ -1684,18 +1715,19 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
       if (p > n - 1)
 	p = n - 1 ;
     }
-  else if (p < k || p > n)
+
+  if (k <= 0 || k >= n - 1)
     {
       (*current_liboctave_error_handler) 
-	("eigs: opts.p must be between k+1 and n");
+	("eigs: Invalid number of eigenvalues to extract (must be 0 < k < n-1).\n"
+	 "      Use 'eig(full(A))' instead");
       return -1;
     }
 
-  if (k > n - 1)
+  if (p <= k || p >= n)
     {
       (*current_liboctave_error_handler) 
-	("eigs: Too many eigenvalues to extract (k >= n-1).\n"
-	 "      Use 'eig(full(A))' instead");
+	("eigs: opts.p must be greater than k and less than n");
       return -1;
     }
 
@@ -2032,6 +2064,13 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
       octave_rand::distribution(rand_dist);
     }
 
+  if (n < 3)
+    {
+      (*current_liboctave_error_handler)
+	("eigs: n must be at least 3");
+      return -1;
+    }
+
   if (p < 0)
     {
       p = k * 2 + 1;
@@ -2042,18 +2081,19 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
       if (p > n - 1)
 	p = n - 1 ;
     }
-  else if (p < k || p > n)
+
+  if (k <= 0 || k >= n - 1)
     {
       (*current_liboctave_error_handler) 
-	("eigs: opts.p must be between k+1 and n");
+	("eigs: Invalid number of eigenvalues to extract (must be 0 < k < n-1).\n"
+	     "      Use 'eig(full(A))' instead");
       return -1;
     }
 
-  if (k > n - 1)
+  if (p <= k || p >= n)
     {
       (*current_liboctave_error_handler) 
-	("eigs: Too many eigenvalues to extract (k >= n-1).\n"
-	     "      Use 'eig(full(A))' instead");
+	("eigs: opts.p must be greater than k and less than n");
       return -1;
     }
 
@@ -2380,6 +2420,13 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n,
       octave_rand::distribution(rand_dist);
     }
 
+  if (n < 3)
+    {
+      (*current_liboctave_error_handler)
+	("eigs: n must be at least 3");
+      return -1;
+    }
+
   if (p < 0)
     {
       p = k * 2 + 1;
@@ -2390,18 +2437,19 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n,
       if (p > n - 1)
 	p = n - 1 ;
     }
-  else if (p < k || p > n)
+
+  if (k <= 0 || k >= n - 1)
     {
       (*current_liboctave_error_handler)
-	("eigs: opts.p must be between k+1 and n");
+	("eigs: Invalid number of eigenvalues to extract (must be 0 < k < n-1).\n"
+	     "      Use 'eig(full(A))' instead");
       return -1;
     }
 
-  if (k > n - 1)
+  if (p <= k || p >= n)
     {
       (*current_liboctave_error_handler)
-	("eigs: Too many eigenvalues to extract (k >= n-1).\n"
-	     "      Use 'eig(full(A))' instead");
+	("eigs: opts.p must be greater than k and less than n");
       return -1;
     }
 
@@ -2697,6 +2745,13 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
       octave_rand::distribution(rand_dist);
     }
 
+  if (n < 3)
+    {
+      (*current_liboctave_error_handler)
+	("eigs: n must be at least 3");
+      return -1;
+    }
+
   if (p < 0)
     {
       p = k * 2 + 1;
@@ -2707,18 +2762,19 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
       if (p > n - 1)
 	p = n - 1 ;
     }
-  else if (p < k || p > n)
+
+  if (k <= 0 || k >= n - 1)
     {
       (*current_liboctave_error_handler) 
-	("eigs: opts.p must be between k+1 and n");
+	("eigs: Invalid number of eigenvalues to extract (must be 0 < k < n-1).\n"
+	 "      Use 'eig(full(A))' instead");
       return -1;
     }
 
-  if (k > n - 1)
+  if (p <= k || p >= n)
     {
       (*current_liboctave_error_handler) 
-	("eigs: Too many eigenvalues to extract (k >= n-1).\n"
-	 "      Use 'eig(full(A))' instead");
+	("eigs: opts.p must be greater than k and less than n");
       return -1;
     }
 
@@ -3014,6 +3070,13 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
       octave_rand::distribution(rand_dist);
     }
 
+  if (n < 3)
+    {
+      (*current_liboctave_error_handler)
+	("eigs: n must be at least 3");
+      return -1;
+    }
+
   if (p < 0)
     {
       p = k * 2 + 1;
@@ -3024,18 +3087,19 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
       if (p > n - 1)
 	p = n - 1 ;
     }
-  else if (p < k || p > n)
+
+  if (k <= 0 || k >= n - 1)
     {
       (*current_liboctave_error_handler) 
-	("eigs: opts.p must be between k+1 and n");
+	("eigs: Invalid number of eigenvalues to extract (must be 0 < k < n-1).\n"
+	     "      Use 'eig(full(A))' instead");
       return -1;
     }
 
-  if (k > n - 1)
+  if (p <= k || p >= n)
     {
       (*current_liboctave_error_handler) 
-	("eigs: Too many eigenvalues to extract (k >= n-1).\n"
-	     "      Use 'eig(full(A))' instead");
+	("eigs: opts.p must be greater than k and less than n");
       return -1;
     }
 
@@ -3323,6 +3387,13 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n,
       octave_rand::distribution(rand_dist);
     }
 
+  if (n < 3)
+    {
+      (*current_liboctave_error_handler)
+	("eigs: n must be at least 3");
+      return -1;
+    }
+
   if (p < 0)
     {
       p = k * 2 + 1;
@@ -3333,18 +3404,19 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n,
       if (p > n - 1)
 	p = n - 1 ;
     }
-  else if (p < k || p > n)
+
+  if (k <= 0 || k >= n - 1)
     {
       (*current_liboctave_error_handler)
-	("eigs: opts.p must be between k+1 and n");
+	("eigs: Invalid number of eigenvalues to extract (must be 0 < k < n-1).\n"
+	     "      Use 'eig(full(A))' instead");
       return -1;
     }
 
-  if (k > n - 1)
+  if (p <= k || p >= n)
     {
       (*current_liboctave_error_handler)
-	("eigs: Too many eigenvalues to extract (k >= n-1).\n"
-	     "      Use 'eig(full(A))' instead");
+	("eigs: opts.p must be greater than k and less than n");
       return -1;
     }
 

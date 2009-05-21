@@ -52,6 +52,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "toplev.h"
 #include "unwind-prot.h"
 
+// forward declaration
+static octave_value xget (const graphics_handle& h, const caseless_str& name);
+
 static void
 gripe_set_invalid (const std::string& pname)
 {
@@ -242,8 +245,7 @@ default_figure_paperposition (void)
 static Matrix
 convert_position (const Matrix& pos, const caseless_str& from_units,
 		  const caseless_str& to_units,
-		  const Matrix& parent_dim = Matrix (1, 2, 0.0),
-		  const graphics_backend& backend = graphics_backend ())
+		  const Matrix& parent_dim = Matrix (1, 2, 0.0))
 {
   Matrix retval (1, 4);
   double res = 0;
@@ -259,7 +261,8 @@ convert_position (const Matrix& pos, const caseless_str& from_units,
     }
   else if (from_units.compare ("characters"))
     {
-      res = backend.get_screen_resolution ();
+      if (res <= 0)
+	res = xget (0, "screenpixelsperinch").double_value ();
 
       double f = 0.0;
 
@@ -277,7 +280,8 @@ convert_position (const Matrix& pos, const caseless_str& from_units,
     }
   else
     {
-      res = backend.get_screen_resolution ();
+      if (res <= 0)
+	res = xget (0, "screenpixelsperinch").double_value ();
 
       double f = 0.0;
 
@@ -308,7 +312,8 @@ convert_position (const Matrix& pos, const caseless_str& from_units,
 	}
       else if (to_units.compare ("characters"))
 	{
-	  res = backend.get_screen_resolution ();
+	  if (res <= 0)
+	    res = xget (0, "screenpixelsperinch").double_value ();
 
 	  double f = 0.0;
 
@@ -325,7 +330,7 @@ convert_position (const Matrix& pos, const caseless_str& from_units,
       else
 	{
 	  if (res <= 0)
-	    res = backend.get_screen_resolution ();
+	    res = xget (0, "screenpixelsperinch").double_value ();
 
 	  double f = 0.0;
 
@@ -2261,13 +2266,11 @@ figure::properties::set_visible (const octave_value& val)
 Matrix
 figure::properties::get_boundingbox (bool) const
 {
-  graphics_backend b = get_backend ();
-  // FIXME -- screen size should be obtained from root object.
-  Matrix screen_size = b.get_screen_size ();
+  Matrix screen_size = xget (0, "screensize").matrix_value ().extract_n (0, 2, 1, 2);
   Matrix pos;
 
   pos = convert_position (get_position ().matrix_value (), get_units (),
-			  "pixels", screen_size, b);
+			  "pixels", screen_size);
 
   pos(0)--;
   pos(1)--;
@@ -2279,15 +2282,13 @@ figure::properties::get_boundingbox (bool) const
 void
 figure::properties::set_boundingbox (const Matrix& bb)
 {
-  graphics_backend b = get_backend ();
-  // FIXME -- screen size should be obtained from root object.
-  Matrix screen_size = b.get_screen_size ();
+  Matrix screen_size = xget (0, "screensize").matrix_value ().extract_n (0, 2, 1, 2);
   Matrix pos = bb;
 
   pos(1) = screen_size(1) - pos(1) - pos(3);
   pos(1)++;
   pos(0)++;
-  pos = convert_position (pos, "pixels", get_units (), screen_size, b);
+  pos = convert_position (pos, "pixels", get_units (), screen_size);
 
   set_position (pos);
 }
@@ -3117,7 +3118,7 @@ axes::properties::get_boundingbox (bool internal) const
 
 
   pos = convert_position (pos, get_units (), "pixels",
-			  parent_bb.extract_n (0, 2, 1, 2), get_backend ());
+			  parent_bb.extract_n (0, 2, 1, 2));
   pos(0)--;
   pos(1)--;
   pos(1) = parent_bb(3) - pos(1) - pos(3);

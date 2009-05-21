@@ -1912,6 +1912,24 @@ system-dependent error message.\n\
 extern "C" int mkstemps (char *pattern, int suffix_len);
 #endif
 
+#if ! defined (HAVE_MKSTEMP) && ! defined (HAVE_MKSTEMPS) && defined (_MSC_VER)
+# if defined (HAVE_FCNTL_H)
+#  include <fcntl.h>
+# endif
+# if defined (HAVE_SYS_STAT_H)
+#  include <sys/stat.h>
+# endif
+int mkstemp (char *tmpl)
+{
+  int ret=-1;
+  mktemp (tmpl);
+  ret = open (tmpl, O_RDWR | O_BINARY | O_CREAT | O_EXCL | _O_SHORT_LIVED,
+	      _S_IREAD | _S_IWRITE);
+  return ret;
+}
+#define HAVE_MKSTEMP 1
+#endif
+
 DEFUN (mkstemp, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{fid}, @var{name}, @var{msg}] =} mkstemp (@var{template}, @var{delete})\n\

@@ -1,3 +1,8 @@
+2009-05-21  Rik  <rdrider0-list@yahoo.com>
+
+	* interpreter/Makefile.in, texmf.cnf: Change texi2pdf call to include local
+	TeX configuration file which increases save_history variable.
+
 2009-05-17  Rik  <rdrider0-list@yahoo.com>
 
 	* interpreter/tips.txi: Change recommendation to use @tex rather than

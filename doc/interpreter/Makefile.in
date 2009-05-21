@@ -136,9 +136,11 @@ TEXINFO := $(TEXINFO_SOURCE) ../conf.texi
 # octave-a4.texi) and call texi2[dvi|pdf] on it.
 
 TEXI2DVICOMMAND = TEXINPUTS="..$(sepchar)$(srcdir)$(sepchar)$(srcdir)/..$(sepchar)$(TEXINPUTS)$(sepchar)" \
+	TEXMFCNF="..$(sepchar)$(srcdir)$(sepchar)$(srcdir)/..$(sepchar)$(TEXINPUTS)$(sepchar)" \
 	  $(TEXI2DVI)
 
 TEXI2PDFCOMMAND = TEXINPUTS="..$(sepchar)$(srcdir)$(sepchar)$(srcdir)/..$(sepchar)$(TEXINPUTS)$(sepchar)" \
+	TEXMFCNF="..$(sepchar)$(srcdir)$(sepchar)$(srcdir)/..$(sepchar)$(TEXMFCNF)$(sepchar)" \
 	  $(TEXI2PDF)
 
 FORMATTED = octave.info octave.pdf octave-a4.pdf octave.info-[0-9]*

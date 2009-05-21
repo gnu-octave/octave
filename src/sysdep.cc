@@ -188,39 +188,6 @@ MSVC_init (void)
 }
 #endif
 
-#if defined (__CYGWIN__)
-
-#include <limits.h>
-#include <sys/cygwin.h>
-
-static void
-CYGWIN_init (void)
-{
-  // Make sure TMPDIR contains an absolute windows path.  Use '/'
-  // rather than '\\' so that sh expansion won't mess file names.
-
-  std::string tmpdir = octave_env::getenv ("TMPDIR");
-
-  if (tmpdir.empty ())
-    tmpdir = "/tmp";
-
-  char buf [PATH_MAX];
-
-  if (cygwin32_conv_to_full_win32_path (tmpdir.c_str (), buf) < 0)
-    panic ("CYGWIN_init: unable to convert TMPDIR (= \"%s\") to Windows directory name",
-	   tmpdir.c_str ());
-  else
-    {
-      tmpdir = buf;
-
-      for (size_t i = 0; i < tmpdir.length (); i++)
-	if (tmpdir[i] == '\\')
-	  tmpdir[i] = '/';
-    }
-
-  octave_env::putenv ("TMPDIR", tmpdir);
-}
-#endif
 
 // Return TRUE if FILE1 and FILE2 refer to the same (physical) file.
 
@@ -335,8 +302,6 @@ sysdep_init (void)
 {
 #if defined (__386BSD__) || defined (__FreeBSD__)
   BSD_init ();
-#elif defined (__CYGWIN__)
-  CYGWIN_init ();
 #elif defined (__MINGW32__)
   MINGW_init ();
 #elif defined (_MSC_VER)

@@ -968,7 +968,11 @@ AC_DEFUN(AC_CHECK_QHULL_OK,
 AC_CACHE_VAL(octave_cv_lib_qhull_ok,
 [
   save_LIBS="$LIBS"
-  LIBS="$LIBS -lqhull -lm"
+  LIBS="$LIBS -lqhull"
+  case $host in
+    *-mingw*|*-msdosmsvc*) ;;
+    *) LIBS="$LIBS -lm" ;;
+  esac
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #include <stdio.h>
 #include <qhull/qhull.h>

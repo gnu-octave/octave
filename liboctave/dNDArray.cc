@@ -699,43 +699,43 @@ NDArray::too_large_for_float (void) const
 boolNDArray
 NDArray::all (int dim) const
 {
-  return do_mx_red_op<boolNDArray> (*this, dim, mx_inline_all);
+  return do_mx_red_op<boolNDArray, double> (*this, dim, mx_inline_all);
 }
 
 boolNDArray
 NDArray::any (int dim) const
 {
-  return do_mx_red_op<boolNDArray> (*this, dim, mx_inline_any);
+  return do_mx_red_op<boolNDArray, double> (*this, dim, mx_inline_any);
 }
 
 NDArray
 NDArray::cumprod (int dim) const
 {
-  return do_mx_cum_op<NDArray> (*this, dim, mx_inline_cumprod);
+  return do_mx_cum_op<NDArray, double> (*this, dim, mx_inline_cumprod);
 }
 
 NDArray
 NDArray::cumsum (int dim) const
 {
-  return do_mx_cum_op<NDArray> (*this, dim, mx_inline_cumsum);
+  return do_mx_cum_op<NDArray, double> (*this, dim, mx_inline_cumsum);
 }
 
 NDArray
 NDArray::prod (int dim) const
 {
-  return do_mx_red_op<NDArray> (*this, dim, mx_inline_prod);
+  return do_mx_red_op<NDArray, double> (*this, dim, mx_inline_prod);
 }
 
 NDArray
 NDArray::sum (int dim) const
 {
-  return do_mx_red_op<NDArray> (*this, dim, mx_inline_sum);
+  return do_mx_red_op<NDArray, double> (*this, dim, mx_inline_sum);
 }
 
 NDArray
 NDArray::sumsq (int dim) const
 {
-  return do_mx_red_op<NDArray> (*this, dim, mx_inline_sumsq);
+  return do_mx_red_op<NDArray, double> (*this, dim, mx_inline_sumsq);
 }
 
 NDArray

@@ -149,6 +149,8 @@ maybe_warn_former_built_in_variable (const std::string& nm)
 
       while (*p)
 	vars.insert (*p++);
+
+      initialized = true;
     }
 
   if (vars.find (nm) != vars.end ())

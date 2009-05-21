@@ -1,5 +1,70 @@
 2009-05-20  Jaroslav Hajek  <highegg@gmail.com>
 
+	* eigs-base.cc (
+	EigsRealSymmetricMatrix,
+	EigsRealSymmetricMatrixShift,
+	EigsRealSymmetricFunc,
+	EigsRealNonSymmetricMatrix,
+	EigsRealNonSymmetricMatrixShift,
+	EigsRealNonSymmetricFunc,
+	EigsComplexNonSymmetricMatrix,
+	EigsComplexNonSymmetricMatrixShift,
+	EigsComplexNonSymmetricFunc): Update tests.
+
+2009-05-21  Jaroslav Hajek  <highegg@gmail.com>
+
+
+	* CMatrix.cc 
+	(ComplexMatrix::all, ComplexMatrix::any, ComplexMatrix::cumprod,
+	ComplexMatrix::cumsum, ComplexMatrix::prod, ComplexMatrix::sum,
+	ComplexMatrix::sumsq): Use explicit template qualifications
+	to workaround bugs in Intel C++ and MSVC++ compilers.
+	* CNDArray.cc
+	(ComplexNDArray::all, ComplexNDArray::any, ComplexNDArray::cumprod,
+	ComplexNDArray::cumsum, ComplexNDArray::prod, ComplexNDArray::sum,
+	ComplexNDArray::sumsq): Ditto.
+	* boolMatrix.cc
+	(boolMatrix::all, boolMatrix::any): Ditto.
+	* boolNDArray.cc
+	(boolNDArray::all, boolNDArray::any): Ditto.
+	* chMatrix.cc
+	(charMatrix::all, charMatrix::any): Ditto.
+	* chNDArray.cc
+	(charNDArray::all, charNDArray::any): Ditto.
+	* dMatrix.cc
+	(Matrix::all, Matrix::any, Matrix::cumprod,
+	Matrix::cumsum, Matrix::prod, Matrix::sum,
+	Matrix::sumsq): Ditto.
+	* dNDArray.cc
+	(NDArray::all, NDArray::any, NDArray::cumprod,
+	NDArray::cumsum, NDArray::prod, NDArray::sum,
+	NDArray::sumsq): Ditto.
+	* fCMatrix.cc
+	(FloatComplexMatrix::all, FloatComplexMatrix::any, FloatComplexMatrix::cumprod,
+	FloatComplexMatrix::cumsum, FloatComplexMatrix::prod, FloatComplexMatrix::sum,
+	FloatComplexMatrix::sumsq): Ditto.
+	* fCNDArray.cc
+	(FloatComplexNDArray::all, FloatComplexNDArray::any, FloatComplexNDArray::cumprod,
+	FloatComplexNDArray::cumsum, FloatComplexNDArray::prod, FloatComplexNDArray::sum,
+	FloatComplexNDArray::sumsq): Ditto.
+	* fMatrix.cc
+	(FloatMatrix::all, FloatMatrix::any, FloatMatrix::cumprod,
+	FloatMatrix::cumsum, FloatMatrix::prod, FloatMatrix::sum,
+	FloatMatrix::sumsq): Ditto.
+	* fNDArray.cc
+	(FloatNDArray::all, FloatNDArray::any, FloatNDArray::cumprod,
+	FloatNDArray::cumsum, FloatNDArray::prod, FloatNDArray::sum,
+	FloatNDArray::sumsq): Ditto.
+	* intNDArray.cc
+	(intNDArray<T>::all, intNDArray<T>::any,
+	intNDArray<T>::cumsum, intNDArray<T>::sum): Ditto.
+
+2009-05-20  Jaroslav Hajek  <highegg@gmail.com>
+
+	* Makefile.in: Remove reference to ArrayN-idx.h.
+
+2009-05-20  Jaroslav Hajek  <highegg@gmail.com>
+
 	* Array-voidp.cc: New source.
 	* Array.cc (NO_INSTANTIATE_ARRAY_SORT): const T& -> T const &
 	* Makefile.in: Include it.

@@ -6,22 +6,7 @@ FTP:
 
   site                          directory
   ----                          ---------
-  ftp.eos.hokudai.ac.jp         /pub/GNU/misc/octave
   ftp.u-aizu.ac.jp              /pub/SciEng/numanal/Octave
   neacm.fe.up.pt                /pub/octave
 
-HTTP:
-
-  url
-  ---
-  http://neacm.fe.up.pt/pub/octave
-  http://octave.oss-mirror.org
-  http://octave.linux-mirror.org
-
-
-John W. Eaton
-jwe@bevo.che.wisc.edu
-University of Wisconsin-Madison
-Department of Chemical & Biological Engineering
-
-Wed, 31 Oct 2007 16:32:44 EDT
+Last updated: Wed, 20 May 2009 20:58:14 PST

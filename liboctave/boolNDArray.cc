@@ -50,27 +50,27 @@ boolNDArray::operator ! (void) const
 boolNDArray
 boolNDArray::all (int dim) const
 {
-  return do_mx_red_op<boolNDArray> (*this, dim, mx_inline_all);
+  return do_mx_red_op<boolNDArray, bool> (*this, dim, mx_inline_all);
 }
 
 boolNDArray
 boolNDArray::any (int dim) const
 {
-  return do_mx_red_op<boolNDArray> (*this, dim, mx_inline_any);
+  return do_mx_red_op<boolNDArray, bool> (*this, dim, mx_inline_any);
 }
 
 NDArray 
 boolNDArray::sum (int dim) const
 {
   // NOTE: going via octave_idx_type is faster even though it requires a conversion.
-  return do_mx_red_op<Array<octave_idx_type> > (*this, dim, mx_inline_count);
+  return do_mx_red_op<Array<octave_idx_type> , bool> (*this, dim, mx_inline_count);
 }
 
 NDArray 
 boolNDArray::cumsum (int dim) const
 {
   // NOTE: going via octave_idx_type is faster even though it requires a conversion.
-  return do_mx_cum_op<Array<octave_idx_type> > (*this, dim, mx_inline_cumcount);
+  return do_mx_cum_op<Array<octave_idx_type> , bool> (*this, dim, mx_inline_cumcount);
 }
 
 boolNDArray

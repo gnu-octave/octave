@@ -15,6 +15,10 @@
 	(clean): Remove mkoctfile$(EXEEXT), octave-config$(EXEEXT),
 	octave-bug$(EXEEXT) and the corresponding object files.
 
+2009-05-07  Rik <rdrider0-list@yahoo.com>
+
+	* README.mirrors: Remove invalid mirror sites which no longer exist.
+
 2009-05-07  John W. Eaton  <jwe@octave.org>
 
 	* configure.in, mkoctfile.in, mkoctfile.cc.in, octave-bug.in,

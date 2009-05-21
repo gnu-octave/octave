@@ -654,43 +654,43 @@ FloatNDArray::too_large_for_float (void) const
 boolNDArray
 FloatNDArray::all (int dim) const
 {
-  return do_mx_red_op<boolNDArray> (*this, dim, mx_inline_all);
+  return do_mx_red_op<boolNDArray, float> (*this, dim, mx_inline_all);
 }
 
 boolNDArray
 FloatNDArray::any (int dim) const
 {
-  return do_mx_red_op<boolNDArray> (*this, dim, mx_inline_any);
+  return do_mx_red_op<boolNDArray, float> (*this, dim, mx_inline_any);
 }
 
 FloatNDArray
 FloatNDArray::cumprod (int dim) const
 {
-  return do_mx_cum_op<FloatNDArray> (*this, dim, mx_inline_cumprod);
+  return do_mx_cum_op<FloatNDArray, float> (*this, dim, mx_inline_cumprod);
 }
 
 FloatNDArray
 FloatNDArray::cumsum (int dim) const
 {
-  return do_mx_cum_op<FloatNDArray> (*this, dim, mx_inline_cumsum);
+  return do_mx_cum_op<FloatNDArray, float> (*this, dim, mx_inline_cumsum);
 }
 
 FloatNDArray
 FloatNDArray::prod (int dim) const
 {
-  return do_mx_red_op<FloatNDArray> (*this, dim, mx_inline_prod);
+  return do_mx_red_op<FloatNDArray, float> (*this, dim, mx_inline_prod);
 }
 
 FloatNDArray
 FloatNDArray::sum (int dim) const
 {
-  return do_mx_red_op<FloatNDArray> (*this, dim, mx_inline_sum);
+  return do_mx_red_op<FloatNDArray, float> (*this, dim, mx_inline_sum);
 }
 
 FloatNDArray
 FloatNDArray::sumsq (int dim) const
 {
-  return do_mx_red_op<FloatNDArray> (*this, dim, mx_inline_sumsq);
+  return do_mx_red_op<FloatNDArray, float> (*this, dim, mx_inline_sumsq);
 }
 
 FloatNDArray

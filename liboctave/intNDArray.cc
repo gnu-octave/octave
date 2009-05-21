@@ -74,14 +74,14 @@ template <class T>
 boolNDArray
 intNDArray<T>::all (int dim) const
 {
-  return do_mx_red_op<boolNDArray> (*this, dim, mx_inline_all);
+  return do_mx_red_op<boolNDArray, T > (*this, dim, mx_inline_all);
 }
 
 template <class T>
 boolNDArray
 intNDArray<T>::any (int dim) const
 {
-  return do_mx_red_op<boolNDArray> (*this, dim, mx_inline_any);
+  return do_mx_red_op<boolNDArray, T > (*this, dim, mx_inline_any);
 }
 
 template <class T>
@@ -204,14 +204,14 @@ template <class T>
 intNDArray<T>
 intNDArray<T>::sum (int dim) const
 {
-  return do_mx_red_op<intNDArray<T> > (*this, dim, mx_inline_sum);
+  return do_mx_red_op<intNDArray<T> , T > (*this, dim, mx_inline_sum);
 }
 
 template <class T>
 intNDArray<T>
 intNDArray<T>::cumsum (int dim) const
 {
-  return do_mx_cum_op<intNDArray<T> > (*this, dim, mx_inline_cumsum);
+  return do_mx_cum_op<intNDArray<T> , T > (*this, dim, mx_inline_cumsum);
 }
 
 template <class T>

@@ -1,5 +1,13 @@
 2009-05-21  Michael Goffioul  <michael.goffioul@gmail.com>
 
+	* CmplxQR.cc (ComplexQR::insert_col, ComplexQR::delete_col): Copy
+	volatile variable to avoid MSVC compilation error (cannot pass
+	volatile variable as const& argument).
+	* dbleQR.cc (QR::insert_col, QR::delete_col): Ditto.
+	* fCmplxQR.cc (FloatComplexQR::insert_col,
+	FloatComplexQR::delete_col): Ditto.
+	* floatQR.cc (FloatQR::insert_col, FloatQR::delete_col): Ditto.
+
 	* oct-mutex.cc: Exclude pthread.h inclusion under Win32.
 
 	* base-aepbal.h (base_aepbal::operator=): Add missing return

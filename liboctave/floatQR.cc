@@ -319,10 +319,11 @@ FloatQR::insert_col (const FloatMatrix& u, const Array<octave_idx_type>& j)
       OCTAVE_LOCAL_BUFFER (float, w, kmax);
       for (volatile octave_idx_type i = 0; i < js.length (); i++)
         {
+	  octave_idx_type ii = i;
           FloatColumnVector utmp = u.column (jsi(i));
-          F77_XFCN (sqrinc, SQRINC, (m, n + i, std::min (kmax, k + i), 
+          F77_XFCN (sqrinc, SQRINC, (m, n + ii, std::min (kmax, k + ii), 
                                      q.fortran_vec (), q.rows (),
-                                     r.fortran_vec (), r.rows (), js(i) + 1, 
+                                     r.fortran_vec (), r.rows (), js(ii) + 1, 
                                      utmp.data (), w));
         }
     }
@@ -378,9 +379,10 @@ FloatQR::delete_col (const Array<octave_idx_type>& j)
       OCTAVE_LOCAL_BUFFER (float, w, k);
       for (volatile octave_idx_type i = 0; i < js.length (); i++)
         {
-          F77_XFCN (sqrdec, SQRDEC, (m, n - i, k == m ? k : k - i, 
+	  octave_idx_type ii = i;
+          F77_XFCN (sqrdec, SQRDEC, (m, n - ii, k == m ? k : k - ii, 
                                      q.fortran_vec (), q.rows (),
-                                     r.fortran_vec (), r.rows (), js(i) + 1, w));
+                                     r.fortran_vec (), r.rows (), js(ii) + 1, w));
         }
       if (k < m)
         {

@@ -1,3 +1,6 @@
+2009-05-21  Marco Atzeri  <marco_atzeri@yahoo.it>
+        * configure.in: Correct my mistake in cygwin SHLBINPRE SHLBIN
+
 2008-05-21  Michael Goffioul <michael.goffioul@gmail.com>
 
 	* aclocal.m4 (AC_CHECK_QHULL_OK): Do not use -lm under

@@ -1254,12 +1254,13 @@ case "$canonical_host_type" in
     FPICFLAG=
     LIBPRE=lib
     SHLPRE=cyg
+    SHLBINPRE=cyg
     SHLEXT=dll
     SHLLIB=dll.a
-    SHLBIN=a    
+    SHLBIN=dll    
     DL_LDFLAGS="-shared -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-runtime-pseudo-reloc"
     SH_LDFLAGS="-shared -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-auto-image-base"
-    SONAME_FLAGS='-Wl,--out-implib=$(patsubst $(SHLPRE)%,$(SHLBINPRE)%,$@).a'
+    SONAME_FLAGS='-Wl,--out-implib=$(patsubst $(SHLPRE)%,$(LIBPRE)%,$@).a'
   ;;
   *-*-mingw*)
     CPICFLAG=

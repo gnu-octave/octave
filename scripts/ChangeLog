@@ -1,3 +1,8 @@
+2009-05-22  John W. Eaton  <jwe@octave.org>
+
+	* general/interp3.m: Don't require interpolation grid to have same
+	size as data.  From Kris Thielemans <kris.thielemans@imperial.ac.uk>.
+
 2009-05-19 Carlo de Falco  <kingcrimson@tiscali.it>
 
 	* pkg/pkg.m: Fix a bug when quering only one non installed package

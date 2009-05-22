@@ -91,7 +91,7 @@ function vi = interp3 (varargin)
     x = varargin (2:4);
     if (any (! cellfun (@isvector, x)))
       for i = 2 : 3
-	if (! size_equal (x{1}, x{i}) || ! size_equal (x{i}, v))
+	if (! size_equal (x{1}, x{i}))
 	  error ("dimensional mismatch");
 	endif
 	x{i} = permute (x{i}, [2, 1, 3]);

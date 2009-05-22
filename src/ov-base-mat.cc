@@ -334,7 +334,7 @@ octave_base_matrix<MT>::assign (const octave_value_list& idx,
       {
         Array<idx_vector> idx_vec (n_idx);
         bool scalar_opt = n_idx == nd;
-        const dim_vector dv = matrix.dims ();
+        const dim_vector dv = matrix.dims ().redim (n_idx);
 
         for (octave_idx_type i = 0; i < n_idx; i++)
           {
@@ -344,7 +344,7 @@ octave_base_matrix<MT>::assign (const octave_value_list& idx,
               break;
 
             scalar_opt = (scalar_opt && idx_vec(i).is_scalar ()
-                          && idx_vec(i)(0) < dv(0));
+                          && idx_vec(i)(0) < dv(i));
           }
 
         if (! error_state)

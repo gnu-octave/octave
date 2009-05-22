@@ -1,3 +1,9 @@
+2009-05-22  Jaroslav Hajek  <highegg@gmail.com>
+
+	* src/ov-base-mat.cc (octave_base_matrix<MT>::assign (const
+	octave_value_list, typename MT::element_type)): Avoid out of bounds
+	assignments.
+
 2009-05-21  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* graphics.cc (figure::properties::get_boundingbox,

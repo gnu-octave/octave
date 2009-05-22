@@ -61,7 +61,7 @@ clean_up_and_exit (int);
 
 extern OCTINTERP_API void recover_from_exception (void);
 
-extern int main_loop (void);
+extern OCTINTERP_API int main_loop (void);
 
 extern OCTINTERP_API void
 do_octave_atexit (void);

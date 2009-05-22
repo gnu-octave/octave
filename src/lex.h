@@ -32,22 +32,22 @@ along with Octave; see the file COPYING.  If not, see
 typedef struct yy_buffer_state *YY_BUFFER_STATE;
 
 // Associate a buffer with a new file to read.
-extern YY_BUFFER_STATE create_buffer (FILE *f);
+extern OCTINTERP_API YY_BUFFER_STATE create_buffer (FILE *f);
 
 // Report the current buffer.
-extern YY_BUFFER_STATE current_buffer (void);
+extern OCTINTERP_API YY_BUFFER_STATE current_buffer (void);
 
 // Connect to new buffer buffer.
-extern void switch_to_buffer (YY_BUFFER_STATE buf);
+extern OCTINTERP_API void switch_to_buffer (YY_BUFFER_STATE buf);
 
 // Delete a buffer.
-extern void delete_buffer (YY_BUFFER_STATE buf);
+extern OCTINTERP_API void delete_buffer (YY_BUFFER_STATE buf);
 
 // Restore a buffer (for unwind-prot).
-extern void restore_input_buffer (void *buf);
+extern OCTINTERP_API void restore_input_buffer (void *buf);
 
 // Delete a buffer (for unwind-prot).
-extern void delete_input_buffer (void *buf);
+extern OCTINTERP_API void delete_input_buffer (void *buf);
 
 // Is the given string a keyword?
 extern bool is_keyword (const std::string& s);

@@ -1,3 +1,11 @@
+2009-05-22  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* toplev.h (main_loop): Tag with OCTINTERP_API.
+	* input.h (octave_read, get_input_from_file, get_input_from_stdin):
+	Ditto.
+	* lex.h (create_buffer, current_buffer, switch_to_buffer,
+	delete_buffer, restore_input_buffer, delete_input_buffer): Ditto.
+
 2009-05-22  Robert T. Short  <octave@phaselockedsystems.com>
 
 	* ov-class.h, ov-class.cc (octave_class::clear_exemplar_map):

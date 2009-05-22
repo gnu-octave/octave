@@ -1,11 +1,11 @@
 2009-05-22  Robert T. Short  <octave@phaselockedsystems.com>
 
-        clear -classes and support.
-	* ov-class.h   (octave_class::clear_exemplar_map): New function.
-	* ov-class.cc  (octave_class::clear_exemplar_map): New function.
-	* symtab.h     (symbol_record::clear_objects): New function
-        * symtab.h     (symbol_record::do_clear_objects): New function
-        * variables.cc (do_matlab_compatible_clear, clear): Added classes option	
+	* ov-class.h, ov-class.cc (octave_class::clear_exemplar_map):
+	New function.
+	* symtab.h (symbol_record::clear_objects,
+	symbol_record::do_clear_objects): New functions.
+	* variables.cc (do_matlab_compatible_clear, clear):
+	Handle -classes option.
 
 2009-05-22  Jaroslav Hajek  <highegg@gmail.com>
 

@@ -1,4 +1,5 @@
-## Copyright (C) 1994, 1995, 1996, 1997, 1999, 2005, 2007, 2008 John W. Eaton
+## Copyright (C) 1994, 1995, 1996, 1997, 1999, 2005, 2007, 2008,
+##               2009 John W. Eaton
 ##
 ## This file is part of Octave.
 ##

@@ -533,7 +533,9 @@ main (int argc, char **argv)
       else if (arg == "--mex")
 	{
 	  incflags += " -I.";
+#ifdef _MSC_VER
 	  ldflags += " -Wl,-export:mexFunction";
+#endif
 	  output_ext = ".mex";
 	}
       else if (starts_with (arg, "-W"))

@@ -1,3 +1,7 @@
+2009-05-22 Benjamin Lindner <lindnerb@users.sourceforge.net>
+
+	* mkoctfile.cc.in: mask MSVC specific linker flags for mex output
+
 2009-06-02  Robert T. Short  <octave@phaselockedsystems.com>
 
 	* examples/@polynomial: Fix end method for zero based indexing.

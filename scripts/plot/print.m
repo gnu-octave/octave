@@ -186,7 +186,11 @@ function print (varargin)
   if (isunix ())
     persistent ghostscript_binary = "gs";
   elseif (ispc ())
-    persistent ghostscript_binary = "gswin32c";
+    if (~isempty (getenv ("GSC")))
+      persistent ghostscript_binary = getenv ("GSC");
+    else
+      persistent ghostscript_binary = "gswin32c";
+    endif
   endif
 
   old_fig = get (0, "currentfigure");
@@ -253,7 +257,8 @@ function print (varargin)
       [status, output] = system (sprintf ("which %s 2>&1", ghostscript_binary));
       have_ghostscript = (status == 0);
     elseif (ispc ())
-      have_ghostscript = true;
+      [status, output] = system (sprintf ("if exist \"%s\" ( exit /B 1 ) else ( exit /B 0 )", ghostscript_binary));
+      have_ghostscript = (status ~= 0);
     endif
 
     doprint = isempty (name);
@@ -571,12 +576,12 @@ function print (varargin)
       endif
       ghostscript_options = sprintf ("%s -sDEVICE=%s", ghostscript_options,
                                      ghostscript_device);
-      command = sprintf ("%s %s -sOutputFile='%s' '%s' 2>&1", ghostscript_binary,
+      command = sprintf ("\"%s\" %s -sOutputFile=\"%s\" \"%s\" 2>&1", ghostscript_binary,
                           ghostscript_options, ghostscript_output, name);
       [errcode, output] = system (command);
       unlink (name);
       if (errcode)
-        error ("print: Conversion failed, %s -> %s.", name, ghostscript_output);
+        error ("print: Conversion failed, %s -> %s.\nError was:\n%s\n", name, ghostscript_output, output);
       endif
     elseif (is_eps_file && tight_flag && ! doprint)
       ## If the saved output file is an eps file, use ghostscript to set a tight bbox.
@@ -625,7 +630,7 @@ function bb = fix_eps_bbox (eps_file_name, ghostscript_binary)
   box_string = "%%BoundingBox:";
 
   ghostscript_options = "-q -dBATCH -dSAFER -dNOPAUSE -dTextAlphaBits=4 -sDEVICE=bbox";
-  cmd = sprintf ("%s %s '%s' 2>&1", ghostscript_binary, ghostscript_options, eps_file_name);
+  cmd = sprintf ("\"%s\" %s \"%s\" 2>&1", ghostscript_binary, ghostscript_options, eps_file_name);
   [status, output] = system (cmd);
 
   if (status == 0)
@@ -672,7 +677,7 @@ function bb = fix_eps_bbox (eps_file_name, ghostscript_binary)
     end_unwind_protect
   elseif (warn_on_no_ghostscript)
     warn_on_no_ghostscript = false;
-    warning ("print.m: Ghostscript could not be used to adjust bounding box.")
+    warning ("print.m: Ghostscript could not be used to adjust bounding box.\nError was:\n%s\n", output)
   endif
 
 endfunction

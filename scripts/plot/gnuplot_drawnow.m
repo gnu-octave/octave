@@ -278,7 +278,7 @@ function [enhanced, implicit_margin] = gnuplot_set_term (plot_stream, new_stream
 
   if (nargin == 5)
     if (! isempty (file))
-      fprintf (plot_stream, "set output \"%s\";\n", file);
+      fprintf (plot_stream, "set output '%s';\n", file);
     endif
   endif
 

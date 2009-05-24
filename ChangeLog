@@ -1,3 +1,7 @@
+2009-05-24  Robert T. Short  <octave@phaselockedsystems.com>
+
+	* examples/@FIRfilter: added FIRfilter class example.
+
 2009-05-22  Marco Atzeri  <marco_atzeri@yahoo.it>
 
         * src/sysdep.cc: Removed CYGWIN_init 

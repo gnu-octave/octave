@@ -1,3 +1,7 @@
+2009-05-24  Robert T. Short  <octave@phaselockedsystems.com>
+
+	* interpreter/oop.txi: Added inheritance documentatin
+
 2009-05-21  Rik  <rdrider0-list@yahoo.com>
 
 	* interpreter/Makefile.in, texmf.cnf: Change texi2pdf call to include local

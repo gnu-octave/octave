@@ -1,3 +1,8 @@
+2009-05-26 Carlo de Falco  <kingcrimson@tiscali.it>
+
+	* pkg/pkg.m: Add "version" field to the structure returned by "pkg
+	describe". 
+
 2009-05-25  Ben Abbott <bpabbott@mac.com>
 
 	* plot/__go_draw_axes__.m: Properly render TeX symbols for x11, when

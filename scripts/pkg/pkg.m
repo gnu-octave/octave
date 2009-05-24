@@ -993,6 +993,7 @@ function [pkg_desc_list, flag] = describe (pkgnames, verbose,
       endif
 
       pkg_desc_list{name_pos}.name = installed_pkgs_lst{i}.name;
+      pkg_desc_list{name_pos}.version = installed_pkgs_lst{i}.version;
       pkg_desc_list{name_pos}.description = installed_pkgs_lst{i}.description;
       pkg_desc_list{name_pos}.provides = parse_pkg_idx (installed_pkgs_lst{i}.dir);
 
@@ -1012,7 +1013,8 @@ function [pkg_desc_list, flag] = describe (pkgnames, verbose,
 
   if (nargout == 0)
     for i = 1:num_pkgnames
-      print_package_description (pkg_desc_list{i}.name, 
+      print_package_description (pkg_desc_list{i}.name,
+				 pkg_desc_list{i}.version,
 				 pkg_desc_list{i}.provides,  
 				 pkg_desc_list{i}.description,
 				 flag{i}, verbose);
@@ -1075,10 +1077,11 @@ function [pkg_idx_struct] = parse_pkg_idx (packdir)
   fclose (fid);
 endfunction
 
-function print_package_description (pkg_name, pkg_idx_struct, 
+function print_package_description (pkg_name, pkg_ver, pkg_idx_struct, 
 				    pkg_desc, status, verbose)
 
   printf ("---\nPackage name:\n\t%s\n", pkg_name);
+  printf ("Version:\n\t%s\n", pkg_ver);
   printf ("Short description:\n\t%s\n", pkg_desc);
   printf ("Status:\n\t%s\n", status);
   if (verbose)

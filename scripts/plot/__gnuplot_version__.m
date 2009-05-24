@@ -30,7 +30,7 @@ function version = __gnuplot_version__ ()
   persistent __version__ = "";
 
   if (isempty (__version__))
-    [status, output] = system (sprintf ("%s --version", gnuplot_binary ()));
+    [status, output] = system (sprintf ("\"%s\" --version", gnuplot_binary ()));
     if (status != 0)
       ## This message ends in a newline so that the traceback messages
       ## are skipped and people might actually see the message, read it,

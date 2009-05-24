@@ -1,3 +1,8 @@
+2009-05-24 Benjamin Lindner <lindnerb@users.sourceforge.net>
+
+	* plot/__gnuplot_version__.m: quote gnuplot_binary to allow spaces
+	in file name
+
 2009-05-22  John W. Eaton  <jwe@octave.org>
 
 	* general/interp3.m: Don't require interpolation grid to have same

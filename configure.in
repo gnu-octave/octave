@@ -1273,6 +1273,7 @@ case "$canonical_host_type" in
     SH_LDFLAGS="-shared -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-auto-image-base"
     SONAME_FLAGS='-Wl,--out-implib=$@.a'
     library_path_var=PATH
+    SCRIPTS_EXE_SUFFIX='$(EXEEXT)'
   ;;
 
   *-*-msdosmsvc)

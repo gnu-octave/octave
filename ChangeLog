@@ -1,3 +1,8 @@
+2009-05-24  Benjamin Lindner <lindnerb@users.sourceforge.net>
+
+	* configure.in: (SCRIPTS_EXE_SUFFIX) Define to ".exe" for 
+	mingw32 compilation (similar to msvc)
+
 2009-05-24  Robert T. Short  <octave@phaselockedsystems.com>
 
 	* examples/@FIRfilter: added FIRfilter class example.

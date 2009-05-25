@@ -1,3 +1,9 @@
+2009-05-25  Jaroslav Hajek  <highegg@gmail.com>
+
+	* examples/@FIRfilter/Makefile.in: New file.
+	* examples/Makefile.in: Include it.
+	* configure.in: Ditto.
+
 2009-05-24  Benjamin Lindner <lindnerb@users.sourceforge.net>
 
 	* configure.in: (SCRIPTS_EXE_SUFFIX) Define to ".exe" for 

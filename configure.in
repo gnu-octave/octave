@@ -2163,7 +2163,8 @@ AC_SUBST(ac_config_files)
 AC_CONFIG_FILES([octMakefile Makeconf test/Makefile
   doc/Makefile doc/faq/Makefile doc/interpreter/Makefile
   doc/liboctave/Makefile doc/refcard/Makefile emacs/Makefile
-  examples/Makefile examples/@polynomial/Makefile liboctave/Makefile
+  examples/Makefile examples/@polynomial/Makefile 
+  examples/@FIRfilter/Makefile liboctave/Makefile
   liboctave/oct-types.h src/Makefile src/mxarray.h libcruft/Makefile
   libcruft/Makerules libcruft/amos/Makefile libcruft/blas/Makefile
   libcruft/daspk/Makefile libcruft/dasrt/Makefile

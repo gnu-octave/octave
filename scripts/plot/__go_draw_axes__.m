@@ -36,6 +36,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
     end_unwind_protect
 
     parent_figure_obj = get (axis_obj.parent);
+    gnuplot_term = __gnuplot_get_var__ (axis_obj.parent, "GPVAL_TERM");
 
     ## Set to false for plotyy axes.
     if (strcmp (axis_obj.tag, "plotyy"))
@@ -95,7 +96,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
 	fputs (plot_stream, "unset title;\n");
       else
 	[tt, f, s] = __maybe_munge_text__ (enhanced, t, "string");
-	fontspec = create_fontspec (f, s);
+	fontspec = create_fontspec (f, s, gnuplot_term);
 	fprintf (plot_stream, "set title \"%s\" %s %s",
 		 undo_string_escapes (tt), fontspec,
 		 __do_enhanced_option__ (enhanced, t));
@@ -116,7 +117,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
 	fprintf (plot_stream, "unset x2label;\n");
       else
 	[tt, f, s] = __maybe_munge_text__ (enhanced, t, "string");
-	fontspec = create_fontspec (f, s);
+	fontspec = create_fontspec (f, s, gnuplot_term);
 	if (strcmpi (axis_obj.xaxislocation, "top"))
 	  fprintf (plot_stream, "set x2label \"%s\" %s %s %s",
 		   undo_string_escapes (tt), colorspec, fontspec,
@@ -144,7 +145,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
 	fprintf (plot_stream, "unset y2label;\n");
       else
 	[tt, f, s] = __maybe_munge_text__ (enhanced, t, "string");
-	fontspec = create_fontspec (f, s);
+	fontspec = create_fontspec (f, s, gnuplot_term);
 	if (strcmpi (axis_obj.yaxislocation, "right"))
 	  fprintf (plot_stream, "set y2label \"%s\" %s %s %s",
 		   undo_string_escapes (tt), colorspec, fontspec,
@@ -171,7 +172,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
 	fputs (plot_stream, "unset zlabel;\n");
       else
 	[tt, f, s] = __maybe_munge_text__ (enhanced, t, "string");
-	fontspec = create_fontspec (f, s);
+	fontspec = create_fontspec (f, s, gnuplot_term);
 	fprintf (plot_stream, "set zlabel \"%s\" %s %s %s",
 		 undo_string_escapes (tt), colorspec, fontspec,
 		 __do_enhanced_option__ (enhanced, t));
@@ -258,7 +259,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
       fputs (plot_stream, "unset grid;\n");
     endif
 
-    do_tics (axis_obj, plot_stream, ymirror, mono);
+    do_tics (axis_obj, plot_stream, ymirror, mono, gnuplot_term);
 
     xlogscale = strcmpi (axis_obj.xscale, "log");
     if (xlogscale)
@@ -992,7 +993,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
 
 	case "text"
 	  [label, f, s] = __maybe_munge_text__ (enhanced, obj, "string");
-	  fontspec = create_fontspec (f, s);
+	  fontspec = create_fontspec (f, s, gnuplot_term);
 	  lpos = obj.position;
 	  halign = obj.horizontalalignment;
 	  angle = obj.rotation;
@@ -1210,7 +1211,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
 	  pos = "";
       endswitch
       if (__gnuplot_has_feature__ ("key_has_font_properties"))
-        fontspec = create_fontspec (axis_obj.fontname, axis_obj.fontsize);
+        fontspec = create_fontspec (axis_obj.fontname, axis_obj.fontsize, gnuplot_term);
       else
 	fontspec = "";
       endif
@@ -1323,8 +1324,8 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
 
 endfunction
 
-function fontspec = create_fontspec (f, s)
-  if (strcmp (f, "*"))
+function fontspec = create_fontspec (f, s, gp_term)
+  if (strcmp (f, "*") && ! strcmp (gp_term, "x11"))
     fontspec = sprintf ("font \",%d\"", s);
   else
     fontspec = sprintf ("font \"%s,%d\"", f, s);
@@ -1516,14 +1517,14 @@ function __gnuplot_write_data__ (plot_stream, data, nd, parametric, cdata)
 
 endfunction
 
-function do_tics (obj, plot_stream, ymirror, mono)
+function do_tics (obj, plot_stream, ymirror, mono, gnuplot_term)
 
   obj.xticklabel = ticklabel_to_cell (obj.xticklabel);
   obj.yticklabel = ticklabel_to_cell (obj.yticklabel);
   obj.zticklabel = ticklabel_to_cell (obj.zticklabel);
 
   [fontname, fontsize] = get_fontname_and_size (obj);
-  fontspec = create_fontspec (fontname, fontsize);
+  fontspec = create_fontspec (fontname, fontsize, gnuplot_term);
 
   ## A Gnuplot tic scale of 69 is equivalent to Octave's 0.5.
   ticklength = sprintf ("scale %4.1f", (69/0.5)*obj.ticklength(1));

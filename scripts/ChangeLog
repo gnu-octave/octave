@@ -1,3 +1,8 @@
+2009-05-25  Ben Abbott <bpabbott@mac.com>
+
+	* plot/__go_draw_axes__.m: Properly render TeX symbols for x11, when
+	using the anonymous fontname="*".
+
 2009-05-24 Benjamin Lindner <lindnerb@users.sourceforge.net>
 
 	* plot/gnuplot_drawnow.m: single-quote output name to allow backslash

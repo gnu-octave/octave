@@ -1,3 +1,8 @@
+2009-05-25  Rik  <rdrider0-list@yahoo.com>
+
+	* interpreter/Makefile.in: Add texmf.cnf to list of distributed files
+	(DIST_FILES) so that pdfs will build.
+
 2009-05-24  Robert T. Short  <octave@phaselockedsystems.com>
 
 	* interpreter/oop.txi: Added inheritance documentatin

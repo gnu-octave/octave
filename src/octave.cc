@@ -647,6 +647,8 @@ octave_main (int argc, char **argv, int embedded)
 
   if (! embedded)
     install_signal_handlers ();
+  else
+    quit_allowed = false;
 
   initialize_file_io ();
 

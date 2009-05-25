@@ -46,6 +46,8 @@ class charMatrix;
 typedef void (*octave_exit_func) (int);
 extern OCTINTERP_API octave_exit_func octave_exit;
 
+extern OCTINTERP_API bool quit_allowed;
+
 // quit is a lot like an interrupt, so we subclass it to simplify possible
 // handling.
 class octave_quit_exception 

@@ -81,6 +81,9 @@ along with Octave; see the file COPYING.  If not, see
 
 void (*octave_exit) (int) = ::exit;
 
+// TRUE means the quit() call is allowed.
+bool quit_allowed = true;
+
 // TRUE means we are exiting via the builtin exit or quit functions.
 static bool quitting_gracefully = false;
 
@@ -654,7 +657,9 @@ Octave's exit status.  The default value is zero.\n\
 {
   octave_value_list retval;
 
-  if (nargout == 0)
+  if (! quit_allowed)
+    error ("quit: not supported in embedded mode.");
+  else if (nargout == 0)
     {
       int exit_status = 0;
 

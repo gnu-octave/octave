@@ -1,5 +1,13 @@
 2009-05-25  Jaroslav Hajek  <highegg@gmail.com>
 
+	* toplev.h (quit_allowed): New global variable.
+	* toplev.cc (quit_allowed): Declare it.
+	(Fquit): Raise error if quitting is not allowed.
+	* octave.cc (octave_main): if running as embedded, disable quit by
+	default.
+
+2009-05-25  Jaroslav Hajek  <highegg@gmail.com>
+
 	* variables.cc (do_who): Only output symbols with a defined value.
 
 2009-05-22  Michael Goffioul  <michael.goffioul@gmail.com>

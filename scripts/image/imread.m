@@ -77,9 +77,9 @@ function varargout = imread (filename, varargin)
     if (map_field && (img_field || x_field))
       varargout{2} = vars.map;
       if (img_field)
-	varargout{1} = vars.img;
+	varargout{1} = vars.img / 64;
       else
-	varargout{1} = vars.X;
+	varargout{1} = vars.X / 64;
       endif
     else
       error ("imread: invalid Octave image file format");

@@ -1,3 +1,9 @@
+2009-05-26  John W. Eaton  <jwe@octave.org>
+
+	* image/imread.m: Scale image data from old Octave image format so
+	that it will work with imshow.
+	* deprecated/loadimage.m: Undo scaling here for compatibility.
+
 2009-05-26 Søren Hauberg  <hauberg@gmail.com>
 
 	* help/__makeinfo__.m: Support several @seealso's in one text. 

@@ -1337,7 +1337,7 @@ load_path::do_dir_list (void) const
 }
 
 string_vector
-load_path::do_files (const std::string& dir) const
+load_path::do_files (const std::string& dir, bool omit_exts) const
 {
   string_vector retval;
 
@@ -1345,6 +1345,21 @@ load_path::do_files (const std::string& dir) const
 
   if (i != dir_info_list.end ())
     retval = i->fcn_files;
+
+  if (omit_exts)
+    {
+      octave_idx_type len = retval.length ();
+
+      for (octave_idx_type i = 0; i < len; i++)
+	{
+	  std::string fname = retval[i];
+
+	  size_t pos = fname.rfind ('.');
+
+	  if (pos != std::string::npos)
+	    retval[i] = fname.substr (0, pos);
+	}
+    }
 
   return retval;
 }

@@ -957,10 +957,17 @@ Undocumented internal function.\n\
 
       if (! error_state)
 	{
-	  string_vector fl = load_path::files (dir);
+	  string_vector fl = load_path::files (dir, true);
 
 	  if (! error_state)
-	    retval = Cell (fl);
+	    {
+	      // Return a sorted list with unique entries (in case of
+	      // .m and .oct versions of the same function in a given
+	      // directory, for example).
+	      fl.sort (true);
+
+	      retval = Cell (fl);
+	    }
 	}
       else
         error ("__list_functions__: input must be a string");

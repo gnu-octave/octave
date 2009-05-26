@@ -1,5 +1,10 @@
 2009-05-26  John W. Eaton  <jwe@octave.org>
 
+	* load-path.h, load-path.cc (load_path::files, load_path::do_files): 
+	New arg, OMIT_EXTS.
+	* help.cc (F__list_functions__): Call load_path::files with
+	omit_exts set to true.
+
 	* symtab.h
 	(symbol_table::symbol_record::symbol_record_rep::is_variable):
 	Use "! is_local ()" instead of storage_class != local.

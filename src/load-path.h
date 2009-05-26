@@ -186,9 +186,10 @@ public:
       ? instance->do_dir_list () : std::list<std::string> ();
   }
 
-  static string_vector files (const std::string& dir)
+  static string_vector files (const std::string& dir, bool omit_exts = false)
   {
-    return instance_ok () ? instance->do_files (dir) : string_vector ();
+    return instance_ok ()
+      ? instance->do_files (dir, omit_exts) : string_vector ();
   }
 
   static string_vector fcn_names (void)
@@ -490,7 +491,7 @@ private:
 
   std::list<std::string> do_dir_list (void) const;
 
-  string_vector do_files (const std::string& dir) const;
+  string_vector do_files (const std::string& dir, bool omit_exts) const;
 
   string_vector do_fcn_names (void) const;
 

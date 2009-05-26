@@ -89,8 +89,8 @@ function [retval, status] = __makeinfo__ (text, output_type = "plain text", see_
   
   ## Handle @seealso macro
   SEE_ALSO = "@seealso";
-  start = strfind (text, SEE_ALSO);
-  if (!isempty (start))
+  starts = strfind (text, SEE_ALSO);
+  for start = starts
     if (start == 1 || (text (start-1) != "@"))
       bracket_start = find (text (start:end) == "{", 1);
       stop = find (text (start:end) == "}", 1);
@@ -111,7 +111,7 @@ function [retval, status] = __makeinfo__ (text, output_type = "plain text", see_
       expanded = see_also (see_also_args);
       text = strcat (text (1:start-1), expanded, text (stop+1:end));
     endif
-  endif
+  endfor
   
   if (strcmpi (output_type, "texinfo"))
     status = 0;

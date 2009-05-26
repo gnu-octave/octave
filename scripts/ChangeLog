@@ -1,3 +1,7 @@
+2009-05-26 Søren Hauberg  <hauberg@gmail.com>
+
+	* help/__makeinfo__.m: Support several @seealso's in one text. 
+
 2009-05-26 Carlo de Falco  <kingcrimson@tiscali.it>
 
 	* pkg/pkg.m: Add "version" field to the structure returned by "pkg

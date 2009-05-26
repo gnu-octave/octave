@@ -666,6 +666,11 @@ get_debug_input (const std::string& prompt)
       // Save current value of global_command.
       unwind_protect_ptr (global_command);
 
+      // Do this with an unwind-protect cleanup function so that the
+      // forced variables will be unmarked in the event of an interrupt.
+      symbol_table::scope_id scope = symbol_table::top_scope ();
+      unwind_protect::add (symbol_table::unmark_forced_variables, &scope);
+
       // This is the same as yyparse in parse.y.
       int retval = octave_parse ();
 
@@ -686,6 +691,9 @@ get_debug_input (const std::string& prompt)
 	  if (octave_completion_matches_called)
 	    octave_completion_matches_called = false;	    
 	}
+
+      // Unmark forced variables.
+      unwind_protect::run ();
 
       // Restore previous value of global_command.
       unwind_protect::run ();

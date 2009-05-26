@@ -1,3 +1,20 @@
+2009-05-26  John W. Eaton  <jwe@octave.org>
+
+	* symtab.h
+	(symbol_table::symbol_record::symbol_record_rep::is_variable):
+	Use "! is_local ()" instead of storage_class != local.
+	(symbol_table::do_variable_names): Only add variables to the list.
+	(symbol_table::unmark_forced_variables): New static function
+	* variables.cc (do_who): Use is_variable instead of is_defined.
+	Also limit output to variables when using regexp pattern.
+	* octave.cc (unmark_forced_vars): Delete.
+	(execute_eval_option_code): Don't add unmark_forced_vars to 
+	unwind_protect stack here.
+	* toplev.cc (main_loop): Add symbol_table::unmark_forced_variables
+	to the unwind_protect stack here.
+	* input.cc (get_debug_input): Likewise.
+	* parse.y (parse_fcn_file, eval_string): Likewise.
+
 2009-05-25  Jaroslav Hajek  <highegg@gmail.com>
 
 	* toplev.h (quit_allowed): New global variable.

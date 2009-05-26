@@ -3258,6 +3258,12 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
 
 	  reset_parser ();
 
+	  // Do this with an unwind-protect cleanup function so that
+	  // the forced variables will be unmarked in the event of an
+	  // interrupt. 
+	  symbol_table::scope_id scope = symbol_table::top_scope ();
+	  unwind_protect::add (symbol_table::unmark_forced_variables, &scope);
+
 	  if (! help_txt.empty ())
 	    help_buf.push (help_txt);
 
@@ -3905,9 +3911,18 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
 
       unwind_protect_ptr (global_command);
 
+      // Do this with an unwind-protect cleanup function so that the
+      // forced variables will be unmarked in the event of an
+      // interrupt.
+      symbol_table::scope_id scope = symbol_table::top_scope ();
+      unwind_protect::add (symbol_table::unmark_forced_variables, &scope);
+
       parse_status = yyparse ();
 
       tree_statement_list *command_list = global_command;
+
+      // Unmark forced variables.
+      unwind_protect::run ();
 
       // Restore previous value of global_command.
       unwind_protect::run ();

@@ -1,3 +1,8 @@
+2009-05-26  John W. Eaton  <jwe@octave.org>
+
+	* pathsearch.h (dir_path::path_sep_char (char),
+	dir_path::static_members::path_sep_char (char)): New functions.
+
 2009-05-21  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* Array-C.cc (class DiagArray2<Complex>::Proxy): Tag with OCTAVE_API.

@@ -1453,10 +1453,13 @@ do_who (int argc, const string_vector& argv, bool return_list,
 	  for (std::list<symbol_table::symbol_record>::const_iterator p = tmp.begin ();
 	       p != tmp.end (); p++)
 	    {
-	      if (verbose)
-		symbol_stats.append (*p);
-	      else
-		symbol_names.push_back (p->name ());
+	      if (p->is_variable ())
+		{
+		  if (verbose)
+		    symbol_stats.append (*p);
+		  else
+		    symbol_names.push_back (p->name ());
+		}
 	    }
 	}
       else
@@ -1505,7 +1508,7 @@ do_who (int argc, const string_vector& argv, bool return_list,
 	      for (std::list<symbol_table::symbol_record>::const_iterator p = tmp.begin ();
 		   p != tmp.end (); p++)
 		{
-                  if (p->is_defined ())
+                  if (p->is_variable ())
                     {
                       if (verbose)
                         symbol_stats.append (*p);

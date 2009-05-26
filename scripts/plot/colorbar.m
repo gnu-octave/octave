@@ -71,7 +71,7 @@ function h = colorbar (varargin)
 	      || strcmpi (arg, "east") || strcmpi (arg, "west")
 	      || strcmpi (arg, "northoutside") || strcmpi (arg, "southoutside")
 	      || strcmpi (arg, "eastoutside") || strcmpi (arg, "westoutside"))
-	loc = arg;
+	loc = tolower (arg);
       elseif (strcmpi (arg, "off") || strcmpi (arg, "none"))
 	deleting = true;
       else

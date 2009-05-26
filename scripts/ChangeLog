@@ -2,6 +2,10 @@
 
 	* help/__makeinfo__.m: Support several @seealso's in one text. 
 
+2009-05-26  John W. Eaton  <jwe@octave.org>
+
+	* plot/colorbar.m: Downcase location argument.
+
 2009-05-26 Carlo de Falco  <kingcrimson@tiscali.it>
 
 	* pkg/pkg.m: Add "version" field to the structure returned by "pkg

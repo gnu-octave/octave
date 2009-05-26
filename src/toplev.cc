@@ -548,9 +548,17 @@ main_loop (void)
     {
       try
 	{
+	  unwind_protect::begin_frame ("main_loop");
+
 	  reset_error_handler ();
 
 	  reset_parser ();
+
+	  // Do this with an unwind-protect cleanup function so that
+	  // the forced variables will be unmarked in the event of an
+	  // interrupt.
+	  symbol_table::scope_id scope = symbol_table::top_scope ();
+	  unwind_protect::add (symbol_table::unmark_forced_variables, &scope);
 
 	  // This is the same as yyparse in parse.y.
 	  retval = octave_parse ();
@@ -602,6 +610,8 @@ main_loop (void)
 	      else if (parser_end_of_input)
 		break;
 	    }
+
+	  unwind_protect::run_frame ("main_loop");
 	}
       catch (octave_quit_exception e)
         {

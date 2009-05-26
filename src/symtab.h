@@ -297,7 +297,7 @@ public:
 
       bool is_variable (context_id context) const
       {
-	return (storage_class != local || is_defined (context) || is_forced ());
+	return (! is_local () || is_defined (context) || is_forced ());
       }
 
       bool is_local (void) const { return storage_class & local; }
@@ -1335,6 +1335,19 @@ public:
   }
 
   // For unwind_protect.
+  static void unmark_forced_variables (void *arg)
+  {
+    // Unmark any symbols that may have been tagged as local variables
+    // while parsing (for example, by force_local_variable in lex.l).
+
+    symbol_table::scope_id *p = static_cast <symbol_table::scope_id *> (arg);
+
+  if (p)
+    unmark_forced_variables (*p);
+}
+
+
+  // For unwind_protect.
   static void clear_variables (void *) { clear_variables (); }
 
   static void clear_functions (void)
@@ -2289,7 +2302,10 @@ private:
     std::list<std::string> retval;
 
     for (table_const_iterator p = table.begin (); p != table.end (); p++)
-      retval.push_back (p->first);
+      {
+	if (p->second.is_variable ())
+	  retval.push_back (p->first);
+      }
 
     retval.sort ();
 

@@ -88,6 +88,11 @@ public:
     return static_members::path_sep_char ();
   }
 
+  static void path_sep_char (char c)
+  {
+    static_members::path_sep_char (c);
+  }
+
   static std::string path_sep_str (void)
   {
     return static_members::path_sep_str ();
@@ -129,6 +134,15 @@ private:
     static char path_sep_char (void)
     {
       return instance_ok () ? instance->xpath_sep_char : 0;
+    }
+
+    static void path_sep_char (char c)
+    {
+      if (instance_ok ())
+	{
+	  instance->xpath_sep_char = c;
+	  instance->xpath_sep_str = std::string (1, c);
+	}
     }
 
     static std::string path_sep_str (void)

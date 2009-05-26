@@ -671,19 +671,47 @@ backward slashes) under Windows.\n\
   return retval;
 }
 
-DEFUN (pathsep, args, ,
+DEFUN (pathsep, args, nargout,
     "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} pathsep ()\n\
-Return the system-dependent character used to separate directories in\n\
+@deftypefn {Built-in Function} {@var{val} =} pathsep ()\n\
+@deftypefn {Built-in Function} {@var{old_val} =} pathsep (@var{new_val})\n\
+Query or set the character used to separate directories in\n\
 a path.\n\
 @seealso{filesep, dir, ls}\n\
 @end deftypefn")
 {
   octave_value retval;
 
-  if (args.length () == 0)
+  int nargin = args.length ();
+
+  if (nargout > 0 || nargin == 0)
     retval = dir_path::path_sep_str ();
-  else
+
+  if (nargin == 1)
+    {
+      std::string sval = args(0).string_value ();
+
+      if (! error_state)
+	{
+	  switch (sval.length ())
+	    {
+	    case 1:
+	      dir_path::path_sep_char (sval[0]);
+	      break;
+
+	    case 0:
+	      dir_path::path_sep_char ('\0');
+	      break;
+
+	    default:
+	      error ("pathsep: argument must be a single character");
+	      break;
+	    }
+	}
+      else
+	error ("pathsep: argument must be a single character");
+    }
+  else if (nargin > 1)
     print_usage ();
 
   return retval;

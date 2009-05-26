@@ -1,3 +1,7 @@
+2009-05-26  John W. Eaton  <jwe@octave.org>
+
+	* src/dirfns.cc (Fpathsep): Allow path separator to be set.
+
 2009-03-17  Thomas Weber  <thomas.weber.mail at gmail.com>
 
         * configure.in: fix typo with regards to termios.h

@@ -697,16 +697,24 @@ write_image (const std::string& filename, const std::string& fmt,
 {
   std::vector<Magick::Image> imvec;
 
+  bool has_map = map.is_defined ();
+
+  if (has_map)
+    {
+      error ("__magick_write__: direct saving of indexed images not currently supported; use ind2rgb and save converted image");
+      return;
+    }
+
   if (img.is_bool_type ())
     encode_bool_image (imvec, img);
   else if (img.is_uint8_type ())
-    encode_uint_image<uint8NDArray> (imvec, img, map.is_defined ());
+    encode_uint_image<uint8NDArray> (imvec, img, has_map);
   else if (img.is_uint16_type ())
-    encode_uint_image<uint16NDArray> (imvec, img, map.is_defined ());
+    encode_uint_image<uint16NDArray> (imvec, img, has_map);
   else
     error ("__magick_write__: image type not supported");
 
-  if (! error_state && map.is_defined ())
+  if (! error_state && has_map)
     {
       NDArray cmap = map.array_value ();
 
@@ -720,7 +728,7 @@ write_image (const std::string& filename, const std::string& fmt,
 
       // Insert calls here to handle parameters for various image formats
       if (fmt == "jpg" || fmt == "jpeg")
-        jpg_settings (imvec, options, map.is_defined ());
+        jpg_settings (imvec, options, has_map);
       else
         warning ("warning: your parameter(s) currently not supported");
     }

@@ -142,10 +142,19 @@ function imwrite (varargin)
       error ("imwrite: %s invalid class for indexed image colormap",
              class (map));
     endif
+
+    ## FIXME -- we should really be writing indexed images here but
+    ## __magick_write__ needs to be fixed to handle them.
+
+    [r, g, b] = ind2rgb (img, map);
+    tmp = uint8 (cat (3, r, g, b) * 255);
+
     if (has_param_list)
-      __magick_write__ (filename, fmt, img, map, options);
+      __magick_write__ (filename, fmt, tmp, options);
+      ## __magick_write__ (filename, fmt, img, map, options);
     else
-      __magick_write__ (filename, fmt, img, map);
+      __magick_write__ (filename, fmt, tmp);
+      ## __magick_write__ (filename, fmt, img, map);
     endif
   endif
 

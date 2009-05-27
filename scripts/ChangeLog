@@ -1,5 +1,8 @@
 2009-05-27  John W. Eaton  <jwe@octave.org>
 
+	* image/imwrite.m: Convert indexed images to RGB before calling
+	__magick_write__.
+
 	* image/imshow.m: In demo, convert image to rgb before scaling
 	components.  Use imread instead of loadimage.
 

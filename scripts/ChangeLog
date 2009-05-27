@@ -1,3 +1,7 @@
+2009-05-27 Søren Hauberg  <hauberg@gmail.com>
+
+	* geometry/delaunay.m: Support cellstr's as options. 
+
 2009-05-27  Jaroslav Hajek  <highegg@gmail.com>
 
 	* plot/imshow.m: Fix handling of indexed images.

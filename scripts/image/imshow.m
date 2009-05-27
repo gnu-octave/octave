@@ -160,8 +160,8 @@ function h = imshow (im, varargin)
     im(im > 1) = 1;
   endif
 
-  if (true_color)
-    tmp = __img__ ([], [], im);
+  if (true_color || indexed)
+    tmp = image ([], [], im);
   else
     tmp = image (round ((rows (colormap ()) - 1) * im));
   endif

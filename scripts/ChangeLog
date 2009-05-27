@@ -1,3 +1,7 @@
+2009-05-27  Jaroslav Hajek  <highegg@gmail.com>
+
+	* plot/imshow.m: Fix handling of indexed images.
+
 2009-05-26 Søren Hauberg  <hauberg@gmail.com>
 
 	* help/__makeinfo__.m: Support several @seealso's in one text. 

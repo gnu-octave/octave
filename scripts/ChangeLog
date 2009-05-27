@@ -1,3 +1,7 @@
+2009-05-17  Rik Wehbring  <rdrider0-list@yahoo.com>
+
+	* ismember.m: Update examples to remove incorrect reference to residue function
+
 2009-05-27  John W. Eaton  <jwe@octave.org>
 
 	* image/imwrite.m: Convert indexed images to RGB before calling
@@ -11,7 +15,7 @@
 	* plot/__go_draw_axes__.m: Fix rendering of overlaping images and
 	line objects. Add demos as well.
 
-2009-05-27 Søren Hauberg  <hauberg@gmail.com>
+2009-05-27 Sï¿½ren Hauberg  <hauberg@gmail.com>
 
 	* geometry/delaunay.m: Support cellstr's as options. 
 
@@ -19,7 +23,7 @@
 
 	* plot/imshow.m: Fix handling of indexed images.
 
-2009-05-26 Søren Hauberg  <hauberg@gmail.com>
+2009-05-26 Sï¿½ren Hauberg  <hauberg@gmail.com>
 
 	* help/__makeinfo__.m: Support several @seealso's in one text. 
 
@@ -389,7 +393,7 @@
 	__accumarray_sum__ for the default summation case.
 	* statistics/base/histc.m: Reimplement using lookup & accumarray.
 
-2009-03-08  Søren Hauberg <hauberg@gmail.com>
+2009-03-08  Sï¿½ren Hauberg <hauberg@gmail.com>
 
 	* statistics/base/histc.m: New function.
 
@@ -875,7 +879,7 @@
 
         * plot/__go_draw_axes__.m: Add support for transparent patches.
 
-2009-01-29  Søren Hauberg  <hauberg@gmail.com>
+2009-01-29  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
 	* help/help.m, help/print_usage.m, help/get_first_help_sentence.m:
 	print sensible error message when function is found but not documented.
@@ -928,7 +932,7 @@
 
 	* polynomial/spline.m: Doc fix.
 
-2009-01-27  Søren Hauberg  <hauberg@gmail.com>
+2009-01-27  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
 	* general/gradient.m: Handle computing the gradient of a function
 	handle.
@@ -974,7 +978,7 @@
 
 	* sparse/svds.m: svds.m: skip tests if ARPACK is missing.
 
-2009-01-23  Søren Hauberg  <hauberg@gmail.com>
+2009-01-23  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
 	* help/type.m: Make 'type X' work, when X is the name of a variable.
 
@@ -988,7 +992,7 @@
 	* help/__additional_help_message__.m: Return message instead of
 	displaying it.
 
-2009-01-22  Søren Hauberg  <hauberg@gmail.com>
+2009-01-22  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
 	* help: New directory.
 	* configure.in (AC_CONFIG_FILES): Add help/Makefile to the list.
@@ -1065,7 +1069,7 @@
 
 	* plot/grid.m: Document handle argument.
 
-2009-01-15  Peter L. Søndergaard  <peter@sonderport.dk>
+2009-01-15  Peter L. Sï¿½ndergaard  <peter@sonderport.dk>
 
 	* general/nargoutchk.m: Doc fix.
 	* general/nargchk.m: Improve compatibility.  New tests.
@@ -1079,7 +1083,7 @@
 	* plot/__go_draw_axes__.m (ticklabel_to_cell): New function.
 	Use it to handle non-cell ticklabels.
 
-2009-01-14  Søren Hauberg  <hauberg@gmail.com>
+2009-01-14  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
 	* general/diff.m, general/logspace.m, general/nextpow2.m,
 	linear-algebra/commutation_matrix.m,
@@ -1271,7 +1275,7 @@
 	systems. Simplify & fix indexing. Use left division for step problem.
 	Fix output args.
 
-2008-12-13  Francesco Potortì  <pot@gnu.org>
+2008-12-13  Francesco Potortï¿½  <pot@gnu.org>
 
 	* specfun/nchoosek.m: Check for input arguments, signal loss of
 	precision, correctly handle k==0 and k==n cases, add proper tests.
@@ -1360,7 +1364,7 @@
 2008-11-10  John W. Eaton  <jwe@octave.org>
 
 	* polynomial/spline.m: Delete debugging statements.  From
-	Sebastian Schöps <sebastian@schoeps.org>.
+	Sebastian Schï¿½ps <sebastian@schoeps.org>.
 
 2008-11-07  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
@@ -1463,7 +1467,7 @@
 	* optimization/qp.m: Convert bounds of the form b <= x <= b and
 	constraints of the form b <= A*x <= b to equality constraints.
 
-2008-10-27  Søren Hauberg  <hauberg@gmail.com>
+2008-10-27  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
 	* plot/ellipsoid.m: Check nargin == 6, not nargin == 5.
 
@@ -1740,7 +1744,7 @@
 
 	* image/imfinfo.m: Delete temporary file.
 
-2008-09-25  Søren Hauberg  <hauberg@gmail.com>
+2008-09-25  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
 	* image/imread.m, image/imwrite.m: Doc fix.
 
@@ -1748,7 +1752,7 @@
 
 	* plot/fplot.m: Call axis after calling plot.
 
-2008-09-24  Søren Hauberg  <hauberg@gmail.com>
+2008-09-24  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
 	* image/imfinfo.m: New function.
 	* image/Makefile.in (SOURCES): Add it to the list.
@@ -2218,7 +2222,7 @@
 	Change caller.  Improve sizing and position of colorbox for subplots.
 	* plot/colorbar.m: New demos.
 
-2008-04-16  Søren Hauberg  <hauberg@gmail.com>
+2008-04-16  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
 	* plot/__gnuplot_version__.m: Display error if gnuplot is not found.
 
@@ -2508,7 +2512,7 @@
 	* miscellaneous/info.m: New function.
 	* miscellaneous/Makefile.in (SOURCES): Add it to the list.
 
-2008-03-27  Søren Hauberg  <hauberg@gmail.com>
+2008-03-27  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
 	* plot/xlim.m, plot/ylim.m, plot/zlim.m, strings/strtrim.m:
 	Doc fixes.
@@ -2566,7 +2570,7 @@
 
 	* linear-algebra/dmult.m: Handle scaling along arbitrary dimension.
 
-2008-03-26  Søren Hauberg  <hauberg@gmail.com>
+2008-03-26  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
 	* polynomial/convn.m: New tests.
 
@@ -2578,7 +2582,7 @@
 	statistics/base/prctile.m: New functions.
 	* statistics/base/Makefile.in (SOURCES): Add them to the list.
  
-2008-03-25  Søren Hauberg  <hauberg@gmail.com>
+2008-03-25  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
 	* polynomial/convn.m: New function.
 	* polynomial/Makefile.in (SOURCES): Add it to the list.
@@ -3095,7 +3099,7 @@
 
 	* plot/axis.m: Correctly handle "tight" and "image" options.
 
-2008-01-14  Søren Hauberg  <hauberg@gmail.com>
+2008-01-14  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
 	* image/hsv2rgb.m, image/ntsc2rgb.m, image/rgb2hsv.m,
 	image/rgb2ntsc.m: Also accept images as input.
@@ -3156,7 +3160,7 @@
 
 	* general/sub2ind.m, general/ind2sub.m: Doc fix.
 
-2008-01-04  Søren Hauberg   <hauberg@gmail.com>
+2008-01-04  Sï¿½ren Hauberg   <hauberg@gmail.com>
 
 	* set/create_set.m, set/union.m: Accept "rows" argument.
 
@@ -3184,7 +3188,7 @@
 
 	Version 3.0.0 released.
 
-2007-12-21  Søren Hauberg  <hauberg@gmail.com>
+2007-12-21  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
 	* image/imshow.m: Accept empty value for display_range.
 
@@ -3192,7 +3196,7 @@
 
 	* pkg/pkg.m: Add .lib as architecture-dependent suffix.
 
-2007-12-19  Søren Hauberg  <hauberg@gmail.com>
+2007-12-19  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
 	* image/imshow.m: Store uint8 images as doubles.  Handle default
 	display ranges correctly.
@@ -3996,7 +4000,7 @@
 	* plot/print.m: Handle -textspecial and -textnormal flags for fig
 	output.
 
-2007-10-15  Søren Hauberg  <hauberg@gmail.com>
+2007-10-15  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
 	* general/rat.m, sparse/pcg.m, sparse/pcr.m, optimization/sqp.m,
 	statistics/models/logistic_regression.m, polynomial/polygcd.m,
@@ -4181,7 +4185,7 @@
 
 	* polynomial/residue.m: New test from test/test_poly.m.
 
-2007-10-06  Søren Hauberg  <hauberg@gmail.com>
+2007-10-06  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
 	* image/saveimage.m: Handle saving color images without a colormap.
 	* image/__img_via_file__.m: Add missing semicolon.
@@ -4424,7 +4428,7 @@
 
 	* plot/ancestor.m: New function, adapted from Octave Forge.
 
-2007-08-31  Søren Hauberg  <hauberg@gmail.com>
+2007-08-31  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
 	* polynomial/polygcd.m: Better layout of example.
 	* polynomial/compan.m: Remove unnecessary check.
@@ -4658,7 +4662,7 @@
 	* plot/drawnow.m, plot/__go_draw_axes__.m: Use strcmpi instead of
 	strcmp for selected property comparisons.
 
-2007-06-25  Søren Hauberg  <hauberg@gmail.com>
+2007-06-25  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
 	* image/imshow.m: Fix check for colormap arguments.
 
@@ -4666,7 +4670,7 @@
 
 	* plot/drawnow.m: Handle GNUTERM=aqua if DISPLAY is not set.
 
-2007-06-25  Søren Hauberg  <hauberg@gmail.com>
+2007-06-25  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
 	* statistics/base/median.m: Update help text to mention 'dim'
 	argument, and note that the data should be sorted for the
@@ -4759,19 +4763,19 @@
 	* plot/__go_draw_axes__.m (do_tics, do_tics_1): New functions.
 	(__go_draw_axes__): Call do_tics to handle tic marks.
 
-2007-06-18  Søren Hauberg  <hauberg@gmail.com>
+2007-06-18  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
 	* general/interp1.m, general/interp2.m, general/interp3.m,
 	general/interpn.m: Replace, NaN with NA.  Use isna instead of ==
 	to check for NA.
 
-2007-06-18  Søren Hauberg  <hauberg@gmail.com>
+2007-06-18  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
 	* optimization/glpk.m: TeXified the help text.
 	* optimization/qp.m: TeXified the help text.
 	* optimization/sqp.m: TeXified the help text.
 
-2007-06-16  Søren Hauberg  <hauberg@gmail.com>
+2007-06-16  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
 	* plot/legend.m: Replace 'vargin' with 'varargin'.
 
@@ -4863,7 +4867,7 @@
 
 	* statistics/tests/wilcoxon_test.m: Error if N <= 25.
 
-2007-06-12  Søren Hauberg  <soren@hauberg.org>
+2007-06-12  Sï¿½ren Hauberg  <soren@hauberg.org>
 
 	* plot/fplot.m: If function is inline, vectorize it.
 
@@ -4890,7 +4894,7 @@
 	indexes into the installed package list indicating the packages to
 	load and the order to load them in to respect the dependencies.
 
-2007-06-03  Søren Hauberg  <soren@hauberg.org>
+2007-06-03  Sï¿½ren Hauberg  <soren@hauberg.org>
 
 	* plot/axes.m: Eliminate redundant else clause.
 
@@ -5002,7 +5006,7 @@
 	* plot/hbar.m: Remove.
 	* plot/barh.m: and move it here.
 
-2007-05-16  Søren Hauberg  <soren@hauberg.org>
+2007-05-16  Sï¿½ren Hauberg  <soren@hauberg.org>
 
 	* general/sub2ind.m, general/ind2sub.m: Doc fix.
 
@@ -5033,7 +5037,7 @@
 
 	* pkg/pkg.m: Mark loaded packages with "*".
 
-2007-05-13  Søren Hauberg  <soren@hauberg.org>
+2007-05-13  Sï¿½ren Hauberg  <soren@hauberg.org>
 
 	* miscellaneous/single.m: Doc fix.
 	Convert to double instead of returning argument unchanged.
@@ -5119,7 +5123,7 @@
 2007-04-24  John W. Eaton  <jwe@octave.org>
 
 	* io/beep.m: Fix cut and paste error.
-	From Søren Hauberg  <soren@hauberg.org>.
+	From Sï¿½ren Hauberg  <soren@hauberg.org>.
 
 2007-04-23  John W. Eaton  <jwe@octave.org>
 
@@ -5170,7 +5174,7 @@
 
 	* gethelp.cc (looks_like_octave_copyright): Use same logic as in
 	looks_like_copyright in src/help.cc.
-	From Søren Hauberg <soren@hauberg.org>.
+	From Sï¿½ren Hauberg <soren@hauberg.org>.
 
 	* plot/__go_draw_axes__.m: For log plots, omit zero values too.
 
@@ -5535,7 +5539,7 @@
 
 	* miscellaneous/cast.m: Use feval and strcmp with cell to check
 	arg instead of switch statement.
-	From Søren Hauberg <soren@hauberg.org>.
+	From Sï¿½ren Hauberg <soren@hauberg.org>.
 
 2007-03-12  John W. Eaton  <jwe@octave.org>
 
@@ -6208,7 +6212,7 @@
 
 	* polynomial/spline.m: Make DG a column instead of a row vector.
 
-2007-01-18  Søren Hauberg  <hauberg@gmail.com>
+2007-01-18  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
 	* pkg/pkg.m (copy_files): Call write_INDEX with correct target
 	file name.
@@ -6230,11 +6234,11 @@
 	elfun/cscd.m, elfun/secd.m, elfun/sind.m, elfun/tand.m:
 	New files.
 
-2007-01-09  Søren Hauberg  <hauberg@gmail.com>
+2007-01-09  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
 	 * pkg/pkg.m: Allow filenames to contain glob patterns.
 
-2007-01-08  Søren Hauberg  <hauberg@gmail.com>
+2007-01-08  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
 	* pkg/pkg.m: Use copyfile instead of calling system.  Use fullfile
 	instead of concatenating with "/".  Use mlock to ensure that
@@ -6244,7 +6248,7 @@
 
 	* miscellaneous/copyfile.m, miscellaneous/movefile.m:
 	Improve handling of file names containing globbing characters.
-	From Søren Hauberg <hauberg@gmail.com>.
+	From Sï¿½ren Hauberg <hauberg@gmail.com>.
 
 2007-01-05  John W. Eaton  <jwe@octave.org>
 
@@ -6256,7 +6260,7 @@
 	* sparse/spfun.m: Check for "function_handle" not "function handle".
 	* plot/fplot.m: Likewise.  Use isa instead of strcmp + class.
 
-2006-12-27  Søren Hauberg  <hauberg@gmail.com>
+2006-12-27  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
 	* image/imshow.m: Strip NaNs from image.
 
@@ -6271,7 +6275,7 @@
 
 	* startup/inputrc: Include sequences for Windows.
 
-2006-12-06  Søren Hauberg  <hauberg@gmail.com>
+2006-12-06  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
 	* pkg/pkg.m (unload_packages): New function.
 	(pkg): Handle unload action.
@@ -6348,7 +6352,7 @@
 	* image/image_viewer.m: Always return old values.  Check arguments.
 	* image/__img_gnuplot__.m: Rename from __img__m.
 
-2006-11-14  Søren Hauberg  <soren@hauberg.org>
+2006-11-14  Sï¿½ren Hauberg  <soren@hauberg.org>
 
 	* image/image_viewer.m: New function.
 	* image/__img_via_file__.m: New function.
@@ -6378,7 +6382,7 @@
 	* general/__isequal__.m: Avoid assignment of comma-separated lists
 	when comparing structs.
 
-2006-11-13  Søren Hauberg  <hauberg@gmail.com>
+2006-11-13  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
 	* general/bicubic.m, general/cart2pol.m, general/cart2sph.m,
 	plot/contour.m, linear-algebra/cross.m, general/cumtrapz.m,
@@ -6392,11 +6396,11 @@
 
 	* plot/mesh.m: Use size_equal to compare dimensions.
 
-2006-11-13  Søren Hauberg  <soren@hauberg.org>
+2006-11-13  Sï¿½ren Hauberg  <soren@hauberg.org>
 
 	* plot/mesh.m: Simplify.  Set hidden3d for the plot.
 
-2006-11-11  Søren Hauberg  <soren@hauberg.org>
+2006-11-11  Sï¿½ren Hauberg  <soren@hauberg.org>
 
 	* miscellaneous/copyfile.m: Fix docs to match function.
 
@@ -6444,7 +6448,7 @@
 
 	* startup/main-rcfile: Conditionally set PAGER_FLAGS.
 
-2006-11-06  Søren Hauberg  <soren@hauberg.org>
+2006-11-06  Sï¿½ren Hauberg  <soren@hauberg.org>
 
 	* pkg/pkg.m (extract_pkg): No need to pass "dotexceptnewline"
 	option to regexp.
@@ -6490,7 +6494,7 @@
 	Daniel J Sebald <daniel.sebald@ieee.org> by way of 
 	Quentin Spencer <qspencer@ieee.org>.
 
-2006-10-25  Søren Hauberg  <soren@hauberg.org>
+2006-10-25  Sï¿½ren Hauberg  <soren@hauberg.org>
 
 	* plot/__pltopt__.m: Update symbol marker id numbers for gnuplot 4.
 
@@ -6804,7 +6808,7 @@
 
 	* pkg/pkg.m: Use fullfile to concatenate directory and file names.
 
-2006-10-04  Søren Hauberg  <soren@hauberg.org>
+2006-10-04  Sï¿½ren Hauberg  <soren@hauberg.org>
 
 	* pkg/pkg.m: Update docs.  Handle prefix option.
 	Handle dependencies for load option.
@@ -6817,7 +6821,7 @@
 	* plot/__init_plot_vars__.m: New function.
 	* plot/__setup_plot__.m: Use __init_plot_vars__.
 
-2006-10-03  Søren Hauberg  <soren@hauberg.org>
+2006-10-03  Sï¿½ren Hauberg  <soren@hauberg.org>
 
 	* pkg/pkg.m: Avoid calling addpath with no args.
 
@@ -6873,7 +6877,7 @@
 
 	* deprecated/chisquare_pdf.m: Typo in documentation. 
 
-2006-09-22  Søren Hauberg  <soren@hauberg.org>
+2006-09-22  Sï¿½ren Hauberg  <soren@hauberg.org>
 
 	* signal/filter2.m: Correct texinfo doc.
 
@@ -6952,7 +6956,7 @@
 	* image/saveimage.m: Use logical indexing instead of
 	indices computed by calling find on the logical index.
 
-2006-08-24  Søren Hauberg  <soren@hauberg.org>
+2006-08-24  Sï¿½ren Hauberg  <soren@hauberg.org>
 
 	* miscellaneous/bincoeff.m, specfun/factorial.m:
 	Use logical indexing instead of indices computed by calling find
@@ -6980,7 +6984,7 @@
 	PKG_ADD directives and append user supplied PKG_ADD.
 	(pkg): Call create_pkgadd after copying files.
 
-2006-08-21  Søren Hauberg  <soren@hauberg.org>
+2006-08-21  Sï¿½ren Hauberg  <soren@hauberg.org>
 
 	* pkg/pkg.m: Handle multiple packages in a single file.
 	Insert directory separator between OCTAVE_HOME and rest of package
@@ -6999,7 +7003,7 @@
 
 	* audio/wavread.m: Fix calculation of sample count.
 
-2006-08-14  Søren Hauberg  <soren@hauberg.org>
+2006-08-14  Sï¿½ren Hauberg  <soren@hauberg.org>
 
 	* image/imshow.m: New Matlab-compatible version.
 
@@ -7016,7 +7020,7 @@
 	* sparse/spy.m, control/base/bode.m, control/base/__stepimp__.m,
 	signal/freqz_plot.m: Adapt to new automatic_replot definition.
 	
-2006-08-14  Søren Hauberg  <soren@hauberg.org>
+2006-08-14  Sï¿½ren Hauberg  <soren@hauberg.org>
 
 	* pkg/pkg.m: Don't pass function name to print_usage.
 	Use addpath and rmpath instead of manipulating LOADPATH.
@@ -7147,7 +7151,7 @@
 	* tar.m, untar.m, unzip.m: Adapt to Octave coding style.
 	* tar.m, untar.m: Only tar; don't compress or uncompress.
 
-2006-05-10  Søren Hauberg  <hauberg@gmail.com>
+2006-05-10  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
 	* tar.m, untar.m, unzip.m: New files.
 
@@ -7364,7 +7368,7 @@
 2006-03-15  John W. Eaton  <jwe@octave.org>
 
 	* miscellaneous/doc.m: New file.
-	From Søren Hauberg <soren@hauberg.org>.
+	From Sï¿½ren Hauberg <soren@hauberg.org>.
 
 2006-03-15  Keith Goodman  <kwgoodman@gmail.com>
 
@@ -8152,7 +8156,7 @@
 	* optimization/glpk.m, optimization/glpkparams.m,
 	optimization/glpktest1, optimization/glpktest2: New files.
 
-2005-03-16  Søren Hauberg  <soren@hauberg.org>
+2005-03-16  Sï¿½ren Hauberg  <soren@hauberg.org>
 
 	* strings/split.m: Quick return for empty second arg.
 	Improve warning for multi-line strings.

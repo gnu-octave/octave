@@ -17,20 +17,21 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{tf}, @var{a_idx}] =} ismember (@var{A}, @var{S}) 
-## @deftypefnx {Function File} {[@var{tf}, @var{a_idx}] =} ismember (@var{A}, @var{S}, "rows")
-## Return a matrix @var{tf} the same shape as @var{A} which has 1 if 
-## @code{A(i,j)} is in @var{S} or 0 if it isn't.  If a second output argument 
-## is requested, the indexes into @var{S} of the matching elements are
+## @deftypefn  {Function File} {[@var{tf} =} ismember (@var{A}, @var{S}) 
+## @deftypefnx {Function File} {[@var{tf}, @var{S_idx}] =} ismember (@var{A}, @var{S}) 
+## @deftypefnx {Function File} {[@var{tf}, @var{S_idx}] =} ismember (@var{A}, @var{S}, "rows")
+## Return a matrix @var{tf} with the same shape as @var{A} which has a 1 if 
+## @code{A(i,j)} is in @var{S} and 0 if it is not.  If a second output argument 
+## is requested, the index into @var{S} of each of the matching elements is
 ## also returned. 
 ##
 ## @example
 ## @group
 ## a = [3, 10, 1];
 ## s = [0:9];
-## [tf, a_idx] = residue (a, s);
+## [tf, s_idx] = ismember (a, s);
 ##      @result{} tf = [1, 0, 1]
-##      @result{} a_idx = [4, 0, 2]
+##      @result{} s_idx = [4, 0, 2]
 ## @end group
 ## @end example
 ##
@@ -40,9 +41,9 @@
 ## @group
 ## a = @{'abc'@};
 ## s = @{'abc', 'def'@};
-## [tf, a_idx] = residue (a, s);
+## [tf, s_idx] = ismember (a, s);
 ##      @result{} tf = [1, 0]
-##      @result{} a_idx = [1, 0]
+##      @result{} s_idx = [1, 0]
 ## @end group
 ## @end example
 ##
@@ -54,9 +55,9 @@
 ## @group
 ## a = [1:3; 5:7; 4:6];
 ## s = [0:2; 1:3; 2:4; 3:5; 4:6];
-## [tf, a_idx] = ismember(a, s, 'rows');
+## [tf, s_idx] = ismember(a, s, 'rows');
 ##      @result{} tf = logical ([1; 0; 1])
-##      @result{} a_idx = [2; 0; 5];
+##      @result{} s_idx = [2; 0; 5];
 ## @end group
 ## @end example
 ##

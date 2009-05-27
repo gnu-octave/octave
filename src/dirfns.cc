@@ -674,7 +674,7 @@ backward slashes) under Windows.\n\
 DEFUN (pathsep, args, nargout,
     "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{val} =} pathsep ()\n\
-@deftypefn {Built-in Function} {@var{old_val} =} pathsep (@var{new_val})\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} pathsep (@var{new_val})\n\
 Query or set the character used to separate directories in\n\
 a path.\n\
 @seealso{filesep, dir, ls}\n\

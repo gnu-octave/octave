@@ -1277,7 +1277,13 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
 	  fprintf (plot_stream, ", \"-\" %s %s %s \\\n",
 		   usingclause{i}, titlespec{i}, withclause{i});
 	elseif (is_image_data (i))
+	  if (! is_image_data (i-1))
+	    fputs (plot_stream, "; ");
+	  endif
           fprintf (plot_stream, "%s \"-\" %s %s %s \\\n", plot_cmd,
+		   usingclause{i}, titlespec{i}, withclause{i});
+	elseif (is_image_data (i-1))
+	  fprintf (plot_stream, "%s \"-\" binary format='%%float64' %s %s %s \\\n", plot_cmd,
 		   usingclause{i}, titlespec{i}, withclause{i});
 	else
 	  fprintf (plot_stream, ", \"-\" binary format='%%float64' %s %s %s \\\n",
@@ -2092,4 +2098,3 @@ function typ = get_old_gnuplot_color (color)
     typ = -1;
   endif
 endfunction
-

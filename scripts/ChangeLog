@@ -1,3 +1,8 @@
+2009-05-26  Ben Abbott <bpabbott@mac.com>
+
+	* plot/__go_draw_axes__.m: Fix rendering of overlaping images and
+	line objects. Add demos as well.
+
 2009-05-27 Søren Hauberg  <hauberg@gmail.com>
 
 	* geometry/delaunay.m: Support cellstr's as options. 

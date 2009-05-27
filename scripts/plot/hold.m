@@ -86,3 +86,34 @@ function hold (varargin)
   set (h, "nextplot", hold_state);
 
 endfunction
+
+%!demo
+%! clf
+%! A = rand (100);
+%! [X, Y] = find (A > 0.9);
+%! imshow (A)
+%! hold on
+%! plot (X, Y, 'o')
+%! hold off
+
+%!demo
+%! clf
+%! hold on
+%! imagesc(1./hilb(4));
+%! plot (1:4, "-s")
+%! hold off
+
+%!demo
+%! clf
+%! hold on
+%! imagesc(1./hilb(2));
+%! imagesc(1./hilb(4));
+%! hold off
+
+%!demo
+%! clf
+%! hold on
+%! plot (1:4, "-s")
+%! imagesc(1./hilb(4));
+%! hold off
+

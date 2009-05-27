@@ -41,6 +41,4 @@ function [img_retval, map_retval] = loadimage (varargin)
 
   [img_retval, map_retval] = imread (varargin{:});
 
-  img_retval *= 64;
-
 endfunction

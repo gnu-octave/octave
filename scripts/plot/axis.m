@@ -71,7 +71,7 @@
 ## @item "manual" 
 ## Fix the current axes limits.
 ## @item "tight"
-## Fix axes to the limits of the data (not implemented).
+## Fix axes to the limits of the data.
 ## @end table
 ##
 ## @noindent

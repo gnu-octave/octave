@@ -1,4 +1,8 @@
-2009-05-17  Rik Wehbring  <rdrider0-list@yahoo.com>
+2009-05-27  Rik Wehbring  <rdrider0-list@yahoo.com>
+
+	* plot/axis.m: Update documentation to reflect addition of "tight" option.
+
+2009-05-27  Rik Wehbring  <rdrider0-list@yahoo.com>
 
 	* ismember.m: Update examples to remove incorrect reference to residue function
 

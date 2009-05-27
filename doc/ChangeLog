@@ -7,6 +7,10 @@
 	* interpreter/oop.txi: Update docs of polynomial class, mention
 	chained indexing.
 
+2009-05-27  Søren Hauberg  <hauberg@gmail.com>
+
+	* interpreter/bugs.txi: fix call to 'page_screen_output'.
+
 2009-05-25  Rik  <rdrider0-list@yahoo.com>
 
 	* interpreter/Makefile.in: Add texmf.cnf to list of distributed files

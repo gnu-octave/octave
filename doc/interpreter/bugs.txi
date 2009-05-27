@@ -79,7 +79,7 @@ fflush (stdout)
 Another possible workaround is to use the command
 
 @example
-page_screen_output = "false"
+page_screen_output (false);
 @end example
 
 @noindent

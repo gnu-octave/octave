@@ -186,12 +186,13 @@ endfunction
 %!  colormap ("autumn");
 
 %!demo
-%!  [I, M] = loadimage ("default.img");
+%!  [I, M] = imread ("default.img");
 %!  imshow (I, M);
 
 %!demo
-%!  [I, M] = loadimage ("default.img");
-%!  imshow (cat(3, I, I*0.5, I*0.8));
+%!  [I, M] = imread ("default.img");
+%!  [R, G, B] = ind2rgb (I, M);
+%!  imshow (cat(3, R, G*0.5, B*0.8));
 
 %!demo
 %!  imshow (rand (100, 100));

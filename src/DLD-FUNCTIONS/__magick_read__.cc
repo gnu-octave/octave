@@ -653,7 +653,6 @@ static void
 encode_map (std::vector<Magick::Image>& imvec, const NDArray& cmap)
 {
   unsigned int mapsize = cmap.dim1 ();
-  Magick::ColorRGB c;
   int nframes = static_cast<int>(imvec.size ());
 
   for (int fnum = 0; fnum < nframes; fnum++)
@@ -664,9 +663,7 @@ encode_map (std::vector<Magick::Image>& imvec, const NDArray& cmap)
 
   for (unsigned int ii = 0; ii < mapsize; ii++)
     {
-      c.red (cmap(ii,0));
-      c.green (cmap(ii,1));
-      c.blue (cmap(ii,2));
+      Magick::ColorRGB c (cmap(ii,0), cmap(ii,1), cmap(ii,2));
 
       // FIXME -- is this case needed?
       if (cmap.dim2 () == 4)

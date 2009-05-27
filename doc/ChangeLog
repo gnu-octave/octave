@@ -7,6 +7,10 @@
 	* interpreter/oop.txi: Update docs of polynomial class, mention
 	chained indexing.
 
+2009-05-27  Søren Hauberg  <hauberg@gmail.com>
+
+	* interpreter/errors.txi: fix 'print_usage' output.
+
 2009-05-27  SÃ¸ren Hauberg  <hauberg@gmail.com>
 
 	* interpreter/bugs.txi: fix call to 'page_screen_output'.

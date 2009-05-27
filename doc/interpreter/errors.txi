@@ -107,16 +107,18 @@ error.
 @group
 f ()
 
-Invalid call to f.  Correct usage is:
-
-     @print{}  -- Function File: f (ARG1)
-     @print{}      Function help text goes here@dots{}
-     @print{} 
-     @print{} 
-     @print{} 
-     @print{} error: called from:
-     @print{} error:   print_usage at line -1, column -1
-     @print{} error:   /home/jwe/octave/f.m at line 7, column 5
+@print{}  error: Invalid call to f.  Correct usage is:
+@print{}  
+@print{}   -- Function File: f (ARG1)
+@print{}  
+@print{}  
+@print{}  Additional help for built-in functions and operators is
+@print{}  available in the on-line version of the manual.  Use the command
+@print{}  `doc <topic>' to search the manual index.
+@print{}  
+@print{}  Help and information about Octave is also available on the WWW
+@print{}  at http://www.octave.org and via the help@@octave.org
+@print{}  mailing list.
 @end group
 @end example
 

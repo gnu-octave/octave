@@ -1,3 +1,12 @@
+2009-05-28  Radek Salac  <salac.r@gmail.com>
+
+	* sparse/bicgstab.m: New output when calling without arguments.
+	Time optimization - remove certain checks linked to preconditioner which
+	are unacceptably slow.
+	* sparse/cgs.m: New output when calling without arguments.
+	Time optimization - remove certain checks linked to preconditioner which
+	are unacceptably slow. Rename internal variable to match bicgstab.
+
 2009-05-27  Rik Wehbring  <rdrider0-list@yahoo.com>
 
 	* plot/axis.m: Update documentation to reflect addition of "tight" option.

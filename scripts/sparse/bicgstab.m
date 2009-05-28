@@ -1,4 +1,4 @@
-## Copyright (C) 2008, 2009 Radek Salac
+## Copyright (C) 2008 Radek Salac
 ##
 ## This file is part of Octave.
 ##
@@ -84,20 +84,10 @@ function [x, flag, relres, iter, resvec] = bicgstab (A, b, tol, maxit, M1, M2, x
     endif 
   endif
 
-  if (nargin > 4 && isnumeric (precon))
-    ## Precon can by also function.
-    if (det (precon) != 0) 
-      ## We can compute inverse preconditioner and use quicker algorithm.
-      precon = inv (precon);
-    else
-      error ("bicgstab: preconditioner is ill conditioned");
-    endif
-
-    if (isinf (cond (precon))); 
-      ## We must make test if preconditioner isn't ill conditioned.
-      error ("bicgstab: preconditioner is ill conditioned");
-    endif
+  if (nargin > 4 && isnumeric(precon) )
+    precon = inv(precon);
   endif
+
 
   ## specifies initial estimate x0
   if (nargin < 7)
@@ -112,7 +102,7 @@ function [x, flag, relres, iter, resvec] = bicgstab (A, b, tol, maxit, M1, M2, x
   rr = res;
 
   ## Vector of the residual norms for each iteration.
-  resvec = [norm(res)];
+  resvec = [norm(res)/norm_b];
 
   ## Default behaviour we don't reach tolerance tol within maxit iterations.
   flag = 1;
@@ -168,6 +158,23 @@ function [x, flag, relres, iter, resvec] = bicgstab (A, b, tol, maxit, M1, M2, x
       break;
     endif
   endfor
+
+  if (nargout < 2)
+    if (flag == 0) 
+      printf (["bicgstab converged at iteration %i ",
+      "to a solution with relative residual %e\n"],iter,relres);
+    elseif (flag == 3)
+      printf (["bicgstab stopped at iteration %i ",
+      "without converging to the desired tolerance %e\n",
+      "because the method stagnated.\n",
+      "The iterate returned (number %i) has relative residual %e\n"],iter,tol,iter,relres);
+    else
+      printf (["bicgstab stopped at iteration %i ",
+      "without converging to the desired toleranc %e\n",
+      "because the maximum number of iterations was reached.\n",
+      "The iterate returned (number %i) has relative residual %e\n"],iter,tol,iter,relres);
+    endif
+  endif
 
 endfunction
 

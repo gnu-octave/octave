@@ -1,4 +1,4 @@
-## Copyright (C) 2008, 2009 Radek Salac
+## Copyright (C) 2008 Radek Salac
 ##
 ## This file is part of Octave.
 ##
@@ -76,20 +76,8 @@ function [x, flag, relres, iter, resvec] = cgs (A, b, tol, maxit, M1, M2, x0)
     endif
   endif
 
-  ## Precon can also be a function.
-  if (nargin > 4 && isnumeric (precon))
-
-    ## We can compute inverse preconditioner and use quicker algorithm.
-    if (det (precon) != 0)
-     precon = inv (precon);
-    else
-     error ("cgs: preconditioner is ill conditioned");
-    endif
-
-    ## We must make test if preconditioner isn't ill conditioned.
-    if (isinf (cond (precon))); 
-      error ("cgs: preconditioner is ill conditioned");
-    endif
+  if (nargin > 4 && isnumeric(precon) )
+    precon = inv(precon);
   endif
 
   ## Specifies initial estimate x0.
@@ -99,29 +87,28 @@ function [x, flag, relres, iter, resvec] = cgs (A, b, tol, maxit, M1, M2, x0)
     x = x0;
   endif
 
-  relres = b - A * x;
-  ## Vector of the residual norms for each iteration.
-  resvec = [norm(relres)];
-  ro = 0;
+  res = b - A * x;
   norm_b = norm (b);
+  ## Vector of the residual norms for each iteration.
+  resvec = [ norm(res)/norm_b ];
+  ro = 0;
   ## Default behavior we don't reach tolerance tol within maxit iterations.
   flag = 1;
   for iter = 1 : maxit
 
     if (nargin > 4 && isnumeric (precon))
-      ## We have computed inverse matrix so we can use quick algorithm.
-      z = precon * relres;
+      z = precon * res;
     elseif (nargin > 4)
       ## Our preconditioner is a function.
-      z = feval (precon, relres);
+      z = feval (precon, res);
     else
       ## We don't use preconditioning.
-      z = relres;
+      z = res;
     endif
 
     ## Cache.
     ro_old = ro;
-    ro = relres' * z;
+    ro = res' * z;
     if (iter == 1)
       p = z;
     else
@@ -133,11 +120,11 @@ function [x, flag, relres, iter, resvec] = cgs (A, b, tol, maxit, M1, M2, x0)
     alpha = ro / (p' * q);
     x = x + alpha * p;
 
-    relres = relres - alpha * q;
-    resvec = [resvec; norm(relres)];
+    res = res - alpha * q;
+    relres = norm(res) / norm_b;
+    resvec = [resvec;relres];
 
-    relres_distance = resvec (end) / norm_b;
-    if (relres_distance <= tol)
+    if (relres <= tol)
       ## We reach tolerance tol within maxit iterations.
       flag = 0;
       break;
@@ -148,7 +135,23 @@ function [x, flag, relres, iter, resvec] = cgs (A, b, tol, maxit, M1, M2, x0)
     endif
   endfor;
 
-  relres = relres_distance;
+  if (nargout < 1)
+    if ( flag == 0 ) 
+      printf (["cgs converged at iteration %i ",
+      "to a solution with relative residual %e\n"],iter,relres);
+    elseif (flag == 3)
+      printf (["cgs stopped at iteration %i ",
+      "without converging to the desired tolerance %e\n",
+      "because the method stagnated.\n",
+      "The iterate returned (number %i) has relative residual %e\n"],iter,tol,iter,relres);
+    else
+      printf (["cgs stopped at iteration %i ",
+      "without converging to the desired tolerance %e\n",
+      "because the maximum number of iterations was reached.\n",
+      "The iterate returned (number %i) has relative residual %e\n"],iter,tol,iter,relres);
+    endif
+  endif
+
 endfunction
 
 

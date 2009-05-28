@@ -1685,13 +1685,34 @@ function do_tics_1 (ticmode, tics, mtics, labelmode, labels, color, ax,
   endif
 endfunction
 
-function ticklabel = ticklabel_to_cell (ticklabel)
+function newlabel = ticklabel_to_cell (ticklabel)
   if (! isempty (ticklabel) && ! iscell (ticklabel))
     if (isnumeric (ticklabel))
       ## Use upto 5 significant digits
       ticklabel = num2str (ticklabel(:), 5);
     endif
-    ticklabel = cellstr (ticklabel);
+    n = setdiff (findstr (ticklabel, '|'), findstr (ticklabel, '\|'));
+    if (! isempty (n))
+      ## FIXME - Can regexp() do this easier?
+      if (ticklabel(1) != "|")
+        n = unique ([n, 0]);
+      endif
+      if (ticklabel(end) != "|")
+        n = unique ([n, numel(ticklabel)+1]);
+      endif
+      n1 = n + 1;
+      n1 = n1(n1<numel(ticklabel))
+      n2 = n - 1;
+      n2 = n2(n2>0)
+      newlabel = cell (numel(n2), 1);
+      for n = 1:numel(newlabel)
+	newlabel{n} = ticklabel(n1(n):n2(n));
+      endfor
+    else
+      newlabel = cellstr (ticklabel);
+    endif
+  else
+    newlabel = ticklabel;
   endif
 endfunction
 

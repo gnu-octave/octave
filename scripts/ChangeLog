@@ -1,3 +1,7 @@
+2009-05-28  Ben Abbott <bpabbott@mac.com>
+
+	* plot/__go_draw_axes__.m: Add support for ticklabel separator '|'.
+
 2009-05-28  Jaroslav Hajek  <highegg@gmail.com>
 
 	* sparse/bicgstab.m: Improve preconditioning; avoid explicit inverse.

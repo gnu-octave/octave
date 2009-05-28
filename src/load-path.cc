@@ -1341,10 +1341,10 @@ load_path::do_files (const std::string& dir, bool omit_exts) const
 {
   string_vector retval;
 
-  const_dir_info_list_iterator i = find_dir_info (dir);
+  const_dir_info_list_iterator p = find_dir_info (dir);
 
-  if (i != dir_info_list.end ())
-    retval = i->fcn_files;
+  if (p != dir_info_list.end ())
+    retval = p->fcn_files;
 
   if (omit_exts)
     {

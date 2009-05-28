@@ -1,3 +1,7 @@
+2009-05-28  John W. Eaton  <jwe@octave.org>
+
+	* load-path.cc (load_path::do_files): Avoid shadow warning from GCC.
+
 2009-05-27  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/__magick_read__.cc (write_image):

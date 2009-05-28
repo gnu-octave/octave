@@ -1065,6 +1065,9 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
       xdir = "noreverse";
     endif
     fprintf (plot_stream, "set xrange [%.15e:%.15e] %s;\n", xlim, xdir);
+    if (strcmpi (axis_obj.xaxislocation, "top"))
+      fprintf (plot_stream, "set x2range [%.15e:%.15e] %s;\n", xlim, xdir);
+    endif
 
     if (isempty (ylim))
       return;
@@ -1075,6 +1078,9 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
       ydir = "noreverse";
     endif
     fprintf (plot_stream, "set yrange [%.15e:%.15e] %s;\n", ylim, ydir);
+    if (strcmpi (axis_obj.yaxislocation, "right"))
+      fprintf (plot_stream, "set y2range [%.15e:%.15e] %s;\n", ylim, ydir);
+    endif
 
     if (nd == 3)
       if (isempty (zlim))
@@ -1685,7 +1691,7 @@ function do_tics_1 (ticmode, tics, mtics, labelmode, labels, color, ax,
   endif
 endfunction
 
-function newlabel = ticklabel_to_cell (ticklabel)
+function ticklabel = ticklabel_to_cell (ticklabel)
   if (! isempty (ticklabel) && ! iscell (ticklabel))
     if (isnumeric (ticklabel))
       ## Use upto 5 significant digits
@@ -1693,26 +1699,12 @@ function newlabel = ticklabel_to_cell (ticklabel)
     endif
     n = setdiff (findstr (ticklabel, '|'), findstr (ticklabel, '\|'));
     if (! isempty (n))
-      ## FIXME - Can regexp() do this easier?
-      if (ticklabel(1) != "|")
-        n = unique ([n, 0]);
-      endif
-      if (ticklabel(end) != "|")
-        n = unique ([n, numel(ticklabel)+1]);
-      endif
-      n1 = n + 1;
-      n1 = n1(n1<numel(ticklabel))
-      n2 = n - 1;
-      n2 = n2(n2>0)
-      newlabel = cell (numel(n2), 1);
-      for n = 1:numel(newlabel)
-	newlabel{n} = ticklabel(n1(n):n2(n));
-      endfor
+      ticklabel = strsplit (ticklabel, "|");
     else
-      newlabel = cellstr (ticklabel);
+      ticklabel = cellstr (ticklabel);
     endif
   else
-    newlabel = ticklabel;
+    ticklabel = ticklabel;
   endif
 endfunction
 

@@ -59,7 +59,7 @@ function __go_draw_figure__ (h, plot_stream, enhanced, mono, output_to_paper, im
 
       if (nkids > 0)
 	fputs (plot_stream, "\nreset;\n");
-	fputs (plot_stream, "set autoscale fix;\n");
+	fputs (plot_stream, "set autoscale keepfix;\n");
 	fputs (plot_stream, "set multiplot;\n");
 	fputs (plot_stream, "set origin 0, 0\n");
 	fputs (plot_stream, "set size 1, 1\n");

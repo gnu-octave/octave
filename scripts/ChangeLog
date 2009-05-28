@@ -1,5 +1,13 @@
 2009-05-28  Ben Abbott <bpabbott@mac.com>
 
+	* plot/__go_draw_axes__.m: Set x2range when xaxislocation=='top' and set
+	y2range when yaxislocation=='right'. Simplified support for ticklabel
+	separator '|'.
+	* plot/__go_draw_figure__.m: Change 'autoscale fix' to 'autoscale keepfix'.
+	* plot/colorbar.m: Add demos.
+
+2009-05-28  Ben Abbott <bpabbott@mac.com>
+
 	* plot/__go_draw_axes__.m: Add support for ticklabel separator '|'.
 
 2009-05-28  Jaroslav Hajek  <highegg@gmail.com>

@@ -382,6 +382,11 @@ endfunction
 
 %!demo
 %! clf
+%! contour(peaks())
+%! colorbar("west");
+
+%!demo
+%! clf
 %! subplot(2,2,1)
 %! contour(peaks())
 %! colorbar("east");
@@ -531,4 +536,17 @@ endfunction
 %! ylim ([1, 64])
 %! colorbar ();
 %! colorbar ();
+
+%!demo
+%! clf
+%! imagesc (1./hilb(99));
+%! h = colorbar;
+%! set (h, 'yscale', 'log');
+
+%!demo
+%! clf
+%! imagesc (log10 (1 ./ hilb (99)));
+%! h = colorbar;
+%! ytick = get(h, "ytick");
+%! set (h, "yticklabel", sprintf ('10^{%g}|', ytick));
 

@@ -65,19 +65,19 @@ function [x, flag, relres, iter, resvec] = cgs (A, b, tol, maxit, M1, M2, x0)
   endif
 
   ## Left preconditioner.
-  precon = [];
   if (nargin == 5)
-    precon = M1;
-  elseif (nargin > 5)
-    if (isparse(M1) && issparse(M2))
-      precon = @(x) M1 * (M2 * x);
-    else
-      precon = M1 * M2;
+    if (isnumeric (M1))
+      precon = @(x) M1 \ x;
     endif
-  endif
-
-  if (nargin > 4 && isnumeric(precon) )
-    precon = inv(precon);
+  elseif (nargin > 5)
+    if (issparse (M1) && issparse (M2))
+      precon = @(x) M2 \ (M1 \ x);
+    else
+      M = M1*M2;
+      precon = @(x) M \ x;
+    endif
+  else
+    precon = @(x) x;
   endif
 
   ## Specifies initial estimate x0.
@@ -96,15 +96,7 @@ function [x, flag, relres, iter, resvec] = cgs (A, b, tol, maxit, M1, M2, x0)
   flag = 1;
   for iter = 1 : maxit
 
-    if (nargin > 4 && isnumeric (precon))
-      z = precon * res;
-    elseif (nargin > 4)
-      ## Our preconditioner is a function.
-      z = feval (precon, res);
-    else
-      ## We don't use preconditioning.
-      z = res;
-    endif
+    z = precon (res);
 
     ## Cache.
     ro_old = ro;

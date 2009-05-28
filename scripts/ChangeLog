@@ -1,3 +1,8 @@
+2009-05-28  Jaroslav Hajek  <highegg@gmail.com>
+
+	* sparse/bicgstab.m: Improve preconditioning; avoid explicit inverse.
+	* sparse/cgs.m: Improve preconditioning; avoid explicit inverse.
+
 2009-05-28  Radek Salac  <salac.r@gmail.com>
 
 	* sparse/bicgstab.m: New output when calling without arguments.

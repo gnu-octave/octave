@@ -75,19 +75,19 @@ function [x, flag, relres, iter, resvec] = bicgstab (A, b, tol, maxit, M1, M2, x
 
   ## Left preconditioner.
   if (nargin == 5)
-    precon = M1;
+    if (isnumeric (M1))
+      precon = @(x) M1 \ x;
+    endif
   elseif (nargin > 5)
-    if (isparse(M1) && issparse(M2))
-      precon = @(x) M1 * (M2 * x);
+    if (issparse (M1) && issparse (M2))
+      precon = @(x) M2 \ (M1 \ x);
     else
-      precon = M1 * M2;
-    endif 
+      M = M1*M2;
+      precon = @(x) M \ x;
+    endif
+  else
+    precon = @(x) x;
   endif
-
-  if (nargin > 4 && isnumeric(precon) )
-    precon = inv(precon);
-  endif
-
 
   ## specifies initial estimate x0
   if (nargin < 7)
@@ -117,27 +117,13 @@ function [x, flag, relres, iter, resvec] = bicgstab (A, b, tol, maxit, M1, M2, x
       p = res + beta * (p - omega * v);
     endif
 
-    if (nargin > 4 && isnumeric (precon))
-      phat = precon * p;
-    elseif (nargin > 4)
-      ## Our preconditioner is a function.
-      phat = feval (precon, p);
-    else
-      phat = p;
-    endif
+    phat = precon (p);
 
     v = A * phat;
     alpha = rho_1 / (rr' * v);
     s = res - alpha * v;
 
-    if (nargin > 4 && isnumeric (precon))
-      shat = precon * s;
-    elseif (nargin > 4)
-      ## Our preconditioner is a function.
-      shat = feval (precon, s);
-    else
-      shat = s;
-    endif
+    shat = precon (s);
 
     t = A * shat; 
     omega = (t' * s) / (t' * t);

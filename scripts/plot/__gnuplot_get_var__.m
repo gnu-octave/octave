@@ -128,7 +128,7 @@ function gp_var_value = __gnuplot_get_var__ (h, gp_var_name, fmt)
       while (isempty (str))
         str = char (fread (istream)');
         if (! isempty (str))
-          str = regexp (str, "OCTAVE:.*", "match")
+          str = regexp (str, "OCTAVE:.*", "match");
           str = str{end}(8:end);
         endif
         fclear (istream);

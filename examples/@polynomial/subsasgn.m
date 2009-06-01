@@ -1,12 +1,20 @@
-function s = subsasgn (s, index, val)
+function p = subsasgn (p, index, val)
+  index.type
+  index.subs
   switch (index.type)
     case "()"
-      if (! isnumeric (val) || iscomplex(val) ||any (val(:)) >= 2.^ s.m || 
-	  any (val(:)) < 0 || any (val(:) != fix(val(:))))
-	error ("subsasgn: value must be an array of real integers between 0 and 2.^m - 1");
+      ind = index.subs;
+      if ( (any (ind{:}>length(p.poly)))
+        || (any (ind{:}<0)) )
+        error ("subsasgn: subscript out of range");
       endif
-      s.x = subsasgn (s.x, index, double (val));
+      p.poly(ind{:}) = val;
     case "."
-      error ("subsagn: can not set properties of a galois field directly");
+      fld = index.subs;
+      if (strcmp (fld, "poly"))
+        p.poly = val;
+      else
+        error ("@polynomial/subsref: invalid property \"%s\"", fld);
+      endif
   endswitch
 endfunction

@@ -9,10 +9,9 @@ function b = subsref (a, s)
     case "."
       fld = s.subs;
       if (strcmp (fld, "poly"))
-	b = a.poly;
+        b = a.poly;
       else
-	error ("@polynomial/subsref: invalid property \"%s\"",
-	       fld);
+        error ("@polynomial/subsref: invalid property \"%s\"", fld);
       endif
   endswitch
 endfunction

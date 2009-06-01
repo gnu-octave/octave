@@ -1,11 +1,13 @@
 function r = end (obj, index_pos, num_indices)
-  dv = size (obj.x);
-  for i = (num_indices + 1) : length (dv)
-    dv(num_indices) *= dv(i);
-  endfor
-  if (index_pos <= length (dv))
-    r = dv (index_pos);
-  elseif
-    r = 1;
+
+  if ( num_indices!=1 )
+    error ("polynomial object may only have one index")
   endif
+  
+  if ( (index_pos<1) || (index_pos>length(obj.poly)) )
+    error ("subscript out of range")
+  end
+
+  r = length(obj.poly);
+
 endfunction

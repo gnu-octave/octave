@@ -1,3 +1,10 @@
+2009-06-02  Robert T. Short  <octave@phaselockedsystems.com>
+
+	* examples/@polynomial: Remove tabs from all functions so
+	documentation looks right.  Fix a bunch of methods
+	that didn't work.  Add a method referred to in the docs
+	that didn't exist.
+
 2009-05-26  John W. Eaton  <jwe@octave.org>
 
 	* src/dirfns.cc (Fpathsep): Allow path separator to be set.

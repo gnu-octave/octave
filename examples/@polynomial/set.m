@@ -9,9 +9,9 @@ function s = set (p, varargin)
     varargin(1:2) = [];
     if (ischar (prop) && strcmp (prop, "poly"))
       if (isvector (val) && isreal (val))
-	s.poly = val(:)';
+        s.poly = val(:).';
       else
-	error ("set: expecting the value to be a real vector");
+        error ("set: expecting the value to be a real vector");
       endif
     else
       error ("set: invalid property of polynomial class");

@@ -51,6 +51,7 @@ SOURCES = \
   polynomial.m \
   polynomial_superiorto.m \
   polyval.m \
+  roots.m \
   set.m \
   subsasgn.m \
   subsref.m

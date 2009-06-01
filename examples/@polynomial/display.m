@@ -5,23 +5,23 @@ function display (p)
   for i = 1 : length (a);
     if (a(i) != 0)
       if (first)
-	first = false;
+        first = false;
       elseif (a(i) > 0)
-	fprintf (" +");
+        fprintf (" +");
       endif
       if (a(i) < 0)
-	fprintf (" -");
+        fprintf (" -");
       endif
       if (i == 1)
-	fprintf (" %g", abs (a(i)));
+        fprintf (" %g", abs (a(i)));
       elseif (abs(a(i)) != 1)
-	fprintf (" %g *", abs (a(i)));
+        fprintf (" %g *", abs (a(i)));
       endif
       if (i > 1)
-	fprintf (" X");
+        fprintf (" X");
       endif
       if (i > 2)
-	fprintf (" ^ %d", i - 1);
+        fprintf (" ^ %d", i - 1);
       endif
     endif
   endfor
@@ -30,4 +30,3 @@ function display (p)
   endif
   fprintf("\n");
 endfunction
-

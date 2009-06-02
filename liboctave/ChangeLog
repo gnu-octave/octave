@@ -1,3 +1,11 @@
+2009-06-02  Jaroslav Hajek  <highegg@gmail.com>
+
+	* Array-C.cc (class DiagArray2<Complex>::Proxy): Only explicitly
+	instantiate DiagArray2<T>::Proxy on MSVC.
+	* Array-d.cc (class DiagArray2<double>::Proxy): Ditto.
+	* Array-f.cc (class DiagArray2<float>::Proxy): Ditto.
+	* Array-fC.cc (class DiagArray2<FloatComplex>::Proxy): Ditto.
+
 2009-05-26  John W. Eaton  <jwe@octave.org>
 
 	* pathsearch.h (dir_path::path_sep_char (char),

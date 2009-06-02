@@ -1,3 +1,10 @@
+2009-06-02  Jaroslav Hajek  <highegg@gmail.com>
+
+	* examples/@polynomial/subsref.m: Allow chained subscripts,
+	fix behavior according to docs.
+	* examples/@polynomial/subsasgn.m: Allow chained subscripts,
+	fix behavior according to docs.
+
 2009-06-02  Robert T. Short  <octave@phaselockedsystems.com>
 
 	* examples/@polynomial: Remove tabs from all functions so

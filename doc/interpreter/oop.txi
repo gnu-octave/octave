@@ -264,7 +264,7 @@ determined by the @code{subsref} method.
 @DOCSTRING(subsref)
 
 For example we might decide that indexing with "()" evaluates the
-polynomial and indexing with "@{@}" returns the @var{n}-th coefficient.
+polynomial and indexing with "@{@}" returns the @var{n}-th coefficient (of @var{n}-th power).
 In this case the @code{subsref} method of our polynomial class might look like
 
 @polynomialfile{subsref.m}
@@ -273,6 +273,11 @@ The equivalent functionality for subscripted assignments uses the
 @code{subsasgn} method.
 
 @DOCSTRING(subsasgn)
+
+Note that the @code{subsref} and @code{subsasgn} methods always receive the
+whole index chain, while they usually handle only the first element.  It is the
+responsibility of these methods to handle the rest of the chain (if needed),
+usually by forwarding it again to @code{subsref} or @code{subsasgn}.
 
 If you wish to use the @code{end} keyword in subscripted expressions
 of an object, then the user needs to define the @code{end} method for 

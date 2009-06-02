@@ -1,3 +1,8 @@
+2009-06-02  Jaroslav Hajek  <highegg@gmail.com>
+
+	* interpreter/oop.txi: Update docs of polynomial class, mention
+	chained indexing.
+
 2009-05-25  Rik  <rdrider0-list@yahoo.com>
 
 	* interpreter/Makefile.in: Add texmf.cnf to list of distributed files

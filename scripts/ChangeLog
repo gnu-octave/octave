@@ -1,3 +1,8 @@
+2009-06-02  Rafael Laboissiere  <rafael@debian.org>
+
+	* help/doc.m: In test, look also for the gzipped version of the
+	info_file
+
 2009-05-29  John W. Eaton  <jwe@octave.org>
 
 	* plot/__gnuplot_get_var__.m: Insert missing semicolon.

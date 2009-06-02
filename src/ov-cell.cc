@@ -216,6 +216,12 @@ octave_cell::subsasgn (const std::string& type,
 
   clear_cellstr_cache ();
 
+  if (idx.front ().empty ())
+    {
+      error ("missing index in indexed assignment");
+      return retval;
+    }
+
   if (n > 1)
     {
       switch (type[0])

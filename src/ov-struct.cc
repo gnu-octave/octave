@@ -264,6 +264,12 @@ octave_struct::subsasgn (const std::string& type,
 
   octave_value t_rhs = rhs;
 
+  if (idx.front ().empty ())
+    {
+      error ("missing index in indexed assignment");
+      return retval;
+    }
+
   if (n > 1 && ! (type.length () == 2 && type[0] == '(' && type[1] == '.'))
     {
       switch (type[0])

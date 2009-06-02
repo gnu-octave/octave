@@ -1203,6 +1203,12 @@ octave_base_value::numeric_assign (const std::string& type,
 {
   octave_value retval;
 
+  if (idx.front ().empty ())
+    {
+      error ("missing index in indexed assignment");
+      return retval;
+    }
+
   int t_lhs = type_id ();
   int t_rhs = rhs.type_id ();
 

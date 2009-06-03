@@ -1,3 +1,8 @@
+2009-06-02  Rob Mahurin  <rob@utk.edu>
+
+	* Makefile.in: Add CARBON_LIBS to OCTINTERP_LINK_DEPS.
+	From Bernard Desgraups <bdesgraupes@orange.fr>.
+	
 2009-06-02  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-base.cc (octave_base_value::numeric_assign): Gripe when no index

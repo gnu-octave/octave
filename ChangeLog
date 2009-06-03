@@ -1,3 +1,7 @@
+2009-06-02  Robert T. Short  <octave@phaselockedsystems.com>
+
+	* examples/@polynomial: Fix end method for zero based indexing.
+
 2009-06-02  Jaroslav Hajek  <highegg@gmail.com>
 
 	* examples/@polynomial/subsref.m: Allow chained subscripts,

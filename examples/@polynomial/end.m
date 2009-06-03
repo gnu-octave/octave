@@ -4,6 +4,6 @@ function r = end (obj, index_pos, num_indices)
     error ("polynomial object may only have one index")
   endif
   
-  r = length (obj.poly);
+  r = length (obj.poly) - 1;
 
 endfunction

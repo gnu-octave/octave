@@ -1,3 +1,7 @@
+2009-06-03  Rik  <rdrider0-list@yahoo.com>
+
+	* input.cc: Correct documentation for keyboard function
+
 	2009-05-25  Jaroslav Hajek  <highegg@gmail.com>
 
 	Version 3.2.0 released.

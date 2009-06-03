@@ -1,3 +1,10 @@
+2009-06-03  Rik  <rdrider0-list@yahoo.com>
+
+	* interpreter/plotimages.m: Correct errorbar plot for docs.  Make hist plot
+	reprodroducible for docs.
+	* interpreter/interpimages.m: Correct typo in legend of interpft plot for
+	docs 
+
 2009-06-03  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Makefile.in: Omit conf.texi in DISTFILES.

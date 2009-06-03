@@ -1,3 +1,7 @@
+2009-06-03  Rik  <rdrider0-list@yahoo.com>
+
+	* input.cc: Correct documentation for keyboard function
+
 2009-06-02  Rob Mahurin  <rob@utk.edu>
 
 	* Makefile.in: Add CARBON_LIBS to OCTINTERP_LINK_DEPS.

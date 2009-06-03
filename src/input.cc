@@ -930,17 +930,19 @@ do_keyboard (const octave_value_list& args)
 
 DEFUN (keyboard, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} keyboard (@var{prompt})\n\
+@deftypefn  {Built-in Function} {} keyboard ()\n\
+@deftypefnx {Built-in Function} {} keyboard (@var{prompt})\n\
 This function is normally used for simple debugging.  When the\n\
 @code{keyboard} function is executed, Octave prints a prompt and waits\n\
 for user input.  The input strings are then evaluated and the results\n\
 are printed.  This makes it possible to examine the values of variables\n\
-within a function, and to assign new values to variables.  No value is\n\
-returned from the @code{keyboard} function, and it continues to prompt\n\
-for input until the user types @samp{quit}, or @samp{exit}.\n\
+within a function, and to assign new values if necessary.  To leave the\n\
+prompt and return to normal execution type @samp{return} or @samp{dbcont}.\n\
+The @code{keyboard} function does not return an exit status.\n\
 \n\
-If @code{keyboard} is invoked without any arguments, a default prompt of\n\
+If @code{keyboard} is invoked without arguments, a default prompt of\n\
 @samp{debug> } is used.\n\
+@seealso{dbcont, dbquit}\n\
 @end deftypefn")
 {
   octave_value_list retval;

@@ -1,3 +1,7 @@
+2009-06-03  Jaroslav Hajek  <highegg@gmail.com>
+
+	* polynomial/polyfit.m: Fix test.
+
 2009-06-02  Rafael Laboissiere  <rafael@debian.org>
 
 	* help/doc.m: In test, look also for the gzipped version of the

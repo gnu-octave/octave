@@ -140,7 +140,7 @@ endfunction
 %!       315600.7143, 315602.9508, 315605.1765 ];
 %! [p1, s1] = polyfit (x, y, 10);
 %! [p2, s2, mu] = polyfit (x, y, 10);
-%! assert (2*s2.normr < s1.normr)
+%! assert (s2.normr < s1.normr)
 
 %!test
 %! x = 1:4;

@@ -113,7 +113,7 @@ function h = colorbar (varargin)
     set (ax, "activepositionproperty", "position", "position", pos);
 
     cax = __go_axes__ (get (ax, "parent"), "tag", "colorbar", 
-    		       "handlevisibility", "off", 
+    		       "handlevisibility", "on", 
 		       "activepositionproperty", "position", 
 		       "position", cpos);
     addproperty ("location", cax, "radio",
@@ -550,3 +550,50 @@ endfunction
 %! ytick = get(h, "ytick");
 %! set (h, "yticklabel", sprintf ('10^{%g}|', ytick));
 
+%!demo
+%! clf
+%! n=5;x=linspace(0,5,n);y=linspace(0,1,n); 
+%! imagesc(1./hilb(n)); axis equal; colorbar 
+
+%!demo
+%! clf
+%! n=5;x=linspace(0,5,n);y=linspace(0,1,n); 
+%! imagesc(x,y,1./hilb(n)); axis equal; colorbar 
+
+%!demo
+%! clf
+%! n=5;x=linspace(0,5,n);y=linspace(0,1,n); 
+%! imagesc(y,x,1./hilb(n)); axis equal; colorbar
+## This requires that the axes position be properly determined for "axes equal"
+
+%!demo
+%! clf
+%! axes
+%! colorbar
+%! hold on
+%! contour(peaks)
+%! hold off
+
+%!demo
+%! clf
+%! plot([0, 2])
+%! colorbar ("east")
+%! axis square
+
+%!demo
+%! clf
+%! plot([0, 2])
+%! colorbar ("eastoutside")
+%! axis square
+
+%!demo
+%! clf
+%! plot([0, 2])
+%! colorbar ("east")
+%! axis equal
+
+%!demo
+%! clf
+%! plot([0, 2])
+%! colorbar ("eastoutside")
+%! axis equal

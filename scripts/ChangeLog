@@ -1,5 +1,8 @@
 2009-06-03  Ben Abbott <bpabbott@mac.com>
 
+	* plot/colorbar.m: Colorbar 'handlevisibility' should be 'on'.
+	Add additional demos which illustrate problems with the present
+	implementation.
 	* plot/__gnuplot_has_feature__.m: Change version for 
 	"x11_figure_position" from ">=4.3.0" to ">=4.2.5".
 	* plot/__scatter__.m: If the color spec is empty, set using

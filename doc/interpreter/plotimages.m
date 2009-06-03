@@ -30,14 +30,17 @@ function plotimages (nm, typ)
     plot (x, sin (x));
     print (cstrcat (nm, ".", typ), cstrcat ("-d", typ))    
   elseif (strcmp (nm, "hist"))
+	 rand ("state", 2);
     hist (randn (10000, 1), 30);
     print (cstrcat (nm, ".", typ), cstrcat ("-d", typ))    
   elseif (strcmp (nm, "errorbar"))
+	 rand ("state", 2);
     x = 0:0.1:10;
     y = sin (x);
-    yp =  0.1 .* randn (size (x));
-    ym = -0.1 .* randn (size (x));
-    errorbar (x, sin (x), ym, yp);
+    yl = 0.1 .* rand (size (x));
+    yu = 0.1 .* rand (size (x));
+    errorbar (x, sin (x), yl, yu);
+	 axis ([0, 10, -1.1, 1.1]);
     print (cstrcat (nm, ".", typ), cstrcat ("-d", typ))    
   elseif (strcmp (nm, "polar"))
     polar (0:0.1:10*pi, 0:0.1:10*pi);

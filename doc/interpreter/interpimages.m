@@ -31,7 +31,7 @@ function interpimages (nm, typ)
     yp = sin (4*ti + 0.3) .* cos (3*ti - 0.1);
     plot (ti, yp, 'g', ti, interp1(t, y, ti, 'spline'), 'b', ...
 	  ti, interpft (y, k), 'c', t, y, 'r+');
-    legend ('sin(4t+0.3)cos(3t-0.1','spline','interpft','data');
+    legend ('sin(4t+0.3)cos(3t-0.1)','spline','interpft','data');
     print (cstrcat (nm, ".", typ), cstrcat ("-d", typ))
   elseif (strcmp (nm, "interpn"))
     x = y = z = -1:1;

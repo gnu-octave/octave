@@ -1,22 +1,10 @@
+#
 # Makefile for octave's doc directory
 #
-# Copyright (C) 1996, 1997, 1999, 2000, 2005, 2006, 2007, 2009 John W. Eaton
-#
-# This file is part of Octave.
-# 
-# Octave is free software; you can redistribute it and/or modify it
-# under the terms of the GNU General Public License as published by the
-# Free Software Foundation; either version 3 of the License, or (at
-# your option) any later version.
-# 
-# Octave is distributed in the hope that it will be useful, but WITHOUT
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-# for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with Octave; see the file COPYING.  If not, see
-# <http://www.gnu.org/licenses/>.
+# John W. Eaton
+# jwe@bevo.che.wisc.edu
+# University of Wisconsin-Madison
+# Department of Chemical Engineering
 
 TOPDIR = ..
 
@@ -33,7 +21,7 @@ INSTALL_DATA = @INSTALL_DATA@
 
 SOURCES =
 
-DISTFILES = $(addprefix $(srcdir)/, Makefile.in ChangeLog conf.texi.in texinfo.tex texmf.cnf) conf.texi
+DISTFILES = $(addprefix $(srcdir)/, Makefile.in ChangeLog conf.texi.in texinfo.tex)
 
 SUBDIRS = faq interpreter liboctave refcard
 
@@ -42,7 +30,7 @@ DISTSUBDIRS = $(SUBDIRS)
 all: conf.texi $(SUBDIRS)
 .PHONY: all
 
-conf.texi: conf.texi.in $(TOPDIR)/Makeconf $(top_srcdir)/src/version.h
+conf.texi: conf.texi.in $(TOPDIR)/Makeconf
 	@$(do-subst-texinfo-vals)
 
 ../BUGS ../INSTALL.OCTAVE:
@@ -67,11 +55,11 @@ tags::
 TAGS:: $(SOURCES)
 	etags $(SOURCES)
 
-distclean maintainer-clean::
-	rm -f tags TAGS Makefile
+distclean::
+	rm -f Makefile
 
 maintainer-clean::
-	rm -f conf.texi
+	rm -f tags TAGS Makefile
 
 dist: conf.texi
 	ln $(DISTFILES) ../`cat ../.fname`/doc

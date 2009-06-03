@@ -74,6 +74,9 @@ function hg = __scatter__ (varargin)
       else
 	c = c(:);
       endif
+    elseif (isempty (c))
+      cc = __next_line_color__();
+      c = repmat (cc, numel(x), 1);
     endif
   elseif (firstnonnumeric == istart + 1 && ischar (varargin{istart + 1}))
     c = varargin{istart + 1};

@@ -18,7 +18,7 @@
 
 	* interpreter/errors.txi: fix 'print_usage' output.
 
-2009-05-27  SÃ¸ren Hauberg  <hauberg@gmail.com>
+2009-05-27  Søren Hauberg  <hauberg@gmail.com>
 
 	* interpreter/bugs.txi: fix call to 'page_screen_output'.
 
@@ -244,11 +244,11 @@
 	(DISTFILES): Add DOC nad mk_doc_cache.m to the list.
 	* mk_doc_cache.m: New file.
 
-2009-02-01  Soren Hauberg <hauberg@gmail.com>
+2009-02-01  Søren Hauberg <hauberg@gmail.com>
 
 	* interpreter/nonlin.txi: Remove reference to 'fsolve_options'.
 
-2009-02-01  Soren Hauberg <hauberg@gmail.com>
+2009-02-01  Søren Hauberg <hauberg@gmail.com>
 
 	* interpreter/system.txi: Remove reference to 'eomdate'.
 

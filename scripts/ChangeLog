@@ -1,3 +1,9 @@
+2009-06-03  Ben Abbott <bpabbott@mac.com>
+
+	* plot/__scatter__.m: If the color spec is empty, set using
+	__next_line_color__.
+	* plot/scatter3.m: Add demos.
+
 2009-06-03  Jaroslav Hajek  <highegg@gmail.com>
 
 	* polynomial/polyfit.m: Fix test.

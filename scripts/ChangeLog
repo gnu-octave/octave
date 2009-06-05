@@ -1,5 +1,7 @@
 2009-06-04  Ben Abbott <bpabbott@mac.com>
 
+	* plot/__go_draw_axes__.m: Change strncmpi(scale,'lo') to 
+	strcmp(scale,'log').
 	* plot/__go_draw_axes__.m: For log-scale axes use format '10^{%T}'.
 
 2009-06-03  Ben Abbott <bpabbott@mac.com>

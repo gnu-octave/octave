@@ -1561,31 +1561,33 @@ do_who (int argc, const string_vector& argv, bool return_list,
 
 DEFUN (who, args, nargout,
   "-*- texinfo -*-\n\
-@deffn {Command} who options pattern @dots{}\n\
-@deffnx {Command} whos options pattern @dots{}\n\
-List currently defined symbols matching the given patterns.  The\n\
-following are valid options.  They may be shortened to one character but\n\
-may not be combined.\n\
+@deffn  {Command} who\n\
+@deffnx {Command} who pattern @dots{}\n\
+@deffnx {Command} who option pattern @dots{}\n\
+@deffnx {Command} C = who(\"pattern\", @dots{})\n\
+List currently defined variables matching the given patterns.  Valid\n\
+pattern syntax is the same as described for the @code{clear} command.\n\
+If no patterns are supplied, all variables are listed.\n\
+By default, only variables visible in the local scope are displayed.\n\
+\n\
+The following are valid options but may not be combined.\n\
 \n\
 @table @code\n\
 @item global\n\
-List the variables in the global scope rather than the current scope.\n\
+List variables in the global scope rather than the current scope.\n\
 @item -regexp\n\
-The patterns are considered as regular expressions and will be used\n\
-for matching the variables to display.  The same pattern syntax as for\n\
+The patterns are considered to be regular expressions when matching the\n\
+variables to display.  The same pattern syntax accepted by\n\
 the @code{regexp} function is used.\n\
 @item -file\n\
-The following argument is treated as a filename, and the variables that\n\
-are found within this file are listed.\n\
+The next argument is treated as a filename.  All variables found within the\n\
+specified file are listed.  No patterns are accepted when reading variables\n\
+from a file.\n\
 @end table\n\
 \n\
-Valid patterns are the same as described for the @code{clear} command\n\
-above.  If no patterns are supplied, all symbols from the given category\n\
-are listed.  By default, only user defined functions and variables\n\
-visible in the local scope are displayed.\n\
-\n\
-The command @kbd{whos} is equivalent to @kbd{who -long}.\n\
-@seealso{regexp}\n\
+If called as a function, return a cell array of defined variable names\n\
+matching the given patterns.\n\
+@seealso{whos, regexp}\n\
 @end deffn")
 {
   octave_value retval;
@@ -1607,8 +1609,46 @@ The command @kbd{whos} is equivalent to @kbd{who -long}.\n\
 
 DEFUN (whos, args, nargout,
   "-*- texinfo -*-\n\
-@deffn {Command} whos options pattern @dots{}\n\
-See who.\n\
+@deffn  {Command} whos\n\
+@deffnx {Command} whos pattern @dots{}\n\
+@deffnx {Command} whos option pattern @dots{}\n\
+@deffnx {Command} S = whos(\"pattern\", @dots{})\n\
+Provide detailed information on currently defined variables matching the\n\
+given patterns.  Options and pattern syntax are the same as for the\n\
+@code{who} command.  Extended information about each variable is\n\
+summarized in a table with the following default entries.\n\
+\n\
+@table @asis\n\
+@item Attr\n\
+Attributes of the listed variable.  Possible attributes are:\n\
+@table @asis\n\
+@item blank\n\
+Variable in local scope\n\
+@item @code{g}\n\
+Variable with global scope\n\
+@item @code{p}\n\
+Persistent variable\n\
+@end table\n\
+@item Name\n\
+The name of the variable.\n\
+@item Size\n\
+The logical size of the variable.  A scalar is 1x1, a vector is 1xN or Nx1,\n\
+a 2-D matrix is MxN.\n\
+@item Bytes\n\
+The amount of memory currently used to store the variable.\n\
+@item Class\n\
+The class of the variable.  Examples include double, single, char, uint16,\n\
+cell, and struct.\n\
+@end table\n\
+\n\
+The table can be customized to display more or less information through\n\
+the function @code{whos_line_format}.\n\
+\n\
+If @code{whos} is called as a function, return a struct array of defined\n\
+variable names matching the given patterns.  Fields in the structure\n\
+describing each variable are: name, size, bytes, class, global, sparse, \n\
+complex, nesting, persistent.\n\
+@seealso{who, whos_line_format}\n\
 @end deffn")
 {
   octave_value retval;
@@ -2220,11 +2260,19 @@ without the dash as well.\n\
 
 DEFUN (whos_line_format, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{val} =} whos_line_format ()\n\
+@deftypefn  {Built-in Function} {@var{val} =} whos_line_format ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} whos_line_format (@var{new_val})\n\
-Query or set the format string used by the @code{whos}.\n\
+Query or set the format string used by the command @code{whos}.\n\
 \n\
-The following escape sequences may be used in the format:\n\
+A full format string is:\n\
+\n\
+@c Set example in small font to prevent overfull line\n\
+@smallexample\n\
+%[modifier]<command>[:width[:left-min[:balance]]];\n\
+@end smallexample\n\
+\n\
+The following command sequences are available:\n\
+\n\
 @table @code\n\
 @item %a\n\
 Prints attributes of variables (g=global, p=persistent,\n\
@@ -2243,32 +2291,31 @@ Prints dimensions of variables.\n\
 Prints type names of variables.\n\
 @end table\n\
 \n\
-Every command may also have a modifier:\n\
+Every command may also have an alignment modifier:\n\
+\n\
 @table @code\n\
 @item l\n\
 Left alignment.\n\
 @item r\n\
-Right alignment (this is the default).\n\
+Right alignment (default).\n\
 @item c\n\
-Centered (may only be applied to command %s).\n\
+Column-aligned (only applicable to command %s).\n\
 @end table\n\
 \n\
-A command is composed like this:\n\
+The @code{width} parameter is a positive integer specifying the minimum\n\
+number of columns used for printing.  No maximum is needed as the field will\n\
+auto-expand as required.\n\
 \n\
-@c Set example in small font to prevent overfull line\n\
-@smallexample\n\
-%[modifier]<command>[:size_of_parameter[:center-specific[:balance]]];\n\
-@end smallexample\n\
-\n\
-Command and modifier is already explained.  The @code{size_of_parameter}\n\
-parameter tells how many columns the parameter will need for printing.\n\
-The @code{center-specific} parameter may only be applied to command\n\
-@samp{%s}.\n\
-The @code{balance} parameter specifies the offset for printing\n\
-the dimensions string.\n\
+The parameters @code{left-min} and @code{balance} are only available when the\n\
+column-aligned modifier is used with the command @samp{%s}.\n\
+@code{balance} specifies the column number within the field width which will\n\
+be aligned between entries.  Numbering starts from 0 which indicates the\n\
+leftmost column.  @code{left-min} specifies the minimum field width to the\n\
+left of the specified balance column.\n\
 \n\
 The default format is\n\
 @code{\"  %a:4; %ln:6; %cs:16:6:1;  %rb:12;  %lc:-1;\\n\"}.\n\
+@seealso{whos}\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (whos_line_format);

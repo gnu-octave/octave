@@ -1,3 +1,7 @@
+	2009-05-25  Jaroslav Hajek  <highegg@gmail.com>
+
+	Version 3.2.0 released.
+
 2009-06-02  Robert T. Short  <octave@phaselockedsystems.com>
 
 	* examples/@polynomial: Fix end method for zero based indexing.

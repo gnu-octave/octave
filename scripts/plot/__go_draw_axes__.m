@@ -1611,7 +1611,7 @@ function do_tics_1 (ticmode, tics, mtics, labelmode, labels, color, ax,
       warned_latex = true;
     endif
   endif
-  if (strncmpi (scale, "lo", 2))
+  if (strcmp (scale, "log"))
     fmt = "10^{%T}";
   else
     fmt = "%g";

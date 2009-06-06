@@ -1,5 +1,9 @@
 2009-06-06  Rik  <rdrider0-list@yahoo.com>
 
+	* load-save.cc: Update documentation for load and save
+
+2009-06-06  Rik  <rdrider0-list@yahoo.com>
+
 	* pr-output.cc: Update documentation for 'format'
 
 2009-06-05  Rik  <rdrider0-list@yahoo.com>

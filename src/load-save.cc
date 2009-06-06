@@ -544,16 +544,16 @@ not linked with the HDF5 library."
 
 DEFUN (load, args, nargout,
   "-*- texinfo -*-\n\
-@deffn {Command} load options file v1 v2 @dots{}\n\
+@deffn  {Command} load file\n\
+@deffnx {Command} load options file\n\
+@deffnx {Command} load options file v1 v2 @dots{}\n\
+@deffnx {Command} S = load(\"options\", \"file\", \"v1\", \"v2\", @dots{})\n\
 Load the named variables @var{v1}, @var{v2}, @dots{}, from the file\n\
-@var{file}.  As with @code{save}, you may specify a list of variables\n\
-and @code{load} will only extract those variables with names that\n\
-match.  For example, to restore the variables saved in the file\n\
-@file{data}, use the command\n\
-\n\
-@example\n\
-load data\n\
-@end example\n\
+@var{file}.  If no variables are specified then all variables found in the\n\
+file will be loaded.  As with @code{save}, the list of variables to extract\n\
+can be full names or use a pattern syntax.  The format of the file is\n\
+automatically detected but may be overridden by supplying the appropriate\n\
+option.\n\
 \n\
 If load is invoked using the functional form\n\
 \n\
@@ -569,9 +569,7 @@ If a variable that is not marked as global is loaded from a file when a\n\
 global symbol with the same name already exists, it is loaded in the\n\
 global symbol table.  Also, if a variable is marked as global in a file\n\
 and a local symbol exists, the local symbol is moved to the global\n\
-symbol table and given the value from the file.  Since it seems that\n\
-both of these cases are likely to be the result of some sort of error,\n\
-they will generate warnings.\n\
+symbol table and given the value from the file.\n\
 \n\
 If invoked with a single output argument, Octave returns data instead\n\
 of inserting variables in the symbol table.  If the data file contains\n\
@@ -581,18 +579,18 @@ returned.  Otherwise, @code{load} returns a structure with members\n\
 \n\
 The @code{load} command can read data stored in Octave's text and\n\
 binary formats, and @sc{matlab}'s binary format.  If compiled with zlib\n\
-support, it can load gzip-compressed files as well.  It will automatically\n\
+support, it can also load gzip-compressed files.  It will automatically\n\
 detect the type of file and do conversion from different floating point\n\
 formats (currently only IEEE big and little endian, though other formats\n\
-may added in the future).\n\
+may be added in the future).\n\
 \n\
 Valid options for @code{load} are listed in the following table.\n\
 \n\
 @table @code\n\
 @item -force\n\
-The @samp{-force} option is accepted but ignored for backward\n\
-compatibility.  Octave now overwrites variables currently in memory with\n\
-the same name as those found in the file.\n\
+This option is accepted for backward compatibility but is ignored.\n\
+Octave now overwrites variables currently in memory with\n\
+those of the same name found in the file.\n\
 \n\
 @item -ascii\n\
 Force Octave to assume the file contains columns of numbers in text format\n\
@@ -602,22 +600,6 @@ name of the file.\n\
 \n\
 @item -binary\n\
 Force Octave to assume the file is in Octave's binary format.\n\
-\n\
-@item -mat\n\
-@itemx -mat-binary\n\
-@itemx -6\n\
-@itemx -v6\n\
-@itemx -7\n\
-@itemx -v7\n\
-Force Octave to assume the file is in @sc{matlab}'s version 6 or 7 binary\n\
-format.\n\
-\n\
-@item -V4\n\
-@itemx -v4\n\
-@itemx -4\n\
-@itemx -mat4-binary\n\
-Force Octave to assume the file is in the binary format written by\n\
-@sc{matlab} version 4.\n\
 \n\
 @item -hdf5\n\
 Force Octave to assume the file is in HDF5 format.\n\
@@ -630,13 +612,30 @@ HAVE_HDF5_HELP_STRING
 
 "\n\
 @item -import\n\
-The @samp{-import} is accepted but ignored for backward compatibility.\n\
+This option is accepted for backward compatibility but is ignored.\n\
 Octave can now support multi-dimensional HDF data and automatically\n\
 modifies variable names if they are invalid Octave identifiers.\n\
+\n\
+@item -mat\n\
+@itemx -mat-binary\n\
+@itemx -6\n\
+@itemx -v6\n\
+@itemx -7\n\
+@itemx -v7\n\
+Force Octave to assume the file is in @sc{matlab}'s version 6 or 7 binary\n\
+format.\n\
+\n\
+@item  -mat4-binary\n\
+@itemx -4\n\
+@itemx -v4\n\
+@itemx -V4\n\
+Force Octave to assume the file is in the binary format written by\n\
+@sc{matlab} version 4.\n\
 \n\
 @item -text\n\
 Force Octave to assume the file is in Octave's text format.\n\
 @end table\n\
+@seealso{save, dlmwrite, csvwrite, fwrite}\n\
 @end deffn")
 {
   octave_value_list retval;
@@ -1441,14 +1440,17 @@ the zlib library."
 
 DEFUN (save, args, ,
   "-*- texinfo -*-\n\
-@deffn {Command} save options file @var{v1} @var{v2} @dots{}\n\
-@deffnx {Command} save options file -struct @var{STR} @var{f1} @var{f2} @dots{}\n\
+@deffn  {Command} save file\n\
+@deffnx {Command} save options file\n\
+@deffnx {Command} save options file @var{v1} @var{v2} @dots{}\n\
+@deffnx {Command} save options file -struct @var{STRUCT} @var{f1} @var{f2} @dots{}\n\
 Save the named variables @var{v1}, @var{v2}, @dots{}, in the file\n\
-@var{file}.  The special filename @samp{-} may be used to write the\n\
-output to your terminal.  If no variable names are listed, Octave saves\n\
-all the variables in the current scope.\n\
+@var{file}.  The special filename @samp{-} may be used to write\n\
+output to the terminal.  If no variable names are listed, Octave saves\n\
+all the variables in the current scope.  Otherwise, full variable names or\n\
+pattern syntax can be used to specify the variables to save.\n\
 If the @code{-struct} modifier is used, fields @var{f1} @var{f2} @dots{}\n\
-of the scalar structure @var{STR} are saved as if they were variables\n\
+of the scalar structure @var{STRUCT} are saved as if they were variables\n\
 with corresponding names.\n\
 Valid options for the @code{save} command are listed in the following table.\n\
 Options that modify the output format override the format specified by \n\
@@ -1466,14 +1468,27 @@ then the @var{options}, @var{file}, and variable name arguments\n\
 \n\
 @table @code\n\
 @item -ascii\n\
-Save a single matrix in a text file.\n\
+Save a single matrix in a text file without header or any other information.\n\
 \n\
 @item -binary\n\
 Save the data in Octave's binary data format.\n\
 \n\
 @item -float-binary\n\
 Save the data in Octave's binary data format but only using single\n\
-precision.  You should use this format only if you know that all the\n\
+precision.  Only use this format if you know that all the\n\
+values to be saved can be represented in single precision.\n\
+\n\
+@item -hdf5\n\
+Save the data in HDF5 format.\n\
+(HDF5 is a free, portable binary format developed by the National\n\
+Center for Supercomputing Applications at the University of Illinois.)\n"
+
+HAVE_HDF5_HELP_STRING
+
+"\n\
+@item -float-hdf5\n\
+Save the data in HDF5 format but only using single precision.\n\
+Only use this format if you know that all the\n\
 values to be saved can be represented in single precision.\n\
 \n\
 @item -V7\n\
@@ -1498,18 +1513,8 @@ Save the data in @sc{matlab}'s v6 binary data format.\n\
 @itemx -mat4-binary\n\
 Save the data in the binary format written by @sc{matlab} version 4.\n\
 \n\
-@item -hdf5\n\
-Save the data in HDF5 format.\n\
-(HDF5 is a free, portable binary format developed by the National\n\
-Center for Supercomputing Applications at the University of Illinois.)\n"
-
-HAVE_HDF5_HELP_STRING
-
-"\n\
-@item -float-hdf5\n\
-Save the data in HDF5 format but only using single precision.\n\
-You should use this format only if you know that all the\n\
-values to be saved can be represented in single precision.\n\
+@item -text\n\
+Save the data in Octave's text data format.  (default).\n\
 \n\
 @item -zip\n\
 @itemx -z\n\
@@ -1521,7 +1526,7 @@ HAVE_ZLIB_HELP_STRING
 
 "@end table\n\
 \n\
-The list of variables to save may include wildcard patterns containing\n\
+The list of variables to save may use wildcard patterns containing\n\
 the following special characters:\n\
 @table @code\n\
 @item ?\n\
@@ -1533,19 +1538,18 @@ Match zero or more characters.\n\
 @item [ @var{list} ]\n\
 Match the list of characters specified by @var{list}.  If the first\n\
 character is @code{!} or @code{^}, match all characters except those\n\
-specified by @var{list}.  For example, the pattern @samp{[a-zA-Z]} will\n\
+specified by @var{list}.  For example, the pattern @code{[a-zA-Z]} will\n\
 match all lower and upper case alphabetic characters.  \n\
 \n\
-Wildcards may also be used in the field names specifications when using\n\
+Wildcards may also be used in the field name specifications when using\n\
 the @code{-struct} modifier (but not in the struct name itself).\n\
 \n\
-@item -text\n\
-Save the data in Octave's text data format.\n\
 @end table\n\
 \n\
-Except when using the @sc{matlab} binary data file format, saving global\n\
-variables also saves the global status of the variable, so that if it is\n\
-restored at a later time using @samp{load}, it will be restored as a\n\
+Except when using the @sc{matlab} binary data file format or the\n\
+@samp{-ascii} format, saving global\n\
+variables also saves the global status of the variable.  If the variable\n\
+is restored at a later time using @samp{load}, it will be restored as a\n\
 global variable.\n\
 \n\
 The command\n\
@@ -1557,6 +1561,7 @@ save -binary data a b*\n\
 @noindent\n\
 saves the variable @samp{a} and all variables beginning with @samp{b} to\n\
 the file @file{data} in Octave's binary format.\n\
+@seealso{load, default_save_options, dlmread, csvread, fread}\n\
 @end deffn")
 {
   octave_value_list retval;
@@ -1750,12 +1755,12 @@ crashes or receives a hangup, terminate or similar signal.\n\
 
 DEFUN (default_save_options, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{val} =} default_save_options ()\n\
+@deftypefn  {Built-in Function} {@var{val} =} default_save_options ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} default_save_options (@var{new_val})\n\
 Query or set the internal variable that specifies the default options\n\
 for the @code{save} command, and defines the default format.\n\
-Typical values include @code{\"-ascii\"}, @code{\"-ascii -zip\"}.\n\
-The default value is @code{-ascii}.\n\
+Typical values include @code{\"-ascii\"}, @code{\"-text -zip\"}.\n\
+The default value is @code{-text}.\n\
 @seealso{save}\n\
 @end deftypefn")
 {
@@ -1810,7 +1815,7 @@ format.\n\
 
 DEFUN (save_header_format_string, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{val} =} save_header_format_string ()\n\
+@deftypefn  {Built-in Function} {@var{val} =} save_header_format_string ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} save_header_format_string (@var{new_val})\n\
 Query or set the internal variable that specifies the format\n\
 string used for the comment line written at the beginning of\n\
@@ -1825,7 +1830,7 @@ default value is\n\
 @smallexample\n\
 \"# Created by Octave VERSION, %a %b %d %H:%M:%S %Y %Z <USER@@HOST>\"\n\
 @end smallexample\n\
-@seealso{strftime}\n\
+@seealso{strftime, save}\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (save_header_format_string);

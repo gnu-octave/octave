@@ -3540,48 +3540,59 @@ set_format_style (int argc, const string_vector& argv)
 
 DEFUN (format, args, ,
   "-*- texinfo -*-\n\
-@deffn {Command} format options\n\
-Control the format of the output produced by @code{disp} and Octave's\n\
-normal echoing mechanism.  Valid options are listed in the following\n\
+@deffn  {Command} format\n\
+@deffnx {Command} format options\n\
+Reset or specify the format of the output produced by @code{disp} and\n\
+Octave's normal echoing mechanism.  This command only affects the display\n\
+of numbers but not how they are stored or computed.  To change the internal\n\
+representation from the default double use one of the conversion functions\n\
+such as @code{single}, @code{uint8}, @code{int64}, etc.\n\
+\n\
+By default, Octave displays 5 significant digits in a human readable form\n\
+(option @samp{short} paired with @samp{loose} format for matrices).\n\
+If @code{format} is invoked without any options, this default format\n\
+is restored.\n\
+\n\
+Valid formats for floating point numbers are listed in the following\n\
 table.\n\
 \n\
 @table @code\n\
 @item short\n\
-Octave will try to print numbers with at\n\
-least 5 significant figures within a field that is a maximum of 10\n\
-characters wide (not counting additional spacing that is added between\n\
-columns of a matrix).\n\
+Fixed point format with 5 significant figures in a field that is a maximum\n\
+of 10 characters wide.  (default).\n\
 \n\
 If Octave is unable to format a matrix so that columns line up on the\n\
-decimal point and all the numbers fit within the maximum field width,\n\
-it switches to an @samp{e} format.\n\
+decimal point and all numbers fit within the maximum field width then\n\
+it switches to an exponential @samp{e} format.\n\
 \n\
 @item long\n\
-Octave will try to print numbers with at least 15 significant figures\n\
-within a field that is a maximum of 20 characters wide (not counting\n\
-additional spacing that is added between columns of a matrix).\n\
+Fixed point format with 15 significant figures in a field that is a maximum\n\
+of 20 characters wide.\n\
 \n\
-As will the @samp{short} format, Octave will switch to an @samp{e}\n\
-format if it is unable to format a matrix so that columns line up on the\n\
-decimal point and all the numbers fit within the maximum field width.\n\
+As with the @samp{short} format, Octave will switch to an exponential\n\
+@samp{e} format if it is unable to format a matrix properly using the\n\
+current format.\n\
 \n\
-@item long e\n\
-@itemx short e\n\
-The same as @samp{format long} or @samp{format short} but always display\n\
-output with an @samp{e} format.  For example, with the @samp{short e}\n\
-format, @code{pi} is displayed as @code{3.14e+00}.\n\
+@item  short e\n\
+@itemx long e\n\
+Exponential format.  The number to be represented is split between a mantissa\n\
+and an exponent (power of 10).  The mantissa has 5 significant digits in the\n\
+short format and 15 digits in the long format.\n\
+For example, with the @samp{short e} format, @code{pi} is displayed as\n\
+@code{3.1416e+00}.\n\
 \n\
-@item long E\n\
-@itemx short E\n\
-The same as @samp{format long e} or @samp{format short e} but always\n\
-display output with an uppercase @samp{E} format.  For example, with\n\
-the @samp{long E} format, @code{pi} is displayed as\n\
+@item  short E\n\
+@itemx long E\n\
+Identical to @samp{short e} or @samp{long e} but displays an uppercase\n\
+@samp{E} to indicate the exponent.\n\
+For example, with the @samp{long E} format, @code{pi} is displayed as\n\
 @code{3.14159265358979E+00}.\n\
-@item long g\n\
-@itemx short g\n\
-Choose between normal @samp{long} (or @samp{short}) and\n\
-@samp{long e} (or @samp{short e}) formats based on the magnitude\n\
-of the number.  For example, with the @samp{short g} format,\n\
+\n\
+@item  short g\n\
+@itemx long g\n\
+Optimally choose between fixed point and exponential format based on\n\
+the magnitude of the number.\n\
+For example, with the @samp{short g} format,\n\
 @code{pi .^ [2; 4; 8; 16; 32]} is displayed as\n\
 \n\
 @example\n\
@@ -3598,40 +3609,28 @@ ans =\n\
 \n\
 @item long G\n\
 @itemx short G\n\
-The same as @samp{format long g} or @samp{format short g} but use an\n\
-uppercase @samp{E} format.  For example, with the @samp{short G} format,\n\
-@code{pi .^ [2; 4; 8; 16; 32]} is displayed as\n\
-\n\
-@example\n\
-@group\n\
-ans =\n\
-\n\
-      9.8696\n\
-      97.409\n\
-      9488.5\n\
-  9.0032E+07\n\
-  8.1058E+15\n\
-@end group\n\
-@end example\n\
+Identical to @samp{short g} or @samp{long g} but displays an uppercase\n\
+@samp{E} to indicate the exponent.\n\
 \n\
 @item free\n\
 @itemx none\n\
 Print output in free format, without trying to line up columns of\n\
 matrices on the decimal point.  This also causes complex numbers to be\n\
-formatted like this @samp{(0.604194, 0.607088)} instead of like this\n\
-@samp{0.60419 + 0.60709i}.\n\
+formatted as numeric pairs like this @samp{(0.60419, 0.60709)} instead\n\
+of like this @samp{0.60419 + 0.60709i}.\n\
+@end table\n\
 \n\
-@item bank\n\
-Print in a fixed format with two places to the right of the decimal\n\
-point.\n\
+The following formats affect all numeric output (floating point and\n\
+integer types).\n\
 \n\
-@item +\n\
+@table @code\n\
+@item  +\n\
 @itemx + @var{chars}\n\
 @itemx plus\n\
 @itemx plus @var{chars}\n\
 Print a @samp{+} symbol for nonzero matrix elements and a space for zero\n\
 matrix elements.  This format can be very useful for examining the\n\
-structure of a large matrix.\n\
+structure of a large sparse matrix.\n\
 \n\
 The optional argument @var{chars} specifies a list of 3 characters to use\n\
 for printing values greater than zero, less than zero and equal to zero.\n\
@@ -3647,12 +3646,15 @@ ans =\n\
 @end group\n\
 @end example\n\
 \n\
-@itemx native-hex\n\
-Print the hexadecimal representation numbers as they are stored in\n\
+@item bank\n\
+Print in a fixed format with two digits to the right of the decimal\n\
+point.\n\
+\n\
+@item native-hex\n\
+Print the hexadecimal representation of numbers as they are stored in\n\
 memory.  For example, on a workstation which stores 8 byte real values\n\
 in IEEE format with the least significant byte first, the value of\n\
-@code{pi} when printed in @code{hex} format is @code{400921fb54442d18}.\n\
-This format only works for numeric values.\n\
+@code{pi} when printed in @code{native-hex} format is @code{400921fb54442d18}.\n\
 \n\
 @item hex\n\
 The same as @code{native-hex}, but always print the most significant\n\
@@ -3669,31 +3671,29 @@ For example, the value of @code{pi} is\n\
 @end example\n\
 \n\
 (shown here in two 32 bit sections for typesetting purposes) when\n\
-printed in bit format on a workstation which stores 8 byte real values\n\
-in IEEE format with the least significant byte first.  This format only\n\
-works for numeric types.\n\
+printed in native-bit format on a workstation which stores 8 byte real values\n\
+in IEEE format with the least significant byte first.\n\
 @item bit\n\
 The same as @code{native-bit}, but always print the most significant\n\
 bits first.\n\
-@item compact\n\
-Remove extra blank space around column number labels.\n\
-@item loose\n\
-Insert blank lines above and below column number labels (this is the\n\
-default).\n\
+\n\
 @item rat\n\
-Print a rational approximation.  That is the values are approximated\n\
-by one small integer divided by another.\n\
+Print a rational approximation, i.e., values are approximated\n\
+as the ratio of small integers.\n\
+For example, with the @samp{rat} format,\n\
+@code{pi} is displayed as @code{355/113}.\n\
 @end table\n\
 \n\
-By default, Octave will try to print numbers with at least 5 significant\n\
-figures within a field that is a maximum of 10 characters wide.\n\
+The following two options affect the display of all matrices.\n\
 \n\
-If Octave is unable to format a matrix so that columns line up on the\n\
-decimal point and all the numbers fit within the maximum field width,\n\
-it switches to an @samp{e} format.\n\
-\n\
-If @code{format} is invoked without any options, the default format\n\
-state is restored.\n\
+@table @code\n\
+@item compact\n\
+Remove extra blank space around column number labels producing more compact\n\
+output with more data per page.\n\
+@item loose\n\
+Insert blank lines above and below column number labels to produce a more\n\
+readable output with less data per page.  (default).\n\
+@end table\n\
 @end deffn")
 {
   octave_value_list retval;

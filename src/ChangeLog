@@ -1,3 +1,7 @@
+2009-06-06  Rik  <rdrider0-list@yahoo.com>
+
+	* pr-output.cc: Update documentation for 'format'
+
 2009-06-05  Rik  <rdrider0-list@yahoo.com>
 
 	* variables.cc: Update documentation for 'who' family of functions

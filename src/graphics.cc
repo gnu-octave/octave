@@ -709,7 +709,7 @@ color_property::do_set (const octave_value& val)
 	error ("invalid value for color property \"%s\"",
            get_name ().c_str ());
     }
-  else if (val.is_real_matrix ())
+  else if (val.is_numeric_type ())
     {
       Matrix m = val.matrix_value ();
 

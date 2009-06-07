@@ -1,5 +1,9 @@
 2009-06-07  Jaroslav Hajek  <highegg@gmail.com>
 
+	* graphics.cc (color_property::do_set): Allow a wider range of types.
+
+2009-06-07  Jaroslav Hajek  <highegg@gmail.com>
+
 	* DLD-FUNCTIONS/find.cc (Ffind): Fix docs. Improve second argument
 	handling. Add regression tests.
 

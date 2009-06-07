@@ -43,29 +43,37 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUN (char, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} char (@var{x})\n\
-@deftypefnx {Built-in Function} {} char (@var{cell_array})\n\
+@deftypefn  {Built-in Function} {} char (@var{x})\n\
+@deftypefnx {Built-in Function} {} char (@var{x}, @dots{})\n\
 @deftypefnx {Built-in Function} {} char (@var{s1}, @var{s2}, @dots{})\n\
+@deftypefnx {Built-in Function} {} char (@var{cell_array})\n\
 Create a string array from one or more numeric matrices, character\n\
-matrices or cell arrays.  For numerical input, each element is converted\n\
-to the corresponding ASCII character.  The arguments (and elements of\n\
-cell array(s)) are concatenated vertically.\n\
+matrices, or cell arrays.  Arguments are concatenated vertically.\n\
 The returned values are padded with blanks as needed to make each row\n\
-of the string array have the same length.  Empty strings are not removed.\n\
+of the string array have the same length.  Empty input strings are\n\
+significant and will concatenated in the output.\n\
+\n\
+For numerical input, each element is converted\n\
+to the corresponding ASCII character.  A range error results if an input\n\
+is outside the ASCII range (0-255).\n\
+\n\
+For cell arrays, each element is concatenated separately.  Cell arrays converted through\n\
+@code{char} can mostly be converted back with @code{cellstr}.\n\
 For example,\n\
 \n\
 @example\n\
 @group\n\
-char ([97, 98, 99], \"\", @{\"98\", \"99\", 100@}, [\"num\", \"bers\"])\n\
+char ([97, 98, 99], \"\", @{\"98\", \"99\", 100@}, \"str1\", [\"ha\", \"lf\"])\n\
      @result{} [\"abc    \"\n\
-        \"       \"\n\
-        \"98     \"\n\
-        \"99     \"\n\
-        \"d      \"\n\
-        \"numbers\"]\n\
+         \"       \"\n\
+         \"98     \"\n\
+         \"99     \"\n\
+         \"d      \"\n\
+         \"str1   \"\n\
+         \"half   \"]\n\
 @end group\n\
 @end example\n\
-\n\
+@seealso{strvcat, cellstr}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -158,29 +166,35 @@ char ([97, 98, 99], \"\", @{\"98\", \"99\", 100@}, [\"num\", \"bers\"])\n\
 
 DEFUN (strvcat, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} strvcat (@var{x})\n\
-@deftypefnx {Built-in Function} {} strvcat (@var{cell_array})\n\
+@deftypefn  {Built-in Function} {} strvcat (@var{x})\n\
+@deftypefnx {Built-in Function} {} strvcat (@var{x}, @dots{})\n\
 @deftypefnx {Built-in Function} {} strvcat (@var{s1}, @var{s2}, @dots{})\n\
+@deftypefnx {Built-in Function} {} strvcat (@var{cell_array})\n\
 Create a character array from one or more numeric matrices, character\n\
-matrices or cell arrays.  For numerical input, each element is converted\n\
-to the corresponding ASCII character.  The arguments (and elements of\n\
-cell array(s)) are concatenated vertically.\n\
+matrices, or cell arrays.  Arguments are concatenated vertically.\n\
 The returned values are padded with blanks as needed to make each row\n\
 of the string array have the same length.  Unlike @code{char}, empty\n\
-strings are removed.\n\
+strings are removed and will not appear in the output.\n\
+\n\
+For numerical input, each element is converted\n\
+to the corresponding ASCII character.  A range error results if an input\n\
+is outside the ASCII range (0-255).\n\
+\n\
+For cell arrays, each element is concatenated separately.  Cell arrays converted through\n\
+@code{strvcat} can mostly be converted back with @code{cellstr}.\n\
 For example,\n\
 \n\
 @example\n\
 @group\n\
-strvcat ([97, 98, 99], \"\", @{\"98\", \"99\", 100@}, [\"num\", \"bers\"])\n\
+strvcat ([97, 98, 99], \"\", @{\"98\", \"99\", 100@}, \"str1\", [\"ha\", \"lf\"])\n\
      @result{} [\"abc    \"\n\
-        \"98     \"\n\
-        \"99     \"\n\
-        \"d      \"\n\
-        \"numbers\"]\n\
+         \"98     \"\n\
+         \"99     \"\n\
+         \"d      \"\n\
+         \"str1   \"\n\
+         \"half   \"]\n\
 @end group\n\
 @end example\n\
-\n\
 @seealso{char, strcat, cstrcat}\n\
 @end deftypefn")
 {

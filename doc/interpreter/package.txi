@@ -40,7 +40,7 @@ website for an updated reference.
 @node Installing and Removing Packages
 @section Installing and Removing Packages
 
-Assuming a package is available in the file @code{image-1.0.0.tar.gz}
+Assuming a package is available in the file @file{image-1.0.0.tar.gz}
 it can be installed from the Octave prompt with the command
 
 @example
@@ -139,9 +139,9 @@ On UNIX-like systems it is possible to make both per-user and
 system-wide installations of a package.  If the user performing the
 installation is @code{root} the packages will be installed in a
 system-wide directory that defaults to 
-@code{OCTAVE_HOME/share/octave/packages/}.  If the user is not 
+@file{OCTAVE_HOME/share/octave/packages/}.  If the user is not 
 @code{root} the default installation directory is
-@code{~/octave/}.  Packages will be installed in a subdirectory of the
+@file{~/octave/}.  Packages will be installed in a subdirectory of the
 installation directory that will be named after the package.  It is
 possible to change the installation directory by using the
 @code{pkg prefix} command
@@ -159,9 +159,9 @@ current_installation_directory = pkg prefix
 
 To function properly the package manager needs to keep some
 information about the installed packages.  For per-user packages this
-information is by default stored in the file @code{~/.octave_packages}
+information is by default stored in the file @file{~/.octave_packages}
 and for system-wide installations it is stored in
-@code{OCTAVE_HOME/share/octave/octave_packages}.  The path to the
+@file{OCTAVE_HOME/share/octave/octave_packages}.  The path to the
 per-user file can be changed with the @code{pkg local_list} command
 
 @example
@@ -257,12 +257,12 @@ by the package.  Typically this will include any @code{m}-files.
 @item package/src
 An optional directory containing code that must be built prior to the
 packages installation.  The Octave package manager will execute
-@code{./configure} in this directory if this script exists, and will
-then call @code{make} if a file @code{Makefile} exists in this
+@file{./configure} in this directory if this script exists, and will
+then call @code{make} if a file @file{Makefile} exists in this
 directory.  @code{make install} will however not be called.  If a file
-called @code{FILES} exist all files listed there will be copied to the
+called @code{FILES} exists all files listed there will be copied to the
 @code{inst} directory, so they also will be installed.  If the
-@code{FILES} file doesn't exist, @code{src/*.m} and @code{src/*.oct}
+@code{FILES} file doesn't exist, @file{src/*.m} and @file{src/*.oct}
 will be copied to the @code{inst} directory.
 
 @item package/doc
@@ -292,7 +292,7 @@ simple format
 @noindent
 @itemize
 @item
-Lines starting with @code{#} are comments.
+Lines starting with @samp{#} are comments.
 
 @item
 Lines starting with a blank character are continuations from the 
@@ -426,7 +426,7 @@ functions in the package.  This file has a very simple format
 
 @noindent
 @itemize
-@item Lines beginning with @code{#} are comments.
+@item Lines beginning with @samp{#} are comments.
 
 @item The first non-comment line should look like this
 

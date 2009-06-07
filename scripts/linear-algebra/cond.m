@@ -24,7 +24,7 @@
 ## By default @code{@var{p}=2} is used which implies a (relatively slow)
 ## singular value decomposition.  Other possible selections are 
 ## @code{@var{p}= 1, Inf, inf, 'Inf', 'fro'} which are generally faster.
-## @seealso{norm, inv, det, svd, rank}
+## @seealso{condest, rcond, norm, svd}
 ## @end deftypefn
 
 ## Author: jwe

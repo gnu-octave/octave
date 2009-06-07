@@ -61,7 +61,7 @@
 ## Pseudospectra." @url{http://citeseer.ist.psu.edu/223007.html}
 ## @end itemize
 ##
-## @seealso{norm, cond, onenormest}
+## @seealso{cond, norm, onenormest}
 ## @end deftypefn
 
 ## Code originally licensed under

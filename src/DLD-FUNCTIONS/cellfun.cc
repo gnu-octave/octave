@@ -900,9 +900,9 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
 
 DEFUN_DLD (num2cell, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{c} =} num2cell (@var{m})\n\
+@deftypefn  {Loadable Function} {@var{c} =} num2cell (@var{m})\n\
 @deftypefnx {Loadable Function} {@var{c} =} num2cell (@var{m}, @var{dim})\n\
-Convert the matrix @var{m} into a cell array.  If @var{dim} is defined, the\n\
+Convert the matrix @var{m} to a cell array.  If @var{dim} is defined, the\n\
 value @var{c} is of dimension 1 in this dimension and the elements of\n\
 @var{m} are placed in slices in @var{c}.\n\
 @seealso{mat2cell}\n\

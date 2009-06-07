@@ -29,7 +29,7 @@
 ## pkg install image-1.0.0.tar.gz
 ## @end example
 ## @noindent
-## installs the package found in the file @code{image-1.0.0.tar.gz}.
+## installs the package found in the file @file{image-1.0.0.tar.gz}.
 ##
 ## The @var{option} variable can contain options that affect the manner
 ## in which a package is installed.  These options can be one or more of
@@ -130,7 +130,7 @@
 ## pkg prefix ~/my_octave_packages
 ## @end example
 ## @noindent
-## sets the installation prefix to @code{~/my_octave_packages}.
+## sets the installation prefix to @file{~/my_octave_packages}.
 ## Packages will be installed in this directory.
 ##
 ## It is possible to get the current installation prefix by requesting an

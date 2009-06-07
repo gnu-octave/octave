@@ -1,3 +1,8 @@
+2009-06-07  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/find.cc (Ffind): Fix docs. Improve second argument
+	handling. Add regression tests.
+
 2009-06-06  Rik  <rdrider0-list@yahoo.com>
 
 	* data.cc: Update documentation for 'complex' function

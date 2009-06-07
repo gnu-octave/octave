@@ -399,12 +399,12 @@ containing the nonzero values.  For example,\n\
 @end group\n\
 @end example\n\
 \n\
-If two inputs are given, @var{n} indicates the number of elements to\n\
-find from the beginning of the matrix or vector.\n\
+If two inputs are given, @var{n} indicates the maximum number of\n\
+elements to find from the beginning of the matrix or vector.\n\
 \n\
 If three inputs are given, @var{direction} should be one of \"first\" or\n\
-\"last\" indicating that it should start counting found elements from the\n\
-first or last element.\n\
+\"last\", requesting only the first or last @var{n} indices, respectively.\n\
+However, the indices are always returned in ascending order.\n\
 \n\
 Note that this function is particularly useful for sparse matrices, as\n\
 it extracts the non-zero elements as vectors, which can then be used to\n\
@@ -434,12 +434,15 @@ b = sparse(i, j, v, sz(1), sz(2));\n\
   octave_idx_type n_to_find = -1;
   if (nargin > 1)
     {
-      n_to_find = args(1).int_value ();
-      if (error_state)
+      double val = args(1).scalar_value ();
+
+      if (error_state || (! xisinf (val) && (val < 0 || val != xround (val))))
 	{
-	  error ("find: expecting second argument to be an integer");
+	  error ("find: expecting second argument to be a nonnegative integer");
 	  return retval;
 	}
+      else
+        n_to_find = val;
     }
 
   // Direction to do the searching (1 == forward, -1 == reverse).
@@ -635,6 +638,12 @@ b = sparse(i, j, v, sz(1), sz(2));\n\
 %! assert (i, ifull);
 %! assert (j, jfull);
 %! assert (all (v == 1));
+
+%!assert (find ([2 0 1 0 5 0], 1), 1)
+%!assert (find ([2 0 1 0 5 0], 2, "last"), [3, 5])
+
+%!assert (find ([2 0 1 0 5 0], Inf), [1, 3, 5])
+%!assert (find ([2 0 1 0 5 0], Inf, "last"), [1, 3, 5])
 
 %!error <Invalid call to find.*> find ();
 

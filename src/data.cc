@@ -2783,9 +2783,20 @@ Return true if @var{x} is a floating-point numeric object.\n\
 
 DEFUN (complex, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} complex (@var{val})\n\
+@deftypefn  {Built-in Function} {} complex (@var{x})\n\
 @deftypefnx {Built-in Function} {} complex (@var{re}, @var{im})\n\
-Convert @var{x} to a complex value.\n\
+Return a complex result from real arguments.  With 1 real argument @var{x},\n\
+return the complex result @code{@var{x} + 0i}.  With 2 real arguments,\n\
+return the complex result @code{@var{re} + @var{im}}.  @code{complex} can\n\
+often be more convenient than expressions such as @code{a + i*b}.\n\
+For example:\n\
+\n\
+@example\n\
+complex ([1, 2], [3, 4])\n\
+@result{}\n\
+   1 + 3i   2 + 4i\n\
+@end example\n\
+@seealso{real, imag, iscomplex}\n\
 @end deftypefn")
 {
   octave_value retval;

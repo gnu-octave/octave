@@ -844,6 +844,7 @@ DEFUN (double, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} double (@var{x})\n\
 Convert @var{x} to double precision type.\n\
+@seealso{single}\n\
 @end deftypefn")
 {
   // The OCTAVE_TYPE_CONV_BODY3 macro declares retval, so they go

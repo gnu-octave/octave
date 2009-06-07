@@ -36,7 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUN_DLD (eig, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{lambda} =} eig (@var{a})\n\
+@deftypefn  {Loadable Function} {@var{lambda} =} eig (@var{a})\n\
 @deftypefnx {Loadable Function} {@var{lambda} =} eig (@var{a}, @var{b})\n\
 @deftypefnx {Loadable Function} {[@var{v}, @var{lambda}] =} eig (@var{a})\n\
 @deftypefnx {Loadable Function} {[@var{v}, @var{lambda}] =} eig (@var{a}, @var{b})\n\
@@ -47,6 +47,7 @@ eigenvectors, when desired, are computed by further manipulations of the\n\
 Schur decomposition.\n\
 \n\
 The eigenvalues returned by @code{eig} are not ordered.\n\
+@seealso{eigs}\n\
 @end deftypefn")
 {
   octave_value_list retval;

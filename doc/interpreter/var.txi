@@ -265,7 +265,7 @@ implementation of @code{count_calls}.
 
 The value of a persistent variable is kept in memory until it is
 explicitly cleared.  Assuming that the implementation of @code{count_calls}
-is saved on disc, we get the following behavior.
+is saved on disk, we get the following behavior.
 
 @example
 for i = 1:2

@@ -17,15 +17,14 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} gtext (@var{s})
+## @deftypefn  {Function File} {} gtext (@var{s})
+## @deftypefnx {Function File} {} gtext (@{@var{s1}; @var{s2}; @dots{}@})
 ## @deftypefnx {Function File} {} gtext (@dots{}, @var{prop}, @var{val})
-## Place text on the current figure.  The text can be defined by the
-## string @var{s}.  If @var{s} is a cell array, each element of the cell
-## array is written to a separate line.
-##
-## Additional arguments are passed to the underlying text object as
-## properties.
-## @seealso{ginput}
+## Place text on the current figure using the mouse.  The text is defined
+## by the string @var{s}.  If @var{s} is a cell array, each element of the cell
+## array is written to a separate line.  Additional arguments are passed to
+## the underlying text object as properties.
+## @seealso{ginput, text}
 ## @end deftypefn
 
 function gtext (s, varargin)

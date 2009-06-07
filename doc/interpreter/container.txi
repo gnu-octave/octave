@@ -23,7 +23,9 @@
 Octave includes support for two different mechanisms to contain
 arbitrary data types in the same variable.  Structures, which are C-like,
 and are indexed with named fields, and cell arrays, where each element
-of the array can have a different data type and or shape.
+of the array can have a different data type and or shape. Multiple
+input arguments and return values of functions are organized as
+another data container, the comma separated list.
 
 @menu
 * Data Structures::
@@ -38,17 +40,29 @@ of the array can have a different data type and or shape.
 
 Octave includes support for organizing data in structures.  The current
 implementation uses an associative array with indices limited to
-strings, but the syntax is more like C-style structures.  Here are some
-examples of using data structures in Octave.
+strings, but the syntax is more like C-style structures.  
+
+@menu
+* Basic Usage and Examples::
+* Structure Arrays::
+* Creating Structures::
+* Manipulating Structures::
+* Processing Data in Structures::
+@end menu
+
+@node Basic Usage and Examples
+@subsection Basic Usage and Examples
+
+Here are some examples of using data structures in Octave.
 
 Elements of structures can be of any value type.  For example, the three
 expressions
 
 @example
 @group
-x.a = 1
-x.b = [1, 2; 3, 4]
-x.c = "string"
+x.a = 1;
+x.b = [1, 2; 3, 4];
+x.c = "string";
 @end group
 @end example
 
@@ -58,38 +72,38 @@ structure, you can type its name, just as for any other variable:
 
 @example
 @group
-octave:2> x
-x =
-@{
-  a = 1
-  b =
+x
+     @result{} x =
+        @{
+          a = 1
+          b =
 
-    1  2
-    3  4
+            1  2
+            3  4
 
-  c = string
-@}
+          c = string
+        @}
 @end group
 @end example
 
 @noindent
 Note that Octave may print the elements in any order.
 
-Structures may be copied.
+Structures may be copied just like any other variable:
 
 @example
 @group
-octave:1> y = x
-y =
-@{
-  a = 1
-  b =
+y = x
+     @result{} y =
+        @{
+          a = 1
+          b =
 
-    1  2
-    3  4
+            1  2
+            3  4
 
-  c = string
-@}
+          c = string
+        @}
 @end group
 @end example
 
@@ -100,24 +114,24 @@ containing the single element @code{d}, which has a value of 3.
 
 @example
 @group
-octave:1> x.b.d = 3
-x.b.d = 3
-octave:2> x.b
-ans =
-@{
-  d = 3
-@}
-octave:3> x
-x =
-@{
-  a = 1
-  b =
-  @{
-    d = 3
-  @}
+x.b.d = 3;
+x.b
+     @result{} ans =
+        @{
+          d = 3
+        @}
 
-  c = string
-@}
+x
+     @result{} x =
+        @{
+          a = 1
+          b =
+          @{
+            d = 3
+          @}
+
+          c = string
+        @}
 @end group
 @end example
 
@@ -126,24 +140,27 @@ other structures, only a few levels are displayed.  For example,
 
 @example
 @group
-octave:1> a.b.c.d.e = 1;
-octave:2> a
-a =
-@{
-  b =
-  @{
-    c =
-    @{
-      d: 1x1 struct
-    @}
-  @}
-@}
+a.b.c.d.e = 1;
+a
+     @result{} a =
+        @{
+          b =
+          @{
+            c =
+            @{
+              1x1 struct array containing the fields:
+
+              d: 1x1 struct
+            @}
+          @}
+        @}
 @end group
 @end example
 
 @noindent
 This prevents long and confusing output from large deeply nested
-structures.
+structures. The number of levels to print for nested structures can be
+set with the function @code{struct_levels_to_print}:
 
 @DOCSTRING(struct_levels_to_print)
 
@@ -153,10 +170,10 @@ elements of the same structure variable.
 
 @example
 @group
-octave:1> function y = f (x)
-> y.re = real (x);
-> y.im = imag (x);
-> endfunction
+function y = f (x)
+  y.re = real (x);
+  y.im = imag (x);
+endfunction
 @end group
 @end example
 
@@ -166,19 +183,20 @@ function argument.
 
 @example
 @group
-octave:2> f (rand (2) + rand (2) * I)
-ans =
-@{
-  im =
+f (rand (2) + rand (2) * I)
+     @result{} ans =
+        @{
+          im =
 
-    0.26475  0.14828
-    0.18436  0.83669
+            0.26475  0.14828
+            0.18436  0.83669
 
-  re =
+          re =
 
-    0.040239  0.242160
-    0.238081  0.402523
-@}
+            0.040239  0.242160
+            0.238081  0.402523
+
+        @}
 @end group
 @end example
 
@@ -187,94 +205,96 @@ indexed like any other variable.  For example,
 
 @example
 @group
-octave:1> [ x.u, x.s(2:3,2:3), x.v ] = svd ([1, 2; 3, 4])
-x.u =
+[ x.u, x.s(2:3,2:3), x.v ] = svd ([1, 2; 3, 4]);
+x
+     @result{} x =
+        @{
+          u =
 
-  -0.40455  -0.91451
-  -0.91451   0.40455
+            -0.40455  -0.91451
+            -0.91451   0.40455
 
-x.s =
+          s =
 
-  0.00000  0.00000  0.00000
-  0.00000  5.46499  0.00000
-  0.00000  0.00000  0.36597
+             0.00000   0.00000   0.00000
+             0.00000   5.46499   0.00000
+             0.00000   0.00000   0.36597
 
-x.v =
+          v =
 
-  -0.57605   0.81742
-  -0.81742  -0.57605
+            -0.57605   0.81742
+            -0.81742  -0.57605
+
+        @}
 @end group
 @end example
 
 It is also possible to cycle through all the elements of a structure in
 a loop, using a special form of the @code{for} statement
-(@pxref{Looping Over Structure Elements})
-
-@menu
-* Structure Arrays::
-* Creating Structures::
-* Manipulating Structures::
-* Processing Data in Structures::
-@end menu
+(@pxref{Looping Over Structure Elements}).
 
 @node Structure Arrays
 @subsection Structure Arrays
 
 A structure array is a particular instance of a structure, where each of
 the fields of the structure is represented by a cell array.  Each of
-these cell arrays has the same dimensions.  An example of the creation of
-a structure array is
+these cell arrays has the same dimensions. Conceptually, a structure
+array can also be seen as an array of structures with identical
+fields.  An example of the creation of a structure array is
 
 @example
 @group
-x(1).a = "string1"
-x(2).a = "string2"
-x(1).b = 1
-x(2).b = 2
+x(1).a = "string1";
+x(2).a = "string2";
+x(1).b = 1;
+x(2).b = 2;
 @end group
 @end example
 
 @noindent
-which creates a 2-by-1 structure array with two fields.  As previously,
-to print the value of the structure array, you can type its name:
+which creates a 2-by-1 structure array with two fields.  Another way
+to create a structure array is with the @code{struct} function
+(@pxref{Creating Structures}).  As previously, to print the value of
+the structure array, you can type its name: 
 
 @example
 @group
-octave:1> x
-x =
-@{
-  1x2 struct array containing the fields:
+x
+     @result{} x =
+        @{
+          1x2 struct array containing the fields:
 
-    a
-    b
-@}  
+            a
+            b
+        @}  
 @end group
 @end example
 
 Individual elements of the structure array can be returned by indexing
-the variable like @code{@var{x} (1)}, which returns a structure with the
-two fields like
+the variable like @code{@var{x}(1)}, which returns a structure with 
+two fields:
 
 @example
 @group
-octave:2> x(1)
-ans =
-@{
-  a = string1
-  b =  1
-@}
+x(1)
+     @result{} ans =
+        @{
+          a = string1
+          b =  1
+        @}
 @end group
 @end example
 
-Furthermore, the structure array can return a comma separated list
-(@pxref{Comma Separated Lists}), if indexed by one of its own field
-names.  For example
+Furthermore, the structure array can return a comma separated list of
+field values (@pxref{Comma Separated Lists}), if indexed by one of its
+own field names.  For example
 
 @example
 @group
-octave:3> x.a
-ans = string1
-ans = string2
+x.a
+     @result{}
+        ans = string1
+        ans = string2
 @end group
 @end example
 
@@ -283,11 +303,11 @@ left-hand side of an assignment:
 
 @example
 @group
-octave:4> [x.a] = deal("new string1", "new string2");
-octave:5> x(1).a
-ans = new string1
-octave:6> x(2).a
-ans = new string2
+[x.a] = deal("new string1", "new string2");
+ x(1).a
+     @result{} ans = new string1
+ x(2).a
+     @result{} ans = new string2
 @end group
 @end example
 
@@ -295,13 +315,14 @@ Just as for numerical arrays, it is possible to use vectors as indices (@pxref{I
 
 @example
 @group
-octave:7> x(3:4) = x(1:2);
-octave:8> [x([1,3]).a] = deal("other string1", "other string2");
-octave:9> x.a
-ans = other string1
-ans = new string2
-ans = other string2
-ans = new string2
+x(3:4) = x(1:2);
+[x([1,3]).a] = deal("other string1", "other string2");
+x.a
+     @result{}
+        ans = other string1
+        ans = new string2
+        ans = other string2
+        ans = new string2
 @end group
 @end example
 
@@ -310,10 +331,10 @@ the example above
 
 @example
 @group
-octave:10> size(x)
-ans =
+size(x)
+     @result{} ans =
 
-   1   4
+          1   4
 @end group
 @end example
 
@@ -323,25 +344,20 @@ example
 
 @example
 in = struct ("call1", @{x, Inf, "last"@}, 
-             "call2", @{x, Inf, "first"@});
-in (1, :) = []
-@result{} in =
-      @{
-        call1 =
-      
-        (,
-          [1] = Inf
-          [2] = last
-        ,)
-      
-        call2 =
-      
-        (,
-          [1] = Inf
-          [2] = first
-        ,)
-      
-      @}
+             "call2", @{x, Inf, "first"@})
+     @result{} in =
+        @{
+          1x3 struct array containing the fields:
+
+            call1
+            call2
+        @}
+
+in(1) = [];
+in.call1
+     @result{}
+       ans = Inf
+       ans = last
 @end example
 
 @node Creating Structures
@@ -369,51 +385,60 @@ arrays, then the scalar arguments are expanded to create a
 structure array with a consistent dimension.  For example
 
 @example
-struct ("field1", @{1, "one"@}, "field2", @{2, "two"@},
-        "field3", 3)
-@result{} ans =
-      @{
-        field1 =
-      
-        (,
-          [1] =  1
-          [2] = one
-        ,)
-      
-        field2 =
-      
-        (,
-          [1] =  2
-          [2] = two
-        ,)
-      
-        field3 =
-      
-        (,
-          [1] =  3
-          [2] =  3
-        ,)
-      
-      @}
+s = struct ("field1", @{1, "one"@}, "field2", @{2, "two"@},
+        "field3", 3);
+s.field1
+     @result{} 
+        ans =  1
+        ans = one
+
+s.field2
+     @result{}
+        ans =  2
+        ans = two
+
+s.field3
+     @result{}
+        ans =  3
+        ans =  3
 @end example
+
+If you want to create a struct which contains a cell array as an
+individual field, you have to put it into another cell array like in
+the following example:
+
+@example
+struct ("field1", @{@{1, "one"@}@}, "field2", 2)
+     @result{} ans =
+        @{
+          field1 =
+        
+        @{
+          [1,1] =  1
+          [1,2] = one
+        @}
+        
+          field2 =  2
+        @}
+ @end example       
 
 @DOCSTRING(struct)
 
+The function @code{isstruct} can be used to test if an object is a
+structure or a structure array.
+
 @DOCSTRING(isstruct)
 
-Additional functions that can manipulate the fields of a structure are
-listed below.
+@node Manipulating Structures
+@subsection Manipulating Structures
+
+Other functions that can manipulate the fields of a structure are given below.
 
 @DOCSTRING(rmfield)
 
 @DOCSTRING(setfield)
 
 @DOCSTRING(orderfields)
-
-@node Manipulating Structures
-@subsection Manipulating Structures
-
-Other functions that can manipulate the fields of a structure are given below.
 
 @DOCSTRING(fieldnames)
 
@@ -445,8 +470,19 @@ be converted to another type of container before being treated.
 It can be both necessary and convenient to store several variables of
 different size or type in one variable.  A cell array is a container
 class able to do just that.  In general cell arrays work just like
-@math{N}-dimensional arrays, with the exception of the use of @samp{@{}
+@math{N}-dimensional arrays with the exception of the use of @samp{@{}
 and @samp{@}} as allocation and indexing operators.
+
+@menu
+* Basic Usage of Cell Arrays::
+* Creating Cell Arrays::
+* Indexing Cell Arrays::
+* Cell Arrays of Strings::
+* Processing Data in Cell Arrays::
+@end menu
+
+@node Basic Usage of Cell Arrays
+@subsection Basic Usage of Cell Arrays
 
 As an example, the following code creates a cell array containing a
 string and a 2-by-2 random matrix
@@ -456,8 +492,9 @@ c = @{"a string", rand(2, 2)@};
 @end example
 
 @noindent
-And a cell array can be indexed with the @{ and @} operators, so the
-variable created in the previous example can be indexed like this
+To access the elements of a cell array, it can be indexed with the @{
+and @} operators.  Thus, the variable created in the previous example
+can be indexed like this:
 
 @example
 @group
@@ -507,25 +544,38 @@ c@{3@} = 3
 @end group
 @end example
 
-In general nested cell arrays are displayed hierarchically as above.  In
-some circumstances it makes sense to reference them by their index, and
-this can be performed by the @code{celldisp} function.
+Details on indexing cell arrays are explained in @ref{Indexing Cell Arrays}.
+
+In general nested cell arrays are displayed hierarchically as in the
+previous example.  In some circumstances it makes sense to reference
+them by their index, and this can be performed by the @code{celldisp}
+function.
 
 @DOCSTRING(celldisp)
 
-@menu
-* Creating Cell Arrays::                 
-* Indexing Cell Arrays::
-* Cell Arrays of Strings::
-* Processing Data in Cell Arrays::
-@end menu
+To test if an object is a cell array, use the @code{iscell}
+function. For example:
+
+@example
+@group
+iscell(c)
+     @result{} ans = 1
+
+iscell(3)
+     @result{} ans = 0
+
+@end group
+@end example
+
+@DOCSTRING(iscell)
 
 @node Creating Cell Arrays
 @subsection Creating Cell Array
 
-The introductory example showed how to create a cell array containing
-currently available variables.  In many situations, however, it is useful
-to create a cell array and then fill it with data.
+The introductory example (@pxref{Basic Usage of Cell Arrays}) showed
+how to create a cell array containing currently available variables.
+In many situations, however, it is useful to create a cell array and
+then fill it with data. 
 
 The @code{cell} function returns a cell array of a given size, containing
 empty matrices.  This function is similar to the @code{zeros}
@@ -564,17 +614,17 @@ size(c1)
 @end example
 
 @noindent
-As can be seen, the @code{size} function also works for cell arrays.  As
-do the other functions describing the size of an object, such as
-@code{length}, @code{numel}, @code{rows}, and @code{columns}.
+As can be seen, the @ref{doc-size, @code{size}} function also works
+for cell arrays.  As do other functions describing the size of an
+object, such as @ref{doc-length, @code{length}}, @ref{doc-numel,
+@code{numel}}, @ref{doc-rows, @code{rows}}, and @ref{doc-columns,
+@code{columns}}.
+
+@DOCSTRING(cell)
 
 As an alternative to creating empty cell arrays, and then filling them, it
 is possible to convert numerical arrays into cell arrays using the
 @code{num2cell} and @code{mat2cell} functions.
-
-@DOCSTRING(cell)
-
-@DOCSTRING(iscell)
 
 @DOCSTRING(num2cell)
 
@@ -583,38 +633,120 @@ is possible to convert numerical arrays into cell arrays using the
 @node Indexing Cell Arrays
 @subsection Indexing Cell Arrays
 
-As shown in the introductory example elements can be inserted from cell
-arrays using the @samp{@{} and @samp{@}} operators.  Besides the change
-of operators, indexing works for cell arrays like for multidimensional
-arrays.  As an example, all the rows of the first and third column of a
-cell array can be set to @code{0} with the following code
+As shown in @pxref{Basic Usage of Cell Arrays} elements can be
+extracted from cell arrays using the @samp{@{} and @samp{@}}
+operators.  If you want to extract or access subarrays which are still 
+cell arrays, you need to use the @samp{(} and @samp{)} operators. The
+following example illustrates the difference:
 
 @example
-c@{:, [1, 3]@} = 0;
+@group
+c = @{"1", "2", "3"; "a", "b", "c"; "4", "5", "6"@};
+c@{2,3@}
+     @result{} ans = c
+
+c(2,3)
+     @result{} ans = 
+        @{
+          [1,1] = c
+        @}
+@end group
 @end example
 
-Accessing values in a cell array is, however, different from the same
-operation for numerical arrays.  Accessing a single element of a cell
-array is very similar to numerical arrays, for example
+@noindent So with @samp{@{@}} you access elements of a cell
+array, while with @samp{()} you access a sub array of a cell
+array.
+
+Using the @samp{(} and @samp{)} operators, indexing works for cell
+arrays like for multidimensional arrays.  As an example, all the rows
+of the first and third column of a cell array can be set to @code{0}
+with the following command:
 
 @example
-element = c@{1, 2@};
+@group
+c(:, [1, 3]) = @{0@}
+     @result{}  =
+        @{
+          [1,1] = 0
+          [2,1] = 0
+          [3,1] = 0
+          [1,2] = 2
+          [2,2] =  10
+          [3,2] =  20
+          [1,3] = 0
+          [2,3] = 0
+          [3,3] = 0
+        @}
+@end group
 @end example
 
-@noindent
-This will, however, @emph{not} work when accessing multiple elements of
-a cell array, because it might not be possible to represent all elements
-with a single variable as is the case with numerical arrays.
+Note, that the above can also be achieved like this:
+
+@example
+c(:, [1, 3]) = 0;
+@end example
+
+@noindent Here, the scalar @samp{0} is automatically promoted to 
+cell array @samp{@{0@}} and then assigned to the subarray of @code{c}.
+
+To give another example for indexing cell arrays with @samp{()}, you
+can exchange the first and the second row of a cell array as in the
+following command: 
+
+@example
+@group
+c = @{1, 2, 3; 4, 5, 6@};
+c([1, 2], :) = c([2, 1], :)
+     @result{} = 
+        @{
+          [1,1] =  4
+          [2,1] =  1
+          [1,2] =  5
+          [2,2] =  2
+          [1,3] =  6
+          [2,3] =  3
+        @}
+@end group
+@end example
 
 Accessing multiple elements of a cell array with the @samp{@{} and
-@samp{@}} operators will result in a comma-separated list (@pxref{Comma
-Separated Lists}) of all the requested elements as discussed later. 
+@samp{@}} operators will result in a comma-separated list of all the
+requested elements (@pxref{Comma Separated Lists}). Using the
+@samp{@{} and @samp{@}} operators the first two rows in the above
+example can be swapped back like this:
 
-One distinction between @samp{@{} and @samp{(} to index cell arrays is
-in the deletion of elements from the cell array.  In a similar manner to
-a numerical array the @samp{()} operator can be used to delete elements
-from the cell array.  The @samp{@{@}} operator however will remove the
-elements of the cell array, but not delete the space for them.  For example
+@example
+@group
+[c@{[1,2], :@}] = deal(c@{[2, 1], :@})
+     @result{} = 
+        @{
+          [1,1] =  1
+          [2,1] =  4
+          [1,2] =  2
+          [2,2] =  5
+          [1,3] =  3
+          [2,3] =  6
+        @}
+@end group
+@end example
+
+As for struct arrays and numerical arrays, the empty matrix @samp{[]}
+can be used to delete elements from a cell array:
+
+@example
+@group
+x = @{"1", "2"; "3", "4"@};
+x(1, :) = []
+     @result{} x =
+        @{
+          [1,1] = 3
+          [1,2] = 4
+        @}
+@end group
+@end example
+
+The following example shows how to just remove the contents of cell
+array elements but not delete the space for them:
 
 @example
 @group
@@ -627,13 +759,6 @@ x@{1, :@} = []
         [1,2] = [](0x0)
         [2,2] = 4
       @}
-
-x(1, :) = []
-@result{} x =
-      @{
-        [1,1] = 3
-        [1,2] = 4
-      @}
 @end group
 @end example
 
@@ -641,12 +766,16 @@ x(1, :) = []
 @subsection Cell Arrays of Strings
 
 One common use of cell arrays is to store multiple strings in the same
-variable.  It is possible to store multiple strings in a character matrix
-by letting each row be a string.  This, however, introduces the problem
-that all strings must be of equal length.  Therefore it is recommended to
-use cell arrays to store multiple strings.  If, however, the character
-matrix representation is required for an operation, it can be converted
-to a cell array of strings using the @code{cellstr} function
+variable.  It is also possible to store multiple strings in a
+character matrix by letting each row be a string.  This, however,
+introduces the problem that all strings must be of equal length.
+Therefore, it is recommended to use cell arrays to store multiple
+strings.  For cases, where the character matrix representation is required
+for an operation, there are several functions that convert a cell
+array of strings to a character array and back.  @code{char} and
+@code{strvcat} convert cell arrays to a character array
+(@pxref{Concatenating Strings}), while the function @code{cellstr}
+converts a character array to a cell array of strings: 
 
 @example
 @group
@@ -660,13 +789,15 @@ c = cellstr (a)
 @end group
 @end example
 
+@DOCSTRING(cellstr)
+
 One further advantage of using cell arrays to store multiple strings is
 that most functions for string manipulations included with Octave
 support this representation.  As an example, it is possible to compare
 one string with many others using the @code{strcmp} function.  If one of
 the arguments to this function is a string and the other is a cell array
-of strings, each element of the cell array will be compared the string
-argument,
+of strings, each element of the cell array will be compared to the string
+argument:
 
 @example
 @group
@@ -678,12 +809,16 @@ strcmp ("hello", c)
 @end example
 
 @noindent
-The following functions for string manipulation support cell arrays of
-strings, @code{strcmp}, @code{strcmpi}, @code{strncmp}, @code{strncmpi}, 
-@code{str2double}, @code{char}, @code{strappend}, @code{strtrunc},
-@code{strvcat}, @code{strfind}, and @code{strmatch}.
+The following string functions support cell arrays of strings:
+@code{char}, @code{strvcat}, @code{strcat} (@pxref{Concatenating
+Strings}), @code{strcmp}, @code{strncmp}, @code{strcmpi},
+@code{strncmpi} (@pxref{Comparing Strings}), @code{str2double},
+@code{deblank}, @code{strtrim}, @code{strtrunc}, @code{strfind},
+@code{strmatch}, , @code{regexp}, @code{regexpi} (@pxref{Manipulating 
+Strings}) and @code{str2double} (@pxref{String Conversions}).
 
-@DOCSTRING(cellstr)
+The function @code{iscellstr} can be used to test if an object is a
+cell array of strings.
 
 @DOCSTRING(iscellstr)
 
@@ -714,65 +849,78 @@ using the @code{cell2mat} and @code{cell2struct} functions.
 @cindex comma separated lists
 @cindex cs-lists
 
-Comma separated lists@footnote{Comma-separated lists are also sometimes
+Comma separated lists @footnote{Comma-separated lists are also sometimes
 informally referred to as @dfn{cs-lists}.} are the basic argument type
-to all Octave functions.  In the example
+to all Octave functions - both for input and return arguments.  In the
+example
 
 @example
 max (@var{a}, @var{b})
 @end example
 
 @noindent
-@code{@var{a}, @var{b}} is a comma separated list.  Comma separated lists
-can appear on both the right and left hand side of an equation.  For
-example
-
-@example
-[@var{i}, @var{j}] = ceil (find (@var{x}, [], "last"));
-@end example
-
-@noindent
-where @code{@var{i}, @var{j}} is equally a comma separated list.  Comma
-separated lists cannot be directly manipulated by the user.  However,
-both structures and cell arrays can be converted into comma
-separated lists, which makes them useful to keep the input arguments and
-return values of functions organized.  Another example of where a comma
-separated list can be used is in the creation of a new array.  If all the
-accessed elements of a cell array are scalars or column vectors, they
-can be concatenated into a new column vector containing the elements, by
-surrounding the list with @code{[} and @code{]} as in the following
+@samp{@var{a}, @var{b}} is a comma separated list.  Comma separated lists
+can appear on both the right and left hand side of an assignment.  For
 example
 
 @example
 @group
-a = @{1, [2, 3], 4@};
-b = [a@{:@}]
+x = [1 0 1 0 0 1 1; 0 0 0 0 0 0 7];
+[@var{i}, @var{j}] = find (@var{x}, 2, "last");
+@end group
+@end example
+
+@noindent
+Here, @samp{@var{x}, 2, "last"} is a comma separated list constituting
+the input arguments of @code{find}.  @code{find} returns a comma
+separated list of output arguments which is assigned element by
+element to the comma separated list @samp{@var{i}, @var{j}}.
+
+Another example of where comma separated lists are used is in the
+creation of a new array with @code{[]} (@pxref{Matrices}) or the
+creation of a cell array with @code{@{@}} (@pxref{Basic Usage of Cell
+Arrays}). In the expressions 
+
+@example
+a = [1, 2, 3, 4];
+c = @{4, 5, 6, 7@};
+@end example
+
+@noindent
+both @samp{1, 2, 3, 4} and @samp{4, 5, 6, 7} are comma separated lists.
+
+Comma separated lists cannot be directly manipulated by the
+user.  However, both structure arrays and cell arrays can be converted
+into comma separated lists, and thus used in place of explicitly
+written comma separated lists.  This feature is useful in many ways,
+as will be shown in the following subsections.
+
+@menu
+* Comma Separated Lists Generated from Cell Arrays::
+* Comma Separated Lists Generated from Structure Arrays::
+@end menu
+
+@node Comma Separated Lists Generated from Cell Arrays
+@subsection Comma Separated Lists Generated from Cell Arrays
+
+As has been mentioned above (@pxref{Indexing Cell Arrays}), elements
+of a cell array can be extracted into a comma separated list with the
+@code{@{} and @code{@}} operators. By surrounding this list with
+@code{[} and @code{]}, it can be concatenated into an array. For example:
+
+@example
+@group
+a = @{1, [2, 3], 4, 5, 6@};
+b = [a@{1:4@}]
      @result{} b =
          1   2   3   4
 @end group
 @end example
 
-It is also possible to pass the accessed elements directly to a
-function.  The list of elements from the cell array will be passed as an
-argument list to a given function as if it is called with the elements as
-arguments.  The two calls to @code{printf} in the following example are
-identical but the latter is simpler and handles more situations
-
-@example
-@group
-c = @{"GNU", "Octave", "is", "Free", "Software"@};
-printf ("%s ", c@{1@}, c@{2@}, c@{3@}, c@{4@}, c@{5@});
-     @print{} GNU Octave is Free Software 
-printf ("%s ", c@{:@});
-     @print{} GNU Octave is Free Software 
-@end group
-@end example
-
-Just like it is possible to create a numerical array from selected
-elements of a cell array, it is possible to create a new cell array
-containing the selected elements.  By surrounding the list with 
+Similarly, it is possible to create a new cell array containing cell
+elements selected with @code{@{@}}.  By surrounding the list with  
 @samp{@{} and @samp{@}} a new cell array will be created, as the
-following example illustrates
+following example illustrates:
 
 @example
 @group
@@ -786,41 +934,50 @@ b = @{ a@{ [1, 3] @} @}
 @end group
 @end example
 
-@noindent
-This syntax is however a bit cumbersome, and since this is a common
-operation, it is possible to achieve the same using the @samp{(}
-and @samp{)} operators for indexing.  When a cell array is indexed
-using the @samp{(} and @samp{)} operators a new cell array containing
-the selected elements will be created.  Using this syntax, the previous 
-example can be simplified into the following
+Furthermore, cell elements (accessed by @code{@{@}}) can be passed
+directly to a function.  The list of elements from the cell array will
+be passed as an argument list to a given function as if it is called
+with the elements as individual arguments.  The two calls to
+@code{printf} in the following example are identical but the latter is
+simpler and can handle cell arrays of an arbitrary size:
 
 @example
 @group
-a = @{1, rand(2, 2), "three"@};
-b = a( [1, 3] )
-     @result{} b =
-         @{
-           [1,1] =  1
-           [1,2] = three
-         @}
+c = @{"GNU", "Octave", "is", "Free", "Software"@};
+printf ("%s ", c@{1@}, c@{2@}, c@{3@}, c@{4@}, c@{5@});
+     @print{} GNU Octave is Free Software 
+printf ("%s ", c@{:@});
+     @print{} GNU Octave is Free Software 
 @end group
 @end example
 
-A comma separated list can equally appear on the left-hand side of an
-assignment.  An example is 
+If used on the left-hand side of an assignment, a comma separated list
+generated with @code{@{@}} can be assigned to.  An example is 
 
 @example
 @group
-in @{1@} = ceil (rand (10, 1));
-in @{2@} = [];
-in @{3@} = "last";
-in @{4@} = "first";
+in@{1@} = [10, 20, 30, 40, 50, 60, 70, 80, 90];
+in@{2@} = inf;
+in@{3@} = "last";
+in@{4@} = "first";
 out = cell (4, 1);
-[out@{1:2@}] = find (in@{1 : 3@});
-[out@{3:4@}] = find (in@{[1, 2, 4]@});
+[out@{1:3@}] = find (in@{1 : 3@});
+[out@{4:6@}] = find (in@{[1, 2, 4]@})
+     @result{} out =
+        @{
+          [1,1] = 1
+          [2,1] = 9
+          [3,1] = 90
+          [4,1] = 1
+          [3,1] = 1
+          [4,1] = 10
+        @}
 @end group
 @end example
 
+
+@node Comma Separated Lists Generated from Structure Arrays
+@subsection Comma Separated Lists Generated from Structure Arrays
 Structure arrays can equally be used to create comma separated
 lists.  This is done by addressing one of the fields of a structure
 array.  For example
@@ -828,8 +985,8 @@ array.  For example
 @example
 @group
 x = ceil (randn (10, 1)); 
-in = struct ("call1", @{x, Inf, "last"@}, 
-             "call2", @{x, Inf, "first"@});
+in = struct ("call1", @{x, 3, "last"@}, 
+             "call2", @{x, inf, "first"@});
 out = struct ("call1", cell (2, 1), "call2", cell (2, 1));
 [out.call1] = find (in.call1);
 [out.call2] = find (in.call2);

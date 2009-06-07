@@ -1,5 +1,9 @@
 2009-06-06  Rik  <rdrider0-list@yahoo.com>
 
+	* data.cc: Update documentation for 'complex' function
+
+2009-06-06  Rik  <rdrider0-list@yahoo.com>
+
 	* load-save.cc: Update documentation for NA and isna functions
 
 2009-06-06  Rik  <rdrider0-list@yahoo.com>

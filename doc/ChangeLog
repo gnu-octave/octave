@@ -1,3 +1,7 @@
+2009-06-07  Thorsten Meyer  <thorsten.meyier@gmx.de>
+
+	* interpreter/container.txi: Udate documentation of container types
+
 2009-06-03  Rik  <rdrider0-list@yahoo.com>
 
 	* interpreter/plotimages.m: Correct errorbar plot for docs.  Make hist plot

@@ -1,3 +1,7 @@
+2009-06-07  Thorsten Meyer  <thorsten.meyier@gmx.de>
+
+	* testfun/assert.m: Fix texinfo bug.
+
 2009-06-04  Ben Abbott <bpabbott@mac.com>
 
 	* plot/__go_draw_axes__.m: Change strncmpi(scale,'lo') to 

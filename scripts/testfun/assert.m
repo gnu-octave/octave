@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} assert (@var{cond})
 ## @deftypefnx {Function File} {} assert (@var{cond}, @var{errmsg}, @dots{})
-## @deftypefnx {Function File} {} assert (@var{cond}, @{var{msg_id}, @var{errmsg}, @dots{})
+## @deftypefnx {Function File} {} assert (@var{cond}, @var{msg_id}, @var{errmsg}, @dots{})
 ## @deftypefnx {Function File} {} assert (@var{observed},@var{expected})
 ## @deftypefnx {Function File} {} assert (@var{observed},@var{expected},@var{tol})
 ##

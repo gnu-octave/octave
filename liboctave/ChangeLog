@@ -1,3 +1,8 @@
+2009-06-07  Jaroslav Hajek  <highegg@gmail.com>
+
+	* Array.cc (Array<T>::find): Avoid allocating excessive memory. Fix
+	order for backward searches.
+
 2009-06-02  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Array-C.cc (class DiagArray2<Complex>::Proxy): Only explicitly

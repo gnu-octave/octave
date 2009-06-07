@@ -2476,7 +2476,7 @@ Array<T>::find (octave_idx_type n, bool backward) const
   const T *src = data ();
   octave_idx_type nel = nelem ();
   const T zero = T ();
-  if (n < 0)
+  if (n < 0 || n >= nel)
     {
       // We want all elements, which means we'll almost surely need
       // to resize. So count first, then allocate array of exact size.
@@ -2509,6 +2509,8 @@ Array<T>::find (octave_idx_type n, bool backward) const
             }
           if (k < n)
             retval.resize (k);
+          octave_idx_type *rdata = retval.fortran_vec ();
+          std::reverse (rdata, rdata + k);
         }
       else
         {

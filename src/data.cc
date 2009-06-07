@@ -3707,6 +3707,7 @@ arguments are taken as the number of rows and columns and any further\n\
 arguments specify additional matrix dimensions.\n\
 The optional argument @var{class} specifies the return type and may be\n\
 either \"double\" or \"single\".\n\
+@seealso{isinf}\n\
 @end deftypefn")
 {
   return fill_matrix (args, lo_ieee_inf_value (), 
@@ -4085,12 +4086,25 @@ DEFALIAS (j, I);
 
 DEFUN (NA, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} NA (@var{x})\n\
+@deftypefn  {Built-in Function} {} NA\n\
+@deftypefnx {Built-in Function} {} NA (@var{n})\n\
 @deftypefnx {Built-in Function} {} NA (@var{n}, @var{m})\n\
 @deftypefnx {Built-in Function} {} NA (@var{n}, @var{m}, @var{k}, @dots{})\n\
 @deftypefnx {Built-in Function} {} NA (@dots{}, @var{class})\n\
-Return a matrix or N-dimensional array whose elements are all equal\n\
+Return a scalar, matrix, or N-dimensional array whose elements are all equal\n\
 to the special constant used to designate missing values.\n\
+\n\
+Note that NA always compares not equal to NA (NA != NA).\n\
+To find NA values, use the @code{isna} function.\n\
+\n\
+When called with no arguments, return a scalar with the value @samp{NA}.\n\
+When called with a single argument, return a square matrix with the dimension\n\
+specified.  When called with more than one scalar argument the first two\n\
+arguments are taken as the number of rows and columns and any further\n\
+arguments specify additional matrix dimensions.\n\
+The optional argument @var{class} specifies the return type and may be\n\
+either \"double\" or \"single\".\n\
+@seealso{isna}\n\
 @end deftypefn")
 {
   return fill_matrix (args, lo_ieee_na_value (), 

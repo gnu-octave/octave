@@ -1023,6 +1023,7 @@ isna ([13, Inf, NA, NaN])\n\
      @result{} [ 0, 0, 1, 0 ]\n\
 @end group\n\
 @end example\n\
+@seealso{isnan}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1062,6 +1063,7 @@ isnan ([13, Inf, NA, NaN])\n\
      @result{} [ 0, 0, 1, 1 ]\n\
 @end group\n\
 @end example\n\
+@seealso{isna}\n\
 @end deftypefn")
 {
   octave_value retval;

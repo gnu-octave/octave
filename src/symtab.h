@@ -2143,15 +2143,14 @@ private:
 	symbol_record& sr = p->second;
 
 	if (sr.is_global ())
-	  {
-	    global_table_iterator q = global_table.find (name);
-
-	    if (q != global_table.end ())
-	      global_table.erase (q);
-
-	    sr.unmark_global ();
-	  }
+          sr.unmark_global ();
       }
+
+    global_table_iterator q = global_table.find (name);
+
+    if (q != global_table.end ())
+      global_table.erase (q);
+
   }
 
   void do_clear_variable (const std::string& name)
@@ -2170,19 +2169,18 @@ private:
       {
 	symbol_record& sr = p->second;
 
-	if (sr.is_global ())
-	  {
-	    if (pattern.match (sr.name ()))
-	      {
-		global_table_iterator q = global_table.find (sr.name ());
-
-		if (q != global_table.end ())
-		  global_table.erase (q);
-
-		sr.unmark_global ();
-	      }
-	  }
+	if (sr.is_global () && pattern.match (sr.name ()))
+          sr.unmark_global ();
       }
+
+    for (global_table_iterator q = global_table.begin (); 
+         q != global_table.end (); q++)
+      {
+	if (pattern.match (q->first))
+          global_table.erase (q);
+      }
+
+
   }
 
   void do_clear_variable_pattern (const std::string& pat)

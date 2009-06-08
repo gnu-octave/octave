@@ -1,3 +1,8 @@
+2009-06-08  Jaroslav Hajek  <highegg@gmail.com>
+
+	* variables.cc (Fclear): Clear also globals when called without
+	arguments.
+
 2009-06-07  Jaroslav Hajek  <highegg@gmail.com>
 
 	* graphics.cc (color_property::do_set): Allow a wider range of types.

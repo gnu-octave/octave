@@ -538,7 +538,7 @@ A figure window.
 @item axes
 @cindex axes graphics object
 @cindex graphics object, axes
-An set of axes.  This object is a child of a figure object and may be a
+A set of axes.  This object is a child of a figure object and may be a
 parent of line, text, image, patch, or surface objects.
 
 @item line
@@ -567,7 +567,7 @@ A filled polygon, currently limited to two dimensions.
 A three-dimensional surface.
 @end table
 
-To determine whether an object is a graphics object index or a figure
+To determine whether a variable is a graphics object index or a figure
 index, use the functions @code{ishandle} and @code{isfigure}.
 
 @DOCSTRING(ishandle)
@@ -593,10 +593,11 @@ properties for graphics objects.  For example,
 get (0)
     @result{} ans =
        @{
-         type = root figure
+         type = root
          currentfigure = [](0x0)
          children = [](0x0)
          visible = on
+			@dots{}
        @}
 @end group
 @end example
@@ -673,24 +674,24 @@ or when waiting for input.  To force an update at other times, call the
 @DOCSTRING(drawnow)
 
 Only figures that are modified will be updated.  The @code{refresh}
-function can also be to force an update of the current figure, even if
-it is nor modified.
+function can also be used to force an update of the current figure, even if
+it is not modified.
 
 @DOCSTRING(refresh)
 
 Normally, high-level plot functions like @code{plot} or @code{mesh} call
 @code{newplot} to initialize the state of the current axes so that the
 next plot is drawn in a blank window with default property settings.  To
-have two plots superimposed over one another, call the @code{hold}
+have two plots superimposed over one another, use the @code{hold}
 function.  For example,
 
 @example
 @group
-hold ("on");
+hold on;
 x = -10:0.1:10;
 plot (x, sin (x));
 plot (x, cos (x));
-hold ("off");
+hold off;
 @end group
 @end example
 

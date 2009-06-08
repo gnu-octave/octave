@@ -17,9 +17,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} delete (@var{file})
-## @deftypefnx {Function File} {} delete (@var{h})
+## @deftypefn  {Function File} {} delete (@var{file})
+## @deftypefnx {Function File} {} delete (@var{handle})
 ## Delete the named file or graphics handle.
+##
+## Deleting graphics objects is the proper way to remove
+## features from a plot without clearing the entire figure.
+## @seealso{clf, cla}
 ## @end deftypefn
 
 ## Author: jwe

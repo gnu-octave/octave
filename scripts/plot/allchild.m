@@ -18,12 +18,12 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{h} =} allchild (@var{handles})
-## Find all children including hidden children of an object.
+## Find all children, including hidden children, of a graphics object.
 ##
 ## This function is similar to @code{get (h, "children")}, but also
 ## returns includes hidden objects.  If @var{handles} is a scalar,
-## @var{h} will be a vector, and if not, @var{h} will be a cell matrix
-## with the same size as @var{handles} and each cell will contain a
+## @var{h} will be a vector.  Otherwise, @var{h} will be a cell matrix
+## of the same size as @var{handles} and each cell will contain a
 ## vector of handles.
 ## @seealso{get, set, findall, findobj}
 ## @end deftypefn

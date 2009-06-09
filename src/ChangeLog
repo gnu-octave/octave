@@ -1,3 +1,8 @@
+2009-06-08  John W. Eaton  <jwe@octave.org>
+
+	* variables.cc (symbol_exist): Returnn 1 for function handles and
+	inline function objects.
+
 2009-06-08  Jaroslav Hajek  <highegg@gmail.com>
 
 	* symtab.h (symbol_table::do_clear_global,

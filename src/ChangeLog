@@ -1,3 +1,7 @@
+2009-06-09  Jaroslav Hajek  <highegg@gmail.com>
+
+	* data.cc (Flog2): Fix tests.
+
 2009-06-08  John W. Eaton  <jwe@octave.org>
 
 	* variables.cc (symbol_exist): Returnn 1 for function handles and

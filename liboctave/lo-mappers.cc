@@ -185,7 +185,7 @@ xlog2 (const Complex& x, int& exp)
 {
   double ax = std::abs (x);
   double lax = xlog2 (ax, exp);
-  return (exp == 0) ? x : (x / ax) * lax;
+  return (ax != lax) ? (x / ax) * lax : x;
 }
 
 // double -> bool mappers.
@@ -503,7 +503,7 @@ xlog2 (const FloatComplex& x, int& exp)
 {
   float ax = std::abs (x);
   float lax = xlog2 (ax, exp);
-  return (exp == 0) ? x : (x / ax) * lax;
+  return (ax != lax) ? (x / ax) * lax : x;
 }
 
 // float -> bool mappers.

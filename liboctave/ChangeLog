@@ -1,3 +1,8 @@
+2009-06-09  Jaroslav Hajek  <highegg@gmail.com>
+
+	* lo-mappers.cc (xlog2 (const Complex&, int&), xlog2 (const
+	FloatComplex&, int&)): Use more robust expression.
+
 2009-06-07  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Array.cc (Array<T>::find): Avoid allocating excessive memory. Fix

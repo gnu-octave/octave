@@ -1082,12 +1082,12 @@ $x = 0$, $f = e = 0$.\n\
 %!test
 %! [f, e] = log2 ([0,-1; 2,-4; Inf,-Inf]);
 %! assert (f, [0,-0.5; 0.5,-0.5; Inf,-Inf]);
-%! assert (e, [0,1;2,3;0,0])
+%! assert (e(1:2,:), [0,1;2,3])
 
 %!test
 %! [f, e] = log2 (complex (zeros (3, 2), [0,-1; 2,-4; Inf,-Inf]));
 %! assert (f, complex (zeros (3, 2), [0,-0.5; 0.5,-0.5; Inf,-Inf]));
-%! assert (e, [0,1; 2,3; 0,0]);
+%! assert (e(1:2,:), [0,1; 2,3]);
 */
 
 DEFUN (fmod, args, ,

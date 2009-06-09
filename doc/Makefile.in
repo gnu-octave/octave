@@ -2,9 +2,7 @@
 # Makefile for octave's doc directory
 #
 # John W. Eaton
-# jwe@bevo.che.wisc.edu
-# University of Wisconsin-Madison
-# Department of Chemical Engineering
+# jwe@octave.org
 
 TOPDIR = ..
 

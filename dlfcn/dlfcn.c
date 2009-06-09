@@ -6,7 +6,7 @@
 
 /*
  * Changes marked with `--jwe' were made on April 7 1996 by John W. Eaton
- * <jwe@bevo.che.wisc.edu> to support g++ and/or use with Octave.
+ * <jwe@octave.org> to support g++ and/or use with Octave.
  */
 
 /*

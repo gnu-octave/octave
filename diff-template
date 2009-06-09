@@ -19,9 +19,7 @@
 # it can be recreated from configure.in using autoconf.
 #
 # John W. Eaton
-# jwe@bevo.che.wisc.edu
-# University of Wisconsin-Madison
-# Department of Chemical Engineering
+# jwe@octave.org
 
 if test -f src/octave.cc ; then
   true

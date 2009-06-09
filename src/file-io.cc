@@ -32,7 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 //   sync_system   (now merged with system)
 //   async_system  (now merged with system)
 
-// Extensively revised by John W. Eaton <jwe@bevo.che.wics.edu>,
+// Extensively revised by John W. Eaton <jwe@octave.org>,
 // April 1996.
 
 #ifdef HAVE_CONFIG_H

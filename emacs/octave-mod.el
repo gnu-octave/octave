@@ -4,7 +4,7 @@
 ;; Free Software Foundation, Inc.
 
 ;; Author: Kurt Hornik <Kurt.Hornik@wu-wien.ac.at>
-;; Author: John Eaton <jwe@bevo.che.wisc.edu>
+;; Author: John Eaton <jwe@octave.org>
 ;; Maintainer: Kurt Hornik <Kurt.Hornik@wu-wien.ac.at>
 ;; Keywords: languages
 

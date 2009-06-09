@@ -110,7 +110,7 @@ new source file, it should have the following comment header (use appropriate
 year, name and comment marks):
 
 @example
-## Copyright (C) 1996, 1997, 2007 John W. Eaton <jwe@@bevo.che.wisc.edu>
+## Copyright (C) 1996, 1997, 2007 John W. Eaton <jwe@@octave.org>
 ##
 ## This file is part of Octave.
 ##

@@ -4963,7 +4963,7 @@ Undocumented internal function.\n\
 DEFUN (available_backends, , ,
    "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} available_backends ()\n\
-Returns resgistered graphics backends.\n\
+Return a cell array of registered graphics backends.\n\
 @end deftypefn")
 {
   gh_manager::autolock guard;
@@ -4979,9 +4979,15 @@ clear_drawnow_request (void *)
 
 DEFUN (drawnow, args, ,
    "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __go_drawnow__ ()\n\
-@deftypefnx {Built-in Function} {} __go_drawnow__ (@var{term}, @var{file}, @var{mono}, @var{debug_file})\n\
-Undocumented internal function.\n\
+@deftypefn  {Built-in Function} {} drawnow ()\n\
+@deftypefnx {Built-in Function} {} drawnow (\"expose\")\n\
+@deftypefnx {Built-in Function} {} drawnow (@var{term}, @var{file}, @var{mono}, @var{debug_file})\n\
+Update figure windows and their children.  The event queue is flushed and\n\
+any callbacks generated are executed.  With the optional argument\n\
+@code{\"expose\"}, only graphic objects are updated and no other events or\n\
+callbacks are processed.\n\
+The third calling form of @code{drawnow} is for debugging and is\n\
+undocumented.\n\
 @end deftypefn")
 {
   static int drawnow_executing = 0;

@@ -17,15 +17,15 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} clf ()
+## @deftypefn  {Function File} {} clf ()
 ## @deftypefnx {Function File} {} clf ("reset")
 ## @deftypefnx {Function File} {} clf (@var{hfig})
 ## @deftypefnx {Function File} {} clf (@var{hfig}, "reset")
-## @deftypefnx {Function File} {@var{hfig} =} clf (@dots{})
-## Delete the children of the current figure with visible handles.
-## If @var{hfig} is specified and is an figure object handle, operate on it
-## instead of the current figure.  If the optional argument @code{"reset"}
-## is specified, also delete the figure's children with hidden handles.
+## Clear the current figure window.  @code{clf} operates by deleting child
+## graphics objects with visible handles (@code{HandleVisibility} = on).
+## If @var{hfig} is specified operate on it instead of the current figure.
+## If the optional argument @code{"reset"} is specified, all objects including
+## those with hidden handles are deleted.
 ## @seealso{cla, close, delete}
 ## @end deftypefn
 

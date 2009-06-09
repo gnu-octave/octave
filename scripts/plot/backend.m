@@ -21,10 +21,10 @@
 ## @deftypefnx {Function File} {} backend (@var{hlist}, @var{name})
 ## Change the default graphics backend to @var{name}.  If the backend is
 ## not already loaded, it is first initialized (initialization is done
-## through the execution of __init_@var{name}__).
+## through the execution of @code{__init_@var{name}__}).
 ##
-## @var{hlist} is a list of figure handles.  When given, this function
-## only switches the default backend for the corresponding figures.
+## When called with a list of figure handles, @var{hlist}, the backend is
+## changed only for the listed figures.
 ## @seealso{available_backends}
 ## @end deftypefn
 

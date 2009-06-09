@@ -17,27 +17,31 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} hold @var{args}
-## Tell Octave to `hold' the current data on the graph when executing
-## subsequent plotting commands.  This allows you to execute a series of
-## plot commands and have all the lines end up on the same graph.  The
-## default is for each new plot command to clear the plot device first.
-## For example, the command
-##
-## @example
-## hold on
-## @end example
-##
-## @noindent
-## turns the hold state on.  An argument of @code{"off"} turns the hold
-## state off, and @code{hold} with no arguments toggles the current hold
-## state.
-##
-## @deftypefnx {Function File} {} hold (@var{h}, @dots{})
+## @deftypefn  {Function File} {} hold
+## @deftypefnx {Function File} {} hold @var{state}
+## @deftypefnx {Function File} {} hold (@var{hax}, @dots{})
+## Toggle or set the 'hold' state of the plotting engine which determines
+## whether new graphic objects are added to the plot or replace the existing
+## objects.  
 ## 
-## Applies to a specific axis or axes, associated with the handle(s), 
-## @var{h}.
+## @table @code
+## @item hold on
+## Retain plot data and settings so that subsequent plot commands are displayed
+## on a single graph.
+##
+## @item hold off
+## Clear plot and restore default graphics settings before each new plot
+## command.  (default).
+##
+## @item hold
+## Toggle the current 'hold' state.
+## @end table
 ## 
+## When given the additional argument @var{hax}, the hold state is modified
+## only for the given axis handle.
+##
+## To query the current 'hold' state use the @code{ishold} function.
+## @seealso{ishold, cla, newplot, clf}
 ## @end deftypefn
 
 function hold (varargin)

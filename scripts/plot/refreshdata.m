@@ -17,16 +17,23 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} refreshdata ()
+## @deftypefn  {Function File} {} refreshdata ()
 ## @deftypefnx {Function File} {} refreshdata (@var{h})
-## @deftypefnx {Function File} {} refreshdata (@var{h}, @var{ws})
-## Evaluates any datasource properties of the current figure and updates
-## the corresponding data.  If call with one or more arguments @var{h} is
-## a scalar or array of figure handles which to refresh.  The data
-## sources are by default evaluated in the "base" workspace but can also
-## be set in the "caller" workspace.
+## @deftypefnx {Function File} {} refreshdata (@var{h}, @var{workspace})
+## Evaluate any @samp{datasource} properties of the current figure and update
+## the plot if the corresponding data has changed.  If called with one or more
+## arguments @var{h} is a scalar or array of figure handles to refresh.  The
+## optional second argument @var{workspace} can take the following values.
 ##
-## An example of the use of refreshdata is
+## @table @code
+## @item "base"
+## Evaluate the datasource properties in the base workspace.  (default).
+## @item "caller"
+## Evaluate the datasource properties in the workspace of the function
+## that called @code{refreshdata}.
+## @end table
+##
+## An example of the use of @code{refreshdata} is:
 ##
 ## @example
 ## @group
@@ -40,8 +47,6 @@
 ## endfor
 ## @end group
 ## @end example
-## 
-## @seealso{linkdata}
 ## @end deftypefn
 
 function refreshdata (h, ws)

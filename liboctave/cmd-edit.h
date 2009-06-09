@@ -150,6 +150,8 @@ public:
 
   static void increment_current_command_number (void);
 
+  static void force_default_editor (void);
+
 private:
 
   // No copying!

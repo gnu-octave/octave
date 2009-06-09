@@ -786,6 +786,10 @@ octave_main (int argc, char **argv, int embedded)
   if (! interactive && ! forced_line_editing)
     line_editing = false;
 
+  // Force default line editor if we don't want readline editing.
+  if (! line_editing)
+    command_editor::force_default_editor ();
+
   // These can come after command line args since none of them set any
   // defaults that might be changed by command line options.
 

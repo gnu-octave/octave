@@ -837,6 +837,13 @@ command_editor::make_command_editor (void)
 #endif
 }
 
+void 
+command_editor::force_default_editor (void)
+{
+  delete instance;
+  instance = new default_command_editor ();
+}
+
 int
 command_editor::startup_handler (void)
 {

@@ -1,3 +1,8 @@
+2009-06-08  Ben Abbott <bpabbott@mac.com>
+
+	* plot/axis.m: Fix bug for 'axis tight' with multiple lines, modify
+	demo.
+
 2009-06-07  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
 	* testfun/assert.m: Fix texinfo bug.

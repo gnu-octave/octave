@@ -298,14 +298,17 @@ function lims = __get_tight_lims__ (ca, ax)
   else
     data = get (kids, strcat (ax, "data"));
     if (iscell (data))
-      lims(1) = min (cellfun (@min, data)(:));
-      lims(2) = min (cellfun (@max, data)(:));
+      data = data (find (! cellfun (@isempty, data)));
+      if (! isempty (data))
+        lims(1) = min (cellfun (@min, data)(:));
+        lims(2) = max (cellfun (@max, data)(:));
+      else
+        lims = [0, 1];
+      endif
     else
       lims = [min(data(:)), max(data(:))];
     endif
   endif
-
-
 endfunction
 
 function __do_tight_option__ (ca)
@@ -430,7 +433,7 @@ endfunction
 %! title("axes at [3 6 0 1], then autoy");
 %!
 %! subplot(326);
-%! plot(t, x);
+%! plot(t, sin(t), t, -2*sin(t/2))
 %! axis("tight");
 %! title("tight");
 

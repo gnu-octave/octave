@@ -1,5 +1,11 @@
 2009-06-08  Jaroslav Hajek  <highegg@gmail.com>
 
+	* symtab.h (symbol_table::do_clear_global,
+	symbol_table::do_clear_global_pattern): Properly erase from both local
+	and global table.
+
+2009-06-08  Jaroslav Hajek  <highegg@gmail.com>
+
 	* variables.cc (Fclear): Clear also globals when called without
 	arguments.
 

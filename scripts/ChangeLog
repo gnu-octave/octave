@@ -1,11 +1,15 @@
+2009-06-10  Marco Caliari <marco.caliari@univr.it>
+
+	* general/quadgk.m: Better waypoint transform.
+
 2009-06-09  David Bateman  <dbateman@free.fr>
 
-	* general/guadgk.m: Add test case and fixed doubly infinite 
+	* general/quadgk.m: Add test case and fixed doubly infinite 
 	waypoint transform for x = 0 case.
 
 2009-06-09  Marco Caliari <marco.caliari@univr.it>
 
-	* general/guadgk.m: Fix doubly infinite transformation to the finite
+	* general/quadgk.m: Fix doubly infinite transformation to the finite
 	interval.
 
 2009-06-08  Ben Abbott <bpabbott@mac.com>

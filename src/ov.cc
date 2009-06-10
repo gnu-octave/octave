@@ -1246,21 +1246,6 @@ octave_value::length (void) const
   return retval;
 }
 
-Matrix
-octave_value::size (void) const
-{
-  dim_vector dv = dims ();
-
-  int n_dims = dv.length ();
-
-  Matrix retval (1, n_dims);
-
-  while (n_dims--)
-    retval(n_dims) = dv(n_dims);
-
-  return retval;
-}
-
 bool
 octave_value::is_equal (const octave_value& test) const
 {

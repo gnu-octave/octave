@@ -354,6 +354,13 @@ public:
   octave_base_value *try_narrowing_conversion (void)
     { return rep->try_narrowing_conversion (); }
 
+  // Close to dims (), but can be overloaded for classes.
+  Matrix size (void)
+    { return rep->size (); }
+
+  octave_idx_type numel (const octave_value_list& idx)
+    { return rep->numel (idx); }
+
   octave_value single_subsref (const std::string& type,
 			       const octave_value_list& idx);
 
@@ -423,8 +430,6 @@ public:
 
   octave_idx_type capacity (void) const
     { return rep->capacity (); }
-
-  Matrix size (void) const;
 
   size_t byte_size (void) const
     { return rep->byte_size (); }

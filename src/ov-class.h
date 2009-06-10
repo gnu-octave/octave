@@ -72,6 +72,10 @@ public:
 
   Cell dotref (const octave_value_list& idx);
 
+  Matrix size (void);
+
+  octave_idx_type numel (const octave_value_list&); 
+
   octave_value subsref (const std::string& type,
 			const std::list<octave_value_list>& idx)
     {

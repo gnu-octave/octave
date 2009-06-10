@@ -1,3 +1,16 @@
+2009-06-10  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-base.cc (octave_base_value::numel (const octave_value_list&),
+	octave_base_value::size): New virtual methods.
+	* ov-base.h: Declare them.
+	* ov.h (octave_value::numel (const octave_value_list&)): New method.
+	(octave_value::size): Forward to octave_base_value.
+	* ov-class.cc (octave_class::numel (const octave_value_list&),
+	octave_base_value::size): New method overrides.
+	* ov-class.h: Declare them.
+	* pt-idx.cc (tree_index_expression::lvalue): Rewrite.
+	* data.cc (Fnumel): Allow indexed query.
+
 2009-06-10  John W. Eaton  <jwe@octave.org>
 
 	* pt-fcn-handle.cc (tree_anon_fcn_handle::dup): Don't convert to

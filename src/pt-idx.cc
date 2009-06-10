@@ -409,6 +409,7 @@ tree_index_expression::lvalue (void)
   octave_lvalue retval;
 
   std::list<octave_value_list> idx;
+  std::string tmp_type;
 
   int n = args.size ();
 
@@ -420,16 +421,13 @@ tree_index_expression::lvalue (void)
 
   if (! error_state)
     {
-      // I think it is OK to have a copy here.
-
       const octave_value *tro = retval.object ();
 
-      octave_value first_retval_object;
+      octave_value tmp;
 
       if (tro)
-	first_retval_object = *tro;
+	tmp = *tro;
 
-      octave_value tmp = first_retval_object;
       octave_idx_type tmpi = 0;
       std::list<octave_value_list> tmpidx;
 
@@ -437,45 +435,14 @@ tree_index_expression::lvalue (void)
 	{
           if (retval.numel () != 1)
             gripe_indexed_cs_list ();
-
-          if (i > 0)
+          else if (tmpi < i)
             {
-              tree_argument_list *al = *p_args;
-
-              if (al && al->has_magic_end ())
-                {
-                  // We have an expression like
-                  //
-                  //   x{end}.a(end)
-                  //
-                  // and we are looking at the argument list that
-                  // contains the second (or third, etc.) "end" token,
-                  // so we must evaluate everything up to the point of
-                  // that argument list so we pass the appropriate
-                  // value to the built-in __end__ function.
-
-                  if (tmp.is_defined ())
-                    {
-                      if (tmpi < i)
-                        {
-                          tmp = tmp.subsref (type.substr (tmpi, i - tmpi), tmpidx, true);
-
-                          tmpi = i;
-                          tmpidx.clear ();
-                        }
-                    }
-                  else
-                    gripe_invalid_inquiry_subscript ();
-
-                  if (tmp.is_undefined ())
-                    gripe_invalid_inquiry_subscript ();
-                  else if (tmp.is_cs_list ())
-                    gripe_indexed_cs_list ();
-
-                  if (error_state)
-                    break;
-                }
+              tmp = tmp.subsref (type.substr (tmpi, i - tmpi), tmpidx, true);
+              tmpidx.clear ();
             }
+
+          if (error_state)
+            break;
 
 	  switch (type[i])
 	    {
@@ -483,8 +450,19 @@ tree_index_expression::lvalue (void)
               {
                 octave_value_list tidx
                   = make_value_list (*p_args, *p_arg_nm, &tmp);
+
                 idx.push_back (tidx);
-                tmpidx.push_back (tidx);
+
+                if (i < n - 1)
+                  {
+                    if (type[i+1] == '.')
+                      {
+                        tmpidx.push_back (tidx);
+                        tmpi = i+1;
+                      }
+                    else
+                      error ("() must be followed by . or close the index chain");
+                  }
               }
               break;
 
@@ -493,60 +471,27 @@ tree_index_expression::lvalue (void)
 		octave_value_list tidx
 		  = make_value_list (*p_args, *p_arg_nm, &tmp);
 
-		if (! tidx.all_scalars ())
-		  {
-                    octave_idx_type nel = 1;
+                if (tmp.is_undefined ())
+                  {
+                    if (tidx.has_magic_colon ())
+                      gripe_invalid_inquiry_subscript ();
+                    else
+                      tmp = Cell ();
+                  }
+                else if (tmp.is_zero_by_zero () 
+                         && (tmp.is_matrix_type () || tmp.is_string ()))
+                  {
+                    tmp = Cell ();
+                  }
 
-                    octave_idx_type nidx = tidx.length ();
-
-                    // Possible cs-list.
-                    bool has_magic_colon = tidx.has_magic_colon ();
-                    dim_vector dims;
-
-		    if (has_magic_colon)
-		      {
-                        if (tmp.is_defined ())
-                          {
-                            if (tmpi < i)
-                              {
-                                tmp = tmp.subsref (type.substr (tmpi, i - tmpi), tmpidx, true);
-                                tmpi = i;
-                                tmpidx.clear ();
-                              }
-
-                            if (tmp.is_undefined ())
-                              gripe_invalid_inquiry_subscript ();
-                            else if (tmp.is_cs_list ())
-                              gripe_indexed_cs_list ();
-
-                            dims = (nidx == 1) ? dim_vector (tmp.numel (), 1) : tmp.dims ();
-                          }
-                        else
-                          gripe_invalid_inquiry_subscript ();
-
-                        if (error_state)
-                          break;
-                      }
-
-                    for (octave_idx_type j = 0; j < nidx; j++)
-                      {
-                        octave_value val = tidx(j);
-
-                        if (val.is_magic_colon ())
-                          nel *= dims (j);
-                        else
-                          nel *= val.numel ();
-                      }
-
-                    retval.numel (nel);
-		  }
+                retval.numel (tmp.numel (tidx));
 
                 if (error_state)
                   break;
 
 		idx.push_back (tidx);
                 tmpidx.push_back (tidx);
-
+                tmpi = i;
 	      }
 	      break;
 
@@ -556,96 +501,58 @@ tree_index_expression::lvalue (void)
                 if (error_state)
                   break;
 
+                bool autoconv = (tmp.is_zero_by_zero () 
+                                 && (tmp.is_matrix_type () || tmp.is_string ()
+                                     || tmp.is_cell ()));
+
                 if (i > 0 && type [i-1] == '(')
                   {
-                    // Possible cs-list.
+                    octave_value_list pidx = idx.back ();
 
-                    octave_value_list xidx = idx.back ();
-
-                    if (! xidx.all_scalars ())
+                    if (tmp.is_undefined ())
                       {
-                        octave_idx_type nel = 1;
-
-                        octave_idx_type nidx = xidx.length ();
-
-                        // Possible cs-list.
-                        bool has_magic_colon = xidx.has_magic_colon ();
-                        dim_vector dims;
-
-                        if (has_magic_colon)
-                          {
-                            // Evaluate everything up to the point preceding the last paren.
-                            if (tmp.is_defined ())
-                              {
-                                if (tmpi < i-1)
-                                  {
-                                    tmpidx.pop_back ();
-                                    tmp = tmp.subsref (type.substr (tmpi, i-1 - tmpi), tmpidx, true);
-                                    tmpi = i - 1;
-                                    tmpidx.clear ();
-                                    tmpidx.push_back (xidx);
-                                  }
-
-                                if (tmp.is_undefined ())
-                                  gripe_invalid_inquiry_subscript ();
-                                else if (tmp.is_cs_list ())
-                                  gripe_indexed_cs_list ();
-
-                                dims = (nidx == 1) ? dim_vector (tmp.numel (), 1) : tmp.dims ();
-                              }
-                            else
-                              gripe_invalid_inquiry_subscript ();
-
-                            if (error_state)
-                              break;
-                          }
-
-                        for (octave_idx_type j = 0; j < nidx; j++)
-                          {
-                            octave_value val = xidx(j);
-
-                            if (val.is_magic_colon ())
-                              nel *= dims (j);
-                            else
-                              nel *= val.numel ();
-                          }
-
-                        retval.numel (nel);
+                        if (pidx.has_magic_colon ())
+                          gripe_invalid_inquiry_subscript ();
+                        else
+                          tmp = Octave_map ();
                       }
+                    else if (autoconv)
+                      tmp = Octave_map ();
+
+                    retval.numel (tmp.numel (pidx));
+
+                    tmpi = i-1;
+                    tmpidx.push_back (tidx);
                   }
                 else
                   {
-                    // A plain struct component can also yield a list reference.
-                    if (tmp.is_defined () && tmpi < i)
-                        tmp = tmp.subsref (type.substr (tmpi, i - tmpi), tmpidx, true);
-
-                    tmpi = i;
-                    tmpidx.clear ();
-
-                    if (tmp.is_cs_list ())
-                      gripe_indexed_cs_list ();
-                    else if (tmp.is_map ())
-                      retval.numel (tmp.numel ());
+                    if (tmp.is_undefined () || autoconv)
+                      {
+                        tmpi = i+1;
+                        tmp = octave_value ();
+                      }
                     else
-                      tmp = Octave_map ();
+                      {
+                        retval.numel (tmp.numel (octave_value_list ()));
 
-                    if (error_state)
-                      break;
-
+                        tmpi = i;
+                        tmpidx.push_back (tidx);
+                      }
                   }
 
                 if (error_state)
                   break;
 
                 idx.push_back (tidx);
-                tmpidx.push_back (tidx);
-
 	      }
 	      break;
 
 	    default:
 	      panic_impossible ();
 	    }
+
+          if (idx.back ().empty ())
+            error ("invalid empty index list");
 
 	  if (error_state)
 	    break;

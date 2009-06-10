@@ -76,6 +76,41 @@ octave_base_value::full_value (void) const
   return octave_value ();
 }
 
+Matrix
+octave_base_value::size (void)
+{
+  const dim_vector dv = dims ();
+  Matrix mdv (1, dv.length ());
+  for (octave_idx_type i = 0; i < dv.length (); i++)
+    mdv(i) = dv(i);
+  return mdv;
+}
+
+octave_idx_type
+octave_base_value::numel (const octave_value_list& idx)
+{
+  octave_idx_type retval;
+
+  octave_idx_type len = idx.length ();
+
+  if (len == 0)
+    retval = numel ();
+  else
+    {
+      const dim_vector dv = dims ().redim (len);
+      retval = 1;
+      for (octave_idx_type i = 0; i < len; i++)
+        {
+          if (idx(i).is_magic_colon ())
+            retval *= dv(i);
+          else
+            retval *= idx(i).numel ();
+        }
+    }
+
+  return retval;
+}
+
 octave_value
 octave_base_value::subsref (const std::string&,
 			    const std::list<octave_value_list>&)

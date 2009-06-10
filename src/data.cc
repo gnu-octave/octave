@@ -2334,18 +2334,14 @@ Returns the number of elements in the object @var{a}.\n\
 @end deftypefn")
 {
   octave_value retval;
+  octave_idx_type nargin = args.length ();
 
-  if (args.length () == 1)
+  if (nargin >= 1)
     {
-      int numel = args(0).numel ();
+      octave_idx_type numel = args(0).numel (args.slice (1, nargin-1));
 
       if (! error_state)
-	{
-	  if (numel < 0)
-	    numel = 0;
-
 	  retval = numel;
-	}
     }
   else
     print_usage ();

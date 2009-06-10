@@ -29,6 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "Array-util.h"
 #include "byte-swap.h"
 #include "oct-locbuf.h"
+#include "lo-mappers.h"
 
 #include "Cell.h"
 #include "defun.h"
@@ -273,6 +274,90 @@ called_from_builtin (void)
   // avoiding dispatch?
 
   return (fcn && fcn->name () == "builtin");
+}
+
+Matrix
+octave_class::size (void)
+{
+  Matrix retval (1, 2, 1.0);
+  octave_value meth = symbol_table::find_method ("size", class_name ());
+
+  if (meth.is_defined ())
+    {
+      count++;
+      octave_value_list args (1, octave_value (this));
+
+      octave_value_list lv = feval (meth.function_value (), args, 1);
+      if (lv.length () == 1 && lv(0).is_matrix_type () && lv(0).dims ().is_vector ())
+        retval = lv(0).matrix_value ();
+      else
+        error ("@%s/size: invalid return value");
+    }
+
+  return retval;
+}
+
+octave_idx_type
+octave_class::numel (const octave_value_list& idx)
+{
+  octave_idx_type retval = -1;
+  const std::string cn = class_name ();
+
+  octave_value meth = symbol_table::find_method ("numel", cn);
+
+  if (meth.is_defined ())
+    {
+      octave_value_list args (idx.length () + 1, octave_value ());
+
+      count++;
+      args(0) = octave_value (this);
+
+      for (octave_idx_type i = 0; i < idx.length (); i++)
+        args(i+1) = idx(i);
+
+      octave_value_list lv = feval (meth.function_value (), args, 1);
+      if (lv.length () == 1 && lv(0).is_scalar_type ())
+        retval = lv(0).idx_type_value (true);
+      else
+        error ("@%s/numel: invalid return value", cn.c_str ());
+    }
+  else
+    {
+      // If method is not found, calculate using size ().
+      const Matrix mdv = size ();
+      octave_idx_type nmdv = mdv.numel ();
+      dim_vector dv; dv.resize (std::max (nmdv, 2));
+      for (octave_idx_type i = 0; i < nmdv && !error_state; i++)
+        {
+          if (mdv(i) == xround (mdv(i)) && xfinite (mdv(i)) && mdv(i) >= 0)
+            dv(i) = mdv(i);
+          else
+            error ("@%s/numel: expected nonnegative integers from @%s/size",
+                   cn.c_str (), cn.c_str ());
+        }
+
+      if (! error_state)
+        {
+          octave_idx_type len = idx.length ();
+          if (len == 0)
+            retval = dv.numel ();
+          else
+            {
+              dv = dv.redim (len);
+              retval = 1;
+              for (octave_idx_type i = 0; i < len; i++)
+                {
+                  if (idx(i).is_magic_colon ())
+                    retval *= dv(i);
+                  else
+                    retval *= idx(i).numel ();
+                }
+            }
+        }
+
+    }
+
+  return retval;
 }
 
 octave_value_list

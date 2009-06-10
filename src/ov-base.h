@@ -151,6 +151,10 @@ public:
 
   virtual void maybe_economize (void) { }
 
+  virtual Matrix size (void); 
+
+  virtual octave_idx_type numel (const octave_value_list&);
+
   virtual octave_value
   subsref (const std::string& type,
 	   const std::list<octave_value_list>& idx);

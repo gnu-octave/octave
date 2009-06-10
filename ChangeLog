@@ -1,3 +1,7 @@
+2009-06-11  Jaroslav Hajek  <highegg@gmail.com>
+
+	* example/@polynomial/numel.m: New method.
+
 2009-05-22 Benjamin Lindner <lindnerb@users.sourceforge.net>
 
 	* mkoctfile.cc.in: mask MSVC specific linker flags for mex output

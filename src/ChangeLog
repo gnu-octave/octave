@@ -1,5 +1,10 @@
 2009-06-09  Jaroslav Hajek  <highegg@gmail.com>
 
+	* octave.cc (octave_main): Call initialize_command_input
+	conditionally. Move line_editing update in front of it.
+
+2009-06-09  Jaroslav Hajek  <highegg@gmail.com>
+
 	* data.cc (Flog2): Fix tests.
 
 2009-06-08  John W. Eaton  <jwe@octave.org>

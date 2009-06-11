@@ -777,10 +777,20 @@ octave_main (int argc, char **argv, int embedded)
   atexit (do_octave_atexit);
 #endif
 
+  // Is input coming from a terminal?  If so, we are probably
+  // interactive.
+
+  interactive = (! embedded
+		 && isatty (fileno (stdin)) && isatty (fileno (stdout)));
+
+  if (! interactive && ! forced_line_editing)
+    line_editing = false;
+
   // These can come after command line args since none of them set any
   // defaults that might be changed by command line options.
 
-  initialize_command_input ();
+  if (line_editing)
+    initialize_command_input ();
 
   if (! inhibit_startup_message)
     std::cout << OCTAVE_STARTUP_MESSAGE "\n" << std::endl;
@@ -805,15 +815,6 @@ octave_main (int argc, char **argv, int embedded)
 
   if (! inhibit_startup_message && reading_startup_message_printed)
     std::cout << std::endl;
-
-  // Is input coming from a terminal?  If so, we are probably
-  // interactive.
-
-  interactive = (! embedded
-		 && isatty (fileno (stdin)) && isatty (fileno (stdout)));
-
-  if (! interactive && ! forced_line_editing)
-    line_editing = false;
 
   // If there is an extra argument, see if it names a file to read.
   // Additional arguments are taken as command line options for the

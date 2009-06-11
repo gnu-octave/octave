@@ -77,7 +77,7 @@
 ## function to integrate, then these can be flagged with the
 ## @code{"WayPoints"} property.  This forces the ends of a sub-interval
 ## to fall on the breakpoints of the function and can result in
-## significantly improved estimated of the error in the integral, faster
+## significantly improved estimation of the error in the integral, faster
 ## computation or both.  For example,
 ##
 ## @example
@@ -191,18 +191,20 @@ function [q, err] = quadgk (f, a, b, varargin)
       ##   \int_{-\infinity_^\infinity f(x) dx = \int_-1^1 f (g(t)) g'(t) dt
       ## where 
       ##   g(t)  = t / (1 - t^2)
-      ##   g'(t) =  1 / (1 + t^2) ^ 2
+      ##   g'(t) =  (1 + t^2) / (1 - t^2) ^ 2
       ## waypoint transform is then
       ##   t =  (-1 + sqrt(1 + 4 * g(t) .^ 2)) ./ (2 * g(t))
       if (!isempty (waypoints))
 	trans = @(x) (-1 + sqrt(1 + 4 * x .^ 2)) ./ (2 * x);
 	subs = [-1; trans(waypoints); 1];
+	## The waypoint transform gives NaN for x=0;
+	subs(isnan(subs)) = 0;
       else
 	subs = linspace (-1, 1, 11)'; 
       endif
       h = 2;
       trans = @(t) t ./ (1 - t.^2);
-      f = @(t) f (t ./ (1 + t .^ 2)) ./ ((1 + t .^ 2) .^ 2);
+      f = @(t) f (trans(t)) .* (1 + t .^ 2) ./ ((1 - t .^ 2) .^ 2);
     elseif (isinf(a))
       ## Formula defined in Shampine paper as two separate steps. One to
       ## weaken singularity at finite end, then a second to transform to
@@ -442,3 +444,5 @@ endfunction
 %!assert (quadgk (@(x) abs (1 - x.^2), 0, 2, 'Waypoints', 1), 2, 1e-6)
 %!assert (quadgk(@(x) 1./(sqrt(x).*(x+1)), 0, Inf), pi, 1e-6)
 %!assert (quadgk (@(z) log (z), 1+1i, 1+1i, 'WayPoints', [1-1i, -1,-1i, -1+1i]), -pi * 1i, 1e-6)
+
+%!assert (quadgk (@(x) exp(-x .^ 2), -Inf, Inf), sqrt(pi), 1e-6)

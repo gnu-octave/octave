@@ -1,3 +1,14 @@
+2009-06-11  John W. Eaton  <jwe@octave.org>
+
+	* display.h (display_info::no_window_system): New static function.
+	(display_info::display_info, display_info::init,
+	display_info::instance_ok): New argument, QUERY.
+	(display_info::init): Skip query if QUERY is false.
+
+	* octave.cc (long_opts, octave_main): Handle --no-window-system option.
+	(NO_WINDOW_SYSTEM_OPTION): New defined value.
+	(usage_string, verbose_usage): Mention --no-window-system option.
+
 2009-06-11  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-class.cc (octave_class::subsref): Set up proper nargout for call to subsref

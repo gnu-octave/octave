@@ -54,6 +54,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <defaults.h>
 #include "Cell.h"
 #include "defun.h"
+#include "display.h"
 #include "error.h"
 #include "file-io.h"
 #include "input.h"
@@ -127,7 +128,7 @@ static const char *usage_string =
   "octave [-?HVdfhiqvx] [--debug] [--echo-commands] [--eval CODE]\n\
        [--exec-path path] [--help] [--image-path path] [--info-file file]\n\
        [--info-program prog] [--interactive] [--line-editing] [--no-history] [--no-init-file]\n\
-       [--no-line-editing] [--no-site-file] [--no-init-path] [-p path]\n\
+       [--no-line-editing] [--no-site-file] [--no-init-path] [--no-window-system] [-p path]\n\
        [--path path] [--silent] [--traditional] [--verbose] [--version] [file]";
 
 // This is here so that it's more likely that the usage message and
@@ -156,6 +157,7 @@ static bool persist = false;
 #define PERSIST_OPTION 11
 #define TRADITIONAL_OPTION 12
 #define LINE_EDITING_OPTION 13
+#define NO_WINDOW_SYSTEM_OPTION 14
 long_options long_opts[] =
   {
     { "debug",            prog_args::no_arg,       0, 'd' },
@@ -175,6 +177,7 @@ long_options long_opts[] =
     { "no-line-editing",  prog_args::no_arg,       0, NO_LINE_EDITING_OPTION },
     { "no-site-file",     prog_args::no_arg,       0, NO_SITE_FILE_OPTION },
     { "no-init-path",     prog_args::no_arg,       0, NO_INIT_PATH_OPTION },
+    { "no-window-system", prog_args::no_arg,       0, NO_WINDOW_SYSTEM_OPTION },
     { "norc",             prog_args::no_arg,       0, 'f' },
     { "path",             prog_args::required_arg, 0, 'p' },
     { "persist",          prog_args::no_arg,       0, PERSIST_OPTION },
@@ -512,6 +515,7 @@ Options:\n\
   --no-init-path          Don't initialize function search path.\n\
   --no-line-editing       Don't use readline for command-line editing.\n\
   --no-site-file          Don't read the site-wide octaverc file.\n\
+  --no-window-system      Disable window system, including graphics.\n\
   --norc, -f              Don't read any initialization files.\n\
   --path PATH, -p PATH    Add PATH to head of function search path.\n\
   --persist               Go interactive after --eval or reading from FILE.\n\
@@ -753,6 +757,10 @@ octave_main (int argc, char **argv, int embedded)
 
 	case NO_INIT_PATH_OPTION:
 	  set_initial_path = false;
+	  break;
+
+	case NO_WINDOW_SYSTEM_OPTION:
+	  display_info::no_window_system ();
 	  break;
 
 	case TRADITIONAL_OPTION:

@@ -10,8 +10,6 @@ to avoid conflicts with non-standard but commonly used Fortran
 intrinsic function names.
 
 John W. Eaton
-jwe@bevo.che.wisc.edu
-University of Wisconsin-Madison
-Department of Chemical Engineering
+jwe@octave.org
 
 Wed Nov 11 17:29:50 1998

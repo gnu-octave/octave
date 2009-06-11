@@ -243,7 +243,7 @@ This line states the name and net address of at least the principal
 author of the library.
 
 @example
-## Author: John W. Eaton <jwe@@bevo.che.wisc.edu>
+## Author: John W. Eaton <jwe@@octave.org>
 @end example
 
 @item Maintainer

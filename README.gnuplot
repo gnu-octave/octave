@@ -15,8 +15,6 @@ on the gnuplot development list.
 
 
 John W. Eaton
-jwe@bevo.che.wisc.edu
-University of Wisconsin-Madison
-Department of Chemical Engineering
+jwe@octave.org
 
 Last updated: Wed, 31 Oct 2007 16:28:39 EDT

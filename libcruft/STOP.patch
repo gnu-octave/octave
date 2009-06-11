@@ -6,10 +6,7 @@ are distributed with Octave, you might want to apply this patch (or
 something like it) to your sources.
 
 John W. Eaton
-jwe@che.utexas.edu
-Department of Chemical Engineering
-The University of Texas at Austin
-
+jwe@octave.org
 
 diff -rc libcruft.orig/blas/xerbla.f libcruft/blas/xerbla.f
 *** libcruft.orig/blas/xerbla.f	Wed Feb 19 21:46:03 1992

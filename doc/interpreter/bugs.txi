@@ -201,18 +201,6 @@ send bug reports for Octave to @email{bug@@octave.org}.
 Octave do not want to receive bug reports.  Those that do have asked to
 be on the mailing list.
 
-As a last resort, send bug reports on paper to:
-
-@example
-@group
-Octave Bugs c/o John W. Eaton
-University of Wisconsin-Madison
-Department of Chemical Engineering
-1415 Engineering Drive
-Madison, Wisconsin 53706  USA
-@end group
-@end example
-
 @node Bug Reporting
 @appendixsec How to Report Bugs
 @cindex bugs, reporting

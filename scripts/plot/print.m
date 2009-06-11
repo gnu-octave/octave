@@ -348,8 +348,15 @@ function print (varargin)
         endif
         termn = "postscript";
       endif
+
+      if (any (dev == "c") || use_color > 0
+          || (! isempty (strfind (dev, "tex")) && use_color == 0))
+	use_color = 1;
+      else
+	use_color = -1;
+      endif
       
-      if (any (dev == "c") || use_color > 0)
+      if (use_color > 0)
         if (force_solid < 0)
 	  options = cstrcat (options, "color dashed ");
         else
@@ -369,8 +376,6 @@ function print (varargin)
       if (! isempty (fontsize))
         options = cstrcat (options, " ", fontsize);
       endif
-      
-      new_terminal = cstrcat (termn, " ", options);
       
     elseif (strcmp (dev, "aifm") || strcmp (dev, "corel"))
       ## Adobe Illustrator, CorelDraw
@@ -421,7 +426,8 @@ function print (varargin)
 
       if (isempty (canvas_size) && isempty (resolution) 
 	  && any (strcmp (dev, {"pbm", "gif", "jpeg", "png"})))
-        options = "large";
+        ##options = "large";
+	options = "";
       elseif (strcmp (dev, "svg"))
 	## Referring to size, either "dynamic" or "fixed"
 	options = "fixed";
@@ -459,10 +465,21 @@ function print (varargin)
     endif
  
     if (__gnuplot_has_feature__ ("variable_GPVAL_TERMINALS"))
-        available_terminals = __gnuplot_get_var__ (gcf, "GPVAL_TERMINALS");
-        available_terminals = regexp (available_terminals, "\\b\\w+\\b", "match");
+      available_terminals = __gnuplot_get_var__ (gcf, "GPVAL_TERMINALS");
+      available_terminals = regexp (available_terminals, "\\b\\w+\\b", "match");
+      ## Favor the cairo terminals.
+      if (strcmp (termn, "pdf") 
+          && any (strcmp (available_terminals, "pdfcairo")))
+        termn = "pdfcairo";
+	gnuplot_supports_term = true;
+      elseif (strcmp (termn, "png")
+              && any (strcmp (available_terminals, "pngcairo")))
+        termn = "pngcairo";
+	gnuplot_supports_term = true;
+      else
         gnuplot_supports_term = any (strcmp (available_terminals, termn));
-    elseif (strcmp (termn, "pdf"))
+      endif
+    elseif (strcmp (termn, "pdf") && have_ghostscript)
       ## Some Linux variants do not include a "pdf" capable gnuplot.
       ## To be safe, use Ghostscript.
       if (have_ghostscript)
@@ -489,7 +506,7 @@ function print (varargin)
 	options = cstrcat (options, " portrait");
 	## All "options" for pdf work for postscript as well.
       else
-        error ("print: the gnuplot terminal, \"%s\", is not available.", termn)
+        error ("print: the device, \"%s\", is not available.", dev)
       endif
     endif
 
@@ -498,7 +515,7 @@ function print (varargin)
     mono = use_color < 0;
 
     if (isempty (resolution))
-      if (any (strcmp (termn, {"emf", "svg"})))
+      if (any (strcmp (dev, {"emf", "svg"})))
         resolution = get (0, "screenpixelsperinch");
       else
         resolution = 150;
@@ -517,7 +534,7 @@ function print (varargin)
 
     unwind_protect
       paper_position_mode = get (gcf, "paperpositionmode");
-      terminals_for_prn = {"postscript", "pdf"};
+      terminals_for_prn = {"postscript", "pdf", "pdfcairo"};
       restore_properties = false;
       is_eps_file = strncmp (dev, "eps", 3);
       output_for_printer = any (strncmp (termn, terminals_for_prn, numel(termn)));
@@ -546,6 +563,9 @@ function print (varargin)
         set (gcf, "paperposition", paperposition_in_inches);
         set (gcf, "paperpositionmode", "manual");
       endif
+      if (use_color < 0)
+	[objs_with_color, color_of_objs] = convert_color2mono (gcf);
+      endif
       if (debug)
         drawnow (new_terminal, name, mono, debug_file);
       else
@@ -558,6 +578,9 @@ function print (varargin)
         for n = 1:numel(props)
           set (gcf, props{n}, p.(props{n}))
         endfor
+      endif
+      if (use_color < 0)
+	convert_mono_to_or_from_color (objs_with_color, color_of_objs, false);
       endif
     end_unwind_protect
 
@@ -581,12 +604,15 @@ function print (varargin)
       [errcode, output] = system (command);
       unlink (name);
       if (errcode)
-        error ("print: Conversion failed, %s -> %s.\nError was:\n%s\n", name, ghostscript_output, output);
+        error ("print: Conversion failed, %s -> %s.\nError was:\n%s\n",
+               name, ghostscript_output, output);
       endif
     elseif (is_eps_file && tight_flag && ! doprint)
       ## If the saved output file is an eps file, use ghostscript to set a tight bbox.
       ## This may result in a smaller or larger bbox geometry.
-      fix_eps_bbox (name, ghostscript_binary);
+      if (have_ghostscript)
+        fix_eps_bbox (name, ghostscript_binary);
+      endif
     endif
 
     if (doprint)
@@ -630,7 +656,8 @@ function bb = fix_eps_bbox (eps_file_name, ghostscript_binary)
   box_string = "%%BoundingBox:";
 
   ghostscript_options = "-q -dBATCH -dSAFER -dNOPAUSE -dTextAlphaBits=4 -sDEVICE=bbox";
-  cmd = sprintf ("\"%s\" %s \"%s\" 2>&1", ghostscript_binary, ghostscript_options, eps_file_name);
+  cmd = sprintf ("\"%s\" %s \"%s\" 2>&1", ghostscript_binary,
+                 ghostscript_options, eps_file_name);
   [status, output] = system (cmd);
 
   if (status == 0)
@@ -677,8 +704,50 @@ function bb = fix_eps_bbox (eps_file_name, ghostscript_binary)
     end_unwind_protect
   elseif (warn_on_no_ghostscript)
     warn_on_no_ghostscript = false;
-    warning ("print.m: Ghostscript could not be used to adjust bounding box.\nError was:\n%s\n", output)
+    warning ("print.m: Ghostscript failed to determine the bounding box.\nError was:\n%s\n", output)
   endif
 
+endfunction
+
+function [h, c] = convert_color2mono (hfig)
+  unwind_protect
+    showhiddenhandles = get (0, "showhiddenhandles");
+    set (0, "showhiddenhandles", "on");
+    h.color = findobj (hfig, "-property", "color");
+    h.facecolor = findobj (hfig, "-property", "facecolor");
+    h.edgecolor = findobj (hfig, "-property", "edgecolor");
+    h.backgroundcolor = findobj (hfig, "-property", "backgroundcolor");
+    h.colormap = findobj (hfig, "-property", "colormap");
+  unwind_protect_cleanup
+    set (0, "showhiddenhandles", showhiddenhandles);
+  end_unwind_protect
+  f = fieldnames (h);
+  for nf = 1:numel(f)
+    if (! isempty (h.(f{nf})))
+      v = get (h.(f{nf}), f{nf});
+      if (! iscell (v))
+        v = {v};
+      endif
+      c.(f{nf}) = v;
+    endif
+  endfor
+  convert_mono_to_or_from_color (h, c, true)
+endfunction
+
+function convert_mono_to_or_from_color (h, c, mono)
+  f = fieldnames (h);
+  for nf = 1:numel(f)
+    for nh = 1:numel (h.(f{nf}))
+      color = c.(f{nf}){nh};
+      ## Ignore color == {"none", "flat", ...}
+      if (isfloat (color))
+	if (mono)
+	  ## Same method as used by rgb2gray in the image pkg.
+	  color = rgb2ntsc (color)(:,1) * ones (1, 3);
+	endif
+        set (h.(f{nf})(nh), f{nf}, color);
+      endif
+    endfor
+  endfor
 endfunction
 

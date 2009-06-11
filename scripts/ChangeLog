@@ -1,3 +1,11 @@
+2009-06-11  Ben Abbott <bpabbott@mac.com>
+
+	* plot/gnuplot_drawnow.m: Add support for pdfcairo and pngcairo
+	terminals. Minor code improvements.
+	* plot/print.m: Associate '-mono' with devices ps, ps2, eps, & eps2.
+	Have '-mono' render all objects in monochrome.
+	For pdf or png output, favor gnuplot's cairo terminals.
+
 2009-06-10  Marco Caliari <marco.caliari@univr.it>
 
 	* plot/hold.m: Add demo including a hggroup.

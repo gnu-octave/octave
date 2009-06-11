@@ -446,7 +446,27 @@ octave_class::subsref (const std::string& type,
 	  count++;
 	  args(0) = octave_value (this);
 
-	  return feval (meth.function_value (), args, nargout);
+          bool maybe_cs_list_query = (type[0] == '.' || type[0] == '{'
+                                      || (type.length () > 1 && type[0] == '('
+                                          && type[1] == '.'));
+
+          if (nargout == 1 && maybe_cs_list_query)
+            {
+              // Set up a proper nargout for the subsref call by calling numel.
+              octave_value_list tmp;
+              if (type[0] != '.') tmp = idx.front ();
+              octave_idx_type true_nargout = numel (tmp);
+              if (! error_state)
+                {
+                  tmp = feval (meth.function_value (), args, true_nargout);
+                  if (true_nargout != 1)
+                    retval(0) = octave_value (tmp, true);
+                  else
+                    retval = tmp;
+                }
+            }
+          else
+            retval = feval (meth.function_value (), args, nargout);
 	}
       else
 	{

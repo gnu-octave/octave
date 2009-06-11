@@ -1,3 +1,8 @@
+2009-06-11  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-class.cc (subsref): Set up proper nargout for call to subsref
+	method.
+
 2009-06-10  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-base.cc (octave_base_value::numel (const octave_value_list&),

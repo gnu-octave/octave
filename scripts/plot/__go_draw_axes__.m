@@ -1028,7 +1028,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
 	  if (isempty (kids))
 	    kids = obj.children;
 	  elseif (! isempty (obj.children))
-	    kids = [obj.children; kids];
+	    kids = [kids; obj.children];
 	  endif
 
 	otherwise

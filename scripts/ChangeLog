@@ -1,5 +1,8 @@
-2009-06-10  Marco Caliari  <marco.caliari@univr.it>
+2009-06-10  Marco Caliari <marco.caliari@univr.it>
 
+	* plot/hold.m: Add demo including a hggroup.
+	* plot/__go_draw_axes__.m: Fix order when pushing group children onto
+	the axes kid list.
 	* general/quadgk.m: Better waypoint transform.
 
 2009-06-09  David Bateman  <dbateman@free.fr>

@@ -127,9 +127,10 @@ static bool verbose_flag = false;
 static const char *usage_string = 
   "octave [-?HVdfhiqvx] [--debug] [--echo-commands] [--eval CODE]\n\
        [--exec-path path] [--help] [--image-path path] [--info-file file]\n\
-       [--info-program prog] [--interactive] [--line-editing] [--no-history] [--no-init-file]\n\
-       [--no-line-editing] [--no-site-file] [--no-init-path] [--no-window-system] [-p path]\n\
-       [--path path] [--silent] [--traditional] [--verbose] [--version] [file]";
+       [--info-program prog] [--interactive] [--line-editing]\n\
+       [--no-history] [--no-init-file] [--no-init-path] [--no-line-editing]\n\
+       [--no-site-file] [--no-window-system] [-p path] [--path path]\n\
+       [--silent] [--traditional] [--verbose] [--version] [file]";
 
 // This is here so that it's more likely that the usage message and
 // the real set of options will agree.  Note: the `+' must come first
@@ -150,18 +151,18 @@ static bool persist = false;
 #define IMAGE_PATH_OPTION 4
 #define INFO_FILE_OPTION 5
 #define INFO_PROG_OPTION 6
-#define NO_INIT_FILE_OPTION 7
-#define NO_LINE_EDITING_OPTION 8
-#define NO_SITE_FILE_OPTION 9
-#define NO_INIT_PATH_OPTION 10
-#define PERSIST_OPTION 11
-#define TRADITIONAL_OPTION 12
-#define LINE_EDITING_OPTION 13
-#define NO_WINDOW_SYSTEM_OPTION 14
+#define LINE_EDITING_OPTION 7
+#define NO_INIT_FILE_OPTION 8
+#define NO_INIT_PATH_OPTION 9
+#define NO_LINE_EDITING_OPTION 10
+#define NO_SITE_FILE_OPTION 11
+#define NO_WINDOW_SYSTEM_OPTION 12
+#define PERSIST_OPTION 13
+#define TRADITIONAL_OPTION 14
 long_options long_opts[] =
   {
-    { "debug",            prog_args::no_arg,       0, 'd' },
     { "braindead",        prog_args::no_arg,       0, TRADITIONAL_OPTION },
+    { "debug",            prog_args::no_arg,       0, 'd' },
     { "doc-cache-file",   prog_args::required_arg, 0, DOC_CACHE_FILE_OPTION },
     { "echo-commands",    prog_args::no_arg,       0, 'x' },
     { "eval",             prog_args::required_arg, 0, EVAL_OPTION },
@@ -174,9 +175,9 @@ long_options long_opts[] =
     { "line-editing",     prog_args::no_arg,       0, LINE_EDITING_OPTION },
     { "no-history",       prog_args::no_arg,       0, 'H' },
     { "no-init-file",     prog_args::no_arg,       0, NO_INIT_FILE_OPTION },
+    { "no-init-path",     prog_args::no_arg,       0, NO_INIT_PATH_OPTION },
     { "no-line-editing",  prog_args::no_arg,       0, NO_LINE_EDITING_OPTION },
     { "no-site-file",     prog_args::no_arg,       0, NO_SITE_FILE_OPTION },
-    { "no-init-path",     prog_args::no_arg,       0, NO_INIT_PATH_OPTION },
     { "no-window-system", prog_args::no_arg,       0, NO_WINDOW_SYSTEM_OPTION },
     { "norc",             prog_args::no_arg,       0, 'f' },
     { "path",             prog_args::required_arg, 0, 'p' },
@@ -747,6 +748,10 @@ octave_main (int argc, char **argv, int embedded)
 	  read_init_files = false;
 	  break;
 
+	case NO_INIT_PATH_OPTION:
+	  set_initial_path = false;
+	  break;
+
 	case NO_LINE_EDITING_OPTION:
 	  line_editing = false;
 	  break;
@@ -755,20 +760,16 @@ octave_main (int argc, char **argv, int embedded)
 	  read_site_files = 0;
 	  break;
 
-	case NO_INIT_PATH_OPTION:
-	  set_initial_path = false;
-	  break;
-
 	case NO_WINDOW_SYSTEM_OPTION:
 	  display_info::no_window_system ();
 	  break;
 
-	case TRADITIONAL_OPTION:
-	  traditional = true;
-	  break;
-
 	case PERSIST_OPTION:
 	  persist = true;
+	  break;
+
+	case TRADITIONAL_OPTION:
+	  traditional = true;
 	  break;
 
 	default:

@@ -1,5 +1,7 @@
 2009-06-11  John W. Eaton  <jwe@octave.org>
 
+	* octave.cc: Keep long options alphabetized.
+
 	* display.h (display_info::no_window_system): New static function.
 	(display_info::display_info, display_info::init,
 	display_info::instance_ok): New argument, QUERY.

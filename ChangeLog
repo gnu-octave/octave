@@ -1,3 +1,8 @@
+2009-06-02  Jaroslav Hajek  <highegg@gmail.com>
+
+	* examples/@polynomial/subsref.m: Handle ':' correctly.
+	* examples/@polynomial/subsasgn.m: Ditto.
+
 2009-06-11  Jaroslav Hajek  <highegg@gmail.com>
 
 	* example/@polynomial/numel.m: New method.

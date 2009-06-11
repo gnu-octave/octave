@@ -15,7 +15,11 @@ function b = subsref (a, s)
       if (numel (ind) != 1)
         error ("polynomial: need exactly one index");
       else
-        b = a.poly(ind{1}+1);
+        if (isnumeric (ind{1}))
+          b = a.poly(ind{1}+1);
+        else
+          b = a.poly(ind{1});
+        endif
       endif
     case "."
       fld = s.subs;

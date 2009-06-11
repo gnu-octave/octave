@@ -195,7 +195,7 @@ function [q, err] = quadgk (f, a, b, varargin)
       ## waypoint transform is then
       ##   t =  (2 * g(t)) ./ (1 + sqrt(1 + 4 * g(t) .^ 2))
       if (!isempty (waypoints))
-	trans = @(x) (2 * x) ./ ((1 + sqrt(1 + 4 * x .^ 2));
+	trans = @(x) (2 * x) ./ (1 + sqrt(1 + 4 * x .^ 2));
 	subs = [-1; trans(waypoints); 1];
       else
 	subs = linspace (-1, 1, 11)'; 

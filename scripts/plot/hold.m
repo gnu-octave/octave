@@ -121,3 +121,18 @@ endfunction
 %! imagesc(1./hilb(4));
 %! hold off
 
+%!demo
+%! clf
+%! colormap (jet)
+%! t = linspace (-3, 3, 50);
+%! [x, y] = meshgrid (t, t);
+%! z = peaks (x, y);
+%! contourf (x, y, z, 10);
+%! hold ("on");
+%! plot (vec (x), vec (y), "^");
+%! patch ([-1.0 1.0 1.0 -1.0 -1.0], [-1.0 -1.0 1.0 1.0 -1.0], "red");
+%! xlim ([-2.0 2.0]);
+%! ylim ([-2.0 2.0]);
+%! colorbar ("SouthOutside");
+%! title ("Test script for some plot functions");
+

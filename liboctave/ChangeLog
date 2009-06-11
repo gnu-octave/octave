@@ -1,5 +1,11 @@
 2009-06-09  Jaroslav Hajek  <highegg@gmail.com>
 
+	* cmd-edit.cc (command_editor::force_default_editor): New static
+	method.
+	* cmd-edit.h: Declare it.
+
+2009-06-09  Jaroslav Hajek  <highegg@gmail.com>
+
 	* lo-mappers.cc (xlog2 (const Complex&, int&), xlog2 (const
 	FloatComplex&, int&)): Use more robust expression.
 

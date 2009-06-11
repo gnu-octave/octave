@@ -2,6 +2,7 @@
 
 	* octave.cc (octave_main): Call initialize_command_input
 	conditionally. Move line_editing update in front of it.
+	Call command_editor::force_default_editor if not line_editing.
 
 2009-06-09  Jaroslav Hajek  <highegg@gmail.com>
 

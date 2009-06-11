@@ -513,7 +513,15 @@ octave_class::subsasgn (const std::string& type,
 	{
 	  octave_value_list args;
 
-	  args(2) = rhs;
+          if (rhs.is_cs_list ())
+            {
+              octave_value_list lrhs = rhs.list_value ();
+              args.resize (2 + lrhs.length ());
+              for (octave_idx_type i = 0; i < lrhs.length (); i++)
+                args(2+i) = lrhs(i);
+            }
+          else
+            args(2) = rhs;
 
 	  args(1) = make_idx_args (type, idx, "subsasgn");
 

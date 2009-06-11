@@ -1,7 +1,9 @@
 2009-06-11  Jaroslav Hajek  <highegg@gmail.com>
 
-	* ov-class.cc (subsref): Set up proper nargout for call to subsref
+	* ov-class.cc (octave_class::subsref): Set up proper nargout for call to subsref
 	method.
+	* ov-class.cc (octave_class::subsref): Unpack cs-list and setup nargin
+	for call to subsasgn.
 
 2009-06-10  Jaroslav Hajek  <highegg@gmail.com>
 

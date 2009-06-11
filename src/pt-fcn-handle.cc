@@ -139,6 +139,10 @@ tree_anon_fcn_handle::rvalue1 (int)
 %!test
 %! assert ((f1 (3)) (10) == 7)
 %!
+%!shared g
+%! g = @(t) feval (@(x) t*x, 2);
+%!assert (g(0.5) == 1)
+%!
 %!shared f, g, h
 %! h = @(x) sin (x);
 %! g = @(f, x) h (x);
@@ -159,42 +163,10 @@ tree_anon_fcn_handle::rvalue (int nargout)
   return retval;
 }
 
-#if 0
-tree_expression *
-tree_anon_fcn_handle::dup (symbol_table::scope_id parent_scope,
-			   symbol_table::context_id parent_context) const
-{
-  tree_parameter_list *param_list = parameter_list ();
-  tree_parameter_list *ret_list = return_list ();
-  tree_statement_list *cmd_list = body ();
-  symbol_table::scope_id this_scope = scope ();
-
-  symbol_table::scope_id new_scope = symbol_table::dup_scope (this_scope);
-
-  if (new_scope > 0)
-    symbol_table::inherit (new_scope, parent_scope, parent_context);
-
-  tree_anon_fcn_handle *new_afh = new
-    tree_anon_fcn_handle (param_list ? param_list->dup (new_scope, 0) : 0,
-			  ret_list ? ret_list->dup (new_scope, 0) : 0,
-			  cmd_list ? cmd_list->dup (new_scope, 0) : 0,
-			  new_scope, line (), column ());
-
-  new_afh->copy_base (*this);
-
-  return new_afh;
-}
-#endif
-
 tree_expression *
 tree_anon_fcn_handle::dup (symbol_table::scope_id,
 			   symbol_table::context_id) const
 {
-  // Instead of simply duplicating, transform to a tree_constant
-  // object that contains an octave_fcn_handle object with the symbol
-  // table of the referenced function primed with values from the
-  // current scope and context.
-
   tree_parameter_list *param_list = parameter_list ();
   tree_parameter_list *ret_list = return_list ();
   tree_statement_list *cmd_list = body ();
@@ -206,33 +178,15 @@ tree_anon_fcn_handle::dup (symbol_table::scope_id,
     symbol_table::inherit (new_scope, symbol_table::current_scope (),
 			   symbol_table::current_context ());
 
-  octave_user_function *uf
-    = new octave_user_function (new_scope,
-				param_list ? param_list->dup (new_scope, 0) : 0,
-				ret_list ? ret_list->dup (new_scope, 0) : 0,
-				cmd_list ? cmd_list->dup (new_scope, 0) : 0);
+  tree_anon_fcn_handle *new_afh = new
+    tree_anon_fcn_handle (param_list ? param_list->dup (new_scope, 0) : 0,
+			  ret_list ? ret_list->dup (new_scope, 0) : 0,
+			  cmd_list ? cmd_list->dup (new_scope, 0) : 0,
+			  new_scope, line (), column ());
 
-  octave_function *curr_fcn = octave_call_stack::current ();
+  new_afh->copy_base (*this);
 
-  if (curr_fcn)
-    {
-      uf->stash_parent_fcn_name (curr_fcn->name ());
-
-      symbol_table::scope_id parent_scope = curr_fcn->parent_fcn_scope ();
-
-      if (parent_scope < 0)
-	parent_scope = curr_fcn->scope ();
-	
-      uf->stash_parent_fcn_scope (parent_scope);
-    }
-
-  uf->mark_as_inline_function ();
-
-  octave_value ov_fcn (uf);
-
-  octave_value fh (new octave_fcn_handle (ov_fcn, "@<anonymous>"));
-
-  return new tree_constant (fh, line (), column ());
+  return new_afh;
 }
 
 void

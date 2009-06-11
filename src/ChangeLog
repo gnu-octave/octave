@@ -1,5 +1,9 @@
 2009-06-10  John W. Eaton  <jwe@octave.org>
 
+	* pt-fcn-handle.cc (tree_anon_fcn_handle::dup): Don't convert to
+	tree_constant object here.  Do inherit from current symbol table
+	scope and context.  New test.
+
 	* lex.l	(handle_identifier): Set lexer_flags.looking_for_object_index
 	false if identifier is a keyword.
 	({IDENT}{S}*): Don't set lexer_flags.looking_for_object_index here.

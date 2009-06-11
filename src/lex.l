@@ -723,11 +723,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     int id_tok = handle_identifier ();
 
     if (id_tok >= 0)
-      {
-        lexer_flags.looking_for_object_index = true;
-
-        COUNT_TOK_AND_RETURN (id_tok);
-      }
+      COUNT_TOK_AND_RETURN (id_tok);
   }
 
 %{
@@ -3104,6 +3100,7 @@ handle_identifier (void)
 
       lexer_flags.quote_is_transpose = true;
       lexer_flags.convert_spaces_to_comma = true;
+      lexer_flags.looking_for_object_index = true;
 
       current_input_column += yyleng;
 
@@ -3141,6 +3138,7 @@ handle_identifier (void)
 	  current_input_column += yyleng;
 	  lexer_flags.quote_is_transpose = false;
 	  lexer_flags.convert_spaces_to_comma = true;
+	  lexer_flags.looking_for_object_index = true;
 
 	  return FCN_HANDLE;
 	}
@@ -3156,6 +3154,7 @@ handle_identifier (void)
 	  current_input_column += yyleng;
 	  lexer_flags.quote_is_transpose = false;
 	  lexer_flags.convert_spaces_to_comma = true;
+	  lexer_flags.looking_for_object_index = false;
 	}
 
       return kw_token;
@@ -3233,6 +3232,9 @@ handle_identifier (void)
     }
 
   current_input_column += yyleng;
+
+  if (tok != "__end__")
+    lexer_flags.looking_for_object_index = true;
 
   return NAME;
 }

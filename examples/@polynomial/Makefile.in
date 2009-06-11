@@ -47,6 +47,7 @@ SOURCES = \
   end.m \
   get.m \
   mtimes.m \
+  numel.m \
   plot.m \
   polynomial.m \
   polynomial_superiorto.m \

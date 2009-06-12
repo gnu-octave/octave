@@ -2470,6 +2470,56 @@ Array<T>::lookup (const Array<T>& values, sortmode mode,
 
 template <class T>
 Array<octave_idx_type> 
+Array<T>::lookupm (const Array<T>& values, sortmode mode) const
+{
+  octave_idx_type n = numel ();
+  octave_sort<T> lsort;
+  Array<octave_idx_type> idx (values.dims ());
+
+  if (mode == UNSORTED)
+    {
+      // auto-detect mode
+      if (n > 1 && lsort.descending_compare (elem (0), elem (n-1)))
+        mode = DESCENDING;
+      else
+        mode = ASCENDING;
+    }
+
+  lsort.set_compare (mode);
+
+  lsort.lookupm (data (), n, values.data (), values.numel (),
+                 idx.fortran_vec ());
+
+  return idx;
+}
+
+template <class T>
+Array<bool> 
+Array<T>::lookupb (const Array<T>& values, sortmode mode) const
+{
+  octave_idx_type n = numel ();
+  octave_sort<T> lsort;
+  Array<bool> match (values.dims ());
+
+  if (mode == UNSORTED)
+    {
+      // auto-detect mode
+      if (n > 1 && lsort.descending_compare (elem (0), elem (n-1)))
+        mode = DESCENDING;
+      else
+        mode = ASCENDING;
+    }
+
+  lsort.set_compare (mode);
+
+  lsort.lookupb (data (), n, values.data (), values.numel (),
+                 match.fortran_vec ());
+
+  return match;
+}
+
+template <class T>
+Array<octave_idx_type> 
 Array<T>::find (octave_idx_type n, bool backward) const
 {
   Array<octave_idx_type> retval;
@@ -2581,6 +2631,12 @@ Array<T>::lookup (T const &, sortmode) const \
 template <> Array<octave_idx_type>  \
 Array<T>::lookup (const Array<T>&, sortmode, bool, bool) const \
 { return Array<octave_idx_type> (); } \
+template <> Array<octave_idx_type>  \
+Array<T>::lookupm (const Array<T>&, sortmode) const \
+{ return Array<octave_idx_type> (); } \
+template <> Array<bool>  \
+Array<T>::lookupb (const Array<T>&, sortmode) const \
+{ return Array<bool> (); } \
 template <> Array<octave_idx_type> \
 Array<T>::find (octave_idx_type, bool) const\
 { return Array<octave_idx_type> (); } \

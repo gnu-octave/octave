@@ -582,6 +582,13 @@ public:
   Array<octave_idx_type> lookup (const Array<T>& values, sortmode mode = UNSORTED, 
                                  bool linf = false, bool rinf = false) const;
 
+  // This looks up only exact matches, giving their indices. Non-exact matches get
+  // the value -1.
+  Array<octave_idx_type> lookupm (const Array<T>& values, sortmode mode = UNSORTED) const;
+
+  // This looks up only exact matches, returning true/false if match.
+  Array<bool> lookupb (const Array<T>& values, sortmode mode = UNSORTED) const;
+
   // Find indices of (at most n) nonzero elements. If n is specified, backward
   // specifies search from backward.
   Array<octave_idx_type> find (octave_idx_type n = -1, bool backward = false) const;

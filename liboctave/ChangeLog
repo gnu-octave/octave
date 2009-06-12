@@ -1,3 +1,11 @@
+2009-06-12  Jaroslav Hajek  <highegg@gmail.com>
+
+	* oct-sort.cc (octave_sort::lookupm, octave_sort::lookupb): New
+	overloaded methods.
+	* oct-sort.h: Declare them.
+	* Array.cc (Array<T>::lookupm, Array<T>::lookupb): New methods.
+	* Array.h: Declare them.
+
 2009-06-09  Jaroslav Hajek  <highegg@gmail.com>
 
 	* cmd-edit.cc (command_editor::force_default_editor): New static

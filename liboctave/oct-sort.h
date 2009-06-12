@@ -148,6 +148,17 @@ public:
                const T* values, octave_idx_type nvalues,
                octave_idx_type *idx, octave_idx_type offset = 0);
 
+  // Lookup an array of values, only returning indices of
+  // exact matches. Non-matches are returned as -1.
+  void lookupm (const T *data, octave_idx_type nel,
+                const T* values, octave_idx_type nvalues,
+                octave_idx_type *idx);
+
+  // Lookup an array of values, only indicating exact matches.
+  void lookupb (const T *data, octave_idx_type nel,
+                const T* values, octave_idx_type nvalues,
+                bool *match);
+
   static bool ascending_compare (typename ref_param<T>::type,
 				 typename ref_param<T>::type);
 
@@ -302,6 +313,15 @@ private:
                const T* values, octave_idx_type nvalues,
                octave_idx_type *idx, octave_idx_type offset, Comp comp);
 
+  template <class Comp>
+  void lookupm (const T *data, octave_idx_type nel,
+                const T* values, octave_idx_type nvalues,
+                octave_idx_type *idx, Comp comp);
+
+  template <class Comp>
+  void lookupb (const T *data, octave_idx_type nel,
+                const T* values, octave_idx_type nvalues,
+                bool *match, Comp comp);
 };
 
 template <class T>

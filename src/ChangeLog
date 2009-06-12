@@ -1,3 +1,9 @@
+2009-06-12  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/lookup.cc (do_numeric_lookup): New template function.
+	(Flookup): Extend to support b and m options, improve diagnostic.
+	Refactor.
+
 2009-06-12  Kai NODA  <nodakai@gmail.com>
 
 	* ls-mat4.h: Fix include guard

@@ -1925,6 +1925,74 @@ octave_sort<T>::lookup (const T *data, octave_idx_type nel,
       lookup (data, nel, values, nvalues, idx, offset, std::ptr_fun (compare));
 }
 
+template <class T> template <class Comp>
+void 
+octave_sort<T>::lookupm (const T *data, octave_idx_type nel,
+                         const T *values, octave_idx_type nvalues,
+                         octave_idx_type *idx, Comp comp)
+{
+  const T *end = data + nel;
+  for (octave_idx_type i = 0; i < nvalues; i++)
+    {
+      const T *ptr = std::lower_bound (data, end, values[i], comp);
+      if (ptr != end && ! comp (values[i], *ptr))
+        idx[i] = ptr - data;
+      else
+        idx[i] = -1;
+    }
+}
+
+template <class T>
+void 
+octave_sort<T>::lookupm (const T *data, octave_idx_type nel,
+                         const T* values, octave_idx_type nvalues,
+                         octave_idx_type *idx)
+{
+#ifdef INLINE_ASCENDING_SORT
+  if (compare == ascending_compare)
+    lookupm (data, nel, values, nvalues, idx, std::less<T> ());
+  else
+#endif
+#ifdef INLINE_DESCENDING_SORT    
+    if (compare == descending_compare)
+      lookupm (data, nel, values, nvalues, idx, std::greater<T> ());
+  else
+#endif
+    if (compare)
+      lookupm (data, nel, values, nvalues, idx, std::ptr_fun (compare));
+}
+
+template <class T> template <class Comp>
+void 
+octave_sort<T>::lookupb (const T *data, octave_idx_type nel,
+                         const T *values, octave_idx_type nvalues,
+                         bool *match, Comp comp)
+{
+  const T *end = data + nel;
+  for (octave_idx_type i = 0; i < nvalues; i++)
+    match[i] = std::binary_search (data, end, values[i], comp);
+}
+
+template <class T>
+void 
+octave_sort<T>::lookupb (const T *data, octave_idx_type nel,
+                         const T* values, octave_idx_type nvalues,
+                         bool *match)
+{
+#ifdef INLINE_ASCENDING_SORT
+  if (compare == ascending_compare)
+    lookupb (data, nel, values, nvalues, match, std::less<T> ());
+  else
+#endif
+#ifdef INLINE_DESCENDING_SORT    
+    if (compare == descending_compare)
+      lookupb (data, nel, values, nvalues, match, std::greater<T> ());
+  else
+#endif
+    if (compare)
+      lookupb (data, nel, values, nvalues, match, std::ptr_fun (compare));
+}
+
 template <class T>
 bool 
 octave_sort<T>::ascending_compare (typename ref_param<T>::type x,

@@ -311,7 +311,7 @@ function print (varargin)
 		"ps", "ps2", "psc", "psc2", "eps", "eps2", ...
 		"epsc", "epsc2", "emf", "pdf", "pslatex", ...
 		"epslatex", "epslatexstandalone", "pstex"};
-    if (! any (strcmp (dev, dev_list)))
+    if (! any (strcmp (dev, dev_list)) && have_ghostscript)
       ghostscript_output = name;
       ghostscript_device = dev;
       dev = "epsc";
@@ -479,7 +479,7 @@ function print (varargin)
       else
         gnuplot_supports_term = any (strcmp (available_terminals, termn));
       endif
-    elseif (strcmp (termn, "pdf") && have_ghostscript)
+    elseif (strcmp (termn, "pdf"))
       ## Some Linux variants do not include a "pdf" capable gnuplot.
       ## To be safe, use Ghostscript.
       if (have_ghostscript)

@@ -1322,7 +1322,7 @@ make_fcn_handle (const std::string& nm)
 	  break;
 
 	case '^':
-	  tnm = 'mpower';
+	  tnm = "mpower";
 	  break;
 
 	case '\\':
@@ -1334,7 +1334,7 @@ make_fcn_handle (const std::string& nm)
 	  break;
 
 	case '>':
-	  tnm = "glt";
+	  tnm = "gt";
 	  break;
 
 	case '&':
@@ -1383,7 +1383,7 @@ make_fcn_handle (const std::string& nm)
 %!      "^", "mpower";
 %!      "\\", "mldivide";
 %!      "<", "lt";
-%!      ">", "glt";
+%!      ">", "gt";
 %!      "&", "and";
 %!      "|", "or"};
 %! for i = 1:rows (x)

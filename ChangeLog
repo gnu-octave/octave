@@ -1,3 +1,8 @@
+2009-06-02  Jaroslav Hajek  <highegg@gmail.com>
+
+	* examples/@polynomial/subsref.m: Handle ':' correctly.
+	* examples/@polynomial/subsasgn.m: Ditto.
+
 2009-05-22 Benjamin Lindner <lindnerb@users.sourceforge.net>
 
 	* mkoctfile.cc.in: mask MSVC specific linker flags for mex output

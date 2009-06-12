@@ -9,7 +9,11 @@ function p = subsasgn (p, s, val)
         error ("polynomial: need exactly one index");
       else
         if (length (s) == 1)
-          p.poly(ind{1}+1) = val;
+          if (isnumeric (ind{1}))
+            p.poly(ind{1}+1) = val; 
+          else
+            p.poly(ind{1}) = val;
+          endif
         else
           error ("polynomial: chained subscripts not allowed for {}");
         endif

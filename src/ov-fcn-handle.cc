@@ -1219,15 +1219,177 @@ make_fcn_handle (const std::string& nm)
 {
   octave_value retval;
 
-  octave_value f = symbol_table::find_function (nm);
+  // Bow to the god of compatibility.
+
+  // FIXME -- it seems ugly to put this here, but there is no single
+  // function in the parser that converts from the operator name to
+  // the corresponding function name.  At least try to do it without N
+  // string compares.
+
+  std::string tnm = nm;
+
+  size_t len = nm.length ();
+
+  if (len == 3 && nm == ".**")
+    tnm = "power";
+  else if (len == 2)
+    {
+      if (nm[0] == '.')
+	{
+	  switch (nm[1])
+	    {
+	    case '\'':
+	      tnm = "transpose";
+	      break;
+
+	    case '+':
+	      tnm = "plus";
+	      break;
+
+	    case '-':
+	      tnm = "minus";
+	      break;
+
+	    case '*':
+	      tnm = "times";
+	      break;
+
+	    case '/':
+	      tnm = "rdivide";
+	      break;
+
+	    case '^':
+	      tnm = "power";
+	      break;
+
+	    case '\\':
+	      tnm = "ldivide";
+	      break;
+	    }
+	}
+      else if (nm[1] == '=')
+	{
+	  switch (nm[0])
+	    {
+	    case '<':
+	      tnm = "le";
+	      break;
+
+	    case '=':
+	      tnm = "eq";
+	      break;
+
+	    case '>':
+	      tnm = "ge";
+	      break;
+
+	    case '~':
+	    case '!':
+	      tnm = "ne";
+	      break;
+	    }
+	}
+      else if (nm == "**")
+	tnm = "mpower";
+    }
+  else if (len == 1)
+    {
+      switch (nm[0])
+	{
+	case '~':
+	case '!':
+	  tnm = "not";
+	  break;
+
+	case '\'':
+	  tnm = "ctranspose";
+	  break;
+
+	case '+':
+	  tnm = "plus";
+	  break;
+
+	case '-':
+	  tnm = "minus";
+	  break;
+
+	case '*':
+	  tnm = "mtimes";
+	  break;
+
+	case '/':
+	  tnm = "mrdivide";
+	  break;
+
+	case '^':
+	  tnm = 'mpower';
+	  break;
+
+	case '\\':
+	  tnm = "mldivide";
+	  break;
+
+	case '<':
+	  tnm = "lt";
+	  break;
+
+	case '>':
+	  tnm = "glt";
+	  break;
+
+	case '&':
+	  tnm = "and";
+	  break;
+
+	case '|':
+	  tnm = "or";
+	  break;
+	}
+    }
+
+  octave_value f = symbol_table::find_function (tnm);
 
   if (f.is_defined ())
-    retval = octave_value (new octave_fcn_handle (f, nm));
+    retval = octave_value (new octave_fcn_handle (f, tnm));
   else
     error ("error creating function handle \"@%s\"", nm.c_str ());
 
   return retval;
 }
+
+/*
+%!test
+%! x = {".**", "power";
+%!      ".'", "transpose";
+%!      ".+", "plus";
+%!      ".-", "minus";
+%!      ".*", "times";
+%!      "./", "rdivide";
+%!      ".^", "power";
+%!      ".\\", "ldivide";
+%!      "<=", "le";
+%!      "==", "eq";
+%!      ">=", "ge";
+%!      "~=", "ne";
+%!      "!=", "ne";
+%!      "**", "mpower";
+%!      "~", "not";
+%!      "!", "not";
+%!      "\'", "ctranspose";
+%!      "+", "plus";
+%!      "-", "minus";
+%!      "*", "mtimes";
+%!      "/", "mrdivide";
+%!      "^", "mpower";
+%!      "\\", "mldivide";
+%!      "<", "lt";
+%!      ">", "glt";
+%!      "&", "and";
+%!      "|", "or"};
+%! for i = 1:rows (x)
+%!   assert (functions (str2func (x{i,1})).function, x{i,2})
+%! endfor
+*/
 
 DEFUN (functions, args, ,
   "-*- texinfo -*-\n\

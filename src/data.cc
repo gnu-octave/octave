@@ -5075,13 +5075,39 @@ This function is equivalent to @code{x'}.\n\
  \
   return retval
 
+#define BINARY_ASSOC_OP_DEFUN_BODY(F) \
+ \
+  octave_value retval; \
+  octave_idx_type nargin = args.length (); \
+ \
+  if (nargin >= 1) \
+    { \
+      retval = args (0); \
+      for (octave_idx_type i = 1; i < nargin; i++) \
+        retval = F (retval, args(i)); \
+    } \
+  else \
+    print_usage (); \
+ \
+  return retval
+
+
 DEFUN (plus, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} plus (@var{x}, @var{y})\n\
+@deftypefnx {Built-in Function} {} plus (@var{x1}, @var{x2}, @dots{})\n\
 This function is equivalent to @code{x + y}.\n\
+If more arguments are given, the summation is applied\n\
+cumulatively from left to right:\n\
+\n\
+@example\n\
+  (@dots{}((x1 + x2) + x3) + @dots{})\n\
+@end example\n\
+\n\
+At least one argument is needed.\n\
 @end deftypefn")
 {
-  BINARY_OP_DEFUN_BODY (op_add);
+  BINARY_ASSOC_OP_DEFUN_BODY (op_add);
 }
 
 DEFUN (minus, args, ,
@@ -5096,10 +5122,19 @@ This function is equivalent to @code{x - y}.\n\
 DEFUN (mtimes, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} mtimes (@var{x}, @var{y})\n\
+@deftypefnx {Built-in Function} {} mtimes (@var{x1}, @var{x2}, @dots{})\n\
 This function is equivalent to @code{x * y}.\n\
+If more arguments are given, the multiplication is applied\n\
+cumulatively from left to right:\n\
+\n\
+@example\n\
+  (@dots{}((x1 * x2) * x3) * @dots{})\n\
+@end example\n\
+\n\
+At least one argument is needed.\n\
 @end deftypefn")
 {
-  BINARY_OP_DEFUN_BODY (op_mul);
+  BINARY_ASSOC_OP_DEFUN_BODY (op_mul);
 }
 
 DEFUN (mrdivide, args, ,
@@ -5186,10 +5221,19 @@ This function is equivalent to @code{x != y}.\n\
 DEFUN (times, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} times (@var{x}, @var{y})\n\
+@deftypefnx {Built-in Function} {} times (@var{x1}, @var{x2}, @dots{})\n\
 This function is equivalent to @code{x .* y}.\n\
+If more arguments are given, the multiplication is applied\n\
+cumulatively from left to right:\n\
+\n\
+@example\n\
+  (@dots{}((x1 .* x2) .* x3) .* @dots{})\n\
+@end example\n\
+\n\
+At least one argument is needed.\n\
 @end deftypefn")
 {
-  BINARY_OP_DEFUN_BODY (op_el_mul);
+  BINARY_ASSOC_OP_DEFUN_BODY (op_el_mul);
 }
 
 DEFUN (rdivide, args, ,
@@ -5222,19 +5266,37 @@ This function is equivalent to @code{x .\\ y}.\n\
 DEFUN (and, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} and (@var{x}, @var{y})\n\
+@deftypefnx {Built-in Function} {} and (@var{x1}, @var{x2}, @dots{})\n\
 This function is equivalent to @code{x & y}.\n\
+If more arguments are given, the logical and is applied\n\
+cumulatively from left to right:\n\
+\n\
+@example\n\
+  (@dots{}((x1 & x2) & x3) & @dots{})\n\
+@end example\n\
+\n\
+At least one argument is needed.\n\
 @end deftypefn")
 {
-  BINARY_OP_DEFUN_BODY (op_el_and);
+  BINARY_ASSOC_OP_DEFUN_BODY (op_el_and);
 }
 
 DEFUN (or, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} or (@var{x}, @var{y})\n\
+@deftypefnx {Built-in Function} {} or (@var{x1}, @var{x2}, @dots{})\n\
 This function is equivalent to @code{x | y}.\n\
+If more arguments are given, the logical or is applied\n\
+cumulatively from left to right:\n\
+\n\
+@example\n\
+  (@dots{}((x1 | x2) | x3) | @dots{})\n\
+@end example\n\
+\n\
+At least one argument is needed.\n\
 @end deftypefn")
 {
-  BINARY_OP_DEFUN_BODY (op_el_or);
+  BINARY_ASSOC_OP_DEFUN_BODY (op_el_or);
 }
 
 static double tic_toc_timestamp = -1.0;

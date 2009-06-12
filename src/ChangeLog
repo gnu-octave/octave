@@ -1,5 +1,10 @@
 2009-06-12  Jaroslav Hajek  <highegg@gmail.com>
 
+	* data.cc (BINARY_ASSOC_OP_DEFUN_BODY): New helper macro.
+	(Fplus, Fmtimes, Ftimes, Fand, For): Allow >= 1 arguments.
+
+2009-06-12  Jaroslav Hajek  <highegg@gmail.com>
+
 	* ov-cell.cc (octave_cell::sort (Array<octave_idx_type>&)): Simplify.
 
 2009-06-11  John W. Eaton  <jwe@octave.org>

@@ -1,3 +1,8 @@
+2009-06-12  Kai NODA  <nodakai@gmail.com>
+
+	* ls-mat4.h: Fix include guard
+	* ov-type-conv.h: Add missing include guard.
+
 2009-06-12  Jaroslav Hajek  <highegg@gmail.com>
 
 	* data.cc (BINARY_ASSOC_OP_DEFUN_BODY): New helper macro.

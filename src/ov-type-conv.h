@@ -20,6 +20,9 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
+#if !defined (octave_ov_type_conv_h)
+#define octave_ov_type_conv_h 1
+
 static 
 octave_value
 octave_type_conv_body (const octave_value &arg, const std::string& name, int t_result)
@@ -102,6 +105,8 @@ octave_type_conv_body (const octave_value &arg, const std::string& name, int t_r
 #define OCTAVE_TYPE_CONV_BODY(NAME) \
   OCTAVE_TYPE_CONV_BODY3 (NAME, octave_ ## NAME ## _matrix, \
 			  octave_ ## NAME ## _scalar)
+
+#endif
 
 /*
 ;;; Local Variables: ***

@@ -1,3 +1,7 @@
+2009-06-12  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-cell.cc (octave_cell::sort (Array<octave_idx_type>&)): Simplify.
+
 2009-06-10  John W. Eaton  <jwe@octave.org>
 
 	* pt-fcn-handle.cc (tree_anon_fcn_handle::dup): Don't convert to

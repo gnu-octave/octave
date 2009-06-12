@@ -323,14 +323,7 @@ function have_enhanced = gnuplot_is_enhanced_term (term)
     ## Determine the default gnuplot terminal.
     term = gnuplot_default_term ();
   endif
-  have_enhanced = false;
-  for n = 1 : length (enhanced_terminals)
-    t = enhanced_terminals{n};
-    if (strncmp (term, t, min (length (term), length (t))))
-      have_enhanced = true;
-      break;
-    endif
-  endfor
+  have_enhanced = any (strncmp (enhanced_terminals, term, min (numel (term), 3)));
 endfunction
 
 function ret = output_to_screen (term)
@@ -338,7 +331,7 @@ function ret = output_to_screen (term)
 endfunction
 
 function ret = term_units_are_pixels (term)
-  ret = any (strcmpi ({"emf", "gif", "jpeg", "pbm", "png", "svg"}, term));
+  ret = any (strncmpi ({"emf", "gif", "jpeg", "pbm", "png", "svg"}, term, 3));
 endfunction
 
 function [fig_size, fig_pos] = get_figsize (h)

@@ -1,3 +1,7 @@
+2009-06-14  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/lookup.cc (Flookup): Support character array lookup.
+
 2009-06-12  John W. Eaton  <jwe@octave.org>
 
 	* ov-fcn-handle.cc (make_fcn_handle): Accept operators which have

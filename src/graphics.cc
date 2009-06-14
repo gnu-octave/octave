@@ -3424,6 +3424,24 @@ axes::properties::calc_ticks_and_lims (array_property& lims,
   ticks = tmp_ticks;
 }
 
+void
+axes::properties::calc_ticklabels (const array_property& ticks,
+				   any_property& labels, bool logscale)
+{
+  Matrix values = ticks.get ().matrix_value ();
+  Cell c (values.dims ());
+  std::ostringstream os;
+
+  for (int i = 0; i < values.numel (); i++)
+    {
+      os.str (std::string ());
+      os << values(i);
+      c(i) = os.str ();
+    }
+
+  labels = c;
+}
+
 static void
 get_children_limits (double& min_val, double& max_val, double& min_pos,
 		     const Matrix& kids, char limit_type)

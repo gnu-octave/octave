@@ -1,3 +1,7 @@
+2009-06-14  Jaroslav Hajek  <highegg@gmail.com>
+
+	* set/ismember.m: Reimplement using lookup & unique.
+
 2009-06-11  Ben Abbott <bpabbott@mac.com>
 
 	* plot/print.m: Fix logic associated with 'have_ghostscript'.

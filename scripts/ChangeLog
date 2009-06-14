@@ -1,3 +1,7 @@
+2009-06-14  Eric Chassande-Mottin <echassandemottin@gmail.com>
+
+	* plot/plotyy.m: Correct behavior when there is no currentfigure.
+
 2009-06-14  Jaroslav Hajek  <highegg@gmail.com>
 
 	* set/ismember.m: Reimplement using lookup & unique.

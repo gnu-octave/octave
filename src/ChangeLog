@@ -1,3 +1,22 @@
+2009-06-14  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* graphics.h.in (axes::properties::xtick, axes::properties::ytick,
+	axes::properties::ztick, axes::properties::xticklabelmode,
+	axes::properties::yticklabelmode, axes::properties::zticklabelmode):
+	Add 'u' modifier to enable updaters.
+	(axes::properties::calc_ticklabels): New function to update tick
+	labels.
+	(axes::properties::update_xtick, axes::properties::update_ytick,
+	axes::properties::update_ztick,
+	axes::properties::update_xticklabelmode,
+	axes::properties::update_yticklabelmode,
+	axes::properties::update_zticklabelmode): Add updaters to update tick
+	labels correctly.
+	(axes::properties::update_xlim, axes::properties::update_ylim,
+	axes::properties::update_zlim): Update tick labels.
+	* graphics.cc (axes::properties::calc_ticklabels): New function to
+	update tick labels.
+
 2009-06-14  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/lookup.cc (Flookup): Support character array lookup.
@@ -190,25 +209,6 @@
 2009-05-25  Jaroslav Hajek  <highegg@gmail.com>
 
 	* variables.cc (do_who): Only output symbols with a defined value.
-
-2009-06-14  Michael Goffioul  <michael.goffioul@gmail.com>
-
-	* graphics.h.in (axes::properties::xtick, axes::properties::ytick,
-	axes::properties::ztick, axes::properties::xticklabelmode,
-	axes::properties::yticklabelmode, axes::properties::zticklabelmode):
-	Add 'u' modifier to enable updaters.
-	(axes::properties::calc_ticklabels): New function to update tick
-	labels.
-	(axes::properties::update_xtick, axes::properties::update_ytick,
-	axes::properties::update_ztick,
-	axes::properties::update_xticklabelmode,
-	axes::properties::update_yticklabelmode,
-	axes::properties::update_zticklabelmode): Add updaters to update tick
-	labels correctly.
-	(axes::properties::update_xlim, axes::properties::update_ylim,
-	axes::properties::update_zlim): Update tick labels.
-	* graphics.cc (axes::properties::calc_ticklabels): New function to
-	update tick labels.
 
 2009-05-22  Michael Goffioul  <michael.goffioul@gmail.com>
 

@@ -65,13 +65,13 @@ find_nonzero_elem_idx (const Array<T>& nda, int nargout,
             jdx.xelem (i) = idx.xelem (i) / nr;
             idx.xelem (i) %= nr;
           }
-        retval(1) = NDArray (jdx, true);
+        retval(1) = octave_value (jdx, true, true);
       }
       // Fall through!
 
     case 1:
     case 0:
-      retval(0) = NDArray (idx, true);
+      retval(0) = octave_value (idx, true, true);
       break;
     }
 

@@ -81,6 +81,15 @@ public:
   octave_matrix (const octave_matrix& m)
     : octave_base_matrix<NDArray> (m) { }
 
+  octave_matrix (const Array<octave_idx_type>& idx, 
+                 bool zero_based = false, bool cache_index = false)
+    : octave_base_matrix<NDArray> (NDArray (idx, zero_based))
+    {
+      // Auto-create cache to speed up subsequent indexing.
+      if (zero_based && cache_index)
+        set_idx_cache (idx_vector (idx));
+    }
+
   ~octave_matrix (void) { }
 
   octave_base_value *clone (void) const { return new octave_matrix (*this); }

@@ -1,5 +1,18 @@
 2009-06-15  Jaroslav Hajek  <highegg@gmail.com>
 
+	* ov-re-mat.h (octave_matrix::octave_matrix (const Array<octave_idx_type>&,
+	bool)): New constructor.
+	* ov.cc (octave_value::octave_value (const Array<octave_idx_type>&,
+	bool)): New constructor.
+	* ov.h: Declare it.
+
+	* data.cc (Fsort, F__sort_rows_idx__): Use the new constructor.
+	* DLD-FUNCTIONS/find.cc (Ffind): Ditto.
+	* DLD-FUNCTIONS/lookup.cc (Flookup): Ditto.
+	* DLD-FUNCTIONS/max.cc (Fmax, Fmin, Fcummax, Fcummin): Ditto.
+
+2009-06-15  Jaroslav Hajek  <highegg@gmail.com>
+
 	* ov-base-mat.h (octave_base_matrix::idx_cache): New member field.
 	(octave_base_matrix::typ): Turn to MatrixType *.
 	(octave_base_matrix::octave_base_matrix (...)): Update constructors.

@@ -125,7 +125,9 @@ do_numeric_lookup (const ArrayT& array, const ArrayT& values,
       else
         idx = array.lookup (values, UNSORTED, left_inf, right_inf);
 
-      retval = NDArray (idx, match_idx);
+      // if left_inf is specified, the result is a valid 1-based index.
+      bool cache_index = left_inf && array.numel () > 1;
+      retval = octave_value (idx, match_idx, cache_index);
     }
 
   return retval;
@@ -314,7 +316,7 @@ For string lookup, 'i' indicates case-insensitive comparison.\n\
                             str_y.nelem (), idx.fortran_vec ());
             }
 
-          retval = NDArray (idx, match_idx);
+          retval = octave_value (idx, match_idx);
         }
     }
   else

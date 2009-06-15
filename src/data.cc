@@ -5628,7 +5628,7 @@ ordered lists.\n\
       Array<octave_idx_type> sidx;
 
       retval (0) = arg.sort (sidx, dim, smode);
-      retval (1) = NDArray (sidx, true);
+      retval (1) = octave_value (sidx, true, true);
     }
   else
     retval(0) = arg.sort (dim, smode);
@@ -5858,7 +5858,7 @@ Undocumented internal function.\n\
     {
       Array<octave_idx_type> idx = arg.sort_rows_idx (smode);
 
-      retval = NDArray (idx, true);
+      retval = octave_value (idx, true, true);
     }
   else
     error ("__sort_rows_idx__: needs a 2-dimensional object");

@@ -974,6 +974,13 @@ octave_value::octave_value (const ArrayN<octave_uint64>& inda)
   maybe_mutate ();
 }
 
+octave_value::octave_value (const Array<octave_idx_type>& inda, bool zero_based,
+                            bool cache_index)
+  : rep (new octave_matrix (inda, zero_based, cache_index))
+{
+  maybe_mutate ();
+}
+
 octave_value::octave_value (double base, double limit, double inc)
   : rep (new octave_range (base, limit, inc))
 {

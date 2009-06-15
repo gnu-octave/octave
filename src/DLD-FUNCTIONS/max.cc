@@ -99,7 +99,7 @@ along with Octave; see the file COPYING.  If not, see
       octave_idx_type len = index.numel (); \
  \
       if (len > 0) \
-	retval(1) = NDArray (index, true, true);	\
+	retval(1) = octave_value (index, true, true);	\
       else \
 	retval(1) = NDArray (); \
     } \
@@ -266,7 +266,7 @@ along with Octave; see the file COPYING.  If not, see
       octave_idx_type len = index.numel (); \
  \
       if (len > 0) \
-	retval(1) = NDArray (index, true, true);	\
+	retval(1) = octave_value (index, true, true);	\
       else \
 	retval(1) = NDArray (); \
     } \
@@ -403,7 +403,7 @@ along with Octave; see the file COPYING.  If not, see
       octave_idx_type len = index.numel (); \
  \
       if (len > 0) \
-	retval(1) = NDArray (index, true, true);	\
+	retval(1) = octave_value (index, true, true);	\
       else \
 	retval(1) = NDArray (); \
     } \
@@ -489,7 +489,7 @@ along with Octave; see the file COPYING.  If not, see
       octave_idx_type len = index.numel (); \
  \
       if (len > 0) \
-	retval(1) = NDArray (index, true, true);	\
+	retval(1) = octave_value (index, true, true);	\
       else \
 	retval(1) = NDArray (); \
     } \

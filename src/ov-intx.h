@@ -316,7 +316,8 @@ public:
       OCTAVE_INT_T::clear_conv_flag ();
    }
 
-  idx_vector index_vector (void) const { return idx_vector (matrix); }
+  idx_vector index_vector (void) const 
+    { return idx_cache ? *idx_cache : set_idx_cache (idx_vector (matrix)); }
 
   int write (octave_stream& os, int block_size,
 	     oct_data_conv::data_type output_type, int skip,

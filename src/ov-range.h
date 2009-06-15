@@ -56,26 +56,28 @@ octave_range : public octave_base_value
 public:
 
   octave_range (void)
-    : octave_base_value () { }
+    : octave_base_value (), idx_cache () { }
 
   octave_range (double base, double limit, double inc)
-    : octave_base_value (), range (base, limit, inc)
+    : octave_base_value (), range (base, limit, inc), idx_cache ()
       {
 	if (range.nelem () < 0)
 	  ::error ("invalid range");
       }
 
   octave_range (const Range& r)
-    : octave_base_value (), range (r)
+    : octave_base_value (), range (r), idx_cache ()
       {
 	if (range.nelem () < 0 && range.nelem () != -2)
 	  ::error ("invalid range");
       }
 
   octave_range (const octave_range& r)
-    : octave_base_value (), range (r.range) { }
+    : octave_base_value (), range (r.range), 
+      idx_cache (r.idx_cache ? new idx_vector (*r.idx_cache) : 0)
+    { }
 
-  ~octave_range (void) { }
+  ~octave_range (void) { clear_cached_info (); }
 
   octave_base_value *clone (void) const { return new octave_range (*this); }
 
@@ -98,7 +100,8 @@ public:
   octave_value do_index_op (const octave_value_list& idx,
 			    bool resize_ok = false);
 
-  idx_vector index_vector (void) const { return idx_vector (range); }
+  idx_vector index_vector (void) const 
+    { return idx_cache ? *idx_cache : set_idx_cache (idx_vector (range)); }
 
   dim_vector dims (void) const
     { 
@@ -334,6 +337,20 @@ public:
 private:
 
   Range range;
+
+  idx_vector set_idx_cache (const idx_vector& idx) const
+    {
+      delete idx_cache;
+      idx_cache = idx ? new idx_vector (idx) : 0;
+      return idx;
+    }
+
+  void clear_cached_info (void) const
+    {
+      delete idx_cache; idx_cache = 0;
+    } 
+
+  mutable idx_vector *idx_cache;
 
   DECLARE_OCTAVE_ALLOCATOR
 

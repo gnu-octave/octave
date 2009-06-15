@@ -88,7 +88,8 @@ public:
 
   octave_base_value *try_narrowing_conversion (void);
 
-  idx_vector index_vector (void) const { return idx_vector (matrix); }
+  idx_vector index_vector (void) const 
+    { return idx_cache ? *idx_cache : set_idx_cache (idx_vector (matrix)); }
 
   bool is_real_matrix (void) const { return true; }
 

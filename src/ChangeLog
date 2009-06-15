@@ -1,3 +1,22 @@
+2009-06-15  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-base-mat.h (octave_base_matrix::idx_cache): New member field.
+	(octave_base_matrix::typ): Turn to MatrixType *.
+	(octave_base_matrix::octave_base_matrix (...)): Update constructors.
+	(octave_base_matrix::clear_cached_info,
+	octave_base_matrix::set_idx_cache): New member functions.
+	* ov-base-mat.cc (octave_base_matrix::assign,
+	octave_base_matrix::delete_elements): Call clear_cached_info here.
+	* ov-re-mat.h (octave_matrix::index_vector): Use idx_cache.
+	* ov-flt-re-mat.h (octave_float_matrix::index_vector): Ditto.
+	* ov-bool-mat.h (octave_bool_matrix::index_vector): Ditto.
+	* ov-intx.h (OCTAVE_VALUE_INT_MATRIX_T::index_vector): Ditto.
+	* ov-range.h (octave_range::idx_cache): New member field.
+	(octave_range::octave_range (...)): Update constructors.
+	(octave_range::clear_cached_info,
+	octave_base_matrix::set_idx_cache): New member functions.
+	(octave_range::idx_vector): Use idx_cache.
+
 2009-06-14  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* graphics.h.in (axes::properties::xtick, axes::properties::ytick,

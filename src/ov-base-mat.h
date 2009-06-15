@@ -51,19 +51,23 @@ octave_base_matrix : public octave_base_value
 public:
 
   octave_base_matrix (void)
-    : octave_base_value (), typ (MatrixType ()) { }
+    : octave_base_value (), typ (), idx_cache () { }
 
   octave_base_matrix (const MT& m, const MatrixType& t = MatrixType ())
-    : octave_base_value (), matrix (m), typ (t)
+    : octave_base_value (), matrix (m), 
+      typ (t.is_known () ? new MatrixType(t) : 0), idx_cache ()
   {
     if (matrix.ndims () == 0)
       matrix.resize (dim_vector (0, 0));
   }
 
   octave_base_matrix (const octave_base_matrix& m)
-    : octave_base_value (), matrix (m.matrix), typ (m.typ) { }
+    : octave_base_value (), matrix (m.matrix), 
+      typ (m.typ ? new MatrixType (*m.typ) : 0), 
+      idx_cache (m.idx_cache ? new idx_vector (*m.idx_cache) : 0) 
+    { }
 
-  ~octave_base_matrix (void) { }
+  ~octave_base_matrix (void) { clear_cached_info (); }
 
   octave_base_value *clone (void) const { return new octave_base_matrix (*this); }
   octave_base_value *empty_clone (void) const { return new octave_base_matrix (); }
@@ -113,9 +117,8 @@ public:
   octave_value all (int dim = 0) const { return matrix.all (dim); }
   octave_value any (int dim = 0) const { return matrix.any (dim); }
 
-  MatrixType matrix_type (void) const { return typ; }
-  MatrixType matrix_type (const MatrixType& _typ) const
-    { MatrixType ret = typ; typ = _typ; return ret; }
+  MatrixType matrix_type (void) const { return typ ? *typ : MatrixType (); }
+  MatrixType matrix_type (const MatrixType& _typ) const;
 
   octave_value diag (octave_idx_type k = 0) const
     { return octave_value (matrix.diag (k)); }
@@ -159,7 +162,21 @@ protected:
 
   MT matrix;
 
-  mutable MatrixType typ;
+  idx_vector set_idx_cache (const idx_vector& idx) const
+    {
+      delete idx_cache;
+      idx_cache = idx ? new idx_vector (idx) : 0;
+      return idx;
+    }
+
+  void clear_cached_info (void) const
+    {
+      delete typ; typ = 0;
+      delete idx_cache; idx_cache = 0;
+    } 
+
+  mutable MatrixType *typ;
+  mutable idx_vector *idx_cache;
 };
 
 #endif

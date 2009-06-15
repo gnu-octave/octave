@@ -273,8 +273,17 @@ octave_base_matrix<MT>::assign (const octave_value_list& idx, const MT& rhs)
       break;
     }
 
-  // Invalidate the matrix type
-  typ.invalidate_type ();
+  // Clear cache.
+  clear_cached_info ();
+}
+
+template <class MT>
+MatrixType 
+octave_base_matrix<MT>::matrix_type (const MatrixType& _typ) const
+{ 
+  delete typ; 
+  typ = new MatrixType (_typ);
+  return *typ;
 }
 
 template <class MT>
@@ -368,8 +377,8 @@ octave_base_matrix<MT>::assign (const octave_value_list& idx,
       break;
     }
 
-  // Invalidate the matrix type
-  typ.invalidate_type ();
+  // Clear cache.
+  clear_cached_info ();
 }
 
 template <class MT>
@@ -385,8 +394,8 @@ octave_base_matrix<MT>::delete_elements (const octave_value_list& idx)
 
   matrix.delete_elements (ra_idx);
 
-  // Invalidate the matrix type
-  typ.invalidate_type ();
+  // Clear cache.
+  clear_cached_info ();
 }
 
 template <class MT>

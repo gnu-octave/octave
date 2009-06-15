@@ -1,3 +1,7 @@
+2009-06-15  Jaroslav Hajek  <highegg@gmail.com>
+
+	* NEWS: Update.
+
 2009-06-02  Jaroslav Hajek  <highegg@gmail.com>
 
 	* examples/@polynomial/subsref.m: Handle ':' correctly.

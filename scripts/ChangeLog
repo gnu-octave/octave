@@ -1,3 +1,8 @@
+2009-06-14  Ben Abbott <bpabbott@mac.com>
+
+	* plot/plotyy.m: Fix compatibility with subplot, add listeners for
+	dataaspectratio, and add a demo.
+
 2009-06-14  Eric Chassande-Mottin <echassandemottin@gmail.com>
 
 	* plot/plotyy.m: Correct behavior when there is no currentfigure.

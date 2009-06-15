@@ -75,7 +75,14 @@ function [Ax, H1, H2] = plotyy (varargin)
     if (isempty (f))
       f = figure ();
     endif
-    ax = get (f, "children");
+    ca = get (f, "currentaxes");
+    if (isempty (ca))
+      ax = [];
+    elseif (strcmp (get (ca, "tag"), "plotyy"));
+      ax = get (ca, "__plotyy_axes__");
+    else
+      ax = ca;
+    endif
     if (length (ax) > 2)
       for i = 3 : length (ax)
         delete (ax (i));
@@ -175,10 +182,16 @@ function [ax, h1, h2] = __plotyy__ (ax, x1, y1, x2, y2, varargin)
   addlistener (ax(2), "position", {@update_position, ax(1)});
   addlistener (ax(1), "view", {@update_position, ax(2)});
   addlistener (ax(2), "view", {@update_position, ax(1)});
+  addlistener (ax(1), "dataaspectratio", {@update_position, ax(2)});
+  addlistener (ax(2), "dataaspectratio", {@update_position, ax(1)});
 
   ## Tag the plotyy axes, so we can use that information
   ## not to mirror the y axis tick marks
   set (ax, "tag", "plotyy")
+
+  ## Store the axes handles for the sister axes.
+  addproperty ("__plotyy_axes__", ax(1), "data", ax);
+  addproperty ("__plotyy_axes__", ax(2), "data", ax);
 
 endfunction
 
@@ -191,6 +204,19 @@ endfunction
 %! xlabel ("X");
 %! ylabel (ax(1), "Axis 1");
 %! ylabel (ax(2), "Axis 2");
+
+%!demo
+%! clf
+%! x = linspace (-1, 1, 201);
+%! subplot (2, 2, 1)
+%! plotyy (x, sin(pi*x), x, 10*cos(pi*x))
+%! subplot (2, 2, 2)
+%! surf (peaks (25))
+%! subplot (2, 2, 3)
+%! contour (peaks (25))
+%! subplot (2, 2, 4)
+%! plotyy (x, 10*sin(2*pi*x), x, cos(2*pi*x))
+%! axis square
 
 function deleteplotyy (h, d, ax2, t2)
   if (ishandle (ax2) && strcmp (get (ax2, "type"), "axes") && 
@@ -210,10 +236,16 @@ function update_position (h, d, ax2)
       recursion = true;
       position = get (h, "position");
       view = get (h, "view");
+      dataaspectratio = get (h, "dataaspectratio");
       oldposition = get (ax2, "position");
       oldview = get (ax2, "view");
-      if (! (isequal (position, oldposition) && isequal (view, oldview)))
-	set (ax2, "position", position, "view", view);
+      olddataaspectratio = get (ax2, "dataaspectratio");
+      if (! (isequal (position, oldposition)
+             && isequal (view, oldview)
+             && isequal (dataaspectratio, olddataaspectratio)))
+	set (ax2, "position", position,
+                  "view", view,
+		  "dataaspectratio", dataaspectratio);
       endif
     unwind_protect_cleanup
       recursion = false;

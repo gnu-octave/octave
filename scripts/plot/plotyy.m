@@ -237,15 +237,18 @@ function update_position (h, d, ax2)
       position = get (h, "position");
       view = get (h, "view");
       dataaspectratio = get (h, "dataaspectratio");
+      dataaspectratiomode = get (h, "dataaspectratiomode");
       oldposition = get (ax2, "position");
       oldview = get (ax2, "view");
       olddataaspectratio = get (ax2, "dataaspectratio");
-      if (! (isequal (position, oldposition)
-             && isequal (view, oldview)
-             && isequal (dataaspectratio, olddataaspectratio)))
-	set (ax2, "position", position,
-                  "view", view,
-		  "dataaspectratio", dataaspectratio);
+      olddataaspectratiomode = get (ax2, "dataaspectratiomode");
+      if (! (isequal (position, oldposition) && isequal (view, oldview)))
+	set (ax2, "position", position, "view", view)
+      endif
+      if (! (isequal (dataaspectratio, olddataaspectratio) 
+	     && isequal (dataaspectratiomode, olddataaspectratiomode)))
+	set (ax2, "dataaspectratio", dataaspectratio);
+	set (ax2, "dataaspectratiomode", dataaspectratiomode);
       endif
     unwind_protect_cleanup
       recursion = false;

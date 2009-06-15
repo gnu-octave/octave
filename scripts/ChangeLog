@@ -1,3 +1,8 @@
+2009-06-15  Ben Abbott <bpabbott@mac.com>
+
+	* plot/plotyy.m: Consider dataaspectratiomode before changing
+	dataaspectratio.
+
 2009-06-14  Ben Abbott <bpabbott@mac.com>
 
 	* plot/plotyy.m: Fix compatibility with subplot, add listeners for

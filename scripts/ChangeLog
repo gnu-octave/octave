@@ -1,5 +1,6 @@
 2009-06-15  Ben Abbott <bpabbott@mac.com>
 
+	* plot/quiver.m: Add 'clf' to demos.
 	* plot/plotyy.m: Consider dataaspectratiomode before changing
 	dataaspectratio.
 

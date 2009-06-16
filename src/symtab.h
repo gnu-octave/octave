@@ -939,11 +939,12 @@ public:
 		instance = p->second;
 
 		xcurrent_scope = scope;
+
+                xcurrent_context = context;
 	      }
 	  }
-
-	if (! error_state)
-	  xcurrent_context = context;
+        else
+          xcurrent_context = context;
       }
   }
 

@@ -73,21 +73,19 @@ function [Ax, H1, H2] = plotyy (varargin)
   else
     f = get (0, "currentfigure");
     if (isempty (f))
+      f = figure ();
+    endif
+    ax = get (f, "children");
+    if (length (ax) > 2)
+      for i = 3 : length (ax)
+        delete (ax (i));
+      endfor
+      ax = ax(1:2);
+    elseif (length (ax) == 1)
+      ax(2) = axes ();
+    elseif (isempty (ax))
       ax(1) = axes ();
       ax(2) = axes ();
-    else
-      ax = get (f, "children");
-      if (length (ax) > 2)
-	for i = 3 : length (ax)
-	  delete (ax (i));
-	endfor
-	ax = ax(1:2);
-      elseif (length (ax) == 1)
-        ax(2) = axes ();
-      elseif (isempty (ax))
-	ax(1) = axes ();
-	ax(2) = axes ();
-      endif
     endif
     if (nargin < 2)
       varargin = {};

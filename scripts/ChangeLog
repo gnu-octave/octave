@@ -1,3 +1,7 @@
+2009-06-14  Eric Chassande-Mottin <echassandemottin@gmail.com>
+
+	* plot/plotyy.m: Correct behavior when there is no currentfigure.
+
 2009-06-11  Ben Abbott <bpabbott@mac.com>
 
 	* plot/print.m: Fix logic associated with 'have_ghostscript'.

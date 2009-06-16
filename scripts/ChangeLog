@@ -1,5 +1,6 @@
 2009-06-14  Ben Abbott <bpabbott@mac.com>
 
+	* plot/quiver.m: Add 'clf' to demos.
 	* plot/plotyy.m: Fix compatibility with subplot, add listeners for
 	dataaspectratio, and add a demo.
 

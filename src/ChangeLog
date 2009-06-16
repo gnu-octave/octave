@@ -1,3 +1,8 @@
+2009-06-16  Jaroslav Hajek  <highegg@gmail.com>
+
+	* symtab.h (symbol_table::set_scope_and_context): Avoid checking
+	error_state for setting context.
+
 2009-06-12  Kai NODA  <nodakai@gmail.com>
 
 	* ls-mat4.h: Fix include guard

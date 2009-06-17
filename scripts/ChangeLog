@@ -1,3 +1,8 @@
+2009-06-17  Bertrand Roessli <bertrand.roessli@psi.ch>
+
+	* plot/axis.m: Fix bug for 'axis tight' with multiple surface plots,
+	add demo.
+
 2009-06-15  Ben Abbott <bpabbott@mac.com>
 
 	* plot/quiver.m: Add 'clf' to demos.

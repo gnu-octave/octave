@@ -500,7 +500,7 @@ octave_value
 octave_base_diag<DMT, MT>::to_dense (void) const
 {
   if (! dense_cache.is_defined ())
-      dense_cache = MT (matrix);
+    dense_cache = MT (matrix);
 
   return dense_cache;
 }

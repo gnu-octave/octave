@@ -498,11 +498,10 @@ public:
 
   void *get_data (void) const
   {
-    void *retval = 0;
+    void *retval = val.mex_get_data ();
 
-    if (is_char ()
-	|| (is_numeric () && is_real_type () && ! is_range ()))
-      retval = maybe_mark_foreign (val.mex_get_data ());
+    if (retval)
+      maybe_mark_foreign (retval);
     else
       request_mutation ();
 

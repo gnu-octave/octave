@@ -1,3 +1,11 @@
+2009-06-18  Jaroslav Hajek  <highegg@gmail.com>
+
+	* dMatrix.cc (xgemm): Replace resize() with uninitialized allocations
+	where appropriate.
+	* fMatrix.cc (xgemm): Ditto.
+	* CMatrix.cc (xgemm): Ditto.
+	* fCMatrix.cc (xgemm): Ditto.
+
 2009-06-12  Jaroslav Hajek  <highegg@gmail.com>
 
 	* oct-sort.cc (octave_sort::lookupm, octave_sort::lookupb): New

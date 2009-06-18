@@ -1,3 +1,8 @@
+2009-06-18  Ben Abbott <bpabbott@mac.com>
+
+	* plot/__go_draw_axes__.m: Change the default x11 fontspec from '*,0'
+	to ',0' to avoid delays searching the fontpath for a font named '*'.
+
 2009-06-18  Daniel Gualberto <daniel@alacer.com.br>
 
 	* polynomial/mpoles.m: Fix infinite loop for a multiplicity of

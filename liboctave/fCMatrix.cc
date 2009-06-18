@@ -2896,7 +2896,7 @@ operator * (const FloatComplexColumnVector& v, const FloatComplexRowVector& a)
     {
       octave_idx_type a_len = a.length ();
 
-      retval.resize (len, a_len);
+      retval = FloatComplexMatrix (len, a_len);
       FloatComplex *c = retval.fortran_vec ();
 
       F77_XFCN (cgemm, CGEMM, (F77_CONST_CHAR_ARG2 ("N", 1),
@@ -3781,12 +3781,12 @@ xgemm (bool transa, bool conja, const FloatComplexMatrix& a,
   else
     {
       if (a_nr == 0 || a_nc == 0 || b_nc == 0)
-	retval.resize (a_nr, b_nc, 0.0);
+	retval = FloatComplexMatrix (a_nr, b_nc, 0.0);
       else if (a.data () == b.data () && a_nr == b_nc && transa != transb)
         {
 	  octave_idx_type lda = a.rows ();
 
-          retval.resize (a_nr, b_nc);
+          retval = FloatComplexMatrix (a_nr, b_nc);
 	  FloatComplex *c = retval.fortran_vec ();
 
           const char *ctransa = get_blas_trans_arg (transa, conja);
@@ -3822,7 +3822,7 @@ xgemm (bool transa, bool conja, const FloatComplexMatrix& a,
 	  octave_idx_type lda = a.rows (), tda = a.cols ();
 	  octave_idx_type ldb = b.rows (), tdb = b.cols ();
 
-	  retval.resize (a_nr, b_nc);
+	  retval = FloatComplexMatrix (a_nr, b_nc);
 	  FloatComplex *c = retval.fortran_vec ();
 
 	  if (b_nc == 1 && a_nr == 1)

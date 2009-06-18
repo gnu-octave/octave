@@ -2592,7 +2592,7 @@ operator * (const ColumnVector& v, const RowVector& a)
     {
       octave_idx_type a_len = a.length ();
 
-      retval.resize (len, a_len);
+      retval = Matrix (len, a_len);
       double *c = retval.fortran_vec ();
 	  
       F77_XFCN (dgemm, DGEMM, (F77_CONST_CHAR_ARG2 ("N", 1),
@@ -3188,12 +3188,12 @@ xgemm (bool transa, const Matrix& a, bool transb, const Matrix& b)
   else
     {
       if (a_nr == 0 || a_nc == 0 || b_nc == 0)
-	retval.resize (a_nr, b_nc, 0.0);
+	retval = Matrix (a_nr, b_nc, 0.0);
       else if (a.data () == b.data () && a_nr == b_nc && transa != transb)
         {
 	  octave_idx_type lda = a.rows ();
 
-          retval.resize (a_nr, b_nc);
+          retval = Matrix (a_nr, b_nc);
 	  double *c = retval.fortran_vec ();
 
           const char *ctransa = get_blas_trans_arg (transa);
@@ -3213,7 +3213,7 @@ xgemm (bool transa, const Matrix& a, bool transb, const Matrix& b)
 	  octave_idx_type lda = a.rows (), tda = a.cols ();
 	  octave_idx_type ldb = b.rows (), tdb = b.cols ();
 
-	  retval.resize (a_nr, b_nc);
+	  retval = Matrix (a_nr, b_nc);
 	  double *c = retval.fortran_vec ();
 
 	  if (b_nc == 1)

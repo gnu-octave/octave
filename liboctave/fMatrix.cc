@@ -2591,7 +2591,7 @@ operator * (const FloatColumnVector& v, const FloatRowVector& a)
     {
       octave_idx_type a_len = a.length ();
 
-      retval.resize (len, a_len);
+      retval = FloatMatrix (len, a_len);
       float *c = retval.fortran_vec ();
 	  
       F77_XFCN (sgemm, SGEMM, (F77_CONST_CHAR_ARG2 ("N", 1),
@@ -3187,12 +3187,12 @@ xgemm (bool transa, const FloatMatrix& a, bool transb, const FloatMatrix& b)
   else
     {
       if (a_nr == 0 || a_nc == 0 || b_nc == 0)
-	retval.resize (a_nr, b_nc, 0.0);
+	retval = FloatMatrix (a_nr, b_nc, 0.0);
       else if (a.data () == b.data () && a_nr == b_nc && transa != transb)
         {
 	  octave_idx_type lda = a.rows ();
 
-          retval.resize (a_nr, b_nc);
+          retval = FloatMatrix (a_nr, b_nc);
 	  float *c = retval.fortran_vec ();
 
           const char *ctransa = get_blas_trans_arg (transa);
@@ -3212,7 +3212,7 @@ xgemm (bool transa, const FloatMatrix& a, bool transb, const FloatMatrix& b)
 	  octave_idx_type lda = a.rows (), tda = a.cols ();
 	  octave_idx_type ldb = b.rows (), tdb = b.cols ();
 
-	  retval.resize (a_nr, b_nc);
+	  retval = FloatMatrix (a_nr, b_nc);
 	  float *c = retval.fortran_vec ();
 
 	  if (b_nc == 1)

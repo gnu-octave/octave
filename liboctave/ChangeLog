@@ -1,5 +1,14 @@
 2009-06-18  Jaroslav Hajek  <highegg@gmail.com>
 
+	* oct-sort.cc (lookup_impl<T, Comp>): New helper inline function.
+	(octave_sort<T>::lookup_merge<Comp>): New private template method.
+	(octave_sort<T>::lookup<Comp>): Rewrite.
+	(octave_sort<T>::lookupm<Comp>): use lookup_impl.
+	(octave_sort<T>::lookupb<Comp>): use lookup_impl.
+	(out_of_range_pred, out_of_range): Remove.
+
+2009-06-18  Jaroslav Hajek  <highegg@gmail.com>
+
 	* dMatrix.cc (xgemm): Replace resize() with uninitialized allocations
 	where appropriate.
 	* fMatrix.cc (xgemm): Ditto.

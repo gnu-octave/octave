@@ -309,6 +309,11 @@ private:
                           const T& value, Comp comp);
 
   template <class Comp>
+  void lookup_merge (const T *data, octave_idx_type lo, octave_idx_type hi,
+                     const T* values, octave_idx_type nvalues,
+                     octave_idx_type *idx, Comp comp);
+
+  template <class Comp>
   void lookup (const T *data, octave_idx_type nel,
                const T* values, octave_idx_type nvalues,
                octave_idx_type *idx, octave_idx_type offset, Comp comp);

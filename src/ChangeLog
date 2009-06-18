@@ -1,3 +1,16 @@
+2009-06-17  John W. Eaton  <jwe@octave.org>
+
+	* mex.cc (mxArray_octave_value::get_data):
+	If octave_value::mex_get_data returns a valid pointer, mark it as
+	foreign and return it instead of enumerating the types that can be
+	handled directly.
+
+	* ov-re-mat.h (octave_matrix::mex_get_data): New function.
+	* ov-bool-mat.h (octave_bool_matrix::mex_get_data): Ditto.
+	* ov-flt-re-mat.h (octave_float_matrix::mex_get_data): Ditto.
+	* ov-intx.h (OCTAVE_VALUE_INT_MATRIX_T::mex_get_data): Ditto.
+	* ov-base-mat.h (octave_base_matrix::mex_get_data): Delete.
+
 2009-06-16  Jaroslav Hajek  <highegg@gmail.com>
 
 	* symtab.h (symbol_table::set_scope_and_context): Avoid checking

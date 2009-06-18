@@ -300,8 +300,9 @@ function lims = __get_tight_lims__ (ca, ax)
     if (iscell (data))
       data = data (find (! cellfun (@isempty, data)));
       if (! isempty (data))
-        lims(1) = min (cellfun (@min, data)(:));
-        lims(2) = max (cellfun (@max, data)(:));
+        lims_min = min (cellfun (@min, cellfun (@min, data, 'UniformOutput', false)(:))); 
+        lims_max = max (cellfun (@max, cellfun (@max, data, 'UniformOutput', false)(:))); 
+        lims = [lims_min, lims_max]; 
       else
         lims = [0, 1];
       endif
@@ -309,6 +310,8 @@ function lims = __get_tight_lims__ (ca, ax)
       lims = [min(data(:)), max(data(:))];
     endif
   endif
+
+
 endfunction
 
 function __do_tight_option__ (ca)
@@ -445,4 +448,14 @@ endfunction
 %! axis image
 %! title("image")
 
+%!demo
+%! clf
+%! [x,y,z] = peaks(50);
+%! x1 = max(x(:));
+%! pcolor(x-x1,y-x1/2,z)
+%! hold on
+%! [x,y,z] = sombrero;
+%! s = x1/max(x(:));
+%! pcolor(s*x+x1,s*y+x1/2,5*z)
+%! axis tight
 

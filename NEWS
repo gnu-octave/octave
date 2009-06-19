@@ -3,7 +3,9 @@ Summary of important user-visible changes for version 3.3:
 
  ** The `lookup' function was extended to be more useful for general-purpose
     binary searching. Using this improvement, the ismember function was
-    rewritten for significantly better performance.
+    rewritten for significantly better performance. The underlying algorithm
+    of lookup was also improved and is now much faster in certain important 
+    cases. 
 
  ** Real, integer and logical matrices, when used in indexing, will now
     cache the internal index_vector value (zero-based indices) when

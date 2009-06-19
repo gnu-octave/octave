@@ -1903,7 +1903,7 @@ octave_sort<T>::lookup (const T *data, octave_idx_type nel,
           // Determine a sorted run.
           for (vhi = vlo + 1; vhi != nvalues; vhi++)
             {
-              if (! comp (values[vhi-1], values[vhi]))
+              if (comp (values[vhi], values[vhi-1]))
                 break;
             }
 

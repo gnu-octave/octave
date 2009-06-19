@@ -79,6 +79,8 @@ Note that in conditional contexts (like the test clause of @code{if} and
 
 @DOCSTRING(find)
         
+@DOCSTRING(lookup)
+        
 @DOCSTRING(common_size)
 
 @node Rearranging Matrices

@@ -128,14 +128,9 @@ which demonstrates the poor behavior of Fourier interpolation for non-periodic f
 
 In additional the support function @code{spline} and @code{lookup} that
 underlie the @code{interp1} function can be called directly.
+@ref{Finding Elements and Checking Conditions}
 
 @DOCSTRING(spline)
-
-The @code{lookup} function is used by other interpolation functions to identify
-the points of the original data that are closest to the current point
-of interest.
-
-@DOCSTRING(lookup)
 
 @node Multi-dimensional Interpolation
 @section Multi-dimensional Interpolation

@@ -97,15 +97,32 @@ function [tf, a_idx] = ismember (a, s, rows_opt)
     else
       [s, is] = sort (s);
     endif
+
+    ## sort out NaNs
+    if (isreal (s) && ! isempty (s) && isnan (s(end)))
+        s = s(1:end - sum (isnan (s)));
+    endif
     
+    if (isreal (a))
+      anan = isnan (a);
+      a(anan) = 0;
+    endif
+
     if (nargout > 1)
       a_idx = lookup (s, a, "m");
       tf = logical (a_idx);
       if (! isempty (is))
         a_idx(tf) = is (a_idx(tf));
       endif
+      if (isreal (a))
+        tf(anan) = false;
+        a_idx(anan) = 0;
+      endif
     else
       tf = lookup (s, a, "b");
+      if (isreal (a))
+        tf(anan) = false;
+      endif
     endif
 
   elseif (nargin == 3 && strcmpi (rows_opt, "rows"))
@@ -200,7 +217,7 @@ endfunction
 
 %!test
 %! [result, a_idx] = ismember ("1.1", "0123456789.1");
-%! assert (all (result == logical ([1, 1, 1])) && all (a_idx == [2, 11, 2]));
+%! assert (all (result == logical ([1, 1, 1])) && all (a_idx == [12, 11, 12]));
 
 %!test
 %! [result, a_idx] = ismember([1:3; 5:7; 4:6], [0:2; 1:3; 2:4; 3:5; 4:6], 'rows');

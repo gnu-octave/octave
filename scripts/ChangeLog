@@ -1,3 +1,7 @@
+2009-06-19  Jaroslav Hajek  <highegg@gmail.com>
+
+	* set/ismember.m: Properly handle NaNs. Fix test.
+
 2009-06-18  Ben Abbott <bpabbott@mac.com>
 
 	* plot/__go_draw_axes__.m: Change the default x11 fontspec from '*,0'

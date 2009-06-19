@@ -1,3 +1,7 @@
+2009-06-19  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/lookup.cc: Update docs.
+
 2009-06-17  John W. Eaton  <jwe@octave.org>
 
 	* mex.cc (mxArray_octave_value::get_data):

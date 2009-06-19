@@ -139,18 +139,19 @@ DEFUN_DLD (lookup, args, ,
 Lookup values in a sorted table.  Usually used as a prelude to\n\
 interpolation.\n\
 \n\
-If table is strictly increasing and @code{idx = lookup (table, y)}, then\n\
+If table is increasing and @code{idx = lookup (table, y)}, then\n\
 @code{table(idx(i)) <= y(i) < table(idx(i+1))} for all @code{y(i)}\n\
 within the table.  If @code{y(i) < table (1)} then\n\
 @code{idx(i)} is 0. If @code{y(i) >= table(end)} then\n\
 @code{idx(i)} is @code{n}.\n\
 \n\
-If the table is strictly decreasing, then the tests are reversed.\n\
-There are no guarantees for tables which are non-monotonic or are not\n\
-strictly monotonic.\n\
+If the table is decreasing, then the tests are reversed.\n\
+For non-strictly monotonic tables, empty intervals are always skipped.\n\
+The result is undefined if @var{table} is not monotonic, or if\n\
+@b{any} of @var{table} or @var{y} contains a NaN.\n\
 \n\
 The algorithm used by lookup is standard binary search, with optimizations\n\
-to speed up the case of partially ordered arrays (dense downsampling).\n\
+to speed up the case of arrays containing pre-ordered portions (sampling).\n\
 In particular, looking up a single entry is of logarithmic complexity\n\
 (unless a conversion occurs due to non-numeric or unequal types).\n\
 \n\

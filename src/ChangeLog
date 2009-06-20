@@ -1,3 +1,7 @@
+2009-06-20  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov.cc (Fsubsasgn): Uniquify shared value before assigning to it.
+
 2009-06-19  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/lookup.cc: Update docs.

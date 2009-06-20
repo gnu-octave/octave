@@ -2704,8 +2704,12 @@ Note that this is the same as writing @code{val(:,1:2) = 0}.\n\
 
       decode_subscripts ("subsasgn", args(1), type, idx);
 
+      octave_value arg0 = args(0);
+
+      arg0.make_unique ();
+
       if (! error_state)
-	retval = args(0).subsasgn (type, idx, args(2));
+	retval = arg0.subsasgn (type, idx, args(2));
     }
   else
     print_usage ();

@@ -1,3 +1,12 @@
+2009-06-22  John W. Eaton  <jwe@octave.org>
+
+	* misc/i1mach.f, misc/r1mach.f, misc/d1mach.f: Rewite in terms of
+	LAPACK functions slamch and dlamch.
+	* misc/machar.c: Delete.
+	* misc/Makefile.in (CSRC): Remove machar.c from the list.
+	(CEXTRA, XCC, XALL_CFLAGS): Delete variables.
+	(machar.o, smachar.o, pic/machar.o, pic/smachar.o): Delete rules.
+
 2009-05-07  Marco Atzeri  <marco_atzeri@yahoo.it>
 
         * Makefile.in: (SHLPRE): Rename from SHLLIBPRE.

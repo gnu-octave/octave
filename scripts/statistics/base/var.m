@@ -56,13 +56,39 @@ function retval = var (x, opt, dim)
     opt = 0;
   endif
 
-  n = size (x, dim);
-  if (n == 1)
+  sz = size (x);
+  n = sz(dim);
+  if (isempty (x))
+    ## FIXME -- is there a way to obtain these results without all the
+    ## special cases?
+    if (ndim (x) == 2 && sz(0) == 0 && sz(1) == 0)
+      retval = NaN;
+    else
+      sz(dim) = 1;
+      if (n == 0)
+	if (prod (sz) == 0)
+	  retval = zeros (sz);
+	else
+	  retval = NaN (sz);
+	endif
+      else
+	retval = zeros (sz);
+      endif
+    endif
+  elseif (n == 1)
     retval = zeros (sz);
-  elseif (numel (x) > 0)
-    retval = sumsq (center (x, dim), dim) / (n + opt - 1);
   else
-    error ("var: x must not be empty");
+    retval = sumsq (center (x, dim), dim) / (n + opt - 1);
   endif
 
 endfunction
+
+%!assert (var (13), 0)
+%!assert (var ([]), NaN)
+%!assert (var (ones (0, 0, 0), 0, 1), zeros (1, 0, 0))
+%!assert (var (ones (0, 0, 0), 0, 2), zeros (0, 1, 0))
+%!assert (var (ones (0, 0, 0), 0, 3), zeros (0, 0))
+%!assert (var (ones (1, 2, 0)), zeros (1, 1, 0))
+%!assert (var (ones (1, 2, 0, 0), 0, 1), zeros (1, 2, 0, 0))
+%!assert (var (ones (1, 2, 0, 0), 0, 2), zeros (1, 1, 0, 0))
+%!assert (var (ones (1, 2, 0, 0), 0, 3), zeros (1, 2, 1, 0))

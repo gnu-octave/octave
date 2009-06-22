@@ -1,3 +1,8 @@
+2009-06-22  John W. Eaton  <jwe@octave.org>
+
+	* statistics/base/var.m: Return zero for scalar case.  Handle
+	empty arguments in a Matlab compatible way.  New tests.
+
 2009-06-19  Jaroslav Hajek  <highegg@gmail.com>
 
 	* set/ismember.m: Properly handle NaNs. Fix test.

@@ -81,9 +81,10 @@ charMatrix::charMatrix (const string_vector& s)
 
   for (octave_idx_type i = 0; i < nr; i++)
     {
-      octave_idx_type nc = s[i].length ();
+      const std::string si = s(i);
+      octave_idx_type nc = si.length ();
       for (octave_idx_type j = 0; j < nc; j++)
-	elem (i, j) = s[i][j];
+	elem (i, j) = si[j];
     }
 }
 

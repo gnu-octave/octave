@@ -29,6 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <iostream>
 #include <sstream>
 #include <vector>
+#include <queue>
 
 #include "Array-util.h"
 #include "byte-swap.h"
@@ -572,6 +573,8 @@ octave_cell::all_strings (bool pad) const
 
   octave_idx_type max_len = 0;
 
+  std::queue<string_vector> strvec_queue;
+
   for (octave_idx_type i = 0; i < nel; i++)
     {
       string_vector s = matrix(i).all_strings ();
@@ -587,15 +590,18 @@ octave_cell::all_strings (bool pad) const
 
       if (s_max_len > max_len)
 	max_len = s_max_len;
+
+      strvec_queue.push (s);
     }
 
-  retval.resize (n_elts);
+  retval = string_vector (n_elts);
 
   octave_idx_type k = 0;
 
   for (octave_idx_type i = 0; i < nel; i++)
     {
-      string_vector s = matrix(i).all_strings ();
+      const string_vector s = strvec_queue.front ();
+      strvec_queue.pop ();
 
       octave_idx_type s_len = s.length ();
 

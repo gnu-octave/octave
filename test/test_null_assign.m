@@ -57,7 +57,7 @@
 
 % subsasgn should work the same way
 %!test
-%! a = ones (3); subsasgn (a, substruct ('()', {':',1:2}), []); assert (size (a), [3,1])
+%! a = ones (3); a = subsasgn (a, substruct ('()', {':',1:2}), []); assert (size (a), [3,1])
 %!test
 %! a = ones (3); b = []; fail ("subsasgn (a, substruct ('()', {':',1:2}), b)", ".")
 

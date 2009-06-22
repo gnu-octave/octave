@@ -1,3 +1,7 @@
+2009-06-22  Jaroslav Hajek  <highegg@gmail.com>
+
+	* test_null_assign.m: Fix test.
+
 2009-04-17  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
 	* test_struct.m: Add tests to prevent regression of bug with

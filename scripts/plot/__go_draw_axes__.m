@@ -1337,7 +1337,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
 endfunction
 
 function fontspec = create_fontspec (f, s, gp_term)
-  if (strcmp (f, "*") && ! strcmp (gp_term, "x11"))
+  if (strcmp (f, "*"))
     fontspec = sprintf ("font \",%d\"", s);
   else
     fontspec = sprintf ("font \"%s,%d\"", f, s);

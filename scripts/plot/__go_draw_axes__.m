@@ -226,7 +226,12 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
 
     if (strcmpi (axis_obj.xminorgrid, "on"))
       have_grid = true;
-      fprintf (plot_stream, "set m%stics 5;\n", xaxisloc);
+      if (strcmp (axis_obj.xscale, "log"))
+	m = 10;
+      else
+	m = 5;
+      endif
+      fprintf (plot_stream, "set m%stics %d;\n", xaxisloc, m);
       fprintf (plot_stream, "set grid m%stics;\n", xaxisloc);
     else
       fprintf (plot_stream, "set grid nom%stics;\n", xaxisloc);
@@ -234,7 +239,12 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
 
     if (strcmpi (axis_obj.yminorgrid, "on"))
       have_grid = true;
-      fprintf (plot_stream, "set m%stics 5;\n", yaxisloc);
+      if (strcmp (axis_obj.yscale, "log"))
+	m = 10;
+      else
+	m = 5;
+      endif
+      fprintf (plot_stream, "set m%stics %d;\n", yaxisloc, m);
       fprintf (plot_stream, "set grid m%stics;\n", yaxisloc);
     else
       fprintf (plot_stream, "set grid nom%stics;\n", yaxisloc);
@@ -242,7 +252,12 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
 
     if (strcmpi (axis_obj.zminorgrid, "on"))
       have_grid = true;
-      fputs (plot_stream, "set mztics 5;\n");
+      if (strcmp (axis_obj.zscale, "log"))
+	m = 10;
+      else
+	m = 5;
+      endif
+      fprintf (plot_stream, "set mztics %d;\n", m);
       fputs (plot_stream, "set grid mztics;\n");
     else
       fputs (plot_stream, "set grid nomztics;\n");
@@ -1535,6 +1550,16 @@ function do_tics (obj, plot_stream, ymirror, mono, gnuplot_term)
   obj.yticklabel = ticklabel_to_cell (obj.yticklabel);
   obj.zticklabel = ticklabel_to_cell (obj.zticklabel);
 
+  if (strcmp (obj.xminorgrid, "on"))
+    obj.xminortick = "on";
+  endif
+  if (strcmp (obj.yminorgrid, "on"))
+    obj.yminortick = "on";
+  endif
+  if (strcmp (obj.zminorgrid, "on"))
+    obj.zminortick = "on";
+  endif
+
   [fontname, fontsize] = get_fontname_and_size (obj);
   fontspec = create_fontspec (fontname, fontsize, gnuplot_term);
 
@@ -1613,8 +1638,10 @@ function do_tics_1 (ticmode, tics, mtics, labelmode, labels, color, ax,
   endif
   if (strcmp (scale, "log"))
     fmt = "10^{%T}";
+    num_mtics = 10;
   else
     fmt = "%g";
+    num_mtics = 5;
   endif
   colorspec = get_text_colorspec (color, mono);
   if (strcmpi (ticmode, "manual") || strcmpi (labelmode, "manual"))
@@ -1655,7 +1682,7 @@ function do_tics_1 (ticmode, tics, mtics, labelmode, labels, color, ax,
 	endfor
 	fprintf (plot_stream, ") %s %s;\n", colorspec, fontspec);
  	if (strcmp (mtics, "on"))
-	  fprintf (plot_stream, "set m%stics 5;\n", ax);
+	  fprintf (plot_stream, "set m%stics %d;\n", ax, num_mtics);
 	else
 	  fprintf (plot_stream, "unset m%stics;\n", ax);
 	endif
@@ -1674,7 +1701,7 @@ function do_tics_1 (ticmode, tics, mtics, labelmode, labels, color, ax,
       fprintf (plot_stream, " %.15g,", tics(1:end-1));
       fprintf (plot_stream, " %.15g) %s;\n", tics(end), fontspec);
       if (strcmp (mtics, "on"))
-        fprintf (plot_stream, "set m%stics 5;\n", ax);
+        fprintf (plot_stream, "set m%stics %d;\n", ax, num_mtics);
       else
 	fprintf (plot_stream, "unset m%stics;\n", ax);
       endif
@@ -1689,7 +1716,7 @@ function do_tics_1 (ticmode, tics, mtics, labelmode, labels, color, ax,
 	       tickdir, ticklength, axispos, colorspec, fontspec);
     endif
     if (strcmp (mtics, "on"))
-      fprintf (plot_stream, "set m%stics 5;\n", ax);
+      fprintf (plot_stream, "set m%stics %d;\n", ax, num_mtics);
     else
       fprintf (plot_stream, "unset m%stics;\n", ax);
     endif

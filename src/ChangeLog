@@ -1,3 +1,7 @@
+2009-06-22  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-cell.cc (octave_cell::all_strings): Avoid duplicate conversions.
+
 2009-06-20  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov.cc (Fsubsasgn): Uniquify shared value before assigning to it.

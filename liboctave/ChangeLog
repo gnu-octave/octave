@@ -1,3 +1,8 @@
+2009-06-22  Jaroslav Hajek  <highegg@gmail.com>
+
+	* chMatrix.cc (charMatrix::charMatrix (const string_vector&)):
+	Optimize w.r.t. COW of std::string.
+
 2009-06-18  Jaroslav Hajek  <highegg@gmail.com>
 
 	* dMatrix.cc (xgemm): Replace resize() with uninitialized allocations

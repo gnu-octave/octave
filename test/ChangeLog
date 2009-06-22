@@ -1,3 +1,7 @@
+2009-06-22  Jaroslav Hajek  <highegg@gmail.com>
+
+	* test_null_assign.m: Fix test.
+
 	2009-05-25  Jaroslav Hajek  <highegg@gmail.com>
 
 	Version 3.2.0 released.

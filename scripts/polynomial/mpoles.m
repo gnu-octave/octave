@@ -92,8 +92,9 @@ function [multp, indx] = mpoles (p, tol, reorder)
   while (n)
     dp = abs (p-p(n));
     if (p(n) == 0.0)
-      p0 = mean (abs (p(find (abs (p) > 0))));
-      if (isempty (p0))
+      if (any (abs (p) > 0 & isfinite (p)))
+        p0 = mean (abs (p(abs (p) > 0 & isfinite (p))));
+      else
         p0 = 1;
       endif
     else
@@ -113,3 +114,8 @@ function [multp, indx] = mpoles (p, tol, reorder)
   indx = ordr(indx);
 
 endfunction
+
+%!test
+%! [mp, n] = mpoles ([0 0], 0.01);
+%! assert (mp, [1; 2])
+

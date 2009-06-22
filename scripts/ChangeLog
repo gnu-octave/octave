@@ -1,3 +1,8 @@
+2009-06-18  Daniel Gualberto <daniel@alacer.com.br>
+
+	* polynomial/mpoles.m: Fix infinite loop for a multiplicity of
+	poles at zero. Test added.
+
 2009-06-17  Bertrand Roessli <bertrand.roessli@psi.ch>
 
 	* plot/axis.m: Fix bug for 'axis tight' with multiple surface plots,

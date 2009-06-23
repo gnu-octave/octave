@@ -1,5 +1,8 @@
 2009-06-22  John W. Eaton  <jwe@octave.org>
 
+	* Makefile.in (MISC_OBJ): Remove misc/machar.o and misc/smachar.o
+	from the list.
+
 	* misc/i1mach.f, misc/r1mach.f, misc/d1mach.f: Rewite in terms of
 	LAPACK functions slamch and dlamch.
 	* misc/machar.c: Delete.

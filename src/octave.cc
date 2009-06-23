@@ -398,15 +398,12 @@ execute_eval_option_code (const std::string& code)
     {
       eval_string (code, false, parse_status, 0);
     }
-  catch (octave_quit_exception e)
-    {
-      unwind_protect::run_frame (uwp_frame);
-      clean_up_and_exit (e.status);
-    }
   catch (octave_interrupt_exception)
     {
       recover_from_exception ();
       octave_stdout << "\n";
+      if (quitting_gracefully)
+        clean_up_and_exit (exit_status);
     }
   catch (std::bad_alloc)
     {
@@ -470,15 +467,12 @@ execute_command_line_file (const std::string& fname)
 
       source_file (fname, context, verbose, require_file, "octave");
     }
-  catch (octave_quit_exception e)
-    {
-      unwind_protect::run_frame (uwp_frame);
-      clean_up_and_exit (e.status);
-    }
   catch (octave_interrupt_exception)
     {
       recover_from_exception ();
       octave_stdout << "\n";
+      if (quitting_gracefully)
+        clean_up_and_exit (exit_status);
     }
   catch (std::bad_alloc)
     {

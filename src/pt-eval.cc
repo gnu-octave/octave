@@ -903,6 +903,9 @@ do_unwind_protect_cleanup_code (void *ptr)
 {
   tree_statement_list *list = static_cast<tree_statement_list *> (ptr);
 
+  unwind_protect::protect_var (octave_interrupt_state);
+  octave_interrupt_state = 0;
+
   // We want to run the cleanup code without error_state being set,
   // but we need to restore its value, so that any errors encountered
   // in the first part of the unwind_protect are not completely
@@ -910,9 +913,6 @@ do_unwind_protect_cleanup_code (void *ptr)
 
   unwind_protect::protect_var (error_state);
   error_state = 0;
-
-  unwind_protect::protect_var (octave_interrupt_state);
-  octave_interrupt_state = 0;
 
   // Similarly, if we have seen a return or break statement, allow all
   // the cleanup code to run before returning or handling the break.

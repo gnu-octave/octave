@@ -85,7 +85,9 @@ void (*octave_exit) (int) = ::exit;
 bool quit_allowed = true;
 
 // TRUE means we are exiting via the builtin exit or quit functions.
-static bool quitting_gracefully = false;
+bool quitting_gracefully = false;
+// This stores the exit status.
+int exit_status = 0;
 
 // TRUE means we are ready to interpret commands, but not everything
 // is ready for interactive use.
@@ -613,15 +615,15 @@ main_loop (void)
 
 	  unwind_protect::run_frame (uwp_frame);
 	}
-      catch (octave_quit_exception e)
-        {
-          unwind_protect::run_all ();
-          clean_up_and_exit (e.status);
-        }
       catch (octave_interrupt_exception)
 	{
 	  recover_from_exception ();
-	  octave_stdout << "\n";
+          octave_stdout << "\n";
+          if (quitting_gracefully)
+            {
+              clean_up_and_exit (exit_status);
+              break; // If user has overriden the exit func.
+            }
 	}
       catch (octave_execution_exception)
 	{
@@ -671,10 +673,6 @@ Octave's exit status.  The default value is zero.\n\
     error ("quit: not supported in embedded mode.");
   else if (nargout == 0)
     {
-      int exit_status = 0;
-
-      quitting_gracefully = true;
-
       if (args.length () > 0)
 	{
 	  int tmp = args(0).nint_value ();
@@ -683,7 +681,16 @@ Octave's exit status.  The default value is zero.\n\
 	    exit_status = tmp;
 	}
 
-      throw octave_quit_exception (exit_status);
+      if (! error_state)
+        {
+          quitting_gracefully = true;
+
+          // Simulate interrupt.
+
+          octave_interrupt_state = -1;
+
+          octave_throw_interrupt_exception ();
+        }
     }
   else
     error ("quit: invalid number of output arguments");
@@ -984,7 +991,22 @@ do_octave_atexit (void)
 
       reset_error_handler ();
 
-      feval (fcn, octave_value_list (), 0);
+      try
+        {
+          feval (fcn, octave_value_list (), 0);
+        }
+      catch (octave_interrupt_exception)
+	{
+	  recover_from_exception ();
+	}
+      catch (octave_execution_exception)
+	{
+	  recover_from_exception ();
+	}
+      catch (std::bad_alloc)
+	{
+	  recover_from_exception ();
+	}
 
       flush_octave_stdout ();
     }

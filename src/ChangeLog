@@ -1,3 +1,9 @@
+2009-06-23  John W. Eaton  <jwe@octave.org>
+
+	* oct-map.cc (Octave_map::squeeze, Octave_map::permute,
+	Octave_map::transpose, Octave_map::reshape, Octave_map::resize,
+	Octave_map::concat): Preserve key order.
+
 2009-06-23  Jaroslav Hajek  <highegg@gmail.com>
 
 	* pt-eval.cc (tree_evaluator::visit_try_catch_command): Simplify.

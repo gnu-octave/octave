@@ -490,7 +490,7 @@ J. Statistical Software, vol 5, 2000,\n\
 
   int nargin = args.length ();
 
-  unwind_protect::begin_frame ("randn");
+  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
 
   // This relies on the fact that elements are popped from the unwind
   // stack in the reverse of the order they are pushed
@@ -498,7 +498,7 @@ J. Statistical Software, vol 5, 2000,\n\
   // reset_rand_generator()).
 
   unwind_protect::add (reset_rand_generator, 0);
-  unwind_protect_str (current_distribution);
+  unwind_protect::protect_var (current_distribution);
 
   current_distribution = "normal";
 
@@ -506,7 +506,7 @@ J. Statistical Software, vol 5, 2000,\n\
 
   retval = do_rand (args, nargin, "randn");
 
-  unwind_protect::run_frame ("randn");
+  unwind_protect::run_frame (uwp_frame);
 
   return retval;
 }
@@ -563,7 +563,7 @@ J. Statistical Software, vol 5, 2000,\n\
 
   int nargin = args.length ();
 
-  unwind_protect::begin_frame ("rande");
+  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
 
   // This relies on the fact that elements are popped from the unwind
   // stack in the reverse of the order they are pushed
@@ -571,7 +571,7 @@ J. Statistical Software, vol 5, 2000,\n\
   // reset_rand_generator()).
 
   unwind_protect::add (reset_rand_generator, 0);
-  unwind_protect_str (current_distribution);
+  unwind_protect::protect_var (current_distribution);
 
   current_distribution = "exponential";
 
@@ -579,7 +579,7 @@ J. Statistical Software, vol 5, 2000,\n\
 
   retval = do_rand (args, nargin, "rande");
 
-  unwind_protect::run_frame ("rande");
+  unwind_protect::run_frame (uwp_frame);
 
   return retval;
 }
@@ -695,7 +695,7 @@ r = r / sum (r)\n\
     error ("randg: insufficient arguments");
   else
     {
-      unwind_protect::begin_frame ("randg");
+      unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
 
       // This relies on the fact that elements are popped from the unwind
       // stack in the reverse of the order they are pushed
@@ -703,7 +703,7 @@ r = r / sum (r)\n\
       // reset_rand_generator()).
 
       unwind_protect::add (reset_rand_generator, 0);
-      unwind_protect_str (current_distribution);
+      unwind_protect::protect_var (current_distribution);
 
       current_distribution = "gamma";
 
@@ -711,7 +711,7 @@ r = r / sum (r)\n\
 
       retval = do_rand (args, nargin, "randg", true);
 
-      unwind_protect::run_frame ("randg");
+      unwind_protect::run_frame (uwp_frame);
     }
 
   return retval;
@@ -909,7 +909,7 @@ D 50 p1284, 1994\n\
     error ("randp: insufficient arguments");
   else
     {
-      unwind_protect::begin_frame ("randp");
+      unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
 
       // This relies on the fact that elements are popped from the unwind
       // stack in the reverse of the order they are pushed
@@ -917,7 +917,7 @@ D 50 p1284, 1994\n\
       // reset_rand_generator()).
 
       unwind_protect::add (reset_rand_generator, 0);
-      unwind_protect_str (current_distribution);
+      unwind_protect::protect_var (current_distribution);
 
       current_distribution = "poisson";
 
@@ -925,7 +925,7 @@ D 50 p1284, 1994\n\
 
       retval = do_rand (args, nargin, "randp", true);
 
-      unwind_protect::run_frame ("randp");
+      unwind_protect::run_frame (uwp_frame);
     }
 
   return retval;

@@ -548,7 +548,7 @@ main_loop (void)
     {
       try
 	{
-	  unwind_protect::begin_frame ("main_loop");
+	  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
 
 	  reset_error_handler ();
 
@@ -611,7 +611,7 @@ main_loop (void)
 		break;
 	    }
 
-	  unwind_protect::run_frame ("main_loop");
+	  unwind_protect::run_frame (uwp_frame);
 	}
       catch (octave_quit_exception e)
         {
@@ -857,7 +857,7 @@ variable @code{status} to the integer @samp{2}.\n\
 {
   octave_value_list retval;
 
-  unwind_protect::begin_frame ("Fsystem");
+  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
 
   int nargin = args.length ();
 
@@ -960,7 +960,7 @@ variable @code{status} to the integer @samp{2}.\n\
   else
     print_usage ();
 
-  unwind_protect::run_frame ("Fsystem");
+  unwind_protect::run_frame (uwp_frame);
 
   return retval;
 }

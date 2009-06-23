@@ -282,9 +282,9 @@ tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
   if (debug_mode)
     do_breakpoint (cmd.is_breakpoint (), cmd.line (), cmd.column ());
 
-  unwind_protect::begin_frame ("tree_evaluator::visit_simple_for_command");
+  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
 
-  unwind_protect_bool (in_loop_command);
+  unwind_protect::protect_var (in_loop_command);
 
   in_loop_command = true;
 
@@ -392,7 +392,7 @@ tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
   }
 
  cleanup:
-  unwind_protect::run_frame ("tree_evaluator::visit_simple_for_command");
+  unwind_protect::run_frame (uwp_frame);
 }
 
 void
@@ -404,9 +404,9 @@ tree_evaluator::visit_complex_for_command (tree_complex_for_command& cmd)
   if (debug_mode)
     do_breakpoint (cmd.is_breakpoint (), cmd.line (), cmd.column ());
 
-  unwind_protect::begin_frame ("tree_evaluator::visit_complex_for_command");
+  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
 
-  unwind_protect_bool (in_loop_command);
+  unwind_protect::protect_var (in_loop_command);
 
   in_loop_command = true;
 
@@ -463,7 +463,7 @@ tree_evaluator::visit_complex_for_command (tree_complex_for_command& cmd)
     error ("in statement `for [X, Y] = VAL', VAL must be a structure");
 
  cleanup:
-  unwind_protect::run_frame ("tree_evaluator::visit_complex_for_command");
+  unwind_protect::run_frame (uwp_frame);
 }
 
 void
@@ -859,11 +859,11 @@ do_catch_code (void *ptr)
 void
 tree_evaluator::visit_try_catch_command (tree_try_catch_command& cmd)
 {
-  unwind_protect::begin_frame ("tree_evaluator::visit_try_catch_command");
+  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
   
-  unwind_protect_int (buffer_error_messages);
-  unwind_protect_bool (Vdebug_on_error);
-  unwind_protect_bool (Vdebug_on_warning);
+  unwind_protect::protect_var (buffer_error_messages);
+  unwind_protect::protect_var (Vdebug_on_error);
+  unwind_protect::protect_var (Vdebug_on_warning);
 
   buffer_error_messages++;
   Vdebug_on_error = false;
@@ -881,7 +881,7 @@ tree_evaluator::visit_try_catch_command (tree_try_catch_command& cmd)
   if (catch_code && error_state)
     {
       error_state = 0;
-      unwind_protect::run_frame ("tree_evaluator::visit_try_catch_command");
+      unwind_protect::run_frame (uwp_frame);
     }
   else
     {
@@ -900,7 +900,7 @@ tree_evaluator::visit_try_catch_command (tree_try_catch_command& cmd)
       unwind_protect::run ();
 
       // Also clear the frame marker.
-      unwind_protect::run_frame ("tree_evaluator::visit_try_catch_command");
+      unwind_protect::run_frame (uwp_frame);
     }
 }
 
@@ -914,10 +914,10 @@ do_unwind_protect_cleanup_code (void *ptr)
   // in the first part of the unwind_protect are not completely
   // ignored.
 
-  unwind_protect_int (error_state);
+  unwind_protect::protect_var (error_state);
   error_state = 0;
 
-  unwind_protect_int (octave_interrupt_state);
+  unwind_protect::protect_var (octave_interrupt_state);
   octave_interrupt_state = 0;
 
   // Similarly, if we have seen a return or break statement, allow all
@@ -925,10 +925,10 @@ do_unwind_protect_cleanup_code (void *ptr)
   // We don't have to worry about continue statements because they can
   // only occur in loops.
 
-  unwind_protect_int (tree_return_command::returning);
+  unwind_protect::protect_var (tree_return_command::returning);
   tree_return_command::returning = 0;
 
-  unwind_protect_int (tree_break_command::breaking);
+  unwind_protect::protect_var (tree_break_command::breaking);
   tree_break_command::breaking = 0;
 
   if (list)
@@ -1003,9 +1003,9 @@ tree_evaluator::visit_while_command (tree_while_command& cmd)
   if (error_state)
     return;
 
-  unwind_protect::begin_frame ("tree_evaluator::visit_while_command");
+  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
 
-  unwind_protect_bool (in_loop_command);
+  unwind_protect::protect_var (in_loop_command);
 
   in_loop_command = true;
 
@@ -1042,7 +1042,7 @@ tree_evaluator::visit_while_command (tree_while_command& cmd)
     }
 
  cleanup:
-  unwind_protect::run_frame ("tree_evaluator::visit_while_command");
+  unwind_protect::run_frame (uwp_frame);
 }
 
 void
@@ -1051,9 +1051,9 @@ tree_evaluator::visit_do_until_command (tree_do_until_command& cmd)
   if (error_state)
     return;
 
-  unwind_protect::begin_frame ("tree_evaluator::visit_do_until_command");
+  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
 
-  unwind_protect_bool (in_loop_command);
+  unwind_protect::protect_var (in_loop_command);
 
   in_loop_command = true;
 
@@ -1088,7 +1088,7 @@ tree_evaluator::visit_do_until_command (tree_do_until_command& cmd)
     }
 
  cleanup:
-  unwind_protect::run_frame ("tree_evaluator::visit_do_until_command");
+  unwind_protect::run_frame (uwp_frame);
 }
 
 void

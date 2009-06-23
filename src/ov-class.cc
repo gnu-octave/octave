@@ -880,15 +880,15 @@ octave_class::print (std::ostream& os, bool) const
 void
 octave_class::print_raw (std::ostream& os, bool) const
 {
-  unwind_protect::begin_frame ("octave_class_print");
+  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
 
-  unwind_protect_int (Vstruct_levels_to_print);
+  unwind_protect::protect_var (Vstruct_levels_to_print);
 
   indent (os);
   os << "  <class " << class_name () << ">";
   newline (os);
 
-  unwind_protect::run_frame ("octave_class_print");
+  unwind_protect::run_frame (uwp_frame);
 }
 
 bool

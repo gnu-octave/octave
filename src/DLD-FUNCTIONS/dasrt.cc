@@ -190,7 +190,7 @@ dasrt_user_j (const ColumnVector& x, const ColumnVector& xdot,
 #define DASRT_ABORT \
   do \
     { \
-      unwind_protect::run_frame ("Fdasrt"); \
+      unwind_protect::run_frame (uwp_frame); \
       return retval; \
     } \
   while (0)
@@ -353,9 +353,9 @@ parameters for @code{dasrt}.\n\
   warned_jac_imaginary = false;
   warned_cf_imaginary = false;
 
-  unwind_protect::begin_frame ("Fdasrt");
+  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
 
-  unwind_protect_int (call_depth);
+  unwind_protect::protect_var (call_depth);
   call_depth++;
 
   if (call_depth > 1)
@@ -368,7 +368,7 @@ parameters for @code{dasrt}.\n\
   if (nargin < 4 || nargin > 6)
     {
       print_usage ();
-      unwind_protect::run_frame ("Fdasrt");
+      unwind_protect::run_frame (uwp_frame);
       return retval;
     }
 
@@ -587,7 +587,7 @@ parameters for @code{dasrt}.\n\
 	}
     }
 
-  unwind_protect::run_frame ("Fdasrt");
+  unwind_protect::run_frame (uwp_frame);
 
   return retval;
 }

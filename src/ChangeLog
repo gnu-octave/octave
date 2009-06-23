@@ -1,3 +1,39 @@
+2009-06-23  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/cellfun.cc: Modernize unwind_protect usage.
+	* DLD-FUNCTIONS/daspk.cc: Ditto.
+	* DLD-FUNCTIONS/dasrt.cc: Ditto.
+	* DLD-FUNCTIONS/dassl.cc: Ditto.
+	* DLD-FUNCTIONS/eigs.cc: Ditto.
+	* DLD-FUNCTIONS/lsode.cc: Ditto.
+	* DLD-FUNCTIONS/quad.cc: Ditto.
+	* DLD-FUNCTIONS/rand.cc: Ditto.
+	* debug.cc: Ditto.
+	* dynamic-ld.cc: Ditto.
+	* error.cc: Ditto.
+	* graphics.cc: Ditto.
+	* help.cc: Ditto.
+	* input.cc: Ditto.
+	* load-path.cc: Ditto.
+	* ls-mat4.cc: Ditto.
+	* ls-mat5.cc: Ditto.
+	* mex.cc: Ditto.
+	* oct-hist.cc: Ditto.
+	* octave.cc: Ditto.
+	* ov-builtin.cc: Ditto.
+	* ov-class.cc: Ditto.
+	* ov-fcn-handle.cc: Ditto.
+	* ov-list.cc: Ditto.
+	* ov-mex-fcn.cc: Ditto.
+	* ov-struct.cc: Ditto.
+	* ov-usr-fcn.cc: Ditto.
+	* pager.cc: Ditto.
+	* pr-output.cc: Ditto.
+	* pt-arg-list.cc: Ditto.
+	* pt-eval.cc: Ditto.
+	* toplev.cc: Ditto.
+	* variables.cc: Ditto.
+
 2009-06-22  Jaroslav Hajek  <highegg@gmail.com>
 
 	* unwind-prot.h (unwind_protect): Rewrite.

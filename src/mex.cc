@@ -3038,10 +3038,10 @@ call_mex (bool have_fmex, void *f, const octave_value_list& args,
   for (int i = 0; i < nout; i++)
     argout[i] = 0;
 
-  unwind_protect::begin_frame ("call_mex");
+  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
 
   // Save old mex pointer.
-  unwind_protect_ptr (mex_context);
+  unwind_protect::protect_var (mex_context);
 
   mex context (curr_mex_fcn);
 
@@ -3090,7 +3090,7 @@ call_mex (bool have_fmex, void *f, const octave_value_list& args,
     }
 
   // Clean up mex resources.
-  unwind_protect::run_frame ("call_mex");
+  unwind_protect::run_frame (uwp_frame);
 
   return retval;
 }
@@ -3270,7 +3270,7 @@ mexGetVariable (const char *space, const char *name)
     {
       // FIXME -- should this be in variables.cc?
 
-      unwind_protect::begin_frame ("mexGetVariable");
+      unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
 
       bool caller = ! strcmp (space, "caller");
       bool base = ! strcmp (space, "base");
@@ -3290,7 +3290,7 @@ mexGetVariable (const char *space, const char *name)
       else
 	mexErrMsgTxt ("mexGetVariable: symbol table does not exist");
 
-      unwind_protect::run_frame ("mexGetVariable");
+      unwind_protect::run_frame (uwp_frame);
     }
 
   if (val.is_defined ())
@@ -3330,7 +3330,7 @@ mexPutVariable (const char *space, const char *name, mxArray *ptr)
     {
       // FIXME -- should this be in variables.cc?
 
-      unwind_protect::begin_frame ("mexPutVariable");
+      unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
 
       bool caller = ! strcmp (space, "caller");
       bool base = ! strcmp (space, "base");
@@ -3350,7 +3350,7 @@ mexPutVariable (const char *space, const char *name, mxArray *ptr)
       else
 	mexErrMsgTxt ("mexPutVariable: symbol table does not exist");
 
-      unwind_protect::run_frame ("mexPutVariable");
+      unwind_protect::run_frame (uwp_frame);
     }
 
   return 0;

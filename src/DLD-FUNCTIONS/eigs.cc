@@ -346,9 +346,9 @@ K Maschhoff, D Sorensen and C Yang.  For more information see\n\
 
   warned_imaginary = false;
 
-  unwind_protect::begin_frame ("Feigs");
+  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
 
-  unwind_protect_int (call_depth);
+  unwind_protect::protect_var (call_depth);
   call_depth++;
 
   if (call_depth > 1)
@@ -356,7 +356,7 @@ K Maschhoff, D Sorensen and C Yang.  For more information see\n\
       error ("eigs: invalid recursive call");
       if (fcn_name.length())
 	clear_function (fcn_name);
-      unwind_protect::run_frame ("Feigs");
+      unwind_protect::run_frame (uwp_frame);
       return retval;
     }
 
@@ -741,7 +741,7 @@ K Maschhoff, D Sorensen and C Yang.  For more information see\n\
   if (! fcn_name.empty ())
     clear_function (fcn_name);
 
-  unwind_protect::run_frame ("Feigs");
+  unwind_protect::run_frame (uwp_frame);
 #else
   error ("eigs: not available in this version of Octave");
 #endif

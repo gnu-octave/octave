@@ -850,7 +850,7 @@ Print or return current stack information.  With optional argument\n\
 {
   octave_value_list retval;
 
-  unwind_protect::begin_frame ("Fdbstack");
+  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
 
   octave_idx_type curr_frame = -1;
 
@@ -914,7 +914,7 @@ Print or return current stack information.  With optional argument\n\
 	}
     }
 
-  unwind_protect::run_frame ("Fdbstack");
+  unwind_protect::run_frame (uwp_frame);
 
   return retval;
 }

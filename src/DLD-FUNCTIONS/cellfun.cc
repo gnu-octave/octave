@@ -389,8 +389,8 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
     }
   else 
     {
-      unwind_protect::begin_frame ("Fcellfun");
-      unwind_protect_int (buffer_error_messages);
+      unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
+      unwind_protect::protect_var (buffer_error_messages);
 
       std::string fcn_name;
       
@@ -631,7 +631,7 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
 	    clear_function (err_name);
 	}
 
-      unwind_protect::run_frame ("Fcellfun");
+      unwind_protect::run_frame (uwp_frame);
     }
 
   return retval;

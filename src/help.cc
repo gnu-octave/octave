@@ -666,7 +666,7 @@ raw_help_from_file (const std::string& nm, std::string& h,
   bool retval = false;
 
   // FIXME -- this is a bit of a kluge...
-  unwind_protect_bool (reading_script_file);
+  unwind_protect::protect_var (reading_script_file);
   reading_script_file = true;
 
   h = get_help_from_file (nm, symbol_found, file);

@@ -293,7 +293,7 @@ octave_list::print (std::ostream& os, bool) const
 void
 octave_list::print_raw (std::ostream& os, bool) const
 {
-  unwind_protect::begin_frame ("octave_list_print");
+  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
 
   octave_idx_type n = data.length ();
 
@@ -326,7 +326,7 @@ octave_list::print_raw (std::ostream& os, bool) const
 
   newline (os);
 
-  unwind_protect::run_frame ("octave_list_print");
+  unwind_protect::run_frame (uwp_frame);
 }
 
 bool

@@ -162,12 +162,14 @@ tree_argument_list::convert_to_const_vector (const octave_value *object)
 		       && object
 		       && ! (object->is_function ()
 			     || object->is_function_handle ()));
+  
+  unwind_protect::frame_id_t uwp_frame;
 
   if (stash_object)
     {
-      unwind_protect::begin_frame ("convert_to_const_vector");
+      uwp_frame = unwind_protect::begin_frame ();
 
-      unwind_protect_const_ptr (indexed_object);
+      unwind_protect::protect_var (indexed_object);
 
       indexed_object = object;
     }
@@ -181,8 +183,8 @@ tree_argument_list::convert_to_const_vector (const octave_value *object)
     {
       if (stash_object)
 	{
-	  unwind_protect_int (index_position);
-	  unwind_protect_int (num_indices);
+	  unwind_protect::protect_var (index_position);
+	  unwind_protect::protect_var (num_indices);
 
 	  index_position = k;
 	  num_indices = len;
@@ -216,7 +218,7 @@ tree_argument_list::convert_to_const_vector (const octave_value *object)
     }
 
   if (stash_object)
-    unwind_protect::run_frame ("convert_to_const_vector");
+    unwind_protect::run_frame (uwp_frame);
 
   return args;
 }

@@ -264,20 +264,20 @@ generate_struct_completions (const std::string& text,
 	{
 	  int parse_status;
 
-	  unwind_protect::begin_frame ("generate_struct_completions");
+	  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
 
-	  unwind_protect_int (error_state);
-	  unwind_protect_int (warning_state);
+	  unwind_protect::protect_var (error_state);
+	  unwind_protect::protect_var (warning_state);
 
-	  unwind_protect_bool (discard_error_messages);
-	  unwind_protect_bool (discard_warning_messages);
+	  unwind_protect::protect_var (discard_error_messages);
+	  unwind_protect::protect_var (discard_warning_messages);
 
 	  discard_error_messages = true;
 	  discard_warning_messages = true;
 
 	  octave_value tmp = eval_string (prefix, true, parse_status);
 
-	  unwind_protect::run_frame ("generate_struct_completions");
+	  unwind_protect::run_frame (uwp_frame);
 
 	  if (tmp.is_defined () && tmp.is_map ())
 	    names = tmp.map_keys ();
@@ -306,16 +306,16 @@ looks_like_struct (const std::string& text)
     {
       int parse_status;
 
-      unwind_protect::begin_frame ("looks_like_struct");
+      unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
 
-      unwind_protect_bool (discard_error_messages);
-      unwind_protect_int (error_state);
+      unwind_protect::protect_var (discard_error_messages);
+      unwind_protect::protect_var (error_state);
 
       discard_error_messages = true;
 
       octave_value tmp = eval_string (text, true, parse_status);
 
-      unwind_protect::run_frame ("looks_like_struct");
+      unwind_protect::run_frame (uwp_frame);
 
       retval = (tmp.is_defined () && tmp.is_map ());
     }
@@ -1384,7 +1384,7 @@ do_who (int argc, const string_vector& argv, bool return_list,
 	    {
 	      std::string nm = argv [i + 1];
 
-	      unwind_protect::begin_frame ("do_who_file");
+	      unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
 
 	      // Set up temporary scope.
 
@@ -1408,7 +1408,7 @@ do_who (int argc, const string_vector& argv, bool return_list,
 		  retval =  do_who (i, argv, return_list, verbose, newmsg);
 		}
 
-	      unwind_protect::run_frame ("do_who_file");
+	      unwind_protect::run_frame (uwp_frame);
 	    }
 
 	  return retval;

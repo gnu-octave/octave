@@ -480,17 +480,17 @@ do_edit_history (int argc, const string_vector& argv)
   // Turn on command echo, so the output from this will make better
   // sense.
 
-  unwind_protect::begin_frame ("do_edit_history");
+  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
 
-  unwind_protect_int (Vecho_executing_commands);
-  unwind_protect_bool (input_from_tmp_history_file);
+  unwind_protect::protect_var (Vecho_executing_commands);
+  unwind_protect::protect_var (input_from_tmp_history_file);
 
   Vecho_executing_commands = ECHO_CMD_LINE;
   input_from_tmp_history_file = true;
 
   source_file (name);
 
-  unwind_protect::run_frame ("do_edit_history");
+  unwind_protect::run_frame (uwp_frame);
 
   // Delete the temporary file.  Should probably be done with an
   // unwind_protect.
@@ -509,17 +509,17 @@ do_run_history (int argc, const string_vector& argv)
   // Turn on command echo so the output from this will make better
   // sense.
 
-  unwind_protect::begin_frame ("do_run_history");
+  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
 
-  unwind_protect_int (Vecho_executing_commands);
-  unwind_protect_bool (input_from_tmp_history_file);
+  unwind_protect::protect_var (Vecho_executing_commands);
+  unwind_protect::protect_var (input_from_tmp_history_file);
 
   Vecho_executing_commands = ECHO_CMD_LINE;
   input_from_tmp_history_file = true;
 
   source_file (name);
 
-  unwind_protect::run_frame ("do_run_history");
+  unwind_protect::run_frame (uwp_frame);
 
   // Delete the temporary file.
 

@@ -330,9 +330,9 @@ octave_dynamic_loader::do_load_oct (const std::string& fcn_name,
 {
   octave_function *retval = 0;
 
-  unwind_protect::begin_frame ("octave_dynamic_loader::do_load");
+  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
 
-  unwind_protect_bool (octave_dynamic_loader::doing_load);
+  unwind_protect::protect_var (octave_dynamic_loader::doing_load);
 
   doing_load = true;
 
@@ -385,7 +385,7 @@ octave_dynamic_loader::do_load_oct (const std::string& fcn_name,
 		 file_name.c_str ());
     }
   
-  unwind_protect::run_frame ("octave_dynamic_loader::do_load");
+  unwind_protect::run_frame (uwp_frame);
 
   return retval;
 }
@@ -397,9 +397,9 @@ octave_dynamic_loader::do_load_mex (const std::string& fcn_name,
 {
   octave_function *retval = 0;
 
-  unwind_protect::begin_frame ("octave_dynamic_loader::do_load");
+  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
 
-  unwind_protect_bool (octave_dynamic_loader::doing_load);
+  unwind_protect::protect_var (octave_dynamic_loader::doing_load);
 
   doing_load = true;
 
@@ -461,7 +461,7 @@ octave_dynamic_loader::do_load_mex (const std::string& fcn_name,
 		 file_name.c_str ());
     }
 
-  unwind_protect::run_frame ("octave_dynamic_loader::do_load");
+  unwind_protect::run_frame (uwp_frame);
 
   return retval;
 }

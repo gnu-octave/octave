@@ -313,7 +313,7 @@ octave_fcn_handle::load_ascii (std::istream& is)
 
       pos = is.tellg ();
 
-      unwind_protect::begin_frame ("anon_ascii_load");
+      unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
 
       // Set up temporary scope to use for evaluating the text that
       // defines the anonymous function.
@@ -385,7 +385,7 @@ octave_fcn_handle::load_ascii (std::istream& is)
       else
 	success = false;
 
-      unwind_protect::run_frame ("anon_ascii_load");
+      unwind_protect::run_frame (uwp_frame);
     }
   else
     success = set_fcn (octaveroot, fpath);
@@ -494,7 +494,7 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
       OCTAVE_LOCAL_BUFFER (char, ctmp2, tmp+1);
       is.get (ctmp2, tmp+1, 0);
 
-      unwind_protect::begin_frame ("anon_binary_load");
+      unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
 
       // Set up temporary scope to use for evaluating the text that
       // defines the anonymous function.
@@ -555,7 +555,7 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
 	    success = false;
 	}
 
-      unwind_protect::run_frame ("anon_binary_load");
+      unwind_protect::run_frame (uwp_frame);
     }
   else
     {
@@ -939,7 +939,7 @@ octave_fcn_handle::load_hdf5 (hid_t loc_id, const char *name,
       // restore error reporting:
       H5Eset_auto (err_func, err_func_data);
 
-      unwind_protect::begin_frame ("anon_hdf5_load");
+      unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
 
       // Set up temporary scope to use for evaluating the text that
       // defines the anonymous function.
@@ -1015,7 +1015,7 @@ octave_fcn_handle::load_hdf5 (hid_t loc_id, const char *name,
 	    success = false;
 	}
 
-      unwind_protect::run_frame ("anon_hdf5_load");
+      unwind_protect::run_frame (uwp_frame);
     }
   else
     {

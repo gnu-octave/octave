@@ -1787,16 +1787,16 @@ base_properties::has_property (const caseless_str& name)
 {
   property p;
 
-  unwind_protect::begin_frame("base_properties::has_property");
+  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
 
-  unwind_protect_bool (discard_error_messages);
-  unwind_protect_int (error_state);
+  unwind_protect::protect_var (discard_error_messages);
+  unwind_protect::protect_var (error_state);
 
   discard_error_messages = true;
 
   p = get_property (name);
 
-  unwind_protect::run_frame ("base_properties::has_property");
+  unwind_protect::run_frame (uwp_frame);
 
   return (p.ok ());
 }
@@ -3638,7 +3638,7 @@ axes::update_axis_limits (const std::string& axis_type)
 
     }
 
-  unwind_protect_bool (updating_axis_limits);
+  unwind_protect::protect_var (updating_axis_limits);
   updating_axis_limits = true;
 
   switch (update_type)
@@ -4189,7 +4189,7 @@ gh_manager::do_execute_callback (const graphics_handle& h,
   else
     args(1) = Matrix ();
 
-  unwind_protect::begin_frame ("execute_callback");
+  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
   unwind_protect::add (gh_manager::restore_gcbo);
 
   if (true)
@@ -4240,7 +4240,7 @@ gh_manager::do_execute_callback (const graphics_handle& h,
   
   END_INTERRUPT_WITH_EXCEPTIONS;
 
-  unwind_protect::run_frame ("execute_callback");
+  unwind_protect::run_frame (uwp_frame);
 }
 
 void
@@ -5015,10 +5015,10 @@ undocumented.\n\
 
   gh_manager::lock ();
 
-  unwind_protect::begin_frame ("Fdrawnow");
+  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
   unwind_protect::add (clear_drawnow_request);
 
-  unwind_protect_int (drawnow_executing);
+  unwind_protect::protect_var (drawnow_executing);
 
   if (++drawnow_executing <= 1)
     {
@@ -5153,7 +5153,7 @@ undocumented.\n\
 	print_usage ();
     }
 
-  unwind_protect::run_frame ("Fdrawnow");
+  unwind_protect::run_frame (uwp_frame);
 
   gh_manager::unlock ();
 

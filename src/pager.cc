@@ -364,10 +364,10 @@ flush_octave_stdout (void)
 {
   if (! flushing_output_to_pager)
     {
-      unwind_protect::begin_frame ("flush_octave_stdout");
+      unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
 
-      unwind_protect_bool (really_flush_to_pager);
-      unwind_protect_bool (flushing_output_to_pager);
+      unwind_protect::protect_var (really_flush_to_pager);
+      unwind_protect::protect_var (flushing_output_to_pager);
 
       really_flush_to_pager = true;
       flushing_output_to_pager = true;
@@ -376,7 +376,7 @@ flush_octave_stdout (void)
 
       clear_external_pager ();
 
-      unwind_protect::run_frame ("flush_octave_stdout");
+      unwind_protect::run_frame (uwp_frame);
     }
 }
 

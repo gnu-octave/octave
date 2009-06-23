@@ -3204,9 +3204,9 @@ representing the elements of @var{x}.  By default @var{len} is 9.\n\
     print_usage ();
   else
     {
-      unwind_protect::begin_frame ("Frats");
+      unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
 
-      unwind_protect_int (rat_string_len);
+      unwind_protect::protect_var (rat_string_len);
 
       rat_string_len = 9;
 
@@ -3219,7 +3219,7 @@ representing the elements of @var{x}.  By default @var{len} is 9.\n\
 
 	  if (arg.is_numeric_type ())
 	    {
-	      unwind_protect_bool (rat_format);
+	      unwind_protect::protect_var (rat_format);
 
 	      rat_format = true;
 
@@ -3254,7 +3254,7 @@ representing the elements of @var{x}.  By default @var{len} is 9.\n\
 	    error ("rats: expecting numeric input");
 	}
 
-      unwind_protect::run_frame ("Frats");
+      unwind_protect::run_frame (uwp_frame);
     }
 
   return retval;

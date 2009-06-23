@@ -557,7 +557,7 @@ load_path::do_set (const std::string& p, bool warn)
 
   // Temporarily disable add hook.
 
-  unwind_protect_fptr (add_hook);
+  unwind_protect::protect_var (add_hook);
 
   add_hook = 0;
 
@@ -1781,9 +1781,9 @@ execute_pkg_add_or_del (const std::string& dir,
   if (! octave_interpreter_ready)
     return;
 
-  unwind_protect::begin_frame ("execute_pkg_add_or_del");
+  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
 
-  unwind_protect_bool (input_from_startup_file);
+  unwind_protect::protect_var (input_from_startup_file);
 
   input_from_startup_file = true;
 
@@ -1794,7 +1794,7 @@ execute_pkg_add_or_del (const std::string& dir,
   if (fs.exists ())
     source_file (file, "base");
 
-  unwind_protect::run_frame ("execute_pkg_add_or_del");
+  unwind_protect::run_frame (uwp_frame);
 }
 
 void

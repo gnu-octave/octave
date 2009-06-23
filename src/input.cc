@@ -652,9 +652,9 @@ get_debug_input (const std::string& prompt)
       std::cerr << msg << std::endl;
     }
 
-  unwind_protect::begin_frame ("get_debug_input");
+  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
 
-  unwind_protect_str (VPS1);
+  unwind_protect::protect_var (VPS1);
   VPS1 = prompt;
 
   while (Vdebugging)
@@ -664,7 +664,7 @@ get_debug_input (const std::string& prompt)
       reset_parser ();
 
       // Save current value of global_command.
-      unwind_protect_ptr (global_command);
+      unwind_protect::protect_var (global_command);
 
       // Do this with an unwind-protect cleanup function so that the
       // forced variables will be unmarked in the event of an interrupt.
@@ -701,7 +701,7 @@ get_debug_input (const std::string& prompt)
       OCTAVE_QUIT;
     }
 
-  unwind_protect::run_frame ("get_debug_input");
+  unwind_protect::run_frame (uwp_frame);
 }
 
 // If the user simply hits return, this will produce an empty matrix.
@@ -897,7 +897,7 @@ do_keyboard (const octave_value_list& args)
 
   assert (nargin == 0 || nargin == 1);
 
-  unwind_protect::begin_frame ("do_keyboard");
+  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
 
   // FIXME -- we shouldn't need both the
   // command_history object and the
@@ -906,12 +906,12 @@ do_keyboard (const octave_value_list& args)
 
   unwind_protect::add (restore_command_history, 0);
 
-  unwind_protect_bool (Vsaving_history);
-  unwind_protect_bool (Vdebugging);
+  unwind_protect::protect_var (Vsaving_history);
+  unwind_protect::protect_var (Vdebugging);
 
   saved_frame = octave_call_stack::current_frame ();
   unwind_protect::add (restore_frame);
-  unwind_protect_size_t (saved_frame);
+  unwind_protect::protect_var (saved_frame);
 
   Vsaving_history = true;
   Vdebugging = true;
@@ -923,7 +923,7 @@ do_keyboard (const octave_value_list& args)
   if (! error_state)
     get_debug_input (prompt);
 
-  unwind_protect::run_frame ("do_keyboard");
+  unwind_protect::run_frame (uwp_frame);
 
   return retval;
 }
@@ -953,7 +953,7 @@ If @code{keyboard} is invoked without arguments, a default prompt of\n\
     {
       saved_frame = octave_call_stack::current_frame ();
       unwind_protect::add (restore_frame);
-      unwind_protect_size_t (saved_frame);
+      unwind_protect::protect_var (saved_frame);
 
       // Skip the frame assigned to the keyboard function.
       octave_call_stack::goto_frame (1);

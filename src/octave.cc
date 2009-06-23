@@ -291,9 +291,9 @@ initialize_version_info (void)
 static void
 execute_startup_files (void)
 {
-  unwind_protect::begin_frame ("execute_startup_files");
+  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
 
-  unwind_protect_bool (input_from_startup_file);
+  unwind_protect::protect_var (input_from_startup_file);
 
   input_from_startup_file = true;
 
@@ -368,13 +368,13 @@ execute_startup_files (void)
 	}
     }
 
-  unwind_protect::run_frame ("execute_startup_files");
+  unwind_protect::run_frame (uwp_frame);
 }
 
 static int
 execute_eval_option_code (const std::string& code)
 {
-  unwind_protect::begin_frame ("execute_eval_option_code");
+  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
 
   octave_save_signal_mask ();
 
@@ -388,7 +388,7 @@ execute_eval_option_code (const std::string& code)
 
   octave_initialized = true;
 
-  unwind_protect_bool (interactive);
+  unwind_protect::protect_var (interactive);
 
   interactive = false;
 
@@ -400,7 +400,7 @@ execute_eval_option_code (const std::string& code)
     }
   catch (octave_quit_exception e)
     {
-      unwind_protect::run_frame ("execute_eval_option_code");
+      unwind_protect::run_frame (uwp_frame);
       clean_up_and_exit (e.status);
     }
   catch (octave_interrupt_exception)
@@ -414,7 +414,7 @@ execute_eval_option_code (const std::string& code)
 		<< std::endl;
     }
 
-  unwind_protect::run_frame ("execute_eval_option_code");
+  unwind_protect::run_frame (uwp_frame);
 
   return parse_status;
 }
@@ -422,7 +422,7 @@ execute_eval_option_code (const std::string& code)
 static void
 execute_command_line_file (const std::string& fname)
 {
-  unwind_protect::begin_frame ("execute_command_line_file");
+  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
 
   octave_save_signal_mask ();
 
@@ -436,15 +436,15 @@ execute_command_line_file (const std::string& fname)
 
   octave_initialized = true;
 
-  unwind_protect_bool (interactive);
-  unwind_protect_bool (reading_script_file);
-  unwind_protect_bool (input_from_command_line_file);
+  unwind_protect::protect_var (interactive);
+  unwind_protect::protect_var (reading_script_file);
+  unwind_protect::protect_var (input_from_command_line_file);
 
-  unwind_protect_str (curr_fcn_file_name);
-  unwind_protect_str (curr_fcn_file_full_name);
+  unwind_protect::protect_var (curr_fcn_file_name);
+  unwind_protect::protect_var (curr_fcn_file_full_name);
 
-  unwind_protect_str (octave_program_invocation_name);
-  unwind_protect_str (octave_program_name);
+  unwind_protect::protect_var (octave_program_invocation_name);
+  unwind_protect::protect_var (octave_program_name);
 
   interactive = false;
   reading_script_file = true;
@@ -472,7 +472,7 @@ execute_command_line_file (const std::string& fname)
     }
   catch (octave_quit_exception e)
     {
-      unwind_protect::run_frame ("execute_command_line_file");
+      unwind_protect::run_frame (uwp_frame);
       clean_up_and_exit (e.status);
     }
   catch (octave_interrupt_exception)
@@ -486,7 +486,7 @@ execute_command_line_file (const std::string& fname)
 		<< fname << " failed" << std::endl;
     }
  
-  unwind_protect::run_frame ("execute_command_line_file");
+  unwind_protect::run_frame (uwp_frame);
 }
 
 // Usage message with extra help.

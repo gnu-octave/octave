@@ -869,7 +869,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 	    tc2 = m2.contents("MCOS")(0).cell_value()(1 + off).cell_value()(1);
 	    m2 = tc2.map_value();
 
-	    unwind_protect::begin_frame ("anon_mat5_load");
+	    unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
 
 	    // Set up temporary scope to use for evaluating the text
 	    // that defines the anonymous function.
@@ -919,7 +919,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 		goto skip_ahead;
 	      }
 
-	    unwind_protect::run_frame ("anon_mat5_load");
+	    unwind_protect::run_frame (uwp_frame);
 	  }
 	else
 	  {

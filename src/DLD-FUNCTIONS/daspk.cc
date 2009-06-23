@@ -155,7 +155,7 @@ daspk_user_jacobian (const ColumnVector& x, const ColumnVector& xdot,
 #define DASPK_ABORT() \
   do \
     { \
-      unwind_protect::run_frame ("Fdaspk"); \
+      unwind_protect::run_frame (uwp_frame); \
       return retval; \
     } \
   while (0)
@@ -280,9 +280,9 @@ parameters for @code{daspk}.\n\
   warned_fcn_imaginary = false;
   warned_jac_imaginary = false;
 
-  unwind_protect::begin_frame ("Fdaspk");
+  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
 
-  unwind_protect_int (call_depth);
+  unwind_protect::protect_var (call_depth);
   call_depth++;
 
   if (call_depth > 1)
@@ -480,7 +480,7 @@ parameters for @code{daspk}.\n\
   else
     print_usage ();
 
-  unwind_protect::run_frame ("Fdaspk");
+  unwind_protect::run_frame (uwp_frame);
 
   return retval;
 }

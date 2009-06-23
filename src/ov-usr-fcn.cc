@@ -111,7 +111,7 @@ octave_user_script::do_multi_index_op (int nargout,
 {
   octave_value_list retval;
 
-  unwind_protect::begin_frame ("user_script_eval");
+  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
 
   if (! error_state)
     {
@@ -119,7 +119,7 @@ octave_user_script::do_multi_index_op (int nargout,
 	{
 	  if (cmd_list)
 	    {
-	      unwind_protect_int (call_depth);
+	      unwind_protect::protect_var (call_depth);
 	      call_depth++;
 
 	      if (call_depth < Vmax_recursion_depth)
@@ -128,7 +128,7 @@ octave_user_script::do_multi_index_op (int nargout,
 
 		  unwind_protect::add (octave_call_stack::unwind_pop, 0);
 
-		  unwind_protect_bool (tree_evaluator::in_fcn_or_script_body);
+		  unwind_protect::protect_var (tree_evaluator::in_fcn_or_script_body);
 		  tree_evaluator::in_fcn_or_script_body = true;
 
 		  cmd_list->accept (*current_evaluator);
@@ -150,7 +150,7 @@ octave_user_script::do_multi_index_op (int nargout,
 	error ("invalid call to script");
     }
 
-  unwind_protect::run_frame ("user_script_eval");
+  unwind_protect::run_frame (uwp_frame);
 
   return retval;
 }
@@ -346,15 +346,15 @@ octave_user_function::do_multi_index_op (int nargout,
 
   int nargin = args.length ();
 
-  unwind_protect::begin_frame ("user_func_eval");
+  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
 
-  unwind_protect_int (call_depth);
+  unwind_protect::protect_var (call_depth);
   call_depth++;
 
   if (call_depth >= Vmax_recursion_depth)
     {
       ::error ("max_recursion_limit exceeded");
-      unwind_protect::run_frame ("user_func_eval");
+      unwind_protect::run_frame (uwp_frame);
       return retval;
     }
 
@@ -379,7 +379,7 @@ octave_user_function::do_multi_index_op (int nargout,
 
   string_vector arg_names = args.name_tags ();
 
-  unwind_protect_int (num_args_passed);
+  unwind_protect::protect_var (num_args_passed);
   num_args_passed = nargin;
 
   if (param_list && ! param_list->varargs_only ())
@@ -430,7 +430,7 @@ octave_user_function::do_multi_index_op (int nargout,
 
     // Evaluate the commands that make up the function.
 
-    unwind_protect_bool (tree_evaluator::in_fcn_or_script_body);
+    unwind_protect::protect_var (tree_evaluator::in_fcn_or_script_body);
     tree_evaluator::in_fcn_or_script_body = true;
 
     bool special_expr = (is_inline_function ()
@@ -495,7 +495,7 @@ octave_user_function::do_multi_index_op (int nargout,
   }
 
  abort:
-  unwind_protect::run_frame ("user_func_eval");
+  unwind_protect::run_frame (uwp_frame);
 
   return retval;
 }

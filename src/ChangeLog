@@ -1,5 +1,9 @@
 2009-06-23  Jaroslav Hajek  <highegg@gmail.com>
 
+	* pt-eval.cc (tree_evaluator::visit_try_catch_command): Simplify.
+
+2009-06-23  Jaroslav Hajek  <highegg@gmail.com>
+
 	* DLD-FUNCTIONS/cellfun.cc: Modernize unwind_protect usage.
 	* DLD-FUNCTIONS/daspk.cc: Ditto.
 	* DLD-FUNCTIONS/dasrt.cc: Ditto.

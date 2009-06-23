@@ -893,13 +893,7 @@ tree_evaluator::visit_try_catch_command (tree_try_catch_command& cmd)
       // For clearing the do_catch_code cleanup function.
       unwind_protect::discard ();
 
-      // For restoring Vdebug_on_warning, Vdebug_on_error, and
-      // buffer_error_messages.
-      unwind_protect::run ();
-      unwind_protect::run ();
-      unwind_protect::run ();
-
-      // Also clear the frame marker.
+      // Run the rest of the frame.
       unwind_protect::run_frame (uwp_frame);
     }
 }

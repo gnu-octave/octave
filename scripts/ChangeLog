@@ -1,3 +1,8 @@
+2009-06-22  John W. Eaton  <jwe@octave.org>
+
+	* statistics/base/var.m: Return zero for scalar case.  Handle
+	empty arguments in a Matlab compatible way.  New tests.
+
 2009-06-18  Ben Abbott <bpabbott@mac.com>
 
 	* plot/__go_draw_axes__.m: Change the default x11 fontspec from '*,0'

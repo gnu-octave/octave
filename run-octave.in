@@ -39,10 +39,10 @@ d2="$top_srcdir/scripts"
 d3="$builddir/scripts"
 d4="$builddir/src"
 
-d1_list=`$FIND "$d1" -type d -a ! \( \( -name CVS -o -name private \) -a -prune \) -exec echo '{}' ';' | $SED 's/$/:/'`
-d2_list=`$FIND "$d2" -type d -a ! \( \( -name CVS -o -name private \) -a -prune \) -exec echo '{}' ';' | $SED 's/$/:/'`
-d3_list=`$FIND "$d3" -type d -a ! \( \( -name CVS -o -name private \) -a -prune \) -exec echo '{}' ';' | $SED 's/$/:/'`
-d4_list=`$FIND "$d4" -type d -a ! \( \( -name CVS -o -name private \) -a -prune \) -exec echo '{}' ';' | $SED 's/$/:/'`
+d1_list=`$FIND "$d1" -type d -a ! \( \( -name private -o -name '@*' \) -a -prune \) -exec echo '{}' ';' | $SED 's/$/:/'`
+d2_list=`$FIND "$d2" -type d -a ! \( \( -name private -o -name '@*' \) -a -prune \) -exec echo '{}' ';' | $SED 's/$/:/'`
+d3_list=`$FIND "$d3" -type d -a ! \( \( -name private -o -name '@*' \) -a -prune \) -exec echo '{}' ';' | $SED 's/$/:/'`
+d4_list=`$FIND "$d4" -type d -a ! \( \( -name private -o -name '@*' \) -a -prune \) -exec echo '{}' ';' | $SED 's/$/:/'`
 
 d1_path=`echo "$d1_list" | $AWK '{ t = (s $0); s = t; } END { sub (/:$/, "", s); print s; }'`
 d2_path=`echo "$d2_list" | $AWK '{ t = (s $0); s = t; } END { sub (/:$/, "", s); print s; }'`

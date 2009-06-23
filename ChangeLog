@@ -1,3 +1,7 @@
+2009-06-23  Robert T. Short  <octave@phaselockedsystems.com>
+
+	* run-octave.in: Exclude @-files from path.  Remove CVS exclusions.
+
 2009-06-19  Jaroslav Hajek  <highegg@gmail.com>
 
 	* NEWS: Update.

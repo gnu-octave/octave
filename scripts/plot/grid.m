@@ -39,10 +39,15 @@
 
 function grid (varargin)
 
-  persistent grid_on = false;
-  persistent minor_on = false;
-
   [ax, varargin, nargs] = __plt_get_axis_arg__ ("grid", varargin{:});
+
+  grid_on = (strcmp (get (ax, "xgrid"), "on")
+             && strcmp (get (ax, "ygrid"), "on")
+             && strcmp (get (ax, "zgrid"), "on"));
+
+  minor_on = (strcmp (get (ax, "xminorgrid"), "on")
+              && strcmp (get (ax, "yminorgrid"), "on")
+              && strcmp (get (ax, "zminorgrid"), "on"));
 
   if (nargs > 2)
     print_usage ();
@@ -67,7 +72,7 @@ function grid (varargin)
 	    print_usage ();
 	  endif
 	else
-	   minor_on = ! minor_on
+	   minor_on = ! minor_on;
 	   if (minor_on)
 	     grid_on = true;
 	   endif
@@ -93,3 +98,25 @@ function grid (varargin)
   endif
 
 endfunction
+
+%!demo
+%! clf
+%! subplot (2,2,1)
+%! plot (1:100)
+%! grid minor
+%! grid minor
+%! grid
+%! title ("no grid")
+%! subplot (2,2,2)
+%! plot (1:100)
+%! grid
+%! title ("grid on")
+%! subplot (2,2,3)
+%! plot (1:100)
+%! grid minor
+%! title ("grid minor")
+%! subplot (2,2,4)
+%! semilogy (1:100)
+%! grid minor
+%! title ("grid minor")
+

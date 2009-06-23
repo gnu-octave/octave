@@ -2,6 +2,7 @@
 
 Copyright (C) 1993, 1994, 1995, 1996, 1997, 1999, 2000, 2002, 2004,
               2005, 2006, 2007, 2008 John W. Eaton
+Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
 
@@ -28,303 +29,58 @@ along with Octave; see the file COPYING.  If not, see
 #include <cstddef>
 #include <cstring>
 
-#include "CMatrix.h"
-
 #include "error.h"
 #include "unwind-prot.h"
 #include "utils.h"
 
-std::stack<unwind_elem> unwind_protect::elt_list;
+std::stack<unwind_protect::elem> unwind_protect::elt_list;
 
-class
-saved_variable
+std::stack<std::pair <std::string, unwind_protect::frame_id_t> > unwind_protect::tag_list;
+
+unwind_protect::restore_mem::restore_mem (void *ptr, size_t size)
+  : rptr (ptr), sptr (reinterpret_cast<void *> (new char[size])), rsize (size)
 {
-public:
-
-  enum var_type
-  {
-    boolean,
-    integer,
-    size_type,
-    string_type,
-    generic_ptr,
-    generic
-  };
-
-  saved_variable (void);
-
-  saved_variable (bool *p, bool v);
-
-  saved_variable (int *p, int v);
-
-  saved_variable (size_t *p, size_t v);
-
-  saved_variable (std::string *p, const std::string& v);
-
-  saved_variable (void **p, void *v);
-
-  ~saved_variable (void);
-
-  void restore_value (void);
-
-  static void restore (void *s);
-
-private:
-
-  union
-    {
-      bool *ptr_to_bool;
-      int *ptr_to_int;
-      size_t *ptr_to_size_t;
-      void *gen_ptr;
-      void **ptr_to_gen_ptr;
-    };
-
-  union
-    {
-      bool bool_value;
-      int int_value;
-      size_t size_t_value;
-      std::string *str_value;
-      void *gen_ptr_value;
-    };
-
-  var_type type_tag;
-
-  size_t size;
-};
-
-saved_variable::saved_variable (void)
-{
-  gen_ptr = 0;
-  gen_ptr_value = 0;
-  type_tag = generic;
-  size = 0;
+  std::memcpy (sptr, rptr, size);
 }
 
-saved_variable::saved_variable (bool *p, bool v)
+unwind_protect::restore_mem::~restore_mem (void)
 {
-  type_tag = boolean;
-  ptr_to_bool = p;
-  bool_value = v;
-  size = sizeof (bool);  // Is this necessary?
-}
-
-saved_variable::saved_variable (int *p, int v)
-{
-  type_tag = integer;
-  ptr_to_int = p;
-  int_value = v;
-  size = sizeof (int);  // Is this necessary?
-}
-
-saved_variable::saved_variable (size_t *p, size_t v)
-{
-  type_tag = size_type;
-  ptr_to_size_t = p;
-  size_t_value = v;
-  size = sizeof (size_t);  // Is this necessary?
-}
-
-saved_variable::saved_variable (std::string *p, const std::string& v)
-{
-  type_tag = string_type;
-  gen_ptr = p;
-  str_value = new std::string (v);
-  size = sizeof (std::string);  // Is this necessary?
-}
-
-saved_variable::saved_variable (void **p, void *v)
-{
-  type_tag = generic_ptr;
-  ptr_to_gen_ptr = p;
-  gen_ptr_value = v;
-  size = sizeof (void *);
-}
-
-saved_variable::~saved_variable (void)
-{
-  switch (type_tag)
-    {
-    case string_type:
-      delete str_value;
-      break;
-
-    case generic:
-      // FIXME
-      // delete [] gen_ptr_value;
-      break;
-
-    default:
-      break;
-    }
-}
-
-void
-saved_variable::restore_value (void)
-{
-  switch (type_tag)
-    {
-    case boolean:
-      *ptr_to_bool = bool_value;
-      break;
-
-    case integer:
-      *ptr_to_int = int_value;
-      break;
-
-    case size_type:
-      *ptr_to_size_t = size_t_value;
-      break;
-
-    case string_type:
-      (static_cast<std::string *> (gen_ptr)) -> assign (*str_value);
-      break;
-
-    case generic_ptr:
-      *ptr_to_gen_ptr = gen_ptr_value;
-      break;
-
-    case generic:
-      memcpy (gen_ptr, gen_ptr_value, size);
-      break;
-
-    default:
-      panic_impossible ();
-      break;
-    }
-}
-
-void
-saved_variable::restore (void *s)
-{
-  saved_variable *sv = static_cast<saved_variable *> (s);
-  sv->restore_value ();
-  delete sv;
-}
-
-void
-unwind_protect::add (unwind_elem::cleanup_func fptr, void *ptr)
-{
-  unwind_elem el (fptr, ptr);
-  elt_list.push (el);
-}
-
-void
-unwind_protect::run (void)
-{
-  unwind_elem el = elt_list.top ();
-
-  elt_list.pop ();
-
-  unwind_elem::cleanup_func f = el.fptr ();
-
-  if (f)
-    f (el.ptr ());
-}
-
-void
-unwind_protect::discard (void)
-{
-  elt_list.pop ();
+  std::memcpy (rptr, sptr, rsize);
+  delete [] reinterpret_cast<char *> (sptr);
 }
 
 void
 unwind_protect::begin_frame (const std::string& tag)
 {
-  unwind_elem elem (tag);
-  elt_list.push (elem);
+  tag_list.push (std::make_pair (tag, begin_frame ()));
 }
 
 void
 unwind_protect::run_frame (const std::string& tag)
 {
-  while (! elt_list.empty ())
+  while (! tag_list.empty ())
     {
-      unwind_elem el = elt_list.top ();
+      std::pair<std::string, frame_id_t> top = tag_list.top ();
+      tag_list.pop ();
 
-      elt_list.pop ();
-
-      unwind_elem::cleanup_func f = el.fptr ();
-
-      if (f)
-	f (el.ptr ());
-
-      if (tag == el.tag ())
-	break;
+      run_frame (top.second);
+      if (top.first == tag)
+        break;
     }
 }
 
 void
 unwind_protect::discard_frame (const std::string& tag)
 {
-  while (! elt_list.empty ())
+  while (! tag_list.empty ())
     {
-      unwind_elem el = elt_list.top ();
+      std::pair<std::string, frame_id_t> top = tag_list.top ();
+      tag_list.pop ();
 
-      elt_list.pop ();
-
-      if (tag == el.tag ())
-	break;
+      run_frame (top.second);
+      if (top.first == tag)
+        break;
     }
-}
-
-void
-unwind_protect::run_all (void)
-{
-  while (! elt_list.empty ())
-    {
-      unwind_elem el = elt_list.top ();
-
-      elt_list.pop ();
-
-      unwind_elem::cleanup_func f = el.fptr ();
-
-      if (f)
-	f (el.ptr ());
-    }
-}
-
-void
-unwind_protect::discard_all (void)
-{
-  while (! elt_list.empty ())
-    elt_list.pop ();
-}
-
-void
-unwind_protect::save_bool (bool *ptr, bool value)
-{
-  saved_variable *s = new saved_variable (ptr, value);
-  add (saved_variable::restore, s);
-}
-
-void
-unwind_protect::save_int (int *ptr, int value)
-{
-  saved_variable *s = new saved_variable (ptr, value);
-  add (saved_variable::restore, s);
-}
-
-void
-unwind_protect::save_size_t (size_t *ptr, size_t value)
-{
-  saved_variable *s = new saved_variable (ptr, value);
-  add (saved_variable::restore, s);
-}
-
-void
-unwind_protect::save_str (std::string *ptr, const std::string& value)
-{
-  saved_variable *s = new saved_variable (ptr, value);
-  add (saved_variable::restore, s);
-}
-
-void
-unwind_protect::save_ptr (void **ptr, void *value)
-{
-  saved_variable *s = new saved_variable (ptr, value);
-  add (saved_variable::restore, s);
 }
 
 /*

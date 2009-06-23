@@ -2,6 +2,7 @@
 
 Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 2000, 2002, 2004,
               2005, 2006, 2007, 2008 John W. Eaton
+Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
 
@@ -28,52 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <string>
 #include <stack>
-
-class
-OCTINTERP_API
-unwind_elem
-{
-public:
-
-  typedef void (*cleanup_func) (void *ptr);
-
-  unwind_elem (void)
-    : ue_tag (), ue_fptr (0), ue_ptr (0) { }
-
-  unwind_elem (const std::string &t)
-    : ue_tag (t), ue_fptr (0), ue_ptr (0) { }
-
-  unwind_elem (cleanup_func f, void *p)
-    : ue_tag (), ue_fptr (f), ue_ptr (p) { }
-
-  unwind_elem (const unwind_elem& el)
-    : ue_tag (el.ue_tag), ue_fptr (el.ue_fptr), ue_ptr (el.ue_ptr) { }
-
-  ~unwind_elem (void) { }
-
-  unwind_elem& operator = (const unwind_elem& el)
-    {
-      ue_tag = el.ue_tag;
-      ue_fptr = el.ue_fptr;
-      ue_ptr = el.ue_ptr;
-
-      return *this;
-    }
-
-  std::string tag (void) { return ue_tag; }
-
-  cleanup_func fptr (void) { return ue_fptr; }
-
-  void *ptr (void) { return ue_ptr; }
-
-private:
-
-  std::string ue_tag;
-
-  cleanup_func ue_fptr;
-
-  void *ue_ptr;
-};
+#include <utility>
 
 class
 OCTINTERP_API
@@ -81,64 +37,174 @@ unwind_protect
 {
 public:
 
-  static void add (unwind_elem::cleanup_func fptr, void *ptr = 0);
+  // This template class can be used to restore value of a variable of any
+  // class posessing a copy constructor and assignment operator.
 
-  static void run (void);
+  template <class T>
+  class
+  restore_var
+  {
+  public:
+    restore_var (T *ptr, const T& val) 
+      : rptr (ptr), rval(val) { }
+    restore_var (T *ptr) 
+      : rptr (ptr), rval(*ptr) { }
+    ~restore_var (void)
+      { *rptr = rval; }
 
-  static void discard (void);
+    // For unwind_protect.
+    static void cleanup (void *ptr)
+      {
+        delete reinterpret_cast<restore_var *> (ptr);
+      }
 
-  static void begin_frame (const std::string& tag);
+  private:
 
-  static void run_frame (const std::string& tag);
+    // No copying!
+    void operator = (const restore_var&); 
 
-  static void discard_frame (const std::string& tag);
+    T *rptr, rval;
+  };
 
-  static void run_all (void);
+  // This class is used to restore arbitrary memory area using std::memcpy.
 
-  static void discard_all (void);
+  class
+  restore_mem
+  {
+  public:
+    restore_mem (void *ptr, size_t size);
+    ~restore_mem (void);
 
-  // Ways to save variables.
+    // For unwind_protect.
+    static void cleanup (void *ptr)
+      {
+        delete reinterpret_cast<restore_mem *> (ptr);
+      }
 
-  static void save_bool (bool *ptr, bool value);
+  private:
 
-  static void save_int (int *ptr, int value);
+    // No copying!
+    void operator = (const restore_mem&); 
 
-  static void save_size_t (size_t *ptr, size_t value);
+    void *rptr, *sptr;
+    size_t rsize;
+  };
 
-  static void save_str (std::string *ptr, const std::string& value);
+  typedef void (*cleanup_func) (void *ptr);
 
-  static void save_ptr (void **ptr, void *value);
+  typedef size_t frame_id_t;
 
-  static void save_var (void *ptr, void *value, size_t size);
+  typedef std::pair<cleanup_func, void *> elem;
 
-  static std::stack<unwind_elem> elt_list;
+  static bool empty (void)
+    { return elt_list.empty (); }
+
+  static void add (cleanup_func fptr, void *ptr = 0)
+    {
+      elt_list.push (elem (fptr, ptr));
+    }
+
+  static void run (void)
+    {
+      elem elt = elt_list.top ();
+      elt_list.pop ();
+
+      elt.first (elt.second);
+    }
+
+  static void discard (void)
+    {
+      elt_list.pop ();
+    }
+
+  static frame_id_t begin_frame ()
+    {
+      return elt_list.size ();
+    }
+
+  static void run_frame (frame_id_t frame_id)
+    {
+      while (elt_list.size () > frame_id)
+        run ();
+    }
+
+  static void discard_frame (frame_id_t frame_id)
+    {
+      while (elt_list.size () > frame_id)
+        discard ();
+    }
+
+  // String tags are deprecated. Use the above trio.
+
+  static void begin_frame (const std::string& tag) GCC_ATTR_DEPRECATED;
+
+  static void run_frame (const std::string& tag) GCC_ATTR_DEPRECATED;
+
+  static void discard_frame (const std::string& tag) GCC_ATTR_DEPRECATED;
+
+  static void run_all (void)
+    { 
+      run_frame (0);
+      while (! tag_list.empty ())
+        tag_list.pop ();
+    }
+
+  static void discard_all (void)
+    { 
+      discard_frame (0);
+      while (! tag_list.empty ())
+        tag_list.pop ();
+    }
+
+  // Protect any variable.
+  template <class T>
+  static void protect_var (T& var)
+    {
+      add (restore_var<T>::cleanup, new restore_var<T> (&var));
+    }
+
+  // Protect any variable, value given.
+  template <class T>
+  static void protect_var (T& var, const T& val)
+    {
+      add (restore_var<T>::cleanup, new restore_var<T> (&var, val));
+    }
+
+  // Protect an area of memory.
+  static void protect_mem (void *ptr, size_t size)
+    {
+      add (restore_mem::cleanup, new restore_mem (ptr, size));
+    }
+
+private:
+
+  static std::stack<elem> elt_list;
+
+  static std::stack<std::pair <std::string, frame_id_t> > tag_list;
 };
 
-// We could get by without these macros, but they are nice to have...
+// Backward compatibility macros. Avoid them; use protect_var directly.
 
 #define unwind_protect_bool(b) \
-  unwind_protect::save_bool (&(b), (b))
+  unwind_protect::protect_var (b)
 
 #define unwind_protect_int(i) \
-  unwind_protect::save_int (&(i), (i))
+  unwind_protect::protect_var (i)
 
 #define unwind_protect_size_t(i) \
-  unwind_protect::save_size_t (&(i), (i))
+  unwind_protect::protect_var (i)
 
 #define unwind_protect_str(s) \
-  unwind_protect::save_str (&(s), (s))
+  unwind_protect::protect_var (s)
 
 #define unwind_protect_ptr(p) \
-  unwind_protect::save_ptr (reinterpret_cast<void **> (&(p)), \
-                            reinterpret_cast<void *> (p))
+  unwind_protect::protect_var (p)
 
 #define unwind_protect_fptr(p) \
-  unwind_protect::save_ptr (reinterpret_cast<void **> (&(p)), \
-                            FCN_PTR_CAST (void *, p))
+  unwind_protect::protect_var (p)
 
 #define unwind_protect_const_ptr(p) \
-  unwind_protect::save_ptr (const_cast<void **> (reinterpret_cast<const void **> (&(p))), \
-                            const_cast<void *> (reinterpret_cast<const void *> (p)))
+  unwind_protect::protect_var (p)
 
 #endif
 

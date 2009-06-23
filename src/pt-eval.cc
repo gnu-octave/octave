@@ -900,7 +900,7 @@ tree_evaluator::visit_try_catch_command (tree_try_catch_command& cmd)
       unwind_protect::run ();
 
       // Also clear the frame marker.
-      unwind_protect::discard ();
+      unwind_protect::run_frame ("tree_evaluator::visit_try_catch_command");
     }
 }
 

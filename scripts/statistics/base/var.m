@@ -61,7 +61,7 @@ function retval = var (x, opt, dim)
   if (isempty (x))
     ## FIXME -- is there a way to obtain these results without all the
     ## special cases?
-    if (ndim (x) == 2 && sz(0) == 0 && sz(1) == 0)
+    if (ndims (x) == 2 && sz(1) == 0 && sz(2) == 0)
       retval = NaN;
     else
       sz(dim) = 1;

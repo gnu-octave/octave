@@ -109,10 +109,8 @@ function implicit_margin = gnuplot_implicit_margin (term, opts_str)
 endfunction
 
 function [enhanced, implicit_margin] = gnuplot_set_term (plot_stream, new_stream, h, term, file)
-  ## Generate the gnuplot "set terminal <term> ..." command.  Include
-  ## the subset of properties "position", "units", "paperposition",
-  ## "paperunits", "name", and "numbertitle".  When "term" originates
-  ## from print.m, it may include gnuplot terminal options.
+  ## Generate the gnuplot "set terminal <term> ..." command.
+  ## When "term" originates from print.m, it may include other options.
   if (nargin < 4)
     ## This supports the gnuplot backend.
     term = gnuplot_default_term ();
@@ -166,11 +164,27 @@ function [enhanced, implicit_margin] = gnuplot_set_term (plot_stream, new_stream
 	  || any (strfind (opts_str, "size ") == 1)))
         ## Convert position to units used by gnuplot.
         if (output_to_screen (term))
-          ## Get figure size in pixels.
-          [gnuplot_size, gnuplot_pos] = get_figsize (h);
+          ## Get figure size in pixels.  Rely on listener
+	  ## to handle coversion of position property.
+	  units = get (h, "units");
+	  unwind_protect
+	    set (h, "units", "pixels");
+	    position_in_pixesl = get (h, "position");
+	  unwind_protect_cleanup
+	    set (h, "units", units);
+	  end_unwind_protect
+	  gnuplot_pos = position_in_pixesl(1:2);
+	  gnuplot_size = position_in_pixesl(3:4);
         else
-          ## Get size of the printed plot in inches.
-          gnuplot_size = get_papersize (h);
+          ## Get size of the printed plot in inches. Rely on listener
+	  ## to handle coversion of papersize property.
+	  paperunits = get (h, "paperunits");
+	  unwind_protect
+	    set (h, "paperunits", "inches");
+            gnuplot_size = get (h, "papersize");
+	  unwind_protect_cleanup
+	    set (h, "paperunits", paperunits);
+	  end_unwind_protect
           if (term_units_are_pixels (term))
 	    ## Convert to inches using the property set by print().
 	    gnuplot_size = gnuplot_size * get (h, "__pixels_per_inch__");
@@ -195,13 +209,19 @@ function [enhanced, implicit_margin] = gnuplot_set_term (plot_stream, new_stream
           endif
           if (any (strncmpi (term, terminals_with_size, 3)))
 	    if (term_units_are_pixels (term))
-              size_str = sprintf ("size %d,%d", gnuplot_size(1), gnuplot_size(2));
+              size_str = sprintf ("size %d,%d", gnuplot_size);
 	    else
-              size_str = sprintf ("size %.15g,%.15g", gnuplot_size(1), gnuplot_size(2));
+              size_str = sprintf ("size %.15g,%.15g", gnuplot_size);
 	    endif
             if (strncmpi (term, "X11", 3) && __gnuplot_has_feature__ ("x11_figure_position"))
 	      ## X11 allows the window to be positioned as well.
-              screen_size = get (0, "screensize")(3:4);
+	      units = get (0, "units");
+	      unwind_protect
+	        set (0, "units", "pixels");
+	        screen_size = get (0, "screensize")(3:4);
+	      unwind_protect_cleanup
+	        set (0, "units", units);
+	      end_unwind_protect
               if (all (screen_size > 0))
                 ## For X11, set the figure positon as well as the size
                 ## gnuplot position is UL, Octave's is LL (same for screen/window)
@@ -213,13 +233,13 @@ function [enhanced, implicit_margin] = gnuplot_set_term (plot_stream, new_stream
             endif
           elseif (strncmpi (term, "aqua", 3))
             ## Aqua has size, but the format is different.
-            size_str = sprintf ("size %d %d", gnuplot_size(1), gnuplot_size(2));
+            size_str = sprintf ("size %d %d", gnuplot_size);
           elseif (strncmpi (term, "fig", 3))
             ## Fig also has size, but the format is different.
-            size_str = sprintf ("size %.15g %.15g", gnuplot_size(1), gnuplot_size(2));
+            size_str = sprintf ("size %.15g %.15g", gnuplot_size);
           elseif (any (strncmpi (term, {"corel", "hpgl"}, 3)))
             ## The size for corel and hpgl are goes at the end (implicit).
-            size_str = sprintf ("%.15g %.15g",gnuplot_size(1), gnuplot_size(2));
+            size_str = sprintf ("%.15g %.15g", gnuplot_size);
           elseif (any (strncmpi (term, {"dxf"}, 3)))
             ## DXF uses autocad units.
             size_str = "";
@@ -334,93 +354,3 @@ function ret = term_units_are_pixels (term)
   ret = any (strncmpi ({"emf", "gif", "jpeg", "pbm", "png", "svg"}, term, 3));
 endfunction
 
-function [fig_size, fig_pos] = get_figsize (h)
-  ## Determine the size of the figure in pixels.
-  position = get (h, "position");
-  units = get (h, "units");
-  t.inches      = 1;
-  t.centimeters = 2.54;
-  t.pixels      = get (0, "screenpixelsperinch");
-  ## gnuplot treats pixels/points for the screen the same (?).
-  t.points      = t.pixels;
-  screensize    = get (0, "screensize")(3:4);
-  t.normalized  = screensize / t.pixels;
-  fig_size = position(3:4) * (t.pixels / t.(units));
-  fig_pos  = position(1:2) * (t.pixels / t.(units));
-  fig_pos(1) = max (min (fig_pos(1), screensize(1)), 10);
-  fig_pos(2) = max (min (fig_pos(2), screensize(2)), 10);
-  fig_size(1) = max (min (fig_size(1), screensize(1)), 10-fig_pos(1));
-  fig_size(2) = max (min (fig_size(2), screensize(2)), 10-fig_pos(2));
-endfunction
-
-function papersize = get_papersize (h)
-  ## Returns the papersize in inches
-  ## FIXME - a listener should hanlde this.
-  persistent papertypes papersizes
-  if (isempty (papertypes))
-    papertypes = {"usletter", "uslegal", ...
-                 "a0", "a1", "a2", "a3", "a4", "a5", ...
-                 "b0", "b1", "b2", "b3", "b4", "b5", ...
-                 "arch-a", "arch-b", "arch-c", "arch-d", "arch-e", ...
-                 "a", "b", "c", "d", "e", ...
-                 "tabloid", "<custom>"};
-    papersizes = [ 8.500, 11.000;
-                   8.500, 14.000;
-                  33.135, 46.847;
-                  23.404, 33.135;
-                  16.548, 23.404;
-                  11.694, 16.528;
-                   8.268, 11.693;
-                   5.847,  8.264;
-                  40.543, 57.366;
-                  28.683, 40.503;
-                  20.252, 28.683;
-                  14.342, 20.252;
-                  10.126, 14.342;
-                   7.171, 10.126;
-                   9.000, 12.000;
-                  12.000, 18.000;
-                  18.000, 24.000;
-                  24.000, 36.000;
-                  36.000, 48.000;
-                   8.500, 11.000;
-                  11.000, 17.000;
-                  17.000, 22.000;
-                  22.000, 34.000;
-                  34.000, 44.000;
-                  11.000, 17.000;
-                   8.500, 11.000];
-    ## <custom> has a page size since we're not doing any checking here.
-    papersizes = round (1000 * papersizes);
-  endif
-
-  paperunits = get (h, "paperunits");
-  if (strcmpi (paperunits, "normalized"))
-    papertype = get (h, "papertype");
-    n = find (strcmpi (papertypes, papertype));
-    papersize = 0.001 * papersizes(n, :);
-    paperunits = "inches";
-  else
-    t.points      = 72;
-    t.centimeters = 2.54;
-    t.inches      = 1.00;
-    ## FIXME -- this papersize/type administration should be done at a
-    ## lower level.
-    if (strcmpi (get (h, "papertype"), "<custom>"))
-      ## If the type is custom but the size is a standard, then set the
-      ## standard type.
-      papersize = get (h, "papersize");
-      papersize = papersize * t.(paperunits);
-      n = find (all ((ones ([size(papersizes, 1), 1])
-		      * round (1000*papersize) - papersizes) == 0, 2));
-      if (! isempty (n))
-        set (h, "papertype", papertypes{n});
-      endif
-    else
-      papertype = get (h, "papertype");
-      n = find (strcmpi (papertypes, papertype));
-      papersize = papersizes(n,:) * 0.001;
-      set (h, "papersize", papersize * t.(paperunits));
-    endif
-  endif
-endfunction

@@ -1,3 +1,10 @@
+2009-06-24  Jaroslav Hajek  <highegg@gmail.com>
+
+	* pt-mat.cc (get_concat_class): Use empty string as zero value.
+	(tm_row_const_rep::tm_row_const_rep): Initialize class_nm to empty
+	string.
+	(tm_const::tm_const): Ditto.
+
 2009-06-24  John W. Eaton  <jwe@octave.org>
 
 	* pt-assign.cc (former_built_in_variables): Remove "ans" from the list.

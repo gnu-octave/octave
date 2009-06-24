@@ -64,6 +64,9 @@ Octave_map::squeeze (void) const
       retval.assign (key (pa), tmp);
     }
 
+  // Preserve order of keys.
+  retval.key_list = key_list;
+
   return retval;
 }
 
@@ -81,6 +84,9 @@ Octave_map::permute (const Array<int>& vec, bool inv) const
 
       retval.assign (key (pa), tmp);
     }
+
+  // Preserve order of keys.
+  retval.key_list = key_list;
 
   return retval;
 }
@@ -153,6 +159,9 @@ Octave_map::transpose (void) const
   for (const_iterator p = begin (); p != end (); p++)
     retval.assign (key(p), Cell (contents(p).transpose ()));
 
+  // Preserve order of keys.
+  retval.key_list = key_list;
+
   return retval;
 }
 
@@ -167,6 +176,9 @@ Octave_map::reshape (const dim_vector& new_dims) const
 	retval.assign (key(p), contents(p).reshape (new_dims));
 
       retval.dimensions = new_dims;
+
+      // Preserve order of keys.
+      retval.key_list = key_list;
     }
   else
     retval = *this;
@@ -196,6 +208,9 @@ Octave_map::resize (const dim_vector& dv, bool fill)
 
 	      assign (key(p), tmp);
 	    }
+
+	  // Preserve order of keys.
+	  retval.key_list = key_list;
 	}
     }
 }
@@ -220,6 +235,9 @@ Octave_map::concat (const Octave_map& rb, const Array<octave_idx_type>& ra_idx)
 	  retval.assign (key(pa),
 			 contents(pa).insert (rb.contents(pb), ra_idx));
 	}
+
+      // Preserve order of keys.
+      retval.key_list = key_list;
     }
   else
     {
@@ -436,10 +454,13 @@ Octave_map
 Octave_map::index (const octave_value_list& idx, bool resize_ok) const
 {
   Octave_map retval;
+
   octave_idx_type n_idx = idx.length ();
+
   if (n_idx > 0)
     {
       Array<idx_vector> ra_idx (n_idx);
+
       for (octave_idx_type i = 0; i < n_idx; i++)
         {
           ra_idx(i) = idx(i).index_vector ();
@@ -451,8 +472,8 @@ Octave_map::index (const octave_value_list& idx, bool resize_ok) const
         {
           for (const_iterator p = begin (); p != end (); p++)
             {
-
               Cell tmp = contents (p);
+
               tmp = tmp.ArrayN<octave_value>::index (ra_idx, resize_ok);
 
               if (error_state)

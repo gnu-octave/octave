@@ -64,7 +64,7 @@ extern "C"
 
   F77_RET_T
   F77_FUNC (dseupd, DSEUPD) (const int&, F77_CONST_CHAR_ARG_DECL,
-			     int*, double*, double*,
+			     octave_idx_type*, double*, double*,
 			     const octave_idx_type&, const double&,
 			     F77_CONST_CHAR_ARG_DECL, const octave_idx_type&, 
 			     F77_CONST_CHAR_ARG_DECL, const octave_idx_type&, 
@@ -87,7 +87,7 @@ extern "C"
 
   F77_RET_T
   F77_FUNC (dneupd, DNEUPD) (const int&, F77_CONST_CHAR_ARG_DECL,
-			     int*, double*, double*,
+			     octave_idx_type*, double*, double*,
 			     double*, const octave_idx_type&, const double&,
 			     const double&, double*, F77_CONST_CHAR_ARG_DECL, 
 			     const octave_idx_type&, F77_CONST_CHAR_ARG_DECL, 
@@ -111,7 +111,7 @@ extern "C"
 
   F77_RET_T
   F77_FUNC (zneupd, ZNEUPD) (const int&, F77_CONST_CHAR_ARG_DECL,
-			     int*, Complex*, Complex*, 
+			     octave_idx_type*, Complex*, Complex*, 
 			     const octave_idx_type&, const Complex&,
 			     Complex*, F77_CONST_CHAR_ARG_DECL,
 			     const octave_idx_type&, F77_CONST_CHAR_ARG_DECL, 
@@ -984,14 +984,14 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
 
   // We have a problem in that the size of the C++ bool 
   // type relative to the fortran logical type. It appears 
-  // that fortran uses 4-bytes per logical and C++ 1-byte 
+  // that fortran uses 4- or 8-bytes per logical and C++ 1-byte 
   // per bool, though this might be system dependent. As 
   // long as the HOWMNY arg is not "S", the logical array
   // is just workspace for ARPACK, so use int type to 
   // avoid problems.
-  Array<int> s (p);
-  int *sel = s.fortran_vec ();
-			
+  Array<octave_idx_type> s (p);
+  octave_idx_type *sel = s.fortran_vec ();
+
   eig_vec.resize (n, k);
   double *z = eig_vec.fortran_vec ();
 
@@ -1321,13 +1321,13 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
 
   // We have a problem in that the size of the C++ bool 
   // type relative to the fortran logical type. It appears 
-  // that fortran uses 4-bytes per logical and C++ 1-byte 
+  // that fortran uses 4- or 8-bytes per logical and C++ 1-byte 
   // per bool, though this might be system dependent. As 
   // long as the HOWMNY arg is not "S", the logical array
   // is just workspace for ARPACK, so use int type to 
   // avoid problems.
-  Array<int> s (p);
-  int *sel = s.fortran_vec ();
+  Array<octave_idx_type> s (p);
+  octave_idx_type *sel = s.fortran_vec ();
 			
   eig_vec.resize (n, k);
   double *z = eig_vec.fortran_vec ();
@@ -1579,13 +1579,13 @@ EigsRealSymmetricFunc (EigsFunc fun, octave_idx_type n,
 
   // We have a problem in that the size of the C++ bool 
   // type relative to the fortran logical type. It appears 
-  // that fortran uses 4-bytes per logical and C++ 1-byte 
+  // that fortran uses 4- or 8-bytes per logical and C++ 1-byte 
   // per bool, though this might be system dependent. As 
   // long as the HOWMNY arg is not "S", the logical array
   // is just workspace for ARPACK, so use int type to 
   // avoid problems.
-  Array<int> s (p);
-  int *sel = s.fortran_vec ();
+  Array<octave_idx_type> s (p);
+  octave_idx_type *sel = s.fortran_vec ();
 			
   eig_vec.resize (n, k);
   double *z = eig_vec.fortran_vec ();
@@ -1898,13 +1898,13 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
 
   // We have a problem in that the size of the C++ bool 
   // type relative to the fortran logical type. It appears 
-  // that fortran uses 4-bytes per logical and C++ 1-byte 
+  // that fortran uses 4- or 8-bytes per logical and C++ 1-byte 
   // per bool, though this might be system dependent. As 
   // long as the HOWMNY arg is not "S", the logical array
   // is just workspace for ARPACK, so use int type to 
   // avoid problems.
-  Array<int> s (p);
-  int *sel = s.fortran_vec ();
+  Array<octave_idx_type> s (p);
+  octave_idx_type *sel = s.fortran_vec ();
 
   Matrix eig_vec2 (n, k + 1);
   double *z = eig_vec2.fortran_vec ();
@@ -2277,13 +2277,13 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
 
   // We have a problem in that the size of the C++ bool 
   // type relative to the fortran logical type. It appears 
-  // that fortran uses 4-bytes per logical and C++ 1-byte 
+  // that fortran uses 4- or 8-bytes per logical and C++ 1-byte 
   // per bool, though this might be system dependent. As 
   // long as the HOWMNY arg is not "S", the logical array
   // is just workspace for ARPACK, so use int type to 
   // avoid problems.
-  Array<int> s (p);
-  int *sel = s.fortran_vec ();
+  Array<octave_idx_type> s (p);
+  octave_idx_type *sel = s.fortran_vec ();
 			
   Matrix eig_vec2 (n, k + 1);
   double *z = eig_vec2.fortran_vec ();
@@ -2582,13 +2582,13 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n,
 
   // We have a problem in that the size of the C++ bool 
   // type relative to the fortran logical type. It appears 
-  // that fortran uses 4-bytes per logical and C++ 1-byte 
+  // that fortran uses 4- or 8-bytes per logical and C++ 1-byte 
   // per bool, though this might be system dependent. As 
   // long as the HOWMNY arg is not "S", the logical array
   // is just workspace for ARPACK, so use int type to 
   // avoid problems.
-  Array<int> s (p);
-  int *sel = s.fortran_vec ();
+  Array<octave_idx_type> s (p);
+  octave_idx_type *sel = s.fortran_vec ();
 
   Matrix eig_vec2 (n, k + 1);
   double *z = eig_vec2.fortran_vec ();
@@ -2945,13 +2945,13 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
 
   // We have a problem in that the size of the C++ bool 
   // type relative to the fortran logical type. It appears 
-  // that fortran uses 4-bytes per logical and C++ 1-byte 
+  // that fortran uses 4- or 8-bytes per logical and C++ 1-byte 
   // per bool, though this might be system dependent. As 
   // long as the HOWMNY arg is not "S", the logical array
   // is just workspace for ARPACK, so use int type to 
   // avoid problems.
-  Array<int> s (p);
-  int *sel = s.fortran_vec ();
+  Array<octave_idx_type> s (p);
+  octave_idx_type *sel = s.fortran_vec ();
 
   eig_vec.resize (n, k);
   Complex *z = eig_vec.fortran_vec ();
@@ -3285,13 +3285,13 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
 
   // We have a problem in that the size of the C++ bool 
   // type relative to the fortran logical type. It appears 
-  // that fortran uses 4-bytes per logical and C++ 1-byte 
+  // that fortran uses 4- or 8-bytes per logical and C++ 1-byte 
   // per bool, though this might be system dependent. As 
   // long as the HOWMNY arg is not "S", the logical array
   // is just workspace for ARPACK, so use int type to 
   // avoid problems.
-  Array<int> s (p);
-  int *sel = s.fortran_vec ();
+  Array<octave_idx_type> s (p);
+  octave_idx_type *sel = s.fortran_vec ();
 
   eig_vec.resize (n, k);
   Complex *z = eig_vec.fortran_vec ();
@@ -3549,13 +3549,13 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n,
 
   // We have a problem in that the size of the C++ bool 
   // type relative to the fortran logical type. It appears 
-  // that fortran uses 4-bytes per logical and C++ 1-byte 
+  // that fortran uses 4- or 8-bytes per logical and C++ 1-byte 
   // per bool, though this might be system dependent. As 
   // long as the HOWMNY arg is not "S", the logical array
   // is just workspace for ARPACK, so use int type to 
   // avoid problems.
-  Array<int> s (p);
-  int *sel = s.fortran_vec ();
+  Array<octave_idx_type> s (p);
+  octave_idx_type *sel = s.fortran_vec ();
 
   eig_vec.resize (n, k);
   Complex *z = eig_vec.fortran_vec ();

@@ -1,3 +1,7 @@
+2009-06-24  Alexander Mamonov  <mamonov@gmail.com>
+
+	* plot/plot3.m: Correctly compute offsets for property/value pairs.
+
 2009-06-23  Alexander Mamonov  <mamonov@gmail.com>
 
 	* image/imread.m: New test.

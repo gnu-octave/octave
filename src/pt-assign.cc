@@ -64,7 +64,6 @@ static const char *former_built_in_variables[] =
   "PS2",
   "PS4",
   "__kluge_procbuf_delay__",
-  "ans",
   "automatic_replot",
   "beep_on_error",
   "completion_append_char",

@@ -1,3 +1,7 @@
+2009-06-24  John W. Eaton  <jwe@octave.org>
+
+	* pt-assign.cc (former_built_in_variables): Remove "ans" from the list.
+
 2009-06-24  Jaroslav Hajek  <highegg@gmail.com>
 
 	* unwind-prot.h (restore_var, restore_mem): Hide also copy

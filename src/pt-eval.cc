@@ -904,12 +904,18 @@ tree_evaluator::visit_try_catch_command (tree_try_catch_command& cmd)
     }
 }
 
+void restore_interrupt_state (void *ptr)
+{
+  octave_interrupt_state = *(reinterpret_cast<sig_atomic_t *> (ptr));
+}
+
 static void
 do_unwind_protect_cleanup_code (void *ptr)
 {
   tree_statement_list *list = static_cast<tree_statement_list *> (ptr);
 
-  unwind_protect_int (octave_interrupt_state);
+  sig_atomic_t saved_octave_interrupt_state = octave_interrupt_state;
+  unwind_protect::add (restore_interrupt_state, &saved_octave_interrupt_state);
   octave_interrupt_state = 0;
 
   // We want to run the cleanup code without error_state being set,

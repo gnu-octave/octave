@@ -1,3 +1,7 @@
+2009-06-24  Rafael Laboissiere  <rafael@debian.org>
+
+	* Makefile.in (dist): Drop conf.texi as prerequisite.
+
 2009-06-16  Jaroslav Hajek  <highegg@gmail.com>
 
 	* interpreter/tips.txi: Update.

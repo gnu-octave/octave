@@ -1,3 +1,8 @@
+2009-06-24  Jaroslav Hajek  <highegg@gmail.com>
+
+	* unwind-prot.h (restore_var, restore_mem): Hide also copy
+	constructors.
+
 2009-06-23  Jaroslav Hajek  <highegg@gmail.com>
 
 	* quit.h (octave_quit_exception): Delete.

@@ -61,6 +61,7 @@ public:
   private:
 
     // No copying!
+    restore_var (const restore_var&);
     void operator = (const restore_var&); 
 
     T *rptr, rval;
@@ -84,6 +85,7 @@ public:
   private:
 
     // No copying!
+    restore_mem (const restore_mem&);
     void operator = (const restore_mem&); 
 
     void *rptr, *sptr;

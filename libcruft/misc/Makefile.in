@@ -29,11 +29,9 @@ EXTERNAL_DISTFILES = $(DISTFILES)
 
 FSRC = d1mach.f r1mach.f i1mach.f
 
-CSRC = machar.c f77-fcn.c lo-error.c cquit.c
+CSRC = f77-fcn.c lo-error.c cquit.c
 
 CXXSRC = f77-extern.cc quit.cc
-
-CEXTRA = smachar.c
 
 MAKEDEPS := $(patsubst %.c, %.d, $(CSRC)) $(patsubst %.cc, %.d, $(CXXSRC))
 
@@ -59,23 +57,6 @@ install install-strip::
 
 uninstall::
 	for f in $(INCLUDES); do rm -f $(DESTDIR)$(octincludedir)/octave/$$f; done
-
-# Don't optimize.
-
-XCC = $(patsubst -O%, , $(CC))
-XALL_CFLAGS = $(patsubst -O%, , $(ALL_CFLAGS))
-
-machar.o: $(srcdir)/machar.c
-	$(XCC) -c $(CPPFLAGS) $(XALL_CFLAGS) -DDP $< -o $@
-
-smachar.o: $(srcdir)/machar.c
-	$(XCC) -c $(CPPFLAGS) $(XALL_CFLAGS) -DSP $< -o $@
-
-pic/machar.o: $(srcdir)/machar.c
-	$(XCC) -c $(CPPFLAGS) $(CPICFLAG) $(XALL_CFLAGS) -DDP $< -o $@
-
-pic/smachar.o: $(srcdir)/machar.c
-	$(XCC) -c $(CPPFLAGS) $(CPICFLAG) $(XALL_CFLAGS) -DSP $< -o $@
 
 ifdef omit_deps
 .PHONY: $(MAKEDEPS)

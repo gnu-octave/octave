@@ -1,3 +1,10 @@
+2009-06-24  Thorsten Meyer  <thorsten.meyier@gmx.de>
+
+	* oct-map.cc (Octave_map::squeeze, Octave_map::permute,
+	Octave_map::transpose, Octave_map::reshape, Octave_map::concat,
+	Octave_map::index): Add tests for preservation of key order in
+	struct arrays.
+
 2009-06-24  Jaroslav Hajek  <highegg@gmail.com>
 
 	* pt-mat.cc (get_concat_class): Use empty string as zero value.

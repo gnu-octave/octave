@@ -200,17 +200,14 @@ Octave_map::resize (const dim_vector& dv, bool fill)
 	      Cell tmp = contents(p);
 
 	      if (fill)
-		tmp.resize(dv, Cell::resize_fill_value ());
+		tmp.resize (dv, Cell::resize_fill_value ());
 	      else
-		tmp.resize(dv);
+		tmp.resize (dv);
 
 	      dimensions = dv;
 
 	      assign (key(p), tmp);
 	    }
-
-	  // Preserve order of keys.
-	  retval.key_list = key_list;
 	}
     }
 }

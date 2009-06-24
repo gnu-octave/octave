@@ -64,7 +64,7 @@ function x = repmat (a, m, n)
     x = reshape (x, idx);
   elseif (ndims (a) == 2 && length (idx) < 3)
     if (issparse (a))
-      x = spkron (ones (idx), a);
+      x = kron (ones (idx), a);
     else
       ## indexing is now faster, so we use it rather than kron.
       m = rows (a); n = columns (a);

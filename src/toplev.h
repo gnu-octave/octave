@@ -48,15 +48,9 @@ extern OCTINTERP_API octave_exit_func octave_exit;
 
 extern OCTINTERP_API bool quit_allowed;
 
-// quit is a lot like an interrupt, so we subclass it to simplify possible
-// handling.
-class octave_quit_exception 
-: public octave_interrupt_exception
-{
-public:
-  int status;
-  octave_quit_exception (int s) : status (s) { }
-};
+extern OCTINTERP_API bool quitting_gracefully;
+
+extern OCTINTERP_API int exit_status;
 
 extern OCTINTERP_API void
 clean_up_and_exit (int);

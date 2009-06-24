@@ -1,3 +1,15 @@
+2009-06-23  Jaroslav Hajek  <highegg@gmail.com>
+
+	* quit.h (octave_quit_exception): Delete.
+	(exit_status, quitting_gracefully): New globals.
+	* quit.cc: Initialize them.
+	(Fquit): Set the globals, simulate interrupt.
+	(main_loop): Handle exit properly.
+	* octave.cc (execute_eval_option_code): Ditto.
+	(execute_command_line_file): Ditto.
+	* pt-eval.cc (do_unwind_protect_cleanup_code):
+	Fix order of unwind_protect calls.
+
 2009-06-23  John W. Eaton  <jwe@octave.org>
 
 	* oct-map.cc (Octave_map::squeeze, Octave_map::permute,

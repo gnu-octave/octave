@@ -68,14 +68,14 @@ private:
 	all_sq_str (false), all_dq_str (false),
 	some_str (false), all_real (false), all_cmplx (false),
 	all_mt (true), any_sparse (false), any_class (false),
-	class_nm (octave_base_value::static_class_name ()), ok (false)
+	class_nm (), ok (false)
     { }
 
     tm_row_const_rep (const tree_argument_list& row)
       : count (1), dv (0, 0), all_str (false), all_sq_str (false),
 	some_str (false), all_real (false), all_cmplx (false),
 	all_mt (true), any_sparse (false), any_class (false),
-	class_nm (octave_base_value::static_class_name ()), ok (false)
+	class_nm (), ok (false)
     { init (row); }
 
     ~tm_row_const_rep (void) { }
@@ -195,8 +195,10 @@ get_concat_class (const std::string& c1, const std::string& c2)
 
   if (c1 == c2)
     retval = c1;
-  else if (c1 == retval)
+  else if (c1.empty ())
     retval = c2;
+  else if (c2.empty ())
+    retval = c1;
   else
     {
       bool c1_is_int = (c1 == "int8" || c1 == "uint8"
@@ -448,7 +450,7 @@ public:
     : dv (0, 0), all_str (false), all_sq_str (false), all_dq_str (false),
       some_str (false), all_real (false), all_cmplx (false),
       all_mt (true), any_sparse (false), any_class (false),
-      class_nm (octave_base_value::static_class_name ()), ok (false)
+      class_nm (), ok (false)
   { init (tm); }
 
   ~tm_const (void) { }

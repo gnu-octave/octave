@@ -1,3 +1,12 @@
+2009-06-24  Alexander Barth  <barth.alexander@gmail.com>
+
+	* eigs-base.cc (EigsRealSymmetricMatrix,
+	EigsRealSymmetricMatrixShift, EigsRealSymmetricFunc,
+	EigsRealNonSymmetricMatrix, EigsRealNonSymmetricMatrixShift,
+	EigsRealNonSymmetricFunc, EigsComplexNonSymmetricMatrix,
+	EigsComplexNonSymmetricMatrixShift, EigsComplexNonSymmetricFunc):
+	Use octave_idx_type for parameters of type LOGICAL in ARPACK.
+
 2009-06-22  Jaroslav Hajek  <highegg@gmail.com>
 
 	* chMatrix.cc (charMatrix::charMatrix (const string_vector&)):

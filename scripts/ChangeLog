@@ -1,3 +1,15 @@
+2009-06-24  Ben Abbott <bpabbott@mac.com>
+
+	* plot/__go_draw_figure__.m: Modify the implicit margin when gnuplot's
+	output is landscape.
+	* plot/gnuplot_drawnow.m: Simplify handling of the figure's paper
+	properties, and rely upon listeners for units conversion. Minor code
+	improvements.
+	* plot/print.m: Reimplement -landscape and -portrait to modify the
+	properties papersize and paperposition. Produce compatible results
+	when paperpositionmode=='auto'. Simplfy units conversion and
+	restoration of initial figure properties.
+
 2009-06-24  Marco Caliari  <marco.caliari@univr.it>
 
 	* general/repmat.m: Call kron, not spkron.

@@ -18,12 +18,14 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} print (@var{filename}, @var{options})
+## @deftypefn {Function File} {} print ()
+## @deftypefnx {Function File} {} print (@var{options})
+## @deftypefnx {Function File} {} print (@var{filename}, @var{options})
 ## @deftypefnx {Function File} {} print (@var{h}, @var{filename}, @var{options})
 ## Print a graph, or save it to a file
 ##
 ## @var{filename} defines the file name of the output file.  If no
-## filename is specified, output is sent to the printer.
+## filename is specified, the output is sent to the printer.
 ##
 ## @var{h} specifies the figure handle.  If no handle is specified
 ## the handle for the current figure is used.
@@ -44,7 +46,7 @@
 ##   Solid or dashed lines.
 ## @item -portrait
 ## @itemx -landscape
-##   Plot orientation, as returned by "orient".
+##   Specify the orientation of the plot for printed output.
 ## @item -d@var{device}
 ##   Output device, where @var{device} is one of:
 ##   @table @code
@@ -130,9 +132,10 @@
 ##   For a complete list, type `system ("gs -h")' to see what formats
 ## and devices are available.
 ##
-##   For output sent to a printer, the size is determined by the
-## figure's "papersize" property.  For output to a file the, size
-## is determined by the "paperposition" property.
+##   When the ghostscript is sent to a printer the size is determined
+## by the figure's "papersize" property.  When the ghostscript output 
+## is sent to a file the size is determined by the figure's
+## "paperposition" property.
 ##
 ## @itemx -r@var{NUM}
 ##   Resolution of bitmaps in pixels per inch.  For both metafiles and 
@@ -169,7 +172,8 @@
 
 function print (varargin)
 
-  orientation = orient ();
+  persistent warn_on_inconsistent_orientation = true
+  orientation = "";
   use_color = 0; # 0=default, -1=mono, +1=color
   force_solid = 0; # 0=default, -1=dashed, +1=solid
   fontsize = "";
@@ -314,8 +318,15 @@ function print (varargin)
     if (! any (strcmp (dev, dev_list)) && have_ghostscript)
       ghostscript_output = name;
       ghostscript_device = dev;
-      dev = "epsc";
-      name = cstrcat (tmpnam, ".eps");
+      if (doprint)
+	## If printing, use color postscript.
+        dev = "psc";
+        name = cstrcat (tmpnam, ".ps");
+      else
+	## If saving to a file, use color encapsulated postscript.
+        dev = "epsc";
+        name = cstrcat (tmpnam, ".eps");
+      endif
     else
       ghostscript_output = "";
     endif
@@ -344,7 +355,7 @@ function print (varargin)
         if (dev(1) == "e")
 	  options = "eps ";
         else
-	  options = cstrcat (orientation, " ");
+	  options = "";
         endif
         termn = "postscript";
       endif
@@ -426,7 +437,6 @@ function print (varargin)
 
       if (isempty (canvas_size) && isempty (resolution) 
 	  && any (strcmp (dev, {"pbm", "gif", "jpeg", "png"})))
-        ##options = "large";
 	options = "";
       elseif (strcmp (dev, "svg"))
 	## Referring to size, either "dynamic" or "fixed"
@@ -503,19 +513,51 @@ function print (varargin)
 	endif
         name = cstrcat (tmpnam, ".ps");
         termn = "postscript";
-	options = cstrcat (options, " portrait");
 	## All "options" for pdf work for postscript as well.
       else
         error ("print: the device, \"%s\", is not available.", dev)
       endif
     endif
 
+    is_eps_file = strncmp (dev, "eps", 3);
+    p.units = get (gcf, "units");
+    p.paperunits = get (gcf, "paperunits");
+    p.papersize = get (gcf, "papersize");
+    p.paperposition = get (gcf, "paperposition");
+    p.paperpositionmode = get (gcf, "paperpositionmode");
+    p.paperorientation = get (gcf, "paperorientation");
+    if (p.papersize(1) > p.papersize(2))
+      paperorientation = "landscape";
+    else
+      paperorientation = "portrait";
+    endif
+    if (! strcmp (paperorientation, get (gcf, "paperorientation"))
+        && warn_on_inconsistent_orientation)
+       msg = {"print.m - inconsistent papersize and paperorientation properties.\n",
+	       sprintf("         papersize = %.2f, %.2f\n", p.papersize),
+	       sprintf("         paperorientation = \"%s\"\n", p.paperorientation),
+	               "         the paperorientation property has been ignored"};
+      warning ("%s",msg{:})
+      warn_on_inconsistent_orientation = false;
+    endif
+
+    if (strcmp (termn, "postscript") && ! strncmp (dev, "eps", 3))
+      if (isempty (orientation))
+	orientation = paperorientation;
+      endif
+      ## This is done here to accommodate ghostscript conversion.
+      options = cstrcat (orientation, " ", options);
+    end
+
     new_terminal = cstrcat (termn, " ", options);
 
-    mono = use_color < 0;
+    mono = (use_color < 0);
+
+    terminals_for_prn = {"postscript", "pdf", "pdfcairo"};
+    output_for_printer = any (strncmp (termn, terminals_for_prn, numel(termn)));
 
     if (isempty (resolution))
-      if (any (strcmp (dev, {"emf", "svg"})))
+      if (any (strcmp (dev, {"emf", "svg"})) || output_for_printer)
         resolution = get (0, "screenpixelsperinch");
       else
         resolution = 150;
@@ -533,21 +575,13 @@ function print (varargin)
     set (gcf, "__pixels_per_inch__", resolution)
 
     unwind_protect
-      paper_position_mode = get (gcf, "paperpositionmode");
-      terminals_for_prn = {"postscript", "pdf", "pdfcairo"};
-      restore_properties = false;
-      is_eps_file = strncmp (dev, "eps", 3);
-      output_for_printer = any (strncmp (termn, terminals_for_prn, numel(termn)));
+      set (gcf, "paperunits", "inches");
+      set (gcf, "units", "pixels");
+      restore_properties = true;
       if ((! output_for_printer || is_eps_file) && ! doprint)
 	## If not PDF or PostScript, and the result is not being sent to a printer,
         ## render an image the size of the paperposition box.
-        restore_properties = true;
-        p.paperunits = get (gcf, "paperunits");
-        p.papertype = get (gcf, "papertype");
-        p.papersize = get (gcf, "papersize");
-        p.paperposition = get (gcf, "paperposition");
-        p.paperpositionmode = get (gcf, "paperpositionmode");
-        set (gcf, "paperunits", "inches");
+	## Trigger the listener to convert all paper props to inches.
 	if (! isempty (canvas_size))
           size_in_pixels = sscanf (canvas_size ,"%d, %d");
           size_in_pixels = reshape (size_in_pixels, [1, numel(size_in_pixels)]);
@@ -558,10 +592,26 @@ function print (varargin)
           paperposition_in_inches(1:2) = 0;
           papersize_in_inches = paperposition_in_inches(3:4);
         endif
-        set (gcf, "papertype", "<custom>");
         set (gcf, "papersize", papersize_in_inches);
         set (gcf, "paperposition", paperposition_in_inches);
         set (gcf, "paperpositionmode", "manual");
+      else
+	if (strcmp (p.paperpositionmode, "auto"))
+	  size_in_pixels = get (gcf, "position")(3:4);
+	  paperposition_in_inches(3:4) = size_in_pixels ./ resolution;
+	  paperposition_in_inches(1:2) = (p.papersize - paperposition_in_inches(3:4))/2;
+	else
+	  paperposition_in_inches = p.paperposition;
+	endif
+	if (! isempty (orientation) && ! strcmp (orientation, paperorientation))
+	  ## When -landscape/portrait changes the orientation, flip both the
+	  ## papersize and paperposition.
+	  restore_properties = true;
+	  set (gcf, "papersize", p.papersize([2, 1]));
+	  set (gcf, "paperposition", paperposition_in_inches([2, 1, 4, 3]));
+	else
+	  set (gcf, "paperposition", paperposition_in_inches);
+	endif
       endif
       if (use_color < 0)
 	[objs_with_color, color_of_objs] = convert_color2mono (gcf);

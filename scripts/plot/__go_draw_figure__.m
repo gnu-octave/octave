@@ -36,19 +36,26 @@ function __go_draw_figure__ (h, plot_stream, enhanced, mono, output_to_paper, im
   if (nargin >= 4 && nargin <= 6)
     htype = get (h, "type");
     if (strcmp (htype, "figure"))
-
-      ## When printing, determine the paperposition in inches.
+      ## When printing, set paperunits to inches and rely on a listener to convert
+      ## the values for papersize and paperposition.
       if (output_to_paper)
 	orig_paper_units = get (h, "paperunits");
+	gpval_term = __gnuplot_get_var__ (h, "GPVAL_TERM");
+	gpval_termoptions = __gnuplot_get_var__ (h, "GPVAL_TERMOPTIONS");
 	unwind_protect
 	  set (h, "paperunits", "inches");
           paper_size = get (h, "papersize");
           paper_position = get (h, "paperposition");
           paper_position = paper_position ./ paper_size([1, 2, 1, 2]);
-	  implicit_margin = implicit_margin ./ paper_size([1, 2]);
+	  implicit_margin = implicit_margin ./ paper_size;
 	unwind_protect_cleanup
 	  set (h, "paperunits", orig_paper_units);
 	end_unwind_protect
+	if (strcmp (gpval_term, "postscript")
+	    && ! isempty (strfind (gpval_termoptions, "landscape")))
+	  ## This needed to obtain the expected result.
+	  implicit_margin(2) = -implicit_margin(2);
+	endif
       else
 	implicit_margin = implicit_margin * [1 1];
       endif

@@ -3896,7 +3896,7 @@ private:
 
   int do_process_events (bool force = false);
 
-  static void restore_gcbo (void*)
+  static void restore_gcbo (void)
   {
     if (instance_ok ())
       instance->do_restore_gcbo ();

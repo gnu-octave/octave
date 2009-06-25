@@ -1,3 +1,8 @@
+2009-06-25  John W. Eaton  <jwe@octave.org>
+
+	* graphics.h.in (gh_manager::restore_gcbo):
+	Arg is now void, not void*.
+
 2009-06-25  Jaroslav Hajek  <highegg@gmail.com>
 
 	* unwind-prot.h (unwind_protect::fcn_elem): New class.

@@ -59,7 +59,7 @@ distclean::
 maintainer-clean::
 	rm -f tags TAGS Makefile
 
-dist: conf.texi
+dist:
 	ln $(DISTFILES) ../`cat ../.fname`/doc
 	for dir in $(DISTSUBDIRS); do mkdir ../`cat ../.fname`/doc/$$dir; $(MAKE) -C $$dir $@; done
 .PHONY: dist

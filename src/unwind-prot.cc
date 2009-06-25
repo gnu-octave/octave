@@ -33,21 +33,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "unwind-prot.h"
 #include "utils.h"
 
-std::stack<unwind_protect::elem> unwind_protect::elt_list;
+std::stack<unwind_protect::elem *> unwind_protect::elt_list;
 
 std::stack<std::pair <std::string, unwind_protect::frame_id_t> > unwind_protect::tag_list;
-
-unwind_protect::restore_mem::restore_mem (void *ptr, size_t size)
-  : rptr (ptr), sptr (reinterpret_cast<void *> (new char[size])), rsize (size)
-{
-  std::memcpy (sptr, rptr, size);
-}
-
-unwind_protect::restore_mem::~restore_mem (void)
-{
-  std::memcpy (rptr, sptr, rsize);
-  delete [] reinterpret_cast<char *> (sptr);
-}
 
 void
 unwind_protect::begin_frame (const std::string& tag)

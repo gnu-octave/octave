@@ -1,3 +1,18 @@
+2009-06-25  Jaroslav Hajek  <highegg@gmail.com>
+
+	* unwind-prot.h (unwind_protect::elem): New polymorphic class.
+	(unwind_protect::restore_var): Remove.
+	(unwind_protect::restore_mem): Remove.
+	(unwind_protect::elt_list): Update.
+	(unwind_protect::add (elem *)): New method.
+	(unwind_protect::add (void (*)(void *), void *)): Reimplement.
+	(unwind_protect::run (void)): Rewrite.
+	(unwind_protect::discard (void)): Rewrite.
+	(unwind_protect::protect_var): Rewrite.
+	(unwind_protect::protect_mem): Rewrite.
+	(unwind_protect::add_action_var): New method.
+	* unwind-prot.cc (unwind_protect::restore_mem): Remove.
+
 2009-06-24  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
 	* oct-map.cc (Octave_map::squeeze, Octave_map::permute,

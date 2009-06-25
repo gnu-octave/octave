@@ -29,7 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <string>
 #include <stack>
-#include <utility>
+#include <memory>
 
 class
 OCTINTERP_API
@@ -37,86 +37,89 @@ unwind_protect
 {
 public:
 
-  // This template class can be used to restore value of a variable of any
-  // class posessing a copy constructor and assignment operator.
+  // A generic unwind_protect element. Knows how to run itself and discard itself.
+  class elem
+  {
+  public:
+    virtual void run (void) { }
+    virtual ~elem (void) { }
+  };
+
+  // An element that merely runs a void (*)(void *) function.
+  
+  class fcn_elem : public elem
+  {
+  public:
+    fcn_elem (void (*fptr) (void *), void *ptr)
+      : e_fptr (fptr), e_ptr (ptr) { }
+
+    void run (void) { e_fptr (e_ptr); }
+
+  private:
+    void (*e_fptr) (void *);
+    void *e_ptr;
+  };
+
+  // An element that stores arbitrary variable, and restores it.
 
   template <class T>
-  class
-  restore_var
+  class restore_var_elem : public elem
   {
   public:
-    restore_var (T *ptr, const T& val) 
-      : rptr (ptr), rval(val) { }
-    restore_var (T *ptr) 
-      : rptr (ptr), rval(*ptr) { }
-    ~restore_var (void)
-      { *rptr = rval; }
+    restore_var_elem (T& ref, const T& val)
+      : e_ptr (&ref), e_val (val) { }
 
-    // For unwind_protect.
-    static void cleanup (void *ptr)
-      {
-        delete reinterpret_cast<restore_var *> (ptr);
-      }
+    void run (void) { *e_ptr = e_val; }
 
   private:
-
-    // No copying!
-    restore_var (const restore_var&);
-    void operator = (const restore_var&); 
-
-    T *rptr, rval;
+    T *e_ptr, e_val;
   };
 
-  // This class is used to restore arbitrary memory area using std::memcpy.
+  // An element that stores a variable of type T along with a void (*) (T)
+  // function pointer, and calls the function with the parameter.
 
-  class
-  restore_mem
+  template <class T>
+  class action_var_elem : public elem
   {
   public:
-    restore_mem (void *ptr, size_t size);
-    ~restore_mem (void);
+    action_var_elem (void (*fcn) (T), T val)
+      : e_fcn (fcn), e_val (val) { }
 
-    // For unwind_protect.
-    static void cleanup (void *ptr)
-      {
-        delete reinterpret_cast<restore_mem *> (ptr);
-      }
+    void run (void) { e_fcn (e_val); }
 
   private:
-
-    // No copying!
-    restore_mem (const restore_mem&);
-    void operator = (const restore_mem&); 
-
-    void *rptr, *sptr;
-    size_t rsize;
+    void (*e_fcn) (T);
+    T e_val;
   };
-
-  typedef void (*cleanup_func) (void *ptr);
 
   typedef size_t frame_id_t;
 
-  typedef std::pair<cleanup_func, void *> elem;
+  // Generic. Users may subclass elem to provide their own cleanup.
+  static void add (elem *el)
+    {
+      elt_list.push (el);
+    }
 
   static bool empty (void)
     { return elt_list.empty (); }
 
-  static void add (cleanup_func fptr, void *ptr = 0)
-    {
-      elt_list.push (elem (fptr, ptr));
-    }
-
   static void run (void)
     {
-      elem elt = elt_list.top ();
+      // Use auto_ptr, so that even if the following run () call throws an
+      // exception, we still clean up the element.
+      std::auto_ptr<elem> elt (elt_list.top ());
       elt_list.pop ();
 
-      elt.first (elt.second);
+      elt->run ();
     }
 
   static void discard (void)
     {
+      // No need to use ato_ptr here.
+      elem *elt = elt_list.top ();
       elt_list.pop ();
+
+      delete elt;
     }
 
   static frame_id_t begin_frame ()
@@ -158,29 +161,35 @@ public:
         tag_list.pop ();
     }
 
+  static void add (void (*fcn) (void *), void *ptr = 0)
+    {
+      elt_list.push (new fcn_elem (fcn, ptr));
+    }
+
   // Protect any variable.
   template <class T>
   static void protect_var (T& var)
     {
-      add (restore_var<T>::cleanup, new restore_var<T> (&var));
+      elt_list.push (new restore_var_elem<T> (var, var));
     }
 
   // Protect any variable, value given.
   template <class T>
   static void protect_var (T& var, const T& val)
     {
-      add (restore_var<T>::cleanup, new restore_var<T> (&var, val));
+      elt_list.push (new restore_var_elem<T> (var, val));
     }
 
-  // Protect an area of memory.
-  static void protect_mem (void *ptr, size_t size)
+  // Store a function pointer together with a single argument (passed by value).
+  template <class T>
+  static void add_action_var (void (*action) (T), T val)
     {
-      add (restore_mem::cleanup, new restore_mem (ptr, size));
+      elt_list.push (new action_var_elem<T> (action, val));
     }
 
 private:
 
-  static std::stack<elem> elt_list;
+  static std::stack<elem *> elt_list;
 
   static std::stack<std::pair <std::string, frame_id_t> > tag_list;
 };

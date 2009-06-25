@@ -1,3 +1,7 @@
+2009-06-24  Marco Caliari  <marco.caliari@univr.it>
+
+	* general/repmat.m: Call kron, not spkron.
+
 2009-06-24  Alexander Mamonov  <mamonov@gmail.com>
 
 	* plot/plot3.m: Correctly compute offsets for property/value pairs.

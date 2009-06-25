@@ -70,6 +70,13 @@ Octave_map::squeeze (void) const
   return retval;
 }
 
+/*
+%!# test preservation of keys by squeeze
+%!test
+%!  x(1,1,1,1).d = 10; x(3,5,1,7).a = "b"; x(2,4,1,7).f = 27;
+%!  assert (fieldnames (squeeze (x)), {"d"; "a"; "f"});
+*/
+
 Octave_map
 Octave_map::permute (const Array<int>& vec, bool inv) const
 {
@@ -90,6 +97,13 @@ Octave_map::permute (const Array<int>& vec, bool inv) const
 
   return retval;
 }
+
+/*
+%!# test preservation of key order by permute
+%!test
+%!  x(1,1,1,1).d = 10; x(3,5,1,7).a = "b"; x(2,4,1,7).f = 27;
+%!  assert (fieldnames (permute (x, [3, 4, 1, 2])), {"d"; "a"; "f"});
+*/
 
 Cell&
 Octave_map::contents (const std::string& k)
@@ -165,6 +179,15 @@ Octave_map::transpose (void) const
   return retval;
 }
 
+/*
+%!# test preservation of key order by transpose
+%!test
+%!  x(1,1).d = 10; x(3,5).a = "b"; x(2,4).f = 27;
+%!  assert (fieldnames (transpose (x)), {"d"; "a"; "f"});
+%!  assert (fieldnames (x'), {"d"; "a"; "f"});
+%!  assert (fieldnames (x.'), {"d"; "a"; "f"});
+*/
+
 Octave_map
 Octave_map::reshape (const dim_vector& new_dims) const
 {
@@ -185,6 +208,13 @@ Octave_map::reshape (const dim_vector& new_dims) const
 
   return retval;
 }
+
+/*
+%!# test preservation of key order by reshape
+%!test
+%!  x(1,1).d = 10; x(4,6).a = "b"; x(2,4).f = 27;
+%!  assert (fieldnames (reshape (x, 3, 8)), {"d"; "a"; "f"});
+*/
 
 void
 Octave_map::resize (const dim_vector& dv, bool fill)
@@ -255,6 +285,14 @@ Octave_map::concat (const Octave_map& rb, const Array<octave_idx_type>& ra_idx)
 
   return retval;
 }
+
+/*
+%!# test preservation of key order by concatenation
+%!test
+%!  x(1, 1).d = 10; x(4, 6).a = "b"; x(2, 4).f = 27;
+%!  y(1, 6).f = 11; y(1, 6).a = "c"; y(1, 6).d = 33;
+%!  assert (fieldnames ([x; y]), {"d"; "a"; "f"});
+*/
 
 static bool
 keys_ok (const Octave_map& a, const Octave_map& b, string_vector& keys)
@@ -488,6 +526,13 @@ Octave_map::index (const octave_value_list& idx, bool resize_ok) const
 
   return retval;
 }
+
+/*
+%!# test preservation of key order by indexing
+%!test
+%!  x(1, 1).d = 10; x(4, 6).a = "b"; x(2, 4).f = 27;
+%!  assert (fieldnames (x([1, 2], [2:5])), {"d"; "a"; "f"});
+*/
 
 /*
 ;;; Local Variables: ***

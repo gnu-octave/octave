@@ -875,7 +875,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 	    // that defines the anonymous function.
 
 	    symbol_table::scope_id local_scope = symbol_table::alloc_scope ();
-	    unwind_protect::add (symbol_table::erase_scope, &local_scope);
+	    unwind_protect::add_action_var (symbol_table::erase_scope, local_scope);
 
 	    symbol_table::set_scope (local_scope);
 

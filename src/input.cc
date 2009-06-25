@@ -669,7 +669,7 @@ get_debug_input (const std::string& prompt)
       // Do this with an unwind-protect cleanup function so that the
       // forced variables will be unmarked in the event of an interrupt.
       symbol_table::scope_id scope = symbol_table::top_scope ();
-      unwind_protect::add (symbol_table::unmark_forced_variables, &scope);
+      unwind_protect::add_action_var (symbol_table::unmark_forced_variables, scope);
 
       // This is the same as yyparse in parse.y.
       int retval = octave_parse ();

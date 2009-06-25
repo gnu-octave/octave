@@ -1389,7 +1389,7 @@ do_who (int argc, const string_vector& argv, bool return_list,
 	      // Set up temporary scope.
 
 	      symbol_table::scope_id tmp_scope = symbol_table::alloc_scope ();
-	      unwind_protect::add (symbol_table::erase_scope, &tmp_scope);
+	      unwind_protect::add_action_var (symbol_table::erase_scope, tmp_scope);
 
 	      symbol_table::set_scope (tmp_scope);
 

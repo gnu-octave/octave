@@ -319,7 +319,7 @@ octave_fcn_handle::load_ascii (std::istream& is)
       // defines the anonymous function.
 
       symbol_table::scope_id local_scope = symbol_table::alloc_scope ();
-      unwind_protect::add (symbol_table::erase_scope, &local_scope);
+      unwind_protect::add_action_var (symbol_table::erase_scope, local_scope);
 
       symbol_table::set_scope (local_scope);
 
@@ -500,7 +500,7 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
       // defines the anonymous function.
 
       symbol_table::scope_id local_scope = symbol_table::alloc_scope ();
-      unwind_protect::add (symbol_table::erase_scope, &local_scope);	      
+      unwind_protect::add_action_var (symbol_table::erase_scope, local_scope);	      
 
       symbol_table::set_scope (local_scope);
 
@@ -945,7 +945,7 @@ octave_fcn_handle::load_hdf5 (hid_t loc_id, const char *name,
       // defines the anonymous function.
 
       symbol_table::scope_id local_scope = symbol_table::alloc_scope ();
-      unwind_protect::add (symbol_table::erase_scope, &local_scope);
+      unwind_protect::add_action_var (symbol_table::erase_scope, local_scope);
 
       symbol_table::set_scope (local_scope);
 

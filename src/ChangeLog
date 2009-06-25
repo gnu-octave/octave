@@ -1,3 +1,7 @@
+2009-06-24  John W. Eaton  <jwe@octave.org>
+
+	* pt-assign.cc (former_built_in_variables): Remove "ans" from the list.
+
 2009-06-24  Jaroslav Hajek  <highegg@gmail.com>
 
 	* pt-eval.cc (do_unwind_protect_cleanup_code):

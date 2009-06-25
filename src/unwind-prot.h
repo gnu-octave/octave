@@ -45,19 +45,51 @@ public:
     virtual ~elem (void) { }
   };
 
-  // An element that merely runs a void (*)(void *) function.
+  // An element that merely runs a void (*)(void) function.
   
   class fcn_elem : public elem
   {
   public:
-    fcn_elem (void (*fptr) (void *), void *ptr)
-      : e_fptr (fptr), e_ptr (ptr) { }
+    fcn_elem (void (*fptr) (void))
+      : e_fptr (fptr) { }
 
-    void run (void) { e_fptr (e_ptr); }
+    void run (void) { e_fptr (); }
 
   private:
-    void (*e_fptr) (void *);
-    void *e_ptr;
+    void (*e_fptr) (void);
+  };
+
+  // An element that stores a variable of type T along with a void (*) (T)
+  // function pointer, and calls the function with the parameter.
+
+  template <class T>
+  class fcn_arg_elem : public elem
+  {
+  public:
+    fcn_arg_elem (void (*fcn) (T), T arg)
+      : e_fcn (fcn), e_arg (arg) { }
+
+    void run (void) { e_fcn (e_arg); }
+
+  private:
+    void (*e_fcn) (T);
+    T e_arg;
+  };
+
+  // An element for calling a member function.
+
+  template <class T>
+  class method_elem : public elem
+  {
+  public:
+    method_elem (T *obj, void (T::*method) (void))
+      : e_obj (obj), e_method (method) { }
+
+    void run (void) { (e_obj->*e_method) (); }
+
+  private:
+    T *e_obj;
+    void (T::*e_method) (void);
   };
 
   // An element that stores arbitrary variable, and restores it.
@@ -75,21 +107,19 @@ public:
     T *e_ptr, e_val;
   };
 
-  // An element that stores a variable of type T along with a void (*) (T)
-  // function pointer, and calls the function with the parameter.
+  // Deletes a class allocated using new.
 
   template <class T>
-  class action_var_elem : public elem
+  class delete_ptr_elem : public elem
   {
   public:
-    action_var_elem (void (*fcn) (T), T val)
-      : e_fcn (fcn), e_val (val) { }
+    delete_ptr_elem (T *ptr)
+      : e_ptr (ptr) { }
 
-    void run (void) { e_fcn (e_val); }
+    void run (void) { delete e_ptr; }
 
   private:
-    void (*e_fcn) (T);
-    T e_val;
+    T *e_ptr;
   };
 
   typedef size_t frame_id_t;
@@ -161,9 +191,38 @@ public:
         tag_list.pop ();
     }
 
+  // For backward compatibility.
   static void add (void (*fcn) (void *), void *ptr = 0)
     {
-      elt_list.push (new fcn_elem (fcn, ptr));
+      elt_list.push (new fcn_arg_elem<void *> (fcn, ptr));
+    }
+
+  // Call to void func (void).
+  static void add_fcn (void (*fcn) (void))
+    {
+      elt_list.push (new fcn_elem (fcn));
+    }
+
+  // Call to void func (T).
+  template <class T>
+  static void add_fcn (void (*action) (T), T val)
+    {
+      elt_list.push (new fcn_arg_elem<T> (action, val));
+    }
+
+  // Call to T::method (void).
+  template <class T>
+  static void add_method (T *obj, void (T::*method) (void))
+    {
+      elt_list.push (new method_elem<T> (obj, method));
+    }
+
+  // Call to delete (T*).
+
+  template <class T>
+  static void add_delete (T *obj)
+    {
+      elt_list.push (new delete_ptr_elem<T> (obj));
     }
 
   // Protect any variable.
@@ -178,13 +237,6 @@ public:
   static void protect_var (T& var, const T& val)
     {
       elt_list.push (new restore_var_elem<T> (var, val));
-    }
-
-  // Store a function pointer together with a single argument (passed by value).
-  template <class T>
-  static void add_action_var (void (*action) (T), T val)
-    {
-      elt_list.push (new action_var_elem<T> (action, val));
     }
 
 private:

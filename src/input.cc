@@ -669,7 +669,7 @@ get_debug_input (const std::string& prompt)
       // Do this with an unwind-protect cleanup function so that the
       // forced variables will be unmarked in the event of an interrupt.
       symbol_table::scope_id scope = symbol_table::top_scope ();
-      unwind_protect::add_action_var (symbol_table::unmark_forced_variables, scope);
+      unwind_protect::add_fcn (symbol_table::unmark_forced_variables, scope);
 
       // This is the same as yyparse in parse.y.
       int retval = octave_parse ();
@@ -874,20 +874,6 @@ RET and can edit it until it has been confirmed.\n\
   return retval;
 }
 
-static void
-restore_command_history (void *)
-{
-  command_history::ignore_entries (! Vsaving_history);
-}
-
-static size_t saved_frame = 0;
-
-static void
-restore_frame (void *)
-{
-  octave_call_stack::goto_frame (saved_frame);
-}
-
 octave_value
 do_keyboard (const octave_value_list& args)
 {
@@ -904,14 +890,13 @@ do_keyboard (const octave_value_list& args)
   // Vsaving_history variable...
   command_history::ignore_entries (false);
 
-  unwind_protect::add (restore_command_history, 0);
+  unwind_protect::add_fcn (command_history::ignore_entries, ! Vsaving_history);
 
   unwind_protect::protect_var (Vsaving_history);
   unwind_protect::protect_var (Vdebugging);
 
-  saved_frame = octave_call_stack::current_frame ();
-  unwind_protect::add (restore_frame);
-  unwind_protect::protect_var (saved_frame);
+  unwind_protect::add_fcn (octave_call_stack::restore_frame, 
+                           octave_call_stack::current_frame ());
 
   Vsaving_history = true;
   Vdebugging = true;
@@ -951,9 +936,8 @@ If @code{keyboard} is invoked without arguments, a default prompt of\n\
 
   if (nargin == 0 || nargin == 1)
     {
-      saved_frame = octave_call_stack::current_frame ();
-      unwind_protect::add (restore_frame);
-      unwind_protect::protect_var (saved_frame);
+      unwind_protect::add_fcn (octave_call_stack::restore_frame, 
+                               octave_call_stack::current_frame ());
 
       // Skip the frame assigned to the keyboard function.
       octave_call_stack::goto_frame (1);

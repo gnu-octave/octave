@@ -126,7 +126,7 @@ octave_user_script::do_multi_index_op (int nargout,
 		{
 		  octave_call_stack::push (this);
 
-		  unwind_protect::add (octave_call_stack::unwind_pop, 0);
+                  unwind_protect::add_fcn (octave_call_stack::pop);
 
 		  unwind_protect::protect_var (tree_evaluator::in_fcn_or_script_body);
 		  tree_evaluator::in_fcn_or_script_body = true;
@@ -275,24 +275,6 @@ octave_user_function::octave_all_va_args (void)
   return retval;
 }
 
-static void
-clear_param_list (void *lst)
-{
-  tree_parameter_list *tmp = static_cast<tree_parameter_list *> (lst);
-
-  if (tmp)
-    tmp->undefine ();
-}
-
-static void
-restore_args_passed (void *fcn)
-{
-  octave_user_function *tmp = static_cast<octave_user_function *> (fcn);
-
-  if (tmp)
-    tmp->restore_args_passed ();
-}
-
 octave_value_list
 octave_user_function::subsref (const std::string& type,
 			       const std::list<octave_value_list>& idx,
@@ -362,20 +344,20 @@ octave_user_function::do_multi_index_op (int nargout,
   // eval_undefined_error().
 
   octave_call_stack::push (this, local_scope, call_depth);
-  unwind_protect::add (octave_call_stack::unwind_pop, 0);
+  unwind_protect::add_fcn (octave_call_stack::pop);
 
   if (call_depth > 0)
     {
       symbol_table::push_context ();
 
-      unwind_protect::add (symbol_table::pop_context);
+      unwind_protect::add_fcn (symbol_table::pop_context);
     }
 
   // Save and restore args passed for recursive calls.
 
   save_args_passed (args);
 
-  unwind_protect::add (::restore_args_passed, this);
+  unwind_protect::add_method (this, &octave_user_function::restore_args_passed);
 
   string_vector arg_names = args.name_tags ();
 
@@ -393,13 +375,17 @@ octave_user_function::do_multi_index_op (int nargout,
   // Doing so decrements the reference counts on the values of local
   // variables that are also named function parameters.
 
-  unwind_protect::add (clear_param_list, param_list);
+  if (param_list)
+    unwind_protect::add_method (param_list, 
+                                &tree_parameter_list::undefine);
 
   // Force return list to be undefined when this function exits.
   // Doing so decrements the reference counts on the values of local
   // variables that are also named values returned by this function.
 
-  unwind_protect::add (clear_param_list, ret_list);
+  if (ret_list)
+    unwind_protect::add_method (ret_list, 
+                                &tree_parameter_list::undefine);
 
   if (call_depth == 0)
     {
@@ -413,7 +399,7 @@ octave_user_function::do_multi_index_op (int nargout,
       // declared global will be unmarked as global before they are
       // undefined by the clear_param_list cleanup function.
 
-      unwind_protect::add (symbol_table::clear_variables);
+      unwind_protect::add_fcn (symbol_table::clear_variables);
     }
 
   // The following code is in a separate scope to avoid warnings from

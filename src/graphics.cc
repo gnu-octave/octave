@@ -4190,7 +4190,7 @@ gh_manager::do_execute_callback (const graphics_handle& h,
     args(1) = Matrix ();
 
   unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
-  unwind_protect::add (gh_manager::restore_gcbo);
+  unwind_protect::add_fcn (gh_manager::restore_gcbo);
 
   if (true)
     {
@@ -4989,12 +4989,6 @@ Return a cell array of registered graphics backends.\n\
   return octave_value (graphics_backend::available_backends_list ());
 }
 
-static void
-clear_drawnow_request (void *)
-{
-  Vdrawnow_requested = false;
-}
-
 DEFUN (drawnow, args, ,
    "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} drawnow ()\n\
@@ -5016,7 +5010,7 @@ undocumented.\n\
   gh_manager::lock ();
 
   unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
-  unwind_protect::add (clear_drawnow_request);
+  unwind_protect::protect_var (Vdrawnow_requested, false);
 
   unwind_protect::protect_var (drawnow_executing);
 

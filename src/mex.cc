@@ -3283,7 +3283,7 @@ mexGetVariable (const char *space, const char *name)
 	    octave_call_stack::goto_base_frame ();
 
 	  if (! error_state)
-	    unwind_protect::add (octave_call_stack::unwind_pop);
+	    unwind_protect::add_fcn (octave_call_stack::pop);
 
 	  val = symbol_table::varval (name);
 	}
@@ -3343,7 +3343,7 @@ mexPutVariable (const char *space, const char *name, mxArray *ptr)
 	    octave_call_stack::goto_base_frame ();
 
 	  if (! error_state)
-	    unwind_protect::add (octave_call_stack::unwind_pop);
+	    unwind_protect::add_fcn (octave_call_stack::pop);
 
 	  symbol_table::varref (name) = mxArray::as_octave_value (ptr);
 	}

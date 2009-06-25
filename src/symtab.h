@@ -1311,12 +1311,18 @@ public:
     clear_functions ();
   }
 
-  static void clear_variables (scope_id scope = xcurrent_scope)
+  static void clear_variables (scope_id scope)
   {
     symbol_table *inst = get_instance (scope);
 
     if (inst)
       inst->do_clear_variables ();
+  }
+
+  // This is split for unwind_protect.
+  static void clear_variables (void)
+  {
+    clear_variables (xcurrent_scope);
   }
 
   static void clear_objects (scope_id scope = xcurrent_scope)
@@ -1334,22 +1340,6 @@ public:
     if (inst)
       inst->do_unmark_forced_variables ();
   }
-
-  // For unwind_protect.
-  static void unmark_forced_variables (void *arg)
-  {
-    // Unmark any symbols that may have been tagged as local variables
-    // while parsing (for example, by force_local_variable in lex.l).
-
-    symbol_table::scope_id *p = static_cast <symbol_table::scope_id *> (arg);
-
-  if (p)
-    unmark_forced_variables (*p);
-}
-
-
-  // For unwind_protect.
-  static void clear_variables (void *) { clear_variables (); }
 
   static void clear_functions (void)
   {

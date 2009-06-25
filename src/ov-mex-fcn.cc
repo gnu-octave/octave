@@ -143,7 +143,7 @@ octave_mex_function::do_multi_index_op (int nargout,
 
       octave_call_stack::push (this);
 
-      unwind_protect::add (octave_call_stack::unwind_pop, 0);
+      unwind_protect::add_fcn (octave_call_stack::pop);
 
       try
 	{

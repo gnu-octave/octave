@@ -820,7 +820,7 @@ tree_evaluator::visit_switch_command (tree_switch_command& cmd)
 }
 
 static void
-do_catch_code (void *ptr)
+do_catch_code (tree_statement_list *list)
 {
   // Is it safe to call OCTAVE_QUIT here?  We are already running
   // something on the unwind_protect stack, but the element for this
@@ -844,8 +844,6 @@ do_catch_code (void *ptr)
 
   if (octave_interrupt_immediately || octave_interrupt_state < 0)
     return;
-
-  tree_statement_list *list = static_cast<tree_statement_list *> (ptr);
 
   // Set up for letting the user print any messages from errors that
   // occurred in the body of the try_catch statement.
@@ -871,7 +869,7 @@ tree_evaluator::visit_try_catch_command (tree_try_catch_command& cmd)
 
   tree_statement_list *catch_code = cmd.cleanup ();
 
-  unwind_protect::add (do_catch_code, catch_code);
+  unwind_protect::add_fcn (do_catch_code, catch_code);
 
   tree_statement_list *try_code = cmd.body ();
 
@@ -899,10 +897,8 @@ tree_evaluator::visit_try_catch_command (tree_try_catch_command& cmd)
 }
 
 static void
-do_unwind_protect_cleanup_code (void *ptr)
+do_unwind_protect_cleanup_code (tree_statement_list *list)
 {
-  tree_statement_list *list = static_cast<tree_statement_list *> (ptr);
-
   unwind_protect::protect_var (octave_interrupt_state);
   octave_interrupt_state = 0;
 
@@ -981,7 +977,7 @@ tree_evaluator::visit_unwind_protect_command (tree_unwind_protect_command& cmd)
 {
   tree_statement_list *cleanup_code = cmd.cleanup ();
 
-  unwind_protect::add (do_unwind_protect_cleanup_code, cleanup_code);
+  unwind_protect::add_fcn (do_unwind_protect_cleanup_code, cleanup_code);
 
   tree_statement_list *unwind_protect_code = cmd.body ();
 

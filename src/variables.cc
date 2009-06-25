@@ -1389,14 +1389,14 @@ do_who (int argc, const string_vector& argv, bool return_list,
 	      // Set up temporary scope.
 
 	      symbol_table::scope_id tmp_scope = symbol_table::alloc_scope ();
-	      unwind_protect::add_action_var (symbol_table::erase_scope, tmp_scope);
+	      unwind_protect::add_fcn (symbol_table::erase_scope, tmp_scope);
 
 	      symbol_table::set_scope (tmp_scope);
 
 	      octave_call_stack::push (tmp_scope, 0);
-	      unwind_protect::add (octave_call_stack::unwind_pop, 0);
+	      unwind_protect::add_fcn (octave_call_stack::pop);
 
-	      unwind_protect::add (symbol_table::clear_variables);
+	      unwind_protect::add_fcn (symbol_table::clear_variables);
 
 	      feval ("load", octave_value (nm), 0);
 

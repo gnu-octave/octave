@@ -1,5 +1,31 @@
 2009-06-25  Jaroslav Hajek  <highegg@gmail.com>
 
+	* unwind-prot.h (unwind_protect::fcn_elem): New class.
+	(unwind_protect::fcn_arg_elem): New class.
+	(unwind_protect::method_elem): New class.
+	(unwind_protect::add_action_var): Rename to add_fcn.
+	(unwind_protect::add_fcn): New static method.
+	(unwind_protect::add_method): New static method.
+
+	* symtab.h: Split clear_variables into two overloads.
+	* toplev.h (octave_call_stack::restore_frame): New static method.
+
+	* graphics.cc: Update unwind_protect usage.
+	* input.cc: Ditto.
+	* lex.h: Ditto.
+	* ls-mat5.cc: Ditto.
+	* mex.cc: Ditto.
+	* ov-builtin.cc: Ditto.
+	* ov-fcn-handle.cc: Ditto.
+	* ov-mex-fcn.cc: Ditto.
+	* ov-usr-fcn.cc: Ditto.
+	* parse.y: Ditto.
+	* pt-eval.cc: Ditto.
+	* toplev.cc: Ditto.
+	* variables.cc: Ditto.
+
+2009-06-25  Jaroslav Hajek  <highegg@gmail.com>
+
 	* input.cc: Use unwind_protect::add_action_var where appropriate.
 	* ls-mat5.cc: Ditto.
 	* ov-fcn-handle.cc: Ditto.

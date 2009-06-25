@@ -247,6 +247,11 @@ public:
     return instance_ok () ? instance->do_goto_frame (n, verbose) : false;
   }
 
+  static void restore_frame (size_t n)
+  {
+    goto_frame (n);
+  }
+
   static bool goto_frame_relative (int n, bool verbose = false)
   {
     return instance_ok ()
@@ -277,10 +282,6 @@ public:
       instance->do_pop ();
   }
   
-  // A function for popping the top of the call stack that is suitable
-  // for use as an unwind_protect handler.
-  static void unwind_pop (void *) { pop (); }
-
   static void clear (void)
   {
     if (instance_ok ())

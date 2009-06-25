@@ -145,7 +145,7 @@ function retval = plot3 (varargin)
 	    if (nargin - arg < 2)
 	      error ("plot3: properties must appear followed by a value");
 	    endif
-	    properties = [properties, varargin(arg:arg+1)];
+	    properties = [properties, varargin(arg+1:arg+2)];
 	    arg += 2;
 	  endwhile
 	endif

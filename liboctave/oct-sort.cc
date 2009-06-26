@@ -1861,7 +1861,7 @@ begin:
               if (idx[k] - lo <= hi - idx[k])
                 {
                   // The smaller portion is run recursively.
-                  lookup_merge (data, idx[k], k, values, k, idx, comp);
+                  lookup_merge (data, lo, idx[k], values, k, idx, comp);
                   // Simulate a tail call.
                   lo = idx[k];
                   values += k; nvalues -= k; idx += k;
@@ -1871,7 +1871,7 @@ begin:
                 {
                   // The smaller portion is run recursively.
                   lookup_merge (data, idx[k], hi, 
-                                values + k, nvalues - k, idx, comp);
+                                values + k, nvalues - k, idx + k, comp);
                   // Simulate a tail call.
                   hi = idx[k];
                   nvalues = k;

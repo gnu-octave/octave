@@ -25,6 +25,7 @@
 function res = __gnuplot_has_feature__ (feature)
   persistent features has_features
   features = {"x11_figure_position",
+              "wxt_figure_size",
               "transparent_patches",
               "transparent_surface",
               "epslatex_implies_eps_filesuffix",
@@ -35,8 +36,8 @@ function res = __gnuplot_has_feature__ (feature)
 
   if (isempty (has_features))
     gnuplot_version = __gnuplot_version__ ();
-    versions = {"4.2.5", "4.3", "4.3", "4.2", "4.2", "4.3", "4.3", "4.3"};
-    operators = {">=", ">=", ">=", ">=", ">=", ">=", ">=", ">="};
+    versions = {"4.2.5", "4.3.0", "4.3", "4.3", "4.2", "4.2", "4.3", "4.3", "4.3"};
+    operators = {">=", ">=", ">=", ">=", ">=", ">=", ">=", ">=", ">="};
     have_features = logical (zeros (size (features)));
     for n = 1 : numel (have_features)
       has_features(n) = compare_versions (gnuplot_version, versions{n}, operators{n});

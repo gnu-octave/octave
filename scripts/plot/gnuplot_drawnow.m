@@ -205,6 +205,8 @@ function [enhanced, implicit_margin] = gnuplot_set_term (plot_stream, new_stream
                                  "epslatex", "pstex", "pslatex"};
           if (__gnuplot_has_feature__ ("x11_figure_position"))
             terminals_with_size{end+1} = "x11";
+          endif
+          if (__gnuplot_has_feature__ ("wxt_figure_size"))
             terminals_with_size{end+1} = "wxt";
           endif
           if (any (strncmpi (term, terminals_with_size, 3)))

@@ -1,3 +1,9 @@
+2009-06-25  Ben Abbott <bpabbott@mac.com>
+
+	* plot/gnuplot_drawnow.m: Apply feature 'wxt_has_size'.
+	* plot/__gnuplot_has_feature__.m: Add feature 'wxt_has_size' for
+	gnuplot >= 4.3.0.
+
 2009-06-24  Ben Abbott <bpabbott@mac.com>
 
 	* plot/__go_draw_figure__.m: Modify the implicit margin when gnuplot's

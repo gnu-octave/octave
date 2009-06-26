@@ -1,3 +1,7 @@
+2009-06-26  John W. Eaton  <jwe@octave.org>
+
+	* load-path.cc (Faddpath): Preserve order of prepended elements.
+
 2009-06-25  John W. Eaton  <jwe@octave.org>
 
 	* graphics.h.in (gh_manager::restore_gcbo):

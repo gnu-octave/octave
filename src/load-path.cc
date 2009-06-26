@@ -2024,6 +2024,9 @@ Directories added to the path must exist.\n\
 	    {
 	      std::list<std::string> dir_elts = split_path (arg);
 
+	      if (! append)
+		std::reverse (dir_elts.begin (), dir_elts.end ());
+
 	      for (std::list<std::string>::const_iterator p = dir_elts.begin ();
 		   p != dir_elts.end ();
 		   p++)

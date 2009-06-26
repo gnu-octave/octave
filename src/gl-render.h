@@ -40,6 +40,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "graphics.h"
+#include "txt-eng-ft.h"
 
 class
 OCTINTERP_API
@@ -77,6 +78,7 @@ protected:
   virtual void draw (const surface::properties& props);
   virtual void draw (const patch::properties& props);
   virtual void draw (const hggroup::properties& props);
+  virtual void draw (const text::properties& props);
 
   virtual void set_color (const Matrix& c);
   virtual void set_polygon_offset (bool on, double offset = 0.0);
@@ -85,11 +87,16 @@ protected:
   virtual void set_clipbox (double x1, double x2, double y1, double y2,
 			    double z1, double z2);
   virtual void set_clipping (bool on);
+  virtual void set_font (const base_properties& props);
 
   virtual void init_marker (const std::string& m, double size, float width);
   virtual void end_marker (void);
   virtual void draw_marker (double x, double y, double z,
 			    const Matrix& lc, const Matrix& fc);
+
+  virtual Matrix draw_text (const std::string& txt,
+			    double x, double y, double z,
+			    int halign, int valign, double rotation = 0.0);
 
 private:
   opengl_renderer (const opengl_renderer&) { }
@@ -137,6 +144,11 @@ private:
 
   // camera information for primitive sorting
   ColumnVector camera_pos, camera_dir;
+
+#if HAVE_FREETYPE
+  // freetype render, used for text rendering
+  ft_render text_renderer;
+#endif
 
 private:
   class patch_tesselator;

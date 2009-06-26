@@ -2389,6 +2389,10 @@ axes::properties::init (void)
   sy = "linear";
   sz = "linear";
 
+  calc_ticklabels (xtick, xticklabel, xscale.is ("log"));
+  calc_ticklabels (ytick, yticklabel, yscale.is ("log"));
+  calc_ticklabels (ztick, zticklabel, zscale.is ("log"));
+
   xset (xlabel.handle_value (), "handlevisibility", "off");
   xset (ylabel.handle_value (), "handlevisibility", "off");
   xset (zlabel.handle_value (), "handlevisibility", "off");
@@ -2404,6 +2408,12 @@ axes::properties::init (void)
   xset (title.handle_value (), "verticalalignment", "bottom");
 
   xset (ylabel.handle_value (), "rotation", 90.0);
+  xset (zlabel.handle_value (), "visible", "off");
+  
+  xset (xlabel.handle_value (), "clipping", "off");
+  xset (ylabel.handle_value (), "clipping", "off");
+  xset (zlabel.handle_value (), "clipping", "off");
+  xset (title.handle_value (), "clipping", "off");
 
   adopt (xlabel.handle_value ());
   adopt (ylabel.handle_value ());
@@ -2622,6 +2632,12 @@ axes::properties::set_defaults (base_graphics_object& obj,
   xset (title.handle_value (), "verticalalignment", "bottom");
 
   xset (ylabel.handle_value (), "rotation", 90.0);
+  xset (zlabel.handle_value (), "visible", "off");
+  
+  xset (xlabel.handle_value (), "clipping", "off");
+  xset (ylabel.handle_value (), "clipping", "off");
+  xset (zlabel.handle_value (), "clipping", "off");
+  xset (title.handle_value (), "clipping", "off");
 
   adopt (xlabel.handle_value ());
   adopt (ylabel.handle_value ());

@@ -1,3 +1,9 @@
+2009-06-26  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* aclocal.m4: Add pkg.m4 macros.
+	* configure.in (HAVE_FREETYPE): New defined variable.
+	* configure.in: Add configure tests for Fontconfig detection.
+
 2009-06-23  Robert T. Short  <octave@phaselockedsystems.com>
 
 	* run-octave.in: Exclude @-files from path.  Remove CVS exclusions.

@@ -1,3 +1,27 @@
+2009-06-26  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* txt-eng.h: New file for simple text engine.
+	* txt-eng.h, txt-eng.cc: Freetype based text render engine.
+	* Makefile.in: Add txt-eng-ft.cc to list of source files.
+	* gl-render.h (opengl_renderer::draw_text, opengl_renderer::set_font,
+	opengl_renderer::draw(text::properties)): New method to support text
+	rendering using the Freetype renderer.
+	(opengl_renderer::text_renderer): New field for text rendering.
+	* gl-render.cc (opengl_renderer::draw(graphics_object)): Support text
+	object.
+	(opengl_renderer::draw(figure::properties)): Setup alpha test.
+	(opengl_renderer::draw(axes::properties)): Render tick labels, hide
+	labels for depth axes and fix a problem in calling
+	graphics_object::get(char*).
+	(opengl_renderer::draw(text::properties)): Basic text rendering using
+	Freetype engine.
+	(opengl_renderer::draw_text): Ditto.
+	(opengl_renderer::set_color): Propagate the color to the text
+	renderer.
+	(opengl_renderer::set_font): New utility method.
+	* graphics.cc (axes::properties::init, axes::properties::set_defauls):
+	(Re)initialize tick labels, labels and title property.
+
 2009-06-26  John W. Eaton  <jwe@octave.org>
 
 	* load-path.cc (Faddpath): Preserve order of prepended elements.

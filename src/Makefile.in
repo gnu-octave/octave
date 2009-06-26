@@ -230,6 +230,7 @@ DIST_SRC := Cell.cc bitfcns.cc c-file-ptr-stream.cc comment-list.cc \
 	parse.y pr-output.cc procstream.cc sighandlers.cc \
 	siglist.c sparse-xdiv.cc sparse-xpow.cc strfns.cc \
 	syscalls.cc symtab.cc sysdep.cc token.cc toplev.cc \
+	txt-eng-ft.cc \
 	unwind-prot.cc utils.cc variables.cc xdiv.cc xnorm.cc xpow.cc \
 	$(OV_SRC) \
 	$(PT_SRC)

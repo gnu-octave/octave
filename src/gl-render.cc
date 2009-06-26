@@ -26,9 +26,13 @@ along with Octave; see the file COPYING.  If not, see
 
 #if defined (HAVE_OPENGL)
 
+#include <iostream>
+
 #include <lo-mappers.h>
 #include "oct-locbuf.h"
 #include "gl-render.h"
+#include "txt-eng.h"
+#include "txt-eng-ft.h"
 
 #define LIGHT_MODE GL_FRONT_AND_BACK
 
@@ -540,6 +544,8 @@ opengl_renderer::draw (const graphics_object& go)
     draw (dynamic_cast<const patch::properties&> (props));
   else if (go.isa ("hggroup"))
     draw (dynamic_cast<const hggroup::properties&> (props));
+  else if (go.isa ("text"))
+    draw (dynamic_cast<const text::properties&> (props));
   else
     warning ("opengl_renderer: cannot render object of type `%s'",
 	     props.graphics_object_name ().c_str ());
@@ -555,6 +561,7 @@ opengl_renderer::draw (const figure::properties& props)
   glEnable (GL_DEPTH_TEST);
   glDepthFunc (GL_LEQUAL);
   glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  glAlphaFunc (GL_GREATER, 0.0f);
   glEnable (GL_NORMALIZE);
 
   if (props.is___enhanced__ ())
@@ -874,6 +881,8 @@ opengl_renderer::draw (const axes::properties& props)
   std::string gridstyle = props.get_gridlinestyle ();
   std::string minorgridstyle = props.get_minorgridlinestyle ();
 
+  set_font (props);
+
   // X grid
 
   if (visible && xstate != AXE_DEPTH_DIR)
@@ -884,8 +893,7 @@ opengl_renderer::draw (const axes::properties& props)
       Matrix xticks = xform.xscale (props.get_xtick ().matrix_value ());
       // FIXME: use pre-computed minor ticks
       Matrix xmticks;
-      // FIXME: use xticklabels property
-      string_vector xticklabels;
+      string_vector xticklabels = props.get_xticklabel ().all_strings ();
       int wmax = 0, hmax = 0;
       bool tick_along_z = xisinf (fy);
       Matrix tickpos (xticks.numel (), 3);
@@ -957,7 +965,27 @@ opengl_renderer::draw (const axes::properties& props)
           glEnd ();
         }
 
-      // FIXME: tick texts
+      // tick texts
+      if (xticklabels.numel () > 0)
+	{
+	  int n = std::min (xticklabels.numel (), xticks.numel ());
+	  int halign = (xstate == AXE_HORZ_DIR ? 1 : (xySym ? 0 : 2));
+	  int valign = (xstate == AXE_VERT_DIR
+			? 1
+		       : (zd*zv(2) <= 0 && !x2Dtop ? 2 : 0));
+
+	  for (int i = 0; i < n; i++)
+	    {
+	      // FIXME: as tick text is transparent, shouldn't be
+	      //        drawn after axes object, for correct rendering?
+	      Matrix b = draw_text (xticklabels(i),
+				    tickpos(i,0), tickpos(i,1), tickpos(i,2),
+				    halign, valign); 
+
+	      wmax = std::max (wmax, static_cast<int> (b(2)));
+	      hmax = std::max (hmax, static_cast<int> (b(3)));
+	    }
+	}
 
       // minor grid lines
       if (do_xminorgrid)
@@ -1026,6 +1054,8 @@ opengl_renderer::draw (const axes::properties& props)
       text::properties& xlabel_props =
         reinterpret_cast<text::properties&> (gh_manager::get_object (props.get_xlabel ()).get_properties ());
 
+      xlabel_props.set_visible ("on");
+
       // FIXME: auto-positioning should be disabled if the 
       //        label has been positioned manually
       if (! xlabel_props.get_string ().empty ())
@@ -1060,6 +1090,10 @@ opengl_renderer::draw (const axes::properties& props)
           xlabel_props.set_rotation (angle);
         }
     }
+  else
+    {
+      gh_manager::get_object (props.get_xlabel ()).set ("visible", "off");
+    }
 
   // Y grid
 		
@@ -1071,8 +1105,7 @@ opengl_renderer::draw (const axes::properties& props)
       Matrix yticks = xform.yscale (props.get_ytick ().matrix_value ());
       // FIXME: use pre-computed minor ticks
       Matrix ymticks;
-      // FIXME: use yticklabels property
-      string_vector yticklabels;
+      string_vector yticklabels = props.get_yticklabel ().all_strings ();
       int wmax = 0, hmax = 0;
       bool tick_along_z = xisinf (fx);
       Matrix tickpos (yticks.numel (), 3);
@@ -1144,7 +1177,25 @@ opengl_renderer::draw (const axes::properties& props)
           glEnd ();
         }
 
-      // FIXME: tick texts
+      // tick texts
+      if (yticklabels.numel () > 0)
+	{
+	  int n = std::min (yticklabels.numel (), yticks.numel ());
+	  int halign = (ystate == AXE_HORZ_DIR ? 1 : (!xySym || y2Dright ? 0 : 2));
+	  int valign = (ystate == AXE_VERT_DIR ? 1 : (zd*zv(2) <= 0 ? 2 : 0));
+
+	  for (int i = 0; i < n; i++)
+	    {
+	      // FIXME: as tick text is transparent, shouldn't be
+	      //        drawn after axes object, for correct rendering?
+	      Matrix b = draw_text (yticklabels(i),
+				    tickpos(i,0), tickpos(i,1), tickpos(i,2),
+				    halign, valign); 
+
+	      wmax = std::max (wmax, static_cast<int> (b(2)));
+	      hmax = std::max (hmax, static_cast<int> (b(3)));
+	    }
+	}
 
       // minor grid lines
       if (do_yminorgrid)
@@ -1213,6 +1264,8 @@ opengl_renderer::draw (const axes::properties& props)
       text::properties& ylabel_props =
         reinterpret_cast<text::properties&> (gh_manager::get_object (props.get_ylabel ()).get_properties ());
 
+      ylabel_props.set_visible ("on");
+
       // FIXME: auto-positioning should be disabled if the 
       //        label has been positioned manually
       if (! ylabel_props.get_string ().empty ())
@@ -1247,6 +1300,10 @@ opengl_renderer::draw (const axes::properties& props)
           ylabel_props.set_rotation (angle);
         }
     }
+  else
+    {
+      gh_manager::get_object (props.get_ylabel ()).set ("visible", "off");
+    }
 		
   // Z Grid
 
@@ -1258,8 +1315,7 @@ opengl_renderer::draw (const axes::properties& props)
       Matrix zticks = xform.zscale (props.get_ztick ().matrix_value ());
       // FIXME: use pre-computed minor ticks
       Matrix zmticks;
-      // FIXME: use zticklabels property
-      string_vector zticklabels;
+      string_vector zticklabels = props.get_zticklabel ().all_strings ();
       int wmax = 0, hmax = 0;
       Matrix tickpos (zticks.numel (), 3);
 
@@ -1364,6 +1420,24 @@ opengl_renderer::draw (const axes::properties& props)
         }
 
       // FIXME: tick texts
+      if (zticklabels.numel () > 0)
+	{
+	  int n = std::min (zticklabels.numel (), zticks.numel ());
+	  int halign = 2;
+	  int valign = (zstate == AXE_VERT_DIR ? 1 : (zd*zv(2) < 0 ? 3 : 2));
+
+	  for (int i = 0; i < n; i++)
+	    {
+	      // FIXME: as tick text is transparent, shouldn't be
+	      //        drawn after axes object, for correct rendering?
+	      Matrix b = draw_text (zticklabels(i),
+				    tickpos(i,0), tickpos(i,1), tickpos(i,2),
+				    halign, valign); 
+
+	      wmax = std::max (wmax, static_cast<int> (b(2)));
+	      hmax = std::max (hmax, static_cast<int> (b(3)));
+	    }
+	}
 
       // minor grid lines
       if (do_zminorgrid)
@@ -1457,6 +1531,8 @@ opengl_renderer::draw (const axes::properties& props)
       text::properties& zlabel_props =
         reinterpret_cast<text::properties&> (gh_manager::get_object (props.get_zlabel ()).get_properties ());
 
+      zlabel_props.set_visible ("on");
+
       // FIXME: auto-positioning should be disabled if the 
       //        label has been positioned manually
       if (! zlabel_props.get_string ().empty ())
@@ -1512,6 +1588,10 @@ opengl_renderer::draw (const axes::properties& props)
           zlabel_props.set_rotation (angle);
         }
     }
+  else
+    {
+      gh_manager::get_object (props.get_zlabel ()).set ("visible", "off");
+    }
 
   set_linestyle ("-");
 
@@ -1537,7 +1617,7 @@ opengl_renderer::draw (const axes::properties& props)
   if (antialias == GL_TRUE)
     glEnable (GL_LINE_SMOOTH);
 
-  Matrix children = props.get_children ();
+  Matrix children = props.get_all_children ();
   std::list<graphics_object> obj_list;
   std::list<graphics_object>::iterator it;
 
@@ -1564,7 +1644,7 @@ opengl_renderer::draw (const axes::properties& props)
       graphics_object go = (*it);
 
       // FIXME: check whether object has "units" property and it is set to "data"
-      if (! go.isa ("text") || go.get ("units").string_value () == "data")
+      if (! go.isa ("text") || go.get (caseless_str ("units")).string_value () == "data")
         {
           set_clipping (go.get_properties ().is_clipping ());
           draw (go);
@@ -2572,6 +2652,38 @@ opengl_renderer::draw (const hggroup::properties &props)
 }
 
 void
+opengl_renderer::draw (const text::properties& props)
+{
+  if (props.get_string ().empty ())
+    return;
+
+  set_font (props);
+  set_color (props.get_color_rgb ());
+
+  // FIXME: take "units" into account
+  Matrix pos = props.get_position ().matrix_value ();
+  int halign = 0, valign = 0;
+
+  if (props.horizontalalignment_is ("center"))
+    halign = 1;
+  else if (props.horizontalalignment_is ("right"))
+    halign = 2;
+  
+  if (props.verticalalignment_is ("top"))
+    valign = 2;
+  else if (props.verticalalignment_is ("baseline"))
+    valign = 3;
+  else if (props.verticalalignment_is ("middle"))
+    valign = 1;
+
+  // FIXME: handle margin and surrounding box
+
+  draw_text (props.get_string (),
+	     pos(0), pos(1), pos(2),
+	     halign, valign, props.get_rotation ());
+}
+
+void
 opengl_renderer::set_viewport (int w, int h)
 {
   glViewport (0, 0, w, h);
@@ -2581,6 +2693,17 @@ void
 opengl_renderer::set_color (const Matrix& c)
 {
   glColor3dv (c.data ());
+#if HAVE_FREETYPE
+  text_renderer.set_color (c);
+#endif
+}
+
+void
+opengl_renderer::set_font (const base_properties& props)
+{
+#if HAVE_FREETYPE
+  text_renderer.set_font (props);
+#endif
 }
 
 void
@@ -2867,6 +2990,85 @@ opengl_renderer::make_marker_list (const std::string& marker, double size,
   glEndList ();
 
   return ID;
+}
+
+Matrix
+opengl_renderer::draw_text (const std::string& txt,
+			    double x, double y, double z,
+			    int halign, int valign, double rotation)
+{
+#if HAVE_FREETYPE
+  if (txt.empty ())
+    return Matrix (1, 4, 0.0);
+
+  // FIXME: clip "rotation" between 0 and 360
+
+  int rot_mode = ft_render::ROTATION_0;
+
+  if (rotation == 90.0)
+    rot_mode = ft_render::ROTATION_90;
+  else if (rotation == 180.0)
+    rot_mode = ft_render::ROTATION_180;
+  else if (rotation == 270.0)
+    rot_mode = ft_render::ROTATION_270;
+
+  text_element *elt = text_parser_none ().parse (txt);
+  Matrix bbox;
+  uint8NDArray pixels = text_renderer.render (elt, bbox, rot_mode);
+  int x0 = 0, y0 = 0;
+  int w = bbox(2), h = bbox(3);
+
+  switch (halign)
+    {
+    default: break;
+    case 1: x0 = -bbox(2)/2; break;
+    case 2: x0 = -bbox(2); break;
+    }
+  switch (valign)
+    {
+    default: break;
+    case 1: y0 = -bbox(3)/2; break;
+    case 2: y0 = -bbox(3); break;
+    case 3: y0 = bbox(1); break;
+    }
+
+  switch (rot_mode)
+    {
+    case ft_render::ROTATION_90:
+      std::swap (x0, y0);
+      std::swap (w, h);
+      x0 -= bbox(3);
+      break;
+    case ft_render::ROTATION_180:
+      x0 -= bbox(2);
+      y0 -= bbox(3);
+      break;
+    case ft_render::ROTATION_270:
+      std::swap (x0, y0);
+      std::swap (w, h);
+      y0 -= bbox(2);
+      break;
+    }
+
+  bool blend = glIsEnabled (GL_BLEND);
+
+  glEnable (GL_BLEND);
+  glEnable (GL_ALPHA_TEST);
+  glRasterPos3d (x, y, z);
+  glBitmap(0, 0, 0, 0, x0, y0, 0);
+  glDrawPixels (w, h,
+		GL_RGBA, GL_UNSIGNED_BYTE, pixels.data ());
+  glDisable (GL_ALPHA_TEST);
+  if (! blend)
+    glDisable (GL_BLEND);
+
+  delete elt;
+
+  return bbox;
+#else
+  ::error ("draw_text: cannot render text, Freetype library not available");
+  return Matrix (1, 4, 0.0);
+#endif
 }
 
 #endif

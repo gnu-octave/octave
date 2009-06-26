@@ -1806,13 +1806,22 @@ begin:
     {
       // Do a linear merge.
       octave_idx_type i = lo, j = 0;
-      while (j != nvalues && i < hi)
+
+      if (j != nvalues && i != hi)
         {
-          if (comp (values[j], data[i]))
-            idx[j++] = i;
-          else
-            i++;
+          while (true)
+            {
+              if (comp (values[j], data[i]))
+                {
+                  idx[j] = i;
+                  if (++j == nvalues)
+                    break;
+                }
+              else if (++i == hi)
+                break;
+            }
         }
+
       while (j != nvalues)
         idx[j++] = i;
     }

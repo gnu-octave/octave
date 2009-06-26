@@ -1,5 +1,10 @@
 2009-06-26  Jaroslav Hajek  <highegg@gmail.com>
 
+	* oct-sort.cc (octave_sort<T>::lookup_merge<Comp>): Slightly speed-up
+	the merge case.
+
+2009-06-26  Jaroslav Hajek  <highegg@gmail.com>
+
 	* oct-sort.cc (octave_sort<T>::lookup_merge<Comp>): Fix lower-part
 	recursion.
 

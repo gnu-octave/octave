@@ -125,7 +125,7 @@ private:
   // making them static members of the dir_path class so that we can
   // ensure proper initialization.
 
-  class static_members
+  class OCTAVE_API static_members
   {
   public:
 

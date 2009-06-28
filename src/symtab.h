@@ -958,13 +958,6 @@ public:
     set_parent_scope (-1);
   }
 
-  static void erase_scope (void *ptr)
-  {
-    scope_id *pscope = static_cast<scope_id *> (ptr);
-
-    erase_scope (*pscope);
-  }
-
   static void erase_scope (scope_id scope)
   {
     assert (scope != xglobal_scope);

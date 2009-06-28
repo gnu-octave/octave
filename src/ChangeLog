@@ -1,3 +1,7 @@
+2009-06-28  Jaroslav Hajek  <highegg@gmail.com>
+
+	* symtab.h (erase_scope (void *)): Remove overload.
+
 2009-06-26  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* txt-eng.h: New file for simple text engine.

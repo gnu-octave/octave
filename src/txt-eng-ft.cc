@@ -169,7 +169,7 @@ private:
 
       if (FT_New_Face (library, file.c_str (), 0, &retval))
 	{
-	  ::error ("unable to load font: %s", file.c_str ());
+	  ::error ("ft_manager: unable to load font: %s", file.c_str ());
 	}
 
       
@@ -396,51 +396,54 @@ ft_render::render (text_element* elt, Matrix& box, int rotation)
   box = bbox;
 
   set_mode (MODE_RENDER);
-  elt->accept (*this);
-
-  switch (rotation)
+  if (pixels.numel () > 0)
     {
-    case ROTATION_0:
-      break;
-    case ROTATION_90:
-	{
-	  Array<octave_idx_type> perm (3);
-	  perm(0) = 0;
-	  perm(1) = 2;
-	  perm(2) = 1;
-	  pixels = pixels.permute (perm);
+      elt->accept (*this);
 
-	  Array<idx_vector> idx (3);
-	  idx(0) = idx_vector (':');
-	  idx(1) = idx_vector (pixels.dim2()-1, -1, -1);
-	  idx(2) = idx_vector (':');
-	  pixels = uint8NDArray (pixels.index (idx));
-	}
-      break;
-    case ROTATION_180:
+      switch (rotation)
 	{
-	  Array<idx_vector> idx (3);
-	  idx(0) = idx_vector (':');
-	  idx(1) = idx_vector (pixels.dim2()-1, -1, -1);
-	  idx(2)=  idx_vector (pixels.dim3()-1, -1, -1);
-	  pixels = uint8NDArray (pixels.index (idx));
-	}
-      break;
-    case ROTATION_270:
-	{
-	  Array<octave_idx_type> perm (3);
-	  perm(0) = 0;
-	  perm(1) = 2;
-	  perm(2) = 1;
-	  pixels = pixels.permute (perm);
+	case ROTATION_0:
+	  break;
+	case ROTATION_90:
+	    {
+	      Array<octave_idx_type> perm (3);
+	      perm(0) = 0;
+	      perm(1) = 2;
+	      perm(2) = 1;
+	      pixels = pixels.permute (perm);
 
-	  Array<idx_vector> idx (3);
-	  idx(0) = idx_vector (':');
-	  idx(1) = idx_vector (':');
-	  idx(2) = idx_vector (pixels.dim3()-1, -1, -1);
-	  pixels = uint8NDArray (pixels.index (idx));
+	      Array<idx_vector> idx (3);
+	      idx(0) = idx_vector (':');
+	      idx(1) = idx_vector (pixels.dim2()-1, -1, -1);
+	      idx(2) = idx_vector (':');
+	      pixels = uint8NDArray (pixels.index (idx));
+	    }
+	  break;
+	case ROTATION_180:
+	    {
+	      Array<idx_vector> idx (3);
+	      idx(0) = idx_vector (':');
+	      idx(1) = idx_vector (pixels.dim2()-1, -1, -1);
+	      idx(2)=  idx_vector (pixels.dim3()-1, -1, -1);
+	      pixels = uint8NDArray (pixels.index (idx));
+	    }
+	  break;
+	case ROTATION_270:
+	    {
+	      Array<octave_idx_type> perm (3);
+	      perm(0) = 0;
+	      perm(1) = 2;
+	      perm(2) = 1;
+	      pixels = pixels.permute (perm);
+
+	      Array<idx_vector> idx (3);
+	      idx(0) = idx_vector (':');
+	      idx(1) = idx_vector (':');
+	      idx(2) = idx_vector (pixels.dim3()-1, -1, -1);
+	      pixels = uint8NDArray (pixels.index (idx));
+	    }
+	  break;
 	}
-      break;
     }
 
   return pixels;

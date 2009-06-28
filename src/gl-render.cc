@@ -3018,6 +3018,12 @@ opengl_renderer::draw_text (const std::string& txt,
   int x0 = 0, y0 = 0;
   int w = bbox(2), h = bbox(3);
 
+  if (pixels.numel () == 0)
+    {
+      // nothing to render
+      return bbox;
+    }
+
   switch (halign)
     {
     default: break;
@@ -3066,7 +3072,7 @@ opengl_renderer::draw_text (const std::string& txt,
 
   return bbox;
 #else
-  ::error ("draw_text: cannot render text, Freetype library not available");
+  ::warning ("draw_text: cannot render text, Freetype library not available");
   return Matrix (1, 4, 0.0);
 #endif
 }

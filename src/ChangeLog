@@ -6,6 +6,13 @@
 	* txt-eng-ft.cc (ft_render::render): Compute bitmap pixels correctly
 	for 90x rotated text.
 
+	* gl-render.cc (opengl_renderer::draw(text::properties)): Don't do
+	anything if the bitmap data is empty. Issue a warning instead of
+	an error if Freetype library is not available.
+	* txt-eng-ft.cc (ft_manager::do_get_font): Small change in error
+	string (add prefix).
+	(ft_render::render): Don't do anything if the bitmap data is empty.
+
 2009-06-28  Jaroslav Hajek  <highegg@gmail.com>
 
 	* symtab.h (erase_scope (void *)): Remove overload.

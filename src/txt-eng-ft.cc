@@ -421,14 +421,24 @@ ft_render::render (text_element* elt, Matrix& box, int rotation)
 	{
 	  Array<idx_vector> idx (3);
 	  idx(0) = idx_vector (':');
-	  idx(1) = idx_vector (pixels.dim2()-1, 0, -1);
-	  idx(2)=  idx_vector (':');
+	  idx(1) = idx_vector (pixels.dim2()-1, -1, -1);
+	  idx(2)=  idx_vector (pixels.dim3()-1, -1, -1);
 	  pixels = uint8NDArray (pixels.index (idx));
 	}
       break;
     case ROTATION_270:
 	{
-	  // FIXME: implement this...
+	  Array<octave_idx_type> perm (3);
+	  perm(0) = 0;
+	  perm(1) = 2;
+	  perm(2) = 1;
+	  pixels = pixels.permute (perm);
+
+	  Array<idx_vector> idx (3);
+	  idx(0) = idx_vector (':');
+	  idx(1) = idx_vector (':');
+	  idx(2) = idx_vector (pixels.dim3()-1, -1, -1);
+	  pixels = uint8NDArray (pixels.index (idx));
 	}
       break;
     }

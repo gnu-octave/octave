@@ -3037,16 +3037,16 @@ opengl_renderer::draw_text (const std::string& txt,
     case ft_render::ROTATION_90:
       std::swap (x0, y0);
       std::swap (w, h);
-      x0 -= bbox(3);
+      x0 = -x0-bbox(3);
       break;
     case ft_render::ROTATION_180:
-      x0 -= bbox(2);
-      y0 -= bbox(3);
+      x0 = -x0-bbox(2);
+      y0 = -y0-bbox(3);
       break;
     case ft_render::ROTATION_270:
       std::swap (x0, y0);
       std::swap (w, h);
-      y0 -= bbox(2);
+      y0 = -y0-bbox(2);
       break;
     }
 

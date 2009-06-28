@@ -1,3 +1,11 @@
+2009-06-28  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* Makefile.in (INCLUDES): Install txt-eng.h and txt-eng-ft.h.
+	* gl-render.cc (opengl_renderer::draw_text): Fix bitmap offset
+	computation for 90x rotated text.
+	* txt-eng-ft.cc (ft_render::render): Compute bitmap pixels correctly
+	for 90x rotated text.
+
 2009-06-28  Jaroslav Hajek  <highegg@gmail.com>
 
 	* symtab.h (erase_scope (void *)): Remove overload.

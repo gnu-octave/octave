@@ -1742,12 +1742,14 @@ octave_sort<T>::is_sorted_rows (const T *data, octave_idx_type rows,
   return retval;
 }
 
-// A helper function (just to avoid repeating expressions).
+// The simple binary lookup.
 template <class T, class Comp>
 inline octave_idx_type
-lookup_impl (const T *data, octave_idx_type lo,
-             octave_idx_type hi, const T& val, Comp comp)
+lookup_binary (const T *data, octave_idx_type hi, 
+               const T& val, Comp comp)
 {
+  octave_idx_type lo = 0;
+
   while (lo < hi)
     {
       octave_idx_type mid = lo + ((hi-lo) >> 1);
@@ -1760,13 +1762,12 @@ lookup_impl (const T *data, octave_idx_type lo,
   return lo;
 }
 
-
 template <class T> template <class Comp>
 octave_idx_type 
 octave_sort<T>::lookup (const T *data, octave_idx_type nel,
                         const T& value, Comp comp)
 {
-  return lookup_impl (data, 0, nel, value, comp);
+  return lookup_binary (data, nel, value, comp);
 }
 
 template <class T>
@@ -1792,105 +1793,8 @@ octave_sort<T>::lookup (const T *data, octave_idx_type nel,
   return retval;
 }
 
-// A recursively splitting lookup of a sorted array in another sorted array.
-template <class T> template <class Comp>
-void 
-octave_sort<T>::lookup_merge (const T *data, octave_idx_type lo, octave_idx_type hi,
-                              const T *values, octave_idx_type nvalues,
-                              octave_idx_type *idx, Comp comp)
-{
-  // Fake entry.
-begin:
-
-  if (hi - lo <= nvalues + 16)
-    {
-      // Do a linear merge.
-      octave_idx_type i = lo, j = 0;
-
-      if (j != nvalues && i != hi)
-        {
-          while (true)
-            {
-              if (comp (values[j], data[i]))
-                {
-                  idx[j] = i;
-                  if (++j == nvalues)
-                    break;
-                }
-              else if (++i == hi)
-                break;
-            }
-        }
-
-      while (j != nvalues)
-        idx[j++] = i;
-    }
-  else
-    {
-      // Use the ordering to split the table; look-up recursively.
-      switch (nvalues)
-        {
-        case 0:
-          break;
-        case 1:
-          idx[0] = lookup_impl (data,     lo,     hi, values[0], comp);
-          break;
-        case 2:
-          idx[0] = lookup_impl (data,     lo,     hi, values[0], comp);
-          idx[1] = lookup_impl (data, idx[0],     hi, values[1], comp);
-          break;
-        case 3:
-          idx[1] = lookup_impl (data,     lo,     hi, values[1], comp);
-          idx[0] = lookup_impl (data,     lo, idx[1], values[0], comp);
-          idx[2] = lookup_impl (data, idx[1],     hi, values[2], comp);
-          break;
-        case 4:
-          idx[2] = lookup_impl (data,     lo,     hi, values[2], comp);
-          idx[0] = lookup_impl (data,     lo, idx[2], values[0], comp);
-          idx[1] = lookup_impl (data, idx[0], idx[2], values[1], comp);
-          idx[3] = lookup_impl (data, idx[2],     hi, values[3], comp);
-          break;
-        case 5:
-          idx[2] = lookup_impl (data,     lo,     hi, values[2], comp);
-          idx[0] = lookup_impl (data,     lo, idx[2], values[0], comp);
-          idx[1] = lookup_impl (data, idx[0], idx[2], values[1], comp);
-          idx[3] = lookup_impl (data, idx[2],     hi, values[3], comp);
-          idx[4] = lookup_impl (data, idx[3],     hi, values[4], comp);
-          break;
-        default:
-            {
-              // This is a bit tricky. We do not want a normal recursion
-              // because we split by idx[k], and there's no guaranteed descend
-              // ratio; hence the worst-case scenario would be a linear stack
-              // growth, which is dangerous. Instead, we recursively run the
-              // smaller half, and simulate a tail call for the rest using
-              // goto.
-              octave_idx_type k = nvalues / 2;
-              idx[k] = lookup_impl (data, lo, hi, values[k], comp);
-              if (idx[k] - lo <= hi - idx[k])
-                {
-                  // The smaller portion is run recursively.
-                  lookup_merge (data, lo, idx[k], values, k, idx, comp);
-                  // Simulate a tail call.
-                  lo = idx[k];
-                  values += k; nvalues -= k; idx += k;
-                  goto begin;
-                }
-              else
-                {
-                  // The smaller portion is run recursively.
-                  lookup_merge (data, idx[k], hi, 
-                                values + k, nvalues - k, idx + k, comp);
-                  // Simulate a tail call.
-                  hi = idx[k];
-                  nvalues = k;
-                  goto begin;
-                }
-              break;
-            }
-        }
-    }
-}
+// This determines the split ratio between the O(M*log2(N)) and O(M+N) algorithms.
+static const double ratio = 1.0;
 
 template <class T> template <class Comp>
 void 
@@ -1898,39 +1802,37 @@ octave_sort<T>::lookup (const T *data, octave_idx_type nel,
                         const T *values, octave_idx_type nvalues,
                         octave_idx_type *idx, octave_idx_type offset, Comp comp)
 {
-  if (nel == 0)
-    // the trivial case of empty table
-    std::fill_n (idx, nvalues, offset);
-  else
+  // Check whether we're comparing two sorted arrays, comparable in size.
+  if (nvalues >= ratio * nel / xlog2 (nel + 1.0) 
+      && is_sorted (values, nvalues, comp))
     {
-      octave_idx_type vlo = 0;
-      int nbadruns = 0;
-      while (vlo != nvalues && nbadruns < 16)
-        {
-          octave_idx_type vhi;
+      // Use the linear algorithm.
+      octave_idx_type i = 0, j = 0;
 
-          // Determine a sorted run.
-          for (vhi = vlo + 1; vhi != nvalues; vhi++)
+      if (j != nvalues && i != nel)
+        {
+          while (true)
             {
-              if (comp (values[vhi], values[vhi-1]))
+              if (comp (values[j], data[i]))
+                {
+                  idx[j] = i + offset;
+                  if (++j == nvalues)
+                    break;
+                }
+              else if (++i == nel)
                 break;
             }
-
-          // Do a recursive lookup.
-          lookup_merge (data - offset, offset, nel + offset,
-                        values + vlo, vhi - vlo, idx + vlo, comp);
-
-          if (vhi - vlo <= 2)
-            nbadruns++;
-          else if (vhi - vlo >= 16)
-            nbadruns = 0;
-
-          vlo = vhi;
         }
 
-      // The optimistic loop terminated, do the rest normally.
-      for (; vlo != nvalues; vlo++)
-        idx[vlo] = lookup_impl (data, 0, nel, values[vlo], comp) + offset;
+      for (; j != nvalues; j++)
+        idx[j] = i + offset;
+
+    }
+  else
+    {
+      // Use a sequence of binary lookups.
+      for (octave_idx_type j = 0; j < nvalues; j++)
+        idx[j] = lookup_binary (data, nel, values[j], comp) + offset;
     }
 }
 
@@ -1960,10 +1862,40 @@ octave_sort<T>::lookupm (const T *data, octave_idx_type nel,
                          const T *values, octave_idx_type nvalues,
                          octave_idx_type *idx, Comp comp)
 {
-  for (octave_idx_type i = 0; i < nvalues; i++)
+  // Check whether we're comparing two sorted arrays, comparable in size.
+  if (nvalues >= ratio * nel / xlog2 (nel + 1.0) 
+      && is_sorted (values, nvalues, comp))
     {
-      octave_idx_type j = lookup_impl (data, 0, nel, values[i], comp);
-      idx[i] = (j != 0 && comp (data[j-1], values[i])) ? -1 : j-1;
+      // Use the linear algorithm.
+      octave_idx_type i = 0, j = 0;
+
+      if (j != nvalues && i != nel)
+        {
+          while (true)
+            {
+              if (comp (values[j], data[i]))
+                {
+                  idx[j] = (i != 0 && comp (data[i-1], values[j])) ? -1 : i-1;
+                  if (++j == nvalues)
+                    break;
+                }
+              else if (++i == nel)
+                break;
+            }
+        }
+
+      for (; j != nvalues; j++)
+        idx[j] = (i != 0 && comp (data[i-1], values[j])) ? -1 : i-1;
+
+    }
+  else
+    {
+      // Use a sequence of binary lookups.
+      for (octave_idx_type j = 0; j < nvalues; j++)
+        {
+          octave_idx_type i = lookup_binary (data, nel, values[j], comp);
+          idx[j] = (i != 0 && comp (data[i-1], values[j])) ? -1 : i-1;
+        }
     }
 }
 
@@ -1993,10 +1925,40 @@ octave_sort<T>::lookupb (const T *data, octave_idx_type nel,
                          const T *values, octave_idx_type nvalues,
                          bool *match, Comp comp)
 {
-  for (octave_idx_type i = 0; i < nvalues; i++)
+  // Check whether we're comparing two sorted arrays, comparable in size.
+  if (nvalues >= ratio * nel / xlog2 (nel + 1.0) 
+      && is_sorted (values, nvalues, comp))
     {
-      octave_idx_type j = lookup_impl (data, 0, nel, values[i], comp);
-      match[i] = (j != 0 && ! comp (data[j-1], values[i]));
+      // Use the linear algorithm.
+      octave_idx_type i = 0, j = 0;
+
+      if (j != nvalues && i != nel)
+        {
+          while (true)
+            {
+              if (comp (values[j], data[i]))
+                {
+                  match[j] = (i != 0 && ! comp (data[i-1], values[j]));
+                  if (++j == nvalues)
+                    break;
+                }
+              else if (++i == nel)
+                break;
+            }
+        }
+
+      for (; j != nvalues; j++)
+        match[j] = (i != 0 && ! comp (data[i-1], values[j]));
+
+    }
+  else
+    {
+      // Use a sequence of binary lookups.
+      for (octave_idx_type j = 0; j < nvalues; j++)
+        {
+          octave_idx_type i = lookup_binary (data, nel, values[j], comp);
+          match[j] = (j != 0 && ! comp (data[i-1], values[j]));
+        }
     }
 }
 

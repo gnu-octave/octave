@@ -1,3 +1,7 @@
+2009-06-29  Jaroslav Hajek  <highegg@gmail.com>
+
+	* NEWS: Correct info.
+
 2009-06-26  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* aclocal.m4: Add pkg.m4 macros.

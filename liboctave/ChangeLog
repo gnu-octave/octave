@@ -1,3 +1,10 @@
+2009-06-29  Jaroslav Hajek  <highegg@gmail.com>
+
+	* oct-sort.cc (octave_sort<T>::lookup_merge): Delete.
+	(octave_sort<T>::lookup<Comp>,
+	octave_sort<T>::lookupm<Comp>,
+	octave_sort<T>::lookupb<Comp>): Rewrite.
+
 2009-06-26  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* pathsearch.h (class dir_path::static_members): Decorate with

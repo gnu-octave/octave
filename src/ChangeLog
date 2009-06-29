@@ -1,3 +1,7 @@
+2009-06-26  John W. Eaton  <jwe@octave.org>
+
+	* load-path.cc (Faddpath): Preserve order of prepended elements.
+
 2009-06-24  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
 	* oct-map.cc (Octave_map::squeeze, Octave_map::permute,

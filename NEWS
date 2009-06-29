@@ -12,6 +12,14 @@ Summary of important user-visible changes for version 3.3:
     no longer needed to avoid repeated indexing by logical arrays using
     `find' for performance reasons.
 
+** The built-in function equivalents to associative operators (plus, times,
+   mtimes, and, or) have been extended to accept multiple arguments. This is
+   especially useful for summing (multiplying, etc.) lists of objects 
+   (of possibly distinct types):
+   
+     matrix_sum = plus (matrix_list{:});
+    
+
 Summary of important user-visible changes for version 3.2:
 ---------------------------------------------------------
 

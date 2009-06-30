@@ -1919,6 +1919,7 @@ octave_sort<T>::lookupm (const T *data, octave_idx_type nel,
       lookupm (data, nel, values, nvalues, idx, std::ptr_fun (compare));
 }
 
+#include <iostream>
 template <class T> template <class Comp>
 void 
 octave_sort<T>::lookupb (const T *data, octave_idx_type nel,
@@ -1957,7 +1958,7 @@ octave_sort<T>::lookupb (const T *data, octave_idx_type nel,
       for (octave_idx_type j = 0; j < nvalues; j++)
         {
           octave_idx_type i = lookup_binary (data, nel, values[j], comp);
-          match[j] = (j != 0 && ! comp (data[i-1], values[j]));
+          match[j] = (i != 0 && ! comp (data[i-1], values[j]));
         }
     }
 }

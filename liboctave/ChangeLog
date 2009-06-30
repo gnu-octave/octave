@@ -1,3 +1,7 @@
+2009-06-30  Jaroslav Hajek  <highegg@gmail.com>
+
+	* oct-sort.cc (octave_sort<T>::lookupb<Comp>): Fix typo.
+
 2009-06-29  Jaroslav Hajek  <highegg@gmail.com>
 
 	* oct-sort.cc (octave_sort<T>::lookup_merge): Delete.

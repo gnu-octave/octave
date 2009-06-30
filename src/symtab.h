@@ -1063,8 +1063,6 @@ public:
 			      scope_id scope = xcurrent_scope,
 			      context_id context = xcurrent_context)
   {
-    assert (xcurrent_context == 0);
-
     symbol_table *inst = get_instance (scope);
 
     if (inst)

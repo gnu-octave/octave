@@ -1,3 +1,7 @@
+2009-06-30  Jaroslav Hajek  <highegg@gmail.com>
+
+	* symtab.h (force_variable): Remove assertion.
+
 2009-06-26  John W. Eaton  <jwe@octave.org>
 
 	* load-path.cc (Faddpath): Preserve order of prepended elements.

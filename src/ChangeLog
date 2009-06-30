@@ -1,3 +1,7 @@
+2009-06-30  Jaroslav Hajek  <highegg@gmail.com>
+
+	* symtab.h (force_variable): Remove assertion.
+
 2009-06-28  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* Makefile.in (INCLUDES): Install txt-eng.h and txt-eng-ft.h.

@@ -392,7 +392,7 @@ raw_mode (bool on, bool wait)
 	s = save_term;
       }
 
-    tcsetattr (tty_fd, TCSAFLUSH, &s);
+    tcsetattr (tty_fd, wait ? TCSAFLUSH : TCSADRAIN, &s);
   }
 #elif defined (HAVE_TERMIO_H)
   {

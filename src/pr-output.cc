@@ -271,6 +271,15 @@ rational_approx (double val, int len)
 	  double step = xround (flip);
 	  double nextn = n;
 	  double nextd = d;
+
+	  // Have we converged to 1/intmax ?
+	  if (m > 100 || fabs (frac) < 1 / static_cast<double>(INT_MAX))
+	    {
+	      lastn = n;
+	      lastd = d;
+	      break;
+	    }
+
 	  frac = flip - step;
 	  n = n * step + lastn;
 	  d = d * step + lastd;
@@ -295,14 +304,6 @@ rational_approx (double val, int len)
 	    break;
 
 	  s = buf.str();
-
-	  // Have we converged to 1/intmax ?
-	  if (m > 100 || fabs (frac) < 1 / static_cast<double>(INT_MAX))
-	    {
-	      lastn = n;
-	      lastd = d;
-	      break;
-	    }
 	}
 
       if (lastd < 0.)

@@ -1,3 +1,9 @@
+2008-07-01  David Bateman  <dbateman@free.fr>
+	
+	* pr-output.cc (static inline std::string rational_approx (double, 
+	int)): Test for underflow of fractional part of rational approximation
+	earlier in the loop.
+
 2009-07-01  Joe Rothweiler <octaveuser@sensicomm.com>
 
 	* input.cc (raw_mode): Use TCSADRAIN if no wait.

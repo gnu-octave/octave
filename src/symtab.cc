@@ -104,17 +104,29 @@ symbol_table::symbol_record::find (tree_argument_list *args,
   octave_value retval;
 
   if (is_global ())
-    return symbol_table::global_varref (name ());
+    retval = symbol_table::global_varref (name ());
   else
     {
-      octave_value val = varval ();
+      retval = varval ();
 
-      if (val.is_defined ())
-	return val;
+      if (retval.is_undefined ())
+        {
+          // Use cached fcn_info pointer if possible.
+          if (rep->finfo)
+            retval = rep->finfo->find (args, arg_names,
+                                       evaluated_args, args_evaluated);
+          else
+            { 
+              retval = symbol_table::find_function (name (), args, arg_names,
+                                                    evaluated_args, args_evaluated);
+
+              if (retval.is_defined ())
+                rep->finfo = get_fcn_info (name ());
+            }
+        }
     }
 
-  return symbol_table::find_function (name (), args, arg_names,
-				      evaluated_args, args_evaluated);
+  return retval;
 }
 
 // Check the load path to see if file that defined this is still

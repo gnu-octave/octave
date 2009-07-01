@@ -155,6 +155,8 @@ public:
     }
   };
 
+  class fcn_info;
+
   class
   symbol_record
   {
@@ -194,7 +196,7 @@ public:
 
       symbol_record_rep (const std::string& nm, const octave_value& v,
 			 unsigned int sc)
-	: name (nm), value_stack (), storage_class (sc), count (1)
+	: name (nm), value_stack (), storage_class (sc), finfo (), count (1)
       {
 	value_stack.push_back (v);
       }
@@ -371,6 +373,8 @@ public:
       std::deque<octave_value> value_stack;
 
       unsigned int storage_class;
+
+      fcn_info *finfo;
 
       size_t count;
 
@@ -1987,6 +1991,12 @@ private:
 	  }
       }
   }
+
+  static fcn_info *get_fcn_info (const std::string& name)
+    {
+      fcn_table_iterator p = fcn_table.find (name);
+      return p != fcn_table.end () ? &p->second : 0;
+    }
 
   octave_value
   do_find (const std::string& name, tree_argument_list *args,

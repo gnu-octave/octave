@@ -1,3 +1,8 @@
+2009-07-02  Jaroslav Hajek  <highegg@gmail.com>
+
+	* Sparse-diag-op-defs.h (inner_do_add_sm_dm): Rewrite to ensure
+	ordering of row indices.
+
 2009-06-30  Jaroslav Hajek  <highegg@gmail.com>
 
 	* oct-sort.cc (octave_sort<T>::lookupb<Comp>): Fix typo.

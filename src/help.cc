@@ -821,32 +821,46 @@ do_which (const std::string& name, std::string& type)
 
   octave_value val = symbol_table::find_function (name);
 
-  if (val.is_defined ())
+  if (name.find_first_of ('.') == std::string::npos)
     {
-      octave_function *fcn = val.function_value ();
+      if (val.is_defined ())
+        {
+          octave_function *fcn = val.function_value ();
 
-      if (fcn)
-	{
-	  file = fcn->fcn_file_name ();
+          if (fcn)
+            {
+              file = fcn->fcn_file_name ();
 
-	  if (file.empty ())
-	    {
-	      if (fcn->is_user_function ())
-		type = "command-line function";
-	      else
-		type = "built-in function";
-	    }
-	  else
-	    type = val.is_user_script ()
-	      ? std::string ("script") : std::string ("function");
-	}
+              if (file.empty ())
+                {
+                  if (fcn->is_user_function ())
+                    type = "command-line function";
+                  else
+                    type = "built-in function";
+                }
+              else
+                type = val.is_user_script ()
+                  ? std::string ("script") : std::string ("function");
+            }
+        }
+      else
+        {
+          // We might find a file that contains only a doc string.
+
+          file = load_path::find_fcn_file (name);
+        }
     }
   else
     {
-      // We might find a file that contains only a doc string.
+      // File query.
 
-      file = load_path::find_fcn_file (name);
+      // For compatibility: "file." queries "file".
+      if (name.size () > 1 && name[name.size () - 1] == '.')
+        file = load_path::find_file (name.substr (0, name.size () - 1));
+      else
+        file = load_path::find_file (name);
     }
+
 
   return file;
 }

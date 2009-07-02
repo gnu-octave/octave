@@ -1,5 +1,9 @@
 2009-07-02  Jaroslav Hajek  <highegg@gmail.com>
 
+	* help.cc (do_which): Also look for files.
+
+2009-07-02  Jaroslav Hajek  <highegg@gmail.com>
+
 	* Cell.cc (Cell::index): Use proper resize_fill_value.
 
 2009-07-01  Jaroslav Hajek  <highegg@gmail.com>

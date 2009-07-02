@@ -134,26 +134,38 @@ RT inner_do_add_sm_dm (const SM& a, const DM& d, OpA opa, OpD opd)
     {
       OCTAVE_QUIT;
       const octave_idx_type colend = a.cidx (j+1);
-      bool found_diag = false;
       r.xcidx (j) = k;
-      for (octave_idx_type k_src = a.cidx (j); k_src < colend; ++k_src, ++k)
-	{
-	  const octave_idx_type i = a.ridx (k_src);
-	  r.xridx (k) = i;
-	  if (i != j)
-	    r.xdata (k) = opa (a.data (k_src));
-	  else
-	    {
-	      r.xdata (k) = opa (a.data (k_src)) + opd (d.dgelem (j));
-	      found_diag = true;
-	    }
-	}
-      if (!found_diag)
-	{
-	  r.xridx (k) = j;
-	  r.xdata (k) = opd (d.dgelem (j));
-	  ++k;
-	}
+      octave_idx_type k_src = a.cidx (j), k_split;
+
+      for (k_split = k_src; k_split < colend; k_split++)
+        if (a.ridx (k_split) >= j)
+          break;
+
+      for (; k_src < k_split; k_src++, k++)
+        {
+          r.xridx (k) = a.ridx (k_src);
+          r.xdata (k) = opa (a.data (k_src));
+        }
+
+      if (k_src < colend && a.ridx (k_src) == j)
+        {
+          r.xridx (k) = j;
+          r.xdata (k) = opa (a.data (k_src)) + opd (d.dgelem (j));
+          k++; k_src++;
+        }
+      else
+        {
+          r.xridx (k) = j;
+          r.xdata (k) = opd (d.dgelem (j));
+          k++;
+        }
+
+      for (; k_src < colend; k_src++, k++)
+        {
+          r.xridx (k) = a.ridx (k_src);
+          r.xdata (k) = opa (a.data (k_src));
+        }
+
     }
   r.xcidx (nc) = k;
 

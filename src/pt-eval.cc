@@ -986,6 +986,8 @@ do_unwind_protect_cleanup_code (void *ptr)
     unwind_protect::discard ();
   else
     unwind_protect::run ();
+
+  unwind_protect::run ();
 }
 
 void

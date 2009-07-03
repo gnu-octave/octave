@@ -7483,7 +7483,7 @@ SparseMatrix::prod (int dim) const
   else
     {
       SPARSE_REDUCTION_OP (SparseMatrix, double, *=, 
-			   (cidx(j+1) - cidx(j) < nc ? 0.0 : 1.0), 1.0);
+			   (cidx(j+1) - cidx(j) < nr ? 0.0 : 1.0), 1.0);
     }
 }
 

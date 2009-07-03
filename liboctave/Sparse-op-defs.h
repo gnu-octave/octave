@@ -1828,7 +1828,7 @@ along with Octave; see the file COPYING.  If not, see
     return transpose (). all (0). transpose(); \
   else \
     { \
-      SPARSE_ANY_ALL_OP (DIM, (cidx(j+1) - cidx(j) < nc ? false : true), \
+      SPARSE_ANY_ALL_OP (DIM, (cidx(j+1) - cidx(j) < nr ? false : true), \
 			 true, ==, false); \
     }
 

@@ -1,3 +1,9 @@
+2009-07-03  Jaroslav Hajek  <highegg@gmail.com>
+
+	* Sparse-op-defs.h (SPARSE_ALL_OP): Fix typo.
+	* dSparse.cc (SparseMatrix::prod): Ditto.
+	* CSparse.cc (ComplexSparseMatrix::prod): Ditto.
+
 2009-07-02  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Sparse-diag-op-defs.h (inner_do_add_sm_dm): Rewrite to ensure

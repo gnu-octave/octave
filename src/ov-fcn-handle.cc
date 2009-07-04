@@ -1349,10 +1349,7 @@ make_fcn_handle (const std::string& nm)
 
   octave_value f = symbol_table::find_function (tnm);
 
-  if (f.is_defined ())
-    retval = octave_value (new octave_fcn_handle (f, tnm));
-  else
-    error ("error creating function handle \"@%s\"", nm.c_str ());
+  retval = octave_value (new octave_fcn_handle (f, tnm));
 
   return retval;
 }

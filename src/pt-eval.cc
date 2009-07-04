@@ -970,6 +970,8 @@ do_unwind_protect_cleanup_code (tree_statement_list *list)
     unwind_protect::discard ();
   else
     unwind_protect::run ();
+
+  unwind_protect::run ();
 }
 
 void

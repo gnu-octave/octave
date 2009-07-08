@@ -153,9 +153,13 @@ maybe_warn_former_built_in_variable (const std::string& nm)
     }
 
   if (vars.find (nm) != vars.end ())
-    warning_with_id ("Octave:built-in-variable-assignment",
-		     "%s is no longer a built-in variable; please read the NEWS file or type `news' for details",
-		     nm.c_str ());
+    {
+      const char *nm_c_str = nm.c_str ();
+
+      warning_with_id ("Octave:built-in-variable-assignment",
+		       "%s is now a function instead of a built-in variable.  By assigning to %s, you have created a variable that hides the function %s.  To remove the variable and restore the function, type \"clear %s\"",
+		       nm_c_str, nm_c_str, nm_c_str, nm_c_str);
+    }
 }
 
 tree_simple_assignment::tree_simple_assignment

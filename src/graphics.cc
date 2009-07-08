@@ -437,7 +437,7 @@ convert_cdata (const base_properties& props, const octave_value& cdata,
       else
 	x = xround (x - 1);
 
-      if (x < 0)
+      if (xisnan (x) || x < 0)
 	x = 0;
       else if (x >= nc)
 	x = (nc - 1);

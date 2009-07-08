@@ -1,6 +1,6 @@
 2009-07-08  John W. Eaton  <jwe@octave.org>
 
-	* graphics.cc (convert_cdata): Handle NaN values in cdata.
+	* graphics.cc (convert_cdata): Return NaN for NaN values in cdata.
 
 	* pt-assign.cc (maybe_warn_former_built_in_variable): Improve message.
 

@@ -437,16 +437,25 @@ convert_cdata (const base_properties& props, const octave_value& cdata,
       else
 	x = xround (x - 1);
 
-      if (xisnan (x) || x < 0)
-	x = 0;
-      else if (x >= nc)
-	x = (nc - 1);
+      if (xisnan (x))
+	{
+	  av[i]       = x;
+	  av[i+lda]   = x;
+	  av[i+2*lda] = x;
+	}
+      else
+	{
+	  if (x < 0)
+	    x = 0;
+	  else if (x >= nc)
+	    x = (nc - 1);
 
-      octave_idx_type idx = static_cast<octave_idx_type> (x);
+	  octave_idx_type idx = static_cast<octave_idx_type> (x);
 
-      av[i]       = cmapv[idx];
-      av[i+lda]   = cmapv[idx+nc];
-      av[i+2*lda] = cmapv[idx+2*nc];
+	  av[i]       = cmapv[idx];
+	  av[i+lda]   = cmapv[idx+nc];
+	  av[i+2*lda] = cmapv[idx+2*nc];
+	}
     }
 
   return octave_value (a);

@@ -1,3 +1,11 @@
+2009-07-08  John W. Eaton  <jwe@octave.org>
+
+	* dim-vector.h (dim_vector::dim_vector_rep::dim_vector_rep
+	(octave_idx_type, const dim_vector_rep *, int)):
+	Enforce 2-d objects here.
+	(dim_vector::dim_vector_rep::dim_vector_rep): Simply copy object.
+	(dim_vector::resize): Allow N < 2.
+
 2009-07-03  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Sparse-op-defs.h (SPARSE_ALL_OP): Fix typo.

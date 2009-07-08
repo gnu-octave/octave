@@ -75,8 +75,8 @@ protected:
     }
 
     dim_vector_rep (const dim_vector_rep& dv)
-      : dims (dv.ndims > 0 ? new octave_idx_type [dv.ndims] : 0),
-	ndims (dv.ndims > 0 ? dv.ndims : 0), count (1)
+      : dims (new octave_idx_type [dv.ndims]),
+	ndims (dv.ndims), count (1)
     {
       if (dims)
 	{
@@ -87,10 +87,22 @@ protected:
 
     dim_vector_rep (octave_idx_type n, const dim_vector_rep *dv,
 		    int fill_value = 0)
-      : dims ((dv && n > 0) ? new octave_idx_type [n] : 0),
-	ndims (n > 0 ? n : 0), count (1)
+      : dims (new octave_idx_type [n < 2 ? 2 : n]),
+	ndims (n < 2 ? 2 : n), count (1)
     {
-      if (dims)
+      if (n == 0)
+	{
+	  // Result is 0x0.
+	  dims[0] = 0;
+	  dims[1] = 0;
+	}
+      else if (n == 1)
+	{
+	  // Result is a column vector.
+	  dims[0] = dv->dims[0];
+	  dims[1] = 1;
+	}
+      else
 	{
 	  int dv_ndims = dv ? dv->ndims : 0;
 
@@ -134,12 +146,16 @@ protected:
     void chop_all_singletons (void)
     {
       int j = 0;
+
       for (int i = 0; i < ndims; i++)
 	{
 	  if (dims[i] != 1)
             dims[j++] = dims[i];
 	}
-      if (j == 1) dims[1] = 1;
+
+      if (j == 1)
+	dims[1] = 1;
+
       ndims = j > 2 ? j : 2;
     }
 
@@ -223,13 +239,6 @@ public:
 
     if (n != len)
       {
-	if (n < 2)
-	  {
-	    (*current_liboctave_error_handler)
-	      ("unable to resize object to fewer than 2 dimensions");
-	    return;
-	  }
-
 	dim_vector_rep *old_rep = rep;
 
 	rep = new dim_vector_rep (n, old_rep, fill_value);

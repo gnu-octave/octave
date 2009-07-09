@@ -1,3 +1,7 @@
+2009-07-09  John W. Eaton  <jwe@octave.org>
+
+	* sparse/nonzeros.m: Always return a column vector.  New tests.
+
 2009-06-25  Ben Abbott <bpabbott@mac.com>
 
 	* plot/gnuplot_drawnow.m: Apply feature 'wxt_has_size'.

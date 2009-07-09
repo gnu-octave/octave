@@ -28,7 +28,12 @@ function t = nonzeros (s)
   endif
 
   [i, j, t] = find (s);
+
+  t = t(:);
+
 endfunction
 
 %!assert(nonzeros([1,2;3,0]),[1;3;2])
+%!assert(nonzeros([1,2,3,0]),[1;3;2])
 %!assert(nonzeros(sparse([1,2;3,0])),[1;3;2])
+%!assert(nonzeros(sparse([1,2,3,0])),[1;3;2])

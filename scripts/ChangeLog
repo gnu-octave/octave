@@ -1,5 +1,8 @@
 2009-07-09  John W. Eaton  <jwe@octave.org>
 
+	* plot/axis.m: Return 4-element vector for 2-d view.
+	From David Woodburn <david.woodburn@gmail.com>.
+
 	* sparse/nonzeros.m: Always return a column vector.  New tests.
 
 2009-06-25  Ben Abbott <bpabbott@mac.com>

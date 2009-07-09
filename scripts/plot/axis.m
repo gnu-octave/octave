@@ -141,8 +141,13 @@ function curr_axis = __axis__ (ca, ax, varargin)
     else
       xlim = get (ca, "xlim");
       ylim = get (ca, "ylim");
-      zlim = get (ca, "zlim");
-      curr_axis = [xlim, ylim, zlim];
+      view = get (ca, "view");
+      if (view(2) == 90)
+	curr_axis = [xlim, ylim];
+      else
+	zlim = get (ca, "zlim");
+	curr_axis = [xlim, ylim, zlim];
+      endif
     endif
 
   elseif (ischar (ax))

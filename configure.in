@@ -1654,8 +1654,8 @@ case "$canonical_host_type" in
 esac
 
 case "$canonical_host_type" in
-  *-*-msdosmsvc)
-    ## The %T format specifier for strftime is reportedly broken,
+  *-*-msdosmsvc | *-*-mingw*)
+    ## The %T and %e format specifiers for strftime are not implemented
     ## so use our version.  We could use an actual configure test
     ## for this.
   ;;

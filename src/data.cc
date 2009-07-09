@@ -1,7 +1,7 @@
 /*
 
 Copyright (C) 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002,
-              2003, 2004, 2005, 2006, 2007, 2008 John W. Eaton
+              2003, 2004, 2005, 2006, 2007, 2008, 2009 John W. Eaton
 Copyright (C) 2009 Jaroslav Hajek
 
 This file is part of Octave.
@@ -3608,7 +3608,10 @@ DEFUN (ones, args, ,
 @deftypefnx {Built-in Function} {} ones (@var{n}, @var{m}, @var{k}, @dots{})\n\
 @deftypefnx {Built-in Function} {} ones (@dots{}, @var{class})\n\
 Return a matrix or N-dimensional array whose elements are all 1.\n\
-The arguments are handled the same as the arguments for @code{eye}.\n\
+If invoked with a single scalar integer argument, return a square\n\
+matrix of the specified size.  If invoked with two or more scalar\n\
+integer arguments, or a vector of integer values, return an array with\n\
+given dimensions.\n\
 \n\
 If you need to create a matrix whose values are all the same, you should\n\
 use an expression like\n\
@@ -3654,7 +3657,7 @@ DEFUN (zeros, args, ,
 @deftypefnx {Built-in Function} {} zeros (@var{n}, @var{m}, @var{k}, @dots{})\n\
 @deftypefnx {Built-in Function} {} zeros (@dots{}, @var{class})\n\
 Return a matrix or N-dimensional array whose elements are all 0.\n\
-The arguments are handled the same as the arguments for @code{eye}.\n\
+The arguments are handled the same as the arguments for @code{ones}.\n\
 \n\
 The optional argument @var{class}, allows @code{zeros} to return an array of\n\
 the specified type, for example\n\
@@ -4131,7 +4134,7 @@ DEFUN (false, args, ,
 @deftypefnx {Built-in Function} {} false (@var{n}, @var{m})\n\
 @deftypefnx {Built-in Function} {} false (@var{n}, @var{m}, @var{k}, @dots{})\n\
 Return a matrix or N-dimensional array whose elements are all logical 0.\n\
-The arguments are handled the same as the arguments for @code{eye}.\n\
+The arguments are handled the same as the arguments for @code{ones}.\n\
 @end deftypefn")
 {
   return fill_matrix (args, false, "false");
@@ -4143,7 +4146,7 @@ DEFUN (true, args, ,
 @deftypefnx {Built-in Function} {} true (@var{n}, @var{m})\n\
 @deftypefnx {Built-in Function} {} true (@var{n}, @var{m}, @var{k}, @dots{})\n\
 Return a matrix or N-dimensional array whose elements are all logical 1.\n\
-The arguments are handled the same as the arguments for @code{eye}.\n\
+The arguments are handled the same as the arguments for @code{ones}.\n\
 @end deftypefn")
 {
   return fill_matrix (args, true, "true");

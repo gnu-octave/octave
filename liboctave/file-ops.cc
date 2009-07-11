@@ -210,13 +210,7 @@ file_ops::symlink (const std::string& old_name,
 
 #if defined (HAVE_SYMLINK)
 
-  OCTAVE_LOCAL_BUFFER (char, old_nm, old_name.length ());
-  OCTAVE_LOCAL_BUFFER (char, new_nm, new_name.length ());
-
-  strcpy (old_nm, old_name.c_str ());
-  strcpy (new_nm, new_name.c_str ());
-
-  status = ::symlink (old_nm, new_nm);
+  status = ::symlink (old_name.c_str (), new_name.c_str ());
 
   if (status < 0)
     {
@@ -250,11 +244,7 @@ file_ops::readlink (const std::string& path, std::string& result,
 #if defined (HAVE_READLINK)
   char buf[MAXPATHLEN+1];
 
-  OCTAVE_LOCAL_BUFFER (char, p, path.length ());
-
-  strcpy (p, path.c_str ());
-
-  status = ::readlink (p, buf, MAXPATHLEN);
+  status = ::readlink (path.c_str (), buf, MAXPATHLEN);
 
   if (status < 0)
     {

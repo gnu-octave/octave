@@ -1,3 +1,8 @@
+2009-07-11  John W. Eaton  <jwe@octave.org>
+
+	* file-ops.cc (file_ops::symlink, file_ops::readlink):
+	Don't use incorrectly sized OCTAVE_LOCAL_BUFFER.
+
 2009-07-08  John W. Eaton  <jwe@octave.org>
 
 	* dim-vector.h (dim_vector::dim_vector_rep::dim_vector_rep

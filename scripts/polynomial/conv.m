@@ -1,5 +1,5 @@
 ## Copyright (C) 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2002, 2004,
-##               2005, 2006, 2007, 2008 John W. Eaton
+##               2005, 2006, 2007, 2008, 2009 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -39,7 +39,7 @@ function y = conv (a, b)
   endif
 
   if (! (isvector (a) && isvector (b)))
-    error("conv: both arguments must be vectors");
+    error ("conv: both arguments must be vectors");
   endif
 
   la = length (a);
@@ -49,7 +49,7 @@ function y = conv (a, b)
 
   ## Use the shortest vector as the coefficent vector to filter.
   ## Preserve the row/column orientation of the longer input.
-  if (la < lb)
+  if (la <= lb)
     if (ly > lb)
       if (size (b, 1) <= size (b, 2))
         x = [b, (zeros (1, ly - lb))];
@@ -61,7 +61,7 @@ function y = conv (a, b)
     endif
     y = filter (a, 1, x);
   else
-    if(ly > la)
+    if (ly > la)
       if (size (a, 1) <= size (a, 2))
         x = [a, (zeros (1, ly - la))];
       else
@@ -75,47 +75,37 @@ function y = conv (a, b)
 
 endfunction
 
-%!assert(all (all (conv (ones (3, 1), ones (3, 1)) == [1; 2; 3; 2; 1])));
-
-%!assert(all (all (conv (ones (1, 3), ones (3, 1)) == [1, 2, 3, 2, 1])));
-
-%!assert(all (all (conv (3, [1, 2, 3]) == [3, 6, 9])));
-
+%!test
+%!  x = ones(3,1);
+%!  y = ones(1,3);
+%!  b = 2;
+%!  c = 3;
+%!  assert (conv (x, x), [1; 2; 3; 2; 1]);
+%!  assert (conv (y, y), [1, 2, 3, 2, 1]);
+%!  assert (conv (x, y), [1, 2, 3, 2, 1]);
+%!  assert (conv (y, x), [1; 2; 3; 2; 1]);
+%!  assert (conv (c, x), [3; 3; 3]);
+%!  assert (conv (c, y), [3, 3, 3]);
+%!  assert (conv (x, c), [3; 3; 3]);
+%!  assert (conv (y, c), [3, 3, 3]);
+%!  assert (conv (b, c), 6);
 %!error conv ([1, 2; 3, 4], 3);
-
-%!assert(conv (2, 3),6);
-
 %!error conv (2, []);
 
 %!test
-%! a = 1:10;
-%! b = 1:3;
-%! c = conv (a, b);
-%! assert (size(c), [1, numel(a)+numel(b)-1])
-%!test
-%! a = (1:10).';
-%! b = 1:3;
-%! c = conv (a, b);
-%! assert (size(c), [numel(a)+numel(b)-1, 1])
-%!test
-%! a = 1:10;
-%! b = (1:3).';
-%! c = conv (a, b);
-%! assert (size(c), [1, numel(a)+numel(b)-1])
+%!  a = 1:10;
+%!  b = 1:3;
+%!  assert (size(conv(a,b)), [1, numel(a)+numel(b)-1])
+%!  assert (size(conv(b,a)), [1, numel(a)+numel(b)-1])
 
 %!test
-%! b = 1:10;
-%! a = 1:3;
-%! c = conv (a, b);
-%! assert (size(c), [1, numel(a)+numel(b)-1])
-%!test
-%! b = (1:10).';
-%! a = 1:3;
-%! c = conv (a, b);
-%! assert (size(c), [numel(a)+numel(b)-1, 1])
-%!test
-%! b = 1:10;
-%! a = (1:3).';
-%! c = conv (a, b);
-%! assert (size(c), [1, numel(a)+numel(b)-1])
+%!  a = (1:10).';
+%!  b = 1:3;
+%!  assert (size(conv(a,b)), [numel(a)+numel(b)-1, 1])
+%!  assert (size(conv(b,a)), [numel(a)+numel(b)-1, 1])
 
+%!test
+%!  a = 1:10;
+%!  b = (1:3).';
+%!  assert (size(conv(a,b)), [1, numel(a)+numel(b)-1])
+%!  assert (size(conv(b,a)), [1, numel(a)+numel(b)-1])

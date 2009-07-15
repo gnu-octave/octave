@@ -690,6 +690,64 @@ template MArrayN<FloatComplex>
 filter (MArray<FloatComplex>&, MArray<FloatComplex>&, MArrayN<FloatComplex>&, int dim);
 
 /*
+%!shared a, b, x, r
+%!test
+%!  a = [1 1];
+%!  b = [1 1];
+%!  x = zeros(1,10); x(1) = 1;
+%!  assert(all(filter(b,   [1], x  ) == [1 1 0 0 0 0 0 0 0 0]  ))
+%!  assert(all(filter(b,   [1], x.') == [1 1 0 0 0 0 0 0 0 0].'))
+%!  assert(all(filter(b.', [1], x  ) == [1 1 0 0 0 0 0 0 0 0]  ))
+%!  assert(all(filter(b.', [1], x.') == [1 1 0 0 0 0 0 0 0 0].'))
+%!  assert(all(filter([1], a,   x  ) == [+1 -1 +1 -1 +1 -1 +1 -1 +1 -1]  ))
+%!  assert(all(filter([1], a,   x.') == [+1 -1 +1 -1 +1 -1 +1 -1 +1 -1].'))
+%!  assert(all(filter([1], a.', x  ) == [+1 -1 +1 -1 +1 -1 +1 -1 +1 -1]  ))
+%!  assert(all(filter([1], a.', x.') == [+1 -1 +1 -1 +1 -1 +1 -1 +1 -1].'))
+%!  assert(all(filter(b,   a,   x  ) == [1 0 0 0 0 0 0 0 0 0]  ))
+%!  assert(all(filter(b.', a,   x  ) == [1 0 0 0 0 0 0 0 0 0]  ))
+%!  assert(all(filter(b,   a.', x  ) == [1 0 0 0 0 0 0 0 0 0]  ))
+%!  assert(all(filter(b.', a,   x  ) == [1 0 0 0 0 0 0 0 0 0]  ))
+%!  assert(all(filter(b,   a,   x.') == [1 0 0 0 0 0 0 0 0 0].'))
+%!  assert(all(filter(b.', a,   x.') == [1 0 0 0 0 0 0 0 0 0].'))
+%!  assert(all(filter(b,   a.', x.') == [1 0 0 0 0 0 0 0 0 0].'))
+%!  assert(all(filter(b.', a,   x.') == [1 0 0 0 0 0 0 0 0 0].'))
+%!
+%!test
+%!  r = sqrt(1/2)*(1+i);
+%!  a = a*r;
+%!  b = b*r;
+%!  assert(all(filter(b, [1], x   ) == r*[1 1 0 0 0 0 0 0 0 0]   ))
+%!  assert(all(filter(b, [1], r*x ) == r*r*[1 1 0 0 0 0 0 0 0 0] ))
+%!  assert(all(filter(b, [1], x.' ) == r*[1 1 0 0 0 0 0 0 0 0].' ))
+%!  assert(all(filter(b, a,   x   ) ==   [1 0 0 0 0 0 0 0 0 0]   ))
+%!  assert(all(filter(b, a,   r*x ) == r*[1 0 0 0 0 0 0 0 0 0]   ))
+%!
+%!shared a, b, x, y, so
+%!test
+%!  a = [1,1]; b=[1,1];
+%!  x = zeros(1,10); x(1) = 1;
+%!  [y, so] = filter(b, [1], x, [-1]);
+%!  assert(all(y == [0 1 0 0 0 0 0 0 0 0]))
+%!  assert(so,0)
+%!
+%!test
+%!  x  = zeros(10,3); x(1,1)=-1; x(1,2)=1;
+%!  y0 = zeros(10,3); y0(1:2,1)=-1; y0(1:2,2)=1;
+%!  y = filter(b,[1],x);
+%!  assert(all(all(y==y0)))
+%!
+%!test
+%!  a = [1,1]; b=[1,1];
+%!  x = zeros(4,4,2); x(1,1:4,1) = +1; x(1,1:4,2) = -1;
+%!  y0 = zeros(4,4,2); y0(1:2,1:4,1) = +1; y0(1:2,1:4,2) = -1;
+%!  y = filter(b, [1], x);
+%!  assert(all(all(all(y==y0))))
+
+%%  Should put some tests of the "DIM" parameter in here.
+
+ */
+
+/*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
 ;;; End: ***

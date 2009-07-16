@@ -54,7 +54,7 @@ function varargout = imread (filename, varargin)
   endif
 
   try
-    [varargout{1:nargout}] = magick_read_internal (fn, varargin{:});
+    [varargout{1:nargout}] = __magick_read__ (fn, varargin{:});
   catch
 
     magick_error = lasterr ();

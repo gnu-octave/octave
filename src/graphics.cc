@@ -481,7 +481,7 @@ get_array_limits (const Array<T>& m, double& emin, double& emax,
 	  if (e > emax)
 	    emax = e;
 
-	  if (e >= 0 && e < eminp)
+	  if (e > 0 && e < eminp)
 	    eminp = e;
 	}
     }
@@ -3389,7 +3389,6 @@ axes::properties::calc_ticks_and_lims (array_property& lims,
 				       array_property& ticks,
 				       bool limmode_is_auto, bool is_logscale)
 {
-
   // FIXME -- add log ticks and lims
 
   if (lims.get ().is_empty ())

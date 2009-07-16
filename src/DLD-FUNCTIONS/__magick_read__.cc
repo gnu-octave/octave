@@ -344,7 +344,7 @@ read_images (const std::vector<Magick::Image>& imvec,
 
 #endif
 
-DEFUN_DLD (__magick_read__, args, nargout,
+DEFUN_DLD (magick_read, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Function File} {@var{m} =} __magick_read__(@var{fname}, @var{index})\n\
 @deftypefnx{Function File} {[@var{m}, @var{colormap}] =} __magick_read__(@var{fname}, @var{index})\n\
@@ -753,7 +753,7 @@ write_image (const std::string& filename, const std::string& fmt,
 
 #endif
 
-DEFUN_DLD (__magick_write__, args, ,
+DEFUN_DLD (magick_write, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Function File} {} __magick_write__(@var{fname}, @var{fmt}, @var{img})\n\
 @deftypefnx {Function File} {} __magick_write__(@var{fname}, @var{fmt}, @var{img}, @var{map})\n\
@@ -882,7 +882,7 @@ magick_to_octave_value (const Magick::ImageType magick)
 
 #endif
 
-DEFUN_DLD (__magick_finfo__, args, ,
+DEFUN_DLD (magick_finfo, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable File} {} __magick_finfo__(@var{fname})\n\
 Read image information with GraphicsMagick++.  In general you should\n\

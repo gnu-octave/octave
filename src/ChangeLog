@@ -1,3 +1,8 @@
+2009-07-16  John W. Eaton  <jwe@octave.org>
+
+	* graphics.cc (get_array_limits): Require min_pos value to be
+	greater than zero.
+
 2009-07-15  Robert T. Short  <octave@phaselockedsystems.com>
 
 	* DLD-FUNCTIONS/filter.cc: New tests.

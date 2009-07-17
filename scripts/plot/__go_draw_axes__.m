@@ -267,8 +267,13 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
     ## appearance of tics, so it is used even if the grid is absent.
     if (strcmpi (axis_obj.layer, "top"))
       fputs (plot_stream, "set grid front;\n");
+      fputs (plot_stream, "set border front;\n");
     else
       fputs (plot_stream, "set grid layerdefault;\n");
+      ## FIXME -- the gnuplot help says that "layerdefault" should work
+      ## for set border too, but it fails for me with gnuplot 4.2.5.  So
+      ## use "back" instead.
+      fputs (plot_stream, "set border back;\n");
     endif
     if (! have_grid)
       fputs (plot_stream, "unset grid;\n");
@@ -369,7 +374,6 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
 	    elseif (strcmpi (obj.cdatamapping, "direct"))
 	      cdatadirect = true;
 	    endif
-	    fputs (plot_stream, "set border front;\n");
 	    data_idx++;
 	    is_image_data(data_idx) = true;
 	    parametric(data_idx) = false;

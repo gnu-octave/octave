@@ -95,7 +95,7 @@ along with Octave; see the file COPYING.  If not, see
 #define STDIN_FILENO 1
 #endif
 
-#if defined (__386BSD__) || defined (__FreeBSD__)
+#if defined (__386BSD__) || defined (__FreeBSD__) || defined (__NetBSD__)
 static void
 BSD_init (void)
 {
@@ -300,7 +300,7 @@ SCO_init (void)
 void
 sysdep_init (void)
 {
-#if defined (__386BSD__) || defined (__FreeBSD__)
+#if defined (__386BSD__) || defined (__FreeBSD__) || defined(__NetBSD__)
   BSD_init ();
 #elif defined (__MINGW32__)
   MINGW_init ();

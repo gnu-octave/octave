@@ -1,3 +1,8 @@
+2009-07-20  John W. Eaton  <jwe@octave.org>
+
+	* lo-ieee.cc (octave_ieee_init) [__NetBSD__]: Call nan to
+	initialize Octave_NaN and nanf, to initialize Octave_Float_NaN.
+
 2009-07-11  John W. Eaton  <jwe@octave.org>
 
 	* file-ops.cc (file_ops::symlink, file_ops::readlink):

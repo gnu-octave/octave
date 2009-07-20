@@ -1,3 +1,7 @@
+2009-07-20  John W. Eaton  <jwe@octave.org>
+
+	* interpreter/contributors.in: Add Aleksej Saushev.
+
 2009-06-24  Rafael Laboissiere  <rafael@debian.org>
 
 	* Makefile.in (dist): Drop conf.texi as prerequisite.

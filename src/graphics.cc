@@ -3466,7 +3466,7 @@ axes::properties::calc_ticklabels (const array_property& ticks,
   labels = c;
 }
 
-static void
+void
 get_children_limits (double& min_val, double& max_val, double& min_pos,
 		     const Matrix& kids, char limit_type)
 {
@@ -3704,14 +3704,63 @@ axes::update_axis_limits (const std::string& axis_type)
   unwind_protect::run ();
 }
 
-void
-axes::properties::zoom (const Matrix& xl, const Matrix& yl)
+inline
+double force_in_range (const double x, const double lower, const double upper)
 {
-  zoom_stack.push_front (xlimmode.get ());
-  zoom_stack.push_front (xlim.get ());
-  zoom_stack.push_front (ylimmode.get ());
-  zoom_stack.push_front (ylim.get ());
+  if (x < lower)
+    { return lower; }
+  else if (x > upper)
+    { return upper; }
+  else
+    { return x; }  
+}
 
+void
+axes::properties::zoom_about_point (double x, double y, double factor,
+                                    bool push_to_zoom_stack)
+{
+  // FIXME: Do we need error checking here?
+  Matrix xlims = get_xlim ().matrix_value ();
+  Matrix ylims = get_ylim ().matrix_value ();
+              
+  // Get children axes limits
+  Matrix kids = get_children ();
+  double minx = octave_Inf;
+  double maxx = -octave_Inf;
+  double min_pos_x = octave_Inf;
+  get_children_limits (minx, maxx, min_pos_x, kids, 'x');
+
+  double miny = octave_Inf;
+  double maxy = -octave_Inf;
+  double min_pos_y = octave_Inf;
+  get_children_limits (miny, maxy, min_pos_y, kids, 'y');
+              
+  // Perform the zooming
+  xlims (0) = x + factor * (xlims (0) - x);
+  xlims (1) = x + factor * (xlims (1) - x);
+  ylims (0) = y + factor * (ylims (0) - y);
+  ylims (1) = y + factor * (ylims (1) - y);
+              
+  // Make sure we stay within the range og the plot
+  xlims (0) = force_in_range (xlims (0), minx, maxx);
+  xlims (1) = force_in_range (xlims (1), minx, maxx);
+  ylims (0) = force_in_range (ylims (0), miny, maxy);
+  ylims (1) = force_in_range (ylims (1), miny, maxy);
+
+  zoom (xlims, ylims, push_to_zoom_stack);
+}
+
+void
+axes::properties::zoom (const Matrix& xl, const Matrix& yl, bool push_to_zoom_stack)
+{
+  if (push_to_zoom_stack)
+    {
+      zoom_stack.push_front (xlimmode.get ());
+      zoom_stack.push_front (xlim.get ());
+      zoom_stack.push_front (ylimmode.get ());
+      zoom_stack.push_front (ylim.get ());
+    }
+  
   xlim = xl;
   xlimmode = "manual";
   ylim = yl;
@@ -3720,6 +3769,43 @@ axes::properties::zoom (const Matrix& xl, const Matrix& yl)
   update_transform ();
   update_xlim (false);
   update_ylim (false);
+}
+
+void
+axes::properties::translate_view (double delta_x, double delta_y)
+{
+  // FIXME: Do we need error checking here?
+  Matrix xlims = get_xlim ().matrix_value ();
+  Matrix ylims = get_ylim ().matrix_value ();
+              
+  // Get children axes limits
+  Matrix kids = get_children ();
+  double minx = octave_Inf;
+  double maxx = -octave_Inf;
+  double min_pos_x = octave_Inf;
+  get_children_limits (minx, maxx, min_pos_x, kids, 'x');
+        
+  double miny = octave_Inf;
+  double maxy = -octave_Inf;
+  double min_pos_y = octave_Inf;
+  get_children_limits (miny, maxy, min_pos_y, kids, 'y');
+  
+  // Make sure we don't exceed the borders
+  if (delta_x > 0)
+    delta_x = std::min (xlims (1) + delta_x, maxx) - xlims (1);
+  else
+    delta_x = std::max (xlims (0) + delta_x, minx) - xlims (0);
+  xlims (0) = xlims (0) + delta_x;
+  xlims (1) = xlims (1) + delta_x;
+                
+  if (delta_y > 0)
+    delta_y = std::min (ylims (1) + delta_y, maxy) - ylims (1);
+  else
+    delta_y = std::max (ylims (0) + delta_y, miny) - ylims (0);
+  ylims (0) = ylims (0) + delta_y;
+  ylims (1) = ylims (1) + delta_y;
+                
+  zoom (xlims, ylims, false);
 }
 
 void

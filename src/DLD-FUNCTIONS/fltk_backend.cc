@@ -334,30 +334,34 @@ private:
       }
   }
 
-  graphics_handle pixel2axes (int /* px */, int /* py */)
+  graphics_handle pixel2axes (int px, int py )
   {
     Matrix kids = fp.get_children ();
+    int len = kids.length ();
 
-    for (octave_idx_type n = 0; n < kids.numel (); n++)
+    for (int k = 0; k < len; k++)
       {
-	graphics_object ax = gh_manager::get_object (kids (n));
-	if (ax && ax.isa ("axes"))
-	  {
-#if 0
-	     axes::properties& ap =
-	       dynamic_cast<axes::properties&> (ax.get_properties ());
+	graphics_handle hnd = gh_manager::lookup (kids(k));
 
-	     // std::cout << "\npixpos="<<pixpos<<"(px,py)=("<<px<<","<<py<<")\n";
-	     if (px >= pixpos(0) && px <= pixpos(2)
-		 && py >= pixpos(1) && py <= pixpos(3))
-	       return ap.get___myhandle__ ();
-#endif
+	if (hnd.ok ())
+	  {
+	    graphics_object child = gh_manager::get_object (hnd);
+
+	    if (child.valid_object () && child.isa ("axes"))
+	      {
+		Matrix bb = child.get_properties ().get_boundingbox (true);
+
+		if (bb(0) <= px && px < (bb(0)+bb(2))
+		    && bb(1) <= py && py < (bb(1)+bb(3)))
+		  {
+		    return hnd;
+		  }
+	      }
 	  }
       }
-
-    return graphics_handle ();
+    return graphics_handle();
   }
-
+  
   void pixel2status (int px0, int py0, int px1 = -1, int py1 = -1)
   {
     double x0, y0, x1, y1;
@@ -442,63 +446,60 @@ private:
 	pixel2status (px0, py0, Fl::event_x (), Fl::event_y ());
 	if (Fl::event_button () == 1)
 	  {
-	    canvas->zoom (true);
-	    Matrix zoom_box (1,4,0);
-	    zoom_box (0) = px0;
-	    zoom_box (1) = py0;
-	    zoom_box (2) =  Fl::event_x ();
-	    zoom_box (3) =  Fl::event_y ();
-	    canvas->set_zoom_box (zoom_box);
-	    canvas->redraw_overlay ();
+	    graphics_handle hnd = pixel2axes (px0, py0);
+	    graphics_object ax = gh_manager::get_object (fp.get_currentaxes ());
+	    if (hnd.ok ()) 
+	      ax = gh_manager::get_object (hnd);
+
+            if (ax && ax.isa ("axes"))
+              {
+                axes::properties& ap = dynamic_cast<axes::properties&> (ax.get_properties ());
+              
+                double x0, y0, x1, y1;
+                pixel2pos (px0, py0, x0, y0);
+                pixel2pos (Fl::event_x (), Fl::event_y (), x1, y1);
+                px0 = Fl::event_x ();
+                py0 = Fl::event_y ();
+
+                ap.translate_view (x0 - x1, y0 - y1);
+                mark_modified ();
+              }
 	    return 1;
 	  }
 	break;
 
+      case FL_MOUSEWHEEL:
+        {
+          // Parameter controlling how fast we zoom. FIXME: Should this be user tweakable?
+          const double zoom_speed = 0.05;
+
+	  graphics_object ax = gh_manager::get_object (fp.get_currentaxes ());
+	  graphics_handle hnd = pixel2axes (Fl::event_x (), Fl::event_y ());
+	  if (hnd.ok ()) 
+	    ax = gh_manager::get_object (hnd);
+
+          if (ax && ax.isa ("axes"))
+            {
+              axes::properties& ap = dynamic_cast<axes::properties&> (ax.get_properties ());
+              
+              // Determine if we're zooming in or out
+              const double factor = (Fl::event_dy () > 0) ? 1.0 + zoom_speed : 1.0 - zoom_speed;
+              
+              // Get the point we're zooming about
+              double x1, y1;
+              pixel2pos (Fl::event_x (), Fl::event_y (), x1, y1);
+              
+              ap.zoom_about_point (x1, y1, factor, false);
+              mark_modified ();
+            }
+	}
+      return 1;
+
       case FL_RELEASE:
 	if (Fl::event_button () == 1)
 	  {
-	    // end of drag -- zoom
-	    if (canvas->zoom ())
-	      {
-		canvas->zoom (false);
-		double x0,y0,x1,y1;
-		graphics_object ax =
-		  gh_manager::get_object (fp.get_currentaxes ());
-		if (ax && ax.isa ("axes"))
-		  {
-		    axes::properties& ap =
-		      dynamic_cast<axes::properties&> (ax.get_properties ());
-		    pixel2pos (px0, py0, x0, y0);
-		    pixel2pos (Fl::event_x (), Fl::event_y (), x1, y1);
-		    Matrix xl (1,2,0);
-		    Matrix yl (1,2,0);
-		    if (x0 < x1)
-		      {
-			xl(0) = x0;
-			xl(1) = x1;
-		      }
-		    else
-		      {
-			xl(0) = x1;
-			xl(1) = x0;
-		      }
-
-		    if (y0 < y1)
-		      {
-			yl(0) = y0;
-			yl(1) = y1;
-		      }
-		    else
-		      {
-			yl(0) = y1;
-			yl(1) = y0;
-		      }
-		    ap.zoom (xl, yl);
-		    mark_modified ();
-		  }
-	      }
 	    // one click -- select axes
-	    else if ( Fl::event_clicks () == 0)
+	    if ( Fl::event_clicks () == 0)
 	      {
 		std::cout << "ca="<< h0.value ()<<"\n";
 		if (h0.ok ())

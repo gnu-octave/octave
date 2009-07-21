@@ -428,8 +428,6 @@ public:
     find (tree_argument_list *args, const string_vector& arg_names,
 	  octave_value_list& evaluated_args, bool& args_evaluated) const;
 
-    octave_value builtin_find (void) const;
-
     void force_variable (context_id context = xcurrent_context)
     {
       rep->force_variable (context);
@@ -545,8 +543,6 @@ public:
       octave_value
       find (tree_argument_list *args, const string_vector& arg_names,
 	    octave_value_list& evaluated_args, bool& args_evaluated);
-
-      octave_value builtin_find (void);
 
       octave_value find_method (const std::string& dispatch_type);
 
@@ -739,8 +735,6 @@ public:
       xfind (tree_argument_list *args, const string_vector& arg_names,
 	     octave_value_list& evaluated_args, bool& args_evaluated);
 
-      octave_value x_builtin_find (void);
-
       // No copying!
 
       fcn_info_rep (const fcn_info_rep&);
@@ -781,11 +775,6 @@ public:
     octave_value
     find (tree_argument_list *args, const string_vector& arg_names,
 	  octave_value_list& evaluated_args, bool& args_evaluated);
-
-    octave_value builtin_find (void)
-    {
-      return rep->builtin_find ();
-    }
 
     octave_value find_method (const std::string& dispatch_type) const
     {
@@ -1056,8 +1045,6 @@ public:
 	const string_vector& arg_names,
 	octave_value_list& evaluated_args, bool& args_evaluated,
 	bool skip_variables = false);
-
-  static octave_value builtin_find (const std::string& name);
 
   // Insert a new name in the table.
   static symbol_record& insert (const std::string& name)
@@ -2016,8 +2003,6 @@ private:
 	   const string_vector& arg_names,
 	   octave_value_list& evaluated_args, bool& args_evaluated,
 	   bool skip_variables);
-
-  octave_value do_builtin_find (const std::string& name);
 
   symbol_record& do_insert (const std::string& name)
   {

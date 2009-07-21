@@ -58,7 +58,7 @@ some other function for the given type signature.\n\
  
       if (! error_state)
 	{
-	  octave_value fcn = symbol_table::builtin_find (name);
+	  octave_value fcn = symbol_table::find_function (name);
 
 	  if (fcn.is_defined ())
 	    retval = feval (fcn.function_value (), args.splice (0, 1),

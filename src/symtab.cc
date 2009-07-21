@@ -724,141 +724,6 @@ symbol_table::fcn_info::fcn_info_rep::xfind
   return built_in_function;
 }
 
-// Find the definition of NAME according to the following precedence
-// list:
-//
-//   built-in function
-//   function on the path
-//   autoload function
-//   command-line function
-//   private function
-//   subfunction
-
-// This function is used to implement the "builtin" function, which
-// searches for "built-in" functions.  In Matlab, "builtin" only
-// returns functions that are actually built-in to the interpreter.
-// But since the list of built-in functions is different in Octave and
-// Matlab, we also search up the precedence list until we find
-// something that matches.  Note that we are only searching by name,
-// so class methods, constructors, and legacy dispatch functions are
-// skipped.
-
-octave_value
-symbol_table::fcn_info::fcn_info_rep::builtin_find (void)
-{
-  octave_value retval = x_builtin_find ();
-
-  if (! retval.is_defined ())
-    {
-      // It is possible that the user created a file on the fly since
-      // the last prompt or chdir, so try updating the load path and
-      // searching again.
-
-      load_path::update ();
-
-      retval = x_builtin_find ();
-    }
-
-  return retval;
-}
-
-octave_value
-symbol_table::fcn_info::fcn_info_rep::x_builtin_find (void)
-{
-  // Built-in function.
-  if (built_in_function.is_defined ())
-    return built_in_function;
-
-  // Function on the path.
-
-  octave_value fcn = find_user_function ();
-
-  if (fcn.is_defined ())
-    return fcn;
-
-  // Autoload?
-
-  fcn = find_autoload ();
-
-  if (fcn.is_defined ())
-    return fcn;
-
-  // Command-line function.
-
-  if (cmdline_function.is_defined ())
-    return cmdline_function;
-
-  // Private function.
-
-  octave_function *curr_fcn = octave_call_stack::current ();
-
-  if (curr_fcn)
-    {
-      std::string dir_name = curr_fcn->dir_name ();
-
-      if (! dir_name.empty ())
-	{
-	  str_val_iterator q = private_functions.find (dir_name);
-
-	  if (q == private_functions.end ())
-	    {
-	      octave_value val = load_private_function (dir_name);
-
-	      if (val.is_defined ())
-		return val;
-	    }
-	  else
-	    {
-	      octave_value& fval = q->second;
-
-	      if (fval.is_defined ())
-		out_of_date_check_internal (fval);
-
-	      if (fval.is_defined ())
-		return fval;
-	      else
-		{
-		  octave_value val = load_private_function (dir_name);
-
-		  if (val.is_defined ())
-		    return val;
-		}
-	    }
-	}
-    }
-
-  // Subfunction.  I think it only makes sense to check for
-  // subfunctions if we are currently executing a function defined
-  // from a .m file.
-
-  scope_val_iterator r = subfunctions.find (xcurrent_scope);
-
-  if (r != subfunctions.end ())
-    {
-      // FIXME -- out-of-date check here.
-
-      return r->second;
-    }
-  else if (curr_fcn)
-    {
-      scope_id pscope = curr_fcn->parent_fcn_scope ();
-
-      if (pscope > 0)
-	{
-	  r = subfunctions.find (pscope);
-
-	  if (r != subfunctions.end ())
-	    {
-	      // FIXME -- out-of-date check here.
-
-	      return r->second;
-	    }
-	}
-    }
-
-  return octave_value ();
-}
-
 octave_value
 symbol_table::fcn_info::fcn_info_rep::find_method (const std::string& dispatch_type)
 {
@@ -1103,14 +968,6 @@ symbol_table::find (const std::string& name, tree_argument_list *args,
 }
 
 octave_value
-symbol_table::builtin_find (const std::string& name)
-{
-  symbol_table *inst = get_instance (xcurrent_scope);
-
-  return inst ? inst->do_builtin_find (name) : octave_value ();
-}
-
-octave_value
 symbol_table::find_function (const std::string& name, tree_argument_list *args,
 			     const string_vector& arg_names,
 			     octave_value_list& evaluated_args,
@@ -1305,30 +1162,6 @@ symbol_table::do_find (const std::string& name, tree_argument_list *args,
 
       octave_value fcn = finfo.find (args, arg_names, evaluated_args,
 				     args_evaluated);
-
-      if (fcn.is_defined ())
-	fcn_table[name] = finfo;
-
-      return fcn;
-    }
-
-  return retval;
-}
-
-octave_value
-symbol_table::do_builtin_find (const std::string& name)
-{
-  octave_value retval;
-
-  fcn_table_iterator p = fcn_table.find (name);
-
-  if (p != fcn_table.end ())
-    return p->second.builtin_find ();
-  else
-    {
-      fcn_info finfo (name);
-
-      octave_value fcn = finfo.builtin_find ();
 
       if (fcn.is_defined ())
 	fcn_table[name] = finfo;

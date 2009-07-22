@@ -426,8 +426,6 @@ public:
 
     octave_value find (const octave_value_list& args = octave_value_list ()) const;
 
-    octave_value builtin_find (void) const;
-
     void force_variable (context_id context = xcurrent_context)
     {
       rep->force_variable (context);

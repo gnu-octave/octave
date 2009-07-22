@@ -141,49 +141,74 @@ function assert (cond, varargin)
       iserror = 1;
       coda = "Dimensions don't match";
 
-    elseif (nargin < 3 && ! strcmp (typeinfo (cond), typeinfo (expected)))
-      iserror = 1;
-      coda = cstrcat ("Type ", typeinfo (cond), " != ", typeinfo (expected));
-
     else
-      ## Numeric.
-      A = cond(:);
-      B = expected(:);
-      ## Check exceptional values.
-      if (any (isna (A) != isna (B)))
-	iserror = 1;
-	coda = "NAs don't match";
-      elseif (any (isnan (A) != isnan (B)))
-	iserror = 1;
-	coda = "NaNs don't match";
-### Try to avoid problems comparing strange values like Inf+NaNi.
-      elseif (any (isinf (A) != isinf (B))
-	      || any (A(isinf (A) & ! isnan (A)) != B(isinf (B) & ! isnan (B))))
-	iserror = 1;
-	coda = "Infs don't match";
-      else
-	## Check normal values.
-	A = A(finite (A));
-	B = B(finite (B));
-	if (tol == 0)
-          err = any (A != B);
-	  errtype = "values do not match";
-	elseif (tol >= 0)
-	  err = max (abs (A - B));
-	  errtype = "maximum absolute error %g exceeds tolerance %g";
-	else 
-	  abserr = max (abs (A(B == 0)));
-	  A = A(B != 0);
-	  B = B(B != 0);
-	  relerr = max (abs (A - B) ./ abs (B));
-	  err = max ([abserr; relerr]);
-	  errtype = "maximum relative error %g exceeds tolerance %g";
-	endif
-	if (err > abs (tol))
-	  iserror = 1;
-	  coda = sprintf (errtype, err, abs (tol));
-	endif
+      if (nargin < 3)
+        ## Without explicit tolerance, be more strict.
+        if (class (cond) != class (expected))
+          iserror = 1;
+          coda = cstrcat ("Class ", class (cond), " != ", class (expected));
+        elseif (isnumeric (cond))
+          if (issparse (cond) != issparse (expected))
+            if (issparse (cond))
+              iserror = 1;
+              coda = "sparse != non-sparse";
+            else
+              iserror = 1;
+              coda = "non-sparse != sparse";
+            endif
+          elseif (iscomplex (cond) != iscomplex (expected))
+            if (iscomplex (cond))
+              iserror = 1;
+              coda = "complex != real";
+            else
+              iserror = 1;
+              coda = "real != complex";
+            endif
+          endif
+        endif
       endif
+
+      if (! iserror)
+        ## Numeric.
+        A = cond(:);
+        B = expected(:);
+        ## Check exceptional values.
+        if (any (isna (A) != isna (B)))
+          iserror = 1;
+          coda = "NAs don't match";
+        elseif (any (isnan (A) != isnan (B)))
+          iserror = 1;
+          coda = "NaNs don't match";
+          ## Try to avoid problems comparing strange values like Inf+NaNi.
+        elseif (any (isinf (A) != isinf (B))
+                || any (A(isinf (A) & ! isnan (A)) != B(isinf (B) & ! isnan (B))))
+          iserror = 1;
+          coda = "Infs don't match";
+        else
+          ## Check normal values.
+          A = A(finite (A));
+          B = B(finite (B));
+          if (tol == 0)
+            err = any (A != B);
+            errtype = "values do not match";
+          elseif (tol >= 0)
+            err = max (abs (A - B));
+            errtype = "maximum absolute error %g exceeds tolerance %g";
+          else 
+            abserr = max (abs (A(B == 0)));
+            A = A(B != 0);
+            B = B(B != 0);
+            relerr = max (abs (A - B) ./ abs (B));
+            err = max ([abserr; relerr]);
+            errtype = "maximum relative error %g exceeds tolerance %g";
+          endif
+          if (err > abs (tol))
+            iserror = 1;
+            coda = sprintf (errtype, err, abs (tol));
+          endif
+        endif
+      endif
+
     endif
 
     if (! iserror)

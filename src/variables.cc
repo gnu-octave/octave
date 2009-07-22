@@ -395,11 +395,7 @@ symbol_exist (const std::string& name, const std::string& type)
   // name that is visible in the current scope will be in the local
   // symbol table.
 
-  octave_value_list evaluated_args;
-  bool args_evaluated = false;
-
-  octave_value val = symbol_table::find (symbol_name, 0, string_vector (),
-					 evaluated_args, args_evaluated);
+  octave_value val = symbol_table::find (symbol_name);
 
   if (val.is_defined ())
     {

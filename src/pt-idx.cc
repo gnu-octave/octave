@@ -296,8 +296,12 @@ tree_index_expression::rvalue (int nargout)
 	  if (n > 0)
 	    {
 	      string_vector anm = *(arg_nm.begin ());
+              have_args = true;
+              first_args = al -> convert_to_const_vector ();
+              first_args.stash_name_tags (anm);
 
-	      first_expr_val = id->do_lookup  (al, anm, first_args, have_args);
+              if (! error_state)
+                first_expr_val = id->do_lookup  (first_args);
 	    }
 	}
     }

@@ -96,10 +96,7 @@ symbol_table::symbol_record::symbol_record_rep::dump
 }
 
 octave_value
-symbol_table::symbol_record::find (tree_argument_list *args,
-				   const string_vector& arg_names,
-				   octave_value_list& evaluated_args,
-				   bool& args_evaluated) const
+symbol_table::symbol_record::find (const octave_value_list& args) const
 {
   octave_value retval;
 
@@ -113,12 +110,10 @@ symbol_table::symbol_record::find (tree_argument_list *args,
         {
           // Use cached fcn_info pointer if possible.
           if (rep->finfo)
-            retval = rep->finfo->find (args, arg_names,
-                                       evaluated_args, args_evaluated);
+            retval = rep->finfo->find (args);
           else
             { 
-              retval = symbol_table::find_function (name (), args, arg_names,
-                                                    evaluated_args, args_evaluated);
+              retval = symbol_table::find_function (name (), args);
 
               if (retval.is_defined ())
                 rep->finfo = get_fcn_info (name ());
@@ -429,11 +424,11 @@ symbol_table::fcn_info::fcn_info_rep::help_for_dispatch (void) const
 }
 
 static std::string
-get_dispatch_type (const octave_value_list& evaluated_args)
+get_dispatch_type (const octave_value_list& args)
 {
   std::string dispatch_type;
 
-  int n = evaluated_args.length ();
+  int n = args.length ();
 
   if (n > 0)
     {
@@ -443,7 +438,7 @@ get_dispatch_type (const octave_value_list& evaluated_args)
 
       for (i = 0; i < n; i++)
 	{
-	  octave_value arg = evaluated_args(i);
+	  octave_value arg = args(i);
 
 	  if (arg.is_object ())
 	    {
@@ -454,7 +449,7 @@ get_dispatch_type (const octave_value_list& evaluated_args)
 
       for (int j = i+1; j < n; j++)
 	{
-	  octave_value arg = evaluated_args(j);
+	  octave_value arg = args(j);
 
 	  if (arg.is_object ())
 	    {
@@ -472,7 +467,7 @@ get_dispatch_type (const octave_value_list& evaluated_args)
 	{
 	  // No object found, so use class of first argument.
 
-	  dispatch_type = evaluated_args(0).class_name ();
+	  dispatch_type = args(0).class_name ();
 	}
     }
 
@@ -493,30 +488,10 @@ get_dispatch_type (const octave_value_list& evaluated_args)
 //   function on the path
 //   built-in function
 
-// Notes:
-//
-// FIXME -- we need to evaluate the argument list to determine the
-// dispatch type.  The method used here works (pass in the args, pass
-// out the evaluated args and a flag saying whether the evaluation was
-// needed), but it seems a bit inelegant.  We do need to save the
-// evaluated args in some way to avoid evaluating them multiple times.
-//  Maybe evaluated args could be attached to the tree_argument_list
-// object?  Then the argument list could be evaluated outside of this
-// function and we could elimnate the arg_names, evaluated_args, and
-// args_evaluated arguments.  We would still want to avoid computing
-// the dispatch type unless it is needed, so the args should be passed
-// rather than the dispatch type.  But the arguments will need to be
-// evaluated no matter what, so evaluating them beforehand should be
-// OK.  If the evaluated arguments are attached to args, then we would
-// need to determine the appropriate place(s) to clear them (for
-// example, before returning from tree_index_expression::rvalue).
-
 octave_value
-symbol_table::fcn_info::fcn_info_rep::find
-  (tree_argument_list *args, const string_vector& arg_names,
-   octave_value_list& evaluated_args, bool& args_evaluated)
+symbol_table::fcn_info::fcn_info_rep::find (const octave_value_list& args)
 {
-  octave_value retval = xfind (args, arg_names, evaluated_args, args_evaluated);
+  octave_value retval = xfind (args);
 
   if (! retval.is_defined ())
     {
@@ -526,16 +501,14 @@ symbol_table::fcn_info::fcn_info_rep::find
 
       load_path::update ();
 
-      retval = xfind (args, arg_names, evaluated_args, args_evaluated);
+      retval = xfind (args);
     }
 
   return retval;
 }
 
 octave_value
-symbol_table::fcn_info::fcn_info_rep::xfind
-  (tree_argument_list *args, const string_vector& arg_names,
-   octave_value_list& evaluated_args, bool& args_evaluated)
+symbol_table::fcn_info::fcn_info_rep::xfind (const octave_value_list& args)
 {
   // Subfunction.  I think it only makes sense to check for
   // subfunctions if we are currently executing a function defined
@@ -644,42 +617,21 @@ symbol_table::fcn_info::fcn_info_rep::xfind
 
   // Class methods.
 
-  if (args_evaluated || (args && args->length () > 0))
+  if (! args.empty ())
     {
-      if (! args_evaluated)
-	evaluated_args = args->convert_to_const_vector ();
+      std::string dispatch_type = get_dispatch_type (args);
 
-      if (! error_state)
-	{
-	  int n = evaluated_args.length ();
+      octave_value fcn = find_method (dispatch_type);
 
-	  if (n > 0 && ! args_evaluated)
-	    evaluated_args.stash_name_tags (arg_names);
-
-	  args_evaluated = true;
-
-	  if (n > 0)
-	    {
-	      std::string dispatch_type = get_dispatch_type (evaluated_args);
-
-	      octave_value fcn = find_method (dispatch_type);
-
-	      if (fcn.is_defined ())
-		return fcn;
-	    }
-	}
-      else
-	return octave_value ();
+      if (fcn.is_defined ())
+        return fcn;
     }
 
-  // Legacy dispatch.  We just check args_evaluated here because the
-  // actual evaluation will have happened already when searching for
-  // class methods.
+  // Legacy dispatch.  
 
-  if (args_evaluated && ! dispatch_map.empty ())
+  if (! args.empty () && ! dispatch_map.empty ())
     {
-      std::string dispatch_type = 
-        const_cast<const octave_value_list&>(evaluated_args)(0).type_name ();
+      std::string dispatch_type = args(0).type_name ();
 
       std::string fname;
 
@@ -693,7 +645,7 @@ symbol_table::fcn_info::fcn_info_rep::xfind
 	  fname = p->second;
 
 	  octave_value fcn
-	    = symbol_table::find_function (fname, evaluated_args);
+	    = symbol_table::find_function (fname, args);
 
 	  if (fcn.is_defined ())
 	    return fcn;
@@ -1080,25 +1032,20 @@ symbol_table::fcn_info::fcn_info_rep::dump
 }
 
 octave_value
-symbol_table::fcn_info::find (tree_argument_list *args,
-			      const string_vector& arg_names,
-			      octave_value_list& evaluated_args,
-			      bool& args_evaluated)
+symbol_table::fcn_info::find (const octave_value_list& args)
 {
-  return rep->find (args, arg_names, evaluated_args, args_evaluated);
+  return rep->find (args);
 }
 
 octave_value
-symbol_table::find (const std::string& name, tree_argument_list *args,
-		    const string_vector& arg_names,
-		    octave_value_list& evaluated_args, bool& args_evaluated,
-		    bool skip_variables)
+symbol_table::find (const std::string& name, 
+                    const octave_value_list& args, 
+                    bool skip_variables)
 {
   symbol_table *inst = get_instance (xcurrent_scope);
 
   return inst
-    ? inst->do_find (name, args, arg_names, evaluated_args,
-		     args_evaluated, skip_variables)
+    ? inst->do_find (name, args, skip_variables)
     : octave_value ();
 }
 
@@ -1111,10 +1058,8 @@ symbol_table::builtin_find (const std::string& name)
 }
 
 octave_value
-symbol_table::find_function (const std::string& name, tree_argument_list *args,
-			     const string_vector& arg_names,
-			     octave_value_list& evaluated_args,
-			     bool& args_evaluated)
+symbol_table::find_function (const std::string& name,
+                             const octave_value_list& args)
 {
   octave_value retval;
 
@@ -1135,8 +1080,7 @@ symbol_table::find_function (const std::string& name, tree_argument_list *args,
       size_t pos = name.find_first_of (Vfilemarker);
 
       if (pos == std::string::npos)
-	retval = find (name, args, arg_names, evaluated_args,
-		       args_evaluated, true);
+	retval = find (name, args, true);
       else
 	{
 	  std::string fcn_scope = name.substr (0, pos);
@@ -1153,9 +1097,7 @@ symbol_table::find_function (const std::string& name, tree_argument_list *args,
 		  xcurrent_scope = parent_fcn->scope ();
 
 		  if (xcurrent_scope > 1)
-		    retval = find_function (name.substr (pos + 1), args,
-					    arg_names, evaluated_args, 
-					    args_evaluated);
+		    retval = find_function (name.substr (pos + 1), args);
 		}
 	    }
 
@@ -1264,10 +1206,9 @@ symbol_table::stash_dir_name_for_subfunctions (scope_id scope,
 }
 
 octave_value
-symbol_table::do_find (const std::string& name, tree_argument_list *args,
-		       const string_vector& arg_names,
-		       octave_value_list& evaluated_args,
-		       bool& args_evaluated, bool skip_variables)
+symbol_table::do_find (const std::string& name, 
+                       const octave_value_list& args,
+		       bool skip_variables)
 {
   octave_value retval;
 
@@ -1298,13 +1239,12 @@ symbol_table::do_find (const std::string& name, tree_argument_list *args,
   fcn_table_iterator p = fcn_table.find (name);
 
   if (p != fcn_table.end ())
-    return p->second.find (args, arg_names, evaluated_args, args_evaluated);
+    return p->second.find (args);
   else
     {
       fcn_info finfo (name);
 
-      octave_value fcn = finfo.find (args, arg_names, evaluated_args,
-				     args_evaluated);
+      octave_value fcn = finfo.find (args);
 
       if (fcn.is_defined ())
 	fcn_table[name] = finfo;

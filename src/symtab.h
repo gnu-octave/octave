@@ -424,9 +424,7 @@ public:
 
     std::string name (void) const { return rep->name; }
 
-    octave_value
-    find (tree_argument_list *args, const string_vector& arg_names,
-	  octave_value_list& evaluated_args, bool& args_evaluated) const;
+    octave_value find (const octave_value_list& args = octave_value_list ()) const;
 
     octave_value builtin_find (void) const;
 
@@ -542,9 +540,7 @@ public:
 
       octave_value load_class_method (const std::string& dispatch_type);
 
-      octave_value
-      find (tree_argument_list *args, const string_vector& arg_names,
-	    octave_value_list& evaluated_args, bool& args_evaluated);
+      octave_value find (const octave_value_list& args = octave_value_list ());
 
       octave_value builtin_find (void);
 
@@ -559,20 +555,9 @@ public:
 	return function_on_path.is_defined ();
       }
 
-      octave_value find_function (void)
+      octave_value find_function (const octave_value_list& args = octave_value_list ())
       {
-	octave_value_list args;
-
-	return find_function (args);
-      }
-
-      octave_value find_function (const octave_value_list& args)
-      {
-	string_vector arg_names;
-	octave_value_list evaluated_args = args;
-	bool args_evaluated = false;
-
-	return find (0, arg_names, evaluated_args, args_evaluated);
+	return find (args);
       }
 
       void lock_subfunction (scope_id scope)
@@ -735,9 +720,7 @@ public:
 
     private:
 
-      octave_value
-      xfind (tree_argument_list *args, const string_vector& arg_names,
-	     octave_value_list& evaluated_args, bool& args_evaluated);
+      octave_value xfind (const octave_value_list& args);
 
       octave_value x_builtin_find (void);
 
@@ -778,9 +761,7 @@ public:
 	delete rep;
     }
 
-    octave_value
-    find (tree_argument_list *args, const string_vector& arg_names,
-	  octave_value_list& evaluated_args, bool& args_evaluated);
+    octave_value find (const octave_value_list& args);
 
     octave_value builtin_find (void)
     {
@@ -1052,9 +1033,8 @@ public:
 
   // Find a value corresponding to the given name in the table.
   static octave_value
-  find (const std::string& name, tree_argument_list *args,
-	const string_vector& arg_names,
-	octave_value_list& evaluated_args, bool& args_evaluated,
+  find (const std::string& name, 
+        const octave_value_list& args = octave_value_list (),
 	bool skip_variables = false);
 
   static octave_value builtin_find (const std::string& name);
@@ -1193,9 +1173,8 @@ public:
   }
 
   static octave_value
-  find_function (const std::string& name, tree_argument_list *args,
-		 const string_vector& arg_names,
-		 octave_value_list& evaluated_args, bool& args_evaluated);
+  find_function (const std::string& name, 
+                 const octave_value_list& args = octave_value_list ());
 
   static octave_value find_user_function (const std::string& name)
   {
@@ -1203,23 +1182,6 @@ public:
 
     return (p != fcn_table.end ())
       ? p->second.find_user_function () : octave_value ();
-  }
-
-  static octave_value find_function (const std::string& name)
-  {
-    octave_value_list evaluated_args;
-
-    return find_function (name, evaluated_args);
-  }
-
-  static octave_value
-  find_function (const std::string& name, const octave_value_list& args)
-  {
-    string_vector arg_names;
-    octave_value_list evaluated_args = args;
-    bool args_evaluated = ! args.empty ();
-
-    return find_function (name, 0, arg_names, evaluated_args, args_evaluated);
   }
 
   static void install_cmdline_function (const std::string& name,
@@ -2012,10 +1974,8 @@ private:
     }
 
   octave_value
-  do_find (const std::string& name, tree_argument_list *args,
-	   const string_vector& arg_names,
-	   octave_value_list& evaluated_args, bool& args_evaluated,
-	   bool skip_variables);
+  do_find (const std::string& name, const octave_value_list& args,
+           bool skip_variables);
 
   octave_value do_builtin_find (const std::string& name);
 

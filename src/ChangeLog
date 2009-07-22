@@ -1,3 +1,18 @@
+2009-07-22  Jaroslav Hajek  <highegg@gmail.com>
+
+	* symtab.cc (symbol_table::find, 
+	symbol_table::find_function, 
+	symbol_table::symbol_record::find,
+	symbol_table::fcn_info::find,
+	symbol_table::fcn_info::fcn_info_rep::find,
+	symbol_table::fcn_info::fcn_info_rep::xfind): Simplify argument lists.
+	* symtab.h: Update declarations.
+	* pt-id.cc (tree_identifier::rvalue): Simplify.
+	* pt-id.h (tree_identifier::do_lookup): Simplify.
+	* pt-idx.cc (tree_index_expression::rvalue): Update.
+	* variables.cc (symbol_exist): Update.
+
+
 2009-07-21  John W. Eaton  <jwe@octave.org>
 
 	* symtab.cc (symbol_table::builtin_find,

@@ -84,10 +84,9 @@ public:
   //     then .mex files, then .m files.
 
   octave_value
-  do_lookup (tree_argument_list *args, const string_vector& arg_names,
-	     octave_value_list& evaluated_args, bool& args_evaluated)
+  do_lookup (const octave_value_list& args = octave_value_list ())
   {
-    return xsym().find (args, arg_names, evaluated_args, args_evaluated);
+    return xsym().find (args);
   }
 
   void mark_global (void) { xsym().mark_global (); }

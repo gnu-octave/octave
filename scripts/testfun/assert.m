@@ -144,7 +144,7 @@ function assert (cond, varargin)
     else
       if (nargin < 3)
         ## Without explicit tolerance, be more strict.
-        if (class (cond) != class (expected))
+        if (! strcmp(class (cond), class (expected)))
           iserror = 1;
           coda = cstrcat ("Class ", class (cond), " != ", class (expected));
         elseif (isnumeric (cond))

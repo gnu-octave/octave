@@ -262,7 +262,7 @@ endfunction
 %! legend("boxon")
 
 %!demo
-%! hold ("off");
+%! clf
 %! x = linspace (0, 10);
 %! plot (x, x);
 %! hold ("on");
@@ -271,11 +271,25 @@ endfunction
 %! hold ("off");
 
 %!demo
+%! clf
 %! x = linspace (0, 10);
 %! plot (x, x, x, x.^2);
 %! legend ("linear");
 
 %!demo
+%! clf
 %! x = linspace (0, 10);
 %! plot (x, x, x, x.^2);
 %! legend ("linear", "quadratic");
+
+%!demo
+%! clf
+%! bar (rand (2, 3))
+%! ylim ([0 1.2])
+%! legend ({"1st Bar", "2nd Bar", "3rd Bar"})
+
+%!demo
+%! clf
+%! bar (rand (2, 3))
+%! ylim ([0 1.2])
+%! legend ("1st Bar", "2nd Bar", "3rd Bar")

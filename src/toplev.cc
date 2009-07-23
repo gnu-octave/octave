@@ -647,6 +647,25 @@ main_loop (void)
   return retval;
 }
 
+// Call a function with exceptions handled to avoid problems with
+// errors while shutting down.
+
+#define IGNORE_EXCEPTION(E) \
+  catch (E) \
+    { \
+      std::cerr << "error: ignoring " #E " while preparing to exit" << std::endl; \
+      recover_from_exception (); \
+    }
+
+#define SAFE_CALL(F, ARGS) \
+  try \
+    { \
+      F ARGS; \
+    } \
+  IGNORE_EXCEPTION (octave_interrupt_exception) \
+  IGNORE_EXCEPTION (octave_execution_exception) \
+  IGNORE_EXCEPTION (std::bad_alloc)
+
 // Fix up things before exiting.
 
 void
@@ -654,7 +673,7 @@ clean_up_and_exit (int retval)
 {
   do_octave_atexit ();
 
-  sysdep_cleanup ();
+  SAFE_CALL (sysdep_cleanup, ())
 
   if (octave_exit)
     (*octave_exit) (retval == EOF ? 0 : retval);
@@ -991,26 +1010,11 @@ do_octave_atexit (void)
 
       octave_atexit_functions.pop_front ();
 
-      reset_error_handler ();
+      SAFE_CALL (reset_error_handler, ())
 
-      try
-        {
-          feval (fcn, octave_value_list (), 0);
-        }
-      catch (octave_interrupt_exception)
-	{
-	  recover_from_exception ();
-	}
-      catch (octave_execution_exception)
-	{
-	  recover_from_exception ();
-	}
-      catch (std::bad_alloc)
-	{
-	  recover_from_exception ();
-	}
+      SAFE_CALL (feval, (fcn, octave_value_list (), 0))
 
-      flush_octave_stdout ();
+      SAFE_CALL (flush_octave_stdout, ())
     }
 
   if (! deja_vu)
@@ -1020,23 +1024,23 @@ do_octave_atexit (void)
       // Do this explicitly so that destructors for mex file objects
       // are called, so that functions registered with mexAtExit are
       // called.
-      clear_mex_functions ();
+      SAFE_CALL (clear_mex_functions, ())
 
-      command_editor::restore_terminal_state ();
+	SAFE_CALL (command_editor::restore_terminal_state, ())
 
       // FIXME -- is this needed?  Can it cause any trouble?
-      raw_mode (0);
+      SAFE_CALL (raw_mode, (0))
 
-      octave_history_write_timestamp ();
+      SAFE_CALL (octave_history_write_timestamp, ())
 
       if (Vsaving_history)
-	command_history::clean_up_and_save ();
+	SAFE_CALL (command_history::clean_up_and_save, ())
 
-      close_files ();
+      SAFE_CALL (close_files, ())
 
-      cleanup_tmp_files ();
+      SAFE_CALL (cleanup_tmp_files, ())
 
-      flush_octave_stdout ();
+      SAFE_CALL (flush_octave_stdout, ())
 
       if (! quitting_gracefully && (interactive || forced_interactive))
 	{
@@ -1045,7 +1049,7 @@ do_octave_atexit (void)
 	  // Yes, we want this to be separate from the call to
 	  // flush_octave_stdout above.
 
-	  flush_octave_stdout ();
+	  SAFE_CALL (flush_octave_stdout, ())
 	}
     }
 }

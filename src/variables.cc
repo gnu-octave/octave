@@ -375,6 +375,30 @@ This function has been deprecated.  Use isglobal instead.\n\
   return do_isglobal (args);
 }
 
+static octave_value
+safe_symbol_lookup (const std::string& symbol_name)
+{
+  octave_value retval;
+
+  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
+  
+  unwind_protect::protect_var (buffer_error_messages);
+  unwind_protect::protect_var (Vdebug_on_error);
+  unwind_protect::protect_var (Vdebug_on_warning);
+
+  buffer_error_messages++;
+  Vdebug_on_error = false;
+  Vdebug_on_warning = false;
+
+  retval = symbol_table::find (symbol_name);
+
+  error_state = 0;
+
+  unwind_protect::run_frame (uwp_frame);
+
+  return retval;
+}
+
 int
 symbol_exist (const std::string& name, const std::string& type)
 {
@@ -395,7 +419,7 @@ symbol_exist (const std::string& name, const std::string& type)
   // name that is visible in the current scope will be in the local
   // symbol table.
 
-  octave_value val = symbol_table::find (symbol_name);
+  octave_value val = safe_symbol_lookup (symbol_name);
 
   if (val.is_defined ())
     {

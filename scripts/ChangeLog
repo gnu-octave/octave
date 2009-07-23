@@ -1,3 +1,8 @@
+2009-07-23  John W. Eaton  <jwe@octave.org>
+
+	* plot/legend.m: Process arguments in order, child objects in
+	reverse.  Remove special case for single label.  New demos.
+
 2009-07-23  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
 	* testfun/assert.m: Fix string comparison bug.

@@ -2316,9 +2316,13 @@ private:
   void do_cache_name (const std::string& name) { table_name = name; }
 };
 
-extern bool out_of_date_check (octave_value& function);
+extern bool out_of_date_check (octave_value& function,
+                               const std::string& dispatch_type = std::string ());
 
-extern bool out_of_date_check (octave_function* fcn);
+extern bool out_of_date_check (octave_function* fcn,
+                               const std::string& dispatch_type = std::string ());
+
+extern std::string get_dispatch_type (const octave_value_list& args);
 
 #endif
 

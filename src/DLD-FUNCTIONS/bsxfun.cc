@@ -148,24 +148,17 @@ dimensionality as the other matrix.\n\
     print_usage ();
   else
     {
-      octave_function *func = 0;
-      std::string name;
-      std::string fcn_name;
+      octave_value func = args(0);
 
-      if (args(0).is_function_handle () || args(0).is_inline_function ())
-	func = args(0).function_value ();
-      else if (args(0).is_string ())
-	{
-	  name = args(0).string_value ();
-	  fcn_name = unique_symbol_name ("__bsxfun_fcn_");
-	  std::string fname = "function y = ";
-	  fname.append (fcn_name);
-	  fname.append ("(x) y = ");
-	  func = extract_function (args(0), "bsxfun", fcn_name, fname,
-				   "; endfunction");
-	}
-      else
-	  error ("bsxfun: first argument must be a string or function handle");
+      if (func.is_string ())
+        {
+          std::string name = func.string_value ();
+          func = symbol_table::find_function (name);
+          if (func.is_undefined ())
+            error ("bsxfun: invalid function name: %s", name.c_str ());
+        }
+      else if (! (args(0).is_function_handle () || args(0).is_inline_function ()))
+        error ("bsxfun: first argument must be a string or function handle");
 
       if (! error_state)
 	{
@@ -207,14 +200,14 @@ dimensionality as the other matrix.\n\
 		  octave_value_list inputs;
 		  inputs (0) = A;
 		  inputs (1) = B;
-		  retval = feval (func, inputs, 1);
+		  retval = func.do_multi_index_op (1, inputs);  
 		}
 	      else if (dvc.numel () < 1)
 		{
 		  octave_value_list inputs;
 		  inputs (0) = A.resize (dvc);
 		  inputs (1) = B.resize (dvc);
-		  retval = feval (func, inputs, 1);	      
+		  retval = func.do_multi_index_op (1, inputs);  
 		}
 	      else
 		{
@@ -257,7 +250,7 @@ dimensionality as the other matrix.\n\
 		      if (maybe_update_column (Bc, B, dvb, dvc, i, idxB))
 			inputs (1) = Bc;
 			
-		      octave_value_list tmp = feval (func, inputs, 1);
+		      octave_value_list tmp = func.do_multi_index_op (1, inputs);  
 
 		      if (error_state)
 			break;
@@ -454,9 +447,6 @@ dimensionality as the other matrix.\n\
 		}
 	    }
 	}
-
-      if (! fcn_name.empty ())
-	clear_function (fcn_name);
     }	
 
   return retval;

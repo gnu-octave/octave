@@ -1,3 +1,23 @@
+2009-07-23  Jaroslav Hajek  <highegg@gmail.com>
+
+	* symtab.cc (get_dispatch_type): Omit first-arg dispatch, export.
+	* symtab.h (get_dispatch_type): Provide decl.
+	* ov-fcn-handle.h (octave_fcn_handle::warn_reload): Delete.
+	(octave_fcn_handle::disp): New field.
+	(octave_fcn_handle::str_ov_map): New typedef.
+	(octave_fcn_handle::octave_fcn_handle (..., str_ov_map *)): New
+	constructor.
+	(octave_fcn_handle::do_multi_index_op): New method decl.
+	(octave_fcn_handle::is_overloaded): New method.
+	* ov-fcn-handle.cc 
+	(octave_fcn_handle::do_multi_index_op): New method.
+	(octave_fcn_handle::subsref): Rewrite using do_multi_index_op.
+	(octave_fcn_handle::make_fcn_handle): Construct overloaded handles if
+	appropriate.
+	(Ffunctions): Indicate (statically) overloaded handles.
+	* DLD-FUNCTIONS/cellfun.cc (Fcellfun): Update & modernize.
+	* DLD-FUNCTIONS/bsxfun.cc (Fbsxfun): Ditto.
+
 2009-07-22  Jaroslav Hajek  <highegg@gmail.com>
 
 	* symtab.cc (symbol_table::find, 

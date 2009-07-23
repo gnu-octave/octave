@@ -25,6 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <iosfwd>
 #include <string>
+#include <memory>
 
 #include "oct-alloc.h"
 
@@ -39,18 +40,29 @@ class
 OCTINTERP_API
 octave_fcn_handle : public octave_base_value
 {
+private:
+
+  typedef std::map<std::string, octave_value> str_ov_map;
+
+  octave_fcn_handle (const octave_value& f, const std::string& n,
+                     str_ov_map *sdisp)
+    : fcn (f), nm (n), disp (sdisp) { }
+
 public:
   octave_fcn_handle (void)
-    : warn_reload (true), fcn (), nm () { }
+    : fcn (), nm () { }
 
   octave_fcn_handle (const std::string& n)
-    : warn_reload (true), fcn (), nm (n) { }
+    : fcn (), nm (n) { }
 
   octave_fcn_handle (const octave_value& f,  const std::string& n);
 
   octave_fcn_handle (const octave_fcn_handle& fh)
-    : octave_base_value (fh), warn_reload (fh.warn_reload),
-      fcn (fh.fcn), nm (fh.nm) { }
+    : octave_base_value (fh), fcn (fh.fcn), nm (fh.nm)
+   { 
+     if (fh.disp.get ())
+       disp.reset (new str_ov_map (*fh.disp));
+   }
 
   ~octave_fcn_handle (void) { }
 
@@ -68,9 +80,14 @@ public:
 			     const std::list<octave_value_list>& idx,
 			     int nargout);
 
+  octave_value_list
+  do_multi_index_op (int nargout, const octave_value_list& args);
+
   bool is_defined (void) const { return true; }
 
   bool is_function_handle (void) const { return true; }
+
+  bool is_overloaded (void) const { return disp.get () && ! disp->empty (); }
 
   dim_vector dims (void) const { static dim_vector dv (1, 1); return dv; }
 
@@ -116,11 +133,6 @@ private:
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 
-  // If TRUE, print a warning if the pointed-to fucntion is out of
-  // date.  This variable may be removed when updating is properly
-  // implemented.
-  mutable bool warn_reload;
-
 protected:
 
   // The function we are handling.
@@ -128,6 +140,12 @@ protected:
 
   // The name of the handle, including the "@".
   std::string nm;
+
+  // A pointer to statical dispatch to standard classes. If null, we don't want
+  // to dispatch at all.
+  std::auto_ptr<str_ov_map> disp;
+
+  friend octave_value make_fcn_handle (const std::string &);
 };
 
 extern octave_value make_fcn_handle (const std::string& nm);

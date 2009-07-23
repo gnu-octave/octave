@@ -283,16 +283,18 @@ out_of_date_check_internal (octave_value& function,
 }
 
 bool
-out_of_date_check (octave_value& function)
+out_of_date_check (octave_value& function,
+                   const std::string& dispatch_type)
 {
-  return out_of_date_check_internal (function);
+  return out_of_date_check_internal (function, dispatch_type);
 }
 
 bool
-out_of_date_check (octave_function* fcn)
+out_of_date_check (octave_function* fcn,
+                   const std::string& dispatch_type)
 {
   octave_value function;
-  return out_of_date_check_internal (fcn, function);
+  return out_of_date_check_internal (fcn, function, dispatch_type);
 }
 
 octave_value
@@ -423,7 +425,7 @@ symbol_table::fcn_info::fcn_info_rep::help_for_dispatch (void) const
   return retval;
 }
 
-static std::string
+std::string
 get_dispatch_type (const octave_value_list& args)
 {
   std::string dispatch_type;
@@ -461,13 +463,6 @@ get_dispatch_type (const octave_value_list& args)
 		  && symbol_table::is_superiorto (cname, dispatch_type))
 		dispatch_type = cname;
 	    }
-	}
-
-      if (dispatch_type.empty ())
-	{
-	  // No object found, so use class of first argument.
-
-	  dispatch_type = args(0).class_name ();
 	}
     }
 
@@ -620,6 +615,9 @@ symbol_table::fcn_info::fcn_info_rep::xfind (const octave_value_list& args)
   if (! args.empty ())
     {
       std::string dispatch_type = get_dispatch_type (args);
+
+      if (dispatch_type.empty ())
+        dispatch_type = args(0).class_name ();
 
       octave_value fcn = find_method (dispatch_type);
 

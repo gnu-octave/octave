@@ -69,7 +69,7 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_fcn_handle,
 
 octave_fcn_handle::octave_fcn_handle (const octave_value& f,
 				      const std::string& n)
-  : warn_reload (true), fcn (f), nm (n)
+  : fcn (f), nm (n)
 {
   octave_user_function *uf = fcn.user_function_value (true);
 
@@ -88,27 +88,17 @@ octave_fcn_handle::subsref (const std::string& type,
     {
     case '(':
       {
-	out_of_date_check (fcn);
+	int tmp_nargout = (type.length () > 1 && nargout == 0) ? 1 : nargout;
 
-	if (fcn.is_defined ())
-	  {
-	    octave_function *f = function_value ();
-
-	    if (f)
-	      retval = f->subsref (type, idx, nargout);
-	    else
-	      error ("invalid function handle");
-	  }
-	else
-	  error ("invalid function handle");
+	retval = do_multi_index_op (tmp_nargout, idx.front ());
       }
       break;
 
     case '{':
     case '.':
       {
-	std::string typ_nm = type_name ();
-	error ("%s cannot be indexed with %c", typ_nm.c_str (), type[0]);
+	std::string tnm = type_name ();
+	error ("%s cannot be indexed with %c", tnm.c_str (), type[0]);
       }
       break;
 
@@ -116,8 +106,66 @@ octave_fcn_handle::subsref (const std::string& type,
       panic_impossible ();
     }
 
-  // There's no need to call next_subsref here --
-  // octave_function::subsref will handle that for us.
+  // FIXME -- perhaps there should be an
+  // octave_value_list::next_subsref member function?  See also
+  // octave_builtin::subsref.
+
+  if (idx.size () > 1)
+    retval = retval(0).next_subsref (nargout, type, idx);
+
+  return retval;
+}
+
+octave_value_list
+octave_fcn_handle::do_multi_index_op (int nargout, 
+                                      const octave_value_list& args)
+{
+  octave_value_list retval;
+
+  out_of_date_check (fcn);
+
+  if (disp.get () && ! args.empty ())
+    {
+      // Possibly overloaded function.
+      octave_value ovfcn = fcn;
+
+      // Get dynamic (class) dispatch type.
+      std::string ddt = get_dispatch_type (args);
+
+      if (ddt.empty ())
+        {
+          // Static dispatch (class of 1st arg)?
+          if (! disp->empty ())
+            {
+              std::string sdt = args(0).class_name ();
+              str_ov_map::iterator pos = disp->find (sdt);
+              if (pos != disp->end ())
+                {
+                  out_of_date_check (pos->second, sdt);
+                  ovfcn = pos->second;
+                }
+            }
+        }
+      else
+        {
+          octave_value method = symbol_table::find_method (nm, ddt);
+          if (method.is_defined ())
+            ovfcn = method;
+        }
+
+      if (ovfcn.is_defined ())
+        retval = ovfcn.do_multi_index_op (nargout, args);
+      else
+        error ("invalid function handle");
+    }
+  else
+    {
+      // Non-overloaded function (anonymous, subfunction, private function).
+      if (fcn.is_defined ())
+        retval = fcn.do_multi_index_op (nargout, args);
+      else
+        error ("invalid function handle");
+    }
 
   return retval;
 }
@@ -1214,6 +1262,40 @@ octave_fcn_handle::print_raw (std::ostream& os, bool pr_as_read_syntax) const
 			   current_print_indent_level ());
 }
 
+static string_vector
+get_builtin_classes (void)
+{
+  // FIXME: this should really be read from somewhere else.
+  static const char *cnames[15] = {
+      "double",
+      "single",
+      "int8",
+      "int16",
+      "int32",
+      "int64",
+      "uint8",
+      "uint16",
+      "uint32",
+      "uint64",
+      "logical",
+      "char",
+      "cell",
+      "struct",
+      "function_handle"
+  };
+
+  static string_vector retval;
+
+  if (retval.is_empty ())
+    {
+      retval = string_vector (15);
+      for (int i = 0; i < 15; i++)
+        retval(i) = cnames[i];
+    }
+
+  return retval;
+}
+
 octave_value
 make_fcn_handle (const std::string& nm)
 {
@@ -1348,9 +1430,31 @@ make_fcn_handle (const std::string& nm)
     }
 
   octave_value f = symbol_table::find_function (tnm);
+  octave_function *fptr = f.is_defined () ? f.function_value () : 0;
 
-  if (f.is_defined ())
-    retval = octave_value (new octave_fcn_handle (f, tnm));
+  if (fptr)
+    {
+      // If it's a subfunction, private function, or class constructor,
+      // we want no dispatch.
+      if (fptr->is_nested_function () || fptr->is_private_function ()
+          || fptr->is_class_constructor ())
+        retval = octave_value (new octave_fcn_handle (f, tnm));
+      else
+        {
+          typedef octave_fcn_handle::str_ov_map str_ov_map;
+          std::auto_ptr<str_ov_map> disp (new str_ov_map);
+          const string_vector cnames = get_builtin_classes ();
+          for (octave_idx_type i = 0; i < cnames.length (); i++)
+            {
+              std::string cnam = cnames(i);
+              octave_value method = symbol_table::find_method (tnm, cnam);
+              if (method.is_defined ())
+                (*disp)[cnam] = method;
+            }
+
+          retval = octave_value (new octave_fcn_handle (f, tnm, disp.release ()));
+        }
+    }
   else
     error ("error creating function handle \"@%s\"", nm.c_str ());
 
@@ -1434,6 +1538,8 @@ Return a struct containing information about the function handle\n\
 		      parentage.elem(1) = fcn->parent_fcn_name ();
 		      m.assign ("parentage", octave_value (parentage)); 
 		    }
+                  else if (fh->is_overloaded ())
+		    m.assign ("type", "overloaded");
 		  else
 		    m.assign ("type", "simple");
 		}

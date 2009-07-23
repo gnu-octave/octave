@@ -1,3 +1,20 @@
+2009-07-23  Shai Ayal  <shaiay@users.sourceforge.net>
+
+	* DLD-FUNCTIONS/fltk_backend.cc (plot_window::pixel2axes_or_ca):
+	Replace plot_window::pixel2axes and use algorithm from octavede.
+	(plot_window::handle): Zooming now works on the axes below the
+	mouse pointer instead of the current axes. Combine old and new
+	zooming methods.
+	(help_text): Update to reflect new mouse/key bindings.
+
+2009-07-23  Soren Hauberg  <hauberg@gmail.com>
+
+	* graphics.cc (axes::properties::zoom_about_point,
+	axes::properties::translate_view): New functions.
+	(axes::properties::zoom): make zoom_stack usage optional.
+	* DLD-FUNCTIONS/fltk_backend.cc (plot_window::handle): Use new
+	zoom API.
+
 2009-07-23  John W. Eaton  <jwe@octave.org>
 
 	* variables.cc (safe_symbol_lookup): New function.

@@ -70,10 +70,12 @@ a - autoscale\n\
 g - toggle grid\n\
 \n\
 Mouse\n\
-left drag - zoom\n\
-right click - unzoom\n\
-double click - copy coordinates to clipboard\
+left drag - pan\n\
+mouse wheel - zoom\n\
+right drag - rectangle zoom\n\
+left double click - autoscale\n\
 ";
+
 
 class OpenGL_fltk : public Fl_Gl_Window
 {
@@ -214,7 +216,7 @@ public:
 		   _h - status_h,
 		   status_h,
 		   status_h,
-		   "H");
+		   "?");
       help->callback (button_callback, static_cast<void*> (this));
 
       status = new
@@ -334,30 +336,34 @@ private:
       }
   }
 
-  graphics_handle pixel2axes (int /* px */, int /* py */)
+  graphics_handle pixel2axes_or_ca (int px, int py )
   {
     Matrix kids = fp.get_children ();
+    int len = kids.length ();
 
-    for (octave_idx_type n = 0; n < kids.numel (); n++)
+    for (int k = 0; k < len; k++)
       {
-	graphics_object ax = gh_manager::get_object (kids (n));
-	if (ax && ax.isa ("axes"))
-	  {
-#if 0
-	     axes::properties& ap =
-	       dynamic_cast<axes::properties&> (ax.get_properties ());
+	graphics_handle hnd = gh_manager::lookup (kids(k));
 
-	     // std::cout << "\npixpos="<<pixpos<<"(px,py)=("<<px<<","<<py<<")\n";
-	     if (px >= pixpos(0) && px <= pixpos(2)
-		 && py >= pixpos(1) && py <= pixpos(3))
-	       return ap.get___myhandle__ ();
-#endif
+	if (hnd.ok ())
+	  {
+	    graphics_object kid = gh_manager::get_object (hnd);
+
+	    if (kid.valid_object () && kid.isa ("axes"))
+	      {
+		Matrix bb = kid.get_properties ().get_boundingbox (true);
+
+		if (bb(0) <= px && px < (bb(0)+bb(2))
+		    && bb(1) <= py && py < (bb(1)+bb(3)))
+		  {
+		    return hnd;
+		  }
+	      }
 	  }
       }
-
-    return graphics_handle ();
+    return fp.get_currentaxes ();
   }
-
+  
   void pixel2status (int px0, int py0, int px1 = -1, int py1 = -1)
   {
     double x0, y0, x1, y1;
@@ -399,7 +405,6 @@ private:
   int handle (int event)
   {
     static int px0,py0;
-    static graphics_handle h0 = graphics_handle ();
 
     int retval = Fl_Window::handle (event);
 
@@ -429,11 +434,10 @@ private:
 	break;
 
       case FL_PUSH:
-	if (Fl::event_button () == 1)
+	if (Fl::event_button () == 1 || Fl::event_button () == 3)
 	  {
 	    px0 = Fl::event_x ();
 	    py0 = Fl::event_y ();
-	    h0 = pixel2axes (Fl::event_x (), Fl::event_y ());
 	    return 1;
 	  }
 	break;
@@ -441,6 +445,26 @@ private:
       case FL_DRAG:
 	pixel2status (px0, py0, Fl::event_x (), Fl::event_y ());
 	if (Fl::event_button () == 1)
+	  {
+	    graphics_object ax = 
+	      gh_manager::get_object (pixel2axes_or_ca (px0, py0));
+            if (ax && ax.isa ("axes"))
+              {
+                axes::properties& ap = 
+		  dynamic_cast<axes::properties&> (ax.get_properties ());
+              
+                double x0, y0, x1, y1;
+                pixel2pos (px0, py0, x0, y0);
+                pixel2pos (Fl::event_x (), Fl::event_y (), x1, y1);
+                px0 = Fl::event_x ();
+                py0 = Fl::event_y ();
+
+                ap.translate_view (x0 - x1, y0 - y1);
+                mark_modified ();
+              }
+	    return 1;
+	  }
+	else if (Fl::event_button () == 3)
 	  {
 	    canvas->zoom (true);
 	    Matrix zoom_box (1,4,0);
@@ -450,20 +474,66 @@ private:
 	    zoom_box (3) =  Fl::event_y ();
 	    canvas->set_zoom_box (zoom_box);
 	    canvas->redraw_overlay ();
-	    return 1;
 	  }
+
 	break;
+
+      case FL_MOUSEWHEEL:
+        {
+          // Parameter controlling how fast we zoom. FIXME: Should
+          // this be user tweakable?
+          const double zoom_speed = 0.05;
+
+	  graphics_object ax = 
+	    gh_manager::get_object (pixel2axes_or_ca (Fl::event_x (), 
+						      Fl::event_y ()));                                                                      
+          if (ax && ax.isa ("axes"))
+            {
+              axes::properties& ap = 
+		dynamic_cast<axes::properties&> (ax.get_properties ());
+              
+              // Determine if we're zooming in or out
+              const double factor = 
+		(Fl::event_dy () > 0) ? 1.0 + zoom_speed : 1.0 - zoom_speed;
+              
+              // Get the point we're zooming about
+              double x1, y1;
+              pixel2pos (Fl::event_x (), Fl::event_y (), x1, y1);
+              
+              ap.zoom_about_point (x1, y1, factor, false);
+              mark_modified ();
+            }
+	}
+      return 1;
 
       case FL_RELEASE:
 	if (Fl::event_button () == 1)
+	  {
+	    if ( Fl::event_clicks () == 1)
+	      {
+		graphics_object ax = 
+		  gh_manager::get_object (pixel2axes_or_ca (Fl::event_x (), 
+							    Fl::event_y ()));
+		if (ax && ax.isa ("axes"))
+		  {
+		    axes::properties& ap =
+		      dynamic_cast<axes::properties&> (ax.get_properties ());
+		    ap.set_xlimmode("auto");
+		    ap.set_ylimmode("auto");
+		    ap.set_zlimmode("auto");
+		    mark_modified ();
+		  }
+	      }
+	  }
+	if (Fl::event_button () == 3)
 	  {
 	    // end of drag -- zoom
 	    if (canvas->zoom ())
 	      {
 		canvas->zoom (false);
 		double x0,y0,x1,y1;
-		graphics_object ax =
-		  gh_manager::get_object (fp.get_currentaxes ());
+		graphics_object ax = 
+		  gh_manager::get_object (pixel2axes_or_ca (px0, py0));
 		if (ax && ax.isa ("axes"))
 		  {
 		    axes::properties& ap =
@@ -482,7 +552,6 @@ private:
 			xl(0) = x1;
 			xl(1) = x0;
 		      }
-
 		    if (y0 < y1)
 		      {
 			yl(0) = y0;
@@ -496,26 +565,6 @@ private:
 		    ap.zoom (xl, yl);
 		    mark_modified ();
 		  }
-	      }
-	    // one click -- select axes
-	    else if ( Fl::event_clicks () == 0)
-	      {
-		std::cout << "ca="<< h0.value ()<<"\n";
-		if (h0.ok ())
-		  fp.set_currentaxes (h0.value());
-		return 1;
-	      }
-	  }
-	else if (Fl::event_button () == 3)
-	  {
-	    graphics_object ax =
-	      gh_manager::get_object (fp.get_currentaxes ());
-	    if (ax && ax.isa ("axes"))
-	      {
-		axes::properties& ap =
-		  dynamic_cast<axes::properties&> (ax.get_properties ());
-		ap.unzoom ();
-		mark_modified ();
 	      }
 	  }
 	break;

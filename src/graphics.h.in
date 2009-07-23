@@ -2610,7 +2610,10 @@ public:
     ColumnVector coord2pixel (double x, double y, double z) const
     { return get_transform ().transform (x, y, z); }
 
-    void zoom (const Matrix& xl, const Matrix& yl);
+    void zoom_about_point (double x, double y, double factor,
+                           bool push_to_zoom_stack = true);
+    void zoom (const Matrix& xl, const Matrix& yl, bool push_to_zoom_stack = true);
+    void translate_view (double delta_x, double delta_y);
     void unzoom (void);
     void clear_zoom_stack (void);
 
@@ -3907,6 +3910,8 @@ private:
   void do_post_event (const graphics_event& e);
 };
 
+void get_children_limits (double& min_val, double& max_val, double& min_pos,
+                          const Matrix& kids, char limit_type);
 
 // This function is NOT equivalent to the scripting language function gcf.
 OCTINTERP_API graphics_handle gcf (void);

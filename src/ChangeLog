@@ -1,3 +1,9 @@
+2009-07-23  John W. Eaton  <jwe@octave.org>
+
+	* toplev.cc (IGNORE_EXCEPTION, SAFE_CALL): New macros.
+	(clean_up_and_exit, do_octave_atexit): Use SAFE_CALL to handle
+	exceptions while preparing to exit.
+
 2009-07-23  Jaroslav Hajek  <highegg@gmail.com>
 
 	* symtab.cc (get_dispatch_type): Omit first-arg dispatch, export.

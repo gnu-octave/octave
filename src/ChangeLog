@@ -1,3 +1,9 @@
+2009-07-23  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/chol.cc (Fcholupdate,
+	Fcholinsert, Fcholdelete, Fcholshift): Replace is_matrix_type ->
+	is_numeric_type.
+
 2009-07-23  John W. Eaton  <jwe@octave.org>
 
 	* toplev.cc (IGNORE_EXCEPTION, SAFE_CALL): New macros.

@@ -619,7 +619,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
   octave_value argr = args(0);
   octave_value argu = args(1);
 
-  if (argr.is_matrix_type () && argu.is_matrix_type ()
+  if (argr.is_numeric_type () && argu.is_numeric_type ()
       && (nargin < 3 || args(2).is_string ()))
     {
       octave_idx_type n = argr.rows ();
@@ -830,7 +830,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
   octave_value argj = args(1);
   octave_value argu = args(2);
 
-  if (argr.is_matrix_type () && argu.is_matrix_type ()
+  if (argr.is_numeric_type () && argu.is_numeric_type ()
       && argj.is_real_scalar ())
     {
       octave_idx_type n = argr.rows ();
@@ -1003,7 +1003,7 @@ return the Cholesky@tie{}factorization of @w{A(p,p)}, where @w{p = [1:j-1,j+1:n+
   octave_value argr = args(0);
   octave_value argj = args(1);
 
-  if (argr.is_matrix_type () && argj.is_real_scalar ())
+  if (argr.is_numeric_type () && argj.is_real_scalar ())
     {
       octave_idx_type n = argr.rows ();
       octave_idx_type j = argj.scalar_value ();
@@ -1141,7 +1141,7 @@ return the Cholesky@tie{}factorization of\n\
   octave_value argi = args(1);
   octave_value argj = args(2);
 
-  if (argr.is_matrix_type () && argi.is_real_scalar () && argj.is_real_scalar ())
+  if (argr.is_numeric_type () && argi.is_real_scalar () && argj.is_real_scalar ())
     {
       octave_idx_type n = argr.rows ();
       octave_idx_type i = argi.scalar_value ();

@@ -23,14 +23,14 @@
 ## Created: 2009-04-11
 
 function plot_stream = __gnuplot_open_stream__ (npipes, h)
-  cmd = gnuplot_binary ();
+  [prog, args] = gnuplot_binary ();
   if (npipes > 1)
-    [plot_stream(1), plot_stream(2), pid] = popen2 (cmd);
+    [plot_stream(1), plot_stream(2), pid] = popen2 (prog, args{:});
     if (pid < 0)
       error ("__gnuplot_open_stream__: failed to open connection to gnuplot.");
     endif
   else
-    plot_stream = popen (cmd, "w");
+    plot_stream = popen (sprintf ("%s ", prog, args{:}), "w");
     if (plot_stream < 0)
       error ("__gnuplot_open_stream__: failed to open connection to gnuplot.");
     endif

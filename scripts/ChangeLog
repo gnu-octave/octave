@@ -1,3 +1,8 @@
+2009-07-24  John W. Eaton  <jwe@octave.org>
+
+	* plot/gnuplot_binary.in: Accept arguments in addition to program name.
+	* plot/__gnuplot_open_stream__.m: Pass additional args to gnuplot.
+
 2009-07-23  Ben Abbott <bpabbott@mac.com>
 
 	* plot/legend.m: Add an hggroup demo using bar(). Include clf()

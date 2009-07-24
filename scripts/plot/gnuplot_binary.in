@@ -17,34 +17,44 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Loadable Function} {@var{val} =} gnuplot_binary ()
-## @deftypefnx {Loadable Function} {@var{old_val} =} gnuplot_binary (@var{new_val})
-## Query or set the name of the program invoked by the plot command.
+## @deftypefn {Loadable Function} {[@var{prog}, @var{args}] =} gnuplot_binary ()
+## @deftypefnx {Loadable Function} {[@var{old_prog}, @var{old_args}] =} gnuplot_binary (@var{new_prog}, @varg{arg1}, @dots{})
+## Query or set the name of the program invoked by the plot command
+## and any arguments to pass to it.  Previous arguments are returned
+## as a cell array.
 ## The default value @code{\"gnuplot\"}.  @xref{Installation}.
 ## @end deftypefn
 
 ## Author: jwe
 
-function retval = gnuplot_binary (new_val)
+function [prog, args] = gnuplot_binary (new_prog, varargin)
 
   persistent gp_binary = %OCTAVE_CONF_GNUPLOT%;
+  persistent gp_args = {};
 
   if (nargout > 0 || nargin == 0)
-    retval = gp_binary;
+    prog = gp_binary;
+    args = gp_args;
   endif
 
   if (nargin == 1)
-    if (ischar (new_val))
-      if (! isempty (new_val))
-	gp_binary = new_val;
+    if (ischar (new_prog))
+      if (! isempty (new_prog))
+	gp_binary = new_prog;
       else
 	error ("gnuplot_binary: value must not be empty");
       endif
     else
-      error ("gnuplot_binary: expecting arg to be a character string");
+      error ("gnuplot_binary: expecting program to be a character string");
     endif
-  elseif (nargin > 1)
-    print_usage ();
+  endif
+
+  if (nargin > 1)
+    if (iscellstr (varargin))
+      gp_args = varargin;
+    else
+      error ("gnuplot_binary: expecting arguments to be character strings");
+    endif
   endif
 
 endfunction

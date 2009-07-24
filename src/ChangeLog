@@ -1,5 +1,9 @@
 2009-07-24  Jaroslav Hajek  <highegg@gmail.com>
 
+	* DLD-FUNCIONS/cellfun.cc (Fcellfun): Avoid double error messages.
+
+2009-07-24  Jaroslav Hajek  <highegg@gmail.com>
+
 	* load-path.cc (load_path::do_any_class_method): New method.
 	* load-path.h (load_path::do_any_class_method): New method decl.
 	(load_path::any_class_method): New method.

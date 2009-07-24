@@ -500,14 +500,14 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
                     goto cellfun_err;
                 }
 
+              if (error_state)
+                goto cellfun_err;
+
               if (tmp.length() < nargout)
                 {
                   error ("cellfun: too many output arguments");
                   goto cellfun_err;
                 }
-
-              if (error_state)
-                break;
 
               if (count == 0)
                 {
@@ -584,14 +584,14 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
                     goto cellfun_err;
                 }
 
+              if (error_state)
+                goto cellfun_err;
+
               if (tmp.length() < nargout)
                 {
                   error ("cellfun: too many output arguments");
                   goto cellfun_err;
                 }
-
-              if (error_state)
-                break;
 
 
               for (int j = 0; j < nargout; j++)

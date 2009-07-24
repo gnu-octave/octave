@@ -108,6 +108,12 @@ public:
       ? instance->do_methods (class_name) : std::list<std::string> ();
   }
 
+  static bool any_class_method (const std::string& meth)
+  {
+    return instance_ok ()
+      ? instance->do_any_class_method (meth) : false;
+  }
+
   static std::string find_fcn (const std::string& fcn, std::string& dir_name)
   {
     return instance_ok ()
@@ -478,6 +484,8 @@ private:
 			      int type = M_FILE | OCT_FILE | MEX_FILE) const;
 
   std::list<std::string> do_methods (const std::string& class_name) const;
+
+  bool do_any_class_method (const std::string& meth) const;
 
   std::string do_find_file (const std::string& file) const;
 

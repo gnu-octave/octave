@@ -122,7 +122,8 @@ octave_fcn_handle::do_multi_index_op (int nargout,
 {
   octave_value_list retval;
 
-  out_of_date_check (fcn);
+  if (fcn.is_defined ())
+    out_of_date_check (fcn);
 
   if (disp.get () && ! args.empty ())
     {
@@ -155,6 +156,13 @@ octave_fcn_handle::do_multi_index_op (int nargout,
 
       if (ovfcn.is_defined ())
         retval = ovfcn.do_multi_index_op (nargout, args);
+      else if (fcn.is_undefined ())
+        {
+          if (ddt.empty ())
+            ddt = args(0).class_name ();
+
+          error ("no %s method to handle class %s", nm.c_str (), ddt.c_str ());
+        }
       else
         error ("invalid function handle");
     }
@@ -1429,15 +1437,32 @@ make_fcn_handle (const std::string& nm)
 	}
     }
 
+  bool handle_ok = false;
   octave_value f = symbol_table::find_function (tnm);
+
+  if (f.is_undefined ())
+    {
+      if (load_path::any_class_method (tnm))
+        handle_ok = true;
+      else
+        {
+          load_path::update ();
+          if (load_path::any_class_method (tnm))
+            handle_ok = true;
+        }
+    }
+  else
+    handle_ok = true;
+
   octave_function *fptr = f.is_defined () ? f.function_value () : 0;
 
-  if (fptr)
+
+  if (handle_ok)
     {
       // If it's a subfunction, private function, or class constructor,
       // we want no dispatch.
-      if (fptr->is_nested_function () || fptr->is_private_function ()
-          || fptr->is_class_constructor ())
+      if (fptr && (fptr->is_nested_function () || fptr->is_private_function ()
+          || fptr->is_class_constructor ()))
         retval = octave_value (new octave_fcn_handle (f, tnm));
       else
         {

@@ -1,3 +1,13 @@
+2009-07-24  Jaroslav Hajek  <highegg@gmail.com>
+
+	* load-path.cc (load_path::do_any_class_method): New method.
+	* load-path.h (load_path::do_any_class_method): New method decl.
+	(load_path::any_class_method): New method.
+	* ov-fcn-handle.cc (octave_fcn_handle::do_multi_index_op): Support
+	calls without non-overloaded base function.
+	(make_fcn_handle): Support creation without non-overloaded base
+	function.
+
 2009-07-23  Shai Ayal  <shaiay@users.sourceforge.net>
 
 	* DLD-FUNCTIONS/fltk_backend.cc (plot_window::pixel2axes_or_ca):

@@ -1091,6 +1091,28 @@ load_path::do_methods (const std::string& class_name) const
   return retval;
 }
 
+bool
+load_path::do_any_class_method (const std::string& meth) const
+{
+  bool retval = false;
+
+  //  update ();
+
+  for (const_method_map_iterator q = method_map.begin ();
+       q != method_map.end (); q++)
+    {
+      const fcn_map_type& m = q->second;
+
+      if (m.find (meth) != m.end ())
+        {
+          retval = true;
+          break;
+        }
+    }
+
+  return retval;
+}
+
 std::string
 load_path::do_find_file (const std::string& file) const
 {

@@ -41,6 +41,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov.h"
 #include "variables.h"
 
+#include "ov-cx-mat.h"
+#include "ov-flt-cx-mat.h"
 #include "ov-re-sparse.h"
 #include "ov-cx-sparse.h"
 
@@ -766,9 +768,20 @@ maybe_warn_string_concat (bool all_dq_strings_p, bool all_sq_strings_p)
     { \
       TYPE result (dv); \
  \
-      SINGLE_TYPE_CONCAT(TYPE, EXTRACTOR); \
+      SINGLE_TYPE_CONCAT (TYPE, EXTRACTOR); \
  \
       retval = result; \
+    } \
+  while (0)
+
+#define DO_SINGLE_TYPE_CONCAT_NO_MUTATE(TYPE, EXTRACTOR, OV_TYPE) \
+  do \
+    { \
+      TYPE result (dv); \
+ \
+      SINGLE_TYPE_CONCAT (TYPE, EXTRACTOR); \
+ \
+      retval = octave_value (new OV_TYPE (result)); \
     } \
   while (0)
 
@@ -874,14 +887,18 @@ tree_matrix::rvalue1 (int)
 	      if (all_real_p)
 		DO_SINGLE_TYPE_CONCAT (SparseMatrix, sparse_matrix_value);
 	      else
-		DO_SINGLE_TYPE_CONCAT (SparseComplexMatrix, sparse_complex_matrix_value);
+		DO_SINGLE_TYPE_CONCAT_NO_MUTATE (SparseComplexMatrix,
+						 sparse_complex_matrix_value,
+						 octave_sparse_complex_matrix);
 	    }
 	  else
 	    {
 	      if (all_real_p)
 		DO_SINGLE_TYPE_CONCAT (NDArray, array_value);
 	      else
-		DO_SINGLE_TYPE_CONCAT (ComplexNDArray, complex_array_value);
+		DO_SINGLE_TYPE_CONCAT_NO_MUTATE (ComplexNDArray,
+						 complex_array_value,
+						 octave_complex_matrix);
 	    }
 	}
       else if (result_type == "single")
@@ -889,8 +906,9 @@ tree_matrix::rvalue1 (int)
 	  if (all_real_p)
 	    DO_SINGLE_TYPE_CONCAT (FloatNDArray, float_array_value);
 	  else
-	    DO_SINGLE_TYPE_CONCAT (FloatComplexNDArray, 
-				   float_complex_array_value);
+	    DO_SINGLE_TYPE_CONCAT_NO_MUTATE (FloatComplexNDArray,
+					     float_complex_array_value,
+					     octave_float_complex_matrix);
 	}
       else if (result_type == "char")
 	{

@@ -93,6 +93,8 @@ octave_ieee_init (void)
 #if defined (__alpha__) && defined (__osf__)
 	extern unsigned int DQNAN[2];
 	octave_NaN = (*(X_CAST(double *, DQNAN)));
+#elif defined (__NetBSD__)
+	octave_NaN = nan ("");
 #else
 	octave_NaN = tmp_inf / tmp_inf;
         // try to ensure that lo_ieee_sign gives false for a NaN.
@@ -139,7 +141,11 @@ octave_ieee_init (void)
 	  }
 #endif
 
+#if defined (__NetBSD__)
+	octave_Float_NaN = nanf ("");
+#else
 	octave_Float_NaN = float_tmp_inf / float_tmp_inf;
+#endif
 	octave_Float_Inf = float_tmp_inf;
 
 	lo_ieee_float tf;

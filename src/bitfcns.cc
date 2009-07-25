@@ -381,7 +381,7 @@ bitshift (float a, int n, int64_t mask)
     { \
       int bits_in_type = octave_ ## T :: nbits (); \
       T ## NDArray m = m_arg.T ## _array_value (); \
-	octave_ ## T mask = ~0ULL; \
+	octave_ ## T mask = octave_ ## T::max (); \
       if ((N) < bits_in_type) \
 	mask = bitshift (mask, (N) - bits_in_type); \
       else if ((N) < 1) \
@@ -395,11 +395,12 @@ bitshift (float a, int n, int64_t mask)
     { \
       int bits_in_type = octave_ ## T :: nbits (); \
       T ## NDArray m = m_arg.T ## _array_value (); \
-	octave_ ## T mask = -1; \
+	octave_ ## T mask = octave_ ## T::max (); \
       if ((N) < bits_in_type) \
 	mask = bitshift (mask, (N) - bits_in_type); \
       else if ((N) < 1) \
 	mask = 0; \
+      mask = mask | octave_ ## T :: min (); /* FIXME: 2's complement only? */ \
       DO_BITSHIFT (T); \
     } \
   while (0)

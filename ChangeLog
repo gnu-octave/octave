@@ -1,3 +1,7 @@
+2009-07-16  John W. Eaton  <jwe@octave.org>
+
+	* Makeconf.in (MAGICK_LIBS): Don't pass --ldflags to $(MAGICK_CONFIG).
+
 2009-07-09  John W. Eaton  <jwe@octave.org>
 
 	* configure.in: Don't use system strftime on MinGW systems.

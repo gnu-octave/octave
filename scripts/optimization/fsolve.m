@@ -135,7 +135,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
   endif    
 
   if (ischar (fcn))
-    fcn = str2func (fcn);
+    fcn = str2func (fcn, "global");
   endif
 
   xsiz = size (x0);

@@ -83,7 +83,7 @@ function [x, fval, info, output, grad, hess] = fminunc (fcn, x0, options = struc
   endif    
 
   if (ischar (fcn))
-    fcn = str2func (fcn);
+    fcn = str2func (fcn, "global");
   endif
 
   xsiz = size (x0);

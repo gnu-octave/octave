@@ -75,7 +75,7 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
   endif
 
   if (ischar (fun))
-    fun = str2func (fun);
+    fun = str2func (fun, "global");
   endif
 
   ## TODO

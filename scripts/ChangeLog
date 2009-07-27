@@ -1,3 +1,9 @@
+2009-07-27  Jaroslav Hajek  <highegg@gmail.com>
+
+	* optimization/fzero.m: Use "global" parameter in str2func.
+	* optimization/fsolve.m: Ditto.
+	* optimization/fminunc.m: Ditto.
+
 2009-07-24  John W. Eaton  <jwe@octave.org>
 
 	* plot/gnuplot_binary.in: Accept arguments in addition to program name.

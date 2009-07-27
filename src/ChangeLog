@@ -1,3 +1,17 @@
+2009-07-27  Jaroslav Hajek  <highegg@gmail.com>
+
+	* symtab.cc (symbol_table::fcn_info::fcn_info_rep::xfind,
+	symbol_table::fcn_info::fcn_info_rep::find,
+	symbol_table::fcn_info::fcn_info_rep::find_function,
+	symbol_table::fcn_info::find,
+	symbol_table::fcn_info::find_function,
+	symbol_table::find, symbol_table::do_find,
+	symbol_table::find_function):
+	Add local_funcs parameter.
+	* symtab.h: Update decls.
+	* ov-fcn-handle.cc (make_fcn_handle): Add local_funcs parameter.
+	* ov-fcn-handle.h: Update decls.
+
 2009-07-24  John W. Eaton  <jwe@octave.org>
 
 	* pt-mat.cc (DO_SINGLE_TYPE_CONCAT_NO_MUTATE): New macro.

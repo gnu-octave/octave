@@ -484,9 +484,10 @@ get_dispatch_type (const octave_value_list& args)
 //   built-in function
 
 octave_value
-symbol_table::fcn_info::fcn_info_rep::find (const octave_value_list& args)
+symbol_table::fcn_info::fcn_info_rep::find (const octave_value_list& args,
+                                            bool local_funcs)
 {
-  octave_value retval = xfind (args);
+  octave_value retval = xfind (args, local_funcs);
 
   if (! retval.is_defined ())
     {
@@ -496,89 +497,93 @@ symbol_table::fcn_info::fcn_info_rep::find (const octave_value_list& args)
 
       load_path::update ();
 
-      retval = xfind (args);
+      retval = xfind (args, local_funcs);
     }
 
   return retval;
 }
 
 octave_value
-symbol_table::fcn_info::fcn_info_rep::xfind (const octave_value_list& args)
+symbol_table::fcn_info::fcn_info_rep::xfind (const octave_value_list& args,
+                                             bool local_funcs)
 {
-  // Subfunction.  I think it only makes sense to check for
-  // subfunctions if we are currently executing a function defined
-  // from a .m file.
-
-  scope_val_iterator r = subfunctions.find (xcurrent_scope);
-
-  octave_function *curr_fcn = 0;
-
-  if (r != subfunctions.end ())
+  if (local_funcs)
     {
-      // FIXME -- out-of-date check here.
+      // Subfunction.  I think it only makes sense to check for
+      // subfunctions if we are currently executing a function defined
+      // from a .m file.
 
-      return r->second;
-    }
-  else
-    {
-      curr_fcn = octave_call_stack::current ();
+      scope_val_iterator r = subfunctions.find (xcurrent_scope);
+
+      octave_function *curr_fcn = 0;
+
+      if (r != subfunctions.end ())
+        {
+          // FIXME -- out-of-date check here.
+
+          return r->second;
+        }
+      else
+        {
+          curr_fcn = octave_call_stack::current ();
+
+          if (curr_fcn)
+            {
+              scope_id pscope = curr_fcn->parent_fcn_scope ();
+
+              if (pscope > 0)
+                {
+                  r = subfunctions.find (pscope);
+
+                  if (r != subfunctions.end ())
+                    {
+                      // FIXME -- out-of-date check here.
+
+                      return r->second;
+                    }
+                }
+            }
+        }
+
+      // Private function.
+
+      if (! curr_fcn)
+        curr_fcn = octave_call_stack::current ();
 
       if (curr_fcn)
-	{
-	  scope_id pscope = curr_fcn->parent_fcn_scope ();
+        {
+          std::string dir_name = curr_fcn->dir_name ();
 
-	  if (pscope > 0)
-	    {
-	      r = subfunctions.find (pscope);
+          if (! dir_name.empty ())
+            {
+              str_val_iterator q = private_functions.find (dir_name);
 
-	      if (r != subfunctions.end ())
-		{
-		  // FIXME -- out-of-date check here.
+              if (q == private_functions.end ())
+                {
+                  octave_value val = load_private_function (dir_name);
 
-		  return r->second;
-		}
-	    }
-	}
-    }
+                  if (val.is_defined ())
+                    return val;
+                }
+              else
+                {
+                  octave_value& fval = q->second;
 
-  // Private function.
+                  if (fval.is_defined ())
+                    out_of_date_check_internal (fval);
 
-  if (! curr_fcn)
-    curr_fcn = octave_call_stack::current ();
+                  if (fval.is_defined ())
+                    return fval;
+                  else
+                    {
+                      octave_value val = load_private_function (dir_name);
 
-  if (curr_fcn)
-    {
-      std::string dir_name = curr_fcn->dir_name ();
-
-      if (! dir_name.empty ())
-	{
-	  str_val_iterator q = private_functions.find (dir_name);
-
-	  if (q == private_functions.end ())
-	    {
-	      octave_value val = load_private_function (dir_name);
-
-	      if (val.is_defined ())
-		return val;
-	    }
-	  else
-	    {
-	      octave_value& fval = q->second;
-
-	      if (fval.is_defined ())
-		out_of_date_check_internal (fval);
-
-	      if (fval.is_defined ())
-		return fval;
-	      else
-		{
-		  octave_value val = load_private_function (dir_name);
-
-		  if (val.is_defined ())
-		    return val;
-		}
-	    }
-	}
+                      if (val.is_defined ())
+                        return val;
+                    }
+                }
+            }
+        }
     }
 
   // Class constructors.  The class name and function name are the same.
@@ -1030,20 +1035,15 @@ symbol_table::fcn_info::fcn_info_rep::dump
 }
 
 octave_value
-symbol_table::fcn_info::find (const octave_value_list& args)
-{
-  return rep->find (args);
-}
-
-octave_value
 symbol_table::find (const std::string& name, 
                     const octave_value_list& args, 
-                    bool skip_variables)
+                    bool skip_variables,
+                    bool local_funcs)
 {
   symbol_table *inst = get_instance (xcurrent_scope);
 
   return inst
-    ? inst->do_find (name, args, skip_variables)
+    ? inst->do_find (name, args, skip_variables, local_funcs)
     : octave_value ();
 }
 
@@ -1057,7 +1057,8 @@ symbol_table::builtin_find (const std::string& name)
 
 octave_value
 symbol_table::find_function (const std::string& name,
-                             const octave_value_list& args)
+                             const octave_value_list& args,
+                             bool local_funcs)
 {
   octave_value retval;
 
@@ -1078,13 +1079,14 @@ symbol_table::find_function (const std::string& name,
       size_t pos = name.find_first_of (Vfilemarker);
 
       if (pos == std::string::npos)
-	retval = find (name, args, true);
+	retval = find (name, args, true, local_funcs);
       else
 	{
 	  std::string fcn_scope = name.substr (0, pos);
 	  scope_id stored_scope = xcurrent_scope;
 	  xcurrent_scope = xtop_scope;
-	  octave_value parent = find_function (name.substr(0, pos));
+	  octave_value parent = find_function (name.substr(0, pos),
+                                               octave_value_list (), false);
 
 	  if (parent.is_defined ())
 	    {
@@ -1206,7 +1208,8 @@ symbol_table::stash_dir_name_for_subfunctions (scope_id scope,
 octave_value
 symbol_table::do_find (const std::string& name, 
                        const octave_value_list& args,
-		       bool skip_variables)
+		       bool skip_variables,
+                       bool local_funcs)
 {
   octave_value retval;
 
@@ -1237,12 +1240,12 @@ symbol_table::do_find (const std::string& name,
   fcn_table_iterator p = fcn_table.find (name);
 
   if (p != fcn_table.end ())
-    return p->second.find (args);
+    return p->second.find (args, local_funcs);
   else
     {
       fcn_info finfo (name);
 
-      octave_value fcn = finfo.find (args);
+      octave_value fcn = finfo.find (args, local_funcs);
 
       if (fcn.is_defined ())
 	fcn_table[name] = finfo;

@@ -145,10 +145,11 @@ protected:
   // to dispatch at all.
   std::auto_ptr<str_ov_map> disp;
 
-  friend octave_value make_fcn_handle (const std::string &);
+  friend octave_value make_fcn_handle (const std::string &, bool);
 };
 
-extern octave_value make_fcn_handle (const std::string& nm);
+extern octave_value make_fcn_handle (const std::string& nm,
+                                     bool local_funcs = true);
 
 #endif
 

@@ -538,7 +538,7 @@ public:
 
       octave_value load_class_method (const std::string& dispatch_type);
 
-      octave_value find (const octave_value_list& args = octave_value_list ());
+      octave_value find (const octave_value_list& args, bool local_funcs);
 
       octave_value builtin_find (void);
 
@@ -553,9 +553,9 @@ public:
 	return function_on_path.is_defined ();
       }
 
-      octave_value find_function (const octave_value_list& args = octave_value_list ())
+      octave_value find_function (const octave_value_list& args, bool local_funcs)
       {
-	return find (args);
+	return find (args, local_funcs);
       }
 
       void lock_subfunction (scope_id scope)
@@ -718,7 +718,7 @@ public:
 
     private:
 
-      octave_value xfind (const octave_value_list& args);
+      octave_value xfind (const octave_value_list& args, bool local_funcs);
 
       octave_value x_builtin_find (void);
 
@@ -759,7 +759,11 @@ public:
 	delete rep;
     }
 
-    octave_value find (const octave_value_list& args);
+    octave_value find (const octave_value_list& args = octave_value_list (),
+                       bool local_funcs = true)
+    {
+      return rep->find (args, local_funcs);
+    }
 
     octave_value builtin_find (void)
     {
@@ -791,14 +795,10 @@ public:
       return rep->is_user_function_defined ();
     }
 
-    octave_value find_function (void)
+    octave_value find_function (const octave_value_list& args = octave_value_list (),
+                                bool local_funcs = true)
     {
-      return rep->find_function ();
-    }
-
-    octave_value find_function (const octave_value_list& args)
-    {
-      return rep->find_function (args);
+      return rep->find_function (args, local_funcs);
     }
 
     void lock_subfunction (scope_id scope)
@@ -1033,7 +1033,8 @@ public:
   static octave_value
   find (const std::string& name, 
         const octave_value_list& args = octave_value_list (),
-	bool skip_variables = false);
+	bool skip_variables = false,
+        bool local_funcs = true);
 
   static octave_value builtin_find (const std::string& name);
 
@@ -1172,7 +1173,8 @@ public:
 
   static octave_value
   find_function (const std::string& name, 
-                 const octave_value_list& args = octave_value_list ());
+                 const octave_value_list& args = octave_value_list (),
+                 bool local_funcs = true);
 
   static octave_value find_user_function (const std::string& name)
   {
@@ -1973,7 +1975,7 @@ private:
 
   octave_value
   do_find (const std::string& name, const octave_value_list& args,
-           bool skip_variables);
+           bool skip_variables, bool local_funcs);
 
   octave_value do_builtin_find (const std::string& name);
 

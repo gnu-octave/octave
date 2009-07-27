@@ -1305,7 +1305,7 @@ get_builtin_classes (void)
 }
 
 octave_value
-make_fcn_handle (const std::string& nm)
+make_fcn_handle (const std::string& nm, bool local_funcs)
 {
   octave_value retval;
 
@@ -1438,7 +1438,8 @@ make_fcn_handle (const std::string& nm)
     }
 
   bool handle_ok = false;
-  octave_value f = symbol_table::find_function (tnm);
+  octave_value f = symbol_table::find_function (tnm, octave_value_list (),
+                                                local_funcs);
 
   if (f.is_undefined ())
     {
@@ -1656,17 +1657,21 @@ the function handle @var{fcn_handle}.\n\
 DEFUN (str2func, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} str2func (@var{fcn_name})\n\
+@deftypefnx {Built-in Function} {} str2func (@var{fcn_name}, \"global\")\n\
 Return a function handle constructed from the string @var{fcn_name}.\n\
+If the optional \"global\" argument is passed, locally visible functions\n\
+are ignored in the lookup.\n\
 @end deftypefn")
 {
   octave_value retval;
+  int nargin = args.length ();
 
-  if (args.length () == 1)
+  if (nargin == 1 || nargin == 2)
     {
       std::string nm = args(0).string_value ();
 
       if (! error_state)
-	retval = make_fcn_handle (nm);
+	retval = make_fcn_handle (nm, nargin != 2);
       else
 	error ("str2func: expecting string as first argument");
     }

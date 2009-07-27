@@ -31,7 +31,10 @@ Summary of important user-visible changes for version 3.3:
       assert (2*linspace (1, 5, 5), 2*(1:5))
       assert (zeros (0, 0), [])
       assert (2*ones (1, 5), (2) (ones (1,5)))
-    
+
+ ** Function handles are now aware of overloaded functions. If a function
+    is overloaded, the handle determines at the time of its reference which
+    function to call. A non-overloaded version does not need to exist.
 
 Summary of important user-visible changes for version 3.2:
 ---------------------------------------------------------

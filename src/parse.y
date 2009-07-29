@@ -1138,7 +1138,10 @@ param_list_beg	: '('
 		;
 
 param_list_end	: ')'
-		  { lexer_flags.looking_at_parameter_list = false; }
+		  {
+		    lexer_flags.looking_at_parameter_list = false;
+		    lexer_flags.looking_for_object_index = false;
+		  }
 		;
 
 param_list	: param_list_beg param_list1 param_list_end

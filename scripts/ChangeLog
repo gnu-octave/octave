@@ -1,3 +1,7 @@
+2009-07-29  Jaroslav Hajek  <highegg@gmail.com>
+
+	* plot/gnuplot_binary.m: Fix typo.
+
 2009-07-27  Jaroslav Hajek  <highegg@gmail.com>
 
 	* optimization/fzero.m: Use "global" parameter in str2func.

@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Loadable Function} {[@var{prog}, @var{args}] =} gnuplot_binary ()
-## @deftypefnx {Loadable Function} {[@var{old_prog}, @var{old_args}] =} gnuplot_binary (@var{new_prog}, @varg{arg1}, @dots{})
+## @deftypefnx {Loadable Function} {[@var{old_prog}, @var{old_args}] =} gnuplot_binary (@var{new_prog}, @var{arg1}, @dots{})
 ## Query or set the name of the program invoked by the plot command
 ## and any arguments to pass to it.  Previous arguments are returned
 ## as a cell array.

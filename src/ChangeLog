@@ -1,5 +1,9 @@
 2009-07-29  John W. Eaton  <jwe@octave.org>
 
+	* ov-float.cc, ov-flt-re-mat.cc, ov-re-mat.cc, ov-re-sparse.cc,
+	ov-scalar.cc: Use complex function for acos mapper if arg is out
+	of range [-1, 1].
+
 	* ov-bool.cc (octave_bool::load_ascii): Call template function to
 	read value.
 	* ov-scalar.cc (octave_scalar::load_ascii): Likewise.

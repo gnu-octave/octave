@@ -149,9 +149,18 @@ octave_fcn_handle::do_multi_index_op (int nargout,
         }
       else
         {
-          octave_value method = symbol_table::find_method (nm, ddt);
-          if (method.is_defined ())
-            ovfcn = method;
+          str_ov_map::iterator pos = disp->find (ddt);
+          if (pos != disp->end ())
+            {
+              out_of_date_check (pos->second, ddt);
+              ovfcn = pos->second;
+            }
+          else
+            {
+              octave_value method = symbol_table::find_method (nm, ddt);
+              if (method.is_defined ())
+                (*disp)[ddt] = ovfcn = method;
+            }
         }
 
       if (ovfcn.is_defined ())

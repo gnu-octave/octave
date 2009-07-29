@@ -1,3 +1,8 @@
+2009-07-29  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-fcn-handle.cc (octave_fcn_handle::do_multi_index_op):
+	Cache lookups also for classes.
+
 2009-07-28  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/cellfun.cc (Fcellfun): Support auto-expanding scalar

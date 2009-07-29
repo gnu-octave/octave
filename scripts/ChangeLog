@@ -1,5 +1,7 @@
 2009-07-29  Ben Abbott <bpabbott@mac.com>
 
+	* plot/__go_draw_axes__.m: Fix ticklabels specified as 2D character
+	array.
 	* plot/__go_draw_axes__.m: Ignore fontnames for the Lua-TikZ terminal.
 	* plot/gnuplot_drawnow.m: Support the gnuplot terminal Lua-TikZ.
 	* plot/print.m: Support the gnuplot terminal Lua-TikZ.

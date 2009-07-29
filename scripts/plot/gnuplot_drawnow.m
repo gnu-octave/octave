@@ -202,7 +202,7 @@ function [enhanced, implicit_margin] = gnuplot_set_term (plot_stream, new_stream
           ## Set terminal size.
           terminals_with_size = {"emf", "gif", "jpeg", "latex", "pbm", ...
                                  "pdf", "png", "postscript", "svg", ...
-                                 "epslatex", "pstex", "pslatex"};
+                                 "epslatex", "pstex", "pslatex", "tikz"};
           if (__gnuplot_has_feature__ ("x11_figure_position"))
             terminals_with_size{end+1} = "x11";
           endif
@@ -212,6 +212,8 @@ function [enhanced, implicit_margin] = gnuplot_set_term (plot_stream, new_stream
           if (any (strncmpi (term, terminals_with_size, 3)))
 	    if (term_units_are_pixels (term))
               size_str = sprintf ("size %d,%d", gnuplot_size);
+	    elseif (strcmp (term, "tikz"))
+              size_str = sprintf ("size %.15gin,%.15gin", gnuplot_size);
 	    else
               size_str = sprintf ("size %.15g,%.15g", gnuplot_size);
 	    endif

@@ -1356,7 +1356,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
 endfunction
 
 function fontspec = create_fontspec (f, s, gp_term)
-  if (strcmp (f, "*"))
+  if (strcmp (f, "*") || strcmp (gp_term, "tikz"))
     fontspec = sprintf ("font \",%d\"", s);
   else
     fontspec = sprintf ("font \"%s,%d\"", f, s);

@@ -70,6 +70,8 @@
 ## processed directly by @LaTeX{}.  The other formats are intended to
 ## be included in a @LaTeX{} (or @TeX{}) document.  The @code{tex} device
 ## is the same as the @code{epslatex} device.
+##   @item tikz
+##     Generate a LaTeX file using gnuplot's Lua/TikZ terminal.
 ##   @item ill
 ##   @itemx aifm
 ##     Adobe Illustrator
@@ -314,7 +316,7 @@ function print (varargin)
 		"gif", "pbm", "dxf", "mf", "svg", "hpgl", ...
 		"ps", "ps2", "psc", "psc2", "eps", "eps2", ...
 		"epsc", "epsc2", "emf", "pdf", "pslatex", ...
-		"epslatex", "epslatexstandalone", "pstex"};
+		"epslatex", "epslatexstandalone", "pstex", "tikz"};
     if (! any (strcmp (dev, dev_list)) && have_ghostscript)
       ghostscript_output = name;
       ghostscript_device = dev;
@@ -387,7 +389,16 @@ function print (varargin)
       if (! isempty (fontsize))
         options = cstrcat (options, " ", fontsize);
       endif
-      
+
+    elseif (strcmp (dev, "tikz"))
+      if (! isempty (font) && ! isempty (fontsize))
+        options = cstrcat (options, "\"", font, ",", fontsize, "\" ");
+      elseif (! isempty (font))
+        options = cstrcat (options, "\"", font, "\" ");
+      else
+        options = "";
+      endif
+
     elseif (strcmp (dev, "aifm") || strcmp (dev, "corel"))
       ## Adobe Illustrator, CorelDraw
       if (use_color >= 0)

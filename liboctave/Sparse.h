@@ -33,6 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "Array.h"
 #include "Array2.h"
 #include "dim-vector.h"
+#include "lo-error.h"
 #include "lo-utils.h"
 
 #include "oct-sort.h"
@@ -130,6 +131,8 @@ protected:
     void maybe_compress (bool remove_zeros);
 
     void change_length (octave_idx_type nz);
+
+    bool indices_ok (void) const;
 
   private:
 
@@ -565,6 +568,8 @@ public:
 
     return result;
   }
+
+  bool indices_ok (void) const { return rep->indices_ok (); }
 };
 
 // NOTE: these functions should be friends of the Sparse<T> class and
@@ -578,6 +583,98 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs);
 template <class LT, class RT>
 /* friend */ int
 assign1 (Sparse<LT>& lhs, const Sparse<RT>& rhs);
+
+template<typename T>
+std::istream&
+read_sparse_matrix (std::istream& is, Sparse<T>& a,
+		    T (*read_fcn) (std::istream&))
+{
+  octave_idx_type nr = a.rows ();
+  octave_idx_type nc = a.cols ();
+  octave_idx_type nz = a.nzmax ();
+
+  if (nr > 0 && nc > 0)
+    {
+      octave_idx_type itmp;
+      octave_idx_type jtmp;
+      octave_idx_type iold = 0;
+      octave_idx_type jold = 0;
+      octave_idx_type ii = 0;
+      T tmp;
+       
+      a.cidx (0) = 0;
+      for (octave_idx_type i = 0; i < nz; i++)
+	{
+	  is >> itmp;
+	  itmp--;
+
+	  if (itmp < iold)
+	    {
+	      (*current_liboctave_error_handler)
+		("invalid sparse matrix: row indices must appear in ascending order in each column");
+	      is.setstate (std::ios::failbit);
+	      goto done;
+	    }
+
+	  if (itmp < 0 || itmp >= nr)
+	    {
+	      (*current_liboctave_error_handler)
+		("invalid sparse matrix: row index = %d out of range",
+		 itmp + 1);
+	      is.setstate (std::ios::failbit);
+	      goto done;
+	    }
+
+
+	  iold = itmp;
+
+	  is >> jtmp;
+	  jtmp--;
+
+	  if (jtmp < jold)
+	    {
+	      (*current_liboctave_error_handler)
+		("invalid sparse matrix: column indices must appear in ascending order");
+	      is.setstate (std::ios::failbit);
+	      goto done;
+	    }
+
+	  if (jtmp < 0 || jtmp >= nc)
+	    {
+	      (*current_liboctave_error_handler)
+		("invalid sparse matrix: column index = %d out of range",
+		 jtmp + 1);
+	      is.setstate (std::ios::failbit);
+	      goto done;
+	    }
+
+	  tmp = read_fcn (is);
+	  
+	  if (is)
+	    {
+	      if (jold != jtmp)
+		{
+		  for (octave_idx_type j = jold; j < jtmp; j++)
+		    a.cidx(j+1) = ii;
+		  
+		  jold = jtmp;
+		  iold = 0;
+		}
+	      a.data (ii) = tmp;
+	      a.ridx (ii++) = itmp;
+	    }
+	  else
+	    goto done;
+	}
+
+      for (octave_idx_type j = jold; j < nc; j++)
+	a.cidx(j+1) = ii;
+    }
+  
+ done:
+
+  return is;
+}
 
 #define INSTANTIATE_SPARSE_ASSIGN(LT, RT, API) \
   template API int assign (Sparse<LT>&, const Sparse<RT>&); \

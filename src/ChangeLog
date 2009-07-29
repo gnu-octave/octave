@@ -1,3 +1,20 @@
+2009-07-29  John W. Eaton  <jwe@octave.org>
+
+	* ov-bool.cc (octave_bool::load_ascii): Call template function to
+	read value.
+	* ov-scalar.cc (octave_scalar::load_ascii): Likewise.
+	* ov-complex.cc (octave_complex::load_ascii): Likewise.
+	* ov-float.cc (octave_float_scalar::load_ascii): Likewise.
+	* ov-flt-complex.cc (octave_float_complex::load_ascii): Likewise.
+	* ls-mat-ascii.cc (read_mat_ascii_data): Likewise.
+
+	* ov-re-sparse.cc (octave_sparse_matrix::load_binary,
+	octave_sparse_matrix::load_hdf5): Perform sanity check on indices.
+	* ov-cx-sparse.cc (octave_sparse_complex_matrix::load_binary,
+	octave_sparse_complex_matrix::load_hdf5): Likewise.
+	* ov-bool-sparse.cc (octave_sparse_bool_matrix::load_binary,
+	octave_sparse_bool_matrix::load_hdf5): Likewise.
+
 2009-07-29  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-fcn-handle.cc (octave_fcn_handle::do_multi_index_op):

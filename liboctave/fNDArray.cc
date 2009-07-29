@@ -925,7 +925,7 @@ operator >> (std::istream& is, FloatNDArray& a)
       float tmp;
       for (octave_idx_type i = 0; i < nel; i++)
 	  {
-	    tmp = octave_read_float (is);
+	    tmp = octave_read_value<float> (is);
 	    if (is)
 	      a.elem (i) = tmp;
 	    else

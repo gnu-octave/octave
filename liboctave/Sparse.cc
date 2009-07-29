@@ -43,6 +43,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "Sparse.h"
 #include "sparse-sort.h"
+#include "sparse-util.h"
 #include "oct-spparms.h"
 
 template <class T>
@@ -196,6 +197,13 @@ Sparse<T>::SparseRep::change_length (octave_idx_type nz)
 
       nzmx = nz;
     }
+}
+
+template <class T>
+bool
+Sparse<T>::SparseRep::indices_ok (void) const
+{
+  return sparse_indices_ok (r, c, nrows, ncols, nnz ());
 }
 
 template <class T>

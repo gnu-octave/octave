@@ -26,7 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <cstdio>
 
-#include <iosfwd>
+#include <iostream>
 #include <string>
 
 #include "oct-cmplx.h"
@@ -62,14 +62,47 @@ extern "C" OCTINTERP_API int octave_strcasecmp (const char *s1, const char *s2);
 
 extern "C" OCTINTERP_API int octave_strncasecmp (const char *s1, const char *s2, size_t n);
 
-extern OCTAVE_API double octave_read_double (std::istream& is);
-extern OCTAVE_API Complex octave_read_complex (std::istream& is);
+template <typename T>
+T
+octave_read_value (std::istream& is)
+{
+  T retval;
+  is >> retval;
+  return retval;
+}
+
+template <> OCTAVE_API double octave_read_value (std::istream& is);
+template <> OCTAVE_API Complex octave_read_value (std::istream& is);
+template <> OCTAVE_API float octave_read_value (std::istream& is);
+template <> OCTAVE_API FloatComplex octave_read_value (std::istream& is);
+
+// The next four functions are provided for backward compatibility.
+inline double
+octave_read_double (std::istream& is)
+{
+  return octave_read_value<double> (is);
+}
+
+inline Complex
+octave_read_complex (std::istream& is)
+{
+  return octave_read_value<Complex> (is);
+}
+
+inline float
+octave_read_float (std::istream& is)
+{
+  return octave_read_value<float> (is);
+}
+
+inline FloatComplex
+octave_read_float_complex (std::istream& is)
+{
+  return octave_read_value<FloatComplex> (is);
+}
 
 extern OCTAVE_API void octave_write_double (std::ostream& os, double dval);
 extern OCTAVE_API void octave_write_complex (std::ostream& os, const Complex& cval);
-
-extern OCTAVE_API float octave_read_float (std::istream& is);
-extern OCTAVE_API FloatComplex octave_read_float_complex (std::istream& is);
 
 extern OCTAVE_API void octave_write_float (std::ostream& os, float dval);
 extern OCTAVE_API void octave_write_float_complex (std::ostream& os, const FloatComplex& cval);

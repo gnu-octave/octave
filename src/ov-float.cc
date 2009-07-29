@@ -139,7 +139,7 @@ octave_float_scalar::save_ascii (std::ostream& os)
 bool 
 octave_float_scalar::load_ascii (std::istream& is)
 {
-  scalar = octave_read_float (is);
+  scalar = octave_read_value<float> (is);
   if (!is)
     {
       error ("load: failed to load scalar constant");

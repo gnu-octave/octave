@@ -180,47 +180,9 @@ operator << (std::ostream& os, const SparseBoolMatrix& a)
 std::istream&
 operator >> (std::istream& is, SparseBoolMatrix& a)
 {
-  octave_idx_type nr = a.rows ();
-  octave_idx_type nc = a.cols ();
-  octave_idx_type nz = a.nzmax ();
+  typedef SparseBoolMatrix::element_type elt_type;
 
-  if (nr > 0 && nc > 0)
-    {
-      octave_idx_type itmp, jtmp, jold = 0;
-      bool tmp;
-      octave_idx_type ii = 0;
-       
-      a.cidx (0) = 0;
-      for (octave_idx_type i = 0; i < nz; i++)
-	{
-	  is >> itmp;
-	  itmp--;
-	  is >> jtmp;
-	  jtmp--;
-	  is >> tmp;
-	  if (is)
-	    {
-	      if (jold != jtmp)
-		{
-		  for (octave_idx_type j = jold; j < jtmp; j++)
-		    a.cidx(j+1) = ii;
-		  
-		  jold = jtmp;
-		}
-	      a.data (ii) = tmp;
-	      a.ridx (ii++) = itmp;
-	    }
-	  else
-	    goto done;
-	}
-
-      for (octave_idx_type j = jold; j < nc; j++)
-	a.cidx(j+1) = ii;
-    }
-
- done:
-
-  return is;
+  return read_sparse_matrix<elt_type> (is, a, octave_read_value<bool>);
 }
 
 SparseBoolMatrix

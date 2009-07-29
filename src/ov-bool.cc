@@ -127,7 +127,7 @@ octave_bool::save_ascii (std::ostream& os)
 bool 
 octave_bool::load_ascii (std::istream& is)
 {
-  scalar = (octave_read_double (is) != 0.);
+  scalar = (octave_read_value<double> (is) != 0.);
 
   if (!is)
     {

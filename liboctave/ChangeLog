@@ -1,3 +1,27 @@
+2009-07-29  John W. Eaton  <jwe@octave.org>
+
+	* fMatrix.cc (operator >>): Use template function to read value.
+	* fNDArray.cc (operator >>): Likeise.
+	* fCMatrix.cc (operator >>): Use template function to read value.
+	* fCNDArray.cc (operator >>): Likeise.
+	* dMatrix.cc (operator >>): Use template function to read value.
+	* dNDArray.cc (operator >>): Likeise.
+	* CMatrix.cc (operator >>): Use template function to read value.
+	* CNDArray.cc (operator >>): Likeise.
+
+	* lo-utils.cc, lo-utils.h (octave_read_value): New template
+	(octave_read_value<double>, octave_read_value<Complex>):
+	Provide specializations.
+	(octave_read_double, octave_read_complex, octave_read_float,
+	octave_rread_float_complex): Define in terms of template functions.
+	* Sparse.h (read_sparse_matrix): New template function.
+	* dSparse.cc (operator >>): Call read_sparse_matrix.
+	* CSparse.cc (operator >>): Likewise.
+	* boolSparse.cc (operator >>): Likewise.
+	* sparse-util.cc, sparse-util.h (sparse_indices_ok): New function.
+	* Sparse.cc (Sparse<T>::indices_ok, Sparse<T>::SparseRep::indices_ok):
+	New member functions.
+
 2009-07-20  John W. Eaton  <jwe@octave.org>
 
 	* lo-ieee.cc (octave_ieee_init) [__NetBSD__]: Call nan to

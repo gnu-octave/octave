@@ -3646,7 +3646,7 @@ operator >> (std::istream& is, ComplexMatrix& a)
       for (octave_idx_type i = 0; i < nr; i++)
 	for (octave_idx_type j = 0; j < nc; j++)
 	  {
-	    tmp = octave_read_complex (is);
+	    tmp = octave_read_value<Complex> (is);
 	    if (is)
 	      a.elem (i, j) = tmp;
 	    else

@@ -916,7 +916,7 @@ operator >> (std::istream& is, FloatComplexNDArray& a)
       FloatComplex tmp;
       for (octave_idx_type i = 0; i < nel; i++)
 	  {
-	    tmp = octave_read_complex (is);
+	    tmp = octave_read_value<FloatComplex> (is);
 	    if (is)
 	      a.elem (i) = tmp;
 	    else

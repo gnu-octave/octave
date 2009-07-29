@@ -81,15 +81,15 @@ octave_sparse_complex_matrix::try_narrowing_conversion (void)
       else if (nr == 0 || nc == 0)
 	retval = new octave_matrix (Matrix (nr, nc));
       else if (matrix.all_elements_are_real ())
-	if (matrix.cols () > 0 && matrix.rows () > 0 && 
-	    double (matrix.byte_size ()) > double (matrix.rows ()) *
-	    double (matrix.cols ()) * sizeof (double))
+	if (matrix.cols () > 0 && matrix.rows () > 0
+	    && (double (matrix.byte_size ()) > double (matrix.rows ())
+		* double (matrix.cols ()) * sizeof (double)))
 	  retval = new octave_matrix (::real (matrix.matrix_value ()));
 	else
 	  retval = new octave_sparse_matrix (::real (matrix));
-      else if (matrix.cols () > 0 && matrix.rows () > 0 && 
-	       double (matrix.byte_size ()) > double (matrix.rows ()) *
-	       double (matrix.cols ()) * sizeof (Complex))
+      else if (matrix.cols () > 0 && matrix.rows () > 0
+	       && (double (matrix.byte_size ()) > double (matrix.rows ())
+		   * double (matrix.cols ()) * sizeof (Complex)))
 	retval = new octave_complex_matrix (matrix.matrix_value ());
     }
   else
@@ -312,7 +312,7 @@ octave_sparse_complex_matrix::load_binary (std::istream& is, bool swap,
     swap_bytes<4> (&tmp);
 
   if (tmp != -2) {
-    error("load: only 2D sparse matrices are supported");
+    error ("load: only 2D sparse matrices are supported");
     return false;
   }
 
@@ -362,6 +362,10 @@ octave_sparse_complex_matrix::load_binary (std::istream& is, bool swap,
 
   if (error_state || ! is)
     return false;
+
+  if (! m.indices_ok ())
+    return false;
+
   matrix = m;
 
   return true;
@@ -681,8 +685,8 @@ octave_sparse_complex_matrix::load_hdf5 (hid_t loc_id, const char *name,
 
   H5Sget_simple_extent_dims (space_hid, hdims, maxdims);
 
-  if (static_cast<int> (hdims[0]) != nc + 1 || 
-      static_cast<int> (hdims[1]) != 1)
+  if (static_cast<int> (hdims[0]) != nc + 1
+      || static_cast<int> (hdims[1]) != 1)
     {
       H5Sclose (space_hid);
       H5Dclose (data_hid);
@@ -716,8 +720,8 @@ octave_sparse_complex_matrix::load_hdf5 (hid_t loc_id, const char *name,
 
   H5Sget_simple_extent_dims (space_hid, hdims, maxdims);
 
-  if (static_cast<int> (hdims[0]) != nz || 
-      static_cast<int> (hdims[1]) != 1)
+  if (static_cast<int> (hdims[0]) != nz
+      || static_cast<int> (hdims[1]) != 1)
     {
       H5Sclose (space_hid);
       H5Dclose (data_hid);
@@ -763,8 +767,8 @@ octave_sparse_complex_matrix::load_hdf5 (hid_t loc_id, const char *name,
 
   H5Sget_simple_extent_dims (space_hid, hdims, maxdims);
 
-  if (static_cast<int> (hdims[0]) != nz || 
-      static_cast<int> (hdims[1]) != 1)
+  if (static_cast<int> (hdims[0]) != nz
+      || static_cast<int> (hdims[1]) != 1)
     {
       H5Sclose (space_hid);
       H5Dclose (data_hid);
@@ -774,7 +778,9 @@ octave_sparse_complex_matrix::load_hdf5 (hid_t loc_id, const char *name,
 
   Complex *ctmp = m.xdata ();
   bool retval = false;
-  if (H5Dread (data_hid, complex_type, H5S_ALL, H5S_ALL, H5P_DEFAULT, ctmp) >= 0) 
+  if (H5Dread (data_hid, complex_type, H5S_ALL, H5S_ALL,
+	       H5P_DEFAULT, ctmp) >= 0
+      && m.indices_ok ())
     {
       retval = true;
       matrix = m;

@@ -921,7 +921,7 @@ operator >> (std::istream& is, ComplexNDArray& a)
       Complex tmp;
       for (octave_idx_type i = 0; i < nel; i++)
 	  {
-	    tmp = octave_read_complex (is);
+	    tmp = octave_read_value<Complex> (is);
 	    if (is)
 	      a.elem (i) = tmp;
 	    else

@@ -256,7 +256,7 @@ read_mat_ascii_data (std::istream& is, const std::string& filename,
 		    {
 		      OCTAVE_QUIT;
 
-		      d = octave_read_double (tmp_stream);
+		      d = octave_read_value<double> (tmp_stream);
 
 		      if (tmp_stream || tmp_stream.eof ())
 			{

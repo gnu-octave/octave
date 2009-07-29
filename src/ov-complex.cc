@@ -259,7 +259,7 @@ octave_complex::save_ascii (std::ostream& os)
 bool 
 octave_complex::load_ascii (std::istream& is)
 {
-  scalar = octave_read_complex (is);
+  scalar = octave_read_value<Complex> (is);
 
   if (!is) 
     {

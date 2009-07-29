@@ -970,7 +970,7 @@ operator >> (std::istream& is, NDArray& a)
       double tmp;
       for (octave_idx_type i = 0; i < nel; i++)
 	  {
-	    tmp = octave_read_double (is);
+	    tmp = octave_read_value<double> (is);
 	    if (is)
 	      a.elem (i) = tmp;
 	    else

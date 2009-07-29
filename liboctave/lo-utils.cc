@@ -290,8 +290,9 @@ read_inf_nan_na (std::istream& is, char c, char sign = '+')
   return d;
 }
 
+template <>
 double
-octave_read_double (std::istream& is)
+octave_read_value (std::istream& is)
 {
   double d = 0.0;
 
@@ -345,8 +346,9 @@ octave_read_double (std::istream& is)
   return d;
 }
 
+template <>
 Complex
-octave_read_complex (std::istream& is)
+octave_read_value (std::istream& is)
 {
   double re = 0.0, im = 0.0;
 
@@ -359,12 +361,12 @@ octave_read_complex (std::istream& is)
 
   if (ch == '(')
     {
-      re = octave_read_double (is);
+      re = octave_read_value<double> (is);
       ch = is.get ();
 
       if (ch == ',')
 	{
-	  im = octave_read_double (is);
+	  im = octave_read_value<double> (is);
 	  ch = is.get ();
 
 	  if (ch == ')')
@@ -380,56 +382,12 @@ octave_read_complex (std::istream& is)
   else
     {
       is.putback (ch);
-      cx = octave_read_double (is);
+      cx = octave_read_value<double> (is);
     }
 
   return cx;
 
 }
-
-void
-octave_write_double (std::ostream& os, double d)
-{
-  if (lo_ieee_is_NA (d))
-    os << "NA";
-  else if (lo_ieee_isnan (d))
-    os << "NaN";
-  else if (lo_ieee_isinf (d))
-    os << (d < 0 ? "-Inf" : "Inf");
-  else
-    os << d;
-}
-
-void
-octave_write_complex (std::ostream& os, const Complex& c)
-{
-  os << "(";
-  octave_write_double (os, real (c));
-  os << ",";
-  octave_write_double (os, imag (c));
-  os << ")";
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 static inline float
 read_float_inf_nan_na (std::istream& is, char c, char sign = '+')
@@ -480,8 +438,9 @@ read_float_inf_nan_na (std::istream& is, char c, char sign = '+')
   return d;
 }
 
+template <>
 float
-octave_read_float (std::istream& is)
+octave_read_value (std::istream& is)
 {
   float d = 0.0;
 
@@ -535,8 +494,9 @@ octave_read_float (std::istream& is)
   return d;
 }
 
+template <>
 FloatComplex
-octave_read_float_complex (std::istream& is)
+octave_read_value (std::istream& is)
 {
   float re = 0.0, im = 0.0;
 
@@ -549,12 +509,12 @@ octave_read_float_complex (std::istream& is)
 
   if (ch == '(')
     {
-      re = octave_read_float (is);
+      re = octave_read_value<float> (is);
       ch = is.get ();
 
       if (ch == ',')
 	{
-	  im = octave_read_float (is);
+	  im = octave_read_value<float> (is);
 	  ch = is.get ();
 
 	  if (ch == ')')
@@ -570,11 +530,34 @@ octave_read_float_complex (std::istream& is)
   else
     {
       is.putback (ch);
-      cx = octave_read_float (is);
+      cx = octave_read_value<float> (is);
     }
 
   return cx;
 
+}
+
+void
+octave_write_double (std::ostream& os, double d)
+{
+  if (lo_ieee_is_NA (d))
+    os << "NA";
+  else if (lo_ieee_isnan (d))
+    os << "NaN";
+  else if (lo_ieee_isinf (d))
+    os << (d < 0 ? "-Inf" : "Inf");
+  else
+    os << d;
+}
+
+void
+octave_write_complex (std::ostream& os, const Complex& c)
+{
+  os << "(";
+  octave_write_double (os, real (c));
+  os << ",";
+  octave_write_double (os, imag (c));
+  os << ")";
 }
 
 void

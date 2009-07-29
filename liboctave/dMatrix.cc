@@ -3064,7 +3064,7 @@ operator >> (std::istream& is, Matrix& a)
       for (octave_idx_type i = 0; i < nr; i++)
 	for (octave_idx_type j = 0; j < nc; j++)
 	  {
-	    tmp = octave_read_double (is);
+	    tmp = octave_read_value<double> (is);
 	    if (is)
 	      a.elem (i, j) = tmp;
 	    else

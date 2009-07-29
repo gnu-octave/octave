@@ -83,9 +83,9 @@ octave_sparse_matrix::try_narrowing_conversion (void)
 
 	  retval = new octave_scalar (tmp (0));
 	}
-      else if (matrix.cols () > 0 && matrix.rows () > 0 && 
-	       double (matrix.byte_size ()) > double (matrix.rows ()) *
-	       double (matrix.cols ()) * sizeof (double))
+      else if (matrix.cols () > 0 && matrix.rows () > 0
+	       && (double (matrix.byte_size ()) > double (matrix.rows ())
+		   * double (matrix.cols ()) * sizeof (double)))
 	retval = new octave_matrix (matrix.matrix_value ());
     }
 
@@ -326,7 +326,7 @@ octave_sparse_matrix::load_binary (std::istream& is, bool swap,
     swap_bytes<4> (&tmp);
 
   if (tmp != -2) {
-    error("load: only 2D sparse matrices are supported");
+    error ("load: only 2D sparse matrices are supported");
     return false;
   }
 
@@ -375,6 +375,10 @@ octave_sparse_matrix::load_binary (std::istream& is, bool swap,
 
   if (error_state || ! is)
     return false;
+
+  if (! m.indices_ok ())
+    return false;
+
   matrix = m;
 
   return true;
@@ -682,8 +686,8 @@ octave_sparse_matrix::load_hdf5 (hid_t loc_id, const char *name,
 
   H5Sget_simple_extent_dims (space_hid, hdims, maxdims);
 
-  if (static_cast<int> (hdims[0]) != nc + 1 || 
-      static_cast<int> (hdims[1]) != 1)
+  if (static_cast<int> (hdims[0]) != nc + 1
+      || static_cast<int> (hdims[1]) != 1)
     {
       H5Sclose (space_hid);
       H5Dclose (data_hid);
@@ -762,22 +766,20 @@ octave_sparse_matrix::load_hdf5 (hid_t loc_id, const char *name,
     }
 
   double *dtmp = m.xdata ();
+  bool retval = false;
   if (H5Dread (data_hid, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, 
-	       H5P_DEFAULT, dtmp) < 0) 
+	       H5P_DEFAULT, dtmp) >= 0
+      && m.indices_ok ())
     {
-      H5Sclose (space_hid);
-      H5Dclose (data_hid);
-      H5Gclose (group_hid);
-      return false;
+      retval = true;
+      matrix = m;
     }
 
   H5Sclose (space_hid);
   H5Dclose (data_hid);
   H5Gclose (group_hid);
 
-  matrix = m;
-
-  return true;
+  return retval;
 }
 
 #endif

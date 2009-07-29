@@ -83,9 +83,9 @@ octave_sparse_bool_matrix::try_narrowing_conversion (void)
 
 	  retval = new octave_bool (tmp (0));
 	}
-      else if (matrix.cols () > 0 && matrix.rows () > 0 && 
-	       double (matrix.byte_size ()) > double (matrix.rows ()) *
-	       double (matrix.cols ()) * sizeof (bool))
+      else if (matrix.cols () > 0 && matrix.rows () > 0
+	       && (double (matrix.byte_size ()) > double (matrix.rows ())
+		   * double (matrix.cols ()) * sizeof (bool)))
 	retval = new octave_bool_matrix (matrix.matrix_value ());
     }
 
@@ -271,7 +271,7 @@ octave_sparse_bool_matrix::load_binary (std::istream& is, bool swap,
     swap_bytes<4> (&tmp);
 
   if (tmp != -2) {
-    error("load: only 2D sparse matrices are supported");
+    error ("load: only 2D sparse matrices are supported");
     return false;
   }
 
@@ -324,6 +324,9 @@ octave_sparse_bool_matrix::load_binary (std::istream& is, bool swap,
   for (int i = 0; i < nz; i++)
     m.data(i) = (htmp[i] ? 1 : 0);
  
+  if (! m.indices_ok ())
+    return false;
+
   matrix = m;
 
   return true;
@@ -605,8 +608,8 @@ octave_sparse_bool_matrix::load_hdf5 (hid_t loc_id, const char *name,
 
   H5Sget_simple_extent_dims (space_hid, hdims, maxdims);
 
-  if (static_cast<int> (hdims[0]) != nc + 1 || 
-      static_cast<int> (hdims[1]) != 1)
+  if (static_cast<int> (hdims[0]) != nc + 1
+      || static_cast<int> (hdims[1]) != 1)
     {
       H5Sclose (space_hid);
       H5Dclose (data_hid);
@@ -640,8 +643,8 @@ octave_sparse_bool_matrix::load_hdf5 (hid_t loc_id, const char *name,
 
   H5Sget_simple_extent_dims (space_hid, hdims, maxdims);
 
-  if (static_cast<int> (hdims[0]) != nz || 
-      static_cast<int> (hdims[1]) != 1)
+  if (static_cast<int> (hdims[0]) != nz
+      || static_cast<int> (hdims[1]) != 1)
     {
       H5Sclose (space_hid);
       H5Dclose (data_hid);
@@ -650,7 +653,8 @@ octave_sparse_bool_matrix::load_hdf5 (hid_t loc_id, const char *name,
     }
 
   itmp = m.xridx ();
-  if (H5Dread (data_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL, H5P_DEFAULT, itmp) < 0) 
+  if (H5Dread (data_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL,
+	       H5P_DEFAULT, itmp) < 0) 
     {
       H5Sclose (space_hid);
       H5Dclose (data_hid);
@@ -675,8 +679,8 @@ octave_sparse_bool_matrix::load_hdf5 (hid_t loc_id, const char *name,
 
   H5Sget_simple_extent_dims (space_hid, hdims, maxdims);
 
-  if (static_cast<int> (hdims[0]) != nz || 
-      static_cast<int> (hdims[1]) != 1)
+  if (static_cast<int> (hdims[0]) != nz
+      || static_cast<int> (hdims[1]) != 1)
     {
       H5Sclose (space_hid);
       H5Dclose (data_hid);
@@ -686,7 +690,9 @@ octave_sparse_bool_matrix::load_hdf5 (hid_t loc_id, const char *name,
 
   OCTAVE_LOCAL_BUFFER (hbool_t, htmp, nz);
   bool retval = false;
-  if (H5Dread (data_hid, H5T_NATIVE_HBOOL, H5S_ALL, H5S_ALL, H5P_DEFAULT, htmp) >= 0) 
+  if (H5Dread (data_hid, H5T_NATIVE_HBOOL, H5S_ALL, H5S_ALL,
+	       H5P_DEFAULT, htmp) >= 0
+      && m.indices_ok ())
     {
       retval = true;
 

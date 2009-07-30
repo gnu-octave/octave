@@ -888,9 +888,6 @@ public:
 
   static context_id current_context (void) { return xcurrent_context; }
 
-  // We use parent_scope to handle parsing subfunctions.
-  static scope_id parent_scope (void) { return xparent_scope; }
-
   static scope_id alloc_scope (void) { return scope_id_cache::alloc (); }
 
   static void set_scope (scope_id scope)
@@ -940,16 +937,6 @@ public:
         else
           xcurrent_context = context;
       }
-  }
-
-  static void set_parent_scope (scope_id scope)
-  {
-    xparent_scope = scope;
-  }
-
-  static void reset_parent_scope (void)
-  {
-    set_parent_scope (-1);
   }
 
   static void erase_scope (scope_id scope)
@@ -1207,7 +1194,7 @@ public:
 
   static void install_subfunction (const std::string& name,
 				   const octave_value& fcn,
-				   scope_id scope = xparent_scope)
+				   scope_id scope)
   {
     fcn_table_iterator p = fcn_table.find (name);
 
@@ -1851,9 +1838,6 @@ private:
   static const scope_id xtop_scope;
 
   static scope_id xcurrent_scope;
-
-  // We use parent_scope to handle parsing subfunctions.
-  static scope_id xparent_scope;
 
   static context_id xcurrent_context;
 

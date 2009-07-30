@@ -2,6 +2,7 @@
 
 Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001,
               2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009  John W. Eaton
+Copyright (C) 2009 David Grundberg
 
 This file is part of Octave.
 
@@ -100,15 +101,26 @@ bool reading_startup_message_printed = false;
 // TRUE means input is coming from startup file.
 bool input_from_startup_file = false;
 
-// Keep a count of how many END tokens we expect.
-int end_tokens_expected = 0;
+// = 0 currently outside any function.
+// = 1 inside the primary function or a subfunction.
+// > 1 means we are looking at a function definition that seems to be
+//     inside a function. Note that the function still might not be a
+//     nested function.
+static int current_function_depth = 0;
+
+// Maximum function depth detected. Just here to determine whether
+// we have nested functions or just implicitly ended subfunctions.
+static int max_function_depth = 0;
+
+// FALSE if we are still at the primary function. Subfunctions can
+// only be declared inside function files.
+static int parsing_subfunctions = false;
+
+// Have we found an explicit end to a function?
+static bool endfunction_found = false;
 
 // Keep track of symbol table information when parsing functions.
 std::stack<symbol_table::scope_id> symtab_context;
-
-// Name of parent function when parsing function files that might
-// contain nested functions.
-std::string parent_function_name;
 
 // Name of the current class when we are parsing class methods or
 // constructors.
@@ -121,9 +133,12 @@ static bool autoloading = false;
 // element.
 static bool fcn_file_from_relative_lookup = false;
 
-// If nonzero, this is a pointer to the function we just finished
-// parsing.
-static octave_function *curr_fcn_ptr = 0;
+// Pointer to the primary user function or user script function.
+static octave_function *primary_fcn_ptr = 0;
+
+// Scope where we install all subfunctions and nested functions. Only
+// used while reading function files.
+static symbol_table::scope_id primary_fcn_scope;
 
 // List of autoloads (function -> file mapping).
 static std::map<std::string, std::string> autoload_map;
@@ -424,7 +439,7 @@ make_statement (T *arg)
 
 // Other tokens.
 %token END_OF_INPUT LEXICAL_ERROR
-%token FCN SCRIPT
+%token FCN SCRIPT_FILE FUNCTION_FILE
 // %token VARARGIN VARARGOUT
 %token CLOSE_BRACE
 
@@ -449,7 +464,8 @@ make_statement (T *arg)
 %type <tree_parameter_list_type> param_list param_list1 param_list2
 %type <tree_parameter_list_type> return_list return_list1
 %type <tree_command_type> command select_command loop_command
-%type <tree_command_type> jump_command except_command function script
+%type <tree_command_type> jump_command except_command function script_file
+%type <tree_command_type> function_file function_list
 %type <tree_if_command_type> if_command
 %type <tree_if_clause_type> elseif_clause else_clause
 %type <tree_if_command_list_type> if_cmd_list1 if_cmd_list
@@ -492,6 +508,10 @@ input		: input1
 		  {
 		    global_command = $1;
 		    promptflag = 1;
+		    YYACCEPT;
+		  }
+		| function_file
+		  {
 		    YYACCEPT;
 		  }
 		| simple_list parse_error
@@ -903,7 +923,7 @@ command		: declaration
 		  { $$ = $1; }
 		| function
 		  { $$ = $1; }
-		| script
+		| script_file
 		  { $$ = $1; }
 		;
 
@@ -1112,11 +1132,20 @@ except_command	: UNWIND stash_comment opt_sep opt_list CLEANUP
 
 push_fcn_symtab	: // empty
 		  {
+		    current_function_depth++;
+
+		    if (max_function_depth < current_function_depth)
+		      max_function_depth = current_function_depth;
+
 		    symtab_context.push (symbol_table::current_scope ());
 		    symbol_table::set_scope (symbol_table::alloc_scope ());
 
-		    if (! lexer_flags.parsing_nested_function)
-		      symbol_table::set_parent_scope (symbol_table::current_scope ());
+		    if (! reading_script_file && current_function_depth == 1
+			&& ! parsing_subfunctions)
+		      primary_fcn_scope = symbol_table::current_scope ();
+
+		    if (reading_script_file && current_function_depth > 1)
+		      yyerror ("nested functions not implemented in this context");
 		  }
 		;
 
@@ -1218,7 +1247,7 @@ return_list1	: identifier
 // Script file
 // ===========
 
-script		: SCRIPT opt_list END_OF_INPUT
+script_file	: SCRIPT_FILE opt_list END_OF_INPUT
 		  {
 		    tree_statement *end_of_script
 		      = make_end ("endscript", input_line_number,
@@ -1228,6 +1257,17 @@ script		: SCRIPT opt_list END_OF_INPUT
 
 		    $$ = 0;
 		  }
+		;
+
+// =============
+// Function file
+// =============
+
+function_file   : FUNCTION_FILE function_list opt_sep END_OF_INPUT
+		;
+
+function_list   : function
+		| function_list sep function
 		;
 
 // ===================
@@ -1254,12 +1294,8 @@ fcn_name	: identifier
 		  {
 		    std::string id_name = $1->name ();
 
-		    if (reading_fcn_file
-		        && ! lexer_flags.parsing_nested_function)
-		      parent_function_name = (curr_fcn_file_name == id_name)
-			? id_name : curr_fcn_file_name;
-
 		    lexer_flags.parsed_function_name = true;
+		    lexer_flags.defining_func = false;
 
 		    $$ = $1;
 		  }
@@ -1284,6 +1320,7 @@ function2	: param_list opt_sep opt_list function_end
 
 function_end	: END
 		  {
+		    endfunction_found = true;
 		    if (end_token_ok ($1, token::function_end))
 		      $$ = make_end ("endfunction", $1->line (), $1->column ());
 		    else
@@ -1291,15 +1328,29 @@ function_end	: END
 		  }
 		| END_OF_INPUT
 		  {
-		    if (lexer_flags.parsing_nested_function)
-		      lexer_flags.parsing_nested_function = -1;
+// A lot of tests are based on the assumption that this is OK
+// 		    if (reading_script_file)
+// 		      {
+// 			yyerror ("function body open at end of script");
+// 			YYABORT;
+// 		      }
 
-		    if (reading_fcn_file || reading_script_file
-			|| get_input_from_eval_string)
-		      $$ = make_end ("endfunction", input_line_number,
-				     current_input_column);
-		    else
-		      YYABORT;
+		    if (endfunction_found)
+		      {
+			yyerror ("inconsistent function endings -- "
+				 "if one function is explicitly ended, "
+				 "so must all the others");
+			YYABORT;
+		      }
+
+		    if (! reading_fcn_file && ! reading_script_file)
+		      {
+			yyerror ("function body open at end of input");
+			YYABORT;
+		      }
+
+		    $$ = make_end ("endfunction", input_line_number,
+				   current_input_column);
 		  }
 		;
 
@@ -2241,7 +2292,7 @@ make_break_command (token *break_tok)
   // so that we don't turn eval ("break;") inside a function, script,
   // or loop into a no-op command.
 
-  if (lexer_flags.looping || lexer_flags.defining_func
+  if (lexer_flags.looping || current_function_depth > 0
       || reading_script_file || tree_evaluator::in_fcn_or_script_body
       || tree_evaluator::in_loop_command)
     retval = new tree_break_command (l, c);
@@ -2294,7 +2345,7 @@ make_return_command (token *return_tok)
       // that we don't turn eval ("return;") inside a function, script,
       // or loop into a no-op command.
 
-      if (lexer_flags.defining_func || reading_script_file
+      if (current_function_depth > 0 || reading_script_file
           || tree_evaluator::in_fcn_or_script_body)
         retval = new tree_return_command (l, c);
       else
@@ -2503,7 +2554,7 @@ make_assign_op (int op, tree_argument_list *lhs, token *eq_tok,
   return retval;
 }
 
-// Define a function.
+// Define a script.
 
 static void
 make_script (tree_statement_list *cmds, tree_statement *end_script)
@@ -2529,7 +2580,7 @@ make_script (tree_statement_list *cmds, tree_statement *end_script)
 
   script->stash_fcn_file_time (now);
 
-  curr_fcn_ptr = script;
+  primary_fcn_ptr = script;
 
   // Unmark any symbols that may have been tagged as local variables
   // while parsing (for example, by force_local_variable in lex.l).
@@ -2581,35 +2632,34 @@ frob_function (const std::string& fname, octave_user_function *fcn)
   // the file does not match the name of the function stated in the
   // file.  Matlab doesn't provide a diagnostic (it ignores the stated
   // name).
+  if (! autoloading && reading_fcn_file
+      && (current_function_depth == 1
+	  && ! (parsing_subfunctions || lexer_flags.parsing_class_method)))
+  {
+    // FIXME -- should curr_fcn_file_name already be
+    // preprocessed when we get here?  It seems to only be a
+    // problem with relative file names.
+
+    std::string nm = curr_fcn_file_name;
+
+    size_t pos = nm.find_last_of (file_ops::dir_sep_chars ());
+
+    if (pos != std::string::npos)
+      nm = curr_fcn_file_name.substr (pos+1);
+
+    if (nm != id_name)
+      {
+	warning_with_id
+	  ("Octave:function-name-clash",
+	   "function name `%s' does not agree with function file name `%s'",
+	   id_name.c_str (), curr_fcn_file_full_name.c_str ());
+
+	id_name = nm;
+      }
+  }
 
   if (reading_fcn_file || autoloading)
     {
-      if (! (autoloading
-	     || lexer_flags.parsing_nested_function
-	     || lexer_flags.parsing_class_method))
-	{
-	  // FIXME -- should curr_fcn_file_name already be
-	  // preprocessed when we get here?  It seems to only be a
-	  // problem with relative file names.
-
-	  std::string nm = curr_fcn_file_name;
-
-	  size_t pos = nm.find_last_of (file_ops::dir_sep_chars ());
-
-	  if (pos != std::string::npos)
-	    nm = curr_fcn_file_name.substr (pos+1);
-
-	  if (nm != id_name)
-	    {
-	      warning_with_id
-		("Octave:function-name-clash",
-		 "function name `%s' does not agree with function file name `%s'",
-		 id_name.c_str (), curr_fcn_file_full_name.c_str ());
-
-	      id_name = nm;
-	    }
-	}
-
       octave_time now;
 
       fcn->stash_fcn_file_name (curr_fcn_file_full_name);
@@ -2619,11 +2669,11 @@ frob_function (const std::string& fname, octave_user_function *fcn)
       if (fcn_file_from_relative_lookup)
 	fcn->mark_relative ();
 
-      if (lexer_flags.parsing_nested_function)
+      if (current_function_depth > 1 || parsing_subfunctions)
         {
-          fcn->stash_parent_fcn_name (parent_function_name);
-          fcn->stash_parent_fcn_scope (symbol_table::parent_scope ());
-	}
+	  fcn->stash_parent_fcn_name (curr_fcn_file_name);
+	  fcn->stash_parent_fcn_scope (primary_fcn_scope);
+        }
 
       if (lexer_flags.parsing_class_method)
 	{
@@ -2653,18 +2703,18 @@ frob_function (const std::string& fname, octave_user_function *fcn)
 
   fcn->stash_function_name (id_name);
 
-  if (! help_buf.empty ())
+  if (! help_buf.empty () && current_function_depth == 1
+      && ! parsing_subfunctions)
     {
       fcn->document (help_buf.top ());
 
       help_buf.pop ();
     }
 
-  if (reading_fcn_file && ! lexer_flags.parsing_nested_function)
-    curr_fcn_ptr = fcn;
-  else
-    curr_fcn_ptr = 0;
-
+  if (reading_fcn_file && current_function_depth == 1
+      && ! parsing_subfunctions)
+    primary_fcn_ptr = fcn;
+  
   return fcn;
 }
 
@@ -2693,23 +2743,21 @@ finish_function (tree_parameter_list *ret_list,
 
       fcn->define_ret_list (ret_list);
 
-      if (lexer_flags.parsing_nested_function)
-	{
+      if (current_function_depth > 1 || parsing_subfunctions)
+        {
+          // FIXME -- is this flag used to determine if the function is a
+          // _subfunction_ somewhere?
 	  fcn->mark_as_nested_function ();
 
-	  symbol_table::install_subfunction (nm, octave_value (fcn));
-
-	  if (lexer_flags.parsing_nested_function < 0)
-	    {
-	      lexer_flags.parsing_nested_function = 0;
-	      symbol_table::reset_parent_scope ();
-	    }
+	  symbol_table::install_subfunction (nm, octave_value (fcn),
+					     primary_fcn_scope);
 	}
-      else if (! curr_fcn_ptr)
+
+      if (! primary_fcn_ptr)
 	{
 	  // FIXME -- there should be a better way to indicate that we
 	  // should create a tree_function_def object other than
-	  // looking at curr_fcn_ptr...
+	  // looking at primary_fcn_ptr...
 
 	  retval = new tree_function_def (fcn);
 	}
@@ -2733,7 +2781,12 @@ recover_from_parsing_function (void)
   symbol_table::set_scope (symtab_context.top ());
   symtab_context.pop ();
 
-  lexer_flags.defining_func = false;
+  if (reading_fcn_file && current_function_depth == 1
+      && ! parsing_subfunctions)
+    parsing_subfunctions = true;
+
+  current_function_depth--;
+
   lexer_flags.parsed_function_name = false;
   lexer_flags.looking_at_return_list = false;
   lexer_flags.looking_at_parameter_list = false;
@@ -2835,7 +2888,7 @@ make_decl_command (int tok, token *tok_val, tree_decl_init_list *lst)
       break;
 
     case STATIC:
-      if (lexer_flags.defining_func)
+      if (current_function_depth > 0)
 	retval = new tree_static_command (lst, l, c);
       else
 	{
@@ -2912,7 +2965,7 @@ finish_cell (tree_cell *c)
 static void
 maybe_warn_missing_semi (tree_statement_list *t)
 {
-  if (lexer_flags.defining_func)
+  if (current_function_depth > 0)
     {
       tree_statement *tmp = t->back();
 
@@ -3153,8 +3206,6 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
 
   // Open function file and parse.
 
-  bool old_reading_fcn_file_state = reading_fcn_file;
-
   FILE *in_stream = command_editor::get_input_stream ();
 
   unwind_protect::add_fcn (command_editor::set_input_stream,
@@ -3164,19 +3215,23 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
 
   unwind_protect::protect_var (input_line_number);
   unwind_protect::protect_var (current_input_column);
-  unwind_protect::protect_var (end_tokens_expected);
   unwind_protect::protect_var (reading_fcn_file);
   unwind_protect::protect_var (line_editing);
-  unwind_protect::protect_var (parent_function_name);
   unwind_protect::protect_var (current_class_name);
+  unwind_protect::protect_var (current_function_depth);
+  unwind_protect::protect_var (max_function_depth);
+  unwind_protect::protect_var (parsing_subfunctions);
+  unwind_protect::protect_var (endfunction_found);
 
   input_line_number = 1;
   current_input_column = 1;
-  end_tokens_expected = 0;
   reading_fcn_file = true;
   line_editing = false;
-  parent_function_name = "";
   current_class_name = dispatch_type;
+  current_function_depth = 0;
+  max_function_depth = 0;
+  parsing_subfunctions = false;
+  endfunction_found = false;
 
   // The next four lines must be in this order.
   unwind_protect::add_fcn (command_history::ignore_entries, ! Vsaving_history);
@@ -3204,10 +3259,10 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
 	{
 	  std::string file_type;
 
-	  bool parsing_script = false;
-
 	  unwind_protect::protect_var (get_input_from_eval_string);
 	  unwind_protect::protect_var (parser_end_of_input);
+	  unwind_protect::protect_var (reading_fcn_file);
+	  unwind_protect::protect_var (reading_script_file);
 
 	  get_input_from_eval_string = false;
 	  parser_end_of_input = false;
@@ -3217,7 +3272,6 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
 	      file_type = "function";
 
 	      unwind_protect::protect_var (Vecho_executing_commands);
-	      unwind_protect::protect_var (reading_fcn_file);
 
 	      Vecho_executing_commands = ECHO_OFF;
 	      reading_fcn_file = true;
@@ -3226,17 +3280,11 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
 	    {
 	      file_type = "script";
 
-	      // The value of `reading_fcn_file' will be restored to the
-	      // proper value when we unwind from this frame.
-	      reading_fcn_file = old_reading_fcn_file_state;
-
-	      unwind_protect::protect_var (reading_script_file);
-
-	      reading_script_file = true;
-
-	      parsing_script = true;
+	      reading_fcn_file = false;
 	    }
 
+	  reading_script_file = ! reading_fcn_file;
+	  
 	  YY_BUFFER_STATE old_buf = current_buffer ();
 	  YY_BUFFER_STATE new_buf = create_buffer (ffile);
 
@@ -3245,8 +3293,8 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
 
 	  switch_to_buffer (new_buf);
 
-	  unwind_protect::protect_var (curr_fcn_ptr);
-	  curr_fcn_ptr = 0;
+	  unwind_protect::protect_var (primary_fcn_ptr);
+	  primary_fcn_ptr = 0;
 
 	  reset_parser ();
 
@@ -3259,14 +3307,21 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
 	  if (! help_txt.empty ())
 	    help_buf.push (help_txt);
 
-	  if (parsing_script)
-	    prep_lexer_for_script ();
+	  if (reading_script_file)
+	    prep_lexer_for_script_file ();
+	  else
+	    prep_lexer_for_function_file ();
 
 	  lexer_flags.parsing_class_method = ! dispatch_type.empty ();
 
 	  int status = yyparse ();
 
-	  fcn_ptr = curr_fcn_ptr;
+	  fcn_ptr = primary_fcn_ptr;
+
+	  if (reading_fcn_file && endfunction_found && max_function_depth > 1)
+	    warning_with_id ("Octave:nested-functions-coerced",
+			     "nested functions are coerced into subfunctions "
+			     "in file %s", ff.c_str ());
 
 	  if (status != 0)
 	    error ("parse error while reading %s file %s",
@@ -3879,6 +3934,10 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
   unwind_protect::protect_var (parser_end_of_input);
   unwind_protect::protect_var (line_editing);
   unwind_protect::protect_var (current_eval_string);
+  unwind_protect::protect_var (current_function_depth);
+  unwind_protect::protect_var (max_function_depth);
+  unwind_protect::protect_var (parsing_subfunctions);
+  unwind_protect::protect_var (endfunction_found);
 
   input_line_number = 1;
   current_input_column = 1;
@@ -3886,6 +3945,10 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
   input_from_eval_string_pending = true;
   parser_end_of_input = false;
   line_editing = false;
+  current_function_depth = 0;
+  max_function_depth = 0;
+  parsing_subfunctions = false;
+  endfunction_found = false;
 
   current_eval_string = s;
 

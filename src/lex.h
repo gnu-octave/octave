@@ -46,7 +46,8 @@ extern OCTINTERP_API void delete_buffer (YY_BUFFER_STATE buf);
 // Is the given string a keyword?
 extern bool is_keyword (const std::string& s);
 
-extern void prep_lexer_for_script (void);
+extern void prep_lexer_for_script_file (void);
+extern void prep_lexer_for_function_file (void);
 
 // For communication between the lexer and parser.
 
@@ -117,14 +118,8 @@ public:
   bool looking_at_indirect_ref;
 
   // TRUE means that we've already seen the name of this function.
-  // Should only matter if defining_func is also TRUE.
+  // Should only matter if current_function_level > 0
   bool parsed_function_name;
-
-  // Are we parsing a nested function?
-  //   1 ==> Yes.
-  //   0 ==> No.
-  //  -1 ==> Yes, but it is the last one because we have seen EOF.
-  int parsing_nested_function;
 
   // TRUE means we are parsing a class method.
   bool parsing_class_method;

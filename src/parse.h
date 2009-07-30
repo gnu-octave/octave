@@ -65,16 +65,9 @@ extern bool input_from_startup_file;
 // Keep track of symbol table information when parsing functions.
 extern std::stack<symbol_table::scope_id> symtab_context;
 
-// Name of parent function when parsing function files that might
-// contain nested functions.
-extern std::string parent_function_name;
-
 // Name of the current class when we are parsing class methods or
 // constructors.
 extern std::string current_class_name;
-
-// Keep a count of how many END tokens we expect.
-extern int end_tokens_expected;
 
 extern OCTINTERP_API std::string
 get_help_from_file (const std::string& nm, bool& symbol_found,

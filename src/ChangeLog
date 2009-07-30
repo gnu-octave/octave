@@ -1,3 +1,48 @@
+2009-07-30  David Grundberg  <individ@acc.umu.se>
+
+	* symtab.h (symbol_table::parent_scope): Remove.
+	(symbol_table::set_parent_scope): Remove.
+	(symbol_table::reset_parent_scope): Remove.
+	(symbol_table::install_subfunction): Require scope parameter
+	instead of xparent_scope default.
+	* symtab.cc: Remove symbol_table::xparent_scope
+	* lex.h (lexical_feedback::parsing_nested_function): Remove.
+	* lex.l	(is_keyword_token): Don't ignore endfunctions.
+	(prep_lexer_for_script_file): Renamed from prep_lexer_for_script.
+	(prep_lexer_for_function_file): New function.
+	(display_token): Display SCRIPT_FILE and FUNCTION_FILE.
+	(display_state): Display FUNCTION_FILE_BEGIN
+	(FUNCTION_FILE_BEGIN): New state.
+	(NESTED_FUNCTION_END, NESTED_FUNCTION_BEGIN): Remove states.
+	(prep_for_function, prep_for_nested_function): Remove functions.
+	* parse.h: Remove extern declaration parent_function_name,
+	end_tokens_expected.
+	* parse.y: Add variables current_function_depth,
+	max_function_depth, parsing_subfunctions, seen_endfunction. Remove
+	parent_function_name. Rename curr_fcn_ptr to primary_fcn_ptr. Add
+	token FUNCTION_FILE. Rename token SCRIPT to SCRIPT_FILE.
+	(function_file): New rule.
+	(input): Accept function_file.
+	(script_file): Rule renamed from script.
+	(function_file): New rule.
+	(function_list): New rule.
+	(push_fcn_symtab): Parse nested functions.
+	(fcn_name): Remove parent_function_name.
+	(function_end): Use seen_endfunction. New error messages.
+	(make_script): Use primary_fcn_ptr.
+	(frob_function): Simplify control structures. Don't use
+	symbol_table::parent_scope.
+	(push_fcn_symtab, function_end, frob_function, finish_function):
+	Use current_function_depth instead of
+	lexical_feedback::parsing_nested_function.
+	(make_return_command): Use current_function_depth instead of
+	lexical_feedback::defining_func.
+	(make_break_command, make_decl_command, maybe_warn_missing_semi):
+	Ditto
+	(parse_fcn_file): Warn when nested functions have been
+	declared. Remove superfluous local variables. Parse function files
+	using function_file rule.
+
 2009-07-30  Jaroslav Hajek  <highegg@gmail.com>
 
 	* data.cc (Fmerge): New DEFUN.

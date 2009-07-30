@@ -28,9 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 %s MATRIX_START
 
 %x SCRIPT_FILE_BEGIN
-
-%x NESTED_FUNCTION_END
-%x NESTED_FUNCTION_BEGIN
+%x FUNCTION_FILE_BEGIN
 
 %{
 #ifdef HAVE_CONFIG_H
@@ -282,8 +280,6 @@ static void xunput (char c, char *buf);
 static void fixup_column_count (char *s);
 static void do_comma_insert_check (void);
 static int is_keyword_token (const std::string& s);
-static void prep_for_function (void);
-static void prep_for_nested_function (void);
 static int process_comment (bool start_in_block, bool& eof);
 static bool match_any (char c, const char *s);
 static bool next_token_is_sep_op (void);
@@ -329,34 +325,25 @@ EXPON	([DdEe][+-]?{D}+)
 NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 %%
 
+%{
+// Make script and function files start with a bogus token. This makes
+// the parser go down a special path.
+%}
+
 <SCRIPT_FILE_BEGIN>. {
     LEXER_DEBUG ("<SCRIPT_FILE_BEGIN>.");
 
     BEGIN (INITIAL);
     xunput (yytext[0], yytext);
-    COUNT_TOK_AND_RETURN (SCRIPT);
+    COUNT_TOK_AND_RETURN (SCRIPT_FILE);
   }
 
-<NESTED_FUNCTION_END>. {
-    LEXER_DEBUG ("<NESTED_FUNCTION_END>.");
-
-    BEGIN (NESTED_FUNCTION_BEGIN);
-    xunput (yytext[0], yytext);
-
-    lexer_flags.at_beginning_of_statement = true;
-
-    COUNT_TOK_AND_RETURN (';');
-  }
-
-<NESTED_FUNCTION_BEGIN>. {
-    LEXER_DEBUG ("<NESTED_FUNCTION_BEGIN>.");
+<FUNCTION_FILE_BEGIN>. {
+    LEXER_DEBUG ("<FUNCTION_FILE_BEGIN>.");
 
     BEGIN (INITIAL);
     xunput (yytext[0], yytext);
-
-    prep_for_nested_function ();
-
-    COUNT_TOK_AND_RETURN (FCN);
+    COUNT_TOK_AND_RETURN (FUNCTION_FILE);
   }
 
 %{
@@ -1004,8 +991,6 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 . {
     LEXER_DEBUG (".");
 
-    // EOF happens here if we are parsing nested functions.
-
     xunput (yytext[0], yytext);
 
     int c = text_yyinput ();
@@ -1058,12 +1043,9 @@ reset_parser (void)
   BEGIN (INITIAL);
 
   parser_end_of_input = false;
-  end_tokens_expected = 0;
 
   while (! symtab_context.empty ())
     symtab_context.pop ();
-
-  symbol_table::reset_parent_scope ();
 
   // We do want a prompt by default.
   promptflag = 1;
@@ -1381,32 +1363,6 @@ delete_input_buffer (void *buf)
   delete_buffer (static_cast<YY_BUFFER_STATE> (buf));
 }
 
-static void
-prep_for_function (void)
-{
-  end_tokens_expected++;
-
-  promptflag--;
-
-  lexer_flags.defining_func = true;
-  lexer_flags.parsed_function_name = false;
-
-  if (! (reading_fcn_file || reading_script_file))
-    input_line_number = 1;
-}
-
-static void
-prep_for_nested_function (void)
-{
-  lexer_flags.parsing_nested_function = 1;
-  help_buf.push (std::string ());
-  prep_for_function ();
-  // We're still only expecting one end token for this set of functions.
-  end_tokens_expected--;
-  yylval.tok_val = new token (input_line_number, current_input_column);
-  token_stack.push (yylval.tok_val);
-}
-
 static bool
 inside_any_object_index (void)
 {
@@ -1466,71 +1422,48 @@ is_keyword_token (const std::string& s)
 		  && ! (lexer_flags.looking_at_return_list
 			|| lexer_flags.parsed_function_name)))
 	    return 0;
-	  else
-	    {
-	      if (reading_fcn_file && end_tokens_expected == 1)
-		return -1;
-	      else
-		{
-		  yylval.tok_val = new token (token::simple_end, l, c);
-		  lexer_flags.at_beginning_of_statement = true;
-		  end_tokens_expected--;
-		}
-	    }
+
+	  yylval.tok_val = new token (token::simple_end, l, c);
+	  lexer_flags.at_beginning_of_statement = true;
 	  break;
 
 	case end_try_catch_kw:
 	  yylval.tok_val = new token (token::try_catch_end, l, c);
 	  lexer_flags.at_beginning_of_statement = true;
-	  end_tokens_expected--;
 	  break;
 
 	case end_unwind_protect_kw:
 	  yylval.tok_val = new token (token::unwind_protect_end, l, c);
 	  lexer_flags.at_beginning_of_statement = true;
-	  end_tokens_expected--;
 	  break;
 
 	case endfor_kw:
 	  yylval.tok_val = new token (token::for_end, l, c);
 	  lexer_flags.at_beginning_of_statement = true;
-	  end_tokens_expected--;
 	  break;
 
 	case endfunction_kw:
-	  {
-	    if (reading_fcn_file && end_tokens_expected == 1)
-	      return -1;
-	    else
-	      {
-		yylval.tok_val = new token (token::function_end, l, c);
-		lexer_flags.at_beginning_of_statement = true;
-		end_tokens_expected--;
-	      }
-	  }
+	  yylval.tok_val = new token (token::function_end, l, c);
+	  lexer_flags.at_beginning_of_statement = true;
 	  break;
 
 	case endif_kw:
 	  yylval.tok_val = new token (token::if_end, l, c);
 	  lexer_flags.at_beginning_of_statement = true;
-	  end_tokens_expected--;
 	  break;
 
 	case endswitch_kw:
 	  yylval.tok_val = new token (token::switch_end, l, c);
 	  lexer_flags.at_beginning_of_statement = true;
-	  end_tokens_expected--;
 	  break;
 
 	case endwhile_kw:
 	  yylval.tok_val = new token (token::while_end, l, c);
 	  lexer_flags.at_beginning_of_statement = true;
-	  end_tokens_expected--;
 	  break;
 
 	case for_kw:
 	case while_kw:
-	  end_tokens_expected++;
 	  promptflag--;
 	  lexer_flags.looping++;
 	  break;
@@ -1544,57 +1477,22 @@ is_keyword_token (const std::string& s)
 	case try_kw:
 	case unwind_protect_kw:
 	  lexer_flags.at_beginning_of_statement = true;
-	  end_tokens_expected++;
 	  promptflag--;
 	  break;
 
 	case if_kw:
 	case switch_kw:
-	  end_tokens_expected++;
 	  promptflag--;
 	  break;
 
 	case function_kw:
-	  {
-	    if (lexer_flags.defining_func)
-	      {
-		if (reading_fcn_file)
-		  {
-		    if (lexer_flags.parsing_nested_function)
-		      {
-			BEGIN (NESTED_FUNCTION_END);
+	  promptflag--;
 
-			yylval.tok_val = new token (token::function_end, l, c);
-			token_stack.push (yylval.tok_val);
+	  lexer_flags.defining_func = true;
+	  lexer_flags.parsed_function_name = false;
 
-			lexer_flags.at_beginning_of_statement = true;
-
-			return END;
-		      }
-		    else
-		      {
-			prep_for_nested_function ();
-
-			return FCN;
-		      }
-		  }
-		else
-		  {
-		    error ("nested functions not implemented in this context");
-
-		    if ((reading_fcn_file || reading_script_file)
-			&& ! curr_fcn_file_name.empty ())
-		      error ("near line %d of file `%s.m'",
-			     input_line_number, curr_fcn_file_name.c_str ());
-		    else
-		      error ("near line %d", input_line_number);
-
-		    return LEXICAL_ERROR;
-		  }
-	      }
-	    else
-	      prep_for_function ();
-	  }
+	  if (! (reading_fcn_file || reading_script_file))
+	    input_line_number = 1;
 	  break;
 
         case magic_file_kw:
@@ -3254,7 +3152,6 @@ lexical_feedback::init (void)
   // Not initially defining a function.
   defining_func = false;
   parsed_function_name = false;
-  parsing_nested_function = 0;
   parsing_class_method = false;
 
   // Not initiallly looking at a function handle.
@@ -3341,9 +3238,15 @@ is omitted, return a list of keywords.\n\
 }
 
 void
-prep_lexer_for_script (void)
+prep_lexer_for_script_file (void)
 {
   BEGIN (SCRIPT_FILE_BEGIN);
+}
+
+void
+prep_lexer_for_function_file (void)
+{
+  BEGIN (FUNCTION_FILE_BEGIN);
 }
 
 static void
@@ -3495,6 +3398,8 @@ display_token (int tok)
     case LEXICAL_ERROR: std::cerr << "LEXICAL_ERROR\n\n"; break;
     case FCN: std::cerr << "FCN\n"; break;
     case CLOSE_BRACE: std::cerr << "CLOSE_BRACE\n"; break;
+    case SCRIPT_FILE: std::cerr << "SCRIPT_FILE\n"; break;
+    case FUNCTION_FILE: std::cerr << "FUNCTION_FILE\n"; break;
     case '\n': std::cerr << "\\n\n"; break;
     case '\r': std::cerr << "\\r\n"; break;
     case '\t': std::cerr << "TAB\n"; break;
@@ -3532,12 +3437,8 @@ display_state (void)
       std::cerr << "SCRIPT_FILE_BEGIN" << std::endl;
       break;
 
-    case NESTED_FUNCTION_END:
-      std::cerr << "NESTED_FUNCTION_END" << std::endl;
-      break;
-
-    case NESTED_FUNCTION_BEGIN:
-      std::cerr << "NESTED_FUNCTION_BEGIN" << std::endl;
+    case FUNCTION_FILE_BEGIN:
+      std::cerr << "FUNCTION_FILE_BEGIN" << std::endl;
       break;
 
     default:

@@ -1,7 +1,58 @@
-2009-07-30  Jaroslav Hajek  <highegg@gmail.com>
+2009-07-30  Ryan Rusaw  <rrusaw@gmail.com>
 
-	* data.cc (Fmerge): Rename to Fifelse.
+	* input.cc (reading_classdef_file): New file-scope variable.
+	(gnu_readline): Also set curr_stream if reading_classdef_file.
+	(octave_gets, get_input_from_file):
+	Handle classdef files like other input files.
+	* input.h (reading_classdef_file): Provide decl.
 
+	* octave.gperf (classdef, endclassdef, endevents, endmethods,
+	endproperties, events, get, methods, properties, set): New keywords.
+
+	* lex.l: Handle classdef filees like other input files.
+	Recognize superclass method identifiers and metaclass query constructs.
+	(is_keyword_token): Recognize endclassdef, endevents, endmethods,
+	endproperties, get, set, properties, methods, and events keywords.
+	(maybe_classdef_get_set_method, parsing_classdef): New variables.
+	(handle_superclass_identifier, handle_meta_identifier):
+	New static functions.
+	(lexical_feedback::init): Initialize parsing_classdef and
+	maybe_classdef_get_set_method.
+	(display_token): Handle SUPERCLASSREF, METAQUERY, GET, SET,
+	PROPERTIES, METHODS, EVENTS, and  CLASSDEF tokens.
+	* lex.h (maybe_classdef_get_set_method, parsing_classdef):
+	Provide decls.
+	* parse.y (%union): New placeholder type, dummy_type.
+	(SUPERCLASSREF, METAQUERY, GET, SET, PROPERTIES, METHODS, EVENTS,
+	CLASSDEF): New tokens.
+	(superclass_identifier, meta_identifier, classdef_beg,
+	classdef_end, classdef1, classdef, opt_attr_list, attr_list, attr,
+	opt_superclasses, superclasses, class_body, properties_beg,
+	properties_block, properties_list, class_property, methods_beg,
+	methods_block, methods_list, events_beg, events_block,
+	events_list, class_event): New non-terminals.
+	(primary_expr): Include superclass_identifier and meta_identifier
+	as possible primary_exprs.
+	(function_beg): If parsing classdef file, set
+	lexer_flags.maybe_classdef_get_set_method to true.
+	be recognized.
+	(fcn_name): Accept GET '.' identifier or SET '.' identifier.
+	(end_error): Handle endclassdef.
+	(looking_at_classdef_keyword): New function.
+	(gobble_leading_whitespace): Handle classdef.
+	* token.h, token.cc (sc, mc):
+	New union fields for symbol classdef symbol_record info.
+	(token::token (symbol_table::symbol_record *,
+	symbol_table::symbol_record *, int, int),
+	token::token (symbol_table::symbol_record *,
+	symbol_table::symbol_record *, symbol_table::symbol_record *, int,
+	int)): New constructors.
+	(token::method_rec, token::class_rec, token::package_rec,
+	token::meta_class_rec, token::meta_package_rec): New methods.
+	(token_type): New enum values: scls_rec_token, meta_rec_token.
+	(end_tok_type): New enum values: classdef_end, events_end,
+	methods_end, properties_end.
+	
 2009-07-30  David Grundberg  <individ@acc.umu.se>
 
 	* symtab.h (symbol_table::parent_scope): Remove.
@@ -46,6 +97,10 @@
 	(parse_fcn_file): Warn when nested functions have been
 	declared. Remove superfluous local variables. Parse function files
 	using function_file rule.
+
+2009-07-30  Jaroslav Hajek  <highegg@gmail.com>
+
+	* data.cc (Fmerge): Rename to Fifelse.
 
 2009-07-30  Jaroslav Hajek  <highegg@gmail.com>
 

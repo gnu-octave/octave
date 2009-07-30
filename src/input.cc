@@ -115,6 +115,9 @@ bool input_from_command_line_file = false;
 // TRUE means we're parsing a function file.
 bool reading_fcn_file = false;
 
+// TRUE means we're parsing a classdef file.
+bool reading_classdef_file = false;
+
 // Simple name of function file we are reading.
 std::string curr_fcn_file_name;
 
@@ -216,7 +219,7 @@ gnu_readline (const std::string& s, bool force_readline)
 
       FILE *curr_stream = command_editor::get_input_stream ();
 
-      if (reading_fcn_file || reading_script_file)
+      if (reading_fcn_file || reading_script_file || reading_classdef_file)
 	curr_stream = ff_instream;
 
       retval = octave_fgets (curr_stream);
@@ -259,6 +262,7 @@ octave_gets (void)
 
   if ((interactive || forced_interactive)
       && (! (reading_fcn_file
+	     || reading_classdef_file
 	     || reading_script_file
 	     || input_from_startup_file
 	     || input_from_command_line_file)))
@@ -304,7 +308,7 @@ octave_gets (void)
 	     || history_skip_auto_repeated_debugging_command))
 	command_history::add (current_input_line);
 
-      if (! (reading_fcn_file || reading_script_file))
+      if (! (reading_fcn_file || reading_script_file || reading_classdef_file))
 	{
 	  octave_diary << current_input_line;
 
@@ -314,9 +318,9 @@ octave_gets (void)
 
       do_input_echo (current_input_line);
     }
-  else if (! (reading_fcn_file || reading_script_file))
+  else if (! (reading_fcn_file || reading_script_file || reading_classdef_file))
     octave_diary << "\n";
-  
+
   return retval;
 }
 
@@ -386,7 +390,7 @@ octave_read (char *buf, unsigned max_size)
       // Make sure input ends with a new line character.
       if (chars_left == 0 && buf[len-1] != '\n')
 	{
-	  if (len < max_size) 
+	  if (len < max_size)
 	    {
 	      // There is enough room to plug the newline character in
 	      // the buffer.
@@ -409,7 +413,7 @@ octave_read (char *buf, unsigned max_size)
     {
       status = 0;
     }
-  else    
+  else
     status = -1;
 
   return status;
@@ -429,7 +433,7 @@ get_input_from_file (const std::string& name, int warn)
   if (! instream && warn)
     warning ("%s: no such file or directory", name.c_str ());
 
-  if (reading_fcn_file || reading_script_file)
+  if (reading_fcn_file || reading_script_file || reading_classdef_file)
     ff_instream = instream;
   else
     command_editor::set_input_stream (instream);
@@ -689,7 +693,7 @@ get_debug_input (const std::string& prompt)
 	  // global_command = 0;
 
 	  if (octave_completion_matches_called)
-	    octave_completion_matches_called = false;	    
+	    octave_completion_matches_called = false;
 	}
 
       // Unmark forced variables.

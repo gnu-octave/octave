@@ -121,8 +121,16 @@ public:
   // Should only matter if current_function_level > 0
   bool parsed_function_name;
 
-  // TRUE means we are parsing a class method.
+  // TRUE means we are parsing a class method in function or classdef file.
   bool parsing_class_method;
+
+  // TRUE means we are parsing a class method declaration line in a
+  // classdef file and can accept a property get or set method name.
+  // For example, "get.PropertyName" is recognized as a function name.
+  bool maybe_classdef_get_set_method;
+
+  // TRUE means we are parsing a classdef file
+  bool parsing_classdef;
 
   // Return transpose or start a string?
   bool quote_is_transpose;

@@ -289,6 +289,8 @@ static std::string strip_trailing_whitespace (char *s);
 static void handle_number (void);
 static int handle_string (char delim);
 static int handle_close_bracket (bool spc_gobbled, int bracket_type);
+static int handle_superclass_identifier (void);
+static int handle_meta_identifier (void);
 static int handle_identifier (void);
 static bool have_continuation (bool trailing_comments_ok = true);
 static bool have_ellipsis_continuation (bool trailing_comments_ok = true);
@@ -690,7 +692,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
       {
 	warning ("block comment open at end of input");
 
-	if ((reading_fcn_file || reading_script_file)
+	if ((reading_fcn_file || reading_script_file || reading_classdef_file)
 	    && ! curr_fcn_file_name.empty ())
 	  warning ("near line %d of file `%s.m'",
 		   input_line_number, curr_fcn_file_name.c_str ());
@@ -714,7 +716,43 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
   }
 
 %{
-// Function handles.
+// Superclass method identifiers. 
+%}
+
+{IDENT}@{IDENT}{S}* |
+{IDENT}@{IDENT}.{IDENT}{S}* {
+    LEXER_DEBUG ("{IDENT}@{IDENT}{S}*|{IDENT}@{IDENT}.{IDENT}{S}*");
+
+    int id_tok = handle_superclass_identifier ();
+
+    if (id_tok >= 0)
+      {
+        lexer_flags.looking_for_object_index = true;
+
+        COUNT_TOK_AND_RETURN (SUPERCLASSREF);
+      }
+  }
+  
+%{
+// Metaclass query
+%}  
+  
+\?{IDENT}{S}* | 
+\?{IDENT}.{IDENT}{S}* {
+    LEXER_DEBUG ("\?{IDENT}{S}* | \?{IDENT}.{IDENT}{S}*");
+    
+    int id_tok = handle_meta_identifier ();
+
+    if (id_tok >= 0)
+      {
+        lexer_flags.looking_for_object_index = true;
+
+        COUNT_TOK_AND_RETURN (METAQUERY);
+      }
+  }  
+
+%{
+// Function handles and superclass references
 %}
 
 "@" {
@@ -729,6 +767,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     lexer_flags.at_beginning_of_statement = false;
 
     COUNT_TOK_AND_RETURN ('@');
+      
   }
 
 %{
@@ -873,7 +912,6 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 "||"	{ LEXER_DEBUG ("||"); BIN_OP_RETURN (EXPR_OR_OR, false, false); }
 "<<"	{ LEXER_DEBUG ("<<"); XBIN_OP_RETURN (LSHIFT, false, false); }
 ">>"	{ LEXER_DEBUG (">>"); XBIN_OP_RETURN (RSHIFT, false, false); }
-
 
 {NOT} {
     LEXER_DEBUG ("{NOT}");
@@ -1065,7 +1103,7 @@ reset_parser (void)
     }
 
   // Can be reset by defining a function.
-  if (! (reading_script_file || reading_fcn_file))
+  if (! (reading_script_file || reading_fcn_file || reading_classdef_file))
     {
       current_input_column = 1;
       input_line_number = command_editor::current_command_number ();
@@ -1075,6 +1113,7 @@ reset_parser (void)
   // input.
   if ((interactive || forced_interactive)
       && ! (reading_fcn_file
+        || reading_classdef_file
 	    || reading_script_file
 	    || get_input_from_eval_string
 	    || input_from_startup_file))
@@ -1417,10 +1456,11 @@ is_keyword_token (const std::string& s)
 	  break;
 
 	case end_kw:
-	  if (inside_any_object_index ()
-	      || (lexer_flags.defining_func
-		  && ! (lexer_flags.looking_at_return_list
-			|| lexer_flags.parsed_function_name)))
+	  if (! reading_classdef_file
+	      && (inside_any_object_index ()
+		  || (lexer_flags.defining_func
+		      && ! (lexer_flags.looking_at_return_list
+			    || lexer_flags.parsed_function_name))))
 	    return 0;
 
 	  yylval.tok_val = new token (token::simple_end, l, c);
@@ -1461,6 +1501,26 @@ is_keyword_token (const std::string& s)
 	  yylval.tok_val = new token (token::while_end, l, c);
 	  lexer_flags.at_beginning_of_statement = true;
 	  break;
+	  
+	case endclassdef_kw:
+	  yylval.tok_val = new token (token::classdef_end, l, c);
+	  lexer_flags.at_beginning_of_statement = true;
+	  break;
+	  
+	case endevents_kw:
+	  yylval.tok_val = new token (token::events_end, l, c);
+	  lexer_flags.at_beginning_of_statement = true;
+	  break;
+	  
+	case endmethods_kw:
+	  yylval.tok_val = new token (token::methods_end, l, c);
+	  lexer_flags.at_beginning_of_statement = true;
+	  break;
+	  
+	case endproperties_kw:
+	  yylval.tok_val = new token (token::properties_end, l, c);
+	  lexer_flags.at_beginning_of_statement = true;
+	  break;
 
 	case for_kw:
 	case while_kw:
@@ -1485,19 +1545,43 @@ is_keyword_token (const std::string& s)
 	  promptflag--;
 	  break;
 
+	case get_kw:
+	case set_kw:  
+	  // 'get' and 'set' are keywords in classdef method
+	  // declarations.
+	  if (! lexer_flags.maybe_classdef_get_set_method)
+	    return 0;
+	  break;
+
+	case properties_kw:
+	case methods_kw:
+	case events_kw:
+	  // 'properties', 'methods' and 'events' are keywords for
+	  // classdef blocks.
+	  if (! lexer_flags.parsing_classdef)
+	    return 0;
+	  // fall through ...
+
+	case classdef_kw:
+	  // 'classdef' is always a keyword.
+	  promptflag--;
+	  break;	  
+
 	case function_kw:
 	  promptflag--;
 
 	  lexer_flags.defining_func = true;
 	  lexer_flags.parsed_function_name = false;
 
-	  if (! (reading_fcn_file || reading_script_file))
+	  if (! (reading_fcn_file || reading_script_file
+		 || reading_classdef_file))
 	    input_line_number = 1;
 	  break;
 
         case magic_file_kw:
 	  {
-	    if ((reading_fcn_file || reading_script_file)
+	    if ((reading_fcn_file || reading_script_file
+		 || reading_classdef_file)
 		&& ! curr_fcn_file_full_name.empty ())
 	      yylval.tok_val = new token (curr_fcn_file_full_name, l, c);
 	    else
@@ -2963,6 +3047,80 @@ looks_like_command_arg (void)
   return retval;
 }
 
+static int
+handle_superclass_identifier (void)
+{
+  eat_continuation ();
+
+  std::string pkg;  
+  std::string meth = strip_trailing_whitespace (yytext); 
+  size_t pos = meth.find ("@");
+  std::string cls = meth.substr (pos).substr (1);
+  meth = meth.substr (0, pos - 1);  
+  
+  pos = cls.find (".");
+  if (pos != std::string::npos)
+    {	 
+      pkg = cls.substr (pos).substr (1);
+      cls = cls.substr (0, pos - 1);
+    }
+    
+  int kw_token = (is_keyword_token (meth) || is_keyword_token (cls)
+		  || is_keyword_token (pkg));
+  if (kw_token)
+    {
+      error ("method, class and package names may not be keywords");
+      return LEXICAL_ERROR;
+    }
+ 
+  yylval.tok_val
+    = new token (meth.empty () ? 0 : &(symbol_table::insert (meth)),
+                 cls.empty () ? 0 : &(symbol_table::insert (cls)),
+                 pkg.empty () ? 0 : &(symbol_table::insert (pkg)),
+		 input_line_number, current_input_column);				   
+  token_stack.push (yylval.tok_val);
+  
+  lexer_flags.convert_spaces_to_comma = true;
+  current_input_column += yyleng;
+  
+  return SUPERCLASSREF;
+}
+
+static int
+handle_meta_identifier (void)
+{
+  eat_continuation ();
+
+  std::string pkg;
+  std::string cls = strip_trailing_whitespace (yytext).substr (1);
+  size_t pos = cls.find (".");
+  
+  if (pos != std::string::npos)
+    {	 
+      pkg = cls.substr (pos).substr (1);
+      cls = cls.substr (0, pos - 1);
+    }
+  
+  int kw_token = is_keyword_token (cls) || is_keyword_token (pkg);
+  if (kw_token)
+    {
+       error ("class and package names may not be keywords");
+      return LEXICAL_ERROR;
+    }
+  
+  yylval.tok_val
+    = new token (cls.empty () ? 0 : &(symbol_table::insert (cls)),
+		 pkg.empty () ? 0 : &(symbol_table::insert (pkg)),
+		 input_line_number, current_input_column);
+
+  token_stack.push (yylval.tok_val);
+                   
+  lexer_flags.convert_spaces_to_comma = true;
+  current_input_column += yyleng;
+  
+  return METAQUERY;
+}
+
 // Figure out exactly what kind of token to return when we have seen
 // an identifier.  Handles keywords.  Return -1 if the identifier
 // should be ignored.
@@ -3153,6 +3311,10 @@ lexical_feedback::init (void)
   defining_func = false;
   parsed_function_name = false;
   parsing_class_method = false;
+  
+  // Not initially defining a class with classdef.
+  maybe_classdef_get_set_method = false;
+  parsing_classdef = false;
 
   // Not initiallly looking at a function handle.
   looking_at_function_handle = 0;
@@ -3400,6 +3562,14 @@ display_token (int tok)
     case CLOSE_BRACE: std::cerr << "CLOSE_BRACE\n"; break;
     case SCRIPT_FILE: std::cerr << "SCRIPT_FILE\n"; break;
     case FUNCTION_FILE: std::cerr << "FUNCTION_FILE\n"; break;
+    case SUPERCLASSREF: std::cerr << "SUPERCLASSREF\n"; break;
+    case METAQUERY: std::cerr << "METAQUERY\n"; break;
+    case GET: std::cerr << "GET\n"; break;
+    case SET: std::cerr << "SET\n"; break;
+    case PROPERTIES: std::cerr << "PROPERTIES\n"; break;
+    case METHODS: std::cerr << "METHODS\n"; break;
+    case EVENTS: std::cerr << "EVENTS\n"; break;
+    case CLASSDEF: std::cerr << "CLASSDEF\n"; break;
     case '\n': std::cerr << "\\n\n"; break;
     case '\r': std::cerr << "\\r\n"; break;
     case '\t': std::cerr << "TAB\n"; break;

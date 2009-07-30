@@ -1,7 +1,7 @@
 /*
 
 Copyright (C) 1993, 1994, 1995, 1996, 1997, 2000, 2002, 2004, 2005,
-              2007 John W. Eaton
+              2007, 2009 John W. Eaton
 
 This file is part of Octave.
 
@@ -81,6 +81,28 @@ token::token (symbol_table::symbol_record *s, int l, int c)
   sr = s;
 }
 
+token::token (symbol_table::symbol_record *cls,
+              symbol_table::symbol_record *pkg, int l, int c)
+{
+  line_num = l;
+  column_num = c;
+  type_tag = meta_rec_token;
+  mc.cr = cls;
+  mc.pr = pkg;
+}
+
+token::token (symbol_table::symbol_record *mth,
+              symbol_table::symbol_record *cls,
+              symbol_table::symbol_record *pkg, int l, int c)
+{
+  line_num = l;
+  column_num = c;
+  type_tag = scls_rec_token;
+  sc.mr = mth;
+  sc.cr = cls;
+  sc.pr = pkg;
+}
+
 token::~token (void)
 {
   if (type_tag == string_token)
@@ -120,6 +142,41 @@ token::sym_rec (void)
 {
   assert (type_tag == sym_rec_token);
   return sr;
+}
+
+symbol_table::symbol_record *
+token::method_rec (void)
+{
+  assert (type_tag == scls_rec_token);
+  return sc.mr;
+}
+
+symbol_table::symbol_record *
+token::class_rec (void)
+{
+  assert (type_tag == scls_rec_token);
+  return sc.cr;
+}
+
+symbol_table::symbol_record *
+token::package_rec (void)
+{
+  assert (type_tag == scls_rec_token);
+  return sc.pr;
+}
+
+symbol_table::symbol_record *
+token::meta_class_rec (void)
+{
+  assert (type_tag == meta_rec_token);
+  return mc.cr;
+}
+
+symbol_table::symbol_record *
+token::meta_package_rec (void)
+{
+  assert (type_tag == meta_rec_token);
+  return mc.pr;
 }
 
 std::string

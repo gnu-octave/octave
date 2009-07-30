@@ -30,6 +30,7 @@ enum octave_kw_id
   break_kw,
   case_kw,
   catch_kw,
+  classdef_kw,
   continue_kw,
   do_kw,
   else_kw,
@@ -37,19 +38,28 @@ enum octave_kw_id
   end_kw,
   end_try_catch_kw,
   end_unwind_protect_kw,
+  endclassdef_kw,
+  endevents_kw,
   endfor_kw,
   endfunction_kw,
   endif_kw,
+  endmethods_kw,
+  endproperties_kw,
   endswitch_kw,
   endwhile_kw,
+  events_kw,
   for_kw,
   function_kw,
+  get_kw,
   global_kw,
   if_kw,
   magic_file_kw,
   magic_line_kw,
+  methods_kw,
   otherwise_kw,
+  properties_kw,
   return_kw,
+  set_kw,
   static_kw,
   switch_kw,
   try_kw,
@@ -64,6 +74,7 @@ struct octave_kw { const char *name; int tok; octave_kw_id kw_id; };
 break, BREAK, break_kw
 case, CASE, case_kw
 catch, CATCH, catch_kw
+classdef, CLASSDEF, classdef_kw
 continue, CONTINUE, continue_kw
 do, DO, do_kw
 else, ELSE, else_kw
@@ -71,18 +82,27 @@ elseif, ELSEIF, elseif_kw
 end, END, end_kw
 end_try_catch, END, end_try_catch_kw
 end_unwind_protect, END, end_unwind_protect_kw
+endclassdef, END, endclassdef_kw 
+endevents, END, endevents_kw
 endfor, END, endfor_kw
 endfunction, END, endfunction_kw
 endif, END, endif_kw
+endmethods, END, endmethods_kw
+endproperties, END, endproperties_kw
 endswitch, END, endswitch_kw
 endwhile, END, endwhile_kw
+events, EVENTS, events_kw
 for, FOR, for_kw
 function, FCN, function_kw
+get, GET, get_kw
 global, GLOBAL, global_kw
 if, IF, if_kw
+methods, METHODS, methods_kw
 otherwise, OTHERWISE, otherwise_kw
 persistent, STATIC, static_kw
+properties, PROPERTIES, properties_kw
 return, FUNC_RET, return_kw
+set, SET, set_kw
 static, STATIC, static_kw
 switch, SWITCH, switch_kw
 try, TRY, try_kw

@@ -1,7 +1,7 @@
 /*
 
 Copyright (C) 1993, 1994, 1995, 1996, 1997, 2000, 2002, 2004, 2005,
-              2007, 2008 John W. Eaton
+              2007, 2008, 2009 John W. Eaton
 
 This file is part of Octave.
 
@@ -38,15 +38,21 @@ public:
       double_token,
       ettype_token,
       pttype_token,
-      sym_rec_token
+      sym_rec_token,
+      scls_rec_token,
+      meta_rec_token
     };
 
   enum end_tok_type
     {
       simple_end,
+      classdef_end,
+      events_end,
       for_end,
       function_end,
       if_end,
+      methods_end,
+      properties_end,
       switch_end,
       while_end,
       try_catch_end,
@@ -67,6 +73,11 @@ public:
   token (end_tok_type t, int l = -1, int c = -1);
   token (plot_tok_type t, int l = -1, int c = -1);
   token (symbol_table::symbol_record *s, int l = -1, int c = -1);
+  token (symbol_table::symbol_record *cls,
+         symbol_table::symbol_record *pkg, int l = -1, int c = -1);
+  token (symbol_table::symbol_record *mth,
+         symbol_table::symbol_record *cls,
+         symbol_table::symbol_record *pkg, int l = -1, int c = -1);
 
   ~token (void);
 
@@ -78,6 +89,13 @@ public:
   end_tok_type ettype (void);
   plot_tok_type pttype (void);
   symbol_table::symbol_record *sym_rec (void);
+
+  symbol_table::symbol_record *method_rec (void);
+  symbol_table::symbol_record *class_rec (void);
+  symbol_table::symbol_record *package_rec (void);
+
+  symbol_table::symbol_record *meta_class_rec (void);
+  symbol_table::symbol_record *meta_package_rec (void);
 
   std::string text_rep (void);
 
@@ -99,6 +117,17 @@ private:
       end_tok_type et;
       plot_tok_type pt;
       symbol_table::symbol_record *sr;
+      struct
+        {
+          symbol_table::symbol_record *mr;
+          symbol_table::symbol_record *cr;
+          symbol_table::symbol_record *pr;
+        } sc;
+      struct
+        {
+          symbol_table::symbol_record *cr;
+          symbol_table::symbol_record *pr;
+        } mc;
     };
   std::string orig_text;
 };

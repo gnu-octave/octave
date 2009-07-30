@@ -410,6 +410,7 @@ make_statement (T *arg)
   tree_statement *tree_statement_type;
   tree_statement_list *tree_statement_list_type;
   octave_user_function *octave_user_function_type;
+  void *dummy_type;
 }
 
 // Tokens with line and column information.
@@ -436,15 +437,22 @@ make_statement (T *arg)
 %token <tok_val> TRY CATCH
 %token <tok_val> GLOBAL STATIC
 %token <tok_val> FCN_HANDLE
+%token <tok_val> PROPERTIES
+%token <tok_val> METHODS
+%token <tok_val> EVENTS
+%token <tok_val> METAQUERY
+%token <tok_val> SUPERCLASSREF
+%token <tok_val> GET SET
 
 // Other tokens.
 %token END_OF_INPUT LEXICAL_ERROR
-%token FCN SCRIPT_FILE FUNCTION_FILE
+%token FCN SCRIPT_FILE FUNCTION_FILE CLASSDEF
 // %token VARARGIN VARARGOUT
 %token CLOSE_BRACE
 
 // Nonterminals we construct.
-%type <comment_type> stash_comment function_beg
+%type <comment_type> stash_comment function_beg classdef_beg
+%type <comment_type> properties_beg methods_beg events_beg
 %type <sep_type> sep_no_nl opt_sep_no_nl sep opt_sep
 %type <tree_type> input
 %type <tree_constant_type> string constant magic_colon
@@ -456,15 +464,18 @@ make_statement (T *arg)
 %type <tree_expression_type> primary_expr postfix_expr prefix_expr binary_expr
 %type <tree_expression_type> simple_expr colon_expr assign_expr expression
 %type <tree_identifier_type> identifier fcn_name
-%type <octave_user_function_type> function1 function2
+%type <tree_identifier_type> superclass_identifier meta_identifier
+%type <octave_user_function_type> function1 function2 classdef1
 %type <tree_index_expression_type> word_list_cmd
 %type <tree_colon_expression_type> colon_expr1
 %type <tree_argument_list_type> arg_list word_list assign_lhs
 %type <tree_argument_list_type> cell_or_matrix_row
 %type <tree_parameter_list_type> param_list param_list1 param_list2
 %type <tree_parameter_list_type> return_list return_list1
+%type <tree_parameter_list_type> superclasses opt_superclasses
 %type <tree_command_type> command select_command loop_command
-%type <tree_command_type> jump_command except_command function script_file
+%type <tree_command_type> jump_command except_command function
+%type <tree_command_type> script_file classdef
 %type <tree_command_type> function_file function_list
 %type <tree_if_command_type> if_command
 %type <tree_if_clause_type> elseif_clause else_clause
@@ -475,9 +486,22 @@ make_statement (T *arg)
 %type <tree_decl_elt_type> decl2
 %type <tree_decl_init_list_type> decl1
 %type <tree_decl_command_type> declaration
-%type <tree_statement_type> statement function_end
+%type <tree_statement_type> statement function_end classdef_end
 %type <tree_statement_list_type> simple_list simple_list1 list list1
 %type <tree_statement_list_type> opt_list input1
+// These types need to be specified.
+%type <dummy_type> attr
+%type <dummy_type> class_event
+%type <dummy_type> class_property
+%type <dummy_type> properties_list
+%type <dummy_type> properties_block
+%type <dummy_type> methods_list
+%type <dummy_type> methods_block
+%type <dummy_type> opt_attr_list
+%type <dummy_type> attr_list
+%type <dummy_type> events_list
+%type <dummy_type> events_block
+%type <dummy_type> class_body
 
 // Precedence and associativity.
 %left ';' ',' '\n'
@@ -601,6 +625,15 @@ identifier	: NAME
 		  }
 		;
 
+superclass_identifier
+		: SUPERCLASSREF
+		  { $$ = new tree_identifier ($1->line (), $1->column ()); }
+		;
+	    
+meta_identifier	: METAQUERY
+		  { $$ = new tree_identifier ($1->line (), $1->column ()); }
+		;	    
+
 string		: DQ_STRING
 		  { $$ = make_constant (DQ_STRING, $1); }
 		| SQ_STRING
@@ -696,7 +729,7 @@ fcn_handle	: '@' FCN_HANDLE
 anon_fcn_handle	: '@' param_list statement
 		  { $$ = make_anon_fcn_handle ($2, $3); }
 		;
-
+	
 primary_expr	: identifier
 		  { $$ = $1; }
 		| constant
@@ -706,6 +739,10 @@ primary_expr	: identifier
 		| matrix
 		  { $$ = $1; }
 		| cell
+		  { $$ = $1; }
+		| meta_identifier
+		  { $$ = $1; }
+		| superclass_identifier
 		  { $$ = $1; }
 		| '(' expression ')'
 		  { $$ = $2->mark_in_parens (); }
@@ -924,6 +961,8 @@ command		: declaration
 		| function
 		  { $$ = $1; }
 		| script_file
+		  { $$ = $1; }
+		| classdef
 		  { $$ = $1; }
 		;
 
@@ -1264,6 +1303,7 @@ script_file	: SCRIPT_FILE opt_list END_OF_INPUT
 // =============
 
 function_file   : FUNCTION_FILE function_list opt_sep END_OF_INPUT
+		  { $$ = 0; }
 		;
 
 function_list   : function
@@ -1275,7 +1315,12 @@ function_list   : function
 // ===================
 
 function_beg	: push_fcn_symtab FCN stash_comment
-		  { $$ = $3; }
+		  {
+		    $$ = $3;
+
+		    if (reading_classdef_file || lexer_flags.parsing_classdef) 
+		      lexer_flags.maybe_classdef_get_set_method = true; 
+		  }
 		;
 
 function	: function_beg function1
@@ -1296,8 +1341,19 @@ fcn_name	: identifier
 
 		    lexer_flags.parsed_function_name = true;
 		    lexer_flags.defining_func = false;
-
+		    lexer_flags.maybe_classdef_get_set_method = false;
+            
 		    $$ = $1;
+		  }
+		| GET '.' identifier
+		  {
+		    lexer_flags.maybe_classdef_get_set_method = false;
+		    $$ = $3;
+		  }
+		| SET '.' identifier
+		  {
+		    lexer_flags.maybe_classdef_get_set_method = false;
+		    $$ = $3;
 		  }
 		;
 
@@ -1349,11 +1405,152 @@ function_end	: END
 			YYABORT;
 		      }
 
+		    if (reading_classdef_file)
+		      {
+		        yyerror ("classdef body open at end of input");
+		        YYABORT;
+		      }
+
 		    $$ = make_end ("endfunction", input_line_number,
 				   current_input_column);
 		  }
 		;
 
+// ========
+// Classdef
+// ========
+
+classdef_beg	: CLASSDEF stash_comment
+		  {
+		    $$ = 0;
+		    lexer_flags.parsing_classdef = true;
+		  }
+		;
+
+classdef_end	: END
+		  {
+		    lexer_flags.parsing_classdef = false;
+
+		    if (end_token_ok ($1, token::classdef_end))
+		      $$ = make_end ("endclassdef", $1->line (), $1->column ());
+		    else
+		      ABORT_PARSE;
+		  }
+		;
+
+classdef1	: classdef_beg opt_attr_list identifier opt_superclasses
+		  { $$ = 0; }
+		;
+
+classdef	: classdef1 '\n' class_body '\n' stash_comment classdef_end
+		  { $$ = 0; }
+		;
+
+opt_attr_list	: // empty
+		  { $$ = 0; }
+		| '(' attr_list ')'
+		  { $$ = 0; }
+		;
+
+attr_list	: attr
+		  { $$ = 0; }
+		| attr_list ',' attr
+		  { $$ = 0; }
+		;
+
+attr		: identifier
+		  { $$ = 0; }
+		| identifier '=' decl_param_init expression
+		  { $$ = 0; }
+		| EXPR_NOT identifier
+		  { $$ = 0; }
+		;
+
+opt_superclasses
+		: // empty
+		  { $$ = 0; }
+		| superclasses
+		  { $$ = 0; }
+		;
+
+superclasses	: EXPR_LT identifier '.' identifier
+		  { $$ = 0; }
+		| EXPR_LT identifier
+		  { $$ = 0; }
+		| superclasses EXPR_AND identifier '.' identifier
+		  { $$ = 0; }
+		| superclasses EXPR_AND identifier
+		  { $$ = 0; }
+		;
+
+class_body	: properties_block
+		  { $$ = 0; }
+		| methods_block
+		  { $$ = 0; }
+		| events_block
+		  { $$ = 0; }
+		| class_body '\n' properties_block
+		  { $$ = 0; }
+		| class_body '\n' methods_block
+		  { $$ = 0; }
+		| class_body '\n' events_block
+		  { $$ = 0; }
+		;
+
+properties_beg	: PROPERTIES stash_comment
+		  { $$ = 0; }
+		;
+
+properties_block
+		: properties_beg opt_attr_list '\n' properties_list '\n' END
+		  { $$ = 0; }
+		;
+
+properties_list
+		: class_property
+		  { $$ = 0; }
+		| properties_list '\n' class_property
+		  { $$ = 0; }
+		;
+
+class_property	: identifier
+		  { $$ = 0; }
+		| identifier '=' decl_param_init expression ';'
+		  { $$ = 0; }
+		;
+
+methods_beg	: METHODS stash_comment
+		  { $$ = 0; }
+		;
+
+methods_block	: methods_beg opt_attr_list '\n' methods_list '\n' END
+		  { $$ = 0; }
+		;
+
+methods_list	: function
+		  { $$ = 0; }
+		| methods_list '\n' function
+		  { $$ = 0; }
+		;
+
+events_beg	: EVENTS stash_comment
+		  { $$ = 0; }
+		;
+
+events_block	: events_beg opt_attr_list '\n' events_list '\n' END
+		  { $$ = 0; }
+		;
+
+events_list	: class_event
+		  { $$ = 0; }
+		| events_list '\n' class_event
+		  { $$ = 0; }
+		;
+
+class_event	: identifier
+		  { $$ = 0; }
+		;
+ 
 // =============
 // Miscellaneous
 // =============
@@ -1414,7 +1611,7 @@ yyerror (const char *s)
 
   std::ostringstream output_buf;
 
-  if (reading_fcn_file || reading_script_file)
+  if (reading_fcn_file || reading_script_file || reading_classdef_file)
     output_buf << "parse error near line " << input_line_number
 	       << " of file " << curr_fcn_file_full_name;
   else
@@ -1474,6 +1671,10 @@ end_error (const char *type, token::end_tok_type ettype, int l, int c)
       error (fmt, type, "endfunction", l, c);
       break;
 
+    case token::classdef_end:
+      error (fmt, type, "endclassdef", l, c);
+      break;
+
     case token::if_end:
       error (fmt, type, "endif", l, c);
       break;
@@ -1520,6 +1721,10 @@ end_token_ok (token *tok, token::end_tok_type expected)
 
       switch (expected)
 	{
+	case token::classdef_end:
+	  end_error ("classdef", ettype, l, c);
+	  break;
+
 	case token::for_end:
 	  end_error ("for", ettype, l, c);
 	  break;
@@ -2658,7 +2863,7 @@ frob_function (const std::string& fname, octave_user_function *fcn)
       }
   }
 
-  if (reading_fcn_file || autoloading)
+  if (reading_fcn_file || reading_classdef_file || autoloading)
     {
       octave_time now;
 
@@ -3135,6 +3340,25 @@ skip_white_space (stream_reader& reader)
   return (c == EOF);
 }
 
+static bool
+looking_at_classdef_keyword (FILE *ffile)
+{
+  bool status = false;
+
+  long pos = ftell (ffile);
+
+  char buf [10];
+  fgets (buf, 10, ffile);
+  size_t len = strlen (buf);
+  if (len > 8 && strncmp (buf, "classdef", 8) == 0
+      && ! (isalnum (buf[8]) || buf[8] == '_'))
+    status = true;
+
+  fseek (ffile, pos, SEEK_SET);
+
+  return status;
+ }
+
 static std::string
 gobble_leading_white_space (FILE *ffile, bool& eof)
 {
@@ -3263,6 +3487,9 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
 	  unwind_protect::protect_var (parser_end_of_input);
 	  unwind_protect::protect_var (reading_fcn_file);
 	  unwind_protect::protect_var (reading_script_file);
+	  unwind_protect::protect_var (reading_classdef_file);
+	  unwind_protect::protect_var (Vecho_executing_commands);
+
 
 	  get_input_from_eval_string = false;
 	  parser_end_of_input = false;
@@ -3271,20 +3498,33 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
 	    {
 	      file_type = "function";
 
-	      unwind_protect::protect_var (Vecho_executing_commands);
+	      Vecho_executing_commands = ECHO_OFF;
+
+	      reading_classdef_file = false;
+	      reading_fcn_file = true;
+	      reading_script_file = false;
+	    }
+	  else if (! force_script && looking_at_classdef_keyword (ffile))
+	    {
+	      file_type = "classdef";
 
 	      Vecho_executing_commands = ECHO_OFF;
-	      reading_fcn_file = true;
+
+	      reading_classdef_file = true;
+	      reading_fcn_file = false;
+	      reading_script_file = false;
 	    }
 	  else
 	    {
 	      file_type = "script";
 
+	      Vecho_executing_commands = ECHO_OFF;
+
+	      reading_classdef_file = false;
 	      reading_fcn_file = false;
+	      reading_script_file = true;
 	    }
 
-	  reading_script_file = ! reading_fcn_file;
-	  
 	  YY_BUFFER_STATE old_buf = current_buffer ();
 	  YY_BUFFER_STATE new_buf = create_buffer (ffile);
 

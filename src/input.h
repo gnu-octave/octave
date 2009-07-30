@@ -66,6 +66,9 @@ extern std::string curr_fcn_file_full_name;
 // TRUE means we're parsing a script file.
 extern bool reading_script_file;
 
+// TRUE means we're parsing a classdef file.
+extern bool reading_classdef_file;
+
 // If we are reading from an M-file, this is it.
 extern FILE *ff_instream;
 

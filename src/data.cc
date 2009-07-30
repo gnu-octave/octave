@@ -6060,9 +6060,9 @@ do_merge (const Array<bool>& mask,
                          fval.INTX ## _array_value ()); \
     }
 
-DEFUN (merge, args, ,
+DEFUN (ifelse, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} merge (@var{mask}, @var{tval}, @var{fval})\n\
+@deftypefn {Built-in Function} {} ifelse (@var{mask}, @var{tval}, @var{fval})\n\
 Merges elements of @var{true_val} and @var{false_val}, depending on the value of\n\
 @var{mask}. If @var{mask} is a logical scalar, the other two arguments can be\n\
 arbitrary values. Otherwise, @var{mask} must be a logical array, and @var{tval},\n\

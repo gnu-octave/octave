@@ -1,3 +1,7 @@
+2009-07-30  Jaroslav Hajek  <highegg@gmail.com>
+
+	* data.cc (Fmerge): Rename to Fifelse.
+
 2009-07-30  David Grundberg  <individ@acc.umu.se>
 
 	* symtab.h (symbol_table::parent_scope): Remove.

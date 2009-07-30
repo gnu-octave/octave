@@ -5996,6 +5996,165 @@ Undocumented internal function.\n\
   return retval;  
 }
 
+template <class NDT>
+static NDT
+do_merge (const Array<bool>& mask,
+          const NDT& tval, const NDT& fval)
+{
+  typedef typename NDT::element_type T;
+  dim_vector dv = mask.dims ();
+  NDT retval (dv);
+
+  bool tscl = tval.numel () == 1, fscl = fval.numel () == 1;
+  
+  if ((! tscl && tval.dims () != dv)
+      || (! fscl && fval.dims () != dv))
+    error ("merge: dimensions mismatch");
+  else
+    {
+      T *rv = retval.fortran_vec ();
+      octave_idx_type n = retval.numel ();
+
+      const T *tv = tval.data (), *fv = fval.data ();
+      const bool *mv = mask.data ();
+
+      if (tscl)
+        {
+          if (fscl)
+            {
+              T ts = tv[0], fs = fv[0];
+              for (octave_idx_type i = 0; i < n; i++)
+                rv[i] = mv[i] ? ts : fs;
+            }
+          else
+            {
+              T ts = tv[0];
+              for (octave_idx_type i = 0; i < n; i++)
+                rv[i] = mv[i] ? ts : fv[i];
+            }
+        }
+      else
+        {
+          if (fscl)
+            {
+              T fs = fv[0];
+              for (octave_idx_type i = 0; i < n; i++)
+                rv[i] = mv[i] ? tv[i] : fs;
+            }
+          else
+            {
+              for (octave_idx_type i = 0; i < n; i++)
+                rv[i] = mv[i] ? tv[i] : fv[i];
+            }
+        }
+    }
+
+  return retval;
+}
+
+#define MAKE_INT_BRANCH(INTX) \
+  else if (tval.is_ ## INTX ## _type () && fval.is_ ## INTX ## _type ()) \
+    { \
+      retval = do_merge (mask, \
+                         tval.INTX ## _array_value (), \
+                         fval.INTX ## _array_value ()); \
+    }
+
+DEFUN (merge, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} merge (@var{mask}, @var{tval}, @var{fval})\n\
+Merges elements of @var{true_val} and @var{false_val}, depending on the value of\n\
+@var{mask}. If @var{mask} is a logical scalar, the other two arguments can be\n\
+arbitrary values. Otherwise, @var{mask} must be a logical array, and @var{tval},\n\
+@var{fval} should be arrays of matching class, or cell arrays.\n\
+In the scalar mask case, @var{tval} is returned if @var{mask} is true, otherwise\n\
+@var{fval} is returned.\n\
+\n\
+In the array mask case, both @var{tval} and @var{fval} must be either scalars or\n\
+arrays with dimensions equal to @var{mask}. The result is constructed as follows:\n\
+@example\n\
+result(mask) = tval(mask);\n\
+result(! mask) = fval(! mask);\n\
+@end example\n\
+\n\
+@var{mask} can also be arbitrary numeric type, in which case\n\
+it is first converted to logical.\n\
+@seealso{logical}\n\
+@end deftypefn")
+{
+  int nargin = args.length ();
+  octave_value retval;
+
+  if (nargin == 3 && args(0).is_numeric_type ())
+    {
+      octave_value mask_val = args(0);
+
+      if (mask_val.is_scalar_type ())
+        retval = mask_val.is_true () ? args(1) : args(2);
+      else
+        {
+          boolNDArray mask = mask_val.bool_array_value ();
+          octave_value tval = args(1), fval = args(2);
+          if (tval.is_double_type () && fval.is_double_type ())
+            {
+              if (tval.is_complex_type () || fval.is_complex_type ())
+                retval = do_merge (mask,
+                                   tval.complex_array_value (),
+                                   fval.complex_array_value ());
+              else
+                retval = do_merge (mask,
+                                   tval.array_value (),
+                                   fval.array_value ());
+            }
+          else if (tval.is_single_type () && fval.is_single_type ())
+            {
+              if (tval.is_complex_type () || fval.is_complex_type ())
+                retval = do_merge (mask,
+                                   tval.float_complex_array_value (),
+                                   fval.float_complex_array_value ());
+              else
+                retval = do_merge (mask,
+                                   tval.float_array_value (),
+                                   fval.float_array_value ());
+            }
+          else if (tval.is_string () && fval.is_string ())
+            {
+              bool sq_string = tval.is_sq_string () || fval.is_sq_string ();
+              retval = octave_value (do_merge (mask,
+                                               tval.char_array_value (),
+                                               fval.char_array_value ()),
+                                     true, sq_string ? '\'' : '"');
+
+            }
+          else if (tval.is_cell () && fval.is_cell ())
+            {
+              retval = do_merge (mask,
+                                 tval.cell_value (),
+                                 fval.cell_value ());
+            }
+
+          MAKE_INT_BRANCH (int8)
+          MAKE_INT_BRANCH (int16)
+          MAKE_INT_BRANCH (int32)
+          MAKE_INT_BRANCH (int64)
+          MAKE_INT_BRANCH (uint8)
+          MAKE_INT_BRANCH (uint16)
+          MAKE_INT_BRANCH (uint32)
+          MAKE_INT_BRANCH (uint64)
+
+          else
+            error ("merge: cannot merge %s with %s with array mask", 
+                   tval.class_name ().c_str (),
+                   fval.class_name ().c_str ());
+        }
+    }
+  else
+    print_usage ();
+
+  return retval;
+}
+
+#undef MAKE_INT_BRANCH
 
 /*
 ;;; Local Variables: ***

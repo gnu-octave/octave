@@ -1,5 +1,6 @@
 ## Copyright (C) 1995, 1996, 1999, 2000, 2002, 2004, 2005, 2007
 ##               Kurt Hornik
+## Copyright (C) 2009 VZLU Prague
 ##
 ## This file is part of Octave.
 ##
@@ -42,6 +43,7 @@
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Created: 15 October 1994
 ## Adapted-By: jwe
+## Optimized-By: Jaroslav Hajek
 
 function [errorcode, varargout] = common_size (varargin)
 
@@ -49,34 +51,27 @@ function [errorcode, varargout] = common_size (varargin)
     error ("common_size: only makes sense if nargin >= 2");
   endif
 
-  len = 2;
-  for i = 1 : nargin
-    sz =  size (varargin{i});
-    if (length (sz) < len)
-      s(i,:) = [sz, ones(1,len - length(sz))];
-    else
-      if (length (sz) > len)
-	if (i > 1)
-	  s = [s, ones(size(s,1), length(sz) - len)];
-	endif
-	len = length (sz);
-      endif
-      s(i,:) = sz;
-    endif
-  endfor
+  ## Find scalar args.
+  nscal = cellfun ("numel", varargin) != 1;
 
-  m = max (s);
-  if (any (any ((s != 1)') & any ((s != ones (nargin, 1) * m)')))
-    errorcode = 1;
+  i = find (nscal, 1);
+
+  if (isempty (i))
+    errorcode = 0;
     varargout = varargin;
   else
-    errorcode = 0;
-    for i = 1 : nargin
-      varargout{i} = varargin{i};
-      if (prod (s(i,:)) == 1)
-	varargout{i} *= ones (m);
+    match = cellfun (@size_equal, varargin, varargin(i));
+    if (any (nscal &! match))
+      errorcode = 1;
+      varargout = varargin;
+    else
+      errorcode = 0;
+      if (nargout > 1)
+        scal = !nscal;
+        varargout = varargin;
+        varargout(scal) = cellfun (@repmat, varargin(scal), {size(varargin{i})}, ...
+                                   "UniformOutput", false);
       endif
-    endfor
+    endif
   endif
-
 endfunction

@@ -268,43 +268,50 @@ function [enhanced, implicit_margin] = gnuplot_set_term (plot_stream, new_stream
       size_str = "";
     endif
 
-    ## Set the gnuplot terminal (type, enhanced?, title, & size).
-    if (! isempty (term))
-      term_str = sprintf ("set terminal %s", term);
-      if (any (strncmpi (term, {"x11", "wxt"}, 3)) && new_stream
-	  && __gnuplot_has_feature__ ("x11_figure_position"))
-        ## The "close" is added to allow the figure position property
-        ## to remain active.
-        term_str = sprintf ("%s close", term_str);
-      endif
-      if (! isempty (enh_str))
-        term_str = sprintf ("%s %s", term_str, enh_str);
-      endif
-      if (! isempty (title_str))
-        term_str = sprintf ("%s %s", term_str, title_str);
-      endif
-      if (nargin > 3 && ischar (opts_str))
-        ## Options must go last.
-        term_str = sprintf ("%s %s", term_str, opts_str);
-      endif
-      if (! isempty (size_str) && new_stream)
-        ## size_str goes last to permit specification of canvas size
-        ## for terminals cdr/corel.
-        term_str = sprintf ("%s %s", term_str, size_str);
-      endif
-      fprintf (plot_stream, "%s\n", term_str);
-    else
-      ## gnuplot will pick up the GNUTERM environment variable itself
-      ## so no need to set the terminal type if not also setting the
-      ## figure title, enhanced mode, or position.
+    ## Set the gnuplot terminal (type, enhanced, title, options & size).
+    term_str = sprintf ("set terminal %s", term);
+    if (! isempty (enh_str))
+      term_str = sprintf ("%s %s", term_str, enh_str);
     endif
+    if (! isempty (title_str))
+      term_str = sprintf ("%s %s", term_str, title_str);
+    endif
+    if (nargin > 3 && ischar (opts_str))
+      ## Options must go last.
+      term_str = sprintf ("%s %s", term_str, opts_str);
+    endif
+    if (! isempty (size_str) && new_stream)
+      ## size_str comes after other options to permit specification of
+      ## the canvas size for terminals cdr/corel.
+      term_str = sprintf ("%s %s", term_str, size_str);
+    endif
+    ## Work around the gnuplot feature of growing the x11 window when
+    ## the mouse and multiplot are set.
+    fputs (plot_stream, "unset multiplot;\n");
+    if (! strcmp (term, "x11")
+        || numel (findall (h, "type", "axes")) > 1
+        || numel (findall (h, "type", "image")) > 0)
+      fprintf (plot_stream, "%s\n", term_str);
+      if (nargin == 5)
+        if (! isempty (file))
+          fprintf (plot_stream, "set output '%s';\n", file);
+        endif
+      endif
+      fputs (plot_stream, "set multiplot;\n");
+    elseif (strcmp (term, "x11"))
+      fprintf (plot_stream, "%s\n", term_str);
+      if (nargin == 5)
+        if (! isempty (file))
+          fprintf (plot_stream, "set output '%s';\n", file);
+        endif
+      endif
+    endif
+  else
+    ## gnuplot will pick up the GNUTERM environment variable itself
+    ## so no need to set the terminal type if not also setting the
+    ## figure title, enhanced mode, or position.
   endif
 
-  if (nargin == 5)
-    if (! isempty (file))
-      fprintf (plot_stream, "set output '%s';\n", file);
-    endif
-  endif
 
 endfunction
 

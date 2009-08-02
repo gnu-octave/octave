@@ -1,3 +1,10 @@
+2009-08-02  Ben Abbott <bpabbott@mac.com>
+
+	* plot/gnuplot_drawnow.m: Avoid the flickering x11 window seen with
+	rapid replots by avoidng setting multiplot mode. This fix only
+	functions for a single axes with no image objects.
+	* plot/__go_draw_figure__.m: Move 'set multiplot' to gnuplot_drawnow.
+
 2009-07-31  Jaroslav Hajek  <highegg@gmail.com>
 
 	* general/common_size: Optimize.

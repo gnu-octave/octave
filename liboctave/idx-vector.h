@@ -371,6 +371,13 @@ public:
     : rep (new idx_range_rep (start, limit, step)) 
     { chkerr (); }
 
+  static idx_vector 
+    make_range (octave_idx_type start, octave_idx_type step,
+                octave_idx_type len)
+    {
+      return idx_vector (new idx_range_rep (start, len, step, DIRECT));
+    }
+
   idx_vector (const Array<octave_idx_type>& inda) 
     : rep (new idx_vector_rep (inda))
     { chkerr (); }
@@ -465,6 +472,9 @@ public:
 
   bool is_scalar (void) const 
     { return rep->idx_class () == class_scalar; }
+
+  bool is_range (void) const
+    { return rep->idx_class () == class_range; }
 
   bool is_colon_equiv (octave_idx_type n) const
     { return rep->is_colon_equiv (n); }
@@ -790,6 +800,13 @@ public:
 
   bool is_permutation (octave_idx_type n) const;
 
+  // Copies all the indices to a given array. Not allowed for colons.
+  void copy_data (octave_idx_type *data) const;
+
+  // Unconverts the index to a scalar, Range or double array.
+  void unconvert (idx_class_type& iclass,
+                  double& scalar, Range& range, Array<double>& array) const;
+    
   // FIXME -- these are here for compatibility.  They should be removed
   // when no longer in use.
 

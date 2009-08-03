@@ -263,6 +263,7 @@ public:
   octave_value (const ArrayN<octave_uint64>& inda);
   octave_value (const Array<octave_idx_type>& inda, 
                 bool zero_based = false, bool cache_index = false);
+  octave_value (const idx_vector& idx);
   octave_value (double base, double limit, double inc);
   octave_value (const Range& r);
   octave_value (const Octave_map& m);

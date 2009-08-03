@@ -1,3 +1,11 @@
+2009-07-31  Jaroslav Hajek  <highegg@gmail.com>
+
+	* idx-vector.h (idx_vector::is_range): New method.
+	(idx_vector::copy_data, idx_vector::unconvert): New method decls.
+	* idx-vector.cc (idx_vector::copy_data, idx_vector::unconvert): New
+	methods.
+	* Array-utils.cc (sub2ind, ind2sub): New functions.
+
 2009-07-29  John W. Eaton  <jwe@octave.org>
 
 	* fMatrix.cc (operator >>): Use template function to read value.

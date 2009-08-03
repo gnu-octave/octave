@@ -981,6 +981,39 @@ octave_value::octave_value (const Array<octave_idx_type>& inda, bool zero_based,
   maybe_mutate ();
 }
 
+octave_value::octave_value (const idx_vector& idx)
+  : rep ()
+{
+  double scalar;
+  Range range;
+  NDArray array;
+  idx_vector::idx_class_type idx_class;
+
+  idx.unconvert (idx_class, scalar, range, array);
+
+  switch (idx_class)
+    {
+    case idx_vector::class_colon:
+      rep = new octave_magic_colon ();
+      break;
+    case idx_vector::class_range:
+      rep = new octave_range (range, idx);
+      break;
+    case idx_vector::class_scalar:
+      rep = new octave_scalar (scalar);
+      break;
+    case idx_vector::class_vector:
+      rep = new octave_matrix (array, idx);
+      break;
+    default:
+      assert (false);
+      break;
+    }
+
+  // FIXME: needed?
+  maybe_mutate ();
+}
+
 octave_value::octave_value (double base, double limit, double inc)
   : rep (new octave_range (base, limit, inc))
 {
@@ -1513,8 +1546,8 @@ convert_to_octave_idx_type_array (const Array<octave_int<T> >& A)
 }
 
 Array<octave_idx_type>
-octave_value::octave_idx_type_vector_value (bool force_string_conv,
-					    bool require_int,
+octave_value::octave_idx_type_vector_value (bool require_int,
+                                            bool force_string_conv,
 					    bool force_vector_conversion) const
 {
   Array<octave_idx_type> retval;

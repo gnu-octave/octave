@@ -1,3 +1,9 @@
+2009-08-03  Jaroslav Hajek  <highegg@gmail.com>
+
+	* general/sub2ind.m: Remove source.
+	* general/ind2sub.m: Remove source.
+	* general/Makefile.in: Update.
+
 2009-08-02  Ben Abbott <bpabbott@mac.com>
 
 	* plot/gnuplot_drawnow.m: Avoid the flickering x11 window seen with

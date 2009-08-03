@@ -1,3 +1,15 @@
+2009-08-03  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/sub2ind.cc: New source.
+	* Makefile.in: Include it.
+	* ov-range.h (octave_range::octave_range (const Range&, const
+	idx_vector&)): New constructor.
+	* ov-re-mat.h (octave_matrix::octave_matrix (const NDArray&, const
+	idx_vector&)): New constructor.
+	* ov.cc (octave_value::octave_value (const idx_vector&)): New
+	constructor.
+	* ov.h: Declare it.
+
 2009-07-30  Ryan Rusaw  <rrusaw@gmail.com>
 
 	* input.cc (reading_classdef_file): New file-scope variable.

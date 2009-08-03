@@ -540,6 +540,49 @@ idx_vector::is_cont_range (octave_idx_type n,
   return res;
 }
 
+void
+idx_vector::copy_data (octave_idx_type *data) const
+{
+  octave_idx_type len = rep->length (0);
+
+  switch (rep->idx_class ())
+    {
+    case class_colon:
+      current_liboctave_error_handler ("colon not allowed");
+      break;
+    case class_range:
+        {
+          idx_range_rep * r = dynamic_cast<idx_range_rep *> (rep);
+          octave_idx_type start = r->get_start (), step = r->get_step ();
+          octave_idx_type i, j;
+          if (step == 1)
+            for (i = start, j = start + len; i < j; i++) *data++ = i;
+          else if (step == -1)
+            for (i = start, j = start - len; i > j; i--) *data++ = i;
+          else
+            for (i = 0, j = start; i < len; i++, j += step) *data++ = j;
+        }
+      break;
+    case class_scalar:
+        {
+          idx_scalar_rep * r = dynamic_cast<idx_scalar_rep *> (rep);
+          *data = r->get_data ();
+        }
+      break;
+    case class_vector:
+        {
+          idx_vector_rep * r = dynamic_cast<idx_vector_rep *> (rep);
+          const octave_idx_type *rdata = r->get_data ();
+          std::copy (rdata, rdata + len, data);
+        }
+      break;
+    default:
+      assert (false);
+      break;
+    }
+
+}
+
 idx_vector
 idx_vector::complement (octave_idx_type n) const
 {
@@ -594,6 +637,43 @@ idx_vector::is_permutation (octave_idx_type n) const
     }
 
   return retval;
+}
+
+void idx_vector::unconvert (idx_class_type& iclass,
+                            double& scalar, Range& range, Array<double>& array) const
+{
+  iclass = idx_class ();
+  switch (iclass)
+    {
+    case class_colon:
+      break;
+    case class_range:
+        {
+          idx_range_rep * r = dynamic_cast<idx_range_rep *> (rep);
+          double start = r->get_start (), step = r->get_step ();
+          range = Range (start+1, step, r->length (0));
+        }
+      break;
+    case class_scalar:
+        {
+          idx_scalar_rep * r = dynamic_cast<idx_scalar_rep *> (rep);
+          scalar = r->get_data () + 1;
+        }
+      break;
+    case class_vector:
+        {
+          idx_vector_rep * r = dynamic_cast<idx_vector_rep *> (rep);
+          const octave_idx_type *data = r->get_data ();
+          array = Array<double> (r->orig_dimensions ());
+          octave_idx_type len = r->length (0);
+          for (octave_idx_type i = 0; i < len; i++)
+            array.xelem (i) = data[i] + 1;
+        }
+      break;
+    default:
+      assert (false);
+      break;
+    }
 }
 
 octave_idx_type 

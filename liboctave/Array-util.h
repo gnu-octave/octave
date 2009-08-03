@@ -78,6 +78,10 @@ extern OCTAVE_API dim_vector zero_dims_inquire (const Array<idx_vector>& ia,
 extern OCTAVE_API dim_vector zero_dims_inquire (const idx_vector& i, const idx_vector& j,
                                                 const dim_vector& rhdv);
 
+extern OCTAVE_API idx_vector sub2ind (const dim_vector& dv, const Array<idx_vector>& idxa);
+
+extern OCTAVE_API Array<idx_vector> ind2sub (const dim_vector& dv, const idx_vector& idx);
+
 struct
 permute_vector
 {

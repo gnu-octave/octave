@@ -90,6 +90,12 @@ public:
         set_idx_cache (idx_vector (idx));
     }
 
+  octave_matrix (const NDArray& nda, const idx_vector& cache)
+    : octave_base_matrix<NDArray> (nda) 
+    { 
+      set_idx_cache (idx_vector (cache));
+    }
+
   ~octave_matrix (void) { }
 
   octave_base_value *clone (void) const { return new octave_matrix (*this); }

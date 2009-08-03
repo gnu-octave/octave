@@ -77,6 +77,12 @@ public:
       idx_cache (r.idx_cache ? new idx_vector (*r.idx_cache) : 0)
     { }
 
+  octave_range (const Range& r, const idx_vector& cache)
+    : octave_base_value (), range (r), idx_cache ()
+      {
+        set_idx_cache (cache);
+      }
+
   ~octave_range (void) { clear_cached_info (); }
 
   octave_base_value *clone (void) const { return new octave_range (*this); }

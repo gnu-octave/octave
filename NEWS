@@ -12,6 +12,11 @@ Summary of important user-visible changes for version 3.3:
     no longer needed to avoid repeated indexing by logical arrays using
     `find' for performance reasons.
 
+ ** sub2ind and ind2sub were reimplemented as compiled functions for better
+    performance. These functions are now faster, can deliver more economized
+    results for ranges, and can reuse the index cache mechanism described in
+    previous paragraph.
+
  ** The built-in function equivalents to associative operators (plus, times,
     mtimes, and, or) have been extended to accept multiple arguments. This
     is especially useful for summing (multiplying, etc.) lists of objects

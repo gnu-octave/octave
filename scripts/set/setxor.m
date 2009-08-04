@@ -71,7 +71,11 @@ function [c, ia, ib] = setxor (a, b, varargin)
       na = numel (a); nb = numel (b);
       [c, i] = sort ([a(:); b(:)]);
       n = length (c);
-      idx = find (c(1:n-1) == c(2:n));
+      if (iscell (c))
+        idx = find (strcmp (c(1:n-1), c(2:n)));	  
+      else
+        idx = find (c(1:n-1) == c(2:n));
+      endif
       if (! isempty (idx))
 	c([idx, idx+1]) = [];
 	i([idx, idx+1]) = [];

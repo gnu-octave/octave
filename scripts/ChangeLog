@@ -1,3 +1,7 @@
+2009-08-04  Pieter Eendebak <pieter.eendebak@gmail.com> 
+
+	* set/setxor.m: Support cell arrays of strings.
+
 2009-08-03  Jaroslav Hajek  <highegg@gmail.com>
 
 	* general/sub2ind.m: Remove source.

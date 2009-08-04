@@ -1,3 +1,10 @@
+2009-08-04  John W. Eaton  <jwe@octave.org>
+
+	* toplev.cc (octave_call_stack::do_goto_frame_relative): Allow
+	NSKIP to be 0.  Set current scope and context.
+	* input.cc (Fkeyboard): Use octave_call_stack::goto_frame_relative
+	to set scope in user code that called the keyboard function.
+
 2009-08-04  Jaroslav Hajek  <highegg@gmail.com>
 
 	* input.cc (Fkeyboard): Only call do_keyboard, don't fiddle with

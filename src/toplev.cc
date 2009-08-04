@@ -366,65 +366,67 @@ octave_call_stack::do_goto_frame_relative (int nskip, bool verbose)
 {
   bool retval = false;
 
-  if (nskip == 0)
-    retval = true;
-  else
+  int incr = 0;
+
+  if (nskip < 0)
+    incr = -1;
+  else if (nskip > 0)
+    incr = 1;
+
+  // Start looking with the caller of dbup/dbdown/keyboard.
+  size_t frame = cs[curr_frame].prev;
+
+  while (true)
     {
-      int incr = nskip < 0 ? -1 : 1;
+      if ((incr < 0 && frame == 0) || (incr > 0 && frame == cs.size () - 1))
+	break;
 
-      // Start looking with the caller of dbup/dbdown.
-      size_t frame = cs[curr_frame].prev;
+      frame += incr;
 
-      while (true)
+      const call_stack_elt& elt = cs[frame];
+
+      octave_function *f = elt.fcn;
+
+      if (f && f->is_user_code ())
 	{
-	  if ((incr < 0 && frame == 0) || (incr > 0 && frame == cs.size () - 1))
-	    break;
+	  if (nskip > 0)
+	    nskip--;
+	  else if (nskip < 0)
+	    nskip++;
 
-	  frame += incr;
-
-	  const call_stack_elt& elt = cs[frame];
-
-	  octave_function *f = elt.fcn;
-
-	  if (f && f->is_user_code ())
+	  if (nskip == 0)
 	    {
-	      if (nskip > 0)
-		nskip--;
-	      else if (nskip < 0)
-		nskip++;
+	      curr_frame = frame;
+	      cs[cs.size () - 1].prev = curr_frame;
 
-	      if (nskip == 0)
+	      symbol_table::set_scope_and_context (elt.scope, elt.context);
+
+	      if (verbose)
 		{
-		  curr_frame = frame;
-		  cs[cs.size () - 1].prev = curr_frame;
-
-		  if (verbose)
+		  tree_statement *s = elt.stmt;
+		  int l = -1;
+		  int c = -1;
+		  if (s)
 		    {
-		      tree_statement *s = elt.stmt;
-		      int l = -1;
-		      int c = -1;
-		      if (s)
-			{
-			  l = s->line ();
-			  c = s->column ();
-			}
-
-		      std::ostringstream buf;
-		      buf << f->name () << ": " << " line " << l
-			  << ", column " << c << std::endl;
-
-		      octave_stdout << buf.str ();
+		      l = s->line ();
+		      c = s->column ();
 		    }
 
-		  retval = true;
-		  break;
+		  std::ostringstream buf;
+		  buf << f->name () << ": " << " line " << l
+		      << ", column " << c << std::endl;
+
+		  octave_stdout << buf.str ();
 		}
+
+	      retval = true;
+	      break;
 	    }
 	}
 
       // There is no need to set scope and context here.  That will
-      // happen when the dbup/dbdown frame is popped and we jump to
-      // the new "prev" frame set above.
+      // happen when the dbup/dbdown/keyboard frame is popped and we
+      // jump to the new "prev" frame set above.
     }
 
   return retval;

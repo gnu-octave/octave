@@ -104,7 +104,7 @@ octave_call_stack *octave_call_stack::instance = 0;
 int
 octave_call_stack::do_current_line (void) const
 {
-  tree_statement *stmt = do_top_statement ();
+  tree_statement *stmt = do_current_statement ();
 
   return stmt ? stmt->line () : -1;
 }
@@ -112,7 +112,7 @@ octave_call_stack::do_current_line (void) const
 int
 octave_call_stack::do_current_column (void) const
 {
-  tree_statement *stmt = do_top_statement ();
+  tree_statement *stmt = do_current_statement ();
 
   return stmt ? stmt->column () : -1;
 }

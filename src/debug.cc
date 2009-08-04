@@ -661,13 +661,21 @@ Show where we are in the code\n\
 
       octave_stdout << name << ":";
 
-      int l = tree_evaluator::debug_line ();
+      unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
+
+      unwind_protect::add_fcn (octave_call_stack::restore_frame, 
+			       octave_call_stack::current_frame ());
+
+      // Skip the frame assigned to the dbwhere function.
+      octave_call_stack::goto_frame_relative (0);
+
+      int l = octave_call_stack::current_line ();
 
       if (l > 0)
 	{
 	  octave_stdout << " line " << l;
 
-	  int c = tree_evaluator::debug_column ();
+	  int c = octave_call_stack::current_column ();
 
 	  if (c > 0)
 	    octave_stdout << ", column " << c;
@@ -684,6 +692,8 @@ Show where we are in the code\n\
 	}
       else
 	octave_stdout << " (unknown line)\n";
+
+      unwind_protect::run_frame (uwp_frame);
     }
   else
     error ("dbwhere: must be inside of a user function to use dbwhere\n");

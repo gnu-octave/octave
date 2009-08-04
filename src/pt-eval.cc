@@ -57,9 +57,6 @@ bool tree_evaluator::in_fcn_or_script_body = false;
 
 bool tree_evaluator::in_loop_command = false;
 
-int tree_evaluator::db_line = -1;
-int tree_evaluator::db_column = -1;
-
 // If TRUE, turn off printing of results in functions (as if a
 // semicolon has been appended to each statement).
 static bool Vsilent_functions = false;
@@ -90,7 +87,7 @@ tree_evaluator::visit_break_command (tree_break_command& cmd)
   if (! error_state)
     {
       if (debug_mode)
-	do_breakpoint (cmd.is_breakpoint (), cmd.line (), cmd.column ());
+	do_breakpoint (cmd.is_breakpoint ());
 
       tree_break_command::breaking = 1;
     }
@@ -189,7 +186,7 @@ void
 tree_evaluator::visit_global_command (tree_global_command& cmd)
 {
   if (debug_mode)
-    do_breakpoint (cmd.is_breakpoint (), cmd.line (), cmd.column ());
+    do_breakpoint (cmd.is_breakpoint ());
 
   do_decl_init_list (do_global_init, cmd.initializer_list ());
 }
@@ -198,7 +195,7 @@ void
 tree_evaluator::visit_static_command (tree_static_command& cmd)
 {
   if (debug_mode)
-    do_breakpoint (cmd.is_breakpoint (), cmd.line (), cmd.column ());
+    do_breakpoint (cmd.is_breakpoint ());
 
   do_decl_init_list (do_static_init, cmd.initializer_list ());
 }
@@ -280,7 +277,7 @@ tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
     return;
 
   if (debug_mode)
-    do_breakpoint (cmd.is_breakpoint (), cmd.line (), cmd.column ());
+    do_breakpoint (cmd.is_breakpoint ());
 
   unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
 
@@ -402,7 +399,7 @@ tree_evaluator::visit_complex_for_command (tree_complex_for_command& cmd)
     return;
 
   if (debug_mode)
-    do_breakpoint (cmd.is_breakpoint (), cmd.line (), cmd.column ());
+    do_breakpoint (cmd.is_breakpoint ());
 
   unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
 
@@ -541,7 +538,7 @@ tree_evaluator::visit_if_command_list (tree_if_command_list& lst)
       tree_expression *expr = tic->condition ();
 
       if (debug_mode && ! tic->is_else_clause ())
-	do_breakpoint (tic->is_breakpoint (), tic->line (), tic->column ());
+	do_breakpoint (tic->is_breakpoint ());
 
       if (tic->is_else_clause () || expr->is_logically_true ("if"))
 	{
@@ -586,7 +583,7 @@ void
 tree_evaluator::visit_no_op_command (tree_no_op_command& cmd)
 {
   if (debug_mode && cmd.is_end_of_fcn_or_script ())
-    do_breakpoint (cmd.is_breakpoint (), cmd.line (), cmd.column (), true);
+    do_breakpoint (cmd.is_breakpoint (), true);
 }
 
 void
@@ -625,7 +622,7 @@ tree_evaluator::visit_return_command (tree_return_command& cmd)
   if (! error_state)
     {
       if (debug_mode)
-	do_breakpoint (cmd.is_breakpoint (), cmd.line (), cmd.column ());
+	do_breakpoint (cmd.is_breakpoint ());
 
       tree_return_command::returning = 1;
     }
@@ -666,8 +663,7 @@ tree_evaluator::visit_statement (tree_statement& stmt)
 	  else
 	    {
 	      if (debug_mode)
-		do_breakpoint (expr->is_breakpoint (), expr->line (),
-			       expr->column ());
+		do_breakpoint (expr->is_breakpoint ());
 
 	      if (in_fcn_or_script_body && Vsilent_functions)
 		expr->set_print_flag (false);
@@ -797,7 +793,7 @@ tree_evaluator::visit_switch_command (tree_switch_command& cmd)
 	      tree_switch_case *t = *p;
 
 	      if (debug_mode && ! t->is_default_case ())
-		do_breakpoint (t->is_breakpoint (), t->line (), t->column ());
+		do_breakpoint (t->is_breakpoint ());
 
 	      if (t->is_default_case () || t->label_matches (val))
 		{
@@ -1006,13 +1002,10 @@ tree_evaluator::visit_while_command (tree_while_command& cmd)
   if (! expr)
     panic_impossible ();
 
-  int l = expr->line ();
-  int c = expr->column ();
-
   for (;;)
     {
       if (debug_mode)
-	do_breakpoint (cmd.is_breakpoint (), l, c);
+	do_breakpoint (cmd.is_breakpoint ());
 
       if (expr->is_logically_true ("while"))
 	{
@@ -1054,9 +1047,6 @@ tree_evaluator::visit_do_until_command (tree_do_until_command& cmd)
   if (! expr)
     panic_impossible ();
 
-  int l = expr->line ();
-  int c = expr->column ();
-
   for (;;)
     {
       tree_statement_list *loop_body = cmd.body ();
@@ -1073,7 +1063,7 @@ tree_evaluator::visit_do_until_command (tree_do_until_command& cmd)
 	break;
 
       if (debug_mode)
-	do_breakpoint (cmd.is_breakpoint (), l, c);
+	do_breakpoint (cmd.is_breakpoint ());
 
       if (expr->is_logically_true ("do-until"))
 	break;
@@ -1086,12 +1076,11 @@ tree_evaluator::visit_do_until_command (tree_do_until_command& cmd)
 void
 tree_evaluator::do_breakpoint (tree_statement& stmt) const
 {
-  do_breakpoint (stmt.is_breakpoint (), stmt.line (), stmt.column (),
-		 stmt.is_end_of_fcn_or_script ());
+  do_breakpoint (stmt.is_breakpoint (), stmt.is_end_of_fcn_or_script ());
 }
 
 void
-tree_evaluator::do_breakpoint (bool is_breakpoint, int l, int c,
+tree_evaluator::do_breakpoint (bool is_breakpoint,
 			       bool is_end_of_fcn_or_script) const
 {
   bool break_on_this_statement = false;
@@ -1160,25 +1149,7 @@ tree_evaluator::do_breakpoint (bool is_breakpoint, int l, int c,
     }
 
   if (break_on_this_statement)
-    {
-      octave_function *xfcn = octave_call_stack::current ();
-
-      if (xfcn)
-	std::cerr << xfcn->name () << ": "; 
-
-      std::cerr << "line " << l << ", " << "column " << c << std::endl;
-
-      db_line = l;
-      db_column = c;
-
-      // FIXME -- probably we just want to print one line, not the
-      // entire statement, which might span many lines...
-      //
-      // tree_print_code tpc (octave_stdout);
-      // stmt.accept (tpc);
-
-      do_keyboard ();
-    }
+    do_keyboard ();
 }
 
 DEFUN (silent_functions, args, nargout,

@@ -1,5 +1,29 @@
 2009-08-04  John W. Eaton  <jwe@octave.org>
 
+	* debug.cc (Fdbwhere): Call octave_call_stack::goto_frame_relative
+	to move to user code frame.  Get line and column information from
+	call stack.
+	* input.cc (Fkeyboard): Don't pass verbose flag to
+	octave_call_stack::goto_frame_relative.
+	(get_debug_input): Get line and column information from call stack.
+	* pt-eval.h, pt-eval.cc (tree_evaluator::debug_line,
+	tree_evaluator::debug_column, tree_evaluator::db_line,
+	tree_evaluator::db_column): Delete.
+	* pt-eval.cc (tree_evaluator::do_breakpoint): Don't print function
+	name and location info here.  Delete line and column number args.
+	Change all callers.
+
+	* toplev.h (octave_call_stack::do_current,
+	octave_call_stack::do_current_statement): New functions.
+	(octave_call_stack::current): Call do_current, not top.
+	(octave_call_stack::current_statement): Call do_current_statement,
+	not top_statement.
+	(octave_call_stack::top, octave_call_stack::top_statement,
+	octave_call_stack::do_top, octave_call_stack::do_top_statement):
+	Delete.
+
+2009-08-04  John W. Eaton  <jwe@octave.org>
+
 	* toplev.cc (octave_call_stack::do_goto_frame_relative): Allow
 	NSKIP to be 0.  Set current scope and context.
 	* input.cc (Fkeyboard): Use octave_call_stack::goto_frame_relative

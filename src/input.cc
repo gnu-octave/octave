@@ -598,7 +598,7 @@ get_debug_input (const std::string& prompt)
   octave_user_code *caller = octave_call_stack::caller_user_code ();
   std::string nm;
 
-  int curr_debug_line = tree_evaluator::debug_line ();
+  int curr_debug_line = octave_call_stack::current_line ();
 
   bool have_file = false;
 
@@ -649,12 +649,7 @@ get_debug_input (const std::string& prompt)
   std::string msg = buf.str ();
 
   if (! msg.empty ())
-    {
-      if (! Vgud_mode)
-	std::cerr << "keyboard: ";
-
-      std::cerr << msg << std::endl;
-    }
+    std::cerr << msg << std::endl;
 
   unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
 
@@ -902,6 +897,12 @@ do_keyboard (const octave_value_list& args)
   unwind_protect::add_fcn (octave_call_stack::restore_frame, 
                            octave_call_stack::current_frame ());
 
+  // FIXME -- probably we just want to print one line, not the
+  // entire statement, which might span many lines...
+  //
+  // tree_print_code tpc (octave_stdout);
+  // stmt.accept (tpc);
+
   Vsaving_history = true;
   Vdebugging = true;
 
@@ -944,7 +945,7 @@ If @code{keyboard} is invoked without arguments, a default prompt of\n\
 			       octave_call_stack::current_frame ());
 
       // Skip the frame assigned to the keyboard function.
-      octave_call_stack::goto_frame_relative (0, true);
+      octave_call_stack::goto_frame_relative (0);
 
       do_keyboard (args);
 

@@ -135,10 +135,16 @@ public:
   }
 
   // Current function (top of stack).
-  static octave_function *current (void) { return top (); }
+  static octave_function *current (void)
+  {
+    return instance_ok () ? instance->do_current () : 0;
+  }
 
   // Current statement (top of stack).
-  static tree_statement *current_statement (void) { return top_statement (); }
+  static tree_statement *current_statement (void)
+  {
+    return instance_ok () ? instance->do_current_statement () : 0;
+  }
 
   // Current line in current function.
   static int current_line (void)
@@ -224,16 +230,6 @@ public:
   {
     if (instance_ok ())
       instance->do_push (0, scope, context);
-  }
-
-  static octave_function *top (void)
-  {
-    return instance_ok () ? instance->do_top (): 0;
-  }
-
-  static tree_statement *top_statement (void)
-  {
-    return instance_ok () ? instance->do_top_statement (): 0;
   }
 
   static void set_statement (tree_statement *s)
@@ -358,26 +354,26 @@ private:
     symbol_table::set_scope_and_context (scope, context);
   }
 
-  octave_function *do_top (void) const
+  octave_function *do_current (void) const
   {
     octave_function *retval = 0;
 
     if (! cs.empty ())
       {
-	const call_stack_elt& elt = cs.back ();
+	const call_stack_elt& elt = cs[curr_frame];
 	retval = elt.fcn;
       }
 
     return retval;
   }
 
-  tree_statement *do_top_statement (void) const
+  tree_statement *do_current_statement (void) const
   {
     tree_statement *retval = 0;
 
     if (! cs.empty ())
       {
-	const call_stack_elt& elt = cs.back ();
+	const call_stack_elt& elt = cs[curr_frame];
 	retval = elt.stmt;
       }
 

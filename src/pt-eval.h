@@ -132,10 +132,6 @@ public:
 
   void visit_do_until_command (tree_do_until_command&);
 
-  static int debug_line (void) { return db_line; }
-
-  static int debug_column (void) { return db_column; }
-
   // If > 0, stop executing at the (N-1)th stopping point, counting
   //         from the the current execution point in the current frame.
   //
@@ -160,11 +156,8 @@ private:
 
   void do_breakpoint (tree_statement& stmt) const;
 
-  void do_breakpoint (bool is_breakpoint, int l, int c,
+  void do_breakpoint (bool is_breakpoint,
 		      bool is_end_of_fcn_or_script = false) const;
-
-  static int db_line;
-  static int db_column;
 
   // No copying!
 

@@ -1,3 +1,8 @@
+2009-08-04  Jaroslav Hajek  <highegg@gmail.com>
+
+	* input.cc (Fkeyboard): Only call do_keyboard, don't fiddle with
+	stack.
+
 2009-08-03  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/sub2ind.cc: New source.

@@ -120,6 +120,8 @@ public:
 
   static string_vector generate_filename_completions (const std::string& text);
 
+  static std::string get_line_buffer (void);
+
   static void insert_text (const std::string& text);
 
   static void newline (void);
@@ -255,6 +257,8 @@ protected:
   virtual user_accept_line_fcn do_get_user_accept_line_function (void) const { return 0; }
 
   virtual string_vector do_generate_filename_completions (const std::string& text) = 0;
+
+  virtual std::string do_get_line_buffer (void) const = 0;
 
   virtual void do_insert_text (const std::string&) = 0;
 

@@ -139,6 +139,8 @@ public:
   string_vector
   do_generate_filename_completions (const std::string& text);
 
+  std::string do_get_line_buffer (void) const;
+
   void do_insert_text (const std::string& text);
 
   void do_newline (void);
@@ -506,6 +508,12 @@ gnu_readline::do_generate_filename_completions (const std::string& text)
   return retval;
 }
 
+std::string
+gnu_readline::do_get_line_buffer (void) const
+{
+  return ::octave_rl_line_buffer ();
+}
+
 void
 gnu_readline::do_insert_text (const std::string& text)
 {
@@ -737,6 +745,8 @@ public:
 
   string_vector do_generate_filename_completions (const std::string& text);
 
+  std::string do_get_line_buffer (void) const;
+
   void do_insert_text (const std::string&);
 
   void do_newline (void);
@@ -788,6 +798,12 @@ default_command_editor::do_generate_filename_completions (const std::string&)
 {
   // FIXME
   return string_vector ();
+}
+
+std::string
+default_command_editor::do_get_line_buffer (void) const
+{
+  return "";
 }
 
 void
@@ -1117,6 +1133,12 @@ command_editor::generate_filename_completions (const std::string& text)
 {
   return (instance_ok ())
     ? instance->do_generate_filename_completions (text) : string_vector ();
+}
+
+std::string
+command_editor::get_line_buffer (void)
+{
+  return (instance_ok ()) ? instance->do_get_line_buffer () : "";
 }
 
 void

@@ -1,3 +1,8 @@
+2009-08-04  Kristian Rumberg  <kristianrumberg@gmail.com>
+
+	* input.cc (is_completing_dirfns): New function.
+	(generate_completion): Use it to selectively complete file names.
+
 2009-08-04  John W. Eaton  <jwe@octave.org>
 
 	* debug.cc (Fdbwhere): Call octave_call_stack::goto_frame_relative
@@ -6,6 +11,7 @@
 	* input.cc (Fkeyboard): Don't pass verbose flag to
 	octave_call_stack::goto_frame_relative.
 	(get_debug_input): Get line and column information from call stack.
+
 	* pt-eval.h, pt-eval.cc (tree_evaluator::debug_line,
 	tree_evaluator::debug_column, tree_evaluator::db_line,
 	tree_evaluator::db_column): Delete.

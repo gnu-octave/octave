@@ -474,6 +474,30 @@ generate_possible_completions (const std::string& text, std::string& prefix,
   return names;
 }
 
+static bool
+is_completing_dirfns (void)
+{
+  static std::string dirfns_commands[] = {"cd", "ls"};
+  static const size_t dirfns_commands_length = 2;
+
+  bool retval = false;
+
+  std::string line = command_editor::get_line_buffer ();
+
+  for (size_t i = 0; i < dirfns_commands_length; i++)
+    {
+      int index = line.find (dirfns_commands[i] + " ");
+
+      if (index == 0)
+	{
+	  retval = true;
+	  break;
+	}
+    }
+
+  return retval;
+}
+
 static std::string
 generate_completion (const std::string& text, int state)
 {
@@ -500,7 +524,13 @@ generate_completion (const std::string& text, int state)
 
       hint = text;
 
-      name_list = generate_possible_completions (text, prefix, hint);
+      // No reason to display symbols while completing a
+      // file/directory operation.
+
+      if (is_completing_dirfns ())
+	name_list = string_vector ();
+      else
+        name_list = generate_possible_completions (text, prefix, hint);
 
       name_list_len = name_list.length ();
 

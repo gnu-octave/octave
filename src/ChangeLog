@@ -1,3 +1,10 @@
+2009-08-05  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.in (octave$(EXEEXT)): Clean up link flags and library list.
+	(OCTINTERP_LINK_DEPS): Omit -L../libcruft $(LIBCRUFT) $(LIBS)
+	$(FLIBS) from the list.  Include $(RLD_FLAG) in the list.
+	(OCT_LINK_DEPS): Only include -L. $(LIBOCTINTERP) in the list.
+
 2009-08-05  Jaroslav Hajek  <highegg@gmail.com>
 
 	* utils.cc (Fisindex): New DEFUN.

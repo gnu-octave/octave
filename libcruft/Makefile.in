@@ -58,8 +58,7 @@ DISTFILES = Makefile.in ChangeLog Makerules.in $(SOURCES) \
 XTRA_CRUFT_SH_LDFLAGS = @XTRA_CRUFT_SH_LDFLAGS@
 SH_LDFLAGS += $(XTRA_CRUFT_SH_LDFLAGS)
 
-# Include BLAS and FFTW just in case some of libcruft depends on them
-LINK_DEPS = $(BLAS_LIBS) $(FFTW_LIBS) $(FLIBS)
+LINK_DEPS = $(BLAS_LIBS) $(FLIBS)
 
 all: libraries
 .PHONY: all

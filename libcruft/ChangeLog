@@ -1,3 +1,7 @@
+2009-08-05  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.in (LINK_DEPS): Omit $(FFTW_LIBS) from the list.
+
 2009-06-22  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.in (MISC_OBJ): Remove misc/machar.o and misc/smachar.o

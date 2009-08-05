@@ -1,8 +1,10 @@
-2009-08-04  John W. Eaton  <jwe@octave.org>
+2009-08-05  John W. Eaton  <jwe@octave.org>
 
 	* acx_pthread.m4: New file.
 	* configure.in: Include it and invoke ACX_PTHREAD macro.  Print
 	ptrhead flags and libraries in summary output.
+	* Makeconf.in (PTHREAD_CFLAGS, PTHREAD_LIBS): Substitute values.
+	(ALL_CFLAGS, ALL_CXXFLAGS): Include $(PTHREAD_CFLAGS).
 
 2009-08-03  Jaroslav Hajek  <highegg@gmail.com>
 

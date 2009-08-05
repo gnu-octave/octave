@@ -254,6 +254,9 @@ AC_SUBST(INCLUDE_DEPS)
 AC_SUBST(DEPEND_FLAGS)
 AC_SUBST(DEPEND_EXTRA_SED_PATTERN)
 
+sinclude(acx_pthread.m4)
+ACX_PTHREAD
+
 AC_PATH_X
 if test "$have_x"; then
   AC_DEFINE(HAVE_X_WINDOWS, 1, [Define if you have X11])
@@ -2225,6 +2228,8 @@ Octave is now configured for $canonical_host_type
   X11 include flags:    $X11_INCFLAGS
   X11 libraries:        $X11_LIBS
   CARBON libraries:     $CARBON_LIBS
+  PTHREAD flags         $PTHREAD_CFLAGS
+  PTHREAD libraries     $PTHREAD_LIBS
   LIBS:                 $LIBS
   Default pager:        $DEFAULT_PAGER
   gnuplot:              $GNUPLOT

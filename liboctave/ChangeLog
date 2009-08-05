@@ -1,3 +1,7 @@
+2009-08-05  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.in (LINK_DEPS): Include $(PTHREAD_LIBS) in the list.
+
 2009-08-04  Kristian Rumberg  <kristianrumberg@gmail.com>
 
 	* cmd-edit.cc (gnu_readline::do_get_line_buffer,

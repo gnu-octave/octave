@@ -1,3 +1,7 @@
+2009-08-05  Jaroslav Hajek  <highegg@gmail.com>
+
+	* utils.cc (Fisindex): New DEFUN.
+
 2009-08-04  Kristian Rumberg  <kristianrumberg@gmail.com>
 
 	* input.cc (is_completing_dirfns): New function.

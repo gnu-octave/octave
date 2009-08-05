@@ -1231,6 +1231,56 @@ octave_sleep (double seconds)
     }
 }
 
+DEFUN (isindex, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} isindex (@var{ind}, @var{n})\n\
+Returns true if @var{ind} is a valid index. Valid indices can be\n\
+either positive integers (though possibly real data), or logical arrays.\n\
+If present, @var{n} specifies the extent of the dimension to be indexed.\n\
+Note that, if possible, the internal conversion result is cached so that\n\
+subsequent indexing will not perform the checking again.\n\
+@end deftypefn")
+{
+  octave_value retval;
+  int nargin = args.length ();
+  octave_idx_type n = 0;
+
+  if (nargin == 2)
+    n = args(1).idx_type_value ();
+  else if (nargin != 1)
+    print_usage ();
+
+  if (! error_state)
+    {
+      unwind_protect::frame_id_t uwp = unwind_protect::begin_frame ();
+      unwind_protect::protect_var (error_state);
+      unwind_protect::protect_var (discard_error_messages);
+      discard_error_messages = true;
+
+      try
+        {
+          idx_vector idx = args(0).index_vector ();
+          if (! error_state)
+            {
+              if (nargin == 2)
+                retval = idx.extent (n) <= n;
+              else
+                retval = true;
+            }
+          else
+            retval = false;
+        }
+      catch (octave_execution_exception)
+        {
+          retval = false;
+        }
+
+      unwind_protect::run_frame (uwp);
+    }
+
+  return retval;
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

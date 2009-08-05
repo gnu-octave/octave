@@ -1,3 +1,8 @@
+2009-08-05  Olli Saarela  <olli.saarela@gmail.com>
+
+	* plot/__gnuplot_get_var__.m: If read fails to return data, sleep
+	before trying again.
+
 2009-08-04  Pieter Eendebak <pieter.eendebak@gmail.com> 
 
 	* set/setxor.m: Support cell arrays of strings.

@@ -110,6 +110,9 @@ optimized more in a future release.
 @item
 Avoid computing costly intermediate results multiple times. Octave currently
 does not eliminate common subexpressions.
+Also, certain internal computation results are cached for variables.
+For instance, if a matrix variable is used multiple times as an index,
+checking the indices (and internal conversion to integers) is only done once.
 
 @item
 Be aware of lazy copies (copy-on-write). When a copy of an object

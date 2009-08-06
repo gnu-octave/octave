@@ -83,27 +83,29 @@ function [rx, ry, rz] = griddata (x, y, z, xi, yi, method)
     tri_list = tsearch (x, y, tri, xi(:), yi(:));
 
     ## Only keep the points within triangles.
-    valid = !isnan (reshape (tri_list, size (xi)));
-    tri_list = tri_list(!isnan (tri_list));
+    valid = !isnan (tri_list);
+    tri_list = tri_list(valid);
     nr_t = rows (tri_list);
 
+    tri = tri(tri_list,:);
+
     ## Assign x,y,z for each point of triangle.
-    x1 = x(tri(tri_list,1));
-    x2 = x(tri(tri_list,2));
-    x3 = x(tri(tri_list,3));
+    x1 = x(tri(:,1));
+    x2 = x(tri(:,2));
+    x3 = x(tri(:,3));
 
-    y1 = y(tri(tri_list,1));
-    y2 = y(tri(tri_list,2));
-    y3 = y(tri(tri_list,3));
+    y1 = y(tri(:,1));
+    y2 = y(tri(:,2));
+    y3 = y(tri(:,3));
 
-    z1 = z(tri(tri_list,1));
-    z2 = z(tri(tri_list,2));
-    z3 = z(tri(tri_list,3));
+    z1 = z(tri(:,1));
+    z2 = z(tri(:,2));
+    z3 = z(tri(:,3));
 
     ## Calculate norm vector.
     N = cross ([x2-x1, y2-y1, z2-z1], [x3-x1, y3-y1, z3-z1]);
-    N_norm = sqrt (sumsq (N, 2));
-    N = N ./ N_norm(:,[1,1,1]);
+    ## Normalize.
+    N = diag (norm (N, "rows")) \ N;
     
     ## Calculate D of plane equation
     ## Ax+By+Cz+D = 0;

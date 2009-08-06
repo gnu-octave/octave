@@ -1,3 +1,7 @@
+2009-08-06  Jaroslav Hajek  <highegg@gmail.com>
+
+	* geometry/griddata.m: Optimize.
+
 2009-08-06  Olaf Till <olaf.till@uni-jena.de>
 
 	* geometry/griddata.m: Linearize arrays.

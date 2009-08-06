@@ -93,8 +93,10 @@ function [c, ia, ib] = setxor (a, b, varargin)
 endfunction
 
 %!assert(setxor([1,2,3],[2,3,4]),[1,4])
+%!assert(setxor({'a'}, {'a', 'b'}), {'b'});
 %!test
 %! a = [3, 1, 4, 1, 5]; b = [1, 2, 3, 4];
 %! [y, ia, ib] = setxor (a, b.');
 %! assert(y, [2, 5]);
 %! assert(y, sort([a(ia), b(ib)]));
+

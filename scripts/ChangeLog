@@ -6,6 +6,10 @@
 
 	* geometry/griddata.m: Linearize arrays.
 
+2009-08-04  Pieter Eendebak <pieter.eendebak@gmail.com> 
+
+	* set/setxor.m: Added test for cell arrays of strings.
+
 2009-08-05  Olli Saarela  <olli.saarela@gmail.com>
 
 	* plot/__gnuplot_get_var__.m: If read fails to return data, sleep

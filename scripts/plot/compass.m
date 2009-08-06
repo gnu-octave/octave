@@ -49,32 +49,29 @@ function retval = compass (varargin)
   [h, varargin, nargin] = __plt_get_axis_arg__ ("compass", varargin{:});
 
   arrowsize = 0.25;
-  firstnonnumeric = Inf;
-  for i = 1:nargin
-    if (! isnumeric (varargin{i}))
-      firstnonnumeric = i;
-      break;
-    endif
-  endfor
 
-  if (nargin < 2 || firstnonnumeric < 2)
+  if (nargin == 0)
+    print_usage ();
+  elseif (nargin == 1 || (nargin == 2 && ! isnumeric (varargin{2})))
     ioff = 2;
-    z = varargin {1} (:) .';
+    z = varargin{1}(:).';
     u = real (z);
     v = imag (z);
-  else
+  elseif (nargin > 1 && isnumeric (varargin{2}))
     ioff = 3;
-    u = varargin {1} (:) .';
-    v = varargin {2} (:) .';
+    u = varargin{1}(:).';
+    v = varargin{2}(:).';
   endif
 
   line_spec = "b-";
+  have_line_spec = false;
   while (ioff <= nargin)
     arg = varargin{ioff++};
     if ((ischar (arg) || iscell (arg)) && ! have_line_spec)
       [linespec, valid] = __pltopt__ ("compass", arg, false);
       if (valid)
 	line_spec = arg;
+	have_line_spec = true;
 	break;
       else
 	error ("compass: invalid linespec");

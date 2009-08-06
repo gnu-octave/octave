@@ -1,5 +1,9 @@
 2009-08-06  John W. Eaton  <jwe@octave.org>
 
+	* plot/compass.m, plot/feather.m: Simplify argument processing.
+
+2009-08-06  John W. Eaton  <jwe@octave.org>
+
 	* statistics/base/std.m: Correctly work along singleton dimension.
 	From Christoph Ellenberger <C.Ellenberger@gmx.net>.
 

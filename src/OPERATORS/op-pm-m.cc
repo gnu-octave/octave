@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2008 Jaroslav Hajek
+Copyright (C) 2008, 2009 Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -23,11 +23,13 @@ along with Octave; see the file COPYING.  If not, see
 #define MINCLUDE "ov-re-mat.h"
 
 #define LMATRIX perm_matrix
+#define LDMATRIX matrix
 #define RMATRIX matrix
 
 #define LSHORT pm
 #define RSHORT m
 
 #define LEFT
+#define DEFINENULLASSIGNCONV
 
 #include "op-pm-template.cc"

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2008 Jaroslav Hajek
+Copyright (C) 2008, 2009 Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -27,8 +27,16 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-perm.h"
 #include MINCLUDE
 #include "ops.h"
+#ifdef DEFINENULLASSIGNCONV
+#include "ov-null-mat.h"
+#endif
+
+#ifndef LDMATRIX
+#define LDMATRIX LMATRIX
+#endif
 
 #define OCTAVE_LMATRIX CONCAT2(octave_, LMATRIX)
+#define OCTAVE_LDMATRIX CONCAT2(octave_, LDMATRIX)
 #define OCTAVE_RMATRIX CONCAT2(octave_, RMATRIX)
 #ifdef LEFT
 #define LMATRIX_VALUE perm_matrix_value
@@ -73,5 +81,8 @@ INST_NAME (void)
   INSTALL_BINOP (op_ldiv, OCTAVE_LMATRIX, OCTAVE_RMATRIX, ldiv);
 #else
   INSTALL_BINOP (op_div, OCTAVE_LMATRIX, OCTAVE_RMATRIX, div);
+#endif
+#ifdef DEFINENULLASSIGNCONV
+  INSTALL_ASSIGNCONV (OCTAVE_LMATRIX, octave_null_matrix, OCTAVE_LDMATRIX);
 #endif
 }

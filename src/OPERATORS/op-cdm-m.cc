@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2008 Jaroslav Hajek
+Copyright (C) 2008, 2009 Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -24,6 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 #define RINCLUDE "ov-re-mat.h"
 
 #define LMATRIX complex_diag_matrix
+#define LDMATRIX complex_matrix
 #define RMATRIX matrix
 #define RDMATRIX complex_matrix
 
@@ -31,6 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 #define RSHORT m
 
 #define DEFINELDIV
+#define DEFINENULLASSIGNCONV
 
 #include "op-dm-template.cc"
 

@@ -432,17 +432,21 @@ tree_evaluator::visit_complex_for_command (tree_complex_for_command& cmd)
 
       octave_lvalue key_ref = elt->lvalue ();
 
-      const Octave_map tmp_val (rhs.map_value ());
+      const Octave_map tmp_val = rhs.map_value ();
 
       tree_statement_list *loop_body = cmd.body ();
 
-      for (Octave_map::const_iterator q = tmp_val.begin (); q != tmp_val.end (); q++)
+      string_vector keys = tmp_val.keys ();
+
+      octave_idx_type nel = keys.numel ();
+
+      for (octave_idx_type i = 0; i < nel; i++)
 	{
-	  octave_value key = tmp_val.key (q);
+	  std::string key = keys[i];
 
-	  const Cell val_lst = tmp_val.contents (q);
+	  const Cell val_lst = tmp_val.contents (key);
 
-	  octave_idx_type n = tmp_val.numel ();
+	  octave_idx_type n = val_lst.numel ();
 
 	  octave_value val = (n == 1) ? val_lst(0) : octave_value (val_lst);
 

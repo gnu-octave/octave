@@ -1,5 +1,8 @@
 2009-08-05  John W. Eaton  <jwe@octave.org>
 
+	* pt-eval.cc (tree_evaluator::visit_complex_for_command):
+	Use key_list order for iterating through map.
+
 	* Makefile.in (OCT_LINK_DEPS): Also include $(RLD_FLAG) in the list.
 
 2009-08-05  John W. Eaton  <jwe@octave.org>

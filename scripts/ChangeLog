@@ -1,3 +1,8 @@
+2009-08-06  John W. Eaton  <jwe@octave.org>
+
+	* statistics/base/std.m: Correctly work along singleton dimension.
+	From Christoph Ellenberger <C.Ellenberger@gmx.net>.
+
 2009-08-06  Jaroslav Hajek  <highegg@gmail.com>
 
 	* geometry/griddata.m: Optimize.

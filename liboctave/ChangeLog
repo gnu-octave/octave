@@ -1,5 +1,11 @@
 2009-08-05  John W. Eaton  <jwe@octave.org>
 
+	* oct-shlib.cc (octave_shl_load_shlib::open): Pass BIND_IMMEDIATE,
+	not BIND_DEFERRED to shl_load.
+	(octave_dlopen_shlib::open): Don't pass RTLD_GLOBAL to dlopen.
+
+2009-08-05  John W. Eaton  <jwe@octave.org>
+
 	* Makefile.in (LINK_DEPS): Omit $(BLAS_LIBS) from the list.
 	Include $(RLD_FLAG) in the list.
 

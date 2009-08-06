@@ -251,10 +251,6 @@ octave_dlopen_shlib::open (const std::string& f)
       flags |= RTLD_NOW;
 #endif
 
-#if defined (RTLD_GLOBAL)
-      flags |= RTLD_GLOBAL;
-#endif
-      
       library = dlopen (file.c_str (), flags);
 
       if (library)
@@ -360,7 +356,7 @@ octave_shl_load_shlib::open (const std::string& f)
     {
       file = f;
 
-      library = shl_load (file.c_str (), BIND_DEFERRED, 0L);
+      library = shl_load (file.c_str (), BIND_IMMEDIATE, 0L);
 
       if (library)
 	stamp_time ();

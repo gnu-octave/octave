@@ -1728,17 +1728,19 @@ function do_tics_1 (ticmode, tics, mtics, labelmode, labels, color, ax,
 endfunction
 
 function ticklabel = ticklabel_to_cell (ticklabel)
-  if (! isempty (ticklabel) && ! iscell (ticklabel))
-    if (isnumeric (ticklabel))
-      ## Use upto 5 significant digits
-      ticklabel = num2str (ticklabel(:), 5);
-    endif
-    n = setdiff (findstr (ticklabel, '|'), findstr (ticklabel, '\|'));
-    if (! isempty (n))
+  if (isnumeric (ticklabel))
+    ## Use upto 5 significant digits
+    ticklabel = num2str (ticklabel(:), 5);
+  endif
+  if (ischar (ticklabel))
+    if (size (ticklabel, 1) == 1 && any (ticklabel == "|"))
+      n = setdiff (findstr (ticklabel, "|"), findstr (ticklabel, '\|'));
       ticklabel = strsplit (ticklabel, "|");
     else
       ticklabel = cellstr (ticklabel);
     endif
+  elseif (isempty (ticklabel))
+    ticklabel = {""};
   else
     ticklabel = ticklabel;
   endif

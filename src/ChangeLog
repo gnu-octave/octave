@@ -1,3 +1,8 @@
+2009-08-06  Jaroslav Hajek  <highegg@gmail.com>
+
+	* OPERATORS/op-dm-template.cc, OPERATORS/op-pm-template.cc:
+	Also define conversions for null string and null sq_string.
+
 2009-08-06  John W. Eaton  <jwe@octave.org>
 
 	* OPERATORS/op-cdm-m.cc, OPERATORS/op-dm-m.cc, OPERATORS/op-pm-m.cc:

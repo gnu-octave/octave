@@ -269,11 +269,11 @@
 	(DISTFILES): Add DOC nad mk_doc_cache.m to the list.
 	* mk_doc_cache.m: New file.
 
-2009-02-01  S�ren Hauberg <hauberg@gmail.com>
+2009-02-01  S�ren Hauberg  <hauberg@gmail.com>
 
 	* interpreter/nonlin.txi: Remove reference to 'fsolve_options'.
 
-2009-02-01  S�ren Hauberg <hauberg@gmail.com>
+2009-02-01  S�ren Hauberg  <hauberg@gmail.com>
 
 	* interpreter/system.txi: Remove reference to 'eomdate'.
 
@@ -874,7 +874,6 @@
 	chapter. Remove references to Hashing chapter and hashing.texi,
 	and subsections for hashing to system utilities chapter.
 
-
 2007-06-12  2007-06-10  S�ren Hauberg  <hauberg@gmail.com>
 
         * interpreter/diffeq.txi: Note that x-dot is the derivative of x.
@@ -1190,7 +1189,7 @@
 	* faq/Makefile.in (Octave-FAQ.dvi, Octave-FAQ.pdf): Likewise.
 	* liboctave/Makefile.in (liboctave.dvi, liboctave.pdf): Likewise.
 
-2006-10-09  Thomas Treichl <Thomas.Treichl@gmx.net>
+2006-10-09  Thomas Treichl  <Thomas.Treichl@gmx.net>
 
 	* interpreter/sparseimages.m: Plot sombrero images if sparse
 	capabilities are missing.
@@ -1378,7 +1377,7 @@
 	* interpreter/octave.texi: Include test/demo appendix.
 	* interpreter/Makefile.in (SUB_SOURCE): Include test.txi.
 
-2005-12-13  David Bateman <dbateman@free.fr>
+2005-12-13  David Bateman  <dbateman@free.fr>
 
 	* interpreter/sparse.txi: Add new gplot, etreeplot and treeplot
 	functions.
@@ -1525,11 +1524,11 @@
 
 	* interpreter/Makefile.in (MAN_BASE): Add octave-config.1 to the list.
 
-2003-02-19  Dirk Eddelbuettel <edd@debian.org>
+2003-02-19  Dirk Eddelbuettel  <edd@debian.org>
 
 	* octave-config.1: New file.
 
-2003-01-11  Paul Kienzle <pkienzle@users.sf.net>
+2003-01-11  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* interpreter/Makefile.in (munge-texi$(BUILD_EXEEXT)): Pass
 	$(BUILD_CXXFLAGS) and $(BUILD_LDFLAGS) to compiler.
@@ -1564,7 +1563,7 @@
 	make it easy to revert back to libg++-based Map class if that
 	fails to work on some systems.
 
-2002-11-01  Dirk Eddelbuettel <edd@debian.org>
+2002-11-01  Dirk Eddelbuettel  <edd@debian.org>
 
 	* interpreter/Makefile.in (MAN_BASE, MAN_SRC): New variables, use
 	as appropriate.
@@ -1573,7 +1572,7 @@
 
  	* interpreter/mkoctfile.1: New file.
 	
-2002-10-25  Paul Kienzle <pkienzle@users.sf.net>
+2002-10-25  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* interpreter/Makefile.in (octave_toc.html): Use -expandinfo and
 	-split_chapter instead of -expand info and -split chapter.
@@ -1615,7 +1614,7 @@
 	* liboctave/Makefile.in (liboctave_toc.html): Likewise.
 	* faq/Makefile.in (Octave-FAQ_toc.html): Likewise.
 
-2001-11-14  Christoph Spiel <cspiel@hammersmith-consulting.com>
+2001-11-14  Christoph Spiel  <cspiel@hammersmith-consulting.com>
 
 	* faq/Makefile.in (Octave-FAQ_toc.html): Use -expandinfo and
 	-split_chapter, not -expand info and -split chapter.

@@ -63,7 +63,9 @@ function [rx, ry, rz] = griddata (x, y, z, xi, yi, method)
 
   [nr, nc] = size (xi);
   
-  x = x(:); y = y(:); z = z(:);
+  x = x(:);
+  y = y(:);
+  z = z(:);
 
   ## Triangulate data.
   tri = delaunay (x, y);

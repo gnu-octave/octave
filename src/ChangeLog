@@ -322,7 +322,6 @@
 	* pt-idx.cc (tree_index_expression::rvalue): Update.
 	* variables.cc (symbol_exist): Update.
 
-
 2009-07-21  John W. Eaton  <jwe@octave.org>
 
 	* symtab.cc (symbol_table::builtin_find,
@@ -344,7 +343,7 @@
 	* bitfcns.cc (DO_UBITSHIFT): Avoid overflow.
 	(DO_SBITSHIFT): Fix mask calculation. 
 
-2009-07-17  Benjamin Lindner <lindnerb@users.sourceforge.net>
+2009-07-17  Benjamin Lindner  <lindnerb@users.sourceforge.net>
 
 	* DLD-FUNCTIONS/__magick_read__.cc (F__magick_read__):
 	Determine correct number of bits required when reading images.
@@ -394,7 +393,7 @@
 	int)): Test for underflow of fractional part of rational approximation
 	earlier in the loop.
 
-2009-07-01  Joe Rothweiler <octaveuser@sensicomm.com>
+2009-07-01  Joe Rothweiler  <octaveuser@sensicomm.com>
 
 	* input.cc (raw_mode): Use TCSADRAIN if no wait.
 
@@ -1017,7 +1016,7 @@
 	$(DESTDIR)$(octlibdir)/$(SHLLIBPRE)octinterp.$(SHLLIB_VER), not
 	$(DESTDIR)$(octlibdir)/$(SHLPRE)octinterp.$(SHLEXT_VER).
 
-2009-05-08  Carsten Clark <tantumquantum+gnuoctave@gmail.com>
+2009-05-08  Carsten Clark  <tantumquantum+gnuoctave@gmail.com>
 
 	* data.cc (Fissorted): Fix typo in documentation entry.
 
@@ -1397,7 +1396,7 @@
 	read_until_newline to avoid leaving stray '\r' in stream when
 	reading files with CRLF line endings.
 
-2009-03-18  Jaroslav Hajek <highegg@gmail.com>
+2009-03-18  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/cellfun.cc
 	(scalar_col_helper, scalar_col_helper_def, scalar_col_helper_nda,
@@ -1476,7 +1475,7 @@
 	'\r' or '\n', skip current line ending instead of skipping until
 	the next.
 
-2009-03-12  Ben Abbott <bpabbott@mac.com>
+2009-03-12  Ben Abbott  <bpabbott@mac.com>
 
 	* graphics.cc: Fix default "papersize" property value.
 
@@ -2275,7 +2274,7 @@
 	* parse.y (begin_obj_idx, cancel_obj_idx): Delete non-terminals
 	and all uses.
 
-2009-02-13 Ben Abbott <bpabott@mac.com>
+2009-02-13 Ben Abbott  <bpabott@mac.com>
 
 	* graphics.h.in (class axes::properties): Initialize ticklength.
 	* graphics.cc (default_axes_ticklength): New function.
@@ -2904,7 +2903,7 @@
 
 	* load-path.cc (Fcommand_line_path): Rename from Fcommandlinepath.
 
-2009-01-27 Ben Abbott <bpabbott@mac.com>
+2009-01-27 Ben Abbott  <bpabbott@mac.com>
 
 	* graphics.cc (convert_position): Handle character units.
 	(default_axes_tick, default_figure_papersize,
@@ -2936,13 +2935,13 @@
 	according to the index expression.
 	* ov-cell.cc (octave_cell::subsasgn): Ditto.
 
-2008-12-25 Ben Abbott <bpabbott@mac.com>
+2008-12-25 Ben Abbott  <bpabbott@mac.com>
 
 	* load-path.cc (Fcommandlinepath): New function.
 	* load-path.h (load_path::get_command_line_path,
 	load_path::do_get_command_line_path): New functions.
 
-2009-01-24 Ben Abbott <bpabbott@mac.com>
+2009-01-24 Ben Abbott  <bpabbott@mac.com>
 
 	* DLD-FUNCTIONS/eigs.cc: eigs.cc: skip tests if ARPACK is missing.
 
@@ -3281,7 +3280,7 @@
 	* ov-cell.cc (octave_cell::subsasgn): Put erased copy back after
 	make_unique has been called.
 
-2009-01-09  Kai Habel <kai.habel@gmx.de>
+2009-01-09  Kai Habel  <kai.habel@gmx.de>
 
         * graphics.cc: Calculate normals for surface boundaries, use
         more neighboring points to calculate interior normals
@@ -3324,7 +3323,7 @@
 	DLD-FUNCTIONS/regexp.cc	(Fregexpi), DLD-FUNCTIONS/regexp.cc
 	(Fregexprep): Add references.
 	
-2008-12-27  Jaroslav Hajek <highegg@gmail.com>
+2008-12-27  Jaroslav Hajek  <highegg@gmail.com>
 
 	* oct-obj.h, oct-obj.cc (octave_value_list::valid_scalar_indices): Remove.
 	* ov-base-diag.cc, ov-base-diag.h, ov-base-scalar.cc, ov-base.h,
@@ -3344,7 +3343,7 @@
 
 	* data.cc (resize): Add cross reference to postpad.
 
-2008-12-25  Jaroslav Hajek <highegg@gmail.com>
+2008-12-25  Jaroslav Hajek  <highegg@gmail.com>
 
 	* load-save.h (load_save_format_type, load_save_format_options): New
 	enums.
@@ -3488,7 +3487,6 @@
 	* ov-base-diag.h (load_ascii): Declare.
 	* ov-perm.cc (save_ascii, load_ascii): Save natively.
 	* ov-perm.h (load_ascii): Declare.
-
 
 2008-12-04  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
@@ -3700,7 +3698,7 @@
 	order.
 	* OPERATORS/op-struct.cc (op_catop_matrix_struct): Ditto.
 
-2008-11-11  Jaroslav Hajek <highegg@gmail.com>
+2008-11-11  Jaroslav Hajek  <highegg@gmail.com>
 
 	* pt-assign.cc: Fix handling of empty cs-lists in assignment LHS.
 
@@ -3711,14 +3709,13 @@
 
 	* parse.y (F__parser_debug_flag__): New function.
 
-2008-10-31  Jaroslav Hajek <highegg@gmail.com>
+2008-10-31  Jaroslav Hajek  <highegg@gmail.com>
 
 	* xnorm.cc: New source.
 	* xnorm.h: New header file.
 	* Makefile.in: Include xnorm.cc in the build process.
 	* data.cc (Fnorm): Call xnorm, xcolnorms, xrownorms or xfrobnorm
 	to do the actual work.
-
 
 2008-10-31  David Bateman  <dbateman@free.fr>
 
@@ -3752,7 +3749,7 @@
 	* graphics.cc (axes::properties::set_defaults): Initialize
 	keyreverse property.
 
-2008-10-28  Jaroslav Hajek <highegg@gmail.com>
+2008-10-28  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Cell.h (Cell::assign (const Array<idx_vector>&, ...),
 	Cell::delete_elements (const Array<idx_vector>&, ...)):
@@ -3770,7 +3767,6 @@
 	Array<T>::assign.
 	* ov-list.cc (octave_list::subsasgn): Call Array<T>::assign.
 	* pr-output.cc (PRINT_ND_ARRAY): Use zero-based indices.
-
 
 2008-10-29  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
@@ -3989,7 +3985,7 @@
 
 	* graphics.cc (F__go_delete__): Allow arrays of graphic handles.
 
-2008-10-01  Jaroslav Hajek <highegg@gmail.com>
+2008-10-01  Jaroslav Hajek  <highegg@gmail.com>
 
 	* OPERATORS/op-i64-i64.cc: Instantiate all 64-bit operations.
 	* OPERATORS/op-ui64-ui64.cc: Instantiate all unsigned 64-bit operations.
@@ -4420,7 +4416,7 @@
 	(Fdrawnow): Call redraw_figure and print_figure with a graphics_object
 	argument.
 
-2008-08-26  Maciek Gajewski <maciej.gajewski0@gmail.com>
+2008-08-26  Maciek Gajewski  <maciej.gajewski0@gmail.com>
 
 	* graphics.h.in (base_property::set): Remove inline implementation.
 	(base_graphics_backend::property_changed,
@@ -5584,7 +5580,7 @@
 	(axes::properties::update_ylim): ditto
 	(axes::properties::update_zlim): ditto
 
-2008-06-04  Michael Goffioul <michael.goffioul@gmail.com>
+2008-06-04  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* ov-fcn-inline.h (class octave_fcn_inline): Mark with OCTINTERP_API.
 	* ov-fcn-handle.h (class Octave_fcn_handle): Likewise.
@@ -6781,7 +6777,7 @@
 	New typedefs.
 	(octave_mex_file_list::do_remove): Use them.
 
-2008-05-03  Rafael Laboissiere <rafael@debian.org>
+2008-05-03  Rafael Laboissiere  <rafael@debian.org>
 
 	* DLD-FUNCTIONS/time.cc, file_io.cc: Use ischar instead of
 	deprecated isstr.
@@ -17711,7 +17707,6 @@
 	* ov-base.cc, ov-base.h, ov-scalar.h, ov-complex.h, ov-bool.h, 
 	ov-range.h, ov-base-mat.h, (resize): New function.
 
-
 2004-07-23  John W. Eaton  <jwe@octave.org>
 
 	* symtab.cc (whos_parameter): Move decl here, from symtab.h.
@@ -24897,7 +24892,6 @@
 	Fstat, Funlink, Fwaitpid, F): Ditto.
 	(Flstat): Refer to stat for doc.
 
-
 	* help.cc (looks_like_texinfo): New function.
 	(display_help_text): Use it to see if the doc string looks like
 	Texinfo source.  If so, use makeinfo to format the text before
@@ -25800,7 +25794,6 @@ Thu Oct  8 13:47:55 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 	Get subprocess exit status by calling wait_status for our procbuf.
 	* pt-plot.cc (close_plot_stream): Send "quit" command to gnuplot
 	before deleting plot_stream.
-
 
 Thu Oct  1 22:39:44 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
@@ -27322,7 +27315,6 @@ Thu Apr 24 03:58:16 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 	* help.cc (Ftype): Work with octave_value instead of a pointer to
 	tree_constant.
 	* symtab.cc (symbol_record_info::symbol_record_info): Likewise.
-
 
 Tue Apr 22 22:59:55 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

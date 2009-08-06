@@ -59,7 +59,7 @@
 	* example/@polynomial/numel.m: New method.
 	* example/@polynomial/Makefile.in: Include it.
 
-2009-05-22 Benjamin Lindner <lindnerb@users.sourceforge.net>
+2009-05-22 Benjamin Lindner  <lindnerb@users.sourceforge.net>
 
 	* mkoctfile.cc.in: mask MSVC specific linker flags for mex output
 
@@ -95,7 +95,7 @@
 	* examples/Makefile.in: Include it.
 	* configure.in: Ditto.
 
-2009-05-24  Benjamin Lindner <lindnerb@users.sourceforge.net>
+2009-05-24  Benjamin Lindner  <lindnerb@users.sourceforge.net>
 
 	* configure.in: (SCRIPTS_EXE_SUFFIX) Define to ".exe" for 
 	mingw32 compilation (similar to msvc)
@@ -111,7 +111,7 @@
 2009-05-21  Marco Atzeri  <marco_atzeri@yahoo.it>
         * configure.in: Correct my mistake in cygwin SHLBINPRE SHLBIN
 
-2008-05-21  Michael Goffioul <michael.goffioul@gmail.com>
+2008-05-21  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* aclocal.m4 (AC_CHECK_QHULL_OK): Do not use -lm under
 	Windows systems.
@@ -132,7 +132,7 @@
 	(clean): Remove mkoctfile$(EXEEXT), octave-config$(EXEEXT),
 	octave-bug$(EXEEXT) and the corresponding object files.
 
-2009-05-07  Rik <rdrider0-list@yahoo.com>
+2009-05-07  Rik  <rdrider0-list@yahoo.com>
 
 	* README.mirrors: Remove invalid mirror sites which no longer exist.
 
@@ -196,7 +196,7 @@
 	* configure.in: For cygwin, set LIBPRE=lib and clear CPICFLAG,
 	CXXPICFLAG, and FPICFLAG.
 
-2009-03-27  Jaroslav Hajek <highegg@gmail.com>
+2009-03-27  Jaroslav Hajek  <highegg@gmail.com>
 
 	* aclocal.m4 (OCTAVE_CMATH_FUNC): Add missing AC_LANG_POP.
 	* configure.in: Enclose string in quotes.
@@ -291,12 +291,12 @@
 
 	* NEWS: Update for release.
 
-2009-02-11 Thomas Treichl <Thomas.Treichl@gmx.net>
+2009-02-11 Thomas Treichl  <Thomas.Treichl@gmx.net>
 
 	* aclocal.m4 (OCTAVE_GLUTESSCALLBACK_THREEDOTS): New macro.
 	(OCTAVE_OPENGL): Use it in OpenGL check.
 
-2009-02-11 Ben Abbott <bpabbott@mac.com>
+2009-02-11 Ben Abbott  <bpabbott@mac.com>
 
 	* configure.in: Include FTGLTextureFont.h when FTGL_UPPER_CASE is
 	not defined.
@@ -441,7 +441,7 @@
 
 	* mkoctfile.cc.in, octave-bug.cc.in: Style fixes.
 
-2008-11-13  Ben Abbott <bpabbott@mac.com>
+2008-11-13  Ben Abbott  <bpabbott@mac.com>
 
 	* src/graphics.h.in: Add props screensize & screenpixelsperinch.
 
@@ -485,11 +485,11 @@
 	* examples/Makefile.in: Reference the new subdirectory here.
 	* configure.in: Add the new makefile to AC_CONFIG_FILES.
 	
-2008-10-01  Jaroslav Hajek <highegg@gmail.com>
+2008-10-01  Jaroslav Hajek  <highegg@gmail.com>
 
 	* configure.in: Check for sizeof (long double) and randl.
 
-2008-09-30  Jaroslav Hajek <highegg@gmail.com>
+2008-09-30  Jaroslav Hajek  <highegg@gmail.com>
 
 	* aclocal.m4 (OCTAVE_FAST_INT_OPS): New macro.
 	* configure.in: Call OCTAVE_FAST_INT_OPS
@@ -506,7 +506,7 @@
 
 	* NEWS: Update for some of the graphics changes
 	
-2008-08-11  Jaroslav Hajek <highegg@gmail.com>
+2008-08-11  Jaroslav Hajek  <highegg@gmail.com>
 
 	* acx_blas_f77_func.m4, acx_lapack.m4: Update macros from
 	<http://autoconf-archive.cryp.to/>.
@@ -566,17 +566,17 @@
 	(HAVE_FLTK): AC_DEFINE if FLTK is available.
 	(HAVE_OPENGL): AC_DEFINE if OpenGL is available.
 
-2008-07-21  Jaroslav Hajek <highegg@gmail.com>
+2008-07-21  Jaroslav Hajek  <highegg@gmail.com>
 
 	* configure.in: Extend FTGL test to test for both ftgl.h and FTGL.h.
 	Use HAVE_FTGL_UPPERCASE to indicate the latter (version <= 2.1.2).
 
-2008-07-19 Rafael Laboissiere <rafael@debia8n.org>
+2008-07-19 Rafael Laboissiere  <rafael@debia8n.org>
 
 	* octMakefile.in (CONF_DISTFILES): Include acx_blas_f77_func.m4 in
 	the list.
 
-2008-07-18 Carlo de Falco <carlo.defalco@gmail.com>
+2008-07-18 Carlo de Falco  <carlo.defalco@gmail.com>
 
 	* aclocal.m4: Search for gl.h and glu.h in OpenGL/ as well as in GL/.
 
@@ -620,12 +620,12 @@
 	* configure.in: new substituted variables GL_RENDER_SRC and
 	FLTK_BACKEND_SRC.
 
-2008-06-20  Michael Goffioul <michael.goffioul@gmail.com>
+2008-06-20  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* Makeconf.in: Add GRAPHICS_CFLAGS substitution.
 	* configure.in: Add checks for hypotf and _hypotf.
 
-2008-06-12  Jaroslav Hajek <highegg@gmail.com>
+2008-06-12  Jaroslav Hajek  <highegg@gmail.com>
 
 	* configure.in: Move LIBS and CXXFLAGS restoration into
 	the proper block.
@@ -654,7 +654,7 @@
 
 	* configure.in: Check for FLTK and corresponding compiler flags.
 
-2008-06-04  Michael Goffioul <michael.goffioul@gmail.com>
+2008-06-04  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* configure.in: Double-quote warn_graphics variable.
 
@@ -669,7 +669,7 @@
 
 	* .hgignore: Also ignore build-.*, configure, and autom4te.cache.
 
-2008-05-22  Jaroslav Hajek <highegg@gmail.com>
+2008-05-22  Jaroslav Hajek  <highegg@gmail.com>
 
 	* mk-opts.pl (emit_print_function, emit_set_function,
 	emit_show_function): Support float type.
@@ -692,13 +692,13 @@
 
 	* README.Cygwin: Update.
 
-2008-04-02  Jaroslav Hajek <highegg@gmail.com>
+2008-04-02  Jaroslav Hajek  <highegg@gmail.com>
 
 	* acx_blas_f77_func.m4: New file.
 	* configure.in: Call ACX_BLAS_WITH_F77_FUNC instead of ACX_BLAS.
 	Supply a warning for incompatible Fortran/BLAS configuration.
 
-2008-03-25  Jaroslav Hajek <highegg@gmail.com>
+2008-03-25  Jaroslav Hajek  <highegg@gmail.com>
 
 	* configure.in: Check for expm1 and log1p functions.
 
@@ -1157,7 +1157,7 @@
 	pointer to octave_base_value, not octave_value.
 	(Fdoit): Rep is reference to octave_base_value, not octave_value.
 
-2007-03-21  Paul Kienzle <pkienzle@users.sf.net>
+2007-03-21  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* octMakefile.in (all): Print message after successful build.
 
@@ -1865,7 +1865,7 @@
 	separately.
 	* PROJECTS: Remove completed sparse matrix tasks.
 
-2005-10-17  Paul Kienzle <pkienzle@users.sf.net>
+2005-10-17  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* octave.test/system/system.exp: rmdir no longer prints a
 	message if the directory does not exist.
@@ -2555,7 +2555,7 @@
 	* configure.in: Only complain for g++ earlier than 2.95.
 	Try harder to get version number only.
 
-2003-03-05  Paul Kienzle <pkienzle@users.sf.net>
+2003-03-05  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* aclocal.m4 (OCTAVE_DYNAMIC_AUTO_ARRAYS): New macro.
 	* configure.in: Use it.
@@ -2573,7 +2573,7 @@
 	(do-subst-config-vals): Add it to the list.
 	(INCFLAGS): Add $(KPATHSEA_INCFLAGS).
 
-2003-02-23  Paul Kienzle <pkienzle@users.sf.net>
+2003-02-23  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* aclocal.m4 (OCTAVE_PLACEMENT_DELETE): New macro.
 	* configure.in: Use it.
@@ -2597,11 +2597,11 @@
 
 	* emacs/Makefile.in (DISTFILES): Add otags.1 to the list.
 
-2003-02-18  Dirk Eddelbuettel <edd@debian.org>
+2003-02-18  Dirk Eddelbuettel  <edd@debian.org>
 
 	* emacs/otags.1: New file.
 
-2003-02-18  David Bateman <dbateman@free.fr>
+2003-02-18  David Bateman  <dbateman@free.fr>
 
 	* configure.in: Eliminate linpack
 
@@ -2618,11 +2618,11 @@
 	* configure.in: Use '$(CXX)', '$(AR)', not "$CXX" and "$AR" when
 	setting variables for building shared libraries.
 
-2003-02-13  Paul Kienzle <pkienzle@users.sf.net>
+2003-02-13  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* examples/make_int.cc: Support for ISO standard compilers.
 
-2003-01-22  Richard Stallman <rms@gnu.org>
+2003-01-22  Richard Stallman  <rms@gnu.org>
 
 	* emacs/octave-mod.el (octave-mode-map): Avoid binding keys that
 	are reserved for users.
@@ -2645,7 +2645,7 @@
 	* configure.in: Don't bother with compiler flags for
 	explicit/no-implicit template instantiation.
 
-2003-01-11  Paul Kienzle <pkienzle@users.sf.net>
+2003-01-11  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* configure.in, Makeconf.in: Allow setting of BUILD_LDFLAGS.
 
@@ -2698,7 +2698,7 @@
 	* configure.in: Dont't set SONAME_FLAGS for alpha alpha*-dec-osf*
 	systems.
 
-2002-11-29  Paul Kienzle <pkienzle@users.sf.net>
+2002-11-29  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* mkoctfile.in: Include "$incflags $def" in commands to generate
 	dependecies.
@@ -2819,7 +2819,7 @@
 	If dynamic linking is used always do what was previously only
 	enabled by --enable-lite-kernel.
 
-2002-10-17  Paul Kienzle <pkienzle@users.sf.net>
+2002-10-17  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* configure.in: Define WITH_DYNAMIC_LINKING based on --enable-shared.
 	Add -lwsock32 to LIBS for MinGW.
@@ -2831,14 +2831,14 @@
 	AC_LINK_IFELSE instead of AC_TRY_LINK.
 	Require both programs to compile for success.
 
-2002-10-16  Paul Kienzle <pkienzle@users.sf.net>
+2002-10-16  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* aclocal.m4: Both Cygwin and MinGW don't prepend underscores.
 	* configure.in: MinGW builds shared libraries the same as Cygwin.
 	MinGW must link to winsock explicitly.
 	* install-octave.in: MinGW and Cygwin both need OCTAVE_HOME.
 
-2002-10-15  Paul Kienzle <pkienzle@users.sf.net>
+2002-10-15  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* configure.in (library_path_var): New variable.
 
@@ -2854,7 +2854,7 @@
 	defined (__WIN32__) || ! defined (__CYGWIN__).
 	Also call AC_SUBST for TERMLIBS.
 
-2002-10-14  Paul Kienzle <pkienzle@users.sf.net>
+2002-10-14  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* configure.in: Use correct SHLEXT and PICFLAG for Cygwin.
 	* configure.in: Cygwin must link against -loctave.dll, etc.
@@ -2915,7 +2915,7 @@
 	* Makeconf.in (BUILD_CC, BUILD_CFLAGS, BUILD_CXX, BUILD_CXXFLAGS):
 	New variables for cross compiling.
 
-2002-10-07  Paul Kienzle <pkienzle@users.sf.net>
+2002-10-07  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* configure.in: Check for raise.
 
@@ -2942,7 +2942,7 @@
  	* configure.in: Use. Check for direct.h.
  	(mkdir): Define.
  
-2002-09-26  Paul Kienzle <pkienzle@users.sf.net>
+2002-09-26  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* configure.in: Check for conio.h.
 	Check for _kbhit.
@@ -2952,7 +2952,7 @@
 	* configure.in (AH_BOTTOM): Don't define
 	USE_PRAGMA_INTERFACE_IMPLEMENTATION.
 
-2002-09-26  Paul Kienzle <pkienzle@users.sf.net>
+2002-09-26  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* configure.in: Fix syntax errors in !HAVE_XXX_T.
 	Don't require terminal control for build.
@@ -2974,7 +2974,7 @@
 
 	* Makeconf.in (%.d : %.cc): Add $*.df to LHS of dependency list.
 
-2002-08-15  Paul Kienzle <pkienzle@users.sf.net>
+2002-08-15  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* mk-opts.pl: Add support for INCLUDE = "...".
 
@@ -3028,7 +3028,7 @@
 	* configure.in (AC_CONFIG_FILES): Add libcruft/daspk/Makefile to
 	the list.
 
-2002-04-24  Kurt Hornik <hornik@ci.tuwien.ac.at>
+2002-04-24  Kurt Hornik  <hornik@ci.tuwien.ac.at>
 
 	* aclocal.m4 (OCTAVE_CC_FLAG, OCTAVE_CXX_FLAG): Also handle flags
 	that contain : and =.
@@ -3062,7 +3062,7 @@
 	Use AS_MESSAGE_LOG_FD instead of AC_FD_CC.
 	* configure.in: Delete second arg in AC_CHECK_SIZEOF calls.
 
-2002-04-03  Steven G. Johnson <stevenj@alum.mit.edu>
+2002-04-03  Steven G. Johnson  <stevenj@alum.mit.edu>
 
 	* configure.in: Correct usage of AC_ARG_WITH for --with-fftw.
 
@@ -3206,7 +3206,7 @@
 
 	* octMakefile.in (CONF_DISTFILES): Remove config.h.bot from the list.
 
-2001-04-19  David Livings <david.livings@asa.co.uk>
+2001-04-19  David Livings  <david.livings@asa.co.uk>
 
 	* Makeconf.in (mk-libdir-link): Omit check for $(octlibdir)/octave
 	existing as a directory.
@@ -3395,7 +3395,7 @@
 
 	* Makefile.in (liboctave.$(SHLEXT)): Delete target before rebuilding.
 
-2000-03-21  Ben Sapp <bsapp@nua.lampf.lanl.gov>:
+2000-03-21  Ben Sapp  <bsapp@nua.lampf.lanl.gov>:
 
 	* Makeconf.in (%.o : %.c): Pass -o to compile command.
 	(%.o : %.cc): Ditto.
@@ -3412,7 +3412,7 @@
 	* configure.in: For building shared libaries, handle
 	i386-pc-solaris2* the same as sparc-sun-solaris2*.
 
-2000-02-29  Ben Sapp <bsapp@nua.lampf.lanl.gov>
+2000-02-29  Ben Sapp  <bsapp@nua.lampf.lanl.gov>
 
 	* examples/make_int.cc (make_int): Handle new operator names.
 
@@ -3503,7 +3503,7 @@
 	* configure.in: Check for select and poll.  Also check for poll.h
 	and sys/poll.h.
 
-1999-10-19  Geoff Jacobsen <geoffj@casquet.inet.net.nz>
+1999-10-19  Geoff Jacobsen  <geoffj@casquet.inet.net.nz>
 
 	* autogen.sh: New file.
 
@@ -3517,7 +3517,7 @@ Mon Sep 20 11:02:29 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
 	sources plus code that will make it work if Emacs doesn't have the
 	customize code.
 
-Tue Sep 14 07:57:06 1999  Kurt Hornik <hornik@ci.tuwien.ac.at>
+Tue Sep 14 07:57:06 1999  Kurt Hornik  <hornik@ci.tuwien.ac.at>
 
 	* emacs/octave-inf.el (inferior-octave-startup): Always pass "-i"
 	and "--no-line-editing" to Octave subprocess.
@@ -3659,7 +3659,7 @@ Tue Aug 18 17:02:25 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* mkoctfile.in: Allow -DDEF on command line.
 
-Thu Jun 18 20:24:40 1998  Roman Hodek <Roman.Hodek@informatik.uni-erlangen.de>
+Thu Jun 18 20:24:40 1998  Roman Hodek  <Roman.Hodek@informatik.uni-erlangen.de>
 
 	* configure.in (RLD_FLAG): Set correctly for Linux on all
 	architectures.  From 
@@ -4203,7 +4203,7 @@ Sun Mar  9 03:44:33 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* config.h.bot (STATIC_CAST): Delete definition.
 
-Thu Mar  6 03:26:41 1997  Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
+Thu Mar  6 03:26:41 1997  Kurt Hornik  <Kurt.Hornik@ci.tuwien.ac.at>
 
 	* emacs/octave-hlp.el: Provide octave-hlp.
 	* emacs/octave-inf.el: Provide octave-inf.
@@ -4211,7 +4211,7 @@ Thu Mar  6 03:26:41 1997  Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
 	* examples/info-emacs-octave-help: Require octave-hlp instead of
 	loading it.
 
-Tue Mar  4 12:19:24 1997  Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
+Tue Mar  4 12:19:24 1997  Kurt Hornik  <Kurt.Hornik@ci.tuwien.ac.at>
 
 	* emacs/octave-mod.el: Properly indent switch statement.
 
@@ -4724,7 +4724,7 @@ Wed May 22 15:05:40 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 	* configure.in (SH_LIBS, SH_FLIBS, SH_TERMLIBS): Define.
 	* Makeconf.in: Substitute.
 
-Wed May 22 02:42:32 1996  Kurt Hornik <Kurt.Hornik@tuwien.ac.at>
+Wed May 22 02:42:32 1996  Kurt Hornik  <Kurt.Hornik@tuwien.ac.at>
 
 	* emacs/octave.el (octave-indent-new-line): Protect
 	octave-indent-line with save-excursion.
@@ -4746,7 +4746,7 @@ Mon May 20 12:22:54 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 	* octave-bug.in: Fix previous change so it also matches things
 	like 1.90, not just 1.1.90.
 
-Fri May 17 09:58:49 1996  Kurt Hornik <Kurt.Hornik@tuwien.ac.at>
+Fri May 17 09:58:49 1996  Kurt Hornik  <Kurt.Hornik@tuwien.ac.at>
 
 	* emacs/octave.el (octave-electric-semi): Also call octave-indent-line
 	to indent the current line after inserting a semicolon.

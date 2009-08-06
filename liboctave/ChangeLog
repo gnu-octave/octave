@@ -230,7 +230,6 @@
 
 2009-05-21  Jaroslav Hajek  <highegg@gmail.com>
 
-
 	* CMatrix.cc 
 	(ComplexMatrix::all, ComplexMatrix::any, ComplexMatrix::cumprod,
 	ComplexMatrix::cumsum, ComplexMatrix::prod, ComplexMatrix::sum,
@@ -432,7 +431,7 @@
 	* lo-mappers.h (xisnan, xisinf, xfinite): If possible, use definitions
 	from <cmath>.
 
-2009-03-18  Jaroslav Hajek <highegg@gmail.com>
+2009-03-18  Jaroslav Hajek  <highegg@gmail.com>
 
 	* oct-norm.cc (get_eps): Remove that hack.
 	(higham): Use std::numeric_limits instead.
@@ -1216,7 +1215,6 @@
 	operator * (const Range& r, double x)): New operators.
 	* Range.h: Declare them.
 
-
 2009-01-20  John W. Eaton  <jwe@octave.org>
 
 	* file-stat.h, file-stat.cc (class base_file_stat): New base class.
@@ -1664,12 +1662,12 @@
 	tag.
 	* oct-norm.cc (xnorm, xfrobnorm, xcolnorms, xrownorms): Ditto.
 
-2008-11-12  Jaroslav Hajek <highegg@gmail.com>
+2008-11-12  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DiagArray2.h (DiagArray2<T>::maybe_delete_elements): Remove
 	declaration.
 
-2008-11-09  Jaroslav Hajek <highegg@gmail.com>
+2008-11-09  Jaroslav Hajek  <highegg@gmail.com>
 
 	* oct-norm.cc: Don't include Array.cc.  
 	(column_norms (const MArray2<T>&, ...)): Use std::vector instead of Array<T> for
@@ -1696,7 +1694,7 @@
 
 	* MArray-defs.h (MARRAY_NORM_BODY): Remove.
 
-2008-11-02  Jaroslav Hajek <highegg@gmail.com>
+2008-11-02  Jaroslav Hajek  <highegg@gmail.com>
 
 	* idx-vector.cc (idx_vector::is_complement): Set resulting extent
 	correctly.
@@ -1710,14 +1708,14 @@
 	* idx-vector.h (idx_vector::idx_range_rep::idx_range_rep (void)):
 	Create empty range by default.
 
-2008-10-30  Jaroslav Hajek <highegg@gmail.com>
+2008-10-30  Jaroslav Hajek  <highegg@gmail.com>
 
 	* oct-inttypes.h (octave_int_abs): New function.
 	(octave_int_arith_base<T, true>::div): Use octave_int_abs instead of
 	std::abs.
 	* oct-inttypes.cc (octave_int_arith_base<int64_t, true>): Ditto.
 
-2008-10-28  Jaroslav Hajek <highegg@gmail.com>
+2008-10-28  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Array-C.cc Array-d.cc Array-f.cc Array-fC.cc Array-i.cc Array-s.cc:
 	Don't use semicolon after INSTANTIATE_ARRAY_ASSIGN.
@@ -1770,7 +1768,7 @@
 	* oct-shlib.cc (octave_dlopen_shlib::open): Use RTLD_NOW instead
 	of RTLD_LAZY.
 
-2008-10-12  Jaroslav Hajek <highegg@gmail.com>
+2008-10-12  Jaroslav Hajek  <highegg@gmail.com>
 
 	* CSparse.cc (ComplexMatrix::expm): Improve inverse preconditioning
 	according to Marco Caliari.
@@ -1784,7 +1782,7 @@
 	char *.
 	* sparse-util.cc (SparseCholPrint): Likewise.
 
-2008-10-09  Jaroslav Hajek <highegg@gmail.com>
+2008-10-09  Jaroslav Hajek  <highegg@gmail.com>
 
 	* oct-sort.cc (octave_sort<T>::merge_getmem,
 	octave_sort<T>::merge_freemem): Replace malloc -> new [], free ->
@@ -1804,7 +1802,7 @@
 	optimizations.
 	(octave_base_int<T>::convert_real): Use exclusive bounds.
 
-2008-10-07  Jaroslav Hajek <highegg@gmail.com>
+2008-10-07  Jaroslav Hajek  <highegg@gmail.com>
 
 	* oct-inttypes.h (OCTAVE_INT_DOUBLE_BIN_OP): Change octave_int64 to 
 	octave_uint64 where appropriate.
@@ -1818,7 +1816,7 @@
 
 	* Spasre-op-defs.h: Undo previous change.
 
-2008-10-01  Jaroslav Hajek <highegg@gmail.com>
+2008-10-01  Jaroslav Hajek  <highegg@gmail.com>
 
 	* oct-inttypes.h (octave_int<T>::one, octave_int<T>::zero): Declare
 	constants. 
@@ -2504,7 +2502,7 @@
 	New functions.
 	* lo-mappers.h: Provide decls.
 
-2008-04-25  Michael Goffioul <michael.goffioul@gmail.com>
+2008-04-25  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* oct-lookup.h (seq_lookup): Do not use output value of fill_n (MSVC
 	does not support it).
@@ -3560,7 +3558,6 @@
 	(octave_idx_type)): New methods to constructor diagonal matrices.
 	* boolMatrix.h, chMatrix.h, intNDArray.h (diag (void), diag
 	(octave_idx_type)): Declare them.
-
 
 2007-10-06  John W. Eaton  <jwe@octave.org>
 

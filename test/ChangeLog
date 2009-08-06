@@ -116,7 +116,7 @@
 
 	* build_sparse_tests.sh: Fix test.
 
-2008-10-28  Jaroslav Hajek <highegg@gmail.com>
+2008-10-28  Jaroslav Hajek  <highegg@gmail.com>
 
 	* test_logical-wfi-f.m: Fix error messages.
 	* test_logical-wfi-t.m: Fix error messages.
@@ -150,7 +150,7 @@
 	* test_args.m: Update format to allow running "test test_args" 
 	and add default argument tests.
 
-2008-05-09  Rafael Laboissiere <rafael@debian.org>
+2008-05-09  Rafael Laboissiere  <rafael@debian.org>
 
 	* test_io.m, test_system.m: Use ischar instead of deprecated isstr.
 
@@ -201,7 +201,7 @@
 	* test_eval.m, test_diffeq.m, test_quad.m, test_signal.m:
 	Delete files with no tests.
 
-2008-02-25  Ben Abbott <bpabbott@mac.com>
+2008-02-25  Ben Abbott  <bpabbott@mac.com>
 
 	* test_eval-catch.m, test_io.m, test_try.m: Use cstrcat instead of
 	strcat.
@@ -481,16 +481,16 @@
 	* octave.test/arith/prod-4.m, octave.test/arith/sum-4.m:
 	Cover more cases for empty matrices.
 
-2002-10-15  Paul Kienzle <pkienzle@users.sf.net>
+2002-10-15  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* Makefile.in: Use @library_path_var@ instead of LD_LIBRARY_PATH.
 
-2002-09-27  Paul Kienzle <pkienzle@users.sf.net>
+2002-09-27  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* qr-7.m: Remove randomness from complex matrix generator.
 	Increase tolerance on rosser matrix test.
 
-2002-09-26  Paul Kienzle <pkienzle@users.sf.net>
+2002-09-26  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* octave.test/linalg/qr-7.m: Replace large random matrix tests 
 	of economy QR decomposition with small predictable tests.
@@ -502,7 +502,7 @@
 	* test/octave.test/signal/signal.exp: Add unwrap test.
 	* test/octave.test/signal/unwrap-1.m: New file.
 
-2002-04-24  David Billinghurst <David.Billinghurst@riotinto.com.au>
+2002-04-24  David Billinghurst  <David.Billinghurst@riotinto.com.au>
 
 	* octave.test/signal/signal.exp: Add tests for fft, ifft
 	fft2, ifft2 and detrend.
@@ -522,7 +522,7 @@
 	* octave.test/diffeq/lsode-2.m (tol): Likewise.
 	* octave.test/diffeq/lsode-3.m (tol): Likewise.
 
-2002-04-12  Kienzle <pkienzle@jazz.ncnr.nist.gov>
+2002-04-12  Kienzle  <pkienzle@jazz.ncnr.nist.gov>
 
 	* config/unix.exp: Allow running of individual tests with
 	"runtest *.exp" from any of the directories under test/octave.test.
@@ -532,12 +532,12 @@
 	* octave.test/linalg/qr-7.m: New test.
 	From Paul Kienzle <pkienzle@jazz.ncnr.nist.gov>.
 	
-2001-04-24  Christoph Spiel <cspiel@hammersmith-consulting.com>
+2001-04-24  Christoph Spiel  <cspiel@hammersmith-consulting.com>
 
 	* Makefile.in (check): Allow user to specify which .exp file to run.
 	* octave.test/try, octave.test/eval-catch: New directories and tests.
 
-2000-06-07  Ben Sapp <bsapp@nua.lampf.lanl.gov>
+2000-06-07  Ben Sapp  <bsapp@nua.lampf.lanl.gov>
 
 	* octave.test/quad/quad-1.m: Use absolute value of difference
 	from expected value when comparing with sqrt (eps).  Potential

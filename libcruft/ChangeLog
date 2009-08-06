@@ -45,7 +45,7 @@
 	SHLBINPRE library prefixes.
 	From Marco Atzeri <marco_atzeri@yahoo.it>.
 
-2008-12-21  Jaroslav Hajek <highegg@gmail.com>
+2008-12-21  Jaroslav Hajek  <highegg@gmail.com>
 
 	* lapack/chegs2.f lapack/chegst.f lapack/chegv.f lapack/dsygs2.f 
 	lapack/dsygst.f lapack/dsygv.f lapack/ssygs2.f lapack/ssygst.f 
@@ -75,7 +75,7 @@
 	* slatec-fn/xacosh.f, slatec-fn/xasinh.f: Replace xsacosh with
 	xacosh, xdacosh with xacosh and xdasinh with xasinh.
 
-2008-06-12  Jaroslav Hajek <highegg@gmail.com>
+2008-06-12  Jaroslav Hajek  <highegg@gmail.com>
 
 	* misc/Makefile.in (MAKEDEPS): Remove CEXTRA.
 
@@ -109,7 +109,7 @@
 	quadpack/qk21.f, quadpack/qpsrt.f: New files.
 	* quadpack/Makefile.in (FSRC): Add them.
 
-2008-05-20  Jaroslav Hajek <highegg@gmail.com>
+2008-05-20  Jaroslav Hajek  <highegg@gmail.com>
 
 	* qrupdate/cch1dn.f, qrupdate/cchinx.f, qrupdate/cqhqr.f, 
 	qrupdate/cqrinc.f, qrupdate/cqrinr.f, qrupdate/cqrqhu.f, 
@@ -297,7 +297,7 @@
 	slatec-fn/xsgmainc.f: New files.
 	* slatec-fn/Makefile.in (FSRC): Add them.	
 
-2008-04-20  Jaroslav Hajek <highegg@gmail.com>
+2008-04-20  Jaroslav Hajek  <highegg@gmail.com>
 
 	* qrupdate/dch1dn.f, qrupdate/dchdex.f, qrupdate/dchinx.f,
 	qrupdate/dqhqr.f, qrupdate/dqrdec.f, qrupdate/dqrinc.f,
@@ -308,14 +308,14 @@
 	qrupdate/zqrqhv.f, qrupdate/zqrshc.f:
 	Fix external declarations, XERBLA calls, and docs.
 
-2008-04-07  Jaroslav Hajek <highegg@gmail.com>
+2008-04-07  Jaroslav Hajek  <highegg@gmail.com>
 
 	* qrupdate/dqrqhu.f, qrupdate/zqrqhu.f,
 	* qrupdate/dqrshc.f, qrupdate/zqrshc.f,
 	* qrupdate/dchinx.f, qrupdate/zchinx.f,
 	* qrupdate/dchdex.f, qrupdate/zchdex.f: New files.
 
-2008-04-02  Jaroslav Hajek <highegg@gmail.com>
+2008-04-02  Jaroslav Hajek  <highegg@gmail.com>
 
 	* blas-xtra/xzdotu.f: Turn into simple wrapper for zdotu.
 	* blas-xtra/xzdotc.f: Turn into simple wrapper for zdotc.
@@ -339,17 +339,17 @@
 	fftpack/cfftf.f:
 	Use (*) instead of (1) for assumed-size dimensions.
 
-2008-03-06  Jaroslav Hajek <highegg@gmail.com>
+2008-03-06  Jaroslav Hajek  <highegg@gmail.com>
 
 	* qrupdate/dqrinc.f: Declare DGEMV external.
 	* qrupdate/zqrinc.f: Declare ZGEMV external.
 	Fix complex constant args in call to ZGEMV.
 
-2008-03-05  Jaroslav Hajek <highegg@gmail.com>
+2008-03-05  Jaroslav Hajek  <highegg@gmail.com>
 
 	* qrupdate/dch1dn.f, qrupdate/zch1dn.f: add "quick return" checks.
 
-2008-03-04 Jaroslav Hajek <highegg@gmail.com>
+2008-03-04 Jaroslav Hajek  <highegg@gmail.com>
 
 	* qrupdate/dch1dn.f, qrupdate/dch1up.f, 
 	qrupdate/zch1dn.f, qrupdate/zch1up.f: New files.
@@ -896,7 +896,7 @@
 	* blas/sgemm.f, blas/strsm.f, blas/ssyrk.f, blas/sscal.f,
 	blas/sgemv.f, blas/sdot.f: New files.
 
-2003-02-20  Paul Kienzle <pkienzle@users.sf.net>
+2003-02-20  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* dassl/ddaslv.f: Fortran doesn't use ; in statements.
 
@@ -907,7 +907,7 @@
 	libcruft/lapack/dtrtri.f, libcruft/lapack/ztrti2.f,
 	libcruft/lapack/ztrtri.f: New files.
 
-2003-02-04  David Bateman <dbateman@free.fr>
+2003-02-04  David Bateman  <dbateman@free.fr>
 
 	* libcruft/Makefile.in (CRUFT_DIRS): Remove linpack from list.
 
@@ -948,7 +948,7 @@
 
 	* misc/quit.cc: Add std:: qualifiers to memcpy calls.
 
-2003-01-03  Paul Kienzle <pkienzle@users.sf.net>
+2003-01-03  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* misc/quit.h: Move #include <new> outside extern "C" block.
 	* misc/f77-fcn.h: Move #include "quit.h" outside extern "C" block.
@@ -1045,7 +1045,7 @@
 
 	* Makefile.in (install): No need to use cd to create links.
 
-2002-10-14  Paul Kienzle <pkienzle@users.sf.net>
+2002-10-14  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* Makefile.in: Use link dependencies for shared libs if
 	INCLUDE_LINK_DEPS.
@@ -1055,7 +1055,7 @@
 	(install, uninstall): Handle link and load forms of the library
 	separately.
 
-2002-09-30  Paul Kienzle <pkienzle@users.sf.net>
+2002-09-30  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* slatec-fn/xdacosh.f: Mark external functions as external.
 	* slatec-fn/xdasinh.f: Ditto.
@@ -1129,7 +1129,7 @@
 	* daspk: New directory.
 	* Makefile.in (CRUFT_DIRS): Add it to the list
 
-2002-04-03  Steven G. Johnson <stevenj@alum.mit.edu>
+2002-04-03  Steven G. Johnson  <stevenj@alum.mit.edu>
 
 	* misc/machar.c: Use F77_FUNC instead of checking
 	F77_APPEND_UNDERSCORE.
@@ -1170,7 +1170,7 @@
 
 	* misc/dostop.c (dostop): Use F77_FCN macro for function definition.
 	Specify length in error format to avoid need for copying string.
-	From Paul Kienzle <pkienzle@kienzle.powernet.co.uk>.
+	From Paul Kienzle  <pkienzle@kienzle.powernet.co.uk>.
 
 2000-12-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
@@ -1352,7 +1352,7 @@ Wed Nov 26 01:49:47 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 	slatec-fn/dgamr.f, slatec-fn/dlbeta.f, slatec-fn/dlnrel.f:
 	New files for incomplete beta and incomplete gamma functions.
 
-Thu Jul 17 13:18:57 1997  Klaus Gebhardt <gebhardt@crunch.ikp.physik.th-darmstadt.de>
+Thu Jul 17 13:18:57 1997  Klaus Gebhardt  <gebhardt@crunch.ikp.physik.th-darmstadt.de>
 
 	* blas/xerbla.f (xerbla): Call XSTOPX instead of using STOP.
 

@@ -7,11 +7,11 @@
 
 	* geometry/griddata.m: Optimize.
 
-2009-08-06  Olaf Till <olaf.till@uni-jena.de>
+2009-08-06  Olaf Till  <olaf.till@uni-jena.de>
 
 	* geometry/griddata.m: Linearize arrays.
 
-2009-08-04  Pieter Eendebak <pieter.eendebak@gmail.com> 
+2009-08-04  Pieter Eendebak  <pieter.eendebak@gmail.com> 
 
 	* set/setxor.m: Added test for cell arrays of strings.
 
@@ -20,7 +20,7 @@
 	* plot/__gnuplot_get_var__.m: If read fails to return data, sleep
 	before trying again.
 
-2009-08-04  Pieter Eendebak <pieter.eendebak@gmail.com> 
+2009-08-04  Pieter Eendebak  <pieter.eendebak@gmail.com> 
 
 	* set/setxor.m: Support cell arrays of strings.
 
@@ -30,7 +30,7 @@
 	* general/ind2sub.m: Remove source.
 	* general/Makefile.in: Update.
 
-2009-08-02  Ben Abbott <bpabbott@mac.com>
+2009-08-02  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/gnuplot_drawnow.m: Avoid the flickering x11 window seen with
 	rapid replots by avoidng setting multiplot mode. This fix only
@@ -41,7 +41,7 @@
 
 	* general/common_size: Optimize.
 
-2009-07-29  Ben Abbott <bpabbott@mac.com>
+2009-07-29  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/__go_draw_axes__.m: Fix ticklabels specified as 2D character
 	array.
@@ -64,7 +64,7 @@
 	* plot/gnuplot_binary.in: Accept arguments in addition to program name.
 	* plot/__gnuplot_open_stream__.m: Pass additional args to gnuplot.
 
-2009-07-23  Ben Abbott <bpabbott@mac.com>
+2009-07-23  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/legend.m: Add an hggroup demo using bar(). Include clf()
 	in each demo.
@@ -90,7 +90,7 @@
 	to send "set border front" or "set border layerdefault" to plot
 	stream.  Don't send "set border front" to plot stream for image data.
 
-2009-07-15  Robert T. Short <octave@phaselockedsystems.com>
+2009-07-15  Robert T. Short  <octave@phaselockedsystems.com>
 
 	* polynomial/conv.m: Fix Matlab incompatibility.  New tests.
 
@@ -101,13 +101,13 @@
 
 	* sparse/nonzeros.m: Always return a column vector.  New tests.
 
-2009-06-25  Ben Abbott <bpabbott@mac.com>
+2009-06-25  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/gnuplot_drawnow.m: Apply feature 'wxt_has_size'.
 	* plot/__gnuplot_has_feature__.m: Add feature 'wxt_has_size' for
 	gnuplot >= 4.3.0.
 
-2009-06-24  Ben Abbott <bpabbott@mac.com>
+2009-06-24  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/__go_draw_figure__.m: Modify the implicit margin when gnuplot's
 	output is landscape.
@@ -131,7 +131,7 @@
 
 	* image/imread.m: New test.
 
-2009-06-22  Ben Abbott <bpabbott@mac.com>
+2009-06-22  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/grid.m: Add missing semi-colon. Allow grid to be toggled
 	on/off for each axis independently. Gnuplot requires that minor
@@ -148,33 +148,33 @@
 
 	* set/ismember.m: Properly handle NaNs. Fix test.
 
-2009-06-18  Ben Abbott <bpabbott@mac.com>
+2009-06-18  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/__go_draw_axes__.m: Change the default x11 fontspec from '*,0'
 	to ',0' to avoid delays searching the fontpath for a font named '*'.
 
-2009-06-18  Daniel Gualberto <daniel@alacer.com.br>
+2009-06-18  Daniel Gualberto  <daniel@alacer.com.br>
 
 	* polynomial/mpoles.m: Fix infinite loop for a multiplicity of
 	poles at zero. Test added.
 
-2009-06-17  Bertrand Roessli <bertrand.roessli@psi.ch>
+2009-06-17  Bertrand Roessli  <bertrand.roessli@psi.ch>
 
 	* plot/axis.m: Fix bug for 'axis tight' with multiple surface plots,
 	add demo.
 
-2009-06-15  Ben Abbott <bpabbott@mac.com>
+2009-06-15  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/quiver.m: Add 'clf' to demos.
 	* plot/plotyy.m: Consider dataaspectratiomode before changing
 	dataaspectratio.
 
-2009-06-14  Ben Abbott <bpabbott@mac.com>
+2009-06-14  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/plotyy.m: Fix compatibility with subplot, add listeners for
 	dataaspectratio, and add a demo.
 
-2009-06-14  Eric Chassande-Mottin <echassandemottin@gmail.com>
+2009-06-14  Eric Chassande-Mottin  <echassandemottin@gmail.com>
 
 	* plot/plotyy.m: Correct behavior when there is no currentfigure.
 
@@ -182,7 +182,7 @@
 
 	* set/ismember.m: Reimplement using lookup & unique.
 
-2009-06-11  Ben Abbott <bpabbott@mac.com>
+2009-06-11  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/print.m: Fix logic associated with 'have_ghostscript'.
 	* plot/gnuplot_drawnow.m: Add support for pdfcairo and pngcairo
@@ -191,7 +191,7 @@
 	Have '-mono' render all objects in monochrome.
 	For pdf or png output, favor gnuplot's cairo terminals.
 
-2009-06-10  Marco Caliari <marco.caliari@univr.it>
+2009-06-10  Marco Caliari  <marco.caliari@univr.it>
 
 	* plot/hold.m: Add demo including a hggroup.
 	* plot/__go_draw_axes__.m: Fix order when pushing group children onto
@@ -203,12 +203,12 @@
 	* general/quadgk.m: Add test case and fixed doubly infinite 
 	waypoint transform for x = 0 case.
 
-2009-06-09  Marco Caliari <marco.caliari@univr.it>
+2009-06-09  Marco Caliari  <marco.caliari@univr.it>
 
 	* general/quadgk.m: Fix doubly infinite transformation to the finite
 	interval.
 
-2009-06-08  Ben Abbott <bpabbott@mac.com>
+2009-06-08  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/axis.m: Fix bug for 'axis tight' with multiple lines, modify
 	demo.
@@ -217,13 +217,13 @@
 
 	* testfun/assert.m: Fix texinfo bug.
 
-2009-06-04  Ben Abbott <bpabbott@mac.com>
+2009-06-04  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/__go_draw_axes__.m: Change strncmpi(scale,'lo') to 
 	strcmp(scale,'log').
 	* plot/__go_draw_axes__.m: For log-scale axes use format '10^{%T}'.
 
-2009-06-03  Ben Abbott <bpabbott@mac.com>
+2009-06-03  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/colorbar.m: Colorbar 'handlevisibility' should be 'on'.
 	Add additional demos which illustrate problems with the present
@@ -247,7 +247,7 @@
 
 	* plot/__gnuplot_get_var__.m: Insert missing semicolon.
 
-2009-05-28  Ben Abbott <bpabbott@mac.com>
+2009-05-28  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/__go_draw_axes__.m: Set x2range when xaxislocation=='top' and set
 	y2range when yaxislocation=='right'. Simplified support for ticklabel
@@ -255,7 +255,7 @@
 	* plot/__go_draw_figure__.m: Change 'autoscale fix' to 'autoscale keepfix'.
 	* plot/colorbar.m: Add demos.
 
-2009-05-28  Ben Abbott <bpabbott@mac.com>
+2009-05-28  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/__go_draw_axes__.m: Add support for ticklabel separator '|'.
 
@@ -289,7 +289,7 @@
 	* image/imshow.m: In demo, convert image to rgb before scaling
 	components.  Use imread instead of loadimage.
 
-2009-05-26  Ben Abbott <bpabbott@mac.com>
+2009-05-26  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/__go_draw_axes__.m: Fix rendering of overlaping images and
 	line objects. Add demos as well.
@@ -315,19 +315,19 @@
 	* pkg/pkg.m: Add "version" field to the structure returned by "pkg
 	describe". 
 
-2009-05-25  Ben Abbott <bpabbott@mac.com>
+2009-05-25  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/__go_draw_axes__.m: Properly render TeX symbols for x11, when
 	using the anonymous fontname="*".
 
-2009-05-24 Benjamin Lindner <lindnerb@users.sourceforge.net>
+2009-05-24 Benjamin Lindner  <lindnerb@users.sourceforge.net>
 
 	* plot/gnuplot_drawnow.m: single-quote output name to allow backslash
 	characters as filesep under windows
 	* plot/print.m: Support ps->pdf using ghostscript under windows, check
 	for %GSC% environment variable.
 
-2009-05-24 Benjamin Lindner <lindnerb@users.sourceforge.net>
+2009-05-24 Benjamin Lindner  <lindnerb@users.sourceforge.net>
 
 	* plot/__gnuplot_version__.m: quote gnuplot_binary to allow spaces
 	in file name
@@ -370,7 +370,7 @@
 	* optimization/fminunc.m: Import the step adaptation strategy
 	improvements from fsolve.
 
-2009-05-08  Ben Abbott <bpabbott@mac.com>
+2009-05-08  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/__gnuplot_has_feature__.m: Add feature "key_has_font_properties".
 	* plot/__go_draw_axes__.m: Have legend inherit the axis font-name/size.
@@ -380,12 +380,12 @@
 	* miscellaneous/tar.m, miscellaneous/unpack.m:
 	Pass "xvf" to tar instead of "-x -v -f".
 
-2009-04-30  Ben Abbott <bpabbott@mac.com>
+2009-04-30  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/__gnuplot_has_feature__.m: Change version for 
 	"x11_figure_position", >4.2.4 to >=4.3.0.
 
-2009-04-30  Ben Abbott <bpabbott@mac.com>
+2009-04-30  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/gnuplot_drawnow.m: For figure position, treat 'wxt' as 'x11'.
 
@@ -393,13 +393,13 @@
 
 	* statistics/base/range.m: Fix behavior when dim is specified.
 
-2009-04-28  Ben Abbott <bpabbott@mac.com>
+2009-04-28  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/print.m: Fix typo: 'gswin23c' -> 'gswin32c'. Suppress stderr
 	when printing. New sub-function: fix_eps_bbox(). Add option, "-tight",
 	to replace the gnuplot bbox with a tight bbox for eps-files.
 
-2009-04-23  Ben Abbott <bpabbott@mac.com>
+2009-04-23  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/print.m: Use Ghostscript rather than ImageMagick's 'convert'.
 	Support printing to non-postscript printers. Do not change the output
@@ -423,7 +423,7 @@
 
 	* plot/__marching_cube__.m: Correct help Texinfo so manual will compile
 
-2009-04-16  Marco Caliari <marco.caliari@univr.it>
+2009-04-16  Marco Caliari  <marco.caliari@univr.it>
 
 	* toeplitz.m: Treat separately the sparse case.
 
@@ -436,8 +436,9 @@
 
 	* plot/__patch__.m: Set default facecolor to [0,1,0].
 	
-2009-04-12  Aravindh Krishnamoorthy <aravindh.k.dev@gmail.com>
-       * special-matrix/hadamard.m: Fix a documentation mistake.
+2009-04-12  Aravindh Krishnamoorthy  <aravindh.k.dev@gmail.com>
+
+	* special-matrix/hadamard.m: Fix a documentation mistake.
 
 2009-04-14  Jaroslav Hajek  <highegg@gmail.com>
 
@@ -445,7 +446,7 @@
 	* polynomial/polyscale.m: Remove.
 	* polynomial/polytrans.m: Remove.
 
-2009-04-12  Ben Abbott <bpabbott@mac.com>
+2009-04-12  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/__gnuplot_open_stream__.m: New function.
 	* plot/__gnuplot_get_var__.m: If not open, open the gnuplot plot stream.
@@ -472,7 +473,7 @@
 
 	* set/intersect.m: Add missing branch.
 
-2009-04-10  Ben Abbott <bpabbott@mac.com>
+2009-04-10  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/print.m: If no pdf support in gnuplot, then "convert" from
 	postscript to pdf. For gnuplot 4.2.x use "convert", if it is present,
@@ -487,11 +488,11 @@
 
 	* special-matrix/vander.m: Optimize.
 
-2009-04-07  Ben Abbott <bpabbott@mac.com>
+2009-04-07  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/Makefile.in: Remove __gnuplot_default_font__.m from SOURCES.
 
-2009-04-06  Ben Abbott <bpabbott@mac.com>
+2009-04-06  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/__gnuplot_get_var__.m: Correct misleading error messages, and
 	remove dangling/commented code.
@@ -499,7 +500,7 @@
 	* plot/__go_draw_axes__.m, plot/__go_draw_figure__.m: Allow
 	fontsize to be specified for all terminals with fontname == "*".
 
-2009-04-06  Jaroslav Hajek <highegg@gmail.com>
+2009-04-06  Jaroslav Hajek  <highegg@gmail.com>
 
 	* polynomial/polyscale.m: New function.
 	* polynomial/polytrans.m: New function.
@@ -526,12 +527,12 @@
 	* optimization/Makefile.in: Update.
 	* optimization/__dogleg__: Allow general quadratics.
 
-2009-04-02  Ben Abbott <bpabbott@mac.com>
+2009-04-02  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/__go_draw_axes__.m: Include gnuplot command termination when
 	plotting image.
 
-2009-04-02  Ben Abbott <bpabbott@mac.com>
+2009-04-02  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/__go_draw_axes__.m: Fix title placement for gnuplot 4.2.x.
 
@@ -539,12 +540,12 @@
 
 	* optimization/fsolve.m: Fix test.
 
-2009-03-30  Ben Abbott <bpabbott@mac.com>
+2009-03-30  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/__go_draw_axes__.m: New subfunction create_fontspec(). Allow
 	fontsize to be specified when the fontname is anonymous.
 
-2009-03-30  Ben Abbott <bpabbott@mac.com>
+2009-03-30  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/__gnuplot_default_font__.m: New function: determine gnuplot's
 	terminal dependent default font.
@@ -555,18 +556,18 @@
 
 	* testfun/Makefile.in (SOURCES): Add rundemos.m to the list.
 
-2009-03-29  Ben Abbott <bpabbott@mac.com>
+2009-03-29  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/print.m: For eps output the bounding box should represent the
 	figure's position.
 
-2009-03-28  Ben Abbott <bpabbott@mac.com>
+2009-03-28  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/gnuplot_drawnow.m: Always set figure property "__plot_stream__"
 	to the active gnuplot steam. Permits __gnuplot_get_var__ to return to
 	proper result for all gnuplot streams.
 
-2009-03-27  Ben Abbott <bpabbott@mac.com>
+2009-03-27  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/__go_draw_axes__.m: Properly position the title for 3D plots
 	when using the gnuplot (v4.3+) backend.
@@ -587,7 +588,7 @@
 	* gethelp.cc (main): Handle second argument.  Write comment with
 	full file name to output.
 
-2009-03-24  Ben Abbott <bpabbott@mac.com>
+2009-03-24  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/gnuplot_drawnow.m: When printing, pass scalar plot_stream
 	to __gnuplot_draw_figure__, and close all plot streams when done.
@@ -596,19 +597,19 @@
 
 	* general/isa.m: Handle parent classes.
 
-2009-03-23  Ben Abbott <bpabbott@mac.com>
+2009-03-23  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/gnuplot_drawnow.m: Check that gnuplot has internal variable
 	"GPVAL_TERMINALS".
 	* plot/__gnuplot_has_feature__.m: Add "variable_GPVAL_TERMINALS".
 
-2009-03-21  Ben Abbott <bpabbott@mac.com>
+2009-03-21  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/gnuplot_drawnow.m: Verify the gnuplot terminal is supported.
 	* plot/__gnuplot_get_var__.m: Add function to get gnuplot variables.
 	* plot/print.m: Restore the behavior for option -S<num>,<num>.
 
-2009-03-19  Jaroslav Hajek <highegg@gmail.com>
+2009-03-19  Jaroslav Hajek  <highegg@gmail.com>
 
 	* optimization/fsolve.m (guarded_eval): Simplify & fix missing
 	semicolon.
@@ -672,7 +673,7 @@
 	__accumarray_sum__ for the default summation case.
 	* statistics/base/histc.m: Reimplement using lookup & accumarray.
 
-2009-03-08  S�ren Hauberg <hauberg@gmail.com>
+2009-03-08  S�ren Hauberg  <hauberg@gmail.com>
 
 	* statistics/base/histc.m: New function.
 
@@ -1109,7 +1110,7 @@
 	
 	* optimization/Makefile.in: Add missing source.
 
-2009-02-02  Rob Mahurin <rob@utk.edu>
+2009-02-02  Rob Mahurin  <rob@utk.edu>
 
 	* general/interpft.m: Increase tolerance in tests, for FFTPACK.
 	
@@ -1154,7 +1155,7 @@
 
 	* miscellaneous/fileparts.m: Match all possible file separators.
 
-2009-01-29  Kai Habel <kai.habel@gmx.de>
+2009-01-29  Kai Habel  <kai.habel@gmx.de>
 
         * plot/__go_draw_axes__.m: Add support for transparent patches.
 
@@ -1165,7 +1166,7 @@
 
 	* help/help.m: Allow displaying 'Contents.m' files.
 
-2009-01-29  Kai Habel <kai.habel@gmx.de>
+2009-01-29  Kai Habel  <kai.habel@gmx.de>
 
         * plot/Makefile.in (SOURCES): Include diffuse.m, specular.m, and
 	surfl.m in the list.
@@ -1331,11 +1332,11 @@
 	* general/cart2sph.m, cart2pol.m, sph2cart.m pol2cart.m:
 	Permit scalars when transforming coordinates.
 
-2009-01-17  Steven Verstoep <isgoed@hotmail.com>
+2009-01-17  Steven Verstoep  <isgoed@hotmail.com>
 
 	* plot/__quiver__.m: __quiver__.m: Fix auto-size of (x,y) coord.
 
-2009-01-16  Daniel J Sebald <daniel.sebald@ieee.org>
+2009-01-16  Daniel J Sebald  <daniel.sebald@ieee.org>
 
 	* plot/gnuplot_drawnow.m: Fix for handling options.
 
@@ -1464,7 +1465,7 @@
 	* plot/ndgrid.m: Ditto.
 	* strings/strcat.m: Ditto.
 
-2009-01-09  Kai Habel <kai.habel@gmx.de>
+2009-01-09  Kai Habel  <kai.habel@gmx.de>
 
         * plot/surfl.m: New function
         * plot/diffuse.m: Ditto.
@@ -1497,7 +1498,7 @@
 
 	* goemetry/voronoi.m: Speed up and handle dense grids.
 
-2008-12-28  Jaroslav Hajek <highegg@gmail.com>
+2008-12-28  Jaroslav Hajek  <highegg@gmail.com>
 
 	* miscellaneous/delete.m: Allow filename globs. Display warnings if
 	operation fails.
@@ -1542,7 +1543,7 @@
 	* sparse/bicgstab.m: New function.
 	* sparse/Makefile.in (SOURCES): Add it here.
 
-2008-12-18  Daniel J Sebald <daniel.sebald@ieee.org>
+2008-12-18  Daniel J Sebald  <daniel.sebald@ieee.org>
 
 	* time/datevec.m (__date_vfmt2sfmt__): New helper function.
 	(datevec): Avoid repeated parsing of the format string.
@@ -1654,7 +1655,7 @@
 
         * plot/subplot.m: fix texi bug
 
-2008-11-04  Thorsten Meyer <thorsten.meyier@gmx.de>
+2008-11-04  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
         * miscellaneous/unpack.m: return directly after recursive handling
           of cell-strings
@@ -1663,18 +1664,18 @@
 
 	* plot/__go_draw_axes__.m: xticklabel should accept a numeric vector.
 
-2008-09-28  Jaroslav Hajek <highegg@gmail.com>
+2008-09-28  Jaroslav Hajek  <highegg@gmail.com>
 
 	* optimization/__fdjac__.m: New function file.
 	* optimization/__dogleg__.m: New function file.
 	* optimization/fsolve.m: New function file.
 	* optimization/Makefile.in: Include the new sources.
 	
-2008-09-28  Jaroslav Hajek <highegg@gmail.com>
+2008-09-28  Jaroslav Hajek  <highegg@gmail.com>
 
 	* optimization/fzero.m: Replace tabs by spaces.
 
-2008-09-28  Jaroslav Hajek <highegg@gmail.com>
+2008-09-28  Jaroslav Hajek  <highegg@gmail.com>
 
 	* optimization/fzero.m: Simplify exception handling.
 
@@ -1691,7 +1692,7 @@
 	* optimization/Makefile.in: Add it.
 	* optimization/lsqnonneg.m: Query options using optimget.
 
-2008-10-31  Jaroslav Hajek <highegg@gmail.com>
+2008-10-31  Jaroslav Hajek  <highegg@gmail.com>
 
 	* linear-algebra/__norm__.m: Remove.
 
@@ -2458,7 +2459,7 @@
 	* miscellaneous/dbstack.m: Delete.
 	* miscellaneous/Makefile.in (SOURCES): Remove it from the list.
 
-2008-05-03  Rafael Laboissiere <rafael@debian.org>
+2008-05-03  Rafael Laboissiere  <rafael@debian.org>
 
 	* linear-algebra/cond.m, miscellaneous/version.m,
 	miscellaneous/version.m, plot/feather.m, plot/__bar__.m,
@@ -3871,7 +3872,6 @@
 	needed to support the enhanced mode.
 	* plot/print.m: Remove "enhanced" option as this is now treated in
 	drawnow.m.
-
 
 	* plot/caxis.m: New function to control the color axis limits.
 	* plot/Makefile.in (SOURCES): Include it.
@@ -5343,7 +5343,6 @@
 	instead of variance for compatibility.
 
 2007-05-08  John W. Eaton  <jwe@octave.org>
-
 
 	* set/unique.m, set/ismember.m: Use numel(x) instead of prod(size(x)).
 

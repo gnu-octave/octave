@@ -67,7 +67,6 @@ function __go_draw_figure__ (h, plot_stream, enhanced, mono, output_to_paper, im
       if (nkids > 0)
 	fputs (plot_stream, "\nreset;\n");
 	fputs (plot_stream, "set autoscale keepfix;\n");
-	fputs (plot_stream, "set multiplot;\n");
 	fputs (plot_stream, "set origin 0, 0\n");
 	fputs (plot_stream, "set size 1, 1\n");
 	for i = 1:nkids
@@ -96,7 +95,6 @@ function __go_draw_figure__ (h, plot_stream, enhanced, mono, output_to_paper, im
 	      error ("__go_draw_figure__: unknown object class, %s", type);
 	  endswitch
 	endfor
-	fputs (plot_stream, "unset multiplot;\n");
       else
 	fputs (plot_stream, "\nreset; clear;\n");
 	fflush (plot_stream);

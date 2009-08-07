@@ -393,8 +393,7 @@ dim_vector
 zero_dims_inquire (const Array<idx_vector>& ia, const dim_vector& rhdv)
 {
   int ial = ia.length (), rhdvl = rhdv.length ();
-  dim_vector rdv;
-  rdv.resize (ial);
+  dim_vector rdv = dim_vector::alloc (ial);
   bool *scalar = new bool[ial], *colon = new bool[ial];
   // Mark scalars and colons, count non-scalar indices.
   int nonsc = 0; 

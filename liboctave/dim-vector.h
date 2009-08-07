@@ -1,6 +1,7 @@
 /*
 
 Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008, 2009 John W. Eaton
+Copyirght (C) 2009 VZLU Prague
 
 This file is part of Octave.
 
@@ -31,187 +32,187 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-error.h"
 #include "oct-types.h"
 
+// Rationale: This implementation is more tricky than Array, but the big plus
+// is that dim_vector requires only one allocation instead of two.
+// It is (slightly) patterned after GCC's basic_string implementation.
+// rep is a pointer to an array of memory, comprising count, length,
+// and the data:
+//          <count>
+//          <ndims>
+//  rep --> <dims[0]>
+//          <dims[1]>
+// ...
+//
+// The inlines count(), ndims() recover this data
+// from the rep. rep points to the beginning of dims to grant
+// faster access (internally, reinterpret_cast is a no-op).
+
 class
 dim_vector
 {
-protected:
+private:
 
-  class dim_vector_rep
-  {
-  public:
+  octave_idx_type *rep;
 
-    octave_idx_type *dims;
-    int ndims;
-    int count;
+  octave_idx_type& ndims() const
+    { return rep[-1]; }
 
-    dim_vector_rep (void)
-      : dims (new octave_idx_type [2]), ndims (2), count (1)
+  octave_idx_type& count() const
+    { return rep[-2]; }
+
+  // Constructs a new rep with count = 1 and ndims given.
+  static octave_idx_type *newrep (int ndims)
     {
-      dims[0] = 0;
-      dims[1] = 0;
+      octave_idx_type *r = new octave_idx_type[ndims + 2];
+      *r++ = 1; *r++ = ndims;
+      return r;
     }
 
-
-    dim_vector_rep (octave_idx_type n)
-      : dims (new octave_idx_type [2]), ndims (2), count (1)
+  // Clones this->rep.
+  octave_idx_type *clonerep (void)
     {
-      dims[0] = n;
-      dims[1] = 1;
+      int l = ndims();
+      octave_idx_type *r = new octave_idx_type[l + 2];
+      *r++ = 1; *r++ = l;
+      for (int i = 0; i < l; i++)
+        r[i] = rep[i];
+      return r;
     }
 
-    dim_vector_rep (octave_idx_type r, octave_idx_type c)
-      : dims (new octave_idx_type [2]), ndims (2), count (1)
+  // Clones & resizes this->rep to length n, filling by given value.
+  octave_idx_type *resizerep (int n, octave_idx_type fill_value)
     {
-      dims[0] = r;
-      dims[1] = c;
+      int l = ndims();
+      if (n < 2) n = 2;
+      octave_idx_type *r = new octave_idx_type[n + 2];
+      *r++ = 1; *r++ = n;
+      if (l > n) l = n;
+      int j;
+      for (j = 0; j < l; j++)
+        r[j] = rep[j];
+      for (; j < n; j++)
+        r[j] = fill_value;
+      return r;
     }
 
-    dim_vector_rep (octave_idx_type r, octave_idx_type c, octave_idx_type p)
-      : dims (new octave_idx_type [3]), ndims (3), count (1)
+  // Frees the rep.
+  void freerep (void)
     {
-      dims[0] = r;
-      dims[1] = c;
-      dims[2] = p;
+      assert (count() == 0);
+      delete [] (rep - 2);
     }
-
-    dim_vector_rep (const dim_vector_rep& dv)
-      : dims (new octave_idx_type [dv.ndims]),
-	ndims (dv.ndims), count (1)
-    {
-      if (dims)
-	{
-	  for (int i = 0; i < ndims; i++)
-	    dims[i] = dv.dims[i];
-	}
-    }
-
-    dim_vector_rep (octave_idx_type n, const dim_vector_rep *dv,
-		    int fill_value = 0)
-      : dims (new octave_idx_type [n < 2 ? 2 : n]),
-	ndims (n < 2 ? 2 : n), count (1)
-    {
-      if (n == 0)
-	{
-	  // Result is 0x0.
-	  dims[0] = 0;
-	  dims[1] = 0;
-	}
-      else if (n == 1)
-	{
-	  // Result is a column vector.
-	  dims[0] = dv->dims[0];
-	  dims[1] = 1;
-	}
-      else
-	{
-	  int dv_ndims = dv ? dv->ndims : 0;
-
-	  int min_len = n < dv_ndims ? n : dv_ndims;
-
-	  for (int i = 0; i < min_len; i++)
-	    dims[i] = dv->dims[i];
-
-	  for (int i = dv_ndims; i < n; i++)
-	    dims[i] = fill_value;
-	}
-    }
-
-    ~dim_vector_rep (void) { delete [] dims; }
-
-    int length (void) const { return ndims; }
-
-    octave_idx_type& elem (int i)
-    {
-      assert (i >= 0 && i < ndims);
-      return dims[i];
-    }
-
-    octave_idx_type elem (int i) const
-    {
-      assert (i >= 0 && i < ndims);
-      return dims[i];
-    }
-
-    void chop_trailing_singletons (void)
-    {
-      for (int i = ndims - 1; i > 1; i--)
-	{
-	  if (dims[i] == 1)
-	    ndims--;
-	  else
-	    break;
-	}
-    }
-
-    void chop_all_singletons (void)
-    {
-      int j = 0;
-
-      for (int i = 0; i < ndims; i++)
-	{
-	  if (dims[i] != 1)
-            dims[j++] = dims[i];
-	}
-
-      if (j == 1)
-	dims[1] = 1;
-
-      ndims = j > 2 ? j : 2;
-    }
-
-  private:
-
-    // No assignment!
-
-    dim_vector_rep& operator = (const dim_vector_rep& dv);
-  };
-
-  dim_vector_rep *rep;
 
   void make_unique (void)
   {
-    if (rep->count > 1)
+    if (count() > 1)
       {
-	--rep->count;
-	rep = new dim_vector_rep (*rep);
+        --count();
+        rep = clonerep ();
       }
-  }
-
-private:
-
-  dim_vector_rep *nil_rep (void) const
-  {
-    static dim_vector_rep *nr = new dim_vector_rep ();
-
-    return nr;
   }
 
 public:
 
-  explicit dim_vector (void)
-    : rep (nil_rep ()) { rep->count++; }
-
   explicit dim_vector (octave_idx_type n)
-    : rep (new dim_vector_rep (n)) { }
+    : rep (newrep (2))
+    {
+      rep[0] = n;
+      rep[1] = 1;
+    }
 
   explicit dim_vector (octave_idx_type r, octave_idx_type c)
-    : rep (new dim_vector_rep (r, c)) { }
+    : rep (newrep (2))
+    {
+      rep[0] = r;
+      rep[1] = c;
+    }
 
   explicit dim_vector (octave_idx_type r, octave_idx_type c, octave_idx_type p)
-    : rep (new dim_vector_rep (r, c, p)) { }
+    : rep (newrep (3))
+    {
+      rep[0] = r;
+      rep[1] = c;
+      rep[2] = p;
+    }
+
+  octave_idx_type& elem (int i)
+    {
+      assert (i >= 0 && i < ndims());
+      make_unique ();
+      return rep[i];
+    }
+
+  octave_idx_type elem (int i) const
+    {
+      assert (i >= 0 && i < ndims());
+      return rep[i];
+    }
+
+  void chop_trailing_singletons (void)
+    {
+      make_unique ();
+      int l = ndims();
+      for (int i = l - 1; i > 1; i--)
+        {
+          if (rep[i] == 1)
+            l--;
+          else
+            break;
+        }
+      ndims() = l;
+    }
+
+  void chop_all_singletons (void)
+    {
+      make_unique ();
+      int j = 0;
+      int l = ndims();
+
+      for (int i = 0; i < l; i++)
+        {
+          if (rep[i] != 1)
+            rep[j++] = rep[i];
+        }
+
+      if (j == 1)
+        rep[1] = 1;
+
+      ndims() = j > 2 ? j : 2;
+    }
+
+private:
+  
+  static octave_idx_type *nil_rep (void)
+    {
+      static dim_vector zv (0, 0);
+      return zv.rep;
+    }
+
+  explicit dim_vector (octave_idx_type *r)
+    : rep (r) { }
+
+public:
+
+  explicit dim_vector (void)
+    : rep (nil_rep ()) { count()++; }
 
   dim_vector (const dim_vector& dv)
-    : rep (dv.rep) { rep->count++; }
+    : rep (dv.rep) { count()++; }
+
+  static dim_vector alloc (int n)
+    {
+      return dim_vector (newrep (n < 2 ? 2 : n));
+    }
 
   dim_vector& operator = (const dim_vector& dv)
   {
     if (&dv != this)
       {
-	if (--rep->count <= 0)
-	  delete rep;
+	if (--count() <= 0)
+          freerep ();
 
 	rep = dv.rep;
-	rep->count++;
+        count()++;
       }
 
     return *this;
@@ -219,15 +220,11 @@ public:
 
   ~dim_vector (void)
   {
-    if (--rep->count <= 0)
-      delete rep;
+    if (--count() <= 0)
+      freerep ();
   }
 
-  int length (void) const { return rep->length (); }
-
-  octave_idx_type& elem (int i) { make_unique (); return rep->elem (i); }
-
-  octave_idx_type elem (int i) const { return rep->elem (i); }
+  int length (void) const { return ndims(); }
 
   octave_idx_type& operator () (int i) { return elem (i); }
 
@@ -239,12 +236,12 @@ public:
 
     if (n != len)
       {
-	dim_vector_rep *old_rep = rep;
+        octave_idx_type *r = resizerep (n, fill_value);
 
-	rep = new dim_vector_rep (n, old_rep, fill_value);
+        if (--count() <= 0)
+          freerep ();
 
-	if (--old_rep->count <= 0)
-	  delete old_rep;
+        rep = r;
       }
   }
 
@@ -337,18 +334,6 @@ public:
     for (i = 0; i < n_dims; i++)
       if (elem (i) < 0) break;
     return i < n_dims;
-  }
-
-  void chop_trailing_singletons (void)
-  {
-    make_unique ();
-    rep->chop_trailing_singletons ();
-  }
-
-  void chop_all_singletons (void)
-  {
-    make_unique ();
-    rep->chop_all_singletons ();
   }
 
   dim_vector squeeze (void) const
@@ -457,14 +442,7 @@ public:
     // Resize *this to the appropriate dimensions.
     
     if (n_max > na)
-      {
-	dim_vector_rep *old_rep = rep;
-
-	rep = new dim_vector_rep (n_max, old_rep, 1);
-
-	if (--old_rep->count <= 0)
-	  delete old_rep;
-      }
+      resize (n_max, 1);
   
     // Larger or equal since dim has been decremented by one.
 

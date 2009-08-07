@@ -586,7 +586,6 @@ Array<T>::permute (const Array<octave_idx_type>& perm_vec_arg, bool inv) const
   Array<octave_idx_type> perm_vec = perm_vec_arg;
 
   dim_vector dv = dims ();
-  dim_vector dv_new;
 
   int perm_vec_len = perm_vec_arg.length ();
 
@@ -594,7 +593,7 @@ Array<T>::permute (const Array<octave_idx_type>& perm_vec_arg, bool inv) const
     (*current_liboctave_error_handler)
       ("%s: invalid permutation vector", inv ? "ipermute" : "permute");
 
-  dv_new.resize (perm_vec_len);
+  dim_vector dv_new = dim_vector::alloc (perm_vec_len);
 
   // Append singleton dimensions as needed.
   dv.resize (perm_vec_len, 1);
@@ -989,8 +988,7 @@ Array<T>::index (const Array<idx_vector>& ia) const
       else 
         {
           // Form result dimensions.
-          dim_vector rdv;
-          rdv.resize (ial);
+          dim_vector rdv = dim_vector::alloc (ial);
           for (int i = 0; i < ial; i++) rdv(i) = ia(i).length (dv(i));
           rdv.chop_trailing_singletons ();
 
@@ -1232,7 +1230,7 @@ Array<T>::index (const Array<idx_vector>& ia,
     {
       int ial = ia.length ();
       dim_vector dv = dimensions.redim (ial);
-      dim_vector dvx; dvx.resize (ial);
+      dim_vector dvx = dim_vector::alloc (ial);
       for (int i = 0; i < ial; i++) dvx(i) = ia(i).extent (dv (i));
       if (! (dvx == dv))
         {
@@ -1437,7 +1435,7 @@ Array<T>::assign (const Array<idx_vector>& ia,
         rdv = zero_dims_inquire (ia, rhdv);
       else
         {
-          rdv.resize (ial);
+          rdv = dim_vector::alloc (ial);
           for (int i = 0; i < ial; i++)
             rdv(i) = ia(i).extent (dv(i));
         }

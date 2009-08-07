@@ -1,4 +1,5 @@
 ## Copyright (C) 2004, 2005, 2006, 2007 David Bateman
+## Copyright (C) 2009 VZLU Prague
 ##
 ## This file is part of Octave.
 ##
@@ -31,7 +32,7 @@
 ## @seealso{fliplr, flipud, rot90, rotdim}
 ## @end deftypefn
 
-## Author: David Bateman
+## Author: David Bateman, Jaroslav Hajek
 
 function y = flipdim (x, dim)
 
@@ -40,27 +41,20 @@ function y = flipdim (x, dim)
   endif
 
   nd = ndims (x);
-  sz = size (x);
   if (nargin == 1)
     ## Find the first non-singleton dimension.
-    dim = 1;
-    while (dim < nd + 1 && sz(dim) == 1)
-      dim = dim + 1;
-    endwhile
-    if (dim > nd)
+    dim = find (size (x) != 1, 1);
+    if (isempty (dim))
       dim = 1;
     endif
   else
-    if (! (isscalar (dim) && dim == round (dim)) && dim > 0 && dim < (nd + 1))
+    if (! isindex (dim, nd))
       error ("flipdim: dim must be an integer and valid dimension");
     endif
   endif
 
-  idx = cell ();
-  for i = 1:nd
-    idx{i} = 1:sz(i);
-  endfor
-  idx{dim} = sz(dim):-1:1;
+  idx(1:nd) = {':'};
+  idx{dim} = size (x, dim):-1:1;
   y = x(idx{:});
 
 endfunction

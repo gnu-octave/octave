@@ -1,4 +1,4 @@
-## Copyright (C) 2004, 2006, 2008 Petr Mikulik
+## Copyright (C) 2004, 2006, 2008, 2009 Petr Mikulik
 ##
 ## This file is part of Octave.
 ##
@@ -110,7 +110,9 @@ function [x, y, button] = __gnuplot_ginput__ (f, n)
 	str = {};
 	while (isempty (str))
 	  str = char (fread (istream)');
-	  if (! isempty (str))
+	  if (isempty (str))
+	    sleep (0.05);
+	  else
 	    str = regexp (str, 'OCTAVE:\s+[\d.\+-]+\s+[\d.\+-]+\s+\d*', 'match');
 	  endif
 	  fclear (istream);

@@ -1,3 +1,7 @@
+2009-08-08  Jaroslav Hajek  <highegg@gmail.com>
+
+	* data.cc (Fifelse): Rename to Fmerge, alias to Fifelse.
+
 2009-08-06  Jaroslav Hajek  <highegg@gmail.com>
 
 	* OPERATORS/op-dm-template.cc, OPERATORS/op-pm-template.cc:

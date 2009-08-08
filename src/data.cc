@@ -6060,9 +6060,10 @@ do_merge (const Array<bool>& mask,
                          fval.INTX ## _array_value ()); \
     }
 
-DEFUN (ifelse, args, ,
+DEFUN (merge, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} ifelse (@var{mask}, @var{tval}, @var{fval})\n\
+@deftypefn {Built-in Function} {} merge (@var{mask}, @var{tval}, @var{fval})\n\
+@deftypefnx {Built-in Function} {} ifelse (@var{mask}, @var{tval}, @var{fval})\n\
 Merges elements of @var{true_val} and @var{false_val}, depending on the value of\n\
 @var{mask}. If @var{mask} is a logical scalar, the other two arguments can be\n\
 arbitrary values. Otherwise, @var{mask} must be a logical array, and @var{tval},\n\
@@ -6153,6 +6154,8 @@ it is first converted to logical.\n\
 
   return retval;
 }
+
+DEFALIAS (ifelse, merge);
 
 #undef MAKE_INT_BRANCH
 

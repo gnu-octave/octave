@@ -4572,9 +4572,10 @@ context @var{context}, which may be either @code{\"caller\"} or\n\
 
 		  buffer_error_messages--;
 
-		  eval_string (args(2), 0, parse_status, nargout);
+		  tmp = eval_string (args(2), nargout > 0,
+				     parse_status, nargout);
 
-		  retval = octave_value_list ();
+		  retval = (nargout > 0) ? tmp : octave_value_list ();
 		}
 	    }
 

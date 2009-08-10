@@ -497,6 +497,17 @@ public:
       return (length () == 2 && (elem (0) == 1 || elem (1) == 1));
     }
 
+  int first_non_singleton (int def = 0) const
+    {
+      for (int i = 0; i < length (); i++)
+        {
+          if (elem (i) != 1)
+            return i;
+        }
+
+      return def;      
+    }
+
 };
 
 static inline bool

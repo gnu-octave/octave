@@ -1,3 +1,7 @@
+2009-08-10  Jaroslav Hajek  <highegg@gmail.com>
+
+	* dim-vector.h (dim_vector::first_non_singleton): New method.
+
 2009-08-06  Jaroslav Hajek  <highegg@gmail.com>
 
 	* dim-vector.h (dim_vector): Rewrite. Use single-alloc implementation

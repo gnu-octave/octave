@@ -48,7 +48,7 @@ function y = flipdim (x, dim)
       dim = 1;
     endif
   else
-    if (! isindex (dim, nd))
+    if (! (isscalar (dim) && isindex (dim, nd)))
       error ("flipdim: dim must be an integer and valid dimension");
     endif
   endif

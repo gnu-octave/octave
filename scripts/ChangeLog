@@ -1,5 +1,9 @@
 2009-08-07  Jaroslav Hajek  <highegg@gmail.com>
 
+	* general/flipdim.m: Fix omitted check.
+
+2009-08-07  Jaroslav Hajek  <highegg@gmail.com>
+
 	* general/flipdim.m: Simplify.
 
 2009-08-07  Olli Saarela  <olli.saarela@gmail.com>

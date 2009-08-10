@@ -30,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <cctype>
 #include <fstream>
 
+#include "file-ops.h"
 #include "lo-ieee.h"
 
 #include "defun-dld.h"
@@ -187,7 +188,9 @@ a spreadsheet style range such as 'A2..Q15'.  The lowest index value is zero.\n\
   if (error_state)
     return retval;
 
-  std::ifstream file (fname.c_str ());
+  std::string tname = file_ops::tilde_expand (fname);
+
+  std::ifstream file (tname.c_str ());
   if (!file)
     {
       error ("dlmread: unable to open file `%s'", fname.c_str ());

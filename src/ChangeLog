@@ -1,3 +1,12 @@
+2009-08-10  Jaroslav Hajek  <highegg@gmail.com>
+
+	* symtab.cc (out_of_date_check): Remove overloads. Add check_relative
+	parameter.
+	(out_of_date_check_internal): Remove.
+	* symtab.h: Update.
+	* ov-fcn-handle.cc (octave_fcn_handle::do_index_op): Call
+	out_of_date_check with check_relative = false.
+
 2009-08-09  John W. Eaton  <jwe@octave.org>
 
 	* parse.y (Fevalin): Also return output from CATCH expression.

@@ -123,7 +123,7 @@ octave_fcn_handle::do_multi_index_op (int nargout,
   octave_value_list retval;
 
   if (fcn.is_defined ())
-    out_of_date_check (fcn);
+    out_of_date_check (fcn, std::string (), false);
 
   if (disp.get () && ! args.empty ())
     {
@@ -142,7 +142,7 @@ octave_fcn_handle::do_multi_index_op (int nargout,
               str_ov_map::iterator pos = disp->find (sdt);
               if (pos != disp->end ())
                 {
-                  out_of_date_check (pos->second, sdt);
+                  out_of_date_check (pos->second, sdt, false);
                   ovfcn = pos->second;
                 }
             }
@@ -152,7 +152,7 @@ octave_fcn_handle::do_multi_index_op (int nargout,
           str_ov_map::iterator pos = disp->find (ddt);
           if (pos != disp->end ())
             {
-              out_of_date_check (pos->second, ddt);
+              out_of_date_check (pos->second, ddt, false);
               ovfcn = pos->second;
             }
           else
@@ -1573,6 +1573,8 @@ Return a struct containing information about the function handle\n\
 		      parentage.elem(1) = fcn->parent_fcn_name ();
 		      m.assign ("parentage", octave_value (parentage)); 
 		    }
+                  else if (fcn->is_private_function ())
+		    m.assign ("type", "private");
                   else if (fh->is_overloaded ())
 		    m.assign ("type", "overloaded");
 		  else

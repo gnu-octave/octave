@@ -156,11 +156,14 @@ load_out_of_date_fcn (const std::string& ff, const std::string& dir_name,
   return retval;
 }
 
-static inline bool
-out_of_date_check_internal (octave_function *fcn, octave_value& function,
-			    const std::string& dispatch_type = std::string ())
+bool
+out_of_date_check (octave_value& function,
+                   const std::string& dispatch_type,
+                   bool check_relative)
 {
   bool retval = false;
+
+  octave_function *fcn = function.function_value (true);
 
   if (fcn)
     {
@@ -174,37 +177,50 @@ out_of_date_check_internal (octave_function *fcn, octave_value& function,
 	    {
 	      octave_time tc = fcn->time_checked ();
 
-	      bool relative = fcn->is_relative ();
+	      bool relative = check_relative && fcn->is_relative ();
 
 	      if (tc < Vlast_prompt_time
 		  || (relative && tc < Vlast_chdir_time))
 		{
 		  bool clear_breakpoints = false;
-		  std::string nm = fcn->name ();
+                  std::string nm = fcn->name ();
 
-		  int nm_len = nm.length ();
+                  bool is_same_file = false;
 
-		  std::string file;
-		  std::string dir_name;
+                  std::string file;
+                  std::string dir_name;
 
-		  if (octave_env::absolute_pathname (nm)
-		      && ((nm_len > 4 && (nm.substr (nm_len-4) == ".oct"
-					  || nm.substr (nm_len-4) == ".mex"))
-			  || (nm_len > 2 && nm.substr (nm_len-2) == ".m")))
-		    file = nm;
-		  else
-		    {
-		      // We don't want to make this an absolute name,
-		      // because load_fcn_file looks at the name to
-		      // decide whether it came from a relative lookup.
+                  if (check_relative)
+                    {
+                      int nm_len = nm.length ();
 
-		      if (! dispatch_type.empty ())
-			file = load_path::find_method (dispatch_type, nm,
-						       dir_name);
+                      if (octave_env::absolute_pathname (nm)
+                          && ((nm_len > 4 && (nm.substr (nm_len-4) == ".oct"
+                                              || nm.substr (nm_len-4) == ".mex"))
+                              || (nm_len > 2 && nm.substr (nm_len-2) == ".m")))
+                        file = nm;
+                      else
+                        {
+                          // We don't want to make this an absolute name,
+                          // because load_fcn_file looks at the name to
+                          // decide whether it came from a relative lookup.
 
-		      if (file.empty ())
-			file = load_path::find_fcn (nm, dir_name);
-		    }
+                          if (! dispatch_type.empty ())
+                            file = load_path::find_method (dispatch_type, nm,
+                                                           dir_name);
+
+                          if (file.empty ())
+                            file = load_path::find_fcn (nm, dir_name);
+                        }
+
+                      if (! file.empty ())
+                        is_same_file = same_file (file, ff);
+                    }
+                  else
+                    {
+                      is_same_file = true;
+                      file = ff;
+                    }
 
 		  if (file.empty ())
 		    {
@@ -215,7 +231,7 @@ out_of_date_check_internal (octave_function *fcn, octave_value& function,
 
 		      clear_breakpoints = true;
 		    }
-		  else if (same_file (file, ff))
+		  else if (is_same_file)
 		    {
 		      // Same file.  If it is out of date, then reload it.
 
@@ -270,29 +286,6 @@ out_of_date_check_internal (octave_function *fcn, octave_value& function,
     }
 
   return retval;
-}
-
-static inline bool
-out_of_date_check_internal (octave_value& function,
-			    const std::string& dispatch_type = std::string ())
-{
-  return out_of_date_check_internal (function.function_value (true),
-				     function, dispatch_type);
-}
-
-bool
-out_of_date_check (octave_value& function,
-                   const std::string& dispatch_type)
-{
-  return out_of_date_check_internal (function, dispatch_type);
-}
-
-bool
-out_of_date_check (octave_function* fcn,
-                   const std::string& dispatch_type)
-{
-  octave_value function;
-  return out_of_date_check_internal (fcn, function, dispatch_type);
 }
 
 octave_value
@@ -568,7 +561,7 @@ symbol_table::fcn_info::fcn_info_rep::xfind (const octave_value_list& args,
                   octave_value& fval = q->second;
 
                   if (fval.is_defined ())
-                    out_of_date_check_internal (fval);
+                    out_of_date_check (fval);
 
                   if (fval.is_defined ())
                     return fval;
@@ -600,7 +593,7 @@ symbol_table::fcn_info::fcn_info_rep::xfind (const octave_value_list& args,
       octave_value& fval = q->second;
 
       if (fval.is_defined ())
-	out_of_date_check_internal (fval, name);
+	out_of_date_check (fval, name);
 
       if (fval.is_defined ())
 	return fval;
@@ -765,7 +758,7 @@ symbol_table::fcn_info::fcn_info_rep::x_builtin_find (void)
 	      octave_value& fval = q->second;
 
 	      if (fval.is_defined ())
-		out_of_date_check_internal (fval);
+		out_of_date_check (fval);
 
 	      if (fval.is_defined ())
 		return fval;
@@ -831,7 +824,7 @@ symbol_table::fcn_info::fcn_info_rep::find_method (const std::string& dispatch_t
       octave_value& fval = q->second;
 
       if (fval.is_defined ())
-	out_of_date_check_internal (fval, dispatch_type);
+	out_of_date_check (fval, dispatch_type);
 
       if (fval.is_defined ())
 	return fval;
@@ -855,7 +848,7 @@ symbol_table::fcn_info::fcn_info_rep::find_autoload (void)
   // Autoloaded function.
 
   if (autoload_function.is_defined ())
-    out_of_date_check_internal (autoload_function);
+    out_of_date_check (autoload_function);
 
   if (! autoload_function.is_defined ())
     {
@@ -884,7 +877,7 @@ symbol_table::fcn_info::fcn_info_rep::find_user_function (void)
   // Function on the path.
 
   if (function_on_path.is_defined ())
-    out_of_date_check_internal (function_on_path);
+    out_of_date_check (function_on_path);
 
   if (! function_on_path.is_defined ())
     {

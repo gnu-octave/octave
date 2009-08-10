@@ -2303,10 +2303,8 @@ private:
 };
 
 extern bool out_of_date_check (octave_value& function,
-                               const std::string& dispatch_type = std::string ());
-
-extern bool out_of_date_check (octave_function* fcn,
-                               const std::string& dispatch_type = std::string ());
+                               const std::string& dispatch_type = std::string (),
+                               bool check_relative = true);
 
 extern std::string get_dispatch_type (const octave_value_list& args);
 

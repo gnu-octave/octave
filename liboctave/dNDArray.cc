@@ -787,6 +787,12 @@ NDArray::cummin (ArrayN<octave_idx_type>& idx_arg, int dim) const
 }
 
 NDArray
+NDArray::diff (octave_idx_type order, int dim) const
+{
+  return do_mx_diff_op<NDArray> (*this, dim, order, mx_inline_diff);
+}
+
+NDArray
 NDArray::concat (const NDArray& rb, const Array<octave_idx_type>& ra_idx)
 {
   if (rb.numel () > 0)

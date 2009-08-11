@@ -86,6 +86,8 @@ public:
   intNDArray sum (int dim) const;
   intNDArray cumsum (int dim) const;
 
+  intNDArray diff (octave_idx_type order = 1, int dim = 0) const;
+
   intNDArray abs (void) const;
   intNDArray signum (void) const;
 

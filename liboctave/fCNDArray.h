@@ -93,6 +93,8 @@ public:
   FloatComplexNDArray cummin (int dim = 0) const;
   FloatComplexNDArray cummin (ArrayN<octave_idx_type>& index, int dim = 0) const;
 
+  FloatComplexNDArray diff (octave_idx_type order = 1, int dim = 0) const;
+
   FloatComplexNDArray& insert (const NDArray& a, octave_idx_type r, octave_idx_type c);
   FloatComplexNDArray& insert (const FloatComplexNDArray& a, octave_idx_type r, octave_idx_type c);
   FloatComplexNDArray& insert (const FloatComplexNDArray& a, const Array<octave_idx_type>& ra_idx);

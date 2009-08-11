@@ -844,6 +844,114 @@ F (const T *v, T *r, octave_idx_type *ri, \
 OP_CUMMINMAX_FCNN (mx_inline_cummin)
 OP_CUMMINMAX_FCNN (mx_inline_cummax)
 
+template <class T>
+void mx_inline_diff (const T *v, T *r, octave_idx_type n,
+                     octave_idx_type order)
+{
+  switch (order)
+    {
+    case 1:
+      for (octave_idx_type i = 0; i < n-1; i++)
+        r[i] = v[i+1] - v[i];
+      break;
+    case 2:
+        {
+          T lst;
+          if (n > 1)
+            lst = v[1] - v[0];
+          for (octave_idx_type i = 0; i < n-2; i++)
+            {
+              T dif = v[i+2] - v[i+1];
+              r[i] = dif - lst;
+              lst = dif;
+            }
+        }
+      break;
+    default:
+        {
+          OCTAVE_LOCAL_BUFFER (T, buf, n-1);
+
+          for (octave_idx_type i = 0; i < n-1; i++)
+            buf[i] = v[i+1] - v[i];
+
+          for (octave_idx_type o = 2; o <= order; o++)
+            {
+              for (octave_idx_type i = 0; i < n-o; i++)
+                buf[i] = buf[i+1] - buf[i];
+            }
+
+          for (octave_idx_type i = 0; i < n-order; i++)
+            r[i] = buf[i];
+        }
+    }
+}
+
+template <class T>
+void mx_inline_diff (const T *v, T *r, 
+                     octave_idx_type m, octave_idx_type n,
+                     octave_idx_type order)
+{
+  switch (order)
+    {
+    case 1:
+      for (octave_idx_type i = 0; i < m*(n-1); i++)
+        r[i] = v[i+m] - v[i];
+      break;
+    case 2:
+      for (octave_idx_type i = 0; i < n-2; i++)
+        {
+          for (octave_idx_type j = i*m; j < i*m+m; j++)
+            r[j] = (v[j+m+m] - v[j+m]) + (v[j+m] - v[j]);
+        }
+      break;
+    default:
+        {
+          OCTAVE_LOCAL_BUFFER (T, buf, n-1);
+
+          for (octave_idx_type j = 0; j < m; j++)
+            {
+              for (octave_idx_type i = 0; i < n-1; i++)
+                buf[i] = v[i*m+j+m] - v[i*m+j];
+
+              for (octave_idx_type o = 2; o <= order; o++)
+                {
+                  for (octave_idx_type i = 0; i < n-o; i++)
+                    buf[i] = buf[i+1] - buf[i];
+                }
+
+              for (octave_idx_type i = 0; i < n-order; i++)
+                r[i*m+j] = buf[i];
+            }
+        }
+    }
+}
+
+template <class T>
+inline void
+mx_inline_diff (const T *v, T *r,
+                octave_idx_type l, octave_idx_type n, octave_idx_type u,
+                octave_idx_type order)
+{
+  if (! n) return;
+  if (l == 1)
+    {
+      for (octave_idx_type i = 0; i < u; i++)
+        {
+          mx_inline_diff (v, r, n, order);
+          v += n; r += n-order;
+        }
+    }
+  else
+    {
+      for (octave_idx_type i = 0; i < u; i++)
+        {
+          mx_inline_diff (v, r, l, n, order);
+          v += l*n;
+          r += l*(n-order);
+        }
+    }
+}
+
 // Assistant function
 
 inline void
@@ -861,10 +969,8 @@ get_extent_triplet (const dim_vector& dims, int& dim,
   else
     {
       if (dim < 0)
-        {
-          // find first non-singleton dim
-          for (dim = 0; dims(dim) == 1 && dim < ndims - 1; dim++) ;
-        }
+        dim = dims.first_non_singleton ();
+
       // calculate extent triplet.
       l = 1, n = dims(dim), u = 1;
       for (octave_idx_type i = 0; i < dim; i++) 
@@ -999,6 +1105,40 @@ do_mx_cumminmax_op (const ArrayType& src, Array<octave_idx_type>& idx, int dim,
 
   mx_cumminmax_op (src.data (), ret.fortran_vec (), idx.fortran_vec (),
                    l, n, u);
+
+  return ret;
+}
+
+template <class ArrayType>
+inline ArrayType
+do_mx_diff_op (const ArrayType& src, int dim, octave_idx_type order,
+               void (*mx_diff_op) (const typename ArrayType::element_type *, 
+                                   typename ArrayType::element_type *,
+                                   octave_idx_type, octave_idx_type, octave_idx_type,
+                                   octave_idx_type))
+{
+  octave_idx_type l, n, u;
+  if (order <= 0)
+    return src;
+
+  dim_vector dims = src.dims ();
+
+  get_extent_triplet (dims, dim, l, n, u);
+  if (dim >= dims.length ())
+    dims.resize (dim+1, 1);
+
+  if (dims(dim) <= order)
+    {
+      dims (dim) = 0;
+      return ArrayType (dims);
+    }
+  else
+    {
+      dims(dim) -= order;
+    }
+
+  ArrayType ret (dims);
+  mx_diff_op (src.data (), ret.fortran_vec (), l, n, u, order);
 
   return ret;
 }

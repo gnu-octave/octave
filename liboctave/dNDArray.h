@@ -105,6 +105,8 @@ public:
   NDArray cummin (int dim = 0) const;
   NDArray cummin (ArrayN<octave_idx_type>& index, int dim = 0) const;
 
+  NDArray diff (octave_idx_type order = 1, int dim = 0) const;
+
   NDArray& insert (const NDArray& a, octave_idx_type r, octave_idx_type c);
   NDArray& insert (const NDArray& a, const Array<octave_idx_type>& ra_idx);
 

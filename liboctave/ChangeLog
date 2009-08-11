@@ -1,3 +1,20 @@
+2009-08-11  Jaroslav Hajek  <highegg@gmail.com>
+
+	* mx-inlines.cc (mx_inline_diff<T>): New overloaded template
+	function.
+	(get_extent_triplet): Use dim_vector::first_non_singleton.
+	(do_mx_diff_op): New template function.
+	* dNDArray.cc (NDArray::diff): New method.
+	* dNDArray.h: Declare it.
+	* fNDArray.cc (FloatNDArray::diff): New method.
+	* fNDArray.h: Declare it.
+	* CNDArray.cc (ComplexNDArray::diff): New method.
+	* CNDArray.h: Declare it.
+	* fCNDArray.cc (FloatComplexNDArray::diff): New method.
+	* fCNDArray.h: Declare it.
+	* intNDArray.cc (intNDArray<T>::diff): New method.
+	* intNDArray.h: Declare it.
+
 2009-08-10  Jaroslav Hajek  <highegg@gmail.com>
 
 	* dim-vector.h (dim_vector::first_non_singleton): New method.

@@ -270,6 +270,13 @@ intNDArray<T>::cummin (ArrayN<octave_idx_type>& idx_arg, int dim) const
   return do_mx_cumminmax_op<intNDArray<T> > (*this, idx_arg, dim, mx_inline_cummin);
 }
 
+template <class T>
+intNDArray<T>
+intNDArray<T>::diff (octave_idx_type order, int dim) const
+{
+  return do_mx_diff_op<intNDArray<T> > (*this, dim, order, mx_inline_diff);
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

@@ -742,6 +742,12 @@ FloatNDArray::cummin (ArrayN<octave_idx_type>& idx_arg, int dim) const
 }
 
 FloatNDArray
+FloatNDArray::diff (octave_idx_type order, int dim) const
+{
+  return do_mx_diff_op<FloatNDArray> (*this, dim, order, mx_inline_diff);
+}
+
+FloatNDArray
 FloatNDArray::concat (const FloatNDArray& rb, const Array<octave_idx_type>& ra_idx)
 {
   if (rb.numel () > 0)

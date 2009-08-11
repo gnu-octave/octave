@@ -3,6 +3,7 @@
 Copyright (C) 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002,
               2003, 2004, 2005, 2006, 2007, 2008, 2009 John W. Eaton
 Copyright (C) 2009 Jaroslav Hajek
+Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
 
@@ -6158,6 +6159,212 @@ it is first converted to logical.\n\
 DEFALIAS (ifelse, merge);
 
 #undef MAKE_INT_BRANCH
+
+template <class SparseT>
+static SparseT
+do_sparse_diff (const SparseT& array, octave_idx_type order,
+                int dim)
+{
+  SparseT retval = array;
+  if (dim == 1)
+    {
+      octave_idx_type k = retval.columns ();
+      while (order > 0 && k > 0)
+        {
+          idx_vector col1 (':'), col2 (':'), sl1 (1, k), sl2 (0, k-1);
+          retval = retval.index (col1, sl1, 0) - retval.index (col2, sl2, 0);
+          assert (retval.columns () == k-1);
+          order--;
+          k--;
+        }
+    }
+  else
+    {
+      octave_idx_type k = retval.rows ();
+      while (order > 0 && k > 0)
+        {
+          idx_vector col1 (':'), col2 (':'), sl1 (1, k), sl2 (0, k-1);
+          retval = retval.index (sl1, col1, 0) - retval.index (sl2, col2, 0);
+          assert (retval.rows () == k-1);
+          order--;
+          k--;
+        }
+    }
+
+  return retval;
+}
+
+static octave_value
+do_diff (const octave_value& array, octave_idx_type order,
+         int dim = -1)
+{
+  octave_value retval;
+
+  const dim_vector& dv = array.dims ();
+  if (dim == -1)
+    {
+      dim = array.dims ().first_non_singleton ();
+
+      // Bother Matlab. This behavior is really wicked.
+      if (dv(dim) <= order)
+        {
+          if (dv(dim) == 1)
+            retval = array.resize (dim_vector (0, 0));
+          else
+            {
+              retval = array;
+              while (order > 0)
+                {
+                  if (dim == dv.length ())
+                    {
+                      retval = do_diff (array, order, dim - 1);
+                      order = 0;
+                    }
+                  else if (dv(dim) == 1)
+                    dim++;
+                  else
+                    {
+                      retval = do_diff (array, dv(dim) - 1, dim);
+                      order -= dv(dim) - 1;
+                      dim++;
+                    }
+                }
+            }
+
+          return retval;
+        }
+    }
+
+  if (array.is_integer_type ())
+    {
+      if (array.is_int8_type ())
+        retval = array.int8_array_value ().diff (order, dim);
+      else if (array.is_int16_type ())
+        retval = array.int16_array_value ().diff (order, dim);
+      else if (array.is_int32_type ())
+        retval = array.int32_array_value ().diff (order, dim);
+      else if (array.is_int64_type ())
+        retval = array.int64_array_value ().diff (order, dim);
+      else if (array.is_uint8_type ())
+        retval = array.uint8_array_value ().diff (order, dim);
+      else if (array.is_uint16_type ())
+        retval = array.uint16_array_value ().diff (order, dim);
+      else if (array.is_uint32_type ())
+        retval = array.uint32_array_value ().diff (order, dim);
+      else if (array.is_uint64_type ())
+        retval = array.uint64_array_value ().diff (order, dim);
+      else
+        panic_impossible ();
+    }
+  else if (array.is_sparse_type ())
+    {
+      if (array.is_complex_type ())
+        retval = do_sparse_diff (array.sparse_complex_matrix_value (), order, dim);
+      else
+        retval = do_sparse_diff (array.sparse_matrix_value (), order, dim);
+    }
+  else if (array.is_single_type ())
+    {
+      if (array.is_complex_type ())
+        retval = array.float_complex_array_value ().diff (order, dim);
+      else
+        retval = array.float_array_value ().diff (order, dim);
+    }
+  else
+    {
+      if (array.is_complex_type ())
+        retval = array.complex_array_value ().diff (order, dim);
+      else
+        retval = array.array_value ().diff (order, dim);
+    }
+
+  return retval;
+}
+
+DEFUN (diff, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} diff (@var{x}, @var{k}, @var{dim})\n\
+If @var{x} is a vector of length @var{n}, @code{diff (@var{x})} is the\n\
+vector of first differences\n\
+@tex\n\
+ $x_2 - x_1, \\ldots{}, x_n - x_{n-1}$.\n\
+@end tex\n\
+@ifnottex\n\
+ @var{x}(2) - @var{x}(1), @dots{}, @var{x}(n) - @var{x}(n-1).\n\
+@end ifnottex\n\
+\n\
+If @var{x} is a matrix, @code{diff (@var{x})} is the matrix of column\n\
+differences along the first non-singleton dimension.\n\
+\n\
+The second argument is optional.  If supplied, @code{diff (@var{x},\n\
+@var{k})}, where @var{k} is a non-negative integer, returns the\n\
+@var{k}-th differences.  It is possible that @var{k} is larger than\n\
+then first non-singleton dimension of the matrix.  In this case,\n\
+@code{diff} continues to take the differences along the next\n\
+non-singleton dimension.\n\
+\n\
+The dimension along which to take the difference can be explicitly\n\
+stated with the optional variable @var{dim}.  In this case the \n\
+@var{k}-th order differences are calculated along this dimension.\n\
+In the case where @var{k} exceeds @code{size (@var{x}, @var{dim})}\n\
+then an empty matrix is returned.\n\
+@end deftypefn")
+{
+  int nargin = args.length ();
+  octave_value retval;
+
+  if (nargin < 1 || nargin > 3)
+    print_usage ();
+  else if (! args(0).is_numeric_type ())
+    error ("diff: X must be numeric");
+
+  if (! error_state)
+    {
+      int dim = -1;
+      octave_idx_type order = 1;
+      if (nargin > 1)
+        {
+          if (args(1).is_scalar_type ())
+            order = args(1).idx_type_value (true, false);
+          else if (! args(1).is_zero_by_zero ())
+            error ("order must be a scalar or []");
+          if (! error_state && order < 0)
+            error ("order must be non-negative");
+        }
+
+      if (nargin > 2)
+        {
+          dim = args(2).int_value (true, false);
+          if (! error_state && (dim < 1 || dim > args(0).ndims ()))
+            error ("needs a valid dimension");
+          else
+            dim -= 1;
+        }
+
+      if (! error_state)
+        retval = do_diff (args(0), order, dim);
+    }
+
+  return retval;
+}
+
+/*
+
+%!assert (diff ([1, 2, 3, 4]), [1, 1, 1])
+%!assert (diff ([1, 3, 7, 19], 2), [2, 8])
+%!assert (diff ([1, 2; 5, 4; 8, 7; 9, 6; 3, 1]), [4, 2; 3, 3; 1, -1; -6, -5])
+%!assert (diff ([1, 2; 5, 4; 8, 7; 9, 6; 3, 1], 3), [-1, -5; -5, 0])
+%!assert (isempty (diff (1)));
+
+%!error diff ([1, 2; 3, 4], -1);
+
+%!error diff ("foo");
+
+%!error diff ();
+
+%!error diff (1, 2, 3, 4);
+
+*/
 
 /*
 ;;; Local Variables: ***

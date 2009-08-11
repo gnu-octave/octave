@@ -667,6 +667,12 @@ FloatComplexNDArray::sumsq (int dim) const
 }
 
 FloatComplexNDArray
+FloatComplexNDArray::diff (octave_idx_type order, int dim) const
+{
+  return do_mx_diff_op<FloatComplexNDArray> (*this, dim, order, mx_inline_diff);
+}
+
+FloatComplexNDArray
 FloatComplexNDArray::concat (const FloatComplexNDArray& rb, const Array<octave_idx_type>& ra_idx)
 {
   if (rb.numel () > 0)

@@ -1,3 +1,12 @@
+2009-08-11  John W. Eaton  <jwe@octave.org>
+
+	* oct-conf.h.in: New #defines for AMD_LIBS, ARPACK_LIBS,
+	CAMD_LIBS, CCOLAMD_LIBS, CHOLMOD_LIBS, COLAMD_LIBS, CXSPARSE_LIBS,
+	FT2_LIBS, GRAPHICS_LIBS, HDF5_LIBS, OPENGL_LIBS, PTHREAD_CFLAGS,
+	PTHREAD_LIBS, QHULL_LIBS, QRUPDATE_LIBS, REGEX_LIBS, UMFPACK_LIBS,
+	ZLIB_LIBS.
+	* toplev.cc (octave_config_info): Include them in the struct.
+
 2009-08-11  Jaroslav Hajek  <highegg@gmail.com>
 
 	* data.cc (Fdiff): New built-in function.

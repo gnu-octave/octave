@@ -1,3 +1,15 @@
+2009-08-11  John W. Eaton  <jwe@octave.org>
+
+	* configure.in: Generate separate variables for HDF5_LIBS and
+	ZLIB_LIBS.  Don't add them to LIBS.  Add separate entries for them
+	in the summary report.
+	* Makeconf.in (HDF5_LIBS, ZLIB_LIBS): New variables.
+	(do-subst-config-vals): Substitute AMD_LIBS, ARPACK_LIBS,
+	CAMD_LIBS, CCOLAMD_LIBS, CHOLMOD_LIBS, COLAMD_LIBS, CXSPARSE_LIBS,
+	FT2_LIBS, GRAPHICS_LIBS, HDF5_LIBS, OPENGL_LIBS, PTHREAD_CFLAGS,
+	PTHREAD_LIBS, QHULL_LIBS, QRUPDATE_LIBS, REGEX_LIBS, UMFPACK_LIBS,
+	ZLIB_LIBS.
+
 2009-08-05  John W. Eaton  <jwe@octave.org>
 
 	* acx_pthread.m4: New file.

@@ -230,6 +230,8 @@ LIBREADLINE = @LIBREADLINE@
 TERMLIBS = @TERMLIBS@
 
 FT2_LIBS = @FT2_LIBS@
+HDF5_LIBS = @HDF5_LIBS@
+ZLIB_LIBS = @ZLIB_LIBS@
 GRAPHICS_LIBS = @GRAPHICS_LIBS@
 QHULL_LIBS = @QHULL_LIBS@
 REGEX_LIBS = @REGEX_LIBS@
@@ -476,17 +478,24 @@ $(SED) < $< \
   -e "s|%OCTAVE_CONF_ALL_CXXFLAGS%|\"${ALL_CXXFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_ALL_FFLAGS%|\"${ALL_FFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_ALL_LDFLAGS%|\"${ALL_LDFLAGS}\"|" \
+  -e "s|%OCTAVE_CONF_AMD_LIBS%|\"${AMD_LIBS}\"|" \
   -e "s|%OCTAVE_CONF_AR%|\"${AR}\"|" \
   -e "s|%OCTAVE_CONF_ARFLAGS%|\"${ARFLAGS}\"|" \
+  -e "s|%OCTAVE_CONF_ARPACK_LIBS%|\"${ARPACK_LIBS}\"|" \
   -e "s|%OCTAVE_CONF_BLAS_LIBS%|\"${BLAS_LIBS}\"|" \
+  -e "s|%OCTAVE_CONF_CAMD_LIBS%|\"${CAMD_LIBS}\"|" \
   -e "s|%OCTAVE_CONF_CANONICAL_HOST_TYPE%|\"${canonical_host_type}\"|" \
   -e "s|%OCTAVE_CONF_CARBON_LIBS%|\"${CARBON_LIBS}\"|" \
   -e "s|%OCTAVE_CONF_CC%|\"${CC}\"|" \
   -e "s|%OCTAVE_CONF_CC_VERSION%|\"${CC_VERSION}\"|" \
+  -e "s|%OCTAVE_CONF_CCOLAMD_LIBS%|\"${CCOLAMD_LIBS}\"|" \
   -e "s|%OCTAVE_CONF_CFLAGS%|\"${CFLAGS}\"|" \
+  -e "s|%OCTAVE_CONF_CHOLMOD_LIBS%|\"${CHOLMOD_LIBS}\"|" \
+  -e "s|%OCTAVE_CONF_COLAMD_LIBS%|\"${COLAMD_LIBS}\"|" \
   -e "s|%OCTAVE_CONF_CPICFLAG%|\"${CPICFLAG}\"|" \
   -e "s|%OCTAVE_CONF_CPPFLAGS%|\"${CPPFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_CURL_LIBS%|\"${CURL_LIBS}\"|" \
+  -e "s|%OCTAVE_CONF_CXSPARSE_LIBS%|\"${CXSPARSE_LIBS}\"|" \
   -e "s|%OCTAVE_CONF_CXX%|\"${CXX}\"|" \
   -e "s|%OCTAVE_CONF_CXXCPP%|\"${CXXCPP}\"|" \
   -e "s|%OCTAVE_CONF_CXXFLAGS%|\"${CXXFLAGS}\"|" \
@@ -505,8 +514,11 @@ $(SED) < $< \
   -e "s|%OCTAVE_CONF_FFTW_LIBS%|\"${FFTW_LIBS}\"|" \
   -e "s|%OCTAVE_CONF_FLIBS%|\"${FLIBS}\"|" \
   -e "s|%OCTAVE_CONF_FPICFLAG%|\"${FPICFLAG}\"|" \
+  -e "s|%OCTAVE_CONF_FT2_LIBS%|\"${FT2_LIBS}\"|" \
   -e "s|%OCTAVE_CONF_GLPK_LIBS%|\"${GLPK_LIBS}\"|" \
   -e "s|%OCTAVE_CONF_GNUPLOT%|\"${GNUPLOT}\"|" \
+  -e "s|%OCTAVE_CONF_GRAPHICS_LIBS%|\"${GRAPHICS_LIBS}\"|" \
+  -e "s|%OCTAVE_CONF_HDF5_LIBS%|\"${HDF5_LIBS}\"|" \
   -e "s|%OCTAVE_CONF_INCFLAGS%|\"${INCFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_INCLUDEDIR%|\"${includedir}\"|" \
   -e "s|%OCTAVE_CONF_LD_CXX%|\"${LD_CXX}\"|" \
@@ -530,9 +542,15 @@ $(SED) < $< \
   -e 's|%OCTAVE_CONF_MKOCTFILE_DL_LDFLAGS%|\"@MKOCTFILE_DL_LDFLAGS@\"|' \
   -e "s|%OCTAVE_CONF_OCTINCLUDEDIR%|\"${octincludedir}\"|" \
   -e "s|%OCTAVE_CONF_OCTLIBDIR%|\"${octlibdir}\"|" \
+  -e "s|%OCTAVE_CONF_OPENGL_LIBS%|\"${OPENGL_LIBS}\"|" \
   -e "s|%OCTAVE_CONF_PREFIX%|\"${prefix}\"|" \
+  -e "s|%OCTAVE_CONF_PTHREAD_CFLAGS%|\"${PTHREAD_CFLAGS}\"|" \
+  -e "s|%OCTAVE_CONF_PTHREAD_LIBS%|\"${PTHREAD_LIBS}\"|" \
+  -e "s|%OCTAVE_CONF_QHULL_LIBS%|\"${QHULL_LIBS}\"|" \
+  -e "s|%OCTAVE_CONF_QRUPDATE_LIBS%|\"${QRUPDATE_LIBS}\"|" \
   -e "s|%OCTAVE_CONF_RANLIB%|\"${RANLIB}\"|" \
   -e "s|%OCTAVE_CONF_RDYNAMIC_FLAG%|\"${RDYNAMIC_FLAG}\"|" \
+  -e "s|%OCTAVE_CONF_REGEX_LIBS%|\"${REGEX_LIBS}\"|" \
   -e "s|%OCTAVE_CONF_RLD_FLAG%|\"${RLD_FLAG}\"|" \
   -e "s|%OCTAVE_CONF_SED%|\"${SED}\"|" \
   -e "s|%OCTAVE_CONF_SHARED_LIBS%|\"${SHARED_LIBS}\"|" \
@@ -544,6 +562,7 @@ $(SED) < $< \
   -e "s|%OCTAVE_CONF_SONAME_FLAGS%|\"${SONAME_FLAGS}\"|" \
   -e "s|%OCTAVE_CONF_STATIC_LIBS%|\"${STATIC_LIBS}\"|" \
   -e "s|%OCTAVE_CONF_UGLY_DEFS%|\"${UGLY_DEFS}\"|" \
+  -e "s|%OCTAVE_CONF_UMFPACK_LIBS%|\"${UMFPACK_LIBS}\"|" \
   -e "s|%OCTAVE_CONF_USE_64_BIT_IDX_T%|\"${USE_64_BIT_IDX_T}\"|" \
   -e "s|%OCTAVE_CONF_VERSION%|\"${version}\"|" \
   -e "s|%OCTAVE_CONF_ENABLE_DYNAMIC_LINKING%|\"${ENABLE_DYNAMIC_LINKING}\"|" \
@@ -553,6 +572,7 @@ $(SED) < $< \
   -e "s|%OCTAVE_CONF_XTRA_CXXFLAGS%|\"${XTRA_CXXFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_YACC%|\"${YACC}\"|" \
   -e "s|%OCTAVE_CONF_YFLAGS%|\"${YFLAGS}\"|" \
+  -e "s|%OCTAVE_CONF_ZLIB_LIBS%|\"${ZLIB_LIBS}\"|" \
   -e "s|%OCTAVE_CONF_config_opts%|\"${config_opts}\"|" | \
   $(SED)  -e "s|%OCTAVE_CONF_DEFS%|\"${UGLY_DEFS}\"|" > $@-t
 $(simple-move-if-change-rule)

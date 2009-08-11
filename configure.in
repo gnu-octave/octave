@@ -523,12 +523,12 @@ ZLIB_LIBS=
 WITH_ZLIB=false
 if test -n "$zlib_lib"; then
   AC_CHECK_LIB($zlib_lib, gzclearerr, [
-      AC_CHECK_HEADERS(zlib.h, [
-	WITH_ZLIB=true
-        ZLIB_LIBS="-l$zlib_lib"
-        LIBS="$ZLIB_LIBS $LIBS"
-        AC_DEFINE(HAVE_ZLIB, 1, [Define if ZLIB is available.])])])
+    AC_CHECK_HEADERS(zlib.h, [
+      WITH_ZLIB=true
+      ZLIB_LIBS="-l$zlib_lib"
+      AC_DEFINE(HAVE_ZLIB, 1, [Define if ZLIB is available.])])])
 fi
+AC_SUBST(ZLIB_LIBS)
 
 if $WITH_ZLIB; then
   ### Check for HDF5 library.
@@ -552,13 +552,15 @@ if $WITH_ZLIB; then
       AC_CHECK_HEADERS(hdf5.h, [
         WITH_HDF5=true
         HDF5_LIBS="-l$hdf5_lib"
-        LIBS="$HDF5_LIBS $LIBS"
+        save_LIBS="$LIBS"
+        LIBS="$HDF5_LIBS $ZLIB_LIBS $LIBS"
 	AC_CHECK_LIB($hdf5_lib, H5Gget_num_objs, [
           OCTAVE_HDF5_HAS_REQUIRED_API
           if test $WITH_HDF5; then
             AC_DEFINE(HAVE_HDF5, 1, [Define if HDF5 is available.])
 	    AC_DEFINE(HAVE_H5GGET_NUM_OBJS, 1, [Define if HDF5 has H5Gget_num_objs.])
-	  fi])])])
+	  fi])
+        LIBS="$save_LIBS"])])
   fi
 
   if $WITH_HDF5; then
@@ -567,13 +569,12 @@ if $WITH_ZLIB; then
         OCTAVE_HDF5_DLL
         ;;
     esac
-    true
   fi
 else
   warn_zlib="ZLIB library not found.  Octave will not be able to save or load compressed data files or HDF5 files."
   AC_MSG_WARN($warn_zlib)
 fi
-
+AC_SUBST(HDF5_LIBS)
 
 # Checks for FFTW header and library.
 
@@ -2220,6 +2221,7 @@ Octave is now configured for $canonical_host_type
   ARPACK libraries:     $ARPACK_LIBS
   QRUPDATE libraries:	$QRUPDATE_LIBS
   HDF5 libraries:       $HDF5_LIBS
+  ZLIB libraries:       $ZLIB_LIBS
   CURL libraries:       $CURL_LIBS
   REGEX libraries:      $REGEX_LIBS
   QHULL libraries:	$QHULL_LIBS

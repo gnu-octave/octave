@@ -1707,22 +1707,24 @@ if $SHARED_LIBS || $ENABLE_DYNAMIC_LINKING; then
 
   ## Check for dyld first since OS X can have a non-standard libdl	
 
-  AC_CHECK_HEADER(mach-o/dyld.h)  
+  save_LIBS="$LIBS"
+  AC_CHECK_HEADER(mach-o/dyld.h)
   if test "$ac_cv_header_mach_o_dyld_h" = yes; then
     dyld_api=true
   else 
-    AC_CHECK_LIB(dld, shl_load)
+    AC_CHECK_LIB(dld, shl_load, [DL_LIBS=-ldld; LIBS="$LIBS $DL_LIBS"])
     AC_CHECK_FUNCS(shl_load shl_findsym)
     if test "$ac_cv_func_shl_load" = yes \
       && test "$ac_cv_func_shl_findsym" = yes; then
       shl_load_api=true
     else
-      AC_CHECK_LIB(wsock32, LoadLibrary)
+      AC_CHECK_LIB(wsock32, LoadLibrary, [
+        DL_LIBS=-lwsock32; LIBS="$LIBS $DL_LIBS"])
       AC_CHECK_FUNCS(LoadLibrary)
       if test "$ac_cv_func_loadlibrary" = yes; then
         loadlibrary_api=true
       else
-        AC_CHECK_LIB(dl, dlopen)
+        AC_CHECK_LIB(dl, dlopen, [DL_LIBS=-ldl; LIBS="$LIBS $DL_LIBS"])
         AC_CHECK_FUNCS(dlopen dlsym dlerror dlclose)
         if test "$ac_cv_func_dlclose" = yes \
           && test "$ac_cv_func_dlerror" = yes \
@@ -1740,6 +1742,8 @@ if $SHARED_LIBS || $ENABLE_DYNAMIC_LINKING; then
       fi
     fi
   fi
+  LIBS="$save_LIBS"
+  AC_SUBST(DL_LIBS)
 
   ## autoconf test for LoadLibrary appears broken. Bypass for cygwin/mingw 
   if $dlopen_api || $shl_load_api || $loadlibrary_api || $dyld_api; then
@@ -1890,15 +1894,10 @@ OCTAVE_MKDIR_TAKES_ONE_ARG
 
 octave_found_termlib=no
 for termlib in ncurses curses termcap terminfo termlib; do
-  AC_CHECK_LIB(${termlib}, tputs, [TERMLIBS="${TERMLIBS} -l${termlib}"])
-  case "${TERMLIBS}" in
-    *-l${termlib}*)
-      LIBS="$TERMLIBS $LIBS"
-      AC_SUBST(TERMLIBS)
-      octave_found_termlib=yes
-      break
-    ;;
-  esac
+  AC_CHECK_LIB(${termlib}, tputs, [
+    TERM_LIBS="-l${termlib}"
+    octave_found_termlib=yes
+    break])
 done
 
 if test "$octave_found_termlib" = no; then
@@ -1906,6 +1905,7 @@ if test "$octave_found_termlib" = no; then
 r -ltermlib!"
   AC_MSG_WARN($warn_termlibs)
 fi
+AC_SUBST(TERM_LIBS)
 
 OCTAVE_ENABLE_READLINE
 
@@ -2230,8 +2230,11 @@ Octave is now configured for $canonical_host_type
   X11 include flags:    $X11_INCFLAGS
   X11 libraries:        $X11_LIBS
   CARBON libraries:     $CARBON_LIBS
-  PTHREAD flags         $PTHREAD_CFLAGS
-  PTHREAD libraries     $PTHREAD_LIBS
+  PTHREAD flags:        $PTHREAD_CFLAGS
+  PTHREAD libraries:    $PTHREAD_LIBS
+  READLINE libraries:   $READLINE_LIBS
+  TERM libraries:       $TERM_LIBS
+  DL libraries:         $DL_LIBS
   LIBS:                 $LIBS
   Default pager:        $DEFAULT_PAGER
   gnuplot:              $GNUPLOT

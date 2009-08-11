@@ -1,5 +1,20 @@
 2009-08-11  John W. Eaton  <jwe@octave.org>
 
+	* configure.in: Define and substitute TERM_LIBS instead of
+	TERMLIBS.  Don't add TERM_LIBS to LIBS.  Define DL_LIBS instead of
+	adding them to LIBS.  Display TERM_LIBS and DL_LIBS in summary
+	reporrt.
+	* aclocal.m4 (OCTAVE_ENABLE_READLINE): Define and substitute
+	READLINE_LIBS instead of LIBREADLINE.  Don't add readline library
+	to LIBS.  Display READLINE_LIBS in summary report.  Temporarily
+	add TERM_LIBS to LIBS when checking for readline library.
+	* Makeconf.in, mkoctfile.cc.in, mkoctfile.in:
+	Use READLINE_LIBS instead of LIBREADLINE and TERM_LIBS instead of
+	TERMLIBS.  Substitute DL_LIBS.
+	(do-subst-config-vals): Substitute TERM_LIBS and DL_LIBS.
+
+2009-08-11  John W. Eaton  <jwe@octave.org>
+
 	* configure.in: Generate separate variables for HDF5_LIBS and
 	ZLIB_LIBS.  Don't add them to LIBS.  Add separate entries for them
 	in the summary report.

@@ -1,3 +1,8 @@
+2009-08-11  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.in (LINK_DEPS): Use READLINE_LIBS instead of
+	LIBREADLINE.  Also link with TERM_LIBS and DL_LIBS.
+
 2009-08-11  Jaroslav Hajek  <highegg@gmail.com>
 
 	* mx-inlines.cc (mx_inline_diff<T>): New overloaded template

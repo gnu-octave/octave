@@ -641,7 +641,7 @@ dnl
 dnl OCTAVE_ENABLE_READLINE
 AC_DEFUN(OCTAVE_ENABLE_READLINE, [
   USE_READLINE=true
-  LIBREADLINE=
+  READLINE_LIBS=
   AC_ARG_ENABLE(readline,
     [  --enable-readline       use readline library (default is yes)],
     [if test "$enableval" = no; then
@@ -649,16 +649,18 @@ AC_DEFUN(OCTAVE_ENABLE_READLINE, [
        warn_readline="command editing and history features require GNU Readline"
      fi])
   if $USE_READLINE; then
+    save_LIBS="$LIBS"
+    LIBS="$TERM_LIBS"
     AC_CHECK_LIB(readline, rl_set_keyboard_input_timeout, [
-      LIBREADLINE="-lreadline"
-      LIBS="$LIBREADLINE $LIBS"
+      READLINE_LIBS="-lreadline"
       AC_DEFINE(USE_READLINE, 1, [Define to use the readline library.])
     ], [
       AC_MSG_WARN([I need GNU Readline 4.2 or later])
       AC_MSG_ERROR([this is fatal unless you specify --disable-readline])
     ])
+    LIBS="$save_LIBS"
   fi
-  AC_SUBST(LIBREADLINE)
+  AC_SUBST(READLINE_LIBS)
 ])
 dnl
 dnl Check to see if C++ reintrepret cast works for function pointers.

@@ -221,7 +221,7 @@ initialize (void)
   vars["RDYNAMIC_FLAG"] = get_variable ("RDYNAMIC_FLAG", %OCTAVE_CONF_RDYNAMIC_FLAG%);
   vars["LIBOCTAVE"] = "-loctave";
   vars["LIBOCTINTERP"] = "-loctinterp";
-  vars["LIBREADLINE"] = "-lreadline";
+  vars["READLINE_LIBS"] = "-lreadline";
   vars["LIBCRUFT"] = "-lcruft";
   vars["BLAS_LIBS"] = get_variable ("BLAS_LIBS", %OCTAVE_CONF_BLAS_LIBS%);
   vars["FFTW_LIBS"] = get_variable ("FFTW_LIBS", %OCTAVE_CONF_FFTW_LIBS%);
@@ -296,10 +296,10 @@ static string help_msg =
 "			    CPICFLAG                  LIBCRUFT\n"
 "			    CPPFLAGS                  LIBOCTAVE\n"
 "			    CXX                       LIBOCTINTERP\n"
-"			    CXXFLAGS                  LIBREADLINE\n"
-"			    CXXPICFLAG                LIBS\n"
-"			    DEPEND_EXTRA_SED_PATTERN  OCTAVE_LIBS\n"
-"			    DEPEND_FLAGS              RDYNAMIC_FLAG\n"
+"			    CXXFLAGS                  LIBS\n"
+"			    CXXPICFLAG                OCTAVE_LIBS\n"
+"			    DEPEND_EXTRA_SED_PATTERN  RDYNAMIC_FLAG\n"
+"			    DEPEND_FLAGS              READLINE_LIBS\n"
 "			    DL_LD                     RLD_FLAG\n"
 "			    DL_LDFLAGS                SED\n"
 "			    F77                       XTRA_CFLAGS\n"
@@ -727,7 +727,7 @@ main (int argc, char **argv)
 		+ " " + ldflags + " " + vars["LFLAGS"] + " "
 		+ vars["RLD_FLAG"] + " " + vars["OCTAVE_LIBS"] + " "
 		+ vars["BLAS_LIBS"] + " " + vars["FFTW_LIBS"] + " "
-		+ vars["LIBREADLINE"] + " " + vars["LIBS"] + " "
+		+ vars["READLINE_LIBS"] + " " + vars["LIBS"] + " "
 		+ vars["FLIBS"];
 	      result = run_command (cmd);
 	    }

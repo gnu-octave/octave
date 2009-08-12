@@ -1,5 +1,9 @@
 2009-08-12  Jaroslav Hajek  <highegg@gmail.com>
 
+	* Makefile.in: Include LDFLAGS when linking shared executable.
+
+2009-08-12  Jaroslav Hajek  <highegg@gmail.com>
+
 	* data.cc (Fissorted, F__sort_rows_idx__, Fnorm): Mark as Built-in
 	Functions in the inline help.
 

@@ -277,7 +277,7 @@ $(SHLPRE)octave.$(SHLEXT_VER): $(SHLPRE)octave.$(SHLEXT)
 
 $(SHLPRE)octave.$(SHLEXT): $(LIBOCTAVE_PICOBJ)
 	rm -f $@
-	$(SH_LD) $(SH_LDFLAGS) $(SONAME_FLAGS) -o $@ \
+	$(SH_LD) $(SH_LDFLAGS) $(LDFLAGS) $(SONAME_FLAGS) -o $@ \
 	$(LIBOCTAVE_PICOBJ) $(LINK_DEPS)
 
 $(LIBOCTAVE_PICOBJ): stmp-pic

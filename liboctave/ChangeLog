@@ -1,3 +1,7 @@
+2009-08-12  Jaroslav Hajek  <highegg@gmail.com>
+
+	* Makefile.in: Include LDFLAGS when linking shared executable.
+
 2009-08-11  John W. Eaton  <jwe@octave.org>
 
 	* oct-fftw.h, oct-fftw.cc (octave_fftw_planner): Convert to singleton.

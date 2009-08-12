@@ -4793,7 +4793,7 @@ DEFUN (full, args, ,
 
 DEFUN (norm, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Function File} {} norm (@var{a}, @var{p}, @var{opt})\n\
+@deftypefn {Built-in Function} {} norm (@var{a}, @var{p}, @var{opt})\n\
 Compute the p-norm of the matrix @var{a}.  If the second argument is\n\
 missing, @code{p = 2} is assumed.\n\
 \n\
@@ -5825,7 +5825,7 @@ ordered lists.\n\
 
 DEFUN (__sort_rows_idx__, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Function File} {} __sort_rows_idx__ (@var{a}, @var{mode})\n\
+@deftypefn {Built-in Function} {} __sort_rows_idx__ (@var{a}, @var{mode})\n\
 Undocumented internal function.\n\
 @end deftypefn\n")
 {
@@ -5872,7 +5872,7 @@ Undocumented internal function.\n\
 
 DEFUN (issorted, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Function File} {} issorted (@var{a}, @var{rows})\n\
+@deftypefn {Built-in Function} {} issorted (@var{a}, @var{rows})\n\
 Returns true if the array is sorted, ascending or descending.\n\
 NaNs are treated as by @code{sort}.  If @var{rows} is supplied and\n\
 has the value \"rows\", checks whether the array is sorted by rows\n\

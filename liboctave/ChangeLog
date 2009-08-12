@@ -1,5 +1,10 @@
 2009-08-11  John W. Eaton  <jwe@octave.org>
 
+	* oct-fftw.h, oct-fftw.cc (octave_fftw_planner): Convert to singleton.
+	(octave_float_fft_planner): Likewise.
+
+2009-08-11  John W. Eaton  <jwe@octave.org>
+
 	* Makefile.in (LINK_DEPS): Use READLINE_LIBS instead of
 	LIBREADLINE.  Also link with TERM_LIBS and DL_LIBS.
 

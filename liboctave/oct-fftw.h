@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2001, 2004, 2005, 2007, 2008 John W. Eaton
+Copyright (C) 2001, 2004, 2005, 2007, 2008, 2009 John W. Eaton
 
 This file is part of Octave.
 
@@ -33,19 +33,16 @@ class
 OCTAVE_API
 octave_fftw_planner
 {
-public:
+protected:
 
   octave_fftw_planner (void);
 
-  fftw_plan create_plan (int dir, const int rank, const dim_vector dims, 
-			 octave_idx_type howmany, octave_idx_type stride, octave_idx_type dist, 
-			 const Complex *in, Complex *out);
+public:
 
-  fftw_plan create_plan (const int rank, const dim_vector dims, 
-			 octave_idx_type howmany, octave_idx_type stride, octave_idx_type dist, 
-			 const double *in, Complex *out);
+  ~octave_fftw_planner (void) { }
 
-  enum FftwMethod {
+  enum FftwMethod
+  {
     UNKNOWN = -1,
     ESTIMATE,
     MEASURE,
@@ -54,11 +51,66 @@ public:
     HYBRID
   };
 
-  FftwMethod method (void);
+  static bool instance_ok (void);
 
-  FftwMethod method (FftwMethod _meth);
+  static fftw_plan
+  create_plan (int dir, const int rank, const dim_vector dims, 
+	       octave_idx_type howmany, octave_idx_type stride,
+	       octave_idx_type dist, const Complex *in,
+	       Complex *out)
+  {
+    static fftw_plan dummy;
+
+    return instance_ok ()
+      ? instance->do_create_plan (dir, rank, dims, howmany, stride,
+				  dist, in, out)
+      : dummy;
+  }
+
+  static fftw_plan
+  create_plan (const int rank, const dim_vector dims, 
+	       octave_idx_type howmany, octave_idx_type stride,
+	       octave_idx_type dist, const double *in, Complex *out)
+  {
+    static fftw_plan dummy;
+
+    return instance_ok ()
+      ? instance->do_create_plan (rank, dims, howmany, stride, dist, in, out)
+      : dummy;
+  }
+
+  static FftwMethod method (void)
+  {
+    static FftwMethod dummy;
+
+    return instance_ok () ? instance->do_method () : dummy;
+  }
+
+  static FftwMethod method (FftwMethod _meth)
+  {
+    static FftwMethod dummy;
+
+    return instance_ok () ? instance->do_method (_meth) : dummy;
+  }
 
 private:
+
+  static octave_fftw_planner *instance;
+
+  fftw_plan
+  do_create_plan (int dir, const int rank, const dim_vector dims, 
+		  octave_idx_type howmany, octave_idx_type stride,
+		  octave_idx_type dist, const Complex *in,
+		  Complex *out);
+
+  fftw_plan
+  do_create_plan (const int rank, const dim_vector dims, 
+		  octave_idx_type howmany, octave_idx_type stride,
+		  octave_idx_type dist, const double *in, Complex *out);
+
+  FftwMethod do_method (void);
+
+  FftwMethod do_method (FftwMethod _meth);
 
   FftwMethod meth;
 
@@ -110,19 +162,16 @@ class
 OCTAVE_API
 octave_float_fftw_planner
 {
-public:
+protected:
 
   octave_float_fftw_planner (void);
 
-  fftwf_plan create_plan (int dir, const int rank, const dim_vector dims, 
-			 octave_idx_type howmany, octave_idx_type stride, octave_idx_type dist, 
-			 const FloatComplex *in, FloatComplex *out);
+public:
 
-  fftwf_plan create_plan (const int rank, const dim_vector dims, 
-			 octave_idx_type howmany, octave_idx_type stride, octave_idx_type dist, 
-			 const float *in, FloatComplex *out);
+  ~octave_float_fftw_planner (void) { }
 
-  enum FftwMethod {
+  enum FftwMethod
+  {
     UNKNOWN = -1,
     ESTIMATE,
     MEASURE,
@@ -131,11 +180,66 @@ public:
     HYBRID
   };
 
-  FftwMethod method (void);
+  static bool instance_ok (void);
+  
+  static fftwf_plan
+  create_plan (int dir, const int rank, const dim_vector dims, 
+	       octave_idx_type howmany, octave_idx_type stride,
+	       octave_idx_type dist, const FloatComplex *in,
+	       FloatComplex *out)
+  {
+    static fftwf_plan dummy;
 
-  FftwMethod method (FftwMethod _meth);
+    return instance_ok ()
+      ? instance->do_create_plan (dir, rank, dims, howmany, stride,
+				  dist, in, out)
+      : dummy;
+  }
+
+  static fftwf_plan
+  create_plan (const int rank, const dim_vector dims, 
+	       octave_idx_type howmany, octave_idx_type stride,
+	       octave_idx_type dist, const float *in, FloatComplex *out)
+  {
+    static fftwf_plan dummy;
+
+    return instance_ok ()
+      ? instance->do_create_plan (rank, dims, howmany, stride, dist, in, out)
+      : dummy;
+  }
+
+  static FftwMethod method (void)
+  {
+    static FftwMethod dummy;
+
+    return instance_ok () ? instance->method () : dummy;
+  }
+
+  static FftwMethod method (FftwMethod _meth)
+  {
+    static FftwMethod dummy;
+
+    return instance_ok () ? instance->method (_meth) : dummy;
+  }
 
 private:
+
+  static octave_float_fftw_planner *instance;
+
+  fftwf_plan
+  do_create_plan (int dir, const int rank, const dim_vector dims, 
+		  octave_idx_type howmany, octave_idx_type stride,
+		  octave_idx_type dist, const FloatComplex *in,
+		  FloatComplex *out);
+
+  fftwf_plan
+  do_create_plan (const int rank, const dim_vector dims, 
+		  octave_idx_type howmany, octave_idx_type stride,
+		  octave_idx_type dist, const float *in, FloatComplex *out);
+
+  FftwMethod do_method (void);
+
+  FftwMethod do_method (FftwMethod _meth);
 
   FftwMethod meth;
 
@@ -182,10 +286,6 @@ private:
 
   bool rsimd_align;
 };
-
-// FIXME -- maybe octave_fftw_planner should be a singleton object?
-extern OCTAVE_API octave_fftw_planner fftw_planner;
-extern OCTAVE_API octave_float_fftw_planner float_fftw_planner;
 
 class
 OCTAVE_API

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2006, 2007, 2008 David Bateman
+Copyright (C) 2006, 2007, 2008, 2009 David Bateman
 
 This file is part of Octave.
 
@@ -176,8 +176,8 @@ they will not be efficient and the point of calculating the wisdom is lost.\n\
 
 		      if (!error_state)
 			{
-			  meth = fftw_planner.method (meth);
-			  float_fftw_planner.method (methf);
+			  meth = octave_fftw_planner::method (meth);
+			  octave_float_fftw_planner::method (methf);
 
 			  if (meth == octave_fftw_planner::MEASURE)
 			    retval = octave_value ("measure");
@@ -228,7 +228,7 @@ they will not be efficient and the point of calculating the wisdom is lost.\n\
 	      if (arg0 == "planner")
 		{
 		  octave_fftw_planner::FftwMethod meth = 
-		    fftw_planner.method ();
+		    octave_fftw_planner::method ();
 
 		  if (meth == octave_fftw_planner::MEASURE)
 		    retval = octave_value ("measure");
@@ -266,4 +266,3 @@ they will not be efficient and the point of calculating the wisdom is lost.\n\
 
   return retval;
 }
-

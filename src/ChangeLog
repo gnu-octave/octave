@@ -1,5 +1,10 @@
 2009-08-11  John W. Eaton  <jwe@octave.org>
 
+	* DLD-FUNCTIONS/fftw.cc (Ffftw): Update for octave_fftw_planner
+	and octave_float_fftw_planner as singleton objects.
+
+2009-08-11  John W. Eaton  <jwe@octave.org>
+
 	* oct-conf.h.in: Use READLINE_LIBS instead of LIBREADLINE.
 	New #defines for TERM_LIBS and DL_LIBS.
 	* toplev.cc (octave_config_info): Add TERM_LIBS and DL_LIBS to the

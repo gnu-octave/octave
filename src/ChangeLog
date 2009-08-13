@@ -1,3 +1,22 @@
+2009-08-13  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/fft.cc, DLD-FUNCTIONS/fft2.cc,
+	DLD-FUNCTIONS/fftn.cc, DLD-FUNCTIONS/fftw.cc: Update for new FFTW
+	defines.
+
+	* Makefile.in (amd.oct, colamd.oct, dmperm.oct, symcrm.oct,
+	qr.oct, fft.oct, fft2.oct, fftn.oct, fftw.oct): Add
+	library-specific CPPFLAGS and LDFLAGS variables to CPPFLAGS
+	and LDFLAGS.
+	* oct-conf.h.in: New #defines for GLPK_CPPFLAGS, GLPK_LDFLAGS,
+	AMD_CPPFLAGS, AMD_LDFLAGS, CAMD_CPPFLAGS, CAMD_LDFLAGS,
+	CCOLAMD_CPPFLAGS, CCOLAMD_LDFLAGS, CHOLMOD_CPPFLAGS,
+	CHOLMOD_LDFLAGS, COLAMD_CPPFLAGS, COLAMD_LDFLAGS,
+	CXSPARSE_CPPFLAGS, CXSPARSE_LDFLAGS, FFTW3_CPPFLAGS,
+	FFTW3_LDFLAGS, FFTW3_LIBS, FFTW3F_CPPFLAGS, FFTW3F_LDFLAGS, and
+	FFTW3F_LIBS.
+	* toplev.cc (octave_config_info): Include them in the list.
+
 2009-08-13  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-class.h (octave_class): Derive from octave_struct.

@@ -33,31 +33,28 @@ along with Octave; see the file COPYING.  If not, see
 #include <vector>
 
 #include "Array-util.h"
-#include "byte-swap.h"
-#include "fMatrix.h"
 #include "DET.h"
+#include "byte-swap.h"
+#include "f77-fcn.h"
+#include "fMatrix.h"
+#include "floatCHOL.h"
 #include "floatSCHUR.h"
 #include "floatSVD.h"
-#include "floatCHOL.h"
-#include "f77-fcn.h"
 #include "functor.h"
 #include "lo-error.h"
-#include "oct-locbuf.h"
 #include "lo-ieee.h"
 #include "lo-mappers.h"
 #include "lo-utils.h"
 #include "mx-base.h"
-#include "mx-fm-fdm.h"
 #include "mx-fdm-fm.h"
+#include "mx-fm-fdm.h"
 #include "mx-inlines.cc"
 #include "mx-op-defs.h"
 #include "oct-cmplx.h"
+#include "oct-fftw.h"
+#include "oct-locbuf.h"
 #include "oct-norm.h"
 #include "quit.h"
-
-#if defined (HAVE_FFTW3)
-#include "oct-fftw.h"
-#endif
 
 // Fortran functions we call.
 
@@ -190,20 +187,6 @@ extern "C"
 			     F77_CHAR_ARG_LEN_DECL
 			     F77_CHAR_ARG_LEN_DECL
 			     F77_CHAR_ARG_LEN_DECL);
-
-  // Note that the original complex fft routines were not written for
-  // float complex arguments.  They have been modified by adding an
-  // implicit float precision (a-h,o-z) statement at the beginning of
-  // each subroutine.
-
-  F77_RET_T
-  F77_FUNC (cffti, CFFTI) (const octave_idx_type&, FloatComplex*);
-
-  F77_RET_T
-  F77_FUNC (cfftf, CFFTF) (const octave_idx_type&, FloatComplex*, FloatComplex*);
-
-  F77_RET_T
-  F77_FUNC (cfftb, CFFTB) (const octave_idx_type&, FloatComplex*, FloatComplex*);
 
   F77_RET_T
   F77_FUNC (slartg, SLARTG) (const float&, const float&, float&,
@@ -893,7 +876,7 @@ FloatMatrix::pseudo_inverse (float tol) const
     }
 }
 
-#if defined (HAVE_FFTW3)
+#if defined (HAVE_FFTW)
 
 FloatComplexMatrix
 FloatMatrix::fourier (void) const
@@ -980,6 +963,23 @@ FloatMatrix::ifourier2d (void) const
 }
 
 #else
+
+extern "C"
+{
+  // Note that the original complex fft routines were not written for
+  // float complex arguments.  They have been modified by adding an
+  // implicit float precision (a-h,o-z) statement at the beginning of
+  // each subroutine.
+
+  F77_RET_T
+  F77_FUNC (cffti, CFFTI) (const octave_idx_type&, FloatComplex*);
+
+  F77_RET_T
+  F77_FUNC (cfftf, CFFTF) (const octave_idx_type&, FloatComplex*, FloatComplex*);
+
+  F77_RET_T
+  F77_FUNC (cfftb, CFFTB) (const octave_idx_type&, FloatComplex*, FloatComplex*);
+}
 
 FloatComplexMatrix
 FloatMatrix::fourier (void) const

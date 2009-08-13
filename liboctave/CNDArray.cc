@@ -32,34 +32,14 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "Array-util.h"
 #include "CNDArray.h"
-#include "mx-base.h"
 #include "f77-fcn.h"
 #include "functor.h"
 #include "lo-ieee.h"
 #include "lo-mappers.h"
-#include "oct-locbuf.h"
+#include "mx-base.h"
 #include "mx-op-defs.h"
-
-#if defined (HAVE_FFTW3)
 #include "oct-fftw.h"
-#else
-extern "C"
-{
-  // Note that the original complex fft routines were not written for
-  // double complex arguments.  They have been modified by adding an
-  // implicit double precision (a-h,o-z) statement at the beginning of
-  // each subroutine.
-
-  F77_RET_T
-  F77_FUNC (zffti, ZFFTI) (const octave_idx_type&, Complex*);
-
-  F77_RET_T
-  F77_FUNC (zfftf, ZFFTF) (const octave_idx_type&, Complex*, Complex*);
-
-  F77_RET_T
-  F77_FUNC (zfftb, ZFFTB) (const octave_idx_type&, Complex*, Complex*);
-}
-#endif
+#include "oct-locbuf.h"
 
 ComplexNDArray::ComplexNDArray (const charNDArray& a)
   : MArrayN<Complex> (a.dims ())
@@ -69,7 +49,8 @@ ComplexNDArray::ComplexNDArray (const charNDArray& a)
     xelem (i) = static_cast<unsigned char> (a(i));
 }
 
-#if defined (HAVE_FFTW3)
+#if defined (HAVE_FFTW)
+
 ComplexNDArray
 ComplexNDArray::fourier (int dim) const
 {
@@ -203,6 +184,24 @@ ComplexNDArray::ifourierNd (void) const
 }
 
 #else
+
+extern "C"
+{
+  // Note that the original complex fft routines were not written for
+  // double complex arguments.  They have been modified by adding an
+  // implicit double precision (a-h,o-z) statement at the beginning of
+  // each subroutine.
+
+  F77_RET_T
+  F77_FUNC (zffti, ZFFTI) (const octave_idx_type&, Complex*);
+
+  F77_RET_T
+  F77_FUNC (zfftf, ZFFTF) (const octave_idx_type&, Complex*, Complex*);
+
+  F77_RET_T
+  F77_FUNC (zfftb, ZFFTB) (const octave_idx_type&, Complex*, Complex*);
+}
+
 ComplexNDArray
 ComplexNDArray::fourier (int dim) const
 {

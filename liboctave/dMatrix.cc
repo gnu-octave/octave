@@ -53,12 +53,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "mx-inlines.cc"
 #include "mx-op-defs.h"
 #include "oct-cmplx.h"
+#include "oct-fftw.h"
 #include "oct-norm.h"
 #include "quit.h"
-
-#if defined (HAVE_FFTW3)
-#include "oct-fftw.h"
-#endif
 
 // Fortran functions we call.
 
@@ -191,20 +188,6 @@ extern "C"
 			     F77_CHAR_ARG_LEN_DECL
 			     F77_CHAR_ARG_LEN_DECL
 			     F77_CHAR_ARG_LEN_DECL);
-
-  // Note that the original complex fft routines were not written for
-  // double complex arguments.  They have been modified by adding an
-  // implicit double precision (a-h,o-z) statement at the beginning of
-  // each subroutine.
-
-  F77_RET_T
-  F77_FUNC (zffti, ZFFTI) (const octave_idx_type&, Complex*);
-
-  F77_RET_T
-  F77_FUNC (zfftf, ZFFTF) (const octave_idx_type&, Complex*, Complex*);
-
-  F77_RET_T
-  F77_FUNC (zfftb, ZFFTB) (const octave_idx_type&, Complex*, Complex*);
 
   F77_RET_T
   F77_FUNC (dlartg, DLARTG) (const double&, const double&, double&,
@@ -894,7 +877,7 @@ Matrix::pseudo_inverse (double tol) const
     }
 }
 
-#if defined (HAVE_FFTW3)
+#if defined (HAVE_FFTW)
 
 ComplexMatrix
 Matrix::fourier (void) const
@@ -981,6 +964,23 @@ Matrix::ifourier2d (void) const
 }
 
 #else
+
+extern "C"
+{
+  // Note that the original complex fft routines were not written for
+  // double complex arguments.  They have been modified by adding an
+  // implicit double precision (a-h,o-z) statement at the beginning of
+  // each subroutine.
+
+  F77_RET_T
+  F77_FUNC (zffti, ZFFTI) (const octave_idx_type&, Complex*);
+
+  F77_RET_T
+  F77_FUNC (zfftf, ZFFTF) (const octave_idx_type&, Complex*, Complex*);
+
+  F77_RET_T
+  F77_FUNC (zfftb, ZFFTB) (const octave_idx_type&, Complex*, Complex*);
+}
 
 ComplexMatrix
 Matrix::fourier (void) const

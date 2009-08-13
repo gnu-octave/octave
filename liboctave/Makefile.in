@@ -37,9 +37,11 @@ DLL_CXXDEFS = @OCTAVE_DLL_DEFS@
 LINK_DEPS = \
   $(RLD_FLAG) \
   -L../libcruft $(LIBCRUFT) \
-  $(CHOLMOD_LIBS) $(UMFPACK_LIBS) $(AMD_LIBS) $(CAMD_LIBS) \
-  $(COLAMD_LIBS) $(CCOLAMD_LIBS) $(CXSPARSE_LIBS) $(ARPACK_LIBS) \
-  $(QRUPDATE_LIBS) $(FFTW_LIBS) $(READLINE_LIBS) $(TERM_LIBS) $(LIBGLOB) \
+  $(SPARSE_LDFLAGS) $(SPARSE_LIBS) \
+  $(ARPACK_LIBS) \
+  $(QRUPDATE_LIBS) \
+  $(FFTW_LDFLAGS) $(FFTW_LIBS) \
+  $(READLINE_LIBS) $(TERM_LIBS) $(LIBGLOB) \
   $(REGEX_LIBS) $(DL_LIBS) $(LIBS) $(FLIBS) $(PTHREAD_LIBS)
 
 MATRIX_INC := Array.h Array2.h Array3.h ArrayN.h DiagArray2.h \
@@ -384,6 +386,46 @@ $(SPARSE_MX_OP_INC) $(SPARSE_MX_OP_SRC) : $(srcdir)/sparse-mk-ops.awk sparse-mx-
 mx-ops.h : $(srcdir)/mk-ops.awk mx-ops
 	$(AWK) -f $(srcdir)/mk-ops.awk prefix=mx make_inclusive_header=mx-ops.h $(srcdir)/mx-ops > $@-t
 	$(simple-move-if-change-rule)
+
+CSparse.d CSparse.df pic/CSparse.o CSparse.o: CPPFLAGS += $(SPARSE_CPPFLAGS)
+
+dSparse.d dSparse.df pic/dSparse.o dSparse.o: CPPFLAGS += $(SPARSE_CPPFLAGS)
+
+SparseCmplxLU.d SparseCmplxLU.df pic/SparseCmplxLU.o SparseCmplxLU.o: \
+  CPPFLAGS += $(SPARSE_CPPFLAGS)
+
+SparsedbleLU.d SparsedbleLU.df pic/SparsedbleLU.o SparsedbleLU.o: \
+  CPPFLAGS += $(SPARSE_CPPFLAGS)
+
+SparseCmplxQR.d SparseCmplxQR.df pic/SparseCmplxQR.o SparseCmplxQR.o: \
+  CPPFLAGS += $(SPARSE_CPPFLAGS)
+
+SparsedbleQR.d SparsedbleQR.df pic/SparsedbleQR.o SparsedbleQR.o: \
+  CPPFLAGS += $(SPARSE_CPPFLAGS)
+
+SparseCmplxCHOL.d SparseCmplxCHOL.df pic/SparseCmplxCHOL.o SparseCmplxCHOL.o: \
+  CPPFLAGS += $(SPARSE_CPPFLAGS)
+
+SparsedbleCHOL.d SparsedbleCHOL.df pic/SparsedbleCHOL.o SparsedbleCHOL.o: \
+  CPPFLAGS += $(SPARSE_CPPFLAGS)
+
+CMatrix.d CMatrix.df pic/CMatrix.o CMatrix.o: CPPFLAGS += $(FFTW_CPPFLAGS)
+
+CNDArray.d CNDArray.df pic/CNDArray.o CNDArray.o: CPPFLAGS += $(FFTW_CPPFLAGS)
+
+dMatrix.d dMatrix.df pic/dMatrix.o dMatrix.o: CPPFLAGS += $(FFTW_CPPFLAGS)
+
+dNDArray.d dNDArray.df pic/dNDArray.o dNDArray.o: CPPFLAGS += $(FFTW_CPPFLAGS)
+
+fCMatrix.d fCMatrix.df pic/fCMatrix.o fCMatrix.o: CPPFLAGS += $(FFTW_CPPFLAGS)
+
+fCNDArray.d fCNDArray.df pic/fCNDArray.o fCNDArray.o: CPPFLAGS += $(FFTW_CPPFLAGS)
+
+fMatrix.d fMatrix.df pic/fMatrix.o fMatrix.o: CPPFLAGS += $(FFTW_CPPFLAGS)
+
+fNDArray.d fNDArray.df pic/fNDArray.o fNDArray.o: CPPFLAGS += $(FFTW_CPPFLAGS)
+
+oct-fftw.d oct-fftw.df pic/oct-fftw.o oct-fftw.o: CPPFLAGS += $(FFTW_CPPFLAGS)
 
 ifdef omit_deps
 .PHONY: $(MAKEDEPS)

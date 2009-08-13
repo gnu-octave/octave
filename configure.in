@@ -426,7 +426,7 @@ esac
 
 OCTAVE_CHECK_LIBRARY(qhull, QHull,
   [Qhull library not found -- this will result in loss of functionality of some geometry functions.],
-  [qhull/qhull_a.h], [qh_qhull],
+  [qhull/qhull_a.h], [qh_qhull], [], [],
   [warn_qhull=
    OCTAVE_CHECK_QHULL_VERSION
    OCTAVE_CHECK_QHULL_OK([TEXINFO_QHULL="@set HAVE_QHULL"
@@ -559,71 +559,29 @@ else
 fi
 AC_SUBST(HDF5_LIBS)
 
-# Checks for FFTW header and library.
-
-# subdirectories of libcruft to build if they aren't found on the system:
+# Subdirectories of libcruft to build if they aren't found on the system:
 FFT_DIR="fftpack"
 AC_SUBST(FFT_DIR)
 
-# Installed fftw library, if any.
-FFTW_LIBS=''
-AC_SUBST(FFTW_LIBS)
+# Checks for FFTW header and library.
 
-AC_ARG_WITH(fftw, 
-  [AS_HELP_STRING([--without-fftw],
-     [use included fftpack instead of installed fftw])],
-  with_fftw=$withval, with_fftw=yes)
+OCTAVE_CHECK_LIBRARY(fftw3, FFTW3,
+  [FFTW3 library not found.  The slower FFTPACK library will be used instead.],
+  [fftw3.h], [fftw_plan_dft_1d])
 
-if test "$with_fftw" = yes; then
-  have_fftw3_header=no
-  with_fftw3=no
-  AC_CHECK_HEADER(fftw3.h, [have_fftw3_header=yes])
-  if test "$have_fftw3_header" = yes; then
-    AC_CHECK_LIB(fftw3, fftw_plan_dft_1d, [
-      AC_CHECK_LIB(fftw3f, fftwf_plan_dft_1d, [FFTW_LIBS="-lfftw3 -lfftw3f"; with_fftw3=yes])])
-  fi
-fi
+OCTAVE_CHECK_LIBRARY(fftw3f, FFTW3F,
+  [FFTW3F library not found.  The slower FFTPACK library will be used instead.],
+  [fftw3.h], [fftwf_plan_dft_1d])
 
-if test "$with_fftw" = yes && test "$with_fftw3" = yes; then
-  FFT_DIR=''
-  AC_DEFINE(HAVE_FFTW3, 1, [Define if the FFTW3 library is used.])
-else
-  warn_fftw="FFTW library not found.  Octave will use the (slower) FFTPACK library instead."
-  AC_MSG_WARN($warn_fftw)
+if test -n "$FFTW3_LIBS" && test -n "$FFTW3F_LIBS"; then
+  FFT_DIR=
 fi
 
 # Checks for GLPK header and library.
 
-AC_ARG_WITH(glpk,
-  [AS_HELP_STRING([--without-glpk], [don't use GLPK])],
-  with_glpk=$withval, with_glpk=yes)
-
-glpk_lib=
-if test "$with_glpk" = yes; then
-  glpk_lib="glpk"
-elif test "$with_glpk" != no; then
-  glpk_lib="$with_glpk"
-fi
-
-GLPK_LIBS=
-if test -n "$glpk_lib"; then
-  AC_CHECK_HEADERS([glpk/glpk.h glpk.h], [
-    AC_CHECK_LIB($glpk_lib, glp_lpx_simplex, [
-      GLPK_LIBS="-l$glpk_lib"
-      AC_DEFINE(GLPK_PRE_4_14, 1, [Define if GLPK version is less than 4.14.])], [
-        AC_CHECK_LIB($glpk_lib, _glp_lpx_simplex, [
-          GLPK_LIBS="-l$glpk_lib"], [])])
-
-    if test -n "$GLPK_LIBS"; then
-      AC_DEFINE(HAVE_GLPK, 1, [Define if GLPK is available.])
-    fi
-    break])
-fi
-AC_SUBST(GLPK_LIBS)
-if test -z "$GLPK_LIBS"; then
-  warn_glpk="GLPK library not found.  The glpk function for solving linear programs will be disabled."
-  AC_MSG_WARN($warn_glpk)
-fi
+OCTAVE_CHECK_LIBRARY(glpk, GLPK,
+  [GLPK library not found.  The glpk function for solving linear programs will be disabled.],
+  [glpk/glpk.h glpk.h], [_glp_lpx_simplex])
 
 # Checks for CURL header and library.
 
@@ -911,33 +869,56 @@ if test -n "$warn_qrupdate"; then
 fi
 
 # Check for AMD library
-AMD_LIBS=
-AC_SUBST(AMD_LIBS)
 
-AC_ARG_WITH(amd,
-  [AS_HELP_STRING([--without-amd],
-     [don't use AMD, disable some sparse functionality])],
-  with_amd=$withval, with_amd=yes)
-
-warn_amd="AMD not found. This will result in some lack of functionality for sparse matrices."
-if test "$with_amd" = yes; then
-  with_amd=no
-  AC_CHECK_HEADERS([suitesparse/amd.h ufsparse/amd.h amd/amd.h amd.h], [
-    AC_CHECK_LIB(amd, amd_postorder, [AMD_LIBS="-lamd"; with_amd=yes])
-    if test "$with_amd" = yes; then
-      AC_DEFINE(HAVE_AMD, 1, [Define if the AMD library is used.])
-      warn_amd=
-    fi
-    break])
-fi 
-if test -n "$warn_amd"; then
-  AC_MSG_WARN($warn_amd)
-fi
+OCTAVE_CHECK_LIBRARY(amd, AMD,
+  [AMD library not found. This will result in some lack of functionality for sparse matrices.],
+  [suitesparse/amd.h ufsparse/amd.h amd/amd.h amd.h],
+  [amd_postorder],
+  [], [don't use AMD library, disable some sparse functionality])
 
 # Check for CAMD library
-CAMD_LIBS=
-AC_SUBST(CAMD_LIBS)
-AC_CHECK_LIB(camd, camd_postorder, [CAMD_LIBS="-lcamd"; with_camd=yes],[with_camd=no])
+
+OCTAVE_CHECK_LIBRARY(camd, CAMD,
+  [CAMD library not found. This will result in some lack of functionality for sparse matrices.],
+  [suitesparse/camd.h ufsparse/camd.h amd/camd.h camd.h],
+  [camd_postorder],
+  [], [don't use CAMD library, disable some sparse functionality])
+
+# Check for COLAMD library
+
+OCTAVE_CHECK_LIBRARY(colamd, COLAMD,
+  [COLAMD library not found. This will result in some lack of functionality for sparse matrices.],
+  [suitesparse/colamd.h ufsparse/colamd.h amd/colamd.h colamd.h],
+  [colamd],
+  [], [don't use COLAMD library, disable some sparse functionality])
+
+# Check for CCOLAMD library
+
+OCTAVE_CHECK_LIBRARY(ccolamd, CCOLAMD,
+  [CCOLAMD library not found. This will result in some lack of functionality for sparse matrices.],
+  [suitesparse/ccolamd.h ufsparse/ccolamd.h amd/ccolamd.h ccolamd.h],
+  [ccolamd],
+  [], [don't use CCOLAMD library, disable some sparse functionality])
+
+# Check for CHOLMOD library.  If your cholmod library requires cblas,
+# then you will need to configure with --with-cholmod="-lcholmod -lcblas".
+
+save_LIBS="$LIBS"
+LIBS="$BLAS_LIBS $FLIBS $LIBS"
+OCTAVE_CHECK_LIBRARY(cholmod, CHOLMOD,
+  [CHOLMOD library not found. This will result in some lack of functionality for sparse matrices.],
+  [suitesparse/cholmod.h ufsparse/cholmod.h cholmod/cholmod.h cholmod.h],
+  [cholmod_start],
+  [], [don't use CHOLMOD library, disable some sparse functionality])
+LIBS="$save_LIBS"
+
+# Check for CXSparse library
+
+OCTAVE_CHECK_LIBRARY(cxsparse, CXSparse,
+  [CXSparse library not found. This will result in some lack of functionality for sparse matrices.],
+  [suitesparse/cs.h ufsparse/cs.h amd/cs.h cs.h],
+  [cs_di_sqr],
+  [C++], [don't use CXSparse library, disable some sparse functionality])
 
 # Check for UMFPACK library.
 
@@ -982,119 +963,12 @@ fi
 
 AC_SUBST(TEXINFO_UMFPACK)
 
-COLAMD_LIBS=
-AC_SUBST(COLAMD_LIBS)
-
-AC_ARG_WITH(colamd,
-  [AS_HELP_STRING([--without-colamd],
-     [don't use COLAMD, disable some sparse functionality])],
-  with_colamd=$withval, with_colamd=yes)
-
-warn_colamd="COLAMD not found. This will result in some lack of functionality for sparse matrices."
-if test "$with_colamd" = yes; then
-  with_colamd=no
-  AC_CHECK_HEADERS([suitesparse/colamd.h ufsparse/colamd.h colamd/colamd.h colamd.h], [
-    AC_CHECK_LIB(colamd, colamd, [COLAMD_LIBS="-lcolamd"; with_colamd=yes])
-    if test "$with_colamd" = yes; then
-      AC_DEFINE(HAVE_COLAMD, 1, [Define if the COLAMD library is used.])
-      TEXINFO_COLAMD="@set HAVE_COLAMD"
-      warn_colamd=
-    fi
-    break])
-fi 
-if test -n "$warn_colamd"; then
-  AC_MSG_WARN($warn_colamd)
-fi
-
-AC_SUBST(TEXINFO_COLAMD)
-
-CCOLAMD_LIBS=
-AC_SUBST(CCOLAMD_LIBS)
-
-AC_ARG_WITH(ccolamd,
-  [AS_HELP_STRING([--without-ccolamd],
-     [don't use CCOLAMD, disable some sparse functionality])],
-  with_ccolamd=$withval, with_ccolamd=yes)
-
-warn_ccolamd="CCOLAMD not found. This will result in some lack of functionality for sparse matrices."
-if test "$with_ccolamd" = yes; then
-  with_ccolamd=no
-  AC_CHECK_HEADERS([suitesparse/ccolamd.h ufsparse/ccolamd.h ccolamd/ccolamd.h ccolamd.h], [
-    AC_CHECK_LIB(ccolamd, ccolamd, [CCOLAMD_LIBS="-lccolamd"; with_ccolamd=yes])
-    if test "$with_ccolamd" = yes; then
-      AC_DEFINE(HAVE_CCOLAMD, 1, [Define if the CCOLAMD library is used.])
-      warn_ccolamd=
-    fi
-    break])
-fi 
-if test -n "$warn_ccolamd"; then
-  AC_MSG_WARN($warn_ccolamd)
-fi
-
-CHOLMOD_LIBS=
-AC_SUBST(CHOLMOD_LIBS)
-
-AC_ARG_WITH(cholmod,
-  [AS_HELP_STRING([--without-cholmod],
-     [don't use CHOLMOD, disable some sparse functionality])],
-  with_cholmod=$withval, with_cholmod=yes)
-
-warn_cholmod="CHOLMOD not found. This will result in some lack of functionality for sparse matrices."
-if test "$with_cholmod" = yes && test "$with_colamd" = yes &&
-	test "$with_ccolamd" = yes && test "$with_amd" = yes; then
-  with_cholmod=no
-  AC_CHECK_HEADERS([suitesparse/cholmod.h ufsparse/cholmod.h cholmod/cholmod.h cholmod.h], [
-    AC_CHECK_LIB(cholmod, cholmod_start, [CHOLMOD_LIBS="-lcholmod"; 
-      with_cholmod=yes], [
-      AC_CHECK_LIB(cholmod, cholmod_start, [CHOLMOD_LIBS="-lcholmod -cblas"; 
-	with_cholmod=yes], [],
-	$CAMD_LIBS $AMD_LIBS $COLAMD_LIBS $CCOLAMD_LIBS $BLAS_LIBS $FLIBS)],
-      $CAMD_LIBS $AMD_LIBS $COLAMD_LIBS $CCOLAMD_LIBS $BLAS_LIBS $FLIBS)
-
-    if test "$with_cholmod" = yes; then
-      AC_DEFINE(HAVE_CHOLMOD, 1, [Define if the CHOLMOD library is used.])
-      TEXINFO_CHOLMOD="@set HAVE_CHOLMOD"
-      warn_cholmod=
-    fi
-    break])
-fi
-if test -n "$warn_cholmod"; then
-  AC_MSG_WARN($warn_cholmod)
-fi
-
-AC_SUBST(TEXINFO_CHOLMOD)
-
-CXSPARSE_LIBS=
-AC_SUBST(CXSPARSE_LIBS)
-
-AC_ARG_WITH(cxsparse,
-  [AS_HELP_STRING([--without-cxsparse],
-     [don't use CXSparse, disable some sparse functionality])],
-  with_cxsparse=$withval, with_cxsparse=yes)
-
-warn_cxsparse="CXSparse not found. This will result in some lack of functionality for sparse matrices."
-if test "$with_cxsparse" = yes; then
-  with_cxsparse=no
-  AC_LANG_PUSH(C++)
-  AC_CHECK_HEADERS([suitesparse/cs.h ufsparse/cs.h cxsparse/cs.h cs.h], [
-    AC_CHECK_LIB(cxsparse, cs_di_sqr, [CXSPARSE_LIBS="-lcxsparse"; with_cxsparse=yes])
-    if test "$with_cxsparse" = yes; then
-      AC_DEFINE(HAVE_CXSPARSE, 1, [Define if the CXSparse library is used.])
-      warn_cxsparse=
-    fi
-    break])
-  AC_LANG_POP(C++)
-fi
-if test -n "$warn_cxsparse"; then
-  AC_MSG_WARN($warn_cxsparse)
-fi
-
 ARPACK_LIBS=
 AC_SUBST(ARPACK_LIBS)
 
 AC_ARG_WITH(arpack,
   [AS_HELP_STRING([--without-arpack],
-     [don't use ARPACK, disable some sparse functionality])],
+     [don't use ARPACK library, disable some sparse functionality])],
   with_arpack=$withval, with_arpack=yes)
 
 warn_arpack="arpack not found. This will result in a lack of the eigs function."
@@ -2128,6 +2002,12 @@ typedef int sig_atomic_t;
 
 #define OCTAVE_EMPTY_CPP_ARG
 
+// Octave is currently unable to use FFTW unless both float
+// and double versions are both available.
+#if defined (HAVE_FFTW3) && defined (HAVE_FFTW3F)
+#define HAVE_FFTW
+#endif
+
 #include "oct-dlldefs.h"
 #include "oct-types.h"
 ])
@@ -2172,21 +2052,40 @@ Octave is now configured for $canonical_host_type
   Fortran libraries:    $FLIBS
   LIBS:                 $LIBS
 
+  AMD CPPFLAGS:         $AMD_CPPFLAGS
+  AMD LDFLAGS:          $AMD_LDFLAGS
   AMD libraries:        $AMD_LIBS
   ARPACK libraries:     $ARPACK_LIBS
   BLAS libraries:       $BLAS_LIBS
+  CAMD CPPFLAGS:        $CAMD_CPPFLAGS
+  CAMD LDFLAGS:         $CAMD_LDFLAGS
   CAMD libraries:       $CAMD_LIBS
   CARBON libraries:     $CARBON_LIBS
+  CCOLAMD CPPFLAGS:     $CCOLAMD_CPPFLAGS
+  CCOLAMD LDFLAGS:      $CCOLAMD_LDFLAGS
   CCOLAMD libraries:    $CCOLAMD_LIBS
+  CHOLMOD CPPFLAGS:     $CHOLMOD_CPPFLAGS
+  CHOLMOD LDFLAGS:      $CHOLMOD_LDFLAGS
   CHOLMOD libraries:    $CHOLMOD_LIBS
+  COLAMD CPPFLAGS:      $COLAMD_CPPFLAGS
+  COLAMD LDFLAGS:       $COLAMD_LDFLAGS
   COLAMD libraries:     $COLAMD_LIBS
   CURL CPPFLAGS:        $CURL_CPPFLAGS
   CURL LDFLAGS:         $CURL_LDFLAGS
   CURL libraries:       $CURL_LIBS
+  CXSPARSE CPPFLAGS:    $CXSPARSE_CPPFLAGS
+  CXSPARSE LDFLAGS:     $CXSPARSE_LDFLAGS
   CXSPARSE libraries:   $CXSPARSE_LIBS
   DL libraries:         $DL_LIBS
-  FFTW libraries:       $FFTW_LIBS
+  FFTW3 CPPFLAGS:       $FFTW3_CPPFLAGS
+  FFTW3 LDFLAGS:        $FFTW3_LDFLAGS
+  FFTW3 libraries:      $FFTW3_LIBS
+  FFTW3F CPPFLAGS:      $FFTW3F_CPPFLAGS
+  FFTW3F LDFLAGS:       $FFTW3F_LDFLAGS
+  FFTW3F libraries:     $FFTW3F_LIBS
   FLTK backend libs:    $GRAPHICS_LIBS
+  GLPK CPPFLAGS:        $GLPK_CPPFLAGS
+  GLPK LDFLAGS:         $GLPK_LDFLAGS
   GLPK libraries:       $GLPK_LIBS
   HDF5 libraries:       $HDF5_LIBS
   OPENGL libraries:     $OPENGL_LIBS

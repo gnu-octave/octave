@@ -32,18 +32,15 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "Array-util.h"
 #include "dNDArray.h"
-#include "functor.h"
-#include "mx-base.h"
 #include "f77-fcn.h"
+#include "functor.h"
 #include "lo-error.h"
 #include "lo-ieee.h"
 #include "lo-mappers.h"
-#include "oct-locbuf.h"
+#include "mx-base.h"
 #include "mx-op-defs.h"
-
-#if defined (HAVE_FFTW3)
 #include "oct-fftw.h"
-#endif
+#include "oct-locbuf.h"
 
 NDArray::NDArray (const Array<octave_idx_type>& a, bool zero_based,
 		  bool negative_to_nan)
@@ -95,7 +92,7 @@ NDArray::NDArray (const charNDArray& a)
     xelem (i) = static_cast<unsigned char> (a(i));
 }
 
-#if defined (HAVE_FFTW3)
+#if defined (HAVE_FFTW)
 
 ComplexNDArray
 NDArray::fourier (int dim) const

@@ -24,10 +24,15 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_oct_fftw_h 1
 
 #include <cstddef>
+
+#if defined (HAVE_FFTW3_H)
 #include <fftw3.h>
+#endif
 
 #include "oct-cmplx.h"
 #include "dim-vector.h"
+
+#if defined (HAVE_FFTW)
 
 class
 OCTAVE_API
@@ -292,6 +297,7 @@ OCTAVE_API
 octave_fftw
 {
 public:
+
   static int fft (const double *in, Complex *out, size_t npts, 
 		  size_t nsamples = 1, octave_idx_type stride = 1, octave_idx_type dist = -1);
   static int fft (const Complex *in, Complex *out, size_t npts, 
@@ -319,10 +325,12 @@ public:
 		     const dim_vector &);
 
 private:
-  octave_fftw ();
+  octave_fftw (void);
   octave_fftw (const octave_fftw&);
   octave_fftw& operator = (const octave_fftw&);
 };
+
+#endif
 
 #endif
 

@@ -413,22 +413,25 @@ AC_DEFUN(OCTAVE_F77_FLAG, [
 dnl
 dnl
 dnl
-dnl OCTAVE_CHECK_LIBRARY(LIBRARY, DOC-NAME, WARN-MSG, HEADER, FUNC, EXTRA-CHECK)
+dnl OCTAVE_CHECK_LIBRARY(LIBRARY, DOC-NAME, WARN-MSG, HEADER, FUNC,
+dnl                      LANG, DOC-STRING, EXTRA-CHECK)
 AC_DEFUN(OCTAVE_CHECK_LIBRARY, [
-  AC_ARG_WITH($1-includedir,
+  AC_ARG_WITH([$1-includedir],
     [AS_HELP_STRING([--with-$1-includedir=DIR],
       [look for $2 include files in DIR])],
     [m4_toupper([$1])_CPPFLAGS="-I$withval"])
   AC_SUBST(m4_toupper([$1])_CPPFLAGS)
 
-  AC_ARG_WITH($1-libdir,
+  AC_ARG_WITH([$1-libdir],
     [AS_HELP_STRING([--with-$1-libdir=DIR],
       [look for $2 libraries in DIR])],
     [m4_toupper([$1])_LDFLAGS="-L$withval"])
   AC_SUBST(m4_toupper([$1])_LDFLAGS)
 
-  AC_ARG_WITH($1,
-    [AS_HELP_STRING([--without-$1], [don't use $2])],
+  AC_ARG_WITH([$1],
+    [m4_ifblank([$7],
+      [AS_HELP_STRING([--without-$1], [don't use $2 library])],
+      [AS_HELP_STRING([--without-$1], [$7])])],
     with_$1=$withval, with_$1=yes)
 
   m4_toupper([$1])_LIBS=
@@ -449,6 +452,7 @@ AC_DEFUN(OCTAVE_CHECK_LIBRARY, [
   if test -n "$m4_toupper([$1])_LIBS"; then
     save_CPPFLAGS="$CPPFLAGS"
     CPPFLAGS="$m4_toupper([$1])_CPPFLAGS $CPPFLAGS"
+    m4_ifnblank([$6], [AC_LANG_PUSH($6)])
     AC_CHECK_HEADERS($4, [
       save_LDFLAGS="$LDFLAGS"
       LDFLAGS="$m4_toupper([$1])_LDFLAGS $LDFLAGS"
@@ -460,14 +464,15 @@ AC_DEFUN(OCTAVE_CHECK_LIBRARY, [
 	[octave_$1_ok=yes], [m4_toupper([$1])_LIBS=""])
       AC_MSG_RESULT($octave_$1_ok)
       if test $octave_$1_ok = yes; then
-	ifelse($#, 6, [$6], [
+	m4_ifblank([$8], [
 	  warn_$1=
 	  AC_DEFINE([HAVE_]m4_toupper([$1]), 1,
             [Define if $2 is available.])
-	  [TEXINFO_]m4_toupper([$1])="@set [HAVE_]m4_toupper([$1])"])
+	  [TEXINFO_]m4_toupper([$1])="@set [HAVE_]m4_toupper([$1])"], [$8])
       fi
       LIBS="$save_LIBS"
       LDFLAGS="$save_LDFLAGS"])
+    m4_ifnblank([$6], [AC_LANG_POP($6)])
     CPPFLAGS="$save_CPPFLAGS"
   fi
   AC_SUBST(m4_toupper([$1])_LIBS)

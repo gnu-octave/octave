@@ -31,15 +31,16 @@ along with Octave; see the file COPYING.  If not, see
 #include <vector>
 
 #include "Array-util.h"
+#include "f77-fcn.h"
 #include "fNDArray.h"
 #include "functor.h"
-#include "mx-base.h"
-#include "f77-fcn.h"
 #include "lo-error.h"
 #include "lo-ieee.h"
 #include "lo-mappers.h"
-#include "oct-locbuf.h"
+#include "mx-base.h"
 #include "mx-op-defs.h"
+#include "oct-fftw.h"
+#include "oct-locbuf.h"
 
 FloatNDArray::FloatNDArray (const charNDArray& a)
   : MArrayN<float> (a.dims ())
@@ -49,8 +50,7 @@ FloatNDArray::FloatNDArray (const charNDArray& a)
     xelem (i) = static_cast<unsigned char> (a(i));
 }
 
-#if defined (HAVE_FFTW3)
-#include "oct-fftw.h"
+#if defined (HAVE_FFTW)
 
 FloatComplexNDArray
 FloatNDArray::fourier (int dim) const

@@ -24,7 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#if defined (HAVE_FFTW3)
+#if defined (HAVE_FFTW)
 
 #include <iostream>
 #include <vector>
@@ -1018,7 +1018,6 @@ octave_fftw::ifftNd (const FloatComplex *in, FloatComplex *out, const int rank,
 
   return 0;
 }
-
 
 #endif
 

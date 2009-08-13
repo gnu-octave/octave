@@ -33,7 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-obj.h"
 #include "utils.h"
 
-#if defined (HAVE_FFTW3)
+#if defined (HAVE_FFTW)
 #define FFTSRC "@sc{fftw}"
 #else
 #define FFTSRC "@sc{fftpack}"

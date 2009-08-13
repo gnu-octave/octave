@@ -38,30 +38,27 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "Array-util.h"
-#include "fCMatrix.h"
 #include "DET.h"
+#include "f77-fcn.h"
+#include "fCMatrix.h"
+#include "fCmplxCHOL.h"
 #include "fCmplxSCHUR.h"
 #include "fCmplxSVD.h"
-#include "fCmplxCHOL.h"
-#include "f77-fcn.h"
 #include "functor.h"
 #include "lo-error.h"
-#include "oct-locbuf.h"
 #include "lo-ieee.h"
 #include "lo-mappers.h"
 #include "lo-utils.h"
 #include "mx-base.h"
 #include "mx-fcm-fdm.h"
-#include "mx-fdm-fcm.h"
 #include "mx-fcm-fs.h"
+#include "mx-fdm-fcm.h"
 #include "mx-inlines.cc"
 #include "mx-op-defs.h"
 #include "oct-cmplx.h"
-#include "oct-norm.h"
-
-#if defined (HAVE_FFTW3)
 #include "oct-fftw.h"
-#endif
+#include "oct-locbuf.h"
+#include "oct-norm.h"
 
 // Fortran functions we call.
 
@@ -209,15 +206,6 @@ extern "C"
 			     F77_CHAR_ARG_LEN_DECL
 			     F77_CHAR_ARG_LEN_DECL
 			     F77_CHAR_ARG_LEN_DECL);
-
-  F77_RET_T
-  F77_FUNC (cffti, CFFTI) (const octave_idx_type&, FloatComplex*);
-
-  F77_RET_T
-  F77_FUNC (cfftf, CFFTF) (const octave_idx_type&, FloatComplex*, FloatComplex*);
-
-  F77_RET_T
-  F77_FUNC (cfftb, CFFTB) (const octave_idx_type&, FloatComplex*, FloatComplex*);
 
   F77_RET_T
   F77_FUNC (clartg, CLARTG) (const FloatComplex&, const FloatComplex&,
@@ -1211,7 +1199,7 @@ FloatComplexMatrix::pseudo_inverse (float tol) const
   return retval;
 }
 
-#if defined (HAVE_FFTW3)
+#if defined (HAVE_FFTW)
 
 FloatComplexMatrix
 FloatComplexMatrix::fourier (void) const
@@ -1300,6 +1288,18 @@ FloatComplexMatrix::ifourier2d (void) const
 }
 
 #else
+
+extern "C"
+{
+  F77_RET_T
+  F77_FUNC (cffti, CFFTI) (const octave_idx_type&, FloatComplex*);
+
+  F77_RET_T
+  F77_FUNC (cfftf, CFFTF) (const octave_idx_type&, FloatComplex*, FloatComplex*);
+
+  F77_RET_T
+  F77_FUNC (cfftb, CFFTB) (const octave_idx_type&, FloatComplex*, FloatComplex*);
+}
 
 FloatComplexMatrix
 FloatComplexMatrix::fourier (void) const

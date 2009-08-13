@@ -25,13 +25,12 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <algorithm>
-#include "ov.h"
+
+#include "oct-fftw.h"
+
 #include "defun-dld.h"
 #include "error.h"
-
-#if defined (HAVE_FFTW3)
-#include "oct-fftw.h"
-#endif
+#include "ov.h"
 
 DEFUN_DLD (fftw, args, ,
   "-*- texinfo -*-\n\
@@ -122,7 +121,7 @@ they will not be efficient and the point of calculating the wisdom is lost.\n\
       return retval;
     }
 
-#if defined (HAVE_FFTW3)
+#if defined (HAVE_FFTW)
   if (args(0).is_string ())
     {
       std::string arg0 = args(0).string_value ();
@@ -260,7 +259,7 @@ they will not be efficient and the point of calculating the wisdom is lost.\n\
     }
 #else
 
-  warning ("fftw: this copy of Octave was not configured to use FFTW3");
+  warning ("fftw: this copy of Octave was not configured to use the FFTW3 planner");
 
 #endif
 

@@ -680,7 +680,34 @@ fltk_backend.d fltk_backend.df fltk_backend.o pic/fltk_backend.o: \
 fltk_backend.oct: \
   OCT_LINK_DEPS += $(GRAPHICS_LDFLAGS) $(GRAPHICS_LIBS) $(FT2_LDFLAGS) $(FT2_LIBS)
 
-check: all
+amd.d amd.df pic/amd.o amd.o: CPPFLAGS += $(SPARSE_CPPFLAGS)
+amd.oct: OCT_LINK_DEPS += $(SPARSE_LDFLAGS) $(SPARSE_LIBS)
+
+colamd.d colamd.df pic/colamd.o colamd.o: CPPFLAGS += $(SPARSE_CPPFLAGS)
+colamd.oct: OCT_LINK_DEPS += $(SPARSE_LDFLAGS) $(SPARSE_LIBS)
+
+dmperm.d dmperm.df pic/dmperm.o dmperm.o: CPPFLAGS += $(SPARSE_CPPFLAGS)
+dmperm.oct: OCT_LINK_DEPS += $(SPARSE_LDFLAGS) $(SPARSE_LIBS)
+
+symrcm.d symrcm.df pic/symrcm.o symrcm.o: CPPFLAGS += $(SPARSE_CPPFLAGS)
+symrcm.oct: OCT_LINK_DEPS += $(SPARSE_LDFLAGS) $(SPARSE_LIBS)
+
+qr.d qr.df pic/qr.o qr.o: CPPFLAGS += $(SPARSE_CPPFLAGS)
+qr.oct: OCT_LINK_DEPS += $(SPARSE_LDFLAGS) $(SPARSE_LIBS)
+
+fft.d fft.df pic/fft.o fft.o: CPPFLAGS += $(FFTW_CPPFLAGS)
+fft.oct: OCT_LINK_DEPS += $(FFTW_LDFLAGS) $(FFTW_LIBS)
+
+fft2.d fft2.df pic/fft2.o fft2.o: CPPFLAGS += $(FFTW_CPPFLAGS)
+fft2.oct: OCT_LINK_DEPS += $(FFTW_LDFLAGS) $(FFTW_LIBS)
+
+fftn.d fftn.df pic/fftn.o fftn.o: CPPFLAGS += $(FFTW_CPPFLAGS)
+fftn.oct: OCT_LINK_DEPS += $(FFTW_LDFLAGS) $(FFTW_LIBS)
+
+fftw.d fftw.df pic/fftw.o fftw.o: CPPFLAGS += $(FFTW_CPPFLAGS)
+fftw.oct: OCT_LINK_DEPS += $(FFTW_LDFLAGS) $(FFTW_LIBS)
+
+pcheck: all
 .PHONY: check
 
 ifdef omit_deps

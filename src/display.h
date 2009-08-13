@@ -29,10 +29,10 @@ class display_info
 {
 protected:
 
-  display_info (void)
+  display_info (bool query = true)
     : ht (1), wd (1), dp (0), rx (72), ry (72)
   {
-    init ();
+    init (query);
   }
 
 public:
@@ -62,6 +62,13 @@ public:
     return instance_ok () ? instance->do_y_dpi () : 0;
   }
 
+  // To disable querying the window system for defaults, this function
+  // must be called before any other display_info function.
+  static void no_window_system (void)
+  {
+    instance_ok (false);
+  }
+
 private:
 
   static display_info *instance;
@@ -82,9 +89,9 @@ private:
   double do_x_dpi (void) const { return rx; }
   double do_y_dpi (void) const { return ry; }
 
-  void init (void);
+  void init (bool query = true);
 
-  static bool instance_ok (void);
+  static bool instance_ok (bool query = true);
 };
 
 #endif

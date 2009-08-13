@@ -49,7 +49,7 @@
 # endif
 #endif
 
-#if HAVE_TZNAME
+#if HAVE_TZNAME && !HAVE_DECL_TZNAME
 extern OCTAVE_IMPORT char *tzname[];
 #endif
 

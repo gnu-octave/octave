@@ -453,7 +453,7 @@ AC_DEFUN(OCTAVE_CHECK_LIBRARY, [
       save_LDFLAGS="$LDFLAGS"
       LDFLAGS="$m4_toupper([$1])_LDFLAGS $LDFLAGS"
       save_LIBS="$LIBS"
-      LIBS="$m4_toupper([$1])_LIBS"
+      LIBS="$m4_toupper([$1])_LIBS $LIBS"
       octave_$1_ok=no
       AC_MSG_CHECKING([for $5 in $m4_toupper([$1])_LIBS])
       AC_LINK_IFELSE([AC_LANG_CALL([], [$5])],

@@ -1,3 +1,8 @@
+2009-08-13  Jaroslav Hajek  <highegg@gmail.com>
+
+	* aclocal.m4 (OCTAVE_CHECK_LIBRARY): Prepend to LIBS rather than
+	replacing.
+
 2009-08-13  John W. Eaton  <jwe@octave.org>
 
 	* Makeconf.in (QHULL_CPPFLAGS, QHULL_LDFLAGS, CURL_CPPFLAGS,

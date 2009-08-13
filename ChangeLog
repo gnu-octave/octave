@@ -1,3 +1,18 @@
+2009-08-13  John W. Eaton  <jwe@octave.org>
+
+	* Makeconf.in (QHULL_CPPFLAGS, QHULL_LDFLAGS, CURL_CPPFLAGS,
+	CURL_LDFLAGS): New variables.
+	(do-subst-config-vals): Substitute QHULL_CPPFLAGS, QHULL_LDFLAGS,
+	CURL_CPPFLAGS, and CURL_LDFLAGS
+	* configure.in: Use OCTAVE_CHECK_LIBRARY to check for qhull and
+	curl libraries.  Print QHULL_CPPFLAGS, QHULL_LDFLAGS,
+	CURL_CPPFLAGS, and CURL_LDFLAGS in the summary.  Print glpk
+	library warning at time of check.  Use AC_MSG_WARN, not
+	AC_MSG_RESULT, to print fftw warning.
+	* aclocal.m4 (OCTAVE_CHECK_LIBRARY): New macro.
+	(AC_CHECK_QHULL_VERSION, AC_CHECK_QHULL_OK):
+	Implement with modern autoconf macros.
+
 2009-08-11  John W. Eaton  <jwe@octave.org>
 
 	* configure.in: Define and substitute TERM_LIBS instead of

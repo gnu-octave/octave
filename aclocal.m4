@@ -411,6 +411,72 @@ AC_DEFUN(OCTAVE_F77_FLAG, [
   fi
 ])
 dnl
+dnl
+dnl
+dnl OCTAVE_CHECK_LIBRARY(LIBRARY, DOC-NAME, WARN-MSG, HEADER, FUNC, EXTRA-CHECK)
+AC_DEFUN(OCTAVE_CHECK_LIBRARY, [
+  AC_ARG_WITH($1-includedir,
+    [AS_HELP_STRING([--with-$1-includedir=DIR],
+      [look for $2 include files in DIR])],
+    [m4_toupper([$1])_CPPFLAGS="-I$withval"])
+  AC_SUBST(m4_toupper([$1])_CPPFLAGS)
+
+  AC_ARG_WITH($1-libdir,
+    [AS_HELP_STRING([--with-$1-libdir=DIR],
+      [look for $2 libraries in DIR])],
+    [m4_toupper([$1])_LDFLAGS="-L$withval"])
+  AC_SUBST(m4_toupper([$1])_LDFLAGS)
+
+  AC_ARG_WITH($1,
+    [AS_HELP_STRING([--without-$1], [don't use $2])],
+    with_$1=$withval, with_$1=yes)
+
+  m4_toupper([$1])_LIBS=
+  case $with_$1 in
+    yes | "")
+      m4_toupper([$1])_LIBS="-l$1"
+    ;;
+    -* | */* | *.a | *.so | *.so.* | *.o)
+      m4_toupper([$1])_LIBS="$with_$1"
+    ;;
+    *)
+      m4_toupper([$1])_LIBS="-l$with_$1"
+    ;;
+  esac
+
+  [TEXINFO_]m4_toupper([$1])=
+  warn_$1="$3"
+  if test -n "$m4_toupper([$1])_LIBS"; then
+    save_CPPFLAGS="$CPPFLAGS"
+    CPPFLAGS="$m4_toupper([$1])_CPPFLAGS $CPPFLAGS"
+    AC_CHECK_HEADERS($4, [
+      save_LDFLAGS="$LDFLAGS"
+      LDFLAGS="$m4_toupper([$1])_LDFLAGS $LDFLAGS"
+      save_LIBS="$LIBS"
+      LIBS="$m4_toupper([$1])_LIBS"
+      octave_$1_ok=no
+      AC_MSG_CHECKING([for $5 in $m4_toupper([$1])_LIBS])
+      AC_LINK_IFELSE([AC_LANG_CALL([], [$5])],
+	[octave_$1_ok=yes], [m4_toupper([$1])_LIBS=""])
+      AC_MSG_RESULT($octave_$1_ok)
+      if test $octave_$1_ok = yes; then
+	ifelse($#, 6, [$6], [
+	  warn_$1=
+	  AC_DEFINE([HAVE_]m4_toupper([$1]), 1,
+            [Define if $2 is available.])
+	  [TEXINFO_]m4_toupper([$1])="@set [HAVE_]m4_toupper([$1])"])
+      fi
+      LIBS="$save_LIBS"
+      LDFLAGS="$save_LDFLAGS"])
+    CPPFLAGS="$save_CPPFLAGS"
+  fi
+  AC_SUBST(m4_toupper([$1])_LIBS)
+  AC_SUBST([TEXINFO_]m4_toupper([$1]))
+  if test -n "$warn_$1"; then
+    AC_MSG_WARN($warn_$1)
+  fi
+])
+dnl
 dnl Check for flex
 dnl
 AC_DEFUN(OCTAVE_PROG_FLEX, [
@@ -929,80 +995,43 @@ AC_DEFUN([OCTAVE_HDF5_HAS_REQUIRED_API], [
 dnl
 dnl Check for the QHull version.
 dnl
-AC_DEFUN(AC_CHECK_QHULL_VERSION,
-[AC_MSG_CHECKING([for qh_qhull in -lqhull with qh_version])
-AC_CACHE_VAL(octave_cv_lib_qhull_version,  [
-cat > conftest.c <<EOF
-#include <stdio.h>
-char *qh_version = "version";
-char qh_qhull();
-int
-main(argc, argv)
-  int argc;
-  char **argv;
-{
-  qh_qhull();
-  return 0;
-}
-EOF
-
-octave_qhull_try="${CC-cc} $CFLAGS $CPPFLAGS $LDFLAGS conftest.c -o conftest -lqhull $LIBS"
-if (eval "$octave_qhull_try") 2>&AS_MESSAGE_LOG_FD && test -s conftest ; then
-    octave_cv_lib_qhull_version=yes
-else
-    octave_cv_lib_qhull_version=no
-fi
-rm -f conftest.c conftest.o conftest
-])dnl
-if test "$octave_cv_lib_qhull_version" = "yes"; then
-  AC_MSG_RESULT(yes)
-  ifelse([$1], , , [$1])
-else
-  AC_MSG_RESULT(no)
-  ifelse([$2], , , [$2])
-fi
+AC_DEFUN(OCTAVE_CHECK_QHULL_VERSION,
+  [AC_CACHE_CHECK([for qh_version in $QHULL_LIBS],
+    octave_cv_lib_qhull_version,  [
+      AC_LINK_IFELSE([AC_LANG_PROGRAM([[
+#include <qhull/qhull_a.h>
+]], [[
+const char *tmp = qh_version;
+]])], [octave_cv_lib_qhull_version=yes], [octave_cv_lib_qhull_version=no])])
+  if test "$octave_cv_lib_qhull_version" = no; then
+    AC_DEFINE(NEED_QHULL_VERSION, 1,
+      [Define if the QHull library needs a qh_version variable defined.])
+  fi
 ])
 dnl
 dnl Check whether QHull works (does not crash)
 dnl
-AC_DEFUN(AC_CHECK_QHULL_OK,
-[AC_MSG_CHECKING([whether the qhull library works])
-AC_CACHE_VAL(octave_cv_lib_qhull_ok,
-[
-  save_LIBS="$LIBS"
-  LIBS="$LIBS -lqhull"
-  case $host in
-    *-mingw*|*-msdosmsvc*) ;;
-    *) LIBS="$LIBS -lm" ;;
-  esac
-AC_RUN_IFELSE([AC_LANG_SOURCE([[
+AC_DEFUN(OCTAVE_CHECK_QHULL_OK,
+  [AC_CACHE_CHECK([whether the qhull library works],
+    octave_cv_lib_qhull_ok, [
+      AC_RUN_IFELSE([AC_LANG_PROGRAM([[
 #include <stdio.h>
 #include <qhull/qhull.h>
-
 #ifdef NEED_QHULL_VERSION
 char *qh_version = "version";
 #endif
-int main()
-{
-  int dim = 2, n = 4;
-  coordT points[8] = { -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, 0.5 };
-  boolT ismalloc = 0;
-
-  return qh_new_qhull (dim, n, points, ismalloc, "qhull ", 0, stderr); 
-}
-]])],
-  [octave_cv_lib_qhull_ok=yes],
-  [octave_cv_lib_qhull_ok=no],
-  [octave_cv_lib_qhull_ok=yes])
-  LIBS="$save_LIBS"
-])
-if test "$octave_cv_lib_qhull_ok" = "yes"; then
-  AC_MSG_RESULT(yes)
-  ifelse([$1], , , [$1])
-else
-  AC_MSG_RESULT(no)
-  ifelse([$2], , , [$2])
-fi
+]], [[
+int dim = 2;
+int n = 4;
+coordT points[8] = { -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, 0.5 };
+boolT ismalloc = 0;
+return qh_new_qhull (dim, n, points, ismalloc, "qhull ", 0, stderr); 
+]])], [octave_cv_lib_qhull_ok=yes], [octave_cv_lib_qhull_ok=no])])
+  if test "$octave_cv_lib_qhull_ok" = "yes"; then
+    $1
+  else
+    $2
+  fi
 ])
 dnl
 dnl Check for OpenGL. If found, define OPENGL_LIBS

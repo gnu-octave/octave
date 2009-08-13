@@ -640,23 +640,45 @@ oct-gperf.h: octave.gperf
 	mv $@-t2 $@
 	rm -f $@-t1
 
-display.o: CPPFLAGS += $(X11_FLAGS)
+display.d display.df display.o pic/display.o: CPPFLAGS += $(X11_FLAGS)
 
-__magick_read__.d: CPPFLAGS += $(MAGICK_INCFLAGS)
-__magick_read__.df: CPPFLAGS += $(MAGICK_INCFLAGS)
-__magick_read__.o pic/__magick_read__.o: CPPFLAGS += $(MAGICK_INCFLAGS)
+__magick_read__.d __magick_read__.df __magick_read__.o pic/__magick_read__.o: \
+  CPPFLAGS += $(MAGICK_INCFLAGS)
 __magick_read__.oct: OCT_LINK_DEPS += $(MAGICK_LIBS)
 
-convhulln.oct: OCT_LINK_DEPS += $(QHULL_LIBS)
-__delaunayn__.oct: OCT_LINK_DEPS += $(QHULL_LIBS)
-__voronoi__.oct: OCT_LINK_DEPS += $(QHULL_LIBS)
-eigs.oct: OCT_LINK_DEPS += $(ARPACK_LIBS)
-qr.oct: OCT_LINK_DEPS += $(QRUPDATE_LIBS)
-chol.oct: OCT_LINK_DEPS += $(QRUPDATE_LIBS)
-regexp.oct: OCT_LINK_DEPS += $(REGEX_LIBS)
-urlwrite.oct: OCT_LINK_DEPS += $(CURL_LIBS)
-__glpk__.oct: OCT_LINK_DEPS += $(GLPK_LIBS)
-fltk_backend.oct: OCT_LINK_DEPS += $(GRAPHICS_LIBS) $(FT2_LIBS)
+convhull.d convhull.df convhull.o pic/convhull.o: CPPFLAGS += $(QHULL_CPPFLAGS)
+convhulln.oct: OCT_LINK_DEPS += $(QHULL_LDFLAGS) $(QHULL_LIBS)
+
+__delaunayn__.d __delaunayn__.df __delaunayn__.o pic/__delaunayn__.o: \
+  CPPFLAGS += $(QHULL_CPPFLAGS)
+__delaunayn__.oct: OCT_LINK_DEPS += $(QHULL_LDFLAGS) $(QHULL_LIBS)
+
+__voronoi__.d __voronoi__.df __voronoi__.o pic/__voronoi__.o: \
+  CPPFLAGS += $(QHULL_CPPFLAGS)
+__voronoi__.oct: OCT_LINK_DEPS += $(QHULL_LDFLAGS) $(QHULL_LIBS)
+
+eigs.d eigs.df eigs.o pic/eigs.o: CPPFLAGS += $(ARPACK_CPPFLAGS)
+eigs.oct: OCT_LINK_DEPS += $(ARPACK_LDFLAGS) $(ARPACK_LIBS)
+
+qr.d qr.df qr.o pic/qr.o: CPPFLAGS += $(QRUPDATE_CPPFLAGS)
+qr.oct: OCT_LINK_DEPS += $(QRUPDATE_LDFLAGS) $(QRUPDATE_LIBS)
+
+chol.d chol.df chol.o pic/chol.o: CPPFLAGS += $(QRUPDATE_CPPFLAGS)
+chol.oct: OCT_LINK_DEPS += $(QRUPDATE_LDFLAGS) $(QRUPDATE_LIBS)
+
+regexp.d regexp.df regexp.o pic/regexp.o: CPPFLAGS += $(REGEX_CPPFLAGS)
+regexp.oct: OCT_LINK_DEPS += $(REGEX_LDFLAGS) $(REGEX_LIBS)
+
+urlwrite.d urlwrite.df urlwrite.o pic/urlwrite.o: CPPFLAGS += $(CURL_CPPFLAGS)
+urlwrite.oct: OCT_LINK_DEPS += $(CURL_LDFLAGS) $(CURL_LIBS)
+
+__glpk__.d __glpk__.df __glpk__.o pic/__glpk__.o: CPPFLAGS += $(GLPK_CPPFLAGS)
+__glpk__.oct: OCT_LINK_DEPS += $(GLPK_LDFLAGS) $(GLPK_LIBS)
+
+fltk_backend.d fltk_backend.df fltk_backend.o pic/fltk_backend.o: \
+  CPPFLAGS += $(GRAPHICS_CPPFLAGS) $(FT2_CPPFLAGS)
+fltk_backend.oct: \
+  OCT_LINK_DEPS += $(GRAPHICS_LDFLAGS) $(GRAPHICS_LIBS) $(FT2_LDFLAGS) $(FT2_LIBS)
 
 check: all
 .PHONY: check

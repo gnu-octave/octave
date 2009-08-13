@@ -423,32 +423,15 @@ case "$canonical_host_type" in
 esac
 
 ### Check for the QHull library
-AC_SUBST(QHULL_LIBS)
-AC_CHECK_HEADER(qhull/qhull_a.h, have_qhull=yes, have_qhull=no)
-if test "$have_qhull" = yes; then
-  AC_CHECK_LIB(qhull, qh_qhull, have_qhull=yes, have_qhull=no)
-  if test "$have_qhull" != yes; then
-    AC_CHECK_QHULL_VERSION(have_qhull=yes, have_qhull=no)
-    AC_DEFINE(NEED_QHULL_VERSION, 1, [Define if the QHull library needs a wh_version variable defined.])
-  fi
-  if test "$have_qhull" = yes; then
-    AC_CHECK_QHULL_OK(have_qhull=yes, have_qhull=bad)
-  fi
-fi
-if test "$have_qhull" = yes; then
-  AC_DEFINE(HAVE_QHULL, 1, [Define if the QHull library is used.])
-  QHULL_LIBS="-lqhull"
-  TEXINFO_QHULL="@set HAVE_QHULL"
-else
-  if test "$have_qhull" = bad; then
-    warn_qhull="Qhull library found, but seems not to work properly --- This will result in loss of functionality of some geometry functions. Please try recompiling the library with -fno-strict-aliasing."
-  else
-    warn_qhull="Qhull library not found --- This will result in loss of functionality of some geometry functions."
-  fi
-  AC_MSG_WARN($warn_qhull)
-fi
 
-AC_SUBST(TEXINFO_QHULL)
+OCTAVE_CHECK_LIBRARY(qhull, QHull,
+  [Qhull library not found -- this will result in loss of functionality of some geometry functions.],
+  [qhull/qhull_a.h], [qh_qhull],
+  [warn_qhull=
+   OCTAVE_CHECK_QHULL_VERSION
+   OCTAVE_CHECK_QHULL_OK([TEXINFO_QHULL="@set HAVE_QHULL"
+     AC_DEFINE(HAVE_QHULL, 1, [Define if QHull is available.])], [
+     warn_qhull="Qhull library found, but seems not to work properly -- this will result in loss of functionality of some geometry functions.  Please try recompiling the library with -fno-strict-aliasing."])])
 
 ### Check for pcre/regex library.
 
@@ -606,7 +589,7 @@ if test "$with_fftw" = yes && test "$with_fftw3" = yes; then
   AC_DEFINE(HAVE_FFTW3, 1, [Define if the FFTW3 library is used.])
 else
   warn_fftw="FFTW library not found.  Octave will use the (slower) FFTPACK library instead."
-  AC_MSG_RESULT($warn_fftw)
+  AC_MSG_WARN($warn_fftw)
 fi
 
 # Checks for GLPK header and library.
@@ -639,35 +622,14 @@ fi
 AC_SUBST(GLPK_LIBS)
 if test -z "$GLPK_LIBS"; then
   warn_glpk="GLPK library not found.  The glpk function for solving linear programs will be disabled."
+  AC_MSG_WARN($warn_glpk)
 fi
 
 # Checks for CURL header and library.
 
-AC_ARG_WITH(curl,
-  [AS_HELP_STRING([--without-curl], [don't use CURL])],
-  with_curl=$withval, with_curl=yes)
-
-curl_lib=
-if test "$with_curl" = yes; then
-  curl_lib="curl"
-elif test "$with_curl" != no; then
-  curl_lib="$with_curl"
-else
-  curl_missing=yes
-fi
-
-CURL_LIBS=
-if test -n "$curl_lib"; then
-  AC_CHECK_LIB($curl_lib, curl_easy_escape, [
-    AC_CHECK_HEADERS(curl/curl.h, [
-      CURL_LIBS="-l$curl_lib"
-      AC_DEFINE(HAVE_CURL, 1, [Define if CURL is available.])], [
-      curl_missing=yes])])
-fi
-AC_SUBST(CURL_LIBS)
-if test "$curl_missing" = yes; then
-  warn_curl="cURL library not found.  The urlread and urlwrite functions will be disabled."
-fi
+OCTAVE_CHECK_LIBRARY(curl, cURL,
+  [cURL library not found.  The urlread and urlwrite functions will be disabled.],
+  [curl/curl.h], [curl_easy_escape])
 
 # GraphicsMagick++
 
@@ -2208,34 +2170,40 @@ Octave is now configured for $canonical_host_type
   C++ compiler:         $CXX $XTRA_CXXFLAGS $WARN_CXXFLAGS $CXXFLAGS
   Fortran compiler:     $F77 $FFLAGS
   Fortran libraries:    $FLIBS
-  BLAS libraries:       $BLAS_LIBS
-  FFTW libraries:       $FFTW_LIBS
-  GLPK libraries:       $GLPK_LIBS
-  UMFPACK libraries:    $UMFPACK_LIBS
+  LIBS:                 $LIBS
+
   AMD libraries:        $AMD_LIBS
+  ARPACK libraries:     $ARPACK_LIBS
+  BLAS libraries:       $BLAS_LIBS
   CAMD libraries:       $CAMD_LIBS
-  COLAMD libraries:     $COLAMD_LIBS
+  CARBON libraries:     $CARBON_LIBS
   CCOLAMD libraries:    $CCOLAMD_LIBS
   CHOLMOD libraries:    $CHOLMOD_LIBS
-  CXSPARSE libraries:   $CXSPARSE_LIBS
-  ARPACK libraries:     $ARPACK_LIBS
-  QRUPDATE libraries:	$QRUPDATE_LIBS
-  HDF5 libraries:       $HDF5_LIBS
-  ZLIB libraries:       $ZLIB_LIBS
+  COLAMD libraries:     $COLAMD_LIBS
+  CURL CPPFLAGS:        $CURL_CPPFLAGS
+  CURL LDFLAGS:         $CURL_LDFLAGS
   CURL libraries:       $CURL_LIBS
-  REGEX libraries:      $REGEX_LIBS
-  QHULL libraries:	$QHULL_LIBS
-  OPENGL libraries:     $OPENGL_LIBS
+  CXSPARSE libraries:   $CXSPARSE_LIBS
+  DL libraries:         $DL_LIBS
+  FFTW libraries:       $FFTW_LIBS
   FLTK backend libs:    $GRAPHICS_LIBS
-  X11 include flags:    $X11_INCFLAGS
-  X11 libraries:        $X11_LIBS
-  CARBON libraries:     $CARBON_LIBS
+  GLPK libraries:       $GLPK_LIBS
+  HDF5 libraries:       $HDF5_LIBS
+  OPENGL libraries:     $OPENGL_LIBS
   PTHREAD flags:        $PTHREAD_CFLAGS
   PTHREAD libraries:    $PTHREAD_LIBS
+  QHULL CPPFLAGS:       $QHULL_CPPFLAGS
+  QHULL LDFLAGS:        $QHULL_LDFLAGS
+  QHULL libraries:      $QHULL_LIBS
+  QRUPDATE libraries:   $QRUPDATE_LIBS
   READLINE libraries:   $READLINE_LIBS
+  REGEX libraries:      $REGEX_LIBS
   TERM libraries:       $TERM_LIBS
-  DL libraries:         $DL_LIBS
-  LIBS:                 $LIBS
+  UMFPACK libraries:    $UMFPACK_LIBS
+  X11 include flags:    $X11_INCFLAGS
+  X11 libraries:        $X11_LIBS
+  ZLIB libraries:       $ZLIB_LIBS
+
   Default pager:        $DEFAULT_PAGER
   gnuplot:              $GNUPLOT
   Magick config:        $MAGICK_CONFIG

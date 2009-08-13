@@ -1,3 +1,14 @@
+2009-08-13  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.in: Consistently add library-specific CPPFLAGS and
+	LDFLAGS variables to CPPFLAGS and LDFLAGS for .oct files that need
+	them.  Also add X11_FLAGS to CPPFLAGS for display.d display.df and
+	pic/display.o.
+
+	* oct-conf.h.in: New #defines for QHULL_CPPFLAGS, QHULL_LDFLAGS,
+	CURL_CPPFLAGS, and CURL_LDFLAGS.
+	* toplev.cc (octave_config_info): Include them in the list.
+
 2009-08-12  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Makefile.in: Include LDFLAGS when linking shared executable.

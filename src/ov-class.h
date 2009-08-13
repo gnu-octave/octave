@@ -146,7 +146,7 @@ public:
   bool print_name_tag (std::ostream& os, const std::string& name) const;
 
   void print_with_name (std::ostream& os, const std::string& name, 
-			bool print_padding = true) const;
+			bool print_padding = true);
 
   bool reconstruct_exemplar (void);
 

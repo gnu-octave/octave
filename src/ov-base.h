@@ -125,15 +125,23 @@ public:
 
   octave_base_value (void) : count (1) { }
 
-  octave_base_value (const octave_base_value&) { }
+  octave_base_value (const octave_base_value&) : count (1) { }
 
   virtual ~octave_base_value (void) { }
 
+  // Unconditional clone. Always clones.
   virtual octave_base_value *
   clone (void) const { return new octave_base_value (*this); }
 
+  // Empty clone.
   virtual octave_base_value *
   empty_clone (void) const { return new octave_base_value (); }
+
+  // Unique clone. Usually clones, but may be overriden to fake the
+  // cloning when sharing copies is to be controlled from within an
+  // instance (see octave_class).
+  virtual octave_base_value *
+  unique_clone (void) { return clone (); }
 
   virtual type_conv_info
   numeric_conversion_function (void) const
@@ -500,7 +508,7 @@ public:
 
   virtual void
   print_with_name (std::ostream& output_buf, const std::string& name, 
-		   bool print_padding = true) const;
+		   bool print_padding = true);
 
   virtual void print_info (std::ostream& os, const std::string& prefix) const;
 
@@ -643,7 +651,10 @@ protected:
   void reset (void) const;
 
   // A reference count.
-  int count;
+  // NOTE: the declaration is octave_idx_type because with 64-bit indexing,
+  // it is well possible to have more than MAX_INT copies of a single value
+  // (think of an empty cell array with >2G elements).
+  octave_idx_type count;
 
 private:
 

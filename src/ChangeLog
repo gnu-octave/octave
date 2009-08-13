@@ -1,3 +1,20 @@
+2009-08-12  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-base.h (octave_base_value::count): Declare as octave_idx_type.
+	(octave_base_value::octave_base_value (const octave_base_value&)):
+	Initialize count to 1.
+	(octave_base_value::unique_clone ()): New method.
+	(octave_base_value::print_with_name): Declare as non-const.
+	* ov-base.cc (octave_base_value::print_with_name): Update.
+	* ov.h (octave_value::make_unique (void)): Don't set rep->count.
+	Call unique_clone.
+	(octave_value::make_unique (int)): Don't set rep->count.
+	Call unique_clone.
+	(octave_value::octave_value (const octave_base_value *)): Declare
+	as private.
+	* ov-class.cc (octave_class::print_with_name): Avoid using clone ().
+	* ov-class.h (octave_class::print_with_name): Declare as non-const.
+
 2009-08-13  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.in: Consistently add library-specific CPPFLAGS and

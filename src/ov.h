@@ -303,8 +303,7 @@ public:
       if (rep->count > 1)
 	{
 	  --rep->count;
-	  rep = rep->clone ();
-	  rep->count = 1;
+	  rep = rep->unique_clone ();
 	}
     }
 
@@ -316,8 +315,7 @@ public:
       if (rep->count > obsolete_copies + 1)
 	{
 	  --rep->count;
-	  rep = rep->clone ();
-	  rep->count = 1;
+	  rep = rep->unique_clone ();
 	}
     }
 
@@ -1141,6 +1139,10 @@ private:
   assign_op unary_op_to_assign_op (unary_op op);
 
   binary_op op_eq_to_binary_op (assign_op op);
+
+  // This declaration protects against constructing octave_value from
+  // const octave_base_value* which actually silently calls octave_value (bool).
+  octave_value (const octave_base_value *);
 
   DECLARE_OCTAVE_ALLOCATOR
 };

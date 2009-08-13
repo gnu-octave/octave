@@ -386,7 +386,7 @@ octave_base_value::print_name_tag (std::ostream& os, const std::string& name) co
 void
 octave_base_value::print_with_name (std::ostream& output_buf,
 				    const std::string& name, 
-				    bool print_padding) const
+				    bool print_padding)
 {
   bool pad_after = print_name_tag (output_buf, name);
 

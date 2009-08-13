@@ -906,7 +906,7 @@ octave_class::print_name_tag (std::ostream& os, const std::string& name) const
 
 void
 octave_class::print_with_name (std::ostream&, const std::string& name, 
-			       bool) const
+			       bool)
 {
   octave_value fcn = symbol_table::find_method ("display", class_name ());
 
@@ -914,7 +914,8 @@ octave_class::print_with_name (std::ostream&, const std::string& name,
     {
       octave_value_list args;
 
-      args(0) = octave_value (clone (), 1);
+      count++;
+      args(0) = octave_value (this);
       
       string_vector arg_names (1);
 

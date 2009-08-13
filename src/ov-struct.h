@@ -63,7 +63,13 @@ public:
   octave_base_value *clone (void) const { return new octave_struct (*this); }
   octave_base_value *empty_clone (void) const { return new octave_struct (); }
 
-  Cell dotref (const octave_value_list& idx, bool auto_add = false);
+  virtual Cell dotref (const octave_value_list& idx)
+    { return dotref (idx, false); }
+
+  Cell dotref (const octave_value_list& idx, bool auto_add);
+
+  virtual octave_value dotasgn (const octave_value_list& idx,
+                                const octave_value& rhs);
 
   octave_value subsref (const std::string& type,
 			const std::list<octave_value_list>& idx)
@@ -148,6 +154,8 @@ public:
   mxArray *as_mxArray (void) const;
 
 protected:
+
+  virtual void gripe_failed_assignment (void);
 
   // The associative array used to manage the structure data.
   Octave_map map;

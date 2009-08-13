@@ -1,3 +1,36 @@
+2009-08-13  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-class.h (octave_class): Derive from octave_struct.
+	(octave_class::octave_class): Update all constructors.
+	(octave_class::numeric_conv, octave_class::byte_size, octave_class::numel, octave_class::nfields,
+	octave_class::reshape, octave_class::resize, octave_class::is_defined,
+	octave_class::map_value): Remove methods (inherit).
+	* ov-class.h (octave_class::obsolete_copies): New field.
+	Init to 0 in all constructors.
+	(octave_class::unique_clone): New decl.
+	* ov-class.cc (octave_class::unique_clone): Fake clone if all
+	remaining copies are obsolete.
+	(octave_class::subsref): Share code with octave_struct::subsref.
+	(octave_class::subsref (..., bool auto_add)): New method.
+	(octave_class::subsasgn): If plausible, attempt to
+	optimize the method call by marking appropriate number of copies
+	obsolete. Share code with octave_struct::subsasgn.
+	(octave_class::dotasgn): New method override.
+	* ov-struct.h (octave_struct::dotref): New virtual overload.
+	(octave_struct::dotasgn): New virtual method decl.
+	* ov-struct.cc (octave_struct::dotasgn): New virtual method.
+	* ov-usr-fcn.h (octave_user_function::num_args_passed,
+	octave_user_function::saved_args): Remove fields. Wipe from all
+	constructor lists.
+	(octave_user_function::save_args_passed,
+	octave_user_function::restore_args_passed): Remove methods.
+	(octave_user_function::all_va_args): Update decl.
+	(octave_user_function::subsasgn_optimization_ok): New method decl.
+	* ov-usr-fcn.cc (octave_user_function::all_va_args): Rename from
+	octave_all_va_args, take args as a parameter.
+	(octave_user_function::subsasgn_optimization_ok): New method.
+	(octave_user_function::do_multi_index_op): Simplify.
+
 2009-08-12  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-base.h (octave_base_value::count): Declare as octave_idx_type.

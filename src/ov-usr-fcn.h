@@ -240,7 +240,7 @@ public:
 
   void unlock_subfunctions (void);
 
-  octave_value_list octave_all_va_args (void);
+  octave_value_list all_va_args (const octave_value_list& args);
 
   void stash_function_name (const std::string& s) { my_name = s; }
 
@@ -259,25 +259,6 @@ public:
   void mark_as_class_method (void) { class_method = true; }
 
   bool is_class_method (void) const { return class_method; }
-
-  void save_args_passed (const octave_value_list& args)
-    {
-      if (call_depth > 0)
-	saved_args.push (args_passed);
-
-      args_passed = args;
-    }
-
-  void restore_args_passed (void)
-    {
-      if (saved_args.empty ())
-	args_passed = octave_value_list ();
-      else
-	{
-	  args_passed = saved_args.top ();
-	  saved_args.pop ();
-	}
-    }
 
   octave_value subsref (const std::string& type,
 			const std::list<octave_value_list>& idx)
@@ -302,6 +283,8 @@ public:
   octave_comment_list *leading_comment (void) { return lead_comm; }
 
   octave_comment_list *trailing_comment (void) { return trail_comm; }
+
+  bool subsasgn_optimization_ok (void);
 
   void accept (tree_walker& tw);
 
@@ -362,15 +345,6 @@ private:
 
   // TRUE means this function is a method for a class.
   bool class_method;
-
-  // The values that were passed as arguments.
-  octave_value_list args_passed;
-
-  // A place to store the passed args for recursive calls.
-  std::stack<octave_value_list> saved_args;
-
-  // The number of arguments passed in.
-  int num_args_passed;
 
   // The scope of the parent function, if any.
   symbol_table::scope_id parent_scope;

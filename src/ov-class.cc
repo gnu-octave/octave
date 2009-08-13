@@ -1,6 +1,7 @@
 /*
 
 Copyright (C) 2007, 2008, 2009 John W. Eaton
+Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
 
@@ -44,6 +45,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-lvalue.h"
 #include "ov-class.h"
 #include "ov-fcn.h"
+#include "ov-usr-fcn.h"
 #include "pager.h"
 #include "parse.h"
 #include "pr-output.h"
@@ -66,7 +68,7 @@ octave_class::register_type (void)
 
 octave_class::octave_class (const Octave_map& m, const std::string& id, 
 			    const octave_value_list& parents)
-  : octave_base_value (), map (m), c_name (id)
+  : octave_struct (m), c_name (id), obsolete_copies (0)
 {
   octave_idx_type n = parents.length ();
 
@@ -95,6 +97,25 @@ octave_class::octave_class (const Octave_map& m, const std::string& id,
     load_path::add_to_parent_map (id, parent_list);
 }
 
+octave_base_value *
+octave_class::unique_clone (void)
+{ 
+  if (count == obsolete_copies)
+    {
+      // All remaining copies are obsolete. We don't actually need to clone.
+      count++;
+      return this;
+    }
+  else
+    { 
+      // In theory, this shouldn't be happening, but it's here just in case.
+      if (count < obsolete_copies)
+        obsolete_copies = 0;
+
+      return clone (); 
+    }
+}
+
 static std::string
 get_current_method_class (void)
 {
@@ -115,24 +136,6 @@ static void
 gripe_invalid_index (void)
 {
   error ("invalid index for class");
-}
-
-static void
-gripe_invalid_index_for_assignment (void)
-{
-  error ("invalid index for class assignment");
-}
-
-static void
-gripe_invalid_index_type (const std::string& nm, char t)
-{
-  error ("%s cannot be indexed with %c", nm.c_str (), t);
-}
-
-static void
-gripe_failed_assignment (void)
-{
-  error ("assignment to class element failed");
 }
 
 static inline octave_value_list
@@ -368,68 +371,7 @@ octave_class::subsref (const std::string& type,
   octave_value_list retval;
 
   if (in_class_method () || called_from_builtin ())
-    {
-      // FIXME -- this block of code is the same as the body of
-      // octave_struct::subsref.  Maybe it could be shared instead of
-      // duplicated.
-
-      int skip = 1;
-
-      switch (type[0])
-	{
-	case '(':
-	  {
-	    if (type.length () > 1 && type[1] == '.')
-	      {
-		std::list<octave_value_list>::const_iterator p = idx.begin ();
-		octave_value_list key_idx = *++p;
-
-		Cell tmp = dotref (key_idx);
-
-		if (! error_state)
-		  {
-		    Cell t = tmp.index (idx.front ());
-
-		    retval(0) = (t.length () == 1) ? t(0) : octave_value (t, true);
-
-		    // We handled two index elements, so tell
-		    // next_subsref to skip both of them.
-
-		    skip++;
-		  }
-	      }
-	    else
-	      retval(0) = octave_value (map.index (idx.front ()),
-					class_name ());
-	  }
-	  break;
-
-	case '.':
-	  {
-	    if (map.numel() > 0)
-	      {
-		Cell t = dotref (idx.front ());
-
-		retval(0) = (t.length () == 1) ? t(0) : octave_value (t, true);
-	      }
-	  }
-	  break;
-
-	case '{':
-	  gripe_invalid_index_type (type_name (), type[0]);
-	  break;
-
-	default:
-	  panic_impossible ();
-	}
-
-      // FIXME -- perhaps there should be an
-      // octave_value_list::next_subsref member function?  See also
-      // octave_user_function::subsref.
-
-      if (idx.size () > 1)
-	retval = retval(0).next_subsref (nargout, type, idx, skip);
-    }
+    retval = octave_struct::subsref (type, idx, nargout);
   else
     {
       octave_value meth = symbol_table::find_method ("subsref", class_name ());
@@ -480,20 +422,59 @@ octave_class::subsref (const std::string& type,
   return retval;
 }
 
-octave_value
-octave_class::numeric_conv (const Cell& val, const std::string& type)
+octave_value 
+octave_class::subsref (const std::string& type,
+                       const std::list<octave_value_list>& idx,
+                       bool auto_add)
+{
+  if (in_class_method () || called_from_builtin ())
+    return octave_struct::subsref (type, idx, auto_add);
+  else
+    return subsref (type, idx);
+
+}
+
+void
+octave_class::gripe_failed_assignment (void)
+{
+  error ("assignment to class element failed");
+}
+
+octave_value 
+octave_class::dotasgn (const octave_value_list& idx, const octave_value& rhs)
 {
   octave_value retval;
 
-  if (val.length () == 1)
-    {
-      retval = val(0);
+  // Find the class in which this method resides before 
+  // attempting to access the requested field.
 
-      if (type.length () > 0 && type[0] == '.' && ! retval.is_map ())
-	retval = Octave_map ();
+  std::string method_class = get_current_method_class ();
+
+  octave_base_value *obvp = find_parent_class (method_class);
+
+  if (obvp)
+    {
+      assert (idx.length () == 1);
+
+      std::string key = idx(0).string_value ();
+
+      if (! error_state)
+        {
+          obvp->assign (key, rhs);
+
+          if (! error_state)
+            {
+              count++;
+              retval = octave_value (this);
+            }
+          else
+            gripe_failed_assignment ();
+        }
+      else
+        gripe_failed_assignment ();
     }
   else
-    gripe_invalid_index_for_assignment ();
+    error ("malformed class");
 
   return retval;
 }
@@ -503,14 +484,14 @@ octave_class::subsasgn (const std::string& type,
 			const std::list<octave_value_list>& idx,
 			const octave_value& rhs)
 {
-  octave_value retval;
-
   if (! (in_class_method () || called_from_builtin ()))
     {
       octave_value meth = symbol_table::find_method ("subsasgn", class_name ());
 
       if (meth.is_defined ())
 	{
+          octave_value retval;
+
 	  octave_value_list args;
 
           if (rhs.is_cs_list ())
@@ -531,7 +512,33 @@ octave_class::subsasgn (const std::string& type,
 	  count++;
 	  args(0) = octave_value (this);
 
-	  octave_value_list tmp = feval (meth.function_value (), args);
+          // Now comes the magic. Count copies with me:
+          // 1. myself (obsolete)
+          // 2. the copy inside args (obsolete)
+          // 3. the copy in method's symbol table (working)
+          // ... possibly more (not obsolete).
+          //
+          // So we mark 2 copies as obsolete and hold our fingers crossed.
+          // But prior to doing that, check whether the routine is amenable
+          // to the optimization.
+          // It is essential that the handling function doesn't store extra
+          // copies anywhere. If it does, things will not break but the
+          // optimization won't work.
+
+          octave_value_list tmp;
+
+          if (obsolete_copies == 0 && meth.is_user_function ()
+              && meth.user_function_value ()->subsasgn_optimization_ok ())
+            {
+              unwind_protect::protect_var (obsolete_copies);
+              obsolete_copies = 2;
+
+              tmp = feval (meth.function_value (), args);
+
+              unwind_protect::run ();
+            }
+          else
+            tmp = feval (meth.function_value (), args);
 
 	  // FIXME -- should the subsasgn method be able to return
 	  // more than one value?
@@ -547,236 +554,7 @@ octave_class::subsasgn (const std::string& type,
 	}
     }
 
-  // FIXME -- this block of code is the same as the body of
-  // octave_struct::subsasgn.  Maybe it could be shared instead of
-  // duplicated.
-
-  int n = type.length ();
-
-  octave_value t_rhs = rhs;
-
-  if (n > 1 && ! (type.length () == 2 && type[0] == '(' && type[1] == '.'))
-    {
-      switch (type[0])
-	{
-	case '(':
-	  {
-	    if (type.length () > 1 && type[1] == '.')
-	      {
-		std::list<octave_value_list>::const_iterator p = idx.begin ();
-		octave_value_list t_idx = *p;
-
-		octave_value_list key_idx = *++p;
-
-		assert (key_idx.length () == 1);
-
-		std::string key = key_idx(0).string_value ();
-
-		if (! error_state)
-		  {
-		    octave_value u;
-
-		    if (! map.contains (key))
-		      u = octave_value::empty_conv (type.substr (2), rhs);
-		    else
-		      {
-			Cell map_val = map.contents (key);
-
-			Cell map_elt = map_val.index (idx.front (), true);
-
-			u = numeric_conv (map_elt, type.substr (2));
-		      }
-
-		    if (! error_state)
-		      {
-			std::list<octave_value_list> next_idx (idx);
-
-			// We handled two index elements, so subsasgn to
-			// needs to skip both of them.
-
-			next_idx.erase (next_idx.begin ());
-			next_idx.erase (next_idx.begin ());
-
-			u.make_unique ();
-
-			t_rhs = u.subsasgn (type.substr (2), next_idx, rhs);
-		      }
-		  }
-		else
-		  gripe_invalid_index_for_assignment ();
-	      }
-	    else
-	      gripe_invalid_index_for_assignment ();
-	  }
-	  break;
-
-	case '.':
-	  {
-	    octave_value_list key_idx = idx.front ();
-
-	    assert (key_idx.length () == 1);
-
-	    std::string key = key_idx(0).string_value ();
-
-	    if (! error_state)
-	      {
-		octave_value u;
-
-		if (! map.contains (key))
-		  u = octave_value::empty_conv (type.substr (1), rhs);
-		else
-		  {
-		    Cell map_val = map.contents (key);
-
-		    u = numeric_conv (map_val, type.substr (1));
-		  }
-
-		if (! error_state)
-		  {
-		    std::list<octave_value_list> next_idx (idx);
-
-		    next_idx.erase (next_idx.begin ());
-
-		    u.make_unique ();
-
-		    t_rhs = u.subsasgn (type.substr (1), next_idx, rhs);
-		  }
-	      }
-	    else
-	      gripe_invalid_index_for_assignment ();
-	  }
-	  break;
-
-	case '{':
-	  gripe_invalid_index_type (type_name (), type[0]);
-	  break;
-
-	default:
-	  panic_impossible ();
-	}
-    }
-
-  if (! error_state)
-    {
-      switch (type[0])
-	{
-	case '(':
-	  {
-	    if (n > 1 && type[1] == '.')
-	      {
-		std::list<octave_value_list>::const_iterator p = idx.begin ();
-		octave_value_list key_idx = *++p;
-
-		assert (key_idx.length () == 1);
-
-		std::string key = key_idx(0).string_value ();
-
-		if (! error_state)
-		  {
-		    map.assign (idx.front (), key, t_rhs);
-
-		    if (! error_state)
-		      {
-			count++;
-			retval = octave_value (this);
-		      }
-		    else
-		      gripe_failed_assignment ();
-		  }
-		else
-		  gripe_failed_assignment ();
-	      }
-	    else
-	      {
-		if (t_rhs.is_object () || t_rhs.is_map ())
-		  {
-		    Octave_map rhs_map = t_rhs.map_value ();
-
-		    if (! error_state)
-		      {
-			map.assign (idx.front (), rhs_map);
-
-			if (! error_state)
-			  {
-			    count++;
-			    retval = octave_value (this);
-			  }
-			else
-			  gripe_failed_assignment ();
-		      }
-		    else
-		      error ("invalid class assignment");
-		  }
-		else
-		  {
-		    if (t_rhs.is_empty ())
-		      {
-			map.maybe_delete_elements (idx.front());
-
-			if (! error_state)
-			  {
-			    count++;
-			    retval = octave_value (this);
-			  }
-			else
-			  gripe_failed_assignment ();
-		      }
-		    else
-		      error ("invalid class assignment");
-		  }
-	      }
-	  }
-	  break;
-
-	case '.':
-	  {
-	    // Find the class in which this method resides before 
-	    // attempting to access the requested field.
-
-	    std::string method_class = get_current_method_class ();
-
-	    octave_base_value *obvp = find_parent_class (method_class);
-
-	    if (obvp)
-	      {
-		octave_value_list key_idx = idx.front ();
-
-		assert (key_idx.length () == 1);
-
-		std::string key = key_idx(0).string_value ();
-
-		if (! error_state)
-		  {
-		    obvp->assign (key, t_rhs);
-
-		    if (! error_state)
-		      {
-			count++;
-			retval = octave_value (this);
-		      }
-		    else
-		      gripe_failed_assignment ();
-		  }
-		else
-		  gripe_failed_assignment ();
-	      }
-	    else
-	      error ("malformed class");
-	  }
-	  break;
-
-	case '{':
-	  gripe_invalid_index_type (type_name (), type[0]);
-	  break;
-
-	default:
-	  panic_impossible ();
-	}
-    }
-  else
-    gripe_failed_assignment ();
-
-  return retval;
+  return octave_struct::subsasgn (type, idx, rhs);
 }
 
 idx_vector
@@ -809,25 +587,6 @@ octave_class::index_vector (void) const
   else
     error ("no subsindex method defined for class %s",
 	   class_name().c_str ());
-
-  return retval;
-}
-
-size_t
-octave_class::byte_size (void) const
-{
-  // Neglect the size of the fieldnames.
-
-  size_t retval = 0;
-
-  for (Octave_map::const_iterator p = map.begin (); p != map.end (); p++)
-    {
-      std::string key = map.key (p);
-
-      octave_value val = octave_value (map.contents (p));
-
-      retval += val.byte_size ();
-    }
 
   return retval;
 }

@@ -52,6 +52,9 @@ along with Octave; see the file COPYING.  If not, see
 // Maximum nesting level for functions called recursively.
 static int Vmax_recursion_depth = 256;
 
+// Whether to optimize subsasgn method calls.
+static bool Voptimize_subsasgn_calls = false;
+
 // User defined scripts.
 
 DEFINE_OCTAVE_ALLOCATOR (octave_user_script);
@@ -183,8 +186,8 @@ octave_user_function::octave_user_function
     system_fcn_file (false), call_depth (-1),
     num_named_args (param_list ? param_list->length () : 0),
     nested_function (false), inline_function (false),
-    class_constructor (false), class_method (false), args_passed (),
-    num_args_passed (0), parent_scope (-1), local_scope (sid)
+    class_constructor (false), class_method (false),
+    parent_scope (-1), local_scope (sid)
 {
   if (cmd_list)
     cmd_list->mark_as_function_body ();
@@ -263,14 +266,14 @@ octave_user_function::unlock_subfunctions (void)
 }
 
 octave_value_list
-octave_user_function::octave_all_va_args (void)
+octave_user_function::all_va_args (const octave_value_list& args)
 {
   octave_value_list retval;
 
-  octave_idx_type n = num_args_passed - num_named_args;
+  octave_idx_type n = args.length () - num_named_args;
 
   if (n > 0)
-    retval = args_passed.slice (num_named_args, n);
+    retval = args.slice (num_named_args, n);
 
   return retval;
 }
@@ -353,16 +356,7 @@ octave_user_function::do_multi_index_op (int nargout,
       unwind_protect::add_fcn (symbol_table::pop_context);
     }
 
-  // Save and restore args passed for recursive calls.
-
-  save_args_passed (args);
-
-  unwind_protect::add_method (this, &octave_user_function::restore_args_passed);
-
   string_vector arg_names = args.name_tags ();
-
-  unwind_protect::protect_var (num_args_passed);
-  num_args_passed = nargin;
 
   if (param_list && ! param_list->varargs_only ())
     {
@@ -407,7 +401,7 @@ octave_user_function::do_multi_index_op (int nargout,
   // variables.
 
   {
-    bind_automatic_vars (arg_names, nargin, nargout, octave_all_va_args ());
+    bind_automatic_vars (arg_names, nargin, nargout, all_va_args (args));
 
     bool echo_commands = (Vecho_executing_commands & ECHO_FUNCTIONS);
 
@@ -490,6 +484,22 @@ void
 octave_user_function::accept (tree_walker& tw)
 {
   tw.visit_octave_user_function (*this);
+}
+
+bool
+octave_user_function::subsasgn_optimization_ok (void)
+{
+  bool retval = false;
+  if (Voptimize_subsasgn_calls
+      && param_list->length () > 0 && ! param_list->varargs_only ()
+      && ret_list->length () == 1 && ! ret_list->takes_varargs ())
+    {
+      tree_identifier *par1 = param_list->front ()->ident ();
+      tree_identifier *ret1 = ret_list->front ()->ident ();
+      retval = par1->name () == ret1->name ();
+    }
+
+  return retval;
 }
 
 #if 0
@@ -679,6 +689,18 @@ printed and control returns to the top level.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (max_recursion_depth);
+}
+
+DEFUN (optimize_subsasgn_calls, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{val} =} optimize_subsasgn_calls ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} optimize_subsasgn_calls  (@var{new_val})\n\
+Query or set the internal flag for subsasgn method call optimizations.\n\
+If true, Octave will attempt to eliminate the redundant copying when calling\n\
+subsasgn method of a user-defined class.\n\
+@end deftypefn")
+{
+  return SET_INTERNAL_VARIABLE (optimize_subsasgn_calls);
 }
 
 /*

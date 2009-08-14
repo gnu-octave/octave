@@ -1,3 +1,7 @@
+2009-08-14  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.in (LINK_DEPS): Include BLAS_LIBS in the list.
+
 2009-08-13  John W. Eaton  <jwe@octave.org>
 
 	* CMatrix.cc, CNDArray.cc, dMatrix.cc, dNDArray.cc, fCMatrix.cc,

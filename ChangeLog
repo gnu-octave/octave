@@ -1,3 +1,8 @@
+2009-08-15  Jaroslav Hajek  <highegg@gmail.com>
+
+	* aclocal.m4: Define the autoconf 2.64+ m4sugar macros `m4_ifblank'
+	and `m4_ifnblank' if on earlier autoconfs.
+
 2009-08-13  John W. Eaton  <jwe@octave.org>
 
 	* Makeconf.in (GLPK_CPPFLAGS, GLPK_LDFLAGS,

@@ -3739,6 +3739,7 @@ operator * (const FloatMatrix& m, const FloatComplexMatrix& a)
 %!assert([1+i 2+i 3+i] * [ 4+i ; 5+i ; 6+i], 29+21i, 1e-14)
 %!assert([1+i 2+i ; 3+i 4+i ] * [5+i ; 6+i], [15 + 14i ; 37 + 18i], 1e-14)
 %!assert([1+i 2+i ; 3+i 4+i ] * [5+i 6+i ; 7+i 8+i], [17 + 15i 20 + 17i; 41 + 19i 48 + 21i], 1e-14)
+%!assert([1 i]*[i 0]', -i);
 */
 
 /* Test some simple identities
@@ -3832,7 +3833,7 @@ xgemm (bool transa, bool conja, const FloatComplexMatrix& a,
                   F77_FUNC (xcdotu, XCDOTU) (a_nc, a.data (), 1, b.data (), 1, *c);
                   if (conja) *c = std::conj (*c);
                 }
-              else if (conjb)
+              else if (conja)
                   F77_FUNC (xcdotc, XCDOTC) (a_nc, a.data (), 1, b.data (), 1, *c);
               else
                   F77_FUNC (xcdotc, XCDOTC) (a_nc, b.data (), 1, a.data (), 1, *c);

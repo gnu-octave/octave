@@ -1,3 +1,8 @@
+2009-08-16  Jaroslav Hajek  <highegg@gmail.com>
+
+	* CMatrix.cc (xgemm): Fix typo. Add test.
+	* fCMatrix.cc (xgemm): Ditto.
+
 2009-08-14  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.in (LINK_DEPS): Include BLAS_LIBS in the list.

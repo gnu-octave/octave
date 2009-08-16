@@ -3755,7 +3755,11 @@ operator * (const Matrix& m, const ComplexMatrix& a)
 %! cv = randn(10,1)+i*rand(10,1);
 %! rv = randn(1,10)+i*rand(1,10);
 %!assert([M*cv,M*cv],M*[cv,cv],1e-14)
+%!assert([M.'*cv,M.'*cv],M.'*[cv,cv],1e-14)
+%!assert([M'*cv,M'*cv],M'*[cv,cv],1e-14)
 %!assert([rv*M;rv*M],[rv;rv]*M,1e-14)
+%!assert([rv*M.';rv*M.'],[rv;rv]*M.',1e-14)
+%!assert([rv*M';rv*M'],[rv;rv]*M',1e-14)
 %!assert(2*rv*cv,[rv,rv]*[cv;cv],1e-14)
 */
 
@@ -3853,7 +3857,7 @@ xgemm (bool transa, bool conja, const ComplexMatrix& a,
                                        b.data (), 1, 0.0, c, 1
                                        F77_CHAR_ARG_LEN (1)));
             }
-          else if (a_nr == 1 && ! conja)
+          else if (a_nr == 1 && ! conja && ! conjb)
             {
               const char *crevtransb = get_blas_trans_arg (! transb, conjb);
               F77_XFCN (zgemv, ZGEMV, (F77_CONST_CHAR_ARG2 (crevtransb, 1),

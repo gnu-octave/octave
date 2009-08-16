@@ -3744,12 +3744,16 @@ operator * (const FloatMatrix& m, const FloatComplexMatrix& a)
 
 /* Test some simple identities
 %!shared M, cv, rv
-%! M = randn(10,10)+i*rand(10,10);
-%! cv = randn(10,1)+i*rand(10,1);
-%! rv = randn(1,10)+i*rand(1,10);
-%!assert([M*cv,M*cv],M*[cv,cv],5e-7)
-%!assert([rv*M;rv*M],[rv;rv]*M,5e-7)
-%!assert(2*rv*cv,[rv,rv]*[cv;cv],5e-7)
+%! M = single(randn(10,10))+i*single(rand(10,10));
+%! cv = single(randn(10,1))+i*single(rand(10,1));
+%! rv = single(randn(1,10))+i*single(rand(1,10));
+%!assert([M*cv,M*cv],M*[cv,cv],5e-6)
+%!assert([M.'*cv,M.'*cv],M.'*[cv,cv],5e-6)
+%!assert([M'*cv,M'*cv],M'*[cv,cv],5e-6)
+%!assert([rv*M;rv*M],[rv;rv]*M,5e-6)
+%!assert([rv*M.';rv*M.'],[rv;rv]*M.',5e-6)
+%!assert([rv*M';rv*M'],[rv;rv]*M',5e-6)
+%!assert(2*rv*cv,[rv,rv]*[cv;cv],5e-6)
 */
 
 static const char *
@@ -3846,7 +3850,7 @@ xgemm (bool transa, bool conja, const FloatComplexMatrix& a,
                                        b.data (), 1, 0.0, c, 1
                                        F77_CHAR_ARG_LEN (1)));
             }
-          else if (a_nr == 1 && ! conja)
+          else if (a_nr == 1 && ! conja && ! conjb)
             {
               const char *crevtransb = get_blas_trans_arg (! transb, conjb);
               F77_XFCN (cgemv, CGEMV, (F77_CONST_CHAR_ARG2 (crevtransb, 1),

@@ -1,5 +1,11 @@
 2009-08-16  Jaroslav Hajek  <highegg@gmail.com>
 
+	* dMatrix.cc, fMatrix.cc, CMatrix.cc, fCMatrix.cc: Add more tests.
+	* CMatrix.cc (xgemm): Fix vector * matrix case.
+	* fCMatrix.cc (xgemm): Ditto.
+
+2009-08-16  Jaroslav Hajek  <highegg@gmail.com>
+
 	* fMatrix.cc, fCMatrix.cc: Make tests use single precision.
 
 2009-08-16  Jaroslav Hajek  <highegg@gmail.com>

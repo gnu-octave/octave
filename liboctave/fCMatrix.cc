@@ -3736,10 +3736,10 @@ operator * (const FloatMatrix& m, const FloatComplexMatrix& a)
 }
 
 /* Simple Dot Product, Matrix-Vector and Matrix-Matrix Unit tests
-%!assert([1+i 2+i 3+i] * [ 4+i ; 5+i ; 6+i], 29+21i, 1e-14)
-%!assert([1+i 2+i ; 3+i 4+i ] * [5+i ; 6+i], [15 + 14i ; 37 + 18i], 1e-14)
-%!assert([1+i 2+i ; 3+i 4+i ] * [5+i 6+i ; 7+i 8+i], [17 + 15i 20 + 17i; 41 + 19i 48 + 21i], 1e-14)
-%!assert([1 i]*[i 0]', -i);
+%!assert(single([1+i 2+i 3+i]) * single([ 4+i ; 5+i ; 6+i]), single(29+21i), 5e-7)
+%!assert(single([1+i 2+i ; 3+i 4+i ]) * single([5+i ; 6+i]), single([15 + 14i ; 37 + 18i]), 5e-7)
+%!assert(single([1+i 2+i ; 3+i 4+i ]) * single([5+i 6+i ; 7+i 8+i]), single([17 + 15i 20 + 17i; 41 + 19i 48 + 21i]), 5e-7)
+%!assert(single([1 i])*single([i 0])', single(-i));
 */
 
 /* Test some simple identities
@@ -3747,9 +3747,9 @@ operator * (const FloatMatrix& m, const FloatComplexMatrix& a)
 %! M = randn(10,10)+i*rand(10,10);
 %! cv = randn(10,1)+i*rand(10,1);
 %! rv = randn(1,10)+i*rand(1,10);
-%!assert([M*cv,M*cv],M*[cv,cv],1e-14)
-%!assert([rv*M;rv*M],[rv;rv]*M,1e-14)
-%!assert(2*rv*cv,[rv,rv]*[cv;cv],1e-14)
+%!assert([M*cv,M*cv],M*[cv,cv],5e-7)
+%!assert([rv*M;rv*M],[rv;rv]*M,5e-7)
+%!assert(2*rv*cv,[rv,rv]*[cv;cv],5e-7)
 */
 
 static const char *

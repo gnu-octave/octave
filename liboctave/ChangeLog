@@ -1,5 +1,9 @@
 2009-08-16  Jaroslav Hajek  <highegg@gmail.com>
 
+	* fMatrix.cc, fCMatrix.cc: Make tests use single precision.
+
+2009-08-16  Jaroslav Hajek  <highegg@gmail.com>
+
 	* CMatrix.cc (xgemm): Fix typo. Add test.
 	* fCMatrix.cc (xgemm): Ditto.
 

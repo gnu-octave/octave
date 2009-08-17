@@ -44,6 +44,9 @@ public:
   octave_value_list (void)
     : data () { }
 
+  explicit octave_value_list (octave_idx_type n)
+    : data (dim_vector (1, n)) { }
+
   octave_value_list (octave_idx_type n, const octave_value& val)
     : data (dim_vector (1, n), val) { }
 
@@ -153,22 +156,6 @@ private:
   // This list of strings can be used to tag each element of data with
   // a name.  By default, it is empty.
   string_vector names;
-
-  // This constructor is private with no definition to keep statements
-  // like
-  //
-  //   octave_value_list foo = 5;
-  //   octave_value_list foo = 5.0;
-  //
-  // from doing different things.  Instead, you have to use the
-  // constructor
-  //
-  //   octave_value_list (n, val);
-  //
-  // and supply a default value to create a vector-valued
-  // octave_value_list.
-
-  octave_value_list (octave_idx_type n);
 
   octave_value& elem (octave_idx_type n)
     {

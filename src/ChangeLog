@@ -1,3 +1,8 @@
+2009-08-17  Jaroslav Hajek  <highegg@gmail.com>
+
+	* oct-obj.h (octave_value_list::octave_value_list (octave_idx_type)):
+	Allow this constructor.
+
 2009-08-19  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/find.cc (Ffind): Reuse cached index vector when

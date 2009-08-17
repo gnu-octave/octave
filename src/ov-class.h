@@ -1,7 +1,6 @@
 /*
 
 Copyright (C) 2007, 2008, 2009 John W. Eaton
-Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
 
@@ -36,7 +35,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-alloc.h"
 #include "oct-map.h"
 #include "ov-base.h"
-#include "ov-struct.h"
 #include "ov-typeinfo.h"
 
 class octave_value_list;
@@ -46,19 +44,19 @@ class tree_walker;
 // Data structures.
 
 class
-octave_class : public octave_struct
+octave_class : public octave_base_value
 {
 public:
 
   octave_class (void)
-    : octave_struct (), obsolete_copies (0) { }
+    : octave_base_value (), obsolete_copies (0)  { }
 
   octave_class (const Octave_map& m, const std::string& id)
-    : octave_struct (m), c_name (id), obsolete_copies (0) { }
+    : octave_base_value (), map (m), c_name (id), obsolete_copies (0) { }
 
   octave_class (const octave_class& s)
-    : octave_struct (s), c_name (s.c_name),
-      parent_list (s.parent_list), obsolete_copies (0) { }
+    : octave_base_value (s), map (s.map), c_name (s.c_name),
+      parent_list (s.parent_list), obsolete_copies (0)  { }
 
   octave_class (const Octave_map& m, const std::string& id, 
                 const octave_value_list& parents);
@@ -76,8 +74,6 @@ public:
 
   Cell dotref (const octave_value_list& idx);
 
-  octave_value dotasgn (const octave_value_list& idx, const octave_value& rhs);
-
   Matrix size (void);
 
   octave_idx_type numel (const octave_value_list&); 
@@ -89,13 +85,12 @@ public:
       return tmp.length () > 0 ? tmp(0) : octave_value ();
     }
 
-  octave_value subsref (const std::string& type,
-			const std::list<octave_value_list>& idx,
-                        bool auto_add);
-
   octave_value_list subsref (const std::string& type,
 			     const std::list<octave_value_list>& idx,
 			     int nargout);
+
+  static octave_value numeric_conv (const Cell& val,
+				    const std::string& type);
 
   void assign(const std::string& k, const octave_value& rhs)
   { map.assign (k, rhs); };
@@ -108,11 +103,33 @@ public:
 
   dim_vector dims (void) const { return map.dims (); }
 
+  size_t byte_size (void) const;
+
+  // This is the number of elements in each field.  The total number
+  // of elements is numel () * nfields ().
+  octave_idx_type numel (void) const
+  {
+    dim_vector dv = dims ();
+    return dv.numel ();
+  }
+
+  octave_idx_type nfields (void) const { return map.nfields (); }
+
   size_t nparents (void) const { return parent_list.size (); }
+
+  octave_value reshape (const dim_vector& new_dims) const
+    { return map.reshape (new_dims); }
+
+  octave_value resize (const dim_vector& dv, bool = false) const
+    { Octave_map tmap = map; tmap.resize (dv); return tmap; }
+
+  bool is_defined (void) const { return true; }
 
   bool is_map (void) const { return false; }
 
   bool is_object (void) const { return true; }
+
+  Octave_map map_value (void) const { return map; }
 
   string_vector map_keys (void) const;
 
@@ -156,11 +173,9 @@ public:
 
   mxArray *as_mxArray (void) const;
 
-protected:
-
-  void gripe_failed_assignment (void);
-
 private:
+
+  Octave_map map;
 
   DECLARE_OCTAVE_ALLOCATOR
 

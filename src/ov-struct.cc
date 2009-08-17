@@ -93,8 +93,8 @@ gripe_invalid_index_type (const std::string& nm, char t)
   error ("%s cannot be indexed with %c", nm.c_str (), t);
 }
 
-void
-octave_struct::gripe_failed_assignment (void)
+static void
+gripe_failed_assignment (void)
 {
   error ("assignment to structure element failed");
 }
@@ -249,43 +249,6 @@ octave_struct::numeric_conv (const octave_value& val,
     retval = Octave_map ();
   else
     retval = val;
-
-  return retval;
-}
-
-octave_value
-octave_struct::dotasgn (const octave_value_list& idx, const octave_value& rhs)
-{
-  octave_value retval;
-
-  assert (idx.length () == 1);
-
-  std::string key = idx(0).string_value ();
-
-  if (rhs.is_cs_list ())
-    {
-      Cell tmp_cell = Cell (rhs.list_value ());
-
-      // The shape of the RHS is irrelevant, we just want
-      // the number of elements to agree and to preserve the
-      // shape of the left hand side of the assignment.
-
-      if (numel () == tmp_cell.numel ())
-        tmp_cell = tmp_cell.reshape (dims ());
-
-      map.assign (key, tmp_cell);
-    }
-  else
-    // Regularize a null matrix if stored into a struct component.
-    map.assign (key, rhs.storable_value ());
-
-  if (! error_state)
-    {
-      count++;
-      retval = octave_value (this);
-    }
-  else
-    gripe_failed_assignment ();
 
   return retval;
 }
@@ -493,8 +456,7 @@ octave_struct::subsasgn (const std::string& type,
 	      }
 	    else
 	      {
-		if (t_rhs.is_map()
-                    || (is_object () && t_rhs.is_object ()))
+		if (t_rhs.is_map())
 		  {
 		    Octave_map rhs_map = t_rhs.map_value ();
 
@@ -536,7 +498,36 @@ octave_struct::subsasgn (const std::string& type,
 
 	case '.':
 	  {
-            retval = dotasgn (idx.front (), t_rhs);
+	    octave_value_list key_idx = idx.front ();
+
+	    assert (key_idx.length () == 1);
+
+	    std::string key = key_idx(0).string_value ();
+
+	    if (t_rhs.is_cs_list ())
+	      {
+		Cell tmp_cell = Cell (t_rhs.list_value ());
+
+		// The shape of the RHS is irrelevant, we just want
+		// the number of elements to agree and to preserve the
+		// shape of the left hand side of the assignment.
+
+		if (numel () == tmp_cell.numel ())
+		  tmp_cell = tmp_cell.reshape (dims ());
+
+		map.assign (key, tmp_cell);
+	      }
+	    else
+              // Regularize a null matrix if stored into a struct component.
+	      map.assign (key, t_rhs.storable_value ());
+
+	    if (! error_state)
+	      {
+		count++;
+		retval = octave_value (this);
+	      }
+	    else
+	      gripe_failed_assignment ();
 	  }
 	  break;
 

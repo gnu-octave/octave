@@ -53,7 +53,7 @@ along with Octave; see the file COPYING.  If not, see
 static int Vmax_recursion_depth = 256;
 
 // Whether to optimize subsasgn method calls.
-static bool Voptimize_subsasgn_calls = false;
+static bool Voptimize_subsasgn_calls = true;
 
 // User defined scripts.
 

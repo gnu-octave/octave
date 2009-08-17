@@ -1,3 +1,11 @@
+2009-08-17  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-struct.h, ov-struct.cc: Revert to e08d72bb988e.
+	* ov-class.h, ov-class.cc: Partially revert to e08d72bb988e.
+	(octave_class::subsasgn): Cut&paste code from octave_struct::subsasgn
+	for the nested dot indexing.
+	* ov-usr-fcn.cc (Voptimize_subasgn_calls): Default to true.
+
 2009-08-13  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/fft.cc, DLD-FUNCTIONS/fft2.cc,

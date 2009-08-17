@@ -288,15 +288,37 @@ DOC_FILES := $(sort $(DEF_FILES))
 ifeq ($(ENABLE_DYNAMIC_LINKING), true)
   OCTAVE_LIBS = $(LIBOCTINTERP)
 else
-  OCTAVE_LIBS = $(LIBOCTINTERP) $(LIBOCTAVE) $(QHULL_LIBS) \
-    $(GLPK_LIBS) $(MAGICK_LIBS) $(REGEX_LIBS) $(LIBCRUFT) \
-    $(LIBPLPLOT) $(LIBGLOB)
+  ## FIXME -- this list is probably not complete now.  It may not even
+  ## be possible to build a statically linked copy of Octave that is
+  ## fully functional.
+  OCTAVE_LIBS = -L. $(LIBOCTINTERP) \
+    -L../liboctave $(LIBOCTAVE) \
+    -L../libcruft $(LIBCRUFT) \
+    $(FFTW_LDFLAGS) $(FFTW_LIBS)
+    $(QHULL_LDFLAGS) $(QHULL_LIBS) \
+    $(ARPACK_LDFLAGS) $(ARPACK_LIBS) \
+    $(QRUPDATE_LDFLAGS) $(QRUPDATE_LIBS) \
+    $(SPARSE_LDFLAGS) $(SPARSE_LIBS) \
+    $(BLAS_LIBS) \
+    $(REGEX_LDFLAGS) $(REGEX_LIBS) \
+    $(CURL_LDFLAGS) $(CURL_LIBS) \
+    $(GLPK_LDFLAGS) $(GLPK_LIBS) \
+    $(MAGICK_LIBS) \
+    $(GRAPHICS_LDFLAGS) $(GRAPHICS_LIBS) \
+    $(FT2_LDFLAGS) $(FT2_LIBS) \
+    $(HDF5_LIBS) $(ZLIB_LIBS) \
+    $(OPENGL_LIBS) $(X11_LIBS) $(CARBON_LIBS) \
+    $(READLINE_LIBS) $(TERM_LIBS) \
+    $(LIBPLPLOT) $(LIBGLOB) \
+    $(LIBS)
 endif
 
 OCTINTERP_LINK_DEPS = $(RLD_FLAG) -L../liboctave $(LIBOCTAVE) \
   -L../libcruft $(LIBCRUFT) \
+  $(FFTW_LDFLAGS) $(FFTW_LIBS) \
   $(HDF5_LIBS) $(ZLIB_LIBS) \
   $(OPENGL_LIBS) $(X11_LIBS) $(CARBON_LIBS) \
+  $(READLINE_LIBS) \
   $(LIBS)
 
 OCT_LINK_DEPS = $(RLD_FLAG) -L. $(LIBOCTINTERP) \

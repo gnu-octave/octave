@@ -1,3 +1,7 @@
+2009-08-17  John W. Eaton  <jwe@octave.org>
+
+	* help/print_usage.m: Make it work again if an argument is given.
+
 2009-08-17  Jaroslav Hajek  <highegg@gmail.com>
 
 	* help/print_usage: Allow calling from methods.

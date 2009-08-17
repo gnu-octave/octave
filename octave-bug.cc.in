@@ -150,7 +150,9 @@ main (int argc, char **argv)
   vars["UMFPACK_LIBS"] = %UMFPACK_LIBS%;
   vars["X11_INCFLAGS"] = %X11_INCFLAGS%;
   vars["X11_LIBS"] = %X11_LIBS%;
-  vars["ZLIB_LIBS"] = %ZLIB_LIBS%;
+  vars["Z_CPPFLAGS"] = %Z_CPPFLAGS%;
+  vars["Z_LDFLAGS"] = %Z_LDFLAGS%;
+  vars["Z_LIBS"] = %Z_LIBS%;
 
   vars["DEFS"] = %OCTAVE_CONF_DEFS%;
 
@@ -284,7 +286,9 @@ main (int argc, char **argv)
   os << "UMFPACK_LIBS:      " << vars["UMFPACK_LIBS"] << endl;
   os << "X11_INCFLAGS:      " << vars["X11_INCFLAGS"] << endl;
   os << "X11_LIBS:          " << vars["X11_LIBS"] << endl;
-  os << "ZLIB_LIBS:         " << vars["ZLIB_LIBS"] << endl;
+  os << "Z_CPPFLAGS:        " << vars["Z_CPPFLAGS"] << endl;
+  os << "Z_LDFLAGS:         " << vars["Z_LDFLAGS"] << endl;
+  os << "Z_LIBS:            " << vars["Z_LIBS"] << endl;
   os << "DEFS:" << endl << vars["DEFS"] << endl;
   os << endl;
 

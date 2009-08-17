@@ -229,7 +229,11 @@ LIBCRUFT = @LIBCRUFT@
 
 FT2_LIBS = @FT2_LIBS@
 HDF5_LIBS = @HDF5_LIBS@
-ZLIB_LIBS = @ZLIB_LIBS@
+
+Z_CPPFLAGS = @Z_CPPFLAGS@
+Z_LDFLAGS = @Z_LDFLAGS@
+Z_LIBS = @Z_LIBS@
+
 GRAPHICS_LIBS = @GRAPHICS_LIBS@
 
 QHULL_CPPFLAGS = @QHULL_CPPFLAGS@
@@ -288,6 +292,8 @@ TERM_LIBS = @TERM_LIBS@
 ARPACK_LIBS = @ARPACK_LIBS@
 DL_LIBS = @DL_LIBS@
 LIBS = @LIBS@
+
+ALL_CPPFLAGS = $(CPPFLAGS) $(Z_CPPFLAGS)
 
 ## Use sort to remove duplicates.
 SPARSE_CPPFLAGS = \
@@ -463,19 +469,19 @@ NO_OCT_FILE_STRIP = @NO_OCT_FILE_STRIP@
 	$(FC) -c $(ALL_FFLAGS) -o $@ $<
 
 %.o : %.c
-	$(CC) -c $(CPPFLAGS) $(ALL_CFLAGS) $< -o $@
+	$(CC) -c $(ALL_CPPFLAGS) $(ALL_CFLAGS) $< -o $@
 
 %.o : %.cc
-	$(CXX) -c $(CPPFLAGS) $(ALL_CXXFLAGS) $< -o $@
+	$(CXX) -c $(ALL_CPPFLAGS) $(ALL_CXXFLAGS) $< -o $@
 
 pic/%.o : %.f
 	$(FC) -c $(FPICFLAG) $(ALL_FFLAGS) $< -o $@
 
 pic/%.o : %.c
-	$(CC) -c $(CPPFLAGS) $(CPICFLAG) $(ALL_CFLAGS) $< -o $@
+	$(CC) -c $(ALL_CPPFLAGS) $(CPICFLAG) $(ALL_CFLAGS) $< -o $@
 
 pic/%.o : %.cc
-	$(CXX) -c $(CPPFLAGS) $(CXXPICFLAG) $(ALL_CXXFLAGS) $< -o $@
+	$(CXX) -c $(ALL_CPPFLAGS) $(CXXPICFLAG) $(ALL_CXXFLAGS) $< -o $@
 
 # Here is a rule for generating dependencies for .cc files:
 
@@ -661,7 +667,9 @@ $(SED) < $< \
   -e "s|%OCTAVE_CONF_XTRA_CXXFLAGS%|\"${XTRA_CXXFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_YACC%|\"${YACC}\"|" \
   -e "s|%OCTAVE_CONF_YFLAGS%|\"${YFLAGS}\"|" \
-  -e "s|%OCTAVE_CONF_ZLIB_LIBS%|\"${ZLIB_LIBS}\"|" \
+  -e "s|%OCTAVE_CONF_Z_CPPFLAGS%|\"${Z_CPPFLAGS}\"|" \
+  -e "s|%OCTAVE_CONF_Z_LDFLAGS%|\"${Z_LDFLAGS}\"|" \
+  -e "s|%OCTAVE_CONF_Z_LIBS%|\"${Z_LIBS}\"|" \
   -e "s|%OCTAVE_CONF_config_opts%|\"${config_opts}\"|" | \
   $(SED)  -e "s|%OCTAVE_CONF_DEFS%|\"${UGLY_DEFS}\"|" > $@-t
 $(simple-move-if-change-rule)

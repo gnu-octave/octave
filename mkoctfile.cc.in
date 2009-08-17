@@ -224,7 +224,10 @@ initialize (void)
   vars["READLINE_LIBS"] = "-lreadline";
   vars["LIBCRUFT"] = "-lcruft";
   vars["BLAS_LIBS"] = get_variable ("BLAS_LIBS", %OCTAVE_CONF_BLAS_LIBS%);
-  vars["FFTW_LIBS"] = get_variable ("FFTW_LIBS", %OCTAVE_CONF_FFTW_LIBS%);
+  vars["FFTW3_LDFLAGS"] = get_variable ("FFTW3_LDFLAGS", %OCTAVE_CONF_FFTW3_LDFLAGS%);
+  vars["FFTW3_LIBS"] = get_variable ("FFTW3_LIBS", %OCTAVE_CONF_FFTW3_LIBS%);
+  vars["FFTW3F_LDFLAGS"] = get_variable ("FFTW3F_LDFLAGS", %OCTAVE_CONF_FFTW3F_LDFLAGS%);
+  vars["FFTW3F_LIBS"] = get_variable ("FFTW3F_LIBS", %OCTAVE_CONF_FFTW3F_LIBS%);
   vars["LIBS"] = get_variable ("LIBS", %OCTAVE_CONF_LIBS%);
   vars["FLIBS"] = get_variable ("FLIBS", %OCTAVE_CONF_FLIBS%);
   vars["LD_CXX"] = get_variable ("LD_CXX", %OCTAVE_CONF_LD_CXX%);
@@ -245,6 +248,9 @@ initialize (void)
 
   vars["OCTAVE_LIBS"] = vars["LIBOCTINTERP"] + " " + vars["LIBOCTAVE"]
     + " " + vars["SPECIAL_MATH_LIB"] + " " + vars["LIBCRUFT"];
+
+  vars["FFTW_LIBS"] = vars["FFTW3_LDFLAGS"] + " " + vars["FFTW3_LIBS"]
+    + " " | vars["FFTW3F_LDFLAGS"] + " " + vars["FFTW3F_LIBS"];
 }
 
 static string usage_msg = "usage: mkoctfile [options] file ...";

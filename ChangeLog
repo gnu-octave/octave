@@ -1,5 +1,25 @@
 2009-08-17  John W. Eaton  <jwe@octave.org>
 
+	* mkoctfile.in, mkoctfile.cc.in (FFTW3_LDFLAGS, FFTW3_LIBS,
+	FFTW3F_LDFLAGS, FFTW3F_LIBS): Substitute instead of FFTW_LIBS.
+	(FFTW_LIBS): Define from FFTW3_LDFLAGS, FFTW3_LIBS,
+	FFTW3F_LDFLAGS, and FFTW3F_LIBS variables.
+
+	* octave-bug.cc.in, octave-bug.in (Z_CPPFLAGS, Z_LDFLAGS):
+	Substitute and display them.
+	(Z_LIBS): Rename from ZLIB_LIBS.
+	* configure.in: Use OCTAVE_CHECK_LIBRARY to check for ZLIB.
+	Print Z_CPPFLAGS and Z_LDFLAGS in the summary.
+	* Makeconf.in (Z_CPPFLAGS, Z_LDFLAGS): New variables.
+	(Z_LIBS): Rename from ZLIB_LIBS.
+	(do-subst-config-vals): Substitute them.
+
+	(ALL_CPPFLAGS): New variable.
+	(%.o : %.c, %.o : %.cc, pic/%.o : %.c, pic/%.o : %.cc):
+	Use $(ALL_CPPFLAGS) instead of $(CPPFLAGS) in command.
+
+2009-08-17  John W. Eaton  <jwe@octave.org>
+
 	* octave-bug.in, octave-bug.cc.in: Include AMD_CPPFLAGS,
 	AMD_LDFLAGS, AMD_LIBS, ARPACK_LIBS, BLAS_LIBS, CAMD_CPPFLAGS,
 	CAMD_LDFLAGS, CAMD_LIBS, CARBON_LIBS, CCOLAMD_CPPFLAGS,

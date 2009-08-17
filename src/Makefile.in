@@ -286,7 +286,17 @@ DEF_FILES := $(patsubst %.cc, %.df, $(DEF_1)) $(DLD_DEF_FILES)
 DOC_FILES := $(sort $(DEF_FILES))
 
 ifeq ($(ENABLE_DYNAMIC_LINKING), true)
-  OCTAVE_LIBS = $(LIBOCTINTERP)
+  OCTAVE_LIBS = -L. $(LIBOCTINTERP) \
+    -L../liboctave $(LIBOCTAVE) \
+    -L../libcruft $(LIBCRUFT) \
+    $(FFTW_LDFLAGS) $(FFTW_LIBS) \
+    $(GRAPHICS_LDFLAGS) $(GRAPHICS_LIBS) \
+    $(FT2_LDFLAGS) $(FT2_LIBS) \
+    $(HDF5_LIBS) $(Z_LDFLAGS) $(Z_LIBS) \
+    $(OPENGL_LIBS) $(X11_LIBS) $(CARBON_LIBS) \
+    $(READLINE_LIBS) $(TERM_LIBS) \
+    $(LIBGLOB) \
+    $(LIBS)
 else
   ## FIXME -- this list is probably not complete now.  It may not even
   ## be possible to build a statically linked copy of Octave that is
@@ -306,7 +316,7 @@ else
     $(MAGICK_LIBS) \
     $(GRAPHICS_LDFLAGS) $(GRAPHICS_LIBS) \
     $(FT2_LDFLAGS) $(FT2_LIBS) \
-    $(HDF5_LIBS) $(ZLIB_LIBS) \
+    $(HDF5_LIBS) $(Z_LDFLAGS) $(Z_LIBS) \
     $(OPENGL_LIBS) $(X11_LIBS) $(CARBON_LIBS) \
     $(READLINE_LIBS) $(TERM_LIBS) \
     $(LIBPLPLOT) $(LIBGLOB) \
@@ -316,7 +326,7 @@ endif
 OCTINTERP_LINK_DEPS = $(RLD_FLAG) -L../liboctave $(LIBOCTAVE) \
   -L../libcruft $(LIBCRUFT) \
   $(FFTW_LDFLAGS) $(FFTW_LIBS) \
-  $(HDF5_LIBS) $(ZLIB_LIBS) \
+  $(HDF5_LIBS) $(Z_LDFLAGS) $(Z_LIBS) \
   $(OPENGL_LIBS) $(X11_LIBS) $(CARBON_LIBS) \
   $(READLINE_LIBS) \
   $(LIBS)
@@ -390,8 +400,7 @@ octave$(EXEEXT): $(LIBRARIES) main.o $(DLD_STATIC_OBJ)
 	$(LD_CXX) $(CPPFLAGS) $(ALL_CXXFLAGS) $(RDYNAMIC_FLAG) \
 	$(ALL_LDFLAGS) -o $@ main.o $(DLD_STATIC_OBJ) \
 	$(RLD_FLAG) \
-	-L. $(LIBOCTINTERP) -L../liboctave $(LIBOCTAVE) \
-	-L../libcruft $(LIBCRUFT)
+	$(OCTAVE_LIBS)
 
 stmp-pic: pic
 	@if [ -f stmp-pic ]; then \

@@ -1,5 +1,10 @@
 2009-08-17  John W. Eaton  <jwe@octave.org>
 
+	* oct-conf.h.in: New #defines for ZLIB_CPPFLAGS and ZLIB_LDFLAGS.
+	* toplev.cc (octave_config_info): Include them in the list.
+
+2009-08-17  John W. Eaton  <jwe@octave.org>
+
 	* Makefile.in (OCTINTERP_LINK_DEPS): Include FFTW_LDFLAGS,
 	FFTW_LIBS and READLINE_LIBS in the list.
 	(OCTAVE_LIBS): Attempt to include all necessary dependencies for

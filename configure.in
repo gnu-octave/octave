@@ -2050,6 +2050,8 @@ Octave is now configured for $canonical_host_type
   C++ compiler:         $CXX $XTRA_CXXFLAGS $WARN_CXXFLAGS $CXXFLAGS
   Fortran compiler:     $F77 $FFLAGS
   Fortran libraries:    $FLIBS
+  Glob libraries:       $LIBGLOB
+  Lex libraries:        $LEXLIB
   LIBS:                 $LIBS
 
   AMD CPPFLAGS:         $AMD_CPPFLAGS

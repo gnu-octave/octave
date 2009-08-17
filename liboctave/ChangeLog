@@ -1,3 +1,7 @@
+2009-08-17  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.in (LINK_DEPS): List LIBS last.
+
 2009-08-16  Jaroslav Hajek  <highegg@gmail.com>
 
 	* dMatrix.cc, fMatrix.cc, CMatrix.cc, fCMatrix.cc: Add more tests.

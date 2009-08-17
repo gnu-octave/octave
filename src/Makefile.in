@@ -294,12 +294,14 @@ else
 endif
 
 OCTINTERP_LINK_DEPS = $(RLD_FLAG) -L../liboctave $(LIBOCTAVE) \
-  -L../libcruft $(LIBCRUFT) $(LIBS) \
-  $(HDF5_LIBS) $(ZLIB_LIBS) $(X11_LIBS) $(OPENGL_LIBS) $(CARBON_LIBS)
+  -L../libcruft $(LIBCRUFT) \
+  $(HDF5_LIBS) $(ZLIB_LIBS) \
+  $(OPENGL_LIBS) $(X11_LIBS) $(CARBON_LIBS) \
+  $(LIBS)
 
 OCT_LINK_DEPS = $(RLD_FLAG) -L. $(LIBOCTINTERP) \
-		-L../liboctave $(LIBOCTAVE) \
-		-L../libcruft $(LIBCRUFT)
+  -L../liboctave $(LIBOCTAVE) \
+  -L../libcruft $(LIBCRUFT)
 
 BUILT_DISTFILES = DOCSTRINGS oct-gperf.h parse.cc lex.cc y.tab.h \
 	$(OPT_HANDLERS) $(BUILT_EXTRAS)

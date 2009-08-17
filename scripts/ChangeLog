@@ -1,3 +1,7 @@
+2009-08-17  Jaroslav Hajek  <highegg@gmail.com>
+
+	* help/print_usage: Allow calling from methods.
+
 2009-08-11  Jaroslav Hajek  <highegg@gmail.com>
 
 	* general/diff.m: Remove.

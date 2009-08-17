@@ -33,12 +33,18 @@ function print_usage (name)
     else
       error ("print_usage: invalid function\n");
     endif
+    path = evalin ("caller", "mfilename (""fullpath"")");
+    if (strcmp (path(end-length(name)+1:end), name))
+      path = [path, ".m"];
+    else
+      path = name;
+    endif
   elseif (!ischar (name))
     error ("print_usage: input argument must be a string");
   endif
   
   ## Do the actual work
-  [text, format] = get_help_text (name);
+  [text, format] = get_help_text (path);
   max_len = 80;
   switch (lower (format))
     case "plain text"

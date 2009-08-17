@@ -982,12 +982,15 @@ AC_DEFUN([OCTAVE_HDF5_DLL], [
   AC_CACHE_CHECK([if _HDF5USEDLL_ needs to be defined],octave_cv_hdf5_dll, [
     AC_TRY_LINK([#include <hdf5.h>], [hid_t x = H5T_NATIVE_DOUBLE; return x],
       octave_cv_hdf5_dll=no, [
-      CFLAGS_old=$CFLAGS
+      save_CFLAGS="$CFLAGS"
       CFLAGS="$CFLAGS -DWIN32 -D_HDF5USEDLL_"
+      save_LIBS="$LIBS"
+      LIBS="$HDF5_LIBS $LIBS"
       AC_TRY_LINK([#include <hdf5.h>], [hid_t x = H5T_NATIVE_DOUBLE; return x],
         octave_cv_hdf5_dll=yes,
 	octave_cv_hdf5_dll=no)
-      CFLAGS=$CFLAGS_old])])
+      CFLAGS="$save_CFLAGS"
+      LIBS="$save_LIBS"])])
   if test "$octave_cv_hdf5_dll" = yes; then
     AC_DEFINE(_HDF5USEDLL_, 1, [Define if using HDF5 dll (Win32)])
   fi])

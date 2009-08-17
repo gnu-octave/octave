@@ -294,9 +294,12 @@ else
 endif
 
 OCTINTERP_LINK_DEPS = $(RLD_FLAG) -L../liboctave $(LIBOCTAVE) \
+  -L../libcruft $(LIBCRUFT) $(LIBS) \
   $(HDF5_LIBS) $(ZLIB_LIBS) $(X11_LIBS) $(OPENGL_LIBS) $(CARBON_LIBS)
 
-OCT_LINK_DEPS = $(RLD_FLAG) -L. $(LIBOCTINTERP)
+OCT_LINK_DEPS = $(RLD_FLAG) -L. $(LIBOCTINTERP) \
+		-L../liboctave $(LIBOCTAVE) \
+		-L../libcruft $(LIBCRUFT)
 
 BUILT_DISTFILES = DOCSTRINGS oct-gperf.h parse.cc lex.cc y.tab.h \
 	$(OPT_HANDLERS) $(BUILT_EXTRAS)
@@ -658,7 +661,10 @@ __voronoi__.d __voronoi__.df __voronoi__.o pic/__voronoi__.o: \
 __voronoi__.oct: OCT_LINK_DEPS += $(QHULL_LDFLAGS) $(QHULL_LIBS)
 
 eigs.d eigs.df eigs.o pic/eigs.o: CPPFLAGS += $(ARPACK_CPPFLAGS)
-eigs.oct: OCT_LINK_DEPS += $(ARPACK_LDFLAGS) $(ARPACK_LIBS)
+eigs.oct: OCT_LINK_DEPS += $(ARPACK_LDFLAGS) $(ARPACK_LIBS) $(BLAS_LIBS)
+
+qz.d qz.df qz.o pic/qz.o:
+qz.oct: OCT_LINK_DEPS += $(BLAS_LIBS)
 
 qr.d qr.df qr.o pic/qr.o: CPPFLAGS += $(QRUPDATE_CPPFLAGS)
 qr.oct: OCT_LINK_DEPS += $(QRUPDATE_LDFLAGS) $(QRUPDATE_LIBS)
@@ -685,6 +691,12 @@ amd.oct: OCT_LINK_DEPS += $(SPARSE_LDFLAGS) $(SPARSE_LIBS)
 
 colamd.d colamd.df pic/colamd.o colamd.o: CPPFLAGS += $(SPARSE_CPPFLAGS)
 colamd.oct: OCT_LINK_DEPS += $(SPARSE_LDFLAGS) $(SPARSE_LIBS)
+
+ccolamd.d ccolamd.df pic/ccolamd.o ccolamd.o: CPPFLAGS += $(SPARSE_CPPFLAGS)
+ccolamd.oct: OCT_LINK_DEPS += $(SPARSE_LDFLAGS) $(SPARSE_LIBS)
+
+symbfact.d symbfact.df pic/symbfact.o symbfact.o: CPPFLAGS += $(SPARSE_CPPFLAGS)
+symbfact.oct: OCT_LINK_DEPS += $(SPARSE_LDFLAGS) $(SPARSE_LIBS)
 
 dmperm.d dmperm.df pic/dmperm.o dmperm.o: CPPFLAGS += $(SPARSE_CPPFLAGS)
 dmperm.oct: OCT_LINK_DEPS += $(SPARSE_LDFLAGS) $(SPARSE_LIBS)

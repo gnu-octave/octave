@@ -558,15 +558,27 @@ fi
 
 # Checks for GLPK header and library.
 
+save_CPPFLAGS="$CPPFLAGS"
+CPPFLAGS="$Z_CPPFLAGS $CPPFLAGS"
+save_LIBS="$LIBS"
+LIBS="$Z_LDFLAGS $Z_LIBS $LIBS"
 OCTAVE_CHECK_LIBRARY(glpk, GLPK,
   [GLPK library not found.  The glpk function for solving linear programs will be disabled.],
   [glpk/glpk.h glpk.h], [_glp_lpx_simplex])
+LIBS="$save_LIBS"
+CPPFLAGS="$save_CPPFLAGS"
 
 # Checks for CURL header and library.
 
+save_CPPFLAGS="$CPPFLAGS"
+CPPFLAGS="$Z_CPPFLAGS $CPPFLAGS"
+save_LIBS="$LIBS"
+LIBS="$Z_LDFLAGS $Z_LIBS $LIBS"
 OCTAVE_CHECK_LIBRARY(curl, cURL,
   [cURL library not found.  The urlread and urlwrite functions will be disabled.],
   [curl/curl.h], [curl_easy_escape])
+LIBS="$save_LIBS"
+CPPFLAGS="$save_CPPFLAGS"
 
 # GraphicsMagick++
 

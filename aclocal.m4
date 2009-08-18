@@ -466,13 +466,13 @@ AC_DEFUN(OCTAVE_CHECK_LIBRARY, [
   [TEXINFO_]m4_toupper([$1])=
   warn_$1="$3"
   if test -n "$m4_toupper([$1])_LIBS"; then
-    save_CPPFLAGS="$CPPFLAGS"
+    octave_check_library_save_CPPFLAGS="$CPPFLAGS"
     CPPFLAGS="$m4_toupper([$1])_CPPFLAGS $CPPFLAGS"
     m4_ifnblank([$6], [AC_LANG_PUSH($6)])
     AC_CHECK_HEADERS($4, [
-      save_LDFLAGS="$LDFLAGS"
+      octave_check_library_save_LDFLAGS="$LDFLAGS"
       LDFLAGS="$m4_toupper([$1])_LDFLAGS $LDFLAGS"
-      save_LIBS="$LIBS"
+      octave_check_library_save_LIBS="$LIBS"
       LIBS="$m4_toupper([$1])_LIBS $LIBS"
       octave_$1_ok=no
       AC_MSG_CHECKING([for $5 in $m4_toupper([$1])_LIBS])
@@ -486,10 +486,10 @@ AC_DEFUN(OCTAVE_CHECK_LIBRARY, [
             [Define if $2 is available.])
 	  [TEXINFO_]m4_toupper([$1])="@set [HAVE_]m4_toupper([$1])"], [$8])
       fi
-      LIBS="$save_LIBS"
-      LDFLAGS="$save_LDFLAGS"])
+      LIBS="$octave_check_library_save_LIBS"
+      LDFLAGS="$octave_check_library_save_LDFLAGS"])
     m4_ifnblank([$6], [AC_LANG_POP($6)])
-    CPPFLAGS="$save_CPPFLAGS"
+    CPPFLAGS="$octave_check_library_save_CPPFLAGS"
   fi
   AC_SUBST(m4_toupper([$1])_LIBS)
   AC_SUBST([TEXINFO_]m4_toupper([$1]))

@@ -1,3 +1,10 @@
+2009-08-18  John W. Eaton  <jwe@octave.org>
+
+	* aclocal.m4 (OCTAVE_CHECK_LIBRARY): Use variables named
+	octave_check_library_save_XXX instead of save_XXX.
+	* configure.in: Add Z_LDFLAGS and Z_LIBS to LIBS, and Z_CPPFLAGS
+	to CPPFLAGS in checks for curl and glpk libraries.
+
 2009-08-18  David Grundberg  <individ@acc.umu.se>
 
 	* aclocal.m4 (OCTAVE_CHECK_LIBRARY): Clear QHULL_LIBS etc on

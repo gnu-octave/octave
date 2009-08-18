@@ -1,3 +1,8 @@
+2009-08-18  David Grundberg  <individ@acc.umu.se>
+
+	* aclocal.m4 (OCTAVE_CHECK_LIBRARY): Clear QHULL_LIBS etc on
+	errors. Interpret --without-qhull etc correctly.
+
 2009-08-17  John W. Eaton  <jwe@octave.org>
 
 	* mkoctfile.in, mkoctfile.cc.in (FFTW3_LDFLAGS, FFTW3_LIBS,

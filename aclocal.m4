@@ -449,6 +449,9 @@ AC_DEFUN(OCTAVE_CHECK_LIBRARY, [
 
   m4_toupper([$1])_LIBS=
   case $with_$1 in
+    no)
+      m4_toupper([$1])_LIBS=
+    ;;
     yes | "")
       m4_toupper([$1])_LIBS="-l$1"
     ;;
@@ -474,7 +477,7 @@ AC_DEFUN(OCTAVE_CHECK_LIBRARY, [
       octave_$1_ok=no
       AC_MSG_CHECKING([for $5 in $m4_toupper([$1])_LIBS])
       AC_LINK_IFELSE([AC_LANG_CALL([], [$5])],
-	[octave_$1_ok=yes], [m4_toupper([$1])_LIBS=""])
+	[octave_$1_ok=yes])
       AC_MSG_RESULT($octave_$1_ok)
       if test $octave_$1_ok = yes; then
 	m4_ifblank([$8], [
@@ -492,6 +495,7 @@ AC_DEFUN(OCTAVE_CHECK_LIBRARY, [
   AC_SUBST([TEXINFO_]m4_toupper([$1]))
   if test -n "$warn_$1"; then
     AC_MSG_WARN($warn_$1)
+    m4_toupper([$1])_LIBS=
   fi
 ])
 dnl

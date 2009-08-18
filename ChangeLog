@@ -1,5 +1,9 @@
 2009-08-18  John W. Eaton  <jwe@octave.org>
 
+	* acx_blas_f77_func.m4 (ACX_BLAS_F77_FUNC): Save and restore LIBS.
+
+2009-08-18  John W. Eaton  <jwe@octave.org>
+
 	* aclocal.m4 (OCTAVE_CHECK_LIBRARY): Use variables named
 	octave_check_library_save_XXX instead of save_XXX.
 	* configure.in: Add Z_LDFLAGS and Z_LIBS to LIBS, and Z_CPPFLAGS

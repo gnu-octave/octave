@@ -1012,7 +1012,7 @@ AC_DEFUN([OCTAVE_HDF5_HAS_REQUIRED_API], [
       octave_cv_hdf5_has_required_api=yes], [
       octave_cv_hdf5_has_required_api=no])])
   if test "$octave_cv_hdf5_has_required_api" = "no"; then
-    HAVE_HDF5=false
+    octave_hdf5_ok=no
     warn_hdf5="HDF5 library does not provide the version 1.6 API.  Octave will not be able to save or load HDF5 data files."
     AC_MSG_WARN($warn_hdf5)
   fi

@@ -1,5 +1,15 @@
 2009-08-18  John W. Eaton  <jwe@octave.org>
 
+	* Makeconf.in (ALL_CPPFLAGS): Add HDF5_CPPFLAGS to the list.
+	* aclocal.m4 (OCTAVE_HDF5_HAS_REQUIRED_API):
+	Set HAVE_HDF5 to false, not WITH_HDF5.
+	* configure.in: Use OCTAVE_CHECK_LIBRARY to check for HDF5
+	library.  Print HDF5_CPPFLAGS and HDF5_LDFLAGLS in the summary.
+	* octave-bug.in, octave-bug.cc.in, Makeconf.in: Substitute
+	HDF5_CPPFLAGS and HDF5_LDFLAGS.
+
+2009-08-18  John W. Eaton  <jwe@octave.org>
+
 	* acx_blas_f77_func.m4 (ACX_BLAS_F77_FUNC): Save and restore LIBS.
 
 2009-08-18  John W. Eaton  <jwe@octave.org>

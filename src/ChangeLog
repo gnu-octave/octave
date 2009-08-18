@@ -1,3 +1,10 @@
+2009-08-18  John W. Eaton  <jwe@octave.org>
+
+	* oct-conf.h.in: New #defines for HDF5_LDFLAGS and HDF5LDFLAGS.
+	* Makefile.in (OCTAVE_LIBS, OCTINTERP_LINK_DEPS):
+	Include them in the lists.
+	* toplev.cc (octave_config_info): Include them in the list.
+
 2009-08-17  John W. Eaton  <jwe@octave.org>
 
 	* oct-conf.h.in: New #defines for ZLIB_CPPFLAGS and ZLIB_LDFLAGS.

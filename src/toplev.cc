@@ -1256,6 +1256,8 @@ specified option.\n\
       { false, "GLPK_LIBS", OCTAVE_CONF_GLPK_LIBS },
       { false, "GNUPLOT", OCTAVE_CONF_GNUPLOT },
       { false, "GRAPHICS_LIBS", OCTAVE_CONF_GRAPHICS_LIBS },
+      { false, "HDF5_CPPFLAGS", OCTAVE_CONF_HDF5_CPPFLAGS },
+      { false, "HDF5_LDFLAGS", OCTAVE_CONF_HDF5_LDFLAGS },
       { false, "HDF5_LIBS", OCTAVE_CONF_HDF5_LIBS },
       { false, "INCFLAGS", OCTAVE_CONF_INCFLAGS },
       { false, "LDFLAGS", OCTAVE_CONF_LDFLAGS },

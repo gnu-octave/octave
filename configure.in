@@ -496,49 +496,30 @@ OCTAVE_CHECK_LIBRARY(z, ZLIB,
 
 ### Check for HDF5 library.
 
-if $WITH_Z; then
+save_CPPFLAGS="$CPPFLAGS"
+CPPFLAGS="$Z_CPPFLAGS $CPPFLAGS"
+save_LIBS="$LIBS"
+LIBS="$Z_LDFLAGS $Z_LIBS $LIBS"
+OCTAVE_CHECK_LIBRARY(hdf5, HDF5,
+  [HDF5 library not found.  Octave will not be able to save or load HDF5 data files.],
+  [hdf5.h], [H5Gget_num_objs], [], [],
+  [warn_hdf5=
+   OCTAVE_HDF5_HAS_REQUIRED_API
+   if test $HAVE_HDF5; then
+     AC_DEFINE(HAVE_HDF5, 1, [Define if HDF5 is available.])
+     AC_DEFINE(HAVE_H5GGET_NUM_OBJS, 1, [Define if HDF5 has H5Gget_num_objs.])
+     case "$canonical_host_type" in
+       *-*-msdosmsvc)
+	 OCTAVE_HDF5_DLL
+	 ;;
+     esac
+   fi])
+CPPFLAGS="$save_CPPFLAGS"
+LIBS="$save_LIBS"
 
-  WITH_HDF5=true
-  AC_ARG_WITH(hdf5,
-    [AS_HELP_STRING([--without-hdf5], [don't use HDF5])],
-    with_hdf5=$withval, with_hdf5=yes)
 
-  hdf5_lib=
-  if test "$with_hdf5" = yes; then
-    hdf5_lib="hdf5"
-  elif test "$with_hdf5" != no; then
-    hdf5_lib="$with_hdf5"
-  fi
+# Subdirectory of libcruft to build if fftw is not found:
 
-  HDF5_LIBS=
-  WITH_HDF5=false
-  if test -n "$hdf5_lib"; then
-    AC_CHECK_LIB($hdf5_lib, H5Pcreate, [
-      AC_CHECK_HEADERS(hdf5.h, [
-        WITH_HDF5=true
-        HDF5_LIBS="-l$hdf5_lib"
-        save_LIBS="$LIBS"
-        LIBS="$HDF5_LIBS $Z_LIBS $LIBS"
-	AC_CHECK_LIB($hdf5_lib, H5Gget_num_objs, [
-          OCTAVE_HDF5_HAS_REQUIRED_API
-          if test $WITH_HDF5; then
-            AC_DEFINE(HAVE_HDF5, 1, [Define if HDF5 is available.])
-	    AC_DEFINE(HAVE_H5GGET_NUM_OBJS, 1, [Define if HDF5 has H5Gget_num_objs.])
-	  fi])
-        LIBS="$save_LIBS"])])
-  fi
-
-  if $WITH_HDF5; then
-    case "$canonical_host_type" in
-      *-*-msdosmsvc)
-        OCTAVE_HDF5_DLL
-        ;;
-    esac
-  fi
-fi
-AC_SUBST(HDF5_LIBS)
-
-# Subdirectories of libcruft to build if they aren't found on the system:
 FFT_DIR="fftpack"
 AC_SUBST(FFT_DIR)
 
@@ -2080,6 +2061,8 @@ Octave is now configured for $canonical_host_type
   GLPK CPPFLAGS:        $GLPK_CPPFLAGS
   GLPK LDFLAGS:         $GLPK_LDFLAGS
   GLPK libraries:       $GLPK_LIBS
+  HDF5 CPPFLAGS:        $HDF5_CPPFLAGS
+  HDF5 LDFLAGS:         $HDF5_LDFLAGS
   HDF5 libraries:       $HDF5_LIBS
   OPENGL libraries:     $OPENGL_LIBS
   PTHREAD flags:        $PTHREAD_CFLAGS

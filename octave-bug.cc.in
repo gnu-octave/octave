@@ -136,6 +136,8 @@ main (int argc, char **argv)
   vars["GLPK_CPPFLAGS"] = %GLPK_CPPFLAGS%;
   vars["GLPK_LDFLAGS"] = %GLPK_LDFLAGS%;
   vars["GLPK_LIBS"] = %GLPK_LIBS%;
+  vars["HDF5_CPPFLAGS"] = %HDF5_CPPFLAGS%;
+  vars["HDF5_LDFLAGS"] = %HDF5_LDFLAGS%;
   vars["HDF5_LIBS"] = %HDF5_LIBS%;
   vars["OPENGL_LIBS"] = %OPENGL_LIBS%;
   vars["PTHREAD_CFLAGS"] = %PTHREAD_CFLAGS%;
@@ -272,6 +274,8 @@ main (int argc, char **argv)
   os << "GLPK_CPPFLAGS:     " << vars["GLPK_CPPFLAGS"] << endl;
   os << "GLPK_LDFLAGS:      " << vars["GLPK_LDFLAGS"] << endl;
   os << "GLPK_LIBS:         " << vars["GLPK_LIBS"] << endl;
+  os << "HDF5_CPPFLAGS:     " << vars["HDF5_CPPFLAGS"] << endl;
+  os << "HDF5_LDFLAGS:      " << vars["HDF5_LDFLAGS"] << endl;
   os << "HDF5_LIBS:         " << vars["HDF5_LIBS"] << endl;
   os << "OPENGL_LIBS:       " << vars["OPENGL_LIBS"] << endl;
   os << "PTHREAD_CFLAGS:    " << vars["PTHREAD_CFLAGS"] << endl;

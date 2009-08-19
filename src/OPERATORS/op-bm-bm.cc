@@ -98,6 +98,8 @@ DEFNDCATOP_FN (bm_fm, bool_matrix, float_matrix, float_array, float_array, conca
 DEFNDCATOP_FN (fm_bm, float_matrix, bool_matrix, float_array, float_array, concat)
 
 DEFNDASSIGNOP_FN (assign, bool_matrix, bool_matrix, bool_array, assign)
+DEFNDASSIGNOP_FNOP (assign_and, bool_matrix, bool_matrix, bool_array, mx_el_and_assign)
+DEFNDASSIGNOP_FNOP (assign_or, bool_matrix, bool_matrix, bool_array, mx_el_or_assign)
 
 DEFNULLASSIGNOP_FN (null_assign, bool_matrix, delete_elements)
 
@@ -173,6 +175,9 @@ install_bm_bm_ops (void)
   INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_null_matrix, null_assign);
   INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_null_str, null_assign);
   INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_null_sq_str, null_assign);
+
+  INSTALL_ASSIGNOP (op_el_and_eq, octave_bool_matrix, octave_bool_matrix, assign_and);
+  INSTALL_ASSIGNOP (op_el_or_eq, octave_bool_matrix, octave_bool_matrix, assign_or);
 }
 
 /*

@@ -82,17 +82,18 @@ operator += (MArrayN<T>& a, const MArrayN<T>& b)
 {
   if (a.is_shared ())
     return a = a + b;
-  octave_idx_type l = a.length ();
 
-  if (l > 0)
+  dim_vector a_dims = a.dims ();
+  dim_vector b_dims = b.dims ();
+
+  if (a_dims != b_dims)
+    gripe_nonconformant ("operator +=", a_dims, b_dims);
+  else 
     {
-      dim_vector a_dims = a.dims ();
-      dim_vector b_dims = b.dims ();
+      octave_idx_type l = a.length ();
 
-      if (a_dims != b_dims)
-	gripe_nonconformant ("operator +=", a_dims, b_dims);
-      else
-	DO_VV_OP2 (T, a, +=, b);
+      if (l > 0)
+        DO_VV_OP2 (T, a, +=, b);
     }
 
   return a;
@@ -104,18 +105,20 @@ operator -= (MArrayN<T>& a, const MArrayN<T>& b)
 {
   if (a.is_shared ())
     return a = a - b;
-  octave_idx_type l = a.length ();
 
-  if (l > 0)
+  dim_vector a_dims = a.dims ();
+  dim_vector b_dims = b.dims ();
+
+  if (a_dims != b_dims)
+    gripe_nonconformant ("operator -=", a_dims, b_dims);
+  else 
     {
-      dim_vector a_dims = a.dims ();
-      dim_vector b_dims = b.dims ();
+      octave_idx_type l = a.length ();
 
-      if (a_dims != b_dims)
-	gripe_nonconformant ("operator -=", a_dims, b_dims);
-      else
-	DO_VV_OP2 (T, a, -=, b);
+      if (l > 0)
+        DO_VV_OP2 (T, a, -=, b);
     }
+
   return a;
 }
 

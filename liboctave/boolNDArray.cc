@@ -31,6 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "mx-base.h"
 #include "lo-ieee.h"
 #include "mx-op-defs.h"
+#include "MArray-defs.h"
 
 // unary operations
 
@@ -153,6 +154,50 @@ NDS_CMP_OPS (boolNDArray, , bool, )
 
 SND_BOOL_OPS (bool, boolNDArray, false)
 SND_CMP_OPS (bool, , boolNDArray, )
+
+boolNDArray& 
+mx_el_and_assign (boolNDArray& a, const boolNDArray& b)
+{
+  if (a.is_shared ())
+    return a = mx_el_and (a, b);
+
+  dim_vector a_dims = a.dims ();
+  dim_vector b_dims = b.dims ();
+
+  if (a_dims != b_dims)
+    gripe_nonconformant ("operator &=", a_dims, b_dims);
+  else
+    {
+      octave_idx_type l = a.length ();
+
+      if (l > 0)
+        DO_VV_OP2 (bool, a, &=, b);
+    }
+
+  return a;
+}
+
+boolNDArray& 
+mx_el_or_assign (boolNDArray& a, const boolNDArray& b)
+{
+  if (a.is_shared ())
+    return a = mx_el_and (a, b);
+
+  dim_vector a_dims = a.dims ();
+  dim_vector b_dims = b.dims ();
+
+  if (a_dims != b_dims)
+    gripe_nonconformant ("operator |=", a_dims, b_dims);
+  else
+    {
+      octave_idx_type l = a.length ();
+
+      if (l > 0)
+        DO_VV_OP2 (bool, a, |=, b);
+    }
+
+  return a;
+}
 
 /*
 ;;; Local Variables: ***

@@ -1,5 +1,11 @@
 2009-08-19  Jaroslav Hajek  <highegg@gmail.com>
 
+	* MArrayN.cc (operator+=, operator-=): Test matching dimensions first.
+	* boolNDArray.cc (mx_el_and_assign, mx_el_or_assign): New functions.
+	* boolNDArray.h: Declare them.
+
+2009-08-19  Jaroslav Hajek  <highegg@gmail.com>
+
 	* Array.cc (Array<T>::clear): New method.
 	* Array.h: Declare it.
 	* MArray-decl.h (MARRAY_OP_ASSIGN_DECLS1, MARRAY_OP_ASSIGN_FWD_DECLS1,

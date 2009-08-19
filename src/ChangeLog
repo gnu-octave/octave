@@ -1,5 +1,10 @@
 2009-08-17  Jaroslav Hajek  <highegg@gmail.com>
 
+	* ops.h (DEFNDASSIGNOP_FNOP): New macro.
+	* OPERATORS/op-bm-bm.cc: Define and install &= and |= operators.
+
+2009-08-17  Jaroslav Hajek  <highegg@gmail.com>
+
 	* OPERATORS/op-m-m.cc: Define and install += and -= operators.
 	* OPERATORS/op-fm-fm.cc: Ditto.
 	* OPERATORS/op-cm-cm.cc: Ditto.

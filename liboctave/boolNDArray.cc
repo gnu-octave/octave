@@ -38,12 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 boolNDArray
 boolNDArray::operator ! (void) const
 {
-  boolNDArray b (dims ());
-
-  for (octave_idx_type i = 0; i < length (); i++)
-    b.elem (i) = ! elem (i);
-
-  return b;
+  return do_mx_unary_op<boolNDArray> (*this, mx_inline_not);
 }
 
 // FIXME -- this is not quite the right thing.
@@ -146,13 +141,13 @@ boolNDArray::diag (octave_idx_type k) const
   return ArrayN<bool>::diag (k);
 }
 
-NDND_BOOL_OPS (boolNDArray, boolNDArray, false)
+NDND_BOOL_OPS (boolNDArray, boolNDArray)
 NDND_CMP_OPS (boolNDArray, , boolNDArray, )
 
-NDS_BOOL_OPS (boolNDArray, bool, false)
+NDS_BOOL_OPS (boolNDArray, bool)
 NDS_CMP_OPS (boolNDArray, , bool, )
 
-SND_BOOL_OPS (bool, boolNDArray, false)
+SND_BOOL_OPS (bool, boolNDArray)
 SND_CMP_OPS (bool, , boolNDArray, )
 
 boolNDArray& 

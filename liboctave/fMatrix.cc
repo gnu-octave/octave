@@ -266,7 +266,7 @@ FloatMatrix::operator == (const FloatMatrix& a) const
   if (rows () != a.rows () || cols () != a.cols ())
     return false;
 
-  return mx_inline_equal (data (), a.data (), length ());
+  return mx_inline_equal (length (), data (), a.data ());
 }
 
 bool
@@ -3403,13 +3403,13 @@ max (const FloatMatrix& a, const FloatMatrix& b)
 }
 
 MS_CMP_OPS(FloatMatrix, , float, )
-MS_BOOL_OPS(FloatMatrix, float, 0.0)
+MS_BOOL_OPS (FloatMatrix, float)
 
 SM_CMP_OPS(float, , FloatMatrix, )
-SM_BOOL_OPS(float, FloatMatrix, 0.0)
+SM_BOOL_OPS (float, FloatMatrix)
 
 MM_CMP_OPS(FloatMatrix, , FloatMatrix, )
-MM_BOOL_OPS(FloatMatrix, FloatMatrix, 0.0)
+MM_BOOL_OPS (FloatMatrix, FloatMatrix)
 
 /*
 ;;; Local Variables: ***

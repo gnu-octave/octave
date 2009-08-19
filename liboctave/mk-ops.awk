@@ -256,9 +256,8 @@ BEGIN {
 	    }
 
           if (bool_ops)
-            printf ("%s%s_BOOL_OPS2 (%s, %s, %s, %s)\n", lhs_class, rhs_class,
-	            lhs_type, rhs_type, lhs_scalar_zero_val,
-	            rhs_scalar_zero_val) >> cc_file
+            printf ("%s%s_BOOL_OPS (%s, %s)\n", lhs_class, rhs_class,
+	            lhs_type, rhs_type) >> cc_file
 
 
           close (cc_file);

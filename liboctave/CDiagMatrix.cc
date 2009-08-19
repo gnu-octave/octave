@@ -50,7 +50,7 @@ ComplexDiagMatrix::operator == (const ComplexDiagMatrix& a) const
   if (rows () != a.rows () || cols () != a.cols ())
     return 0;
 
-  return mx_inline_equal (data (), a.data (), length ());
+  return mx_inline_equal (length (), data (), a.data ());
 }
 
 bool
@@ -445,7 +445,7 @@ ComplexDiagMatrix::operator += (const DiagMatrix& a)
 
   Complex *d = fortran_vec (); // Ensures only one reference to my privates!
 
-  mx_inline_add2 (d, a.data (), length ());
+  mx_inline_add2 (length (), d, a.data ());
   return *this;
 }
 

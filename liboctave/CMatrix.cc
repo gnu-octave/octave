@@ -304,7 +304,7 @@ ComplexMatrix::operator == (const ComplexMatrix& a) const
   if (rows () != a.rows () || cols () != a.cols ())
     return false;
 
-  return mx_inline_equal (data (), a.data (), length ());
+  return mx_inline_equal (length (), data (), a.data ());
 }
 
 bool
@@ -3025,7 +3025,7 @@ ComplexMatrix::operator += (const Matrix& a)
 
   Complex *d = fortran_vec (); // Ensures only one reference to my privates!
 
-  mx_inline_add2 (d, a.data (), length ());
+  mx_inline_add2 (length (), d, a.data ());
   return *this;
 }
 
@@ -3049,7 +3049,7 @@ ComplexMatrix::operator -= (const Matrix& a)
 
   Complex *d = fortran_vec (); // Ensures only one reference to my privates!
 
-  mx_inline_subtract2 (d, a.data (), length ());
+  mx_inline_sub2 (length (), d, a.data ());
   return *this;
 }
 
@@ -4075,13 +4075,13 @@ max (const ComplexMatrix& a, const ComplexMatrix& b)
 }
 
 MS_CMP_OPS(ComplexMatrix, std::real, Complex, std::real)
-MS_BOOL_OPS(ComplexMatrix, Complex, 0.0)
+MS_BOOL_OPS (ComplexMatrix, Complex)
 
 SM_CMP_OPS(Complex, std::real, ComplexMatrix, std::real)
-SM_BOOL_OPS(Complex, ComplexMatrix, 0.0)
+SM_BOOL_OPS (Complex, ComplexMatrix)
 
 MM_CMP_OPS(ComplexMatrix, std::real, ComplexMatrix, std::real)
-MM_BOOL_OPS(ComplexMatrix, ComplexMatrix, 0.0)
+MM_BOOL_OPS (ComplexMatrix, ComplexMatrix)
 
 /*
 ;;; Local Variables: ***

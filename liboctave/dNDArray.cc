@@ -1122,13 +1122,13 @@ max (const NDArray& a, const NDArray& b)
 }
 
 NDS_CMP_OPS(NDArray, , double, )
-NDS_BOOL_OPS(NDArray, double, 0.0)
+NDS_BOOL_OPS (NDArray, double)
 
 SND_CMP_OPS(double, , NDArray, )
-SND_BOOL_OPS(double, NDArray, 0.0)
+SND_BOOL_OPS (double, NDArray)
 
 NDND_CMP_OPS(NDArray, , NDArray, )
-NDND_BOOL_OPS(NDArray, NDArray, 0.0)
+NDND_BOOL_OPS (NDArray, NDArray)
 
 /*
 ;;; Local Variables: ***

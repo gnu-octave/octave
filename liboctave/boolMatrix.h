@@ -83,6 +83,9 @@ private:
   boolMatrix (bool *b, octave_idx_type r, octave_idx_type c) : Array2<bool> (b, r, c) { }
 };
 
+MM_BOOL_OP_DECLS (boolMatrix, boolMatrix, OCTAVE_API)
+MS_BOOL_OP_DECLS (boolMatrix, bool, OCTAVE_API)
+SM_BOOL_OP_DECLS (bool, boolMatrix, OCTAVE_API)
 MM_CMP_OP_DECLS (boolMatrix, boolMatrix, OCTAVE_API)
 
 #endif

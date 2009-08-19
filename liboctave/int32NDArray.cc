@@ -40,13 +40,13 @@ std::istream&
 operator >> (std::istream& is, intNDArray<octave_int32>& a);
 
 NDS_CMP_OPS (int32NDArray, , octave_int32, )
-NDS_BOOL_OPS (int32NDArray, octave_int32, octave_int32 (0))
+NDS_BOOL_OPS (int32NDArray, octave_int32)
 
 SND_CMP_OPS (octave_int32, , int32NDArray, )
-SND_BOOL_OPS (octave_int32, int32NDArray, octave_int32 (0))
+SND_BOOL_OPS (octave_int32, int32NDArray)
 
 NDND_CMP_OPS (int32NDArray, , int32NDArray, )
-NDND_BOOL_OPS (int32NDArray, int32NDArray, octave_int32 (0))
+NDND_BOOL_OPS (int32NDArray, int32NDArray)
 
 MINMAX_FCNS (int32)
 

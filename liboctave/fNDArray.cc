@@ -1080,13 +1080,13 @@ max (const FloatNDArray& a, const FloatNDArray& b)
 }
 
 NDS_CMP_OPS(FloatNDArray, , float, )
-NDS_BOOL_OPS(FloatNDArray, float, static_cast<float> (0.0))
+NDS_BOOL_OPS (FloatNDArray, float)
 
 SND_CMP_OPS(float, , FloatNDArray, )
-SND_BOOL_OPS(float, FloatNDArray, static_cast<float> (0.0))
+SND_BOOL_OPS (float, FloatNDArray)
 
 NDND_CMP_OPS(FloatNDArray, , FloatNDArray, )
-NDND_BOOL_OPS(FloatNDArray, FloatNDArray, static_cast<float> (0.0))
+NDND_BOOL_OPS (FloatNDArray, FloatNDArray)
 
 /*
 ;;; Local Variables: ***

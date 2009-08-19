@@ -94,7 +94,7 @@ charMatrix::operator == (const charMatrix& a) const
   if (rows () != a.rows () || cols () != a.cols ())
     return 0;
 
-  return mx_inline_equal (data (), a.data (), length ());
+  return mx_inline_equal (length (), data (), a.data ());
 }
 
 bool
@@ -215,13 +215,13 @@ charMatrix::any (int dim) const
 }
 
 MS_CMP_OPS(charMatrix, , char, )
-MS_BOOL_OPS(charMatrix, char, 0)
+MS_BOOL_OPS (charMatrix, char)
 
 SM_CMP_OPS(char, , charMatrix, )
-SM_BOOL_OPS(char, charMatrix, 0)
+SM_BOOL_OPS (char, charMatrix)
 
 MM_CMP_OPS(charMatrix, , charMatrix, )
-MM_BOOL_OPS(charMatrix, charMatrix, 0)
+MM_BOOL_OPS (charMatrix, charMatrix)
 
 /*
 ;;; Local Variables: ***

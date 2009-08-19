@@ -28,6 +28,14 @@ along with Octave; see the file COPYING.  If not, see
 #include "mx-op-decl.h"
 #include "mx-inlines.cc"
 
+#define ND_LOGICAL_NAN_CHECK(X) \
+if (mx_inline_any_nan ((X).numel (), (X).data ())) \
+    gripe_nan_to_logical_conversion ()
+
+#define SC_LOGICAL_NAN_CHECK(X) \
+  if (xisnan(X)) \
+      gripe_nan_to_logical_conversion ()
+
 // vector by scalar operations.
 
 #define VS_BIN_OP(R, F, OP, V, S) \
@@ -108,22 +116,14 @@ along with Octave; see the file COPYING.  If not, see
   R \
   OP (const M& m, const S& s) \
   { \
-    octave_idx_type nr = m.rows (); \
-    octave_idx_type nc = m.cols (); \
- \
-    R r (nr, nc); \
- \
-    if (nr > 0 && nc > 0) \
-      F ## _vs (r.fortran_vec (), m.data (), nr * nc, s); \
- \
-    return r; \
+    return do_ms_binary_op<R, M, S> (m, s, F); \
   }
 
 #define MS_BIN_OPS(R, M, S) \
   MS_BIN_OP (R, operator +, M, S, mx_inline_add) \
-  MS_BIN_OP (R, operator -, M, S, mx_inline_subtract) \
-  MS_BIN_OP (R, operator *, M, S, mx_inline_multiply) \
-  MS_BIN_OP (R, operator /, M, S, mx_inline_divide)
+  MS_BIN_OP (R, operator -, M, S, mx_inline_sub) \
+  MS_BIN_OP (R, operator *, M, S, mx_inline_mul) \
+  MS_BIN_OP (R, operator /, M, S, mx_inline_div)
 
 #define MS_CMP_OP(F, OP, M, MC, S, SC) \
   boolMatrix \
@@ -154,45 +154,18 @@ along with Octave; see the file COPYING.  If not, see
   MS_CMP_OP (mx_el_eq, ==, M,   , S,   ) \
   MS_CMP_OP (mx_el_ne, !=, M,   , S,   )
 
-#define MS_BOOL_OP(F, OP, M, S, LHS_ZERO, RHS_ZERO) \
+#define MS_BOOL_OP(F, OP, M, S) \
   boolMatrix \
   F (const M& m, const S& s) \
   { \
-    boolMatrix r; \
- \
-    octave_idx_type nr = m.rows (); \
-    octave_idx_type nc = m.cols (); \
- \
-    if (nr != 0 && nc != 0) \
-      { \
-        r.resize (nr, nc); \
- \
-	if (xisnan (s)) \
-	  gripe_nan_to_logical_conversion (); \
-	else \
-	  { \
- \
-	    for (octave_idx_type j = 0; j < nc; j++) \
-	      for (octave_idx_type i = 0; i < nr; i++) \
-		if (xisnan (m.elem(i, j))) \
-		  { \
-		    gripe_nan_to_logical_conversion (); \
-		    return r; \
-		  } \
-		else \
-		  r.elem(i, j) = (m.elem(i, j) != LHS_ZERO) OP (s != RHS_ZERO); \
-	    } \
-      } \
- \
-    return r; \
+    ND_LOGICAL_NAN_CHECK (m); \
+    SC_LOGICAL_NAN_CHECK (s); \
+    return do_ms_binary_op<boolMatrix, M, S> (m, s, OP); \
   }
 
-#define MS_BOOL_OPS2(M, S, LHS_ZERO, RHS_ZERO) \
-  MS_BOOL_OP (mx_el_and, &&, M, S, LHS_ZERO, RHS_ZERO) \
-  MS_BOOL_OP (mx_el_or,  ||, M, S, LHS_ZERO, RHS_ZERO)
-
-#define MS_BOOL_OPS(M, S, ZERO) \
-  MS_BOOL_OPS2(M, S, ZERO, ZERO)
+#define MS_BOOL_OPS(M, S) \
+  MS_BOOL_OP (mx_el_and, mx_inline_and, M, S) \
+  MS_BOOL_OP (mx_el_or,  mx_inline_or,  M, S)
 
 // scalar by matrix operations.
 
@@ -200,22 +173,14 @@ along with Octave; see the file COPYING.  If not, see
   R \
   OP (const S& s, const M& m) \
   { \
-    octave_idx_type nr = m.rows (); \
-    octave_idx_type nc = m.cols (); \
- \
-    R r (nr, nc); \
- \
-    if (nr > 0 && nc > 0) \
-      F ## _sv (r.fortran_vec (), s, m.data (), nr * nc); \
- \
-    return r; \
+    return do_sm_binary_op<R, S, M> (s, m, F); \
   }
 
 #define SM_BIN_OPS(R, S, M) \
   SM_BIN_OP (R, operator +, S, M, mx_inline_add) \
-  SM_BIN_OP (R, operator -, S, M, mx_inline_subtract) \
-  SM_BIN_OP (R, operator *, S, M, mx_inline_multiply) \
-  SM_BIN_OP (R, operator /, S, M, mx_inline_divide)
+  SM_BIN_OP (R, operator -, S, M, mx_inline_sub) \
+  SM_BIN_OP (R, operator *, S, M, mx_inline_mul) \
+  SM_BIN_OP (R, operator /, S, M, mx_inline_div)
 
 #define SM_CMP_OP(F, OP, S, SC, M, MC) \
   boolMatrix \
@@ -246,44 +211,18 @@ along with Octave; see the file COPYING.  If not, see
   SM_CMP_OP (mx_el_eq, ==, S,   , M,   ) \
   SM_CMP_OP (mx_el_ne, !=, S,   , M,   )
 
-#define SM_BOOL_OP(F, OP, S, M, LHS_ZERO, RHS_ZERO) \
+#define SM_BOOL_OP(F, OP, S, M) \
   boolMatrix \
   F (const S& s, const M& m) \
   { \
-    boolMatrix r; \
- \
-    octave_idx_type nr = m.rows (); \
-    octave_idx_type nc = m.cols (); \
- \
-    if (nr != 0 && nc != 0) \
-      { \
-        r.resize (nr, nc); \
- \
-	if (xisnan (s)) \
-	  gripe_nan_to_logical_conversion (); \
-	else \
-	  { \
-	    for (octave_idx_type j = 0; j < nc; j++) \
-	      for (octave_idx_type i = 0; i < nr; i++) \
-		if (xisnan (m.elem(i, j))) \
-		  { \
-		    gripe_nan_to_logical_conversion (); \
-		    return r; \
-		  } \
-		else \
-		  r.elem(i, j) = (s != LHS_ZERO) OP (m.elem(i, j) != RHS_ZERO); \
-	  } \
-      } \
- \
-    return r; \
+    SC_LOGICAL_NAN_CHECK (s); \
+    ND_LOGICAL_NAN_CHECK (m); \
+    return do_sm_binary_op<boolMatrix, S, M> (s, m, OP); \
   }
 
-#define SM_BOOL_OPS2(S, M, LHS_ZERO, RHS_ZERO) \
-  SM_BOOL_OP (mx_el_and, &&, S, M, LHS_ZERO, RHS_ZERO) \
-  SM_BOOL_OP (mx_el_or,  ||, S, M, LHS_ZERO, RHS_ZERO)
-
-#define SM_BOOL_OPS(S, M, ZERO) \
-  SM_BOOL_OPS2(S, M, ZERO, ZERO)
+#define SM_BOOL_OPS(S, M) \
+  SM_BOOL_OP (mx_el_and, mx_inline_and, S, M) \
+  SM_BOOL_OP (mx_el_or,  mx_inline_or,  S, M)
 
 // matrix by matrix operations.
 
@@ -291,32 +230,14 @@ along with Octave; see the file COPYING.  If not, see
   R \
   OP (const M1& m1, const M2& m2) \
   { \
-    R r; \
- \
-    octave_idx_type m1_nr = m1.rows (); \
-    octave_idx_type m1_nc = m1.cols (); \
- \
-    octave_idx_type m2_nr = m2.rows (); \
-    octave_idx_type m2_nc = m2.cols (); \
- \
-    if (m1_nr != m2_nr || m1_nc != m2_nc) \
-      gripe_nonconformant (#OP, m1_nr, m1_nc, m2_nr, m2_nc); \
-    else \
-      { \
-	r.resize (m1_nr, m1_nc); \
- \
-	if (m1_nr > 0 && m1_nc > 0) \
-	  F ## _vv (r.fortran_vec (), m1.data (), m2.data (), m1_nr * m1_nc); \
-      } \
- \
-    return r; \
+    return do_mm_binary_op<R, M1, M2> (m1, m2, F, #OP); \
   }
 
 #define MM_BIN_OPS(R, M1, M2) \
   MM_BIN_OP (R, operator +, M1, M2, mx_inline_add) \
-  MM_BIN_OP (R, operator -, M1, M2, mx_inline_subtract) \
-  MM_BIN_OP (R, product,    M1, M2, mx_inline_multiply) \
-  MM_BIN_OP (R, quotient,   M1, M2, mx_inline_divide)
+  MM_BIN_OP (R, operator -, M1, M2, mx_inline_sub) \
+  MM_BIN_OP (R, product,    M1, M2, mx_inline_mul) \
+  MM_BIN_OP (R, quotient,   M1, M2, mx_inline_div)
 
 #define MM_CMP_OP(F, OP, M1, C1, M2, C2) \
   boolMatrix \
@@ -352,51 +273,18 @@ along with Octave; see the file COPYING.  If not, see
   MM_CMP_OP (mx_el_eq, ==, M1,   , M2,   ) \
   MM_CMP_OP (mx_el_ne, !=, M1,   , M2,   )
 
-#define MM_BOOL_OP(F, OP, M1, M2, LHS_ZERO, RHS_ZERO) \
+#define MM_BOOL_OP(F, OP, M1, M2) \
   boolMatrix \
   F (const M1& m1, const M2& m2) \
   { \
-    boolMatrix r; \
- \
-    octave_idx_type m1_nr = m1.rows (); \
-    octave_idx_type m1_nc = m1.cols (); \
- \
-    octave_idx_type m2_nr = m2.rows (); \
-    octave_idx_type m2_nc = m2.cols (); \
- \
-    if (m1_nr == m2_nr && m1_nc == m2_nc) \
-      { \
-	if (m1_nr != 0 || m1_nc != 0) \
-	  { \
-	    r.resize (m1_nr, m1_nc); \
- \
-	    for (octave_idx_type j = 0; j < m1_nc; j++) \
-	      for (octave_idx_type i = 0; i < m1_nr; i++) \
-		if (xisnan (m1.elem(i, j)) || xisnan (m2.elem(i, j))) \
-		  { \
-		    gripe_nan_to_logical_conversion (); \
-		    return r; \
-		  } \
-		else \
-		  r.elem(i, j) = (m1.elem(i, j) != LHS_ZERO) \
-		    OP (m2.elem(i, j) != RHS_ZERO); \
-	  } \
-      } \
-    else \
-      { \
-	if ((m1_nr != 0 || m1_nc != 0) && (m2_nr != 0 || m2_nc != 0)) \
-	  gripe_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc); \
-      } \
- \
-    return r; \
+    ND_LOGICAL_NAN_CHECK(m1); \
+    ND_LOGICAL_NAN_CHECK(m2); \
+    return do_mm_binary_op<boolMatrix, M1, M2> (m1, m2, OP, #F); \
   }
 
-#define MM_BOOL_OPS2(M1, M2, LHS_ZERO, RHS_ZERO) \
-  MM_BOOL_OP (mx_el_and, &&, M1, M2, LHS_ZERO, RHS_ZERO) \
-  MM_BOOL_OP (mx_el_or,  ||, M1, M2, LHS_ZERO, RHS_ZERO)
-
-#define MM_BOOL_OPS(M1, M2, ZERO) \
-  MM_BOOL_OPS2(M1, M2, ZERO, ZERO)
+#define MM_BOOL_OPS(M1, M2) \
+  MM_BOOL_OP (mx_el_and, mx_inline_and, M1, M2) \
+  MM_BOOL_OP (mx_el_or,  mx_inline_or,  M1, M2)
 
 // N-d matrix by scalar operations.
 
@@ -404,21 +292,14 @@ along with Octave; see the file COPYING.  If not, see
   R \
   OP (const ND& m, const S& s) \
   { \
-    R r (m.dims ()); \
- \
-    octave_idx_type len = m.length (); \
- \
-    if (len > 0) \
-      F ## _vs (r.fortran_vec (), m.data (), len, s); \
- \
-    return r; \
+    return do_ms_binary_op<R, ND, S> (m, s, F); \
   }
 
 #define NDS_BIN_OPS(R, ND, S) \
   NDS_BIN_OP (R, operator +, ND, S, mx_inline_add) \
-  NDS_BIN_OP (R, operator -, ND, S, mx_inline_subtract) \
-  NDS_BIN_OP (R, operator *, ND, S, mx_inline_multiply) \
-  NDS_BIN_OP (R, operator /, ND, S, mx_inline_divide)
+  NDS_BIN_OP (R, operator -, ND, S, mx_inline_sub) \
+  NDS_BIN_OP (R, operator *, ND, S, mx_inline_mul) \
+  NDS_BIN_OP (R, operator /, ND, S, mx_inline_div)
 
 #define NDS_CMP_OP(F, OP, ND, NDC, S, SC) \
   boolNDArray \
@@ -496,42 +377,22 @@ along with Octave; see the file COPYING.  If not, see
   NDS_CMP_OP2 (mx_el_eq, ==, ND,    , S,   , SPEC1, SPEC2) \
   NDS_CMP_OP2 (mx_el_ne, !=, ND,    , S,   , SPEC1, SPEC2)
 
-#define NDS_BOOL_OP(F, EQ, OP, ND, S, LHS_ZERO, RHS_ZERO) \
+#define NDS_BOOL_OP(F, OP, ND, S) \
   boolNDArray \
   F (const ND& m, const S& s) \
   { \
-    boolNDArray r (m.dims ()); \
- \
-    octave_idx_type len = m.length (); \
- \
-    if (len > 0) \
-      { \
-	if (xisnan (s)) \
-	  gripe_nan_to_logical_conversion (); \
-	else \
-	  { \
-	    for (octave_idx_type i = 0; i < len; i++) \
-	      if (xisnan (m.elem(i))) \
-		{ \
-		  gripe_nan_to_logical_conversion (); \
-		  return r; \
-		} \
-	      else \
-		r.xelem(i) = (m.elem(i) EQ LHS_ZERO) OP (s != RHS_ZERO); \
-	  } \
-      } \
- \
-    return r; \
+    ND_LOGICAL_NAN_CHECK (m); \
+    SC_LOGICAL_NAN_CHECK (s); \
+    return do_ms_binary_op<boolNDArray, ND, S> (m, s, OP); \
   }
 
-#define NDS_BOOL_OPS2(ND, S, LHS_ZERO, RHS_ZERO) \
-  NDS_BOOL_OP (mx_el_and, !=, &&, ND, S, LHS_ZERO, RHS_ZERO) \
-  NDS_BOOL_OP (mx_el_or,  !=, ||, ND, S, LHS_ZERO, RHS_ZERO) \
-  NDS_BOOL_OP (mx_el_not_and, ==, &&, ND, S, LHS_ZERO, RHS_ZERO) \
-  NDS_BOOL_OP (mx_el_not_or,  ==, ||, ND, S, LHS_ZERO, RHS_ZERO)
-
-#define NDS_BOOL_OPS(ND, S, ZERO) \
-  NDS_BOOL_OPS2(ND, S, ZERO, ZERO)
+#define NDS_BOOL_OPS(ND, S) \
+  NDS_BOOL_OP (mx_el_and,     mx_inline_and,     ND, S) \
+  NDS_BOOL_OP (mx_el_or,      mx_inline_or,      ND, S) \
+  NDS_BOOL_OP (mx_el_not_and, mx_inline_not_and, ND, S) \
+  NDS_BOOL_OP (mx_el_not_or,  mx_inline_not_or,  ND, S) \
+  NDS_BOOL_OP (mx_el_and_not, mx_inline_and_not, ND, S) \
+  NDS_BOOL_OP (mx_el_or_not,  mx_inline_or_not,  ND, S)
 
 // scalar by N-d matrix operations.
 
@@ -539,21 +400,14 @@ along with Octave; see the file COPYING.  If not, see
   R \
   OP (const S& s, const ND& m) \
   { \
-    R r (m.dims ()); \
- \
-    octave_idx_type len = m.length (); \
- \
-    if (len > 0) \
-      F ## _sv (r.fortran_vec (), s, m.data (), len); \
- \
-    return r; \
+    return do_sm_binary_op<R, S, ND> (s, m, F); \
   }
 
 #define SND_BIN_OPS(R, S, ND) \
   SND_BIN_OP (R, operator +, S, ND, mx_inline_add) \
-  SND_BIN_OP (R, operator -, S, ND, mx_inline_subtract) \
-  SND_BIN_OP (R, operator *, S, ND, mx_inline_multiply) \
-  SND_BIN_OP (R, operator /, S, ND, mx_inline_divide)
+  SND_BIN_OP (R, operator -, S, ND, mx_inline_sub) \
+  SND_BIN_OP (R, operator *, S, ND, mx_inline_mul) \
+  SND_BIN_OP (R, operator /, S, ND, mx_inline_div)
 
 #define SND_CMP_OP(F, OP, S, SC, ND, NDC) \
   boolNDArray \
@@ -629,42 +483,22 @@ along with Octave; see the file COPYING.  If not, see
   SND_CMP_OP2 (mx_el_eq, ==, S,   , ND,    , SPEC1, SPEC2) \
   SND_CMP_OP2 (mx_el_ne, !=, S,   , ND,    , SPEC1, SPEC2)
 
-#define SND_BOOL_OP(F, OP, EQ, S, ND, LHS_ZERO, RHS_ZERO) \
+#define SND_BOOL_OP(F, OP, S, ND) \
   boolNDArray \
   F (const S& s, const ND& m) \
   { \
-    boolNDArray r (m.dims ()); \
- \
-    octave_idx_type len = m.length (); \
- \
-    if (len > 0) \
-      { \
-	if (xisnan (s)) \
-	  gripe_nan_to_logical_conversion (); \
-	else \
-	  { \
-	    for (octave_idx_type i = 0; i < len; i++) \
-	      if (xisnan (m.elem(i))) \
-		{ \
-	          gripe_nan_to_logical_conversion (); \
-		  return r; \
-		} \
-	      else \
-		r.xelem(i) = (s != LHS_ZERO) OP (m.elem(i) EQ RHS_ZERO); \
-	    } \
-      } \
- \
-    return r; \
+    SC_LOGICAL_NAN_CHECK (s); \
+    ND_LOGICAL_NAN_CHECK (m); \
+    return do_sm_binary_op<boolNDArray, S, ND> (s, m, OP); \
   }
 
-#define SND_BOOL_OPS2(S, ND, LHS_ZERO, RHS_ZERO) \
-  SND_BOOL_OP (mx_el_and, &&, !=, S, ND, LHS_ZERO, RHS_ZERO) \
-  SND_BOOL_OP (mx_el_or,  ||, !=, S, ND, LHS_ZERO, RHS_ZERO) \
-  SND_BOOL_OP (mx_el_and_not, &&, ==, S, ND, LHS_ZERO, RHS_ZERO) \
-  SND_BOOL_OP (mx_el_or_not,  ||, ==, S, ND, LHS_ZERO, RHS_ZERO)
-
-#define SND_BOOL_OPS(S, ND, ZERO) \
-  SND_BOOL_OPS2(S, ND, ZERO, ZERO)
+#define SND_BOOL_OPS(S, ND) \
+  SND_BOOL_OP (mx_el_and,     mx_inline_and,     S, ND) \
+  SND_BOOL_OP (mx_el_or,      mx_inline_or,      S, ND) \
+  SND_BOOL_OP (mx_el_not_and, mx_inline_not_and, S, ND) \
+  SND_BOOL_OP (mx_el_not_or,  mx_inline_not_or,  S, ND) \
+  SND_BOOL_OP (mx_el_and_not, mx_inline_and_not, S, ND) \
+  SND_BOOL_OP (mx_el_or_not,  mx_inline_or_not,  S, ND)
 
 // N-d matrix by N-d matrix operations.
 
@@ -672,31 +506,14 @@ along with Octave; see the file COPYING.  If not, see
   R \
   OP (const ND1& m1, const ND2& m2) \
   { \
-    R r; \
- \
-    dim_vector m1_dims = m1.dims (); \
-    dim_vector m2_dims = m2.dims (); \
- \
-    if (m1_dims != m2_dims) \
-      gripe_nonconformant (#OP, m1_dims, m2_dims); \
-    else \
-      { \
-	r = R (m1_dims); \
- \
-	octave_idx_type len = m1.length (); \
- \
-	if (len > 0) \
-	  F ## _vv (r.fortran_vec (), m1.data (), m2.data (), len); \
-      } \
- \
-    return r; \
+    return do_mm_binary_op<R, ND1, ND2> (m1, m2, F, #OP); \
   }
 
 #define NDND_BIN_OPS(R, ND1, ND2) \
   NDND_BIN_OP (R, operator +, ND1, ND2, mx_inline_add) \
-  NDND_BIN_OP (R, operator -, ND1, ND2, mx_inline_subtract) \
-  NDND_BIN_OP (R, product,    ND1, ND2, mx_inline_multiply) \
-  NDND_BIN_OP (R, quotient,   ND1, ND2, mx_inline_divide)
+  NDND_BIN_OP (R, operator -, ND1, ND2, mx_inline_sub) \
+  NDND_BIN_OP (R, product,    ND1, ND2, mx_inline_mul) \
+  NDND_BIN_OP (R, quotient,   ND1, ND2, mx_inline_div)
 
 #define NDND_CMP_OP(F, OP, ND1, C1, ND2, C2) \
   boolNDArray \
@@ -728,47 +545,22 @@ along with Octave; see the file COPYING.  If not, see
   NDND_CMP_OP (mx_el_eq, ==, ND1,   , ND2,   ) \
   NDND_CMP_OP (mx_el_ne, !=, ND1,   , ND2,   )
 
-#define NDND_BOOL_OP(F, EQ1, OP, EQ2, ND1, ND2, LHS_ZERO, RHS_ZERO) \
+#define NDND_BOOL_OP(F, OP, ND1, ND2) \
   boolNDArray \
   F (const ND1& m1, const ND2& m2) \
   { \
-    boolNDArray r; \
- \
-    dim_vector m1_dims = m1.dims (); \
-    dim_vector m2_dims = m2.dims (); \
- \
-    if (m1_dims == m2_dims) \
-      { \
-	if (! m1_dims.all_zero ()) \
-	  { \
-	    r = boolNDArray (m1_dims); \
- \
-	    for (octave_idx_type i = 0; i < m1.length (); i++) \
-	      if (xisnan (m1.elem(i)) || xisnan (m2.elem(i))) \
-		{ \
-	          gripe_nan_to_logical_conversion (); \
-		  return r; \
-		} \
-	      else \
-		r.xelem(i) = (m1.elem(i) EQ1 LHS_ZERO) OP (m2.elem(i) EQ2 RHS_ZERO); \
-	  } \
-      } \
-    else \
-      gripe_nonconformant (#F, m1_dims, m2_dims); \
- \
-    return r; \
+    ND_LOGICAL_NAN_CHECK(m1); \
+    ND_LOGICAL_NAN_CHECK(m2); \
+    return do_mm_binary_op<boolNDArray, ND1, ND2> (m1, m2, OP, #F); \
   }
 
-#define NDND_BOOL_OPS2(ND1, ND2, LHS_ZERO, RHS_ZERO) \
-  NDND_BOOL_OP (mx_el_and, !=, &&, !=, ND1, ND2, LHS_ZERO, RHS_ZERO) \
-  NDND_BOOL_OP (mx_el_or,  !=, ||, !=, ND1, ND2, LHS_ZERO, RHS_ZERO) \
-  NDND_BOOL_OP (mx_el_and_not, != , &&, ==, ND1, ND2, LHS_ZERO, RHS_ZERO) \
-  NDND_BOOL_OP (mx_el_or_not, !=, ||, ==, ND1, ND2, LHS_ZERO, RHS_ZERO) \
-  NDND_BOOL_OP (mx_el_not_and, ==, &&, !=, ND1, ND2, LHS_ZERO, RHS_ZERO) \
-  NDND_BOOL_OP (mx_el_not_or,  ==, ||, !=, ND1, ND2, LHS_ZERO, RHS_ZERO)
-
-#define NDND_BOOL_OPS(ND1, ND2, ZERO) \
-  NDND_BOOL_OPS2(ND1, ND2, ZERO, ZERO)
+#define NDND_BOOL_OPS(ND1, ND2) \
+  NDND_BOOL_OP (mx_el_and,     mx_inline_and,     ND1, ND2) \
+  NDND_BOOL_OP (mx_el_or,      mx_inline_or,      ND1, ND2) \
+  NDND_BOOL_OP (mx_el_not_and, mx_inline_not_and, ND1, ND2) \
+  NDND_BOOL_OP (mx_el_not_or,  mx_inline_not_or,  ND1, ND2) \
+  NDND_BOOL_OP (mx_el_and_not, mx_inline_and_not, ND1, ND2) \
+  NDND_BOOL_OP (mx_el_or_not,  mx_inline_or_not,  ND1, ND2)
 
 // scalar by diagonal matrix operations.
 
@@ -870,10 +662,10 @@ operator * (const M& m, const DM& dm) \
       octave_idx_type len = dm.length (); \
       for (octave_idx_type i = 0; i < len; i++) \
         { \
-          mx_inline_multiply_vs (rd, md, m_nr, dd[i]); \
+          mx_inline_mul (m_nr, rd, md, dd[i]); \
           rd += m_nr; md += m_nr; \
         } \
-      mx_inline_fill_vs (rd, m_nr * (dm_nc - len), R_ZERO); \
+      mx_inline_fill (m_nr * (dm_nc - len), rd, R_ZERO); \
     } \
  \
   return r; \
@@ -942,9 +734,9 @@ operator * (const DM& dm, const M& m) \
       octave_idx_type len = dm.length (); \
       for (octave_idx_type i = 0; i < m_nc; i++) \
         { \
-          mx_inline_multiply_vv (rd, md, dd, len); \
+          mx_inline_mul (len, rd, md, dd); \
           rd += len; md += m_nr; \
-          mx_inline_fill_vs (rd, dm_nr - len, R_ZERO); \
+          mx_inline_fill (dm_nr - len, rd, R_ZERO); \
           rd += dm_nr - len; \
         } \
     } \
@@ -978,8 +770,7 @@ operator * (const DM& dm, const M& m) \
 	r.resize (dm1_nr, dm1_nc); \
  \
 	if (dm1_nr > 0 && dm1_nc > 0) \
-	  F ## _vv (r.fortran_vec (), dm1.data (), dm2.data (), \
-		    dm1.length ()); \
+	  F (dm1.length (), r.fortran_vec (), dm1.data (), dm2.data ()); \
       } \
  \
     return r; \
@@ -987,8 +778,8 @@ operator * (const DM& dm, const M& m) \
 
 #define DMDM_BIN_OPS(R, DM1, DM2) \
   DMDM_BIN_OP (R, operator +, DM1, DM2, mx_inline_add) \
-  DMDM_BIN_OP (R, operator -, DM1, DM2, mx_inline_subtract) \
-  DMDM_BIN_OP (R, product,    DM1, DM2, mx_inline_multiply)
+  DMDM_BIN_OP (R, operator -, DM1, DM2, mx_inline_sub) \
+  DMDM_BIN_OP (R, product,    DM1, DM2, mx_inline_mul)
 
 // scalar by N-d array min/max ops
 

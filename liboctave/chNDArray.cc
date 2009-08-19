@@ -207,13 +207,13 @@ charNDArray::smap (mapper fcn) const
 }
 
 NDS_CMP_OPS(charNDArray, , char, )
-NDS_BOOL_OPS(charNDArray, char, 0)
+NDS_BOOL_OPS (charNDArray, char)
 
 SND_CMP_OPS(char, , charNDArray, )
-SND_BOOL_OPS(char, charNDArray, 0)
+SND_BOOL_OPS (char, charNDArray)
 
 NDND_CMP_OPS(charNDArray, , charNDArray, )
-NDND_BOOL_OPS(charNDArray, charNDArray, 0)
+NDND_BOOL_OPS (charNDArray, charNDArray)
 
 /*
 ;;; Local Variables: ***

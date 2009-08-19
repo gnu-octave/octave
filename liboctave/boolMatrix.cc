@@ -43,7 +43,7 @@ boolMatrix::operator == (const boolMatrix& a) const
   if (rows () != a.rows () || cols () != a.cols ())
     return 0;
 
-  return mx_inline_equal (data (), a.data (), length ());
+  return mx_inline_equal (length (), data (), a.data ());
 }
 
 bool
@@ -99,6 +99,9 @@ boolMatrix::any (int dim) const
   return do_mx_red_op<boolMatrix, bool> (*this, dim, mx_inline_any);
 }
 
+MM_BOOL_OPS (boolMatrix, boolMatrix)
+MS_BOOL_OPS (boolMatrix, bool)
+SM_BOOL_OPS (bool, boolMatrix)
 MM_CMP_OPS (boolMatrix, , boolMatrix, )
 
 /*

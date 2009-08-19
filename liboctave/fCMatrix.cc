@@ -303,7 +303,7 @@ FloatComplexMatrix::operator == (const FloatComplexMatrix& a) const
   if (rows () != a.rows () || cols () != a.cols ())
     return false;
 
-  return mx_inline_equal (data (), a.data (), length ());
+  return mx_inline_equal (length (), data (), a.data ());
 }
 
 bool
@@ -3018,7 +3018,7 @@ FloatComplexMatrix::operator += (const FloatMatrix& a)
 
   FloatComplex *d = fortran_vec (); // Ensures only one reference to my privates!
 
-  mx_inline_add2 (d, a.data (), length ());
+  mx_inline_add2 (length (), d, a.data ());
   return *this;
 }
 
@@ -3042,7 +3042,7 @@ FloatComplexMatrix::operator -= (const FloatMatrix& a)
 
   FloatComplex *d = fortran_vec (); // Ensures only one reference to my privates!
 
-  mx_inline_subtract2 (d, a.data (), length ());
+  mx_inline_sub2 (length (), d, a.data ());
   return *this;
 }
 
@@ -4068,13 +4068,13 @@ max (const FloatComplexMatrix& a, const FloatComplexMatrix& b)
 }
 
 MS_CMP_OPS(FloatComplexMatrix, std::real, FloatComplex, std::real)
-MS_BOOL_OPS(FloatComplexMatrix, FloatComplex, static_cast<float> (0.0))
+MS_BOOL_OPS (FloatComplexMatrix, FloatComplex)
 
 SM_CMP_OPS(FloatComplex, std::real, FloatComplexMatrix, std::real)
-SM_BOOL_OPS(FloatComplex, FloatComplexMatrix, static_cast<float> (0.0))
+SM_BOOL_OPS (FloatComplex, FloatComplexMatrix)
 
 MM_CMP_OPS(FloatComplexMatrix, std::real, FloatComplexMatrix, std::real)
-MM_BOOL_OPS(FloatComplexMatrix, FloatComplexMatrix, static_cast<float> (0.0))
+MM_BOOL_OPS (FloatComplexMatrix, FloatComplexMatrix)
 
 /*
 ;;; Local Variables: ***

@@ -267,7 +267,7 @@ Matrix::operator == (const Matrix& a) const
   if (rows () != a.rows () || cols () != a.cols ())
     return false;
 
-  return mx_inline_equal (data (), a.data (), length ());
+  return mx_inline_equal (length (), data (), a.data ());
 }
 
 bool
@@ -3404,13 +3404,13 @@ max (const Matrix& a, const Matrix& b)
 }
 
 MS_CMP_OPS(Matrix, , double, )
-MS_BOOL_OPS(Matrix, double, 0.0)
+MS_BOOL_OPS (Matrix, double)
 
 SM_CMP_OPS(double, , Matrix, )
-SM_BOOL_OPS(double, Matrix, 0.0)
+SM_BOOL_OPS (double, Matrix)
 
 MM_CMP_OPS(Matrix, , Matrix, )
-MM_BOOL_OPS(Matrix, Matrix, 0.0)
+MM_BOOL_OPS (Matrix, Matrix)
 
 /*
 ;;; Local Variables: ***

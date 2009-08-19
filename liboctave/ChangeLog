@@ -1,3 +1,71 @@
+2009-08-20  Jaroslav Hajek  <highegg@gmail.com>
+
+	* mx-inlines.cc (mx_inline_add, mx_inline_sub, mx_inline_mul,
+	mx_inline_div, mx_inline_uminus, mx_inline_not, mx_inline_add2,
+	mx_inline_sub2, mx_inline_mul2, mx_inline_div2, mx_inline_iszero,
+	mx_inline_notzero, mx_inline_and, mx_inline_or, mx_inline_not_and,
+	mx_inline_not_or, mx_inline_and_not, mx_inline_or_not, 
+	mx_inline_lt, mx_inline_le, mx_inline_gt, mx_inline_ge,
+	mx_inline_eq, mx_inline_ne): New templates.
+	(do_mx_unary_op, do_mm_binary_op, do_sm_binary_op,
+	do_ms_binary_op, do_mm_inplace_op,do_ms_inplace_op):
+	New templates.
+
+	* mx-op-defs.h (ND_LOGICAL_NAN_CHECK, SC_LOGICAL_NAN_CHECK):
+	New macros.
+	(NDND_BIN_OP, NDS_BIN_OP, SND_BIN_OP): Simplify.
+	(MM_BIN_OP, MS_BIN_OP, MM_BIN_OP): Simplify.
+	(NDND_BOOL_OP, NDS_BOOL_OP, SND_BOOL_OP): Simplify.
+	(MM_BOOL_OP, MS_BOOL_OP, MM_BOOL_OP): Simplify.
+	(NDND_BOOL_OPS2, NDS_BOOL_OPS2, SND_BOOL_OPS2,
+	MM_BOOL_OPS2, MS_BOOL_OPS2, SM_BOOL_OPS2): Remove.
+	* mx-op-decl.h (NDND_BOOL_OPX_DECLS, NDS_BOOL_OPX_DECLS,
+	SND_BOOL_OPX_DECLS): New macros.
+	* mk-ops.awk: use _BOOL_OPS rather than _BOOL_OPS2.
+
+	* boolMatrix.cc: Add missing bool op defs.
+	* boolMatrix.h: Add missing bool op decls.
+
+
+	* boolNDArray.cc: Remove unused arg to BOOL_OPS.
+	* CMatrix.cc: Ditto.
+	* CNDArray.cc: Ditto.
+	* ChangeLog: Ditto.
+	* chMatrix.cc: Ditto.
+	* chNDArray.cc: Ditto.
+	* dMatrix.cc: Ditto.
+	* dNDArray.cc: Ditto.
+	* fCMatrix.cc: Ditto.
+	* fCNDArray.cc: Ditto.
+	* fMatrix.cc: Ditto.
+	* fNDArray.cc: Ditto.
+	* int16NDArray.cc: Ditto.
+	* int32NDArray.cc: Ditto.
+	* int64NDArray.cc: Ditto.
+	* int8NDArray.cc: Ditto.
+	* uint16NDArray.cc: Ditto.
+	* uint32NDArray.cc: Ditto.
+	* uint64NDArray.cc: Ditto.
+	* uint8NDArray.cc: Ditto.
+
+	* CColVector.cc: Update syntax where needed.
+	* CDiagMatrix.cc: Ditto.
+	* CMatrix.cc: Ditto.
+	* CRowVector.cc: Ditto.
+	* chMatrix.cc: Ditto.
+	* dColVector.cc: Ditto.
+	* dDiagMatrix.cc: Ditto.
+	* dMatrix.cc: Ditto.
+	* dRowVector.cc: Ditto.
+	* fCColVector.cc: Ditto.
+	* fCDiagMatrix.cc: Ditto.
+	* fCMatrix.cc: Ditto.
+	* fCRowVector.cc: Ditto.
+	* fColVector.cc: Ditto.
+	* fDiagMatrix.cc: Ditto.
+	* fMatrix.cc: Ditto.
+	* fRowVector.cc: Ditto.
+
 2009-08-19  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Array-util.cc (zero_dims_inquire): Add matching ndims case.

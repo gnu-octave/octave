@@ -57,7 +57,7 @@ ColumnVector::operator == (const ColumnVector& a) const
   octave_idx_type len = length ();
   if (len != a.length ())
     return 0;
-  return mx_inline_equal (data (), a.data (), len);
+  return mx_inline_equal (len, data (), a.data ());
 }
 
 bool

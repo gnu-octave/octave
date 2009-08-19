@@ -67,7 +67,7 @@ FloatComplexRowVector::operator == (const FloatComplexRowVector& a) const
   octave_idx_type len = length ();
   if (len != a.length ())
     return 0;
-  return mx_inline_equal (data (), a.data (), len);
+  return mx_inline_equal (len, data (), a.data ());
 }
 
 bool
@@ -294,7 +294,7 @@ FloatComplexRowVector::operator += (const FloatRowVector& a)
 
   FloatComplex *d = fortran_vec (); // Ensures only one reference to my privates!
 
-  mx_inline_add2 (d, a.data (), len);
+  mx_inline_add2 (len, d, a.data ());
   return *this;
 }
 
@@ -316,7 +316,7 @@ FloatComplexRowVector::operator -= (const FloatRowVector& a)
 
   FloatComplex *d = fortran_vec (); // Ensures only one reference to my privates!
 
-  mx_inline_subtract2 (d, a.data (), len);
+  mx_inline_sub2 (len, d, a.data ());
   return *this;
 }
 

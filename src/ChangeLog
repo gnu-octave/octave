@@ -1,3 +1,8 @@
+2009-08-19  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/find.cc (Ffind): Reuse cached index vector when
+	converting boolean mask to indices.
+
 2009-08-18  John W. Eaton  <jwe@octave.org>
 
 	* oct-conf.h.in: New #defines for HDF5_LDFLAGS and HDF5LDFLAGS.

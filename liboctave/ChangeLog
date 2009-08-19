@@ -1,5 +1,9 @@
 2009-08-19  Jaroslav Hajek  <highegg@gmail.com>
 
+	* Array-util.cc (zero_dims_inquire): Add matching ndims case.
+
+2009-08-19  Jaroslav Hajek  <highegg@gmail.com>
+
 	* MArrayN.cc (operator+=, operator-=): Test matching dimensions first.
 	* boolNDArray.cc (mx_el_and_assign, mx_el_or_assign): New functions.
 	* boolNDArray.h: Declare them.

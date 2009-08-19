@@ -455,6 +455,12 @@ zero_dims_inquire (const idx_vector& i, const idx_vector& j,
       rdv(0) = rhdv(0);
       rdv(1) = rhdv(1);
     }
+  else if (rhdv.length () == 2
+           && ! i.is_scalar () && ! j.is_scalar ())
+    {
+      rdv(0) = icol ? rhdv(0) : i.extent (0);
+      rdv(1) = jcol ? rhdv(1) : j.extent (0);
+    }
   else
     {
       dim_vector rhdv0 = rhdv;

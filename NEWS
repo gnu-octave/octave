@@ -41,6 +41,28 @@ Summary of important user-visible changes for version 3.3:
     is overloaded, the handle determines at the time of its reference which
     function to call. A non-overloaded version does not need to exist.
 
+ ** The operation-assignment operators +=, -=, *= and /= now behave more
+    efficiently in certain cases. For instance, if m is a matrix and s
+    a scalar, then the statement
+
+      m += s;
+ 
+    will operate on m's data in-place if it is not shared by another variable,
+    usually increasing both time and memory efficiency.
+    
+    Only the most common combinations are affected, namely:
+    
+      matrix += matrix
+      matrix -= matrix
+      matrix += scalar
+      matrix -= scalar
+      matrix *= scalar
+      matrix /= scalar
+
+   where matrix and scalar belong to the same class. The left-hand side must be
+   a simple variable reference.
+ 
+
 Summary of important user-visible changes for version 3.2:
 ---------------------------------------------------------
 

@@ -1,3 +1,7 @@
+2009-08-19  Jaroslav Hajek  <highegg@gmail.com>
+
+	* NEWS: Update.
+
 2009-08-18  John W. Eaton  <jwe@octave.org>
 
 	* aclocal.m4 (OCTAVE_HDF5_HAS_REQUIRED_API): If test fails, set

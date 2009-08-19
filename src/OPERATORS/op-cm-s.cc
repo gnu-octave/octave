@@ -110,6 +110,9 @@ DEFNDCATOP_FN (cm_s, complex_matrix, scalar, complex_array, array, concat)
 
 DEFNDASSIGNOP_FN (assign, complex_matrix, scalar, complex_array, assign)
 
+DEFNDASSIGNOP_OP (assign_mul, complex_matrix, scalar, scalar, *=)
+DEFNDASSIGNOP_OP (assign_div, complex_matrix, scalar, scalar, /=)
+
 void
 install_cm_s_ops (void)
 {
@@ -135,6 +138,9 @@ install_cm_s_ops (void)
   INSTALL_CATOP (octave_complex_matrix, octave_scalar, cm_s);
 
   INSTALL_ASSIGNOP (op_asn_eq, octave_complex_matrix, octave_scalar, assign);
+
+  INSTALL_ASSIGNOP (op_mul_eq, octave_complex_matrix, octave_scalar, assign_mul);
+  INSTALL_ASSIGNOP (op_div_eq, octave_complex_matrix, octave_scalar, assign_div);
 }
 
 /*

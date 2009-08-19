@@ -108,6 +108,11 @@ DEFNDCATOP_FN (m_s, matrix, scalar, array, array, concat)
 DEFNDASSIGNOP_FN (assign, matrix, scalar, scalar, assign)
 DEFNDASSIGNOP_FN (sgl_assign, float_matrix, scalar, float_scalar, assign)
 
+DEFNDASSIGNOP_OP (assign_add, matrix, scalar, scalar, +=)
+DEFNDASSIGNOP_OP (assign_sub, matrix, scalar, scalar, -=)
+DEFNDASSIGNOP_OP (assign_mul, matrix, scalar, scalar, *=)
+DEFNDASSIGNOP_OP (assign_div, matrix, scalar, scalar, /=)
+
 void
 install_m_s_ops (void)
 {
@@ -140,6 +145,11 @@ install_m_s_ops (void)
 
   INSTALL_ASSIGNOP (op_asn_eq, octave_matrix, octave_scalar, assign);
   INSTALL_ASSIGNOP (op_asn_eq, octave_float_matrix, octave_scalar, sgl_assign);
+
+  INSTALL_ASSIGNOP (op_add_eq, octave_matrix, octave_scalar, assign_add);
+  INSTALL_ASSIGNOP (op_sub_eq, octave_matrix, octave_scalar, assign_sub);
+  INSTALL_ASSIGNOP (op_mul_eq, octave_matrix, octave_scalar, assign_mul);
+  INSTALL_ASSIGNOP (op_div_eq, octave_matrix, octave_scalar, assign_div);
 }
 
 /*

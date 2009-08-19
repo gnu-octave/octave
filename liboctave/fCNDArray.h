@@ -173,6 +173,9 @@ NDND_BOOL_OP_DECLS (FloatComplexNDArray, FloatComplexNDArray, OCTAVE_API)
 
 MARRAY_FORWARD_DEFS (MArrayN, FloatComplexNDArray, FloatComplex)
 
+extern OCTAVE_API FloatComplexNDArray& operator *= (FloatComplexNDArray& a, float s);
+extern OCTAVE_API FloatComplexNDArray& operator /= (FloatComplexNDArray& a, float s);
+
 #endif
 
 /*

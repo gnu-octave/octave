@@ -584,6 +584,12 @@ along with Octave; see the file COPYING.  If not, see
 #define OCTAVE_MS_INT_ASSIGN_OPS(PFX, TM, TS, TE) \
   DEFNDASSIGNOP_FN (PFX ## _assign, TM ## matrix, TS ## scalar, TM ## scalar, assign)
 
+#define OCTAVE_MS_INT_ASSIGNEQ_OPS(PFX, TM) \
+  DEFNDASSIGNOP_OP (PFX ## _assign_add, TM ## matrix, TM ## scalar, TM ## scalar, +=) \
+  DEFNDASSIGNOP_OP (PFX ## _assign_sub, TM ## matrix, TM ## scalar, TM ## scalar, -=) \
+  DEFNDASSIGNOP_OP (PFX ## _assign_mul, TM ## matrix, TM ## scalar, TM ## scalar, *=) \
+  DEFNDASSIGNOP_OP (PFX ## _assign_div, TM ## matrix, TM ## scalar, TM ## scalar, /=)
+
 #define OCTAVE_MS_POW_OPS(T1, T2) \
 octave_value elem_xpow (T1 ## NDArray a, octave_ ## T2  b) \
 { \
@@ -659,6 +665,7 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
   OCTAVE_MS_INT_BOOL_OPS (mfx, TYPE ## _, float_) \
   OCTAVE_MS_INT_BOOL_OPS (mfxs, float_, TYPE ## _) \
   OCTAVE_MS_INT_ASSIGN_OPS (ms, TYPE ## _, TYPE ## _, TYPE ## _) \
+  OCTAVE_MS_INT_ASSIGNEQ_OPS (mse, TYPE ## _) \
   OCTAVE_MS_INT_ASSIGN_OPS (mx, TYPE ## _, , ) \
   OCTAVE_MS_INT_ASSIGN_OPS (mfx, TYPE ## _, float_, float_)
 
@@ -746,6 +753,10 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
 
 #define OCTAVE_MM_INT_ASSIGN_OPS(PFX, TLHS, TRHS, TE) \
   DEFNDASSIGNOP_FN (PFX ## _assign, TLHS ## matrix, TRHS ## matrix, TLHS ## array, assign)
+
+#define OCTAVE_MM_INT_ASSIGNEQ_OPS(PFX, TM) \
+  DEFNDASSIGNOP_OP (PFX ## _assign_add, TM ## matrix, TM ## matrix, TM ## array, +=) \
+  DEFNDASSIGNOP_OP (PFX ## _assign_sub, TM ## matrix, TM ## matrix, TM ## array, -=)
 
 #define OCTAVE_MM_POW_OPS(T1, T2) \
   octave_value \
@@ -871,6 +882,7 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
   OCTAVE_MM_INT_BOOL_OPS (mmfx, TYPE ## _, float_) \
   OCTAVE_MM_INT_BOOL_OPS (mfxm, float_, TYPE ## _) \
   OCTAVE_MM_INT_ASSIGN_OPS (mm, TYPE ## _, TYPE ## _, TYPE ## _) \
+  OCTAVE_MM_INT_ASSIGNEQ_OPS (mme, TYPE ## _) \
   OCTAVE_MM_INT_ASSIGN_OPS (mmx, TYPE ## _, , ) \
   OCTAVE_MM_INT_ASSIGN_OPS (mmfx, TYPE ## _, float_, float_) \
   OCTAVE_MM_CONV(TYPE ## _, complex_) \
@@ -1045,6 +1057,12 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
 #define OCTAVE_INSTALL_MS_INT_ASSIGN_OPS(PFX, TLHS, TRHS) \
   INSTALL_ASSIGNOP (op_asn_eq, octave_ ## TLHS ## matrix, octave_ ## TRHS ## scalar, PFX ## _assign)
 
+#define OCTAVE_INSTALL_MS_INT_ASSIGNEQ_OPS(PFX, TLHS, TRHS) \
+  INSTALL_ASSIGNOP (op_add_eq, octave_ ## TLHS ## matrix, octave_ ## TRHS ## scalar, PFX ## _assign_add) \
+  INSTALL_ASSIGNOP (op_sub_eq, octave_ ## TLHS ## matrix, octave_ ## TRHS ## scalar, PFX ## _assign_sub) \
+  INSTALL_ASSIGNOP (op_mul_eq, octave_ ## TLHS ## matrix, octave_ ## TRHS ## scalar, PFX ## _assign_mul) \
+  INSTALL_ASSIGNOP (op_div_eq, octave_ ## TLHS ## matrix, octave_ ## TRHS ## scalar, PFX ## _assign_div)
+
 #define OCTAVE_INSTALL_MS_INT_OPS(TYPE) \
   OCTAVE_INSTALL_MS_INT_ARITH_OPS (ms, TYPE ## _, TYPE ## _) \
   OCTAVE_INSTALL_MS_INT_ARITH_OPS (msx, TYPE ## _, ) \
@@ -1062,6 +1080,7 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
   OCTAVE_INSTALL_MS_INT_BOOL_OPS (mfx, TYPE ## _, float_) \
   OCTAVE_INSTALL_MS_INT_BOOL_OPS (mfxs, float_, TYPE ## _) \
   OCTAVE_INSTALL_MS_INT_ASSIGN_OPS (ms, TYPE ## _, TYPE ## _) \
+  OCTAVE_INSTALL_MS_INT_ASSIGNEQ_OPS (mse, TYPE ## _, TYPE ## _) \
   OCTAVE_INSTALL_MS_INT_ASSIGN_OPS (mx, TYPE ## _, ) \
   OCTAVE_INSTALL_MS_INT_ASSIGN_OPS (mfx, TYPE ## _, float_) \
   INSTALL_ASSIGNCONV (octave_ ## TYPE ## _matrix, octave_complex_scalar, octave_complex_matrix) \
@@ -1108,6 +1127,10 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
 #define OCTAVE_INSTALL_MM_INT_ASSIGN_OPS(PFX, TLHS, TRHS) \
   INSTALL_ASSIGNOP (op_asn_eq, octave_ ## TLHS ## matrix, octave_ ## TRHS ## matrix, PFX ## _assign)
 
+#define OCTAVE_INSTALL_MM_INT_ASSIGNEQ_OPS(PFX, TLHS, TRHS) \
+  INSTALL_ASSIGNOP (op_add_eq, octave_ ## TLHS ## matrix, octave_ ## TRHS ## matrix, PFX ## _assign_add) \
+  INSTALL_ASSIGNOP (op_sub_eq, octave_ ## TLHS ## matrix, octave_ ## TRHS ## matrix, PFX ## _assign_sub)
+
 #define OCTAVE_INSTALL_MM_INT_OPS(TYPE) \
   OCTAVE_INSTALL_M_INT_UNOPS (TYPE) \
   OCTAVE_INSTALL_MM_INT_ARITH_OPS (mm, TYPE ##_, TYPE ## _) \
@@ -1126,6 +1149,7 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
   OCTAVE_INSTALL_MM_INT_BOOL_OPS (mmfx, TYPE ## _, float_) \
   OCTAVE_INSTALL_MM_INT_BOOL_OPS (mfxm, float_, TYPE ## _) \
   OCTAVE_INSTALL_MM_INT_ASSIGN_OPS (mm, TYPE ## _, TYPE ## _) \
+  OCTAVE_INSTALL_MM_INT_ASSIGNEQ_OPS (mme, TYPE ## _, TYPE ## _) \
   OCTAVE_INSTALL_MM_INT_ASSIGN_OPS (mmx, TYPE ## _, ) \
   OCTAVE_INSTALL_MM_INT_ASSIGN_OPS (mmfx, TYPE ## _, float_) \
   INSTALL_WIDENOP (octave_ ## TYPE ## _matrix, octave_complex_matrix, TYPE ## _m_complex_m_conv) \

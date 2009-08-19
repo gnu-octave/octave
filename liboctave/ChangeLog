@@ -1,3 +1,26 @@
+2009-08-19  Jaroslav Hajek  <highegg@gmail.com>
+
+	* Array.cc (Array<T>::clear): New method.
+	* Array.h: Declare it.
+	* MArray-decl.h (MARRAY_OP_ASSIGN_DECLS1, MARRAY_OP_ASSIGN_FWD_DECLS1,
+	MARRAY_OP_ASSIGN_FRIENDS1, MARRAY_OP_ASSIGN_FWD_DEFS1): New macros.
+	(MARRAY_OPS_FORWARD_DECLS, MARRAY_OPS_FRIEND_DECLS): Use them.
+	* MArray-defs.h (MARRAY_OP_ASSIGN_DEFS1): New macro.
+	(INSTANTIATE_MARRAY_FRIENDS): Use it.
+	(INSTANTIATE_MARRAY2_FRIENDS): Use it.
+	(INSTANTIATE_MARRAYN_FRIENDS): Use it.
+	* MArray.cc (operator+=, operator-=):
+	Operate out-of-place when this is shared copy.
+	(operator*=, operator/=): New operator overloads.
+	* MArray2.cc: Ditto.
+	* MArrayN.cc: Ditto.
+	* CNDArray.cc (operator *= (ComplexNDArray&, double),
+	operator /= (ComplexNDArray&, double)): New operators.
+	* CNDArray.h: Declare them.
+	* fCNDArray.cc (operator *= (FloatComplexNDArray&, double),
+	operator /= (FloatComplexNDArray&, double)): New operators.
+	* fCNDArray.h: Declare them.
+
 2009-08-17  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.in (LINK_DEPS): List LIBS last.

@@ -111,6 +111,21 @@ Array<T>::fill (const T& val)
 }
 
 template <class T>
+void
+Array<T>::clear (void)
+{
+  if (--rep->count <= 0)
+    delete rep;
+
+  rep = nil_rep ();
+  rep->count++; 
+  slice_data = rep->data;
+  slice_len = rep->len;
+
+  dimensions = dim_vector ();
+}
+
+template <class T>
 Array<T>
 Array<T>::squeeze (void) const
 {

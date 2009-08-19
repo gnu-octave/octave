@@ -1,5 +1,22 @@
 2009-08-17  Jaroslav Hajek  <highegg@gmail.com>
 
+	* OPERATORS/op-m-m.cc: Define and install += and -= operators.
+	* OPERATORS/op-fm-fm.cc: Ditto.
+	* OPERATORS/op-cm-cm.cc: Ditto.
+	* OPERATORS/op-fcm-fcm.cc: Ditto.
+	* OPERATORS/op-m-s.cc: Define and install +=,-=,*=,/= operators.
+	* OPERATORS/op-fm-fs.cc: Ditto.
+	* OPERATORS/op-cm-cs.cc: Ditto.
+	* OPERATORS/op-fcm-fcs.cc: Ditto.
+	* OPERATORS/op-cm-s.cc: Define and install *=,/= operators.
+	* OPERATORS/op-fcm-fs.cc: Ditto.
+	* ops.h (DEFNDASSIGNOP_OP): New macro.
+	* ov.cc (octave_value::assign (assign_op, const octave_value&)):
+	Try looking up specialized handlers if the value is not shared.
+	* ov-base-mat.h (octave_base_matrix::matrix_ref): New method.
+
+2009-08-17  Jaroslav Hajek  <highegg@gmail.com>
+
 	* oct-obj.h (octave_value_list::octave_value_list (octave_idx_type)):
 	Allow this constructor.
 

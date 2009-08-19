@@ -38,6 +38,8 @@ template <class T>
 MArrayN<T>&
 operator += (MArrayN<T>& a, const T& s)
 {
+  if (a.is_shared ())
+    return a = a + s;
   DO_VS_OP2 (T, a, +=, s)
   return a;
 }
@@ -46,7 +48,29 @@ template <class T>
 MArrayN<T>&
 operator -= (MArrayN<T>& a, const T& s)
 {
+  if (a.is_shared ())
+    return a = a - s;
   DO_VS_OP2 (T, a, -=, s)
+  return a;
+}
+
+template <class T>
+MArrayN<T>&
+operator *= (MArrayN<T>& a, const T& s)
+{
+  if (a.is_shared ())
+    return a = a * s;
+  DO_VS_OP2 (T, a, *=, s)
+  return a;
+}
+
+template <class T>
+MArrayN<T>&
+operator /= (MArrayN<T>& a, const T& s)
+{
+  if (a.is_shared ())
+    return a = a / s;
+  DO_VS_OP2 (T, a, /=, s)
   return a;
 }
 
@@ -56,6 +80,8 @@ template <class T>
 MArrayN<T>&
 operator += (MArrayN<T>& a, const MArrayN<T>& b)
 {
+  if (a.is_shared ())
+    return a = a + b;
   octave_idx_type l = a.length ();
 
   if (l > 0)
@@ -76,6 +102,8 @@ template <class T>
 MArrayN<T>&
 operator -= (MArrayN<T>& a, const MArrayN<T>& b)
 {
+  if (a.is_shared ())
+    return a = a - b;
   octave_idx_type l = a.length ();
 
   if (l > 0)

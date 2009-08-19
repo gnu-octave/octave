@@ -201,6 +201,18 @@ extern void install_ops (void);
     return octave_value (); \
   }
 
+// FIXME: the following currently doesn't handle index.
+#define DEFNDASSIGNOP_OP(name, t1, t2, f, op) \
+  ASSIGNOPDECL (name) \
+  { \
+    CAST_BINOP_ARGS (CONCAT2(octave_, t1)&, const CONCAT2(octave_, t2)&); \
+ \
+    assert (idx.empty ()); \
+    v1.matrix_ref () op v2.CONCAT2(f, _value) (); \
+ \
+    return octave_value (); \
+  }
+
 #define DEFASSIGNANYOP_FN(name, t1, f) \
   ASSIGNANYOPDECL (name) \
   { \

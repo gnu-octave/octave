@@ -36,6 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "functor.h"
 #include "lo-ieee.h"
 #include "lo-mappers.h"
+#include "MArray-defs.h"
 #include "mx-base.h"
 #include "mx-op-defs.h"
 #include "oct-fftw.h"
@@ -1082,6 +1083,22 @@ SND_BOOL_OPS(Complex, ComplexNDArray, 0.0)
 
 NDND_CMP_OPS(ComplexNDArray, std::real, ComplexNDArray, std::real)
 NDND_BOOL_OPS(ComplexNDArray, ComplexNDArray, 0.0)
+
+ComplexNDArray& operator *= (ComplexNDArray& a, double s)
+{
+  if (a.is_shared ())
+    return a = a * s;
+  DO_VS_OP2 (Complex, a, *=, s)
+  return a;
+}
+
+ComplexNDArray& operator /= (ComplexNDArray& a, double s)
+{
+  if (a.is_shared ())
+    return a = a / s;
+  DO_VS_OP2 (Complex, a, /=, s)
+  return a;
+}
 
 /*
 ;;; Local Variables: ***

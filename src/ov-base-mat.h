@@ -154,6 +154,12 @@ public:
 
   void print_info (std::ostream& os, const std::string& prefix) const;
 
+  MT& matrix_ref (void)
+    {
+      clear_cached_info ();
+      return matrix;
+    }
+
 protected:
 
   MT matrix;

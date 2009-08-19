@@ -134,6 +134,15 @@ DEFNDASSIGNOP_FN (assign, float_complex_matrix, float_complex,
 DEFNDASSIGNOP_FN (dbl_assign, complex_matrix, float_complex, 
 		  complex, assign)
 
+DEFNDASSIGNOP_OP (assign_add, float_complex_matrix, float_complex_scalar,
+                  float_complex, +=)
+DEFNDASSIGNOP_OP (assign_sub, float_complex_matrix, float_complex_scalar,
+                  float_complex, -=)
+DEFNDASSIGNOP_OP (assign_mul, float_complex_matrix, float_complex_scalar,
+                  float_complex, *=)
+DEFNDASSIGNOP_OP (assign_div, float_complex_matrix, float_complex_scalar,
+                  float_complex, /=)
+
 void
 install_fcm_fcs_ops (void)
 {
@@ -176,6 +185,15 @@ install_fcm_fcs_ops (void)
 		    octave_float_complex, assign);
   INSTALL_ASSIGNOP (op_asn_eq, octave_complex_matrix, 
 		    octave_float_complex, dbl_assign);
+
+  INSTALL_ASSIGNOP (op_add_eq, octave_float_complex_matrix,
+                    octave_float_complex_scalar, assign_add);
+  INSTALL_ASSIGNOP (op_sub_eq, octave_float_complex_matrix,
+                    octave_float_complex_scalar, assign_sub);
+  INSTALL_ASSIGNOP (op_mul_eq, octave_float_complex_matrix,
+                    octave_float_complex_scalar, assign_mul);
+  INSTALL_ASSIGNOP (op_div_eq, octave_float_complex_matrix,
+                    octave_float_complex_scalar, assign_div);
 }
 
 /*

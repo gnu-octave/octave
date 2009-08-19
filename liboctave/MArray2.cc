@@ -39,6 +39,8 @@ template <class T>
 MArray2<T>&
 operator += (MArray2<T>& a, const T& s)
 {
+  if (a.is_shared ())
+    return a = a + s;
   DO_VS_OP2 (T, a, +=, s)
   return a;
 }
@@ -47,7 +49,29 @@ template <class T>
 MArray2<T>&
 operator -= (MArray2<T>& a, const T& s)
 {
+  if (a.is_shared ())
+    return a = a - s;
   DO_VS_OP2 (T, a, -=, s)
+  return a;
+}
+
+template <class T>
+MArray2<T>&
+operator *= (MArray2<T>& a, const T& s)
+{
+  if (a.is_shared ())
+    return a = a * s;
+  DO_VS_OP2 (T, a, *=, s)
+  return a;
+}
+
+template <class T>
+MArray2<T>&
+operator /= (MArray2<T>& a, const T& s)
+{
+  if (a.is_shared ())
+    return a = a / s;
+  DO_VS_OP2 (T, a, /=, s)
   return a;
 }
 
@@ -57,6 +81,8 @@ template <class T>
 MArray2<T>&
 operator += (MArray2<T>& a, const MArray2<T>& b)
 {
+  if (a.is_shared ())
+    return a = a + b;
   octave_idx_type r = a.rows ();
   octave_idx_type c = a.cols ();
   octave_idx_type br = b.rows ();
@@ -78,6 +104,8 @@ template <class T>
 MArray2<T>&
 operator -= (MArray2<T>& a, const MArray2<T>& b)
 {
+  if (a.is_shared ())
+    return a = a - b;
   octave_idx_type r = a.rows ();
   octave_idx_type c = a.cols ();
   octave_idx_type br = b.rows ();

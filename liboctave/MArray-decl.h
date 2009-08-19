@@ -33,13 +33,25 @@ along with Octave; see the file COPYING.  If not, see
   MARRAY_OP_ASSIGN_DECL (A_T, E_T, +=, PFX, API, LTGT, RHS_T); \
   MARRAY_OP_ASSIGN_DECL (A_T, E_T, -=, PFX, API, LTGT, RHS_T);
 
+#define MARRAY_OP_ASSIGN_DECLS1(A_T, E_T, PFX, API, LTGT, RHS_T) \
+  MARRAY_OP_ASSIGN_DECL (A_T, E_T, +=, PFX, API, LTGT, RHS_T); \
+  MARRAY_OP_ASSIGN_DECL (A_T, E_T, -=, PFX, API, LTGT, RHS_T); \
+  MARRAY_OP_ASSIGN_DECL (A_T, E_T, *=, PFX, API, LTGT, RHS_T); \
+  MARRAY_OP_ASSIGN_DECL (A_T, E_T, /=, PFX, API, LTGT, RHS_T);
+
 // Generate forward declarations for OP= operators.
 #define MARRAY_OP_ASSIGN_FWD_DECLS(A_T, RHS_T, API) \
   MARRAY_OP_ASSIGN_DECLS (A_T, T, template <typename T>, API, , RHS_T)
 
+#define MARRAY_OP_ASSIGN_FWD_DECLS1(A_T, RHS_T, API) \
+  MARRAY_OP_ASSIGN_DECLS1 (A_T, T, template <typename T>, API, , RHS_T)
+
 // Generate friend declarations for the OP= operators.
 #define MARRAY_OP_ASSIGN_FRIENDS(A_T, RHS_T, API) \
   MARRAY_OP_ASSIGN_DECLS (A_T, T, friend, API, <>, RHS_T)
+
+#define MARRAY_OP_ASSIGN_FRIENDS1(A_T, RHS_T, API) \
+  MARRAY_OP_ASSIGN_DECLS1 (A_T, T, friend, API, <>, RHS_T)
 
 // A function that can be used to forward OP= operations from derived
 // classes back to us.
@@ -54,6 +66,12 @@ along with Octave; see the file COPYING.  If not, see
 #define MARRAY_OP_ASSIGN_FWD_DEFS(R, T, C_X, X_T, C_Y, Y_T) \
   MARRAY_OP_ASSIGN_FWD_FCN (R, operator +=, T, C_X, X_T, C_Y, Y_T) \
   MARRAY_OP_ASSIGN_FWD_FCN (R, operator -=, T, C_X, X_T, C_Y, Y_T)
+
+#define MARRAY_OP_ASSIGN_FWD_DEFS1(R, T, C_X, X_T, C_Y, Y_T) \
+  MARRAY_OP_ASSIGN_FWD_FCN (R, operator +=, T, C_X, X_T, C_Y, Y_T) \
+  MARRAY_OP_ASSIGN_FWD_FCN (R, operator -=, T, C_X, X_T, C_Y, Y_T) \
+  MARRAY_OP_ASSIGN_FWD_FCN (R, operator *=, T, C_X, X_T, C_Y, Y_T) \
+  MARRAY_OP_ASSIGN_FWD_FCN (R, operator /=, T, C_X, X_T, C_Y, Y_T)
 
 // A macro that can be used to declare and instantiate unary operators.
 #define MARRAY_UNOP(A_T, E_T, F, PFX, API, LTGT) \
@@ -182,7 +200,7 @@ along with Octave; see the file COPYING.  If not, see
   template <class T> \
   class A_T; \
  \
-  MARRAY_OP_ASSIGN_FWD_DECLS (A_T, T, API) \
+  MARRAY_OP_ASSIGN_FWD_DECLS1 (A_T, T, API) \
   MARRAY_OP_ASSIGN_FWD_DECLS (A_T, A_T<T>, API) \
   MARRAY_UNOP_FWD_DECLS (A_T, API) \
   MARRAY_BINOP_FWD_DECLS (A_T, API)
@@ -197,7 +215,7 @@ along with Octave; see the file COPYING.  If not, see
 
 // Friend declarations for the MArray operators.
 #define MARRAY_OPS_FRIEND_DECLS(A_T, API) \
-  MARRAY_OP_ASSIGN_FRIENDS (A_T, T, API) \
+  MARRAY_OP_ASSIGN_FRIENDS1 (A_T, T, API) \
   MARRAY_OP_ASSIGN_FRIENDS (A_T, A_T<T>, API) \
   MARRAY_UNOP_FRIENDS (A_T, API) \
   MARRAY_BINOP_FRIENDS (A_T, API)

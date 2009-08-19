@@ -189,6 +189,11 @@ DEFNDASSIGNOP_FN (dbl_assign, float_complex_matrix, complex_matrix,
 
 DEFNULLASSIGNOP_FN (null_assign, float_complex_matrix, delete_elements)
 
+DEFNDASSIGNOP_OP (assign_add, float_complex_matrix, 
+                  float_complex_matrix, float_complex_array, +=)
+DEFNDASSIGNOP_OP (assign_sub, float_complex_matrix, 
+                  float_complex_matrix, float_complex_array, -=)
+
 CONVDECL (float_complex_matrix_to_complex_matrix)
 {
   CAST_CONV_ARG (const octave_float_complex_matrix&);
@@ -271,6 +276,11 @@ install_fcm_fcm_ops (void)
                     octave_null_str, null_assign);
   INSTALL_ASSIGNOP (op_asn_eq, octave_float_complex_matrix, 
                     octave_null_sq_str, null_assign);
+
+  INSTALL_ASSIGNOP (op_add_eq, octave_float_complex_matrix,
+                    octave_float_complex_matrix, assign_add);
+  INSTALL_ASSIGNOP (op_sub_eq, octave_float_complex_matrix,
+                    octave_float_complex_matrix, assign_sub);
 
   INSTALL_CONVOP (octave_float_complex_matrix, octave_complex_matrix, 
 		  float_complex_matrix_to_complex_matrix);

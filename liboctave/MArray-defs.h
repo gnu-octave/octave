@@ -77,6 +77,9 @@ along with Octave; see the file COPYING.  If not, see
 #define MARRAY_OP_ASSIGN_DEFS(A_T, E_T, RHS_T, API) \
   MARRAY_OP_ASSIGN_DECLS (A_T, E_T, template, API, , RHS_T)
 
+#define MARRAY_OP_ASSIGN_DEFS1(A_T, E_T, RHS_T, API) \
+  MARRAY_OP_ASSIGN_DECLS1 (A_T, E_T, template, API, , RHS_T)
+
 // Instantiate the unary operators.
 #define MARRAY_UNOP_DEFS(A_T, E_T, API) \
   MARRAY_UNOP_DECLS (A_T, E_T, template, API, )
@@ -96,21 +99,21 @@ along with Octave; see the file COPYING.  If not, see
 
 // Instantiate all the MArray friends for MArray element type T.
 #define INSTANTIATE_MARRAY_FRIENDS(T, API) \
-  MARRAY_OP_ASSIGN_DEFS (MArray, T, T, API) \
+  MARRAY_OP_ASSIGN_DEFS1 (MArray, T, T, API) \
   MARRAY_OP_ASSIGN_DEFS (MArray, T, MArray<T>, API) \
   MARRAY_UNOP_DEFS (MArray, T, API) \
   MARRAY_BINOP_DEFS (MArray, T, API)
 
 // Instantiate all the MArray2 friends for MArray2 element type T.
 #define INSTANTIATE_MARRAY2_FRIENDS(T, API) \
-  MARRAY_OP_ASSIGN_DEFS (MArray2, T, T, API) \
+  MARRAY_OP_ASSIGN_DEFS1 (MArray2, T, T, API) \
   MARRAY_OP_ASSIGN_DEFS (MArray2, T, MArray2<T>, API) \
   MARRAY_UNOP_DEFS (MArray2, T, API) \
   MARRAY_BINOP_DEFS (MArray2, T, API)
 
 // Instantiate all the MArrayN friends for MArrayN element type T.
 #define INSTANTIATE_MARRAYN_FRIENDS(T, API) \
-  MARRAY_OP_ASSIGN_DEFS (MArrayN, T, T, API) \
+  MARRAY_OP_ASSIGN_DEFS1 (MArrayN, T, T, API) \
   MARRAY_OP_ASSIGN_DEFS (MArrayN, T, MArrayN<T>, API) \
   MARRAY_UNOP_DEFS (MArrayN, T, API) \
   MARRAY_BINOP_DEFS (MArrayN, T, API)

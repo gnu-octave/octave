@@ -122,6 +122,11 @@ DEFNDCATOP_FN (fm_s, float_matrix, scalar, float_array, float_array, concat)
 DEFNDASSIGNOP_FN (assign, float_matrix, float_scalar, float_scalar, assign)
 DEFNDASSIGNOP_FN (dbl_assign, matrix, float_scalar, scalar, assign)
 
+DEFNDASSIGNOP_OP (assign_add, float_matrix, float_scalar, float_scalar, +=)
+DEFNDASSIGNOP_OP (assign_sub, float_matrix, float_scalar, float_scalar, -=)
+DEFNDASSIGNOP_OP (assign_mul, float_matrix, float_scalar, float_scalar, *=)
+DEFNDASSIGNOP_OP (assign_div, float_matrix, float_scalar, float_scalar, /=)
+
 void
 install_fm_fs_ops (void)
 {
@@ -150,6 +155,11 @@ install_fm_fs_ops (void)
 
   INSTALL_ASSIGNOP (op_asn_eq, octave_float_matrix, octave_float_scalar, assign);
   INSTALL_ASSIGNOP (op_asn_eq, octave_matrix, octave_float_scalar, dbl_assign);
+
+  INSTALL_ASSIGNOP (op_add_eq, octave_float_matrix, octave_float_scalar, assign_add);
+  INSTALL_ASSIGNOP (op_sub_eq, octave_float_matrix, octave_float_scalar, assign_sub);
+  INSTALL_ASSIGNOP (op_mul_eq, octave_float_matrix, octave_float_scalar, assign_mul);
+  INSTALL_ASSIGNOP (op_div_eq, octave_float_matrix, octave_float_scalar, assign_div);
 }
 
 /*

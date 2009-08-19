@@ -238,6 +238,7 @@ public:
   Array<T>& operator = (const Array<T>& a);
 
   void fill (const T& val); 
+  void clear (void);
 
   octave_idx_type capacity (void) const { return slice_len; }
   octave_idx_type length (void) const { return capacity (); }
@@ -439,6 +440,8 @@ public:
   const T *fortran_vec (void) const { return data (); }
 
   T *fortran_vec (void);
+
+  bool is_shared (void) { return rep->count > 1; }
 
   int ndims (void) const { return dimensions.length (); }
 

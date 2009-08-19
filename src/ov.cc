@@ -1195,10 +1195,6 @@ octave_value::assign (assign_op op, const std::string& type,
 
   if (op != op_asn_eq)
     {
-      // FIXME -- only do the following stuff if we can't find
-      // a specific function to call to handle the op= operation for
-      // the types we have.
-
       octave_value t = subsref (type, idx);
 
       if (! error_state)
@@ -1236,19 +1232,41 @@ octave_value::assign (assign_op op, const octave_value& rhs)
     operator = (rhs.storable_value ());
   else
     {
-      // FIXME -- only do the following stuff if we can't find
-      // a specific function to call to handle the op= operation for
-      // the types we have.
+      octave_value_typeinfo::assign_op_fcn f = 0;
+      
+      // Only attempt to operate in-place if this variable is unshared.
+      if (rep->count == 1)
+        {
+          int tthis = this->type_id ();
+          int trhs = rhs.type_id ();
 
-      binary_op binop = op_eq_to_binary_op (op);
+	  f = octave_value_typeinfo::lookup_assign_op (op, tthis, trhs);
+        }
 
-      if (! error_state)
+      if (f)
 	{
-	  octave_value t = do_binary_op (binop, *this, rhs);
-
-	  if (! error_state)
-	    operator = (t);
+	  try
+	    {
+	      f (*rep, octave_value_list (), *rhs.rep);
+	    }
+	  catch (octave_execution_exception)
+	    {
+	      gripe_library_execution_error ();
+	    }
 	}
+      else
+        {
+
+          binary_op binop = op_eq_to_binary_op (op);
+
+          if (! error_state)
+            {
+              octave_value t = do_binary_op (binop, *this, rhs);
+
+              if (! error_state)
+                operator = (t);
+            }
+        }
 
       if (error_state)
 	gripe_assign_failed_or_no_method (assign_op_as_string (op),

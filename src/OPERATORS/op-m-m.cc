@@ -138,6 +138,9 @@ DEFNDASSIGNOP_FN (sgl_assign, float_matrix, matrix, float_array, assign)
 
 DEFNULLASSIGNOP_FN (null_assign, matrix, delete_elements)
 
+DEFNDASSIGNOP_OP (assign_add, matrix, matrix, array, +=)
+DEFNDASSIGNOP_OP (assign_sub, matrix, matrix, array, -=)
+
 CONVDECL (matrix_to_float_matrix)
 {
   CAST_CONV_ARG (const octave_matrix&);
@@ -192,6 +195,9 @@ install_m_m_ops (void)
   INSTALL_ASSIGNOP (op_asn_eq, octave_matrix, octave_null_matrix, null_assign);
   INSTALL_ASSIGNOP (op_asn_eq, octave_matrix, octave_null_str, null_assign);
   INSTALL_ASSIGNOP (op_asn_eq, octave_matrix, octave_null_sq_str, null_assign);
+
+  INSTALL_ASSIGNOP (op_add_eq, octave_matrix, octave_matrix, assign_add);
+  INSTALL_ASSIGNOP (op_sub_eq, octave_matrix, octave_matrix, assign_sub);
 
   INSTALL_CONVOP (octave_matrix, octave_float_matrix, matrix_to_float_matrix);
 }

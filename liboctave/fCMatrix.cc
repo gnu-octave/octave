@@ -3051,8 +3051,7 @@ FloatComplexMatrix::operator -= (const FloatMatrix& a)
 boolMatrix
 FloatComplexMatrix::operator ! (void) const
 {
-  ND_LOGICAL_NAN_CHECK (*this);
-  return do_mx_unary_op<boolMatrix, FloatComplexMatrix> (*this, mx_inline_iszero);
+  return do_mx_unary_op<boolMatrix, FloatComplexMatrix> (*this, mx_inline_not);
 }
 
 // other operations

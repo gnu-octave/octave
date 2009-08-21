@@ -497,8 +497,7 @@ ComplexNDArray::ifourierNd (void) const
 boolNDArray
 ComplexNDArray::operator ! (void) const
 {
-  ND_LOGICAL_NAN_CHECK (*this);
-  return do_mx_unary_op<boolNDArray, ComplexNDArray> (*this, mx_inline_iszero);
+  return do_mx_unary_op<boolNDArray, ComplexNDArray> (*this, mx_inline_not);
 }
 
 // FIXME -- this is not quite the right thing.

@@ -1,4 +1,21 @@
 2009-08-20  Jaroslav Hajek  <highegg@gmail.com>
+
+	* mx-inlines.cc (logical_value): New overloaded template.
+	(DEFMXBOOL_OP): Use it in definitions.
+	(mx_inline_not): Also use logical_value.
+	* mx-op-defs.h (ND_LOGICAL_NAN_CHECK, SC_LOGICAL_NAN_CHECK): Remove
+	(also from all macros).
+
+	* CMatrix.cc (operator !): Simply call mx_inline_not.
+	* CNDArray.cc: Ditto.
+	* dMatrix.cc: Ditto.
+	* dNDArray.cc: Ditto.
+	* fCMatrix.cc: Ditto.
+	* fCNDArray.cc: Ditto.
+	* fMatrix.cc: Ditto.
+	* fNDArray.cc: Ditto.
+	
+2009-08-20  Jaroslav Hajek  <highegg@gmail.com>
 	
 	* dMatrix.cc (Matrix::operator!): Simplify & check for NaNs.
 	* fMatrix.cc (FloatMatrix::operator!): Ditto.

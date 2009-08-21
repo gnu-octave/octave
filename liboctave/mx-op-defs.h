@@ -28,14 +28,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "mx-op-decl.h"
 #include "mx-inlines.cc"
 
-#define ND_LOGICAL_NAN_CHECK(X) \
-if (mx_inline_any_nan ((X).numel (), (X).data ())) \
-    gripe_nan_to_logical_conversion ()
-
-#define SC_LOGICAL_NAN_CHECK(X) \
-  if (xisnan(X)) \
-      gripe_nan_to_logical_conversion ()
-
 // vector by scalar operations.
 
 #define VS_BIN_OP(R, F, OP, V, S) \
@@ -158,8 +150,6 @@ if (mx_inline_any_nan ((X).numel (), (X).data ())) \
   boolMatrix \
   F (const M& m, const S& s) \
   { \
-    ND_LOGICAL_NAN_CHECK (m); \
-    SC_LOGICAL_NAN_CHECK (s); \
     return do_ms_binary_op<boolMatrix, M, S> (m, s, OP); \
   }
 
@@ -215,8 +205,6 @@ if (mx_inline_any_nan ((X).numel (), (X).data ())) \
   boolMatrix \
   F (const S& s, const M& m) \
   { \
-    SC_LOGICAL_NAN_CHECK (s); \
-    ND_LOGICAL_NAN_CHECK (m); \
     return do_sm_binary_op<boolMatrix, S, M> (s, m, OP); \
   }
 
@@ -277,8 +265,6 @@ if (mx_inline_any_nan ((X).numel (), (X).data ())) \
   boolMatrix \
   F (const M1& m1, const M2& m2) \
   { \
-    ND_LOGICAL_NAN_CHECK(m1); \
-    ND_LOGICAL_NAN_CHECK(m2); \
     return do_mm_binary_op<boolMatrix, M1, M2> (m1, m2, OP, #F); \
   }
 
@@ -381,8 +367,6 @@ if (mx_inline_any_nan ((X).numel (), (X).data ())) \
   boolNDArray \
   F (const ND& m, const S& s) \
   { \
-    ND_LOGICAL_NAN_CHECK (m); \
-    SC_LOGICAL_NAN_CHECK (s); \
     return do_ms_binary_op<boolNDArray, ND, S> (m, s, OP); \
   }
 
@@ -487,8 +471,6 @@ if (mx_inline_any_nan ((X).numel (), (X).data ())) \
   boolNDArray \
   F (const S& s, const ND& m) \
   { \
-    SC_LOGICAL_NAN_CHECK (s); \
-    ND_LOGICAL_NAN_CHECK (m); \
     return do_sm_binary_op<boolNDArray, S, ND> (s, m, OP); \
   }
 
@@ -549,8 +531,6 @@ if (mx_inline_any_nan ((X).numel (), (X).data ())) \
   boolNDArray \
   F (const ND1& m1, const ND2& m2) \
   { \
-    ND_LOGICAL_NAN_CHECK(m1); \
-    ND_LOGICAL_NAN_CHECK(m2); \
     return do_mm_binary_op<boolNDArray, ND1, ND2> (m1, m2, OP, #F); \
   }
 

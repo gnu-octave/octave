@@ -538,8 +538,7 @@ NDArray::ifourierNd (void) const
 boolNDArray
 NDArray::operator ! (void) const
 {
-  ND_LOGICAL_NAN_CHECK (*this);
-  return do_mx_unary_op<boolNDArray, NDArray> (*this, mx_inline_iszero);
+  return do_mx_unary_op<boolNDArray, NDArray> (*this, mx_inline_not);
 }
 
 bool

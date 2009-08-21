@@ -3058,8 +3058,7 @@ ComplexMatrix::operator -= (const Matrix& a)
 boolMatrix
 ComplexMatrix::operator ! (void) const
 {
-  ND_LOGICAL_NAN_CHECK (*this);
-  return do_mx_unary_op<boolMatrix, ComplexMatrix> (*this, mx_inline_iszero);
+  return do_mx_unary_op<boolMatrix, ComplexMatrix> (*this, mx_inline_not);
 }
 
 // other operations

@@ -2567,8 +2567,7 @@ Matrix::operator -= (const DiagMatrix& a)
 boolMatrix
 Matrix::operator ! (void) const
 {
-  ND_LOGICAL_NAN_CHECK (*this);
-  return do_mx_unary_op<boolMatrix, Matrix> (*this, mx_inline_iszero);
+  return do_mx_unary_op<boolMatrix, Matrix> (*this, mx_inline_not);
 }
 
 // column vector by row vector -> matrix operations

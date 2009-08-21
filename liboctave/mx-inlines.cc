@@ -48,7 +48,6 @@ inline void F (size_t n, R *r, const X *x) \
 { for (size_t i = 0; i < n; i++) r[i] = OP x[i]; }
 
 DEFMXUNOP (mx_inline_uminus, -)
-DEFMXUNOP (mx_inline_not, !)
 
 #define DEFMXUNBOOLOP(F, OP) \
 template <class X> \
@@ -119,36 +118,57 @@ template <class X, class Y> \
 inline void F (size_t n, bool *r, X x, const std::complex<Y> *y) \
 { for (size_t i = 0; i < n; i++) r[i] = x OP real (y[i]); }
 
-#define DEFMXBOOLOP(F, EQ1, OP, EQ2) \
+// Convert to logical value, for logical op purposes.
+template <class T> inline bool logical_value (T x) { return x; }
+template <class T> inline bool logical_value (const octave_int<T>& x) 
+{ return x.value (); }
+
+// NaNs in real data should generate an error. Doing it on-the-fly is faster.
+
+#define DEFLOGCHKNAN(ARG, ZERO) \
+inline bool logical_value (ARG x) \
+{ if (xisnan (x)) gripe_nan_to_logical_conversion (); return x != ZERO; }
+
+DEFLOGCHKNAN (double, 0.0)
+DEFLOGCHKNAN (const Complex&, 0.0)
+DEFLOGCHKNAN (float, 0.0f)
+DEFLOGCHKNAN (const FloatComplex&, 0.0f)
+
+template <class X>
+void mx_inline_not (size_t n, bool *r, const X* x)
+{
+  for (size_t i = 0; i < n; i++)
+    r[i] = ! logical_value (x[i]);
+}
+
+#define DEFMXBOOLOP(F, NOT1, OP, NOT2) \
 template <class X, class Y> \
 inline void F (size_t n, bool *r, const X *x, const Y *y) \
 { \
-  const X xzero = X(); \
-  const Y yzero = Y(); \
   for (size_t i = 0; i < n; i++) \
-    r[i] = (x[i] EQ1 xzero) OP (y[i] EQ2 yzero); \
+    r[i] = (NOT1 logical_value (x[i])) OP (NOT2 logical_value (y[i])); \
 } \
 template <class X, class Y> \
 inline void F (size_t n, bool *r, const X *x, Y y) \
 { \
-  const X xzero = X(); \
-  const bool yy = y EQ2 Y(); \
-  for (size_t i = 0; i < n; i++) r[i] = (x[i] EQ1 xzero) OP yy; \
+  const bool yy = (NOT2 logical_value (y)); \
+  for (size_t i = 0; i < n; i++) \
+    r[i] = (NOT1 logical_value (x[i])) OP yy; \
 } \
 template <class X, class Y> \
 inline void F (size_t n, bool *r, X x, const Y *y) \
 { \
-  const bool xx = x EQ1 X(); \
-  const Y yzero = Y(); \
-  for (size_t i = 0; i < n; i++) r[i] = xx OP (y[i] EQ2 yzero); \
+  const bool xx = (NOT1 logical_value (x)); \
+  for (size_t i = 0; i < n; i++) \
+    r[i] = xx OP (NOT2 logical_value (y[i])); \
 }
 
-DEFMXBOOLOP (mx_inline_and, !=, &, !=)
-DEFMXBOOLOP (mx_inline_or, !=, |, !=)
-DEFMXBOOLOP (mx_inline_not_and, ==, &, !=)
-DEFMXBOOLOP (mx_inline_not_or, ==, |, !=)
-DEFMXBOOLOP (mx_inline_and_not, !=, &, ==)
-DEFMXBOOLOP (mx_inline_or_not, !=, |, ==)
+DEFMXBOOLOP (mx_inline_and, , &, )
+DEFMXBOOLOP (mx_inline_or, , |, )
+DEFMXBOOLOP (mx_inline_not_and, !, &, )
+DEFMXBOOLOP (mx_inline_not_or, !, |, )
+DEFMXBOOLOP (mx_inline_and_not, , &, !)
+DEFMXBOOLOP (mx_inline_or_not, , |, !)
 
 template <class T> 
 inline bool 

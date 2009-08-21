@@ -2566,8 +2566,7 @@ FloatMatrix::operator -= (const FloatDiagMatrix& a)
 boolMatrix
 FloatMatrix::operator ! (void) const
 {
-  ND_LOGICAL_NAN_CHECK (*this);
-  return do_mx_unary_op<boolMatrix, FloatMatrix> (*this, mx_inline_iszero);
+  return do_mx_unary_op<boolMatrix, FloatMatrix> (*this, mx_inline_not);
 }
 
 // column vector by row vector -> matrix operations

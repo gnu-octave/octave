@@ -3058,16 +3058,8 @@ ComplexMatrix::operator -= (const Matrix& a)
 boolMatrix
 ComplexMatrix::operator ! (void) const
 {
-  octave_idx_type nr = rows ();
-  octave_idx_type nc = cols ();
-
-  boolMatrix b (nr, nc);
-
-  for (octave_idx_type j = 0; j < nc; j++)
-    for (octave_idx_type i = 0; i < nr; i++)
-      b.elem (i, j) = elem (i, j) == 0.0;
-
-  return b;
+  ND_LOGICAL_NAN_CHECK (*this);
+  return do_mx_unary_op<boolMatrix, ComplexMatrix> (*this, mx_inline_iszero);
 }
 
 // other operations

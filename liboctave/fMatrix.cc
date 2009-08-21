@@ -2566,16 +2566,8 @@ FloatMatrix::operator -= (const FloatDiagMatrix& a)
 boolMatrix
 FloatMatrix::operator ! (void) const
 {
-  octave_idx_type nr = rows ();
-  octave_idx_type nc = cols ();
-
-  boolMatrix b (nr, nc);
-
-  for (octave_idx_type j = 0; j < nc; j++)
-    for (octave_idx_type i = 0; i < nr; i++)
-      b.elem (i, j) = ! elem (i, j);
-
-  return b;
+  ND_LOGICAL_NAN_CHECK (*this);
+  return do_mx_unary_op<boolMatrix, FloatMatrix> (*this, mx_inline_iszero);
 }
 
 // column vector by row vector -> matrix operations

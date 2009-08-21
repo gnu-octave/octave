@@ -42,8 +42,10 @@ along with Octave; see the file COPYING.  If not, see
 DEFUNOP (not, float_complex)
 {
   CAST_UNOP_ARG (const octave_float_complex&);
-
-  return octave_value (v.float_complex_value () == 0.0);
+  FloatComplex x = v.float_complex_value ();
+  if (xisnan (x))
+    gripe_nan_to_logical_conversion ();
+  return octave_value (x == 0.0f);
 }
 
 DEFUNOP_OP (uplus, float_complex, /* no-op */)

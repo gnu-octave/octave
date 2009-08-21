@@ -1,4 +1,15 @@
 2009-08-20  Jaroslav Hajek  <highegg@gmail.com>
+	
+	* dMatrix.cc (Matrix::operator!): Simplify & check for NaNs.
+	* fMatrix.cc (FloatMatrix::operator!): Ditto.
+	* CMatrix.cc (ComplexMatrix::operator!): Ditto.
+	* fCMatrix.cc (FloatComplexMatrix::operator!): Ditto.
+	* dNDArray.cc (NDArray::operator!): Ditto.
+	* fNDArray.cc (FloatNDArray::operator!): Ditto.
+	* CNDArray.cc (ComplexNDArray::operator!): Ditto.
+	* fCNDArray.cc (FloatComplexNDArray::operator!): Ditto.
+
+2009-08-20  Jaroslav Hajek  <highegg@gmail.com>
 
 	* mx-inlines.cc (mx_inline_add, mx_inline_sub, mx_inline_mul,
 	mx_inline_div, mx_inline_uminus, mx_inline_not, mx_inline_add2,

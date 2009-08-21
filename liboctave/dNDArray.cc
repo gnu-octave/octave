@@ -538,12 +538,8 @@ NDArray::ifourierNd (void) const
 boolNDArray
 NDArray::operator ! (void) const
 {
-  boolNDArray b (dims ());
-
-  for (octave_idx_type i = 0; i < length (); i++)
-    b.elem (i) = ! elem (i);
-
-  return b;
+  ND_LOGICAL_NAN_CHECK (*this);
+  return do_mx_unary_op<boolNDArray, NDArray> (*this, mx_inline_iszero);
 }
 
 bool

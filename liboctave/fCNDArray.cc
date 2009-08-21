@@ -492,12 +492,8 @@ FloatComplexNDArray::ifourierNd (void) const
 boolNDArray
 FloatComplexNDArray::operator ! (void) const
 {
-  boolNDArray b (dims ());
-
-  for (octave_idx_type i = 0; i < length (); i++)
-    b.elem (i) = elem (i) == static_cast<float> (0.0);
-
-  return b;
+  ND_LOGICAL_NAN_CHECK (*this);
+  return do_mx_unary_op<boolNDArray, FloatComplexNDArray> (*this, mx_inline_iszero);
 }
 
 // FIXME -- this is not quite the right thing.

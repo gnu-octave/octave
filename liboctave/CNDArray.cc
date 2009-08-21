@@ -497,12 +497,8 @@ ComplexNDArray::ifourierNd (void) const
 boolNDArray
 ComplexNDArray::operator ! (void) const
 {
-  boolNDArray b (dims ());
-
-  for (octave_idx_type i = 0; i < length (); i++)
-    b.elem (i) = elem (i) == 0.0;
-
-  return b;
+  ND_LOGICAL_NAN_CHECK (*this);
+  return do_mx_unary_op<boolNDArray, ComplexNDArray> (*this, mx_inline_iszero);
 }
 
 // FIXME -- this is not quite the right thing.

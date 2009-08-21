@@ -25,6 +25,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
+#include "Array-util.h"
+
 #include "gripes.h"
 #include "oct-obj.h"
 #include "ov.h"
@@ -42,8 +44,10 @@ along with Octave; see the file COPYING.  If not, see
 DEFUNOP (not, complex)
 {
   CAST_UNOP_ARG (const octave_complex&);
-
-  return octave_value (v.complex_value () == 0.0);
+  Complex x = v.complex_value ();
+  if (xisnan (x))
+    gripe_nan_to_logical_conversion ();
+  return octave_value (x == 0.0);
 }
 
 DEFUNOP_OP (uplus, complex, /* no-op */)

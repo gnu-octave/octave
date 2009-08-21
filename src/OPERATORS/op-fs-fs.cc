@@ -25,6 +25,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
+#include "Array-util.h"
+
 #include "gripes.h"
 #include "oct-obj.h"
 #include "ov.h"
@@ -39,7 +41,15 @@ along with Octave; see the file COPYING.  If not, see
 
 // scalar unary ops.
 
-DEFUNOP_OP (not, float_scalar, !)
+DEFUNOP (not, float_scalar)
+{
+  CAST_UNOP_ARG (const octave_float_scalar&);
+  float x = v.float_value ();
+  if (xisnan (x))
+    gripe_nan_to_logical_conversion ();
+  return octave_value (x == 0.0f);
+}
+
 DEFUNOP_OP (uplus, float_scalar, /* no-op */)
 DEFUNOP_OP (uminus, float_scalar, -)
 DEFUNOP_OP (transpose, float_scalar, /* no-op */)

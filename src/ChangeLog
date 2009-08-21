@@ -1,3 +1,10 @@
+2009-08-21  Jaroslav Hajek  <highegg@gmail.com>
+
+	* OPERATORS/op-s-s.cc: Check for NaN in ! operator.
+	* OPERATORS/op-fs-fs.cc: Ditto.
+	* OPERATORS/op-cs-cs.cc: Ditto.
+	* OPERATORS/op-fcs-fcs.cc: Ditto.
+
 2009-08-17  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ops.h (DEFNDASSIGNOP_FNOP): New macro.

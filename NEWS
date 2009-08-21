@@ -58,6 +58,8 @@ Summary of important user-visible changes for version 3.3:
       matrix -= scalar
       matrix *= scalar
       matrix /= scalar
+      logical matrix |= logical matrix
+      logical matrix &= logical matrix
 
    where matrix and scalar belong to the same class. The left-hand side must be
    a simple variable reference.

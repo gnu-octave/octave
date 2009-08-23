@@ -1,3 +1,7 @@
+2009-08-19  Jaroslav Hajek  <highegg@gmail.com>
+
+	* Array-util.cc (zero_dims_inquire): Add matching ndims case.
+
 2009-08-16  Jaroslav Hajek  <highegg@gmail.com>
 
 	* dMatrix.cc, fMatrix.cc, CMatrix.cc, fCMatrix.cc: Add more tests.

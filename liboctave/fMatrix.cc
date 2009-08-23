@@ -3157,9 +3157,11 @@ Sylvester (const FloatMatrix& a, const FloatMatrix& b, const FloatMatrix& c)
 %! M = single(randn(10,10));
 %! cv = single(randn(10,1));
 %! rv = single(randn(1,10));
-%!assert([M*cv,M*cv],M*[cv,cv],5e-7)
-%!assert([rv*M;rv*M],[rv;rv]*M,5e-7)
-%!assert(2*rv*cv,[rv,rv]*[cv;cv],5e-7)
+%!assert([M*cv,M*cv],M*[cv,cv],5e-6)
+%!assert([M'*cv,M'*cv],M'*[cv,cv],5e-6)
+%!assert([rv*M;rv*M],[rv;rv]*M,5e-6)
+%!assert([rv*M';rv*M'],[rv;rv]*M',5e-6)
+%!assert(2*rv*cv,[rv,rv]*[cv;cv],5e-6)
 */
 
 static const char *

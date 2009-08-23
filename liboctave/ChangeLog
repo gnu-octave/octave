@@ -1,3 +1,9 @@
+2009-08-23  Jaroslav Hajek  <highegg@gmail.com>
+
+	* Array.h (Array::make_unique, Array::~Array, Array::operator =):
+	Move here to allow inlining.
+	* Array.cc: Remove from here.
+
 2009-08-20  Jaroslav Hajek  <highegg@gmail.com>
 
 	* mx-inlines.cc (logical_value): New overloaded template.

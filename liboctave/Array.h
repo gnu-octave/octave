@@ -98,7 +98,15 @@ protected:
 
 public:
 
-  void make_unique (void);
+  void make_unique (void)
+    {
+      if (rep->count > 1)
+        {
+          --rep->count;
+          rep = new ArrayRep (slice_data, slice_len, true);
+          slice_data = rep->data;
+        }
+    }
 
   typedef T element_type;
 
@@ -233,9 +241,29 @@ public:
 
   Array (const Array<T>& a, const dim_vector& dv);
 
-  virtual ~Array (void);
+  ~Array (void)
+    {
+      if (--rep->count <= 0)
+        delete rep;
+    }
 
-  Array<T>& operator = (const Array<T>& a);
+  Array<T>& operator = (const Array<T>& a)
+    {
+      if (this != &a)
+        {
+          if (--rep->count <= 0)
+            delete rep;
+
+          rep = a.rep;
+          rep->count++;
+
+          dimensions = a.dimensions;
+          slice_data = a.slice_data;
+          slice_len = a.slice_len;
+        }
+
+      return *this;
+    }
 
   void fill (const T& val); 
   void clear (void);

@@ -46,18 +46,6 @@ along with Octave; see the file COPYING.  If not, see
 // all the derived classes.
 
 template <class T>
-void
-Array<T>::make_unique (void)
-{
-  if (rep->count > 1)
-    {
-      --rep->count;
-      rep = new ArrayRep (slice_data, slice_len, true);
-      slice_data = rep->data;
-    }
-}
-
-template <class T>
 Array<T>::Array (const Array<T>& a, const dim_vector& dv)
   : rep (a.rep), dimensions (dv), 
     slice_data (a.slice_data), slice_len (a.slice_len)
@@ -67,33 +55,6 @@ Array<T>::Array (const Array<T>& a, const dim_vector& dv)
   if (a.numel () < dv.numel ())
     (*current_liboctave_error_handler)
       ("Array::Array (const Array&, const dim_vector&): dimension mismatch");
-}
-
-template <class T>
-Array<T>::~Array (void)
-{
-  if (--rep->count <= 0)
-    delete rep;
-}
-
-template <class T>
-Array<T>&
-Array<T>::operator = (const Array<T>& a)
-{
-  if (this != &a)
-    {
-      if (--rep->count <= 0)
-	delete rep;
-
-      rep = a.rep;
-      rep->count++;
-
-      dimensions = a.dimensions;
-      slice_data = a.slice_data;
-      slice_len = a.slice_len;
-    }
-
-  return *this;
 }
 
 template <class T>

@@ -64,6 +64,7 @@ AC_REQUIRE([ACX_BLAS])
 if test "$cross_compiling" = yes ; then
 	ifelse($3, ,$1,$3)
 elif test x"$acx_blas_ok" = xyes; then
+	save_acx_blas_f77_func_LIBS="$LIBS"
 	LIBS="$BLAS_LIBS $LIBS"
 	AC_LANG_PUSH(Fortran 77)
 # LSAME check (LOGICAL return values)
@@ -157,6 +158,7 @@ elif test x"$acx_blas_ok" = xyes; then
 		acx_blas_f77_func_ok=no;
 		$2
 	fi
+	LIBS="$save_acx_blas_f77_func_LIBS"
 fi
 
 ])dnl ACX_BLAS_F77_FUNC

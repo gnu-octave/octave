@@ -1,3 +1,15 @@
+2009-08-22  Jaroslav Hajek  <highegg@gmail.com>
+
+	* data.cc (UNARY_OP_DEFUN_BODY,
+	BINARY_OP_DEFUN_BODY, BINARY_ASSOC_OP_DEFUN_BODY): Remove.
+	(unary_op_defun_body, binary_op_defun_body,
+	binary_assoc_op_defun_body): New functions.
+	(Fnot, Fuplus, Fuminus, Ftranspose, Fctranspose): Use
+	unary_op_defun_body.
+	(Fminus, Fmrdivide, Fmpower, Fmldivide, Flt, Fle, Feq, Fge, Fgt, Fne,
+	Frdivide, Fpower, Fldivide): Use binary_op_defun_body.
+	(Fplus, Ftimes, Fmtimes, Fand, For): Use binary_assoc_op_defun_body.
+
 2009-08-21  Jaroslav Hajek  <highegg@gmail.com>
 
 	* OPERATORS/op-s-s.cc: Check for NaN in ! operator.

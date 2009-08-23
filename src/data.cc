@@ -4968,16 +4968,18 @@ column norms are computed.\n\
 %!assert (norm(fhi*m2,"fro"), single(sqrt(30)*fhi), -eps('single'))
 */
 
-#define UNARY_OP_DEFUN_BODY(F) \
- \
-  octave_value retval; \
- \
-  if (args.length () == 1) \
-    retval = F (args(0)); \
-  else \
-    print_usage (); \
- \
-  return retval
+static octave_value
+unary_op_defun_body (octave_value::unary_op op,
+                     const octave_value_list& args)
+{
+  octave_value retval;
+  if (args.length () == 1)
+    retval = do_unary_op (op, args(0));
+  else
+    print_usage ();
+
+  return retval;
+}
 
 DEFUN (not, args, ,
   "-*- texinfo -*-\n\
@@ -4985,7 +4987,7 @@ DEFUN (not, args, ,
 This function is equivalent to @code{! x}.\n\
 @end deftypefn")
 {
-  UNARY_OP_DEFUN_BODY (op_not);
+  return unary_op_defun_body (octave_value::op_not, args);
 }
 
 DEFUN (uplus, args, ,
@@ -4994,7 +4996,7 @@ DEFUN (uplus, args, ,
 This function is equivalent to @code{+ x}.\n\
 @end deftypefn")
 {
-  UNARY_OP_DEFUN_BODY (op_uplus);
+  return unary_op_defun_body (octave_value::op_uplus, args);
 }
 
 DEFUN (uminus, args, ,
@@ -5003,7 +5005,7 @@ DEFUN (uminus, args, ,
 This function is equivalent to @code{- x}.\n\
 @end deftypefn")
 {
-  UNARY_OP_DEFUN_BODY (op_uminus);
+  return unary_op_defun_body (octave_value::op_uminus, args);
 }
 
 DEFUN (transpose, args, ,
@@ -5012,7 +5014,7 @@ DEFUN (transpose, args, ,
 This function is equivalent to @code{x.'}.\n\
 @end deftypefn")
 {
-  UNARY_OP_DEFUN_BODY (op_transpose);
+  return unary_op_defun_body (octave_value::op_transpose, args);
 }
 
 /*
@@ -5043,7 +5045,7 @@ DEFUN (ctranspose, args, ,
 This function is equivalent to @code{x'}.\n\
 @end deftypefn")
 {
-  UNARY_OP_DEFUN_BODY (op_hermitian);
+  return unary_op_defun_body (octave_value::op_hermitian, args);
 }
 
 /*
@@ -5068,33 +5070,48 @@ This function is equivalent to @code{x'}.\n\
 
 */
 
-#define BINARY_OP_DEFUN_BODY(F) \
- \
-  octave_value retval; \
- \
-  if (args.length () == 2) \
-    retval = F (args(0), args(1)); \
-  else \
-    print_usage (); \
- \
-  return retval
+static octave_value
+binary_op_defun_body (octave_value::binary_op op,
+                      const octave_value_list& args)
+{
+  octave_value retval;
 
-#define BINARY_ASSOC_OP_DEFUN_BODY(F) \
- \
-  octave_value retval; \
-  octave_idx_type nargin = args.length (); \
- \
-  if (nargin >= 1) \
-    { \
-      retval = args (0); \
-      for (octave_idx_type i = 1; i < nargin; i++) \
-        retval = F (retval, args(i)); \
-    } \
-  else \
-    print_usage (); \
- \
-  return retval
+  if (args.length () == 2)
+    retval = do_binary_op (op, args(0), args(1));
+  else
+    print_usage ();
 
+  return retval;
+}
+
+static octave_value
+binary_assoc_op_defun_body (octave_value::binary_op op,
+                            octave_value::assign_op aop,
+                            const octave_value_list& args)
+{
+  octave_value retval;
+  int nargin = args.length ();
+
+  switch (nargin)
+    {
+    case 0:
+      print_usage ();
+      break;
+    case 1:
+      retval = args(0);
+      break;
+    case 2:
+      retval = do_binary_op (op, args(0), args(1));
+     break;
+    default:
+     retval = do_binary_op (op, args(0), args(1));
+     for (int i = 2; i < nargin; i++)
+       retval.assign (aop, args(i));
+     break;
+    }
+
+  return retval;
+}
 
 DEFUN (plus, args, ,
   "-*- texinfo -*-\n\
@@ -5111,7 +5128,8 @@ cumulatively from left to right:\n\
 At least one argument is needed.\n\
 @end deftypefn")
 {
-  BINARY_ASSOC_OP_DEFUN_BODY (op_add);
+  return binary_assoc_op_defun_body (octave_value::op_add,
+                                     octave_value::op_add_eq, args);
 }
 
 DEFUN (minus, args, ,
@@ -5120,7 +5138,7 @@ DEFUN (minus, args, ,
 This function is equivalent to @code{x - y}.\n\
 @end deftypefn")
 {
-  BINARY_OP_DEFUN_BODY (op_sub);
+  return binary_op_defun_body (octave_value::op_sub, args);
 }
 
 DEFUN (mtimes, args, ,
@@ -5138,7 +5156,8 @@ cumulatively from left to right:\n\
 At least one argument is needed.\n\
 @end deftypefn")
 {
-  BINARY_ASSOC_OP_DEFUN_BODY (op_mul);
+  return binary_assoc_op_defun_body (octave_value::op_mul,
+                                     octave_value::op_mul_eq, args);
 }
 
 DEFUN (mrdivide, args, ,
@@ -5147,7 +5166,7 @@ DEFUN (mrdivide, args, ,
 This function is equivalent to @code{x / y}.\n\
 @end deftypefn")
 {
-  BINARY_OP_DEFUN_BODY (op_div);
+  return binary_op_defun_body (octave_value::op_div, args);
 }
 
 DEFUN (mpower, args, ,
@@ -5156,7 +5175,7 @@ DEFUN (mpower, args, ,
 This function is equivalent to @code{x ^ y}.\n\
 @end deftypefn")
 {
-  BINARY_OP_DEFUN_BODY (op_pow);
+  return binary_op_defun_body (octave_value::op_pow, args);
 }
 
 DEFUN (mldivide, args, ,
@@ -5165,7 +5184,7 @@ DEFUN (mldivide, args, ,
 This function is equivalent to @code{x \\ y}.\n\
 @end deftypefn")
 {
-  BINARY_OP_DEFUN_BODY (op_ldiv);
+  return binary_op_defun_body (octave_value::op_ldiv, args);
 }
 
 DEFUN (lt, args, ,
@@ -5174,7 +5193,7 @@ DEFUN (lt, args, ,
 This function is equivalent to @code{x < y}.\n\
 @end deftypefn")
 {
-  BINARY_OP_DEFUN_BODY (op_lt);
+  return binary_op_defun_body (octave_value::op_lt, args);
 }
 
 DEFUN (le, args, ,
@@ -5183,7 +5202,7 @@ DEFUN (le, args, ,
 This function is equivalent to @code{x <= y}.\n\
 @end deftypefn")
 {
-  BINARY_OP_DEFUN_BODY (op_le);
+  return binary_op_defun_body (octave_value::op_le, args);
 }
 
 DEFUN (eq, args, ,
@@ -5192,7 +5211,7 @@ DEFUN (eq, args, ,
 This function is equivalent to @code{x == y}.\n\
 @end deftypefn")
 {
-  BINARY_OP_DEFUN_BODY (op_eq);
+  return binary_op_defun_body (octave_value::op_eq, args);
 }
 
 DEFUN (ge, args, ,
@@ -5201,7 +5220,7 @@ DEFUN (ge, args, ,
 This function is equivalent to @code{x >= y}.\n\
 @end deftypefn")
 {
-  BINARY_OP_DEFUN_BODY (op_ge);
+  return binary_op_defun_body (octave_value::op_ge, args);
 }
 
 DEFUN (gt, args, ,
@@ -5210,7 +5229,7 @@ DEFUN (gt, args, ,
 This function is equivalent to @code{x > y}.\n\
 @end deftypefn")
 {
-  BINARY_OP_DEFUN_BODY (op_gt);
+  return binary_op_defun_body (octave_value::op_gt, args);
 }
 
 DEFUN (ne, args, ,
@@ -5219,7 +5238,7 @@ DEFUN (ne, args, ,
 This function is equivalent to @code{x != y}.\n\
 @end deftypefn")
 {
-  BINARY_OP_DEFUN_BODY (op_ne);
+  return binary_op_defun_body (octave_value::op_ne, args);
 }
 
 DEFUN (times, args, ,
@@ -5237,7 +5256,8 @@ cumulatively from left to right:\n\
 At least one argument is needed.\n\
 @end deftypefn")
 {
-  BINARY_ASSOC_OP_DEFUN_BODY (op_el_mul);
+  return binary_assoc_op_defun_body (octave_value::op_el_mul,
+                                     octave_value::op_el_mul_eq, args);
 }
 
 DEFUN (rdivide, args, ,
@@ -5246,7 +5266,7 @@ DEFUN (rdivide, args, ,
 This function is equivalent to @code{x ./ y}.\n\
 @end deftypefn")
 {
-  BINARY_OP_DEFUN_BODY (op_el_div);
+  return binary_op_defun_body (octave_value::op_el_div, args);
 }
 
 DEFUN (power, args, ,
@@ -5255,7 +5275,7 @@ DEFUN (power, args, ,
 This function is equivalent to @code{x .^ y}.\n\
 @end deftypefn")
 {
-  BINARY_OP_DEFUN_BODY (op_el_pow);
+  return binary_op_defun_body (octave_value::op_el_pow, args);
 }
 
 DEFUN (ldivide, args, ,
@@ -5264,7 +5284,7 @@ DEFUN (ldivide, args, ,
 This function is equivalent to @code{x .\\ y}.\n\
 @end deftypefn")
 {
-  BINARY_OP_DEFUN_BODY (op_el_ldiv);
+  return binary_op_defun_body (octave_value::op_el_ldiv, args);
 }
 
 DEFUN (and, args, ,
@@ -5282,7 +5302,8 @@ cumulatively from left to right:\n\
 At least one argument is needed.\n\
 @end deftypefn")
 {
-  BINARY_ASSOC_OP_DEFUN_BODY (op_el_and);
+  return binary_assoc_op_defun_body (octave_value::op_el_and,
+                                     octave_value::op_el_and_eq, args);
 }
 
 DEFUN (or, args, ,
@@ -5300,7 +5321,8 @@ cumulatively from left to right:\n\
 At least one argument is needed.\n\
 @end deftypefn")
 {
-  BINARY_ASSOC_OP_DEFUN_BODY (op_el_or);
+  return binary_assoc_op_defun_body (octave_value::op_el_or,
+                                     octave_value::op_el_or_eq, args);
 }
 
 static double tic_toc_timestamp = -1.0;

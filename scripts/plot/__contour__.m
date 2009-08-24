@@ -28,6 +28,7 @@ function [c, hg] = __contour__ (varargin)
 
   linespec.linestyle = "-";
   linespec.color = "auto";
+  edgecolor = "flat";
   for i = 3 : nargin
     arg = varargin {i};
     if ((ischar (arg) || iscell (arg)))
@@ -52,6 +53,17 @@ function [c, hg] = __contour__ (varargin)
 	varargin(i:i+1) = [];
       elseif (strcmpi (varargin{i}, "linecolor"))
 	linespec.color = varargin {i + 1};
+	edgecolor = linespec.color;
+	if (ischar (edgecolor) && strcmpi (edgecolor, "auto"))
+	  edgecolor = "flat";
+	endif
+	varargin(i:i+1) = [];
+      elseif (strcmpi (varargin{i}, "edgecolor"))
+	linespec.color = varargin {i + 1};
+	edgecolor = linespec.color;
+	if (ischar (edgecolor) && strcmpi (edgecolor, "flat"))
+	  linespec.color = "auto";
+	endif
 	varargin(i:i+1) = [];
       else
 	opts{end+1} = varargin{i};
@@ -164,6 +176,10 @@ function [c, hg] = __contour__ (varargin)
   addproperty ("linestyle", hg, "linelinestyle", linespec.linestyle);
   addproperty ("linewidth", hg, "linelinewidth", 0.5);
 
+  ## FIXME It would be good to hide this property which is just an undocumented
+  ## alias for linecolor
+  addproperty ("edgecolor", hg, "color", edgecolor, "{flat}|none");
+
   addlistener (hg, "fill", @update_data);
 
   addlistener (hg, "zlevelmode", @update_zlevel);
@@ -184,6 +200,8 @@ function [c, hg] = __contour__ (varargin)
   addlistener (hg, "linecolor", @update_line);
   addlistener (hg, "linestyle", @update_line);
   addlistener (hg, "linewidth", @update_line);
+
+  addlistener (hg, "edgecolor", @update_edgecolor);
 
   add_patch_children (hg);
 
@@ -366,10 +384,26 @@ function update_zlevel (h, d)
   endswitch
 endfunction
 
+function update_edgecolor (h, d)
+  ec = get (h, "edgecolor");
+  lc = get (h, "linecolor");
+  if (ischar (ec) && strcmpi (ec, "flat"))
+    if (! strcmpi (lc, "auto"))
+      set (h, "linecolor", "auto");
+    endif
+  elseif (! isequal (ec, lc))
+    set (h, "linecolor", ec);
+  endif
+endfunction
+
 function update_line (h, d)
   lc = get (h, "linecolor");
+  ec = get (h, "edgecolor");
   if (strcmpi (lc, "auto"))
     lc = "flat";
+  endif
+  if (! isequal (ec, lc))
+    set (h, "edgecolor", lc);
   endif
   set (findobj (h, "type", "patch"), "edgecolor", lc,
        "linewidth", get (h, "linewidth"), "linestyle", get (h, "linestyle"));

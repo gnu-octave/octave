@@ -96,7 +96,7 @@ elif test x"$acx_blas_ok" = xyes; then
 	[acx_blas_isamax_fcall_ok=no])
 	AC_MSG_RESULT([$acx_blas_isamax_fcall_ok])
 # SDOT check (REAL return values)
-	AC_MSG_CHECKING([whether DDOT is called correctly from Fortran])
+	AC_MSG_CHECKING([whether SDOT is called correctly from Fortran])
 	AC_RUN_IFELSE(AC_LANG_PROGRAM(,[[
       real sdot,a(1),b(1),w
       external sdot

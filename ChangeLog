@@ -1,3 +1,7 @@
+2009-08-24  Jaroslav Hajek  <highegg@gmail.com>
+
+	* acx_blas_f77_func.m4: Fix typo.
+
 2009-08-19  Jaroslav Hajek  <highegg@gmail.com>
 
 	* NEWS: Update.

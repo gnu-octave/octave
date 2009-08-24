@@ -50,14 +50,18 @@ Summary of important user-visible changes for version 3.3:
     will operate on m's data in-place if it is not shared by another variable,
     usually increasing both time and memory efficiency.
     
-    Only the most common combinations are affected, namely:
+    Only selected common combinations are affected, namely:
     
       matrix += matrix
       matrix -= matrix
+      matrix .*= matrix
+      matrix ./= matrix
+
       matrix += scalar
       matrix -= scalar
       matrix *= scalar
       matrix /= scalar
+
       logical matrix |= logical matrix
       logical matrix &= logical matrix
 

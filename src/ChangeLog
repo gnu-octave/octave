@@ -1,3 +1,11 @@
+2009-08-24  Jaroslav Hajek  <highegg@gmail.com>
+
+	* OPERATORS/op-m-m.cc: Install .*= and ./= operators.
+	* OPERATORS/op-fm-fm.cc: Ditto.
+	* OPERATORS/op-cm-cm.cc: Ditto.
+	* OPERATORS/op-fcm-fcm.cc: Ditto.
+	* OPERATORS/op-int.h: Ditto.
+
 2009-08-22  Jaroslav Hajek  <highegg@gmail.com>
 
 	* data.cc (UNARY_OP_DEFUN_BODY,

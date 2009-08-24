@@ -165,6 +165,8 @@ DEFNULLASSIGNOP_FN (null_assign, complex_matrix, delete_elements)
 
 DEFNDASSIGNOP_OP (assign_add, complex_matrix, complex_matrix, complex_array, +=)
 DEFNDASSIGNOP_OP (assign_sub, complex_matrix, complex_matrix, complex_array, -=)
+DEFNDASSIGNOP_FNOP (assign_el_mul, complex_matrix, complex_matrix, complex_array, product_eq)
+DEFNDASSIGNOP_FNOP (assign_el_div, complex_matrix, complex_matrix, complex_array, quotient_eq)
 
 CONVDECL (complex_matrix_to_float_complex_matrix)
 {
@@ -218,6 +220,8 @@ install_cm_cm_ops (void)
 
   INSTALL_ASSIGNOP (op_add_eq, octave_complex_matrix, octave_complex_matrix, assign_add);
   INSTALL_ASSIGNOP (op_sub_eq, octave_complex_matrix, octave_complex_matrix, assign_sub);
+  INSTALL_ASSIGNOP (op_el_mul_eq, octave_complex_matrix, octave_complex_matrix, assign_el_mul);
+  INSTALL_ASSIGNOP (op_el_div_eq, octave_complex_matrix, octave_complex_matrix, assign_el_div);
 
   INSTALL_CONVOP (octave_complex_matrix, octave_float_complex_matrix, 
 		  complex_matrix_to_float_complex_matrix);

@@ -1,3 +1,18 @@
+2009-08-24  Jaroslav Hajek  <highegg@gmail.com>
+
+	* MArray.cc (MArray<T>::product_eq, MArray<T>::quotient_eq): New
+	methods.
+	* MArray2.cc (MArray2<T>::product_eq, MArray2<T>::quotient_eq): Ditto.
+	* MArrayN.cc (MArrayN<T>::product_eq, MArrayN<T>::quotient_eq): Ditto.
+	* MArray-decl.h (MARRAY_OP_ASSIGN_DECLX): New macro.
+	(MARRAY_OP_ASSIGN_DECLS, MARRAY_OP_ASSIGN_FWD_DEFS): Include
+	product_eq and quotient_eq.
+	(MARRAY_FORWARD_DEFS): Use MARRAY_OP_ASSIGN_FWD_DEFS1.
+	(MDIAGARRAY2_OPS_FORWARD_DECLS): Don't instantiate
+	OP= operators for diag matrices.
+	(MDIAGARRAY2_FORWARD_DEFS): Ditto.
+	* MArray-defs.h (INSTANTIATE_MDIAGARRAY2_FRIENDS): Ditto.
+
 2009-08-23  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Array.h (Array::make_unique, Array::~Array, Array::operator =):

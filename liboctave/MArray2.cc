@@ -123,6 +123,53 @@ operator -= (MArray2<T>& a, const MArray2<T>& b)
   return a;
 }
 
+
+template <class T>
+MArray2<T>&
+product_eq (MArray2<T>& a, const MArray2<T>& b)
+{
+  if (a.is_shared ())
+    return a = product (a, b);
+  octave_idx_type r = a.rows ();
+  octave_idx_type c = a.cols ();
+  octave_idx_type br = b.rows ();
+  octave_idx_type bc = b.cols ();
+  if (r != br || c != bc)
+    gripe_nonconformant ("operator .*=", r, c, br, bc);
+  else
+    {
+      if (r > 0 && c > 0)
+	{
+	  octave_idx_type l = a.length ();
+	  DO_VV_OP2 (T, a, *=, b);
+	}
+    }
+  return a;
+}
+
+template <class T>
+MArray2<T>&
+quotient_eq (MArray2<T>& a, const MArray2<T>& b)
+{
+  if (a.is_shared ())
+    return a = quotient (a, b);
+  octave_idx_type r = a.rows ();
+  octave_idx_type c = a.cols ();
+  octave_idx_type br = b.rows ();
+  octave_idx_type bc = b.cols ();
+  if (r != br || c != bc)
+    gripe_nonconformant ("operator ./=", r, c, br, bc);
+  else
+    {
+      if (r > 0 && c > 0)
+	{
+	  octave_idx_type l = a.length ();
+	  DO_VV_OP2 (T, a, /=, b);
+	}
+    }
+  return a;
+}
+
 // Element by element MArray2 by scalar ops.
 
 #define MARRAY_A2S_OP(OP) \

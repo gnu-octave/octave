@@ -122,6 +122,52 @@ operator -= (MArrayN<T>& a, const MArrayN<T>& b)
   return a;
 }
 
+template <class T>
+MArrayN<T>&
+product_eq (MArrayN<T>& a, const MArrayN<T>& b)
+{
+  if (a.is_shared ())
+    return a = product (a, b);
+
+  dim_vector a_dims = a.dims ();
+  dim_vector b_dims = b.dims ();
+
+  if (a_dims != b_dims)
+    gripe_nonconformant ("operator .*=", a_dims, b_dims);
+  else 
+    {
+      octave_idx_type l = a.length ();
+
+      if (l > 0)
+        DO_VV_OP2 (T, a, *=, b);
+    }
+
+  return a;
+}
+
+template <class T>
+MArrayN<T>&
+quotient_eq (MArrayN<T>& a, const MArrayN<T>& b)
+{
+  if (a.is_shared ())
+    return a = quotient (a, b);
+
+  dim_vector a_dims = a.dims ();
+  dim_vector b_dims = b.dims ();
+
+  if (a_dims != b_dims)
+    gripe_nonconformant ("operator ./=", a_dims, b_dims);
+  else 
+    {
+      octave_idx_type l = a.length ();
+
+      if (l > 0)
+        DO_VV_OP2 (T, a, /=, b);
+    }
+
+  return a;
+}
+
 // Element by element MArrayN by scalar ops.
 
 #define MARRAYN_NDS_OP(OP) \

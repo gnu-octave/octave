@@ -120,7 +120,6 @@ along with Octave; see the file COPYING.  If not, see
 
 // Instantiate all the MDiagArray2 friends for MDiagArray2 element type T.
 #define INSTANTIATE_MDIAGARRAY2_FRIENDS(T, API) \
-  MARRAY_OP_ASSIGN_DEFS (MDiagArray2, T, MDiagArray2<T>, API) \
   MARRAY_UNOP_DEFS (MDiagArray2, T, API) \
   MDIAGARRAY2_BINOP_DEFS (MDiagArray2, T, API)
 

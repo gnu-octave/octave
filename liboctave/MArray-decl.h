@@ -28,10 +28,16 @@ along with Octave; see the file COPYING.  If not, see
   PFX API A_T<E_T>& \
   operator OP LTGT (A_T<E_T>&, const RHS_T&)
 
+#define MARRAY_OP_ASSIGN_DECLX(A_T, E_T, OP, PFX, API, LTGT, RHS_T) \
+  PFX API A_T<E_T>& \
+  OP LTGT (A_T<E_T>&, const RHS_T&)
+
 // All the OP= operators that we care about.
 #define MARRAY_OP_ASSIGN_DECLS(A_T, E_T, PFX, API, LTGT, RHS_T) \
   MARRAY_OP_ASSIGN_DECL (A_T, E_T, +=, PFX, API, LTGT, RHS_T); \
-  MARRAY_OP_ASSIGN_DECL (A_T, E_T, -=, PFX, API, LTGT, RHS_T);
+  MARRAY_OP_ASSIGN_DECL (A_T, E_T, -=, PFX, API, LTGT, RHS_T); \
+  MARRAY_OP_ASSIGN_DECLX (A_T, E_T, product_eq, PFX, API, LTGT, RHS_T); \
+  MARRAY_OP_ASSIGN_DECLX (A_T, E_T, quotient_eq, PFX, API, LTGT, RHS_T);
 
 #define MARRAY_OP_ASSIGN_DECLS1(A_T, E_T, PFX, API, LTGT, RHS_T) \
   MARRAY_OP_ASSIGN_DECL (A_T, E_T, +=, PFX, API, LTGT, RHS_T); \
@@ -65,7 +71,9 @@ along with Octave; see the file COPYING.  If not, see
 // All the OP= operators that we care about forwarding.
 #define MARRAY_OP_ASSIGN_FWD_DEFS(R, T, C_X, X_T, C_Y, Y_T) \
   MARRAY_OP_ASSIGN_FWD_FCN (R, operator +=, T, C_X, X_T, C_Y, Y_T) \
-  MARRAY_OP_ASSIGN_FWD_FCN (R, operator -=, T, C_X, X_T, C_Y, Y_T)
+  MARRAY_OP_ASSIGN_FWD_FCN (R, operator -=, T, C_X, X_T, C_Y, Y_T) \
+  MARRAY_OP_ASSIGN_FWD_FCN (R, product_eq, T, C_X, X_T, C_Y, Y_T) \
+  MARRAY_OP_ASSIGN_FWD_FCN (R, quotient_eq, T, C_X, X_T, C_Y, Y_T)
 
 #define MARRAY_OP_ASSIGN_FWD_DEFS1(R, T, C_X, X_T, C_Y, Y_T) \
   MARRAY_OP_ASSIGN_FWD_FCN (R, operator +=, T, C_X, X_T, C_Y, Y_T) \
@@ -209,7 +217,6 @@ along with Octave; see the file COPYING.  If not, see
   template <class T> \
   class A_T; \
  \
-  MARRAY_OP_ASSIGN_FWD_DECLS (A_T, A_T<T>, API) \
   MARRAY_UNOP_FWD_DECLS (A_T, API) \
   MDIAGARRAY2_BINOP_FWD_DECLS (A_T, API)
 
@@ -228,7 +235,7 @@ along with Octave; see the file COPYING.  If not, see
 // Define all the MArray forwarding functions for return type R and
 // MArray element type T
 #define MARRAY_FORWARD_DEFS(B, R, T) \
-  MARRAY_OP_ASSIGN_FWD_DEFS \
+  MARRAY_OP_ASSIGN_FWD_DEFS1 \
     (R, T, dynamic_cast<B<T>&>, R, , T) \
  \
   MARRAY_OP_ASSIGN_FWD_DEFS \
@@ -248,10 +255,6 @@ along with Octave; see the file COPYING.  If not, see
     (R, T, dynamic_cast<const B<T>&>, R, dynamic_cast<const B<T>&>, R)
 
 #define MDIAGARRAY2_FORWARD_DEFS(B, R, T) \
-  MARRAY_OP_ASSIGN_FWD_DEFS \
-    (R, T, \
-     dynamic_cast<B<T>&>, R, dynamic_cast<const B<T>&>, R) \
- \
   MARRAY_UNOP_FWD_DEFS \
     (R, T, dynamic_cast<const B<T>&>, R) \
  \

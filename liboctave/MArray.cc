@@ -190,6 +190,42 @@ operator -= (MArray<T>& a, const MArray<T>& b)
   return a;
 }
 
+template <class T>
+MArray<T>&
+product_eq (MArray<T>& a, const MArray<T>& b)
+{
+  if (a.is_shared ())
+    return a = product (a, b);
+  octave_idx_type l = a.length ();
+  if (l > 0)
+    {
+      octave_idx_type bl = b.length ();
+      if (l != bl)
+	gripe_nonconformant ("operator .*=", l, bl);
+      else
+	DO_VV_OP2 (T, a, *=, b);
+    }
+  return a;
+}
+
+template <class T>
+MArray<T>&
+quotient_eq (MArray<T>& a, const MArray<T>& b)
+{
+  if (a.is_shared ())
+    return a = quotient (a, b);
+  octave_idx_type l = a.length ();
+  if (l > 0)
+    {
+      octave_idx_type bl = b.length ();
+      if (l != bl)
+	gripe_nonconformant ("operator ./=", l, bl);
+      else
+	DO_VV_OP2 (T, a, /=, b);
+    }
+  return a;
+}
+
 // Element by element MArray by scalar ops.
 
 #define MARRAY_AS_OP(OP) \

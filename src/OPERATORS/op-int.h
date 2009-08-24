@@ -756,7 +756,9 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
 
 #define OCTAVE_MM_INT_ASSIGNEQ_OPS(PFX, TM) \
   DEFNDASSIGNOP_OP (PFX ## _assign_add, TM ## matrix, TM ## matrix, TM ## array, +=) \
-  DEFNDASSIGNOP_OP (PFX ## _assign_sub, TM ## matrix, TM ## matrix, TM ## array, -=)
+  DEFNDASSIGNOP_OP (PFX ## _assign_sub, TM ## matrix, TM ## matrix, TM ## array, -=) \
+  DEFNDASSIGNOP_FNOP (PFX ## _assign_el_mul, TM ## matrix, TM ## matrix, TM ## array, product_eq) \
+  DEFNDASSIGNOP_FNOP (PFX ## _assign_el_div, TM ## matrix, TM ## matrix, TM ## array, quotient_eq)
 
 #define OCTAVE_MM_POW_OPS(T1, T2) \
   octave_value \
@@ -1129,7 +1131,9 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
 
 #define OCTAVE_INSTALL_MM_INT_ASSIGNEQ_OPS(PFX, TLHS, TRHS) \
   INSTALL_ASSIGNOP (op_add_eq, octave_ ## TLHS ## matrix, octave_ ## TRHS ## matrix, PFX ## _assign_add) \
-  INSTALL_ASSIGNOP (op_sub_eq, octave_ ## TLHS ## matrix, octave_ ## TRHS ## matrix, PFX ## _assign_sub)
+  INSTALL_ASSIGNOP (op_sub_eq, octave_ ## TLHS ## matrix, octave_ ## TRHS ## matrix, PFX ## _assign_sub) \
+  INSTALL_ASSIGNOP (op_el_mul_eq, octave_ ## TLHS ## matrix, octave_ ## TRHS ## matrix, PFX ## _assign_el_mul) \
+  INSTALL_ASSIGNOP (op_el_div_eq, octave_ ## TLHS ## matrix, octave_ ## TRHS ## matrix, PFX ## _assign_el_div)
 
 #define OCTAVE_INSTALL_MM_INT_OPS(TYPE) \
   OCTAVE_INSTALL_M_INT_UNOPS (TYPE) \

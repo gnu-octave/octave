@@ -193,6 +193,10 @@ DEFNDASSIGNOP_OP (assign_add, float_complex_matrix,
                   float_complex_matrix, float_complex_array, +=)
 DEFNDASSIGNOP_OP (assign_sub, float_complex_matrix, 
                   float_complex_matrix, float_complex_array, -=)
+DEFNDASSIGNOP_FNOP (assign_el_mul, float_complex_matrix, float_complex_matrix,
+                    float_complex_array, product_eq)
+DEFNDASSIGNOP_FNOP (assign_el_div, float_complex_matrix, float_complex_matrix,
+                    float_complex_array, quotient_eq)
 
 CONVDECL (float_complex_matrix_to_complex_matrix)
 {
@@ -281,6 +285,10 @@ install_fcm_fcm_ops (void)
                     octave_float_complex_matrix, assign_add);
   INSTALL_ASSIGNOP (op_sub_eq, octave_float_complex_matrix,
                     octave_float_complex_matrix, assign_sub);
+  INSTALL_ASSIGNOP (op_el_mul_eq, octave_float_complex_matrix,
+                    octave_float_complex_matrix, assign_el_mul);
+  INSTALL_ASSIGNOP (op_el_div_eq, octave_float_complex_matrix,
+                    octave_float_complex_matrix, assign_el_div);
 
   INSTALL_CONVOP (octave_float_complex_matrix, octave_complex_matrix, 
 		  float_complex_matrix_to_complex_matrix);

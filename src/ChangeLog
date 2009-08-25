@@ -1,3 +1,7 @@
+2009-08-25  John W. Eaton  <jwe@octave.org>
+
+	* graphics.cc (gnuplot_backend::send_quit): Wait for gnuplot process.
+
 2009-08-24  Jaroslav Hajek  <highegg@gmail.com>
 
 	* OPERATORS/op-m-m.cc: Install .*= and ./= operators.

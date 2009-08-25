@@ -2042,7 +2042,7 @@ public:
 private:
   void send_quit (const octave_value& pstream) const
     {
-      if (! pstream.is_empty())
+      if (! pstream.is_empty ())
 	{
 	  octave_value_list args;
 	  Matrix fids = pstream.matrix_value ();
@@ -2050,15 +2050,23 @@ private:
 	  if (! error_state)
 	    {
 	      args(1) = "\nquit;\n";
-	      args(0) = octave_value (fids (0));
+	      args(0) = fids(0);
 	      feval ("fputs", args);
+
 	      args.resize (1);
 	      feval ("fflush", args);
 	      feval ("pclose", args);
+
 	      if (fids.numel () > 1)
 		{
-		  args(0) = octave_value (fids (1));
+		  args(0) = fids(1);
 		  feval ("pclose", args);
+
+		  if (fids.numel () > 2)
+		    {
+		      args(0) = fids(2);
+		      feval ("waitpid", args);
+		    }
 		}
 	    }
 	}

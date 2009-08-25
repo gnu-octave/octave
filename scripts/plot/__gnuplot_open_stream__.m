@@ -28,6 +28,8 @@ function plot_stream = __gnuplot_open_stream__ (npipes, h)
     [plot_stream(1), plot_stream(2), pid] = popen2 (prog, args{:});
     if (pid < 0)
       error ("__gnuplot_open_stream__: failed to open connection to gnuplot.");
+    else
+      plot_stream(3) = pid;
     endif
   else
     plot_stream = popen (sprintf ("%s ", prog, args{:}), "w");

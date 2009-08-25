@@ -67,9 +67,12 @@ function gnuplot_drawnow (h, term, file, mono, debug_file)
       set (h, "__plot_stream__", default_plot_stream);
       if (! isempty (plot_stream))
         pclose (plot_stream(1));
-        if (numel (plot_stream) == 2)
+        if (numel (plot_stream) > 1)
           pclose (plot_stream(2));
         endif
+	if (numel (plot_stream) > 2)
+	  waitpid (plot_stream(3));
+	endif
       endif
       if (! isempty (fid))
         fclose (fid);

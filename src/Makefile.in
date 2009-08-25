@@ -314,7 +314,7 @@ else
     $(REGEX_LDFLAGS) $(REGEX_LIBS) \
     $(CURL_LDFLAGS) $(CURL_LIBS) \
     $(GLPK_LDFLAGS) $(GLPK_LIBS) \
-    $(MAGICK_LIBS) \
+    $(MAGICK_LDFLAGS) $(MAGICK_LIBS) \
     $(GRAPHICS_LDFLAGS) $(GRAPHICS_LIBS) \
     $(FT2_LDFLAGS) $(FT2_LIBS) \
     $(HDF5_LDFLAGS) $(HDF5_LIBS) $(Z_LDFLAGS) $(Z_LIBS) \
@@ -685,8 +685,8 @@ oct-gperf.h: octave.gperf
 display.d display.df display.o pic/display.o: CPPFLAGS += $(X11_FLAGS)
 
 __magick_read__.d __magick_read__.df __magick_read__.o pic/__magick_read__.o: \
-  CPPFLAGS += $(MAGICK_INCFLAGS)
-__magick_read__.oct: OCT_LINK_DEPS += $(MAGICK_LIBS)
+  CPPFLAGS += $(MAGICK_CPPFLAGS)
+__magick_read__.oct: OCT_LINK_DEPS += $(MAGICK_LDFLAGS) $(MAGICK_LIBS)
 
 convhull.d convhull.df convhull.o pic/convhull.o: CPPFLAGS += $(QHULL_CPPFLAGS)
 convhulln.oct: OCT_LINK_DEPS += $(QHULL_LDFLAGS) $(QHULL_LIBS)

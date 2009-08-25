@@ -33,7 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #ifdef HAVE_MAGICK
 
-#include <GraphicsMagick/Magick++.h>
+#include <Magick++.h>
 
 unsigned int
 scale_quantum_to_depth (const Magick::Quantum& quantum, unsigned int depth)

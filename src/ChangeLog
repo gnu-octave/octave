@@ -1,3 +1,12 @@
+2009-08-25  David Grundberg  <individ@acc.umu.se>
+
+	* DLD-FUNCTIONS/__magick_read__.cc [HAVE_MAGICK]: Include
+	Magick++.h instead of GraphicsMagick/Magic++.h.
+	* Makefile.in: Replace MAGICK_LIBS with MAGICK_LDFLAGS and
+	MAGICK_LIBS. Replace MAGICK_INCFLAGS with MAGICK_CPPFLAGS.
+	* oct-conf.h.in: Ditto.
+	* toplev.cc (octave_config_info): Ditto.
+
 2009-08-26  John W. Eaton  <jwe@octave.org>
 
 	* oct-conf.h.in: New defines for UMFPACK_CPPFLAGS and UMFPACK_LDFLAGS.

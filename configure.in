@@ -113,6 +113,10 @@ OCTAVE_SET_DEFAULT(localveroctfiledir,
   '$(libexecdir)/octave/$(version)/site/oct/$(canonical_host_type)')
 OCTAVE_SET_DEFAULT(imagedir, '$(datadir)/octave/$(version)/imagelib')
 
+### Find pkg-config executable (sets $PKG_CONFIG)
+
+PKG_PROG_PKG_CONFIG
+
 ### Make configure args available for other uses.
 
 config_opts=$ac_configure_args
@@ -562,15 +566,56 @@ OCTAVE_CHECK_LIBRARY(curl, cURL,
 LIBS="$save_LIBS"
 CPPFLAGS="$save_CPPFLAGS"
 
-# GraphicsMagick++
+### GraphicsMagick++
 
-warn_magick=
-AC_CHECK_PROGS(MAGICK_CONFIG, [GraphicsMagick++-config GraphicsMagick-config])
-if test -z "$MAGICK_CONFIG"; then
-  warn_magick="GraphicsMagick++ config script not found.  Assuming GraphicsMagic++ library and header files are missing, so imread will not be fully functional"
-else
+warn_magick="GraphicsMagick++ library not found.  The imread function for reading image files will not be fully functional."
+
+MAGICK_CPPFLAGS=
+MAGICK_LDFLAGS=
+MAGICK_LIBS=
+
+PKG_CHECK_EXISTS([GraphicsMagick++], [
+  ## Make sure we only get -I, -L and -l flags. Some GraphicsMagick++
+  ## packages adds extra flags that are useful when building
+  ## GraphicsMagick++ extentions. These extra flags break the Octave build.
+  MAGICK_LDFLAGS=`$PKG_CONFIG --libs-only-L GraphicsMagick++`
+  MAGICK_LIBS=`$PKG_CONFIG --libs-only-l GraphicsMagick++`
+  MAGICK_CPPFLAGS=`$PKG_CONFIG --cflags-only-I GraphicsMagick++`
+
+  warn_magick="GraphicsMagick++ library fails tests.  The imread function for reading image files will not be fully functional."
+
+  save_CPPFLAGS="$CPPFLAGS"
+  save_LDFLAGS="$LDFLAGS"
+  save_LIBS="$LIBS"
+  CPPFLAGS="$CPPFLAGS $MAGICK_CPPFLAGS"
+  LDFLAGS="$LIBS $MAGICK_LDFLAGS"
+  LIBS="$LIBS $MAGICK_LIBS"
+  AC_LANG_PUSH(C++)
+    AC_CHECK_HEADER([Magick++.h], [
+      AC_MSG_CHECKING([for Magick::ColorRGB in Magick++.h])
+      AC_TRY_LINK([#include <Magick++.h>], [Magick::ColorRGB c;], [
+        AC_MSG_RESULT(yes)
+        warn_magick=
+      ], [
+        AC_MSG_RESULT(no)
+      ])
+    ])
+  AC_LANG_POP(C++)
+  CPPFLAGS="$save_CPPFLAGS"
+  LDFLAGS="$save_LDFLAGS"
+  LIBS="$save_LIBS"
+])
+
+if test -z "$warn_magick"; then
   AC_DEFINE(HAVE_MAGICK, 1, [Define if GraphicsMagick++ is available.])
+else
+  MAGICK_CPPFLAGS=
+  MAGICK_LDFLAGS=
+  MAGICK_LIBS=
 fi
+AC_SUBST(MAGICK_CPPFLAGS)
+AC_SUBST(MAGICK_LDFLAGS)
+AC_SUBST(MAGICK_LIBS)
 
 # ---------------------------------------------------------------------
 
@@ -642,7 +687,6 @@ fi
 # fontconfig library
 
 warn_fontconfig=""
-PKG_PROG_PKG_CONFIG
 if test -z "$warn_freetype"; then
   PKG_CHECK_MODULES(FONTCONFIG,[fontconfig],[
     have_fontconfig=yes
@@ -2024,6 +2068,10 @@ Octave is now configured for $canonical_host_type
   GLPK CPPFLAGS:        $GLPK_CPPFLAGS
   GLPK LDFLAGS:         $GLPK_LDFLAGS
   GLPK libraries:       $GLPK_LIBS
+  GraphicsMagick++
+    CPPFLAGS:           $MAGICK_CPPFLAGS
+    LDFLAGS:            $MAGICK_LDFLAGS
+    libraries:          $MAGICK_LIBS
   HDF5 CPPFLAGS:        $HDF5_CPPFLAGS
   HDF5 LDFLAGS:         $HDF5_LDFLAGS
   HDF5 libraries:       $HDF5_LIBS
@@ -2046,7 +2094,6 @@ Octave is now configured for $canonical_host_type
 
   Default pager:        $DEFAULT_PAGER
   gnuplot:              $GNUPLOT
-  Magick config:        $MAGICK_CONFIG
 
   Do internal array bounds checking:  $BOUNDS_CHECKING
   Build static libraries:             $STATIC_LIBS

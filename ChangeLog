@@ -36,6 +36,18 @@
 	* mkoctfile.cc.in: Fix typo.
 	* octave-bug.cc.in: Correct substututions.
 
+2009-08-25  David Grundberg  <individ@acc.umu.se>
+
+	* configure.in: Run PKG_PROG_PKG_CONFIG earlier. Use pkg-config
+	instead of GraphicsMagick++-config. Determine only -I, -L and -l
+	flags and put them in MAGICK_CPPFLAGS, MAGICK_LDFLAGS and
+	MAGICK_LIBS respectively. Substitute these variables.
+	Remove variables MAGICK_CONFIG and MAGICK_INCFLAGS.
+	Test linking against GraphicsMagick++.
+	* Makeconf.in: Don't run $(MAGICK_CONFIG) here. Use substituted
+	valued from MAGICK_CPPFLAGS, MAGICK_LDFLAGS and MAGICK_LIBS.
+	Remove variables MAGICK_CONFIG and MAGICK_INCFLAGS.
+
 2009-08-24  Jaroslav Hajek  <highegg@gmail.com>
 
 	* acx_blas_f77_func.m4: Fix typo.

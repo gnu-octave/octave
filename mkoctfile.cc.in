@@ -250,7 +250,7 @@ initialize (void)
     + " " + vars["SPECIAL_MATH_LIB"] + " " + vars["LIBCRUFT"];
 
   vars["FFTW_LIBS"] = vars["FFTW3_LDFLAGS"] + " " + vars["FFTW3_LIBS"]
-    + " " | vars["FFTW3F_LDFLAGS"] + " " + vars["FFTW3F_LIBS"];
+    + " " + vars["FFTW3F_LDFLAGS"] + " " + vars["FFTW3F_LIBS"];
 }
 
 static string usage_msg = "usage: mkoctfile [options] file ...";

@@ -1,3 +1,8 @@
+2009-08-26  Benjamin Lindner  <lindnerb@users.sourceforge.net>
+
+	* mkoctfile.cc.in: Fix typo.
+	* octave-bug.cc.in: Correct substututions.
+
 2009-08-24  Jaroslav Hajek  <highegg@gmail.com>
 
 	* acx_blas_f77_func.m4: Fix typo.

@@ -261,7 +261,7 @@ waitpid (pid);\n\
 \n\
 Note that @code{popen2}, unlike @code{popen}, will not \"reap\" the\n\
 child process.  If you don't use @code{waitpid} to check the child's\n\
-exit status, it will linger until Octave exits.
+exit status, it will linger until Octave exits.\n\
 @end deftypefn")
 {
   octave_value_list retval;

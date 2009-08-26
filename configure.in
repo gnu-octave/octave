@@ -585,7 +585,7 @@ if test -n "$OPENGL_LIBS"; then
 
 ## ftgl (needs freetype 2)
   AC_CHECK_FT2([9.0.3],[AC_DEFINE(HAVE_FREETYPE, 1, [Define to 1 if you have Freetype library.])],
-    [warn_freetype="FreeType library not found. Native renderer will not have on-screen text"])
+    [warn_freetype="FreeType library not found.  Native renderer will not have on-screen text"])
   if test -z "$warn_freetype"; then
     AC_LANG_PUSH(C++)
       save_LIBS="$LIBS"
@@ -627,13 +627,13 @@ FTGLTextureFont font("");], [
 	  AC_MSG_RESULT(yes)
 	  XTRA_CXXFLAGS="$XTRA_CXXFLAGS $FT2_CFLAGS"], [
 	  AC_MSG_RESULT(no)
-          warn_ftgl="FTGL library not found. Native renderer will not have on-screen text"
+          warn_ftgl="FTGL library not found.  Native renderer will not have on-screen text"
         ])
 	LIBS="$save_LIBS"
 	CXXFLAGS="$save_CXXFLAGS"
 	CPPFLAGS="$save_CPPFLAGS"
       else
-        warn_ftgl="FTGL headers not found. Native renderer will not have on-screen text"
+        warn_ftgl="FTGL headers not found.  Native renderer will not have on-screen text"
       fi
     AC_LANG_POP(C++)
   fi
@@ -650,7 +650,7 @@ if test -z "$warn_freetype"; then
     XTRA_CXXFLAGS="$XTRA_CXXFLAGS $FONTCONFIG_CFLAGS"
     AC_DEFINE(HAVE_FONTCONFIG, 1, [Define to 1 if fontconfig is present])],[
     have_fontconfig=no
-    warn_fontconfig="Fontconfig not found. Native text rendering will use hard-coded font instead."])
+    warn_fontconfig="Fontconfig not found.  Native text rendering will use hard-coded font instead."])
 fi
 
 GRAPHICS_LIBS=
@@ -818,7 +818,7 @@ fi
 save_LIBS="$LIBS"
 LIBS="$BLAS_LIBS $FLIBS $LIBS"
 OCTAVE_CHECK_LIBRARY(qrupdate, qrupdate,
-  [qrupdate not found. The QR & Cholesky updating functions will be slow.],
+  [qrupdate not found.  The QR & Cholesky updating functions will be slow.],
   [],
   [F77_FUNC(sqr1up,SQR1UP)],
   [], [don't use qrupdate, disable QR & Cholesky updating functions])
@@ -827,7 +827,7 @@ LIBS="$save_LIBS"
 # Check for AMD library
 
 OCTAVE_CHECK_LIBRARY(amd, AMD,
-  [AMD library not found. This will result in some lack of functionality for sparse matrices.],
+  [AMD library not found.  This will result in some lack of functionality for sparse matrices.],
   [suitesparse/amd.h ufsparse/amd.h amd/amd.h amd.h],
   [amd_postorder],
   [], [don't use AMD library, disable some sparse functionality])
@@ -835,7 +835,7 @@ OCTAVE_CHECK_LIBRARY(amd, AMD,
 # Check for CAMD library
 
 OCTAVE_CHECK_LIBRARY(camd, CAMD,
-  [CAMD library not found. This will result in some lack of functionality for sparse matrices.],
+  [CAMD library not found.  This will result in some lack of functionality for sparse matrices.],
   [suitesparse/camd.h ufsparse/camd.h amd/camd.h camd.h],
   [camd_postorder],
   [], [don't use CAMD library, disable some sparse functionality])
@@ -843,7 +843,7 @@ OCTAVE_CHECK_LIBRARY(camd, CAMD,
 # Check for COLAMD library
 
 OCTAVE_CHECK_LIBRARY(colamd, COLAMD,
-  [COLAMD library not found. This will result in some lack of functionality for sparse matrices.],
+  [COLAMD library not found.  This will result in some lack of functionality for sparse matrices.],
   [suitesparse/colamd.h ufsparse/colamd.h amd/colamd.h colamd.h],
   [colamd],
   [], [don't use COLAMD library, disable some sparse functionality])
@@ -851,7 +851,7 @@ OCTAVE_CHECK_LIBRARY(colamd, COLAMD,
 # Check for CCOLAMD library
 
 OCTAVE_CHECK_LIBRARY(ccolamd, CCOLAMD,
-  [CCOLAMD library not found. This will result in some lack of functionality for sparse matrices.],
+  [CCOLAMD library not found.  This will result in some lack of functionality for sparse matrices.],
   [suitesparse/ccolamd.h ufsparse/ccolamd.h amd/ccolamd.h ccolamd.h],
   [ccolamd],
   [], [don't use CCOLAMD library, disable some sparse functionality])
@@ -862,7 +862,7 @@ OCTAVE_CHECK_LIBRARY(ccolamd, CCOLAMD,
 save_LIBS="$LIBS"
 LIBS="$BLAS_LIBS $FLIBS $LIBS"
 OCTAVE_CHECK_LIBRARY(cholmod, CHOLMOD,
-  [CHOLMOD library not found. This will result in some lack of functionality for sparse matrices.],
+  [CHOLMOD library not found.  This will result in some lack of functionality for sparse matrices.],
   [suitesparse/cholmod.h ufsparse/cholmod.h cholmod/cholmod.h cholmod.h],
   [cholmod_start],
   [], [don't use CHOLMOD library, disable some sparse functionality])
@@ -871,7 +871,7 @@ LIBS="$save_LIBS"
 # Check for CXSparse library
 
 OCTAVE_CHECK_LIBRARY(cxsparse, CXSparse,
-  [CXSparse library not found. This will result in some lack of functionality for sparse matrices.],
+  [CXSparse library not found.  This will result in some lack of functionality for sparse matrices.],
   [suitesparse/cs.h ufsparse/cs.h amd/cs.h cs.h],
   [cs_di_sqr],
   [C++], [don't use CXSparse library, disable some sparse functionality])

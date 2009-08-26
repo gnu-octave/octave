@@ -1,3 +1,7 @@
+2009-08-25  John W. Eaton  <jwe@octave.org>
+
+	* graphics.cc (gnuplot_backend::send_quit): Wait for gnuplot process.
+
 2009-08-12  Jaroslav Hajek  <highegg@gmail.com>
 
 	* data.cc (Fissorted, F__sort_rows_idx__, Fnorm): Mark as Built-in

@@ -1,3 +1,10 @@
+2009-08-25  John W. Eaton  <jwe@octave.org>
+
+	* plot/__gnuplot_open_stream__.m: Save pid in __plot_stream__ property.
+	* plot/gnuplot_drawnow.m: Wait for gnuplot subprocess when printing.
+	From Ben Abbott <bpabbott@mac.com>, Rob Mahurin <rob@utk.edu>, and
+	Dmitri Sergatskov <dasergatskov@gmail.com>.
+
 2009-08-22  David Bateman  <dbateman@free.fr>
 
 	* plot/__add_datasource__.m: Correct test for "datasource" argument

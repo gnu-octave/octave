@@ -1,5 +1,9 @@
 2009-08-26  John W. Eaton  <jwe@octave.org>
 
+	* octave-bug.in: Correct substitutions.
+
+2009-08-26  John W. Eaton  <jwe@octave.org>
+
 	* aclocal.m4 (OCTAVE_CHECK_LIBRARY): Allow empty list of header files.
 	* configure.in: Use OCTAVE_CHECK_LIBRARY to check for arpack.
 	* octave-bug.in, octave-bug.cc.in: Substitute ARPACK_CPPFLAGS and

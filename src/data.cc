@@ -1106,8 +1106,8 @@ sign as @var{x}.  If @var{y} is zero, the result is implementation-dependent.\n\
 
   if (nargin == 2 && args(0).is_defined () && args(1).is_defined ())
     {
-      octave_value arg_y = args(0);
-      octave_value arg_x = args(1);
+      octave_value arg_x = args(0);
+      octave_value arg_y = args(1);
 
       dim_vector y_dims = arg_y.dims ();
       dim_vector x_dims = arg_x.dims ();

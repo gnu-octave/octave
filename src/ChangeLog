@@ -2,6 +2,10 @@
 
 	* data.cc (Ffmod): Reverse order of args.
 
+2009-08-26  Rob Mahurin  <rob@utk.edu>
+
+	* syscalls.cc: Recommend waitpid() in popen2() documentation.
+	
 2009-08-25  John W. Eaton  <jwe@octave.org>
 
 	* graphics.cc (gnuplot_backend::send_quit): Wait for gnuplot process.

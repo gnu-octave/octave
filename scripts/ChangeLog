@@ -1,3 +1,7 @@
+2009-08-26  E. Joshua Rigler  <relgire@gmail.com>
+
+	* time/datestr.m: Set tm.isdst to -1 before calling mktime.
+
 2009-08-25  John W. Eaton  <jwe@octave.org>
 
 	* plot/__gnuplot_open_stream__.m: Save pid in __plot_stream__ property.

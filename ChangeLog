@@ -1,5 +1,9 @@
 2009-08-26  John W. Eaton  <jwe@octave.org>
 
+	* configure.in: Restore LIBS after checking for ARPACK.
+
+2009-08-26  John W. Eaton  <jwe@octave.org>
+
 	* configure.in: Use OCTAVE_CHECK_LIBRARY to check for UMFPACK.
 	* octave-bug.in, octave-bug.cc.in: Substitute UMFPACK_CPPFLAGS and
 	UMFPACK_LDFLAGS.

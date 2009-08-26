@@ -917,6 +917,7 @@ OCTAVE_CHECK_LIBRARY(arpack, ARPACK,
   [],
   [F77_FUNC(dseupd,DSEUPD)],
   [], [don't use the ARPACK library, disable eigs function])
+LIBS="$save_LIBS"
 
 ### Handle shared library options.
 

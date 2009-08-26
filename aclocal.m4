@@ -469,7 +469,10 @@ AC_DEFUN(OCTAVE_CHECK_LIBRARY, [
     octave_check_library_save_CPPFLAGS="$CPPFLAGS"
     CPPFLAGS="$m4_toupper([$1])_CPPFLAGS $CPPFLAGS"
     m4_ifnblank([$6], [AC_LANG_PUSH($6)])
-    AC_CHECK_HEADERS($4, [
+    octave_$1_check_for_lib=false
+    m4_ifblank([$4], [octave_$1_check_for_lib=true],
+               [AC_CHECK_HEADERS($4, [octave_$1_check_for_lib=true; break])])
+    if $octave_$1_check_for_lib; then
       octave_check_library_save_LDFLAGS="$LDFLAGS"
       LDFLAGS="$m4_toupper([$1])_LDFLAGS $LDFLAGS"
       octave_check_library_save_LIBS="$LIBS"
@@ -487,7 +490,8 @@ AC_DEFUN(OCTAVE_CHECK_LIBRARY, [
 	  [TEXINFO_]m4_toupper([$1])="@set [HAVE_]m4_toupper([$1])"], [$8])
       fi
       LIBS="$octave_check_library_save_LIBS"
-      LDFLAGS="$octave_check_library_save_LDFLAGS"])
+      LDFLAGS="$octave_check_library_save_LDFLAGS"
+    fi
     m4_ifnblank([$6], [AC_LANG_POP($6)])
     CPPFLAGS="$octave_check_library_save_CPPFLAGS"
   fi

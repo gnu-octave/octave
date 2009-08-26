@@ -1,5 +1,10 @@
 2009-08-26  John W. Eaton  <jwe@octave.org>
 
+	* oct-conf.h.in: New defines for QRUPDATE_CPPFLAGS and QRUPDATE_LDFLAGS.
+	* toplev.cc (octave_config_info): Include them in the list.
+
+2009-08-26  John W. Eaton  <jwe@octave.org>
+
 	* oct-conf.h.in: New defines for ARPACK_CPPFLAGS and ARPACK_LDFLAGS.
 	* toplev.cc (octave_config_info): Include them in the list.
 

@@ -813,33 +813,16 @@ if test "x$acx_blas_f77_func_ok" = "xno"; then
   AC_MSG_WARN($warn_blas_f77_incompatible)
 fi
 
-QRUPDATE_LIBS=
-AC_SUBST(QRUPDATE_LIBS)
-
 # Check for the qrupdate library
-AC_ARG_WITH(qrupdate,
-  [AS_HELP_STRING([--without-qrupdate],
-     [don't use qrupdate, disable QR & Cholesky updating functions])],
-  with_qrupdate=$withval, with_qrupdate=yes)
 
-warn_qrupdate="qrupdate not found. The QR & Cholesky updating functions will be slow."
-if test "$with_qrupdate" = yes; then
-  with_qrupdate=no
-  if $have_fortran_compiler; then 
-    AC_F77_FUNC(sqr1up)
-  elif $have_f2c; then
-    sqr1up=sqr1up_
-  fi
-  AC_CHECK_LIB(qrupdate, $sqr1up, 
-    [QRUPDATE_LIBS="-lqrupdate"; with_qrupdate=yes], [], [$BLAS_LIBS $FLIBS])
-  if test "$with_qrupdate" = yes; then
-    AC_DEFINE(HAVE_QRUPDATE, 1, [Define if the qrupdate library is used.])
-    warn_qrupdate=
-  fi
-fi
-if test -n "$warn_qrupdate"; then
-  AC_MSG_WARN($warn_qrupdate)
-fi
+save_LIBS="$LIBS"
+LIBS="$BLAS_LIBS $FLIBS $LIBS"
+OCTAVE_CHECK_LIBRARY(qrupdate, qrupdate,
+  [qrupdate not found. The QR & Cholesky updating functions will be slow.],
+  [],
+  [F77_FUNC(sqr1up,SQR1UP)],
+  [], [don't use qrupdate, disable QR & Cholesky updating functions])
+LIBS="$save_LIBS"
 
 # Check for AMD library
 

@@ -1,5 +1,13 @@
 2009-08-26  John W. Eaton  <jwe@octave.org>
 
+	* configure.in: Use OCTAVE_CHECK_LIBRARY to check for qrupdate.
+	* octave-bug.in, octave-bug.cc.in: Substitute QRUPDATE_CPPFLAGS and
+	QRUPDATE_LDFLAGS.
+	* Makeconf.in (QRUPDATE_CPPFLAGS, QRUPDATE_LDFLAGS): New variables.
+	(do-subst-config-vals): Substitute them.
+
+2009-08-26  John W. Eaton  <jwe@octave.org>
+
 	* octave-bug.in: Correct substitutions.
 
 2009-08-26  John W. Eaton  <jwe@octave.org>

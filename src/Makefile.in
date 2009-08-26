@@ -296,6 +296,7 @@ ifeq ($(ENABLE_DYNAMIC_LINKING), true)
     $(OPENGL_LIBS) $(X11_LIBS) $(CARBON_LIBS) \
     $(READLINE_LIBS) $(TERM_LIBS) \
     $(LIBGLOB) \
+    $(FLIBS) \
     $(LIBS)
 else
   ## FIXME -- this list is probably not complete now.  It may not even
@@ -319,7 +320,8 @@ else
     $(HDF5_LDFLAGS) $(HDF5_LIBS) $(Z_LDFLAGS) $(Z_LIBS) \
     $(OPENGL_LIBS) $(X11_LIBS) $(CARBON_LIBS) \
     $(READLINE_LIBS) $(TERM_LIBS) \
-    $(LIBPLPLOT) $(LIBGLOB) \
+    $(LIBGLOB) \
+    $(FLIBS) \
     $(LIBS)
 endif
 
@@ -328,7 +330,9 @@ OCTINTERP_LINK_DEPS = $(RLD_FLAG) -L../liboctave $(LIBOCTAVE) \
   $(FFTW_LDFLAGS) $(FFTW_LIBS) \
   $(HDF5_LDFLAGS) $(HDF5_LIBS) $(Z_LDFLAGS) $(Z_LIBS) \
   $(OPENGL_LIBS) $(X11_LIBS) $(CARBON_LIBS) \
-  $(READLINE_LIBS) \
+  $(READLINE_LIBS) $(TERM_LIBS) \
+  $(LIBGLOB) \
+  $(FLIBS) \
   $(LIBS)
 
 OCT_LINK_DEPS = $(RLD_FLAG) -L. $(LIBOCTINTERP) \

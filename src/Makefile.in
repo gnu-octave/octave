@@ -296,6 +296,7 @@ ifeq ($(ENABLE_DYNAMIC_LINKING), true)
     $(OPENGL_LIBS) $(X11_LIBS) $(CARBON_LIBS) \
     $(READLINE_LIBS) $(TERM_LIBS) \
     $(LIBGLOB) \
+    $(BLAS_LIBS) \
     $(FLIBS) \
     $(LIBS)
 else
@@ -310,7 +311,6 @@ else
     $(ARPACK_LDFLAGS) $(ARPACK_LIBS) \
     $(QRUPDATE_LDFLAGS) $(QRUPDATE_LIBS) \
     $(SPARSE_LDFLAGS) $(SPARSE_LIBS) \
-    $(BLAS_LIBS) \
     $(REGEX_LDFLAGS) $(REGEX_LIBS) \
     $(CURL_LDFLAGS) $(CURL_LIBS) \
     $(GLPK_LDFLAGS) $(GLPK_LIBS) \
@@ -321,6 +321,7 @@ else
     $(OPENGL_LIBS) $(X11_LIBS) $(CARBON_LIBS) \
     $(READLINE_LIBS) $(TERM_LIBS) \
     $(LIBGLOB) \
+    $(BLAS_LIBS) \
     $(FLIBS) \
     $(LIBS)
 endif
@@ -332,6 +333,7 @@ OCTINTERP_LINK_DEPS = $(RLD_FLAG) -L../liboctave $(LIBOCTAVE) \
   $(OPENGL_LIBS) $(X11_LIBS) $(CARBON_LIBS) \
   $(READLINE_LIBS) $(TERM_LIBS) \
   $(LIBGLOB) \
+  $(BLAS_LIBS) \
   $(FLIBS) \
   $(LIBS)
 

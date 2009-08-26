@@ -1,5 +1,10 @@
 2009-08-26  John W. Eaton  <jwe@octave.org>
 
+	* Makefile.in (OCTAVE_LIBS, OCTINTERP_LINK_DEPS):
+	Include BLAS_LIBS in the list.
+
+2009-08-26  John W. Eaton  <jwe@octave.org>
+
 	* Makefile.in (OCTAVE_LIBS): Include FLIBS in the list.
 	(OCTINTERP_LINK_DEPS): Include TERM_LIBS, LIBGLOB, and FLIBS in
 	the list.

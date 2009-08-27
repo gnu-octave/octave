@@ -102,7 +102,7 @@ function fmt = get_fmt (x, sep)
       fmt = sprintf ("%%%dd", min_fw);
     else
       ## Could have anything.
-      tfw = floor (log10 (abs (t))) + 1 + sep;
+      tfw = floor (log10 (double (abs (t)))) + 1 + sep;
       fw = max (tfw);
       if (any (t(tfw == fw) < 0))
 	fw++;

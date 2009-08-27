@@ -1,3 +1,7 @@
+2009-08-17  Jaroslav Hajek  <highegg@gmail.com>
+
+	* general/int2str.m: Convert to double before calling log10.
+
 2009-08-26  E. Joshua Rigler  <relgire@gmail.com>
 
 	* time/datestr.m: Set tm.isdst to -1 before calling mktime.

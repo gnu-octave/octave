@@ -142,13 +142,13 @@ boolNDArray::diag (octave_idx_type k) const
 }
 
 NDND_BOOL_OPS (boolNDArray, boolNDArray)
-NDND_CMP_OPS (boolNDArray, , boolNDArray, )
+NDND_CMP_OPS (boolNDArray, boolNDArray)
 
 NDS_BOOL_OPS (boolNDArray, bool)
-NDS_CMP_OPS (boolNDArray, , bool, )
+NDS_CMP_OPS (boolNDArray, bool)
 
 SND_BOOL_OPS (bool, boolNDArray)
-SND_CMP_OPS (bool, , boolNDArray, )
+SND_CMP_OPS (bool, boolNDArray)
 
 boolNDArray& 
 mx_el_and_assign (boolNDArray& a, const boolNDArray& b)

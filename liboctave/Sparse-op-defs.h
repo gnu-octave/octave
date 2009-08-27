@@ -139,10 +139,10 @@ along with Octave; see the file COPYING.  If not, see
   }
 
 #define SPARSE_SMS_CMP_OPS(M, MZ, CM, S, SZ, CS)	\
-  SPARSE_SMS_CMP_OP (mx_el_lt, <,  M, MZ, CM, S, SZ, CS)	\
-  SPARSE_SMS_CMP_OP (mx_el_le, <=, M, MZ, CM, S, SZ, CS)	\
-  SPARSE_SMS_CMP_OP (mx_el_ge, >=, M, MZ, CM, S, SZ, CS)	\
-  SPARSE_SMS_CMP_OP (mx_el_gt, >,  M, MZ, CM, S, SZ, CS)	\
+  SPARSE_SMS_CMP_OP (mx_el_lt, <,  M, MZ,   , S, SZ,   )	\
+  SPARSE_SMS_CMP_OP (mx_el_le, <=, M, MZ,   , S, SZ,   )	\
+  SPARSE_SMS_CMP_OP (mx_el_ge, >=, M, MZ,   , S, SZ,   )	\
+  SPARSE_SMS_CMP_OP (mx_el_gt, >,  M, MZ,   , S, SZ,   )	\
   SPARSE_SMS_CMP_OP (mx_el_eq, ==, M, MZ,   , S, SZ,   )	\
   SPARSE_SMS_CMP_OP (mx_el_ne, !=, M, MZ,   , S, SZ,   )
 
@@ -308,10 +308,10 @@ along with Octave; see the file COPYING.  If not, see
   }
 
 #define SPARSE_SSM_CMP_OPS(S, SZ, SC, M, MZ, MC)	\
-  SPARSE_SSM_CMP_OP (mx_el_lt, <,  S, SZ, SC, M, MZ, MC)	\
-  SPARSE_SSM_CMP_OP (mx_el_le, <=, S, SZ, SC, M, MZ, MC)	\
-  SPARSE_SSM_CMP_OP (mx_el_ge, >=, S, SZ, SC, M, MZ, MC)	\
-  SPARSE_SSM_CMP_OP (mx_el_gt, >,  S, SZ, SC, M, MZ, MC)	\
+  SPARSE_SSM_CMP_OP (mx_el_lt, <,  S, SZ,   , M, MZ,   )	\
+  SPARSE_SSM_CMP_OP (mx_el_le, <=, S, SZ,   , M, MZ,   )	\
+  SPARSE_SSM_CMP_OP (mx_el_ge, >=, S, SZ,   , M, MZ,   )	\
+  SPARSE_SSM_CMP_OP (mx_el_gt, >,  S, SZ,   , M, MZ,   )	\
   SPARSE_SSM_CMP_OP (mx_el_eq, ==, S, SZ,   , M, MZ,   )	\
   SPARSE_SSM_CMP_OP (mx_el_ne, !=, S, SZ,   , M, MZ,   )
 
@@ -905,10 +905,10 @@ along with Octave; see the file COPYING.  If not, see
   }
 
 #define SPARSE_SMSM_CMP_OPS(M1, Z1, C1, M2, Z2, C2)  \
-  SPARSE_SMSM_CMP_OP (mx_el_lt, <,  M1, Z1, C1, M2, Z2, C2) \
-  SPARSE_SMSM_CMP_OP (mx_el_le, <=, M1, Z1, C1, M2, Z2, C2) \
-  SPARSE_SMSM_CMP_OP (mx_el_ge, >=, M1, Z1, C1, M2, Z2, C2) \
-  SPARSE_SMSM_CMP_OP (mx_el_gt, >,  M1, Z1, C1, M2, Z2, C2) \
+  SPARSE_SMSM_CMP_OP (mx_el_lt, <,  M1, Z1,   , M2, Z2,   ) \
+  SPARSE_SMSM_CMP_OP (mx_el_le, <=, M1, Z1,   , M2, Z2,   ) \
+  SPARSE_SMSM_CMP_OP (mx_el_ge, >=, M1, Z1,   , M2, Z2,   ) \
+  SPARSE_SMSM_CMP_OP (mx_el_gt, >,  M1, Z1,   , M2, Z2,   ) \
   SPARSE_SMSM_CMP_OP (mx_el_eq, ==, M1, Z1,   , M2, Z2,   ) \
   SPARSE_SMSM_CMP_OP (mx_el_ne, !=, M1, Z1,   , M2, Z2,   )
 
@@ -1222,10 +1222,10 @@ along with Octave; see the file COPYING.  If not, see
   }
 
 #define SPARSE_MSM_CMP_OPS(M1, Z1, C1, M2, Z2, C2)  \
-  SPARSE_MSM_CMP_OP (mx_el_lt, <,  M1, C1, M2, C2) \
-  SPARSE_MSM_CMP_OP (mx_el_le, <=, M1, C1, M2, C2) \
-  SPARSE_MSM_CMP_OP (mx_el_ge, >=, M1, C1, M2, C2) \
-  SPARSE_MSM_CMP_OP (mx_el_gt, >,  M1, C1, M2, C2) \
+  SPARSE_MSM_CMP_OP (mx_el_lt, <,  M1,   , M2,   ) \
+  SPARSE_MSM_CMP_OP (mx_el_le, <=, M1,   , M2,   ) \
+  SPARSE_MSM_CMP_OP (mx_el_ge, >=, M1,   , M2,   ) \
+  SPARSE_MSM_CMP_OP (mx_el_gt, >,  M1,   , M2,   ) \
   SPARSE_MSM_CMP_OP (mx_el_eq, ==, M1,   , M2,   ) \
   SPARSE_MSM_CMP_OP (mx_el_ne, !=, M1,   , M2,   )
 
@@ -1456,10 +1456,10 @@ along with Octave; see the file COPYING.  If not, see
   }
 
 #define SPARSE_SMM_CMP_OPS(M1, Z1, C1, M2, Z2, C2)  \
-  SPARSE_SMM_CMP_OP (mx_el_lt, <,  M1, C1, M2, C2) \
-  SPARSE_SMM_CMP_OP (mx_el_le, <=, M1, C1, M2, C2) \
-  SPARSE_SMM_CMP_OP (mx_el_ge, >=, M1, C1, M2, C2) \
-  SPARSE_SMM_CMP_OP (mx_el_gt, >,  M1, C1, M2, C2) \
+  SPARSE_SMM_CMP_OP (mx_el_lt, <,  M1,   , M2,   ) \
+  SPARSE_SMM_CMP_OP (mx_el_le, <=, M1,   , M2,   ) \
+  SPARSE_SMM_CMP_OP (mx_el_ge, >=, M1,   , M2,   ) \
+  SPARSE_SMM_CMP_OP (mx_el_gt, >,  M1,   , M2,   ) \
   SPARSE_SMM_CMP_OP (mx_el_eq, ==, M1,   , M2,   ) \
   SPARSE_SMM_CMP_OP (mx_el_ne, !=, M1,   , M2,   )
 

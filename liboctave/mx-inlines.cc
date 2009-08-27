@@ -104,20 +104,6 @@ DEFMXCMPOP (mx_inline_ge, >=)
 DEFMXCMPOP (mx_inline_eq, ==)
 DEFMXCMPOP (mx_inline_ne, !=)
 
-// For compatibility with certain loserware, cmp ops on complex nums only
-// compare real parts, although "sort" defines ordering on complex numbers!
-
-#define DEFCMPLXCMOP(F, OP) \
-template <class X, class Y> \
-inline void F (size_t n, bool *r, const std::complex<X> *x, const Y *y) \
-{ for (size_t i = 0; i < n; i++) r[i] = real (x[i]) OP real (y[i]); } \
-template <class X, class Y> \
-inline void F (size_t n, bool *r, const std::complex<X> *x, Y y) \
-{ for (size_t i = 0; i < n; i++) r[i] = real (x[i]) OP y; } \
-template <class X, class Y> \
-inline void F (size_t n, bool *r, X x, const std::complex<Y> *y) \
-{ for (size_t i = 0; i < n; i++) r[i] = x OP real (y[i]); }
-
 // Convert to logical value, for logical op purposes.
 template <class T> inline bool logical_value (T x) { return x; }
 template <class T> inline bool logical_value (const octave_int<T>& x) 

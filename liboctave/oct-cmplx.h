@@ -29,23 +29,37 @@ along with Octave; see the file COPYING.  If not, see
 typedef std::complex<double> Complex;
 typedef std::complex<float> FloatComplex;
 
-// The default comparison of complex number is to compare by abs, then by arg.
-// FIXME: this could be speeded up significantly.
-template <class T>
-inline bool operator < (const std::complex<T>& a,
-                        const std::complex<T>& b)
-{
-  T ax = std::abs (a), bx = std::abs (b);
-  return ax < bx || (ax == bx && std::arg (a) < std::arg (b));
-}
+// For complex-complex and complex-real comparisons, we use the following ordering:
+// compare absolute values first; if they match, compare phase angles.
+// This is partially inconsistent with M*b, which compares complex numbers only
+// by their real parts; OTOH, it uses the same definition for max/min and sort.
+// The abs/arg comparison is definitely more useful (the other one is emulated rather
+// trivially), so let's be consistent and use that all over.
 
-template <class T>
-inline bool operator > (const std::complex<T>& a,
-                        const std::complex<T>& b)
-{
-  T ax = std::abs (a), bx = std::abs (b);
-  return ax > bx || (ax == bx && std::arg (a) > std::arg (b));
-}
+#define DEF_COMPLEXR_COMP(OP, OPS) \
+template <class T> \
+inline bool operator OP (const std::complex<T>& a, const std::complex<T>& b) \
+{ \
+  T ax = std::abs (a), bx = std::abs (b); \
+  return ax OPS bx || (ax == bx && std::arg (a) OP std::arg (b)); \
+} \
+template <class T> \
+inline bool operator OP (const std::complex<T>& a, T b) \
+{ \
+  T ax = std::abs (a); \
+  return ax OPS b || (ax == b && std::arg (a) OP 0); \
+} \
+template <class T> \
+inline bool operator OP (T a, const std::complex<T>& b) \
+{ \
+  T bx = std::abs (b); \
+  return a OPS bx || (a == bx && 0 OP std::arg (b)); \
+} \
+
+DEF_COMPLEXR_COMP (>, >)
+DEF_COMPLEXR_COMP (<, <)
+DEF_COMPLEXR_COMP (<=, <=)
+DEF_COMPLEXR_COMP (>=, >=)
 
 #endif
 

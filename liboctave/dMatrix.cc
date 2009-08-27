@@ -3394,13 +3394,13 @@ max (const Matrix& a, const Matrix& b)
   return result;
 }
 
-MS_CMP_OPS(Matrix, , double, )
+MS_CMP_OPS (Matrix, double)
 MS_BOOL_OPS (Matrix, double)
 
-SM_CMP_OPS(double, , Matrix, )
+SM_CMP_OPS (double, Matrix)
 SM_BOOL_OPS (double, Matrix)
 
-MM_CMP_OPS(Matrix, , Matrix, )
+MM_CMP_OPS (Matrix, Matrix)
 MM_BOOL_OPS (Matrix, Matrix)
 
 /*

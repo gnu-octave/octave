@@ -214,13 +214,13 @@ charMatrix::any (int dim) const
   return do_mx_red_op<boolMatrix, char> (*this, dim, mx_inline_any);
 }
 
-MS_CMP_OPS(charMatrix, , char, )
+MS_CMP_OPS (charMatrix, char)
 MS_BOOL_OPS (charMatrix, char)
 
-SM_CMP_OPS(char, , charMatrix, )
+SM_CMP_OPS (char, charMatrix)
 SM_BOOL_OPS (char, charMatrix)
 
-MM_CMP_OPS(charMatrix, , charMatrix, )
+MM_CMP_OPS (charMatrix, charMatrix)
 MM_BOOL_OPS (charMatrix, charMatrix)
 
 /*

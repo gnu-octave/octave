@@ -1,3 +1,43 @@
+2009-08-27  Jaroslav Hajek  <highegg@gmail.com>
+
+	* mx-inlines.cc (DEFCMPLXCMOP): Remove.
+	* oct-cmplx.h (operator <, operator >): Remove definitions.
+	(DEF_COMPLEXR_COMP): New macro. Instantiate for <, >, <=, >=.
+	* mx-op-defs.h (MM_CMP_OP, MS_CMP_OP, SM_CMP_OP,
+	NDND_CMP_OP, NDS_CMP_OP, SND_CMP_OP): Replace by one-liners. Remove
+	unused parameters.
+	(MM_CMP_OPS, MS_CMP_OPS, SM_CMP_OPS, NDND_CMP_OPS, NDS_CMP_OPS,
+	SND_CMP_OPS): Update.
+	(NDS_CMP_OP1, NDS_CMP_OPS1, NDS_CMP_OP2, NDS_CMP_OPS2,
+	SND_CMP_OP1, SND_CMP_OPS1, SND_CMP_OP2, SND_CMP_OPS2): Remove.
+	* mk-ops.awk: Simplify CMP_OPS branch.
+	* Sparse-op-defs.h (SPARSE_SMSM_CMP_OPS, SPARSE_SMS_CMP_OPS,
+	SPARSE_SSM_CMP_OPS, SPARSE_MSM_CMP_OPS, SPARSE_SMM_CMP_OPS):
+	Update.
+
+	* CNDArray.cc: Update syntax.
+	* boolNDArray.cc: Ditto.
+	* chNDArray.cc: Ditto.
+	* dNDArray.cc: Ditto.
+	* fCNDArray.cc: Ditto.
+	* fNDArray.cc: Ditto.
+
+	* int16NDArray.cc: Ditto.
+	* int32NDArray.cc: Ditto.
+	* int64NDArray.cc: Ditto.
+	* int8NDArray.cc: Ditto.
+	* uint16NDArray.cc: Ditto.
+	* uint32NDArray.cc: Ditto.
+	* uint64NDArray.cc: Ditto.
+	* uint8NDArray.cc: Ditto.
+
+	* CMatrix.cc: Ditto.
+	* boolMatrix.cc: Ditto.
+	* chMatrix.cc: Ditto.
+	* dMatrix.cc: Ditto.
+	* fCMatrix.cc: Ditto.
+	* fMatrix.cc: Ditto.
+
 2009-08-24  Jaroslav Hajek  <highegg@gmail.com>
 
 	* MArray.cc (MArray<T>::product_eq, MArray<T>::quotient_eq): New

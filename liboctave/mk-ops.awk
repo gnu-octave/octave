@@ -222,38 +222,8 @@ BEGIN {
             }
 
           if (cmp_ops)
-	    {
-	      if (lhs_class == "S" || rhs_class == "S")
-	        {
-		  if (lhs_core_type)
-		    {
-		      if (rhs_core_type)
-			printf ("%s%s_CMP_OPS2 (%s, %s, %s, %s, %s, %s)\n",
-				lhs_class, rhs_class, lhs_type, lhs_conv,
-				rhs_type, rhs_conv,
-				lhs_core_type, rhs_core_type) >> cc_file
-		      else
-			printf ("%s%s_CMP_OPS1 (%s, %s, %s, %s, %s)\n",
-				lhs_class, rhs_class, lhs_type, lhs_conv,
-				rhs_type, rhs_conv, lhs_core_type) >> cc_file
-		    }
-		  else
-		    {
-		      if (rhs_core_type)
-			printf ("%s%s_CMP_OPS1 (%s, %s, %s, %s, %s)\n",
-				lhs_class, rhs_class, lhs_type, lhs_conv,
-				rhs_type, rhs_conv, rhs_core_type) >> cc_file
-		      else
-			printf ("%s%s_CMP_OPS (%s, %s, %s, %s)\n",
-				lhs_class, rhs_class, lhs_type, lhs_conv,
-				rhs_type, rhs_conv) >> cc_file
-		    }
-		}
-	      else
-		printf ("%s%s_CMP_OPS (%s, %s, %s, %s)\n",
-			lhs_class, rhs_class, lhs_type, lhs_conv,
-			rhs_type, rhs_conv) >> cc_file
-	    }
+	     printf ("%s%s_CMP_OPS (%s, %s)\n",
+		     lhs_class, rhs_class, lhs_type, rhs_type) >> cc_file
 
           if (bool_ops)
             printf ("%s%s_BOOL_OPS (%s, %s)\n", lhs_class, rhs_class,

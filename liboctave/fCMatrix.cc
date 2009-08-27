@@ -4058,13 +4058,13 @@ max (const FloatComplexMatrix& a, const FloatComplexMatrix& b)
   return result;
 }
 
-MS_CMP_OPS(FloatComplexMatrix, std::real, FloatComplex, std::real)
+MS_CMP_OPS (FloatComplexMatrix, FloatComplex)
 MS_BOOL_OPS (FloatComplexMatrix, FloatComplex)
 
-SM_CMP_OPS(FloatComplex, std::real, FloatComplexMatrix, std::real)
+SM_CMP_OPS (FloatComplex, FloatComplexMatrix)
 SM_BOOL_OPS (FloatComplex, FloatComplexMatrix)
 
-MM_CMP_OPS(FloatComplexMatrix, std::real, FloatComplexMatrix, std::real)
+MM_CMP_OPS (FloatComplexMatrix, FloatComplexMatrix)
 MM_BOOL_OPS (FloatComplexMatrix, FloatComplexMatrix)
 
 /*

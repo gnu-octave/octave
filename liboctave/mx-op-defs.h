@@ -117,34 +117,20 @@ along with Octave; see the file COPYING.  If not, see
   MS_BIN_OP (R, operator *, M, S, mx_inline_mul) \
   MS_BIN_OP (R, operator /, M, S, mx_inline_div)
 
-#define MS_CMP_OP(F, OP, M, MC, S, SC) \
+#define MS_CMP_OP(F, OP, M, S) \
   boolMatrix \
   F (const M& m, const S& s) \
   { \
-    boolMatrix r; \
- \
-    octave_idx_type nr = m.rows (); \
-    octave_idx_type nc = m.cols (); \
- \
-    r.resize (nr, nc); \
- \
-    if (nr > 0 && nc > 0) \
-      { \
-        for (octave_idx_type j = 0; j < nc; j++) \
-          for (octave_idx_type i = 0; i < nr; i++) \
-	    r.elem(i, j) = MC (m.elem(i, j)) OP SC (s); \
-      } \
- \
-    return r; \
+    return do_ms_binary_op<boolMatrix, M, S> (m, s, OP); \
   }
 
-#define MS_CMP_OPS(M, CM, S, CS) \
-  MS_CMP_OP (mx_el_lt, <,  M, CM, S, CS) \
-  MS_CMP_OP (mx_el_le, <=, M, CM, S, CS) \
-  MS_CMP_OP (mx_el_ge, >=, M, CM, S, CS) \
-  MS_CMP_OP (mx_el_gt, >,  M, CM, S, CS) \
-  MS_CMP_OP (mx_el_eq, ==, M,   , S,   ) \
-  MS_CMP_OP (mx_el_ne, !=, M,   , S,   )
+#define MS_CMP_OPS(M, S) \
+  MS_CMP_OP (mx_el_lt, mx_inline_lt, M, S) \
+  MS_CMP_OP (mx_el_le, mx_inline_le, M, S) \
+  MS_CMP_OP (mx_el_ge, mx_inline_ge, M, S) \
+  MS_CMP_OP (mx_el_gt, mx_inline_gt, M, S) \
+  MS_CMP_OP (mx_el_eq, mx_inline_eq, M, S) \
+  MS_CMP_OP (mx_el_ne, mx_inline_ne, M, S)
 
 #define MS_BOOL_OP(F, OP, M, S) \
   boolMatrix \
@@ -172,34 +158,20 @@ along with Octave; see the file COPYING.  If not, see
   SM_BIN_OP (R, operator *, S, M, mx_inline_mul) \
   SM_BIN_OP (R, operator /, S, M, mx_inline_div)
 
-#define SM_CMP_OP(F, OP, S, SC, M, MC) \
+#define SM_CMP_OP(F, OP, S, M) \
   boolMatrix \
   F (const S& s, const M& m) \
   { \
-    boolMatrix r; \
- \
-    octave_idx_type nr = m.rows (); \
-    octave_idx_type nc = m.cols (); \
- \
-    r.resize (nr, nc); \
- \
-    if (nr > 0 && nc > 0) \
-      { \
-        for (octave_idx_type j = 0; j < nc; j++) \
-          for (octave_idx_type i = 0; i < nr; i++) \
-	    r.elem(i, j) = SC (s) OP MC (m.elem(i, j)); \
-      } \
- \
-    return r; \
+    return do_sm_binary_op<boolMatrix, S, M> (s, m, OP); \
   }
 
-#define SM_CMP_OPS(S, CS, M, CM) \
-  SM_CMP_OP (mx_el_lt, <,  S, CS, M, CM) \
-  SM_CMP_OP (mx_el_le, <=, S, CS, M, CM) \
-  SM_CMP_OP (mx_el_ge, >=, S, CS, M, CM) \
-  SM_CMP_OP (mx_el_gt, >,  S, CS, M, CM) \
-  SM_CMP_OP (mx_el_eq, ==, S,   , M,   ) \
-  SM_CMP_OP (mx_el_ne, !=, S,   , M,   )
+#define SM_CMP_OPS(S, M) \
+  SM_CMP_OP (mx_el_lt, mx_inline_lt, S, M) \
+  SM_CMP_OP (mx_el_le, mx_inline_le, S, M) \
+  SM_CMP_OP (mx_el_ge, mx_inline_ge, S, M) \
+  SM_CMP_OP (mx_el_gt, mx_inline_gt, S, M) \
+  SM_CMP_OP (mx_el_eq, mx_inline_eq, S, M) \
+  SM_CMP_OP (mx_el_ne, mx_inline_ne, S, M)
 
 #define SM_BOOL_OP(F, OP, S, M) \
   boolMatrix \
@@ -227,39 +199,20 @@ along with Octave; see the file COPYING.  If not, see
   MM_BIN_OP (R, product,    M1, M2, mx_inline_mul) \
   MM_BIN_OP (R, quotient,   M1, M2, mx_inline_div)
 
-#define MM_CMP_OP(F, OP, M1, C1, M2, C2) \
+#define MM_CMP_OP(F, OP, M1, M2) \
   boolMatrix \
   F (const M1& m1, const M2& m2) \
   { \
-    boolMatrix r; \
- \
-    octave_idx_type m1_nr = m1.rows (); \
-    octave_idx_type m1_nc = m1.cols (); \
- \
-    octave_idx_type m2_nr = m2.rows (); \
-    octave_idx_type m2_nc = m2.cols (); \
- \
-    if (m1_nr == m2_nr && m1_nc == m2_nc) \
-      { \
-	r.resize (m1_nr, m1_nc); \
- \
-	for (octave_idx_type j = 0; j < m1_nc; j++) \
-	  for (octave_idx_type i = 0; i < m1_nr; i++) \
-	    r.elem(i, j) = C1 (m1.elem(i, j)) OP C2 (m2.elem(i, j)); \
-      } \
-    else \
-      gripe_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc); \
- \
-    return r; \
+    return do_mm_binary_op<boolMatrix, M1, M2> (m1, m2, OP, #F); \
   }
 
-#define MM_CMP_OPS(M1, C1, M2, C2) \
-  MM_CMP_OP (mx_el_lt, <,  M1, C1, M2, C2) \
-  MM_CMP_OP (mx_el_le, <=, M1, C1, M2, C2) \
-  MM_CMP_OP (mx_el_ge, >=, M1, C1, M2, C2) \
-  MM_CMP_OP (mx_el_gt, >,  M1, C1, M2, C2) \
-  MM_CMP_OP (mx_el_eq, ==, M1,   , M2,   ) \
-  MM_CMP_OP (mx_el_ne, !=, M1,   , M2,   )
+#define MM_CMP_OPS(M1, M2) \
+  MM_CMP_OP (mx_el_lt, mx_inline_lt, M1, M2) \
+  MM_CMP_OP (mx_el_le, mx_inline_le, M1, M2) \
+  MM_CMP_OP (mx_el_ge, mx_inline_ge, M1, M2) \
+  MM_CMP_OP (mx_el_gt, mx_inline_gt, M1, M2) \
+  MM_CMP_OP (mx_el_eq, mx_inline_eq, M1, M2) \
+  MM_CMP_OP (mx_el_ne, mx_inline_ne, M1, M2)
 
 #define MM_BOOL_OP(F, OP, M1, M2) \
   boolMatrix \
@@ -287,81 +240,20 @@ along with Octave; see the file COPYING.  If not, see
   NDS_BIN_OP (R, operator *, ND, S, mx_inline_mul) \
   NDS_BIN_OP (R, operator /, ND, S, mx_inline_div)
 
-#define NDS_CMP_OP(F, OP, ND, NDC, S, SC) \
+#define NDS_CMP_OP(F, OP, ND, S) \
   boolNDArray \
   F (const ND& m, const S& s) \
   { \
-    boolNDArray r (m.dims ()); \
- \
-    octave_idx_type len = m.length (); \
- \
-    if (s == S ()) \
-      { \
-        for (octave_idx_type i = 0; i < len; i++) \
-        r.xelem(i) = NDC (m.elem(i)) OP SC (S ()); \
-      } \
-    else \
-      { \
-        for (octave_idx_type i = 0; i < len; i++) \
-          r.xelem(i) = NDC (m.elem(i)) OP SC (s); \
-      } \
- \
-    return r; \
+    return do_ms_binary_op<boolNDArray, ND, S> (m, s, OP); \
   }
 
-#define NDS_CMP_OPS(ND, NDC, S, SC) \
-  NDS_CMP_OP (mx_el_lt, <,  ND, NDC, S, SC) \
-  NDS_CMP_OP (mx_el_le, <=, ND, NDC, S, SC) \
-  NDS_CMP_OP (mx_el_ge, >=, ND, NDC, S, SC) \
-  NDS_CMP_OP (mx_el_gt, >,  ND, NDC, S, SC) \
-  NDS_CMP_OP (mx_el_eq, ==, ND,    , S,   ) \
-  NDS_CMP_OP (mx_el_ne, !=, ND,    , S,   )
-
-#define NDS_CMP_OP1(F, OP, ND, NDC, S, SC, SPEC) \
-  boolNDArray \
-  F (const ND& m, const S& s) \
-  { \
-    boolNDArray r (m.dims ()); \
- \
-    octave_idx_type len = m.length (); \
- \
-    for (octave_idx_type i = 0; i < len; i++) \
-      r.elem(i) = operator OP <SPEC> (NDC (m.elem(i)), SC (s)); \
- \
-    return r; \
-  }
-
-#define NDS_CMP_OPS1(ND, NDC, S, SC, SPEC) \
-  NDS_CMP_OP1 (mx_el_lt, <,  ND, NDC, S, SC, SPEC) \
-  NDS_CMP_OP1 (mx_el_le, <=, ND, NDC, S, SC, SPEC) \
-  NDS_CMP_OP1 (mx_el_ge, >=, ND, NDC, S, SC, SPEC) \
-  NDS_CMP_OP1 (mx_el_gt, >,  ND, NDC, S, SC, SPEC) \
-  NDS_CMP_OP1 (mx_el_eq, ==, ND,    , S,   , SPEC) \
-  NDS_CMP_OP1 (mx_el_ne, !=, ND,    , S,   , SPEC)
-
-#define NDS_CMP_OP2(F, OP, ND, NDC, S, SC, SPEC1, SPEC2) \
-  boolNDArray \
-  F (const ND& m, const S& s) \
-  { \
-    boolNDArray r; \
- \
-    octave_idx_type len = m.length (); \
- \
-    r.resize (m.dims ()); \
- \
-    for (octave_idx_type i = 0; i < len; i++) \
-      r.elem(i) = operator OP <SPEC1,SPEC2> (NDC (m.elem(i)), SC (s)); \
- \
-    return r; \
-  }
-
-#define NDS_CMP_OPS2(ND, NDC, S, SC, SPEC1, SPEC2) \
-  NDS_CMP_OP2 (mx_el_lt, <,  ND, NDC, S, SC, SPEC1, SPEC2) \
-  NDS_CMP_OP2 (mx_el_le, <=, ND, NDC, S, SC, SPEC1, SPEC2) \
-  NDS_CMP_OP2 (mx_el_ge, >=, ND, NDC, S, SC, SPEC1, SPEC2) \
-  NDS_CMP_OP2 (mx_el_gt, >,  ND, NDC, S, SC, SPEC1, SPEC2) \
-  NDS_CMP_OP2 (mx_el_eq, ==, ND,    , S,   , SPEC1, SPEC2) \
-  NDS_CMP_OP2 (mx_el_ne, !=, ND,    , S,   , SPEC1, SPEC2)
+#define NDS_CMP_OPS(ND, S) \
+  NDS_CMP_OP (mx_el_lt, mx_inline_lt, ND, S) \
+  NDS_CMP_OP (mx_el_le, mx_inline_le, ND, S) \
+  NDS_CMP_OP (mx_el_ge, mx_inline_ge, ND, S) \
+  NDS_CMP_OP (mx_el_gt, mx_inline_gt, ND, S) \
+  NDS_CMP_OP (mx_el_eq, mx_inline_eq, ND, S) \
+  NDS_CMP_OP (mx_el_ne, mx_inline_ne, ND, S)
 
 #define NDS_BOOL_OP(F, OP, ND, S) \
   boolNDArray \
@@ -393,79 +285,20 @@ along with Octave; see the file COPYING.  If not, see
   SND_BIN_OP (R, operator *, S, ND, mx_inline_mul) \
   SND_BIN_OP (R, operator /, S, ND, mx_inline_div)
 
-#define SND_CMP_OP(F, OP, S, SC, ND, NDC) \
+#define SND_CMP_OP(F, OP, S, ND) \
   boolNDArray \
   F (const S& s, const ND& m) \
   { \
-    boolNDArray r (m.dims ()); \
- \
-    octave_idx_type len = m.length (); \
- \
-    if (s == S ()) \
-      { \
-        for (octave_idx_type i = 0; i < len; i++) \
-        r.xelem(i) = SC (S ()) OP NDC (m.elem(i)); \
-      } \
-    else \
-      { \
-        for (octave_idx_type i = 0; i < len; i++) \
-          r.xelem(i) = SC (s) OP NDC (m.elem(i)); \
-      } \
- \
-    return r; \
+    return do_sm_binary_op<boolNDArray, S, ND> (s, m, OP); \
   }
 
-#define SND_CMP_OPS(S, CS, ND, CND) \
-  SND_CMP_OP (mx_el_lt, <,  S, CS, ND, CND) \
-  SND_CMP_OP (mx_el_le, <=, S, CS, ND, CND) \
-  SND_CMP_OP (mx_el_ge, >=, S, CS, ND, CND) \
-  SND_CMP_OP (mx_el_gt, >,  S, CS, ND, CND) \
-  SND_CMP_OP (mx_el_eq, ==, S,   , ND,    ) \
-  SND_CMP_OP (mx_el_ne, !=, S,   , ND,    )
-
-#define SND_CMP_OP1(F, OP, S, SC, ND, NDC, SPEC) \
-  boolNDArray \
-  F (const S& s, const ND& m) \
-  { \
-    boolNDArray r (m.dims ()); \
- \
-    octave_idx_type len = m.length (); \
- \
-    for (octave_idx_type i = 0; i < len; i++) \
-      r.elem(i) = operator OP <SPEC> (SC (s), NDC (m.elem(i))); \
- \
-    return r; \
-  }
-
-#define SND_CMP_OPS1(S, CS, ND, CND, SPEC) \
-  SND_CMP_OP1 (mx_el_lt, <,  S, CS, ND, CND, SPEC) \
-  SND_CMP_OP1 (mx_el_le, <=, S, CS, ND, CND, SPEC) \
-  SND_CMP_OP1 (mx_el_ge, >=, S, CS, ND, CND, SPEC) \
-  SND_CMP_OP1 (mx_el_gt, >,  S, CS, ND, CND, SPEC) \
-  SND_CMP_OP1 (mx_el_eq, ==, S,   , ND,    , SPEC) \
-  SND_CMP_OP1 (mx_el_ne, !=, S,   , ND,    , SPEC)
-
-#define SND_CMP_OP2(F, OP, S, SC, ND, NDC, SPEC1, SPEC2) \
-  boolNDArray \
-  F (const S& s, const ND& m) \
-  { \
-    boolNDArray r (m.dims ()); \
- \
-    octave_idx_type len = m.length (); \
- \
-    for (octave_idx_type i = 0; i < len; i++) \
-      r.elem(i) = operator OP <SPEC1, SPEC2> (SC (s), NDC (m.elem(i))); \
- \
-    return r; \
-  }
-
-#define SND_CMP_OPS2(S, CS, ND, CND, SPEC1, SPEC2) \
-  SND_CMP_OP2 (mx_el_lt, <,  S, CS, ND, CND, SPEC1, SPEC2) \
-  SND_CMP_OP2 (mx_el_le, <=, S, CS, ND, CND, SPEC1, SPEC2) \
-  SND_CMP_OP2 (mx_el_ge, >=, S, CS, ND, CND, SPEC1, SPEC2) \
-  SND_CMP_OP2 (mx_el_gt, >,  S, CS, ND, CND, SPEC1, SPEC2) \
-  SND_CMP_OP2 (mx_el_eq, ==, S,   , ND,    , SPEC1, SPEC2) \
-  SND_CMP_OP2 (mx_el_ne, !=, S,   , ND,    , SPEC1, SPEC2)
+#define SND_CMP_OPS(S, ND) \
+  SND_CMP_OP (mx_el_lt, mx_inline_lt, S, ND) \
+  SND_CMP_OP (mx_el_le, mx_inline_le, S, ND) \
+  SND_CMP_OP (mx_el_ge, mx_inline_ge, S, ND) \
+  SND_CMP_OP (mx_el_gt, mx_inline_gt, S, ND) \
+  SND_CMP_OP (mx_el_eq, mx_inline_eq, S, ND) \
+  SND_CMP_OP (mx_el_ne, mx_inline_ne, S, ND)
 
 #define SND_BOOL_OP(F, OP, S, ND) \
   boolNDArray \
@@ -497,35 +330,20 @@ along with Octave; see the file COPYING.  If not, see
   NDND_BIN_OP (R, product,    ND1, ND2, mx_inline_mul) \
   NDND_BIN_OP (R, quotient,   ND1, ND2, mx_inline_div)
 
-#define NDND_CMP_OP(F, OP, ND1, C1, ND2, C2) \
+#define NDND_CMP_OP(F, OP, ND1, ND2) \
   boolNDArray \
   F (const ND1& m1, const ND2& m2) \
   { \
-    boolNDArray r; \
- \
-    dim_vector m1_dims = m1.dims (); \
-    dim_vector m2_dims = m2.dims (); \
- \
-    if (m1_dims == m2_dims) \
-      { \
-	r = boolNDArray (m1_dims); \
- \
-	for (octave_idx_type i = 0; i < m1.length (); i++) \
-	  r.xelem(i) = C1 (m1.elem(i)) OP C2 (m2.elem(i)); \
-      } \
-    else \
-      gripe_nonconformant (#F, m1_dims, m2_dims); \
- \
-    return r; \
+    return do_mm_binary_op<boolNDArray, ND1, ND2> (m1, m2, OP, #F); \
   }
 
-#define NDND_CMP_OPS(ND1, C1, ND2, C2) \
-  NDND_CMP_OP (mx_el_lt, <,  ND1, C1, ND2, C2) \
-  NDND_CMP_OP (mx_el_le, <=, ND1, C1, ND2, C2) \
-  NDND_CMP_OP (mx_el_ge, >=, ND1, C1, ND2, C2) \
-  NDND_CMP_OP (mx_el_gt, >,  ND1, C1, ND2, C2) \
-  NDND_CMP_OP (mx_el_eq, ==, ND1,   , ND2,   ) \
-  NDND_CMP_OP (mx_el_ne, !=, ND1,   , ND2,   )
+#define NDND_CMP_OPS(ND1, ND2) \
+  NDND_CMP_OP (mx_el_lt, mx_inline_lt, ND1, ND2) \
+  NDND_CMP_OP (mx_el_le, mx_inline_le, ND1, ND2) \
+  NDND_CMP_OP (mx_el_ge, mx_inline_ge, ND1, ND2) \
+  NDND_CMP_OP (mx_el_gt, mx_inline_gt, ND1, ND2) \
+  NDND_CMP_OP (mx_el_eq, mx_inline_eq, ND1, ND2) \
+  NDND_CMP_OP (mx_el_ne, mx_inline_ne, ND1, ND2)
 
 #define NDND_BOOL_OP(F, OP, ND1, ND2) \
   boolNDArray \

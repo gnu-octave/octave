@@ -3393,13 +3393,13 @@ max (const FloatMatrix& a, const FloatMatrix& b)
   return result;
 }
 
-MS_CMP_OPS(FloatMatrix, , float, )
+MS_CMP_OPS (FloatMatrix, float)
 MS_BOOL_OPS (FloatMatrix, float)
 
-SM_CMP_OPS(float, , FloatMatrix, )
+SM_CMP_OPS (float, FloatMatrix)
 SM_BOOL_OPS (float, FloatMatrix)
 
-MM_CMP_OPS(FloatMatrix, , FloatMatrix, )
+MM_CMP_OPS (FloatMatrix, FloatMatrix)
 MM_BOOL_OPS (FloatMatrix, FloatMatrix)
 
 /*

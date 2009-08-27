@@ -1065,13 +1065,13 @@ max (const FloatComplexNDArray& a, const FloatComplexNDArray& b)
   return result;
 }
 
-NDS_CMP_OPS(FloatComplexNDArray, std::real, FloatComplex, std::real)
+NDS_CMP_OPS (FloatComplexNDArray, FloatComplex)
 NDS_BOOL_OPS (FloatComplexNDArray, FloatComplex)
 
-SND_CMP_OPS(FloatComplex, std::real, FloatComplexNDArray, std::real)
+SND_CMP_OPS (FloatComplex, FloatComplexNDArray)
 SND_BOOL_OPS (FloatComplex, FloatComplexNDArray)
 
-NDND_CMP_OPS(FloatComplexNDArray, std::real, FloatComplexNDArray, std::real)
+NDND_CMP_OPS (FloatComplexNDArray, FloatComplexNDArray)
 NDND_BOOL_OPS (FloatComplexNDArray, FloatComplexNDArray)
 
 FloatComplexNDArray& operator *= (FloatComplexNDArray& a, float s)

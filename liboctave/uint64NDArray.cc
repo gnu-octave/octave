@@ -39,13 +39,13 @@ template OCTAVE_API
 std::istream&
 operator >> (std::istream& is, intNDArray<octave_uint64>& a);
 
-NDS_CMP_OPS (uint64NDArray, , octave_uint64, )
+NDS_CMP_OPS (uint64NDArray, octave_uint64)
 NDS_BOOL_OPS (uint64NDArray, octave_uint64)
 
-SND_CMP_OPS (octave_uint64, , uint64NDArray, )
+SND_CMP_OPS (octave_uint64, uint64NDArray)
 SND_BOOL_OPS (octave_uint64, uint64NDArray)
 
-NDND_CMP_OPS (uint64NDArray, , uint64NDArray, )
+NDND_CMP_OPS (uint64NDArray, uint64NDArray)
 NDND_BOOL_OPS (uint64NDArray, uint64NDArray)
 
 MINMAX_FCNS (uint64)

@@ -4065,13 +4065,13 @@ max (const ComplexMatrix& a, const ComplexMatrix& b)
   return result;
 }
 
-MS_CMP_OPS(ComplexMatrix, std::real, Complex, std::real)
+MS_CMP_OPS (ComplexMatrix, Complex)
 MS_BOOL_OPS (ComplexMatrix, Complex)
 
-SM_CMP_OPS(Complex, std::real, ComplexMatrix, std::real)
+SM_CMP_OPS (Complex, ComplexMatrix)
 SM_BOOL_OPS (Complex, ComplexMatrix)
 
-MM_CMP_OPS(ComplexMatrix, std::real, ComplexMatrix, std::real)
+MM_CMP_OPS (ComplexMatrix, ComplexMatrix)
 MM_BOOL_OPS (ComplexMatrix, ComplexMatrix)
 
 /*

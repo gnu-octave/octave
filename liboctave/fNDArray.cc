@@ -1074,13 +1074,13 @@ max (const FloatNDArray& a, const FloatNDArray& b)
   return result;
 }
 
-NDS_CMP_OPS(FloatNDArray, , float, )
+NDS_CMP_OPS (FloatNDArray, float)
 NDS_BOOL_OPS (FloatNDArray, float)
 
-SND_CMP_OPS(float, , FloatNDArray, )
+SND_CMP_OPS (float, FloatNDArray)
 SND_BOOL_OPS (float, FloatNDArray)
 
-NDND_CMP_OPS(FloatNDArray, , FloatNDArray, )
+NDND_CMP_OPS (FloatNDArray, FloatNDArray)
 NDND_BOOL_OPS (FloatNDArray, FloatNDArray)
 
 /*

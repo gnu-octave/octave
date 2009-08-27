@@ -206,13 +206,13 @@ charNDArray::smap (mapper fcn) const
   return result;
 }
 
-NDS_CMP_OPS(charNDArray, , char, )
+NDS_CMP_OPS (charNDArray, char)
 NDS_BOOL_OPS (charNDArray, char)
 
-SND_CMP_OPS(char, , charNDArray, )
+SND_CMP_OPS (char, charNDArray)
 SND_BOOL_OPS (char, charNDArray)
 
-NDND_CMP_OPS(charNDArray, , charNDArray, )
+NDND_CMP_OPS (charNDArray, charNDArray)
 NDND_BOOL_OPS (charNDArray, charNDArray)
 
 /*

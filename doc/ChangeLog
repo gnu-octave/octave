@@ -1,3 +1,7 @@
+2009-08-27  Jaroslav Hajek  <highegg@gmail.com>
+
+	* interpreter/expr.txi: Mention complex comparisons change.
+
 2009-08-05  Jaroslav Hajek  <highegg@gmail.com>
 
 	* interpreter/tips.txi: Update.

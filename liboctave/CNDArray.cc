@@ -1070,13 +1070,13 @@ max (const ComplexNDArray& a, const ComplexNDArray& b)
   return result;
 }
 
-NDS_CMP_OPS(ComplexNDArray, std::real, Complex, std::real)
+NDS_CMP_OPS (ComplexNDArray, Complex)
 NDS_BOOL_OPS (ComplexNDArray, Complex)
 
-SND_CMP_OPS(Complex, std::real, ComplexNDArray, std::real)
+SND_CMP_OPS (Complex, ComplexNDArray)
 SND_BOOL_OPS (Complex, ComplexNDArray)
 
-NDND_CMP_OPS(ComplexNDArray, std::real, ComplexNDArray, std::real)
+NDND_CMP_OPS (ComplexNDArray, ComplexNDArray)
 NDND_BOOL_OPS (ComplexNDArray, ComplexNDArray)
 
 ComplexNDArray& operator *= (ComplexNDArray& a, double s)

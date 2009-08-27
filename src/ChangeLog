@@ -1,3 +1,8 @@
+2009-08-27  Jaroslav Hajek  <highegg@gmail.com>
+
+	* OPERATORS/op-cs-cs.cc: Simplify comparison operators.
+	* OPERATORS/op-fcs-fcs.cc: Ditto.
+
 2009-08-25  David Grundberg  <individ@acc.umu.se>
 
 	* DLD-FUNCTIONS/__magick_read__.cc [HAVE_MAGICK]: Include

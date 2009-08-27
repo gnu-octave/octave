@@ -96,47 +96,12 @@ DEFBINOP (ldiv, complex, complex)
   return octave_value (v2.complex_value () / d);
 }
 
-DEFBINOP (lt, complex, complex)
-{
-  CAST_BINOP_ARGS (const octave_complex&, const octave_complex&);
-
-  return real (v1.complex_value ()) < real (v2.complex_value ());
-}
-
-DEFBINOP (le, complex, complex)
-{
-  CAST_BINOP_ARGS (const octave_complex&, const octave_complex&);
-
-  return real (v1.complex_value ()) <= real (v2.complex_value ());
-}
-
-DEFBINOP (eq, complex, complex)
-{
-  CAST_BINOP_ARGS (const octave_complex&, const octave_complex&);
-
-  return v1.complex_value () == v2.complex_value ();
-}
-
-DEFBINOP (ge, complex, complex)
-{
-  CAST_BINOP_ARGS (const octave_complex&, const octave_complex&);
-
-  return real (v1.complex_value ()) >= real (v2.complex_value ());
-}
-
-DEFBINOP (gt, complex, complex)
-{
-  CAST_BINOP_ARGS (const octave_complex&, const octave_complex&);
-
-  return real (v1.complex_value ()) > real (v2.complex_value ());
-}
-
-DEFBINOP (ne, complex, complex)
-{
-  CAST_BINOP_ARGS (const octave_complex&, const octave_complex&);
-
-  return v1.complex_value () != v2.complex_value ();
-}
+DEFBINOP_OP (lt, complex, complex, <)
+DEFBINOP_OP (le, complex, complex, <=)
+DEFBINOP_OP (eq, complex, complex, ==)
+DEFBINOP_OP (ge, complex, complex, >=)
+DEFBINOP_OP (gt, complex, complex, >)
+DEFBINOP_OP (ne, complex, complex, !=)
 
 DEFBINOP_OP (el_mul, complex, complex, *)
 

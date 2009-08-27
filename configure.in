@@ -585,11 +585,9 @@ PKG_CHECK_EXISTS([GraphicsMagick++], [
   warn_magick="GraphicsMagick++ library fails tests.  The imread function for reading image files will not be fully functional."
 
   save_CPPFLAGS="$CPPFLAGS"
-  save_LDFLAGS="$LDFLAGS"
   save_LIBS="$LIBS"
-  CPPFLAGS="$CPPFLAGS $MAGICK_CPPFLAGS"
-  LDFLAGS="$LIBS $MAGICK_LDFLAGS"
-  LIBS="$LIBS $MAGICK_LIBS"
+  CPPFLAGS="$MAGICK_CPPFLAGS $CPPFLAGS"
+  LIBS="$MAGICK_LDFLAGS $MAGICK_LIBS $LIBS"
   AC_LANG_PUSH(C++)
     AC_CHECK_HEADER([Magick++.h], [
       AC_MSG_CHECKING([for Magick::ColorRGB in Magick++.h])
@@ -602,7 +600,6 @@ PKG_CHECK_EXISTS([GraphicsMagick++], [
     ])
   AC_LANG_POP(C++)
   CPPFLAGS="$save_CPPFLAGS"
-  LDFLAGS="$save_LDFLAGS"
   LIBS="$save_LIBS"
 ])
 

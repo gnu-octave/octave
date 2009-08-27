@@ -1,3 +1,8 @@
+2009-08-27  John W. Eaton  <jwe@octave.org>
+
+	* configure.in: Properly save and restore CPPFLAGS and LIBS when
+	checking for GraphicsMagick++.  Don't temporarily change LDFLAGS.
+
 2009-08-27  Jaroslav Hajek  <highegg@gmail.com>
 
 	* aclocal.m4 (m4_ifblank, m4_ifnblank): State FSF copyright and markup

@@ -123,11 +123,7 @@ get_current_method_class (void)
 
   octave_function *fcn = octave_call_stack::current ();
 
-  std::string my_dir = fcn->dir_name ();
-
-  std::string method_class = file_ops::tail (my_dir);
-
-  retval = method_class.substr (1);
+  retval = fcn->dispatch_class ();
 
   return retval;
 }

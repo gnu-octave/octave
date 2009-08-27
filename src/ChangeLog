@@ -1,5 +1,9 @@
 2009-08-27  Jaroslav Hajek  <highegg@gmail.com>
 
+	* src/ov-class.cc (get_current_method_class): Simplify.
+
+2009-08-27  Jaroslav Hajek  <highegg@gmail.com>
+
 	* OPERATORS/op-cs-cs.cc: Simplify comparison operators.
 	* OPERATORS/op-fcs-fcs.cc: Ditto.
 

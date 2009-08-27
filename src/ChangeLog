@@ -1,3 +1,13 @@
+2009-08-27  John W. Eaton  <jwe@octave.org>
+
+	* graphics.cc (validate_property_name): New static function.
+	(base_properties::dynamic_property_names): New function.
+	* graphicffs.h.in (base_properties::dynamic_property_names):
+	Provide decl.
+	* genprops.awk: Generate all_property_names functions.  Use
+	all_property_names as needed to avoid duplication elsewhere.
+	Call validate_property_name in set/get functions.
+
 2009-08-27  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-class.cc (get_current_method_class): Simplify.

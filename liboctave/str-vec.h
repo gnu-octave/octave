@@ -26,6 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <iosfwd>
 #include <list>
+#include <set>
 #include <string>
 
 #include "Array.h"
@@ -47,6 +48,8 @@ public:
   string_vector (const string_vector& s) : Array<std::string> (s) { }
 
   string_vector (const std::list<std::string>& lst);
+
+  string_vector (const std::set<std::string>& lst);
 
   string_vector (const char * const *s);
 

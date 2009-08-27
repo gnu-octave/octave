@@ -61,6 +61,49 @@ gripe_set_invalid (const std::string& pname)
   error ("set: invalid value for %s property", pname.c_str ());
 }
 
+static void
+validate_property_name (const std::string& who,
+			const std::set<std::string>& pnames,
+			const caseless_str& pname)
+{
+  size_t len = pname.length ();
+  std::set<std::string> matches;
+
+  for (std::set<std::string>::const_iterator p = pnames.begin ();
+       p != pnames.end (); p++)
+    {
+      if (pname.compare (*p, len))
+	matches.insert (*p);
+    }
+
+  size_t num_matches = matches.size ();
+
+  if (num_matches == 0)
+    {
+      error ("%s: unknown property %s", who.c_str (), pname.c_str ());
+    }
+  else if (num_matches > 1)
+    {
+      string_vector sv (matches);
+
+      std::ostringstream os;
+
+      sv.list_in_columns (os);
+
+      std::string match_list = os.str ();
+
+      error ("%s: ambiguous property name %s; possible matches:\n\n%s",
+	     who.c_str (), pname.c_str (), match_list.c_str ());
+    }
+  else if (num_matches == 1 && ! pname.compare (*(matches.begin ())))
+    {
+      std::string possible_match = *(matches.begin ());
+
+      error ("%s: instead of %s, did you mean %s?",
+	     who.c_str (), pname.c_str (), possible_match.c_str ());
+    }
+}
+
 static Matrix
 jet_colormap (void)
 {
@@ -1742,17 +1785,17 @@ base_properties::get_dynamic (bool all) const
 
 std::map<std::string, std::set<std::string> > base_properties::all_dynamic_properties;
 
+std::set<std::string>
+base_properties::dynamic_property_names (const std::string& cname)
+{
+  return all_dynamic_properties[cname];
+}
+
 bool
 base_properties::has_dynamic_property (const std::string& pname,
 				       const std::string& cname)
 {
-  // FIXME -- we need to maintain a static map of class names to sets
-  // of dynamic property names, then look up the set for the given
-  // cname, then see if the set contains the given pname.  Doing that
-  // implies changes to set_dynamic, I think.  Where is set_dynamic
-  // ever used?
-
-  std::set<std::string>& dynprops = all_dynamic_properties[cname];
+  const std::set<std::string>& dynprops = dynamic_property_names (cname);
 
   return dynprops.find (pname) != dynprops.end ();
 }
@@ -5537,10 +5580,7 @@ get_property_from_handle (double handle, const std::string& property,
   octave_value retval;
 
   if (obj)
-    {
-      caseless_str p = std::string (property);
-      retval = obj.get (p);
-    }
+    retval = obj.get (caseless_str (property));
   else
     error ("%s: invalid handle (= %g)", func.c_str(), handle);
 
@@ -5558,9 +5598,9 @@ set_property_in_handle (double handle, const std::string& property,
 
   if (obj)
     {
-      caseless_str p = std::string (property);
-      obj.set (p, arg);
-      if (!error_state)
+      obj.set (caseless_str (property), arg);
+
+      if (! error_state)
 	ret = true;
     }
   else

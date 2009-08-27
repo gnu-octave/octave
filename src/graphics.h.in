@@ -1732,6 +1732,8 @@ public:
 
   static std::map<std::string, std::set<std::string> > all_dynamic_properties;
  
+  static std::set<std::string> dynamic_property_names (const std::string& cname);
+
   static bool has_dynamic_property (const std::string& pname,
 				    const std::string& cname);
 

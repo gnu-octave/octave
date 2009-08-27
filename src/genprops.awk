@@ -259,9 +259,9 @@ function emit_declarations ()
 
   printf ("public:\n\n");
   if (base)
-    printf ("\n  static bool has_property (const std::string& pname, const std::string& cname);\n\n");
+    printf ("\n  static std::set<std::string> all_property_names (const std::string& cname);\n\n  static bool has_property (const std::string& pname, const std::string& cname);\n\n");
   else
-    printf ("\n  static bool has_property (const std::string& pname);\n\n");
+    printf ("\n  static std::set<std::string> all_property_names (void);\n\n  static bool has_property (const std::string& pname);\n\n");
 
   if (idx > 0)
     print (base ? "protected:\n" : "private:\n");
@@ -433,6 +433,9 @@ function emit_source ()
       printf ("void\n%s::properties::set (const caseless_str& pname, const octave_value& val)\n{\n",
               class_name) >> filename;
 
+    if (! base)
+      printf ("  const std::set<std::string>& pnames = all_property_names ();\n\n  validate_property_name (\"get\", pnames, pname);\n\n  if (error_state)\n    return;\n\n") >> filename;
+
     first = 1;
 
     for (i = 1; i <= idx; i++)
@@ -474,7 +477,7 @@ function emit_source ()
     }
 
     printf ("\n  return m;\n}\n\n") >> filename;
-    
+
     ## get "one" method
 
     if (base)
@@ -483,6 +486,9 @@ function emit_source ()
       printf ("octave_value\n%s::properties::get (const caseless_str& pname) const\n{\n",
               class_name) >> filename;
     printf ("  octave_value retval;\n\n") >> filename;
+
+    if (! base)
+      printf ("  const std::set<std::string>& pnames = all_property_names ();\n\n  validate_property_name (\"get\", pnames, pname);\n\n  if (error_state)\n    return retval;\n\n") >> filename;
 
     for (i = 1; i<= idx; i++)
     {
@@ -505,6 +511,9 @@ function emit_source ()
     else
       printf ("property\n%s::properties::get_property (const caseless_str& pname)\n{\n",
               class_name) >> filename;
+
+    if (! base)
+      printf ("  const std::set<std::string>& pnames = all_property_names ();\n\n  validate_property_name (\"get\", pnames, pname);\n\n  if (error_state)\n    return property ();\n\n") >> filename;
 
     for (i = 1; i<= idx; i++)
     {
@@ -567,17 +576,24 @@ function emit_source ()
               class_name, object_name) >> filename;
 
     if (base)
-      printf ("bool base_properties::has_property (const std::string& pname, const std::string& cname") >> filename;
+      printf ("std::set<std::string>\nbase_properties::all_property_names (const std::string& cname") >> filename;
     else
-    printf ("bool %s::properties::has_property (const std::string& pname", class_name) >> filename;
-    printf (")\n{\n  static std::set<std::string> all_properties;\n\n  static bool initialized = false;\n\n  if (! initialized)\n    {\n") >> filename;
+      printf ("std::set<std::string>\n%s::properties::all_property_names (void", class_name) >> filename;
+    printf (")\n{\n  static std::set<std::string> all_pnames;\n\n  static bool initialized = false;\n\n  if (! initialized)\n    {\n") >> filename;
     for (i = 1; i <= idx; i++)
-      printf ("      all_properties.insert (\"%s\");\n", name[i]) >> filename;
+      printf ("      all_pnames.insert (\"%s\");\n", name[i]) >> filename;
     printf ("\n      initialized = true;\n    }\n\n") >> filename;
     if (base)
-	printf ("  return all_properties.find (pname) != all_properties.end () || has_dynamic_property (pname, cname);\n}\n\n") >> filename;
+      printf ("  std::set<std::string> retval = all_pnames;\n  std::set<std::string> dyn_props = dynamic_property_names (cname);\n  retval.insert (dyn_props.begin(), dyn_props.end ());\n  return retval;\n}\n\n") >> filename;
     else
-      printf ("  return all_properties.find (pname) != all_properties.end () || base_properties::has_property (pname, \"%s\");\n}\n\n", class_name) >> filename;
+      printf ("  std::set<std::string> retval = all_pnames;\n  std::set<std::string> base_props = base_properties::all_property_names (\"%s\");\n  retval.insert (base_props.begin (), base_props.end ());\n  return retval;\n}\n\n", class_name) >> filename;
+
+    if (base)
+      printf ("bool\nbase_properties::has_property (const std::string& pname, const std::string& cname)\n{\n  std::set<std::string> pnames = all_property_names (cname);\n\n") >> filename;
+    else
+      printf ("bool\n%s::properties::has_property (const std::string& pname)\n{\n  std::set<std::string> pnames = all_property_names ();\n\n", class_name) >> filename;
+
+    printf ("  return pnames.find (pname) != pnames.end ();\n}\n\n") >> filename;
   }
 }
 

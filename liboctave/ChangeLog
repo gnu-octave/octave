@@ -1,3 +1,8 @@
+2009-08-27  John W. Eaton  <jwe@octave.org>
+
+	* str-vec.cc, str-vec.h (string_vector::string_vector (const
+	std::set<std::string>&)): New constructor.
+
 2009-08-27  Jaroslav Hajek  <highegg@gmail.com>
 
 	* mx-inlines.cc (DEFCMPLXCMOP): Remove.

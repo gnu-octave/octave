@@ -1787,6 +1787,12 @@ public:
   static void stash_dir_name_for_subfunctions (scope_id scope,
 					       const std::string& dir_name);
 
+  static void add_to_parent_map (const std::string& classname,
+				 const std::list<std::string>& parent_list)
+  {
+    parent_map[classname] = parent_list;
+  }
+
 private:
 
   typedef std::map<std::string, symbol_record>::const_iterator table_const_iterator;
@@ -1833,6 +1839,12 @@ private:
 
   typedef std::map<std::string, std::set<std::string> >::const_iterator class_precedence_table_const_iterator;
   typedef std::map<std::string, std::set<std::string> >::iterator class_precedence_table_iterator;
+
+  // Map from class names to parent class names.
+  static std::map<std::string, std::list<std::string> > parent_map;
+
+  typedef std::map<std::string, std::list<std::string> >::const_iterator const_parent_map_iterator;
+  typedef std::map<std::string, std::list<std::string> >::iterator parent_map_iterator;
 
   static const scope_id xglobal_scope;
   static const scope_id xtop_scope;

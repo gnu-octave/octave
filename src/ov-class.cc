@@ -94,7 +94,7 @@ octave_class::octave_class (const Octave_map& m, const std::string& id,
     }
 
   if (! error_state)
-    load_path::add_to_parent_map (id, parent_list);
+    symbol_table::add_to_parent_map (id, parent_list);
 }
 
 octave_base_value *
@@ -123,7 +123,8 @@ get_current_method_class (void)
 
   octave_function *fcn = octave_call_stack::current ();
 
-  retval = fcn->dispatch_class ();
+  if (fcn->is_class_method () || fcn->is_class_constructor ())
+    retval = fcn->dispatch_class ();
 
   return retval;
 }
@@ -1574,7 +1575,7 @@ octave_class::as_mxArray (void) const
 }
 
 bool
-octave_class::in_class_method (void) const
+octave_class::in_class_method (void)
 {
   octave_function *fcn = octave_call_stack::current ();
 
@@ -1582,7 +1583,7 @@ octave_class::in_class_method (void) const
 	  && (fcn->is_class_method ()
 	      || fcn->is_class_constructor ()
 	      || fcn->is_private_function_of_class (class_name ()))
-	  && fcn->dispatch_class () == class_name ());
+	  && find_parent_class (fcn->dispatch_class ()));
 }
 
 octave_class::exemplar_info::exemplar_info (const octave_value& obj)

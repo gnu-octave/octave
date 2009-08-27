@@ -38,7 +38,7 @@ load_path
 protected:
 
   load_path (void)
-    : dir_info_list (), fcn_map (), method_map (), parent_map () { }
+    : dir_info_list (), fcn_map (), method_map () { }
 
 public:
 
@@ -236,13 +236,6 @@ public:
     return instance_ok () ? instance->do_system_path () : std::string ();
   }
 
-  static void add_to_parent_map (const std::string& classname,
-				 const std::list<std::string>& parent_list)
-  {
-    if (instance_ok ())
-      instance->do_add_to_parent_map (classname, parent_list);
-  }
-
 private:
 
   static const int M_FILE = 1;
@@ -402,12 +395,6 @@ private:
   typedef method_map_type::const_iterator const_method_map_iterator;
   typedef method_map_type::iterator method_map_iterator;
  
-  // <CLASS_NAME, PARENT_LIST>>
-  typedef std::map<std::string, std::list<std::string> > parent_map_type;
-
-  typedef parent_map_type::const_iterator const_parent_map_iterator;
-  typedef parent_map_type::iterator parent_map_iterator;
-
   mutable dir_info_list_type dir_info_list;
 
   mutable fcn_map_type fcn_map;
@@ -415,8 +402,6 @@ private:
   mutable private_fcn_map_type private_fcn_map;
 
   mutable method_map_type method_map;
-
-  mutable parent_map_type parent_map;
 
   static load_path *instance;
 
@@ -517,9 +502,6 @@ private:
   std::string do_system_path (void) const { return sys_path; }
 
   std::string do_get_command_line_path (void) const { return command_line_path; }
-
-  void do_add_to_parent_map (const std::string& classname,
-			     const std::list<std::string>& parent_list) const;
 
   void add_to_fcn_map (const dir_info& di, bool at_end) const;
 

@@ -196,7 +196,7 @@ private:
   std::string c_name;
   std::list<std::string> parent_list;
 
-  bool in_class_method (void) const;
+  bool in_class_method (void);
 
   int obsolete_copies;
 

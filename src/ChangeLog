@@ -1,6 +1,19 @@
 2009-08-27  Jaroslav Hajek  <highegg@gmail.com>
 
-	* src/ov-class.cc (get_current_method_class): Simplify.
+	* ov-class.cc (get_current_method_class): Simplify.
+	(octave_class::in_class_method): Don't rely on multiple copies of
+	methods. Don't declare as const.
+	(octave_class::octave_class (const Octave_map&, const std::string&, 
+	const octave_value_list&)):
+	Call symbol_table::add_to_parent_map instead.
+	* ov-class.h (octave_class::in_class_method): Don't declare as const.
+	* symtab.h (symbol_table::parent_map): New field.
+	(symbol_table::add_to_parent_map): New method.
+	(symbol_table::load_class_method): Search also parent classes.
+	* load-path.h (load_path::parent_map, load_path::add_to_parent_map,
+	load_path::do_add_to_parent_map): Remove.
+	* load-path.cc (load_path::do_find_method): Don't search parent
+	classes.
 
 2009-08-27  Jaroslav Hajek  <highegg@gmail.com>
 

@@ -57,6 +57,8 @@ std::map<std::string, symbol_table::fcn_info> symbol_table::fcn_table;
 
 std::map<std::string, std::set<std::string> > symbol_table::class_precedence_table;
 
+std::map<std::string, std::list<std::string> > symbol_table::parent_map;
+
 const symbol_table::scope_id symbol_table::xglobal_scope = 0;
 const symbol_table::scope_id symbol_table::xtop_scope = 1;
 
@@ -376,6 +378,32 @@ symbol_table::fcn_info::fcn_info_rep::load_class_method
 	      class_methods[dispatch_type] = retval;
 	    }
 	}
+
+      if (retval.is_undefined ())
+        {
+          // Search parent classes
+
+          const_parent_map_iterator r = parent_map.find (dispatch_type);
+
+          if (r != parent_map.end ())
+            {
+              const std::list<std::string>& plist = r->second;
+              std::list<std::string>::const_iterator it = plist.begin ();
+
+              while (it != plist.end ())
+                {
+                  retval = find_method (*it);
+
+                  if (retval.is_defined ()) 
+                    {
+                      class_methods[dispatch_type] = retval;
+                      break;
+                    }
+
+                  it++;
+                }
+            }
+        }
     }
 
   return retval;

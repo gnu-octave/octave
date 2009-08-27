@@ -1,3 +1,8 @@
+2009-08-27  Jaroslav Hajek  <highegg@gmail.com>
+
+	* aclocal.m4 (m4_ifblank, m4_ifnblank): State FSF copyright and markup
+	as FIXME.
+
 2009-08-26  John W. Eaton  <jwe@octave.org>
 
 	* configure.in: Restore LIBS after checking for ARPACK.

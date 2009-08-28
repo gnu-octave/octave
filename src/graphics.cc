@@ -66,7 +66,7 @@ gripe_set_invalid (const std::string& pname)
 // if there is no match, or the match is ambiguous.
 
 static caseless_str
-validate_property_name (const std::string& who,
+validate_property_name (const std::string& who, const std::string& what,
 			const std::set<std::string>& pnames,
 			const caseless_str& pname)
 {
@@ -92,7 +92,8 @@ validate_property_name (const std::string& who,
 
   if (num_matches == 0)
     {
-      error ("%s: unknown property %s", who.c_str (), pname.c_str ());
+      error ("%s: unknown %s property %s",
+	     who.c_str (), what.c_str (), pname.c_str ());
     }
   else if (num_matches > 1)
     {
@@ -104,8 +105,8 @@ validate_property_name (const std::string& who,
 
       std::string match_list = os.str ();
 
-      error ("%s: ambiguous property name %s; possible matches:\n\n%s",
-	     who.c_str (), pname.c_str (), match_list.c_str ());
+      error ("%s: ambiguous %s property name %s; possible matches:\n\n%s",
+	     who.c_str (), what.c_str (), pname.c_str (), match_list.c_str ());
     }
   else if (num_matches == 1)
     {
@@ -114,8 +115,9 @@ validate_property_name (const std::string& who,
       std::string possible_match = *(matches.begin ());
 
       warning_with_id ("Octave:abbreviated-property-match",
-		       "%s: allowing %s to match %s", who.c_str (),
-		       pname.c_str (), possible_match.c_str ());
+		       "%s: allowing %s to match %s property %s",
+		       who.c_str (), pname.c_str (), what.c_str (),
+		       possible_match.c_str ());
 
       return possible_match;
     }
@@ -1248,21 +1250,21 @@ property_list::set (const caseless_str& name, const octave_value& val)
 
 	  bool has_property = false;
 	  if (pfx == "axes")
-	    has_property = axes::properties::has_property (pname);
+	    has_property = axes::properties::has_core_property (pname);
 	  else if (pfx == "line")
-	    has_property = line::properties::has_property (pname);
+	    has_property = line::properties::has_core_property (pname);
 	  else if (pfx == "text")
-	    has_property = text::properties::has_property (pname);
+	    has_property = text::properties::has_core_property (pname);
 	  else if (pfx == "image")
-	    has_property = image::properties::has_property (pname);
+	    has_property = image::properties::has_core_property (pname);
 	  else if (pfx == "patch")
-	    has_property = patch::properties::has_property (pname);
+	    has_property = patch::properties::has_core_property (pname);
 	  else if (pfx == "figure")
-	    has_property = figure::properties::has_property (pname);
+	    has_property = figure::properties::has_core_property (pname);
 	  else if (pfx == "surface")
-	    has_property = surface::properties::has_property (pname);
+	    has_property = surface::properties::has_core_property (pname);
 	  else if (pfx == "hggroup")
-	    has_property = hggroup::properties::has_property (pname);
+	    has_property = hggroup::properties::has_core_property (pname);
 
 	  if (has_property)
 	    {
@@ -1853,25 +1855,6 @@ base_properties::get_property_dynamic (const caseless_str& name)
     return it->second;
 }
 
-bool
-base_properties::has_property (const caseless_str& name)
-{
-  property p;
-
-  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
-
-  unwind_protect::protect_var (discard_error_messages);
-  unwind_protect::protect_var (error_state);
-
-  discard_error_messages = true;
-
-  p = get_property (name);
-
-  unwind_protect::run_frame (uwp_frame);
-
-  return (p.ok ());
-}
-
 void
 base_properties::remove_child (const graphics_handle& h)
 {
@@ -2169,13 +2152,23 @@ base_graphics_object::remove_all_listeners (void)
 
   for (Octave_map::const_iterator pa = m.begin (); pa != m.end (); pa++)
     {
-      if (get_properties().has_property (pa->first))
-	{
-	  property p = get_properties ().get_property (pa->first);
+      // FIXME -- there has to be a better way.  I think we want to
+      // ask whether it is OK to delete the listener for the given
+      // property.  How can we know in advance that it will be OK?
 
-	  if (! error_state && p.ok ())
-	    p.delete_listener ();
-	}
+      unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
+
+      unwind_protect::protect_var (discard_error_messages);
+      unwind_protect::protect_var (error_state);
+
+      discard_error_messages = true;
+
+      property p = get_properties ().get_property (pa->first);
+
+      if (! error_state && p.ok ())
+	p.delete_listener ();
+
+      unwind_protect::run_frame (uwp_frame);
     }
 }
 

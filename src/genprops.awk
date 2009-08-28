@@ -257,11 +257,15 @@ function emit_declarations ()
   if (class_name && ! base)
     emit_common_declarations();
 
-  printf ("public:\n\n");
+  printf ("public:\n\n\n  static std::set<std::string> core_property_names (void);\n\n  static bool has_core_property (const caseless_str& pname);\n\n  std::set<std::string> all_property_names (");
   if (base)
-    printf ("\n  static std::set<std::string> all_property_names (const std::string& cname);\n\n  static bool has_property (const std::string& pname, const std::string& cname);\n\n");
+    printf ("const std::string& cname");
   else
-    printf ("\n  static std::set<std::string> all_property_names (void);\n\n  static bool has_property (const std::string& pname);\n\n");
+    printf ("void");
+  printf (") const;\n\n");
+
+  if (! base)
+    printf ("  bool has_property (const caseless_str& pname) const;\n\n");
 
   if (idx > 0)
     print (base ? "protected:\n" : "private:\n");
@@ -434,7 +438,7 @@ function emit_source ()
               class_name) >> filename;
 
     if (! base)
-      printf ("  const std::set<std::string>& pnames = all_property_names ();\n\n  caseless_str pname = validate_property_name (\"get\", pnames, pname_arg);\n\n  if (error_state)\n    return;\n\n") >> filename;
+      printf ("  const std::set<std::string>& pnames = all_property_names ();\n\n  caseless_str pname = validate_property_name (\"get\", go_name, pnames, pname_arg);\n\n  if (error_state)\n    return;\n\n") >> filename;
 
     first = 1;
 
@@ -488,7 +492,7 @@ function emit_source ()
     printf ("  octave_value retval;\n\n") >> filename;
 
     if (! base)
-      printf ("  const std::set<std::string>& pnames = all_property_names ();\n\n  caseless_str pname = validate_property_name (\"get\", pnames, pname_arg);\n\n  if (error_state)\n    return retval;\n\n") >> filename;
+      printf ("  const std::set<std::string>& pnames = all_property_names ();\n\n  caseless_str pname = validate_property_name (\"get\", go_name, pnames, pname_arg);\n\n  if (error_state)\n    return retval;\n\n") >> filename;
 
     for (i = 1; i<= idx; i++)
     {
@@ -513,7 +517,7 @@ function emit_source ()
               class_name) >> filename;
 
     if (! base)
-      printf ("  const std::set<std::string>& pnames = all_property_names ();\n\n  caseless_str pname = validate_property_name (\"get\", pnames, pname_arg);\n\n  if (error_state)\n    return property ();\n\n") >> filename;
+      printf ("  const std::set<std::string>& pnames = all_property_names ();\n\n  caseless_str pname = validate_property_name (\"get\", go_name, pnames, pname_arg);\n\n  if (error_state)\n    return property ();\n\n") >> filename;
 
     for (i = 1; i<= idx; i++)
     {
@@ -575,25 +579,43 @@ function emit_source ()
       printf ("std::string %s::properties::go_name (\"%s\");\n\n",
               class_name, object_name) >> filename;
 
+    printf ("std::set<std::string>\n") >> filename;
     if (base)
-      printf ("std::set<std::string>\nbase_properties::all_property_names (const std::string& cname") >> filename;
+      printf ("base_properties") >> filename;
     else
-      printf ("std::set<std::string>\n%s::properties::all_property_names (void", class_name) >> filename;
-    printf (")\n{\n  static std::set<std::string> all_pnames;\n\n  static bool initialized = false;\n\n  if (! initialized)\n    {\n") >> filename;
+      printf ("%s::properties", class_name) >> filename;
+    printf ("::core_property_names (void)\n{\n  static std::set<std::string> all_pnames;\n\n  static bool initialized = false;\n\n  if (! initialized)\n    {\n") >> filename;
     for (i = 1; i <= idx; i++)
       printf ("      all_pnames.insert (\"%s\");\n", name[i]) >> filename;
-    printf ("\n      initialized = true;\n    }\n\n") >> filename;
-    if (base)
-      printf ("  std::set<std::string> retval = all_pnames;\n  std::set<std::string> dyn_props = dynamic_property_names (cname);\n  retval.insert (dyn_props.begin(), dyn_props.end ());\n  return retval;\n}\n\n") >> filename;
-    else
-      printf ("  std::set<std::string> retval = all_pnames;\n  std::set<std::string> base_props = base_properties::all_property_names (\"%s\");\n  retval.insert (base_props.begin (), base_props.end ());\n  return retval;\n}\n\n", class_name) >> filename;
+    if (! base)
+      printf ("\n      std::set<std::string> base_pnames = base_properties::core_property_names ();\n      all_pnames.insert (base_pnames.begin (), base_pnames.end ());\n") >> filename;
+    printf ("\n      initialized = true;\n    }\n\n  return all_pnames;\n}\n\n") >> filename;
 
+    printf ("bool\n") >> filename;
     if (base)
-      printf ("bool\nbase_properties::has_property (const std::string& pname, const std::string& cname)\n{\n  std::set<std::string> pnames = all_property_names (cname);\n\n") >> filename;
+      printf ("base_properties") >> filename;
     else
-      printf ("bool\n%s::properties::has_property (const std::string& pname)\n{\n  std::set<std::string> pnames = all_property_names ();\n\n", class_name) >> filename;
+      printf ("%s::properties", class_name) >> filename;
+    printf ("::has_core_property (const caseless_str& pname)\n{\n  std::set<std::string> pnames = core_property_names ();\n\n  return pnames.find (pname) != pnames.end ();\n}\n\n", class_name) >> filename;
 
-    printf ("  return pnames.find (pname) != pnames.end ();\n}\n\n") >> filename;
+    printf ("std::set<std::string>\n") >> filename;
+    if (base)
+	printf ("base_properties") >> filename;
+    else
+      printf ("%s::properties", class_name) >> filename;
+    printf ("::all_property_names (") >> filename;
+    if (base)
+      printf ("const std::string& cname") >> filename;
+    else
+      printf ("void") >> filename;
+    printf (") const\n{\n  static std::set<std::string> all_pnames = core_property_names ();\n\n") >> filename;
+    if (base)
+      printf ("  std::set<std::string> retval = all_pnames;\n  std::set<std::string> dyn_props = dynamic_property_names (cname);\n  retval.insert (dyn_props.begin (), dyn_props.end ());\n  for (std::map<caseless_str, property, cmp_caseless_str>::const_iterator p = all_props.begin ();\n       p != all_props.end (); p++)\n    retval.insert (p->first);\n\n  return retval;\n}\n\n") >> filename;
+    else
+      printf ("  std::set<std::string> retval = all_pnames;\n  std::set<std::string> base_props = base_properties::all_property_names (\"%s\");\n  retval.insert (base_props.begin (), base_props.end ());\n\n  return retval;\n}\n\n", class_name) >> filename;
+
+    if (! base)
+      printf ("bool\n%s::properties::has_property (const caseless_str& pname) const\n{\n  std::set<std::string> pnames = all_property_names ();\n\n  return pnames.find (pname) != pnames.end ();\n}\n\n", class_name) >> filename;
   }
 }
 

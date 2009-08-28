@@ -1,5 +1,20 @@
 2009-08-28  John W. Eaton  <jwe@octave.org>
 
+	* genprops.awk: Generate static member functions has_core_property
+	and core_property_names.  Make has_property and all_property_names
+	non-static const member functions.  Pass object type to
+	validate_property_name.
+	* graphics.cc (validate_property_name): New arg, WHAT.
+	Improve warning and error messages.
+	(property_list::set): Use has_core_property instead of has_property.
+	(base_properties::has_property): Delete definition.
+	(base_graphics_object::remove_all_listeners): Move unwind protect
+	block here, from old base_properties::has_property function.
+	* graphics.h.in (base_properties::has_property): Now virtual.
+	Unconditionally call panic_impossible.
+
+2009-08-28  John W. Eaton  <jwe@octave.org>
+
 	* graphics.cc (validate_property_name): Return full name of
 	matched property value.  Issue warning if given property name is
 	abbreviated.

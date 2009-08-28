@@ -1656,7 +1656,11 @@ public:
 
   virtual property get_property (const caseless_str& pname);
 
-  bool has_property (const caseless_str& pname);
+  virtual bool has_property (const caseless_str&) const
+  {
+    panic_impossible ();
+    return false;
+  }
 
   bool is_modified (void) const { return is___modified__ (); }
  

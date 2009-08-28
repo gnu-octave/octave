@@ -61,7 +61,11 @@ gripe_set_invalid (const std::string& pname)
   error ("set: invalid value for %s property", pname.c_str ());
 }
 
-static void
+// Check to see that PNAME matches just one of PNAMES uniquely.
+// Return the full name of the match, or an empty caseless_str object
+// if there is no match, or the match is ambiguous.
+
+static caseless_str
 validate_property_name (const std::string& who,
 			const std::set<std::string>& pnames,
 			const caseless_str& pname)
@@ -73,7 +77,15 @@ validate_property_name (const std::string& who,
        p != pnames.end (); p++)
     {
       if (pname.compare (*p, len))
-	matches.insert (*p);
+	{
+	  if (len == p->length ())
+	    {
+	      // Exact match.
+	      return pname;
+	    }
+
+	  matches.insert (*p);
+	}
     }
 
   size_t num_matches = matches.size ();
@@ -95,13 +107,20 @@ validate_property_name (const std::string& who,
       error ("%s: ambiguous property name %s; possible matches:\n\n%s",
 	     who.c_str (), pname.c_str (), match_list.c_str ());
     }
-  else if (num_matches == 1 && ! pname.compare (*(matches.begin ())))
+  else if (num_matches == 1)
     {
+      // Exact match was handled above.
+
       std::string possible_match = *(matches.begin ());
 
-      error ("%s: instead of %s, did you mean %s?",
-	     who.c_str (), pname.c_str (), possible_match.c_str ());
+      warning_with_id ("Octave:abbreviated-property-match",
+		       "%s: allowing %s to match %s", who.c_str (),
+		       pname.c_str (), possible_match.c_str ());
+
+      return possible_match;
     }
+
+  return caseless_str ();
 }
 
 static Matrix

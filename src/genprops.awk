@@ -430,11 +430,11 @@ function emit_source ()
     if (base)
       printf ("void\nbase_properties::set (const caseless_str& pname, const std::string& cname, const octave_value& val)\n{\n") >> filename;
     else
-      printf ("void\n%s::properties::set (const caseless_str& pname, const octave_value& val)\n{\n",
+      printf ("void\n%s::properties::set (const caseless_str& pname_arg, const octave_value& val)\n{\n",
               class_name) >> filename;
 
     if (! base)
-      printf ("  const std::set<std::string>& pnames = all_property_names ();\n\n  validate_property_name (\"get\", pnames, pname);\n\n  if (error_state)\n    return;\n\n") >> filename;
+      printf ("  const std::set<std::string>& pnames = all_property_names ();\n\n  caseless_str pname = validate_property_name (\"get\", pnames, pname_arg);\n\n  if (error_state)\n    return;\n\n") >> filename;
 
     first = 1;
 
@@ -483,12 +483,12 @@ function emit_source ()
     if (base)
       printf ("octave_value\nbase_properties::get (const caseless_str& pname) const\n{\n") >> filename;
     else
-      printf ("octave_value\n%s::properties::get (const caseless_str& pname) const\n{\n",
+      printf ("octave_value\n%s::properties::get (const caseless_str& pname_arg) const\n{\n",
               class_name) >> filename;
     printf ("  octave_value retval;\n\n") >> filename;
 
     if (! base)
-      printf ("  const std::set<std::string>& pnames = all_property_names ();\n\n  validate_property_name (\"get\", pnames, pname);\n\n  if (error_state)\n    return retval;\n\n") >> filename;
+      printf ("  const std::set<std::string>& pnames = all_property_names ();\n\n  caseless_str pname = validate_property_name (\"get\", pnames, pname_arg);\n\n  if (error_state)\n    return retval;\n\n") >> filename;
 
     for (i = 1; i<= idx; i++)
     {
@@ -509,11 +509,11 @@ function emit_source ()
     if (base)
       printf ("property\nbase_properties::get_property (const caseless_str& pname)\n{\n") >> filename;
     else
-      printf ("property\n%s::properties::get_property (const caseless_str& pname)\n{\n",
+      printf ("property\n%s::properties::get_property (const caseless_str& pname_arg)\n{\n",
               class_name) >> filename;
 
     if (! base)
-      printf ("  const std::set<std::string>& pnames = all_property_names ();\n\n  validate_property_name (\"get\", pnames, pname);\n\n  if (error_state)\n    return property ();\n\n") >> filename;
+      printf ("  const std::set<std::string>& pnames = all_property_names ();\n\n  caseless_str pname = validate_property_name (\"get\", pnames, pname_arg);\n\n  if (error_state)\n    return property ();\n\n") >> filename;
 
     for (i = 1; i<= idx; i++)
     {

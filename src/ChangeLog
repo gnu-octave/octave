@@ -1,3 +1,13 @@
+2009-08-28  John W. Eaton  <jwe@octave.org>
+
+	* graphics.cc (validate_property_name): Return full name of
+	matched property value.  Issue warning if given property name is
+	abbreviated.
+	* genprops.awk: Use name returned by validate_property_name for
+	subsequent matching.
+	* octave.cc (maximum_braindamage):
+	Disable Octave:abbreviated-property-match warning.
+
 2009-08-27  John W. Eaton  <jwe@octave.org>
 
 	* graphics.cc (validate_property_name): New static function.

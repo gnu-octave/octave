@@ -1,3 +1,7 @@
+2009-08-29  John W. Eaton  <jwe@octave.org>
+
+	* time/datestr.m: Add missing semicolon.
+
 2009-08-17  Jaroslav Hajek  <highegg@gmail.com>
 
 	* general/int2str.m: Convert to double before calling log10.

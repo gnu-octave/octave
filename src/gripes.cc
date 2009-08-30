@@ -271,6 +271,13 @@ gripe_indexed_cs_list (void)
   error ("a cs-list cannot be further indexed");
 }
 
+void
+gripe_warn_complex_cmp (void)
+{
+  warning_with_id ("Octave:matlab-incompatible",
+                   "potential Matlab compatibility problem: comparing complex numbers");
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

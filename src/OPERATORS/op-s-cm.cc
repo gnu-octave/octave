@@ -77,12 +77,12 @@ DEFBINOP (ldiv, scalar, complex_matrix)
   return octave_value (v2.complex_array_value () / d);
 }
 
-DEFNDBINOP_FN (lt, scalar, complex_matrix, scalar, complex_array, mx_el_lt)
-DEFNDBINOP_FN (le, scalar, complex_matrix, scalar, complex_array, mx_el_le)
-DEFNDBINOP_FN (eq, scalar, complex_matrix, scalar, complex_array, mx_el_eq)
-DEFNDBINOP_FN (ge, scalar, complex_matrix, scalar, complex_array, mx_el_ge)
-DEFNDBINOP_FN (gt, scalar, complex_matrix, scalar, complex_array, mx_el_gt)
-DEFNDBINOP_FN (ne, scalar, complex_matrix, scalar, complex_array, mx_el_ne)
+DEFNDCMPLXCMPOP_FN (lt, scalar, complex_matrix, scalar, complex_array, mx_el_lt)
+DEFNDCMPLXCMPOP_FN (le, scalar, complex_matrix, scalar, complex_array, mx_el_le)
+DEFNDCMPLXCMPOP_FN (eq, scalar, complex_matrix, scalar, complex_array, mx_el_eq)
+DEFNDCMPLXCMPOP_FN (ge, scalar, complex_matrix, scalar, complex_array, mx_el_ge)
+DEFNDCMPLXCMPOP_FN (gt, scalar, complex_matrix, scalar, complex_array, mx_el_gt)
+DEFNDCMPLXCMPOP_FN (ne, scalar, complex_matrix, scalar, complex_array, mx_el_ne)
 
 DEFNDBINOP_OP (el_mul, scalar, complex_matrix, scalar, complex_array, *)
 DEFNDBINOP_FN (el_div, scalar, complex_matrix, scalar, complex_array, x_el_div)

@@ -1,5 +1,33 @@
 2009-08-30  Jaroslav Hajek  <highegg@gmail.com>
 
+	* ops.h (DEFCMPLXCMPOP_OP, DEFNDCMPLXCMPOP_FN): New macros.
+	* gripes.cc (gripe_warn_complex_cmp): New function.
+	* gripes.h: declare it.
+
+	* OPERATORS/op-cm-cm.cc: Call the new macros.
+	* OPERATORS/op-cm-cs.cc: Ditto.
+	* OPERATORS/op-cm-m.cc: Ditto.
+	* OPERATORS/op-cm-s.cc: Ditto.
+	* OPERATORS/op-cs-cm.cc: Ditto.
+	* OPERATORS/op-cs-cs.cc: Ditto.
+	* OPERATORS/op-cs-m.cc: Ditto.
+	* OPERATORS/op-fcm-fcm.cc: Ditto.
+	* OPERATORS/op-fcm-fcs.cc: Ditto.
+	* OPERATORS/op-fcm-fm.cc: Ditto.
+	* OPERATORS/op-fcm-fs.cc: Ditto.
+	* OPERATORS/op-fcs-fcm.cc: Ditto.
+	* OPERATORS/op-fcs-fcs.cc: Ditto.
+	* OPERATORS/op-fcs-fm.cc: Ditto.
+	* OPERATORS/op-fm-fcm.cc: Ditto.
+	* OPERATORS/op-fm-fcs.cc: Ditto.
+	* OPERATORS/op-fs-fcm.cc: Ditto.
+	* OPERATORS/op-m-cm.cc: Ditto.
+	* OPERATORS/op-m-cs.cc: Ditto.
+	* OPERATORS/op-s-cm.cc: Ditto.
+
+
+2009-08-30  Jaroslav Hajek  <highegg@gmail.com>
+
 	* ops.h (BOOL_OP1, BOOL_OP2, BOOL_OP3, SC_MX_BOOL_OP, MX_SC_BOOL_OP,
 	MX_MX_BOOL_OP): Remove.
 

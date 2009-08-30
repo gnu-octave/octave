@@ -82,17 +82,17 @@ DEFBINOP (ldiv, float_scalar, float_complex_matrix)
   return octave_value (v2.float_complex_array_value () / d);
 }
 
-DEFNDBINOP_FN (lt, float_scalar, float_complex_matrix, float_scalar, 
+DEFNDCMPLXCMPOP_FN (lt, float_scalar, float_complex_matrix, float_scalar, 
 	       float_complex_array, mx_el_lt)
-DEFNDBINOP_FN (le, float_scalar, float_complex_matrix, float_scalar, 
+DEFNDCMPLXCMPOP_FN (le, float_scalar, float_complex_matrix, float_scalar, 
 	       float_complex_array, mx_el_le)
-DEFNDBINOP_FN (eq, float_scalar, float_complex_matrix, float_scalar, 
+DEFNDCMPLXCMPOP_FN (eq, float_scalar, float_complex_matrix, float_scalar, 
 	       float_complex_array, mx_el_eq)
-DEFNDBINOP_FN (ge, float_scalar, float_complex_matrix, float_scalar, 
+DEFNDCMPLXCMPOP_FN (ge, float_scalar, float_complex_matrix, float_scalar, 
 	       float_complex_array, mx_el_ge)
-DEFNDBINOP_FN (gt, float_scalar, float_complex_matrix, float_scalar, 
+DEFNDCMPLXCMPOP_FN (gt, float_scalar, float_complex_matrix, float_scalar, 
 	       float_complex_array, mx_el_gt)
-DEFNDBINOP_FN (ne, float_scalar, float_complex_matrix, float_scalar, 
+DEFNDCMPLXCMPOP_FN (ne, float_scalar, float_complex_matrix, float_scalar, 
 	       float_complex_array, mx_el_ne)
 
 DEFNDBINOP_OP (el_mul, float_scalar, float_complex_matrix, float_scalar, 

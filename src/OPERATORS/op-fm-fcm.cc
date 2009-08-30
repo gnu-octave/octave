@@ -83,17 +83,17 @@ DEFBINOP (ldiv, float_matrix, float_complex_matrix)
   return ret;
 }
 
-DEFNDBINOP_FN (lt, float_matrix, float_complex_matrix, float_array, 
+DEFNDCMPLXCMPOP_FN (lt, float_matrix, float_complex_matrix, float_array, 
 	       float_complex_array, mx_el_lt)
-DEFNDBINOP_FN (le, float_matrix, float_complex_matrix, float_array, 
+DEFNDCMPLXCMPOP_FN (le, float_matrix, float_complex_matrix, float_array, 
 	       float_complex_array, mx_el_le)
-DEFNDBINOP_FN (eq, float_matrix, float_complex_matrix, float_array, 
+DEFNDCMPLXCMPOP_FN (eq, float_matrix, float_complex_matrix, float_array, 
 	       float_complex_array, mx_el_eq)
-DEFNDBINOP_FN (ge, float_matrix, float_complex_matrix, float_array, 
+DEFNDCMPLXCMPOP_FN (ge, float_matrix, float_complex_matrix, float_array, 
 	       float_complex_array, mx_el_ge)
-DEFNDBINOP_FN (gt, float_matrix, float_complex_matrix, float_array, 
+DEFNDCMPLXCMPOP_FN (gt, float_matrix, float_complex_matrix, float_array, 
 	       float_complex_array, mx_el_gt)
-DEFNDBINOP_FN (ne, float_matrix, float_complex_matrix, float_array, 
+DEFNDCMPLXCMPOP_FN (ne, float_matrix, float_complex_matrix, float_array, 
 	       float_complex_array, mx_el_ne)
 
 DEFNDBINOP_FN (el_mul, float_matrix, float_complex_matrix, float_array, 

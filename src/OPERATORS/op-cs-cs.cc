@@ -96,12 +96,12 @@ DEFBINOP (ldiv, complex, complex)
   return octave_value (v2.complex_value () / d);
 }
 
-DEFBINOP_OP (lt, complex, complex, <)
-DEFBINOP_OP (le, complex, complex, <=)
-DEFBINOP_OP (eq, complex, complex, ==)
-DEFBINOP_OP (ge, complex, complex, >=)
-DEFBINOP_OP (gt, complex, complex, >)
-DEFBINOP_OP (ne, complex, complex, !=)
+DEFCMPLXCMPOP_OP (lt, complex, complex, <)
+DEFCMPLXCMPOP_OP (le, complex, complex, <=)
+DEFCMPLXCMPOP_OP (eq, complex, complex, ==)
+DEFCMPLXCMPOP_OP (ge, complex, complex, >=)
+DEFCMPLXCMPOP_OP (gt, complex, complex, >)
+DEFCMPLXCMPOP_OP (ne, complex, complex, !=)
 
 DEFBINOP_OP (el_mul, complex, complex, *)
 

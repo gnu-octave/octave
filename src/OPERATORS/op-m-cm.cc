@@ -79,12 +79,12 @@ DEFBINOP (ldiv, matrix, complex_matrix)
   return ret;
 }
 
-DEFNDBINOP_FN (lt, matrix, complex_matrix, array, complex_array, mx_el_lt)
-DEFNDBINOP_FN (le, matrix, complex_matrix, array, complex_array, mx_el_le)
-DEFNDBINOP_FN (eq, matrix, complex_matrix, array, complex_array, mx_el_eq)
-DEFNDBINOP_FN (ge, matrix, complex_matrix, array, complex_array, mx_el_ge)
-DEFNDBINOP_FN (gt, matrix, complex_matrix, array, complex_array, mx_el_gt)
-DEFNDBINOP_FN (ne, matrix, complex_matrix, array, complex_array, mx_el_ne)
+DEFNDCMPLXCMPOP_FN (lt, matrix, complex_matrix, array, complex_array, mx_el_lt)
+DEFNDCMPLXCMPOP_FN (le, matrix, complex_matrix, array, complex_array, mx_el_le)
+DEFNDCMPLXCMPOP_FN (eq, matrix, complex_matrix, array, complex_array, mx_el_eq)
+DEFNDCMPLXCMPOP_FN (ge, matrix, complex_matrix, array, complex_array, mx_el_ge)
+DEFNDCMPLXCMPOP_FN (gt, matrix, complex_matrix, array, complex_array, mx_el_gt)
+DEFNDCMPLXCMPOP_FN (ne, matrix, complex_matrix, array, complex_array, mx_el_ne)
 
 DEFNDBINOP_FN (el_mul, matrix, complex_matrix, array, complex_array, product)
 DEFNDBINOP_FN (el_div, matrix, complex_matrix, array, complex_array, quotient)

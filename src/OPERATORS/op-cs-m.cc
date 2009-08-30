@@ -75,12 +75,12 @@ DEFBINOP (ldiv, complex, matrix)
   return octave_value (v2.array_value () / d);
 }
 
-DEFNDBINOP_FN (lt, complex, matrix, complex, array, mx_el_lt)
-DEFNDBINOP_FN (le, complex, matrix, complex, array, mx_el_le)
-DEFNDBINOP_FN (eq, complex, matrix, complex, array, mx_el_eq)
-DEFNDBINOP_FN (ge, complex, matrix, complex, array, mx_el_ge)
-DEFNDBINOP_FN (gt, complex, matrix, complex, array, mx_el_gt)
-DEFNDBINOP_FN (ne, complex, matrix, complex, array, mx_el_ne)
+DEFNDCMPLXCMPOP_FN (lt, complex, matrix, complex, array, mx_el_lt)
+DEFNDCMPLXCMPOP_FN (le, complex, matrix, complex, array, mx_el_le)
+DEFNDCMPLXCMPOP_FN (eq, complex, matrix, complex, array, mx_el_eq)
+DEFNDCMPLXCMPOP_FN (ge, complex, matrix, complex, array, mx_el_ge)
+DEFNDCMPLXCMPOP_FN (gt, complex, matrix, complex, array, mx_el_gt)
+DEFNDCMPLXCMPOP_FN (ne, complex, matrix, complex, array, mx_el_ne)
 
 DEFNDBINOP_OP (el_mul, complex, matrix, complex, array, *)
 DEFNDBINOP_FN (el_div, complex, matrix, complex, array, x_el_div)

@@ -140,6 +140,9 @@ gripe_invalid_inquiry_subscript (void);
 extern OCTINTERP_API void
 gripe_indexed_cs_list (void);
 
+extern OCTINTERP_API void
+gripe_warn_complex_cmp (void);
+
 #endif
 
 /*

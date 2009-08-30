@@ -287,6 +287,15 @@ extern void install_ops (void);
       (v1.CONCAT2(t1, _value) () op v2.CONCAT2(t2, _value) ()); \
   }
 
+#define DEFCMPLXCMPOP_OP(name, t1, t2, op) \
+  BINOPDECL (name, a1, a2) \
+  { \
+    CAST_BINOP_ARGS (const CONCAT2(octave_, t1)&, const CONCAT2(octave_, t2)&); \
+    gripe_warn_complex_cmp (); \
+    return octave_value \
+      (v1.CONCAT2(t1, _value) () op v2.CONCAT2(t2, _value) ()); \
+  }
+
 #define DEFSCALARBOOLOP_OP(name, t1, t2, op) \
   BINOPDECL (name, a1, a2) \
   { \
@@ -319,6 +328,13 @@ extern void install_ops (void);
   }
 
 #define DEFNDBINOP_FN(name, t1, t2, e1, e2, f) \
+  BINOPDECL (name, a1, a2) \
+  { \
+    CAST_BINOP_ARGS (const CONCAT2(octave_, t1)&, const CONCAT2(octave_, t2)&); \
+    return octave_value (f (v1.CONCAT2(e1, _value) (), v2.CONCAT2(e2, _value) ())); \
+  }
+
+#define DEFNDCMPLXCMPOP_FN(name, t1, t2, e1, e2, f) \
   BINOPDECL (name, a1, a2) \
   { \
     CAST_BINOP_ARGS (const CONCAT2(octave_, t1)&, const CONCAT2(octave_, t2)&); \

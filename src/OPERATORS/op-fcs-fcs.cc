@@ -94,12 +94,12 @@ DEFBINOP (ldiv, float_complex, float_complex)
   return octave_value (v2.float_complex_value () / d);
 }
 
-DEFBINOP_OP (lt, float_complex, float_complex, <)
-DEFBINOP_OP (le, float_complex, float_complex, <=)
-DEFBINOP_OP (eq, float_complex, float_complex, ==)
-DEFBINOP_OP (ge, float_complex, float_complex, >=)
-DEFBINOP_OP (gt, float_complex, float_complex, >)
-DEFBINOP_OP (ne, float_complex, float_complex, !=)
+DEFCMPLXCMPOP_OP (lt, float_complex, float_complex, <)
+DEFCMPLXCMPOP_OP (le, float_complex, float_complex, <=)
+DEFCMPLXCMPOP_OP (eq, float_complex, float_complex, ==)
+DEFCMPLXCMPOP_OP (ge, float_complex, float_complex, >=)
+DEFCMPLXCMPOP_OP (gt, float_complex, float_complex, >)
+DEFCMPLXCMPOP_OP (ne, float_complex, float_complex, !=)
 
 DEFBINOP_OP (el_mul, float_complex, float_complex, *)
 

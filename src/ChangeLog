@@ -1,3 +1,8 @@
+2009-08-30  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ops.h (BOOL_OP1, BOOL_OP2, BOOL_OP3, SC_MX_BOOL_OP, MX_SC_BOOL_OP,
+	MX_MX_BOOL_OP): Remove.
+
 2009-08-28  John W. Eaton  <jwe@octave.org>
 
 	* genprops.awk: Generate static member functions has_core_property

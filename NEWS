@@ -67,7 +67,12 @@ Summary of important user-visible changes for version 3.3:
 
    where matrix and scalar belong to the same class. The left-hand side must be
    a simple variable reference.
- 
+
+ ** The effect of comparison operators (<,>,<=,>=) when applied to complex numbers 
+    has changed to be consistent with the strict ordering defined by max, min and sort.
+    More specifically, complex numbers are compared by lexicographical comparison of
+    the pairs [abs(z), arg(z)]. Previously, only real parts were compared; this can be
+    trivially achieved by wrapping the operands in real().
 
 Summary of important user-visible changes for version 3.2:
 ---------------------------------------------------------

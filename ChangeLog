@@ -1,3 +1,7 @@
+2009-08-30  Jaroslav Hajek  <highegg@gmail.com>
+
+	* NEWS: Update.
+
 2009-08-27  John W. Eaton  <jwe@octave.org>
 
 	* configure.in: Properly save and restore CPPFLAGS and LIBS when

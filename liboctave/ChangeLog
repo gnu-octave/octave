@@ -1,3 +1,8 @@
+2009-08-31  John W. Eaton  <jwe@octave.org>
+
+	* liboctave/lo-ieee.cc (octave_ieee_init): Abort if floating point
+	format is not recognized as IEEE.
+
 2009-08-27  John W. Eaton  <jwe@octave.org>
 
 	* str-vec.cc, str-vec.h (string_vector::string_vector (const

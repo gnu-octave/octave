@@ -184,7 +184,8 @@ function [q, err] = quadgk (f, a, b, varargin)
     if (iscomplex (a) || iscomplex (b) || iscomplex(waypoints))
       ## contour integral, no transform
       subs = [a; waypoints; b];
-      h = b - a;
+      h = sum (abs (diff (subs)));
+      h0 = h;
       trans = @(t) t;
     elseif (isinf (a) && isinf(b))
       ## Standard Infinite to finite integral transformation.
@@ -201,6 +202,7 @@ function [q, err] = quadgk (f, a, b, varargin)
 	subs = linspace (-1, 1, 11)'; 
       endif
       h = 2;
+      h0 = b - a;
       trans = @(t) t ./ (1 - t.^2);
       f = @(t) f (t ./ (1 - t .^ 2)) .* (1 + t .^ 2) ./ ((1 - t .^ 2) .^ 2);
     elseif (isinf(a))
@@ -226,6 +228,7 @@ function [q, err] = quadgk (f, a, b, varargin)
 	subs = linspace (0, 1, 11)'; 
       endif
       h = 1;
+      h0 = b - a;
       trans = @(t) b - (t ./ (1 + t)).^2;
       f = @(s) - 2 * s .* f (b -  (s ./ (1 + s)) .^ 2) ./ ((1 + s) .^ 3);
     elseif (isinf(b))
@@ -250,6 +253,7 @@ function [q, err] = quadgk (f, a, b, varargin)
 	subs = linspace (0, 1, 11)'; 
       endif
       h = 1;
+      h0 = b - a;
       trans = @(t) a + (t ./ (1 - t)).^2;
       f = @(s) 2 * s .* f (a +  (s ./ (1 - s)) .^ 2) ./ ((1 - s) .^ 3);
     else
@@ -271,6 +275,7 @@ function [q, err] = quadgk (f, a, b, varargin)
 	subs = linspace(-1, 1, 11)'; 
       endif
       h = 2;
+      h0 = b - a;
       trans = @(t) ((b - a) ./ 4) * t .* (3 - t.^2) + (b + a) ./ 2;
       f = @(t) f((b - a) ./ 4 .* t .* (3 - t.^2) + (b + a) ./ 2) .* ...
            3 .* (b - a) ./ 4 .* (1 - t.^2);
@@ -305,7 +310,7 @@ function [q, err] = quadgk (f, a, b, varargin)
 	## Check for sub-intervals that are too small. Test must be
 	## performed in untransformed sub-intervals. What is a good
 	## value for this test. Shampine suggests 100*eps
-	if (any (diff (trans (subs), [], 2) / (b - a) < 100 * myeps))
+	if (any (abs (diff (trans (subs), [], 2) / h0) < 100 * myeps))
 	  q = q0;
 	  err = err0;
 	  break;
@@ -329,7 +334,7 @@ function [q, err] = quadgk (f, a, b, varargin)
 	endif
 
 	## Accept the sub-intervals that meet the convergence criteria
-	idx = find (abs (q_errs) < tol .* diff (subs, [], 2) ./ h);
+	idx = find (abs (q_errs) < tol .* abs(diff (subs, [], 2)) ./ h);
 	if (first)
 	  q = sum (q_subs (idx));
 	  err = sum (q_errs(idx));

@@ -425,25 +425,27 @@ K Maschhoff, D Sorensen and C Yang.  For more information see\n\
 	    }
 	}
 
-      // Note hold off reading B till later to avoid issues of double 
-      // copies of the matrix if B is full/real while A is complex..
-      if (!error_state && nargin > 1 && !(args(1).is_real_scalar ()))
+    }
+
+  // Note hold off reading B till later to avoid issues of double 
+  // copies of the matrix if B is full/real while A is complex..
+  if (!error_state && nargin > 1 + arg_offset && 
+      !(args(1 + arg_offset).is_real_scalar ()))
+    {
+      if (args(1+arg_offset).is_complex_type ())
 	{
-	  if (args(1).is_complex_type ())
-	    {
-	      b_arg = 1+arg_offset;
-	      have_b = true;
-	      bmat = 'G';
-	      b_is_complex = true;
-	      arg_offset++;
-	    }
-	  else
-	    {
-	      b_arg = 1+arg_offset;
-	      have_b = true;
-	      bmat = 'G';
-	      arg_offset++;
-	    }
+	  b_arg = 1+arg_offset;
+	  have_b = true;
+	  bmat = 'G';
+	  b_is_complex = true;
+	  arg_offset++;
+	}
+      else
+	{
+	  b_arg = 1+arg_offset;
+	  have_b = true;
+	  bmat = 'G';
+	  arg_offset++;
 	}
     }
 
@@ -833,6 +835,11 @@ K Maschhoff, D Sorensen and C Yang.  For more information see\n\
 %! opts.issym = 1; opts.isreal = 1;
 %! d1 = eigs (fn, n, k, 4.1, opts);
 %! assert (d1, eigs(A,k,4.1), 1e-11);
+%!testif HAVE_ARPACK
+%! AA = speye (10);
+%! fn = @(x) A * x;
+%! opts.issym = 1; opts.isreal = 1;
+%! assert (eigs (fn, 10, AA, 3, 'lm', opts), [1; 1; 1]);
 %!testif HAVE_ARPACK
 %! [v1,d1] = eigs(A, k, 'lm');
 %! d1 = diag(d1);

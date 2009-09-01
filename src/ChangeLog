@@ -1,3 +1,9 @@
+2008-09-01  David Bateman  <dbateman@free.fr>
+
+	* DLD-FUNCTIONS/eig.cc (Feigs): Correct nesting error in option
+	parsing that prevented the use of a function for generalized
+	eigenvalue problems.
+
 2009-08-30  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ops.h (DEFCMPLXCMPOP_OP, DEFNDCMPLXCMPOP_FN): New macros.

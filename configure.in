@@ -412,6 +412,8 @@ AC_ARG_VAR(BUILD_LDFLAGS, [build system C++ compiler link flags (used if cross c
 AC_ARG_VAR(BUILD_EXEEXT, [build system executable extension (used if cross compiling)])
 
 dnl This is bogus.  We shouldn't have to explicitly add libc too!
+dnl Keep this check before the check for the Fortran compiler,
+dnl in case -lm is needed to compile Fortran programs.
 
 ### Look for math library.  If found, this will add -lm to LIBS.
 
@@ -425,6 +427,102 @@ case "$canonical_host_type" in
     AC_CHECK_LIB(m, sin)
   ;;
 esac
+
+## Default FFLAGS is -O.
+if test "x$FFLAGS" = x; then
+  FFLAGS="-O"
+fi
+
+## the F77 variable, if set, overrides AC_PROG_F77 automatically
+AC_PROG_F77
+AC_F77_LIBRARY_LDFLAGS
+AC_F77_DUMMY_MAIN
+AC_F77_WRAPPERS
+
+F77_TOLOWER=true
+F77_APPEND_UNDERSCORE=true
+F77_APPEND_EXTRA_UNDERSCORE=true
+
+case "$ac_cv_f77_mangling" in
+  "upper case") F77_TOLOWER=false ;;
+esac
+case "$ac_cv_f77_mangling" in
+  "no underscore") F77_APPEND_UNDERSCORE=false ;;
+esac
+case "$ac_cv_f77_mangling" in
+  "no extra underscore") F77_APPEND_EXTRA_UNDERSCORE=false ;;
+esac
+
+case "$canonical_host_type" in
+  i[[3456789]]86-*-*)
+    if test "$ac_cv_f77_compiler_gnu" = yes; then
+      OCTAVE_F77_FLAG(-mieee-fp)
+###      OCTAVE_F77_FLAG(-ffloat-store)
+    fi
+  ;;
+  alpha*-*-*)
+    if test "$ac_cv_f77_compiler_gnu" = yes; then
+      OCTAVE_F77_FLAG(-mieee)
+    else
+      OCTAVE_F77_FLAG(-ieee)
+      OCTAVE_F77_FLAG(-fpe1)
+    fi
+  ;;
+  powerpc-apple-machten*)
+    FFLAGS=
+  ;;
+esac
+
+if test -n "$FFLAGS"; then
+  AC_MSG_NOTICE([defining FFLAGS to be $FFLAGS])
+fi
+
+AC_SUBST(F77_TOLOWER)
+AC_SUBST(F77_APPEND_UNDERSCORE)
+AC_SUBST(F77_APPEND_EXTRA_UNDERSCORE)
+
+if test -z "$F77"; then
+  AC_MSG_ERROR([in order to build octave, you must have a compatible Fortran compiler or wrapper script for f2c that functions as a Fortran compiler installed and in your path.  See the file INSTALL for more information.])
+fi
+
+OCTAVE_CHECK_FORTRAN_INTEGER_SIZE
+if test "x$octave_cv_fortran_integer_size" = xno; then
+  if $USE_64_BIT_IDX_T; then
+    case "$F77" in
+      gfortran)
+        case "$FFLAGS" in
+          *-fdefault-integer-8*)
+          ;;
+          *)
+            AC_MSG_NOTICE([adding -fdefault-integer-8 to FFLAGS])
+            FFLAGS="-fdefault-integer-8 $FFLAGS"
+	    ## Invalidate the cache and try again.
+            $as_unset octave_cv_fortran_integer_size
+          ;;
+        esac
+      ;;
+    esac
+    if test -z "$octave_cv_fortran_integer_size"; then
+      OCTAVE_CHECK_FORTRAN_INTEGER_SIZE
+    fi
+    if test "x$octave_cv_fortran_integer_size" = xno; then
+      AC_MSG_ERROR([in order to build octave with 64-bit indexing support your Fortran compiler must have a default integer size of 8 bytes.  See the file INSTALL for more information.])
+    fi
+  else
+    AC_MSG_ERROR([your Fortran compiler must have default integers that are the same size as octave_idx_type ($OCTAVE_IDX_TYPE).  See the file INSTALL for more information.])
+  fi
+fi
+
+FC=$F77
+AC_SUBST(FC)
+
+OCTAVE_F77_FLAG(-ffloat-store, [
+AC_MSG_RESULT([setting F77_FLOAT_STORE_FLAG to -ffloat-store])
+F77_FLOAT_STORE_FLAG=-ffloat-store
+AC_SUBST(F77_FLOAT_STORE_FLAG)
+])
+
+OCTAVE_IEEE754_DATA_FORMAT
 
 ### Check for the QHull library
 
@@ -753,73 +851,11 @@ fi
 AC_SUBST(GRAPHICS_CFLAGS)
 AC_SUBST(GRAPHICS_LIBS)
 
-OCTAVE_IEEE754_DATA_FORMAT
-
 # ----------------------------------------------------------------------
 
 OCTAVE_PROG_AR
 
 AC_PROG_RANLIB
-
-## Default FFLAGS is -O.
-if test "x$FFLAGS" = x; then
-  FFLAGS="-O"
-fi
-
-## the F77 variable, if set, overrides AC_PROG_F77 automatically
-AC_PROG_F77
-AC_F77_LIBRARY_LDFLAGS
-AC_F77_DUMMY_MAIN
-AC_F77_WRAPPERS
-
-F77_TOLOWER=true
-F77_APPEND_UNDERSCORE=true
-F77_APPEND_EXTRA_UNDERSCORE=true
-
-case "$ac_cv_f77_mangling" in
-  "upper case") F77_TOLOWER=false ;;
-esac
-case "$ac_cv_f77_mangling" in
-  "no underscore") F77_APPEND_UNDERSCORE=false ;;
-esac
-case "$ac_cv_f77_mangling" in
-  "no extra underscore") F77_APPEND_EXTRA_UNDERSCORE=false ;;
-esac
-
-case "$canonical_host_type" in
-  i[[3456789]]86-*-*)
-    if test "$ac_cv_f77_compiler_gnu" = yes; then
-      OCTAVE_F77_FLAG(-mieee-fp)
-###      OCTAVE_F77_FLAG(-ffloat-store)
-    fi
-  ;;
-  alpha*-*-*)
-    if test "$ac_cv_f77_compiler_gnu" = yes; then
-      OCTAVE_F77_FLAG(-mieee)
-    else
-      OCTAVE_F77_FLAG(-ieee)
-      OCTAVE_F77_FLAG(-fpe1)
-    fi
-  ;;
-  powerpc-apple-machten*)
-    FFLAGS=
-  ;;
-esac
-
-if test -n "$FFLAGS"; then
-  AC_MSG_NOTICE([defining FFLAGS to be $FFLAGS])
-fi
-
-AC_SUBST(F77_TOLOWER)
-AC_SUBST(F77_APPEND_UNDERSCORE)
-AC_SUBST(F77_APPEND_EXTRA_UNDERSCORE)
-
-if test -z "$F77"; then
-  AC_MSG_WARN([in order to build octave, you must have a compatible])
-  AC_MSG_WARN([Fortran compiler or wrapper script for f2c that functions])
-  AC_MSG_WARN([as a Fortran compiler installed and in your path.])
-  AC_MSG_ERROR([See the file INSTALL for more information.])
-fi
 
 XTRA_CRUFT_SH_LDFLAGS=
 case "$canonical_host_type" in
@@ -829,15 +865,6 @@ case "$canonical_host_type" in
   ;;
 esac
 AC_SUBST(XTRA_CRUFT_SH_LDFLAGS)
-
-FC=$F77
-AC_SUBST(FC)
-
-OCTAVE_F77_FLAG(-ffloat-store, [
-AC_MSG_RESULT([setting F77_FLOAT_STORE_FLAG to -ffloat-store])
-F77_FLOAT_STORE_FLAG=-ffloat-store
-AC_SUBST(F77_FLOAT_STORE_FLAG)
-])
 
 ### Checks for BLAS and LAPACK libraries:
 # (Build subdirectories of libcruft if they aren't found on the system.)

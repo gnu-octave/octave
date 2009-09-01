@@ -428,6 +428,57 @@ AC_DEFUN(OCTAVE_F77_FLAG, [
   fi
 ])
 dnl
+dnl Check to see whether the default Fortran INTEGER is 64 bits wide.
+dnl
+AC_DEFUN(OCTAVE_CHECK_FORTRAN_INTEGER_SIZE, [
+  AC_LANG_PUSH(Fortran 77)
+  AC_CACHE_CHECK([whether $F77 generates correct size integers],
+                 [octave_cv_fortran_integer_size],
+[AC_COMPILE_IFELSE(
+[      subroutine foo(n, in, out)
+      integer n, in(n), out(n)
+      integer i
+      do 10 i = 1, n
+        out(i) = in(i)
+   10 continue
+      return
+      end],
+[mv conftest.$ac_objext fintsize.$ac_objext
+
+  octave_fintsize_save_LIBS="$LIBS"
+  LIBS="fintsize.$ac_objext $[]_AC_LANG_PREFIX[]LIBS"
+  AC_LANG_PUSH(C)dnl
+  AC_RUN_IFELSE([AC_LANG_PROGRAM([[#include <assert.h>]], [[
+#ifdef USE_64_BIT_IDX_T
+#if IDX_TYPE_LONG
+  typedef long octave_idx_type;
+#else
+  typedef int octave_idx_type;
+#endif
+#else
+  typedef int octave_idx_type;
+#endif
+  octave_idx_type n = 2;
+  octave_idx_type in[2];
+  octave_idx_type out[2];
+  in[0] = 13;
+  in[0] = 42;
+  F77_FUNC(foo,FOO) (&n, &in, &out);
+  assert (in[0] == out[0] && in[1] == out[1]);
+]])],
+  [octave_cv_fortran_integer_size=yes],
+  [octave_cv_fortran_integer_size=no])
+  AC_LANG_POP(C)dnl
+
+LIBS="$octave_fintsize_save_LIBS"
+rm -f conftest.$ac_objext fintsize.$ac_objext
+], [
+  rm -f conftest.$ac_objext
+  AC_MSG_FAILURE([cannot compile a simple Fortran program])
+  octave_cv_fortran_integer_size=no])])
+  AC_LANG_POP(Fortran 77)
+])
+dnl
 dnl
 dnl
 dnl OCTAVE_CHECK_LIBRARY(LIBRARY, DOC-NAME, WARN-MSG, HEADER, FUNC,

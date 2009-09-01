@@ -1,3 +1,9 @@
+2009-09-01  John W. Eaton  <jwe@octave.org>
+
+	* aclocal.m4 (OCTAVE_REQUIRE_64_BIT_FORTRAN_INTEGERS): New macro.
+	* configure.in: Use it, if building with --enable-64.
+	Move checks for Fortran compiler ahead of checks for libraries.
+
 2009-09-01  Jaroslav Hajek  <highegg@gmail.com>
 
 	* NEWS: Update.

@@ -1,3 +1,7 @@
+2009-09-01  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-class.cc (get_current_method_class): Check before slicing.
+
 2009-08-26  Jaroslav Hajek  <highegg@gmail.com>
 
 	* data.cc (Ffmod): Reverse order of args.

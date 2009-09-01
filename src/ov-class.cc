@@ -105,7 +105,8 @@ get_current_method_class (void)
 
   std::string method_class = file_ops::tail (my_dir);
 
-  retval = method_class.substr (1);
+  if (method_class.size () > 0)
+    retval = method_class.substr (1);
 
   return retval;
 }

@@ -277,7 +277,9 @@ function retval = datestr (date, f, p)
     sec = vi(6);
     tm.sec = fix (sec);
     tm.usec = fix (rem (sec, 1) * 1e6);
-
+    ## Force mktime to check for DST.
+    tm.isdst = -1
+ 
     str = strftime (df, localtime (mktime (tm)));
 
     if (i == 1)

@@ -1,3 +1,7 @@
+2009-09-01  Christophe Tournery  <christophe.tournery@illusonic.com>
+
+	* audio/wavread.m: Rename data_size from obsolete ck_size.
+
 2009-08-31  David Bateman  <dbateman@free.fr>
 
 	* general/quadgk.m: More care with the interval length and

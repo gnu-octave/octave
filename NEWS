@@ -74,6 +74,13 @@ Summary of important user-visible changes for version 3.3:
     the pairs [abs(z), arg(z)]. Previously, only real parts were compared; this can be
     trivially achieved by wrapping the operands in real().
 
+ ** As a side effect of code refactoring in liboctave, the binary logical operations
+    are now more easily amenable to compiler optimizations and are thus significantly
+    faster.
+
+ ** Octave now allows user-defined subsasgn methods to optimize out redundant copies.
+    For more information, see the manual.
+
 Summary of important user-visible changes for version 3.2:
 ---------------------------------------------------------
 

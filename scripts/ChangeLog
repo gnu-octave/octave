@@ -1,3 +1,7 @@
+2009-08-29  John W. Eaton  <jwe@octave.org>
+
+	* time/datestr.m: Add missing semicolon.
+
 2009-08-26  E. Joshua Rigler  <relgire@gmail.com>
 
 	* time/datestr.m: Set tm.isdst to -1 before calling mktime.

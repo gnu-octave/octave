@@ -58,8 +58,8 @@ inline bool operator OP (T a, const std::complex<T>& b) \
 
 DEF_COMPLEXR_COMP (>, >)
 DEF_COMPLEXR_COMP (<, <)
-DEF_COMPLEXR_COMP (<=, <=)
-DEF_COMPLEXR_COMP (>=, >=)
+DEF_COMPLEXR_COMP (<=, <)
+DEF_COMPLEXR_COMP (>=, >)
 
 #endif
 

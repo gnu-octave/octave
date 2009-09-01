@@ -64,7 +64,7 @@ function retval = std (a, opt, dim)
   if (nargin < 1 || nargin > 3)
     print_usage ();
   endif
-  if nargin < 3
+  if (nargin < 3)
     dim = find (size (a) > 1, 1);
     if (isempty (dim))
       dim = 1;
@@ -76,7 +76,7 @@ function retval = std (a, opt, dim)
 
   n = size (a, dim);
   if (n == 1)
-    retval = zeros (sz);
+    retval = zeros (size (a));
   elseif (numel (a) > 0)
     retval = sqrt (sumsq (center (a, dim), dim) / (n + opt - 1));
   else
@@ -89,8 +89,9 @@ endfunction
 %! x = ones (10, 2);
 %! y = [1, 3];
 %! assert(std (x) == [0, 0] && abs (std (y) - sqrt (2)) < sqrt (eps));
+%! assert (std (x, 0, 3), zeros (10, 2))
+%! assert (std (ones (3, 1, 2), 0, 2), zeros (3, 1, 2))
 
 %!error std ();
 
 %!error std (1, 2, 3, 4);
-

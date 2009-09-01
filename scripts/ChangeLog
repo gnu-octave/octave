@@ -1,3 +1,7 @@
+2009-08-06  Olaf Till <olaf.till@uni-jena.de>
+
+	* geometry/griddata.m: Linearize arrays.
+
 2009-08-25  John W. Eaton  <jwe@octave.org>
 
 	* plot/__gnuplot_open_stream__.m: Save pid in __plot_stream__ property.

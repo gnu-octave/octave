@@ -1,6 +1,6 @@
 2009-09-02  Jaroslav Hajek  <highegg@gmail.com>
 
-	* oct-cmplx.h: Rewrite the comaprison ops. Use FLOAT_STORE.
+	* oct-cmplx.h: Rewrite the comaprison ops. Use FLOAT_TRUNCATE.
 
 2009-09-01  Jaroslav Hajek  <highegg@gmail.com>
 

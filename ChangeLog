@@ -1,6 +1,6 @@
 2009-09-02  Jaroslav Hajek  <highegg@gmail.com>
 
-	* configure.in (FLOAT_STORE): New config macro.
+	* configure.in (FLOAT_TRUNCATE): New config macro.
 
 2009-09-02  Jaroslav Hajek  <highegg@gmail.com>
 

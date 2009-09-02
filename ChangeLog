@@ -1,3 +1,8 @@
+2009-09-02  Jaroslav Hajek  <highegg@gmail.com>
+
+	* acx_blas_f77_func.m4 (ACX_BLAS_F77_FUNC): Check for correct INTEGER
+	size.
+
 2009-09-01  John W. Eaton  <jwe@octave.org>
 
 	* aclocal.m4 (OCTAVE_REQUIRE_64_BIT_FORTRAN_INTEGERS): New macro.

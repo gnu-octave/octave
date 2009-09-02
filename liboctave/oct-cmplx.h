@@ -2,6 +2,7 @@
 
 Copyright (C) 1995, 1996, 1997, 2000, 2001, 2004, 2005, 2007, 2008, 2009
               John W. Eaton
+Copyright (C) 2009 VZLU Prague, a.s.
 
 This file is part of Octave.
 
@@ -40,21 +41,39 @@ typedef std::complex<float> FloatComplex;
 template <class T> \
 inline bool operator OP (const std::complex<T>& a, const std::complex<T>& b) \
 { \
-  T ax = std::abs (a), bx = std::abs (b); \
-  return ax OPS bx || (ax == bx && std::arg (a) OP std::arg (b)); \
+  FLOAT_TRUNCATE const T ax = std::abs (a), bx = std::abs (b); \
+  if (ax == bx) \
+    { \
+      FLOAT_TRUNCATE const T ay = std::arg (a), by = std::arg (b); \
+      return ay OP by; \
+    } \
+  else \
+    return ax OPS bx; \
 } \
 template <class T> \
 inline bool operator OP (const std::complex<T>& a, T b) \
 { \
-  T ax = std::abs (a); \
-  return ax OPS b || (ax == b && std::arg (a) OP 0); \
+  FLOAT_TRUNCATE const T ax = std::abs (a); \
+  if (ax == b) \
+    { \
+      FLOAT_TRUNCATE const T ay = std::arg (a); \
+      return ay OP 0; \
+    } \
+  else \
+    return ax OPS b; \
 } \
 template <class T> \
 inline bool operator OP (T a, const std::complex<T>& b) \
 { \
-  T bx = std::abs (b); \
-  return a OPS bx || (a == bx && 0 OP std::arg (b)); \
-} \
+  FLOAT_TRUNCATE const T bx = std::abs (b); \
+  if (a == bx) \
+    { \
+      FLOAT_TRUNCATE const T by = std::arg (b); \
+      return 0 OP by; \
+    } \
+  else \
+    return a OPS bx; \
+}
 
 DEF_COMPLEXR_COMP (>, >)
 DEF_COMPLEXR_COMP (<, <)

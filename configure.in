@@ -289,6 +289,23 @@ if test $have_framework_carbon = "yes"; then
   AC_SUBST(CARBON_LIBS)
 fi
 
+### When compiling math for x87, problems may arise in some code comparing
+### floating-point intermediate results.
+### Generally, it helps to store the result in a local volatile variable,
+### but it also degrades performance.
+### Thus, we provide a FLOAT_TRUNCATE macro that may be defined to "volatile"
+### when compiling for x87 target, or left empty for modern SSE math, that
+### doesn't suffer from this problem at all.
+AC_ARG_ENABLE(float-truncate,
+  [AS_HELP_STRING([--enable-float-truncate],
+     [enables truncating intermediate FP results.])],
+  [if test "$enableval" = yes; then ac_float_truncate=volatile;
+   else ac_float_truncate=; fi],
+  ac_float_truncate=)
+
+AC_DEFINE_UNQUOTED(FLOAT_TRUNCATE, $ac_float_truncate, 
+	  [Define to volatile if you need truncating intermediate FP results])
+
 ### On Intel systems with gcc, we may need to compile with -mieee-fp
 ### and -ffloat-store to get full support for IEEE floating point.
 ###

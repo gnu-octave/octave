@@ -308,11 +308,11 @@ bool
 octave_perm_matrix::save_binary (std::ostream& os, bool&)
 {
 
-  int32_t size = matrix.rows ();
+  int32_t sz = matrix.rows ();
   bool colp = matrix.is_col_perm ();
-  os.write (reinterpret_cast<char *> (&size), 4);
+  os.write (reinterpret_cast<char *> (&sz), 4);
   os.write (reinterpret_cast<char *> (&colp), 1);
-  os.write (reinterpret_cast<const char *> (matrix.data ()), matrix.byte_size());
+  os.write (reinterpret_cast<const char *> (matrix.data ()), matrix.byte_size ());
 
   return true;
 }
@@ -321,13 +321,13 @@ bool
 octave_perm_matrix::load_binary (std::istream& is, bool swap,
                                  oct_mach_info::float_format )
 {
-  int32_t size;
+  int32_t sz;
   bool colp;
-  if (! (is.read (reinterpret_cast<char *> (&size), 4)
+  if (! (is.read (reinterpret_cast<char *> (&sz), 4)
          && is.read (reinterpret_cast<char *> (&colp), 1)))
     return false;
 
-  MArray<octave_idx_type> m (size);
+  MArray<octave_idx_type> m (sz);
 
   if (! is.read (reinterpret_cast<char *> (m.fortran_vec ()), m.byte_size ()))
     return false;

@@ -1,3 +1,11 @@
+2009-09-02  John W. Eaton  <jwe@octave.org>
+
+	* graphics.cc (axes::properties::calc_ticklabels):
+	Avoid unused parameter warning from gcc.
+
+	* ov-perm.cc (octave_perm_matrix::save_binary,
+	octave_perm_matrix::load_binary): Avoid shadow warning from gcc.
+
 2008-09-01  David Bateman  <dbateman@free.fr>
 
 	* DLD-FUNCTIONS/eig.cc (Feigs): Correct nesting error in option

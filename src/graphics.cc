@@ -3513,7 +3513,7 @@ axes::properties::calc_ticks_and_lims (array_property& lims,
 
 void
 axes::properties::calc_ticklabels (const array_property& ticks,
-				   any_property& labels, bool logscale)
+				   any_property& labels, bool /*logscale*/)
 {
   Matrix values = ticks.get ().matrix_value ();
   Cell c (values.dims ());

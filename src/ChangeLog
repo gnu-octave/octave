@@ -1,3 +1,9 @@
+2008-09-01  David Bateman  <dbateman@free.fr>
+
+	* DLD-FUNCTIONS/eig.cc (Feigs): Correct nesting error in option
+	parsing that prevented the use of a function for generalized
+	eigenvalue problems.
+
 2009-09-01  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-class.cc (get_current_method_class): Check before slicing.

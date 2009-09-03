@@ -837,7 +837,7 @@ K Maschhoff, D Sorensen and C Yang.  For more information see\n\
 %! assert (d1, eigs(A,k,4.1), 1e-11);
 %!testif HAVE_ARPACK
 %! AA = speye (10);
-%! fn = @(x) A * x;
+%! fn = @(x) AA * x;
 %! opts.issym = 1; opts.isreal = 1;
 %! assert (eigs (fn, 10, AA, 3, 'lm', opts), [1; 1; 1]);
 %!testif HAVE_ARPACK

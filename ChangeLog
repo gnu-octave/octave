@@ -1,3 +1,7 @@
+2009-09-03  John W. Eaton  <jwe@octave.org>
+
+	* configure.in (AH_BOTTOM): If HAVE_Z is defined, define HAVE_ZLIB.
+
 2009-09-03  Jaroslav Hajek  <highegg@gmail.com>
 
 	* NEWS: Update.

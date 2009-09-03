@@ -2028,6 +2028,11 @@ typedef int sig_atomic_t;
 #define HAVE_FFTW
 #endif
 
+// Backward compatibility.
+#if defined (HAVE_Z)
+#define HAVE_ZLIB
+#endif
+
 #include "oct-dlldefs.h"
 #include "oct-types.h"
 ])

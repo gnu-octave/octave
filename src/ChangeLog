@@ -1,5 +1,10 @@
 2009-09-03  Jaroslav Hajek  <highegg@gmail.com>
 
+	* ov.cc (octave_value::assign (assign_op, const octave_value&)):
+	Call maybe_mutate after in-place operation.
+
+2009-09-03  Jaroslav Hajek  <highegg@gmail.com>
+
 	* ov.cc (octave_value::do_non_const_unary_op): Split to
 	genuine/non-genuine case.
 	(octave_value::binary_op_to_assign_op): New method.

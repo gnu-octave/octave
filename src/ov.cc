@@ -1286,6 +1286,7 @@ octave_value::assign (assign_op op, const octave_value& rhs)
 	  try
 	    {
 	      f (*rep, octave_value_list (), *rhs.rep);
+              maybe_mutate (); // Usually unnecessary, but may be needed (complex arrays).
 	    }
 	  catch (octave_execution_exception)
 	    {

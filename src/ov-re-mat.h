@@ -177,9 +177,10 @@ public:
 
   octave_value diag (octave_idx_type k = 0) const;
 
-  void increment (void) { matrix += 1.0; }
+  // Use matrix_ref here to clear index cache.
+  void increment (void) { matrix_ref () += 1.0; }
 
-  void decrement (void) { matrix -= 1.0; }
+  void decrement (void) { matrix_ref () -= 1.0; }
 
   octave_value convert_to_str_internal (bool pad, bool force, char type) const;
 

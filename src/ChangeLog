@@ -1,3 +1,13 @@
+2009-09-03  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-re-mat.h (octave_matrix::increment, octave_matrix::decrement):
+	Use matrix_ref.
+	* ov-flt-re-mat.h (octave_float_matrix::increment,
+	octave_float_matrix::decrement): Use matrix_ref.
+	* ov-intx.h (OCTAVE_VALUE_INT_MATRIX_T::increment,
+	OCTAVE_VALUE_INT_MATRIX_T::decrement):
+	Use matrix_ref.
+
 2009-09-02  John W. Eaton  <jwe@octave.org>
 
 	* graphics.cc (axes::properties::calc_ticklabels):

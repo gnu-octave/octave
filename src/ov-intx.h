@@ -299,9 +299,10 @@ public:
     return retval;
   }
 
+  // Use matrix_ref here to clear index cache.
   void increment (void) 
    { 
-     matrix += OCTAVE_INT_T (1); 
+     matrix_ref() += OCTAVE_INT_T (1); 
      if (OCTAVE_INT_T::get_math_trunc_flag ())
        gripe_unop_integer_math_truncated ("++", type_name (). c_str ());
 
@@ -310,7 +311,7 @@ public:
 
   void decrement (void)
    { 
-     matrix -= OCTAVE_INT_T (1); 
+     matrix_ref() -= OCTAVE_INT_T (1); 
      if (OCTAVE_INT_T::get_math_trunc_flag ())
        gripe_unop_integer_math_truncated ("--", type_name (). c_str ());
       OCTAVE_INT_T::clear_conv_flag ();

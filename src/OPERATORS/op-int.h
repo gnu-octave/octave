@@ -698,7 +698,8 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
   } \
  \
   DEFNCUNOP_METHOD (m_incr, TYPE ## _matrix, increment) \
-  DEFNCUNOP_METHOD (m_decr, TYPE ## _matrix, decrement)
+  DEFNCUNOP_METHOD (m_decr, TYPE ## _matrix, decrement) \
+  DEFNCUNOP_METHOD (m_changesign, TYPE ## _matrix, changesign)
 
 #define OCTAVE_MM_INT_ARITH_OPS(PFX, T1, T2, T3)	\
   /* matrix by matrix ops. */ \
@@ -1096,7 +1097,8 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
   INSTALL_UNOP (op_hermitian, octave_ ## TYPE ## _matrix, m_transpose); \
  \
   INSTALL_NCUNOP (op_incr, octave_ ## TYPE ## _matrix, m_incr); \
-  INSTALL_NCUNOP (op_decr, octave_ ## TYPE ## _matrix, m_decr);
+  INSTALL_NCUNOP (op_decr, octave_ ## TYPE ## _matrix, m_decr); \
+  INSTALL_NCUNOP (op_uminus, octave_ ## TYPE ## _matrix, m_changesign);
 
 #define OCTAVE_INSTALL_MM_INT_ARITH_OPS(PFX, T1, T2)			\
   INSTALL_BINOP (op_add, octave_ ## T1 ## matrix, octave_ ## T2 ## matrix, PFX ## _add); \

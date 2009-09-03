@@ -1,3 +1,22 @@
+2009-09-03  Jaroslav Hajek  <highegg@gmail.com>
+
+	* mx-inlines.cc (DEFMXUNOPEQ): New macro.
+	(mx_inline_not2, mx_inline_uminus2): New loops.
+	* boolNDArray.cc (boolNDArray::invert): New method.
+	* boolNDArray.h: Declare it.
+	* MArrayN.cc (MArrayN<T>::changesign): New method.
+	* MArrayN.h: Declare it.
+	* dNDArray.cc (NDArray::changesign): New method.
+	* dNDArray.h: Declare it.
+	* fNDArray.cc (FloatNDArray::changesign): New method.
+	* fNDArray.h: Declare it.
+	* CNDArray.cc (ComplexNDArray::changesign): New method.
+	* CNDArray.h: Declare it.
+	* fCNDArray.cc (FloatComplexNDArray::changesign): New method.
+	* fCNDArray.h: Declare it.
+	* intNDArray.cc (intNDArray::changesign): New method.
+	* intNDArray.h: Declare it.
+
 2009-09-02  Jaroslav Hajek  <highegg@gmail.com>
 
 	* oct-cmplx.h: Rewrite the comaprison ops. Use FLOAT_TRUNCATE.

@@ -474,6 +474,44 @@ octave_value::assign_op_as_string (assign_op op)
   return retval;
 }
 
+octave_value::assign_op
+octave_value::binary_op_to_assign_op (binary_op op)
+{
+  assign_op retval;
+
+  switch (op)
+    {
+    case op_add:
+      retval = op_add_eq;
+      break;
+    case op_sub:
+      retval = op_sub_eq;
+      break;
+    case op_mul:
+      retval = op_mul_eq;
+      break;
+    case op_div:
+      retval = op_div_eq;
+      break;
+    case op_el_mul:
+      retval = op_el_mul_eq;
+      break;
+    case op_el_div:
+      retval = op_el_div_eq;
+      break;
+    case op_el_and:
+      retval = op_el_and_eq;
+      break;
+    case op_el_or:
+      retval = op_el_or_eq;
+      break;
+    default:
+      retval = unknown_assign_op;
+    }
+
+  return retval;
+}
+
 octave_value::octave_value (short int i)
   : rep (new octave_scalar (i))
 {
@@ -2246,77 +2284,104 @@ gripe_unary_op_conversion_failed (const std::string& op,
 const octave_value&
 octave_value::do_non_const_unary_op (unary_op op)
 {
-  octave_value retval;
-
-  int t = type_id ();
-
-  octave_value_typeinfo::non_const_unary_op_fcn f
-    = octave_value_typeinfo::lookup_non_const_unary_op (op, t);
-
-  if (f)
+  if (op == op_incr || op == op_decr)
     {
-      make_unique ();
+      // Genuine.
+      int t = type_id ();
 
-      try
-	{
-	  f (*rep);
-	}
-      catch (octave_execution_exception)
-	{
-	  gripe_library_execution_error ();
-	}
+      octave_value_typeinfo::non_const_unary_op_fcn f
+        = octave_value_typeinfo::lookup_non_const_unary_op (op, t);
+
+      if (f)
+        {
+          make_unique ();
+
+          try
+            {
+              f (*rep);
+            }
+          catch (octave_execution_exception)
+            {
+              gripe_library_execution_error ();
+            }
+        }
+      else
+        {
+          octave_base_value::type_conv_fcn cf = numeric_conversion_function ();
+
+          if (cf)
+            {
+              octave_base_value *tmp = cf (*rep);
+
+              if (tmp)
+                {
+                  octave_base_value *old_rep = rep;
+                  rep = tmp;
+
+                  t = type_id ();
+
+                  f = octave_value_typeinfo::lookup_non_const_unary_op (op, t);
+
+                  if (f)
+                    {
+                      try
+                        {
+                          f (*rep);
+                        }
+                      catch (octave_execution_exception)
+                        {
+                          gripe_library_execution_error ();
+                        }
+
+                      if (old_rep && --old_rep->count == 0)
+                        delete old_rep;
+                    }
+                  else
+                    {
+                      if (old_rep)
+                        {
+                          if (--rep->count == 0)
+                            delete rep;
+
+                          rep = old_rep;
+                        }
+
+                      gripe_unary_op (octave_value::unary_op_as_string (op),
+                                      type_name ());
+                    }
+                }
+              else
+                gripe_unary_op_conversion_failed
+                  (octave_value::unary_op_as_string (op), type_name ());
+            }
+          else
+            gripe_unary_op (octave_value::unary_op_as_string (op), type_name ());
+        }
     }
   else
     {
-      octave_base_value::type_conv_fcn cf = numeric_conversion_function ();
+      // Non-genuine.
+      int t = type_id ();
 
-      if (cf)
-	{
-	  octave_base_value *tmp = cf (*rep);
+      octave_value_typeinfo::non_const_unary_op_fcn f = 0;
 
-	  if (tmp)
-	    {
-	      octave_base_value *old_rep = rep;
-	      rep = tmp;
+      // Only attempt to operate in-place if this variable is unshared.
+      if (rep->count == 1)
+        f = octave_value_typeinfo::lookup_non_const_unary_op (op, t);
 
-	      t = type_id ();
-
-	      f = octave_value_typeinfo::lookup_non_const_unary_op (op, t);
-
-	      if (f)
-		{
-		  try
-		    {
-		      f (*rep);
-		    }
-		  catch (octave_execution_exception)
-		    {
-		      gripe_library_execution_error ();
-		    }
-
-		  if (old_rep && --old_rep->count == 0)
-		    delete old_rep;
-		}
-	      else
-		{
-		  if (old_rep)
-		    {
-		      if (--rep->count == 0)
-			delete rep;
-
-		      rep = old_rep;
-		    }
-
-		  gripe_unary_op (octave_value::unary_op_as_string (op),
-				  type_name ());
-		}
-	    }
-	  else
-	    gripe_unary_op_conversion_failed
-	      (octave_value::unary_op_as_string (op), type_name ());
-	}
+      if (f)
+        {
+          try
+            {
+              f (*rep);
+            }
+          catch (octave_execution_exception)
+            {
+              gripe_library_execution_error ();
+            }
+        }
       else
-	gripe_unary_op (octave_value::unary_op_as_string (op), type_name ());
+        *this = do_unary_op (op, *this);
     }
 
   return *this;

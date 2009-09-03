@@ -70,6 +70,7 @@ DEFUNOP (hermitian, complex_matrix)
 
 DEFNCUNOP_METHOD (incr, complex_matrix, increment)
 DEFNCUNOP_METHOD (decr, complex_matrix, decrement)
+DEFNCUNOP_METHOD (changesign, complex_matrix, changesign)
 
 // complex matrix by complex matrix ops.
 
@@ -186,6 +187,7 @@ install_cm_cm_ops (void)
 
   INSTALL_NCUNOP (op_incr, octave_complex_matrix, incr);
   INSTALL_NCUNOP (op_decr, octave_complex_matrix, decr);
+  INSTALL_NCUNOP (op_uminus, octave_complex_matrix, changesign);
 
   INSTALL_BINOP (op_add, octave_complex_matrix, octave_complex_matrix, add);
   INSTALL_BINOP (op_sub, octave_complex_matrix, octave_complex_matrix, sub);

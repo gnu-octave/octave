@@ -66,7 +66,12 @@ tree_binary_expression::rvalue1 (int)
 
 	  if (! error_state && b.is_defined ())
 	    {
-	      retval = ::do_binary_op (etype, a, b);
+              octave_value::assign_op aop = octave_value::binary_op_to_assign_op (etype);
+
+              if (aop == octave_value::unknown_assign_op)
+                retval = ::do_binary_op (etype, a, b);
+              else
+                retval = a.assign (aop, b);
 
 	      if (error_state)
 		retval = octave_value ();

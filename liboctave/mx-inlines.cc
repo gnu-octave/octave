@@ -49,6 +49,13 @@ inline void F (size_t n, R *r, const X *x) \
 
 DEFMXUNOP (mx_inline_uminus, -)
 
+#define DEFMXUNOPEQ(F, OP) \
+template <class R> \
+inline void F (size_t n, R *r) \
+{ for (size_t i = 0; i < n; i++) r[i] = OP r[i]; }
+
+DEFMXUNOPEQ (mx_inline_uminus2, -)
+
 #define DEFMXUNBOOLOP(F, OP) \
 template <class X> \
 inline void F (size_t n, bool *r, const X *x) \
@@ -125,6 +132,11 @@ void mx_inline_not (size_t n, bool *r, const X* x)
 {
   for (size_t i = 0; i < n; i++)
     r[i] = ! logical_value (x[i]);
+}
+
+inline void mx_inline_not2 (size_t n, bool *r)
+{
+  for (size_t i = 0; i < n; i++) r[i] = ! r[i];
 }
 
 #define DEFMXBOOLOP(F, NOT1, OP, NOT2) \
@@ -221,6 +233,16 @@ do_mx_unary_op (const XNDA& x,
   op (r.nelem (), r.fortran_vec (), x.data ());
   return r;
 }
+
+template <class RNDA>
+inline RNDA&
+do_mx_inplace_op (RNDA& r,
+                  void (*op) (size_t, typename RNDA::element_type *))
+{
+  op (r.numel (), r.fortran_vec ());
+  return r;
+}
+
 
 template <class RNDA, class XNDA, class YNDA>
 inline RNDA 

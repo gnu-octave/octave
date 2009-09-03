@@ -109,6 +109,8 @@ public:
   {
     return ArrayN<T>::template map<U> (fcn);
   }
+
+  void changesign (void);
 };
 
 #endif

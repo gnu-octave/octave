@@ -59,6 +59,8 @@ public:
 
   boolNDArray operator ! (void) const;
 
+  boolNDArray& invert (void); 
+
   bool any_element_is_nan (void) const { return false; }
 
   // FIXME -- this is not quite the right thing.

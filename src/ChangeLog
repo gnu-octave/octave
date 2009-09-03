@@ -1,5 +1,30 @@
 2009-09-03  Jaroslav Hajek  <highegg@gmail.com>
 
+	* ov.cc (octave_value::do_non_const_unary_op): Split to
+	genuine/non-genuine case.
+	(octave_value::binary_op_to_assign_op): New method.
+	* ov.h: Declare it.
+	* ov-re-mat.h (octave_matrix::changesign): New method.
+	* ov-flt-re-mat.h (octave_float_matrix::changesign): New method.
+	* ov-cx-mat.h (octave_complex_matrix::changesign): New method.
+	* ov-flt-cx-mat.h (octave_float_complex_matrix::changesign): New
+	method.
+	* ov-intx.h (OCTAVE_VALUE_INT_MATRIX_T::changesign): New method.
+	* ov-bool-mat.h (octave_bool_matrix::invert): New method.
+	* pt-unop.cc (tree_prefix_expression::rvalue1): Use
+	do_non_const_unary_op.
+	* pt-binop.cc (tree_binary_expression::rvalue1): If possible,
+	convert to computed assignment.
+
+	* OPERATORS/op-m-m.cc: Define & install in-place minus operation.
+	* OPERATORS/op-fm-fm.cc: Ditto.
+	* OPERATORS/op-cm-cm.cc: Ditto.
+	* OPERATORS/op-fcm-fcm.cc: Ditto.
+	* OPERATORS/op-int.h: Ditto.
+	* OPERATORS/op-bm-bm.cc: Define & install in-place not operation.
+
+2009-09-03  Jaroslav Hajek  <highegg@gmail.com>
+
 	* ov-re-mat.h (octave_matrix::increment, octave_matrix::decrement):
 	Use matrix_ref.
 	* ov-flt-re-mat.h (octave_float_matrix::increment,

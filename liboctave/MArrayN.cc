@@ -29,8 +29,18 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-error.h"
 
 #include "MArray-defs.h"
+#include "mx-inlines.cc"
 
 // N-dimensional array with math ops.
+template <class T>
+void
+MArrayN<T>::changesign (void)
+{
+  if (Array<T>::is_shared ())
+    *this = - *this;
+  else
+    do_mx_inplace_op<MArrayN<T> > (*this, mx_inline_uminus2);
+}
 
 // Element by element MArrayN by scalar ops.
 

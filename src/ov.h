@@ -141,6 +141,8 @@ public:
     unknown_assign_op
   };
 
+  static assign_op binary_op_to_assign_op (binary_op);
+
   static std::string unary_op_as_string (unary_op);
   static std::string unary_op_fcn_name (unary_op);
 

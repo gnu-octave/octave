@@ -57,6 +57,7 @@ DEFUNOP (transpose, float_matrix)
 
 DEFNCUNOP_METHOD (incr, float_matrix, increment)
 DEFNCUNOP_METHOD (decr, float_matrix, decrement)
+DEFNCUNOP_METHOD (changesign, float_matrix, changesign)
 
 // matrix by matrix ops.
 
@@ -188,6 +189,7 @@ install_fm_fm_ops (void)
 
   INSTALL_NCUNOP (op_incr, octave_float_matrix, incr);
   INSTALL_NCUNOP (op_decr, octave_float_matrix, decr);
+  INSTALL_NCUNOP (op_uminus, octave_float_matrix, changesign);
 
   INSTALL_BINOP (op_add, octave_float_matrix, octave_float_matrix, add);
   INSTALL_BINOP (op_sub, octave_float_matrix, octave_float_matrix, sub);

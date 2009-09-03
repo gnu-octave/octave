@@ -42,6 +42,17 @@ boolNDArray::operator ! (void) const
   return do_mx_unary_op<boolNDArray> (*this, mx_inline_not);
 }
 
+boolNDArray&
+boolNDArray::invert (void)
+{
+  if (is_shared ())
+    *this = ! *this;
+  else
+    do_mx_inplace_op<boolNDArray> (*this, mx_inline_not2);
+
+  return *this;
+}
+
 // FIXME -- this is not quite the right thing.
 
 boolNDArray

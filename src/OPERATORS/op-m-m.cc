@@ -57,6 +57,7 @@ DEFUNOP (transpose, matrix)
 
 DEFNCUNOP_METHOD (incr, matrix, increment)
 DEFNCUNOP_METHOD (decr, matrix, decrement)
+DEFNCUNOP_METHOD (changesign, matrix, changesign)
 
 // matrix by matrix ops.
 
@@ -161,6 +162,7 @@ install_m_m_ops (void)
 
   INSTALL_NCUNOP (op_incr, octave_matrix, incr);
   INSTALL_NCUNOP (op_decr, octave_matrix, decr);
+  INSTALL_NCUNOP (op_uminus, octave_matrix, changesign);
 
   INSTALL_BINOP (op_add, octave_matrix, octave_matrix, add);
   INSTALL_BINOP (op_sub, octave_matrix, octave_matrix, sub);

@@ -317,6 +317,14 @@ public:
       OCTAVE_INT_T::clear_conv_flag ();
    }
 
+  void changesign (void)
+   { 
+     matrix_ref ().changesign (); 
+     if (OCTAVE_INT_T::get_math_trunc_flag ())
+       gripe_unop_integer_math_truncated ("-", type_name (). c_str ());
+      OCTAVE_INT_T::clear_conv_flag ();
+   }
+
   idx_vector index_vector (void) const 
     { return idx_cache ? *idx_cache : set_idx_cache (idx_vector (matrix)); }
 

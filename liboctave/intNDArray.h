@@ -68,6 +68,12 @@ public:
 
   intNDArray diag (octave_idx_type k = 0) const;
 
+  intNDArray& changesign (void) 
+    { 
+      MArrayN<T>::changesign (); 
+      return *this; 
+    }
+
   // FIXME -- this is not quite the right thing.
 
   boolNDArray all (int dim = -1) const;

@@ -55,6 +55,8 @@ DEFNDUNOP_OP (not, bool_matrix, bool_array, !)
 DEFNDUNOP_OP (uplus, bool_matrix, array, +)
 DEFNDUNOP_OP (uminus, bool_matrix, array, -)
 
+DEFNCUNOP_METHOD (invert, bool_matrix, invert)
+
 DEFUNOP (transpose, bool_matrix)
 {
   CAST_UNOP_ARG (const octave_bool_matrix&);
@@ -132,6 +134,8 @@ install_bm_bm_ops (void)
   INSTALL_UNOP (op_uminus, octave_bool_matrix, uminus);
   INSTALL_UNOP (op_transpose, octave_bool_matrix, transpose);
   INSTALL_UNOP (op_hermitian, octave_bool_matrix, transpose);
+
+  INSTALL_NCUNOP (op_not, octave_bool_matrix, invert);
 
   INSTALL_BINOP (op_eq, octave_bool_matrix, octave_bool_matrix, eq);
   INSTALL_BINOP (op_ne, octave_bool_matrix, octave_bool_matrix, ne);

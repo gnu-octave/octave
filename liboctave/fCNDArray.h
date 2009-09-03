@@ -138,6 +138,12 @@ public:
 
   FloatComplexNDArray diag (octave_idx_type k = 0) const;
 
+  FloatComplexNDArray& changesign (void) 
+    { 
+      MArrayN<FloatComplex>::changesign (); 
+      return *this; 
+    }
+
   typedef float (*dmapper) (const FloatComplex&);
   typedef FloatComplex (*cmapper) (const FloatComplex&);
   typedef bool (*bmapper) (const FloatComplex&);

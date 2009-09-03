@@ -182,6 +182,8 @@ public:
 
   void decrement (void) { matrix_ref () -= 1.0; }
 
+  void changesign (void) { matrix_ref ().changesign (); }
+
   octave_value convert_to_str_internal (bool pad, bool force, char type) const;
 
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;

@@ -149,6 +149,12 @@ public:
 
   NDArray diag (octave_idx_type k = 0) const;
 
+  NDArray& changesign (void) 
+    { 
+      MArrayN<double>::changesign (); 
+      return *this; 
+    }
+
   typedef double (*dmapper) (double);
   typedef Complex (*cmapper) (const Complex&);
   typedef bool (*bmapper) (double);

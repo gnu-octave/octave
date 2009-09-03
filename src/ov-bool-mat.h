@@ -175,6 +175,9 @@ public:
 
   octave_value convert_to_str_internal (bool pad, bool force, char type) const;
 
+  // Use matrix_ref here to clear index cache.
+  void invert (void) { matrix_ref ().invert (); }
+
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 
   bool save_ascii (std::ostream& os);

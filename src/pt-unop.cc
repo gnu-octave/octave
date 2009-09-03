@@ -89,7 +89,7 @@ tree_prefix_expression::rvalue1 (int)
 
 	  if (! error_state && val.is_defined ())
 	    {
-	      retval = ::do_unary_op (etype, val);
+	      retval = val.do_non_const_unary_op (etype);
 
 	      if (error_state)
 		retval = octave_value ();

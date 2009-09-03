@@ -134,6 +134,8 @@ public:
 
   void decrement (void) { matrix -= FloatComplex (1.0); }
 
+  void changesign (void) { matrix.changesign (); }
+
   bool save_ascii (std::ostream& os);
 
   bool load_ascii (std::istream& is);

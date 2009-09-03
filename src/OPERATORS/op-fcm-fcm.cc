@@ -70,6 +70,7 @@ DEFUNOP (hermitian, float_complex_matrix)
 
 DEFNCUNOP_METHOD (incr, float_complex_matrix, increment)
 DEFNCUNOP_METHOD (decr, float_complex_matrix, decrement)
+DEFNCUNOP_METHOD (changesign, float_complex_matrix, changesign)
 
 // complex matrix by complex matrix ops.
 
@@ -216,6 +217,7 @@ install_fcm_fcm_ops (void)
 
   INSTALL_NCUNOP (op_incr, octave_float_complex_matrix, incr);
   INSTALL_NCUNOP (op_decr, octave_float_complex_matrix, decr);
+  INSTALL_NCUNOP (op_uminus, octave_float_complex_matrix, changesign);
 
   INSTALL_BINOP (op_add, octave_float_complex_matrix, 
 		 octave_float_complex_matrix, add);

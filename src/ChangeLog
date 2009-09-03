@@ -1,3 +1,8 @@
+2009-09-03  John W. Eaton  <jwe@octave.org>
+
+	* pr-output.cc (set_format (const Complex&, int&, int&)):
+	Avoid passing NaN or Inf to log10.
+
 2009-09-03  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov.cc (octave_value::assign (assign_op, const octave_value&)):

@@ -1,3 +1,15 @@
+2009-09-04  John W. Eaton  <jwe@octave.org>
+
+	* txt-eng-ft.cc (ft_manager::do_get_font, ft_render::set_font,
+	ft_render::set_mode, ft_render::visit, ft_render::set_color):
+	Issue warnings instead of errors for non-fatal problems.
+	(ft_render::visit): If face is null, then return without warning.
+	* genprops.awk: Also generate const std::string& and const char*
+	versions of the get member functions.
+	* gl-render.cc (opengl_renderer::draw): Omit caseless_str
+	constructor in call to get method.
+	* ft_render::set_font (): Likewise.
+
 2009-09-03  John W. Eaton  <jwe@octave.org>
 
 	* pr-output.cc (set_format (const Complex&, int&, int&)):

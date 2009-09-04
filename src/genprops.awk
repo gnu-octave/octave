@@ -246,6 +246,8 @@ function emit_common_declarations ()
   printf ("  void set (const caseless_str& pname, const octave_value& val);\n\n");
   printf ("  octave_value get (bool all = false) const;\n\n");
   printf ("  octave_value get (const caseless_str& pname) const;\n\n");
+  printf ("  octave_value get (const std::string& pname) const\n  {\n  return get (caseless_str (pname)); }\n\n");
+  printf ("  octave_value get (const char *pname) const\n  {\n  return get (caseless_str (pname)); }\n\n");
   printf ("  property get_property (const caseless_str& pname);\n\n");
   printf ("  std::string graphics_object_name (void) const { return go_name; }\n\n");
   printf ("  static property_list::pval_map_type factory_defaults (void);\n\n");

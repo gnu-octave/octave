@@ -1644,15 +1644,15 @@ opengl_renderer::draw (const axes::properties& props)
       graphics_object go = (*it);
 
       // FIXME: check whether object has "units" property and it is set to "data"
-      if (! go.isa ("text") || go.get (caseless_str ("units")).string_value () == "data")
+      if (! go.isa ("text") || go.get ("units").string_value () == "data")
         {
           set_clipping (go.get_properties ().is_clipping ());
           draw (go);
 
           it = obj_list.erase (it);
-        }
+	}
       else
-        it++;
+	it++;
     }
 
   // 3rd pass: draw remaining objects

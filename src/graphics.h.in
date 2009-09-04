@@ -1652,6 +1652,16 @@ public:
 
   virtual octave_value get (const caseless_str& pname) const;
 
+  virtual octave_value get (const std::string& pname) const
+  {
+    return get (caseless_str (pname));
+  }
+
+  virtual octave_value get (const char *pname) const
+  {
+    return get (caseless_str (pname));
+  }
+
   virtual octave_value get (bool all = false) const;
 
   virtual property get_property (const caseless_str& pname);

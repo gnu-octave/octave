@@ -30,6 +30,7 @@ SED=%SED%
 top_srcdir='%abs_top_srcdir%'
 builddir='%builddir%'
 
+ldpreloadsep="%ldpreloadsep%"
 liboctinterp="$builddir/src/%liboctinterp%"
 liboctave="$builddir/liboctave/%liboctave%"
 libcruft="$builddir/libcruft/%libcruft%"
@@ -68,7 +69,7 @@ if [ $# -gt 0 ]; then
 fi
 
 OCTAVE_SITE_INITFILE="$top_srcdir/scripts/startup/main-rcfile" \
-LD_PRELOAD="$liboctinterp $liboctave $libcruft" \
+LD_PRELOAD="$libcruft$ldpreloadsep$liboctave$ldpreloadsep$liboctinterp" \
 %library_path_var%="$builddir/src:$builddir/liboctave:$builddir/libcruft:$%library_path_var%" \
   exec $driver "$builddir/src/octave" --no-init-path --path="$LOADPATH" --image-path="$IMAGEPATH" --doc-cache-file="$DOCFILE" --info-file="$INFOFILE" "$@"
 

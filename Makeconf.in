@@ -471,6 +471,11 @@ localstartupfiledir = ${localfcnfiledir}/startup
 # LD_LIBRARY_PATH, DYLD_LIBRARY_PATH, PATH, ...
 library_path_var = @library_path_var@
 
+# The separator used for elements of the LD_PRELOAD variable (might be
+# a space, so protect with $(null))
+null :=
+ldpreloadsep = $(null)@ldpreloadsep@$(null)
+
 NO_OCT_FILE_STRIP = @NO_OCT_FILE_STRIP@
 
 # The following pattern rules and the substitution functions require
@@ -765,6 +770,7 @@ $(SED) < $< \
   -e "s|%liboctinterp%|${SHLPRE}octinterp.${SHLEXT}|g" \
   -e "s|%liboctave%|${SHLPRE}octave.${SHLEXT}|g" \
   -e "s|%libcruft%|${SHLPRE}cruft.${SHLEXT}|g" \
+  -e "s|%ldpreloadsep%|${ldpreloadsep}|g" \
   -e "s|%srcdir%|${srcdir}|" \
   -e "s|%top_srcdir%|${top_srcdir}|" \
   -e "s|%abs_top_srcdir%|${abs_top_srcdir}|" \

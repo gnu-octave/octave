@@ -1,3 +1,9 @@
+2009-09-04  John W. Eaton  <jwe@octave.org>
+
+	* configure.in (ldpreloadsep): New variable.  Set to ':' for Cygwin.
+	* Makeconf.in (do-subst-script-vals): Substitute it.
+	* run-octave.in: Use it to seprate elements in the LD_PRELOAD variable.
+
 2009-09-03  John W. Eaton  <jwe@octave.org>
 
 	* configure.in (AH_BOTTOM): If HAVE_Z is defined, define HAVE_ZLIB.

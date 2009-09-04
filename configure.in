@@ -1083,6 +1083,7 @@ OCTAVE_DLL_DEFS=
 OCTINTERP_DLL_DEFS=
 OCTGRAPHICS_DLL_DEFS=
 library_path_var=LD_LIBRARY_PATH
+ldpreloadsep=" "
 SCRIPTS_EXE_SUFFIX=
 case "$canonical_host_type" in
   *-*-386bsd* | *-*-netbsd*)
@@ -1135,6 +1136,7 @@ case "$canonical_host_type" in
     DL_LDFLAGS="-shared -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-runtime-pseudo-reloc"
     SH_LDFLAGS="-shared -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-auto-image-base"
     SONAME_FLAGS='-Wl,--out-implib=$(patsubst $(SHLPRE)%,$(LIBPRE)%,$@).a'
+    ldpreloadsep=":"
   ;;
   *-*-mingw*)
     CPICFLAG=
@@ -1324,6 +1326,7 @@ AC_SUBST(OCTAVE_DLL_DEFS)
 AC_SUBST(OCTINTERP_DLL_DEFS)
 AC_SUBST(OCTGRAPHICS_DLL_DEFS)
 AC_SUBST(library_path_var)
+AC_SUBST(ldpreloadsep)
 AC_SUBST(SCRIPTS_EXE_SUFFIX)
 
 ### special checks for odd OS specific things.

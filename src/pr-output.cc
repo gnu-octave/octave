@@ -852,10 +852,10 @@ set_format (const Complex& c, int& r_fw, int& i_fw)
   double r_abs = rp < 0.0 ? -rp : rp;
   double i_abs = ip < 0.0 ? -ip : ip;
 
-  int r_x = r_abs == 0.0
+  int r_x = (xisinf (rp) || xisnan (rp) || xr_abs == 0.0)
     ? 0 : static_cast<int> (floor (log10 (r_abs) + 1.0));
 
-  int i_x = i_abs == 0.0
+  int i_x = (xisinf (ip) || xisnan (ip) || i_abs == 0.0)
     ? 0 : static_cast<int> (floor (log10 (i_abs) + 1.0));
 
   int x_max, x_min;

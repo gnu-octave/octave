@@ -1,3 +1,8 @@
+2009-09-03  John W. Eaton  <jwe@octave.org>
+
+	* pr-output.cc (set_format (const Complex&, int&, int&)):
+	Avoid passing NaN or Inf to log10.
+
 2008-09-01  David Bateman  <dbateman@free.fr>
 
 	* DLD-FUNCTIONS/eig.cc (Feigs): Correct nesting error in option

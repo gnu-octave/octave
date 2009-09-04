@@ -1,3 +1,7 @@
+2009-09-04  Marco Atzeri  <marco_atzeri@yahoo.it>
+
+	*  README.Cygwin: Update version info.
+
 2009-09-04  John W. Eaton  <jwe@octave.org>
 
 	* configure.in (ldpreloadsep): New variable.  Set to ':' for Cygwin.

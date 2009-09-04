@@ -10,23 +10,10 @@ version gcc-4.3.2-1 or later.
 
 Binary version 3.0.2-2 is built with gcc-4.3.2-1
  
-Current cygwin octvave maintainer : 
-	Marco Atzeri
-	http://matzeri.altervista.org
+Current Cygwin package maintainer for Octave:
 
-An obsolete version of Octave (2.1.73) is part of the normal net
-distribution of Cygwin, available from http://www.cygwin.com.  Check
-the package list in Cygwin's setup.exe installer if you would like to
-try using it.  However, 2.1.73 is unsupported and we STRONGLY
-recommended that you use a more recent version of Octave.
-
-It should be possible to build Octave on Windows systems with Cygwin,
-but at the time of this writing, there are some performance problems
-related to the way C++ exception handling is implemented with the
-default Cygwin compiler.  This is a known problem with a long history.
-If you would like to see this problem corrected, please search the
-Cygwin mailing lists for threads related to "sjlj exception handling"
-(or similar).
+  Marco Atzeri
+  http://matzeri.altervista.org
 
 There is also an "unofficial" Octave distribution for Cygwin:
 
@@ -56,4 +43,4 @@ Marco Atzeri
 marco_atzeri@yahoo.it
 Italy
 
-Wed, 17 Sep 2008 14:16:03 EDT
+Fri, 04 Sep 2009 11:30:38 EDT

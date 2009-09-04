@@ -40,6 +40,8 @@ public:
 
   explicit ComplexRowVector (octave_idx_type n) : MArray<Complex> (n) { }
 
+  explicit ComplexRowVector (const dim_vector& dv) : MArray<Complex> (dv) { }
+
   ComplexRowVector (octave_idx_type n, const Complex& val) : MArray<Complex> (n, val) { }
 
   ComplexRowVector (const ComplexRowVector& a) : MArray<Complex> (a) { }

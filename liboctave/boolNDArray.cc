@@ -166,20 +166,9 @@ boolNDArray&
 mx_el_and_assign (boolNDArray& a, const boolNDArray& b)
 {
   if (a.is_shared ())
-    return a = mx_el_and (a, b);
-
-  dim_vector a_dims = a.dims ();
-  dim_vector b_dims = b.dims ();
-
-  if (a_dims != b_dims)
-    gripe_nonconformant ("operator &=", a_dims, b_dims);
+    a = mx_el_and (a, b);
   else
-    {
-      octave_idx_type l = a.length ();
-
-      if (l > 0)
-        DO_VV_OP2 (bool, a, &=, b);
-    }
+    do_mm_inplace_op<boolNDArray, boolNDArray> (a, b, mx_inline_and2, "operator &=");
 
   return a;
 }
@@ -188,20 +177,9 @@ boolNDArray&
 mx_el_or_assign (boolNDArray& a, const boolNDArray& b)
 {
   if (a.is_shared ())
-    return a = mx_el_and (a, b);
-
-  dim_vector a_dims = a.dims ();
-  dim_vector b_dims = b.dims ();
-
-  if (a_dims != b_dims)
-    gripe_nonconformant ("operator |=", a_dims, b_dims);
+    a = mx_el_or (a, b);
   else
-    {
-      octave_idx_type l = a.length ();
-
-      if (l > 0)
-        DO_VV_OP2 (bool, a, |=, b);
-    }
+    do_mm_inplace_op<boolNDArray, boolNDArray> (a, b, mx_inline_or2, "operator |=");
 
   return a;
 }

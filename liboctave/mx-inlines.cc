@@ -168,6 +168,17 @@ DEFMXBOOLOP (mx_inline_not_or, !, |, )
 DEFMXBOOLOP (mx_inline_and_not, , &, !)
 DEFMXBOOLOP (mx_inline_or_not, , |, !)
 
+#define DEFMXBOOLOPEQ(F, OP) \
+template <class X> \
+inline void F (size_t n, bool *r, const X *x) \
+{ \
+  for (size_t i = 0; i < n; i++) \
+    r[i] OP logical_value (x[i]); \
+} \
+
+DEFMXBOOLOPEQ (mx_inline_and2, &=)
+DEFMXBOOLOPEQ (mx_inline_or2, |=)
+
 template <class T> 
 inline bool 
 mx_inline_any_nan (size_t, const T*) { return false; }
@@ -230,7 +241,7 @@ do_mx_unary_op (const XNDA& x,
                             const typename XNDA::element_type *))
 {
   RNDA r (x.dims ());
-  op (r.nelem (), r.fortran_vec (), x.data ());
+  op (r.length (), r.fortran_vec (), x.data ());
   return r;
 }
 
@@ -256,7 +267,7 @@ do_mm_binary_op (const XNDA& x, const YNDA& y,
   if (dx == dy)
     {
       RNDA r (dx);
-      op (r.nelem (), r.fortran_vec (), x.data (), y.data ());
+      op (r.length (), r.fortran_vec (), x.data (), y.data ());
       return r;
     }
   else
@@ -273,7 +284,7 @@ do_ms_binary_op (const XNDA& x, const YS& y,
                              const typename XNDA::element_type *, YS))
 {
   RNDA r (x.dims ());
-  op (r.nelem (), r.fortran_vec (), x.data (), y);
+  op (r.length (), r.fortran_vec (), x.data (), y);
   return r;
 }
 
@@ -284,7 +295,7 @@ do_sm_binary_op (const XS& x, const YNDA& y,
                              const typename YNDA::element_type *))
 {
   RNDA r (y.dims ());
-  op (r.nelem (), r.fortran_vec (), x, y.data ());
+  op (r.length (), r.fortran_vec (), x, y.data ());
   return r;
 }
 
@@ -297,15 +308,10 @@ do_mm_inplace_op (RNDA& r, const XNDA& x,
 {
   dim_vector dr = r.dims (), dx = x.dims ();
   if (dr == dx)
-    {
-      op (r.nelem (), r.fortran_vec (), x.data ());
-      return r;
-    }
+    op (r.length (), r.fortran_vec (), x.data ());
   else
-    {
-      gripe_nonconformant (opname, dr, dx);
-      return RNDA ();
-    }
+    gripe_nonconformant (opname, dr, dx);
+  return r;
 }
 
 template <class RNDA, class XS>
@@ -313,7 +319,7 @@ inline RNDA&
 do_ms_inplace_op (RNDA& r, const XS& x,
                   void (*op) (size_t, typename RNDA::element_type *, XS))
 {
-  op (r.nelem (), r.fortran_vec (), x);
+  op (r.length (), r.fortran_vec (), x);
   return r;
 }
 

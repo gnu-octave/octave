@@ -49,8 +49,9 @@ MArrayN<T>&
 operator += (MArrayN<T>& a, const T& s)
 {
   if (a.is_shared ())
-    return a = a + s;
-  DO_VS_OP2 (T, a, +=, s)
+    a = a + s;
+  else
+    do_ms_inplace_op<MArrayN<T>, T> (a, s, mx_inline_add2);
   return a;
 }
 
@@ -59,8 +60,9 @@ MArrayN<T>&
 operator -= (MArrayN<T>& a, const T& s)
 {
   if (a.is_shared ())
-    return a = a - s;
-  DO_VS_OP2 (T, a, -=, s)
+    a = a - s;
+  else
+    do_ms_inplace_op<MArrayN<T>, T> (a, s, mx_inline_sub2);
   return a;
 }
 
@@ -69,8 +71,9 @@ MArrayN<T>&
 operator *= (MArrayN<T>& a, const T& s)
 {
   if (a.is_shared ())
-    return a = a * s;
-  DO_VS_OP2 (T, a, *=, s)
+    a = a * s;
+  else
+    do_ms_inplace_op<MArrayN<T>, T> (a, s, mx_inline_mul2);
   return a;
 }
 
@@ -79,8 +82,9 @@ MArrayN<T>&
 operator /= (MArrayN<T>& a, const T& s)
 {
   if (a.is_shared ())
-    return a = a / s;
-  DO_VS_OP2 (T, a, /=, s)
+    a = a / s;
+  else
+    do_ms_inplace_op<MArrayN<T>, T> (a, s, mx_inline_div2);
   return a;
 }
 
@@ -91,21 +95,9 @@ MArrayN<T>&
 operator += (MArrayN<T>& a, const MArrayN<T>& b)
 {
   if (a.is_shared ())
-    return a = a + b;
-
-  dim_vector a_dims = a.dims ();
-  dim_vector b_dims = b.dims ();
-
-  if (a_dims != b_dims)
-    gripe_nonconformant ("operator +=", a_dims, b_dims);
-  else 
-    {
-      octave_idx_type l = a.length ();
-
-      if (l > 0)
-        DO_VV_OP2 (T, a, +=, b);
-    }
-
+    a = a + b;
+  else
+    do_mm_inplace_op<MArrayN<T>, MArrayN<T> > (a, b, mx_inline_add2, "+=");
   return a;
 }
 
@@ -114,23 +106,12 @@ MArrayN<T>&
 operator -= (MArrayN<T>& a, const MArrayN<T>& b)
 {
   if (a.is_shared ())
-    return a = a - b;
-
-  dim_vector a_dims = a.dims ();
-  dim_vector b_dims = b.dims ();
-
-  if (a_dims != b_dims)
-    gripe_nonconformant ("operator -=", a_dims, b_dims);
-  else 
-    {
-      octave_idx_type l = a.length ();
-
-      if (l > 0)
-        DO_VV_OP2 (T, a, -=, b);
-    }
-
+    a = a - b;
+  else
+    do_mm_inplace_op<MArrayN<T>, MArrayN<T> > (a, b, mx_inline_sub2, "-=");
   return a;
 }
+
 
 template <class T>
 MArrayN<T>&
@@ -138,20 +119,8 @@ product_eq (MArrayN<T>& a, const MArrayN<T>& b)
 {
   if (a.is_shared ())
     return a = product (a, b);
-
-  dim_vector a_dims = a.dims ();
-  dim_vector b_dims = b.dims ();
-
-  if (a_dims != b_dims)
-    gripe_nonconformant ("operator .*=", a_dims, b_dims);
-  else 
-    {
-      octave_idx_type l = a.length ();
-
-      if (l > 0)
-        DO_VV_OP2 (T, a, *=, b);
-    }
-
+  else
+    do_mm_inplace_op<MArrayN<T>, MArrayN<T> > (a, b, mx_inline_mul2, ".*=");
   return a;
 }
 
@@ -161,104 +130,55 @@ quotient_eq (MArrayN<T>& a, const MArrayN<T>& b)
 {
   if (a.is_shared ())
     return a = quotient (a, b);
-
-  dim_vector a_dims = a.dims ();
-  dim_vector b_dims = b.dims ();
-
-  if (a_dims != b_dims)
-    gripe_nonconformant ("operator ./=", a_dims, b_dims);
-  else 
-    {
-      octave_idx_type l = a.length ();
-
-      if (l > 0)
-        DO_VV_OP2 (T, a, /=, b);
-    }
-
+  else
+    do_mm_inplace_op<MArrayN<T>, MArrayN<T> > (a, b, mx_inline_div2, "./=");
   return a;
 }
 
 // Element by element MArrayN by scalar ops.
 
-#define MARRAYN_NDS_OP(OP) \
+#define MARRAY_NDS_OP(OP, FN) \
   template <class T> \
   MArrayN<T> \
   operator OP (const MArrayN<T>& a, const T& s) \
-    { \
-      MArrayN<T> result (a.dims ()); \
-      T *r = result.fortran_vec (); \
-      octave_idx_type l = a.length (); \
-      const T *v = a.data (); \
-      DO_VS_OP (r, l, v, OP, s); \
-      return result; \
-    }
+  { \
+    return do_ms_binary_op<MArrayN<T>, MArrayN<T>, T> (a, s, FN); \
+  }
 
-MARRAYN_NDS_OP (+)
-MARRAYN_NDS_OP (-)
-MARRAYN_NDS_OP (*)
-MARRAYN_NDS_OP (/)
+MARRAY_NDS_OP (+, mx_inline_add)
+MARRAY_NDS_OP (-, mx_inline_sub)
+MARRAY_NDS_OP (*, mx_inline_mul)
+MARRAY_NDS_OP (/, mx_inline_div)
 
-// Element by element MArrayN by scalar ops.
+// Element by element scalar by MArrayN ops.
 
-#define MARRAYN_SND_OP(OP) \
+#define MARRAY_SND_OP(OP, FN) \
   template <class T> \
   MArrayN<T> \
   operator OP (const T& s, const MArrayN<T>& a) \
   { \
-    MArrayN<T> result (a.dims ()); \
-    T *r = result.fortran_vec (); \
-    octave_idx_type l = a.length (); \
-    const T *v = a.data (); \
-    DO_SV_OP (r, l, s, OP, v); \
-    return result; \
+    return do_sm_binary_op<MArrayN<T>, T, MArrayN<T> > (s, a, FN); \
   }
 
-MARRAYN_SND_OP (+)
-MARRAYN_SND_OP (-)
-MARRAYN_SND_OP (*)
-MARRAYN_SND_OP (/)
+MARRAY_SND_OP (+, mx_inline_add)
+MARRAY_SND_OP (-, mx_inline_sub)
+MARRAY_SND_OP (*, mx_inline_mul)
+MARRAY_SND_OP (/, mx_inline_div)
 
-#define MARRAY_NDND_OP(FCN, OP) \
-template <class T> \
-MArrayN<T> \
-FCN (const MArrayN<T>& a, const MArrayN<T>& b) \
-{ \
-dim_vector a_dims = a.dims (); \
-dim_vector b_dims = b.dims (); \
-int dims_ok = 1; \
-int any_dims_zero = 0; \
-if (a_dims.length () != b_dims.length ()) \
- dims_ok = 0; \
- else \
-   { \
-     for (int i = 0; i < a_dims.length (); i++) \
-       { \
-	 if (a_dims (i) != b_dims (i)) \
-	   { dims_ok = 0; break; } \
-	 if (a_dims (i) == 0) \
-	   any_dims_zero = 1; \
-       } \
-   } \
- if (!dims_ok) \
-   { \
-     gripe_nonconformant (#FCN, a_dims, b_dims); \
-     return MArrayN<T> (); \
-   } \
- if (any_dims_zero) \
-   return MArrayN<T> (a_dims); \
- octave_idx_type l = a.length (); \
- MArrayN<T> result (a_dims); \
- T* r = result.fortran_vec (); \
- const T *x = a.data (); \
- const T *y = b.data (); \
- DO_VV_OP (r, l, x, OP, y); \
- return result; \
-}
+// Element by element MArrayN by MArrayN ops.
 
-MARRAY_NDND_OP (operator +, +)
-MARRAY_NDND_OP (operator -, -)
-MARRAY_NDND_OP (product,    *)
-MARRAY_NDND_OP (quotient,   /)
+#define MARRAY_NDND_OP(FCN, OP, FN) \
+  template <class T> \
+  MArrayN<T> \
+  FCN (const MArrayN<T>& a, const MArrayN<T>& b) \
+  { \
+    return do_mm_binary_op<MArrayN<T>, MArrayN<T>, MArrayN<T> > (a, b, FN, #FCN); \
+  }
+
+MARRAY_NDND_OP (operator +, +, mx_inline_add)
+MARRAY_NDND_OP (operator -, -, mx_inline_sub)
+MARRAY_NDND_OP (product,    *, mx_inline_mul)
+MARRAY_NDND_OP (quotient,   /, mx_inline_div)
 
 template <class T>
 MArrayN<T>
@@ -271,12 +191,7 @@ template <class T>
 MArrayN<T>
 operator - (const MArrayN<T>& a)
 {
-  octave_idx_type l = a.length ();
-  MArrayN<T> result (a.dims ());
-  T *r = result.fortran_vec ();
-  const T *x = a.data ();
-  NEG_V (r, l, x);
-  return result;
+  return do_mx_unary_op<MArrayN<T>, MArrayN<T> > (a, mx_inline_uminus); 
 }
 
 /*

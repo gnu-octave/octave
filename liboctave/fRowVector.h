@@ -38,6 +38,8 @@ public:
 
   explicit FloatRowVector (octave_idx_type n) : MArray<float> (n) { }
 
+  explicit FloatRowVector (const dim_vector& dv) : MArray<float> (dv) { }
+
   FloatRowVector (octave_idx_type n, float val) : MArray<float> (n, val) { }
 
   FloatRowVector (const FloatRowVector& a) : MArray<float> (a) { }

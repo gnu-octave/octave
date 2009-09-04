@@ -105,6 +105,13 @@ public:
   DiagArray2 (octave_idx_type r, octave_idx_type c, const T& val) 
     : Array<T> (std::min (r, c), val), d1 (r), d2 (c) { }
 
+  DiagArray2 (const dim_vector& dv)
+    : Array<T> (std::min (dv(0), dv(1))), d1 (dv(0)), d2 (dv(0))
+    {
+      if (dv.length () != 2)
+	(*current_liboctave_error_handler) ("too many dimensions");
+    }
+
   DiagArray2 (const Array<T>& a) 
     : Array<T> (a), d1 (a.numel ()), d2 (a.numel ()) { }
 

@@ -53,7 +53,10 @@ public:
 
   MArray (const MArray<T>& a) : Array<T> (a) { }
 
-  MArray (const Array<T>& a) : Array<T> (a) { }
+  // FIXME: kluge.
+  MArray (const Array<T>& a) : Array<T> (a, dim_vector (a.length ())) { }
+
+  MArray (const dim_vector& dv) : Array<T> (dv) { }
 
   ~MArray (void) { }
 
@@ -62,6 +65,10 @@ public:
       Array<T>::operator = (a);
       return *this;
     }
+
+  // FIXME: kluge again. This design really sucks.
+  void resize (octave_idx_type n, const T& val = Array<T>::resize_fill_value ())
+    { Array<T>::resize_fill (n, 1, val); }
 
   MArray<T> transpose (void) const { return Array<T>::transpose (); }
   MArray<T> hermitian (T (*fcn) (const T&) = 0) const { return Array<T>::hermitian (fcn); }

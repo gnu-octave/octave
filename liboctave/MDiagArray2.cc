@@ -47,9 +47,6 @@ MDiagArray2<T>::is_multiple_of_identity (T val) const
   return retval;
 }
 
-// Some functions return a reference to this object after a failure.
-template <class T> MDiagArray2<T> MDiagArray2<T>::nil_array;
-
 // Two dimensional diagonal array with math ops.
 
 // Element by element MDiagArray2 by MDiagArray2 ops.
@@ -58,22 +55,10 @@ template <class T>
 MDiagArray2<T>&
 operator += (MDiagArray2<T>& a, const MDiagArray2<T>& b)
 {
-  octave_idx_type r = a.rows ();
-  octave_idx_type c = a.cols ();
-
-  octave_idx_type b_nr = b.rows ();
-  octave_idx_type b_nc = b.cols ();
-
-  if (r != b_nr || c != b_nc)
-    {
-      gripe_nonconformant ("operator +=", r, c, b_nr, b_nc);
-      return MDiagArray2<T>::nil_array;
-    }
+  if (a.is_shared ())
+    a = a + b;
   else
-    {
-      octave_idx_type l = a.length ();
-      DO_VV_OP2 (T, a, +=, b);
-    }
+    do_mm_inplace_op<MDiagArray2<T>, MDiagArray2<T> > (a, b, mx_inline_add2, "+=");
   return a;
 }
 
@@ -81,42 +66,26 @@ template <class T>
 MDiagArray2<T>&
 operator -= (MDiagArray2<T>& a, const MDiagArray2<T>& b)
 {
-  octave_idx_type r = a.rows ();
-  octave_idx_type c = a.cols ();
-
-  octave_idx_type b_nr = b.rows ();
-  octave_idx_type b_nc = b.cols ();
-
-  if (r != b_nr || c != b_nc)
-    {
-      gripe_nonconformant ("operator -=", r, c, b_nr, b_nc);
-      return MDiagArray2<T>::nil_array;
-    }
+  if (a.is_shared ())
+    a = a - b;
   else
-    {
-      octave_idx_type l = a.length ();
-      DO_VV_OP2 (T, a, -=, b);
-    }
+    do_mm_inplace_op<MDiagArray2<T>, MDiagArray2<T> > (a, b, mx_inline_sub2, "-=");
   return a;
 }
 
+
 // Element by element MDiagArray2 by scalar ops.
 
-#define MARRAY_DAS_OP(OP) \
+#define MARRAY_DAS_OP(OP, FN) \
   template <class T> \
   MDiagArray2<T> \
   operator OP (const MDiagArray2<T>& a, const T& s) \
   { \
-    MDiagArray2<T> result (a.rows (), a.cols ()); \
-    T *r = result.fortran_vec (); \
-    octave_idx_type l = a.length (); \
-    const T *v = a.data (); \
-    DO_VS_OP (r, l, v, OP, s); \
-    return result; \
+    return do_ms_binary_op<MDiagArray2<T>, MDiagArray2<T>, T> (a, s, FN); \
   }
 
-MARRAY_DAS_OP (*)
-MARRAY_DAS_OP (/)
+MARRAY_DAS_OP (*, mx_inline_mul)
+MARRAY_DAS_OP (/, mx_inline_div)
 
 // Element by element scalar by MDiagArray2 ops.
 
@@ -124,44 +93,22 @@ template <class T>
 MDiagArray2<T>
 operator * (const T& s, const MDiagArray2<T>& a)
 {
-  MDiagArray2<T> result (a.rows (), a.cols ()); \
-  T *r = result.fortran_vec (); \
-  octave_idx_type l = a.length (); \
-  const T *v = a.data (); \
-  DO_SV_OP (r, l, s, *, v); \
-  return result; \
+  return do_sm_binary_op<MDiagArray2<T>, T, MDiagArray2<T> > (s, a, mx_inline_mul);
 }
 
 // Element by element MDiagArray2 by MDiagArray2 ops.
 
-#define MARRAY_DADA_OP(FCN, OP) \
+#define MARRAY_DADA_OP(FCN, OP, FN) \
   template <class T> \
   MDiagArray2<T> \
   FCN (const MDiagArray2<T>& a, const MDiagArray2<T>& b) \
   { \
-    octave_idx_type a_nr = a.rows (); \
-    octave_idx_type a_nc = a.cols (); \
-    octave_idx_type b_nr = b.rows (); \
-    octave_idx_type b_nc = b.cols (); \
-    if (a_nr != b_nr || a_nc != b_nc) \
-      { \
-        gripe_nonconformant (#FCN, a_nr, a_nc, b_nr, b_nc); \
-	return MDiagArray2<T> (); \
-      } \
-    if (a_nc == 0 || a_nr == 0) \
-      return MDiagArray2<T> (); \
-    octave_idx_type l = a.length (); \
-    MDiagArray2<T> result (a_nr, a_nc); \
-    T *r = result.fortran_vec (); \
-    const T *x = a.data (); \
-    const T *y = b.data (); \
-    DO_VV_OP (r, l, x, OP, y); \
-    return result; \
+    return do_mm_binary_op<MDiagArray2<T>, MDiagArray2<T>, MDiagArray2<T> > (a, b, FN, #FCN); \
   }
 
-MARRAY_DADA_OP (operator +, +)
-MARRAY_DADA_OP (operator -, -)
-MARRAY_DADA_OP (product,    *)
+MARRAY_DADA_OP (operator +, +, mx_inline_add)
+MARRAY_DADA_OP (operator -, -, mx_inline_sub)
+MARRAY_DADA_OP (product,    *, mx_inline_mul)
 
 // Unary MDiagArray2 ops.
 
@@ -176,12 +123,7 @@ template <class T>
 MDiagArray2<T>
 operator - (const MDiagArray2<T>& a)
 {
-  octave_idx_type l = a.length ();
-  MDiagArray2<T> result (a.rows (), a.cols ());
-  T *r = result.fortran_vec ();
-  const T *x = a.data ();
-  NEG_V (r, l, x);
-  return result;
+  return do_mx_unary_op<MDiagArray2<T>, MDiagArray2<T> > (a, mx_inline_uminus); 
 }
 
 /*

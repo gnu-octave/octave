@@ -41,6 +41,8 @@ public:
 
   explicit ComplexColumnVector (octave_idx_type n) : MArray<Complex> (n) { }
 
+  explicit ComplexColumnVector (const dim_vector& dv) : MArray<Complex> (dv) { }
+
   ComplexColumnVector (octave_idx_type n, const Complex& val)
     : MArray<Complex> (n, val) { }
 

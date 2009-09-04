@@ -38,6 +38,8 @@ public:
 
   explicit ColumnVector (octave_idx_type n) : MArray<double> (n) { }
 
+  explicit ColumnVector (const dim_vector& dv) : MArray<double> (dv) { }
+
   ColumnVector (octave_idx_type n, double val) : MArray<double> (n, val) { }
 
   ColumnVector (const ColumnVector& a) : MArray<double> (a) { }

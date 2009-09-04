@@ -38,6 +38,8 @@ public:
 
   explicit RowVector (octave_idx_type n) : MArray<double> (n) { }
 
+  explicit RowVector (const dim_vector& dv) : MArray<double> (dv) { }
+
   RowVector (octave_idx_type n, double val) : MArray<double> (n, val) { }
 
   RowVector (const RowVector& a) : MArray<double> (a) { }

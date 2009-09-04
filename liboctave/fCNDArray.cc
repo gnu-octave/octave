@@ -1078,16 +1078,18 @@ NDND_BOOL_OPS (FloatComplexNDArray, FloatComplexNDArray)
 FloatComplexNDArray& operator *= (FloatComplexNDArray& a, float s)
 {
   if (a.is_shared ())
-    return a = a * s;
-  DO_VS_OP2 (FloatComplex, a, *=, s)
+    a = a * s;
+  else
+    do_ms_inplace_op<FloatComplexNDArray, float> (a, s, mx_inline_mul2);
   return a;
 }
 
 FloatComplexNDArray& operator /= (FloatComplexNDArray& a, float s)
 {
   if (a.is_shared ())
-    return a = a / s;
-  DO_VS_OP2 (FloatComplex, a, /=, s)
+    a = a / s;
+  else
+    do_ms_inplace_op<FloatComplexNDArray, float> (a, s, mx_inline_div2);
   return a;
 }
 

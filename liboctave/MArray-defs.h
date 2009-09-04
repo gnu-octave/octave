@@ -25,54 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_MArray_defs_h)
 #define octave_MArray_defs_h 1
 
-// Nothing like a little CPP abuse to brighten everyone's day.
-
-#define DO_VS_OP(r, l, v, OP, s) \
-  if (l > 0) \
-    { \
-      for (octave_idx_type i = 0; i < l; i++) \
-	r[i] = v[i] OP s; \
-    }
-
-#define DO_SV_OP(r, l, s, OP, v) \
-  if (l > 0) \
-    { \
-      for (octave_idx_type i = 0; i < l; i++) \
-	r[i] = s OP v[i]; \
-    }
-
-#define DO_VV_OP(r, l, x, OP, y) \
-  if (l > 0) \
-    { \
-      for (octave_idx_type i = 0; i < l; i++) \
-	r[i] = x[i] OP y[i]; \
-    }
-
-#define NEG_V(r, l, x) \
-  if (l > 0) \
-    { \
-      for (octave_idx_type i = 0; i < l; i++) \
-	r[i] = -x[i]; \
-    }
-
-#define DO_VS_OP2(T, a, OP, s) \
-  octave_idx_type l = a.length (); \
-  if (l > 0) \
-    { \
-      T *tmp = a.fortran_vec (); \
-      for (octave_idx_type i = 0; i < l; i++) \
-	tmp[i] OP s; \
-    }
-
-#define DO_VV_OP2(T, a, OP, b) \
-  do \
-    { \
-      T *a_tmp = a.fortran_vec (); \
-      const T *b_tmp = b.data (); \
-      for (octave_idx_type i = 0; i < l; i++) \
-	a_tmp[i] OP b_tmp[i]; \
-    } \
-  while (0)
+#include "mx-inlines.cc"
 
 // Instantiate the OP= operators.
 #define MARRAY_OP_ASSIGN_DEFS(A_T, E_T, RHS_T, API) \

@@ -53,6 +53,8 @@ public:
 
   MDiagArray2 (octave_idx_type r, octave_idx_type c, const T& val) : DiagArray2<T> (r, c, val) { }
 
+  MDiagArray2 (const dim_vector& dv) : DiagArray2<T> (dv) { }
+
   MDiagArray2 (const MDiagArray2<T>& a) : DiagArray2<T> (a) { }
 
   MDiagArray2 (const DiagArray2<T>& a) : DiagArray2<T> (a) { }
@@ -99,8 +101,6 @@ public:
   MDiagArray2<T> hermitian (T (*fcn) (const T&) = 0) const { return DiagArray2<T>::hermitian (fcn); }
 
   bool is_multiple_of_identity (T val) const;
-
-  static MDiagArray2<T> nil_array;
 
   // Currently, the OPS functions don't need to be friends, but that
   // may change.

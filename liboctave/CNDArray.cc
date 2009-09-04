@@ -1083,8 +1083,9 @@ NDND_BOOL_OPS (ComplexNDArray, ComplexNDArray)
 ComplexNDArray& operator *= (ComplexNDArray& a, double s)
 {
   if (a.is_shared ())
-    return a = a * s;
-  DO_VS_OP2 (Complex, a, *=, s)
+    a = a * s;
+  else
+    do_ms_inplace_op<ComplexNDArray, double> (a, s, mx_inline_mul2);
   return a;
 }
 
@@ -1092,7 +1093,8 @@ ComplexNDArray& operator /= (ComplexNDArray& a, double s)
 {
   if (a.is_shared ())
     return a = a / s;
-  DO_VS_OP2 (Complex, a, /=, s)
+  else
+    do_ms_inplace_op<ComplexNDArray, double> (a, s, mx_inline_div2);
   return a;
 }
 

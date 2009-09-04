@@ -1,3 +1,88 @@
+2009-09-04  Jaroslav Hajek  <highegg@gmail.com>
+
+	* mx-inlines.cc (DEFMXBOOLOPEQ): New macro.
+	(mx_inline_and2, mx_inline_or2): New loops.
+
+	* MArray.h (MArray<T>::MArray (const dim_vector&)): New constructor.
+	(MArray<T>::MArray (const Array<T>&)): Ensure column vector.
+	(MArray<T>::resize): New method.
+	* DiagArray2.h (DiagArray2<T>::DiagArray2 (const dim_vector&)): New
+	constructor.
+	* MDiagArray2.h (MDiagArray2<T>::MDiagArray2 (const dim_vector&)): New
+	constructor.
+	* dColVector.h (ColumnVector::ColumnVector (const dim_vector&)): New
+	constructor.
+	* fColVector.h (FloatColumnVector::FloatColumnVector (const
+	dim_vector&)): New constructor.
+	* CColVector.h (ComplexColumnVector::ComplexColumnVector (const
+	dim_vector&)): New constructor.
+	* fCColVector.h (FloatComplexColumnVector::FloatComplexColumnVector
+	(const dim_vector&)): New constructor.
+	* dRowVector.h (RowVector::RowVector (const dim_vector&)): New
+	constructor.
+	* fRowVector.h (FloatRowVector::FloatRowVector (const dim_vector&)):
+	New constructor.
+	* CRowVector.h (ComplexRowVector::ComplexRowVector (const
+	dim_vector&)): New constructor.
+	* fCRowVector.h (FloatComplexRowVector::FloatComplexRowVector (const
+	dim_vector&)): New constructor.
+
+	* CNDArray.cc (operator *= (const ComplexNDArray, double)): Simplify.
+	* fCNDArray.cc (operator *= (const FloatComplexNDArray, float)): Simplify.
+
+	* MArray.cc
+	(operator += (MArray<T>&, const T&)): Simplify.
+	(operator -= (MArray<T>&, const T&)): Simplify.
+	(operator *= (MArray<T>&, const T&)): Simplify.
+	(operator /= (MArray<T>&, const T&)): Simplify.
+	(operator += (MArray<T>&, const MArray<T>&)): Simplify.
+	(operator -= (MArray<T>&, const MArray<T>&)): Simplify.
+	(product (MArray<T>&, const MArray<T>&)): Simplify.
+	(quotient (MArray<T>&, const MArray<T>&)): Simplify.
+	(MARRAY_AS_OP): Simplify.
+	(MARRAY_SA_OP): Simplify.
+	(MARRAY_AA_OP): Simplify.
+	(operator - (const MArray<T>&)): Simplify.
+
+	* MArray2.cc
+	(operator += (MArray2<T>&, const T&)): Simplify.
+	(operator -= (MArray2<T>&, const T&)): Simplify.
+	(operator *= (MArray2<T>&, const T&)): Simplify.
+	(operator /= (MArray2<T>&, const T&)): Simplify.
+	(operator += (MArray2<T>&, const MArray<T>&)): Simplify.
+	(operator -= (MArray2<T>&, const MArray<T>&)): Simplify.
+	(product (MArray2<T>&, const MArray<T>&)): Simplify.
+	(quotient (MArray2<T>&, const MArray<T>&)): Simplify.
+	(MARRAY_A2S_OP): Simplify.
+	(MARRAY_SA2_OP): Simplify.
+	(MARRAY_A2A2_OP): Simplify.
+	(operator - (const MArray2<T>&)): Simplify.
+
+	* MArrayN.cc
+	(operator += (MArrayN<T>&, const T&)): Simplify.
+	(operator -= (MArrayN<T>&, const T&)): Simplify.
+	(operator *= (MArrayN<T>&, const T&)): Simplify.
+	(operator /= (MArrayN<T>&, const T&)): Simplify.
+	(operator += (MArrayN<T>&, const MArray<T>&)): Simplify.
+	(operator -= (MArrayN<T>&, const MArray<T>&)): Simplify.
+	(product (MArrayN<T>&, const MArray<T>&)): Simplify.
+	(quotient (MArrayN<T>&, const MArray<T>&)): Simplify.
+	(MARRAY_NDS_OP): Simplify.
+	(MARRAY_SND_OP): Simplify.
+	(MARRAY_NDND_OP): Simplify.
+	(operator - (const MArrayN<T>&)): Simplify.
+
+	* MDiagArray2.cc
+	(operator += (MDiagArray2<T>&, const MDiagArray2<T>&)): Simplify.
+	(operator -= (MDiagArray2<T>&, const MDiagArray2<T>&)): Simplify.
+	(operator *= (MDiagArray2<T>&, T)): Simplify.
+	(operator /= (MDiagArray2<T>&, T)): Simplify.
+	(MARRAY_DAS_OP, MARRAY_SDA_OP, MARRAY_DADA_OP): Simplify.
+	* boolNDArray.cc (mx_el_and_assign, mx_el_or_assign): Simplify.
+
+	* MArray-defs.h (DO_VS_OP, DO_SV_OP, DO_VV_OP,
+	DO_VS_OP2, DO_VV_OP2, NEGV): Remove.
+
 2009-09-03  Jaroslav Hajek  <highegg@gmail.com>
 
 	* mx-inlines.cc (DEFMXUNOPEQ): New macro.

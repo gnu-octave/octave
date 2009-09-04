@@ -117,8 +117,9 @@ MArray<T>&
 operator += (MArray<T>& a, const T& s)
 {
   if (a.is_shared ())
-    return a = a + s;
-  DO_VS_OP2 (T, a, +=, s)
+    a = a + s;
+  else
+    do_ms_inplace_op<MArray<T>, T> (a, s, mx_inline_add2);
   return a;
 }
 
@@ -127,8 +128,9 @@ MArray<T>&
 operator -= (MArray<T>& a, const T& s)
 {
   if (a.is_shared ())
-    return a = a - s;
-  DO_VS_OP2 (T, a, -=, s)
+    a = a - s;
+  else
+    do_ms_inplace_op<MArray<T>, T> (a, s, mx_inline_sub2);
   return a;
 }
 
@@ -137,8 +139,9 @@ MArray<T>&
 operator *= (MArray<T>& a, const T& s)
 {
   if (a.is_shared ())
-    return a = a * s;
-  DO_VS_OP2 (T, a, *=, s)
+    a = a * s;
+  else
+    do_ms_inplace_op<MArray<T>, T> (a, s, mx_inline_mul2);
   return a;
 }
 
@@ -147,8 +150,9 @@ MArray<T>&
 operator /= (MArray<T>& a, const T& s)
 {
   if (a.is_shared ())
-    return a = a / s;
-  DO_VS_OP2 (T, a, /=, s)
+    a = a / s;
+  else
+    do_ms_inplace_op<MArray<T>, T> (a, s, mx_inline_div2);
   return a;
 }
 
@@ -159,16 +163,9 @@ MArray<T>&
 operator += (MArray<T>& a, const MArray<T>& b)
 {
   if (a.is_shared ())
-    return a = a + b;
-  octave_idx_type l = a.length ();
-  if (l > 0)
-    {
-      octave_idx_type bl = b.length ();
-      if (l != bl)
-	gripe_nonconformant ("operator +=", l, bl);
-      else
-	DO_VV_OP2 (T, a, +=, b);
-    }
+    a = a + b;
+  else
+    do_mm_inplace_op<MArray<T>, MArray<T> > (a, b, mx_inline_add2, "+=");
   return a;
 }
 
@@ -177,16 +174,9 @@ MArray<T>&
 operator -= (MArray<T>& a, const MArray<T>& b)
 {
   if (a.is_shared ())
-    return a = a - b;
-  octave_idx_type l = a.length ();
-  if (l > 0)
-    {
-      octave_idx_type bl = b.length ();
-      if (l != bl)
-	gripe_nonconformant ("operator -=", l, bl);
-      else
-	DO_VV_OP2 (T, a, -=, b);
-    }
+    a = a - b;
+  else
+    do_mm_inplace_op<MArray<T>, MArray<T> > (a, b, mx_inline_sub2, "-=");
   return a;
 }
 
@@ -196,15 +186,8 @@ product_eq (MArray<T>& a, const MArray<T>& b)
 {
   if (a.is_shared ())
     return a = product (a, b);
-  octave_idx_type l = a.length ();
-  if (l > 0)
-    {
-      octave_idx_type bl = b.length ();
-      if (l != bl)
-	gripe_nonconformant ("operator .*=", l, bl);
-      else
-	DO_VV_OP2 (T, a, *=, b);
-    }
+  else
+    do_mm_inplace_op<MArray<T>, MArray<T> > (a, b, mx_inline_mul2, ".*=");
   return a;
 }
 
@@ -214,86 +197,55 @@ quotient_eq (MArray<T>& a, const MArray<T>& b)
 {
   if (a.is_shared ())
     return a = quotient (a, b);
-  octave_idx_type l = a.length ();
-  if (l > 0)
-    {
-      octave_idx_type bl = b.length ();
-      if (l != bl)
-	gripe_nonconformant ("operator ./=", l, bl);
-      else
-	DO_VV_OP2 (T, a, /=, b);
-    }
+  else
+    do_mm_inplace_op<MArray<T>, MArray<T> > (a, b, mx_inline_div2, "./=");
   return a;
 }
 
 // Element by element MArray by scalar ops.
 
-#define MARRAY_AS_OP(OP) \
+#define MARRAY_AS_OP(OP, FN) \
   template <class T> \
   MArray<T> \
   operator OP (const MArray<T>& a, const T& s) \
   { \
-    MArray<T> result (a.length ()); \
-    T *r = result.fortran_vec (); \
-    octave_idx_type l = a.length (); \
-    const T *v = a.data (); \
-    DO_VS_OP (r, l, v, OP, s); \
-    return result; \
+    return do_ms_binary_op<MArray<T>, MArray<T>, T> (a, s, FN); \
   }
 
-MARRAY_AS_OP (+)
-MARRAY_AS_OP (-)
-MARRAY_AS_OP (*)
-MARRAY_AS_OP (/)
+MARRAY_AS_OP (+, mx_inline_add)
+MARRAY_AS_OP (-, mx_inline_sub)
+MARRAY_AS_OP (*, mx_inline_mul)
+MARRAY_AS_OP (/, mx_inline_div)
 
 // Element by element scalar by MArray ops.
 
-#define MARRAY_SA_OP(OP) \
+#define MARRAY_SA_OP(OP, FN) \
   template <class T> \
   MArray<T> \
   operator OP (const T& s, const MArray<T>& a) \
   { \
-    MArray<T> result (a.length ()); \
-    T *r = result.fortran_vec (); \
-    octave_idx_type l = a.length (); \
-    const T *v = a.data (); \
-    DO_SV_OP (r, l, s, OP, v); \
-    return result; \
+    return do_sm_binary_op<MArray<T>, T, MArray<T> > (s, a, FN); \
   }
 
-MARRAY_SA_OP(+)
-MARRAY_SA_OP(-)
-MARRAY_SA_OP(*)
-MARRAY_SA_OP(/)
+MARRAY_SA_OP(+, mx_inline_add)
+MARRAY_SA_OP(-, mx_inline_sub)
+MARRAY_SA_OP(*, mx_inline_mul)
+MARRAY_SA_OP(/, mx_inline_div)
 
 // Element by element MArray by MArray ops.
 
-#define MARRAY_AA_OP(FCN, OP) \
+#define MARRAY_AA_OP(FCN, OP, FN) \
   template <class T> \
   MArray<T> \
   FCN (const MArray<T>& a, const MArray<T>& b) \
   { \
-    octave_idx_type l = a.length (); \
-    octave_idx_type bl = b.length (); \
-    if (l != bl) \
-      { \
-	gripe_nonconformant (#FCN, l, bl); \
-	return MArray<T> (); \
-      } \
-    if (l == 0) \
-      return MArray<T> (); \
-    MArray<T> result (l); \
-    T *r = result.fortran_vec (); \
-    const T *x = a.data (); \
-    const T *y = b.data (); \
-    DO_VV_OP (r, l, x, OP, y); \
-    return result; \
+    return do_mm_binary_op<MArray<T>, MArray<T>, MArray<T> > (a, b, FN, #FCN); \
   }
 
-MARRAY_AA_OP (operator +, +)
-MARRAY_AA_OP (operator -, -)
-MARRAY_AA_OP (product,    *)
-MARRAY_AA_OP (quotient,   /)
+MARRAY_AA_OP (operator +, +, mx_inline_add)
+MARRAY_AA_OP (operator -, -, mx_inline_sub)
+MARRAY_AA_OP (product,    *, mx_inline_mul)
+MARRAY_AA_OP (quotient,   /, mx_inline_div)
 
 // Unary MArray ops.
 
@@ -308,12 +260,7 @@ template <class T>
 MArray<T>
 operator - (const MArray<T>& a)
 {
-  octave_idx_type l = a.length ();
-  MArray<T> result (l);
-  T *r = result.fortran_vec ();
-  const T *x = a.data ();
-  NEG_V (r, l, x);
-  return result;
+  return do_mx_unary_op<MArray<T>, MArray<T> > (a, mx_inline_uminus); 
 }
 
 /*

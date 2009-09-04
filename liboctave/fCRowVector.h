@@ -40,6 +40,8 @@ public:
 
   explicit FloatComplexRowVector (octave_idx_type n) : MArray<FloatComplex> (n) { }
 
+  explicit FloatComplexRowVector (const dim_vector& dv) : MArray<FloatComplex> (dv) { }
+
   FloatComplexRowVector (octave_idx_type n, const FloatComplex& val) : MArray<FloatComplex> (n, val) { }
 
   FloatComplexRowVector (const FloatComplexRowVector& a) : MArray<FloatComplex> (a) { }

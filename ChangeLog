@@ -1,3 +1,8 @@
+2009-09-04  John W. Eaton  <jwe@octave.org>
+
+	* Makeconf.in (SPARSE_CPPFLAGS, SPARSE_LDFLAGS, FFTW_CPPFLAGS,
+	FFTW_LDFLAGS): Don't sort lists.
+
 2009-09-02  Marco Atzeri  <marco_atzeri@yahoo.it>
 
 	* Makeconf.in: Order SPARSE_LIBS so linking succeeds on Cygwin.

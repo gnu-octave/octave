@@ -320,11 +320,11 @@ SPARSE_LDFLAGS = \
     $(CCOLAMD_LDFLAGS) $(CHOLMOD_LDFLAGS) $(CXSPARSE_LDFLAGS) \
     $(UMFPACK_LDFLAGS))
 
-## FIXME -- does order matter here?
+## Order matters, at least on some systems (Cygwin, for example).
 SPARSE_LIBS = \
-  $(AMD_LIBS) $(CAMD_LIBS) $(COLAMD_LIBS) \
-    $(CCOLAMD_LIBS) $(CHOLMOD_LIBS) $(CXSPARSE_LIBS) \
-    $(UMFPACK_LIBS)
+    $(CHOLMOD_LIBS) $(UMFPACK_LIBS) \
+    $(AMD_LIBS) $(CAMD_LIBS) $(COLAMD_LIBS) \
+    $(CCOLAMD_LIBS) $(CXSPARSE_LIBS)
 
 ## Use sort to remove duplicates.
 FFTW_CPPFLAGS = $(sort $(FFTW3_CPPFLAGS) $(FFTW3F_CPPFLAGS))

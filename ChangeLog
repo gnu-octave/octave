@@ -1,3 +1,7 @@
+2009-09-02  Marco Atzeri  <marco_atzeri@yahoo.it>
+
+	* Makeconf.in: Order SPARSE_LIBS so linking succeeds on Cygwin.
+
 2009-09-04  Marco Atzeri  <marco_atzeri@yahoo.it>
 
 	*  README.Cygwin: Update version info.

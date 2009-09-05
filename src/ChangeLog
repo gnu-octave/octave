@@ -1,3 +1,8 @@
+2009-09-05  John W. Eaton  <jwe@octave.org>
+
+	* txt-eng-ft.cc (ft_manager::do_get_font): Remove spurious
+	assignment usd for debugging.
+
 2009-09-04  John W. Eaton  <jwe@octave.org>
 
 	* txt-eng-ft.cc (ft_manager::do_get_font, ft_render::set_font,

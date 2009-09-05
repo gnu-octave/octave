@@ -140,7 +140,6 @@ private:
 
 	      FcDefaultSubstitute (pat);
 	      match = FcFontMatch (0, pat, &res);
-	      match = 0;
 	      
 	      if (match && res != FcResultNoMatch)
 		{

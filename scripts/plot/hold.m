@@ -46,48 +46,40 @@
 
 function hold (varargin)
 
-  if (nargin > 0 && numel (varargin{1}) == 1 && ishandle (varargin{1}(1))
+  if (nargin > 0 && numel (varargin{1}) == 1 && ishandle (varargin{1})
       && strcmp (get (varargin{1}, "type"), "axes"))
-    [h, varargin, nargs] = __plt_get_axis_arg__ ("hold", varargin{:});
-  elseif (nargin > 0 && numel (varargin{1}) > 1 && ishandle (varargin{1}(1)))
+    [ax, varargin, nargs] = __plt_get_axis_arg__ ("hold", varargin{:});
+  elseif (nargin > 0 && numel (varargin{1}) > 1 && ishandle (varargin{1}))
     print_usage ();
   else
-    h = gcf ();
+    ax = gca ();
+    fig = gcf ();
     nargs = numel (varargin);
   endif
 
-  hold_state = get (h, "nextplot");
-
   if (nargs == 0)
-    if (strcmpi (hold_state, "add"))
-      hold_state = "replace";
-    else
-      hold_state = "add";
-    endif
+    turn_hold_off = ishold (ax);
   elseif (nargs == 1)
     state = varargin{1};
     if (ischar (state))
       if (strcmpi (state, "off"))
-	hold_state = "replace";
+	turn_hold_off = true;
       elseif (strcmpi (state, "on"))
-	hold_state = "add";
+	turn_hold_off = false;
       else
-	print_usage ();
+	error ("hold: invalid hold state");
       endif
     endif
   else
     print_usage ();
   endif
 
-  if (isfigure (h))
-    if (isempty (get (h, "currentaxes")))
-      set (h, "currentaxes", __go_axes__ (h))
-    endif
-    axes_objs = findobj (h, "type", "axes");
-    h = [h; axes_objs];
+  if (turn_hold_off)
+    set (ax, "nextplot", "replace");
+  else
+    set (ax, "nextplot", "add");
+    set (fig, "nextplot", "add");
   endif
-
-  set (h, "nextplot", hold_state);
 
 endfunction
 

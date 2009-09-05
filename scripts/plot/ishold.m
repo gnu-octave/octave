@@ -1,4 +1,4 @@
-## Copyright (C) 2005, 2006, 2007, 2008 John W. Eaton
+## Copyright (C) 2005, 2006, 2007, 2008 2009 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -22,12 +22,34 @@
 ## false if the plot device will be cleared before drawing the next line.
 ## @end deftypefn
 
-function retval = ishold ()
+function retval = ishold (h)
 
   if (nargin == 0)
-    retval = strcmpi (get (gca (), "nextplot"), "add");
+    ax = gca ();
+    fig = gcf ();
+  elseif (nargin == 1)
+    if (ishandle (h))
+      if (isfigure (h))
+	ax = get (h, "currentaxes");
+	if (isempty (ax))
+	  ax = __go_axes__ (h);
+	  set (h, "currentaxes", ax);
+	endif
+	fig = h;
+      elseif (strcmpi (get (h, "type"), "axes"))
+	ax = h;
+	fig = get (h, "parent");
+      else
+	error ("hold: expecting argument to be axes or figure graphics handle");
+      endif
+    else
+      error ("hold: expecting argument to be axes or figure graphics handle");
+    endif
   else
     print_usage ();
   endif
+
+  retval = (strcmpi (get (fig, "nextplot"), "add")
+	    && strcmpi (get (ax, "nextplot"), "add"));
 
 endfunction

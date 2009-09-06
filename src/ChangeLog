@@ -1,3 +1,10 @@
+2009-09-06  Jaroslav Hajek  <highegg@gmail.com>
+
+	* OPERATORS/op-s-cs.cc: Use DEFCMPLXCMPOP_OP.
+	* OPERATORS/op-cs-s.cc: Ditto.
+	* OPERATORS/op-fs-fcs.cc: Ditto.
+	* OPERATORS/op-fcs-fs.cc: Ditto.
+
 2009-09-05  John W. Eaton  <jwe@octave.org>
 
 	* genprops.awk: Fix formatting of generated output.

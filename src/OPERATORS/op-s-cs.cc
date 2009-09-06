@@ -70,47 +70,12 @@ DEFBINOP (ldiv, scalar, complex)
   return octave_value (v2.complex_value () / d);
 }
 
-DEFBINOP (lt, scalar, complex)
-{
-  CAST_BINOP_ARGS (const octave_scalar&, const octave_complex&);
-
-  return v1.double_value () < real (v2.complex_value ());
-}
-
-DEFBINOP (le, scalar, complex)
-{
-  CAST_BINOP_ARGS (const octave_scalar&, const octave_complex&);
-
-  return v1.double_value () <= real (v2.complex_value ());
-}
-
-DEFBINOP (eq, scalar, complex)
-{
-  CAST_BINOP_ARGS (const octave_scalar&, const octave_complex&);
-
-  return v1.double_value () == v2.complex_value ();
-}
-
-DEFBINOP (ge, scalar, complex)
-{
-  CAST_BINOP_ARGS (const octave_scalar&, const octave_complex&);
-
-  return v1.double_value () >= real (v2.complex_value ());
-}
-
-DEFBINOP (gt, scalar, complex)
-{
-  CAST_BINOP_ARGS (const octave_scalar&, const octave_complex&);
-
-  return v1.double_value () > real (v2.complex_value ());
-}
-
-DEFBINOP (ne, scalar, complex)
-{
-  CAST_BINOP_ARGS (const octave_scalar&, const octave_complex&);
-
-  return v1.double_value () != v2.complex_value ();
-}
+DEFCMPLXCMPOP_OP (lt, scalar, complex, <)
+DEFCMPLXCMPOP_OP (le, scalar, complex, <=)
+DEFCMPLXCMPOP_OP (eq, scalar, complex, ==)
+DEFCMPLXCMPOP_OP (ge, scalar, complex, >=)
+DEFCMPLXCMPOP_OP (gt, scalar, complex, >)
+DEFCMPLXCMPOP_OP (ne, scalar, complex, !=)
 
 DEFBINOP_OP (el_mul, scalar, complex, *)
 

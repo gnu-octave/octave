@@ -71,47 +71,12 @@ DEFBINOP (ldiv, float_complex, float)
   return octave_value (v2.float_value () / d);
 }
 
-DEFBINOP (lt, float_complex, float)
-{
-  CAST_BINOP_ARGS (const octave_float_complex&, const octave_float_scalar&);
-
-  return real (v1.float_complex_value ()) < v2.float_value ();
-}
-
-DEFBINOP (le, float_complex, float)
-{
-  CAST_BINOP_ARGS (const octave_float_complex&, const octave_float_scalar&);
-
-  return real (v1.float_complex_value ()) <= v2.float_value ();
-}
-
-DEFBINOP (eq, float_complex, float)
-{
-  CAST_BINOP_ARGS (const octave_float_complex&, const octave_float_scalar&);
-
-  return v1.float_complex_value () == v2.float_value ();
-}
-
-DEFBINOP (ge, float_complex, float)
-{
-  CAST_BINOP_ARGS (const octave_float_complex&, const octave_float_scalar&);
-
-  return real (v1.float_complex_value ()) >= v2.float_value ();
-}
-
-DEFBINOP (gt, float_complex, float)
-{
-  CAST_BINOP_ARGS (const octave_float_complex&, const octave_float_scalar&);
-
-  return real (v1.float_complex_value ()) > v2.float_value ();
-}
-
-DEFBINOP (ne, float_complex, float)
-{
-  CAST_BINOP_ARGS (const octave_float_complex&, const octave_float_scalar&);
-
-  return v1.float_complex_value () != v2.float_value ();
-}
+DEFCMPLXCMPOP_OP (lt, float_complex, float_scalar, <)
+DEFCMPLXCMPOP_OP (le, float_complex, float_scalar, <=)
+DEFCMPLXCMPOP_OP (eq, float_complex, float_scalar, ==)
+DEFCMPLXCMPOP_OP (ge, float_complex, float_scalar, >=)
+DEFCMPLXCMPOP_OP (gt, float_complex, float_scalar, >)
+DEFCMPLXCMPOP_OP (ne, float_complex, float_scalar, !=)
 
 DEFBINOP_OP (el_mul, float_complex, float_scalar, *)
 

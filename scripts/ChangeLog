@@ -1,5 +1,10 @@
 2009-09-06  Jaroslav Hajek  <highegg@gmail.com>
 
+	* optimization/fsolve.m: Update initial factor.
+	* optimization/fminunc.m: Update initial factor.
+
+2009-09-06  Jaroslav Hajek  <highegg@gmail.com>
+
 	* general/arrayfun.m: Fix test.
 
 2009-09-05  John W. Eaton  <jwe@octave.org>

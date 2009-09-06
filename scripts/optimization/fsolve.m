@@ -164,7 +164,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
   tolx = optimget (options, "TolX", sqrt (macheps));
   tolf = optimget (options, "TolFun", sqrt (macheps));
 
-  factor = 100;
+  factor = 1;
 
   niter = 1;
   nfev = 1;

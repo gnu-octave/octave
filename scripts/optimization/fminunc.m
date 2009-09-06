@@ -110,7 +110,7 @@ function [x, fval, info, output, grad, hess] = fminunc (fcn, x0, options = struc
   tolx = optimget (options, "TolX", sqrt (macheps));
   tolf = optimget (options, "TolFun", sqrt (macheps));
 
-  factor = 100;
+  factor = 0.1;
   ## FIXME: TypicalX corresponds to user scaling (???)
   autodg = true;
 

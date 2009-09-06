@@ -2079,6 +2079,16 @@ public:
 	 ? get_factory_defaults () : rep->get (name));
   }
 
+  octave_value get (const std::string& name) const
+  {
+    return get (caseless_str (name));
+  }
+
+  octave_value get (const char *name) const
+  {
+    return get (caseless_str (name));
+  }
+
   octave_value get_default (const caseless_str& name) const
   {
     return rep->get_default (name);

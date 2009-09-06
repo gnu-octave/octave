@@ -1,5 +1,11 @@
 2009-09-05  John W. Eaton  <jwe@octave.org>
 
+	* genprops.awk: Fix formatting of generated output.
+	* graphics.h.in (graphics_object::get (const std::string&) const,
+	graphics_object::get (const char *) const): New functions.
+
+2009-09-05  John W. Eaton  <jwe@octave.org>
+
 	* txt-eng-ft.cc (ft_manager::do_get_font): Remove spurious
 	assignment usd for debugging.
 

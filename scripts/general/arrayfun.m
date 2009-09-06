@@ -246,7 +246,7 @@ endfunction
 
 %% Input arguments can be of type numeric
 %!test
-%!  A = arrayfun (@(x,y) x>y, [1.1, 4.2], [3.1, 2+6*i]);
+%!  A = arrayfun (@(x,y) x>y, [1.1, 4.2], [3.1, 2+3*i]);
 %!  assert (A, [false, true]);
 %!test
 %!  A = arrayfun (@(x,y) x>y, [1.1, 4.2; 2, 4], [3.1, 2; 2, 4+2*i], "UniformOutput", true);

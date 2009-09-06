@@ -743,7 +743,7 @@ cellfun_err:
 
 %% Input arguments can be of type cell array of numeric
 %!test
-%!  A = cellfun (@(x,y) x>y, {1.1, 4.2}, {3.1, 2+6*i});
+%!  A = cellfun (@(x,y) x>y, {1.1, 4.2}, {3.1, 2+3*i});
 %!  assert (A, [false, true]);
 %!test
 %!  A = cellfun (@(x,y) x>y, {1.1, 4.2; 2, 4}, {3.1, 2; 2, 4+2*i}, \

@@ -1,5 +1,9 @@
 2009-09-06  Jaroslav Hajek  <highegg@gmail.com>
 
+	* DLD-FUNCTIONS/cellfun.cc: Fix test.
+
+2009-09-06  Jaroslav Hajek  <highegg@gmail.com>
+
 	* OPERATORS/op-s-cs.cc: Use DEFCMPLXCMPOP_OP.
 	* OPERATORS/op-cs-s.cc: Ditto.
 	* OPERATORS/op-fs-fcs.cc: Ditto.

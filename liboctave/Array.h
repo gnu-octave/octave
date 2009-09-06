@@ -266,7 +266,14 @@ public:
     }
 
   void fill (const T& val); 
+
   void clear (void);
+  void clear (const dim_vector& dv);
+  void clear (octave_idx_type n)
+    { clear (dim_vector (n)); }
+
+  void clear (octave_idx_type r, octave_idx_type c)
+    { clear (dim_vector (r, c)); }
 
   octave_idx_type capacity (void) const { return slice_len; }
   octave_idx_type length (void) const { return capacity (); }

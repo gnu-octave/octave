@@ -1,5 +1,12 @@
 2009-09-04  Jaroslav Hajek  <highegg@gmail.com>
 
+	* Array.cc (Array<T>::clear (const dim_vector&)): new method.
+	* Array.h: Declare it.
+	(Array<T>::clear (octave_idx_type)): New method.
+	(Array<T>::clear (octave_idx_type, octave_idx_type)): New method.
+
+2009-09-04  Jaroslav Hajek  <highegg@gmail.com>
+
 	* mx-inlines.cc (DEFMXBOOLOPEQ): New macro.
 	(mx_inline_and2, mx_inline_or2): New loops.
 

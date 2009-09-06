@@ -88,6 +88,20 @@ Array<T>::clear (void)
 }
 
 template <class T>
+void
+Array<T>::clear (const dim_vector& dv)
+{
+  if (--rep->count <= 0)
+    delete rep;
+
+  rep = new ArrayRep (dv.numel ());
+  slice_data = rep->data;
+  slice_len = rep->len;
+
+  dimensions = dv;
+}
+
+template <class T>
 Array<T>
 Array<T>::squeeze (void) const
 {

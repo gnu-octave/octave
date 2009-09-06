@@ -1,3 +1,14 @@
+2009-09-06  Jaroslav Hajek  <highegg@gmail.com>
+
+	* dColVector.h (operator *(const Matrix&, const ColumnVector)):
+	Optimize.
+	* fColVector.h (operator *(const FloatMatrix&, const
+	FloatColumnVector)): Optimize.
+	* CColVector.h (operator *(const ComplexMatrix&, const
+	ComplexColumnVector)): Optimize.
+	* fCColVector.h (operator *(const FloatComplexMatrix&, const
+	FloatComplexColumnVector)): Optimize.
+
 2009-09-04  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Array.cc (Array<T>::clear (const dim_vector&)): new method.

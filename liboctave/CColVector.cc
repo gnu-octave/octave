@@ -340,20 +340,17 @@ operator * (const ComplexMatrix& m, const ComplexColumnVector& a)
     gripe_nonconformant ("operator *", nr, nc, a_len, 1);
   else
     {
-      if (nc == 0 || nr == 0)
-	retval.resize (nr, 0.0);
-      else
-	{
-	  octave_idx_type ld = nr;
+      retval.clear (nr);
 
-	  retval.resize (nr);
-	  Complex *y = retval.fortran_vec ();
+      if (nr != 0)
+        {
+          Complex *y = retval.fortran_vec ();
 
-	  F77_XFCN (zgemv, ZGEMV, (F77_CONST_CHAR_ARG2 ("N", 1),
-				   nr, nc, 1.0, m.data (), ld,
-				   a.data (), 1, 0.0, y, 1
-				   F77_CHAR_ARG_LEN (1)));
-	}
+          F77_XFCN (zgemv, ZGEMV, (F77_CONST_CHAR_ARG2 ("N", 1),
+                                   nr, nc, 1.0, m.data (), nr,
+                                   a.data (), 1, 0.0, y, 1
+                                   F77_CHAR_ARG_LEN (1)));
+        }
     }
 
   return retval;

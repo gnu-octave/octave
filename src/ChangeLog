@@ -1,3 +1,7 @@
+2009-09-07  Jaroslav Hajek  <highegg@gmail.com>
+
+	* src/Makefile.in: Add LDFLAGS to OCT_LINK_DEPS.
+
 2009-09-06  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/cellfun.cc: Fix test.

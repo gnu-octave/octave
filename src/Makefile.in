@@ -337,7 +337,7 @@ OCTINTERP_LINK_DEPS = $(RLD_FLAG) -L../liboctave $(LIBOCTAVE) \
   $(FLIBS) \
   $(LIBS)
 
-OCT_LINK_DEPS = $(RLD_FLAG) -L. $(LIBOCTINTERP) \
+OCT_LINK_DEPS = $(RLD_FLAG) $(LDFLAGS) -L. $(LIBOCTINTERP) \
   -L../liboctave $(LIBOCTAVE) \
   -L../libcruft $(LIBCRUFT)
 

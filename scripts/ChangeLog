@@ -1,3 +1,10 @@
+2009-09-05  John W. Eaton  <jwe@octave.org>
+
+	* plot/hold.m: Correctly toggle hold state.  Set both figure and
+	axes "nextplot" property when turning hold state on.
+	* plot/ishold.m: Check figure and axes nextplot properties.
+	Accept axes or figure handle argument.
+
 2009-08-17  Jaroslav Hajek  <highegg@gmail.com>
 
 	* general/int2str.m: Convert to double before calling log10.

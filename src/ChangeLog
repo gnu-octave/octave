@@ -1,3 +1,7 @@
+2009-09-08  Rafael Laboissiere  <rafael@debian.org>
+
+	* pr-output.cc: New test.
+
 2009-09-07  Jaroslav Hajek  <highegg@gmail.com>
 
 	* src/Makefile.in: Add LDFLAGS to OCT_LINK_DEPS.

@@ -20,7 +20,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn{Function File} {} fminunc (@var{fcn}, @var{x0}, @var{options})
-## @deftypefnx{Function File} {[@var{x}, @var{fvec}, @var{info}, @var{output}, @var{fjac}]} = fminunc (@var{fcn}, @dots{})
+## @deftypefnx{Function File} {[@var{x}, @var{fvec}, @var{info}, @var{output}, @var{grad}, @var{hess}]} = fminunc (@var{fcn}, @dots{})
 ## Solve a unconstrained optimization problem defined by the function @var{fcn}.
 ## @var{fcn} should accepts a vector (array) defining the unknown variables,
 ## and return the objective function value, optionally with gradient.
@@ -59,6 +59,10 @@
 ## @item -3
 ## The trust region radius became excessively small. 
 ## @end table
+##
+## Optionally, fminunc can also yield a structure with convergence statistics
+## (@var{output}), the output gradient (@var{grad}) and approximate hessian
+## (@var{hess}).
 ##
 ## Note: If you only have a single nonlinear equation of one variable, using 
 ## @code{fminbnd} is usually a much better idea.
@@ -307,6 +311,10 @@ function [x, fval, info, output, grad, hess] = fminunc (fcn, x0, options = struc
   output.iterations = niter;
   output.successful = nsuciter;
   output.funcCount = nfev;
+
+  if (nargout > 5)
+    hess = hesr'*hesr;
+  endif
 
 endfunction
 

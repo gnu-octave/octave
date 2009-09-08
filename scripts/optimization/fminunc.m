@@ -189,7 +189,7 @@ function [x, fval, info, output, grad, hess] = fminunc (fcn, x0, options = struc
       dg = d2f;
       xn = norm (dg .* x);
       ## FIXME: something better?
-      delta = max (factor * xn, 1);
+      delta = factor * max (xn, 1);
     endif
 
     ## FIXME: maybe fixed lower and upper bounds?

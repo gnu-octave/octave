@@ -1,3 +1,8 @@
+2009-09-06  Jaroslav Hajek  <highegg@gmail.com>
+
+	* optimization/fsolve.m: Change initial TR step strategy.
+	* optimization/fminunc.m: Change initial TR step strategy.
+
 2009-09-08  Jaroslav Hajek  <highegg@gmail.com>
 
 	* optimization/fminunc.m: Correct extra output params handling.

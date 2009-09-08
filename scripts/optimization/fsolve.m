@@ -234,7 +234,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
       dg(dg == 0) = 1;
       xn = norm (dg .* x);
       ## FIXME: something better?
-      delta = max (factor * xn, 1);
+      delta = factor * max (xn, 1);
     endif
 
     ## Rescale adaptively.

@@ -1,3 +1,9 @@
+2009-09-09  Tatsuro Matsuoka <tmacchant@yahoo.co.jp>
+
+	* plot/gnuplot_drawnow.m: Avoid flickering windows by avoding
+	'set multiplot' / 'unset multiplot' for gnuplot's windows and
+	wxt terminals.
+
 2009-09-06  Jaroslav Hajek  <highegg@gmail.com>
 
 	* optimization/__dogleg__.m: Revert to revision 22c8272af34b.

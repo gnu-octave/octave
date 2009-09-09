@@ -288,10 +288,12 @@ function [enhanced, implicit_margin] = gnuplot_set_term (plot_stream, new_stream
       ## the canvas size for terminals cdr/corel.
       term_str = sprintf ("%s %s", term_str, size_str);
     endif
-    ## Work around the gnuplot feature of growing the x11 window when
-    ## the mouse and multiplot are set.
+    ## Work around the gnuplot feature of growing the x11 window and
+    ## flickering window (x11, windows, & wxt) when the mouse and
+    ## multiplot are set in gnuplot.
     fputs (plot_stream, "unset multiplot;\n");
-    if (! strcmp (term, "x11")
+    flickering_terms = {"x11", "windows", "wxt"};
+    if (! any (strcmp (term, flickering_terms))
         || numel (findall (h, "type", "axes")) > 1
         || numel (findall (h, "type", "image")) > 0)
       fprintf (plot_stream, "%s\n", term_str);
@@ -301,7 +303,7 @@ function [enhanced, implicit_margin] = gnuplot_set_term (plot_stream, new_stream
         endif
       endif
       fputs (plot_stream, "set multiplot;\n");
-    elseif (strcmp (term, "x11"))
+    elseif (any (strcmp (term, flickering_terms)))
       fprintf (plot_stream, "%s\n", term_str);
       if (nargin == 5)
         if (! isempty (file))

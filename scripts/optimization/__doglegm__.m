@@ -17,24 +17,24 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn{Function File} {@var{x}} = __dogleg__ (@var{r}, @var{b}, @var{x}, @var{d}, @var{delta})
-## Undocumented internal function.
+## @deftypefn{Function File} {@var{x}} = __doglegm__ (@var{r}, @var{b}, @var{x}, @var{d}, @var{delta})
 ## @end deftypefn
 
-## Solve the double dogleg trust-region least-squares problem:
-## Minimize norm(r*x-b) subject to the constraint norm(d.*x) <= delta,
+## Solve the double dogleg trust-region minimization problem:
+## Minimize 1/2*norm(r*x)^2  subject to the constraint norm(d.*x) <= delta,
 ## x being a convex combination of the gauss-newton and scaled gradient.
 
 ## TODO: error checks
 ## TODO: handle singularity, or leave it up to mldivide?
 
-function x = __dogleg__ (r, b, d, delta)
+function x = __doglegm__ (r, g, d, delta)
   ## Get Gauss-Newton direction.
+  b = r' \ g;
   x = r \ b;
   xn = norm (d .* x);
   if (xn > delta)
     ## GN is too big, get scaled gradient.
-    s = (r' * b) ./ d;
+    s = g ./ d;
     sn = norm (s);
     if (sn > 0)
       ## Normalize and rescale.

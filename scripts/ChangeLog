@@ -1,3 +1,9 @@
+2009-09-06  Jaroslav Hajek  <highegg@gmail.com>
+
+	* optimization/__dogleg__.m: Revert to revision 22c8272af34b.
+	* optimization/__doglegm__.m: New source.
+	* optimization/fminunc.m: Use it.
+
 2009-09-08  John W. Eaton  <jwe@octave.org>
 
 	* io/dlmwrite.m: Fix typo.

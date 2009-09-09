@@ -209,7 +209,7 @@ function [x, fval, info, output, grad, hess] = fminunc (fcn, x0, options = struc
     ## Inner loop.
     while (! suc && niter <= maxiter && nfev < maxfev && ! info)
 
-      s = - __dogleg__ (hesr, grad, dg, delta, true);
+      s = - __doglegm__ (hesr, grad, dg, delta);
 
       sn = norm (dg .* s);
       if (niter == 1)

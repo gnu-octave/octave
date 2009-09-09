@@ -1,3 +1,7 @@
+2009-09-08  John W. Eaton  <jwe@octave.org>
+
+	* io/dlmwrite.m: Fix typo.
+
 2009-09-05  John W. Eaton  <jwe@octave.org>
 
 	* plot/hold.m: Correctly toggle hold state.  Set both figure and

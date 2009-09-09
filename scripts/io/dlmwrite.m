@@ -85,7 +85,7 @@
 function dlmwrite (file, a, varargin)
 
   if (nargin < 2 || ! ischar (file))
-    ptint_usage ();
+    print_usage ();
   endif
 
   ## set defaults

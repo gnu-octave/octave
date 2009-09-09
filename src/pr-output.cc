@@ -3350,6 +3350,18 @@ Note that the output from @code{fdisp} always ends with a newline.\n\
   return retval;
 }
 
+/* 
+%!test
+%! format short
+%! fd = tmpfile ();
+%! for r = [0, Inf -Inf, NaN]
+%!   for i = [0, Inf -Inf, NaN]
+%!     fdisp (fd, complex (r, i));
+%!   endfor
+%! endfor
+%! fclose (fd);
+*/                                 
+
 static void
 init_format_state (void)
 {

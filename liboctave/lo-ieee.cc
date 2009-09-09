@@ -157,13 +157,12 @@ octave_ieee_init (void)
     case oct_mach_info::flt_fmt_cray:
     case oct_mach_info::flt_fmt_vax_d:
     case oct_mach_info::flt_fmt_vax_g:
-      break;
-
     default:
       // If the format is unknown, then you will probably not have a
       // useful system, but we will just issue a warning and go on...
-      (*current_liboctave_warning_handler)
-	("lo_ieee_init: unrecognized floating point format!");
+      (*current_liboctave_error_handler)
+	("lo_ieee_init: floating point format is not IEEE!  Maybe DLAMCH is miscompiled, or you are using some strange system without IEEE floating point math?");
+      abort ();
     }
 }
 

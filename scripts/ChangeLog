@@ -1,5 +1,9 @@
 2009-09-11  Jaroslav Hajek  <highegg@gmail.com>
 
+	* optimization/Makefile.in: Include __doglegm__.m.
+
+2009-09-11  Jaroslav Hajek  <highegg@gmail.com>
+
 	* optimization/fminunc.m: Simplify damped BFGS calculation.
 
 2009-09-09  Tatsuro Matsuoka <tmacchant@yahoo.co.jp>

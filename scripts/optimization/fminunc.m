@@ -170,11 +170,7 @@ function [x, fval, info, output, grad, hess] = fminunc (fcn, x0, options = struc
       sBs = sumsq (w);
       Bs = hesr'*w;
       sy = y'*s;
-      if (sy >= 0.2*sBs)
-        theta = 1;
-      else
-        theta = 0.8*sBs / (sBs - sy);
-      endif
+      theta = 0.8 / max (1 - sy / sBs, 0.8);
       r = theta * y + (1-theta) * Bs;
       hesr = cholupdate (hesr, r / sqrt (s'*r), "+");
       [hesr, info] = cholupdate (hesr, Bs / sqrt (sBs), "-");

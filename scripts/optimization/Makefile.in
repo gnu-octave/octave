@@ -42,6 +42,7 @@ SOURCES = \
   glpk.m \
   glpkmex.m \
   lsqnonneg.m \
+  pqpnonneg.m \
   optimset.m \
   optimget.m \
   __all_opts__.m \

@@ -19,25 +19,21 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{x} =} lsqnonneg (@var{c}, @var{d})
-## @deftypefnx {Function File} {@var{x} =} lsqnonneg (@var{c}, @var{d}, @var{x0})
-## @deftypefnx {Function File} {[@var{x}, @var{resnorm}] =} lsqnonneg (@dots{})
-## @deftypefnx {Function File} {[@var{x}, @var{resnorm}, @var{residual}] =} lsqnonneg (@dots{})
-## @deftypefnx {Function File} {[@var{x}, @var{resnorm}, @var{residual}, @var{exitflag}] =} lsqnonneg (@dots{})
-## @deftypefnx {Function File} {[@var{x}, @var{resnorm}, @var{residual}, @var{exitflag}, @var{output}] =} lsqnonneg (@dots{})
-## @deftypefnx {Function File} {[@var{x}, @var{resnorm}, @var{residual}, @var{exitflag}, @var{output}, @var{lambda}] =} lsqnonneg (@dots{})
-## Minimize @code{norm (@var{c}*@var{x}-d)} subject to @code{@var{x} >=
-## 0}.  @var{c} and @var{d} must be real.  @var{x0} is an optional
-## initial guess for @var{x}.
+## @deftypefn {Function File} {@var{x} =} pqpnonneg (@var{c}, @var{d})
+## @deftypefnx {Function File} {@var{x} =} pqpnonneg (@var{c}, @var{d}, @var{x0})
+## @deftypefnx {Function File} {[@var{x}, @var{minval}] =} pqpnonneg (@dots{})
+## @deftypefnx {Function File} {[@var{x}, @var{minval}, @var{exitflag}] =} pqpnonneg (@dots{})
+## @deftypefnx {Function File} {[@var{x}, @var{minval}, @var{exitflag}, @var{output}] =} pqpnonneg (@dots{})
+## @deftypefnx {Function File} {[@var{x}, @var{minval}, @var{exitflag}, @var{output}, @var{lambda}] =} pqpnonneg (@dots{})
+## Minimize @code{1/2*x'*c*x + d'*x} subject to @code{@var{x} >=
+## 0}.  @var{c} and @var{d} must be real, and @var{c} must be symmetric and positive definite.
+## @var{x0} is an optional initial guess for @var{x}.
 ##
 ## Outputs:
 ## @itemize @bullet
-## @item resnorm
+## @item minval
 ##
-## The squared 2-norm of the residual: norm(@var{c}*@var{x}-@var{d})^2
-## @item residual
-##
-## The residual: @var{d}-@var{c}*@var{x}
+## The minimum attained model value, 1/2*xmin'*c*xmin + d'*xmin
 ## @item exitflag
 ##
 ## An indicator of convergence.  0 indicates that the iteration count
@@ -55,15 +51,17 @@
 ##
 ## Not implemented.
 ## @end itemize
-## @seealso{optimset, pqpnonneg}
+## @seealso{optimset, lsqnonneg, qp}
 ## @end deftypefn
 
-## PKG_ADD: __all_opts__ ("lsqnonneg");
+## PKG_ADD: __all_opts__ ("pqpnonneg");
 
-## This is implemented from Lawson and Hanson's 1973 algorithm on page
+## This is analogical to the lsqnonneg implementation, which is 
+## implemented from Lawson and Hanson's 1973 algorithm on page
 ## 161 of Solving Least Squares Problems.
+## It shares the convergence guarantees.
 
-function [x, resnorm, residual, exitflag, output, lambda] = lsqnonneg (c, d, x = [], options = struct ())
+function [x, minval, exitflag, output, lambda] = pqpnonneg (c, d, x = [], options = struct ())
 
   if (nargin == 1 && ischar (c) && strcmp (c, 'defaults'))
     x = optimset ("MaxIter", 1e5);
@@ -77,6 +75,10 @@ function [x, resnorm, residual, exitflag, output, lambda] = lsqnonneg (c, d, x =
   ## Lawson-Hanson Step 1 (LH1): initialize the variables.
   m = rows (c);
   n = columns (c);
+  if (m != n)
+    error ("matrix must be square");
+  endif
+
   if (isempty (x))
     ## Initial guess is 0s.
     x = zeros (n, 1);
@@ -85,15 +87,13 @@ function [x, resnorm, residual, exitflag, output, lambda] = lsqnonneg (c, d, x =
     x = max (x, 0);
   endif
 
-  useqr = m >= n;
   max_iter = optimget (options, "MaxIter", 1e5);
 
   ## Initialize P, according to zero pattern of x.
   p = find (x > 0).';
-  if (useqr)
-    ## Initialize the QR factorization, economized form.
-    [q, r] = qr (c(:,p), 0);
-  endif
+  ## Initialize the Cholesky factorization.
+  r = chol (c(p, p));
+  usechol = true;
 
   iter = 0;
 
@@ -104,10 +104,10 @@ function [x, resnorm, residual, exitflag, output, lambda] = lsqnonneg (c, d, x =
 
       ## LH6: compute the positive matrix and find the min norm solution
       ## of the positive problem.
-      if (useqr)
-        xtmp = r \ q'*d;
+      if (usechol)
+        xtmp = -(r \ (r' \ d(p)));
       else
-        xtmp = c(:,p) \ d;
+        xtmp = -(c(p,p) \ d(p));
       endif
       idx = find (xtmp < 0);
 
@@ -129,21 +129,21 @@ function [x, resnorm, residual, exitflag, output, lambda] = lsqnonneg (c, d, x =
         ## This corresponds to those indices where minimum of sf is attained.
         idx = idx (sf == alpha);
         p(idx) = [];
-        if (useqr)
-          ## update the QR factorization.
-          [q, r] = qrdelete (q, r, idx);
+        if (usechol)
+          ## update the Cholesky factorization.
+          r = choldelete (r, idx);
         endif
       endif
     endwhile
       
     ## compute the gradient.
-    w = c'*(d - c*x);
+    w = -(d + c*x);
     w(p) = [];
     if (! any (w > 0))
-      if (useqr)
+      if (usechol)
         ## verify the solution achieved using qr updating.
         ## in the best case, this should only take a single step.
-        useqr = false;
+        usechol = false;
         continue;
       else
         ## we're finished.
@@ -154,7 +154,7 @@ function [x, resnorm, residual, exitflag, output, lambda] = lsqnonneg (c, d, x =
     ## find the maximum gradient.
     idx = find (w == max (w));
     if (numel (idx) > 1)
-      warning ("lsqnonneg:nonunique",
+      warning ("pqpnonneg:nonunique",
                "A non-unique solution may be returned due to equal gradients.");
       idx = idx(1);
     endif
@@ -163,9 +163,9 @@ function [x, resnorm, residual, exitflag, output, lambda] = lsqnonneg (c, d, x =
     zidx = z(idx);
     jdx = 1 + lookup (p, zidx);
     p = [p(1:jdx-1), zidx, p(jdx:end)];
-    if (useqr)
-      ## insert the column into the QR factorization.
-      [q, r] = qrinsert (q, r, jdx, c(:,zidx));
+    if (usechol)
+      ## insert the column into the Cholesky factorization.
+      r = cholinsert (r, jdx, c(p,zidx));
     endif
 
   endwhile
@@ -173,19 +173,16 @@ function [x, resnorm, residual, exitflag, output, lambda] = lsqnonneg (c, d, x =
 
   ## Generate the additional output arguments.
   if (nargout > 1)
-    resnorm = norm (c*x - d) ^ 2;
-  endif
-  if (nargout > 2)
-    residual = d - c*x;
+    minval = 1/2*(x'*c*x) + d'*x;
   endif
   exitflag = iter;
-  if (nargout > 3 && iter >= max_iter)
+  if (nargout > 2 && iter >= max_iter)
     exitflag = 0;
   endif
-  if (nargout > 4)
-    output = struct ("algorithm", "nnls", "iterations", iter);
+  if (nargout > 3)
+    output = struct ("algorithm", "nnls-pqp", "iterations", iter);
   endif
-  if (nargout > 5)
+  if (nargout > 4)
     lambda = zeros (size (x));
     lambda(p) = w;
   endif
@@ -194,12 +191,12 @@ endfunction
 
 ## Tests
 %!test
-%! C = [1 0;0 1;2 1];
-%! d = [1;3;-2];
-%! assert (lsqnonneg (C, d), [0;0.5], 100*eps)
+%! C = [5 2;2 2];
+%! d = [3; -1];
+%! assert (pqpnonneg (C, d), [0;0.5], 100*eps)
 
+## Test equivalence of lsq and pqp
 %!test
-%! C = [0.0372 0.2869;0.6861 0.7071;0.6233 0.6245;0.6344 0.6170];
-%! d = [0.8587;0.1781;0.0747;0.8405];
-%! xnew = [0;0.6929];
-%! assert (lsqnonneg (C, d), xnew, 0.0001)
+%! C = rand (20, 10);
+%! d = rand (20, 1);
+%! assert (pqpnonneg (C'*C, -C'*d), lsqnonneg (C, d), 100*eps)

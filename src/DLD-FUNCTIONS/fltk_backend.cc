@@ -89,7 +89,8 @@ public:
 
   ~OpenGL_fltk (void) { }
 
-  void zoom (bool z) { in_zoom = z; }
+  void zoom (bool z) 
+  {in_zoom = z; if (!in_zoom) hide_overlay ();}
   bool zoom (void) { return in_zoom; }
   void set_zoom_box (const Matrix& zb) { zoom_box = zb; }
 
@@ -231,7 +232,7 @@ public:
       status->textsize (10);
       status->box (FL_ENGRAVED_BOX);
 
-      // This allows us to have a valid OpenGL context right away
+      //This allows us to have a valid OpenGL context right away
       canvas->mode (FL_DEPTH | FL_DOUBLE );
       show ();
       canvas->show ();
@@ -322,10 +323,15 @@ private:
     mark_modified ();
   }
 
-  void pixel2pos (int px, int py, double& xx, double& yy) const
+  void pixel2pos 
+  (graphics_handle ax, int px, int py, double& xx, double& yy) const
   {
-    graphics_object ax = gh_manager::get_object (fp.get_currentaxes ());
+    pixel2pos ( gh_manager::get_object (ax), px, py, xx, yy);
+  }
 
+  void pixel2pos 
+  (graphics_object ax, int px, int py, double& xx, double& yy) const
+  {
     if (ax && ax.isa ("axes"))
       {
 	axes::properties& ap =
@@ -364,16 +370,22 @@ private:
     return fp.get_currentaxes ();
   }
   
-  void pixel2status (int px0, int py0, int px1 = -1, int py1 = -1)
+  void pixel2status 
+  (graphics_handle ax, int px0, int py0, int px1 = -1, int py1 = -1)
+  {
+    pixel2status (gh_manager::get_object (ax), px0, py0, px1, py1);
+  }
+  void pixel2status 
+  (graphics_object ax, int px0, int py0, int px1 = -1, int py1 = -1)
   {
     double x0, y0, x1, y1;
     std::stringstream cbuf;
 
-    pixel2pos (px0, py0, x0, y0);
+    pixel2pos (ax, px0, py0, x0, y0);
     cbuf << "[" << x0 << ", " << y0 << "]";
     if (px1 >= 0)
       {
-	pixel2pos (px1, py1, x1, y1);
+	pixel2pos (ax, px1, py1, x1, y1);
 	cbuf << " -> ["<< x1 << ", " << y1 << "]";
       }
 
@@ -405,6 +417,8 @@ private:
   int handle (int event)
   {
     static int px0,py0;
+    static graphics_object ax0;
+
 
     int retval = Fl_Window::handle (event);
 
@@ -430,7 +444,8 @@ private:
 	break;
 
       case FL_MOVE:
-	pixel2status (Fl::event_x (), Fl::event_y ());
+	pixel2status (pixel2axes_or_ca (Fl::event_x (), Fl::event_y ()),
+		      Fl::event_x (), Fl::event_y ());
 	break;
 
       case FL_PUSH:
@@ -438,24 +453,23 @@ private:
 	  {
 	    px0 = Fl::event_x ();
 	    py0 = Fl::event_y ();
+	    ax0 = gh_manager::get_object (pixel2axes_or_ca (px0, py0));
 	    return 1;
 	  }
 	break;
 
       case FL_DRAG:
-	pixel2status (px0, py0, Fl::event_x (), Fl::event_y ());
+	pixel2status (ax0, px0, py0, Fl::event_x (), Fl::event_y ());
 	if (Fl::event_button () == 1)
 	  {
-	    graphics_object ax = 
-	      gh_manager::get_object (pixel2axes_or_ca (px0, py0));
-            if (ax && ax.isa ("axes"))
+            if (ax0 && ax0.isa ("axes"))
               {
                 axes::properties& ap = 
-		  dynamic_cast<axes::properties&> (ax.get_properties ());
+		  dynamic_cast<axes::properties&> (ax0.get_properties ());
               
                 double x0, y0, x1, y1;
-                pixel2pos (px0, py0, x0, y0);
-                pixel2pos (Fl::event_x (), Fl::event_y (), x1, y1);
+                pixel2pos (ax0, px0, py0, x0, y0);
+                pixel2pos (ax0, Fl::event_x (), Fl::event_y (), x1, y1);
                 px0 = Fl::event_x ();
                 py0 = Fl::event_y ();
 
@@ -473,7 +487,6 @@ private:
 	    zoom_box (2) =  Fl::event_x ();
 	    zoom_box (3) =  Fl::event_y ();
 	    canvas->set_zoom_box (zoom_box);
-	    canvas->redraw_overlay ();
 	  }
 
 	break;
@@ -498,7 +511,7 @@ private:
               
               // Get the point we're zooming about
               double x1, y1;
-              pixel2pos (Fl::event_x (), Fl::event_y (), x1, y1);
+              pixel2pos (ax, Fl::event_x (), Fl::event_y (), x1, y1);
               
               ap.zoom_about_point (x1, y1, factor, false);
               mark_modified ();
@@ -511,13 +524,10 @@ private:
 	  {
 	    if ( Fl::event_clicks () == 1)
 	      {
-		graphics_object ax = 
-		  gh_manager::get_object (pixel2axes_or_ca (Fl::event_x (), 
-							    Fl::event_y ()));
-		if (ax && ax.isa ("axes"))
+		if (ax0 && ax0.isa ("axes"))
 		  {
 		    axes::properties& ap =
-		      dynamic_cast<axes::properties&> (ax.get_properties ());
+		      dynamic_cast<axes::properties&> (ax0.get_properties ());
 		    ap.set_xlimmode("auto");
 		    ap.set_ylimmode("auto");
 		    ap.set_zlimmode("auto");
@@ -532,14 +542,12 @@ private:
 	      {
 		canvas->zoom (false);
 		double x0,y0,x1,y1;
-		graphics_object ax = 
-		  gh_manager::get_object (pixel2axes_or_ca (px0, py0));
-		if (ax && ax.isa ("axes"))
+		if (ax0 && ax0.isa ("axes"))
 		  {
 		    axes::properties& ap =
-		      dynamic_cast<axes::properties&> (ax.get_properties ());
-		    pixel2pos (px0, py0, x0, y0);
-		    pixel2pos (Fl::event_x (), Fl::event_y (), x1, y1);
+		      dynamic_cast<axes::properties&> (ax0.get_properties ());
+		    pixel2pos (ax0, px0, py0, x0, y0);
+		    pixel2pos (ax0, Fl::event_x (), Fl::event_y (), x1, y1);
 		    Matrix xl (1,2,0);
 		    Matrix yl (1,2,0);
 		    if (x0 < x1)

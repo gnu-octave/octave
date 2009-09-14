@@ -1,3 +1,14 @@
+2009-09-14  Jaroslav Hajek  <highegg@gmail.com>
+
+	* symtab.h (symbol_table::curr_fcn): New member field.
+	(symbol_table::get_curr_fcn, symbol_table::set_curr_fcn): New member
+	funcs.
+	* symtab.cc (symbol_table::fcn_info::fcn_info_rep::xfind): Use
+	symbol_table::get_curr_fcn.
+	(symbol_table::fcn_info::fcn_info_rep::x_builtin_find): Ditto.
+	* ov-usr-fcn.cc (octave_user_function::octave_user_function): Call
+	symbol_table::set_curr_fcn.
+
 2009-09-12  John W. Eaton  <jwe@octave.org>
 
 	* version.h (OCTAVE_VERSION): Now 3.3.50+.

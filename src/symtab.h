@@ -34,6 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "regex-match.h"
 
 class tree_argument_list;
+class octave_user_function;
 
 #include "oct-obj.h"
 #include "ov.h"
@@ -1793,6 +1794,24 @@ public:
     parent_map[classname] = parent_list;
   }
 
+  static octave_user_function *get_curr_fcn (scope_id scope = xcurrent_scope)
+    {
+      symbol_table *inst = get_instance (scope);
+      return inst->curr_fcn;
+    }
+
+  static void set_curr_fcn (octave_user_function *curr_fcn,
+                            scope_id scope = xcurrent_scope)
+    {
+      assert (scope != xtop_scope && scope != xglobal_scope);
+      symbol_table *inst = get_instance (scope);
+      // FIXME: normally, functions should not usurp each other's scope.
+      // If for any incredible reason this is needed, call 
+      // set_user_function (0, scope) first.
+      assert (inst->curr_fcn == 0 || curr_fcn == 0);
+      inst->curr_fcn = curr_fcn;
+    }
+
 private:
 
   typedef std::map<std::string, symbol_record>::const_iterator table_const_iterator;
@@ -1816,6 +1835,9 @@ private:
 
   // Map from symbol names to symbol info.
   std::map<std::string, symbol_record> table;
+
+  // The associated user code (may be null).
+  octave_user_function *curr_fcn;
 
   // Map from names of global variables to values.
   static std::map<std::string, octave_value> global_table;
@@ -1854,7 +1876,7 @@ private:
   static context_id xcurrent_context;
 
   symbol_table (void)
-    : table_name (), table () { }
+    : table_name (), table (), curr_fcn (0) { }
 
   ~symbol_table (void) { }
 

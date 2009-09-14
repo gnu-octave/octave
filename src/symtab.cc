@@ -41,7 +41,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "pager.h"
 #include "parse.h"
 #include "pt-arg-list.h"
-#include "toplev.h"
 #include "unwind-prot.h"
 #include "utils.h"
 #include "debug.h"
@@ -535,7 +534,7 @@ symbol_table::fcn_info::fcn_info_rep::xfind (const octave_value_list& args,
 
       scope_val_iterator r = subfunctions.find (xcurrent_scope);
 
-      octave_function *curr_fcn = 0;
+      octave_user_function *curr_fcn = symbol_table::get_curr_fcn ();
 
       if (r != subfunctions.end ())
         {
@@ -545,8 +544,6 @@ symbol_table::fcn_info::fcn_info_rep::xfind (const octave_value_list& args,
         }
       else
         {
-          curr_fcn = octave_call_stack::current ();
-
           if (curr_fcn)
             {
               scope_id pscope = curr_fcn->parent_fcn_scope ();
@@ -566,9 +563,6 @@ symbol_table::fcn_info::fcn_info_rep::xfind (const octave_value_list& args,
         }
 
       // Private function.
-
-      if (! curr_fcn)
-        curr_fcn = octave_call_stack::current ();
 
       if (curr_fcn)
         {
@@ -765,7 +759,7 @@ symbol_table::fcn_info::fcn_info_rep::x_builtin_find (void)
 
   // Private function.
 
-  octave_function *curr_fcn = octave_call_stack::current ();
+  octave_user_function *curr_fcn = symbol_table::get_curr_fcn ();
 
   if (curr_fcn)
     {

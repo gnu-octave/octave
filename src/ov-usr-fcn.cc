@@ -191,6 +191,9 @@ octave_user_function::octave_user_function
 {
   if (cmd_list)
     cmd_list->mark_as_function_body ();
+
+  if (local_scope >= 0)
+    symbol_table::set_curr_fcn (this, local_scope);
 }
 
 octave_user_function::~octave_user_function (void)

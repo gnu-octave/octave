@@ -15,32 +15,11 @@ Current Cygwin package maintainer for Octave:
   Marco Atzeri
   http://matzeri.altervista.org
 
-There is also an "unofficial" Octave distribution for Cygwin:
-
- 1. http://www.geocities.jp/tmacchant
-
-    The binaries here are built using gcc-3.4.4-3 configured with
-    --disable-sjlj-exceptions.  Performance is improved by using DWARF
-    exception handling instead of setjump/longjump exception
-    handling.  However, to build dynamically loaded .oct files that
-    will work with this version of Octave, you must use the same
-    specially configured version of GCC that was used to build Octave
-    itself and not the version of GCC that is distributed with
-    Cygwin.
-
-    This binary is maintained by Tatsuro Matsuroka.
-
-
 John W. Eaton
 jwe@octave.org
-
-Tatsuro MATSUOKA 
-tmacchant@yahoo.co.jp
-Department of Molecular Design and Engineering, 
-Gradudate School of Engineering, Nagoya University.
 
 Marco Atzeri
 marco_atzeri@yahoo.it
 Italy
 
-Fri, 04 Sep 2009 11:30:38 EDT
+Mon, 14 Sep 2009 14:14:40 EDT

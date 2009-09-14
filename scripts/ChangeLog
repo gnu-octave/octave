@@ -1,3 +1,7 @@
+2009-06-23  Alexander Mamonov  <mamonov@gmail.com>
+
+	* image/imread.m: New test.
+
 2009-09-09  Tatsuro Matsuoka <tmacchant@yahoo.co.jp>
 
 	* plot/gnuplot_drawnow.m: Avoid flickering windows by avoding

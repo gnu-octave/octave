@@ -473,7 +473,7 @@ octave_user_function::do_multi_index_op (int nargout,
 	  }
 
 	if (! error_state)
-	  retval = ret_list->convert_to_const_vector (varargout);
+	  retval = ret_list->convert_to_const_vector (nargout, varargout);
       }
   }
 
@@ -704,6 +704,17 @@ subsasgn method of a user-defined class.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (optimize_subsasgn_calls);
+}
+
+DEFUN (test_feval, args, , "")
+{
+  octave_value_list fargs(2);
+  fargs(0) = "load";
+  fargs(1) = "nlwing2";
+  octave_value_list retval = feval ("pkg", fargs, 0);
+  std::cerr << retval.length () << '\n';
+
+  return octave_value_list ();
 }
 
 /*

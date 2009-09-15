@@ -79,7 +79,7 @@ public:
 
   bool is_defined (void);
 
-  octave_value_list convert_to_const_vector (const Cell& varargout);
+  octave_value_list convert_to_const_vector (int nargout, const Cell& varargout);
 
   tree_parameter_list *dup (symbol_table::scope_id scope,
 			    symbol_table::context_id context) const;

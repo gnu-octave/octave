@@ -204,25 +204,36 @@ tree_parameter_list::undefine (void)
 }
 
 octave_value_list
-tree_parameter_list::convert_to_const_vector (const Cell& varargout)
+tree_parameter_list::convert_to_const_vector (int nargout,
+                                              const Cell& varargout)
 {
   octave_idx_type vlen = varargout.numel ();
 
-  int nout = length () + vlen;
+  // Special case. Will do a shallow copy.
+  if (length () == 0 && vlen == nargout)
+    return varargout;
 
-  octave_value_list retval (nout, octave_value ());
+  // We want always at least one return value.
+  int nout = std::max (nargout, 1);
+  octave_value_list retval (nout);
 
   int i = 0;
 
-  for (iterator p = begin (); p != end (); p++)
+  for (iterator p = begin (); p != end () && i < nout; p++)
     {
       tree_decl_elt *elt = *p;
 
       retval(i++) = elt->is_defined () ? elt->rvalue1 () : octave_value ();
     }
 
+  vlen = std::min (vlen, nout - i);
+
   for (octave_idx_type j = 0; j < vlen; j++)
     retval(i++) = varargout(j);
+
+  // If there was zero outputs requested, and nothing is defined, don't return anything.
+  if (nargout == 0 && retval(0).is_undefined ())
+    retval = octave_value_list ();
 
   return retval;
 }

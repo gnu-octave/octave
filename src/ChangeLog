@@ -1,5 +1,14 @@
 2009-09-15  Jaroslav Hajek  <highegg@gmail.com>
 
+	* pt-misc.cc (tree_parameter_list::convert_to_const_vector): Pass
+	in nargout. Don't return excess elements. Optimize varargout-only case
+	to possibly use a shallow copy.
+	* pt-misc.h: Update decl.
+	* ov-usr-fcn.cc (octave_user_function::do_multi_index_op): Update call
+	to tree_parameter_list::convert_to_const_vector.
+
+2009-09-15  Jaroslav Hajek  <highegg@gmail.com>
+
 	* pr-output.cc (Fdisp, Ffdisp): Declare retval as octave_value_list.
 
 2009-09-14  Shai Ayal  <shaiay@users.sourceforge.net>

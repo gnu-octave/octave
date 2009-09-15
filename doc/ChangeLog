@@ -1,3 +1,7 @@
+2009-09-14  John W. Eaton  <jwe@octave.org>
+
+	* interpreter/optim.txi: Document pqpnonneg.
+
 2009-08-27  Jaroslav Hajek  <highegg@gmail.com>
 
 	* interpreter/expr.txi: Mention complex comparisons change.

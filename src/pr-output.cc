@@ -3283,7 +3283,7 @@ returns the formatted output in a string.\n\
 @seealso{fdisp}\n\
 @end deftypefn")
 {
-  octave_value retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 
@@ -3324,7 +3324,7 @@ Note that the output from @code{fdisp} always ends with a newline.\n\
 @seealso{disp}\n\
 @end deftypefn")
 {
-  octave_value retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 

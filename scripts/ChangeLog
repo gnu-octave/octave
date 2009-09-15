@@ -1,3 +1,9 @@
+2009-09-15  John W. Eaton  <jwe@octave.org>
+
+	* confiugre.ac: Rename from configure.in
+	* Makefile.in: Rename all instances of configure.in to
+	configure.ac.
+
 2009-09-11  Jaroslav Hajek  <highegg@gmail.com>
 
 	* optimization/Makefile.in: Include __doglegm__.m.

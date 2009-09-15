@@ -22,7 +22,7 @@ echo "calling autoconf and autoheader..."
         exit 1
 }
 
-for i in `find . -name configure.in -print`; do (
+for i in `find . -name configure.ac -print`; do (
     dir=`dirname $i`
     cd $dir
     pwd

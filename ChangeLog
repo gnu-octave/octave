@@ -1,3 +1,18 @@
+2009-09-15  John W. Eaton  <jwe@octave.org>
+
+	* configure.ac: Rename from configure.in.
+	(AC_CONFIG_FILES): Add m4/Makefile to the list.
+	* acx_blas.m4, acx_lapack.m4, acx_blas_f77_func.m4,
+	acx_pthread.m4: Move to m4 subdirectory.
+	* m4/Makefile.in: New file.
+	* octMakefile.in (M4_FILES): Adjust for new m4 subdirectory.
+	Rename all instances of configure.in to configure.ac.
+	(CONF_DISTSUBDIRS, DISTSUBDIRS): Add m4 to the lists.
+
+	* configure.in: Substitute ac_config_headers.
+	* octMakefile.in (CONFIG_FILES): Include @ac_config_headers@ in
+	the list.  From Thorsten Meyer <thorsten.meyier@gmx.de>.
+
 2009-09-04  John W. Eaton  <jwe@octave.org>
 
 	* Makeconf.in (SPARSE_CPPFLAGS, SPARSE_LDFLAGS, FFTW_CPPFLAGS,

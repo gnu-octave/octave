@@ -36,8 +36,7 @@ INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_DATA = @INSTALL_DATA@
 
 CONF_DISTFILES = Makefile octMakefile.in Makeconf.in \
-	configure configure.in config.guess config.sub aclocal.m4 \
-	acx_blas.m4 acx_lapack.m4 acx_blas_f77_func.m4 \
+	configure configure.ac config.guess config.sub aclocal.m4 \
 	config.h.in install-sh autogen.sh
 
 BUILT_DISTFILES = BUGS INSTALL.OCTAVE
@@ -57,10 +56,10 @@ SUBDIRS = libcruft liboctave src scripts doc examples
 INSTALL_SUBDIRS = libcruft liboctave src scripts doc examples
 
 # Subdirectories in which to run `make conf-dist'.
-CONF_DISTSUBDIRS = src
+CONF_DISTSUBDIRS = src m4
 
 # Subdirectories in which to run `make dist'.
-DISTSUBDIRS = $(sort $(SUBDIRS) test emacs)
+DISTSUBDIRS = $(sort $(SUBDIRS) test emacs m4)
 
 # Subdirectories in which to run clean targets.
 CLEANSUBDIRS = $(DISTSUBDIRS)
@@ -74,9 +73,7 @@ DIRS_TO_MAKE = $(bindir) $(datadir) $(libdir) $(octincludedir)/octave \
 SHELL_SCRIPTS = octave-bug$(SCRIPTS_EXE_SUFFIX) octave-config$(SCRIPTS_EXE_SUFFIX) \
 		mkoctfile$(SCRIPTS_EXE_SUFFIX)  run-octave
 
-CONFIG_FILES = @ac_config_files@
-
-M4_FILES = $(wildcard *.m4)
+CONFIG_FILES = @ac_config_headers@ @ac_config_files@
 
 all: $(SHELL_SCRIPTS) $(filter-out libcruft liboctave, $(SUBDIRS)) dist-info-files
 	@echo ""
@@ -100,7 +97,9 @@ $(CONFIG_FILES): %: %.in config.status
 config.status: configure
 	./config.status --recheck
 
-configure: configure.in $(M4_FILES)
+M4_FILES = $(wildcard m4/*.m4)
+
+configure: configure.ac $(M4_FILES)
 	(cd $(top_srcdir); autoconf --force)
 	(cd $(top_srcdir); autoheader --force)
 

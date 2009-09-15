@@ -258,7 +258,6 @@ AC_SUBST(INCLUDE_DEPS)
 AC_SUBST(DEPEND_FLAGS)
 AC_SUBST(DEPEND_EXTRA_SED_PATTERN)
 
-sinclude(acx_pthread.m4)
 ACX_PTHREAD
 
 AC_PATH_X
@@ -885,9 +884,6 @@ AC_SUBST(XTRA_CRUFT_SH_LDFLAGS)
 
 ### Checks for BLAS and LAPACK libraries:
 # (Build subdirectories of libcruft if they aren't found on the system.)
-sinclude(acx_blas.m4)
-sinclude(acx_blas_f77_func.m4)
-sinclude(acx_lapack.m4)
 ACX_BLAS_WITH_F77_FUNC([], [BLAS_DIR="blas"])
 ACX_LAPACK([BLAS_LIBS="$LAPACK_LIBS $BLAS_LIBS"], [LAPACK_DIR="lapack"])
 AC_SUBST(BLAS_DIR)
@@ -2047,8 +2043,9 @@ AC_CONFIG_COMMANDS([Makefile], [if test "$ac_srcdir" != "."; then
 fi])
 
 AC_SUBST(ac_config_files)
+AC_SUBST(ac_config_headers)
 
-AC_CONFIG_FILES([octMakefile Makeconf test/Makefile
+AC_CONFIG_FILES([octMakefile Makeconf m4/Makefile test/Makefile
   doc/Makefile doc/faq/Makefile doc/interpreter/Makefile
   doc/liboctave/Makefile doc/refcard/Makefile emacs/Makefile
   examples/Makefile examples/@polynomial/Makefile 

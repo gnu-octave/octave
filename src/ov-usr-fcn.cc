@@ -706,17 +706,6 @@ subsasgn method of a user-defined class.\n\
   return SET_INTERNAL_VARIABLE (optimize_subsasgn_calls);
 }
 
-DEFUN (test_feval, args, , "")
-{
-  octave_value_list fargs(2);
-  fargs(0) = "load";
-  fargs(1) = "nlwing2";
-  octave_value_list retval = feval ("pkg", fargs, 0);
-  std::cerr << retval.length () << '\n';
-
-  return octave_value_list ();
-}
-
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

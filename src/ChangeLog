@@ -1,3 +1,7 @@
+2009-09-16  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/rand.cc (Frandperm): New function.
+
 2009-09-15  Jaroslav Hajek  <highegg@gmail.com>
 
 	* pt-misc.cc (tree_parameter_list::convert_to_const_vector): Pass

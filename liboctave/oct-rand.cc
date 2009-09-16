@@ -390,7 +390,7 @@ octave_rand::do_matrix (octave_idx_type n, octave_idx_type m, double a)
 
   if (n >= 0 && m >= 0)
     {
-      retval.resize (n, m);
+      retval.clear (n, m);
 
       if (n > 0 && m > 0)
 	fill (retval.capacity(), retval.fortran_vec(), a);
@@ -408,7 +408,7 @@ octave_rand::do_nd_array (const dim_vector& dims, double a)
 
   if (! dims.all_zero ())
     {
-      retval.resize (dims);
+      retval.clear (dims);
 
       fill (retval.capacity(), retval.fortran_vec(), a);
     }
@@ -423,7 +423,7 @@ octave_rand::do_vector (octave_idx_type n, double a)
 
   if (n > 0)
     {
-      retval.resize (n);
+      retval.clear (n);
 
       fill (retval.capacity (), retval.fortran_vec (), a);
     }

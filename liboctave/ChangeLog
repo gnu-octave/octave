@@ -1,3 +1,8 @@
+2009-09-16  Jaroslav Hajek  <highegg@gmail.com>
+
+	* oct-rand.cc (octave_rand::do_matrix, do_nd_array, do_vector):
+	Use Array::clear rather than Array::resize.
+
 2009-09-06  Jaroslav Hajek  <highegg@gmail.com>
 
 	* dColVector.h (operator *(const Matrix&, const ColumnVector)):

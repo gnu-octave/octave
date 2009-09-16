@@ -43,7 +43,7 @@ SOURCES = __isequal__.m __splinen__.m accumarray.m arrayfun.m \
   isequalwithequalnans.m isscalar.m issquare.m issymmetric.m \
   isvector.m loadobj.m logical.m logspace.m mod.m nargchk.m \
   nargoutchk.m nextpow2.m nthroot.m num2str.m perror.m pol2cart.m \
-  polyarea.m postpad.m prepad.m quadgk.m quadl.m quadv.m randperm.m rat.m \
+  polyarea.m postpad.m prepad.m quadgk.m quadl.m quadv.m rat.m \
   rem.m repmat.m rot90.m rotdim.m runlength.m saveobj.m shift.m shiftdim.m \
   sortrows.m sph2cart.m strerror.m structfun.m subsindex.m \
   triplequad.m trapz.m tril.m triu.m

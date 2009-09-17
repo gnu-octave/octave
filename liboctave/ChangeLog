@@ -3,7 +3,7 @@
 	* oct-types.h.in: Delete.
 	* Makefile.in (BUILT_INCLUDES, DISTFILES): Remove oct-types.h.in
 	from the list.
-	(distclean, maintainer-clean): 
+	(distclean, maintainer-clean): Don't remove oct-types.h
 	* DAEFunc.h, MatrixType.h, base-aepbal.h, dim-vector.h,
 	lo-specfun.h, lo-utils.h, mx-op-decl.h, oct-inttypes.h,
 	randgamma.h, randmtzig.h, randpoisson.h:

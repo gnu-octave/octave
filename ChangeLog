@@ -1,3 +1,10 @@
+2009-09-17  John W. Eaton  <jwe@octave.org>
+
+	* configure.ac: Also AC_DEFINE OCTAAVE_IDX_TYPE.
+	(AH_BOTTOM): Include contents of libcruft/misc/oct-dlldefs.h and
+	liboctave/oct-types.h here.  Use C-style comments.
+	(AC_CONFIG_FILES): Remove liboctave/oct-types.h from the list.
+
 2009-09-15  John W. Eaton  <jwe@octave.org>
 
 	* configure.ac: Rename from configure.in.

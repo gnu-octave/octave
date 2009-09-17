@@ -64,8 +64,6 @@ along with Octave; see the file COPYING.  If not, see
 #ifndef _RANDMTZIG_H
 #define _RANDMTZIG_H
 
-#include "oct-types.h"
-
 #define MT_N 624
 
 #ifdef  __cplusplus

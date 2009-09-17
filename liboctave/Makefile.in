@@ -104,7 +104,7 @@ INCLUDES := CollocWt.h DAE.h DAEFunc.h DAERT.h \
 	sparse-util.h sun-utils.h sysdir.h systime.h syswait.h \
 	$(MATRIX_INC)
 
-BUILT_INCLUDES := oct-types.h mx-ops.h \
+BUILT_INCLUDES := mx-ops.h \
 	$(OPT_INC) \
 	$(MX_OP_INC) \
 	$(VX_OP_INC) \
@@ -200,7 +200,7 @@ EXTRAS := mx-inlines.cc kpse.cc intNDArray.cc
 INCLUDES_FOR_INSTALL := $(INCLUDES) $(BUILT_INCLUDES) $(TEMPLATE_SRC) $(EXTRAS)
 
 DISTFILES := $(addprefix $(srcdir)/, Makefile.in ChangeLog mk-ops.awk \
-	mx-ops vx-ops sparse-mk-ops.awk sparse-mx-ops oct-types.h.in \
+	mx-ops vx-ops sparse-mk-ops.awk sparse-mx-ops \
 	$(TEMPLATE_SRC) \
 	$(LIBOCTAVE_CXX_SOURCES) \
 	$(LIBOCT_READLINE_SOURCES) \
@@ -365,7 +365,7 @@ mostlyclean: clean
 
 distclean maintainer-clean: clean
 	rm -f tags TAGS
-	rm -f Makefile so_locations oct-types.h $(PREREQ)
+	rm -f Makefile so_locations $(PREREQ)
 .PHONY: distclean maintainer-clean
 
 dist: $(PREREQ)

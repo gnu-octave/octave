@@ -24,8 +24,6 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_MatrixType_h)
 #define octave_MatrixType_h
 
-#include "oct-types.h"
-
 class Matrix;
 class ComplexMatrix;
 class FloatMatrix;

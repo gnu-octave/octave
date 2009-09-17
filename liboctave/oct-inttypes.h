@@ -32,7 +32,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "lo-traits.h"
 #include "lo-math.h"
-#include "oct-types.h"
 #include "lo-mappers.h"
 
 #ifdef OCTAVE_INT_USE_LONG_DOUBLE

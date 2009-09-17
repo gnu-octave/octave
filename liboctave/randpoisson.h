@@ -25,8 +25,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #ifndef _RANDPOISSON_H
 
-#include "oct-types.h"
-
 #ifdef  __cplusplus
 extern "C" {
 #endif

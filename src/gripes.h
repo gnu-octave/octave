@@ -26,8 +26,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <string>
 
-#include "oct-types.h"
-
 class octave_value;
 
 extern OCTINTERP_API void

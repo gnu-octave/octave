@@ -165,6 +165,8 @@ if $USE_64_BIT_IDX_T; then
   fi
 fi
 AC_SUBST(OCTAVE_IDX_TYPE)
+AC_DEFINE_UNQUOTED(OCTAVE_IDX_TYPE, $OCTAVE_IDX_TYPE,
+  [Define to the type of octave_idx_type (64 or 32 bit signed integer)])
 if $USE_64_BIT_IDX_T; then
   AC_DEFINE(USE_64_BIT_IDX_T, 1, [Define if using 64-bit integers for array dimensions and indexing])
 fi
@@ -2012,28 +2014,115 @@ typedef int sig_atomic_t;
 #define SIZEOF_OCTAVE_IDX_TYPE SIZEOF_INT
 #endif
 
-// To be able to use long doubles for 64-bit mixed arithmetics, we need them at
-// least 80 bits wide and we need roundl declared in math.h.
-// FIXME -- maybe substitute this by a more precise check in the future.
+/* To be able to use long doubles for 64-bit mixed arithmetics, we need
+   them at least 80 bits wide and we need roundl declared in math.h.
+   FIXME -- maybe substitute this by a more precise check in the future.  */
 #if (SIZEOF_LONG_DOUBLE >= 10) && defined (HAVE_ROUNDL)
 #define OCTAVE_INT_USE_LONG_DOUBLE
 #endif
 
 #define OCTAVE_EMPTY_CPP_ARG
 
-// Octave is currently unable to use FFTW unless both float
-// and double versions are both available.
+/* Octave is currently unable to use FFTW unless both float
+   and double versions are both available.  */
 #if defined (HAVE_FFTW3) && defined (HAVE_FFTW3F)
 #define HAVE_FFTW
 #endif
 
-// Backward compatibility.
+/* Backward compatibility.  */
 #if defined (HAVE_Z)
 #define HAVE_ZLIB
 #endif
 
-#include "oct-dlldefs.h"
-#include "oct-types.h"
+/* oct-dlldefs.h */
+
+#if defined (_MSC_VER)
+#define OCTAVE_EXPORT __declspec(dllexport)
+#define OCTAVE_IMPORT __declspec(dllimport)
+#else
+/* All other compilers, at least for now. */
+#define OCTAVE_EXPORT
+#define OCTAVE_IMPORT
+#endif
+
+/* API macro for libcruft */
+#ifdef CRUFT_DLL
+#define CRUFT_API OCTAVE_EXPORT
+#else
+#define CRUFT_API OCTAVE_IMPORT
+#endif
+
+/* API macro for liboctave */
+#ifdef OCTAVE_DLL
+#define OCTAVE_API OCTAVE_EXPORT
+#else
+#define OCTAVE_API OCTAVE_IMPORT
+#endif
+
+/* API macro for src */
+#ifdef OCTINTERP_DLL
+#define OCTINTERP_API OCTAVE_EXPORT
+#else
+#define OCTINTERP_API OCTAVE_IMPORT
+#endif
+
+/* API macro for src/graphics */
+#ifdef OCTGRAPHICS_DLL
+#define OCTGRAPHICS_API OCTAVE_EXPORT
+#else
+#define OCTGRAPHICS_API OCTAVE_IMPORT
+#endif
+
+/* oct-types.h */
+
+typedef OCTAVE_IDX_TYPE octave_idx_type;
+
+#if defined (HAVE_STDINT_H)
+#include <stdint.h>
+#elif defined (HAVE_INTTYPES_H)
+#include <inttypes.h>
+#else
+
+#if defined (HAVE_LIMITS_H)
+#include <limits.h>
+#endif
+
+#if CHAR_BIT == 8
+typedef signed char int8_t;
+typedef unsigned char uint8_t;
+#else
+#error "CHAR_BIT is not 8!"
+#endif
+
+#if SIZEOF_SHORT == 2
+typedef short int16_t;
+typedef unsigned short uint16_t;
+#elif SIZEOF_INT == 2
+typedef long int16_t;
+typedef unsigned long uint16_t;
+#else
+#error "No 2 byte integer type found!"
+#endif
+
+#if SIZEOF_INT == 4
+typedef int int32_t;
+typedef unsigned int uint32_t;
+#elif SIZEOF_LONG == 4
+typedef long int32_t;
+typedef unsigned long uint32_t;
+#else
+#error "No 4 byte integer type found!"
+#endif
+
+#if SIZEOF_LONG == 8
+typedef long int64_t;
+typedef unsigned long uint64_t;
+#elif SIZEOF_LONG_LONG == 8
+typedef long long int64_t;
+typedef unsigned long long uint64_t;
+#endif
+
+#endif
 ])
 
 ### Do the substitutions in all the Makefiles.
@@ -2050,7 +2139,7 @@ AC_CONFIG_FILES([octMakefile Makeconf m4/Makefile test/Makefile
   doc/liboctave/Makefile doc/refcard/Makefile emacs/Makefile
   examples/Makefile examples/@polynomial/Makefile 
   examples/@FIRfilter/Makefile liboctave/Makefile
-  liboctave/oct-types.h src/Makefile src/mxarray.h libcruft/Makefile
+  src/Makefile src/mxarray.h libcruft/Makefile
   libcruft/Makerules libcruft/amos/Makefile libcruft/blas/Makefile
   libcruft/daspk/Makefile libcruft/dasrt/Makefile
   libcruft/dassl/Makefile libcruft/fftpack/Makefile

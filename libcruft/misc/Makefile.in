@@ -35,7 +35,7 @@ CXXSRC = f77-extern.cc quit.cc
 
 MAKEDEPS := $(patsubst %.c, %.d, $(CSRC)) $(patsubst %.cc, %.d, $(CXXSRC))
 
-INCLUDES := f77-fcn.h lo-error.h oct-dlldefs.h quit.h
+INCLUDES := f77-fcn.h lo-error.h quit.h
 
 SPECIAL:= d1mach-tst.for $(INCLUDES)
 

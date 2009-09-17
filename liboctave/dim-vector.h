@@ -30,7 +30,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 
 #include "lo-error.h"
-#include "oct-types.h"
 
 // Rationale: This implementation is more tricky than Array, but the big plus
 // is that dim_vector requires only one allocation instead of two.

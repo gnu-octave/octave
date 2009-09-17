@@ -30,7 +30,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 
 #include "oct-cmplx.h"
-#include "oct-types.h"
 #include "syswait.h"
 
 extern OCTAVE_API octave_idx_type NINTbig (double x);

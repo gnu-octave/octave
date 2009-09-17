@@ -1,3 +1,8 @@
+2009-09-17  John W. Eaton  <jwe@octave.org>
+
+	* misc/oct-dlldefs.h: Delete.
+	* misc/Makefile.in (INCLUDES): Remove oct-dlldefs.h from the list.
+
 2009-08-05  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.in (LINK_DEPS): Omit $(FFTW_LIBS) from the list.

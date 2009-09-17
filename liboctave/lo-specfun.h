@@ -25,7 +25,6 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_liboctave_specfun_h 1
 
 #include "oct-cmplx.h"
-#include "oct-types.h"
 #include "ArrayN.h"
 
 template <class T> class Array2;

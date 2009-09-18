@@ -1,3 +1,19 @@
+2009-09-18  Jaroslav Hajek  <highegg@gmail.com>
+
+	* Array.h (NoAlias): New template class.
+	* dRowVector.cc (linspace): Rewrite.
+	* fRowVector.cc (linspace): Rewrite.
+	* CRowVector.cc (linspace): Rewrite.
+	* fCRowVector.cc (linspace): Rewrite.
+	* dMatrix.cc (linspace): New method.
+	* dMatrix.h (linspace): Declare it.
+	* fMatrix.cc (linspace): New method.
+	* fMatrix.h (linspace): Declare it.
+	* CMatrix.cc (linspace): New method.
+	* CMatrix.h (linspace): Declare it.
+	* fCMatrix.cc (linspace): New method.
+	* fCMatrix.h (linspace): Declare it.
+
 2009-09-17  John W. Eaton  <jwe@octave.org>
 
 	* oct-types.h.in: Delete.

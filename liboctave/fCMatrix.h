@@ -408,6 +408,10 @@ extern OCTAVE_API FloatComplexMatrix max (const FloatComplex& c, const FloatComp
 extern OCTAVE_API FloatComplexMatrix max (const FloatComplexMatrix& m, const FloatComplex& c);
 extern OCTAVE_API FloatComplexMatrix max (const FloatComplexMatrix& a, const FloatComplexMatrix& b);
 
+extern OCTAVE_API FloatComplexMatrix linspace (const FloatComplexColumnVector& x1, 
+                                               const FloatComplexColumnVector& x2, 
+                                               octave_idx_type n);
+
 MS_CMP_OP_DECLS (FloatComplexMatrix, FloatComplex, OCTAVE_API)
 MS_BOOL_OP_DECLS (FloatComplexMatrix, FloatComplex, OCTAVE_API)
 

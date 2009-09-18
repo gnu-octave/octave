@@ -679,6 +679,39 @@ private:
   static void instantiation_guard ();
 };
 
+// This is a simple wrapper template that will subclass an Array<T> type or any
+// later type derived from it and override the default non-const operator() to
+// not check for the array's uniqueness. It is, however, the user's
+// responsibility to ensure the array is actually unaliased whenever elements
+// are accessed.
+
+template<class ArrayClass>
+class NoAlias : public ArrayClass
+{
+  typedef typename ArrayClass::element_type T;
+public:
+  NoAlias () : ArrayClass () { }
+
+  // FIXME: this would be simpler once C++0x is available
+  template <class X>
+    explicit NoAlias (X x) : ArrayClass (x) { }
+
+  template <class X, class Y>
+    explicit NoAlias (X x, Y y) : ArrayClass (x, y) { }
+
+  template <class X, class Y, class Z>
+    explicit NoAlias (X x, Y y, Z z) : ArrayClass (x, y, z) { }
+
+  T& operator () (octave_idx_type n)
+    { return ArrayClass::xelem (n); }
+  T& operator () (octave_idx_type i, octave_idx_type j)
+    { return ArrayClass::xelem (i, j); }
+  T& operator () (octave_idx_type i, octave_idx_type j, octave_idx_type k)
+    { return ArrayClass::xelem (i, j, k); }
+  T& operator () (const Array<octave_idx_type>& ra_idx)
+    { return ArrayClass::xelem (ra_idx); }
+};
+
 #endif
 
 /*

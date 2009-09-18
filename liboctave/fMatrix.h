@@ -358,6 +358,11 @@ extern OCTAVE_API FloatMatrix max (float d, const FloatMatrix& m);
 extern OCTAVE_API FloatMatrix max (const FloatMatrix& m, float d);
 extern OCTAVE_API FloatMatrix max (const FloatMatrix& a, const FloatMatrix& b);
 
+extern OCTAVE_API FloatMatrix linspace (const FloatColumnVector& x1, 
+                                        const FloatColumnVector& x2, 
+                                        octave_idx_type n);
+
+
 MS_CMP_OP_DECLS (FloatMatrix, float, OCTAVE_API)
 MS_BOOL_OP_DECLS (FloatMatrix, float, OCTAVE_API)
 

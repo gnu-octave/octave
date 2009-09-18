@@ -482,22 +482,15 @@ operator * (const FloatComplexRowVector& v, const FloatComplexColumnVector& a)
 FloatComplexRowVector
 linspace (const FloatComplex& x1, const FloatComplex& x2, octave_idx_type n)
 {
-  FloatComplexRowVector retval;
+  if (n < 1) n = 1;
 
-  if (n > 0)
-    {
-      retval.resize (n);
-      FloatComplex delta = (x2 - x1) / static_cast<float> (n - 1.0);
-      retval.elem (0) = x1;
-      for (octave_idx_type i = 1; i < n-1; i++)
-	retval.elem (i) = x1 +  static_cast<float> (1.0) * i * delta;
-      retval.elem (n-1) = x2;
-    }
-  else
-    {
-      retval.resize (1);
-      retval.elem (0) = x2;
-    }
+  NoAlias<FloatComplexRowVector> retval (n);
+
+  FloatComplex delta = (x2 - x1) / (n - 1.0f);
+  FloatComplex y = retval(0) = x1;
+  for (octave_idx_type i = 1; i < n-1; i++)
+    retval(i) = y += delta;
+  retval(n-1) = x2;
 
   return retval;
 }

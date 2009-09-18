@@ -311,22 +311,15 @@ operator >> (std::istream& is, FloatRowVector& a)
 FloatRowVector
 linspace (float x1, float x2, octave_idx_type n)
 {
-  FloatRowVector retval;
+  if (n < 1) n = 1;
 
-  if (n > 1)
-    {
-      retval.resize (n);
-      float delta = (x2 - x1) / (n - 1);
-      retval.elem (0) = x1;
-      for (octave_idx_type i = 1; i < n-1; i++)
-	retval.elem (i) = x1 + i * delta;
-      retval.elem (n-1) = x2;
-    }
-  else
-    {
-      retval.resize (1);
-      retval.elem (0) = x2;
-    }
+  NoAlias<FloatRowVector> retval (n);
+
+  float delta = (x2 - x1) / (n - 1);
+  float y = retval(0) = x1;
+  for (octave_idx_type i = 1; i < n-1; i++)
+    retval(i) = y += delta;
+  retval(n-1) = x2;
 
   return retval;
 }

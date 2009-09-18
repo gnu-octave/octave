@@ -311,22 +311,15 @@ operator >> (std::istream& is, RowVector& a)
 RowVector
 linspace (double x1, double x2, octave_idx_type n)
 {
-  RowVector retval;
+  if (n < 1) n = 1;
 
-  if (n > 1)
-    {
-      retval.resize (n);
-      double delta = (x2 - x1) / (n - 1);
-      retval.elem (0) = x1;
-      for (octave_idx_type i = 1; i < n-1; i++)
-	retval.elem (i) = x1 + i * delta;
-      retval.elem (n-1) = x2;
-    }
-  else
-    {
-      retval.resize (1);
-      retval.elem (0) = x2;
-    }
+  NoAlias<RowVector> retval (n);
+
+  double delta = (x2 - x1) / (n - 1);
+  double y = retval(0) = x1;
+  for (octave_idx_type i = 1; i < n-1; i++)
+    retval(i) = y += delta;
+  retval(n-1) = x2;
 
   return retval;
 }

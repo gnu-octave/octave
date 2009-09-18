@@ -482,22 +482,15 @@ operator * (const ComplexRowVector& v, const ComplexColumnVector& a)
 ComplexRowVector
 linspace (const Complex& x1, const Complex& x2, octave_idx_type n)
 {
-  ComplexRowVector retval;
+  if (n < 1) n = 1;
 
-  if (n > 0)
-    {
-      retval.resize (n);
-      Complex delta = (x2 - x1) / (n - 1.0);
-      retval.elem (0) = x1;
-      for (octave_idx_type i = 1; i < n-1; i++)
-	retval.elem (i) = x1 + 1.0 * i * delta;
-      retval.elem (n-1) = x2;
-    }
-  else
-    {
-      retval.resize (1);
-      retval.elem (0) = x2;
-    }
+  NoAlias<ComplexRowVector> retval (n);
+
+  Complex delta = (x2 - x1) / (n - 1.0);
+  Complex y = retval(0) = x1;
+  for (octave_idx_type i = 1; i < n-1; i++)
+    retval(i) = y += delta;
+  retval(n-1) = x2;
 
   return retval;
 }

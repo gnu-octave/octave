@@ -357,6 +357,10 @@ extern OCTAVE_API Matrix max (double d, const Matrix& m);
 extern OCTAVE_API Matrix max (const Matrix& m, double d);
 extern OCTAVE_API Matrix max (const Matrix& a, const Matrix& b);
 
+extern OCTAVE_API Matrix linspace (const ColumnVector& x1, 
+                                   const ColumnVector& x2, 
+                                   octave_idx_type n);
+
 MS_CMP_OP_DECLS (Matrix, double, OCTAVE_API)
 MS_BOOL_OP_DECLS (Matrix, double, OCTAVE_API)
 

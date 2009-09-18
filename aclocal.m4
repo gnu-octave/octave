@@ -41,7 +41,7 @@ dnl
 dnl Figure out the hardware-vendor-os info.
 dnl
 dnl OCTAVE_HOST_TYPE
-AC_DEFUN(OCTAVE_HOST_TYPE,
+AC_DEFUN([OCTAVE_HOST_TYPE],
 [AC_CANONICAL_HOST
 if test -z "$host"; then
   host=unknown
@@ -56,7 +56,7 @@ dnl
 dnl Set default value for a variable and substitute it.
 dnl
 dnl OCTAVE_SET_DEFAULT
-AC_DEFUN(OCTAVE_SET_DEFAULT,
+AC_DEFUN([OCTAVE_SET_DEFAULT],
 [ifelse($#, 2, [: ${$1=$2}
 ])dnl
 AC_MSG_RESULT([defining $1 to be $$1])
@@ -64,7 +64,7 @@ AC_SUBST($1)])
 dnl
 dnl Check for ar.
 dnl
-AC_DEFUN(OCTAVE_PROG_AR,
+AC_DEFUN([OCTAVE_PROG_AR],
 [if test -z "$AR"; then
   AR=ar
 fi
@@ -78,7 +78,7 @@ AC_SUBST(ARFLAGS)
 dnl
 dnl See if the compiler supports placement delete
 dnl
-AC_DEFUN(OCTAVE_PLACEMENT_DELETE,
+AC_DEFUN([OCTAVE_PLACEMENT_DELETE],
 [AC_CACHE_CHECK([whether <new> defines placement delete operator],
 octave_cv_placement_delete,
 [AC_LANG_PUSH(C++)
@@ -93,7 +93,7 @@ AC_LANG_POP(C++)
 dnl
 dnl See if the compiler dynamic auto arrays
 dnl
-AC_DEFUN(OCTAVE_DYNAMIC_AUTO_ARRAYS,
+AC_DEFUN([OCTAVE_DYNAMIC_AUTO_ARRAYS],
 [AC_CACHE_CHECK([whether C++ supports dynamic auto arrays],
 octave_cv_dynamic_auto_arrays,
 [AC_LANG_PUSH(C++)
@@ -108,7 +108,7 @@ AC_LANG_POP(C++)
 dnl
 dnl Check for broken strptime
 dnl
-AC_DEFUN(OCTAVE_STRPTIME_BROKEN,
+AC_DEFUN([OCTAVE_STRPTIME_BROKEN],
 [AC_CACHE_CHECK([whether strptime is broken],
 octave_cv_strptime_broken,
 [AC_LANG_PUSH(C)
@@ -141,7 +141,7 @@ dnl Some BSD putenv's, e.g., FreeBSD, do malloc/free's on the environment.
 dnl This test program is due to Mike Hibler <mike@cs.utah.edu>.
 dnl We don't actually need to run this if we don't have putenv, but it
 dnl doesn't hurt.
-AC_DEFUN(OCTAVE_SMART_PUTENV,
+AC_DEFUN([OCTAVE_SMART_PUTENV],
 [AC_MSG_CHECKING(whether putenv uses malloc)
 AC_CACHE_VAL(octave_cv_func_putenv_malloc,
 [AC_RUN_IFELSE([AC_LANG_SOURCE([[
@@ -204,7 +204,7 @@ dnl These two checks for signal functions were originally part of the
 dnl aclocal.m4 file distributed with bash 2.0.
 dnl
 dnl Check type of signal routines (posix, 4.2bsd, 4.1bsd or v7)
-AC_DEFUN(OCTAVE_SIGNAL_CHECK,
+AC_DEFUN([OCTAVE_SIGNAL_CHECK],
 [AC_REQUIRE([AC_TYPE_SIGNAL])
 AC_MSG_CHECKING(for type of signal functions)
 AC_CACHE_VAL(octave_cv_signal_vintage,
@@ -242,7 +242,7 @@ AC_DEFINE(HAVE_USG_SIGHOLD, 1, [Define if you have System V Release 3 signals.])
 fi
 ])
 dnl
-AC_DEFUN(OCTAVE_REINSTALL_SIGHANDLERS,
+AC_DEFUN([OCTAVE_REINSTALL_SIGHANDLERS],
 [AC_REQUIRE([AC_TYPE_SIGNAL])
 AC_REQUIRE([OCTAVE_SIGNAL_CHECK])
 AC_MSG_CHECKING([if signal handlers must be reinstalled when invoked])
@@ -307,7 +307,7 @@ dnl Check to see if C++ compiler needs the new friend template declaration
 dnl syntax. 
 dnl
 dnl OCTAVE_CXX_NEW_FRIEND_TEMPLATE_DECL
-AC_DEFUN(OCTAVE_CXX_NEW_FRIEND_TEMPLATE_DECL, [
+AC_DEFUN([OCTAVE_CXX_NEW_FRIEND_TEMPLATE_DECL], [
   AC_REQUIRE([AC_PROG_CXX])
   AC_MSG_CHECKING([for C++ support for new friend template declaration])
   AC_CACHE_VAL(octave_cv_cxx_new_friend_template_decl, [
@@ -344,7 +344,7 @@ dnl commands.  Otherwise, add FLAG to CFLAGS if the compiler accepts
 dnl the flag.
 dnl
 dnl OCTAVE_CC_FLAG
-AC_DEFUN(OCTAVE_CC_FLAG, [
+AC_DEFUN([OCTAVE_CC_FLAG], [
   ac_safe=`echo "$1" | sed 'y%./+-:=%__p___%'`
   AC_MSG_CHECKING(whether ${CC-cc} accepts $1)
   AC_CACHE_VAL(octave_cv_cc_flag_$ac_safe, [
@@ -374,7 +374,7 @@ dnl commands.  Otherwise, add FLAG to CXXFLAGS if the compiler accepts
 dnl the flag.
 dnl
 dnl OCTAVE_CXX_FLAG
-AC_DEFUN(OCTAVE_CXX_FLAG, [
+AC_DEFUN([OCTAVE_CXX_FLAG], [
   ac_safe=`echo "$1" | sed 'y%./+-:=%__p___%'`
   AC_MSG_CHECKING(whether ${CXX-g++} accepts $1)
   AC_CACHE_VAL(octave_cv_cxx_flag_$ac_safe, [
@@ -404,7 +404,7 @@ dnl commands.  Otherwise, add FLAG to FFLAGS if the compiler accepts
 dnl the flag.
 dnl
 dnl OCTAVE_F77_FLAG
-AC_DEFUN(OCTAVE_F77_FLAG, [
+AC_DEFUN([OCTAVE_F77_FLAG], [
   ac_safe=`echo "$1" | sed 'y%./+-:=%__p___%'`
   AC_MSG_CHECKING(whether ${F77-g77} accepts $1)
   AC_CACHE_VAL(octave_cv_f77_flag_$ac_safe, [
@@ -430,7 +430,7 @@ AC_DEFUN(OCTAVE_F77_FLAG, [
 dnl
 dnl Check to see whether the default Fortran INTEGER is 64 bits wide.
 dnl
-AC_DEFUN(OCTAVE_CHECK_FORTRAN_INTEGER_SIZE, [
+AC_DEFUN([OCTAVE_CHECK_FORTRAN_INTEGER_SIZE], [
   AC_LANG_PUSH(Fortran 77)
   AC_CACHE_CHECK([whether $F77 generates correct size integers],
                  [octave_cv_fortran_integer_size],
@@ -483,7 +483,7 @@ dnl
 dnl
 dnl OCTAVE_CHECK_LIBRARY(LIBRARY, DOC-NAME, WARN-MSG, HEADER, FUNC,
 dnl                      LANG, DOC-STRING, EXTRA-CHECK)
-AC_DEFUN(OCTAVE_CHECK_LIBRARY, [
+AC_DEFUN([OCTAVE_CHECK_LIBRARY], [
   AC_ARG_WITH([$1-includedir],
     [AS_HELP_STRING([--with-$1-includedir=DIR],
       [look for $2 include files in DIR])],
@@ -560,7 +560,7 @@ AC_DEFUN(OCTAVE_CHECK_LIBRARY, [
 dnl
 dnl Check for flex
 dnl
-AC_DEFUN(OCTAVE_PROG_FLEX, [
+AC_DEFUN([OCTAVE_PROG_FLEX], [
 ### For now, don't define LEXLIB to be -lfl -- we don't use anything in
 ### it, and it might not be installed.
 ###
@@ -584,7 +584,7 @@ AC_DEFUN(OCTAVE_PROG_FLEX, [
 dnl
 dnl Check for bison
 dnl
-AC_DEFUN(OCTAVE_PROG_BISON, [
+AC_DEFUN([OCTAVE_PROG_BISON], [
   AC_PROG_YACC
   case "$YACC" in
     bison*)
@@ -599,7 +599,7 @@ AC_DEFUN(OCTAVE_PROG_BISON, [
 dnl
 dnl What pager should we use?
 dnl
-AC_DEFUN(OCTAVE_PROG_PAGER,
+AC_DEFUN([OCTAVE_PROG_PAGER],
 [if test "$cross_compiling" = yes; then
   DEFAULT_PAGER=less
   AC_MSG_RESULT(assuming $DEFAULT_PAGER exists on $canonical_host_type host)
@@ -622,7 +622,7 @@ fi
 dnl
 dnl Does gnuplot exist?
 dnl
-AC_DEFUN(OCTAVE_PROG_GNUPLOT, [
+AC_DEFUN([OCTAVE_PROG_GNUPLOT], [
 case "$canonical_host_type" in
   *-*-cygwin* | *-*-mingw32* | *-*-msdosmsvc)
     gp_names="pgnuplot pipe-gnuplot gnuplot"
@@ -666,7 +666,7 @@ dnl
 dnl Is gperf installed?
 dnl
 dnl OCTAVE_PROG_GPERF
-AC_DEFUN(OCTAVE_PROG_GPERF, [
+AC_DEFUN([OCTAVE_PROG_GPERF], [
   AC_CHECK_PROG(GPERF, gperf, gperf, [])
   if test -z "$GPERF"; then
     GPERF='$(top_srcdir)/missing gperf'
@@ -679,7 +679,7 @@ dnl
 dnl Is ghostscript installed?
 dnl
 dnl OCTAVE_PROG_GHOSTSCRIPT
-AC_DEFUN(OCTAVE_PROG_GHOSTSCRIPT, [
+AC_DEFUN([OCTAVE_PROG_GHOSTSCRIPT], [
   case "$canonical_host_type" in
     *-*-cygwin* | *-*-mingw32* | *-*-msdosmsvc)
       gs_names="gs gswin32"
@@ -700,7 +700,7 @@ dnl
 dnl Is makeinfo installed?
 dnl
 dnl OCTAVE_PROG_MAKEINFO
-AC_DEFUN(OCTAVE_PROG_MAKEINFO, [
+AC_DEFUN([OCTAVE_PROG_MAKEINFO], [
   AC_CHECK_PROG(MAKEINFO, makeinfo, makeinfo, [])
   if test -z "$MAKEINFO"; then
     MAKEINFO='$(top_srcdir)/missing makeinfo'
@@ -713,7 +713,7 @@ dnl
 dnl Is texi2dvi installed?
 dnl
 dnl OCTAVE_PROG_TEXI2DVI
-AC_DEFUN(OCTAVE_PROG_TEXI2DVI, [
+AC_DEFUN([OCTAVE_PROG_TEXI2DVI], [
   AC_CHECK_PROG(TEXI2DVI, texi2dvi, texi2dvi, [])
   if test -z "$TEXI2DVI"; then
     TEXI2DVI='$(top_srcdir)/missing texi2dvi'
@@ -726,7 +726,7 @@ dnl
 dnl Is texi2pdf installed?
 dnl
 dnl OCTAVE_PROG_TEXI2PDF
-AC_DEFUN(OCTAVE_PROG_TEXI2PDF, [
+AC_DEFUN([OCTAVE_PROG_TEXI2PDF], [
   AC_REQUIRE([OCTAVE_PROG_TEXI2DVI])
   AC_CHECK_PROG(TEXI2PDF, texi2pdf, texi2pdf, [])
   if test -z "$TEXI2PDF"; then
@@ -750,7 +750,7 @@ dnl See if the C++ library is ISO compliant.
 dnl FIXME: This is obviously very simplistic, and trivially fooled.
 dnl
 dnl OCTAVE_CXX_ISO_COMPLIANT_LIBRARY
-AC_DEFUN(OCTAVE_CXX_ISO_COMPLIANT_LIBRARY, [
+AC_DEFUN([OCTAVE_CXX_ISO_COMPLIANT_LIBRARY], [
   AC_REQUIRE([AC_PROG_CXX])
   AC_MSG_CHECKING([if C++ library is ISO compliant])
   AC_CACHE_VAL(octave_cv_cxx_iso_compliant_library, [
@@ -786,7 +786,7 @@ dnl Allow the user disable support for command line editing using GNU
 dnl readline.
 dnl
 dnl OCTAVE_ENABLE_READLINE
-AC_DEFUN(OCTAVE_ENABLE_READLINE, [
+AC_DEFUN([OCTAVE_ENABLE_READLINE], [
   USE_READLINE=true
   READLINE_LIBS=
   AC_ARG_ENABLE(readline,
@@ -814,7 +814,7 @@ dnl Check to see if C++ reintrepret cast works for function pointers.
 dnl
 dnl OCTAVE_CXX_BROKEN_REINTERPRET_CAST
 dnl
-AC_DEFUN(OCTAVE_CXX_BROKEN_REINTERPRET_CAST, [
+AC_DEFUN([OCTAVE_CXX_BROKEN_REINTERPRET_CAST], [
   AC_REQUIRE([AC_PROG_CXX])
   AC_LANG_PUSH(C++)
   AC_CACHE_CHECK([for broken C++ reinterpret_cast],
@@ -833,7 +833,7 @@ fi
 dnl
 dnl Determine if mkdir accepts only one argument instead dnl of the usual 2.
 dnl
-AC_DEFUN(OCTAVE_MKDIR_TAKES_ONE_ARG, [
+AC_DEFUN([OCTAVE_MKDIR_TAKES_ONE_ARG], [
 AC_LANG_PUSH(C++)
 AC_CACHE_CHECK([if mkdir takes one argument], octave_cv_mkdir_takes_one_arg,
 [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <sys/types.h>
@@ -931,7 +931,7 @@ dnl
 dnl Find Perl.
 dnl
 dnl OCTAVE_PROG_PERL
-AC_DEFUN(OCTAVE_PROG_PERL,
+AC_DEFUN([OCTAVE_PROG_PERL],
 [AC_CHECK_PROG(PERL, perl, perl, [])
   AC_SUBST(PERL)
 ])
@@ -939,7 +939,7 @@ dnl
 dnl Find Python.
 dnl
 dnl OCTAVE_PROG_PYTHON
-AC_DEFUN(OCTAVE_PROG_PYTHON,
+AC_DEFUN([OCTAVE_PROG_PYTHON],
 [AC_CHECK_PROG(PYTHON, python, python, [])
   AC_SUBST(PYTHON)
 ])
@@ -947,7 +947,7 @@ dnl
 dnl Find desktop-file-install.
 dnl
 dnl OCTAVE_PROG_DESKTOP_FILE_INSTALL
-AC_DEFUN(OCTAVE_PROG_DESKTOP_FILE_INSTALL,
+AC_DEFUN([OCTAVE_PROG_DESKTOP_FILE_INSTALL],
 [AC_CHECK_PROG(DESKTOP_FILE_INSTALL, desktop-file-install, desktop-file-install, [])
   AC_SUBST(DESKTOP_FILE_INSTALL)
 ])
@@ -1079,7 +1079,7 @@ AC_DEFUN([OCTAVE_HDF5_HAS_REQUIRED_API], [
 dnl
 dnl Check for the QHull version.
 dnl
-AC_DEFUN(OCTAVE_CHECK_QHULL_VERSION,
+AC_DEFUN([OCTAVE_CHECK_QHULL_VERSION],
   [AC_CACHE_CHECK([for qh_version in $QHULL_LIBS],
     octave_cv_lib_qhull_version,  [
       AC_LINK_IFELSE([AC_LANG_PROGRAM([[
@@ -1095,7 +1095,7 @@ const char *tmp = qh_version;
 dnl
 dnl Check whether QHull works (does not crash)
 dnl
-AC_DEFUN(OCTAVE_CHECK_QHULL_OK,
+AC_DEFUN([OCTAVE_CHECK_QHULL_OK],
   [AC_CACHE_CHECK([whether the qhull library works],
     octave_cv_lib_qhull_ok, [
       AC_RUN_IFELSE([AC_LANG_PROGRAM([[
@@ -1193,7 +1193,7 @@ dnl
 dnl See if function gluTessCallback is called with "(...)"
 dnl
 dnl OCTAVE_GLUTESSCALLBACK_THREEDOTS
-AC_DEFUN(OCTAVE_GLUTESSCALLBACK_THREEDOTS,
+AC_DEFUN([OCTAVE_GLUTESSCALLBACK_THREEDOTS],
 [AC_CACHE_CHECK([whether gluTessCallback is called with "(...)"],
 octave_cv_glutesscallback_threedots,
 [AC_LANG_PUSH(C++)
@@ -1512,7 +1512,7 @@ dnl "--without-framework-$1". If this test is successful then perform
 dnl $4, otherwise do $5.
 dnl
 dnl OCTAVE_HAVE_FRAMEWORK
-AC_DEFUN(OCTAVE_HAVE_FRAMEWORK, [
+AC_DEFUN([OCTAVE_HAVE_FRAMEWORK], [
   AC_MSG_CHECKING(whether ${LD-ld} accepts -framework $1)
   AC_CACHE_VAL(octave_cv_framework_$1, [
     XLDFLAGS="$LDFLAGS"
@@ -1545,7 +1545,7 @@ dnl
 dnl Do we have a working c99 vsnprintf function?
 dnl
 dnl OCTAVE_HAVE_C99_VSNPRINTF
-AC_DEFUN(OCTAVE_HAVE_C99_VSNPRINTF, [
+AC_DEFUN([OCTAVE_HAVE_C99_VSNPRINTF], [
   AC_CACHE_CHECK([for c99 vsnprintf], [oct_cv_c99_vsnprintf],
     [AC_RUN_IFELSE([AC_LANG_PROGRAM([[#include <stdio.h>
 #include <stdarg.h>

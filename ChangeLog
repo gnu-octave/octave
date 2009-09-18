@@ -1,3 +1,7 @@
+2009-09-18  John W. Eaton  <jwe@octave.org>
+
+	* aclocal.m4: Consistently quote first arg to AC_DEFUN.
+
 2009-09-17  John W. Eaton  <jwe@octave.org>
 
 	* configure.ac: Also AC_DEFINE OCTAAVE_IDX_TYPE.

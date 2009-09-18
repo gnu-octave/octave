@@ -1,3 +1,7 @@
+2009-09-18  John W. Eaton  <jwe@octave.org>
+
+	* mach-info.cc: Don't include oct-types.h.
+
 2009-09-18  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Array.h (NoAlias): New template class.

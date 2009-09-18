@@ -28,7 +28,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "f77-fcn.h"
 #include "lo-error.h"
 #include "mach-info.h"
-#include "oct-types.h"
 
 extern "C"
 {

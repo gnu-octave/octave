@@ -55,6 +55,8 @@ To initialize:
 #endif
 
 #include "cmd-edit.h"
+#include "lo-ieee.h"
+
 #include "defun-dld.h"
 #include "error.h"
 #include "gl-render.h"
@@ -792,6 +794,41 @@ figure_manager *figure_manager::instance = 0;
 std::string figure_manager::fltk_idx_header="fltk index=";
 int figure_manager::curr_index = 1;
 
+static bool backend_registered = false;
+// give FLTK no more than 0.01 sec to do it's stuff
+static double fltk_maxtime = 1e-2;
+
+static int
+__fltk_redraw__ (void)
+{
+  if (backend_registered)
+    {
+      // we scan all figures and add those which use FLTK as a backend
+      graphics_object obj = gh_manager::get_object (0);
+      if (obj && obj.isa ("root"))
+	{
+	  base_properties& props = obj.get_properties ();
+	  Matrix children = props.get_children ();
+
+	  for (octave_idx_type n = 0; n < children.numel (); n++)
+	    {
+	      graphics_object fobj = gh_manager::get_object (children (n));
+	      if (fobj && fobj.isa ("figure"))
+		{
+		  figure::properties& fp =
+		      dynamic_cast<figure::properties&> (fobj.get_properties ());
+		  if (fp.get___backend__ () == FLTK_BACKEND_NAME)
+		    figure_manager::new_window (fp);
+		}
+	    }
+	}
+
+      Fl::wait (fltk_maxtime);
+    }
+
+  return 0;
+}
+
 class fltk_backend : public base_graphics_backend
 {
 public:
@@ -832,6 +869,8 @@ public:
   void redraw_figure (const graphics_object& go) const
   {
     figure_manager::mark_modified (go.get_handle ());
+
+    __fltk_redraw__ ();
   }
 
   void print_figure (const graphics_object& /*go*/,
@@ -858,41 +897,6 @@ public:
     return sz;
   }
 };
-
-static bool backend_registered = false;
-// give FLTK no more than 0.01 sec to do it's stuff
-static double fltk_maxtime = 1e-2;
-
-static int
-__fltk_redraw__ (void)
-{
-  if (backend_registered)
-    {
-      // we scan all figures and add those which use FLTK as a backend
-      graphics_object obj = gh_manager::get_object (0);
-      if (obj && obj.isa ("root"))
-	{
-	  base_properties& props = obj.get_properties ();
-	  Matrix children = props.get_children ();
-
-	  for (octave_idx_type n = 0; n < children.numel (); n++)
-	    {
-	      graphics_object fobj = gh_manager::get_object (children (n));
-	      if (fobj && fobj.isa ("figure"))
-		{
-		  figure::properties& fp =
-		      dynamic_cast<figure::properties&> (fobj.get_properties ());
-		  if (fp.get___backend__ () == FLTK_BACKEND_NAME)
-		    figure_manager::new_window (fp);
-		}
-	    }
-	}
-
-      Fl::wait (fltk_maxtime);
-    }
-
-  return 0;
-}
 
 DEFUN_DLD (__fltk_redraw__, , , "")
 {

@@ -1,5 +1,10 @@
 2009-09-18  John W. Eaton  <jwe@octave.org>
 
+	* DLD-FUNCTIONS/fltk_backend.cc (fltk_backend::redraw_figure):
+	Call __fltk_redraw__ after marking figure as modified.
+
+2009-09-18  John W. Eaton  <jwe@octave.org>
+
 	* mexproto.h: Define OCTINTERP_API if it is not already defined.
 	Use C-style comments.
 

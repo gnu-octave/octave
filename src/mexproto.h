@@ -55,8 +55,6 @@ extern "C" {
 #include <stdlib.h>
 #endif
 
-#include "oct-dlldefs.h"
-
 #define MXARRAY_TYPEDEFS_ONLY
 #include "mxarray.h"
 #undef MXARRAY_TYPEDEFS_ONLY

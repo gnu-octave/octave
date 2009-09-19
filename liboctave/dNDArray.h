@@ -37,6 +37,8 @@ NDArray : public MArrayN<double>
 {
 public:
 
+  typedef Matrix matrix_type;
+
   NDArray (void) : MArrayN<double> () { }
 
   NDArray (const dim_vector& dv) : MArrayN<double> (dv) { }

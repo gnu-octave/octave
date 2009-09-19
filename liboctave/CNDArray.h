@@ -35,6 +35,8 @@ ComplexNDArray : public MArrayN<Complex>
 {
 public:
 
+  typedef ComplexMatrix matrix_type;
+
   ComplexNDArray (void) : MArrayN<Complex> () { }
 
   ComplexNDArray (const dim_vector& dv) : MArrayN<Complex> (dv) { }

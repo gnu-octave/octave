@@ -38,6 +38,9 @@ Matrix : public MArray2<double>
 {
 public:
 
+  typedef ColumnVector column_vector_type;
+  typedef RowVector row_vector_type;
+
   typedef void (*solve_singularity_handler) (double rcon);
 
   Matrix (void) : MArray2<double> () { }

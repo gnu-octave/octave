@@ -1,3 +1,21 @@
+2009-09-19  Jaroslav Hajek  <highegg@gmail.com>
+
+	* dNDArray.h (NDArray::matrix_type): New typedef.
+	* fNDArray.h (FloatNDArray::matrix_type): New typedef.
+	* CNDArray.h (ComplexNDArray::matrix_type): New typedef.
+	* fCNDArray.h (FloatComplexNDArray::matrix_type): New typedef.
+	* boolNDArray.h (boolNDArray::matrix_type): New typedef.
+	* charNDArray.h (charNDArray::matrix_type): New typedef.
+
+	* dMatrix.h (Matrix::column_vector_type, 
+	Matrix::row_vector_type): New typedefs.
+	* fMatrix.h (FloatMatrix::column_vector_type,
+	FloatMatrix::row_vector_type): New typedefs.
+	* CMatrix.h (ComplexMatrix::column_vector_type,
+	ComplexMatrix::row_vector_type): New typedefs.
+	* fCMatrix.h (FloatComplexMatrix::column_vector_type,
+	FloatComplexMatrix::row_vector_type): New typedefs.
+
 2009-09-18  John W. Eaton  <jwe@octave.org>
 
 	* mach-info.cc: Don't include oct-types.h.

@@ -35,6 +35,8 @@ charNDArray : public MArrayN<char>
 {
 public:
 
+  typedef charMatrix matrix_type;
+
   charNDArray (void) : MArrayN<char> () { }
 
   charNDArray (const dim_vector& dv) : MArrayN<char> (dv) { }

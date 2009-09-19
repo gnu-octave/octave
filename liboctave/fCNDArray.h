@@ -35,6 +35,8 @@ FloatComplexNDArray : public MArrayN<FloatComplex>
 {
 public:
 
+  typedef FloatComplexMatrix matrix_type;
+
   FloatComplexNDArray (void) : MArrayN<FloatComplex> () { }
 
   FloatComplexNDArray (const dim_vector& dv) : MArrayN<FloatComplex> (dv) { }

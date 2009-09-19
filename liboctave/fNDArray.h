@@ -37,6 +37,8 @@ FloatNDArray : public MArrayN<float>
 {
 public:
 
+  typedef FloatMatrix matrix_type;
+
   FloatNDArray (void) : MArrayN<float> () { }
 
   FloatNDArray (const dim_vector& dv) : MArrayN<float> (dv) { }

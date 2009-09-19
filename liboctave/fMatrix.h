@@ -38,6 +38,9 @@ FloatMatrix : public MArray2<float>
 {
 public:
 
+  typedef FloatColumnVector column_vector_type;
+  typedef FloatRowVector row_vector_type;
+
   typedef void (*solve_singularity_handler) (float rcon);
 
   FloatMatrix (void) : MArray2<float> () { }

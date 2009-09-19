@@ -36,6 +36,8 @@ boolNDArray : public ArrayN<bool>
 {
 public:
 
+  typedef boolMatrix matrix_type;
+
   boolNDArray (void) : ArrayN<bool> () { }
 
   boolNDArray (const dim_vector& dv) : ArrayN<bool> (dv) { }

@@ -39,6 +39,9 @@ FloatComplexMatrix : public MArray2<FloatComplex>
 {
 public:
  
+  typedef FloatComplexColumnVector column_vector_type;
+  typedef FloatComplexRowVector row_vector_type;
+
   typedef void (*solve_singularity_handler) (float rcon);
 
   FloatComplexMatrix (void) : MArray2<FloatComplex> () { }

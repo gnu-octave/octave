@@ -39,6 +39,9 @@ ComplexMatrix : public MArray2<Complex>
 {
 public:
  
+  typedef ComplexColumnVector column_vector_type;
+  typedef ComplexRowVector row_vector_type;
+
   typedef void (*solve_singularity_handler) (double rcon);
 
   ComplexMatrix (void) : MArray2<Complex> () { }

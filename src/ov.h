@@ -1313,6 +1313,66 @@ OCTAVE_ARRAY_TYPE_TRAIT (FloatNDArray, float);
 // of octave_value::rep.
 #define OV_REP_TYPE octave_base_value
 
+// Templated value extractors.
+template<class Value>
+inline Value octave_value_extract (const octave_value&)
+  { assert (false); }
+
+#define DEF_VALUE_EXTRACTOR(VALUE,MPREFIX) \
+template<> \
+inline VALUE octave_value_extract<VALUE> (const octave_value& v) \
+  { return v.MPREFIX ## _value (); }
+
+DEF_VALUE_EXTRACTOR (double, scalar)
+DEF_VALUE_EXTRACTOR (float, float_scalar)
+DEF_VALUE_EXTRACTOR (Complex, complex)
+DEF_VALUE_EXTRACTOR (FloatComplex, float_complex)
+DEF_VALUE_EXTRACTOR (bool, bool)
+
+DEF_VALUE_EXTRACTOR (octave_int8, int8_scalar)
+DEF_VALUE_EXTRACTOR (octave_int16, int16_scalar)
+DEF_VALUE_EXTRACTOR (octave_int32, int32_scalar)
+DEF_VALUE_EXTRACTOR (octave_int64, int64_scalar)
+DEF_VALUE_EXTRACTOR (octave_uint8, uint8_scalar)
+DEF_VALUE_EXTRACTOR (octave_uint16, uint16_scalar)
+DEF_VALUE_EXTRACTOR (octave_uint32, uint32_scalar)
+DEF_VALUE_EXTRACTOR (octave_uint64, uint64_scalar)
+
+
+DEF_VALUE_EXTRACTOR (NDArray, array)
+DEF_VALUE_EXTRACTOR (FloatNDArray, float_array)
+DEF_VALUE_EXTRACTOR (ComplexNDArray, complex_array)
+DEF_VALUE_EXTRACTOR (FloatComplexNDArray, float_complex_array)
+DEF_VALUE_EXTRACTOR (boolNDArray, bool_array)
+
+DEF_VALUE_EXTRACTOR (charNDArray, char_array)
+DEF_VALUE_EXTRACTOR (int8NDArray, int8_array)
+DEF_VALUE_EXTRACTOR (int16NDArray, int16_array)
+DEF_VALUE_EXTRACTOR (int32NDArray, int32_array)
+DEF_VALUE_EXTRACTOR (int64NDArray, int64_array)
+DEF_VALUE_EXTRACTOR (uint8NDArray, uint8_array)
+DEF_VALUE_EXTRACTOR (uint16NDArray, uint16_array)
+DEF_VALUE_EXTRACTOR (uint32NDArray, uint32_array)
+DEF_VALUE_EXTRACTOR (uint64NDArray, uint64_array)
+
+DEF_VALUE_EXTRACTOR (Matrix, matrix)
+DEF_VALUE_EXTRACTOR (FloatMatrix, float_matrix)
+DEF_VALUE_EXTRACTOR (ComplexMatrix, complex_matrix)
+DEF_VALUE_EXTRACTOR (FloatComplexMatrix, float_complex_matrix)
+DEF_VALUE_EXTRACTOR (boolMatrix, bool_matrix)
+
+DEF_VALUE_EXTRACTOR (ColumnVector, column_vector)
+DEF_VALUE_EXTRACTOR (FloatColumnVector, float_column_vector)
+DEF_VALUE_EXTRACTOR (ComplexColumnVector, complex_column_vector)
+DEF_VALUE_EXTRACTOR (FloatComplexColumnVector, float_complex_column_vector)
+
+DEF_VALUE_EXTRACTOR (RowVector, row_vector)
+DEF_VALUE_EXTRACTOR (FloatRowVector, float_row_vector)
+DEF_VALUE_EXTRACTOR (ComplexRowVector, complex_row_vector)
+DEF_VALUE_EXTRACTOR (FloatComplexRowVector, float_complex_row_vector)
+
+#undef DEF_VALUE_EXTRACTOR
+
 #endif
 
 /*

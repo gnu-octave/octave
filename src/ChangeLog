@@ -1,3 +1,7 @@
+2009-09-19  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov.h (octave_value_extract): New template function.
+
 2009-09-18  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/fltk_backend.cc (fltk_backend::redraw_figure):

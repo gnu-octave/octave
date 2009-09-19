@@ -487,9 +487,9 @@ linspace (const FloatComplex& x1, const FloatComplex& x2, octave_idx_type n)
   NoAlias<FloatComplexRowVector> retval (n);
 
   FloatComplex delta = (x2 - x1) / (n - 1.0f);
-  FloatComplex y = retval(0) = x1;
+  retval(0) = x1;
   for (octave_idx_type i = 1; i < n-1; i++)
-    retval(i) = y += delta;
+    retval(i) = x1 + static_cast<float> (i)*delta;
   retval(n-1) = x2;
 
   return retval;

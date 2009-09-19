@@ -1,6 +1,8 @@
 2009-09-19  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov.h (octave_value_extract): New template function.
+	* data.cc (do_linspace): New static template function.
+	(Flinspace): Rewrite.
 
 2009-09-18  John W. Eaton  <jwe@octave.org>
 

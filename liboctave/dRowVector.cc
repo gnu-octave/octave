@@ -316,9 +316,9 @@ linspace (double x1, double x2, octave_idx_type n)
   NoAlias<RowVector> retval (n);
 
   double delta = (x2 - x1) / (n - 1);
-  double y = retval(0) = x1;
+  retval(0) = x1;
   for (octave_idx_type i = 1; i < n-1; i++)
-    retval(i) = y += delta;
+    retval(i) = x1 + i*delta;
   retval(n-1) = x2;
 
   return retval;

@@ -45,6 +45,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-math.h"
 #include "str-vec.h"
 #include "quit.h"
+#include "mx-base.h"
 
 #include "Cell.h"
 #include "defun.h"
@@ -4382,6 +4383,50 @@ with @sc{matlab}.\n\
 
  */
 
+template <class MT>
+static octave_value 
+do_linspace (const octave_value& base, const octave_value& limit,
+             octave_idx_type n)
+{
+  typedef typename MT::column_vector_type CVT;
+  typedef typename MT::element_type T;
+
+  octave_value retval;
+
+  if (base.is_scalar_type ())
+    {
+      T bs = octave_value_extract<T> (base);
+      if (limit.is_scalar_type ())
+        {
+          T ls = octave_value_extract<T> (limit);
+          retval = linspace (bs, ls, n);
+        }
+      else
+        {
+          CVT lv = octave_value_extract<CVT> (limit);
+          CVT bv (lv.length (), bs);
+          retval = linspace (bv, lv, n);
+        }
+    }
+  else
+    {
+      CVT bv = octave_value_extract<CVT> (base);
+      if (limit.is_scalar_type ())
+        {
+          T ls = octave_value_extract<T> (limit);
+          CVT lv (bv.length (), ls);
+          retval = linspace (bv, lv, n);
+        }
+      else
+        {
+          CVT lv = octave_value_extract<CVT> (limit);
+          retval = linspace (bv, lv, n);
+        }
+    }
+
+  return retval;
+}
+
 DEFUN (linspace, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} linspace (@var{base}, @var{limit}, @var{n})\n\
@@ -4392,7 +4437,9 @@ the range.  If @var{base} is greater than @var{limit}, the elements are\n\
 stored in decreasing order.  If the number of points is not specified, a\n\
 value of 100 is used.\n\
 \n\
-The @code{linspace} function always returns a row vector.\n\
+The @code{linspace} function always returns a row vector if both\n\
+@var{base} and @var{limit} are scalars. If one of them or both are column\n\
+vectors, @code{linspace} returns a matrix.\n\
 \n\
 For compatibility with @sc{matlab}, return the second argument if\n\
 fewer than two values are requested.\n\
@@ -4421,60 +4468,17 @@ fewer than two values are requested.\n\
       if (arg_1.is_single_type () || arg_2.is_single_type ())
 	{
 	  if (arg_1.is_complex_type () || arg_2.is_complex_type ())
-	    {
-	      FloatComplex x1 = arg_1.float_complex_value ();
-	      FloatComplex x2 = arg_2.float_complex_value ();
-
-	      if (! error_state)
-		{
-		  FloatComplexRowVector rv = linspace (x1, x2, npoints);
-
-		  if (! error_state)
-		    retval = rv;
-		}
-	    }
+            retval = do_linspace<FloatComplexMatrix> (arg_1, arg_2, npoints);
 	  else
-	    {
-	      float x1 = arg_1.float_value ();
-	      float x2 = arg_2.float_value ();
-
-	      if (! error_state)
-		{
-		  FloatRowVector rv = linspace (x1, x2, npoints);
-
-		  if (! error_state)
-		    retval = rv;
-		}
-	    }
+            retval = do_linspace<FloatMatrix> (arg_1, arg_2, npoints);
+	    
 	}
       else
 	{
 	  if (arg_1.is_complex_type () || arg_2.is_complex_type ())
-	    {
-	      Complex x1 = arg_1.complex_value ();
-	      Complex x2 = arg_2.complex_value ();
-
-	      if (! error_state)
-		{
-		  ComplexRowVector rv = linspace (x1, x2, npoints);
-
-		  if (! error_state)
-		    retval = rv;
-		}
-	    }
+            retval = do_linspace<ComplexMatrix> (arg_1, arg_2, npoints);
 	  else
-	    {
-	      double x1 = arg_1.double_value ();
-	      double x2 = arg_2.double_value ();
-
-	      if (! error_state)
-		{
-		  RowVector rv = linspace (x1, x2, npoints);
-
-		  if (! error_state)
-		    retval = rv;
-		}
-	    }
+            retval = do_linspace<Matrix> (arg_1, arg_2, npoints);
 	}
     }
   else

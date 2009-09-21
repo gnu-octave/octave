@@ -1,3 +1,8 @@
+2009-09-21  Jaroslav Hajek  <highegg@gmail.com>
+
+	* set/union.m: Fix docstring.
+	* set/setxor.m: Fix docstring.
+
 2009-09-16  Jaroslav Hajek  <highegg@gmail.com>
 
 	* general/randperm.m: Remove.

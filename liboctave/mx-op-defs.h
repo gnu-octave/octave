@@ -35,21 +35,14 @@ along with Octave; see the file COPYING.  If not, see
   R \
   F (const V& v, const S& s) \
   { \
-    octave_idx_type len = v.length (); \
- \
-    R r (len); \
- \
-    for (octave_idx_type i = 0; i < len; i++) \
-      r.elem(i) = v.elem(i) OP s; \
- \
-    return r; \
+    return do_ms_binary_op<R, V, S> (v, s, OP); \
   }
 
 #define VS_BIN_OPS(R, V, S) \
-  VS_BIN_OP (R, operator +, +, V, S) \
-  VS_BIN_OP (R, operator -, -, V, S) \
-  VS_BIN_OP (R, operator *, *, V, S) \
-  VS_BIN_OP (R, operator /, /, V, S)
+  VS_BIN_OP (R, operator +, mx_inline_add, V, S) \
+  VS_BIN_OP (R, operator -, mx_inline_sub, V, S) \
+  VS_BIN_OP (R, operator *, mx_inline_mul, V, S) \
+  VS_BIN_OP (R, operator /, mx_inline_div, V, S)
 
 // scalar by vector by operations.
 
@@ -57,21 +50,14 @@ along with Octave; see the file COPYING.  If not, see
   R \
   F (const S& s, const V& v) \
   { \
-    octave_idx_type len = v.length (); \
- \
-    R r (len); \
- \
-    for (octave_idx_type i = 0; i < len; i++) \
-      r.elem(i) = s OP v.elem(i); \
- \
-    return r; \
+    return do_sm_binary_op<R, S, V> (s, v, OP); \
   }
 
 #define SV_BIN_OPS(R, S, V) \
-  SV_BIN_OP (R, operator +, +, S, V) \
-  SV_BIN_OP (R, operator -, -, S, V) \
-  SV_BIN_OP (R, operator *, *, S, V) \
-  SV_BIN_OP (R, operator /, /, S, V)
+  SV_BIN_OP (R, operator +, mx_inline_add, S, V) \
+  SV_BIN_OP (R, operator -, mx_inline_sub, S, V) \
+  SV_BIN_OP (R, operator *, mx_inline_mul, S, V) \
+  SV_BIN_OP (R, operator /, mx_inline_div, S, V)
 
 // vector by vector operations.
 
@@ -79,29 +65,14 @@ along with Octave; see the file COPYING.  If not, see
   R \
   F (const V1& v1, const V2& v2) \
   { \
-    R r; \
- \
-    octave_idx_type v1_len = v1.length (); \
-    octave_idx_type v2_len = v2.length (); \
- \
-    if (v1_len != v2_len) \
-      gripe_nonconformant (#OP, v1_len, v2_len); \
-    else \
-      { \
-	r.resize (v1_len); \
- \
-	for (octave_idx_type i = 0; i < v1_len; i++) \
-	  r.elem(i) = v1.elem(i) OP v2.elem(i); \
-      } \
- \
-    return r; \
+    return do_mm_binary_op<R, V1, V2> (v1, v2, OP, #F); \
   }
 
 #define VV_BIN_OPS(R, V1, V2) \
-  VV_BIN_OP (R, operator +, +, V1, V2) \
-  VV_BIN_OP (R, operator -, -, V1, V2) \
-  VV_BIN_OP (R, product,    *, V1, V2) \
-  VV_BIN_OP (R, quotient,   /, V1, V2)
+  VV_BIN_OP (R, operator +, mx_inline_add, V1, V2) \
+  VV_BIN_OP (R, operator -, mx_inline_sub, V1, V2) \
+  VV_BIN_OP (R, product,    mx_inline_mul, V1, V2) \
+  VV_BIN_OP (R, quotient,   mx_inline_div, V1, V2)
 
 // matrix by scalar operations.
 

@@ -1,3 +1,7 @@
+2009-09-21  Jaroslav Hajek  <highegg@gmail.com>
+
+	* mx-op-defs.h (VS_BIN_OP, SV_BIN_OP, VV_BIN_OP): Simplify.
+
 2009-09-19  Jaroslav Hajek  <highegg@gmail.com>
 
 	* dNDArray.h (NDArray::matrix_type): New typedef.

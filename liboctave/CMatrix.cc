@@ -299,6 +299,17 @@ ComplexMatrix::ComplexMatrix (const charMatrix& a)
       elem (i, j) = static_cast<unsigned char> (a.elem (i, j));
 }
 
+ComplexMatrix::ComplexMatrix (const Matrix& re, const Matrix& im)
+  : MArray2<Complex> (re.rows (), re.cols ())
+{
+  if (im.rows () != rows () || im.cols () != cols ())
+    (*current_liboctave_error_handler) ("complex: internal error");
+
+  octave_idx_type nel = numel ();
+  for (octave_idx_type i = 0; i < nel; i++)
+    xelem (i) = Complex (re(i), im(i));
+}
+
 bool
 ComplexMatrix::operator == (const ComplexMatrix& a) const
 {
@@ -3727,15 +3738,19 @@ Sylvester (const ComplexMatrix& a, const ComplexMatrix& b,
 ComplexMatrix
 operator * (const ComplexMatrix& m, const Matrix& a)
 {
-  ComplexMatrix tmp (a);
-  return m * tmp;
+  if (m.columns () > std::min (m.rows (), a.columns ()) / 10)
+    return ComplexMatrix (real (m) * a, imag (m) * a);
+  else
+    return m * ComplexMatrix (a);
 }
 
 ComplexMatrix
 operator * (const Matrix& m, const ComplexMatrix& a)
 {
-  ComplexMatrix tmp (m);
-  return tmp * a;
+  if (a.rows () > std::min (m.rows (), a.columns ()) / 10)
+    return ComplexMatrix (m * real (a), m * imag (a));
+  else
+    return m * ComplexMatrix (a);
 }
 
 /* Simple Dot Product, Matrix-Vector and Matrix-Matrix Unit tests

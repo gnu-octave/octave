@@ -47,6 +47,17 @@ DEFNDBINOP_OP (sub, complex_matrix, matrix, complex_array, array, -)
 
 DEFBINOP_OP (mul, complex_matrix, matrix, *)
 
+DEFBINOP (mul_trans, complex_matrix, matrix)
+{
+  CAST_BINOP_ARGS (const octave_complex_matrix&, const octave_matrix&);
+
+  ComplexMatrix m1 = v1.complex_matrix_value ();
+  Matrix m2 = v2.matrix_value ();
+
+  return ComplexMatrix (xgemm (false, real (m1), true, m2),
+                        xgemm (false, imag (m1), true, m2));
+}
+
 DEFBINOP (div, complex_matrix, matrix)
 {
   CAST_BINOP_ARGS (const octave_complex_matrix&, const octave_matrix&);
@@ -124,6 +135,8 @@ install_cm_m_ops (void)
   INSTALL_BINOP (op_el_ldiv, octave_complex_matrix, octave_matrix, el_ldiv);
   INSTALL_BINOP (op_el_and, octave_complex_matrix, octave_matrix, el_and);
   INSTALL_BINOP (op_el_or, octave_complex_matrix, octave_matrix, el_or);
+  INSTALL_BINOP (op_mul_trans, octave_complex_matrix, octave_matrix, mul_trans);
+  INSTALL_BINOP (op_mul_herm, octave_complex_matrix, octave_matrix, mul_trans);
 
   INSTALL_CATOP (octave_complex_matrix, octave_matrix, cm_m);
 

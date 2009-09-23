@@ -1,5 +1,12 @@
 2009-09-23  Jaroslav Hajek  <highegg@gmail.com>
 
+	* OPERATORS/op-m-cm.cc: Declare and install trans_mul operator.
+	* OPERATORS/op-fm-fcm.cc: Ditto.
+	* OPERATORS/op-cm-m.cc: Declare and install mul_trans operator.
+	* OPERATORS/op-fcm-fm.cc: Ditto.
+
+2009-09-23  Jaroslav Hajek  <highegg@gmail.com>
+
 	* OPERATORS/op-m-cm.cc: Declare and install trans_ldiv operator.
 	* OPERATORS/op-fm-fcm.cc: Ditto.
 

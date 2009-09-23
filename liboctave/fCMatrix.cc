@@ -298,6 +298,17 @@ FloatComplexMatrix::FloatComplexMatrix (const charMatrix& a)
       elem (i, j) = static_cast<unsigned char> (a.elem (i, j));
 }
 
+FloatComplexMatrix::FloatComplexMatrix (const FloatMatrix& re, const FloatMatrix& im)
+  : MArray2<FloatComplex> (re.rows (), re.cols ())
+{
+  if (im.rows () != rows () || im.cols () != cols ())
+    (*current_liboctave_error_handler) ("complex: internal error");
+
+  octave_idx_type nel = numel ();
+  for (octave_idx_type i = 0; i < nel; i++)
+    xelem (i) = FloatComplex (re(i), im(i));
+}
+
 bool
 FloatComplexMatrix::operator == (const FloatComplexMatrix& a) const
 {
@@ -3720,15 +3731,19 @@ Sylvester (const FloatComplexMatrix& a, const FloatComplexMatrix& b,
 FloatComplexMatrix
 operator * (const FloatComplexMatrix& m, const FloatMatrix& a)
 {
-  FloatComplexMatrix tmp (a);
-  return m * tmp;
+  if (m.columns () > std::min (m.rows (), a.columns ()) / 10)
+    return FloatComplexMatrix (real (m) * a, imag (m) * a);
+  else
+    return m * FloatComplexMatrix (a);
 }
 
 FloatComplexMatrix
 operator * (const FloatMatrix& m, const FloatComplexMatrix& a)
 {
-  FloatComplexMatrix tmp (m);
-  return tmp * a;
+  if (a.rows () > std::min (m.rows (), a.columns ()) / 10)
+    return FloatComplexMatrix (m * real (a), m * imag (a));
+  else
+    return m * FloatComplexMatrix (a);
 }
 
 /* Simple Dot Product, Matrix-Vector and Matrix-Matrix Unit tests

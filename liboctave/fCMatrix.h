@@ -82,6 +82,8 @@ public:
 
   explicit FloatComplexMatrix (const charMatrix& a);
 
+  FloatComplexMatrix (const FloatMatrix& re, const FloatMatrix& im);
+
   FloatComplexMatrix& operator = (const FloatComplexMatrix& a)
     {
       MArray2<FloatComplex>::operator = (a);

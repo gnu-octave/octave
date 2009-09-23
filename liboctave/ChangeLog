@@ -1,5 +1,16 @@
 2009-09-23  Jaroslav Hajek  <highegg@gmail.com>
 
+	* CMatrix.cc (ComplexMatrix::ComplexMatrix (const Matrix&, const
+	Matrix&)): New constructor.
+	(operator * (Matrix, ComplexMatrix), operator * (ComplexMatrix,
+	Matrix)): Optimize.
+	* fCMatrix.cc (FloatComplexMatrix::FloatComplexMatrix (const FloatMatrix&, const
+	FloatMatrix&)): New constructor.
+	(operator * (FloatMatrix, FloatComplexMatrix), operator * (FloatComplexMatrix,
+	FloatMatrix)): Optimize.
+
+2009-09-23  Jaroslav Hajek  <highegg@gmail.com>
+
 	* dMatrix.cc (stack_complex_matrix, unstack_complex_matrix): New
 	static funcs.
 	(Matrix::solve (..., const ComplexMatrix&, ...)): Use the above funcs.

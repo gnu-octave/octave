@@ -112,6 +112,36 @@ Summary of important user-visible changes for version 3.3:
     Currently, only temporaries on the left-hand side of the operator can be reused,
     as well as temporaries subject to unary operators - and !.
 
+ ** More efficient matrix division handling. Octave is now able to handle the expressions
+    
+       M' \ v
+       M.' \ v
+       v / M 
+
+    (M is a matrix and v is a vector) more efficiently in certain cases. 
+    In particular, if M is triangular, all three expressions will be handled by a single call to 
+    xTRTRS, with appropriate flags. Previously, all three expressions required a physical transpose
+    of M.
+
+ ** More efficient handling of certain mixed real-complex matrix operations.
+    For instance, if RM is a real matrix and CM a complex matrix,
+    
+      RM * CM 
+
+    can now be evaluated either as
+
+      complex (RM * real (CM), RM * imag (CM))
+
+    or as
+
+      complex (RM) * CM,
+
+    depending on the dimensions. The 1st form requires more temporaries and copying,
+    but halves the count of FLOPs, which normally brings better performance if
+    RM has enough rows. Previously, the 2nd form was always used.
+
+    Matrix division is similarly affected. 
+
 Summary of important user-visible changes for version 3.2:
 ---------------------------------------------------------
 

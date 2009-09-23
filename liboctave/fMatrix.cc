@@ -1910,6 +1910,13 @@ FloatMatrix::solve (MatrixType &typ, const FloatMatrix& b) const
 }
 
 FloatMatrix
+FloatMatrix::solve (MatrixType &typ, const FloatMatrix& b, octave_idx_type& info) const
+{
+  float rcon;
+  return solve (typ, b, info, rcon, 0);
+}
+
+FloatMatrix
 FloatMatrix::solve (MatrixType &typ, const FloatMatrix& b, octave_idx_type& info, 
 	       float& rcon) const
 {
@@ -1955,24 +1962,51 @@ FloatMatrix::solve (MatrixType &mattype, const FloatMatrix& b, octave_idx_type& 
 FloatComplexMatrix
 FloatMatrix::solve (MatrixType &typ, const FloatComplexMatrix& b) const
 {
-  FloatComplexMatrix tmp (*this);
-  return tmp.solve (typ, b);
+  octave_idx_type info;
+  float rcon;
+  return solve (typ, b, info, rcon, 0);
 }
 
 FloatComplexMatrix
 FloatMatrix::solve (MatrixType &typ, const FloatComplexMatrix& b, 
   octave_idx_type& info) const
 {
-  FloatComplexMatrix tmp (*this);
-  return tmp.solve (typ, b, info);
+  float rcon;
+  return solve (typ, b, info, rcon, 0);
 }
 
 FloatComplexMatrix
 FloatMatrix::solve (MatrixType &typ, const FloatComplexMatrix& b, octave_idx_type& info,
 	       float& rcon) const
 {
-  FloatComplexMatrix tmp (*this);
-  return tmp.solve (typ, b, info, rcon);
+  return solve (typ, b, info, rcon, 0);
+}
+
+static FloatMatrix
+stack_complex_matrix (const FloatComplexMatrix& cm)
+{
+  octave_idx_type m = cm.rows (), n = cm.cols (), nel = m*n;
+  FloatMatrix retval (m, 2*n);
+  const FloatComplex *cmd = cm.data ();
+  float *rd = retval.fortran_vec ();
+  for (octave_idx_type i = 0; i < nel; i++)
+    {
+      rd[i] = std::real (cmd[i]);
+      rd[nel+i] = std::imag (cmd[i]);
+    }
+  return retval;
+}
+
+static FloatComplexMatrix
+unstack_complex_matrix (const FloatMatrix& sm)
+{
+  octave_idx_type m = sm.rows (), n = sm.cols () / 2, nel = m*n;
+  FloatComplexMatrix retval (m, n);
+  const float *smd = sm.data ();
+  FloatComplex *rd = retval.fortran_vec ();
+  for (octave_idx_type i = 0; i < nel; i++)
+    rd[i] = FloatComplex (smd[i], smd[nel+i]);
+  return retval;
 }
 
 FloatComplexMatrix
@@ -1980,8 +2014,9 @@ FloatMatrix::solve (MatrixType &typ, const FloatComplexMatrix& b, octave_idx_typ
 	       float& rcon, solve_singularity_handler sing_handler,
 	       bool singular_fallback, blas_trans_type transt) const
 {
-  FloatComplexMatrix tmp (*this);
-  return tmp.solve (typ, b, info, rcon, sing_handler, singular_fallback, transt);
+  FloatMatrix tmp = stack_complex_matrix (b);
+  tmp = solve (typ, tmp, info, rcon, sing_handler, singular_fallback, transt);
+  return unstack_complex_matrix (tmp);
 }
 
 FloatColumnVector

@@ -1,5 +1,10 @@
 2009-09-23  Jaroslav Hajek  <highegg@gmail.com>
 
+	* OPERATORS/op-m-cm.cc: Declare and install trans_ldiv operator.
+	* OPERATORS/op-fm-fcm.cc: Ditto.
+
+2009-09-23  Jaroslav Hajek  <highegg@gmail.com>
+
 	* ov.h (octave_value::op_trans_ldiv, op_herm_ldiv): New enum constants.
 	* ov.cc (decompose_binary_op, binary_op_fcn_name): Support them.
 	* xdiv.h: Include mx-defs.h, delete forward decls.

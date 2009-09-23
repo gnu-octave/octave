@@ -83,6 +83,19 @@ DEFBINOP (ldiv, float_matrix, float_complex_matrix)
   return ret;
 }
 
+DEFBINOP (trans_ldiv, float_matrix, float_complex_matrix)
+{
+  CAST_BINOP_ARGS (const octave_float_matrix&, 
+                   const octave_float_complex_matrix&);
+  MatrixType typ = v1.matrix_type ();
+  
+  FloatComplexMatrix ret = xleftdiv (v1.float_matrix_value (), 
+                         v2.float_complex_matrix_value (), typ, blas_trans);
+
+  v1.matrix_type (typ);
+  return ret;
+}
+
 DEFNDCMPLXCMPOP_FN (lt, float_matrix, float_complex_matrix, float_array, 
 	       float_complex_array, mx_el_lt)
 DEFNDCMPLXCMPOP_FN (le, float_matrix, float_complex_matrix, float_array, 

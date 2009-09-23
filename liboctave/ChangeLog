@@ -1,5 +1,16 @@
 2009-09-23  Jaroslav Hajek  <highegg@gmail.com>
 
+	* dMatrix.cc (stack_complex_matrix, unstack_complex_matrix): New
+	static funcs.
+	(Matrix::solve (..., const ComplexMatrix&, ...)): Use the above funcs.
+	Improve forwarding.
+	* fMatrix.cc (stack_complex_matrix, unstack_complex_matrix): New
+	static funcs.
+	(FloatMatrix::solve (..., const FloatComplexMatrix&, ...)): Use the
+	above funcs.  Improve forwarding.
+
+2009-09-23  Jaroslav Hajek  <highegg@gmail.com>
+
 	* mx-defs.h (blas_trans_type): New enum.
 	(get_blas_char): New inline func.
 	* dMatrix.cc (Matrix::utsolve, Matrix::ltsolve, Matrix::solve):

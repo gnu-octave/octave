@@ -1911,6 +1911,13 @@ Matrix::solve (MatrixType &typ, const Matrix& b) const
 }
 
 Matrix
+Matrix::solve (MatrixType &typ, const Matrix& b, octave_idx_type& info) const
+{
+  double rcon;
+  return solve (typ, b, info, rcon, 0);
+}
+
+Matrix
 Matrix::solve (MatrixType &typ, const Matrix& b, octave_idx_type& info, 
 	       double& rcon) const
 {
@@ -1956,24 +1963,51 @@ Matrix::solve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
 ComplexMatrix
 Matrix::solve (MatrixType &typ, const ComplexMatrix& b) const
 {
-  ComplexMatrix tmp (*this);
-  return tmp.solve (typ, b);
+  octave_idx_type info;
+  double rcon;
+  return solve (typ, b, info, rcon, 0);
 }
 
 ComplexMatrix
 Matrix::solve (MatrixType &typ, const ComplexMatrix& b, 
   octave_idx_type& info) const
 {
-  ComplexMatrix tmp (*this);
-  return tmp.solve (typ, b, info);
+  double rcon;
+  return solve (typ, b, info, rcon, 0);
 }
 
 ComplexMatrix
 Matrix::solve (MatrixType &typ, const ComplexMatrix& b, octave_idx_type& info,
 	       double& rcon) const
 {
-  ComplexMatrix tmp (*this);
-  return tmp.solve (typ, b, info, rcon);
+  return solve (typ, b, info, rcon, 0);
+}
+
+static Matrix
+stack_complex_matrix (const ComplexMatrix& cm)
+{
+  octave_idx_type m = cm.rows (), n = cm.cols (), nel = m*n;
+  Matrix retval (m, 2*n);
+  const Complex *cmd = cm.data ();
+  double *rd = retval.fortran_vec ();
+  for (octave_idx_type i = 0; i < nel; i++)
+    {
+      rd[i] = std::real (cmd[i]);
+      rd[nel+i] = std::imag (cmd[i]);
+    }
+  return retval;
+}
+
+static ComplexMatrix
+unstack_complex_matrix (const Matrix& sm)
+{
+  octave_idx_type m = sm.rows (), n = sm.cols () / 2, nel = m*n;
+  ComplexMatrix retval (m, n);
+  const double *smd = sm.data ();
+  Complex *rd = retval.fortran_vec ();
+  for (octave_idx_type i = 0; i < nel; i++)
+    rd[i] = Complex (smd[i], smd[nel+i]);
+  return retval;
 }
 
 ComplexMatrix
@@ -1981,8 +2015,9 @@ Matrix::solve (MatrixType &typ, const ComplexMatrix& b, octave_idx_type& info,
 	       double& rcon, solve_singularity_handler sing_handler,
 	       bool singular_fallback, blas_trans_type transt) const
 {
-  ComplexMatrix tmp (*this);
-  return tmp.solve (typ, b, info, rcon, sing_handler, singular_fallback, transt);
+  Matrix tmp = stack_complex_matrix (b);
+  tmp = solve (typ, tmp, info, rcon, sing_handler, singular_fallback, transt);
+  return unstack_complex_matrix (tmp);
 }
 
 ColumnVector

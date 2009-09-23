@@ -126,6 +126,20 @@ typedef float (*f_f_Mapper)(float);
 typedef float (*f_fc_Mapper)(const FloatComplex&);
 typedef FloatComplex (*fc_fc_Mapper)(const FloatComplex&);
 
+enum blas_trans_type
+{
+  blas_no_trans = 'N',
+  blas_trans = 'T',
+  blas_conj_trans = 'C'
+};
+
+inline char 
+get_blas_char (blas_trans_type transt)
+{
+  return static_cast<char> (transt);
+}
+
+
 #endif
 
 #endif

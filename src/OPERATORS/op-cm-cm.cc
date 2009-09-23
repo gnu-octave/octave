@@ -137,6 +137,30 @@ DEFBINOP (mul_herm, complex_matrix, complex_matrix)
                              true, true, v2.complex_matrix_value ()));
 }
 
+DEFBINOP (trans_ldiv, complex_matrix, complex_matrix)
+{
+  CAST_BINOP_ARGS (const octave_complex_matrix&, const octave_complex_matrix&);
+  MatrixType typ = v1.matrix_type ();
+  
+  ComplexMatrix ret = xleftdiv (v1.complex_matrix_value (), 
+				v2.complex_matrix_value (), typ, blas_trans);
+
+  v1.matrix_type (typ);
+  return ret;
+}
+
+DEFBINOP (herm_ldiv, complex_matrix, complex_matrix)
+{
+  CAST_BINOP_ARGS (const octave_complex_matrix&, const octave_complex_matrix&);
+  MatrixType typ = v1.matrix_type ();
+  
+  ComplexMatrix ret = xleftdiv (v1.complex_matrix_value (), 
+				v2.complex_matrix_value (), typ, blas_conj_trans);
+
+  v1.matrix_type (typ);
+  return ret;
+}
+
 DEFNDCMPLXCMPOP_FN (lt, complex_matrix, complex_matrix, complex_array, complex_array, mx_el_lt)
 DEFNDCMPLXCMPOP_FN (le, complex_matrix, complex_matrix, complex_array, complex_array, mx_el_le)
 DEFNDCMPLXCMPOP_FN (eq, complex_matrix, complex_matrix, complex_array, complex_array, mx_el_eq)
@@ -199,6 +223,9 @@ install_cm_cm_ops (void)
   INSTALL_BINOP (op_mul_trans, octave_complex_matrix, octave_complex_matrix, mul_trans);
   INSTALL_BINOP (op_herm_mul, octave_complex_matrix, octave_complex_matrix, herm_mul);
   INSTALL_BINOP (op_mul_herm, octave_complex_matrix, octave_complex_matrix, mul_herm);
+  INSTALL_BINOP (op_trans_ldiv, octave_complex_matrix, octave_complex_matrix, trans_ldiv);
+  INSTALL_BINOP (op_herm_ldiv, octave_complex_matrix, octave_complex_matrix, herm_ldiv);
+
   INSTALL_BINOP (op_lt, octave_complex_matrix, octave_complex_matrix, lt);
   INSTALL_BINOP (op_le, octave_complex_matrix, octave_complex_matrix, le);
   INSTALL_BINOP (op_eq, octave_complex_matrix, octave_complex_matrix, eq);

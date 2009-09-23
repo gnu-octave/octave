@@ -110,6 +110,18 @@ DEFBINOP (mul_trans, float_matrix, float_matrix)
                              true, v2.float_matrix_value ()));
 }
 
+DEFBINOP (trans_ldiv, float_matrix, float_matrix)
+{
+  CAST_BINOP_ARGS (const octave_float_matrix&, const octave_float_matrix&);
+  MatrixType typ = v1.matrix_type ();
+  
+  FloatMatrix ret = xleftdiv (v1.float_matrix_value (), 
+			      v2.float_matrix_value (), typ, blas_trans);
+
+  v1.matrix_type (typ);
+  return ret;
+}
+
 DEFNDBINOP_FN (lt, float_matrix, float_matrix, float_array, 
 	       float_array, mx_el_lt)
 DEFNDBINOP_FN (le, float_matrix, float_matrix, float_array, 
@@ -217,6 +229,8 @@ install_fm_fm_ops (void)
   INSTALL_BINOP (op_mul_trans, octave_float_matrix, octave_float_matrix, mul_trans);
   INSTALL_BINOP (op_herm_mul, octave_float_matrix, octave_float_matrix, trans_mul);
   INSTALL_BINOP (op_mul_herm, octave_float_matrix, octave_float_matrix, mul_trans);
+  INSTALL_BINOP (op_trans_ldiv, octave_float_matrix, octave_float_matrix, trans_ldiv);
+  INSTALL_BINOP (op_herm_ldiv, octave_float_matrix, octave_float_matrix, trans_ldiv);
 
   INSTALL_CATOP (octave_float_matrix, octave_float_matrix, fm_fm);
   INSTALL_CATOP (octave_matrix, octave_float_matrix, m_fm);

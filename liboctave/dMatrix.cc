@@ -1523,7 +1523,7 @@ Matrix::rcond (MatrixType &mattype) const
 Matrix
 Matrix::utsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
 		double& rcon, solve_singularity_handler sing_handler,
-		bool calc_cond) const
+		bool calc_cond, blas_trans_type transt) const
 {
   Matrix retval;
 
@@ -1599,7 +1599,7 @@ Matrix::utsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
 		  double *result = retval.fortran_vec ();
 
 		  char uplo = 'U';
-		  char trans = 'N';
+		  char trans = get_blas_char (transt);
 		  char dia = 'N';
 
 		  F77_XFCN (dtrtrs, DTRTRS, (F77_CONST_CHAR_ARG2 (&uplo, 1), 
@@ -1623,7 +1623,7 @@ Matrix::utsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
 Matrix
 Matrix::ltsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
 		double& rcon, solve_singularity_handler sing_handler,
-		bool calc_cond) const
+		bool calc_cond, blas_trans_type transt) const
 {
   Matrix retval;
 
@@ -1699,7 +1699,7 @@ Matrix::ltsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
 		  double *result = retval.fortran_vec ();
 
 		  char uplo = 'L';
-		  char trans = 'N';
+		  char trans = get_blas_char (transt);
 		  char dia = 'N';
 
 		  F77_XFCN (dtrtrs, DTRTRS, (F77_CONST_CHAR_ARG2 (&uplo, 1), 
@@ -1920,7 +1920,7 @@ Matrix::solve (MatrixType &typ, const Matrix& b, octave_idx_type& info,
 Matrix
 Matrix::solve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
 	       double& rcon, solve_singularity_handler sing_handler,
-	       bool singular_fallback) const
+	       bool singular_fallback, blas_trans_type transt) const
 {
   Matrix retval;
   int typ = mattype.type ();
@@ -1930,9 +1930,11 @@ Matrix::solve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
 
   // Only calculate the condition number for LU/Cholesky
   if (typ == MatrixType::Upper || typ == MatrixType::Permuted_Upper)
-    retval = utsolve (mattype, b, info, rcon, sing_handler, false);
+    retval = utsolve (mattype, b, info, rcon, sing_handler, false, transt);
   else if (typ == MatrixType::Lower || typ == MatrixType::Permuted_Lower)
-    retval = ltsolve (mattype, b, info, rcon, sing_handler, false);
+    retval = ltsolve (mattype, b, info, rcon, sing_handler, false, transt);
+  else if (transt == blas_trans || transt == blas_conj_trans)
+    return transpose ().solve (mattype, b, info, rcon, sing_handler, singular_fallback);
   else if (typ == MatrixType::Full || typ == MatrixType::Hermitian)
     retval = fsolve (mattype, b, info, rcon, sing_handler, true);
   else if (typ != MatrixType::Rectangular)
@@ -1977,10 +1979,10 @@ Matrix::solve (MatrixType &typ, const ComplexMatrix& b, octave_idx_type& info,
 ComplexMatrix
 Matrix::solve (MatrixType &typ, const ComplexMatrix& b, octave_idx_type& info,
 	       double& rcon, solve_singularity_handler sing_handler,
-	       bool singular_fallback) const
+	       bool singular_fallback, blas_trans_type transt) const
 {
   ComplexMatrix tmp (*this);
-  return tmp.solve (typ, b, info, rcon, sing_handler, singular_fallback);
+  return tmp.solve (typ, b, info, rcon, sing_handler, singular_fallback, transt);
 }
 
 ColumnVector
@@ -2007,10 +2009,10 @@ Matrix::solve (MatrixType &typ, const ColumnVector& b, octave_idx_type& info,
 
 ColumnVector
 Matrix::solve (MatrixType &typ, const ColumnVector& b, octave_idx_type& info,
-	       double& rcon, solve_singularity_handler sing_handler) const
+	       double& rcon, solve_singularity_handler sing_handler, blas_trans_type transt) const
 {
   Matrix tmp (b);
-  return solve (typ, tmp, info, rcon, sing_handler).column(static_cast<octave_idx_type> (0));
+  return solve (typ, tmp, info, rcon, sing_handler, transt).column(static_cast<octave_idx_type> (0));
 }
 
 ComplexColumnVector
@@ -2039,10 +2041,10 @@ Matrix::solve (MatrixType &typ, const ComplexColumnVector& b,
 ComplexColumnVector
 Matrix::solve (MatrixType &typ, const ComplexColumnVector& b, 
 	       octave_idx_type& info, double& rcon,
-	       solve_singularity_handler sing_handler) const
+	       solve_singularity_handler sing_handler, blas_trans_type transt) const
 {
   ComplexMatrix tmp (*this);
-  return tmp.solve(typ, b, info, rcon, sing_handler);
+  return tmp.solve(typ, b, info, rcon, sing_handler, transt);
 }
 
 Matrix
@@ -2068,10 +2070,10 @@ Matrix::solve (const Matrix& b, octave_idx_type& info, double& rcon) const
 
 Matrix
 Matrix::solve (const Matrix& b, octave_idx_type& info,
-	       double& rcon, solve_singularity_handler sing_handler) const
+	       double& rcon, solve_singularity_handler sing_handler, blas_trans_type transt) const
 {
   MatrixType mattype (*this);
-  return solve (mattype, b, info, rcon, sing_handler);
+  return solve (mattype, b, info, rcon, sing_handler, true, transt);
 }
 
 ComplexMatrix
@@ -2097,10 +2099,10 @@ Matrix::solve (const ComplexMatrix& b, octave_idx_type& info, double& rcon) cons
 
 ComplexMatrix
 Matrix::solve (const ComplexMatrix& b, octave_idx_type& info, double& rcon,
-	       solve_singularity_handler sing_handler) const
+	       solve_singularity_handler sing_handler, blas_trans_type transt) const
 {
   ComplexMatrix tmp (*this);
-  return tmp.solve (b, info, rcon, sing_handler);
+  return tmp.solve (b, info, rcon, sing_handler, transt);
 }
 
 ColumnVector
@@ -2125,10 +2127,10 @@ Matrix::solve (const ColumnVector& b, octave_idx_type& info, double& rcon) const
 
 ColumnVector
 Matrix::solve (const ColumnVector& b, octave_idx_type& info, double& rcon,
-	       solve_singularity_handler sing_handler) const
+	       solve_singularity_handler sing_handler, blas_trans_type transt) const
 {
   MatrixType mattype (*this);
-  return solve (mattype, b, info, rcon, sing_handler);
+  return solve (mattype, b, info, rcon, sing_handler, transt);
 }
 
 ComplexColumnVector
@@ -2154,10 +2156,10 @@ Matrix::solve (const ComplexColumnVector& b, octave_idx_type& info, double& rcon
 
 ComplexColumnVector
 Matrix::solve (const ComplexColumnVector& b, octave_idx_type& info, double& rcon,
-	       solve_singularity_handler sing_handler) const
+	       solve_singularity_handler sing_handler, blas_trans_type transt) const
 {
   ComplexMatrix tmp (*this);
-  return tmp.solve (b, info, rcon, sing_handler);
+  return tmp.solve (b, info, rcon, sing_handler, transt);
 }
 
 Matrix

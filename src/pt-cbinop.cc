@@ -106,6 +106,24 @@ simplify_mul_op (tree_expression *&a, tree_expression *&b)
   return retop;
 }
 
+// Possibly convert left division to trans_ldiv or herm_ldiv.
+
+static octave_value::compound_binary_op
+simplify_ldiv_op (tree_expression *&a, tree_expression *&b)
+{
+  octave_value::compound_binary_op retop;
+  octave_value::unary_op opa = strip_trans_herm (a);
+
+  if (opa == octave_value::op_hermitian)
+    retop = octave_value::op_herm_ldiv;
+  else if (opa == octave_value::op_transpose)
+    retop = octave_value::op_trans_ldiv;
+  else
+    retop = octave_value::unknown_compound_binary_op;
+
+  return retop;
+}
+
 // Possibly contract and/or with negation.
 
 static octave_value::compound_binary_op
@@ -150,6 +168,10 @@ maybe_compound_binary_expression (tree_expression *a, tree_expression *b,
     {
     case octave_value::op_mul:
       ct = simplify_mul_op (ca, cb);
+      break;
+
+    case octave_value::op_ldiv:
+      ct = simplify_ldiv_op (ca, cb);
       break;
 
     case octave_value::op_el_and:

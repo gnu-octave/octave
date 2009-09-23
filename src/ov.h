@@ -112,6 +112,8 @@ public:
     op_mul_trans,
     op_herm_mul,      
     op_mul_herm,
+    op_trans_ldiv,
+    op_herm_ldiv,
     op_el_not_and,
     op_el_not_or,
     op_el_and_not,

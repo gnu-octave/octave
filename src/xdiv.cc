@@ -132,17 +132,13 @@ xdiv (const Matrix& a, const Matrix& b, MatrixType &typ)
   if (! mx_div_conform (a, b))
     return Matrix ();
 
-  Matrix atmp = a.transpose ();
-  Matrix btmp = b.transpose ();
-  MatrixType btyp = typ.transpose ();
-
   octave_idx_type info;
   double rcond = 0.0;
 
   Matrix result 
-    = btmp.solve (btyp, atmp, info, rcond, solve_singularity_warning);
+    = b.solve (typ, a.transpose (), info, rcond, 
+               solve_singularity_warning, true, blas_trans);
 
-  typ = btyp.transpose ();
   return result.transpose ();
 }
 
@@ -153,18 +149,14 @@ xdiv (const Matrix& a, const ComplexMatrix& b, MatrixType &typ)
   if (! mx_div_conform (a, b))
     return ComplexMatrix ();
 
-  Matrix atmp = a.transpose ();
-  ComplexMatrix btmp = b.hermitian ();
-  MatrixType btyp = typ.transpose ();
-
   octave_idx_type info;
   double rcond = 0.0;
 
   ComplexMatrix result
-    = btmp.solve (btyp, atmp, info, rcond, solve_singularity_warning);
+    = b.solve (typ, a.transpose (), info, rcond, 
+               solve_singularity_warning, true, blas_trans);
 
-  typ = btyp.transpose ();
-  return result.hermitian ();
+  return result.transpose ();
 }
 
 // -*- 3 -*-
@@ -174,18 +166,14 @@ xdiv (const ComplexMatrix& a, const Matrix& b, MatrixType &typ)
   if (! mx_div_conform (a, b))
     return ComplexMatrix ();
 
-  ComplexMatrix atmp = a.hermitian ();
-  Matrix btmp = b.transpose ();
-  MatrixType btyp = typ.transpose ();
-
   octave_idx_type info;
   double rcond = 0.0;
 
   ComplexMatrix result
-    = btmp.solve (btyp, atmp, info, rcond, solve_singularity_warning);
+    = b.solve (typ, a.transpose (), info, rcond, 
+               solve_singularity_warning, true, blas_trans);
 
-  typ = btyp.transpose ();
-  return result.hermitian ();
+  return result.transpose ();
 }
 
 // -*- 4 -*-
@@ -195,18 +183,14 @@ xdiv (const ComplexMatrix& a, const ComplexMatrix& b, MatrixType &typ)
   if (! mx_div_conform (a, b))
     return ComplexMatrix ();
 
-  ComplexMatrix atmp = a.hermitian ();
-  ComplexMatrix btmp = b.hermitian ();
-  MatrixType btyp = typ.transpose ();
-
   octave_idx_type info;
   double rcond = 0.0;
 
   ComplexMatrix result
-    = btmp.solve (btyp, atmp, info, rcond, solve_singularity_warning);
+    = b.solve (typ, a.transpose (), info, rcond, 
+               solve_singularity_warning, true, blas_trans);
 
-  typ = btyp.transpose ();
-  return result.hermitian ();
+  return result.transpose ();
 }
 
 // Funny element by element division operations.
@@ -366,19 +350,19 @@ x_el_div (const Complex a, const ComplexNDArray& b)
 
 // -*- 1 -*-
 Matrix
-xleftdiv (const Matrix& a, const Matrix& b, MatrixType &typ)
+xleftdiv (const Matrix& a, const Matrix& b, MatrixType &typ, blas_trans_type transt)
 {
   if (! mx_leftdiv_conform (a, b))
     return Matrix ();
 
   octave_idx_type info;
   double rcond = 0.0;
-  return a.solve (typ, b, info, rcond, solve_singularity_warning);
+  return a.solve (typ, b, info, rcond, solve_singularity_warning, true, transt);
 }
 
 // -*- 2 -*-
 ComplexMatrix
-xleftdiv (const Matrix& a, const ComplexMatrix& b, MatrixType &typ)
+xleftdiv (const Matrix& a, const ComplexMatrix& b, MatrixType &typ, blas_trans_type transt)
 {
   if (! mx_leftdiv_conform (a, b))
     return ComplexMatrix ();
@@ -386,31 +370,31 @@ xleftdiv (const Matrix& a, const ComplexMatrix& b, MatrixType &typ)
   octave_idx_type info;
   double rcond = 0.0;
 
-  return a.solve (typ, b, info, rcond, solve_singularity_warning);
+  return a.solve (typ, b, info, rcond, solve_singularity_warning, true, transt);
 }
 
 // -*- 3 -*-
 ComplexMatrix
-xleftdiv (const ComplexMatrix& a, const Matrix& b, MatrixType &typ)
+xleftdiv (const ComplexMatrix& a, const Matrix& b, MatrixType &typ, blas_trans_type transt)
 {
   if (! mx_leftdiv_conform (a, b))
     return ComplexMatrix ();
 
   octave_idx_type info;
   double rcond = 0.0;
-  return a.solve (typ, b, info, rcond, solve_singularity_warning);
+  return a.solve (typ, b, info, rcond, solve_singularity_warning, true, transt);
 }
 
 // -*- 4 -*-
 ComplexMatrix
-xleftdiv (const ComplexMatrix& a, const ComplexMatrix& b, MatrixType &typ)
+xleftdiv (const ComplexMatrix& a, const ComplexMatrix& b, MatrixType &typ, blas_trans_type transt)
 {
   if (! mx_leftdiv_conform (a, b))
     return ComplexMatrix ();
 
   octave_idx_type info;
   double rcond = 0.0;
-  return a.solve (typ, b, info, rcond, solve_singularity_warning);
+  return a.solve (typ, b, info, rcond, solve_singularity_warning, true, transt);
 }
 
 static void
@@ -446,17 +430,13 @@ xdiv (const FloatMatrix& a, const FloatMatrix& b, MatrixType &typ)
   if (! mx_div_conform (a, b))
     return FloatMatrix ();
 
-  FloatMatrix atmp = a.transpose ();
-  FloatMatrix btmp = b.transpose ();
-  MatrixType btyp = typ.transpose ();
-
   octave_idx_type info;
   float rcond = 0.0;
 
   FloatMatrix result 
-    = btmp.solve (btyp, atmp, info, rcond, solve_singularity_warning);
+    = b.solve (typ, a.transpose (), info, rcond, 
+               solve_singularity_warning, true, blas_trans);
 
-  typ = btyp.transpose ();
   return result.transpose ();
 }
 
@@ -467,18 +447,14 @@ xdiv (const FloatMatrix& a, const FloatComplexMatrix& b, MatrixType &typ)
   if (! mx_div_conform (a, b))
     return FloatComplexMatrix ();
 
-  FloatMatrix atmp = a.transpose ();
-  FloatComplexMatrix btmp = b.hermitian ();
-  MatrixType btyp = typ.transpose ();
-
   octave_idx_type info;
   float rcond = 0.0;
 
-  FloatComplexMatrix result
-    = btmp.solve (btyp, atmp, info, rcond, solve_singularity_warning);
+  FloatComplexMatrix result 
+    = b.solve (typ, a.transpose (), info, rcond, 
+               solve_singularity_warning, true, blas_trans);
 
-  typ = btyp.transpose ();
-  return result.hermitian ();
+  return result.transpose ();
 }
 
 // -*- 3 -*-
@@ -488,18 +464,14 @@ xdiv (const FloatComplexMatrix& a, const FloatMatrix& b, MatrixType &typ)
   if (! mx_div_conform (a, b))
     return FloatComplexMatrix ();
 
-  FloatComplexMatrix atmp = a.hermitian ();
-  FloatMatrix btmp = b.transpose ();
-  MatrixType btyp = typ.transpose ();
-
   octave_idx_type info;
   float rcond = 0.0;
 
-  FloatComplexMatrix result
-    = btmp.solve (btyp, atmp, info, rcond, solve_singularity_warning);
+  FloatComplexMatrix result 
+    = b.solve (typ, a.transpose (), info, rcond, 
+               solve_singularity_warning, true, blas_trans);
 
-  typ = btyp.transpose ();
-  return result.hermitian ();
+  return result.transpose ();
 }
 
 // -*- 4 -*-
@@ -509,18 +481,14 @@ xdiv (const FloatComplexMatrix& a, const FloatComplexMatrix& b, MatrixType &typ)
   if (! mx_div_conform (a, b))
     return FloatComplexMatrix ();
 
-  FloatComplexMatrix atmp = a.hermitian ();
-  FloatComplexMatrix btmp = b.hermitian ();
-  MatrixType btyp = typ.transpose ();
-
   octave_idx_type info;
   float rcond = 0.0;
 
-  FloatComplexMatrix result
-    = btmp.solve (btyp, atmp, info, rcond, solve_singularity_warning);
+  FloatComplexMatrix result 
+    = b.solve (typ, a.transpose (), info, rcond, 
+               solve_singularity_warning, true, blas_trans);
 
-  typ = btyp.transpose ();
-  return result.hermitian ();
+  return result.transpose ();
 }
 
 // Funny element by element division operations.
@@ -680,19 +648,19 @@ x_el_div (const FloatComplex a, const FloatComplexNDArray& b)
 
 // -*- 1 -*-
 FloatMatrix
-xleftdiv (const FloatMatrix& a, const FloatMatrix& b, MatrixType &typ)
+xleftdiv (const FloatMatrix& a, const FloatMatrix& b, MatrixType &typ, blas_trans_type transt)
 {
   if (! mx_leftdiv_conform (a, b))
     return FloatMatrix ();
 
   octave_idx_type info;
   float rcond = 0.0;
-  return a.solve (typ, b, info, rcond, solve_singularity_warning);
+  return a.solve (typ, b, info, rcond, solve_singularity_warning, true, transt);
 }
 
 // -*- 2 -*-
 FloatComplexMatrix
-xleftdiv (const FloatMatrix& a, const FloatComplexMatrix& b, MatrixType &typ)
+xleftdiv (const FloatMatrix& a, const FloatComplexMatrix& b, MatrixType &typ, blas_trans_type transt)
 {
   if (! mx_leftdiv_conform (a, b))
     return FloatComplexMatrix ();
@@ -700,31 +668,31 @@ xleftdiv (const FloatMatrix& a, const FloatComplexMatrix& b, MatrixType &typ)
   octave_idx_type info;
   float rcond = 0.0;
 
-  return a.solve (typ, b, info, rcond, solve_singularity_warning);
+  return a.solve (typ, b, info, rcond, solve_singularity_warning, true, transt);
 }
 
 // -*- 3 -*-
 FloatComplexMatrix
-xleftdiv (const FloatComplexMatrix& a, const FloatMatrix& b, MatrixType &typ)
+xleftdiv (const FloatComplexMatrix& a, const FloatMatrix& b, MatrixType &typ, blas_trans_type transt)
 {
   if (! mx_leftdiv_conform (a, b))
     return FloatComplexMatrix ();
 
   octave_idx_type info;
   float rcond = 0.0;
-  return a.solve (typ, b, info, rcond, solve_singularity_warning);
+  return a.solve (typ, b, info, rcond, solve_singularity_warning, true, transt);
 }
 
 // -*- 4 -*-
 FloatComplexMatrix
-xleftdiv (const FloatComplexMatrix& a, const FloatComplexMatrix& b, MatrixType &typ)
+xleftdiv (const FloatComplexMatrix& a, const FloatComplexMatrix& b, MatrixType &typ, blas_trans_type transt)
 {
   if (! mx_leftdiv_conform (a, b))
     return FloatComplexMatrix ();
 
   octave_idx_type info;
   float rcond = 0.0;
-  return a.solve (typ, b, info, rcond, solve_singularity_warning);
+  return a.solve (typ, b, info, rcond, solve_singularity_warning, true, transt);
 }
 
 // Diagonal matrix division.

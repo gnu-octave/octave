@@ -377,6 +377,14 @@ octave_value::binary_op_fcn_name (compound_binary_op op)
       retval = "timesherm";
       break;
 
+    case op_trans_ldiv:
+      retval = "transldiv";
+      break;
+
+    case op_herm_ldiv:
+      retval = "hermldiv";
+      break;
+
     case op_el_and_not:
       retval = "andnot";
       break;
@@ -1995,6 +2003,16 @@ decompose_binary_op (octave_value::compound_binary_op op,
       retval = do_binary_op (octave_value::op_mul,
                              v1,
                              do_unary_op (octave_value::op_hermitian, v2));
+      break;
+    case octave_value::op_trans_ldiv:
+      retval = do_binary_op (octave_value::op_ldiv,
+                             do_unary_op (octave_value::op_transpose, v1),
+                             v2);
+      break;
+    case octave_value::op_herm_ldiv:
+      retval = do_binary_op (octave_value::op_ldiv,
+                             do_unary_op (octave_value::op_hermitian, v1),
+                             v2);
       break;
     case octave_value::op_el_not_and:
       retval = do_binary_op (octave_value::op_el_and,

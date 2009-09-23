@@ -1,3 +1,17 @@
+2009-09-23  Jaroslav Hajek  <highegg@gmail.com>
+
+	* mx-defs.h (blas_trans_type): New enum.
+	(get_blas_char): New inline func.
+	* dMatrix.cc (Matrix::utsolve, Matrix::ltsolve, Matrix::solve):
+	Support transt parameter.
+	* fMatrix.cc (FloatMatrix::utsolve, FloatMatrix::ltsolve,
+	FloatMatrix::solve): Ditto.
+	* CMatrix.cc (ComplexMatrix::utsolve, ComplexMatrix::ltsolve,
+	ComplexMatrix::solve): Ditto.
+	* fCMatrix.cc (FloatComplexMatrix::utsolve,
+	FloatComplexMatrix::ltsolve, FloatComplexMatrix::solve): Ditto.
+	* dMatrix.h, fMatrix.h, CMatrix.h, fCMatrix.h: Update.
+
 2009-09-21  Jaroslav Hajek  <highegg@gmail.com>
 
 	* mx-op-defs.h (VS_BIN_OP, SV_BIN_OP, VV_BIN_OP): Simplify.

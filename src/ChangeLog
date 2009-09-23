@@ -1,3 +1,18 @@
+2009-09-23  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov.h (octave_value::op_trans_ldiv, op_herm_ldiv): New enum constants.
+	* ov.cc (decompose_binary_op, binary_op_fcn_name): Support them.
+	* xdiv.h: Include mx-defs.h, delete forward decls.
+	* xdiv.cc (xleftdiv): Support transt parameter.
+	(xdiv): Optimize.
+	* pt-cbinop.cc (simplify_ldiv_op): New static func.
+	(maybe_compound_binary_expression): Try it.
+	* OPERATORS/op-m-m.cc: Define and install trans_ldiv handler.
+	* OPERATORS/op-fm-fm.cc: Ditto.
+	* OPERATORS/op-cm-cm.cc: Define and install trans_ldiv and herm_ldiv
+	handlers.
+	* OPERATORS/op-fcm-fcm.cc: Ditto.
+
 2009-09-19  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov.h (octave_value_extract): New template function.

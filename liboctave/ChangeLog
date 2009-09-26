@@ -1,3 +1,18 @@
+2009-09-26  Jaroslav Hajek  <highegg@gmail.com>
+
+	* dMatrix.cc (xgemm): Use blas_trans_type to indicate transposes.
+	(operator *(const Matrix&, const Matrix&)): Update.
+	* fMatrix.cc (xgemm): Use blas_trans_type to indicate transposes.
+	(operator *(const FloatMatrix&, const FloatMatrix&)): Update.
+	* CMatrix.cc (xgemm): Use blas_trans_type to indicate transposes.
+	(operator *(const ComplexMatrix&, const ComplexMatrix&)): Update.
+	* fCMatrix.cc (xgemm): Use blas_trans_type to indicate transposes.
+	(operator *(const FloatComplexMatrix&, const FloatComplexMatrix&)): Update.
+	* dMatrix.h: Update decl.
+	* fMatrix.h: Update decl.
+	* CMatrix.h: Update decl.
+	* fCMatrix.h: Update decl.
+
 2009-09-23  Jaroslav Hajek  <highegg@gmail.com>
 
 	* CMatrix.cc (ComplexMatrix::ComplexMatrix (const Matrix&, const

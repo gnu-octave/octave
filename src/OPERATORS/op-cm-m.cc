@@ -54,8 +54,8 @@ DEFBINOP (mul_trans, complex_matrix, matrix)
   ComplexMatrix m1 = v1.complex_matrix_value ();
   Matrix m2 = v2.matrix_value ();
 
-  return ComplexMatrix (xgemm (false, real (m1), true, m2),
-                        xgemm (false, imag (m1), true, m2));
+  return ComplexMatrix (xgemm (real (m1), m2, blas_no_trans, blas_trans),
+                        xgemm (imag (m1), m2, blas_no_trans, blas_trans));
 }
 
 DEFBINOP (div, complex_matrix, matrix)

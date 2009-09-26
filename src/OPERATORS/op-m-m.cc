@@ -97,13 +97,15 @@ DEFBINOP (ldiv, matrix, matrix)
 DEFBINOP (trans_mul, matrix, matrix)
 {
   CAST_BINOP_ARGS (const octave_matrix&, const octave_matrix&);
-  return octave_value(xgemm (true, v1.matrix_value (), false, v2.matrix_value ()));
+  return octave_value(xgemm (v1.matrix_value (), v2.matrix_value (),
+                             blas_trans, blas_no_trans));
 }
 
 DEFBINOP (mul_trans, matrix, matrix)
 {
   CAST_BINOP_ARGS (const octave_matrix&, const octave_matrix&);
-  return octave_value(xgemm (false, v1.matrix_value (), true, v2.matrix_value ()));
+  return octave_value(xgemm (v1.matrix_value (), v2.matrix_value (),
+                             blas_no_trans, blas_trans));
 }
 
 DEFBINOP (trans_ldiv, matrix, matrix)

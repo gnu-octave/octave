@@ -354,7 +354,9 @@ extern OCTAVE_API FloatMatrix Givens (float, float);
 
 extern OCTAVE_API FloatMatrix Sylvester (const FloatMatrix&, const FloatMatrix&, const FloatMatrix&);
 
-extern OCTAVE_API FloatMatrix xgemm (bool transa, const FloatMatrix& a, bool transb, const FloatMatrix& b);
+extern OCTAVE_API FloatMatrix xgemm (const FloatMatrix& a, const FloatMatrix& b,
+                                     blas_trans_type transa = blas_no_trans, 
+                                     blas_trans_type transb = blas_no_trans);
 
 extern OCTAVE_API FloatMatrix operator * (const FloatMatrix& a, const FloatMatrix& b);
 

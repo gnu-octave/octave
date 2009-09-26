@@ -112,29 +112,33 @@ DEFBINOP (ldiv, complex_matrix, complex_matrix)
 DEFBINOP (trans_mul, complex_matrix, complex_matrix)
 {
   CAST_BINOP_ARGS (const octave_complex_matrix&, const octave_complex_matrix&);
-  return octave_value(xgemm (true, false, v1.complex_matrix_value (), 
-                             false, false, v2.complex_matrix_value ()));
+  return octave_value(xgemm (v1.complex_matrix_value (), 
+                             v2.complex_matrix_value (),
+                             blas_trans, blas_no_trans));
 }
 
 DEFBINOP (mul_trans, complex_matrix, complex_matrix)
 {
   CAST_BINOP_ARGS (const octave_complex_matrix&, const octave_complex_matrix&);
-  return octave_value(xgemm (false, false, v1.complex_matrix_value (), 
-                             true, false, v2.complex_matrix_value ()));
+  return octave_value(xgemm (v1.complex_matrix_value (), 
+                             v2.complex_matrix_value (),
+                             blas_no_trans, blas_trans));
 }
 
 DEFBINOP (herm_mul, complex_matrix, complex_matrix)
 {
   CAST_BINOP_ARGS (const octave_complex_matrix&, const octave_complex_matrix&);
-  return octave_value(xgemm (true, true, v1.complex_matrix_value (), 
-                             false, false, v2.complex_matrix_value ()));
+  return octave_value(xgemm (v1.complex_matrix_value (), 
+                             v2.complex_matrix_value (),
+                             blas_conj_trans, blas_no_trans));
 }
 
 DEFBINOP (mul_herm, complex_matrix, complex_matrix)
 {
   CAST_BINOP_ARGS (const octave_complex_matrix&, const octave_complex_matrix&);
-  return octave_value(xgemm (false, false, v1.complex_matrix_value (), 
-                             true, true, v2.complex_matrix_value ()));
+  return octave_value(xgemm (v1.complex_matrix_value (), 
+                             v2.complex_matrix_value (),
+                             blas_no_trans, blas_conj_trans));
 }
 
 DEFBINOP (trans_ldiv, complex_matrix, complex_matrix)

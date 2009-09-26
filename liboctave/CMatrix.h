@@ -406,8 +406,9 @@ extern OCTAVE_API ComplexMatrix
 Sylvester (const ComplexMatrix&, const ComplexMatrix&, const ComplexMatrix&);
 
 extern OCTAVE_API ComplexMatrix 
-xgemm (bool transa, bool conja, const ComplexMatrix& a, 
-       bool transb, bool conjb, const ComplexMatrix& b);
+xgemm (const ComplexMatrix& a, const ComplexMatrix& b,
+       blas_trans_type transa = blas_no_trans, 
+       blas_trans_type transb = blas_no_trans);
 
 extern OCTAVE_API ComplexMatrix operator * (const Matrix&,        const ComplexMatrix&);
 extern OCTAVE_API ComplexMatrix operator * (const ComplexMatrix&, const Matrix&);

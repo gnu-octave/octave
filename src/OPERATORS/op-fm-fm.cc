@@ -99,15 +99,17 @@ DEFBINOP (ldiv, float_matrix, float_matrix)
 DEFBINOP (trans_mul, float_matrix, float_matrix)
 {
   CAST_BINOP_ARGS (const octave_float_matrix&, const octave_float_matrix&);
-  return octave_value(xgemm (true, v1.float_matrix_value (), 
-                             false, v2.float_matrix_value ()));
+  return octave_value(xgemm (v1.float_matrix_value (), 
+                             v2.float_matrix_value (),
+                             blas_trans, blas_no_trans));
 }
 
 DEFBINOP (mul_trans, float_matrix, float_matrix)
 {
   CAST_BINOP_ARGS (const octave_float_matrix&, const octave_float_matrix&);
-  return octave_value(xgemm (false, v1.float_matrix_value (), 
-                             true, v2.float_matrix_value ()));
+  return octave_value(xgemm (v1.float_matrix_value (), 
+                             v2.float_matrix_value (),
+                             blas_no_trans, blas_trans));
 }
 
 DEFBINOP (trans_ldiv, float_matrix, float_matrix)

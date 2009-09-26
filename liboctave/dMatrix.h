@@ -354,7 +354,9 @@ extern OCTAVE_API Matrix Givens (double, double);
 
 extern OCTAVE_API Matrix Sylvester (const Matrix&, const Matrix&, const Matrix&);
 
-extern OCTAVE_API Matrix xgemm (bool transa, const Matrix& a, bool transb, const Matrix& b);
+extern OCTAVE_API Matrix xgemm (const Matrix& a, const Matrix& b,
+                                blas_trans_type transa = blas_no_trans, 
+                                blas_trans_type transb = blas_no_trans);
 
 extern OCTAVE_API Matrix operator * (const Matrix& a, const Matrix& b);
 

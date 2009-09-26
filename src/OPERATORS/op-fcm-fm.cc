@@ -56,8 +56,8 @@ DEFBINOP (mul_trans, float_complex_matrix, float_matrix)
   FloatComplexMatrix m1 = v1.float_complex_matrix_value ();
   FloatMatrix m2 = v2.float_matrix_value ();
 
-  return FloatComplexMatrix (xgemm (false, real (m1), true, m2),
-                             xgemm (false, imag (m1), true, m2));
+  return FloatComplexMatrix (xgemm (real (m1), m2, blas_no_trans, blas_trans),
+                             xgemm (imag (m1), m2, blas_no_trans, blas_trans));
 }
 
 DEFBINOP (div, float_complex_matrix, float_matrix)

@@ -116,29 +116,33 @@ DEFBINOP (ldiv, float_complex_matrix, float_complex_matrix)
 DEFBINOP (trans_mul, float_complex_matrix, float_complex_matrix)
 {
   CAST_BINOP_ARGS (const octave_float_complex_matrix&, const octave_float_complex_matrix&);
-  return octave_value(xgemm (true, false, v1.float_complex_matrix_value (), 
-                             false, false, v2.float_complex_matrix_value ()));
+  return octave_value(xgemm (v1.float_complex_matrix_value (), 
+                             v2.float_complex_matrix_value (),
+                             blas_trans, blas_no_trans));
 }
 
 DEFBINOP (mul_trans, float_complex_matrix, float_complex_matrix)
 {
   CAST_BINOP_ARGS (const octave_float_complex_matrix&, const octave_float_complex_matrix&);
-  return octave_value(xgemm (false, false, v1.float_complex_matrix_value (), 
-                             true, false, v2.float_complex_matrix_value ()));
+  return octave_value(xgemm (v1.float_complex_matrix_value (), 
+                             v2.float_complex_matrix_value (),
+                             blas_no_trans, blas_trans));
 }
 
 DEFBINOP (herm_mul, float_complex_matrix, float_complex_matrix)
 {
   CAST_BINOP_ARGS (const octave_float_complex_matrix&, const octave_float_complex_matrix&);
-  return octave_value(xgemm (true, true, v1.float_complex_matrix_value (), 
-                             false, false, v2.float_complex_matrix_value ()));
+  return octave_value(xgemm (v1.float_complex_matrix_value (), 
+                             v2.float_complex_matrix_value (),
+                             blas_conj_trans, blas_no_trans));
 }
 
 DEFBINOP (mul_herm, float_complex_matrix, float_complex_matrix)
 {
   CAST_BINOP_ARGS (const octave_float_complex_matrix&, const octave_float_complex_matrix&);
-  return octave_value(xgemm (false, false, v1.float_complex_matrix_value (), 
-                             true, true, v2.float_complex_matrix_value ()));
+  return octave_value(xgemm (v1.float_complex_matrix_value (), 
+                             v2.float_complex_matrix_value (),
+                             blas_no_trans, blas_conj_trans));
 }
 
 DEFBINOP (trans_ldiv, float_complex_matrix, float_complex_matrix)

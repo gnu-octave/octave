@@ -1,3 +1,14 @@
+2009-09-26  Jaroslav Hajek  <highegg@gmail.com>
+
+	* OPERATORS/op-m-m.cc (trans_mul, mul_trans): Update.
+	* OPERATORS/op-fm-fm.cc (trans_mul, mul_trans): Update.
+	* OPERATORS/op-cm-cm.cc (trans_mul, mul_trans, herm_mul, mul_herm): Update.
+	* OPERATORS/op-fcm-fcm.cc (trans_mul, mul_trans, herm_mul, mul_herm): Update.
+	* OPERATORS/op-m-cm.cc (trans_mul): Update.
+	* OPERATORS/op-cm-m.cc (mul_trans): Update.
+	* OPERATORS/op-fm-fcm.cc (trans_mul): Update.
+	* OPERATORS/op-fcm-fm.cc (mul_trans): Update.
+
 2009-09-23  Jaroslav Hajek  <highegg@gmail.com>
 
 	* OPERATORS/op-m-cm.cc: Declare and install trans_mul operator.

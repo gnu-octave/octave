@@ -462,30 +462,39 @@ public:
       int n_dims = length ();
       if (n_dims == n)
         return *this;
-      else
+      else if (n_dims < n)
         {
-          dim_vector retval;
-          retval.resize (n == 1 ? 2 : n, 1);
-          
-          bool zeros = true;
-          for (int i = 0; i < n && i < n_dims; i++)
+          dim_vector retval = alloc (n);
+
+          int pad = 0;
+          for (int i = 0; i < n_dims; i++)
             {
-              retval(i) = elem (i);
-              zeros = zeros && elem (i) == 0;
+              retval.rep[i] = rep[i];
+              if (rep[i] != 0)
+                pad = 1;
             }
 
-          if (n < n_dims)
-            {
-              octave_idx_type k = 1;
-              for (int i = n; i < n_dims; i++)
-                k *= elem (i);
-              retval(n - 1) *= k;
-            }
-          else if (zeros)
-            {
-              for (int i = n_dims; i < n; i++)
-                retval.elem (i) = 0;
-            }
+          for (int i = n_dims; i < n; i++)
+            retval.rep[i] = pad;
+
+          return retval;
+        }
+      else
+        {
+          if (n < 1) n = 1;
+
+          dim_vector retval = alloc (n);
+
+          retval.rep[1] = 1;
+
+          for (int i = 0; i < n-1; i++)
+            retval.rep[i] = rep[i];
+
+          int k = rep[n-1];
+          for (int i = n; i < n_dims; i++)
+            k *= rep[i];
+
+          retval.rep[n-1] = k;
 
           return retval;
         }

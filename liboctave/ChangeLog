@@ -1,3 +1,8 @@
+2009-09-27  Jaroslav Hajek  <highegg@gmail.com>
+
+	* dim-vector.h (dim_vector::redim): Rewrite.
+	* Array-util.cc (sub2ind): Allow single index case.
+
 2009-09-26  Jaroslav Hajek  <highegg@gmail.com>
 
 	* dMatrix.cc (xgemm): Use blas_trans_type to indicate transposes.

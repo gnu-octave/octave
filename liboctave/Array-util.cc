@@ -496,7 +496,7 @@ idx_vector sub2ind (const dim_vector& dv, const Array<idx_vector>& idxa)
   idx_vector retval;
   octave_idx_type len = idxa.length ();
 
-  if (len >= 2)
+  if (len >= 1)
     {
       const dim_vector dvx = dv.redim (len);
       bool all_ranges = true;
@@ -517,7 +517,9 @@ idx_vector sub2ind (const dim_vector& dv, const Array<idx_vector>& idxa)
             current_liboctave_error_handler ("sub2ind: index out of range");
         }
 
-      if (clen == 1)
+      if (len == 1)
+        retval = idxa(0);
+      else if (clen == 1)
         {
           // All scalars case - the result is a scalar.
           octave_idx_type idx = idxa(len-1)(0);

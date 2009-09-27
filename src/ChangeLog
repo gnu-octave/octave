@@ -1,3 +1,8 @@
+2009-09-27  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/sub2ind.cc (get_dimensions): Allow singleton array.
+	(Fsub2ind): Allow single index.
+
 2009-09-26  Jaroslav Hajek  <highegg@gmail.com>
 
 	* OPERATORS/op-m-m.cc (trans_mul, mul_trans): Update.

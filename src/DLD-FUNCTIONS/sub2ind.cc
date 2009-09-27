@@ -40,12 +40,13 @@ get_dim_vector (const octave_value& val,
   dim_vector dv;
   octave_idx_type n = dimsv.length ();
 
-  if (n < 2)
-    error ("%s: dimension vector must have at least 2 elements", name);
+  if (n < 1)
+    error ("%s: dimension vector must not be empty", name);
   else
     {
-      dv.resize (n);
-      for (octave_idx_type i = 0; i < dimsv.length (); i++)
+      dv.resize (std::max (n, 2));
+      dv(1) = 1;
+      for (octave_idx_type i = 0; i < n; i++)
         {
           octave_idx_type ii = static_cast<int> (dimsv(i));
           if (ii == dimsv(i) && ii >= 0)
@@ -84,13 +85,12 @@ linear_index = sub2ind ([3, 3], 2, 3)\n\
   int nargin = args.length ();
   octave_value retval;
 
-  if (nargin < 3)
+  if (nargin < 2)
     print_usage ();
   else
     {
       dim_vector dv = get_dim_vector (args(0), "sub2ind");
       Array<idx_vector> idxa (nargin - 1);
-      dim_vector idims;
 
       if (! error_state)
         {

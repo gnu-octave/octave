@@ -1,5 +1,9 @@
 2009-09-27  Jaroslav Hajek  <highegg@gmail.com>
 
+	* oct-cmplx.h: Fix complex-real orderings.
+
+2009-09-27  Jaroslav Hajek  <highegg@gmail.com>
+
 	* dim-vector.h (dim_vector::redim): Rewrite.
 	* Array-util.cc (sub2ind): Allow single index case.
 

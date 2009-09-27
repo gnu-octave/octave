@@ -53,26 +53,26 @@ inline bool operator OP (const std::complex<T>& a, const std::complex<T>& b) \
 template <class T> \
 inline bool operator OP (const std::complex<T>& a, T b) \
 { \
-  FLOAT_TRUNCATE const T ax = std::abs (a); \
-  if (ax == b) \
+  FLOAT_TRUNCATE const T ax = std::abs (a), bx = std::abs (b); \
+  if (ax == bx) \
     { \
       FLOAT_TRUNCATE const T ay = std::arg (a); \
       return ay OP 0; \
     } \
   else \
-    return ax OPS b; \
+    return ax OPS bx; \
 } \
 template <class T> \
 inline bool operator OP (T a, const std::complex<T>& b) \
 { \
-  FLOAT_TRUNCATE const T bx = std::abs (b); \
-  if (a == bx) \
+  FLOAT_TRUNCATE const T ax = std::abs (a), bx = std::abs (b); \
+  if (ax == bx) \
     { \
       FLOAT_TRUNCATE const T by = std::arg (b); \
       return 0 OP by; \
     } \
   else \
-    return a OPS bx; \
+    return ax OPS bx; \
 }
 
 DEF_COMPLEXR_COMP (>, >)

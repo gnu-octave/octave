@@ -185,6 +185,9 @@ private:
   }
 };
 
+// Parameter controlling how fast we zoom when using the scrool wheel
+static double wheel_zoom_speed = 0.05;
+
 class plot_window : public Fl_Window
 {
 public:
@@ -482,23 +485,20 @@ private:
 	  }
 	else if (Fl::event_button () == 3)
 	  {
-	    canvas->zoom (true);
 	    Matrix zoom_box (1,4,0);
 	    zoom_box (0) = px0;
 	    zoom_box (1) = py0;
 	    zoom_box (2) =  Fl::event_x ();
 	    zoom_box (3) =  Fl::event_y ();
 	    canvas->set_zoom_box (zoom_box);
+	    canvas->zoom (true);
+	    canvas->redraw_overlay ();
 	  }
 
 	break;
 
       case FL_MOUSEWHEEL:
         {
-          // Parameter controlling how fast we zoom. FIXME: Should
-          // this be user tweakable?
-          const double zoom_speed = 0.05;
-
 	  graphics_object ax = 
 	    gh_manager::get_object (pixel2axes_or_ca (Fl::event_x (), 
 						      Fl::event_y ()));                                                                      
@@ -509,7 +509,7 @@ private:
               
               // Determine if we're zooming in or out
               const double factor = 
-		(Fl::event_dy () > 0) ? 1.0 + zoom_speed : 1.0 - zoom_speed;
+		(Fl::event_dy () > 0) ? 1.0 + wheel_zoom_speed : 1.0 - wheel_zoom_speed;
               
               // Get the point we're zooming about
               double x1, y1;
@@ -957,6 +957,27 @@ DEFUN_DLD (__fltk_maxtime__, args, ,"")
     {
       if (args(0).is_real_scalar ())
       fltk_maxtime = args(0).double_value ();
+    else
+      error ("argument must be a real scalar");
+    }
+
+  return retval;
+}
+
+DEFUN_DLD (fltk_mouse_wheel_zoom, args, ,
+"-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} fltk_mouse_wheel_zoom ([@var{speed}])\n\
+Returns the current mouse wheel zoom factor in the fltk backend. If\n\
+the @var{speed} argument is given, set the mouse zoom factor to this\n\
+value.\n\
+@end deftypefn")
+{
+  octave_value retval = wheel_zoom_speed;
+
+  if (args.length () == 1)
+    {
+      if (args(0).is_real_scalar ())
+      wheel_zoom_speed = args(0).double_value ();
     else
       error ("argument must be a real scalar");
     }

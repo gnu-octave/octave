@@ -1,3 +1,10 @@
+2009-09-28  Shai Ayal  <shaiay@users.sourceforge.net>
+
+	* DLD-FUNCTIONS/fltk_backend.cc (plot_window::handle): Redraw the
+	overlay when zoom box changes size.
+	* DLD-FUNCTIONS/fltk_backend.cc (fltk_mouse_wheel_zoom): New
+	function to set mouse wheel zoom factor.
+
 2009-09-27  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/sub2ind.cc (get_dimensions): Allow singleton array.

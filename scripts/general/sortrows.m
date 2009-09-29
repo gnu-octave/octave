@@ -35,45 +35,66 @@ function [s, i] = sortrows (m, c)
   other_mode = "descend";
 
   if (issparse (m))
-    error ("sortrows: sparse matrices not yet supported");
-  endif
-
-  ## If the sort is homogeneous, we use the built-in faster algorithm.
-  if (nargin == 1)
+    ## FIXME -- eliminate this case once __sort_rows_idx__ is fixed to
+    ## handle sparse matrices.
+    if (nargin == 1)
+      i = sort_rows_idx_generic (default_mode, other_mode, m);
+    else
+      i = sort_rows_idx_generic (default_mode, other_mode, m, c);
+    endif
+  elseif (nargin == 1)
     i = __sort_rows_idx__ (m, default_mode);
   elseif (all (c > 0))
     i = __sort_rows_idx__ (m(:,c), default_mode);
   elseif (all (c < 0))
     i = __sort_rows_idx__ (m(:,-c), other_mode);
   else
-    ## Otherwise, fall back to the old algorithm
-    for ii = 1:length (c);
-      if (c(ii) < 0)
-        mode{ii} = other_mode;
-      else
-        mode{ii} = default_mode;
-      endif
-    endfor
-    indices = abs(c(:));
-
-    ## Since sort is 'stable' the order of identical elements will be
-    ## preserved, so by traversing the sort indices in reverse order we
-    ## will make sure that identical elements in index i are subsorted by
-    ## index j.
-    indices = flipud (indices);
-    mode = flipud (mode');
-    i = [1:size(m,1)]';
-    for ii = 1:length (indices);
-      [trash, idx] = sort (m(i, indices(ii)), mode{ii});
-      i = i(idx);
-    endfor
+    ## Otherwise, fall back to the old algorithm.
+    i = sort_rows_idx_generic (default_mode, other_mode, m, c);
   endif
 
   s = m(i,:);
 
 endfunction
 
-%!shared x, idx
-%! [x, idx] = sortrows ([1, 1; 1, 2; 3, 6; 2, 7], [1, -2]);
+function i = sort_rows_idx_generic (default_mode, other_mode, m, c)
+
+  if (nargin == 3)
+    indices = [1:size(m,2)]';
+    mode(1:size(m,2)) = {default_mode};
+  else
+    for ii = 1:length (c);
+      if (c(ii) < 0)
+	mode{ii} = other_mode;
+      else
+	mode{ii} = default_mode;
+      endif
+    endfor
+    indices = abs(c(:));
+  endif
+
+  ## Since sort is 'stable' the order of identical elements will be
+  ## preserved, so by traversing the sort indices in reverse order we
+  ## will make sure that identical elements in index i are subsorted by
+  ## index j.
+  indices = flipud (indices);
+  mode = flipud (mode');
+  i = [1:size(m,1)]';
+  for ii = 1:length (indices);
+    [trash, idx] = sort (m(i, indices(ii)), mode{ii});
+    i = i(idx);
+  endfor
+
+endfunction
+
+
+%!shared m, c, x, idx, sx, sidx
+%! m = [1, 1; 1, 2; 3, 6; 2, 7];
+%! c = [1, -2];
+%! [x, idx] = sortrows (m, c);
+%! [sx, sidx] = sortrows (sparse (m), c);
 %!assert (x, [1, 2; 1, 1; 2, 7; 3, 6]);
 %!assert (idx, [2; 1; 4; 3]);
+%!assert (issparse (sx));
+%!assert (x, full (sx));
+%!assert (idx, sidx);

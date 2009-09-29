@@ -1,3 +1,7 @@
+2009-09-28  John W. Eaton  <jwe@octave.org>
+
+	* general/sortrows.m: Also use old algorithm for sparse matrices.
+
 2009-09-21  Jaroslav Hajek  <highegg@gmail.com>
 
 	* set/union.m: Fix docstring.

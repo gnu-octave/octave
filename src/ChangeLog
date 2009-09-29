@@ -1,3 +1,8 @@
+2009-09-29  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/reinterpret.cc: New source.
+	* Makefile.in: Add it here.
+
 2009-09-28  Shai Ayal  <shaiay@users.sourceforge.net>
 
 	* DLD-FUNCTIONS/fltk_backend.cc (plot_window::handle): Redraw the

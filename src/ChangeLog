@@ -1,7 +1,7 @@
 2009-09-29  Jaroslav Hajek  <highegg@gmail.com>
 
-	* DLD-FUNCTIONS/reinterpret.cc: New source.
-	* Makefile.in: Add it here.
+	* DLD-FUNCTIONS/typecast.cc (Ftypecast): Rewrite.
+	(Fbitpack, Fbitunpack): New DEFUNs.
 
 2009-09-28  Shai Ayal  <shaiay@users.sourceforge.net>
 

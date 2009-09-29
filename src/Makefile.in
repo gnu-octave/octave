@@ -71,7 +71,7 @@ DLD_XSRC := amd.cc balance.cc besselj.cc betainc.cc bsxfun.cc \
 	gammainc.cc gcd.cc getgrent.cc getpwent.cc getrusage.cc \
 	givens.cc hess.cc hex2num.cc inv.cc kron.cc lookup.cc \
 	lsode.cc lu.cc luinc.cc matrix_type.cc max.cc md5sum.cc \
-	pinv.cc qr.cc quad.cc qz.cc rand.cc rcond.cc regexp.cc reinterpret.cc \
+	pinv.cc qr.cc quad.cc qz.cc rand.cc rcond.cc regexp.cc \
 	schur.cc sparse.cc spparms.cc sqrtm.cc sub2ind.cc svd.cc syl.cc \
 	symrcm.cc symbfact.cc time.cc tsearch.cc typecast.cc \
 	urlwrite.cc __contourc__.cc __delaunayn__.cc \

@@ -29,7 +29,7 @@
 ## that are returned by @code{contour}, @code{contourf} and @code{contour3}.
 ## The contour labels are rotated and placed in the contour itself.
 ##
-## By default, all contours are labelled.  However, the contours to label can be
+## By default, all contours are labeled.  However, the contours to label can be
 ## specified by the vector @var{v}.  If the "manual" argument is given then
 ## the contours to label can be selected with the mouse.
 ##

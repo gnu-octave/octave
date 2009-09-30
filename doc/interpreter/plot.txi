@@ -7,12 +7,12 @@
 @c under the terms of the GNU General Public License as published by the
 @c Free Software Foundation; either version 3 of the License, or (at
 @c your option) any later version.
-@c 
+@c
 @c Octave is distributed in the hope that it will be useful, but WITHOUT
 @c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 @c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 @c for more details.
-@c 
+@c
 @c You should have received a copy of the GNU General Public License
 @c along with Octave; see the file COPYING.  If not, see
 @c <http://www.gnu.org/licenses/>.
@@ -23,27 +23,47 @@
 @cindex graphics
 
 @menu
-* Plotting Basics::
+* Introduction::
+* High-Level Plotting::
+* Graphics Structures::
 * Advanced Plotting::
 @end menu
 
-@node Plotting Basics
-@section Plotting Basics
+@node Introduction to Plotting
+@section Introduction to Plotting
 
-Octave makes it easy to create many different types of two- and
-three-dimensional plots using a few high-level functions.
+Earlier versions of Octave provided plotting through the use of
+gnuplot. This capability is still available.  But, a newer plotting
+capability is provided by access to OpenGL.  Which plotting system
+is used is controlled by the @code{backend} function. (See @ref{Graphics Backends}.)
 
-If you need finer control over graphics, see @ref{Advanced Plotting}.
+The function call @code{backend("fltk")} selects the fltk/OpenGL system, and
+@code{backend("gnuplot")} selects the gnuplot system.
+The two systems may be used selectively through the use of the @code{backend}
+property of the graphics handle for each figure.  This is
+explained in @ref{Graphics Data Structures}.
+
+@node High-Level Plotting
+@section High-Level Plotting
+
+Octave provides simple means to create many different types of two- and
+three-dimensional plots using high-level functions.
+
+If you need more detailed control, see @ref{Graphics Data Structures}
+and @ref{Advanced Plotting}.
 
 @menu
-* Two-Dimensional Plots::       
-* Three-Dimensional Plotting::  
-* Plot Annotations::            
-* Multiple Plots on One Page::  
-* Multiple Plot Windows::       
-* Printing Plots::              
+* Two-Dimensional Plots::
+* Three-Dimensional Plotting::
+* Plot Annotations::
+* Multiple Plots on One Page::
+* Multiple Plot Windows::
+* Use of @code{axis}, @code{line}, and @code{patch} Functions
+* Manipulation of Plot Windows
+* Use of the @code{interpreter} Property
+* Printing Plots::
 * Interacting with plots::
-* Test Plotting Functions::     
+* Test Plotting Functions::
 @end menu
 
 @node Two-Dimensional Plots
@@ -116,8 +136,6 @@ shown in @ref{fig:hist}.
 @DOCSTRING(stem3)
 
 @DOCSTRING(scatter)
-
-@DOCSTRING(scatter3)
 
 @DOCSTRING(plotmatrix)
 
@@ -342,6 +360,8 @@ three-dimensional plots.
 
 @DOCSTRING(shading)
 
+@DOCSTRING(scatter3)
+
 @menu
 * Three-dimensional Function Plotting::
 * Three-dimensional Geometric Shapes::
@@ -457,9 +477,326 @@ creates two figures, with the first displaying a sine wave and
 the second a cosine wave.  Figure numbers must be positive integers.
 
 @DOCSTRING(figure)
+@subsection Use of @code{axis},  @code{line}, and @code{patch} functions
+@cindex use of @code{axis},  @code{line}, and @code{patch} functions
+
+You can create axes, line, and patch objects directly using the
+@code{axes}, @code{line}, and @code{patch} functions.  These objects
+become children of the current axes object.
+
+@DOCSTRING(axes)
+@DOCSTRING(line)
+@DOCSTRING(patch)
+
+@DOCSTRING(fill)
+
+@DOCSTRING(surface)
+
+@subsection Manipulation of plot windows
+@cindex manipulation of plot windows
+
+By default, Octave refreshes the plot window when a prompt is printed,
+or when waiting for input.  The
+@code{drawnow} function is used to cause a plot window to be updated.
+
+@DOCSTRING(drawnow)
+
+Only figures that are modified will be updated.  The @code{refresh}
+function can also be used to force an update of the current figure, even if
+it is not modified.
+
+@DOCSTRING(refresh)
+
+Normally, high-level plot functions like @code{plot} or @code{mesh} call
+@code{newplot} to initialize the state of the current axes so that the
+next plot is drawn in a blank window with default property settings.  To
+have two plots superimposed over one another, use the @code{hold}
+function.  For example,
+
+@example
+@group
+hold on;
+x = -10:0.1:10;
+plot (x, sin (x));
+plot (x, cos (x));
+hold off;
+@end group
+@end example
+
+@noindent
+displays sine and cosine waves on the same axes.  If the hold state is
+off, consecutive plotting commands like this will only display the last
+plot.
+
+@DOCSTRING(newplot)
+
+@DOCSTRING(hold)
+
+@DOCSTRING(ishold)
+To clear the current figure, call the @code{clf} function.  To clear the
+current axis, call the @code{cla} function.  To bring the current figure
+to the top of the window stack, call the @code{shg} function.  To delete
+a graphics object, call @code{delete} on its index.  To close the
+figure window, call the @code{close} function.
+
+@DOCSTRING(clf)
+
+@DOCSTRING(cla)
+
+@DOCSTRING(shg)
+
+@DOCSTRING(delete)
+
+@DOCSTRING(close)
+
+@DOCSTRING(closereq)
+
+@subsection Use of the @code{interpreter} Property
+@cindex use of the @code{interpreter} property
+
+All text objects, including titles, labels, legends, and text, include
+the property 'interpreter', this property determines the manner in which
+special control sequences in the text are rendered.  If the interpreter
+is set to 'none', then no rendering occurs.  At this point the 'latex'
+option is not implemented and so the 'latex' interpreter also does not
+interpret the text.
+
+The 'tex' option implements a subset of @sc{TeX} functionality in the
+rendering of the text.  This allows the insertion of special characters
+such as Greek or mathematical symbols within the text.  The special
+characters are also inserted with a code starting with the back-slash
+(\) character, as in the table @ref{tab:extended}.
+
+In addition, the formatting of the text can be changed within the string
+with the codes
+
+@multitable @columnfractions .2 .2 .6 .2
+@item @tab \bf @tab Bold font @tab
+@item @tab \it @tab Italic font @tab
+@item @tab \sl @tab Oblique Font @tab
+@item @tab \rm @tab Normal font @tab
+@end multitable
+
+These are be used in conjunction with the @{ and @} characters to limit
+the change in the font to part of the string.  For example
+
+@example
+xlabel ('@{\bf H@} = a @{\bf V@}')
+@end example
+
+where the character 'a' will not appear in a bold font.  Note that to
+avoid having Octave interpret the backslash characters in the strings,
+the strings should be in single quotes.
+
+It is also possible to change the fontname and size within the text
+
+@multitable @columnfractions .1 .4 .6 .1
+@item @tab \fontname@{@var{fontname}@} @tab Specify the font to use @tab
+@item @tab \fontsize@{@var{size}@} @tab Specify the size of the font to
+use @tab
+@end multitable
+
+Finally, the superscript and subscripting can be controlled with the '^'
+and '_' characters.  If the '^' or '_' is followed by a @{ character,
+then all of the block surrounded by the @{ @} pair is super- or
+sub-scripted.  Without the @{ @} pair, only the character immediately
+following the '^' or '_' is super- or sub-scripted.
+
+@float Table,tab:extended
+@tex
+\vskip 6pt
+{\hbox to \hsize {\hfill\vbox{\offinterlineskip \tabskip=0pt
+\halign{
+\vrule height2.0ex depth1.ex width 0.6pt #\tabskip=0.3em &
+# \hfil & \vrule # & # \hfil & # \vrule &
+# \hfil & \vrule # & # \hfil & # \vrule &
+# \hfil & \vrule # & # \hfil & # \vrule
+width 0.6pt \tabskip=0pt\cr
+\noalign{\hrule height 0.6pt}
+& Code && Sym && Code && Sym && Code && Sym &\cr
+\noalign{\hrule}
+& $\backslash$forall    && $\forall$
+&& $\backslash$exists   && $\exists$
+&& $\backslash$ni       && $\ni$       &\cr
+& $\backslash$cong      && $\cong$
+&& $\backslash$Delta    && $\Delta$
+&& $\backslash$Phi      && $\Phi$      &\cr
+& $\backslash$Gamma     && $\Gamma$
+&& $\backslash$vartheta && $\vartheta$
+&& $\backslash$Lambda   && $\Lambda$   &\cr
+& $\backslash$Pi        && $\Pi$
+&& $\backslash$Theta    && $\Theta$
+&& $\backslash$Sigma    && $\Sigma$    &\cr
+& $\backslash$varsigma  && $\varsigma$
+&& $\backslash$Omega    && $\Omega$
+&& $\backslash$Xi       && $\Xi$       &\cr
+& $\backslash$Psi       && $\Psi$
+&& $\backslash$perp     && $\perp$
+&& $\backslash$alpha    && $\alpha$    &\cr
+& $\backslash$beta      && $\beta$
+&& $\backslash$chi      && $\chi$
+&& $\backslash$delta    && $\delta$    &\cr
+& $\backslash$epsilon   && $\epsilon$
+&& $\backslash$phi      && $\phi$
+&& $\backslash$gamma    && $\gamma$    &\cr
+& $\backslash$eta       && $\eta$
+&& $\backslash$iota     && $\iota$
+&& $\backslash$varphi   && $\varphi$   &\cr
+& $\backslash$kappa     && $\kappa$
+&& $\backslash$lambda   && $\lambda$
+&& $\backslash$mu       && $\mu$       &\cr
+& $\backslash$nu        && $\nu$
+&& $\backslash$o        && $\o$
+&& $\backslash$pi       && $\pi$       &\cr
+& $\backslash$theta     && $\theta$
+&& $\backslash$rho      && $\rho$
+&& $\backslash$sigma    && $\sigma$    &\cr
+& $\backslash$tau       && $\tau$
+&& $\backslash$upsilon  && $\upsilon$
+&& $\backslash$varpi    && $\varpi$    &\cr
+& $\backslash$omega     && $\omega$
+&& $\backslash$xi       && $\xi$
+&& $\backslash$psi      && $\psi$      &\cr
+& $\backslash$zeta      && $\zeta$
+&& $\backslash$sim      && $\sim$
+&& $\backslash$Upsilon  && $\Upsilon$  &\cr
+& $\backslash$prime     && $\prime$
+&& $\backslash$leq      && $\leq$
+&& $\backslash$infty    && $\infty$    &\cr
+& $\backslash$clubsuit  && $\clubsuit$
+&& $\backslash$diamondsuit    && $\diamondsuit$
+&& $\backslash$heartsuit      && $\heartsuit$     &\cr
+& $\backslash$spadesuit       && $\spadesuit$
+&& $\backslash$leftrightarrow && $\leftrightarrow$
+&& $\backslash$leftarrow      && $\leftarrow$     &\cr
+& $\backslash$uparrow         && $\uparrow$
+&& $\backslash$rightarrow     && $\rightarrow$
+&& $\backslash$downarrow      && $\downarrow$     &\cr
+& $\backslash$circ      && $\circ$
+&& $\backslash$pm       && $\pm$
+&& $\backslash$geq      && $\geq$      &\cr
+& $\backslash$times     && $\times$
+&& $\backslash$propto   && $\propto$
+&& $\backslash$partial  && $\partial$  &\cr
+& $\backslash$bullet    && $\bullet$
+&& $\backslash$div      && $\div$
+&& $\backslash$neq      && $\neq$      &\cr
+& $\backslash$equiv     && $\equiv$
+&& $\backslash$approx   && $\approx$
+&& $\backslash$ldots    && $\ldots$ &\cr
+& $\backslash$mid       && $\mid$
+&& $\backslash$aleph    && $\aleph$
+&& $\backslash$Im       && $\Im$ &\cr
+& $\backslash$Re        && $\Re$
+&& $\backslash$wp       && $\wp$
+&& $\backslash$otimes   && $\otimes$ &\cr
+& $\backslash$oplus     && $\oplus$
+&& $\backslash$oslash   && $\oslash$
+&& $\backslash$cap      && $\cap$ &\cr
+& $\backslash$cup       && $\cup$
+&& $\backslash$supset   && $\supset$
+&& $\backslash$supseteq && $\supseteq$ &\cr
+& $\backslash$subset    && $\subset$
+&& $\backslash$subseteq && $\subseteq$
+&& $\backslash$in       && $\in$ &\cr
+& $\backslash$notin     && $\notin$
+&& $\backslash$angle    && $\angle$
+&& $\backslash$bigtriangledown && $\bigtriangledown$ &\cr
+& $\backslash$langle    && $\langle$
+&& $\backslash$rangle   && $\rangle$
+&& $\backslash$nabla    && $\nabla$    &\cr
+& $\backslash$prod      && $\prod$
+&& $\backslash$surd     && $\surd$
+&& $\backslash$cdot     && $\cdot$     &\cr
+& $\backslash$neg       && $\neg$
+&& $\backslash$wedge    && $\wedge$
+&& $\backslash$vee      && $\vee$      &\cr
+& $\backslash$Leftrightarrow && $\Leftrightarrow$
+&& $\backslash$Leftarrow     && $\Leftarrow$
+&& $\backslash$Uparrow       && $\Uparrow$           &\cr
+& $\backslash$Rightarrow     && $\Rightarrow$
+&& $\backslash$Downarrow     && $\Downarrow$
+&& $\backslash$diamond  && $\diamond$  &\cr
+& $\backslash$copyright && $\copyright$
+&& $\backslash$rfloor   && $\rfloor$
+&& $\backslash$lceil    && $\lceil$    &\cr
+& $\backslash$lfloor    && $\lfloor$
+&& $\backslash$rceil    && $\rceil$
+&& $\backslash$int      && $\int$      &\cr
+\noalign{\hrule height 0.6pt}
+}}\hfill}}
+@end tex
+@ifnottex
+@multitable @columnfractions .125 .25 .25 .25 .125
+@item @tab  \forall     @tab  \exists     @tab  \ni      @tab
+@item @tab  \cong       @tab  \Delta      @tab  \Phi     @tab
+@item @tab  \Gamma      @tab  \vartheta   @tab  \Lambda  @tab
+@item @tab  \Pi         @tab  \Theta      @tab  \Sigma   @tab
+@item @tab  \varsigma   @tab  \Omega      @tab  \Xi      @tab
+@item @tab  \Psi        @tab  \perp       @tab  \alpha   @tab
+@item @tab  \beta       @tab  \chi        @tab  \delta   @tab
+@item @tab  \epsilon    @tab  \phi        @tab  \gamma   @tab
+@item @tab  \eta        @tab  \iota       @tab  \varphi  @tab
+@item @tab  \kappa      @tab  \lambda     @tab  \mu      @tab
+@item @tab  \nu         @tab  \o          @tab  \pi      @tab
+@item @tab  \theta      @tab  \rho        @tab  \sigma   @tab
+@item @tab  \tau        @tab  \upsilon    @tab  \varpi   @tab
+@item @tab  \omega      @tab  \xi         @tab  \psi     @tab
+@item @tab  \zeta       @tab  \sim        @tab  \Upsilon @tab
+@item @tab  \prime      @tab  \leq        @tab  \infty   @tab
+@item @tab  \clubsuit   @tab  \diamondsuit    @tab  \heartsuit  @tab
+@item @tab  \spadesuit  @tab  \leftrightarrow @tab  \leftarrow  @tab
+@item @tab  \uparrow    @tab  \rightarrow @tab  \downarrow @tab
+@item @tab  \circ       @tab \pm          @tab  \geq     @tab
+@item @tab  \times      @tab  \propto     @tab  \partial @tab
+@item @tab  \bullet     @tab \div         @tab  \neq     @tab
+@item @tab  \equiv      @tab  \approx     @tab  \ldots   @tab
+@item @tab  \mid        @tab  \aleph      @tab  \Im      @tab
+@item @tab  \Re         @tab \wp          @tab  \otimes  @tab
+@item @tab  \oplus      @tab \oslash      @tab  \cap     @tab
+@item @tab  \cup        @tab   \supset    @tab  \supseteq @tab
+@item @tab  \subset     @tab \subseteq    @tab  \in      @tab
+@item @tab  \notin      @tab \angle       @tab  \bigrightriangledown @tab
+@item @tab  \langle     @tab  \rangle     @tab  \nabla   @tab
+@item @tab  \prod       @tab \surd        @tab  \cdot    @tab
+@item @tab  \neg        @tab  \wedge      @tab \vee      @tab
+@item @tab  \Leftrightarrow @tab \Leftarrow @tab \Uparrow @tab
+@item @tab  \Rightarrow @tab \Downarrow   @tab \diamond  @tab
+@item @tab  \copyright  @tab  \lfloor     @tab  \lceil   @tab
+@item @tab  \rfloor     @tab  \rceil      @tab  \int     @tab
+@end multitable
+@end ifnottex
+@caption{Available special characters in @sc{TeX} mode}
+@end float
+
+A complete example showing the capabilities of the extended text is
+
+@example
+@group
+x = 0:0.01:3;
+plot(x,erf(x));
+hold on;
+plot(x,x,"r");
+axis([0, 3, 0, 1]);
+text(0.65, 0.6175, strcat('\leftarrow x = @{2/\surd\pi',
+' @{\fontsize@{16@}\int_@{\fontsize@{8@}0@}^@{\fontsize@{8@}x@}@}',
+' e^@{-t^2@} dt@} = 0.6175'))
+@end group
+@end example
+
+@ifnotinfo
+@noindent
+The result of which can be seen in @ref{fig:extendedtext}
+
+@float Figure,fig:extendedtext
+@center @image{extended,4in}
+@caption{Example of inclusion of text with the @sc{TeX} interpreter}
+@end float
+@end ifnotinfo
 
 @node Printing Plots
 @subsection Printing Plots
+@cindex printing plots
 
 The @code{print} command allows you to save plots in a variety of
 formats.  For example,
@@ -499,36 +836,188 @@ at the Octave prompt should display a three-dimensional plot.
 @DOCSTRING(sombrero)
 
 @DOCSTRING(peaks)
-
-@node Advanced Plotting
-@section Advanced Plotting
+@node Graphics Data Structures
+@section Graphics Data Structures
+@cindex graphics data structures
 
 @menu
+* Introduction to Graphics Structures
 * Graphics Objects::
-* Graphics Object Properties::  
-* Managing Default Properties::  
-* Colors::
-* Line Styles::
-* Marker Styles::
-* Callbacks::
-* Object Groups::
-* Graphics backends::
+* Graphics Object Properties::
+* Managing Default Properties::
+
 @end menu
+
+@node Introduction to Graphics Structures
+@subsection Introduction to Graphics Structures
+@cindex introduction to graphics structures
+@anchor{doc-graphics structures}
+
+The graphics functions use pointers, which are of class graphics_handle,
+in order to address the data structures which control
+graphical displays.
+A graphics handle may point any one of a number of different object types.
+The objects are the graphics data structures. The types of objects
+are: @code{figure}, @code{axes},
+@code{line}, @code{text}, @code{patch},
+@code{surface}, @code{text} and @code{image}.
+
+Each of these objects has a function by the
+same name. and, each of these functions returns a graphics handle pointing
+to an object of corresponding type. In addition there are several functions
+which operate on properties of the graphics objects and which return handles: the functions @code{ plot}
+and @code{plot3}
+return a handle pointing to an object of type line, the function @code{subplot}
+returns a handle pointing to an object of type axes, the function @code{fill} returns a
+handle pointing to an object of type patch, the functions @code{area}, @code{bar},
+@code{barh}, @code{contour}, @code{contuorf}, @code{contour3}, @code{surf}, @code{mesh},
+@code{surfc}, @code{meshc},
+@code{errorbar}, @code{quiver}, @code{quiver3}, @code{scatter}, @code{scatter3},
+@code{stair}, @code{stem}, @code{stem3} each return a handle as documented
+in @ref{doc-datasources,, Data Sources}.
+
+
+The graphics objects are arranged in a hierarchy:
+
+1. The root is at 0.  i.e. @code{get(0)} returns the properties of the root
+   object.
+
+2. Below the root are @code{figure} objects.
+
+3. Below the @code{figure} objects are @code{axes}.
+
+4. Below the @code{axes} objects are
+@code{line}, @code{text}, @code{patch},
+@code{surface}, and @code{image} objects.
+
+Graphics handles may be distinguished from function handles (@ref{Function Handles})
+by means of the function @code{ishandle()}.  @code{ishandle} returns true if its
+argument is a handle of a graphics object.  In addition, the figure object
+may be tested using @code{isfigure()}.  @code{isfigure} returns true only if its
+argument is a handle of a figure.
+ishghandle() is synonymous with ishandle().  The @code{whos} function can be used
+to show the object type of each currently defined graphics handle.  (Note: this is
+not true today, but it is, I hope, considered an error in whos. It may be better
+to have whos just show graphics_handle as the class, and provide a new function
+which, given a graphics handle, returns its object type.  This could generalize
+the ishandle() functions and, in fact, replace them.)
+
+The @code{get} and @code{set} commands are
+used to obtain and set the values of properties of graphics objects. In addition,
+the @code{get} command may be used to obtain property names.
+
+For example, the property "type" of the graphics object pointed to by the graphics
+handle h may be displayed by:
+
+@code{get(h, "type")}
+
+The properties and their current values are returned by @code{get(h)}
+where h is a handle of a graphics object. If only the names of the
+allowed properties are wanted they may be displayed by:
+@code{get(h, "");}
+
+Thus, for example,
+@c @example
+@smallformat
+@group
+@verbatim
+h=figure();
+get(h,"type")
+ans = figure
+get(h, "");
+error: get: ambiguous figure property name ; possible matches:
+
+__backend__            currentobject          paperposition          toolbar
+__enhanced__           deletefcn              paperpositionmode      type
+__modified__           dockcontrols           papersize              uicontextmenu
+__myhandle__           doublebuffer           papertype              units
+__plot_stream__        filename               paperunits             userdata
+alphamap               handlevisibility       parent                 visible
+beingdeleted           hittest                pointer                windowbuttondownfcn
+busyaction             integerhandle          pointershapecdata      windowbuttonmotionfcn
+buttondownfcn          interruptible          pointershapehotspot    windowbuttonupfcn
+children               inverthardcopy         position               windowbuttonwheelfcn
+clipping               keypressfcn            renderer               windowstyle
+closerequestfcn        keyreleasefcn          renderermode           wvisual
+color                  menubar                resize                 wvisualmode
+colormap               mincolormap            resizefcn              xdisplay
+createfcn              name                   selected               xvisual
+current_point          nextplot               selectionhighlight     xvisualmode
+currentaxes            numbertitle            selectiontype
+currentcharacter       paperorientation       tag
+@end verbatim
+@end group
+@end smallformat
+@c @end example
+@c @end flushleft
+@c @example
+@smallformat
+@group
+@verbatim
+aa=axes();
+get(aa,"");
+error: get: ambiguous axes property name ; possible matches:
+
+__modified__            drawmode                tickdir                 xtickmode
+__myhandle__            fontangle               tickdirmode             yaxislocation
+activepositionproperty  fontname                ticklength              ycolor
+alim                    fontsize                tightinset              ydir
+alimmode                fontunits               title                   ygrid
+ambientlightcolor       fontweight              type                    ylabel
+beingdeleted            gridlinestyle           uicontextmenu           ylim
+box                     handlevisibility        units                   ylimmode
+busyaction              hittest                 userdata                yminorgrid
+buttondownfcn           interpreter             view                    yminortick
+cameraposition          interruptible           visible                 yscale
+camerapositionmode      key                     x_normrendertransform   ytick
+cameratarget            keybox                  x_projectiontransform   yticklabel
+cameratargetmode        keypos                  x_rendertransform       yticklabelmode
+cameraupvector          keyreverse              x_viewporttransform     ytickmode
+cameraupvectormode      layer                   x_viewtransform         zcolor
+cameraviewangle         linestyleorder          xaxislocation           zdir
+cameraviewanglemode     linewidth               xcolor                  zgrid
+children                minorgridlinestyle      xdir                    zlabel
+clim                    nextplot                xgrid                   zlim
+climmode                outerposition           xlabel                  zlimmode
+@end verbatim
+@end group
+@group
+@verbatim
+clipping                parent                  xlim                    zminorgrid
+color                   plotboxaspectratio      xlimmode                zminortick
+colororder              plotboxaspectratiomode  xminorgrid              zscale
+createfcn               position                xminortick              ztick
+currentpoint            projection              xscale                  zticklabel
+dataaspectratio         selected                xtick                   zticklabelmode
+dataaspectratiomode     selectionhighlight      xticklabel              ztickmode
+deletefcn               tag                     xticklabelmode
+@end verbatim
+@end group
+@end smallformat
+@c @end example
+
+The root figure has index 0.  Its properties may be displayed by:
+@code{get(0,"")}.
+The uses of @code{get()} and @code{set()} are further explained in
+{@ref{doc-get,,get}, @ref{doc-set,,set}}.
 
 @node Graphics Objects
 @subsection Graphics Objects
+@cindex graphics objects
 
-Plots in Octave are constructed from the following @dfn{graphics
-objects}.  Each graphics object has a set of properties that define its
-appearance and may also contain links to other graphics objects.
-Graphics objects are only referenced by a numeric index, or @dfn{handle}.
+The hierarchy of graphics objects was explained above. (See 
+@ref{introduction to graphics structures.}  Here the
+specific objects are described, and the properties contained in
+these objects are discussed. Keep in mind that
+graphics objects are always referenced by @dfn{handle}.
 
 @table @asis
+@c @group
 @item root figure
 @cindex root figure graphics object
 @cindex graphics object, root figure
-The parent of all figure objects.  The index for the root figure is
-defined to be 0.
+the top level of the hierarchy and the parent of all figure objects.
+The @code{handle} index of the root figure is 0.
 
 @item figure
 @cindex figure graphics object
@@ -563,9 +1052,13 @@ A filled polygon, currently limited to two dimensions.
 
 @item surface
 @cindex surface graphics object
-@cindex graphics object, surface 
+@cindex graphics object, surface
 A three-dimensional surface.
+@c @end group
 @end table
+
+@subsubsection Handle Functions
+@cindex handle functions
 
 To determine whether a variable is a graphics object index or a figure
 index, use the functions @code{ishandle} and @code{isfigure}.
@@ -653,110 +1146,121 @@ objects.
 
 @DOCSTRING(allchild)
 
-You can create axes, line, and patch objects directly using the
-@code{axes}, @code{line}, and @code{patch} functions.  These objects
-become children of the current axes object.
-
-@DOCSTRING(axes)
-
-@DOCSTRING(line)
-
-@DOCSTRING(patch)
-
-@DOCSTRING(fill)
-
-@DOCSTRING(surface)
-
-By default, Octave refreshes the plot window when a prompt is printed,
-or when waiting for input.  To force an update at other times, call the
-@code{drawnow} function.
-
-@DOCSTRING(drawnow)
-
-Only figures that are modified will be updated.  The @code{refresh}
-function can also be used to force an update of the current figure, even if
-it is not modified.
-
-@DOCSTRING(refresh)
-
-Normally, high-level plot functions like @code{plot} or @code{mesh} call
-@code{newplot} to initialize the state of the current axes so that the
-next plot is drawn in a blank window with default property settings.  To
-have two plots superimposed over one another, use the @code{hold}
-function.  For example,
-
-@example
-@group
-hold on;
-x = -10:0.1:10;
-plot (x, sin (x));
-plot (x, cos (x));
-hold off;
-@end group
-@end example
-
-@noindent
-displays sine and cosine waves on the same axes.  If the hold state is
-off, consecutive plotting commands like this will only display the last
-plot.
-
-@DOCSTRING(newplot)
-
-@DOCSTRING(hold)
-
-@DOCSTRING(ishold)
-
-To clear the current figure, call the @code{clf} function.  To clear the
-current axis, call the @code{cla} function.  To bring the current figure
-to the top of the window stack, call the @code{shg} function.  To delete
-a graphics object, call @code{delete} on its index.  To close the
-figure window, call the @code{close} function.
-
-@DOCSTRING(clf)
-
-@DOCSTRING(cla)
-
-@DOCSTRING(shg)
-
-@DOCSTRING(delete)
-
-@DOCSTRING(close)
-
-@DOCSTRING(closereq)
-
 @node Graphics Object Properties
 @subsection Graphics Object Properties
 @cindex graphics object properties
 
 @menu
-* Root Figure Properties::      
-* Figure Properties::           
-* Axes Properties::             
-* Line Properties::             
-* Text Properties::             
-* Image Properties::            
-* Patch Properties::            
-* Surface Properties::          
+* Root Figure Properties::
+* Figure Properties::
+* Axes Properties::
+* Line Properties::
+* Text Properties::
+* Image Properties::
+* Patch Properties::
+* Surface Properties::
 * Searching Properties::
 @end menu
 
+In this Section the object properties are discussed in detail, starting
+with the root figure properties and continuing through the graphics object
+hierarchy.
+
 @node Root Figure Properties
 @subsubsection Root Figure Properties
+@cindex root figure properties
 
+The @code{root figure} properties are:
 @table @code
+@item __modified__  
+--- Values: "on," "off"
+@item __myhandle__
+@item beingdeleted  
+--- Values: "on," "off"
+@item busyaction
+@item buttondownfcn
+@item callbackobject
+@item children
+@item clipping
+ --- Values: "on," "off"
+@item createfcn
 @item currentfigure
-Index to graphics object for the current figure.
-
-@c FIXME -- does this work?
-@c @item visible
-@c Either @code{"on"} or @code{"off"} to toggle display of figures.
+@item deletefcn
+@item handlevisibility  
+--- Values: "on," "off"
+@item hittest
+--- Values: "on," "off"
+@item interruptible  
+--- Values: "on," "off"
+@item parent
+@item screendepth
+@item screenpixelsperinch
+@item screensize
+@item selected
+@item selectionhighlight
+@item screendepth
+@item screenpixelsperinch
+@item showhiddenhandles  
+--- Values: "on," "off"
+@item tag
+@item type
+@item uicontextmenu
+@item units
+@item userdata
+@item visible
 @end table
 
 @node Figure Properties
 @subsubsection Figure Properties
 @cindex figure properties
 
+The @code{figure} properties are:
 @table @code
+@item __backend__  
+--- The backend currently in use.
+@item __enhanced__
+@item __modified__
+@item __myhandle__
+@item __plot_stream__
+@item alphamap
+@item beingdeleted 
+--- Values: "on," "off"
+@item busyaction
+@item buttondownfcn
+@item children
+Handle to children.
+@item clipping
+--- Values: "on," "off"
+@item closerequestfcn 
+--- Handle of function to call on close.
+@item color
+@item colormap
+An N-by-3 matrix containing the color map for the current axes.
+@item paperorientation
+@item createfcn
+@item currentaxes 
+Handle to graphics object of current axes.
+@item currentcharacter
+@item currentobject
+@item current_point
+@item deletefcn
+@item dockcontrols 
+--- Values: "on," "off"
+@item doublebuffer 
+--- Values: "on," "off"
+@item filename
+@item handlevisibility 
+--- Values: "on," "off"
+@item hittest
+@item integerhandle
+@item interruptible 
+--- Values: "on," "off"
+@item inverthardcopy
+@item keypressfcn
+@item keyreleasefcn
+@item menubar
+@item mincolormap
+@item name
 @item nextplot
 May be one of
 @table @code
@@ -765,62 +1269,85 @@ May be one of
 @item "replace"
 @item "replacechildren"
 @end table
-
-@item closerequestfcn
-Handle of function to call when a figure is closed.
-
-@item currentaxes
-Index to graphics object of current axes.
-
-@item colormap
-An N-by-3 matrix containing the color map for the current axes.
-
-@item visible
-Either @code{"on"} or @code{"off"} to toggle display of the figure.
-
+@item numbertitle
 @item paperorientation
 Indicates the orientation for printing.  Either @code{"landscape"} or
 @code{"portrait"}.
+@item paperposition
+@item paperpositionmode
+@item papersize
+@item papertype
+@item paperunits
+@item pointer
+@item pointershapecdata
+@item pointershapehotspot
+@item position
+@item renderer
+@item renderermode
+@item resize
+@item resizefcn
+@item selected
+@item selectionhighlight 
+--- Values: "on," "off"
+@item selectiontype
+@item tag
+@item toolbar
+@item type
+@item units
+@item userdata
+@item visible
+Either @code{"on"} or @code{"off"} to toggle display of the figure.
+@item windowbuttondownfcn
+@item windowbuttonmotionfcn
+@item windowbuttonupfcn
+@item windowbuttonwheelfcn
+@item windowstyle
+@item wvisual
+@item wvisualmode
+@item xdisplay
+@item xvisual
+@item xvisualmode
 @end table
 
 @node Axes Properties
 @subsubsection Axes Properties
 @cindex axes properties
 
+The @code{axes} properties are:
 @table @code
-@item position
-A vector specifying the position of the plot, excluding titles, axes and
-legend.  The four elements of the vector are the coordinates of the
-lower left corner and width and height of the plot, in units normalized
-to the width and height of the plot window.  For example, @code{[0.2,
-0.3, 0.4, 0.5]} sets the lower left corner of the axes at @math{(0.2,
-0.3)} and the width and height to be 0.4 and 0.5 respectively.  See also
-the @code{outerposition} property.
-
-@item title
-Index of text object for the axes title.
-
+@item __modified__
+@item __myhandle__
+@item activepositionproperty
+@item alim
+@item alimmode
+@item ambientlightcolor
+@item beingdeleted
 @item box
-Either @code{"on"} or @code{"off"} to toggle display of the box around
-the axes.
-
-@item key
-Either @code{"on"} or @code{"off"} to toggle display of the legend.
-Note that this property is not compatible with @sc{matlab} and may be
-removed in a future version of Octave.
-
-@item keybox
-Either @code{"on"} or @code{"off"} to toggle display of a box around the
-legend.  Note that this property is not compatible with @sc{matlab} and
-may be removed in a future version of Octave.
-
-@item keypos
-An integer from 1 to 4 specifying the position of the legend.  1
-indicates upper right corner, 2 indicates upper left, 3 indicates lower
-left, and 4 indicates lower right.  Note that this property is not
-compatible with @sc{matlab} and may be removed in a future version of
-Octave.
-
+Box surrounding axes. 
+--- Values: "on," "off"
+@item busyaction
+@item buttondownfcn
+@item cameraposition
+@item camerapositionmode
+@item cameratarget
+@item cameratargetmode
+@item cameraupvector
+@item cameraupvectormode
+@item cameraviewangle
+@item cameraviewanglemode
+@item children
+@item clim
+Two-element vector defining the limits for the c axis of
+an image.  See @code{pcolor} property.
+Setting this property also forces the corresponding mode
+property to be set to @code{"manual"}.
+@item climmode
+Either @code{"manual"} or @code{"auto"}.
+@item clipping
+@item color
+@item colororder
+@item createfcn
+@item currentpoint
 @item dataaspectratio
 A two-element vector specifying the relative height and width of the
 data displayed in the axes.  Setting @code{dataaspectratio} to @samp{1,
@@ -828,82 +1355,40 @@ data displayed in the axes.  Setting @code{dataaspectratio} to @samp{1,
 same as the length of 2 units on the x-axis.  Setting
 @code{dataaspectratio} also forces the @code{dataaspectratiomode}
 property to be set to @code{"manual"}.
-
-@item dataaspectratiomode
+@item dataaspectratiomode 
 Either @code{"manual"} or @code{"auto"}.
-
-@item xlim
-@itemx ylim
-@itemx zlim
-@itemx clim
-Two-element vectors defining the limits for the x, y, and z axes and the 
-Setting one of these properties also forces the corresponding mode
-property to be set to @code{"manual"}.
-
-@item xlimmode
-@itemx ylimmode
-@itemx zlimmode
-@itemx climmode
-Either @code{"manual"} or @code{"auto"}.
-
-@item xlabel
-@itemx ylabel
-@itemx zlabel
-Indices to text objects for the axes labels.
-
-@item xgrid
-@itemx ygrid
-@itemx zgrid
-Either @code{"on"} or @code{"off"} to toggle display of grid lines.
-
-@item xminorgrid
-@itemx yminorgrid
-@itemx zminorgrid
-Either @code{"on"} or @code{"off"} to toggle display of minor grid lines.
-
-@item xtick
-@itemx ytick
-@itemx ztick
-Setting one of these properties also forces the corresponding mode
-property to be set to @code{"manual"}.
-
-@item xtickmode
-@itemx ytickmode
-@itemx ztickmode
-Either @code{"manual"} or @code{"auto"}.
-
-@item xticklabel
-@itemx yticklabel
-@itemx zticklabel
-Setting one of these properties also forces the corresponding mode
-property to be set to @code{"manual"}.
-
-@item xticklabelmode
-@itemx yticklabelmode
-@itemx zticklabelmode
-Either @code{"manual"} or @code{"auto"}.
-
-@item xscale
-@itemx yscale
-@itemx zscale
-Either @code{"linear"} or @code{"log"}.
-
-@item xdir
-@itemx ydir
-@itemx zdir
-Either @code{"forward"} or @code{"reverse"}.
-
-@item xaxislocation
-@itemx yaxislocation
-Either @code{"top"} or @code{"bottom"} for the x-axis and @code{"left"}
-or @code{"right"} for the y-axis.
-
-@item view
-A three element vector specifying the view point for three-dimensional plots.
-
-@item visible
-Either @code{"on"} or @code{"off"} to toggle display of the axes.
-
+@item deletefcn
+@item drawmode
+@item fontangle
+@item fontname
+@item fontsize
+@item fontunits
+@item fontweight
+@item gridlinestyle
+@item handlevisibility
+@item hittest
+@item interpreter
+@item interruptible
+@item key
+Toggle display of the legend. --- Values: "on," "off"
+Note that this property is not compatible with @sc{matlab} and may be
+removed in a future version of Octave.
+@item keybox
+Toggle display of a box around the
+legend.   --- Values: "on," "off"
+Note that this property is not compatible with @sc{matlab} and
+may be removed in a future version of Octave.
+@item keypos
+An integer from 1 to 4 specifying the position of the legend.  1
+indicates upper right corner, 2 indicates upper left, 3 indicates lower
+left, and 4 indicates lower right.  Note that this property is not
+compatible with @sc{matlab} and may be removed in a future version of
+Octave.
+@item keyreverse
+@item layer
+@item linestyleorder
+@item linewidth
+@item minorgridlinestyle
 @item nextplot
 May be one of
 @table @code
@@ -912,7 +1397,6 @@ May be one of
 @item "replace"
 @item "replacechildren"
 @end table
-
 @item outerposition
 A vector specifying the position of the plot, including titles, axes and
 legend.  The four elements of the vector are the coordinates of the
@@ -921,399 +1405,493 @@ to the width and height of the plot window.  For example, @code{[0.2,
 0.3, 0.4, 0.5]} sets the lower left corner of the axes at @math{(0.2,
 0.3)} and the width and height to be 0.4 and 0.5 respectively.  See also
 the @code{position} property.
+@item parent
+@item plotboxaspectratio
+@item plotboxaspectratiomode
+@item position
+A vector specifying the position of the plot, excluding titles, axes and
+legend.  The four elements of the vector are the coordinates of the
+lower left corner and width and height of the plot, in units normalized
+to the width and height of the plot window.  For example, @code{[0.2,
+0.3, 0.4, 0.5]} sets the lower left corner of the axes at @math{(0.2,
+0.3)} and the width and height to be 0.4 and 0.5 respectively.  See also
+the @code{outerposition} property.
+@item projection
+@item selected
+@item selectionhighlight
+@item tag
+@item tickdir
+@item tickdirmode
+@item ticklength
+@item tightinset
+@item title
+Index of text object for the axes title.
+@item type
+@item uicontextmenu
+@item units
+@item userdata
+@item view
+A three element vector specifying the view point for three-dimensional plots.
+@item visible
+Either @code{"on"} or @code{"off"} to toggle display of the axes.
+@item x_normrendertransform
+@item x_projectiontransform
+@item x_rendertransform
+@item x_viewporttransform
+@item x_viewtransform
+@item xaxislocation 
+Either @code{"top"} or @code{"bottom"}.
+@item xcolor
+@item xdir
+Either @code{"forward"} or @code{"reverse"}.
+@item xgrid
+Either @code{"on"} or @code{"off"} to toggle display of grid lines.
+@item xlabel
+Indices to text objects for the axes labels.
+@item xlim
+Two-element vector defining the limits for the x axis.
+Setting this property also forces the corresponding mode
+property to be set to @code{"manual"}.
+@item xlimmode
+Either @code{"manual"} or @code{"auto"}.
+@item xminorgrid 
+Either @code{"on"} or @code{"off"} to toggle display of minor grid lines.
+@item xminortick
+@item xscale
+Either @code{"linear"} or @code{"log"}.
+@item xtick
+Set position of tick marks.
+Setting this property also forces the corresponding mode
+property to be set to @code{"manual"}.
+@item xticklabel
+Setting this property also forces the corresponding mode
+property to be set to @code{"manual"}.
+@item xticklabelmode 
+Either @code{"manual"} or @code{"auto"}.
+@item xtickmode 
+Either @code{"manual"} or @code{"auto"}.
+@item yaxislocation 
+Either @code{"left"} or @code{"right"}
+@item ycolor
+@item ydir
+Either @code{"forward"} or @code{"reverse"}.
+@item ygrid
+Either @code{"on"} or @code{"off"} to toggle display of grid lines.
+@item ylabel
+Indices to text objects for the axes labels.
+@item ylim
+Two-element vectors defining the limits for the x, y, and z axes and the
+Setting one of these properties also forces the corresponding mode
+property to be set to @code{"manual"}.
+@item ylimmode
+Either @code{"manual"} or @code{"auto"}.
+@item yminorgrid 
+Either @code{"on"} or @code{"off"} to toggle display of minor grid lines.
+@item yminortick
+@item yscale
+Either @code{"linear"} or @code{"log"}.
+@item ytick
+Set position of tick marks.
+Setting this property also forces the corresponding mode
+property to be set to @code{"manual"}.
+@item yticklabel
+Setting this property also forces the corresponding mode
+property to be set to @code{"manual"}.
+@item yticklabelmode 
+Either @code{"manual"} or @code{"auto"}.
+@item ytickmode 
+Either @code{"manual"} or @code{"auto"}.
+@item zcolor
+@item zdir
+Either @code{"forward"} or @code{"reverse"}.
+@item zgrid
+Either @code{"on"} or @code{"off"} to toggle display of grid lines.
+@item zlabel
+Indices to text objects for the axes labels.
+@item zlim
+Two-element vector defining the limits for z axis.
+Setting this property also forces the corresponding mode
+property to be set to @code{"manual"}.
+@item zlimmode
+Either @code{"manual"} or @code{"auto"}.
+@item zminorgrid 
+Either @code{"on"} or @code{"off"} to toggle display of minor grid lines.
+@item zminortick
+@item zscale
+Either @code{"linear"} or @code{"log"}.
+@item ztick
+Set position of tick marks.
+Setting this property also forces the corresponding mode
+property to be set to @code{"manual"}.
+@item zticklabel 
+Setting this property also forces the corresponding mode
+property to be set to @code{"manual"}.
+@item zticklabelmode 
+Either @code{"manual"} or @code{"auto"}.
+@item ztickmode
+Either @code{"manual"} or @code{"auto"}.
+
 @end table
 
 @node Line Properties
 @subsubsection Line Properties
 @cindex line properties
 
+The @code{line} properties are:
 @table @code
-@itemx xdata
-@itemx ydata
-@itemx zdata
-@itemx ldata
-@itemx udata
-@itemx xldata
-@itemx xudata
-The data to be plotted.  The @code{ldata} and @code{udata} elements are
-for errorbars in the y direction, and the @code{xldata} and @code{xudata}
-elements are for errorbars in the x direction.
-
+@item __modified__
+@item __myhandle__
+@item beingdeleted
+@item busyaction
+@item buttondownfcn
+@item children
+@item clipping
 @item color
 The RGB color of the line, or a color name.  @xref{Colors}.
-
+@item createfcn
+@item deletefcn
+@item displayname
+@item erasemode
+@item handlevisibility
+@item hittest
+@item interpreter
+@item interruptible
+@item keylabel
+The text of the legend entry corresponding to this line.  Note that this
+property is not compatible with @sc{matlab} and may be removed in a
+future version of Octave.
+@item ldata
+The lower errorbar in the y direction to be plotted.
 @item linestyle
 @itemx linewidth
 @xref{Line Styles}.
-
+@item linewidth
 @item marker
 @item markeredgecolor
 @item markerfacecolor
 @item markersize
 @xref{Marker Styles}.
-
-@item keylabel
-The text of the legend entry corresponding to this line.  Note that this
-property is not compatible with @sc{matlab} and may be removed in a
-future version of Octave.
+@item parent
+@item selected
+@item selectionhighlight
+@item tag
+@item type
+@item udata
+The upper errorbar in the y direction to be plotted.
+@item uicontextmenu
+@item userdata
+@item visible
+@item xdata
+The data to be plotted.
+@item xdatasource
+@item xldata
+The lower errorbar to be plotted.
+@item xlim
+@item xliminclude
+@item xudata
+The upper errorbar to be plotted.
+@item ydata
+The data to be plotted.
+@item ydatasource
+@item ylim
+@item yliminclude
+@item zdata
+The data to be plotted.
+@item zdatasource
+@item zlim
+@item zliminclude
 @end table
 
 @node Text Properties
 @subsubsection Text Properties
 @cindex text properties
 
+The @code{text} properties are:
 @table @code
-@item string
-The character string contained by the text object.
-
-@item units
-May be @code{"normalized"} or @code{"graph"}.
-
-@item position
-The coordinates of the text object.
-
-@item rotation
-The angle of rotation for the displayed text, measured in degrees.
-
-@item horizontalalignment
-May be @code{"left"}, @code{"center"}, or @code{"right"}.
-
+@item __modified__
+@item __myhandle__
+@item backgroundcolor
+@item beingdeleted
+@item busyaction
+@item buttondownfcn
+@item children
+@item clipping
 @item color
 The color of the text.  @xref{Colors}.
-
-@item fontname
-The font used for the text.
-
-@item fontsize
-The size of the font, in points to use.
-
+@item createfcn
+@item deletefcn
+@item displayname
+@item edgecolor
+@item editing
+@item erasemode
 @item fontangle
 Flag whether the font is italic or normal.  Valid values are 'normal',
 'italic' and 'oblique'.
-
+@item fontname
+The font used for the text.
+@item fontsize
+The size of the font, in points to use.
+@item fontunits
 @item fontweight
 Flag whether the font is bold, etc.  Valid values are 'normal', 'bold',
 'demi' or 'light'.
-
+@item handlevisibility
+@item hittest
+@item horizontalalignment
+May be @code{"left"}, @code{"center"}, or @code{"right"}.
 @item interpreter
 Determines how the text is rendered.  Valid values are 'none', 'tex' or
 'latex'.
+@item interruptible
+@item linestyle
+@item linewidth
+@item margin
+@item parent
+@item position
+The coordinates of the text object.
+@item rotation
+The angle of rotation for the displayed text, measured in degrees.
+@item selected
+@item selectionhighlight
+@item string
+The character string contained by the text object.
+@item tag
+@item type
+@item uicontextmenu
+@item units
+May be @code{"normalized"} or @code{"graph"}.
+@item userdata
+@item verticalalignment
+@item visible
+@item xlim
+@item xliminclude
+@item ylim
+@item yliminclude
+@item zlim
+@item zliminclude
+
 @end table
-
-All text objects, including titles, labels, legends, and text, include
-the property 'interpreter', this property determines the manner in which
-special control sequences in the text are rendered.  If the interpreter
-is set to 'none', then no rendering occurs.  At this point the 'latex'
-option is not implemented and so the 'latex' interpreter also does not
-interpret the text.
-
-The 'tex' option implements a subset of @sc{TeX} functionality in the
-rendering of the text.  This allows the insertion of special characters
-such as Greek or mathematical symbols within the text.  The special
-characters are also inserted with a code starting with the back-slash
-(\) character, as in the table @ref{tab:extended}. 
-
-In addition, the formatting of the text can be changed within the string
-with the codes 
-
-@multitable @columnfractions .2 .2 .6 .2
-@item @tab \bf @tab Bold font @tab
-@item @tab \it @tab Italic font @tab
-@item @tab \sl @tab Oblique Font @tab
-@item @tab \rm @tab Normal font @tab
-@end multitable
-
-These are be used in conjunction with the @{ and @} characters to limit
-the change in the font to part of the string.  For example
-
-@example
-xlabel ('@{\bf H@} = a @{\bf V@}')
-@end example
-
-where the character 'a' will not appear in a bold font.  Note that to
-avoid having Octave interpret the backslash characters in the strings,
-the strings should be in single quotes.
-
-It is also possible to change the fontname and size within the text 
-
-@multitable @columnfractions .1 .4 .6 .1
-@item @tab \fontname@{@var{fontname}@} @tab Specify the font to use @tab
-@item @tab \fontsize@{@var{size}@} @tab Specify the size of the font to
-use @tab
-@end multitable
-
-Finally, the superscript and subscripting can be controlled with the '^'
-and '_' characters.  If the '^' or '_' is followed by a @{ character,
-then all of the block surrounded by the @{ @} pair is super- or
-sub-scripted.  Without the @{ @} pair, only the character immediately
-following the '^' or '_' is super- or sub-scripted.
-
-@float Table,tab:extended
-@tex
-\vskip 6pt
-{\hbox to \hsize {\hfill\vbox{\offinterlineskip \tabskip=0pt 
-\halign{
-\vrule height2.0ex depth1.ex width 0.6pt #\tabskip=0.3em &
-# \hfil & \vrule # & # \hfil & # \vrule &
-# \hfil & \vrule # & # \hfil & # \vrule &
-# \hfil & \vrule # & # \hfil & # \vrule 
-width 0.6pt \tabskip=0pt\cr
-\noalign{\hrule height 0.6pt}
-& Code && Sym && Code && Sym && Code && Sym &\cr
-\noalign{\hrule}
-& $\backslash$forall    && $\forall$ 
-&& $\backslash$exists   && $\exists$ 
-&& $\backslash$ni       && $\ni$       &\cr
-& $\backslash$cong      && $\cong$ 
-&& $\backslash$Delta    && $\Delta$ 
-&& $\backslash$Phi      && $\Phi$      &\cr
-& $\backslash$Gamma     && $\Gamma$ 
-&& $\backslash$vartheta && $\vartheta$ 
-&& $\backslash$Lambda   && $\Lambda$   &\cr
-& $\backslash$Pi        && $\Pi$ 
-&& $\backslash$Theta    && $\Theta$ 
-&& $\backslash$Sigma    && $\Sigma$    &\cr
-& $\backslash$varsigma  && $\varsigma$ 
-&& $\backslash$Omega    && $\Omega$ 
-&& $\backslash$Xi       && $\Xi$       &\cr
-& $\backslash$Psi       && $\Psi$ 
-&& $\backslash$perp     && $\perp$ 
-&& $\backslash$alpha    && $\alpha$    &\cr
-& $\backslash$beta      && $\beta$ 
-&& $\backslash$chi      && $\chi$ 
-&& $\backslash$delta    && $\delta$    &\cr
-& $\backslash$epsilon   && $\epsilon$ 
-&& $\backslash$phi      && $\phi$ 
-&& $\backslash$gamma    && $\gamma$    &\cr
-& $\backslash$eta       && $\eta$ 
-&& $\backslash$iota     && $\iota$ 
-&& $\backslash$varphi   && $\varphi$   &\cr
-& $\backslash$kappa     && $\kappa$ 
-&& $\backslash$lambda   && $\lambda$ 
-&& $\backslash$mu       && $\mu$       &\cr
-& $\backslash$nu        && $\nu$ 
-&& $\backslash$o        && $\o$ 
-&& $\backslash$pi       && $\pi$       &\cr
-& $\backslash$theta     && $\theta$ 
-&& $\backslash$rho      && $\rho$ 
-&& $\backslash$sigma    && $\sigma$    &\cr
-& $\backslash$tau       && $\tau$
-&& $\backslash$upsilon  && $\upsilon$ 
-&& $\backslash$varpi    && $\varpi$    &\cr
-& $\backslash$omega     && $\omega$ 
-&& $\backslash$xi       && $\xi$ 
-&& $\backslash$psi      && $\psi$      &\cr
-& $\backslash$zeta      && $\zeta$ 
-&& $\backslash$sim      && $\sim$ 
-&& $\backslash$Upsilon  && $\Upsilon$  &\cr
-& $\backslash$prime     && $\prime$ 
-&& $\backslash$leq      && $\leq$ 
-&& $\backslash$infty    && $\infty$    &\cr
-& $\backslash$clubsuit  && $\clubsuit$ 
-&& $\backslash$diamondsuit    && $\diamondsuit$ 
-&& $\backslash$heartsuit      && $\heartsuit$     &\cr
-& $\backslash$spadesuit       && $\spadesuit$ 
-&& $\backslash$leftrightarrow && $\leftrightarrow$ 
-&& $\backslash$leftarrow      && $\leftarrow$     &\cr
-& $\backslash$uparrow         && $\uparrow$ 
-&& $\backslash$rightarrow     && $\rightarrow$ 
-&& $\backslash$downarrow      && $\downarrow$     &\cr
-& $\backslash$circ      && $\circ$ 
-&& $\backslash$pm       && $\pm$ 
-&& $\backslash$geq      && $\geq$      &\cr
-& $\backslash$times     && $\times$ 
-&& $\backslash$propto   && $\propto$ 
-&& $\backslash$partial  && $\partial$  &\cr
-& $\backslash$bullet    && $\bullet$
-&& $\backslash$div      && $\div$ 
-&& $\backslash$neq      && $\neq$      &\cr
-& $\backslash$equiv     && $\equiv$ 
-&& $\backslash$approx   && $\approx$ 
-&& $\backslash$ldots    && $\ldots$ &\cr
-& $\backslash$mid       && $\mid$ 
-&& $\backslash$aleph    && $\aleph$ 
-&& $\backslash$Im       && $\Im$ &\cr
-& $\backslash$Re        && $\Re$ 
-&& $\backslash$wp       && $\wp$ 
-&& $\backslash$otimes   && $\otimes$ &\cr
-& $\backslash$oplus     && $\oplus$ 
-&& $\backslash$oslash   && $\oslash$ 
-&& $\backslash$cap      && $\cap$ &\cr
-& $\backslash$cup       && $\cup$ 
-&& $\backslash$supset   && $\supset$ 
-&& $\backslash$supseteq && $\supseteq$ &\cr
-& $\backslash$subset    && $\subset$ 
-&& $\backslash$subseteq && $\subseteq$ 
-&& $\backslash$in       && $\in$ &\cr
-& $\backslash$notin     && $\notin$
-&& $\backslash$angle    && $\angle$
-&& $\backslash$bigtriangledown && $\bigtriangledown$ &\cr
-& $\backslash$langle    && $\langle$ 
-&& $\backslash$rangle   && $\rangle$ 
-&& $\backslash$nabla    && $\nabla$    &\cr
-& $\backslash$prod      && $\prod$
-&& $\backslash$surd     && $\surd$ 
-&& $\backslash$cdot     && $\cdot$     &\cr
-& $\backslash$neg       && $\neg$ 
-&& $\backslash$wedge    && $\wedge$ 
-&& $\backslash$vee      && $\vee$      &\cr
-& $\backslash$Leftrightarrow && $\Leftrightarrow$
-&& $\backslash$Leftarrow     && $\Leftarrow$
-&& $\backslash$Uparrow       && $\Uparrow$           &\cr
-& $\backslash$Rightarrow     && $\Rightarrow$
-&& $\backslash$Downarrow     && $\Downarrow$
-&& $\backslash$diamond  && $\diamond$  &\cr
-& $\backslash$copyright && $\copyright$ 
-&& $\backslash$rfloor   && $\rfloor$ 
-&& $\backslash$lceil    && $\lceil$    &\cr
-& $\backslash$lfloor    && $\lfloor$ 
-&& $\backslash$rceil    && $\rceil$ 
-&& $\backslash$int      && $\int$      &\cr
-\noalign{\hrule height 0.6pt}
-}}\hfill}}
-@end tex
-@ifnottex
-@multitable @columnfractions .125 .25 .25 .25 .125
-@item @tab  \forall     @tab  \exists     @tab  \ni      @tab
-@item @tab  \cong       @tab  \Delta      @tab  \Phi     @tab
-@item @tab  \Gamma      @tab  \vartheta   @tab  \Lambda  @tab
-@item @tab  \Pi         @tab  \Theta      @tab  \Sigma   @tab
-@item @tab  \varsigma   @tab  \Omega      @tab  \Xi      @tab
-@item @tab  \Psi        @tab  \perp       @tab  \alpha   @tab
-@item @tab  \beta       @tab  \chi        @tab  \delta   @tab  
-@item @tab  \epsilon    @tab  \phi        @tab  \gamma   @tab
-@item @tab  \eta        @tab  \iota       @tab  \varphi  @tab
-@item @tab  \kappa      @tab  \lambda     @tab  \mu      @tab 
-@item @tab  \nu         @tab  \o          @tab  \pi      @tab
-@item @tab  \theta      @tab  \rho        @tab  \sigma   @tab 
-@item @tab  \tau        @tab  \upsilon    @tab  \varpi   @tab
-@item @tab  \omega      @tab  \xi         @tab  \psi     @tab 
-@item @tab  \zeta       @tab  \sim        @tab  \Upsilon @tab
-@item @tab  \prime      @tab  \leq        @tab  \infty   @tab
-@item @tab  \clubsuit   @tab  \diamondsuit    @tab  \heartsuit  @tab
-@item @tab  \spadesuit  @tab  \leftrightarrow @tab  \leftarrow  @tab 
-@item @tab  \uparrow    @tab  \rightarrow @tab  \downarrow @tab 
-@item @tab  \circ       @tab \pm          @tab  \geq     @tab 
-@item @tab  \times      @tab  \propto     @tab  \partial @tab
-@item @tab  \bullet     @tab \div         @tab  \neq     @tab 
-@item @tab  \equiv      @tab  \approx     @tab  \ldots   @tab 
-@item @tab  \mid        @tab  \aleph      @tab  \Im      @tab 
-@item @tab  \Re         @tab \wp          @tab  \otimes  @tab
-@item @tab  \oplus      @tab \oslash      @tab  \cap     @tab 
-@item @tab  \cup        @tab   \supset    @tab  \supseteq @tab 
-@item @tab  \subset     @tab \subseteq    @tab  \in      @tab 
-@item @tab  \notin      @tab \angle       @tab  \bigrightriangledown @tab
-@item @tab  \langle     @tab  \rangle     @tab  \nabla   @tab
-@item @tab  \prod       @tab \surd        @tab  \cdot    @tab 
-@item @tab  \neg        @tab  \wedge      @tab \vee      @tab 
-@item @tab  \Leftrightarrow @tab \Leftarrow @tab \Uparrow @tab
-@item @tab  \Rightarrow @tab \Downarrow   @tab \diamond  @tab
-@item @tab  \copyright  @tab  \lfloor     @tab  \lceil   @tab 
-@item @tab  \rfloor     @tab  \rceil      @tab  \int     @tab 
-@end multitable
-@end ifnottex
-@caption{Available special characters in @sc{TeX} mode}
-@end float
-
-A complete example showing the capabilities of the extended text is
-
-@example
-@group
-x = 0:0.01:3;
-plot(x,erf(x));
-hold on;
-plot(x,x,"r");
-axis([0, 3, 0, 1]);
-text(0.65, 0.6175, strcat('\leftarrow x = @{2/\surd\pi',
-' @{\fontsize@{16@}\int_@{\fontsize@{8@}0@}^@{\fontsize@{8@}x@}@}',
-' e^@{-t^2@} dt@} = 0.6175'))
-@end group
-@end example
-
-@ifnotinfo
-@noindent
-The result of which can be seen in @ref{fig:extendedtext}
-
-@float Figure,fig:extendedtext
-@center @image{extended,4in}
-@caption{Example of inclusion of text with the @sc{TeX} interpreter}
-@end float
-@end ifnotinfo
 
 @node Image Properties
 @subsubsection Image Properties
 @cindex image properties
 
+The @code{image} properties are:
 @table @code
+@item __modified__
+@item __myhandle__
+@item beingdeleted
+@item busyaction
+@item buttondownfcn
 @item cdata
 The data for the image.  Each pixel of the image corresponds to an
 element of @code{cdata}.  The value of an element of @code{cdata}
 specifies the row-index into the colormap of the axes object containing
 the image.  The color value found in the color map for the given index
 determines the color of the pixel.
-
+@item cdatamapping
+@item children
+@item clim
+@item climinclude
+@item clipping
+@item createfcn
+@item deletefcn
+@item handlevisibility
+@item hittest
+@item interruptible
+@item parent
+@item selected
+@item selectionhighlight
+@item tag
+@item type
+@item uicontextmenu
+@item userdata
+@item visible
 @item xdata
-@itemx ydata
-Two-element vectors specifying the range of the x- and y- coordinates for
+Two-element vector specifying the range of the x-coordinates for
 the image.
+@item xlim
+@item xliminclude
+@item ydata
+Two-element vector specifying the range of the y-coordinates for
+the image.
+@item ylim
+@item yliminclude
 @end table
 
 @node Patch Properties
 @subsubsection Patch Properties
 @cindex patch properties
 
+The @code{patch} properties are:
 @table @code
+@item __modified__
+@item __myhandle__
+@item alim
+@item aliminclude
+@item alphadatamapping
+@item ambientstrength
+@item backfacelighting
+@item beingdeleted
+@item busyaction
+@item buttondownfcn
 @item cdata
-@itemx xdata
-@itemx ydata
-@itemx zdata
 Data defining the patch object.
-
-@item facecolor
-The fill color of the patch.  @xref{Colors}.
-
-@item facealpha
-A number in the range [0, 1] indicating the transparency of the patch.
-
+@item cdatamapping
+@item children
+@item clim
+@item climinclude
+@item clipping
+@item createfcn
+@item deletefcn
+@item diffusestrength
+@item edgealpha
 @item edgecolor
 The color of the line defining the patch.  @xref{Colors}.
-
+@item edgelighting
+@item erasemode
+@item facealpha
+A number in the range [0, 1] indicating the transparency of the patch.
+@item facecolor
+The fill color of the patch.  @xref{Colors}.
+@item facelighting
+@item faces
+@item facevertexalphadata
+@item facevertexcdata
+@item handlevisibility
+@item hittest
+@item interpreter
+@item interruptible
+@item keylabel
 @item linestyle
-@itemx linewidth
 @xref{Line Styles}.
-
+@item linewidth
+@xref{Line Styles}.
 @item marker
-@itemx markeredgecolor
-@itemx markerfacecolor
-@itemx markersize
 @xref{Marker Styles}.
+@item markeredgecolor
+@xref{Marker Styles}.
+@item markerfacecolor
+@xref{Marker Styles}.
+@item markersize
+@xref{Marker Styles}.
+@item normalmode
+@item parent
+@item selected
+@item selectionhighlight
+@item specularcolorreflectance
+@item specularexponent
+@item specularstrength
+@item tag
+@item type
+@item uicontextmenu
+@item userdata
+@item vertexnormals
+@item vertices
+@item visible
+@item xdata
+Data defining the patch object.
+@item xlim
+@item xliminclude
+@item ydata
+Data defining the patch object.
+@item ylim
+@item yliminclude
+@item zdata
+Data defining the patch object.
+@item zlim
+@item zliminclude
+
 @end table
 
 @node Surface Properties
 @subsubsection Surface Properties
 @cindex surface properties
 
+The @code{surface} properties are:
 @table @code
-@item xdata
-@itemx ydata
-@itemx zdata
-The data determining the surface.  The @code{xdata} and @code{ydata}
-elements are vectors and @code{zdata} must be a matrix.
-
+@item __modified__
+@item __myhandle__
+@item alim
+@item aliminclude
+@item alphadata
+@item alphadatamapping
+@item ambientstrength
+@item backfacelighting
+@item beingdeleted
+@item busyaction
+@item buttondownfcn
+@item cdata
+@item cdatamapping
+@item cdatasource
+@item children
+@item clim
+@item climinclude
+@item clipping
+@item createfcn
+@item deletefcn
+@item diffusestrength
+@item edgealpha
+@item edgecolor
+@item edgelighting
+@item erasemode
+@item facealpha
+@item facecolor
+@item facelighting
+@item handlevisibility
+@item hittest
+@item interpreter
+@item interruptible
 @item keylabel
 The text of the legend entry corresponding to this surface.  Note that
 this property is not compatible with @sc{matlab} and may be removed in a
 future version of Octave.
+@item linestyle
+@item linewidth
+@item marker
+@item markeredgecolor
+@item markerfacecolor
+@item markersize
+@item meshstyle
+@item normalmode
+@item parent
+@item selected
+@item selectionhighlight
+@item specularcolorreflectance
+@item specularexponent
+@item specularstrength
+@item tag
+@item type
+@item uicontextmenu
+@item userdata
+@item vertexnormals
+@item visible
+@item xdata
+The data determining the surface.  The @code{xdata} and @code{ydata}
+elements are vectors and @code{zdata} must be a matrix.
+@item xdatasource
+@item xlim
+@item xliminclude
+@item ydata
+The data determining the surface.  The @code{xdata} and @code{ydata}
+elements are vectors and @code{zdata} must be a matrix.
+@item ydatasource
+@item ylim
+@item yliminclude
+@item zdata
+The data determining the surface.  The @code{xdata} and @code{ydata}
+elements are vectors and @code{zdata} must be a matrix.
+@item zdatasource
+@item zlim
+@item zliminclude
 @end table
 
 @node Searching Properties
-@subsubsection Searching Properties
+@subsection Searching Properties
 
 @DOCSTRING(findobj)
 
 @DOCSTRING(findall)
-
-
 @node Managing Default Properties
 @subsection Managing Default Properties
 @cindex default graphics properties
@@ -1402,6 +1980,20 @@ get (0, "factory");
 @noindent
 returns a list of factory defaults.
 
+
+@node Advanced Plotting
+@section Advanced Plotting
+
+@menu
+* Colors::
+* Line Styles::
+* Marker Styles::
+* Callbacks::
+* Object Groups::
+* Graphics backends::
+@end menu
+
+
 @node Colors
 @subsection Colors
 @cindex graphics colors
@@ -1468,7 +2060,7 @@ of 2 is twice as large as the default, etc.
 
 Callback functions can be associated with graphics objects and triggered
 after certain events occur.  The basic structure of all callback function
-is 
+is
 
 @example
 @group
@@ -1540,7 +2132,7 @@ function described below.
 @cindex object groups
 
 A number of Octave high level plot functions return groups of other
-graphics objects or they return graphics objects that are have their
+graphics objects or they return graphics objects that have their
 properties linked in such a way that changes to one of the properties
 results in changes in the others.  A graphic object that groups other
 objects is an @code{hggroup}
@@ -1565,7 +2157,7 @@ which groups the two plots into a single object and controls their
 visibility directly.  The default properties of an @code{hggroup} are
 the same as the set of common properties for the other graphics
 objects.  Additional properties can be added with the @code{addproperty}
-function. 
+function.
 
 @DOCSTRING(addproperty)
 
@@ -1610,13 +2202,13 @@ h1 = plot (x, sin (x), "color", [1, 0, 0], "parent", hg);
 addproperty ("linestyle", hg, "linelinestyle", get (h, "linestyle"));
 hold on
 h2 = plot (x, cos (x), "color", [0, 1, 0], "parent", hg);
-hlink = linkprop ([hg, h1, h2], "color"); 
+hlink = linkprop ([hg, h1, h2], "color");
 @end group
 @end example
 
 @DOCSTRING(linkprop)
 
-These capabilities are used in a number of basic graphics objects. 
+These capabilities are used in a number of basic graphics objects.
 The @code{hggroup} objects created by the functions of Octave contain
 one or more graphics object and are used to:
 
@@ -1648,7 +2240,7 @@ get (get (h, "children")(1), "xdata")
 shows the difference between the @code{xdata} of the @code{hggroup}
 of a stem series object and the underlying line.
 
-The basic properties of such group objects is that they consist of one 
+The basic properties of such group objects is that they consist of one
 or more linked @code{hggroup}, and that changes in certain properties of
 these groups are propagated to other members of the group.  Whereas,
 certain properties of the members of the group only apply to the current
@@ -1677,11 +2269,11 @@ corresponding hggroup elements.
 @node Data sources in object groups
 @subsubsection Data sources in object groups
 @cindex data sources in object groups
-
+@anchor{doc-datasources}
 All of the group objects contain data source parameters.  There are
 string parameters that contain an expression that is evaluated to update
 the relevant data property of the group when the @code{refreshdata}
-function is called. 
+function is called.
 
 @DOCSTRING(refreshdata)
 
@@ -1716,7 +2308,7 @@ The line and fill color of the patch objects making up the areas.  @xref{Colors}
 @itemx ydata
 The x and y coordinates of the original columns of the data passed to
 @code{area} prior to the cumulative summation used in the @code{area}
-function. 
+function.
 
 @item xdatasource
 @itemx ydatasource
@@ -1729,7 +2321,7 @@ Data source variables.
 @cindex bar series
 
 Bar series objects are created by the @code{bar} or @code{barh}
-functions.  Each @code{hggroup} element contains a single patch object. 
+functions.  Each @code{hggroup} element contains a single patch object.
 The properties of the bar series are
 
 @table @code
@@ -1739,7 +2331,7 @@ The properties of the bar series are
 The property @code{showbaseline} flags whether the baseline of the bar
 series is displayed (default is "on").  The handle of the graphics object
 representing the baseline is given by the @code{baseline} property and
-the y-value of the baseline by the @code{basevalue} property. 
+the y-value of the baseline by the @code{basevalue} property.
 
 Changes to any of these property are propagated to the other members of
 the bar series and to the baseline itself.  Equally changes in the
@@ -1769,7 +2361,7 @@ The line and fill color of the patch objects making up the bars.  @xref{Colors}.
 
 @item xdata
 The nominal x positions of the bars.  Changes in this property and
-propagated to the other members of the bar series. 
+propagated to the other members of the bar series.
 
 @item ydata
 The y value of the bars in the @code{hggroup}.
@@ -1800,9 +2392,9 @@ contours to plot are to be filled.
 
 @item zlevelmode
 @itemx zlevel
-The radio property @code{zlevelmode} can have the values "none", "auto" or 
+The radio property @code{zlevelmode} can have the values "none", "auto" or
 "manual".  When its value is "none" there is no z component to the plotted
-contours.  When its value is "auto" the z value of the plotted contours is 
+contours.  When its value is "auto" the z value of the plotted contours is
 at the same value as the contour itself.  If the value is "manual", then the
 z value at which to plot the contour is determined by the @code{zlevel}
 property.
@@ -1811,9 +2403,9 @@ property.
 @itemx levellist
 @itemx levelstepmode
 @itemx levelstep
-If @code{levellistmode} is "manual", then the levels at which to plot the 
+If @code{levellistmode} is "manual", then the levels at which to plot the
 contours is determined by @code{levellist}.  If @code{levellistmode} is
-set to "auto", then the distance between contours is determined by 
+set to "auto", then the distance between contours is determined by
 @code{levelstep}.  If both @code{levellistmode} and @code{levelstepmode}
 are set to "auto", then there are assumed to be 10 equal spaced contours.
 
@@ -1821,12 +2413,12 @@ are set to "auto", then there are assumed to be 10 equal spaced contours.
 @itemx textlist
 @itemx textstepmode
 @itemx textstep
-If @code{textlistmode} is "manual", then the labelled contours 
-is determined by @code{textlist}.  If @code{textlistmode} is set to 
-"auto", then the distance between labelled contours is determined by 
+If @code{textlistmode} is "manual", then the labeled contours
+is determined by @code{textlist}.  If @code{textlistmode} is set to
+"auto", then the distance between labeled contours is determined by
 @code{textstep}.  If both @code{textlistmode} and @code{textstepmode}
-are set to "auto", then there are assumed to be 10 equal spaced 
-labelled contours.
+are set to "auto", then there are assumed to be 10 equal spaced
+labeled contours.
 
 @item showtext
 Flag whether the contour labels are shown or not.
@@ -1860,7 +2452,7 @@ Data source variables.
 @cindex series objects
 @cindex error bar series
 
-Error bar series are created by the @code{errorbar} function.  Each 
+Error bar series are created by the @code{errorbar} function.  Each
 @code{hggroup} element contains two line objects representing the data and
 the errorbars separately.  The properties of the error bar series are
 
@@ -1937,7 +2529,7 @@ Data source variables.
 Quiver series objects are created by the @code{quiver} or @code{quiver3}
 functions.  Each @code{hggroup} element of the series contains three line
 objects as children representing the body and head of the arrow,
-together with a marker as the point of original of the arrows.  The 
+together with a marker as the point of original of the arrows.  The
 properties of the quiver series are
 
 @table @code
@@ -1946,7 +2538,7 @@ properties of the quiver series are
 Flag whether the length of the arrows is scaled or defined directly from
 the @var{u}, @var{v} and @var{w} data.  If the arrow length is flagged
 as being scaled by the @code{autoscale} property, then the length of the
-autoscaled arrow is controlled by the @code{autoscalefactor}. 
+autoscaled arrow is controlled by the @code{autoscalefactor}.
 
 @item maxheadsize
 This property controls the size of the head of the arrows in the quiver
@@ -2016,7 +2608,7 @@ The color data for the points of the plot.  Each point can have a separate
 color, or a unique color can be specified.
 
 @item sizedata
-The size data for the points of the plot.  Each point can its own size or a 
+The size data for the points of the plot.  Each point can its own size or a
 unique size can be specified.
 
 @item xdatasource
@@ -2147,8 +2739,8 @@ The original x, y, z and c data.
 Data source variables.
 @end table
 
-@node Graphics backends
-@subsection Graphics backends
+@node Graphics Backends
+@subsection Graphics Backends
 @cindex graphics backends
 @cindex backends, graphics
 

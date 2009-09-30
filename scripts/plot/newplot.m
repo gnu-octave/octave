@@ -18,8 +18,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} newplot ()
-## Prepare graphics engine to produce a new plot.  This function should
-## be called at the beginning of all high-level plotting functions.
+## Prepare graphics engine to produce a new plot.  This function is
+## called at the beginning of all high-level plotting functions.
+## It is not normally required in user programs.
 ## @end deftypefn
 
 function newplot ()

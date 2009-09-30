@@ -1,3 +1,7 @@
+2009-09-30  Michael D. Godfrey  <godfrey@isl.stanford.edu>
+
+	* interpreter/plot.txi: Document graphics structures.
+	
 2009-09-14  John W. Eaton  <jwe@octave.org>
 
 	* interpreter/optim.txi: Document pqpnonneg.

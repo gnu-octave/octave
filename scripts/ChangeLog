@@ -1,3 +1,8 @@
+2009-09-30  Michael D. Godfrey  <godfrey@isl.stanford.edu>
+
+	* plot/clabel.m: Spelling fix.
+	* plot/newplot.m: Update docstring.
+
 2009-09-28  John W. Eaton  <jwe@octave.org>
 
 	* general/sortrows.m: Also use old algorithm for sparse matrices.

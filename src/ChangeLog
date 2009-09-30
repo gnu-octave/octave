@@ -1,3 +1,9 @@
+2009-09-30  John W. Eaton  <jwe@octave.org>
+
+	* error.cc (error_1, pr_where_2, handle_message):
+	Don't do anything if fmt is empty.
+	(Ferror): Call print_usage if nargin == 0.
+
 2009-09-29  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/typecast.cc (Ftypecast): Rewrite.

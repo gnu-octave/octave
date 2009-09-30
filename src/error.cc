@@ -283,28 +283,34 @@ error_1 (std::ostream& os, const char *name, const char *id,
 	{
 	  if (*fmt)
 	    {
-	      int len = strlen (fmt);
-	      if (fmt[len - 1] == '\n')
-		{
-		  if (len > 1)
-		    {
-		      char *tmp_fmt = strsave (fmt);
-		      tmp_fmt[len - 1] = '\0';
-		      verror (true, os, name, id, tmp_fmt, args);
-		      delete [] tmp_fmt;
-		    }
+	      size_t len = strlen (fmt);
 
-		  error_state = -2;
+	      if (len > 0)
+		{
+		  if (fmt[len - 1] == '\n')
+		    {
+		      if (len > 1)
+			{
+			  char *tmp_fmt = strsave (fmt);
+			  tmp_fmt[len - 1] = '\0';
+			  verror (true, os, name, id, tmp_fmt, args);
+			  delete [] tmp_fmt;
+			}
+
+		      error_state = -2;
+		    }
+		  else
+		    {
+		      verror (true, os, name, id, fmt, args);
+
+		      if (! error_state)
+			error_state = 1;
+		    }
 		}
-	      else
-		verror (true, os, name, id, fmt, args);
 	    }
 	}
       else
 	panic ("error_1: invalid format");
-
-      if (! error_state)
-	error_state = 1;
     }
 }
 
@@ -383,19 +389,23 @@ pr_where_2 (const char *fmt, va_list args)
     {
       if (*fmt)
 	{
-	  int len = strlen (fmt);
-	  if (fmt[len - 1] == '\n')
+	  size_t len = strlen (fmt);
+
+	  if (len > 0)
 	    {
-	      if (len > 1)
+	      if (fmt[len - 1] == '\n')
 		{
-		  char *tmp_fmt = strsave (fmt);
-		  tmp_fmt[len - 1] = '\0';
-		  verror (false, std::cerr, 0, "", tmp_fmt, args);
-		  delete [] tmp_fmt;
+		  if (len > 1)
+		    {
+		      char *tmp_fmt = strsave (fmt);
+		      tmp_fmt[len - 1] = '\0';
+		      verror (false, std::cerr, 0, "", tmp_fmt, args);
+		      delete [] tmp_fmt;
+		    }
 		}
+	      else
+		verror (false, std::cerr, 0, "", fmt, args);
 	    }
-	  else
-	    verror (false, std::cerr, 0, "", fmt, args);
 	}
     }
   else
@@ -763,22 +773,26 @@ handle_message (error_fun f, const char *id, const char *msg,
 
 // Ugh.
 
-  int len = strlen (msg);
-  if (msg[len - 1] == '\n')
+  size_t len = strlen (msg);
+
+  if (len > 0)
     {
-      if (len > 1)
+      if (msg[len - 1] == '\n')
 	{
-	  char *tmp_msg = strsave (msg);
-	  tmp_msg[len - 1] = '\0';
-	  f (id, "%s\n", tmp_msg);
-	  retval = tmp_msg;
-	  delete [] tmp_msg;
+	  if (len > 1)
+	    {
+	      char *tmp_msg = strsave (msg);
+	      tmp_msg[len - 1] = '\0';
+	      f (id, "%s\n", tmp_msg);
+	      retval = tmp_msg;
+	      delete [] tmp_msg;
+	    }
 	}
-    }
-  else
-    {
-      f (id, "%s", msg);
-      retval = msg;
+      else
+	{
+	  f (id, "%s", msg);
+	  retval = msg;
+	}
     }
 
   return retval;
@@ -985,56 +999,61 @@ error: nargin != 1\n\
 
   std::string id;
 
-  if (nargin > 1)
+  if (nargin == 0)
+    print_usage ();
+  else
     {
-      std::string arg1 = args(0).string_value ();
-
-      if (! error_state)
+      if (nargin > 1)
 	{
-	  if (arg1.find ('%') == std::string::npos)
+	  std::string arg1 = args(0).string_value ();
+
+	  if (! error_state)
 	    {
-	      id = arg1;
+	      if (arg1.find ('%') == std::string::npos)
+		{
+		  id = arg1;
 
-	      nargs.resize (nargin-1);
+		  nargs.resize (nargin-1);
 
-	      for (int i = 1; i < nargin; i++)
-		nargs(i-1) = args(i);
+		  for (int i = 1; i < nargin; i++)
+		    nargs(i-1) = args(i);
+		}
+	    }
+	  else
+	    return retval;
+	}
+      else if (nargin == 1 && args(0).is_map ())
+	{
+	  octave_value_list tmp;
+
+	  Octave_map m = args(0).map_value ();
+
+	  if (m.numel () == 1)
+	    {
+	      if (m.contains ("message"))
+		{
+		  Cell c = m.contents ("message");
+
+		  if (! c.is_empty () && c(0).is_string ())
+		    nargs(0) = c(0).string_value ();
+		}
+
+	      if (m.contains ("identifier"))
+		{
+		  Cell c = m.contents ("identifier");
+
+		  if (! c.is_empty () && c(0).is_string ())
+		    id = c(0).string_value ();
+		}
+
+	      // FIXME -- also need to handle "stack" field in error
+	      // structure, but that will require some more significant
+	      // surgery on handle_message, error_with_id, etc.
 	    }
 	}
-      else
-	return retval;
+
+      handle_message (error_with_id, id.c_str (), "unspecified error", nargs);
     }
-  else if (nargin == 1 && args(0).is_map ())
-    {
-      octave_value_list tmp;
-
-      Octave_map m = args(0).map_value ();
-
-      if (m.numel () == 1)
-	{
-	  if (m.contains ("message"))
-	    {
-	      Cell c = m.contents ("message");
-
-	      if (! c.is_empty () && c(0).is_string ())
-		nargs(0) = c(0).string_value ();
-	    }
-
-	  if (m.contains ("identifier"))
-	    {
-	      Cell c = m.contents ("identifier");
-
-	      if (! c.is_empty () && c(0).is_string ())
-		id = c(0).string_value ();
-	    }
-
-	  // FIXME -- also need to handle "stack" field in error
-	  // structure, but that will require some more significant
-	  // surgery on handle_message, error_with_id, etc.
-	}
-    }
-
-  handle_message (error_with_id, id.c_str (), "unspecified error", nargs);
 
   return retval;
 }

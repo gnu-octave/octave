@@ -20,16 +20,10 @@
 
 set -e
 
-FIND=${FIND:-'find'}
-
 PERL=${PERL:-'perl'}
 
-if test $# -eq 1; then
-  d=$1
-elif test $# -eq 0; then
-  d=.
-else
-  echo "usage: mkdoc [directory]" 1>&2
+if test $# -eq 0; then
+  echo "usage: mkdoc file ..." 1>&2
   exit 1
 fi
 
@@ -41,8 +35,9 @@ if test -f gethelp; then
 ### Edit those files instead and run make to update this file.
 
 EOF
-  $FIND $d -name '*.m' | \
-    $PERL -n -e 'chop;
+  for arg
+  do
+    echo "$arg" | $PERL -n -e 'chop;
                $f = "$_";
                m{(.*)/(.*)\.m};
                for (qx{./gethelp $2 "$f" < "$f"}) {
@@ -53,6 +48,7 @@ EOF
                  $i_am_in_example = 0 if /\s*\@end\s+example/;
                  print;
                }'
+  done
 else
   echo "gethelp program seems to be missing!" 1>&2
   exit 1

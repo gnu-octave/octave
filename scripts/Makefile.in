@@ -35,8 +35,13 @@ INSTALL_DATA = @INSTALL_DATA@
 
 SOURCES =
 
-ALL_M_FILES1 := $(shell find $(srcdir) -name '*.m' -print)
-ALL_M_FILES := $(patsubst $(srcdir)/%, %, $(ALL_M_FILES1))
+ifeq ($(srcdir),.)
+  M_FILE_DIRS := $(srcdir)
+else
+  M_FILE_DIRS := $(srcdir) .
+endif
+
+ALL_M_FILES := $(shell find $(M_FILE_DIRS) -name '*.m' -print)
 
 DISTFILES = $(addprefix $(srcdir)/, Makefile.in ChangeLog $(SOURCES) \
 	configure.ac configure mkinstalldirs mkdoc mkpkgadd gethelp.cc \
@@ -75,7 +80,7 @@ $(SUBDIRS):
 .PHONY: $(SUBDIRS)
 
 DOCSTRINGS: gethelp$(BUILD_EXEEXT) mkdoc $(ALL_M_FILES)
-	$(srcdir)/mkdoc $(srcdir) > $@.t
+	$(srcdir)/mkdoc $(ALL_M_FILES) > $@.t
 	mv $@.t $@
 
 gethelp$(BUILD_EXEEXT): gethelp.cc

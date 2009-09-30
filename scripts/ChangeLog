@@ -1,3 +1,10 @@
+2009-09-30  John W. Eaton  <jwe@octave.org>
+
+	* mkdoc: Work on list of file names instead of a directory.
+	* Makefile.in (ALL_M_FILES): Don't strip directories.
+	Also search build directory if it is different from $(srcdir).
+	Pass $(ALL_M_FILES) to mkdoc.
+
 2009-09-30  Michael D. Godfrey  <godfrey@isl.stanford.edu>
 
 	* plot/clabel.m: Spelling fix.

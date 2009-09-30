@@ -1,3 +1,7 @@
+2009-09-30  Jaroslav Hajek  <highegg@gmail.com>
+
+	* general/arrayfun.m: Simplify.
+
 2009-09-30  John W. Eaton  <jwe@octave.org>
 
 	* mkdoc: Work on list of file names instead of a directory.

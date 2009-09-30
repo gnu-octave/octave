@@ -1,4 +1,5 @@
 ## Copyright (C) 2006, 2007, 2008, 2009 Bill Denney
+## Copyright (C) 2009 Jaroslav Hajek
 ##
 ## This file is part of Octave.
 ##
@@ -128,6 +129,7 @@
 ## @end deftypefn
 
 ## Author: Bill Denney <denney@seas.upenn.edu>
+## Rewritten: Jaroslav Hajek <highegg@gmail.com>
 
 function varargout = arrayfun (func, varargin)
 
@@ -135,40 +137,31 @@ function varargout = arrayfun (func, varargin)
     print_usage ();
   endif
 
-  ## Convert everything to cells and call cellfun (let cellfun error
-  ## check the options in case more options come available).
-  sizetomatch = size (varargin{1});
-  m2cargs{1} = ones (size (varargin{1}, 1), 1);
-  m2cargs{2} = ones (size (varargin{1}, 2), 1);
-  cfarg{1} = mat2cell (varargin{1}, m2cargs{:});
-  stillmatches = true;
-  idx = 1;
-  len = length (varargin);
-  while (stillmatches && idx < len)
-    idx++;
-    thissize = size (varargin{idx});
-    if (numel (thissize) == numel (sizetomatch)
-        && all (thissize == sizetomatch))
-      if (ischar (varargin{idx})
-          && (strcmpi (varargin{idx}, "UniformOutput")
-              || strcmpi (varargin{idx}, "ErrorHandler")))
-        ## Catch these strings just in case they happen to be the same
-        ## size as the other input.
-        stillmatches = false;
-      else
-        cfarg{idx} = mat2cell (varargin{idx}, m2cargs{:});
-      endif
+  nargs = length (varargin);
+
+  recognized_opts = {"UniformOutput", "ErrorHandler"};
+
+  while (nargs >= 2)
+    maybeopt = varargin{nargs-1};
+    if (ischar (maybeopt) && any (strcmpi (maybeopt, recognized_opts)))
+      nargs -= 2;
     else
-      stillmatches = false;
+      break;
     endif
   endwhile
 
-  varargout = cell (max ([nargout, 1]), 1);
-  if (idx >= len)
-    [varargout{:}] = cellfun (func, cfarg{:});
-  else
-    [varargout{:}] = cellfun (func, cfarg{:}, varargin{idx:len});
-  endif
+  args = varargin(1:nargs);
+  opts = varargin(nargs+1:end);
+
+  args = cellfun (@num2cell, args, "UniformOutput", false,
+  "ErrorHandler",  @arg_class_error);
+
+  [varargout{1:nargout}] = cellfun (func, args{:}, opts{:});
+
+endfunction
+
+function arg_class_error (S, X)
+  error ("arrayfun: invalid argument of class %s", class (X))
 endfunction
 
 %% Test function to check the "Errorhandler" option

@@ -65,8 +65,8 @@ protected:
   public:
     texture_rep (void) : valid (false), count (1) { }
 
-    texture_rep (GLuint _id, int _w, int _h, int _tw, int _th)
-	: id (_id), w (_w), h (_h), tw (_tw), th (_th),
+    texture_rep (GLuint id_arg, int w_arg, int h_arg, int tw_arg, int th_arg)
+	: id (id_arg), w (w_arg), h (h_arg), tw (tw_arg), th (th_arg),
 	  tx (double(w)/tw), ty (double(h)/th), valid (true),
 	  count (1) { }
 
@@ -154,6 +154,8 @@ opengl_texture::create (const octave_value& data)
   // Expect RGB data
   if (dv.length () == 3 && dv(2) == 3)
     {
+      // FIXME -- dim_vectors hold octave_idx_type values.  Should we
+      // check for dimensions larger than intmax?
       int h = dv(0), w = dv(1), tw, th;
       GLuint id;
       bool ok = true;
@@ -166,34 +168,38 @@ opengl_texture::create (const octave_value& data)
 
       if (data.is_double_type ())
 	{
-	  NDArray _a = data.array_value ();
+	  const NDArray xdata = data.array_value ();
 
 	  OCTAVE_LOCAL_BUFFER (float, a, (3*tw*th));
 
 	  for (int i = 0; i < h; i++)
-	    for (int j = 0, idx = i*tw*3; j < w; j++, idx += 3)
-	      {
-		a[idx]   = _a(i,j,0);
-		a[idx+1] = _a(i,j,1);
-		a[idx+2] = _a(i,j,2);
-	      }
+	    {
+	      for (int j = 0, idx = i*tw*3; j < w; j++, idx += 3)
+		{
+		  a[idx]   = xdata(i,j,0);
+		  a[idx+1] = xdata(i,j,1);
+		  a[idx+2] = xdata(i,j,2);
+		}
+	    }
 
 	  glTexImage2D (GL_TEXTURE_2D, 0, 3, tw, th, 0,
 			GL_RGB, GL_FLOAT, a);
 	}
       else if (data.is_uint8_type ())
 	{
-	  uint8NDArray _a = data.uint8_array_value ();
+	  const uint8NDArray xdata = data.uint8_array_value ();
 
 	  OCTAVE_LOCAL_BUFFER (octave_uint8, a, (3*tw*th));
 
 	  for (int i = 0; i < h; i++)
-	    for (int j = 0, idx = i*tw*3; j < w; j++, idx += 3)
-	      {
-		a[idx]   = _a(i,j,0);
-		a[idx+1] = _a(i,j,1);
-		a[idx+2] = _a(i,j,2);
-	      }
+	    {
+	      for (int j = 0, idx = i*tw*3; j < w; j++, idx += 3)
+		{
+		  a[idx]   = xdata(i,j,0);
+		  a[idx+1] = xdata(i,j,1);
+		  a[idx+2] = xdata(i,j,2);
+		}
+	    }
 
 	  glTexImage2D (GL_TEXTURE_2D, 0, 3, tw, th, 0,
 			GL_RGB, GL_UNSIGNED_BYTE, a);
@@ -1795,14 +1801,14 @@ opengl_renderer::draw (const line::properties& props)
 void
 opengl_renderer::draw (const surface::properties& props)
 {
-  Matrix x = xform.xscale (props.get_xdata ().matrix_value ());
-  Matrix y = xform.yscale (props.get_ydata ().matrix_value ());
-  Matrix z = xform.zscale (props.get_zdata ().matrix_value ());
+  const Matrix x = xform.xscale (props.get_xdata ().matrix_value ());
+  const Matrix y = xform.yscale (props.get_ydata ().matrix_value ());
+  const Matrix z = xform.zscale (props.get_zdata ().matrix_value ());
 
   int zr = z.rows (), zc = z.columns ();
 
   NDArray c;
-  NDArray n = props.get_vertexnormals ().array_value ();
+  const NDArray n = props.get_vertexnormals ().array_value ();
 
   // FIXME: handle transparency
   Matrix a;
@@ -2342,10 +2348,10 @@ opengl_renderer::draw (const surface::properties& props)
 void
 opengl_renderer::draw (const patch::properties &props)
 {
-  Matrix f = props.get_faces ().matrix_value ();
-  Matrix v = xform.scale (props.get_vertices ().matrix_value ());
+  const Matrix f = props.get_faces ().matrix_value ();
+  const Matrix v = xform.scale (props.get_vertices ().matrix_value ());
   Matrix c;
-  Matrix n = props.get_vertexnormals ().matrix_value ();
+  const Matrix n = props.get_vertexnormals ().matrix_value ();
   Matrix a;
 
   int nv = v.rows ();
@@ -2663,7 +2669,7 @@ opengl_renderer::draw (const text::properties& props)
   set_color (props.get_color_rgb ());
 
   // FIXME: take "units" into account
-  Matrix pos = props.get_position ().matrix_value ();
+  const Matrix pos = props.get_position ().matrix_value ();
   int halign = 0, valign = 0;
 
   if (props.horizontalalignment_is ("center"))
@@ -2693,12 +2699,12 @@ opengl_renderer::draw (const image::properties& props)
   int h = dv(0), w = dv(1);
   bool ok = true;
   
-  Matrix x = props.get_xdata ().matrix_value ();
-  Matrix y = props.get_ydata ().matrix_value ();
-  ColumnVector p0 = xform.transform (x(0), y(0), 0);
-  ColumnVector p1 = xform.transform (x(1), y(1), 0);
+  const Matrix x = props.get_xdata ().matrix_value ();
+  const Matrix y = props.get_ydata ().matrix_value ();
+  const ColumnVector p0 = xform.transform (x(0), y(0), 0);
+  const ColumnVector p1 = xform.transform (x(1), y(1), 0);
 
-  glPixelZoom ( (p1(0)-p0(0))/(w-1) , -(p1(1)-p0(1))/(h-1));
+  glPixelZoom ((p1(0)-p0(0))/(w-1) , -(p1(1)-p0(1))/(h-1));
   glRasterPos3d (x(0), y(0), 0);
 
   // Expect RGB data
@@ -2706,53 +2712,59 @@ opengl_renderer::draw (const image::properties& props)
     {
       if (cdata.is_double_type ())
 	{
-	  NDArray _a = cdata.array_value ();
+	  const NDArray xcdata = cdata.array_value ();
 
 	  OCTAVE_LOCAL_BUFFER (GLfloat, a, (3*w*h));
 
 	  for (int i = 0; i < h; i++)
-	    for (int j = 0, idx = i*w*3; j < w; j++, idx += 3)
-	      {
-		a[idx]   = _a(i,j,0);
-		a[idx+1] = _a(i,j,1);
-		a[idx+2] = _a(i,j,2);
-	      }
-	  glDrawPixels (w, h,
-			GL_RGB, GL_FLOAT, a);
+	    {
+	      for (int j = 0, idx = i*w*3; j < w; j++, idx += 3)
+		{
+		  a[idx]   = xcdata(i,j,0);
+		  a[idx+1] = xcdata(i,j,1);
+		  a[idx+2] = xcdata(i,j,2);
+		}
+	    }
+
+	  glDrawPixels (w, h, GL_RGB, GL_FLOAT, a);
 
 	}
       else if (cdata.is_uint16_type ())
 	{
-	  uint8NDArray _a = cdata.uint16_array_value ();
+	  const uint8NDArray xcdata = cdata.uint16_array_value ();
 
 	  OCTAVE_LOCAL_BUFFER (octave_uint16, a, (3*w*h));
 
 	  for (int i = 0; i < h; i++)
-	    for (int j = 0, idx = i*w*3; j < w; j++, idx += 3)
-	      {
-		a[idx]   = _a(i,j,0);
-		a[idx+1] = _a(i,j,1);
-		a[idx+2] = _a(i,j,2);
-	      }
-	  glDrawPixels (w, h,
-			GL_RGB, GL_UNSIGNED_SHORT, a);
+	    {
+	      for (int j = 0, idx = i*w*3; j < w; j++, idx += 3)
+		{
+		  a[idx]   = xcdata(i,j,0);
+		  a[idx+1] = xcdata(i,j,1);
+		  a[idx+2] = xcdata(i,j,2);
+		}
+	    }
+
+	  glDrawPixels (w, h, GL_RGB, GL_UNSIGNED_SHORT, a);
 
 	}
       else if (cdata.is_uint8_type ())
 	{
-	  uint8NDArray _a = cdata.uint8_array_value ();
+	  const uint8NDArray xcdata = cdata.uint8_array_value ();
 
 	  OCTAVE_LOCAL_BUFFER (octave_uint8, a, (3*w*h));
 
 	  for (int i = 0; i < h; i++)
-	    for (int j = 0, idx = i*w*3; j < w; j++, idx += 3)
-	      {
-		a[idx]   = _a(i,j,0);
-		a[idx+1] = _a(i,j,1);
-		a[idx+2] = _a(i,j,2);
-	      }
-	  glDrawPixels (w, h,
-			GL_RGB, GL_UNSIGNED_BYTE, a);
+	    {
+	      for (int j = 0, idx = i*w*3; j < w; j++, idx += 3)
+		{
+		  a[idx]   = xcdata(i,j,0);
+		  a[idx+1] = xcdata(i,j,1);
+		  a[idx+2] = xcdata(i,j,2);
+		}
+	    }
+
+	  glDrawPixels (w, h, GL_RGB, GL_UNSIGNED_BYTE, a);
 
 	}
       else
@@ -2985,46 +2997,46 @@ opengl_renderer::make_marker_list (const std::string& marker, double size,
     {
     case '+':
       glBegin (GL_LINES);
-      glVertex2f (-sz/2 ,0     );
-      glVertex2f (sz/2  ,0     );
-      glVertex2f (0     ,-sz/2 );
-      glVertex2f (0     ,sz/2  );
+      glVertex2f (-sz/2, 0);
+      glVertex2f (sz/2, 0);
+      glVertex2f (0, -sz/2);
+      glVertex2f (0, sz/2);
       glEnd ();
       break;
     case 'x':
       glBegin(GL_LINES);
-      glVertex2f (-sz/2 ,-sz/2);
-      glVertex2f (sz/2  ,sz/2 );
-      glVertex2f (-sz/2 ,sz/2 );
-      glVertex2f (sz/2 ,-sz/2 );
+      glVertex2f (-sz/2, -sz/2);
+      glVertex2f (sz/2, sz/2);
+      glVertex2f (-sz/2, sz/2);
+      glVertex2f (sz/2, -sz/2);
       glEnd ();
       break;
     case '*':
       glBegin (GL_LINES);
-      glVertex2f (-sz/2 ,0     );
-      glVertex2f (sz/2  ,0     );
-      glVertex2f (0     ,-sz/2 );
-      glVertex2f (0     ,sz/2  );
-      glVertex2f (-tt   ,-tt   );
-      glVertex2f (+tt   ,+tt   );
-      glVertex2f (-tt   ,+tt   );
-      glVertex2f (+tt   ,-tt   );
+      glVertex2f (-sz/2, 0);
+      glVertex2f (sz/2, 0);
+      glVertex2f (0, -sz/2);
+      glVertex2f (0, sz/2);
+      glVertex2f (-tt, -tt);
+      glVertex2f (+tt, +tt);
+      glVertex2f (-tt, +tt);
+      glVertex2f (+tt, -tt);
       glEnd ();
       break;
     case '.':
       glBegin (GL_POLYGON);
       glVertex2f (-sz/10, -sz/10);
-      glVertex2f (-sz/10, sz/10 );
-      glVertex2f (sz/10 , sz/10 );
-      glVertex2f (sz/10 , -sz/10);
+      glVertex2f (-sz/10, sz/10);
+      glVertex2f (sz/10, sz/10);
+      glVertex2f (sz/10, -sz/10);
       glEnd ();
       break;
     case 's':
       glBegin ((filled ? GL_POLYGON : GL_LINE_LOOP));
       glVertex2d (-sz/2, -sz/2);
-      glVertex2d (-sz/2,  sz/2);
-      glVertex2d ( sz/2,  sz/2);
-      glVertex2d ( sz/2, -sz/2);
+      glVertex2d (-sz/2, sz/2);
+      glVertex2d (sz/2, sz/2);
+      glVertex2d (sz/2, -sz/2);
       glEnd();
       break;
     case 'o':
@@ -3039,38 +3051,38 @@ opengl_renderer::make_marker_list (const std::string& marker, double size,
       break;
     case 'd':
       glBegin ((filled ? GL_POLYGON : GL_LINE_LOOP));
-      glVertex2d (    0, -sz/2);
-      glVertex2d ( sz/2,     0);
-      glVertex2d (    0,  sz/2);
-      glVertex2d (-sz/2,     0);
+      glVertex2d (0, -sz/2);
+      glVertex2d (sz/2, 0);
+      glVertex2d (0, sz/2);
+      glVertex2d (-sz/2, 0);
       glEnd();
       break;
     case '^':
       glBegin ((filled ? GL_POLYGON : GL_LINE_LOOP));
-      glVertex2f (0     ,  sz/2);
-      glVertex2f (sz/2  , -sz/2);
-      glVertex2f (-sz/2 , -sz/2);
+      glVertex2f (0, sz/2);
+      glVertex2f (sz/2, -sz/2);
+      glVertex2f (-sz/2, -sz/2);
       glEnd ();
       break;
     case 'v':
       glBegin ((filled ? GL_POLYGON : GL_LINE_LOOP));
-      glVertex2f (0     ,-sz/2);
-      glVertex2f (-sz/2 ,sz/2 );
-      glVertex2f (sz/2  ,sz/2 );
+      glVertex2f (0, -sz/2);
+      glVertex2f (-sz/2, sz/2);
+      glVertex2f (sz/2, sz/2);
       glEnd ();
       break;
     case '>':
       glBegin ((filled ? GL_POLYGON : GL_LINE_LOOP));
-      glVertex2f (sz/2  ,0    );
-      glVertex2f (-sz/2 ,sz/2 );
-      glVertex2f (-sz/2 ,-sz/2);
+      glVertex2f (sz/2, 0);
+      glVertex2f (-sz/2, sz/2);
+      glVertex2f (-sz/2, -sz/2);
       glEnd ();
       break;
     case '<':
       glBegin ((filled ? GL_POLYGON : GL_LINE_LOOP));
-      glVertex2f (-sz/2 ,0    );
-      glVertex2f (sz/2  ,-sz/2);
-      glVertex2f (sz/2  ,sz/2 );
+      glVertex2f (-sz/2, 0);
+      glVertex2f (sz/2, -sz/2);
+      glVertex2f (sz/2, sz/2);
       glEnd ();
       break;
     default:

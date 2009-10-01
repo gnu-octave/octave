@@ -1,5 +1,9 @@
 2009-10-01  John W. Eaton  <jwe@octave.org>
 
+	* image/__img__.m: Adjust xlim and ylim correctly.
+
+2009-10-01  John W. Eaton  <jwe@octave.org>
+
 	* Makefile.in (plot/gnuplot_binary.m): New rule.
 	(DOCSTRINGS): Depend on plot/gnuplot_binary.m.
 	(ALL_M_FILES): Define with =, not :=.

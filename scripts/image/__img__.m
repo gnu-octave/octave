@@ -49,13 +49,24 @@ function h = __img__ (x, y, img, varargin)
     y = [1, rows(img)];
   endif
 
-  xlim = [x(1), x(end)];
-  ylim = [y(1), y(end)];
+  xdata = [x(1), x(end)];
+  ydata = [y(1), y(end)];
+
+  xlim = [x(1)-0.5, x(end)+0.5];
+  ylim = [y(1)-0.5, y(end)+0.5];
 
   ca = gca ();
 
-  tmp = __go_image__ (ca, "cdata", img, "xdata", xlim, "ydata", ylim, 
+  tmp = __go_image__ (ca, "cdata", img, "xdata", xdata, "ydata", ydata,
 		      "cdatamapping", "direct", varargin {:});
+
+  ## FIXME -- how can we do this and also get the {x,y}limmode
+  ## properties to remain "auto"?  I suppose this adjustment should
+  ## happen automatically in axes::update_axis_limits instead of
+  ## explicitly setting the values here.  But then what information is
+  ## available to axes::update_axis_limits to determine that the
+  ## adjustment is necessary?
+  set (ca, "xlim", xlim, "ylim", ylim);
 
   if (ndims (img) == 3)
     if (isinteger (img))
@@ -66,8 +77,7 @@ function h = __img__ (x, y, img, varargin)
     endif
   endif
 
-  set (ca, "view", [0, 90], "xlimmode", "manual", "ylimmode", "manual",
-       "xlim", xlim, "ylim", ylim);
+  set (ca, "view", [0, 90]);
 
   if (strcmp (get (ca, "nextplot"), "replace"))
     set (ca, "ydir", "reverse");

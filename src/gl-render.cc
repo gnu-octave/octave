@@ -2704,8 +2704,8 @@ opengl_renderer::draw (const image::properties& props)
   const ColumnVector p0 = xform.transform (x(0), y(0), 0);
   const ColumnVector p1 = xform.transform (x(1), y(1), 0);
 
-  glPixelZoom ((p1(0)-p0(0))/(w-1) , -(p1(1)-p0(1))/(h-1));
-  glRasterPos3d (x(0), y(0), 0);
+  glPixelZoom ((p1(0)-p0(0))/(w-1), -(p1(1)-p0(1))/(h-1));
+  glRasterPos3d (x(0)-0.5, y(0)-0.5, 0);
 
   // Expect RGB data
   if (dv.length () == 3 && dv(2) == 3)

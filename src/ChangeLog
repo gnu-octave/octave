@@ -1,5 +1,10 @@
 2009-10-01  John W. Eaton  <jwe@octave.org>
 
+	* gl-render.cc (opengl_renderer::draw (const image::properties&)):
+	Adjust origin for glRasterPos3d.
+
+2009-10-01  John W. Eaton  <jwe@octave.org>
+
 	* gl-render.cc: Style fixes.
 
 2009-10-01  Shai Ayal  <shaiay@users.sourceforge.net>

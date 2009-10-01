@@ -41,7 +41,9 @@ else
   M_FILE_DIRS := $(srcdir) .
 endif
 
-ALL_M_FILES := $(shell find $(M_FILE_DIRS) -name '*.m' -print)
+## Define this with =, not := so that the generated plot/gnuplot_binary.m
+## file will be included in the list when it is available.
+ALL_M_FILES = $(shell find $(M_FILE_DIRS) -name '*.m' -print)
 
 DISTFILES = $(addprefix $(srcdir)/, Makefile.in ChangeLog $(SOURCES) \
 	configure.ac configure mkinstalldirs mkdoc mkpkgadd gethelp.cc \
@@ -79,7 +81,11 @@ $(SUBDIRS):
 	$(MAKE) -C $@ all
 .PHONY: $(SUBDIRS)
 
-DOCSTRINGS: gethelp$(BUILD_EXEEXT) mkdoc $(ALL_M_FILES)
+## Kluge alert:
+plot/gnuplot_binary.m:
+	$(MAKE) -C plot $(notdir $@)
+
+DOCSTRINGS: plot/gnuplot_binary.m gethelp$(BUILD_EXEEXT) mkdoc $(ALL_M_FILES)
 	$(srcdir)/mkdoc $(ALL_M_FILES) > $@.t
 	mv $@.t $@
 

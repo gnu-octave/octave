@@ -454,7 +454,7 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
       // This is to prevent copy-on-write.
       const Cell *cinputs = inputs;
 
-      octave_idx_type k;
+      octave_idx_type k = 1;
 
       dim_vector fdims (1, 1);
 

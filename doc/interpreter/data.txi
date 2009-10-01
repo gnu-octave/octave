@@ -65,6 +65,10 @@ use of the following functions.
 
 @DOCSTRING(swapbytes)
 
+@DOCSTRING(bitpack)
+
+@DOCSTRING(bitunpack)
+
 @menu
 * Numeric Objects::             
 * Missing Data::                

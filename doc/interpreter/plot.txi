@@ -23,10 +23,10 @@
 @cindex graphics
 
 @menu
-* Introduction::
-* High-Level Plotting::
-* Graphics Structures::
-* Advanced Plotting::
+* Introduction to Plotting::    
+* High-Level Plotting::         
+* Graphics Data Structures::    
+* Advanced Plotting::           
 @end menu
 
 @node Introduction to Plotting
@@ -53,17 +53,14 @@ If you need more detailed control, see @ref{Graphics Data Structures}
 and @ref{Advanced Plotting}.
 
 @menu
-* Two-Dimensional Plots::
-* Three-Dimensional Plotting::
-* Plot Annotations::
-* Multiple Plots on One Page::
-* Multiple Plot Windows::
-* Use of @code{axis}, @code{line}, and @code{patch} Functions
-* Manipulation of Plot Windows
-* Use of the @code{interpreter} Property
-* Printing Plots::
-* Interacting with plots::
-* Test Plotting Functions::
+* Two-Dimensional Plots::       
+* Three-Dimensional Plotting::  
+* Plot Annotations::            
+* Multiple Plots on One Page::  
+* Multiple Plot Windows::       
+* Printing Plots::              
+* Interacting with plots::      
+* Test Plotting Functions::     
 @end menu
 
 @node Two-Dimensional Plots
@@ -237,7 +234,7 @@ get or set individual axis limits.  Each has the same form.
 @DOCSTRING(xlim)
 
 @menu
-* Two-dimensional Function Plotting::
+* Two-dimensional Function Plotting::  
 @end menu
 
 @node Two-dimensional Function Plotting
@@ -363,8 +360,8 @@ three-dimensional plots.
 @DOCSTRING(scatter3)
 
 @menu
-* Three-dimensional Function Plotting::
-* Three-dimensional Geometric Shapes::
+* Three-dimensional Function Plotting::  
+* Three-dimensional Geometric Shapes::  
 @end menu
 
 @node Three-dimensional Function Plotting
@@ -841,11 +838,11 @@ at the Octave prompt should display a three-dimensional plot.
 @cindex graphics data structures
 
 @menu
-* Introduction to Graphics Structures
-* Graphics Objects::
-* Graphics Object Properties::
-* Managing Default Properties::
-
+* Introduction to Graphics Structures::  
+* Graphics Objects::            
+* Graphics Object Properties::  
+* Searching Properties::        
+* Managing Default Properties::  
 @end menu
 
 @node Introduction to Graphics Structures
@@ -999,14 +996,14 @@ deletefcn               tag                     xticklabelmode
 The root figure has index 0.  Its properties may be displayed by:
 @code{get(0,"")}.
 The uses of @code{get()} and @code{set()} are further explained in
-{@ref{doc-get,,get}, @ref{doc-set,,set}}.
+@ref{doc-get,,get}, @ref{doc-set,,set}.
 
 @node Graphics Objects
 @subsection Graphics Objects
 @cindex graphics objects
 
 The hierarchy of graphics objects was explained above. (See 
-@ref{introduction to graphics structures.}  Here the
+@ref{Introduction to Graphics Structures}.  Here the
 specific objects are described, and the properties contained in
 these objects are discussed. Keep in mind that
 graphics objects are always referenced by @dfn{handle}.
@@ -1151,15 +1148,14 @@ objects.
 @cindex graphics object properties
 
 @menu
-* Root Figure Properties::
-* Figure Properties::
-* Axes Properties::
-* Line Properties::
-* Text Properties::
-* Image Properties::
-* Patch Properties::
-* Surface Properties::
-* Searching Properties::
+* Root Figure Properties::      
+* Figure Properties::           
+* Axes Properties::             
+* Line Properties::             
+* Text Properties::             
+* Image Properties::            
+* Patch Properties::            
+* Surface Properties::          
 @end menu
 
 In this Section the object properties are discussed in detail, starting
@@ -1985,12 +1981,12 @@ returns a list of factory defaults.
 @section Advanced Plotting
 
 @menu
-* Colors::
-* Line Styles::
-* Marker Styles::
-* Callbacks::
-* Object Groups::
-* Graphics backends::
+* Colors::                      
+* Line Styles::                 
+* Marker Styles::               
+* Callbacks::                   
+* Object Groups::               
+* Graphics Backends::           
 @end menu
 
 
@@ -2253,17 +2249,17 @@ and position are automatically adjusted, based on changes to the
 corresponding hggroup elements.
 
 @menu
-* Data sources in object groups::
-* Area series::
-* Bar series::
-* Contour groups::
-* Error bar series::
-* Line series::
-* Quiver group::
-* Scatter group::
-* Stair group::
-* Stem Series::
-* Surface group::
+* Data sources in object groups::  
+* Area series::                 
+* Bar series::                  
+* Contour groups::              
+* Error bar series::            
+* Line series::                 
+* Quiver group::                
+* Scatter group::               
+* Stair group::                 
+* Stem Series::                 
+* Surface group::               
 @end menu
 
 @node Data sources in object groups
@@ -2749,7 +2745,7 @@ Data source variables.
 @DOCSTRING(available_backends)
 
 @menu
-* Interaction with gnuplot::
+* Interaction with gnuplot::    
 @end menu
 
 @node Interaction with gnuplot

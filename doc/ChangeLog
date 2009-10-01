@@ -1,3 +1,11 @@
+2009-09-30  John W. Eaton  <jwe@octave.org>
+
+	* interpreter/data.txi (Built-in Data Types):
+	Document bitpack and bitunpack.
+	* interpreter/plot.txi: Delete spurious {}.  Update menus.  Fix
+	cross-referencing.
+	* interpreter/octave.texi: Update plotting sub-menus in detailed menu.
+
 2009-09-30  Michael D. Godfrey  <godfrey@isl.stanford.edu>
 
 	* interpreter/plot.txi: Document graphics structures.

@@ -475,10 +475,12 @@ C-Style I/O Functions
 
 Plotting
 
-* Plotting Basics::
-* Advanced Plotting::
+* Introduction to Plotting::    
+* High-Level Plotting::         
+* Graphics Data Structures::    
+* Advanced Plotting::           
 
-Plotting Basics
+Introduction to Plotting
 
 * Two-Dimensional Plots::       
 * Three-Dimensional Plotting::  
@@ -486,7 +488,7 @@ Plotting Basics
 * Multiple Plots on One Page::  
 * Multiple Plot Windows::       
 * Printing Plots::              
-* Interacting with plots::
+* Interacting with plots::      
 * Test Plotting Functions::     
 
 Two-Dimensional Plots
@@ -498,17 +500,13 @@ Three-Dimensional Plotting
 * Three-dimensional Function Plotting::
 * Three-dimensional Geometric Shapes::
 
-Advanced Plotting
+Graphics Data Structures
 
-* Graphics Objects::
+* Introduction to Graphics Structures::  
+* Graphics Objects::            
 * Graphics Object Properties::  
+* Searching Properties::        
 * Managing Default Properties::  
-* Colors::
-* Line Styles::
-* Marker Styles::
-* Callbacks::
-* Object Groups::
-* Graphics backends::
 
 Graphics Object Properties
 
@@ -520,21 +518,29 @@ Graphics Object Properties
 * Image Properties::            
 * Patch Properties::            
 * Surface Properties::          
-* Searching Properties::
+
+Advanced Plotting
+
+* Colors::                      
+* Line Styles::                 
+* Marker Styles::               
+* Callbacks::                   
+* Object Groups::               
+* Graphics Backends::           
 
 Object Groups
 
-* Data sources in object groups::
-* Area series::
-* Bar series::
-* Contour groups::
-* Error bar series::
-* Line series::
-* Quiver group::
-* Scatter group::
-* Stair group::
-* Stem Series::
-* Surface group::
+* Data sources in object groups::  
+* Area series::                 
+* Bar series::                  
+* Contour groups::              
+* Error bar series::            
+* Line series::                 
+* Quiver group::                
+* Scatter group::               
+* Stair group::                 
+* Stem Series::                 
+* Surface group::               
 
 Graphics backends
 

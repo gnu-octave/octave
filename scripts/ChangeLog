@@ -1,3 +1,7 @@
+2009-10-01  Jaroslav Hajek  <highegg@gmail.com>
+
+	* geometry/griddata.m: Fix handling vector xi, yi.
+
 2009-09-30  Jaroslav Hajek  <highegg@gmail.com>
 
 	* general/arrayfun.m: Simplify.

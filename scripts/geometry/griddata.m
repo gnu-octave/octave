@@ -51,13 +51,12 @@ function [rx, ry, rz] = griddata (x, y, z, xi, yi, method)
     error ("griddata: x, y, and z must be vectors of same length");
   endif
   
-  ## Meshgrid xi and yi if they are vectors unless they
-  ## are vectors of the same length.
-  if (isvector (xi) && isvector (yi) && numel (xi) != numel (yi))
+  ## Meshgrid xi and yi if they are a row and column vector.
+  if (rows (xi) == 1 && columns (yi) == 1)
     [xi, yi] = meshgrid (xi, yi);
   endif
 
-  if (any (size (xi) != size (yi)))
+  if (! size_equal (xi, yi))
     error ("griddata: xi and yi must be vectors or matrices of same size");
   endif
 
@@ -114,7 +113,7 @@ function [rx, ry, rz] = griddata (x, y, z, xi, yi, method)
     D = -(N(:,1) .* x1 + N(:,2) .* y1 + N(:,3) .* z1);
     
     ## Calculate zi by solving plane equation for xi, yi.
-    zi(valid) = -(N(:,1).*xi(valid) + N(:,2).*yi(valid) + D) ./ N(:,3);
+    zi(valid) = -(N(:,1).*xi(:)(valid) + N(:,2).*yi(:)(valid) + D) ./ N(:,3);
     
   else
     error ("griddata: unknown interpolation method");

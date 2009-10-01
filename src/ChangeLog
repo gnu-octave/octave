@@ -1,3 +1,10 @@
+2009-10-01  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/cellfun.cc 
+	(do_num2cell_helper, do_num2cell): New funcs.
+	(Fnum2cell): Rewrite.
+	(do_cellslices_nda): Do not leave trailing dims.
+
 2009-09-30  John W. Eaton  <jwe@octave.org>
 
 	* error.cc (error_1, pr_where_2, handle_message):

@@ -1,3 +1,7 @@
+2009-10-01  Jaroslav Hajek  <highegg@gmail.com>
+
+	* Array.cc (Array<T>::permute): Fast case identity permutation.
+
 2009-09-27  Jaroslav Hajek  <highegg@gmail.com>
 
 	* oct-cmplx.h: Fix complex-real orderings.

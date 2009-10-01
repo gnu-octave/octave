@@ -592,6 +592,8 @@ Array<T>::permute (const Array<octave_idx_type>& perm_vec_arg, bool inv) const
   // Need this array to check for identical elements in permutation array.
   OCTAVE_LOCAL_BUFFER_INIT (bool, checked, perm_vec_len, false);
 
+  bool identity = true;
+
   // Find dimension vector of permuted array.
   for (int i = 0; i < perm_vec_len; i++)
     {
@@ -614,10 +616,16 @@ Array<T>::permute (const Array<octave_idx_type>& perm_vec_arg, bool inv) const
 	  return retval;
 	}
       else
-	checked[perm_elt] = true;
+        {
+          checked[perm_elt] = true;
+          identity = identity && perm_elt == i;
+        }
 
       dv_new(i) = dv(perm_elt);
     }
+
+  if (identity)
+    return *this;
 
   if (inv)
     {

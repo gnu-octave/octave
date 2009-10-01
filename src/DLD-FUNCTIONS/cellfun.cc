@@ -475,13 +475,12 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
             inputlist(j) = cinputs[j](0);
         }
 
-      k = inputs[0].numel ();
-
       for (int j = 0; j < nargin; j++)
         {
           if (mask[j])
             {
               fdims = inputs[j].dims ();
+              k = inputs[j].numel ();
               for (int i = j+1; i < nargin; i++)
                 {
                   if (mask[i] && inputs[i].dims () != fdims)
@@ -490,6 +489,7 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
                       goto cellfun_err;
                     }
                 }
+              break;
             }
         }
 

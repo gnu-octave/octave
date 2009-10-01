@@ -1,3 +1,8 @@
+2009-10-01  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/cellfun.cc (Fcellfun): Fix initialization, add missing
+	break.
+
 2009-10-01  John W. Eaton  <jwe@octave.org>
 
 	* gl-render.cc (opengl_renderer::draw (const image::properties&)):

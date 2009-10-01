@@ -3143,6 +3143,8 @@ public:
     std::string get_climinclude (void) const
       { return climinclude.current_value (); }
 
+    octave_value get_color_data (void) const;
+
     // See the genprops.awk script for an explanation of the
     // properties declarations.
 

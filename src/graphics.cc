@@ -3932,7 +3932,12 @@ line::properties::compute_ylim (void) const
 
 // ---------------------------------------------------------------------
 
-// Note: "image" code is entirely auto-generated
+octave_value
+image::properties::get_color_data (void) const
+{
+  return convert_cdata (*this, get_cdata (),
+			cdatamapping_is ("scaled"), 3);
+}
 
 // ---------------------------------------------------------------------
 

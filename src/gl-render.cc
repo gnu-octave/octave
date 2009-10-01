@@ -546,6 +546,8 @@ opengl_renderer::draw (const graphics_object& go)
     draw (dynamic_cast<const hggroup::properties&> (props));
   else if (go.isa ("text"))
     draw (dynamic_cast<const text::properties&> (props));
+  else if (go.isa ("image"))
+    draw (dynamic_cast<const image::properties&> (props));
   else
     warning ("opengl_renderer: cannot render object of type `%s'",
 	     props.graphics_object_name ().c_str ());
@@ -2681,6 +2683,96 @@ opengl_renderer::draw (const text::properties& props)
   draw_text (props.get_string (),
 	     pos(0), pos(1), pos(2),
 	     halign, valign, props.get_rotation ());
+}
+
+void
+opengl_renderer::draw (const image::properties& props)
+{
+  octave_value cdata = props.get_cdata ();
+  dim_vector dv (cdata.dims ());
+  int h = dv(0), w = dv(1);
+  bool ok = true;
+  
+  Matrix x = props.get_xdata ().matrix_value ();
+  Matrix y = props.get_ydata ().matrix_value ();
+  ColumnVector p0 = xform.transform (x(0), y(0), 0);
+  ColumnVector p1 = xform.transform (x(1), y(1), 0);
+
+  glPixelZoom ( (p1(0)-p0(0))/(w-1) , -(p1(1)-p0(1))/(h-1));
+  glRasterPos3d (x(0), y(0), 0);
+
+  // Expect RGB data
+  if (dv.length () == 3 && dv(2) == 3)
+    {
+      if (cdata.is_double_type ())
+	{
+	  NDArray _a = cdata.array_value ();
+
+	  OCTAVE_LOCAL_BUFFER (GLfloat, a, (3*w*h));
+
+	  for (int i = 0; i < h; i++)
+	    for (int j = 0, idx = i*w*3; j < w; j++, idx += 3)
+	      {
+		a[idx]   = _a(i,j,0);
+		a[idx+1] = _a(i,j,1);
+		a[idx+2] = _a(i,j,2);
+	      }
+	  glDrawPixels (w, h,
+			GL_RGB, GL_FLOAT, a);
+
+	}
+      else if (cdata.is_uint16_type ())
+	{
+	  uint8NDArray _a = cdata.uint16_array_value ();
+
+	  OCTAVE_LOCAL_BUFFER (octave_uint16, a, (3*w*h));
+
+	  for (int i = 0; i < h; i++)
+	    for (int j = 0, idx = i*w*3; j < w; j++, idx += 3)
+	      {
+		a[idx]   = _a(i,j,0);
+		a[idx+1] = _a(i,j,1);
+		a[idx+2] = _a(i,j,2);
+	      }
+	  glDrawPixels (w, h,
+			GL_RGB, GL_UNSIGNED_SHORT, a);
+
+	}
+      else if (cdata.is_uint8_type ())
+	{
+	  uint8NDArray _a = cdata.uint8_array_value ();
+
+	  OCTAVE_LOCAL_BUFFER (octave_uint8, a, (3*w*h));
+
+	  for (int i = 0; i < h; i++)
+	    for (int j = 0, idx = i*w*3; j < w; j++, idx += 3)
+	      {
+		a[idx]   = _a(i,j,0);
+		a[idx+1] = _a(i,j,1);
+		a[idx+2] = _a(i,j,2);
+	      }
+	  glDrawPixels (w, h,
+			GL_RGB, GL_UNSIGNED_BYTE, a);
+
+	}
+      else
+	{
+	  ok = false;
+	  warning ("opengl_texture::draw: invalid image data type (expected double, uint16, or uint8)");
+	}
+    }
+  // indexed
+  else if (dv.length () == 2)
+    {
+      // FIXME -- deal with indexed data
+      warning ("opengl_texture::draw:image indexed images not supported yet");
+    }
+  else
+    {
+      ok = false;
+      warning ("opengl_texture::draw: invalid image size (expected n*m*3 or n*m)");
+    }
+  glPixelZoom (1, 1);
 }
 
 void

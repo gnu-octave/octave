@@ -1,3 +1,8 @@
+2009-10-01  Shai Ayal  <shaiay@users.sourceforge.net>
+
+	* graphics.cc (image::properties::get_color_data): New function.
+	* gl-render.cc (opengl_renderer::draw): Handle RGB images.
+
 2009-10-01  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/cellfun.cc 

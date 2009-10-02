@@ -47,13 +47,13 @@ octave_base_scalar : public octave_base_value
 public:
 
   octave_base_scalar (void)
-    : octave_base_value (), typ (MatrixType ()) { }
+    : octave_base_value () { }
 
-  octave_base_scalar (const ST& s, const MatrixType& t = MatrixType ())
-    : octave_base_value (), scalar (s), typ (t) { }
+  octave_base_scalar (const ST& s)
+    : octave_base_value (), scalar (s) { }
 
   octave_base_scalar (const octave_base_scalar& s)
-    : octave_base_value (), scalar (s.scalar), typ (s.typ) { }
+    : octave_base_value (), scalar (s.scalar) { }
 
   ~octave_base_scalar (void) { }
 
@@ -117,9 +117,9 @@ public:
   sortmode is_sorted_rows (sortmode mode = UNSORTED) const
     { return mode ? mode : ASCENDING; }
 
-  MatrixType matrix_type (void) const { return typ; }
-  MatrixType matrix_type (const MatrixType& _typ) const
-    { MatrixType ret = typ; typ = _typ; return ret; }
+  MatrixType matrix_type (void) const { return MatrixType::Diagonal; }
+  MatrixType matrix_type (const MatrixType&) const
+    { return matrix_type (); }
 
   bool is_scalar_type (void) const { return true; }
 
@@ -141,8 +141,6 @@ protected:
 
   // The value of this scalar.
   ST scalar;
-
-  mutable MatrixType typ;
 };
 
 #endif

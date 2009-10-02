@@ -1,5 +1,11 @@
 2009-10-02  Jaroslav Hajek  <highegg@gmail.com>
 
+	* ov-base-scalar.h (octave_base_scalar::matrix_type): Always
+	return MatrixType::Diagonal.
+	(octave_base_scalar::typ): Remove.
+
+2009-10-02  Jaroslav Hajek  <highegg@gmail.com>
+
 	* ov.h: Define also diag matrix extractors.
 	(octave_type_traits, octave_array_type_traits): Remove.
 	(octave_value::builtin_type): New method.

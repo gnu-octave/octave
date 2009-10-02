@@ -73,6 +73,8 @@ public:
 
   idx_vector index_vector (void) const { return idx_vector (scalar); }
 
+  builtin_type_t builtin_type (void) const { return btyp_bool; }
+
   bool is_real_scalar (void) const { return true; }
 
   bool is_bool_scalar (void) const { return true; }

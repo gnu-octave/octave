@@ -1,3 +1,40 @@
+2009-10-02  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov.h: Define also diag matrix extractors.
+	(octave_type_traits, octave_array_type_traits): Remove.
+	(octave_value::builtin_type): New method.
+	* oct-stream.cc (do_read): Update.
+	* data.cc (identity_matrix): Update.
+	* ov-base.h (builtin_type_t): New enum.
+	(octave_base_value::builtin_type): New method.
+	* ov-re-mat.h (octave_matrix::builtin_type): New method.
+	* ov-flt-re-mat.h (octave_float_matrix::builtin_type): New method.
+	* ov-cx-mat.h (octave_complex_matrix::builtin_type): New method.
+	* ov-flt-cx-mat.h (octave_float_complex_matrix::builtin_type): New method.
+	* ov-bool-mat.h (octave_bool_matrix::builtin_type): New method.
+	* ov-ch-mat.h (octave_char_matrix::builtin_type): New method.
+	* ov-scalar.h (octave_scalar::builtin_type): New method.
+	* ov-float.h (octave_float::builtin_type): New method.
+	* ov-complex.h (octave_complex::builtin_type): New method.
+	* ov-bool.h (octave_bool::builtin_type): New method.
+	* ov-flt-complex.h (octave_float_complex::builtin_type): New method.
+	* ov-re-diag.h (octave_diag_matrix::builtin_type): New method.
+	* ov-flt-re-diag.h (octave_float_diag_matrix::builtin_type): New method.
+	* ov-cx-diag.h (octave_complex_diag_matrix::builtin_type): New method.
+	* ov-flt-cx-diag.h (octave_float_complex_diag_matrix::builtin_type): New method.
+	* ov-re-sparse.h (octave_sparse_matrix::builtin_type): New method.
+	* ov-cx-sparse.h (octave_sparse_complex_matrix::builtin_type): New method.
+	* ov-bool-sparse.h (octave_sparse_bool_matrix::builtin_type): New method.
+	* ov-intx.h (octave_int_matrix::builtin_type, octave_int_scalar::builtin_type): New methods.
+	* ov-int8.h: Define OCTAVE_INT_BTYP.
+	* ov-int16.h: Define OCTAVE_INT_BTYP.
+	* ov-int32.h: Define OCTAVE_INT_BTYP.
+	* ov-int64.h: Define OCTAVE_INT_BTYP.
+	* ov-uint8.h: Define OCTAVE_INT_BTYP.
+	* ov-uint16.h: Define OCTAVE_INT_BTYP.
+	* ov-uint32.h: Define OCTAVE_INT_BTYP.
+	* ov-uint64.h: Define OCTAVE_INT_BTYP.
+
 2009-10-01  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/cellfun.cc (Fcellfun): Fix initialization, add missing

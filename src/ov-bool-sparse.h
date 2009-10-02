@@ -88,6 +88,8 @@ public:
   idx_vector index_vector (void) const 
     { return idx_vector (bool_array_value ()); }
 
+  builtin_type_t builtin_type (void) const { return btyp_bool; }
+
   bool is_bool_matrix (void) const { return true; }
 
   bool is_bool_type (void) const { return true; }

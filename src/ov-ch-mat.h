@@ -82,6 +82,8 @@ public:
 
   idx_vector index_vector (void) const;
 
+  builtin_type_t builtin_type (void) const { return btyp_char; }
+
   bool is_char_matrix (void) const { return true; }
   bool is_real_matrix (void) const { return true; }
 

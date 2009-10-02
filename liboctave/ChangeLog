@@ -1,3 +1,7 @@
+2009-10-02  Jaroslav Hajek  <highegg@gmail.com>
+
+	* lo-traits.h (strip_template_param): New trait class.
+
 2009-10-01  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Array.cc (Array<T>::permute): Fast case identity permutation.

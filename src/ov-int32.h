@@ -35,6 +35,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #define OCTAVE_INT_MX_CLASS mxINT32_CLASS
 
+#define OCTAVE_INT_BTYP btyp_int32
+
 #include "ov-intx.h"
 
 #undef OCTAVE_INT_T
@@ -48,6 +50,8 @@ along with Octave; see the file COPYING.  If not, see
 #undef OCTAVE_TYPE_PREDICATE_FUNCTION
 
 #undef OCTAVE_INT_MX_CLASS
+
+#undef OCTAVE_INT_BTYP
 
 #endif
 

@@ -4160,7 +4160,7 @@ identity_matrix (int nr, int nc)
 {
   octave_value retval;
 
-  typename octave_array_type_traits<MT>::element_type one (1);
+  typename MT::element_type one (1);
 
   if (nr == 1 && nc == 1)
     retval = one;
@@ -4168,7 +4168,7 @@ identity_matrix (int nr, int nc)
     {
       dim_vector dims (nr, nc);
 
-      typename octave_array_type_traits<MT>::element_type zero (0);
+      typename MT::element_type zero (0);
 
       MT m (dims, zero);
 

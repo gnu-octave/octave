@@ -91,6 +91,8 @@ public:
   idx_vector index_vector (void) const 
     { return idx_cache ? *idx_cache : set_idx_cache (idx_vector (matrix)); }
 
+  builtin_type_t builtin_type (void) const { return btyp_float; }
+
   bool is_real_matrix (void) const { return true; }
 
   bool is_real_type (void) const { return true; }

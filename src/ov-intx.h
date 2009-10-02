@@ -68,6 +68,8 @@ public:
 
   bool is_integer_type (void) const { return true; }
 
+  builtin_type_t builtin_type (void) const { return OCTAVE_INT_BTYP; }
+
 private:
 
   template <class IM>
@@ -441,6 +443,8 @@ public:
   bool OCTAVE_TYPE_PREDICATE_FUNCTION (void) const { return true; }
 
   bool is_integer_type (void) const { return true; }
+
+  builtin_type_t builtin_type (void) const { return OCTAVE_INT_BTYP; }
 
 private:
 

@@ -81,6 +81,23 @@ public:
   typedef typename if_then_else<is_class_type<T>::no, T, T const&>::result type;
 };
 
+// Will turn TemplatedClass<T> to T, leave T otherwise.
+// Useful for stripping wrapper classes, like octave_int.
+
+template<template<typename> class TemplatedClass, typename T>
+class strip_template_param
+{
+public:
+  typedef T type;
+};
+
+template<template<typename> class TemplatedClass, typename T>
+class strip_template_param<TemplatedClass, TemplatedClass<T> >
+{
+public:
+  typedef T type;
+};
+
 #endif
 
 /*

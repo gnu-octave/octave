@@ -97,6 +97,8 @@ public:
 
   void assign (const octave_value_list& idx, const SparseMatrix& rhs);
 
+  builtin_type_t builtin_type (void) const { return btyp_complex; }
+
   bool is_complex_matrix (void) const { return true; }
 
   bool is_complex_type (void) const { return true; }

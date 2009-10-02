@@ -550,6 +550,9 @@ public:
   octave_value any (int dim = 0) const
     { return rep->any (dim); }
 
+  builtin_type_t builtin_type (void) const
+    { return rep->builtin_type (); }
+
   // Floating point types.
 
   bool is_double_type (void) const
@@ -1252,63 +1255,6 @@ OV_COMP_BINOP_FN (op_mul_herm)
 
 extern OCTINTERP_API void install_types (void);
 
-// FIXME -- these trait classes probably belong somehwere else...
-
-template <typename T>
-class
-octave_type_traits
-{
-public:
-  typedef T val_type;
-};
-
-#define OCTAVE_TYPE_TRAIT(T, VAL_T) \
-  template <> \
-  class \
-  octave_type_traits<T> \
-  { \
-  public: \
-    typedef VAL_T val_type; \
-  }
-
-OCTAVE_TYPE_TRAIT (octave_int8, octave_int8::val_type);
-OCTAVE_TYPE_TRAIT (octave_uint8, octave_uint8::val_type);
-OCTAVE_TYPE_TRAIT (octave_int16, octave_int16::val_type);
-OCTAVE_TYPE_TRAIT (octave_uint16, octave_uint16::val_type);
-OCTAVE_TYPE_TRAIT (octave_int32, octave_int32::val_type);
-OCTAVE_TYPE_TRAIT (octave_uint32, octave_uint32::val_type);
-OCTAVE_TYPE_TRAIT (octave_int64, octave_int64::val_type);
-OCTAVE_TYPE_TRAIT (octave_uint64, octave_uint64::val_type);
-
-template <typename T>
-class octave_array_type_traits
-{
-public:
-  typedef T element_type;
-};
-
-#define OCTAVE_ARRAY_TYPE_TRAIT(T, ELT_T) \
-  template <> \
-  class \
-  octave_array_type_traits<T> \
-  { \
-  public: \
-    typedef ELT_T element_type; \
-  }
-
-OCTAVE_ARRAY_TYPE_TRAIT (charNDArray, char);
-OCTAVE_ARRAY_TYPE_TRAIT (boolNDArray, bool);
-OCTAVE_ARRAY_TYPE_TRAIT (int8NDArray, octave_int8);
-OCTAVE_ARRAY_TYPE_TRAIT (uint8NDArray, octave_uint8);
-OCTAVE_ARRAY_TYPE_TRAIT (int16NDArray, octave_int16);
-OCTAVE_ARRAY_TYPE_TRAIT (uint16NDArray, octave_uint16);
-OCTAVE_ARRAY_TYPE_TRAIT (int32NDArray, octave_int32);
-OCTAVE_ARRAY_TYPE_TRAIT (uint32NDArray, octave_uint32);
-OCTAVE_ARRAY_TYPE_TRAIT (int64NDArray, octave_int64);
-OCTAVE_ARRAY_TYPE_TRAIT (uint64NDArray, octave_uint64);
-OCTAVE_ARRAY_TYPE_TRAIT (NDArray, double);
-OCTAVE_ARRAY_TYPE_TRAIT (FloatNDArray, float);
-
 // This will eventually go away, but for now it can be used to
 // simplify the transition to the new octave_value class hierarchy,
 // which uses octave_base_value instead of octave_value for the type
@@ -1372,6 +1318,12 @@ DEF_VALUE_EXTRACTOR (RowVector, row_vector)
 DEF_VALUE_EXTRACTOR (FloatRowVector, float_row_vector)
 DEF_VALUE_EXTRACTOR (ComplexRowVector, complex_row_vector)
 DEF_VALUE_EXTRACTOR (FloatComplexRowVector, float_complex_row_vector)
+
+DEF_VALUE_EXTRACTOR (DiagMatrix, diag_matrix)
+DEF_VALUE_EXTRACTOR (FloatDiagMatrix, float_diag_matrix)
+DEF_VALUE_EXTRACTOR (ComplexDiagMatrix, complex_diag_matrix)
+DEF_VALUE_EXTRACTOR (FloatComplexDiagMatrix, float_complex_diag_matrix)
+DEF_VALUE_EXTRACTOR (PermMatrix, perm_matrix)
 
 #undef DEF_VALUE_EXTRACTOR
 

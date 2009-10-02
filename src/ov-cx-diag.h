@@ -57,6 +57,8 @@ public:
 
   octave_base_value *try_narrowing_conversion (void);
 
+  builtin_type_t builtin_type (void) const { return btyp_complex; }
+
   bool is_complex_matrix (void) const { return true; }
 
   bool is_complex_type (void) const { return true; }

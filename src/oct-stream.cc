@@ -3072,10 +3072,10 @@ do_read (octave_stream& strm, octave_idx_type nr, octave_idx_type nc, octave_idx
 
   count = 0;
 
-  typename octave_array_type_traits<RET_T>::element_type elt_zero
-    = typename octave_array_type_traits<RET_T>::element_type ();
+  typename RET_T::element_type elt_zero
+    = typename RET_T::element_type ();
 
-  typename octave_array_type_traits<RET_T>::element_type *dat = 0;
+  typename RET_T::element_type *dat = 0;
 
   octave_idx_type max_size = 0;
 
@@ -3117,8 +3117,8 @@ do_read (octave_stream& strm, octave_idx_type nr, octave_idx_type nc, octave_idx
 
   union
   {
-    char buf[sizeof (typename octave_type_traits<READ_T>::val_type)];
-    typename octave_type_traits<READ_T>::val_type val;
+    char buf[sizeof (typename strip_template_param<octave_int, READ_T>::type)];
+    typename strip_template_param<octave_int, READ_T>::type val;
   } u;
 
   std::istream *isp = strm.input_stream ();
@@ -3144,22 +3144,22 @@ do_read (octave_stream& strm, octave_idx_type nr, octave_idx_type nc, octave_idx
 		  break;
 		}
 
-	      is.read (u.buf, sizeof (typename octave_type_traits<READ_T>::val_type));
+	      is.read (u.buf, sizeof (typename strip_template_param<octave_int, READ_T>::type));
 
 	      // We only swap bytes for integer types.  For float
 	      // types, the format conversion will also handle byte
 	      // swapping.
 
 	      if (swap)
-		swap_bytes<sizeof (typename octave_type_traits<READ_T>::val_type)> (u.buf);
+		swap_bytes<sizeof (typename strip_template_param<octave_int, READ_T>::type)> (u.buf);
 	      else if (do_float_fmt_conv)
 		do_float_format_conversion
 		  (u.buf,
-		   sizeof (typename octave_type_traits<READ_T>::val_type),
+		   sizeof (typename strip_template_param<octave_int, READ_T>::type),
 		   1, from_flt_fmt, oct_mach_info::float_format ());
 
-	      typename octave_array_type_traits<RET_T>::element_type tmp
-		= static_cast <typename octave_array_type_traits<RET_T>::element_type> (u.val);
+	      typename RET_T::element_type tmp
+		= static_cast <typename RET_T::element_type> (u.val);
 
 	      if (is)
 		{
@@ -3414,13 +3414,13 @@ template <class T>
 void
 write_int (std::ostream& os, bool swap, const T& val)
 {
-  typename octave_type_traits<T>::val_type tmp = val.value ();
+  typename T::val_type tmp = val.value ();
 
   if (swap)
-    swap_bytes<sizeof (typename octave_type_traits<T>::val_type)> (&tmp);
+    swap_bytes<sizeof (typename T::val_type)> (&tmp);
 
   os.write (reinterpret_cast<const char *> (&tmp),
-	    sizeof (typename octave_type_traits<T>::val_type));
+	    sizeof (typename T::val_type));
 }
 
 template void write_int (std::ostream&, bool, const octave_int8&);

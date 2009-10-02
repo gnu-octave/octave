@@ -158,6 +158,8 @@ public:
   sortmode is_sorted_rows (sortmode mode = UNSORTED) const
     { return mode ? mode : ASCENDING; }
 
+  builtin_type_t builtin_type (void) const { return btyp_double; }
+
   bool is_real_type (void) const { return true; }
 
   bool is_double_type (void) const { return true; }

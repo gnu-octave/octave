@@ -82,6 +82,8 @@ public:
   octave_value any (int = 0) const
     { return (scalar != 0 && ! lo_ieee_isnan (scalar)); }
 
+  builtin_type_t builtin_type (void) const { return btyp_float; }
+
   bool is_real_scalar (void) const { return true; }
 
   bool is_real_type (void) const { return true; }

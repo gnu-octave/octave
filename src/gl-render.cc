@@ -2704,8 +2704,53 @@ opengl_renderer::draw (const image::properties& props)
   const ColumnVector p0 = xform.transform (x(0), y(0), 0);
   const ColumnVector p1 = xform.transform (x(1), y(1), 0);
 
-  glPixelZoom ((p1(0)-p0(0))/(w-1), -(p1(1)-p0(1))/(h-1));
-  glRasterPos3d (x(0)-0.5, y(0)-0.5, 0);
+  // image pixel size in screen pixel units
+  float pix_dx = (p1(0) - p0(0))/(w-1);
+  float pix_dy = (p1(1) - p0(1))/(h-1);
+
+  // image pixel size in normalized units
+  float nor_dx = (x(1) - x(0))/(w-1);
+  float nor_dy = (y(1) - y(0))/(h-1);
+
+  // OpenGL won't draw the image if it's origin is outside the
+  // viewport/clipping plane so we must do the clipping
+  // ourselfes - only draw part of the image
+
+  int j0 = 0, j1 = w;
+  int i0 = 0, i1 = h;
+
+  float im_xmin = x(0) - nor_dx/2;
+  float im_xmax = x(1) + nor_dx/2;
+  float im_ymin = y(0) - nor_dy/2;
+  float im_ymax = y(1) + nor_dy/2;
+  if (props.is_clipping ()) // clip to axes
+    {
+      if (im_xmin < xmin)
+	j0 += (xmin - im_xmin)/nor_dx + 1;
+      if (im_xmax > xmax)
+	j1 -= (im_xmax - xmax)/nor_dx ;
+
+      if (im_ymin < ymin)
+	i0 += (ymin - im_ymin)/nor_dy + 1;
+      if (im_ymax > ymax)
+	i1 -= (im_ymax - ymax)/nor_dy;
+    }
+  else // clip to viewport
+    {
+      GLfloat vp[4];
+      glGetFloatv(GL_VIEWPORT, vp);
+      // FIXME -- actually add the code to do it!
+      
+    }
+
+  if (i0 >= i1 || j0 >= j1) 
+    return;
+
+  glPixelZoom (pix_dx, -pix_dy);
+  glRasterPos3d (im_xmin + nor_dx*j0, im_ymin + nor_dy*i0, 0);
+
+  // by default this is 4
+  glPixelStorei (GL_UNPACK_ALIGNMENT,1);
 
   // Expect RGB data
   if (dv.length () == 3 && dv(2) == 3)
@@ -2714,11 +2759,11 @@ opengl_renderer::draw (const image::properties& props)
 	{
 	  const NDArray xcdata = cdata.array_value ();
 
-	  OCTAVE_LOCAL_BUFFER (GLfloat, a, (3*w*h));
+	  OCTAVE_LOCAL_BUFFER (GLfloat, a, 3*(j1-j0)*(i1-i0));
 
-	  for (int i = 0; i < h; i++)
+	  for (int i = i0; i < i1; i++)
 	    {
-	      for (int j = 0, idx = i*w*3; j < w; j++, idx += 3)
+	      for (int j = j0, idx = (i-i0)*(j1-j0)*3; j < j1; j++, idx += 3)
 		{
 		  a[idx]   = xcdata(i,j,0);
 		  a[idx+1] = xcdata(i,j,1);
@@ -2726,18 +2771,18 @@ opengl_renderer::draw (const image::properties& props)
 		}
 	    }
 
-	  glDrawPixels (w, h, GL_RGB, GL_FLOAT, a);
+	  glDrawPixels (j1-j0, i1-i0, GL_RGB, GL_FLOAT, a);
 
 	}
       else if (cdata.is_uint16_type ())
 	{
-	  const uint8NDArray xcdata = cdata.uint16_array_value ();
+	  const uint16NDArray xcdata = cdata.uint16_array_value ();
 
-	  OCTAVE_LOCAL_BUFFER (octave_uint16, a, (3*w*h));
+	  OCTAVE_LOCAL_BUFFER (GLushort, a, 3*(j1-j0)*(i1-i0));
 
-	  for (int i = 0; i < h; i++)
+	  for (int i = i0; i < i1; i++)
 	    {
-	      for (int j = 0, idx = i*w*3; j < w; j++, idx += 3)
+	      for (int j = j0, idx = (i-i0)*(j1-j0)*3; j < j1; j++, idx += 3)
 		{
 		  a[idx]   = xcdata(i,j,0);
 		  a[idx+1] = xcdata(i,j,1);
@@ -2745,18 +2790,18 @@ opengl_renderer::draw (const image::properties& props)
 		}
 	    }
 
-	  glDrawPixels (w, h, GL_RGB, GL_UNSIGNED_SHORT, a);
+	  glDrawPixels (j1-j0, i1-i0, GL_RGB, GL_UNSIGNED_SHORT, a);
 
 	}
       else if (cdata.is_uint8_type ())
 	{
 	  const uint8NDArray xcdata = cdata.uint8_array_value ();
 
-	  OCTAVE_LOCAL_BUFFER (octave_uint8, a, (3*w*h));
+	  OCTAVE_LOCAL_BUFFER (GLubyte, a, 3*(j1-j0)*(i1-i0));
 
-	  for (int i = 0; i < h; i++)
+	  for (int i = i0; i < i1; i++)
 	    {
-	      for (int j = 0, idx = i*w*3; j < w; j++, idx += 3)
+	      for (int j = j0, idx = (i-i0)*(j1-j0)*3; j < j1; j++, idx += 3)
 		{
 		  a[idx]   = xcdata(i,j,0);
 		  a[idx+1] = xcdata(i,j,1);
@@ -2764,8 +2809,7 @@ opengl_renderer::draw (const image::properties& props)
 		}
 	    }
 
-	  glDrawPixels (w, h, GL_RGB, GL_UNSIGNED_BYTE, a);
-
+	  glDrawPixels (j1-j0, i1-i0, GL_RGB, GL_UNSIGNED_BYTE, a);
 	}
       else
 	{

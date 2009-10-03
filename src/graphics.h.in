@@ -3175,13 +3175,27 @@ public:
       }
 
   private:
-    // FIXME -- limits should take pixel width into account.
     void update_xdata (void)
-      { set_xlim (xdata.get_limits ()); }
+    { 
+      octave_idx_type iw = (get_cdata ().dims ())(1) - 1;
+      Matrix limits = xdata.get_limits ();
+      float dp = (limits(1) - limits(0))/(2*iw);
 
-    // FIXME -- idem.
+      limits(0) = limits(0) - dp;
+      limits(1) = limits(1) + dp;
+      set_xlim (limits); 
+    }
+
     void update_ydata (void)
-      { set_ylim (ydata.get_limits ()); }
+    {
+      octave_idx_type ih = (get_cdata().dims ())(0) - 1;
+      Matrix limits = ydata.get_limits ();
+      float dp = (limits(1) - limits(0))/(2*ih);
+
+      limits(0) = limits(0) - dp;
+      limits(1) = limits(1) + dp;
+      set_ylim (limits); 
+    }
 
     void update_cdata (void)
       {

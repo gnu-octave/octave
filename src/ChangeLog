@@ -1,3 +1,10 @@
+2009-10-03  Shai Ayal  <shaiay@users.sourceforge.net>
+
+	* graphics.h.in (image::update_xdata): Add a half-pixel to each limit.
+	(image::update_ydata): Ditto.
+	* gl-render.cc (opengl_renderer::draw): Clip image to axis and fix
+	unpack alignment.
+
 2009-10-02  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-base-scalar.h (octave_base_scalar::matrix_type): Always

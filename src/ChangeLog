@@ -1,3 +1,9 @@
+2009-10-04  John W. Eaton  <jwe@octave.org>
+
+	* ov-str-mat.h (octave_char_matrix_str::squeeze,
+	octave_char_matrix_sq_str::squeeze, octave_char_matrix_str::diag,
+	octave_char_matrix_sq_str::diag): New functions.
+
 2009-10-03  Shai Ayal  <shaiay@users.sourceforge.net>
 
 	* graphics.h.in (image::update_xdata): Add a half-pixel to each limit.

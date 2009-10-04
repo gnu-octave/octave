@@ -91,6 +91,9 @@ public:
 			    bool resize_ok = false)
     { return do_index_op_internal (idx, resize_ok); }
 
+  octave_value squeeze (void) const
+    { return octave_value (charNDArray (matrix.squeeze ()), true); }
+
   octave_value reshape (const dim_vector& new_dims) const
     { return octave_value (charNDArray (matrix.reshape (new_dims)), true); }
 
@@ -98,6 +101,9 @@ public:
     { return octave_value (charNDArray (matrix.permute (vec, inv)), true); }
 
   octave_value resize (const dim_vector& dv, bool fill = false) const;
+
+  octave_value diag (octave_idx_type k = 0) const
+    { return octave_value (matrix.diag (k), true); }
 
   bool is_string (void) const { return true; }
 
@@ -255,6 +261,9 @@ public:
   octave_base_value *clone (void) const { return new octave_char_matrix_sq_str (*this); }
   octave_base_value *empty_clone (void) const { return new octave_char_matrix_sq_str (); }
 
+  octave_value squeeze (void) const
+    { return octave_value (charNDArray (matrix.squeeze ()), true, '\''); }
+
   octave_value reshape (const dim_vector& new_dims) const
     { return octave_value (charNDArray (matrix.reshape (new_dims)), true, '\''); }
 
@@ -267,6 +276,9 @@ public:
       retval.resize (dv);
       return octave_value (retval, true, '\'');
     }
+
+  octave_value diag (octave_idx_type k = 0) const
+    { return octave_value (matrix.diag (k), true, '\''); }
 
   bool is_sq_string (void) const { return true; }
 

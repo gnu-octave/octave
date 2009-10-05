@@ -1,5 +1,10 @@
 2009-10-05  Jaroslav Hajek  <highegg@gmail.com>
 
+	* pt-idx.cc (tree_index_expression::rvalue): When evaluating index
+	chain, split on chaining ()() and (){}.
+
+2009-10-05  Jaroslav Hajek  <highegg@gmail.com>
+
 	* pt-misc.cc (tree_argument_list::convert_to_const_vector):
 	Return more than nargout arguments only unless undefined elements
 	occur.

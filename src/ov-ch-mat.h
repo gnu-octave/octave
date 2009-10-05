@@ -193,11 +193,6 @@ public:
 
 #undef BOOL_MAT_MAPPER
 
-protected:
-
-  DECLARE_OCTAVE_ALLOCATOR
-
-  DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
 
 #endif

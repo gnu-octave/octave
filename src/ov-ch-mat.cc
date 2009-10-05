@@ -39,11 +39,6 @@ along with Octave; see the file COPYING.  If not, see
 
 template class octave_base_matrix<charNDArray>;
 
-DEFINE_OCTAVE_ALLOCATOR (octave_char_matrix);
-
-DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_char_matrix,
-				     "char matrix", "int8");
-
 idx_vector 
 octave_char_matrix::index_vector (void) const
 { 

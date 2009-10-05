@@ -2614,7 +2614,6 @@ install_types (void)
   octave_range::register_type ();
   octave_bool::register_type ();
   octave_bool_matrix::register_type ();
-  octave_char_matrix::register_type ();
   octave_char_matrix_str::register_type ();
   octave_char_matrix_sq_str::register_type ();
   octave_int8_scalar::register_type ();

@@ -37,13 +37,18 @@ public:
 
   base_lu (void) { }
 
-  base_lu (const base_lu& a) : a_fact (a.a_fact), ipvt (a.ipvt) { }
+  base_lu (const base_lu& a) : 
+    a_fact (a.a_fact), l_fact (a.l_fact), ipvt (a.ipvt) { }
+
+  base_lu (const lu_type& l, const lu_type& u, 
+           const PermMatrix& p);
 
   base_lu& operator = (const base_lu& a)
     {
       if (this != &a)
 	{
 	  a_fact = a.a_fact;
+          l_fact = a.l_fact;
 	  ipvt = a.ipvt;
 	}
       return *this;
@@ -51,11 +56,15 @@ public:
 
   ~base_lu (void) { }
 
+  bool packed (void) const;
+
+  void unpack (void);
+
   lu_type L (void) const;
 
   lu_type U (void) const;
 
-  lu_type Y (void) const { return a_fact; }
+  lu_type Y (void) const;
 
   PermMatrix P (void) const;
 
@@ -64,8 +73,8 @@ public:
 protected:
 
   Array<octave_idx_type> getp (void) const;
-  lu_type a_fact;
-  MArray<octave_idx_type> ipvt;
+  lu_type a_fact, l_fact;
+  Array<octave_idx_type> ipvt;
 };
 
 #endif

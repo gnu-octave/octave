@@ -61,7 +61,8 @@ FloatLU::FloatLU (const FloatMatrix& a)
 
   F77_XFCN (sgetrf, SGETRF, (a_nr, a_nc, tmp_data, a_nr, pipvt, info));
 
-  ipvt -= static_cast<octave_idx_type> (1);
+  for (octave_idx_type i = 0; i < mn; i++)
+    pipvt[i] -= 1;
 }
 
 /*

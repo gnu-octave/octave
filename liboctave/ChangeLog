@@ -1,3 +1,12 @@
+2009-10-05  Jaroslav Hajek  <highegg@gmail.com>
+
+	* dim-vector.h (operator ==): Include fast case.
+	* base-lu.cc (base_lu::packed, base_lu::unpack): New methods.
+	(base_lu::L, base_lu::U, base_lu::Y, base_lu::getp): Distinguish
+	packed vs. unpacked case.
+	* base-lu.h: Update decls.
+	(base_lu::l_fact): New member field.
+
 2009-10-02  Jaroslav Hajek  <highegg@gmail.com>
 
 	* lo-traits.h (strip_template_param): New trait class.

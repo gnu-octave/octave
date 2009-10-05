@@ -516,11 +516,16 @@ public:
       return def;      
     }
 
+  friend bool operator == (const dim_vector& a, const dim_vector& b);
 };
 
-static inline bool
+inline bool
 operator == (const dim_vector& a, const dim_vector& b)
 {
+  // Fast case.
+  if (a.rep == b.rep)
+    return true;
+
   bool retval = true;
 
   int a_len = a.length ();
@@ -543,7 +548,7 @@ operator == (const dim_vector& a, const dim_vector& b)
   return retval;
 }
 
-static inline bool
+inline bool
 operator != (const dim_vector& a, const dim_vector& b)
 {
   return ! operator == (a, b);

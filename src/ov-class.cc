@@ -464,27 +464,32 @@ octave_class::subsref (const std::string& type,
 	  count++;
 	  args(0) = octave_value (this);
 
+          // FIXME: for Matlab compatibility, let us attempt to set up a proper
+          // value for nargout at least in the simple case where the
+          // cs-list-type expression - i.e., {} or ().x, is the leading one.
+          // Note that Octave does not actually need this, since it will
+          // be able to properly react to varargout a posteriori.
           bool maybe_cs_list_query = (type[0] == '.' || type[0] == '{'
                                       || (type.length () > 1 && type[0] == '('
                                           && type[1] == '.'));
 
-          if (nargout == 1 && maybe_cs_list_query)
+          int true_nargout = nargout;
+
+          if (maybe_cs_list_query)
             {
               // Set up a proper nargout for the subsref call by calling numel.
               octave_value_list tmp;
               if (type[0] != '.') tmp = idx.front ();
-              octave_idx_type true_nargout = numel (tmp);
-              if (! error_state)
-                {
-                  tmp = feval (meth.function_value (), args, true_nargout);
-                  if (true_nargout != 1)
-                    retval(0) = octave_value (tmp, true);
-                  else
-                    retval = tmp;
-                }
+              true_nargout = numel (tmp);
             }
-          else
-            retval = feval (meth.function_value (), args, nargout);
+
+          retval = feval (meth.function_value (), args, true_nargout);
+
+          // Since we're handling subsref, return the list in the first value
+          // if it has more than one element, to be able to pass through
+          // rvalue1 calls. 
+          if (retval.length () > 1)
+            retval = octave_value (retval, true);
 	}
       else
 	{

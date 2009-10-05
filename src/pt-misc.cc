@@ -208,34 +208,45 @@ tree_parameter_list::convert_to_const_vector (int nargout,
                                               const Cell& varargout)
 {
   octave_idx_type vlen = varargout.numel ();
+  int len = length ();
 
   // Special case. Will do a shallow copy.
-  if (length () == 0 && vlen == nargout)
+  if (len == 0)
     return varargout;
-
-  // We want always at least one return value.
-  int nout = std::max (nargout, 1);
-  octave_value_list retval (nout);
-
-  int i = 0;
-
-  for (iterator p = begin (); p != end () && i < nout; p++)
+  else if (nargout <= len)
     {
-      tree_decl_elt *elt = *p;
+      octave_value_list retval (nargout);
 
-      retval(i++) = elt->is_defined () ? elt->rvalue1 () : octave_value ();
+      int i = 0;
+
+      for (iterator p = begin (); p != end (); p++)
+        {
+          tree_decl_elt *elt = *p;
+          if (elt->is_defined ())
+            retval(i++) = elt->rvalue1 ();
+          else
+            break;
+        }
+
+      return retval;
     }
+  else
+    {
+      octave_value_list retval (len + vlen);
 
-  vlen = std::min (vlen, nout - i);
+      int i = 0;
 
-  for (octave_idx_type j = 0; j < vlen; j++)
-    retval(i++) = varargout(j);
+      for (iterator p = begin (); p != end (); p++)
+        {
+          tree_decl_elt *elt = *p;
+          retval(i++) = elt->rvalue1 ();
+        }
 
-  // If there was zero outputs requested, and nothing is defined, don't return anything.
-  if (nargout == 0 && retval(0).is_undefined ())
-    retval = octave_value_list ();
+      for (octave_idx_type j = 0; j < vlen; j++)
+        retval(i++) = varargout(j);
 
-  return retval;
+      return retval;
+    }
 }
 
 bool

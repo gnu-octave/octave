@@ -1,5 +1,13 @@
 2009-10-05  Jaroslav Hajek  <highegg@gmail.com>
 
+	* pt-misc.cc (tree_argument_list::convert_to_const_vector):
+	Return more than nargout arguments only unless undefined elements
+	occur.
+	* ov-class.cc (octave_class::subsref): Pack return list from
+	overloaded method into first value.
+
+2009-10-05  Jaroslav Hajek  <highegg@gmail.com>
+
 	* ov-ch-mat.h (octave_char_matrix): Don't declare allocator and
 	typeid.
 	* ov-ch-mat.cc: Don't define them.

@@ -28,6 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "idx-vector.h"
 #include "error.h"
 #include "Array-util.h"
+#include "oct-locbuf.h"
 
 static void
 gripe_invalid_permutation (void)
@@ -100,16 +101,30 @@ PermMatrix::inverse (void) const
 octave_idx_type 
 PermMatrix::determinant (void) const
 {
-  Array<octave_idx_type> pa = *this;
-  octave_idx_type len = pa.length (), *p = pa.fortran_vec ();
-  bool neg = false;
+  // Determine the sign of a permutation in linear time.
+  // Is this widely known?
+
+  octave_idx_type len = perm_length ();
+  const octave_idx_type *pa = data ();
+
+  OCTAVE_LOCAL_BUFFER (octave_idx_type, p, len);
+  OCTAVE_LOCAL_BUFFER (octave_idx_type, q, len);
+
   for (octave_idx_type i = 0; i < len; i++)
     {
-      octave_idx_type j = p[i];
+      p[i] = pa[i];
+      q[p[i]] = i;
+    }
+
+  bool neg = false;
+
+  for (octave_idx_type i = 0; i < len; i++)
+    {
+      octave_idx_type j = p[i], k = q[i];
       if (j != i)
         {
-          p[i] = p[j];
-          p[j] = j;
+          p[k] = p[i];
+          q[j] = q[i];
           neg = ! neg;
         }
     }

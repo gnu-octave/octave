@@ -1,5 +1,10 @@
 2009-10-05  Jaroslav Hajek  <highegg@gmail.com>
 
+	* PermMatrix.cc (PermMatrix::determinant): Implement a (hopefully)
+	working algorithm.
+
+2009-10-05  Jaroslav Hajek  <highegg@gmail.com>
+
 	* dim-vector.h (operator ==): Include fast case.
 	* base-lu.cc (base_lu::packed, base_lu::unpack): New methods.
 	(base_lu::L, base_lu::U, base_lu::Y, base_lu::getp): Distinguish

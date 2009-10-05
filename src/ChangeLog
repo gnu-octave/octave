@@ -1,3 +1,70 @@
+2009-10-05  John W. Eaton  <jwe@octave.org>
+
+	* ov.h (octave_value (const charMatrix&, char, bool),
+	octave_value (const charNDArray&, char, bool),
+	octave_value (const ArrayN<char>&, char, bool)):
+	New constructor decls.
+	(octave_value (const charMatrix&, bool, char),
+	octave_value (const charNDArray&, bool, char),
+	octave_value (const ArrayN<char>&, bool, char)): Mark with
+	GCC_ATTR_DEPRECATED.  Single-quoted strings are now default string
+	type.
+	(octave_value::convert_to_str): Default is single-quoted strings.
+	* ov.cc (octave_value (const charMatrix&, char, bool),
+	octave_value (const charNDArray&, char, bool),
+	octave_value (const ArrayN<char>&, char, bool)): New constructors.
+	(octave_value (const charMatrix&, bool, char),
+	octave_value (const charNDArray&, bool, char),
+	octave_value (const ArrayN<char>&, bool, char)):
+	Assume is_string argument is always true.
+
+	* ov-re-mat.cc (octave_sparse_matrix::convert_to_str_internal):
+	Update for octave_value constructore changes.
+	* ov-ch-mat.h (octave_char_matrix::convert_to_str_internal): Likewise.
+	* ov-re-sparse.cc (octave_sparse_matrix::convert_to_str_internal):
+	Likewise.
+	* ov-str-mat.h (octave_char_matrix_str::squeeze,
+	octave_char_matrix_str::reshape, octave_char_matrix_str::permute,
+	octave_char_matrix_str::diag, octave_char_matrix_str::sort,
+	octave_char_matrix_sq_str::squeeze,
+	octave_char_matrix_sq_str::reshape,
+	octave_char_matrix_sq_str::permute,
+	octave_char_matrix_sq_str::diag, octave_char_matrix_sq_str::sort):
+	Likewise.
+	* ov-str-mat.cc (octave_char_matrix_str::do_index_op_internal):
+	Likewise.
+	(octave_char_matrix_str::resize): Likewise.
+	* data.cc (do_cat, Fmerge): Likewise.
+	* ops.h (DEFNDCHARCATOP_FN): Likewise.
+	* ov-base-int.cc (octave_base_int_matrix<T>::convert_to_str_internal):
+	Likewise.
+	* pt-mat.cc (tree_matrix::rvalue1): Likewise.
+
+	* ov-ch-mat.h (octave_char_matrix::octave_char_matrix): Delete
+	unused bool arg.  Declare constructors protected.
+
+	(xisalnum, xisalpha, xisascii, xiscntrl, xisdigit, xisgraph,
+	xislower, xisprint, xispunct, xisspace, xisupper, xisxdigit,
+	xtoascii, xtolower, xtoupper): Move decls here from ov-str-mat.h.
+	(MAT_MAPPER, BOOL_MAT_MAPPER): Move macro definitions and uses
+	here from ov-str-mat.h.
+
+	* ov-ch-mat.cc (MACRO_WRAPPER, STRING_MAPPER, TOSTRING_MAPPER):
+	Move macro definitions and uses here.
+	* ov-str-mat.cc: From here.
+
+	* DLD-FUNCTIONS/typecast (Ftypecast): Update for octave_value
+	constructor changes.  Create sq_string unless casting from string,
+	then preserve exact type.
+	(Fbitpack): Update for octave_value constructor changes.  Create
+	sq_string.
+	* DLD-FUNCTIONS/hex2num.cc (Fnum2hex): Update for octave_value
+	constructor changes.  Create sq_string.
+	* ls-oct-ascii.cc (read_ascii_data): Likewise.
+	* mex.cc (mxArray_number::as_octave_value): Likewise.
+	* oct-stream.cc (octave_stream::read): Likewise.
+	* ov-base.cc (STRING_MAPPER): Likewise.
+
 2009-10-04  John W. Eaton  <jwe@octave.org>
 
 	* ov-str-mat.h (octave_char_matrix_str::squeeze,

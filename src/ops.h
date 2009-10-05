@@ -381,8 +381,8 @@ extern void install_ops (void);
     CAST_BINOP_ARGS (CONCAT2(octave_, t1)&, const CONCAT2(octave_, t2)&); \
  \
     return octave_value (v1.char_array_value () . f (v2.char_array_value (), ra_idx), \
-			 true, ((a1.is_sq_string () || a2.is_sq_string ()) \
-				? '\'' : '"')); \
+			 ((a1.is_sq_string () || a2.is_sq_string ()) \
+			  ? '\'' : '"')); \
   }
 
 // For compatibility, the second arg is always converted to the type

@@ -1166,7 +1166,7 @@ UNDEFINED_MAPPER (tanh)
   octave_value \
   octave_base_value::F (void) const \
   { \
-    octave_value tmp = octave_value (char_array_value (true), true); \
+    octave_value tmp = char_array_value (true); \
     return error_state ? octave_value () : octave_value (tmp.F ()); \
   }
 

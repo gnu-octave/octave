@@ -97,7 +97,7 @@ octave_char_matrix_str::do_index_op_internal (const octave_value_list& idx,
   switch (len)
     {
     case 0:
-      retval = octave_value (matrix, true, type);
+      retval = octave_value (matrix, type);
       break;
 
     case 1:
@@ -106,7 +106,7 @@ octave_char_matrix_str::do_index_op_internal (const octave_value_list& idx,
 
 	if (! error_state)
 	  retval = octave_value (charNDArray (matrix.index (i, resize_ok)),
-				 true, type);
+				 type);
       }
       break;
 
@@ -117,7 +117,7 @@ octave_char_matrix_str::do_index_op_internal (const octave_value_list& idx,
 
 	if (! error_state)
 	  retval = octave_value (charNDArray (matrix.index (i, j, resize_ok)),
-				 true, type);
+				 type);
       }
       break;
 
@@ -130,7 +130,7 @@ octave_char_matrix_str::do_index_op_internal (const octave_value_list& idx,
 
 	if (! error_state)
 	  retval = octave_value (charNDArray (matrix.index (idx_vec, resize_ok)),
-				 true, type);
+				 type);
       }
       break;
     }
@@ -143,10 +143,10 @@ octave_char_matrix_str::resize (const dim_vector& dv, bool fill) const
 {
   charNDArray retval (matrix);
   if (fill)
-    retval.resize (dv, charNDArray::resize_fill_value());
+    retval.resize (dv, charNDArray::resize_fill_value ());
   else
     retval.resize (dv);
-  return octave_value (retval, true);
+  return octave_value (retval, is_sq_string () ? '\'' : '"');
 }
 
 #define CHAR_MATRIX_CONV(T, INIT, TNAME, FCN) \
@@ -749,46 +749,6 @@ octave_char_matrix_str::load_hdf5 (hid_t loc_id, const char *name,
 }
 
 #endif
-
-#define MACRO_WRAPPER(FCN, CTYPE_FCN) \
-  static int x ## FCN (int c) { return CTYPE_FCN (c); }
-
-#define STRING_MAPPER(FCN, AMAP, CTYPE_FCN) \
-  MACRO_WRAPPER (FCN, CTYPE_FCN) \
- \
-  octave_value \
-  octave_char_matrix_str::FCN (void) const \
-  { \
-    static charNDArray::mapper smap = x ## FCN; \
-    return matrix.AMAP (smap);  \
-  }
-
-#define TOSTRING_MAPPER(FCN, AMAP, CTYPE_FCN) \
-  MACRO_WRAPPER (FCN, CTYPE_FCN) \
- \
-  octave_value \
-  octave_char_matrix_str::FCN (void) const \
-  { \
-    static charNDArray::mapper smap = x ## FCN; \
-    return octave_value (matrix.AMAP (smap), true, \
-			 is_sq_string () ? '\'' : '"'); \
-  }
-
-STRING_MAPPER (xisalnum, bmap, isalnum)
-STRING_MAPPER (xisalpha, bmap, isalpha)
-STRING_MAPPER (xisascii, bmap, isascii)
-STRING_MAPPER (xiscntrl, bmap, iscntrl)
-STRING_MAPPER (xisdigit, bmap, isdigit)
-STRING_MAPPER (xisgraph, bmap, isgraph)
-STRING_MAPPER (xislower, bmap, islower)
-STRING_MAPPER (xisprint, bmap, isprint)
-STRING_MAPPER (xispunct, bmap, ispunct)
-STRING_MAPPER (xisspace, bmap, isspace)
-STRING_MAPPER (xisupper, bmap, isupper)
-STRING_MAPPER (xisxdigit, bmap, isxdigit)
-STRING_MAPPER (xtoascii, dmap, toascii)
-TOSTRING_MAPPER (xtolower, smap, tolower)
-TOSTRING_MAPPER (xtoupper, smap, toupper)
 
 /*
 ;;; Local Variables: ***

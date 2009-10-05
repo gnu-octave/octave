@@ -177,8 +177,8 @@ num2hex ([-1, 1, e, Inf, NaN, NA]);\n\
 		  m.elem (i, j) = ch;
 		}
 	    }
-	  
-	  retval = octave_value (m, true);
+
+	  retval = m;
 	}
     }
 

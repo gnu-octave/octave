@@ -239,7 +239,8 @@ octave_sparse_matrix::convert_to_str_internal (bool, bool, char type) const
 		    static_cast<char> (ival);
 		}
 	  }
-      retval = octave_value (chm, true, type);
+
+      retval = octave_value (chm, type);
     }
 
   return retval;

@@ -188,7 +188,7 @@ typecast (@var{x}, 'uint8')\n\
       if (error_state || numclass.size () == 0)
         ;
       else if (numclass == "char")
-        retval = octave_value (reinterpret_copy<charNDArray> (data, byte_size, old_dims), true);
+        retval = octave_value (reinterpret_copy<charNDArray> (data, byte_size, old_dims), array.is_dq_string () ? '"' : '\'');
       else if (numclass[0] == 'i')
         {
           if (numclass == "int8")
@@ -304,7 +304,7 @@ The result is a row vector if @var{x} is a row vector, otherwise it is a column 
       if (error_state || numclass.size () == 0)
         ;
       else if (numclass == "char")
-        retval = octave_value (do_bitpack<charNDArray> (bitp), true);
+        retval = octave_value (do_bitpack<charNDArray> (bitp), '\'');
       else if (numclass[0] == 'i')
         {
           if (numclass == "int8")

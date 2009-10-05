@@ -3368,7 +3368,7 @@ octave_stream::read (const Array<double>& size, octave_idx_type block_size,
 		      && (output_type == oct_data_conv::dt_char
 			  || output_type == oct_data_conv::dt_schar
 			  || output_type == oct_data_conv::dt_uchar))
-		    retval = octave_value (retval.char_matrix_value (), true);
+		    retval = retval.char_matrix_value ();
 		}
 	      else
 		error ("fread: unable to read and convert requested types");

@@ -920,7 +920,7 @@ tree_matrix::rvalue1 (int)
 
 	  SINGLE_TYPE_CONCAT (charNDArray, char_array_value);
 
-	  retval = octave_value (result, true, type);
+	  retval = octave_value (result, type);
 	}
       else if (result_type == "logical")
 	{

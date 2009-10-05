@@ -1918,7 +1918,7 @@ do_cat (const octave_value_list& args, std::string fname)
 
 	      SINGLE_TYPE_CONCAT (charNDArray, char_array_value);
 
-	      retval = octave_value (result, true, type);
+	      retval = octave_value (result, type);
 	    }
 	  else if (result_type == "logical")
 	    {
@@ -6151,8 +6151,7 @@ it is first converted to logical.\n\
               retval = octave_value (do_merge (mask,
                                                tval.char_array_value (),
                                                fval.char_array_value ()),
-                                     true, sq_string ? '\'' : '"');
-
+                                     sq_string ? '\'' : '"');
             }
           else if (tval.is_cell () && fval.is_cell ())
             {

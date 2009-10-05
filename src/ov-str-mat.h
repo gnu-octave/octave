@@ -35,8 +35,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "oct-stream.h"
 #include "ov.h"
-#include "ov-re-mat.h"
 #include "ov-ch-mat.h"
+#include "ov-re-mat.h"
 #include "ov-typeinfo.h"
 
 class Octave_map;
@@ -92,18 +92,18 @@ public:
     { return do_index_op_internal (idx, resize_ok); }
 
   octave_value squeeze (void) const
-    { return octave_value (charNDArray (matrix.squeeze ()), true); }
+    { return octave_value (charNDArray (matrix.squeeze ())); }
 
   octave_value reshape (const dim_vector& new_dims) const
-    { return octave_value (charNDArray (matrix.reshape (new_dims)), true); }
+    { return octave_value (charNDArray (matrix.reshape (new_dims))); }
 
   octave_value permute (const Array<int>& vec, bool inv = false) const
-    { return octave_value (charNDArray (matrix.permute (vec, inv)), true); }
+    { return octave_value (charNDArray (matrix.permute (vec, inv))); }
 
   octave_value resize (const dim_vector& dv, bool fill = false) const;
 
   octave_value diag (octave_idx_type k = 0) const
-    { return octave_value (matrix.diag (k), true); }
+    { return octave_value (matrix.diag (k)); }
 
   bool is_string (void) const { return true; }
 
@@ -130,11 +130,11 @@ public:
   std::string string_value (bool force = false) const;
 
   octave_value sort (octave_idx_type dim = 0, sortmode mode = ASCENDING) const
-    { return octave_value (matrix.sort (dim, mode), true); }
+    { return octave_value (matrix.sort (dim, mode)); }
 
   octave_value sort (Array<octave_idx_type> &sidx, octave_idx_type dim = 0,
 		     sortmode mode = ASCENDING) const
-    { return octave_value (matrix.sort (sidx, dim, mode), true); }
+    { return octave_value (matrix.sort (sidx, dim, mode)); }
 
   bool print_as_scalar (void) const { return (rows () <= 1); }
 
@@ -159,56 +159,6 @@ public:
 	     oct_data_conv::data_type output_type, int skip,
 	     oct_mach_info::float_format flt_fmt) const
     { return os.write (matrix, block_size, output_type, skip, flt_fmt); }
-
-  octave_value xisalnum (void) const;
-  octave_value xisalpha (void) const;
-  octave_value xisascii (void) const;
-  octave_value xiscntrl (void) const;
-  octave_value xisdigit (void) const;
-  octave_value xisgraph (void) const;
-  octave_value xislower (void) const;
-  octave_value xisprint (void) const;
-  octave_value xispunct (void) const;
-  octave_value xisspace (void) const;
-  octave_value xisupper (void) const;
-  octave_value xisxdigit (void) const;
-  octave_value xtoascii (void) const;
-  octave_value xtolower (void) const;
-  octave_value xtoupper (void) const;
-
-#define MAT_MAPPER(MAP) \
-  octave_value MAP (void) const \
-    { \
-      octave_matrix m (array_value (true)); \
-      return m.MAP (); \
-    }
-
-  MAT_MAPPER (abs)
-  MAT_MAPPER (angle)
-  MAT_MAPPER (arg)
-  MAT_MAPPER (ceil)
-  MAT_MAPPER (conj)
-  MAT_MAPPER (fix)
-  MAT_MAPPER (floor)
-  MAT_MAPPER (imag)
-  MAT_MAPPER (real)
-  MAT_MAPPER (round)
-  MAT_MAPPER (signum)
-
-#undef MAT_MAPPER
-
-#define BOOL_MAT_MAPPER(MAP, VAL)	\
-  octave_value MAP (void) const \
-    { \
-      return boolNDArray (matrix.dims (), VAL); \
-    }
-
-  BOOL_MAT_MAPPER (finite, true)
-  BOOL_MAT_MAPPER (isinf, false)
-  BOOL_MAT_MAPPER (isna, false)
-  BOOL_MAT_MAPPER (isnan, false)
-
-#undef BOOL_MAT_MAPPER
 
 protected:
 
@@ -262,23 +212,23 @@ public:
   octave_base_value *empty_clone (void) const { return new octave_char_matrix_sq_str (); }
 
   octave_value squeeze (void) const
-    { return octave_value (charNDArray (matrix.squeeze ()), true, '\''); }
+    { return octave_value (charNDArray (matrix.squeeze ()), '\''); }
 
   octave_value reshape (const dim_vector& new_dims) const
-    { return octave_value (charNDArray (matrix.reshape (new_dims)), true, '\''); }
+    { return octave_value (charNDArray (matrix.reshape (new_dims)), '\''); }
 
   octave_value permute (const Array<int>& vec, bool inv = false) const
-    { return octave_value (charNDArray (matrix.permute (vec, inv)), true, '\''); }
+    { return octave_value (charNDArray (matrix.permute (vec, inv)), '\''); }
 
   octave_value resize (const dim_vector& dv, bool = false) const
     {
       charNDArray retval (matrix);
       retval.resize (dv);
-      return octave_value (retval, true, '\'');
+      return octave_value (retval, '\'');
     }
 
   octave_value diag (octave_idx_type k = 0) const
-    { return octave_value (matrix.diag (k), true, '\''); }
+    { return octave_value (matrix.diag (k), '\''); }
 
   bool is_sq_string (void) const { return true; }
 
@@ -288,11 +238,11 @@ public:
 
 
   octave_value sort (octave_idx_type dim = 0, sortmode mode = ASCENDING) const
-    { return octave_value (matrix.sort (dim, mode), true, '\''); }
+    { return octave_value (matrix.sort (dim, mode), '\''); }
 
   octave_value sort (Array<octave_idx_type> &sidx, octave_idx_type dim = 0,
 		     sortmode mode = ASCENDING) const
-    { return octave_value (matrix.sort (sidx, dim, mode), true, '\''); }
+    { return octave_value (matrix.sort (sidx, dim, mode), '\''); }
 
 private:
 

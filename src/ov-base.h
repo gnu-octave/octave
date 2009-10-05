@@ -537,7 +537,7 @@ public:
   virtual octave_value_list list_value (void) const;
 
   virtual octave_value convert_to_str (bool pad = false, bool force = false,
-				       char type = '"') const;
+				       char type = '\'') const;
   virtual octave_value
   convert_to_str_internal (bool pad, bool force, char type) const;
 

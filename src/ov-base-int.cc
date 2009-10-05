@@ -172,7 +172,7 @@ octave_base_int_matrix<T>::convert_to_str_internal (bool, bool, char type) const
 	chm (i) = static_cast<char> (ival);
     }
 
-  retval = octave_value (chm, true, type);
+  retval = octave_value (chm, type);
 
   return retval;
 }

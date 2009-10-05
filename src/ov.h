@@ -223,16 +223,19 @@ public:
   octave_value (const boolMatrix& bm, const MatrixType& t = MatrixType());
   octave_value (const boolNDArray& bnda);
   octave_value (const ArrayN<bool>& bnda);
-  octave_value (char c, char type = '"');
-  octave_value (const char *s, char type = '"');
-  octave_value (const std::string& s, char type = '"');
-  octave_value (const string_vector& s, char type = '"');
-  octave_value (const charMatrix& chm, bool is_string = false,
-		char type = '"');
-  octave_value (const charNDArray& chnda, bool is_string = false,
-		char type = '"');
-  octave_value (const ArrayN<char>& chnda, bool is_string = false,
-		char type = '"');
+  octave_value (char c, char type = '\'');
+  octave_value (const char *s, char type = '\'');
+  octave_value (const std::string& s, char type = '\'');
+  octave_value (const string_vector& s, char type = '\'');
+  octave_value (const charMatrix& chm, 	char type = '\'');
+  octave_value (const charNDArray& chnda, char type = '\'');
+  octave_value (const ArrayN<char>& chnda, char type = '\'');
+  octave_value (const charMatrix& chm, bool is_string,
+		char type = '\'') GCC_ATTR_DEPRECATED;
+  octave_value (const charNDArray& chnda, bool is_string,
+		char type = '\'') GCC_ATTR_DEPRECATED;
+  octave_value (const ArrayN<char>& chnda, bool is_string,
+		char type = '\'') GCC_ATTR_DEPRECATED;
   octave_value (const SparseMatrix& m, const MatrixType& t = MatrixType ());
   octave_value (const Sparse<double>& m, const MatrixType& t = MatrixType ());
   octave_value (const SparseComplexMatrix& m, 
@@ -946,8 +949,8 @@ public:
   // it, and we should convert it if possible.
 
   octave_value convert_to_str (bool pad = false, bool force = false,
-			       char type = '"') const
-  { return rep->convert_to_str (pad, force, type); }
+			       char type = '\'') const
+    { return rep->convert_to_str (pad, force, type); }
 
   octave_value
   convert_to_str_internal (bool pad, bool force, char type) const

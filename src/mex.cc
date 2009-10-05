@@ -1341,7 +1341,7 @@ protected:
 	  for (mwIndex i = 0; i < nel; i++)
 	    ptr[i] = static_cast<char> (ppr[i]);
 
-	  retval = octave_value (val, true, '\'');
+	  retval = val;
 	}
 	break;
 

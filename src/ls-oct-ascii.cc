@@ -278,7 +278,7 @@ read_ascii_data (std::istream& is, const std::string& filename, bool& global,
 
       // Special case for backward compatiablity. A small bit of cruft
       if (SUBSTRING_COMPARE_EQ (typ, 0, 12, "string array"))
-	tc = octave_value (charMatrix (), true);
+	tc = charMatrix ();
       else
 	tc = octave_value_typeinfo::lookup_type (typ);
 

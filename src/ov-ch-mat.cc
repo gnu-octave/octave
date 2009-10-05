@@ -155,6 +155,45 @@ octave_char_matrix::as_mxArray (void) const
   return retval;
 }
 
+#define MACRO_WRAPPER(FCN, CTYPE_FCN) \
+  static int x ## FCN (int c) { return CTYPE_FCN (c); }
+
+#define STRING_MAPPER(FCN, AMAP, CTYPE_FCN) \
+  MACRO_WRAPPER (FCN, CTYPE_FCN) \
+ \
+  octave_value \
+  octave_char_matrix::FCN (void) const \
+  { \
+    static charNDArray::mapper smap = x ## FCN; \
+    return matrix.AMAP (smap);  \
+  }
+
+#define TOSTRING_MAPPER(FCN, AMAP, CTYPE_FCN) \
+  MACRO_WRAPPER (FCN, CTYPE_FCN) \
+ \
+  octave_value \
+  octave_char_matrix::FCN (void) const \
+  { \
+    static charNDArray::mapper smap = x ## FCN; \
+    return octave_value (matrix.AMAP (smap), is_sq_string () ? '\'' : '"'); \
+  }
+
+STRING_MAPPER (xisalnum, bmap, isalnum)
+STRING_MAPPER (xisalpha, bmap, isalpha)
+STRING_MAPPER (xisascii, bmap, isascii)
+STRING_MAPPER (xiscntrl, bmap, iscntrl)
+STRING_MAPPER (xisdigit, bmap, isdigit)
+STRING_MAPPER (xisgraph, bmap, isgraph)
+STRING_MAPPER (xislower, bmap, islower)
+STRING_MAPPER (xisprint, bmap, isprint)
+STRING_MAPPER (xispunct, bmap, ispunct)
+STRING_MAPPER (xisspace, bmap, isspace)
+STRING_MAPPER (xisupper, bmap, isupper)
+STRING_MAPPER (xisxdigit, bmap, isxdigit)
+STRING_MAPPER (xtoascii, dmap, toascii)
+TOSTRING_MAPPER (xtolower, smap, tolower)
+TOSTRING_MAPPER (xtoupper, smap, toupper)
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

@@ -810,32 +810,50 @@ octave_value::octave_value (const string_vector& s, char type)
   maybe_mutate ();
 }
 
-octave_value::octave_value (const charMatrix& chm, bool is_str, char type)
-  : rep (is_str
-	 ? (type == '"'
-	    ? new octave_char_matrix_dq_str (chm)
-	    : new octave_char_matrix_sq_str (chm))
-	 : new octave_char_matrix (chm))
+octave_value::octave_value (const charMatrix& chm, char type)
+  : rep (type == '"'
+	 ? new octave_char_matrix_dq_str (chm)
+	 : new octave_char_matrix_sq_str (chm))
 {
   maybe_mutate ();
 }
 
-octave_value::octave_value (const charNDArray& chm, bool is_str, char type)
-  : rep (is_str
-	 ? (type == '"'
-	    ? new octave_char_matrix_dq_str (chm)
-	    : new octave_char_matrix_sq_str (chm))
-	 : new octave_char_matrix (chm))
+octave_value::octave_value (const charNDArray& chm, char type)
+  : rep (type == '"'
+	 ? new octave_char_matrix_dq_str (chm)
+	 : new octave_char_matrix_sq_str (chm))
 {
   maybe_mutate ();
 }
 
-octave_value::octave_value (const ArrayN<char>& chm, bool is_str, char type)
-  : rep (is_str
-	 ? (type == '"'
-	    ? new octave_char_matrix_dq_str (chm)
-	    : new octave_char_matrix_sq_str (chm))
-	 : new octave_char_matrix (chm))
+octave_value::octave_value (const ArrayN<char>& chm, char type)
+  : rep (type == '"'
+	 ? new octave_char_matrix_dq_str (chm)
+	 : new octave_char_matrix_sq_str (chm))
+{
+  maybe_mutate ();
+}
+
+octave_value::octave_value (const charMatrix& chm, bool, char type)
+  : rep (type == '"'
+	 ? new octave_char_matrix_dq_str (chm)
+	 : new octave_char_matrix_sq_str (chm))
+{
+  maybe_mutate ();
+}
+
+octave_value::octave_value (const charNDArray& chm, bool, char type)
+  : rep (type == '"'
+	 ? new octave_char_matrix_dq_str (chm)
+	 : new octave_char_matrix_sq_str (chm))
+{
+  maybe_mutate ();
+}
+
+octave_value::octave_value (const ArrayN<char>& chm, bool, char type)
+  : rep (type == '"'
+	 ? new octave_char_matrix_dq_str (chm)
+	 : new octave_char_matrix_sq_str (chm))
 {
   maybe_mutate ();
 }

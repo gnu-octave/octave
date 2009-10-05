@@ -1,5 +1,10 @@
 2009-10-05  Jaroslav Hajek  <highegg@gmail.com>
 
+	* ov.cc (octave_value::assign): Do not gripe "assignment failed" if
+	already griped about the binary operation.
+
+2009-10-05  Jaroslav Hajek  <highegg@gmail.com>
+
 	* pt-idx.cc (tree_index_expression::rvalue): When evaluating index
 	chain, split on chaining ()() and (){}.
 

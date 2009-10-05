@@ -1279,11 +1279,11 @@ octave_value::assign (assign_op op, const std::string& type,
 	}
       else
 	retval = subsasgn (type, idx, t_rhs);
-    }
 
-  if (error_state)
-    gripe_assign_failed_or_no_method (assign_op_as_string (op),
-				      type_name (), rhs.type_name ());
+      if (error_state)
+        gripe_assign_failed_or_no_method (assign_op_as_string (op_asn_eq),
+                                          type_name (), rhs.type_name ());
+    }
 
   return retval;
 }
@@ -1332,10 +1332,6 @@ octave_value::assign (assign_op op, const octave_value& rhs)
                 operator = (t);
             }
         }
-
-      if (error_state)
-	gripe_assign_failed_or_no_method (assign_op_as_string (op),
-					  type_name (), rhs.type_name ());
     }
 
   return *this;

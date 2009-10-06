@@ -1,3 +1,18 @@
+2009-10-06  Jaroslav Hajek  <highegg@gmail.com>
+
+	* dDiagMatrix.cc (operator *(const DiagMatrix&, const DiagMatrix&)):
+	Rewrite.
+	* fDiagMatrix.cc (operator *(const FloatDiagMatrix&, const FloatDiagMatrix&)):
+	Rewrite.
+	* CDiagMatrix.cc (operator *(const ComplexDiagMatrix&, const ComplexDiagMatrix&)):
+	Rewrite.
+	* fCDiagMatrix.cc (operator *(const FloatComplexDiagMatrix&, const
+	FloatComplexDiagMatrix&)):
+	Rewrite.
+	* DiagArray2.h (DiagArray2::diag_length): New method.
+	* PermMatrix.h (PermMatrix::length): Make consistent with
+	DiagArray2::length.
+
 2009-10-05  Jaroslav Hajek  <highegg@gmail.com>
 
 	* base-lu.cc (base_lu::unpack): Unpack getp as well.

@@ -57,8 +57,9 @@ public:
 
   octave_idx_type perm_length (void) const 
     { return Array<octave_idx_type>::length (); }
+  // FIXME: a dangerous ambiguity?
   octave_idx_type length (void) const 
-    { return dim1 () * dim2 (); }
+    { return perm_length (); }
   octave_idx_type nelem (void) const { return dim1 () * dim2 (); }
   octave_idx_type numel (void) const { return nelem (); }
 

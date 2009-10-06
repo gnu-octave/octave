@@ -460,25 +460,16 @@ operator * (const FloatComplexDiagMatrix& a, const FloatDiagMatrix& b)
   octave_idx_type b_nc = b.cols ();
 
   if (a_nc != b_nr)
-    {
-      gripe_nonconformant ("operator *", a_nr, a_nc, b_nr, b_nc);
-      return FloatComplexDiagMatrix ();
-    }
-
-  if (a_nr == 0 || a_nc == 0 || b_nc == 0)
-    return FloatComplexDiagMatrix (a_nr, a_nc, 0.0);
+    gripe_nonconformant ("operator *", a_nr, a_nc, b_nr, b_nc);
 
   FloatComplexDiagMatrix c (a_nr, b_nc);
 
-  octave_idx_type len = a_nr < b_nc ? a_nr : b_nc;
+  octave_idx_type len = c.length (), lenm = len < a_nc ? len : a_nc;
 
-  for (octave_idx_type i = 0; i < len; i++)
-    {
-      FloatComplex a_element = a.elem (i, i);
-      float b_element = b.elem (i, i);
-
-      c.elem (i, i) = a_element * b_element;
-    }
+  for (octave_idx_type i = 0; i < lenm; i++)
+    c.dgxelem (i) = a.dgelem (i) * b.dgelem (i);
+  for (octave_idx_type i = lenm; i < len; i++)
+    c.dgxelem (i) = 0.0f;
 
   return c;
 }

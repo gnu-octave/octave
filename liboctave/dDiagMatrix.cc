@@ -338,25 +338,16 @@ operator * (const DiagMatrix& a, const DiagMatrix& b)
   octave_idx_type b_nc = b.cols ();
 
   if (a_nc != b_nr)
-    {
-      gripe_nonconformant ("operator *", a_nr, a_nc, b_nr, b_nc);
-      return DiagMatrix ();
-    }
-
-  if (a_nr == 0 || a_nc == 0 || b_nc == 0)
-    return DiagMatrix (a_nr, a_nc, 0.0);
+    gripe_nonconformant ("operator *", a_nr, a_nc, b_nr, b_nc);
 
   DiagMatrix c (a_nr, b_nc);
 
-  octave_idx_type len = a_nr < b_nc ? a_nr : b_nc;
+  octave_idx_type len = c.length (), lenm = len < a_nc ? len : a_nc;
 
-  for (octave_idx_type i = 0; i < len; i++)
-    {
-      double a_element = a.elem (i, i);
-      double b_element = b.elem (i, i);
-
-      c.elem (i, i) = a_element * b_element;
-    }
+  for (octave_idx_type i = 0; i < lenm; i++)
+    c.dgxelem (i) = a.dgelem (i) * b.dgelem (i);
+  for (octave_idx_type i = lenm; i < len; i++)
+    c.dgxelem (i) = 0.0;
 
   return c;
 }

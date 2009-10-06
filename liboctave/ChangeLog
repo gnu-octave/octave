@@ -1,5 +1,9 @@
 2009-10-05  Jaroslav Hajek  <highegg@gmail.com>
 
+	* base-lu.cc (base_lu::unpack): Unpack getp as well.
+
+2009-10-05  Jaroslav Hajek  <highegg@gmail.com>
+
 	* PermMatrix.cc (PermMatrix::determinant): Implement a (hopefully)
 	working algorithm.
 

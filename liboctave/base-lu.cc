@@ -50,6 +50,7 @@ base_lu <lu_type> :: unpack (void)
     {
       l_fact = L ();
       a_fact = U (); // FIXME: sub-optimal
+      ipvt = getp ();
     }
 }
 

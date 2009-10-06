@@ -230,7 +230,7 @@ try
     puts ("Octave by contributing fixes for them.\n");
   endif
   if (dsk > 0)
-    printf ("\nThere were %d skipped tests (see fntest.log for details).\n", dsk);
+    printf ("\nThere were %d skipped tests (see fntests.log for details).\n", dsk);
     puts ("Skipped tests are features that are disabled in this version\n");
     puts ("of Octave as the needed libraries were not present when Octave\n");
     puts ("was built\n");

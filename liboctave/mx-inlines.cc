@@ -951,10 +951,9 @@ void mx_inline_diff (const T *v, T *r, octave_idx_type n,
         r[i] = v[i+1] - v[i];
       break;
     case 2:
-        {
-          T lst;
-          if (n > 1)
-            lst = v[1] - v[0];
+      if (n > 1)
+	{
+	  T lst = v[1] - v[0];
           for (octave_idx_type i = 0; i < n-2; i++)
             {
               T dif = v[i+2] - v[i+1];

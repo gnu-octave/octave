@@ -109,7 +109,7 @@ simplify_mul_op (tree_expression *&a, tree_expression *&b)
 // Possibly convert left division to trans_ldiv or herm_ldiv.
 
 static octave_value::compound_binary_op
-simplify_ldiv_op (tree_expression *&a, tree_expression *&b)
+simplify_ldiv_op (tree_expression *&a, tree_expression *&)
 {
   octave_value::compound_binary_op retop;
   octave_value::unary_op opa = strip_trans_herm (a);

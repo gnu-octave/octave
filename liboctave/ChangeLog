@@ -1,3 +1,7 @@
+2009-10-07  John W. Eaton  <jwe@octave.org>
+
+	* mx-inlines.cc (mx_inline_diff): Avoid uninitialized variable warning.
+
 2009-10-06  Jaroslav Hajek  <highegg@gmail.com>
 
 	* dDiagMatrix.cc (operator *(const DiagMatrix&, const DiagMatrix&)):

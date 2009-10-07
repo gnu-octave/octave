@@ -342,7 +342,7 @@ public:
       return *this;
     }
 
-  int get_count (void) const { return rep->count; }
+  octave_idx_type get_count (void) const { return rep->count; }
 
   octave_base_value::type_conv_info numeric_conversion_function (void) const
     { return rep->numeric_conversion_function (); }

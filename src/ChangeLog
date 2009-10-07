@@ -1,5 +1,9 @@
 2009-10-07  John W. Eaton  <jwe@octave.org>
 
+	* ov.h (octave_value::get_count): Return octave_idx_type, not int.
+
+2009-10-07  John W. Eaton  <jwe@octave.org>
+
 	* pt-arg-list.cc (tree_argument_list::convert_to_const_vector):
 	Avoid uninitialized variable warning.
 	* pt-cbinop.cc (simplify_ldiv_op): Avoid unused parameter warning.

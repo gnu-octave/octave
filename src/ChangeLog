@@ -1,3 +1,11 @@
+2009-10-07  Jaroslav Hajek  <highegg@gmail.com>
+
+	* oct-stream.cc (octave_base_stream::skipl,
+	octave_stream::skipl (long, ...), octave_stream::skipl (const
+	octave_value&, ...)): New methods.
+	* oct-stream.h: Declare them.
+	* file-io.cc (Ffskipl): New DEFUN.
+
 2009-10-07  John W. Eaton  <jwe@octave.org>
 
 	* OPERATORS/op-str-str.cc (DEFUNOP (transpose, char_matrix_str)):

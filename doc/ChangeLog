@@ -1,3 +1,7 @@
+2009-10-07  Jaroslav Hajek  <highegg@gmail.com>
+
+	* interpreter/io.txi: Add reference to fskipl.
+
 2009-09-30  John W. Eaton  <jwe@octave.org>
 
 	* interpreter/data.txi (Built-in Data Types):

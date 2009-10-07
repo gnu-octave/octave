@@ -438,6 +438,7 @@ private:
 
   std::string getl (octave_idx_type max_len, bool& err, const std::string& who /* = "getl" */);
   std::string gets (octave_idx_type max_len, bool& err, const std::string& who /* = "gets" */);
+  long skipl (long count, bool& err, const std::string& who /* = "skipl" */);
 
   octave_value do_scanf (scanf_format_list& fmt_list, octave_idx_type nr, octave_idx_type nc,
 			 bool one_elt_size_spec, octave_idx_type& count,
@@ -500,6 +501,9 @@ public:
   std::string gets (octave_idx_type max_len, bool& err, const std::string& who /* = "gets" */);
   std::string gets (const octave_value& max_len, bool& err,
 		    const std::string& who /* = "gets" */);
+
+  long skipl (long count, bool& err, const std::string& who /* = "skipl" */);
+  long skipl (const octave_value& count, bool& err, const std::string& who /* = "skipl" */);
 
   int seek (long offset, int origin);
   int seek (const octave_value& offset, const octave_value& origin);

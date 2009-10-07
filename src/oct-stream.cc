@@ -1070,6 +1070,65 @@ octave_base_stream::gets (octave_idx_type max_len, bool& err, const std::string&
   return do_gets (max_len, err, false, who);
 }
 
+long
+octave_base_stream::skipl (long num, bool& err, const std::string& who)
+{
+  long cnt = -1;
+
+  if ((interactive || forced_interactive) && file_number () == 0)
+    {
+      ::error ("%s: unable to read from stdin while running interactively",
+	       who.c_str ());
+	     
+      return count;
+    }
+
+  err = false;
+
+  std::istream *isp = input_stream ();
+
+  if (isp)
+    {
+      std::istream& is = *isp;
+
+      int c = 0, lastc = -1;
+      cnt = 0;
+
+      while (is && (c = is.get ()) != EOF)
+        {
+          // Handle CRLF, CR, or LF as line ending.
+
+          if (c == '\r' || (c == '\n' && lastc != '\r'))
+            {
+              if (++cnt == num)
+                break;
+            }
+
+          lastc = c;
+        }
+
+      // Maybe eat the following \n if \r was just met.
+      if (c == '\r' && is.peek () == '\n')
+       is.get ();
+
+      if (is.bad ())
+        {
+          err = true;
+          error (who, "read error");
+        }
+
+      if (err)
+        cnt = -1;
+    }
+  else
+    {
+      err = true;
+      invalid_operation (who, "reading");
+    }
+
+  return cnt;
+}
+
 #define OCTAVE_SCAN(is, fmt, arg) octave_scan (is, fmt, arg)
 
 template <class T>
@@ -2914,6 +2973,50 @@ octave_stream::gets (const octave_value& tc_max_len, bool& err,
 
   if (! error_state)
     retval = gets (max_len, err, who);
+
+  return retval;
+}
+
+long
+octave_stream::skipl (long count, bool& err, const std::string& who)
+{
+  long retval = -1;
+
+  if (stream_ok ())
+    retval = rep->skipl (count, err, who);
+
+  return retval;
+}
+
+long
+octave_stream::skipl (const octave_value& tc_count, bool& err, const std::string& who)
+{
+  long retval = -1;
+
+  err = false;
+
+  int conv_err = 0;
+
+  int count = 1;
+
+  if (tc_count.is_defined ())
+    {
+      if (tc_count.is_scalar_type () && xisinf (tc_count.scalar_value ()))
+        count = -1;
+      else
+        {
+          count = convert_to_valid_int (tc_count, conv_err);
+
+          if (conv_err || count < 0)
+            {
+              err = true;
+              ::error ("%s: invalid number of lines specified", who.c_str ());
+            }
+        }
+    }
+
+  if (! error_state)
+    retval = skipl (count, err, who);
 
   return retval;
 }

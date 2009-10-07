@@ -396,6 +396,47 @@ If there are no more characters to read, @code{fgets} returns @minus{}1.\n\
   return retval;
 }
 
+DEFUN (fskipl, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} fskipl (@var{fid}, @var{count})\n\
+Skips a given number of lines, i.e. discards characters until an end-of-line\n\
+is met exactly @var{count}-times, or end-of-file occurs.\n\
+Returns the number of lines skipped (end-of-line sequences encountered).\n\
+If @var{count} is omitted, it defaults to 1. @var{count} may also be\n\
+@code{Inf}, in which case lines are skipped to the end of file.\n\
+This form is suitable for counting lines in a file.\n\
+@seealso{fgetl, fgets}\n\
+@end deftypefn")
+{
+  static std::string who = "fskipl";
+
+  octave_value retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 1 || nargin == 2)
+    {
+      octave_stream os = octave_stream_list::lookup (args(0), who);
+
+      if (! error_state)
+	{
+	  octave_value count_arg = (nargin == 2) ? args(1) : octave_value ();
+
+	  bool err = false;
+
+	  long tmp = os.skipl (count_arg, err, who);
+
+	  if (! (error_state || err))
+            retval = tmp;
+	}
+    }
+  else
+    print_usage ();
+
+  return retval;
+}
+
+
 static octave_stream
 do_stream_open (const std::string& name, const std::string& mode,
 		const std::string& arch, int& fid)

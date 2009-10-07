@@ -369,6 +369,8 @@ the line @samp{Free Software is needed for Free Science}.
 
 @DOCSTRING(fgets)
 
+@DOCSTRING(fskipl)
+
 @node Formatted Output
 @subsection Formatted Output
 

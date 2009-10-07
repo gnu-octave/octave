@@ -1,3 +1,8 @@
+2009-10-07  John W. Eaton  <jwe@octave.org>
+
+	* OPERATORS/op-str-str.cc (DEFUNOP (transpose, char_matrix_str)):
+	Update for octave_value constructor changes.
+
 2009-10-05  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov.cc (octave_value::assign): Do not gripe "assignment failed" if
@@ -44,7 +49,7 @@
 	Assume is_string argument is always true.
 
 	* ov-re-mat.cc (octave_sparse_matrix::convert_to_str_internal):
-	Update for octave_value constructore changes.
+	Update for octave_value constructor changes.
 	* ov-ch-mat.h (octave_char_matrix::convert_to_str_internal): Likewise.
 	* ov-re-sparse.cc (octave_sparse_matrix::convert_to_str_internal):
 	Likewise.

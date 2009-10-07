@@ -1,4 +1,4 @@
-/*
+n/*
 
 Copyright (C) 1996, 1997, 1998, 2000, 2002, 2003, 2004, 2005, 2007, 2008
               John W. Eaton
@@ -45,7 +45,7 @@ DEFUNOP (transpose, char_matrix_str)
       return octave_value ();
     }
   else
-    return octave_value (v.char_matrix_value().transpose (), true,
+    return octave_value (v.char_matrix_value().transpose (),
 			 a.is_sq_string () ? '\'' : '"');
 }
 

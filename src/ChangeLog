@@ -1,5 +1,11 @@
 2009-10-07  John W. Eaton  <jwe@octave.org>
 
+	* variables.cc (get_dims_str): New function.
+	(symbol_info_list::display_line,
+	symbol_info_list::parse_whos_line_format): Use it to get dims string.
+
+2009-10-07  John W. Eaton  <jwe@octave.org>
+
 	* ov.h (octave_value::get_count): Return octave_idx_type, not int.
 
 2009-10-07  John W. Eaton  <jwe@octave.org>

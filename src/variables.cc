@@ -883,6 +883,26 @@ print_descriptor (std::ostream& os, std::list<whos_parameter> params)
   os << param_buf.str ();
 }
 
+// FIXME -- This is a bit of a kluge.  We'd like to just use val.dims()
+// and if val is an object, expect that dims will call size if it is
+// overloaded by a user-defined method.  But there are currently some
+// unresolved const issues that prevent that solution from working.
+
+std::string
+get_dims_str (const octave_value& val)
+{
+  octave_value tmp = val;
+
+  Matrix sz = tmp.size ();
+
+  dim_vector dv (sz.numel ());
+
+  for (octave_idx_type i = 0; i < dv.length (); i++)
+    dv(i) = sz(i);
+
+  return dv.str ();
+}
+
 class
 symbol_info_list
 {
@@ -903,8 +923,7 @@ private:
     void display_line (std::ostream& os,
 		       const std::list<whos_parameter>& params) const
     {
-      dim_vector dims = varval.dims ();
-      std::string dims_str = dims.str ();
+      std::string dims_str = get_dims_str (varval);
 
       std::list<whos_parameter>::const_iterator i = params.begin ();
 
@@ -1300,8 +1319,7 @@ public:
 		     p != lst.end (); p++)
 		  {
 		    octave_value val = p->varval;
-		    dim_vector dims = val.dims ();
-		    std::string dims_str = dims.str ();
+		    std::string dims_str = get_dims_str (val);
 		    int first1 = dims_str.find ('x');
 		    int total1 = dims_str.length ();
 		    int rest1 = total1 - first1;

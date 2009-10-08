@@ -903,8 +903,8 @@ LIBS="$BLAS_LIBS $FLIBS $LIBS"
 OCTAVE_CHECK_LIBRARY(qrupdate, qrupdate,
   [qrupdate not found.  The QR & Cholesky updating functions will be slow.],
   [],
-  [F77_FUNC(sqr1up,SQR1UP)],
-  [], [don't use qrupdate, disable QR & Cholesky updating functions])
+  [sqr1up],
+  [Fortran 77], [don't use qrupdate, disable QR & Cholesky updating functions])
 LIBS="$save_LIBS"
 
 # Check for AMD library
@@ -998,8 +998,8 @@ LIBS="$LAPACK_LIBS $BLAS_LIBS $FLIBS $LIBS"
 OCTAVE_CHECK_LIBRARY(arpack, ARPACK,
   [arpack not found.  The eigs function will be disabled.],
   [],
-  [F77_FUNC(dseupd,DSEUPD)],
-  [], [don't use the ARPACK library, disable eigs function])
+  [dseupd],
+  [Fortran 77], [don't use the ARPACK library, disable eigs function])
 LIBS="$save_LIBS"
 
 ### Handle shared library options.

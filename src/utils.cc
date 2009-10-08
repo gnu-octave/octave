@@ -1000,6 +1000,31 @@ get_dimensions (const octave_value& a, const octave_value& b,
     check_dimensions (nr, nc, warn_for); // May set error_state.
 }
 
+octave_idx_type
+dims_to_numel (const dim_vector& dims, const octave_value_list& idx)
+{
+  octave_idx_type retval;
+
+  octave_idx_type len = idx.length ();
+
+  if (len == 0)
+    retval = dims.numel ();
+  else
+    {
+      const dim_vector dv = dims.redim (len);
+      retval = 1;
+      for (octave_idx_type i = 0; i < len; i++)
+        {
+          if (idx(i).is_magic_colon ())
+            retval *= dv(i);
+          else
+            retval *= idx(i).numel ();
+        }
+    }
+
+  return retval;
+}
+
 Matrix
 identity_matrix (octave_idx_type nr, octave_idx_type nc)
 {

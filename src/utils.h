@@ -92,6 +92,11 @@ extern OCTINTERP_API void
 get_dimensions (const octave_value& a,const char *warn_for,
 		octave_idx_type& nr, octave_idx_type& nc);
 
+extern OCTINTERP_API octave_idx_type
+dims_to_numel (const dim_vector& dims, const octave_value_list& idx);
+
+
+
 extern OCTINTERP_API Matrix
 identity_matrix (octave_idx_type nr, octave_idx_type nc);
 

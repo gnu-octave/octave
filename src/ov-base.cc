@@ -89,26 +89,7 @@ octave_base_value::size (void)
 octave_idx_type
 octave_base_value::numel (const octave_value_list& idx)
 {
-  octave_idx_type retval;
-
-  octave_idx_type len = idx.length ();
-
-  if (len == 0)
-    retval = numel ();
-  else
-    {
-      const dim_vector dv = dims ().redim (len);
-      retval = 1;
-      for (octave_idx_type i = 0; i < len; i++)
-        {
-          if (idx(i).is_magic_colon ())
-            retval *= dv(i);
-          else
-            retval *= idx(i).numel ();
-        }
-    }
-
-  return retval;
+  return dims_to_numel (dims (), idx);
 }
 
 octave_value

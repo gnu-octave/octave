@@ -1,3 +1,11 @@
+2009-10-08  Jaroslav Hajek  <highegg@gmail.com>
+
+	* utils.cc (dims_to_numel): New function.
+	* utils.h: Declare it.
+	* ov-base.cc (octave_base_value::numel (const octave_value_list&)):
+	Use it here.
+	* data.cc (Fnumel): Also here.
+
 2009-10-07  John W. Eaton  <jwe@octave.org>
 
 	* variables.cc (get_dims_str): New function.

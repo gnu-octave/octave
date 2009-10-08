@@ -2331,19 +2331,28 @@ Trailing singleton dimensions are not counted.\n\
 DEFUN (numel, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} numel (@var{a})\n\
+@deftypefnx {Built-in Function} {} numel (@var{a}, @var{idx1}, @var{idx2}, @dots{})\n\
 Returns the number of elements in the object @var{a}.\n\
+Optionally, if indices @var{idx1}, @var{idx2}, @dots{} are supplied,\n\
+return the number of elements that would result from the indexing\n\
+@example\n\
+  @var{a}(@var{idx1}, @var{idx2}, @dots{})\n\
+@end example\n\
+This method is also called when an object appears as lvalue with cs-list\n\
+indexing, i.e. @code{object@{@dots{}@}} or @code{object(@dots{}).field}.\n\
 @seealso{size}\n\
 @end deftypefn")
 {
   octave_value retval;
   octave_idx_type nargin = args.length ();
 
-  if (nargin >= 1)
+  if (nargin == 1)
+    retval = args(0).numel ();
+  else if (nargin > 1)
     {
-      octave_idx_type numel = args(0).numel (args.slice (1, nargin-1));
-
-      if (! error_state)
-	  retval = numel;
+      // Don't use numel (const octave_value_list&) here as that corresponds to
+      // an overloaded call, not to builtin!
+      retval = dims_to_numel (args(0).dims (), args.slice (1, nargin-1));
     }
   else
     print_usage ();

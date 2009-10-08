@@ -1,5 +1,12 @@
 2009-10-08  Jaroslav Hajek  <highegg@gmail.com>
 
+	* data.cc (Flength): Simplify.
+	(Fndims): Simplify.
+	(Fsize): Rewrite, use dim_vector::redim to simplify.
+	(Fsize_equal): Don't chop trailing singletons (should be already chopped).
+
+2009-10-08  Jaroslav Hajek  <highegg@gmail.com>
+
 	* utils.cc (dims_to_numel): New function.
 	* utils.h: Declare it.
 	* ov-base.cc (octave_base_value::numel (const octave_value_list&)):

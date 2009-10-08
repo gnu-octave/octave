@@ -2293,12 +2293,7 @@ odd definition is used for compatibility with @sc{matlab}).\n\
   octave_value retval;
 
   if (args.length () == 1)
-    {
-      int len = args(0).length ();
-
-      if (! error_state)
-	retval = len;
-    }
+    retval = args(0).length ();
   else
     print_usage ();
 
@@ -2316,12 +2311,7 @@ Trailing singleton dimensions are not counted.\n\
   octave_value retval;
 
   if (args.length () == 1)
-    {
-      int n_dims = args(0).ndims ();
-
-      if (! error_state)
-	retval = n_dims;
-    }
+    retval = args(0).ndims ();
   else
     print_usage ();
 
@@ -2402,34 +2392,23 @@ returns the number of columns in the given matrix.\n\
 
   if (nargin == 1)
     {
-      dim_vector dimensions = args(0).dims ();
-
-      int ndims = dimensions.length ();
-
-      Matrix m (1, ndims);
+      const dim_vector dimensions = args(0).dims ();
 
       if (nargout > 1)
 	{
-	  for (int i = nargout-1; i >= ndims; i--)
-	    retval(i) = 1;
-
-	  if (ndims > nargout)
-	    {
-	      octave_idx_type d = 1;
-
-	      while (ndims >= nargout)
-		d *= dimensions(--ndims);
-	      
-	      retval(ndims) = d;
-	    }
-
-	  while (ndims--)
-	    retval(ndims) = dimensions(ndims);
+          const dim_vector rdims = dimensions.redim (nargout);
+          retval.resize (nargout);
+          for (int i = 0; i < nargout; i++)
+            retval(i) = rdims(i);
 	}
       else
 	{
+          int ndims = dimensions.length ();
+
+          NoAlias<Matrix> m (1, ndims);
+
 	  for (int i = 0; i < ndims; i++)
-	    m(0, i) = dimensions(i);
+	    m(i) = dimensions(i);
 
 	  retval(0) = m;
 	}
@@ -2442,7 +2421,7 @@ returns the number of columns in the given matrix.\n\
 	error ("size: expecting scalar as second argument");
       else
 	{
-	  dim_vector dv = args(0).dims ();
+	  const dim_vector dv = args(0).dims ();
 
 	  if (nd > 0)
 	    {
@@ -2479,12 +2458,10 @@ Called with a single argument, size_equal returns true.\n\
       retval = true;
 
       dim_vector a_dims = args(0).dims ();
-      a_dims.chop_trailing_singletons ();
 
       for (int i = 1; i < nargin; ++i)
         {
           dim_vector b_dims = args(i).dims ();
-          b_dims.chop_trailing_singletons ();
 
           if (a_dims != b_dims)
 	    {

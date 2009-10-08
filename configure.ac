@@ -905,6 +905,20 @@ OCTAVE_CHECK_LIBRARY(qrupdate, qrupdate,
   [],
   [sqr1up],
   [Fortran 77], [don't use qrupdate, disable QR & Cholesky updating functions])
+
+if test "$octave_qrupdate_ok" = yes; then
+  LIBS="$LIBS $QRUPDATE_LIBS"
+  AC_LANG_PUSH([Fortran 77])
+  AC_MSG_CHECKING([for slup1up in $QRUPDATE_LIBS])
+  octave_qrupdate_luu=no
+  AC_LINK_IFELSE([AC_LANG_CALL([], [slup1up])],
+  [octave_qrupdate_luu=yes])
+  AC_MSG_RESULT($octave_qrupdate_luu)
+  if test "$octave_qrupdate_luu" = yes; then
+    AC_DEFINE(HAVE_QRUPDATE_LUU, [1], [Define if qrupdate supports LU updates])
+  fi
+  AC_LANG_POP([Fortran 77])
+fi
 LIBS="$save_LIBS"
 
 # Check for AMD library

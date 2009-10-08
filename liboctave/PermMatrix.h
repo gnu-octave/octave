@@ -118,6 +118,8 @@ public:
   void print_info (std::ostream& os, const std::string& prefix) const
     { Array<octave_idx_type>::print_info (os, prefix); }
 
+  static PermMatrix eye (octave_idx_type n);
+
 private:
   bool _colp;
 };

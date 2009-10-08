@@ -2,6 +2,7 @@
 
 Copyright (C) 1994, 1995, 1996, 1997, 1999, 2002, 2003, 2004, 2005,
               2007, 2008 John W. Eaton
+Copyright (C) 2009 VZLU Prague, a.s.
 
 This file is part of Octave.
 
@@ -28,6 +29,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "floatLU.h"
 #include "f77-fcn.h"
 #include "lo-error.h"
+#include "oct-locbuf.h"
+#include "fColVector.h"
 
 // Instantiate the base LU class for the types we need.
 
@@ -43,6 +46,21 @@ extern "C"
   F77_RET_T
   F77_FUNC (sgetrf, SGETRF) (const octave_idx_type&, const octave_idx_type&, float*,
 			     const octave_idx_type&, octave_idx_type*, octave_idx_type&);
+
+#ifdef HAVE_QRUPDATE_LUU
+  F77_RET_T
+  F77_FUNC (slu1up, SLU1UP) (const octave_idx_type&, const octave_idx_type&,
+                             float *, const octave_idx_type&,
+                             float *, const octave_idx_type&,
+                             float *, float *);
+
+  F77_RET_T
+  F77_FUNC (slup1up, SLUP1UP) (const octave_idx_type&, const octave_idx_type&,
+                               float *, const octave_idx_type&,
+                               float *, const octave_idx_type&,
+                               octave_idx_type *, const float *,
+                               const float *, float *);
+#endif
 }
 
 FloatLU::FloatLU (const FloatMatrix& a)
@@ -64,6 +82,132 @@ FloatLU::FloatLU (const FloatMatrix& a)
   for (octave_idx_type i = 0; i < mn; i++)
     pipvt[i] -= 1;
 }
+
+#ifdef HAVE_QRUPDATE_LUU
+
+void FloatLU::update (const FloatColumnVector& u, const FloatColumnVector& v)
+{
+  if (packed ())
+    unpack ();
+
+  FloatMatrix& l = l_fact;
+  FloatMatrix& r = a_fact;
+
+  octave_idx_type m = l.rows ();
+  octave_idx_type n = r.columns ();
+  octave_idx_type k = l.columns ();
+
+  if (u.length () == m && v.length () == n)
+    {
+      FloatColumnVector utmp = u, vtmp = v;
+      F77_XFCN (slu1up, SLU1UP, (m, n, l.fortran_vec (), m, r.fortran_vec (), k,
+                                 utmp.fortran_vec (), vtmp.fortran_vec ()));
+    }
+  else
+    (*current_liboctave_error_handler) ("luupdate: dimensions mismatch");
+}
+
+void FloatLU::update (const FloatMatrix& u, const FloatMatrix& v)
+{
+  if (packed ())
+    unpack ();
+
+  FloatMatrix& l = l_fact;
+  FloatMatrix& r = a_fact;
+
+  octave_idx_type m = l.rows ();
+  octave_idx_type n = r.columns ();
+  octave_idx_type k = l.columns ();
+
+  if (u.rows () == m && v.rows () == n && u.cols () == v.cols ())
+    {
+      for (volatile octave_idx_type i = 0; i < u.cols (); i++)
+        {
+          FloatColumnVector utmp = u.column (i), vtmp = v.column (i);
+          F77_XFCN (slu1up, SLU1UP, (m, n, l.fortran_vec (), m, r.fortran_vec (), k,
+                                     utmp.fortran_vec (), vtmp.fortran_vec ()));
+        }
+    }
+  else
+    (*current_liboctave_error_handler) ("luupdate: dimensions mismatch");
+}
+
+void FloatLU::update_piv (const FloatColumnVector& u, const FloatColumnVector& v)
+{
+  if (packed ())
+    unpack ();
+
+  FloatMatrix& l = l_fact;
+  FloatMatrix& r = a_fact;
+
+  octave_idx_type m = l.rows ();
+  octave_idx_type n = r.columns ();
+  octave_idx_type k = l.columns ();
+
+  if (u.length () == m && v.length () == n)
+    {
+      FloatColumnVector utmp = u, vtmp = v;
+      OCTAVE_LOCAL_BUFFER (float, w, m);
+      for (octave_idx_type i = 0; i < m; i++) ipvt(i) += 1; // increment
+      F77_XFCN (slup1up, SLUP1UP, (m, n, l.fortran_vec (), m, r.fortran_vec (), k,
+                                   ipvt.fortran_vec (), utmp.data (), vtmp.data (), w));
+      for (octave_idx_type i = 0; i < m; i++) ipvt(i) -= 1; // decrement
+    }
+  else
+    (*current_liboctave_error_handler) ("luupdate: dimensions mismatch");
+}
+
+void FloatLU::update_piv (const FloatMatrix& u, const FloatMatrix& v)
+{
+  if (packed ())
+    unpack ();
+
+  FloatMatrix& l = l_fact;
+  FloatMatrix& r = a_fact;
+
+  octave_idx_type m = l.rows ();
+  octave_idx_type n = r.columns ();
+  octave_idx_type k = l.columns ();
+
+  if (u.rows () == m && v.rows () == n && u.cols () == v.cols ())
+    {
+      OCTAVE_LOCAL_BUFFER (float, w, m);
+      for (octave_idx_type i = 0; i < m; i++) ipvt(i) += 1; // increment
+      for (volatile octave_idx_type i = 0; i < u.cols (); i++)
+        {
+          FloatColumnVector utmp = u.column (i), vtmp = v.column (i);
+          F77_XFCN (slup1up, SLUP1UP, (m, n, l.fortran_vec (), m, r.fortran_vec (), k,
+                                       ipvt.fortran_vec (), utmp.data (), vtmp.data (), w));
+        }
+      for (octave_idx_type i = 0; i < m; i++) ipvt(i) -= 1; // decrement
+    }
+  else
+    (*current_liboctave_error_handler) ("luupdate: dimensions mismatch");
+}
+
+#else
+
+void FloatLU::update (const FloatColumnVector&, const FloatColumnVector&)
+{
+  (*current_liboctave_error_handler) ("luupdate: not available in this version");
+}
+
+void FloatLU::update (const FloatMatrix&, const FloatMatrix&)
+{
+  (*current_liboctave_error_handler) ("luupdate: not available in this version");
+}
+
+void FloatLU::update_piv (const FloatColumnVector&, const FloatColumnVector&)
+{
+  (*current_liboctave_error_handler) ("luupdate: not available in this version");
+}
+
+void FloatLU::update_piv (const FloatMatrix&, const FloatMatrix&)
+{
+  (*current_liboctave_error_handler) ("luupdate: not available in this version");
+}
+
+#endif
 
 /*
 ;;; Local Variables: ***

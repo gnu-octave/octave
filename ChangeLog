@@ -1,5 +1,9 @@
 2009-10-08  Jaroslav Hajek  <highegg@gmail.com>
 
+	* configure.ac: Define HAVE_QRUPDATE_LUU if qrupdate supports LU updates.
+
+2009-10-08  Jaroslav Hajek  <highegg@gmail.com>
+
 	* configure.ac: Use the LANG argument to OCTAVE_CHECK_LIBRARY to avoid
 	ugly names.
 

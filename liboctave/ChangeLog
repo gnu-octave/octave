@@ -1,3 +1,19 @@
+2009-10-08  Jaroslav Hajek  <highegg@gmail.com>
+
+	* PermMatrix.cc (PermMatrix::eye): New method.
+	* PermMatrix.h: Declare it.
+	* dbleLU.cc (LU::update, LU::update_piv): New overloaded methods.
+	* dbleLU.h: Declare them.
+	* floatLU.cc (FloatLU::update, FloatLU::update_piv): New overloaded
+	methods.
+	* floatLU.h: Declare them.
+	* CmplxLU.cc (ComplexLU::update, ComplexLU::update_piv): New
+	overloaded methods.
+	* CmplxLU.h: Declare them.
+	* fCmplxLU.cc (FloatComplexLU::update, FloatComplexLU::update_piv):
+	New overloaded methods.
+	* fCmplxLU.h: Declare them.
+
 2009-10-07  John W. Eaton  <jwe@octave.org>
 
 	* mx-inlines.cc (mx_inline_diff): Avoid uninitialized variable warning.

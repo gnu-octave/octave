@@ -2,6 +2,7 @@
 
 Copyright (C) 1994, 1995, 1996, 1997, 1999, 2002, 2003, 2004, 2005,
               2007, 2008 John W. Eaton
+Copyright (C) 2009 VZLU Prague, a.s.
 
 This file is part of Octave.
 
@@ -28,6 +29,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "CmplxLU.h"
 #include "f77-fcn.h"
 #include "lo-error.h"
+#include "oct-locbuf.h"
+#include "CColVector.h"
 
 // Instantiate the base LU class for the types we need.
 
@@ -43,6 +46,21 @@ extern "C"
   F77_RET_T
   F77_FUNC (zgetrf, ZGETRF) (const octave_idx_type&, const octave_idx_type&, Complex*,
 			     const octave_idx_type&, octave_idx_type*, octave_idx_type&);
+
+#ifdef HAVE_QRUPDATE_LUU
+  F77_RET_T
+  F77_FUNC (zlu1up, ZLU1UP) (const octave_idx_type&, const octave_idx_type&,
+                             Complex *, const octave_idx_type&,
+                             Complex *, const octave_idx_type&,
+                             Complex *, Complex *);
+
+  F77_RET_T
+  F77_FUNC (zlup1up, ZLUP1UP) (const octave_idx_type&, const octave_idx_type&,
+                               Complex *, const octave_idx_type&,
+                               Complex *, const octave_idx_type&,
+                               octave_idx_type *, const Complex *,
+                               const Complex *, Complex *);
+#endif
 }
 
 ComplexLU::ComplexLU (const ComplexMatrix& a)
@@ -64,6 +82,132 @@ ComplexLU::ComplexLU (const ComplexMatrix& a)
   for (octave_idx_type i = 0; i < mn; i++)
     pipvt[i] -= 1;
 }
+
+#ifdef HAVE_QRUPDATE_LUU
+
+void ComplexLU::update (const ComplexColumnVector& u, const ComplexColumnVector& v)
+{
+  if (packed ())
+    unpack ();
+
+  ComplexMatrix& l = l_fact;
+  ComplexMatrix& r = a_fact;
+
+  octave_idx_type m = l.rows ();
+  octave_idx_type n = r.columns ();
+  octave_idx_type k = l.columns ();
+
+  if (u.length () == m && v.length () == n)
+    {
+      ComplexColumnVector utmp = u, vtmp = v;
+      F77_XFCN (zlu1up, ZLU1UP, (m, n, l.fortran_vec (), m, r.fortran_vec (), k,
+                                 utmp.fortran_vec (), vtmp.fortran_vec ()));
+    }
+  else
+    (*current_liboctave_error_handler) ("luupdate: dimensions mismatch");
+}
+
+void ComplexLU::update (const ComplexMatrix& u, const ComplexMatrix& v)
+{
+  if (packed ())
+    unpack ();
+
+  ComplexMatrix& l = l_fact;
+  ComplexMatrix& r = a_fact;
+
+  octave_idx_type m = l.rows ();
+  octave_idx_type n = r.columns ();
+  octave_idx_type k = l.columns ();
+
+  if (u.rows () == m && v.rows () == n && u.cols () == v.cols ())
+    {
+      for (volatile octave_idx_type i = 0; i < u.cols (); i++)
+        {
+          ComplexColumnVector utmp = u.column (i), vtmp = v.column (i);
+          F77_XFCN (zlu1up, ZLU1UP, (m, n, l.fortran_vec (), m, r.fortran_vec (), k,
+                                     utmp.fortran_vec (), vtmp.fortran_vec ()));
+        }
+    }
+  else
+    (*current_liboctave_error_handler) ("luupdate: dimensions mismatch");
+}
+
+void ComplexLU::update_piv (const ComplexColumnVector& u, const ComplexColumnVector& v)
+{
+  if (packed ())
+    unpack ();
+
+  ComplexMatrix& l = l_fact;
+  ComplexMatrix& r = a_fact;
+
+  octave_idx_type m = l.rows ();
+  octave_idx_type n = r.columns ();
+  octave_idx_type k = l.columns ();
+
+  if (u.length () == m && v.length () == n)
+    {
+      ComplexColumnVector utmp = u, vtmp = v;
+      OCTAVE_LOCAL_BUFFER (Complex, w, m);
+      for (octave_idx_type i = 0; i < m; i++) ipvt(i) += 1; // increment
+      F77_XFCN (zlup1up, ZLUP1UP, (m, n, l.fortran_vec (), m, r.fortran_vec (), k,
+                                   ipvt.fortran_vec (), utmp.data (), vtmp.data (), w));
+      for (octave_idx_type i = 0; i < m; i++) ipvt(i) -= 1; // decrement
+    }
+  else
+    (*current_liboctave_error_handler) ("luupdate: dimensions mismatch");
+}
+
+void ComplexLU::update_piv (const ComplexMatrix& u, const ComplexMatrix& v)
+{
+  if (packed ())
+    unpack ();
+
+  ComplexMatrix& l = l_fact;
+  ComplexMatrix& r = a_fact;
+
+  octave_idx_type m = l.rows ();
+  octave_idx_type n = r.columns ();
+  octave_idx_type k = l.columns ();
+
+  if (u.rows () == m && v.rows () == n && u.cols () == v.cols ())
+    {
+      OCTAVE_LOCAL_BUFFER (Complex, w, m);
+      for (octave_idx_type i = 0; i < m; i++) ipvt(i) += 1; // increment
+      for (volatile octave_idx_type i = 0; i < u.cols (); i++)
+        {
+          ComplexColumnVector utmp = u.column (i), vtmp = v.column (i);
+          F77_XFCN (zlup1up, ZLUP1UP, (m, n, l.fortran_vec (), m, r.fortran_vec (), k,
+                                       ipvt.fortran_vec (), utmp.data (), vtmp.data (), w));
+        }
+      for (octave_idx_type i = 0; i < m; i++) ipvt(i) -= 1; // decrement
+    }
+  else
+    (*current_liboctave_error_handler) ("luupdate: dimensions mismatch");
+}
+
+#else
+
+void ComplexLU::update (const ComplexColumnVector&, const ComplexColumnVector&)
+{
+  (*current_liboctave_error_handler) ("luupdate: not available in this version");
+}
+
+void ComplexLU::update (const ComplexMatrix&, const ComplexMatrix&)
+{
+  (*current_liboctave_error_handler) ("luupdate: not available in this version");
+}
+
+void ComplexLU::update_piv (const ComplexColumnVector&, const ComplexColumnVector&)
+{
+  (*current_liboctave_error_handler) ("luupdate: not available in this version");
+}
+
+void ComplexLU::update_piv (const ComplexMatrix&, const ComplexMatrix&)
+{
+  (*current_liboctave_error_handler) ("luupdate: not available in this version");
+}
+
+#endif
 
 /*
 ;;; Local Variables: ***

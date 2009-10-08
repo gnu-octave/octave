@@ -179,6 +179,16 @@ PermMatrix::power (octave_idx_type m) const
   return PermMatrix (res_pvec, res_colp, false);
 }
 
+PermMatrix
+PermMatrix::eye (octave_idx_type n)
+{
+  Array<octave_idx_type> p(n);
+  for (octave_idx_type i = 0; i < n; i++)
+    p(i) = i;
+
+  return PermMatrix (p, false, false);
+}
+
 PermMatrix 
 operator *(const PermMatrix& a, const PermMatrix& b)
 {

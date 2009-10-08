@@ -1,5 +1,10 @@
 2009-10-08  Jaroslav Hajek  <highegg@gmail.com>
 
+	* DLD-FUNCTIONS/lu.cc (Fluupdate): New DEFUN_DLD.
+	(check_lu_dims): New helper func.
+
+2009-10-08  Jaroslav Hajek  <highegg@gmail.com>
+
 	* data.cc (Flength): Simplify.
 	(Fndims): Simplify.
 	(Fsize): Rewrite, use dim_vector::redim to simplify.

@@ -139,6 +139,8 @@ flag a non-Hermitian matrix.
 
 @DOCSTRING(lu)
 
+@DOCSTRING(luupdate)
+
 @DOCSTRING(qr)
 
 @DOCSTRING(qrupdate)

@@ -1,3 +1,7 @@
+2009-10-08  Jaroslav Hajek  <highegg@gmail.com>
+
+	* intepreter/linalg.txi: Add reference to luupdate.
+
 2009-10-07  Jaroslav Hajek  <highegg@gmail.com>
 
 	* interpreter/io.txi: Add reference to fskipl.

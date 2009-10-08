@@ -594,11 +594,47 @@ bool check_lu_dims (const octave_value& l, const octave_value& u,
             (p.is_undefined () || p.rows () == m));
 }
 
-DEFUN_DLD (luupdate, args, nargout,
+DEFUN_DLD (luupdate, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {[@var{l}, @var{u}] =} luupdate (@var{l}, @var{u}, @var{x}, @var{y})\n\
-@deftypefn {Loadable Function} {[@var{l}, @var{u}, @var{p}] =}\
-luupdate (@var{l}, @var{u}, @var{p}, @var{x}, @var{y})\n\
+@deftypefn {Loadable Function} {[@var{L}, @var{U}] =} luupdate (@var{l}, @var{u}, @var{x}, @var{y})\n\
+@deftypefnx {Loadable Function} {[@var{L}, @var{U}, @var{P}] =}\
+luupdate (@var{L}, @var{U}, @var{P}, @var{x}, @var{y})\n\
+Given an LU@tie{}factorization of a real or complex matrix\n\
+@w{@var{A} = @var{L}*@var{U}}, @var{L}@tie{}lower unit trapezoidal and\n\
+@var{U}@tie{}upper trapezoidal, return the LU@tie{}factorization\n\
+of @w{@var{A} + @var{x}*@var{y}.'}, where @var{x} and @var{y} are\n\
+column vectors (rank-1 update) or matrices with equal number of columns\n\
+(rank-k update).\n\
+Optionally, row-pivoted updating can be used by supplying\n\
+a row permutation (pivoting) matrix @var{P};\n\
+in that case, an updated permutation matrix is returned.\n\
+Note that if @var{L}, @var{U}, @var{P} is a pivoted LU@tie{}factorization\n\
+as obtained by @code{lu}:\n\
+\n\
+@example\n\
+  [@var{L}, @var{U}, @var{P}] = lu (@var{A});\n\
+@end example\n\
+\n\
+then a factorization of @code{@var{a}+@var{x}*@var{y}.'} can be obtained either as\n\
+\n\
+@example\n\
+  [@var{L1}, @var{U1}] = lu (@var{L}, @var{U}, @var{P}*@var{x}, @var{y})\n\
+@end example\n\
+\n\
+or\n\
+\n\
+@example\n\
+  [@var{L1}, @var{U1}, @var{P1}] = lu (@var{L}, @var{U}, @var{P}, @var{x}, @var{y})\n\
+@end example\n\
+\n\
+The first form uses the unpivoted algorithm, which is faster, but less stable.\n\
+The second form uses a slower pivoted algorithm, which is more stable.\n\
+\n\
+Note that the matrix case is done as a sequence of rank-1 updates;\n\
+thus, for k large enough, it will be both faster and more accurate to recompute\n\
+the factorization from scratch.\n\
+@seealso{lu,qrupdate,cholupdate}\n\
+@end deftypefn\n\
 ")
 {
   octave_idx_type nargin = args.length ();

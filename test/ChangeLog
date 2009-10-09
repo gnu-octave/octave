@@ -1,3 +1,7 @@
+2009-10-08  Rik  <octdev@nomad.inbox5.com>
+
+	* fntests.m: Fix typo of an extra space in instructions to user
+
 2009-10-05  Rik  <octdev@nomad.inbox5.com>
 
 	* fntests.m: Fix typo directing users to the wrong log file

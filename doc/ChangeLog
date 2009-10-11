@@ -1,5 +1,10 @@
 2009-10-11  Rik <octave@nomad.inbox5.com>
 
+	* Makefile.in: Include texmf.cnf in distributed files to fix texinfo
+	runtime error with stack overflow.
+
+2009-10-11  Rik <octave@nomad.inbox5.com>
+
 	* intepreter/Makefile.in: Fix broken command to create octave.dvi
 
 2009-10-08  Jaroslav Hajek  <highegg@gmail.com>

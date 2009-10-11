@@ -19,7 +19,7 @@ INSTALL_DATA = @INSTALL_DATA@
 
 SOURCES =
 
-DISTFILES = $(addprefix $(srcdir)/, Makefile.in ChangeLog conf.texi.in texinfo.tex)
+DISTFILES = $(addprefix $(srcdir)/, Makefile.in conf.texi.in texinfo.tex texmf.cnf ChangeLog)
 
 SUBDIRS = faq interpreter liboctave refcard
 

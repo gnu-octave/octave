@@ -136,7 +136,7 @@ TEXINFO := $(TEXINFO_SOURCE) ../conf.texi
 # octave-a4.texi) and call texi2[dvi|pdf] on it.
 
 TEXI2DVICOMMAND = TEXINPUTS="..$(sepchar)$(srcdir)$(sepchar)$(srcdir)/..$(sepchar)$(TEXINPUTS)$(sepchar)" \
-	TEXMFCNF="..$(sepchar)$(srcdir)$(sepchar)$(srcdir)/..$(sepchar)$(TEXINPUTS)$(sepchar)" \
+	TEXMFCNF="..$(sepchar)$(srcdir)$(sepchar)$(srcdir)/..$(sepchar)$(TEXMFCNF)$(sepchar)" \
 	  $(TEXI2DVI)
 
 TEXI2PDFCOMMAND = TEXINPUTS="..$(sepchar)$(srcdir)$(sepchar)$(srcdir)/..$(sepchar)$(TEXINPUTS)$(sepchar)" \
@@ -148,7 +148,6 @@ FORMATTED = octave.info octave.pdf octave-a4.pdf octave.info-[0-9]*
 MAN_BASE := mkoctfile octave octave-bug octave-config
 MAN_SRC := $(addsuffix .1, $(MAN_BASE))
 
-# FIXME -- need to include generated figures here...
 DISTFILES = $(addprefix $(srcdir)/, Makefile.in contributors.in \
   mkcontrib.awk dir  munge-texi.cc $(MAN_SRC) $(SOURCES) $(MAIN_TEXINFO)) \
   $(SUB_TEXINFO) contributors.texi $(FORMATTED) $(IMAGES) mk_doc_cache.m \
@@ -206,8 +205,7 @@ octave.info: $(IMAGES_TXT) $(TEXINFO) $(EXAMPLE_FILES)
 	-$(MAKEINFO) -I.. -I$(srcdir) -I$(srcdir)/.. $(MAIN_TEXINFO)
 
 octave.dvi: $(IMAGES_EPS) $(TEXINFO) $(EXAMPLE_FILES)
-	-TEXINPUTS="..$(sepchar)$(srcdir)$(sepchar)$(srcdir)/..$(sepchar)$(TEXINPUTS)$(sepchar)" \
-	  $(TEXI2DVI) $(MAIN_TEXINFO)
+	-$(TEXI2DVICOMMAND) $(MAIN_TEXINFO)
 
 octave-a4.dvi: $(IMAGES_EPS) $(TEXINFO) $(EXAMPLE_FILES) octave-a4.texi
 	-$(TEXI2DVICOMMAND) octave-a4.texi -t @afourpaper

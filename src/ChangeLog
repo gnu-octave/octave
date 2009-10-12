@@ -1,5 +1,18 @@
 2009-10-12  Jaroslav Hajek  <highegg@gmail.com>
 
+	* DLD-FUNCTIONS/lu.cc (maybe_set_triangular): Remove.
+	(get_lu_l, get_lu_u): New helper funcs.
+	(Flu, Fluupdate): Use them to auto-set MatrixType of results.
+	* DLD-FUNCTIONS/qr.cc (maybe_set_triangular): Remove.
+	(get_qr_r): New helper func.
+	(Fqr, Fqrupdate, Fqrinsert, Fqrdelete,
+	Fqrshift): Use it to auto-set MatrixType of results.
+	* DLD-FUNCTIONS/chol.cc (get_chol_r): New helper func.
+	(Fchol, Fcholupdate, Fcholinsert, Fcholdelete, Fcholshift): Use it
+	to auto-set MatrixType of result.
+
+2009-10-12  Jaroslav Hajek  <highegg@gmail.com>
+
 	* DLD-FUNCTIONS/matrix_type.cc (Fmatrix_type): Support 'nocompute'
 	option.
 

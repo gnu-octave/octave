@@ -45,6 +45,14 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-obj.h"
 #include "utils.h"
 
+template <class CHOLT>
+static octave_value
+get_chol_r (const CHOLT& fact)
+{
+  return octave_value (fact.chol_matrix (), 
+                       MatrixType (MatrixType::Upper));
+}
+
 DEFUN_DLD (chol, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{r} =} chol (@var{a})\n\
@@ -247,7 +255,7 @@ sparse matrices.\n\
 		      if (LLt)
 			retval(0) = fact.chol_matrix ().transpose ();
 		      else
-			retval(0) = fact.chol_matrix ();
+			retval(0) = get_chol_r (fact);
 		    }
 		  else
 		    error ("chol: matrix not positive definite");
@@ -267,7 +275,7 @@ sparse matrices.\n\
 		      if (LLt)
 			retval(0) = fact.chol_matrix ().hermitian ();
 		      else
-			retval(0) = fact.chol_matrix ();
+			retval(0) = get_chol_r (fact);
 		    }
 		  else
 		    error ("chol: matrix not positive definite");
@@ -292,7 +300,7 @@ sparse matrices.\n\
 		      if (LLt)
 			retval(0) = fact.chol_matrix ().transpose ();
 		      else
-			retval(0) = fact.chol_matrix ();
+			retval(0) = get_chol_r (fact);
 		    }
 		  else
 		    error ("chol: matrix not positive definite");
@@ -312,7 +320,7 @@ sparse matrices.\n\
 		      if (LLt)
 			retval(0) = fact.chol_matrix ().hermitian ();
 		      else
-			retval(0) = fact.chol_matrix ();
+			retval(0) = get_chol_r (fact);
 		    }
 		  else
 		    error ("chol: matrix not positive definite");
@@ -648,7 +656,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
 		    else
 		      fact.update (u);
 
-		    retval(0) = fact.chol_matrix ();
+		    retval(0) = get_chol_r (fact);
 		  }
 		else
 		  {
@@ -664,7 +672,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
 		    else
 		      fact.update (u);
 
-		    retval(0) = fact.chol_matrix ();
+		    retval(0) = get_chol_r (fact);
 		  }
 	      }
 	    else
@@ -683,7 +691,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
 		    else
 		      fact.update (u);
 
-		    retval(0) = fact.chol_matrix ();
+		    retval(0) = get_chol_r (fact);
 		  }
 		else
 		  {
@@ -699,7 +707,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
 		    else
 		      fact.update (u);
 
-		    retval(0) = fact.chol_matrix ();
+		    retval(0) = get_chol_r (fact);
 		  }
 	      }
 
@@ -853,7 +861,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
 		      fact.set (R);
 		      err = fact.insert_sym (u, j-1);
 
-		      retval(0) = fact.chol_matrix ();
+		      retval(0) = get_chol_r (fact);
 		    }
 		  else
 		    {
@@ -865,7 +873,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
 		      fact.set (R);
 		      err = fact.insert_sym (u, j-1);
 
-		      retval(0) = fact.chol_matrix ();
+		      retval(0) = get_chol_r (fact);
 		    }
 		}
 	      else
@@ -880,7 +888,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
 		      fact.set (R);
 		      err = fact.insert_sym (u, j-1);
 
-		      retval(0) = fact.chol_matrix ();
+		      retval(0) = get_chol_r (fact);
 		    }
 		  else
 		    {
@@ -892,7 +900,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
 		      fact.set (R);
 		      err = fact.insert_sym (u, j-1);
 
-		      retval(0) = fact.chol_matrix ();
+		      retval(0) = get_chol_r (fact);
 		    }
 		}
 
@@ -1023,7 +1031,7 @@ return the Cholesky@tie{}factorization of @w{A(p,p)}, where @w{p = [1:j-1,j+1:n+
 		      fact.set (R);
 		      fact.delete_sym (j-1);
 
-		      retval(0) = fact.chol_matrix ();
+		      retval(0) = get_chol_r (fact);
 		    }
 		  else
 		    {
@@ -1034,7 +1042,7 @@ return the Cholesky@tie{}factorization of @w{A(p,p)}, where @w{p = [1:j-1,j+1:n+
 		      fact.set (R);
 		      fact.delete_sym (j-1);
 
-		      retval(0) = fact.chol_matrix ();
+		      retval(0) = get_chol_r (fact);
 		    }
 		}
 	      else
@@ -1048,7 +1056,7 @@ return the Cholesky@tie{}factorization of @w{A(p,p)}, where @w{p = [1:j-1,j+1:n+
 		      fact.set (R);
 		      fact.delete_sym (j-1);
 
-		      retval(0) = fact.chol_matrix ();
+		      retval(0) = get_chol_r (fact);
 		    }
 		  else
 		    {
@@ -1059,7 +1067,7 @@ return the Cholesky@tie{}factorization of @w{A(p,p)}, where @w{p = [1:j-1,j+1:n+
 		      fact.set (R);
 		      fact.delete_sym (j-1);
 
-		      retval(0) = fact.chol_matrix ();
+		      retval(0) = get_chol_r (fact);
 		    }
 		}
             }
@@ -1164,7 +1172,7 @@ return the Cholesky@tie{}factorization of\n\
 		      fact.set (R);
 		      fact.shift_sym (i-1, j-1);
 
-		      retval(0) = fact.chol_matrix ();
+		      retval(0) = get_chol_r (fact);
 		    }
 		  else
 		    {
@@ -1175,7 +1183,7 @@ return the Cholesky@tie{}factorization of\n\
 		      fact.set (R);
 		      fact.shift_sym (i-1, j-1);
 
-		      retval(0) = fact.chol_matrix ();
+		      retval(0) = get_chol_r (fact);
 		    }
 		}
 	      else
@@ -1189,7 +1197,7 @@ return the Cholesky@tie{}factorization of\n\
 		      fact.set (R);
 		      fact.shift_sym (i-1, j-1);
 
-		      retval(0) = fact.chol_matrix ();
+		      retval(0) = get_chol_r (fact);
 		    }
 		  else
 		    {
@@ -1200,7 +1208,7 @@ return the Cholesky@tie{}factorization of\n\
 		      fact.set (R);
 		      fact.shift_sym (i-1, j-1);
 
-		      retval(0) = fact.chol_matrix ();
+		      retval(0) = get_chol_r (fact);
 		    }
 		}
             }

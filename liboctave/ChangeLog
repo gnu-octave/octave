@@ -1,5 +1,12 @@
 2009-10-12  Jaroslav Hajek  <highegg@gmail.com>
 
+	* base-qr.cc (base_qr::regular): New method.
+	* base-qr.h: Declare it.
+	* base-lu.cc (base_lu::regular): New method.
+	* base-lu.h: Declare it.
+
+2009-10-12  Jaroslav Hajek  <highegg@gmail.com>
+
 	* base-qr.h: New source.
 	* base-qr.cc: New source.
 	* dbleQR.h (QR): Rebase on base_qr<Matrix>.

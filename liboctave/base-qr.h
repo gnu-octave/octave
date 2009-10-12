@@ -65,6 +65,8 @@ public:
 
   qr_type_t get_type (void) const;
 
+  bool regular (void) const;
+
 protected:
 
   qr_type q, r;

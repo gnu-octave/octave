@@ -70,6 +70,8 @@ public:
 
   ColumnVector P_vec (void) const;
 
+  bool regular (void) const;
+
 protected:
 
   Array<octave_idx_type> getp (void) const;

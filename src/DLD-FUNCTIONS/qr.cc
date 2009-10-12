@@ -46,25 +46,13 @@ along with Octave; see the file COPYING.  If not, see
 
 template <class MT>
 static octave_value
-maybe_set_triangular (const MT& m, MatrixType::matrix_type t = MatrixType::Upper)
+get_qr_r (const base_qr<MT>& fact)
 {
-  typedef typename MT::element_type T;
-  octave_value retval;
-  octave_idx_type r = m.rows (), c = m.columns ();
-  if (r == c)
-    {
-      const T zero = T();
-      octave_idx_type i = 0;
-      for (;i != r && m(i,i) != zero; i++) ;
-      if (i == r)
-        retval = octave_value (m, MatrixType (t));
-      else
-        retval = m;
-    }
+  MT R = fact.R ();
+  if (R.is_square () && fact.regular ())
+    return octave_value (R, MatrixType (MatrixType::Upper));
   else
-    retval = m;
-
-  return retval;
+    return R;
 }
 
 // [Q, R] = qr (X):      form Q unitary and R upper triangular such
@@ -325,7 +313,7 @@ as\n\
 		    case 2:
 		      {
 			FloatQR fact (m, type);
-			retval(1) = maybe_set_triangular (fact.R ());
+			retval(1) = get_qr_r (fact);
 			retval(0) = fact.Q ();
 		      }
 		      break;
@@ -337,7 +325,7 @@ as\n\
                           retval(2) = fact.Pvec ();
                         else
                           retval(2) = fact.P ();
-			retval(1) = maybe_set_triangular (fact.R ());
+			retval(1) = get_qr_r (fact);
 			retval(0) = fact.Q ();
 		      }
 		      break;
@@ -363,7 +351,7 @@ as\n\
 		    case 2:
 		      {
 			FloatComplexQR fact (m, type);
-			retval(1) = maybe_set_triangular (fact.R ());
+			retval(1) = get_qr_r (fact);
 			retval(0) = fact.Q ();
 		      }
 		      break;
@@ -375,7 +363,7 @@ as\n\
                           retval(2) = fact.Pvec ();
                         else
                           retval(2) = fact.P ();
-			retval(1) = maybe_set_triangular (fact.R ());
+			retval(1) = get_qr_r (fact);
 			retval(0) = fact.Q ();
 		      }
 		      break;
@@ -404,7 +392,7 @@ as\n\
 		    case 2:
 		      {
 			QR fact (m, type);
-			retval(1) = maybe_set_triangular (fact.R ());
+			retval(1) = get_qr_r (fact);
 			retval(0) = fact.Q ();
 		      }
 		      break;
@@ -416,7 +404,7 @@ as\n\
                           retval(2) = fact.Pvec ();
                         else
                           retval(2) = fact.P ();
-			retval(1) = maybe_set_triangular (fact.R ());
+			retval(1) = get_qr_r (fact);
 			retval(0) = fact.Q ();
 		      }
 		      break;
@@ -442,7 +430,7 @@ as\n\
 		    case 2:
 		      {
 			ComplexQR fact (m, type);
-			retval(1) = maybe_set_triangular (fact.R ());
+			retval(1) = get_qr_r (fact);
 			retval(0) = fact.Q ();
 		      }
 		      break;
@@ -454,7 +442,7 @@ as\n\
                           retval(2) = fact.Pvec ();
                         else
                           retval(2) = fact.P ();
-			retval(1) = maybe_set_triangular (fact.R ());
+			retval(1) = get_qr_r (fact);
 			retval(0) = fact.Q ();
 		      }
 		      break;
@@ -838,7 +826,7 @@ The QR factorization supplied may be either full\n\
 		  FloatQR fact (Q, R);
 		  fact.update (u, v);
 
-		  retval(1) = fact.R ();
+		  retval(1) = get_qr_r (fact);
 		  retval(0) = fact.Q ();
 		}
 	      else
@@ -851,7 +839,7 @@ The QR factorization supplied may be either full\n\
 		  QR fact (Q, R);
 		  fact.update (u, v);
 
-		  retval(1) = fact.R ();
+		  retval(1) = get_qr_r (fact);
 		  retval(0) = fact.Q ();
 		}
             }
@@ -871,7 +859,7 @@ The QR factorization supplied may be either full\n\
 		  FloatComplexQR fact (Q, R);
 		  fact.update (u, v);
               
-		  retval(1) = fact.R ();
+		  retval(1) = get_qr_r (fact);
 		  retval(0) = fact.Q ();
 		}
 	      else
@@ -884,7 +872,7 @@ The QR factorization supplied may be either full\n\
 		  ComplexQR fact (Q, R);
 		  fact.update (u, v);
               
-		  retval(1) = fact.R ();
+		  retval(1) = get_qr_r (fact);
 		  retval(0) = fact.Q ();
 		}
             }
@@ -1041,7 +1029,7 @@ If @var{orient} is @code{\"row\"}, full factorization is needed.\n\
 			else 
 			  fact.insert_row (x.row (0), j(0)-1);
 
-			retval(1) = fact.R ();
+			retval(1) = get_qr_r (fact);
 			retval(0) = fact.Q ();
 
 		      }
@@ -1058,7 +1046,7 @@ If @var{orient} is @code{\"row\"}, full factorization is needed.\n\
 			else 
 			  fact.insert_row (x.row (0), j(0)-1);
 
-			retval(1) = fact.R ();
+			retval(1) = get_qr_r (fact);
 			retval(0) = fact.Q ();
 
 		      }
@@ -1081,7 +1069,7 @@ If @var{orient} is @code{\"row\"}, full factorization is needed.\n\
 			else 
 			  fact.insert_row (x.row (0), j(0)-1);
 
-			retval(1) = fact.R ();
+			retval(1) = get_qr_r (fact);
 			retval(0) = fact.Q ();
 		      }
 		    else
@@ -1097,7 +1085,7 @@ If @var{orient} is @code{\"row\"}, full factorization is needed.\n\
 			else 
 			  fact.insert_row (x.row (0), j(0)-1);
 
-			retval(1) = fact.R ();
+			retval(1) = get_qr_r (fact);
 			retval(0) = fact.Q ();
 		      }
                   }
@@ -1252,7 +1240,7 @@ If @var{orient} is @code{\"row\"}, full factorization is needed.\n\
 			else 
 			  fact.delete_row (j(0)-1);
 
-			retval(1) = fact.R ();
+			retval(1) = get_qr_r (fact);
 			retval(0) = fact.Q ();
 		      }
 		    else
@@ -1267,7 +1255,7 @@ If @var{orient} is @code{\"row\"}, full factorization is needed.\n\
 			else 
 			  fact.delete_row (j(0)-1);
 
-			retval(1) = fact.R ();
+			retval(1) = get_qr_r (fact);
 			retval(0) = fact.Q ();
 		      }
                   }
@@ -1287,7 +1275,7 @@ If @var{orient} is @code{\"row\"}, full factorization is needed.\n\
 			else 
 			  fact.delete_row (j(0)-1);
 
-			retval(1) = fact.R ();
+			retval(1) = get_qr_r (fact);
 			retval(0) = fact.Q ();
 		      }
 		    else
@@ -1302,7 +1290,7 @@ If @var{orient} is @code{\"row\"}, full factorization is needed.\n\
 			else 
 			  fact.delete_row (j(0)-1);
 
-			retval(1) = fact.R ();
+			retval(1) = get_qr_r (fact);
 			retval(0) = fact.Q ();
 		      }
                   }
@@ -1478,7 +1466,7 @@ of @w{@var{A}(:,p)}, where @w{p} is the permutation @*\n\
 		      FloatQR fact (Q, R);
 		      fact.shift_cols (i-1, j-1);
 
-		      retval(1) = fact.R ();
+		      retval(1) = get_qr_r (fact);
 		      retval(0) = fact.Q ();
 		    }
 		  else
@@ -1489,7 +1477,7 @@ of @w{@var{A}(:,p)}, where @w{p} is the permutation @*\n\
 		      QR fact (Q, R);
 		      fact.shift_cols (i-1, j-1);
 
-		      retval(1) = fact.R ();
+		      retval(1) = get_qr_r (fact);
 		      retval(0) = fact.Q ();
 		    }
                 }
@@ -1505,7 +1493,7 @@ of @w{@var{A}(:,p)}, where @w{p} is the permutation @*\n\
 		      FloatComplexQR fact (Q, R);
 		      fact.shift_cols (i-1, j-1);
                   
-		      retval(1) = fact.R ();
+		      retval(1) = get_qr_r (fact);
 		      retval(0) = fact.Q ();
 		    }
 		  else
@@ -1516,7 +1504,7 @@ of @w{@var{A}(:,p)}, where @w{p} is the permutation @*\n\
 		      ComplexQR fact (Q, R);
 		      fact.shift_cols (i-1, j-1);
                   
-		      retval(1) = fact.R ();
+		      retval(1) = get_qr_r (fact);
 		      retval(0) = fact.Q ();
 		    }
                 }

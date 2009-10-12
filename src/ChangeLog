@@ -1,5 +1,9 @@
 2009-10-12  Jaroslav Hajek  <highegg@gmail.com>
 
+	* pt-binop.cc, pt-unop.cc: Revert the effect of 1be3c73ed7b5.
+
+2009-10-12  Jaroslav Hajek  <highegg@gmail.com>
+
 	* DLD-FUNCTIONS/lu.cc (maybe_set_triangular): Remove.
 	(get_lu_l, get_lu_u): New helper funcs.
 	(Flu, Fluupdate): Use them to auto-set MatrixType of results.

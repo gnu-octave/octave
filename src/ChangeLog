@@ -1,3 +1,8 @@
+2009-10-12  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/matrix_type.cc (Fmatrix_type): Support 'nocompute'
+	option.
+
 2009-10-08  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/lu.cc (Fluupdate): New DEFUN_DLD.

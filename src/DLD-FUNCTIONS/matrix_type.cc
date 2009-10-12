@@ -39,6 +39,7 @@ along with Octave; see the file COPYING.  If not, see
 DEFUN_DLD (matrix_type, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{type} =} matrix_type (@var{a})\n\
+@deftypefnx {Loadable Function} {@var{type} =} matrix_type (@var{a}, 'nocompute')\n\
 @deftypefnx {Loadable Function} {@var{a} =} matrix_type (@var{a}, @var{type})\n\
 @deftypefnx {Loadable Function} {@var{a} =} matrix_type (@var{a}, 'upper', @var{perm})\n\
 @deftypefnx {Loadable Function} {@var{a} =} matrix_type (@var{a}, 'lower', @var{perm})\n\
@@ -48,6 +49,9 @@ for solutions of linear equations involving @var{a} to be performed.  Called wit
 single argument, @code{matrix_type} returns the type of the matrix and caches it for\n\
 future use.  Called with more than one argument, @code{matrix_type} allows the type\n\
 of the matrix to be defined.\n\
+\n\
+If the option 'nocompute' is given, the function will not attempt to guess the type if it is\n\
+still unknown. This is useful for debugging purposes.\n\
 \n\
 The possible matrix types depend on whether the matrix is full or sparse, and can be\n\
 one of the following\n\
@@ -117,10 +121,17 @@ classification of the matrix.\n\
     error ("matrix_type: incorrect number of arguments");
   else
     {
+      bool autocomp = true;
+      if (nargin == 2 && args(1).is_string () && args(1).string_value () == "nocompute")
+        {
+          nargin = 1;
+          autocomp = false;
+        }
+
       if (args(0).is_scalar_type())
 	{
 	  if (nargin == 1)
-	    retval = octave_value ("Full");
+	    retval = octave_value ("Diagonal");
 	  else
 	    retval = args(0);
 	}
@@ -134,7 +145,7 @@ classification of the matrix.\n\
 		{
 		  mattyp = args(0).matrix_type ();
 
-		  if (mattyp.is_unknown ())
+		  if (mattyp.is_unknown () && autocomp )
 		    {
 		      SparseComplexMatrix m = 
 			args(0).sparse_complex_matrix_value ();
@@ -149,7 +160,7 @@ classification of the matrix.\n\
 		{
 		  mattyp = args(0).matrix_type ();
 
-		  if (mattyp.is_unknown ())
+		  if (mattyp.is_unknown () && autocomp)
 		    {
 		      SparseMatrix m = args(0).sparse_matrix_value ();
 		      if (!error_state)
@@ -194,7 +205,6 @@ classification of the matrix.\n\
 	      else if (typ == MatrixType::Full)
 		retval = octave_value ("Full");
 	      else
-		// This should never happen!!!
 		retval = octave_value ("Unknown");
 	    }
 	  else
@@ -320,7 +330,7 @@ classification of the matrix.\n\
 		{
 		  mattyp = args(0).matrix_type ();
 
-		  if (mattyp.is_unknown ())
+		  if (mattyp.is_unknown () && autocomp)
 		    {
 		      if (args(0).is_single_type ())
 			{
@@ -346,7 +356,7 @@ classification of the matrix.\n\
 		{
 		  mattyp = args(0).matrix_type ();
 
-		  if (mattyp.is_unknown ())
+		  if (mattyp.is_unknown () && autocomp)
 		    {
 		      if (args(0).is_single_type ())
 			{
@@ -391,7 +401,6 @@ classification of the matrix.\n\
 	      else if (typ == MatrixType::Full)
 		retval = octave_value ("Full");
 	      else
-		// This should never happen!!!
 		retval = octave_value ("Unknown");
 	    }
 	  else

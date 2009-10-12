@@ -38,7 +38,7 @@ public:
 
   FloatComplexQRP (void) : FloatComplexQR (), p () { }
 
-  FloatComplexQRP (const FloatComplexMatrix&, QR::type = QR::std);
+  FloatComplexQRP (const FloatComplexMatrix&, qr_type_t = qr_type_std);
 
   FloatComplexQRP (const FloatComplexQRP& a) : FloatComplexQR (a), p (a.p) { }
 
@@ -54,7 +54,7 @@ public:
 
   ~FloatComplexQRP (void) { }
 
-  void init (const FloatComplexMatrix&, QR::type = QR::std);
+  void init (const FloatComplexMatrix&, qr_type_t = qr_type_std);
 
   PermMatrix P (void) const { return p; }
 

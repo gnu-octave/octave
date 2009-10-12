@@ -30,47 +30,31 @@ along with Octave; see the file COPYING.  If not, see
 #include "dMatrix.h"
 #include "dColVector.h"
 #include "dRowVector.h"
+#include "base-qr.h"
 
 class
 OCTAVE_API
-QR
+QR : public base_qr<Matrix>
 {
 public:
 
-  enum type
-    {
-      std,
-      raw,
-      economy
-    };
+  // Import them here to allow the QR:: prefix.
+  typedef qr_type_t type;
 
-  QR (void) : q (), r () { }
+  static const type std = qr_type_std;
+  static const type raw = qr_type_raw;
+  static const type economy = qr_type_economy;
 
-  QR (const Matrix&, QR::type = QR::std);
+  QR (void) : base_qr<Matrix> () { }
 
-  QR (const Matrix& q, const Matrix& r);
+  QR (const Matrix&, qr_type_t = qr_type_std);
 
-  QR (const QR& a) : q (a.q), r (a.r) { }
+  QR (const Matrix& qx, const Matrix& rx) 
+    : base_qr<Matrix> (qx, rx) { }
 
-  QR& operator = (const QR& a)
-    {
-      if (this != &a)
-	{
-	  q = a.q;
-	  r = a.r;
-	}
-      return *this;
-    }
+  QR (const QR& a) : base_qr<Matrix> (a) { }
 
-  ~QR (void) { }
-
-  void init (const Matrix&, QR::type);
-
-  Matrix Q (void) const { return q; }
-
-  Matrix R (void) const { return r; }
-
-  QR::type get_type (void) const;
+  void init (const Matrix&, qr_type_t);
 
   void update (const ColumnVector& u, const ColumnVector& v);
 
@@ -90,20 +74,11 @@ public:
 
   void shift_cols (octave_idx_type i, octave_idx_type j);
 
-  friend std::ostream&  operator << (std::ostream&, const QR&);
-
 protected:
 
   void form (octave_idx_type n, Matrix& afact, 
-             double *tau, QR::type qr_type);
-
-  Matrix q;
-  Matrix r;
+             double *tau, qr_type_t qr_type);
 };
-
-#ifndef HAVE_QRUPDATE
-void warn_qrupdate_once (void);
-#endif
 
 #endif
 

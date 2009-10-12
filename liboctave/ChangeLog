@@ -1,3 +1,24 @@
+2009-10-12  Jaroslav Hajek  <highegg@gmail.com>
+
+	* base-qr.h: New source.
+	* base-qr.cc: New source.
+	* dbleQR.h (QR): Rebase on base_qr<Matrix>.
+	* dbleQR.cc: Ditto.
+	* floatQR.h (QR): Rebase on base_qr<FloatMatrix>.
+	* floatQR.cc: Ditto.
+	* CmplxQR.h (QR): Rebase on base_qr<ComplexMatrix>.
+	* CmplxQR.cc: Ditto.
+	* fCmplxQR.h (QR): Rebase on base_qr<FloatComplexMatrix>.
+	* fCmplxQR.cc: Ditto.
+	* dbleQRP.h (QR): Update.
+	* dbleQRP.cc: Ditto.
+	* floatQRP.h (QR): Update.
+	* floatQRP.cc: Ditto.
+	* CmplxQRP.h (QR): Update.
+	* CmplxQRP.cc: Ditto.
+	* fCmplxQRP.h (QR): Update.
+	* fCmplxQRP.cc: Ditto.
+
 2009-10-08  Jaroslav Hajek  <highegg@gmail.com>
 
 	* PermMatrix.cc (PermMatrix::eye): New method.

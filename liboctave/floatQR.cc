@@ -34,6 +34,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "idx-vector.h"
 #include "oct-locbuf.h"
 
+#include "base-qr.cc"
+
+template class base_qr<FloatMatrix>;
+
 extern "C"
 {
   F77_RET_T
@@ -80,14 +84,13 @@ extern "C"
 #endif
 }
 
-FloatQR::FloatQR (const FloatMatrix& a, QR::type qr_type)
-  : q (), r ()
+FloatQR::FloatQR (const FloatMatrix& a, qr_type_t qr_type)
 {
   init (a, qr_type);
 }
 
 void
-FloatQR::init (const FloatMatrix& a, QR::type qr_type)
+FloatQR::init (const FloatMatrix& a, qr_type_t qr_type)
 {
   octave_idx_type m = a.rows ();
   octave_idx_type n = a.cols ();
@@ -98,7 +101,7 @@ FloatQR::init (const FloatMatrix& a, QR::type qr_type)
   octave_idx_type info = 0;
 
   FloatMatrix afact = a;
-  if (m > n && qr_type == QR::std)
+  if (m > n && qr_type == qr_type_std)
     afact.resize (m, m);
 
   if (m > 0)
@@ -118,12 +121,12 @@ FloatQR::init (const FloatMatrix& a, QR::type qr_type)
 }
 
 void FloatQR::form (octave_idx_type n, FloatMatrix& afact, 
-                    float *tau, QR::type qr_type)
+                    float *tau, qr_type_t qr_type)
 {
   octave_idx_type m = afact.rows (), min_mn = std::min (m, n);
   octave_idx_type info;
 
-  if (qr_type == QR::raw)
+  if (qr_type == qr_type_raw)
     {
       for (octave_idx_type j = 0; j < min_mn; j++)
 	{
@@ -141,7 +144,7 @@ void FloatQR::form (octave_idx_type n, FloatMatrix& afact,
         {
           // afact will become q.
           q = afact;
-          octave_idx_type k = qr_type == QR::economy ? n : m;
+          octave_idx_type k = qr_type == qr_type_economy ? n : m;
           r = FloatMatrix (k, n);
           for (octave_idx_type j = 0; j < n; j++)
             {
@@ -183,32 +186,6 @@ void FloatQR::form (octave_idx_type n, FloatMatrix& afact,
                                      work, lwork, info));
         }
     }
-}
-
-FloatQR::FloatQR (const FloatMatrix& q_arg, const FloatMatrix& r_arg)
-{
-  octave_idx_type qr = q_arg.rows (), qc = q_arg.columns ();
-  octave_idx_type rr = r_arg.rows (), rc = r_arg.columns ();
-  if (qc == rr && (qr == qc || (qr > qc && rr == rc)))
-    {
-      q = q_arg;
-      r = r_arg;
-    }
-  else
-    (*current_liboctave_error_handler) ("QR dimensions mismatch");
-}
-
-QR::type
-FloatQR::get_type (void) const
-{
-  QR::type retval;
-  if (!q.is_empty () && q.is_square ())
-    retval = QR::std;
-  else if (q.rows () > q.columns () && r.is_square ())
-    retval = QR::economy;
-  else
-    retval = QR::raw;
-  return retval;
 }
 
 #ifdef HAVE_QRUPDATE

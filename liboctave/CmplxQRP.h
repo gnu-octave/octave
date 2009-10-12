@@ -38,7 +38,7 @@ public:
 
   ComplexQRP (void) : ComplexQR (), p () { }
 
-  ComplexQRP (const ComplexMatrix&, QR::type = QR::std);
+  ComplexQRP (const ComplexMatrix&, qr_type_t = qr_type_std);
 
   ComplexQRP (const ComplexQRP& a) : ComplexQR (a), p (a.p) { }
 
@@ -54,7 +54,7 @@ public:
 
   ~ComplexQRP (void) { }
 
-  void init (const ComplexMatrix&, QR::type = QR::std);
+  void init (const ComplexMatrix&, qr_type_t = qr_type_std);
 
   PermMatrix P (void) const { return p; }
 

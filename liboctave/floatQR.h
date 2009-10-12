@@ -30,41 +30,24 @@ along with Octave; see the file COPYING.  If not, see
 #include "fMatrix.h"
 #include "fColVector.h"
 #include "fRowVector.h"
-#include "dbleQR.h"
+#include "base-qr.h"
 
 class
 OCTAVE_API
-FloatQR
+FloatQR : public base_qr<FloatMatrix>
 {
 public:
 
-  FloatQR (void) : q (), r () { }
+  FloatQR (void) : base_qr<FloatMatrix> () { }
 
-  FloatQR (const FloatMatrix&, QR::type = QR::std);
+  FloatQR (const FloatMatrix&, qr_type_t = qr_type_std);
 
-  FloatQR (const FloatMatrix& q, const FloatMatrix& r);
+  FloatQR (const FloatMatrix& qx, const FloatMatrix& rx) 
+    : base_qr<FloatMatrix> (qx, rx) { }
 
-  FloatQR (const FloatQR& a) : q (a.q), r (a.r) { }
+  FloatQR (const FloatQR& a) : base_qr<FloatMatrix> (a) { }
 
-  FloatQR& operator = (const FloatQR& a)
-    {
-      if (this != &a)
-	{
-	  q = a.q;
-	  r = a.r;
-	}
-      return *this;
-    }
-
-  ~FloatQR (void) { }
-
-  void init (const FloatMatrix&, QR::type);
-
-  FloatMatrix Q (void) const { return q; }
-
-  FloatMatrix R (void) const { return r; }
-
-  QR::type get_type (void) const;
+  void init (const FloatMatrix&, qr_type_t);
 
   void update (const FloatColumnVector& u, const FloatColumnVector& v);
 
@@ -84,15 +67,10 @@ public:
 
   void shift_cols (octave_idx_type i, octave_idx_type j);
 
-  friend std::ostream&  operator << (std::ostream&, const FloatQR&);
-
 protected:
 
   void form (octave_idx_type n, FloatMatrix& afact, 
-             float *tau, QR::type qr_type);
-
-  FloatMatrix q;
-  FloatMatrix r;
+             float *tau, qr_type_t qr_type);
 };
 
 #endif

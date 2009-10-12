@@ -32,41 +32,24 @@ along with Octave; see the file COPYING.  If not, see
 #include "fCMatrix.h"
 #include "fCColVector.h"
 #include "fCRowVector.h"
-#include "dbleQR.h"
+#include "base-qr.h"
 
 class
 OCTAVE_API
-FloatComplexQR
+FloatComplexQR : public base_qr<FloatComplexMatrix>
 {
 public:
 
-  FloatComplexQR (void) : q (), r () { }
+  FloatComplexQR (void) : base_qr<FloatComplexMatrix> () { }
 
-  FloatComplexQR (const FloatComplexMatrix&, QR::type = QR::std);
+  FloatComplexQR (const FloatComplexMatrix&, qr_type_t = qr_type_std);
 
-  FloatComplexQR (const FloatComplexMatrix& q, const FloatComplexMatrix& r);
+  FloatComplexQR (const FloatComplexMatrix& qx, const FloatComplexMatrix& rx) 
+    : base_qr<FloatComplexMatrix> (qx, rx) { }
 
-  FloatComplexQR (const FloatComplexQR& a) : q (a.q), r (a.r) { }
+  FloatComplexQR (const FloatComplexQR& a) : base_qr<FloatComplexMatrix> (a) { }
 
-  FloatComplexQR& operator = (const FloatComplexQR& a)
-    {
-      if (this != &a)
-	{
-	  q = a.q;
-	  r = a.r;
-	}
-      return *this;
-    }
-
-  ~FloatComplexQR (void) { }
-
-  void init (const FloatComplexMatrix&, QR::type = QR::std);
-
-  FloatComplexMatrix Q (void) const { return q; }
-
-  FloatComplexMatrix R (void) const { return r; }
-
-  QR::type get_type (void) const;
+  void init (const FloatComplexMatrix&, qr_type_t = qr_type_std);
 
   void update (const FloatComplexColumnVector& u, const FloatComplexColumnVector& v);
 
@@ -86,15 +69,10 @@ public:
 
   void shift_cols (octave_idx_type i, octave_idx_type j);
 
-  friend std::ostream&  operator << (std::ostream&, const FloatComplexQR&);
-
 protected:
 
   void form (octave_idx_type n, FloatComplexMatrix& afact, 
-             FloatComplex *tau, QR::type qr_type);
-
-  FloatComplexMatrix q;
-  FloatComplexMatrix r;
+             FloatComplex *tau, qr_type_t qr_type);
 };
 
 #endif

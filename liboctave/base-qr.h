@@ -1,7 +1,6 @@
 /*
 
-Copyright (C) 1994, 1995, 1996, 1997, 2000, 2002, 2004, 2005, 2006,
-              2007, 2008 John W. Eaton
+Copyright (C) 2009 Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -21,57 +20,58 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_QRP_h)
-#define octave_QRP_h 1
+#if !defined (octave_base_qr_h)
+#define octave_base_qr_h 1
 
-#include <iosfwd>
-
-#include "dbleQR.h"
-#include "PermMatrix.h"
+#include "MArray.h"
 #include "dColVector.h"
+#include "PermMatrix.h"
 
+enum qr_type_t
+{
+  qr_type_std,
+  qr_type_raw,
+  qr_type_economy
+};
+
+template <class qr_type>
 class
-OCTAVE_API
-QRP : public QR
+base_qr
 {
 public:
 
-  QRP (void) : QR (), p () { }
+  typedef typename qr_type::element_type qr_elt_type;
 
-  QRP (const Matrix&, qr_type_t = qr_type_std);
+  base_qr (void) { }
 
-  QRP (const QRP& a) : QR (a), p (a.p) { }
+  base_qr (const qr_type& q, const qr_type& r);
 
-  QRP& operator = (const QRP& a)
+  base_qr (const base_qr& a) : 
+    q (a.q), r (a.r) { }
+
+  base_qr& operator = (const base_qr& a)
     {
       if (this != &a)
 	{
-	  QR::operator = (a);
-	  p = a.p;
+	  q = a.q;
+	  r = a.r;
 	}
-
       return *this;
     }
 
-  ~QRP (void) { }
+  qr_type Q (void) const { return q; }
 
-  void init (const Matrix&, qr_type_t = qr_type_std);
+  qr_type R (void) const { return r; }
 
-  PermMatrix P (void) const { return p; }
-
-  ColumnVector Pvec (void) const;
-
-  friend std::ostream&  operator << (std::ostream&, const QRP&);
+  qr_type_t get_type (void) const;
 
 protected:
 
-  PermMatrix p;
+  qr_type q, r;
 };
 
+#ifndef HAVE_QRUPDATE
+void warn_qrupdate_once (void);
 #endif
 
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/
+#endif

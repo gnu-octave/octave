@@ -81,37 +81,6 @@ Summary of important user-visible changes for version 3.3:
  ** Octave now allows user-defined subsasgn methods to optimize out redundant copies.
     For more information, see the manual.
 
- ** When evaluating nested expressions, Octave will now make some attempts to
-    reuse temporary arrays instead of allocating new one for each result.
-    For instance, the expression
-    
-      -(2*a + b)
-
-    where a and b are arrays, will now be done like this:
-
-      allocate c
-      for all i: c(i) = 2*a(i)
-      for all i: c(i) = c(i) + b(i)
-      for all i: c(i) = -c(i)
-      c is the result
-
-    previously, a new temporary was allocated for each intermediary result
-
-      allocate c
-      for all i: c(i) = 2*a(i)
-      allocate d
-      for all i: d(i) = c(i) + b(i)
-      deallocate c
-      allocate e
-      for all i: e(i) = -d(i)
-      deallocate d
-      e is the result
-    
-    This will result in memory saving and less allocations, as well as a modest
-    performance improvement on most platforms.
-    Currently, only temporaries on the left-hand side of the operator can be reused,
-    as well as temporaries subject to unary operators - and !.
-
  ** More efficient matrix division handling. Octave is now able to handle the expressions
     
        M' \ v
@@ -141,6 +110,12 @@ Summary of important user-visible changes for version 3.3:
     RM has enough rows. Previously, the 2nd form was always used.
 
     Matrix division is similarly affected. 
+
+ ** More efficient handling of triangular matrix factors returned from factorizations.
+    The functions for computing QR, LU and Cholesky factorizations will now automatically
+    return the triangular matrix factors with proper internal matrix_type set, so that it
+    won't need to be computed when the matrix is used for division.
+
 
 Summary of important user-visible changes for version 3.2:
 ---------------------------------------------------------

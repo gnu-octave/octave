@@ -31,7 +31,7 @@ INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
-SOURCES =
+################################################################################
 
 MAIN_TEXINFO = liboctave.texi
 
@@ -59,7 +59,7 @@ SPELL = $(patsubst %.texi, %.spell, $(TEXINFO))
 	$(SED) -e 's/@@/ at /g' -e 's/@[a-zA-Z]*//g' $< | spell > $@.tmp
 	mv $@.tmp $@
 
-all: liboctave.info liboctave.dvi liboctave.ps liboctave.pdf HTML/index.html
+all: $(FORMATTED) HTML/index.html
 .PHONY: all
 
 liboctave.info: $(TEXINFO)
@@ -88,12 +88,6 @@ install install-strip: all
 uninstall:
 	rm -f $(DESTDIR)$(infodir)/liboctave.info*
 .PHONY: uninstall
-
-tags: $(SOURCES)
-	ctags $(SOURCES)
-
-TAGS: $(SOURCES)
-	etags $(SOURCES)
 
 spell: $(SPELL)
 .PHONY: spell

@@ -1,5 +1,11 @@
 2009-10-12  Rik <octave@nomad.inbox5.com>
 
+	* liboctave/Makefile.in: Simplify Makefile using GNU Make functions
+	* liboctave/liboctave.texi: Stop header of file, which was meant to be
+	commented, from being transferred into the documentation.
+
+2009-10-12  Rik <octave@nomad.inbox5.com>
+
 	* faq/Makefile.in: Clean a few non-functional commands from Makefile
 
 2009-10-12  Rik <octave@nomad.inbox5.com>

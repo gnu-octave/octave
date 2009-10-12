@@ -1,5 +1,9 @@
 2009-10-12  Rik <octave@nomad.inbox5.com>
 
+	* faq/Makefile.in: Clean a few non-functional commands from Makefile
+
+2009-10-12  Rik <octave@nomad.inbox5.com>
+
 	* refcard/Makefile.in: Simplify Makefile using GNU Make functions
 
 2009-10-11  Rik <octave@nomad.inbox5.com>

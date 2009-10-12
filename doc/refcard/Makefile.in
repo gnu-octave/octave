@@ -30,11 +30,15 @@ INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
-TEX := refcard.tex refcard-a4.tex refcard-legal.tex refcard-letter.tex 
+################################################################################
 
-FORMATTED := refcard-a4.dvi refcard-a4.ps refcard-a4.pdf \
-	refcard-legal.dvi refcard-legal.ps refcard-legal.pdf \
-	refcard-letter.dvi refcard-letter.ps refcard-letter.pdf
+BASENAMES := refcard-letter refcard-a4 refcard-legal
+
+TEX := refcard.tex $(addsuffix .tex, $(BASENAMES))
+
+FORMATTED := $(addsuffix .dvi, $(BASENAMES)) \
+             $(addsuffix .ps,  $(BASENAMES)) \
+             $(addsuffix .pdf, $(BASENAMES))
 
 DISTFILES := $(addprefix $(srcdir)/, Makefile.in $(TEX)) $(FORMATTED)
 
@@ -69,12 +73,6 @@ refcard-letter.pdf: refcard-letter.tex refcard.tex
 
 check install install-strip uninstall:
 .PHONY: check install install-strip uninstall
-
-tags: $(SOURCES)
-	ctags $(SOURCES)
-
-TAGS: $(SOURCES)
-	etags $(SOURCES)
 
 mostlyclean clean:
 	rm -f refcard-*.log

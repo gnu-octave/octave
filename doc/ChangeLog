@@ -1,3 +1,7 @@
+2009-10-12  Rik <octave@nomad.inbox5.com>
+
+	* refcard/Makefile.in: Simplify Makefile using GNU Make functions
+
 2009-10-11  Rik <octave@nomad.inbox5.com>
 
 	* Makefile.in: Include texmf.cnf in distributed files to fix texinfo

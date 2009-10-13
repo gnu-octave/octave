@@ -89,6 +89,7 @@ public:
   FloatNDArray cumsum (int dim = -1) const;
   FloatNDArray prod (int dim = -1) const;
   FloatNDArray sum (int dim = -1) const;  
+       NDArray dsum (int dim = -1) const;  
   FloatNDArray sumsq (int dim = -1) const;
   FloatNDArray concat (const FloatNDArray& rb, const Array<octave_idx_type>& ra_idx);
   FloatComplexNDArray concat (const FloatComplexNDArray& rb, const Array<octave_idx_type>& ra_idx);

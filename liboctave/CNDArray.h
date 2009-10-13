@@ -81,6 +81,7 @@ public:
   ComplexNDArray cumsum (int dim = -1) const;
   ComplexNDArray prod (int dim = -1) const;
   ComplexNDArray sum (int dim = -1) const;
+  ComplexNDArray xsum (int dim = -1) const;
   ComplexNDArray sumsq (int dim = -1) const;
   ComplexNDArray concat (const ComplexNDArray& rb, const Array<octave_idx_type>& ra_idx);
   ComplexNDArray concat (const NDArray& rb, const Array<octave_idx_type>& ra_idx);

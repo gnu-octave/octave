@@ -48,6 +48,41 @@ public:
   typedef T2 result;
 };
 
+// Determine whether two types are equal.
+template <class T1, class T2>
+class equal_types
+{
+public:
+
+  static const bool value = false;
+};
+
+template <class T>
+class equal_types <T, T>
+{
+public:
+
+  static const bool value = false;
+};
+
+// Determine whether a type is an instance of a template.
+
+template <template <class> class Template, class T>
+class is_instance
+{
+public:
+
+  static const bool value = false;
+};
+
+template <template <class> class Template, class T>
+class is_instance <Template, Template<T> >
+{
+public:
+
+  static const bool value = true;
+};
+
 // Determine whether a template paramter is a class type.
 
 template<typename T1>
@@ -96,6 +131,23 @@ class strip_template_param<TemplatedClass, TemplatedClass<T> >
 {
 public:
   typedef T type;
+};
+
+// Will turn TemplatedClass<T> to TemplatedClass<S>, T to S otherwise.
+// Useful for generic promotions.
+
+template<template<typename> class TemplatedClass, typename T, typename S>
+class subst_template_param
+{
+public:
+  typedef S type;
+};
+
+template<template<typename> class TemplatedClass, typename T, typename S>
+class subst_template_param<TemplatedClass, TemplatedClass<T>, S>
+{
+public:
+  typedef TemplatedClass<S> type;
 };
 
 #endif

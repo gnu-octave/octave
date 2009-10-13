@@ -662,6 +662,12 @@ ComplexNDArray::sum (int dim) const
 }
 
 ComplexNDArray
+ComplexNDArray::xsum (int dim) const
+{
+  return do_mx_red_op<ComplexNDArray, Complex> (*this, dim, mx_inline_xsum);
+}
+
+ComplexNDArray
 ComplexNDArray::sumsq (int dim) const
 {
   return do_mx_red_op<NDArray, Complex> (*this, dim, mx_inline_sumsq);

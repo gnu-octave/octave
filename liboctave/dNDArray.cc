@@ -726,6 +726,12 @@ NDArray::sum (int dim) const
 }
 
 NDArray
+NDArray::xsum (int dim) const
+{
+  return do_mx_red_op<NDArray, double> (*this, dim, mx_inline_xsum);
+}
+
+NDArray
 NDArray::sumsq (int dim) const
 {
   return do_mx_red_op<NDArray, double> (*this, dim, mx_inline_sumsq);

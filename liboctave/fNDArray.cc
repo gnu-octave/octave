@@ -683,6 +683,12 @@ FloatNDArray::sum (int dim) const
   return do_mx_red_op<FloatNDArray, float> (*this, dim, mx_inline_sum);
 }
 
+NDArray
+FloatNDArray::dsum (int dim) const
+{
+  return do_mx_red_op<NDArray, float> (*this, dim, mx_inline_dsum);
+}
+
 FloatNDArray
 FloatNDArray::sumsq (int dim) const
 {

@@ -1,3 +1,9 @@
+2009-10-13  Jaroslav Hajek  <highegg@gmail.com>
+
+	* data.cc (Fsum): Rewrite.
+	(Fcumsum): Rewrite.
+	(NATIVE_REDUCTION, NATIVE_REDUCTION_1): Remove.
+
 2009-10-12  Jaroslav Hajek  <highegg@gmail.com>
 
 	* pt-binop.cc, pt-unop.cc: Revert the effect of 1be3c73ed7b5.

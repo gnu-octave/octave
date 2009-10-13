@@ -25,6 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "MArrayN.h"
 #include "boolNDArray.h"
+class NDArray;
 
 template <class T>
 class
@@ -90,6 +91,7 @@ public:
   intNDArray cummin (ArrayN<octave_idx_type>& index, int dim = 0) const;
   
   intNDArray sum (int dim) const;
+  NDArray dsum (int dim) const;
   intNDArray cumsum (int dim) const;
 
   intNDArray diff (octave_idx_type order = 1, int dim = 0) const;

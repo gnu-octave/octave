@@ -209,6 +209,13 @@ intNDArray<T>::sum (int dim) const
 }
 
 template <class T>
+NDArray
+intNDArray<T>::dsum (int dim) const
+{
+  return do_mx_red_op<NDArray , T> (*this, dim, mx_inline_dsum);
+}
+
+template <class T>
 intNDArray<T>
 intNDArray<T>::cumsum (int dim) const
 {

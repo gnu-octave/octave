@@ -415,6 +415,14 @@ inline bool xis_false (const FloatComplex& x) { return x == 0.0f; }
 #define OP_RED_SUMSQ(ac, el) ac += el*el
 #define OP_RED_SUMSQC(ac, el) ac += cabsq (el)
 
+inline void op_dble_sum(double& ac, float el)
+{ ac += el; }
+inline void op_dble_sum(Complex& ac, const FloatComplex& el)
+{ ac += el; } // FIXME: guaranteed?
+template <class T>
+inline void op_dble_sum(double& ac, const octave_int<T>& el)
+{ ac += el.double_value (); }
+
 // The following two implement a simple short-circuiting.
 #define OP_RED_ANYC(ac, el) if (xis_true (el)) { ac = true; break; } else continue
 #define OP_RED_ALLC(ac, el) if (xis_false (el)) { ac = false; break; } else continue
@@ -430,7 +438,10 @@ F (const TSRC* v, octave_idx_type n) \
   return ac; \
 }
 
+#define PROMOTE_DOUBLE(T) typename subst_template_param<std::complex, T, double>::type
+
 OP_RED_FCN (mx_inline_sum, T, T, OP_RED_SUM, 0)
+OP_RED_FCN (mx_inline_dsum, T, PROMOTE_DOUBLE(T), op_dble_sum, 0.0)
 OP_RED_FCN (mx_inline_count, bool, T, OP_RED_SUM, 0)
 OP_RED_FCN (mx_inline_prod, T, T, OP_RED_PROD, 1)
 OP_RED_FCN (mx_inline_sumsq, T, T, OP_RED_SUMSQ, 0)
@@ -455,6 +466,7 @@ F (const TSRC* v, TRES *r, octave_idx_type m, octave_idx_type n) \
 }
 
 OP_RED_FCN2 (mx_inline_sum, T, T, OP_RED_SUM, 0)
+OP_RED_FCN2 (mx_inline_dsum, T, PROMOTE_DOUBLE(T), op_dble_sum, 0.0)
 OP_RED_FCN2 (mx_inline_count, bool, T, OP_RED_SUM, 0)
 OP_RED_FCN2 (mx_inline_prod, T, T, OP_RED_PROD, 1)
 OP_RED_FCN2 (mx_inline_sumsq, T, T, OP_RED_SUMSQ, 0)
@@ -518,6 +530,7 @@ F (const TSRC *v, TRES *r, octave_idx_type l, \
 }
 
 OP_RED_FCNN (mx_inline_sum, T, T)
+OP_RED_FCNN (mx_inline_dsum, T, PROMOTE_DOUBLE(T))
 OP_RED_FCNN (mx_inline_count, bool, T)
 OP_RED_FCNN (mx_inline_prod, T, T)
 OP_RED_FCNN (mx_inline_sumsq, T, T)
@@ -1237,6 +1250,54 @@ do_mx_diff_op (const ArrayType& src, int dim, octave_idx_type order,
 
   return ret;
 }
+
+// Fast extra-precise summation. According to
+// T. Ogita, S. M. Rump, S. Oishi:
+// Accurate Sum And Dot Product,
+// SIAM J. Sci. Computing, Vol. 26, 2005
+
+template <class T>
+inline void twosum_accum (T& s, T& e, 
+                          const T& x)
+{
+  FLOAT_TRUNCATE T s1 = s + x, t = s1 - s, e1 = (s - (s1 - t)) + (x - t);
+  s = s1;
+  e += e1;
+}
+
+template <class T>
+inline T
+mx_inline_xsum (const T *v, octave_idx_type n) 
+{
+  T s = 0, e = 0;
+  for (octave_idx_type i = 0; i < n; i++)
+    twosum_accum (s, e, v[i]);
+
+  return s + e;
+}
+
+template <class T>
+inline void
+mx_inline_xsum (const T *v, T *r, 
+                octave_idx_type m, octave_idx_type n)
+{
+  OCTAVE_LOCAL_BUFFER (T, e, m);
+  for (octave_idx_type i = 0; i < m; i++)
+    e[i] = r[i] = T ();
+
+  for (octave_idx_type j = 0; j < n; j++)
+    {
+      for (octave_idx_type i = 0; i < m; i++)
+        twosum_accum (r[i], e[i], v[i]);
+
+      v += m;
+    }
+
+  for (octave_idx_type i = 0; i < m; i++)
+    r[i] += e[i];
+}
+
+OP_RED_FCNN (mx_inline_xsum, T, T)
 
 #endif
 

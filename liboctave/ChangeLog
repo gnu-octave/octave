@@ -1,3 +1,20 @@
+2009-10-13  Jaroslav Hajek  <highegg@gmail.com>
+
+	* lo-traits.h (equal_types, is_instance, subst_template_param): New
+	traits classes.
+	* mx-inlines.cc (op_dble_sum, twosum_accum): New helper funcs.
+	(mx_inline_dsum, mx_inline_xsum): New reduction loops.
+	* fNDArray.cc (FloatNDArray::dsum): New method.
+	* fNDArray.h: Declare it.
+	* fCNDArray.cc (FloatComplexNDArray::dsum): New method.
+	* fCNDArray.h: Declare it.
+	* dNDArray.cc (NDArray::xsum): New method.
+	* dNDArray.h: Declare it.
+	* CNDArray.cc (ComplexNDArray::xsum): New method.
+	* CNDArray.h: Declare it.
+	* intNDArray.cc (intNDArray::dsum): New method.
+	* intNDArray.h: Declare it.
+
 2009-10-12  Jaroslav Hajek  <highegg@gmail.com>
 
 	* base-qr.cc (base_qr::regular): New method.

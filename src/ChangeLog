@@ -1,5 +1,10 @@
 2009-10-13  Jaroslav Hajek  <highegg@gmail.com>
 
+	* data.cc (Fcumsum, Fcumprod, Fprod, Fsum, Fsumsq): Correct help
+	string.
+
+2009-10-13  Jaroslav Hajek  <highegg@gmail.com>
+
 	* data.cc (Fsum): Rewrite.
 	(Fcumsum): Rewrite.
 	(NATIVE_REDUCTION, NATIVE_REDUCTION_1): Remove.

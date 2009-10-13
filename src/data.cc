@@ -1548,12 +1548,8 @@ DEFUN (cumprod, args, ,
 @deftypefn  {Built-in Function} {} cumprod (@var{x})\n\
 @deftypefnx {Built-in Function} {} cumprod (@var{x}, @var{dim})\n\
 Cumulative product of elements along dimension @var{dim}.  If\n\
-@var{dim} is omitted, it defaults to 1 (column-wise cumulative\n\
-products).\n\
+@var{dim} is omitted, it defaults to the first non-singleton dimension.\n\
 \n\
-As a special case, if @var{x} is a vector and @var{dim} is omitted,\n\
-return the cumulative product of the elements as a vector with the\n\
-same orientation as @var{x}.\n\
 @seealso{prod, cumsum}\n\
 @end deftypefn")
 {
@@ -1588,11 +1584,7 @@ DEFUN (cumsum, args, ,
 @deftypefnx {Built-in Function} {} cumsum (@var{x}, @var{dim})\n\
 @deftypefnx {Built-in Function} {} cumsum (@dots{}, 'native')\n\
 Cumulative sum of elements along dimension @var{dim}.  If @var{dim}\n\
-is omitted, it defaults to 1 (column-wise cumulative sums).\n\
-\n\
-As a special case, if @var{x} is a vector and @var{dim} is omitted,\n\
-return the cumulative sum of the elements as a vector with the\n\
-same orientation as @var{x}.\n\
+is omitted, it defaults to the first non-singleton dimension.\n\
 \n\
 The \"native\" argument implies the summation is performed in native type.\n\
  See @code{sum} for a complete description and example of the use of\n\
@@ -1836,10 +1828,7 @@ DEFUN (prod, args, ,
 @deftypefn  {Built-in Function} {} prod (@var{x})\n\
 @deftypefnx {Built-in Function} {} prod (@var{x}, @var{dim})\n\
 Product of elements along dimension @var{dim}.  If @var{dim} is\n\
-omitted, it defaults to 1 (column-wise products).\n\
-\n\
-As a special case, if @var{x} is a vector and @var{dim} is omitted,\n\
-return the product of the elements.\n\
+omitted, it defaults to the first non-singleton dimension.\n\
 @seealso{cumprod, sum}\n\
 @end deftypefn")
 {
@@ -2667,10 +2656,7 @@ DEFUN (sum, args, ,
 @deftypefnx {Built-in Function} {} sum (@dots{}, 'double')\n\
 @deftypefnx {Built-in Function} {} sum (@dots{}, 'extra')\n\
 Sum of elements along dimension @var{dim}.  If @var{dim} is\n\
-omitted, it defaults to 1 (column-wise sum).\n\
-\n\
-As a special case, if @var{x} is a vector and @var{dim} is omitted,\n\
-return the sum of the elements.\n\
+omitted, it defaults to the first non-singleton dimension.\n\
 \n\
 If the optional argument 'native' is given, then the sum is performed\n\
 in the same type as the original argument, rather than in the default\n\
@@ -2684,8 +2670,10 @@ sum ([true, true], 'native')\n\
   @result{} true\n\
 @end group\n\
 @end example\n\
+  \n\
 On the contrary, if 'double' is given, the sum is performed in double precision\n\
 even for single precision inputs.\n\
+\n\
 For double precision inputs, 'extra' indicates that a more accurate algorithm\n\
 than straightforward summation is to be used. For single precision inputs, 'extra' is\n\
 the same as 'double'. Otherwise, 'extra' has no effect.\n\
@@ -2882,10 +2870,7 @@ DEFUN (sumsq, args, ,
 @deftypefn  {Built-in Function} {} sumsq (@var{x})\n\
 @deftypefnx {Built-in Function} {} sumsq (@var{x}, @var{dim})\n\
 Sum of squares of elements along dimension @var{dim}.  If @var{dim}\n\
-is omitted, it defaults to 1 (column-wise sum of squares).\n\
-\n\
-As a special case, if @var{x} is a vector and @var{dim} is omitted,\n\
-return the sum of squares of the elements.\n\
+is omitted, it defaults to the first non-singleton dimension.\n\
 \n\
 This function is conceptually equivalent to computing\n\
 @example\n\

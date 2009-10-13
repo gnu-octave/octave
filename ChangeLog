@@ -1,3 +1,7 @@
+2009-10-13  Jaroslav Hajek  <highegg@gmail.com>
+
+	* NEWS: Update.
+
 2009-10-08  Jaroslav Hajek  <highegg@gmail.com>
 
 	* configure.ac: Define HAVE_QRUPDATE_LUU if qrupdate supports LU updates.

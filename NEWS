@@ -116,6 +116,11 @@ Summary of important user-visible changes for version 3.3:
     return the triangular matrix factors with proper internal matrix_type set, so that it
     won't need to be computed when the matrix is used for division.
 
+ ** The built-in "sum" function now handles the non-native summation (i.e. double precision
+    sum of single or integer inputs) more efficiently, avoiding a temporary conversion of
+    the whole input array to doubles. Further, "sum" can now accept an "extra" option argument,
+    using a compensated summation algorithm rather than a straightforward sum, which significantly
+    improves precision if lots of cancellation occurs in the summation.
 
 Summary of important user-visible changes for version 3.2:
 ---------------------------------------------------------

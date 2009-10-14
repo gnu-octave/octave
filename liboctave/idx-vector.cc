@@ -541,6 +541,26 @@ idx_vector::is_cont_range (octave_idx_type n,
   return res;
 }
 
+octave_idx_type
+idx_vector::increment (void) const
+{
+  octave_idx_type retval = 0;
+  switch (rep->idx_class ())
+    {
+    case class_colon:
+      retval = 1;
+    case class_range:
+      retval = dynamic_cast<idx_range_rep *> (rep) -> get_step ();
+      break;
+    case class_vector:
+      {
+        if (length (0) > 1)
+          retval = elem (1) - elem (0);
+      }
+    }
+  return retval;
+}
+
 void
 idx_vector::copy_data (octave_idx_type *data) const
 {

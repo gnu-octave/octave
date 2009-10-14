@@ -1,3 +1,10 @@
+2009-10-14  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov.cc (octave_value::octave_value (const Array<std::string>&)): New
+	constructor.
+	* ov.h: Declare it.
+	* data.cc (Fnth_element): New DEFUN.
+
 2009-10-13  Jaroslav Hajek  <highegg@gmail.com>
 
 	* data.cc (Fcumsum, Fcumprod, Fprod, Fsum, Fsumsq): Correct help

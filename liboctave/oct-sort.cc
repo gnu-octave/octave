@@ -1919,7 +1919,6 @@ octave_sort<T>::lookupm (const T *data, octave_idx_type nel,
       lookupm (data, nel, values, nvalues, idx, std::ptr_fun (compare));
 }
 
-#include <iostream>
 template <class T> template <class Comp>
 void 
 octave_sort<T>::lookupb (const T *data, octave_idx_type nel,
@@ -1981,6 +1980,53 @@ octave_sort<T>::lookupb (const T *data, octave_idx_type nel,
 #endif
     if (compare)
       lookupb (data, nel, values, nvalues, match, std::ptr_fun (compare));
+}
+
+template <class T> template <class Comp>
+void 
+octave_sort<T>::nth_element (T *data, octave_idx_type nel,
+                             octave_idx_type lo, octave_idx_type up,
+                             Comp comp)
+{
+  // Simply wrap the STL algorithms.
+  // FIXME: this will fail if we attempt to inline <,> for Complex.
+  if (up == lo+1)
+    std::nth_element (data, data + lo, data + nel, comp);
+  else if (lo == 0)
+    std::partial_sort (data, data + up, data + nel, comp);
+  else
+    {
+      std::nth_element (data, data + lo, data + nel, comp);
+      if (up == lo + 2)
+        {
+          // Finding two subsequent elements.
+          std::swap (data[lo+1], 
+                     *std::min_element (data + lo + 1, data + nel, comp));
+        }
+      else
+        std::partial_sort (data + lo + 1, data + up, data + nel, comp);
+    }
+}
+
+template <class T>
+void 
+octave_sort<T>::nth_element (T *data, octave_idx_type nel,
+                             octave_idx_type lo, octave_idx_type up)
+{
+  if (up < 0)
+    up = lo + 1;
+#ifdef INLINE_ASCENDING_SORT
+  if (compare == ascending_compare)
+    nth_element (data, nel, lo, up, std::less<T> ());
+  else
+#endif
+#ifdef INLINE_DESCENDING_SORT    
+    if (compare == descending_compare)
+      nth_element (data, nel, lo, up, std::greater<T> ());
+  else
+#endif
+    if (compare)
+      nth_element (data, nel, lo, up, std::ptr_fun (compare));
 }
 
 template <class T>

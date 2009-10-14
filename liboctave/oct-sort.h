@@ -159,6 +159,11 @@ public:
                 const T* values, octave_idx_type nvalues,
                 bool *match);
 
+  // Rearranges the array so that the elements with indices
+  // lo..up-1 are in their correct place. 
+  void nth_element (T *data, octave_idx_type nel,
+                    octave_idx_type lo, octave_idx_type up = -1);
+
   static bool ascending_compare (typename ref_param<T>::type,
 				 typename ref_param<T>::type);
 
@@ -322,6 +327,11 @@ private:
   void lookupb (const T *data, octave_idx_type nel,
                 const T* values, octave_idx_type nvalues,
                 bool *match, Comp comp);
+
+  template <class Comp>
+  void nth_element (T *data, octave_idx_type nel,
+                    octave_idx_type lo, octave_idx_type up,
+                    Comp comp);
 };
 
 template <class T>

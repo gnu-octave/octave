@@ -595,8 +595,8 @@ public:
   // You should not use it anywhere else.
   void *mex_get_data (void) const { return const_cast<T *> (data ()); }
 
-  Array<T> sort (octave_idx_type dim = 0, sortmode mode = ASCENDING) const;
-  Array<T> sort (Array<octave_idx_type> &sidx, octave_idx_type dim = 0,
+  Array<T> sort (int dim = 0, sortmode mode = ASCENDING) const;
+  Array<T> sort (Array<octave_idx_type> &sidx, int dim = 0,
 		 sortmode mode = ASCENDING) const;
 
   // Ordering is auto-detected or can be specified.
@@ -630,6 +630,10 @@ public:
   // Find indices of (at most n) nonzero elements. If n is specified, backward
   // specifies search from backward.
   Array<octave_idx_type> find (octave_idx_type n = -1, bool backward = false) const;
+
+  // Returns the n-th element in increasing order, using the same ordering as
+  // used for sort. n can either be a scalar index or a contiguous range.
+  Array<T> nth_element (const idx_vector& n, int dim = 0) const;
 
   Array<T> diag (octave_idx_type k = 0) const;
 

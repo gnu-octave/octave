@@ -1,3 +1,13 @@
+2009-10-14  Jaroslav Hajek  <highegg@gmail.com>
+
+	* oct-sort.cc (octave_sort<T>::nth_element): New overloaded method.
+	* oct-sort.h: Declare it.
+	* Array.cc (Array<T>::nth_element): New method.
+	* Array.h: Declare it.
+	(Array<T>::sort): Use int for dim argument.
+	* ArrayN.h (ArrayN<T>::nth_element): Wrap.
+	(ArrayN<T>::sort): Use int for dim argument.
+
 2009-10-13  Jaroslav Hajek  <highegg@gmail.com>
 
 	* lo-traits.h (equal_types, is_instance, subst_template_param): New

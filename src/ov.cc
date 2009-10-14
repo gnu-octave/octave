@@ -1078,6 +1078,12 @@ octave_value::octave_value (const idx_vector& idx)
   maybe_mutate ();
 }
 
+octave_value::octave_value (const Array<std::string>& cellstr)
+  : rep (new octave_cell (cellstr))
+{
+  maybe_mutate ();
+}
+
 octave_value::octave_value (double base, double limit, double inc)
   : rep (new octave_range (base, limit, inc))
 {

@@ -796,6 +796,10 @@ public:
   bool is_cont_range (octave_idx_type n,
                       octave_idx_type& l, octave_idx_type& u) const;
 
+  // Returns the increment for ranges and colon, 0 for scalars and empty
+  // vectors, 1st difference otherwise.
+  octave_idx_type increment (void) const;
+
   idx_vector
   complement (octave_idx_type n) const;
 

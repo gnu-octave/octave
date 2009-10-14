@@ -131,17 +131,20 @@ public:
       return ArrayN<T> (tmp, tmp.dims ());
     }
 
-  ArrayN<T> sort (octave_idx_type dim = 0, sortmode mode = ASCENDING) const
+  ArrayN<T> sort (int dim = 0, sortmode mode = ASCENDING) const
     {
-      Array<T> tmp = Array<T>::sort (dim, mode);
-      return ArrayN<T> (tmp, tmp.dims ());
+      return Array<T>::sort (dim, mode);
     }
 
-  ArrayN<T> sort (Array<octave_idx_type> &sidx, octave_idx_type dim = 0,
+  ArrayN<T> sort (Array<octave_idx_type> &sidx, int dim = 0,
 		 sortmode mode = ASCENDING) const
     {
-      Array<T> tmp = Array<T>::sort (sidx, dim, mode);
-      return ArrayN<T> (tmp, tmp.dims ());
+      return Array<T>::sort (sidx, dim, mode);
+    }
+
+  ArrayN<T> nth_element (const idx_vector& n, int dim = 0) const
+    {
+      return Array<T>::nth_element (n, dim);
     }
 
   ArrayN<T> diag (octave_idx_type k) const

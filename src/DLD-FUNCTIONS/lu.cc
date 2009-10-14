@@ -595,9 +595,8 @@ bool check_lu_dims (const octave_value& l, const octave_value& u,
 
 DEFUN_DLD (luupdate, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {[@var{L}, @var{U}] =} luupdate (@var{l}, @var{u}, @var{x}, @var{y})\n\
-@deftypefnx {Loadable Function} {[@var{L}, @var{U}, @var{P}] =}\
-luupdate (@var{L}, @var{U}, @var{P}, @var{x}, @var{y})\n\
+@deftypefn  {Loadable Function} {[@var{L}, @var{U}] =} luupdate (@var{l}, @var{u}, @var{x}, @var{y})\n\
+@deftypefnx {Loadable Function} {[@var{L}, @var{U}, @var{P}] =} luupdate (@var{L}, @var{U}, @var{P}, @var{x}, @var{y})\n\
 Given an LU@tie{}factorization of a real or complex matrix\n\
 @w{@var{A} = @var{L}*@var{U}}, @var{L}@tie{}lower unit trapezoidal and\n\
 @var{U}@tie{}upper trapezoidal, return the LU@tie{}factorization\n\
@@ -633,8 +632,7 @@ Note that the matrix case is done as a sequence of rank-1 updates;\n\
 thus, for k large enough, it will be both faster and more accurate to recompute\n\
 the factorization from scratch.\n\
 @seealso{lu,qrupdate,cholupdate}\n\
-@end deftypefn\n\
-")
+@end deftypefn")
 {
   octave_idx_type nargin = args.length ();
   octave_value_list retval;

@@ -1894,7 +1894,7 @@ if the child process has stopped but is not traced via the\n\
 
 DEFUNX ("WCONTINUE", FWCONTINUE, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} WCONINTUE ()\n\
+@deftypefn {Built-in Function} {} WCONTINUE ()\n\
 Return the numerical value of the option argument that may be\n\
 passed to @code{waitpid} to indicate that it should also return\n\
 if a stopped child has been resumed by delivery of a @code{SIGCONT}\n\

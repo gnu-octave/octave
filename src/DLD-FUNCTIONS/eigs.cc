@@ -131,55 +131,49 @@ eigs_complex_func (const ComplexColumnVector &x, int &eigs_error)
 
 DEFUN_DLD (eigs, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{d}} = eigs (@var{a})\n\
-@deftypefnx {Loadable Function} {@var{d}} = eigs (@var{a}, @var{k})\n\
-@deftypefnx {Loadable Function} {@var{d}} = eigs (@var{a}, @var{k}, @var{sigma})\n\
-@deftypefnx {Loadable Function} {@var{d}} = eigs (@var{a}, @var{k}, @var{sigma},@var{opts})\n\
-@deftypefnx {Loadable Function} {@var{d}} = eigs (@var{a}, @var{b})\n\
-@deftypefnx {Loadable Function} {@var{d}} = eigs (@var{a}, @var{b}, @var{k})\n\
-@deftypefnx {Loadable Function} {@var{d}} = eigs (@var{a}, @var{b}, @var{k}, @var{sigma})\n\
-@deftypefnx {Loadable Function} {@var{d}} = eigs (@var{a}, @var{b}, @var{k}, @var{sigma}, @var{opts})\n\
-@deftypefnx {Loadable Function} {@var{d}} = eigs (@var{af}, @var{n})\n\
-@deftypefnx {Loadable Function} {@var{d}} = eigs (@var{af}, @var{n}, @var{b})\n\
-@deftypefnx {Loadable Function} {@var{d}} = eigs (@var{af}, @var{n}, @var{k})\n\
-@deftypefnx {Loadable Function} {@var{d}} = eigs (@var{af}, @var{n}, @var{b}, @var{k})\n\
-@deftypefnx {Loadable Function} {@var{d}} = eigs (@var{af}, @var{n}, @var{k}, @var{sigma})\n\
-@deftypefnx {Loadable Function} {@var{d}} = eigs (@var{af}, @var{n}, @var{b}, @var{k}, @var{sigma})\n\
-@deftypefnx {Loadable Function} {@var{d}} = eigs (@var{af}, @var{n}, @var{k}, @var{sigma}, @var{opts})\n\
-@deftypefnx {Loadable Function} {@var{d}} = eigs (@var{af}, @var{n}, @var{b}, @var{k}, @var{sigma}, @var{opts})\n\
-@deftypefnx {Loadable Function} {[@var{v}, @var{d}]} = eigs (@var{a}, @dots{})\n\
-@deftypefnx {Loadable Function} {[@var{v}, @var{d}]} = eigs (@var{af}, @var{n}, @dots{})\n\
-@deftypefnx {Loadable Function} {[@var{v}, @var{d}, @var{flag}]} = eigs (@var{a}, @dots{})\n\
-@deftypefnx {Loadable Function} {[@var{v}, @var{d}, @var{flag}]} = eigs (@var{af}, @var{n}, @dots{})\n\
+@deftypefn  {Loadable Function} {@var{d} =} eigs (@var{a})\n\
+@deftypefnx {Loadable Function} {@var{d} =} eigs (@var{a}, @var{k})\n\
+@deftypefnx {Loadable Function} {@var{d} =} eigs (@var{a}, @var{k}, @var{sigma})\n\
+@deftypefnx {Loadable Function} {@var{d} =} eigs (@var{a}, @var{k}, @var{sigma},@var{opts})\n\
+@deftypefnx {Loadable Function} {@var{d} =} eigs (@var{a}, @var{b})\n\
+@deftypefnx {Loadable Function} {@var{d} =} eigs (@var{a}, @var{b}, @var{k})\n\
+@deftypefnx {Loadable Function} {@var{d} =} eigs (@var{a}, @var{b}, @var{k}, @var{sigma})\n\
+@deftypefnx {Loadable Function} {@var{d} =} eigs (@var{a}, @var{b}, @var{k}, @var{sigma}, @var{opts})\n\
+@deftypefnx {Loadable Function} {@var{d} =} eigs (@var{af}, @var{n})\n\
+@deftypefnx {Loadable Function} {@var{d} =} eigs (@var{af}, @var{n}, @var{b})\n\
+@deftypefnx {Loadable Function} {@var{d} =} eigs (@var{af}, @var{n}, @var{k})\n\
+@deftypefnx {Loadable Function} {@var{d} =} eigs (@var{af}, @var{n}, @var{b}, @var{k})\n\
+@deftypefnx {Loadable Function} {@var{d} =} eigs (@var{af}, @var{n}, @var{k}, @var{sigma})\n\
+@deftypefnx {Loadable Function} {@var{d} =} eigs (@var{af}, @var{n}, @var{b}, @var{k}, @var{sigma})\n\
+@deftypefnx {Loadable Function} {@var{d} =} eigs (@var{af}, @var{n}, @var{k}, @var{sigma}, @var{opts})\n\
+@deftypefnx {Loadable Function} {@var{d} =} eigs (@var{af}, @var{n}, @var{b}, @var{k}, @var{sigma}, @var{opts})\n\
+@deftypefnx {Loadable Function} {[@var{v}, @var{d}] =} eigs (@var{a}, @dots{})\n\
+@deftypefnx {Loadable Function} {[@var{v}, @var{d}] =} eigs (@var{af}, @var{n}, @dots{})\n\
+@deftypefnx {Loadable Function} {[@var{v}, @var{d}, @var{flag}] =} eigs (@var{a}, @dots{})\n\
+@deftypefnx {Loadable Function} {[@var{v}, @var{d}, @var{flag}] =} eigs (@var{af}, @var{n}, @dots{})\n\
 Calculate a limited number of eigenvalues and eigenvectors of @var{a},\n\
 based on a selection criteria.  The number eigenvalues and eigenvectors to\n\
 calculate is given by @var{k} whose default value is 6.\n\
 \n\
 By default @code{eigs} solve the equation\n\
-@iftex\n\
 @tex\n\
 $A \\nu = \\lambda \\nu$\n\
 @end tex\n\
-@end iftex\n\
 @ifinfo\n\
 @code{A * v = lambda * v}\n\
 @end ifinfo\n\
 , where\n\
-@iftex\n\
 @tex\n\
 $\\lambda$ is a scalar representing one of the eigenvalues, and $\\nu$\n\
 @end tex\n\
-@end iftex\n\
 @ifinfo\n\
 @code{lambda} is a scalar representing one of the eigenvalues, and @code{v}\n\
 @end ifinfo\n\
 is the corresponding eigenvector.  If given the positive definite matrix\n\
 @var{B} then @code{eigs} solves the general eigenvalue equation\n\
-@iftex\n\
 @tex\n\
 $A \\nu = \\lambda B \\nu$\n\
 @end tex\n\
-@end iftex\n\
 @ifinfo\n\
 @code{A * v = lambda * B * v}\n\
 @end ifinfo\n\
@@ -304,12 +298,12 @@ Given a third return argument @var{flag}, @code{eigs} also returns the status\n\
 of the convergence.  If @var{flag} is 0, then all eigenvalues have converged,\n\
 otherwise not.\n\
 \n\
-This function is based on the @sc{Arpack} package, written by R Lehoucq,\n\
+This function is based on the @sc{arpack} package, written by R Lehoucq,\n\
 K Maschhoff, D Sorensen and C Yang.  For more information see\n\
 @url{http://www.caam.rice.edu/software/ARPACK/}.\n\
 \n\
-@end deftypefn\n\
-@seealso{eig, svds}")
+@seealso{eig, svds}\n\
+@end deftypefn")
 {
   octave_value_list retval;
 #ifdef HAVE_ARPACK

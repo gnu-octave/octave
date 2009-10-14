@@ -925,7 +925,7 @@ for an example of how to create an executable Octave script.\n\
 
 DEFUN (program_invocation_name, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} program_invocation_name ()\n\
+@deftypefn {Built-in Function} {} program_invocation_name ()\n\
 Return the name that was typed at the shell prompt to run Octave.\n\
 \n\
 If executing a script from the command line (e.g., @code{octave foo.m})\n\

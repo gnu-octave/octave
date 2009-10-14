@@ -15,7 +15,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Command} help @var{name}
+## @deffn {Command} help @var{name}
 ## Display the help text for @var{name}.
 ## If invoked without any arguments, @code{help} prints a list
 ## of all the available operators and functions.
@@ -27,7 +27,7 @@
 ## comma and semicolons that are used as command separators.  To get help
 ## for those, you must type @kbd{help comma} or @kbd{help semicolon}.
 ## @seealso{doc, lookfor, which}
-## @end deftypefn
+## @end deffn
 
 function help (name)
 

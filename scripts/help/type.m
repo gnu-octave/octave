@@ -15,7 +15,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Command} type options name @dots{}
+## @deftypefn  {Command} {} type @var{name} @dots{}
+## @deftypefnx {Command} {} type -q @var{name} @dots{}
+## @deftypefnx {Function File} {defs =} type ("@var{name}", @dots{})
 ## Display the definition of each @var{name} that refers to a function.
 ## 
 ## Normally also displays whether each @var{name} is user-defined or built-in;

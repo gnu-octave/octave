@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Command} pkg @var{command} @var{pkg_name}
-## @deftypefnx {Command} pkg @var{command} @var{option} @var{pkg_name}
+## @deffn  {Command} pkg @var{command} @var{pkg_name}
+## @deffnx {Command} pkg @var{command} @var{option} @var{pkg_name}
 ## This command interacts with the package manager.  Different actions will
 ## be taken depending on the value of @var{command}.
 ##
@@ -193,7 +193,7 @@
 ## The options @code{-verbose} and @code{-nodeps} are respected, while 
 ## the other options are ignored.
 ## @end table
-## @end deftypefn
+## @end deffn
 
 function [local_packages, global_packages] = pkg (varargin)
   ## Installation prefix (FIXME: what should these be on windows?)

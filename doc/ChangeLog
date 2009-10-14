@@ -1,3 +1,7 @@
+2009-10-13  Rik <octave@nomad.inbox5.com>
+
+	* various: Fix various incorrect usages of deffn and deftypefn macros
+
 2009-10-12  Rik <octave@nomad.inbox5.com>
 
 	* liboctave/Makefile.in: Simplify Makefile using GNU Make functions

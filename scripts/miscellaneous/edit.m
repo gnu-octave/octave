@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Command} edit @var{name}
-## @deftypefnx {Command} edit @var{field} @var{value}
+## @deftypefn  {Command} {} edit @var{name}
+## @deftypefnx {Command} {} edit @var{field} @var{value}
 ## @deftypefnx {Command} {@var{value} =} edit get @var{field}
 ## Edit the named function, or change editor settings.
 ##

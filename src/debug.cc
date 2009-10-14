@@ -960,7 +960,8 @@ do_dbupdown (const octave_value_list& args, const std::string& who)
 
 DEFUN (dbup, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} dbup (@var{n})\n\
+@deftypefn  {Loadable Function} {} dbup\n\
+@deftypefnx {Loadable Function} {} dbup (@var{n})\n\
 In debugging mode, move up the execution stack @var{n} frames.\n\
 If @var{n} is omitted, move up one frame.\n\
 @seealso{dbstack}\n\
@@ -975,7 +976,8 @@ If @var{n} is omitted, move up one frame.\n\
 
 DEFUN (dbdown, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} dbdown (@var{n})\n\
+@deftypefn  {Loadable Function} {} dbdown\n\
+@deftypefnx {Loadable Function} {} dbdown (@var{n})\n\
 In debugging mode, move down the execution stack @var{n} frames.\n\
 If @var{n} is omitted, move down one frame.\n\
 @seealso{dbstack}\n\
@@ -990,15 +992,17 @@ If @var{n} is omitted, move down one frame.\n\
 
 DEFUN (dbstep, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Command} {} dbstep @var{n}\n\
+@deftypefn  {Command} {} dbstep\n\
+@deftypefnx {Command} {} dbstep @var{n}\n\
 @deftypefnx {Command} {} dbstep in\n\
 @deftypefnx {Command} {} dbstep out\n\
-In debugging mode, execute the next @var{n} lines of code.  If @var{n} is\n\
-omitted execute the next line of code.  If the next line of code is itself\n\
+In debugging mode, execute the next @var{n} lines of code.\n\
+If @var{n} is omitted , execute the next single line of code.\n\
+If the next line of code is itself\n\
 defined in terms of an m-file remain in the existing function.\n\
 \n\
 Using @code{dbstep in} will cause execution of the next line to step into\n\
-any m-files defined on the next line.  Using @code{dbstep out} with cause\n\
+any m-files defined on the next line.  Using @code{dbstep out} will cause\n\
 execution to continue until the current function returns.\n\
 @seealso{dbcont, dbquit}\n\
 @end deftypefn")
@@ -1064,9 +1068,9 @@ DEFALIAS (dbnext, dbstep);
 
 DEFUN (dbcont, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Command} {} dbcont ()\n\
+@deftypefn {Command} {} dbcont\n\
 In debugging mode, quit debugging mode and continue execution.\n\
-@seealso{dbstep, dbstep}\n\
+@seealso{dbstep, dbquit}\n\
 @end deftypefn")
 {
   if (Vdebugging)
@@ -1088,7 +1092,7 @@ In debugging mode, quit debugging mode and continue execution.\n\
 
 DEFUN (dbquit, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Command} {} dbquit ()\n\
+@deftypefn {Command} {} dbquit\n\
 In debugging mode, quit debugging mode and return to the top level.\n\
 @seealso{dbstep, dbcont}\n\
 @end deftypefn")
@@ -1112,7 +1116,7 @@ In debugging mode, quit debugging mode and return to the top level.\n\
 
 DEFUN (isdebugmode, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Command} {} isdebugmode ()\n\
+@deftypefn {Loadable Function} {} isdebugmode ()\n\
 Return true if debug mode is on, otherwise false.\n\
 @seealso{dbstack, dbclear, dbstop, dbstatus}\n\
 @end deftypefn")

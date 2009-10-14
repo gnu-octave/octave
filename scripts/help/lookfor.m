@@ -15,10 +15,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Command} lookfor @var{str}
-## @deftypefnx {Command} lookfor -all @var{str}
-## @deftypefnx {Function} {[@var{func}, @var{helpstring}] =} lookfor (@var{str})
-## @deftypefnx {Function} {[@var{func}, @var{helpstring}] =} lookfor ('-all', @var{str})
+## @deftypefn  {Command} {} lookfor @var{str}
+## @deftypefnx {Command} {} lookfor -all @var{str}
+## @deftypefnx {Function File} {[@var{func}, @var{helpstring}] =} lookfor (@var{str})
+## @deftypefnx {Function File} {[@var{func}, @var{helpstring}] =} lookfor ('-all', @var{str})
 ## Search for the string @var{str} in all functions found in the current 
 ## function search path.  By default, @code{lookfor} searches for @var{str}
 ## in the first sentence of the help string of each function found.  The entire

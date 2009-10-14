@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} run (@var{f})
-## @deftypefnx {Command} {} run @var{f}
+## @deftypefn  {Command} {} run @var{f}
+## @deftypefnx {Function File} {} run (@var{f})
 ## Run scripts in the current workspace that are not necessarily on the
 ## path.  If @var{f} is the script to run, including its path, then @code{run}
-## change the directory to the directory where @var{f} is found.  @code{run}
+## changes the directory to the directory where @var{f} is found.  @code{run}
 ## then executes the script, and returns to the original directory.
 ## @seealso{system}
 ## @end deftypefn

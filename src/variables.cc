@@ -1600,10 +1600,10 @@ do_who (int argc, const string_vector& argv, bool return_list,
 
 DEFUN (who, args, nargout,
   "-*- texinfo -*-\n\
-@deffn  {Command} who\n\
-@deffnx {Command} who pattern @dots{}\n\
-@deffnx {Command} who option pattern @dots{}\n\
-@deffnx {Command} C = who(\"pattern\", @dots{})\n\
+@deftypefn  {Command} {} who\n\
+@deftypefnx {Command} {} who pattern @dots{}\n\
+@deftypefnx {Command} {} who option pattern @dots{}\n\
+@deftypefnx {Command} {C =} who(\"pattern\", @dots{})\n\
 List currently defined variables matching the given patterns.  Valid\n\
 pattern syntax is the same as described for the @code{clear} command.\n\
 If no patterns are supplied, all variables are listed.\n\
@@ -1627,7 +1627,7 @@ from a file.\n\
 If called as a function, return a cell array of defined variable names\n\
 matching the given patterns.\n\
 @seealso{whos, regexp}\n\
-@end deffn")
+@end deftypefn")
 {
   octave_value retval;
 
@@ -1648,10 +1648,10 @@ matching the given patterns.\n\
 
 DEFUN (whos, args, nargout,
   "-*- texinfo -*-\n\
-@deffn  {Command} whos\n\
-@deffnx {Command} whos pattern @dots{}\n\
-@deffnx {Command} whos option pattern @dots{}\n\
-@deffnx {Command} S = whos(\"pattern\", @dots{})\n\
+@deftypefn  {Command} {} whos\n\
+@deftypefnx {Command} {} whos pattern @dots{}\n\
+@deftypefnx {Command} {} whos option pattern @dots{}\n\
+@deftypefnx {Command} {S =} whos(\"pattern\", @dots{})\n\
 Provide detailed information on currently defined variables matching the\n\
 given patterns.  Options and pattern syntax are the same as for the\n\
 @code{who} command.  Extended information about each variable is\n\
@@ -1688,7 +1688,7 @@ variable names matching the given patterns.  Fields in the structure\n\
 describing each variable are: name, size, bytes, class, global, sparse, \n\
 complex, nesting, persistent.\n\
 @seealso{who, whos_line_format}\n\
-@end deffn")
+@end deftypefn")
 {
   octave_value retval;
 

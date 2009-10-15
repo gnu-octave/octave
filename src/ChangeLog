@@ -1,5 +1,9 @@
 2009-10-15  Jaroslav Hajek  <highegg@gmail.com>
 
+	* DLD-FUNCTIONS/lookup.cc (Flookup): Update docstring.
+
+2009-10-15  Jaroslav Hajek  <highegg@gmail.com>
+
 	* ov.h (octave_value::octave_value (octave_base_value *, bool)) : New constructor.
 	(octave_value::octave_value (octave_base_value *, int)): Deprecate.
 	* DLD-FUNCTIONS/cellfun.cc (Fcellfun): Allow the obsolete func body syntax.

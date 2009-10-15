@@ -1118,9 +1118,11 @@ octave_value::octave_value (octave_value::magic_colon)
 {
 }
 
-octave_value::octave_value (octave_base_value *new_rep)
+octave_value::octave_value (octave_base_value *new_rep, bool borrow)
   : rep (new_rep)
 {
+  if (borrow)
+    rep->count++;
 }
 
 octave_value::octave_value (octave_base_value *new_rep, int xcount)

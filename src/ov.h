@@ -279,8 +279,8 @@ public:
   octave_value (const octave_value_list& m, bool is_cs_list = false);
   octave_value (octave_value::magic_colon);
 
-  octave_value (octave_base_value *new_rep);
-  octave_value (octave_base_value *new_rep, int xcount);
+  octave_value (octave_base_value *new_rep, bool borrow = false);
+  octave_value (octave_base_value *new_rep, int xcount) GCC_ATTR_DEPRECATED;
 
   // Copy constructor.
 

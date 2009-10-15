@@ -41,6 +41,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-colon.h"
 #include "unwind-prot.h"
 #include "gripes.h"
+#include "utils.h"
 
 // Rationale:
 // The octave_base_value::subsasgn method carries too much overhead for
@@ -296,9 +297,6 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
       octave_idx_type k = f_args.numel ();
 
       std::string name = func.string_value ();
-      if (name.find_first_of ("(x)") != std::string::npos)
-        warning ("cellfun: passing function body as string is no longer supported."
-                 " Use @ or `inline'.");
 
       if (name == "isempty")
         {      
@@ -384,6 +382,19 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
         }
       else
         {
+          if (! valid_identifier (name))
+            {
+
+              std::string fcn_name = unique_symbol_name ("__cellfun_fcn_");
+              std::string fname = "function y = ";
+              fname.append (fcn_name);
+              fname.append ("(x) y = ");
+              octave_function *ptr_func = extract_function (args(0), "cellfun", 
+                                                            fcn_name, fname, "; endfunction");
+              if (ptr_func && ! error_state)
+                func = octave_value (ptr_func, true);
+            }
+
           func = symbol_table::find_function (name);
           if (func.is_undefined ())
             error ("cellfun: invalid function name: %s", name.c_str ());

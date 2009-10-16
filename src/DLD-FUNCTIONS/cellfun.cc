@@ -993,8 +993,7 @@ do_num2cell (const NDA& array, const Array<int>& dimv)
       Cell retval (celldv);
       for (octave_idx_type i = 0; i < nelc; i++)
         {
-          NDA tmp (parray.index (idx_vector::colon, idx_vector (i)));
-          retval.xelem (i) = tmp.reshape (arraydv);
+          retval.xelem (i) = NDA (parray.column (i).reshape (arraydv));
         }
 
       return retval;

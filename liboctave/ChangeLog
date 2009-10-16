@@ -1,3 +1,10 @@
+2009-10-16  Jaroslav Hajek  <highegg@gmail.com>
+
+	* Array.cc (Array<T>::column, Array<T>::page, Array<T>::linearize,
+	Array<T>::linear_slice): New methods.
+	* Array.h: Declare them
+	* ArrayN.h: Forward them.
+
 2009-10-14  Jaroslav Hajek  <highegg@gmail.com>
 
 	* oct-sort.cc (octave_sort<T>::nth_element): New overloaded method.

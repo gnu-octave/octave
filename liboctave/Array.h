@@ -151,7 +151,7 @@ protected:
     {
       rep->count++;
       slice_data = a.slice_data + l;
-      slice_len = std::min (u, a.slice_len) - l;
+      slice_len = u - l;
     }
 
 private:
@@ -239,6 +239,7 @@ public:
       fill (val);
     }
 
+  // Reshape constructor.
   Array (const Array<T>& a, const dim_vector& dv);
 
   ~Array (void)
@@ -455,7 +456,23 @@ public:
   T operator () (const Array<octave_idx_type>& ra_idx) const { return elem (ra_idx); }
 #endif
 
-  Array<T> reshape (const dim_vector& new_dims) const;
+  // Fast extractors. All of these produce shallow copies.
+  // Warning: none of these do check bounds, unless BOUNDS_CHECKING is on!
+
+  // Extract column: A(:,k+1).
+  Array<T> column (octave_idx_type k) const;
+  // Extract page: A(:,:,k+1).
+  Array<T> page (octave_idx_type k) const;
+
+  // Give this array as a column vector: A(:).
+  Array<T> linearize (void) const;
+
+  // Extract a slice from this array as a column vector: A(:)(lo+1:up).
+  // Must be 0 <= lo && up <= numel. May be up < lo.
+  Array<T> linear_slice (octave_idx_type lo, octave_idx_type up) const;
+
+  Array<T> reshape (const dim_vector& new_dims) const
+    { return Array<T> (*this, new_dims); }
 
   Array<T> permute (const Array<octave_idx_type>& vec, bool inv = false) const;
   Array<T> ipermute (const Array<octave_idx_type>& vec) const

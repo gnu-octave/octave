@@ -84,6 +84,16 @@ public:
       return *this;
     }
 
+  ArrayN<T> column (octave_idx_type k) const
+    { return Array<T>::column (k); }
+  ArrayN<T> page (octave_idx_type k) const
+    { return Array<T>::page (k); }
+
+  ArrayN<T> linearize (void) const
+    { return Array<T>::linearize (); }
+  ArrayN<T> linear_slice (octave_idx_type lo, octave_idx_type up) const
+    { return Array<T>::linear_slice (lo, up); }
+
   ArrayN<T> reshape (const dim_vector& new_dims) const
     { return Array<T>::reshape (new_dims); }
 

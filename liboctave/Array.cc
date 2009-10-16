@@ -51,11 +51,19 @@ Array<T>::Array (const Array<T>& a, const dim_vector& dv)
   : rep (a.rep), dimensions (dv), 
     slice_data (a.slice_data), slice_len (a.slice_len)
 {
-  rep->count++;
+  if (dv.numel () != a.numel ())
+    {
+      std::string dimensions_str = dimensions.str ();
+      std::string new_dims_str = dv.str ();
 
-  if (a.numel () < dv.numel ())
-    (*current_liboctave_error_handler)
-      ("Array::Array (const Array&, const dim_vector&): dimension mismatch");
+      (*current_liboctave_error_handler)
+        ("reshape: can't reshape %s array to %s array",
+         dimensions_str.c_str (), new_dims_str.c_str ());
+    }
+
+  // This goes here because if an exception is thrown by the above,
+  // destructor will be never called.
+  rep->count++;
 }
 
 template <class T>
@@ -414,30 +422,51 @@ Array<T>::range_error (const char *fcn, const Array<octave_idx_type>& ra_idx)
   return foo;
 }
 
+
 template <class T>
 Array<T>
-Array<T>::reshape (const dim_vector& new_dims) const
+Array<T>::column (octave_idx_type k) const
 {
-  Array<T> retval;
+  octave_idx_type r = dimensions(0);
+#ifdef BOUNDS_CHECKING
+  if (k < 0 || k * r >= numel ())
+    range_error ("column", k);
+#endif
 
-  if (dimensions != new_dims)
-    {
-      if (dimensions.numel () == new_dims.numel ())
-	retval = Array<T> (*this, new_dims);
-      else
-	{
-	  std::string dimensions_str = dimensions.str ();
-	  std::string new_dims_str = new_dims.str ();
+  return Array<T> (*this, dim_vector (r, 1), k*r, k*r + r);
+}
 
-	  (*current_liboctave_error_handler)
-	    ("reshape: can't reshape %s array to %s array",
-	     dimensions_str.c_str (), new_dims_str.c_str ());
-	}
-    }
-  else
-    retval = *this;
+template <class T>
+Array<T>
+Array<T>::page (octave_idx_type k) const
+{
+  octave_idx_type r = dimensions(0), c = dimensions (1), p = r*c;
+#ifdef BOUNDS_CHECKING
+  if (k < 0 || k * p >= numel ())
+    range_error ("page", k);
+#endif
 
-  return retval;
+  return Array<T> (*this, dim_vector (r, c), k*p, k*p + p);
+}
+
+template <class T>
+Array<T>
+Array<T>::linearize (void) const
+{
+  octave_idx_type n = numel ();
+  return Array<T> (*this, dim_vector (n, 1), 0, n);
+}
+
+template <class T>
+Array<T>
+Array<T>::linear_slice (octave_idx_type lo, octave_idx_type up) const
+{
+#ifdef BOUNDS_CHECKING
+  if (lo < 0 || up > numel ())
+    range_error ("linear_slice", lo, up);
+#endif
+  if (up < lo) up = lo;
+  return Array<T> (*this, dim_vector (up - lo, 1), lo, up);
 }
 
 // Helper class for multi-d dimension permuting (generalized transpose).

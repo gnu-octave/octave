@@ -97,12 +97,7 @@ INSTANTIATE_ARRAY (FloatComplex, OCTAVE_API);
 
 template class OCTAVE_API Array2<FloatComplex>;
 
-#include "ArrayN.h"
-#include "ArrayN.cc"
-
-template class OCTAVE_API ArrayN<FloatComplex>;
-
-template OCTAVE_API std::ostream& operator << (std::ostream&, const ArrayN<FloatComplex>&);
+template OCTAVE_API std::ostream& operator << (std::ostream&, const Array<FloatComplex>&);
 
 #include "DiagArray2.h"
 #include "DiagArray2.cc"

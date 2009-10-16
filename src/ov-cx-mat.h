@@ -66,7 +66,7 @@ public:
   octave_complex_matrix (const ComplexMatrix& m, const MatrixType& t)
     : octave_base_matrix<ComplexNDArray> (m, t) { }
 
-  octave_complex_matrix (const ArrayN<Complex>& m)
+  octave_complex_matrix (const Array<Complex>& m)
     : octave_base_matrix<ComplexNDArray> (ComplexNDArray (m)) { }
 
   octave_complex_matrix (const ComplexDiagMatrix& d)

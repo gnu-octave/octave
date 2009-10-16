@@ -509,7 +509,7 @@ Octave_map::index (const octave_value_list& idx, bool resize_ok) const
             {
               Cell tmp = contents (p);
 
-              tmp = tmp.ArrayN<octave_value>::index (ra_idx, resize_ok);
+              tmp = tmp.Array<octave_value>::index (ra_idx, resize_ok);
 
               if (error_state)
                 break;

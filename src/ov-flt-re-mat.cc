@@ -238,7 +238,7 @@ octave_float_matrix::char_array_value (bool) const
 SparseMatrix 
 octave_float_matrix::sparse_matrix_value (bool) const
 {
-  return SparseMatrix (matrix.matrix_value ());
+  return SparseMatrix (matrix_value ());
 }
 
 SparseComplexMatrix 

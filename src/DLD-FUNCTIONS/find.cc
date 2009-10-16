@@ -53,7 +53,7 @@ find_nonzero_elem_idx (const Array<T>& nda, int nargout,
     {
     default:
     case 3:
-      retval(2) = ArrayN<T> (nda.index (idx_vector (idx)));
+      retval(2) = Array<T> (nda.index (idx_vector (idx)));
       // Fall through!
 
     case 2:
@@ -175,7 +175,7 @@ find_nonzero_elem_idx (const Sparse<T>& v, int nargout,
   Matrix i_idx (result_nr, result_nc);
   Matrix j_idx (result_nr, result_nc);
 
-  ArrayN<T> val (dim_vector (result_nr, result_nc));
+  Array<T> val (dim_vector (result_nr, result_nc));
 
   if (count > 0)
     {
@@ -285,7 +285,7 @@ find_nonzero_elem_idx (const PermMatrix& v, int nargout,
   Matrix i_idx (count, 1);
   Matrix j_idx (count, 1);
   // Every value is 1.
-  ArrayN<double> val (dim_vector (count, 1), 1.0);
+  Array<double> val (dim_vector (count, 1), 1.0);
 
   if (count > 0)
     {

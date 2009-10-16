@@ -33,12 +33,12 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-obj.h"
 
 Cell::Cell (const octave_value_list& ovl)
-  : ArrayN<octave_value> (ovl.cell_value ())
+  : Array<octave_value> (ovl.cell_value ())
 {
 }
 
 Cell::Cell (const string_vector& sv, bool trim)
-  : ArrayN<octave_value> ()
+  : Array<octave_value> ()
 {
   octave_idx_type n = sv.length ();
 
@@ -63,7 +63,7 @@ Cell::Cell (const string_vector& sv, bool trim)
 }
 
 Cell::Cell (const Array<std::string>& sa)
-  : ArrayN<octave_value> (sa.dims ())
+  : Array<octave_value> (sa.dims ())
 {
   octave_idx_type n = sa.numel ();
 
@@ -78,7 +78,7 @@ Cell::Cell (const Array<std::string>& sa)
 // SV as possible.
 
 Cell::Cell (const dim_vector& dv, const string_vector& sv, bool trim)
-  : ArrayN<octave_value> (dv, resize_fill_value ())
+  : Array<octave_value> (dv, resize_fill_value ())
 {
   octave_idx_type n = sv.length ();
 
@@ -139,7 +139,7 @@ Cell::index (const octave_value_list& idx_arg, bool resize_ok) const
 	idx_vector i = idx_arg(0).index_vector ();
 
 	if (! error_state)
-	  retval = ArrayN<octave_value>::index (i, resize_ok, resize_fill_value ());
+	  retval = Array<octave_value>::index (i, resize_ok, resize_fill_value ());
       }
       break;
 
@@ -152,7 +152,7 @@ Cell::index (const octave_value_list& idx_arg, bool resize_ok) const
 	    idx_vector j = idx_arg(1).index_vector ();
 
 	    if (! error_state)
-	      retval = ArrayN<octave_value>::index (i, j, resize_ok,
+	      retval = Array<octave_value>::index (i, j, resize_ok,
                                                     resize_fill_value ());
 	  }
       }
@@ -171,7 +171,7 @@ Cell::index (const octave_value_list& idx_arg, bool resize_ok) const
 	  }
 
 	if (!error_state)
-	  retval = ArrayN<octave_value>::index (iv, resize_ok,
+	  retval = Array<octave_value>::index (iv, resize_ok,
                                                 resize_fill_value ());
       }
       break;
@@ -282,7 +282,7 @@ Cell::map (ctype_mapper fcn) const
 Cell
 Cell::diag (octave_idx_type k) const
 {
-  return ArrayN<octave_value>::diag (k);
+  return Array<octave_value>::diag (k);
 }
 
 /*

@@ -54,7 +54,7 @@ public:
   FloatNDArray (const MArrayN<U>& a) : MArrayN<float> (a) { }
 
   template <class U>
-  FloatNDArray (const ArrayN<U>& a) : MArrayN<float> (a) { }
+  FloatNDArray (const Array<U>& a) : MArrayN<float> (a) { }
 
   template <class U>
   explicit FloatNDArray (const intNDArray<U>& a) : MArrayN<float> (a) { }
@@ -96,14 +96,14 @@ public:
   charNDArray concat (const charNDArray& rb, const Array<octave_idx_type>& ra_idx);
 
   FloatNDArray max (int dim = 0) const;
-  FloatNDArray max (ArrayN<octave_idx_type>& index, int dim = 0) const;
+  FloatNDArray max (Array<octave_idx_type>& index, int dim = 0) const;
   FloatNDArray min (int dim = 0) const;
-  FloatNDArray min (ArrayN<octave_idx_type>& index, int dim = 0) const;
+  FloatNDArray min (Array<octave_idx_type>& index, int dim = 0) const;
   
   FloatNDArray cummax (int dim = 0) const;
-  FloatNDArray cummax (ArrayN<octave_idx_type>& index, int dim = 0) const;
+  FloatNDArray cummax (Array<octave_idx_type>& index, int dim = 0) const;
   FloatNDArray cummin (int dim = 0) const;
-  FloatNDArray cummin (ArrayN<octave_idx_type>& index, int dim = 0) const;
+  FloatNDArray cummin (Array<octave_idx_type>& index, int dim = 0) const;
 
   FloatNDArray diff (octave_idx_type order = 1, int dim = 0) const;
 

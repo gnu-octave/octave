@@ -1,5 +1,41 @@
 2009-10-16  Jaroslav Hajek  <highegg@gmail.com>
 
+	* ArrayN.h: Remove everything, just #define ArrayN Array. 
+	Warn if under gcc.
+	* ArrayN.cc: Remove.
+	* Array.cc (operator >>): New operator.
+	* Array.h: Declare it.
+
+	* Array-C.cc: Remove traces of ArrayN.
+	* Array-b.cc: Ditto.
+	* Array-ch.cc: Ditto.
+	* Array-d.cc: Ditto.
+	* Array-f.cc: Ditto.
+	* Array-fC.cc: Ditto.
+	* CNDArray.cc: Ditto.
+	* CNDArray.h: Ditto.
+	* MArrayN.h: Ditto.
+	* boolNDArray.cc: Ditto.
+	* boolNDArray.h: Ditto.
+	* chNDArray.h: Ditto.
+	* dNDArray.cc: Ditto.
+	* dNDArray.h: Ditto.
+	* fCNDArray.cc: Ditto.
+	* fCNDArray.h: Ditto.
+	* fNDArray.cc: Ditto.
+	* fNDArray.h: Ditto.
+	* intNDArray.cc: Ditto.
+	* intNDArray.h: Ditto.
+	* lo-specfun.cc: Ditto.
+	* lo-specfun.h: Ditto.
+
+	* mx-op-defs.h (DMS_BIN_OP, SDM_BIN_OP): Rewrite.
+	(DMS_BIN_OPS, SDM_BIN_OPS): Define dm*s and dm/s rather than dm+s and
+	dm-s which are rather useless.
+	* mx-ops: Update.
+
+2009-10-16  Jaroslav Hajek  <highegg@gmail.com>
+
 	* Array.cc (Array<T>::column, Array<T>::page, Array<T>::linearize,
 	Array<T>::linear_slice): New methods.
 	* Array.h: Declare them

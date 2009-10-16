@@ -2661,13 +2661,13 @@ void
 octave_print_internal (std::ostream& os, const std::string& s,
 		       bool pr_as_read_syntax, int extra_indent)
 {
-  ArrayN<std::string> nda (dim_vector (1, 1), s);
+  Array<std::string> nda (dim_vector (1, 1), s);
 
   octave_print_internal (os, nda, pr_as_read_syntax, extra_indent);
 }
 
 void
-octave_print_internal (std::ostream& os, const ArrayN<std::string>& nda,
+octave_print_internal (std::ostream& os, const Array<std::string>& nda,
 		       bool pr_as_read_syntax, int /* extra_indent */)
 {
   // FIXME -- this mostly duplicates the code in the

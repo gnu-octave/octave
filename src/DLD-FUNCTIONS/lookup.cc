@@ -113,7 +113,7 @@ do_numeric_lookup (const ArrayT& array, const ArrayT& values,
 
   if (match_bool)
     {
-      boolNDArray match = ArrayN<bool> (array.lookupb (values));
+      boolNDArray match = Array<bool> (array.lookupb (values));
       retval = match;
     }
   else

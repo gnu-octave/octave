@@ -1,5 +1,33 @@
 2009-10-16  Jaroslav Hajek  <highegg@gmail.com>
 
+	* Cell.cc: Remove traces of ArrayN.
+	* Cell.h: Ditto.
+	* DLD-FUNCTIONS/besselj.cc: Ditto.
+	* DLD-FUNCTIONS/find.cc: Ditto.
+	* DLD-FUNCTIONS/lookup.cc: Ditto.
+	* DLD-FUNCTIONS/max.cc: Ditto.
+	* TEMPLATE-INST/Array-tc.cc: Ditto.
+	* data.cc: Ditto.
+	* oct-map.cc: Ditto.
+	* ov-cx-mat.h: Ditto.
+	* ov-flt-cx-mat.cc: Ditto.
+	* ov-flt-cx-mat.h: Ditto.
+	* ov-flt-re-mat.cc: Ditto.
+	* ov-flt-re-mat.h: Ditto.
+	* ov-intx.h: Ditto.
+	* ov-re-mat.h: Ditto.
+	* ov.cc: Ditto.
+	* ov.h: Ditto.
+	* pr-output.cc: Ditto.
+	* pr-output.h: Ditto.
+	* variables.cc: Ditto.
+
+	* OPERATORS/op-dm-scm.cc: Avoid using dm + s, dm - s operators.
+	* OPERATORS/op-dm-sm.cc: Ditto.
+	* OPERATORS/op-dms-template.cc: Ditto.
+
+2009-10-16  Jaroslav Hajek  <highegg@gmail.com>
+
 	* DLD-FUNCTIONS/cellfun.cc (Fnum2cell): Use Array<T>::column here.
 
 2009-10-15  Jaroslav Hajek  <highegg@gmail.com>

@@ -23,7 +23,7 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_boolNDArray_h)
 #define octave_boolNDArray_h 1
 
-#include "ArrayN.h"
+#include "Array.h"
 
 #include "mx-defs.h"
 #include "mx-op-decl.h"
@@ -32,28 +32,28 @@ along with Octave; see the file COPYING.  If not, see
 
 class
 OCTAVE_API
-boolNDArray : public ArrayN<bool>
+boolNDArray : public Array<bool>
 {
 public:
 
   typedef boolMatrix matrix_type;
 
-  boolNDArray (void) : ArrayN<bool> () { }
+  boolNDArray (void) : Array<bool> () { }
 
-  boolNDArray (const dim_vector& dv) : ArrayN<bool> (dv) { }
+  boolNDArray (const dim_vector& dv) : Array<bool> (dv) { }
 
   boolNDArray (const dim_vector& dv, const bool& val)
-    : ArrayN<bool> (dv, val) { }
+    : Array<bool> (dv, val) { }
   
-  boolNDArray (const boolNDArray& a) : ArrayN<bool> (a) { }
+  boolNDArray (const boolNDArray& a) : Array<bool> (a) { }
 
-  boolNDArray (const boolMatrix& a) : ArrayN<bool> (a) { }
+  boolNDArray (const boolMatrix& a) : Array<bool> (a) { }
 
-  boolNDArray (const ArrayN<bool>& a) : ArrayN<bool> (a) { }
+  boolNDArray (const Array<bool>& a) : Array<bool> (a) { }
 
   boolNDArray& operator = (const boolNDArray& a)
     {
-      ArrayN<bool>::operator = (a);
+      Array<bool>::operator = (a);
       return *this;
     }
 
@@ -80,7 +80,7 @@ public:
 
   boolMatrix matrix_value (void) const;
 
-  boolNDArray squeeze (void) const { return ArrayN<bool>::squeeze (); }
+  boolNDArray squeeze (void) const { return Array<bool>::squeeze (); }
 
   static void increment_index (Array<octave_idx_type>& ra_idx,
 			       const dim_vector& dimensions,
@@ -120,7 +120,7 @@ public:
 
 private:
 
-  boolNDArray (bool *d, dim_vector& dv) : ArrayN<bool> (d, dv) { }
+  boolNDArray (bool *d, dim_vector& dv) : Array<bool> (d, dv) { }
 };
 
 NDND_BOOL_OP_DECLS (boolNDArray, boolNDArray, OCTAVE_API)

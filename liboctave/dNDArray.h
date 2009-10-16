@@ -57,7 +57,7 @@ public:
   NDArray (const MArrayN<U>& a) : MArrayN<double> (a) { }
 
   template <class U>
-  NDArray (const ArrayN<U>& a) : MArrayN<double> (a) { }
+  NDArray (const Array<U>& a) : MArrayN<double> (a) { }
 
   template <class U>
   explicit NDArray (const intNDArray<U>& a) : MArrayN<double> (a) { }
@@ -99,14 +99,14 @@ public:
   charNDArray concat (const charNDArray& rb, const Array<octave_idx_type>& ra_idx);
 
   NDArray max (int dim = 0) const;
-  NDArray max (ArrayN<octave_idx_type>& index, int dim = 0) const;
+  NDArray max (Array<octave_idx_type>& index, int dim = 0) const;
   NDArray min (int dim = 0) const;
-  NDArray min (ArrayN<octave_idx_type>& index, int dim = 0) const;
+  NDArray min (Array<octave_idx_type>& index, int dim = 0) const;
   
   NDArray cummax (int dim = 0) const;
-  NDArray cummax (ArrayN<octave_idx_type>& index, int dim = 0) const;
+  NDArray cummax (Array<octave_idx_type>& index, int dim = 0) const;
   NDArray cummin (int dim = 0) const;
-  NDArray cummin (ArrayN<octave_idx_type>& index, int dim = 0) const;
+  NDArray cummin (Array<octave_idx_type>& index, int dim = 0) const;
 
   NDArray diff (octave_idx_type order = 1, int dim = 0) const;
 

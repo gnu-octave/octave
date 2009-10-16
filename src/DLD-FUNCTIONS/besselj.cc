@@ -133,7 +133,7 @@ do_bessel (enum bessel_type type, const char *fn,
 
 		      if (! error_state)
 			{
-			  ArrayN<octave_idx_type> ierr;
+			  Array<octave_idx_type> ierr;
 			  octave_value result;
 
 			  DO_BESSEL (type, alpha, x, scaled, ierr, result);
@@ -197,7 +197,7 @@ do_bessel (enum bessel_type type, const char *fn,
 
 			  if (! error_state)
 			    {
-			      ArrayN<octave_idx_type> ierr;
+			      Array<octave_idx_type> ierr;
 			      octave_value result;
 
 			      DO_BESSEL (type, alpha, x, scaled, ierr, result);
@@ -216,7 +216,7 @@ do_bessel (enum bessel_type type, const char *fn,
 
 			  if (! error_state)
 			    {
-			      ArrayN<octave_idx_type> ierr;
+			      Array<octave_idx_type> ierr;
 			      octave_value result;
 			  
 			      DO_BESSEL (type, alpha, x, scaled, ierr, result);
@@ -268,7 +268,7 @@ do_bessel (enum bessel_type type, const char *fn,
 
 		      if (! error_state)
 			{
-			  ArrayN<octave_idx_type> ierr;
+			  Array<octave_idx_type> ierr;
 			  octave_value result;
 
 			  DO_BESSEL (type, alpha, x, scaled, ierr, result);
@@ -332,7 +332,7 @@ do_bessel (enum bessel_type type, const char *fn,
 
 			  if (! error_state)
 			    {
-			      ArrayN<octave_idx_type> ierr;
+			      Array<octave_idx_type> ierr;
 			      octave_value result;
 
 			      DO_BESSEL (type, alpha, x, scaled, ierr, result);
@@ -351,7 +351,7 @@ do_bessel (enum bessel_type type, const char *fn,
 
 			  if (! error_state)
 			    {
-			      ArrayN<octave_idx_type> ierr;
+			      Array<octave_idx_type> ierr;
 			      octave_value result;
 			  
 			      DO_BESSEL (type, alpha, x, scaled, ierr, result);
@@ -587,7 +587,7 @@ return @code{NaN}.\n\
 
 	      if (! error_state)
 		{
-		  ArrayN<octave_idx_type> ierr;
+		  Array<octave_idx_type> ierr;
 		  octave_value result;
 
 		  if (kind > 1)
@@ -609,7 +609,7 @@ return @code{NaN}.\n\
 
 	      if (! error_state)
 		{
-		  ArrayN<octave_idx_type> ierr;
+		  Array<octave_idx_type> ierr;
 		  octave_value result;
 
 		  if (kind > 1)

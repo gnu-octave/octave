@@ -150,7 +150,7 @@ boolNDArray::compute_index (Array<octave_idx_type>& ra_idx,
 boolNDArray
 boolNDArray::diag (octave_idx_type k) const
 {
-  return ArrayN<bool>::diag (k);
+  return Array<bool>::diag (k);
 }
 
 NDND_BOOL_OPS (boolNDArray, boolNDArray)

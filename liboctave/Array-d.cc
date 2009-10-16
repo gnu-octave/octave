@@ -92,12 +92,7 @@ INSTANTIATE_ARRAY (double, OCTAVE_API);
 
 template class OCTAVE_API Array2<double>;
 
-#include "ArrayN.h"
-#include "ArrayN.cc"
-
-template class OCTAVE_API ArrayN<double>;
-
-template OCTAVE_API std::ostream& operator << (std::ostream&, const ArrayN<double>&);
+template OCTAVE_API std::ostream& operator << (std::ostream&, const Array<double>&);
 
 #include "DiagArray2.h"
 #include "DiagArray2.cc"

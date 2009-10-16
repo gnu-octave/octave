@@ -71,7 +71,7 @@ along with Octave; see the file COPYING.  If not, see
     } \
   else if (nargout == 2) \
     { \
-      ArrayN<octave_idx_type> index; \
+      Array<octave_idx_type> index; \
  \
       if (arg1.is_real_type ()) \
 	{ \
@@ -238,7 +238,7 @@ along with Octave; see the file COPYING.  If not, see
     } \
   else if (nargout == 2) \
     { \
-      ArrayN<octave_idx_type> index; \
+      Array<octave_idx_type> index; \
  \
       if (arg1.is_real_type ()) \
 	{ \
@@ -390,7 +390,7 @@ along with Octave; see the file COPYING.  If not, see
     } \
   else if (nargout == 2) \
     { \
-      ArrayN<octave_idx_type> index; \
+      Array<octave_idx_type> index; \
  \
       TYP ## NDArray m = arg1. TYP ## _array_value (); \
  \

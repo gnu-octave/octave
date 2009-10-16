@@ -52,7 +52,7 @@ public:
   ComplexNDArray (const MArrayN<U>& a) : MArrayN<Complex> (a) { }
 
   template <class U>
-  ComplexNDArray (const ArrayN<U>& a) : MArrayN<Complex> (a) { }
+  ComplexNDArray (const Array<U>& a) : MArrayN<Complex> (a) { }
 
   ComplexNDArray (const charNDArray&); 
 
@@ -87,14 +87,14 @@ public:
   ComplexNDArray concat (const NDArray& rb, const Array<octave_idx_type>& ra_idx);
 
   ComplexNDArray max (int dim = 0) const;
-  ComplexNDArray max (ArrayN<octave_idx_type>& index, int dim = 0) const;
+  ComplexNDArray max (Array<octave_idx_type>& index, int dim = 0) const;
   ComplexNDArray min (int dim = 0) const;
-  ComplexNDArray min (ArrayN<octave_idx_type>& index, int dim = 0) const;
+  ComplexNDArray min (Array<octave_idx_type>& index, int dim = 0) const;
 
   ComplexNDArray cummax (int dim = 0) const;
-  ComplexNDArray cummax (ArrayN<octave_idx_type>& index, int dim = 0) const;
+  ComplexNDArray cummax (Array<octave_idx_type>& index, int dim = 0) const;
   ComplexNDArray cummin (int dim = 0) const;
-  ComplexNDArray cummin (ArrayN<octave_idx_type>& index, int dim = 0) const;
+  ComplexNDArray cummin (Array<octave_idx_type>& index, int dim = 0) const;
 
   ComplexNDArray diff (octave_idx_type order = 1, int dim = 0) const;
 

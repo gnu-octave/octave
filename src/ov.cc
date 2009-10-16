@@ -586,7 +586,7 @@ octave_value::octave_value (const Cell& c, bool is_csl)
 {
 }
 
-octave_value::octave_value (const ArrayN<octave_value>& a, bool is_csl)
+octave_value::octave_value (const Array<octave_value>& a, bool is_csl)
   : rep (is_csl
 	 ? dynamic_cast<octave_base_value *> (new octave_cs_list (Cell (a)))
 	 : dynamic_cast<octave_base_value *> (new octave_cell (Cell (a))))
@@ -617,13 +617,13 @@ octave_value::octave_value (const FloatNDArray& a)
   maybe_mutate ();
 }
 
-octave_value::octave_value (const ArrayN<double>& a)
+octave_value::octave_value (const Array<double>& a)
   : rep (new octave_matrix (a))
 {
   maybe_mutate ();
 }
 
-octave_value::octave_value (const ArrayN<float>& a)
+octave_value::octave_value (const Array<float>& a)
   : rep (new octave_float_matrix (a))
 {
   maybe_mutate ();
@@ -701,13 +701,13 @@ octave_value::octave_value (const FloatComplexNDArray& a)
   maybe_mutate ();
 }
 
-octave_value::octave_value (const ArrayN<Complex>& a)
+octave_value::octave_value (const Array<Complex>& a)
   : rep (new octave_complex_matrix (a))
 {
   maybe_mutate ();
 }
 
-octave_value::octave_value (const ArrayN<FloatComplex>& a)
+octave_value::octave_value (const Array<FloatComplex>& a)
   : rep (new octave_float_complex_matrix (a))
 {
   maybe_mutate ();
@@ -772,7 +772,7 @@ octave_value::octave_value (const boolNDArray& bnda)
   maybe_mutate ();
 }
 
-octave_value::octave_value (const ArrayN<bool>& bnda)
+octave_value::octave_value (const Array<bool>& bnda)
   : rep (new octave_bool_matrix (bnda))
 {
   maybe_mutate ();
@@ -826,7 +826,7 @@ octave_value::octave_value (const charNDArray& chm, char type)
   maybe_mutate ();
 }
 
-octave_value::octave_value (const ArrayN<char>& chm, char type)
+octave_value::octave_value (const Array<char>& chm, char type)
   : rep (type == '"'
 	 ? new octave_char_matrix_dq_str (chm)
 	 : new octave_char_matrix_sq_str (chm))
@@ -850,7 +850,7 @@ octave_value::octave_value (const charNDArray& chm, bool, char type)
   maybe_mutate ();
 }
 
-octave_value::octave_value (const ArrayN<char>& chm, bool, char type)
+octave_value::octave_value (const Array<char>& chm, bool, char type)
   : rep (type == '"'
 	 ? new octave_char_matrix_dq_str (chm)
 	 : new octave_char_matrix_sq_str (chm))
@@ -948,7 +948,7 @@ octave_value::octave_value (const int8NDArray& inda)
   maybe_mutate ();
 }
 
-octave_value::octave_value (const ArrayN<octave_int8>& inda)
+octave_value::octave_value (const Array<octave_int8>& inda)
   : rep (new octave_int8_matrix (inda))
 {
   maybe_mutate ();
@@ -960,7 +960,7 @@ octave_value::octave_value (const uint8NDArray& inda)
   maybe_mutate ();
 }
 
-octave_value::octave_value (const ArrayN<octave_uint8>& inda)
+octave_value::octave_value (const Array<octave_uint8>& inda)
   : rep (new octave_uint8_matrix (inda))
 {
   maybe_mutate ();
@@ -972,7 +972,7 @@ octave_value::octave_value (const int16NDArray& inda)
   maybe_mutate ();
 }
 
-octave_value::octave_value (const ArrayN<octave_int16>& inda)
+octave_value::octave_value (const Array<octave_int16>& inda)
   : rep (new octave_int16_matrix (inda))
 {
   maybe_mutate ();
@@ -984,7 +984,7 @@ octave_value::octave_value (const uint16NDArray& inda)
   maybe_mutate ();
 }
 
-octave_value::octave_value (const ArrayN<octave_uint16>& inda)
+octave_value::octave_value (const Array<octave_uint16>& inda)
   : rep (new octave_uint16_matrix (inda))
 {
   maybe_mutate ();
@@ -996,7 +996,7 @@ octave_value::octave_value (const int32NDArray& inda)
   maybe_mutate ();
 }
 
-octave_value::octave_value (const ArrayN<octave_int32>& inda)
+octave_value::octave_value (const Array<octave_int32>& inda)
   : rep (new octave_int32_matrix (inda))
 {
   maybe_mutate ();
@@ -1008,7 +1008,7 @@ octave_value::octave_value (const uint32NDArray& inda)
   maybe_mutate ();
 }
 
-octave_value::octave_value (const ArrayN<octave_uint32>& inda)
+octave_value::octave_value (const Array<octave_uint32>& inda)
   : rep (new octave_uint32_matrix (inda))
 {
   maybe_mutate ();
@@ -1020,7 +1020,7 @@ octave_value::octave_value (const int64NDArray& inda)
   maybe_mutate ();
 }
 
-octave_value::octave_value (const ArrayN<octave_int64>& inda)
+octave_value::octave_value (const Array<octave_int64>& inda)
   : rep (new octave_int64_matrix (inda))
 {
   maybe_mutate ();
@@ -1032,7 +1032,7 @@ octave_value::octave_value (const uint64NDArray& inda)
   maybe_mutate ();
 }
 
-octave_value::octave_value (const ArrayN<octave_uint64>& inda)
+octave_value::octave_value (const Array<octave_uint64>& inda)
   : rep (new octave_uint64_matrix (inda))
 {
   maybe_mutate ();

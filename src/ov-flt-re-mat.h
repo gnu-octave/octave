@@ -66,7 +66,7 @@ public:
   octave_float_matrix (const FloatNDArray& nda)
     : octave_base_matrix<FloatNDArray> (nda) { }
 
-  octave_float_matrix (const ArrayN<float>& m)
+  octave_float_matrix (const Array<float>& m)
     : octave_base_matrix<FloatNDArray> (FloatNDArray (m)) { }
 
   octave_float_matrix (const FloatDiagMatrix& d)

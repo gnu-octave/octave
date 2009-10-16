@@ -259,7 +259,7 @@ octave_float_complex_matrix::sparse_matrix_value (bool force_conversion) const
     gripe_implicit_conversion ("Octave:imag-to-real",
 			       "complex matrix", "real matrix");
 
-  retval = SparseMatrix (::real (matrix.matrix_value ()));
+  retval = SparseMatrix (::real (complex_matrix_value ()));
 
   return retval;
 }
@@ -267,7 +267,7 @@ octave_float_complex_matrix::sparse_matrix_value (bool force_conversion) const
 SparseComplexMatrix
 octave_float_complex_matrix::sparse_complex_matrix_value (bool) const
 {
-  return SparseComplexMatrix (matrix.matrix_value ());
+  return SparseComplexMatrix (complex_matrix_value ());
 }
 
 octave_value

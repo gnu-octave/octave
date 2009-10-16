@@ -237,8 +237,7 @@ class boolNDArray;
 // scalar by diagonal matrix operations.
 
 #define SDM_BIN_OP_DECLS(R, S, DM, API) \
-  BIN_OP_DECL (R, operator +, S, DM, API); \
-  BIN_OP_DECL (R, operator -, S, DM, API);
+  BIN_OP_DECL (R, operator *, S, DM, API); \
 
 #define SDM_OP_DECLS(R, S, DM, API) \
   SDM_BIN_OP_DECLS(R, S, DM, API)
@@ -246,8 +245,8 @@ class boolNDArray;
 // diagonal matrix by scalar operations.
 
 #define DMS_BIN_OP_DECLS(R, DM, S, API) \
-  BIN_OP_DECL (R, operator +, DM, S, API); \
-  BIN_OP_DECL (R, operator -, DM, S, API);
+  BIN_OP_DECL (R, operator *, DM, S, API); \
+  BIN_OP_DECL (R, operator /, DM, S, API);
 
 #define DMS_OP_DECLS(R, DM, S, API) \
   DMS_BIN_OP_DECLS(R, DM, S, API)

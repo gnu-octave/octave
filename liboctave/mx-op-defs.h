@@ -334,45 +334,38 @@ along with Octave; see the file COPYING.  If not, see
 
 // scalar by diagonal matrix operations.
 
-#define SDM_BIN_OP(R, OP, S, DM, OPEQ) \
+#define SDM_BIN_OP(R, OP, S, DM) \
   R \
-  OP (const S& s, const DM& dm) \
+  operator OP (const S& s, const DM& dm) \
   { \
-    octave_idx_type nr = dm.rows (); \
-    octave_idx_type nc = dm.cols (); \
- \
-    R r (nr, nc, s); \
+    R r (dm.rows (), dm.cols ()); \
  \
     for (octave_idx_type i = 0; i < dm.length (); i++) \
-      r.elem(i, i) OPEQ dm.elem(i, i); \
+      r.dgxelem (i) = s OP dm.dgelem (i); \
  \
     return r; \
 }
 
 #define SDM_BIN_OPS(R, S, DM) \
-  SDM_BIN_OP (R, operator +, S, DM, +=) \
-  SDM_BIN_OP (R, operator -, S, DM, -=)
+  SDM_BIN_OP (R, *, S, DM)
 
 // diagonal matrix by scalar operations.
 
-#define DMS_BIN_OP(R, OP, DM, S, SGN) \
+#define DMS_BIN_OP(R, OP, DM, S) \
   R \
-  OP (const DM& dm, const S& s) \
+  operator OP (const DM& dm, const S& s) \
   { \
-    octave_idx_type nr = dm.rows (); \
-    octave_idx_type nc = dm.cols (); \
- \
-    R r (nr, nc, SGN s); \
+    R r (dm.rows (), dm.cols ()); \
  \
     for (octave_idx_type i = 0; i < dm.length (); i++) \
-      r.elem(i, i) += dm.elem(i, i); \
+      r.dgxelem (i) = dm.dgelem (i) OP s; \
  \
     return r; \
   }
 
 #define DMS_BIN_OPS(R, DM, S) \
-  DMS_BIN_OP (R, operator +, DM, S, ) \
-  DMS_BIN_OP (R, operator -, DM, S, -)
+  DMS_BIN_OP (R, *, DM, S) \
+  DMS_BIN_OP (R, /, DM, S)
 
 // matrix by diagonal matrix operations.
 

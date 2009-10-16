@@ -48,9 +48,6 @@ public:
   explicit intNDArray (const Array<U>& a) : MArrayN<T> (a) { }
 
   template <class U>
-  explicit intNDArray (const ArrayN<U>& a) : MArrayN<T> (a) { }
-
-  template <class U>
   intNDArray (const MArrayN<U>& a) : MArrayN<T> (a) { }
 
   template <class U>
@@ -81,14 +78,14 @@ public:
   boolNDArray any (int dim = -1) const;
 
   intNDArray max (int dim = 0) const;
-  intNDArray max (ArrayN<octave_idx_type>& index, int dim = 0) const;
+  intNDArray max (Array<octave_idx_type>& index, int dim = 0) const;
   intNDArray min (int dim = 0) const;
-  intNDArray min (ArrayN<octave_idx_type>& index, int dim = 0) const;
+  intNDArray min (Array<octave_idx_type>& index, int dim = 0) const;
   
   intNDArray cummax (int dim = 0) const;
-  intNDArray cummax (ArrayN<octave_idx_type>& index, int dim = 0) const;
+  intNDArray cummax (Array<octave_idx_type>& index, int dim = 0) const;
   intNDArray cummin (int dim = 0) const;
-  intNDArray cummin (ArrayN<octave_idx_type>& index, int dim = 0) const;
+  intNDArray cummin (Array<octave_idx_type>& index, int dim = 0) const;
   
   intNDArray sum (int dim) const;
   NDArray dsum (int dim) const;

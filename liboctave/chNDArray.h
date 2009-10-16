@@ -55,7 +55,7 @@ public:
 
   charNDArray (const string_vector& s) : MArrayN<char> (charMatrix (s)) { }
 
-  charNDArray (const ArrayN<char>& a) : MArrayN<char> (a) { }
+  charNDArray (const Array<char>& a) : MArrayN<char> (a) { }
 
   charNDArray& operator = (const charNDArray& a)
     {
@@ -77,7 +77,7 @@ public:
   
   charMatrix matrix_value (void) const;
 
-  charNDArray squeeze (void) const { return ArrayN<char>::squeeze (); }
+  charNDArray squeeze (void) const { return Array<char>::squeeze (); }
 
   static void increment_index (Array<octave_idx_type>& ra_idx,
 			       const dim_vector& dimensions,

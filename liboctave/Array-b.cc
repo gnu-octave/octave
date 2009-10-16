@@ -39,12 +39,7 @@ INSTANTIATE_ARRAY (bool, OCTAVE_API);
 
 template class OCTAVE_API Array2<bool>;
 
-#include "ArrayN.h"
-#include "ArrayN.cc"
-
-template class OCTAVE_API ArrayN<bool>;
-
-template OCTAVE_API std::ostream& operator << (std::ostream&, const ArrayN<bool>&);
+template OCTAVE_API std::ostream& operator << (std::ostream&, const Array<bool>&);
 
 #include "DiagArray2.h"
 #include "DiagArray2.cc"

@@ -1071,7 +1071,7 @@ do_bessel (dptr f, const char *fn, const Matrix& alpha,
 
 static inline ComplexNDArray
 do_bessel (dptr f, const char *, double alpha, const ComplexNDArray& x,
-	   bool scaled, ArrayN<octave_idx_type>& ierr)
+	   bool scaled, Array<octave_idx_type>& ierr)
 {
   dim_vector dv = x.dims ();
   octave_idx_type nel = dv.numel ();
@@ -1087,7 +1087,7 @@ do_bessel (dptr f, const char *, double alpha, const ComplexNDArray& x,
 
 static inline ComplexNDArray
 do_bessel (dptr f, const char *, const NDArray& alpha, const Complex& x,
-	   bool scaled, ArrayN<octave_idx_type>& ierr)
+	   bool scaled, Array<octave_idx_type>& ierr)
 {
   dim_vector dv = alpha.dims ();
   octave_idx_type nel = dv.numel ();
@@ -1103,7 +1103,7 @@ do_bessel (dptr f, const char *, const NDArray& alpha, const Complex& x,
 
 static inline ComplexNDArray
 do_bessel (dptr f, const char *fn, const NDArray& alpha,
-	   const ComplexNDArray& x, bool scaled, ArrayN<octave_idx_type>& ierr)
+	   const ComplexNDArray& x, bool scaled, Array<octave_idx_type>& ierr)
 {
   dim_vector dv = x.dims ();
   ComplexNDArray retval;
@@ -1177,7 +1177,7 @@ do_bessel (dptr f, const char *, const RowVector& alpha,
 #define SN_BESSEL(name, fcn) \
   ComplexNDArray \
   name (double alpha, const ComplexNDArray& x, bool scaled, \
-	ArrayN<octave_idx_type>& ierr) \
+	Array<octave_idx_type>& ierr) \
   { \
     return do_bessel (fcn, #name, alpha, x, scaled, ierr); \
   }
@@ -1185,7 +1185,7 @@ do_bessel (dptr f, const char *, const RowVector& alpha,
 #define NS_BESSEL(name, fcn) \
   ComplexNDArray \
   name (const NDArray& alpha, const Complex& x, bool scaled, \
-	ArrayN<octave_idx_type>& ierr) \
+	Array<octave_idx_type>& ierr) \
   { \
     return do_bessel (fcn, #name, alpha, x, scaled, ierr); \
   }
@@ -1193,7 +1193,7 @@ do_bessel (dptr f, const char *, const RowVector& alpha,
 #define NN_BESSEL(name, fcn) \
   ComplexNDArray \
   name (const NDArray& alpha, const ComplexNDArray& x, bool scaled, \
-	ArrayN<octave_idx_type>& ierr) \
+	Array<octave_idx_type>& ierr) \
   { \
     return do_bessel (fcn, #name, alpha, x, scaled, ierr); \
   }
@@ -1668,7 +1668,7 @@ do_bessel (fptr f, const char *fn, const FloatMatrix& alpha,
 
 static inline FloatComplexNDArray
 do_bessel (fptr f, const char *, float alpha, const FloatComplexNDArray& x,
-	   bool scaled, ArrayN<octave_idx_type>& ierr)
+	   bool scaled, Array<octave_idx_type>& ierr)
 {
   dim_vector dv = x.dims ();
   octave_idx_type nel = dv.numel ();
@@ -1684,7 +1684,7 @@ do_bessel (fptr f, const char *, float alpha, const FloatComplexNDArray& x,
 
 static inline FloatComplexNDArray
 do_bessel (fptr f, const char *, const FloatNDArray& alpha, const FloatComplex& x,
-	   bool scaled, ArrayN<octave_idx_type>& ierr)
+	   bool scaled, Array<octave_idx_type>& ierr)
 {
   dim_vector dv = alpha.dims ();
   octave_idx_type nel = dv.numel ();
@@ -1700,7 +1700,7 @@ do_bessel (fptr f, const char *, const FloatNDArray& alpha, const FloatComplex& 
 
 static inline FloatComplexNDArray
 do_bessel (fptr f, const char *fn, const FloatNDArray& alpha,
-	   const FloatComplexNDArray& x, bool scaled, ArrayN<octave_idx_type>& ierr)
+	   const FloatComplexNDArray& x, bool scaled, Array<octave_idx_type>& ierr)
 {
   dim_vector dv = x.dims ();
   FloatComplexNDArray retval;
@@ -1774,7 +1774,7 @@ do_bessel (fptr f, const char *, const FloatRowVector& alpha,
 #define SN_BESSEL(name, fcn) \
   FloatComplexNDArray \
   name (float alpha, const FloatComplexNDArray& x, bool scaled, \
-	ArrayN<octave_idx_type>& ierr) \
+	Array<octave_idx_type>& ierr) \
   { \
     return do_bessel (fcn, #name, alpha, x, scaled, ierr); \
   }
@@ -1782,7 +1782,7 @@ do_bessel (fptr f, const char *, const FloatRowVector& alpha,
 #define NS_BESSEL(name, fcn) \
   FloatComplexNDArray \
   name (const FloatNDArray& alpha, const FloatComplex& x, bool scaled, \
-	ArrayN<octave_idx_type>& ierr) \
+	Array<octave_idx_type>& ierr) \
   { \
     return do_bessel (fcn, #name, alpha, x, scaled, ierr); \
   }
@@ -1790,7 +1790,7 @@ do_bessel (fptr f, const char *, const FloatRowVector& alpha,
 #define NN_BESSEL(name, fcn) \
   FloatComplexNDArray \
   name (const FloatNDArray& alpha, const FloatComplexNDArray& x, bool scaled, \
-	ArrayN<octave_idx_type>& ierr) \
+	Array<octave_idx_type>& ierr) \
   { \
     return do_bessel (fcn, #name, alpha, x, scaled, ierr); \
   }
@@ -1931,7 +1931,7 @@ biry (const ComplexMatrix& z, bool deriv, bool scaled, Array2<octave_idx_type>& 
 }
 
 ComplexNDArray
-airy (const ComplexNDArray& z, bool deriv, bool scaled, ArrayN<octave_idx_type>& ierr)
+airy (const ComplexNDArray& z, bool deriv, bool scaled, Array<octave_idx_type>& ierr)
 {
   dim_vector dv = z.dims ();
   octave_idx_type nel = dv.numel ();
@@ -1946,7 +1946,7 @@ airy (const ComplexNDArray& z, bool deriv, bool scaled, ArrayN<octave_idx_type>&
 }
 
 ComplexNDArray
-biry (const ComplexNDArray& z, bool deriv, bool scaled, ArrayN<octave_idx_type>& ierr)
+biry (const ComplexNDArray& z, bool deriv, bool scaled, Array<octave_idx_type>& ierr)
 {
   dim_vector dv = z.dims ();
   octave_idx_type nel = dv.numel ();
@@ -2061,7 +2061,7 @@ biry (const FloatComplexMatrix& z, bool deriv, bool scaled, Array2<octave_idx_ty
 }
 
 FloatComplexNDArray
-airy (const FloatComplexNDArray& z, bool deriv, bool scaled, ArrayN<octave_idx_type>& ierr)
+airy (const FloatComplexNDArray& z, bool deriv, bool scaled, Array<octave_idx_type>& ierr)
 {
   dim_vector dv = z.dims ();
   octave_idx_type nel = dv.numel ();
@@ -2076,7 +2076,7 @@ airy (const FloatComplexNDArray& z, bool deriv, bool scaled, ArrayN<octave_idx_t
 }
 
 FloatComplexNDArray
-biry (const FloatComplexNDArray& z, bool deriv, bool scaled, ArrayN<octave_idx_type>& ierr)
+biry (const FloatComplexNDArray& z, bool deriv, bool scaled, Array<octave_idx_type>& ierr)
 {
   dim_vector dv = z.dims ();
   octave_idx_type nel = dv.numel ();

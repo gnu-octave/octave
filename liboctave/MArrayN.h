@@ -25,7 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_MArrayN_h)
 #define octave_MArrayN_h 1
 
-#include "ArrayN.h"
+#include "Array.h"
 #include "MArray2.h"
 #include "dim-vector.h"
 
@@ -39,34 +39,34 @@ MARRAY_OPS_FORWARD_DECLS (MArrayN, )
 
 template <class T>
 class
-MArrayN : public ArrayN<T>
+MArrayN : public Array<T>
 {
 protected:
 
-  MArrayN (T *d, const dim_vector& dv) : ArrayN<T> (d, dv) { }
+  MArrayN (T *d, const dim_vector& dv) : Array<T> (d, dv) { }
 
 public:
   
-  MArrayN (void) : ArrayN<T> () {}
+  MArrayN (void) : Array<T> () {}
   
-  MArrayN (const dim_vector& dv) : ArrayN<T> (dv) { }
+  MArrayN (const dim_vector& dv) : Array<T> (dv) { }
   
-  MArrayN (const dim_vector& dv, const T& val) : ArrayN<T> (dv, val) { }
+  MArrayN (const dim_vector& dv, const T& val) : Array<T> (dv, val) { }
 
   template <class U>
-  explicit MArrayN (const Array2<U>& a) : ArrayN<T> (a) { }
+  explicit MArrayN (const Array2<U>& a) : Array<T> (a) { }
 
   template <class U>
-  MArrayN (const ArrayN<U>& a) : ArrayN<T> (a) { }
+  MArrayN (const Array<U>& a) : Array<T> (a) { }
 
   template <class U>
-  MArrayN (const MArrayN<U>& a) : ArrayN<T> (a) { }
+  MArrayN (const MArrayN<U>& a) : Array<T> (a) { }
 
   ~MArrayN (void) { }
 
   MArrayN<T>& operator = (const MArrayN<T>& a)
     {
-      ArrayN<T>::operator = (a);
+      Array<T>::operator = (a);
       return *this;
     }
 
@@ -88,26 +88,26 @@ public:
     }
 
   MArrayN<T> reshape (const dim_vector& new_dims) const
-    { return ArrayN<T>::reshape (new_dims); }
+    { return Array<T>::reshape (new_dims); }
 
   MArrayN<T> permute (const Array<octave_idx_type>& vec, 
 		      bool inv = false) const
-    { return ArrayN<T>::permute (vec, inv); }
+    { return Array<T>::permute (vec, inv); }
 
   MArrayN<T> ipermute (const Array<octave_idx_type>& vec) const
-    { return ArrayN<T>::ipermute (vec); }
+    { return Array<T>::ipermute (vec); }
 
-  MArrayN squeeze (void) const { return ArrayN<T>::squeeze (); }
+  MArrayN squeeze (void) const { return Array<T>::squeeze (); }
 
   MArrayN<T> diag (octave_idx_type k) const
   {
-    return ArrayN<T>::diag (k);
+    return Array<T>::diag (k);
   }
 
   template <class U, class F>
   MArrayN<U> map (F fcn) const
   {
-    return ArrayN<T>::template map<U> (fcn);
+    return Array<T>::template map<U> (fcn);
   }
 
   void changesign (void);

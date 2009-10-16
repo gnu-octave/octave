@@ -28,7 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "oct-cmplx.h"
 
-template <typename T> class ArrayN;
+template <typename T> class Array;
 class ComplexMatrix;
 class FloatComplexMatrix;
 class ComplexDiagMatrix;
@@ -171,7 +171,7 @@ octave_print_internal (std::ostream& os, const std::string& s,
 		       int extra_indent = 0);
 
 extern OCTINTERP_API void
-octave_print_internal (std::ostream& os, const ArrayN<std::string>& sa,
+octave_print_internal (std::ostream& os, const Array<std::string>& sa,
 		       bool pr_as_read_syntax = false,
 		       int extra_indent = 0);
 

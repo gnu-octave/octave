@@ -6263,7 +6263,7 @@ do_accumarray_sum (const idx_vector& idx, const NDT& vals,
   else
     error ("accumarray: dimensions mismatch");
 
-  return NDT (MArrayN<T> (ArrayN<T> (array)));
+  return NDT (MArrayN<T> (Array<T> (array)));
 }
 
 DEFUN (__accumarray_sum__, args, ,

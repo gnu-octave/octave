@@ -66,7 +66,7 @@ public:
   octave_float_complex_matrix (const FloatComplexMatrix& m, const MatrixType& t)
     : octave_base_matrix<FloatComplexNDArray> (m, t) { }
 
-  octave_float_complex_matrix (const ArrayN<FloatComplex>& m)
+  octave_float_complex_matrix (const Array<FloatComplex>& m)
     : octave_base_matrix<FloatComplexNDArray> (FloatComplexNDArray (m)) { }
 
   octave_float_complex_matrix (const FloatComplexDiagMatrix& d)

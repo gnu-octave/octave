@@ -714,7 +714,7 @@ ComplexNDArray::max (int dim) const
 }
 
 ComplexNDArray
-ComplexNDArray::max (ArrayN<octave_idx_type>& idx_arg, int dim) const
+ComplexNDArray::max (Array<octave_idx_type>& idx_arg, int dim) const
 {
   return do_mx_minmax_op<ComplexNDArray> (*this, idx_arg, dim, mx_inline_max);
 }
@@ -726,7 +726,7 @@ ComplexNDArray::min (int dim) const
 }
 
 ComplexNDArray
-ComplexNDArray::min (ArrayN<octave_idx_type>& idx_arg, int dim) const
+ComplexNDArray::min (Array<octave_idx_type>& idx_arg, int dim) const
 {
   return do_mx_minmax_op<ComplexNDArray> (*this, idx_arg, dim, mx_inline_min);
 }
@@ -738,7 +738,7 @@ ComplexNDArray::cummax (int dim) const
 }
 
 ComplexNDArray
-ComplexNDArray::cummax (ArrayN<octave_idx_type>& idx_arg, int dim) const
+ComplexNDArray::cummax (Array<octave_idx_type>& idx_arg, int dim) const
 {
   return do_mx_cumminmax_op<ComplexNDArray> (*this, idx_arg, dim, mx_inline_cummax);
 }
@@ -750,7 +750,7 @@ ComplexNDArray::cummin (int dim) const
 }
 
 ComplexNDArray
-ComplexNDArray::cummin (ArrayN<octave_idx_type>& idx_arg, int dim) const
+ComplexNDArray::cummin (Array<octave_idx_type>& idx_arg, int dim) const
 {
   return do_mx_cumminmax_op<ComplexNDArray> (*this, idx_arg, dim, mx_inline_cummin);
 }
@@ -765,19 +765,19 @@ ComplexNDArray::abs (void) const
 boolNDArray
 ComplexNDArray::isnan (void) const
 {
-  return ArrayN<bool> (fastmap<bool> (xisnan));
+  return Array<bool> (fastmap<bool> (xisnan));
 }
 
 boolNDArray
 ComplexNDArray::isinf (void) const
 {
-  return ArrayN<bool> (fastmap<bool> (xisinf));
+  return Array<bool> (fastmap<bool> (xisinf));
 }
 
 boolNDArray
 ComplexNDArray::isfinite (void) const
 {
-  return ArrayN<bool> (fastmap<bool> (xfinite));
+  return Array<bool> (fastmap<bool> (xfinite));
 }
 
 ComplexNDArray

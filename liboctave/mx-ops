@@ -82,65 +82,57 @@ pm PermMatrix PM PermMatrix.h YES static_cast<octave_idx_type>(0)
 #
 cdm cdm dm B
 cdm dm cdm B
-cm cs cdm B
-cm cs dm B
+cdm cs dm B
 cm cs m BCL real NONE boolMatrix.h
 cnda cs nda BCL real NONE boolMatrix.h boolNDArray.h
-cm cdm cs B
 cm cdm cm B
 cm cdm m B
-cm cdm s B
+cdm cdm s B
 cm cm cdm B
 cm cm dm B
 cm cm m BCL real NONE boolMatrix.h
 cnda cnda nda BCL real NONE boolMatrix.h boolNDArray.h
 cm cm s BCL real NONE boolMatrix.h
 cnda cnda s BCL real NONE boolMatrix.h boolNDArray.h
-cm dm cs B
+cdm dm cs B
 cm dm cm B
 cm m cs BCL NONE real boolMatrix.h
 cnda nda cs BCL NONE real boolMatrix.h boolNDArray.h
 cm m cdm B
 cm m cm BCL NONE real boolMatrix.h
 cnda nda cnda BCL NONE real boolMatrix.h boolNDArray.h
-cm s cdm B
+cdm s cdm B
 cm s cm BCL NONE real boolMatrix.h
 cnda s cnda BCL NONE real boolMatrix.h boolNDArray.h
 m dm m B
-m dm s B
 m m dm B
-m s dm B
 #
 fcdm fcdm fdm B
 fcdm fdm fcdm B
-fcm fcs fcdm B
-fcm fcs fdm B
+fcdm fcs fdm B
 fcm fcs fm BCL real NONE boolMatrix.h
 fcnda fcs fnda BCL real NONE boolMatrix.h boolNDArray.h
-fcm fcdm fcs B
 fcm fcdm fcm B
 fcm fcdm fm B
-fcm fcdm fs B
+fcdm fcdm fs B
 fcm fcm fcdm B
 fcm fcm fdm B
 fcm fcm fm BCL real NONE boolMatrix.h
 fcnda fcnda fnda BCL real NONE boolMatrix.h boolNDArray.h
 fcm fcm fs BCL real NONE boolMatrix.h
 fcnda fcnda fs BCL real NONE boolMatrix.h boolNDArray.h
-fcm fdm fcs B
+fcdm fdm fcs B
 fcm fdm fcm B
 fcm fm fcs BCL NONE real boolMatrix.h
 fcnda fnda fcs BCL NONE real boolMatrix.h boolNDArray.h
 fcm fm fcdm B
 fcm fm fcm BCL NONE real boolMatrix.h
 fcnda fnda fcnda BCL NONE real boolMatrix.h boolNDArray.h
-fcm fs fcdm B
+fcdm fs fcdm B
 fcm fs fcm BCL NONE real boolMatrix.h
 fcnda fs fcnda BCL NONE real boolMatrix.h boolNDArray.h
 fm fdm fm B
-fm fdm fs B
 fm fm fdm B
-fm fs fdm B
 #
 m pm m B
 m m pm B

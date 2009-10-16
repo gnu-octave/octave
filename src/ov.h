@@ -190,14 +190,14 @@ public:
   octave_value (octave_time t);
   octave_value (double d);
   octave_value (float d);
-  octave_value (const ArrayN<octave_value>& a, bool is_cs_list = false);
+  octave_value (const Array<octave_value>& a, bool is_cs_list = false);
   octave_value (const Cell& c, bool is_cs_list = false);
   octave_value (const Matrix& m, const MatrixType& t = MatrixType());
   octave_value (const FloatMatrix& m, const MatrixType& t = MatrixType());
   octave_value (const NDArray& nda);
   octave_value (const FloatNDArray& nda);
-  octave_value (const ArrayN<double>& m);
-  octave_value (const ArrayN<float>& m);
+  octave_value (const Array<double>& m);
+  octave_value (const Array<float>& m);
   octave_value (const DiagMatrix& d);
   octave_value (const FloatDiagMatrix& d);
   octave_value (const RowVector& v);
@@ -210,8 +210,8 @@ public:
   octave_value (const FloatComplexMatrix& m, const MatrixType& t = MatrixType());
   octave_value (const ComplexNDArray& cnda);
   octave_value (const FloatComplexNDArray& cnda);
-  octave_value (const ArrayN<Complex>& m);
-  octave_value (const ArrayN<FloatComplex>& m);
+  octave_value (const Array<Complex>& m);
+  octave_value (const Array<FloatComplex>& m);
   octave_value (const ComplexDiagMatrix& d);
   octave_value (const FloatComplexDiagMatrix& d);
   octave_value (const ComplexRowVector& v);
@@ -222,19 +222,19 @@ public:
   octave_value (bool b);
   octave_value (const boolMatrix& bm, const MatrixType& t = MatrixType());
   octave_value (const boolNDArray& bnda);
-  octave_value (const ArrayN<bool>& bnda);
+  octave_value (const Array<bool>& bnda);
   octave_value (char c, char type = '\'');
   octave_value (const char *s, char type = '\'');
   octave_value (const std::string& s, char type = '\'');
   octave_value (const string_vector& s, char type = '\'');
   octave_value (const charMatrix& chm, 	char type = '\'');
   octave_value (const charNDArray& chnda, char type = '\'');
-  octave_value (const ArrayN<char>& chnda, char type = '\'');
+  octave_value (const Array<char>& chnda, char type = '\'');
   octave_value (const charMatrix& chm, bool is_string,
 		char type = '\'') GCC_ATTR_DEPRECATED;
   octave_value (const charNDArray& chnda, bool is_string,
 		char type = '\'') GCC_ATTR_DEPRECATED;
-  octave_value (const ArrayN<char>& chnda, bool is_string,
+  octave_value (const Array<char>& chnda, bool is_string,
 		char type = '\'') GCC_ATTR_DEPRECATED;
   octave_value (const SparseMatrix& m, const MatrixType& t = MatrixType ());
   octave_value (const Sparse<double>& m, const MatrixType& t = MatrixType ());
@@ -253,21 +253,21 @@ public:
   octave_value (const octave_uint32& i);
   octave_value (const octave_uint64& i);
   octave_value (const int8NDArray& inda);
-  octave_value (const ArrayN<octave_int8>& inda);
+  octave_value (const Array<octave_int8>& inda);
   octave_value (const int16NDArray& inda);
-  octave_value (const ArrayN<octave_int16>& inda);
+  octave_value (const Array<octave_int16>& inda);
   octave_value (const int32NDArray& inda);
-  octave_value (const ArrayN<octave_int32>& inda);
+  octave_value (const Array<octave_int32>& inda);
   octave_value (const int64NDArray& inda);
-  octave_value (const ArrayN<octave_int64>& inda);
+  octave_value (const Array<octave_int64>& inda);
   octave_value (const uint8NDArray& inda);
-  octave_value (const ArrayN<octave_uint8>& inda);
+  octave_value (const Array<octave_uint8>& inda);
   octave_value (const uint16NDArray& inda);
-  octave_value (const ArrayN<octave_uint16>& inda);
+  octave_value (const Array<octave_uint16>& inda);
   octave_value (const uint32NDArray& inda);
-  octave_value (const ArrayN<octave_uint32>& inda);
+  octave_value (const Array<octave_uint32>& inda);
   octave_value (const uint64NDArray& inda);
-  octave_value (const ArrayN<octave_uint64>& inda);
+  octave_value (const Array<octave_uint64>& inda);
   octave_value (const Array<octave_idx_type>& inda, 
                 bool zero_based = false, bool cache_index = false);
   octave_value (const Array<std::string>& cellstr);

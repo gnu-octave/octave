@@ -78,7 +78,7 @@ DEFBINOP (add_dm_sm, diag_matrix, sparse_matrix)
     {
       double d = v2.scalar_value ();
 
-      return octave_value (v1.diag_matrix_value () + d);
+      return octave_value (v1.matrix_value () + d);
     }
   else
     return v1.diag_matrix_value () + v2.sparse_matrix_value ();
@@ -94,7 +94,7 @@ DEFBINOP (sub_dm_sm, diag_matrix, sparse_matrix)
     {
       double d = v2.scalar_value ();
 
-      return octave_value (v1.diag_matrix_value () - d);
+      return octave_value (v1.matrix_value () - d);
     }
   else
     return v1.diag_matrix_value () - v2.sparse_matrix_value ();
@@ -155,7 +155,7 @@ DEFBINOP (add_sm_dm, sparse_matrix, diag_matrix)
     {
       double d = v1.scalar_value ();
 
-      return octave_value (d + v2.diag_matrix_value ());
+      return octave_value (d + v2.matrix_value ());
     }
   else
     return v1.sparse_matrix_value () + v2.diag_matrix_value ();
@@ -171,7 +171,7 @@ DEFBINOP (sub_sm_dm, sparse_matrix, diag_matrix)
     {
       double d = v1.scalar_value ();
 
-      return octave_value (d - v2.diag_matrix_value ());
+      return octave_value (d - v2.matrix_value ());
     }
   else
     return v1.sparse_matrix_value () - v2.diag_matrix_value ();

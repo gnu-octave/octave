@@ -735,6 +735,10 @@ public:
 
 #endif
 
+template <class T>
+std::ostream&
+operator << (std::ostream& os, const Array<T>& a);
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

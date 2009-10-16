@@ -1088,15 +1088,15 @@ public:
   {
     size_t len = lst.size ();
 
-    Array<octave_value> name_info (len, 1);
-    Array<octave_value> size_info (len, 1);
-    Array<octave_value> bytes_info (len, 1);
-    Array<octave_value> class_info (len, 1);
-    Array<octave_value> global_info (len, 1);
-    Array<octave_value> sparse_info (len, 1);
-    Array<octave_value> complex_info (len, 1);
-    Array<octave_value> nesting_info (len, 1);
-    Array<octave_value> persistent_info (len, 1);
+    Cell name_info (len, 1);
+    Cell size_info (len, 1);
+    Cell bytes_info (len, 1);
+    Cell class_info (len, 1);
+    Cell global_info (len, 1);
+    Cell sparse_info (len, 1);
+    Cell complex_info (len, 1);
+    Cell nesting_info (len, 1);
+    Cell persistent_info (len, 1);
 
     std::list<symbol_info>::const_iterator p = lst.begin ();
 

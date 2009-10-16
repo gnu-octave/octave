@@ -133,20 +133,24 @@ function [tf, a_idx] = ismember (a, s, rows_opt)
     elseif (! ischar (a) && ! isnumeric (a))
       error ("ismember: input arguments must be arrays, cell arrays, or strings"); 
     endif
-    if (columns (a) != columns (s))
+    if (isempty (a) || isempty (c))
+      tf = false (rows (a), 1);
+      a_idx = zeros (rows (a), 1);
+    elseif (columns (a) != columns (s))
       error ("ismember: number of columns must match");
+    else
+
+      ## FIXME: lookup does not support "rows", so we just use unique.
+      [xx, ii, jj] = unique ([a; s], "rows", "last");
+      na = rows (a);
+      jj = ii(jj(1:na));
+      tf = jj > na;
+
+      if (nargout > 1)
+        a_idx = max (0, jj - na);
+      endif
+
     endif
-
-    ## FIXME: lookup does not support "rows", so we just use unique.
-    [xx, ii, jj] = unique ([a; s], "rows", "last");
-    na = rows (a);
-    jj = ii(jj(1:na));
-    tf = jj > na;
-
-    if (nargout > 1)
-      a_idx = max (0, jj - na);
-    endif
-
   else
     print_usage ();
   endif

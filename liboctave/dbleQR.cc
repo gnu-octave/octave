@@ -84,6 +84,8 @@ extern "C"
 #endif
 }
 
+const QR::type QR::raw, QR::std, QR::economy;
+
 QR::QR (const Matrix& a, qr_type_t qr_type)
 {
   init (a, qr_type);

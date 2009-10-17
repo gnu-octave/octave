@@ -1,3 +1,7 @@
+2009-10-17  Jaroslav Hajek  <highegg@gmail.com>
+
+	* dbleQR.cc: Initialize QR::raw, QR::economy and QR::std.
+
 2009-10-16  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ArrayN.h: Remove everything, just #define ArrayN Array. 

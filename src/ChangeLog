@@ -1,3 +1,7 @@
+2009-10-17  Jaroslav Hajek  <highegg@gmail.com>
+
+	* data.cc (Fnth_element): Clarify docstring.
+
 2009-10-16  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Cell.cc: Remove traces of ArrayN.

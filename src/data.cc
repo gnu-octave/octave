@@ -6164,7 +6164,7 @@ or descending @code{u:-1:l}, in which case a range of elements is returned.\n\
 If @var{x} is an array, @code{nth_element} operates along the dimension defined by @var{dim},\n\
 or the first non-singleton dimension if @var{dim} is not given.\n\
 \n\
-nth_element encapsulates the C++ STL algorithms nth_element and partial_sort.\n\
+nth_element encapsulates the C++ standard library algorithms nth_element and partial_sort.\n\
 On average, the complexity of the operation is O(M*log(K)), where\n\
 @code{M = size(@var{x}, @var{dim})} and @code{K = length (@var{n})}.\n\
 This function is intended for cases where the ratio K/M is small; otherwise,\n\

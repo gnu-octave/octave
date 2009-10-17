@@ -133,7 +133,7 @@ function [tf, a_idx] = ismember (a, s, rows_opt)
     elseif (! ischar (a) && ! isnumeric (a))
       error ("ismember: input arguments must be arrays, cell arrays, or strings"); 
     endif
-    if (isempty (a) || isempty (c))
+    if (isempty (a) || isempty (s))
       tf = false (rows (a), 1);
       a_idx = zeros (rows (a), 1);
     elseif (columns (a) != columns (s))

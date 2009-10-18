@@ -50,7 +50,7 @@ LINK_DEPS = \
 MATRIX_INC := Array.h Array2.h Array3.h ArrayN.h DiagArray2.h \
 	Array-util.h MArray-decl.h MArray-defs.h \
 	MArray.h MArray2.h MDiagArray2.h Matrix.h MArrayN.h \
-	base-lu.h base-aepbal.h dim-vector.h mx-base.h mx-op-decl.h \
+	base-lu.h base-qr.h base-aepbal.h dim-vector.h mx-base.h mx-op-decl.h \
 	mx-op-defs.h mx-defs.h mx-ext.h CColVector.h CDiagMatrix.h \
 	CMatrix.h CNDArray.h CRowVector.h CmplxAEPBAL.h CmplxCHOL.h \
 	CmplxGEPBAL.h CmplxHESS.h CmplxLU.h CmplxQR.h CmplxQRP.h \
@@ -112,7 +112,7 @@ BUILT_INCLUDES := mx-ops.h \
 
 TEMPLATE_SRC := Array.cc ArrayN.cc eigs-base.cc DiagArray2.cc \
 	MArray.cc MArray2.cc MArrayN.cc MDiagArray2.cc \
-	base-lu.cc oct-sort.cc sparse-base-lu.cc \
+	base-lu.cc base-qr.cc oct-sort.cc sparse-base-lu.cc \
 	sparse-base-chol.cc sparse-dmsolve.cc
 
 TI_SRC := Array-C.cc Array-b.cc Array-ch.cc Array-i.cc Array-d.cc \

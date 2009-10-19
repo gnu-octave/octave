@@ -1,3 +1,7 @@
+2009-10-19  Soren Hauberg  <hauberg@gmail.com>
+
+	* io/strread.m, io/textread.m: New functions.
+
 2009-10-20  Jaroslav Hajek  <highegg@gmail.com>
 
 	* statistics/base/center.m: Rewrite using bsxfun.

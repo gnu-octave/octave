@@ -516,6 +516,58 @@ public:
       return def;      
     }
 
+  // Computes a linear index from an index tuple.
+  octave_idx_type compute_index (const octave_idx_type *idx)
+    {
+      octave_idx_type k = 0;
+      for (int i = length () - 1; i >= 0; i++)
+        k = k * rep[i] + idx[i];
+
+      return k;
+    }
+
+  // Increments a multi-dimensional index tuple, optionally starting
+  // from an offset position. Returns the index of the last index
+  // position that was changed, or length () if just cycled over.
+  int increment_index (octave_idx_type *idx, int start = 0)
+    {
+      int i;
+      for (i = start; i < length (); i++)
+        {
+          if (++(*idx) == rep[i])
+            *idx = 0;
+          else
+            break;
+        }
+      return i;
+    }
+
+  // Returns cumulative dimensions.
+  dim_vector cumulative (void) const
+    {
+      int nd = length ();
+      dim_vector retval = alloc (nd);
+
+      octave_idx_type k = 1;
+      for (int i = 0; i < nd; i++)
+        retval.rep[i] = k *= rep[i];
+
+      return retval;
+    }
+
+  // Computes a linear index from an index tuple. Assumes that the dimensions
+  // are cumulative.
+  octave_idx_type cum_compute_index (const octave_idx_type *idx)
+    {
+      octave_idx_type k = idx[0];
+
+      for (int i = 1; i < length (); i++)
+        k += rep[i-1] * idx[i];
+
+      return k;
+    }
+
+
   friend bool operator == (const dim_vector& a, const dim_vector& b);
 };
 

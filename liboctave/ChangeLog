@@ -1,3 +1,9 @@
+2009-10-19  Jaroslav Hajek  <highegg@gmail.com>
+
+	* dim-vector.h (dim_vector::compute_index,
+	dim_vector::increment_index, dim_vector::cumulative,
+	dim_vector::cum_compute_index): New methods.
+
 2009-10-18  Carsten Clark  <tantumquantum+gnuoctave@gmail.com>
 
 	* Makefile.in: Remove ArrayN.cc.

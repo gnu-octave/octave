@@ -1330,16 +1330,19 @@ mat2cell (reshape(1:16,4,4),[3,1],[3,1])\n\
 
 */
 
+// FIXME: it would be nice to allow ranges being handled without a conversion.
 template <class NDA>
 static Cell 
-do_cellslices_nda (const NDA& array, const idx_vector& lb, const idx_vector& ub)
+do_cellslices_nda (const NDA& array, 
+                   const Array<octave_idx_type>& lb, 
+                   const Array<octave_idx_type>& ub)
 {
-  octave_idx_type n = lb.length (0);
+  octave_idx_type n = lb.length ();
   Cell retval (1, n);
   if (array.is_vector ())
     {
       for (octave_idx_type i = 0; i < n && ! error_state; i++)
-        retval(i) = array.index (idx_vector (lb(i), ub(i) + 1));
+        retval(i) = array.index (idx_vector (lb(i) - 1, ub(i)));
     }
   else
     {
@@ -1352,7 +1355,7 @@ do_cellslices_nda (const NDA& array, const idx_vector& lb, const idx_vector& ub)
           dv = array.dims ();
           dv(dv.length () - 1) = ub(i) + 1 - lb(i);
           dv.chop_trailing_singletons ();
-          retval(i) = array.index (idx_vector (nl*lb(i), nl*(ub(i) + 1))).reshape (dv);
+          retval(i) = array.index (idx_vector (nl*(lb(i) - 1), nl*ub(i))).reshape (dv);
         }
     }
 
@@ -1385,12 +1388,11 @@ If @var{X} is a matrix or array, indexing is done along the last dimension.\n\
   if (nargin == 3)
     {
       octave_value x = args(0);
-      idx_vector lb = args(1).index_vector (), ub = args(2).index_vector ();
+      Array<octave_idx_type> lb = args(1).octave_idx_type_vector_value ();
+      Array<octave_idx_type> ub = args(2).octave_idx_type_vector_value ();
       if (! error_state)
         {
-          if (lb.is_colon () || ub.is_colon ())
-            error ("cellslices: invalid use of colon");
-          else if (lb.length (0) != ub.length (0))
+          if (lb.length () != ub.length ())
             error ("cellslices: the lengths of lb and ub must match");
           else
             {
@@ -1439,14 +1441,13 @@ If @var{X} is a matrix or array, indexing is done along the last dimension.\n\
               else
                 {
                   // generic code.
-                  octave_idx_type n = lb.length (0);
+                  octave_idx_type n = lb.length ();
                   retcell = Cell (1, n);
                   octave_idx_type nind = x.dims ().is_vector () ? 1 : x.ndims ();
                   octave_value_list idx (nind, octave_value::magic_colon_t);
                   for (octave_idx_type i = 0; i < n && ! error_state; i++)
                     {
-                      idx(nind-1) = Range (static_cast<double> (lb(i)) + 1,
-                                           static_cast<double> (ub(i)) + 1);
+                      idx(nind-1) = Range (lb(i), ub(i));
                       retcell(i) = x.do_index_op (idx);
                     }
                 }

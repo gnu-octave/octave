@@ -1,3 +1,8 @@
+2009-10-19  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/cellfun.cc (Fcellslices): Allow non-positive indices
+	as bounds.
+
 2009-10-17  Jaroslav Hajek  <highegg@gmail.com>
 
 	* data.cc (Fnth_element): Clarify docstring.

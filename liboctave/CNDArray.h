@@ -28,6 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "mx-defs.h"
 #include "mx-op-decl.h"
+#include "bsxfun-decl.h"
 
 class
 OCTAVE_API
@@ -184,6 +185,9 @@ MARRAY_FORWARD_DEFS (MArrayN, ComplexNDArray, Complex)
 
 extern OCTAVE_API ComplexNDArray& operator *= (ComplexNDArray& a, double s);
 extern OCTAVE_API ComplexNDArray& operator /= (ComplexNDArray& a, double s);
+
+BSXFUN_STDOP_DECLS (ComplexNDArray, OCTAVE_API)
+BSXFUN_STDREL_DECLS (ComplexNDArray, OCTAVE_API)
 
 #endif
 

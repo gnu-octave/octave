@@ -26,6 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "intNDArray.h"
 #include "mx-op-decl.h"
 #include "oct-inttypes.h"
+#include "bsxfun-decl.h"
 
 typedef intNDArray<octave_uint32> uint32NDArray;
 
@@ -41,6 +42,9 @@ NDND_BOOL_OP_DECLS (uint32NDArray, uint32NDArray, OCTAVE_API)
 MARRAY_FORWARD_DEFS (MArrayN, uint32NDArray, octave_uint32)
 
 MINMAX_DECLS (uint32)
+
+BSXFUN_STDOP_DECLS (uint32NDArray, OCTAVE_API)
+BSXFUN_STDREL_DECLS (uint32NDArray, OCTAVE_API)
 
 #endif
 

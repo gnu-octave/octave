@@ -71,7 +71,8 @@ enum builtin_type_t
   btyp_uint64,
   btyp_char,
   btyp_bool,
-  btyp_unknown
+  btyp_unknown,
+  btyp_num_types = btyp_unknown
 };
 
 template <class T>

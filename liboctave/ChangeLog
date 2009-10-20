@@ -1,3 +1,44 @@
+2009-10-20  Jaroslav Hajek  <highegg@gmail.com>
+
+	* bsxfun-decl.h, bsxfun-defs.cc: New sources.
+	* Makefile.in: Add them.
+	* dim-vector.h (dim_vector::compute_index,
+	dim_vector::increment_index): Fix.
+	* mx-inlines.cc (DEFMXMAPPER, DEFMXLOCALMAPPER): New macros.
+	(mx_inline_xmin, mx_inline_xmax): New loops.
+	(mx_inline_fun): Remove.
+	* oct-inttypes.h (xmin (const octave_int<T>&, const octave_int<T>&),
+	xmax (const octave_int<T>&, const octave_int<T>&)):
+	New inline functions.
+
+	* CNDArray.cc: Define bsxfun operations.
+	* boolNDArray.cc: Ditto.
+	* dNDArray.cc: Ditto.
+	* fCNDArray.cc: Ditto.
+	* fNDArray.cc: Ditto.
+	* int16NDArray.cc: Ditto.
+	* int32NDArray.cc: Ditto.
+	* int64NDArray.cc: Ditto.
+	* int8NDArray.cc: Ditto.
+	* uint16NDArray.cc: Ditto.
+	* uint32NDArray.cc: Ditto.
+	* uint64NDArray.cc: Ditto.
+	* uint8NDArray.cc: Ditto.
+
+	* CNDArray.h: Declare bsxfun operations.
+	* boolNDArray.h: Ditto.
+	* dNDArray.h: Ditto.
+	* fCNDArray.h: Ditto.
+	* fNDArray.h: Ditto.
+	* int16NDArray.h: Ditto.
+	* int32NDArray.h: Ditto.
+	* int64NDArray.h: Ditto.
+	* int8NDArray.h: Ditto.
+	* uint16NDArray.h: Ditto.
+	* uint32NDArray.h: Ditto.
+	* uint64NDArray.h: Ditto.
+	* uint8NDArray.h: Ditto.
+
 2009-10-19  Jaroslav Hajek  <highegg@gmail.com>
 
 	* dim-vector.h (dim_vector::compute_index,

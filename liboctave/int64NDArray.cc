@@ -29,6 +29,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "mx-op-defs.h"
 #include "intNDArray.cc"
 
+#include "bsxfun-defs.cc"
+
 template class OCTAVE_API intNDArray<octave_int64>;
 
 template OCTAVE_API
@@ -49,6 +51,9 @@ NDND_CMP_OPS (int64NDArray, int64NDArray)
 NDND_BOOL_OPS (int64NDArray, int64NDArray)
 
 MINMAX_FCNS (int64)
+
+BSXFUN_STDOP_DEFS_MXLOOP (int64NDArray)
+BSXFUN_STDREL_DEFS_MXLOOP (int64NDArray)
 
 /*
 ;;; Local Variables: ***

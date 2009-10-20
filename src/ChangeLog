@@ -1,3 +1,14 @@
+2009-10-20  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-base.h (builtin_type_t): Declare also btyp_num_types.
+	* DLD-FUNCTIONS/bsxfun.cc (bsxfun_builtin_op): New enum.
+	(bsxfun_handler): New typedef.
+	(bsxfun_builtin_names, bsxfun_handler_table): New variables.
+	(bsxfun_builtin_lookup, maybe_fill_table, maybe_optimized_builtin):
+	New static funcs.
+	(bsxfun_forward_op, bsxfun_forward_rel): New static template funcs.
+	(Fbsxfun): Try to optimize some built-in operations.
+
 2009-10-19  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/cellfun.cc (Fcellslices): Allow non-positive indices

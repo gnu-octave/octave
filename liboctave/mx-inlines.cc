@@ -197,39 +197,28 @@ DEFMXANYNAN(float)
 DEFMXANYNAN(Complex)
 DEFMXANYNAN(FloatComplex)
 
-// Arbitrary unary/binary function mappers. Note the function reference is a
-// template parameter!
-template <class R, class X, R F(X)>
-void mx_inline_fun (size_t n, R *r, const X *x)
-{ for (size_t i = 0; i < n; i++) r[i] = F(x[i]); }
+// Pairwise minimums/maximums
+#define DEFMXMAPPER(F, FUN) \
+template <class T> \
+inline void F (size_t n, T *r, const T *x, const T *y) \
+{ for (size_t i = 0; i < n; i++) r[i] = FUN (x[i], y[i]); } \
+template <class T> \
+inline void F (size_t n, T *r, const T *x, T y) \
+{ for (size_t i = 0; i < n; i++) r[i] = FUN (x[i], y); } \
+template <class T> \
+inline void F (size_t n, T *r, T x, const T *y) \
+{ for (size_t i = 0; i < n; i++) r[i] = FUN (x, y[i]); }
 
-template <class R, class X, R F(const X&)>
-void mx_inline_fun (size_t n, R *r, const X *x)
-{ for (size_t i = 0; i < n; i++) r[i] = F(x[i]); }
+DEFMXMAPPER (mx_inline_xmin, xmin)
+DEFMXMAPPER (mx_inline_xmax, xmax)
 
-template <class R, class X, class Y, R F(X, Y)>
-void mx_inline_fun (size_t n, R *r, const X *x, const Y *y)
-{ for (size_t i = 0; i < n; i++) r[i] = F(x[i], y[i]); }
-
-template <class R, class X, class Y, R F(X, Y)>
-void mx_inline_fun (size_t n, R *r, X x, const Y *y)
-{ for (size_t i = 0; i < n; i++) r[i] = F(x, y[i]); }
-
-template <class R, class X, class Y, R F(X, Y)>
-void mx_inline_fun (size_t n, R *r, const X *x, Y y)
-{ for (size_t i = 0; i < n; i++) r[i] = F(x[i], y); }
-
-template <class R, class X, class Y, R F(const X&, const Y&)>
-void mx_inline_fun (size_t n, R *r, const X *x, const Y *y)
-{ for (size_t i = 0; i < n; i++) r[i] = F(x[i], y[i]); }
-
-template <class R, class X, class Y, R F(const X&, const Y&)>
-void mx_inline_fun (size_t n, R *r, X x, const Y *y)
-{ for (size_t i = 0; i < n; i++) r[i] = F(x, y[i]); }
-
-template <class R, class X, class Y, R F(const X&, const Y&)>
-void mx_inline_fun (size_t n, R *r, const X *x, Y y)
-{ for (size_t i = 0; i < n; i++) r[i] = F(x[i], y); }
+#define DEFMXLOCALMAPPER(F, FUN, T) \
+static void F (size_t n, T *r, const T *x, const T *y) \
+{ for (size_t i = 0; i < n; i++) r[i] = FUN (x[i], y[i]); } \
+static void F (size_t n, T *r, const T *x, T y) \
+{ for (size_t i = 0; i < n; i++) r[i] = FUN (x[i], y); } \
+static void F (size_t n, T *r, T x, const T *y) \
+{ for (size_t i = 0; i < n; i++) r[i] = FUN (x, y[i]); }
 
 // Appliers. Since these call the operation just once, we pass it as
 // a pointer, to allow the compiler reduce number of instances.

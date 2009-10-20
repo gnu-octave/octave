@@ -30,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "mx-defs.h"
 #include "mx-op-decl.h"
+#include "bsxfun-decl.h"
 
 class
 OCTAVE_API
@@ -194,6 +195,9 @@ NDND_CMP_OP_DECLS (NDArray, NDArray, OCTAVE_API)
 NDND_BOOL_OP_DECLS (NDArray, NDArray, OCTAVE_API)
 
 MARRAY_FORWARD_DEFS (MArrayN, NDArray, double)
+
+BSXFUN_STDOP_DECLS (NDArray, OCTAVE_API)
+BSXFUN_STDREL_DECLS (NDArray, OCTAVE_API)
 
 #endif
 

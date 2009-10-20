@@ -520,7 +520,7 @@ public:
   octave_idx_type compute_index (const octave_idx_type *idx)
     {
       octave_idx_type k = 0;
-      for (int i = length () - 1; i >= 0; i++)
+      for (int i = length () - 1; i >= 0; i--)
         k = k * rep[i] + idx[i];
 
       return k;
@@ -535,7 +535,7 @@ public:
       for (i = start; i < length (); i++)
         {
           if (++(*idx) == rep[i])
-            *idx = 0;
+            *idx++ = 0;
           else
             break;
         }

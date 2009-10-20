@@ -43,6 +43,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-fftw.h"
 #include "oct-locbuf.h"
 
+#include "bsxfun-defs.cc"
+
 NDArray::NDArray (const Array<octave_idx_type>& a, bool zero_based,
 		  bool negative_to_nan)
 {
@@ -1131,6 +1133,9 @@ SND_BOOL_OPS (double, NDArray)
 
 NDND_CMP_OPS (NDArray, NDArray)
 NDND_BOOL_OPS (NDArray, NDArray)
+
+BSXFUN_STDOP_DEFS_MXLOOP (NDArray)
+BSXFUN_STDREL_DEFS_MXLOOP (NDArray)
 
 /*
 ;;; Local Variables: ***

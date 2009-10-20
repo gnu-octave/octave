@@ -34,6 +34,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "mx-op-defs.h"
 #include "MArray-defs.h"
 
+#include "bsxfun-defs.cc"
+
 // unary operations
 
 boolNDArray
@@ -183,6 +185,9 @@ mx_el_or_assign (boolNDArray& a, const boolNDArray& b)
 
   return a;
 }
+
+BSXFUN_OP_DEF_MXLOOP (and, boolNDArray, mx_inline_and)
+BSXFUN_OP_DEF_MXLOOP (or, boolNDArray, mx_inline_or)
 
 /*
 ;;; Local Variables: ***

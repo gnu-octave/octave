@@ -27,8 +27,10 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "mx-defs.h"
 #include "mx-op-decl.h"
+#include "bsxfun-decl.h"
 
 #include "boolMatrix.h"
+
 
 class
 OCTAVE_API
@@ -136,6 +138,9 @@ extern OCTAVE_API boolNDArray&
 mx_el_and_assign (boolNDArray& m, const boolNDArray& a);
 extern OCTAVE_API boolNDArray& 
 mx_el_or_assign (boolNDArray& m, const boolNDArray& a);
+
+BSXFUN_OP_DECL (and, boolNDArray, OCTAVE_API);
+BSXFUN_OP_DECL (or, boolNDArray, OCTAVE_API);
 
 #endif
 

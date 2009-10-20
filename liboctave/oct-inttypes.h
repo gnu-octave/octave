@@ -1090,6 +1090,22 @@ OCTAVE_INT_FLOAT_CMP_OP (!=)
 
 #undef OCTAVE_INT_FLOAT_CMP_OP
 
+template <class T>
+octave_int<T>
+xmax (const octave_int<T>& x, const octave_int<T>& y)
+{
+  const T xv = x.value (), yv = y.value ();
+  return octave_int<T> (xv >= yv ? xv : yv); 
+}
+
+template <class T>
+octave_int<T>
+xmin (const octave_int<T>& x, const octave_int<T>& y)
+{
+  const T xv = x.value (), yv = y.value ();
+  return octave_int<T> (xv <= yv ? xv : yv); 
+}
+
 #endif
 
 /*

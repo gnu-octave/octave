@@ -43,6 +43,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-fftw.h"
 #include "oct-locbuf.h"
 
+#include "bsxfun-defs.cc"
+
 FloatNDArray::FloatNDArray (const charNDArray& a)
   : MArrayN<float> (a.dims ())
 {
@@ -1089,6 +1091,9 @@ SND_BOOL_OPS (float, FloatNDArray)
 
 NDND_CMP_OPS (FloatNDArray, FloatNDArray)
 NDND_BOOL_OPS (FloatNDArray, FloatNDArray)
+
+BSXFUN_STDOP_DEFS_MXLOOP (FloatNDArray)
+BSXFUN_STDREL_DEFS_MXLOOP (FloatNDArray)
 
 /*
 ;;; Local Variables: ***

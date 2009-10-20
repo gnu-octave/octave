@@ -43,6 +43,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-fftw.h"
 #include "oct-locbuf.h"
 
+#include "bsxfun-defs.cc"
+
 ComplexNDArray::ComplexNDArray (const charNDArray& a)
   : MArrayN<Complex> (a.dims ())
 {
@@ -1103,6 +1105,9 @@ ComplexNDArray& operator /= (ComplexNDArray& a, double s)
     do_ms_inplace_op<ComplexNDArray, double> (a, s, mx_inline_div2);
   return a;
 }
+
+BSXFUN_STDOP_DEFS_MXLOOP (ComplexNDArray)
+BSXFUN_STDREL_DEFS_MXLOOP (ComplexNDArray)
 
 /*
 ;;; Local Variables: ***

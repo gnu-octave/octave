@@ -1,4 +1,9 @@
-2009-10-08  Rik  <octdev@nomad.inbox5.com>
+2009-10-19  Rik  <octdev@nomad.inbox5.com>
+
+	* fntests.m: .cc files are now included in the list of files requiring
+	tests only if they define a user function (DEFUN or DEFUN_DLD)
+
+2009-10-19  Rik  <octdev@nomad.inbox5.com>
 
 	* fntests.m: Remove deprecated functions from list of functions requiring
 	new tests to be written

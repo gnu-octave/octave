@@ -68,6 +68,17 @@ function print_pass_fail (n, p)
   puts ("\n");
 endfunction
 
+function y = hasfunctions (f)
+  fid = fopen (f);
+  if (fid < 0)
+    error ("fopen failed: %s", f);
+  else
+    str = fread (fid, "*char")';
+    fclose (fid);
+    y = regexp (str,'^(DEFUN|DEFUN_DLD)\b', "lineanchors");
+  endif
+endfunction
+
 ## FIXME -- should we only try match the keyword at the start of a line?
 function y = hastests (f)
   fid = fopen (f);
@@ -128,9 +139,9 @@ function [dp, dn, dxf, dsk] = run_test_script (fid, d);
   endfor
   for i = 1:length (lst)
     nm = lst(i).name;
-    if ((length (nm) > 3 && strcmp (nm((end-2):end), ".cc"))
-	|| (length (nm) > 2 && strcmp (nm((end-1):end), ".m")))
-      f = fullfile (d, nm);
+    f = fullfile (d, nm);
+    if ((length (nm) > 2 && strcmp (nm((end-1):end), ".m")) || 
+        (length (nm) > 3 && strcmp (nm((end-2):end), ".cc") && hasfunctions(f)))
       p = n = xf = 0;
       ## Only run if it contains %!test, %!assert %!error or %!warning
       if (hastests (f))

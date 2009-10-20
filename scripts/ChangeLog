@@ -1,3 +1,8 @@
+2009-10-20  Soren Hauberg  <hauberg@gmail.com>
+
+	* general/interp2.m: improved error checking and support for bicubic
+	interpolation when X and Y are meshgrid format.
+
 2009-10-22  Jaroslav Hajek  <highegg@gmail.com>
 
 	* general/interp1.m: Perform optimizations, improve code (use switch

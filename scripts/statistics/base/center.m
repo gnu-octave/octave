@@ -1,5 +1,6 @@
 ## Copyright (C) 1995, 1996, 1997, 1998, 2000, 2002, 2004, 2005, 2006,
 ##               2007, 2009 Kurt Hornik
+## Copyright (C) 2009 VZLU Prague
 ##
 ## This file is part of Octave.
 ##
@@ -36,27 +37,13 @@ function retval = center (x, dim)
   endif
 
   if (nargin < 2)
-    t = find (size (x) != 1);
-    if (isempty (t))
-      dim = 1;
-    else
-      dim = t(1);
-    endif
+    dim = [find(size (x) != 1, 1), 1](1); # First non-singleton dim.
   endif
   n = size (x, dim);
 
-  if (n == 1)
-    retval = zeros (size (x));
-  elseif (n > 0)
-    if (isvector (x))
-      retval = x - sum (x) / n;
-    else
-      mx = sum (x, dim) / n;
-      idx(1:ndims (x)) = {':'}; 
-      idx{dim} = ones (1, n);
-      retval = x - mx(idx{:});
-    endif
-  else
+  if (n == 0)
     retval = x;
+  else
+    retval = bsxfun (@minus, x, sum (x, dim) / n);
   endif
 endfunction

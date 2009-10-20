@@ -1,5 +1,10 @@
 2009-10-08  Rik  <octdev@nomad.inbox5.com>
 
+	* fntests.m: Remove deprecated functions from list of functions requiring
+	new tests to be written
+
+2009-10-08  Rik  <octdev@nomad.inbox5.com>
+
 	* fntests.m: Fix typo of an extra space in instructions to user
 
 2009-10-05  Rik  <octdev@nomad.inbox5.com>

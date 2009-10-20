@@ -118,7 +118,7 @@ function [dp, dn, dxf, dsk] = run_test_script (fid, d);
   for i = 1:length (lst)
     nm = lst(i).name;
     if (lst(i).isdir && ! strcmp (nm, ".") && ! strcmp (nm, "..")
-	&& ! strcmp (nm, "CVS"))
+	&& ! strcmp (nm, "CVS") && ! strcmp (nm, "deprecated") )
       [p, n, xf, sk] = run_test_script (fid, [d, "/", nm]);
       dp += p;
       dn += n;

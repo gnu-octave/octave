@@ -122,6 +122,13 @@ Summary of important user-visible changes for version 3.3:
     using a compensated summation algorithm rather than a straightforward sum, which significantly
     improves precision if lots of cancellation occurs in the summation.
 
+ ** The built-in "bsxfun" function now uses optimized code for certain cases where built-in
+    operator handles are passed in. Namely, the optimizations concern the operators
+    plus, minus, times, ldivide, rdivide, and, or (for logical arrays), the relational
+    operators eq, ne, lt, le, gt, ge, and the functions min and max.
+    Optimizations only apply when both operands are of the same built-in class
+    (or one is single and the other is double).
+
 Summary of important user-visible changes for version 3.2:
 ---------------------------------------------------------
 

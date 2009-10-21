@@ -31,6 +31,8 @@ INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
+################################################################################
+
 SCRIPT_SOURCES = sparseimages.m interpimages.m geometryimages.m plotimages.m
 
 POLYNOMIAL_FILES_NODIR = \
@@ -154,8 +156,6 @@ DISTFILES = $(addprefix $(srcdir)/, Makefile.in contributors.in \
   doc-cache stmp-html
 
 DISTDIRS = HTML
-
-DISTSUBDIRS :=
 
 SUBDIRS :=
 
@@ -341,12 +341,6 @@ uninstall:
 	for f in $(MAN_BASE); do rm -f $(DESTDIR)$(man1dir)/$$f$(man1ext); done
 .PHONY: uninstall
 
-tags: $(SOURCES)
-	ctags $(SOURCES)
-
-TAGS: $(SOURCES)
-	etags $(SOURCES)
-
 spell: $(SPELL)
 .PHONY: spell
 
@@ -357,7 +351,7 @@ mostlyclean clean:
 	octave.cps octave.fns octave.ins octave.kys octave.ops \
 	octave.pgs octave.rds octave.tps octave.vrs octave.aux \
 	octave.log octave.toc \
-	munge-texi$(BUILD_EXEEXT) munge-texi.o \
+	munge-texi.o \
 	octave-a4.cp octave-a4.fn octave-a4.in \
 	octave-a4.ky octave-a4.op octave-a4.pg octave-a4.rd octave-a4.tp octave-a4.vr \
 	octave-a4.cps octave-a4.fns octave-a4.ins octave-a4.kys octave-a4.ops \
@@ -372,11 +366,11 @@ mostlyclean clean:
 
 distclean: clean
 	@$(subdir-for-command)
-	rm -f tags TAGS Makefile
+	rm -f Makefile
 .PHONY: distclean
 
 maintainer-clean: distclean clean-texi
-	rm -f doc-cache stmp-html $(FORMATTED) $(IMAGES)
+	rm -f munge-texi$(BUILD_EXEEXT) doc-cache stmp-html $(FORMATTED) $(IMAGES)
 	rm -rf HTML
 .PHONY: maintainer-clean
 
@@ -384,11 +378,10 @@ clean-texi:
 	rm -f $(SUB_TEXINFO) contributors.texi octave-a4.texi octave-smallbook.texi
 .PHONY: clean-texi
 
-dist: clean-texi all
+dist: all
 	ln $(DISTFILES) ../../`cat ../../.fname`/doc/interpreter
 	for dir in $(DISTDIRS); do \
 	  mkdir ../../`cat ../../.fname`/doc/interpreter/$$dir; \
 	  ln ../../doc/interpreter/$$dir/* ../../`cat ../../.fname`/doc/interpreter/$$dir; \
 	done
-	for dir in $(DISTSUBDIRS); do mkdir ../../`cat ../../.fname`/doc/interpreter/$$dir; $(MAKE) -C $$dir $@; done
 .PHONY: dist

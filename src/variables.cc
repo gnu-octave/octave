@@ -1606,7 +1606,7 @@ DEFUN (who, args, nargout,
 @deftypefn  {Command} {} who\n\
 @deftypefnx {Command} {} who pattern @dots{}\n\
 @deftypefnx {Command} {} who option pattern @dots{}\n\
-@deftypefnx {Command} {C =} who(\"pattern\", @dots{})\n\
+@deftypefnx {Command} {C =} who (\"pattern\", @dots{})\n\
 List currently defined variables matching the given patterns.  Valid\n\
 pattern syntax is the same as described for the @code{clear} command.\n\
 If no patterns are supplied, all variables are listed.\n\
@@ -1654,7 +1654,7 @@ DEFUN (whos, args, nargout,
 @deftypefn  {Command} {} whos\n\
 @deftypefnx {Command} {} whos pattern @dots{}\n\
 @deftypefnx {Command} {} whos option pattern @dots{}\n\
-@deftypefnx {Command} {S =} whos(\"pattern\", @dots{})\n\
+@deftypefnx {Command} {S =} whos (\"pattern\", @dots{})\n\
 Provide detailed information on currently defined variables matching the\n\
 given patterns.  Options and pattern syntax are the same as for the\n\
 @code{who} command.  Extended information about each variable is\n\

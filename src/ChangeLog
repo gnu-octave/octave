@@ -1,3 +1,7 @@
+2009-10-21  Rik <octave@nomad.inbox5.com>
+
+	* variables.cc: Correct use of deftypefnx for who and whos
+
 2009-10-21  John W. Eaton  <jwe@octave.org>
 
 	* load-path.h (load_path::dir_path::dir_time_last_checked): New field.

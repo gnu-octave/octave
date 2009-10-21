@@ -1,3 +1,11 @@
+2009-10-21  John W. Eaton  <jwe@octave.org>
+
+	* oct-time.h 	(octave_time::octave_time (time_t t, int us)):
+	New constructor.
+	(operator + (const octave_time&, const octave_time&)): New function.
+
+	* file-stat.h (base_file_stat::time_resolution): New function.
+
 2009-10-20  Jaroslav Hajek  <highegg@gmail.com>
 
 	* bsxfun-decl.h, bsxfun-defs.cc: New sources.

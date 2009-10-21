@@ -79,6 +79,15 @@ public:
 
   ~base_file_stat (void) { }
 
+  // The minimum difference in file time stamp values.
+  // FIXME -- this value should come from the filesystem itself.  How
+  // can we get that info?
+  octave_time time_resolution (void) const
+  {
+    static octave_time resolution (1.0);
+    return resolution;
+  }
+
   // File status and info.  The is_XXX functions will return false for
   // file_stat objects that are not properly initialized.  The others
   // should all return 0 (or the equivalent, for the given object)

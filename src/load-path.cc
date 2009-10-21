@@ -76,7 +76,7 @@ load_path::dir_info::update (void)
 
 		  const dir_info& di = p->second;
 
-		  if (fs.mtime () != di.dir_mtime)
+		  if (fs.mtime () + fs.time_resolution () > di.dir_time_last_checked)
 		    initialize ();
 		  else
 		    *this = di;
@@ -93,7 +93,7 @@ load_path::dir_info::update (void)
 	    }
 	}
 
-      if (fs.mtime () != dir_mtime)
+      if (fs.mtime () + fs.time_resolution () > dir_time_last_checked)
 	initialize ();
     }
   else
@@ -108,11 +108,14 @@ load_path::dir_info::initialize (void)
 {
   is_relative = ! octave_env::absolute_pathname (dir_name);
 
+  dir_time_last_checked = octave_time (static_cast<time_t> (0));
+
   file_stat fs (dir_name);
 
   if (fs)
     {
       dir_mtime = fs.mtime ();
+      dir_time_last_checked = octave_time ();
 
       get_file_list (dir_name);
 

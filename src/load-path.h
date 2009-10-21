@@ -274,8 +274,9 @@ private:
     dir_info (const dir_info& di)
       : dir_name (di.dir_name), abs_dir_name (di.abs_dir_name),
 	is_relative (di.is_relative),
-	dir_mtime (di.dir_mtime), all_files (di.all_files),
-	fcn_files (di.fcn_files),
+	dir_mtime (di.dir_mtime),
+	dir_time_last_checked (di.dir_time_last_checked), 
+	all_files (di.all_files), fcn_files (di.fcn_files),
 	private_file_map (di.private_file_map),
 	method_file_map (di.method_file_map) { }
 
@@ -289,6 +290,7 @@ private:
 	  abs_dir_name = di.abs_dir_name;
 	  is_relative = di.is_relative;
 	  dir_mtime = di.dir_mtime;
+	  dir_time_last_checked = di.dir_time_last_checked;
 	  all_files = di.all_files;
 	  fcn_files = di.fcn_files;
 	  private_file_map = di.private_file_map;
@@ -304,6 +306,7 @@ private:
     std::string abs_dir_name;
     bool is_relative;
     octave_time dir_mtime;
+    octave_time dir_time_last_checked;
     string_vector all_files;
     string_vector fcn_files;
     fcn_file_map_type private_file_map;

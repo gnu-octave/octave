@@ -42,6 +42,28 @@ public:
   octave_time (time_t t)
     : ot_unix_time (t), ot_usec (0) { }
 
+  octave_time (time_t t, int us)
+    : ot_unix_time (t), ot_usec ()
+  {
+    int rem, extra;
+
+    if (us >= 0)
+      {
+	rem = us % 1000000;
+	extra = (us - rem) / 1000000;
+      }
+    else
+      {
+	us = -us;
+	rem = us % 1000000;
+	extra = - (1 + (us - rem) / 1000000);
+	rem = 1000000 - us % 1000000;
+      }
+
+    ot_usec = rem;
+    ot_unix_time += extra;
+  }
+
   octave_time (double d)
     : ot_unix_time (static_cast<time_t> (d)), ot_usec (0)
   {
@@ -134,6 +156,13 @@ inline bool
 operator >= (const octave_time& t1, const octave_time& t2)
 {
   return (t1 > t2 || t1 == t2);
+}
+
+inline octave_time
+operator + (const octave_time& t1, const octave_time& t2)
+{
+  return octave_time (t1.unix_time () + t2.unix_time (),
+		      t1.usec () + t2.usec ());
 }
 
 class

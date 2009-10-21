@@ -1,3 +1,14 @@
+2009-10-21  John W. Eaton  <jwe@octave.org>
+
+	* load-path.h (load_path::dir_path::dir_time_last_checked): New field.
+	(load_path::dir_path::dir_path, load_path::dir_path::operator=):
+	Initialize and copy dir_time_last_checked.
+	* load-path.cc 	(load_path::dir_info::initialize): Store time of
+	last update.
+	(load_path::dir_info::update): Check directory modification time
+	against time of last update, within resolution of filesystem time
+	stamps.  Suggested by Judd Storrs <storrsjm@email.uc.edu>.
+
 2009-10-20  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-base.h (builtin_type_t): Declare also btyp_num_types.

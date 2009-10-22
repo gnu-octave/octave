@@ -51,3 +51,10 @@ function map = flag (number)
   endif
 
 endfunction
+
+%!demo
+%! ## Show the 'flag' colormap as an image
+%! image (1:64, linspace (0, 1, 64), repmat (1:64, 64, 1)')
+%! axis ([1, 64, 0, 1], "ticy", "xy")
+%! colormap flag
+

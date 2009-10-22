@@ -1,3 +1,15 @@
+2009-10-22  Soren Hauberg  <hauberg@gmail.com>
+
+	* image/autumn.m, image/bone.m, image/cool.m, image/copper.m,
+	image/flag.m, image/gmap40.m, image/gray.m, image/hot.m,
+	image/hsv.m, image/jet.m, image/ocean.m, image/pink.m,
+	image/prism.m, image/rainbow.m, image/spring.m, image/summer.m,
+	image/white.m, image/winter.m: Add demos.
+
+2009-10-20  Soren Hauberg  <hauberg@gmail.com>
+ 
+ 	* general/interp2.m: improved error checking and support for bicubic
+
 2009-10-19  Soren Hauberg  <hauberg@gmail.com>
 
 	* io/strread.m, io/textread.m: New functions.

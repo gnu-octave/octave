@@ -73,50 +73,49 @@ function ret = pchip (x, y, xi)
     print_usage ();
   endif
 
-  x = x(:);
+  x = x(:).';
   n = length (x);
 
   ## Check the size and shape of y
-  ndy = ndims (y);
-  szy = size (y);
-  if (ndy == 2 && (szy(1) == 1 || szy(2) == 1))
-    if (szy(1) == 1)
-      y = y';
-    else
-      szy = fliplr (szy);
-    endif
+  if (isvector (y))
+    y = y(:).';
+    szy = size (y);
   else
-    y = reshape (y, [prod(szy(1:end-1)), szy(end)])';
+    szy = size (y);
+    y = reshape (y, [prod(szy(1:end-1)), szy(end)]);
   endif
 
   h = diff (x);
   if (all (h < 0))
-    x = flipud (x);
+    x = fliplr (x);
     h = diff (x);
-    y = flipud (y);
+    y = fliplr (y);
   elseif (any (h <= 0))
     error("pchip: x must be strictly monotonic");
   endif
 
-  if (rows (y) != n)
+  if (columns (y) != n)
     error("pchip: size of x and y must match");
   endif
 
-  [ry, cy] = size (y);
-  if (cy > 1)
-    h = kron (diff (x), ones (1, cy));
-  endif
-  
-  dy = diff (y) ./ h;
+  f1 = y(:,1:n-1);
 
-  a = y;
-  b = __pchip_deriv__ (x, y);
-  c = - (b(2:n, :) + 2 * b(1:n - 1, :)) ./ h + 3 * diff (a) ./ h .^ 2;
-  d = (b(1:n - 1, :) + b(2:n, :)) ./ h.^2 - 2 * diff (a) ./ h.^3;
+  ## Compute derivatives.
+  d = __pchip_deriv__ (x, y, 2);
+  d1 = d(:,1:n-1);
+  d2 = d(:,2:n);
 
-  d = d(1:n - 1, :); c = c(1:n - 1, :);
-  b = b(1:n - 1, :); a = a(1:n - 1, :);
-  coeffs = [d(:), c(:), b(:), a(:)];
+  ## This is taken from SLATEC. 
+  h = diag (h);
+
+  delta = diff (y, 1, 2) / h;
+  del1 = (d1 - delta) / h;
+  del2 = (d2 - delta) / h;
+  c3 = del1 + del2;
+  c2 = -c3 - del1;
+  c3 = c3 / h;
+
+  coeffs = [c3.'(:), c2.'(:), d1.'(:), f1.'(:)];
   pp = mkpp (x, coeffs, szy(1:end-1));
 
   if (nargin == 2)

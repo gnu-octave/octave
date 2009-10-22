@@ -395,7 +395,7 @@ octave_base_value::print_info (std::ostream& os,
     if (! error_state) \
       { \
 	if (require_int && D_NINT (d) != d) \
-	  error ("conversion of %g to " #T " value failed", d); \
+	  error_with_cfn ("conversion of %g to " #T " value failed", d); \
 	else if (d < MIN_LIMIT) \
 	  retval = MIN_LIMIT; \
 	else if (d > MAX_LIMIT) \

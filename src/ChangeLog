@@ -1,3 +1,18 @@
+2009-10-22  Jaroslav Hajek  <highegg@gmail.com>
+
+	* error.cc (verror (bool, std::ostream&, ..., bool)): Add optional
+	with_cfn flag. If specified, prepend current function name (unless
+	already there).
+	(error_1): Accept with_cfn flag and pass it on.
+	(error_2): Ditto.
+	(verror_with_cfn, error_with_cfn, error_with_id_cfn,
+	verror_with_id_cfn): New functions.
+	* error.h: Declare them.
+	* octave.cc (lo_error_handler): Call verror_with_cfn.
+	* ov-base.cc (INT_CONV_METHOD): Call error_with_cfn.
+	* ov.cc (octave_value::int_vector_value,
+	octave_idx_type_vector_value): Call error_with_cfn.
+
 2009-10-21  Rik <octave@nomad.inbox5.com>
 
 	* variables.cc: Correct use of deftypefnx for who and whos

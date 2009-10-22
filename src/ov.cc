@@ -1594,7 +1594,7 @@ octave_value::int_vector_value (bool force_string_conv, bool require_int,
                     retval.xelem (i) = v;
                   else
                     {
-                      error ("conversion to integer value failed");
+                      error_with_cfn ("conversion to integer value failed");
                       break;
                     }
                 }
@@ -1676,7 +1676,7 @@ octave_value::octave_idx_type_vector_value (bool require_int,
                     retval.xelem (i) = v;
                   else
                     {
-                      error ("conversion to integer value failed");
+                      error_with_cfn ("conversion to integer value failed");
                       break;
                     }
                 }

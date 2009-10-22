@@ -47,6 +47,9 @@ extern OCTINTERP_API void warning (const char *fmt, ...);
 extern OCTINTERP_API void verror (const char *fmt, va_list args);
 extern OCTINTERP_API void error (const char *fmt, ...);
 
+extern OCTINTERP_API void verror_with_cfn (const char *fmt, va_list args);
+extern OCTINTERP_API void error_with_cfn (const char *fmt, ...);
+
 extern OCTINTERP_API void vparse_error (const char *fmt, va_list args);
 extern OCTINTERP_API void parse_error (const char *fmt, ...);
 
@@ -73,6 +76,12 @@ verror_with_id (const char *id, const char *fmt, va_list args);
 
 extern OCTINTERP_API void
 error_with_id (const char *id, const char *fmt, ...);
+
+extern OCTINTERP_API void
+verror_with_id_cfn (const char *id, const char *fmt, va_list args);
+
+extern OCTINTERP_API void
+error_with_id_cfn (const char *id, const char *fmt, ...);
 
 extern OCTINTERP_API void
 vparse_error_with_id (const char *id, const char *fmt, va_list args);

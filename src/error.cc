@@ -204,7 +204,8 @@ vwarning (const char *name, const char *id, const char *fmt, va_list args)
 
 static void
 verror (bool save_last_error, std::ostream& os,
-	const char *name, const char *id, const char *fmt, va_list args)
+	const char *name, const char *id, const char *fmt, va_list args,
+        bool with_cfn = false)
 {
   if (discard_error_messages)
     return;
@@ -231,6 +232,28 @@ verror (bool save_last_error, std::ostream& os,
 
   if (name)
     msg_string += std::string (name) + ": ";
+
+  // If with_fcn is specified, we'll attempt to prefix the message with the name
+  // of the current executing function. But we'll do so only if:
+  // 1. the name is not empty (anonymous function)
+  // 2. it is not already there (including the following colon)
+  if (with_cfn)
+    {
+      octave_function *curfcn = octave_call_stack::current ();
+      if (curfcn)
+        {
+          std::string cfn = curfcn->name ();
+          if (! cfn.empty ())
+            {
+              cfn += ':';
+              if (cfn.length () > base_msg.length ()
+                 || base_msg.compare (0, cfn.length (), cfn) != 0)
+                {
+                  msg_string += cfn + ' ';
+                }
+            }
+        }
+    }
 
   msg_string += base_msg + "\n";
 
@@ -275,7 +298,7 @@ verror (bool save_last_error, std::ostream& os,
 
 static void
 error_1 (std::ostream& os, const char *name, const char *id,
-	 const char *fmt, va_list args)
+	 const char *fmt, va_list args, bool with_cfn = false)
 {
   if (error_state != -2)
     {
@@ -293,7 +316,7 @@ error_1 (std::ostream& os, const char *name, const char *id,
 			{
 			  char *tmp_fmt = strsave (fmt);
 			  tmp_fmt[len - 1] = '\0';
-			  verror (true, os, name, id, tmp_fmt, args);
+			  verror (true, os, name, id, tmp_fmt, args, with_cfn);
 			  delete [] tmp_fmt;
 			}
 
@@ -301,7 +324,7 @@ error_1 (std::ostream& os, const char *name, const char *id,
 		    }
 		  else
 		    {
-		      verror (true, os, name, id, fmt, args);
+		      verror (true, os, name, id, fmt, args, with_cfn);
 
 		      if (! error_state)
 			error_state = 1;
@@ -453,11 +476,11 @@ pr_where (const char *who)
 }
 
 static void
-error_2 (const char *id, const char *fmt, va_list args)
+error_2 (const char *id, const char *fmt, va_list args, bool with_cfn = false)
 {
   int init_state = error_state;
 
-  error_1 (std::cerr, "error", id, fmt, args);
+  error_1 (std::cerr, "error", id, fmt, args, with_cfn);
 
   if ((interactive || forced_interactive)
       && Vdebug_on_error && init_state == 0
@@ -492,6 +515,21 @@ error (const char *fmt, ...)
 }
 
 void
+verror_with_cfn (const char *fmt, va_list args)
+{
+  error_2 ("", fmt, args, true);
+}
+
+void
+error_with_cfn (const char *fmt, ...)
+{
+  va_list args;
+  va_start (args, fmt);
+  verror_with_cfn (fmt, args);
+  va_end (args);
+}
+
+void
 verror_with_id (const char *id, const char *fmt, va_list args)
 {
   error_2 (id, fmt, args);
@@ -503,6 +541,21 @@ error_with_id (const char *id, const char *fmt, ...)
   va_list args;
   va_start (args, fmt);
   verror_with_id (id, fmt, args);
+  va_end (args);
+}
+
+void
+verror_with_id_cfn (const char *id, const char *fmt, va_list args)
+{
+  error_2 (id, fmt, args, true);
+}
+
+void
+error_with_id_cfn (const char *id, const char *fmt, ...)
+{
+  va_list args;
+  va_start (args, fmt);
+  verror_with_id_cfn (id, fmt, args);
   va_end (args);
 }
 

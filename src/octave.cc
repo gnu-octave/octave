@@ -552,7 +552,7 @@ lo_error_handler (const char *fmt, ...)
 {
   va_list args;
   va_start (args, fmt);
-  verror (fmt, args);
+  verror_with_cfn (fmt, args);
   va_end (args);
 
   octave_throw_execution_exception ();

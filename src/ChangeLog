@@ -1,3 +1,8 @@
+2009-10-23  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/tril.cc: New source.
+	* Makefile.in: Include it.
+
 2009-10-22  Jaroslav Hajek  <highegg@gmail.com>
 
 	* error.cc (verror (bool, std::ostream&, ..., bool)): Add optional

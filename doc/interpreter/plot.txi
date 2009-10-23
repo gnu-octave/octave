@@ -867,7 +867,7 @@ and @code{plot3}
 return a handle pointing to an object of type line, the function @code{subplot}
 returns a handle pointing to an object of type axes, the function @code{fill} returns a
 handle pointing to an object of type patch, the functions @code{area}, @code{bar},
-@code{barh}, @code{contour}, @code{contuorf}, @code{contour3}, @code{surf}, @code{mesh},
+@code{barh}, @code{contour}, @code{contourf}, @code{contour3}, @code{surf}, @code{mesh},
 @code{surfc}, @code{meshc},
 @code{errorbar}, @code{quiver}, @code{quiver3}, @code{scatter}, @code{scatter3},
 @code{stair}, @code{stem}, @code{stem3} each return a handle as documented

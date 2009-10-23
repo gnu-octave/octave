@@ -22,7 +22,7 @@
 ## @deftypefnx {Function File} {} clf (@var{hfig})
 ## @deftypefnx {Function File} {} clf (@var{hfig}, "reset")
 ## Clear the current figure window.  @code{clf} operates by deleting child
-## graphics objects with visible handles (@code{HandleVisibility} = on).
+## graphics objects with visible handles (@code{handlevisibility} = on).
 ## If @var{hfig} is specified operate on it instead of the current figure.
 ## If the optional argument @code{"reset"} is specified, all objects including
 ## those with hidden handles are deleted.

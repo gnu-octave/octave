@@ -605,7 +605,7 @@ This dummy element will be overwritten by the class function.
 
 Note further that all our examples provide for the case in which no
 arguments are supplied.  This is important since octave will call the
-constructor with no arguments when loading ojects from save files to
+constructor with no arguments when loading objects from save files to
 determine the inheritance structure.
 
 A class may be a child of more than one class (see the documentation

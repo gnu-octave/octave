@@ -213,11 +213,9 @@ Generalized eigenvalue problem @math{A x = s B x},\n\
 @item @code{lambda = qz(A,B)}\n\
 \n\
 Computes the generalized eigenvalues\n\
-@iftex\n\
 @tex\n\
 $\\lambda$\n\
 @end tex\n\
-@end iftex\n\
 @ifnottex\n\
 @var{lambda}\n\
 @end ifnottex\n\
@@ -226,13 +224,11 @@ of @math{(A - s B)}.\n\
 \n\
 Computes qz decomposition, generalized eigenvectors, and \n\
 generalized eigenvalues of @math{(A - sB)}\n\
-@iftex\n\
 @tex\n\
 $$ AV = BV{ \\rm diag }(\\lambda) $$\n\
 $$ W^T A = { \\rm diag }(\\lambda)W^T B $$\n\
 $$ AA = Q^T AZ, BB = Q^T BZ $$\n\
 @end tex\n\
-@end iftex\n\
 @ifnottex\n\
 @example\n\
 @group\n\

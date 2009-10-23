@@ -64,7 +64,6 @@
 ## Print the configuration variable VAR.  Recognized variables are: 
 ##
 ## @example             
-## @group
 ##    ALL_CFLAGS                FFTW_LIBS     
 ##    ALL_CXXFLAGS              FLIBS       
 ##    ALL_FFLAGS                FPICFLAG      
@@ -85,7 +84,6 @@
 ##    F2CFLAGS                  XTRA_CFLAGS   
 ##    F77                       XTRA_CXXFLAGS 
 ##    FFLAGS
-## @end group
 ## @end example
 ##
 ## @item --link-stand-alone

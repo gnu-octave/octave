@@ -37,13 +37,11 @@ DEFUN_DLD (betainc, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} betainc (@var{x}, @var{a}, @var{b})\n\
 Return the incomplete Beta function,\n\
-@iftex\n\
 @tex\n\
 $$\n\
  \\beta (x, a, b) = B (a, b)^{-1} \\int_0^x t^{(a-z)} (1-t)^{(b-1)} dt.\n\
 $$\n\
 @end tex\n\
-@end iftex\n\
 @ifnottex\n\
 \n\
 @c Set example in small font to prevent overfull line\n\

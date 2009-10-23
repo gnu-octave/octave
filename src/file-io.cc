@@ -399,7 +399,7 @@ If there are no more characters to read, @code{fgets} returns @minus{}1.\n\
 DEFUN (fskipl, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} fskipl (@var{fid}, @var{count})\n\
-Skips a given number of lines, i.e. discards characters until an end-of-line\n\
+Skips a given number of lines, i.e., discards characters until an end-of-line\n\
 is met exactly @var{count}-times, or end-of-file occurs.\n\
 Returns the number of lines skipped (end-of-line sequences encountered).\n\
 If @var{count} is omitted, it defaults to 1. @var{count} may also be\n\

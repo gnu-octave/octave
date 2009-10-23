@@ -27,7 +27,7 @@
 ##
 ## @example
 ## @group
-## @var{c} = [lev1, x1, x2, @dots{}, levn, x1, x2, @dots{} 
+## @var{c} = [lev1, x1, x2, @dots{}, levn, x1, x2, ... 
 ##      len1, y1, y2, @dots{}, lenn, y1, y2, @dots{}]
 ## @end group
 ## @end example

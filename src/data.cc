@@ -2429,7 +2429,7 @@ return the number of elements that would result from the indexing\n\
   @var{a}(@var{idx1}, @var{idx2}, @dots{})\n\
 @end example\n\
 This method is also called when an object appears as lvalue with cs-list\n\
-indexing, i.e. @code{object@{@dots{}@}} or @code{object(@dots{}).field}.\n\
+indexing, i.e., @code{object@{@dots{}@}} or @code{object(@dots{}).field}.\n\
 @seealso{size}\n\
 @end deftypefn")
 {
@@ -2675,8 +2675,8 @@ On the contrary, if 'double' is given, the sum is performed in double precision\
 even for single precision inputs.\n\
 \n\
 For double precision inputs, 'extra' indicates that a more accurate algorithm\n\
-than straightforward summation is to be used. For single precision inputs, 'extra' is\n\
-the same as 'double'. Otherwise, 'extra' has no effect.\n\
+than straightforward summation is to be used.  For single precision inputs, 'extra' is\n\
+the same as 'double'.  Otherwise, 'extra' has no effect.\n\
 @seealso{cumsum, sumsq, prod}\n\
 @end deftypefn")
 {
@@ -3000,9 +3000,11 @@ often be more convenient than expressions such as @code{a + i*b}.\n\
 For example:\n\
 \n\
 @example\n\
+@group\n\
 complex ([1, 2], [3, 4])\n\
 @result{}\n\
    1 + 3i   2 + 4i\n\
+@end group\n\
 @end example\n\
 @seealso{real, imag, iscomplex}\n\
 @end deftypefn")
@@ -4648,7 +4650,7 @@ stored in decreasing order.  If the number of points is not specified, a\n\
 value of 100 is used.\n\
 \n\
 The @code{linspace} function always returns a row vector if both\n\
-@var{base} and @var{limit} are scalars. If one of them or both are column\n\
+@var{base} and @var{limit} are scalars.  If one of them or both are column\n\
 vectors, @code{linspace} returns a matrix.\n\
 \n\
 For compatibility with @sc{matlab}, return the second argument if\n\
@@ -6384,17 +6386,19 @@ DEFUN (merge, args, ,
 @deftypefn {Built-in Function} {} merge (@var{mask}, @var{tval}, @var{fval})\n\
 @deftypefnx {Built-in Function} {} ifelse (@var{mask}, @var{tval}, @var{fval})\n\
 Merges elements of @var{true_val} and @var{false_val}, depending on the value of\n\
-@var{mask}. If @var{mask} is a logical scalar, the other two arguments can be\n\
-arbitrary values. Otherwise, @var{mask} must be a logical array, and @var{tval},\n\
+@var{mask}.  If @var{mask} is a logical scalar, the other two arguments can be\n\
+arbitrary values.  Otherwise, @var{mask} must be a logical array, and @var{tval},\n\
 @var{fval} should be arrays of matching class, or cell arrays.\n\
 In the scalar mask case, @var{tval} is returned if @var{mask} is true, otherwise\n\
 @var{fval} is returned.\n\
 \n\
 In the array mask case, both @var{tval} and @var{fval} must be either scalars or\n\
-arrays with dimensions equal to @var{mask}. The result is constructed as follows:\n\
+arrays with dimensions equal to @var{mask}.  The result is constructed as follows:\n\
 @example\n\
+@group\n\
 result(mask) = tval(mask);\n\
 result(! mask) = fval(! mask);\n\
+@end group\n\
 @end example\n\
 \n\
 @var{mask} can also be arbitrary numeric type, in which case\n\

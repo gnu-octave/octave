@@ -71,7 +71,7 @@
 ## be included in a @LaTeX{} (or @TeX{}) document.  The @code{tex} device
 ## is the same as the @code{epslatex} device.
 ##   @item tikz
-##     Generate a LaTeX file using gnuplot's Lua/TikZ terminal.
+##     Generate a @LaTeX{} file using gnuplot's Lua/TikZ terminal.
 ##   @item ill
 ##   @itemx aifm
 ##     Adobe Illustrator

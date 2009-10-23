@@ -180,13 +180,11 @@ DEFUN_DLD (dassl, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {[@var{x}, @var{xdot}, @var{istate}, @var{msg}] =} dassl (@var{fcn}, @var{x_0}, @var{xdot_0}, @var{t}, @var{t_crit})\n\
 Solve the set of differential-algebraic equations\n\
-@iftex\n\
 @tex\n\
 $$ 0 = f (x, \\dot{x}, t) $$\n\
 with\n\
 $$ x(t_0) = x_0, \\dot{x}(t_0) = \\dot{x}_0 $$\n\
 @end tex\n\
-@end iftex\n\
 @ifnottex\n\
 \n\
 @example\n\
@@ -226,14 +224,12 @@ of strings, inline functions, or function handles, the first element names\n\
 the function @math{f} described above, and the second element names a\n\
 function to compute the modified Jacobian\n\
 \n\
-@iftex\n\
 @tex\n\
 $$\n\
 J = {\\partial f \\over \\partial x}\n\
   + c {\\partial f \\over \\partial \\dot{x}}\n\
 $$\n\
 @end tex\n\
-@end iftex\n\
 @ifnottex\n\
 @example\n\
 @group\n\

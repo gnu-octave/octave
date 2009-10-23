@@ -103,13 +103,11 @@ r =\n\
 \n\
 The @code{qr} factorization has applications in the solution of least\n\
 squares problems\n\
-@iftex\n\
 @tex\n\
 $$\n\
 \\min_x \\left\\Vert A x - b \\right\\Vert_2\n\
 $$\n\
 @end tex\n\
-@end iftex\n\
 @ifnottex\n\
 \n\
 @example\n\
@@ -118,20 +116,16 @@ $$\n\
 \n\
 @end ifnottex\n\
 for overdetermined systems of equations (i.e.,\n\
-@iftex\n\
 @tex\n\
 $A$\n\
 @end tex\n\
-@end iftex\n\
 @ifnottex\n\
 @code{a}\n\
 @end ifnottex\n\
  is a tall, thin matrix).  The QR factorization is\n\
-@iftex\n\
 @tex\n\
 $QR = A$ where $Q$ is an orthogonal matrix and $R$ is upper triangular.\n\
 @end tex\n\
-@end iftex\n\
 @ifnottex\n\
 @code{q * r = a} where @code{q} is an orthogonal matrix and @code{r} is\n\
 upper triangular.\n\

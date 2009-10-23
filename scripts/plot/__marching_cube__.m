@@ -35,14 +35,15 @@
 ## whereas computed vertices color data @var{c} is returned as third
 ## argument.
 ##
-## The marching cube algorithm is well known and described eg. at
-## Wikipedia. The triangulation lookup table and the edge table used
+## The marching cube algorithm is well known and described, for example, at
+## Wikipedia.  The triangulation lookup table and the edge table used
 ## here are based on Cory Gene Bloyd's implementation and can be found
 ## beyond other surface and geometry stuff at Paul Bourke's website
 ## @uref{http://local.wasp.uwa.edu.au/~pbourke/geometry/polygonise}.
 ##
 ## For example,
 ## @example
+## @group
 ## N = 20;
 ## lin = linspace(0, 2, N);
 ## [x, y, z] = meshgrid (lin, lin, lin);
@@ -52,12 +53,14 @@
 ##
 ## figure ();
 ## trimesh (t, p(:,1), p(:,2), p(:,3));
+## @end group
 ## @end example
 ##
 ## Instead of the @command{trimesh} function the @command{patch}
-## function can be used to visualize the geometry. For example,
+## function can be used to visualize the geometry.  For example,
 ##
 ## @example
+## @group
 ## figure (); view (-38, 20);
 ## pa = patch ("Faces", t, "Vertices", p, "FaceVertexCData", p, \
 ##             "FaceColor", "interp", "EdgeColor", "none");
@@ -68,6 +71,7 @@
 ## ## Set lightning (available with the JHandles package)
 ## # set (pa, "FaceLighting", "gouraud");
 ## # light( "Position", [1 1 5]);
+## @end group
 ## @end example
 ##
 ## @end deftypefn

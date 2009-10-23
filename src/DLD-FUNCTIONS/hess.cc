@@ -47,7 +47,6 @@ The Hessenberg decomposition is usually used as the first step in an\n\
 eigenvalue computation, but has other applications as well (see Golub,\n\
 Nash, and Van Loan, IEEE Transactions on Automatic Control, 1979).  The\n\
 Hessenberg decomposition is\n\
-@iftex\n\
 @tex\n\
 $$\n\
 A = PHP^T\n\
@@ -55,7 +54,6 @@ $$\n\
 where $P$ is a square unitary matrix ($P^HP = I$), and $H$\n\
 is upper Hessenberg ($H_{i,j} = 0, \\forall i \\ge j+1$).\n\
 @end tex\n\
-@end iftex\n\
 @ifnottex\n\
 @code{p * h * p' = a} where @code{p} is a square unitary matrix\n\
 (@code{p' * p = I}, using complex-conjugate transposition) and @code{h}\n\

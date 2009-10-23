@@ -26,7 +26,7 @@
 ## and return the objective function value, optionally with gradient.
 ## In other words, this function attempts to determine a vector @var{x} such 
 ## that @code{@var{fcn} (@var{x})} is a local minimum.
-## @var{x0} determines a starting guess. The shape of @var{x0} is preserved
+## @var{x0} determines a starting guess.  The shape of @var{x0} is preserved
 ## in all calls to @var{fcn}, but otherwise it is treated as a column vector.
 ## @var{options} is a structure specifying additional options.
 ## Currently, @code{fminunc} recognizes these options:
@@ -38,7 +38,7 @@
 ## called with 2 output arguments, also returns the Jacobian matrix
 ## of right-hand sides at the requested point.  @code{"TolX"} specifies
 ## the termination tolerance in the unknown variables, while 
-## @code{"TolFun"} is a tolerance for equations. Default is @code{1e-7}
+## @code{"TolFun"} is a tolerance for equations.  Default is @code{1e-7}
 ## for both @code{"TolX"} and @code{"TolFun"}.
 ## 
 ## For description of the other options, see @code{optimset}.
@@ -48,7 +48,7 @@
 ## 
 ## @table @asis
 ## @item 1
-## Converged to a solution point. Relative gradient error is less than specified
+## Converged to a solution point.  Relative gradient error is less than specified
 ## by TolFun.
 ## @item 2
 ## Last relative step size was less that TolX.

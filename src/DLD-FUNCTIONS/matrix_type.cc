@@ -51,7 +51,7 @@ future use.  Called with more than one argument, @code{matrix_type} allows the t
 of the matrix to be defined.\n\
 \n\
 If the option 'nocompute' is given, the function will not attempt to guess the type if it is\n\
-still unknown. This is useful for debugging purposes.\n\
+still unknown.  This is useful for debugging purposes.\n\
 \n\
 The possible matrix types depend on whether the matrix is full or sparse, and can be\n\
 one of the following\n\

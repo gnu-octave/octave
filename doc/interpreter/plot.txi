@@ -33,9 +33,9 @@
 @section Introduction to Plotting
 
 Earlier versions of Octave provided plotting through the use of
-gnuplot. This capability is still available.  But, a newer plotting
+gnuplot.  This capability is still available.  But, a newer plotting
 capability is provided by access to OpenGL.  Which plotting system
-is used is controlled by the @code{backend} function. (See @ref{Graphics Backends}.)
+is used is controlled by the @code{backend} function.  (See @ref{Graphics Backends}.)
 
 The function call @code{backend("fltk")} selects the fltk/OpenGL system, and
 @code{backend("gnuplot")} selects the gnuplot system.
@@ -558,7 +558,7 @@ is set to 'none', then no rendering occurs.  At this point the 'latex'
 option is not implemented and so the 'latex' interpreter also does not
 interpret the text.
 
-The 'tex' option implements a subset of @sc{TeX} functionality in the
+The 'tex' option implements a subset of @TeX{} functionality in the
 rendering of the text.  This allows the insertion of special characters
 such as Greek or mathematical symbols within the text.  The special
 characters are also inserted with a code starting with the back-slash
@@ -763,7 +763,7 @@ width 0.6pt \tabskip=0pt\cr
 @item @tab  \rfloor     @tab  \rceil      @tab  \int     @tab
 @end multitable
 @end ifnottex
-@caption{Available special characters in @sc{TeX} mode}
+@caption{Available special characters in @TeX{} mode}
 @end float
 
 A complete example showing the capabilities of the extended text is
@@ -787,7 +787,7 @@ The result of which can be seen in @ref{fig:extendedtext}
 
 @float Figure,fig:extendedtext
 @center @image{extended,4in}
-@caption{Example of inclusion of text with the @sc{TeX} interpreter}
+@caption{Example of inclusion of text with the @TeX{} interpreter}
 @end float
 @end ifnotinfo
 
@@ -854,14 +854,14 @@ The graphics functions use pointers, which are of class graphics_handle,
 in order to address the data structures which control
 graphical displays.
 A graphics handle may point any one of a number of different object types.
-The objects are the graphics data structures. The types of objects
+The objects are the graphics data structures.  The types of objects
 are: @code{figure}, @code{axes},
 @code{line}, @code{text}, @code{patch},
 @code{surface}, @code{text} and @code{image}.
 
 Each of these objects has a function by the
 same name. and, each of these functions returns a graphics handle pointing
-to an object of corresponding type. In addition there are several functions
+to an object of corresponding type.  In addition there are several functions
 which operate on properties of the graphics objects and which return handles: the functions @code{ plot}
 and @code{plot3}
 return a handle pointing to an object of type line, the function @code{subplot}
@@ -876,7 +876,7 @@ in @ref{doc-datasources,, Data Sources}.
 
 The graphics objects are arranged in a hierarchy:
 
-1. The root is at 0.  i.e. @code{get(0)} returns the properties of the root
+1. The root is at 0.  i.e., @code{get(0)} returns the properties of the root
    object.
 
 2. Below the root are @code{figure} objects.
@@ -894,13 +894,13 @@ may be tested using @code{isfigure()}.  @code{isfigure} returns true only if its
 argument is a handle of a figure.
 ishghandle() is synonymous with ishandle().  The @code{whos} function can be used
 to show the object type of each currently defined graphics handle.  (Note: this is
-not true today, but it is, I hope, considered an error in whos. It may be better
+not true today, but it is, I hope, considered an error in whos.  It may be better
 to have whos just show graphics_handle as the class, and provide a new function
 which, given a graphics handle, returns its object type.  This could generalize
 the ishandle() functions and, in fact, replace them.)
 
 The @code{get} and @code{set} commands are
-used to obtain and set the values of properties of graphics objects. In addition,
+used to obtain and set the values of properties of graphics objects.  In addition,
 the @code{get} command may be used to obtain property names.
 
 For example, the property "type" of the graphics object pointed to by the graphics
@@ -909,7 +909,7 @@ handle h may be displayed by:
 @code{get(h, "type")}
 
 The properties and their current values are returned by @code{get(h)}
-where h is a handle of a graphics object. If only the names of the
+where h is a handle of a graphics object.  If only the names of the
 allowed properties are wanted they may be displayed by:
 @code{get(h, "");}
 
@@ -1002,10 +1002,10 @@ The uses of @code{get()} and @code{set()} are further explained in
 @subsection Graphics Objects
 @cindex graphics objects
 
-The hierarchy of graphics objects was explained above. (See 
+The hierarchy of graphics objects was explained above.  (See 
 @ref{Introduction to Graphics Structures}.  Here the
 specific objects are described, and the properties contained in
-these objects are discussed. Keep in mind that
+these objects are discussed.  Keep in mind that
 graphics objects are always referenced by @dfn{handle}.
 
 @table @asis
@@ -1445,7 +1445,7 @@ Either @code{"on"} or @code{"off"} to toggle display of grid lines.
 @item xlabel
 Indices to text objects for the axes labels.
 @item xlim
-Two-element vector defining the limits for the x axis.
+Two-element vector defining the limits for the x-axis.
 Setting this property also forces the corresponding mode
 property to be set to @code{"manual"}.
 @item xlimmode
@@ -1505,7 +1505,7 @@ Either @code{"on"} or @code{"off"} to toggle display of grid lines.
 @item zlabel
 Indices to text objects for the axes labels.
 @item zlim
-Two-element vector defining the limits for z axis.
+Two-element vector defining the limits for z-axis.
 Setting this property also forces the corresponding mode
 property to be set to @code{"manual"}.
 @item zlimmode

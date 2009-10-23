@@ -1025,8 +1025,8 @@ DEFUN_DLD (randperm, args, ,
 @deftypefnx {Loadable Function} {} randperm (@var{n}, @var{m})\n\
 Return a row vector containing a random permutation of @code{1:@var{n}}.\n\
 If @var{m} is supplied, return @var{m} permutations,\n\
-one in each row of a NxM matrix. The complexity is O(M*N) in both time and\n\
-memory. The randomization is performed using rand().\n\
+one in each row of a NxM matrix.  The complexity is O(M*N) in both time and\n\
+memory.  The randomization is performed using rand().\n\
 All permutations are equally likely.\n\
 @seealso{perms}\n\
 @end deftypefn")

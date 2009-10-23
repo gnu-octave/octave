@@ -325,37 +325,41 @@ method
 @subsection Indexed Assignment Optimization
 
 Octave's ubiquitous lazily-copied pass-by-value semantics implies 
-a problem for performance of user-defined subsasgn methods. Imagine
+a problem for performance of user-defined subsasgn methods.  Imagine
 a call to subsasgn:
 
 @example
+@group
   ss = substruct ("()",@{1@});
   x = subsasgn (x, ss, 1);
+@end group
 @end example
 
 and the corresponding method looking like this:
 
 @example
+@group
   function x = subsasgn (x, ss, val)
     @dots{}
     x.myfield(ss.subs@{1@}) = val;
   endfunction
+@end group
 @end example
 
 The problem is that on entry to the subsasgn method, @code{x} is still
 referenced from the caller's scope, which means that the method will 
 first need to unshare (copy) @code{x} and @code{x.myfield} before performing
-the assignment. Upon completing the call, unless an error occurs,
+the assignment.  Upon completing the call, unless an error occurs,
 the result is immediately assigned to @code{x} in the caller's scope,
-so that the previous value of @code{x.myfield} is forgotten. Hence, the
+so that the previous value of @code{x.myfield} is forgotten.  Hence, the
 Octave language implies a copy of N elements (N being the size of
 @code{x.myfield}), where modifying just a single element would actually
-suffice, i.e. degrades a constant-time operation to linear-time one.
+suffice, i.e., degrades a constant-time operation to linear-time one.
 This may be a real problem for user classes that intrinsically store large
 arrays.
 
 To partially solve the problem, Octave uses a special optimization for
-user-defined subsasgn methods coded as m-files. When the method
+user-defined subsasgn methods coded as m-files.  When the method
 gets called as a result of the built-in assignment syntax (not direct subsasgn
 call as shown above), i.e.
 
@@ -373,7 +377,7 @@ element takes constant time.
 It is important to understand the implications that this optimization brings.
 Since no extra copy of @code{x} in the caller's scope will exist, it is @i{solely}
 the callee's responsibility to not leave @code{x} in an invalid state if an error
-occurs throughout the execution. Also, if the method partially changes @code{x}
+occurs throughout the execution.  Also, if the method partially changes @code{x}
 and then errors out, the changes @i{will} affect @code{x} in the caller's scope.
 Deleting or completely replacing @code{x} inside subsasgn will not do anything,
 however, only indexed assignments matter.
@@ -385,9 +389,11 @@ Another option to avoid the effect is to declare subsasgn methods with different
 output and input arguments, like this:
 
 @example
+@group
   function y = subsasgn (x, ss, val)
     @dots{}
   endfunction
+@end group
 @end example
 
 @node Overloading Objects
@@ -576,14 +582,16 @@ parent class and providing that object as the third argument of the
 class function.
 
 This is easily demonstrated by example.  Suppose the programmer needs
-an FIR filter, i.e. a filter with a numerator polynomial but a unity
+an FIR filter, i.e., a filter with a numerator polynomial but a unity
 denominator polynomial.  In traditional octave programming, this would
 be performed as follows.
 
 @example
+@group
 octave:1> x = [some data vector];
 octave:2> n = [some coefficient vector];
 octave:3> y = filter (n, 1, x);
+@end group
 @end example
 
 The equivalent class could be implemented in a class directory
@@ -625,6 +633,7 @@ an object by calling the class constructor.  We may also check the
 class type and examine the underlying structure.
 
 @example
+@group
 octave:1> f=FIRfilter(polynomial([1 1 1]/3))
 f.polynomial = 0.333333 + 0.333333 * X + 0.333333 * X ^ 2
 octave:2> class(f)
@@ -638,6 +647,7 @@ ans =
 @{
 polynomial = 0.333333 + 0.333333 * X + 0.333333 * X ^ 2
 @}
+@end group
 @end example
 
 We only need to define a method to actually process data with our
@@ -652,6 +662,7 @@ The "()" case allows us to filter data using the polynomial provided
 to the constructor.
 
 @example
+@group
 octave:2> f=FIRfilter(polynomial([1 1 1]/3));
 octave:3> x=ones(5,1);
 octave:4> y=f(x)
@@ -662,14 +673,17 @@ y =
    1.00000
    1.00000
    1.00000
+@end group
 @end example
 
 The "." case allows us to view the contents of the polynomial field.
 
 @example
+@group
 octave:1> f=FIRfilter(polynomial([1 1 1]/3));
 octave:2> f.polynomial
 ans = 0.333333 + 0.333333 * X + 0.333333 * X ^ 2
+@end group
 @end example
 
 In order to change the contents of the object, we need to define a
@@ -681,9 +695,11 @@ publicly writeable.
 So that
 
 @example
+@group
 octave:6> f=FIRfilter();
 octave:7> f.polynomial = polynomial([1 2 3]);
 f.polynomial = 1 + 2 * X + 3 * X ^ 2
+@end group
 @end example
 
 

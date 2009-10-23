@@ -1,3 +1,8 @@
+2009-10-23  Rik <octave@nomad.inbox5.com>
+
+	* various: Periodic grammar check of Octave documentation files to ensure
+	a standardized format.
+
 2009-10-20  Rik <octave@nomad.inbox5.com>
 
 	* interpreter/Makefile.in: Clean Makefile.in and remove a few

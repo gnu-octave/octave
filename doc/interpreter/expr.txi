@@ -621,11 +621,13 @@ For complex numbers, the following ordering is defined:
 @var{z1} < @var{z2}
 iff
 @example
+@group
   abs(@var{z1}) < abs(@var{z2}) 
   || (abs(@var{z1}) == abs(@var{z2}) && arg(@var{z1}) < arg(@var{z2}))
+@end group
 @end example
 This is consistent with the ordering used by @dfn{max}, @dfn{min} and @dfn{sort},
-but is not consistent with Matlab, which only compares the real parts.
+but is not consistent with @sc{matlab}, which only compares the real parts.
 
 String comparisons may also be performed with the @code{strcmp}
 function, not with the comparison operators listed above.

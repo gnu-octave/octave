@@ -36,7 +36,7 @@
 ## then the volume data is taken at those given points.
 ##
 ## The string input argument "noshare" is only for compatibility and
-## has no effect. If given the string input argument
+## has no effect.  If given the string input argument
 ## "verbose" then print messages to the command line interface about the
 ## current progress.
 ##
@@ -56,9 +56,11 @@
 ## For example
 ##
 ## @example
+## @group
 ## [x, y, z] = meshgrid (1:5, 1:5, 1:5);
 ## val = rand (5, 5, 5);
 ## isosurface (x, y, z, val, .5);
+## @end group
 ## @end example
 ##
 ## will directly draw a random isosurface geometry in a graphics window.

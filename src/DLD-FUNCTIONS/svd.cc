@@ -43,13 +43,11 @@ DEFUN_DLD (svd, args, nargout,
 @deftypefnx {Loadable Function} {[@var{u}, @var{s}, @var{v}] =} svd (@var{a})\n\
 @cindex singular value decomposition\n\
 Compute the singular value decomposition of @var{a}\n\
-@iftex\n\
 @tex\n\
 $$\n\
  A = U S V^H\n\
 $$\n\
 @end tex\n\
-@end iftex\n\
 @ifnottex\n\
 \n\
 @example\n\
@@ -59,11 +57,9 @@ A = U*S*V'\n\
 \n\
 The function @code{svd} normally returns the vector of singular values.\n\
 If asked for three return values, it computes\n\
-@iftex\n\
 @tex\n\
 $U$, $S$, and $V$.\n\
 @end tex\n\
-@end iftex\n\
 @ifnottex\n\
 U, S, and V.\n\
 @end ifnottex\n\

@@ -967,7 +967,7 @@ DEFUN_DLD (__fltk_maxtime__, args, ,"")
 DEFUN_DLD (fltk_mouse_wheel_zoom, args, ,
 "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} fltk_mouse_wheel_zoom ([@var{speed}])\n\
-Returns the current mouse wheel zoom factor in the fltk backend. If\n\
+Returns the current mouse wheel zoom factor in the fltk backend.  If\n\
 the @var{speed} argument is given, set the mouse zoom factor to this\n\
 value.\n\
 @end deftypefn")

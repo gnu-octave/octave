@@ -89,10 +89,11 @@ DEFUN_DLD (typecast, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} typecast (@var{x}, @var{class})\n\
 Returns a new array @var{y} resulting from interpreting the data of\n\
-@var{x} in memory as data of the numeric class @var{class}. Both the class\n\
+@var{x} in memory as data of the numeric class @var{class}.  Both the class\n\
 of @var{x} and @var{class} must be one of the built-in numeric classes:\n\
 \n\
 @example\n\
+@group\n\
   \"logical\"\n\
   \"char\"\n\
   \"int8\"\n\
@@ -107,12 +108,13 @@ of @var{x} and @var{class} must be one of the built-in numeric classes:\n\
   \"single\"\n\
   \"double complex\"\n\
   \"single complex\"\n\
+@end group\n\
 @end example\n\
 \n\
 the last two are reserved for @var{class}; they indicate that a complex-valued result\n\
-is requested. Complex arrays are stored in memory as consecutive pairs of real numbers.\n\
-The sizes of integer types are given by their bit counts. Both logical and char are typically\n\
-one byte wide; however, this is not guaranteed by C++. If your system is IEEE conformant,\n\
+is requested.  Complex arrays are stored in memory as consecutive pairs of real numbers.\n\
+The sizes of integer types are given by their bit counts.  Both logical and char are typically\n\
+one byte wide; however, this is not guaranteed by C++.  If your system is IEEE conformant,\n\
 single and double should be 4 bytes and 8 bytes wide, respectively.\n\
 \"logical\" is not allowed for @var{class}.\n\
 If the input is a row vector, the return value is a row vector, otherwise it is a column vector.\n\
@@ -269,10 +271,11 @@ DEFUN_DLD (bitpack, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{y} =} bitpack (@var{x}, @var{class})\n\
 Returns a new array @var{y} resulting from interpreting a logical array @var{x}\n\
-as raw bit pattern for data of the numeric class @var{class}. @var{class} must be\n\
+as raw bit pattern for data of the numeric class @var{class}.  @var{class} must be\n\
 one of the built-in numeric classes:\n\
 \n\
 @example\n\
+@group\n\
   \"char\"\n\
   \"int8\"\n\
   \"int16\"\n\
@@ -284,10 +287,11 @@ one of the built-in numeric classes:\n\
   \"uint64\"\n\
   \"double\"\n\
   \"single\"\n\
+@end group\n\
 @end example\n\
 \n\
 The number of elements of @var{x} should be divisible by the bit length of @var{class}.\n\
-If it is not, excess bits are discarded. Bits come in increasing order of significance, i.e.\n\
+If it is not, excess bits are discarded.  Bits come in increasing order of significance, i.e.\n\
 @code{x(1)} is bit 0, @code{x(2)} is bit 1, etc.\n\
 The result is a row vector if @var{x} is a row vector, otherwise it is a column vector.\n\
 @seealso{bitunpack,typecast,bitget,bitset}\n\
@@ -378,6 +382,7 @@ Returns a logical array @var{y} corresponding to the raw bit pattern of @var{x}.
 @var{x} must belong to one of the built-in numeric classes:\n\
 \n\
 @example\n\
+@group\n\
   \"char\"\n\
   \"int8\"\n\
   \"int16\"\n\
@@ -389,6 +394,7 @@ Returns a logical array @var{y} corresponding to the raw bit pattern of @var{x}.
   \"uint64\"\n\
   \"double\"\n\
   \"single\"\n\
+@end group\n\
 @end example\n\
 \n\
 The result is a row vector if @var{x} is a row vector, otherwise it is a column vector.\n\

@@ -37,13 +37,11 @@ DEFUN_DLD (gammainc, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} gammainc (@var{x}, @var{a})\n\
 Compute the normalized incomplete gamma function,\n\
-@iftex\n\
 @tex\n\
 $$\n\
  \\gamma (x, a) = {\\displaystyle\\int_0^x e^{-t} t^{a-1} dt \\over \\Gamma (a)}\n\
 $$\n\
 @end tex\n\
-@end iftex\n\
 @ifnottex\n\
 \n\
 @smallexample\n\

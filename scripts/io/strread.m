@@ -22,8 +22,8 @@
 ## Read data from a string.
 ##
 ## The string @var{str} is split into words that are repeatedly matched to the
-## specifiers in @var{format}. The first word is matched to the first specifier,
-## the second to the second specifier and so forth. If there are more words than
+## specifiers in @var{format}.  The first word is matched to the first specifier,
+## the second to the second specifier and so forth.  If there are more words than
 ## specifiers, the process is repeated until all words have been processed.
 ##
 ## The string @var{format} describes how the words in @var{str} should be parsed.

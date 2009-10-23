@@ -509,13 +509,11 @@ DEFUN (erf, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} erf (@var{z})\n\
 Computes the error function,\n\
-@iftex\n\
 @tex\n\
 $$\n\
  {\\rm erf} (z) = {2 \\over \\sqrt{\\pi}}\\int_0^z e^{-t^2} dt\n\
 $$\n\
 @end tex\n\
-@end iftex\n\
 @ifnottex\n\
 \n\
 @example\n\
@@ -574,11 +572,9 @@ DEFUN (erfc, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} erfc (@var{z})\n\
 Computes the complementary error function,\n\
-@iftex\n\
 @tex\n\
 $1 - {\\rm erf} (z)$.\n\
 @end tex\n\
-@end iftex\n\
 @ifnottex\n\
 @code{1 - erf (@var{z})}.\n\
 @end ifnottex\n\
@@ -775,13 +771,11 @@ DEFUN (gamma, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} gamma (@var{z})\n\
 Computes the Gamma function,\n\
-@iftex\n\
 @tex\n\
 $$\n\
  \\Gamma (z) = \\int_0^\\infty t^{z-1} e^{-t} dt.\n\
 $$\n\
 @end tex\n\
-@end iftex\n\
 @ifnottex\n\
 \n\
 @example\n\

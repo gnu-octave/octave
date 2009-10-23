@@ -35,7 +35,6 @@ DEFUN_DLD (givens, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{g} =} givens (@var{x}, @var{y})\n\
 @deftypefnx {Loadable Function} {[@var{c}, @var{s}] =} givens (@var{x}, @var{y})\n\
-@iftex\n\
 @tex\n\
 Return a $2\\times 2$ orthogonal matrix\n\
 $$\n\
@@ -47,7 +46,6 @@ $$\n\
 $$\n\
 with $x$ and $y$ scalars.\n\
 @end tex\n\
-@end iftex\n\
 @ifnottex\n\
 Return a 2 by 2 orthogonal matrix\n\
 @code{@var{g} = [@var{c} @var{s}; -@var{s}' @var{c}]} such that\n\

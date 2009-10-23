@@ -63,11 +63,9 @@ DEFUN_DLD (chol, args, nargout,
 @cindex Cholesky factorization\n\
 Compute the Cholesky factor, @var{r}, of the symmetric positive definite\n\
 matrix @var{a}, where\n\
-@iftex\n\
 @tex\n\
 $ R^T R = A $.\n\
 @end tex\n\
-@end iftex\n\
 @ifnottex\n\
 \n\
 @example\n\
@@ -84,11 +82,9 @@ gives the factorization, and @var{p} will have a positive value otherwise.\n\
 If called with 3 outputs then a sparsity preserving row/column permutation\n\
 is applied to @var{a} prior to the factorization.  That is @var{r}\n\
 is the factorization of @code{@var{a}(@var{q},@var{q})} such that\n\
-@iftex\n\
 @tex\n\
 $ R^T R = Q^T A Q$.\n\
 @end tex\n\
-@end iftex\n\
 @ifnottex\n\
 \n\
 @example\n\
@@ -99,11 +95,9 @@ $ R^T R = Q^T A Q$.\n\
 The sparsity preserving permutation is generally returned as a matrix.\n\
 However, given the flag 'vector', @var{q} will be returned as a vector\n\
 such that\n\
-@iftex\n\
 @tex\n\
 $ R^T R = A (Q, Q)$.\n\
 @end tex\n\
-@end iftex\n\
 @ifnottex\n\
 \n\
 @example\n\
@@ -113,11 +107,9 @@ $ R^T R = A (Q, Q)$.\n\
 \n\
 Called with either a sparse or full matrix and using the 'lower' flag,\n\
 @code{chol} returns the lower triangular factorization such that\n\
-@iftex\n\
 @tex\n\
 $ L L^T = A $.\n\
 @end tex\n\
-@end iftex\n\
 @ifnottex\n\
 \n\
 @example\n\

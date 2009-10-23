@@ -240,7 +240,7 @@ is problem dependent and should be in the range @var{k} to @var{n}.  The\n\
 default value is @code{2 * @var{k}}.\n\
 \n\
 @item v0\n\
-The starting vector for the computation.  The default is to have @sc{Arpack}\n\
+The starting vector for the computation.  The default is to have @sc{arpack}\n\
 randomly generate a starting vector.\n\
 \n\
 @item disp\n\

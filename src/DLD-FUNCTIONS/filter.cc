@@ -286,14 +286,12 @@ DEFUN_DLD (filter, args, nargout,
 @deftypefnx {Loadable Function} {[@var{y}, @var{sf}] =} filter (@var{b}, @var{a}, @var{x}, @var{si}, @var{dim})\n\
 Return the solution to the following linear, time-invariant difference\n\
 equation:\n\
-@iftex\n\
 @tex\n\
 $$\n\
 \\sum_{k=0}^N a_{k+1} y_{n-k} = \\sum_{k=0}^M b_{k+1} x_{n-k}, \\qquad\n\
  1 \\le n \\le P\n\
 $$\n\
 @end tex\n\
-@end iftex\n\
 @ifnottex\n\
 \n\
 @c Set example in small font to prevent overfull line\n\
@@ -309,21 +307,17 @@ where\n\
 @ifnottex\n\
  N=length(a)-1 and M=length(b)-1.\n\
 @end ifnottex\n\
-@iftex\n\
 @tex\n\
  $a \\in \\Re^{N-1}$, $b \\in \\Re^{M-1}$, and $x \\in \\Re^P$.\n\
 @end tex\n\
-@end iftex\n\
 over the first non-singleton dimension of @var{x} or over @var{dim} if\n\
 supplied.  An equivalent form of this equation is:\n\
-@iftex\n\
 @tex\n\
 $$\n\
 y_n = -\\sum_{k=1}^N c_{k+1} y_{n-k} + \\sum_{k=0}^M d_{k+1} x_{n-k}, \\qquad\n\
  1 \\le n \\le P\n\
 $$\n\
 @end tex\n\
-@end iftex\n\
 @ifnottex\n\
 \n\
 @c Set example in small font to prevent overfull line\n\
@@ -339,11 +333,9 @@ where\n\
 @ifnottex\n\
  c = a/a(1) and d = b/a(1).\n\
 @end ifnottex\n\
-@iftex\n\
 @tex\n\
 $c = a/a_1$ and $d = b/a_1$.\n\
 @end tex\n\
-@end iftex\n\
 \n\
 If the fourth argument @var{si} is provided, it is taken as the\n\
 initial state of the system and the final state is returned as\n\
@@ -355,14 +347,12 @@ zeros.\n\
 In terms of the z-transform, y is the result of passing the discrete-\n\
 time signal x through a system characterized by the following rational\n\
 system function:\n\
-@iftex\n\
 @tex\n\
 $$\n\
 H(z) = {\\displaystyle\\sum_{k=0}^M d_{k+1} z^{-k}\n\
         \\over 1 + \\displaystyle\\sum_{k+1}^N c_{k+1} z^{-k}}\n\
 $$\n\
 @end tex\n\
-@end iftex\n\
 @ifnottex\n\
 \n\
 @example\n\

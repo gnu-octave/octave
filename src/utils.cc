@@ -1259,7 +1259,7 @@ octave_sleep (double seconds)
 DEFUN (isindex, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} isindex (@var{ind}, @var{n})\n\
-Returns true if @var{ind} is a valid index. Valid indices can be\n\
+Returns true if @var{ind} is a valid index.  Valid indices can be\n\
 either positive integers (though possibly real data), or logical arrays.\n\
 If present, @var{n} specifies the extent of the dimension to be indexed.\n\
 Note that, if possible, the internal conversion result is cached so that\n\

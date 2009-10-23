@@ -47,131 +47,103 @@ The Schur decomposition is used to compute eigenvalues of a\n\
 square matrix, and has applications in the solution of algebraic\n\
 Riccati equations in control (see @code{are} and @code{dare}).\n\
 @code{schur} always returns\n\
-@iftex\n\
 @tex\n\
 $S = U^T A U$\n\
 @end tex\n\
-@end iftex\n\
 @ifnottex\n\
 @code{s = u' * a * u}\n\
 @end ifnottex\n\
 where\n\
-@iftex\n\
 @tex\n\
 $U$\n\
 @end tex\n\
-@end iftex\n\
 @ifnottex\n\
 @code{u}\n\
 @end ifnottex\n\
  is a unitary matrix\n\
-@iftex\n\
 @tex\n\
 ($U^T U$ is identity)\n\
 @end tex\n\
-@end iftex\n\
 @ifnottex\n\
 (@code{u'* u} is identity)\n\
 @end ifnottex\n\
 and\n\
-@iftex\n\
 @tex\n\
 $S$\n\
 @end tex\n\
-@end iftex\n\
 @ifnottex\n\
 @code{s}\n\
 @end ifnottex\n\
 is upper triangular.  The eigenvalues of\n\
-@iftex\n\
 @tex\n\
 $A$ (and $S$)\n\
 @end tex\n\
-@end iftex\n\
 @ifnottex\n\
 @code{a} (and @code{s})\n\
 @end ifnottex\n\
 are the diagonal elements of\n\
-@iftex\n\
 @tex\n\
 $S$.\n\
 @end tex\n\
-@end iftex\n\
 @ifnottex\n\
 @code{s}.\n\
 @end ifnottex\n\
 If the matrix\n\
-@iftex\n\
 @tex\n\
 $A$\n\
 @end tex\n\
-@end iftex\n\
 @ifnottex\n\
 @code{a}\n\
 @end ifnottex\n\
 is real, then the real Schur decomposition is computed, in which the\n\
 matrix\n\
-@iftex\n\
 @tex\n\
 $U$\n\
 @end tex\n\
-@end iftex\n\
 @ifnottex\n\
 @code{u}\n\
 @end ifnottex\n\
 is orthogonal and\n\
-@iftex\n\
 @tex\n\
 $S$\n\
 @end tex\n\
-@end iftex\n\
 @ifnottex\n\
 @code{s}\n\
 @end ifnottex\n\
 is block upper triangular\n\
 with blocks of size at most\n\
-@iftex\n\
 @tex\n\
 $2\\times 2$\n\
 @end tex\n\
-@end iftex\n\
 @ifnottex\n\
 @code{2 x 2}\n\
 @end ifnottex\n\
 along the diagonal.  The diagonal elements of\n\
-@iftex\n\
 @tex\n\
 $S$\n\
 @end tex\n\
-@end iftex\n\
 @ifnottex\n\
 @code{s}\n\
 @end ifnottex\n\
 (or the eigenvalues of the\n\
-@iftex\n\
 @tex\n\
 $2\\times 2$\n\
 @end tex\n\
-@end iftex\n\
 @ifnottex\n\
 @code{2 x 2}\n\
 @end ifnottex\n\
 blocks, when\n\
 appropriate) are the eigenvalues of\n\
-@iftex\n\
 @tex\n\
 $A$\n\
 @end tex\n\
-@end iftex\n\
 @ifnottex\n\
 @code{a}\n\
 @end ifnottex\n\
 and\n\
-@iftex\n\
 @tex\n\
 $S$.\n\
 @end tex\n\
-@end iftex\n\
 @ifnottex\n\
 @code{s}.\n\
 @end ifnottex\n\
@@ -180,67 +152,53 @@ The eigenvalues are optionally ordered along the diagonal according to\n\
 the value of @code{opt}.  @code{opt = \"a\"} indicates that all\n\
 eigenvalues with negative real parts should be moved to the leading\n\
 block of\n\
-@iftex\n\
 @tex\n\
 $S$\n\
 @end tex\n\
-@end iftex\n\
 @ifnottex\n\
 @code{s}\n\
 @end ifnottex\n\
 (used in @code{are}), @code{opt = \"d\"} indicates that all eigenvalues\n\
 with magnitude less than one should be moved to the leading block of\n\
-@iftex\n\
 @tex\n\
 $S$\n\
 @end tex\n\
-@end iftex\n\
 @ifnottex\n\
 @code{s}\n\
 @end ifnottex\n\
 (used in @code{dare}), and @code{opt = \"u\"}, the default, indicates that\n\
 no ordering of eigenvalues should occur.  The leading\n\
-@iftex\n\
 @tex\n\
 $k$\n\
 @end tex\n\
-@end iftex\n\
 @ifnottex\n\
 @code{k}\n\
 @end ifnottex\n\
 columns of\n\
-@iftex\n\
 @tex\n\
 $U$\n\
 @end tex\n\
-@end iftex\n\
 @ifnottex\n\
 @code{u}\n\
 @end ifnottex\n\
 always span the\n\
-@iftex\n\
 @tex\n\
 $A$-invariant\n\
 @end tex\n\
-@end iftex\n\
 @ifnottex\n\
 @code{a}-invariant\n\
 @end ifnottex\n\
 subspace corresponding to the\n\
-@iftex\n\
 @tex\n\
 $k$\n\
 @end tex\n\
-@end iftex\n\
 @ifnottex\n\
 @code{k}\n\
 @end ifnottex\n\
 leading eigenvalues of\n\
-@iftex\n\
 @tex\n\
 $S$.\n\
 @end tex\n\
-@end iftex\n\
 @ifnottex\n\
 @code{s}.\n\
 @end ifnottex\n\

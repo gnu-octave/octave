@@ -37,13 +37,11 @@ DEFUN_DLD (syl, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{x} =} syl (@var{a}, @var{b}, @var{c})\n\
 Solve the Sylvester equation\n\
-@iftex\n\
 @tex\n\
 $$\n\
  A X + X B + C = 0\n\
 $$\n\
 @end tex\n\
-@end iftex\n\
 @ifnottex\n\
 \n\
 @example\n\

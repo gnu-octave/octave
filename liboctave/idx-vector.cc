@@ -95,14 +95,14 @@ DEFINE_OCTAVE_ALLOCATOR(idx_vector::idx_range_rep);
 
 idx_vector::idx_range_rep::idx_range_rep (octave_idx_type _start, octave_idx_type _limit,
                                           octave_idx_type _step)
- : start(_start), len (_step ? (_limit - _start) / _step : -1), step (_step)
+ : start(_start), len (_step ? std::max((_limit - _start) / _step, 0) : -1), step (_step)
 {
   if (len < 0)
     {
       gripe_invalid_range ();
       err = true;
     }
-  else if (start < 0)
+  else if (start < 0 || (step < 0 && start + (len-1)*step < 0))
     {
       gripe_invalid_index ();
       err = true;
@@ -557,6 +557,8 @@ idx_vector::increment (void) const
         if (length (0) > 1)
           retval = elem (1) - elem (0);
       }
+    default:
+      break;
     }
   return retval;
 }

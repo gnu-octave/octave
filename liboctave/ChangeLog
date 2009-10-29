@@ -1,3 +1,7 @@
+2009-10-28  John W. Eaton  <jwe@octave.org>
+
+	* PermMatrix.cc: Don't include error.h.
+
 2009-10-27  David Bateman  <dbateman@free.fr>
 
 	* SparsedbleLU.cc (SparseLU::SparseLU (const SparseMatrix&,

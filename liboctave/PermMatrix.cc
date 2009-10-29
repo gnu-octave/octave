@@ -26,7 +26,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "PermMatrix.h"
 #include "idx-vector.h"
-#include "error.h"
 #include "Array-util.h"
 #include "oct-locbuf.h"
 

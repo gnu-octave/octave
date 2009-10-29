@@ -1579,10 +1579,20 @@ if $SHARED_LIBS || $ENABLE_DYNAMIC_LINKING; then
   ## Check for dyld first since OS X can have a non-standard libdl	
 
   save_LIBS="$LIBS"
-  AC_CHECK_HEADER(mach-o/dyld.h)
-  if test "$ac_cv_header_mach_o_dyld_h" = yes; then
-    dyld_api=true
-  else 
+  use_mach_dyld=false
+  AC_ARG_ENABLE(mach-dyld,
+    [AS_HELP_STRING([--enable-mach-dyld], [enable older Mach-O dyld interface])],
+      [if test "x$enableval" = xno; then
+         use_mach_dyld=false;
+       else
+         use_mach_dyld=true;
+       fi], [use_mach_dyld=true])
+  if $use_mach_dyld; then
+    AC_CHECK_HEADER(mach-o/dyld.h)
+    if test "$ac_cv_header_mach_o_dyld_h" = yes; then
+      dyld_api=true
+    fi
+  elif test "$dyld_api" = false; then
     AC_CHECK_LIB(dld, shl_load, [DL_LIBS=-ldld; LIBS="$LIBS $DL_LIBS"])
     AC_CHECK_FUNCS(shl_load shl_findsym)
     if test "$ac_cv_func_shl_load" = yes \

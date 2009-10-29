@@ -1,3 +1,7 @@
+2009-10-29  Thomas Treichl  <Thomas.Treichl@gmx.net>
+
+	* configure.in: Add support for dlopen on Mac systems.
+
 2009-10-20  Jaroslav Hajek  <highegg@gmail.com>
 
 	* NEWS: Update.

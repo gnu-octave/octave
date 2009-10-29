@@ -1586,7 +1586,7 @@ if $SHARED_LIBS || $ENABLE_DYNAMIC_LINKING; then
          use_mach_dyld=false;
        else
          use_mach_dyld=true;
-       fi], [use_mach_dyld=true])
+       fi], [])
   if $use_mach_dyld; then
     AC_CHECK_HEADER(mach-o/dyld.h)
     if test "$ac_cv_header_mach_o_dyld_h" = yes; then

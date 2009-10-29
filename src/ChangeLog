@@ -1,3 +1,8 @@
+2009-10-29  John W. Eaton  <jwe@octave.org>
+
+	* parse.y (finish_function): Return function object unless parsing
+	function file.
+
 2009-10-23  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/tril.cc: New source.

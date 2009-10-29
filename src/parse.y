@@ -2958,13 +2958,18 @@ finish_function (tree_parameter_list *ret_list,
 					     primary_fcn_scope);
 	}
 
-      if (! primary_fcn_ptr)
+      if (! reading_fcn_file)
 	{
-	  // FIXME -- there should be a better way to indicate that we
-	  // should create a tree_function_def object other than
-	  // looking at primary_fcn_ptr...
+	  // We are either reading a script file or defining a function
+	  // at the command line, so this definition creates a
+	  // tree_function object that is placed in the parse tree.
+	  // Otherwise, it is just inserted in the symbol table,
+	  // either as a subfunction (see above), or as the primary
+	  // function for the file, via primary_fcn_ptr (see also
+	  // load_fcn_from_file,, parse_fcn_file, and
+	  // symbol_table::fcn_info::fcn_info_rep::find_user_function).
 
-	  retval = new tree_function_def (fcn);
+          retval = new tree_function_def (fcn);
 	}
 
       // Unmark any symbols that may have been tagged as local

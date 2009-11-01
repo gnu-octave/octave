@@ -1,5 +1,10 @@
 2009-11-01  John W. Eaton  <jwe@octave.org>
 
+	* data.cc (get_sort_mode_option): New function.
+	(Fissorted): Handle ascending or descending option.
+
+2009-11-01  John W. Eaton  <jwe@octave.org>
+
 	* load-path.cc (load_path::dir_info::update): Always initialize
 	relative directories that are not yet included in abs_dir_cache.
 

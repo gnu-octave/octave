@@ -6108,13 +6108,37 @@ Undocumented internal function.\n\
   return retval;
 }
 
+static sortmode
+get_sort_mode_option (const octave_value& arg, const char *argn)
+{
+  sortmode smode;
+
+  std::string mode = arg.string_value ();
+
+  if (error_state)
+    error ("issorted: expecting %s argument to be a character string", argn);
+  else if (mode == "ascending")
+    smode = ASCENDING;
+  else if (mode == "descending")
+    smode = DESCENDING;
+  else if (mode == "either")
+    smode = UNSORTED;
+  else
+    error ("issorted: expecting MODE to be \"ascending\", \"descending\", or \"either\"");
+
+  return smode;
+}
+
 DEFUN (issorted, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} issorted (@var{a}, @var{rows})\n\
-Returns true if the array is sorted, ascending or descending.\n\
-NaNs are treated as by @code{sort}.  If @var{rows} is supplied and\n\
-has the value \"rows\", checks whether the array is sorted by rows\n\
-as if output by @code{sortrows} (with no options).\n\
+@deftypefn {Built-in Function} {} issorted (@var{a}, @var{mode})\n\
+@deftypefnx {Built-in Function} {} issorted (@var{a}, @code{\"rows\"}, @var{mode})\n\
+Returns true if the array is sorted according to @var{mode}, which\n\
+may be either \"ascending\", \"descending\", or \"either\".  By default,\n\
+ @var{mode} is \"ascending\".  NaNs are treated as by @code{sort}.\n\
+If @var{rows} is supplied and has the value \"rows\", checks whether\n\
+the array is sorted by rows as if output by @code{sortrows} (with no\n\
+options).\n\
 \n\
 This function does not yet support sparse matrices.\n\
 @seealso{sortrows, sort}\n\
@@ -6124,36 +6148,94 @@ This function does not yet support sparse matrices.\n\
 
   int nargin = args.length ();
 
-  if (nargin == 1)
+  if (nargin < 1 || nargin > 3)
     {
-      octave_value arg = args(0);
+      print_usage ();
+      return retval;
+    }
+
+  bool by_rows = false;
+
+  sortmode smode = ASCENDING;
+
+  if (nargin > 1)
+    {
+      octave_value mode_arg;
+
+      if (nargin == 3)
+	smode = get_sort_mode_option (args(2), "third");
+
+      std::string tmp = args(1).string_value ();
+
+      if (! error_state)
+	{
+	  if (tmp == "rows")
+	    by_rows = true;
+	  else
+	    smode = get_sort_mode_option (args(1), "second");
+	}
+      else
+	error ("expecting second argument to be character string");
+
+      if (error_state)
+	return retval;
+    }
+    
+  octave_value arg = args(0);
+
+  if (by_rows)
+    {
+      if (arg.is_sparse_type ())
+	error ("issorted: sparse matrices not yet supported");
+      if (arg.ndims () == 2)
+	retval = arg.is_sorted_rows (smode) != UNSORTED;
+      else
+	error ("issorted: needs a 2-dimensional object");
+    }
+  else
+    {
       if (arg.dims ().is_vector ())
-        retval = args(0).is_sorted () != UNSORTED;
+	retval = args(0).is_sorted (smode) != UNSORTED;
       else
         error ("issorted: needs a vector");
     }
-  else if (nargin == 2)
-    {
-      if (args(1).is_string () && args(1).string_value () == "rows")
-        {
-          octave_value arg = args(0);
-          sortmode smode = ASCENDING;
-
-          if (arg.is_sparse_type ())
-            error ("issorted: sparse matrices not yet supported");
-          if (arg.ndims () == 2)
-            retval = arg.is_sorted_rows (smode) != UNSORTED;
-          else
-            error ("issorted: needs a 2-dimensional object");
-        }
-      else
-        error ("issorted: second argument must be \"rows\"");
-    }
-  else
-    print_usage ();
 
   return retval;
 }
+
+/*
+%!shared sm, um, sv, uv
+%! sm = [1, 2; 3, 4];
+%! um = [3, 1; 2, 4];
+%! sv = [1, 2, 3, 4];
+%! uv = [2, 1, 4, 3];
+%!assert(issorted (sm, "rows"));
+%!assert(!issorted (um, "rows"));
+%!assert(issorted (sv));
+%!assert(!issorted (uv));
+%!assert(issorted (sv'));
+%!assert(!issorted (uv'));
+%!assert(issorted (sm, "rows", "ascending"));
+%!assert(!issorted (um, "rows", "ascending"));
+%!assert(issorted (sv, "ascending"));
+%!assert(!issorted (uv, "ascending"));
+%!assert(issorted (sv', "ascending"));
+%!assert(!issorted (uv', "ascending"));
+%!assert(!issorted (sm, "rows", "descending"));
+%!assert(issorted (flipud (sm), "rows", "descending"));
+%!assert(!issorted (sv, "descending"));
+%!assert(issorted (fliplr (sv), "descending"));
+%!assert(!issorted (sv', "descending"));
+%!assert(issorted (fliplr (sv)', "descending"));
+%!assert(!issorted (um, "rows", "either"));
+%!assert(!issorted (uv, "either"));
+%!assert(issorted (sm, "rows", "either"));
+%!assert(issorted (flipud (sm), "rows", "either"));
+%!assert(issorted (sv, "either"));
+%!assert(issorted (fliplr (sv), "either"));
+%!assert(issorted (sv', "either"));
+%!assert(issorted (fliplr (sv)', "either"));
+*/
 
 DEFUN (nth_element, args, ,
   "-*- texinfo -*-\n\

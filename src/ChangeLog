@@ -1,3 +1,8 @@
+2009-11-01  John W. Eaton  <jwe@octave.org>
+
+	* load-path.cc (load_path::dir_info::update): Always initialize
+	relative directories that are not yet included in abs_dir_cache.
+
 2009-10-29  John W. Eaton  <jwe@octave.org>
 
 	* parse.y (finish_function): Return function object unless parsing

@@ -80,8 +80,12 @@ load_path::dir_info::update (void)
 		    initialize ();
 		  else
 		    *this = di;
+		}
+	      else
+		{
+		  // We haven't seen this directory before.
 
-		  return;
+		  initialize ();
 		}
 	    }
 	  catch (octave_execution_exception)
@@ -92,8 +96,7 @@ load_path::dir_info::update (void)
 	      error_state = 0;
 	    }
 	}
-
-      if (fs.mtime () + fs.time_resolution () > dir_time_last_checked)
+      else if (fs.mtime () + fs.time_resolution () > dir_time_last_checked)
 	initialize ();
     }
   else

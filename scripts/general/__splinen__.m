@@ -37,7 +37,7 @@ function yi = __splinen__ (x, y, xi, extrapval, f)
   endif
   yi = y;
   for i = length(x):-1:1
-    yi = permute (spline (x{i}, yi, xi{i}), [length(x),1:length(x)-1]);
+    yi = permute (spline (x{i}, yi, xi{i}(:)), [length(x),1:length(x)-1]);
   endfor
 
   [xi{:}] = ndgrid (cellfun (@(x) x(:), xi, "UniformOutput", false){:});

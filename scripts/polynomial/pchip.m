@@ -115,7 +115,7 @@ function ret = pchip (x, y, xi)
   c2 = -c3 - del1;
   c3 = c3 / h;
 
-  coeffs = [c3.'(:), c2.'(:), d1.'(:), f1.'(:)];
+  coeffs = cat (3, c3, c2, d1, f1);
   pp = mkpp (x, coeffs, szy(1:end-1));
 
   if (nargin == 2)

@@ -186,7 +186,7 @@ function ret = spline (x, y, xi)
   c = c(1:n-1,:);
   b = b(1:n-1,:);
   a = a(1:n-1,:);
-  coeffs = [d(:), c(:), b(:), a(:)];
+  coeffs = cat (3, d.', c.', b.', a.');
   ret = mkpp (x, coeffs, szy(1:end-1));
 
   if (nargin == 3)

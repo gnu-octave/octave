@@ -27,14 +27,10 @@
 ## lowest.  There must be one row for each interval in @var{x}, so 
 ## @code{rows (@var{p}) == length (@var{x}) - 1}.  
 ##
-## You can concatenate multiple polynomials of the same order over the 
-## same set of intervals using @code{@var{p} = [ @var{p1}; @var{p2}; 
-## @dots{}; @var{pd} ]}.  In this case, @code{rows (@var{p}) == @var{d} 
-## * (length (@var{x}) - 1)}.
-##
-## @var{d} specifies the shape of the matrix @var{p} for all except the
-## last dimension.  If @var{d} is not specified it will be computed as
-## @code{round (rows (@var{p}) / (length (@var{x}) - 1))} instead.
+## @var{p} may also be a multi-dimensional array, specifying a vector-valued
+## or array-valued polynomial. The shape is determined by @var{d}. If @var{d} is
+## not given, the default is @code{size (p)(1:end-2)}. If @var{d} is given, the
+## leading dimensions of @var{p} are reshaped to conform to @var{d}.
 ##
 ## @seealso{unmkpp, ppval, spline}
 ## @end deftypefn
@@ -44,14 +40,24 @@ function pp = mkpp (x, P, d)
     print_usage ();
   endif
   pp.x = x(:);
-  pp.P = P;
-  pp.n = length (x) - 1;
-  pp.k = columns (P);
+  n = length (x) - 1;
+  if (n < 1)
+    error ("mkpp: at least one interval is needed");
+  endif
+  nd = ndims (P);
+  k = size (P, nd);
   if (nargin < 3)
-    d = round (rows (P) / pp.n); 
+    if (nd == 2)
+      d = 1;
+    else
+      d = prod (size (P)(1:nd-1));
+    endif
   endif
   pp.d = d;
-  if (pp.n * prod (d) != rows (P))
+  pp.P = P = reshape (P, prod (d), [], k);
+  pp.orient = 0;
+
+  if (size (P, 2) != n)
     error ("mkpp: num intervals in x doesn't match num polynomials in P");
   endif
 endfunction

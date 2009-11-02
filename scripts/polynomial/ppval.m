@@ -19,9 +19,11 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{yi} =} ppval (@var{pp}, @var{xi})
 ## Evaluate piece-wise polynomial @var{pp} at the points @var{xi}.  
-## If @code{@var{pp}.d} is a scalar greater than 1, or an array,
-## then the returned value @var{yi} will be an array that is 
-## @code{d1, d1, @dots{}, dk, length (@var{xi})]}.
+## If @var{pp} is scalar-valued, the result is an array of the same shape as @var{xi}.
+## Otherwise, the size of the result is @code{[pp.d, length(@var{xi})]} if
+## @var{xi} is a vector, or @code{[pp.d, size(@var{xi})]} if it is a multi-dimensional
+## array. If pp.orient is 1, the dimensions are permuted as in interp1, to
+## @code{[pp.d, length(@var{xi})]} and @code{[pp.d, size(@var{xi})]} respectively.
 ## @seealso{mkpp, unmkpp, spline}
 ## @end deftypefn 
 
@@ -33,23 +35,45 @@ function yi = ppval (pp, xi)
   if (! isstruct (pp))
     error ("ppval: expects a pp structure");
   endif
-  if (isempty (xi))
-    yi = [];
-  else
-    transposed = (columns (xi) == 1);
-    xi = xi(:);
-    xn = length (xi);
-    idx = lookup (pp.x, xi, "lr");
-    dx = (xi - pp.x(idx)).';
-    dx = reshape (dx(ones(1,prod(pp.d)),:),[pp.d,xn]);
-    c = reshape (pp.P(:,1), pp.n, prod (pp.d));
-    yi = reshape (c(idx,:).', [pp.d, xn]);
-    for i  = 2 : pp.k;
-      c = reshape (pp.P(:,i), pp.n, prod (pp.d));
-      yi = yi .* dx + reshape (c(idx,:).', [pp.d, xn]);
-    endfor
-    if (transposed && isscalar (pp.d) && pp.d == 1)
-      yi = yi.';
-    endif
+
+  ## Extract info.
+  x = pp.x;
+  P = pp.P;
+  d = pp.d;
+  k = size (P, 3);
+  nd = size (P, 1);
+
+  ## Determine resulting shape.
+  if (d == 1) # scalar case
+    yisz = size (xi);
+  elseif (isvector (xi)) # this is special
+    yisz = [d, length(xi)];
+  else # general
+    yisz = [d, size(xi)];
   endif
+
+  ## Determine intervals.
+  xi = xi(:);
+  xn = numel (xi);
+
+  idx = lookup (x, xi, "lr");
+
+  ## Offsets.
+  dx = (xi - x(idx)).';
+  dx = dx(ones (1, nd), :); # spread (do nothing in 1D)
+
+  ## Use Horner scheme.
+  yi = P(:,idx,1);
+  for i = 2:k;
+    yi .*= dx;
+    yi += P(:,idx,i);
+  endfor
+
+  ## Adjust shape.
+  yi = reshape (yi, yisz);
+  if (d != 1 && pp.orient == 1)
+    ## Switch dimensions to match interp1 order.
+    yi = shiftdim (yi, length (d));
+  endif
+
 endfunction

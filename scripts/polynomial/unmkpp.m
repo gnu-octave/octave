@@ -30,10 +30,7 @@
 ## (@var{i}, :)} contains the coefficients for the polynomial over
 ## interval @var{i} ordered from highest to lowest.  If @code{@var{d} >
 ## 1}, @code{@var{p} (@var{r}, @var{i}, :)} contains the coefficients for 
-## the r-th polynomial defined on interval @var{i}.  However, this is 
-## stored as a 2-D array such that @code{@var{c} = reshape (@var{p} (:,
-## @var{j}), @var{n}, @var{d})} gives @code{@var{c} (@var{i},  @var{r})}
-## is the j-th coefficient of the r-th polynomial over the i-th interval.
+## the r-th polynomial defined on interval @var{i}.
 ## @item @var{n}
 ## Number of polynomial pieces.
 ## @item @var{k}
@@ -54,7 +51,10 @@ function [x, P, n, k, d] = unmkpp (pp)
   endif
   x = pp.x;
   P = pp.P;
-  n = pp.n;
-  k = pp.k;
+  n = size (P, 2);
+  k = size (P, 3);
   d = pp.d;
+  if (d == 1)
+    P = reshape (P, n, k);
+  endif
 endfunction

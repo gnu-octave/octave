@@ -1249,7 +1249,7 @@ template <class T>
 inline void twosum_accum (T& s, T& e, 
                           const T& x)
 {
-  FLOAT_TRUNCATE T s1 = s + x, t = s1 - s, e1 = (s - (s1 - t)) + (x - t);
+  T s1 = s + x, t = s1 - s, e1 = (s - (s1 - t)) + (x - t);
   s = s1;
   e += e1;
 }

@@ -1,3 +1,7 @@
+2009-11-02  Jaroslav Hajek  <highegg@gmail.com>
+
+	* mx-inlines.cc (twosum_accum): Remove FLOAT_TRUNCATE.
+
 2009-10-28  John W. Eaton  <jwe@octave.org>
 
 	* PermMatrix.cc: Don't include error.h.

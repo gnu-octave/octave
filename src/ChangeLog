@@ -1,3 +1,9 @@
+2009-11-02  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-class.cc (octave_class::unique_parent_class): New method.
+	(octave_class::subsasgn): Use it here.
+	* ov-class.h: Declare it.
+
 2009-11-01  John W. Eaton  <jwe@octave.org>
 
 	* data.cc (get_sort_mode_option): New function.

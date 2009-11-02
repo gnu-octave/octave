@@ -521,6 +521,9 @@ public:
   virtual octave_base_value *find_parent_class (const std::string&)
     { return 0; }
 
+  virtual octave_base_value *unique_parent_class (const std::string&)
+    { return 0; }
+
   virtual octave_function *function_value (bool silent = false);
 
   virtual const octave_function *function_value (bool silent = false) const;

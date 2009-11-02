@@ -141,6 +141,8 @@ public:
 
   octave_base_value *find_parent_class (const std::string&);
 
+  octave_base_value *unique_parent_class (const std::string&);
+
   void print (std::ostream& os, bool pr_as_read_syntax = false) const;
 
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;

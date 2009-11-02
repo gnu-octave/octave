@@ -794,7 +794,7 @@ octave_class::subsasgn (const std::string& type,
 
 	    std::string method_class = get_current_method_class ();
 
-	    octave_base_value *obvp = find_parent_class (method_class);
+	    octave_base_value *obvp = unique_parent_class (method_class);
 
 	    if (obvp)
 	      {
@@ -924,6 +924,44 @@ octave_class::find_parent_class (const std::string& parent_class_name)
 
 	  if (retval)
 	    break;
+	}
+    }
+
+  return retval;
+}
+
+octave_base_value *
+octave_class::unique_parent_class (const std::string& parent_class_name)
+{
+  octave_base_value* retval = 0;
+
+  if (parent_class_name == class_name ())
+    retval = this;
+  else
+    {
+      for (std::list<std::string>::iterator pit = parent_list.begin ();
+	   pit != parent_list.end ();
+	   pit++)
+	{
+	  Octave_map::iterator smap = map.seek (*pit);
+
+	  Cell& tmp = smap->second;
+
+	  octave_value& vtmp = tmp(0);
+
+	  octave_base_value *obvp = vtmp.internal_rep ();
+
+          // Use find_parent_class first to avoid uniquifying if not necessary.
+	  retval = obvp->find_parent_class (parent_class_name);
+
+	  if (retval)
+            {
+              vtmp.make_unique ();
+              obvp = vtmp.internal_rep ();
+              retval = obvp->unique_parent_class (parent_class_name);
+
+              break;
+            }
 	}
     }
 

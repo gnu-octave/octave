@@ -1,5 +1,9 @@
 2009-11-02  Jaroslav Hajek  <highegg@gmail.com>
 
+	* general/interp1.m:
+
+2009-11-02  Jaroslav Hajek  <highegg@gmail.com>
+
 	* polynomial/mkpp.m: Improve Matlab compatibility.
 	* polynomial/ppval.m: Ditto.
 	* polynomial/unmkpp: Update.

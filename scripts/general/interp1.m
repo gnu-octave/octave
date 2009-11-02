@@ -127,13 +127,15 @@ function yi = interp1 (x, y, varargin)
   ## reshape matrices for convenience
   x = x(:);
   nx = rows (x);
+  szx = size (xi);
   if (isvector (y))
     y = y(:);
+  elseif (isvector (xi))
+    szx = length (xi);    
   endif
   szy = size (y);
   y = y(:,:);
   [ny, nc] = size (y);
-  szx = size (xi);
   xi = xi(:);
 
   ## determine sizes
@@ -293,15 +295,7 @@ function yi = interp1 (x, y, varargin)
       yi(outliers, :) = extrap;
     endif
 
-    if (! isvector (y) && length (szx) == 2 && (szx(1) == 1 || szx(2) == 1))
-      if (szx(1) == 1)
-	yi = reshape (yi, [szx(2), szy(2:end)]);
-      else
-	yi = reshape (yi, [szx(1), szy(2:end)]);
-      endif
-    else
-      yi = reshape (yi, [szx, szy(2:end)]);
-    endif
+    yi = reshape (yi, [szx, szy(2:end)]);
   endif
 
 endfunction

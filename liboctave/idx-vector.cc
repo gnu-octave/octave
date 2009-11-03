@@ -420,43 +420,83 @@ bool idx_vector::maybe_reduce (octave_idx_type n, const idx_vector& j,
   switch (j.idx_class ())
     {
     case class_colon:
-      if (rep->is_colon_equiv (n))
+      switch (rep->idx_class ())
         {
+        case class_colon:
           // (:,:) reduces to (:)
-          *this = colon;
           reduced = true;
-        }
-      else if (rep->idx_class () == class_scalar)
-        {
-          // (i,:) reduces to a range.
-          idx_scalar_rep * r = dynamic_cast<idx_scalar_rep *> (rep);
-          octave_idx_type k = r->get_data ();
-          *this = new idx_range_rep (k, nj, n, DIRECT);
-          reduced = true;
+          break;
+        case class_scalar:
+          {
+            // (i,:) reduces to a range.
+            idx_scalar_rep * r = dynamic_cast<idx_scalar_rep *> (rep);
+            octave_idx_type k = r->get_data ();
+            *this = new idx_range_rep (k, nj, n, DIRECT);
+            reduced = true;
+            break;
+          }
+        case class_range:
+          {
+            // (i:k:end,:) reduces to a range if i <= k and k divides n.
+            idx_range_rep * r = dynamic_cast<idx_range_rep *> (rep);
+            octave_idx_type s = r->get_start (), l = r->length (n);
+            octave_idx_type t = r->get_step ();
+            if (l*t == n)
+              {
+                *this = new idx_range_rep (s, l * nj, t, DIRECT);
+                reduced = true;
+              }
+            break;
+          }
+        default:
+          break;
         }
       break;
     case class_range:
-      if (rep->is_colon_equiv (n))
+      switch (rep->idx_class ())
         {
-          // (:,i:j) reduces to a range (the step must be 1)
-          idx_range_rep * rj = dynamic_cast<idx_range_rep *> (j.rep);
-          if (rj->get_step () == 1)
-            {
-              octave_idx_type s = rj->get_start (), l = rj->length (nj);
-              *this = new idx_range_rep (s * n, l * n, 1, DIRECT);
-              reduced = true;
-            }
-        }
-      else if (rep->idx_class () == class_scalar)
-        {
-          // (k,i:d:j) reduces to a range.
-          idx_scalar_rep * r = dynamic_cast<idx_scalar_rep *> (rep);
-          idx_range_rep * rj = dynamic_cast<idx_range_rep *> (j.rep);
-          octave_idx_type k = r->get_data ();
-          octave_idx_type s = rj->get_start (), l = rj->length (nj);
-          octave_idx_type t = rj->get_step ();
-          *this = new idx_range_rep (n * s + k, l, n * t, DIRECT);
-          reduced = true;
+        case class_colon:
+          {
+            // (:,i:j) reduces to a range (the step must be 1)
+            idx_range_rep * rj = dynamic_cast<idx_range_rep *> (j.rep);
+            if (rj->get_step () == 1)
+              {
+                octave_idx_type sj = rj->get_start (), lj = rj->length (nj);
+                *this = new idx_range_rep (sj * n, lj * n, 1, DIRECT);
+                reduced = true;
+              }
+            break;
+          }
+        case class_scalar:
+          {
+            // (k,i:d:j) reduces to a range.
+            idx_scalar_rep * r = dynamic_cast<idx_scalar_rep *> (rep);
+            idx_range_rep * rj = dynamic_cast<idx_range_rep *> (j.rep);
+            octave_idx_type k = r->get_data ();
+            octave_idx_type sj = rj->get_start (), lj = rj->length (nj);
+            octave_idx_type tj = rj->get_step ();
+            *this = new idx_range_rep (n * sj + k, lj, n * tj, DIRECT);
+            reduced = true;
+            break;
+          }
+        case class_range:
+          {
+            // (i:k:end,p:q) reduces to a range if i <= k and k divides n.
+            idx_range_rep * r = dynamic_cast<idx_range_rep *> (rep);
+            octave_idx_type s = r->get_start (), l = r->length (n);
+            octave_idx_type t = r->get_step ();
+            idx_range_rep * rj = dynamic_cast<idx_range_rep *> (j.rep);
+            octave_idx_type sj = rj->get_start (), lj = rj->length (nj);
+            octave_idx_type tj = rj->get_step ();
+            if (l*t == n && tj == 1)
+              {
+                *this = new idx_range_rep (s + n * sj, l * lj, t, DIRECT);
+                reduced = true;
+              }
+            break;
+          }
+        default:
+          break;
         }
       break;
     case class_scalar:
@@ -470,8 +510,8 @@ bool idx_vector::maybe_reduce (octave_idx_type n, const idx_vector& j,
             octave_idx_type k = r->get_data () + n * rj->get_data ();
             *this = new idx_scalar_rep (k, DIRECT);
             reduced = true;
+            break;
           }
-          break;
         case class_range:
           {
             // (i:d:j,k) reduces to a range.
@@ -482,8 +522,8 @@ bool idx_vector::maybe_reduce (octave_idx_type n, const idx_vector& j,
             octave_idx_type k = rj->get_data ();
             *this = new idx_range_rep (n * k + s, l, t, DIRECT);
             reduced = true;
+            break;
           }
-          break;
         case class_colon:
           {
             // (:,k) reduces to a range.
@@ -491,8 +531,8 @@ bool idx_vector::maybe_reduce (octave_idx_type n, const idx_vector& j,
             octave_idx_type k = rj->get_data ();
             *this = new idx_range_rep (n * k, n, 1, DIRECT);
             reduced = true;
+            break;
           }
-          break;
         default:
           break;
         }

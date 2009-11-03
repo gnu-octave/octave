@@ -1,3 +1,9 @@
+2009-11-03  John W. Eaton  <jwe@octave.org>
+
+	* graphics.h.in (root_figure): Add commandwindowsize, diary,
+	diaryfile, echo, format, language, monitorpositions,
+	pointerlocation, pointerwindow, and recursionlimit properties.
+
 2009-11-03  David Grundberg  <davidg@cs.umu.se>
 
 	* graphics.h.in (root_figure): Add FormatSpacing property.

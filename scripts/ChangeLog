@@ -1,3 +1,8 @@
+2009-11-02  Stefan Hepp  <stefan@stefant.org>
+
+	* plot/gnuplot_drawnow.m (gnuplot_default_term): Don't set term to
+	x11 unless DISPLAY is set.
+
 2009-11-02  Jaroslav Hajek  <highegg@gmail.com>
 
 	* general/interp1.m: Simplify.

@@ -328,8 +328,10 @@ function term = gnuplot_default_term ()
       term = "aqua";
     elseif (! isunix ())
       term = "windows";
-    else
+    elseif (! isempty (getenv ("DISPLAY")))
       term = "x11";
+    else
+      term = "unknown";
     endif
   endif
 endfunction

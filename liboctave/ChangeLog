@@ -1,5 +1,20 @@
 2009-11-03  Jaroslav Hajek  <highegg@gmail.com>
 
+	* oct-mem.h: New source.
+	* Makefile.in: Include it.
+	* Array.h (Array<T>::ArrayRep::ArrayRep (...)): Use octave_new,
+	octave_ucopy and octave_fill.
+	(Array<T>::ArrayRep::~ArrayRep): Use octave_delete.
+	(Array<T>::coerce): Use octave_new.
+	* Array.cc (Array<T>::fill, rec_resize_helper::do_resize_fill,
+	Array<T>::resize_fill, rec_permute_helper::do_permute,
+	Array<T>::delete_elements): Use octave_ucopy and octave_fill.
+	* idx-vector.h (index_vector::index, index_vector::assign): Use
+	octave_ucopy.
+	* idx-vector.cc (index_vector::copy_data): Ditto.
+
+2009-11-03  Jaroslav Hajek  <highegg@gmail.com>
+
 	* idx-vector.cc (idx_vector::maybe_reduce): Implement (i:k:end, :)
 	and (i:k:end, p:q) reductions.
 

@@ -34,6 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "dim-vector.h"
 #include "oct-inttypes.h"
 #include "oct-alloc.h"
+#include "oct-mem.h"
 
 template<class T> class Array;
 template<class T> class Sparse;
@@ -517,7 +518,7 @@ public:
       switch (rep->idx_class ())
         {
         case class_colon:
-          std::copy (src, src + len, dest);
+          octave_ucopy (len, src, dest);
           break;
         case class_range:
           {
@@ -525,7 +526,7 @@ public:
             octave_idx_type start = r->get_start (), step = r->get_step ();
             const T *ssrc = src + start;
             if (step == 1)
-              std::copy (ssrc, ssrc + len, dest);
+              octave_ucopy (len, ssrc, dest);
             else if (step == -1)
               std::reverse_copy (ssrc - len + 1, ssrc + 1, dest);
             else if (step == 0)
@@ -575,7 +576,7 @@ public:
       switch (rep->idx_class ())
         {
         case class_colon:
-          std::copy (src, src + len, dest);
+          octave_ucopy (len, src, dest);
           break;
         case class_range:
           {
@@ -583,7 +584,7 @@ public:
             octave_idx_type start = r->get_start (), step = r->get_step ();
             T *sdest = dest + start;
             if (step == 1)
-              std::copy (src, src + len, sdest);
+              octave_ucopy (len, src, sdest);
             else if (step == -1)
               std::reverse_copy (src, src + len, sdest - len + 1);
             else

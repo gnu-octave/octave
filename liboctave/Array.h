@@ -38,6 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-utils.h"
 #include "oct-sort.h"
 #include "quit.h"
+#include "oct-mem.h"
 
 // One dimensional array class.  Handles the reference counting for
 // all the derived classes.
@@ -61,29 +62,29 @@ protected:
     int count;
 
     ArrayRep (T *d, octave_idx_type l, bool copy = false) 
-      : data (copy ? new T [l] : d), len (l), count (1) 
+      : data (copy ? octave_new<T> (l) : d), len (l), count (1) 
         { 
           if (copy)
-            std::copy (d, d + l, data);
+            octave_ucopy (l, d, data);
         }
 
     ArrayRep (void) : data (0), len (0), count (1) { }
 
-    explicit ArrayRep (octave_idx_type n) : data (new T [n]), len (n), count (1) { }
+    explicit ArrayRep (octave_idx_type n) : data (octave_new<T> (n)), len (n), count (1) { }
 
     explicit ArrayRep (octave_idx_type n, const T& val)
-      : data (new T [n]), len (n), count (1)
+      : data (octave_new<T> (n)), len (n), count (1)
       {
-        std::fill (data, data + n, val);
+        octave_fill (n, val, data);
       }
 
     ArrayRep (const ArrayRep& a)
-      : data (new T [a.len]), len (a.len), count (1)
+      : data (octave_new<T> (a.len)), len (a.len), count (1)
       {
-        std::copy (a.data, a.data + a.len, data);
+        octave_ucopy (a.len, a.data, data);
       }
  
-    ~ArrayRep (void) { delete [] data; }
+    ~ArrayRep (void) { octave_delete<T> (data); }
 
     octave_idx_type length (void) const { return len; }
 
@@ -168,7 +169,7 @@ private:
   T *
   coerce (const U *a, octave_idx_type len)
   {
-    T *retval = new T [len];
+    T *retval = octave_new<T> (len);
 
     for (octave_idx_type i = 0; i < len; i++)
       retval[i] = T (a[i]);
@@ -733,11 +734,11 @@ public:
     { return ArrayClass::xelem (ra_idx); }
 };
 
-#endif
-
 template <class T>
 std::ostream&
 operator << (std::ostream& os, const Array<T>& a);
+
+#endif
 
 /*
 ;;; Local Variables: ***

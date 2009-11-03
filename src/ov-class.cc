@@ -306,10 +306,10 @@ octave_class::size (void)
       octave_value_list args (1, octave_value (this));
 
       octave_value_list lv = feval (meth.function_value (), args, 1);
-      if (lv.length () == 1 && lv(0).is_matrix_type () && lv(0).dims ().is_vector ())
+      if (lv.length () > 0 && lv(0).is_matrix_type () && lv(0).dims ().is_vector ())
         retval = lv(0).matrix_value ();
       else
-        error ("@%s/size: invalid return value");
+        error ("@%s/size: invalid return value", class_name ().c_str ());
     }
 
   return retval;

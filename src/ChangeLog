@@ -1,5 +1,10 @@
 2009-11-03  David Grundberg  <davidg@cs.umu.se>
 
+	* ov-class.cc (octave_class::size): Allow and ignore extra outargs
+	from user-defined size methods.
+
+2009-11-03  David Grundberg  <davidg@cs.umu.se>
+
 	* ov-class.cc (make_idx_args): Call user-defined subsref/subsasgn
 	with 1xN structs instead of Nx1.
 

@@ -31,8 +31,8 @@ function retval = substruct (varargin)
 
   if (nargs > 1 && mod (nargs, 2) == 0)
     narg_pairs = nargs / 2;
-    typ = cell (narg_pairs, 1);
-    sub = cell (narg_pairs, 1);
+    typ = cell (1, narg_pairs);
+    sub = cell (1, narg_pairs);
     k = 1;
     for i = 1:2:nargs
       t = varargin{i};
@@ -66,11 +66,11 @@ endfunction
 
 %!test
 %! x(1,1).type = "()";
-%! x(2,1).type = "{}";
-%! x(3,1).type = ".";
+%! x(1,2).type = "{}";
+%! x(1,3).type = ".";
 %! x(1,1).subs = {1,2,3};
-%! x(2,1).subs = ":";
-%! x(3,1).subs = "foo";
+%! x(1,2).subs = ":";
+%! x(1,3).subs = "foo";
 %! y = substruct ("()", {1,2,3}, "{}", ":", ".", "foo");
 %! assert(x,y);
 %!error assert(substruct);

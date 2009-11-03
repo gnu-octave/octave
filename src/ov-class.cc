@@ -178,8 +178,8 @@ make_idx_args (const std::string& type,
 
   if (len == idx.size ())
     {
-      Cell type_field (len, 1);
-      Cell subs_field (len, 1);
+      Cell type_field (1, len);
+      Cell subs_field (1, len);
 
       std::list<octave_value_list>::const_iterator p = idx.begin ();
 

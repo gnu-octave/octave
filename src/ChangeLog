@@ -1,5 +1,9 @@
 2009-11-03  David Grundberg  <davidg@cs.umu.se>
 
+	* graphics.h.in (root_figure): Add FormatSpacing property.
+
+2009-11-03  David Grundberg  <davidg@cs.umu.se>
+
 	* ov-class.cc (octave_class::size): Allow and ignore extra outargs
 	from user-defined size methods.
 

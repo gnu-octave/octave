@@ -2210,6 +2210,7 @@ public:
       array_property screensize r , default_screensize ()
       double_property screenpixelsperinch r , default_screenpixelsperinch ()
       radio_property units U , "inches|centimeters|normalized|points|{pixels}"
+      radio_property formatspacing , "{loose}|compact"
       bool_property showhiddenhandles , "off"
     END_PROPERTIES
 

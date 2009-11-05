@@ -77,7 +77,7 @@ Array<T>::fill (const T& val)
       slice_data = rep->data;
     }
   else
-    octave_fill (slice_len, val, slice_data);
+    fill_or_memset (slice_len, val, slice_data);
 }
 
 template <class T>
@@ -569,7 +569,7 @@ private:
           octave_idx_type step = stride[0], len = dim[0];
           if (step == 1)
             {
-              octave_ucopy (len, src, dest);
+              copy_or_memcpy (len, src, dest);
               dest += len;
             }
           else
@@ -832,8 +832,8 @@ private:
     {
       if (lev == 0)
         {
-          octave_ucopy (cext[0], src, dest);
-          octave_fill (dext[0] - cext[0], rfv, dest + cext[0]);
+          copy_or_memcpy (cext[0], src, dest);
+          fill_or_memset (dext[0] - cext[0], rfv, dest + cext[0]);
         }
       else
         {
@@ -841,7 +841,7 @@ private:
           for (k = 0; k < cext[lev]; k++)
             do_resize_fill (src + k * sd, dest + k * dd, rfv, lev - 1);
 
-          octave_fill (dext[lev] - k * dd, rfv, dest + k * dd);
+          fill_or_memset (dext[lev] - k * dd, rfv, dest + k * dd);
         }
     }
 public:
@@ -1117,7 +1117,7 @@ Array<T>::resize_fill (octave_idx_type n, const T& rfv)
                   Array<T> tmp (Array<T> (nn), dv, 0, n);
                   T *dest = tmp.fortran_vec ();
 
-                  octave_ucopy (nx, data (), dest);
+                  copy_or_memcpy (nx, data (), dest);
                   dest[nx] = rfv;
 
                   *this = tmp;
@@ -1129,8 +1129,8 @@ Array<T>::resize_fill (octave_idx_type n, const T& rfv)
               T *dest = tmp.fortran_vec ();
 
               octave_idx_type n0 = std::min (n, nx), n1 = n - n0;
-              octave_ucopy (n0, data (), dest);
-              octave_fill (n1, rfv, dest + n0);
+              copy_or_memcpy (n0, data (), dest);
+              fill_or_memset (n1, rfv, dest + n0);
 
               *this = tmp;
             }
@@ -1157,22 +1157,22 @@ Array<T>::resize_fill (octave_idx_type r, octave_idx_type c, const T& rfv)
           const T *src = data ();
           if (r == rx)
             {
-              octave_ucopy (r * c0, src, dest);
+              copy_or_memcpy (r * c0, src, dest);
               dest += r * c0;
             }
           else
             {
               for (octave_idx_type k = 0; k < c0; k++)
                 {
-                  octave_ucopy (r0, src, dest);
+                  copy_or_memcpy (r0, src, dest);
                   src += rx;
                   dest += r0;
-                  octave_fill (r1, rfv, dest);
+                  fill_or_memset (r1, rfv, dest);
                   dest += r1;
                 }
             }
 
-          octave_fill (r * c1, rfv, dest);
+          fill_or_memset (r * c1, rfv, dest);
 
           *this = tmp;
         }
@@ -1557,8 +1557,8 @@ Array<T>::delete_elements (const idx_vector& i)
           Array<T> tmp (dim_vector (col_vec ? m : 1, !col_vec ? m : 1));
           const T *src = data ();
           T *dest = tmp.fortran_vec ();
-          octave_ucopy (l, src, dest);
-          octave_ucopy (n - u, src + u, dest + l);
+          copy_or_memcpy (l, src, dest);
+          copy_or_memcpy (n - u, src + u, dest + l);
           *this = tmp;
         }
       else
@@ -1609,9 +1609,9 @@ Array<T>::delete_elements (int dim, const idx_vector& i)
           l *= dl; u *= dl; n *= dl;
           for (octave_idx_type k = 0; k < du; k++)
             {
-              octave_ucopy (l, src, dest);
+              copy_or_memcpy (l, src, dest);
               dest += l;
-              octave_ucopy (n - u, src + u, dest);
+              copy_or_memcpy (n - u, src + u, dest);
               dest += n - u;
               src += n;
             }

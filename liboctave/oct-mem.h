@@ -39,11 +39,11 @@ along with Octave; see the file COPYING.  If not, see
 // Unaliased copy. This boils down to memcpy, even for octave_int and complex types.
 
 template <class T>
-inline void octave_ucopy (octave_idx_type n, const T *src, T *dest)
+inline void copy_or_memcpy (octave_idx_type n, const T *src, T *dest)
 { std::copy (src, src + n, dest); }
 
 #define DEFINE_POD_UCOPY(T) \
-inline void octave_ucopy (octave_idx_type n, const T *src, T *dest) \
+inline void copy_or_memcpy (octave_idx_type n, const T *src, T *dest) \
 { std::memcpy (dest, src, n * sizeof (T)); }
 
 DEFINE_POD_UCOPY (double)
@@ -66,25 +66,31 @@ DEFINE_POD_UCOPY (octave_int<T>)
 // Fill by value, with a check for zero. This boils down to memset if value is
 // a POD zero.
 template <class T>
-inline void octave_fill (octave_idx_type n, const T& value, T *dest)
+inline void fill_or_memset (octave_idx_type n, const T& value, T *dest)
 { std::fill_n (dest, n, value); }
 
 template <class T>
-inline bool octave_fill_iszero (const T& value)
-{ return value == T(); }
+inline bool helper_is_zero_mem (const T& value)
+{ 
+  typedef typename query_integer_type<sizeof (T), false>::type IT; // get integer type of the same size.
+  return *(reinterpret_cast<const IT *>(&value)) == 0; 
+}
 
 template <class T>
-inline bool octave_fill_iszero (const std::complex<T>& value)
-{ return value.real () == T() && value.imag () == T(); }
+inline bool helper_is_zero_mem (const std::complex<T>& value)
+{
+  return (helper_is_zero_mem (value.real ()) 
+          && helper_is_zero_mem (value.imag ())); 
+}
 
 template <class T>
-inline bool octave_fill_iszero (const octave_int<T>& value)
+inline bool helper_is_zero_mem (const octave_int<T>& value)
 { return value.value () == T(); }
 
 #define DEFINE_POD_FILL(T) \
-inline void octave_fill (octave_idx_type n, const T& value, T *dest) \
+inline void fill_or_memset (octave_idx_type n, const T& value, T *dest) \
 { \
-  if (octave_fill_iszero (value)) \
+  if (helper_is_zero_mem (value)) \
     std::memset (dest, 0, n * sizeof (T)); \
   else \
     std::fill_n (dest, n, value); \
@@ -110,18 +116,18 @@ DEFINE_POD_FILL (octave_int<T>)
 // Uninitialized allocation. Will not initialize memory for complex and octave_int.
 // Memory allocated by octave_new should be freed by octave_delete.
 template <class T>
-inline T *octave_new (octave_idx_type n)
+inline T *no_ctor_new (octave_idx_type n)
 { return new T[n]; }
 template <class T>
-inline void octave_delete (T *ptr)
+inline void no_ctor_delete (T *ptr)
 { delete [] ptr; }
 
 #define DEFINE_POD_NEW_DELETE(T) \
 template <> \
-inline T *octave_new<T > (octave_idx_type n) \
+inline T *no_ctor_new<T > (octave_idx_type n) \
 { return reinterpret_cast<T *> (new char[n * sizeof (T)]); } \
 template <> \
-inline void octave_delete<T > (T *ptr) \
+inline void no_ctor_delete<T > (T *ptr) \
 { delete [] reinterpret_cast<char *> (ptr); }
 
 DEFINE_POD_NEW_DELETE (Complex)

@@ -636,7 +636,7 @@ idx_vector::copy_data (octave_idx_type *data) const
         {
           idx_vector_rep * r = dynamic_cast<idx_vector_rep *> (rep);
           const octave_idx_type *rdata = r->get_data ();
-          octave_ucopy (len, rdata, data);
+          copy_or_memcpy (len, rdata, data);
         }
       break;
     default:

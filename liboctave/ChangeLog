@@ -1,5 +1,15 @@
 2009-11-03  Jaroslav Hajek  <highegg@gmail.com>
 
+	* oct-mem.h: Rename octave_ucopy -> copy_or_memcpy,
+	octave_fill -> fill_or_memset, octave_new -> no_ctor_new,
+	octave_delete -> no_ctor_delete.
+	* Array.h: Update.
+	* Array.cc: Update.
+	* idx-vector.h: Update.
+	* idx-vector.cc: Update.
+
+2009-11-03  Jaroslav Hajek  <highegg@gmail.com>
+
 	* oct-mem.h: New source.
 	* Makefile.in: Include it.
 	* Array.h (Array<T>::ArrayRep::ArrayRep (...)): Use octave_new,

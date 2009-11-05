@@ -62,29 +62,29 @@ protected:
     int count;
 
     ArrayRep (T *d, octave_idx_type l, bool copy = false) 
-      : data (copy ? octave_new<T> (l) : d), len (l), count (1) 
+      : data (copy ? no_ctor_new<T> (l) : d), len (l), count (1) 
         { 
           if (copy)
-            octave_ucopy (l, d, data);
+            copy_or_memcpy (l, d, data);
         }
 
     ArrayRep (void) : data (0), len (0), count (1) { }
 
-    explicit ArrayRep (octave_idx_type n) : data (octave_new<T> (n)), len (n), count (1) { }
+    explicit ArrayRep (octave_idx_type n) : data (no_ctor_new<T> (n)), len (n), count (1) { }
 
     explicit ArrayRep (octave_idx_type n, const T& val)
-      : data (octave_new<T> (n)), len (n), count (1)
+      : data (no_ctor_new<T> (n)), len (n), count (1)
       {
-        octave_fill (n, val, data);
+        fill_or_memset (n, val, data);
       }
 
     ArrayRep (const ArrayRep& a)
-      : data (octave_new<T> (a.len)), len (a.len), count (1)
+      : data (no_ctor_new<T> (a.len)), len (a.len), count (1)
       {
-        octave_ucopy (a.len, a.data, data);
+        copy_or_memcpy (a.len, a.data, data);
       }
  
-    ~ArrayRep (void) { octave_delete<T> (data); }
+    ~ArrayRep (void) { no_ctor_delete<T> (data); }
 
     octave_idx_type length (void) const { return len; }
 
@@ -169,7 +169,7 @@ private:
   T *
   coerce (const U *a, octave_idx_type len)
   {
-    T *retval = octave_new<T> (len);
+    T *retval = no_ctor_new<T> (len);
 
     for (octave_idx_type i = 0; i < len; i++)
       retval[i] = T (a[i]);

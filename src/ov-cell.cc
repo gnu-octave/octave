@@ -695,10 +695,11 @@ octave_cell::print_raw (std::ostream& os, bool) const
 	}
       else
 	{
+          indent (os);
 	  os << "{}";
 	  if (Vprint_empty_dimensions)
 	    os << "(" << nr << "x" << nc << ")";
-	  os << "\n";
+          newline (os);
 	}
     }
   else

@@ -365,110 +365,100 @@ tree_multi_assignment::rvalue (int)
       if (error_state)
 	return retval;
 
-      if (rhs_val.empty ())
-	{
-	  if (n_out > 0)
-	    {
-	      error ("value on right hand side of assignment is undefined");
-	      return retval;
-	    }
-	}
-      else
-	{
-	  octave_idx_type k = 0;
+      octave_idx_type k = 0;
 
-	  octave_idx_type n = rhs_val.length ();
+      octave_idx_type n = rhs_val.length ();
 
-          // To avoid copying per elements and possible optimizations, we
-          // postpone joining the final values.
-          std::list<octave_value_list> retval_list;
+      // To avoid copying per elements and possible optimizations, we
+      // postpone joining the final values.
+      std::list<octave_value_list> retval_list;
 
-	  tree_argument_list::iterator q = lhs->begin ();
+      tree_argument_list::iterator q = lhs->begin ();
 
-	  for (std::list<octave_lvalue>::iterator p = lvalue_list.begin ();
-	       p != lvalue_list.end ();
-	       p++)
-	    {
-	      tree_expression *lhs_elt = *q++;
+      for (std::list<octave_lvalue>::iterator p = lvalue_list.begin ();
+           p != lvalue_list.end ();
+           p++)
+        {
+          tree_expression *lhs_elt = *q++;
 
-	      octave_lvalue ult = *p;
+          octave_lvalue ult = *p;
 
-	      octave_idx_type nel = ult.numel ();
+          octave_idx_type nel = ult.numel ();
 
-	      if (nel > 1)
-		{
-		  if (k + nel <= n)
-		    {
-		      if (etype == octave_value::op_asn_eq)
-			{
-                          // This won't do a copy.
-			  octave_value_list ovl  = rhs_val.slice (k, nel);
+          if (nel != 1)
+            {
+              if (k + nel <= n)
+                {
+                  if (etype == octave_value::op_asn_eq)
+                    {
+                      // This won't do a copy.
+                      octave_value_list ovl  = rhs_val.slice (k, nel);
 
-			  ult.assign (etype, octave_value (ovl, true));
+                      ult.assign (etype, octave_value (ovl, true));
 
-			  if (! error_state)
-			    {
-                              retval_list.push_back (ovl);
+                      if (! error_state)
+                        {
+                          retval_list.push_back (ovl);
 
-			      k += nel;
-			    }
-			}
-		      else
-			{
-			  std::string op = octave_value::assign_op_as_string (etype);
-			  error ("operator %s unsupported for comma-separated list assignment",
-				 op.c_str ());
-			}
-		    }
-		  else
-		    error ("some elements undefined in return list");
-		}
-	      else if (nel == 1)
-		{
-		  if (k < n)
-		    {
-		      ult.assign (etype, rhs_val(k));
+                          k += nel;
+                        }
+                    }
+                  else
+                    {
+                      std::string op = octave_value::assign_op_as_string (etype);
+                      error ("operator %s unsupported for comma-separated list assignment",
+                             op.c_str ());
+                    }
+                }
+              else
+                error ("some elements undefined in return list");
+            }
+          else
+            {
+              if (k < n)
+                {
+                  ult.assign (etype, rhs_val(k));
 
-		      if (! error_state)
-			{
-			  if (etype == octave_value::op_asn_eq)
-                            retval_list.push_back (rhs_val(k));
-			  else
-                            retval_list.push_back (ult.value ());
+                  if (! error_state)
+                    {
+                      if (etype == octave_value::op_asn_eq)
+                        retval_list.push_back (rhs_val(k));
+                      else
+                        retval_list.push_back (ult.value ());
 
-			  k++;
-			}
-		    }
-		  else
-		    error ("element number %d undefined in return list", k+1);
-		}
+                      k++;
+                    }
+                }
+              else
+                error ("element number %d undefined in return list", k+1);
+            }
 
-	      if (error_state)
-		break;
-	      else if (print_result ())
-		{
-		  // We clear any index here so that we can get
-		  // the new value of the referenced object below,
-		  // instead of the indexed value (which should be
-		  // the same as the right hand side value).
+          if (error_state)
+            break;
+          else if (print_result ())
+            {
+              // We clear any index here so that we can get
+              // the new value of the referenced object below,
+              // instead of the indexed value (which should be
+              // the same as the right hand side value).
 
-		  ult.clear_index ();
+              ult.clear_index ();
 
-		  octave_value lhs_val = ult.value ();
+              octave_value lhs_val = ult.value ();
 
-		  if (! error_state)
-		    lhs_val.print_with_name (octave_stdout,
-					     lhs_elt->name ());
-		}
+              if (! error_state)
+                lhs_val.print_with_name (octave_stdout,
+                                         lhs_elt->name ());
+            }
 
-	      if (error_state)
-		break;
+          if (error_state)
+            break;
 
-	    }
-          
-          // Concatenate return values.
-          retval = retval_list;
-	}
+        }
+
+      // Concatenate return values.
+      retval = retval_list;
+
     }
 
   first_execution = false;

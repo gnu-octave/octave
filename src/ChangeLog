@@ -1,5 +1,10 @@
 2009-11-06  Jaroslav Hajek  <highegg@gmail.com>
 
+	* pt-assign.cc (tree_multi_assignment::rvalue): Don't skip zero-length
+	lvalue cs-lists.
+
+2009-11-06  Jaroslav Hajek  <highegg@gmail.com>
+
 	* ov-cell.cc (octave_cell::print_raw): Indent properly. Use newline
 	rather than '\n'.
 

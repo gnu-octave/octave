@@ -1,3 +1,8 @@
+2009-11-08  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/bsxfun.cc: Add missing copyright.
+	(fill_table): Mark table as initialized.
+
 2009-11-06  Jaroslav Hajek  <highegg@gmail.com>
 
 	* pt-assign.cc (tree_multi_assignment::rvalue): Don't skip zero-length

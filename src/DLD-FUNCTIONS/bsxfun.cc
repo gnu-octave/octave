@@ -1,6 +1,7 @@
 /*
 
 Copyright (C) 2007, 2008, 2009 David Bateman
+Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
 
@@ -149,6 +150,8 @@ static void maybe_fill_table (void)
   // For bools, we register and/or.
   REGISTER_OP_HANDLER (bsxfun_builtin_and, btyp_bool, boolNDArray, bsxfun_and);
   REGISTER_OP_HANDLER (bsxfun_builtin_or, btyp_bool, boolNDArray, bsxfun_or);
+
+  filled = true;
 }
 
 static octave_value

@@ -922,6 +922,26 @@ the second must be a string.\n\
   return retval;
 }
 
+DEFUN (nfields, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} nfields (@var{s})\n\
+Return the number of fields of the structure @var{s}.\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 1 && args(0).is_map ())
+    {
+      retval = static_cast<double> (args(0).nfields ());
+    }
+  else
+    print_usage ();
+
+  return retval;
+}
+
 // Check that the dimensions of the input arguments are correct.
 
 static bool

@@ -87,9 +87,29 @@ function gnuplot_drawnow (h, term, file, mono, debug_file)
     else
       new_stream = false;
     endif
-    enhanced = gnuplot_set_term (plot_stream (1), new_stream, h);
+    term = gnuplot_default_term ();
+    if (strcmp (term, "dumb"))
+      ## popen2 eats stdout of gnuplot, use temporary file instead
+      dumb_tmp_file = tmpnam ();
+      enhanced = gnuplot_set_term (plot_stream (1), new_stream, h, ...
+                                   term, dumb_tmp_file);
+    else
+      enhanced = gnuplot_set_term (plot_stream (1), new_stream, h, term);
+    end
     __go_draw_figure__ (h, plot_stream (1), enhanced, mono, 0);
     fflush (plot_stream (1));
+    if (strcmp (term, "dumb"))
+      fid = -1;
+      while (fid < 0)
+        pause (0.1);
+        fid = fopen (dumb_tmp_file, 'r');
+      endwhile
+      ## reprint the plot on screen
+      [a, count] = fscanf (fid, '%c', Inf);
+      puts (a);
+      fclose (fid);
+      unlink (dumb_tmp_file);
+    endif
   else
     print_usage ();
   endif
@@ -143,8 +163,8 @@ function [enhanced, implicit_margin] = gnuplot_set_term (plot_stream, new_stream
 
     if (! isempty (h) && isfigure (h))
 
-      ## Generate gnuoplot title string for backend plot windows.
-      if (output_to_screen (term))
+      ## Generate gnuplot title string for backend plot windows.
+      if (output_to_screen (term) && ~strcmp (term, "dumb"))
         fig.numbertitle = get (h, "numbertitle");
         fig.name = get (h, "name");
         if (strcmpi (get (h, "numbertitle"), "on"))
@@ -241,6 +261,15 @@ function [enhanced, implicit_margin] = gnuplot_set_term (plot_stream, new_stream
           elseif (strncmpi (term, "aqua", 3))
             ## Aqua has size, but the format is different.
             size_str = sprintf ("size %d %d", gnuplot_size);
+          elseif (strncmpi (term, "dumb", 3))
+            new_stream = 1;
+            if (~isempty (getenv ("COLUMNS")) && ~isempty (getenv ("LINES")))
+              ## Let dumb use full text screen size.
+              size_str = ["size ", getenv("COLUMNS"), " ", getenv("LINES")];
+            else
+	      ## Use the gnuplot default.
+              size_str = "";
+            end
           elseif (strncmpi (term, "fig", 3))
             ## Fig also has size, but the format is different.
             size_str = sprintf ("size %.15g %.15g", gnuplot_size);
@@ -292,7 +321,7 @@ function [enhanced, implicit_margin] = gnuplot_set_term (plot_stream, new_stream
     ## flickering window (x11, windows, & wxt) when the mouse and
     ## multiplot are set in gnuplot.
     fputs (plot_stream, "unset multiplot;\n");
-    flickering_terms = {"x11", "windows", "wxt"};
+    flickering_terms = {"x11", "windows", "wxt", "dumb"};
     if (! any (strcmp (term, flickering_terms))
         || numel (findall (h, "type", "axes")) > 1
         || numel (findall (h, "type", "image")) > 0)
@@ -317,7 +346,6 @@ function [enhanced, implicit_margin] = gnuplot_set_term (plot_stream, new_stream
     ## figure title, enhanced mode, or position.
   endif
 
-
 endfunction
 
 function term = gnuplot_default_term ()
@@ -331,7 +359,7 @@ function term = gnuplot_default_term ()
     elseif (! isempty (getenv ("DISPLAY")))
       term = "x11";
     else
-      term = "unknown";
+      term = "dumb";
     endif
   endif
 endfunction
@@ -365,7 +393,7 @@ function have_enhanced = gnuplot_is_enhanced_term (term)
 endfunction
 
 function ret = output_to_screen (term)
-  ret = any (strcmpi ({"aqua", "wxt", "x11", "windows", "pm"}, term));
+  ret = any (strcmpi ({"aqua", "dumb", "wxt", "x11", "windows", "pm"}, term));
 endfunction
 
 function ret = term_units_are_pixels (term)

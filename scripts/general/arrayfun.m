@@ -156,7 +156,7 @@ function varargout = arrayfun (func, varargin)
   args = cellfun (@num2cell, args, "UniformOutput", false,
   "ErrorHandler",  @arg_class_error);
 
-  [varargout{1:nargout}] = cellfun (func, args{:}, opts{:});
+  [varargout{1:max(1, nargout)}] = cellfun (func, args{:}, opts{:});
 
 endfunction
 

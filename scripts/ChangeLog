@@ -1,3 +1,7 @@
+2009-11-09  Jaroslav Hajek  <highegg@gmail.com>
+
+	* general/arrayfun.m: Fix nargout=0 case.
+
 2009-11-08  Petr Mikulik <mikulik@physics.muni.cz>
 
 	* plot/gnuplot_drawnow.m: Support gnuplot's dumb terminal.

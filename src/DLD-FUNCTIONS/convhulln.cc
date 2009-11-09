@@ -29,13 +29,17 @@ along with Octave; see the file COPYING.  If not, see
 * guaranteed to be simplicial.
 */
 
-#include <sstream>
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#include "oct.h"
+
+#include <sstream>
+
 #include "Cell.h"
+#include "defun-dld.h"
+#include "error.h"
+#include "oct-obj.h"
+#include "parse.h"
 
 #ifdef HAVE_QHULL
 #if defined(HAVE__SNPRINTF) && !defined(HAVE_SNPRINTF)

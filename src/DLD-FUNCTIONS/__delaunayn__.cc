@@ -38,14 +38,17 @@ along with Octave; see the file COPYING.  If not, see
   * change the default options (for compatibility with matlab)
 */
 
-#include <iostream>
-#include <string>
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#include "oct.h"
-#include "ov-cell.h"
+
+#include <iostream>
+#include <string>
+
+#include "Cell.h"
+#include "defun-dld.h"
+#include "error.h"
+#include "oct-obj.h"
 
 #ifdef HAVE_QHULL
 extern "C" {

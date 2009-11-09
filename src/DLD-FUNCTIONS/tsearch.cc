@@ -22,14 +22,21 @@ along with Octave; see the file COPYING.  If not, see
 
 // Author: Andreas Stahel <Andreas.Stahel@hta-bi.bfh.ch>
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <iostream>
 #include <fstream>
 #include <string>
 
-#include "oct.h"
-#include "parse.h"
 #include "lo-ieee.h"
 #include "lo-math.h"
+
+#include "defun-dld.h"
+#include "error.h"
+#include "oct-obj.h"
+#include "parse.h"
 
 inline double max(double a, double b, double c)
 {

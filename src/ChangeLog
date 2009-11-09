@@ -1,3 +1,10 @@
+2009-11-09  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/__delaunayn__.cc, DLD-FUNCTIONS/__dsearchn__.cc,
+	DLD-FUNCTIONS/__voronoi__.cc, DLD-FUNCTIONS/convhulln.cc,
+	DLD-FUNCTIONS/qz.cc, DLD-FUNCTIONS/tsearch.cc: Correctly include
+	config.h, don't include oct.h, etc.
+
 2009-11-08  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/bsxfun.cc: Add missing copyright.

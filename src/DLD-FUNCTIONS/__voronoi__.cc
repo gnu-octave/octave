@@ -30,13 +30,18 @@ Added optional second argument to pass options to the underlying
 qhull command
 */
 
-#include <iostream>
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
+
+#include <cstdio>
+
 #include "lo-ieee.h"
-#include "oct.h"
+
 #include "Cell.h"
+#include "defun-dld.h"
+#include "error.h"
+#include "oct-obj.h"
 
 #ifdef HAVE_QHULL
 extern "C" {

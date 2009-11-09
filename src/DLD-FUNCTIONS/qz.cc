@@ -29,7 +29,9 @@ along with Octave; see the file COPYING.  If not, see
 #undef DEBUG_SORT
 #undef DEBUG_EIG
 
-#include "config.h"
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 
 #include <cfloat>
 

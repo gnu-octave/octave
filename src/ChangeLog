@@ -1,3 +1,7 @@
+2009-11-09  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov.h: Add sparse matrix extractors.
+
 2009-11-09  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/__delaunayn__.cc, DLD-FUNCTIONS/__dsearchn__.cc,

@@ -1329,6 +1329,9 @@ DEF_VALUE_EXTRACTOR (ComplexDiagMatrix, complex_diag_matrix)
 DEF_VALUE_EXTRACTOR (FloatComplexDiagMatrix, float_complex_diag_matrix)
 DEF_VALUE_EXTRACTOR (PermMatrix, perm_matrix)
 
+DEF_VALUE_EXTRACTOR (SparseMatrix, sparse_matrix)
+DEF_VALUE_EXTRACTOR (SparseComplexMatrix, sparse_complex_matrix)
+DEF_VALUE_EXTRACTOR (SparseBoolMatrix, sparse_bool_matrix)
 #undef DEF_VALUE_EXTRACTOR
 
 #endif

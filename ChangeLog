@@ -1,3 +1,7 @@
+2009-11-09  David Grundberg  <davidg@cs.umu.se>
+
+	* configure.ac: Use AMD_CPPFLAGS while checking for UMFPACK.
+
 2009-10-29  Thomas Treichl  <Thomas.Treichl@gmx.net>
 
 	* configure.in: Add support for dlopen on Mac systems.

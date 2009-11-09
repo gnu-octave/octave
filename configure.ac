@@ -976,12 +976,15 @@ OCTAVE_CHECK_LIBRARY(cxsparse, CXSparse,
 # Check for UMFPACK library.
 
 save_LIBS="$LIBS"
+save_CPPFLAGS="$CPPFLAGS"
 LIBS="$AMD_LDFLAGS $AMD_LIBS $BLAS_LIBS $FLIBS $LIBS"
+CPPFLAGS="$AMD_CPPFLAGS $CPPFLAGS"
 OCTAVE_CHECK_LIBRARY(umfpack, UMFPACK,
   [UMFPACK not found.  This will result in some lack of functionality for sparse matrices.],
   [suitesparse/umfpack.h ufsparse/umfpack.h umfpack/umfpack.h umfpack.h],
   [umfpack_zi_get_determinant],
   [], [don't use UMFPACK, disable some sparse functionality])
+CPPFLAGS="$save_CPPFLAGS"
 LIBS="$save_LIBS"
 
 if test -z "$UMFPACK_LIBS"; then

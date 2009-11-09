@@ -274,25 +274,28 @@ SparseMatrix::insert (const SparseMatrix& a, const Array<octave_idx_type>& indx)
 SparseMatrix
 SparseMatrix::max (int dim) const
 {
-  Array2<octave_idx_type> dummy_idx;
+  Array<octave_idx_type> dummy_idx;
   return max (dummy_idx, dim);
 }
 
 SparseMatrix
-SparseMatrix::max (Array2<octave_idx_type>& idx_arg, int dim) const
+SparseMatrix::max (Array<octave_idx_type>& idx_arg, int dim) const
 {
   SparseMatrix result;
   dim_vector dv = dims ();
 
-  if (dv.numel () == 0 || dim > dv.length () || dim < 0)
+  if (dv.numel () == 0 || dim >= dv.length ())
     return result;
  
+  if (dim < 0)
+    dim = dv.first_non_singleton ();
+
   octave_idx_type nr = dv(0);
   octave_idx_type nc = dv(1);
 
   if (dim == 0)
     {
-      idx_arg.resize (1, nc);
+      idx_arg.clear (1, nc);
       octave_idx_type nel = 0;
       for (octave_idx_type j = 0; j < nc; j++)
 	{
@@ -346,7 +349,7 @@ SparseMatrix::max (Array2<octave_idx_type>& idx_arg, int dim) const
     }
   else
     {
-      idx_arg.resize (nr, 1, 0);
+      idx_arg.resize_fill (nr, 1, 0);
 
       for (octave_idx_type i = cidx(0); i < cidx(1); i++)
 	idx_arg.elem(ridx(i)) = -1;
@@ -420,25 +423,28 @@ SparseMatrix::max (Array2<octave_idx_type>& idx_arg, int dim) const
 SparseMatrix
 SparseMatrix::min (int dim) const
 {
-  Array2<octave_idx_type> dummy_idx;
+  Array<octave_idx_type> dummy_idx;
   return min (dummy_idx, dim);
 }
 
 SparseMatrix
-SparseMatrix::min (Array2<octave_idx_type>& idx_arg, int dim) const
+SparseMatrix::min (Array<octave_idx_type>& idx_arg, int dim) const
 {
   SparseMatrix result;
   dim_vector dv = dims ();
 
-  if (dv.numel () == 0 || dim > dv.length () || dim < 0)
+  if (dv.numel () == 0 || dim >= dv.length ())
     return result;
  
+  if (dim < 0)
+    dim = dv.first_non_singleton ();
+
   octave_idx_type nr = dv(0);
   octave_idx_type nc = dv(1);
 
   if (dim == 0)
     {
-      idx_arg.resize (1, nc);
+      idx_arg.clear (1, nc);
       octave_idx_type nel = 0;
       for (octave_idx_type j = 0; j < nc; j++)
 	{
@@ -492,7 +498,7 @@ SparseMatrix::min (Array2<octave_idx_type>& idx_arg, int dim) const
     }
   else
     {
-      idx_arg.resize (nr, 1, 0);
+      idx_arg.resize_fill (nr, 1, 0);
 
       for (octave_idx_type i = cidx(0); i < cidx(1); i++)
 	idx_arg.elem(ridx(i)) = -1;

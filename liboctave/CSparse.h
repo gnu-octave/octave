@@ -109,10 +109,10 @@ public:
 
   bool is_hermitian (void) const;
 
-  SparseComplexMatrix max (int dim = 0) const;
-  SparseComplexMatrix max (Array2<octave_idx_type>& index, int dim = 0) const;
-  SparseComplexMatrix min (int dim = 0) const;
-  SparseComplexMatrix min (Array2<octave_idx_type>& index, int dim = 0) const;
+  SparseComplexMatrix max (int dim = -1) const;
+  SparseComplexMatrix max (Array<octave_idx_type>& index, int dim = -1) const;
+  SparseComplexMatrix min (int dim = -1) const;
+  SparseComplexMatrix min (Array<octave_idx_type>& index, int dim = -1) const;
 
   SparseComplexMatrix& insert (const SparseComplexMatrix& a, octave_idx_type r, octave_idx_type c);
   SparseComplexMatrix& insert (const SparseMatrix& a, octave_idx_type r, octave_idx_type c);

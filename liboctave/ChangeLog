@@ -4,6 +4,18 @@
 	* dSparse.cc: Update.
 	* CSparse.h (Sparse::max): Use Array<octave_idx_type>.
 	* CSparse.cc: Update.
+	* dNDArray.h (NDArray::max, NDArray::min, NDArray::cummax,
+	NDArray::cummin, NDArray::diff): Use dim = -1 as default.
+	* fNDArray.h (FloatNDArray::max, FloatNDArray::min, FloatNDArray::cummax,
+	FloatNDArray::cummin, FloatNDArray::diff): Use dim = -1 as default.
+	* CNDArray.h (ComplexNDArray::max, ComplexNDArray::min,
+	ComplexNDArray::cummax, ComplexNDArray::cummin, ComplexNDArray::diff):
+	Use dim = -1 as default.
+	* fCNDArray.h (FloatComplexNDArray::max, FloatComplexNDArray::min,
+	FloatComplexNDArray::cummax, FloatComplexNDArray::cummin,
+	FloatComplexNDArray::diff): Use dim = -1 as default.
+	* intNDArray.h (intNDArray::max, intNDArray::min, intNDArray::cummax,
+	intNDArray::cummin, intNDArray::diff): Use dim = -1 as default.
 
 2009-11-03  Jaroslav Hajek  <highegg@gmail.com>
 

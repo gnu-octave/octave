@@ -243,25 +243,28 @@ static const Complex Complex_NaN_result (octave_NaN, octave_NaN);
 SparseComplexMatrix
 SparseComplexMatrix::max (int dim) const
 {
-  Array2<octave_idx_type> dummy_idx;
+  Array<octave_idx_type> dummy_idx;
   return max (dummy_idx, dim);
 }
 
 SparseComplexMatrix
-SparseComplexMatrix::max (Array2<octave_idx_type>& idx_arg, int dim) const
+SparseComplexMatrix::max (Array<octave_idx_type>& idx_arg, int dim) const
 {
   SparseComplexMatrix result;
   dim_vector dv = dims ();
 
-  if (dv.numel () == 0 || dim > dv.length () || dim < 0)
+  if (dv.numel () == 0 || dim >= dv.length ())
     return result;
  
+  if (dim < 0)
+    dim = dv.first_non_singleton ();
+
   octave_idx_type nr = dv(0);
   octave_idx_type nc = dv(1);
 
   if (dim == 0)
     {
-      idx_arg.resize (1, nc);
+      idx_arg.clear (1, nc);
       octave_idx_type nel = 0;
       for (octave_idx_type j = 0; j < nc; j++)
 	{
@@ -321,7 +324,7 @@ SparseComplexMatrix::max (Array2<octave_idx_type>& idx_arg, int dim) const
     }
   else
     {
-      idx_arg.resize (nr, 1, 0);
+      idx_arg.resize_fill (nr, 1, 0);
 
       for (octave_idx_type i = cidx(0); i < cidx(1); i++)
 	idx_arg.elem(ridx(i)) = -1;
@@ -395,25 +398,28 @@ SparseComplexMatrix::max (Array2<octave_idx_type>& idx_arg, int dim) const
 SparseComplexMatrix
 SparseComplexMatrix::min (int dim) const
 {
-  Array2<octave_idx_type> dummy_idx;
+  Array<octave_idx_type> dummy_idx;
   return min (dummy_idx, dim);
 }
 
 SparseComplexMatrix
-SparseComplexMatrix::min (Array2<octave_idx_type>& idx_arg, int dim) const
+SparseComplexMatrix::min (Array<octave_idx_type>& idx_arg, int dim) const
 {
   SparseComplexMatrix result;
   dim_vector dv = dims ();
 
-  if (dv.numel () == 0 || dim > dv.length () || dim < 0)
+  if (dv.numel () == 0 || dim >= dv.length ())
     return result;
  
+  if (dim < 0)
+    dim = dv.first_non_singleton ();
+
   octave_idx_type nr = dv(0);
   octave_idx_type nc = dv(1);
 
   if (dim == 0)
     {
-      idx_arg.resize (1, nc);
+      idx_arg.clear (1, nc);
       octave_idx_type nel = 0;
       for (octave_idx_type j = 0; j < nc; j++)
 	{
@@ -473,7 +479,7 @@ SparseComplexMatrix::min (Array2<octave_idx_type>& idx_arg, int dim) const
     }
   else
     {
-      idx_arg.resize (nr, 1, 0);
+      idx_arg.resize_fill (nr, 1, 0);
 
       for (octave_idx_type i = cidx(0); i < cidx(1); i++)
 	idx_arg.elem(ridx(i)) = -1;

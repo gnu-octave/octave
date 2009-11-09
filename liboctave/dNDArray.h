@@ -99,17 +99,17 @@ public:
   ComplexNDArray concat (const ComplexNDArray& rb, const Array<octave_idx_type>& ra_idx);
   charNDArray concat (const charNDArray& rb, const Array<octave_idx_type>& ra_idx);
 
-  NDArray max (int dim = 0) const;
-  NDArray max (Array<octave_idx_type>& index, int dim = 0) const;
-  NDArray min (int dim = 0) const;
-  NDArray min (Array<octave_idx_type>& index, int dim = 0) const;
+  NDArray max (int dim = -1) const;
+  NDArray max (Array<octave_idx_type>& index, int dim = -1) const;
+  NDArray min (int dim = -1) const;
+  NDArray min (Array<octave_idx_type>& index, int dim = -1) const;
   
-  NDArray cummax (int dim = 0) const;
-  NDArray cummax (Array<octave_idx_type>& index, int dim = 0) const;
-  NDArray cummin (int dim = 0) const;
-  NDArray cummin (Array<octave_idx_type>& index, int dim = 0) const;
+  NDArray cummax (int dim = -1) const;
+  NDArray cummax (Array<octave_idx_type>& index, int dim = -1) const;
+  NDArray cummin (int dim = -1) const;
+  NDArray cummin (Array<octave_idx_type>& index, int dim = -1) const;
 
-  NDArray diff (octave_idx_type order = 1, int dim = 0) const;
+  NDArray diff (octave_idx_type order = 1, int dim = -1) const;
 
   NDArray& insert (const NDArray& a, octave_idx_type r, octave_idx_type c);
   NDArray& insert (const NDArray& a, const Array<octave_idx_type>& ra_idx);

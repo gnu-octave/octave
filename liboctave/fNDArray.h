@@ -96,17 +96,17 @@ public:
   FloatComplexNDArray concat (const FloatComplexNDArray& rb, const Array<octave_idx_type>& ra_idx);
   charNDArray concat (const charNDArray& rb, const Array<octave_idx_type>& ra_idx);
 
-  FloatNDArray max (int dim = 0) const;
-  FloatNDArray max (Array<octave_idx_type>& index, int dim = 0) const;
-  FloatNDArray min (int dim = 0) const;
-  FloatNDArray min (Array<octave_idx_type>& index, int dim = 0) const;
+  FloatNDArray max (int dim = -1) const;
+  FloatNDArray max (Array<octave_idx_type>& index, int dim = -1) const;
+  FloatNDArray min (int dim = -1) const;
+  FloatNDArray min (Array<octave_idx_type>& index, int dim = -1) const;
   
-  FloatNDArray cummax (int dim = 0) const;
-  FloatNDArray cummax (Array<octave_idx_type>& index, int dim = 0) const;
-  FloatNDArray cummin (int dim = 0) const;
-  FloatNDArray cummin (Array<octave_idx_type>& index, int dim = 0) const;
+  FloatNDArray cummax (int dim = -1) const;
+  FloatNDArray cummax (Array<octave_idx_type>& index, int dim = -1) const;
+  FloatNDArray cummin (int dim = -1) const;
+  FloatNDArray cummin (Array<octave_idx_type>& index, int dim = -1) const;
 
-  FloatNDArray diff (octave_idx_type order = 1, int dim = 0) const;
+  FloatNDArray diff (octave_idx_type order = 1, int dim = -1) const;
 
   FloatNDArray& insert (const FloatNDArray& a, octave_idx_type r, octave_idx_type c);
   FloatNDArray& insert (const FloatNDArray& a, const Array<octave_idx_type>& ra_idx);

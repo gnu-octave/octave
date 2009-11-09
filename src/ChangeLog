@@ -1,5 +1,18 @@
 2009-11-09  Jaroslav Hajek  <highegg@gmail.com>
 
+	* ov-base.cc (btyp_mixed_numeric): New function.
+	* ov-base.h: Declare it.
+	(btyp_isnumeric): New inline function.
+	* DLD_FUNCTIONS/max.cc (do_minmax_red_op, do_minmax_bin_op,
+	do_minmax_body, do_cumminmax_red_op): New functions.
+	(MINMAX_DOUBLE_SBODY, MINMAX_DOUBLE_BODY,
+	MINMAX_SINGLE_SBODY, MINMAX_SINGLE_BODY,
+	MINMAX_SPARSE_BODY, MINMAX_INT_SBODY, MINMAX_INT_BODY,
+	MINMAX_BODY, CUMMINMAX_BODY): Remove.
+	(Fmin, Fmax, Fcummin, Fcummax): Update.
+
+2009-11-09  Jaroslav Hajek  <highegg@gmail.com>
+
 	* ov.h: Add sparse matrix extractors.
 
 2009-11-09  John W. Eaton  <jwe@octave.org>

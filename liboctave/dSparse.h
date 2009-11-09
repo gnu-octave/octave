@@ -99,10 +99,10 @@ SparseMatrix : public MSparse<double>
 
   bool is_symmetric (void) const;
 
-  SparseMatrix max (int dim = 0) const;
-  SparseMatrix max (Array2<octave_idx_type>& index, int dim = 0) const;
-  SparseMatrix min (int dim = 0) const;
-  SparseMatrix min (Array2<octave_idx_type>& index, int dim = 0) const;
+  SparseMatrix max (int dim = -1) const;
+  SparseMatrix max (Array<octave_idx_type>& index, int dim = -1) const;
+  SparseMatrix min (int dim = -1) const;
+  SparseMatrix min (Array<octave_idx_type>& index, int dim = -1) const;
   
   // destructive insert/delete/reorder operations
 

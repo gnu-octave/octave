@@ -69,11 +69,27 @@ enum builtin_type_t
   btyp_uint16,
   btyp_uint32,
   btyp_uint64,
-  btyp_char,
   btyp_bool,
+  btyp_char,
   btyp_unknown,
   btyp_num_types = btyp_unknown
 };
+
+inline bool btyp_isnumeric (builtin_type_t btyp)
+{ return btyp <= btyp_uint64; }
+
+// Compute a numeric type for a possibly mixed-type operation, using these rules:
+// bool -> double
+// single + double -> single
+// real + complex -> complex
+// integer + real -> integer
+// uint + uint -> uint (the bigger one)
+// sint + sint -> sint (the bigger one)
+//
+// failing otherwise.
+
+extern OCTINTERP_API
+builtin_type_t btyp_mixed_numeric (builtin_type_t x, builtin_type_t y);
 
 template <class T>
 struct class_to_btyp

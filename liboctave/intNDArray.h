@@ -77,21 +77,21 @@ public:
   boolNDArray all (int dim = -1) const;
   boolNDArray any (int dim = -1) const;
 
-  intNDArray max (int dim = 0) const;
-  intNDArray max (Array<octave_idx_type>& index, int dim = 0) const;
-  intNDArray min (int dim = 0) const;
-  intNDArray min (Array<octave_idx_type>& index, int dim = 0) const;
+  intNDArray max (int dim = -1) const;
+  intNDArray max (Array<octave_idx_type>& index, int dim = -1) const;
+  intNDArray min (int dim = -1) const;
+  intNDArray min (Array<octave_idx_type>& index, int dim = -1) const;
   
-  intNDArray cummax (int dim = 0) const;
-  intNDArray cummax (Array<octave_idx_type>& index, int dim = 0) const;
-  intNDArray cummin (int dim = 0) const;
-  intNDArray cummin (Array<octave_idx_type>& index, int dim = 0) const;
+  intNDArray cummax (int dim = -1) const;
+  intNDArray cummax (Array<octave_idx_type>& index, int dim = -1) const;
+  intNDArray cummin (int dim = -1) const;
+  intNDArray cummin (Array<octave_idx_type>& index, int dim = -1) const;
   
   intNDArray sum (int dim) const;
   NDArray dsum (int dim) const;
   intNDArray cumsum (int dim) const;
 
-  intNDArray diff (octave_idx_type order = 1, int dim = 0) const;
+  intNDArray diff (octave_idx_type order = 1, int dim = -1) const;
 
   intNDArray abs (void) const;
   intNDArray signum (void) const;

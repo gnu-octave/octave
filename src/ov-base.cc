@@ -54,6 +54,30 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 #include "variables.h"
 
+builtin_type_t btyp_mixed_numeric (builtin_type_t x, builtin_type_t y)
+{
+  builtin_type_t retval = btyp_unknown;
+
+  if (x == btyp_bool)
+    x = btyp_double;
+  if (y == btyp_bool)
+    y = btyp_double;
+
+  if (x <= btyp_float_complex && y <= btyp_float_complex)
+    retval = static_cast<builtin_type_t> (x | y);
+  else if (x <= btyp_uint64 && y <= btyp_float)
+    retval = x;
+  else if (x <= btyp_float && y <= btyp_uint64)
+    retval = y;
+  else if ((x >= btyp_int8 && x <= btyp_int64 
+            && y >= btyp_int8 && y <= btyp_int64)
+           || (x >= btyp_uint8 && x <= btyp_uint64
+               && y >= btyp_uint8 && y <= btyp_uint64))
+    retval = (x > y) ? x : y;
+
+  return retval;
+}
+
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_base_value,
 				     "<unknown type>", "unknown");
 

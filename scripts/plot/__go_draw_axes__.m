@@ -525,8 +525,12 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
 	  style = do_linestyle_command (obj, obj.color, data_idx, mono, 
 					plot_stream, errbars);
 
-	  withclause{data_idx} = sprintf ("with %s linestyle %d",
-					  style{1}, data_idx);
+	  if (isempty (style{1}))
+	    withclause{data_idx} = '';
+	  else
+	    withclause{data_idx} = sprintf ("with %s linestyle %d",
+					    style{1}, data_idx);
+	  endif
 
 	  if (length (style) > 1)
 	    data_idx++;

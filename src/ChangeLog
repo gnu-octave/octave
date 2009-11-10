@@ -1,3 +1,7 @@
+2009-11-10  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/max.cc (Fcummin, Fcummax): Simplify examples in docs.
+
 2009-11-09  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-base.cc (btyp_mixed_numeric): New function.

@@ -537,18 +537,16 @@ cummin ([5 4 6 2 3 1])\n\
 \n\
 The call\n\
 @example\n\
-  [w, iw] = cummin (x, dim)\n\
+  [w, iw] = cummin (x)\n\
 @end example\n\
 \n\
 @noindent\n\
-is equivalent to the following code:\n\
+with @code{x} a vector, is equivalent to the following code:\n\
 @example\n\
 @group\n\
 w = iw = zeros (size (x));\n\
-idxw = idxx = repmat (@{':'@}, 1, ndims (x));\n\
-for i = 1:size (x, dim)\n\
-  idxw@{dim@} = i; idxx@{dim@} = 1:i;\n\
-  [w(idxw@{:@}), iw(idxw@{:@})] = min(x(idxx@{:@}), [], dim);\n\
+for i = 1:length (x)\n\
+  [w(i), iw(i)] = max (x(1:i));\n\
 endfor\n\
 @end group\n\
 @end example\n\
@@ -582,14 +580,12 @@ The call\n\
 @end example\n\
 \n\
 @noindent\n\
-is equivalent to the following code:\n\
+with @code{x} a vector, is equivalent to the following code:\n\
 @example\n\
 @group\n\
 w = iw = zeros (size (x));\n\
-idxw = idxx = repmat (@{':'@}, 1, ndims (x));\n\
-for i = 1:size (x, dim)\n\
-  idxw@{dim@} = i; idxx@{dim@} = 1:i;\n\
-  [w(idxw@{:@}), iw(idxw@{:@})] = max(x(idxx@{:@}), [], dim);\n\
+for i = 1:length (x)\n\
+  [w(i), iw(i)] = max (x(1:i));\n\
 endfor\n\
 @end group\n\
 @end example\n\

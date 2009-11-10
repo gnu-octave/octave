@@ -1718,10 +1718,14 @@ result in an end-of-file condition.\n\
 DEFUNX ("ferror", Fferror, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} ferror (@var{fid})\n\
+@deftypefnx {Built-in Function} {} ferror (@var{fid}, \"clear\")\n\
 Return 1 if an error condition has been encountered for a given file\n\
 and 0 otherwise.  Note that it will only return 1 if an error has\n\
 already been encountered, not if the next operation will result in an\n\
 error condition.\n\
+\n\
+If the optional argument @code{\"clear\"} is supplied, the error\n\
+condition is cleared.\n\
 @end deftypefn")
 {
   octave_value_list retval;

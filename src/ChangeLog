@@ -1,10 +1,13 @@
+2009-11-10  John W. Eaton  <jwe@octave.org>
+
+	* file-io.cc (Fferror): Update doc string.
+
 2009-11-10  David Grundberg  <davidg@cs.umu.se>
 
 	* oct-strstrm.h (octave_base_strstream::tell): Declare virtual.
 	(octave_istrstream::tell): New method.
 
 2009-11-10  John W. Eaton  <jwe@octave.org>
-
 	* Makefile.am, OPERATORS/module.mk, TEMPLATE-INST/module.mk,
 	find-defun-files.sh, version.h.in,
 	DLD-FUNCTIONS/config-module.awk, DLD-FUNCTIONS/config-module.sh,

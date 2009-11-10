@@ -297,6 +297,9 @@ called_from_builtin (void)
 Matrix
 octave_class::size (void)
 {
+  if (in_class_method () || called_from_builtin ())
+    return octave_base_value::size ();
+
   Matrix retval (1, 2, 1.0);
   octave_value meth = symbol_table::find_method ("size", class_name ());
 
@@ -318,6 +321,9 @@ octave_class::size (void)
 octave_idx_type
 octave_class::numel (const octave_value_list& idx)
 {
+  if (in_class_method () || called_from_builtin ())
+    return octave_base_value::numel (idx);
+
   octave_idx_type retval = -1;
   const std::string cn = class_name ();
 

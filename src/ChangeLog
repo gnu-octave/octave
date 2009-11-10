@@ -1,5 +1,11 @@
 2009-11-10  Jaroslav Hajek  <highegg@gmail.com>
 
+	* ov-class.cc (octave_class::numel): Use base version if called from
+	built-in assignment.
+	(octave_class::size): Ditto.
+
+2009-11-10  Jaroslav Hajek  <highegg@gmail.com>
+
 	* DLD-FUNCTIONS/max.cc (Fcummin, Fcummax): Simplify examples in docs.
 
 2009-11-09  Jaroslav Hajek  <highegg@gmail.com>

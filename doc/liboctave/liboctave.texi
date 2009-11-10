@@ -17,11 +17,16 @@
 % <http://www.gnu.org/licenses/>.
 
 
-\input texinfo  @c -*-texinfo-*-
+\input texinfo
 @setfilename liboctave.info
-@direntry
+
+@ifinfo
+@format
+START-INFO-DIR-ENTRY
 * liboctave: (liboctave). Octave C++ Classes
-@end direntry
+END-INFO-DIR-ENTRY
+@end format
+@end ifinfo
 
 @c @smallbook
 @c @setchapternewpage odd

@@ -1,0 +1,29 @@
+FCN_FILE_DIRS += linear-algebra
+
+linear_algebra_FCN_FILES = \
+  linear-algebra/commutation_matrix.m \
+  linear-algebra/cond.m \
+  linear-algebra/condest.m \
+  linear-algebra/cross.m \
+  linear-algebra/dot.m \
+  linear-algebra/duplication_matrix.m \
+  linear-algebra/expm.m \
+  linear-algebra/housh.m \
+  linear-algebra/krylov.m \
+  linear-algebra/krylovb.m \
+  linear-algebra/logm.m \
+  linear-algebra/null.m \
+  linear-algebra/onenormest.m \
+  linear-algebra/orth.m \
+  linear-algebra/planerot.m \
+  linear-algebra/qzhess.m \
+  linear-algebra/rank.m \
+  linear-algebra/rref.m \
+  linear-algebra/subspace.m \
+  linear-algebra/trace.m \
+  linear-algebra/vec.m \
+  linear-algebra/vech.m
+
+FCN_FILES += $(linear_algebra_FCN_FILES)
+
+PKG_ADD_FILES += linear-algebra/PKG_ADD

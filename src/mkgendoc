@@ -89,7 +89,7 @@ print_doc_string (const std::string& name, const std::string& file_name,
 EOF
 
 for file in $DOC_FILES; do
-  fcn=`echo $file | $SED 's,^\./,,; s/\.df//; s/-/_/g'`
+  fcn=`echo $file | $SED 's,.*/,,; s/\.df//; s/-/_/g;'`
   echo "static void"
   echo "print_${fcn}_doc_strings (void)"
   echo "{"
@@ -113,7 +113,7 @@ main (void)
 EOF
 
 for file in $DOC_FILES; do
-  fcn=`echo $file | $SED 's,^\./,,; s/\.df//; s/-/_/g'`
+  fcn=`echo $file | $SED 's,.*/,,; s/\.df//; s/-/_/g;'`
   echo "  print_${fcn}_doc_strings ();"
 done
 

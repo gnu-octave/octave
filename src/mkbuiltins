@@ -87,7 +87,7 @@ cat << \EOF
 EOF
 
 for file in $DEF_FILES; do
-  fcn=`echo $file | $SED 's,^\./,,; s/\.df//; s/-/_/g'`
+  fcn=`echo $file | $SED 's,.*/,,; s/\.df//; s/-/_/g;'`
   echo "static void"
   echo "install_${fcn}_fcns (void)"
   echo "{"
@@ -104,7 +104,7 @@ install_builtins (void)
 EOF
 
 for file in $DEF_FILES; do
-  fcn=`echo $file | $SED 's,^\./,,; s/\.df//; s/-/_/g'`
+  fcn=`echo $file | $SED 's,.*/,,; s/\.df//; s/-/_/g;'`
   echo "  install_${fcn}_fcns ();"
 done
 

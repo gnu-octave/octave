@@ -30,11 +30,6 @@ SED=%SED%
 top_srcdir='%abs_top_srcdir%'
 builddir='%builddir%'
 
-ldpreloadsep="%ldpreloadsep%"
-liboctinterp="$builddir/src/%liboctinterp%"
-liboctave="$builddir/liboctave/%liboctave%"
-libcruft="$builddir/libcruft/%libcruft%"
-
 d1="$top_srcdir/test"
 d2="$top_srcdir/scripts"
 d3="$builddir/scripts"
@@ -53,7 +48,7 @@ d4_path=`echo "$d4_list" | $AWK '{ t = (s $0); s = t; } END { sub (/:$/, "", s);
 LOADPATH="$d1_path:$d2_path:$d3_path:$d4_path"
 IMAGEPATH="$top_srcdir/scripts/image"
 DOCFILE="$builddir/doc/interpreter/doc-cache"
-INFOFILE="$builddir/doc/interpreter/octave.info"
+INFOFILE="$top_srcdir/doc/interpreter/octave.info"
 
 if [ $# -gt 0 ]; then
   if [ "x$1" = "x-g" ]; then
@@ -69,7 +64,7 @@ if [ $# -gt 0 ]; then
 fi
 
 OCTAVE_SITE_INITFILE="$top_srcdir/scripts/startup/main-rcfile" \
-LD_PRELOAD="$libcruft$ldpreloadsep$liboctave$ldpreloadsep$liboctinterp" \
-%library_path_var%="$builddir/src:$builddir/liboctave:$builddir/libcruft:$%library_path_var%" \
-  exec $driver "$builddir/src/octave" --no-init-path --path="$LOADPATH" --image-path="$IMAGEPATH" --doc-cache-file="$DOCFILE" --info-file="$INFOFILE" "$@"
-
+  exec $builddir/libtool --mode=execute $driver \
+    "$builddir/src/octave" --no-init-path --path="$LOADPATH" \
+    --image-path="$IMAGEPATH" --doc-cache-file="$DOCFILE" \
+    --info-file="$INFOFILE" "$@"

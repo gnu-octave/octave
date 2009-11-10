@@ -1,3 +1,20 @@
+2009-11-10  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.am, amos/module.mk, blas-xtra/module.mk,
+	blas/module.mk, daspk/module.mk, dasrt/module.mk, dassl/module.mk,
+	fftpack/module.mk, lapack-xtra/module.mk, lapack/module.mk,
+	misc/module.mk, odepack/module.mk, ordered-qz/module.mk,
+	quadpack/module.mk, ranlib/module.mk, slatec-err/module.mk,
+	slatec-fn/module.mk, villad/module.mk: New files.
+
+	* Makefile.in, Makerules.in, amos/Makefile.in,
+	blas-xtra/Makefile.in, blas/Makefile.in, daspk/Makefile.in,
+	dasrt/Makefile.in, dassl/Makefile.in, fftpack/Makefile.in,
+	lapack-xtra/Makefile.in, lapack/Makefile.in, misc/Makefile.in,
+	odepack/Makefile.in, ordered-qz/Makefile.in, quadpack/Makefile.in,
+	ranlib/Makefile.in, slatec-err/Makefile.in, slatec-fn/Makefile.in,
+	villad/Makefile.in: Delete.
+
 2009-09-17  John W. Eaton  <jwe@octave.org>
 
 	* misc/oct-dlldefs.h: Delete.

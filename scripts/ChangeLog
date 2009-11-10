@@ -1,3 +1,35 @@
+2009-11-10  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.am, audio/module.mk, deprecated/module.mk,
+	elfun/module.mk, general/module.mk, geometry/module.mk,
+	help/module.mk, image/module.mk, io/module.mk,
+	linear-algebra/module.mk, miscellaneous/module.mk,
+	optimization/module.mk, path/module.mk, pkg/module.mk,
+	plot/module.mk, polynomial/module.mk, set/module.mk,
+	signal/module.mk, sparse/Makefile.in, specfun/Makefile.in,
+	special-matrix/Makefile.in, startup/Makefile.in,
+	statistics/Makefile.in, statistics/base/module.mk,
+	statistics/distributions/module.mk, statistics/models/module.mk,
+	statistics/tests/module.mk, strings/module.mk, testfun/module.mk,
+	time/module.mk: New files.
+	* Makefile.in, move-if-change, configure.ac, audio/Makefile.in,
+	deprecated/Makefile.in, elfun/Makefile.in, general/Makefile.in,
+	geometry/Makefile.in, help/Makefile.in, image/Makefile.in,
+	io/Makefile.in, linear-algebra/Makefile.in,
+	miscellaneous/Makefile.in, optimization/Makefile.in,
+	path/Makefile.in, pkg/Makefile.in, plot/Makefile.in,
+	polynomial/Makefile.in, set/Makefile.in, signal/Makefile.in,
+	skip-autoheader, sparse/module.mk, specfun/module.mk,
+	special-matrix/module.mk, startup/module.mk,
+	statistics/base/Makefile.in, statistics/distributions/Makefile.in,
+	statistics/models/Makefile.in, statistics/tests/Makefile.in,
+	strings/Makefile.in, testfun/Makefile.in, time/Makefile.in:
+	Delete.
+	* mk-pkg-add: Rename from mkpkgadd.
+	* mkdoc, mk-pkg-addd: Operate on explicit lists of files instead
+	of directory names.
+	* mkdoc: Skip files not ending in .m.
+
 2009-11-10  Ben Abbott <bpabbott@mac.com>
 
 	* plot/__go_draw_axes__.m: No 'with linestyle' when linestyle == 'none'.

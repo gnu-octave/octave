@@ -1262,6 +1262,7 @@ specified option.\n\
       { false, "HDF5_LDFLAGS", OCTAVE_CONF_HDF5_LDFLAGS },
       { false, "HDF5_LIBS", OCTAVE_CONF_HDF5_LIBS },
       { false, "INCFLAGS", OCTAVE_CONF_INCFLAGS },
+      { false, "LAPACK_LIBS", OCTAVE_CONF_LAPACK_LIBS },
       { false, "LDFLAGS", OCTAVE_CONF_LDFLAGS },
       { false, "LD_CXX", OCTAVE_CONF_LD_CXX },
       { false, "LD_STATIC_FLAG", OCTAVE_CONF_LD_STATIC_FLAG },

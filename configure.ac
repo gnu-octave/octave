@@ -29,11 +29,24 @@ dnl               2009 John W. Eaton
 EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
-AC_INIT
+AC_INIT([GNU Octave], [3.3.50+], [bug@octave.org], [octave], [http://www.octave.org])
+
+dnl PACKAGE_VERSION is set by the AC_INIT VERSION arg
+OCTAVE_VERSION="$PACKAGE_VERSION"
+OCTAVE_API_VERSION="api-v38+"
+OCTAVE_RELEASE_DATE="2009-09-12"
+OCTAVE_COPYRIGHT="Copyright (C) 2009 John W. Eaton and others."
+AC_SUBST(OCTAVE_VERSION)
+AC_SUBST(OCTAVE_API_VERSION)
+AC_SUBST(OCTAVE_RELEASE_DATE)
+AC_SUBST(OCTAVE_COPYRIGHT)
+
+AM_INIT_AUTOMAKE([1.11 tar-ustar])
 AC_REVISION($Revision: 1.603 $)
 AC_PREREQ(2.60)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
+AC_CONFIG_MACRO_DIR([m4])
 
 OCTAVE_HOST_TYPE
 
@@ -87,7 +100,7 @@ OCTAVE_SET_DEFAULT(man1dir, '$(mandir)/man1')
 OCTAVE_SET_DEFAULT(man1ext, '.1')
 OCTAVE_SET_DEFAULT(doc_cache_file, '$(octetcdir)/doc-cache')
 OCTAVE_SET_DEFAULT(infofile, '$(infodir)/octave.info')
-OCTAVE_SET_DEFAULT(octincludedir, '$(includedir)/octave-$(version)')
+OCTAVE_SET_DEFAULT(octincludedir, '$(includedir)/octave-$(version)/octave')
 OCTAVE_SET_DEFAULT(fcnfiledir, '$(datadir)/octave/$(version)/m')
 OCTAVE_SET_DEFAULT(localfcnfiledir, '$(datadir)/octave/site/m')
 OCTAVE_SET_DEFAULT(localapifcnfiledir,
@@ -217,13 +230,7 @@ AC_PROG_GCC_TRADITIONAL
 gcc_version=`$CC -v 2>&1 | grep "^.*gcc version" | \
   sed -e 's/^.*g.. version *//' -e 's/cygnus-//' -e 's/egcs-//'`
 case "$gcc_version" in
-  2.*)
-    if test -z "$LDFLAGS"; then
-      LDFLAGS="-g"
-      AC_MSG_NOTICE([defining LDFLAGS to be $LDFLAGS])
-    fi
-  ;;
-  1.*)
+  [12].*)
     warn_gcc_version="gcc version $gcc_version is likely to cause problems"
     AC_MSG_WARN($warn_gcc_version)
   ;;
@@ -654,9 +661,8 @@ OCTAVE_CHECK_LIBRARY(fftw3f, FFTW3F,
   [FFTW3F library not found.  The slower FFTPACK library will be used instead.],
   [fftw3.h], [fftwf_plan_dft_1d])
 
-if test -n "$FFTW3_LIBS" && test -n "$FFTW3F_LIBS"; then
-  FFT_DIR=
-fi
+AM_CONDITIONAL([AMCOND_HAVE_FFTW],
+  [test -n "$FFTW3_LIBS" && test -n "$FFTW3F_LIBS"])
 
 # Checks for GLPK header and library.
 
@@ -873,7 +879,20 @@ AC_SUBST(GRAPHICS_LIBS)
 
 OCTAVE_PROG_AR
 
-AC_PROG_RANLIB
+LT_PREREQ([2.2.2])
+LT_INIT([disable-static dlopen win32-dll])
+
+if test x$enable_shared = xyes; then
+  SHARED_LIBS=true
+else
+  SHARED_LIBS=false
+fi
+
+if test x$enable_static = xyes; then
+  STATIC_LIBS=true
+else
+  STATIC_LIBS=false
+fi
 
 XTRA_CRUFT_SH_LDFLAGS=
 case "$canonical_host_type" in
@@ -886,10 +905,11 @@ AC_SUBST(XTRA_CRUFT_SH_LDFLAGS)
 
 ### Checks for BLAS and LAPACK libraries:
 # (Build subdirectories of libcruft if they aren't found on the system.)
-ACX_BLAS_WITH_F77_FUNC([], [BLAS_DIR="blas"])
-ACX_LAPACK([BLAS_LIBS="$LAPACK_LIBS $BLAS_LIBS"], [LAPACK_DIR="lapack"])
-AC_SUBST(BLAS_DIR)
-AC_SUBST(LAPACK_DIR)
+ACX_BLAS_WITH_F77_FUNC([:], [:])
+ACX_LAPACK([:], [:])
+
+AM_CONDITIONAL([AMCOND_HAVE_BLAS], [test x$acx_blas_ok = xyes])
+AM_CONDITIONAL([AMCOND_HAVE_LAPACK], [test x$acx_lapack_ok = xyes])
 
 if test "x$acx_blas_f77_func_ok" = "xno"; then
   warn_blas_f77_incompatible="A BLAS library was detected but found incompatible with your Fortran 77 compiler.  The reference BLAS implementation will be used. To improve performance, consider using a different Fortran compiler or a switch like -ff2c to make your Fortran compiler use a calling convention compatible with the way your BLAS library was compiled, or use a different BLAS library."
@@ -899,7 +919,7 @@ fi
 # Check for the qrupdate library
 
 save_LIBS="$LIBS"
-LIBS="$BLAS_LIBS $FLIBS $LIBS"
+LIBS="$LAPACK_LIBS $BLAS_LIBS $FLIBS $LIBS"
 OCTAVE_CHECK_LIBRARY(qrupdate, qrupdate,
   [qrupdate not found.  The QR & Cholesky updating functions will be slow.],
   [],
@@ -957,7 +977,7 @@ OCTAVE_CHECK_LIBRARY(ccolamd, CCOLAMD,
 # then you will need to configure with --with-cholmod="-lcholmod -lcblas".
 
 save_LIBS="$LIBS"
-LIBS="$BLAS_LIBS $FLIBS $LIBS"
+LIBS="$LAPACK_LIBS $BLAS_LIBS $FLIBS $LIBS"
 OCTAVE_CHECK_LIBRARY(cholmod, CHOLMOD,
   [CHOLMOD library not found.  This will result in some lack of functionality for sparse matrices.],
   [suitesparse/cholmod.h ufsparse/cholmod.h cholmod/cholmod.h cholmod.h],
@@ -1019,39 +1039,19 @@ OCTAVE_CHECK_LIBRARY(arpack, ARPACK,
   [Fortran 77], [don't use the ARPACK library, disable eigs function])
 LIBS="$save_LIBS"
 
-### Handle shared library options.
-
-### Enable creation of static libraries.
-
-AC_ARG_ENABLE(static,
-  [AS_HELP_STRING([--enable-static], [create static libraries])],
-  [if test "$enableval" = no; then STATIC_LIBS=false;
-   else STATIC_LIBS=true; fi],
-  STATIC_LIBS=false)
-AC_SUBST(STATIC_LIBS)
-
-### Enable creation of shared libraries.  Currently only works with
-### gcc on some systems.
-
-AC_ARG_ENABLE(shared,
-  [AS_HELP_STRING([--enable-shared],
-     [create shared libraries (not all systems)])],
-  [if test "$enableval" = no; then SHARED_LIBS=false;
-   else SHARED_LIBS=true; fi],
-  SHARED_LIBS=true)
-AC_SUBST(SHARED_LIBS)
-
 ### Enable dynamic linking.  --enable-shared implies this, so
 ### --enable-dl is only need if you are only building static libraries
 ### and want to try dynamic linking too (works on some systems, for
 ### example, OS X and Windows).
 
-AC_ARG_ENABLE(dl,
-  [AS_HELP_STRING([--enable-dl],
-     [create shared libraries (not all systems)])],
-  [if test "$enableval" = no; then ENABLE_DYNAMIC_LINKING=false;
-   else ENABLE_DYNAMIC_LINKING=true; fi],
-  ENABLE_DYNAMIC_LINKING=true)
+AC_ARG_ENABLE([dl], [
+  AS_HELP_STRING([--enable-dl],
+    [create shared libraries (not all systems)])], [
+  case "${enableval}" in
+    yes) ENABLE_DYNAMIC_LINKING=true ;;
+    no) ENABLE_DYNAMIC_LINKING=false ;;
+    *) AC_MSG_ERROR([bad value ${enableval} for --enable-dl]) ;;
+  esac], [ENABLE_DYNAMIC_LINKING=true])
 
 if $STATIC_LIBS || $SHARED_LIBS; then
   true
@@ -1352,15 +1352,18 @@ AC_SUBST(SCRIPTS_EXE_SUFFIX)
 AC_CHECK_FUNCS(gethostname, [], [AC_CHECK_LIB(socket, gethostname)])
 AC_CHECK_FUNCS(getpwnam, [], [AC_CHECK_LIB(sun, getpwnam)])
 
+NO_UNDEFINED_LDFLAG=
 case "$canonical_host_type" in
   *-*-cygwin*)
    AC_CHECK_LIB(wsock32, gethostname)
    LIBS="$LIBS -lwsock32"
   ;;
   *-*-msdosmsvc* | *-*-mingw*)
-  LIBS="$LIBS -lgdi32 -lws2_32 -luser32 -lkernel32"
+    LIBS="$LIBS -lgdi32 -lws2_32 -luser32 -lkernel32"
+    NO_UNDEFINED_LDFLAG=-no-undefined
   ;;
 esac
+AC_SUBST(NO_UNDEFINED_LDFLAG)
 
 ### Type stuff.
 
@@ -1569,6 +1572,9 @@ esac
 ### Dynamic linking is now enabled only if we are building shared
 ### libs and some API for dynamic linking is detected.
 
+## FIXME -- a lot of the following duplicates the functionality of
+## code generated by the dlopen option for LT_INIT.
+
 LD_CXX='$(CXX)'
 RDYNAMIC_FLAG=
 DL_API_MSG=""
@@ -1608,20 +1614,27 @@ if $SHARED_LIBS || $ENABLE_DYNAMIC_LINKING; then
       if test "$ac_cv_func_loadlibrary" = yes; then
         loadlibrary_api=true
       else
-        AC_CHECK_LIB(dl, dlopen, [DL_LIBS=-ldl; LIBS="$LIBS $DL_LIBS"])
-        AC_CHECK_FUNCS(dlopen dlsym dlerror dlclose)
-        if test "$ac_cv_func_dlclose" = yes \
-          && test "$ac_cv_func_dlerror" = yes \
-          && test "$ac_cv_func_dlopen" = yes \
-          && test "$ac_cv_func_dlsym" = yes; then
-          dlopen_api=true
-        else
-	  case "$canonical_host_type" in
-	    i[[3456]]86-*-sco3.2v5*)
-	      LD_CXX='LD_RUN_PATH=$LD_RUN_PATH:$(octlibdir) $(CXX)'
-	      dlopen_api=true
-	    ;;
-	  esac
+        ## With the dlopen option, LT_INIT has already checked for
+	## dlopen and the -ldl library.  So we just look at cache values.
+        if test "x$ac_cv_lib_dl_dlopen" = xyes; then
+	  DL_LIBS=-ldl;
+	  LIBS="$LIBS $DL_LIBS"
+        fi
+	if test "x$ac_cv_func_dlopen" = xyes \
+          || test "x$ac_cv_lib_dl_dlopen" = xyes; then
+          AC_CHECK_FUNCS(dlsym dlerror dlclose)
+          if test "x$ac_cv_func_dlclose" = xyes \
+            && test "x$ac_cv_func_dlerror" = xyes \
+            && test "x$ac_cv_func_dlsym" = xyes; then
+            dlopen_api=true
+          else
+	    case "$canonical_host_type" in
+	      i[[3456]]86-*-sco3.2v5*)
+	        LD_CXX='LD_RUN_PATH=$LD_RUN_PATH:$(octlibdir) $(CXX)'
+	        dlopen_api=
+	      ;;
+	    esac
+          fi
 	fi
       fi
     fi
@@ -1660,6 +1673,9 @@ if $SHARED_LIBS || $ENABLE_DYNAMIC_LINKING; then
     AC_DEFINE(ENABLE_DYNAMIC_LINKING, 1, [Define if using dynamic linking])
   fi
 fi
+
+AM_CONDITIONAL([AMCOND_ENABLE_DYNAMIC_LINKING],
+  [test x$ENABLE_DYNAMIC_LINKING = xtrue])
 
 if $SHARED_LIBS; then
    LIBOCTINTERP=-loctinterp$SHLLINKEXT
@@ -1836,6 +1852,8 @@ OCTAVE_PROG_PERL
 OCTAVE_PROG_PYTHON
 
 OCTAVE_PROG_FLEX
+AC_SUBST([LEX_OUTPUT_ROOT], [lex.octave_])
+
 OCTAVE_PROG_BISON
 
 AC_PROG_LN_S
@@ -1945,8 +1963,6 @@ AC_SUBST(WARN_CXXFLAGS)
 export CC
 export CXX
 export F77
-
-AC_CONFIG_SUBDIRS(scripts)
 
 ### Some things to add to the bottom of config.h.
 
@@ -2154,28 +2170,24 @@ typedef unsigned long long uint64_t;
 
 ### Do the substitutions in all the Makefiles.
 
-AC_CONFIG_COMMANDS([Makefile], [if test "$ac_srcdir" != "."; then
-  cp $srcdir/Makefile .
-fi])
-
 AC_SUBST(ac_config_files)
 AC_SUBST(ac_config_headers)
 
-AC_CONFIG_FILES([octMakefile Makeconf m4/Makefile test/Makefile
-  doc/Makefile doc/faq/Makefile doc/interpreter/Makefile
-  doc/liboctave/Makefile doc/refcard/Makefile emacs/Makefile
-  examples/Makefile examples/@polynomial/Makefile 
-  examples/@FIRfilter/Makefile liboctave/Makefile
-  src/Makefile src/mxarray.h libcruft/Makefile
-  libcruft/Makerules libcruft/amos/Makefile libcruft/blas/Makefile
-  libcruft/daspk/Makefile libcruft/dasrt/Makefile
-  libcruft/dassl/Makefile libcruft/fftpack/Makefile
-  libcruft/lapack/Makefile 
-  libcruft/misc/Makefile libcruft/odepack/Makefile
-  libcruft/ordered-qz/Makefile libcruft/quadpack/Makefile
-  libcruft/ranlib/Makefile libcruft/slatec-fn/Makefile
-  libcruft/slatec-err/Makefile libcruft/villad/Makefile
-  libcruft/blas-xtra/Makefile libcruft/lapack-xtra/Makefile])
+AC_CONFIG_FILES([
+  Makefile 
+  doc/Makefile
+  doc/faq/Makefile
+  doc/interpreter/Makefile
+  doc/liboctave/Makefile
+  doc/refcard/Makefile
+  examples/Makefile
+  libcruft/Makefile
+  liboctave/Makefile
+  scripts/Makefile
+  src/Makefile
+  src/mxarray.h
+  src/version.h
+  test/Makefile])
 
 AC_OUTPUT
 
@@ -2185,77 +2197,77 @@ AC_MSG_NOTICE([
 
 Octave is now configured for $canonical_host_type
 
-  Source directory:     $srcdir
-  Installation prefix:  $prefix
-  C compiler:           $CC $XTRA_CFLAGS $WARN_CFLAGS $CFLAGS
-  C++ compiler:         $CXX $XTRA_CXXFLAGS $WARN_CXXFLAGS $CXXFLAGS
-  Fortran compiler:     $F77 $FFLAGS
-  Fortran libraries:    $FLIBS
-  Glob libraries:       $LIBGLOB
-  Lex libraries:        $LEXLIB
-  LIBS:                 $LIBS
+  Source directory:            $srcdir
+  Installation prefix:         $prefix
+  C compiler:                  $CC $XTRA_CFLAGS $WARN_CFLAGS $CFLAGS
+  C++ compiler:                $CXX $XTRA_CXXFLAGS $WARN_CXXFLAGS $CXXFLAGS
+  Fortran compiler:            $F77 $FFLAGS
+  Fortran libraries:           $FLIBS
+  Glob libraries:              $LIBGLOB
+  Lex libraries:               $LEXLIB
+  LIBS:                        $LIBS
 
-  AMD CPPFLAGS:         $AMD_CPPFLAGS
-  AMD LDFLAGS:          $AMD_LDFLAGS
-  AMD libraries:        $AMD_LIBS
-  ARPACK libraries:     $ARPACK_LIBS
-  BLAS libraries:       $BLAS_LIBS
-  CAMD CPPFLAGS:        $CAMD_CPPFLAGS
-  CAMD LDFLAGS:         $CAMD_LDFLAGS
-  CAMD libraries:       $CAMD_LIBS
-  CARBON libraries:     $CARBON_LIBS
-  CCOLAMD CPPFLAGS:     $CCOLAMD_CPPFLAGS
-  CCOLAMD LDFLAGS:      $CCOLAMD_LDFLAGS
-  CCOLAMD libraries:    $CCOLAMD_LIBS
-  CHOLMOD CPPFLAGS:     $CHOLMOD_CPPFLAGS
-  CHOLMOD LDFLAGS:      $CHOLMOD_LDFLAGS
-  CHOLMOD libraries:    $CHOLMOD_LIBS
-  COLAMD CPPFLAGS:      $COLAMD_CPPFLAGS
-  COLAMD LDFLAGS:       $COLAMD_LDFLAGS
-  COLAMD libraries:     $COLAMD_LIBS
-  CURL CPPFLAGS:        $CURL_CPPFLAGS
-  CURL LDFLAGS:         $CURL_LDFLAGS
-  CURL libraries:       $CURL_LIBS
-  CXSPARSE CPPFLAGS:    $CXSPARSE_CPPFLAGS
-  CXSPARSE LDFLAGS:     $CXSPARSE_LDFLAGS
-  CXSPARSE libraries:   $CXSPARSE_LIBS
-  DL libraries:         $DL_LIBS
-  FFTW3 CPPFLAGS:       $FFTW3_CPPFLAGS
-  FFTW3 LDFLAGS:        $FFTW3_LDFLAGS
-  FFTW3 libraries:      $FFTW3_LIBS
-  FFTW3F CPPFLAGS:      $FFTW3F_CPPFLAGS
-  FFTW3F LDFLAGS:       $FFTW3F_LDFLAGS
-  FFTW3F libraries:     $FFTW3F_LIBS
-  FLTK backend libs:    $GRAPHICS_LIBS
-  GLPK CPPFLAGS:        $GLPK_CPPFLAGS
-  GLPK LDFLAGS:         $GLPK_LDFLAGS
-  GLPK libraries:       $GLPK_LIBS
-  GraphicsMagick++
-    CPPFLAGS:           $MAGICK_CPPFLAGS
-    LDFLAGS:            $MAGICK_LDFLAGS
-    libraries:          $MAGICK_LIBS
-  HDF5 CPPFLAGS:        $HDF5_CPPFLAGS
-  HDF5 LDFLAGS:         $HDF5_LDFLAGS
-  HDF5 libraries:       $HDF5_LIBS
-  OPENGL libraries:     $OPENGL_LIBS
-  PTHREAD flags:        $PTHREAD_CFLAGS
-  PTHREAD libraries:    $PTHREAD_LIBS
-  QHULL CPPFLAGS:       $QHULL_CPPFLAGS
-  QHULL LDFLAGS:        $QHULL_LDFLAGS
-  QHULL libraries:      $QHULL_LIBS
-  QRUPDATE libraries:   $QRUPDATE_LIBS
-  READLINE libraries:   $READLINE_LIBS
-  REGEX libraries:      $REGEX_LIBS
-  TERM libraries:       $TERM_LIBS
-  UMFPACK libraries:    $UMFPACK_LIBS
-  X11 include flags:    $X11_INCFLAGS
-  X11 libraries:        $X11_LIBS
-  Z CPPFLAGS:           $Z_CPPFLAGS
-  Z LDFLAGS:            $Z_LDFLAGS
-  Z libraries:          $Z_LIBS
+  AMD CPPFLAGS:                $AMD_CPPFLAGS
+  AMD LDFLAGS:                 $AMD_LDFLAGS
+  AMD libraries:               $AMD_LIBS
+  ARPACK libraries:            $ARPACK_LIBS
+  BLAS libraries:              $BLAS_LIBS
+  CAMD CPPFLAGS:               $CAMD_CPPFLAGS
+  CAMD LDFLAGS:                $CAMD_LDFLAGS
+  CAMD libraries:              $CAMD_LIBS
+  CARBON libraries:            $CARBON_LIBS
+  CCOLAMD CPPFLAGS:            $CCOLAMD_CPPFLAGS
+  CCOLAMD LDFLAGS:             $CCOLAMD_LDFLAGS
+  CCOLAMD libraries:           $CCOLAMD_LIBS
+  CHOLMOD CPPFLAGS:            $CHOLMOD_CPPFLAGS
+  CHOLMOD LDFLAGS:             $CHOLMOD_LDFLAGS
+  CHOLMOD libraries:           $CHOLMOD_LIBS
+  COLAMD CPPFLAGS:             $COLAMD_CPPFLAGS
+  COLAMD LDFLAGS:              $COLAMD_LDFLAGS
+  COLAMD libraries:            $COLAMD_LIBS
+  CURL CPPFLAGS:               $CURL_CPPFLAGS
+  CURL LDFLAGS:                $CURL_LDFLAGS
+  CURL libraries:              $CURL_LIBS
+  CXSPARSE CPPFLAGS:           $CXSPARSE_CPPFLAGS
+  CXSPARSE LDFLAGS:            $CXSPARSE_LDFLAGS
+  CXSPARSE libraries:          $CXSPARSE_LIBS
+  DL libraries:                $DL_LIBS
+  FFTW3 CPPFLAGS:              $FFTW3_CPPFLAGS
+  FFTW3 LDFLAGS:               $FFTW3_LDFLAGS
+  FFTW3 libraries:             $FFTW3_LIBS
+  FFTW3F CPPFLAGS:             $FFTW3F_CPPFLAGS
+  FFTW3F LDFLAGS:              $FFTW3F_LDFLAGS
+  FFTW3F libraries:            $FFTW3F_LIBS
+  FLTK backend libs:           $GRAPHICS_LIBS
+  GLPK CPPFLAGS:               $GLPK_CPPFLAGS
+  GLPK LDFLAGS:                $GLPK_LDFLAGS
+  GLPK libraries:              $GLPK_LIBS
+  GraphicsMagick++ CPPFLAGS:   $MAGICK_CPPFLAGS
+  GraphicsMagick++ LDFLAGS:    $MAGICK_LDFLAGS
+  GraphicsMagick++ libraries:  $MAGICK_LIBS
+  HDF5 CPPFLAGS:               $HDF5_CPPFLAGS
+  HDF5 LDFLAGS:                $HDF5_LDFLAGS
+  HDF5 libraries:              $HDF5_LIBS
+  LAPACK libraries:            $LAPACK_LIBS
+  OPENGL libraries:            $OPENGL_LIBS
+  PTHREAD flags:               $PTHREAD_CFLAGS
+  PTHREAD libraries:           $PTHREAD_LIBS
+  QHULL CPPFLAGS:              $QHULL_CPPFLAGS
+  QHULL LDFLAGS:               $QHULL_LDFLAGS
+  QHULL libraries:             $QHULL_LIBS
+  QRUPDATE libraries:          $QRUPDATE_LIBS
+  READLINE libraries:          $READLINE_LIBS
+  REGEX libraries:             $REGEX_LIBS
+  TERM libraries:              $TERM_LIBS
+  UMFPACK libraries:           $UMFPACK_LIBS
+  X11 include flags:           $X11_INCFLAGS
+  X11 libraries:               $X11_LIBS
+  Z CPPFLAGS:                  $Z_CPPFLAGS
+  Z LDFLAGS:                   $Z_LDFLAGS
+  Z libraries:                 $Z_LIBS
 
-  Default pager:        $DEFAULT_PAGER
-  gnuplot:              $GNUPLOT
+  Default pager:               $DEFAULT_PAGER
+  gnuplot:                     $GNUPLOT
 
   Do internal array bounds checking:  $BOUNDS_CHECKING
   Build static libraries:             $STATIC_LIBS

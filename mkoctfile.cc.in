@@ -184,11 +184,13 @@ initialize (void)
   vars["OCTLIBDIR"] = get_variable ("OCTLIBDIR", DEFAULT_OCTLIBDIR);
 
 #if defined (__WIN32__) && ! defined (_POSIX_VERSION)
-  std::string DEFAULT_INCFLAGS = "-I" + quote_path (vars["OCTINCLUDEDIR"])
-    + " -I" + quote_path (vars["OCTINCLUDEDIR"] + "\\octave");
+  std::string DEFAULT_INCFLAGS
+    = "-I" + quote_path (vars["OCTINCLUDEDIR"] + "\\..")
+    + " -I" + quote_path (vars["OCTINCLUDEDIR"]);
 #else
-  std::string DEFAULT_INCFLAGS = "-I" + quote_path (vars["OCTINCLUDEDIR"])
- + " -I" + quote_path (vars["OCTINCLUDEDIR"] + "/octave");
+  std::string DEFAULT_INCFLAGS
+    = "-I" + quote_path (vars["OCTINCLUDEDIR"] + "/..")
+    + " -I" + quote_path (vars["OCTINCLUDEDIR"]);
 #endif
   if (vars["INCLUDEDIR"] != "/usr/include")
     DEFAULT_INCFLAGS += " -I" + quote_path (vars["INCLUDEDIR"]);

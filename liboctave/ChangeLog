@@ -1,3 +1,10 @@
+2009-11-10  John W. Eaton  <jwe@octave.org>
+
+	* mx-ops, sparse-mx-ops, vx-ops b/liboctave/vx-ops:
+	Add comment about updating.
+	* Makefile.am, config-ops.sh: New files.
+	* Makefile.in: Delete.
+
 2009-11-09  Jaroslav Hajek  <highegg@gmail.com>
 
 	* dSparse.h (Sparse::max): Use Array<octave_idx_type>.

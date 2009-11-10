@@ -1,0 +1,439 @@
+# Makefile for octave's scripts directory
+#
+# Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2002,
+#               2003, 2004, 2005, 2006, 2007, 2008, 2009 John W. Eaton
+#
+# This file is part of Octave.
+# 
+# Octave is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the
+# Free Software Foundation; either version 3 of the License, or (at
+# your option) any later version.
+# 
+# Octave is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+# for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with Octave; see the file COPYING.  If not, see
+# <http://www.gnu.org/licenses/>.
+
+TOPDIR = ..
+
+include ../common.mk 
+
+AUTOMAKE_OPTIONS = subdir-objects
+
+FCN_FILE_DIRS =
+
+EXTRA_DIST = \
+  gethelp.cc \
+  mkdoc \
+  mk-pkg-add
+
+FCN_FILES =
+
+GEN_FCN_FILES =
+
+PKG_ADD_FILES =
+
+IMAGES =
+
+include audio/module.mk
+include deprecated/module.mk
+include elfun/module.mk
+include general/module.mk
+include geometry/module.mk
+include help/module.mk
+include image/module.mk
+include io/module.mk
+include linear-algebra/module.mk
+include miscellaneous/module.mk
+include optimization/module.mk
+include path/module.mk
+include pkg/module.mk
+include plot/module.mk
+include polynomial/module.mk
+include set/module.mk
+include signal/module.mk
+include sparse/module.mk
+include specfun/module.mk
+include special-matrix/module.mk
+include startup/module.mk
+include statistics/base/module.mk
+include statistics/distributions/module.mk
+include statistics/models/module.mk
+include statistics/tests/module.mk
+include strings/module.mk
+include testfun/module.mk
+include time/module.mk
+
+nobase_fcnfile_DATA = $(FCN_FILES) $(GEN_FCN_FILES)
+
+octave_dirstamp = $(am__leading_dot)dirstamp
+
+audio/PKG_ADD: $(audio_FCN_FILES) $(audio_GEN_FCN_FILES) audio/$(octave_dirstamp) mk-pkg-add
+	@echo "generating $@"
+	@$(srcdir)/mk-pkg-add $(srcdir) $(audio_FCN_FILES) -- $(audio_GEN_FCN_FILES) > $@-t
+	@mv $@-t $@
+
+deprecated/PKG_ADD: $(deprecated_FCN_FILES) $(deprecated_GEN_FCN_FILES) deprecated/$(octave_dirstamp) mk-pkg-add
+	@echo "generating $@"
+	@$(srcdir)/mk-pkg-add $(srcdir) $(deprecated_FCN_FILES) -- $(deprecated_GEN_FCN_FILES) > $@-t
+	@mv $@-t $@
+
+elfun/PKG_ADD: $(elfun_FCN_FILES) $(elfun_GEN_FCN_FILES) elfun/$(octave_dirstamp) mk-pkg-add
+	@echo "generating $@"
+	@$(srcdir)/mk-pkg-add $(srcdir) $(elfun_FCN_FILES) -- $(elfun_GEN_FCN_FILES) > $@-t
+	@mv $@-t $@
+
+general/PKG_ADD: $(general_FCN_FILES) $(general_GEN_FCN_FILES) general/$(octave_dirstamp) mk-pkg-add
+	@echo "generating $@"
+	@$(srcdir)/mk-pkg-add $(srcdir) $(general_FCN_FILES) -- $(general_GEN_FCN_FILES) > $@-t
+	@mv $@-t $@
+
+geometry/PKG_ADD: $(geometry_FCN_FILES) $(geometry_GEN_FCN_FILES) geometry/$(octave_dirstamp) mk-pkg-add
+	@echo "generating $@"
+	@$(srcdir)/mk-pkg-add $(srcdir) $(geometry_FCN_FILES) -- $(geometry_GEN_FCN_FILES) > $@-t
+	@mv $@-t $@
+
+help/PKG_ADD: $(help_FCN_FILES) $(help_GEN_FCN_FILES) help/$(octave_dirstamp) mk-pkg-add
+	@echo "generating $@"
+	@$(srcdir)/mk-pkg-add $(srcdir) $(help_FCN_FILES) -- $(help_GEN_FCN_FILES) > $@-t
+	@mv $@-t $@
+
+image/PKG_ADD: $(image_FCN_FILES) $(image_GEN_FCN_FILES) image/$(octave_dirstamp) mk-pkg-add
+	@echo "generating $@"
+	@$(srcdir)/mk-pkg-add $(srcdir) $(image_FCN_FILES) -- $(image_GEN_FCN_FILES) > $@-t
+	@mv $@-t $@
+
+io/PKG_ADD: $(io_FCN_FILES) $(io_GEN_FCN_FILES) io/$(octave_dirstamp) mk-pkg-add
+	@echo "generating $@"
+	@$(srcdir)/mk-pkg-add $(srcdir) $(io_FCN_FILES) -- $(io_GEN_FCN_FILES) > $@-t
+	@mv $@-t $@
+
+linear-algebra/PKG_ADD: $(linear_algebra_FCN_FILES) $(linear_algebra_GEN_FCN_FILES) linear-algebra/$(octave_dirstamp) mk-pkg-add
+	@echo "generating $@"
+	@$(srcdir)/mk-pkg-add $(srcdir) $(linear_algebra_FCN_FILES) -- $(linear_algebra_GEN_FCN_FILES) > $@-t
+	@mv $@-t $@
+
+miscellaneous/PKG_ADD: $(miscellaneous_FCN_FILES) $(miscellaneous_GEN_FCN_FILES) miscellaneous/$(octave_dirstamp) mk-pkg-add
+	@echo "generating $@"
+	@$(srcdir)/mk-pkg-add $(srcdir) $(miscellaneous_FCN_FILES) -- $(miscellaneous_GEN_FCN_FILES) > $@-t
+	@mv $@-t $@
+
+optimization/PKG_ADD: $(optimization_FCN_FILES) $(optimization_GEN_FCN_FILES) optimization/$(octave_dirstamp) mk-pkg-add
+	@echo "generating $@"
+	@$(srcdir)/mk-pkg-add "$(srcdir)" $(optimization_FCN_FILES) -- $(optimization_GEN_FCN_FILES) > $@-t
+	@mv $@-t $@
+
+path/PKG_ADD: $(path_FCN_FILES) $(path_GEN_FCN_FILES) path/$(octave_dirstamp) mk-pkg-add
+	@echo "generating $@"
+	@$(srcdir)/mk-pkg-add $(srcdir) $(path_FCN_FILES) -- $(path_GEN_FCN_FILES) > $@-t
+	@mv $@-t $@
+
+pkg/PKG_ADD: $(pkg_FCN_FILES) $(pkg_GEN_FCN_FILES) pkg/$(octave_dirstamp) mk-pkg-add
+	@echo "generating $@"
+	@$(srcdir)/mk-pkg-add $(srcdir) $(pkg_FCN_FILES) -- $(pkg_GEN_FCN_FILES) > $@-t
+	@mv $@-t $@
+
+plot/PKG_ADD: $(plot_FCN_FILES) $(plot_GEN_FCN_FILES) plot/$(octave_dirstamp) mk-pkg-add
+	@echo "generating $@"
+	@$(srcdir)/mk-pkg-add $(srcdir) $(plot_FCN_FILES) -- $(plot_GEN_FCN_FILES) > $@-t
+	@mv $@-t $@
+
+polynomial/PKG_ADD: $(polynomial_FCN_FILES) $(polynomial_GEN_FCN_FILES) polynomial/$(octave_dirstamp) mk-pkg-add
+	@echo "generating $@"
+	@$(srcdir)/mk-pkg-add $(srcdir) $(polynomial_FCN_FILES) -- $(polynomial_GEN_FCN_FILES) > $@-t
+	@mv $@-t $@
+
+set/PKG_ADD: $(set_FCN_FILES) $(set_GEN_FCN_FILES) set/$(octave_dirstamp) mk-pkg-add
+	@echo "generating $@"
+	@$(srcdir)/mk-pkg-add $(srcdir) $(set_FCN_FILES) -- $(set_GEN_FCN_FILES) > $@-t
+	@mv $@-t $@
+
+signal/PKG_ADD: $(signal_FCN_FILES) $(signal_GEN_FCN_FILES) signal/$(octave_dirstamp) mk-pkg-add
+	@echo "generating $@"
+	@$(srcdir)/mk-pkg-add $(srcdir) $(signal_FCN_FILES) -- $(signal_GEN_FCN_FILES) > $@-t
+	@mv $@-t $@
+
+sparse/PKG_ADD: $(sparse_FCN_FILES) $(sparse_GEN_FCN_FILES) sparse/$(octave_dirstamp) mk-pkg-add
+	@echo "generating $@"
+	@$(srcdir)/mk-pkg-add $(srcdir) $(sparse_FCN_FILES) -- $(sparse_GEN_FCN_FILES) > $@-t
+	@mv $@-t $@
+
+specfun/PKG_ADD: $(specfun_FCN_FILES) $(specfun_GEN_FCN_FILES) specfun/$(octave_dirstamp) mk-pkg-add
+	@echo "generating $@"
+	@$(srcdir)/mk-pkg-add $(srcdir) $(specfun_FCN_FILES) -- $(specfun_GEN_FCN_FILES) > $@-t
+	@mv $@-t $@
+
+special-matrix/PKG_ADD: $(special_matrix_FCN_FILES) $(special_matrix_GEN_FCN_FILES) special-matrix/$(octave_dirstamp) mk-pkg-add
+	@echo "generating $@"
+	@$(srcdir)/mk-pkg-add $(srcdir) $(special_matrix_FCN_FILES) -- $(special_matrix_GEN_FCN_FILES) > $@-t
+	@mv $@-t $@
+
+startup/PKG_ADD: $(startup_FCN_FILES) $(startup_GEN_FCN_FILES) startup/$(octave_dirstamp) mk-pkg-add
+	@echo "generating $@"
+	@$(srcdir)/mk-pkg-add $(srcdir) $(startup_FCN_FILES) -- $(startup_GEN_FCN_FILES) > $@-t
+	@mv $@-t $@
+
+statistics/base/PKG_ADD: $(statistics_base_FCN_FILES) $(statistics_base_GEN_FCN_FILES) statistics/base/$(octave_dirstamp) mk-pkg-add
+	@echo "generating $@"
+	@$(srcdir)/mk-pkg-add $(srcdir) $(statistics_base_FCN_FILES) -- $(statistics_base_GEN_FCN_FILES) > $@-t
+	@mv $@-t $@
+
+statistics/distributions/PKG_ADD: $(statistics_distributions_FCN_FILES) $(statistics_distributions_GEN_FCN_FILES) statistics/distributions/$(octave_dirstamp) mk-pkg-add
+	@echo "generating $@"
+	@$(srcdir)/mk-pkg-add $(srcdir) $(statistics_distributions_FCN_FILES) -- $(statistics_distributions_GEN_FCN_FILES) > $@-t
+	@mv $@-t $@
+
+statistics/models/PKG_ADD: $(statistics_models_FCN_FILES) $(statistics_models_GEN_FCN_FILES) statistics/models/$(octave_dirstamp) mk-pkg-add
+	@echo "generating $@"
+	@$(srcdir)/mk-pkg-add $(srcdir) $(statistics_models_FCN_FILES) -- $(statistics_models_GEN_FCN_FILES) > $@-t
+	@mv $@-t $@
+
+statistics/tests/PKG_ADD: $(statistics_tests_FCN_FILES) $(statistics_tests_GEN_FCN_FILES) statistics/tests/$(octave_dirstamp) mk-pkg-add
+	@echo "generating $@"
+	@$(srcdir)/mk-pkg-add $(srcdir) $(statistics_tests_FCN_FILES) -- $(statistics_tests_GEN_FCN_FILES) > $@-t
+	@mv $@-t $@
+
+strings/PKG_ADD: $(strings_FCN_FILES) $(strings_GEN_FCN_FILES) strings/$(octave_dirstamp) mk-pkg-add
+	@echo "generating $@"
+	@$(srcdir)/mk-pkg-add $(srcdir) $(strings_FCN_FILES) -- $(strings_GEN_FCN_FILES) > $@-t
+	@mv $@-t $@
+
+testfun/PKG_ADD: $(testfun_FCN_FILES) $(testfun_GEN_FCN_FILES) testfun/$(octave_dirstamp) mk-pkg-add
+	@echo "generating $@"
+	@$(srcdir)/mk-pkg-add $(srcdir) $(testfun_FCN_FILES) -- $(testfun_GEN_FCN_FILES) > $@-t
+	@mv $@-t $@
+
+time/PKG_ADD: $(time_FCN_FILES) $(time_GEN_FCN_FILES) time/$(octave_dirstamp) mk-pkg-add
+	@echo "generating $@"
+	@$(srcdir)/mk-pkg-add $(srcdir) $(time_FCN_FILES) -- $(time_GEN_FCN_FILES) > $@-t
+	@mv $@-t $@
+
+$(audio_GEN_FCN_FILES): audio/$(octave_dirstamp)
+$(deprecated_GEN_FCN_FILES): deprecated/$(octave_dirstamp)
+$(elfun_GEN_FCN_FILES): elfun/$(octave_dirstamp)
+$(general_GEN_FCN_FILES): general/$(octave_dirstamp)
+$(geometry_GEN_FCN_FILES): geometry/$(octave_dirstamp)
+$(help_GEN_FCN_FILES): help/$(octave_dirstamp)
+$(image_GEN_FCN_FILES): image/$(octave_dirstamp)
+$(io_GEN_FCN_FILES): io/$(octave_dirstamp)
+$(linear_algebra_GEN_FCN_FILES): linear-algebra/$(octave_dirstamp)
+$(miscellaneous_GEN_FCN_FILES): miscellaneous/$(octave_dirstamp)
+$(optimization_GEN_FCN_FILES): optimization/$(octave_dirstamp)
+$(path_GEN_FCN_FILES): path/$(octave_dirstamp)
+$(pkg_GEN_FCN_FILES): pkg/$(octave_dirstamp)
+$(plot_GEN_FCN_FILES): plot/$(octave_dirstamp)
+$(polynomial_GEN_FCN_FILES): polynomial/$(octave_dirstamp)
+$(set_GEN_FCN_FILES): set/$(octave_dirstamp)
+$(signal_GEN_FCN_FILES): signal/$(octave_dirstamp)
+$(sparse_GEN_FCN_FILES): sparse/$(octave_dirstamp)
+$(specfun_GEN_FCN_FILES): specfun/$(octave_dirstamp)
+$(special_matrix_GEN_FCN_FILES): special-matrix/$(octave_dirstamp)
+$(startup_GEN_FCN_FILES): startup/$(octave_dirstamp)
+$(statistics_base_GEN_FCN_FILES): statistics/base/$(octave_dirstamp)
+$(statistics_distributions_GEN_FCN_FILES): statistics/distributions/$(octave_dirstamp)
+$(statistics_models_GEN_FCN_FILES): statistics/models/$(octave_dirstamp)
+$(statistics_tests_GEN_FCN_FILES): statistics/tests/$(octave_dirstamp)
+$(strings_GEN_FCN_FILES): strings/$(octave_dirstamp)
+$(testfun_GEN_FCN_FILES): testfun/$(octave_dirstamp)
+$(time_GEN_FCN_FILES): time/$(octave_dirstamp)
+
+audio/$(octave_dirstamp):
+	@$(MKDIR_P) audio
+	@: > audio/$(octave_dirstamp)
+deprecated/$(octave_dirstamp):
+	@$(MKDIR_P) deprecated
+	@: > deprecated/$(octave_dirstamp)
+elfun/$(octave_dirstamp):
+	@$(MKDIR_P) elfun
+	@: > elfun/$(octave_dirstamp)
+general/$(octave_dirstamp):
+	@$(MKDIR_P) general
+	@: > general/$(octave_dirstamp)
+geometry/$(octave_dirstamp):
+	@$(MKDIR_P) geometry
+	@: > geometry/$(octave_dirstamp)
+help/$(octave_dirstamp):
+	@$(MKDIR_P) help
+	@: > help/$(octave_dirstamp)
+image/$(octave_dirstamp):
+	@$(MKDIR_P) image
+	@: > image/$(octave_dirstamp)
+io/$(octave_dirstamp):
+	@$(MKDIR_P) io
+	@: > io/$(octave_dirstamp)
+linear-algebra/$(octave_dirstamp):
+	@$(MKDIR_P) linear-algebra
+	@: > linear-algebra/$(octave_dirstamp)
+miscellaneous/$(octave_dirstamp):
+	@$(MKDIR_P) miscellaneous
+	@: > miscellaneous/$(octave_dirstamp)
+optimization/$(octave_dirstamp):
+	@$(MKDIR_P) optimization
+	@: > optimization/$(octave_dirstamp)
+path/$(octave_dirstamp):
+	@$(MKDIR_P) path
+	@: > path/$(octave_dirstamp)
+pkg/$(octave_dirstamp):
+	@$(MKDIR_P) pkg
+	@: > pkg/$(octave_dirstamp)
+plot/$(octave_dirstamp):
+	@$(MKDIR_P) plot
+	@: > plot/$(octave_dirstamp)
+polynomial/$(octave_dirstamp):
+	@$(MKDIR_P) polynomial
+	@: > polynomial/$(octave_dirstamp)
+set/$(octave_dirstamp):
+	@$(MKDIR_P) set
+	@: > set/$(octave_dirstamp)
+signal/$(octave_dirstamp):
+	@$(MKDIR_P) signal
+	@: > signal/$(octave_dirstamp)
+sparse/$(octave_dirstamp):
+	@$(MKDIR_P) sparse
+	@: > sparse/$(octave_dirstamp)
+specfun/$(octave_dirstamp):
+	@$(MKDIR_P) specfun
+	@: > specfun/$(octave_dirstamp)
+special-matrix/$(octave_dirstamp):
+	@$(MKDIR_P) special-matrix
+	@: > special-matrix/$(octave_dirstamp)
+startup/$(octave_dirstamp):
+	@$(MKDIR_P) startup
+	@: > startup/$(octave_dirstamp)
+statistics/base/$(octave_dirstamp):
+	@$(MKDIR_P) statistics/base
+	@: > statistics/base/$(octave_dirstamp)
+statistics/distributions/$(octave_dirstamp):
+	@$(MKDIR_P) statistics/distributions
+	@: > statistics/distributions/$(octave_dirstamp)
+statistics/models/$(octave_dirstamp):
+	@$(MKDIR_P) statistics/models
+	@: > statistics/models/$(octave_dirstamp)
+statistics/tests/$(octave_dirstamp):
+	@$(MKDIR_P) statistics/tests
+	@: > statistics/tests/$(octave_dirstamp)
+strings/$(octave_dirstamp):
+	@$(MKDIR_P) strings
+	@: > strings/$(octave_dirstamp)
+testfun/$(octave_dirstamp):
+	@$(MKDIR_P) testfun
+	@: > testfun/$(octave_dirstamp)
+time/$(octave_dirstamp):
+	@$(MKDIR_P) time
+	@: > time/$(octave_dirstamp)
+
+FCN_FILES_IN = $(GEN_FCN_FILES:.m=.in)
+
+EXTRA_DIST += \
+  $(IMAGES) \
+  $(FCN_FILES) \
+  $(FCN_FILES_IN)
+
+all-local: $(GEN_FCN_FILES) $(PKG_ADD_FILES) DOCSTRINGS
+
+DOCSTRINGS: gethelp$(BUILD_EXEEXT) mkdoc $(FCN_FILES)
+	@echo "generating $@"
+	@$(srcdir)/mkdoc "$(srcdir)" $(FCN_FILES) -- $(GEN_FCN_FILES) > $@.t
+	@mv $@.t $@
+
+gethelp$(BUILD_EXEEXT): gethelp.cc
+	$(BUILD_CXX) $(BUILD_CXXFLAGS) -o $@ $^ $(BUILD_LDFLAGS)
+
+$(GEN_FCN_FILES) : %.m : %.in Makefile
+	@$(do_subst_config_vals)
+
+check-m-sources:
+	@echo -n "checking whether files in source tree are listed in module.mk files..."; \
+	for f in $$(find $(srcdir) -name '*.m'); do \
+	  found=false; \
+	  for m in $(FCN_FILES); do \
+	    if [ "$$f" = $(srcdir)/"$$m" ]; then \
+	      found=true; \
+	      break; \
+	    fi; \
+	  done; \
+	  if $$found; then \
+	    true; \
+	  else \
+	    missing=$$(echo $$f | $(SED) "s|^$(srcdir)||"); \
+	    echo "$$missing: not listed in SOURCES"; \
+	  fi; \
+	done; \
+	if test -z "$$missing"; then \
+	  echo "yes"; \
+	fi
+.PHONY: check-m-sources
+
+install-data-local: install-images install-startup-files install-pkg-add
+.PHONY: install-data-local
+
+uninstall-local: uninstall-images uninstall-startup-files uninstall-pkg-add
+.PHONY: uninstall-local
+
+install-images:
+	$(MKDIR_P) $(DESTDIR)$(imagedir)
+	for im in $(IMAGES); do \
+	  f=`echo $$im | $(SED) 's,image/,,'`; \
+	  echo "$(INSTALL_DATA) $(srcdir)/$$im $(DESTDIR)$(imagedir)/$$f"; \
+	  $(INSTALL_DATA) $(srcdir)/$$im $(DESTDIR)$(imagedir)/$$f; \
+	done
+.PHONY: install-images
+
+uninstall-images:
+	for im in $(IMAGES); do \
+	  f=`echo $$im | $(SED) 's,.*/,,'`; \
+	  echo "rm -f $(DESTDIR)$(imagedir)/$$f"; \
+	  rm -f $(DESTDIR)$(imagedir)/$$f; \
+	done
+.PHONY: uninstall-images
+
+install-startup-files:
+	$(MKDIR_P) $(DESTDIR)$(fcnfiledir)/startup
+	if test -f $(DESTDIR)$(fcnfiledir)/startup/octaverc; then true; \
+	else \
+	  $(INSTALL_DATA) $(srcdir)/$(SYSTEM_STARTUP_FILE_SRC) \
+	    $(DESTDIR)$(fcnfiledir)/startup/octaverc; \
+	fi
+	if test -f $(DESTDIR)$(fcnfiledir)/startup/inputrc; then true; \
+	else \
+	  $(INSTALL_DATA) $(srcdir)/$(SYSTEM_INPUTRC_FILE_SRC) \
+	    $(DESTDIR)$(fcnfiledir)/startup/inputrc; \
+	fi
+	$(MKDIR_P) $(DESTDIR)$(localfcnfiledir)/startup
+	if test -f $(DESTDIR)$(localfcnfiledir)/startup/octaverc; \
+	then true; \
+	else \
+	  $(INSTALL_DATA) $(srcdir)/$(LOCAL_STARTUP_FILE_SRC) \
+	    $(DESTDIR)$(localfcnfiledir)/startup/octaverc; \
+	fi
+.PHONY: install-startup-files
+
+uninstall-startup-files:
+	rm -f $(DESTDIR)$(fcnfiledir)/startup/octaverc
+	rm -f $(DESTDIR)$(fcnfiledir)/startup/inputrc
+	rm -f $(DESTDIR)$(localfcnfiledir)/startup/octaverc
+.PHONY: uninstall-startup-files
+
+install-pkg-add:
+	for f in $(PKG_ADD_FILES); do \
+	  if [ -n "`cat $$f`" ]; then \
+	    $(MKDIR_P) $(DESTDIR)$(fcnfiledir)/`echo $$f | $(SED) 's,/[^/]*$$,,'`; \
+	    $(INSTALL_DATA) $$f $(DESTDIR)$(fcnfiledir)/$$f; \
+	  fi \
+	done
+.PHONY: install-pkg-add
+
+uninstall-pkg-add:
+	for f in $(PKG_ADD_FILES); do \
+	  rm -f $(DESTDIR)$(fcnfiledir)/$$f; \
+	done
+.PHONY: uninstall-pkg-add
+
+# ## optimization:
+
+# EXTRAS = glpktest1 glpktest2

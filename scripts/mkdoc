@@ -18,14 +18,16 @@
 # along with Octave; see the file COPYING.  If not, see
 # <http://www.gnu.org/licenses/>.
 
+## Expecting arguments in this order:
+##
+##  SRCDIR SRCDIR-FILES ... -- LOCAL-FILES ...
+
 set -e
 
 PERL=${PERL:-'perl'}
 
-if test $# -eq 0; then
-  echo "usage: mkdoc file ..." 1>&2
-  exit 1
-fi
+prefix="$1/"
+shift
 
 if test -f gethelp; then
   cat << EOF
@@ -37,17 +39,21 @@ if test -f gethelp; then
 EOF
   for arg
   do
-    echo "$arg" | $PERL -n -e 'chop;
-               $f = "$_";
-               m{(.*)/(.*)\.m};
-               for (qx{./gethelp $2 "$f" < "$f"}) {
-                 s/^\s+\@/\@/ unless $i_am_in_example;
-                 s/^\s+\@group/\@group/;
-                 s/^\s+\@end\s+group/\@end\s+group/;
-                 $i_am_in_example = 1 if /\s*\@example/;
-                 $i_am_in_example = 0 if /\s*\@end\s+example/;
-                 print;
-               }'
+    if [ "$arg" = "--" ]; then
+      prefix=""
+    else
+      echo "$prefix$arg" | $PERL -n -e 'chop;
+	$f = "$_";
+        next unless m{(.*)/(.*)\.m};
+	for (qx{./gethelp $2 "$f" < "$f"}) {
+	  s/^\s+\@/\@/ unless $i_am_in_example;
+	  s/^\s+\@group/\@group/;
+	  s/^\s+\@end\s+group/\@end\s+group/;
+	  $i_am_in_example = 1 if /\s*\@example/;
+	  $i_am_in_example = 0 if /\s*\@end\s+example/;
+	  print;
+	}'
+    fi
   done
 else
   echo "gethelp program seems to be missing!" 1>&2

@@ -1,3 +1,54 @@
+2009-11-10  John W. Eaton  <jwe@octave.org>
+
+	* configure.ac: Set octincludedir to
+	$(includedir)/octave-$(version)/octave, not
+	$(includedir)/octave-$(version).
+	* mkoctfile.in: Set DEFAULT_INCFLAGS to -I$octincludedir/.. and
+	-I$octincludedir instead of -I$octincludedir and
+	-I$octincludedir/octave.
+
+	* configure.ac: Pass args to AC_INIT.  Invoke AM_INIT_AUTOMAKE and
+	AC_PROG_LIBTOOL.  Don't call AC_PROG_RANLIB.  Set version info here.
+	Call AC_CONFIG_MACRO_DIR.  Give same warning for gcc 1.x and 2.x.
+	Use AM_CONDITIONALS for FFTW, BLAS, and LAPACK.  Don't set
+	variables with calls to ACX_BLAS_WITH_F77_FUNC or ACX_LAPACK.
+	Don't substitute BLAS_DIR or LAPACK_DIR.  Use LT_INIT.  Eliminate
+	--enable-shared and --enable-static options (now provided by
+	LT_INIT).  Set SHARED_LIBS and STATIC_LIBS variables based on
+	LT_INIT variables.  Handle dlopen libraries with info from
+	LT_INIT.  Substitute NO_UNDEFINED_FLAG (only set on Windows
+	sytems).  Include $LAPACK_LIBS in $LIBS when checking for qrupdate
+	and cholmod.  Handle --enable-dl consistently with other --enable
+	options.  Don't copy $srcdir/Makefile in AH_BOTTOM commands.
+	Substitute LEX_OUTPUT_ROOT.  Use AM_CONDITONAL for
+	ENABLE_DYNAMIC_LINKING.  Reindent configure summary.
+	(AC_CONFIG_FILES): Don't list Makefiles in libcruft
+	subdirectories.  Generate Makefile and src/version.h.  Don't
+	generate Makeconf, octMakefile, m4/Makefile, emacs/Makefile,
+	examples/@polynomial/Makefile, or examples/@FIRfilter/Makefile.
+
+	* run-octave.in Call libtool to execute src/octave.
+	(ldpreloadsep, liboctinterp, liboctave, libcruft): Delete variables.
+	(INFOFILE): Find it in $top_srcdir, not $builddir.
+
+	* acinclude.m4: Rename from aclocal.m4.
+	(OCTAVE_PROG_FLEX): Don't include -t in LFLAGS.
+
+	* autogen.sh: Exit immediately on error.  Use libtoolize, aclocal,
+	and automake.  Only run autoconf and autoheader in top-level and
+	scripts directories.
+	Run liboctave/config-ops.sh, doc/interpreter/config-images.sh, and
+	src/DLD-FUNCTIONS/config-module.sh, to generate source lists for
+	subdirectories.
+
+	* AUTHORS, Makefile.am, common.mk, m4/module.mk, emacs/module.mk,
+	examples/@FIRfilter/module.mk, examples/@polynomial/module.mk,
+	examples/Makefile.am: New files.
+	* Makeconf.in, Makefile, octMakefile.in, m4/Makefile.in,
+	emacs/Makefile.in, install-sh, examples/Makefile.in,
+	examples/@FIRfilter/Makefile.in, examples/@polynomial/Makefile.in:
+	Delete.
+
 2009-11-09  David Grundberg  <davidg@cs.umu.se>
 
 	* configure.ac: Use AMD_CPPFLAGS while checking for UMFPACK.

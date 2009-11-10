@@ -1,3 +1,20 @@
+2009-11-10  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.am, OPERATORS/module.mk, TEMPLATE-INST/module.mk,
+	find-defun-files.sh, version.h.in,
+	DLD-FUNCTIONS/config-module.awk, DLD-FUNCTIONS/config-module.sh,
+	DLD-FUNCTIONS/module-files: New files.
+	* Makefile.in, version.h: Delete.
+	* lex.ll: Rename from lex.l.  Include oct-parse.h instead of
+	y.tab.h.
+	* parse.yy: Rename from parse.y
+	* mkbuiltins, mkgendoc: Don't require filenames to start with a
+	"." at beginning of line.
+
+	* oct-conf.h.in (OCTAVE_CONF_LAPACK_LIBS): Delete macro.
+	* toplev.cc (octave_config_info): Don't include LAPACK_LIBS in the
+	struct.
+
 2009-11-10  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-class.cc (octave_class::numel): Use base version if called from

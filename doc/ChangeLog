@@ -1,3 +1,16 @@
+2009-11-10  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.am, faq/Makefile.am, interpreter/Makefile.am,
+	liboctave/Makefile.am, refcard/Makefile.am,
+	interpreter/config-images.sh, interpreter/images,
+	interpreter/images.awk: New files.
+	* Makefile.in, faq/Makefile.in, interpreter/Makefile.in,
+	liboctave/Makefile.in, refcard/Makefile.in: Delete.
+	* interpreter/munge-texi.cc (main, usage): Eliminate unnecessary
+	-d option.
+	* liboctave/liboctave.texi: Surround @direntry in appropriate magic.
+	* faq/OctaveFAQ.texi: Rename from faq/Octave-FAQ.texi.
+
 2009-10-23  Rik <octave@nomad.inbox5.com>
 
 	* various: Periodic grammar check of Octave documentation files to ensure

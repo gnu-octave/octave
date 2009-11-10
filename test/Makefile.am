@@ -1,0 +1,79 @@
+# Makefile for octave's test directory
+#
+# Copyright (C) 1994, 1995, 1996, 1997, 1998, 2001, 2002, 2006, 2007
+#               John W. Eaton
+#
+# This file is part of Octave.
+# 
+# Octave is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the
+# Free Software Foundation; either version 3 of the License, or (at
+# your option) any later version.
+# 
+# Octave is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+# for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with Octave; see the file COPYING.  If not, see
+# <http://www.gnu.org/licenses/>.
+
+TOPDIR = ..
+
+include ../common.mk
+
+FCN_FILE_DIRS =
+
+FCN_FILES = \
+  fntests.m \
+  test_args.m \
+  test_classes.m \
+  test_contin.m \
+  test_diag_perm.m \
+  test_error.m \
+  test_eval-catch.m \
+  test_for.m \
+  test_func.m \
+  test_global.m \
+  test_if.m \
+  test_index-wfi-f.m \
+  test_index-wfi-t.m \
+  test_io.m \
+  test_logical-wfi-f.m \
+  test_logical-wfi-t.m \
+  test_null_assign.m \
+  test_prefer.m \
+  test_range.m \
+  test_recursion.m \
+  test_return.m \
+  test_slice.m \
+  test_string.m \
+  test_struct.m \
+  test_switch.m \
+  test_system.m \
+  test_transpose.m \
+  test_try.m \
+  test_unwind.m \
+  test_while.m
+
+include @Blork/module.mk
+include @Cork/module.mk
+include @Dork/module.mk
+include @Gork/module.mk
+include @Pork/module.mk
+include @Sneetch/module.mk
+include @Snork/module.mk
+include @Spork/module.mk
+
+EXTRA_DIST = \
+  ChangeLog \
+  build_sparse_tests.sh \
+  $(FCN_FILES)
+
+check: test_sparse.m
+	../run-octave --norc --silent --no-history $(srcdir)/fntests.m $(srcdir)
+.PHONY: check
+
+test_sparse.m: build_sparse_tests.sh
+	$(srcdir)/build_sparse_tests.sh

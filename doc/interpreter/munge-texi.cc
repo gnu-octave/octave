@@ -47,7 +47,7 @@ fatal (const std::string& msg)
 static void
 usage (void)
 {
-  std::cerr << "usage: munge-texi -d DOCSTRING-FILE file ...\n";
+  std::cerr << "usage: munge-texi DOCSTRING-FILE file ...\n";
   exit (1);
 }
 
@@ -310,17 +310,7 @@ int
 main (int argc, char **argv)
 {
   while (*++argv)
-    {
-      if (! strcmp (*argv, "-d"))
-	{
-	  if (*++argv)
-	    process_doc_file (*argv);
-	  else
-	    usage ();
-	}
-      else
-	break;
-    }
+    process_doc_file (*argv);
 
   process_texi_input_file (std::cin, std::cout);
 

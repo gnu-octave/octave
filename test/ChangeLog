@@ -1,3 +1,10 @@
+2009-11-10  John W. Eaton  <jwe@octave.org>
+
+	* @Blork/module.mk, @Cork/module.mk, @Dork/module.mk,
+	@Gork/module.mk, @Pork/module.mk, @Sneetch/module.mk,
+	@Snork/module.mk, @Spork/module.mk, Makefile.am: New files.
+	* Makefile.in: Delete.
+
 2009-10-19  Rik  <octdev@nomad.inbox5.com>
 
 	* fntests.m: .cc files are now included in the list of files requiring

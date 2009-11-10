@@ -45,7 +45,7 @@ public:
 
   // Return current stream position.
 
-  long tell (void);
+  virtual long tell (void);
 
   // The name of the file.
 
@@ -104,6 +104,8 @@ public:
   std::istream *input_stream (void) { return &is; }
 
   std::ostream *output_stream (void) { return 0; }
+
+  long tell (void) { return is.tellg (); }
 
   std::streambuf *rdbuf (void) { return is ? is.rdbuf () : 0; }
 

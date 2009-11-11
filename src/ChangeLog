@@ -58,6 +58,7 @@
 	(octave_istrstream::tell): New method.
 
 2009-11-10  John W. Eaton  <jwe@octave.org>
+
 	* Makefile.am, OPERATORS/module.mk, TEMPLATE-INST/module.mk,
 	find-defun-files.sh, version.h.in,
 	DLD-FUNCTIONS/config-module.awk, DLD-FUNCTIONS/config-module.sh,

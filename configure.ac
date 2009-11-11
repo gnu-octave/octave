@@ -741,13 +741,12 @@ AC_SUBST(MAGICK_LIBS)
 ## libraries needed for graphics
 
 warn_freetype=""
-warn_ftgl=""
 
 OCTAVE_OPENGL
 if test -n "$OPENGL_LIBS"; then
   AC_DEFINE(HAVE_OPENGL, 1, [Define if OpenGL is available])
 
-## ftgl (needs freetype 2)
+## freetype 2
   AC_CHECK_FT2([9.0.3],[AC_DEFINE(HAVE_FREETYPE, 1, [Define to 1 if you have Freetype library.])],
     [warn_freetype="FreeType library not found.  Native renderer will not have on-screen text"])
   if test -z "$warn_freetype"; then
@@ -758,48 +757,6 @@ if test -n "$OPENGL_LIBS"; then
       LIBS="$LIBS $FT2_LIBS $OPENGL_LIBS"
       CXXFLAGS="$CXXFLAGS $FT2_CFLAGS"
       CPPFLAGS="$CPPFLAGS $FT2_CFLAGS"
-      has_ftgl_h=yes
-      AC_CHECK_HEADERS([FTGL/ftgl.h ftgl.h], break, [
-	AC_CHECK_HEADERS([FTGL/FTGL.h FTGL.h], [
-          AC_DEFINE(HAVE_FTGL_UPPERCASE, 1, [Define to 1 if you have FTGL.h or FTGL/FTGL.h])
-	  break
-	  ], has_ftgl_h=no)])
-      if test "$has_ftgl_h" = yes; then
-	AC_MSG_CHECKING([for FTGLTextureFont in -lftgl])
-	LIBS="$save_LIBS -lftgl $FT2_LIBS $OPENGL_LIBS"
-        AC_TRY_LINK([
-#ifdef HAVE_FTGL_FTGL_H
-#ifdef HAVE_FTGL_UPPERCASE
-#include <FTGL/FTGL.h>
-#else
-#include <FTGL/ftgl.h>
-#endif
-#include <FTGL/FTGLTextureFont.h>
-#elif HAVE_FTGL_H
-#ifdef HAVE_FTGL_UPPERCASE
-#include <FTGL.h>
-#else
-#include <ftgl.h>
-#endif
-#include <FTGLTextureFont.h>
-#endif], [
-FTGLTextureFont font("");], [
-          OPENGL_LIBS="-lftgl $FT2_LIBS $OPENGL_LIBS"
-	  LIBS="$save_LIBS"
-	  CPPFLAGS="$save_CPPFLAGS"
-          AC_DEFINE(HAVE_FTGL, 1, [Define to 1 if FTGL is present])
-	  AC_MSG_RESULT(yes)
-	  XTRA_CXXFLAGS="$XTRA_CXXFLAGS $FT2_CFLAGS"], [
-	  AC_MSG_RESULT(no)
-          warn_ftgl="FTGL library not found.  Native renderer will not have on-screen text"
-        ])
-	LIBS="$save_LIBS"
-	CXXFLAGS="$save_CXXFLAGS"
-	CPPFLAGS="$save_CPPFLAGS"
-      else
-        warn_ftgl="FTGL headers not found.  Native renderer will not have on-screen text"
-      fi
-    AC_LANG_POP(C++)
   fi
 fi
 
@@ -2496,12 +2453,6 @@ fi
 
 if test -n "$warn_fontconfig"; then
   AC_MSG_WARN("$warn_fontconfig")
-  native_graphics=false
-  warn_msg_printed=true
-fi
-
-if test -n "$warn_ftgl"; then
-  AC_MSG_WARN("$warn_ftgl")
   native_graphics=false
   warn_msg_printed=true
 fi

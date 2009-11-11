@@ -1,3 +1,7 @@
+2009-11-11  Shai Ayal <shaiay@users.sourceforge.net>
+
+	* configure.ac: Remove tests for ftgl.
+
 2009-11-11  Benjamin Lindner  <lindnerb@users.sourceforge.net>
 
 	* configure.ac: Remove -mwindows from FLTK_LDFLAGS.

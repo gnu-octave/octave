@@ -169,6 +169,12 @@ public:
       ? instance->do_find_dir (dir) : std::string ();
   }
 
+  static string_vector find_matching_dirs (const std::string& dir)
+  {
+    return instance_ok ()
+      ? instance->do_find_matching_dirs (dir) : string_vector ();
+  }
+
   static std::string find_first_of (const string_vector& files)
   {
     return instance_ok () ?
@@ -478,6 +484,8 @@ private:
   std::string do_find_file (const std::string& file) const;
 
   std::string do_find_dir (const std::string& dir) const;
+
+  string_vector do_find_matching_dirs (const std::string& dir) const;
 
   std::string do_find_first_of (const string_vector& files) const;
 

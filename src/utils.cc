@@ -802,22 +802,34 @@ Return the full name of @var{file}, relative to the current directory.\n\
 
 DEFUN (find_dir_in_path, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} find_dir_in_path (@var{dir})\n\
+@deftypefn {Built-in Function} {} find_dir_in_path (@var{dir}, \"all\")\n\
 Return the full name of the path element matching @var{dir}.  The\n\
 match is performed at the end of each path element.  For example, if\n\
 @var{dir} is @code{\"foo/bar\"}, it matches the path element\n\
 @code{\"/some/dir/foo/bar\"}, but not @code{\"/some/dir/foo/bar/baz\"}\n\
 or @code{\"/some/dir/allfoo/bar\"}.\n\
+\n\
+The second argument is optional.  If it is supplied, return a cell array\n\
+containing all the directory names that match.\n\
 @end deftypefn")
 {
   octave_value retval = std::string ();
 
-  if (args.length () == 1)
+  int nargin = args.length ();
+
+  std::string dir;
+
+  if (nargin == 1 || nargin == 2)
     {
-      std::string dir = args(0).string_value ();
+      dir = args(0).string_value ();
 
       if (! error_state)
-	retval = load_path::find_dir (dir);
+	{
+	  if (nargin == 1)
+	    retval = load_path::find_dir (dir);
+	  else if (nargin == 2)
+	    retval = Cell (load_path::find_matching_dirs (dir));
+	}
       else
 	error ("find_dir_in_path: expecting argument to be a directory name");
     }

@@ -1,3 +1,16 @@
+2009-11-11  John W. Eaton  <jwe@octave.org>
+
+	* help.cc (do_get_help_text_from_file, Fget_help_text_from_file):
+	New functions.
+	(do_get_help_text): Pass NAME by const reference.
+	* utils.cc (find_dir_in_path): New optional argument "all".
+	* load-path.cc (load_path::do_find_matching_dirs): New function.
+	(load_path::do_find_dir): Perform match on absolute directory
+	names, but return name as it appears in dir_info_list.  Adjust
+	dname_len after stripping directory separator.
+	* load-path.h (load_path::do_find_matching_dirs): Provide decl.
+	(load_path::find_matching_dirs): New function.
+
 2009-11-11  Shai Ayal  <shaiay@users.sourceforge.net>
 
 	* DLD-FUNCTIONS/fltk_backend.cc (Fl_Gl_Window::draw):

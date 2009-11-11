@@ -65,10 +65,8 @@ function help (name)
       case "not documented"
         error ("help: `%s' is not documented\n", name);
       case "not found"
-        [text, status] = do_contents (name);
-        if (status != 0)
-          error ("help: `%s' not found\n", name);
-        endif
+        do_contents (name);
+	return;
       otherwise
         error ("help: internal error: unsupported help text format: '%s'\n", format);
     endswitch
@@ -87,30 +85,40 @@ function help (name)
 
 endfunction
 
-function [text, status] = do_contents (name)
-  text = "";
-  status = 1;
+function do_contents (name)
 
-  d = find_dir_in_path (name);
-  if (!isempty (d))
-    p = path ();
-    unwind_protect
-      ## Only include 'd' in the path, and then get the help text of 'Contents'
-      path (d);
-      [text, format] = get_help_text ("Contents");
+  found = false;
 
-      ## Take action depending on help text format
-      switch (lower (format))
-        case "plain text"
-          status = 0;
-        case "texinfo"
-          [text, status] = __makeinfo__ (text, "plain text");
-        case "html"
-          [text, status] = strip_html_tags (text);
-      endswitch
-    unwind_protect_cleanup
-      ## Restore path
-      path (p);
-    end_unwind_protect
+  dlist = find_dir_in_path (name, "all");
+
+  for i = 1:numel (dlist)
+    fname = make_absolute_filename (fullfile (dlist{i}, "Contents.m"));
+
+    [text, format] = get_help_text_from_file (fname);
+
+    ## Take action depending on help text format
+    switch (lower (format))
+      case "plain text"
+	status = 0;
+      case "texinfo"
+	[text, status] = __makeinfo__ (text, "plain text");
+      case "html"
+	[text, status] = strip_html_tags (text);
+    endswitch
+
+    if (! isempty (text))
+      found = true;
+      ## Print text.
+      if (status != 0)
+	warning ("help: Texinfo formatting filter exited abnormally; raw Texinfo source of help text follows...\n");
+      endif
+      printf ("%s:\n\n%s\n", fname, text);
+    endif
+
+  endfor
+
+  if (found)
+    puts (__additional_help_message__ ());
   endif
+
 endfunction

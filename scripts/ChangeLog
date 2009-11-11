@@ -1,3 +1,10 @@
+2009-11-11  John W. Eaton  <jwe@octave.org>
+
+	* help/help.m (help): Return immediately after calling do_contents.
+	(do_contents): Find all matching directories, not just the first.
+	Call get_help_text_from_file to avoid looking in path.
+	Handle printing here.
+
 2009-11-10  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.am, audio/module.mk, deprecated/module.mk,

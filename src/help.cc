@@ -705,7 +705,7 @@ raw_help (const std::string& nm, bool& symbol_found)
 }
 
 static void
-do_get_help_text (const std::string name, std::string& text,
+do_get_help_text (const std::string& name, std::string& text,
 		  std::string& format)
 {
   bool symbol_found = false;
@@ -767,6 +767,80 @@ To convert the help text to other formats, use the @code{makeinfo} function.\n\
 	}
       else
 	error ("get_help_text: invalid input");
+    }
+  else
+    print_usage ();
+
+  return retval;
+}
+
+static void
+do_get_help_text_from_file (const std::string& fname, std::string& text,
+			    std::string& format)
+{
+  bool symbol_found = false;
+
+  std::string f;
+
+  raw_help_from_file (fname, text, f, symbol_found);
+
+  format = "Not found";
+  if (symbol_found)
+    {
+      size_t idx = -1;
+      if (text.empty ())
+        {
+          format = "Not documented";
+        }
+      else if (looks_like_texinfo (text, idx))
+        {
+          format = "texinfo";
+          text.erase (0, idx);
+        }
+      else if (looks_like_html (text))
+        {
+          format = "html";
+        }
+      else
+        {
+          format = "plain text";
+        }
+    }
+}
+
+DEFUN (get_help_text_from_file, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {[@var{text}, @var{format}] =} get_help_text_from_file (@var{fname})\n\
+Returns the help text from the given file.\n\
+\n\
+This function returns the raw help text @var{text} and an indication of\n\
+its format for the function @var{name}.  The format indication @var{format}\n\
+is a string that can be either @t{\"texinfo\"}, @t{\"html\"}, or\n\
+@t{\"plain text\"}.\n\
+\n\
+To convert the help text to other formats, use the @code{makeinfo} function.\n\
+\n\
+@seealso{makeinfo}\n\
+@end deftypefn")
+{
+  octave_value_list retval;
+
+  if (args.length () == 1)
+    {
+      const std::string fname = args(0).string_value ();
+
+      if (! error_state)
+	{
+	  std::string text;
+	  std::string format;
+
+	  do_get_help_text_from_file (fname, text, format);
+  
+	  retval(1) = format;
+	  retval(0) = text;
+	}
+      else
+	error ("get_help_text_from_file: invalid input");
     }
   else
     print_usage ();

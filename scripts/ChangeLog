@@ -1,5 +1,10 @@
 2009-11-11  John W. Eaton  <jwe@octave.org>
 
+	* plot/stairs.m (__stairs__): Correct nargin check.  New demos.
+	From Jakub Kasse <jakub.kasse@tul.cz>.
+
+2009-11-11  John W. Eaton  <jwe@octave.org>
+
 	* help/help.m (help): Return immediately after calling do_contents.
 	(do_contents): Find all matching directories, not just the first.
 	Call get_help_text_from_file to avoid looking in path.

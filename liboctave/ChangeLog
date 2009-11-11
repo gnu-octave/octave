@@ -1,3 +1,8 @@
+2009-11-11  John W. Eaton  <jwe@octave.org>
+
+	* lo-ieee.cc (octave_ieee_init): Improve comment about systems
+	without IEEE floating point format.
+
 2009-11-11  Jaroslav Hajek  <highegg@gmail.com>
 
 	* mx-inlines.cc (mx_inline_map): New template loop.

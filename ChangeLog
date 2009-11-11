@@ -1,3 +1,8 @@
+2009-11-11  John W. Eaton  <jwe@octave.org>
+
+	* acinclude.m4 (OCTAVE_IEEE754_DATA_FORMAT): Fail if IEEE 754
+	format is not detected.
+
 2009-11-11  Shai Ayal <shaiay@users.sourceforge.net>
 
 	* configure.ac: Remove tests for ftgl.

@@ -978,6 +978,13 @@ else
 fi
 if test "$octave_cv_ieee754_data_format" = yes; then
   AC_DEFINE(HAVE_IEEE754_DATA_FORMAT, 1, [Define if your system uses IEEE 754 data format.])
+else
+  ## If the format is unknown, then you will probably not have a
+  ## useful system, so we will abort here.  Anyone wishing to
+  ## experiment with building Octave on a system without IEEE
+  ## floating point should be capable of removing this check and
+  ## the one in the octave_ieee_init function in liboctave/lo-ieee.cc.
+  AC_MSG_ERROR([IEEE 754 data format required for building Octave])
 fi
 ])
 dnl

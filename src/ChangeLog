@@ -1,5 +1,10 @@
 2009-11-11  John W. Eaton  <jwe@octave.org>
 
+	* load-path.cc (load_path::do_find_all_first_of): Take advantage
+	of string_vector (std::list<std:string>) constructor.
+
+2009-11-11  John W. Eaton  <jwe@octave.org>
+
 	* help.cc (do_get_help_text_from_file, Fget_help_text_from_file):
 	New functions.
 	(do_get_help_text): Pass NAME by const reference.

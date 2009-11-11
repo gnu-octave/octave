@@ -1349,18 +1349,7 @@ load_path::do_find_all_first_of (const string_vector& flist) const
 	}
     }
 
-  size_t retsize = retlist.size ();
-
-  string_vector retval (retsize);
-
-  for (size_t i = 0; i < retsize; i++)
-    {
-      retval[i] = retlist.front ();
-
-      retlist.pop_front ();
-    }
-
-  return retval;
+  return retlist;
 }
 
 string_vector

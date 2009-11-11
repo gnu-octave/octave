@@ -879,6 +879,11 @@ AC_SUBST(GRAPHICS_LIBS)
 
 OCTAVE_PROG_AR
 
+ifdef([LT_INIT], [], [
+  errprint([error: you must have libtool 2.2.2 or a more recent version
+])
+  m4exit([1])])
+
 LT_PREREQ([2.2.2])
 LT_INIT([disable-static dlopen win32-dll])
 

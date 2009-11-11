@@ -1,3 +1,23 @@
+2009-11-10  Shai Ayal  <shaiay@users.sourceforge.net>
+
+	* gl2ps-renderer.cc, gl2ps-renderer.h, gl2ps.c, gl2ps.h:
+	New files.  PostScript backend based on opengl_renderer and gl2ps.
+	* Makefile.am (octinclude_HEADERS): Add gl2ps.h to the list.
+	(DIST_SRC): Add gl2ps.c to the list.
+	* gl-render.cc (opengl_renderer::render_text): Rename from
+	opengl_renderer::draw_text.
+	(opengl_renderer::draw_figure, opengl_renderer::draw_axes,
+	opengl_renderer::draw_line, opengl_renderer::draw_surface,
+	opengl_renderer::draw_patch, opengl_renderer::draw_hggroup,
+	opengl_renderer::draw_text, opengl_renderer::draw_image):
+	Rename from overloaded opengl_renderer::draw.
+	* gl-render.h: Fix decls.
+
+	* DLD-FUNCTIONS/fltk_backend.cc	(OpenGL_fltk::print): New function.
+	(OpenGL_fltk::print_filename): New data member.
+	(OpenGL_fltk::draw): Add support for printing.
+	(fltk_backend::print_figure): Call figure_manager::print.
+
 2009-11-10  John W. Eaton  <jwe@octave.org>
 
 	* file-io.cc (Fferror): Update doc string.

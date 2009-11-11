@@ -60,6 +60,7 @@ To initialize:
 #include "defun-dld.h"
 #include "error.h"
 #include "gl-render.h"
+#include "gl2ps-renderer.h"
 #include "graphics.h"
 #include "parse.h"
 #include "variables.h"
@@ -83,7 +84,8 @@ class OpenGL_fltk : public Fl_Gl_Window
 {
 public:
   OpenGL_fltk (int xx, int yy, int ww, int hh, double num)
-    : Fl_Gl_Window (xx, yy, ww, hh, 0), number (num), in_zoom (false)
+    : Fl_Gl_Window (xx, yy, ww, hh, 0), number (num), in_zoom (false),
+      print_filename ("")
   {
     // ask for double buffering and a depth buffer
     mode (FL_DEPTH | FL_DOUBLE);
@@ -92,17 +94,28 @@ public:
   ~OpenGL_fltk (void) { }
 
   void zoom (bool z) 
-  {in_zoom = z; if (!in_zoom) hide_overlay ();}
+  {
+    in_zoom = z;
+    if (! in_zoom)
+      hide_overlay ();
+  }
+
   bool zoom (void) { return in_zoom; }
   void set_zoom_box (const Matrix& zb) { zoom_box = zb; }
+  
+  void print (const std::string& filename)
+  {
+    print_filename  = filename;
+  }
 
 private:
   double number;
   opengl_renderer renderer;
   bool in_zoom;
-
   // (x1,y1,x2,y2)
   Matrix zoom_box;
+
+  std::string print_filename;
 
   void setup_viewport (int _w, int _h)
   {
@@ -113,16 +126,26 @@ private:
 
   void draw (void)
   {
-    if (!valid ())
+    if (! valid ())
       {
 	valid (1);
 	setup_viewport (w (), h ());
       }
 
-    renderer.draw (gh_manager::lookup (number));
+    if (! print_filename.empty ())
+      {
+	opengl_renderer *rend = new glps_renderer (print_filename);
+	rend->draw (gh_manager::lookup (number));
+	print_filename = "";
+	delete rend;
+      }
+    else
+      {
+	renderer.draw (gh_manager::lookup (number));
+      }
   }
 
-  void resize (int _x,int _y,int _w,int _h)
+  void resize (int _x, int _y, int _w, int _h)
   {
     Fl_Gl_Window::resize (_x, _y, _w, _h);
     setup_viewport (_w, _h);
@@ -131,12 +154,12 @@ private:
 
   void draw_overlay (void)
   {
-    if (!in_zoom)
+    if (! in_zoom)
       return;
 
-    if (!valid())
+    if (! valid ())
       {
-	valid(1);
+	valid (1);
 	setup_viewport (w (), h ());
       }
 
@@ -268,6 +291,11 @@ public:
 
   // FIXME -- this could change
   double number (void) { return fp.get___myhandle__ ().value (); }
+
+  void print (const std::string& fname)
+  {
+    canvas->print (fname);
+  }
 
   void mark_modified (void)
   {
@@ -654,6 +682,12 @@ public:
     return get_size (hnd2idx (gh));
   }
 
+  static void print (const graphics_handle& gh , const std::string& filename)
+  {
+    if (instance_ok ())
+      instance->do_print (hnd2idx(gh), filename);
+  }
+
 private:
 
   static figure_manager *instance;
@@ -725,6 +759,15 @@ private:
       }
 
     return sz;
+  }
+
+  void do_print (int idx, const std::string& filename)
+  {
+    wm_iterator win;
+    if ((win = windows.find (idx)) != windows.end ())
+      {
+	win->second->print (filename);
+      }
   }
 
   // FIXME -- default size should be configurable.
@@ -873,10 +916,13 @@ public:
     __fltk_redraw__ ();
   }
 
-  void print_figure (const graphics_object& /*go*/,
-		     const std::string& /*term*/,
-		     const std::string& /*file*/, bool /*mono*/,
-		     const std::string& /*debug_file*/) const { }
+  void print_figure (const graphics_object& go,
+		     const std::string& term,
+		     const std::string& file, bool mono,
+		     const std::string& debug_file) const 
+  { 
+    figure_manager::print (go.get_handle (), file);
+  }
 
   Matrix get_canvas_size (const graphics_handle& fh) const
   {

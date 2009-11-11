@@ -72,14 +72,14 @@ public:
   virtual void set_viewport (int w, int h);
 
 protected:
-  virtual void draw (const figure::properties& props);
-  virtual void draw (const axes::properties& props);
-  virtual void draw (const line::properties& props);
-  virtual void draw (const surface::properties& props);
-  virtual void draw (const patch::properties& props);
-  virtual void draw (const hggroup::properties& props);
-  virtual void draw (const text::properties& props);
-  virtual void draw (const image::properties& props);
+  virtual void draw_figure (const figure::properties& props);
+  virtual void draw_axes (const axes::properties& props);
+  virtual void draw_line (const line::properties& props);
+  virtual void draw_surface (const surface::properties& props);
+  virtual void draw_patch (const patch::properties& props);
+  virtual void draw_hggroup (const hggroup::properties& props);
+  virtual void draw_text (const text::properties& props);
+  virtual void draw_image (const image::properties& props);
 
   virtual void set_color (const Matrix& c);
   virtual void set_polygon_offset (bool on, double offset = 0.0);
@@ -95,7 +95,7 @@ protected:
   virtual void draw_marker (double x, double y, double z,
 			    const Matrix& lc, const Matrix& fc);
 
-  virtual Matrix draw_text (const std::string& txt,
+  virtual Matrix render_text (const std::string& txt,
 			    double x, double y, double z,
 			    int halign, int valign, double rotation = 0.0);
 

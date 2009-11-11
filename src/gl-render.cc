@@ -535,32 +535,32 @@ opengl_renderer::draw (const graphics_object& go)
 {
   if (! go.valid_object ())
     return;
-
+  
   const base_properties& props = go.get_properties ();
 
   if (go.isa ("figure"))
-    draw (dynamic_cast<const figure::properties&> (props));
+    draw_figure (dynamic_cast<const figure::properties&> (props));
   else if (go.isa ("axes"))
-    draw (dynamic_cast<const axes::properties&> (props));
+    draw_axes (dynamic_cast<const axes::properties&> (props));
   else if (go.isa ("line"))
-    draw (dynamic_cast<const line::properties&> (props));
+    draw_line (dynamic_cast<const line::properties&> (props));
   else if (go.isa ("surface"))
-    draw (dynamic_cast<const surface::properties&> (props));
+    draw_surface (dynamic_cast<const surface::properties&> (props));
   else if (go.isa ("patch"))
-    draw (dynamic_cast<const patch::properties&> (props));
+    draw_patch (dynamic_cast<const patch::properties&> (props));
   else if (go.isa ("hggroup"))
-    draw (dynamic_cast<const hggroup::properties&> (props));
+    draw_hggroup (dynamic_cast<const hggroup::properties&> (props));
   else if (go.isa ("text"))
-    draw (dynamic_cast<const text::properties&> (props));
+    draw_text (dynamic_cast<const text::properties&> (props));
   else if (go.isa ("image"))
-    draw (dynamic_cast<const image::properties&> (props));
+    draw_image (dynamic_cast<const image::properties&> (props));
   else
     warning ("opengl_renderer: cannot render object of type `%s'",
 	     props.graphics_object_name ().c_str ());
 }
 
 void
-opengl_renderer::draw (const figure::properties& props)
+opengl_renderer::draw_figure (const figure::properties& props)
 {
   backend = props.get_backend ();
 
@@ -599,7 +599,7 @@ opengl_renderer::draw (const figure::properties& props)
 }
 
 void
-opengl_renderer::draw (const axes::properties& props)
+opengl_renderer::draw_axes (const axes::properties& props)
 {
   // setup OpenGL transformation
 
@@ -986,7 +986,7 @@ opengl_renderer::draw (const axes::properties& props)
 	    {
 	      // FIXME: as tick text is transparent, shouldn't be
 	      //        drawn after axes object, for correct rendering?
-	      Matrix b = draw_text (xticklabels(i),
+	      Matrix b = render_text (xticklabels(i),
 				    tickpos(i,0), tickpos(i,1), tickpos(i,2),
 				    halign, valign); 
 
@@ -1196,7 +1196,7 @@ opengl_renderer::draw (const axes::properties& props)
 	    {
 	      // FIXME: as tick text is transparent, shouldn't be
 	      //        drawn after axes object, for correct rendering?
-	      Matrix b = draw_text (yticklabels(i),
+	      Matrix b = render_text (yticklabels(i),
 				    tickpos(i,0), tickpos(i,1), tickpos(i,2),
 				    halign, valign); 
 
@@ -1438,7 +1438,7 @@ opengl_renderer::draw (const axes::properties& props)
 	    {
 	      // FIXME: as tick text is transparent, shouldn't be
 	      //        drawn after axes object, for correct rendering?
-	      Matrix b = draw_text (zticklabels(i),
+	      Matrix b = render_text (zticklabels(i),
 				    tickpos(i,0), tickpos(i,1), tickpos(i,2),
 				    halign, valign); 
 
@@ -1679,7 +1679,7 @@ opengl_renderer::draw (const axes::properties& props)
 }
 
 void
-opengl_renderer::draw (const line::properties& props)
+opengl_renderer::draw_line (const line::properties& props)
 {
   Matrix x = xform.xscale (props.get_xdata ().matrix_value ());
   Matrix y = xform.yscale (props.get_ydata ().matrix_value ());
@@ -1799,7 +1799,7 @@ opengl_renderer::draw (const line::properties& props)
 }
 
 void
-opengl_renderer::draw (const surface::properties& props)
+opengl_renderer::draw_surface (const surface::properties& props)
 {
   const Matrix x = xform.xscale (props.get_xdata ().matrix_value ());
   const Matrix y = xform.yscale (props.get_ydata ().matrix_value ());
@@ -2346,7 +2346,7 @@ opengl_renderer::draw (const surface::properties& props)
 // FIXME: global optimization (rendering, data structures...), there
 // is probably a smarter/faster/less-memory-consuming way to do this.
 void
-opengl_renderer::draw (const patch::properties &props)
+opengl_renderer::draw_patch (const patch::properties &props)
 {
   const Matrix f = props.get_faces ().matrix_value ();
   const Matrix v = xform.scale (props.get_vertices ().matrix_value ());
@@ -2654,13 +2654,13 @@ opengl_renderer::draw (const patch::properties &props)
 }
 
 void
-opengl_renderer::draw (const hggroup::properties &props)
+opengl_renderer::draw_hggroup (const hggroup::properties &props)
 {
   draw (props.get_children ());
 }
 
 void
-opengl_renderer::draw (const text::properties& props)
+opengl_renderer::draw_text (const text::properties& props)
 {
   if (props.get_string ().empty ())
     return;
@@ -2686,13 +2686,13 @@ opengl_renderer::draw (const text::properties& props)
 
   // FIXME: handle margin and surrounding box
 
-  draw_text (props.get_string (),
+  render_text (props.get_string (),
 	     pos(0), pos(1), pos(2),
 	     halign, valign, props.get_rotation ());
 }
 
 void
-opengl_renderer::draw (const image::properties& props)
+opengl_renderer::draw_image (const image::properties& props)
 {
   octave_value cdata = props.get_cdata ();
   dim_vector dv (cdata.dims ());
@@ -3141,7 +3141,7 @@ opengl_renderer::make_marker_list (const std::string& marker, double size,
 }
 
 Matrix
-opengl_renderer::draw_text (const std::string& txt,
+opengl_renderer::render_text (const std::string& txt,
 			    double x, double y, double z,
 			    int halign, int valign, double rotation)
 {
@@ -3220,7 +3220,7 @@ opengl_renderer::draw_text (const std::string& txt,
 
   return bbox;
 #else
-  ::warning ("draw_text: cannot render text, Freetype library not available");
+  ::warning ("render_text: cannot render text, Freetype library not available");
   return Matrix (1, 4, 0.0);
 #endif
 }

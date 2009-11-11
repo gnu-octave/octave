@@ -206,6 +206,8 @@ octinclude_HEADERS = \
   error.h \
   file-io.h \
   gl-render.h \
+  gl2ps.h \
+  gl2ps-renderer.h \
   graphics.h \
   graphics-props.cc \
   gripes.h \
@@ -368,6 +370,8 @@ DIST_SRC = \
   error.cc \
   file-io.cc \
   gl-render.cc \
+  gl2ps.c \
+  gl2ps-renderer.cc \
   graphics.cc \
   gripes.cc \
   help.cc \

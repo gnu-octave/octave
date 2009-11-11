@@ -1,6 +1,10 @@
 Summary of important user-visible changes for version 3.3:
 ---------------------------------------------------------
 
+ ** BLAS and LAPACK libraries are now required to build Octave.  The
+    subset of the reference BLAS and LAPACK libraries has been removed
+    from the Octave sources.
+
  ** The `lookup' function was extended to be more useful for general-purpose
     binary searching. Using this improvement, the ismember function was
     rewritten for significantly better performance.

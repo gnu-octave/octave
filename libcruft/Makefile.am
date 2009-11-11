@@ -38,13 +38,11 @@ octinclude_HEADERS =
 EXTRA_DIST = ChangeLog STOP.patch mkf77def.in
 
 include amos/module.mk
-include blas/module.mk
 include blas-xtra/module.mk
 include daspk/module.mk
 include dasrt/module.mk
 include dassl/module.mk
 include fftpack/module.mk
-include lapack/module.mk
 include lapack-xtra/module.mk
 include misc/module.mk
 include odepack/module.mk

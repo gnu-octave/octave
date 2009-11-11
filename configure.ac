@@ -904,16 +904,15 @@ esac
 AC_SUBST(XTRA_CRUFT_SH_LDFLAGS)
 
 ### Checks for BLAS and LAPACK libraries:
-# (Build subdirectories of libcruft if they aren't found on the system.)
 ACX_BLAS_WITH_F77_FUNC([:], [:])
 ACX_LAPACK([:], [:])
 
-AM_CONDITIONAL([AMCOND_HAVE_BLAS], [test x$acx_blas_ok = xyes])
-AM_CONDITIONAL([AMCOND_HAVE_LAPACK], [test x$acx_lapack_ok = xyes])
+if test x$acx_blas_ok = xno || test x$acx_lapack_ok = xno; then
+  AC_MSG_ERROR([You are required to have BLAS and LAPACK libraries])
+fi
 
 if test "x$acx_blas_f77_func_ok" = "xno"; then
-  warn_blas_f77_incompatible="A BLAS library was detected but found incompatible with your Fortran 77 compiler.  The reference BLAS implementation will be used. To improve performance, consider using a different Fortran compiler or a switch like -ff2c to make your Fortran compiler use a calling convention compatible with the way your BLAS library was compiled, or use a different BLAS library."
-  AC_MSG_WARN($warn_blas_f77_incompatible)
+  AC_MSG_ERROR([A BLAS library was detected but found incompatible with your Fortran 77 compiler])
 fi
 
 # Check for the qrupdate library
@@ -2331,11 +2330,6 @@ fi
 
 if test -n "$warn_less"; then
   AC_MSG_WARN($warn_less)
-  warn_msg_printed=true
-fi
-
-if test -n "$warn_blas_f77_incompatible"; then
-  AC_MSG_WARN($warn_blas_f77_incompatible)
   warn_msg_printed=true
 fi
 

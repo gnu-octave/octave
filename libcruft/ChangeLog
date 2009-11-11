@@ -1,5 +1,10 @@
 2009-11-10  John W. Eaton  <jwe@octave.org>
 
+	* blas, lapack: Remove directories and all files.
+	* Makefile.am: Don't include blas/module.mk or lapack/module.mk.
+
+2009-11-10  John W. Eaton  <jwe@octave.org>
+
 	* Makefile.am, amos/module.mk, blas-xtra/module.mk,
 	blas/module.mk, daspk/module.mk, dasrt/module.mk, dassl/module.mk,
 	fftpack/module.mk, lapack-xtra/module.mk, lapack/module.mk,

@@ -1,5 +1,14 @@
 2009-11-10  John W. Eaton  <jwe@octave.org>
 
+	* NEWS: Update.
+
+	* configure.ac: Exit with error if BLAS or LAPACK libraries are
+	not found or if the BLAS library is found to be incompatible with
+	the Fortran compiler.  Eliminate warn_blas_f77_incompatible
+	variable.
+
+2009-11-10  John W. Eaton  <jwe@octave.org>
+
 	* configure.ac: Set octincludedir to
 	$(includedir)/octave-$(version)/octave, not
 	$(includedir)/octave-$(version).

@@ -760,33 +760,31 @@ ComplexNDArray::cummin (Array<octave_idx_type>& idx_arg, int dim) const
 NDArray
 ComplexNDArray::abs (void) const
 {
-  return NDArray (mx_inline_cabs_dup (data (), length ()),
-                  dims ());
+  return do_mx_unary_map<NDArray, ComplexNDArray, std::abs> (*this);
 }
 
 boolNDArray
 ComplexNDArray::isnan (void) const
 {
-  return Array<bool> (fastmap<bool> (xisnan));
+  return do_mx_unary_map<boolNDArray, ComplexNDArray, xisnan> (*this);
 }
 
 boolNDArray
 ComplexNDArray::isinf (void) const
 {
-  return Array<bool> (fastmap<bool> (xisinf));
+  return do_mx_unary_map<boolNDArray, ComplexNDArray, xisinf> (*this);
 }
 
 boolNDArray
 ComplexNDArray::isfinite (void) const
 {
-  return Array<bool> (fastmap<bool> (xfinite));
+  return do_mx_unary_map<boolNDArray, ComplexNDArray, xfinite> (*this);
 }
 
 ComplexNDArray
 conj (const ComplexNDArray& a)
 {
-  return ComplexNDArray (mx_inline_conj_dup (a.data (), a.length ()),
-                         a.dims ());
+  return do_mx_unary_map<ComplexNDArray, ComplexNDArray, std::conj> (a);
 }
 
 ComplexNDArray&

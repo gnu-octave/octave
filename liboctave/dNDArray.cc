@@ -849,15 +849,13 @@ NDArray::concat (const charNDArray& rb, const Array<octave_idx_type>& ra_idx)
 NDArray
 real (const ComplexNDArray& a)
 {
-  return NDArray (mx_inline_real_dup (a.data (), a.length ()),
-                  a.dims ());
+  return do_mx_unary_op<NDArray, ComplexNDArray> (a, mx_inline_real);
 }
 
 NDArray
 imag (const ComplexNDArray& a)
 {
-  return NDArray (mx_inline_imag_dup (a.data (), a.length ()),
-                  a.dims ());
+  return do_mx_unary_op<NDArray, ComplexNDArray> (a, mx_inline_imag);
 }
 
 NDArray&
@@ -877,26 +875,25 @@ NDArray::insert (const NDArray& a, const Array<octave_idx_type>& ra_idx)
 NDArray
 NDArray::abs (void) const
 {
-  return NDArray (mx_inline_fabs_dup (data (), length ()),
-                  dims ());
+  return do_mx_unary_map<NDArray, NDArray, std::abs> (*this);
 }
 
 boolNDArray
 NDArray::isnan (void) const
 {
-  return Array<bool> (fastmap<bool> (xisnan));
+  return do_mx_unary_map<boolNDArray, NDArray, xisnan> (*this);
 }
 
 boolNDArray
 NDArray::isinf (void) const
 {
-  return Array<bool> (fastmap<bool> (xisinf));
+  return do_mx_unary_map<boolNDArray, NDArray, xisinf> (*this);
 }
 
 boolNDArray
 NDArray::isfinite (void) const
 {
-  return Array<bool> (fastmap<bool> (xfinite));
+  return do_mx_unary_map<boolNDArray, NDArray, xfinite> (*this);
 }
 
 Matrix

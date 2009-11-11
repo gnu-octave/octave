@@ -755,33 +755,31 @@ FloatComplexNDArray::cummin (Array<octave_idx_type>& idx_arg, int dim) const
 FloatNDArray
 FloatComplexNDArray::abs (void) const
 {
-  return FloatNDArray (mx_inline_cabs_dup (data (), length ()),
-                       dims ());
+  return do_mx_unary_map<FloatNDArray, FloatComplexNDArray, std::abs> (*this);
 }
 
 boolNDArray
 FloatComplexNDArray::isnan (void) const
 {
-  return Array<bool> (fastmap<bool> (xisnan));
+  return do_mx_unary_map<boolNDArray, FloatComplexNDArray, xisnan> (*this);
 }
 
 boolNDArray
 FloatComplexNDArray::isinf (void) const
 {
-  return Array<bool> (fastmap<bool> (xisinf));
+  return do_mx_unary_map<boolNDArray, FloatComplexNDArray, xisinf> (*this);
 }
 
 boolNDArray
 FloatComplexNDArray::isfinite (void) const
 {
-  return Array<bool> (fastmap<bool> (xfinite));
+  return do_mx_unary_map<boolNDArray, FloatComplexNDArray, xfinite> (*this);
 }
 
 FloatComplexNDArray
 conj (const FloatComplexNDArray& a)
 {
-  return FloatComplexNDArray (mx_inline_conj_dup (a.data (), a.length ()),
-                              a.dims ());
+  return do_mx_unary_map<FloatComplexNDArray, FloatComplexNDArray, std::conj> (a);
 }
 
 FloatComplexNDArray&

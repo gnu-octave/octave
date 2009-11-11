@@ -197,8 +197,20 @@ DEFMXANYNAN(float)
 DEFMXANYNAN(Complex)
 DEFMXANYNAN(FloatComplex)
 
-// Pairwise minimums/maximums
 #define DEFMXMAPPER(F, FUN) \
+template <class T> \
+inline void F (size_t n, T *r, const T *x) \
+{ for (size_t i = 0; i < n; i++) r[i] = FUN (x[i]); }
+
+template<class T>
+inline void mx_inline_real (size_t n, T *r, const std::complex<T>* x)
+{ for (size_t i = 0; i < n; i++) r[i] = x[i].real (); }
+template<class T>
+inline void mx_inline_imag (size_t n, T *r, const std::complex<T>* x)
+{ for (size_t i = 0; i < n; i++) r[i] = x[i].imag (); }
+
+// Pairwise minimums/maximums
+#define DEFMXMAPPER2(F, FUN) \
 template <class T> \
 inline void F (size_t n, T *r, const T *x, const T *y) \
 { for (size_t i = 0; i < n; i++) r[i] = FUN (x[i], y[i]); } \
@@ -209,35 +221,54 @@ template <class T> \
 inline void F (size_t n, T *r, T x, const T *y) \
 { for (size_t i = 0; i < n; i++) r[i] = FUN (x, y[i]); }
 
-DEFMXMAPPER (mx_inline_xmin, xmin)
-DEFMXMAPPER (mx_inline_xmax, xmax)
+DEFMXMAPPER2 (mx_inline_xmin, xmin)
+DEFMXMAPPER2 (mx_inline_xmax, xmax)
 
-#define DEFMXLOCALMAPPER(F, FUN, T) \
-static void F (size_t n, T *r, const T *x, const T *y) \
-{ for (size_t i = 0; i < n; i++) r[i] = FUN (x[i], y[i]); } \
-static void F (size_t n, T *r, const T *x, T y) \
-{ for (size_t i = 0; i < n; i++) r[i] = FUN (x[i], y); } \
-static void F (size_t n, T *r, T x, const T *y) \
-{ for (size_t i = 0; i < n; i++) r[i] = FUN (x, y[i]); }
+// Arbitrary function appliers. The function is a template parameter to enable
+// inlining.
+template <class R, class X, R fun (X x)>
+inline void mx_inline_map (size_t n, R *r, const X *x)
+{ for (size_t i = 0; i < n; i++) r[i] = fun (x[i]); }
+
+template <class R, class X, R fun (const X& x)>
+inline void mx_inline_map (size_t n, R *r, const X *x)
+{ for (size_t i = 0; i < n; i++) r[i] = fun (x[i]); }
 
 // Appliers. Since these call the operation just once, we pass it as
 // a pointer, to allow the compiler reduce number of instances.
 
+#define AELEMT(ARRAY) typename ARRAY::element_type
 template <class RNDA, class XNDA>
 inline RNDA 
 do_mx_unary_op (const XNDA& x,
-                void (*op) (size_t, typename RNDA::element_type *,
-                            const typename XNDA::element_type *))
+                void (*op) (size_t, AELEMT(RNDA) *,
+                            const AELEMT(XNDA) *))
 {
   RNDA r (x.dims ());
   op (r.length (), r.fortran_vec (), x.data ());
   return r;
 }
 
+// Shortcuts for applying mx_inline_map.
+
+template <class RNDA, class XNDA, AELEMT(RNDA) fun (AELEMT(XNDA))>
+inline RNDA 
+do_mx_unary_map (const XNDA& x)
+{
+  return do_mx_unary_op<RNDA, XNDA> (x, mx_inline_map<AELEMT(RNDA), AELEMT(XNDA), fun>);
+}
+
+template <class RNDA, class XNDA, AELEMT(RNDA) fun (const AELEMT(XNDA)&)>
+inline RNDA 
+do_mx_unary_map (const XNDA& x)
+{
+  return do_mx_unary_op<RNDA, XNDA> (x, mx_inline_map<AELEMT(RNDA), AELEMT(XNDA), fun>);
+}
+
 template <class RNDA>
 inline RNDA&
 do_mx_inplace_op (RNDA& r,
-                  void (*op) (size_t, typename RNDA::element_type *))
+                  void (*op) (size_t, AELEMT(RNDA) *))
 {
   op (r.numel (), r.fortran_vec ());
   return r;
@@ -247,9 +278,9 @@ do_mx_inplace_op (RNDA& r,
 template <class RNDA, class XNDA, class YNDA>
 inline RNDA 
 do_mm_binary_op (const XNDA& x, const YNDA& y,
-                 void (*op) (size_t, typename RNDA::element_type *,
-                             const typename XNDA::element_type *,
-                             const typename YNDA::element_type *),
+                 void (*op) (size_t, AELEMT(RNDA) *,
+                             const AELEMT(XNDA) *,
+                             const AELEMT(YNDA) *),
                  const char *opname)
 {
   dim_vector dx = x.dims (), dy = y.dims ();
@@ -269,8 +300,8 @@ do_mm_binary_op (const XNDA& x, const YNDA& y,
 template <class RNDA, class XNDA, class YS>
 inline RNDA 
 do_ms_binary_op (const XNDA& x, const YS& y,
-                 void (*op) (size_t, typename RNDA::element_type *,
-                             const typename XNDA::element_type *, YS))
+                 void (*op) (size_t, AELEMT(RNDA) *,
+                             const AELEMT(XNDA) *, YS))
 {
   RNDA r (x.dims ());
   op (r.length (), r.fortran_vec (), x.data (), y);
@@ -280,8 +311,8 @@ do_ms_binary_op (const XNDA& x, const YS& y,
 template <class RNDA, class XS, class YNDA>
 inline RNDA 
 do_sm_binary_op (const XS& x, const YNDA& y,
-                 void (*op) (size_t, typename RNDA::element_type *, XS,
-                             const typename YNDA::element_type *))
+                 void (*op) (size_t, AELEMT(RNDA) *, XS,
+                             const AELEMT(YNDA) *))
 {
   RNDA r (y.dims ());
   op (r.length (), r.fortran_vec (), x, y.data ());
@@ -291,8 +322,8 @@ do_sm_binary_op (const XS& x, const YNDA& y,
 template <class RNDA, class XNDA>
 inline RNDA& 
 do_mm_inplace_op (RNDA& r, const XNDA& x,
-                  void (*op) (size_t, typename RNDA::element_type *,
-                              const typename XNDA::element_type *),
+                  void (*op) (size_t, AELEMT(RNDA) *,
+                              const AELEMT(XNDA) *),
                   const char *opname)
 {
   dim_vector dr = r.dims (), dx = x.dims ();
@@ -306,7 +337,7 @@ do_mm_inplace_op (RNDA& r, const XNDA& x,
 template <class RNDA, class XS>
 inline RNDA& 
 do_ms_inplace_op (RNDA& r, const XS& x,
-                  void (*op) (size_t, typename RNDA::element_type *, XS))
+                  void (*op) (size_t, AELEMT(RNDA) *, XS))
 {
   op (r.length (), r.fortran_vec (), x);
   return r;
@@ -1084,7 +1115,7 @@ get_extent_triplet (const dim_vector& dims, int& dim,
 template <class ArrayType, class T>
 inline ArrayType
 do_mx_red_op (const Array<T>& src, int dim,
-              void (*mx_red_op) (const T *, typename ArrayType::element_type *,
+              void (*mx_red_op) (const T *, AELEMT(ArrayType) *,
                                  octave_idx_type, octave_idx_type, octave_idx_type))
 {
   octave_idx_type l, n, u;
@@ -1108,7 +1139,7 @@ do_mx_red_op (const Array<T>& src, int dim,
 template <class ArrayType, class T>
 inline ArrayType
 do_mx_cum_op (const Array<T>& src, int dim,
-              void (*mx_cum_op) (const T *, typename ArrayType::element_type *,
+              void (*mx_cum_op) (const T *, AELEMT(ArrayType) *,
                                  octave_idx_type, octave_idx_type, octave_idx_type))
 {
   octave_idx_type l, n, u;
@@ -1125,8 +1156,7 @@ do_mx_cum_op (const Array<T>& src, int dim,
 template <class ArrayType>
 inline ArrayType
 do_mx_minmax_op (const ArrayType& src, int dim,
-                 void (*mx_minmax_op) (const typename ArrayType::element_type *, 
-                                       typename ArrayType::element_type *,
+                 void (*mx_minmax_op) (const AELEMT(ArrayType) *, AELEMT(ArrayType) *,
                                        octave_idx_type, octave_idx_type, octave_idx_type))
 {
   octave_idx_type l, n, u;
@@ -1146,8 +1176,7 @@ do_mx_minmax_op (const ArrayType& src, int dim,
 template <class ArrayType>
 inline ArrayType
 do_mx_minmax_op (const ArrayType& src, Array<octave_idx_type>& idx, int dim,
-                 void (*mx_minmax_op) (const typename ArrayType::element_type *, 
-                                       typename ArrayType::element_type *,
+                 void (*mx_minmax_op) (const AELEMT(ArrayType) *, AELEMT(ArrayType) *,
                                        octave_idx_type *,
                                        octave_idx_type, octave_idx_type, octave_idx_type))
 {
@@ -1171,8 +1200,7 @@ do_mx_minmax_op (const ArrayType& src, Array<octave_idx_type>& idx, int dim,
 template <class ArrayType>
 inline ArrayType
 do_mx_cumminmax_op (const ArrayType& src, int dim,
-                    void (*mx_cumminmax_op) (const typename ArrayType::element_type *, 
-                                             typename ArrayType::element_type *,
+                    void (*mx_cumminmax_op) (const AELEMT(ArrayType) *, AELEMT(ArrayType) *,
                                              octave_idx_type, octave_idx_type, octave_idx_type))
 {
   octave_idx_type l, n, u;
@@ -1188,8 +1216,7 @@ do_mx_cumminmax_op (const ArrayType& src, int dim,
 template <class ArrayType>
 inline ArrayType
 do_mx_cumminmax_op (const ArrayType& src, Array<octave_idx_type>& idx, int dim,
-                    void (*mx_cumminmax_op) (const typename ArrayType::element_type *, 
-                                             typename ArrayType::element_type *,
+                    void (*mx_cumminmax_op) (const AELEMT(ArrayType) *, AELEMT(ArrayType) *,
                                              octave_idx_type *,
                                              octave_idx_type, octave_idx_type, octave_idx_type))
 {
@@ -1209,8 +1236,7 @@ do_mx_cumminmax_op (const ArrayType& src, Array<octave_idx_type>& idx, int dim,
 template <class ArrayType>
 inline ArrayType
 do_mx_diff_op (const ArrayType& src, int dim, octave_idx_type order,
-               void (*mx_diff_op) (const typename ArrayType::element_type *, 
-                                   typename ArrayType::element_type *,
+               void (*mx_diff_op) (const AELEMT(ArrayType) *, AELEMT(ArrayType) *,
                                    octave_idx_type, octave_idx_type, octave_idx_type,
                                    octave_idx_type))
 {

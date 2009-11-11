@@ -1,3 +1,21 @@
+2009-11-11  Jaroslav Hajek  <highegg@gmail.com>
+
+	* mx-inlines.cc (mx_inline_map): New template loop.
+	(DEFMXMAPPER): New macro.
+	(DEFMXMAPPER2): Rename from DEFMXMAPPER.
+	(do_mx_unary_map): New applier.
+	(mx_inline_real, mx_inline_complex): New loops.
+	* dNDArray.cc (NDArray::abs, NDArray::isnan, NDArray::isinf,
+	NDArray::isfinite, real, imag): Use new constructs.
+	* fNDArray.cc (FloatNDArray::abs, FloatNDArray::isnan,
+	FloatNDArray::isinf, FloatNDArray::isfinite, real, imag): Ditto.
+	* CNDArray.cc (ComplexNDArray::abs, ComplexNDArray::isnan,
+	ComplexNDArray::isinf, ComplexNDArray::isfinite, conj): Use new
+	constructs.
+	* fCNDArray.cc (FloatComplexNDArray::abs, FloatComplexNDArray::isnan,
+	FloatComplexNDArray::isinf, FloatComplexNDArray::isfinite, conj): Use
+	new constructs.
+
 2009-11-10  John W. Eaton  <jwe@octave.org>
 
 	* mx-ops, sparse-mx-ops, vx-ops b/liboctave/vx-ops:

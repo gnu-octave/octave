@@ -676,25 +676,6 @@ public:
     return result;
   }
 
-  // This is non-breakable map, suitable for fast functions. Efficiency
-  // relies on compiler's ability to inline a function pointer. This seems
-  // to be OK with recent GCC.
-  template <class U>
-  Array<U>
-  fastmap (U (*fcn) (typename ref_param<T>::type)) const
-  {
-    octave_idx_type len = length ();
-
-    const T *m = data ();
-
-    Array<U> result (dims ());
-    U *p = result.fortran_vec ();
-
-    std::transform (m, m + len, p, fcn);
-
-    return result;
-  }
-
   template <class U> friend class Array;
 
 private:

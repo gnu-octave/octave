@@ -807,15 +807,13 @@ FloatNDArray::concat (const charNDArray& rb, const Array<octave_idx_type>& ra_id
 FloatNDArray
 real (const FloatComplexNDArray& a)
 {
-  return FloatNDArray (mx_inline_real_dup (a.data (), a.length ()),
-                       a.dims ());
+  return do_mx_unary_op<FloatNDArray, FloatComplexNDArray> (a, mx_inline_real);
 }
 
 FloatNDArray
 imag (const FloatComplexNDArray& a)
 {
-  return FloatNDArray (mx_inline_imag_dup (a.data (), a.length ()),
-                       a.dims ());
+  return do_mx_unary_op<FloatNDArray, FloatComplexNDArray> (a, mx_inline_imag);
 }
 
 FloatNDArray&
@@ -835,26 +833,25 @@ FloatNDArray::insert (const FloatNDArray& a, const Array<octave_idx_type>& ra_id
 FloatNDArray
 FloatNDArray::abs (void) const
 {
-  return FloatNDArray (mx_inline_fabs_dup (data (), length ()),
-                       dims ());
+  return do_mx_unary_map<FloatNDArray, FloatNDArray, std::abs> (*this);
 }
 
 boolNDArray
 FloatNDArray::isnan (void) const
 {
-  return Array<bool> (fastmap<bool> (xisnan));
+  return do_mx_unary_map<boolNDArray, FloatNDArray, xisnan> (*this);
 }
 
 boolNDArray
 FloatNDArray::isinf (void) const
 {
-  return Array<bool> (fastmap<bool> (xisinf));
+  return do_mx_unary_map<boolNDArray, FloatNDArray, xisinf> (*this);
 }
 
 boolNDArray
 FloatNDArray::isfinite (void) const
 {
-  return Array<bool> (fastmap<bool> (xfinite));
+  return do_mx_unary_map<boolNDArray, FloatNDArray, xfinite> (*this);
 }
 
 FloatMatrix

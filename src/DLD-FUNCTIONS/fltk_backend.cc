@@ -142,6 +142,9 @@ private:
     else
       {
 	renderer.draw (gh_manager::lookup (number));
+
+	if (zoom ())
+	  overlay ();
       }
   }
 
@@ -152,17 +155,17 @@ private:
     redraw ();
   }
 
-  void draw_overlay (void)
+  void zoom_box_vertex (void)
   {
-    if (! in_zoom)
-      return;
-
-    if (! valid ())
-      {
-	valid (1);
-	setup_viewport (w (), h ());
-      }
-
+    glVertex2d (zoom_box(0), h () - zoom_box(1));
+    glVertex2d (zoom_box(0), h () - zoom_box(3));
+    glVertex2d (zoom_box(2), h () - zoom_box(3));
+    glVertex2d (zoom_box(2), h () - zoom_box(1));
+    glVertex2d (zoom_box(0), h () - zoom_box(1));
+  }
+ 
+  void overlay (void)
+  {
     glPushMatrix ();
 
     glMatrixMode (GL_MODELVIEW);
@@ -175,14 +178,15 @@ private:
     glPushAttrib (GL_DEPTH_BUFFER_BIT | GL_CURRENT_BIT);
     glDisable (GL_DEPTH_TEST);
 
-    glLineWidth (1);
+    glBegin (GL_POLYGON);
+    glColor4f (0.45, 0.62, 0.81, 0.1);
+    zoom_box_vertex ();
+    glEnd ();
+
     glBegin (GL_LINE_STRIP);
-    gl_color(0);
-    glVertex2d (zoom_box(0), h () - zoom_box(1));
-    glVertex2d (zoom_box(0), h () - zoom_box(3));
-    glVertex2d (zoom_box(2), h () - zoom_box(3));
-    glVertex2d (zoom_box(2), h () - zoom_box(1));
-    glVertex2d (zoom_box(0), h () - zoom_box(1));
+    glLineWidth (1.5);
+    glColor4f (0.45, 0.62, 0.81, 0.9);
+    zoom_box_vertex ();
     glEnd ();
 
     glPopAttrib ();
@@ -403,13 +407,14 @@ private:
     return fp.get_currentaxes ();
   }
   
-  void pixel2status 
-  (graphics_handle ax, int px0, int py0, int px1 = -1, int py1 = -1)
+  void pixel2status (graphics_handle ax, int px0, int py0,
+		     int px1 = -1, int py1 = -1)
   {
     pixel2status (gh_manager::get_object (ax), px0, py0, px1, py1);
   }
-  void pixel2status 
-  (graphics_object ax, int px0, int py0, int px1 = -1, int py1 = -1)
+
+  void pixel2status (graphics_object ax, int px0, int py0,
+		     int px1 = -1, int py1 = -1)
   {
     double x0, y0, x1, y1;
     std::stringstream cbuf;
@@ -520,7 +525,7 @@ private:
 	    zoom_box (3) =  Fl::event_y ();
 	    canvas->set_zoom_box (zoom_box);
 	    canvas->zoom (true);
-	    canvas->redraw_overlay ();
+	    canvas->redraw ();
 	  }
 
 	break;

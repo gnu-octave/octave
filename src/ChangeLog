@@ -1,3 +1,15 @@
+2009-11-11  Shai Ayal  <shaiay@users.sourceforge.net>
+
+	* DLD-FUNCTIONS/fltk_backend.cc (Fl_Gl_Window::draw):
+	If zooming, call overlay.
+	(Fl_Gl_Window::overlay): Rename from draw_overlay.
+	Don't return early if zooming.  Don't call valid and conditionally
+	call setup_veiwport.  Set overlay color and draw line around zoom
+	box.
+	(Fl_Gl_Window::zoom_box_vertex): New function.
+	(Fl_Gl_Window::pixel2status): Call canvas->redraw, not
+	canvas->redraw_overlay.
+	
 2009-11-10  Shai Ayal  <shaiay@users.sourceforge.net>
 
 	* gl2ps-renderer.cc, gl2ps-renderer.h, gl2ps.c, gl2ps.h:

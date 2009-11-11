@@ -1,3 +1,7 @@
+2009-11-11  Benjamin Lindner  <lindnerb@users.sourceforge.net>
+
+	* configure.ac: Remove -mwindows from FLTK_LDFLAGS.
+
 2009-11-11  John W. Eaton  <jwe@octave.org>
 
 	* configure.ac: Fail if LT_INIT it is not defined.

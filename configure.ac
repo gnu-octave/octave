@@ -854,6 +854,12 @@ else
   FLTK_CFLAGS="`$FLTK_CONFIG $fltkconf_args --use-gl --cflags`"
   FLTK_LDFLAGS="`$FLTK_CONFIG $fltkconf_args --use-gl --ldflags`"
   
+  case "$canonical_host_type" in
+    *-*-mingw*)
+      FLTK_LDFLAGS="`echo $FLTK_LDFLAGS | sed -e 's/-mwindows//g'`"
+    ;;
+  esac
+
   AC_MSG_CHECKING(for OpenGL support in FLTK)
   cat > conftest.cc <<EOF
   #include <FL/gl.h>

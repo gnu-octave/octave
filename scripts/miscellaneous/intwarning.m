@@ -25,10 +25,9 @@
 ##
 ## @table @asis
 ## @item "query"
-## The state of the Octave integer conversion and math warnings is
-## queried.  If there is no output argument, then the state is printed.
-## Otherwise it is returned in a structure with the fields "identifier"
-## and "state".
+## With an output argument, return the current state of the integer
+## conversion and math warnings.  With no output arguments, print the
+## current state.
 ##
 ## @c Set example in small font to prevent overfull line
 ## @smallexample
@@ -42,16 +41,11 @@
 ## @end smallexample 
 ##
 ## @item "on"
-## Turn integer conversion and math warnings "on".  If there is no output
-## argument, then nothing is printed.  Otherwise the original state of
-## the state of the integer conversion and math warnings is returned in
-## a structure array.
-##
-## @item "off"
-## Turn integer conversion and math warnings "on".  If there is no output
-## argument, then nothing is printed.  Otherwise the original state of
-## the state of the integer conversion and math warnings is returned in
-## a structure array.
+## @itemx "off"
+## Turn integer conversion and math warnings on (or off).  If there is
+## no output argument, then nothing is printed.  Otherwise the original
+## state of the state of the integer conversion and math warnings is
+## returned in a structure array.
 ## @end table
 ##
 ## The original state of the integer warnings can be restored by passing

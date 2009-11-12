@@ -30,6 +30,8 @@ EXTRA_DIST = \
   texinfo.tex \
   texmf.cnf
 
+DISTCLEANFILES = conf.texi
+
 SUBDIRS = faq interpreter liboctave refcard
 
 all-local: conf.texi

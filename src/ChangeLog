@@ -1,3 +1,125 @@
+2009-11-12  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-base.h (unary_mapper_t): New enum.
+	(octave_base_value::map (unary_mapper_t)): New method.
+	(octave_base_value::abs): Remove.
+	(octave_base_value::acos): Remove.
+	(octave_base_value::acosh): Remove.
+	(octave_base_value::angle): Remove.
+	(octave_base_value::arg): Remove.
+	(octave_base_value::asin): Remove.
+	(octave_base_value::asinh): Remove.
+	(octave_base_value::atan): Remove.
+	(octave_base_value::atanh): Remove.
+	(octave_base_value::ceil): Remove.
+	(octave_base_value::conj): Remove.
+	(octave_base_value::cos): Remove.
+	(octave_base_value::cosh): Remove.
+	(octave_base_value::erf): Remove.
+	(octave_base_value::erfc): Remove.
+	(octave_base_value::exp): Remove.
+	(octave_base_value::expm1): Remove.
+	(octave_base_value::finite): Remove.
+	(octave_base_value::fix): Remove.
+	(octave_base_value::floor): Remove.
+	(octave_base_value::gamma): Remove.
+	(octave_base_value::imag): Remove.
+	(octave_base_value::isinf): Remove.
+	(octave_base_value::isna): Remove.
+	(octave_base_value::isnan): Remove.
+	(octave_base_value::lgamma): Remove.
+	(octave_base_value::log): Remove.
+	(octave_base_value::log2): Remove.
+	(octave_base_value::log10): Remove.
+	(octave_base_value::log1p): Remove.
+	(octave_base_value::real): Remove.
+	(octave_base_value::round): Remove.
+	(octave_base_value::roundb): Remove.
+	(octave_base_value::signum): Remove.
+	(octave_base_value::sin): Remove.
+	(octave_base_value::sinh): Remove.
+	(octave_base_value::sqrt): Remove.
+	(octave_base_value::tan): Remove.
+	(octave_base_value::tanh): Remove.
+
+	* ov.h 
+	(octave_value::map (unary_mapper_t)): New method.
+	(octave_value::abs): Remove.
+	(octave_value::acos): Remove.
+	(octave_value::acosh): Remove.
+	(octave_value::angle): Remove.
+	(octave_value::arg): Remove.
+	(octave_value::asin): Remove.
+	(octave_value::asinh): Remove.
+	(octave_value::atan): Remove.
+	(octave_value::atanh): Remove.
+	(octave_value::ceil): Remove.
+	(octave_value::conj): Remove.
+	(octave_value::cos): Remove.
+	(octave_value::cosh): Remove.
+	(octave_value::erf): Remove.
+	(octave_value::erfc): Remove.
+	(octave_value::exp): Remove.
+	(octave_value::expm1): Remove.
+	(octave_value::finite): Remove.
+	(octave_value::fix): Remove.
+	(octave_value::floor): Remove.
+	(octave_value::gamma): Remove.
+	(octave_value::imag): Remove.
+	(octave_value::isinf): Remove.
+	(octave_value::isna): Remove.
+	(octave_value::isnan): Remove.
+	(octave_value::lgamma): Remove.
+	(octave_value::log): Remove.
+	(octave_value::log2): Remove.
+	(octave_value::log10): Remove.
+	(octave_value::log1p): Remove.
+	(octave_value::real): Remove.
+	(octave_value::round): Remove.
+	(octave_value::roundb): Remove.
+	(octave_value::signum): Remove.
+	(octave_value::sin): Remove.
+	(octave_value::sinh): Remove.
+	(octave_value::sqrt): Remove.
+	(octave_value::tan): Remove.
+	(octave_value::tanh): Remove.
+
+	* ov-scalar.h, ov-scalar.cc (octave_scalar): Update.
+	* ov-float.h, ov-float.cc (octave_float): Update.
+
+	* ov-complex.h, ov-complex.cc (octave_complex): Update.
+	* ov-flt-complex.h, ov-flt-complex.cc (octave_float_complex): Update.
+
+	* ov-re-matrix.h ov-re-matrix.cc (octave_matrix): Update.
+	* ov-flt-re-matrix.h ov-flt-re-matrix.cc (octave_float_matrix): Update.
+	* ov-cx-matrix.h ov-cx-matrix.cc (octave_complex_matrix): Update.
+	* ov-flt-cx-matrix.h ov-flt-cx-matrix.cc (octave_float_complex_matrix): Update.
+
+	* ov-re-sparse.h ov-re-sparse.cc (octave_sparse_matrix): Update.
+	* ov-cx-sparse.h ov-cx-sparse.cc (octave_sparse_complex_matrix): Update.
+
+	* ov-re-diag.h ov-re-diag.cc (octave_diag_matrix): Update.
+	* ov-flt-re-diag.h ov-flt-re-diag.cc (octave_float_diag_matrix): Update.
+	* ov-cx-diag.h ov-cx-diag.cc (octave_complex_diag_matrix): Update.
+	* ov-flt-cx-diag.h ov-flt-cx-diag.cc (octave_float_complex_diag_matrix): Update.
+
+	* ov-range.h (octave_range): Update.
+	* ov-intx.h (OCTAVE_VALUE_INT_MATRIX_T): Update.
+	(OCTAVE_VALUE_INT_SCALAR_T): Update.
+
+	* ov-perm.h (octave_perm_matrix): Update.
+	* ov-bool.h (octave_bool): Update.
+	* ov-bool-mat.h (octave_bool_matrix): Update.
+	* ov-ch-mat.h (octave_char_matrix): Update.
+
+	* mappers.cc (Fabs, Facos, Facosh, Fangle, Farg, Fasin, Fasinh,
+	Fatan, Fatanh, Fceil, Fconj, Fcos, Fcosh, Ferf, Ferfc, Fexp, Fexpm1,
+	Ffinite, Ffix, Ffloor, Fgamma, Fimag, Fisinf, Fisna, Fisnan, Flgamma,
+	Flog, Flog2, Flog10, Flog1p, Freal, Fround, Froundb, Fsignum, Fsin,
+	Fsinh, Fsqrt, Ftan, Ftanh, Fisalnum, Fisalpha, Fisascii, Fiscntrl,
+	Fisdigit, Fisgraph, Fislower, Fisprint, Fispunct, Fisspace, Fisupper,
+	Fisxdigit, Ftoascii, Ftolower, Ftoupper): Update.
+
 2009-11-11  John W. Eaton  <jwe@octave.org>
 
 	* load-path.cc (load_path::do_find_all_first_of): Take advantage

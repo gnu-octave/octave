@@ -95,11 +95,6 @@ public:
 
   charNDArray diag (octave_idx_type k = 0) const;
 
-  typedef int (*mapper) (int);
-  boolNDArray bmap (mapper fcn) const;
-  NDArray dmap (mapper fcn) const;
-  charNDArray smap (mapper fcn) const;
-
 private:
 
   charNDArray (char *d, dim_vector& dv) : MArrayN<char> (d, dv) { }

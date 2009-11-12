@@ -426,12 +426,6 @@ public:
   friend OCTAVE_API std::ostream& operator << (std::ostream& os, const SparseMatrix& a);
   friend OCTAVE_API std::istream& operator >> (std::istream& is, SparseMatrix& a);
 
-  typedef double (*dmapper) (double);
-  typedef Complex (*cmapper) (const Complex&);
-  typedef bool (*bmapper) (double);
-  SparseMatrix map (dmapper fcn) const;
-  SparseComplexMatrix map (cmapper fcn) const;
-  SparseBoolMatrix map (bmapper fcn) const;
 };
 
 // Publish externally used friend functions.

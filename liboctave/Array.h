@@ -666,15 +666,35 @@ public:
     Array<U> result (dims ());
     U *p = result.fortran_vec ();
 
-    for (octave_idx_type i = 0; i < len; i++)
+    octave_idx_type i;
+    for (i = 0; i < len - 3; i += 4)
       {
 	OCTAVE_QUIT;
 
-	p[i] = fcn (m[i]);
+        p[i] = fcn (m[i]);
+        p[i+1] = fcn (m[i+1]);
+        p[i+2] = fcn (m[i+2]);
+        p[i+3] = fcn (m[i+3]);
       }
+
+    OCTAVE_QUIT;
+
+    for (; i < len; i++)
+      p[i] = fcn (m[i]);
 
     return result;
   }
+
+  // Overloads for function references.
+  template <class U>
+  Array<U>
+  map (U (&fcn) (T)) const
+  { return map<U, U (&) (T)> (fcn); }
+
+  template <class U>
+  Array<U>
+  map (U (&fcn) (const T&)) const
+  { return map<U, U (&) (const T&)> (fcn); }
 
   template <class U> friend class Array;
 

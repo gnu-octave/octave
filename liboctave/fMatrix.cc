@@ -2636,24 +2636,6 @@ operator * (const FloatColumnVector& v, const FloatRowVector& a)
 
 // other operations.
 
-FloatMatrix
-FloatMatrix::map (dmapper fcn) const
-{
-  return MArray2<float>::map<float> (func_ptr (fcn));
-}
-
-FloatComplexMatrix
-FloatMatrix::map (cmapper fcn) const
-{
-  return MArray2<float>::map<FloatComplex> (func_ptr (fcn));
-}
-
-boolMatrix
-FloatMatrix::map (bmapper fcn) const
-{
-  return MArray2<float>::map<bool> (func_ptr (fcn));
-}
-
 bool
 FloatMatrix::any_element_is_negative (bool neg_zero) const
 {

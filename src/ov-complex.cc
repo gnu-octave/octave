@@ -400,102 +400,55 @@ octave_complex::as_mxArray (void) const
   return retval;
 }
 
-static double
-xabs (const Complex& x)
+octave_value
+octave_complex::map (unary_mapper_t umap) const
 {
-  return (xisinf (x.real ()) || xisinf (x.imag ())) ? octave_Inf : abs (x);
+  switch (umap)
+    {
+#define SCALAR_MAPPER(UMAP, FCN) \
+    case umap_ ## UMAP: \
+      return octave_value (FCN (scalar))
+
+      SCALAR_MAPPER (abs, std::abs);
+      SCALAR_MAPPER (acos, ::acos);
+      SCALAR_MAPPER (acosh, ::acosh);
+      SCALAR_MAPPER (angle, std::arg);
+      SCALAR_MAPPER (arg, std::arg);
+      SCALAR_MAPPER (asin, ::asin);
+      SCALAR_MAPPER (asinh, ::asinh);
+      SCALAR_MAPPER (atan, ::atan);
+      SCALAR_MAPPER (atanh, ::atanh);
+      SCALAR_MAPPER (ceil, ::ceil);
+      SCALAR_MAPPER (conj, std::conj);
+      SCALAR_MAPPER (cos, std::cos);
+      SCALAR_MAPPER (cosh, std::cosh);
+      SCALAR_MAPPER (exp, std::exp);
+      SCALAR_MAPPER (expm1, ::expm1);
+      SCALAR_MAPPER (fix, ::fix);
+      SCALAR_MAPPER (floor, ::floor);
+      SCALAR_MAPPER (imag, std::imag);
+      SCALAR_MAPPER (log, std::log);
+      SCALAR_MAPPER (log2, xlog2);
+      SCALAR_MAPPER (log10, std::log10);
+      SCALAR_MAPPER (log1p, ::log1p);
+      SCALAR_MAPPER (real, std::real);
+      SCALAR_MAPPER (round, xround);
+      SCALAR_MAPPER (roundb, xroundb);
+      SCALAR_MAPPER (signum, ::signum);
+      SCALAR_MAPPER (sin, std::sin);
+      SCALAR_MAPPER (sinh, std::sinh);
+      SCALAR_MAPPER (sqrt, std::sqrt);
+      SCALAR_MAPPER (tan, std::tan);
+      SCALAR_MAPPER (tanh, std::tanh);
+      SCALAR_MAPPER (finite, xfinite);
+      SCALAR_MAPPER (isinf, xisinf);
+      SCALAR_MAPPER (isna, octave_is_NA);
+      SCALAR_MAPPER (isnan, xisnan);
+
+    default:
+      return octave_base_value::map (umap);
+    }
 }
-
-static double
-ximag (const Complex& x)
-{
-  return x.imag ();
-}
-
-static double
-xreal (const Complex& x)
-{
-  return x.real ();
-}
-
-#define COMPLEX_MAPPER(MAP, FCN)	\
-  octave_value \
-  octave_complex::MAP (void) const \
-  { \
-    return octave_value (FCN (scalar)); \
-  }
-
-#define SCALAR_MAPPER(MAP, FCN)	\
-  octave_value \
-  octave_complex::MAP (void) const \
-  { \
-    if (scalar.imag () == 0) \
-      return octave_value (FCN (scalar.real ())); \
-    else \
-      { \
-        error ("%s: not defined for complex arguments", #MAP); \
-        return octave_value (); \
-      } \
-  }
-
-#define CD_SCALAR_MAPPER(MAP, RFCN, CFCN, L1, L2) \
-  octave_value \
-  octave_complex::MAP (void) const \
-  { \
-    if (scalar.imag () == 0) \
-      { \
-	double re = scalar.real (); \
-	return (re < L1 || re > L2 \
-            ? octave_value (CFCN (scalar)) \
-	    : octave_value (RFCN (re))); \
-      } \
-    else \
-      { \
-        error ("%s: not defined for complex arguments", #MAP); \
-        return octave_value (); \
-      } \
-  }
-
-SCALAR_MAPPER (erf, ::erf)
-SCALAR_MAPPER (erfc, ::erfc)
-SCALAR_MAPPER (gamma, xgamma)
-CD_SCALAR_MAPPER (lgamma, xlgamma, xlgamma, 0.0, octave_Inf)
-
-COMPLEX_MAPPER (abs, xabs)
-COMPLEX_MAPPER (acos, ::acos)
-COMPLEX_MAPPER (acosh, ::acosh)
-COMPLEX_MAPPER (angle, std::arg)
-COMPLEX_MAPPER (arg, std::arg)
-COMPLEX_MAPPER (asin, ::asin)
-COMPLEX_MAPPER (asinh, ::asinh)
-COMPLEX_MAPPER (atan, ::atan)
-COMPLEX_MAPPER (atanh, ::atanh)
-COMPLEX_MAPPER (ceil, ::ceil)
-COMPLEX_MAPPER (conj, std::conj)
-COMPLEX_MAPPER (cos, std::cos)
-COMPLEX_MAPPER (cosh, std::cosh)
-COMPLEX_MAPPER (exp, std::exp)
-COMPLEX_MAPPER (expm1, ::expm1)
-COMPLEX_MAPPER (fix, ::fix)
-COMPLEX_MAPPER (floor, ::floor)
-COMPLEX_MAPPER (imag, ximag)
-COMPLEX_MAPPER (log, std::log)
-COMPLEX_MAPPER (log2, xlog2)
-COMPLEX_MAPPER (log10, std::log10)
-COMPLEX_MAPPER (log1p, ::log1p)
-COMPLEX_MAPPER (real, xreal)
-COMPLEX_MAPPER (round, xround)
-COMPLEX_MAPPER (roundb, xroundb)
-COMPLEX_MAPPER (signum, ::signum)
-COMPLEX_MAPPER (sin, std::sin)
-COMPLEX_MAPPER (sinh, std::sinh)
-COMPLEX_MAPPER (sqrt, std::sqrt)
-COMPLEX_MAPPER (tan, std::tan)
-COMPLEX_MAPPER (tanh, std::tanh)
-COMPLEX_MAPPER (finite, xfinite)
-COMPLEX_MAPPER (isinf, xisinf)
-COMPLEX_MAPPER (isna, octave_is_NA)
-COMPLEX_MAPPER (isnan, xisnan)
 
 /*
 ;;; Local Variables: ***

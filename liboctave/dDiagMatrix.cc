@@ -376,7 +376,7 @@ DiagMatrix::determinant (void) const
 double
 DiagMatrix::rcond (void) const
 {
-  ColumnVector av  = diag (0).map (fabs);
+  ColumnVector av  = diag (0).map<double> (fabs);
   double amx = av.max (), amn = av.min ();
   return amx == 0 ? 0.0 : amn / amx;
 }

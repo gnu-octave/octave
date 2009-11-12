@@ -7432,24 +7432,6 @@ SparseComplexMatrix::diag (octave_idx_type k) const
   return MSparse<Complex>::diag (k);
 }
 
-SparseMatrix
-SparseComplexMatrix::map (dmapper fcn) const
-{
-  return MSparse<Complex>::map<double> (func_ptr (fcn));
-}
-
-SparseComplexMatrix
-SparseComplexMatrix::map (cmapper fcn) const
-{
-  return MSparse<Complex>::map<Complex> (func_ptr (fcn));
-}
-
-SparseBoolMatrix
-SparseComplexMatrix::map (bmapper fcn) const
-{
-  return MSparse<Complex>::map<bool> (func_ptr (fcn));
-}
-
 std::ostream&
 operator << (std::ostream& os, const SparseComplexMatrix& a)
 {

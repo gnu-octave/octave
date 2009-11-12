@@ -287,14 +287,6 @@ public:
 
   // other operations
 
-  typedef double (*dmapper) (double);
-  typedef Complex (*cmapper) (const Complex&);
-  typedef bool (*bmapper) (double);
-
-  Matrix map (dmapper fcn) const;
-  ComplexMatrix map (cmapper fcn) const;
-  boolMatrix map (bmapper fcn) const;
-
   bool any_element_is_negative (bool = false) const;
   bool any_element_is_nan (void) const;
   bool any_element_is_inf_or_nan (void) const;

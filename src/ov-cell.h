@@ -155,21 +155,8 @@ public:
   bool load_hdf5 (hid_t loc_id, const char *name, bool have_h5giterate_bug);
 #endif
 
-  octave_value xisalnum (void) const { return matrix.xisalnum (); }
-  octave_value xisalpha (void) const { return matrix.xisalpha (); }
-  octave_value xisascii (void) const { return matrix.xisascii (); }
-  octave_value xiscntrl (void) const { return matrix.xiscntrl (); }
-  octave_value xisdigit (void) const { return matrix.xisdigit (); }
-  octave_value xisgraph (void) const { return matrix.xisgraph (); }
-  octave_value xislower (void) const { return matrix.xislower (); }
-  octave_value xisprint (void) const { return matrix.xisprint (); }
-  octave_value xispunct (void) const { return matrix.xispunct (); }
-  octave_value xisspace (void) const { return matrix.xisspace (); }
-  octave_value xisupper (void) const { return matrix.xisupper (); }
-  octave_value xisxdigit (void) const { return matrix.xisxdigit (); }
-  octave_value xtoascii (void) const { return matrix.xtoascii (); }
-  octave_value xtolower (void) const { return matrix.xtolower (); }
-  octave_value xtoupper (void) const { return matrix.xtoupper (); }
+  octave_value map (unary_mapper_t umap) const
+    { return matrix.map (umap); }
 
   mxArray *as_mxArray (void) const;
 

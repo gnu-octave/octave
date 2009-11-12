@@ -227,10 +227,10 @@ For string lookup, 'i' indicates case-insensitive comparison.\n\
       // (though it's not too meaningful).
       
       if (table.is_complex_type ())
-        table = table.abs ();
+        table = table.map (umap_abs);
 
       if (y.is_complex_type ())
-        y = y.abs ();
+        y = y.map (umap_abs);
 
       Array<octave_idx_type> idx;
 

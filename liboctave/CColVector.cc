@@ -453,18 +453,6 @@ operator * (const ComplexDiagMatrix& m, const ComplexColumnVector& a)
 
 // other operations
 
-ColumnVector
-ComplexColumnVector::map (dmapper fcn) const
-{
-  return MArray<Complex>::map<double> (func_ptr (fcn));
-}
-
-ComplexColumnVector
-ComplexColumnVector::map (cmapper fcn) const
-{
-  return MArray<Complex>::map<Complex> (func_ptr (fcn));
-}
-
 Complex
 ComplexColumnVector::min (void) const
 {

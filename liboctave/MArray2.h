@@ -87,11 +87,16 @@ public:
     return Array2<T>::diag (k);
   }
 
-  template <class U, class F>
-  MArray2<U> map (F fcn) const
-  {
-    return Array2<T>::template map<U> (fcn);
-  }
+  // FIXME: should go away.
+  template <class U>
+  MArray2<U>
+  map (U (&fcn) (T)) const
+  { return Array2<T>::template map<U> (fcn); }
+
+  template <class U>
+  MArray2<U>
+  map (U (&fcn) (const T&)) const
+  { return Array2<T>::template map<U> (fcn); }
 
   // Currently, the OPS functions don't need to be friends, but that
   // may change.

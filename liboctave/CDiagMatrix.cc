@@ -564,7 +564,7 @@ ComplexDiagMatrix::determinant (void) const
 double
 ComplexDiagMatrix::rcond (void) const
 {
-  ColumnVector av = diag (0).map (std::abs);
+  ColumnVector av = diag (0).map<double> (std::abs);
   double amx = av.max (), amn = av.min ();
   return amx == 0 ? 0.0 : amn / amx;
 }

@@ -1117,79 +1117,79 @@ octave_base_value::is_sorted_rows (sortmode) const
   return UNSORTED;
 }
 
-#define UNDEFINED_MAPPER(F) \
-  octave_value \
-  octave_base_value::F (void) const \
-  { \
-    gripe_wrong_type_arg ("octave_base_value::" #F " ()", type_name ()); \
-    return octave_value (); \
-  }
+extern OCTINTERP_API
+const char *get_umap_name (unary_mapper_t umap)
+{
+  static const char *names[num_unary_mappers] = 
+    {
+      "abs",
+      "acos",
+      "acosh",
+      "angle",
+      "arg",
+      "asin",
+      "asinh",
+      "atan",
+      "atanh",
+      "ceil",
+      "conj",
+      "cos",
+      "cosh",
+      "erf",
+      "erfc",
+      "exp",
+      "expm1",
+      "finite",
+      "fix",
+      "floor",
+      "gamma",
+      "imag",
+      "isinf",
+      "isna",
+      "isnan",
+      "lgamma",
+      "log",
+      "log2",
+      "log10",
+      "log1p",
+      "real",
+      "round",
+      "roundb",
+      "signum",
+      "sin",
+      "sinh",
+      "sqrt",
+      "tan",
+      "tanh",
+      "isalnum",
+      "isalpha",
+      "isascii",
+      "iscntrl",
+      "isdigit",
+      "isgraph",
+      "islower",
+      "isprint",
+      "ispunct",
+      "isspace",
+      "isupper",
+      "isxdigit",
+      "toascii",
+      "tolower",
+      "toupper"
+    };
 
-UNDEFINED_MAPPER (abs)
-UNDEFINED_MAPPER (acos)
-UNDEFINED_MAPPER (acosh)
-UNDEFINED_MAPPER (angle)
-UNDEFINED_MAPPER (arg)
-UNDEFINED_MAPPER (asin)
-UNDEFINED_MAPPER (asinh)
-UNDEFINED_MAPPER (atan)
-UNDEFINED_MAPPER (atanh)
-UNDEFINED_MAPPER (ceil)
-UNDEFINED_MAPPER (conj)
-UNDEFINED_MAPPER (cos)
-UNDEFINED_MAPPER (cosh)
-UNDEFINED_MAPPER (erf)
-UNDEFINED_MAPPER (erfc)
-UNDEFINED_MAPPER (exp)
-UNDEFINED_MAPPER (expm1)
-UNDEFINED_MAPPER (finite)
-UNDEFINED_MAPPER (fix)
-UNDEFINED_MAPPER (floor)
-UNDEFINED_MAPPER (gamma)
-UNDEFINED_MAPPER (imag)
-UNDEFINED_MAPPER (isinf)
-UNDEFINED_MAPPER (isna)
-UNDEFINED_MAPPER (isnan)
-UNDEFINED_MAPPER (lgamma)
-UNDEFINED_MAPPER (log)
-UNDEFINED_MAPPER (log2)
-UNDEFINED_MAPPER (log10)
-UNDEFINED_MAPPER (log1p)
-UNDEFINED_MAPPER (real)
-UNDEFINED_MAPPER (round)
-UNDEFINED_MAPPER (roundb)
-UNDEFINED_MAPPER (signum)
-UNDEFINED_MAPPER (sin)
-UNDEFINED_MAPPER (sinh)
-UNDEFINED_MAPPER (sqrt)
-UNDEFINED_MAPPER (tan)
-UNDEFINED_MAPPER (tanh)
+  if (umap < 0 || umap >= num_unary_mappers)
+    return "unknown";
+  else
+    return names[umap];
+}
 
-// String mapper functions, convert to a string
-
-#define STRING_MAPPER(F) \
-  octave_value \
-  octave_base_value::F (void) const \
-  { \
-    octave_value tmp = char_array_value (true); \
-    return error_state ? octave_value () : octave_value (tmp.F ()); \
-  }
-
-STRING_MAPPER (xisalnum)
-STRING_MAPPER (xisalpha)
-STRING_MAPPER (xisascii)
-STRING_MAPPER (xiscntrl)
-STRING_MAPPER (xisdigit)
-STRING_MAPPER (xisgraph)
-STRING_MAPPER (xislower)
-STRING_MAPPER (xisprint)
-STRING_MAPPER (xispunct)
-STRING_MAPPER (xisspace)
-STRING_MAPPER (xisupper)
-STRING_MAPPER (xisxdigit)
-STRING_MAPPER (xtoascii)
-STRING_MAPPER (xtolower)
-STRING_MAPPER (xtoupper)
+octave_value
+octave_base_value::map (unary_mapper_t umap) const
+{
+  error ("%s: not defined for %s", get_umap_name (umap), type_name ().c_str ());
+  return octave_value ();
+}
 
 void
 octave_base_value::lock (void)

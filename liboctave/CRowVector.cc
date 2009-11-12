@@ -366,18 +366,6 @@ operator * (const RowVector& v, const ComplexMatrix& a)
 
 // other operations
 
-RowVector
-ComplexRowVector::map (dmapper fcn) const
-{
-  return MArray<Complex>::map<double> (func_ptr (fcn));
-}
-
-ComplexRowVector
-ComplexRowVector::map (cmapper fcn) const
-{
-  return MArray<Complex>::map<Complex> (func_ptr (fcn));
-}
-
 Complex
 ComplexRowVector::min (void) const
 {

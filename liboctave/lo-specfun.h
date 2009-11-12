@@ -90,7 +90,7 @@ extern OCTAVE_API Complex expm1 (const Complex& x);
 #if !defined (HAVE_EXPM1F)
 extern OCTAVE_API float expm1f (float x);
 #endif
-extern OCTAVE_API FloatComplex expm1f (const FloatComplex& x);
+extern OCTAVE_API FloatComplex expm1 (const FloatComplex& x);
 
 #if !defined (HAVE_LOG1P)
 extern OCTAVE_API double log1p (double x);
@@ -100,15 +100,15 @@ extern OCTAVE_API Complex log1p (const Complex& x);
 #if !defined (HAVE_LOG1PF)
 extern OCTAVE_API float log1pf (float x);
 #endif
-extern OCTAVE_API FloatComplex log1pf (const FloatComplex& x);
+extern OCTAVE_API FloatComplex log1p (const FloatComplex& x);
 
 extern OCTAVE_API double xgamma (double x);
 extern OCTAVE_API double xlgamma (double x);
-extern OCTAVE_API Complex xlgamma (const Complex& x);
+extern OCTAVE_API Complex rc_lgamma (double x);
 
 extern OCTAVE_API float xgamma (float x);
 extern OCTAVE_API float xlgamma (float x);
-extern OCTAVE_API FloatComplex xlgamma (const FloatComplex& x);
+extern OCTAVE_API FloatComplex rc_lgamma (float x);
 
 extern OCTAVE_API Complex
 besselj (double alpha, const Complex& x, bool scaled, octave_idx_type& ierr);
@@ -579,6 +579,9 @@ inline float gammainc (float x, float a)
   bool err;
   return gammainc (x, a, err);
 }
+
+extern OCTAVE_API Complex rc_log1p (double);
+extern OCTAVE_API FloatComplex rc_log1p (float);
 
 #endif
 

@@ -808,111 +808,70 @@ octave_sparse_matrix::as_mxArray (void) const
   return retval;
 }
 
-static bool
-any_element_less_than (const SparseMatrix& a, double val)
+octave_value
+octave_sparse_matrix::map (unary_mapper_t umap) const
 {
-  octave_idx_type len = a.nnz ();
-
-  if (val > 0. && len != a.numel ())
-    return true;
-
-  for (octave_idx_type i = 0; i < len; i++)
+  switch (umap)
     {
-      OCTAVE_QUIT;
+    case umap_imag:
+      return SparseMatrix (matrix.rows (), matrix.cols (), 0.0);
 
-      if (a.data(i) < val)
-	return true;
+    case umap_real:
+    case umap_conj:
+      return matrix;
+
+    // Mappers handled specially.
+#define ARRAY_METHOD_MAPPER(UMAP, FCN) \
+    case umap_ ## UMAP: \
+      return octave_value (matrix.FCN ())
+
+      ARRAY_METHOD_MAPPER (abs, abs);
+
+#define ARRAY_MAPPER(UMAP, TYPE, FCN) \
+    case umap_ ## UMAP: \
+      return octave_value (matrix.map<TYPE> (FCN))
+
+      ARRAY_MAPPER (acos, Complex, rc_acos);
+      ARRAY_MAPPER (acosh, Complex, rc_acosh);
+      ARRAY_MAPPER (angle, double, ::arg);
+      ARRAY_MAPPER (arg, double, ::arg);
+      ARRAY_MAPPER (asin, Complex, rc_asin);
+      ARRAY_MAPPER (asinh, double, ::asinh);
+      ARRAY_MAPPER (atan, double, ::atan);
+      ARRAY_MAPPER (atanh, Complex, rc_atanh);
+      ARRAY_MAPPER (erf, double, ::erf);
+      ARRAY_MAPPER (erfc, double, ::erfc);
+      ARRAY_MAPPER (gamma, double, xgamma);
+      ARRAY_MAPPER (lgamma, Complex, rc_lgamma);
+      ARRAY_MAPPER (ceil, double, ::ceil);
+      ARRAY_MAPPER (cos, double, ::cos);
+      ARRAY_MAPPER (cosh, double, ::cosh);
+      ARRAY_MAPPER (exp, double, ::exp);
+      ARRAY_MAPPER (expm1, double, ::expm1);
+      ARRAY_MAPPER (fix, double, ::fix);
+      ARRAY_MAPPER (floor, double, ::floor);
+      ARRAY_MAPPER (log, Complex, rc_log);
+      ARRAY_MAPPER (log2, Complex, rc_log2);
+      ARRAY_MAPPER (log10, Complex, rc_log10);
+      ARRAY_MAPPER (log1p, Complex, rc_log1p);
+      ARRAY_MAPPER (round, double, xround);
+      ARRAY_MAPPER (roundb, double, xroundb);
+      ARRAY_MAPPER (signum, double, ::signum);
+      ARRAY_MAPPER (sin, double, ::sin);
+      ARRAY_MAPPER (sinh, double, ::sinh);
+      ARRAY_MAPPER (sqrt, Complex, rc_sqrt);
+      ARRAY_MAPPER (tan, double, ::tan);
+      ARRAY_MAPPER (tanh, double, ::tanh);
+      ARRAY_MAPPER (isnan, bool, xisnan);
+      ARRAY_MAPPER (isna, bool, octave_is_NA);
+      ARRAY_MAPPER (isinf, bool, xisinf);
+      ARRAY_MAPPER (finite, bool, xfinite);
+
+    default: // Attempt to go via dense matrix.
+      return full_value ().map (umap).sparse_matrix_value ();
     }
-
-  return false;
 }
 
-static bool
-any_element_greater_than (const SparseMatrix& a, double val)
-{
-  octave_idx_type len = a.nnz ();
-
-  if (val < 0. && len != a.numel ())
-    return true;
-
-  for (octave_idx_type i = 0; i < len; i++)
-    {
-      OCTAVE_QUIT;
-
-      if (a.data(i) > val)
-	return true;
-    }
-
-  return false;
-}
-
-#define SPARSE_MAPPER(MAP, AMAP, FCN) \
-  octave_value \
-  octave_sparse_matrix::MAP (void) const \
-  { \
-    static AMAP dmap = FCN; \
-    return matrix.map (dmap); \
-  }
-
-#define CD_SPARSE_MAPPER(MAP, RFCN, CFCN, L1, L2) \
-  octave_value \
-  octave_sparse_matrix::MAP (void) const \
-  { \
-    static SparseMatrix::dmapper dmap = RFCN; \
-    static SparseMatrix::cmapper cmap = CFCN; \
- \
-    return (any_element_less_than (matrix, L1) \
-            ? octave_value (matrix.map (cmap)) \
-            : (any_element_greater_than (matrix, L2) \
-               ? octave_value (matrix.map (cmap)) \
-	       : octave_value (matrix.map (dmap)))); \
-  }
-
-static double
-xconj (double x)
-{
-  return x;
-}
-
-SPARSE_MAPPER (erf, SparseMatrix::dmapper, ::erf)
-SPARSE_MAPPER (erfc, SparseMatrix::dmapper, ::erfc)
-SPARSE_MAPPER (gamma, SparseMatrix::dmapper, xgamma)
-CD_SPARSE_MAPPER (lgamma, xlgamma, xlgamma, 0.0, octave_Inf)
-SPARSE_MAPPER (abs, SparseMatrix::dmapper, ::fabs)
-CD_SPARSE_MAPPER (acos, ::acos, ::acos, -1.0, 1.0)
-CD_SPARSE_MAPPER (acosh, ::acosh, ::acosh, 1.0, octave_Inf)
-SPARSE_MAPPER (angle, SparseMatrix::dmapper, ::arg)
-SPARSE_MAPPER (arg, SparseMatrix::dmapper, ::arg)
-CD_SPARSE_MAPPER (asin, ::asin, ::asin, -1.0, 1.0)
-SPARSE_MAPPER (asinh, SparseMatrix::dmapper, ::asinh)
-SPARSE_MAPPER (atan, SparseMatrix::dmapper, ::atan)
-CD_SPARSE_MAPPER (atanh, ::atanh, ::atanh, -1.0, 1.0)
-SPARSE_MAPPER (ceil, SparseMatrix::dmapper, ::ceil)
-SPARSE_MAPPER (conj, SparseMatrix::dmapper, xconj)
-SPARSE_MAPPER (cos, SparseMatrix::dmapper, ::cos)
-SPARSE_MAPPER (cosh, SparseMatrix::dmapper, ::cosh)
-SPARSE_MAPPER (exp, SparseMatrix::dmapper, ::exp)
-SPARSE_MAPPER (expm1, SparseMatrix::dmapper, ::expm1)
-SPARSE_MAPPER (fix, SparseMatrix::dmapper, ::fix)
-SPARSE_MAPPER (floor, SparseMatrix::dmapper, ::floor)
-SPARSE_MAPPER (imag, SparseMatrix::dmapper, ::imag)
-CD_SPARSE_MAPPER (log, ::log, std::log, 0.0, octave_Inf)
-CD_SPARSE_MAPPER (log2, xlog2, xlog2, 0.0, octave_Inf)
-CD_SPARSE_MAPPER (log10, ::log10, std::log10, 0.0, octave_Inf)
-CD_SPARSE_MAPPER (log1p, ::log1p, ::log1p, 0.0, octave_Inf)
-SPARSE_MAPPER (real, SparseMatrix::dmapper, ::real)
-SPARSE_MAPPER (round, SparseMatrix::dmapper, xround)
-SPARSE_MAPPER (roundb, SparseMatrix::dmapper, xroundb)
-SPARSE_MAPPER (signum, SparseMatrix::dmapper, ::signum)
-SPARSE_MAPPER (sin, SparseMatrix::dmapper, ::sin)
-SPARSE_MAPPER (sinh, SparseMatrix::dmapper, ::sinh)
-CD_SPARSE_MAPPER (sqrt, ::sqrt, std::sqrt, 0.0, octave_Inf)
-SPARSE_MAPPER (tan, SparseMatrix::dmapper, ::tan)
-SPARSE_MAPPER (tanh, SparseMatrix::dmapper, ::tanh)
-SPARSE_MAPPER (finite, SparseMatrix::bmapper, xfinite)
-SPARSE_MAPPER (isinf, SparseMatrix::bmapper, xisinf)
-SPARSE_MAPPER (isna, SparseMatrix::bmapper, octave_is_NA)
-SPARSE_MAPPER (isnan, SparseMatrix::bmapper, xisnan)
 
 /*
 ;;; Local Variables: ***

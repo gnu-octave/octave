@@ -316,10 +316,8 @@ xlgamma (double x)
 }
 
 Complex
-xlgamma (const Complex& xc)
+rc_lgamma (double x)
 {
-  // Can only be called with a real value of x.
-  double x = xc.real ();
   double result;
 
 #if defined (HAVE_LGAMMA_R)
@@ -383,10 +381,8 @@ xlgamma (float x)
 }
 
 FloatComplex
-xlgamma (const FloatComplex& xc)
+rc_lgamma (float x)
 {
-  // Can only be called with a real value of x.
-  float x = xc.real ();
   float result;
 
 #if defined (HAVE_LGAMMAF_R)
@@ -502,7 +498,7 @@ expm1f (float x)
 #endif
 
 FloatComplex 
-expm1f(const FloatComplex& x)
+expm1(const FloatComplex& x)
 {
   FloatComplex retval;
 
@@ -588,7 +584,7 @@ log1pf (float x)
 #endif
 
 FloatComplex 
-log1pf (const FloatComplex& x)
+log1p (const FloatComplex& x)
 {
   FloatComplex retval;
 
@@ -3090,6 +3086,19 @@ gammainc (const FloatNDArray& x, const FloatNDArray& a)
  done:
 
   return retval;
+}
+
+
+Complex rc_log1p (double x)
+{
+  const double pi = 3.14159265358979323846;
+  return x < -1.0 ? Complex (log (-(1.0 + x)), pi) : Complex (log1p (x));
+}
+
+FloatComplex rc_log1p (float x)
+{
+  const float pi = 3.14159265358979323846f;
+  return x < -1.0f ? FloatComplex (logf (-(1.0f + x)), pi) : FloatComplex (log1pf (x));
 }
 
 /*

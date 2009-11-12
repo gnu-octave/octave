@@ -209,54 +209,11 @@ public:
   mxArray *as_mxArray (void) const;
 
   // Mapper functions are converted to double for treatment
-#define BOOL_MAT_MAPPER(MAP) \
-  octave_value MAP (void) const \
-    { \
-      octave_matrix m (array_value ()); \
-      return m.MAP (); \
+  octave_value map (unary_mapper_t umap) const
+    {
+      octave_matrix m (array_value ());
+      return m.map (umap);
     }
-
-  BOOL_MAT_MAPPER (abs)
-  BOOL_MAT_MAPPER (acos)
-  BOOL_MAT_MAPPER (acosh)
-  BOOL_MAT_MAPPER (angle)
-  BOOL_MAT_MAPPER (arg)
-  BOOL_MAT_MAPPER (asin)
-  BOOL_MAT_MAPPER (asinh)
-  BOOL_MAT_MAPPER (atan)
-  BOOL_MAT_MAPPER (atanh)
-  BOOL_MAT_MAPPER (ceil)
-  BOOL_MAT_MAPPER (conj)
-  BOOL_MAT_MAPPER (cos)
-  BOOL_MAT_MAPPER (cosh)
-  BOOL_MAT_MAPPER (erf)
-  BOOL_MAT_MAPPER (erfc)
-  BOOL_MAT_MAPPER (exp)
-  BOOL_MAT_MAPPER (expm1)
-  BOOL_MAT_MAPPER (finite)
-  BOOL_MAT_MAPPER (fix)
-  BOOL_MAT_MAPPER (floor)
-  BOOL_MAT_MAPPER (gamma)
-  BOOL_MAT_MAPPER (imag)
-  BOOL_MAT_MAPPER (isinf)
-  BOOL_MAT_MAPPER (isna)
-  BOOL_MAT_MAPPER (isnan)
-  BOOL_MAT_MAPPER (lgamma)
-  BOOL_MAT_MAPPER (log)
-  BOOL_MAT_MAPPER (log2)
-  BOOL_MAT_MAPPER (log10)
-  BOOL_MAT_MAPPER (log1p)
-  BOOL_MAT_MAPPER (real)
-  BOOL_MAT_MAPPER (round)
-  BOOL_MAT_MAPPER (roundb)
-  BOOL_MAT_MAPPER (signum)
-  BOOL_MAT_MAPPER (sin)
-  BOOL_MAT_MAPPER (sinh)
-  BOOL_MAT_MAPPER (sqrt)
-  BOOL_MAT_MAPPER (tan)
-  BOOL_MAT_MAPPER (tanh)
-
-#undef BOOL_MAT_MAPPER
 
 protected:
 

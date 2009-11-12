@@ -117,6 +117,70 @@ DEF_CLASS_TO_BTYP (octave_uint64, btyp_uint64);
 DEF_CLASS_TO_BTYP (bool, btyp_bool);
 DEF_CLASS_TO_BTYP (char, btyp_char);
 
+// Standard mappers.
+enum unary_mapper_t
+{
+  umap_abs,
+  umap_acos,
+  umap_acosh,
+  umap_angle,
+  umap_arg,
+  umap_asin,
+  umap_asinh,
+  umap_atan,
+  umap_atanh,
+  umap_ceil,
+  umap_conj,
+  umap_cos,
+  umap_cosh,
+  umap_erf,
+  umap_erfc,
+  umap_exp,
+  umap_expm1,
+  umap_finite,
+  umap_fix,
+  umap_floor,
+  umap_gamma,
+  umap_imag,
+  umap_isinf,
+  umap_isna,
+  umap_isnan,
+  umap_lgamma,
+  umap_log,
+  umap_log2,
+  umap_log10,
+  umap_log1p,
+  umap_real,
+  umap_round,
+  umap_roundb,
+  umap_signum,
+  umap_sin,
+  umap_sinh,
+  umap_sqrt,
+  umap_tan,
+  umap_tanh,
+  umap_isalnum,
+  umap_isalpha,
+  umap_isascii,
+  umap_iscntrl,
+  umap_isdigit,
+  umap_isgraph,
+  umap_islower,
+  umap_isprint,
+  umap_ispunct,
+  umap_isspace,
+  umap_isupper,
+  umap_isxdigit,
+  umap_toascii,
+  umap_tolower,
+  umap_toupper,
+  umap_unknown,
+  num_unary_mappers = umap_unknown
+};
+
+extern OCTINTERP_API
+const char *get_umap_name (unary_mapper_t);
+
 // T_ID is the type id of struct objects, set by register_type().
 // T_NAME is the type name of struct objects.
 
@@ -632,64 +696,7 @@ public:
 
   virtual void dump (std::ostream& os) const;
 
-  virtual octave_value abs (void) const;
-  virtual octave_value acos (void) const;
-  virtual octave_value acosh (void) const;
-  virtual octave_value angle (void) const;
-  virtual octave_value arg (void) const;
-  virtual octave_value asin (void) const;
-  virtual octave_value asinh (void) const;
-  virtual octave_value atan (void) const;
-  virtual octave_value atanh (void) const;
-  virtual octave_value ceil (void) const;
-  virtual octave_value conj (void) const;
-  virtual octave_value cos (void) const;
-  virtual octave_value cosh (void) const;
-  virtual octave_value erf (void) const;
-  virtual octave_value erfc (void) const;
-  virtual octave_value exp (void) const;
-  virtual octave_value expm1 (void) const;
-  virtual octave_value finite (void) const;
-  virtual octave_value fix (void) const;
-  virtual octave_value floor (void) const;
-  virtual octave_value gamma (void) const;
-  virtual octave_value imag (void) const;
-  virtual octave_value isinf (void) const;
-  virtual octave_value isna (void) const;
-  virtual octave_value isnan (void) const;
-  virtual octave_value lgamma (void) const;
-  virtual octave_value log (void) const;
-  virtual octave_value log2 (void) const;
-  virtual octave_value log10 (void) const;
-  virtual octave_value log1p (void) const;
-  virtual octave_value real (void) const;
-  virtual octave_value round (void) const;
-  virtual octave_value roundb (void) const;
-  virtual octave_value signum (void) const;
-  virtual octave_value sin (void) const;
-  virtual octave_value sinh (void) const;
-  virtual octave_value sqrt (void) const;
-  virtual octave_value tan (void) const;
-  virtual octave_value tanh (void) const;
-
-  // These functions are prefixed with X to avoid potential macro
-  // conflicts.
-
-  virtual octave_value xisalnum (void) const;
-  virtual octave_value xisalpha (void) const;
-  virtual octave_value xisascii (void) const;
-  virtual octave_value xiscntrl (void) const;
-  virtual octave_value xisdigit (void) const;
-  virtual octave_value xisgraph (void) const;
-  virtual octave_value xislower (void) const;
-  virtual octave_value xisprint (void) const;
-  virtual octave_value xispunct (void) const;
-  virtual octave_value xisspace (void) const;
-  virtual octave_value xisupper (void) const;
-  virtual octave_value xisxdigit (void) const;
-  virtual octave_value xtoascii (void) const;
-  virtual octave_value xtolower (void) const;
-  virtual octave_value xtoupper (void) const;
+  virtual octave_value map (unary_mapper_t) const;
 
 protected:
 

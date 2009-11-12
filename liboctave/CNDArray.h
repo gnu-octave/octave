@@ -148,14 +148,6 @@ public:
       return *this; 
     }
 
-  typedef double (*dmapper) (const Complex&);
-  typedef Complex (*cmapper) (const Complex&);
-  typedef bool (*bmapper) (const Complex&);
-
-  NDArray map (dmapper fcn) const;
-  ComplexNDArray map (cmapper fcn) const;
-  boolNDArray map (bmapper fcn) const;
-
 private:
 
   ComplexNDArray (Complex *d, const dim_vector& dv)

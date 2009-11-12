@@ -3072,24 +3072,6 @@ FloatComplexMatrix::operator ! (void) const
 
 // other operations
 
-FloatMatrix
-FloatComplexMatrix::map (dmapper fcn) const
-{
-  return MArray2<FloatComplex>::map<float> (func_ptr (fcn));
-}
-
-FloatComplexMatrix
-FloatComplexMatrix::map (cmapper fcn) const
-{
-  return MArray2<FloatComplex>::map<FloatComplex> (func_ptr (fcn));
-}
-
-boolMatrix
-FloatComplexMatrix::map (bmapper fcn) const
-{
-  return MArray2<FloatComplex>::map<bool> (func_ptr (fcn));
-}
-
 bool
 FloatComplexMatrix::any_element_is_nan (void) const
 {

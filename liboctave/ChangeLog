@@ -1,3 +1,64 @@
+2009-11-12  Jaroslav Hajek  <highegg@gmail.com>
+
+	* lo-mappers.cc ( rc_acos, rc_acos, rc_acosh, rc_acosh, rc_asin,
+	rc_asin, rc_atanh, rc_atanh, rc_log, rc_log, rc_xlog2, rc_log2,
+	rc_log10, rc_log10, rc_sqrt, rc_sqrt): New mappers.
+	* lo-mappers.h: Declare them.
+
+	* lo-specfun.cc (rc_lgamma, rc_lgamma, rc_log1p, rc_log1p): New
+	mappers.
+	* lo-specfun.h: Declare them.
+	* Array.h (Array<T>::map): Unroll loop to reduce OCTAVE_QUIT checking.
+	Provide function-reference overloads.
+
+	* MArray.h (MArray<T>::map): Provide function-reference overloads.
+	* Array2.h (Array2<T>::map): Ditto.
+	* MArray2.h (MArray2<T>::map): Ditto.
+
+	* Sparse.h (Sparse<T>::map): Ditto.
+	* MSparse.h (MSparse<T>::map): Ditto.
+
+	* dNDArray.h (NDArray::map): Remove.
+	* dNDArray.cc (NDArray::map): Remove.
+	* fNDArray.h (FloatNDArray::map): Remove.
+	* fNDArray.cc (FloatNDArray::map): Remove.
+	* CNDArray.h (ComplexNDArray::map): Remove.
+	* CNDArray.cc (ComplexNDArray::map): Remove.
+	* fCNDArray.h (FloatComplexNDArray::map): Remove.
+	* fCNDArray.cc (FloatComplexNDArray::map): Remove.
+
+	* dMatrix.h (Matrix::map): Remove.
+	* dMatrix.cc (Matrix::map): Remove.
+	* fMatrix.h (FloatMatrix::map): Remove.
+	* fMatrix.cc (FloatMatrix::map): Remove.
+	* CMatrix.h (ComplexMatrix::map): Remove.
+	* CMatrix.cc (ComplexMatrix::map): Remove.
+	* fCMatrix.h (FloatComplexMatrix::map): Remove.
+	* fCMatrix.cc (FloatComplexMatrix::map): Remove.
+
+	* dRowVector.h (RowVector::map): Remove.
+	* dRowVector.cc (RowVector::map): Remove.
+	* fRowVector.h (FloatRowVector::map): Remove.
+	* fRowVector.cc (FloatRowVector::map): Remove.
+	* CRowVector.h (ComplexRowVector::map): Remove.
+	* CRowVector.cc (ComplexRowVector::map): Remove.
+	* fCRowVector.h (FloatComplexRowVector::map): Remove.
+	* fCRowVector.cc (FloatComplexRowVector::map): Remove.
+
+	* dColVector.h (ColumnVector::map): Remove.
+	* dColVector.cc (ColumnVector::map): Remove.
+	* fColVector.h (FloatColumnVector::map): Remove.
+	* fColVector.cc (FloatColumnVector::map): Remove.
+	* CColVector.h (ComplexColumnVector::map): Remove.
+	* CColVector.cc (ComplexColumnVector::map): Remove.
+	* fCColVector.h (FloatComplexColumnVector::map): Remove.
+	* fCColVector.cc (FloatComplexColumnVector::map): Remove.
+
+	* dSparse.h (SparseMatrix::map): Remove.
+	* dSparse.cc (SparseMatrix::map): Remove.
+	* CSparse.h (SparseComplexMatrix::map): Remove.
+	* CSparse.cc (SparseComplexMatrix::map): Remove.
+
 2009-11-11  John W. Eaton  <jwe@octave.org>
 
 	* lo-ieee.cc (octave_ieee_init): Improve comment about systems

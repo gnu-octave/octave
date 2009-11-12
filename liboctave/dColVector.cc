@@ -260,18 +260,6 @@ operator * (const DiagMatrix& m, const ColumnVector& a)
 
 // other operations
 
-ColumnVector
-ColumnVector::map (dmapper fcn) const
-{
-  return MArray<double>::map<double> (func_ptr (fcn));
-}
-
-ComplexColumnVector
-ColumnVector::map (cmapper fcn) const
-{
-  return MArray<double>::map<Complex> (func_ptr (fcn));
-}
-
 double
 ColumnVector::min (void) const
 {

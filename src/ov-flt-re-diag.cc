@@ -91,46 +91,27 @@ octave_float_diag_matrix::float_complex_diag_matrix_value (bool) const
 }
 
 octave_value
-octave_float_diag_matrix::abs (void) const
+octave_float_diag_matrix::map (unary_mapper_t umap) const
 {
-  return matrix.abs ();
-}
-
-octave_value
-octave_float_diag_matrix::real (void) const
-{
-  return matrix;
-}
-
-octave_value
-octave_float_diag_matrix::conj (void) const
-{
-  return matrix;
-}
-
-octave_value
-octave_float_diag_matrix::imag (void) const
-{
-  return DiagMatrix (matrix.rows (), matrix.cols (), 0.0f);
-}
-
-octave_value
-octave_float_diag_matrix::sqrt (void) const
-{    
-  octave_value retval;
-
-  static FloatNDArray::dmapper dsqrt = ::sqrtf;
-  static FloatNDArray::cmapper csqrt = std::sqrt;
-
-  FloatColumnVector dvec = matrix.diag ();
-  if (FloatMatrix (dvec).any_element_is_negative ())
-    retval = FloatComplexDiagMatrix (dvec.map (csqrt));
-  else
-    retval = FloatDiagMatrix (dvec.map (dsqrt));
-
-  retval.resize (dims ());
-
-  return retval;
+  switch (umap)
+    {
+    case umap_abs:
+      return matrix.abs ();
+    case umap_real:
+    case umap_conj:
+      return matrix;
+    case umap_imag:
+      return DiagMatrix (matrix.rows (), matrix.cols (), 0.0);
+    case umap_sqrt:
+      {
+        FloatComplexColumnVector tmp = matrix.diag ().map<FloatComplex> (rc_sqrt);
+        FloatComplexDiagMatrix retval (tmp);
+        retval.resize (matrix.rows (), matrix.columns ());
+        return retval;
+      }
+    default:
+      return to_dense ().map (umap);
+    }
 }
 
 bool 

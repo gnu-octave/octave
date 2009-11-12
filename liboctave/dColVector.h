@@ -85,12 +85,6 @@ public:
 
   // other operations
 
-  typedef double (*dmapper) (double);
-  typedef Complex (*cmapper) (const Complex&);
-
-  ColumnVector map (dmapper fcn) const;
-  ComplexColumnVector map (cmapper fcn) const;
-
   double min (void) const;
   double max (void) const;
 

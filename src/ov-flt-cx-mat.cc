@@ -686,189 +686,65 @@ octave_float_complex_matrix::as_mxArray (void) const
   return retval;
 }
 
-#if 0
-static float
-xabs (const FloatComplex& x)
+octave_value
+octave_float_complex_matrix::map (unary_mapper_t umap) const
 {
-  return (xisinf (x.real ()) || xisinf (x.imag ())) ? octave_Inf : abs (x);
-}
-#endif
-
-static float
-ximag (const FloatComplex& x)
-{
-  return x.imag ();
-}
-
-static float
-xreal (const FloatComplex& x)
-{
-  return x.real ();
-}
-
-static bool
-any_element_less_than (const FloatNDArray& a, float val)
-{
-  octave_idx_type len = a.length ();
-  const float *m = a.fortran_vec ();
-
-  for (octave_idx_type i = 0; i < len; i++)
+  switch (umap)
     {
-      OCTAVE_QUIT;
+    // Mappers handled specially.
+    case umap_real:
+      return ::real (matrix);
+    case umap_imag:
+      return ::imag (matrix);
+    case umap_conj:
+      return ::conj (matrix);
 
-      if (m[i] < val)
-	return true;
+#define ARRAY_METHOD_MAPPER(UMAP, FCN) \
+    case umap_ ## UMAP: \
+      return octave_value (matrix.FCN ())
+
+      ARRAY_METHOD_MAPPER (abs, abs);
+      ARRAY_METHOD_MAPPER (isnan, isnan);
+      ARRAY_METHOD_MAPPER (isinf, isinf);
+      ARRAY_METHOD_MAPPER (finite, isfinite);
+
+#define ARRAY_MAPPER(UMAP, TYPE, FCN) \
+    case umap_ ## UMAP: \
+      return octave_value (matrix.map<TYPE> (FCN))
+
+      ARRAY_MAPPER (acos, FloatComplex, ::acos);
+      ARRAY_MAPPER (acosh, FloatComplex, ::acosh);
+      ARRAY_MAPPER (angle, float, std::arg);
+      ARRAY_MAPPER (arg, float, std::arg);
+      ARRAY_MAPPER (asin, FloatComplex, ::asin);
+      ARRAY_MAPPER (asinh, FloatComplex, ::asinh);
+      ARRAY_MAPPER (atan, FloatComplex, ::atan);
+      ARRAY_MAPPER (atanh, FloatComplex, ::atanh);
+      ARRAY_MAPPER (ceil, FloatComplex, ::ceil);
+      ARRAY_MAPPER (cos, FloatComplex, std::cos);
+      ARRAY_MAPPER (cosh, FloatComplex, std::cosh);
+      ARRAY_MAPPER (exp, FloatComplex, std::exp);
+      ARRAY_MAPPER (expm1, FloatComplex, ::expm1);
+      ARRAY_MAPPER (fix, FloatComplex, ::fix);
+      ARRAY_MAPPER (floor, FloatComplex, ::floor);
+      ARRAY_MAPPER (log, FloatComplex, std::log);
+      ARRAY_MAPPER (log2, FloatComplex, xlog2);
+      ARRAY_MAPPER (log10, FloatComplex, std::log10);
+      ARRAY_MAPPER (log1p, FloatComplex, ::log1p);
+      ARRAY_MAPPER (round, FloatComplex, xround);
+      ARRAY_MAPPER (roundb, FloatComplex, xroundb);
+      ARRAY_MAPPER (signum, FloatComplex, ::signum);
+      ARRAY_MAPPER (sin, FloatComplex, std::sin);
+      ARRAY_MAPPER (sinh, FloatComplex, std::sinh);
+      ARRAY_MAPPER (sqrt, FloatComplex, std::sqrt);
+      ARRAY_MAPPER (tan, FloatComplex, std::tan);
+      ARRAY_MAPPER (tanh, FloatComplex, std::tanh);
+      ARRAY_MAPPER (isna, bool, octave_is_NA);
+
+    default:
+      return octave_base_value::map (umap);
     }
-
-  return false;
 }
-
-static bool
-any_element_greater_than (const FloatNDArray& a, float val)
-{
-  octave_idx_type len = a.length ();
-  const float *m = a.fortran_vec ();
-
-  for (octave_idx_type i = 0; i < len; i++)
-    {
-      OCTAVE_QUIT;
-
-      if (m[i] > val)
-	return true;
-    }
-
-  return false;
-}
-
-#define ARRAY_MAPPER(MAP, AMAP, FCN) \
-  octave_value \
-  octave_float_complex_matrix::MAP (void) const \
-  { \
-    static AMAP cmap = FCN; \
-    return matrix.map (cmap); \
-  }
-
-#define DARRAY_MAPPER(MAP, AMAP, FCN) \
-  octave_value \
-  octave_float_complex_matrix::MAP (void) const \
-  { \
-    static FloatComplexNDArray::dmapper dmap = ximag; \
-    FloatNDArray m = matrix.map (dmap); \
-    if (m.all_elements_are_zero ()) \
-      { \
-	dmap = xreal; \
-	m = matrix.map (dmap); \
-        static AMAP cmap = FCN; \
-        return m.map (cmap); \
-      } \
-    else \
-      { \
-        error ("%s: not defined for complex arguments", #MAP); \
-        return octave_value (); \
-      } \
-  }
-
-#define CD_ARRAY_MAPPER(MAP, RFCN, CFCN, L1, L2) \
-  octave_value \
-  octave_float_complex_matrix::MAP (void) const \
-  { \
-    static FloatComplexNDArray::dmapper idmap = ximag; \
-    NDArray m = matrix.map (idmap); \
-    if (m.all_elements_are_zero ()) \
-      { \
-	static FloatComplexNDArray::dmapper rdmap = xreal; \
-	m = matrix.map (rdmap); \
-        static NDArray::dmapper dmap = RFCN; \
-        static NDArray::cmapper cmap = CFCN; \
-        return (any_element_less_than (m, L1) \
-                ? octave_value (m.map (cmap)) \
-	        : (any_element_greater_than (m, L2) \
-	           ? octave_value (m.map (cmap)) \
-	           : octave_value (m.map (dmap)))); \
-      } \
-    else \
-      { \
-        /*error ("%s: not defined for complex arguments", #MAP); */	\
-        return octave_value (m); \
-      } \
-  }
-
-// The fast mappers.
-octave_value
-octave_float_complex_matrix::abs (void) const
-{
-  return matrix.abs ();
-}
-
-octave_value
-octave_float_complex_matrix::real (void) const
-{
-  return ::real (matrix);
-}
-
-octave_value
-octave_float_complex_matrix::conj (void) const
-{
-  return ::conj (matrix);
-}
-
-octave_value
-octave_float_complex_matrix::imag (void) const
-{
-  return ::imag (matrix);
-}
-
-octave_value
-octave_float_complex_matrix::isnan (void) const
-{
-  return matrix.isnan ();
-}
-
-octave_value
-octave_float_complex_matrix::isinf (void) const
-{
-  return matrix.isinf ();
-}
-
-octave_value
-octave_float_complex_matrix::finite (void) const
-{
-  return matrix.isfinite ();
-}
-
-DARRAY_MAPPER (erf, FloatNDArray::dmapper, ::erff)
-DARRAY_MAPPER (erfc, FloatNDArray::dmapper, ::erfcf)
-DARRAY_MAPPER (gamma, FloatNDArray::dmapper, xgamma)
-CD_ARRAY_MAPPER (lgamma, xlgamma, xlgamma, 0.0, octave_Inf)
-
-ARRAY_MAPPER (acos, FloatComplexNDArray::cmapper, ::acos)
-ARRAY_MAPPER (acosh, FloatComplexNDArray::cmapper, ::acosh)
-ARRAY_MAPPER (angle, FloatComplexNDArray::dmapper, std::arg)
-ARRAY_MAPPER (arg, FloatComplexNDArray::dmapper, std::arg)
-ARRAY_MAPPER (asin, FloatComplexNDArray::cmapper, ::asin)
-ARRAY_MAPPER (asinh, FloatComplexNDArray::cmapper, ::asinh)
-ARRAY_MAPPER (atan, FloatComplexNDArray::cmapper, ::atan)
-ARRAY_MAPPER (atanh, FloatComplexNDArray::cmapper, ::atanh)
-ARRAY_MAPPER (ceil, FloatComplexNDArray::cmapper, ::ceil)
-ARRAY_MAPPER (cos, FloatComplexNDArray::cmapper, std::cos)
-ARRAY_MAPPER (cosh, FloatComplexNDArray::cmapper, std::cosh)
-ARRAY_MAPPER (exp, FloatComplexNDArray::cmapper, std::exp)
-ARRAY_MAPPER (expm1, FloatComplexNDArray::cmapper, ::expm1f)
-ARRAY_MAPPER (fix, FloatComplexNDArray::cmapper, ::fix)
-ARRAY_MAPPER (floor, FloatComplexNDArray::cmapper, ::floor)
-ARRAY_MAPPER (log, FloatComplexNDArray::cmapper, std::log)
-ARRAY_MAPPER (log2, FloatComplexNDArray::cmapper, xlog2)
-ARRAY_MAPPER (log10, FloatComplexNDArray::cmapper, std::log10)
-ARRAY_MAPPER (log1p, FloatComplexNDArray::cmapper, ::log1pf)
-ARRAY_MAPPER (round, FloatComplexNDArray::cmapper, xround)
-ARRAY_MAPPER (roundb, FloatComplexNDArray::cmapper, xroundb)
-ARRAY_MAPPER (signum, FloatComplexNDArray::cmapper, ::signum)
-ARRAY_MAPPER (sin, FloatComplexNDArray::cmapper, std::sin)
-ARRAY_MAPPER (sinh, FloatComplexNDArray::cmapper, std::sinh)
-ARRAY_MAPPER (sqrt, FloatComplexNDArray::cmapper, std::sqrt)
-ARRAY_MAPPER (tan, FloatComplexNDArray::cmapper, std::tan)
-ARRAY_MAPPER (tanh, FloatComplexNDArray::cmapper, std::tanh)
-ARRAY_MAPPER (isna, FloatComplexNDArray::bmapper, octave_is_NA)
 
 /*
 ;;; Local Variables: ***

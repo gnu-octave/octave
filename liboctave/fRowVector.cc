@@ -232,18 +232,6 @@ operator * (const FloatRowVector& v, const FloatMatrix& a)
 
 // other operations
 
-FloatRowVector
-FloatRowVector::map (dmapper fcn) const
-{
-  return MArray<float>::map<float> (func_ptr (fcn));
-}
-
-FloatComplexRowVector
-FloatRowVector::map (cmapper fcn) const
-{
-  return MArray<float>::map<FloatComplex> (func_ptr (fcn));
-}
-
 float
 FloatRowVector::min (void) const
 {

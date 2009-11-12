@@ -564,7 +564,7 @@ FloatComplexDiagMatrix::determinant (void) const
 float
 FloatComplexDiagMatrix::rcond (void) const
 {
-  FloatColumnVector av = diag (0).map (std::abs);
+  FloatColumnVector av = diag (0).map<float> (std::abs);
   float amx = av.max (), amn = av.min ();
   return amx == 0 ? 0.0f : amn / amx;
 }

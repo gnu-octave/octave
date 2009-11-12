@@ -411,53 +411,6 @@ octave_perm_matrix::to_dense (void) const
   return dense_cache;
 }
 
-#define FORWARD_MAPPER(MAP) \
-  octave_value \
-  octave_perm_matrix::MAP (void) const \
-  { \
-    return to_dense ().MAP (); \
-  }
-
-FORWARD_MAPPER (erf)
-FORWARD_MAPPER (erfc)
-FORWARD_MAPPER (gamma)
-FORWARD_MAPPER (lgamma)
-FORWARD_MAPPER (abs)
-FORWARD_MAPPER (acos)
-FORWARD_MAPPER (acosh)
-FORWARD_MAPPER (angle)
-FORWARD_MAPPER (arg)
-FORWARD_MAPPER (asin)
-FORWARD_MAPPER (asinh)
-FORWARD_MAPPER (atan)
-FORWARD_MAPPER (atanh)
-FORWARD_MAPPER (ceil)
-FORWARD_MAPPER (conj)
-FORWARD_MAPPER (cos)
-FORWARD_MAPPER (cosh)
-FORWARD_MAPPER (exp)
-FORWARD_MAPPER (expm1)
-FORWARD_MAPPER (fix)
-FORWARD_MAPPER (floor)
-FORWARD_MAPPER (imag)
-FORWARD_MAPPER (log)
-FORWARD_MAPPER (log2)
-FORWARD_MAPPER (log10)
-FORWARD_MAPPER (log1p)
-FORWARD_MAPPER (real)
-FORWARD_MAPPER (round)
-FORWARD_MAPPER (roundb)
-FORWARD_MAPPER (signum)
-FORWARD_MAPPER (sin)
-FORWARD_MAPPER (sinh)
-FORWARD_MAPPER (sqrt)
-FORWARD_MAPPER (tan)
-FORWARD_MAPPER (tanh)
-FORWARD_MAPPER (finite)
-FORWARD_MAPPER (isinf)
-FORWARD_MAPPER (isna)
-FORWARD_MAPPER (isnan)
-
 DEFINE_OCTAVE_ALLOCATOR (octave_perm_matrix);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_perm_matrix, 

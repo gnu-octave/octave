@@ -287,14 +287,6 @@ public:
 
   // other operations
 
-  typedef float (*dmapper) (float);
-  typedef FloatComplex (*cmapper) (const FloatComplex&);
-  typedef bool (*bmapper) (float);
-
-  FloatMatrix map (dmapper fcn) const;
-  FloatComplexMatrix map (cmapper fcn) const;
-  boolMatrix map (bmapper fcn) const;
-
   bool any_element_is_negative (bool = false) const;
   bool any_element_is_nan (void) const;
   bool any_element_is_inf_or_nan (void) const;

@@ -260,18 +260,6 @@ operator * (const FloatDiagMatrix& m, const FloatColumnVector& a)
 
 // other operations
 
-FloatColumnVector
-FloatColumnVector::map (dmapper fcn) const
-{
-  return MArray<float>::map<float> (func_ptr (fcn));
-}
-
-FloatComplexColumnVector
-FloatColumnVector::map (cmapper fcn) const
-{
-  return MArray<float>::map<FloatComplex> (func_ptr (fcn));
-}
-
 float
 FloatColumnVector::min (void) const
 {

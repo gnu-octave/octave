@@ -116,12 +116,6 @@ public:
 
   // other operations
 
-  typedef float (*dmapper) (const FloatComplex&);
-  typedef FloatComplex (*cmapper) (const FloatComplex&);
-
-  FloatColumnVector map (dmapper fcn) const;
-  FloatComplexColumnVector map (cmapper fcn) const;
-
   FloatComplex min (void) const;
   FloatComplex max (void) const;
 

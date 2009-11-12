@@ -376,7 +376,7 @@ FloatDiagMatrix::determinant (void) const
 float
 FloatDiagMatrix::rcond (void) const
 {
-  FloatColumnVector av = diag (0).map (fabsf);
+  FloatColumnVector av = diag (0).map<float> (fabsf);
   float amx = av.max (), amn = av.min ();
   return amx == 0 ? 0.0f : amn / amx;
 }

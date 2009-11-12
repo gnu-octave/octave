@@ -143,56 +143,7 @@ public:
 
   mxArray *as_mxArray (void) const;
 
-  octave_value xisalnum (void) const;
-  octave_value xisalpha (void) const;
-  octave_value xisascii (void) const;
-  octave_value xiscntrl (void) const;
-  octave_value xisdigit (void) const;
-  octave_value xisgraph (void) const;
-  octave_value xislower (void) const;
-  octave_value xisprint (void) const;
-  octave_value xispunct (void) const;
-  octave_value xisspace (void) const;
-  octave_value xisupper (void) const;
-  octave_value xisxdigit (void) const;
-  octave_value xtoascii (void) const;
-  octave_value xtolower (void) const;
-  octave_value xtoupper (void) const;
-
-#define MAT_MAPPER(MAP) \
-  octave_value MAP (void) const \
-    { \
-      octave_matrix m (array_value (true)); \
-      return m.MAP (); \
-    }
-
-  MAT_MAPPER (abs)
-  MAT_MAPPER (angle)
-  MAT_MAPPER (arg)
-  MAT_MAPPER (ceil)
-  MAT_MAPPER (conj)
-  MAT_MAPPER (fix)
-  MAT_MAPPER (floor)
-  MAT_MAPPER (imag)
-  MAT_MAPPER (real)
-  MAT_MAPPER (round)
-  MAT_MAPPER (signum)
-
-#undef MAT_MAPPER
-
-#define BOOL_MAT_MAPPER(MAP, VAL)	\
-  octave_value MAP (void) const \
-    { \
-      return boolNDArray (matrix.dims (), VAL); \
-    }
-
-  BOOL_MAT_MAPPER (finite, true)
-  BOOL_MAT_MAPPER (isinf, false)
-  BOOL_MAT_MAPPER (isna, false)
-  BOOL_MAT_MAPPER (isnan, false)
-
-#undef BOOL_MAT_MAPPER
-
+  octave_value map (unary_mapper_t umap) const;
 };
 
 #endif

@@ -438,13 +438,6 @@ public:
 				    const SparseComplexMatrix& a);
   friend OCTAVE_API std::istream& operator >> (std::istream& is, 
 				    SparseComplexMatrix& a);
-
-  typedef double (*dmapper) (const Complex&);
-  typedef Complex (*cmapper) (const Complex&);
-  typedef bool (*bmapper) (const Complex&);
-  SparseMatrix map (dmapper fcn) const;
-  SparseComplexMatrix map (cmapper fcn) const;
-  SparseBoolMatrix map (bmapper fcn) const;
 };
 
 extern OCTAVE_API SparseComplexMatrix operator * (const SparseMatrix&,        

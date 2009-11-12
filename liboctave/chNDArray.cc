@@ -152,60 +152,6 @@ charNDArray::diag (octave_idx_type k) const
   return MArrayN<char>::diag (k);
 }
 
-boolNDArray
-charNDArray::bmap (mapper fcn) const
-{
-  octave_idx_type len = length ();
-  const char *m = fortran_vec();
-  boolNDArray result (dims ());
-  bool *p = result.fortran_vec ();
-
-  for (octave_idx_type i = 0; i < len; i++)
-    {
-      OCTAVE_QUIT;
-
-      p[i] = bool (fcn (m[i]));
-    }
-
-  return result;
-}
-
-NDArray
-charNDArray::dmap (mapper fcn) const
-{
-  octave_idx_type len = length ();
-  const char *m = fortran_vec();
-  NDArray result (dims ());
-  double *p = result.fortran_vec ();
-
-  for (octave_idx_type i = 0; i < len; i++)
-    {
-      OCTAVE_QUIT;
-
-      p[i] = fcn (m[i]);
-    }
-
-  return result;
-}
-
-charNDArray
-charNDArray::smap (mapper fcn) const
-{
-  octave_idx_type len = length ();
-  const char *m = fortran_vec();
-  charNDArray result (dims ());
-  char *p = result.fortran_vec ();
-
-  for (octave_idx_type i = 0; i < len; i++)
-    {
-      OCTAVE_QUIT;
-
-      p[i] = fcn (m[i]);
-    }
-
-  return result;
-}
-
 NDS_CMP_OPS (charNDArray, char)
 NDS_BOOL_OPS (charNDArray, char)
 

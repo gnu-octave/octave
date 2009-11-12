@@ -148,11 +148,16 @@ public:
     return Array<T>::diag (k);
   }
 
-  template <class U, class F>
-  Array2<U> map (F fcn) const
-  {
-    return Array<T>::template map<U> (fcn);
-  }
+  // FIXME: should go away.
+  template <class U>
+  Array2<U>
+  map (U (&fcn) (T)) const
+  { return Array<T>::template map<U> (fcn); }
+
+  template <class U>
+  Array2<U>
+  map (U (&fcn) (const T&)) const
+  { return Array<T>::template map<U> (fcn); }
 };
 
 #endif

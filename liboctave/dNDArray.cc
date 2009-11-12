@@ -931,24 +931,6 @@ NDArray::diag (octave_idx_type k) const
   return MArrayN<double>::diag (k);
 }
 
-NDArray
-NDArray::map (dmapper fcn) const
-{
-  return MArrayN<double>::map<double> (func_ptr (fcn));
-}
-
-ComplexNDArray
-NDArray::map (cmapper fcn) const
-{
-  return MArrayN<double>::map<Complex> (func_ptr (fcn));
-}
-
-boolNDArray
-NDArray::map (bmapper fcn) const
-{
-  return MArrayN<double>::map<bool> (func_ptr (fcn));
-}
-
 // This contains no information on the array structure !!!
 std::ostream&
 operator << (std::ostream& os, const NDArray& a)

@@ -174,6 +174,25 @@ extern OCTAVE_API bool octave_is_NaN_or_NA (const FloatComplex& x);
 extern OCTAVE_API FloatComplex xmin (const FloatComplex& x, const FloatComplex& y);
 extern OCTAVE_API FloatComplex xmax (const FloatComplex& x, const FloatComplex& y);
 
+// These map reals to Complex.
+
+extern OCTAVE_API Complex rc_acos (double);
+extern OCTAVE_API FloatComplex rc_acos (float);
+extern OCTAVE_API Complex rc_acosh (double);
+extern OCTAVE_API FloatComplex rc_acosh (float);
+extern OCTAVE_API Complex rc_asin (double);
+extern OCTAVE_API FloatComplex rc_asin (float);
+extern OCTAVE_API Complex rc_atanh (double);
+extern OCTAVE_API FloatComplex rc_atanh (float);
+extern OCTAVE_API Complex rc_log (double);
+extern OCTAVE_API FloatComplex rc_log (float);
+extern OCTAVE_API Complex rc_log2 (double);
+extern OCTAVE_API FloatComplex rc_log2 (float);
+extern OCTAVE_API Complex rc_log10 (double);
+extern OCTAVE_API FloatComplex rc_log10 (float);
+extern OCTAVE_API Complex rc_sqrt (double);
+extern OCTAVE_API FloatComplex rc_sqrt (float);
+
 #endif
 
 /*

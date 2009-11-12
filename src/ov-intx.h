@@ -355,42 +355,37 @@ public:
     return retval;
   }
 
-#define MAT_MAPPER(FCN) \
-  octave_value FCN (void) const { return matrix.FCN (); }
+  octave_value map (unary_mapper_t umap) const
+    {
+      switch (umap)
+        {
+        case umap_abs:
+          return matrix.abs ();
+        case umap_signum:
+          return matrix.signum ();
+        case umap_ceil:
+        case umap_conj:
+        case umap_fix:
+        case umap_floor:
+        case umap_real:
+        case umap_round:
+          return matrix;
+        case umap_imag:
+          return intNDArray<OCTAVE_INT_T> (matrix.dims (), OCTAVE_INT_T ());
+        case umap_isnan:
+        case umap_isna:
+        case umap_isinf:
+          return boolNDArray (matrix.dims (), false);
+        case umap_finite:
+          return boolNDArray (matrix.dims (), true);
 
-  MAT_MAPPER (abs)
-  MAT_MAPPER (signum)
-
-#undef MAT_MAPPER
-
-  octave_value imag (void) const
-  {
-    return intNDArray<OCTAVE_INT_T> (matrix.dims (),
-				     static_cast<OCTAVE_INT_T>(0));
-  }
-
-#define NO_OP_MAPPER(FCN) \
-  octave_value FCN (void) const { return octave_value (matrix); }
-
-  NO_OP_MAPPER (ceil)
-  NO_OP_MAPPER (conj)
-  NO_OP_MAPPER (fix)
-  NO_OP_MAPPER (floor)
-  NO_OP_MAPPER (real)
-  NO_OP_MAPPER (round)
-  NO_OP_MAPPER (roundb)
-
-#undef NO_OP_MAPPER
-
-#define BOOL_MAPPER(FCN, VAL) \
-  octave_value FCN (void) const { return boolNDArray (matrix.dims (), VAL); }
-
-  BOOL_MAPPER (finite, true)
-  BOOL_MAPPER (isinf, false)
-  BOOL_MAPPER (isna, false)
-  BOOL_MAPPER (isnan, false)
-
-#undef BOOL_MAPPER
+        default: 
+          {
+            octave_matrix m (array_value ());
+            return m.map (umap);
+          }
+        }
+    }
 
 private:
 
@@ -673,37 +668,37 @@ public:
     return retval;
   }
 
-#define SCALAR_MAPPER(FCN) \
-  octave_value FCN (void) const { return scalar.FCN (); }
+  octave_value map (unary_mapper_t umap) const
+    {
+      switch (umap)
+        {
+        case umap_abs:
+          return scalar.abs ();
+        case umap_signum:
+          return scalar.signum ();
+        case umap_ceil:
+        case umap_conj:
+        case umap_fix:
+        case umap_floor:
+        case umap_real:
+        case umap_round:
+          return scalar;
+        case umap_imag:
+          return OCTAVE_INT_T ();
+        case umap_isnan:
+        case umap_isna:
+        case umap_isinf:
+          return false;
+        case umap_finite:
+          return true;
 
-  SCALAR_MAPPER (abs)
-  SCALAR_MAPPER (signum)
-
-#undef SCALAR_MAPPER
-
-  octave_value imag (void) const { return static_cast<OCTAVE_INT_T>(0); }
-
-#define NO_OP_MAPPER(FCN) \
-  octave_value FCN (void) const { return octave_value (scalar); }
-
-  NO_OP_MAPPER (ceil)
-  NO_OP_MAPPER (conj)
-  NO_OP_MAPPER (fix)
-  NO_OP_MAPPER (floor)
-  NO_OP_MAPPER (real)
-  NO_OP_MAPPER (round)
-  NO_OP_MAPPER (roundb)
-
-#undef NO_OP_MAPPER
-
-#define BOOL_MAPPER(FCN, VAL) octave_value FCN (void) const { return VAL; }
-
-  BOOL_MAPPER (finite, true)
-  BOOL_MAPPER (isinf, false)
-  BOOL_MAPPER (isna, false)
-  BOOL_MAPPER (isnan, false)
-
-#undef BOOL_MAPPER
+        default: 
+          {
+            octave_scalar m (scalar_value ());
+            return m.map (umap);
+          }
+        }
+    }
 
 private:
 

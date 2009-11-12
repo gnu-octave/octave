@@ -719,189 +719,65 @@ octave_complex_matrix::as_mxArray (void) const
   return retval;
 }
 
-#if 0
-static double
-xabs (const Complex& x)
+octave_value
+octave_complex_matrix::map (unary_mapper_t umap) const
 {
-  return (xisinf (x.real ()) || xisinf (x.imag ())) ? octave_Inf : abs (x);
-}
-#endif
-
-static double
-ximag (const Complex& x)
-{
-  return x.imag ();
-}
-
-static double
-xreal (const Complex& x)
-{
-  return x.real ();
-}
-
-static bool
-any_element_less_than (const NDArray& a, double val)
-{
-  octave_idx_type len = a.length ();
-  const double *m = a.fortran_vec ();
-
-  for (octave_idx_type i = 0; i < len; i++)
+  switch (umap)
     {
-      OCTAVE_QUIT;
+    // Mappers handled specially.
+    case umap_real:
+      return ::real (matrix);
+    case umap_imag:
+      return ::imag (matrix);
+    case umap_conj:
+      return ::conj (matrix);
 
-      if (m[i] < val)
-	return true;
+#define ARRAY_METHOD_MAPPER(UMAP, FCN) \
+    case umap_ ## UMAP: \
+      return octave_value (matrix.FCN ())
+
+      ARRAY_METHOD_MAPPER (abs, abs);
+      ARRAY_METHOD_MAPPER (isnan, isnan);
+      ARRAY_METHOD_MAPPER (isinf, isinf);
+      ARRAY_METHOD_MAPPER (finite, isfinite);
+
+#define ARRAY_MAPPER(UMAP, TYPE, FCN) \
+    case umap_ ## UMAP: \
+      return octave_value (matrix.map<TYPE> (FCN))
+
+      ARRAY_MAPPER (acos, Complex, ::acos);
+      ARRAY_MAPPER (acosh, Complex, ::acosh);
+      ARRAY_MAPPER (angle, double, std::arg);
+      ARRAY_MAPPER (arg, double, std::arg);
+      ARRAY_MAPPER (asin, Complex, ::asin);
+      ARRAY_MAPPER (asinh, Complex, ::asinh);
+      ARRAY_MAPPER (atan, Complex, ::atan);
+      ARRAY_MAPPER (atanh, Complex, ::atanh);
+      ARRAY_MAPPER (ceil, Complex, ::ceil);
+      ARRAY_MAPPER (cos, Complex, std::cos);
+      ARRAY_MAPPER (cosh, Complex, std::cosh);
+      ARRAY_MAPPER (exp, Complex, std::exp);
+      ARRAY_MAPPER (expm1, Complex, ::expm1);
+      ARRAY_MAPPER (fix, Complex, ::fix);
+      ARRAY_MAPPER (floor, Complex, ::floor);
+      ARRAY_MAPPER (log, Complex, std::log);
+      ARRAY_MAPPER (log2, Complex, xlog2);
+      ARRAY_MAPPER (log10, Complex, std::log10);
+      ARRAY_MAPPER (log1p, Complex, ::log1p);
+      ARRAY_MAPPER (round, Complex, xround);
+      ARRAY_MAPPER (roundb, Complex, xroundb);
+      ARRAY_MAPPER (signum, Complex, ::signum);
+      ARRAY_MAPPER (sin, Complex, std::sin);
+      ARRAY_MAPPER (sinh, Complex, std::sinh);
+      ARRAY_MAPPER (sqrt, Complex, std::sqrt);
+      ARRAY_MAPPER (tan, Complex, std::tan);
+      ARRAY_MAPPER (tanh, Complex, std::tanh);
+      ARRAY_MAPPER (isna, bool, octave_is_NA);
+
+    default:
+      return octave_base_value::map (umap);
     }
-
-  return false;
 }
-
-static bool
-any_element_greater_than (const NDArray& a, double val)
-{
-  octave_idx_type len = a.length ();
-  const double *m = a.fortran_vec ();
-
-  for (octave_idx_type i = 0; i < len; i++)
-    {
-      OCTAVE_QUIT;
-
-      if (m[i] > val)
-	return true;
-    }
-
-  return false;
-}
-
-#define ARRAY_MAPPER(MAP, AMAP, FCN) \
-  octave_value \
-  octave_complex_matrix::MAP (void) const \
-  { \
-    static AMAP cmap = FCN; \
-    return matrix.map (cmap); \
-  }
-
-#define DARRAY_MAPPER(MAP, AMAP, FCN) \
-  octave_value \
-  octave_complex_matrix::MAP (void) const \
-  { \
-    static ComplexNDArray::dmapper dmap = ximag; \
-    NDArray m = matrix.map (dmap); \
-    if (m.all_elements_are_zero ()) \
-      { \
-	dmap = xreal; \
-	m = matrix.map (dmap); \
-        static AMAP cmap = FCN; \
-        return m.map (cmap); \
-      } \
-    else \
-      { \
-        error ("%s: not defined for complex arguments", #MAP); \
-        return octave_value (); \
-      } \
-  }
-
-#define CD_ARRAY_MAPPER(MAP, RFCN, CFCN, L1, L2) \
-  octave_value \
-  octave_complex_matrix::MAP (void) const \
-  { \
-    static ComplexNDArray::dmapper idmap = ximag; \
-    NDArray m = matrix.map (idmap); \
-    if (m.all_elements_are_zero ()) \
-      { \
-	static ComplexNDArray::dmapper rdmap = xreal; \
-	m = matrix.map (rdmap); \
-        static NDArray::dmapper dmap = RFCN; \
-        static NDArray::cmapper cmap = CFCN; \
-        return (any_element_less_than (m, L1) \
-                ? octave_value (m.map (cmap)) \
-	        : (any_element_greater_than (m, L2) \
-	           ? octave_value (m.map (cmap)) \
-	           : octave_value (m.map (dmap)))); \
-      } \
-    else \
-      { \
-        /*error ("%s: not defined for complex arguments", #MAP); */	\
-        return octave_value (m); \
-      } \
-  }
-
-// The fast mappers.
-octave_value
-octave_complex_matrix::abs (void) const
-{
-  return matrix.abs ();
-}
-
-octave_value
-octave_complex_matrix::real (void) const
-{
-  return ::real (matrix);
-}
-
-octave_value
-octave_complex_matrix::conj (void) const
-{
-  return ::conj (matrix);
-}
-
-octave_value
-octave_complex_matrix::imag (void) const
-{
-  return ::imag (matrix);
-}
-
-octave_value
-octave_complex_matrix::isnan (void) const
-{
-  return matrix.isnan ();
-}
-
-octave_value
-octave_complex_matrix::isinf (void) const
-{
-  return matrix.isinf ();
-}
-
-octave_value
-octave_complex_matrix::finite (void) const
-{
-  return matrix.isfinite ();
-}
-
-DARRAY_MAPPER (erf, NDArray::dmapper, ::erf)
-DARRAY_MAPPER (erfc, NDArray::dmapper, ::erfc)
-DARRAY_MAPPER (gamma, NDArray::dmapper, xgamma)
-CD_ARRAY_MAPPER (lgamma, xlgamma, xlgamma, 0.0, octave_Inf)
-
-ARRAY_MAPPER (acos, ComplexNDArray::cmapper, ::acos)
-ARRAY_MAPPER (acosh, ComplexNDArray::cmapper, ::acosh)
-ARRAY_MAPPER (angle, ComplexNDArray::dmapper, std::arg)
-ARRAY_MAPPER (arg, ComplexNDArray::dmapper, std::arg)
-ARRAY_MAPPER (asin, ComplexNDArray::cmapper, ::asin)
-ARRAY_MAPPER (asinh, ComplexNDArray::cmapper, ::asinh)
-ARRAY_MAPPER (atan, ComplexNDArray::cmapper, ::atan)
-ARRAY_MAPPER (atanh, ComplexNDArray::cmapper, ::atanh)
-ARRAY_MAPPER (ceil, ComplexNDArray::cmapper, ::ceil)
-ARRAY_MAPPER (cos, ComplexNDArray::cmapper, std::cos)
-ARRAY_MAPPER (cosh, ComplexNDArray::cmapper, std::cosh)
-ARRAY_MAPPER (exp, ComplexNDArray::cmapper, std::exp)
-ARRAY_MAPPER (expm1, ComplexNDArray::cmapper, ::expm1)
-ARRAY_MAPPER (fix, ComplexNDArray::cmapper, ::fix)
-ARRAY_MAPPER (floor, ComplexNDArray::cmapper, ::floor)
-ARRAY_MAPPER (log, ComplexNDArray::cmapper, std::log)
-ARRAY_MAPPER (log2, ComplexNDArray::cmapper, xlog2)
-ARRAY_MAPPER (log10, ComplexNDArray::cmapper, std::log10)
-ARRAY_MAPPER (log1p, ComplexNDArray::cmapper, ::log1p)
-ARRAY_MAPPER (round, ComplexNDArray::cmapper, xround)
-ARRAY_MAPPER (roundb, ComplexNDArray::cmapper, xroundb)
-ARRAY_MAPPER (signum, ComplexNDArray::cmapper, ::signum)
-ARRAY_MAPPER (sin, ComplexNDArray::cmapper, std::sin)
-ARRAY_MAPPER (sinh, ComplexNDArray::cmapper, std::sinh)
-ARRAY_MAPPER (sqrt, ComplexNDArray::cmapper, std::sqrt)
-ARRAY_MAPPER (tan, ComplexNDArray::cmapper, std::tan)
-ARRAY_MAPPER (tanh, ComplexNDArray::cmapper, std::tanh)
-ARRAY_MAPPER (isna, ComplexNDArray::bmapper, octave_is_NA)
 
 /*
 ;;; Local Variables: ***

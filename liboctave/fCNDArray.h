@@ -148,14 +148,6 @@ public:
       return *this; 
     }
 
-  typedef float (*dmapper) (const FloatComplex&);
-  typedef FloatComplex (*cmapper) (const FloatComplex&);
-  typedef bool (*bmapper) (const FloatComplex&);
-
-  FloatNDArray map (dmapper fcn) const;
-  FloatComplexNDArray map (cmapper fcn) const;
-  boolNDArray map (bmapper fcn) const;
-
 private:
 
   FloatComplexNDArray (FloatComplex *d, const dim_vector& dv)

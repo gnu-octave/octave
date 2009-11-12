@@ -7550,24 +7550,6 @@ SparseMatrix::matrix_value (void) const
   return retval;
 }
 
-SparseMatrix
-SparseMatrix::map (dmapper fcn) const
-{
-  return MSparse<double>::map<double> (func_ptr (fcn));
-}
-
-SparseComplexMatrix
-SparseMatrix::map (cmapper fcn) const
-{
-  return MSparse<double>::map<Complex> (func_ptr (fcn));
-}
-
-SparseBoolMatrix
-SparseMatrix::map (bmapper fcn) const
-{
-  return MSparse<double>::map<bool> (func_ptr (fcn));
-}
-
 std::ostream&
 operator << (std::ostream& os, const SparseMatrix& a)
 {

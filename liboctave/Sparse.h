@@ -569,6 +569,17 @@ public:
     return result;
   }
 
+  // Overloads for function references.
+  template <class U>
+  Sparse<U>
+  map (U (&fcn) (T)) const
+  { return map<U, U (&) (T)> (fcn); }
+
+  template <class U>
+  Sparse<U>
+  map (U (&fcn) (const T&)) const
+  { return map<U, U (&) (const T&)> (fcn); }
+
   bool indices_ok (void) const { return rep->indices_ok (); }
 };
 

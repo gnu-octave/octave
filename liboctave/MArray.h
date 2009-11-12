@@ -93,11 +93,16 @@ public:
   double norm (double p) const;
   float norm (float p) const;
 
-  template <class U, class F>
-  MArray<U> map (F fcn) const
-  {
-    return Array<T>::template map<U> (fcn);
-  }
+  // FIXME: should go away.
+  template <class U>
+  MArray<U>
+  map (U (&fcn) (T)) const
+  { return Array<T>::template map<U> (fcn); }
+
+  template <class U>
+  MArray<U>
+  map (U (&fcn) (const T&)) const
+  { return Array<T>::template map<U> (fcn); }
 
   // Performs indexed accumulative addition.
 

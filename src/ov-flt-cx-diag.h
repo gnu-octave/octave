@@ -78,11 +78,7 @@ public:
   bool load_binary (std::istream& is, bool swap, 
 		    oct_mach_info::float_format fmt);
 
-  octave_value abs (void) const;
-  octave_value conj (void) const;
-  octave_value imag (void) const;
-  octave_value real (void) const;
-  octave_value sqrt (void) const;
+  octave_value map (unary_mapper_t umap) const;
 
 private:
 

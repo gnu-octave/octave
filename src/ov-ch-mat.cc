@@ -150,44 +150,50 @@ octave_char_matrix::as_mxArray (void) const
   return retval;
 }
 
-#define MACRO_WRAPPER(FCN, CTYPE_FCN) \
-  static int x ## FCN (int c) { return CTYPE_FCN (c); }
+// The C++ standard guarantees cctype defines functions, not macros (and hence macros *CAN'T* 
+// be defined if only cctype is included)
+// so there's no need to f*ck around. The exceptions are isascii and toascii,
+// which are not C++.
+// Oddly enough, all those character functions are int (*) (int), even
+// in C++. Wicked!
+static inline int xisascii (int c)
+{ return isascii (c); }
 
-#define STRING_MAPPER(FCN, AMAP, CTYPE_FCN) \
-  MACRO_WRAPPER (FCN, CTYPE_FCN) \
- \
-  octave_value \
-  octave_char_matrix::FCN (void) const \
-  { \
-    static charNDArray::mapper smap = x ## FCN; \
-    return matrix.AMAP (smap);  \
-  }
+static inline int xtoascii (int c)
+{ return toascii (c); }
 
-#define TOSTRING_MAPPER(FCN, AMAP, CTYPE_FCN) \
-  MACRO_WRAPPER (FCN, CTYPE_FCN) \
- \
-  octave_value \
-  octave_char_matrix::FCN (void) const \
-  { \
-    static charNDArray::mapper smap = x ## FCN; \
-    return octave_value (matrix.AMAP (smap), is_sq_string () ? '\'' : '"'); \
-  }
+octave_value
+octave_char_matrix::map (unary_mapper_t umap) const
+{
+  switch (umap)
+    {
+#define STRING_MAPPER(UMAP,FCN,TYPE) \
+    case UMAP: \
+      return octave_value (matrix.map<TYPE, int (&) (int)> (FCN))
 
-STRING_MAPPER (xisalnum, bmap, isalnum)
-STRING_MAPPER (xisalpha, bmap, isalpha)
-STRING_MAPPER (xisascii, bmap, isascii)
-STRING_MAPPER (xiscntrl, bmap, iscntrl)
-STRING_MAPPER (xisdigit, bmap, isdigit)
-STRING_MAPPER (xisgraph, bmap, isgraph)
-STRING_MAPPER (xislower, bmap, islower)
-STRING_MAPPER (xisprint, bmap, isprint)
-STRING_MAPPER (xispunct, bmap, ispunct)
-STRING_MAPPER (xisspace, bmap, isspace)
-STRING_MAPPER (xisupper, bmap, isupper)
-STRING_MAPPER (xisxdigit, bmap, isxdigit)
-STRING_MAPPER (xtoascii, dmap, toascii)
-TOSTRING_MAPPER (xtolower, smap, tolower)
-TOSTRING_MAPPER (xtoupper, smap, toupper)
+    STRING_MAPPER (umap_isalnum, std::isalnum, bool);
+    STRING_MAPPER (umap_isalpha, std::isalpha, bool);
+    STRING_MAPPER (umap_isascii, xisascii, bool);
+    STRING_MAPPER (umap_iscntrl, std::iscntrl, bool);
+    STRING_MAPPER (umap_isdigit, std::isdigit, bool);
+    STRING_MAPPER (umap_isgraph, std::isgraph, bool);
+    STRING_MAPPER (umap_islower, std::islower, bool);
+    STRING_MAPPER (umap_isprint, std::isprint, bool);
+    STRING_MAPPER (umap_ispunct, std::ispunct, bool);
+    STRING_MAPPER (umap_isspace, std::isspace, bool);
+    STRING_MAPPER (umap_isupper, std::isupper, bool);
+    STRING_MAPPER (umap_isxdigit, std::isxdigit, bool);
+    STRING_MAPPER (umap_toascii, xtoascii, double);
+    STRING_MAPPER (umap_tolower, std::tolower, char);
+    STRING_MAPPER (umap_toupper, std::toupper, char);
+
+    default: 
+      {
+        octave_matrix m (array_value (true));
+        return m.map (umap);
+      }
+    }
+}
 
 /*
 ;;; Local Variables: ***

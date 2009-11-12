@@ -3079,24 +3079,6 @@ ComplexMatrix::operator ! (void) const
 
 // other operations
 
-Matrix
-ComplexMatrix::map (dmapper fcn) const
-{
-  return MArray2<Complex>::map<double> (func_ptr (fcn));
-}
-
-ComplexMatrix
-ComplexMatrix::map (cmapper fcn) const
-{
-  return MArray2<Complex>::map<Complex> (func_ptr (fcn));
-}
-
-boolMatrix
-ComplexMatrix::map (bmapper fcn) const
-{
-  return MArray2<Complex>::map<bool> (func_ptr (fcn));
-}
-
 bool
 ComplexMatrix::any_element_is_nan (void) const
 {

@@ -117,11 +117,16 @@ public:
     return Sparse<T>::diag (k);
   }
 
- template <class U, class F>
-  MSparse<U> map (F fcn) const
-  {
-    return Sparse<T>::template map<U> (fcn);
-  }
+  // FIXME: should go away.
+  template <class U>
+  MSparse<U>
+  map (U (&fcn) (T)) const
+  { return Sparse<T>::template map<U> (fcn); }
+
+  template <class U>
+  MSparse<U>
+  map (U (&fcn) (const T&)) const
+  { return Sparse<T>::template map<U> (fcn); }
 
   // Currently, the OPS functions don't need to be friends, but that
   // may change.

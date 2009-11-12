@@ -232,18 +232,6 @@ operator * (const RowVector& v, const Matrix& a)
 
 // other operations
 
-RowVector
-RowVector::map (dmapper fcn) const
-{
-  return MArray<double>::map<double> (func_ptr (fcn));
-}
-
-ComplexRowVector
-RowVector::map (cmapper fcn) const
-{
-  return MArray<double>::map<Complex> (func_ptr (fcn));
-}
-
 double
 RowVector::min (void) const
 {

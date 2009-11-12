@@ -252,67 +252,63 @@ octave_float_scalar::as_mxArray (void) const
   return retval;
 }
 
-#define SCALAR_MAPPER(MAP, FCN) \
-  octave_value \
-  octave_float_scalar::MAP (void) const \
-  { \
-    return octave_value (FCN (scalar)); \
-  }
-
-#define CD_SCALAR_MAPPER(MAP, RFCN, CFCN, L1, L2) \
-  octave_value \
-  octave_float_scalar::MAP (void) const \
-  { \
-    return (scalar < L1 || scalar > L2 \
-            ? octave_value (CFCN (FloatComplex (scalar))) \
-	    : octave_value (RFCN (scalar))); \
-  }
-
-static float
-xconj (float x)
+octave_value
+octave_float_scalar::map (unary_mapper_t umap) const
 {
-  return x;
-}
+  switch (umap)
+    {
+    case umap_imag:
+      return 0.0f;
 
-SCALAR_MAPPER (erf, ::erff)
-SCALAR_MAPPER (erfc, ::erfcf)
-SCALAR_MAPPER (gamma, xgamma)
-CD_SCALAR_MAPPER (lgamma, xlgamma, xlgamma, 0.0, octave_Float_Inf)
-SCALAR_MAPPER (abs, ::fabsf)
-CD_SCALAR_MAPPER (acos, ::acosf, ::acos, -1.0, 1.0)
-CD_SCALAR_MAPPER (acosh, ::acoshf, ::acosh, 1.0, octave_Float_Inf)
-SCALAR_MAPPER (angle, ::arg)
-SCALAR_MAPPER (arg, ::arg)
-CD_SCALAR_MAPPER (asin, ::asinf, ::asin, -1.0, 1.0)
-SCALAR_MAPPER (asinh, ::asinhf)
-SCALAR_MAPPER (atan, ::atanf)
-CD_SCALAR_MAPPER (atanh, ::atanhf, ::atanh, -1.0, 1.0)
-SCALAR_MAPPER (ceil, ::ceilf)
-SCALAR_MAPPER (conj, xconj)
-SCALAR_MAPPER (cos, ::cosf)
-SCALAR_MAPPER (cosh, ::coshf)
-SCALAR_MAPPER (exp, ::expf)
-SCALAR_MAPPER (expm1, ::expm1f)
-SCALAR_MAPPER (fix, ::fix)
-SCALAR_MAPPER (floor, ::floorf)
-SCALAR_MAPPER (imag, ::imag)
-CD_SCALAR_MAPPER (log, ::logf, std::log, 0.0, octave_Float_Inf)
-CD_SCALAR_MAPPER (log2, xlog2, xlog2, 0.0, octave_Float_Inf)
-CD_SCALAR_MAPPER (log10, ::log10f, std::log10, 0.0, octave_Float_Inf)
-CD_SCALAR_MAPPER (log1p, ::log1pf, ::log1p, -1.0, octave_Float_Inf)
-SCALAR_MAPPER (real, ::real)
-SCALAR_MAPPER (round, xround)
-SCALAR_MAPPER (roundb, xroundb)
-SCALAR_MAPPER (signum, ::signum)
-SCALAR_MAPPER (sin, ::sinf)
-SCALAR_MAPPER (sinh, ::sinhf)
-CD_SCALAR_MAPPER (sqrt, ::sqrtf, std::sqrt, 0.0, octave_Float_Inf)
-SCALAR_MAPPER (tan, ::tanf)
-SCALAR_MAPPER (tanh, ::tanhf)
-SCALAR_MAPPER (finite, xfinite)
-SCALAR_MAPPER (isinf, xisinf)
-SCALAR_MAPPER (isna, octave_is_NA)
-SCALAR_MAPPER (isnan, xisnan)
+    case umap_real:
+    case umap_conj:
+      return scalar;
+
+#define SCALAR_MAPPER(UMAP, FCN) \
+    case umap_ ## UMAP: \
+      return octave_value (FCN (scalar))
+
+      SCALAR_MAPPER (abs, ::fabsf);
+      SCALAR_MAPPER (acos, rc_acos);
+      SCALAR_MAPPER (acosh, rc_acosh);
+      SCALAR_MAPPER (angle, ::arg);
+      SCALAR_MAPPER (arg, ::arg);
+      SCALAR_MAPPER (asin, rc_asin);
+      SCALAR_MAPPER (asinh, ::asinhf);
+      SCALAR_MAPPER (atan, ::atanf);
+      SCALAR_MAPPER (atanh, rc_atanh);
+      SCALAR_MAPPER (erf, ::erff);
+      SCALAR_MAPPER (erfc, ::erfcf);
+      SCALAR_MAPPER (gamma, xgamma);
+      SCALAR_MAPPER (lgamma, rc_lgamma);
+      SCALAR_MAPPER (ceil, ::ceilf);
+      SCALAR_MAPPER (cos, ::cosf);
+      SCALAR_MAPPER (cosh, ::coshf);
+      SCALAR_MAPPER (exp, ::expf);
+      SCALAR_MAPPER (expm1, ::expm1f);
+      SCALAR_MAPPER (fix, ::fix);
+      SCALAR_MAPPER (floor, ::floorf);
+      SCALAR_MAPPER (log, rc_log);
+      SCALAR_MAPPER (log2, rc_log2);
+      SCALAR_MAPPER (log10, rc_log10);
+      SCALAR_MAPPER (log1p, rc_log1p);
+      SCALAR_MAPPER (round, xround);
+      SCALAR_MAPPER (roundb, xroundb);
+      SCALAR_MAPPER (signum, ::signum);
+      SCALAR_MAPPER (sin, ::sinf);
+      SCALAR_MAPPER (sinh, ::sinhf);
+      SCALAR_MAPPER (sqrt, rc_sqrt);
+      SCALAR_MAPPER (tan, ::tanf);
+      SCALAR_MAPPER (tanh, ::tanhf);
+      SCALAR_MAPPER (finite, xfinite);
+      SCALAR_MAPPER (isinf, xisinf);
+      SCALAR_MAPPER (isna, octave_is_NA);
+      SCALAR_MAPPER (isnan, xisnan);
+
+    default:
+      return octave_base_value::map (umap);
+    }
+}
 
 /*
 ;;; Local Variables: ***

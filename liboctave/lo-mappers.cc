@@ -672,6 +672,94 @@ xmax (const FloatComplex& x, const FloatComplex& y)
   return abs (x) >= abs (y) ? x : (xisnan (x) ? x : y);
 }
 
+Complex
+rc_acos (double x)
+{
+  return fabs (x) > 1.0 ? acos (Complex (x)) : Complex (acos (x));
+}
+
+FloatComplex
+rc_acos (float x)
+{
+  return fabsf (x) > 1.0f ? acos (FloatComplex (x)) : FloatComplex (acosf (x));
+}
+
+Complex rc_acosh (double x)
+{
+  return x < 1.0 ? acosh (Complex (x)) : Complex (acosh (x));
+}
+
+FloatComplex rc_acosh (float x)
+{
+  return x < 1.0f ? acosh (FloatComplex (x)) : FloatComplex (acoshf (x));
+}
+
+Complex rc_asin (double x)
+{
+  return fabs (x) > 1.0 ? asin (Complex (x)) : Complex (asin (x));
+}
+
+FloatComplex rc_asin (float x)
+{
+  return fabsf (x) > 1.0f ? asin (FloatComplex (x)) : FloatComplex (asinf (x));
+}
+
+Complex rc_atanh (double x)
+{
+  return fabs (x) > 1.0 ? atanh (Complex (x)) : Complex (atanh (x));
+}
+
+FloatComplex rc_atanh (float x)
+{
+  return fabsf (x) > 1.0f ? atanh (FloatComplex (x)) : FloatComplex (atanhf (x));
+}
+
+Complex rc_log (double x)
+{
+  const double pi = 3.14159265358979323846;
+  return x < 0.0 ? Complex (log (-x), pi) : Complex (log (x));
+}
+
+FloatComplex rc_log (float x)
+{
+  const float pi = 3.14159265358979323846f;
+  return x < 0.0f ? FloatComplex (logf (-x), pi) : FloatComplex (logf (x));
+}
+
+Complex rc_log2 (double x)
+{
+  const double pil2 = 4.53236014182719380962; // = pi / log(2)
+  return x < 0.0 ? Complex (xlog2 (-x), pil2) : Complex (xlog2 (x));
+}
+
+FloatComplex rc_log2 (float x)
+{
+  const float pil2 = 4.53236014182719380962f; // = pi / log(2)
+  return x < 0.0f ? FloatComplex (xlog2 (-x), pil2) : FloatComplex (xlog2 (x));
+}
+
+Complex rc_log10 (double x)
+{
+  const double pil10 = 1.36437635384184134748; // = pi / log(10)
+  return x < 0.0 ? Complex (log10 (-x), pil10) : Complex (log10 (x));
+}
+
+FloatComplex rc_log10 (float x)
+{
+  const float pil10 = 1.36437635384184134748f; // = pi / log(10)
+  return x < 0.0f ? FloatComplex (log10 (-x), pil10) : FloatComplex (log10f (x));
+}
+
+Complex rc_sqrt (double x)
+{
+  return x < 0.0 ? Complex (0.0, sqrt (-x)) : Complex (sqrt (x));
+}
+
+FloatComplex rc_sqrt (float x)
+{
+  return x < 0.0f ? FloatComplex (0.0f, sqrtf (-x)) : FloatComplex (sqrtf (x));
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

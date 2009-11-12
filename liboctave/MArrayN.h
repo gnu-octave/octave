@@ -104,12 +104,6 @@ public:
     return Array<T>::diag (k);
   }
 
-  template <class U, class F>
-  MArrayN<U> map (F fcn) const
-  {
-    return Array<T>::template map<U> (fcn);
-  }
-
   void changesign (void);
 };
 

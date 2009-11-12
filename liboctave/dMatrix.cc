@@ -2637,24 +2637,6 @@ operator * (const ColumnVector& v, const RowVector& a)
 
 // other operations.
 
-Matrix
-Matrix::map (dmapper fcn) const
-{
-  return MArray2<double>::map<double> (func_ptr (fcn));
-}
-
-ComplexMatrix
-Matrix::map (cmapper fcn) const
-{
-  return MArray2<double>::map<Complex> (func_ptr (fcn));
-}
-
-boolMatrix
-Matrix::map (bmapper fcn) const
-{
-  return MArray2<double>::map<bool> (func_ptr (fcn));
-}
-
 bool
 Matrix::any_element_is_negative (bool neg_zero) const
 {

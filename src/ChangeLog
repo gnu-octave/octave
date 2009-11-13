@@ -1,3 +1,8 @@
+2009-11-13  Joel Keay  <keay@ou.edu>
+
+	* graphics.h.in (image::properties::init): Also allow single,
+	int16, and uint16 data types.
+
 2009-11-13  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-base.h (unary_mapper_t): Move to octave_base_value.

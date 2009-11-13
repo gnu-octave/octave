@@ -181,21 +181,29 @@ DEFMXBOOLOPEQ (mx_inline_or2, |=)
 
 template <class T> 
 inline bool 
-mx_inline_any_nan (size_t, const T*) { return false; }
+mx_inline_any_nan (size_t n, const T* x) 
+{
+  for (size_t i = 0; i < n; i++)
+    {
+      if (xisnan (x[i]))
+        return true;
+    }
 
-#define DEFMXANYNAN(T) \
-inline bool \
-mx_inline_any_nan (size_t n, const T* t) \
-{ \
-  for (size_t i = 0; i < n; i++) \
-    if (xisnan (t[i])) return true; \
-  return false; \
+  return false;
 }
 
-DEFMXANYNAN(double)
-DEFMXANYNAN(float)
-DEFMXANYNAN(Complex)
-DEFMXANYNAN(FloatComplex)
+template<class T>
+inline bool 
+mx_inline_all_real (size_t n, const std::complex<T>* x)
+{
+  for (size_t i = 0; i < n; i++)
+    {
+      if (x[i].imag () != 0)
+        return false;
+    }
+
+  return true;
+}
 
 #define DEFMXMAPPER(F, FUN) \
 template <class T> \

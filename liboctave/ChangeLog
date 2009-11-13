@@ -1,3 +1,8 @@
+2009-11-13  Jaroslav Hajek  <highegg@gmail.com>
+
+	* mx-inlines.cc (mx_inline_any_nan): Rewrite.
+	(mx_inline_all_real): New reduction loop.
+
 2009-11-12  Jaroslav Hajek  <highegg@gmail.com>
 
 	* lo-mappers.cc ( rc_acos, rc_acos, rc_acosh, rc_acosh, rc_asin,

@@ -3111,21 +3111,7 @@ FloatComplexMatrix::any_element_is_inf_or_nan (void) const
 bool
 FloatComplexMatrix::all_elements_are_real (void) const
 {
-  octave_idx_type nr = rows ();
-  octave_idx_type nc = cols ();
-
-  for (octave_idx_type j = 0; j < nc; j++)
-    {
-      for (octave_idx_type i = 0; i < nr; i++)
-	{
-	  float ip = std::imag (elem (i, j));
-
-	  if (ip != 0.0 || lo_ieee_signbit (ip))
-	    return false;
-	}
-    }
-
-  return true;
+  return mx_inline_all_real (numel (), data ());
 }
 
 // Return nonzero if any element of CM has a non-integer real or

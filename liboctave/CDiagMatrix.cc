@@ -412,16 +412,7 @@ ComplexDiagMatrix::pseudo_inverse (void) const
 bool
 ComplexDiagMatrix::all_elements_are_real (void) const
 {
-  octave_idx_type len = length ();
-  for (octave_idx_type i = 0; i < len; i++)
-    {
-      double ip = std::imag (elem (i, i));
-
-      if (ip != 0.0 || lo_ieee_signbit (ip))
-        return false;
-    }
-
-  return true;
+  return mx_inline_all_real (length (), data ());
 }
 
 // diagonal matrix by diagonal matrix -> diagonal matrix operations

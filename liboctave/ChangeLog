@@ -1,3 +1,15 @@
+2009-11-13  Jaroslav Hajek  <highegg@gmail.com>
+
+	* CNDArray.cc (ComplexNDArray::all_elements_are_real): 
+	Use mx_inline_all_real.
+	* CMatrix.cc (ComplexMatrix::all_elements_are_real): Ditto.
+	* fCNDArray.cc (FloatComplexNDArray::all_elements_are_real): 
+	Use mx_inline_all_real.
+	* fCMatrix.cc (FloatComplexMatrix::all_elements_are_real): Ditto.
+	* CDiagMatrix.cc (ComplexDiagMatrix::all_elements_are_real): Ditto.
+	* fCDiagMatrix.cc (FloatComplexDiagMatrix::all_elements_are_real): Ditto.
+	* CSparse.cc (SparseComplexMatrix::all_elements_are_real): Ditto.
+
 2009-11-17  Jaroslav Hajek  <highegg@gmail.com>
 
 	* base-aepbal.h (permuting_vector): Fix lower part swapping.

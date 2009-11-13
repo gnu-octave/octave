@@ -1,3 +1,14 @@
+2009-11-13  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-complex.cc (octave_complex::try_narrowing_conversion): Don't
+	check signbit.
+	* ov-flt-complex.cc (octave_float_complex::try_narrowing_conversion):
+	Ditto.
+	* ov-cx-mat.cc (octave_complex_matrix::try_narrowing_conversion):
+	Simplify. Don't check signbit.
+	* ov-flt-cx-mat.cc
+	(octave_float_complex_matrix::try_narrowing_conversion): Ditto.
+
 2009-11-17  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-re-mat.cc (do_rc_map): New static function.

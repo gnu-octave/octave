@@ -82,28 +82,14 @@ octave_complex_matrix::try_narrowing_conversion (void)
 {
   octave_base_value *retval = 0;
 
-  if (matrix.ndims () == 2)
+  if (matrix.numel () == 1)
     {
-      ComplexMatrix cm = matrix.matrix_value ();
+      Complex c = matrix (0);
 
-      octave_idx_type nr = cm.rows ();
-      octave_idx_type nc = cm.cols ();
-
-      if (nr == 1 && nc == 1)
-	{
-	  Complex c = matrix (0, 0);
-
-	  double im = std::imag (c);
-
-	  if (im == 0.0 && ! lo_ieee_signbit (im))
-	    retval = new octave_scalar (std::real (c));
-	  else
-	    retval = new octave_complex (c);
-	}
-      else if (nr == 0 || nc == 0)
-	retval = new octave_matrix (Matrix (nr, nc));
-      else if (cm.all_elements_are_real ())
-	retval = new octave_matrix (::real (cm));
+      if (std::imag (c) == 0.0)
+        retval = new octave_scalar (std::real (c));
+      else
+        retval = new octave_complex (c);
     }
   else if (matrix.all_elements_are_real ())
     retval = new octave_matrix (::real (matrix));

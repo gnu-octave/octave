@@ -62,7 +62,7 @@ octave_float_complex::try_narrowing_conversion (void)
 
   float im = std::imag (scalar);
 
-  if (im == 0.0 && ! lo_ieee_signbit (im))
+  if (im == 0.0)
     retval = new octave_float_scalar (std::real (scalar));
 
   return retval;

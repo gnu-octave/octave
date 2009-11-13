@@ -53,6 +53,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "Sparse-diag-op-defs.h"
 
 #include "Sparse-perm-op-defs.h"
+#include "mx-inlines.cc"
 
 // Define whether to use a basic QR solver or one that uses a Dulmange
 // Mendelsohn factorization to seperate the problem into under-determined,
@@ -7268,17 +7269,7 @@ SparseComplexMatrix::any_element_is_inf_or_nan (void) const
 bool
 SparseComplexMatrix::all_elements_are_real (void) const
 {
-  octave_idx_type nel = nnz ();
-
-  for (octave_idx_type i = 0; i < nel; i++)
-    {
-      double ip = std::imag (data (i));
-      
-      if (ip != 0.0 || lo_ieee_signbit (ip))
-	return false;
-    }
-
-  return true;
+  return mx_inline_all_real (nnz (), data ());
 }
 
 // Return nonzero if any element of CM has a non-integer real or

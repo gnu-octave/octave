@@ -266,7 +266,7 @@ Cell::insert (const Cell& a, const Array<octave_idx_type>& ra_idx)
 }
 
 Cell
-Cell::map (unary_mapper_t umap) const
+Cell::map (ctype_mapper fcn) const
 {
   Cell retval (dims ());
   octave_value *r = retval.fortran_vec ();
@@ -274,11 +274,7 @@ Cell::map (unary_mapper_t umap) const
   const octave_value *p = data ();
 
   for (octave_idx_type i = 0; i < numel (); i++)
-    {
-      r[i] = p[i].map (umap);
-      if (error_state)
-        break;
-    }
+    r[i] = ((p++)->*fcn) ();
 
   return retval;
 }

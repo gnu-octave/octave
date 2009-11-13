@@ -168,24 +168,24 @@ octave_char_matrix::map (unary_mapper_t umap) const
   switch (umap)
     {
 #define STRING_MAPPER(UMAP,FCN,TYPE) \
-    case UMAP: \
+    case umap_ ## UMAP: \
       return octave_value (matrix.map<TYPE, int (&) (int)> (FCN))
 
-    STRING_MAPPER (umap_isalnum, std::isalnum, bool);
-    STRING_MAPPER (umap_isalpha, std::isalpha, bool);
-    STRING_MAPPER (umap_isascii, xisascii, bool);
-    STRING_MAPPER (umap_iscntrl, std::iscntrl, bool);
-    STRING_MAPPER (umap_isdigit, std::isdigit, bool);
-    STRING_MAPPER (umap_isgraph, std::isgraph, bool);
-    STRING_MAPPER (umap_islower, std::islower, bool);
-    STRING_MAPPER (umap_isprint, std::isprint, bool);
-    STRING_MAPPER (umap_ispunct, std::ispunct, bool);
-    STRING_MAPPER (umap_isspace, std::isspace, bool);
-    STRING_MAPPER (umap_isupper, std::isupper, bool);
-    STRING_MAPPER (umap_isxdigit, std::isxdigit, bool);
-    STRING_MAPPER (umap_toascii, xtoascii, double);
-    STRING_MAPPER (umap_tolower, std::tolower, char);
-    STRING_MAPPER (umap_toupper, std::toupper, char);
+    STRING_MAPPER (xisalnum, std::isalnum, bool);
+    STRING_MAPPER (xisalpha, std::isalpha, bool);
+    STRING_MAPPER (xisascii, xisascii, bool);
+    STRING_MAPPER (xiscntrl, std::iscntrl, bool);
+    STRING_MAPPER (xisdigit, std::isdigit, bool);
+    STRING_MAPPER (xisgraph, std::isgraph, bool);
+    STRING_MAPPER (xislower, std::islower, bool);
+    STRING_MAPPER (xisprint, std::isprint, bool);
+    STRING_MAPPER (xispunct, std::ispunct, bool);
+    STRING_MAPPER (xisspace, std::isspace, bool);
+    STRING_MAPPER (xisupper, std::isupper, bool);
+    STRING_MAPPER (xisxdigit, std::isxdigit, bool);
+    STRING_MAPPER (xtoascii, xtoascii, double);
+    STRING_MAPPER (xtolower, std::tolower, char);
+    STRING_MAPPER (xtoupper, std::toupper, char);
 
     default: 
       {

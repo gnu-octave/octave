@@ -1117,8 +1117,9 @@ octave_base_value::is_sorted_rows (sortmode) const
   return UNSORTED;
 }
 
-extern OCTINTERP_API
-const char *get_umap_name (unary_mapper_t umap)
+
+const char *
+octave_base_value::get_umap_name (unary_mapper_t umap)
 {
   static const char *names[num_unary_mappers] = 
     {

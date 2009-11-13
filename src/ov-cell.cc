@@ -1426,6 +1426,35 @@ octave_cell::as_mxArray (void) const
   return retval;
 }
 
+octave_value
+octave_cell::map (unary_mapper_t umap) const
+{
+  switch (umap)
+    {
+#define FORWARD_MAPPER(UMAP) \
+    case umap_ ## UMAP: \
+      return matrix.UMAP ()
+    FORWARD_MAPPER (xisalnum);
+    FORWARD_MAPPER (xisalpha);
+    FORWARD_MAPPER (xisascii);
+    FORWARD_MAPPER (xiscntrl);
+    FORWARD_MAPPER (xisdigit);
+    FORWARD_MAPPER (xisgraph);
+    FORWARD_MAPPER (xislower);
+    FORWARD_MAPPER (xisprint);
+    FORWARD_MAPPER (xispunct);
+    FORWARD_MAPPER (xisspace);
+    FORWARD_MAPPER (xisupper);
+    FORWARD_MAPPER (xisxdigit);
+    FORWARD_MAPPER (xtoascii);
+    FORWARD_MAPPER (xtolower);
+    FORWARD_MAPPER (xtoupper);
+    
+    default:
+      return octave_base_value::map (umap);
+    }
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

@@ -369,6 +369,36 @@ octave_base_sparse<T>::load_ascii (std::istream& is)
   return success;
 }
 
+template <class T>
+octave_value
+octave_base_sparse<T>::map (octave_base_value::unary_mapper_t umap) const
+{
+  // Try the map on the dense value.
+  octave_value retval = this->full_value ().map (umap);
+
+  // Sparsify the result if possible.
+  // FIXME: intentionally skip this step for string mappers. Is this wanted?
+  if (umap >= umap_xisalnum && umap <= umap_xtoupper)
+    return retval;
+
+  switch (retval.builtin_type ())
+    {
+    case btyp_double:
+      retval = retval.sparse_matrix_value ();
+      break;
+    case btyp_complex:
+      retval = retval.sparse_complex_matrix_value ();
+      break;
+    case btyp_bool:
+      retval = retval.sparse_bool_matrix_value ();
+      break;
+    default:
+      break;
+    }
+
+  return retval;
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

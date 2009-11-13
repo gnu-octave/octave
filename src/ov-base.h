@@ -117,70 +117,6 @@ DEF_CLASS_TO_BTYP (octave_uint64, btyp_uint64);
 DEF_CLASS_TO_BTYP (bool, btyp_bool);
 DEF_CLASS_TO_BTYP (char, btyp_char);
 
-// Standard mappers.
-enum unary_mapper_t
-{
-  umap_abs,
-  umap_acos,
-  umap_acosh,
-  umap_angle,
-  umap_arg,
-  umap_asin,
-  umap_asinh,
-  umap_atan,
-  umap_atanh,
-  umap_ceil,
-  umap_conj,
-  umap_cos,
-  umap_cosh,
-  umap_erf,
-  umap_erfc,
-  umap_exp,
-  umap_expm1,
-  umap_finite,
-  umap_fix,
-  umap_floor,
-  umap_gamma,
-  umap_imag,
-  umap_isinf,
-  umap_isna,
-  umap_isnan,
-  umap_lgamma,
-  umap_log,
-  umap_log2,
-  umap_log10,
-  umap_log1p,
-  umap_real,
-  umap_round,
-  umap_roundb,
-  umap_signum,
-  umap_sin,
-  umap_sinh,
-  umap_sqrt,
-  umap_tan,
-  umap_tanh,
-  umap_isalnum,
-  umap_isalpha,
-  umap_isascii,
-  umap_iscntrl,
-  umap_isdigit,
-  umap_isgraph,
-  umap_islower,
-  umap_isprint,
-  umap_ispunct,
-  umap_isspace,
-  umap_isupper,
-  umap_isxdigit,
-  umap_toascii,
-  umap_tolower,
-  umap_toupper,
-  umap_unknown,
-  num_unary_mappers = umap_unknown
-};
-
-extern OCTINTERP_API
-const char *get_umap_name (unary_mapper_t);
-
 // T_ID is the type id of struct objects, set by register_type().
 // T_NAME is the type name of struct objects.
 
@@ -696,6 +632,67 @@ public:
 
   virtual void dump (std::ostream& os) const;
 
+  // Standard mappers. Register new ones here.
+  enum unary_mapper_t
+    {
+      umap_abs,
+      umap_acos,
+      umap_acosh,
+      umap_angle,
+      umap_arg,
+      umap_asin,
+      umap_asinh,
+      umap_atan,
+      umap_atanh,
+      umap_ceil,
+      umap_conj,
+      umap_cos,
+      umap_cosh,
+      umap_erf,
+      umap_erfc,
+      umap_exp,
+      umap_expm1,
+      umap_finite,
+      umap_fix,
+      umap_floor,
+      umap_gamma,
+      umap_imag,
+      umap_isinf,
+      umap_isna,
+      umap_isnan,
+      umap_lgamma,
+      umap_log,
+      umap_log2,
+      umap_log10,
+      umap_log1p,
+      umap_real,
+      umap_round,
+      umap_roundb,
+      umap_signum,
+      umap_sin,
+      umap_sinh,
+      umap_sqrt,
+      umap_tan,
+      umap_tanh,
+      umap_xisalnum,
+      umap_xisalpha,
+      umap_xisascii,
+      umap_xiscntrl,
+      umap_xisdigit,
+      umap_xisgraph,
+      umap_xislower,
+      umap_xisprint,
+      umap_xispunct,
+      umap_xisspace,
+      umap_xisupper,
+      umap_xisxdigit,
+      umap_xtoascii,
+      umap_xtolower,
+      umap_xtoupper,
+      umap_unknown,
+      num_unary_mappers = umap_unknown
+    };
+
   virtual octave_value map (unary_mapper_t) const;
 
 protected:
@@ -731,6 +728,8 @@ protected:
   octave_idx_type count;
 
 private:
+
+  static const char *get_umap_name (unary_mapper_t);
 
   static int curr_print_indent_level;
   static bool beginning_of_line;

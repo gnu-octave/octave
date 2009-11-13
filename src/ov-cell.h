@@ -155,8 +155,7 @@ public:
   bool load_hdf5 (hid_t loc_id, const char *name, bool have_h5giterate_bug);
 #endif
 
-  octave_value map (unary_mapper_t umap) const
-    { return matrix.map (umap); }
+  octave_value map (unary_mapper_t umap) const;
 
   mxArray *as_mxArray (void) const;
 

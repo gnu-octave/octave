@@ -868,7 +868,7 @@ octave_sparse_matrix::map (unary_mapper_t umap) const
       ARRAY_MAPPER (finite, bool, xfinite);
 
     default: // Attempt to go via dense matrix.
-      return full_value ().map (umap).sparse_matrix_value ();
+      return octave_base_sparse<SparseMatrix>::map (umap);
     }
 }
 

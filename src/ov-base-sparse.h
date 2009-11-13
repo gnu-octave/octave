@@ -169,6 +169,8 @@ octave_base_sparse : public octave_base_value
 
 protected:
 
+  octave_value map (octave_base_value::unary_mapper_t umap) const;
+
   T matrix;
 
   mutable MatrixType typ;

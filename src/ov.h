@@ -1076,8 +1076,72 @@ public:
 
   void dump (std::ostream& os) const { rep->dump (os); }
 
-  octave_value map (unary_mapper_t umap) const
-    { return rep->map (umap); } 
+#define MAPPER_FORWARD(F) \
+  octave_value F (void) const { return rep->map (octave_base_value::umap_ ## F); }
+
+  MAPPER_FORWARD (abs)
+  MAPPER_FORWARD (acos)
+  MAPPER_FORWARD (acosh)
+  MAPPER_FORWARD (angle)
+  MAPPER_FORWARD (arg)
+  MAPPER_FORWARD (asin)
+  MAPPER_FORWARD (asinh)
+  MAPPER_FORWARD (atan)
+  MAPPER_FORWARD (atanh)
+  MAPPER_FORWARD (ceil)
+  MAPPER_FORWARD (conj)
+  MAPPER_FORWARD (cos)
+  MAPPER_FORWARD (cosh)
+  MAPPER_FORWARD (erf)
+  MAPPER_FORWARD (erfc)
+  MAPPER_FORWARD (exp)
+  MAPPER_FORWARD (expm1)
+  MAPPER_FORWARD (finite)
+  MAPPER_FORWARD (fix)
+  MAPPER_FORWARD (floor)
+  MAPPER_FORWARD (gamma)
+  MAPPER_FORWARD (imag)
+  MAPPER_FORWARD (isinf)
+  MAPPER_FORWARD (isna)
+  MAPPER_FORWARD (isnan)
+  MAPPER_FORWARD (lgamma)
+  MAPPER_FORWARD (log)
+  MAPPER_FORWARD (log2)
+  MAPPER_FORWARD (log10)
+  MAPPER_FORWARD (log1p)
+  MAPPER_FORWARD (real)
+  MAPPER_FORWARD (round)
+  MAPPER_FORWARD (roundb)
+  MAPPER_FORWARD (signum)
+  MAPPER_FORWARD (sin)
+  MAPPER_FORWARD (sinh)
+  MAPPER_FORWARD (sqrt)
+  MAPPER_FORWARD (tan)
+  MAPPER_FORWARD (tanh)
+
+  // These functions are prefixed with X to avoid potential macro
+  // conflicts.
+
+  MAPPER_FORWARD (xisalnum)
+  MAPPER_FORWARD (xisalpha)
+  MAPPER_FORWARD (xisascii)
+  MAPPER_FORWARD (xiscntrl)
+  MAPPER_FORWARD (xisdigit)
+  MAPPER_FORWARD (xisgraph)
+  MAPPER_FORWARD (xislower)
+  MAPPER_FORWARD (xisprint)
+  MAPPER_FORWARD (xispunct)
+  MAPPER_FORWARD (xisspace)
+  MAPPER_FORWARD (xisupper)
+  MAPPER_FORWARD (xisxdigit)
+  MAPPER_FORWARD (xtoascii)
+  MAPPER_FORWARD (xtolower)
+  MAPPER_FORWARD (xtoupper)
+
+#undef MAPPER_FORWARD
+
+  octave_value map (octave_base_value::unary_mapper_t umap) const
+    { return rep->map (umap); }
 
 protected:
 

@@ -1,3 +1,18 @@
+2009-11-13  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-base.h (unary_mapper_t): Move to octave_base_value.
+	* ov.h: Partially revert to c657c056240d.
+	(FORWARD_MAPPER): Update to use octave_base_value::map.
+	(octave_value::map): Ditto.
+	* mappers.cc: Revert to c657c056240d.
+	* data.cc: Ditto.
+	* Cell.h, Cell.cc: Ditto.
+	* ov-cell.cc (octave_cell::map): Rewrite.
+	* ov-base-sparse.cc (octave_base_sparse::map): New method.
+	* ov-base-sparse.h: Declare it.
+	* ov-re-sparse.cc (octave_sparse_matrix::map): Use it as a fallback.
+	* ov-cx-sparse.cc (octave_sparse_complexmatrix::map): Ditto.
+
 2009-11-12  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-base.h (unary_mapper_t): New enum.

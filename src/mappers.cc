@@ -35,7 +35,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun.h"
 #include "error.h"
 #include "variables.h"
-#include "gripes.h"
 
 DEFUN (abs, args, ,
     "-*- texinfo -*-\n\
@@ -60,7 +59,7 @@ abs (3 + 4i)\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).map (umap_abs);
+    retval = args(0).abs ();
   else
     print_usage ();
 
@@ -95,7 +94,7 @@ Compute the inverse cosine in radians for each element of @var{x}.\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).map (umap_acos);
+    retval = args(0).acos ();
   else
     print_usage ();
 
@@ -132,7 +131,7 @@ Compute the inverse hyperbolic cosine for each element of @var{x}.\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).map (umap_acosh);
+    retval = args(0).acosh ();
   else
     print_usage ();
 
@@ -164,7 +163,7 @@ See arg.\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).map (umap_arg);
+    retval = args(0).arg ();
   else
     print_usage ();
 
@@ -196,7 +195,7 @@ arg (3 + 4i)\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).map (umap_arg);
+    retval = args(0).arg ();
   else
     print_usage ();
 
@@ -231,7 +230,7 @@ Compute the inverse sine in radians for each element of @var{x}.\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).map (umap_asin);
+    retval = args(0).asin ();
   else
     print_usage ();
 
@@ -258,7 +257,7 @@ Compute the inverse hyperbolic sine for each element of @var{x}.\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).map (umap_asinh);
+    retval = args(0).asinh ();
   else
     print_usage ();
 
@@ -291,7 +290,7 @@ Compute the inverse tangent in radians for each element of @var{x}.\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).map (umap_atan);
+    retval = args(0).atan ();
   else
     print_usage ();
 
@@ -328,7 +327,7 @@ Compute the inverse hyperbolic tangent for each element of @var{x}.\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).map (umap_atanh);
+    retval = args(0).atanh ();
   else
     print_usage ();
 
@@ -369,7 +368,7 @@ ceil ([-2.7, 2.7])\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).map (umap_ceil);
+    retval = args(0).ceil ();
   else
     print_usage ();
 
@@ -410,7 +409,7 @@ $\\bar{z} = x - iy$.\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).map (umap_conj);
+    retval = args(0).conj ();
   else
     print_usage ();
 
@@ -445,7 +444,7 @@ Compute the cosine for each element of @var{x} in radians.\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).map (umap_cos);
+    retval = args(0).cos ();
   else
     print_usage ();
 
@@ -482,7 +481,7 @@ Compute the hyperbolic cosine for each element of @var{x}.\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).map (umap_cosh);
+    retval = args(0).cosh ();
   else
     print_usage ();
 
@@ -532,7 +531,7 @@ erf (z) = (2/sqrt (pi)) | e^(-t^2) dt\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).map (umap_erf);
+    retval = args(0).erf ();
   else
     print_usage ();
 
@@ -584,7 +583,7 @@ $1 - {\\rm erf} (z)$.\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).map (umap_erfc);
+    retval = args(0).erfc ();
   else
     print_usage ();
 
@@ -616,7 +615,7 @@ exponential, see @ref{Linear Algebra}.\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).map (umap_exp);
+    retval = args(0).exp ();
   else
     print_usage ();
 
@@ -654,7 +653,7 @@ accurately in the neighborhood of zero.\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).map (umap_expm1);
+    retval = args(0).expm1 ();
   else
     print_usage ();
 
@@ -677,7 +676,7 @@ finite ([13, Inf, NA, NaN])\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).map (umap_finite);
+    retval = args(0).finite ();
   else
     print_usage ();
 
@@ -713,7 +712,7 @@ fix ([-2.7, 2.7])\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).map (umap_fix);
+    retval = args(0).fix ();
   else
     print_usage ();
 
@@ -749,7 +748,7 @@ floor ([-2.7, 2.7])\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).map (umap_floor);
+    retval = args(0).floor ();
   else
     print_usage ();
 
@@ -794,7 +793,7 @@ gamma (z) = | t^(z-1) exp (-t) dt.\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).map (umap_gamma);
+    retval = args(0).gamma ();
   else
     print_usage ();
 
@@ -835,7 +834,7 @@ Return the imaginary part of @var{z} as a real number.\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).map (umap_imag);
+    retval = args(0).imag ();
   else
     print_usage ();
 
@@ -868,7 +867,7 @@ Return 1 for characters that are letters or digits (@code{isalpha\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).map (umap_isalnum);
+    retval = args(0).xisalnum ();
   else
     print_usage ();
 
@@ -885,7 +884,7 @@ or @code{islower (@var{s})} is true).\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).map (umap_isalpha);
+    retval = args(0).xisalpha ();
   else
     print_usage ();
 
@@ -900,7 +899,7 @@ Return 1 for characters that are ASCII (in the range 0 to 127 decimal).\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).map (umap_isascii);
+    retval = args(0).xisascii ();
   else
     print_usage ();
 
@@ -915,7 +914,7 @@ Return 1 for control characters.\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).map (umap_iscntrl);
+    retval = args(0).xiscntrl ();
   else
     print_usage ();
 
@@ -930,7 +929,7 @@ Return 1 for characters that are decimal digits.\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).map (umap_isdigit);
+    retval = args(0).xisdigit ();
   else
     print_usage ();
 
@@ -953,7 +952,7 @@ isinf ([13, Inf, NA, NaN])\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).map (umap_isinf);
+    retval = args(0).isinf ();
   else
     print_usage ();
 
@@ -984,7 +983,7 @@ Return 1 for printable characters (but not the space character).\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).map (umap_isgraph);
+    retval = args(0).xisgraph ();
   else
     print_usage ();
 
@@ -999,7 +998,7 @@ Return 1 for characters that are lower case letters.\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).map (umap_islower);
+    retval = args(0).xislower ();
   else
     print_usage ();
 
@@ -1023,7 +1022,7 @@ isna ([13, Inf, NA, NaN])\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).map (umap_isna);
+    retval = args(0).isna ();
   else
     print_usage ();
 
@@ -1063,7 +1062,7 @@ isnan ([13, Inf, NA, NaN])\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).map (umap_isnan);
+    retval = args(0).isnan ();
   else
     print_usage ();
 
@@ -1094,7 +1093,7 @@ Return 1 for printable characters (including the space character).\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).map (umap_isprint);
+    retval = args(0).xisprint ();
   else
     print_usage ();
 
@@ -1109,7 +1108,7 @@ Return 1 for punctuation characters.\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).map (umap_ispunct);
+    retval = args(0).xispunct ();
   else
     print_usage ();
 
@@ -1125,7 +1124,7 @@ carriage return, tab, and vertical tab).\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).map (umap_isspace);
+    retval = args(0).xisspace ();
   else
     print_usage ();
 
@@ -1140,7 +1139,7 @@ Return 1 for upper case letters.\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).map (umap_isupper);
+    retval = args(0).xisupper ();
   else
     print_usage ();
 
@@ -1155,7 +1154,7 @@ Return 1 for characters that are hexadecimal digits.\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).map (umap_isxdigit);
+    retval = args(0).xisxdigit ();
   else
     print_usage ();
 
@@ -1172,7 +1171,7 @@ Return the natural logarithm of the gamma function of @var{x}.\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).map (umap_lgamma);
+    retval = args(0).lgamma ();
   else
     print_usage ();
 
@@ -1221,7 +1220,7 @@ matrix logarithm, see @ref{Linear Algebra}.\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).map (umap_log);
+    retval = args(0).log ();
   else
     print_usage ();
 
@@ -1241,120 +1240,6 @@ matrix logarithm, see @ref{Linear Algebra}.\n\
 
  */
 
-template<typename T, typename ET>
-void 
-map_2_xlog2 (const Array<T>& x, Array<T>& f, Array<ET>& e)
-{
-  f = Array<T>(x.dims ());
-  e = Array<ET>(x.dims ());
-  for (octave_idx_type i = 0; i < x.numel (); i++)
-    {
-      int exp;
-      f.xelem (i) = xlog2 (x(i), exp);
-      e.xelem (i) = exp;
-    }
-}
-
-DEFUN (log2, args, nargout,
-  "-*- texinfo -*-\n\
-@deftypefn {Mapping Function} {} log2 (@var{x})\n\
-@deftypefnx {Mapping Function} {[@var{f}, @var{e}] =} log2 (@var{x})\n\
-Compute the base-2 logarithm of each element of @var{x}.\n\
-\n\
-If called with two output arguments, split @var{x} into\n\
-binary mantissa and exponent so that\n\
-@tex\n\
-${1 \\over 2} \\le \\left| f \\right| < 1$\n\
-@end tex\n\
-@ifnottex\n\
-@code{1/2 <= abs(f) < 1}\n\
-@end ifnottex\n\
-and @var{e} is an integer.  If\n\
-@tex\n\
-$x = 0$, $f = e = 0$.\n\
-@end tex\n\
-@ifnottex\n\
-@code{x = 0}, @code{f = e = 0}.\n\
-@end ifnottex\n\
-@seealso{pow2, log, log10, exp}\n\
-@end deftypefn")
-{
-  octave_value_list retval;
-
-  if (args.length () == 1)
-    {
-      if (nargout < 2)
-        retval(0) = args(0).map (umap_log2);
-      else if (args(0).is_single_type ())
-	{
-	  if (args(0).is_real_type ())
-	    {
-	      FloatNDArray f;
-	      FloatNDArray x = args(0).float_array_value ();
-	      // FIXME -- should E be an int value?
-	      FloatMatrix e;
-	      map_2_xlog2 (x, f, e);
-	      retval (1) = e;
-	      retval (0) = f;
-	    }
-	  else if (args(0).is_complex_type ())
-	    {
-	      FloatComplexNDArray f;
-	      FloatComplexNDArray x = args(0).float_complex_array_value ();
-	      // FIXME -- should E be an int value?
-	      FloatNDArray e;
-	      map_2_xlog2 (x, f, e);
-	      retval (1) = e;
-	      retval (0) = f;
-	    }
-	}
-      else if (args(0).is_real_type ())
-        {
-          NDArray f;
-          NDArray x = args(0).array_value ();
-          // FIXME -- should E be an int value?
-          Matrix e;
-          map_2_xlog2 (x, f, e);
-          retval (1) = e;
-          retval (0) = f;
-        }
-      else if (args(0).is_complex_type ())
-        {
-          ComplexNDArray f;
-          ComplexNDArray x = args(0).complex_array_value ();
-          // FIXME -- should E be an int value?
-          NDArray e;
-          map_2_xlog2 (x, f, e);
-          retval (1) = e;
-          retval (0) = f;
-        }
-      else
-        gripe_wrong_type_arg ("log2", args(0));
-    }
-  else
-    print_usage ();
-
-  return retval;
-}
-
-/*
-%!assert(log2 ([1/4, 1/2, 1, 2, 4]), [-2, -1, 0, 1, 2]);
-%!assert(log2(Inf), Inf);
-%!assert(isnan(log2(NaN)));
-%!assert(log2(4*i), 2 + log2(1*i));
-%!assert(log2(complex(0,Inf)), Inf + log2(i));
-
-%!test
-%! [f, e] = log2 ([0,-1; 2,-4; Inf,-Inf]);
-%! assert (f, [0,-0.5; 0.5,-0.5; Inf,-Inf]);
-%! assert (e(1:2,:), [0,1;2,3])
-
-%!test
-%! [f, e] = log2 (complex (zeros (3, 2), [0,-1; 2,-4; Inf,-Inf]));
-%! assert (f, complex (zeros (3, 2), [0,-0.5; 0.5,-0.5; Inf,-Inf]));
-%! assert (e(1:2,:), [0,1; 2,3]);
-*/
-
 DEFUN (log10, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} log10 (@var{x})\n\
@@ -1364,7 +1249,7 @@ Compute the base-10 logarithm of each element of @var{x}.\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).map (umap_log10);
+    retval = args(0).log10 ();
   else
     print_usage ();
 
@@ -1397,7 +1282,7 @@ accurately in the neighborhood of zero.\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).map (umap_log1p);
+    retval = args(0).log1p ();
   else
     print_usage ();
 
@@ -1413,7 +1298,7 @@ Return the real part of @var{z}.\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).map (umap_real);
+    retval = args(0).real ();
   else
     print_usage ();
 
@@ -1453,7 +1338,7 @@ round ([-2.7, 2.7])\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).map (umap_round);
+    retval = args(0).round ();
   else
     print_usage ();
 
@@ -1494,7 +1379,7 @@ return @code{roundb (real (@var{x})) + roundb (imag (@var{x})) * I}.\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).map (umap_roundb);
+    retval = args(0).roundb ();
   else
     print_usage ();
 
@@ -1526,7 +1411,7 @@ For complex arguments, @code{sign} returns @code{x ./ abs (@var{x})}.\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).map (umap_signum);
+    retval = args(0).signum ();
   else
     print_usage ();
 
@@ -1559,7 +1444,7 @@ Compute the sine for each element of @var{x} in radians.\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).map (umap_sin);
+    retval = args(0).sin ();
   else
     print_usage ();
 
@@ -1596,7 +1481,7 @@ Compute the hyperbolic sine for each element of @var{x}.\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).map (umap_sinh);
+    retval = args(0).sinh ();
   else
     print_usage ();
 
@@ -1631,7 +1516,7 @@ a complex result is returned.  To compute the matrix square root, see\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).map (umap_sqrt);
+    retval = args(0).sqrt ();
   else
     print_usage ();
 
@@ -1664,7 +1549,7 @@ Compute the tangent for each element of @var{x} in radians.\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).map (umap_tan);
+    retval = args(0).tan ();
   else
     print_usage ();
 
@@ -1701,7 +1586,7 @@ Compute hyperbolic tangent for each element of @var{x}.\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).map (umap_tanh);
+    retval = args(0).tanh ();
   else
     print_usage ();
 
@@ -1742,7 +1627,7 @@ toascii (\"ASCII\")\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).map (umap_toascii);
+    retval = args(0).xtoascii ();
   else
     print_usage ();
 
@@ -1768,7 +1653,7 @@ tolower (\"MiXeD cAsE 123\")\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).map (umap_tolower);
+    retval = args(0).xtolower ();
   else
     print_usage ();
 
@@ -1814,7 +1699,7 @@ toupper (\"MiXeD cAsE 123\")\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).map (umap_toupper);
+    retval = args(0).xtoupper ();
   else
     print_usage ();
 

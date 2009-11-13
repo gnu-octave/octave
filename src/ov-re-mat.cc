@@ -768,7 +768,13 @@ octave_matrix::map (unary_mapper_t umap) const
       ARRAY_MAPPER (isna, bool, octave_is_NA);
 
     default:
-      return octave_base_value::map (umap);
+      if (umap >= umap_xisalnum && umap <= umap_xtoupper)
+        {
+          octave_value str_conv = convert_to_str (true, true);
+          return error_state ? octave_value () : str_conv.map (umap);
+        }
+      else
+        return octave_base_value::map (umap);
     }
 }
 

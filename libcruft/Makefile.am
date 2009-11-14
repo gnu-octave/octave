@@ -31,9 +31,12 @@ libcruft_la_SOURCES =
 
 libcruft_la_CPPFLAGS = @CRUFT_DLL_DEFS@
 
-libcruft_la_LDFLAGS = -release $(version) $(NO_UNDEFINED_LDFLAG)
+libcruft_la_LDFLAGS = \
+  -release $(version) $(NO_UNDEFINED_LDFLAG) @XTRA_CRUFT_SH_LDFLAGS@
 
 libcruft_la_LIBADD = $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS)
+
+libcruft_la_DEPENDENCIES = cruft.def
 
 octinclude_HEADERS =
 
@@ -54,3 +57,8 @@ include ranlib/module.mk
 include slatec-err/module.mk
 include slatec-fn/module.mk
 include villad/module.mk
+
+cruft.def: $(libcruft_la_SOURCES) $(TOPDIR)/libcruft/mkf77def
+	chmod a+rx mkf77def
+	./mkf77def $(srcdir) $(libcruft_la_SOURCES) > $@-t
+	mv $@-t $@

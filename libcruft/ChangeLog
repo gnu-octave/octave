@@ -1,5 +1,13 @@
 2009-11-13  John W. Eaton  <jwe@octave.org>
 
+	* Makefile.am: Restore rules for building cruft.def.
+	(libcruft_la_LDFLAGS): Also append @XTRA_CRUFT_SH_LDFLAGS@.
+	(libcruft_la_DEPENDENCIES): New variable.
+	* mkf77def.in: Use @VAR@ instead of %VAR% substitutions.
+	Process	srcdir plus list of files instead of working as a filter.
+
+2009-11-13  John W. Eaton  <jwe@octave.org>
+
 	* Makefile.am (libcruft_la_CPPFLAGS): Define.
 
 2009-11-10  John W. Eaton  <jwe@octave.org>

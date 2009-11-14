@@ -21,9 +21,9 @@
 SED=${SED:-'sed'}
 AWK=${AWK:-'awk'}
 
-F77_TOLOWER=%F77_APPEND_UNDERSCORE%
-F77_APPEND_UNDERSCORE=%F77_APPEND_UNDERSCORE%
-F77_APPEND_EXTRA_UNDERSCORE=%F77_APPEND_EXTRA_UNDERSCORE%
+F77_TOLOWER="@F77_APPEND_UNDERSCORE@"
+F77_APPEND_UNDERSCORE="@F77_APPEND_UNDERSCORE@"
+F77_APPEND_EXTRA_UNDERSCORE="@F77_APPEND_EXTRA_UNDERSCORE@"
 
 if $F77_TOLOWER; then
   case_cmd="tolower";
@@ -43,4 +43,13 @@ else
   awkcmd="$AWK '{ printf (\"%s%s\n\", tolower (\$0), \"$uscore\"); }'"
 fi
 
-$SED -n -e 'y/ABCDEFGHIJLKMNOPQRSTUVWXYZ/abcdefghijlkmnopqrstuvwxyz/; s/^\(      \|	\)[ 	]*\(.*function\|subroutine\|entry\)[ 	]*\([^ 	(]*\).*$/\3/p' | eval $awkcmd
+if [ $# -gt 1 ]; then
+  srcdir="$1"
+  shift
+fi
+
+echo EXPORTS
+for arg
+do
+  $SED -n -e 'y/ABCDEFGHIJLKMNOPQRSTUVWXYZ/abcdefghijlkmnopqrstuvwxyz/; s/^\(      \|	\)[ 	]*\(.*function\|subroutine\|entry\)[ 	]*\([^ 	(]*\).*$/\3/p' "$srcdir/$arg" | eval $awkcmd
+done

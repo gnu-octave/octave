@@ -1,3 +1,7 @@
+2009-11-12  John W. Eaton  <jwe@octave.org>
+
+	* configure.ac (AC_CONFIG_FILES): Also generate libcruft/mkf77def.
+
 2009-11-11  John W. Eaton  <jwe@octave.org>
 
 	* acinclude.m4 (OCTAVE_IEEE754_DATA_FORMAT): Fail if IEEE 754

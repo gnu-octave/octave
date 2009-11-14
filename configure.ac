@@ -2149,6 +2149,7 @@ AC_CONFIG_FILES([
   doc/refcard/Makefile
   examples/Makefile
   libcruft/Makefile
+  libcruft/mkf77def
   liboctave/Makefile
   scripts/Makefile
   src/Makefile

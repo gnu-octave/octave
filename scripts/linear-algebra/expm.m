@@ -139,7 +139,7 @@ function r = expm (a)
   ## inverse balancing.
   d = diag (d);
   r = d * r / d;
-  r = r(p, p);
+  r(p, p) = r;
   ## Inverse trace reduction.
   if (trshift >0)
     r *= exp (trshift);

@@ -1,3 +1,7 @@
+2009-11-14  Jaroslav Hajek  <highegg@gmail.com>
+
+	* linear-algebra/expm.m: Fix typo.
+
 2009-11-11  John W. Eaton  <jwe@octave.org>
 
 	* miscellaneous/intwarning.m: Doc fix.

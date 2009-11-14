@@ -534,7 +534,7 @@ nodist_liboctinterp_la_SOURCES = \
   $(OPT_HANDLERS) \
   $(OPT_INC)
 
-liboctinterp_la_CPPFLAGS = @OCTINTERP_DLL_DEFS@
+liboctinterp_la_CPPFLAGS = @OCTINTERP_DLL_DEFS@ $(AM_CPPFLAGS)
 
 liboctinterp_la_LDFLAGS = -release $(version) $(NO_UNDEFINED_LDFLAG)
 

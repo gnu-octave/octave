@@ -1,3 +1,7 @@
+2009-11-13  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.am (libcruft_la_CPPFLAGS): Define.
+
 2009-11-10  John W. Eaton  <jwe@octave.org>
 
 	* blas, lapack: Remove directories and all files.

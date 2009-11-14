@@ -1,3 +1,8 @@
+2009-11-13  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.am (liboctave_la_CPPFLAGS): Add @OCTAVE_DLL_DEFS@ to
+	the list of flags.
+
 2009-11-13  Jaroslav Hajek  <highegg@gmail.com>
 
 	* mx-inlines.cc (mx_inline_any_nan): Rewrite.

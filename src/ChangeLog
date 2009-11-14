@@ -1,3 +1,7 @@
+2009-11-13  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.am (liboctinterp_la_CPPFLAGS): Define.
+
 2009-11-13  Joel Keay  <keay@ou.edu>
 
 	* graphics.h.in (image::properties::init): Also allow single,

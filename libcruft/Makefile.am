@@ -29,6 +29,8 @@ AUTOMAKE_OPTIONS = subdir-objects
 
 libcruft_la_SOURCES =
 
+libcruft_la_CPPFLAGS = @CRUFT_DLL_DEFS@
+
 libcruft_la_LDFLAGS = -release $(version) $(NO_UNDEFINED_LDFLAG)
 
 libcruft_la_LIBADD = $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS)

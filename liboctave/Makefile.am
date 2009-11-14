@@ -512,17 +512,19 @@ liboctave_la_SOURCES = \
 
 liboctave_la_LIBADD = $(LINK_DEPS)
 
+liboctave_la_CPPFLAGS = \
+  @OCTAVE_DLL_DEFS@ \
+  $(SPARSE_XCPPFLAGS) \
+  $(FFTW_XCPPFLAGS) \
+  $(ARPACK_CPPFLAGS) \
+  $(AM_CPPFLAGS)
+
+
 liboctave_la_LDFLAGS = -release $(version) $(NO_UNDEFINED_LDFLAG) \
   $(SPARSE_XLDFLAGS) \
   $(ARPACK_LDFLAGS) \
   $(QRUPDATE_LDFLAGS) \
   $(FFTW_XLDFLAGS)
-
-liboctave_la_CPPFLAGS = \
-  $(SPARSE_XCPPFLAGS) \
-  $(FFTW_XCPPFLAGS) \
-  $(ARPACK_CPPFLAGS) \
-  $(AM_CPPFLAGS)
 
 octinclude_HEADERS = \
   $(INCS) \

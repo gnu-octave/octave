@@ -534,6 +534,8 @@ nodist_liboctinterp_la_SOURCES = \
   $(OPT_HANDLERS) \
   $(OPT_INC)
 
+liboctinterp_la_CPPFLAGS = @OCTINTERP_DLL_DEFS@
+
 liboctinterp_la_LDFLAGS = -release $(version) $(NO_UNDEFINED_LDFLAG)
 
 ## Order matters here.  Leave builtins.cc last, because it depends on 

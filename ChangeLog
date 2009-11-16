@@ -1,3 +1,9 @@
+2009-11-16  John W. Eaton  <jwe@octave.org>
+
+	* common.mk (AM_CXXFLAGS): Don't include DLL_CXXDEFS in the list.
+	(CONFIGURE_CFLAGS): New variable.
+	(AM_CFLAGS): Define similar to AM_CXXFLAGS.
+
 2009-11-12  John W. Eaton  <jwe@octave.org>
 
 	* configure.ac (AC_CONFIG_FILES): Also generate libcruft/mkf77def.

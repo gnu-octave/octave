@@ -62,16 +62,12 @@ public:
       for (octave_idx_type i = n-1; i >= ihi; i--)
         {
           octave_idx_type j = scale(i) - 1;
-          octave_idx_type k = pv(j);
-          pv(j) = pv(i);
-          pv(i) = k;
+          std::swap (pv(i), pv(j));
         }
-      for (octave_idx_type i = ilo-2; i >= 0; i--)
+      for (octave_idx_type i = 0; i < ilo-1; i++)
         {
           octave_idx_type j = scale(i) - 1;
-          octave_idx_type k = pv(j);
-          pv(j) = pv(i);
-          pv(i) = k;
+          std::swap (pv(i), pv(j));
         }
       
       return pv;

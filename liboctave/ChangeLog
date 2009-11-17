@@ -1,3 +1,7 @@
+2009-11-17  Jaroslav Hajek  <highegg@gmail.com>
+
+	* base-aepbal.h (permuting_vector): Fix lower part swapping.
+
 2009-11-13  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.am (liboctave_la_CPPFLAGS): Add @OCTAVE_DLL_DEFS@ to

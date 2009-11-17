@@ -1,3 +1,7 @@
+2009-11-17  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/balance.cc: Fix docs.
+
 2009-11-13  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.am (liboctinterp_la_CPPFLAGS): Define.

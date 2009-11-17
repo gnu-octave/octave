@@ -708,6 +708,45 @@ octave_matrix::as_mxArray (void) const
   return retval;
 }
 
+// This uses a smarter strategy for doing the complex->real mappers.  We
+// allocate an array for a real result and keep filling it until a complex
+// result is produced.
+static octave_value
+do_rc_map (const NDArray& a, Complex (&fcn) (double))
+{
+  octave_idx_type n = a.numel ();
+  NoAlias<NDArray> rr (a.dims ());
+
+  for (octave_idx_type i = 0; i < n; i++)
+    {
+      OCTAVE_QUIT;
+
+      Complex tmp = fcn (a(i));
+      if (tmp.imag () == 0.0)
+        rr(i) = tmp.real ();
+      else
+        {
+          NoAlias<ComplexNDArray> rc (a.dims ());
+
+          for (octave_idx_type j = 0; j < i; j++)
+            rc(j) = rr(j);
+
+          rc(i) = tmp;
+
+          for (octave_idx_type j = i+1; j < n; j++)
+            {
+              OCTAVE_QUIT;
+
+              rc(j) = fcn (a(i));
+            }
+
+          return new octave_complex_matrix (rc);
+        }
+    }
+
+  return rr;
+}
+
 octave_value
 octave_matrix::map (unary_mapper_t umap) const
 {
@@ -734,18 +773,22 @@ octave_matrix::map (unary_mapper_t umap) const
     case umap_ ## UMAP: \
       return octave_value (matrix.map<TYPE> (FCN))
 
-      ARRAY_MAPPER (acos, Complex, rc_acos);
-      ARRAY_MAPPER (acosh, Complex, rc_acosh);
+#define RC_ARRAY_MAPPER(UMAP, TYPE, FCN) \
+    case umap_ ## UMAP: \
+      return do_rc_map (matrix, FCN)
+
+      RC_ARRAY_MAPPER (acos, Complex, rc_acos);
+      RC_ARRAY_MAPPER (acosh, Complex, rc_acosh);
       ARRAY_MAPPER (angle, double, ::arg);
       ARRAY_MAPPER (arg, double, ::arg);
-      ARRAY_MAPPER (asin, Complex, rc_asin);
+      RC_ARRAY_MAPPER (asin, Complex, rc_asin);
       ARRAY_MAPPER (asinh, double, ::asinh);
       ARRAY_MAPPER (atan, double, ::atan);
-      ARRAY_MAPPER (atanh, Complex, rc_atanh);
+      RC_ARRAY_MAPPER (atanh, Complex, rc_atanh);
       ARRAY_MAPPER (erf, double, ::erf);
       ARRAY_MAPPER (erfc, double, ::erfc);
       ARRAY_MAPPER (gamma, double, xgamma);
-      ARRAY_MAPPER (lgamma, Complex, rc_lgamma);
+      RC_ARRAY_MAPPER (lgamma, Complex, rc_lgamma);
       ARRAY_MAPPER (ceil, double, ::ceil);
       ARRAY_MAPPER (cos, double, ::cos);
       ARRAY_MAPPER (cosh, double, ::cosh);
@@ -753,16 +796,16 @@ octave_matrix::map (unary_mapper_t umap) const
       ARRAY_MAPPER (expm1, double, ::expm1);
       ARRAY_MAPPER (fix, double, ::fix);
       ARRAY_MAPPER (floor, double, ::floor);
-      ARRAY_MAPPER (log, Complex, rc_log);
-      ARRAY_MAPPER (log2, Complex, rc_log2);
-      ARRAY_MAPPER (log10, Complex, rc_log10);
-      ARRAY_MAPPER (log1p, Complex, rc_log1p);
+      RC_ARRAY_MAPPER (log, Complex, rc_log);
+      RC_ARRAY_MAPPER (log2, Complex, rc_log2);
+      RC_ARRAY_MAPPER (log10, Complex, rc_log10);
+      RC_ARRAY_MAPPER (log1p, Complex, rc_log1p);
       ARRAY_MAPPER (round, double, xround);
       ARRAY_MAPPER (roundb, double, xroundb);
       ARRAY_MAPPER (signum, double, ::signum);
       ARRAY_MAPPER (sin, double, ::sin);
       ARRAY_MAPPER (sinh, double, ::sinh);
-      ARRAY_MAPPER (sqrt, Complex, rc_sqrt);
+      RC_ARRAY_MAPPER (sqrt, Complex, rc_sqrt);
       ARRAY_MAPPER (tan, double, ::tan);
       ARRAY_MAPPER (tanh, double, ::tanh);
       ARRAY_MAPPER (isna, bool, octave_is_NA);

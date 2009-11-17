@@ -1,5 +1,12 @@
 2009-11-17  Jaroslav Hajek  <highegg@gmail.com>
 
+	* ov-re-mat.cc (do_rc_map): New static function.
+	(octave_matrix::map): Use it here.
+	* ov-flt-re-mat.cc (do_rc_map): New static function.
+	(octave_float_matrix::map): Use it here.
+
+2009-11-17  Jaroslav Hajek  <highegg@gmail.com>
+
 	* DLD-FUNCTIONS/balance.cc: Fix docs.
 
 2009-11-13  John W. Eaton  <jwe@octave.org>

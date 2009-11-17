@@ -51,5 +51,9 @@ fi
 echo EXPORTS
 for arg
 do
-  $SED -n -e 'y/ABCDEFGHIJLKMNOPQRSTUVWXYZ/abcdefghijlkmnopqrstuvwxyz/; s/^\(      \|	\)[ 	]*\(.*function\|subroutine\|entry\)[ 	]*\([^ 	(]*\).*$/\3/p' "$srcdir/$arg" | eval $awkcmd
+  case "$arg" in
+    *.f)
+      $SED -n -e 'y/ABCDEFGHIJLKMNOPQRSTUVWXYZ/abcdefghijlkmnopqrstuvwxyz/; s/^\(      \|	\)[ 	]*\(.*function\|subroutine\|entry\)[ 	]*\([^ 	(]*\).*$/\3/p' "$srcdir/$arg" | eval $awkcmd
+    ;;
+  esac
 done

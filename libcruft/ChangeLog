@@ -1,3 +1,7 @@
+2009-11-17  John W. Eaton  <jwe@octave.org>
+
+	* mkf77def.in: Only process files with names that match *.f.
+
 2009-11-13  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.am: Restore rules for building cruft.def.

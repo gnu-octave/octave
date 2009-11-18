@@ -737,7 +737,7 @@ do_rc_map (const NDArray& a, Complex (&fcn) (double))
             {
               OCTAVE_QUIT;
 
-              rc(j) = fcn (a(i));
+              rc(j) = fcn (a(j));
             }
 
           return new octave_complex_matrix (rc);

@@ -709,7 +709,7 @@ do_rc_map (const FloatNDArray& a, FloatComplex (&fcn) (float))
             {
               OCTAVE_QUIT;
 
-              rc(j) = fcn (a(i));
+              rc(j) = fcn (a(j));
             }
 
           return new octave_float_complex_matrix (rc);

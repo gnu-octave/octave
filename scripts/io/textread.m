@@ -50,7 +50,7 @@ function varargout = textread (filename, formatstr = "%f", varargin)
   endif
 
   ## Maybe skip header lines
-  headerlines = find (strncmp (varargin, "headerlines"), 1);
+  headerlines = find (strcmpi (varargin, "headerlines"), 1);
   if (! isempty (headerlines))
     fskipl (fid, headerlines);
     varargin(headerlines:headerlines+1) = [];

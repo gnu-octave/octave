@@ -1,3 +1,7 @@
+2009-11-18  Jaroslav Hajek  <highegg@gmail.com>
+
+	* io/textread.m: strncmp->strcmpi.
+
 2009-11-14  Jaroslav Hajek  <highegg@gmail.com>
 
 	* linear-algebra/expm.m: Fix typo.

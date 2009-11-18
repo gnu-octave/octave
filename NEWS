@@ -135,10 +135,10 @@ Summary of important user-visible changes for version 3.3:
 
  ** The built-in "bsxfun" function now uses optimized code for certain cases where built-in
     operator handles are passed in. Namely, the optimizations concern the operators
-    plus, minus, times, ldivide, rdivide, and, or (for logical arrays), the relational
+    plus, minus, times, ldivide, rdivide, power, and, or (for logical arrays), the relational
     operators eq, ne, lt, le, gt, ge, and the functions min and max.
-    Optimizations only apply when both operands are of the same built-in class
-    (or one is single and the other is double).
+    Optimizations only apply when both operands are of the same built-in class. Mixed real/complex
+    and single/double operations will first convert both operands to a common type.
 
 Summary of important user-visible changes for version 3.2:
 ---------------------------------------------------------

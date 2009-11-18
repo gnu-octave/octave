@@ -192,6 +192,19 @@ mx_inline_any_nan (size_t n, const T* x)
   return false;
 }
 
+template <class T> 
+inline bool 
+mx_inline_any_negative (size_t n, const T* x) 
+{
+  for (size_t i = 0; i < n; i++)
+    {
+      if (x[i] < 0)
+        return true;
+    }
+
+  return false;
+}
+
 template<class T>
 inline bool 
 mx_inline_all_real (size_t n, const std::complex<T>* x)
@@ -231,6 +244,20 @@ inline void F (size_t n, T *r, T x, const T *y) \
 
 DEFMXMAPPER2 (mx_inline_xmin, xmin)
 DEFMXMAPPER2 (mx_inline_xmax, xmax)
+
+// Pairwise power
+#define DEFMXMAPPER2X(F, FUN) \
+template <class R, class X, class Y> \
+inline void F (size_t n, R *r, const X *x, const Y *y) \
+{ for (size_t i = 0; i < n; i++) r[i] = FUN (x[i], y[i]); } \
+template <class R, class X, class Y> \
+inline void F (size_t n, R *r, const X *x, Y y) \
+{ for (size_t i = 0; i < n; i++) r[i] = FUN (x[i], y); } \
+template <class R, class X, class Y> \
+inline void F (size_t n, R *r, X x, const Y *y) \
+{ for (size_t i = 0; i < n; i++) r[i] = FUN (x, y[i]); }
+
+DEFMXMAPPER2X (mx_inline_pow, std::pow)
 
 // Arbitrary function appliers. The function is a template parameter to enable
 // inlining.

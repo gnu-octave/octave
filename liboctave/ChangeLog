@@ -1,3 +1,27 @@
+2009-11-18  Jaroslav Hajek  <highegg@gmail.com>
+
+	* mx-inlines.cc (mx_inline_any_negative, mx_inline_pow): New loops.
+	(DEFMXMAPPER2X): New macro.
+	* bsxfun-decl.h (BSXFUN_OP2_DECL): New macro.
+	* bsxfun-defs.cc (BSXFUN_OP2_DEF, BSXFUN_OP2_DEF_MXLOOP): New macros.
+	(do_bsxfun_op): Use OCTAVE_QUIT.
+	* dNDArray.cc (NDArray::all_integers (void)): New method.
+	(NDArray::any_element_is_negative): Use mx_inline_any_negative.
+	(bsxfun_pow (const NDArray&, const NDArray&),
+	bsxfun_pow (const ComplexNDArray&, const NDArray&)): New functions.
+	* dNDArray.h: Update.
+	* fNDArray.cc (FloatNDArray::all_integers (void)): New method.
+	(FloatNDArray::any_element_is_negative): Use mx_inline_any_negative.
+	(bsxfun_pow (const FloatNDArray&, const FloatNDArray&),
+	bsxfun_pow (const FloatComplexNDArray&, const FloatNDArray&)): New functions.
+	* fNDArray.h: Update.
+	* CNDArray.cc (bsxfun_pow (const ComplexNDArray&, const
+	ComplexNDArray&)): New function.
+	* CNDArray.h: Update.
+	* fCNDArray.cc (bsxfun_pow (const FloatComplexNDArray&, const
+	FloatComplexNDArray&)): New function.
+	* fCNDArray.h: Update.
+
 2009-11-13  Jaroslav Hajek  <highegg@gmail.com>
 
 	* CNDArray.cc (ComplexNDArray::all_elements_are_real): 

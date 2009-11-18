@@ -181,6 +181,8 @@ extern OCTAVE_API FloatComplexNDArray& operator /= (FloatComplexNDArray& a, floa
 BSXFUN_STDOP_DECLS (FloatComplexNDArray, OCTAVE_API)
 BSXFUN_STDREL_DECLS (FloatComplexNDArray, OCTAVE_API)
 
+BSXFUN_OP_DECL (pow, FloatComplexNDArray, OCTAVE_API)
+
 #endif
 
 /*

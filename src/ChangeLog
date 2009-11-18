@@ -1,3 +1,11 @@
+2009-11-18  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/bsxfun.cc (bsxfun_builtin_op): New member:
+	bsxfun_builtin_power.
+	(bsxfun_builtin_names): Include "power".
+	(do_bsxfun_real_pow): New static function.
+	(maybe_fill_table): Register power handlers.
+
 2009-11-13  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-complex.cc (octave_complex::try_narrowing_conversion): Don't

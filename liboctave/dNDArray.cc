@@ -556,11 +556,7 @@ NDArray::any_element_is_negative (bool neg_zero) const
 	  return true;
     }
   else
-    {
-      for (octave_idx_type i = 0; i < nel; i++)
-	if (elem (i) < 0)
-	  return true;
-    }
+    return mx_inline_any_negative (numel (), data ());
 
   return false;
 }
@@ -664,6 +660,22 @@ NDArray::all_integers (double& max_val, double& min_val) const
 
       if (val < min_val)
 	min_val = val;
+
+      if (D_NINT (val) != val)
+	return false;
+    }
+
+  return true;
+}
+
+bool
+NDArray::all_integers (void) const
+{
+  octave_idx_type nel = nelem ();
+
+  for (octave_idx_type i = 0; i < nel; i++)
+    {
+      double val = elem (i);
 
       if (D_NINT (val) != val)
 	return false;
@@ -1115,6 +1127,10 @@ NDND_BOOL_OPS (NDArray, NDArray)
 
 BSXFUN_STDOP_DEFS_MXLOOP (NDArray)
 BSXFUN_STDREL_DEFS_MXLOOP (NDArray)
+
+BSXFUN_OP_DEF_MXLOOP (pow, NDArray, mx_inline_pow)
+BSXFUN_OP2_DEF_MXLOOP (pow, ComplexNDArray, ComplexNDArray, 
+                       NDArray, mx_inline_pow)
 
 /*
 ;;; Local Variables: ***

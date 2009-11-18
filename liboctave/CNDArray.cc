@@ -1079,6 +1079,8 @@ ComplexNDArray& operator /= (ComplexNDArray& a, double s)
 BSXFUN_STDOP_DEFS_MXLOOP (ComplexNDArray)
 BSXFUN_STDREL_DEFS_MXLOOP (ComplexNDArray)
 
+BSXFUN_OP_DEF_MXLOOP (pow, ComplexNDArray, mx_inline_pow)
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

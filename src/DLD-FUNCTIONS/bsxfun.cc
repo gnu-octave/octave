@@ -56,6 +56,7 @@ enum bsxfun_builtin_op
   bsxfun_builtin_ge,
   bsxfun_builtin_and,
   bsxfun_builtin_or,
+  bsxfun_builtin_power,
   bsxfun_builtin_unknown,
   bsxfun_num_builtin_ops = bsxfun_builtin_unknown
 };
@@ -75,7 +76,8 @@ const char *bsxfun_builtin_names[] =
   "gt",
   "ge",
   "and",
-  "or"
+  "or",
+  "power"
 };
 
 static bsxfun_builtin_op 
@@ -108,6 +110,19 @@ bsxfun_forward_rel (const octave_value& x, const octave_value& y)
   NDA xa = octave_value_extract<NDA> (x);
   NDA ya = octave_value_extract<NDA> (y);
   return octave_value (bsxfun_rel (xa, ya));
+}
+
+// Pow needs a special handler for reals because of the potentially complex result.
+template <class NDA, class CNDA>
+static octave_value
+do_bsxfun_real_pow (const octave_value& x, const octave_value& y)
+{
+  NDA xa = octave_value_extract<NDA> (x);
+  NDA ya = octave_value_extract<NDA> (y);
+  if (! ya.all_integers () && xa.any_element_is_negative ())
+    return octave_value (bsxfun_pow (CNDA (xa), ya));
+  else
+    return octave_value (bsxfun_pow (xa, ya));
 }
 
 static void maybe_fill_table (void)
@@ -150,6 +165,15 @@ static void maybe_fill_table (void)
   // For bools, we register and/or.
   REGISTER_OP_HANDLER (bsxfun_builtin_and, btyp_bool, boolNDArray, bsxfun_and);
   REGISTER_OP_HANDLER (bsxfun_builtin_or, btyp_bool, boolNDArray, bsxfun_or);
+
+  // Register power handlers.
+  bsxfun_handler_table[bsxfun_builtin_power][btyp_double] = 
+    do_bsxfun_real_pow<NDArray, ComplexNDArray>;
+  bsxfun_handler_table[bsxfun_builtin_power][btyp_float] = 
+    do_bsxfun_real_pow<FloatNDArray, FloatComplexNDArray>;
+
+  REGISTER_OP_HANDLER (bsxfun_builtin_power, btyp_complex, ComplexNDArray, bsxfun_pow);
+  REGISTER_OP_HANDLER (bsxfun_builtin_power, btyp_float_complex, FloatComplexNDArray, bsxfun_pow);
 
   filled = true;
 }

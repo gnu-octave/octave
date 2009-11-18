@@ -27,6 +27,9 @@ along with Octave; see the file COPYING.  If not, see
 #define BSXFUN_OP_DECL(OP, ARRAY, API) \
 extern API ARRAY bsxfun_ ## OP (const ARRAY&, const ARRAY&);
 
+#define BSXFUN_OP2_DECL(OP, ARRAY, ARRAY1, ARRAY2, API) \
+extern API ARRAY bsxfun_ ## OP (const ARRAY1&, const ARRAY2&);
+
 #define BSXFUN_REL_DECL(OP, ARRAY, API) \
 extern API boolNDArray bsxfun_ ## OP (const ARRAY&, const ARRAY&);
 

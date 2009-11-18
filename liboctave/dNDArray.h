@@ -82,6 +82,7 @@ public:
   bool all_elements_are_zero (void) const;
   bool all_elements_are_int_or_inf_or_nan (void) const;
   bool all_integers (double& max_val, double& min_val) const;
+  bool all_integers (void) const;
   bool too_large_for_float (void) const;
 
   // FIXME -- this is not quite the right thing.
@@ -190,6 +191,10 @@ MARRAY_FORWARD_DEFS (MArrayN, NDArray, double)
 
 BSXFUN_STDOP_DECLS (NDArray, OCTAVE_API)
 BSXFUN_STDREL_DECLS (NDArray, OCTAVE_API)
+
+BSXFUN_OP_DECL (pow, NDArray, OCTAVE_API)
+BSXFUN_OP2_DECL (pow, ComplexNDArray, ComplexNDArray, 
+                 NDArray, OCTAVE_API)
 
 #endif
 

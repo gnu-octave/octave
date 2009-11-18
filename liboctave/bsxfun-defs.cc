@@ -117,6 +117,8 @@ do_bsxfun_op (const XNDA& x, const YNDA& y,
       OCTAVE_LOCAL_BUFFER_INIT (octave_idx_type, idx, nd, 0);
       for (octave_idx_type iter = 0; iter < niter; iter++)
         {
+          OCTAVE_QUIT;
+
           // Compute indices. 
           // FIXME: performance impact noticeable?
           octave_idx_type xidx = cdvx.cum_compute_index (idx);
@@ -141,12 +143,19 @@ do_bsxfun_op (const XNDA& x, const YNDA& y,
 #define BSXFUN_OP_DEF(OP, ARRAY) \
 ARRAY bsxfun_ ## OP (const ARRAY& x, const ARRAY& y)
 
+#define BSXFUN_OP2_DEF(OP, ARRAY, ARRAY1, ARRAY2) \
+ARRAY bsxfun_ ## OP (const ARRAY1& x, const ARRAY2& y)
+
 #define BSXFUN_REL_DEF(OP, ARRAY) \
 boolNDArray bsxfun_ ## OP (const ARRAY& x, const ARRAY& y)
 
 #define BSXFUN_OP_DEF_MXLOOP(OP, ARRAY, LOOP) \
   BSXFUN_OP_DEF(OP, ARRAY) \
   { return do_bsxfun_op<ARRAY, ARRAY, ARRAY> (x, y, LOOP, LOOP, LOOP); }
+
+#define BSXFUN_OP2_DEF_MXLOOP(OP, ARRAY, ARRAY1, ARRAY2, LOOP) \
+  BSXFUN_OP2_DEF(OP, ARRAY, ARRAY1, ARRAY2) \
+  { return do_bsxfun_op<ARRAY, ARRAY1, ARRAY2> (x, y, LOOP, LOOP, LOOP); }
 
 #define BSXFUN_REL_DEF_MXLOOP(OP, ARRAY, LOOP) \
   BSXFUN_REL_DEF(OP, ARRAY) \

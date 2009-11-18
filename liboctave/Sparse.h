@@ -616,36 +616,18 @@ read_sparse_matrix (std::istream& is, Sparse<T>& a,
       a.cidx (0) = 0;
       for (octave_idx_type i = 0; i < nz; i++)
 	{
+          itmp = 0; jtmp = 0;
 	  is >> itmp;
 	  itmp--;
 
-	  if (itmp < iold)
-	    {
-	      (*current_liboctave_error_handler)
-		("invalid sparse matrix: row indices must appear in ascending order in each column");
-	      is.setstate (std::ios::failbit);
-	      goto done;
-	    }
+	  is >> jtmp;
+	  jtmp--;
 
 	  if (itmp < 0 || itmp >= nr)
 	    {
 	      (*current_liboctave_error_handler)
 		("invalid sparse matrix: row index = %d out of range",
 		 itmp + 1);
-	      is.setstate (std::ios::failbit);
-	      goto done;
-	    }
-
-
-	  iold = itmp;
-
-	  is >> jtmp;
-	  jtmp--;
-
-	  if (jtmp < jold)
-	    {
-	      (*current_liboctave_error_handler)
-		("invalid sparse matrix: column indices must appear in ascending order");
 	      is.setstate (std::ios::failbit);
 	      goto done;
 	    }
@@ -659,18 +641,33 @@ read_sparse_matrix (std::istream& is, Sparse<T>& a,
 	      goto done;
 	    }
 
+	  if (jtmp < jold)
+	    {
+	      (*current_liboctave_error_handler)
+		("invalid sparse matrix: column indices must appear in ascending order");
+	      is.setstate (std::ios::failbit);
+	      goto done;
+	    }
+          else if (jtmp > jold)
+            {
+              for (octave_idx_type j = jold; j < jtmp; j++)
+                a.cidx(j+1) = ii;
+            }
+          else if (itmp < iold)
+	    {
+	      (*current_liboctave_error_handler)
+		("invalid sparse matrix: row indices must appear in ascending order in each column");
+	      is.setstate (std::ios::failbit);
+	      goto done;
+	    }
+
+	  iold = itmp;
+          jold = jtmp;
+
 	  tmp = read_fcn (is);
 	  
 	  if (is)
 	    {
-	      if (jold != jtmp)
-		{
-		  for (octave_idx_type j = jold; j < jtmp; j++)
-		    a.cidx(j+1) = ii;
-		  
-		  jold = jtmp;
-		  iold = 0;
-		}
 	      a.data (ii) = tmp;
 	      a.ridx (ii++) = itmp;
 	    }

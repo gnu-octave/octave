@@ -1,5 +1,9 @@
 2009-11-18  Jaroslav Hajek  <highegg@gmail.com>
 
+	* Sparse.h (read_sparse_matrix): Fix order of tests and reads. 
+
+2009-11-18  Jaroslav Hajek  <highegg@gmail.com>
+
 	* mx-inlines.cc (mx_inline_any_negative, mx_inline_pow): New loops.
 	(DEFMXMAPPER2X): New macro.
 	* bsxfun-decl.h (BSXFUN_OP2_DECL): New macro.

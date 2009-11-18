@@ -197,6 +197,14 @@ string_vector::list_in_columns (std::ostream& os, int width) const
   octave_idx_type max_name_length = 0;
   octave_idx_type total_names = length ();
 
+  if (total_names == 0)
+    {
+      // List empty, remember to end output with a newline.
+
+      os << "\n";
+      return os;
+    }
+
   for (octave_idx_type i = 0; i < total_names; i++)
     {
       octave_idx_type name_length = elem (i).length ();

@@ -1,3 +1,8 @@
+2009-11-18  David Grundberg  <davidg@cs.umu.se>
+
+       * str-vec.cc (string_vector::list_in_columns): Avoid crash on
+       empty arguments from list_in_columns.
+
 2009-11-18  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Sparse.h (read_sparse_matrix): Fix order of tests and reads. 

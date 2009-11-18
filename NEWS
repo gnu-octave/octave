@@ -78,6 +78,13 @@ Summary of important user-visible changes for version 3.3:
     the pairs [abs(z), arg(z)]. Previously, only real parts were compared; this can be
     trivially achieved by wrapping the operands in real().
 
+ ** The automatic simplification of complex computation results has changed. Octave will
+    now simplify any complex number with a zero imaginary part or any complex matrix
+    with all elements having zero imaginary part to a real value. Previously, this was done
+    only for positive zeros.
+    Note that the behavior of the `complex' function is unchanged and it still
+    produces a complex value even if the imaginary part is zero.
+
  ** As a side effect of code refactoring in liboctave, the binary logical operations
     are now more easily amenable to compiler optimizations and are thus significantly
     faster.

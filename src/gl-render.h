@@ -95,9 +95,15 @@ protected:
   virtual void draw_marker (double x, double y, double z,
 			    const Matrix& lc, const Matrix& fc);
 
+  virtual void text_to_pixels (const std::string& txt,
+			       double rotation,
+			       uint8NDArray& pixels,
+			       Matrix& bbox,
+			       int& rot_mode);
+
   virtual Matrix render_text (const std::string& txt,
-			    double x, double y, double z,
-			    int halign, int valign, double rotation = 0.0);
+			      double x, double y, double z,
+			      int halign, int valign, double rotation = 0.0);
 
 private:
   opengl_renderer (const opengl_renderer&) { }

@@ -1,3 +1,15 @@
+2009-11-14  Shai Ayal  <shaiay@users.sourceforge.net>
+
+	* gl-render.cc (opengl_renderer::text_to_pixels):
+	New function from code in render_text to produce the pixels and
+	compute bounding box.
+	(opengl_renderer::render_text): Call text_to_pixels to compute
+	rotation mode and bounding box.
+	* gl-renger.h (opengl_renderer::text_to_pixels): Provide decl.
+	* gl2ps-renderer.cc (glps_renderer::render_text):
+	Call text_to_pixels to compute bounding box.
+	(glps_renderer::set_font): Call opengl_renderer::set_font.
+
 2009-11-18  Michael Godfrey  <godfrey@isl.stanford.edu>
 
 	* txt-eng-ft.cc: Relax font match test.

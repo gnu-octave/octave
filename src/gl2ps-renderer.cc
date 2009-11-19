@@ -76,10 +76,8 @@ glps_renderer::render_text (const std::string& txt,
 			    double x, double y, double z,
 			    int ha, int va, double rotation)
 {
-  Matrix retval = Matrix (1, 4, 0.0);
-
   if (txt.empty ())
-    return retval;
+    return Matrix (1, 4, 0.0);
 
   int gl2psa=GL2PS_TEXT_BL;
   if (ha == 0)
@@ -114,13 +112,21 @@ glps_renderer::render_text (const std::string& txt,
 
   gl2psTextOpt (txt.c_str (), fontname.c_str (), fontsize, gl2psa, rotation);
 
-  // FIXME -- we have no way of getting a bounding box from gl2ps
-  return retval;
+  // FIXME? -- we have no way of getting a bounding box from gl2ps, so
+  // we use freetype
+  Matrix bbox;
+  uint8NDArray pixels;
+  int rot_mode;
+  text_to_pixels (txt, rotation, pixels, bbox, rot_mode);
+
+  return bbox;
 }
 
 void
 glps_renderer::set_font (const base_properties& props)
 {
+  opengl_renderer::set_font (props);
+
   fontsize = props.get ("fontsize").double_value ();
 
   caseless_str fn = props.get ("fontname").string_value ();

@@ -3140,18 +3140,16 @@ opengl_renderer::make_marker_list (const std::string& marker, double size,
   return ID;
 }
 
-Matrix
-opengl_renderer::render_text (const std::string& txt,
-			    double x, double y, double z,
-			    int halign, int valign, double rotation)
+void
+opengl_renderer::text_to_pixels (const std::string& txt,
+				 double rotation,
+				 uint8NDArray& pixels,
+				 Matrix& bbox,
+				 int& rot_mode)
 {
-#if HAVE_FREETYPE
-  if (txt.empty ())
-    return Matrix (1, 4, 0.0);
-
   // FIXME: clip "rotation" between 0 and 360
 
-  int rot_mode = ft_render::ROTATION_0;
+  rot_mode = ft_render::ROTATION_0;
 
   if (rotation == 90.0)
     rot_mode = ft_render::ROTATION_90;
@@ -3161,8 +3159,24 @@ opengl_renderer::render_text (const std::string& txt,
     rot_mode = ft_render::ROTATION_270;
 
   text_element *elt = text_parser_none ().parse (txt);
+  pixels = text_renderer.render (elt, bbox, rot_mode);
+  delete elt;
+}
+
+Matrix
+opengl_renderer::render_text (const std::string& txt,
+			    double x, double y, double z,
+			    int halign, int valign, double rotation)
+{
+#if HAVE_FREETYPE
+  if (txt.empty ())
+    return Matrix (1, 4, 0.0);
+
   Matrix bbox;
-  uint8NDArray pixels = text_renderer.render (elt, bbox, rot_mode);
+  uint8NDArray pixels;
+  int rot_mode;
+  text_to_pixels (txt, rotation, pixels, bbox, rot_mode);
+
   int x0 = 0, y0 = 0;
   int w = bbox(2), h = bbox(3);
 
@@ -3215,8 +3229,6 @@ opengl_renderer::render_text (const std::string& txt,
   glDisable (GL_ALPHA_TEST);
   if (! blend)
     glDisable (GL_BLEND);
-
-  delete elt;
 
   return bbox;
 #else

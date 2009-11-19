@@ -138,7 +138,7 @@ protected:
     }
 
   Array (T *d, const dim_vector& dv)
-    : rep (new typename Array<T>::ArrayRep (d, get_size (dv))),
+    : rep (new typename Array<T>::ArrayRep (d, dv.numel ())),
       dimensions (dv) 
     { 
       slice_data = rep->data;
@@ -224,7 +224,7 @@ public:
 public:
 
   Array (const dim_vector& dv)
-    : rep (new typename Array<T>::ArrayRep (get_size (dv))),
+    : rep (new typename Array<T>::ArrayRep (dv.safe_numel ())),
       dimensions (dv) 
     { 
       slice_data = rep->data;
@@ -232,7 +232,7 @@ public:
     }
 
   Array (const dim_vector& dv, const T& val)
-    : rep (new typename Array<T>::ArrayRep (get_size (dv))),
+    : rep (new typename Array<T>::ArrayRep (dv.safe_numel ())),
       dimensions (dv)
     {
       slice_data = rep->data;
@@ -301,10 +301,6 @@ public:
   void chop_trailing_singletons (void) 
   { dimensions.chop_trailing_singletons (); }
   
-  static octave_idx_type get_size (octave_idx_type r, octave_idx_type c);
-  static octave_idx_type get_size (octave_idx_type r, octave_idx_type c, octave_idx_type p);
-  static octave_idx_type get_size (const dim_vector& dv);
-
   octave_idx_type compute_index (const Array<octave_idx_type>& ra_idx) const;
 
   T range_error (const char *fcn, octave_idx_type n) const;

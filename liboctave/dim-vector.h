@@ -25,6 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_dim_vector_h 1
 
 #include <cassert>
+#include <limits>
 
 #include <sstream>
 #include <string>
@@ -325,6 +326,30 @@ public:
       retval *= elem (i);
 
     return retval;
+  }
+
+  // The following function will throw a std::bad_alloc ()
+  // exception if the requested size is larger than can be indexed by
+  // octave_idx_type. This may be smaller than the actual amount of
+  // memory that can be safely allocated on a system.  However, if we
+  // don't fail here, we can end up with a mysterious crash inside a
+  // function that is iterating over an array using octave_idx_type
+  // indices.
+
+  octave_idx_type safe_numel (void) const
+  {
+    octave_idx_type idx_max = std::numeric_limits<octave_idx_type>::max () - 1;
+    octave_idx_type n = 1;
+    int n_dims = length ();
+    for (int i = 0; i < n_dims; i++)
+      {
+        n *= rep[i];
+        if (rep[i] != 0)
+          idx_max /= rep[i];
+        if (idx_max <= 0)
+          throw std::bad_alloc ();
+      }
+    return n;
   }
 
   bool any_neg (void) const

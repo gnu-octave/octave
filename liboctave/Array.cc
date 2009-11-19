@@ -102,7 +102,7 @@ Array<T>::clear (const dim_vector& dv)
   if (--rep->count <= 0)
     delete rep;
 
-  rep = new ArrayRep (get_size (dv));
+  rep = new ArrayRep (dv.safe_numel ());
   slice_data = rep->data;
   slice_len = rep->len;
 
@@ -161,135 +161,6 @@ Array<T>::squeeze (void) const
 
   return retval;
 }
-
-// KLUGE
-
-// The following get_size functions will throw a std::bad_alloc ()
-// exception if the requested size is larger than can be indexed by
-// octave_idx_type.  This may be smaller than the actual amount of
-// memory that can be safely allocated on a system.  However, if we
-// don't fail here, we can end up with a mysterious crash inside a
-// function that is iterating over an array using octave_idx_type
-// indices.
-
-// A guess (should be quite conservative).
-#define MALLOC_OVERHEAD 1024
-
-template <class T>
-octave_idx_type
-Array<T>::get_size (octave_idx_type r, octave_idx_type c)
-{
-  static int nl;
-  static double dl
-    = frexp (static_cast<double> 
-	(std::numeric_limits<octave_idx_type>::max() - MALLOC_OVERHEAD) / sizeof (T), &nl);
-
-  int nr, nc;
-  double dr = frexp (static_cast<double> (r), &nr);   // r = dr * 2^nr
-  double dc = frexp (static_cast<double> (c), &nc);   // c = dc * 2^nc
-
-  int nt = nr + nc;
-  double dt = dr * dc;
-
-  if (dt < 0.5)
-    {
-      nt--;
-      dt *= 2;
-    }
-
-  if (nt < nl || (nt == nl && dt < dl))
-    return r * c;
-  else
-    {
-      throw std::bad_alloc ();
-      return 0;
-    }
-}
-
-template <class T>
-octave_idx_type
-Array<T>::get_size (octave_idx_type r, octave_idx_type c, octave_idx_type p)
-{
-  static int nl;
-  static double dl
-    = frexp (static_cast<double>
-	(std::numeric_limits<octave_idx_type>::max() - MALLOC_OVERHEAD) / sizeof (T), &nl);
-
-  int nr, nc, np;
-  double dr = frexp (static_cast<double> (r), &nr);
-  double dc = frexp (static_cast<double> (c), &nc);
-  double dp = frexp (static_cast<double> (p), &np);
-
-  int nt = nr + nc + np;
-  double dt = dr * dc * dp;
-
-  if (dt < 0.5)
-    {
-      nt--;
-      dt *= 2;
-
-      if (dt < 0.5)
-	{
-	  nt--;
-	  dt *= 2;
-	}
-    }
-
-  if (nt < nl || (nt == nl && dt < dl))
-    return r * c * p;
-  else
-    {
-      throw std::bad_alloc ();
-      return 0;
-    }
-}
-
-template <class T>
-octave_idx_type
-Array<T>::get_size (const dim_vector& ra_idx)
-{
-  static int nl;
-  static double dl
-    = frexp (static_cast<double>
-	(std::numeric_limits<octave_idx_type>::max() - MALLOC_OVERHEAD) / sizeof (T), &nl);
-
-  int n = ra_idx.length ();
-
-  int nt = 0;
-  double dt = 1;
-
-  for (int i = 0; i < n; i++)
-    {
-      int nra_idx;
-      double dra_idx = frexp (static_cast<double> (ra_idx(i)), &nra_idx);
-
-      nt += nra_idx;
-      dt *= dra_idx;
-
-      if (dt < 0.5)
-	{
-	  nt--;
-	  dt *= 2;
-	}
-    }
-
-  if (nt < nl || (nt == nl && dt < dl))
-    {
-      octave_idx_type retval = 1;
-
-      for (int i = 0; i < n; i++)
-	retval *= ra_idx(i);
-
-      return retval;
-    }
-  else
-    {
-      throw std::bad_alloc ();
-      return 0;
-    }
-}
-
-#undef MALLOC_OVERHEAD
 
 template <class T>
 octave_idx_type

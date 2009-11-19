@@ -43,8 +43,6 @@ Array2 : public Array<T>
 {
 protected:
 
-  static octave_idx_type get_size (octave_idx_type r, octave_idx_type c) { return Array<T>::get_size (r, c); }
-
   Array2 (T *d, octave_idx_type r, octave_idx_type c) : Array<T> (d, dim_vector (r, c)) { }
 
 public:

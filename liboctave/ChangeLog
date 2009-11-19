@@ -1,5 +1,16 @@
 2009-11-19  Jaroslav Hajek  <highegg@gmail.com>
 
+	* dim-vector.h (dim_vector::safe_numel): New method.
+	* Array.h (Array<T>::Array (const dim_vector&),
+	Array<T>::Array (const dim_vector&, const T&),
+	Array<T>::Array (T *, const dim_vector&)): Use it here.
+	* Array.cc (Array<T>::clear (const dim_vector&)): Also here.
+	(Array<T>::get_size): Remove.
+	* Array2.h (Array2::get_size): Remove.
+	* Array3.h (Array3::get_size): Remove.
+
+2009-11-19  Jaroslav Hajek  <highegg@gmail.com>
+
 	* Array.cc (Array::clear (const dim_vector&)): Use get_size.
 
 2009-11-19  Jaroslav Hajek  <highegg@gmail.com>

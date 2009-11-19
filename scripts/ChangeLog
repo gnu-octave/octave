@@ -1,3 +1,8 @@
+2009-11-18  Ben Abbott <bpabbott@mac.com>
+
+	* plot/orient.m: Flip papersize and paperposition when orientation
+	changes. Add support for 'tall' option. Add tests.
+
 2009-11-18  Jaroslav Hajek  <highegg@gmail.com>
 
 	* io/textread.m: strncmp->strcmpi.

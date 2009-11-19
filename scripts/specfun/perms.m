@@ -1,4 +1,5 @@
 ## Copyright (C) 2001, 2006, 2007, 2009 Paul Kienzle
+## Copyright (C) 2009 VZLU Prague
 ##
 ## This file is part of Octave.
 ##
@@ -42,19 +43,22 @@ function A = perms (v)
   endif
   v = v(:);
   n = length (v);
-  if (n == 1)
-    A = v;
+
+  if (n == 0)
+    A = [];
   else
-    B = perms (v(1:n-1));
-    Bidx = 1:size (B, 1);
-    A = v(n) * ones (prod (2:n), n);
-    A(Bidx,1:n-1) = B;
-    k = size (B, 1);
-    for i = n-1:-1:2
-      A(k+Bidx,1:i-1) = B(Bidx,1:i-1);
-      A(k+Bidx,i+1:n) = B(Bidx,i:n-1);
-      k = k + size (B, 1);
+    A = v(1);
+    for j = 2:n
+      B = A;
+      A = zeros (prod (2:j), n, class (v));
+      k = size (B, 1);
+      idx = 1:k;
+      for i = j:-1:1
+        A(idx,1:i-1) = B(:,1:i-1);
+        A(idx,i) = v(j);
+        A(idx,i+1:j) = B(:,i:j-1);
+        idx += k;
+      endfor
     endfor
-    A(k+Bidx,2:n) = B;
   endif
 endfunction

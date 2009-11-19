@@ -3101,9 +3101,9 @@ FloatComplex rc_log1p (float x)
   return x < -1.0f ? FloatComplex (logf (-(1.0f + x)), pi) : FloatComplex (log1pf (x));
 }
 
-// This algorithm is due to P. Jacklam
-// See http://
-// The rational approximation has relative accuracy 1e-9 in the whole region.
+// This algorithm is due to P. Jacklam.
+// See http://home.online.no/~pjacklam/notes/invnorm/
+// The rational approximation has relative accuracy 1.15e-9 in the whole region.
 // For doubles, it is refined by a single step of Higham's 3rd order method.
 // For single precision, the accuracy is already OK, so we skip it to get
 // faster evaluation.

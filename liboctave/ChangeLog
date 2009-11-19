@@ -1,5 +1,9 @@
 2009-11-19  Jaroslav Hajek  <highegg@gmail.com>
 
+	* Array.cc (Array::clear (const dim_vector&)): Use get_size.
+
+2009-11-19  Jaroslav Hajek  <highegg@gmail.com>
+
 	* lo-mappers.cc (do_erfinv): New static function.
 	(erfinv (double), erfinv (float)): New mappers.
 	* lo-mappers.h: Declare them.

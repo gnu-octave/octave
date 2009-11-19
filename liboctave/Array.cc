@@ -102,7 +102,7 @@ Array<T>::clear (const dim_vector& dv)
   if (--rep->count <= 0)
     delete rep;
 
-  rep = new ArrayRep (dv.numel ());
+  rep = new ArrayRep (get_size (dv));
   slice_data = rep->data;
   slice_len = rep->len;
 

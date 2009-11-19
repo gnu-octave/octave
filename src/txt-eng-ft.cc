@@ -140,8 +140,10 @@ private:
 
 	      FcDefaultSubstitute (pat);
 	      match = FcFontMatch (0, pat, &res);
-	      
-	      if (match && res != FcResultNoMatch)
+
+	      // FIXME -- originally, this test also required that
+	      // res != FcResultNoMatch.  Is that really needed?
+	      if (match)
 		{
 		  unsigned char *tmp;
 

@@ -1,3 +1,7 @@
+2009-11-18  Michael Godfrey  <godfrey@isl.stanford.edu>
+
+	* txt-eng-ft.cc: Relax font match test.
+
 2009-11-18  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/bsxfun.cc (bsxfun_builtin_op): New member:

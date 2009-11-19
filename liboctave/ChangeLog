@@ -1,3 +1,9 @@
+2009-11-19  Jaroslav Hajek  <highegg@gmail.com>
+
+	* lo-mappers.cc (do_erfinv): New static function.
+	(erfinv (double), erfinv (float)): New mappers.
+	* lo-mappers.h: Declare them.
+
 2009-11-18  David Grundberg  <davidg@cs.umu.se>
 
        * str-vec.cc (string_vector::list_in_columns): Avoid crash on

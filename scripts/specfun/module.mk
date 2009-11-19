@@ -5,7 +5,6 @@ specfun_FCN_FILES = \
   specfun/beta.m \
   specfun/betai.m \
   specfun/betaln.m \
-  specfun/erfinv.m \
   specfun/factor.m \
   specfun/factorial.m \
   specfun/gammai.m \

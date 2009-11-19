@@ -583,6 +583,9 @@ inline float gammainc (float x, float a)
 extern OCTAVE_API Complex rc_log1p (double);
 extern OCTAVE_API FloatComplex rc_log1p (float);
 
+extern OCTAVE_API double erfinv (double x);
+extern OCTAVE_API float erfinv (float x);
+
 #endif
 
 /*

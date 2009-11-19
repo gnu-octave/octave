@@ -1,3 +1,15 @@
+2009-11-19  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-base.h (unary_mapper_t): New member: umap_erfinv.
+	* ov-base.c (octave_base_value::get_umap_name): Add "erfinv" here.
+	* ov.h (octave_value::erfinv): New method.
+	* ov-scalar.cc (octave_scalar::map): Handle umap_erfinv.
+	* ov-float.cc (octave_float::map): Ditto.
+	* ov-re-mat.cc (octave_matrix::map): Ditto.
+	* ov-flt-re-mat.cc (octave_float_matrix::map): Ditto.
+	* ov-re-sparse.cc (octave_sparse_matrix::map): Ditto.
+	* mappers.cc (Ferfinv): New DEFUN.
+
 2009-11-14  Shai Ayal  <shaiay@users.sourceforge.net>
 
 	* gl-render.cc (opengl_renderer::text_to_pixels):

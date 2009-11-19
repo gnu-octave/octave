@@ -1093,6 +1093,7 @@ public:
   MAPPER_FORWARD (cos)
   MAPPER_FORWARD (cosh)
   MAPPER_FORWARD (erf)
+  MAPPER_FORWARD (erfinv)
   MAPPER_FORWARD (erfc)
   MAPPER_FORWARD (exp)
   MAPPER_FORWARD (expm1)

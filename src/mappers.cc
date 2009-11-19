@@ -568,6 +568,40 @@ erf (z) = (2/sqrt (pi)) | e^(-t^2) dt\n\
 
 */
 
+DEFUN (erfinv, args, ,
+    "-*- texinfo -*-\n\
+@deftypefn {Mapping Function} {} erfinv (@var{x})\n\
+Computes the inverse error function, i.e. @var{y} such that\n\
+@example\n\
+  erf(@var{y}) == @var{x}\n\
+@end example\n\
+@seealso{erfc, erf}\n\
+@end deftypefn")
+{
+  octave_value retval;
+  if (args.length () == 1)
+    retval = args(0).erfinv ();
+  else
+    print_usage ();
+
+  return retval;
+}
+
+/*
+%% middle region
+%!assert (erf (erfinv ([-0.9 -0.3 0 0.4 0.8])), [-0.9 -0.3 0 0.4 0.8], 1e-16)
+%!assert (erf (erfinv (single ([-0.9 -0.3 0 0.4 0.8]))), single ([-0.9 -0.3 0 0.4 0.8]), 1e-8)
+%% tail region
+%!assert (erf (erfinv ([-0.999 -0.99 0.9999 0.99999])), [-0.999 -0.99 0.9999 0.99999], 1e-16)
+%!assert (erf (erfinv (single ([-0.999 -0.99 0.9999 0.99999]))), single ([-0.999 -0.99 0.9999 0.99999]), 1e-8)
+%% backward - loss of accuracy
+%!assert (erfinv (erf ([-3 -1 -0.4 0.7 1.3 2.8])), [-3 -1 -0.4 0.7 1.3 2.8], -1e-12)
+%!assert (erfinv (erf (single ([-3 -1 -0.4 0.7 1.3 2.8]))), single ([-3 -1 -0.4 0.7 1.3 2.8]), -1e-4)
+%% exceptional
+%!assert (erfinv ([-1, 1, 1.1, -2.1]), [-Inf, Inf, NaN, NaN])
+%!error erfinv (1+2i)
+*/
+
 DEFUN (erfc, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} erfc (@var{z})\n\

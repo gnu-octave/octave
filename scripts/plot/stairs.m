@@ -80,7 +80,7 @@ endfunction
 
 function [h, xs, ys] = __stairs__ (doplot, varargin)
 
-  if (nargin == 1 || ischar (varargin{2}))
+  if (nargin == 2 || ischar (varargin{2}))
     y = varargin {1};
     varargin(1) = [];
     if (ismatrix (y))
@@ -215,6 +215,13 @@ endfunction
 %! x = 1:10;
 %! y = rand (1, 10);
 %! [xs, ys] = stairs (x, y);
+%! plot (xs, ys);
+
+%!demo
+%! stairs (1:9);
+
+%!demo
+%! [xs, ys] = stairs (9:-1:1);
 %! plot (xs, ys);
 
 function update_props (h, d)

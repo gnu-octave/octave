@@ -1,3 +1,8 @@
+2009-11-11  John W. Eaton  <jwe@octave.org>
+
+	* plot/stairs.m (__stairs__): Correct nargin check.  New demos.
+	From Jakub Kasse <jakub.kasse@tul.cz>.
+
 2009-09-01  Christophe Tournery  <christophe.tournery@illusonic.com>
 
 	* audio/wavread.m: Rename data_size from obsolete ck_size.

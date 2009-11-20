@@ -6491,7 +6491,7 @@ it is first converted to logical.\n\
   int nargin = args.length ();
   octave_value retval;
 
-  if (nargin == 3 && args(0).is_numeric_type ())
+  if (nargin == 3 && args(0).is_bool_type () || args(0).is_numeric_type ())
     {
       octave_value mask_val = args(0);
 

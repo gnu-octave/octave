@@ -1,5 +1,9 @@
 2009-11-20  Jaroslav Hajek  <highegg@gmail.com>
 
+	* data.cc (Fmerge): Correct query for logical masks.
+
+2009-11-20  Jaroslav Hajek  <highegg@gmail.com>
+
 	* utils.cc (dims_to_numel): Fallback to index_vector query for
 	non-numeric types.
 

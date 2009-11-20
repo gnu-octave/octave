@@ -1,3 +1,7 @@
+2009-11-20  Lukas Reichlin <lukas.reichlin@swissonline.ch>
+
+	* linear-algebra/krylov.m: Add missing swap routine.
+
 2009-11-20  Jaroslav Hajek  <highegg@gmail.com>
 
 	* general/__isequal__.m: Check for isnumeric|islogical.

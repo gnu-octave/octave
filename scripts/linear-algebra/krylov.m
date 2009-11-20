@@ -237,3 +237,11 @@ function [Uret, H, nu] = krylov (A, V, k, eps1, pflg);
   endif
 
 endfunction
+
+
+function [a1, b1] = swap (a, b)
+
+  a1 = b;
+  b1 = a;
+
+endfunction

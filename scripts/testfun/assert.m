@@ -65,7 +65,7 @@ function assert (cond, varargin)
   in = cstrcat ("(", in, ")");
 
   if (nargin == 1 || (nargin > 1 && islogical (cond) && ischar (varargin{1})))
-    if (! isnumeric (cond) || ! all (cond(:)))
+    if ((! isnumeric (cond) && ! islogical (cond)) || ! all (cond(:)))
       if (nargin == 1)
 	## Say which elements failed?
 	error ("assert %s failed", in);

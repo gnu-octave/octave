@@ -1,3 +1,8 @@
+2009-11-20  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-bool.h (octave_bool::is_numeric_type): New overload.
+	* ov-bool-mat.h (octave_bool-matrix::is_numeric_type): New overload.
+
 2009-11-19  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-base.h (unary_mapper_t): New member: umap_erfinv.

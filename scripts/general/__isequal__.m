@@ -66,8 +66,8 @@ function t = __isequal__ (nans_compare_equal, x, varargin)
   ## numeric values.
   t = (all (strcmp (class(x),
 		   cellfun (@class, varargin, "UniformOutput", false)))
-       || (isnumeric (x)
-	   && all (cellfun (@isnumeric, varargin, "UniformOutput", true))));
+       || ((isnumeric (x) || islogical (x))
+	   && all ((cellfun (@isnumeric, varargin) | cellfun (@islogical, varargin)))));
 
   if (t)
     ## Test that everything has the same number of dimensions.

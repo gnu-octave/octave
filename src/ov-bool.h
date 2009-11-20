@@ -83,6 +83,8 @@ public:
 
   bool is_real_type (void) const { return true; }
 
+  bool is_numeric_type (void) const { return false; }
+
   bool is_true (void) const { return scalar; }
 
   int8NDArray

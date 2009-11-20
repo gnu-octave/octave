@@ -1,3 +1,8 @@
+2009-11-20  Jaroslav Hajek  <highegg@gmail.com>
+
+	* general/__isequal__.m: Check for isnumeric|islogical.
+	* testfun/assert.m: Ditto.
+
 2009-11-19  Jaroslav Hajek  <highegg@gmail.com>
 
 	* specfun/perms.m: Avoid recursion. Simplify assignments. Allow empty

@@ -1,4 +1,5 @@
 ## Copyright (C) 2000, 2006, 2007, 2009 Etienne Grossmann
+## Copyright (C) 2009 VZLU Prague
 ##
 ## This file is part of Octave.
 ##
@@ -43,22 +44,19 @@
 ## Author:  Etienne Grossmann <etienne@cs.uky.edu>
 
 function obj = setfield (obj, varargin)
-   field = "obj";
-   for i = 1:nargin-2
-     v = varargin{i};
-     if (iscell (v))
-       sep = "(";
-       for j = 1:length (v)
-	 field = sprintf ("%s%s%s", field, sep, num2str (v{j}));
-         sep = ",";
-       endfor
-       field = sprintf ("%s)", field);
-     else
-       field = sprintf ("%s.%s", field, v);
-     endif
-   endfor
-   val = varargin{nargin-1};
-   eval (sprintf ("%s=val;", field));
+  if (nargin < 3)
+    print_usage ();
+  endif
+  subs = varargin(1:end-1);
+  rhs = varargin{end};
+  flds = cellfun (@ischar, subs);
+  idxs = cellfun (@iscell, subs);
+  if (all (flds | idxs))
+    typs = merge (flds, {"."}, {"()"});
+    obj = subsasgn (obj, struct ("type", typs, "subs", subs), rhs);
+  else
+    error ("setfield: invalid index");
+  endif
 endfunction
 
 %!test

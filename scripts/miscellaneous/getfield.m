@@ -1,4 +1,5 @@
 ## Copyright (C) 2000, 2006, 2007, 2009 Etienne Grossmann
+## Copyright (C) 2009 VZLU Prague
 ##
 ## This file is part of Octave.
 ##
@@ -42,17 +43,19 @@
 
 ## Author: Etienne Grossmann <etienne@cs.uky.edu>
 
-function s = getfield (s, varargin)
-
-  for idx = 1:nargin-1
-    i = varargin{idx};
-    if (iscell (i))
-      s = s(i{:});
-    else
-      s = s.(i);
-    endif
-  endfor
-
+function obj = getfield (s, varargin)
+  if (nargin < 2)
+    print_usage ();
+  endif
+  subs = varargin;
+  flds = cellfun (@ischar, subs);
+  idxs = cellfun (@iscell, subs);
+  if (all (flds | idxs))
+    typs = merge (flds, {"."}, {"()"});
+    obj = subsref (s, struct ("type", typs, "subs", subs));
+  else
+    error ("getfield: invalid index");
+  endif
 endfunction
 
 %!test

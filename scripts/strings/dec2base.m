@@ -86,7 +86,7 @@ function retval = dec2base (n, base, len)
   ## determine digits for each number
   power = ones (length (n), 1) * (base .^ (max_len-1 : -1 : 0));
   n = n(:) * ones (1, max_len);
-  digits = floor (rem (n, base*power) ./ power);
+  digits = floor (double (rem (n, base*power)) ./ power);
 
   ## convert digits to symbols
   retval = reshape (symbols (digits+1), size (digits));

@@ -1,3 +1,7 @@
+2009-11-20  Jaroslav Hajek  <highegg@gmail.com>
+
+	* scripts/strings/dec2base.m: Fix division.
+
 2009-11-20  Lukas Reichlin <lukas.reichlin@swissonline.ch>
 
 	* linear-algebra/krylov.m: Add missing swap routine.

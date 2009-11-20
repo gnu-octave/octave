@@ -115,8 +115,10 @@ function legend (varargin)
 	switch (str)
 	  case {"off", "hide"}
 	    set (ca, "key", "off");
+	    nargs--;
 	  case "show"
 	    set (ca, "key", "on");
+	    nargs--;
 	  case "toggle"
 	    val = get (ca, "key");
 	    if (strcmpi (val, "on"))
@@ -124,40 +126,21 @@ function legend (varargin)
 	    else
 	      set (ca, "key", "on");
 	    endif
+	    nargs--;
 	  case "boxon"
 	    set (ca, "key", "on", "keybox", "on");
+	    nargs--;
 	  case "boxoff"
 	    set (ca, "keybox", "off");
+	    nargs--;
 	  case "left"
 	    set (ca, "keyreverse", "off")
+	    nargs--;
 	  case "right"
 	    set (ca, "keyreverse", "on")
+	    nargs--;
 	  otherwise
-	    typ = get (kids (k), "type");
-	    while (k <= nkids && ! strcmp (typ, "line") &&
-		   ! strcmp (typ, "hggroup"))
-	      k++;
-	      typ = get (kids (k), "type");
-	    endwhile
-	    if (k <= nkids)
-	      turn_on_legend = true;
-	      if (strcmp (typ, "hggroup"))
-		hgkids = get (kids(k), "children");
-		for j = 1 : length (hgkids)
-		  hgobj = get (hgkids (j));
-		  if (isfield (hgobj, "keylabel"))
-		    set (hgkids(j), "keylabel", arg);
-		    break;
-		  endif
-		endfor
-	      else
-		set (kids(k), "keylabel", arg);
-	      endif
-	    else
-	      warning ("legend: ignoring extra labels");
-	    endif
 	endswitch
-	nargs--;
       else
 	varargin = cellstr (arg);
 	nargs = numel (varargin);
@@ -172,11 +155,10 @@ function legend (varargin)
 
   if (nargs > 0)
     have_data = false;
-    for i = 1:nkids
-      if (strcmp (get (kids(k), "type"), "line")
-	  || strcmp (get (kids(k), "type"), "surface")
-	  || strcmp (get (kids(k), "type"), "patch")
-	  || strcmp (get (kids(k), "type"), "hggroup"))
+    for k = 1:nkids
+      typ = get (kids(k), "type");
+      if (strcmp (typ, "line") || strcmp (typ, "surface")
+	  || strcmp (typ, "patch") || strcmp (typ, "hggroup"))
 	have_data = true;
 	break;
       endif
@@ -187,17 +169,17 @@ function legend (varargin)
   endif
 
   warned = false;
-  for i = nargs:-1:1
+  k = nkids;
+  for i = 1:nargs
     arg = varargin{i};
     if (ischar (arg))
-      while (k <= nkids
-	     && ! (strcmp (get (kids(k), "type"), "line")
-		   || strcmp (get (kids(k), "type"), "surface")
-		   || strcmp (get (kids(k), "type"), "patch")
-		   || strcmp (get (kids(k), "type"), "hggroup")))
-	k++;
+      typ = get (kids(k), "type");
+      while (k > 1
+	     && ! (strcmp (typ, "line") || strcmp (typ, "surface")
+		   || strcmp (typ, "patch") || strcmp (typ, "hggroup")))
+	typ = get (kids(--k), "type");
       endwhile
-      if (k <= nkids)
+      if (k > 0)
 	if (strcmp (get (kids(k), "type"), "hggroup"))
 	  hgkids = get (kids(k), "children");
 	  for j = 1 : length (hgkids)
@@ -211,7 +193,9 @@ function legend (varargin)
 	  set (kids(k), "keylabel", arg);
 	endif
 	turn_on_legend = true;
-	k++;
+	if (--k == 0)
+	  break;
+	endif
       elseif (! warned)
 	warned = true;
 	warning ("legend: ignoring extra labels");
@@ -235,9 +219,21 @@ endfunction
 
 %!demo
 %! clf
+%! plot(1:10, 1:10, 1:10, fliplr(1:10));
+%! title("incline is blue and decline is green");
+%! legend("I'm blue", "I'm green", "location", "east")
+
+%!demo
+%! clf
 %! plot(1:10, 1:10);
 %! title("a very long label can sometimes cause problems");
 %! legend({"hello world"}, "location", "northeastoutside")
+
+%!demo
+%! clf
+%! plot(1:10, 1:10);
+%! title("a very long label can sometimes cause problems");
+%! legend("hello world", "location", "northeastoutside")
 
 %!demo
 %! clf
@@ -251,3 +247,35 @@ endfunction
 %! xlabel("Sample Nr [k]"); ylabel("Amplitude [V]");
 %! legend(labels, "location", "southoutside")
 %! legend("boxon")
+
+%!demo
+%! clf
+%! labels = {};
+%! for i = 1:5
+%!     h = plot(1:100, i + rand(100,1)); hold on;
+%!     set (h, "color", get (gca, "colororder")(i,:))
+%!     labels = {labels{:}, cstrcat("Signal ", num2str(i))};
+%! endfor; hold off;
+%! title("Signals with random offset and uniform noise")
+%! xlabel("Sample Nr [k]"); ylabel("Amplitude [V]");
+%! legend(labels{:}, "location", "southoutside")
+%! legend("boxon")
+
+%!demo
+%! hold ("off");
+%! x = linspace (0, 10);
+%! plot (x, x);
+%! hold ("on");
+%! stem (x, x.^2, 'g')
+%! legend ("linear");
+%! hold ("off");
+
+%!demo
+%! x = linspace (0, 10);
+%! plot (x, x, x, x.^2);
+%! legend ("linear");
+
+%!demo
+%! x = linspace (0, 10);
+%! plot (x, x, x, x.^2);
+%! legend ("linear", "quadratic");

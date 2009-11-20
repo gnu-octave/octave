@@ -1,5 +1,10 @@
 2009-11-20  Jaroslav Hajek  <highegg@gmail.com>
 
+	* utils.cc (dims_to_numel): Fallback to index_vector query for
+	non-numeric types.
+
+2009-11-20  Jaroslav Hajek  <highegg@gmail.com>
+
 	* ov-bool.h (octave_bool::is_numeric_type): New overload.
 	* ov-bool-mat.h (octave_bool-matrix::is_numeric_type): New overload.
 

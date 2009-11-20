@@ -1027,10 +1027,18 @@ dims_to_numel (const dim_vector& dims, const octave_value_list& idx)
       retval = 1;
       for (octave_idx_type i = 0; i < len; i++)
         {
-          if (idx(i).is_magic_colon ())
+          octave_value idxi = idx(i);
+          if (idxi.is_magic_colon ())
             retval *= dv(i);
+          else if (idxi.is_numeric_type ())
+            retval *= idxi.numel ();
           else
-            retval *= idx(i).numel ();
+            {
+              idx_vector jdx = idxi.index_vector ();
+              if (error_state)
+                break;
+              retval *= jdx.length (dv(i));
+            }
         }
     }
 

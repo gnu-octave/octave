@@ -1,3 +1,9 @@
+2009-11-22  Michael Goffioul <michael.goffioul@gmail.com>
+
+	* plot/print.m: Properly set the default ghostscript_binary
+	under Windows. Modify the search for the ghostscript binary
+	so that it works for Win32, mingw, Cygwin, and Unix systems.
+
 2009-11-20  Jaroslav Hajek  <highegg@gmail.com>
 
 	* scripts/strings/dec2base.m: Fix division.

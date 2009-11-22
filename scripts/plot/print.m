@@ -189,14 +189,22 @@ function print (varargin)
   special_flag = "textnormal";
   tight_flag = false;
   resolution = "";
-  if (isunix ())
-    persistent ghostscript_binary = "gs";
-  elseif (ispc ())
-    if (~isempty (getenv ("GSC")))
-      persistent ghostscript_binary = getenv ("GSC");
+
+  persistent ghostscript_binary = "";
+  if (isempty (ghostscript_binary))
+    ghostscript_binary = getenv ("GSC");
+    ng = 0;
+    if (isunix ())
+      ## Unix - Includes Mac OSX and Cygwin.
+      gs_binaries = {"gs", "gs.exe"};
     else
-      persistent ghostscript_binary = "gswin32c";
+      ## pc - Includes Win32 and mingw.
+      gs_binaries = {"gs.exe", "gswin32c.exe"};
     endif
+    while (ng < numel (gs_binaries) && isempty (ghostscript_binary))
+      ng = ng + 1;
+      ghostscript_binary = file_in_path (EXEC_PATH, gs_binaries{ng});
+    endwhile
   endif
 
   old_fig = get (0, "currentfigure");
@@ -235,6 +243,12 @@ function print (varargin)
 	  printer = arg;
 	elseif ((length (arg) > 2) && arg(1:2) == "-G")
 	  ghostscript_binary = arg(3:end);
+	  if (exist (ghostscript_binary, "file") != 2)
+	    ghostscript_binary = file_in_path (EXEC_PATH, ghostscript_binary);
+	  endif
+	  if (isempty (ghostscript_binary))
+	    error ("print.m: Ghostscript binary ""%s"" could not be located", arg(3:end))
+	  endif
         elseif (length (arg) > 2 && arg(1:2) == "-F")
 	  idx = rindex (arg, ":");
 	  if (idx)
@@ -259,13 +273,7 @@ function print (varargin)
       endif
     endfor
 
-    if (isunix ())
-      [status, output] = system (sprintf ("which %s 2>&1", ghostscript_binary));
-      have_ghostscript = (status == 0);
-    elseif (ispc ())
-      [status, output] = system (sprintf ("if exist \"%s\" ( exit /B 1 ) else ( exit /B 0 )", ghostscript_binary));
-      have_ghostscript = (status ~= 0);
-    endif
+    have_ghostscript = (exist (ghostscript_binary, "file") == 2);
 
     doprint = isempty (name);
     if (doprint)

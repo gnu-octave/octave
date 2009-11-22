@@ -746,29 +746,22 @@ OCTAVE_OPENGL
 if test -n "$OPENGL_LIBS"; then
   AC_DEFINE(HAVE_OPENGL, 1, [Define if OpenGL is available])
 
-## freetype 2
-  AC_CHECK_FT2([9.0.3],[AC_DEFINE(HAVE_FREETYPE, 1, [Define to 1 if you have Freetype library.])],
+  ## freetype 2
+
+  AC_CHECK_FT2([9.0.3], [AC_DEFINE(HAVE_FREETYPE, 1, [Define to 1 if you have Freetype library.])
+    XTRA_CXXFLAGS="$XTRA_CXXFLAGS $FT2_CFLAGS"],
     [warn_freetype="FreeType library not found.  Native renderer will not have on-screen text"])
-  if test -z "$warn_freetype"; then
-    AC_LANG_PUSH(C++)
-      save_LIBS="$LIBS"
-      save_CXXFLAGS="$CXXFLAGS"
-      save_CPPFLAGS="$CPPFLAGS"
-      LIBS="$LIBS $FT2_LIBS $OPENGL_LIBS"
-      CXXFLAGS="$CXXFLAGS $FT2_CFLAGS"
-      CPPFLAGS="$CPPFLAGS $FT2_CFLAGS"
-  fi
 fi
 
-# fontconfig library
+## fontconfig library
 
 warn_fontconfig=""
 if test -z "$warn_freetype"; then
-  PKG_CHECK_MODULES(FONTCONFIG,[fontconfig],[
+  PKG_CHECK_MODULES(FONTCONFIG, [fontconfig], [
     have_fontconfig=yes
     OPENGL_LIBS="$FONTCONFIG_LIBS $OPENGL_LIBS"
     XTRA_CXXFLAGS="$XTRA_CXXFLAGS $FONTCONFIG_CFLAGS"
-    AC_DEFINE(HAVE_FONTCONFIG, 1, [Define to 1 if fontconfig is present])],[
+    AC_DEFINE(HAVE_FONTCONFIG, 1, [Define to 1 if fontconfig is present])], [
     have_fontconfig=no
     warn_fontconfig="Fontconfig not found.  Native text rendering will use hard-coded font instead."])
 fi

@@ -2199,10 +2199,15 @@ Octave is now configured for $canonical_host_type
   FFTW3F CPPFLAGS:             $FFTW3F_CPPFLAGS
   FFTW3F LDFLAGS:              $FFTW3F_LDFLAGS
   FFTW3F libraries:            $FFTW3F_LIBS
-  FLTK backend libs:           $GRAPHICS_LIBS
+  fontconfig CFLAGS:           $FONTCONFIG_CFLAGS
+  fontconfig LIBS:             $FONTCONFIG_LIBS
+  FT2_CFLAGS:                  $FT2_CFLAGS
+  FT2_LIBS:                    $FT2_LIBS
   GLPK CPPFLAGS:               $GLPK_CPPFLAGS
   GLPK LDFLAGS:                $GLPK_LDFLAGS
   GLPK libraries:              $GLPK_LIBS
+  graphics CFLAGS:             $GRAPHICS_CFLAGS
+  graphics LIBS:               $GRAPHICS_LIBS
   GraphicsMagick++ CPPFLAGS:   $MAGICK_CPPFLAGS
   GraphicsMagick++ LDFLAGS:    $MAGICK_LDFLAGS
   GraphicsMagick++ libraries:  $MAGICK_LIBS

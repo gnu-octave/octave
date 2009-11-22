@@ -1,5 +1,11 @@
 2009-11-21  John W. Eaton  <jwe@octave.org>
 
+	* configure.ac (AC_MSG_NOTICE): Report graphics (fltk) CFLAGS.
+	Report fontconfig CFLAGS and LIBS.
+	Report freetype2 CFLAGS and LIBS.
+
+2009-11-21  John W. Eaton  <jwe@octave.org>
+
 	* common.mk: Substitute FT2_CFLAGS.
 	* configure.ac: Remove spurious lines in check for freetype.  Add
 	$FT2_CFLAGS to $XTRA_CXXFLAGS.

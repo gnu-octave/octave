@@ -1247,6 +1247,14 @@ octave_struct::save_ascii (std::ostream& os)
 
   octave_idx_type nf = m.nfields ();
 
+  const dim_vector dv = dims ();
+
+  os << "# ndims: " << dv.length () << "\n";
+
+  for (int i = 0; i < dv.length (); i++)
+    os << " " << dv (i);
+  os << "\n";
+
   os << "# length: " << nf << "\n";
 
   // Iterating over the list of keys will preserve the order of the
@@ -1272,13 +1280,39 @@ bool
 octave_struct::load_ascii (std::istream& is)
 {
   octave_idx_type len = 0;
+  dim_vector dv (1, 1);
   bool success = true;
 
-  if (extract_keyword (is, "length", len) && len >= 0)
+  // KLUGE: earlier Octave versions did not save extra dimensions with struct,
+  // and as a result did not preserve dimensions for empty structs.
+  // The default dimensions were 1x1, which we want to preserve.
+  string_vector keywords(2);
+
+  keywords[0] = "ndims";
+  keywords[1] = "length";
+
+  std::string kw;
+
+  if (extract_keyword (is, keywords, kw, len, true))
+    {
+      if (kw == keywords[0])
+        {
+          int mdims = std::max (len, 2);
+          dv.resize (mdims);
+          for (int i = 0; i < mdims; i++)
+            is >> dv(i);
+
+          success = extract_keyword (is, keywords[1], len);
+        }
+    }
+  else
+    success = false;
+
+  if (success && len >= 0)
     {
       if (len > 0)
 	{
-	  Octave_map m (map);
+	  Octave_map m (dv);
 
 	  for (octave_idx_type j = 0; j < len; j++)
 	    {
@@ -1312,7 +1346,7 @@ octave_struct::load_ascii (std::istream& is)
 	    }
 	}
       else if (len == 0 )
-	map = Octave_map (dim_vector (1, 1));
+	map = Octave_map (dv);
       else
 	panic_impossible ();
     }

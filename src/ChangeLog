@@ -1,3 +1,10 @@
+2009-11-23  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-struct.cc (octave_struct::save_ascii): Save dimensions for
+	structs.
+	(octave_struct::load_ascii): Load dimensions if present, 
+	use 1x1 otherwise.
+
 2009-11-20  Jaroslav Hajek  <highegg@gmail.com>
 
 	* data.cc (Fmerge): Correct query for logical masks.

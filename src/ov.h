@@ -764,8 +764,8 @@ public:
   SparseComplexMatrix sparse_complex_matrix_value (bool frc_str_conv = false) const
     { return rep->sparse_complex_matrix_value (frc_str_conv); }
 
-  SparseBoolMatrix sparse_bool_matrix_value (bool frc_str_conv = false) const
-    { return rep->sparse_bool_matrix_value (frc_str_conv); }
+  SparseBoolMatrix sparse_bool_matrix_value (bool warn = false) const
+    { return rep->sparse_bool_matrix_value (warn); }
 
   DiagMatrix diag_matrix_value (bool force = false) const
     { return rep->diag_matrix_value (force); }

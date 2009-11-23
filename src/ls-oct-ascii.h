@@ -115,6 +115,14 @@ extract_keyword (std::istream& is, const char *keyword, T& value,
   return status;
 }
 
+template <class T>
+bool
+extract_keyword (std::istream& is, const std::string& kw, T& value, 
+		 const bool next_only = false)
+{
+  return extract_keyword (is, kw.c_str (), value, next_only);
+}
+
 // Match one of the elements in KEYWORDS on stream IS, placing the
 // matched keyword in KW and the associated value in VALUE,
 // returning TRUE if successful and FALSE otherwise.

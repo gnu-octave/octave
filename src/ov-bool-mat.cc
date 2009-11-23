@@ -32,6 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "mx-base.h"
 #include "oct-locbuf.h"
 
+#include "defun.h"
 #include "gripes.h"
 #include "oct-obj.h"
 #include "ops.h"

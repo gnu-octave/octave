@@ -386,6 +386,7 @@ public:
   bool any_element_is_negative (bool = false) const;
   bool any_element_is_nan (void) const;
   bool any_element_is_inf_or_nan (void) const;
+  bool any_element_not_one_or_zero (void) const;
   bool all_elements_are_zero (void) const;
   bool all_elements_are_int_or_inf_or_nan (void) const;
   bool all_integers (double& max_val, double& min_val) const;

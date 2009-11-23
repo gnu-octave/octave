@@ -1,5 +1,9 @@
 2009-11-23  Jaroslav Hajek  <highegg@gmail.com>
 
+	* data.cc (Fmerge): Add missing parentheses.
+
+2009-11-23  Jaroslav Hajek  <highegg@gmail.com>
+
 	* ov-complex.h (octave_complex::bool_value,
 	octave_complex::bool_array_value): New methods.
 	* ov-flt-complex.h (octave_float_complex::bool_value,

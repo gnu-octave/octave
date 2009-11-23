@@ -124,6 +124,8 @@ public:
 
   FloatComplexNDArray float_complex_array_value (bool = false) const;
 
+  boolNDArray bool_array_value (bool warn = false) const;
+
   charNDArray char_array_value (bool frc_str_conv = false) const;
   
   SparseMatrix sparse_matrix_value (bool = false) const;

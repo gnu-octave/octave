@@ -1,5 +1,17 @@
 2009-11-23  Jaroslav Hajek  <highegg@gmail.com>
 
+	* ov-complex.h (octave_complex::bool_value,
+	octave_complex::bool_array_value): New methods.
+	* ov-flt-complex.h (octave_float_complex::bool_value,
+	octave_float_complex::bool_array_value): New methods.
+	* ov-cx-mat.cc (octave_complex_matrix::bool_array_value): New method.
+	* ov-cx-mat.h: Declare it.
+	* ov-flt-cx-mat.cc (octave_float_complex_matrix::bool_array_value):
+	New method.
+	* ov-flt-cx-mat.h: Declare it.
+
+2009-11-23  Jaroslav Hajek  <highegg@gmail.com>
+
 	* ov-struct.cc (octave_struct::save_ascii): Save dimensions for
 	structs.
 	(octave_struct::load_ascii): Load dimensions if present, 

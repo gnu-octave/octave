@@ -210,6 +210,18 @@ octave_float_complex_matrix::float_complex_matrix_value (bool) const
   return FloatComplexMatrix (matrix.matrix_value ());
 }
 
+boolNDArray
+octave_float_complex_matrix::bool_array_value (bool warn) const
+{
+  if (matrix.any_element_is_nan ())
+    error ("invalid conversion from NaN to logical");
+  else if (warn && (! matrix.all_elements_are_real () 
+                    || real (matrix).any_element_not_one_or_zero ()))
+    gripe_logical_conversion ();
+
+  return mx_el_ne (matrix, FloatComplex (0.0));
+}
+  
 charNDArray
 octave_float_complex_matrix::char_array_value (bool frc_str_conv) const
 {

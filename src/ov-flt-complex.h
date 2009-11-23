@@ -34,6 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-alloc.h"
 #include "str-vec.h"
 
+#include "gripes.h"
 #include "error.h"
 #include "ov-base.h"
 #include "ov-flt-cx-mat.h"
@@ -132,6 +133,26 @@ public:
   ComplexNDArray complex_array_value (bool = false) const;
 
   FloatComplexNDArray float_complex_array_value (bool = false) const;
+
+  bool bool_value (bool warn = false) const
+  {
+    if (xisnan (scalar))
+      error ("invalid conversion from NaN to logical");
+    else if (warn && scalar != 0.0f && scalar != 1.0f)
+      gripe_logical_conversion ();
+
+    return scalar != 0.0f;
+  }
+
+  boolNDArray bool_array_value (bool warn = false) const
+  {
+    if (xisnan (scalar))
+      error ("invalid conversion from NaN to logical");
+    else if (warn && scalar != 0.0f && scalar != 1.0f)
+      gripe_logical_conversion ();
+
+    return boolNDArray (dim_vector (1, 1), scalar != 1.0f);
+  }
 
   void increment (void) { scalar += 1.0; }
 

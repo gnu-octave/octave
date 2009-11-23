@@ -230,6 +230,18 @@ octave_sparse_complex_matrix::sparse_matrix_value (bool force_conversion) const
   return retval;
 }
 
+SparseBoolMatrix 
+octave_sparse_complex_matrix::sparse_bool_matrix_value (bool warn) const
+{
+  if (matrix.any_element_is_nan ())
+    error ("invalid conversion from NaN to logical");
+  else if (warn && (! matrix.all_elements_are_real () 
+                    || real (matrix).any_element_not_one_or_zero ()))
+    gripe_logical_conversion ();
+
+  return mx_el_ne (matrix, Complex (0.0));
+}
+
 bool 
 octave_sparse_complex_matrix::save_binary (std::ostream& os, 
 					   bool&save_as_floats)

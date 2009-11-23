@@ -536,6 +536,38 @@ octave_bool_matrix::as_mxArray (void) const
   return retval;
 }
 
+DEFUN (logical, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} logical (@var{x})\n\
+Convert @var{x} to logical type.\n\
+@seealso{double, single, char}\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  if (args.length () == 1)
+    {
+      octave_value arg = args(0);
+      if (arg.is_bool_type ())
+        retval = arg;
+      else if (arg.is_numeric_type ())
+        {
+          if (arg.is_sparse_type ())
+            retval = arg.sparse_bool_matrix_value ();
+          else if (arg.is_scalar_type ())
+            retval = arg.bool_value ();
+          else
+            retval = arg.bool_array_value ();
+        }
+      else
+        gripe_wrong_type_arg ("logical", arg);
+    }
+  else
+    print_usage ();
+
+  return retval;
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

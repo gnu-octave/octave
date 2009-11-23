@@ -48,7 +48,6 @@ general_FCN_FILES = \
   general/issymmetric.m \
   general/isvector.m \
   general/loadobj.m \
-  general/logical.m \
   general/logspace.m \
   general/mod.m \
   general/nargchk.m \

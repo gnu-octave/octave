@@ -1,3 +1,7 @@
+2009-11-08  Petr Mikulik <mikulik@physics.muni.cz>
+
+	* plot/gnuplot_drawnow.m: Support gnuplot's dumb terminal.
+
 2009-11-02  Stefan Hepp  <stefan@stefant.org>
 
 	* plot/gnuplot_drawnow.m (gnuplot_default_term): Don't set term to

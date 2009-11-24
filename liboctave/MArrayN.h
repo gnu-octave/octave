@@ -104,6 +104,12 @@ public:
     return Array<T>::diag (k);
   }
 
+  // Performs indexed accumulative addition.
+
+  void idx_add (const idx_vector& idx, T val);
+
+  void idx_add (const idx_vector& idx, const MArrayN<T>& vals);
+
   void changesign (void);
 };
 

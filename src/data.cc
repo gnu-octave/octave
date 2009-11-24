@@ -6330,24 +6330,16 @@ do_accumarray_sum (const idx_vector& idx, const NDT& vals,
   else if (idx.extent (n) > n)
     error ("accumarray: index out of range");
 
-  // FIXME: the class tree in liboctave is overly complicated, hence the
-  // following type gymnastics.
-  MArray<T> array;
+  NDT retval (dim_vector (n, 1), T());
 
   if (vals.numel () == 1)
-    {
-      array = MArray<T> (n, T ());
-      array.idx_add (idx, vals (0));
-    }
-  else if (vals.length () == idx.length (n))
-    {
-      array = MArray<T> (n, T ());
-      array.idx_add (idx, MArray<T> (vals));
-    }
+    retval.idx_add (idx, vals (0));
+  else if (vals.numel () == idx.length (n))
+    retval.idx_add (idx, vals);
   else
     error ("accumarray: dimensions mismatch");
 
-  return NDT (MArrayN<T> (Array<T> (array)));
+  return retval;
 }
 
 DEFUN (__accumarray_sum__, args, ,

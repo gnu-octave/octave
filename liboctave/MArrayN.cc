@@ -31,6 +31,62 @@ along with Octave; see the file COPYING.  If not, see
 #include "MArray-defs.h"
 #include "mx-inlines.cc"
 
+template <class T>
+struct _idxadds_helper
+{
+  T *array;
+  T val;
+  _idxadds_helper (T *a, T v) : array (a), val (v) { }
+  void operator () (octave_idx_type i)
+    { array[i] += val; }
+};
+
+template <class T>
+struct _idxadda_helper
+{
+  T *array;
+  const T *vals;
+  _idxadda_helper (T *a, const T *v) : array (a), vals (v) { }
+  void operator () (octave_idx_type i)
+    { array[i] += *vals++; }
+};
+
+template <class T>
+void
+MArrayN<T>::idx_add (const idx_vector& idx, T val)
+{
+  octave_idx_type n = this->length ();
+  octave_idx_type ext = idx.extent (n);
+  if (ext > n)
+    {
+      this->resize (ext);
+      n = ext;
+    }
+
+  OCTAVE_QUIT;
+
+  octave_idx_type len = idx.length (n);
+  idx.loop (len, _idxadds_helper<T> (this->fortran_vec (), val));
+}
+
+template <class T>
+void
+MArrayN<T>::idx_add (const idx_vector& idx, const MArrayN<T>& vals)
+{
+  octave_idx_type n = this->length ();
+  octave_idx_type ext = idx.extent (n);
+  if (ext > n)
+    {
+      this->resize (ext);
+      n = ext;
+    }
+
+  OCTAVE_QUIT;
+
+  octave_idx_type len = std::min (idx.length (n), vals.length ());
+  idx.loop (len, _idxadda_helper<T> (this->fortran_vec (), vals.data ()));
+}
+
 // N-dimensional array with math ops.
 template <class T>
 void

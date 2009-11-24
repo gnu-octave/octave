@@ -1,3 +1,9 @@
+2009-11-24  Jaroslav Hajek  <highegg@gmail.com>
+
+	* MArrayN.cc (MArrayN::idx_add): New methods.
+	* MArrayN.h: Declare them.
+	* MArray.cc, MArray.h: Remove from here.
+
 2009-11-19  Jaroslav Hajek  <highegg@gmail.com>
 
 	* dim-vector.h (dim_vector::safe_numel): New method.

@@ -1,5 +1,9 @@
 2009-11-24  Jaroslav Hajek  <highegg@gmail.com>
 
+	* data.cc (do_accumarray_sum): Simplify.
+
+2009-11-24  Jaroslav Hajek  <highegg@gmail.com>
+
 	* ov-struct.cc (octave_struct::save_binary): Save dimensions for
 	structs.
 	(octave_struct::load_binary): Load dimensions if present, 

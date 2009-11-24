@@ -1,5 +1,10 @@
 2009-11-24  Jaroslav Hajek  <highegg@gmail.com>
 
+	* general/cell2mat.m: Check type of all elements. Slightly optimize.
+	Add tests.
+
+2009-11-24  Jaroslav Hajek  <highegg@gmail.com>
+
 	* general/accumarray.m: Use num2cell instead of mat2cell. Use repmat.
 
 2009-11-20  Jaroslav Hajek  <highegg@gmail.com>

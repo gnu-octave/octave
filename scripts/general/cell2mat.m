@@ -37,30 +37,30 @@ function m = cell2mat (c)
   
   nb = numel (c);
 
+  ## We only want numeric, logical, and char matrices.
+  valid = cellfun (@isnumeric, c);
+  valid |= cellfun (@islogical, c);
+  valid |= cellfun (@ischar, c);
+
+  if (! all (valid))
+    error ("cell2mat: elements must be numeric, char or logical");
+  endif
+
   if (nb == 0)
     m = [];
-  elseif (nb == 1)
-    elt = c{1};
-    if (isnumeric (elt) || ischar (elt) || islogical (elt))
-      m = elt;
-    elseif (iscell (elt))
-      m = cell2mat (elt);
-    else
-      error ("cell2mat: all elements of cell array must be numeric, logical or char");
-    endif
   elseif (ndims (c) == 2)
-    nr = rows (c);
-    nc = columns (c);
+    ## 2d case optimized
+    [nr, nc] = size (c);
     if (nc > nr)
       c1 = cell (nr, 1);
       for i = 1 : nr
-	c1{i} = [c{i : nr : end}];
+	c1{i} = [c{i,:}];
       endfor
-      m = cat (1, c1 {:});
+      m = vertcat (c1 {:});
     else
       c1 = cell (nc, 1);
       for i = 1 : nc
-	c1{i} = cat (1, c{(i - 1) * nr  + [1 : nr]});
+	c1{i} = vertcat (c{:,i});
       endfor
       m = [c1{:}];
     endif
@@ -68,10 +68,11 @@ function m = cell2mat (c)
     ## n dimensions case
     for k = ndims (c):-1:2,
       sz = size (c);
-      sz(end) = 1;
+      sz(k) = 1;
       c1 = cell (sz);
-      for i = 1:(prod (sz))
-        c1{i} = cat (k, c{i:(prod (sz)):end});
+      n1 = prod (sz);
+      for i = 1:n1
+        c1{i} = cat (k, c{i:n1:end});
       endfor
       c = c1;
     endfor
@@ -88,6 +89,14 @@ endfunction
 %! F = E; F(:,:,2) = E;
 %!assert (cell2mat (C), E);
 %!assert (cell2mat (D), F);
+%!test
+%! m = rand (10) + i * rand (10);
+%! c = mat2cell (m, [1 2 3 4], [4 3 2 1]);
+%! assert (cell2mat (c), m)
+%!test
+%! m = int8 (256*rand (4, 5, 6, 7, 8));
+%! c = mat2cell (m, [1 2 1], [1 2 2], [3 1 1 1], [4 1 2], [3 1 4]);
+%! assert (cell2mat (c), m)
 ## Demos
 %!demo
 %! C = {[1], [2 3 4]; [5; 9], [6 7 8; 10 11 12]};

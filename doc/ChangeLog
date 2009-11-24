@@ -1,3 +1,8 @@
+2009-11-24  Rik <octave@nomad.inbox5.com>
+
+	* interpreter/Makefile.am: 
+	Correct Makefile so that it halts on error when unable to build doc-cache
+
 2009-11-23  Rik <octave@nomad.inbox5.com>
 
 	* faq/Makefile.am, interpreter/Makefile.am, liboctave/Makefile.am: 

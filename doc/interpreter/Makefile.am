@@ -204,7 +204,7 @@ $(TOPDIR)/scripts/DOCSTRINGS:
 	$(MAKE) -C $(TOPDIR)/scripts DOCSTRINGS
 
 doc-cache: $(DOCSTRING_FILES) mk_doc_cache.m
-	$(TOPDIR)/run-octave -f -q -H $(srcdir)/mk_doc_cache.m doc-cache $(DOCSTRING_FILES) || rm -f doc-cache
+	$(TOPDIR)/run-octave -f -q -H $(srcdir)/mk_doc_cache.m doc-cache $(DOCSTRING_FILES) || { rm -f doc-cache; exit 1; }
 
 $(MUNGED_TEXI_SRC): $(DOCSTRING_FILES) munge-texi$(BUILD_EXEEXT)
 

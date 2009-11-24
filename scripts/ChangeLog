@@ -1,3 +1,7 @@
+2009-11-24  Jaroslav Hajek  <highegg@gmail.com>
+
+	* general/accumarray.m: Use num2cell instead of mat2cell. Use repmat.
+
 2009-11-20  Jaroslav Hajek  <highegg@gmail.com>
 
 	* script/miscellaneous/getfield: Deblank field names, gripe on invalid

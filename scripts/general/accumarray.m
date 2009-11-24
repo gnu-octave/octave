@@ -105,7 +105,7 @@ function A = accumarray (subs, val, sz, func, fillval, isspar)
         endif
 
         ## Convert multidimensional subscripts.
-        subs = sub2ind (sz, mat2cell (subs, rows (subs), ones (1, ndims)){:});
+        subs = sub2ind (sz, num2cell (subs, 1){:});
       elseif (nargin < 3)
         ## In case of linear indexing, the fast built-in accumulator
         ## will determine the extent for us.
@@ -145,7 +145,7 @@ function A = accumarray (subs, val, sz, func, fillval, isspar)
   [subs, idx] = sortrows (subs);
 
   if (isscalar (val))
-    val = val * ones (size (idx));
+    val = repmat (size (idx));
   else
     val = val(idx);
   endif

@@ -34,7 +34,16 @@
 ## screen and exits with an error.
 ## @end deftypefn
 
+## deprecated in version 3.4
+
 function [idxvec,errmsg]  = cellidx (listvar, strlist)
+
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+             "cellidx is obsolete and will be removed from a future version of Octave; use ismember instead.");
+  endif
 
   if (nargin != 2)
     print_usage ();

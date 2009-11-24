@@ -9,6 +9,7 @@ deprecated_FCN_FILES = \
   deprecated/binomial_inv.m \
   deprecated/binomial_pdf.m \
   deprecated/binomial_rnd.m \
+  deprecated/cellidx.m \
   deprecated/chisquare_cdf.m \
   deprecated/chisquare_inv.m \
   deprecated/chisquare_pdf.m \

@@ -12,7 +12,6 @@ general_FCN_FILES = \
   general/blkdiag.m \
   general/cart2pol.m \
   general/cart2sph.m \
-  general/cellidx.m \
   general/cell2mat.m \
   general/celldisp.m \
   general/circshift.m \

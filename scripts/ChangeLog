@@ -1,5 +1,9 @@
 2009-11-24  Jaroslav Hajek  <highegg@gmail.com>
 
+	* general/cellidx.m: Deprecate.
+
+2009-11-24  Jaroslav Hajek  <highegg@gmail.com>
+
 	* general/issquare.m: Change to return consistent result for empty
 	matrices.
 

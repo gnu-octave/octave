@@ -27,7 +27,7 @@ TEXINFO_TEX = ../texinfo.tex
 
 info_TEXINFOS = OctaveFAQ.texi
 
-OctaveFAQ_TEXINFOS = ../conf.texi
+nodist_OctaveFAQ_TEXINFOS = ../conf.texi
 
 ../conf.texi:
 	$(MAKE) -C .. conf.texi

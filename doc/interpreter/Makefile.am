@@ -134,8 +134,10 @@ MUNGED_TEXI_SRC = \
   var.texi
 
 info_TEXINFOS = octave.texi
-octave_TEXINFOS = \
-  ../conf.texi \
+nodist_octave_TEXINFOS = \
+  ../conf.texi 
+
+dist_octave_TEXINFOS = \
   contributors.texi \
   $(MUNGED_TEXI_SRC)
 

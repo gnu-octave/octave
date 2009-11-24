@@ -1,5 +1,11 @@
 2009-11-23  Rik <octave@nomad.inbox5.com>
 
+	* faq/Makefile.am, interpreter/Makefile.am, liboctave/Makefile.am: 
+	Stop distribution of conf.texi by autotools.  conf.texi must be re-made
+	from conf.texi.in during configure step
+
+2009-11-23  Rik <octave@nomad.inbox5.com>
+
 	* Makefile.am: Add . to SUBDIRS to force automake to compile this
 	directory, and make conf.texi, before recursively compiling SUBDIRS which
 	depend on conf.texi

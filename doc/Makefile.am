@@ -32,7 +32,7 @@ EXTRA_DIST = \
 
 DISTCLEANFILES = conf.texi
 
-SUBDIRS = faq interpreter liboctave refcard
+SUBDIRS = . faq interpreter liboctave refcard
 
 all-local: conf.texi
 

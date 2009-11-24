@@ -1,3 +1,9 @@
+2009-11-23  Rik <octave@nomad.inbox5.com>
+
+	* Makefile.am: Add . to SUBDIRS to force automake to compile this
+	directory, and make conf.texi, before recursively compiling SUBDIRS which
+	depend on conf.texi
+
 2009-11-11  Rik <octave@nomad.inbox5.com>
 
 	* Makefile.am: Add DISTCLEANFILES macro so that generated conf.texi can be 

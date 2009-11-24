@@ -1365,6 +1365,19 @@ octave_struct::save_binary (std::ostream& os, bool& save_as_floats)
 
   octave_idx_type nf = m.nfields ();
 
+  dim_vector d = dims ();
+  if (d.length () < 1)
+    return false;
+
+  // Use negative value for ndims
+  int32_t di = - d.length();
+  os.write (reinterpret_cast<char *> (&di), 4);
+  for (int i = 0; i < d.length (); i++)
+    {
+      di = d(i);
+      os.write (reinterpret_cast<char *> (&di), 4);
+    }
+  
   int32_t len = nf;
   os.write (reinterpret_cast<char *> (&len), 4);
 
@@ -1398,9 +1411,34 @@ octave_struct::load_binary (std::istream& is, bool swap,
   if (swap)
     swap_bytes<4> (&len);
 
+  dim_vector dv (1, 1);
+
+  if (len < 0)
+    {
+      // We have explicit dimensions.
+      int mdims = -len;
+
+      int32_t di;
+      dv.resize (mdims);
+
+      for (int i = 0; i < mdims; i++)
+        {
+          if (! is.read (reinterpret_cast<char *> (&di), 4))
+            return false;
+          if (swap)
+            swap_bytes<4> (&di);
+          dv(i) = di;
+        }
+
+      if (! is.read (reinterpret_cast<char *> (&len), 4))
+        return false;
+      if (swap)
+        swap_bytes<4> (&len);
+    }
+
   if (len > 0)
     {
-      Octave_map m (map);
+      Octave_map m (dv);
 
       for (octave_idx_type j = 0; j < len; j++)
 	{
@@ -1434,10 +1472,10 @@ octave_struct::load_binary (std::istream& is, bool swap,
 	  success = false;
 	}
     }
-  else if (len == 0 )
-    map = Octave_map (dim_vector (1, 1));
+  else if (len == 0)
+    map = Octave_map (dv);
   else
-    panic_impossible ();
+    success = false;
 
   return success;
 }

@@ -1,5 +1,6 @@
 ## Copyright (C) 1996, 1997, 2002, 2003, 2004, 2005, 2006, 2007, 2008
 ##               John W. Eaton
+## Copyright (C) 2009 VZLU Prague
 ##
 ## This file is part of Octave.
 ##
@@ -19,9 +20,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} issymmetric (@var{x}, @var{tol})
-## If @var{x} is symmetric within the tolerance specified by @var{tol},
-## then return the dimension of @var{x}.  Otherwise, return 0.  If
-## @var{tol} is omitted, use a tolerance equal to the machine precision.
+## Return true if @var{x} is a symmetric matrix within the tolerance specified
+## by @var{tol}, otherwise return false. The default tolerance is zero (uses
+## faster code).
 ## Matrix @var{x} is considered symmetric if
 ## @code{norm (@var{x} - @var{x}.', inf) / norm (@var{x}, inf) < @var{tol}}.
 ## @seealso{size, rows, columns, length, ismatrix, isscalar,
@@ -32,36 +33,31 @@
 ## Created: August 1993
 ## Adapted-By: jwe
 
-function retval = issymmetric (x, tol)
+function retval = issymmetric (x, tol = 0)
 
-  if (nargin == 1 || nargin == 2)
-    retval = issquare (x);
-    if (retval != 0)
-      if (nargin == 1)
-	if (isa (x, "single"))
-	  tol = eps("single");
-	else
-	  tol = eps; 
-	endif
-      endif
-      norm_x = norm (x, inf);
-      if (norm_x != 0 && norm (x - x', inf) / norm_x > tol)
-        retval = 0;
-      endif
-    endif
-  else
+  if (nargin < 1 || nargin > 2)
     print_usage ();
+  endif
+
+  retval = issquare (x);
+  if (retval)
+    if (tol == 0)
+      retval = all ((x == x.')(:));
+    else
+      norm_x = norm (x, inf);
+      retval = norm_x == 0 || norm (x - x.', inf) / norm_x <= tol;
+    endif
   endif
 
 endfunction
 
 %!assert(issymmetric (1));
 %!assert(!(issymmetric ([1, 2])));
-%!assert(!(issymmetric ([])));
-%!assert(issymmetric ([1, 2; 2, 1]) == 2);
+%!assert(issymmetric ([]));
+%!assert(issymmetric ([1, 2; 2, 1]));
 %!assert(!(issymmetric ("test")));
-%!assert(issymmetric ([1, 2.1; 2, 1.1], 0.2) == 2);
-%!assert(issymmetric ([1, 2i; -2i, 1]));
+%!assert(issymmetric ([1, 2.1; 2, 1.1], 0.2));
+%!assert(issymmetric ([1, 2i; 2i, 1]));
 %!assert(!(issymmetric ("t")));
 %!assert(!(issymmetric (["te"; "et"])));
 %!error issymmetric ([1, 2; 2, 1], 0, 0);

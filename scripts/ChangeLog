@@ -1,5 +1,14 @@
 2009-11-24  Jaroslav Hajek  <highegg@gmail.com>
 
+	* general/issymmetric.m: Move to linear-algebra.
+	* general/isdefinite.m: Ditto.
+	* linear-algebra/issymmetric.m: Use 0 as default tolerance. Optimize
+	this case. Check for symmetry, not hermitianness.
+	* linear-algebra/ishermitian.m: New function.
+	* linear-algebra/isdefinite.m: Use ishermitian instead of issymmetric.
+
+2009-11-24  Jaroslav Hajek  <highegg@gmail.com>
+
 	* general/cellidx.m: Deprecate.
 
 2009-11-24  Jaroslav Hajek  <highegg@gmail.com>

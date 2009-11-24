@@ -9,6 +9,9 @@ linear_algebra_FCN_FILES = \
   linear-algebra/duplication_matrix.m \
   linear-algebra/expm.m \
   linear-algebra/housh.m \
+  linear-algebra/isdefinite.m \
+  linear-algebra/ishermitian.m \
+  linear-algebra/issymmetric.m \
   linear-algebra/krylov.m \
   linear-algebra/krylovb.m \
   linear-algebra/logm.m \

@@ -38,13 +38,11 @@ general_FCN_FILES = \
   general/interpft.m \
   general/is_duplicate_entry.m \
   general/isa.m \
-  general/isdefinite.m \
   general/isdir.m \
   general/isequal.m \
   general/isequalwithequalnans.m \
   general/isscalar.m \
   general/issquare.m \
-  general/issymmetric.m \
   general/isvector.m \
   general/loadobj.m \
   general/logspace.m \

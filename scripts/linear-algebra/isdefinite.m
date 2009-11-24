@@ -39,8 +39,8 @@ function retval = isdefinite (x, tol)
 	tol = 100*eps; 
       endif
     endif
-    sym = issymmetric (x, tol);
-    if (sym > 0)
+    sym = ishermitian (x);
+    if (sym)
       ## Matrix is symmetric, check eigenvalues.
       mineig = min (eig (x));
       if (mineig > tol)

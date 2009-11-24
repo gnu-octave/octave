@@ -18,8 +18,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} issquare (@var{x})
-## If @var{x} is a square matrix, then return the dimension of @var{x}.
-## Otherwise, return 0.
+## If @var{x} is a square matrix, return true.
+## Otherwise, return false.
 ## @seealso{size, rows, columns, length, ismatrix, isscalar, isvector}
 ## @end deftypefn
 
@@ -29,14 +29,12 @@
 
 function retval = issquare (x)
 
-  retval = 0;
-
   if (nargin == 1)
-    if (ismatrix (x) && ndims (x) < 3)
-      [nr, nc] = size (x);
-      if (nr == nc && nr > 0)
-        retval = nr;
-      endif
+    if (ismatrix (x) && ndims (x) == 2)
+      [r, c] = size (x);
+      retval = r == c;
+    else
+      retval = false;
     endif
   else
     print_usage ();
@@ -48,18 +46,16 @@ endfunction
 
 %!assert(!(issquare ([1, 2])));
 
-%!assert(!(issquare ([])));
+%!assert(issquare ([]));
 
-%!assert(issquare ([1, 2; 3, 4]) == 2);
+%!assert(issquare ([1, 2; 3, 4]));
 
 %!test
-%! warn_str_to_num = 0;
 %! assert(!(issquare ("t")));
 
 %!assert(!(issquare ("test")));
 
 %!test
-%! warn_str_to_num = 0;
 %! assert(!(issquare (["test"; "ing"; "1"; "2"])));
 
 %!test

@@ -1,3 +1,7 @@
+2009-11-17  Jaroslav Hajek  <highegg@gmail.com>
+
+	* base-aepbal.h (permuting_vector): Fix lower part swapping.
+
 2009-11-18  David Grundberg  <davidg@cs.umu.se>
 
        * str-vec.cc (string_vector::list_in_columns): Avoid crash on

@@ -34,6 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "f77-fcn.h"
 #include "lo-error.h"
 #include "oct-locbuf.h"
+#include "oct-norm.h"
 #ifndef HAVE_QRUPDATE
 #include "dbleQR.h"
 #endif
@@ -96,20 +97,27 @@ FloatComplexCHOL::init (const FloatComplexMatrix& a, bool calc_cond)
   octave_idx_type n = a_nc;
   octave_idx_type info;
 
-  chol_mat = a;
+  chol_mat.clear (n, n);
+  for (octave_idx_type j = 0; j < n; j++)
+    {
+      for (octave_idx_type i = 0; i <= j; i++)
+        chol_mat.xelem (i, j) = a(i, j);
+      for (octave_idx_type i = j+1; i < n; i++)
+        chol_mat.xelem (i, j) = 0.0f;
+    }
   FloatComplex *h = chol_mat.fortran_vec ();
 
   // Calculate the norm of the matrix, for later use.
   float anorm = 0;
   if (calc_cond) 
-    anorm = chol_mat.abs().sum().row(static_cast<octave_idx_type>(0)).max();
+    anorm = xnorm (a, 1);
 
   F77_XFCN (cpotrf, CPOTRF, (F77_CONST_CHAR_ARG2 ("U", 1), n, h, n, info
 			     F77_CHAR_ARG_LEN (1)));
 
   xrcond = 0.0;
-  if (info != 0)
-    info = -1;
+  if (info > 0)
+    chol_mat.resize (info - 1, info - 1);
   else if (calc_cond) 
     {
       octave_idx_type cpocon_info = 0;
@@ -125,16 +133,6 @@ FloatComplexCHOL::init (const FloatComplexMatrix& a, bool calc_cond)
 
       if (cpocon_info != 0) 
 	info = -1;
-    }
-  else
-    {
-      // If someone thinks of a more graceful way of doing this (or
-      // faster for that matter :-)), please let me know!
-
-      if (n > 1)
-	for (octave_idx_type j = 0; j < a_nc; j++)
-	  for (octave_idx_type i = j+1; i < a_nr; i++)
-	    chol_mat.xelem (i, j) = 0.0;
     }
 
   return info;

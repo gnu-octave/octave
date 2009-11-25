@@ -53,6 +53,14 @@ get_chol_r (const CHOLT& fact)
                        MatrixType (MatrixType::Upper));
 }
 
+template <class CHOLT>
+static octave_value
+get_chol_l (const CHOLT& fact)
+{
+  return octave_value (fact.chol_matrix ().transpose (), 
+                       MatrixType (MatrixType::Lower));
+}
+
 DEFUN_DLD (chol, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{r} =} chol (@var{a})\n\
@@ -243,9 +251,9 @@ sparse matrices.\n\
 		  FloatCHOL fact (m, info);
 		  if (nargout == 2 || info == 0)
 		    {
-		      retval(1) = static_cast<float> (info);
+		      retval(1) = info;
 		      if (LLt)
-			retval(0) = fact.chol_matrix ().transpose ();
+			retval(0) = get_chol_l (fact);
 		      else
 			retval(0) = get_chol_r (fact);
 		    }
@@ -263,9 +271,9 @@ sparse matrices.\n\
 		  FloatComplexCHOL fact (m, info);
 		  if (nargout == 2 || info == 0)
 		    {
-		      retval(1) = static_cast<float> (info);
+		      retval(1) = info;
 		      if (LLt)
-			retval(0) = fact.chol_matrix ().hermitian ();
+			retval(0) = get_chol_l (fact);
 		      else
 			retval(0) = get_chol_r (fact);
 		    }
@@ -288,9 +296,9 @@ sparse matrices.\n\
 		  CHOL fact (m, info);
 		  if (nargout == 2 || info == 0)
 		    {
-		      retval(1) = static_cast<double> (info);
+		      retval(1) = info;
 		      if (LLt)
-			retval(0) = fact.chol_matrix ().transpose ();
+			retval(0) = get_chol_l (fact);
 		      else
 			retval(0) = get_chol_r (fact);
 		    }
@@ -308,9 +316,9 @@ sparse matrices.\n\
 		  ComplexCHOL fact (m, info);
 		  if (nargout == 2 || info == 0)
 		    {
-		      retval(1) = static_cast<double> (info);
+		      retval(1) = info;
 		      if (LLt)
-			retval(0) = fact.chol_matrix ().hermitian ();
+			retval(0) = get_chol_l (fact);
 		      else
 			retval(0) = get_chol_r (fact);
 		    }

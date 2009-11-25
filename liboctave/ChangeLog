@@ -1,3 +1,11 @@
+2009-11-25  Jaroslav Hajek  <highegg@gmail.com>
+
+	* dbleCHOL.cc (CHOL::init): Output LAPACK's info. Resize matrix if
+	nonzero. Use smarter copying.
+	* floatCHOL.cc (FloatCHOL::init): Ditto.
+	* CmplxCHOL.cc (ComplexCHOL::init): Ditto.
+	* fCmplxCHOL.cc (FloatComplexCHOL::init): Ditto.
+
 2009-11-24  Jaroslav Hajek  <highegg@gmail.com>
 
 	* MArrayN.cc (MArrayN::idx_add): New methods.

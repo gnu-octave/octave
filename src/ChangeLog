@@ -1,3 +1,9 @@
+2009-11-25  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/chol.cc (get_chol_l): New helper function.
+	(Fchol): Use it to set MatrixType for lower triangular factors as
+	well. Use default octave_idx_type->octave_value conversion.
+
 2009-11-24  Jaroslav Hajek  <highegg@gmail.com>
 
 	* data.cc (do_accumarray_sum): Simplify.

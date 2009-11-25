@@ -156,20 +156,13 @@ octave.html: $(octave_TEXINFOS) $(IMAGES_PNG) $(EXAMPLE_FILES)
 
 all-local: dvi html pdf ps doc-cache
 
-install-data-local: install-doc-cache
-.PHONY: install-data-local
-
-uninstall-local: uninstall-doc-cache
-.PHONY: uninstall-local
-
-install-doc-cache:
+# Install doc-cache of help files
+install-data-local:
 	$(MKDIR_P) $(DESTDIR)$(octetcdir)
 	$(INSTALL_DATA) doc-cache $(DESTDIR)$(octetcdir)/doc-cache
-.PHONY: install-doc-cache
 
-uninstall-doc-cache:
+uninstall-local:
 	rm -f $(DESTDIR)$(octetcdir)/doc-cache
-.PHONY: uninstall-doc-cache
 
 EXTRA_DIST = \
   config-images.sh \

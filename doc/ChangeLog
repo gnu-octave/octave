@@ -1,3 +1,9 @@
+2009-11-25  Rik <octave@nomad.inbox5.com>
+
+	* interpreter/Makefile.am: 
+	Simplify doc-cache handling in Makefile.am to use only install-data-local
+	target
+
 2009-11-24  Rik <octave@nomad.inbox5.com>
 
 	* interpreter/Makefile.am: 

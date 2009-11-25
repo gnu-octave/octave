@@ -619,7 +619,6 @@ install-exec-hook: make-version-links
 install-data-hook: install-oct
 
 uninstall-local: remove-version-links uninstall-oct
-.PHONY: uninstall-local
 
 make-version-links:
 	cd $(DESTDIR)$(bindir) && \

@@ -551,6 +551,8 @@ mx-ops.h : $(srcdir)/mk-ops.awk mx-ops
 	$(AWK) -f $(srcdir)/mk-ops.awk prefix=mx make_inclusive_header=mx-ops.h $(srcdir)/mx-ops > $@-t
 	$(simple_move_if_change_rule)
 
-distclean-local maintainer-clean-local:
+distclean-local:
 	rm -f $(BUILT_INCS) $(BUILT_LIBOCTAVE_CXX_SOURCES)
-.PHONY: distclean-local maintainer-clean-local
+
+#distclean-local maintainer-clean-local:
+#.PHONY: distclean-local maintainer-clean-local

@@ -370,10 +370,8 @@ check-m-sources:
 .PHONY: check-m-sources
 
 install-data-local: install-images install-startup-files install-pkg-add
-.PHONY: install-data-local
 
 uninstall-local: uninstall-images uninstall-startup-files uninstall-pkg-add
-.PHONY: uninstall-local
 
 install-images:
 	$(MKDIR_P) $(DESTDIR)$(imagedir)

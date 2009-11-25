@@ -78,10 +78,8 @@ octave.desktop: octave.desktop.in Makefile
 	mv $@-t $@
 
 install-data-local: install-images install-desktop
-.PHONY: install-data-local
 
 uninstall-local: uninstall-images uninstall-desktop
-.PHONY: uninstall-local
 
 install-images:
 	$(MKDIR_P) $(DESTDIR)$(imagedir)

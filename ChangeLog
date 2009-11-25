@@ -1,3 +1,10 @@
+2009-11-25  Rik <octave@nomad.inbox5.com>
+
+	* Makefile.am examples/Makefile.am liboctave/Makefile.am
+	scripts/Makefile.am src/Makefile.am test/Makefile.am:
+	Remove unnecessary .PHONY targets for common targets which
+	Automake supplies already.  Examples are local-all, install-local-data
+
 2009-11-21  John W. Eaton  <jwe@octave.org>
 
 	* configure.ac (AC_MSG_NOTICE): Report graphics (fltk) CFLAGS.

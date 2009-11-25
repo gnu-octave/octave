@@ -100,7 +100,6 @@ all-local: $(bin_SCRIPTS) $(INFO_FILES)
 	@echo "   make check      - to run the tests"
 	@echo "   make install    - to install (PREFIX=$(prefix))"
 	@echo ""
-.PHONY: all
 
 octave-bug: octave-bug.in Makefile
 	@$(do_subst_config_vals)
@@ -162,16 +161,12 @@ DIRS_TO_MAKE = \
 
 installdirs-local:
 	$(MKDIR_P) $(addprefix $(DESTDIR), $(DIRS_TO_MAKE))
-.PHONY: installdirs-local
 
 install-data-local: installdirs-local install-extras
-.PHONY: install-data-local
 
 install-exec-hook: make-version-links
-.PHONY: install-exec-hook
 
 uninstall-local: remove-version-links uninstall-extras
-.PHONY: uninstall-local
 
 install-extras:
 	$(MKDIR_P) $(DESTDIR)$(octetcdir)

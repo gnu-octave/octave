@@ -73,7 +73,6 @@ EXTRA_DIST = \
 
 check: test_sparse.m
 	../run-octave --norc --silent --no-history $(srcdir)/fntests.m $(srcdir)
-.PHONY: check
 
 test_sparse.m: build_sparse_tests.sh
 	$(srcdir)/build_sparse_tests.sh

@@ -956,7 +956,7 @@ If @code{keyboard} is invoked without arguments, a default prompt of\n\
       unwind_protect_size_t (saved_frame);
 
       // Skip the frame assigned to the keyboard function.
-      octave_call_stack::goto_frame (1);
+      octave_call_stack::goto_frame_relative (0, true);
 
       do_keyboard (args);
 

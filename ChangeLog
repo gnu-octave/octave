@@ -1,3 +1,11 @@
+2009-11-25  Tatsuro MATSUOKA  <tmacchant@yahoo.co.jp>
+
+	* acinclude.m4 (OCTAVE_PROG_GNUPLOT): Don't check for pgnuplot or
+	pipe-gnuplot on Windows systems.  Set default to gnuplot for all
+	systems.
+	(OCTAVE_PROG_GHOSTSCRIPT): Check for gswin32c first on Windows
+	systems, then gs.
+
 2009-11-25  Rik <octave@nomad.inbox5.com>
 
 	* Makefile.am examples/Makefile.am liboctave/Makefile.am

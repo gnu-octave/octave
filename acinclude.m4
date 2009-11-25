@@ -623,16 +623,8 @@ dnl
 dnl Does gnuplot exist?
 dnl
 AC_DEFUN([OCTAVE_PROG_GNUPLOT], [
-case "$canonical_host_type" in
-  *-*-cygwin* | *-*-mingw32* | *-*-msdosmsvc)
-    gp_names="pgnuplot pipe-gnuplot gnuplot"
-    gp_default=pgnuplot
-  ;;
-  *)
-    gp_names=gnuplot
-    gp_default=gnuplot
-  ;;
-esac
+gp_names="gnuplot"
+gp_default="gnuplot"
 if test "$cross_compiling" = yes; then
   GNUPLOT="$gp_default"
   AC_MSG_RESULT(assuming $GNUPLOT exists on $canonical_host_type host)
@@ -681,11 +673,11 @@ dnl
 dnl OCTAVE_PROG_GHOSTSCRIPT
 AC_DEFUN([OCTAVE_PROG_GHOSTSCRIPT], [
   case "$canonical_host_type" in
-    *-*-cygwin* | *-*-mingw32* | *-*-msdosmsvc)
-      gs_names="gs gswin32"
+    *-*-mingw* | *-*-msdosmsvc)
+      gs_names="gswin32c gs"
     ;;
     *)
-      gs_names=gs
+      gs_names="gs"
     ;;
   esac
   AC_CHECK_PROGS(GHOSTSCRIPT, $gs_names)

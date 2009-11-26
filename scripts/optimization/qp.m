@@ -85,16 +85,13 @@ function [x, obj, INFO, lambda] = qp (x0, H, q, A, b, lb, ub, A_lb, A_in, A_ub)
   if (nargin == 5 || nargin == 7 || nargin == 10)
 
     ## Checking the quadratic penalty
-    n = issquare (H);
-    if (n == 0)
+    if (! issquare (H))
       error ("qp: quadratic penalty matrix not square");
-    endif
-
-    n1 = issymmetric (H);
-    if (n1 == 0)
-      ## warning ("qp: quadratic penalty matrix not symmetric");
+    elseif (! ishermitian (H))
+      ## warning ("qp: quadratic penalty matrix not hermitian");
       H = (H + H')/2;
     endif
+    n = rows (H);
 
     ## Checking the initial guess (if empty it is resized to the
     ## right dimension and filled with 0)

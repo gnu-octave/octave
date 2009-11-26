@@ -1,5 +1,11 @@
 2009-11-26  Jaroslav Hajek  <highegg@gmail.com>
 
+	* optimization/qp.m: Fix matrix tests.
+	* optimization/condest.m: Ditto.
+	* optimization/krylov.m: Ditto.
+
+2009-11-26  Jaroslav Hajek  <highegg@gmail.com>
+
 	* sparse/normest.m: Move to linear-algebra.
 	* linear-algebra/normest.m: Simplify. Don't form A'*A explicitly.
 

@@ -81,10 +81,10 @@ function [Uret, H, nu] = krylov (A, V, k, eps1, pflg);
     eps1 = defeps;
   endif
 
-  na = issquare (A);
-  if (! na)
-    error ("A(%d x %d) must be square", rows (A), columns (A));
+  if (! issquare (A) || isempty (A))
+    error ("A(%d x %d) must be non-empty square matrix", rows (A), columns (A));
   endif
+  na = rows (A);
 
   [m, kb] = size (V);
   if (m != na)

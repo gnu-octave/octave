@@ -117,10 +117,10 @@ function [est, v] = condest (varargin)
 
   if (ismatrix (varargin{1}))
     A = varargin{1};
-    n = issquare (A);
-    if (! n)
+    if (! issquare (A))
       error ("condest: matrix must be square");
     endif
+    n = rows (A);
     have_A = true;
 
     if (nargin > 1)

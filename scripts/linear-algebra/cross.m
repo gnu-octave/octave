@@ -66,27 +66,26 @@ function z = cross (x, y, dim)
        error ("cross: must have at least one dimension with 3 elements");
      endif
    else
-     if (size (x) != 3)
+     if (size (x, dim) != 3)
        error ("cross: dimension dim must have 3 elements");
      endif
   endif
 
   nd = ndims (x);
   sz = size (x);
-  idx1 = cell (1, nd);
-  for i = 1:nd
-    idx1{i} = 1:sz(i);
-  endfor
-  idx2 = idx3 = idx1;
+  idx2 = idx3 = idx1 = {':'}(ones (1, nd));
   idx1(dim) = 1;
   idx2(dim) = 2;
   idx3(dim) = 3;
 
   if (size_equal (x, y))
-    z = cat (dim, 
-	     (x(idx2{:}) .* y(idx3{:}) - x(idx3{:}) .* y(idx2{:})),
-             (x(idx3{:}) .* y(idx1{:}) - x(idx1{:}) .* y(idx3{:})),
-             (x(idx1{:}) .* y(idx2{:}) - x(idx2{:}) .* y(idx1{:})));
+    x1 = x(idx1{:});
+    x2 = x(idx2{:});
+    x3 = x(idx3{:});
+    y1 = y(idx1{:});
+    y2 = y(idx2{:});
+    y3 = y(idx3{:});
+    z = cat (dim, (x2.*y3 - x3.*y2), (x3.*y1 - x1.*y3), (x1.*y2 - x2.*y1));
   else
     error ("cross: x and y must have the same dimensions");
   endif

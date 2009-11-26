@@ -7,7 +7,6 @@ sparse_FCN_FILES = \
   sparse/etreeplot.m \
   sparse/gplot.m \
   sparse/nonzeros.m \
-  sparse/normest.m \
   sparse/pcg.m \
   sparse/pcr.m \
   sparse/spalloc.m \

@@ -1,4 +1,5 @@
 ## Copyright (C) 2006, 2007, 2008, 2009 David Bateman and Marco Caliari
+## Copyright (C) 2009 VZLU Prague
 ##
 ## This file is part of Octave.
 ##
@@ -28,60 +29,32 @@
 ## @code{normest} to converge.
 ## @end deftypefn
 
-function [e1, c] = normest (A, tol)
-  if (nargin < 2)
-    tol = 1e-6;
-  endif
-  if (isa (A, "single"))
-    if (tol < eps ("single"))
-      tol = eps ("single");
-    endif
-  else
-    if (tol < eps)
-      tol = eps
-    endif
-  endif
-  if (ndims (A) != 2)
+function [e, c] = normest (A, tol = 1e-6)
+  if (! ismatrix (A) || ndims (A) != 2)
     error ("normest: A must be a matrix");
   endif 
-  maxA = max (max (abs (A)));
+  if (! isfloat (A))
+    A = double (A);
+  endif
+  tol = max (tol, eps (class (A)));
   c = 0;
-  if (maxA == 0)
-    e1 = 0
-  else
+  x = norm (A, "columns").';
+  e = norm (x);
+  if (e > 0)
     [m, n] = size (A);
-    B = A / maxA;
-    Bt = B';
-    if (m > n)
-      tmp = B;
-      B = Bt;
-      Bt = tmp;
-    endif
+    x /= e;
     e0 = 0;
-    x = randn (min (m, n), 1);
-    e1 = norm (x);
-    x = x / e1;
-    e1 = sqrt (e1);
-    if (issparse (A))
-      while (abs (e1 - e0) > tol * e1)
-	e0 = e1;
-	x = B * (Bt * x);
-	e1 = norm (x);
-	x = x / e1;
-	e1 = sqrt (e1);
-	c = c + 1;
-      endwhile
-    else
-      B = B * Bt;
-      while (abs (e1 - e0) > tol * e1)
-	e0 = e1;
-	x = B * x;
-	e1 = norm (x);
-	x = x / e1;
-	e1 = sqrt (e1);
-	c = c + 1;
-      endwhile
-    endif
-    e1 = e1 * maxA;
+    while (abs (e - e0) > tol * e)
+      e0 = e;
+      y = A*x;
+      e = norm (y);
+      if (e == 0)
+        x = rand (n, 1);
+      else
+        x = A'*(y / e);
+      endif
+      x /= norm (x);
+      c += 1;
+    endwhile
   endif
 endfunction

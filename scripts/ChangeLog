@@ -1,3 +1,8 @@
+2009-11-26  Jaroslav Hajek  <highegg@gmail.com>
+
+	* sparse/normest.m: Move to linear-algebra.
+	* linear-algebra/normest.m: Simplify. Don't form A'*A explicitly.
+
 2009-11-25  Jaroslav Hajek  <highegg@gmail.com>
 
 	* linear-algebra/isdefinite.m: Use Cholesky factorization.

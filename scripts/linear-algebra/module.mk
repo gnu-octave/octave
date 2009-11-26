@@ -15,6 +15,7 @@ linear_algebra_FCN_FILES = \
   linear-algebra/krylov.m \
   linear-algebra/krylovb.m \
   linear-algebra/logm.m \
+  linear-algebra/normest.m \
   linear-algebra/null.m \
   linear-algebra/onenormest.m \
   linear-algebra/orth.m \

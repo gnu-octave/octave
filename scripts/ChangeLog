@@ -1,3 +1,7 @@
+2009-11-25  Jaroslav Hajek  <highegg@gmail.com>
+
+	* linear-algebra/isdefinite.m: Use Cholesky factorization.
+
 2009-11-24  Jaroslav Hajek  <highegg@gmail.com>
 
 	* general/issymmetric.m: Move to linear-algebra.

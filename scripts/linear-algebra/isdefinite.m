@@ -21,7 +21,8 @@
 ## Return 1 if @var{x} is symmetric positive definite within the
 ## tolerance specified by @var{tol} or 0 if @var{x} is symmetric
 ## positive semidefinite.  Otherwise, return -1.  If @var{tol}
-## is omitted, use a tolerance equal to 100 times the machine precision.
+## is omitted, use a tolerance equal to 100 times the machine precision,
+## multiplied by the Frobeniusm norm of @var{x}.
 ## @seealso{issymmetric}
 ## @end deftypefn
 
@@ -31,30 +32,33 @@
 
 function retval = isdefinite (x, tol)
 
-  if (nargin == 1 || nargin == 2)
-    if (nargin == 1)
-      if (isa (x, "single"))
-	tol = 100 * eps("single");
-      else
-	tol = 100*eps; 
-      endif
-    endif
-    sym = ishermitian (x);
-    if (sym)
-      ## Matrix is symmetric, check eigenvalues.
-      mineig = min (eig (x));
-      if (mineig > tol)
-	retval = 1;
-      elseif (mineig > -tol)
-	retval = 0;
-      else
-	retval = -1;
-      endif
-    else
-      error ("isdefinite: matrix x must be symmetric");
-    endif
-  else
+  if (nargin < 1 || nargin > 2)
     print_usage ();
+  endif
+
+  if (! ishermitian (x))
+    error ("isdefinite: x must be a hermitian matrix");
+  endif
+
+  if (! isfloat (x))
+    x = double (x);
+  endif
+
+  if (nargin == 1)
+    tol = 100 * eps(class (x)) * norm (x, "fro");
+  endif
+
+  e = tol * eye (rows (x));
+  [r, p] = chol (x - e);
+  if (p == 0)
+    retval = 1;
+  else
+    [r, p] = chol (x + e);
+    if (p == 0)
+      retval = 0;
+    else
+      retval = -1;
+    endif
   endif
 
 endfunction

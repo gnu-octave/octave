@@ -43,12 +43,12 @@ function z = dot (x, y, dim)
     if (! size_equal (x, y))
       error ("dot: sizes of arguments must match");
     endif
-    z = sum(x .* conj (y));
+    z = sum(conj (x) .* y);
   else
     if (! size_equal (x, y))
       error ("dot: sizes of arguments must match");
     endif
-    z = sum(x .* conj (y), dim);
+    z = sum(conj (x) .* y, dim);
   endif
 
 endfunction

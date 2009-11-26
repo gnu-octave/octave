@@ -1,5 +1,10 @@
 2009-11-26  Jaroslav Hajek  <highegg@gmail.com>
 
+	* DLD-FUNCTIONS/dot.cc: New source.
+	* DLD-FUNCTIONS/module-files: Include it.
+
+2009-11-26  Jaroslav Hajek  <highegg@gmail.com>
+
 	* data.cc (Fismatrix): Return true for empty matrices as well.
 
 2009-11-25  Jaroslav Hajek  <highegg@gmail.com>

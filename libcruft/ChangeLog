@@ -1,3 +1,15 @@
+2009-11-26  Jaroslav Hajek  <highegg@gmail.com>
+
+	* blas-xtra/sdot3.f: New source.
+	* blas-xtra/ddot3.f: New source.
+	* blas-xtra/cdotc3.f: New source.
+	* blas-xtra/zdotc3.f: New source.
+	* blas-xtra/smatm3.f: New source.
+	* blas-xtra/dmatm3.f: New source.
+	* blas-xtra/cmatm3.f: New source.
+	* blas-xtra/zmatm3.f: New source.
+	* blas-xtra/module.mk: Include them.
+
 2009-11-17  John W. Eaton  <jwe@octave.org>
 
 	* mkf77def.in: Only process files with names that match *.f.

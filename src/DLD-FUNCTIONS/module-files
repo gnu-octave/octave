@@ -24,6 +24,7 @@ daspk.cc
 dasrt.cc
 dassl.cc
 det.cc
+dot.cc
 dispatch.cc
 dlmread.cc
 dmperm.cc

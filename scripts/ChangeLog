@@ -1,5 +1,10 @@
 2009-11-26  Jaroslav Hajek  <highegg@gmail.com>
 
+	* linear-algebra/dot.m: Remove.
+	* linear-algebra/module.mk: Update.
+
+2009-11-26  Jaroslav Hajek  <highegg@gmail.com>
+
 	* optimization/qp.m: Fix matrix tests.
 	* optimization/condest.m: Ditto.
 	* optimization/krylov.m: Ditto.

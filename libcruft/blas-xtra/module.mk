@@ -1,6 +1,14 @@
 EXTRA_DIST += blas-xtra/module.mk
 
 libcruft_la_SOURCES += \
+  blas-xtra/ddot3.f \
+  blas-xtra/zdotc3.f \
+  blas-xtra/sdot3.f \
+  blas-xtra/cdotc3.f \
+  blas-xtra/dmatm3.f \
+  blas-xtra/zmatm3.f \
+  blas-xtra/smatm3.f \
+  blas-xtra/cmatm3.f \
   blas-xtra/xddot.f \
   blas-xtra/xdnrm2.f \
   blas-xtra/xdznrm2.f \

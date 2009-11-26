@@ -5,7 +5,6 @@ linear_algebra_FCN_FILES = \
   linear-algebra/cond.m \
   linear-algebra/condest.m \
   linear-algebra/cross.m \
-  linear-algebra/dot.m \
   linear-algebra/duplication_matrix.m \
   linear-algebra/expm.m \
   linear-algebra/housh.m \

@@ -1,3 +1,7 @@
+2009-11-26  David Grundberg <individ@acc.umu.se>
+
+	* linear-algebra/dot.m: Conjugate first argument.
+
 2009-11-14  Jaroslav Hajek  <highegg@gmail.com>
 
 	* linear-algebra/expm.m: Fix typo.

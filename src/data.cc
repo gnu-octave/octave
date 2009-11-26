@@ -3356,10 +3356,7 @@ Return 1 if @var{a} is a matrix.  Otherwise, return 0.\n\
     {
       octave_value arg = args(0);
 
-      if (arg.is_scalar_type () || arg.is_range ())
-	retval = true;
-      else if (arg.is_matrix_type ())
-	retval = (arg.rows () >= 1 && arg.columns () >= 1);
+      retval = arg.is_matrix_type () || arg.is_scalar_type () || arg.is_range ();
     }
   else
     print_usage ();
@@ -3369,19 +3366,16 @@ Return 1 if @var{a} is a matrix.  Otherwise, return 0.\n\
 
 /*
 
+%!assert(ismatrix ([]));
 %!assert(ismatrix (1));
 %!assert(ismatrix ([1, 2, 3]));
 %!assert(ismatrix ([1, 2; 3, 4]));
+%!assert(ismatrix (zeros (3, 2, 4)));
 
-%% Yes, this is right, ismatrix() checks for non-empty matrices.
-%!assert(ismatrix ([]), false);
-
+%!assert(ismatrix (single([])));
 %!assert(ismatrix (single(1)));
 %!assert(ismatrix (single([1, 2, 3])));
 %!assert(ismatrix (single([1, 2; 3, 4])));
-
-%% Yes, this is right, ismatrix() checks for non-empty matrices.
-%!assert(ismatrix (single([])), false);
 
 %!assert(ismatrix ("t"), false);
 %!assert(ismatrix ("test"), false);

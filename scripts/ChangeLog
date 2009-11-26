@@ -1,5 +1,9 @@
 2009-11-26  Jaroslav Hajek  <highegg@gmail.com>
 
+	* linear-algebra/normest.m: Randomize initial vector.
+
+2009-11-26  Jaroslav Hajek  <highegg@gmail.com>
+
 	* linear-algebra/dot.m: Remove.
 	* linear-algebra/module.mk: Update.
 

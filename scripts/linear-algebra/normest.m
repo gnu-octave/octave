@@ -42,6 +42,10 @@ function [e, c] = normest (A, tol = 1e-6)
   e = norm (x);
   if (e > 0)
     [m, n] = size (A);
+    ## Randomize x to avoid bad guesses for important matrices.
+    ## FIXME: can we do something smarter?
+    x .*= randn (n, 1);
+    e = norm (x);
     x /= e;
     e0 = 0;
     while (abs (e - e0) > tol * e)

@@ -41,6 +41,23 @@ Summary of important user-visible changes for version 3.3:
       assert (zeros (0, 0), [])
       assert (2*ones (1, 5), (2) (ones (1,5)))
 
+ ** The behavior of library functions ismatrix, issquare and issymmetric has
+    been changed for better consistency.
+    
+    * ismatrix now returns true for all numeric and logical 2d or Nd matrices.
+      Previously, ismatrix returned false if the first or second dimension was 
+      zero. Hence, `ismatrix ([])' was false, while `ismatrix (zeros (1,2,0))'
+      was true.
+
+    * issquare now returns a logical scalar, and is equivalent to the expression
+      `ismatrix (x) && ndims (x) == 2 && rows (x) == columns (x)'. The dimension
+      is no longer returned. As a result, `issquare ([])' now yields true.
+    
+    * issymmetric now checks for symmetry instead of hermitianness. For the latter,
+      ishermitian was created. Also, logical scalar is returned rather than the
+      dimension, so `issymmetric ([])' is now true.
+      
+
  ** Function handles are now aware of overloaded functions. If a function
     is overloaded, the handle determines at the time of its reference which
     function to call. A non-overloaded version does not need to exist.

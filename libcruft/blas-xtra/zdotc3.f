@@ -29,8 +29,6 @@ c c (out)       double complex output array, size (m,n)
       double complex a(m,k,n),b(m,k,n)
       double complex c(m,n)
 
-      integer kk
-      parameter (kk = 64)
       double complex zdotc
       external zdotc
 
@@ -38,22 +36,21 @@ c quick return if possible.
       if (m <= 0 .or. n <= 0) return
 
       if (m == 1) then
-c the column-major case
+c the column-major case.
         do j = 1,n
           c(1,j) = zdotc(k,a(1,1,j),1,b(1,1,j),1)
         end do
       else
-c here the product is row-wise, but we'd still like to use BLAS's dot
-c for its usually better accuracy. let's do a compromise and split the
-c middle dimension.
+c We prefer performance here, because that's what we generally
+c do by default in reduction functions. Besides, the accuracy
+c of xDOT is questionable. Hence, do a cache-aligned nested loop.
         do j = 1,n
-          l = mod(k,kk)
           do i = 1,m
-            c(i,j) = ddot(l,a(i,1,j),m,b(i,1,j),m)
+            c(i,j) = 0d0
           end do
-          do l = l+1,k,kk
+          do l = 1,k
             do i = 1,m
-              c(i,j) = c(i,j) + zdotc(kk,a(i,l,j),m,b(i,l,j),m)
+              c(i,j) = c(i,j) + conjg(a(i,l,j))*b(i,l,j)
             end do
           end do
         end do

@@ -1,5 +1,12 @@
 2009-11-26  Jaroslav Hajek  <highegg@gmail.com>
 
+	* blas-xtra/sdot3.f: Use nested cache-aligned loop for general case.
+	* blas-xtra/ddot3.f: Ditto.
+	* blas-xtra/cdotc3.f: Ditto.
+	* blas-xtra/zdotc3.f: Ditto.
+
+2009-11-26  Jaroslav Hajek  <highegg@gmail.com>
+
 	* blas-xtra/sdot3.f: New source.
 	* blas-xtra/ddot3.f: New source.
 	* blas-xtra/cdotc3.f: New source.

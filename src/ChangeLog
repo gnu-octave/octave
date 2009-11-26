@@ -1,5 +1,9 @@
 2009-11-26  Jaroslav Hajek  <highegg@gmail.com>
 
+	* DLD-FUNCTIONS/dot.cc (Fdot): Update docs.
+
+2009-11-26  Jaroslav Hajek  <highegg@gmail.com>
+
 	* DLD-FUNCTIONS/dot.cc: New source.
 	* DLD-FUNCTIONS/module-files: Include it.
 

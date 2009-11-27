@@ -2425,6 +2425,20 @@ Array<T>::lookupb (const Array<T>& values, sortmode mode) const
 }
 
 template <class T>
+octave_idx_type 
+Array<T>::nnz (void) const
+{
+  const T *src = data ();
+  octave_idx_type nel = nelem (), retval = 0;
+  const T zero = T ();
+  for (octave_idx_type i = 0; i < nel; i++)
+    if (src[i] != zero)
+      retval++;
+
+  return retval;
+}
+
+template <class T>
 Array<octave_idx_type> 
 Array<T>::find (octave_idx_type n, bool backward) const
 {
@@ -2693,6 +2707,10 @@ Array<T>::lookupm (const Array<T>&, sortmode) const \
 template <> Array<bool>  \
 Array<T>::lookupb (const Array<T>&, sortmode) const \
 { return Array<bool> (); } \
+ \
+template <> octave_idx_type \
+Array<T>::nnz (void) const\
+{ return 0; } \
 template <> Array<octave_idx_type> \
 Array<T>::find (octave_idx_type, bool) const\
 { return Array<octave_idx_type> (); } \

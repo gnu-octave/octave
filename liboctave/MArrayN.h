@@ -70,23 +70,6 @@ public:
       return *this;
     }
 
-  octave_idx_type nnz (void) const
-    {
-      octave_idx_type retval = 0;
-
-      const T *d = this->data ();
-
-      octave_idx_type nel = this->numel ();
-
-      for (octave_idx_type i = 0; i < nel; i++)
-	{
-	  if (d[i] != T ())
-	    retval++;
-	}
-
-      return retval;
-    }
-
   MArrayN<T> reshape (const dim_vector& new_dims) const
     { return Array<T>::reshape (new_dims); }
 

@@ -641,6 +641,9 @@ public:
   // This looks up only exact matches, returning true/false if match.
   Array<bool> lookupb (const Array<T>& values, sortmode mode = UNSORTED) const;
 
+  // Count nonzero elements.
+  octave_idx_type nnz (void) const;
+
   // Find indices of (at most n) nonzero elements. If n is specified, backward
   // specifies search from backward.
   Array<octave_idx_type> find (octave_idx_type n = -1, bool backward = false) const;

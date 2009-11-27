@@ -101,23 +101,6 @@ public:
   //  bool all_elements_are_real (void) const;
   //  bool all_integers (double& max_val, double& min_val) const;
 
-  octave_idx_type nnz (void) const
-    {
-      octave_idx_type retval = 0;
-
-      const bool *d = this->data ();
-
-      octave_idx_type nel = this->numel ();
-
-      for (octave_idx_type i = 0; i < nel; i++)
-	{
-	  if (d[i])
-	    retval++;
-	}
-
-      return retval;
-    }
-
   boolNDArray diag (octave_idx_type k = 0) const;
 
 private:

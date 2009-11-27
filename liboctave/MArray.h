@@ -73,23 +73,6 @@ public:
   MArray<T> transpose (void) const { return Array<T>::transpose (); }
   MArray<T> hermitian (T (*fcn) (const T&) = 0) const { return Array<T>::hermitian (fcn); }
 
-  octave_idx_type nnz (void) const
-    {
-      octave_idx_type retval = 0;
-
-      const T *d = this->data ();
-
-      octave_idx_type nel = this->numel ();
-
-      for (octave_idx_type i = 0; i < nel; i++)
-	{
-	  if (d[i] != T ())
-	    retval++;
-	}
-
-      return retval;
-    }
-
   double norm (double p) const;
   float norm (float p) const;
 

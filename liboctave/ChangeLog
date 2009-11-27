@@ -1,3 +1,11 @@
+2009-11-27  Jaroslav Hajek  <highegg@gmail.com>
+
+	* Array.cc (Array<T>::nnz): New method.
+	* Array.h: Declare it.
+	* MArray.h (MArray<T>::nnz): Remove.
+	* MArrayN.h (MArrayN<T>::nnz): Remove.
+	* boolNDArray.h (boolNDArray::nnz): Remove.
+
 2009-11-25  Jaroslav Hajek  <highegg@gmail.com>
 
 	* dbleCHOL.cc (CHOL::init): Output LAPACK's info. Resize matrix if

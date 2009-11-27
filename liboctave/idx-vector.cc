@@ -288,11 +288,12 @@ idx_vector::idx_vector_rep::idx_vector_rep (bool b)
     }
 }
 
-idx_vector::idx_vector_rep::idx_vector_rep (const Array<bool>& bnda)
-  : data (0), len (0), ext (0), aowner (0), orig_dims ()
+idx_vector::idx_vector_rep::idx_vector_rep (const Array<bool>& bnda,
+                                            octave_idx_type nnz)
+  : data (0), len (nnz), ext (0), aowner (0), orig_dims ()
 {
-  for (octave_idx_type i = 0, l = bnda.numel (); i < l; i++)
-    if (bnda.xelem (i)) len++;
+  if (nnz < 0)
+    len = bnda.nnz ();
 
   const dim_vector dv = bnda.dims ();
 
@@ -393,7 +394,106 @@ idx_vector::idx_vector_rep::print (std::ostream& os) const
   return os;
 }
 
+DEFINE_OCTAVE_ALLOCATOR(idx_vector::idx_mask_rep);
+
+idx_vector::idx_mask_rep::idx_mask_rep (bool b)
+  : data (0), len (b ? 1 : 0), ext (0), lsti (-1), lste (-1),
+    aowner (0), orig_dims (len, len)
+{
+  if (len != 0)
+    {
+      bool *d = new bool [1];
+      d[0] = true;
+      data = d;
+      ext = 1;
+    }
+}
+
+idx_vector::idx_mask_rep::idx_mask_rep (const Array<bool>& bnda,
+                                        octave_idx_type nnz)
+  : data (0), len (nnz), ext (bnda.numel ()), lsti (-1), lste (-1),
+    aowner (0), orig_dims ()
+{
+  if (nnz < 0)
+    len = bnda.nnz ();
+
+  // We truncate the extent as much as possible. For Matlab
+  // compatibility, but maybe it's not a bad idea anyway.
+  while (ext > 0 && ! bnda(ext-1))
+    ext--;
+
+  const dim_vector dv = bnda.dims ();
+
+  if (! dv.all_zero ())
+    orig_dims = ((dv.length () == 2 && dv(0) == 1) 
+                 ? dim_vector (1, len) : dim_vector (len, 1));
+
+  aowner = new Array<bool> (bnda);
+  data = bnda.data ();
+}
+
+idx_vector::idx_mask_rep::~idx_mask_rep (void)
+{ 
+  if (aowner) 
+    delete aowner;
+  else
+    delete [] data; 
+}
+
+octave_idx_type
+idx_vector::idx_mask_rep::xelem (octave_idx_type n) const
+{
+  if (n == lsti + 1)
+    {
+      lsti = n;
+      while (! data[++lste]) ;
+    }
+  else
+    {
+      lsti = n++;
+      lste = -1;
+      while (n > 0)
+        if (data[++lste]) --n;
+    }
+  return lste;
+}
+
+octave_idx_type
+idx_vector::idx_mask_rep::checkelem (octave_idx_type n) const
+{
+  if (n < 0 || n >= len)
+    {
+      gripe_invalid_index ();
+      return 0;
+    }
+
+  return xelem (n);
+}
+
+std::ostream& 
+idx_vector::idx_mask_rep::print (std::ostream& os) const
+{
+  os << '[';
+  for (octave_idx_type ii = 0; ii < ext - 1; ii++)
+    os << data[ii] << ',' << ' ';
+  if (ext > 0) os << data[ext-1]; os << ']';
+
+  return os;
+}
+
 const idx_vector idx_vector::colon (new idx_vector::idx_colon_rep ());
+
+idx_vector::idx_vector (const Array<bool>& bnda)
+  : rep (0)
+{
+  // Convert only if it means saving at least half the memory.
+  static const int factor = (2 * sizeof (octave_idx_type));
+  octave_idx_type nnz = bnda.nnz ();
+  if (nnz <= bnda.numel () / factor)
+    rep = new idx_vector_rep (bnda, nnz);
+  else
+    rep = new idx_mask_rep (bnda, nnz);
+}
 
 bool idx_vector::maybe_reduce (octave_idx_type n, const idx_vector& j,
                                octave_idx_type nj)
@@ -574,6 +674,17 @@ idx_vector::is_cont_range (octave_idx_type n,
         res = true;
       }
       break;
+    case class_mask:
+      {
+        idx_mask_rep * r = dynamic_cast<idx_mask_rep *> (rep);
+        octave_idx_type ext = r->extent (0), len = r->length (0);
+        if (ext == len)
+          {
+            l = 0;
+            u = len;
+            res = true;
+          }
+      }
     default:
       break;
     }
@@ -702,8 +813,27 @@ idx_vector::is_permutation (octave_idx_type n) const
   return retval;
 }
 
+idx_vector
+idx_vector::unmask (void) const
+{
+  if (idx_class () == class_mask)
+    {
+      idx_mask_rep * r = dynamic_cast<idx_mask_rep *> (rep);
+      const bool *data = r->get_data ();
+      octave_idx_type ext = r->extent (0), len = r->length (0);
+      octave_idx_type *idata = new octave_idx_type [len];
+      for (octave_idx_type i = 0, j = 0; i < ext; i++)
+        if (data[i]) 
+          idata[j++] = i;
+      ext = len > 0 ? idata[len - 1] : 0;
+      return new idx_vector_rep (idata, len, ext, r->orig_dimensions (), DIRECT);
+    }
+  else
+    return *this;
+}
+
 void idx_vector::unconvert (idx_class_type& iclass,
-                            double& scalar, Range& range, Array<double>& array) const
+                            double& scalar, Range& range, Array<double>& array)
 {
   iclass = idx_class ();
   switch (iclass)
@@ -731,6 +861,14 @@ void idx_vector::unconvert (idx_class_type& iclass,
           octave_idx_type len = r->length (0);
           for (octave_idx_type i = 0; i < len; i++)
             array.xelem (i) = data[i] + 1;
+        }
+      break;
+    case class_mask:
+        {
+          // This is done because we don't want a logical index be cached for a
+          // numeric array.
+          *this = unmask ();
+          unconvert (iclass, scalar, range, array);
         }
       break;
     default:

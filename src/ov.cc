@@ -1053,7 +1053,8 @@ octave_value::octave_value (const idx_vector& idx)
   NDArray array;
   idx_vector::idx_class_type idx_class;
 
-  idx.unconvert (idx_class, scalar, range, array);
+  idx_vector jdx = idx; // Unconvert may potentially modify the class.
+  jdx.unconvert (idx_class, scalar, range, array);
 
   switch (idx_class)
     {
@@ -1061,13 +1062,13 @@ octave_value::octave_value (const idx_vector& idx)
       rep = new octave_magic_colon ();
       break;
     case idx_vector::class_range:
-      rep = new octave_range (range, idx);
+      rep = new octave_range (range, jdx);
       break;
     case idx_vector::class_scalar:
       rep = new octave_scalar (scalar);
       break;
     case idx_vector::class_vector:
-      rep = new octave_matrix (array, idx);
+      rep = new octave_matrix (array, jdx);
       break;
     default:
       assert (false);

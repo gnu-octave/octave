@@ -1,3 +1,8 @@
+2009-11-27  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov.cc (octave_value::octave_value (const index_vector&)): Take a
+	copy if idx to allow mutation.
+
 2009-11-26  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/dot.cc (Fdot): Update docs.

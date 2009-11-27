@@ -1,5 +1,18 @@
 2009-11-27  Jaroslav Hajek  <highegg@gmail.com>
 
+	* idx-vector.h (idx_vector::index_class): New member: class_mask.
+	(idx_vector::idx_mask_rep): New class.
+	(idx_vector::idx_vector (bool)): Construct idx_mask_rep.
+	(idx_vector::unmask): New method decl.
+	* idx-vector.cc (idx_vector::idx_vector (const boolNDArray&)):
+	Construct idx_mask_rep conditionally.
+	(idx_vector::unmask): New method.
+	(idx_vector::unconvert): Make non-const. unmask when called on a mask
+	vector.
+	(idx_vector::is_cont_range): Check also for idx_mask_rep.
+
+2009-11-27  Jaroslav Hajek  <highegg@gmail.com>
+
 	* Array.cc (Array<T>::nnz): New method.
 	* Array.h: Declare it.
 	* MArray.h (MArray<T>::nnz): Remove.

@@ -59,7 +59,8 @@ public:
       class_colon = 0,
       class_range,
       class_scalar,
-      class_vector
+      class_vector,
+      class_mask
     };
 
 private:
@@ -279,7 +280,7 @@ private:
 
     idx_vector_rep (bool);
 
-    idx_vector_rep (const Array<bool>&);
+    idx_vector_rep (const Array<bool>&, octave_idx_type = -1);
 
     idx_vector_rep (const Sparse<bool>&);
 
@@ -328,6 +329,74 @@ private:
     dim_vector orig_dims;
   };
 
+  // The logical mask index.
+  class OCTAVE_API idx_mask_rep : public idx_base_rep
+  {
+  public:
+    // Direct constructor.
+    idx_mask_rep (bool *_data, octave_idx_type _len, 
+                  octave_idx_type _ext, const dim_vector& od, direct)
+      : data (_data), len (_len), ext (_ext), aowner (0), orig_dims (od) { }
+
+    idx_mask_rep (void) 
+      : data (0), len (0), aowner (0)
+      { }
+
+    idx_mask_rep (bool);
+
+    idx_mask_rep (const Array<bool>&, octave_idx_type = -1);
+
+    ~idx_mask_rep (void);
+
+    octave_idx_type xelem (octave_idx_type i) const;
+
+    octave_idx_type checkelem (octave_idx_type i) const;
+
+    octave_idx_type length (octave_idx_type) const
+      { return len; }
+
+    octave_idx_type extent (octave_idx_type n) const
+      { return std::max (n, ext); }
+
+    idx_class_type idx_class (void) const { return class_mask; }
+
+    idx_base_rep *sort_uniq_clone (bool = false) 
+      { count++; return this; }
+
+    dim_vector orig_dimensions (void) const
+      { return orig_dims; }
+
+    bool is_colon_equiv (octave_idx_type n) const
+      { return count == n && ext == n; }
+
+    const bool *get_data (void) const { return data; }
+
+    std::ostream& print (std::ostream& os) const;
+
+  private:
+
+    DECLARE_OCTAVE_ALLOCATOR
+
+    // No copying!
+    idx_mask_rep (const idx_mask_rep& idx);
+
+    const bool *data;
+    octave_idx_type len, ext;
+
+    // FIXME: I'm not sure if this is a good design. Maybe it would be better to
+    // employ some sort of generalized iteration scheme.
+    mutable octave_idx_type lsti, lste;
+
+    // This is a trick to allow user-given mask arrays to be used as indices
+    // without copying. If the following pointer is nonzero, we do not own the data,
+    // but rather have an Array<bool> object that provides us the data.
+    // Note that we need a pointer because we deferred the Array<T> declaration and
+    // we do not want it yet to be defined.
+    
+    Array<bool> *aowner;
+
+    dim_vector orig_dims;
+  };
 
   idx_vector (idx_base_rep *r) : rep (r) { }
 
@@ -400,7 +469,7 @@ public:
   idx_vector (float x) : rep (new idx_scalar_rep (x)) { chkerr (); }
 
   // A scalar bool does not necessarily map to scalar index.
-  idx_vector (bool x) : rep (new idx_vector_rep (x)) { chkerr (); }
+  idx_vector (bool x) : rep (new idx_mask_rep (x)) { chkerr (); }
 
   template <class T>
   idx_vector (const Array<octave_int<T> >& nda) : rep (new idx_vector_rep (nda))
@@ -412,8 +481,7 @@ public:
   idx_vector (const Array<float>& nda) : rep (new idx_vector_rep (nda))
     { chkerr (); }
 
-  idx_vector (const Array<bool>& nda) : rep (new idx_vector_rep (nda))
-    { chkerr (); }
+  idx_vector (const Array<bool>& nda);
 
   idx_vector (const Range& r) 
     : rep (new idx_range_rep (r))
@@ -552,6 +620,15 @@ public:
               dest[i] = src[data[i]];
           }
           break;
+        case class_mask:
+          {
+            idx_mask_rep * r = dynamic_cast<idx_mask_rep *> (rep);
+            const bool *data = r->get_data ();
+            octave_idx_type ext = r->extent (0);
+            for (octave_idx_type i = 0; i < ext; i++)
+              if (data[i]) *dest++ = src[i];
+          }
+          break;
         default:
           assert (false);
           break;
@@ -606,6 +683,15 @@ public:
             const octave_idx_type *data = r->get_data ();
             for (octave_idx_type i = 0; i < len; i++)
               dest[data[i]] = src[i];
+          }
+          break;
+        case class_mask:
+          {
+            idx_mask_rep * r = dynamic_cast<idx_mask_rep *> (rep);
+            const bool *data = r->get_data ();
+            octave_idx_type ext = r->extent (0);
+            for (octave_idx_type i = 0; i < ext; i++)
+              if (data[i]) dest[i] = *src++;
           }
           break;
         default:
@@ -664,6 +750,15 @@ public:
               dest[data[i]] = val;
           }
           break;
+        case class_mask:
+          {
+            idx_mask_rep * r = dynamic_cast<idx_mask_rep *> (rep);
+            const bool *data = r->get_data ();
+            octave_idx_type ext = r->extent (0);
+            for (octave_idx_type i = 0; i < ext; i++)
+              if (data[i]) dest[i] = val;
+          }
+          break;
         default:
           assert (false);
           break;
@@ -714,6 +809,15 @@ public:
             idx_vector_rep * r = dynamic_cast<idx_vector_rep *> (rep);
             const octave_idx_type *data = r->get_data ();
             for (octave_idx_type i = 0; i < len; i++) body (data[i]);
+          }
+          break;
+        case class_mask:
+          {
+            idx_mask_rep * r = dynamic_cast<idx_mask_rep *> (rep);
+            const bool *data = r->get_data ();
+            octave_idx_type ext = r->extent (0);
+            for (octave_idx_type i = 0, j = 0; i < ext; i++)
+              if (data[i]) body (j++);
           }
           break;
         default:
@@ -776,6 +880,17 @@ public:
             ret = i;
           }
           break;
+        case class_mask:
+          {
+            idx_mask_rep * r = dynamic_cast<idx_mask_rep *> (rep);
+            const bool *data = r->get_data ();
+            octave_idx_type ext = r->extent (0), j = 0;
+            for (octave_idx_type i = 0; i < ext; i++)
+              if (data[i] && body (j++))
+                break;
+            ret = j;
+          }
+          break;
         default:
           assert (false);
           break;
@@ -809,9 +924,13 @@ public:
   // Copies all the indices to a given array. Not allowed for colons.
   void copy_data (octave_idx_type *data) const;
 
+  // If the index is a mask, convert it to index vector.
+  idx_vector unmask (void) const;
+
   // Unconverts the index to a scalar, Range or double array.
+  // Note that the index class can be changed, if it's a mask index.
   void unconvert (idx_class_type& iclass,
-                  double& scalar, Range& range, Array<double>& array) const;
+                  double& scalar, Range& range, Array<double>& array);
     
   // FIXME -- these are here for compatibility.  They should be removed
   // when no longer in use.

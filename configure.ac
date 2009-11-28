@@ -683,7 +683,7 @@ CPPFLAGS="$Z_CPPFLAGS $CPPFLAGS"
 save_LIBS="$LIBS"
 LIBS="$Z_LDFLAGS $Z_LIBS $LIBS"
 OCTAVE_CHECK_LIBRARY(curl, cURL,
-  [cURL library not found.  The urlread and urlwrite functions will be disabled.],
+  [cURL library not found.  The ftp objects, urlread and urlwrite functions will be disabled.],
   [curl/curl.h], [curl_easy_escape])
 LIBS="$save_LIBS"
 CPPFLAGS="$save_CPPFLAGS"

@@ -1,5 +1,14 @@
-2009-11-27  Jaroslav Hajek  <highegg@gmail.com>
+2009-11-27  David Bateman  <dbateman@free.fr>
 
+	* DLD-FUNCTIONS/urlwrite.cc (curl_handle, curl_handles): Add classes
+	to manage the open curl connections.
+	(F__ftp__, F__ftp_pwd__, F__ftp_cwd__, F__ftp_dir__, F__ftp_ascii__,
+	F__ftp_binary__, F__ftp_close__, F__ftp_mode__, F__ftp_delete__,
+	F__ftp_rmdir__, F__ftp_mkdir__, F__ftp_rename__, F__ftp_mput__,
+	F__ftp_mget__): New functions.
+
+2009-11-27  Jaroslav Hajek  <highegg@gmail.com>
+ 
 	* ov.cc (octave_value::octave_value (const index_vector&)): Take a
 	copy if idx to allow mutation.
 
@@ -1025,7 +1034,7 @@
 	* ov-perm.cc (octave_perm_matrix::save_binary,
 	octave_perm_matrix::load_binary): Avoid shadow warning from gcc.
 
-2008-09-01  David Bateman  <dbateman@free.fr>
+2009-09-01  David Bateman  <dbateman@free.fr>
 
 	* DLD-FUNCTIONS/eig.cc (Feigs): Correct nesting error in option
 	parsing that prevented the use of a function for generalized

@@ -117,7 +117,7 @@ Don't use CCOLAMD, disable some sparse matrix functionality.
 Don't use COLAMD, disable some sparse matrix functionality.
 
 @item --without-curl
-Don't use the cURL, disable the @code{urlread} and @code{urlwrite}
+Don't use the cURL, disable the ftp objects, @code{urlread} and @code{urlwrite}
 functions.
 
 @item --without-cxsparse

@@ -1,17 +1,23 @@
+2009-11-27  David Bateman  <dbateman@free.fr>
+
+	* interpreter/install.txi: Document that curl libraries impact ftp
+	objects.
+	* interpreter/system.txi: Document the ftp objects
+
 2009-11-25  Rik <octave@nomad.inbox5.com>
 
-	* interpreter/Makefile.am: 
+	* interpreter/Makefile.am:
 	Simplify doc-cache handling in Makefile.am to use only install-data-local
 	target
 
 2009-11-24  Rik <octave@nomad.inbox5.com>
 
-	* interpreter/Makefile.am: 
+	* interpreter/Makefile.am:
 	Correct Makefile so that it halts on error when unable to build doc-cache
 
 2009-11-23  Rik <octave@nomad.inbox5.com>
 
-	* faq/Makefile.am, interpreter/Makefile.am, liboctave/Makefile.am: 
+	* faq/Makefile.am, interpreter/Makefile.am, liboctave/Makefile.am:
 	Stop distribution of conf.texi by autotools.  conf.texi must be re-made
 	from conf.texi.in during configure step
 

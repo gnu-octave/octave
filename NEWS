@@ -28,6 +28,15 @@ Summary of important user-visible changes for version 3.3:
    
       matrix_sum = plus (matrix_list{:});
 
+ ** An FTP object type based on libcurl has been implemented. These objects
+    allow ftp connections, downloads and uploads to be managed. An example of
+    its use might be
+
+    fp = ftp ("ftp.octave.org);
+    cd (fp, "gnu/octave");
+    mget (fp, "octave-3.2.3.tar.bz2");
+    close (fp);
+
  ** The default behavior of assert (observed, expected) has been relaxed
     to employ less strict checking that does not require the internals
     of the values to match. This avoids previously valid tests from

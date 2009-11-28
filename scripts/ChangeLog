@@ -1,7 +1,15 @@
+2009-11-27  David Bateman  <dbateman@free.fr>
+
+	* @ftp/ascii.m, @ftp/binary.m, @ftp/cd.m, @ftp/close.m,
+	@ftp/delete.m, @ftp/dir.m, @ftp/display.m, @ftp/ftp.m,
+	@ftp/loadobj.m, @ftp/mget.m, @ftp/mkdir.m, @ftp/module.mk,
+	@ftp/mput.m, @ftp/rename.m, @ftp/rmdir.m, @ftp/saveobj.m: New files
+	* Makefile.am: Add the @ftp to the build.
+
 2009-11-26  Jaroslav Hajek  <highegg@gmail.com>
 
 	* linear-algebra/cross.m: Avoid doing indexing twice.
-		
+
 2009-11-26  Jaroslav Hajek  <highegg@gmail.com>
 
 	* linear-algebra/normest.m: Randomize initial vector.

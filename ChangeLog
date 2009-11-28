@@ -1,3 +1,8 @@
+2009-11-27  David Bateman  <dbateman@free.fr>
+
+	* NEWS: Document ftp objects.
+	* configure.ac: Document that curl libraries impact ftp objects.
+
 2009-11-26  Jaroslav Hajek  <highegg@gmail.com>
 
 	* NEWS: Update.

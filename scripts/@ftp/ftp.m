@@ -1,0 +1,32 @@
+## Copyright (C) 2009 David Bateman
+##
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 2 of the License, or
+## (at your option) any later version.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with this program; If not, see <http://www.gnu.org/licenses/>.
+
+## -*- texinfo -*-
+## @deftypefn {Function File} {@var{f}} = ftp (@var{host})
+## @deftypefnx {Function File} {@var{f}} = ftp (@var{host}, @var{username}, ## @var{password})
+## Connect to the FTP server @var{host} with @var{username} and @var{password}.
+## If @var{username} and @var{password} are not specified, user "anonymous"
+## with no password is used. The returned FTP object @var{f} represents the
+## established FTP connection.
+## @end deftypefn
+
+function obj = ftp (host, user = "anonymous", pass = "")
+  p.host = host;
+  p.user = user;
+  p.pass = pass;
+  p.curlhandle = tmpnam ("ftp-");
+  __ftp__ (p.curlhandle, host, user, pass);
+  obj = class (p, "ftp");
+endfunction

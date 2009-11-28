@@ -40,6 +40,7 @@ PKG_ADD_FILES =
 
 IMAGES =
 
+include @ftp/module.mk
 include audio/module.mk
 include deprecated/module.mk
 include elfun/module.mk
@@ -72,6 +73,11 @@ include time/module.mk
 nobase_fcnfile_DATA = $(FCN_FILES) $(GEN_FCN_FILES)
 
 octave_dirstamp = $(am__leading_dot)dirstamp
+
+@ftp/PKG_ADD: $(@ftp_FCN_FILES) $(@ftp_GEN_FCN_FILES) @ftp/$(octave_dirstamp) mk-pkg-add
+	@echo "generating $@"
+	@$(srcdir)/mk-pkg-add $(srcdir) $(@ftp_FCN_FILES) -- $(@ftp_GEN_FCN_FILES) > $@-t
+	@mv $@-t $@
 
 audio/PKG_ADD: $(audio_FCN_FILES) $(audio_GEN_FCN_FILES) audio/$(octave_dirstamp) mk-pkg-add
 	@echo "generating $@"
@@ -213,6 +219,7 @@ time/PKG_ADD: $(time_FCN_FILES) $(time_GEN_FCN_FILES) time/$(octave_dirstamp) mk
 	@$(srcdir)/mk-pkg-add $(srcdir) $(time_FCN_FILES) -- $(time_GEN_FCN_FILES) > $@-t
 	@mv $@-t $@
 
+$(@ftp_GEN_FCN_FILES): @ftp/$(octave_dirstamp)
 $(audio_GEN_FCN_FILES): audio/$(octave_dirstamp)
 $(deprecated_GEN_FCN_FILES): deprecated/$(octave_dirstamp)
 $(elfun_GEN_FCN_FILES): elfun/$(octave_dirstamp)
@@ -242,6 +249,9 @@ $(strings_GEN_FCN_FILES): strings/$(octave_dirstamp)
 $(testfun_GEN_FCN_FILES): testfun/$(octave_dirstamp)
 $(time_GEN_FCN_FILES): time/$(octave_dirstamp)
 
+@ftp/$(octave_dirstamp):
+	@$(MKDIR_P) @ftp
+	@: > @ftp/$(octave_dirstamp)
 audio/$(octave_dirstamp):
 	@$(MKDIR_P) audio
 	@: > audio/$(octave_dirstamp)

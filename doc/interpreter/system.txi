@@ -244,6 +244,27 @@ about the status of files.
 @node Networking Utilities
 @section Networking Utilities
 
+@menu
+* FTP objects::
+* URL manipulation::
+@end menu
+
+@node FTP objects
+@subsection FTP objects
+
+@DOCSTRING(ftp)
+
+@DOCSTRING(mget)
+
+@DOCSTRING(mput)
+
+@DOCSTRING(ascii)
+
+@DOCSTRING(binary)
+
+@node URL manipulation
+@subsection URL manipulation
+
 @DOCSTRING(urlread)
 
 @DOCSTRING(urlwrite)

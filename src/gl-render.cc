@@ -2694,7 +2694,7 @@ opengl_renderer::draw_text (const text::properties& props)
 void
 opengl_renderer::draw_image (const image::properties& props)
 {
-  octave_value cdata = props.get_cdata ();
+  octave_value cdata = props.get_color_data ();
   dim_vector dv (cdata.dims ());
   int h = dv(0), w = dv(1);
   bool ok = true;
@@ -2817,13 +2817,7 @@ opengl_renderer::draw_image (const image::properties& props)
 	  warning ("opengl_texture::draw: invalid image data type (expected double, uint16, or uint8)");
 	}
     }
-  // indexed
-  else if (dv.length () == 2)
-    {
-      // FIXME -- deal with indexed data
-      warning ("opengl_texture::draw:image indexed images not supported yet");
-    }
-  else
+  else 
     {
       ok = false;
       warning ("opengl_texture::draw: invalid image size (expected n*m*3 or n*m)");

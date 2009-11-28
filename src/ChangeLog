@@ -1,5 +1,9 @@
 2009-11-28  Shai Ayal  <shaiay@users.sourceforge.net>
 
+	* gl-render.cc (opengl_renderer::draw_image): Handle indexed images.
+
+2009-11-28  Shai Ayal  <shaiay@users.sourceforge.net>
+
 	* gl-render.h (opengl_renderer::draw): Draw children from end of
 	list to preserve correct stacking order (first child should be on
 	top).

@@ -1,3 +1,11 @@
+2009-11-28  Shai Ayal  <shaiay@users.sourceforge.net>
+
+	* gl-render.h (opengl_renderer::draw): Draw children from end of
+	list to preserve correct stacking order (first child should be on
+	top).
+
+	* graphics.cc (maybe_set_children): Store sorted child lists.
+
 2009-11-27  Kacper Kowalik <xarthisius.kk@gmail.com>
 
 	* ls-hdf5.cc (have_h5giterate_bug): Drop this group iteration flag

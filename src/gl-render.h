@@ -60,7 +60,7 @@ public:
     {
       int len = hlist.length ();
 
-      for (int i = 0; i < len; i++)
+      for (int i = len-1; i >= 0; i--)
 	{
 	  graphics_handle h = gh_manager::lookup (hlist(i));
 

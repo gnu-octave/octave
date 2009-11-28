@@ -1726,8 +1726,8 @@ maybe_set_children (const Matrix& kids, const octave_value& val)
 	  Matrix t1 = kids;
 	  Matrix t2 = new_kids;
 
-	  t1.sort ();
-	  t2.sort ();
+	  t1 = t1.sort ();
+	  t2 = t2.sort ();
 
 	  if (t1 != t2)
 	    ok = false;

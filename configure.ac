@@ -635,7 +635,6 @@ OCTAVE_CHECK_LIBRARY(hdf5, HDF5,
    if test $octave_hdf5_ok = yes; then
      TEXINFO_HDF5="@set HAVE_HDF5"
      AC_DEFINE(HAVE_HDF5, 1, [Define if HDF5 is available.])
-     AC_DEFINE(HAVE_H5GGET_NUM_OBJS, 1, [Define if HDF5 has H5Gget_num_objs.])
      case "$canonical_host_type" in
        *-*-msdosmsvc)
 	 OCTAVE_HDF5_DLL

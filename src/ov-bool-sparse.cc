@@ -510,8 +510,7 @@ octave_sparse_bool_matrix::save_hdf5 (hid_t loc_id, const char *name, bool)
 }
 
 bool
-octave_sparse_bool_matrix::load_hdf5 (hid_t loc_id, const char *name,
-				      bool /* have_h5giterate_bug */)
+octave_sparse_bool_matrix::load_hdf5 (hid_t loc_id, const char *name)
 {
   octave_idx_type nr, nc, nz;
   hid_t group_hid, data_hid, space_hid;

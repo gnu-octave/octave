@@ -177,11 +177,6 @@ hdf5_make_complex_type (hid_t num_type)
   return type_id;
 }
 
-// This variable, set in read_hdf5_data(), tells whether we are using
-// a version of HDF5 with a buggy H5Giterate (i.e. which neglects to
-// increment the index parameter to the next unread item).
-static bool have_h5giterate_bug = false;
-
 // This function is designed to be passed to H5Giterate, which calls it
 // on each data item in an HDF5 file.  For the item whose name is NAME in
 // the group GROUP_ID, this function sets dv->tc to an Octave representation
@@ -271,8 +266,7 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
 
 	  d->tc = octave_value_typeinfo::lookup_type (typ);
 
-	  retval = (d->tc.load_hdf5 (subgroup_id, "value", 
-		have_h5giterate_bug) ? 1 : -1);
+	  retval = (d->tc.load_hdf5 (subgroup_id, "value") ? 1 : -1);
 
 	  // check for OCTAVE_GLOBAL attribute:
 	  d->global = hdf5_check_attr (subgroup_id, "OCTAVE_GLOBAL");
@@ -295,8 +289,7 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
 
 	  H5Gclose (subgroup_id);
 
-	  retval = (d->tc.load_hdf5 (group_id, name, have_h5giterate_bug) 
-		    ? 1 : -1);
+	  retval = (d->tc.load_hdf5 (group_id, name) ? 1 : -1);
 	}
 
     }
@@ -471,8 +464,7 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
       H5Tclose (type_id);
       H5Dclose (data_id);
 
-      retval = (d->tc.load_hdf5 (group_id, name, have_h5giterate_bug) 
-		? 1 : -1);
+      retval = (d->tc.load_hdf5 (group_id, name) ? 1 : -1);
     }
 
   if (!ident_valid)
@@ -528,39 +520,16 @@ read_hdf5_data (std::istream& is, const std::string& /* filename */,
   hdf5_ifstream& hs = dynamic_cast<hdf5_ifstream&> (is);
   hdf5_callback_data d;
 
-  // Versions of HDF5 prior to 1.2.2 had a bug in H5Giterate where it
-  // would return the index of the last item processed instead of the
-  // next item to be processed, forcing us to increment the index manually.
-
-  unsigned int vers_major, vers_minor, vers_release;
-
-  H5get_libversion (&vers_major, &vers_minor, &vers_release);
-
-  // FIXME -- this test looks wrong.
-  have_h5giterate_bug
-    = (vers_major < 1
-       || (vers_major == 1 && (vers_minor < 2
-			       || (vers_minor == 2 && vers_release < 2))));
-
   herr_t H5Giterate_retval = -1;
 
-#ifdef HAVE_H5GGET_NUM_OBJS
   hsize_t num_obj = 0;
   hid_t group_id = H5Gopen (hs.file_id, "/"); 
   H5Gget_num_objs (group_id, &num_obj);
   H5Gclose (group_id);
   if (hs.current_item < static_cast<int> (num_obj))
-#endif
     H5Giterate_retval = H5Giterate (hs.file_id, "/", &hs.current_item,
 				    hdf5_read_next_data, &d);
 
-  if (have_h5giterate_bug)
-    {
-      // H5Giterate sets current_item to the last item processed; we want
-      // the index of the next item (for the next call to read_hdf5_data)
-
-      hs.current_item++;
-    }
 
   if (H5Giterate_retval > 0)
     {

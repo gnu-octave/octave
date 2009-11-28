@@ -389,8 +389,7 @@ octave_fcn_inline::save_hdf5 (hid_t loc_id, const char *name,
 }
 
 bool
-octave_fcn_inline::load_hdf5 (hid_t loc_id, const char *name,
-			      bool /* have_h5giterate_bug */)
+octave_fcn_inline::load_hdf5 (hid_t loc_id, const char *name)
 {
   hid_t group_hid, data_hid, space_hid, type_hid, type_class_hid, st_id;
   hsize_t rank;

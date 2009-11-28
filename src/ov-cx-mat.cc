@@ -615,8 +615,7 @@ octave_complex_matrix::save_hdf5 (hid_t loc_id, const char *name,
 }
 
 bool 
-octave_complex_matrix::load_hdf5 (hid_t loc_id, const char *name,
-				  bool /* have_h5giterate_bug */)
+octave_complex_matrix::load_hdf5 (hid_t loc_id, const char *name)
 {
   bool retval = false;
 

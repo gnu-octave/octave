@@ -341,8 +341,7 @@ octave_complex::save_hdf5 (hid_t loc_id, const char *name,
 }
 
 bool
-octave_complex::load_hdf5 (hid_t loc_id, const char *name,
-			   bool /* have_h5giterate_bug */)
+octave_complex::load_hdf5 (hid_t loc_id, const char *name)
 {
   bool retval = false;
   hid_t data_hid = H5Dopen (loc_id, name);

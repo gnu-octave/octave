@@ -839,8 +839,7 @@ octave_fcn_handle::save_hdf5 (hid_t loc_id, const char *name,
 }
 
 bool
-octave_fcn_handle::load_hdf5 (hid_t loc_id, const char *name,
-			      bool have_h5giterate_bug)
+octave_fcn_handle::load_hdf5 (hid_t loc_id, const char *name)
 {
   bool success = true;
 
@@ -1020,7 +1019,6 @@ octave_fcn_handle::load_hdf5 (hid_t loc_id, const char *name,
 
       if (len > 0 && success)
 	{
-#ifdef HAVE_H5GGET_NUM_OBJS
 	  hsize_t num_obj = 0;
 	  data_hid = H5Gopen (group_hid, "symbol table"); 
 	  H5Gget_num_objs (data_hid, &num_obj);
@@ -1031,7 +1029,6 @@ octave_fcn_handle::load_hdf5 (hid_t loc_id, const char *name,
 	      error ("load: failed to load anonymous function handle");
 	      success = false;
 	    }
-#endif
 
 	  if (! error_state)
 	    {
@@ -1046,9 +1043,6 @@ octave_fcn_handle::load_hdf5 (hid_t loc_id, const char *name,
 		      success = false;
 		      break;
 		    }
-
-		  if (have_h5giterate_bug)
-		    current_item++;  // H5Giterate returns last index processed
 
 		  symbol_table::varref (dsub.name, local_scope) = dsub.tc;
 		}

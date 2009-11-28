@@ -488,8 +488,7 @@ octave_range::save_hdf5 (hid_t loc_id, const char *name,
 }
 
 bool 
-octave_range::load_hdf5 (hid_t loc_id, const char *name,
-			 bool /* have_h5giterate_bug */)
+octave_range::load_hdf5 (hid_t loc_id, const char *name)
 {
   bool retval = false;
 

@@ -370,8 +370,7 @@ octave_base_int_matrix<T>::save_hdf5 (hid_t loc_id, const char *name, bool)
 
 template <class T>
 bool
-octave_base_int_matrix<T>::load_hdf5 (hid_t loc_id, const char *name,
-				      bool /* have_h5giterate_bug */)
+octave_base_int_matrix<T>::load_hdf5 (hid_t loc_id, const char *name)
 {
   hid_t save_type_hid = HDF5_SAVE_TYPE;
   bool retval = false;
@@ -560,8 +559,7 @@ octave_base_int_scalar<T>::save_hdf5 (hid_t loc_id, const char *name, bool)
 
 template <class T>
 bool
-octave_base_int_scalar<T>::load_hdf5 (hid_t loc_id, const char *name,
-				      bool /* have_h5giterate_bug */)
+octave_base_int_scalar<T>::load_hdf5 (hid_t loc_id, const char *name)
 {
   hid_t save_type_hid = HDF5_SAVE_TYPE;
   hid_t data_hid = H5Dopen (loc_id, name);

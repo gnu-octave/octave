@@ -1,5 +1,9 @@
 2009-11-27  David Bateman  <dbateman@free.fr>
 
+	* doc/interpreter/contributors.in: Add Kacper Kowalik.
+
+2009-11-27  David Bateman  <dbateman@free.fr>
+
 	* interpreter/install.txi: Document that curl libraries impact ftp
 	objects.
 	* interpreter/system.txi: Document the ftp objects

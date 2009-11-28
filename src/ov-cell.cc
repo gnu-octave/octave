@@ -1104,8 +1104,7 @@ octave_cell::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
 }
 
 bool
-octave_cell::load_hdf5 (hid_t loc_id, const char *name,
-			bool have_h5giterate_bug)
+octave_cell::load_hdf5 (hid_t loc_id, const char *name)
 {
   clear_cellstr_cache ();
 
@@ -1166,24 +1165,17 @@ octave_cell::load_hdf5 (hid_t loc_id, const char *name,
 
   int current_item = 0;
 
-  if (have_h5giterate_bug)
-    current_item = 1;   // Skip dims items in group.
-
-#ifdef HAVE_H5GGET_NUM_OBJS
   hsize_t num_obj = 0;
   group_id = H5Gopen (loc_id, name); 
   H5Gget_num_objs (group_id, &num_obj);
   H5Gclose (group_id);
-#endif
 
   for (octave_idx_type i = 0; i < dv.numel (); i++)
     {
 
-#ifdef HAVE_H5GGET_NUM_OBJS
       if (current_item >= static_cast<int> (num_obj))
-	retval2 = -1;
+        retval2 = -1;
       else
-#endif
 	retval2 = H5Giterate (loc_id, name, &current_item,
 			      hdf5_read_next_data, &dsub);
       
@@ -1192,9 +1184,6 @@ octave_cell::load_hdf5 (hid_t loc_id, const char *name,
 
       octave_value ov = dsub.tc;
       m.elem (i) = ov;
-
-      if (have_h5giterate_bug)
-	current_item++;  // H5Giterate returned the last index processed.
 
     }
 

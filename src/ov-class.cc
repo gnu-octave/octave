@@ -1471,8 +1471,7 @@ octave_class::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
 }
 
 bool 
-octave_class::load_hdf5 (hid_t loc_id, const char *name,
-			  bool have_h5giterate_bug)
+octave_class::load_hdf5 (hid_t loc_id, const char *name)
 {
   bool retval = false;
 
@@ -1548,7 +1547,6 @@ octave_class::load_hdf5 (hid_t loc_id, const char *name,
   reconstruct_exemplar ();
 
 
-#ifdef HAVE_H5GGET_NUM_OBJS
   subgroup_hid = H5Gopen (group_hid, name); 
   H5Gget_num_objs (subgroup_hid, &num_obj);
   H5Gclose (subgroup_hid);
@@ -1556,10 +1554,6 @@ octave_class::load_hdf5 (hid_t loc_id, const char *name,
   while (current_item < static_cast<int> (num_obj)
 	 && (retval2 = H5Giterate (group_hid, name, &current_item,
 				   hdf5_read_next_data, &dsub)) > 0)
-#else
-  while ((retval2 = H5Giterate (group_hid, name, &current_item,
-				hdf5_read_next_data, &dsub)) > 0)
-#endif
     {
       octave_value t2 = dsub.tc;
 
@@ -1573,8 +1567,6 @@ octave_class::load_hdf5 (hid_t loc_id, const char *name,
 
       m.assign (dsub.name, tcell);
 
-      if (have_h5giterate_bug)
-	current_item++;  // H5Giterate returned the last index processed
     }
 
   if (retval2 >= 0)

@@ -1,3 +1,64 @@
+2009-11-27  Kacper Kowalik <xarthisius.kk@gmail.com>
+
+	* ls-hdf5.cc (have_h5giterate_bug): Drop this group iteration flag
+	for buggy pre 1.2.2 versions of hdf5.
+	* ov-base-int.cc (octave_base_int_matrix<T>::load_hdf5)
+	octave_base_int_scalar<T>::load_hdf5),
+	ov-base-int.h (octave_base_int_matrix<T>::load_hdf5,
+	octave_base_int_scalar<T>::load_hdf5),
+	ov-base.cc (octave_base_value::load_hdf5),
+	ov-base.h (octave_base_value::load_hdf5),
+	ov-bool-mat.cc (octave_bool_matrix::load_hdf5),
+	ov-bool-mat.h (octave_bool_matrix::load_hdf5),
+	ov-bool-sparse.cc (octave_sparse_bool_matrix::load_hdf5),
+	ov-bool-sparse.h (octave_sparse_bool_matrix::load_hdf5),
+	ov-bool.cc (octave_bool::load_hdf5),
+	ov-bool.h (octave_bool::load_hdf5),
+	ov-cell.cc (octave_cell::load_hdf5),
+	ov-cell.h (octave_cell::load_hdf5),
+	ov-class.cc (octave_class::load_hdf5),
+	ov-class.h (octave_class::load_hdf5),
+	ov-complex.cc (octave_complex::load_hdf5),
+	ov-complex.h (octave_complex::load_hdf5),
+	ov-cx-mat.cc (octave_complex_matrix::load_hdf5),
+	ov-cx-mat.h (octave_complex_matrix::load_hdf5),
+	ov-cx-sparse.cc (octave_sparse_complex_matrix::load_hdf5),
+	ov-cx-sparse.h (octave_sparse_complex_matrix::load_hdf5),
+	ov-fcn-handle.cc (octave_fcn_handle::load_hdf5),
+	ov-fcn-handle.h (octave_fcn_handle::load_hdf5),
+	ov-fcn-inline.cc (octave_fcn_inline::load_hdf5),
+	ov-fcn-inline.h (octave_fcn_inline::load_hdf5),
+	ov-float.cc (octave_float_scalar::load_hdf5),
+	ov-float.h (octave_float_scalar::load_hdf5),
+	ov-flt-complex.cc (octave_float_complex::load_hdf5),
+	ov-flt-complex.h (octave_float_complex::load_hdf5),
+	ov-flt-cx-mat.cc (octave_float_complex_matrix::load_hdf5),
+	ov-flt-cx-mat.h (octave_float_complex_matrix::load_hdf5),
+	ov-flt-re-mat.cc (octave_float_matrix::load_hdf5),
+	ov-flt-re-mat.h (octave_float_matrix::load_hdf5),
+	ov-list.cc (octave_list::load_hdf5),
+	ov-list.h (octave_list::load_hdf5),
+	ov-range.cc (octave_range::load_hdf5),
+	ov-range.h (octave_range::load_hdf5),
+	ov-re-mat.cc (octave_matrix::load_hdf5),
+	ov-re-mat.h (octave_matrix::load_hdf5),
+	ov-re-sparse.cc (octave_sparse_matrix::load_hdf5),
+	ov-re-sparse.h (octave_sparse_matrix::load_hdf5),
+	ov-scalar.cc (octave_scalar::load_hdf5),
+	ov-scalar.h (octave_scalar::load_hdf5),
+	ov-str-mat.cc (octave_char_matrix_str::load_hdf5),
+	ov-str-mat.h (octave_char_matrix_str::load_hdf5),
+	ov-struct.cc (octave_struct::load_hdf5),
+	ov-struct.h (octave_struct::load_hdf5),
+	ov.h (octave_value::load_hdf5):
+	Remove have_hg5iterate_bug from the call to load_hdf5.
+	* ov-cell.cc (octave_bool::load_hdf5),
+	ov-class.cc (octave_class::load_hdf5),
+	ov-fcn-handle.cc (octave_fcn_handle::load_hdf5),
+	ov-list.cc (octave_list::load_hdf5),
+	ov-struct.cc (octave_struct::load_hdf5):
+	Remove HAVE_H5GGET_NUM_OBJS cruft for old hdf5 versions.
+
 2009-11-27  David Bateman  <dbateman@free.fr>
 
 	* DLD-FUNCTIONS/urlwrite.cc (curl_handle, curl_handles): Add classes

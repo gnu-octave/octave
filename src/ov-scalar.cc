@@ -224,8 +224,7 @@ octave_scalar::save_hdf5 (hid_t loc_id, const char *name,
 }
 
 bool
-octave_scalar::load_hdf5 (hid_t loc_id, const char *name,
-			  bool /* have_h5giterate_bug */)
+octave_scalar::load_hdf5 (hid_t loc_id, const char *name)
 {
   hid_t data_hid = H5Dopen (loc_id, name);
   hid_t space_id = H5Dget_space (data_hid);

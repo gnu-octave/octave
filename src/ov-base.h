@@ -593,7 +593,7 @@ public:
   save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats);
 
   virtual bool
-  load_hdf5 (hid_t loc_id, const char *name, bool have_h5giterate_bug);
+  load_hdf5 (hid_t loc_id, const char *name);
 #endif
 
   virtual int

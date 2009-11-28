@@ -1042,7 +1042,7 @@ octave_base_value::save_hdf5 (hid_t, const char *, bool)
 }
 
 bool 
-octave_base_value::load_hdf5 (hid_t, const char *, bool)
+octave_base_value::load_hdf5 (hid_t, const char *)
 {
   gripe_wrong_type_arg ("octave_base_value::load_binary()", type_name ());
 

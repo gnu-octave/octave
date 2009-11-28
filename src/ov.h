@@ -1029,9 +1029,8 @@ public:
   bool save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
     { return rep->save_hdf5 (loc_id, name, save_as_floats); }
 
-  bool load_hdf5 (hid_t loc_id, const char *name,
-			  bool have_h5giterate_bug)
-    { return rep->load_hdf5 (loc_id, name, have_h5giterate_bug); }
+  bool load_hdf5 (hid_t loc_id, const char *name)
+    { return rep->load_hdf5 (loc_id, name); }
 #endif
 
   int write (octave_stream& os, int block_size,

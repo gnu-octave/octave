@@ -51,6 +51,7 @@ along with Octave; see the file COPYING.  If not, see
 #if defined (HAVE_CURL)
 
 #include <curl/curl.h>
+#include <curl/curlver.h>
 #include <curl/types.h>
 #include <curl/easy.h>
 
@@ -559,10 +560,23 @@ private:
       setopt (CURLOPT_NOBODY, 1);
 
       // Set the username and password
+#if (LIBCURL_VERSION_NUM >= 0x071300)
+      // This is possible since cURL 7.19.
       if (user.length () != 0)
 	setopt (CURLOPT_USERNAME, user.c_str());
       if (passwd.length () != 0)
 	setopt (CURLOPT_PASSWORD, passwd.c_str());
+#else
+      // Probably needs to be static to remain valid long enough.
+      static std::string userpwd;
+      if (user.length () != 0)
+        {
+          userpwd = user;
+          if (passwd.length () != 0)
+            userpwd += ':' + passwd;
+          setopt (CURLOPT_USERPWD, userpwd.c_str ());
+        }
+#endif
 
       // Define our callback to get called when there's data to be written.
       setopt (CURLOPT_WRITEFUNCTION, write_data);

@@ -1,3 +1,8 @@
+2009-11-29  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/urlwrite.cc (curl_handle::init): Use CURLOPT_USERPWD
+	if libcurl ver < 7.19.0.
+
 2009-11-28  Shai Ayal  <shaiay@users.sourceforge.net>
 
 	* gl-render.cc (opengl_renderer::draw_image): Handle indexed images.

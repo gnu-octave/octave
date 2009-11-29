@@ -367,7 +367,7 @@ private:
       { return orig_dims; }
 
     bool is_colon_equiv (octave_idx_type n) const
-      { return count == n && ext == n; }
+      { return len == n && ext == n; }
 
     const bool *get_data (void) const { return data; }
 

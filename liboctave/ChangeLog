@@ -1,3 +1,11 @@
+2009-11-28  Jaroslav Hajek  <highegg@gmail.com>
+
+	* dim-vector.h (dim_vector::zero_by_zero): New method.
+	* idx-vector.h (idx_vector::idx_mask_rep::is_colon_equiv): Fix.
+	* Array.cc (Array<T>::assign): Minor tweaks. Optimize 
+	A = []; A(1:m,1:n,1:k) = X for all cases. Use a shallow copy
+	for all colon-equivalent indices.
+
 2009-11-27  Jaroslav Hajek  <highegg@gmail.com>
 
 	* idx-vector.h (idx_vector::index_class): New member: class_mask.

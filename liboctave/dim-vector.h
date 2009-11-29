@@ -278,6 +278,11 @@ public:
     return retval;
   }
 
+  bool zero_by_zero (void) const
+  {
+    return length () == 2 && elem (0) == 0 && elem (1) == 0;
+  }
+
   bool any_zero (void) const
   {
     bool retval = false;

@@ -1180,12 +1180,12 @@ Array<T>::assign (const idx_vector& i, const Array<T>& rhs, const T& rfv)
   if (rhl == 1 || i.length (n) == rhl)
     {
       octave_idx_type nx = i.extent (n);
+      bool colon = i.is_colon_equiv (nx);
       // Try to resize first if necessary. 
       if (nx != n)
         {
           // Optimize case A = []; A(1:n) = X with A empty. 
-          if (rows () == 0 && columns () == 0 && ndims () == 2
-              && i.is_colon_equiv (nx))
+          if (dimensions.zero_by_zero () && colon)
             {
               if (rhl == 1)
                 *this = Array<T> (dim_vector (1, nx), rhs(0));
@@ -1198,7 +1198,7 @@ Array<T>::assign (const idx_vector& i, const Array<T>& rhs, const T& rfv)
           n = numel ();
         }
 
-      if (i.is_colon ())
+      if (colon)
         {
           // A(:) = X makes a full fill or a shallow copy.
           if (rhl == 1)
@@ -1249,12 +1249,13 @@ Array<T>::assign (const idx_vector& i, const idx_vector& j,
 
   if (match)
     {
+      bool all_colons = (i.is_colon_equiv (rdv(0)) 
+                         && j.is_colon_equiv (rdv(1)));
       // Resize if requested.
       if (rdv != dv)
         {
           // Optimize case A = []; A(1:m, 1:n) = X
-          if (dv.all_zero () && i.is_colon_equiv (rdv(0))
-              && j.is_colon_equiv (rdv(1)))
+          if (dv.zero_by_zero () && all_colons)
             {
               if (isfill)
                 *this = Array<T> (rdv, rhs(0));
@@ -1267,7 +1268,7 @@ Array<T>::assign (const idx_vector& i, const idx_vector& j,
           dv = dimensions;
         }
 
-      if (i.is_colon () && j.is_colon ())
+      if (all_colons)
         {
           // A(:,:) = X makes a full fill or a shallow copy
           if (isfill)
@@ -1353,7 +1354,7 @@ Array<T>::assign (const Array<idx_vector>& ia,
       int j = 0, rhdvl = rhdv.length ();
       for (int i = 0; i < ial; i++)
         {
-          all_colons = all_colons && ia(i).is_colon ();
+          all_colons = all_colons && ia(i).is_colon_equiv (rdv(i));
           octave_idx_type l = ia(i).length (rdv(i));
           if (l == 1) continue;
           match = match && j < rhdvl && l == rhdv(j++);
@@ -1367,6 +1368,17 @@ Array<T>::assign (const Array<idx_vector>& ia,
           // Resize first if necessary.
           if (rdv != dv)
             {
+              // Optimize case A = []; A(1:m, 1:n) = X
+              if (dv.zero_by_zero () && all_colons)
+                {
+                  rdv.chop_trailing_singletons ();
+                  if (isfill)
+                    *this = Array<T> (rdv, rhs(0));
+                  else
+                    *this = Array<T> (rhs, rdv);
+                  return;
+                }
+
               resize_fill (rdv, rfv);
               dv = dimensions;
               chop_trailing_singletons ();

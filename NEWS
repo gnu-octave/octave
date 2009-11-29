@@ -16,6 +16,12 @@ Summary of important user-visible changes for version 3.3:
     no longer needed to avoid repeated indexing by logical arrays using
     `find' for performance reasons.
 
+ ** Logical matrices are now treated more efficiently when used as indices.
+    Octave will keep the index as a logical mask unless the ratio of true 
+    elements is small enough, using a specialized code. Previously, all logical
+    matrices were always first converted to index vectors. This results in
+    savings in both memory and computing time. 
+
  ** sub2ind and ind2sub were reimplemented as compiled functions for better
     performance. These functions are now faster, can deliver more economized
     results for ranges, and can reuse the index cache mechanism described in
@@ -95,8 +101,11 @@ Summary of important user-visible changes for version 3.3:
       logical matrix |= logical matrix
       logical matrix &= logical matrix
 
-   where matrix and scalar belong to the same class. The left-hand side must be
-   a simple variable reference.
+    where matrix and scalar belong to the same class. The left-hand side must be
+    a simple variable reference.
+
+    Moreover, when unary operators occur in expressions, Octave will also try to do
+    the operation in-place if it's argument is a temporary expresssion.
 
  ** The effect of comparison operators (<,>,<=,>=) when applied to complex numbers 
     has changed to be consistent with the strict ordering defined by max, min and sort.

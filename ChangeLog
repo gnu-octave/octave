@@ -1,3 +1,7 @@
+2009-11-29  Jaroslav Hajek  <highegg@gmail.com>
+
+	* NEWS: Update.
+
 2009-11-27  David Bateman  <dbateman@free.fr>
 
 	* configure.ac (HAVE_H5GGET_NUM_OBJS) Remove define.

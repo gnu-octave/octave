@@ -1,3 +1,7 @@
+2009-11-30  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/fft2.cc (Fifft2): Docstring fix.
+
 2009-11-29  Jaroslav Hajek  <highegg@gmail.com>
 
 	* pt-unop.cc (tree_prefix_expression::rvalue1): Try to use

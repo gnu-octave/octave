@@ -1,3 +1,11 @@
+2009-11-30  Kacper Kowalik <xarthisius.kk@gmail.com>
+
+	* acinclude.m4 (OCTAVE_HDF5_HAS_ENFORCED_16_API): New macro that
+	tests whether the HDF5 library has an enforced v1.6 API and detects
+	v1.8 APIs.
+	* configure.m4: Adapt test for HDF5 libraries to support v1.8 
+	HDF5 libraries.
+
 2009-11-29  Jaroslav Hajek  <highegg@gmail.com>
 
 	* NEWS: Update.

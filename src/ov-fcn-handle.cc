@@ -651,7 +651,11 @@ octave_fcn_handle::save_hdf5 (hid_t loc_id, const char *name,
   bool retval = true;
 
   hid_t group_hid = -1;
+#if HAVE_HDF5_18
+  group_hid = H5Gcreate (loc_id, name, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+#else
   group_hid = H5Gcreate (loc_id, name, 0);
+#endif
   if (group_hid < 0)
     return false;
 
@@ -676,8 +680,12 @@ octave_fcn_handle::save_hdf5 (hid_t loc_id, const char *name,
       H5Gclose (group_hid);
       return false;
     }
-
+#if HAVE_HDF5_18
+  data_hid = H5Dcreate (group_hid, "nm",  type_hid, space_hid, 
+  			H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+#else
   data_hid = H5Dcreate (group_hid, "nm",  type_hid, space_hid, H5P_DEFAULT);
+#endif
   if (data_hid < 0 || H5Dwrite (data_hid, type_hid, H5S_ALL, H5S_ALL,
 				H5P_DEFAULT, nm.c_str ()) < 0)
     {
@@ -703,8 +711,13 @@ octave_fcn_handle::save_hdf5 (hid_t loc_id, const char *name,
 	  return false;
 	}
 
+#if HAVE_HDF5_18
+      data_hid = H5Dcreate (group_hid, "fcn",  type_hid, space_hid,
+			    H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+#else
       data_hid = H5Dcreate (group_hid, "fcn",  type_hid, space_hid,
 			    H5P_DEFAULT);
+#endif
       if (data_hid < 0 || H5Dwrite (data_hid, type_hid, H5S_ALL, H5S_ALL,
 				    H5P_DEFAULT, stmp.c_str ()) < 0)
 	{
@@ -729,8 +742,15 @@ octave_fcn_handle::save_hdf5 (hid_t loc_id, const char *name,
 
 	  if (as_id >= 0)
 	    {
+#if HAVE_HDF5_18
+	      hid_t a_id = H5Acreate (group_hid, "SYMBOL_TABLE",
+				      H5T_NATIVE_IDX, as_id, 
+				      H5P_DEFAULT, H5P_DEFAULT);
+
+#else
 	      hid_t a_id = H5Acreate (group_hid, "SYMBOL_TABLE",
 				      H5T_NATIVE_IDX, as_id, H5P_DEFAULT);
+#endif
 
 	      if (a_id >= 0)
 		{
@@ -745,8 +765,11 @@ octave_fcn_handle::save_hdf5 (hid_t loc_id, const char *name,
 	    }
 	  else
 	    retval = false;
-
+#if HAVE_HDF5_18
+	  data_hid = H5Gcreate (group_hid, "symbol table", H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+#else
 	  data_hid = H5Gcreate (group_hid, "symbol table", 0);
+#endif
 	  if (data_hid < 0) 
 	    {
 	      H5Sclose (space_hid);
@@ -786,9 +809,13 @@ octave_fcn_handle::save_hdf5 (hid_t loc_id, const char *name,
       H5Tclose (type_hid);
       type_hid = H5Tcopy (H5T_C_S1);
       H5Tset_size (type_hid, octaveroot.length () + 1);
-
+#if HAVE_HDF5_18
+      hid_t a_id = H5Acreate (group_hid, "OCTAVEROOT",
+			      type_hid, space_hid, H5P_DEFAULT, H5P_DEFAULT);
+#else
       hid_t a_id = H5Acreate (group_hid, "OCTAVEROOT",
 			      type_hid, space_hid, H5P_DEFAULT);
+#endif
 
       if (a_id >= 0)
 	{
@@ -819,7 +846,12 @@ octave_fcn_handle::save_hdf5 (hid_t loc_id, const char *name,
       type_hid = H5Tcopy (H5T_C_S1);
       H5Tset_size (type_hid, fpath.length () + 1);
 
+#if HAVE_HDF5_18
+      a_id = H5Acreate (group_hid, "FILE", type_hid, space_hid, 
+      			H5P_DEFAULT, H5P_DEFAULT);
+#else
       a_id = H5Acreate (group_hid, "FILE", type_hid, space_hid, H5P_DEFAULT);
+#endif
 
       if (a_id >= 0)
 	{
@@ -847,11 +879,19 @@ octave_fcn_handle::load_hdf5 (hid_t loc_id, const char *name)
   hsize_t rank;
   int slen;
 
+#if HAVE_HDF5_18
+  group_hid = H5Gopen (loc_id, name, H5P_DEFAULT);
+#else
   group_hid = H5Gopen (loc_id, name);
+#endif
   if (group_hid < 0)
     return false;
 
+#if HAVE_HDF5_18
+  data_hid = H5Dopen (group_hid, "nm", H5P_DEFAULT);
+#else
   data_hid = H5Dopen (group_hid, "nm");
+#endif
 
   if (data_hid < 0)
     {
@@ -913,7 +953,11 @@ octave_fcn_handle::load_hdf5 (hid_t loc_id, const char *name)
 
   if (nm == "@<anonymous>")
     {
+#if HAVE_HDF5_18
+      data_hid = H5Dopen (group_hid, "fcn", H5P_DEFAULT);
+#else
       data_hid = H5Dopen (group_hid, "fcn");
+#endif
 
       if (data_hid < 0)
 	{
@@ -988,8 +1032,13 @@ octave_fcn_handle::load_hdf5 (hid_t loc_id, const char *name)
 
       // turn off error reporting temporarily, but save the error
       // reporting function:
+#if HAVE_HDF5_18
+      H5Eget_auto (H5E_DEFAULT, &err_func, &err_func_data);
+      H5Eset_auto (H5E_DEFAULT, 0, 0);
+#else
       H5Eget_auto (&err_func, &err_func_data);
       H5Eset_auto (0, 0);
+#endif
 
       hid_t attr_id = H5Aopen_name (group_hid, "SYMBOL_TABLE");
 
@@ -1002,7 +1051,11 @@ octave_fcn_handle::load_hdf5 (hid_t loc_id, const char *name)
 	}
 
       // restore error reporting:
+#if HAVE_HDF5_18
+      H5Eset_auto (H5E_DEFAULT, err_func, err_func_data);
+#else
       H5Eset_auto (err_func, err_func_data);
+#endif
 
       unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
 
@@ -1020,7 +1073,11 @@ octave_fcn_handle::load_hdf5 (hid_t loc_id, const char *name)
       if (len > 0 && success)
 	{
 	  hsize_t num_obj = 0;
+#if HAVE_HDF5_18
+	  data_hid = H5Gopen (group_hid, "symbol table", H5P_DEFAULT); 
+#else
 	  data_hid = H5Gopen (group_hid, "symbol table"); 
+#endif
 	  H5Gget_num_objs (data_hid, &num_obj);
 	  H5Gclose (data_hid);
 
@@ -1091,8 +1148,13 @@ octave_fcn_handle::load_hdf5 (hid_t loc_id, const char *name)
 
       // turn off error reporting temporarily, but save the error
       // reporting function:
+#if HAVE_HDF5_18
+      H5Eget_auto (H5E_DEFAULT, &err_func, &err_func_data);
+      H5Eset_auto (H5E_DEFAULT, 0, 0);
+#else
       H5Eget_auto (&err_func, &err_func_data);
       H5Eset_auto (0, 0);
+#endif
 
       hid_t attr_id = H5Aopen_name (group_hid, "OCTAVEROOT");
       if (attr_id >= 0)
@@ -1152,7 +1214,11 @@ octave_fcn_handle::load_hdf5 (hid_t loc_id, const char *name)
 	}
 
       // restore error reporting:
+#if HAVE_HDF5_18
+      H5Eset_auto (H5E_DEFAULT, err_func, err_func_data);
+#else
       H5Eset_auto (err_func, err_func_data);
+#endif
 
       success = (success ? set_fcn (octaveroot, fpath) : success);
     }

@@ -142,8 +142,13 @@ hdf5_check_attr (hid_t loc_id, const char *attr_name)
   // turn off error reporting temporarily, but save the error
   // reporting function:
 
+#if HAVE_HDF5_18
+  H5Eget_auto (H5E_DEFAULT, &err_func, &err_func_data);
+  H5Eset_auto (H5E_DEFAULT, 0, 0);
+#else
   H5Eget_auto (&err_func, &err_func_data);
   H5Eset_auto (0, 0);
+#endif
 
   hid_t attr_id = H5Aopen_name (loc_id, attr_name);
 
@@ -155,8 +160,11 @@ hdf5_check_attr (hid_t loc_id, const char *attr_name)
     }
 
   // restore error reporting:
+#if HAVE_HDF5_18
+  H5Eset_auto (H5E_DEFAULT, err_func, err_func_data);
+#else
   H5Eset_auto (err_func, err_func_data);
-
+#endif
   return retval;
 }
 
@@ -216,7 +224,11 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
 
   if (info.type == H5G_GROUP && ident_valid)
     {
+#if HAVE_HDF5_18
+      subgroup_id = H5Gopen (group_id, name, H5P_DEFAULT);
+#else
       subgroup_id = H5Gopen (group_id, name);
+#endif
 
       if (subgroup_id < 0)
 	{
@@ -226,7 +238,11 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
 
       if (hdf5_check_attr (subgroup_id, "OCTAVE_NEW_FORMAT"))
 	{
+#if HAVE_HDF5_18
+	  data_id = H5Dopen (subgroup_id, "type", H5P_DEFAULT);
+#else
 	  data_id = H5Dopen (subgroup_id, "type");
+#endif
 
 	  if (data_id < 0)
 	    {
@@ -296,7 +312,11 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
   else if (info.type == H5G_DATASET && ident_valid)
     {
       // For backwards compatiability.
+#if HAVE_HDF5_18
+      data_id = H5Dopen (group_id, name, H5P_DEFAULT);
+#else
       data_id = H5Dopen (group_id, name);
+#endif
 
       if (data_id < 0)
 	{
@@ -523,13 +543,16 @@ read_hdf5_data (std::istream& is, const std::string& /* filename */,
   herr_t H5Giterate_retval = -1;
 
   hsize_t num_obj = 0;
+#if HAVE_HDF5_18
+  hid_t group_id = H5Gopen (hs.file_id, "/", H5P_DEFAULT); 
+#else
   hid_t group_id = H5Gopen (hs.file_id, "/"); 
+#endif
   H5Gget_num_objs (group_id, &num_obj);
   H5Gclose (group_id);
   if (hs.current_item < static_cast<int> (num_obj))
     H5Giterate_retval = H5Giterate (hs.file_id, "/", &hs.current_item,
 				    hdf5_read_next_data, &d);
-
 
   if (H5Giterate_retval > 0)
     {
@@ -561,9 +584,13 @@ hdf5_add_attr (hid_t loc_id, const char *attr_name)
 
   if (as_id >= 0)
     {
+#if HAVE_HDF5_18
+      hid_t a_id = H5Acreate (loc_id, attr_name, H5T_NATIVE_UCHAR, 
+      			      as_id, H5P_DEFAULT, H5P_DEFAULT);
+#else
       hid_t a_id = H5Acreate (loc_id, attr_name,
 			      H5T_NATIVE_UCHAR, as_id, H5P_DEFAULT);
-
+#endif
       if (a_id >= 0)
 	{
 	  unsigned char attr_val = 1;
@@ -607,9 +634,13 @@ save_hdf5_empty (hid_t loc_id, const char *name, const dim_vector d)
 
   space_hid = H5Screate_simple (1, &sz, 0);
   if (space_hid < 0) return space_hid;
-
+#if HAVE_HDF5_18
+  data_hid = H5Dcreate (loc_id, name, H5T_NATIVE_IDX, space_hid, 
+			H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+#else
   data_hid = H5Dcreate (loc_id, name, H5T_NATIVE_IDX, space_hid, 
 			H5P_DEFAULT);
+#endif
   if (data_hid < 0)
     {
       H5Sclose (space_hid);
@@ -639,7 +670,11 @@ load_hdf5_empty (hid_t loc_id, const char *name, dim_vector &d)
     return 0;
 
   hsize_t hdims, maxdims;
+#if HAVE_HDF5_18
+  hid_t data_hid = H5Dopen (loc_id, name, H5P_DEFAULT);
+#else
   hid_t data_hid = H5Dopen (loc_id, name);
+#endif
   hid_t space_id = H5Dget_space (data_hid);
   H5Sget_simple_extent_dims (space_id, &hdims, &maxdims);
   int retval;
@@ -722,8 +757,11 @@ add_hdf5_data (hid_t loc_id, const octave_value& tc,
     val = val.full_value ();
 
   std::string t = val.type_name();
-
+#if HAVE_HDF5_18
+  data_id = H5Gcreate (loc_id, name.c_str (), H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+#else
   data_id = H5Gcreate (loc_id, name.c_str (), 0);
+#endif
   if (data_id < 0)
     goto error_cleanup;
 
@@ -736,8 +774,12 @@ add_hdf5_data (hid_t loc_id, const octave_value& tc,
   space_id = H5Screate_simple (0 , dims, 0);
   if (space_id < 0)
     goto error_cleanup;
-
+#if HAVE_HDF5_18
+  data_type_id = H5Dcreate (data_id, "type",  type_id, space_id,
+  			    H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+#else
   data_type_id = H5Dcreate (data_id, "type",  type_id, space_id, H5P_DEFAULT);
+#endif
   if (data_type_id < 0 || H5Dwrite (data_type_id, type_id, H5S_ALL, H5S_ALL, 
 				    H5P_DEFAULT, t.c_str ()) < 0)
     goto error_cleanup;

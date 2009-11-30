@@ -462,8 +462,12 @@ octave_range::save_hdf5 (hid_t loc_id, const char *name,
       H5Sclose (space_hid);
       return false;
     }
-
+#if HAVE_HDF5_18
+  data_hid = H5Dcreate (loc_id, name, type_hid, space_hid, 
+  			H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+#else
   data_hid = H5Dcreate (loc_id, name, type_hid, space_hid, H5P_DEFAULT);
+#endif
   if (data_hid < 0) 
     {
       H5Sclose (space_hid);
@@ -492,7 +496,11 @@ octave_range::load_hdf5 (hid_t loc_id, const char *name)
 {
   bool retval = false;
 
+#if HAVE_HDF5_18
+  hid_t data_hid = H5Dopen (loc_id, name, H5P_DEFAULT);
+#else
   hid_t data_hid = H5Dopen (loc_id, name);
+#endif
   hid_t type_hid = H5Dget_type (data_hid);
 
   hid_t range_type = hdf5_make_range_type (H5T_NATIVE_DOUBLE);

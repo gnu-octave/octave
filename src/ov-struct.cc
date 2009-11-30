@@ -1487,7 +1487,11 @@ octave_struct::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
 {
   hid_t data_hid = -1;
 
+#if HAVE_HDF5_18
+  data_hid = H5Gcreate (loc_id, name, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+#else
   data_hid = H5Gcreate (loc_id, name, 0);
+#endif
   if (data_hid < 0) return false;
 
   // recursively add each element of the structure to this group
@@ -1528,7 +1532,11 @@ octave_struct::load_hdf5 (hid_t loc_id, const char *name)
   Octave_map m (dim_vector (1, 1));
   int current_item = 0;
   hsize_t num_obj = 0;
-  hid_t group_id = H5Gopen (loc_id, name); 
+#if HAVE_HDF5_18
+  hid_t group_id = H5Gopen (loc_id, name, H5P_DEFAULT);
+#else
+  hid_t group_id = H5Gopen (loc_id, name);
+#endif
   H5Gget_num_objs (group_id, &num_obj);
   H5Gclose (group_id);
 

@@ -686,7 +686,11 @@ octave_list::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
 {
   hid_t data_hid = -1;
 
+#if HAVE_HDF5_18
+  data_hid = H5Gcreate (loc_id, name, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+#else
   data_hid = H5Gcreate (loc_id, name, 0);
+#endif
   if (data_hid < 0) return false;
 
   // recursively add each element of the list to this group
@@ -722,7 +726,11 @@ octave_list::load_hdf5 (hid_t loc_id,  const char *name)
   octave_value_list lst;
   int current_item = 0;
   hsize_t num_obj = 0;
+#if HAVE_HDF5_18
+  hid_t group_id = H5Gopen (loc_id, name, H5P_DEFAULT); 
+#else
   hid_t group_id = H5Gopen (loc_id, name); 
+#endif
   H5Gget_num_objs (group_id, &num_obj);
   H5Gclose (group_id);
 

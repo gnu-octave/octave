@@ -1,3 +1,14 @@
+2009-11-30  Kacper Kowalik <xarthisius.kk@gmail.com>
+
+	* oct-hdf5.h: Drop force the use of the v1.6 API
+	* ls-hdf5.cc, ov-base-int.cc, ov-bool-mat.cc, ov-bool-sparse.cc,
+	ov-bool.cc, ov-cell.cc, ov-class.cc, ov-complex.cc, ov-cx-mat.cc,
+	ov-cx-sparse.cc, ov-fcn-handle.cc, ov-fcn-inline.cc, ov-float.cc,
+	ov-flt-complex.cc, ov-flt-cx-mat.cc, ov-flt-re-mat.cc, ov-list.cc,
+	ov-range.cc, ov-re-mat.cc, ov-re-sparse.cc, ov-scalar.cc,
+	ov-str-mat.cc, ov-struct.cc: Allow v1.8 API versions of hdf5
+	functions.
+
 2009-11-30  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/fft2.cc (Fifft2): Docstring fix.

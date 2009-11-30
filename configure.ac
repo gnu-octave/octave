@@ -631,16 +631,15 @@ OCTAVE_CHECK_LIBRARY(hdf5, HDF5,
   [HDF5 library not found.  Octave will not be able to save or load HDF5 data files.],
   [hdf5.h], [H5Gget_num_objs], [], [],
   [warn_hdf5=
-   OCTAVE_HDF5_HAS_REQUIRED_API
-   if test $octave_hdf5_ok = yes; then
-     TEXINFO_HDF5="@set HAVE_HDF5"
-     AC_DEFINE(HAVE_HDF5, 1, [Define if HDF5 is available.])
-     case "$canonical_host_type" in
-       *-*-msdosmsvc)
-	 OCTAVE_HDF5_DLL
-	 ;;
-     esac
-   fi])
+   OCTAVE_HDF5_HAS_ENFORCED_16_API
+   TEXINFO_HDF5="@set HAVE_HDF5"
+   AC_DEFINE(HAVE_HDF5, 1, [Define if HDF5 is available and newer than version 1.6.])
+   case "$canonical_host_type" in
+     *-*-msdosmsvc)
+       OCTAVE_HDF5_DLL
+       ;;
+   esac
+   ])
 CPPFLAGS="$save_CPPFLAGS"
 LIBS="$save_LIBS"
 

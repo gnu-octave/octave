@@ -432,9 +432,13 @@ octave_bool_matrix::save_hdf5 (hid_t loc_id, const char *name,
 
   space_hid = H5Screate_simple (rank, hdims, 0);
   if (space_hid < 0) return false;
-
+#if HAVE_HDF5_18
+  data_hid = H5Dcreate (loc_id, name, H5T_NATIVE_HBOOL, space_hid, 
+			H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+#else
   data_hid = H5Dcreate (loc_id, name, H5T_NATIVE_HBOOL, space_hid, 
 			H5P_DEFAULT);
+#endif
   if (data_hid < 0)
     {
       H5Sclose (space_hid);
@@ -469,7 +473,11 @@ octave_bool_matrix::load_hdf5 (hid_t loc_id, const char *name)
   if (empty)
     return (empty > 0);
 
+#if HAVE_HDF5_18
+  hid_t data_hid = H5Dopen (loc_id, name, H5P_DEFAULT);
+#else
   hid_t data_hid = H5Dopen (loc_id, name);
+#endif
   hid_t space_id = H5Dget_space (data_hid);
 
   hsize_t rank = H5Sget_simple_extent_ndims (space_id);

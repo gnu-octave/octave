@@ -1059,20 +1059,17 @@ AC_DEFUN([OCTAVE_HDF5_DLL], [
 dnl
 dnl Check whether HDF5 library has version 1.6 API functions.
 dnl
-AC_DEFUN([OCTAVE_HDF5_HAS_REQUIRED_API], [
-  AC_CACHE_CHECK([whether HDF5 library has required API],
-    octave_cv_hdf5_has_required_api, [
+AC_DEFUN([OCTAVE_HDF5_HAS_ENFORCED_16_API], [
+  AC_CACHE_CHECK([whether HDF5 library has enforced version 1.6 API],
+    octave_cv_hdf5_has_enforced_16_api, [
     AC_TRY_LINK([
-#define H5_USE_16_API 1
 #include <hdf5.h>
 ], [
   H5Eset_auto (0, 0);], [
-      octave_cv_hdf5_has_required_api=yes], [
-      octave_cv_hdf5_has_required_api=no])])
-  if test "$octave_cv_hdf5_has_required_api" = "no"; then
-    octave_hdf5_ok=no
-    warn_hdf5="HDF5 library does not provide the version 1.6 API.  Octave will not be able to save or load HDF5 data files."
-    AC_MSG_WARN($warn_hdf5)
+      octave_cv_hdf5_has_enforced_16_api=yes], [
+      octave_cv_hdf5_has_enforced_16_api=no])])
+  if test "$octave_cv_hdf5_has_enforced_16_api" != "yes"; then
+    AC_DEFINE(HAVE_HDF5_18, 1, [Define if >=HDF5-1.8 is available.])
   fi
 ])
 dnl

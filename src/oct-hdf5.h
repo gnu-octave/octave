@@ -24,13 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_hdf5_h 1
 
 #if defined (HAVE_HDF5)
-
-#if !defined (H5_USE_16_API)
-#define H5_USE_16_API 1
-#endif
-
 #include <hdf5.h>
-
 #endif
 
 #endif

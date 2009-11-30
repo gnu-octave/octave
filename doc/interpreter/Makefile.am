@@ -134,25 +134,28 @@ MUNGED_TEXI_SRC = \
   var.texi
 
 info_TEXINFOS = octave.texi
-nodist_octave_TEXINFOS = \
-  ../conf.texi 
+nodist_octave_TEXINFOS = ../conf.texi contributors.texi $(MUNGED_TEXI_SRC)
 
-dist_octave_TEXINFOS = \
-  contributors.texi \
-  $(MUNGED_TEXI_SRC)
+all_octave_TEXINFOS = \
+  $(info_TEXINFOS) \
+  $(nodist_octave_TEXINFOS)
 
 TXI_SRC = $(MUNGED_TEXI_SRC:.texi=.txi)
+
+DISTCLEANFILES = $(MUNGED_TEXI_SRC)
 
 ../conf.texi:
 	$(MAKE) -C .. conf.texi
 
-$(srcdir)/octave.info: $(octave_TEXINFOS) $(IMAGES_TXT) $(EXAMPLE_FILES)
+$(srcdir)/octave.info: $(all_octave_TEXINFOS) $(IMAGES_TXT) $(EXAMPLE_FILES)
 
-octave.dvi octave.ps: $(octave_TEXINFOS) $(IMAGES_EPS) $(EXAMPLE_FILES)
+octave.dvi: $(all_octave_TEXINFOS) $(IMAGES_EPS) $(EXAMPLE_FILES)
 
-octave.pdf: $(octave_TEXINFOS) $(IMAGES_PDF) $(EXAMPLE_FILES)
+octave.ps: octave.dvi $(IMAGES_EPS)
 
-octave.html: $(octave_TEXINFOS) $(IMAGES_PNG) $(EXAMPLE_FILES)
+octave.pdf: $(all_octave_TEXINFOS) $(IMAGES_PDF) $(EXAMPLE_FILES)
+
+octave.html: $(all_octave_TEXINFOS) $(IMAGES_PNG) $(EXAMPLE_FILES)
 
 all-local: dvi html pdf ps doc-cache
 

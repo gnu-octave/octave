@@ -1,3 +1,7 @@
+2009-11-30  John W. Eaton  <jwe@octave.org>
+
+	* mkdoc: Handle classes in function names.
+
 2009-11-27  David Bateman  <dbateman@free.fr>
 
 	* @ftp/ascii.m, @ftp/binary.m, @ftp/cd.m, @ftp/close.m,

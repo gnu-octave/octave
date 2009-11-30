@@ -127,6 +127,9 @@ extract_docstring (std::istream& is)
                   else
                     doc += ", ";
 
+		  if (function_name[0] == '@')
+		    function_name = "@" + function_name;
+
                   doc += "@ref{doc-" + function_name + ",,"
 		    + function_name + "}";
 
@@ -275,6 +278,9 @@ process_texi_input_file (std::istream& is, std::ostream& os)
 			  // Make `see also' references in functions
 			  // possible using @anchor{TAG} (new with
 			  // Texinfo 4.0).
+
+			  if (symbol_name[0] == '@')
+			    symbol_name = "@" + symbol_name;
 
 			  os << "@anchor{doc-" << symbol_name << "}\n";
 

@@ -1,5 +1,14 @@
 2009-11-30  John W. Eaton  <jwe@octave.org>
 
+	* interpreter/munge-texi.cc (process_texi_input_file): Double @ in
+	symbol_name used in @anchor.
+	(extract_docstring): Double @ in function name used in @ref.
+
+	* interpreter/mk_doc_cache.m (cmd): Transform @ in class names to
+	@@ when processing DOCSTRINGS files.
+
+2009-11-30  John W. Eaton  <jwe@octave.org>
+
 	* interpreter/Makefile.a (nodist_octave_TEXINFOS): Add
 	contributors.texi and $(MUNGED_TEXI_SRC) to the list.
 	(dist_octave_TEXINFOS): Delete.

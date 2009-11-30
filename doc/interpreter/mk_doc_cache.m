@@ -59,6 +59,7 @@ text = [text{:}, doc_delim];
 
 text = regexprep (text, "@seealso *{([^}]*)}", "See also: $1.");
 text = regexprep (text, "-\\*- texinfo -\\*-[ \t]*[\r\n]*", "");
+text = regexprep (text, "@", "@@");
 
 [fid, name, msg] = mkstemp ("octave_doc_XXXXXX", true);
 

@@ -44,8 +44,12 @@ EOF
     else
       echo "$prefix$arg" | $PERL -n -e 'chop;
 	$f = "$_";
-        next unless m{(.*)/(.*)\.m};
-	for (qx{./gethelp $2 "$f" < "$f"}) {
+        next unless m{(.*)/(@|)([^/]*)/(.*)\.m};
+        $fcn = "$4";
+        if ($2) {
+          $fcn = "$2$3/$fcn";
+        }
+	for (qx{./gethelp $fcn "$f" < "$f"}) {
 	  s/^\s+\@/\@/ unless $i_am_in_example;
 	  s/^\s+\@group/\@group/;
 	  s/^\s+\@end\s+group/\@end\s+group/;

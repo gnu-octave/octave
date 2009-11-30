@@ -252,15 +252,15 @@ about the status of files.
 @node FTP objects
 @subsection FTP objects
 
-@DOCSTRING(ftp)
+@DOCSTRING(@ftp/ftp)
 
-@DOCSTRING(mget)
+@DOCSTRING(@ftp/mget)
 
-@DOCSTRING(mput)
+@DOCSTRING(@ftp/mput)
 
-@DOCSTRING(ascii)
+@DOCSTRING(@ftp/ascii)
 
-@DOCSTRING(binary)
+@DOCSTRING(@ftp/binary)
 
 @node URL manipulation
 @subsection URL manipulation

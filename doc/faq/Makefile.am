@@ -27,11 +27,6 @@ TEXINFO_TEX = ../texinfo.tex
 
 info_TEXINFOS = OctaveFAQ.texi
 
-nodist_OctaveFAQ_TEXINFOS = ../conf.texi
-
-../conf.texi:
-	$(MAKE) -C .. conf.texi
-
 all-local: dvi html pdf ps
 
 EXTRA_DIST = OctaveFAQ.dvi OctaveFAQ.html OctaveFAQ.pdf OctaveFAQ.ps

@@ -1,3 +1,8 @@
+2009-12-01  Rik <octave@nomad.inbox5.com>
+
+	* faq/Makefile.am, doc/interpreter/bugs.txi, doc/interpreter/install.txi:
+	Eliminate false dependency on conf.texi
+
 2009-11-30  Rik <octave@nomad.inbox5.com>
 
 	* interpreter/Makefile.am:

@@ -25,7 +25,6 @@
 @end ifclear
 
 @ifset INSTALLONLY
-@include conf.texi
 
 This file documents the installation of Octave.
 

@@ -5,20 +5,28 @@ plot_GEN_FCN_FILES = \
 
 GEN_FCN_FILES += $(plot_GEN_FCN_FILES)
 
+plot_PRIVATE_FCN_FILES = \
+  plot/private/__actual_axis_position__.m \
+  plot/private/__add_datasource__.m \
+  plot/private/__axes_limits__.m \
+  plot/private/__axis_label__.m \
+  plot/private/__bar__.m \
+  plot/private/__clabel__.m \
+  plot/private/__contour__.m \
+  plot/private/__default_plot_options__.m \
+  plot/private/__errcomm__.m \
+  plot/private/__errplot__.m \
+  plot/private/__ezplot__.m \
+  plot/private/__interp_cube__.m \
+  plot/private/__line__.m \
+  plot/private/__patch__.m \
+  plot/private/__plt__.m \
+  plot/private/__pltopt__.m \
+  plot/private/__quiver__.m \
+  plot/private/__scatter__.m \
+  plot/private/__stem__.m
+
 plot_FCN_FILES = \
-  plot/__actual_axis_position__.m \
-  plot/__add_datasource__.m \
-  plot/__area__.m \
-  plot/__axes_limits__.m \
-  plot/__axis_label__.m \
-  plot/__bar__.m \
-  plot/__bars__.m \
-  plot/__clabel__.m \
-  plot/__contour__.m \
-  plot/__default_plot_options__.m \
-  plot/__errcomm__.m \
-  plot/__errplot__.m \
-  plot/__ezplot__.m \
   plot/__gnuplot_get_var__.m \
   plot/__gnuplot_ginput__.m \
   plot/__gnuplot_has_feature__.m \
@@ -27,29 +35,9 @@ plot_FCN_FILES = \
   plot/__go_close_all__.m \
   plot/__go_draw_axes__.m \
   plot/__go_draw_figure__.m \
-  plot/__interp_cube__.m \
-  plot/__line__.m \
   plot/__marching_cube__.m \
   plot/__next_line_color__.m \
-  plot/__patch__.m \
-  plot/__plr1__.m \
-  plot/__plr2__.m \
-  plot/__plt1__.m \
-  plot/__plt2__.m \
-  plot/__plt2mm__.m \
-  plot/__plt2mv__.m \
-  plot/__plt2ss__.m \
-  plot/__plt2sv__.m \
-  plot/__plt2vm__.m \
-  plot/__plt2vs__.m \
-  plot/__plt2vv__.m \
-  plot/__plt__.m \
   plot/__plt_get_axis_arg__.m \
-  plot/__pltopt1__.m \
-  plot/__pltopt__.m \
-  plot/__quiver__.m \
-  plot/__scatter__.m \
-  plot/__stem__.m \
   plot/allchild.m \
   plot/ancestor.m \
   plot/area.m \
@@ -170,7 +158,8 @@ plot_FCN_FILES = \
   plot/ylabel.m \
   plot/ylim.m \
   plot/zlabel.m \
-  plot/zlim.m
+  plot/zlim.m \
+  $(plot_PRIVATE_FCN_FILES)
 
 FCN_FILES += $(plot_FCN_FILES)
 

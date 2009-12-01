@@ -1,3 +1,40 @@
+2009-12-01  John W. Eaton  <jwe@octave.org>
+
+	* plot/private/__axes_limits__.m:
+	* plot/private/__axis_label__.m:
+	* plot/private/__bar__.m:
+	* plot/private/__clabel__.m:
+	* plot/private/__contour__.m:
+	* plot/private/__errcomm__.m:
+	* plot/private/__errplot__.m:
+	* plot/private/__ezplot__.m:
+	* plot/private/__line__.m:
+	* plot/private/__patch__.m:
+	* plot/private/__plt__.m:
+	* plot/private/__pltopt__.m:
+	* plot/private/__quiver__.m: Rename from plot/__quiver__.m
+	* plot/private/__scatter__.m:
+	* plot/private/__stem__.m:
+	* plot/private/__interp_cube__.m:
+	* plot/private/__add_datasource__.m:
+	* plot/private/__actual_axis_position__.m
+	* plot/private/__default_plot_options__.m
+
+	* plot/__pltopt1__.m: Now a subfunction of plot/__pltopt__.m.
+
+	* plot/__bars__.m: Now a subfunction of plot/__bar__.m.
+	* plot/__bar__.m (bars): Rename from __bars__.
+	(__bar__): Call bars insteaad of __bars__.
+
+	* plot/__area__.m: Now a subfunction of plot/area.m.
+
+	* plot/__plr1__.m, plot/__plr2__.m: Now subfunctions of polar.m.
+
+	* plot/__plt1__.m, plot/__plt2__.m, plot/__plt2mm__.m,
+	plot/__plt2mv__.m, plot/__plt2ss__.m, plot/__plt2sv__.m,
+	plot/__plt2vm__.m, plot/__plt2vs__.m, plot/__plt2vv__.m:
+	Now subfunctions of __plt__.m.
+
 2009-11-30  John W. Eaton  <jwe@octave.org>
 
 	* mkdoc: Handle classes in function names.

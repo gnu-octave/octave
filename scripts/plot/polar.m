@@ -80,3 +80,128 @@ function retval = polar (varargin)
   end_unwind_protect
 
 endfunction
+
+function retval = __plr1__ (h, theta, fmt)
+
+  if (nargin != 3)
+    print_usage ();
+  endif
+
+  [nr, nc] = size (theta);
+  if (nr == 1)
+    theta = theta';
+    tmp = nr;
+    nr = nc;
+    nc = tmp;
+  endif
+  theta_i = imag (theta);
+  if (any (theta_i))
+    rho = theta_i;
+    theta = real (theta);
+  else
+    rho = theta;
+    theta = (1:nr)';
+  endif
+
+  retval = __plr2__ (h, theta, rho, fmt);
+
+endfunction
+
+function retval = __plr2__ (h, theta, rho, fmt)
+
+  if (nargin != 4)
+    print_usage ();
+  endif
+
+  if (any (imag (theta)))
+    theta = real (theta);
+  endif
+
+  if (any (imag (rho)))
+    rho = real (rho);
+  endif
+
+  if (isscalar (theta))
+    if (isscalar (rho))
+      x = rho * cos (theta);
+      y = rho * sin (theta);
+      retval = __plt__ ("polar", h, x, y, fmt);
+    else
+      error ("__plr2__: invalid data for plotting");
+    endif
+  elseif (isvector (theta))
+    if (isvector (rho))
+      if (length (theta) != length (rho))
+        error ("__plr2__: vector lengths must match");
+      endif
+      if (rows (rho) == 1)
+        rho = rho';
+      endif
+      if (rows (theta) == 1)
+        theta = theta';
+      endif
+      x = rho .* cos (theta);
+      y = rho .* sin (theta);
+      retval = __plt__ ("polar", h, x, y, fmt);
+    elseif (ismatrix (rho))
+      [t_nr, t_nc] = size (theta);
+      if (t_nr == 1)
+        theta = theta';
+        tmp = t_nr;
+        t_nr = t_nc;
+        t_nc = tmp;
+      endif
+      [r_nr, r_nc] = size (rho);
+      if (t_nr != r_nr)
+        rho = rho';
+        tmp = r_nr;
+        r_nr = r_nc;
+        r_nc = tmp;
+      endif
+      if (t_nr != r_nr)
+        error ("__plr2__: vector and matrix sizes must match");
+      endif
+      x = diag (cos (theta)) * rho;
+      y = diag (sin (theta)) * rho;
+      retval = __plt__ ("polar", h, x, y, fmt);
+    else
+      error ("__plr2__: invalid data for plotting");
+    endif
+  elseif (ismatrix (theta))
+    if (isvector (rho))
+      [r_nr, r_nc] = size (rho);
+      if (r_nr == 1)
+        rho = rho';
+        tmp = r_nr;
+        r_nr = r_nc;
+        r_nc = tmp;
+      endif
+      [t_nr, t_nc] = size (theta);
+      if (r_nr != t_nr)
+        theta = theta';
+        tmp = t_nr;
+        t_nr = t_nc;
+        t_nc = tmp;
+      endif
+      if (r_nr != t_nr)
+        error ("__plr2__: vector and matrix sizes must match");
+      endif
+      diag_r = diag (rho);
+      x = diag_r * cos (theta);
+      y = diag_r * sin (theta);
+      retval = __plt__ ("polar", h, x, y, fmt);
+    elseif (ismatrix (rho))
+      if (! size_equal (rho, theta))
+        error ("__plr2__: matrix dimensions must match");
+      endif
+      x = rho .* cos (theta);
+      y = rho .* sin (theta);
+      retval = __plt__ ("polar", h, x, y, fmt);
+    else
+      error ("__plr2__: invalid data for plotting");
+    endif
+  else
+    error ("__plr2__: invalid data for plotting");
+  endif
+
+endfunction

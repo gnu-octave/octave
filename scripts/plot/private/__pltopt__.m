@@ -1,4 +1,4 @@
-## Copyright (C) 1996, 1997, 1998, 1999, 2000, 2002, 2003, 2004, 2005,
+## Copyright (C) 1994, 1995, 1996, 1997, 1998, 2000, 2002, 2004, 2005,
 ##               2006, 2007, 2009 John W. Eaton
 ##
 ## This file is part of Octave.
@@ -18,9 +18,108 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{options}, @var{valid}] =} __pltopt1__ (@var{caller}, @var{opt}, @var{err_on_invalid})
+## @deftypefn {Function File} {} __pltopt__ (@var{caller}, @var{opt})
 ## Undocumented internal function.
 ## @end deftypefn
+
+## @deftypefn {Function File} {} __pltopt__ (@var{caller}, @var{opt})
+##
+## Decode plot option strings.
+##
+## @var{opt} can currently be some combination of the following:
+##
+## @table @code
+## @item "-"
+## For solid linestyle (default).
+##
+## @item "--"
+## For dashed line style.
+##
+## @item "-."
+## For linespoints plot style.
+##
+## @item ":"
+## For dots plot style.
+##
+## @item "r"
+## Red line color.
+##
+## @item "g"
+## Green line color.
+##
+## @item "b"
+## Blue line color.
+##
+## @item "c"
+## Cyan line color.
+##
+## @item "m"
+## Magenta line color.
+##
+## @item "y"
+## Yellow line color.
+##
+## @item "k"
+## Black line color.
+##
+## @item "w"
+## White line color.
+##
+## @item ";title;"
+## Here @code{"title"} is the label for the key.
+##
+## @item "+"
+## @itemx "o"
+## @itemx "*"
+## @itemx "."
+## @itemx "x"
+## @itemx "s"
+## @itemx "d"
+## @itemx "^"
+## @itemx "v"
+## @itemx ">"
+## @itemx "<"
+## @itemx "p"
+## @itemx "h"
+## Used in combination with the points or linespoints styles, set the point
+## style.
+## @end table
+##
+## The legend may be fixed to include the name of the variable
+## plotted in some future version of Octave.
+
+## Author: jwe
+
+function [options, valid] = __pltopt__ (caller, opt, err_on_invalid)
+
+  valid = true;
+  options =  __default_plot_options__ ();
+
+  if ((nargin == 2 || nargin == 3) && (nargout == 1 || nargout == 2))
+    if (nargin == 2)
+      err_on_invalid = true;
+    endif
+    if (ischar (opt))
+      nel = rows (opt);
+    elseif (iscellstr (opt))
+      nel = numel (opt);
+    else
+      error ("__pltopt__: expecting argument to be character string or cell array of character strings");
+    endif
+    if (ischar (opt))
+      opt = cellstr (opt);
+    endif
+    for i = nel:-1:1
+      [options(i), valid] = __pltopt1__ (caller, opt{i}, err_on_invalid);
+      if (! err_on_invalid && ! valid)
+	return;
+      endif
+    endfor
+  else
+    print_usage ();
+  endif
+
+endfunction
 
 ## Really decode plot option strings.
 

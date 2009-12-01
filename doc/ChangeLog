@@ -1,3 +1,9 @@
+2009-11-30  Rik <octave@nomad.inbox5.com>
+
+	* interpreter/Makefile.am:
+	Overhaul Makefile to correctly generate *.texi files and to stop their
+	distribution when running 'make dist'
+
 2009-11-30  John W. Eaton  <jwe@octave.org>
 
 	* interpreter/munge-texi.cc (process_texi_input_file): Double @ in

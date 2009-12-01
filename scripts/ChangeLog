@@ -8,25 +8,28 @@
 
 2009-12-01  John W. Eaton  <jwe@octave.org>
 
-	* plot/private/__axes_limits__.m:
-	* plot/private/__axis_label__.m:
-	* plot/private/__bar__.m:
-	* plot/private/__clabel__.m:
-	* plot/private/__contour__.m:
-	* plot/private/__errcomm__.m:
-	* plot/private/__errplot__.m:
-	* plot/private/__ezplot__.m:
-	* plot/private/__line__.m:
-	* plot/private/__patch__.m:
-	* plot/private/__plt__.m:
-	* plot/private/__pltopt__.m:
+	* plot/private/__actual_axis_position__.m: Rename from
+	plot/__actual_axis_position__.m.
+	* plot/private/__add_datasource__.m: Rename from
+	plot/__add_datasource__.m.
+	* plot/private/__axes_limits__.m: Rename from plot/__axes_limits__.m.
+	* plot/private/__axis_label__.m: Rename from plot/__axis_label__.m.
+	* plot/private/__bar__.m: Rename from plot/__bar__.m.
+	* plot/private/__clabel__.m: Rename from plot/__clabel__.m.
+	* plot/private/__contour__.m: Rename from plot/__contour__.m.
+	* plot/private/__default_plot_options__.m: Rename from
+	plot/__default_plot_options__.m.
+	* plot/private/__errcomm__.m: Rename from plot/__errcomm__.m.
+	* plot/private/__errplot__.m: Rename from plot/__errplot__.m.
+	* plot/private/__ezplot__.m: Rename from plot/__ezplot__.m.
+	* plot/private/__interp_cube__.m: Rename from plot/__interp_cube__.m.
+	* plot/private/__line__.m: Rename from plot/__line__.m.
+	* plot/private/__patch__.m: Rename from plot/__patch__.m.
+	* plot/private/__plt__.m: Rename from plot/__plt__.m.
+	* plot/private/__pltopt__.m: Rename from plot/__pltopt__.m.
 	* plot/private/__quiver__.m: Rename from plot/__quiver__.m
-	* plot/private/__scatter__.m:
-	* plot/private/__stem__.m:
-	* plot/private/__interp_cube__.m:
-	* plot/private/__add_datasource__.m:
-	* plot/private/__actual_axis_position__.m
-	* plot/private/__default_plot_options__.m
+	* plot/private/__scatter__.m: Rename from plot/__scatter__.m.
+	* plot/private/__stem__.m: Rename from plot/__stem__.m.
 
 	* plot/__pltopt1__.m: Now a subfunction of plot/__pltopt__.m.
 

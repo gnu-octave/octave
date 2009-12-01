@@ -93,7 +93,7 @@ public:
   octave_matrix (const NDArray& nda, const idx_vector& cache)
     : octave_base_matrix<NDArray> (nda) 
     { 
-      set_idx_cache (idx_vector (cache));
+      set_idx_cache (cache);
     }
 
   ~octave_matrix (void) { }

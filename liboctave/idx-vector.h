@@ -195,6 +195,8 @@ private:
 
     std::ostream& print (std::ostream& os) const;
 
+    Range unconvert (void) const;
+
   private:
 
     DECLARE_OCTAVE_ALLOCATOR
@@ -247,6 +249,8 @@ private:
     octave_idx_type get_data (void) const { return data; }
 
     std::ostream& print (std::ostream& os) const;
+
+    double unconvert (void) const;
 
   private:
 
@@ -307,6 +311,8 @@ private:
     const octave_idx_type *get_data (void) const { return data; }
 
     std::ostream& print (std::ostream& os) const;
+
+    Array<double> unconvert (void) const;
 
   private:
 
@@ -372,6 +378,8 @@ private:
     const bool *get_data (void) const { return data; }
 
     std::ostream& print (std::ostream& os) const;
+
+    Array<bool> unconvert (void) const;
 
   private:
 
@@ -927,10 +935,10 @@ public:
   // If the index is a mask, convert it to index vector.
   idx_vector unmask (void) const;
 
-  // Unconverts the index to a scalar, Range or double array.
-  // Note that the index class can be changed, if it's a mask index.
+  // Unconverts the index to a scalar, Range, double array or a mask.
   void unconvert (idx_class_type& iclass,
-                  double& scalar, Range& range, Array<double>& array);
+                  double& scalar, Range& range, 
+                  Array<double>& array, Array<bool>& mask) const;
     
   // FIXME -- these are here for compatibility.  They should be removed
   // when no longer in use.

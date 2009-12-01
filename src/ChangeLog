@@ -1,3 +1,13 @@
+2009-12-01  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-bool-mat.h (octave_bool_matrix::octave_bool_matrix (const
+	boolNDArray&, const idx_vector&)): New constructor.
+	* ov-re-mat.h (octave_bool_matrix::octave_bool_matrix (const
+	NDArray&, const idx_vector&)): Simplify.
+	 * ov.cc (octave_value::octave_value (const idx_vector&)): Allow the
+	 mask case.
+	 * DLD-FUNCTIONS/find.cc (Ffind): Explicitly call unmask ().
+
 2009-11-30  Kacper Kowalik <xarthisius.kk@gmail.com>
 
 	* oct-hdf5.h: Drop force the use of the v1.6 API

@@ -65,6 +65,12 @@ public:
   octave_bool_matrix (const boolMatrix& bm, const MatrixType& t)
     : octave_base_matrix<boolNDArray> (bm, t) { }
 
+  octave_bool_matrix (const boolNDArray& bm, const idx_vector& cache)
+    : octave_base_matrix<boolNDArray> (bm) 
+    { 
+      set_idx_cache (cache);
+    }
+
   octave_bool_matrix (const octave_bool_matrix& bm)
     : octave_base_matrix<boolNDArray> (bm) { }
 

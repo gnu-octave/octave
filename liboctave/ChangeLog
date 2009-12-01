@@ -1,3 +1,12 @@
+2009-12-01  Jaroslav Hajek  <highegg@gmail.com>
+
+	* idx-vector.cc (idx_vector::idx_range_rep::unconvert,
+	idx_vector::idx_scalar_rep::unconvert,
+	idx_vector::idx_vector_rep::unconvert,
+	idx_vector::idx_mask_rep::unconvert): New methods.
+	(idx_vector::unconvert): Use them here. Add mask output.
+	* idx-vector.h: Update decls.
+
 2009-11-28  Jaroslav Hajek  <highegg@gmail.com>
 
 	* dim-vector.h (dim_vector::zero_by_zero): New method.

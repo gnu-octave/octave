@@ -168,6 +168,13 @@ idx_vector::idx_range_rep::print (std::ostream& os) const
   return os;
 }
 
+Range
+idx_vector::idx_range_rep::unconvert (void) const
+{
+  return Range (static_cast<double> (start+1), 
+                static_cast<double> (step), len);
+}
+
 inline octave_idx_type
 convert_index (octave_idx_type i, bool& conv_error, 
                octave_idx_type& ext)
@@ -233,6 +240,12 @@ idx_vector::idx_scalar_rep::checkelem (octave_idx_type i) const
 std::ostream& idx_vector::idx_scalar_rep::print (std::ostream& os) const
 {
   return os << data;
+}
+
+double
+idx_vector::idx_scalar_rep::unconvert (void) const
+{
+  return data + 1;
 }
 
 DEFINE_OCTAVE_ALLOCATOR(idx_vector::idx_vector_rep);
@@ -394,6 +407,15 @@ idx_vector::idx_vector_rep::print (std::ostream& os) const
   return os;
 }
 
+Array<double>
+idx_vector::idx_vector_rep::unconvert (void) const
+{
+  Array<double> retval (orig_dims);
+  for (octave_idx_type i = 0; i < len; i++)
+    retval.xelem (i) = data[i] + 1;
+  return retval;
+}
+
 DEFINE_OCTAVE_ALLOCATOR(idx_vector::idx_mask_rep);
 
 idx_vector::idx_mask_rep::idx_mask_rep (bool b)
@@ -479,6 +501,20 @@ idx_vector::idx_mask_rep::print (std::ostream& os) const
   if (ext > 0) os << data[ext-1]; os << ']';
 
   return os;
+}
+
+Array<bool>
+idx_vector::idx_mask_rep::unconvert (void) const
+{
+  if (aowner)
+    return *aowner;
+  else
+    {
+      Array<bool> retval (orig_dims);
+      for (octave_idx_type i = 0; i < len; i++)
+        retval.xelem (i) = data[i];
+      return retval;
+    }
 }
 
 const idx_vector idx_vector::colon (new idx_vector::idx_colon_rep ());
@@ -833,7 +869,8 @@ idx_vector::unmask (void) const
 }
 
 void idx_vector::unconvert (idx_class_type& iclass,
-                            double& scalar, Range& range, Array<double>& array)
+                            double& scalar, Range& range, 
+                            Array<double>& array, Array<bool>& mask) const
 {
   iclass = idx_class ();
   switch (iclass)
@@ -843,32 +880,25 @@ void idx_vector::unconvert (idx_class_type& iclass,
     case class_range:
         {
           idx_range_rep * r = dynamic_cast<idx_range_rep *> (rep);
-          double start = r->get_start (), step = r->get_step ();
-          range = Range (start+1, step, r->length (0));
+          range = r->unconvert ();
         }
       break;
     case class_scalar:
         {
           idx_scalar_rep * r = dynamic_cast<idx_scalar_rep *> (rep);
-          scalar = r->get_data () + 1;
+          scalar = r->unconvert ();
         }
       break;
     case class_vector:
         {
           idx_vector_rep * r = dynamic_cast<idx_vector_rep *> (rep);
-          const octave_idx_type *data = r->get_data ();
-          array = Array<double> (r->orig_dimensions ());
-          octave_idx_type len = r->length (0);
-          for (octave_idx_type i = 0; i < len; i++)
-            array.xelem (i) = data[i] + 1;
+          array = r->unconvert ();
         }
       break;
     case class_mask:
         {
-          // This is done because we don't want a logical index be cached for a
-          // numeric array.
-          *this = unmask ();
-          unconvert (iclass, scalar, range, array);
+          idx_mask_rep * r = dynamic_cast<idx_mask_rep *> (rep);
+          mask = r->unconvert ();
         }
       break;
     default:

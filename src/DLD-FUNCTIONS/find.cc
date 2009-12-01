@@ -483,8 +483,8 @@ b = sparse(i, j, v, sz(1), sz(2));\n\
       else if (nargout <= 1 && n_to_find == -1 && direction == 1)
         {
           // This case is equivalent to extracting indices from a logical
-          // matrix. Try to reuse the possibly cached index vector.
-          retval(0) = arg.index_vector ();
+          // matrix. Try to reuse the possibly cached index vector. 
+          retval(0) = arg.index_vector ().unmask ();
         }
       else
         {

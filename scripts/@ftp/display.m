@@ -16,7 +16,7 @@
 function display (obj)
   printf ("FTP Object\n");
   printf (" host: %s\n", obj.host);
-  printf (" user: %s\n", obj.user);
+  printf (" user: %s\n", obj.username);
   printf ("  dir: %s\n", __ftp_pwd__ (obj.curlhandle));
   printf (" mode: %s\n", __ftp_mode__ (obj.curlhandle));
 endfunction

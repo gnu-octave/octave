@@ -1,3 +1,11 @@
+2009-12-01  David Bateman  <dbateman@free.fr>
+
+	* @ftp/ftp.m: Treat empty constructor and construction from
+	another FTP object.
+	* @ftp/loadobj.m: Allow and remove the matlab specific fields
+	of FTP objects allowing matlab FTP objects to be loaded in Octave.
+	* @ftp/display.m: user -> username.
+
 2009-12-01  John W. Eaton  <jwe@octave.org>
 
 	* plot/private/__axes_limits__.m:

@@ -22,11 +22,21 @@
 ## established FTP connection.
 ## @end deftypefn
 
-function obj = ftp (host, user = "anonymous", pass = "")
-  p.host = host;
-  p.user = user;
-  p.pass = pass;
-  p.curlhandle = tmpnam ("ftp-");
-  __ftp__ (p.curlhandle, host, user, pass);
-  obj = class (p, "ftp");
+function obj = ftp (host, username = "anonymous", password = "")
+  if (nargin == 0)
+    p.host = "";
+    p.username = username;
+    p.password = password;
+    p.curlhandle = tmpnam ("ftp-");
+    obj = class (p, "ftp");
+  elseif (nargin == 1 && strcmp (class (host), "ftp"))
+    obj = host;
+  else
+    p.host = host;
+    p.username = username;
+    p.password = password;
+    p.curlhandle = tmpnam ("ftp-");
+    __ftp__ (p.curlhandle, host, username, password);
+    obj = class (p, "ftp");
+  endif
 endfunction

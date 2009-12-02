@@ -1,3 +1,7 @@
+2009-12-02  John W. Eaton  <jwe@octave.org>
+
+	* help/module.mk: Fix typo in previous change.
+
 2009-12-01  John W. Eaton  <jwe@octave.org>
 
 	* help/module.mk (help_PRIVATE_FCN_FILES): New list.

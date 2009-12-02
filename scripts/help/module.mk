@@ -1,7 +1,7 @@
 FCN_FILE_DIRS += help
 
 help_PRIVATE_FCN_FILES = \
-  help/__additional_help_message__.m \
+  help/private/__additional_help_message__.m \
 
 help_FCN_FILES = \
   help/__makeinfo__.m \

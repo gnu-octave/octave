@@ -526,3 +526,43 @@ endfunction
 %! assert (norm (f) < tol);
 %! assert (norm (x - x_opt, Inf) < tol);
 
+## Solve the double dogleg trust-region least-squares problem:
+## Minimize norm(r*x-b) subject to the constraint norm(d.*x) <= delta,
+## x being a convex combination of the gauss-newton and scaled gradient.
+
+## TODO: error checks
+## TODO: handle singularity, or leave it up to mldivide?
+
+function x = __dogleg__ (r, b, d, delta)
+  ## Get Gauss-Newton direction.
+  x = r \ b;
+  xn = norm (d .* x);
+  if (xn > delta)
+    ## GN is too big, get scaled gradient.
+    s = (r' * b) ./ d;
+    sn = norm (s);
+    if (sn > 0)
+      ## Normalize and rescale.
+      s = (s / sn) ./ d;
+      ## Get the line minimizer in s direction.
+      tn = norm (r*s);
+      snm = (sn / tn) / tn;
+      if (snm < delta)
+	## Get the dogleg path minimizer.
+        bn = norm (b);
+        dxn = delta/xn; snmd = snm/delta;
+        t = (bn/sn) * (bn/xn) * snmd;
+        t -= dxn * snmd^2 - sqrt ((t-dxn)^2 + (1-dxn^2)*(1-snmd^2));
+        alpha = dxn*(1-snmd^2) / t;
+      else
+        alpha = 0;
+      endif
+    else
+      alpha = delta / xn;
+      snm = 0;
+    endif
+    ## Form the appropriate convex combination.
+    x = alpha * x + ((1-alpha) * min (snm, delta)) * s;
+  endif
+endfunction
+

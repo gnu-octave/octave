@@ -1,7 +1,6 @@
 FCN_FILE_DIRS += statistics/base
 
 statistics_base_FCN_FILES = \
-  statistics/base/__quantile__.m \
   statistics/base/center.m \
   statistics/base/cloglog.m \
   statistics/base/cor.m \

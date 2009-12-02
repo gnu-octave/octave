@@ -1,7 +1,9 @@
 FCN_FILE_DIRS += miscellaneous
 
+miscellaneous_PRIVATE_FCN_FILES = \
+  miscellaneous/private/__xzip__.m
+
 miscellaneous_FCN_FILES = \
-  miscellaneous/__xzip__.m \
   miscellaneous/ans.m \
   miscellaneous/bincoeff.m \
   miscellaneous/bug_report.m \
@@ -66,7 +68,8 @@ miscellaneous_FCN_FILES = \
   miscellaneous/warning_ids.m \
   miscellaneous/what.m \
   miscellaneous/xor.m \
-  miscellaneous/zip.m
+  miscellaneous/zip.m \
+  $(miscellaneous_PRIVATE_FCN_FILES)
 
 FCN_FILES += $(miscellaneous_FCN_FILES)
 

@@ -120,21 +120,24 @@ function [d, f] = myfileparts (files)
   f(idx) = files(idx);
 endfunction
 
-%!error <extension has to be a string with finite length> 
-%!  __xzip__("gzip", "", "gzip -r %s", "bla");
-%!error <no files to move>
-%!  __xzip__("gzip", ".gz", "gzip -r %s", tmpnam);
-%!error <command failed with exit status>
-%!  # test __xzip__ with invalid compression command
-%!  unwind_protect
-%!    filename = tmpnam;
-%!    dummy    = 1;
-%!    save(filename, "dummy");
-%!    dirname  = tmpnam;
-%!    mkdir(dirname);
-%!    entry = __xzip__("gzip", ".gz", "xxxzipxxx -r %s 2>/dev/null", 
-%!                     filename, dirname);
-%!  unwind_protect_cleanup
-%!    delete(filename);
-%!    rmdir(dirname);
-%!  end_unwind_protect
+## FIXME -- reinstate these tests if we invent a way to test private
+## functions directly.
+##
+## %!error <extension has to be a string with finite length> 
+## %!  __xzip__("gzip", "", "gzip -r %s", "bla");
+## %!error <no files to move>
+## %!  __xzip__("gzip", ".gz", "gzip -r %s", tmpnam);
+## %!error <command failed with exit status>
+## %!  # test __xzip__ with invalid compression command
+## %!  unwind_protect
+## %!    filename = tmpnam;
+## %!    dummy    = 1;
+## %!    save(filename, "dummy");
+## %!    dirname  = tmpnam;
+## %!    mkdir(dirname);
+## %!    entry = __xzip__("gzip", ".gz", "xxxzipxxx -r %s 2>/dev/null", 
+## %!                     filename, dirname);
+## %!  unwind_protect_cleanup
+## %!    delete(filename);
+## %!    rmdir(dirname);
+## %!  end_unwind_protect

@@ -1,8 +1,6 @@
 FCN_FILE_DIRS += image
 
 image_FCN_FILES = \
-  image/__img__.m \
-  image/__img_via_file__.m \
   image/autumn.m \
   image/bone.m \
   image/brighten.m \

@@ -1,8 +1,10 @@
 FCN_FILE_DIRS += general
 
+general_PRIVATE_FCN_FILES = \
+  general/private/__isequal__.m \
+  general/private/__splinen__.m
+
 general_FCN_FILES = \
-  general/__isequal__.m \
-  general/__splinen__.m \
   general/accumarray.m \
   general/arrayfun.m \
   general/bicubic.m \
@@ -75,7 +77,8 @@ general_FCN_FILES = \
   general/structfun.m \
   general/subsindex.m \
   general/triplequad.m \
-  general/trapz.m
+  general/trapz.m \
+  $(general_PRIVATE_FCN_FILES)
 
 FCN_FILES += $(general_FCN_FILES)
 

@@ -1,3 +1,59 @@
+2009-12-01  John W. Eaton  <jwe@octave.org>
+
+	* help/module.mk (help_PRIVATE_FCN_FILES): New list.
+	(help_FCN_FILES): Remove new private functions from the list.
+	Include $(help_PRIVATE_FCN_FILES) in the list.
+	* help/private/__additional_help_message__.m: Rename from
+	help/__additional_help_message__.m.
+
+	* statistics/base/module.mk (statistics_base_FCN_FILES):
+	Remove statistics/base/__quantile__.m from the list.
+	* statistics/base/__quantile__.m: Now a subfunction of
+	statistics/base/quantile.m.
+	* statistics/base/quantile.m: Remove redundant tests.
+
+	* miscellaneous/__xzip__.m: Comment out tests until we have a way
+	to test private functions directly.
+
+	* general/isequal.m, general/isequalwithequalnans.m:
+	Convert tests from __isequal__.
+
+	* optimization/module.mk (optimization_PRIVATE_FCN_FILES): New list.
+	(optimization_FCN_FILES): Remove new private functions and new
+	subfunctions from the list.  Include
+	$(optimization_PRIVATE_FCN_FILES) in the list.
+
+	* optimization/private/__fdjac__.m: Rename from
+	optimization/__fdjac__.m.
+
+	* optimization/__dogleg__.m: Now a subfunction of path/fsolve.m.
+	* optimization/__doglegm__.m: Now a subfunction of path/fminunc.m.
+
+	* general/module.mk (general_PRIVATE_FCN_FILES): New list.
+	(general_FCN_FILES): Remove new private functions from the list.
+	Include $(general_PRIVATE_FCN_FILES) in the list.
+
+	* general/private/__isequal__.m: Rename from general/__isequal__.m.
+	* general/private/__splinen__.m: Rename from general/__splinen__.m.
+
+	* image/module.mk (image_FCN_FILES): Remove image/__img__.m and
+	image/__img_via_file__.m from the list.
+
+	* image/__img__.m: Now a subfunction of image/image.m.
+	* image/__img_via_file__.m: Now a subfunction of image_viewer.m.
+
+	* path/module.mk (path_FCN_FILES): Remove path/__extractpath__.m
+	from the list.
+
+	* path/__extractpath__.m: Now a subfunction of path/pathdef.m.
+
+	* miscellaneous/module.mk (miscellaneous_PRIVATE_FCN_FILES): New list.
+	(miscellaneous_FCN_FILES): Remove __xzip__.m from the list.
+	Include $(miscellaneous_PRIVATE_FCN_FILES) in the list.
+
+	* miscellaneous/private/__xzip__.m: Rename from
+	miscellaneous/__xzip__.m.
+
 2009-12-01  David Bateman  <dbateman@free.fr>
 
 	* @ftp/ftp.m: Treat empty constructor and construction from
@@ -7,6 +63,10 @@
 	* @ftp/display.m: user -> username.
 
 2009-12-01  John W. Eaton  <jwe@octave.org>
+
+	* plot/module.mk (plot_PRIVATE_FCN_FILES): New list.
+	(plot_FCN_FILES): Include $(plot_PRIVATE_FCN_FILES) in the list.
+	Remove new private functions and new subfunctions from the list.
 
 	* plot/private/__actual_axis_position__.m: Rename from
 	plot/__actual_axis_position__.m.

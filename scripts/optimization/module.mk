@@ -1,21 +1,22 @@
 FCN_FILE_DIRS += optimization
 
+optimization_PRIVATE_FCN_FILES = \
+  optimization/private/__fdjac__.m
+
 optimization_FCN_FILES = \
-  optimization/fzero.m \
-  optimization/__fdjac__.m \
-  optimization/__dogleg__.m \
-  optimization/__doglegm__.m \
-  optimization/fsolve.m \
+  optimization/__all_opts__.m \
   optimization/fminunc.m \
+  optimization/fsolve.m \
+  optimization/fzero.m \
   optimization/glpk.m \
   optimization/glpkmex.m \
   optimization/lsqnonneg.m \
-  optimization/pqpnonneg.m \
-  optimization/optimset.m \
   optimization/optimget.m \
-  optimization/__all_opts__.m \
+  optimization/optimset.m \
+  optimization/pqpnonneg.m \
   optimization/qp.m \
-  optimization/sqp.m
+  optimization/sqp.m \
+  $(optimization_PRIVATE_FCN_FILES)
 
 FCN_FILES += $(optimization_FCN_FILES)
 

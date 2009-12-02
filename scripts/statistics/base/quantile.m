@@ -1,4 +1,4 @@
-## Copyright (C) 2008, 2009 Ben Abbott
+## Copyright (C) 2008, 2009 Ben Abbott and Jaroslav Hajek
 ## 
 ## This file is part of Octave.
 ##
@@ -265,3 +265,116 @@ endfunction
 %! yexp = median (x, dim);
 %! assert (yobs, yexp);
 
+## For the cumulative probability values in @var{p}, compute the 
+## quantiles, @var{q} (the inverse of the cdf), for the sample, @var{x}.
+##
+## The optional input, @var{method}, refers to nine methods available in R
+## (http://www.r-project.org/). The default is @var{method} = 7. For more 
+## detail, see `help quantile'.
+## @seealso{prctile, quantile, statistics}
+
+## Author: Ben Abbott <bpabbott@mac.com>
+## Vectorized version: Jaroslav Hajek <highegg@gmail.com>
+## Description: Quantile function of a empirical samples
+
+function inv = __quantile__ (x, p, method = 5)
+
+  if (nargin < 2 || nargin > 3)
+    print_usage ();
+  endif
+
+  if (! ismatrix (x))
+    error ("quantile: x must be a matrix");
+  endif
+
+  ## Save length and set shape of quantiles.
+  n = numel (p);
+  p = p(:);
+
+  ## Save length and set shape of samples.
+  ## FIXME: does sort guarantee that NaN's come at the end?
+  x = sort (x);
+  m = sum (! isnan (x));
+  mx = size (x, 1);
+  nx = size (x, 2);
+
+  ## Initialize output values.
+  inv = Inf*(-(p < 0) + (p > 1));
+  inv = repmat (inv, 1, nx);
+
+  ## Do the work.
+  if (any(k = find((p >= 0) & (p <= 1))))
+    n = length (k);
+    p = p (k);
+    ## Special case.
+    if (mx == 1)
+      inv(k,:) = repmat (x, n, 1);
+      return
+    endif
+
+    ## The column-distribution indices.
+    pcd = kron (ones (n, 1), mx*(0:nx-1));
+    mm = kron (ones (n, 1), m);
+    switch method
+      case {1, 2, 3}
+        switch method
+          case 1
+	    p = max (ceil (kron (p, m)), 1);
+	    inv(k,:) = x(p + pcd);
+
+          case 2
+	    p = kron (p, m);
+	    p_lr = max (ceil (p), 1);
+	    p_rl = min (floor (p + 1), mm);
+	    inv(k,:) = (x(p_lr + pcd) + x(p_rl + pcd))/2;
+
+          case 3
+           ## Used by SAS, method PCTLDEF=2.
+           ## http://support.sas.com/onlinedoc/913/getDoc/en/statug.hlp/stdize_sect14.htm
+	    t = max (kron (p, m), 1);
+	    t = roundb (t);
+	    inv(k,:) = x(t + pcd);
+        endswitch
+
+      otherwise
+        switch method
+          case 4
+	    p = kron (p, m);
+
+          case 5
+            ## Used by Matlab.
+	    p = kron (p, m) + 0.5;
+
+          case 6
+            ## Used by Minitab and SPSS.
+	    p = kron (p, m+1);
+
+          case 7
+            ## Used by S and R.
+	    p = kron (p, m-1) + 1;
+
+          case 8
+            ## Median unbiased .
+	    p = kron (p, m+1/3) + 1/3;
+
+          case 9
+            ## Approximately unbiased respecting order statistics.
+	    p = kron (p, m+0.25) + 0.375;
+
+          otherwise
+            error ("quantile: Unknown method, '%d'", method);
+        endswitch
+
+	## Duplicate single values.
+	imm1 = mm == 1;
+	x(2,imm1) = x(1,imm1);
+
+	## Interval indices.
+	pi = max (min (floor (p), mm-1), 1);
+	pr = max (min (p - pi, 1), 0);
+	pi += pcd;
+	inv(k,:) = (1-pr) .* x(pi) + pr .* x(pi+1);
+    endswitch
+  endif
+
+endfunction

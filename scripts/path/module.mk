@@ -1,7 +1,6 @@
 FCN_FILE_DIRS += path
 
 path_FCN_FILES = \
-  path/__extractpath__.m \
   path/matlabroot.m \
   path/pathdef.m \
   path/savepath.m

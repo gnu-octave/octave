@@ -28,7 +28,9 @@ AM_MAKEINFOHTMLFLAGS = -I.. -I$(srcdir) -I$(srcdir)/..
 
 TEXINFO_TEX = ../texinfo.tex
 
-TEXINPUTS := "..$(PATH_SEPARATOR)$(srcdir)$(PATH_SEPARATOR)$(srcdir)/..$(PATH_SEPARATOR)$(TEXINPUTS)$(PATH_SEPARATOR)"
+## Extra PATH_SEPARATOR at start and end of list is currently required
+## due to weak parsing by texi2XXX scripts.  (12/02/09)
+TEXINPUTS := "$(PATH_SEPARATOR)..$(PATH_SEPARATOR)$(srcdir)/..$(PATH_SEPARATOR)$(srcdir)$(PATH_SEPARATOR)$(TEXINPUTS)$(PATH_SEPARATOR)"
 export TEXINPUTS
 
 TEXMFCNF := "..$(PATH_SEPARATOR)$(srcdir)$(PATH_SEPARATOR)$(srcdir)/..$(PATH_SEPARATOR)$(PATH_SEPARATOR)$(TEXMFCNF)$(PATH_SEPARATOR)"

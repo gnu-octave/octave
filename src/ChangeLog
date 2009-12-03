@@ -1,3 +1,8 @@
+2009-12-02  Rik <rik@nomad.inbox5.com>
+
+	* DLD-FUNCTIONS/urlwrite.cc: Correctly compile code even when libcurl is
+	not present according to configure.
+
 2009-12-01  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-bool-mat.h (octave_bool_matrix::octave_bool_matrix (const

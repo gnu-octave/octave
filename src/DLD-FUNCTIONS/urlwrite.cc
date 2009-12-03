@@ -48,7 +48,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-map.h"
 #include "unwind-prot.h"
 
-#if defined (HAVE_CURL)
+#ifdef HAVE_CURL
 
 #include <curl/curl.h>
 #include <curl/curlver.h>
@@ -740,7 +740,7 @@ urlwrite (\"http://www.google.com/search\", \"search.html\",\n\
 {
   octave_value_list retval;
 
-#if defined (HAVE_CURL)
+#ifdef HAVE_CURL
 
   int nargin = args.length ();
 
@@ -900,7 +900,7 @@ s = urlread (\"http://www.google.com/search\", \"get\",\n\
   // Octave's return value
   octave_value_list retval;
 
-#if defined (HAVE_CURL)
+#ifdef HAVE_CURL
 
   int nargin = args.length ();
 
@@ -1423,6 +1423,7 @@ Undocumented internal function\n\
   return octave_value ();
 }
 
+#ifdef HAVE_CURL
 static string_vector
 mput_directory (const curl_handle& curl, const std::string& base,
 		const std::string& dir)
@@ -1509,6 +1510,7 @@ mput_directory (const curl_handle& curl, const std::string& base,
 
   return retval;
 }
+#endif
 
 DEFUN_DLD (__ftp_mput__, args, nargout,
   "-*- texinfo -*-\n\

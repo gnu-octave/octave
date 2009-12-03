@@ -1,3 +1,37 @@
+2009-12-03  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.am (CLEANFILES): Include DLD-FUNCTIONS/PKG_ADD,
+	doc-files, gendoc.cc, gendoc$(BUILD_EXEEXT), graphics-props.cc,
+	oct-parse.output, $(BUILT_NODISTFILES) in the list.  Remove
+	$(BUILT_SOURCES) from the list.
+	(MAINTAINERCLEANFILES): New variable.
+	(BUILT_DISTFILES): Remove oct-parse.cc and lex.cc from the list.
+	(BUILT_NODISTFILES): Include defaults.h, graphics.h, oct-conf.h,
+	oct-errno.cc, ops.cc, mxarray.h, and version.h in the list.
+	Remove $(OPT_INC) from the list.
+	(BUILT_SOURCES): Include mxarray.h and version.h in the list.
+	(EXTRA_DIST): Include version.h.in in the list.
+	(.cc.df): Don't silence rules.  Omit $(srcdir) from XDEFUN_FILE_NAME.  
+	($(DEF_FILES)): Depend on mkdefs and Makefile.
+	(mxarray.h, version.h): New rules.
+	(DLD-FUNCTIONS/PKG_ADD): Don't silence rules.
+	(builtins.cc, DOCSTRINGS, gendoc.cc, ops.cc, $(OPT_HANDLERS))
+	oct-errno.cc, oct-gperf.h): Don't silence rules.
+	(doc-files, defaults.h, oct-conf.h): Don't silence rules.
+
+	* mxarray.h.in, version.h.in: Use % to delimit substitutions, not @.
+
+	* mkbuiltins: Operate on a list of files passed as arguments.
+
+	* genprops.awk: Write either graphics.h or graphics-props.cc to
+	stdout instead of graphics.h simultaneously with graphics-props.cc
+	ot a file.
+	* Makefile.am (graphics.h, graphics-props.cc): Split into two
+	separate rules.
+
+	* find-defun-files.sh: Omit directory part from .df file names.
+	Operate on .ll and .yy files instead of generated .cc files.
+
 2009-12-02  Rik <rik@nomad.inbox5.com>
 
 	* DLD-FUNCTIONS/urlwrite.cc: Correctly compile code even when libcurl is

@@ -273,6 +273,11 @@ BUILT_INCS = \
 
 BUILT_SOURCES = $(BUILT_INCS)
 
+## FIXME -- These files don't need to be distributed.  They do need
+## to be installed.  So we need to add them to a list somewhere so
+## that happens correctly.
+BUILT_NODISTFILES = $(BUILT_INCS)
+
 TEMPLATE_SRC = \
   Array.cc \
   DiagArray2.cc \

@@ -164,3 +164,5 @@ plot_FCN_FILES = \
 FCN_FILES += $(plot_FCN_FILES)
 
 PKG_ADD_FILES += plot/PKG_ADD
+
+DIRSTAMP_FILES += plot/$(octave_dirstamp)

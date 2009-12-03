@@ -122,3 +122,5 @@ deprecated_FCN_FILES = \
 FCN_FILES += $(deprecated_FCN_FILES)
 
 PKG_ADD_FILES += deprecated/PKG_ADD
+
+DIRSTAMP_FILES += deprecated/$(octave_dirstamp)

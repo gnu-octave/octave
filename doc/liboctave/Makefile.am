@@ -33,10 +33,8 @@ export TEXINPUTS
 
 info_TEXINFOS = liboctave.texi
 
-nodist_liboctave_TEXINFOS = \
-  ../conf.texi
-
 dist_liboctave_TEXINFOS = \
+  ../conf.texi \
   array.texi \
   bugs.texi \
   cp-idx.texi \

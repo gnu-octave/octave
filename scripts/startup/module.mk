@@ -23,3 +23,5 @@ EXTRA_DIST += \
   $(SYSTEM_INPUTRC_FILE_SRC)
 
 PKG_ADD_FILES += startup/PKG_ADD
+
+DIRSTAMP_FILES += startup/$(octave_dirstamp)

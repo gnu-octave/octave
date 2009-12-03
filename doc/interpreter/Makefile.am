@@ -84,80 +84,77 @@ include images.mk
 
 IMAGES = $(IMAGES_EPS) $(IMAGES_PDF) $(IMAGES_PNG) $(IMAGES_TXT)
 
-TXI_SRC = \
-  arith.txi \
-  audio.txi \
-  basics.txi \
-  bugs.txi \
-  container.txi \
-  contrib.txi \
-  cp-idx.txi \
-  data.txi \
-  debug.txi \
-  diffeq.txi \
-  diagperm.txi \
-  dynamic.txi \
-  emacs.txi \
-  errors.txi \
-  eval.txi \
-  expr.txi \
-  fn-idx.txi \
-  func.txi \
-  geometry.txi \
-  gpl.txi \
-  grammar.txi \
-  image.txi \
-  install.txi \
-  interp.txi \
-  intro.txi \
-  io.txi \
-  linalg.txi \
-  matrix.txi \
-  nonlin.txi \
-  numbers.txi \
-  oop.txi \
-  op-idx.txi \
-  optim.txi \
-  package.txi \
-  plot.txi \
-  poly.txi \
-  preface.txi \
-  quad.txi \
-  set.txi \
-  signal.txi \
-  sparse.txi \
-  stats.txi \
-  stmt.txi \
-  strings.txi \
-  system.txi \
-  testfun.txi \
-  tips.txi \
-  var.txi
+MUNGED_TEXI_SRC = \
+  arith.texi \
+  audio.texi \
+  basics.texi \
+  bugs.texi \
+  container.texi \
+  contrib.texi \
+  cp-idx.texi \
+  data.texi \
+  debug.texi \
+  diffeq.texi \
+  diagperm.texi \
+  dynamic.texi \
+  emacs.texi \
+  errors.texi \
+  eval.texi \
+  expr.texi \
+  fn-idx.texi \
+  func.texi \
+  geometry.texi \
+  gpl.texi \
+  grammar.texi \
+  image.texi \
+  install.texi \
+  interp.texi \
+  intro.texi \
+  io.texi \
+  linalg.texi \
+  matrix.texi \
+  nonlin.texi \
+  numbers.texi \
+  oop.texi \
+  op-idx.texi \
+  optim.texi \
+  package.texi \
+  plot.texi \
+  poly.texi \
+  preface.texi \
+  quad.texi \
+  set.texi \
+  signal.texi \
+  sparse.texi \
+  stats.texi \
+  stmt.texi \
+  strings.texi \
+  system.texi \
+  testfun.texi \
+  tips.texi \
+  var.texi
 
-MUNGED_TEXI_SRC = $(TXI_SRC:.txi=.texi)
+TXI_SRC = $(MUNGED_TEXI_SRC:.texi=.txi)
 
 info_TEXINFOS = octave.texi
 
-nodist_octave_TEXINFOS = \
-  ../conf.texi
-
 octave_TEXINFOS = \
+  ../conf.texi \
   contributors.texi \
   $(MUNGED_TEXI_SRC)
 
 ../conf.texi:
 	$(MAKE) -C .. conf.texi
 
-octave.info octave.dvi octave.pdf octave.html: $(nodist_octave_TEXINFOS) $(octave_TEXINFOS) $(EXAMPLE_FILES)
+$(srcdir)/octave.info octave.dvi octave.pdf octave.html: $(octave_TEXINFOS) $(octave_TEXINFOS) $(EXAMPLE_FILES)
 
-octave.info: $(IMAGES_TXT)
+$(srcdir)/octave.info: $(IMAGES_TXT)
 
 octave.dvi octave.ps: $(IMAGES_EPS)
 
 octave.pdf: $(IMAGES_PDF)
 
 octave.html: $(IMAGES_PNG)
-
 
 all-local: dvi html pdf ps doc-cache
 
@@ -169,13 +166,7 @@ install-data-local:
 uninstall-local:
 	rm -f $(DESTDIR)$(octetcdir)/doc-cache
 
-DOCSTRING_FILES = $(TOPDIR)/src/DOCSTRINGS $(TOPDIR)/scripts/DOCSTRINGS
-
-$(TOPDIR)/src/DOCSTRINGS:
-	$(MAKE) -C $(TOPDIR)/src DOCSTRINGS
-
-$(TOPDIR)/scripts/DOCSTRINGS:
-	$(MAKE) -C $(TOPDIR)/scripts DOCSTRINGS
+DOCSTRING_FILES = $(shell $(srcdir)/find-docstring-files.sh "$(top_srcdir)")
 
 doc-cache: $(DOCSTRING_FILES) mk_doc_cache.m
 	$(TOPDIR)/run-octave -f -q -H $(srcdir)/mk_doc_cache.m doc-cache $(DOCSTRING_FILES) || { rm -f doc-cache; exit 1; }
@@ -186,7 +177,7 @@ munge-texi$(BUILD_EXEEXT): munge-texi.cc
 	$(BUILD_CXX) $(BUILD_CXXFLAGS) -o $@ $^ $(BUILD_LDFLAGS)
 
 .txi.texi:
-	./munge-texi $(DOCSTRING_FILES) < $< > $@-t
+	./munge-texi $(top_srcdir) $(DOCSTRING_FILES) < $< > $@-t
 	mv $@-t $@
 
 contributors.texi: contributors.in
@@ -210,6 +201,7 @@ contributors.texi: contributors.in
 EXTRA_DIST = \
   config-images.sh \
   contributors.in \
+  find-docstring-files.sh \
   images \
   images.mk \
   mk_doc_cache.m \
@@ -223,15 +215,4 @@ DISTCLEANFILES = $(octave_TEXINFOS) doc-cache munge-texi$(BUILD_EXEEXT)
 
 MAINTAINERCLEANFILES = $(IMAGES)
 
-## .texi files are generated files, not primary sources, and should not 
-## be distributed.  Automake, however, does not create rules to generate
-## pdf and html documentation unless the info and texi files will be
-## distributed.  Various hacks, including using the nodist_ prefix and 
-## DISTCLEANFILES, do not work.  The current solution is to build the texi
-## files and create the correct Makefile rules and then use the dist-hook
-## feature to remove the .texi files from the distribution just before it 
-## is archived in a tar file.
-dist-hook:
-	( cd $(distdir) ; rm -f $(octave_TEXINFOS) ; ) 
-
-.NOTPARALLEL:
+.NOPARALLEL:

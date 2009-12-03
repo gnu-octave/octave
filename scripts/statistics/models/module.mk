@@ -8,3 +8,5 @@ statistics_models_FCN_FILES = \
 FCN_FILES += $(statistics_models_FCN_FILES)
 
 PKG_ADD_FILES += statistics/models/PKG_ADD
+
+DIRSTAMP_FILES += statistics/models/$(octave_dirstamp)

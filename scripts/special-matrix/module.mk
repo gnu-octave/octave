@@ -16,3 +16,5 @@ special_matrix_FCN_FILES = \
 FCN_FILES += $(special_matrix_FCN_FILES)
 
 PKG_ADD_FILES += special-matrix/PKG_ADD
+
+DIRSTAMP_FILES += special-matrix/$(octave_dirstamp)

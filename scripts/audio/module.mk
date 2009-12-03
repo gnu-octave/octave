@@ -14,3 +14,5 @@ audio_FCN_FILES = \
 FCN_FILES += $(audio_FCN_FILES)
 
 PKG_ADD_FILES += audio/PKG_ADD
+
+DIRSTAMP_FILES += audio/$(octave_dirstamp)

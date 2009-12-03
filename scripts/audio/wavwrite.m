@@ -168,6 +168,7 @@ endfunction
 %! assert(A,B, 10^(-4));
 %! assert(samples_per_sec, 8000);
 %! assert(bits_per_sample, 16);
+%! delete ("a.wav");
 %
 %!test
 %! A=[1:10; 1:10] / 10;
@@ -176,6 +177,7 @@ endfunction
 %! assert(A,B, 10^(-4));
 %! assert(samples_per_sec, 4000);
 %! assert(bits_per_sample, 16);
+%! delete ("a.wav");
 %
 %!test
 %! A=[1:10; 1:10] / 10;
@@ -184,3 +186,4 @@ endfunction
 %! assert(A,B, 10^(-2));
 %! assert(samples_per_sec, 4000);
 %! assert(bits_per_sample, 8);
+%! delete ("a.wav");

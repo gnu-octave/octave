@@ -30,3 +30,5 @@ linear_algebra_FCN_FILES = \
 FCN_FILES += $(linear_algebra_FCN_FILES)
 
 PKG_ADD_FILES += linear-algebra/PKG_ADD
+
+DIRSTAMP_FILES += linear-algebra/$(octave_dirstamp)

@@ -22,3 +22,5 @@ geometry_FCN_FILES = \
 FCN_FILES += $(geometry_FCN_FILES)
 
 PKG_ADD_FILES += geometry/PKG_ADD
+
+DIRSTAMP_FILES += geometry/$(octave_dirstamp)

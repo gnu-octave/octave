@@ -8,3 +8,5 @@ path_FCN_FILES = \
 FCN_FILES += $(path_FCN_FILES)
 
 PKG_ADD_FILES += path/PKG_ADD
+
+DIRSTAMP_FILES += path/$(octave_dirstamp)

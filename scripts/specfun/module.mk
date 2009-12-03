@@ -21,3 +21,5 @@ specfun_FCN_FILES = \
 FCN_FILES += $(specfun_FCN_FILES)
 
 PKG_ADD_FILES += specfun/PKG_ADD
+
+DIRSTAMP_FILES += specfun/$(octave_dirstamp)

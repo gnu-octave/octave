@@ -1,3 +1,44 @@
+2009-12-03  John W. Eaton  <jwe@octave.org>
+
+	* doc/Makefile.am (MUNGED_TEXI_SRC): Define as explicit list.
+	(TXI_SRC): Define using substitution rule.
+
+	* doc/Makefile.am (conf.texi): Only substitute OCTAVE_VERSION.
+	* conf.texi: Likewise.
+
+	* doc/interpreter/find-docstring-files.sh: New file.
+	* doc/interpreter/Makefile.am (DOCSTRING_FILES): Use it.
+	($(TOPDIR)/src/DOCSTRINGS, $(TOPDIR)/scripts/DOCSTRINGS):
+	Delete rules.
+	(.txi.texi): Pass $(top_srcdir) to munge-texi.
+	(octave.info octave.dvi octave.pdf octave.html):
+	Depend on $(octave_TEXINFOS), not $(nodist_octave_TEXINFOS).
+	(nodist_octave_TEXINFOS): Delete variable.
+	(octave_TEXINFOS): Include ../conf.texi in the list.
+	(dist-hook): Delete target.
+	(EXTRA_DIST): Add find-docstring-files.sh to the list.
+
+	* doc/interpreter/basics.texi: Eliminate @value{OCTAVEHOME}
+	* doc/interpreter/dynamic.txi: Delete examplefile and
+	longexamplefile macro definitions.  Replace uses with
+	@EXAMPLEFILE, to be expanded by munge-texi.
+	* doc/interpreter/geometry.txi: Eliminate @ifset HAVE_QHULL.
+	* doc/interpreter/oop.txi: Delete classfile and polynomialfile
+	macro definitions.  Replace uses with @EXAMPLEFILE, to be expanded
+	by munge-texi.
+	* doc/interpreter/sparse.txi: Eliminate @ifset HAVE_CHOLMOD,
+	@ifset HAVE_UMFPACK, and @ifset HAVE_COLAMD.
+
+	* munge-texi.cc (top_srcdir): New global variable.
+	(main): set top_srcdir from first arg.
+	(usage): Include TOP-SRCDIR in the message.
+	(recover_from_macro, process_example_file): New functions.
+	(process_texi_input_file): Handle @EXAMPLEFILE tag.
+
+	* doc/liboctave/Makefile.am (nodist_liboctave_TEXINFOS):
+	Delete variable.
+	(liboctave_TEXINFOS): Include ../conf.texi in the list.
+
 2009-12-02  Rik <octave@nomad.inbox5.com>
 
 	* interpreter/Makefile.am: Correct Makefile.am to allow VPATH builds of

@@ -20,3 +20,5 @@ FCN_FILE_DIRS += @ftp
 FCN_FILES += $(@ftp_FCN_FILES)
 
 PKG_ADD_FILES += @ftp/PKG_ADD
+
+DIRSTAMP_FILES += @ftp/$(octave_dirstamp)

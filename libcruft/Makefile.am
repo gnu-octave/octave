@@ -40,6 +40,8 @@ libcruft_la_DEPENDENCIES = cruft.def
 
 octinclude_HEADERS =
 
+DISTCLEANFILES = cruft.def
+
 EXTRA_DIST = ChangeLog STOP.patch mkf77def.in
 
 include amos/module.mk

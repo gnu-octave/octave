@@ -25,13 +25,13 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_version_h)
 #define octave_version_h 1
 
-#define OCTAVE_VERSION "@OCTAVE_VERSION@"
+#define OCTAVE_VERSION %OCTAVE_VERSION%
 
-#define OCTAVE_API_VERSION "@OCTAVE_API_VERSION@"
+#define OCTAVE_API_VERSION %OCTAVE_API_VERSION%
 
-#define OCTAVE_RELEASE_DATE "@OCTAVE_RELEASE_DATE@"
+#define OCTAVE_RELEASE_DATE %OCTAVE_RELEASE_DATE%
 
-#define OCTAVE_COPYRIGHT "@OCTAVE_COPYRIGHT@"
+#define OCTAVE_COPYRIGHT %OCTAVE_COPYRIGHT%
 
 // This is the first line printed by --version.  The GNU coding
 // standards say that the version number should follow the last space

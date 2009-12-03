@@ -31,14 +31,43 @@ AM_CPPFLAGS = \
 
 AUTOMAKE_OPTIONS = subdir-objects
 
-BUILT_DISTFILES = \
-  DOCSTRINGS \
+## Order matters here.  Leave builtins.cc last, because it depends on 
+## $(DEF_FILES), and building those requires all the sources
+## (except builtins.cc) to be available.  List only one of graphics.h
+## and graphics-props.cc because if both are listed, building in
+## parallel will fail.
+BUILT_SOURCES = \
+  defaults.h \
+  graphics.h \
+  lex.cc \
+  mxarray.h \
+  oct-conf.h \
+  oct-errno.cc \
   oct-gperf.h \
   oct-parse.cc \
-  oct-parse.h \
-  lex.cc \
+  ops.cc \
+  version.h \
+  builtins.cc
+
+BUILT_DISTFILES = \
+  oct-gperf.h \
+  oct-parse.h
+
+## FIXME -- These files don't need to be distributed.  Some of them
+## do need to be installed.  So we need to add them to a list somewhere
+## so that happens correctly.
+BUILT_NODISTFILES = \
+  defaults.h \
+  graphics.h \
+  oct-conf.h \
+  oct-errno.cc \
+  ops.cc \
+  mxarray.h \
+  version.h \
   $(OPT_HANDLERS) \
-  $(OPT_INC)
+  $(OPT_INC) \
+  $(DEF_FILES) \
+  builtins.cc
 
 EXTRA_DIST = \
   ChangeLog \
@@ -57,20 +86,24 @@ EXTRA_DIST = \
   oct-conf.h.in \
   oct-errno.cc.in \
   octave.gperf \
+  version.h.in \
   $(BUILT_DISTFILES)
 
 DLL_CDEFS = @OCTINTERP_DLL_DEFS@
 DLL_CXXDEFS = @OCTINTERP_DLL_DEFS@
 
 .cc.df:	
-	@echo making $@ from $<
-	@(echo "// DO NOT EDIT!  Generated automatically by mkdefs." ; \
-	  echo " XDEFUN_FILE_NAME (\"$<\")" ; \
+	(echo "// DO NOT EDIT!  Generated automatically by mkdefs." ; \
+	  case "$<" in \
+	    $(srcdir)/*) xsrcdir="`echo $< | sed 's,^$(srcdir),src,'`" ;; \
+	    *) xsrcdir="src/$<" ;; \
+	  esac ; \
+	  echo " XDEFUN_FILE_NAME (\"$$xsrcdir\")" ; \
 	  egrep '^(///*|/\*) *PKG_ADD:' $< ; \
 	  $(CXXCPP) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	    $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) \
 	    -DMAKE_BUILTINS $< | $(srcdir)/mkdefs) > $@-t
-	@mv $@-t $@
+	mv $@-t $@
 
 OPT_HANDLERS = \
   DASPK-opts.cc \
@@ -444,6 +477,7 @@ liboctinterp_la_SOURCES = \
   $(DIST_SRC) \
   $(DLD_STATIC_SRC) \
   $(OPERATORS_SRC) \
+  $(OPT_HANDLERS) \
   $(TEMPLATE_INST_SRC)
 
 DLD_DYNAMIC_DEF_FILES = $(DLD_DYNAMIC_SRC:.cc=.df)
@@ -452,6 +486,8 @@ DLD_STATIC_DEF_FILES = $(DLD_STATIC_SRC:.cc=.df)
 SRC_DEF_FILES := $(shell $(srcdir)/find-defun-files.sh "$(srcdir)" $(DIST_SRC))
 
 DEF_FILES = $(SRC_DEF_FILES) $(DLD_DYNAMIC_DEF_FILES) $(DLD_STATIC_DEF_FILES)
+
+$(DEF_FILES): mkdefs Makefile
 
 if AMCOND_ENABLE_DYNAMIC_LINKING
   OCTAVE_LIBS = \
@@ -538,25 +574,17 @@ liboctinterp_la_CPPFLAGS = @OCTINTERP_DLL_DEFS@ $(AM_CPPFLAGS)
 
 liboctinterp_la_LDFLAGS = -release $(version) $(NO_UNDEFINED_LDFLAG)
 
-## Order matters here.  Leave builtins.cc last, because it depends on 
-## $(DEF_FILES), and building those requires all the sources
-## (except builtins.cc) to be available.  List only one of graphics.h
-## and graphics-props.cc because if both are listed, building in
-## parallel will vail.
-BUILT_SOURCES = \
-  defaults.h \
-  graphics.h \
-  lex.cc \
-  oct-conf.h \
-  oct-errno.cc \
-  oct-gperf.h \
-  oct-parse.cc \
-  ops.cc \
-  $(OPT_HANDLERS) \
-  $(OPT_INC) \
-  builtins.cc
+CLEANFILES = \
+  DLD-FUNCTIONS/PKG_ADD \
+  doc-files \
+  gendoc.cc \
+  gendoc$(BUILD_EXEEXT) \
+  graphics-props.cc \
+  oct-parse.output \
+  $(BUILT_NODISTFILES)
 
-CLEANFILES = $(BUILT_SOURCES)
+MAINTAINERCLEANFILES = \
+  $(BUILT_DISTFILES)
 
 octave_LDADD = $(OCTAVE_LIBS)
 
@@ -571,46 +599,52 @@ fltk_backend.lo fltk_backend.o: \
 # XERBLA = ../libcruft/blas-xtra/xerbla.o
 
 builtins.cc: $(DEF_FILES) mkbuiltins
-	@echo making $@
-	@echo DEF_FILES = $(DEF_FILES)
-	@echo $(DEF_FILES) > def-files
-	@$(srcdir)/mkbuiltins def-files > $@-t
-	@mv $@-t $@
+	$(srcdir)/mkbuiltins $(DEF_FILES) > $@-t
+	mv $@-t $@
 
-## FIXME -- maybe genprops.awk should write both output files?
-## Or maybe there should be separate commands to generate each file?
-graphics.h graphics-props.cc: graphics.h.in genprops.awk
-	@echo making graphics.h and graphics-props.cc
-	@$(AWK) -f $(srcdir)/genprops.awk $< > graphics.h-t
-	@mv graphics.h-t graphics.h
+mxarray.h: mxarray.h.in Makefile
+	$(SED) < $< \
+	  -e "s|%OCTAVE_IDX_TYPE%|${OCTAVE_IDX_TYPE}|" > $@-t
+	mv $@-t $@
 
-DLD-FUNCTIONS/PKG_ADD: $(DLD_DYNAMIC_DEF_FILES)
+version.h: version.h.in Makefile
+	$(SED) < $< \
+	  -e "s|%OCTAVE_API_VERSION%|\"${OCTAVE_API_VERSION}\"|" \
+	  -e "s|%OCTAVE_COPYRIGHT%|\"${OCTAVE_COPYRIGHT}\"|" \
+	  -e "s|%OCTAVE_RELEASE_DATE%|\"${OCTAVE_RELEASE_DATE}\"|" \
+	  -e "s|%OCTAVE_VERSION%|\"${OCTAVE_VERSION}\"|" > $@-t
+	mv $@-t $@
+
+graphics.h: graphics.h.in genprops.awk Makefile
+	$(AWK) -f $(srcdir)/genprops.awk $< > $@-t
+	mv $@-t $@
+
+graphics-props.cc: graphics.h.in genprops.awk Makefile
+	$(AWK) -v emit_graphics_props=1 -f $(srcdir)/genprops.awk $< > $@-t
+	mv $@-t $@
+
+DLD-FUNCTIONS/PKG_ADD: $(DLD_DYNAMIC_DEF_FILES) mk-pkg-add
 	$(srcdir)/mk-pkg-add $(DLD_DYNAMIC_DEF_FILES) > $@-t
-	@mv $@-t $@
+	mv $@-t $@
 
 DOCSTRINGS: gendoc$(BUILD_EXEEXT)
-	@echo making $@
-	@./gendoc > $@-t
-	@mv $@-t $@
+	./gendoc > $@-t
+	mv $@-t $@
 
 doc-files: $(DEF_FILES)
-	@echo making $@
-	@echo DEF_FILES = $(DEF_FILES)
-	@echo $(DEF_FILES) > $@-t
+	echo $(DEF_FILES) > $@-t
 	mv $@-t $@
 
 gendoc.cc: doc-files mkgendoc
-	@echo making $@
-	@$(srcdir)/mkgendoc doc-files > $@-t
-	@mv $@-t $@
+	$(srcdir)/mkgendoc $(srcdidr) doc-files > $@-t
+	mv $@-t $@
 
 gendoc$(BUILD_EXEEXT): gendoc.cc
 	$(BUILD_CXX) $(BUILD_CXXFLAGS) -o $@ $^ $(BUILD_LDFLAGS)
 
 ops.cc: $(OPERATORS_SRC) mkops
-	@echo making $@ from $(OPERATORS_SRC)
-	@$(srcdir)/mkops $(OPERATORS_SRC) > $@-t
-	@mv $@-t $@
+	$(srcdir)/mkops $(OPERATORS_SRC) > $@-t
+	mv $@-t $@
 
 $(DEF_FILES): $(OPT_INC) mkdefs 
 
@@ -663,9 +697,8 @@ endif
 # Special rules -- these files need special things to be defined.
 
 $(OPT_HANDLERS) : %.cc : $(top_srcdir)/liboctave/%.in $(top_srcdir)/mk-opts.pl
-	@echo making $@ from $<
-	@$(PERL) $(top_srcdir)/mk-opts.pl --opt-handler-fcns $< > $@-t
-	@mv $@-t $@
+	$(PERL) $(top_srcdir)/mk-opts.pl --opt-handler-fcns $< > $@-t
+	mv $@-t $@
 
 ## We require Bison.
 #parse.cc : parse.y
@@ -687,21 +720,20 @@ $(OPT_INC) : %.h : %.in
 ## newly generated file is not different.
 
 defaults.h: defaults.h.in Makefile
-	@$(do_subst_default_vals)
+	$(do_subst_default_vals)
 
 oct-conf.h: oct-conf.h.in Makefile
-	@$(do_subst_config_vals)
+	$(do_subst_config_vals)
 
 oct-errno.cc: oct-errno.cc.in Makefile
-	@echo "making $@ from $<"
-	@if test -n "$(PERL)"; then \
+	if test -n "$(PERL)"; then \
 	  $(srcdir)/mk-errno-list --perl "$(PERL)" < $< > $@-t; \
 	elif test -n "$(PYTHON)"; then \
 	  $(srcdir)/mk-errno-list --python "$(PYTHON)" < $< > $@-t; \
 	else \
 	  $(SED) '/@SYSDEP_ERRNO_LIST@/D' $< > $@-t; \
 	fi
-	@mv $@-t $@
+	mv $@-t $@
 
 ## Don't use a pipeline to process gperf output since if gperf
 ## is missing but sed is not, the exit status of the pipeline
@@ -709,8 +741,8 @@ oct-errno.cc: oct-errno.cc.in Makefile
 ## oct-gperf.h file.
 oct-gperf.h: octave.gperf
 	$(GPERF) -t -C -D -G -L C++ -Z octave_kw_hash $< > $@-t1
-	$(SED) 's,lookup\[,gperf_lookup[,' < $@-t1 > $@-t2
-	mv $@-t2 $@
+	$(SED) 's,lookup\[,gperf_lookup[,' < $@-t1 > $@-t
+	mv $@-t $@
 	rm -f $@-t1
 
 display.df display.lo: CPPFLAGS += $(X11_FLAGS)

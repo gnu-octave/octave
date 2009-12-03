@@ -85,8 +85,8 @@ typedef char mxChar;
  * mex is used with the -largearraydims flag, but why do that? Its better
  * to conform to the same indexing as the rest of Octave
  */
-typedef @OCTAVE_IDX_TYPE@ mwSize;
-typedef @OCTAVE_IDX_TYPE@ mwIndex;
+typedef %OCTAVE_IDX_TYPE% mwSize;
+typedef %OCTAVE_IDX_TYPE% mwIndex;
 
 #if ! defined (MXARRAY_TYPEDEFS_ONLY)
 

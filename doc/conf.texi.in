@@ -17,11 +17,4 @@
 @c <http://www.gnu.org/licenses/>.
 
 @set OCTAVE_MANUAL
-@set top_srcdir %top_srcdir%
-@set abs_top_srcdir %abs_top_srcdir%
-@set OCTAVEHOME %OCTAVE_HOME%
 @set VERSION %OCTAVE_VERSION%
-%TEXINFO_COLAMD%
-%TEXINFO_CHOLMOD%
-%TEXINFO_UMFPACK%
-%TEXINFO_QHULL%

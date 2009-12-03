@@ -45,7 +45,7 @@ AM_INIT_AUTOMAKE([1.11 tar-ustar])
 AC_REVISION($Revision: 1.603 $)
 AC_PREREQ(2.60)
 AC_CONFIG_SRCDIR([src/octave.cc])
-AC_CONFIG_HEADER(config.h)
+AC_CONFIG_HEADER([config.h])
 AC_CONFIG_MACRO_DIR([m4])
 
 OCTAVE_HOST_TYPE
@@ -2144,8 +2144,6 @@ AC_CONFIG_FILES([
   liboctave/Makefile
   scripts/Makefile
   src/Makefile
-  src/mxarray.h
-  src/version.h
   test/Makefile])
 
 AC_OUTPUT

@@ -1,3 +1,28 @@
+2009-12-03  John W. Eaton  <jwe@octave.org>
+
+	* audio/wavwrite.m: Delete generated a.wav file after each test.
+
+	* Makefile.am (DIRSTAMP_FILES, DISTCLEANFILES): New variables.
+	(DOCSTRINGS): Also depend on $(FCN_FILES_IN).  Pass
+	$(FCN_FILES_IN) to mkdoc instead of $(GEN_FCN_FILES).  Tell mkdoc
+	to look for $(FCN_FILES_IN) files in $(srcdir), not build
+	directory.
+	(DISTCLEANFILES): New variable.
+	Don't silence dirstamp, DOCSTRINGS, $(GEN_FCN_FILES), and PKG_ADD
+	rules.
+
+	* audio/module.mk, deprecated/module.mk, elfun/module.mk,
+	help/module.mk, general/module.mk, geometry/module.mk,
+	image/module.mk, io/module.mk, linear-algebra/module.mk,
+	miscellaneous/module.mk, @ftp/module.mk, optimization/module.mk,
+	path/module.mk, pkg/module.mk, plot/module.mk,
+	polynomial/module.mk, set/module.mk, signal/module.mk,
+	sparse/module.mk, specfun/module.mk, special-matrix/module.mk,
+	startup/module.mk, statistics/base/module.mk,
+	statistics/distributions/module.mk, statistics/models/module.mk,
+	statistics/tests/module.mk, strings/module.mk, testfun/module.mk,
+	time/module.mk: Append to DIRSTAMP_FILES.
+
 2009-12-02  Rik <rik@nomad.inbox5.com>
 
 	* image/imread.m: Run test case only if underlying GraphicMagick library

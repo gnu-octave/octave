@@ -21,3 +21,5 @@ optimization_FCN_FILES = \
 FCN_FILES += $(optimization_FCN_FILES)
 
 PKG_ADD_FILES += optimization/PKG_ADD
+
+DIRSTAMP_FILES += optimization/$(octave_dirstamp)

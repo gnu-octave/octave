@@ -36,17 +36,10 @@ SUBDIRS = . faq interpreter liboctave refcard
 
 all-local: conf.texi
 
-conf.texi: conf.texi.in $(TOPDIR)/common.mk
+conf.texi: conf.texi.in Makefile
 	@echo "making $@ from $<"
 	@$(SED) < $< \
-	  -e "s|%abs_top_srcdir%|${abs_top_srcdir}|" \
-	  -e "s|%top_srcdir%|${top_srcdir}|" \
-	  -e "s|%OCTAVE_HOME%|${prefix}|" \
-	  -e "s|%OCTAVE_VERSION%|${version}|" \
-	  -e "s|%TEXINFO_COLAMD%|${TEXINFO_COLAMD}|" \
-	  -e "s|%TEXINFO_CHOLMOD%|${TEXINFO_CHOLMOD}|" \
-	  -e "s|%TEXINFO_UMFPACK%|${TEXINFO_UMFPACK}|" \
-	  -e "s|%TEXINFO_QHULL%|${TEXINFO_QHULL}|" > $@-t
+	  -e "s|%OCTAVE_VERSION%|${version}|" > $@-t
 	$(simple_move_if_change_rule)
 
 ../BUGS ../INSTALL.OCTAVE:

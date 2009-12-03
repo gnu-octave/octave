@@ -11,3 +11,5 @@ io_FCN_FILES = \
 FCN_FILES += $(io_FCN_FILES)
 
 PKG_ADD_FILES += io/PKG_ADD
+
+DIRSTAMP_FILES += io/$(octave_dirstamp)

@@ -33,6 +33,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <cstdlib>
 #include <cstring>
 
+static std::string top_srcdir;
+
 static const char doc_delim = '';
 
 static std::map<std::string, std::string> help_text;
@@ -47,7 +49,7 @@ fatal (const std::string& msg)
 static void
 usage (void)
 {
-  std::cerr << "usage: munge-texi DOCSTRING-FILE file ...\n";
+  std::cerr << "usage: munge-texi TOP-SRCDIR DOCSTRING-FILE < file\n";
   exit (1);
 }
 
@@ -208,6 +210,47 @@ process_doc_file (const std::string& fname)
     fatal ("unable to open docfile");
 }
 
+static bool
+recover_from_macro (std::ostream& os, char *buf, int i)
+{
+  bool bol = false;
+
+  buf[i] = '\0';
+  os << buf;
+
+  if (buf[i - 1] == '\n')
+    bol = true;
+
+  return bol;
+}
+
+static void
+process_example_file (const std::string& file_name, std::ostream& os)
+{
+  std::ifstream infile (file_name.c_str ());
+
+  if (infile)
+    {
+      os << "@verbatim\n";
+
+      int c;
+      int clast = 0;
+
+      while ((c = infile.get ()) != EOF)
+	{
+	  os << (char) c;
+	  clast = c;
+	}
+
+      if (clast != '\n')
+	os << "\n";
+
+      os << "@end verbatim\n";
+    }
+  else
+    fatal ("unable to open example file " + file_name);
+}
+
 static void
 process_texi_input_file (std::istream& is, std::ostream& os)
 {
@@ -222,82 +265,108 @@ process_texi_input_file (std::istream& is, std::ostream& os)
 	{
 	  if (c == '@')
 	    {
-	      std::string symbol_name;
-
 	      char buf[16];
 	      int i = 0;
 	      buf[i++] = (char) c;
 
-	      if ((   buf[i++] = (char) is.get ()) == 'D'
-		  && (buf[i++] = (char) is.get ()) == 'O'
-		  && (buf[i++] = (char) is.get ()) == 'C'
-		  && (buf[i++] = (char) is.get ()) == 'S'
-		  && (buf[i++] = (char) is.get ()) == 'T'
-		  && (buf[i++] = (char) is.get ()) == 'R'
-		  && (buf[i++] = (char) is.get ()) == 'I'
-		  && (buf[i++] = (char) is.get ()) == 'N'
-		  && (buf[i++] = (char) is.get ()) == 'G'
-		  && (buf[i++] = (char) is.get ()) == '(')
+	      buf[i++] = c = (char) is.get ();
+
+	      if (c == 'D')
 		{
-		  while ((c = is.get ()) != EOF && c != ')')
-		    symbol_name += (char) c;
+		  std::string symbol_name;
 
-		  if (is.eof ())
-		    fatal ("end of file while reading @DOCSTRING command");
-		  else
+		  if (   (buf[i++] = (char) is.get ()) == 'O'
+		      && (buf[i++] = (char) is.get ()) == 'C'
+		      && (buf[i++] = (char) is.get ()) == 'S'
+		      && (buf[i++] = (char) is.get ()) == 'T'
+		      && (buf[i++] = (char) is.get ()) == 'R'
+		      && (buf[i++] = (char) is.get ()) == 'I'
+		      && (buf[i++] = (char) is.get ()) == 'N'
+		      && (buf[i++] = (char) is.get ()) == 'G'
+		      && (buf[i++] = (char) is.get ()) == '(')
 		    {
-		      std::string doc_string = help_text[symbol_name];
+		      while ((c = is.get ()) != EOF && c != ')')
+			symbol_name += (char) c;
 
-		      size_t len = doc_string.length ();
-
-		      int j = 0;
-
-		      // If there is a leading comment with the file
-		      // name, copy it to the output.
-		      if (len > 1
-			  && doc_string[j] == '@'
-			  && doc_string[j+1] == 'c')
+		      if (is.eof ())
+			fatal ("end of file while reading @DOCSTRING command");
+		      else
 			{
-			  j = 2;
-			  while (doc_string[j++] != '\n')
-			    /* find eol */;
+			  std::string doc_string = help_text[symbol_name];
 
-			  os << doc_string.substr (0, j);
-			}
+			  size_t len = doc_string.length ();
 
-		      while (doc_string[j] == ' ')
-			j++;
+			  int j = 0;
 
-		      if (doc_string.substr (j, 15) == "-*- texinfo -*-")
-			{
-			  j += 15;
+			  // If there is a leading comment with the file
+			  // name, copy it to the output.
+			  if (len > 1
+			      && doc_string[j] == '@'
+			      && doc_string[j+1] == 'c')
+			    {
+			      j = 2;
+			      while (doc_string[j++] != '\n')
+				/* find eol */;
 
-			  while (isspace (doc_string[j]))
+			      os << doc_string.substr (0, j);
+			    }
+
+			  while (doc_string[j] == ' ')
 			    j++;
 
-			  // Make `see also' references in functions
-			  // possible using @anchor{TAG} (new with
-			  // Texinfo 4.0).
+			  if (doc_string.substr (j, 15) == "-*- texinfo -*-")
+			    {
+			      j += 15;
 
-			  if (symbol_name[0] == '@')
-			    symbol_name = "@" + symbol_name;
+			      while (isspace (doc_string[j]))
+				j++;
 
-			  os << "@anchor{doc-" << symbol_name << "}\n";
+			      // Make `see also' references in functions
+			      // possible using @anchor{TAG} (new with
+			      // Texinfo 4.0).
 
-			  os << doc_string.substr (j);
+			      if (symbol_name[0] == '@')
+				symbol_name = "@" + symbol_name;
+
+			      os << "@anchor{doc-" << symbol_name << "}\n";
+
+			      os << doc_string.substr (j);
+			    }
+			  else
+			    os << doc_string;
 			}
-		      else
-			os << doc_string;
 		    }
+		  else
+		    bol = recover_from_macro (os, buf, i);
+		}
+	      else if (c == 'E')
+		{
+		  std::string file_name;
+
+		  if (   (buf[i++] = (char) is.get ()) == 'X'
+		      && (buf[i++] = (char) is.get ()) == 'A'
+		      && (buf[i++] = (char) is.get ()) == 'M'
+		      && (buf[i++] = (char) is.get ()) == 'P'
+		      && (buf[i++] = (char) is.get ()) == 'L'
+		      && (buf[i++] = (char) is.get ()) == 'E'
+		      && (buf[i++] = (char) is.get ()) == 'F'
+		      && (buf[i++] = (char) is.get ()) == 'I'
+		      && (buf[i++] = (char) is.get ()) == 'L'
+		      && (buf[i++] = (char) is.get ()) == 'E'
+		      && (buf[i++] = (char) is.get ()) == '(')
+		    {
+		      while ((c = is.get ()) != EOF && c != ')')
+			file_name += (char) c;
+
+		      file_name = top_srcdir + "/examples/" + file_name;
+
+		      process_example_file (file_name, os);
+		    }
+		  else
+		    bol = recover_from_macro (os, buf, i);
 		}
 	      else
-		{
-		  buf[i] = '\0';
-		  os << buf;
-
-		  if (buf[i - 1] == '\n')
-		    bol = true;
-		}
+		bol = recover_from_macro (os, buf, i);
 	    }
 	  else
 	    os.put ((char) c);
@@ -315,6 +384,8 @@ process_texi_input_file (std::istream& is, std::ostream& os)
 int
 main (int argc, char **argv)
 {
+  top_srcdir = *++argv;
+
   while (*++argv)
     process_doc_file (*argv);
 

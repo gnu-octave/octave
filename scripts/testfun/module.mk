@@ -12,3 +12,5 @@ testfun_FCN_FILES = \
 FCN_FILES += $(testfun_FCN_FILES)
 
 PKG_ADD_FILES += testfun/PKG_ADD
+
+DIRSTAMP_FILES += testfun/$(octave_dirstamp)

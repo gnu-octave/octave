@@ -95,3 +95,5 @@ statistics_distributions_FCN_FILES = \
 FCN_FILES += $(statistics_distributions_FCN_FILES)
 
 PKG_ADD_FILES += statistics/distributions/PKG_ADD
+
+DIRSTAMP_FILES += statistics/distributions/$(octave_dirstamp)

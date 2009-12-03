@@ -76,7 +76,6 @@ plot(X, Y, "b", x, y, "r*");
 @end group
 @end example
 
-@ifset HAVE_QHULL
 @ifnotinfo
 @noindent
 The result of which can be seen in @ref{fig:delaunay}.
@@ -86,7 +85,6 @@ The result of which can be seen in @ref{fig:delaunay}.
 @caption{Delaunay triangulation of a random set of points}
 @end float
 @end ifnotinfo
-@end ifset
 
 @menu
 * Plotting the Triangulation::
@@ -305,7 +303,6 @@ plot (vx, vy, "r");
 @end group
 @end example
 
-@ifset HAVE_QHULL
 @ifnotinfo
 @noindent
 The result of which can be seen in @ref{fig:voronoi}.  Note that the
@@ -318,7 +315,6 @@ diagram clearer.
 @caption{Delaunay triangulation and Voronoi diagram of a random set of points}
 @end float
 @end ifnotinfo
-@end ifset
 
 Additional information about the size of the facets of a Voronoi
 diagram, and which points of a set of points is in a polygon can be had
@@ -399,7 +395,6 @@ axis ([-3.05, 3.05, -0.05, 1.05]);
 @end group
 @end example
 
-@ifset HAVE_QHULL
 @ifnotinfo
 @noindent
 The output of the above can be seen in @ref{fig:convhull}.
@@ -409,7 +404,6 @@ The output of the above can be seen in @ref{fig:convhull}.
 @caption{The convex hull of a simple set of points}
 @end float
 @end ifnotinfo
-@end ifset
 
 @node Interpolation on Scattered Data
 @section Interpolation on Scattered Data
@@ -443,7 +437,6 @@ griddata(x,y,z,xx,yy);
 @end group
 @end example
 
-@ifset HAVE_QHULL
 @noindent
 that interpolates from a random scattering of points, to a uniform
 grid. 
@@ -455,4 +448,3 @@ The output of the above can be seen in @ref{fig:griddata}.
 @caption{Interpolation from a scattered data to a regular grid}
 @end float
 @end ifnotinfo
-@end ifset

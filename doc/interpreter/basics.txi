@@ -294,7 +294,7 @@ including function definitions.
 @item @var{octave-home}/share/octave/site/m/startup/octaverc
 @cindex site startup file
 where @var{octave-home} is the directory in which Octave is installed
-(the default is @file{@value{OCTAVEHOME}}).
+(the default is @file{/usr/local}).
 This file is provided so that changes to the default Octave environment 
 can be made globally for all users at your site for all versions of Octave
 you have installed.  Care should be taken when making changes to this file 
@@ -304,7 +304,7 @@ may be overridden by the environment variable @w{@code{OCTAVE_SITE_INITFILE}}.
 @item @var{octave-home}/share/octave/@var{version}/m/startup/octaverc
 @cindex version startup file
 where @var{octave-home} is the directory in which Octave is
-installed (the default is @file{@value{OCTAVEHOME}}), and @var{version}
+installed (the default is @file{/usr/local}), and @var{version}
 is the version number of Octave.  This file is provided so that changes
 to the default Octave environment can be made globally for all users of
 a particular version of Octave.  Care should be taken when making

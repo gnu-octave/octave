@@ -19,19 +19,12 @@
 # along with Octave; see the file COPYING.  If not, see
 # <http://www.gnu.org/licenses/>.
 
-if test $# -ne 1; then
-  echo "usage: mkbuiltins f1" 1>&2
+if test $# -eq 0; then
+  echo "usage: mkbuiltins f1 f2 ..." 1>&2
   exit 1
 fi
 
 SED=${SED:-'sed'}
-
-DEF_FILES=`cat $1`
-
-if test -z "$DEF_FILES"; then
-  echo "mkbuiltins: DEF_FILES is empty!" 1>&2
-  exit 1
-fi
 
 cat << \EOF
 // DO NOT EDIT!  Generated automatically by mkbuiltins.
@@ -86,12 +79,13 @@ cat << \EOF
 
 EOF
 
-for file in $DEF_FILES; do
-  fcn=`echo $file | $SED 's,.*/,,; s/\.df//; s/-/_/g;'`
+for arg
+do
+  fcn=`echo "$arg" | $SED 's,.*/,,; s/\.df//; s/-/_/g;'`
   echo "static void"
   echo "install_${fcn}_fcns (void)"
   echo "{"
-  cat $file
+  cat "$arg"
   echo "}"
   echo ""
 done
@@ -103,8 +97,9 @@ install_builtins (void)
 {
 EOF
 
-for file in $DEF_FILES; do
-  fcn=`echo $file | $SED 's,.*/,,; s/\.df//; s/-/_/g;'`
+for arg
+do
+  fcn=`echo "$arg" | $SED 's,.*/,,; s/\.df//; s/-/_/g;'`
   echo "  install_${fcn}_fcns ();"
 done
 

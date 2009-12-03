@@ -74,3 +74,5 @@ miscellaneous_FCN_FILES = \
 FCN_FILES += $(miscellaneous_FCN_FILES)
 
 PKG_ADD_FILES += miscellaneous/PKG_ADD
+
+DIRSTAMP_FILES += miscellaneous/$(octave_dirstamp)

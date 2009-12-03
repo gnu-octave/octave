@@ -21,18 +21,6 @@
 @c For now can't include "@" character in the path name, and so name
 @c the example directory without the "@"!!
 
-@macro classfile{class, file}
-@example
-@group
-@verbatiminclude @value{abs_top_srcdir}/examples/\class\/\file\
-@end group
-@end example
-@end macro
-
-@macro polynomialfile{file}
-@classfile{@@polynomial,\file\}
-@end macro
-
 @node Object Oriented Programming
 @chapter Object Oriented Programming
 
@@ -105,7 +93,11 @@ and so in our example the constructor with have the name
 called with no arguments to should return a value object.  So for example
 our polynomial might look like
 
-@polynomialfile{polynomial.m}
+@example
+@group
+@EXAMPLEFILE(@polynomial/polynomial.m)
+@end group
+@end example
 
 Note that the return value of the constructor must be the output of
 the @code{class} function called with the first argument being a
@@ -184,7 +176,11 @@ then Octave will printed nothing when displaying the contents of a class.
 @noindent
 An example of a display method for the polynomial class might be
 
-@polynomialfile{display.m}
+@example
+@group
+@EXAMPLEFILE(@polynomial/display.m)
+@end group
+@end example
 
 @noindent
 Note that in the display method, it makes sense to start the method
@@ -198,13 +194,21 @@ should also define the @code{get} and @code{set} methods.  The
 argument of the appropriate class it should return a structure with
 all of the properties of the class.  For example
 
-@polynomialfile{get.m}
+@example
+@group
+@EXAMPLEFILE(@polynomial/get.m)
+@end group
+@end example
 
 @noindent
 Similarly, the @code{set} method should taken as its first argument an
 object to modify, and then take property/value pairs to be modified. 
 
-@polynomialfile{set.m}
+@example
+@group
+@EXAMPLEFILE(@polynomial/set.m)
+@end group
+@end example
 
 @noindent
 Note that as Octave does not implement pass by reference, than the
@@ -276,7 +280,11 @@ For example we might decide that indexing with "()" evaluates the
 polynomial and indexing with "@{@}" returns the @var{n}-th coefficient (of @var{n}-th power).
 In this case the @code{subsref} method of our polynomial class might look like
 
-@polynomialfile{subsref.m}
+@example
+@group
+@EXAMPLEFILE(@polynomial/subsref.m)
+@end group
+@end example
 
 The equivalent functionality for subscripted assignments uses the 
 @code{subsasgn} method.
@@ -296,7 +304,11 @@ the class.
 
 For example the @code{end} method for our polynomial class might look like
 
-@polynomialfile{end.m}
+@example
+@group
+@EXAMPLEFILE(@polynomial/end.m)
+@end group
+@end example
 
 @noindent
 which is a fairly generic @code{end} method that has a behavior similar to
@@ -413,13 +425,21 @@ version of this function to be called as needed.  A pertinent example
 for our polynomial class might be to overload the @code{polyval} function
 like
 
-@polynomialfile{polyval.m}
+@example
+@group
+@EXAMPLEFILE(@polynomial/polyval.m)
+@end group
+@end example
 
 This function just hands off the work to the normal Octave @code{polyval}
 function.  Another interesting example for an overloaded function for our
 polynomial class is the @code{plot} function.
 
-@polynomialfile{plot.m}
+@example
+@group
+@EXAMPLEFILE(@polynomial/plot.m)
+@end group
+@end example
 
 @noindent
 which allows polynomials to be plotted in the domain near the region
@@ -431,7 +451,11 @@ allows the @code{cast} function to work with the user class and can aid
 in the use of methods of other classes with the user class.  An example
 @code{double} function for our polynomial class might look like.
 
-@polynomialfile{double.m}
+@example
+@group
+@EXAMPLEFILE(@polynomial/double.m)
+@end group
+@end example
 
 @node Operator Overloading
 @subsection Operator Overloading
@@ -530,7 +554,11 @@ width 0.6pt \tabskip=0pt\cr
 
 An example @code{mtimes} method for our polynomial class might look like
 
-@polynomialfile{mtimes.m}
+@example
+@group
+@EXAMPLEFILE(@polynomial/mtimes.m)
+@end group
+@end example
 
 @node Precedence of Objects
 @subsection Precedence of Objects
@@ -559,7 +587,11 @@ the above is of the type "polynomial" and so we use the
 @code{superiorto} function in the class constructor.  In particular our
 polynomial class constructor would be modified to be
 
-@polynomialfile{polynomial_superiorto.m}
+@example
+@group
+@EXAMPLEFILE(@polynomial/polynomial_superiorto.m)
+@end group
+@end example
 
 Note that user classes always have higher precedence than built-in
 Octave types.  So in fact marking our polynomial class higher than the 
@@ -598,7 +630,11 @@ The equivalent class could be implemented in a class directory
 @@FIRfilter that is on the octave path.  The constructor is a file
 FIRfilter.m in the class directory.
 
-@classfile{@@FIRfilter,FIRfilter.m}
+@example
+@group
+@EXAMPLEFILE(@FIRfilter/FIRfilter.m)
+@end group
+@end example
 
 As before, the leading comments provide command-line documentation for
 the class constructor.  This constructor is very similar to the
@@ -623,7 +659,11 @@ other than memory or other physical issues.
 
 As before, we need a @code{display} method.  A simple example might be
 
-@classfile{@@FIRfilter,display.m}
+@example
+@group
+@EXAMPLEFILE(@FIRfilter/display.m)
+@end group
+@end example
 
 Note that we have used the polynomial field of the struct to display
 the filter coefficients.
@@ -656,7 +696,11 @@ of changing the data stored in the class.  Since the fields in the
 underlying struct are private by default, we could provide a mechanism
 to access the fields.  The @code{subsref} method may be used for both.
 
-@classfile{@@FIRfilter,subsref.m}
+@example
+@group
+@EXAMPLEFILE(@FIRfilter/subsref.m)
+@end group
+@end example
 
 The "()" case allows us to filter data using the polynomial provided
 to the constructor.
@@ -690,7 +734,11 @@ In order to change the contents of the object, we need to define a
 @code{subsasgn} method.  For example, we may make the polynomial field
 publicly writeable.
 
-@classfile{@@FIRfilter,subsasgn.m}
+@example
+@group
+@EXAMPLEFILE(@FIRfilter/subsasgn.m)
+@end group
+@end example
 
 So that
 
@@ -710,6 +758,10 @@ aggregation may be a more sensible design approach.  In this case, the
 polynomial is simply a field in the class structure.  A class
 constructor for this case might be
 
-@classfile{@@FIRfilter,FIRfilter_aggregation.m}
+@example
+@group
+@EXAMPLEFILE(@FIRfilter/FIRfilter_aggregation.m)
+@end group
+@end example
 
 For our example, the remaining class methods remain unchanged.

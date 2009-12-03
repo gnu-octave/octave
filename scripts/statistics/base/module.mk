@@ -40,3 +40,5 @@ statistics_base_FCN_FILES = \
 FCN_FILES += $(statistics_base_FCN_FILES)
 
 PKG_ADD_FILES += statistics/base/PKG_ADD
+
+DIRSTAMP_FILES += statistics/base/$(octave_dirstamp)

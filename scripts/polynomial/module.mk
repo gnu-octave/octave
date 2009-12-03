@@ -28,3 +28,5 @@ polynomial_FCN_FILES = \
 FCN_FILES += $(polynomial_FCN_FILES)
 
 PKG_ADD_FILES += polynomial/PKG_ADD
+
+DIRSTAMP_FILES += polynomial/$(octave_dirstamp)

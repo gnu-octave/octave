@@ -71,6 +71,12 @@ EXTRA_DIST = \
   build_sparse_tests.sh \
   $(FCN_FILES)
 
+CLEANFILES = \
+  test_sparse.m
+
+DISTCLEANFILES = \
+  fntests.log
+
 check: test_sparse.m
 	../run-octave --norc --silent --no-history $(srcdir)/fntests.m $(srcdir)
 

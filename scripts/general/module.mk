@@ -83,3 +83,5 @@ general_FCN_FILES = \
 FCN_FILES += $(general_FCN_FILES)
 
 PKG_ADD_FILES += general/PKG_ADD
+
+DIRSTAMP_FILES += general/$(octave_dirstamp)

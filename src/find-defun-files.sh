@@ -13,11 +13,12 @@ shift
 
 for arg
 do
-  file=`echo "$arg" | sed 's/\.ll$/.cc/; s/\.yy$/.cc/'`;
-  if [ ! -f $file ]; then
-    file="$srcdir/$file"
+  if [ -f "$arg" ]; then
+    file="$arg"
+  else
+    file="$srcdir/$arg"
   fi
   if [ "`egrep -l "$DEFUN_PATTERN" $file`" ]; then
-    echo "$file" | sed 's/\.cc$/.df/';
+    echo "$file" | sed 's,.*/,,; s/\.\(cc\|yy\|ll\)$/.df/';
   fi
 done

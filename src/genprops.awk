@@ -16,7 +16,12 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 ##
-## This script is used to generate the graphics.h file from graphics.h.in.
+## Generate the graphics.h file from graphics.h.in and write the
+## output to stdout.
+##
+## If the variable emit_graphics_props is set on the command line,
+## generate the graphics-props.cc file from graphics.h.in and write
+## the output to stdout.
 ##
 ## Lines between the BEGIN_PROPERTIES and END_PROPERTIES markers have
 ## one of the following formats:
@@ -393,54 +398,54 @@ function emit_source ()
 {
   if (class_name)
   {
-    printf ("// ******** %s ********\n\n", class_name) >> filename;
+    printf ("// ******** %s ********\n\n", class_name);
 
     ## constructor
 
     if (base)
-      printf ("base_properties::base_properties (const std::string& ty, const graphics_handle& mh, const graphics_handle& p)\n  : ") >> filename;
+      printf ("base_properties::base_properties (const std::string& ty, const graphics_handle& mh, const graphics_handle& p)\n  : ");
     else
     {
-      printf ("%s::properties::properties (const graphics_handle& mh, const graphics_handle& p)\n", class_name) >> filename;
-      printf ("  : base_properties (go_name, mh, p),\n") >> filename;
+      printf ("%s::properties::properties (const graphics_handle& mh, const graphics_handle& p)\n", class_name);
+      printf ("  : base_properties (go_name, mh, p),\n");
     }
 
     for (i = 1; i <= idx; i++)
     {
       if (ptype[i])
-        printf ("    %s (\"%s\", mh, %s)", name[i], name[i], defval[i]) >> filename;
+        printf ("    %s (\"%s\", mh, %s)", name[i], name[i], defval[i]);
       else
-        printf ("    %s (%s)", name[i], defval[i]) >> filename;
+        printf ("    %s (%s)", name[i], defval[i]);
       if (i < idx)
-        printf (",") >> filename;
-      printf ("\n") >> filename;
+        printf (",");
+      printf ("\n");
     }
 
-    printf ("{\n") >> filename;
+    printf ("{\n");
 
     for (i = 1; i <= idx; i++)
     {
-##    printf ("  insert_static_property (\"%s\", %s);\n", name[i], name[i]) >> filename;
+##    printf ("  insert_static_property (\"%s\", %s);\n", name[i], name[i]);
       if (ptype[i])
       {
-        printf ("  %s.set_id (%s);\n", name[i], toupper(name[i])) >> filename;
+        printf ("  %s.set_id (%s);\n", name[i], toupper(name[i]));
         if (hidden[i])
-          printf ("  %s.set_hidden (true);\n", name[i]) >> filename;
+          printf ("  %s.set_hidden (true);\n", name[i]);
       }
     }
 
-    printf ("  init ();\n}\n\n") >> filename;
+    printf ("  init ();\n}\n\n");
 
     ## set method
 
     if (base)
-      printf ("void\nbase_properties::set (const caseless_str& pname, const std::string& cname, const octave_value& val)\n{\n") >> filename;
+      printf ("void\nbase_properties::set (const caseless_str& pname, const std::string& cname, const octave_value& val)\n{\n");
     else
       printf ("void\n%s::properties::set (const caseless_str& pname_arg, const octave_value& val)\n{\n",
-              class_name) >> filename;
+              class_name);
 
     if (! base)
-      printf ("  const std::set<std::string>& pnames = all_property_names ();\n\n  caseless_str pname = validate_property_name (\"get\", go_name, pnames, pname_arg);\n\n  if (error_state)\n    return;\n\n") >> filename;
+      printf ("  const std::set<std::string>& pnames = all_property_names ();\n\n  caseless_str pname = validate_property_name (\"get\", go_name, pnames, pname_arg);\n\n  if (error_state)\n    return;\n\n");
 
     first = 1;
 
@@ -449,107 +454,107 @@ function emit_source ()
       if (! readonly[i])
       {
         printf ("  %sif (pname.compare (\"%s\"))\n    set_%s (val);\n",
-                (first == 0 ? "else " : ""), name[i], name[i]) >> filename;
+                (first == 0 ? "else " : ""), name[i], name[i]);
         first = 0;
       }
     }
 
     if (base)
-      printf ("  else\n    set_dynamic (pname, cname, val);\n}\n\n") >> filename;
+      printf ("  else\n    set_dynamic (pname, cname, val);\n}\n\n");
     else
-      printf ("  else\n    base_properties::set (pname, \"%s\", val);\n}\n\n", class_name) >> filename;
+      printf ("  else\n    base_properties::set (pname, \"%s\", val);\n}\n\n", class_name);
 
     ## get "all" method
 
     if (base)
     {
-      printf ("octave_value\nbase_properties::get (bool all) const\n{\n") >> filename;
-      printf ("  Octave_map m = get_dynamic (all).map_value ();\n\n") >> filename;
+      printf ("octave_value\nbase_properties::get (bool all) const\n{\n");
+      printf ("  Octave_map m = get_dynamic (all).map_value ();\n\n");
     }
     else
     {
-      printf ("octave_value\n%s::properties::get (bool all) const\n{\n", class_name) >> filename;
-      printf ("  Octave_map m = base_properties::get (all).map_value ();\n\n") >> filename;
+      printf ("octave_value\n%s::properties::get (bool all) const\n{\n", class_name);
+      printf ("  Octave_map m = base_properties::get (all).map_value ();\n\n");
     }
 
     for (i = 1; i <= idx; i++)
     {
       if (hidden[i])
         printf ("  if (all)\n    m.assign (\"%s\", get_%s ()%s);\n", name[i], name[i],
-                (type[i] == "handle_property" || type[i] == "graphics_handle" ? ".as_octave_value ()" : "")) >> filename;
+                (type[i] == "handle_property" || type[i] == "graphics_handle" ? ".as_octave_value ()" : ""));
       else
         printf ("  m.assign (\"%s\", get_%s ()%s);\n", name[i], name[i],
-                (type[i] == "handle_property" || type[i] == "graphics_handle" ? ".as_octave_value ()" : "")) >> filename;
+                (type[i] == "handle_property" || type[i] == "graphics_handle" ? ".as_octave_value ()" : ""));
     }
 
-    printf ("\n  return m;\n}\n\n") >> filename;
+    printf ("\n  return m;\n}\n\n");
 
     ## get "one" method
 
     if (base)
-      printf ("octave_value\nbase_properties::get (const caseless_str& pname) const\n{\n") >> filename;
+      printf ("octave_value\nbase_properties::get (const caseless_str& pname) const\n{\n");
     else
       printf ("octave_value\n%s::properties::get (const caseless_str& pname_arg) const\n{\n",
-              class_name) >> filename;
-    printf ("  octave_value retval;\n\n") >> filename;
+              class_name);
+    printf ("  octave_value retval;\n\n");
 
     if (! base)
-      printf ("  const std::set<std::string>& pnames = all_property_names ();\n\n  caseless_str pname = validate_property_name (\"get\", go_name, pnames, pname_arg);\n\n  if (error_state)\n    return retval;\n\n") >> filename;
+      printf ("  const std::set<std::string>& pnames = all_property_names ();\n\n  caseless_str pname = validate_property_name (\"get\", go_name, pnames, pname_arg);\n\n  if (error_state)\n    return retval;\n\n");
 
     for (i = 1; i<= idx; i++)
     {
       printf ("  %sif (pname.compare (\"%s\"))\n",
-              (i > 1 ? "else " : ""), name[i]) >> filename;
+              (i > 1 ? "else " : ""), name[i]);
       printf ("    retval = get_%s ()%s;\n", name[i],
-              (type[i] == "handle_property" || type[i] == "graphics_handle" ? ".as_octave_value ()" : "")) >> filename;
+              (type[i] == "handle_property" || type[i] == "graphics_handle" ? ".as_octave_value ()" : ""));
     }
 
     if (base)
-      printf ("  else\n    retval = get_dynamic (pname);\n\n") >> filename;
+      printf ("  else\n    retval = get_dynamic (pname);\n\n");
     else
-      printf ("  else\n    retval = base_properties::get (pname);\n\n") >> filename;
-    printf ("  return retval;\n}\n\n") >> filename;
+      printf ("  else\n    retval = base_properties::get (pname);\n\n");
+    printf ("  return retval;\n}\n\n");
 
     ## get_property method
 
     if (base)
-      printf ("property\nbase_properties::get_property (const caseless_str& pname)\n{\n") >> filename;
+      printf ("property\nbase_properties::get_property (const caseless_str& pname)\n{\n");
     else
       printf ("property\n%s::properties::get_property (const caseless_str& pname_arg)\n{\n",
-              class_name) >> filename;
+              class_name);
 
     if (! base)
-      printf ("  const std::set<std::string>& pnames = all_property_names ();\n\n  caseless_str pname = validate_property_name (\"get\", go_name, pnames, pname_arg);\n\n  if (error_state)\n    return property ();\n\n") >> filename;
+      printf ("  const std::set<std::string>& pnames = all_property_names ();\n\n  caseless_str pname = validate_property_name (\"get\", go_name, pnames, pname_arg);\n\n  if (error_state)\n    return property ();\n\n");
 
     for (i = 1; i<= idx; i++)
     {
       if (ptype[i])
       {
         printf ("  %sif (pname.compare (\"%s\"))\n",
-                (i > 1 ? "else " : ""), name[i]) >> filename;
-        printf ("    return property (&%s, true);\n", name[i]) >> filename;
+                (i > 1 ? "else " : ""), name[i]);
+        printf ("    return property (&%s, true);\n", name[i]);
       }
     }
 
     if (base)
-      printf ("  else\n    return get_property_dynamic (pname);\n") >> filename;
+      printf ("  else\n    return get_property_dynamic (pname);\n");
     else
-      printf ("  else\n    return base_properties::get_property (pname);\n") >> filename;
-    printf ("}\n\n") >> filename;
+      printf ("  else\n    return base_properties::get_property (pname);\n");
+    printf ("}\n\n");
 
 
     ## factory defaults method
 
     if (base)
     {
-      printf ("property_list::pval_map_type\nbase_properties::factory_defaults (void)\n{\n") >> filename;
-      printf ("  property_list::pval_map_type m;\n\n") >> filename;
+      printf ("property_list::pval_map_type\nbase_properties::factory_defaults (void)\n{\n");
+      printf ("  property_list::pval_map_type m;\n\n");
     }
     else
     {
       printf ("property_list::pval_map_type\n%s::properties::factory_defaults (void)\n{\n",
-              class_name) >> filename;
-      printf ("  property_list::pval_map_type m = base_properties::factory_defaults ();\n\n") >> filename;
+              class_name);
+      printf ("  property_list::pval_map_type m = base_properties::factory_defaults ();\n\n");
     }
 
     for (i = 1; i <= idx; i++)
@@ -569,62 +574,60 @@ function emit_source ()
       	}
 
         printf ("  m[\"%s\"] = %s%s;\n", name[i], dval,
-                (type[i] == "handle_property" || type[i] == "graphics_handle" ? ".as_octave_value ()" : "")) >> filename;
+                (type[i] == "handle_property" || type[i] == "graphics_handle" ? ".as_octave_value ()" : ""));
       }
     }
 
-    printf ("\n  return m;\n}\n\n") >> filename;
+    printf ("\n  return m;\n}\n\n");
 
     ## go_name static field
 
     if (! base)
       printf ("std::string %s::properties::go_name (\"%s\");\n\n",
-              class_name, object_name) >> filename;
+              class_name, object_name);
 
-    printf ("std::set<std::string>\n") >> filename;
+    printf ("std::set<std::string>\n");
     if (base)
-      printf ("base_properties") >> filename;
+      printf ("base_properties");
     else
-      printf ("%s::properties", class_name) >> filename;
-    printf ("::core_property_names (void)\n{\n  static std::set<std::string> all_pnames;\n\n  static bool initialized = false;\n\n  if (! initialized)\n    {\n") >> filename;
+      printf ("%s::properties", class_name);
+    printf ("::core_property_names (void)\n{\n  static std::set<std::string> all_pnames;\n\n  static bool initialized = false;\n\n  if (! initialized)\n    {\n");
     for (i = 1; i <= idx; i++)
-      printf ("      all_pnames.insert (\"%s\");\n", name[i]) >> filename;
+      printf ("      all_pnames.insert (\"%s\");\n", name[i]);
     if (! base)
-      printf ("\n      std::set<std::string> base_pnames = base_properties::core_property_names ();\n      all_pnames.insert (base_pnames.begin (), base_pnames.end ());\n") >> filename;
-    printf ("\n      initialized = true;\n    }\n\n  return all_pnames;\n}\n\n") >> filename;
+      printf ("\n      std::set<std::string> base_pnames = base_properties::core_property_names ();\n      all_pnames.insert (base_pnames.begin (), base_pnames.end ());\n");
+    printf ("\n      initialized = true;\n    }\n\n  return all_pnames;\n}\n\n");
 
-    printf ("bool\n") >> filename;
+    printf ("bool\n");
     if (base)
-      printf ("base_properties") >> filename;
+      printf ("base_properties");
     else
-      printf ("%s::properties", class_name) >> filename;
-    printf ("::has_core_property (const caseless_str& pname)\n{\n  std::set<std::string> pnames = core_property_names ();\n\n  return pnames.find (pname) != pnames.end ();\n}\n\n", class_name) >> filename;
+      printf ("%s::properties", class_name);
+    printf ("::has_core_property (const caseless_str& pname)\n{\n  std::set<std::string> pnames = core_property_names ();\n\n  return pnames.find (pname) != pnames.end ();\n}\n\n", class_name);
 
-    printf ("std::set<std::string>\n") >> filename;
+    printf ("std::set<std::string>\n");
     if (base)
-	printf ("base_properties") >> filename;
+	printf ("base_properties");
     else
-      printf ("%s::properties", class_name) >> filename;
-    printf ("::all_property_names (") >> filename;
+      printf ("%s::properties", class_name);
+    printf ("::all_property_names (");
     if (base)
-      printf ("const std::string& cname") >> filename;
+      printf ("const std::string& cname");
     else
-      printf ("void") >> filename;
-    printf (") const\n{\n  static std::set<std::string> all_pnames = core_property_names ();\n\n") >> filename;
+      printf ("void");
+    printf (") const\n{\n  static std::set<std::string> all_pnames = core_property_names ();\n\n");
     if (base)
-      printf ("  std::set<std::string> retval = all_pnames;\n  std::set<std::string> dyn_props = dynamic_property_names (cname);\n  retval.insert (dyn_props.begin (), dyn_props.end ());\n  for (std::map<caseless_str, property, cmp_caseless_str>::const_iterator p = all_props.begin ();\n       p != all_props.end (); p++)\n    retval.insert (p->first);\n\n  return retval;\n}\n\n") >> filename;
+      printf ("  std::set<std::string> retval = all_pnames;\n  std::set<std::string> dyn_props = dynamic_property_names (cname);\n  retval.insert (dyn_props.begin (), dyn_props.end ());\n  for (std::map<caseless_str, property, cmp_caseless_str>::const_iterator p = all_props.begin ();\n       p != all_props.end (); p++)\n    retval.insert (p->first);\n\n  return retval;\n}\n\n");
     else
-      printf ("  std::set<std::string> retval = all_pnames;\n  std::set<std::string> base_props = base_properties::all_property_names (\"%s\");\n  retval.insert (base_props.begin (), base_props.end ());\n\n  return retval;\n}\n\n", class_name) >> filename;
+      printf ("  std::set<std::string> retval = all_pnames;\n  std::set<std::string> base_props = base_properties::all_property_names (\"%s\");\n  retval.insert (base_props.begin (), base_props.end ());\n\n  return retval;\n}\n\n", class_name);
 
     if (! base)
-      printf ("bool\n%s::properties::has_property (const caseless_str& pname) const\n{\n  std::set<std::string> pnames = all_property_names ();\n\n  return pnames.find (pname) != pnames.end ();\n}\n\n", class_name) >> filename;
+      printf ("bool\n%s::properties::has_property (const caseless_str& pname) const\n{\n  std::set<std::string> pnames = all_property_names ();\n\n  return pnames.find (pname) != pnames.end ();\n}\n\n", class_name);
   }
 }
 
 BEGIN {
-  filename = "graphics-props.cc";
-  printf ("// DO NOT EDIT!  Generated automatically by genprops.awk.\n\n");
-  printf ("// DO NOT EDIT!  Generated automatically by genprops.awk.\n\n") > filename;
+  printf ("// DO NOT EDIT!  Generated automatically by genprops.awk.\n\n")
   pcount = 0;
 }
 
@@ -665,8 +668,10 @@ BEGIN {
 }
 
 /END_PROPERTIES/ {
-  emit_declarations();
-  emit_source();
+  if (emit_graphics_props)
+    emit_source();
+  else
+    emit_declarations();
   gather = 0;
   next;
 }
@@ -795,6 +800,6 @@ BEGIN {
     }
 
   }
-  else
+  else if (! emit_graphics_props)
     print $0;
 }

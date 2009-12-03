@@ -68,6 +68,8 @@ include @FIRfilter/module.mk
 
 EXTRA_DIST += $(FCN_FILES)
 
+CLEANFILES = octave.desktop
+
 all-local: octave.desktop
 
 octave.desktop: octave.desktop.in Makefile

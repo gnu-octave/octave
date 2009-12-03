@@ -43,3 +43,5 @@ signal_FCN_FILES = \
 FCN_FILES += $(signal_FCN_FILES)
 
 PKG_ADD_FILES += signal/PKG_ADD
+
+DIRSTAMP_FILES += signal/$(octave_dirstamp)

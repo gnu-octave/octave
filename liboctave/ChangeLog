@@ -1,3 +1,7 @@
+2009-12-03  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.am (BUILT_NODISTFILES): New variable.
+
 2009-12-01  Jaroslav Hajek  <highegg@gmail.com>
 
 	* idx-vector.cc (idx_vector::idx_range_rep::unconvert,

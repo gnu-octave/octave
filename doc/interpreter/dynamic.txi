@@ -17,20 +17,6 @@
 @c along with Octave; see the file COPYING.  If not, see
 @c <http://www.gnu.org/licenses/>.
 
-@macro examplefile{file}
-@example
-@group
-@verbatiminclude @value{abs_top_srcdir}/examples/\file\
-@end group
-@end example
-@end macro
-
-@macro longexamplefile{file}
-@example
-@verbatiminclude @value{abs_top_srcdir}/examples/\file\
-@end example
-@end macro
-
 @node Dynamically Linked Functions
 @appendix Dynamically Linked Functions
 @cindex dynamic-linking
@@ -112,7 +98,11 @@ call from within octave or from the command line.
 
 Consider the short example
 
-@examplefile{helloworld.cc}
+@example
+@group
+@EXAMPLEFILE(helloworld.cc)
+@end group
+@end example
 
 This example although short introduces the basics of writing a C++
 function that can be dynamically linked to Octave.  The easiest way to
@@ -294,7 +284,11 @@ that are of interest only for matrices such as @code{transpose},
 The typical way to extract a matrix or array from the input arguments of
 @w{@code{DEFUN_DLD}} function is as follows
 
-@examplefile{addtwomatrices.cc}
+@example
+@group
+@EXAMPLEFILE(addtwomatrices.cc)
+@end group
+@end example
 
 To avoid segmentation faults causing Octave to abort, this function
 explicitly checks that there are sufficient arguments available before
@@ -353,7 +347,9 @@ listed below.
 In Octave a character string is just a special @code{Array} class.
 Consider the example 
 
-@longexamplefile{stringdemo.cc}
+@example
+@EXAMPLEFILE(stringdemo.cc)
+@end example
 
 An example of the use of this function is
 
@@ -414,7 +410,11 @@ array is just an array of @code{octave_value}s, and so each element of the cell
 array can then be treated just like any other @code{octave_value}.  A simple
 example is
 
-@examplefile{celldemo.cc}
+@example
+@group
+@EXAMPLEFILE(celldemo.cc)
+@end group
+@end example
 
 Note that cell arrays are used less often in standard oct-files and so
 the @file{Cell.h} header file must be explicitly included.  The rest of this
@@ -444,7 +444,9 @@ with the pair consisting of a @code{std::string} and an octave
 
 A simple example demonstrating the use of structures within oct-files is
 
-@longexamplefile{structdemo.cc}
+@example
+@EXAMPLEFILE(structdemo.cc)
+@end example
 
 An example of its use is
 
@@ -822,7 +824,9 @@ second argument is a boolean argument specifying what to do in the case
 that no global variable of the desired name is found.  An example of the
 use of these two functions is
 
-@longexamplefile{globaldemo.cc}
+@example
+@EXAMPLEFILE(globaldemo.cc)
+@end example
 
 An example of its use is
 
@@ -861,7 +865,9 @@ be passed as one of
 The example below demonstrates an example that accepts all four means of
 passing a function to an oct-file.
 
-@longexamplefile{funcdemo.cc}
+@example
+@EXAMPLEFILE(funcdemo.cc)
+@end example
 
 The first argument to this demonstration is the user supplied function
 and the following arguments are all passed to the user function.
@@ -956,12 +962,16 @@ segmentation fault.
 An example of the inclusion of a Fortran function in an oct-file is
 given in the following example, where the C++ wrapper is
 
-@longexamplefile{fortdemo.cc}
+@example
+@EXAMPLEFILE(fortdemo.cc)
+@end example
 
 @noindent
 and the fortran function is
 
-@longexamplefile{fortsub.f}
+@example
+@EXAMPLEFILE(fortsub.f)
+@end example
 
 This example demonstrates most of the features needed to link to an
 external Fortran function, including passing arrays and strings, as well
@@ -1018,7 +1028,9 @@ octave_value class like @code{is_real_matrix}, etc., but equally include
 more specialized functions.  Some of the more common ones are
 demonstrated in the following example
 
-@longexamplefile{paramdemo.cc}
+@example
+@EXAMPLEFILE(paramdemo.cc)
+@end example
 
 @noindent
 and an example of its use is
@@ -1087,7 +1099,9 @@ handling of Octave, it is important to enforce that certain code is run
 to allow variables, etc. to be restored even if an exception occurs.  An
 example of the use of this mechanism is
 
-@longexamplefile{unwinddemo.cc}
+@example
+@EXAMPLEFILE(unwinddemo.cc)
+@end example
 
 As can be seen in the example
 
@@ -1216,7 +1230,11 @@ distinguish between filenames in upper and lower case
 
 Consider the short example
 
-@examplefile{firstmexdemo.c}
+@example
+@group
+@EXAMPLEFILE(firstmexdemo.c)
+@end group
+@end example
 
 This simple example demonstrates the basics of writing a mex-file.  The
 entry point into the mex-file is defined by @code{mexFunction}.  Note
@@ -1261,7 +1279,11 @@ we can use the @code{mexFunctionName} function to determine what name
 the mex-file was called with.  This can be used to alter the behavior of
 the mex-file based on the function name.  For example if
 
-@examplefile{myfunc.c}
+@example
+@group
+@EXAMPLEFILE(myfunc.c)
+@end group
+@end example
 
 @noindent
 is in file @file{myfunc.c}, and it is compiled with
@@ -1347,7 +1369,9 @@ An example that demonstration how to work with arbitrary real or complex
 double precision arrays is given by the file @file{mypow2.c} as given
 below.
 
-@longexamplefile{mypow2.c}
+@example
+@EXAMPLEFILE(mypow2.c)
+@end example
 
 @noindent
 with an example of its use
@@ -1376,7 +1400,9 @@ use of strings and character matrices in mex-files.  An example of their
 use, that parallels the demo in @file{stringdemo.cc}, is given in the
 file @file{mystring.c}, as seen below.
 
-@longexamplefile{mystring.c}
+@example
+@EXAMPLEFILE(mystring.c)
+@end example
 
 @noindent
 An example of its expected output is
@@ -1404,7 +1430,11 @@ as we can in oct-files.  An example that reduplicates the functional of
 the @file{celldemo.cc} oct-file in a mex-file is given by
 @file{mycell.c} as below
 
-@examplefile{mycell.c}
+@example
+@group
+@EXAMPLEFILE(mycell.c)
+@end group
+@end example
 
 @noindent
 which as can be seen below has exactly the same behavior as the oct-file
@@ -1485,7 +1515,9 @@ includes a Cell Array per field of the structure.
 An example that demonstrates the use of structures in mex-file can be
 found in the file @file{mystruct.c}, as seen below
 
-@longexamplefile{mystruct.c}
+@example
+@EXAMPLEFILE(mystruct.c)
+@end example
 
 An example of the behavior of this function within Octave is then
 
@@ -1574,7 +1606,9 @@ to the rows of the non-zero elements, and this is given by
 @code{mxGetIr}.  A complete example of the use of sparse matrices in
 mex-files is given by the file @file{mysparse.c} as seen below
 
-@longexamplefile{mysparse.c}
+@example
+@EXAMPLEFILE(mysparse.c)
+@end example
 
 @node Calling Other Functions in Mex-Files
 @subsection Calling Other Functions in Mex-Files
@@ -1583,7 +1617,9 @@ It is also possible call other Octave functions from within a mex-file
 using @code{mexCallMATLAB}.  An example of the use of
 @code{mexCallMATLAB} can be see in the example below
 
-@longexamplefile{myfeval.c}
+@example
+@EXAMPLEFILE(myfeval.c)
+@end example
 
 If this code is in the file @file{myfeval.c}, and is compiled to
 @file{myfeval.mex}, then an example of its use is
@@ -1616,7 +1652,11 @@ array and matrix classes as well as to all the Octave algorithms.  The
 following C++ program, uses class Matrix from liboctave.a or
 liboctave.so.
 
-@examplefile{standalone.cc}
+@example
+@group
+@EXAMPLEFILE(standalone.cc)
+@end group
+@end example
 
 @noindent
 mkoctfile can then be used to build a standalone application with a
@@ -1641,7 +1681,11 @@ Octave to be used by the application.  To do that the Octave interpreter
 needs to be initialized first.  An example of how to do this can then be
 seen in the code
 
-@examplefile{embedded.cc}
+@example
+@group
+@EXAMPLEFILE(embedded.cc)
+@end group
+@end example
 
 @noindent
 which is compiled and run as before as a standalone application with

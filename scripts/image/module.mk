@@ -45,3 +45,5 @@ IMAGES += \
 FCN_FILES += $(image_FCN_FILES)
 
 PKG_ADD_FILES += image/PKG_ADD
+
+DIRSTAMP_FILES += image/$(octave_dirstamp)

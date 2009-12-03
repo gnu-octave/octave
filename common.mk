@@ -18,8 +18,13 @@ GNUPLOT = @GNUPLOT@
 
 DESKTOP_FILE_INSTALL = @DESKTOP_FILE_INSTALL@
 
-version = @OCTAVE_VERSION@
-api_version = @OCTAVE_API_VERSION@
+OCTAVE_VERSION = @OCTAVE_VERSION@
+OCTAVE_API_VERSION = @OCTAVE_API_VERSION@
+OCTAVE_RELEASE_DATE = @OCTAVE_RELEASE_DATE@
+OCTAVE_COPYRIGHT = @OCTAVE_COPYRIGHT@
+
+version = $(OCTAVE_VERSION)
+api_version = $(OCTAVE_API_VERSION)
 
 ## AM_LIBTOOLFLAGS = --silent
 
@@ -273,6 +278,7 @@ FFTW_XLDFLAGS = $(FFTW3_LDFLAGS) $(FFTW3F_LDFLAGS)
 FFTW_XLIBS = $(FFTW3_LIBS) $(FFTW3F_LIBS)
 
 USE_64_BIT_IDX_T = @USE_64_BIT_IDX_T@
+OCTAVE_IDX_TYPE = @OCTAVE_IDX_TYPE@
 
 TEXINFO_COLAMD = @TEXINFO_COLAMD@
 TEXINFO_CHOLMOD = @TEXINFO_CHOLMOD@
@@ -618,21 +624,6 @@ $(SED) < $< > $@-t \
   -e "s|%OCTAVE_API_VERSION%|\"${api_version}\"|" \
   -e "s|%OCTAVE_RELEASE%|\"${OCTAVE_RELEASE}\"|" \
   -e "s|%OCTAVE_VERSION%|\"${version}\"|"
-$(simple_move_if_change_rule)
-endef
-
-define do_subst_texinfo_vals
-echo "making $@ from $<"
-$(SED) < $< \
-  -e "s|%abs_top_srcdir%|${abs_top_srcdir}|" \
-  -e "s|%top_srcdir%|${top_srcdir}|" \
-  -e "s|%OCTAVE_HOME%|${prefix}|" \
-  -e "s|%OCTAVE_VERSION%|${version}|" \
-  -e "s|%TEXINFO_COLAMD%|${TEXINFO_COLAMD}|" \
-  -e "s|%TEXINFO_CHOLMOD%|${TEXINFO_CHOLMOD}|" \
-  -e "s|%TEXINFO_UMFPACK%|${TEXINFO_UMFPACK}|" \
-  -e "s|%TEXINFO_QHULL%|${TEXINFO_QHULL}|" | \
-  $(SED) -e "s|%OCTAVE_CONF_DEFS%|\"${UGLY_DEFS}\"|" > $@-t
 $(simple_move_if_change_rule)
 endef
 

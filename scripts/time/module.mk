@@ -20,3 +20,5 @@ time_FCN_FILES = \
 FCN_FILES += $(time_FCN_FILES)
 
 PKG_ADD_FILES += time/PKG_ADD
+
+DIRSTAMP_FILES += time/$(octave_dirstamp)

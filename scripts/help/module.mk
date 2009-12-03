@@ -19,3 +19,5 @@ help_FCN_FILES = \
 FCN_FILES += $(help_FCN_FILES)
 
 PKG_ADD_FILES += help/PKG_ADD
+
+DIRSTAMP_FILES += help/$(octave_dirstamp)

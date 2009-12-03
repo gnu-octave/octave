@@ -12,3 +12,5 @@ set_FCN_FILES = \
 FCN_FILES += $(set_FCN_FILES)
 
 PKG_ADD_FILES += set/PKG_ADD
+
+DIRSTAMP_FILES += set/$(octave_dirstamp)

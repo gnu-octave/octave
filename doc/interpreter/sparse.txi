@@ -658,11 +658,7 @@ The standard Cholesky factorization of this matrix can be
 obtained by the same command that would be used for a full
 matrix.  This can be visualized with the command 
 @code{r = chol(A); spy(r);}.
-@ifset HAVE_CHOLMOD
-@ifset HAVE_COLAMD
 @xref{fig:simplechol}.
-@end ifset
-@end ifset
 The original matrix had 
 @ifinfo
 @ifnothtml
@@ -705,8 +701,6 @@ appropriate sparsity preserving reordering of the matrix during the
 factorization, In that case this might be obtained with three return
 arguments as r@code{[r, p, q] = chol(A); spy(r)}.
 
-@ifset HAVE_CHOLMOD
-@ifset HAVE_COLAMD
 @float Figure,fig:simplechol
 @center @image{spchol,4in}
 @caption{Structure of the un-permuted Cholesky factorization of the above matrix.}
@@ -716,8 +710,6 @@ arguments as r@code{[r, p, q] = chol(A); spy(r)}.
 @center @image{spcholperm,4in}
 @caption{Structure of the permuted Cholesky factorization of the above matrix.}
 @end float
-@end ifset
-@end ifset
 
 In the case of an asymmetric matrix, the appropriate sparsity
 preserving permutation is @dfn{colamd} and the factorization using
@@ -1100,13 +1092,7 @@ solve for the voltages at each vertex @code{V}.
 Finally, in order to display the solution, we show each solved voltage 
 value in the z-axis for each simplex vertex.
 @ifset htmltex
-@ifset HAVE_CHOLMOD
-@ifset HAVE_UMFPACK
-@ifset HAVE_COLAMD
 @xref{fig:femmodel}.
-@end ifset
-@end ifset
-@end ifset
 @end ifset
 
 @example
@@ -1122,15 +1108,9 @@ value in the z-axis for each simplex vertex.
 
 
 @ifset htmltex
-@ifset HAVE_CHOLMOD
-@ifset HAVE_UMFPACK
-@ifset HAVE_COLAMD
 @float Figure,fig:femmodel
 @center @image{grid,4in}
 @caption{Example finite element model the showing triangular elements. 
 The height of each vertex corresponds to the solution value.}
 @end float
-@end ifset
-@end ifset
-@end ifset
 @end ifset

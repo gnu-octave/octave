@@ -29,7 +29,7 @@ EXTRA_DIST = \
   texinfo.tex \
   texmf.cnf
 
-SUBDIRS = . faq interpreter liboctave refcard
+SUBDIRS = faq interpreter liboctave refcard
 
 ../BUGS ../INSTALL.OCTAVE:
 	$(MAKE) -C interpreter ../$@

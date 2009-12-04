@@ -23,17 +23,14 @@ TOPDIR = ../..
 
 include ../../common.mk
 
-AM_MAKEINFOFLAGS = -I.. -I$(srcdir) -I$(srcdir)/..
-AM_MAKEINFOHTMLFLAGS = -I.. -I$(srcdir) -I$(srcdir)/..
-
 TEXINFO_TEX = ../texinfo.tex
 
-## Extra PATH_SEPARATOR at start and end of list is currently required
-## due to weak parsing by texi2XXX scripts.  (12/02/09)
-TEXINPUTS := "$(PATH_SEPARATOR)..$(PATH_SEPARATOR)$(srcdir)/..$(PATH_SEPARATOR)$(srcdir)$(PATH_SEPARATOR)$(TEXINPUTS)$(PATH_SEPARATOR)"
+## Leading PATH_SEPARATOR required due to weak parsing by dvips (12/04/09)
+TEXINPUTS := "$(PATH_SEPARATOR)$(srcdir)$(PATH_SEPARATOR)$(TEXINPUTS)$(PATH_SEPARATOR)"
 export TEXINPUTS
 
-TEXMFCNF := "..$(PATH_SEPARATOR)$(srcdir)$(PATH_SEPARATOR)$(srcdir)/..$(PATH_SEPARATOR)$(PATH_SEPARATOR)$(TEXMFCNF)$(PATH_SEPARATOR)"
+## Include custom texmf.cnf necessary to run @seealso macro 
+TEXMFCNF := "..$(PATH_SEPARATOR)$(srcdir)/..$(PATH_SEPARATOR)$(TEXMFCNF)$(PATH_SEPARATOR)"
 export TEXMFCNF
 
 dist_man1_MANS = \
@@ -147,9 +144,9 @@ octave_TEXINFOS = \
   contributors.texi \
   $(MUNGED_TEXI_SRC)
 
-$(srcdir)/octave.info octave.dvi octave.html octave.pdf: $(srcdir)/version.texi $(octave_TEXINFOS) $(EXAMPLE_FILES)
+octave.info octave.dvi octave.html octave.pdf: $(srcdir)/version.texi $(octave_TEXINFOS) $(EXAMPLE_FILES)
 
-$(srcdir)/octave.info: $(IMAGES_TXT)
+octave.info: $(IMAGES_TXT)
 
 octave.dvi octave.ps: $(IMAGES_EPS)
 
@@ -188,15 +185,13 @@ contributors.texi: contributors.in
 ../../INSTALL.OCTAVE: install.texi
 	rm -f INSTALL
 	-$(MAKEINFO) -D INSTALLONLY \
-	  --no-validate --no-headers --no-split --output INSTALL \
-	  -I.. -I$(srcdir) -I$(srcdir)/.. $<
+	  --no-validate --no-headers --no-split --output INSTALL $<
 	mv INSTALL ../../INSTALL.OCTAVE
 
 ../../BUGS: bugs.texi
 	rm -f BUGS
 	-$(MAKEINFO) -D BUGSONLY \
-	  --no-validate --no-headers --no-split --output BUGS \
-	  -I.. -I$(srcdir) -I$(srcdir)/.. $<
+	  --no-validate --no-headers --no-split --output BUGS $<
 	mv BUGS ../../BUGS
 
 EXTRA_DIST = \

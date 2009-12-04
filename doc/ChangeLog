@@ -1,5 +1,11 @@
 2009-12-04  Rik <octave@nomad.inbox5.com>
 
+	* Makefile.am, interpreter/Makefile.am, liboctave/Makefile.am: remove 
+	  lingering configuration support for conf.texi
+	* liboctave/Makefile.am: distribute .texi files
+
+2009-12-04  Rik <octave@nomad.inbox5.com>
+
 	* interpreter/geometryimages.m, interpreter/interpimages.m,
 	  interpreter/sparseimages.m, interpreter/plotimages.m: 
 	  Switch to color output for PostScript documentation images

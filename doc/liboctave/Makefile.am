@@ -23,17 +23,11 @@ TOPDIR = ../..
 
 include ../../common.mk
 
-AM_MAKEINFOFLAGS = -I.. -I$(srcdir) -I$(srcdir)/..
-AM_MAKEINFOHTMLFLAGS = -I.. -I$(srcdir) -I$(srcdir)/..
-
 TEXINFO_TEX = ../texinfo.tex
-
-TEXINPUTS = "..$(PATH_SEPARATOR)$(srcdir)$(PATH_SEPARATOR)$(srcdir)/..$(PATH_SEPARATOR)"
-export TEXINPUTS
 
 info_TEXINFOS = liboctave.texi
 
-dist_liboctave_TEXINFOS = \
+liboctave_TEXINFOS = \
   array.texi \
   bugs.texi \
   cp-idx.texi \
@@ -58,6 +52,6 @@ all-local: dvi html pdf ps
 
 EXTRA_DIST = liboctave.dvi liboctave.html liboctave.pdf liboctave.ps
 
-$(srcdir)/liboctave.info liboctave.dvi liboctave.html liboctave.pdf: $(srcdir)/version.texi
+liboctave.info liboctave.dvi liboctave.html liboctave.pdf: $(srcdir)/version.texi
 
 .NOTPARALLEL:

@@ -1,3 +1,7 @@
+2009-12-04  John W. Eaton  <jwe@octave.org>
+
+	* configure.ac: Require auotconf 2.62.
+
 2009-12-03  John W. Eaton  <jwe@octave.org>
 
 	* common.mk (OCTAVE_VERSION, OCTAVE_API_VERSION)

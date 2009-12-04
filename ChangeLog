@@ -1,5 +1,9 @@
 2009-12-04  John W. Eaton  <jwe@octave.org>
 
+	* configure.ac: Check $have_x = yes, not just $have_x.
+
+2009-12-04  John W. Eaton  <jwe@octave.org>
+
 	* configure.ac: Require auotconf 2.62.
 
 2009-12-03  John W. Eaton  <jwe@octave.org>

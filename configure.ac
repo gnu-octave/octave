@@ -270,7 +270,7 @@ AC_SUBST(DEPEND_EXTRA_SED_PATTERN)
 ACX_PTHREAD
 
 AC_PATH_X
-if test "$have_x"; then
+if test "$have_x" = "yes"; then
   AC_DEFINE(HAVE_X_WINDOWS, 1, [Define if you have X11])
 
   if test "$x_includes" != "NONE"; then

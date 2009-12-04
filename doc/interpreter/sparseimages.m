@@ -21,6 +21,7 @@ function sparseimages (nm, typ)
   if (strcmp (typ, "png"))
     set (0, "defaulttextfontname", "*");
   endif
+
   if (! isempty (findstr (octave_config_info ("DEFS"), "HAVE_COLAMD"))
       && ! isempty (findstr (octave_config_info ("DEFS"), "HAVE_CHOLMOD"))
       && ! isempty (findstr (octave_config_info ("DEFS"), "HAVE_UMFPACK")))
@@ -57,11 +58,17 @@ endfunction
 
 function gplotimages (nm, typ)
   hide_output ();
+  if (strcmp (typ, "eps"))
+    d_typ = "-depsc2";
+  else
+    d_typ = cstrcat ("-d", typ);
+  endif
+
   A = sparse ([2,6,1,3,2,4,3,5,4,6,1,5],
 	      [1,1,2,2,3,3,4,4,5,5,6,6], 1, 6, 6);
   xy = [0,4,8,6,4,2;5,0,5,7,5,7]';
   gplot (A, xy)
-  print (cstrcat (nm, ".", typ), cstrcat ("-d", typ))
+  print (cstrcat (nm, ".", typ), d_typ)
   hide_output ();
 endfunction
 
@@ -94,12 +101,18 @@ endfunction
 
 function otherimages(nm,n,typ)
   hide_output ();
+  if (strcmp (typ, "eps"))
+    d_typ = "-depsc2";
+  else
+    d_typ = cstrcat ("-d", typ);
+  endif
+
   a = 10*speye(n) + sparse(1:n,ceil([1:n]/2),1,n,n) + ...
       sparse(ceil([1:n]/2),1:n,1,n,n);
   if (strcmp (nm, "spmatrix"))
     spy(a);
     axis("ij")
-    print(cstrcat("spmatrix.",typ),cstrcat("-d",typ))
+    print(cstrcat("spmatrix.",typ), d_typ)
     hide_output ();
   else
     if (!isempty(findstr(octave_config_info ("DEFS"),"HAVE_COLAMD")) &&
@@ -108,13 +121,13 @@ function otherimages(nm,n,typ)
 	r1 = chol(a);
 	spy(r1);
 	axis("ij")
-	print(cstrcat("spchol.",typ),cstrcat("-d",typ))
+	print(cstrcat("spchol.",typ), d_typ)
 	hide_output ();
       elseif (strcmp (nm, "spcholperm"))
 	[r2,p2,q2]=chol(a);
 	spy(r2);
 	axis("ij")
-	print(cstrcat("spcholperm.",typ),cstrcat("-d",typ))
+	print(cstrcat("spcholperm.",typ), d_typ)
 	hide_output ();
       endif
       ## printf("Image NNZ: Matrix %d, Chol %d, PermChol %d\n",nnz(a),nnz(r1),nnz(r2));
@@ -162,6 +175,12 @@ endfunction
 
 function femimages (nm,typ)
   hide_output ();
+  if (strcmp (typ, "eps"))
+    d_typ = "-depsc2";
+  else
+    d_typ = cstrcat ("-d", typ);
+  endif
+
   if (!isempty(findstr(octave_config_info ("DEFS"),"HAVE_COLAMD")) &&
       !isempty(findstr(octave_config_info ("DEFS"),"HAVE_CHOLMOD")) &&
       !isempty(findstr(octave_config_info ("DEFS"),"HAVE_UMFPACK")))
@@ -237,7 +256,7 @@ function femimages (nm,typ)
 
     plot3 (xelems, yelems, velems);
     view (10, 10);
-    print(cstrcat(nm,".",typ),cstrcat("-d",typ))
+    print(cstrcat(nm,".",typ), d_typ)
     hide_output ();
   endif
 endfunction
@@ -258,6 +277,11 @@ function sombreroimage (nm, typ)
   else ## if (!strcmp (typ, "txt"))
 
     hide_output ();
+    if (strcmp (typ, "eps"))
+      d_typ = "-depsc2";
+    else
+      d_typ = cstrcat ("-d", typ);
+    endif
 
     x = y = linspace (-8, 8, 41)';
     [xx, yy] = meshgrid (x, y);
@@ -267,7 +291,7 @@ function sombreroimage (nm, typ)
       mesh (x, y, z);
       title ("Sorry, graphics not available because octave was\\ncompiled without the sparse matrix implementation.");
     unwind_protect_cleanup
-      print (cstrcat (nm, ".", typ), cstrcat ("-d", typ));
+      print (cstrcat (nm, ".", typ), d_typ);
       hide_output ();
     end_unwind_protect
   endif

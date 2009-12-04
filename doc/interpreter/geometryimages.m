@@ -22,6 +22,11 @@ function geometryimages (nm, typ)
   if (strcmp (typ, "png"))
     set (0, "defaulttextfontname", "*");
   endif
+  if (strcmp (typ, "eps"))
+    d_typ = "-depsc2";
+  else
+    d_typ = cstrcat ("-d", typ);
+  endif
 
   if (isempty (findstr (octave_config_info ("DEFS"), "HAVE_QHULL"))
       && (strcmp (nm, "voronoi") || strcmp (nm, "griddata")
@@ -46,14 +51,14 @@ function geometryimages (nm, typ)
     plot (xc, yc, "g-", "LineWidth", 3);
     axis([0, 1, 0, 1]);
     legend ("Delaunay Triangulation", "Voronoi Diagram");
-    print (cstrcat (nm, ".", typ), cstrcat ("-d", typ))    
+    print (cstrcat (nm, ".", typ), d_typ)    
   elseif (strcmp (nm, "triplot"))
     rand ("state", 2)
     x = rand (20, 1);
     y = rand (20, 1);
     tri = delaunay (x, y);
     triplot (tri, x, y);
-    print (cstrcat (nm, ".", typ), cstrcat ("-d", typ))    
+    print (cstrcat (nm, ".", typ), d_typ)    
   elseif (strcmp (nm, "griddata"))
     rand("state",1);
     x=2*rand(1000,1)-1;
@@ -61,14 +66,14 @@ function geometryimages (nm, typ)
     z=sin(2*(x.^2+y.^2));
     [xx,yy]=meshgrid(linspace(-1,1,32));
     griddata(x,y,z,xx,yy);
-    print (cstrcat (nm, ".", typ), cstrcat ("-d", typ))    
+    print (cstrcat (nm, ".", typ), d_typ)    
   elseif (strcmp (nm, "convhull"))
     x = -3:0.05:3;
     y = abs (sin (x));
     k = convhull (x, y);
     plot (x(k),y(k),'r-',x,y,'b+');
     axis ([-3.05, 3.05, -0.05, 1.05]);
-    print (cstrcat (nm, ".", typ), cstrcat ("-d", typ)) 
+    print (cstrcat (nm, ".", typ), d_typ) 
   elseif (strcmp (nm, "delaunay"))
     rand ("state", 1);
     x = rand (1, 10);
@@ -78,7 +83,7 @@ function geometryimages (nm, typ)
     Y = [ y(T(:,1)); y(T(:,2)); y(T(:,3)); y(T(:,1)) ];
     axis ([0, 1, 0, 1]);
     plot(X, Y, "b", x, y, "r*");
-    print (cstrcat (nm, ".", typ), cstrcat ("-d", typ)) 
+    print (cstrcat (nm, ".", typ), d_typ) 
   elseif (strcmp (nm, "inpolygon"))
     randn ("state", 2);
     x = randn (100, 1);
@@ -88,7 +93,7 @@ function geometryimages (nm, typ)
     in = inpolygon (x, y, vx, vy);
     plot(vx, vy, x(in), y(in), "r+", x(!in), y(!in), "bo");
     axis ([-2, 2, -2, 2]);
-    print (cstrcat (nm, ".", typ), cstrcat ("-d", typ)) 
+    print (cstrcat (nm, ".", typ), d_typ) 
   else
     error ("unrecognized plot requested");
   endif
@@ -144,7 +149,7 @@ function sombreroimage (nm, typ)
       mesh (x, y, z);
       title ("Sorry, graphics not available because octave was\\ncompiled without the QHULL library.");
     unwind_protect_cleanup
-      print (cstrcat (nm, ".", typ), cstrcat ("-d", typ));
+      print (cstrcat (nm, ".", typ), d_typ);
       hide_output ();
     end_unwind_protect
   endif

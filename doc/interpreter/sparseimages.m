@@ -17,6 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 function sparseimages (nm, typ)
+  set_print_size ();
   if (strcmp (typ, "png"))
     set (0, "defaulttextfontname", "*");
   endif
@@ -40,19 +41,28 @@ function sparseimages (nm, typ)
   endif
 endfunction
 
-function bury_output ()
+function set_print_size ()
+  image_size = [5.0, 3.5]; # in inches, 16:9 format
+  border = 0;              # For postscript use 50/72
+  set (0, "defaultfigurepapertype", "<custom>");
+  set (0, "defaultfigurepaperorientation", "landscape");
+  set (0, "defaultfigurepapersize", image_size + 2*border);
+  set (0, "defaultfigurepaperposition", [border, border, image_size]);
+endfunction
+
+function hide_output ()
   f = figure (1);
   set (f, "visible", "off");
 endfunction
 
 function gplotimages (nm, typ)
-  bury_output ();
+  hide_output ();
   A = sparse ([2,6,1,3,2,4,3,5,4,6,1,5],
 	      [1,1,2,2,3,3,4,4,5,5,6,6], 1, 6, 6);
   xy = [0,4,8,6,4,2;5,0,5,7,5,7]';
   gplot (A, xy)
   print (cstrcat (nm, ".", typ), cstrcat ("-d", typ))
-  bury_output ();
+  hide_output ();
 endfunction
 
 function txtimages(nm,n,typ)
@@ -83,14 +93,14 @@ function txtimages(nm,n,typ)
 endfunction
 
 function otherimages(nm,n,typ)
-  bury_output ();
+  hide_output ();
   a = 10*speye(n) + sparse(1:n,ceil([1:n]/2),1,n,n) + ...
       sparse(ceil([1:n]/2),1:n,1,n,n);
   if (strcmp (nm, "spmatrix"))
     spy(a);
     axis("ij")
     print(cstrcat("spmatrix.",typ),cstrcat("-d",typ))
-    bury_output ();
+    hide_output ();
   else
     if (!isempty(findstr(octave_config_info ("DEFS"),"HAVE_COLAMD")) &&
 	!isempty(findstr(octave_config_info ("DEFS"),"HAVE_CHOLMOD")))
@@ -99,13 +109,13 @@ function otherimages(nm,n,typ)
 	spy(r1);
 	axis("ij")
 	print(cstrcat("spchol.",typ),cstrcat("-d",typ))
-	bury_output ();
+	hide_output ();
       elseif (strcmp (nm, "spcholperm"))
 	[r2,p2,q2]=chol(a);
 	spy(r2);
 	axis("ij")
 	print(cstrcat("spcholperm.",typ),cstrcat("-d",typ))
-	bury_output ();
+	hide_output ();
       endif
       ## printf("Image NNZ: Matrix %d, Chol %d, PermChol %d\n",nnz(a),nnz(r1),nnz(r2));
     endif
@@ -151,7 +161,7 @@ function printsparse(a,nm)
 endfunction
 
 function femimages (nm,typ)
-  bury_output ();
+  hide_output ();
   if (!isempty(findstr(octave_config_info ("DEFS"),"HAVE_COLAMD")) &&
       !isempty(findstr(octave_config_info ("DEFS"),"HAVE_CHOLMOD")) &&
       !isempty(findstr(octave_config_info ("DEFS"),"HAVE_UMFPACK")))
@@ -228,7 +238,7 @@ function femimages (nm,typ)
     plot3 (xelems, yelems, velems);
     view (10, 10);
     print(cstrcat(nm,".",typ),cstrcat("-d",typ))
-    bury_output ();
+    hide_output ();
   endif
 endfunction
 
@@ -247,7 +257,7 @@ function sombreroimage (nm, typ)
     return;
   else ## if (!strcmp (typ, "txt"))
 
-    bury_output ();
+    hide_output ();
 
     x = y = linspace (-8, 8, 41)';
     [xx, yy] = meshgrid (x, y);
@@ -258,7 +268,7 @@ function sombreroimage (nm, typ)
       title ("Sorry, graphics not available because octave was\\ncompiled without the sparse matrix implementation.");
     unwind_protect_cleanup
       print (cstrcat (nm, ".", typ), cstrcat ("-d", typ));
-      bury_output ();
+      hide_output ();
     end_unwind_protect
   endif
 endfunction

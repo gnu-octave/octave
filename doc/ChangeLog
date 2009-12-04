@@ -1,3 +1,14 @@
+2009-12-04  Rik <octave@nomad.inbox5.com>
+
+	* interpreter/geometryimages.m, interpreter/interpimages.m,
+	  interpreter/sparseimages.m, interpreter/plotimages.m: 
+	  Set default paperorientation to landscape to stop warning message
+
+2009-12-04  Ben Abbott <bpabbott@mac.com>
+
+	* interpreter/geometryimages.m, interpreter/interpimages.m,
+	  interpreter/sparseimages.m: Set default papersize to the desired imagesize
+
 2009-12-04  John W. Eaton  <jwe@octave.org>
 
 	* interpreter/images.awk: Emit rules to copy PNG files to

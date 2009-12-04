@@ -17,10 +17,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 function interpimages (nm, typ)
-  bury_output ();
+  set_print_size ();
+  hide_output ();
   if (strcmp (typ, "png"))
     set (0, "defaulttextfontname", "*");
   endif
+
   if (strcmp (typ, "txt"))
     image_as_txt (nm);
   elseif (strcmp (nm, "interpft"))
@@ -66,13 +68,22 @@ function interpimages (nm, typ)
     legend('spline','pchip');
     print (cstrcat (nm, ".", typ), cstrcat ("-d", typ))
   endif
-  bury_output ();  
+  hide_output ();  
+endfunction
+
+function set_print_size ()
+  image_size = [5.0, 3.5]; # in inches, 16:9 format
+  border = 0;              # For postscript use 50/72
+  set (0, "defaultfigurepapertype", "<custom>");
+  set (0, "defaultfigurepaperorientation", "landscape");
+  set (0, "defaultfigurepapersize", image_size + 2*border);
+  set (0, "defaultfigurepaperposition", [border, border, image_size]);
 endfunction
 
 ## Use this function before plotting commands and after every call to
 ## print since print() resets output to stdout (unfortunately, gnpulot
 ## can't pop output as it can the terminal type).
-function bury_output ()
+function hide_output ()
   f = figure (1);
   set (f, "visible", "off");
 endfunction

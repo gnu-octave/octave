@@ -1,5 +1,11 @@
 2009-12-04  John W. Eaton  <jwe@octave.org>
 
+	* configure.ac (OCTAVE_API_VERSION_NUMBER): New variable.
+	(OCTAVE_API_VERSION): Define using OCTAVE_API_VERSION_NUMBER.
+	* common.mk (OCTAVE_API_VERSION_NUMBER): New variable.
+
+2009-12-04  John W. Eaton  <jwe@octave.org>
+
 	* configure.ac: Check $have_x = yes, not just $have_x.
 	From Carmine Paolino <earcar@gmail.com>.
 

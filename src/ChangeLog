@@ -1,5 +1,10 @@
 2009-12-04  John W. Eaton  <jwe@octave.org>
 
+	* version.h.in (OCTAVE_API_VERSION_NUMBER): New macro.
+	* Makefile.am (version.h): Substitute OCTAVE_API_VERSION_NUMBER.
+
+2009-12-04  John W. Eaton  <jwe@octave.org>
+
 	* Makefile.am (mkdefs): New arguments, srcdir and file.
 	Generate output here.
 	(.cc.df): Not here.

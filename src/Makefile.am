@@ -33,12 +33,11 @@ AUTOMAKE_OPTIONS = subdir-objects
 
 ## Order matters here.  Leave builtins.cc last, because it depends on 
 ## $(DEF_FILES), and building those requires all the sources
-## (except builtins.cc) to be available.  List only one of graphics.h
-## and graphics-props.cc because if both are listed, building in
-## parallel will fail.
+## (except builtins.cc) to be available.
 BUILT_SOURCES = \
   defaults.h \
   graphics.h \
+  graphics-props.cc \
   lex.cc \
   mxarray.h \
   oct-conf.h \

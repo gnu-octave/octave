@@ -1,5 +1,9 @@
 2009-12-04  John W. Eaton  <jwe@octave.org>
 
+	* Makefile.am (BUILT_SOURCES): Include graphics-props.cc in the list.
+
+2009-12-04  John W. Eaton  <jwe@octave.org>
+
 	* Makefile.am (liboctinterp_la_SOURCES): Remove $(OPT_HANDLERS)
 	from the list.
 

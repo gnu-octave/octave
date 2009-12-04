@@ -1,3 +1,23 @@
+2009-12-04  John W. Eaton  <jwe@octave.org>
+
+	* interpreter/octave.texi: Include version.texi instead of conf.texi.
+	* interpreter/Makefile.am (../conf.texi): Delete rule.
+	(octave_TEXINFOS): Delete ../conf.texi from the list.
+	($(srcdir)/octave.info octave.dvi octave.pdf octave.html):
+	Remove duplicate $(octave_TEXINFOS) dependency.
+	Depend on $(srcdir)/version.texi.
+
+	* liboctave/liboctave.texi: Include version.texi instead of conf.texi.
+	* liboctave/Makefile.am (../conf.texi): Delete rule.
+	(dist_liboctave_TEXINFOS): Delete ../conf.texi from the list.
+	(.NOTPARALLEL): Correct spelling of target.
+	($(srcdir)/liboctave.info liboctave.dvi liboctave.html liboctave.pdf):
+	Depend on $(srcdir)/version.texi
+
+	* conf.texi.in: Delete.
+	* Makefile.am: Delete rules for conf.texi.
+	(.NOTPARALLEL): New target.
+
 2009-12-03  John W. Eaton  <jwe@octave.org>
 
 	* doc/Makefile.am (MUNGED_TEXI_SRC): Define as explicit list.

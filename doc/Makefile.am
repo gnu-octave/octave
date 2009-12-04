@@ -26,22 +26,13 @@ include ../common.mk
 EXTRA_DIST = \
   Makefile.am \
   ChangeLog \
-  conf.texi.in \
   texinfo.tex \
   texmf.cnf
 
-DISTCLEANFILES = conf.texi
-
 SUBDIRS = . faq interpreter liboctave refcard
-
-all-local: conf.texi
-
-conf.texi: conf.texi.in Makefile
-	@echo "making $@ from $<"
-	@$(SED) < $< \
-	  -e "s|%OCTAVE_VERSION%|${version}|" > $@-t
-	$(simple_move_if_change_rule)
 
 ../BUGS ../INSTALL.OCTAVE:
 	$(MAKE) -C interpreter ../$@
 .PHONY: ../BUGS ../INSTALL.OCTAVE
+
+.NOTPARALLEL:

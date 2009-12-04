@@ -34,7 +34,6 @@ export TEXINPUTS
 info_TEXINFOS = liboctave.texi
 
 dist_liboctave_TEXINFOS = \
-  ../conf.texi \
   array.texi \
   bugs.texi \
   cp-idx.texi \
@@ -55,11 +54,10 @@ dist_liboctave_TEXINFOS = \
   quad.texi \
   range.texi
 
-../conf.texi:
-	$(MAKE) -C .. conf.texi
-
 all-local: dvi html pdf ps
 
 EXTRA_DIST = liboctave.dvi liboctave.html liboctave.pdf liboctave.ps
+
+$(srcdir)/liboctave.info liboctave.dvi liboctave.html liboctave.pdf: $(srcdir)/version.texi
 
 .NOTPARALLEL:

@@ -139,22 +139,18 @@ TXI_SRC = $(MUNGED_TEXI_SRC:.texi=.txi)
 info_TEXINFOS = octave.texi
 
 octave_TEXINFOS = \
-  ../conf.texi \
   contributors.texi \
   $(MUNGED_TEXI_SRC)
 
-../conf.texi:
-	$(MAKE) -C .. conf.texi
-
-$(srcdir)/octave.info octave.dvi octave.pdf octave.html: $(octave_TEXINFOS) $(octave_TEXINFOS) $(EXAMPLE_FILES)
+$(srcdir)/octave.info octave.dvi octave.html octave.pdf: $(srcdir)/version.texi $(octave_TEXINFOS) $(EXAMPLE_FILES)
 
 $(srcdir)/octave.info: $(IMAGES_TXT)
 
 octave.dvi octave.ps: $(IMAGES_EPS)
 
-octave.pdf: $(IMAGES_PDF)
-
 octave.html: $(IMAGES_PNG)
+
+octave.pdf: $(IMAGES_PDF)
 
 all-local: dvi html pdf ps doc-cache
 
@@ -215,4 +211,4 @@ DISTCLEANFILES = $(octave_TEXINFOS) doc-cache munge-texi$(BUILD_EXEEXT)
 
 MAINTAINERCLEANFILES = $(IMAGES)
 
-.NOPARALLEL:
+.NOTPARALLEL:

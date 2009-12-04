@@ -66,11 +66,10 @@ END-INFO-DIR-ENTRY
 
 @defindex op
 
-@c Things like the Octave version number are defined in conf.texi.
-@c This file doesn't include a chapter, so it must not be included
-@c if you want to run the Emacs function texinfo-multiple-files-update.
-
-@include conf.texi
+@c The version.texi file doesn't include a chapter, so it must not be
+@c included if you want to run the Emacs function
+@c texinfo-multiple-files-update.
+@include version.texi
 
 @settitle GNU Octave
 

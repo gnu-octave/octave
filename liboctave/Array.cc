@@ -2189,55 +2189,9 @@ Array<T>::sort (Array<octave_idx_type> &sidx, int dim,
 }
 
 template <class T>
-sortmode
-Array<T>::is_sorted (sortmode mode) const
-{
-  if (nelem () <= 1)
-    return ASCENDING;
-
-  const T *lo = data (), *hi = data () + nelem () - 1;
-
-  // Check for NaNs at the beginning and end.
-  if (mode != ASCENDING && sort_isnan<T> (*lo))
-    {
-      mode = DESCENDING;
-      do
-        ++lo;
-      while (lo < hi && sort_isnan<T> (*lo));
-    }
-  else if (mode != DESCENDING && sort_isnan<T> (*hi))
-    {
-      mode = ASCENDING;
-      do
-        --hi;
-      while (lo < hi && sort_isnan<T> (*hi));
-    }
-  
-  octave_sort<T> lsort;
-
-  // If mode is still unknown, compare lo and hi
-  if (! mode)
-    {
-      if (lsort.descending_compare (*lo, *hi))
-        mode = DESCENDING;
-      else if (lsort.ascending_compare (*lo, *hi))
-        mode = ASCENDING;
-      else
-        mode = ASCENDING;
-    }
-
-  lsort.set_compare (mode);
-
-  if (! lsort.is_sorted (lo, hi - lo + 1))
-    mode = UNSORTED;
-
-  return mode;
-}
-
-template <class T>
 typename Array<T>::compare_fcn_type
-sortrows_comparator (sortmode mode, const Array<T>& /* a */,
-		     bool /* allow_chk */)
+safe_comparator (sortmode mode, const Array<T>& /* a */,
+                 bool /* allow_chk */)
 {
   if (mode == ASCENDING)
     return octave_sort<T>::ascending_compare;
@@ -2248,6 +2202,41 @@ sortrows_comparator (sortmode mode, const Array<T>& /* a */,
 }
 
 template <class T>
+sortmode
+Array<T>::is_sorted (sortmode mode) const
+{
+  octave_sort<T> lsort;
+
+  octave_idx_type n = numel ();
+
+  if (n <= 1)
+    return mode ? mode : ASCENDING;
+
+  if (! mode)
+    {
+      // Auto-detect mode.
+      compare_fcn_type compare
+	= safe_comparator (ASCENDING, *this, false);
+
+      if (compare (elem (n-1), elem (0)))
+        mode = DESCENDING;
+      else
+        mode = ASCENDING;
+    }
+
+  if (mode)
+    {
+      lsort.set_compare (safe_comparator (mode, *this, false));
+
+      if (! lsort.is_sorted (data (), n))
+        mode = UNSORTED;
+    }
+
+  return mode;
+
+}
+
+template <class T>
 Array<octave_idx_type>
 Array<T>::sort_rows_idx (sortmode mode) const
 {
@@ -2255,7 +2244,7 @@ Array<T>::sort_rows_idx (sortmode mode) const
 
   octave_sort<T> lsort;
 
-  lsort.set_compare (sortrows_comparator (mode, *this, true));
+  lsort.set_compare (safe_comparator (mode, *this, true));
 
   octave_idx_type r = rows (), c = cols ();
 
@@ -2282,7 +2271,7 @@ Array<T>::is_sorted_rows (sortmode mode) const
     {
       // Auto-detect mode.
       compare_fcn_type compare
-	= sortrows_comparator (ASCENDING, *this, false);
+	= safe_comparator (ASCENDING, *this, false);
 
       octave_idx_type i;
       for (i = 0; i < cols (); i++)
@@ -2315,7 +2304,7 @@ Array<T>::is_sorted_rows (sortmode mode) const
 
   if (mode)
     {
-      lsort.set_compare (sortrows_comparator (mode, *this, false));
+      lsort.set_compare (safe_comparator (mode, *this, false));
 
       if (! lsort.is_sorted_rows (data (), r, c))
         mode = UNSORTED;
@@ -2696,7 +2685,7 @@ Array<T>::is_sorted (sortmode) const  \
 { return UNSORTED; } \
  \
 Array<T>::compare_fcn_type \
-sortrows_comparator (sortmode, const Array<T>&, bool) \
+safe_comparator (sortmode, const Array<T>&, bool) \
 { return 0; } \
  \
 template <> Array<octave_idx_type>  \

@@ -56,7 +56,7 @@ nan_descending_compare (double x, double y)
 }
 
 Array<double>::compare_fcn_type
-sortrows_comparator (sortmode mode, const Array<double>& a , bool allow_chk)
+safe_comparator (sortmode mode, const Array<double>& a , bool allow_chk)
 {
   Array<double>::compare_fcn_type result = 0;
 

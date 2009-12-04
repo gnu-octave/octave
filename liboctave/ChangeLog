@@ -1,3 +1,12 @@
+2009-12-05  Jaroslav Hajek  <highegg@gmail.com>
+
+	* Array.cc (sortrows_comparator): Rename to safe_comparator.
+	(Array<T>::is_sorted): Use it here.
+	* Array-d.cc: Update.
+	* Array-f.cc: Update.
+	* Array-C.cc: Update.
+	* Array-fC.cc: Update.
+
 2009-12-03  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.am (BUILT_NODISTFILES): New variable.

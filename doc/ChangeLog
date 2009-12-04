@@ -1,5 +1,12 @@
 2009-12-04  John W. Eaton  <jwe@octave.org>
 
+	* interpreter/images.awk: Emit rules to copy PNG files to
+	octave.html directory once it is created.
+	* interpreter/Makefile.am (all-local): Depend on $(HTMLDIR_IMAGES).
+	(IMAGES): Include $(HTMLDIR_IMAGES) in the list.
+
+2009-12-04  John W. Eaton  <jwe@octave.org>
+
 	* interpreter/octave.texi: Include version.texi instead of conf.texi.
 	* interpreter/Makefile.am (../conf.texi): Delete rule.
 	(octave_TEXINFOS): Delete ../conf.texi from the list.

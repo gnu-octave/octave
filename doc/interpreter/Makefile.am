@@ -82,7 +82,12 @@ include images.mk
 .eps.pdf:
 	if [ -f $< ] ; then $(GHOSTSCRIPT) -dBATCH -dEPSCrop -dNOPAUSE -q -sDEVICE=pdfwrite -sOutputFile=$@ $< ; fi
 
-IMAGES = $(IMAGES_EPS) $(IMAGES_PDF) $(IMAGES_PNG) $(IMAGES_TXT)
+IMAGES = \
+  $(IMAGES_EPS) \
+  $(IMAGES_PDF) \
+  $(IMAGES_PNG) \
+  $(IMAGES_TXT) \
+  $(HTMLDIR_IMAGES)
 
 MUNGED_TEXI_SRC = \
   arith.texi \
@@ -152,7 +157,7 @@ octave.html: $(IMAGES_PNG)
 
 octave.pdf: $(IMAGES_PDF)
 
-all-local: dvi html pdf ps doc-cache
+all-local: dvi html pdf ps doc-cache $(HTMLDIR_IMAGES)
 
 # Install doc-cache of help files
 install-data-local:

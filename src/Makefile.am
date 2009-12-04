@@ -92,16 +92,9 @@ DLL_CDEFS = @OCTINTERP_DLL_DEFS@
 DLL_CXXDEFS = @OCTINTERP_DLL_DEFS@
 
 .cc.df:	
-	(echo "// DO NOT EDIT!  Generated automatically by mkdefs." ; \
-	  case "$<" in \
-	    $(srcdir)/*) xsrcdir="`echo $< | sed 's,^$(srcdir),src,'`" ;; \
-	    *) xsrcdir="src/$<" ;; \
-	  esac ; \
-	  echo " XDEFUN_FILE_NAME (\"$$xsrcdir\")" ; \
-	  egrep '^(///*|/\*) *PKG_ADD:' $< ; \
-	  $(CXXCPP) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
-	    $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) \
-	    -DMAKE_BUILTINS $< | $(srcdir)/mkdefs) > $@-t
+	$(CXXCPP) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
+	  $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) \
+	  -DMAKE_BUILTINS $< | $(srcdir)/mkdefs $(srcdir) $< > $@-t
 	mv $@-t $@
 
 OPT_HANDLERS = \

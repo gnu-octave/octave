@@ -1,6 +1,6 @@
 #! /bin/sh
 #
-# Copyright (C) 1996, 1999, 2000, 2003, 2006, 2007 John W. Eaton
+# Copyright (C) 1996, 1999, 2000, 2003, 2006, 2007, 2009 John W. Eaton
 #
 # This file is part of Octave.
 # 
@@ -19,6 +19,26 @@
 # <http://www.gnu.org/licenses/>.
 
 SED=${SED:-'sed'}
+
+if [ $# -ne 2 ]; then
+  echo "usage: mkdefs srcdir file < preprocessed-file-contents" 1>&2
+  exit 1
+fi
+
+srcdir="$1"
+file="$2";
+
+echo "// DO NOT EDIT!  Generated automatically by mkdefs."
+case "$file" in
+  $srcdir/*)
+    xsrcdir=`echo "$file" | sed "s,^$srcdir,src,"`
+  ;;
+  *)
+    xsrcdir="src/$file"
+  ;;
+esac
+echo " XDEFUN_FILE_NAME (\"$xsrcdir\")"
+egrep '^(///*|/\*) *PKG_ADD:' $file
 
 $SED -n -e '/^ *BEGIN_INSTALL_BUILTIN/{
   : loop

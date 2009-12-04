@@ -1,5 +1,11 @@
 2009-12-04  John W. Eaton  <jwe@octave.org>
 
+	* Makefile.am (mkdefs): New arguments, srcdir and file.
+	Generate output here.
+	(.cc.df): Not here.
+
+2009-12-04  John W. Eaton  <jwe@octave.org>
+
 	* Makefile.am (BUILT_SOURCES): Include graphics-props.cc in the list.
 
 2009-12-04  John W. Eaton  <jwe@octave.org>

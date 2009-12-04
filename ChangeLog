@@ -1,6 +1,7 @@
 2009-12-04  John W. Eaton  <jwe@octave.org>
 
 	* configure.ac: Check $have_x = yes, not just $have_x.
+	From Carmine Paolino <earcar@gmail.com>.
 
 2009-12-04  John W. Eaton  <jwe@octave.org>
 

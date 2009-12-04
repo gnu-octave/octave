@@ -477,7 +477,6 @@ liboctinterp_la_SOURCES = \
   $(DIST_SRC) \
   $(DLD_STATIC_SRC) \
   $(OPERATORS_SRC) \
-  $(OPT_HANDLERS) \
   $(TEMPLATE_INST_SRC)
 
 DLD_DYNAMIC_DEF_FILES = $(DLD_DYNAMIC_SRC:.cc=.df)

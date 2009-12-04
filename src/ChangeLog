@@ -1,5 +1,10 @@
 2009-12-04  John W. Eaton  <jwe@octave.org>
 
+	* DLD-FUNCTIONS/urlwrite.cc (curl_handle::init): Always use
+	CURLOPT_USERPWD instead of CURLOPT_USER and CURLOPT_PASSWD.
+
+2009-12-04  John W. Eaton  <jwe@octave.org>
+
 	* version.h.in (OCTAVE_API_VERSION_NUMBER): New macro.
 	* Makefile.am (version.h): Substitute OCTAVE_API_VERSION_NUMBER.
 

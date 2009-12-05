@@ -1,5 +1,24 @@
 2009-12-05  Jaroslav Hajek  <highegg@gmail.com>
 
+	* oct-sort.cc (lookup_binary): Remove.
+	(octave_sort<T>::lookup (const T*, octave_idx_type, const T&, comp)): Move
+	code here.
+	(octave_sort<T>::lookup (const T*, octave_idx_type, const T*,
+	octave_idx_type, octave_idx_type *, comp)): Remove offset parameter.
+	Use a simple sequence of lookups.
+	(octave_sort<T>::lookup (const T*, octave_idx_type, const T*,
+	octave_idx_type, octave_idx_type *)): Update.
+	(octave_sort<T>::lookupm, octave_sort<T>::lookupb): Remove.
+	(octave_sort<T>::lookup_sorted): New overloaded method.
+
+	* Array.cc (Array<T>::lookup (const Array<T>&, sortmode)): Remove
+	linf & rinf params. Rewrite using is_sorted to check for sortedness,
+	call octave_sort::lookup_sorted to do the sorted merge.
+	(Array<T>::lookupm, Array<T>::lookupb): Remove.
+	(NO_INSTANTIATE_ARRAY_SORT): Update.
+
+2009-12-05  Jaroslav Hajek  <highegg@gmail.com>
+
 	* Array.cc (sortrows_comparator): Rename to safe_comparator.
 	(Array<T>::is_sorted): Use it here.
 	* Array-d.cc: Update.

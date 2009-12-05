@@ -1,3 +1,8 @@
+2009-12-05  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/lookup.cc (do_numeric_lookup): Rewrite.
+	(Flookup): Simplify string part. Use Array<std::string>::lookup.
+
 2009-12-04  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/urlwrite.cc (curl_handle::init): Always use

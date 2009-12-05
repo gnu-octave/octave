@@ -142,22 +142,16 @@ public:
   octave_idx_type lookup (const T *data, octave_idx_type nel,
                           const T& value);
 
-  // Ditto, but for an array of values, specializing on long runs.
-  // Adds offset to all indices.
+  // Ditto, but for an array.
   void lookup (const T *data, octave_idx_type nel,
                const T* values, octave_idx_type nvalues,
-               octave_idx_type *idx, octave_idx_type offset = 0);
+               octave_idx_type *idx);
 
-  // Lookup an array of values, only returning indices of
-  // exact matches. Non-matches are returned as -1.
-  void lookupm (const T *data, octave_idx_type nel,
-                const T* values, octave_idx_type nvalues,
-                octave_idx_type *idx);
-
-  // Lookup an array of values, only indicating exact matches.
-  void lookupb (const T *data, octave_idx_type nel,
-                const T* values, octave_idx_type nvalues,
-                bool *match);
+  // A linear merge of two sorted tables. rev indicates the second table is
+  // in reverse order.
+  void lookup_sorted (const T *data, octave_idx_type nel,
+                      const T* values, octave_idx_type nvalues,
+                      octave_idx_type *idx, bool rev = false);
 
   // Rearranges the array so that the elements with indices
   // lo..up-1 are in their correct place. 
@@ -316,17 +310,12 @@ private:
   template <class Comp>
   void lookup (const T *data, octave_idx_type nel,
                const T* values, octave_idx_type nvalues,
-               octave_idx_type *idx, octave_idx_type offset, Comp comp);
+               octave_idx_type *idx, Comp comp);
 
   template <class Comp>
-  void lookupm (const T *data, octave_idx_type nel,
-                const T* values, octave_idx_type nvalues,
-                octave_idx_type *idx, Comp comp);
-
-  template <class Comp>
-  void lookupb (const T *data, octave_idx_type nel,
-                const T* values, octave_idx_type nvalues,
-                bool *match, Comp comp);
+  void lookup_sorted (const T *data, octave_idx_type nel,
+                      const T* values, octave_idx_type nvalues,
+                      octave_idx_type *idx, bool rev, Comp comp);
 
   template <class Comp>
   void nth_element (T *data, octave_idx_type nel,

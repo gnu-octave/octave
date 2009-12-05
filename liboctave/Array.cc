@@ -2242,9 +2242,7 @@ Array<T>::sort_rows_idx (sortmode mode) const
 {
   Array<octave_idx_type> idx;
 
-  octave_sort<T> lsort;
-
-  lsort.set_compare (safe_comparator (mode, *this, true));
+  octave_sort<T> lsort (safe_comparator (mode, *this, true));
 
   octave_idx_type r = rows (), c = cols ();
 
@@ -2336,14 +2334,11 @@ Array<T>::lookup (const T& value, sortmode mode) const
   return lsort.lookup (data (), n, value);
 }
 
-// Ditto, but for an array of values, specializing on long runs.
-// Adds optional offset to all indices.
 template <class T>
 Array<octave_idx_type> 
-Array<T>::lookup (const Array<T>& values, sortmode mode, 
-                  bool linf, bool rinf) const
+Array<T>::lookup (const Array<T>& values, sortmode mode) const
 {
-  octave_idx_type n = numel ();
+  octave_idx_type n = numel (), nval = values.numel ();
   octave_sort<T> lsort;
   Array<octave_idx_type> idx (values.dims ());
 
@@ -2358,71 +2353,27 @@ Array<T>::lookup (const Array<T>& values, sortmode mode,
 
   lsort.set_compare (mode);
 
-  // set offset and shift size.
-  octave_idx_type offset = 0;
+  // This determines the split ratio between the O(M*log2(N)) and O(M+N) algorithms.
+  static const double ratio = 1.0;
+  sortmode vmode = UNSORTED;
 
-  if (linf && n > 0)
+  // Attempt the O(M+N) algorithm if M is large enough.
+  if (nval > ratio * n / xlog2 (n + 1.0))
     {
-      offset++;
-      n--;
+      vmode = values.is_sorted ();
+      // The table must not contain a NaN.
+      if ((vmode == ASCENDING && sort_isnan<T> (values(nval-1)))
+          || (vmode == DESCENDING && sort_isnan<T> (values(0))))
+        vmode = UNSORTED;
     }
-  if (rinf && n > 0)
-    n--;
 
-  lsort.lookup (data () + offset, n, values.data (), values.numel (),
-                idx.fortran_vec (), offset);
+  if (vmode != UNSORTED)
+    lsort.lookup_sorted (data (), n, values.data (), nval,
+                         idx.fortran_vec (), vmode != mode);
+  else
+    lsort.lookup (data (), n, values.data (), nval, idx.fortran_vec ());
 
   return idx;
-}
-
-template <class T>
-Array<octave_idx_type> 
-Array<T>::lookupm (const Array<T>& values, sortmode mode) const
-{
-  octave_idx_type n = numel ();
-  octave_sort<T> lsort;
-  Array<octave_idx_type> idx (values.dims ());
-
-  if (mode == UNSORTED)
-    {
-      // auto-detect mode
-      if (n > 1 && lsort.descending_compare (elem (0), elem (n-1)))
-        mode = DESCENDING;
-      else
-        mode = ASCENDING;
-    }
-
-  lsort.set_compare (mode);
-
-  lsort.lookupm (data (), n, values.data (), values.numel (),
-                 idx.fortran_vec ());
-
-  return idx;
-}
-
-template <class T>
-Array<bool> 
-Array<T>::lookupb (const Array<T>& values, sortmode mode) const
-{
-  octave_idx_type n = numel ();
-  octave_sort<T> lsort;
-  Array<bool> match (values.dims ());
-
-  if (mode == UNSORTED)
-    {
-      // auto-detect mode
-      if (n > 1 && lsort.descending_compare (elem (0), elem (n-1)))
-        mode = DESCENDING;
-      else
-        mode = ASCENDING;
-    }
-
-  lsort.set_compare (mode);
-
-  lsort.lookupb (data (), n, values.data (), values.numel (),
-                 match.fortran_vec ());
-
-  return match;
 }
 
 template <class T>
@@ -2700,14 +2651,8 @@ template <> octave_idx_type  \
 Array<T>::lookup (T const &, sortmode) const \
 { return 0; } \
 template <> Array<octave_idx_type>  \
-Array<T>::lookup (const Array<T>&, sortmode, bool, bool) const \
+Array<T>::lookup (const Array<T>&, sortmode) const \
 { return Array<octave_idx_type> (); } \
-template <> Array<octave_idx_type>  \
-Array<T>::lookupm (const Array<T>&, sortmode) const \
-{ return Array<octave_idx_type> (); } \
-template <> Array<bool>  \
-Array<T>::lookupb (const Array<T>&, sortmode) const \
-{ return Array<bool> (); } \
  \
 template <> octave_idx_type \
 Array<T>::nnz (void) const\

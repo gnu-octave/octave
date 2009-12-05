@@ -111,24 +111,61 @@ do_numeric_lookup (const ArrayT& array, const ArrayT& values,
 {
   octave_value retval;
 
+  Array<octave_idx_type> idx = array.lookup (values);
+  octave_idx_type n = array.numel (), nval = values.numel ();
+
+  // Post-process.
   if (match_bool)
     {
-      boolNDArray match = Array<bool> (array.lookupb (values));
+      boolNDArray match (idx.dims ());
+      for (octave_idx_type i = 0; i < nval; i++)
+        {
+          octave_idx_type j = idx.xelem (i);
+          match.xelem (i) = j != 0 && values(i) == array(j-1);
+        }
+
       retval = match;
     }
-  else
+  else if (match_idx || left_inf || right_inf)
     {
-      Array<octave_idx_type> idx;
-
+      NDArray ridx (idx.dims ());
       if (match_idx)
-        idx = array.lookupm (values);
-      else
-        idx = array.lookup (values, UNSORTED, left_inf, right_inf);
+        {
+          for (octave_idx_type i = 0; i < nval; i++)
+            {
+              octave_idx_type j = idx.xelem (i);
+              ridx.xelem (i) = (j != 0 && values(i) == array(j-1)) ? j : 0;
+            }
+        }
+      else if (left_inf && right_inf)
+        {
+          for (octave_idx_type i = 0; i < nval; i++)
+            {
+              octave_idx_type j = idx.xelem (i);
+              ridx.xelem (i) = std::min (std::max (1, j), n-1);
+            }
+        }
+      else if (left_inf)
+        {
+          for (octave_idx_type i = 0; i < nval; i++)
+            {
+              octave_idx_type j = idx.xelem (i);
+              ridx.xelem (i) = std::max (1, j);
+            }
+        }
+      else if (right_inf)
+        {
+          for (octave_idx_type i = 0; i < nval; i++)
+            {
+              octave_idx_type j = idx.xelem (i);
+              ridx.xelem (i) = std::min (j, n-1);
+            }
+        }
 
-      // if left_inf is specified, the result is a valid 1-based index.
-      bool cache_index = left_inf && array.numel () > 1;
-      retval = octave_value (idx, match_idx, cache_index);
+      retval = ridx;
     }
+  else
+    retval = idx;
 
   return retval;
 }
@@ -262,30 +299,14 @@ For string lookup, 'i' indicates case-insensitive comparison.\n\
     }
   else if (str_case)
     {
-      Array<std::string> str_table = table.cellstr_value ();
-      
-      // Here we'll use octave_sort directly to avoid converting the array
-      // for case-insensitive comparison.
-
-
-      // check for case-insensitive option
-      if (nargin == 3)
+      // FIXME: this should be handled directly.
+      if (icase)
         {
-          std::string opt = args(2).string_value ();
+          table = table.xtoupper ();
+          y = y.xtoupper ();
         }
 
-      sortmode mode = (icase ? get_sort_mode (str_table, stri_comp_gt)
-                       : get_sort_mode (str_table));
-
-      bool (*str_comp) (const std::string&, const std::string&);
-
-      // pick the correct comparator
-      if (mode == DESCENDING)
-        str_comp = icase ? stri_comp_gt : octave_sort<std::string>::descending_compare;
-      else
-        str_comp = icase ? stri_comp_lt : octave_sort<std::string>::ascending_compare;
-
-      octave_sort<std::string> lsort (str_comp);
+      Array<std::string> str_table = table.cellstr_value ();
       Array<std::string> str_y (1);
 
       if (y.is_cellstr ())
@@ -293,32 +314,37 @@ For string lookup, 'i' indicates case-insensitive comparison.\n\
       else
         str_y(0) = y.string_value ();
 
+      Array<octave_idx_type> idx = str_table.lookup (str_y);
+      octave_idx_type nval = str_y.numel ();
+
+      // Post-process.
       if (match_bool)
         {
-          boolNDArray match (str_y.dims ());
-
-          lsort.lookupb (str_table.data (), str_table.nelem (), str_y.data (),
-                         str_y.nelem (), match.fortran_vec ());
+          boolNDArray match (idx.dims ());
+          for (octave_idx_type i = 0; i < nval; i++)
+            {
+              octave_idx_type j = idx.xelem (i);
+              match.xelem (i) = j != 0 && str_y(i) == str_table(j-1);
+            }
 
           retval = match;
         }
-      else
+      else if (match_idx) 
         {
-          Array<octave_idx_type> idx (str_y.dims ());
-
+          NDArray ridx (idx.dims ());
           if (match_idx)
             {
-              lsort.lookupm (str_table.data (), str_table.nelem (), str_y.data (),
-                             str_y.nelem (), idx.fortran_vec ());
-            }
-          else
-            {
-              lsort.lookup (str_table.data (), str_table.nelem (), str_y.data (),
-                            str_y.nelem (), idx.fortran_vec ());
+              for (octave_idx_type i = 0; i < nval; i++)
+                {
+                  octave_idx_type j = idx.xelem (i);
+                  ridx.xelem (i) = (j != 0 && str_y(i) == str_table(j-1)) ? j : 0;
+                }
             }
 
-          retval = octave_value (idx, match_idx);
+          retval = ridx;
         }
+      else
+        retval = idx;
     }
   else
     print_usage ();

@@ -1743,31 +1743,24 @@ octave_sort<T>::is_sorted_rows (const T *data, octave_idx_type rows,
 }
 
 // The simple binary lookup.
-template <class T, class Comp>
-inline octave_idx_type
-lookup_binary (const T *data, octave_idx_type hi, 
-               const T& val, Comp comp)
-{
-  octave_idx_type lo = 0;
-
-  while (lo < hi)
-    {
-      octave_idx_type mid = lo + ((hi-lo) >> 1);
-      if (comp (val, data[mid]))
-        hi = mid;
-      else
-        lo = mid + 1;
-    }
-
-  return lo;
-}
 
 template <class T> template <class Comp>
 octave_idx_type 
 octave_sort<T>::lookup (const T *data, octave_idx_type nel,
                         const T& value, Comp comp)
 {
-  return lookup_binary (data, nel, value, comp);
+  octave_idx_type lo = 0, hi = nel;
+
+  while (lo < hi)
+    {
+      octave_idx_type mid = lo + ((hi-lo) >> 1);
+      if (comp (value, data[mid]))
+        hi = mid;
+      else
+        lo = mid + 1;
+    }
+
+  return lo;
 }
 
 template <class T>
@@ -1793,89 +1786,78 @@ octave_sort<T>::lookup (const T *data, octave_idx_type nel,
   return retval;
 }
 
-// This determines the split ratio between the O(M*log2(N)) and O(M+N) algorithms.
-static const double ratio = 1.0;
-
 template <class T> template <class Comp>
 void 
 octave_sort<T>::lookup (const T *data, octave_idx_type nel,
                         const T *values, octave_idx_type nvalues,
-                        octave_idx_type *idx, octave_idx_type offset, Comp comp)
+                        octave_idx_type *idx, Comp comp)
 {
-  // Check whether we're comparing two sorted arrays, comparable in size.
-  if (nvalues >= ratio * nel / xlog2 (nel + 1.0) 
-      && is_sorted (values, nvalues, comp))
-    {
-      // Use the linear algorithm.
-      octave_idx_type i = 0, j = 0;
-
-      if (j != nvalues && i != nel)
-        {
-          while (true)
-            {
-              if (comp (values[j], data[i]))
-                {
-                  idx[j] = i + offset;
-                  if (++j == nvalues)
-                    break;
-                }
-              else if (++i == nel)
-                break;
-            }
-        }
-
-      for (; j != nvalues; j++)
-        idx[j] = i + offset;
-
-    }
-  else
-    {
-      // Use a sequence of binary lookups.
-      for (octave_idx_type j = 0; j < nvalues; j++)
-        idx[j] = lookup_binary (data, nel, values[j], comp) + offset;
-    }
+  // Use a sequence of binary lookups.
+  // TODO: Can this be sped up generally? The sorted merge case is dealt with
+  // elsewhere.
+  for (octave_idx_type j = 0; j < nvalues; j++)
+    idx[j] = lookup (data, nel, values[j], comp);
 }
 
 template <class T>
 void 
 octave_sort<T>::lookup (const T *data, octave_idx_type nel,
                         const T* values, octave_idx_type nvalues,
-                        octave_idx_type *idx, octave_idx_type offset)
+                        octave_idx_type *idx)
 {
 #ifdef INLINE_ASCENDING_SORT
   if (compare == ascending_compare)
-    lookup (data, nel, values, nvalues, idx, offset, std::less<T> ());
+    lookup (data, nel, values, nvalues, idx, std::less<T> ());
   else
 #endif
 #ifdef INLINE_DESCENDING_SORT    
     if (compare == descending_compare)
-      lookup (data, nel, values, nvalues, idx, offset, std::greater<T> ());
+      lookup (data, nel, values, nvalues, idx, std::greater<T> ());
   else
 #endif
     if (compare)
-      lookup (data, nel, values, nvalues, idx, offset, std::ptr_fun (compare));
+      lookup (data, nel, values, nvalues, idx, std::ptr_fun (compare));
 }
 
 template <class T> template <class Comp>
 void 
-octave_sort<T>::lookupm (const T *data, octave_idx_type nel,
-                         const T *values, octave_idx_type nvalues,
-                         octave_idx_type *idx, Comp comp)
+octave_sort<T>::lookup_sorted (const T *data, octave_idx_type nel,
+                               const T *values, octave_idx_type nvalues,
+                               octave_idx_type *idx, bool rev, Comp comp)
 {
-  // Check whether we're comparing two sorted arrays, comparable in size.
-  if (nvalues >= ratio * nel / xlog2 (nel + 1.0) 
-      && is_sorted (values, nvalues, comp))
+  if (rev)
     {
-      // Use the linear algorithm.
-      octave_idx_type i = 0, j = 0;
+      octave_idx_type i = 0, j = nvalues - 1;
 
-      if (j != nvalues && i != nel)
+      if (nvalues > 0 && nel > 0)
         {
           while (true)
             {
               if (comp (values[j], data[i]))
                 {
-                  idx[j] = (i != 0 && comp (data[i-1], values[j])) ? -1 : i-1;
+                  idx[j] = i;
+                  if (--j < 0)
+                    break;
+                }
+              else if (++i == nel)
+                break;
+            }
+        }
+
+      for (; j >= 0; j--)
+        idx[j] = i;
+    }
+  else
+    {
+      octave_idx_type i = 0, j = 0;
+
+      if (nvalues > 0 && nel > 0)
+        {
+          while (true)
+            {
+              if (comp (values[j], data[i]))
+                {
+                  idx[j] = i;
                   if (++j == nvalues)
                     break;
                 }
@@ -1885,101 +1867,28 @@ octave_sort<T>::lookupm (const T *data, octave_idx_type nel,
         }
 
       for (; j != nvalues; j++)
-        idx[j] = (i != 0 && comp (data[i-1], values[j])) ? -1 : i-1;
-
-    }
-  else
-    {
-      // Use a sequence of binary lookups.
-      for (octave_idx_type j = 0; j < nvalues; j++)
-        {
-          octave_idx_type i = lookup_binary (data, nel, values[j], comp);
-          idx[j] = (i != 0 && comp (data[i-1], values[j])) ? -1 : i-1;
-        }
+        idx[j] = i;
     }
 }
 
 template <class T>
 void 
-octave_sort<T>::lookupm (const T *data, octave_idx_type nel,
-                         const T* values, octave_idx_type nvalues,
-                         octave_idx_type *idx)
+octave_sort<T>::lookup_sorted (const T *data, octave_idx_type nel,
+                               const T* values, octave_idx_type nvalues,
+                               octave_idx_type *idx, bool rev)
 {
 #ifdef INLINE_ASCENDING_SORT
   if (compare == ascending_compare)
-    lookupm (data, nel, values, nvalues, idx, std::less<T> ());
+    lookup_sorted (data, nel, values, nvalues, idx, rev, std::less<T> ());
   else
 #endif
 #ifdef INLINE_DESCENDING_SORT    
     if (compare == descending_compare)
-      lookupm (data, nel, values, nvalues, idx, std::greater<T> ());
+      lookup_sorted (data, nel, values, nvalues, idx, rev, std::greater<T> ());
   else
 #endif
     if (compare)
-      lookupm (data, nel, values, nvalues, idx, std::ptr_fun (compare));
-}
-
-template <class T> template <class Comp>
-void 
-octave_sort<T>::lookupb (const T *data, octave_idx_type nel,
-                         const T *values, octave_idx_type nvalues,
-                         bool *match, Comp comp)
-{
-  // Check whether we're comparing two sorted arrays, comparable in size.
-  if (nvalues >= ratio * nel / xlog2 (nel + 1.0) 
-      && is_sorted (values, nvalues, comp))
-    {
-      // Use the linear algorithm.
-      octave_idx_type i = 0, j = 0;
-
-      if (j != nvalues && i != nel)
-        {
-          while (true)
-            {
-              if (comp (values[j], data[i]))
-                {
-                  match[j] = (i != 0 && ! comp (data[i-1], values[j]));
-                  if (++j == nvalues)
-                    break;
-                }
-              else if (++i == nel)
-                break;
-            }
-        }
-
-      for (; j != nvalues; j++)
-        match[j] = (i != 0 && ! comp (data[i-1], values[j]));
-
-    }
-  else
-    {
-      // Use a sequence of binary lookups.
-      for (octave_idx_type j = 0; j < nvalues; j++)
-        {
-          octave_idx_type i = lookup_binary (data, nel, values[j], comp);
-          match[j] = (i != 0 && ! comp (data[i-1], values[j]));
-        }
-    }
-}
-
-template <class T>
-void 
-octave_sort<T>::lookupb (const T *data, octave_idx_type nel,
-                         const T* values, octave_idx_type nvalues,
-                         bool *match)
-{
-#ifdef INLINE_ASCENDING_SORT
-  if (compare == ascending_compare)
-    lookupb (data, nel, values, nvalues, match, std::less<T> ());
-  else
-#endif
-#ifdef INLINE_DESCENDING_SORT    
-    if (compare == descending_compare)
-      lookupb (data, nel, values, nvalues, match, std::greater<T> ());
-  else
-#endif
-    if (compare)
-      lookupb (data, nel, values, nvalues, match, std::ptr_fun (compare));
+      lookup_sorted (data, nel, values, nvalues, idx, rev, std::ptr_fun (compare));
 }
 
 template <class T> template <class Comp>

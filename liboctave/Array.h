@@ -622,24 +622,13 @@ public:
   // Ordering is auto-detected or can be specified.
   sortmode is_sorted_rows (sortmode mode = UNSORTED) const;
 
-  // Do a binary lookup in a sorted array.
+  // Do a binary lookup in a sorted array. Must not contain NaNs.
   // Mode can be specified or is auto-detected by comparing 1st and last element.
   octave_idx_type lookup (const T& value, sortmode mode = UNSORTED) const;
 
-  // Ditto, but for an array of values, specializing on long runs.
-  // If linf is true, the leftmost interval is extended to infinity 
-  // (indices will be >= 1).
-  // If rinf is true, the rightmost interval is extended to infinity 
-  // (indices will be <= length ()-1).
-  Array<octave_idx_type> lookup (const Array<T>& values, sortmode mode = UNSORTED, 
-                                 bool linf = false, bool rinf = false) const;
-
-  // This looks up only exact matches, giving their indices. Non-exact matches get
-  // the value -1.
-  Array<octave_idx_type> lookupm (const Array<T>& values, sortmode mode = UNSORTED) const;
-
-  // This looks up only exact matches, returning true/false if match.
-  Array<bool> lookupb (const Array<T>& values, sortmode mode = UNSORTED) const;
+  // Ditto, but for an array of values, specializing on the case when values
+  // are sorted. NaNs get the value N.
+  Array<octave_idx_type> lookup (const Array<T>& values, sortmode mode = UNSORTED) const;
 
   // Count nonzero elements.
   octave_idx_type nnz (void) const;

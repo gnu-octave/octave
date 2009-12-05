@@ -84,6 +84,76 @@ safe_comparator (sortmode mode, const Array<double>& a , bool allow_chk)
   return result;
 }
 
+// The default solution using NaN-safe comparator is OK, but almost twice as
+// slow than this code.
+template <>
+sortmode
+Array<double>::is_sorted (sortmode mode) const
+{
+  octave_idx_type n = numel ();
+
+  const double *el = data ();
+
+  if (n <= 1)
+    return mode ? mode : ASCENDING;
+
+  if (! mode)
+    {
+      // Auto-detect mode.
+      if (el[n-1] < el[0] || xisnan (el[0]))
+        mode = DESCENDING;
+      else
+        mode = ASCENDING;
+    }
+
+  if (mode == DESCENDING)
+    {
+      octave_idx_type j = 0;
+      double r;
+      // Sort out NaNs.
+      do
+        r = el[j++];
+      while (xisnan (r) && j < n);
+
+      // Orient the test so that NaN will not pass through. 
+      for (; j < n; j++)
+        {
+          if (r >= el[j])
+            r = el[j];
+          else
+            {
+              mode = UNSORTED;
+              break;
+            }
+        }
+
+    }
+  else if (mode == ASCENDING)
+    {
+      // Sort out NaNs.
+      while (n > 0 && xisnan (el[n-1]))
+        n--;
+
+      if (n > 0)
+        {
+          // Orient the test so that NaN will not pass through. 
+          double r = el[0];
+          for (octave_idx_type j = 1; j < n; j++)
+            {
+              if (r <= el[j])
+                r = el[j];
+              else
+                {
+                  mode = UNSORTED;
+                  break;
+                }
+            }
+        }
+    }
+
+  return mode;
+}
+
 INSTANTIATE_ARRAY_SORT (double);
 
 INSTANTIATE_ARRAY (double, OCTAVE_API);

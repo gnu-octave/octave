@@ -1,5 +1,10 @@
 2009-12-05  Jaroslav Hajek  <highegg@gmail.com>
 
+	* Array-d.cc (Array<double>::is_sorted): Optimized specialization.
+	* Array-f.cc (Array<float>::is_sorted): Ditto.
+
+2009-12-05  Jaroslav Hajek  <highegg@gmail.com>
+
 	* oct-sort.cc (lookup_binary): Remove.
 	(octave_sort<T>::lookup (const T*, octave_idx_type, const T&, comp)): Move
 	code here.

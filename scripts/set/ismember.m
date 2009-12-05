@@ -98,31 +98,19 @@ function [tf, a_idx] = ismember (a, s, rows_opt)
       [s, is] = sort (s);
     endif
 
-    ## sort out NaNs
+    ## sort out NaNs in table
     if (isreal (s) && ! isempty (s) && isnan (s(end)))
         s = s(1:end - sum (isnan (s)));
     endif
     
-    if (isreal (a))
-      anan = isnan (a);
-      a(anan) = 0;
-    endif
-
     if (nargout > 1)
       a_idx = lookup (s, a, "m");
       tf = logical (a_idx);
       if (! isempty (is))
         a_idx(tf) = is (a_idx(tf));
       endif
-      if (isreal (a))
-        tf(anan) = false;
-        a_idx(anan) = 0;
-      endif
     else
       tf = lookup (s, a, "b");
-      if (isreal (a))
-        tf(anan) = false;
-      endif
     endif
 
   elseif (nargin == 3 && strcmpi (rows_opt, "rows"))

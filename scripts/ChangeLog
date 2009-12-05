@@ -1,3 +1,7 @@
+2009-12-05  Jaroslav Hajek  <highegg@gmail.com>
+
+	* set/ismember.m: Simplify.
+
 2009-12-03  John W. Eaton  <jwe@octave.org>
 
 	* audio/wavwrite.m: Delete generated a.wav file after each test.

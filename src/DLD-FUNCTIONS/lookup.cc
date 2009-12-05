@@ -187,10 +187,9 @@ For non-strictly monotonic tables, empty intervals are always skipped.\n\
 The result is undefined if @var{table} is not monotonic, or if\n\
 @var{table} contains a NaN.\n\
 \n\
-The algorithm used by lookup is standard binary search, with optimizations\n\
-to speed up the case of arrays containing pre-ordered portions (sampling).\n\
-In particular, looking up a single entry is of logarithmic complexity\n\
-(unless a conversion occurs due to non-numeric or unequal types).\n\
+The complexity of the lookup is O(M*log(N)) where N is the size of @var{table}\n\
+and M is the size of @var{y}. In the special case when @var{y} is also sorted,\n\
+the complexity is O(min(M*log(N),M+N)).\n\
 \n\
 @var{table} and @var{y} can also be cell arrays of strings\n\
 (or @var{y} can be a single string).  In this case, string lookup\n\

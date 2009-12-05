@@ -1,5 +1,9 @@
 2009-12-05  Jaroslav Hajek  <highegg@gmail.com>
 
+	* DLD-FUNCTIONS/lookup.cc (Flookup): Document complexity.
+
+2009-12-05  Jaroslav Hajek  <highegg@gmail.com>
+
 	* DLD-FUNCTIONS/lookup.cc (do_numeric_lookup): Rewrite.
 	(Flookup): Simplify string part. Use Array<std::string>::lookup.
 

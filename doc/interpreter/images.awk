@@ -25,6 +25,12 @@ BEGIN {
 
     printf ("IMAGES_%s += $(%s_%s)\n", uext, ubasename, uext);
 
+    # Skip building pdf images in Octave
+    # Use Makefile rule to transform .eps files to .pdf
+    if (ext == "pdf") {
+      continue;
+    }
+
     if (ext == "png") {
       printf ("HTMLDIR_IMAGES += ");
       for (j = 2; j <= NF; j++)

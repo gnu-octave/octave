@@ -169,12 +169,13 @@ DOCSTRING_FILES = $(shell $(srcdir)/find-docstring-files.sh "$(top_srcdir)")
 doc-cache: $(DOCSTRING_FILES) mk_doc_cache.m
 	$(TOPDIR)/run-octave -f -q -H $(srcdir)/mk_doc_cache.m doc-cache $(DOCSTRING_FILES) || { rm -f doc-cache; exit 1; }
 
-$(MUNGED_TEXI_SRC): $(DOCSTRING_FILES) munge-texi$(BUILD_EXEEXT)
+$(MUNGED_TEXI_SRC): $(DOCSTRING_FILES) munge-texi.cc
 
 munge-texi$(BUILD_EXEEXT): munge-texi.cc
 	$(BUILD_CXX) $(BUILD_CXXFLAGS) -o $@ $^ $(BUILD_LDFLAGS)
 
 .txi.texi:
+	@$(MAKE) $(AM_MAKEFLAGS) munge-texi$(BUILD_EXEEXT)
 	./munge-texi $(top_srcdir) $(DOCSTRING_FILES) < $< > $@-t
 	mv $@-t $@
 

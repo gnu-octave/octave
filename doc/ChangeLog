@@ -1,3 +1,8 @@
+2009-12-05  Rik <octave@nomad.inbox5.com>
+
+	* interpreter/Makefile.am: Set dependency of *.texi files on
+	munge-texi source code rather than executable.
+
 2009-12-04  Rik <octave@nomad.inbox5.com>
 
 	* interpreter/images.awk: Revert to using Ghostscript for documentation 

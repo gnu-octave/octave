@@ -1,3 +1,8 @@
+2009-12-07  Jaroslav Hajek  <highegg@gmail.com>
+
+	* general/interp1.m: Allow discontinuities (jumps) for the "nearest" and
+	"linear" methods. Document the feature and add a few tests.
+
 2009-12-06  Rik <rik@nomad.inbox5.com>
 
 	* Makefile.am: Distribute DOCSTRINGS so that documentation will not require

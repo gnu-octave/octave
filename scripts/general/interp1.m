@@ -1,4 +1,5 @@
 ## Copyright (C) 2000, 2006, 2007, 2008, 2009 Paul Kienzle
+## Copyright (C) 2009 VZLU Prague
 ##
 ## This file is part of Octave.
 ##
@@ -24,7 +25,7 @@
 ##
 ## One-dimensional interpolation.  Interpolate @var{y}, defined at the
 ## points @var{x}, at the points @var{xi}.  The sample points @var{x} 
-## must be strictly monotonic.  If @var{y} is an array, treat the columns
+## must be monotonic.  If @var{y} is an array, treat the columns
 ## of @var{y} separately.
 ##
 ## Method is one of:
@@ -58,6 +59,13 @@
 ## There is an equivalence, such that @code{ppval (interp1 (@var{x},
 ## @var{y}, @var{method}, 'pp'), @var{xi}) == interp1 (@var{x}, @var{y},
 ## @var{xi}, @var{method}, 'extrap')}.
+##
+## Duplicate points in @var{x} specify a discontinuous interpolant. There
+## should be at most 2 consecutive points with the same value.
+## The discontinuous interpolant is right-continuous if @var{x} is increasing,
+## left-continuous if it is decreasing.
+## Discontinuities are (currently) only allowed for "nearest" and "linear"
+## methods; in all other cases, @var{x} must be strictly monotonic.
 ##
 ## An example of the use of @code{interp1} is
 ##
@@ -144,7 +152,7 @@ function yi = interp1 (x, y, varargin)
   endif
 
   ## check whether x is sorted; sort if not.
-  if (! issorted (x))
+  if (! issorted (x, "either"))
     [x, p] = sort (x);
     y = y(p,:);
   endif
@@ -154,8 +162,16 @@ function yi = interp1 (x, y, varargin)
   if (starmethod)
     dx = x(2) - x(1);
   else
-    if (any (x(1:nx-1) == x(2:nx)))
-      error ("interp1: table must be strictly monotonic");
+    jumps = x(1:nx-1) == x(2:nx);
+    have_jumps = any (jumps);
+    if (have_jumps)
+      if (any (strcmp (method, {"nearest", "linear"})))
+        if (any (jumps(1:nx-2) & jumps(2:nx-1)))
+          warning ("interp1: extra points in discontinuities");
+        endif
+      else
+        error ("interp1: discontinuities not supported for method %s", method);
+      endif
     endif
   endif
 
@@ -164,14 +180,14 @@ function yi = interp1 (x, y, varargin)
   switch (method)
   case "nearest"
     if (pp)
-      yi = mkpp ([x(1); (x(1:end-1)+x(2:end))/2; x(end)], y, szy(2:end));
+      yi = mkpp ([x(1); (x(1:nx-1)+x(2:nx))/2; x(nx)], y, szy(2:end));
     else
       idx = lookup (0.5*(x(1:nx-1)+x(2:nx)), xi) + 1;
       yi = y(idx,:);
     endif
   case "*nearest"
     if (pp)
-      yi = mkpp ([x(1); x(1)+[0.5:(ny-1)]'*dx; x(nx)], y, szy(2:end));
+      yi = mkpp ([x(1); x(1)+[0.5:(nx-1)]'*dx; x(nx)], y, szy(2:end));
     else
       idx = max (1, min (ny, floor((xi-x(1))/dx+1.5)));
       yi = y(idx,:);
@@ -180,13 +196,32 @@ function yi = interp1 (x, y, varargin)
     dy = diff (y);
     dx = diff (x);
     if (pp)
-      yi = mkpp (x, [dy./dx, y(1:end-1)], szy(2:end));
+      coefs = [dy./dx, y(1:nx-1)];
+      xx = x;
+      if (have_jumps)
+        ## Omit zero-size intervals.
+        coefs(jumps) = [];
+        xx(jumps) = [];
+      endif
+      yi = mkpp (xx, coefs, szy(2:end));
     else
       ## find the interval containing the test point
       idx = lookup (x, xi, "lr");
       ## use the endpoints of the interval to define a line
       s = (xi - x(idx))./dx(idx);
       yi = bsxfun (@times, s, dy(idx,:)) + y(idx,:);
+      if (have_jumps)
+        ## Fix the corner cases of discontinuities at boundaries.
+        ## Internal discontinuities already handled correctly.
+        if (jumps (1))
+          mask = xi < x(1);
+          yi(mask,:) = y(1*ones (1, sum (mask)),:);
+        endif
+        if (jumps(nx-1))
+          mask = xi >= x(nx);
+          yi(mask,:) = y(nx*ones (1, sum (mask)),:);
+        endif
+      endif
     endif
   case "*linear"
     dy = diff (y);
@@ -336,6 +371,17 @@ endfunction
 %!       ti(2:end-1),ddyp,'c^');
 %! legend('cubic','spline','pchip');
 %! title("Second derivative of interpolated 'sin (4*t + 0.3) .* cos (3*t - 0.1)'");
+
+%!demo
+%! xf=0:0.05:10; yf = sin(2*pi*xf/5) - (xf >= 5);
+%! xp=[0:.5:4.5,4.99,5:.5:10];      yp = sin(2*pi*xp/5) - (xp >= 5);
+%! lin=interp1(xp,yp,xf,"linear");
+%! near=interp1(xp,yp,xf,"nearest");
+%! plot(xf,yf,"r",xf,near,"g",xf,lin,"b",xp,yp,"r*");
+%! legend ("original","nearest","linear")
+%! %--------------------------------------------------------
+%! % confirm that interpolated function matches the original
+
 
 ## For each type of interpolated test, confirm that the interpolated
 ## value at the knots match the values at the knots.  Points away
@@ -552,3 +598,6 @@ endfunction
 %!assert (interp1(1:2:6,1:2:6,1.4,"*spline"),1.4);
 
 %!assert (interp1([3,2,1],[3,2,2],2.5),2.5)
+
+%!assert (interp1 ([1,2,2,3,4],[0,1,4,2,1],[-1,1.5,2,2.5,3.5], "linear", "extrap"), [-2,0.5,4,3,1.5])
+%!assert (interp1 ([4,4,3,2,0],[0,1,4,2,1],[1.5,4,4.5], "linear"), [0,1,NA])

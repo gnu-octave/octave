@@ -55,7 +55,7 @@ DEFBINOP (div, complex, sparse_matrix)
       double d = v2.scalar_value ();
 
       if (d == 0.0)
-	gripe_divide_by_zero ();
+        gripe_divide_by_zero ();
 
       return octave_value (SparseComplexMatrix (1, 1, v1.complex_value () / d));
     }
@@ -160,7 +160,7 @@ install_cs_sm_ops (void)
   INSTALL_CATOP (octave_complex, octave_sparse_matrix, cs_sm);
 
   INSTALL_ASSIGNCONV (octave_complex, octave_sparse_matrix, 
-		      octave_complex_matrix);
+                      octave_complex_matrix);
 
   INSTALL_WIDENOP (octave_complex, octave_sparse_matrix, sparse_matrix_conv);
 }

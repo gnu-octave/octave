@@ -87,11 +87,11 @@ void
 install_pm_sm_ops (void)
 {
   INSTALL_BINOP (op_mul, octave_perm_matrix, octave_sparse_matrix,
-		 mul_pm_sm);
+                 mul_pm_sm);
   INSTALL_BINOP (op_ldiv, octave_perm_matrix, octave_sparse_matrix,
-		 ldiv_pm_sm);
+                 ldiv_pm_sm);
   INSTALL_BINOP (op_mul, octave_sparse_matrix, octave_perm_matrix,
-		 mul_sm_pm);
+                 mul_sm_pm);
   INSTALL_BINOP (op_div, octave_sparse_matrix, octave_perm_matrix,
-		 div_sm_pm);
+                 div_sm_pm);
 }

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004, 2005, 2007, 2008 David Bateman
+Copyright (C) 2004, 2005, 2007, 2008, 2009 David Bateman
 Copyright (C) 1998, 1999, 2000, 2001, 2002, 2003, 2004 Andy Adler
 
 This file is part of Octave.
@@ -50,7 +50,7 @@ DEFBINOP_FN (el_or,  sparse_bool_matrix, bool_matrix, mx_el_or)
 DEFCATOP (sbm_bm, sparse_bool_matrix, bool_matrix)
 {
   CAST_BINOP_ARGS (octave_sparse_bool_matrix&, const octave_bool_matrix&); 
-		   
+                   
   SparseBoolMatrix tmp (v2.bool_matrix_value ());
   return octave_value (v1.sparse_bool_matrix_value (). concat (tmp, ra_idx));
 }
@@ -58,7 +58,7 @@ DEFCATOP (sbm_bm, sparse_bool_matrix, bool_matrix)
 DEFCATOP (sbm_m, sparse_bool_matrix, matrix)
 {
   CAST_BINOP_ARGS (octave_sparse_bool_matrix&, const octave_matrix&);
-		   
+                   
   SparseMatrix tmp (v2.matrix_value ());
   return octave_value (v1.sparse_matrix_value (). concat (tmp, ra_idx));
 }
@@ -66,7 +66,7 @@ DEFCATOP (sbm_m, sparse_bool_matrix, matrix)
 DEFCATOP (sm_bm, sparse_matrix, bool_matrix)
 {
   CAST_BINOP_ARGS (octave_sparse_matrix&, const octave_bool_matrix&); 
-		   
+                   
   SparseMatrix tmp (v2.matrix_value ());
   return octave_value (v1.sparse_matrix_value (). concat (tmp, ra_idx));
 }
@@ -86,16 +86,16 @@ install_sbm_bm_ops (void)
   INSTALL_BINOP (op_ne, octave_sparse_bool_matrix, octave_bool_matrix, ne);
 
   INSTALL_BINOP (op_el_and, octave_sparse_bool_matrix, octave_bool_matrix, 
-		 el_and);
+                 el_and);
   INSTALL_BINOP (op_el_or, octave_sparse_bool_matrix, octave_bool_matrix, 
-		 el_or);
+                 el_or);
 
   INSTALL_CATOP (octave_sparse_bool_matrix, octave_bool_matrix, sbm_bm);
   INSTALL_CATOP (octave_sparse_matrix, octave_bool_matrix, sm_bm);
   INSTALL_CATOP (octave_sparse_bool_matrix, octave_matrix, sbm_m);
 
   INSTALL_ASSIGNOP (op_asn_eq, octave_sparse_bool_matrix, 
-		    octave_bool_matrix, assign);
+                    octave_bool_matrix, assign);
 }
 
 /*

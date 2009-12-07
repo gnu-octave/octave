@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004, 2005, 2006, 2007 David Bateman
+Copyright (C) 2004, 2005, 2006, 2007, 2009 David Bateman
 Copyright (C) 1998, 1999, 2000, 2001, 2002, 2003, 2004 Andy Adler
 
 This file is part of Octave.
@@ -54,7 +54,7 @@ DEFBINOP (div, sparse_complex_matrix, sparse_matrix)
       double d = v2.scalar_value ();
 
       if (d == 0.0)
-	gripe_divide_by_zero ();
+        gripe_divide_by_zero ();
 
       return octave_value (v1.sparse_complex_matrix_value () / d);
     }
@@ -62,7 +62,7 @@ DEFBINOP (div, sparse_complex_matrix, sparse_matrix)
     {
       MatrixType typ = v2.matrix_type ();
       SparseComplexMatrix ret = xdiv (v1.sparse_complex_matrix_value (), 
-				      v2.sparse_matrix_value (), typ);
+                                      v2.sparse_matrix_value (), typ);
   
       v2.matrix_type (typ);
       return ret;
@@ -84,7 +84,7 @@ DEFBINOP (ldiv, sparse_complex_matrix, sparse_matrix)
       Complex d = v1.complex_value ();
 
       if (d == 0.0)
-	gripe_divide_by_zero ();
+        gripe_divide_by_zero ();
 
       return octave_value (v2.sparse_matrix_value () / d);
     }
@@ -93,7 +93,7 @@ DEFBINOP (ldiv, sparse_complex_matrix, sparse_matrix)
       MatrixType typ = v1.matrix_type ();
 
       SparseComplexMatrix ret = xleftdiv (v1.sparse_complex_matrix_value (), 
-					  v2.sparse_matrix_value (), typ);
+                                          v2.sparse_matrix_value (), typ);
 
       v1.matrix_type (typ);
       return ret;
@@ -114,7 +114,7 @@ DEFBINOP_FN (el_pow, sparse_complex_matrix, sparse_matrix, elem_xpow)
 DEFBINOP (el_ldiv, sparse_complex_matrix, sparse_matrix)
 {
   CAST_BINOP_ARGS (const octave_sparse_complex_matrix&, 
-		   const octave_sparse_matrix&);
+                   const octave_sparse_matrix&);
 
   return octave_value
     (quotient (v2.sparse_matrix_value (), v1.sparse_complex_matrix_value ()));
@@ -131,46 +131,46 @@ void
 install_scm_sm_ops (void)
 {
   INSTALL_BINOP (op_add, octave_sparse_complex_matrix, octave_sparse_matrix,
-		 add);
+                 add);
   INSTALL_BINOP (op_sub, octave_sparse_complex_matrix, octave_sparse_matrix,
-		 sub);
+                 sub);
   INSTALL_BINOP (op_mul, octave_sparse_complex_matrix, octave_sparse_matrix,
-		 mul);
+                 mul);
   INSTALL_BINOP (op_div, octave_sparse_complex_matrix, octave_sparse_matrix,
-		 div);
+                 div);
   INSTALL_BINOP (op_pow, octave_sparse_complex_matrix, octave_sparse_matrix,
-		 pow);
+                 pow);
   INSTALL_BINOP (op_ldiv, octave_sparse_complex_matrix, octave_sparse_matrix,
-		 ldiv);
+                 ldiv);
   INSTALL_BINOP (op_lt, octave_sparse_complex_matrix, octave_sparse_matrix, 
-		 lt);
+                 lt);
   INSTALL_BINOP (op_le, octave_sparse_complex_matrix, octave_sparse_matrix, 
-		 le);
+                 le);
   INSTALL_BINOP (op_eq, octave_sparse_complex_matrix, octave_sparse_matrix, 
-		 eq);
+                 eq);
   INSTALL_BINOP (op_ge, octave_sparse_complex_matrix, octave_sparse_matrix, 
-		 ge);
+                 ge);
   INSTALL_BINOP (op_gt, octave_sparse_complex_matrix, octave_sparse_matrix, 
-		 gt);
+                 gt);
   INSTALL_BINOP (op_ne, octave_sparse_complex_matrix, octave_sparse_matrix, 
-		 ne);
+                 ne);
   INSTALL_BINOP (op_el_mul, octave_sparse_complex_matrix, 
-		 octave_sparse_matrix, el_mul);
+                 octave_sparse_matrix, el_mul);
   INSTALL_BINOP (op_el_div, octave_sparse_complex_matrix, 
-		 octave_sparse_matrix, el_div);
+                 octave_sparse_matrix, el_div);
   INSTALL_BINOP (op_el_pow, octave_sparse_complex_matrix,
-		 octave_sparse_matrix, el_pow);
+                 octave_sparse_matrix, el_pow);
   INSTALL_BINOP (op_el_ldiv, octave_sparse_complex_matrix, 
-		 octave_sparse_matrix, el_ldiv);
+                 octave_sparse_matrix, el_ldiv);
   INSTALL_BINOP (op_el_and, octave_sparse_complex_matrix, 
-		 octave_sparse_matrix, el_and);
+                 octave_sparse_matrix, el_and);
   INSTALL_BINOP (op_el_or, octave_sparse_complex_matrix, 
-		 octave_sparse_matrix, el_or);
+                 octave_sparse_matrix, el_or);
 
   INSTALL_CATOP (octave_sparse_complex_matrix, octave_sparse_matrix, scm_sm);
 
   INSTALL_ASSIGNOP (op_asn_eq, octave_sparse_complex_matrix, 
-		    octave_sparse_matrix, assign);
+                    octave_sparse_matrix, assign);
 }
 
 /*

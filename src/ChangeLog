@@ -1,3 +1,20 @@
+2009-12-07  John W. Eaton  <jwe@octave.org>
+
+	* op-pm-sm.cc, op-pm-scm.cc, op-dm-sm.cc, op-dm-scm.cc,
+	op-fs-fm.cc, op-fs-fcm.cc, op-fs-fcs.cc, op-fm-fm.cc,
+	op-fm-fcs.cc, op-fm-fcm.cc, op-fcs-fs.cc, op-fcs-fm.cc,
+	op-fcs-fcm.cc, op-fcm-fs.cc, op-fcm-fm.cc, op-fm-fs.cc,
+	op-fcm-fcm.cc, op-class.cc, op-fcm-fcs.cc, op-str-str.cc,
+	op-str-s.cc, op-str-m.cc, op-struct.cc, op-sm-scm.cc, op-sm-s.cc,
+	op-sm-sm.cc, op-sm-cs.cc, op-sm-cm.cc, op-scm-sm.cc,
+	op-scm-scm.cc, op-scm-s.cc, op-scm-m.cc, op-scm-cs.cc, op-sm-m.cc,
+	op-sbm-sbm.cc, op-scm-cm.cc, op-sbm-bm.cc, op-s-sm.cc,
+	op-s-scm.cc, op-sbm-b.cc, op-m-scm.cc, op-m-sm.cc, op-m-cm.cc,
+	op-int.h, op-int-conv.cc, op-int-concat.cc, op-cs-sm.cc,
+	op-cs-scm.cc, op-cm-sm.cc, op-cs-cs.cc, op-cm-m.cc, op-cm-scm.cc,
+	op-cm-cm.cc, op-chm.cc, op-cell.cc, op-bm-sbm.cc, op-bm-bm.cc,
+	op-bm-b.cc, op-b-sbm.cc, op-fcs-fcs.cc: Untabify.
+
 2009-12-07  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Makefile.am: Build OPT_HANDLERS before DEF_FILES.

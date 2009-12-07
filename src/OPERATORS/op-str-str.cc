@@ -1,7 +1,7 @@
 /*
 
-Copyright (C) 1996, 1997, 1998, 2000, 2002, 2003, 2004, 2005, 2007, 2008
-              John W. Eaton
+Copyright (C) 1996, 1997, 1998, 2000, 2002, 2003, 2004, 2005, 2007,
+              2008, 2009John W. Eaton
 
 This file is part of Octave.
 
@@ -46,12 +46,12 @@ DEFUNOP (transpose, char_matrix_str)
     }
   else
     return octave_value (v.char_matrix_value().transpose (),
-			 a.is_sq_string () ? '\'' : '"');
+                         a.is_sq_string () ? '\'' : '"');
 }
 
 // string by string ops.
 
-#define DEFCHARNDBINOP_FN(name, op, t1, t2, e1, e2, f)	\
+#define DEFCHARNDBINOP_FN(name, op, t1, t2, e1, e2, f)  \
   BINOPDECL (name, a1, a2) \
   { \
     dim_vector a1_dims = a1.dims (); \
@@ -64,17 +64,17 @@ DEFUNOP (transpose, char_matrix_str)
  \
     if (a1_is_scalar) \
       { \
-	if (a2_is_scalar) \
-	  return octave_value ((v1.e1 ## _value ())(0) op (v2.e2 ## _value ())(0)); \
-	else \
-	  return octave_value (f ((v1.e1 ## _value ())(0), v2.e2 ## _value ())); \
+        if (a2_is_scalar) \
+          return octave_value ((v1.e1 ## _value ())(0) op (v2.e2 ## _value ())(0)); \
+        else \
+          return octave_value (f ((v1.e1 ## _value ())(0), v2.e2 ## _value ())); \
       } \
     else \
       { \
-	if (a2_is_scalar) \
-	  return octave_value (f (v1.e1 ## _value (), (v2.e2 ## _value ())(0))); \
-	else \
-	  return octave_value (f (v1.e1 ## _value (), v2.e2 ## _value ())); \
+        if (a2_is_scalar) \
+          return octave_value (f (v1.e1 ## _value (), (v2.e2 ## _value ())(0))); \
+        else \
+          return octave_value (f (v1.e1 ## _value (), v2.e2 ## _value ())); \
       } \
   }
 

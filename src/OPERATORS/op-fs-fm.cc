@@ -1,7 +1,7 @@
 /*
 
 Copyright (C) 1996, 1997, 2000, 2001, 2002, 2003, 2004, 2005, 2006,
-              2007, 2008 John W. Eaton
+              2007, 2008, 2009 John W. Eaton
 
 This file is part of Octave.
 
@@ -72,24 +72,24 @@ DEFBINOP (ldiv, float_scalar, float_matrix)
 }
 
 DEFNDBINOP_FN (lt, float_scalar, float_matrix, float_scalar, 
-	       float_array, mx_el_lt)
+               float_array, mx_el_lt)
 DEFNDBINOP_FN (le, float_scalar, float_matrix, float_scalar, 
-	       float_array, mx_el_le)
+               float_array, mx_el_le)
 DEFNDBINOP_FN (eq, float_scalar, float_matrix, float_scalar, 
-	       float_array, mx_el_eq)
+               float_array, mx_el_eq)
 DEFNDBINOP_FN (ge, float_scalar, float_matrix, float_scalar, 
-	       float_array, mx_el_ge)
+               float_array, mx_el_ge)
 DEFNDBINOP_FN (gt, float_scalar, float_matrix, float_scalar, 
 float_array, mx_el_gt)
 DEFNDBINOP_FN (ne, float_scalar, float_matrix, float_scalar, 
-	       float_array, mx_el_ne)
+               float_array, mx_el_ne)
 
 DEFNDBINOP_OP (el_mul, float_scalar, float_matrix, float_scalar, 
-	       float_array, *)
+               float_array, *)
 DEFNDBINOP_FN (el_div, float_scalar, float_matrix, float_scalar, 
-	       float_array, x_el_div)
+               float_array, x_el_div)
 DEFNDBINOP_FN (el_pow, float_scalar, float_matrix, float_scalar, 
-	       float_array, elem_xpow)
+               float_array, elem_xpow)
 
 DEFBINOP (el_ldiv, float_scalar, float_matrix)
 {
@@ -104,12 +104,12 @@ DEFBINOP (el_ldiv, float_scalar, float_matrix)
 }
 
 DEFNDBINOP_FN (el_and, float_scalar, float_matrix, float_scalar, 
-	       float_array, mx_el_and)
+               float_array, mx_el_and)
 DEFNDBINOP_FN (el_or,  float_scalar, float_matrix, float_scalar, 
-	       float_array, mx_el_or)
+               float_array, mx_el_or)
 
 DEFNDCATOP_FN (fs_fm, float_scalar, float_matrix, float_array, 
-	       float_array, concat)
+               float_array, concat)
 
 DEFNDCATOP_FN (s_fm, scalar, float_matrix, float_array, float_array, concat)
 

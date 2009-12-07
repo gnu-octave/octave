@@ -30,7 +30,7 @@ along with Octave; see the file COPYING.  If not, see
       (v1.t1 ## _value () op v2.t2 ## _value ()); \
     if (octave_ ## t3 ::get_math_trunc_flag ()) \
       gripe_binop_integer_math_truncated (#op, v1.type_name (). c_str (), \
-					  v2.type_name (). c_str ());	\
+                                          v2.type_name (). c_str ());   \
     octave_ ## t3 ::clear_conv_flag (); \
     return retval; \
   }
@@ -43,31 +43,31 @@ along with Octave; see the file COPYING.  If not, see
       (v1.e1 ## _value () op v2.e2 ## _value ()); \
     if (octave_ ## t3 ::get_math_trunc_flag ()) \
       gripe_binop_integer_math_truncated (#op, v1.type_name (). c_str (), \
-					  v2.type_name (). c_str ());	\
+                                          v2.type_name (). c_str ());   \
     octave_ ## t3 ::clear_conv_flag (); \
     return retval; \
   }
 
-#define DEFINTBINOP_FN(name, t1, t2, f, t3, op)	\
+#define DEFINTBINOP_FN(name, t1, t2, f, t3, op) \
   BINOPDECL (name, a1, a2) \
   { \
     CAST_BINOP_ARGS (const octave_ ## t1&, const octave_ ## t2&); \
     octave_value retval = octave_value (f (v1.t1 ## _value (), v2.t2 ## _value ())); \
     if (octave_ ## t3 ::get_math_trunc_flag ()) \
       gripe_binop_integer_math_truncated (#op, v1.type_name (). c_str (), \
-					  v2.type_name (). c_str ());	\
+                                          v2.type_name (). c_str ());   \
     octave_ ## t3 ::clear_conv_flag (); \
     return retval; \
   }
 
-#define DEFINTNDBINOP_FN(name, t1, t2, e1, e2, f, t3, op)	\
+#define DEFINTNDBINOP_FN(name, t1, t2, e1, e2, f, t3, op)       \
   BINOPDECL (name, a1, a2) \
   { \
     CAST_BINOP_ARGS (const octave_ ## t1&, const octave_ ## t2&); \
     octave_value retval = octave_value (f (v1.e1 ## _value (), v2.e2 ## _value ())); \
     if (octave_ ## t3 ::get_math_trunc_flag ()) \
       gripe_binop_integer_math_truncated (#op, v1.type_name (). c_str (), \
-					  v2.type_name (). c_str ());	\
+                                          v2.type_name (). c_str ());   \
     octave_ ## t3 ::clear_conv_flag (); \
     return retval; \
   }
@@ -187,7 +187,7 @@ along with Octave; see the file COPYING.  If not, see
   DEFNCUNOP_METHOD (s_incr, TYPE ## _scalar, increment) \
   DEFNCUNOP_METHOD (s_decr, TYPE ## _scalar, decrement)
 
-#define OCTAVE_SS_INT_ARITH_OPS(PFX, T1, T2, T3)	\
+#define OCTAVE_SS_INT_ARITH_OPS(PFX, T1, T2, T3)        \
   /* scalar by scalar ops. */ \
  \
   DEFINTBINOP_OP (PFX ## _add, T1 ## scalar, T2 ## scalar, +, T3) \
@@ -204,12 +204,12 @@ along with Octave; see the file COPYING.  If not, see
     octave_value retval = octave_value (v1.T1 ## scalar_value () / v2.T2 ## scalar_value ()); \
     if (octave_ ## T3 ::get_math_trunc_flag ()) \
       gripe_binop_integer_math_truncated ("/", v1.type_name (). c_str (), \
-					  v2.type_name (). c_str ());	\
+                                          v2.type_name (). c_str ());   \
     octave_ ## T3 ::clear_conv_flag (); \
     return retval; \
   } \
  \
-  DEFINTBINOP_FN (PFX ## _pow, T1 ## scalar, T2 ## scalar, xpow, T3, ^)	\
+  DEFINTBINOP_FN (PFX ## _pow, T1 ## scalar, T2 ## scalar, xpow, T3, ^) \
  \
   DEFBINOP (PFX ## _ldiv, T1 ## scalar, T2 ## scalar) \
   { \
@@ -221,12 +221,12 @@ along with Octave; see the file COPYING.  If not, see
     octave_value retval = octave_value (v2.T2 ## scalar_value () / v1.T1 ## scalar_value ()); \
     if (octave_ ## T3 ::get_math_trunc_flag ()) \
           gripe_binop_integer_math_truncated ("\\", v1.type_name (). c_str (), \
-					      v2.type_name (). c_str ()); \
+                                              v2.type_name (). c_str ()); \
     octave_ ## T3 ::clear_conv_flag (); \
     return retval; \
   } \
  \
-  DEFINTBINOP_OP (PFX ## _el_mul, T1 ## scalar, T2 ## scalar, *, T3)	\
+  DEFINTBINOP_OP (PFX ## _el_mul, T1 ## scalar, T2 ## scalar, *, T3)    \
  \
   DEFBINOP (PFX ## _el_div, T1 ## scalar, T2 ## scalar) \
   { \
@@ -238,7 +238,7 @@ along with Octave; see the file COPYING.  If not, see
     octave_value retval = octave_value (v1.T1 ## scalar_value () / v2.T2 ## scalar_value ()); \
     if (octave_ ## T3 ::get_math_trunc_flag ()) \
       gripe_binop_integer_math_truncated (".\\", v1.type_name (). c_str (), \
-					  v2.type_name (). c_str ()); \
+                                          v2.type_name (). c_str ()); \
     octave_ ## T3 ::clear_conv_flag (); \
     return retval; \
   } \
@@ -255,7 +255,7 @@ along with Octave; see the file COPYING.  If not, see
     octave_value retval = octave_value (v2.T2 ## scalar_value () / v1.T1 ## scalar_value ()); \
     if (octave_ ## T3 ::get_math_trunc_flag ()) \
       gripe_binop_integer_math_truncated (".\\", v1.type_name (). c_str (), \
-					  v2.type_name (). c_str ());	\
+                                          v2.type_name (). c_str ());   \
     octave_ ## T3 ::clear_conv_flag (); \
     return retval; \
   } \
@@ -362,7 +362,7 @@ along with Octave; see the file COPYING.  If not, see
     octave_value retval = octave_value (v2.TS ## scalar_value () / v1.TS ## scalar_value ()); \
     if (octave_ ## TI ::get_math_trunc_flag ()) \
       gripe_binop_integer_math_truncated ("\\", v1.type_name (). c_str (), \
-					  v2.type_name (). c_str ());	\
+                                          v2.type_name (). c_str ());   \
     octave_ ## TI ::clear_conv_flag (); \
     return retval; \
   } \
@@ -375,7 +375,7 @@ along with Octave; see the file COPYING.  If not, see
     octave_value retval = octave_value (v1.TS ## scalar_value () / v2.TM ## array_value ()); \
     if (octave_ ## TI ::get_math_trunc_flag ()) \
       gripe_binop_integer_math_truncated (".\\", v1.type_name (). c_str (), \
-					  v2.type_name (). c_str ());	\
+                                          v2.type_name (). c_str ());   \
     octave_ ## TI ::clear_conv_flag (); \
     return retval; \
   } \
@@ -392,7 +392,7 @@ along with Octave; see the file COPYING.  If not, see
     octave_value retval = octave_value (v2.TM ## array_value () / v1.TS ## scalar_value ()); \
     if (octave_ ## TI ::get_math_trunc_flag ()) \
       gripe_binop_integer_math_truncated (".\\", v1.type_name (). c_str (), \
-					  v2.type_name (). c_str ());	\
+                                          v2.type_name (). c_str ());   \
     octave_ ## TI ::clear_conv_flag (); \
     return retval; \
   }
@@ -418,8 +418,8 @@ along with Octave; see the file COPYING.  If not, see
     T2 ## NDArray result (b.dims ()); \
     for (int i = 0; i < b.length (); i++) \
       { \
-	OCTAVE_QUIT; \
-	result (i) = pow (a, b(i)); \
+        OCTAVE_QUIT; \
+        result (i) = pow (a, b(i)); \
       } \
     return octave_value (result); \
   } \
@@ -430,8 +430,8 @@ along with Octave; see the file COPYING.  If not, see
     T1 ## NDArray result (b.dims ()); \
     for (int i = 0; i < b.length (); i++) \
       { \
-	OCTAVE_QUIT; \
-	result (i) = pow (a, b(i)); \
+        OCTAVE_QUIT; \
+        result (i) = pow (a, b(i)); \
       } \
     return octave_value (result); \
   } \
@@ -442,8 +442,8 @@ along with Octave; see the file COPYING.  If not, see
     T2 ## NDArray result (b.dims ()); \
     for (int i = 0; i < b.length (); i++) \
       { \
-	OCTAVE_QUIT; \
-	result (i) = pow (a, b(i)); \
+        OCTAVE_QUIT; \
+        result (i) = pow (a, b(i)); \
       } \
     return octave_value (result); \
   } \
@@ -454,8 +454,8 @@ along with Octave; see the file COPYING.  If not, see
     T1 ## NDArray result (b.dims ()); \
     for (int i = 0; i < b.length (); i++) \
       { \
-	OCTAVE_QUIT; \
-	result (i) = powf (a, b(i)); \
+        OCTAVE_QUIT; \
+        result (i) = powf (a, b(i)); \
       } \
     return octave_value (result); \
   } \
@@ -466,8 +466,8 @@ along with Octave; see the file COPYING.  If not, see
     T2 ## NDArray result (b.dims ()); \
     for (int i = 0; i < b.length (); i++) \
       { \
-	OCTAVE_QUIT; \
-	result (i) = powf (a, b(i)); \
+        OCTAVE_QUIT; \
+        result (i) = powf (a, b(i)); \
       } \
     return octave_value (result); \
   }
@@ -519,7 +519,7 @@ along with Octave; see the file COPYING.  If not, see
     octave_value retval = octave_value (v1.TM ## array_value () / v2.TS ## scalar_value ()); \
     if (octave_ ## TI ::get_math_trunc_flag ()) \
       gripe_binop_integer_math_truncated ("/", v1.type_name (). c_str (), \
-					  v2.type_name (). c_str ());	\
+                                          v2.type_name (). c_str ());   \
     octave_ ## TI ::clear_conv_flag (); \
     return retval; \
   } \
@@ -548,7 +548,7 @@ along with Octave; see the file COPYING.  If not, see
     octave_value retval = octave_value (v1.TM ## array_value () / v2.TS ## scalar_value ()); \
     if (octave_ ## TI ::get_math_trunc_flag ()) \
       gripe_binop_integer_math_truncated ("./", v1.type_name (). c_str (), \
-					  v2.type_name (). c_str ());	\
+                                          v2.type_name (). c_str ());   \
     octave_ ## TI ::clear_conv_flag (); \
     return retval; \
   } \
@@ -562,7 +562,7 @@ along with Octave; see the file COPYING.  If not, see
     octave_value retval = v2.TS ## scalar_value () / v1.TM ## array_value (); \
     if (octave_ ## TI ::get_math_trunc_flag ()) \
       gripe_binop_integer_math_truncated (".^", v1.type_name (). c_str (), \
-					  v2.type_name (). c_str ());	\
+                                          v2.type_name (). c_str ());   \
     octave_ ## TI ::clear_conv_flag (); \
     return retval; \
   }
@@ -597,7 +597,7 @@ octave_value elem_xpow (T1 ## NDArray a, octave_ ## T2  b) \
   for (int i = 0; i < a.length (); i++) \
     { \
       OCTAVE_QUIT; \
-      result (i) = pow (a(i), b);		\
+      result (i) = pow (a(i), b);               \
     } \
   return octave_value (result); \
 } \
@@ -608,7 +608,7 @@ octave_value elem_xpow (T1 ## NDArray a, double  b) \
   for (int i = 0; i < a.length (); i++) \
     { \
       OCTAVE_QUIT; \
-      result (i) = pow (a(i), b);		\
+      result (i) = pow (a(i), b);               \
     } \
   return octave_value (result); \
 } \
@@ -619,7 +619,7 @@ octave_value elem_xpow (NDArray a, octave_ ## T2  b) \
   for (int i = 0; i < a.length (); i++) \
     { \
       OCTAVE_QUIT; \
-      result (i) = pow (a(i), b);		\
+      result (i) = pow (a(i), b);               \
     } \
   return octave_value (result); \
 } \
@@ -630,7 +630,7 @@ octave_value elem_xpow (T1 ## NDArray a, float  b) \
   for (int i = 0; i < a.length (); i++) \
     { \
       OCTAVE_QUIT; \
-      result (i) = powf (a(i), b);		\
+      result (i) = powf (a(i), b);              \
     } \
   return octave_value (result); \
 } \
@@ -641,7 +641,7 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
   for (int i = 0; i < a.length (); i++) \
     { \
       OCTAVE_QUIT; \
-      result (i) = powf (a(i), b);		\
+      result (i) = powf (a(i), b);              \
     } \
   return octave_value (result); \
 }
@@ -690,8 +690,8 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
  \
     if (v.ndims () > 2) \
       { \
-	error ("transpose not defined for N-d objects"); \
-	return octave_value (); \
+        error ("transpose not defined for N-d objects"); \
+        return octave_value (); \
       } \
     else \
       return octave_value (v.TYPE ## _array_value().transpose ()); \
@@ -701,7 +701,7 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
   DEFNCUNOP_METHOD (m_decr, TYPE ## _matrix, decrement) \
   DEFNCUNOP_METHOD (m_changesign, TYPE ## _matrix, changesign)
 
-#define OCTAVE_MM_INT_ARITH_OPS(PFX, T1, T2, T3)	\
+#define OCTAVE_MM_INT_ARITH_OPS(PFX, T1, T2, T3)        \
   /* matrix by matrix ops. */ \
  \
   DEFINTNDBINOP_OP (PFX ## _add, T1 ## matrix, T2 ## matrix, T1 ## array, T2 ## array, +, T3) \
@@ -731,7 +731,7 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
     octave_value retval = octave_value (quotient (v2.T2 ## array_value (), v1.T1 ## array_value ())); \
     if (octave_ ## T3 ::get_math_trunc_flag ()) \
       gripe_binop_integer_math_truncated (".\\", v1.type_name (). c_str (), \
-					  v2.type_name (). c_str ());	\
+                                          v2.type_name (). c_str ());   \
     octave_ ## T3 ::clear_conv_flag (); \
     return retval; \
   }
@@ -769,14 +769,14 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
     dim_vector b_dims = b.dims (); \
     if (a_dims != b_dims) \
       { \
-	gripe_nonconformant ("operator .^", a_dims, b_dims); \
-	return octave_value (); \
+        gripe_nonconformant ("operator .^", a_dims, b_dims); \
+        return octave_value (); \
       } \
     T1 ## NDArray result (a_dims); \
     for (int i = 0; i < a.length (); i++) \
       { \
-	OCTAVE_QUIT; \
-	result (i) = pow (a(i), b(i)); \
+        OCTAVE_QUIT; \
+        result (i) = pow (a(i), b(i)); \
       } \
     return octave_value (result); \
   } \
@@ -788,14 +788,14 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
     dim_vector b_dims = b.dims (); \
     if (a_dims != b_dims) \
       { \
-	gripe_nonconformant ("operator .^", a_dims, b_dims); \
-	return octave_value (); \
+        gripe_nonconformant ("operator .^", a_dims, b_dims); \
+        return octave_value (); \
       } \
     T1 ## NDArray result (a_dims); \
     for (int i = 0; i < a.length (); i++) \
       { \
-	OCTAVE_QUIT; \
-	result (i) = pow (a(i), b(i)); \
+        OCTAVE_QUIT; \
+        result (i) = pow (a(i), b(i)); \
       } \
     return octave_value (result); \
   } \
@@ -807,14 +807,14 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
     dim_vector b_dims = b.dims (); \
     if (a_dims != b_dims) \
       { \
-	gripe_nonconformant ("operator .^", a_dims, b_dims); \
-	return octave_value (); \
+        gripe_nonconformant ("operator .^", a_dims, b_dims); \
+        return octave_value (); \
       } \
     T2 ## NDArray result (a_dims); \
     for (int i = 0; i < a.length (); i++) \
       { \
-	OCTAVE_QUIT; \
-	result (i) = pow (a(i), b(i)); \
+        OCTAVE_QUIT; \
+        result (i) = pow (a(i), b(i)); \
       } \
     return octave_value (result); \
   } \
@@ -826,14 +826,14 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
     dim_vector b_dims = b.dims (); \
     if (a_dims != b_dims) \
       { \
-	gripe_nonconformant ("operator .^", a_dims, b_dims); \
-	return octave_value (); \
+        gripe_nonconformant ("operator .^", a_dims, b_dims); \
+        return octave_value (); \
       } \
     T1 ## NDArray result (a_dims); \
     for (int i = 0; i < a.length (); i++) \
       { \
-	OCTAVE_QUIT; \
-	result (i) = powf (a(i), b(i)); \
+        OCTAVE_QUIT; \
+        result (i) = powf (a(i), b(i)); \
       } \
     return octave_value (result); \
   } \
@@ -845,14 +845,14 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
     dim_vector b_dims = b.dims (); \
     if (a_dims != b_dims) \
       { \
-	gripe_nonconformant ("operator .^", a_dims, b_dims); \
-	return octave_value (); \
+        gripe_nonconformant ("operator .^", a_dims, b_dims); \
+        return octave_value (); \
       } \
     T2 ## NDArray result (a_dims); \
     for (int i = 0; i < a.length (); i++) \
       { \
-	OCTAVE_QUIT; \
-	result (i) = powf (a(i), b(i)); \
+        OCTAVE_QUIT; \
+        result (i) = powf (a(i), b(i)); \
       } \
     return octave_value (result); \
   }
@@ -959,10 +959,10 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
 #define OCTAVE_INSTALL_SS_INT_OPS(TYPE) \
   OCTAVE_INSTALL_S_INT_UNOPS (TYPE) \
   OCTAVE_INSTALL_SS_INT_ARITH_OPS (ss, TYPE ## _, TYPE ## _) \
-  OCTAVE_INSTALL_SS_INT_ARITH_OPS (ssx, TYPE ## _, )	     \
-  OCTAVE_INSTALL_SS_INT_ARITH_OPS (sxs,  , TYPE ## _)	     \
-  OCTAVE_INSTALL_SS_INT_ARITH_OPS (ssfx, TYPE ## _, float_)	     \
-  OCTAVE_INSTALL_SS_INT_ARITH_OPS (sfxs,  float_, TYPE ## _)	     \
+  OCTAVE_INSTALL_SS_INT_ARITH_OPS (ssx, TYPE ## _, )         \
+  OCTAVE_INSTALL_SS_INT_ARITH_OPS (sxs,  , TYPE ## _)        \
+  OCTAVE_INSTALL_SS_INT_ARITH_OPS (ssfx, TYPE ## _, float_)          \
+  OCTAVE_INSTALL_SS_INT_ARITH_OPS (sfxs,  float_, TYPE ## _)         \
   OCTAVE_INSTALL_SS_INT_CMP_OPS (ss, TYPE ## _, TYPE ## _) \
   OCTAVE_INSTALL_SS_INT_CMP_OPS (sx, TYPE ## _, ) \
   OCTAVE_INSTALL_SS_INT_CMP_OPS (xs, , TYPE ## _) \
@@ -1007,10 +1007,10 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
 
 #define OCTAVE_INSTALL_SM_INT_OPS(TYPE) \
   OCTAVE_INSTALL_SM_INT_ARITH_OPS (sm, TYPE ## _, TYPE ## _) \
-  OCTAVE_INSTALL_SM_INT_ARITH_OPS (smx, TYPE ## _, )	     \
-  OCTAVE_INSTALL_SM_INT_ARITH_OPS (sxm, , TYPE ## _)	     \
-  OCTAVE_INSTALL_SM_INT_ARITH_OPS (smfx, TYPE ## _, float_)	     \
-  OCTAVE_INSTALL_SM_INT_ARITH_OPS (sfxm, float_, TYPE ## _)	     \
+  OCTAVE_INSTALL_SM_INT_ARITH_OPS (smx, TYPE ## _, )         \
+  OCTAVE_INSTALL_SM_INT_ARITH_OPS (sxm, , TYPE ## _)         \
+  OCTAVE_INSTALL_SM_INT_ARITH_OPS (smfx, TYPE ## _, float_)          \
+  OCTAVE_INSTALL_SM_INT_ARITH_OPS (sfxm, float_, TYPE ## _)          \
   OCTAVE_INSTALL_SM_INT_CMP_OPS (sm, TYPE ## _, TYPE ## _) \
   OCTAVE_INSTALL_SM_INT_CMP_OPS (xm, , TYPE ## _) \
   OCTAVE_INSTALL_SM_INT_CMP_OPS (smx, TYPE ## _, ) \
@@ -1069,9 +1069,9 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
 #define OCTAVE_INSTALL_MS_INT_OPS(TYPE) \
   OCTAVE_INSTALL_MS_INT_ARITH_OPS (ms, TYPE ## _, TYPE ## _) \
   OCTAVE_INSTALL_MS_INT_ARITH_OPS (msx, TYPE ## _, ) \
-  OCTAVE_INSTALL_MS_INT_ARITH_OPS (mxs, , TYPE ## _)	   \
+  OCTAVE_INSTALL_MS_INT_ARITH_OPS (mxs, , TYPE ## _)       \
   OCTAVE_INSTALL_MS_INT_ARITH_OPS (msfx, TYPE ## _, float_) \
-  OCTAVE_INSTALL_MS_INT_ARITH_OPS (mfxs, float_, TYPE ## _)	   \
+  OCTAVE_INSTALL_MS_INT_ARITH_OPS (mfxs, float_, TYPE ## _)        \
   OCTAVE_INSTALL_MS_INT_CMP_OPS (ms, TYPE ## _, TYPE ## _) \
   OCTAVE_INSTALL_MS_INT_CMP_OPS (mx, TYPE ## _, ) \
   OCTAVE_INSTALL_MS_INT_CMP_OPS (mxs, , TYPE ## _) \
@@ -1100,7 +1100,7 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
   INSTALL_NCUNOP (op_decr, octave_ ## TYPE ## _matrix, m_decr); \
   INSTALL_NCUNOP (op_uminus, octave_ ## TYPE ## _matrix, m_changesign);
 
-#define OCTAVE_INSTALL_MM_INT_ARITH_OPS(PFX, T1, T2)			\
+#define OCTAVE_INSTALL_MM_INT_ARITH_OPS(PFX, T1, T2)                    \
   INSTALL_BINOP (op_add, octave_ ## T1 ## matrix, octave_ ## T2 ## matrix, PFX ## _add); \
   INSTALL_BINOP (op_sub, octave_ ## T1 ## matrix, octave_ ## T2 ## matrix, PFX ## _sub); \
   /* INSTALL_BINOP (op_mul, octave_ ## T1 ## matrix, octave_ ## T2 ## matrix, PFX ## _mul); */ \
@@ -1141,9 +1141,9 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
   OCTAVE_INSTALL_M_INT_UNOPS (TYPE) \
   OCTAVE_INSTALL_MM_INT_ARITH_OPS (mm, TYPE ##_, TYPE ## _) \
   OCTAVE_INSTALL_MM_INT_ARITH_OPS (mmx, TYPE ##_, ) \
-  OCTAVE_INSTALL_MM_INT_ARITH_OPS (mxm, , TYPE ##_)	   \
+  OCTAVE_INSTALL_MM_INT_ARITH_OPS (mxm, , TYPE ##_)        \
   OCTAVE_INSTALL_MM_INT_ARITH_OPS (mmfx, TYPE ##_, float_) \
-  OCTAVE_INSTALL_MM_INT_ARITH_OPS (mfxm, float_, TYPE ##_)	   \
+  OCTAVE_INSTALL_MM_INT_ARITH_OPS (mfxm, float_, TYPE ##_)         \
   OCTAVE_INSTALL_MM_INT_CMP_OPS (mm, TYPE ## _, TYPE ## _) \
   OCTAVE_INSTALL_MM_INT_CMP_OPS (mmx, TYPE ## _, ) \
   OCTAVE_INSTALL_MM_INT_CMP_OPS (mxm, , TYPE ## _) \

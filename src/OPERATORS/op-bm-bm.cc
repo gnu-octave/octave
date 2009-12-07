@@ -1,7 +1,7 @@
 /*
 
 Copyright (C) 1996, 1997, 1998, 2000, 2002, 2003, 2004, 2005, 2006,
-              2007, 2008 John W. Eaton
+              2007, 2008, 2009 John W. Eaton
 
 This file is part of Octave.
 
@@ -76,22 +76,22 @@ DEFNDBINOP_FN (eq, bool_matrix, bool_matrix, bool_array, bool_array, mx_el_eq)
 DEFNDBINOP_FN (ne, bool_matrix, bool_matrix, bool_array, bool_array, mx_el_ne)
 
 DEFNDBINOP_FN (el_and, bool_matrix, bool_matrix, bool_array, bool_array,
-	       mx_el_and)
+               mx_el_and)
 
 DEFNDBINOP_FN (el_or,  bool_matrix, bool_matrix, bool_array, bool_array,
-	       mx_el_or)
+               mx_el_or)
 
 DEFNDBINOP_FN (el_not_and, bool_matrix, bool_matrix, bool_array, bool_array,
-	       mx_el_not_and)
+               mx_el_not_and)
 
 DEFNDBINOP_FN (el_not_or,  bool_matrix, bool_matrix, bool_array, bool_array,
-	       mx_el_not_or)
+               mx_el_not_or)
 
 DEFNDBINOP_FN (el_and_not, bool_matrix, bool_matrix, bool_array, bool_array,
-	       mx_el_and_not)
+               mx_el_and_not)
 
 DEFNDBINOP_FN (el_or_not,  bool_matrix, bool_matrix, bool_array, bool_array,
-	       mx_el_or_not)
+               mx_el_or_not)
 
 DEFNDCATOP_FN (bm_bm, bool_matrix, bool_matrix, bool_array, bool_array, concat)
 DEFNDCATOP_FN (bm_m, bool_matrix, matrix, array, array, concat)
@@ -107,8 +107,8 @@ DEFNULLASSIGNOP_FN (null_assign, bool_matrix, delete_elements)
 
 static octave_value
 oct_assignop_conv_and_assign (octave_base_value& a1,
-			      const octave_value_list& idx,
-			      const octave_base_value& a2)
+                              const octave_value_list& idx,
+                              const octave_base_value& a2)
 {
   octave_bool_matrix& v1 = dynamic_cast<octave_bool_matrix&> (a1);
 

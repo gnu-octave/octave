@@ -1,7 +1,7 @@
 /*
 
 Copyright (C) 1996, 1997, 1998, 2000, 2002, 2003, 2004, 2005, 2006,
-              2007, 2008 John W. Eaton
+              2007, 2008, 2009 John W. Eaton
 
 This file is part of Octave.
 
@@ -85,7 +85,7 @@ DEFBINOP (div, complex_matrix, complex_matrix)
   MatrixType typ = v2.matrix_type ();
   
   ComplexMatrix ret = xdiv (v1.complex_matrix_value (), 
-			    v2.complex_matrix_value (), typ);
+                            v2.complex_matrix_value (), typ);
 
   v2.matrix_type (typ);
   return ret;
@@ -103,7 +103,7 @@ DEFBINOP (ldiv, complex_matrix, complex_matrix)
   MatrixType typ = v1.matrix_type ();
   
   ComplexMatrix ret = xleftdiv (v1.complex_matrix_value (), 
-				v2.complex_matrix_value (), typ);
+                                v2.complex_matrix_value (), typ);
 
   v1.matrix_type (typ);
   return ret;
@@ -147,7 +147,7 @@ DEFBINOP (trans_ldiv, complex_matrix, complex_matrix)
   MatrixType typ = v1.matrix_type ();
   
   ComplexMatrix ret = xleftdiv (v1.complex_matrix_value (), 
-				v2.complex_matrix_value (), typ, blas_trans);
+                                v2.complex_matrix_value (), typ, blas_trans);
 
   v1.matrix_type (typ);
   return ret;
@@ -159,7 +159,7 @@ DEFBINOP (herm_ldiv, complex_matrix, complex_matrix)
   MatrixType typ = v1.matrix_type ();
   
   ComplexMatrix ret = xleftdiv (v1.complex_matrix_value (), 
-				v2.complex_matrix_value (), typ, blas_conj_trans);
+                                v2.complex_matrix_value (), typ, blas_conj_trans);
 
   v1.matrix_type (typ);
   return ret;
@@ -257,7 +257,7 @@ install_cm_cm_ops (void)
   INSTALL_ASSIGNOP (op_el_div_eq, octave_complex_matrix, octave_complex_matrix, assign_el_div);
 
   INSTALL_CONVOP (octave_complex_matrix, octave_float_complex_matrix, 
-		  complex_matrix_to_float_complex_matrix);
+                  complex_matrix_to_float_complex_matrix);
 }
 
 /*

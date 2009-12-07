@@ -1,7 +1,7 @@
 /*
 
 Copyright (C) 1996, 1997, 2000, 2001, 2002, 2003, 2004, 2005, 2006,
-              2007 John W. Eaton
+              2007, 2009 John W. Eaton
 
 This file is part of Octave.
 
@@ -64,7 +64,7 @@ DEFBINOP (div, complex_matrix, matrix)
   MatrixType typ = v2.matrix_type ();
   
   ComplexMatrix ret = xdiv (v1.complex_matrix_value (), 
-			    v2.matrix_value (), typ);
+                            v2.matrix_value (), typ);
 
   v2.matrix_type (typ);
   return ret;
@@ -83,7 +83,7 @@ DEFBINOP (ldiv, complex_matrix, matrix)
   MatrixType typ = v1.matrix_type ();
   
   ComplexMatrix ret = xleftdiv (v1.complex_matrix_value (), 
-				v2.matrix_value (), typ);
+                                v2.matrix_value (), typ);
 
   v1.matrix_type (typ);
   return ret;

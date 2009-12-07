@@ -1,7 +1,7 @@
 /*
 
 Copyright (C) 1996, 1997, 2000, 2001, 2002, 2003, 2004, 2005, 2006,
-              2007, 2008 John W. Eaton
+              2007, 2008, 2009 John W. Eaton
 
 This file is part of Octave.
 
@@ -72,24 +72,24 @@ DEFBINOP (ldiv, float_complex, float_complex_matrix)
 }
 
 DEFNDCMPLXCMPOP_FN (lt, float_complex, float_complex_matrix, float_complex, 
-	       float_complex_array, mx_el_lt)
+               float_complex_array, mx_el_lt)
 DEFNDCMPLXCMPOP_FN (le, float_complex, float_complex_matrix, float_complex, 
-	       float_complex_array, mx_el_le)
+               float_complex_array, mx_el_le)
 DEFNDCMPLXCMPOP_FN (eq, float_complex, float_complex_matrix, float_complex, 
-	       float_complex_array, mx_el_eq)
+               float_complex_array, mx_el_eq)
 DEFNDCMPLXCMPOP_FN (ge, float_complex, float_complex_matrix, float_complex, 
-	       float_complex_array, mx_el_ge)
+               float_complex_array, mx_el_ge)
 DEFNDCMPLXCMPOP_FN (gt, float_complex, float_complex_matrix, float_complex, 
-	       float_complex_array, mx_el_gt)
+               float_complex_array, mx_el_gt)
 DEFNDCMPLXCMPOP_FN (ne, float_complex, float_complex_matrix, float_complex, 
-	       float_complex_array, mx_el_ne)
+               float_complex_array, mx_el_ne)
 
 DEFNDBINOP_OP (el_mul, float_complex, float_complex_matrix, float_complex, 
-	       float_complex_array, *)
+               float_complex_array, *)
 DEFNDBINOP_FN (el_div, float_complex, float_complex_matrix, float_complex, 
-	       float_complex_array, x_el_div)
+               float_complex_array, x_el_div)
 DEFNDBINOP_FN (el_pow, float_complex, float_complex_matrix, float_complex, 
-	       float_complex_array, elem_xpow)
+               float_complex_array, elem_xpow)
 
 DEFBINOP (el_ldiv, float_complex, float_complex_matrix)
 {

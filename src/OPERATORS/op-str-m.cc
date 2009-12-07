@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2003, 2004, 2005, 2007 John W. Eaton
+Copyright (C) 2003, 2004, 2005, 2007, 2009 John W. Eaton
 
 This file is part of Octave.
 
@@ -38,7 +38,7 @@ DEFASSIGNOP (assign, char_matrix_str, octave_matrix)
 
   octave_value tmp
     = v2.convert_to_str_internal (false, false,
-				  a1.is_sq_string () ? '\'' : '"');
+                                  a1.is_sq_string () ? '\'' : '"');
 
   if (! error_state)
     v1.assign (idx, tmp.char_matrix_value ());

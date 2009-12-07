@@ -76,7 +76,7 @@ DEFBINOP (ldiv, sparse_matrix, complex)
       double d = v1.scalar_value ();
 
       if (d == 0.0)
-	gripe_divide_by_zero ();
+        gripe_divide_by_zero ();
 
       return octave_value (SparseComplexMatrix (1, 1, v2.complex_value () / d));
     }
@@ -122,7 +122,7 @@ DEFBINOP (el_ldiv, sparse_matrix, complex)
   CAST_BINOP_ARGS (const octave_sparse_matrix&, const octave_complex&);
 
   return octave_value (x_el_div (v2.complex_value (), 
-				 v1.sparse_matrix_value ()));
+                                 v1.sparse_matrix_value ()));
 }
 
 DEFBINOP_FN (el_and, sparse_matrix, complex, mx_el_and)
@@ -161,7 +161,7 @@ install_sm_cs_ops (void)
   INSTALL_CATOP (octave_sparse_matrix, octave_complex, sm_cs);
 
   INSTALL_ASSIGNCONV (octave_sparse_matrix, octave_complex,
-		      octave_sparse_complex_matrix);
+                      octave_sparse_complex_matrix);
 }
 
 /*

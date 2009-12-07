@@ -78,7 +78,7 @@ DEFBINOP (ldiv, sparse_matrix, scalar)
       double d = v1.scalar_value ();
 
       if (d == 0.0)
-	gripe_divide_by_zero ();
+        gripe_divide_by_zero ();
 
       return octave_value (SparseMatrix(1, 1, v2.scalar_value () / d));
     }

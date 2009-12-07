@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996, 1997, 2000, 2002, 2003, 2004, 2005, 2007, 2008
+Copyright (C) 1996, 1997, 2000, 2002, 2003, 2004, 2005, 2007, 2008, 2009
               John W. Eaton
 
 This file is part of Octave.
@@ -111,7 +111,7 @@ DEFBINOP (el_and, float_complex, float)
   CAST_BINOP_ARGS (const octave_float_complex&, const octave_float_scalar&);
 
   return (v1.float_complex_value () != static_cast<float>(0.0) && 
-	  v2.float_value ());
+          v2.float_value ());
 }
 
 DEFBINOP (el_or, float_complex, float)
@@ -119,17 +119,17 @@ DEFBINOP (el_or, float_complex, float)
   CAST_BINOP_ARGS (const octave_float_complex&, const octave_float_scalar&);
 
   return (v1.float_complex_value () != static_cast<float>(0.0) || 
-	  v2.float_value ());
+          v2.float_value ());
 }
 
 DEFNDCATOP_FN (fcs_fs, float_complex, float_scalar, float_complex_array, 
-	       float_array, concat)
+               float_array, concat)
 
 DEFNDCATOP_FN (cs_fs, complex, float_scalar, float_complex_array, 
-	       float_array, concat)
+               float_array, concat)
 
 DEFNDCATOP_FN (fcs_s, float_complex, scalar, float_complex_array, 
-	       float_array, concat)
+               float_array, concat)
 
 void
 install_fcs_fs_ops (void)
@@ -158,9 +158,9 @@ install_fcs_fs_ops (void)
   INSTALL_CATOP (octave_float_complex, octave_scalar, fcs_s);
 
   INSTALL_ASSIGNCONV (octave_float_complex, octave_float_scalar, 
-		      octave_float_complex_matrix);
+                      octave_float_complex_matrix);
   INSTALL_ASSIGNCONV (octave_complex, octave_float_scalar, 
-		      octave_complex_matrix);
+                      octave_complex_matrix);
 }
 
 /*

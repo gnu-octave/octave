@@ -1,6 +1,7 @@
 /*
 
-Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008 Cai Jianming
+Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009
+              Cai Jianming
 
 This file is part of Octave.
 
@@ -65,8 +66,8 @@ DEFNDASSIGNOP_FN (assign, bool_matrix, bool, bool_array, assign)
 
 static octave_value
 oct_assignop_conv_and_assign (octave_base_value& a1,
-			      const octave_value_list& idx,
-			      const octave_base_value& a2)
+                              const octave_value_list& idx,
+                              const octave_base_value& a2)
 {
   octave_bool_matrix& v1 = dynamic_cast<octave_bool_matrix&> (a1);
 

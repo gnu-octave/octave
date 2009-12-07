@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996, 1997, 2004, 2005, 2007, 2008 John W. Eaton
+Copyright (C) 1996, 1997, 2004, 2005, 2007, 2008, 2009 John W. Eaton
 
 This file is part of Octave.
 
@@ -51,7 +51,7 @@ DEFNDCATOP_FN (struct_struct, struct, struct, map, map, concat)
 
 static octave_value
 oct_catop_struct_matrix (octave_base_value& a1, const octave_base_value& a2,
-			 const Array<octave_idx_type>&)
+                         const Array<octave_idx_type>&)
 {
   octave_value retval;
   CAST_BINOP_ARGS (const octave_struct&, const octave_matrix&);
@@ -66,7 +66,7 @@ oct_catop_struct_matrix (octave_base_value& a1, const octave_base_value& a2,
 
 static octave_value
 oct_catop_matrix_struct (octave_base_value& a1, const octave_base_value& a2,
-			 const Array<octave_idx_type>&)
+                         const Array<octave_idx_type>&)
 {
   octave_value retval;
   CAST_BINOP_ARGS (const octave_matrix&, const octave_struct&);

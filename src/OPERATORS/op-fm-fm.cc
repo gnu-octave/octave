@@ -1,7 +1,7 @@
 /*
 
 Copyright (C) 1996, 1997, 1998, 2000, 2001, 2002, 2003, 2004, 2005,
-              2006, 2007, 2008 John W. Eaton
+              2006, 2007, 2008, 2009 John W. Eaton
 
 This file is part of Octave.
 
@@ -72,7 +72,7 @@ DEFBINOP (div, float_matrix, float_matrix)
   MatrixType typ = v2.matrix_type ();
   
   FloatMatrix ret = xdiv (v1.float_matrix_value (), 
-			  v2.float_matrix_value (), typ);
+                          v2.float_matrix_value (), typ);
 
   v2.matrix_type (typ);
   return ret;
@@ -90,7 +90,7 @@ DEFBINOP (ldiv, float_matrix, float_matrix)
   MatrixType typ = v1.matrix_type ();
   
   FloatMatrix ret = xleftdiv (v1.float_matrix_value (), 
-			      v2.float_matrix_value (), typ);
+                              v2.float_matrix_value (), typ);
 
   v1.matrix_type (typ);
   return ret;
@@ -118,57 +118,57 @@ DEFBINOP (trans_ldiv, float_matrix, float_matrix)
   MatrixType typ = v1.matrix_type ();
   
   FloatMatrix ret = xleftdiv (v1.float_matrix_value (), 
-			      v2.float_matrix_value (), typ, blas_trans);
+                              v2.float_matrix_value (), typ, blas_trans);
 
   v1.matrix_type (typ);
   return ret;
 }
 
 DEFNDBINOP_FN (lt, float_matrix, float_matrix, float_array, 
-	       float_array, mx_el_lt)
+               float_array, mx_el_lt)
 DEFNDBINOP_FN (le, float_matrix, float_matrix, float_array, 
-	       float_array, mx_el_le)
+               float_array, mx_el_le)
 DEFNDBINOP_FN (eq, float_matrix, float_matrix, float_array, 
-	       float_array, mx_el_eq)
+               float_array, mx_el_eq)
 DEFNDBINOP_FN (ge, float_matrix, float_matrix, float_array, 
-	       float_array, mx_el_ge)
+               float_array, mx_el_ge)
 DEFNDBINOP_FN (gt, float_matrix, float_matrix, float_array, 
-	       float_array, mx_el_gt)
+               float_array, mx_el_gt)
 DEFNDBINOP_FN (ne, float_matrix, float_matrix, float_array, 
-	       float_array, mx_el_ne)
+               float_array, mx_el_ne)
 
 DEFNDBINOP_FN (el_mul, float_matrix, float_matrix, float_array, 
-	       float_array, product)
+               float_array, product)
 DEFNDBINOP_FN (el_div, float_matrix, float_matrix, float_array, 
-	       float_array, quotient)
+               float_array, quotient)
 DEFNDBINOP_FN (el_pow, float_matrix, float_matrix, float_array, 
-	       float_array, elem_xpow)
+               float_array, elem_xpow)
 
 DEFBINOP (el_ldiv, float_matrix, float_matrix)
 {
   CAST_BINOP_ARGS (const octave_float_matrix&, const octave_float_matrix&);
 
   return octave_value (quotient (v2.float_array_value (), 
-				 v1.float_array_value ()));
+                                 v1.float_array_value ()));
 }
 
 DEFNDBINOP_FN (el_and, float_matrix, float_matrix, float_array, 
-	       float_array, mx_el_and)
+               float_array, mx_el_and)
 DEFNDBINOP_FN (el_or,  float_matrix, float_matrix, float_array, 
-	       float_array, mx_el_or)
+               float_array, mx_el_or)
 DEFNDBINOP_FN (el_not_and, float_matrix, float_matrix, float_array, 
-	       float_array, mx_el_not_and)
+               float_array, mx_el_not_and)
 DEFNDBINOP_FN (el_not_or,  float_matrix, float_matrix, float_array, 
-	       float_array, mx_el_not_or)
+               float_array, mx_el_not_or)
 DEFNDBINOP_FN (el_and_not, float_matrix, float_matrix, float_array, 
-	       float_array, mx_el_and_not)
+               float_array, mx_el_and_not)
 DEFNDBINOP_FN (el_or_not,  float_matrix, float_matrix, float_array, 
-	       float_array, mx_el_or_not)
+               float_array, mx_el_or_not)
 
 
 
 DEFNDCATOP_FN (fm_fm, float_matrix, float_matrix, float_array, 
-	       float_array, concat)
+               float_array, concat)
 
 DEFNDCATOP_FN (m_fm, matrix, float_matrix, float_array, float_array, concat)
 
@@ -239,9 +239,9 @@ install_fm_fm_ops (void)
   INSTALL_CATOP (octave_float_matrix, octave_matrix, fm_m);
 
   INSTALL_ASSIGNOP (op_asn_eq, octave_float_matrix, 
-		    octave_float_matrix, assign);
+                    octave_float_matrix, assign);
   INSTALL_ASSIGNOP (op_asn_eq, octave_matrix, 
-		    octave_float_matrix, dbl_assign);
+                    octave_float_matrix, dbl_assign);
 
   INSTALL_ASSIGNOP (op_asn_eq, octave_float_matrix, octave_null_matrix, null_assign);
   INSTALL_ASSIGNOP (op_asn_eq, octave_float_matrix, octave_null_str, null_assign);

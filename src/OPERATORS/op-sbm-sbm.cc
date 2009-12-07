@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004, 2005, 2007 David Bateman
+Copyright (C) 2004, 2005, 2007, 2009 David Bateman
 Copyright (C) 1998, 1999, 2000, 2001, 2002, 2003, 2004 Andy Adler
 
 This file is part of Octave.
@@ -66,14 +66,14 @@ DEFBINOP_FN (el_and, sparse_bool_matrix, sparse_bool_matrix, mx_el_and)
 DEFBINOP_FN (el_or,  sparse_bool_matrix, sparse_bool_matrix, mx_el_or)
 
 DEFNDCATOP_FN (sbm_sbm, sparse_bool_matrix, sparse_bool_matrix, 
-	       sparse_bool_matrix, sparse_bool_matrix, concat)
+               sparse_bool_matrix, sparse_bool_matrix, concat)
 DEFNDCATOP_FN (sbm_sm, sparse_bool_matrix, sparse_matrix, sparse_matrix, 
-	       sparse_matrix, concat)
+               sparse_matrix, concat)
 DEFNDCATOP_FN (sm_sbm, sparse_matrix, sparse_bool_matrix, sparse_matrix, 
-	       sparse_matrix, concat)
+               sparse_matrix, concat)
 
 DEFASSIGNOP_FN (assign, sparse_bool_matrix, sparse_bool_matrix, 
-		assign)
+                assign)
 
 CONVDECL (bool_matrix_to_double_matrix)
 {
@@ -92,25 +92,25 @@ install_sbm_sbm_ops (void)
   INSTALL_UNOP (op_hermitian, octave_sparse_bool_matrix, transpose);
 
   INSTALL_BINOP (op_eq, octave_sparse_bool_matrix, 
-		 octave_sparse_bool_matrix, eq);
+                 octave_sparse_bool_matrix, eq);
   INSTALL_BINOP (op_ne, octave_sparse_bool_matrix, 
-		 octave_sparse_bool_matrix, ne);
+                 octave_sparse_bool_matrix, ne);
 
   INSTALL_BINOP (op_el_and, octave_sparse_bool_matrix, 
-		 octave_sparse_bool_matrix, el_and);
+                 octave_sparse_bool_matrix, el_and);
   INSTALL_BINOP (op_el_or, octave_sparse_bool_matrix, 
-		 octave_sparse_bool_matrix, el_or);
+                 octave_sparse_bool_matrix, el_or);
 
   INSTALL_CATOP (octave_sparse_bool_matrix, octave_sparse_bool_matrix, 
-		 sbm_sbm);
+                 sbm_sbm);
   INSTALL_CATOP (octave_sparse_bool_matrix, octave_sparse_matrix, sbm_sm);
   INSTALL_CATOP (octave_sparse_matrix, octave_sparse_bool_matrix, sm_sbm);
 
   INSTALL_ASSIGNOP (op_asn_eq, octave_sparse_bool_matrix, 
-		    octave_sparse_bool_matrix, assign); 
+                    octave_sparse_bool_matrix, assign); 
 
   INSTALL_CONVOP (octave_sparse_bool_matrix, octave_sparse_matrix, 
-		  bool_matrix_to_double_matrix);
+                  bool_matrix_to_double_matrix);
 }
 
 /*

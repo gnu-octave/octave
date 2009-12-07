@@ -134,7 +134,7 @@ DEFBINOP (div_sm_dm, sparse_matrix, diag_matrix)
       double d = v2.scalar_value ();
 
       if (d == 0.0)
-	gripe_divide_by_zero ();
+        gripe_divide_by_zero ();
 
       return octave_value (v1.sparse_matrix_value () / d);
     }
@@ -181,14 +181,14 @@ void
 install_dm_sm_ops (void)
 {
   INSTALL_BINOP (op_mul, octave_diag_matrix, octave_sparse_matrix,
-		 mul_dm_sm);
+                 mul_dm_sm);
 
   INSTALL_BINOP (op_add, octave_diag_matrix, octave_sparse_matrix, add_dm_sm);
   INSTALL_BINOP (op_sub, octave_diag_matrix, octave_sparse_matrix, sub_dm_sm);
   INSTALL_BINOP (op_ldiv, octave_diag_matrix, octave_sparse_matrix, ldiv_dm_sm);
 
   INSTALL_BINOP (op_mul, octave_sparse_matrix, octave_diag_matrix,
-		 mul_sm_dm);
+                 mul_sm_dm);
 
   INSTALL_BINOP (op_add, octave_sparse_matrix, octave_diag_matrix, add_sm_dm);
   INSTALL_BINOP (op_sub, octave_sparse_matrix, octave_diag_matrix, sub_sm_dm);

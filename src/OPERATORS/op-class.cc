@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2007, 2008 John W. Eaton
+Copyright (C) 2007, 2008, 2009 John W. Eaton
 
 This file is part of Octave.
 
@@ -50,14 +50,14 @@ along with Octave; see the file COPYING.  If not, see
  \
     if (meth.is_defined ()) \
       { \
-	octave_value_list args; \
+        octave_value_list args; \
  \
-	args(0) = a; \
+        args(0) = a; \
  \
-	octave_value_list tmp = feval (meth.function_value (), args, 1); \
+        octave_value_list tmp = feval (meth.function_value (), args, 1); \
  \
-	if (tmp.length () > 0) \
-	  retval = tmp(0); \
+        if (tmp.length () > 0) \
+          retval = tmp(0); \
       } \
     else \
       error ("%s method not defined for %s class", \
@@ -87,15 +87,15 @@ DEF_CLASS_UNOP (ctranspose)
  \
     if (meth.is_defined ()) \
       { \
-	octave_value_list args; \
+        octave_value_list args; \
  \
-	args(1) = a2; \
-	args(0) = a1; \
+        args(1) = a2; \
+        args(0) = a1; \
  \
-	octave_value_list tmp = feval (meth.function_value (), args, 1); \
+        octave_value_list tmp = feval (meth.function_value (), args, 1); \
  \
-	if (tmp.length () > 0) \
-	  retval = tmp(0); \
+        if (tmp.length () > 0) \
+          retval = tmp(0); \
       } \
     else \
       error ("%s method not defined for %s class", \

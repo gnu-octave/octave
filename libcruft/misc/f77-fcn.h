@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996, 1997, 2002, 2003, 2004, 2005, 2006, 2007, 2008
+Copyright (C) 1996, 1997, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009
               John W. Eaton
 
 This file is part of Octave.
@@ -57,19 +57,19 @@ extern "C" {
       f77_exception_encountered = 0; \
       octave_save_current_context (saved_context); \
       if (octave_set_current_context) \
-	{ \
-	  octave_interrupt_immediately = saved_octave_interrupt_immediately; \
+        { \
+          octave_interrupt_immediately = saved_octave_interrupt_immediately; \
           octave_restore_current_context (saved_context); \
-	  if (f77_exception_encountered) \
-	    F77_XFCN_ERROR (f, F); \
+          if (f77_exception_encountered) \
+            F77_XFCN_ERROR (f, F); \
           else \
-	    octave_rethrow_exception (); \
-	} \
+            octave_rethrow_exception (); \
+        } \
       else \
         { \
-	  octave_interrupt_immediately++; \
-	  F77_FUNC (f, F) args; \
-	  octave_interrupt_immediately--; \
+          octave_interrupt_immediately++; \
+          F77_FUNC (f, F) args; \
+          octave_interrupt_immediately--; \
           octave_restore_current_context (saved_context); \
         } \
     } \
@@ -221,7 +221,7 @@ octave_make_cray_const_ftn_ch_dsc (const char *ptr_arg, unsigned long len_arg)
 
 extern CRUFT_API F77_RET_T
 F77_FUNC (xstopx, XSTOPX) (F77_CONST_CHAR_ARG_DECL
-			   F77_CHAR_ARG_LEN_DECL) GCC_ATTR_NORETURN;
+                           F77_CHAR_ARG_LEN_DECL) GCC_ATTR_NORETURN;
 
 #ifdef __cplusplus
 }

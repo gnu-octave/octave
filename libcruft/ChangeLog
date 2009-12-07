@@ -1,3 +1,7 @@
+2009-12-07  John W. Eaton  <jwe@octave.org>
+
+	* misc/cquit.c, misc/f77-fcn.h, misc/quit.h: Untabify.
+
 2009-12-03  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.am (DISTCLEANFILES): New variable.

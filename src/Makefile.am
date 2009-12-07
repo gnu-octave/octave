@@ -72,6 +72,7 @@ EXTRA_DIST = \
   ChangeLog \
   Makefile.in \
   defaults.h.in \
+  DOCSTRINGS \
   find-defun-files.sh \
   genprops.awk \
   graphics.h.in \
@@ -621,7 +622,7 @@ DLD-FUNCTIONS/PKG_ADD: $(DLD_DYNAMIC_DEF_FILES) mk-pkg-add
 
 DOCSTRINGS: gendoc$(BUILD_EXEEXT)
 	./gendoc > $@-t
-	mv $@-t $@
+	$(simple_move_if_change_rule)
 
 doc-files: $(DEF_FILES)
 	echo $(DEF_FILES) > $@-t

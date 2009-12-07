@@ -28,6 +28,7 @@ AUTOMAKE_OPTIONS = subdir-objects
 FCN_FILE_DIRS =
 
 EXTRA_DIST = \
+  DOCSTRINGS \
   gethelp.cc \
   mkdoc \
   mk-pkg-add

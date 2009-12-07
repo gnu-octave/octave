@@ -42,21 +42,25 @@ EOF
     if [ "$arg" = "--" ]; then
       prefix=""
     else
-      echo "$prefix$arg" | $PERL -n -e 'chop;
-	$f = "$_";
-        next unless m{(.*)/(@|)([^/]*)/(.*)\.m};
-        $fcn = "$4";
-        if ($2) {
-          $fcn = "$2$3/$fcn";
-        }
-	for (qx{./gethelp $fcn "$f" < "$f"}) {
-	  s/^\s+\@/\@/ unless $i_am_in_example;
+      $PERL -w -e '
+	unless (@ARGV == 2) { die "Usage: $0 srcdir m_filename" ; }
+	($srcdir, $m_fname) = ($ARGV[0], $ARGV[1]);
+	$full_fname = $srcdir . $m_fname;
+	exit unless ( $full_fname =~ m{(.*)/(@|)([^/]*)/(.*)\.m} );
+	if ($2) {
+	  $fcn = "$2$3/$4";
+	} else {
+	  $fcn = $4;
+	}
+	$re_srcdir = quotemeta($srcdir);
+	for (qx{ ./gethelp $fcn "$full_fname" < "$full_fname"} ) {
+	  s/^\s+\@/\@/ unless $in_example;
 	  s/^\s+\@group/\@group/;
-	  s/^\s+\@end\s+group/\@end\s+group/;
-	  $i_am_in_example = 1 if /\s*\@example/;
-	  $i_am_in_example = 0 if /\s*\@end\s+example/;
+	  s/^\s+\@end\s+group/\@end group/;
+	  s|\@c $re_srcdir|\@c scripts/|o;
+	  $in_example = (/\s*\@example\b/ .. /\s*\@end\s+example\b/);
 	  print;
-	}'
+	}' "$prefix" "$arg"
     fi
   done
 else

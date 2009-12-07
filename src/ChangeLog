@@ -1,3 +1,8 @@
+2009-12-06  Rik <rik@nomad.inbox5.com>
+
+	* Makefile.am: Distribute DOCSTRINGS so that documentation will not require
+	rebuild after merely untarring a distribution.
+
 2009-12-05  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/lookup.cc (Flookup): Document complexity.

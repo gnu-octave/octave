@@ -1,3 +1,12 @@
+2009-12-06  Rik <rik@nomad.inbox5.com>
+
+	* Makefile.am: Distribute DOCSTRINGS so that documentation will not require
+	rebuild after merely untarring a distribution.
+	* mkdoc: Change output to refer to mfiles as "scripts/..." rather than
+	"$srcdir/...".  Otherwise, distributed DOCSTRINGS file will not match
+	DOCSTRINGS created under a VPATH build and documentation will be
+	unnecessarily rebuilt.
+
 2009-12-05  Jaroslav Hajek  <highegg@gmail.com>
 
 	* set/ismember.m: Simplify.

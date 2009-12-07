@@ -479,7 +479,7 @@ SRC_DEF_FILES := $(shell $(srcdir)/find-defun-files.sh "$(srcdir)" $(DIST_SRC))
 
 DEF_FILES = $(SRC_DEF_FILES) $(DLD_DYNAMIC_DEF_FILES) $(DLD_STATIC_DEF_FILES)
 
-$(DEF_FILES): mkdefs Makefile
+$(DEF_FILES): mkdefs Makefile $(OPT_HANDLERS)
 
 if AMCOND_ENABLE_DYNAMIC_LINKING
   OCTAVE_LIBS = \

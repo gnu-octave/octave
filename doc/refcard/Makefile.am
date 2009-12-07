@@ -40,7 +40,12 @@ FORMATTED = \
   refcard-letter.pdf
 
 EXTRA_DIST = \
-  $(TEX) $(FORMATTED)
+  $(TEX) \
+  $(FORMATTED)
+
+CLEANFILES = refcard-a4.log refcard-legal.log refcard-letter.log
+
+MAINTAINERCLEANFILES = $(FORMATTED)
 
 all-local: $(FORMATTED)
 

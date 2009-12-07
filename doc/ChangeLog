@@ -1,3 +1,8 @@
+2009-12-07  Rik <octave@nomad.inbox5.com>
+
+	* refcard/Makefile.am: Add CLEANFILES and MAINTAINERCLEANFILES objects to
+	properly clean directory.
+
 2009-12-05  Rik <octave@nomad.inbox5.com>
 
 	* interpreter/Makefile.am: Set dependency of *.texi files on

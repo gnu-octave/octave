@@ -3,7 +3,7 @@
 
 void
 mexFunction (int nlhs, mxArray *plhs[], int nrhs, 
-	     const mxArray *prhs[])
+             const mxArray *prhs[])
 {
   mwIndex i, j;
   mwSize m, n;
@@ -17,7 +17,7 @@ mexFunction (int nlhs, mxArray *plhs[], int nrhs,
   n = mxGetN (prhs[0]);
   pi = mxGetChars (prhs[0]);
   plhs[0] = mxCreateNumericMatrix (m, n, mxCHAR_CLASS, 
-				   mxREAL);
+                                   mxREAL);
   po = mxGetChars (plhs[0]);
 
   for (j = 0; j < n; j++)

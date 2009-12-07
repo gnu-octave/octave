@@ -2,7 +2,7 @@
 
 void
 mexFunction (int nlhs, mxArray* plhs[], int nrhs, 
-	     const mxArray* prhs[])
+             const mxArray* prhs[])
 {
   mwIndex i;
   mwSize n;
@@ -26,14 +26,14 @@ mexFunction (int nlhs, mxArray* plhs[], int nrhs,
       vio = mxGetPi (plhs[0]);
 
       for (i = 0; i < n; i++)
-	{
-	  vro [i] = vri [i] * vri [i] - vii [i] * vii [i];
-	  vio [i] = 2 * vri [i] * vii [i];
-	}
+        {
+          vro [i] = vri [i] * vri [i] - vii [i] * vii [i];
+          vio [i] = 2 * vri [i] * vii [i];
+        }
     }
   else
     {
       for (i = 0; i < n; i++)
-	vro [i] = vri [i] * vri [i];
+        vro [i] = vri [i] * vri [i];
     }
 }

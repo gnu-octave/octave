@@ -2,7 +2,7 @@
 
 void
 mexFunction (int nlhs, mxArray *plhs[], int nrhs, 
-	     const mxArray *prhs[])
+             const mxArray *prhs[])
 {
   const char *nm;
   nm = mexFunctionName ();

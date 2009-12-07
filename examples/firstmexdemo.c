@@ -2,7 +2,7 @@
 
 void
 mexFunction (int nlhs, mxArray *plhs[], int nrhs, 
-	     const mxArray *prhs[])
+             const mxArray *prhs[])
 {
   mxArray *v = mxCreateDoubleMatrix (1, 1, mxREAL);
   double *data = mxGetPr (v);

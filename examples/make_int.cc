@@ -244,7 +244,7 @@ Creates an integer variable from VAL.")
       mlock ("make_int");
 
       octave_stdout << "installing integer type at type-id = "
-	   << octave_integer::static_type_id () << "\n";
+           << octave_integer::static_type_id () << "\n";
 
       INSTALL_UNOP (op_not, octave_integer, gnot);
       INSTALL_UNOP (op_uminus, octave_integer, uminus);
@@ -281,7 +281,7 @@ Creates an integer variable from VAL.")
       double d = args(0).double_value ();
 
       if (! error_state)
-	retval = octave_value (new octave_integer (NINT (d)));
+        retval = octave_value (new octave_integer (NINT (d)));
     }
   else
     usage ("make_int");

@@ -28,7 +28,7 @@ DEFUN_DLD (funcdemo, args, nargout, "Function Demo")
         }
       else
         error ("funcdemo: expected string,",
-	       " inline or function handle");
+               " inline or function handle");
     }
   return retval;
 }

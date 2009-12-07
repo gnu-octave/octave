@@ -2,14 +2,14 @@
 
 void
 mexFunction (int nlhs, mxArray* plhs[], int nrhs, 
-	     const mxArray* prhs[])
+             const mxArray* prhs[])
 {
   char *str;
 
   mexPrintf ("Hello, World!\n");
 
   mexPrintf ("I have %d inputs and %d outputs\n", nrhs,
-	     nlhs);
+             nlhs);
 
   if (nrhs < 1 || ! mxIsString (prhs[0])) 
     mexErrMsgTxt ("function name expected");

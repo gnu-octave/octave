@@ -23,7 +23,7 @@ DEFUN_DLD (stringdemo, args, , "String Demo")
             {
               std::string tmp = ch.row_as_string (i);
               ch.insert (ch.row_as_string(nr-i-1).c_str(), 
-			 i, 0);
+                         i, 0);
               ch.insert (tmp.c_str(), nr-i-1, 0);
             }
           retval(0) = octave_value (ch, true);

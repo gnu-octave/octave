@@ -18,7 +18,7 @@ DEFUN_DLD (structdemo, args, , "Struct demo.")
           // The following two lines might be written as
           //    octave_value tmp;
           //    for (Octave_map::iterator p0 = 
-	  //        arg0.begin(); 
+          //        arg0.begin(); 
           //        p0 != arg0.end(); p0++ )
           //      if (arg0.key (p0) == arg1)
           //        {

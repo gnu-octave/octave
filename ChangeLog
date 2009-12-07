@@ -1,3 +1,13 @@
+2009-12-07  John W. Eaton  <jwe@octave.org>
+
+	* examples/firstmexdemo.c, examples/fortdemo.cc,
+	examples/funcdemo.cc, examples/hello.cc, examples/make_int.cc,
+	examples/mycell.c, examples/myfeval.c, examples/myfunc.c,
+	examples/mypow2.c, examples/mysparse.c, examples/mystring.c,
+	examples/mystruct.c, examples/paramdemo.cc,
+	examples/stringdemo.cc, examples/structdemo.cc,
+	examples/unwinddemo.cc, examples/embedded.cc: Untabify.
+
 2009-12-04  John W. Eaton  <jwe@octave.org>
 
 	* configure.ac (OCTAVE_API_VERSION_NUMBER): New variable.

@@ -20,9 +20,9 @@ main (void)
     {
       a_matrix (i) = 5 * (i + 1); 
       if (i != 0)
-	std::cout << ", " << 5 * (i + 2);
+        std::cout << ", " << 5 * (i + 2);
       else
-	std::cout << 5 * (i + 2);
+        std::cout << 5 * (i + 2);
     }
   std::cout << "] is ";
 
@@ -33,9 +33,9 @@ main (void)
     {
       a_matrix = out(0).matrix_value ();
       if (a_matrix.numel () == 1)
-	std::cout << a_matrix(0) << "\n";
+        std::cout << a_matrix(0) << "\n";
       else
-	std::cout << "invalid\n";
+        std::cout << "invalid\n";
     }
   else
     std::cout << "invalid\n";

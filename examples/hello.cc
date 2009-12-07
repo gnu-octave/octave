@@ -33,12 +33,12 @@
 // Currently, this includes the files
 //
 //   balance.cc  fft.cc      ifft.cc     minmax.cc   sort.cc
-//   chol.cc	 fft2.cc     ifft2.cc    pinv.cc     svd.cc
+//   chol.cc     fft2.cc     ifft2.cc    pinv.cc     svd.cc
 //   colloc.cc   filter.cc   inv.cc      qr.cc       syl.cc
 //   dassl.cc    find.cc     log.cc      quad.cc
-//   det.cc	 fsolve.cc   lsode.cc    qzval.cc
-//   eig.cc	 givens.cc   lu.cc       rand.cc
-//   expm.cc	 hess.cc     minmax.cc   schur.cc
+//   det.cc      fsolve.cc   lsode.cc    qzval.cc
+//   eig.cc      givens.cc   lu.cc       rand.cc
+//   expm.cc     hess.cc     minmax.cc   schur.cc
 //
 // The difference between DEFUN_DLD and DEFUN_DLD_BUILTIN is that
 // DEFUN_DLD_BUILTIN can define a built-in function that is not

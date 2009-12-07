@@ -54,4 +54,6 @@ EXTRA_DIST = liboctave.dvi liboctave.html liboctave.pdf liboctave.ps
 
 liboctave.info liboctave.dvi liboctave.html liboctave.pdf: $(srcdir)/version.texi
 
+## Automake generated rules for documentation are not parallel-safe.
+## Restrict current directory to run serially
 .NOTPARALLEL:

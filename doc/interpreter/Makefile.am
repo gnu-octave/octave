@@ -212,4 +212,6 @@ DISTCLEANFILES = $(octave_TEXINFOS) doc-cache munge-texi$(BUILD_EXEEXT)
 
 MAINTAINERCLEANFILES = $(IMAGES)
 
+## Automake generated rules for documentation are not parallel-safe.
+## Restrict current directory to run serially
 .NOTPARALLEL:

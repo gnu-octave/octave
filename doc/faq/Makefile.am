@@ -31,4 +31,6 @@ all-local: dvi html pdf ps
 
 EXTRA_DIST = OctaveFAQ.dvi OctaveFAQ.html OctaveFAQ.pdf OctaveFAQ.ps
 
+## Automake generated rules for documentation are not parallel-safe.
+## Restrict current directory to run serially
 .NOTPARALLEL:

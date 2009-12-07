@@ -39,19 +39,17 @@ function yi = interp1q (x, y, xi)
   x = x(:);
   nx = size (x, 1);
   szy = size (y);
-  ny = szy (1);
-  nc = prod (szy (2 : end));
-  y = reshape (y, ny, nc);
+  y = y(:,:);
+  [ny, nc] = size (y);
   szx = size (xi);
   xi = xi (:);
-  range = find (xi >= x (1) & xi <= x (nx));
-  yi = NA (size(xi, 1), size (y, 2));
-  xi = xi (range);
-  dy = y (2 : ny, :) - y (1 : ny - 1, :);
-  dx = x (2 : nx) - x (1 : nx - 1);
+  dy = diff (y);
+  dx = diff (x);
   idx = lookup (x, xi, "lr");
   s = (xi - x (idx)) ./ dx (idx);
-  yi (range, :) = s (:, ones (1, nc)) .* dy (idx, :) + y (idx, :);
+  yi = bsxfun (@times, s, dy(idx,:)) + y(idx,:);
+  range = xi < x(1) | !(xi <= x(nx));
+  yi(range,:) = NA;
   if (length (szx) == 2 && any (szx == 1))
     yi = reshape (yi, [max(szx), szy(2:end)]);
   else

@@ -103,9 +103,3 @@ install_cell_ops (void)
   INSTALL_ASSIGNOP (op_asn_eq, octave_cell, octave_null_str, null_assign);
   INSTALL_ASSIGNOP (op_asn_eq, octave_cell, octave_null_sq_str, null_assign);
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

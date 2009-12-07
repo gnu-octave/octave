@@ -254,9 +254,3 @@ install_fm_fm_ops (void)
 
   INSTALL_CONVOP (octave_float_matrix, octave_matrix, float_matrix_to_matrix);
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

@@ -63,9 +63,3 @@ F77_FUNC (xstopx, XSTOPX) (const char *s, long slen)
 
   F77_RETURN (0)
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

@@ -222,9 +222,3 @@ install_m_m_ops (void)
 
   INSTALL_CONVOP (octave_matrix, octave_float_matrix, matrix_to_float_matrix);
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

@@ -1,5 +1,11 @@
 2009-12-07  John W. Eaton  <jwe@octave.org>
 
+	* examples/make_int.cc: Delete Emacs local variables.
+
+	* .dir-locals.el: New file.
+
+2009-12-07  John W. Eaton  <jwe@octave.org>
+
 	* examples/firstmexdemo.c, examples/fortdemo.cc,
 	examples/funcdemo.cc, examples/hello.cc, examples/make_int.cc,
 	examples/mycell.c, examples/myfeval.c, examples/myfunc.c,

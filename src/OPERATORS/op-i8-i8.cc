@@ -147,9 +147,3 @@ install_i8_i8_ops (void)
   OCTAVE_INSTALL_MIXED_INT_CMP_OPS (int8, int64);
   OCTAVE_INSTALL_MIXED_INT_CMP_OPS (int8, uint64);
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

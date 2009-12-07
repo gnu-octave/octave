@@ -33,10 +33,3 @@ along with Octave; see the file COPYING.  If not, see
 
 // So we can check to see if an exception has occurred.
 int f77_exception_encountered = 0;
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
-;;; End: ***
-*/

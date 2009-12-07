@@ -1,5 +1,11 @@
 2009-12-07  John W. Eaton  <jwe@octave.org>
 
+	* misc/f77-fcn.h, misc/lo-error.h, misc/quit.h,
+	misc/f77-extern.cc, misc/quit.cc, misc/cquit.c, misc/f77-fcn.c,
+	misc/lo-error.c: Remove Emacs local variable list.
+
+2009-12-07  John W. Eaton  <jwe@octave.org>
+
 	* misc/cquit.c, misc/f77-fcn.h, misc/quit.h: Untabify.
 
 2009-12-03  John W. Eaton  <jwe@octave.org>

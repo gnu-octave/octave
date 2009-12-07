@@ -183,9 +183,3 @@ install_fs_fs_ops (void)
 
   INSTALL_CONVOP (octave_float_scalar, octave_matrix, float_to_scalar);
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

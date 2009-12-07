@@ -187,9 +187,3 @@ install_scm_s_ops (void)
   INSTALL_ASSIGNOP (op_asn_eq, octave_sparse_complex_matrix, octave_scalar, 
                     assign);
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

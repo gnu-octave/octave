@@ -151,9 +151,3 @@ install_m_s_ops (void)
   INSTALL_ASSIGNOP (op_mul_eq, octave_matrix, octave_scalar, assign_mul);
   INSTALL_ASSIGNOP (op_div_eq, octave_matrix, octave_scalar, assign_div);
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

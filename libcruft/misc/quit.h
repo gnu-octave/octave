@@ -215,9 +215,3 @@ extern CRUFT_API void (*octave_bad_alloc_hook) (void);
 #endif
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

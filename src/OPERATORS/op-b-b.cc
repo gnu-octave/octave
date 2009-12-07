@@ -94,9 +94,3 @@ install_b_b_ops (void)
 
   INSTALL_ASSIGNCONV (octave_bool, octave_bool, octave_bool_matrix);
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

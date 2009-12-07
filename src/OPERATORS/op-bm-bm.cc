@@ -183,9 +183,3 @@ install_bm_bm_ops (void)
   INSTALL_ASSIGNOP (op_el_and_eq, octave_bool_matrix, octave_bool_matrix, assign_and);
   INSTALL_ASSIGNOP (op_el_or_eq, octave_bool_matrix, octave_bool_matrix, assign_or);
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

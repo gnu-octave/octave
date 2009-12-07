@@ -111,10 +111,3 @@ liboctave_warning_with_id (const char *id, const char *fmt, ...)
   verror ("warning", fmt, args);
   va_end (args);
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C ***
-;;; page-delimiter: "^/\\*" ***
-;;; End: ***
-*/

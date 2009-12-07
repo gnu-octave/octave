@@ -244,9 +244,3 @@ install_int_conv_ops (void)
   INSTALL_INT_CONV_FUNCTIONS (uint32)
   INSTALL_INT_CONV_FUNCTIONS (uint64)
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

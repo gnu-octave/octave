@@ -147,9 +147,3 @@ install_ui64_ui64_ops (void)
   OCTAVE_INSTALL_MIXED_INT_CMP_OPS (uint64, uint32);
   OCTAVE_INSTALL_MIXED_INT_CMP_OPS (uint64, int64);
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

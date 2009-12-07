@@ -100,9 +100,3 @@ octave_rethrow_exception (void)
 	}
     }
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

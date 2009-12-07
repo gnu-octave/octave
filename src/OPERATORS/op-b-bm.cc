@@ -78,9 +78,3 @@ install_b_bm_ops (void)
 
   INSTALL_WIDENOP (octave_bool, octave_bool_matrix, bool_matrix_conv);
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

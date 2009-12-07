@@ -112,9 +112,3 @@ install_sbm_sbm_ops (void)
   INSTALL_CONVOP (octave_sparse_bool_matrix, octave_sparse_matrix, 
                   bool_matrix_to_double_matrix);
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

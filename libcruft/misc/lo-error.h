@@ -58,9 +58,3 @@ CRUFT_API extern void set_liboctave_warning_with_id_handler (liboctave_warning_w
 #endif
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

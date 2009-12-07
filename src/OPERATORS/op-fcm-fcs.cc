@@ -195,9 +195,3 @@ install_fcm_fcs_ops (void)
   INSTALL_ASSIGNOP (op_div_eq, octave_float_complex_matrix,
                     octave_float_complex_scalar, assign_div);
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

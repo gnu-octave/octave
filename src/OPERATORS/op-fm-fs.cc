@@ -161,9 +161,3 @@ install_fm_fs_ops (void)
   INSTALL_ASSIGNOP (op_mul_eq, octave_float_matrix, octave_float_scalar, assign_mul);
   INSTALL_ASSIGNOP (op_div_eq, octave_float_matrix, octave_float_scalar, assign_div);
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

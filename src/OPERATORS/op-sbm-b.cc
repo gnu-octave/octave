@@ -92,9 +92,3 @@ install_sbm_b_ops (void)
 
   INSTALL_ASSIGNOP (op_asn_eq, octave_sparse_bool_matrix, octave_bool, assign);
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

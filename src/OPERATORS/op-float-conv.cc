@@ -109,9 +109,3 @@ install_float_conv_ops (void)
 
   INSTALL_CONVOP (octave_scalar, octave_float_matrix, float_scalar_to_float_matrix);
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-p*/

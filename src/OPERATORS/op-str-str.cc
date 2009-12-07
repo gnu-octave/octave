@@ -1,7 +1,7 @@
 /*
 
 Copyright (C) 1996, 1997, 1998, 2000, 2002, 2003, 2004, 2005, 2007,
-              2008, 2009John W. Eaton
+              2008, 2009 John W. Eaton
 
 This file is part of Octave.
 
@@ -154,9 +154,3 @@ install_str_str_ops (void)
   INSTALL_ASSIGNOP (op_asn_eq, octave_char_matrix_sq_str, octave_null_sq_str, null_assign);
 
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

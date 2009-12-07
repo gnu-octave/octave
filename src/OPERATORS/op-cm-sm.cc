@@ -166,9 +166,3 @@ install_cm_sm_ops (void)
                       octave_complex_matrix)
 
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

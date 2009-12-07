@@ -196,9 +196,3 @@ install_cs_cs_ops (void)
   INSTALL_CONVOP (octave_complex, octave_float_complex_matrix, 
                   complex_to_float_complex);
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

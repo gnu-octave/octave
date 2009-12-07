@@ -41,9 +41,3 @@ install_list_ops (void)
 {
   INSTALL_ASSIGNANYOP (op_asn_eq, octave_list, assign);
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

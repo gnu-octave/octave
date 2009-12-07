@@ -171,9 +171,3 @@ install_s_s_ops (void)
   INSTALL_ASSIGNCONV (octave_scalar, octave_null_str, octave_matrix);
   INSTALL_ASSIGNCONV (octave_scalar, octave_null_sq_str, octave_matrix);
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

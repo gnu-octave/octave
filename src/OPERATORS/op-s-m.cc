@@ -135,9 +135,3 @@ install_s_m_ops (void)
 
   INSTALL_WIDENOP (octave_scalar, octave_matrix, matrix_conv);
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

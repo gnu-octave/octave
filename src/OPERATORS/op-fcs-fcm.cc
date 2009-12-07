@@ -151,9 +151,3 @@ install_fcs_fcm_ops (void)
 
   INSTALL_WIDENOP (octave_float_complex, octave_float_complex_matrix, float_complex_matrix_conv);
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

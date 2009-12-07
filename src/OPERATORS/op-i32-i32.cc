@@ -147,9 +147,3 @@ install_i32_i32_ops (void)
   OCTAVE_INSTALL_MIXED_INT_CMP_OPS (int32, int64);
   OCTAVE_INSTALL_MIXED_INT_CMP_OPS (int32, uint64);
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

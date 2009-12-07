@@ -207,9 +207,3 @@ install_fcs_fcs_ops (void)
   INSTALL_CONVOP (octave_float_complex, octave_complex_matrix, 
                   float_complex_to_complex);
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

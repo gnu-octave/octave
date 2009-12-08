@@ -1,5 +1,6 @@
 2009-12-08  Petr Mikulik <mikulik@physics.muni.cz>
 
+	* plot/gnuplot_drawnow.m: Prune prompt lines from dumb terminal output.
 	* plot/__go_draw_figure__.m: Add missing 'unset multiplot' to restore
 	hotkey and mouse functionality for 2D plots.
 

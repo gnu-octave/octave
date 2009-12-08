@@ -106,8 +106,14 @@ function gnuplot_drawnow (h, term, file, mono, debug_file)
       endwhile
       ## reprint the plot on screen
       [a, count] = fscanf (fid, '%c', Inf);
-      puts (a);
       fclose (fid);
+      if (count>0)
+        if (a(1)==12)
+       	  ## avoid ^L at the beginning
+	  a = a(2:end);
+        end
+        puts (a);
+      end
       unlink (dumb_tmp_file);
     endif
   else
@@ -264,8 +270,10 @@ function [enhanced, implicit_margin] = gnuplot_set_term (plot_stream, new_stream
           elseif (strncmpi (term, "dumb", 3))
             new_stream = 1;
             if (~isempty (getenv ("COLUMNS")) && ~isempty (getenv ("LINES")))
-              ## Let dumb use full text screen size.
-              size_str = ["size ", getenv("COLUMNS"), " ", getenv("LINES")];
+              ## Let dumb use full text screen size (minus prompt lines).
+              n = sprintf ("%i", -2 - length (find (sprintf ("%s", PS1) == "\n")));
+              ## n = the number of times \n appears in PS1
+              size_str = ["size ", getenv("COLUMNS"), ",", getenv("LINES"), n];
             else
 	      ## Use the gnuplot default.
               size_str = "";

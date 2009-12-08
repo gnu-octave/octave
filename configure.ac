@@ -2419,11 +2419,14 @@ if test -n "$warn_gnuplot"; then
   AC_MSG_WARN([plotting commands without it.])
   AC_MSG_WARN([])
   AC_MSG_WARN([If gnuplot is installed but it isn't in your path, you can])
-  AC_MSG_WARN([tell Octave where to find it by typing the command])
+  AC_MSG_WARN([tell Octave where to find it using the gnuplot_binary])
+  AC_MSG_WARN([function.  For example,])
   AC_MSG_WARN([])
-  AC_MSG_WARN([gnuplot_binary = "/full/path/to/gnuplot/binary"])
+  AC_MSG_WARN([gnuplot_binary ("/full/name/of/gnuplot/binary")])
   AC_MSG_WARN([])
   AC_MSG_WARN([at the Octave prompt.])
+  AC_MSG_WARN([])
+  AC_MSG_WARN([Setting default value to $GNUPLOT])
   AC_MSG_WARN([])
   warn_msg_printed=true
 fi

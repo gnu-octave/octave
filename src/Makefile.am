@@ -629,7 +629,7 @@ doc-files: $(DEF_FILES)
 	mv $@-t $@
 
 gendoc.cc: doc-files mkgendoc
-	$(srcdir)/mkgendoc $(srcdidr) doc-files > $@-t
+	$(srcdir)/mkgendoc doc-files > $@-t
 	mv $@-t $@
 
 gendoc$(BUILD_EXEEXT): gendoc.cc

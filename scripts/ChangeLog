@@ -1,3 +1,10 @@
+2009-12-08  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.am (DOCSTRINGS): Depend on $(GEN_FCN_FILES) instead
+	of $(FCN_FILES_IN).  Pass $(GEN_FCN_FILES) to mkdoc instead of
+	$(FCN_FILES_IN).  Use mv instead of $(simple_move_if_change_rule).
+	(EXTRA_DIST): Include  $(GEN_FCN_FILES) in the list.
+
 2009-12-07  Jaroslav Hajek  <highegg@gmail.com>
 
 	* general/interp1.m: Allow discontinuities (jumps) for the "nearest" and

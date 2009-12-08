@@ -1,3 +1,7 @@
+2009-12-08  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.am (gendoc.cc): Don't pass $(srcdidr) to mkgendoc.
+
 2009-12-07  John W. Eaton  <jwe@octave.org>
 
 	* OPERATORS/op-b-b.cc, OPERATORS/op-b-bm.cc,

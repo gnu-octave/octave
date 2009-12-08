@@ -322,13 +322,14 @@ FCN_FILES_IN = $(GEN_FCN_FILES:.m=.in)
 EXTRA_DIST += \
   $(IMAGES) \
   $(FCN_FILES) \
-  $(FCN_FILES_IN)
+  $(FCN_FILES_IN) \
+  $(GEN_FCN_FILES)
 
 all-local: $(GEN_FCN_FILES) $(PKG_ADD_FILES) DOCSTRINGS
 
-DOCSTRINGS: mkdoc $(FCN_FILES) $(FCN_FILES_IN) gethelp$(BUILD_EXEEXT) 
-	$(srcdir)/mkdoc "$(srcdir)" $(FCN_FILES) $(FCN_FILES_IN) > $@-t
-	$(simple_move_if_change_rule)
+DOCSTRINGS: mkdoc $(FCN_FILES) $(GEN_FCN_FILES) gethelp$(BUILD_EXEEXT) 
+	$(srcdir)/mkdoc "$(srcdir)" $(FCN_FILES) -- $(GEN_FCN_FILES) > $@-t
+	mv $@-t $@
 
 gethelp$(BUILD_EXEEXT): gethelp.cc
 	$(BUILD_CXX) $(BUILD_CXXFLAGS) -o $@ $^ $(BUILD_LDFLAGS)

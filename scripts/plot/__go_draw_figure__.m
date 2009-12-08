@@ -95,6 +95,7 @@ function __go_draw_figure__ (h, plot_stream, enhanced, mono, output_to_paper, im
 	      error ("__go_draw_figure__: unknown object class, %s", type);
 	  endswitch
 	endfor
+	fputs (plot_stream, "\nunset multiplot;\n");
       else
 	fputs (plot_stream, "\nreset; clear;\n");
 	fflush (plot_stream);

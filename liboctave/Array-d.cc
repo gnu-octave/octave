@@ -87,6 +87,7 @@ safe_comparator (sortmode mode, const Array<double>& a , bool allow_chk)
 // The default solution using NaN-safe comparator is OK, but almost twice as
 // slow than this code.
 template <>
+OCTAVE_API
 sortmode
 Array<double>::is_sorted (sortmode mode) const
 {

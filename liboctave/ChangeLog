@@ -1,3 +1,9 @@
+2009-12-08  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* Array-d.cc (Array<double>::is_sorted): Declare as OCTAVE_API.
+	* Array-f.cc (Array<float>::is_sorted): Ditto.
+	* lo-sysdep.cc: Undef min and max after including windows.h
+
 2009-12-05  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Array-d.cc (Array<double>::is_sorted): Optimized specialization.

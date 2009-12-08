@@ -25,6 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
+#include <cctype>
 #include <iostream>
 
 #include "lo-ieee.h"

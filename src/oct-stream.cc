@@ -3175,10 +3175,10 @@ do_read (octave_stream& strm, octave_idx_type nr, octave_idx_type nc, octave_idx
 
   count = 0;
 
-  typename RET_T::element_type elt_zero
-    = typename RET_T::element_type ();
+  typedef typename RET_T::element_type ELMT;
+  ELMT elt_zero = ELMT ();
 
-  typename RET_T::element_type *dat = 0;
+  ELMT *dat = 0;
 
   octave_idx_type max_size = 0;
 

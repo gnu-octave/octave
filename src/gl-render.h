@@ -25,6 +25,10 @@ along with Octave; see the file COPYING.  If not, see
 
 #ifdef HAVE_WINDOWS_H
 #include <windows.h>
+#ifdef max
+# undef min
+# undef max
+#endif
 #endif
 
 #ifdef HAVE_GL_GL_H

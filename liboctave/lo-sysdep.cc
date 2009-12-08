@@ -41,6 +41,10 @@ along with Octave; see the file COPYING.  If not, see
 
 #if defined (__WIN32__) && ! defined (__CYGWIN__)
 #include <windows.h>
+#ifdef max
+# undef min
+# undef max
+#endif
 #endif
 
 #include "file-ops.h"

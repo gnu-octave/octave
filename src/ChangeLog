@@ -1,3 +1,9 @@
+2009-12-08  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* ov-ch-mat.cc: Add missing #include.
+	* oct-stream.cc (do_read): Simplify.
+	* gl-render.h: Undef min and max after #including windows.h.
+
 2009-12-08  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.am (gendoc.cc): Don't pass $(srcdidr) to mkgendoc.

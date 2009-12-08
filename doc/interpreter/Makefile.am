@@ -204,6 +204,10 @@ EXTRA_DIST = \
   mk_doc_cache.m \
   mkcontrib.awk \
   munge-texi.cc \
+  octave.dvi \
+  octave.html \
+  octave.pdf \
+  octave.ps \
   $(IMAGES) \
   $(IMAGES_SRC) \
   $(TXI_SRC)

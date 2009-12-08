@@ -1,3 +1,7 @@
+2009-12-09  Rik <octave@nomad.inbox5.com>
+
+	* Makefile.am: Distribute DOCSTRINGS in tar.gz file
+
 2009-12-07  Jaroslav Hajek  <highegg@gmail.com>
 
 	* dirfns.cc (Ffnmatch): Simplify.

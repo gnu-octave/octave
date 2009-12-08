@@ -1,3 +1,7 @@
+2009-12-08  Rik <octave@nomad.inbox5.com>
+
+	* Makefile.am: add BUGS and OCTAVE.INSTALL to DISTCLEANFILES
+
 2009-12-08  John W. Eaton  <jwe@octave.org>
 
 	* configure.ac: Update gnuplot status message.

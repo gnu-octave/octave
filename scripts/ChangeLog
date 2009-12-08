@@ -1,3 +1,8 @@
+2009-12-09  Rik <octave@nomad.inbox5.com>
+
+	* Makefile.am: Distribute DOCSTRINGS in tar.gz file
+	* mkdoc: pass current directory, "./", when running mkdoc on local files
+
 2009-12-07  Jaroslav Hajek  <highegg@gmail.com>
 
 	* general/interp1q.m: Use more optimal code.

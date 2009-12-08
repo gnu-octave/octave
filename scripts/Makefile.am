@@ -74,6 +74,7 @@ include testfun/module.mk
 include time/module.mk
 
 DISTCLEANFILES = \
+  DOCSTRINGS \
   gethelp$(BUILD_EXEEXT) \
   $(PKG_ADD_FILES) \
   $(DIRSTAMP_FILES) \
@@ -329,7 +330,7 @@ all-local: $(GEN_FCN_FILES) $(PKG_ADD_FILES) DOCSTRINGS
 
 DOCSTRINGS: mkdoc $(FCN_FILES) $(GEN_FCN_FILES) gethelp$(BUILD_EXEEXT) 
 	$(srcdir)/mkdoc "$(srcdir)" $(FCN_FILES) -- $(GEN_FCN_FILES) > $@-t
-	mv $@-t $@
+	$(simple_move_if_change_rule)
 
 gethelp$(BUILD_EXEEXT): gethelp.cc
 	$(BUILD_CXX) $(BUILD_CXXFLAGS) -o $@ $^ $(BUILD_LDFLAGS)

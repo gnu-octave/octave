@@ -40,7 +40,7 @@ EOF
   for arg
   do
     if [ "$arg" = "--" ]; then
-      prefix=""
+      prefix="./"
     else
       $PERL -w -e '
 	unless (@ARGV == 2) { die "Usage: $0 srcdir m_filename" ; }

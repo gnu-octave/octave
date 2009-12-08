@@ -80,11 +80,13 @@ bin_SCRIPTS = \
   octave-config$(SCRIPTS_EXE_SUFFIX) \
   octave-bug$(SCRIPTS_EXE_SUFFIX)
 
-CLEANFILES = $(BUILT_SHELL_FILES)
-
 INFO_FILES = \
   INSTALL.OCTAVE \
   BUGS
+
+CLEANFILES = $(BUILT_SHELL_FILES)
+
+DISTCLEANFILES = $(INFO_FILES) 
 
 CONFIG_FILES = @ac_config_headers@ @ac_config_files@
 

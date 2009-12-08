@@ -328,7 +328,7 @@ all-local: $(GEN_FCN_FILES) $(PKG_ADD_FILES) DOCSTRINGS
 
 DOCSTRINGS: mkdoc $(FCN_FILES) $(FCN_FILES_IN) gethelp$(BUILD_EXEEXT) 
 	$(srcdir)/mkdoc "$(srcdir)" $(FCN_FILES) $(FCN_FILES_IN) > $@-t
-	$(simple_move_if_change_rule)
+	mv $@-t $@
 
 gethelp$(BUILD_EXEEXT): gethelp.cc
 	$(BUILD_CXX) $(BUILD_CXXFLAGS) -o $@ $^ $(BUILD_LDFLAGS)

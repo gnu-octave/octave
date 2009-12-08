@@ -1,3 +1,7 @@
+2009-12-08  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.am (DOCSTRINGS): Don't use $(simple_move_if_change_rule).
+
 2009-12-07  Jaroslav Hajek  <highegg@gmail.com>
 
 	* general/interp1.m: Allow discontinuities (jumps) for the "nearest" and

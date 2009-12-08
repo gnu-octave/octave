@@ -1,3 +1,7 @@
+2009-12-07  Jaroslav Hajek  <highegg@gmail.com>
+
+	* dirfns.cc (Ffnmatch): Simplify.
+
 2009-12-08  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* ov-ch-mat.cc: Add missing #include.

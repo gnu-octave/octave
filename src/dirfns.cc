@@ -616,16 +616,7 @@ fnmatch (\"a*b\", @{\"ab\"; \"axyzb\"; \"xyzab\"@})\n\
 	{
 	  glob_match pattern (file_ops::tilde_expand (pat));
 
-	  Array<bool> tmp = pattern.match (str);
-
-	  octave_idx_type n = tmp.length ();
-
-	  ColumnVector result (n);
-
-	  for (octave_idx_type i = 0; i < n; i++)
-	    result(i) = tmp(i);
-
-	  retval = result;
+	  retval = pattern.match (str);
 	}
     }
   else

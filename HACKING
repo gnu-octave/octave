@@ -53,8 +53,25 @@ fragments and then runs the bootstrap script.  The bootstrap script comes
 from gnulib but is kept in the Octave source archive.  It should be
 updated from the gnulib source as necssary.  The bootstrap script takes
 care of checking out a copy of gnulib, running the autotools, and
-generating the configure script.  Once the autogen.sh and bootstrap
-scripts complete successfully, you may run
+generating the configure script.
+
+If you have a copy of gnulib in some directory apart from the Octave
+source tree, then pass the name of that directory to the bootstrap
+script using the
+
+  --gnulib-srcdir=DIRNAME
+
+option (all options passed to autogen.sh are forwarded to the
+bootstrap script).  This way, you can share a single gnulib source
+tree among several projects.  Regardless of the location of the gnulib
+sources, the bootstrap script will try to update them if it appears
+that they are checked out using git.  Otherwise, it is your
+responsibility to keep the gnulib sources up to date.  They change
+frequently, so the best way to stay current is probably to use git to
+do the job.
+
+Once the autogen.sh and bootstrap scripts complete successfully, you may
+run
 
   $ ./configure
   $ make

@@ -1,5 +1,9 @@
 2009-12-09  John W. Eaton  <jwe@octave.org>
 
+	* HACKING: Clarify gnulib checkout and use.
+
+2009-12-09  John W. Eaton  <jwe@octave.org>
+
 	* configure.ac: Remove URL argument from AC_INIT.
 	Use AC_CONFIG_AUX_DIR.  Move AM_INIT_AUTOMAKE after other
 	AC_CONFIG setup macros.  Use gl_EARLY and gl_INIT for gnulib.

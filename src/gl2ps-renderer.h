@@ -47,6 +47,9 @@ protected:
 
   virtual void set_font (const base_properties& props);
 
+  virtual void draw_pixels (GLsizei w, GLsizei h, GLenum format, 
+			    GLenum type, const GLvoid *data);
+
   virtual void set_linestyle (const std::string& s, bool use_stipple)
   {
     opengl_renderer::set_linestyle (s, use_stipple);

@@ -44,6 +44,7 @@
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
 #  if defined(_MSC_VER)
 #    pragma warning(disable:4115)
+#    pragma warning(disable:4996)
 #  endif
 #  include <windows.h>
 #  if defined(GL2PSDLL)
@@ -79,7 +80,7 @@
 
 #define GL2PS_MAJOR_VERSION 1
 #define GL2PS_MINOR_VERSION 3
-#define GL2PS_PATCH_VERSION 4
+#define GL2PS_PATCH_VERSION 5
 #define GL2PS_EXTRA_VERSION ""
 
 #define GL2PS_VERSION (GL2PS_MAJOR_VERSION + \

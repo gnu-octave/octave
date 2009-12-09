@@ -1,5 +1,22 @@
 2009-12-09  John W. Eaton  <jwe@octave.org>
 
+	* gl2ps-renderer.cc (draw_pixels): New template function.
+	(opengl_renderer::draw_pixels): Use it.
+
+2009-12-09  Shai Ayal  <shaiay@users.sourceforge.net>
+
+	* gl2ps.c, gl2ps.h: Use upstream version gl2ps-1.3.5-svn-20091202.
+
+	* gl-render.cc (opengl_renderer::draw_pixels): New function.
+	(opengl_renderer::draw_image): Correctly handle images with width
+	or height of 1.  Use draw_pixels.
+	* gl-render.h (opengl_renderer::draw_pixels): Provide decl.
+
+	* gl2ps-renderer.cc (glps_renderer::draw_pixels): New function.
+	* gl2ps-renderer.h (glps_renderer::draw_pixels): Provide decl.
+
+2009-12-09  John W. Eaton  <jwe@octave.org>
+
 	* load-save.cc: Call nstrftime instead of my_strftime.
 
 2009-12-09  John W. Eaton  <jwe@octave.org>

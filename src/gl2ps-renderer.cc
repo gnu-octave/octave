@@ -145,6 +145,30 @@ glps_renderer::set_font (const base_properties& props)
   // FIXME -- add support for bold and italic
 }
 
+template <typename T>
+static void
+draw_pixels (GLsizei w, GLsizei h, GLenum format, const T *data)
+{
+  OCTAVE_LOCAL_BUFFER (GLfloat, a, 3*w*h);
+
+  for (int i = 0; i < 3*w*h; i++)
+    a[i] = data[i];
+    
+  gl2psDrawPixels (w, h, 0, 0, format, GL_FLOAT, a);
+}
+
+void 
+glps_renderer::draw_pixels (GLsizei w, GLsizei h, GLenum format,
+                            GLenum type, const GLvoid *data)
+{
+  if (type == GL_UNSIGNED_SHORT) 
+    ::draw_pixels (w, h, format, static_cast<const GLushort *> (data));
+  else if (type == GL_UNSIGNED_BYTE) 
+    ::draw_pixels (w, h, format, static_cast<const GLubyte *> (data));
+  else
+    gl2psDrawPixels (w, h, 0, 0, format, type, data);
+}
+
 #endif
 
 /*

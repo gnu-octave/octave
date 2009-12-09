@@ -109,6 +109,9 @@ protected:
 			      double x, double y, double z,
 			      int halign, int valign, double rotation = 0.0);
 
+  virtual void draw_pixels (GLsizei w, GLsizei h, GLenum format, 
+			    GLenum type, const GLvoid *data);
+
 private:
   opengl_renderer (const opengl_renderer&) { }
 

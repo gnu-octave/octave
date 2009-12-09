@@ -2705,12 +2705,33 @@ opengl_renderer::draw_image (const image::properties& props)
   const ColumnVector p1 = xform.transform (x(1), y(1), 0);
 
   // image pixel size in screen pixel units
-  float pix_dx = (p1(0) - p0(0))/(w-1);
-  float pix_dy = (p1(1) - p0(1))/(h-1);
-
+  float pix_dx, pix_dy;
   // image pixel size in normalized units
-  float nor_dx = (x(1) - x(0))/(w-1);
-  float nor_dy = (y(1) - y(0))/(h-1);
+  float nor_dx, nor_dy;
+
+  if (w > 1) 
+    {
+      pix_dx = (p1(0) - p0(0))/(w-1);
+      nor_dx = (x(1) - x(0))/(w-1);
+    }
+  else
+    {
+      const ColumnVector p1 = xform.transform (x(1) + 1, y(1), 0);
+      pix_dx = p1(0) - p0(0);
+      nor_dx = 1;
+    }
+  if (h > 1)
+    {
+      pix_dy = (p1(1) - p0(1))/(h-1);
+      nor_dy = (y(1) - y(0))/(h-1);
+    }
+  else
+    {
+      const ColumnVector p1 = xform.transform (x(1), y(1) + 1, 0);
+      pix_dy = p1(1) - p0(1);
+      nor_dy = 1;
+    }
+
 
   // OpenGL won't draw the image if it's origin is outside the
   // viewport/clipping plane so we must do the clipping
@@ -2771,7 +2792,7 @@ opengl_renderer::draw_image (const image::properties& props)
 		}
 	    }
 
-	  glDrawPixels (j1-j0, i1-i0, GL_RGB, GL_FLOAT, a);
+	  draw_pixels (j1-j0, i1-i0, GL_RGB, GL_FLOAT, a);
 
 	}
       else if (cdata.is_uint16_type ())
@@ -2790,7 +2811,7 @@ opengl_renderer::draw_image (const image::properties& props)
 		}
 	    }
 
-	  glDrawPixels (j1-j0, i1-i0, GL_RGB, GL_UNSIGNED_SHORT, a);
+	  draw_pixels (j1-j0, i1-i0, GL_RGB, GL_UNSIGNED_SHORT, a);
 
 	}
       else if (cdata.is_uint8_type ())
@@ -2809,7 +2830,7 @@ opengl_renderer::draw_image (const image::properties& props)
 		}
 	    }
 
-	  glDrawPixels (j1-j0, i1-i0, GL_RGB, GL_UNSIGNED_BYTE, a);
+	  draw_pixels (j1-j0, i1-i0, GL_RGB, GL_UNSIGNED_BYTE, a);
 	}
       else
 	{
@@ -2829,6 +2850,13 @@ void
 opengl_renderer::set_viewport (int w, int h)
 {
   glViewport (0, 0, w, h);
+}
+
+void
+opengl_renderer::draw_pixels (GLsizei width, GLsizei height, GLenum format,
+                              GLenum type, const GLvoid *data)
+{
+  glDrawPixels (width, height, format, type, data);
 }
 
 void

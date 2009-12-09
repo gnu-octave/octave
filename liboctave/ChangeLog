@@ -1,5 +1,10 @@
 2009-12-09  John W. Eaton  <jwe@octave.org>
 
+	* oct-time.cc (octave_base_tm::strftime): Call nstrftime instead
+	of my_strftime.
+
+2009-12-09  John W. Eaton  <jwe@octave.org>
+
 	* oct-time.cc: Include strftime.h.  Don't provide decl for strftime.
 	(octave_base_tm::strftime): Call my_strftime instead of ::strftime.
 	* Makefile.am (AM_CPPFLAGS): Add -I$(top_srcdir)/libgnu to the list.

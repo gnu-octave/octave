@@ -1,5 +1,9 @@
 2009-12-09  John W. Eaton  <jwe@octave.org>
 
+	* load-save.cc: Call nstrftime instead of my_strftime.
+
+2009-12-09  John W. Eaton  <jwe@octave.org>
+
 	* load-save.cc: Include strftime.h.
 	(write_header): Call my_strftime instead of strftime.
 

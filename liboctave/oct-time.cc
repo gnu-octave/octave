@@ -267,7 +267,7 @@ octave_base_tm::strftime (const std::string& fmt) const
 	  buf = new char[bufsize];
 	  buf[0] = '\0';
 
-	  chars_written = my_strftime (buf, bufsize, fmt_str, &t, 0, 0);
+	  chars_written = nstrftime (buf, bufsize, fmt_str, &t, 0, 0);
 
 	  bufsize *= 2;
 	}

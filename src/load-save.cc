@@ -1184,8 +1184,8 @@ write_header (std::ostream& os, load_save_format format)
 	bdt = *gmtime (&now);
 	memset (headertext, ' ', 124);
 	// ISO 8601 format date
-	my_strftime (headertext, 124, "MATLAB 5.0 MAT-file, written by Octave "
-		     OCTAVE_VERSION ", %Y-%m-%d %T UTC", &bdt, 1, 0);
+	nstrftime (headertext, 124, "MATLAB 5.0 MAT-file, written by Octave "
+                   OCTAVE_VERSION ", %Y-%m-%d %T UTC", &bdt, 1, 0);
 
 	// The first pair of bytes give the version of the MAT file
 	// format.  The second pair of bytes form a magic number which

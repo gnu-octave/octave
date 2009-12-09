@@ -40,16 +40,12 @@ along with Octave; see the file COPYING.  If not, see
 #undef max
 #endif
 
+#include "strftime.h"
+
 #include "lo-error.h"
 #include "lo-math.h"
 #include "lo-utils.h"
 #include "oct-time.h"
-
-#ifndef HAVE_STRFTIME
-// Override any previous definition and use local version.
-extern "C" size_t
-strftime (char *s, size_t maxsize, const char *format, const struct tm *tp);
-#endif
 
 octave_time::octave_time (const octave_base_tm& tm)
 {
@@ -271,7 +267,7 @@ octave_base_tm::strftime (const std::string& fmt) const
 	  buf = new char[bufsize];
 	  buf[0] = '\0';
 
-	  chars_written = ::strftime (buf, bufsize, fmt_str, &t);
+	  chars_written = my_strftime (buf, bufsize, fmt_str, &t, 0, 0);
 
 	  bufsize *= 2;
 	}

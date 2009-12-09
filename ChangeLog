@@ -1,3 +1,23 @@
+2009-12-09  John W. Eaton  <jwe@octave.org>
+
+	* configure.ac: Remove URL argument from AC_INIT.
+	Use AC_CONFIG_AUX_DIR.  Move AM_INIT_AUTOMAKE after other
+	AC_CONFIG setup macros.  Use gl_EARLY and gl_INIT for gnulib.
+	Add libgnu/Makefile to the list of AC_CONFIG_FILES.  Eliminate
+	special case check for for strftime.
+	* bootstrap: New file, from gnulib.
+	* bootstrap.conf: New file, from gnulib.  Override bootstrap
+	defaults for checkout_only_file, gnulib_tool_option_extras,
+	gnulib_name, and source_base.
+	(gnulib_modules): Add strftime to the list.
+	* autogen.sh: Simply generate makefile fragments and call
+	bootstrap to do the rest of the initial setup.
+	* Makefile.am (SUBDIRS): Add libgnu to the list.
+	* libgnu/Makefile.am: New directory and file.
+	* INSTALL: Remove our copy so version from gnulib will be
+	distributed.
+	* HACKING: New file.
+
 2009-12-08  Rik <octave@nomad.inbox5.com>
 
 	* Makefile.am: add BUGS and OCTAVE.INSTALL to DISTCLEANFILES

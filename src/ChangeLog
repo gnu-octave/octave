@@ -1,3 +1,12 @@
+2009-12-09  John W. Eaton  <jwe@octave.org>
+
+	* load-save.cc: Include strftime.h.
+	(write_header): Call my_strftime instead of strftime.
+
+	* Makefile.am (AM_CPPFLAGS): Add -I$(top_srcdir)/libgnu to the list.
+	(OCTAVE_LIBS, OCTINTERP_LINK_DEPS, OCT_LINK_DEPS):
+	Add ../libgnu/libgnu.la to the list.
+
 2009-12-09  Rik <octave@nomad.inbox5.com>
 
 	* Makefile.am: Distribute DOCSTRINGS in tar.gz file

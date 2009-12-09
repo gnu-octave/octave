@@ -1,3 +1,12 @@
+2009-12-09  John W. Eaton  <jwe@octave.org>
+
+	* oct-time.cc: Include strftime.h.  Don't provide decl for strftime.
+	(octave_base_tm::strftime): Call my_strftime instead of ::strftime.
+	* Makefile.am (AM_CPPFLAGS): Add -I$(top_srcdir)/libgnu to the list.
+	(LINK_DEPS): Add ../libgnu/libgnu.la to the list.
+	(LIBOCTAVE_C_SOURCES): Remove strftime.c from the list.
+	* strftime.c: Delete.
+
 2009-12-08  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* Array-d.cc (Array<double>::is_sorted): Declare as OCTAVE_API.

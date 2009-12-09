@@ -29,7 +29,7 @@ dnl               2009 John W. Eaton
 EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
-AC_INIT([GNU Octave], [3.3.50+], [bug@octave.org], [octave], [http://www.octave.org])
+AC_INIT([GNU Octave], [3.3.50+], [bug@octave.org], [octave])
 
 dnl PACKAGE_VERSION is set by the AC_INIT VERSION arg
 OCTAVE_VERSION="$PACKAGE_VERSION"
@@ -43,12 +43,14 @@ AC_SUBST(OCTAVE_API_VERSION)
 AC_SUBST(OCTAVE_RELEASE_DATE)
 AC_SUBST(OCTAVE_COPYRIGHT)
 
-AM_INIT_AUTOMAKE([1.11 tar-ustar])
 AC_REVISION($Revision: 1.603 $)
 AC_PREREQ([2.62])
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER([config.h])
+AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_MACRO_DIR([m4])
+
+AM_INIT_AUTOMAKE([1.11 tar-ustar])
 
 OCTAVE_HOST_TYPE
 
@@ -226,6 +228,11 @@ OCTAVE_CXX_BROKEN_REINTERPRET_CAST
 AC_PROG_CC
 AC_PROG_CPP
 AC_PROG_GCC_TRADITIONAL
+
+### gnulib
+
+gl_EARLY
+gl_INIT
 
 ### Do special things for gcc.
 
@@ -1494,17 +1501,6 @@ case "$canonical_host_type" in
    ;;
 esac
 
-case "$canonical_host_type" in
-  *-*-msdosmsvc | *-*-mingw*)
-    ## The %T and %e format specifiers for strftime are not implemented
-    ## so use our version.  We could use an actual configure test
-    ## for this.
-  ;;
-  *)
-    AC_CHECK_FUNCS(strftime)
-  ;;
-esac
-
 OCTAVE_HAVE_C99_VSNPRINTF
 OCTAVE_STRPTIME_BROKEN
 OCTAVE_SMART_PUTENV
@@ -2143,6 +2139,7 @@ AC_CONFIG_FILES([
   examples/Makefile
   libcruft/Makefile
   libcruft/mkf77def
+  libgnu/Makefile
   liboctave/Makefile
   scripts/Makefile
   src/Makefile

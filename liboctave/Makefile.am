@@ -25,9 +25,7 @@ include ../common.mk
 
 octlib_LTLIBRARIES = liboctave.la
 
-AM_CPPFLAGS = -I$(top_srcdir)/libcruft/misc
-
-AUTOMAKE_OPTIONS = subdir-objects
+AM_CPPFLAGS = -I$(top_srcdir)/libgnu -I$(top_srcdir)/libcruft/misc
 
 EXTRA_DIST = \
   ChangeLog \
@@ -475,7 +473,6 @@ LIBOCTAVE_C_SOURCES = \
   rename.c \
   rmdir.c \
   strcasecmp.c \
-  strftime.c \
   strncase.c \
   strptime.c \
   tempnam.c \
@@ -500,6 +497,7 @@ LIBOCT_PATHSEARCH_SOURCES = \
 LINK_DEPS = \
   $(RLD_FLAG) \
   ../libcruft/libcruft.la \
+  ../libgnu/libgnu.la \
   $(SPARSE_XLIBS) \
   $(ARPACK_LIBS) \
   $(QRUPDATE_LIBS) \
@@ -523,7 +521,6 @@ liboctave_la_CPPFLAGS = \
   $(FFTW_XCPPFLAGS) \
   $(ARPACK_CPPFLAGS) \
   $(AM_CPPFLAGS)
-
 
 liboctave_la_LDFLAGS = -release $(version) $(NO_UNDEFINED_LDFLAG) \
   $(SPARSE_XLDFLAGS) \

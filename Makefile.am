@@ -67,7 +67,7 @@ include emacs/module.mk
 include m4/module.mk
 
 # Subdirectories in which to run `make all'.
-SUBDIRS = libcruft liboctave src scripts doc examples test
+SUBDIRS = libgnu libcruft liboctave src scripts doc examples test
 
 BUILT_SHELL_FILES = \
   mkoctfile$(SCRIPTS_EXE_SUFFIX) \

@@ -27,7 +27,7 @@ octlib_LTLIBRARIES = \
   liboctinterp.la
 
 AM_CPPFLAGS = \
-  @CPPFLAGS@ -I$(top_srcdir)/libcruft/misc -I../liboctave -I$(top_srcdir)/liboctave -I. -I$(srcdir) 
+  @CPPFLAGS@ -I$(top_srcdir)/libgnu -I$(top_srcdir)/libcruft/misc -I../liboctave -I$(top_srcdir)/liboctave -I. -I$(srcdir) 
 
 AUTOMAKE_OPTIONS = subdir-objects
 
@@ -486,6 +486,7 @@ if AMCOND_ENABLE_DYNAMIC_LINKING
     ./liboctinterp.la \
     ../liboctave/liboctave.la \
     ../libcruft/libcruft.la \
+    ../libgnu/libgnu.la \
     $(FFTW_XLDFLAGS) $(FFTW_XLIBS) \
     $(SPARSE_XLDFLAGS) $(SPARSE_XLIBS) \
     $(GRAPHICS_LDFLAGS) $(GRAPHICS_LIBS) \
@@ -505,6 +506,7 @@ else
     ./liboctinterp.la \
     ../liboctave/liboctave.la \
     ../libcruft/libcruft.la \
+    ../libgnu/libgnu.la \
     $(FFTW_XLDFLAGS) $(FFTW_XLIBS)
     $(QHULL_LDFLAGS) $(QHULL_LIBS) \
     $(ARPACK_LDFLAGS) $(ARPACK_LIBS) \
@@ -529,6 +531,7 @@ OCTINTERP_LINK_DEPS = \
   $(RLD_FLAG) \
   ../liboctave/liboctave.la \
   ../libcruft/libcruft.la \
+  ../libgnu/libgnu.la \
   $(FFTW_XLDFLAGS) $(FFTW_XLIBS) \
   $(HDF5_LDFLAGS) $(HDF5_LIBS) $(Z_LDFLAGS) $(Z_LIBS) \
   $(OPENGL_LIBS) $(X11_LIBS) $(CARBON_LIBS) \
@@ -544,7 +547,8 @@ OCT_LINK_DEPS = \
   $(RLD_FLAG) $(LDFLAGS) \
   ./liboctinterp.la \
   ../liboctave/liboctave.la \
-  ../libcruft/libcruft.la
+  ../libcruft/libcruft.la \
+  ../libgnu/libgnu.la
 
 bin_PROGRAMS = octave
 

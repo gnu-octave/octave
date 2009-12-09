@@ -67,6 +67,9 @@ To initialize:
 
 #define FLTK_BACKEND_NAME "fltk"
 
+// Give FLTK no more than 0.01 sec to do its stuff.
+static double fltk_maxtime = 1e-2;
+
 const char* help_text = "\
 Keyboard Shortcuts\n\
 a - autoscale\n\
@@ -87,7 +90,7 @@ public:
     : Fl_Gl_Window (xx, yy, ww, hh, 0), number (num), in_zoom (false),
       print_filename ("")
   {
-    // ask for double buffering and a depth buffer
+    // Ask for double buffering and a depth buffer.
     mode (FL_DEPTH | FL_DOUBLE);
   }
 
@@ -212,7 +215,7 @@ private:
   }
 };
 
-// Parameter controlling how fast we zoom when using the scrool wheel
+// Parameter controlling how fast we zoom when using the scrool wheel.
 static double wheel_zoom_speed = 0.05;
 
 class plot_window : public Fl_Window
@@ -264,7 +267,7 @@ public:
       status->textsize (10);
       status->box (FL_ENGRAVED_BOX);
 
-      //This allows us to have a valid OpenGL context right away
+      // This allows us to have a valid OpenGL context right away.
       canvas->mode (FL_DEPTH | FL_DOUBLE );
       show ();
       canvas->show ();
@@ -293,12 +296,17 @@ public:
     delete status;
   }
 
-  // FIXME -- this could change
+  // FIXME -- this could change.
   double number (void) { return fp.get___myhandle__ ().value (); }
 
   void print (const std::string& fname)
   {
     canvas->print (fname);
+
+    // Print immediately so the output file will exist when the drawnow
+    // command is done.
+    mark_modified ();
+    Fl::wait (fltk_maxtime);
   }
 
   void mark_modified (void)
@@ -308,13 +316,14 @@ public:
   }
 
 private:
-  // figure properties
+
+  // Figure properties.
   figure::properties& fp;
 
-  // status area height
+  // Status area height.
   static const int status_h = 20;
 
-  // window callback
+  // Window callback.
   static void window_close (Fl_Widget*, void* data)
   {
     octave_value_list args;
@@ -322,7 +331,7 @@ private:
     feval ("close", args);
   }
 
-  // button callbacks
+  // Button callbacks.
   static void button_callback (Fl_Widget* ww, void* data)
   {
     static_cast<plot_window*> (data)->button_press (ww);
@@ -460,7 +469,7 @@ private:
 
     int retval = Fl_Window::handle (event);
 
-    // we only handle events which are in the canvas area
+    // We only handle events which are in the canvas area.
     if (Fl::event_y () >= h() - status_h)
       return retval;
 
@@ -540,11 +549,11 @@ private:
               axes::properties& ap = 
 		dynamic_cast<axes::properties&> (ax.get_properties ());
               
-              // Determine if we're zooming in or out
+              // Determine if we're zooming in or out.
               const double factor = 
 		(Fl::event_dy () > 0) ? 1.0 + wheel_zoom_speed : 1.0 - wheel_zoom_speed;
               
-              // Get the point we're zooming about
+              // Get the point we're zooming about.
               double x1, y1;
               pixel2pos (ax, Fl::event_x (), Fl::event_y (), x1, y1);
               
@@ -572,7 +581,7 @@ private:
 	  }
 	if (Fl::event_button () == 3)
 	  {
-	    // end of drag -- zoom
+	    // End of drag -- zoom.
 	    if (canvas->zoom ())
 	      {
 		canvas->zoom (false);
@@ -703,7 +712,7 @@ private:
   figure_manager (const figure_manager&);
   figure_manager& operator = (const figure_manager&);
 
-  // singelton -- hide all of the above
+  // Singelton -- hide all of the above.
 
   static int curr_index;
   typedef std::map<int, plot_window*> window_map;
@@ -843,8 +852,6 @@ std::string figure_manager::fltk_idx_header="fltk index=";
 int figure_manager::curr_index = 1;
 
 static bool backend_registered = false;
-// give FLTK no more than 0.01 sec to do it's stuff
-static double fltk_maxtime = 1e-2;
 
 static int
 __fltk_redraw__ (void)
@@ -936,7 +943,7 @@ public:
 
   double get_screen_resolution (void) const
   {
-    // FLTK doesn't give this info
+    // FLTK doesn't give this info.
     return 72.0;
   }
 
@@ -956,7 +963,8 @@ DEFUN_DLD (__fltk_redraw__, , , "")
   return octave_value ();
 }
 
-// call this to init the fltk backend
+// Initialize the fltk backend.
+
 DEFUN_DLD (__init_fltk__, , , "")
 {
   if (! backend_registered)
@@ -976,7 +984,8 @@ DEFUN_DLD (__init_fltk__, , , "")
 }
 
 
-// call this to delete the fltk backend
+// Delete the fltk backend.
+
 DEFUN_DLD (__remove_fltk__, , , "")
 {
   if (backend_registered)
@@ -1007,16 +1016,16 @@ DEFUN_DLD (__fltk_maxtime__, args, ,"")
   if (args.length () == 1)
     {
       if (args(0).is_real_scalar ())
-      fltk_maxtime = args(0).double_value ();
-    else
-      error ("argument must be a real scalar");
+        fltk_maxtime = args(0).double_value ();
+      else
+        error ("argument must be a real scalar");
     }
 
   return retval;
 }
 
 DEFUN_DLD (fltk_mouse_wheel_zoom, args, ,
-"-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} fltk_mouse_wheel_zoom ([@var{speed}])\n\
 Returns the current mouse wheel zoom factor in the fltk backend.  If\n\
 the @var{speed} argument is given, set the mouse zoom factor to this\n\
@@ -1028,9 +1037,9 @@ value.\n\
   if (args.length () == 1)
     {
       if (args(0).is_real_scalar ())
-      wheel_zoom_speed = args(0).double_value ();
-    else
-      error ("argument must be a real scalar");
+        wheel_zoom_speed = args(0).double_value ();
+      else
+        error ("argument must be a real scalar");
     }
 
   return retval;

@@ -1,5 +1,13 @@
 2009-12-09  John W. Eaton  <jwe@octave.org>
 
+	* DLD-FUNCTIONS/fltk_backend.cc: Style fixes.
+
+2009-12-09  Shai Ayal  <shaiay@users.sourceforge.net>
+
+	* DLD-FUNCTIONS/fltk_backend.cc (plot_window::print): Print immediatly.
+
+2009-12-09  John W. Eaton  <jwe@octave.org>
+
 	* gl2ps-renderer.cc (draw_pixels): New template function.
 	(opengl_renderer::draw_pixels): Use it.
 

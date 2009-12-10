@@ -123,6 +123,29 @@ alias_builtin (const std::string& alias, const std::string& name)
   symbol_table::alias_built_in_function (alias, name);
 }
 
+octave_shlib
+get_current_shlib (void)
+{
+  octave_shlib retval;
+  
+  octave_function *curr_fcn = octave_call_stack::current ();
+  if (curr_fcn)
+    {
+      if (curr_fcn->is_dld_function ())
+        {
+          octave_dld_function *dld = dynamic_cast<octave_dld_function *> (curr_fcn);
+          retval = dld->get_shlib ();
+        }
+      else if (curr_fcn->is_mex_function ())
+        {
+          octave_mex_function *mex = dynamic_cast<octave_mex_function *> (curr_fcn);
+          retval = mex->get_shlib ();
+        }
+    }
+
+  return retval;
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

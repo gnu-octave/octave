@@ -84,6 +84,9 @@ public:
 
   void atexit (void (*fcn) (void)) { exit_fcn_ptr = fcn; }
 
+  octave_shlib get_shlib (void) const
+    { return sh_lib; }
+
 private:
 
   void *mex_fcn_ptr;

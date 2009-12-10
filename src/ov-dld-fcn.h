@@ -72,6 +72,9 @@ public:
       const std::string& nm = std::string (),
       const std::string& ds = std::string ());
 
+  octave_shlib get_shlib (void) const
+    { return sh_lib; }
+
 private:
 
   octave_shlib sh_lib;

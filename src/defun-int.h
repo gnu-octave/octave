@@ -55,6 +55,22 @@ install_mex_function (void *fptr, bool fmex, const std::string& name,
 extern OCTINTERP_API void
 alias_builtin (const std::string& alias, const std::string& name);
 
+// Gets the shlib of the currently executing DLD function, if any.
+extern OCTINTERP_API octave_shlib
+get_current_shlib (void);
+
+// This is a convenience class that calls the above function automatically at
+// construction time. When deriving new classes, you can either use it as a field
+// or as a parent (with multiple inheritance).
+
+class octave_auto_shlib : public octave_shlib
+{
+  octave_auto_shlib (void)
+    : octave_shlib (get_current_shlib ()) { }
+  octave_auto_shlib (const octave_shlib& shl)
+    : octave_shlib (shl) { }
+};
+
 #define DECLARE_FUNX(name, args_name, nargout_name) \
   OCTAVE_EXPORT octave_value_list \
   name (const octave_value_list& args_name, int nargout_name)

@@ -405,16 +405,16 @@ if [ -n "$f77files" ]; then
   for f in $f77files; do
     case $f in
       *.f)
-        b=`echo $f | $SED 's,\.f$,,'`
+        b=`echo $f | $SED 's,.*/,,; s,\.f$,,'`
       ;;
       *.F)
-        b=`echo $f | $SED 's,\.F$,,'`
+        b=`echo $f | $SED 's,.*/,,; s,\.F$,,'`
       ;;
       *.f90)
-        b=`echo $f | $SED 's,\.f90$,,'`
+        b=`echo $f | $SED 's,.*/,,; s,\.f90$,,'`
       ;;
       *.F90)
-        b=`echo $f | $SED 's,\.F90$,,'`
+        b=`echo $f | $SED 's,.*/,,; s,\.F90$,,'`
       ;;
     esac
     if [ -n "$F77" ]; then
@@ -440,7 +440,7 @@ fi
 if [ -n "$cfiles" ]; then
   for f in $cfiles; do
     if [ -n  "$CC" ]; then
-      b=`echo $f | $SED 's,\.c$,,'`
+      b=`echo $f | $SED 's,.*/,,; s,\.c$,,'`
       if [ -n "$outputfile" ]; then
 	if $link; then
 	  o=$b.o
@@ -465,13 +465,13 @@ if [ -n "$ccfiles" ]; then
     if [ -n "$CXX" ]; then
       case $f in
 	*.cc)
-	  b=`echo $f | $SED 's,\.cc$,,'`
+	  b=`echo $f | $SED 's,.*/,,; s,\.cc$,,'`
 	;;
 	*.C)
-	  b=`echo $f | $SED 's,\.C$,,'`
+	  b=`echo $f | $SED 's,.*/,,; s,\.C$,,'`
 	;;
 	*.cpp)
-	  b=`echo $f | $SED 's,\.cpp$,,'`
+	  b=`echo $f | $SED 's,.*/,,; s,\.cpp$,,'`
 	;;
       esac
       if [ -n "$outputfile" ]; then

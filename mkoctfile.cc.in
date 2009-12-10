@@ -581,7 +581,7 @@ main (int argc, char **argv)
     {
       for (it = cfiles.begin (); it != cfiles.end (); ++it)
 	{
-	  string f = *it, dfile = basename (f) + ".d", line;
+	  string f = *it, dfile = basename (f, true) + ".d", line;
 
 	  unlink (dfile.c_str ());
 	  string cmd = vars["CC"] + " " + vars["DEPEND_FLAGS"] + " "
@@ -609,7 +609,7 @@ main (int argc, char **argv)
 
       for (it = ccfiles.begin (); it != ccfiles.end (); ++it)
 	{
-	  string f = *it, dfile = basename (f) + ".d", line;
+	  string f = *it, dfile = basename (f, true) + ".d", line;
 
 	  unlink (dfile.c_str ());
 	  string cmd = vars["CC"] + " " + vars["DEPEND_FLAGS"] + " "
@@ -640,7 +640,7 @@ main (int argc, char **argv)
 
   for (it = f77files.begin (); it != f77files.end (); ++it)
     {
-      string f = *it, b = basename (f);
+      string f = *it, b = basename (f, true);
       if (!vars["F77"].empty ())
 	{
 	  string o;
@@ -671,7 +671,7 @@ main (int argc, char **argv)
       string f = *it;
       if (!vars["CC"].empty ())
 	{
-	  string b = basename (f), o;
+	  string b = basename (f, true), o;
 	  if (!outputfile.empty ())
 	    {
 	      if (link)
@@ -700,7 +700,7 @@ main (int argc, char **argv)
       string f = *it;
       if (!vars["CXX"].empty ())
 	{
-	  string b = basename (f), o;
+	  string b = basename (f, true), o;
 	  if (!outputfile.empty ())
 	    {
 	      if (link)

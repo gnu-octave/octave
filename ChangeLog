@@ -1,5 +1,11 @@
 2009-12-10  John W. Eaton  <jwe@octave.org>
 
+	* mkoctfile.in, mkoctfile.cc.in: When compiling files in
+	subdirectories, place object files in current directory by
+	default.
+
+2009-12-10  John W. Eaton  <jwe@octave.org>
+
 	* mkoctfile.cc.in: Accept long options with single -.
 
 2009-12-10  John W. Eaton  <jwe@octave.org>

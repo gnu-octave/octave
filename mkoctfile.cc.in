@@ -413,7 +413,9 @@ main (int argc, char **argv)
       return 1;
     }
 
-  if (argc == 2 && (!strcmp (argv[1], "-v") || !strcmp (argv[1], "--version")))
+  if (argc == 2 && (!strcmp (argv[1], "-v")
+                    || !strcmp (argv[1], "-version")
+                    || !strcmp (argv[1], "--version")))
     {
       cout << version_msg << endl;
       return 0;
@@ -451,8 +453,8 @@ main (int argc, char **argv)
 	  file = arg;
 	  libfiles += (" " + quote_path (arg));
 	}
-      else if (arg == "-d" || arg == "--debug" || arg == "-v"
-	       || arg == "--verbose")
+      else if (arg == "-d" || arg == "-debug" || arg == "--debug"
+               || arg == "-v" || arg == "-verbose" ||  arg == "--verbose")
 	{
 	  debug = true;
 	  if (vars["CC"] == "cc-msvc")
@@ -462,7 +464,7 @@ main (int argc, char **argv)
 	  if (vars["DL_LD"] == "cc-msvc")
 	    vars["DL_LD"] += " -d";
 	}
-      else if (arg == "-h" || arg == "-?" || arg == "--help")
+      else if (arg == "-h" || arg == "-?" || arg == "-help" || arg == "--help")
 	{
 	  cout << usage_msg << endl;
 	  cout << help_msg << endl;
@@ -491,12 +493,12 @@ main (int argc, char **argv)
 	{
 	  ldflags += (" " + arg);
 	}
-      else if (arg == "-M" || arg == "--depend")
+      else if (arg == "-M" || arg == "-depend" || arg == "--depend")
 	{
 	  depend = true;
 	  compile = false;
 	}
-      else if (arg == "-o" || arg == "--output")
+      else if (arg == "-o" || arg == "-output" || arg == "--output")
 	{
 	  if (i < argc-1)
 	    {
@@ -506,7 +508,7 @@ main (int argc, char **argv)
 	  else
 	    cerr << "mkoctfile: output file name missing" << endl;
 	}
-      else if (arg == "-p" || arg == "--print")
+      else if (arg == "-p" || arg == "-print" || arg == "--print")
 	{
 	  if (i < argc-1)
 	    {
@@ -517,14 +519,14 @@ main (int argc, char **argv)
 	  else
 	    cerr << "mkoctfile: --print requires argument" << endl;
 	}
-      else if (arg == "-s" || arg == "--strip")
+      else if (arg == "-s" || arg == "-strip" || arg == "--strip")
 	{
 	  if (no_oct_file_strip_on_this_platform)
 	    cerr << "mkoctfile: stripping disabled on this platform" << endl;
 	  else
 	    strip = true;
 	}
-      else if (arg == "-c" || arg == "--compile")
+      else if (arg == "-c" || arg == "-compile" || arg == "--compile")
 	{
 	  link = false;
 	}
@@ -534,11 +536,11 @@ main (int argc, char **argv)
 	  vars["ALL_CXXFLAGS"] += " -g";
 	  vars["ALL_FFLAGS"] += " -g";
 	}
-      else if (arg == "--link-stand-alone")
+      else if (arg == "-link-stand-alone" || arg == "--link-stand-alone")
 	{
 	  link_stand_alone = true;
 	}
-      else if (arg == "--mex")
+      else if (arg == "-mex" || arg == "--mex")
 	{
 	  incflags += " -I.";
 #ifdef _MSC_VER

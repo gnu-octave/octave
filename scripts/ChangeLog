@@ -1,3 +1,8 @@
+2009-12-09  Rik <octave@nomad.inbox5.com>
+
+	* Makefile.am: Copy DOCSTRINGS from srcdir to builddir if it does not
+	exist.  Enables VPATH builds.
+
 2009-12-08  Petr Mikulik <mikulik@physics.muni.cz>
 
 	* plot/gnuplot_drawnow.m: Prune prompt lines from dumb terminal output.

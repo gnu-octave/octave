@@ -1,5 +1,10 @@
 2009-12-10  John W. Eaton  <jwe@octave.org>
 
+	* file-io.cc (fopen_mode_to_ios_mode): Allow "+" at the end of
+	modestrings like "rb+".
+
+2009-12-10  John W. Eaton  <jwe@octave.org>
+
 	* oct-stream.cc (BEGIN_C_CONVERSION, BEGIN_S_CONVERSION):
 	Store characters directly in appropriately sized std::string object.
 	(FINISH_CHARACTER_CONVERSION): Do store ASCII NUL values.

@@ -184,11 +184,11 @@ fopen_mode_to_ios_mode (const std::string& mode_arg)
 	    retval = std::ios::out | std::ios::trunc;
 	  else if (mode == "at")
 	    retval = std::ios::out | std::ios::app;
-	  else if (mode == "r+t")
+	  else if (mode == "r+t" || mode == "rt+")
 	    retval = std::ios::in | std::ios::out;
-	  else if (mode == "w+t")
+	  else if (mode == "w+t" || mode == "wt+")
 	    retval = std::ios::in | std::ios::out | std::ios::trunc;
-	  else if (mode == "a+t")
+	  else if (mode == "a+t" || mode == "at+")
 	    retval = std::ios::in | std::ios::out | std::ios::app;
 	  else if (mode == "rb" || mode == "r")
 	    retval = std::ios::in | std::ios::binary;
@@ -196,12 +196,12 @@ fopen_mode_to_ios_mode (const std::string& mode_arg)
 	    retval = std::ios::out | std::ios::trunc | std::ios::binary;
 	  else if (mode == "ab" || mode == "a")
 	    retval = std::ios::out | std::ios::app | std::ios::binary;
-	  else if (mode == "r+b" || mode == "r+")
+	  else if (mode == "r+b" || mode == "rb+" || mode == "r+")
 	    retval = std::ios::in | std::ios::out | std::ios::binary;
-	  else if (mode == "w+b" || mode == "w+")
+	  else if (mode == "w+b" || mode == "wb+" || mode == "w+")
 	    retval = (std::ios::in | std::ios::out | std::ios::trunc
 		      | std::ios::binary);
-	  else if (mode == "a+b" || mode == "a+")
+	  else if (mode == "a+b" || mode == "ab+" || mode == "a+")
 	    retval = (std::ios::in | std::ios::out | std::ios::app
 		      | std::ios::binary);
 	  else

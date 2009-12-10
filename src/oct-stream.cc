@@ -1555,22 +1555,16 @@ do_scanf_conv (std::istream&, const scanf_format_elt&, double*,
  \
   int width = elt->width ? elt->width : 1; \
  \
-  char *tbuf = new char[width + 1]; \
+  std::string tmp (width, '\0'); \
  \
   int c = EOF; \
   int n = 0; \
  \
   while (is && n < width && (c = is.get ()) != EOF) \
-    tbuf[n++] = static_cast<char> (c);		    \
- \
-  tbuf[n] = '\0'; \
+    tmp[n++] = static_cast<char> (c); \
  \
   if (n > 0 && c == EOF) \
-    is.clear (); \
- \
-  std::string tmp = tbuf; \
- \
-  delete [] tbuf
+    is.clear ()
 
 // For a `%s' format, skip initial whitespace and then read until the
 // next whitespace character or until WIDTH characters have been read.
@@ -1583,7 +1577,7 @@ do_scanf_conv (std::istream&, const scanf_format_elt&, double*,
     { \
       if (width) \
         { \
-          char *tbuf = new char [width+1]; \
+          std::string tmp (width, '\0'); \
  \
           int c = EOF; \
  \
@@ -1593,7 +1587,7 @@ do_scanf_conv (std::istream&, const scanf_format_elt&, double*,
             { \
               if (! isspace (c)) \
                 { \
-                  tbuf[n++] = static_cast<char> (c); \
+                  tmp[n++] = static_cast<char> (c); \
                   break; \
                 } \
             } \
@@ -1606,17 +1600,13 @@ do_scanf_conv (std::istream&, const scanf_format_elt&, double*,
                   break; \
                 } \
               else \
-                tbuf[n++] = static_cast<char> (c); \
+                tmp[n++] = static_cast<char> (c); \
             } \
- \
-          tbuf[n] = '\0'; \
  \
           if (n > 0 && c == EOF) \
             is.clear (); \
  \
-          tmp = tbuf; \
- \
-          delete [] tbuf; \
+          tmp.resize (n); \
         } \
       else \
         { \
@@ -1680,7 +1670,7 @@ do_scanf_conv (std::istream&, const scanf_format_elt&, double*,
 	    { \
 	      conversion_count++; \
  \
-	      while (i < width && tmp[i] != '\0') \
+	      while (i < width) \
 		{ \
 		  if (data_index == max_size) \
 		    { \

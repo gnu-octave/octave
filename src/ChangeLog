@@ -1,4 +1,8 @@
-2009-12-09  Rik <octave@nomad.inbox5.com>
+2009-12-10  Rik <octave@nomad.inbox5.com>
+
+	* Makefile.am: distclean symbolic links for OCT_FILES
+
+2009-12-10  Rik <octave@nomad.inbox5.com>
 
 	* Makefile.am: Copy DOCSTRINGS from srcdir to builddir if it does not
 	exist.  Enables VPATH builds.

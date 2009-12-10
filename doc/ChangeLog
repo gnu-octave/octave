@@ -1,3 +1,8 @@
+2009-12-10  Rik <octave@nomad.inbox5.com>
+
+	* interpreter/Makefile.am: new distdir-local rule to check for presence of
+	necessary libraries before packaging distribution
+
 2009-12-08  Rik <octave@nomad.inbox5.com>
 
 	* interpreter/Makefile.am: Distribute all generated documentation (.pdf,

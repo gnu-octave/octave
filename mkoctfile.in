@@ -350,6 +350,13 @@ if $link_stand_alone; then
 else
   if [ -n "$outputfile" ]; then
     octfile="$outputfile"
+    case "$octfile" in
+      *$output_ext)
+      ;;
+      *)
+        octfile="$octfile$output_ext"
+      ;;
+    esac
   else
     octfile=`basename $octfile`
     octfile=`echo $octfile | $SED 's,\.[^.]*$,,'`$output_ext

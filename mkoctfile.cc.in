@@ -570,7 +570,13 @@ main (int argc, char **argv)
   else
     {
       if (!outputfile.empty ())
-	octfile = outputfile;
+        {
+          octfile = outputfile;
+          size_t len = octfile.length ();
+          size_t len_ext = output_ext.length ();
+          if (octfile.substr (len-len_ext) != output_ext)
+            octfile += output_ext;
+        }
       else
 	octfile = basename (octfile, true) + output_ext;
     }

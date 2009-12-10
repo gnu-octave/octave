@@ -1,5 +1,10 @@
 2009-12-10  John W. Eaton  <jwe@octave.org>
 
+	* mkoctfile.in, mkoctfile.cc.in: If output file is specified and
+	it does not end in output_ext, append output_ext.
+
+2009-12-10  John W. Eaton  <jwe@octave.org>
+
 	* mkoctfile.in, mkoctfile.cc.in: When compiling files in
 	subdirectories, place object files in current directory by
 	default.

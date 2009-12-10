@@ -1,3 +1,7 @@
+2009-12-10  John W. Eaton  <jwe@octave.org>
+
+	* mkoctfile.in: Accept long options with single -.
+
 2009-12-09  John W. Eaton  <jwe@octave.org>
 
 	* HACKING: Clarify gnulib checkout and use.

@@ -150,7 +150,7 @@ fi
 
 if [ $# -eq 1 ]; then
   case "$1" in
-    -v | --version)
+    -v | -version | --version)
       echo $version_msg 1>&2
       exit 0
     ;;
@@ -180,10 +180,10 @@ while [ $# -gt 0 ]; do
       file=$1
       libfiles="$libfiles $file"
     ;;
-    -d | --debug | -v | --verbose)
+    -d | -debug | --debug | -v | -verbose | --verbose)
       dbg=echo
     ;;
-    -h | -\? | --help)
+    -h | -\? | -help | --help)
       echo $usage_msg 1>&2
       cat << EOF
 
@@ -283,11 +283,11 @@ EOF
     -[lLR]* | -Wl,*)
       ldflags="$ldflags $1"
     ;;
-    -M | --depend)
+    -M | -depend | --depend)
       depend=true
       compile=false
     ;;
-    -o | --output)
+    -o | -ouput | --output)
       shift
       if [ $# -gt 0 ]; then
         outputfile="$1"
@@ -295,7 +295,7 @@ EOF
         echo "mkoctfile: output file name missing" 1>&2
       fi
     ;;
-    -p | --print)
+    -p | -print | --print)
       shift
       if [ $# -gt 0 ]; then
         eval echo \${$1}
@@ -305,14 +305,14 @@ EOF
         exit 1
       fi
     ;;
-    -s | --strip)
+    -s | -strip | --strip)
       if $no_oct_file_strip_on_this_platform; then
         echo "mkoctfile: stripping disabled on this platform" 1>&2
       else
         strip=true
       fi
     ;;
-    -c | --compile)
+    -c | -compile | --compile)
       link=false
     ;;
     -g)
@@ -320,10 +320,10 @@ EOF
       ALL_CXXFLAGS="$ALL_CXXFLAGS -g"
       ALL_FFLAGS="$ALL_FFLAGS -g"
     ;;
-    --link-stand-alone)
+    -link-stand-alone | --link-stand-alone)
       link_stand_alone=true
     ;;
-    --mex)
+    -mex | --mex)
       incflags="$incflags -I."
       output_ext=".mex"
     ;;

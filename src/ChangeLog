@@ -1,3 +1,7 @@
+2009-12-10  Jaroslav Hajek  <highegg@gmail.com>
+
+	* symtab.cc (out_of_date_check): Try also autoloads.
+
 2009-12-09  Jaroslav Hajek  <highegg@gmail.com>
 
 	* symtab.h (symbol_table::fcn_info::clear_autoload_function): New method.

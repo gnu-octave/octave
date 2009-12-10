@@ -211,6 +211,10 @@ out_of_date_check (octave_value& function,
                             file = load_path::find_method (dispatch_type, nm,
                                                            dir_name);
 
+                          // Maybe it's an autoload?
+                          if (file.empty ())
+                            file = lookup_autoload (nm);
+
                           if (file.empty ())
                             file = load_path::find_fcn (nm, dir_name);
                         }

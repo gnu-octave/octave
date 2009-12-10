@@ -158,8 +158,7 @@ all-local: dvi html pdf ps doc-cache $(HTMLDIR_IMAGES)
 
 # Prevent packaging of distribution unless all libraries 
 # necessary to create documentation are present
-distdir: distdir-local
-distdir-local:
+dist-hook:
 	@$(GREP) '#define HAVE_COLAMD 1' $(top_builddir)/config.h > /dev/null || { echo "Documentation creation requires missing COLAMD library.  Cannot package distribution!" ; exit 1; }
 	@$(GREP) '#define HAVE_CHOLMOD 1' $(top_builddir)/config.h > /dev/null || { echo "Documentation creation requires missing CHOLMOD library.  Cannot package distribution!" ; exit 1; }
 	@$(GREP) '#define HAVE_UMFPACK 1' $(top_builddir)/config.h > /dev/null || { echo "Documentation creation requires missing UMFPACK library.  Cannot package distribution!" ; exit 1; }

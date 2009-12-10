@@ -1,5 +1,10 @@
 2009-12-10  Rik <octave@nomad.inbox5.com>
 
+	* interpreter/Makefile.am: Replace distdir-local with dist-hook rule as it
+	is better supported by automake.
+
+2009-12-10  Rik <octave@nomad.inbox5.com>
+
 	* interpreter/Makefile.am: new distdir-local rule to check for presence of
 	necessary libraries before packaging distribution
 

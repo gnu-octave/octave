@@ -1,3 +1,8 @@
+2009-12-09  Jaroslav Hajek  <highegg@gmail.com>
+
+	* oct-shlib.h (octave_shlib): Rewrite.
+	* oct-shlib.cc (octave_shlib): Rewrite.
+
 2009-12-09  John W. Eaton  <jwe@octave.org>
 
 	* oct-time.cc (octave_base_tm::strftime): Call nstrftime instead

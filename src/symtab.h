@@ -847,6 +847,8 @@ public:
 
     void clear_user_function (void) { rep->clear_user_function (); }
     
+    void clear_autoload_function (void) { rep->clear_autoload_function (); }
+    
     void clear_mex_function (void) { rep->clear_mex_function (); }
 
     void add_dispatch (const std::string& type, const std::string& fname)
@@ -1390,6 +1392,20 @@ public:
     // FIXME -- is this necessary, or even useful?
     // else
     //   error ("clear: no such function `%s'", name.c_str ());
+  }
+
+  // This clears oct and mex files, incl. autoloads.
+  static void clear_dld_function (const std::string& name)
+  {
+    fcn_table_iterator p = fcn_table.find (name);
+
+    if (p != fcn_table.end ())
+      {
+	fcn_info& finfo = p->second;
+
+	finfo.clear_autoload_function ();
+	finfo.clear_user_function ();
+      }
   }
 
   static void clear_mex_functions (void)

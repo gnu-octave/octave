@@ -1,6 +1,7 @@
 /*
 
 Copyright (C) 1999, 2000, 2002, 2004, 2005, 2006, 2007, 2008 John W. Eaton
+Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
 
@@ -24,43 +25,103 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_shlib_h 1
 
 #include <string>
+#include <map>
 
 #include "oct-time.h"
-
-// This just provides a way to avoid infinite recursion when building
-// octave_shlib objects.
-
-class
-OCTAVE_API
-octave_xshlib
-{
-public:
-
-  octave_xshlib (void) { }
-};
 
 class
 OCTAVE_API
 octave_shlib
 {
-public:
+public: // FIXME: make this class private?
 
   typedef std::string (*name_mangler) (const std::string&);
-
   typedef void (*close_hook) (const std::string&);
 
-  octave_shlib (void) : relative (false), rep (make_shlib ()) { }
+  class shlib_rep
+  {
+  public:
 
-  octave_shlib (const std::string& f)
-    : relative (false), rep (make_shlib ()) { open (f); }
+    shlib_rep (void) 
+      : count (1), file (), tm_loaded (time_t ()) { }
 
-  virtual ~octave_shlib (void)
+  protected:
+
+    shlib_rep (const std::string& f);
+
+  public:
+
+    virtual ~shlib_rep (void)
+      {
+        instances.erase (file);
+      }
+
+    virtual bool is_open (void) const
+      { return false; }
+
+    virtual void *search (const std::string&, name_mangler = 0)
+      { return 0; }
+
+    bool is_out_of_date (void) const;
+
+    // This method will be overriden conditionally.
+    static shlib_rep *new_instance (const std::string& f);
+
+    static shlib_rep *get_instance (const std::string& f, bool fake);
+
+    octave_time time_loaded (void) const
+      { return tm_loaded; }
+
+    std::string file_name (void) const
+      { return file; }
+
+    void insert_hook_name (const std::string& name) const;
+
+    void erase_hook_name (const std::string& name) const;
+
+    size_t num_fcn_names (void) const { return fcn_names.size (); }
+
+    void add_fcn_name (const std::string&);
+
+    bool remove_fcn_name (const std::string&);
+
+    void do_close_hook (close_hook cl_hook);
+
+  public:
+
+    int count;
+
+  protected:
+
+    void fake_reload (void); 
+
+    std::string file;
+    octave_time tm_loaded;
+
+    // Set of hooked function names.
+    typedef std::map<std::string, size_t>::iterator fcn_names_iterator;
+    typedef std::map<std::string, size_t>::const_iterator fcn_names_const_iterator;
+
+    std::map<std::string, size_t> fcn_names;
+
+    static std::map<std::string, shlib_rep *> instances;
+  };
+
+private:
+
+  static shlib_rep nil_rep;
+
+public:
+
+  octave_shlib (void) : rep (&nil_rep) { rep->count++; }
+
+  octave_shlib (const std::string& f, bool fake = true)
+    : rep (shlib_rep::get_instance (f, fake)) { }
+
+  ~octave_shlib (void)
     {
-      if (rep && --rep->count == 0)
-	{
-	  delete rep;
-	  rep = 0;
-	}
+      if (--rep->count == 0)
+        delete rep;
     }
 
   octave_shlib (const octave_shlib& sl)
@@ -86,51 +147,49 @@ public:
   bool operator == (const octave_shlib& sl) const
     { return (rep == sl.rep); }
 
-  operator bool () const { return is_open (); }
+  operator bool () const { return rep->is_open (); }
 
-  virtual void open (const std::string& f) { rep->open (f); }
+  void open (const std::string& f) 
+    { *this = octave_shlib (f); }
 
-  virtual void *search (const std::string& nm, name_mangler mangler = 0)
-    { return rep->search (nm, mangler); }
+  void close (close_hook cl_hook = 0)
+    { 
+      if (cl_hook)
+        rep->do_close_hook (cl_hook);
 
-  virtual void close (close_hook cl_hook = 0)
-    { rep->close (cl_hook); }
+      *this = octave_shlib (); 
+    }
 
-  virtual bool remove (const std::string& fcn_name)
-    { return rep->remove (fcn_name); }
+  void *search (const std::string& nm, name_mangler mangler = 0) const
+    { 
+      void *f = rep->search (nm, mangler); 
+      if (f)
+        rep->add_fcn_name (nm);
 
-  virtual bool is_out_of_date (void) const
+      return f;
+    }
+
+  void add (const std::string& name)
+    { rep->add_fcn_name (name); }
+
+  bool remove (const std::string& name)
+    { return rep->remove_fcn_name (name); }
+
+  size_t number_of_functions_loaded (void) const
+    { return rep->num_fcn_names (); }
+
+  bool is_out_of_date (void) const
     { return rep->is_out_of_date (); }
 
-  void mark_relative (void) { relative = true; }
-
-  bool is_relative (void) const { return relative; }
-
-  virtual size_t number_of_functions_loaded (void) const
-    { return rep->number_of_functions_loaded (); }
-
-  virtual std::string file_name (void) const
+  std::string file_name (void) const
     { return rep->file_name (); }
 
-  virtual octave_time time_loaded (void) const
+  octave_time time_loaded (void) const
     { return rep->time_loaded (); }
 
-protected:
+private:
 
-  octave_shlib (const octave_xshlib&) : rep (0) { }
-
-  virtual bool is_open (void) const { return rep->is_open (); }
-
-  static octave_shlib *make_shlib (void);
-
-  // TRUE if this function was found from a relative path element.
-  bool relative;
-
-  union
-    {
-      octave_shlib *rep;
-      int count;
-    };
+  shlib_rep *rep;
 };
 
 #endif

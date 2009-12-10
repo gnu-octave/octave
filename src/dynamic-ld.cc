@@ -107,9 +107,11 @@ octave_shlib_list::do_remove (octave_shlib& shl,
     {
       if (*p == shl)
 	{
-	  shl.close (cl_hook);
-
+          // Erase first to avoid potentially invalidating the pointer by the
+          // following hooks.
 	  lib_list.erase (p);
+
+	  shl.close (cl_hook);
 
 	  break;
 	}
@@ -240,9 +242,11 @@ octave_mex_file_list::do_remove (octave_shlib& shl,
     {
       if (*p == shl)
 	{
-	  shl.close (cl_hook);
-
+          // Erase first to avoid potentially invalidating the pointer by the
+          // following hooks.
 	  file_list.erase (p);
+
+	  shl.close (cl_hook);
 
 	  break;
 	}
@@ -309,7 +313,7 @@ void do_clear_function (const std::string& fcn_name)
 {
   warning_with_id ("Octave:reload-forces-clear", "  %s", fcn_name.c_str ());
 
-  symbol_table::clear_user_function (fcn_name);
+  symbol_table::clear_dld_function (fcn_name);
 }
 
 static void
@@ -346,12 +350,7 @@ octave_dynamic_loader::do_load_oct (const std::string& fcn_name,
       oct_file.open (file_name);
 
       if (! error_state && oct_file)
-	{
-	  octave_shlib_list::append (oct_file);
-
-	  if (relative)
-	    oct_file.mark_relative ();
-	}
+        octave_shlib_list::append (oct_file);
     }
 
   if (! error_state)
@@ -413,12 +412,7 @@ octave_dynamic_loader::do_load_mex (const std::string& fcn_name,
       mex_file.open (file_name);
 
       if (! error_state && mex_file)
-	{
-	  octave_shlib_list::append (mex_file);
-
-	  if (relative)
-	    mex_file.mark_relative ();
-	}
+        octave_shlib_list::append (mex_file);
     }
 
   if (! error_state)

@@ -1,3 +1,14 @@
+2009-12-09  Jaroslav Hajek  <highegg@gmail.com>
+
+	* symtab.h (symbol_table::fcn_info::clear_autoload_function): New method.
+	(symbol_table::clear_dld_function): New method.
+	* dynamic-ld.cc (octave_shlib_list::do_remove): Switch order of stmts.
+	(octave_mex_file_list::do_remove): Likewise.
+	(do_clear_function): Call symbol_table::clear_dld_function.
+	(octave_dynamic_loader::do_load_oct): Don't use
+	octave_shlib::mark_relative.
+	(octave_dynamic_loader::do_load_mex): Ditto.
+
 2009-12-10  John W. Eaton  <jwe@octave.org>
 
 	* file-io.cc (fopen_mode_to_ios_mode): Allow "+" at the end of

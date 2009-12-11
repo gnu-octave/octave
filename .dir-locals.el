@@ -1,4 +1,5 @@
 ((nil . ((indent-tabs-mode . nil)
          (fill-column . 72)))
  (c-default-mode "gnu")
- ("ChangeLog" . ((nil . ((indent-tabs-mode . t))))))
+ (change-log-mode . ((indent-tabs-mode . t)))
+ (makefile-mode . ((indent-tabs-mode . t))))

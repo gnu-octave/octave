@@ -73,7 +73,7 @@
 
 	* dim-vector.h (dim_vector::zero_by_zero): New method.
 	* idx-vector.h (idx_vector::idx_mask_rep::is_colon_equiv): Fix.
-	* Array.cc (Array<T>::assign): Minor tweaks. Optimize 
+	* Array.cc (Array<T>::assign): Minor tweaks. Optimize
 	A = []; A(1:m,1:n,1:k) = X for all cases. Use a shallow copy
 	for all colon-equivalent indices.
 
@@ -140,7 +140,7 @@
 
 2009-11-18  Jaroslav Hajek  <highegg@gmail.com>
 
-	* Sparse.h (read_sparse_matrix): Fix order of tests and reads. 
+	* Sparse.h (read_sparse_matrix): Fix order of tests and reads.
 
 2009-11-18  Jaroslav Hajek  <highegg@gmail.com>
 
@@ -168,10 +168,10 @@
 
 2009-11-13  Jaroslav Hajek  <highegg@gmail.com>
 
-	* CNDArray.cc (ComplexNDArray::all_elements_are_real): 
+	* CNDArray.cc (ComplexNDArray::all_elements_are_real):
 	Use mx_inline_all_real.
 	* CMatrix.cc (ComplexMatrix::all_elements_are_real): Ditto.
-	* fCNDArray.cc (FloatComplexNDArray::all_elements_are_real): 
+	* fCNDArray.cc (FloatComplexNDArray::all_elements_are_real):
 	Use mx_inline_all_real.
 	* fCMatrix.cc (FloatComplexMatrix::all_elements_are_real): Ditto.
 	* CDiagMatrix.cc (ComplexDiagMatrix::all_elements_are_real): Ditto.
@@ -346,8 +346,8 @@
 	const Matrix&, bool), SparseLU::SparseLU (const SparseMatrix&,
 	const ColumnVector&, const Matrix&, boo, bool, double, bool,
 	bool)): Fix test for valid pivot tolerance.
-	* SparseCmplxLU.cc (SparseComplexLU::SparseComplexLU 
-	(const SparseComplexMatrix&, const Matrix&, bool), 
+	* SparseCmplxLU.cc (SparseComplexLU::SparseComplexLU
+	(const SparseComplexMatrix&, const Matrix&, bool),
 	SparseComplexLU::SparseComplexLU (const SparseComplexMatrix&,
 	const ColumnVector&, const Matrix&, boo, bool, double, bool,
 	bool)): Ditto.
@@ -427,7 +427,7 @@
 
 2009-10-16  Jaroslav Hajek  <highegg@gmail.com>
 
-	* ArrayN.h: Remove everything, just #define ArrayN Array. 
+	* ArrayN.h: Remove everything, just #define ArrayN Array.
 	Warn if under gcc.
 	* ArrayN.cc: Remove.
 	* Array.cc (operator >>): New operator.
@@ -657,7 +657,7 @@
 	* boolNDArray.h (boolNDArray::matrix_type): New typedef.
 	* charNDArray.h (charNDArray::matrix_type): New typedef.
 
-	* dMatrix.h (Matrix::column_vector_type, 
+	* dMatrix.h (Matrix::column_vector_type,
 	Matrix::row_vector_type): New typedefs.
 	* fMatrix.h (FloatMatrix::column_vector_type,
 	FloatMatrix::row_vector_type): New typedefs.
@@ -919,9 +919,9 @@
 	* fCNDArray.cc: Ditto.
 	* fMatrix.cc: Ditto.
 	* fNDArray.cc: Ditto.
-	
+
 2009-08-20  Jaroslav Hajek  <highegg@gmail.com>
-	
+
 	* dMatrix.cc (Matrix::operator!): Simplify & check for NaNs.
 	* fMatrix.cc (FloatMatrix::operator!): Ditto.
 	* CMatrix.cc (ComplexMatrix::operator!): Ditto.
@@ -937,7 +937,7 @@
 	mx_inline_div, mx_inline_uminus, mx_inline_not, mx_inline_add2,
 	mx_inline_sub2, mx_inline_mul2, mx_inline_div2, mx_inline_iszero,
 	mx_inline_notzero, mx_inline_and, mx_inline_or, mx_inline_not_and,
-	mx_inline_not_or, mx_inline_and_not, mx_inline_or_not, 
+	mx_inline_not_or, mx_inline_and_not, mx_inline_or_not,
 	mx_inline_lt, mx_inline_le, mx_inline_gt, mx_inline_ge,
 	mx_inline_eq, mx_inline_ne): New templates.
 	(do_mx_unary_op, do_mm_binary_op, do_sm_binary_op,
@@ -1338,7 +1338,7 @@
 
 2009-05-21  Jaroslav Hajek  <highegg@gmail.com>
 
-	* CMatrix.cc 
+	* CMatrix.cc
 	(ComplexMatrix::all, ComplexMatrix::any, ComplexMatrix::cumprod,
 	ComplexMatrix::cumsum, ComplexMatrix::prod, ComplexMatrix::sum,
 	ComplexMatrix::sumsq): Use explicit template qualifications
@@ -1394,7 +1394,7 @@
 	* Makefile.in: Include it.
 
 2009-05-15  Jaroslav Hajek  <highegg@gmail.com>
-	
+
 	* Array.cc (Array<T>::instantiation_guard): New function
 	(INSTANTIATE_ARRAY): Always override it here.
 	* Array.h: Declare it.
@@ -1411,7 +1411,7 @@
 
 2009-05-07  Marco Atzeri  <marco_atzeri@yahoo.it>
 
-        * Makefile.in: (SHLPRE): Rename from SHLLIBPRE.
+	* Makefile.in: (SHLPRE): Rename from SHLLIBPRE.
 
 2009-05-05  Robert T. Short  <octave@phaselockedsystems.com>
 
@@ -1488,7 +1488,7 @@
 	Sparse-perm-op-defs.h to the list.
 
 2009-03-25  Jaroslav Hajek  <highegg@gmail.com>
-	
+
 	* oct-inttypes.cc (INT_DOUBLE_BINOP_DECL (*, uint64),
 	INT_DOUBLE_BINOP_DECL (*, int64)): x -> y where appropriate.
 
@@ -1514,7 +1514,7 @@
 	* fCDiagMatrix.cc: Ditto.
 
 2009-03-20  Jaroslav Hajek  <highegg@gmail.com>
-	
+
 	* CColVector.cc, CMatrix.cc, CNDArray.cc, CRowVector.cc, CSparse.cc,
 	boolSparse.cc, dColVector.cc, dMatrix.cc, dNDArray.cc, dRowVector.cc,
 	dSparse.cc, fCColVector.cc, fCMatrix.cc, fCNDArray.cc, fCRowVector.cc,
@@ -1656,7 +1656,7 @@
 	Ditto.
 	* CNDArray.cc (ComplexNDArray::ComplexNDArray (const charNDArray&)):
 	Ditto.
-	* fCNDArray.cc (FloatComplexNDArray::FloatComplexNDArray 
+	* fCNDArray.cc (FloatComplexNDArray::FloatComplexNDArray
 	(const charNDArray&)): Ditto.
 
 	* dNDArray.h (NDArray::NDArray (const charNDArray&)): Declare.
@@ -1664,7 +1664,7 @@
 	Ditto.
 	* CNDArray.h (ComplexNDArray::ComplexNDArray (const charNDArray&)):
 	Ditto.
-	* fCNDArray.h (FloatComplexNDArray::FloatComplexNDArray 
+	* fCNDArray.h (FloatComplexNDArray::FloatComplexNDArray
 	(const charNDArray&)): Ditto.
 
 	* dMatrix.cc (Matrix::Matrix (const charMatrix&)): Cast to unsigned
@@ -1672,7 +1672,7 @@
 	* fMatrix.cc (FloatMatrix::FloatMatrix (const charMatrix&)): Likewise.
 	* CMatrix.cc (ComplexMatrix::ComplexMatrix (const charMatrix&)):
 	Likewise.
-	* fCMatrix.cc (FloatComplexMatrix::FloatComplexMatrix 
+	* fCMatrix.cc (FloatComplexMatrix::FloatComplexMatrix
 	(const charMatrix&)): Likewise.
 
 2009-03-10  Jason Riedy  <jason@acm.org>
@@ -1754,7 +1754,7 @@
 	* dSparse.h (SparseMatrix::SparseMatrix(const PermMatrix&)): New
 	constructor.
 	(SparseMatrix::SparseMatrix(const DiagMatrix&)): Fix implementation.
-	* CSparse.h (SparseComplexMatrix::SparseComplexMatrix(const ComplexDiagMatrix&)): 
+	* CSparse.h (SparseComplexMatrix::SparseComplexMatrix(const ComplexDiagMatrix&)):
 	Fix implementation.
 
 2009-03-04  Jaroslav Hajek  <highegg@gmail.com>
@@ -1785,7 +1785,7 @@
 	(octave_int_cmp_op::emulate_mop): New static overloaded template
 	member function.
 	* oct-inttypes.cc: Turn the octave_int_cmp_op::mop definitions into
-	defs for octave_int_cmp_op::emulate_mop. 
+	defs for octave_int_cmp_op::emulate_mop.
 	(INSTANTIATE_INT64_DOUBLE_CMP_OP0): Instantiate
 	octave_int_cmp_op::emulate_op instead.
 
@@ -1805,7 +1805,7 @@
 	* oct-sort.h (octave_sort<T>::MergeState::MergeState): New
 	constructor.
 	(octave_sort<T>::MergeState::~MergeState): New destructor.
-	(octave_sort<T>::MergeState::reset, 
+	(octave_sort<T>::MergeState::reset,
 	octave_sort<T>::MergeState::getmem,
 	octave_sort<T>::MergeState::getmemi): New methods.
 	(octave_sort<T>::sort,
@@ -1948,7 +1948,7 @@
 	const idx_vector& j,...)): Fix invalid dimension inquiry.
 
 2009-02-16  Jaroslav Hajek  <highegg@gmail.com>
-	
+
 	* mx-inlines.cc (OP_ROW_SHORT_CIRCUIT): New macro.
 	(mx_inline_any, mx_inline_all): Override row-reduction case.
 	(MX_CUMULATIVE_OP, MX_BASE_REDUCTION_OP, MX_REDUCTION_OP,
@@ -1958,7 +1958,7 @@
 	Remove unused macros.
 
 2009-02-16  Jaroslav Hajek  <highegg@gmail.com>
-	
+
 	* mx-inlines.cc (OP_RED_FCNN): Use explicit type qualification.
 	(mx_inline_count): New overloaded template function.
 	* boolNDArray.h (boolNDArray::sum): Return NDArray.
@@ -2072,7 +2072,7 @@
 	* oct-sort.h (compare_fcn_type): Ditto.
 
 	* oct-sort.h, oct-sort.cc (octave_sort<T>::octave_sort,
-	octave_sort<T>::set_compare, octave_sort<T>::compare): 
+	octave_sort<T>::set_compare, octave_sort<T>::compare):
 	Use typedef to simplify decl.
 	(octave_sort<T>::ascending_compare,
 	octave_sort<T>::descending_compare):
@@ -2104,11 +2104,11 @@
 	* Array.h: Reflect changes.
 
 	* dim-vector.h (dim_vector::is_vector): New method.
-	* Array-C.cc, Array-fC.cc: Override _sort_isnan, don't check for 
+	* Array-C.cc, Array-fC.cc: Override _sort_isnan, don't check for
 	NaN in default comparators. Provide NaN-safe comparators, override
 	_sortrows_comparator.
 	* Array-d.cc, Array-f.cc: Provide NaN-safe comparators, override
-	_sortrows_comparator.	
+	_sortrows_comparator.
 	* Range.cc (Range::is_sorted): New method.
 	* Range.h: Declare it.
 
@@ -2134,7 +2134,7 @@
 	From Rafael Laboissiere <rafael@debian.org>.
 
 2009-02-05  Jaroslav Hajek  <highegg@gmail.com>
-	
+
 	* idx-vector.h (idx_vector::idx_colon_rep,
 	idx_vector::idx_scalar_rep, idx_vector::idx_range_rep,
 	idx_vector::idx_vector_rep): Declare allocators.
@@ -2168,7 +2168,7 @@
 	allocation for pointers and const pointers.
 
 2009-02-03  Benjamin Lindner  <lindnerben@gmx.net>
-	
+
 	* Makefile.in: Add missing library reference.
 
 2009-02-03  Jaroslav Hajek  <highegg@gmail.com>
@@ -2384,7 +2384,7 @@
 	CHOL::shift_sym): Reflect changes in qrupdate interfaces,
 
 	* fCmplxCHOL.h (FloatComplexCHOL::update, FloatComplexCHOL::downdate,
-	FloatComplexCHOL::insert_sym): Update interfaces.  
+	FloatComplexCHOL::insert_sym): Update interfaces.
 	* fCmplxCHOL.cc: Update external decls for qrupdate routines.
 	(FloatComplexCHOL::update, FloatComplexCHOL::downdate,
 	FloatComplexCHOL::insert_sym, FloatComplexCHOL::delete_sym,
@@ -2410,7 +2410,7 @@
 	From Robert Millan <rmh@aybabtu.com>.
 
 2009-01-14  Jaroslav Hajek  <highegg@gmail.com>
-	
+
 	* Array.h (Array<T>::rep, Array<T>::dimensions): Make protected.
 	* Array.cc (Array<T>::make_unique): Move implementation here.
 	(Array<T>::fill): Ditto.
@@ -2462,9 +2462,9 @@
 
 2008-12-12  David Bateman  <dbateman@free.fr>
 
-	* sparse-base-chol.cc (inverse): Fix inversion based on cholesky 
+	* sparse-base-chol.cc (inverse): Fix inversion based on cholesky
 	factorization.
-	
+
 2008-12-12  Jaroslav Hajek  <highegg@gmail.com>
 
 	* oct-locbuf.cc: New source.
@@ -2493,7 +2493,7 @@
 
 2008-12-08  Jaroslav Hajek  <highegg@gmail.com>
 
-	* idx-vector.cc (idx_vector::idx_vector_rep::idx_vector_rep (const 
+	* idx-vector.cc (idx_vector::idx_vector_rep::idx_vector_rep (const
 	Sparse<bool>&)): New constructor.
 	* idx_vector.h: Declare it.
 	(idx_vector::idx_vector (const Sparse<bool>&)): New constructor.
@@ -2503,7 +2503,7 @@
 2008-12-09  David Bateman  <dbateman@free.fr>
 
 	* Makefile.in (INCLUDES): Add oct-locbuf.h
-	
+
 2008-12-07  Jaroslav Hajek  <highegg@gmail.com>
 
 	* mx-inlines.cc (mx_inline_fill_vs): New template function.
@@ -2546,9 +2546,9 @@
 	(PermMatrix::dim1, dim2, rows, columns, cols, length,
 	nelem, numel, byte_size, dims): New methods.
 
-	
+
 2008-12-04  Jaroslav Hajek  <highegg@gmail.com>
-	
+
 	* dDiagMatrix.cc (DiagMatrix::determinant, DiagMatrix::rcond): New
 	method.
 	* dDiagMatrix.h: Declare them.
@@ -2627,7 +2627,7 @@
 	(operator *(const FloatDiagMatrix&, const FloatDiagMatrix&)): Optimize.
 	(real (const FloatComplexDiagMatrix&), imag (const FloatComplexDiagMatrix&)):
 	New functions.
-	
+
 	* CDiagMatrix.h (ComplexDiagMatrix::ComplexDiagMatrix (const DiagArray2<U>&)): New template
 	constructor.
 	(ComplexDiagMatrix::abs): New method decl.
@@ -2657,52 +2657,52 @@
 	* dSparse.h (SparseMatrix::SparseMatrix (const DiagMatrix&)): Declare
 	it.
 
-	* CSparse.cc (SparseComplexMatrix::SparseComplexMatrix (const ComplexDiagMatrix&)): 
+	* CSparse.cc (SparseComplexMatrix::SparseComplexMatrix (const ComplexDiagMatrix&)):
 	New constructor.
-	* CSparse.h (SparseComplexMatrix::SparseComplexMatrix (const ComplexDiagMatrix&)): 
+	* CSparse.h (SparseComplexMatrix::SparseComplexMatrix (const ComplexDiagMatrix&)):
 	Declare it.
 	* mx-op-defs.h (DMM_MULTIPLY_OP, MDM_MULTIPLY_OP): Optimize.
 
 2008-11-21  Jarkko Kaleva  <d3roga@gmail.com>
 
-	* EIG.h (EIG::EIG (const Matrix& a, const Matrix& b, 
+	* EIG.h (EIG::EIG (const Matrix& a, const Matrix& b,
 	bool calc_eigenvectors = true)): New constructor.
-	(EIG::EIG (const Matrix& a, const Matrix& b, octave_idx_type& info, 
+	(EIG::EIG (const Matrix& a, const Matrix& b, octave_idx_type& info,
 	bool calc_eigenvectors = true)): New constructor.
-	(EIG::EIG (const ComplexMatrix& a, const ComplexMatrix& b, 
+	(EIG::EIG (const ComplexMatrix& a, const ComplexMatrix& b,
 	bool calc_eigenvectors = true)): New constructor.
-	(EIG::EIG (const ComplexMatrix& a, const ComplexMatrix& b, 
-	octave_idx_type& info, bool calc_eigenvectors = true)): New 
+	(EIG::EIG (const ComplexMatrix& a, const ComplexMatrix& b,
+	octave_idx_type& info, bool calc_eigenvectors = true)): New
 	constructor.
-	* EIG.cc (EIG::init (const Matrix& a, const Matrix& b, 
+	* EIG.cc (EIG::init (const Matrix& a, const Matrix& b,
 	bool calc_eigenvectors)): New function.
-	(EIG::init (const ComplexMatrix& a, const ComplexMatrix& b, 
+	(EIG::init (const ComplexMatrix& a, const ComplexMatrix& b,
 	bool calc_eigenvectors)): New function.
-	(EIG::symmetric_init (const Matrix& a, const Matrix& b, 
+	(EIG::symmetric_init (const Matrix& a, const Matrix& b,
 	bool calc_eigenvectors)): New function.
-	(EIG::hermitian_init (const ComplexMatrix& a, const ComplexMatrix& b, 
+	(EIG::hermitian_init (const ComplexMatrix& a, const ComplexMatrix& b,
 	bool calc_eigenvectors)): New function.
-	* fEIG.h (fEIG::fEIG (const FloatMatrix& a, const FloatMatrix& b, 
+	* fEIG.h (fEIG::fEIG (const FloatMatrix& a, const FloatMatrix& b,
 	bool calc_eigenvectors = true)): New constructor.
-	(fEIG::fEIG (const FloatMatrix& a, const FloatMatrix& b, 
-	octave_idx_type& info, bool calc_eigenvectors = true)): New 
+	(fEIG::fEIG (const FloatMatrix& a, const FloatMatrix& b,
+	octave_idx_type& info, bool calc_eigenvectors = true)): New
 	constructor.
-	(fEIG::fEIG (const FloatComplexMatrix& a, const FloatComplexMatrix& b, 
-	bool calc_eigenvectors = true)): New constructor.	
-	(fEIG::fEIG (const FloatComplexMatrix& a, const FloatComplexMatrix& b, 
-	octave_idx_type& info, bool calc_eigenvectors = true)): New 
+	(fEIG::fEIG (const FloatComplexMatrix& a, const FloatComplexMatrix& b,
+	bool calc_eigenvectors = true)): New constructor.
+	(fEIG::fEIG (const FloatComplexMatrix& a, const FloatComplexMatrix& b,
+	octave_idx_type& info, bool calc_eigenvectors = true)): New
 	constructor.
-	(fEIG::init (const FloatMatrix& a, const FloatMatrix& b, 
+	(fEIG::init (const FloatMatrix& a, const FloatMatrix& b,
 	bool calc_eigenvectors)): New function.
-	(fEIG::init (const FloatComplexMatrix& a, const FloatComplexMatrix& b, 
+	(fEIG::init (const FloatComplexMatrix& a, const FloatComplexMatrix& b,
 	bool calc_eigenvectors)): New function.
-	(fEIG::symmetric_init (const FloatMatrix& a, const FloatMatrix& b, 
+	(fEIG::symmetric_init (const FloatMatrix& a, const FloatMatrix& b,
 	bool calc_eigenvectors)): New function.
-	(fEIG::hermitian_init (const FloatComplexMatrix& a, 
+	(fEIG::hermitian_init (const FloatComplexMatrix& a,
 	const FloatComplexMatrix& b, bool calc_eigenvectors)): New function.
 
 2008-11-19  Jaroslav Hajek  <highegg@gmail.com>
-	
+
 	* dMatrix.cc (Matrix::determinant),
 	fMatrix.cc (FloatMatrix::determinant),
 	CMatrix.cc (ComplexMatrix::determinant),
@@ -2737,8 +2737,8 @@
 
 2008-11-18  David Bateman  <dbateman@free.fr>
 
-	* file-ops.cc (std::string file_ops::tilde_expand (const 
-	std::string&)): Check if the string contains a tilde and fast 
+	* file-ops.cc (std::string file_ops::tilde_expand (const
+	std::string&)): Check if the string contains a tilde and fast
 	return if not.
 
 2008-11-17  John W. Eaton  <jwe@octave.org>
@@ -2777,7 +2777,7 @@
 
 2008-11-09  Jaroslav Hajek  <highegg@gmail.com>
 
-	* oct-norm.cc: Don't include Array.cc.  
+	* oct-norm.cc: Don't include Array.cc.
 	(column_norms (const MArray2<T>&, ...)): Use std::vector instead of Array<T> for
 	accumulator containers. Use empty constructor instead of
 	Array<T>::resize.
@@ -2795,10 +2795,10 @@
 	* dSparse.cc (SparseMatrix::row, SparseMatrix::column):
 	New member functions.
 	* dSparse.h (SparseMatrix): Declare them.
-	* MArray-C.cc (MArray<Complex>::norm), 
-	MArray-d.cc (MArray<double>::norm), 
-	MArray-fC.cc (MArray<FloatComplex>::norm), 
-	MArray-f.cc (MArray<float>::norm): Wrap a call to xnorm. 
+	* MArray-C.cc (MArray<Complex>::norm),
+	MArray-d.cc (MArray<double>::norm),
+	MArray-fC.cc (MArray<FloatComplex>::norm),
+	MArray-f.cc (MArray<float>::norm): Wrap a call to xnorm.
 
 	* MArray-defs.h (MARRAY_NORM_BODY): Remove.
 
@@ -2912,11 +2912,11 @@
 
 2008-10-07  Jaroslav Hajek  <highegg@gmail.com>
 
-	* oct-inttypes.h (OCTAVE_INT_DOUBLE_BIN_OP): Change octave_int64 to 
+	* oct-inttypes.h (OCTAVE_INT_DOUBLE_BIN_OP): Change octave_int64 to
 	octave_uint64 where appropriate.
 
 2008-10-06  David Bateman  <dbateman@free.fr>
-	
+
 	* Sparse-op-defs.h (SPARSE_SMSM_CMP_OPS): Duplicate code for scalar
 	sparse arguments rather than rely on extern function.
 
@@ -2927,11 +2927,11 @@
 2008-10-01  Jaroslav Hajek  <highegg@gmail.com>
 
 	* oct-inttypes.h (octave_int<T>::one, octave_int<T>::zero): Declare
-	constants. 
+	constants.
 	* oct-inttypes.cc: Define them.
 	* oct-inttypes.h: Define mixed operations via long double if possible.
 	* oct-inttypes.cc: Define alternative implementations for 64-bit
-	multiplication and mixed operations. 
+	multiplication and mixed operations.
 	* mx-ops: Instantiate all 64-bit integer operations.
 
 2008-10-06  Jaroslav Hajek  <highegg@gmail.com>
@@ -2959,7 +2959,7 @@
 
 2008-09-30  Jaroslav Hajek  <highegg@gmail.com>
 
-	* oct-inttypes.h: Mostly rewrite. 
+	* oct-inttypes.h: Mostly rewrite.
 	* oct-inttypes.cc: Modstly rewrite.
 
 2008-09-29  Jaroslav Hajek  <highegg@gmail.com>
@@ -2982,8 +2982,8 @@
 	initializations for each generator to avoid correlation.
 
 2008-09-12  Jaroslav Hajek  <highegg@gmail.com>
- 
- 	* oct-inttypes.h (pow (const octave_int<T>&, const octave_int<T>&)): 
+
+ 	* oct-inttypes.h (pow (const octave_int<T>&, const octave_int<T>&)):
 
 2008-09-19  John W. Eaton  <jwe@octave.org>
 
@@ -3004,7 +3004,7 @@
 
 2008-09-12  Jaroslav Hajek  <highegg@gmail.com>
 
-	* oct-inttypes.h (pow (const octave_int<T>&, const octave_int<T>&)): 
+	* oct-inttypes.h (pow (const octave_int<T>&, const octave_int<T>&)):
 	Handle negative exponent correctly.
 
 2008-08-19  David Bateman  <dbateman@free.fr>
@@ -3124,10 +3124,10 @@
 	detect old NA value.
 	(double __lo_ieee_replace_old_NA (double)): Function to replace
 	old NA value with new new.
-	* data-conv.cc (void read_doubles(std::istream&, double *, 
+	* data-conv.cc (void read_doubles(std::istream&, double *,
 	save_type, int, bool, octave_mach_info::float_format)): Test if
 	loaded NA values is the old representation and replace it.
-	
+
 2008-07-28  Jaroslav Hajek  <highegg@gmail.com>
 
 	* lo-math.h: Ensure log2 is undefined from cmath in C++ mode.
@@ -3282,7 +3282,7 @@
 	* fCmplxLU.cc (class FloatComplexLU): Correct error in instantiation.
 	* floatLU.cc (class FloatLU): ditto.
 	* floatLU.h (class FloatLU): ditto.
-	
+
 	* floatAEPBAL.cc (octave_idx_type FloatAEPBALANCE::init (const
 	FloatMatrix&, const std::string&)): Use FloatMatrix to initialize
 	balancing_mat.
@@ -3320,7 +3320,7 @@
 	* dMatrix.cc, CMatrix.cc, Sparse-op-defs.h: Add missing copyright.
 
 	* Sparse-op-defs.h (SPARSE_FULL_MUL): Simplify scalar*matrix case.
-	Correct indenting. 
+	Correct indenting.
 	(SPARSE_FULL_TRANS_MUL): New macro.
 	(FULL_SPARSE_MUL): Simplify scalar*matrix case. Correct indenting.
 	Move OCTAVE_QUIT one level up.
@@ -3384,9 +3384,9 @@
 	(FloatGEPBALANCE): Declare them.
 	* Makefile.in (MATRIX_INC): Include them here.
 	(MATRIX_SRC): and here.
-	
+
 	* floatAEPBAL.cc (FloatAEPBALANCE), fCmplxAEPBAL.cc
-	(FloatComplexAEPBALANCE): New classes for single precision 
+	(FloatComplexAEPBALANCE): New classes for single precision
 	Algebraic eignvalue balancing.
 	* floatAEPBAL.h (FloatAEPBALANCE), fCmplxAEPBAL.h
 	(FloatComplexAEPBALANCE): Declare them.
@@ -3418,7 +3418,7 @@
 	ComplexGEPBALANCE, FloatGEPBALANCE,FloatComplexGEPBALANCE,
 	FloatHESS, FloatComplexHESS, FloatQR, FloatComplexQR, QRP,
 	ComplexQRP, FloatQRP, FloatComplexQRP):	Declare classes.
-	
+
 2008-05-20  David Bateman  <dbateman@free.fr>
 
 	* Array.cc (Array<T> Array<T>::transpose () const): Modify for tiled
@@ -3431,7 +3431,7 @@
 	Specialization for diagonal arrays.
 	(DiagArray2<T> DiagArray2<T>::transpose (T (*) (const&)) const):
 	Ditto.
-	
+
 	* MArray.h (MArray<T> hermitian <T (*) (const&)) const): New method.
 	(MArray<T> transpose () const): Ditto.
 	* MArray2.h (MArray2<T> hermitian <T (*) (const&)) const): Ditto.
@@ -3470,7 +3470,7 @@
 	* lo-mappers.h (FloatComplex xlog2(const FloatComplex&), float
 	xlog2 (flot, int&), FloatComplex xlog2(const FloatComplex&, int&)):
 	Declare them.
-	
+
 	* CmplxGEBAL.cc (ComplexGEPBALANCE), dbleGEPBAL.cc (GEPBALANCE),
 	fCmplxGEPBAL.cc (FloatComplexGEPBALANCE), floatGEPBAL.cc
 	(FloatGEPBALANCE): New class for generalized eigenvalue balancing.
@@ -3479,9 +3479,9 @@
 	(FloatGEPBALANCE): Declare them.
 	* Makefile.in (MATRIX_INC): Include them here.
 	(MATRIX_SRC): and here.
-	
+
 	* floatAEPBAL.cc (FloatAEPBALANCE), fCmplxAEPBAL.cc
-	(FloatComplexAEPBALANCE): New classes for single precision 
+	(FloatComplexAEPBALANCE): New classes for single precision
 	Algebraic eignvalue balancing.
 	* floatAEPBAL.h (FloatAEPBALANCE), fCmplxAEPBAL.h
 	(FloatComplexAEPBALANCE): Declare them.
@@ -3513,7 +3513,7 @@
 	ComplexGEPBALANCE, FloatGEPBALANCE,FloatComplexGEPBALANCE,
 	FloatHESS, FloatComplexHESS, FloatQR, FloatComplexQR, QRP,
 	ComplexQRP, FloatQRP, FloatComplexQRP):	Declare classes.
-	
+
 	* Array-f.cc, Array-fC.cc, MArray-f.cc, MArray-fC.cc,
 	fCColVector.cc, fCColVector.h, fCDiagMatrix.cc, fCDiagMatrix.h,
 	fCMatrix.cc, fCMatrix.h, fCNDArray.cc, fCNDArray.h,
@@ -3537,7 +3537,7 @@
 	mx-defs.h, mx-ext.h, mx-inlines.cc, mx-op-defs.h, mx-ops,
 	oct-cmplx.h, oct-fftw.cc, oct-fftw.h, oct-inttypes.h, vx-ops:
 	Allow single precision types.
-	
+
 2008-05-20  David Bateman  <dbateman@free.fr>
 
 	* CMatrix.cc (double rcond): Replace with double rcon everywhere
@@ -3702,7 +3702,7 @@
 
 	* mx-ops: Definite binary operators for mixed integer array +
 	array case, except for 64bit cases.
-	
+
 2008-03-21  David Bateman  <dbateman@free.fr>
 
 	* oct-sparse.h: Add headers for amd.h.
@@ -3725,7 +3725,7 @@
 	* Range.cc (Matrix Range::diag (octave_idx_type) const):
 	New method for the diag function.
 	* Range.h  (Matrix diag (octave_idx_type) const): Declare it.
-	
+
 	* CDiagMatrix.cc (ComplexColumnVector ComplexDiagMatrix::diag
 	(void) const): delete.
 	* dDiagMatrix.cc (ColumnVector DiagMatrix::diag (void) const): delete.
@@ -3741,7 +3741,7 @@
 	* chMatrix.h (charMatrix diag (void) const): ditto.
 	* intNDArray.cc (intNDArray<T> intNDArray<T>::diag (void) const): ditto.
 	* intNDArray.h (intNDArray<T> diag (void) const): ditto.
-	
+
 	* CMatrix.cc (ComplexMatrix ComplexMatrix::diag (octave_idx_type)
 	const): Rewrite in terms of template classes function.
 	* CMatrix.h (ComplexMatrix diag (octave_idx_type)const ): Change
@@ -3752,10 +3752,10 @@
 	* boolMatrix.cc (boolMatrix boolMatrix::diag (octave_idx_type) const):
 	Rewrite in terms of template classes function.
 	* boolMatrix.h (boolMatrix diag (octave_idx_type) const): Change
-	return type. 
+	return type.
 	* chMatrix.cc (charMatrix charMatrix::diag (octave_idx_type)
 	const): Rewrite in terms of template classes function.
-	
+
 	* dSparse.cc (SparseMatrix SparseMatrix::diag (octave_idx_type) const):
 	Rewrite in terms of template classes function.
 	* CSparse.cc (SparseComplexMatrix SparseComplexMatrix::diag
@@ -3777,7 +3777,7 @@
 	* chNDArray.h (charNDArray diag (octave_idx_type) const):
 	Declare it.
 
-	
+
 2008-03-19  John W. Eaton  <jwe@octave.org>
 
 	* oct-env.cc (octave_env::do_base_pathname): Also handle rooted
@@ -3799,17 +3799,17 @@
 	* CSparse.cc (SparseMatrix SparseComplexMatrix::map (dmapper) const,
 	SparseComplexMatrix SparseComplexMatrix::map (cmapper) const,
 	SparseBoolMatrix SparseComplexMatrix::map (bmapper) const): ditto.
-	
+
 2008-03-18  David Bateman  <dbateman@free.fr>
 
 	* lo-specfun.cc (Complex xlgamma (const Complex&)): New function.
 	* lo-specfun.h (Complex xlgamma (const Complex&)): Declare it.
 	* randpoison.c (xlgamma): Use lgamma if HAVE_LGAMMA is defined.
-	
+
 	* dNDArray.cc (NDArray::min, NDArraymax): chop trailing singletons.
 	* CNDarray.cc (ComplexNDArray::min, CompelxNDArray::max): ditto.
 	* intNDarray.cc (intNDArray<T>::min, intNDArray<T>::max): ditto.
-	
+
 	* Array.cc (Array<T>::index): Don't short_freeze on index with
 	fewer dimensions than the array only if the last dimension is empty.
 
@@ -3840,9 +3840,9 @@
 
 2008-03-05  Jaroslav Hajek  <highegg@gmail.com>
 
-	* dbleQR.cc (QR::insert_col, QR::insert_row, 
+	* dbleQR.cc (QR::insert_col, QR::insert_row,
 	QR::delete_col, QR::delete_row): Use 0-based indexing.
-	* CmplxQR.cc (ComplexQR::insert_col, ComplexQR::insert_row, 
+	* CmplxQR.cc (ComplexQR::insert_col, ComplexQR::insert_row,
 	ComplexQR::delete_col, ComplexQR::delete_row): Likewise.
 
 	* dbleCHOL.cc: Small doc and declaration fixes.
@@ -3945,19 +3945,19 @@
 
 2008-02-22  David Bateman  <dbateman@free.fr>
 
-	* boolSparse.cc (SparseBoolMatrix SparseBoolMatrix::diag 
+	* boolSparse.cc (SparseBoolMatrix SparseBoolMatrix::diag
 	(octave_idx_type) const): New method.
-	* boolSparse.h (SparseBoolMatrix SparseBoolMatrix::diag 
+	* boolSparse.h (SparseBoolMatrix SparseBoolMatrix::diag
 	(octave_idx_type) const): Declare it.
 
 	* base-lu.h (lu_type Y (void) const): New method to return
 	factorization of xGETRF directly.
 	* sparse-base-lu.cc (template <class lu_type, class lu_elt_type,
-	class p_type, class p_elt_type> lu_type sparse_base_lu <lu_type, 
+	class p_type, class p_elt_type> lu_type sparse_base_lu <lu_type,
 	lu_elt_type, p_type, p_elt_type> :: Y (void) const): New method
 	to simulate the retirn of xGETRF.
 	* sparse-base-lu.h (template <class lu_type, class lu_elt_type,
-	class p_type, class p_elt_type> lu_type sparse_base_lu <lu_type, 
+	class p_type, class p_elt_type> lu_type sparse_base_lu <lu_type,
 	lu_elt_type, p_type, p_elt_type> :: Y (void) const): Declare it
 	(SparseMatrix R (void) const): Method to return scaling factors.
 	* SparsedbleLU.cc: Allow two element pivot thresholding and
@@ -3972,20 +3972,20 @@
 	* base-lu.h (ColumnVector P_vec (void) const): Declare it.
 	* sparse-base-lu.cc (ColumnVector Pr_vec (void) const): New method
 	return row permutations as a vector.
-	(ColumnVector Pc_vec (void) const): New method return column 
+	(ColumnVector Pc_vec (void) const): New method return column
 	permutations as a vector.
 	* sparse-base-lu.h (ColumnVector Pr_vec (void) const): Declare it.
 	(ColumnVector Pc_vec (void) const): Declare it.
 
 	* oct-spparms.cc: Add sym_tol field.
-	
+
 2008-02-20  David Bateman  <dbateman@free.fr>
 
 	* SparseComplexQR.cc (ComplexMatrix
-	SparseComplexQR::SparseComplexQR_rep::Q 
+	SparseComplexQR::SparseComplexQR_rep::Q
 	(void) const): New method.
 	* SparseComplexQR.h (ComplexMatrix
-	SparseComplexQR::SparseComplexQR_rep::Q 
+	SparseComplexQR::SparseComplexQR_rep::Q
 	(void) const): Declare it.
 	* SparseQR.cc (Matrix SparseQR::SparseQR_rep::Q	(void) const): ditto.
 	* SparseQR.h (Matrix SparseQR::SparseQR_rep::Q	(void) const): ditto.
@@ -4069,7 +4069,7 @@
 	(ComplexMatrix::lssolve): Call xilaenv instead of ilaenv.
 
 2008-02-12  Jason Riedy  <ejr@cs.berkeley.edu>
-  
+
 	* Array.cc (ascending_compare, descending_compare): Remove
 	non-standard extern in the instantiations.
 
@@ -4160,7 +4160,7 @@
 	for 64-bit builds.
 	(enum sortmode): Type of sort to perform.
 	(vec_index): Simple class to aid in indexed sorts.
-	
+
 	* Array.h ( Array<T> sort (octave_idx_type, sortmode) const,
 	Array<T> sort (Array<octave_idx_type> &, octave_idx_type,
 	sortmode) const): Array sorting methods.
@@ -4172,22 +4172,22 @@
 	Array<T> Array<T>::sort (Array<octave_idx_type> &, octave_idx_type,
 	sortmode) const): Array sorting functions based of octave_sort
 	class.
-	* Array-C.cc: Instantiate the complex array sort methods. 
+	* Array-C.cc: Instantiate the complex array sort methods.
 	(IFLT): New macro to override the one in the
 	octave_sort class to avoid need for Complex < and > operators.
 	(static double xabs (const Complex&)): Complex abs function
 	avoiding std::abs(Inf) returning NaN with some compilers.
 	(ascending_compare, descending compare): override template
 	functions for complex comparison.
-	* Array-d.cc: Instantiate the double array sort methods. 
-	(Array<double> Array<double>::sort (octave_idx_type, 
-	sortmode) const, Array<double> Array<double>::sort 
-	(Array<octave_idx_type> &, octave_idx_type, sortmode) const): 
+	* Array-d.cc: Instantiate the double array sort methods.
+	(Array<double> Array<double>::sort (octave_idx_type,
+	sortmode) const, Array<double> Array<double>::sort
+	(Array<octave_idx_type> &, octave_idx_type, sortmode) const):
 	Array sorting functions based of octave_sort using uint64 sorting
 	on IEE754 doubles, for speed and correct sorting of Inf and NaN.
 	(ascending_compare, descending compare): override template
 	functions for double and uint64 comparison.
-	* Array-b.cc, Array-ch.cc, Array-i.cc, Array-s.cc, Array-str.cc: 
+	* Array-b.cc, Array-ch.cc, Array-i.cc, Array-s.cc, Array-str.cc:
 	Instantiate the array sort methods.
 	* Array-idx-vec.cc: Null instantiation of array sort methods.
 	* Array2.h, Array3.h, ArrayN.h (sort): 2, 3 and N-dimensional
@@ -4197,7 +4197,7 @@
 	* Sparse.h ( Sparse<T> sort (octave_idx_type, sortmode) const,
 	Sparse<T> sort (Array<octave_idx_type> &, octave_idx_type,
 	sortmode) const): Sparse sorting methods.
-	(INSTANTIATE_ARRAY_SORT): Macro to instantiate the sparse sorting 
+	(INSTANTIATE_ARRAY_SORT): Macro to instantiate the sparse sorting
 	methods.
 	* Sparse.cc: replace sort with lsort throughout to avoid shadowing
 	of new sort method.
@@ -4207,14 +4207,14 @@
 	Sparse<T> Sparse<T>::sort (Sparse<octave_idx_type> &, octave_idx_type,
 	sortmode) const): Sparse sorting functions based of octave_sort
 	class.
-	* Sparse-C.cc: Instantiate the complex sparse sort methods. 
+	* Sparse-C.cc: Instantiate the complex sparse sort methods.
 	(IFLT): New macro to override the one in the
 	octave_sort class to avoid need for Complex < and > operators.
 	(static double xabs (const Complex&)): Complex abs function
 	avoiding std::abs(Inf) returning NaN with some compilers.
 	(sparse_ascending_compare, sparse_descending compare): override
 	template functions for complex comparison.
-	* Sparse-d.cc: Instantiate the cdouble sparse sort methods. 
+	* Sparse-d.cc: Instantiate the cdouble sparse sort methods.
 	(sparse_ascending_compare, sparse_descending compare): override
 	template functions for double comparison.
 	* Array-b.cc: Instantiate the sparse sort methods.
@@ -4272,10 +4272,10 @@
 
 2007-12-18  David Bateman  <dbateman@free.fr>
 
-	* Sparse.cc (template <class T> Sparse<T> Sparse<T>::index 
-	(idx_vector&, int) const): Fix case indexing of non zero scalar 
+	* Sparse.cc (template <class T> Sparse<T> Sparse<T>::index
+	(idx_vector&, int) const): Fix case indexing of non zero scalar
 	stored as a sparse matrix.
-	(template <class T> Sparse<T> Sparse<T>::index (idx_vector&, 
+	(template <class T> Sparse<T> Sparse<T>::index (idx_vector&,
 	idx_vector&, int) const): For the non permutated indexing case,
 	fix link list calculation and use.
 
@@ -4314,7 +4314,7 @@
 2007-12-07  David Bateman  <dbateman@free.fr>
 
 	* Sparse-op-defs.h (SPARSE_SMS_CMP_OP, SPARSE_SMS_BOOL_OP,
-	SPARSE_SSM_CMP_OP, SPARSE_SSM_BOOL_OP, SPARSE_SMSM_CMP_OP, 
+	SPARSE_SSM_CMP_OP, SPARSE_SSM_BOOL_OP, SPARSE_SMSM_CMP_OP,
 	SPARSE_SMSM_BOOL_OP, SPARSE_BASE_REDUCTION_OP): Use sparse
 	indexing where possible rather than the elem method.
 	(SPARSE_REDUCTION_OP_ROW_EXPR, SPARSE_REDUCTION_OP_COL_EXPR,
@@ -4398,19 +4398,19 @@
 	* intNDArray.cc (template <class T> intNDArray<T>
 	intNDArray<T>::max (int) const, template <class T> intNDArray<T>
 	intNDArray<T>::max (ArrayN<octave_idx_type>&, int) const,
-	template <class T> intNDArray<T> intNDArray<T>::min (int) const, 
-	template <class T> intNDArray<T> intNDArray<T>::min 
+	template <class T> intNDArray<T> intNDArray<T>::min (int) const,
+	template <class T> intNDArray<T> intNDArray<T>::min
 	(ArrayN<octave_idx_type>&, int) const): New methods for integer
 	classes.
 	* intNDArray.h (class intNDArray): Add min/max methods
 	* mx-op-defs.h (MIXMAX_DECLS, MINMAX_FCNS, SND_MINMAX_FCN,
 	NDS_MINMAX_FCN, NDND_MINMAX_FCN): New macro for instantiation of
 	min/max functions.
-	* int8NDArray.h, int16NDArray.h, int32NDArray.h, int64NDArray.h, 
+	* int8NDArray.h, int16NDArray.h, int32NDArray.h, int64NDArray.h,
 	uint8NDArray.h, uint16NDArray.h, uint32NDArray.h, uint64NDArray.h
 	(MINMAX_DECLS(T)): Declare the min/max functions for integer
 	types.
-	* int8NDArray.cc, int16NDArray.cc, int32NDArray.cc, int64NDArray.cc, 
+	* int8NDArray.cc, int16NDArray.cc, int32NDArray.cc, int64NDArray.cc,
 	uint8NDArray.cc, uint16NDArray.cc, uint32NDArray.cc, uint64NDArray.cc
 	(MINMAX_FCNS(T)): Instantiate the min/max functions for integer
 	types.
@@ -4454,43 +4454,43 @@
 
 2007-10-29  David Bateman  <dbateman@free.fr>
 
-	* CMatrix.h (lssolve (const Matrix&, octave_idx_type&, 
-	octave_idx_type&, double&) const, lssolve (const ComplexMatrix&, 
-	octave_idx_type&, octave_idx_type&, double&) const, lssolve 
-	(const ColumnVector&, octave_idx_type&, octave_idx_type&, 
-	double& rcond) const, lssolve (const ComplexColumnVector&, 
+	* CMatrix.h (lssolve (const Matrix&, octave_idx_type&,
+	octave_idx_type&, double&) const, lssolve (const ComplexMatrix&,
+	octave_idx_type&, octave_idx_type&, double&) const, lssolve
+	(const ColumnVector&, octave_idx_type&, octave_idx_type&,
+	double& rcond) const, lssolve (const ComplexColumnVector&,
 	octave_idx_type&, octave_idx_type&, double& rcond) const): New
 	declarations.
-	* CMatrix.cc (lssolve (const Matrix&, octave_idx_type&, 
-	octave_idx_type&, double&) const, lssolve (const ComplexMatrix&, 
-	octave_idx_type&, octave_idx_type&, double&) const, lssolve 
-	(const ColumnVector&, octave_idx_type&, octave_idx_type&, 
-	double& rcond) const, lssolve (const ComplexColumnVector&, 
+	* CMatrix.cc (lssolve (const Matrix&, octave_idx_type&,
+	octave_idx_type&, double&) const, lssolve (const ComplexMatrix&,
+	octave_idx_type&, octave_idx_type&, double&) const, lssolve
+	(const ColumnVector&, octave_idx_type&, octave_idx_type&,
+	double& rcond) const, lssolve (const ComplexColumnVector&,
 	octave_idx_type&, octave_idx_type&, double& rcond) const): New
 	methods.
 	(lssolve (const Matrix&, octave_idx_type&, octave_idx_type&,
-	double&) const, lssolve (const ComplexMatrix&, octave_idx_type&, 
+	double&) const, lssolve (const ComplexMatrix&, octave_idx_type&,
 	octave_idx_type&, double&) const): Also return rcond from the
 	singular values returned by XGELSD.
-	* dMatrix.h (lssolve (const Matrix&, octave_idx_type&, 
-	octave_idx_type&, double&) const, lssolve (const ComplexMatrix&, 
-	octave_idx_type&, octave_idx_type&, double&) const, lssolve 
-	(const ColumnVector&, octave_idx_type&, octave_idx_type&, 
-	double& rcond) const, lssolve (const ComplexColumnVector&, 
+	* dMatrix.h (lssolve (const Matrix&, octave_idx_type&,
+	octave_idx_type&, double&) const, lssolve (const ComplexMatrix&,
+	octave_idx_type&, octave_idx_type&, double&) const, lssolve
+	(const ColumnVector&, octave_idx_type&, octave_idx_type&,
+	double& rcond) const, lssolve (const ComplexColumnVector&,
 	octave_idx_type&, octave_idx_type&, double& rcond) const): New
 	declarations.
-	* dMatrix.cc (lssolve (const Matrix&, octave_idx_type&, 
-	octave_idx_type&, double&) const, lssolve (const ComplexMatrix&, 
-	octave_idx_type&, octave_idx_type&, double&) const, lssolve 
-	(const ColumnVector&, octave_idx_type&, octave_idx_type&, 
-	double& rcond) const, lssolve (const ComplexColumnVector&, 
+	* dMatrix.cc (lssolve (const Matrix&, octave_idx_type&,
+	octave_idx_type&, double&) const, lssolve (const ComplexMatrix&,
+	octave_idx_type&, octave_idx_type&, double&) const, lssolve
+	(const ColumnVector&, octave_idx_type&, octave_idx_type&,
+	double& rcond) const, lssolve (const ComplexColumnVector&,
 	octave_idx_type&, octave_idx_type&, double& rcond) const): New
 	methods.
 	(lssolve (const Matrix&, octave_idx_type&, octave_idx_type&,
-	double&) const, lssolve (const ComplexMatrix&, octave_idx_type&, 
+	double&) const, lssolve (const ComplexMatrix&, octave_idx_type&,
 	octave_idx_type&, double&) const): Also return rcond from the
 	singular values returned by XGELSD.
-		
+
 2007-10-26  David Bateman  <dbateman@free.fr>
 
 	* dMatrix.cc (Matrix::lssolve): Use xGELSD for rank deficient
@@ -4574,7 +4574,7 @@
 
 	* Sparse.cc (Sparse<T> Sparse<T>::index (idx_vector&, idx_vector&,
 	int)): Remove a for loop in the random indexing case at the
-	expense of maintaining a set of linked lists of indices that point 
+	expense of maintaining a set of linked lists of indices that point
 	to the same column in the original matrix.
 	(int assign (Sparse<LT>&, Sparse<RT>)): Take a const copy of lhs
 	and use it on the RHS of expressions to avoid unnecessary calls to
@@ -4622,7 +4622,7 @@
 	of text.
 	(file_quoting_desired): Function to set whether readline should
 	attempt to quote filenames.
-	(do_set_filename_quoting_characters, 
+	(do_set_filename_quoting_characters,
 	do_set_completer_quote_characters, do_set_quoting_function,
 	do_set_dequoting_function, do_set_char_is_quoted_function,
 	do_set_user_accept_line_function, do_get_quoting_function,
@@ -4631,14 +4631,14 @@
 	Virtual functions to control the behavior of readline quoting and
 	acceptance of lines.
 	(do_accept_line): Virtual function for the accept line function.
-	* cmd-edit.cc (class gnu_readline do_set_filename_quote_characters, 
+	* cmd-edit.cc (class gnu_readline do_set_filename_quote_characters,
 	do_completer_quote_characters, do_set_quoting_function,
 	do_set_dequoting_function, do_set_char_is_quoted_function,
 	do_set_user_accept_line_function, do_get_quoting_function,
-	do_get_dequoting_function, do_get_user_accept_line_function, 
+	do_get_dequoting_function, do_get_user_accept_line_function,
 	do_accept_line, do_filename_quoting_desired, command_quoter,
 	command_dequoter, command_char_is_quoted, command_accept_line):
-	New functions in gnu_readline class to control filename quoting 
+	New functions in gnu_readline class to control filename quoting
 	and line acceptance.
 	(quoting_function, dequoting_function, char_is_quoted_function,
 	user_accept_line_function): private variable to store functions
@@ -4650,18 +4650,18 @@
 	(gnu_readeline::operate_and_get_next): Use new accept_line
 	function rather than newline.
 	(default_ommand_editor::do_accept_line): New method.
-	(class command_editor set_filename_quote_characters, 
+	(class command_editor set_filename_quote_characters,
 	set_completer_quote_characters, set_quoting_function,
 	set_dequoting_function, set_char_is_quoted_function,
 	set_user_accept_line_function, get_quoting_function,
-	get_dequoting_function, get_user_accept_line_function, 
+	get_dequoting_function, get_user_accept_line_function,
 	accept_line, filename_quoting_desired): New functions checking
 	instance before calling virtual function.
 
 	* CMatrix.h, dMatrix.h, boolMatrix.h, chMatrix.h, MArray2.h,
 	Array2.h: Add dim_vector constructors.
 	* charNDArray.h (charNDArray (const dim_vector&)): Add missing
-	const to dim_vector constructors. 
+	const to dim_vector constructors.
 	* boolMatrix.cc, chMatrix.cc, intNDArray.cc (diag (void), diag
 	(octave_idx_type)): New methods to constructor diagonal matrices.
 	* boolMatrix.h, chMatrix.h, intNDArray.h (diag (void), diag
@@ -4708,7 +4708,7 @@
 
 	* dMatrix.cc (utsolve, ltsolve, fsolve, lssolve): Allow
 	zero dimensioned matrices.
-        * CMatrix.cc (utsolve, ltsolve, fsolve, lssolve): ditto.
+	* CMatrix.cc (utsolve, ltsolve, fsolve, lssolve): ditto.
 	* dSparse.cc (dsolve, utsolve, ltsolve, bsolve, trisolve, fsolve):
 	ditto.
 	* CSparse.cc (dsolve, utsolve, ltsolve, bsolve, trisolve, fsolve):
@@ -4782,7 +4782,7 @@
 	bring the additional multiplication out of the inner loop.
 	(int assign2 (Array<LT>&, const Array<RT>&, const LT&)): ditto.
 	(int assignN (Array<LT>&, const Array<RT>&, const LT&)): ditto.
-	* idx-vector.h (idx_vector::idx_vector_rep::idx_vector_rep 
+	* idx-vector.h (idx_vector::idx_vector_rep::idx_vector_rep
 	(const Range& r)): Don't use init_state() method but special case
 	as with a Range can avoid exhaustive search.
 
@@ -4797,29 +4797,29 @@
 
 2007-09-06  David Bateman  <dbateman@free.fr>
 
-        * Array-util.cc (increment_index): dimensions can have singleton
-        trailing dimensions.
-        * Array.h (range_error, xelem, checkelem, elem, operator ()):
-        Modify use of Array<int> to Array<octave_idx_type> and adjust
-        where necessary.
-        * Array.cc (range_error): ditto.
-        * MArrayN.h (permute, ipermute): ditto.
-        * ArrayN.h (permute, ipermute): ditto.
-        * so-array.cc (streamoff_array::compute_index): ditto.
-        * so-array.h (compute_index): ditto.
-        * CMattrix.cc (ComplexMatrix::exmpm): ditto.
+	* Array-util.cc (increment_index): dimensions can have singleton
+	trailing dimensions.
+	* Array.h (range_error, xelem, checkelem, elem, operator ()):
+	Modify use of Array<int> to Array<octave_idx_type> and adjust
+	where necessary.
+	* Array.cc (range_error): ditto.
+	* MArrayN.h (permute, ipermute): ditto.
+	* ArrayN.h (permute, ipermute): ditto.
+	* so-array.cc (streamoff_array::compute_index): ditto.
+	* so-array.h (compute_index): ditto.
+	* CMattrix.cc (ComplexMatrix::exmpm): ditto.
 
 2007-08-29  David Bateman  <dbateman@free.fr>
 
-        * dSparse.cc (SparseMatrix SparseMatrix::inverse (MatrixType &, 
-        octave_idx_type&, double&, int, int)): Calculate with LU even for
-        matrices marked as singular.
-        * CSparse.cc (SparseComplexMatrix SparseComplexMatrix::inverse (
-        MatrixType &, octave_idx_type&, double&, int, int)): ditto.
-        * dMatrix.cc (Matrix Matrix::inverse (MatrixType &, octave_idx_type&,
-        double&, int, int)): ditto. If rcond==0 force matrix of infinities.
-        * dMatrix.cc (ComplexMatrix ComplexMatrix::inverse (MatrixType &,
-         octave_idx_type&, double&, int, int)): ditto.
+	* dSparse.cc (SparseMatrix SparseMatrix::inverse (MatrixType &,
+	octave_idx_type&, double&, int, int)): Calculate with LU even for
+	matrices marked as singular.
+	* CSparse.cc (SparseComplexMatrix SparseComplexMatrix::inverse (
+	MatrixType &, octave_idx_type&, double&, int, int)): ditto.
+	* dMatrix.cc (Matrix Matrix::inverse (MatrixType &, octave_idx_type&,
+	double&, int, int)): ditto. If rcond==0 force matrix of infinities.
+	* dMatrix.cc (ComplexMatrix ComplexMatrix::inverse (MatrixType &,
+	 octave_idx_type&, double&, int, int)): ditto.
 
 2007-08-27  John W. Eaton  <jwe@octave.org>
 
@@ -4829,27 +4829,27 @@
 
 2007-08-24  David Bateman  <dbateman@free.fr>
 
-        * MSparse.h (MSparse<T>& insert (const Sparse<T>&, 
-        const Array<octave_idx_type>&)): New method.
-        (MSparse (const dim_vector&, octave_idx_type)): Ditto.
-        * dSparse.h (SparseMatrix& SparseMatrix::insert (const
-        SparseMatrix&, const Array<octave_idx_type>&)): ditto.
-        (SparseMatrix (const dim_vector&, octave_idx_type)): ditto.
-        * dSparse.cc (SparseMatrix& SparseMatrix::insert (const
-        SparseMatrix&, const Array<octave_idx_type>&)): ditto.
-        * boolSparse.h (SparseBoolMatrix& SparseBoolMatrix::insert (const
-        SparseBoolMatrix&, const Array<octave_idx_type>&)): ditto.
-        * boolSparse.cc (SparseBoolMatrix& SparseBoolMatrix::insert (const
-        SparseBoolMatrix&, const Array<octave_idx_type>&)): ditto.
-        * CSparse.h (SparseComplexMatrix& SparseComplexMatrix::insert (const
-        SparseMatrix&, const Array<octave_idx_type>&),
-        SparseComplexMatrix& SparseComplexMatrix::insert (const
-        SparseComplexMatrix&, const Array<octave_idx_type>&)): ditto.
-        (SparseComplexMatrix (const dim_vector&, octave_idx_type)): ditto.
-        * CSparse.cc (SparseComplexMatrix& SparseComplexMatrix::insert (const
-        SparseMatrix&, const Array<octave_idx_type>&),
-        SparseComplexMatrix& SparseComplexMatrix::insert (const
-        SparseComplexMatrix&, const Array<octave_idx_type>&)): ditto.
+	* MSparse.h (MSparse<T>& insert (const Sparse<T>&,
+	const Array<octave_idx_type>&)): New method.
+	(MSparse (const dim_vector&, octave_idx_type)): Ditto.
+	* dSparse.h (SparseMatrix& SparseMatrix::insert (const
+	SparseMatrix&, const Array<octave_idx_type>&)): ditto.
+	(SparseMatrix (const dim_vector&, octave_idx_type)): ditto.
+	* dSparse.cc (SparseMatrix& SparseMatrix::insert (const
+	SparseMatrix&, const Array<octave_idx_type>&)): ditto.
+	* boolSparse.h (SparseBoolMatrix& SparseBoolMatrix::insert (const
+	SparseBoolMatrix&, const Array<octave_idx_type>&)): ditto.
+	* boolSparse.cc (SparseBoolMatrix& SparseBoolMatrix::insert (const
+	SparseBoolMatrix&, const Array<octave_idx_type>&)): ditto.
+	* CSparse.h (SparseComplexMatrix& SparseComplexMatrix::insert (const
+	SparseMatrix&, const Array<octave_idx_type>&),
+	SparseComplexMatrix& SparseComplexMatrix::insert (const
+	SparseComplexMatrix&, const Array<octave_idx_type>&)): ditto.
+	(SparseComplexMatrix (const dim_vector&, octave_idx_type)): ditto.
+	* CSparse.cc (SparseComplexMatrix& SparseComplexMatrix::insert (const
+	SparseMatrix&, const Array<octave_idx_type>&),
+	SparseComplexMatrix& SparseComplexMatrix::insert (const
+	SparseComplexMatrix&, const Array<octave_idx_type>&)): ditto.
 
 2007-08-19  David Bateman  <dbateman@free.fr>
 
@@ -4868,8 +4868,8 @@
 	root directory.
 
 2007-07-25  David Bateman  <dbateman@free.fr>
-	
-	* Makefile.in: 	Adjust DISTFILES to allow out of tree "make dist" 
+
+	* Makefile.in: 	Adjust DISTFILES to allow out of tree "make dist"
 	to work.
 
 2007-06-04  David Bateman  <dbateman@free.fr>
@@ -5079,15 +5079,15 @@
 2007-03-26  David Bateman  <dbateman@free.fr>
 
 	* MatrixType.cc: Replace all uses of the method
-	octave_sparse_params::get_key ("bandden") with 
+	octave_sparse_params::get_key ("bandden") with
 	octave_sparse_params::get_bandden (void).
 	(MatrixType::MatrixType (void)): Undo previous change but use
 	octave_sparse_params::get_bandden (void).
 	* oct-spparms.cc (get_bandden(void), do_get_bandden(void)): New
 	methods.
 	* oct-spparms.h (get_bandden(void), do_get_bandden(void)):
-	Declare them.	
-	
+	Declare them.
+
 2007-03-26  Luis Ortiz  <lortiz@interactivesupercomputing.com>
 	    David Bateman  <dbateman@free.fr>
 
@@ -5155,13 +5155,13 @@
 
 2007-03-01  David Bateman  <dbateman@free.fr>
 
-        * md5.h, md5.c: New files from libmd5-rfc sourceforge project for
-        an independent implementation of RFC1321.
-        * oct-md5.h, oct-md5: New files for treating std::string class
-        with MD5.
-        * Makefile.in (INCLUDES): Add md5.h and oct-md5.h
-        (LIBOCTAVE_CXX_SOURCES): Add oct-md5.cc
-        (LIBOCTAVE_C_SOURCES): Add md5.c
+	* md5.h, md5.c: New files from libmd5-rfc sourceforge project for
+	an independent implementation of RFC1321.
+	* oct-md5.h, oct-md5: New files for treating std::string class
+	with MD5.
+	* Makefile.in (INCLUDES): Add md5.h and oct-md5.h
+	(LIBOCTAVE_CXX_SOURCES): Add oct-md5.cc
+	(LIBOCTAVE_C_SOURCES): Add md5.c
 
 2007-02-27  John W. Eaton  <jwe@octave.org>
 
@@ -5246,10 +5246,10 @@
 
 2007-01-05  David Bateman  <dbateman@free.fr>
 
-	* oct-fftw.cc: (octave_fftw_planner::method (void), 
+	* oct-fftw.cc: (octave_fftw_planner::method (void),
 	octave_fftw_planner (FftwMethod)): New methods to interrogate and
 	set the FFTW wisdom method used.
-	(octave_fftw_planner::create_plan) Modify to allow different 
+	(octave_fftw_planner::create_plan) Modify to allow different
 	methods to be used.
 	(octave_fftw_planner): Move class definition from here.
 	* oct-fftw.h (octave_fftw_planner): To here. Add method methods
@@ -5266,8 +5266,8 @@
 	(SPARSE_SMSM_BIN_OP_1, SPARSE_SMSM_BIN_OP_2, SPARSE_SMSM_BIN_OP_3,
 	SPARSE_SMSM_CMP_OP, SPARSE_SMSM_BOOL_OP, SPARSE_MSM_BIN_OP_1,
 	SPARSE_MSM_BIN_OP_2, SPARSE_MSM_CMP_OP, SPARSE_MSM_BOOL_OP,
-	SPARSE_SMM_BIN_OP_1, SPARSE_SMM_BIN_OP_2, SPARSE_SMM_CMP_OP, 
-	SPARSE_SMM_BOOL_OP, SPARSE_SPARSE_MUL, SPARSE_FULL_MUL, 
+	SPARSE_SMM_BIN_OP_1, SPARSE_SMM_BIN_OP_2, SPARSE_SMM_CMP_OP,
+	SPARSE_SMM_BOOL_OP, SPARSE_SPARSE_MUL, SPARSE_FULL_MUL,
 	FULL_SPARSE_MUL): Modify macros so that scalars stored as
 	sparse matrices are special cased.
 
@@ -5294,12 +5294,12 @@
 	* CSparse.cc (SparseComplexMatrix::is_symmetric): Ditto.
 
 	* dMatrrix.cc (finverse): Old inverse method renamed inverse.
-        (tinverse): New method for triangular matrices.
-        (inverse): New function with matrix type probing.
-        * dMatrix.h (finverse, tinverse, inverse): New and modified
-        declarations.
-        * CMatrix.cc: Ditto.
-        * CMatrix.h: Ditto.
+	(tinverse): New method for triangular matrices.
+	(inverse): New function with matrix type probing.
+	* dMatrix.h (finverse, tinverse, inverse): New and modified
+	declarations.
+	* CMatrix.cc: Ditto.
+	* CMatrix.h: Ditto.
 
 2006-12-06  John W. Eaton  <jwe@octave.org>
 
@@ -5326,11 +5326,11 @@
 	* oct-sparse.h: Allow sparse headers to also be in a sparsesuite
 	sub-directory.
 
-        * dSparse.cc (SparseMatrix::inverse): Transpose the matrix type as
+	* dSparse.cc (SparseMatrix::inverse): Transpose the matrix type as
 	well when calling tinverse for lower triangular matrices.
-        * CSparse.cc (SparseComplexMatrix::inverse):
-        Ditto.
-					
+	* CSparse.cc (SparseComplexMatrix::inverse):
+	Ditto.
+
 2006-11-21  John W. Eaton  <jwe@octave.org>
 
 	* oct-env.cc (do_absolute_pathname): Undo previous change.
@@ -5489,7 +5489,7 @@
 
 	* oct-syscalls.cc (syscalls::waitpid): Always declare and define retval.
 
-	* CMatrix.cc (ComplexMatrix::solve): Avoid infinite recursion. 
+	* CMatrix.cc (ComplexMatrix::solve): Avoid infinite recursion.
 	* CSparse.cc (SparseComplexMatrix::insert): Likewise.
 
 	* oct-types.h.in: Include limits.h, for CHAR_BIT.
@@ -5510,12 +5510,12 @@
 
 2006-09-22  David Bateman  <dbateman@free.fr>
 
-	* MatrixType.h (MatrixType::MatrixType(const SparseComplexMatrix&)): 
-	Remove spurious warning. 
+	* MatrixType.h (MatrixType::MatrixType(const SparseComplexMatrix&)):
+	Remove spurious warning.
 
 2006-09-15  John W. Eaton  <jwe@octave.org>
 
-	* Array.cc (Array<T>::index (Array<idx_vector>&, int, const T&) const): 
+	* Array.cc (Array<T>::index (Array<idx_vector>&, int, const T&) const):
 	Handle resizing.
 
 	* intNDArray.h (intNDArray<T>:elt_type): New typedef.
@@ -5523,7 +5523,7 @@
 2006-09-11  John W. Eaton  <jwe@octave.org>
 
 	* dMatrix.cc (operator * (const Matrix&, const Matrix&))):
-	Handle M*v and rv*cv special cases. 
+	Handle M*v and rv*cv special cases.
 	* CMatrix.cc (operator * (const ComplexMatrix&, const
 	ComplexMatrix&))): Likewise.
 	From Luis F. Ortiz <lortiz@interactivesupercomputing.com>.
@@ -5636,7 +5636,7 @@
 	* CSparse.cc (tinverse): ditto.
 	* Sparse-op-defs.h (SPARSE_SPARSE_MUL): Take into account 64-bit
 	constant assignment.
-	
+
 2006-06-30  John W. Eaton  <jwe@octave.org>
 
 	* lo-sysdep.cc (octave_chdir): Perform tilde expansion here.
@@ -5652,7 +5652,7 @@
 
 	* Sparse.cc (Sparse<T>::SparseRep::elem): Avoid out of bounds
 	array access.
-	
+
 2006-06-27  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.in: Finish renaming of OBJECTS -> LIBOCTAVE_OBJECTS.
@@ -5700,7 +5700,7 @@
 	* sparse-dmsolve.cc: Remove reference to ov-re-sparse.h,
 	ov-cx-sparse. and error_state.
 	* SparseQR.cc, SparseCmplxQR.cc (qrsolve): Return info = -1 on error.
-	
+
 2006-05-08  David Bateman  <dbateman@free.fr>
 
 	* Sparse-op-defs.h (SPARSE_SPARSE_MUL): Set column pointers in
@@ -5717,9 +5717,9 @@
 
 	* CMatrix.cc (zpotrf, zpocon, zpotrs, ztrcon, ztrtrs):
 	External declaration of lapack triangular and Cholesky codes.
-	(ComplexMatrix::utsolve, ComplexMatrix::ltsolve, 
+	(ComplexMatrix::utsolve, ComplexMatrix::ltsolve,
 	ComplexMatrix::fsolve): New private solver codes for
-        upper, lower and LU/Cholesky solvers.
+	upper, lower and LU/Cholesky solvers.
 	(ComplexMatrix::solve): New versions for cached matrix
 	type. Adapt old versions to call new versions
 	* CMatrix.h (utsolve, ltsolve, fsolve): Declaration of
@@ -5727,9 +5727,9 @@
 	(solve): New versions for cached matrix type.
 	* dMatrix.cc (dpotrf, dpocon, dpotrs, dtrcon, dtrtrs):
 	External declaration of lapack triangular and Cholesky codes.
-	(Matrix::utsolve, Matrix::ltsolve, 
+	(Matrix::utsolve, Matrix::ltsolve,
 	Matrix::fsolve): New private solver codes for
-        upper, lower and LU/Cholesky solvers.
+	upper, lower and LU/Cholesky solvers.
 	(Matrix::solve): New versions for cached matrix
 	type. Adapt old versions to call new versions
 	* dMatrix.h (utsolve, ltsolve, fsolve): Declaration of
@@ -5750,7 +5750,7 @@
 	MatrixType.cc respectively. Delete SparseType.h and SparseType.cc
 	respectively.
 	* mx-base.h: Include MatrixTye.h as header file.
-	
+
 2006-05-01  John W. Eaton  <jwe@octave.org>
 
 	* oct-shlib.h (octave_shlib::octave_shlib, octave_shlib::open):
@@ -5814,12 +5814,12 @@
 
 2006-04-13  David Bateman  <dbateman@free.fr>
 
-        * Sparse.cc (assign (Sparse<LT>&, const Sparse<RT>&)):
+	* Sparse.cc (assign (Sparse<LT>&, const Sparse<RT>&)):
 	Optimize assignment.
 
 2006-04-13  John W. Eaton  <jwe@octave.org>
 
-        * Sparse.cc (assign (Sparse<LT>&, const Sparse<RT>&)):
+	* Sparse.cc (assign (Sparse<LT>&, const Sparse<RT>&)):
 	Eliminate unnecessary casts.
 	* SparsedbleLU.cc (SparseLU::SparseLU): Likewise.
 
@@ -5858,9 +5858,9 @@
 	to avoid copy of original matrix.
 
 	* Makefile.in (INCLUDES): Add randgamma.h, randpoisson.h and
-        randmtzig.h to the list.
+	randmtzig.h to the list.
 	(LIBOCTAVE_C_SOURCES): Add randgamma.c, randpoisson.c and
-        randmtzig.c to the list.
+	randmtzig.c to the list.
 	* oct-rand.cc (do_old_initialization): Rename from do_initialization.
 	(use_old_generators): New variable.
 	(old_initialized): Rename from initialized.
@@ -5874,7 +5874,7 @@
 	(octave_rand::exponential_distribution,
 	octave_rand::poisson_distribution,
 	octave_rand::gamma_distribution): New methods to select
-        exponential, poisson or gamma distribution.
+	exponential, poisson or gamma distribution.
 	(octave_rand::scalar, octave_rand::matrix, octave_rand::nd_array,
 	octave_rand::vector): Add new distributions.
 	* oct-rand.h: Provide decls for new functions.
@@ -5882,7 +5882,7 @@
 	(octave_rand::scalar, octave_rand::matrix, octave_rand::nd_array,
 	octave_rand::vector): New arg A, for gamma and poisson distributions.
 	* randpoisson.c, randpoisson.h, randgamma.c, randmtzig.c,
-        randmtzig.h: New files.
+	randmtzig.h: New files.
 
 2006-03-24  John W. Eaton  <jwe@octave.org>
 
@@ -5938,7 +5938,7 @@
 	(utsolve, ltsolve, trisolve, bsolve, fsolve): Mark matrix type as
 	singular if singularity is detected.
 	(solve): Use optional argument to disable calculation of
-	condition number for all but fsolve, for speed. Add code to 
+	condition number for all but fsolve, for speed. Add code to
 	allow rectnagular matrices or matrices identified as singular
 	to be treated.
 	(lssolve): delete.
@@ -5964,7 +5964,7 @@
 	(SPARSE_SPARSE_MUL, SPARSE_FULL_MUL, FULL_SPARSE_MUL): Update
 	macros to allow mixed complex/real arguments.
 	* SparseCmplxQR.cc (OCTAVE_C99_ZERO): New macro for C99 zero
-        value.
+	value.
 	(qrsolve): Use it to zero temporary buffers used bt CXSPARSE.
 	* SparseType.cc (SparseType::SparseType ()): Correct detection
 	of permutated triangular matrices to avoid seg-faults. Disable
@@ -5990,7 +5990,7 @@
 
 	* Sparse.cc (Sparse<T>::transpose (void) const): Accelerate algorithm.
 	* CSparse.cc (SparseComplexMatrix::transpose (void) const): ditto.
-	
+
 2006-03-01  John W. Eaton  <jwe@octave.org>
 
 	* CMatrix.cc (ComplexMatrix::determinant):
@@ -6005,7 +6005,7 @@
 	Store value internally with double and int instead of 2-element
 	double vector.
 	(DET::initialize2, DET::initialize10): Provide decls.
-	* dbleDET.cc (DET::value_will_overflow,	DET::value_will_underflow): 
+	* dbleDET.cc (DET::value_will_overflow,	DET::value_will_underflow):
 	Return bool value, not int.
 	(DET::initialize2, DET::initialize10): New functions.
 
@@ -6030,7 +6030,7 @@
 
 2006-02-20  David Bateman  <dbateman@free.fr>
 
-	* dSparse.cc (dsolve, utsolve, ltsolve): Remove restriction that 
+	* dSparse.cc (dsolve, utsolve, ltsolve): Remove restriction that
 	matrix must be square in diagonal, permuted diagonal, triangular
 	and permuted triangular back/forward substitution code. Change
 	ambiguous use of no. rows and columns.
@@ -6045,14 +6045,14 @@
 2006-02-15  John W. Eaton  <jwe@octave.org>
 
 	* kpse.cc: Do define ST_NLINK_TRICK for Cygwin systems.
-	(do_subdir) [ST_NLINK_TRICK]: Check links != 2 instead of links > 2. 
+	(do_subdir) [ST_NLINK_TRICK]: Check links != 2 instead of links > 2.
 
 	* getopt.c: Use __CYGWIN__ instead of __CYGWIN32__.
 
 2006-02-13  David Bateman  <dbateman@free.fr>
 
 	* Makefile.in (LINK_DEPS): Add missing dependencies on colamd,
-	ccolamd and cxsparse 
+	ccolamd and cxsparse
 
 2006-02-13  John W. Eaton  <jwe@octave.org>
 
@@ -6074,20 +6074,20 @@
 
 2006-02-09  David Bateman  <dbateman@free.fr>
 
-        * SparseQR.cc: new file for real sparse QR class.
-        * SparseQR.h: declaration.
-        * SparseCmplxQR.cc: new file for complex sparse QR class.
-        * SparseCmplxQR.h: declaration.
-        * dSparse.cc (dinverse,tinverse,inverse): Remove unused input args.
-        (factorize, fsolve): Enable code code lssolve.
-        (lssolve): disable unused args, write based in above sparse QR class.
-        * CSparse.cc (dinverse,tinverse,inverse): Remove unused input args.
-        (factorize, fsolve): Enable code code lssolve.
-        (lssolve): disable unused args, write based in above sparse QR class.
-        * oct-sparse.h: fix location of colamd, ccolamd and metis headers.
-        Include CXSparse headers.
-        * Makefile.in (MATRIX_INC): Include SparseQR.h and SparseCmplxQR.h.
-        (MATRIX_SRC): Include SparseQR.cc and SparseCmplxQR.cc.
+	* SparseQR.cc: new file for real sparse QR class.
+	* SparseQR.h: declaration.
+	* SparseCmplxQR.cc: new file for complex sparse QR class.
+	* SparseCmplxQR.h: declaration.
+	* dSparse.cc (dinverse,tinverse,inverse): Remove unused input args.
+	(factorize, fsolve): Enable code code lssolve.
+	(lssolve): disable unused args, write based in above sparse QR class.
+	* CSparse.cc (dinverse,tinverse,inverse): Remove unused input args.
+	(factorize, fsolve): Enable code code lssolve.
+	(lssolve): disable unused args, write based in above sparse QR class.
+	* oct-sparse.h: fix location of colamd, ccolamd and metis headers.
+	Include CXSparse headers.
+	* Makefile.in (MATRIX_INC): Include SparseQR.h and SparseCmplxQR.h.
+	(MATRIX_SRC): Include SparseQR.cc and SparseCmplxQR.cc.
 
 2006-02-08  John W. Eaton  <jwe@octave.org>
 
@@ -6111,18 +6111,18 @@
 
 2006-01-21  David Bateman  <dbateman@free.fr>
 
-        * sparse-sort.cc (bool octave_sparse_sidxl_comp): 64-bit fix.
-        (bool octave_idx_vector_comp): New function.
-        (template class octave_sort<octave_idx_vector_sort *>): Instantiate
-        indexed idx_vector sorting function.
-        * sparse-sort.h (class octave_sparse_sort_idxl): 64-bit fix.
-        (class octave_idx_vector_sort): New class for indexed idx_vector
-        sorting.
-        (bool octave_idx_vector_comp): Declaration.
-        * Sparse.cc (int assign1(Sparse<LT>&, Sparse<RT>&)): Treat cases of
-        unordered LHS indexes in assignment using new octave_idx_vector_sort
-        class.
-        (int assign(Sparse<LT>&, Sparse<RT>&)): ditto.
+	* sparse-sort.cc (bool octave_sparse_sidxl_comp): 64-bit fix.
+	(bool octave_idx_vector_comp): New function.
+	(template class octave_sort<octave_idx_vector_sort *>): Instantiate
+	indexed idx_vector sorting function.
+	* sparse-sort.h (class octave_sparse_sort_idxl): 64-bit fix.
+	(class octave_idx_vector_sort): New class for indexed idx_vector
+	sorting.
+	(bool octave_idx_vector_comp): Declaration.
+	* Sparse.cc (int assign1(Sparse<LT>&, Sparse<RT>&)): Treat cases of
+	unordered LHS indexes in assignment using new octave_idx_vector_sort
+	class.
+	(int assign(Sparse<LT>&, Sparse<RT>&)): ditto.
 
 2006-01-30  John W. Eaton  <jwe@octave.org>
 
@@ -6135,16 +6135,16 @@
 
 	* Spars-op-defs.h (SPARSE_SPARSE_MUL): Previous change resulted in
 	elements not being sorted in return matrix. Sort them, and make
-	solver select between two algorithms to further improve the 
+	solver select between two algorithms to further improve the
 	performance.
 	* dSparse.cc: include oct-sort.h.
 	* CSparse.cc: ditto.
 	* sparse-sort.cc: Instantiate octave_sort<octave_idx_type>.
-	
+
 2005-12-28  David Bateman  <dbateman@free.fr>
 
 	* Sparse-op-defs.h (SPARSE_SPARSE_MUL): Improved algorithm that is
-	faster in all cases, and significantly so for low density or small 
+	faster in all cases, and significantly so for low density or small
 	order problems.
 
 2005-11-30  John W. Eaton  <jwe@octave.org>
@@ -6218,7 +6218,7 @@
 	Changes for GCC 4.1, tip from Arno J. Klaassen
 	<arno@heho.snv.jussieu.fr>:
 
-	* dSparse.h (real (const SparseComplexMatrix&)): 
+	* dSparse.h (real (const SparseComplexMatrix&)):
 	Publish externally used friend function.
 	(imag (const SparseComplexMatrix&)): Likewise.
 
@@ -6230,7 +6230,7 @@
 	Publish externally used friend function.
 	(imag (const ComplexNDArray&)): Likewise.
 
-	* dMatrix.h (operator * (const ComplexMatrix&)): 
+	* dMatrix.h (operator * (const ComplexMatrix&)):
 	Move decl outside class.  No need to be friend.
 	(real (const ComplexMatrix&)): Publish externally used friend function.
 	(imag (const ComplexMatrix&)): Likewise.
@@ -6242,13 +6242,13 @@
 	Likewise.
 
 2005-10-23  David Bateman  <dbateman@free.fr>
-	
+
 	* Sparse-op-defs.h (SPARSE_SPARSE_MUL): Check whether trailing zero
 	elements need to be removed.
-	
+
 	* oct-sparse.h.in: Include metis headers and some macros for long/int
 	versions of cholmod.
-	
+
 	* CSparse.cc (tinverse): New private function for the inversion of
 	an upper triangular matrix.
 	(dinverse): ditto for diagonal matrices.
@@ -6262,9 +6262,9 @@
 	* dSparse.h (tinverse, dinverse, inverse): ditto.
 
 	* SparseType.cc: Fix complex constructor for hermitian matrices.
-	
+
 	* sparse-util.cc: New file for sparse utility functions.
-	* sparse-util.h: New file with declarations of sparse utility 
+	* sparse-util.h: New file with declarations of sparse utility
 	functions.
 
 	* sparse-base-chol.cc: New file with sparse cholesky class based
@@ -6282,7 +6282,7 @@
 	(INCLUDES): Include sparse-util.h
 	(TEMPLATE_SRC): Include sparse-base-chol.cc
 	(MATRIX_SRC): Include SparseCmplxCHOL.cc and SparsedbleCHOL.cc
-	
+
 2005-10-12  John W. Eaton  <jwe@octave.org>
 
 	* oct-env.cc (octave_env::have_x11_display): New function.
@@ -6317,7 +6317,7 @@
 	* lo-cutils.c (octave_waitpid): New function.
 	* lo-utils.h: Provide decl.  Include syswait.h here, not in
 	oct-syscalls.cc
-	
+
 
 	* syswait.h [__MINGW32__]: Define WAITPID here instead of defining
 	waitpid in src/sysdep.h.  Make this header C-compatible.
@@ -6335,7 +6335,7 @@
 
 2005-09-15  David Bateman  <dbateman@free.fr>
 
-	* dSparse.cc : Include oct-sparse.h for probed umfpack, colamd etc 
+	* dSparse.cc : Include oct-sparse.h for probed umfpack, colamd etc
 	headers. Remove include of umfpack.h.
 	* CSparse.cc : ditto.
 	* SparsedbleLU.cc : ditto.
@@ -6345,7 +6345,7 @@
 	* COLAMD.files : delete.
 	* COLAMD.README : delete.
 	* Makefile.in: Remove COLAMD. Add LIBGLOB.
-	(LN_S): Change to DESTDIR before LN_S to avoid lack of symlinks 
+	(LN_S): Change to DESTDIR before LN_S to avoid lack of symlinks
 	under mingw.
 
 	* kpse.cc (ENV_SEP, ENV_SEP_STRING): Use SEPCHAR and SEPCHAR_STR
@@ -6365,7 +6365,7 @@
 2005-09-04  David Bateman  <dbateman@free.fr>
 
 	* COLAMD: Update version of colamd to v2.4.
-	* COLAMD.files: Add colamd_global.c to COLAMD_SRC and second build of 
+	* COLAMD.files: Add colamd_global.c to COLAMD_SRC and second build of
 	colamd.c for long version.
 
 2005-08-25  David Bateman  <dbateman@free.fr>
@@ -6481,13 +6481,13 @@
 
 	* CSparse.h (UMFPACK_ZNAME): Define macro to pick version of
 	UMFPACK for 64-bit.
-	* CSparse.cc (UMFPACK_ZNAME): Replace all umfpack_zi_* with 
+	* CSparse.cc (UMFPACK_ZNAME): Replace all umfpack_zi_* with
 	UMFPACK_ZNAME(*).
 	* SparseCmplxLU.cc (UMFPACK_ZNAME): ditto
 
 	* dSparse.h (UMFPACK_DNAME): Define macro to pick version of
 	UMFPACK for 64-bit.
-	* dSparse.cc (UMFPACK_DNAME): Replace all umfpack_di_* with 
+	* dSparse.cc (UMFPACK_DNAME): Replace all umfpack_di_* with
 	UMFPACK_DNAME(*).
 	* SparsedbleLU.cc (UMFPACK_DNAME): ditto
 
@@ -6510,10 +6510,10 @@
 
 	* SparseType.h: Simplify the permutation code.
 	(SparseType(const matrix_type), SparseType
-	(const matrix_type, const octave_idx_type, const octave_idx_type*), 
-	SparseType(const matrix_type, const octave_idx_type, 
+	(const matrix_type, const octave_idx_type, const octave_idx_type*),
+	SparseType(const matrix_type, const octave_idx_type,
 	const octave_idx_type)): Declarations.
-	
+
 2005-04-25  John W. Eaton  <jwe@octave.org>
 
 	* str-vec.cc (string_vector::delete_c_str_vec): Correctly free
@@ -6541,7 +6541,7 @@
 
 	* SparseType.cc (transpose): New function.
 	* SparseType.h (transpose): Definition.
-	
+
 2005-04-11  John W. Eaton  <jwe@octave.org>
 
 	* lo-specfun.cc: Use F77_XFCN instead of F77_FUNC for calls to
@@ -6549,9 +6549,9 @@
 
 2005-04-10  David Bateman  <dbateman@free.fr>
 
-	* Makefile.in: include oct-types in INCLUDES so that it is 
+	* Makefile.in: include oct-types in INCLUDES so that it is
 	installed
-	
+
 2005-04-08  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.in (clean): Use exact filenames instead of *.xxx.
@@ -6691,7 +6691,7 @@
 
 	* Sparse.cc (Sparse<T>::reshape): Set cidx for the N last elements
 	in the sparse matrix.
-	
+
 2005-02-25  John W. Eaton  <jwe@octave.org>
 
 	Sparse merge.
@@ -6701,7 +6701,7 @@
 	* CSparse.cc (SparseComplexMatrix:dsolve, SparseComplexMatrix:utsolve,
 	SparseComplexMatrix::ltsolve, SparseComplexMatrix::trisolve,
 	SparseComplexMatrix::bsolve, SparseComplexMatrix:fsolve): Split sparse
-	solver into separate functions for the diagonal, upper, lower 
+	solver into separate functions for the diagonal, upper, lower
 	triangular, tridiagonal, banded and full cases.
 	(SparseComplexMatrix::solve): rewrite to call the above function. One
 	version that probes the matrix type and another that assumes the type
@@ -6732,10 +6732,10 @@
 	triangular_col_perm, sparse_info, matrix_type): Likewise
 
 	* Sparse.cc (type, sparse_info, band_size): Remove type code
-	
+
 	* SparseType.h: New class for the matrix type used in solvers
 	* SparseType.cc: methods of sparse matrix type class
-	
+
 	* Makefile.in: Add SparseType.cc
 
 	2005-02-01  David Bateman  <dbateman@free.fr>
@@ -6756,18 +6756,18 @@
 	* MSparse.h (int type (int) const, bool is_dense (void) const): ditto
 	* dSparse.h (int type (int) const, bool is_dense (void) const): ditto
 	* CSparse.h (int type (int) const, bool is_dense (void) const): ditto
-	* boolSparse.h (int type (int) const, bool is_dense (void) const): 
+	* boolSparse.h (int type (int) const, bool is_dense (void) const):
 	ditto
 
-	* Sparse.cc (int Sparse<T>::type (int) const, 
+	* Sparse.cc (int Sparse<T>::type (int) const,
 	bool Sparse<T>::is_dense (void) const): New functions definition
-	
+
 	* Sparse.h (matrix_type typ): Move caching of matrix type to SparseRep,
 	so it actually is cached, but disable
 
 	* oct-spparms.cc (SparseParams::init_keys): Change spmoni to spumoni
 	for compatiability
-	
+
 	2005-01-18  David Bateman  <dbateman@free.fr>
 
 	* Array.cc (Array<T>::insert (const Array<T>&, const Array<int>&)):
@@ -6778,35 +6778,35 @@
 	* Sparse.h : Reverse definitions of numel and nelem.
 	* Sparse.cc (assign1): Use numel and not nelem
 	* Sparse-op-def.h: Replace all uses of nelem with numel
-	
+
 	2005-01-07  David Bateman  <dbateman@free.fr>
 
 	* dbleDET.h: Make SparseMatrix a friend of the class DET
-	* CmplexDET.h: Make SparseComplexMatrix a friend of the class 
+	* CmplexDET.h: Make SparseComplexMatrix a friend of the class
 	ComplexDET
-	* dSparse.cc (SparseMatrix::determinant): Replace use of SparseDET 
+	* dSparse.cc (SparseMatrix::determinant): Replace use of SparseDET
 	by DET
 	* dSparse.h (determinant): ditto
-	* CSparse.cc (SparseComplexMatrix::determinant): Replace use of 
+	* CSparse.cc (SparseComplexMatrix::determinant): Replace use of
 	SparseComplexDET by ComplexDET
 	* CSparse.h (determinant): ditto
-	* SparsedbleDET.h, SparsedbleDET.cc, SparseCmplxDET.h, 
+	* SparsedbleDET.h, SparsedbleDET.cc, SparseCmplxDET.h,
 	SparseCmplxDET.cc: delete files
 	* Makefile.in: Delete reference to SparsedbleDET.h, SparsedbleDET.cc,
 	SparseCmplxDET.h andSparseCmplxDET.cc.
 
-	* CSparse.cc (SparseComplexMatrix::solve): Store matrix type in 
+	* CSparse.cc (SparseComplexMatrix::solve): Store matrix type in
 	local variable to avoid variable shadowing.
 	* dSparse.cc (SparseMatrix::solve): ditto.
-	
-        * boolSparse.cc boolSparse.h CSparse.cc CSparse.h dSparse.cc 
+
+	* boolSparse.cc boolSparse.h CSparse.cc CSparse.h dSparse.cc
 	dSparse.h MSparse.cc MSparse-C.cc MSparse-d.cc MSparse-defs.h
-   	MSparse.h oct-spparms.cc oct-spparms.h Sparse-b.cc Sparse.cc 
-	Sparse-C.cc SparseCmplxLU.cc SparseCmplxLU.h SparsedbleLU.cc 
-	SparsedbleLU.h Sparse-d.cc Sparse.h Sparse-op-defs.h sparse-sort.cc 
+   	MSparse.h oct-spparms.cc oct-spparms.h Sparse-b.cc Sparse.cc
+	Sparse-C.cc SparseCmplxLU.cc SparseCmplxLU.h SparsedbleLU.cc
+	SparsedbleLU.h Sparse-d.cc Sparse.h Sparse-op-defs.h sparse-sort.cc
 	sparse-sort.h: Remove additional licensing clause with authors
 	permission.
-	
+
 	2004-12-30  John W. Eaton  <jwe@octave.org>
 
 	* MSparse.cc (SPARSE_A2S_OP_2, SPARSE_SA2_OP_2):
@@ -6833,7 +6833,7 @@
 
 	* CSparse.cc (SparseComplexMatrix::hermitian): Avoid shadow warnings.
 	* Sparse.cc (Sparse<T>::Sparse, Sparse<T>::type, assign): Likewise.
-	
+
 	* Sparse.h (Sparse::SparseRep): Order data members and initializer
 	lists consistently.
 
@@ -6848,7 +6848,7 @@
 	(DISTDIRS): New variable.
 	(dist): Handle $(DISTDIRS).
 
-	Merge of sparse code from David Bateman <dbateman@free.fr> and 
+	Merge of sparse code from David Bateman <dbateman@free.fr> and
 	Andy Adler <adler@site.uottawa.ca>.
 
 	* Makefile.in (VPATH): ADD @srcdir@/COLAMD to the list.
@@ -6897,7 +6897,7 @@
 	SparseCmplxDET.cc, SparseCmplxLU.cc, SparsedbleDET.cc,
 	SparsedbleLU.cc: New files.
 	* Makefile.in (MATRIX_SRC): Add them to the list.
-	
+
 	* boolSparse.h, CSparse.h, dSparse.h, MSparse-defs.h, MSparse.h,
 	Sparse.h, oct-spparms.h, sparse-base-lu.h, SparseCmplxDET.h,
 	SparseCmplxLU.h, SparsedbleDET.h, SparsedbleLU.h,
@@ -7222,7 +7222,7 @@
 
 	* oct-inttypes.h (pow (constT, T)): New template.
 
-	* int8NDArray.cc, int16NDArray.cc, int32NDArray.cc, uint8NDArray.cc, 
+	* int8NDArray.cc, int16NDArray.cc, int32NDArray.cc, uint8NDArray.cc,
 	uint16NDArray.cc, uint32NDArray.cc: Instantiate power function.
 
 2004-08-31  John W. Eaton  <jwe@octave.org>
@@ -7307,13 +7307,13 @@
 
 2004-08-23  David Bateman  <dbateman@free.fr>
 
-        * dim-vector.h (dim_vector::concat): Correct incrementation for
+	* dim-vector.h (dim_vector::concat): Correct incrementation for
 	non-existent dimensions.
 
 2004-08-09  John W. Eaton  <jwe@octave.org>
 
 	* idx-vector.h (idx_vector::idx_vector_rep::tree_to_mat_idx
-	(const octave_int<U>&)): New member function. 
+	(const octave_int<U>&)): New member function.
 	(idx_vector::idx_vector_rep::tree_to_mat_idx (double, bool&),
 	idx_vector::idx_vector_rep::tree_to_mat_idx (int)):
 	Now member functions instead of static in idx-vector.cc.
@@ -7352,22 +7352,22 @@
 2004-07-23  David Bateman  <dbateman@free.fr>
 
 	* Array.cc, Array.h (cat_ra): Delete.
-	* Array.h, Array-C.cc, Array-d.cc, Array-ch.cc, Array-i.cc 
+	* Array.h, Array-C.cc, Array-d.cc, Array-ch.cc, Array-i.cc
 	(INSTANTIATE_ARRAY_CAT): Delete.
 
-	* dNDArray.cc, dNDArray.h, CNDArray.cc, CNDArray.h, chNDArray.cc, 
+	* dNDArray.cc, dNDArray.h, CNDArray.cc, CNDArray.h, chNDArray.cc,
 	chNDArray.h, intNDArray.cc, intNDArray.h (cat): Delete.
-	
+
 	* Array.cc (Array<T>::insert): Copy data in NDArray version.
 
-	* dNDArray.cc, dNDArray.h, CNDArray.cc, CNDArray.h, chNDArray.cc, 
+	* dNDArray.cc, dNDArray.h, CNDArray.cc, CNDArray.h, chNDArray.cc,
 	chNDArray.h (concat): New function used for concatenation that does
 	an indexed copy of one array into another.
 
 	* dim-vector.h (concat): New function to concatenate dim_vectors.
 
 	* dNDArray.cc, dNDArray.h, CNDArray.cc, CNDArray.h, chNDArray.cc,
-	chNDArray.h, intNDArray.cc, intNDArray.h (insert): New function for 
+	chNDArray.h, intNDArray.cc, intNDArray.h (insert): New function for
 	insertion of one NDArray into another.
 
 	* oct-inttype.cc (OCTAVE_INT_CONCAT_FN, OCTAVE_INT_CONCAT_DECL): New
@@ -7413,7 +7413,7 @@
 	(ComplexNDArray::ComplexNDArray (const NDArray&),
 	(ComplexNDArray::ComplexNDArray (const boolNDArray&),
 	(ComplexNDArray::ComplexNDArray (const charNDArray&)): Delete.
-	
+
 	(ComplexNDArray::squeze): Call MArrayN::squeeze, not ArrayN::squeeze.
 
 	* MArrayN.h:
@@ -7461,11 +7461,11 @@
 
 2004-04-30  David Bateman  <dbateman@free.fr>
 
-        * dim_vector.h (dim_vector::dim_vector_rep::dim_vector_rep):
+	* dim_vector.h (dim_vector::dim_vector_rep::dim_vector_rep):
 	New arg, fill_value.
 	(dim_vector::resize): Allow optional fill_value argument.
 
-        * Array.cc (Array<T>::index (Array<idx_vector>&, int, const T&)):
+	* Array.cc (Array<T>::index (Array<idx_vector>&, int, const T&)):
 	Don't chop trailing dimensions of Array<idx_vector> if there is
 	more than one element in idx_vector.  Resize the return value to
 	the size of Array<idx_vector>.
@@ -7502,20 +7502,20 @@
 
 2004-04-02  David Bateman  <dbateman@free.fr>
 
-	* lo-specfun.cc (besselj, bessely, besseli, besselk, besselh1, 
+	* lo-specfun.cc (besselj, bessely, besseli, besselk, besselh1,
 	besselh2, airy, biry, betainc, gammainc, do_bessel):
 	New N-d array versions.
 	(SN_BESSEL, NS_BESSEL, NN_BESSEL): New macros.
-	* lo-specfun.h (besselj, bessely, besseli, besselk, besselh1, 
+	* lo-specfun.h (besselj, bessely, besseli, besselk, besselh1,
 	besselh2, airy, biry, betainc, gammainc): Provide decls.
-	
+
 	* dNDArray.cc (NDArray::min, NDArray::max, min, max):
 	New functions.
 	* dNDArray.h (NDArray::min, NDArray::max, min, max): Provide decls.
 
 	* CNDArray.cc (ComplexNDArray::min, ComplexNDArray::max, min, max):
 	New functions.
-	* CNDArray.h (ComplexNDArray::min, ComplexNDArray::max, min, max): 
+	* CNDArray.h (ComplexNDArray::min, ComplexNDArray::max, min, max):
 	Provide decls.
 
 2004-03-17  David Hoover  <jazzdaq@yahoo.com>
@@ -7585,11 +7585,11 @@
 	(Range::print_range): Delete.
 
 2004-03-02  David Bateman  <dbateman@free.fr>
- 
+
 	* oct-fftw.cc: Only two versions of plan, and avoid endless
 	changes between them.  Faster for small fft's.
 	(octave_fftw_planner::simd_align, octave_fftw_planner::rsimd_align):
-	New member variables. 
+	New member variables.
 	(octave_fftw_planner::ialign, octave_fftw_planner::oalign,
 	octave_fftw_planner::rialign, octave_fftw_planner::roalign): Delete.
 	Change all uses.
@@ -7600,15 +7600,15 @@
 
 	* Array.cc (Array<T>::insertN): Eliminate N-d indexing.
 
-        * mx-inlines.cc (MX_ND_CAT): Delete macro.
+	* mx-inlines.cc (MX_ND_CAT): Delete macro.
 
-        * dNDArray.h, chNDArray.h, CNDArray.h (cat): Change declaration.
-        * dNDArray.cc (NDArray<T>::cat): Call new form of cat function.
-        * chNDArray.cc (charNDArray<T>::cat): Ditto.
-        * CNDArray.cc (ComplexNDArray<T>::cat): Ditto.
+	* dNDArray.h, chNDArray.h, CNDArray.h (cat): Change declaration.
+	* dNDArray.cc (NDArray<T>::cat): Call new form of cat function.
+	* chNDArray.cc (charNDArray<T>::cat): Ditto.
+	* CNDArray.cc (ComplexNDArray<T>::cat): Ditto.
 
-        * Array.h (cat_ra): Return int.  Accept idx and move args, not add_dim.
-        * Array.cc (cat_ra): Speed up implementation by avoiding N-d indexing.
+	* Array.h (cat_ra): Return int.  Accept idx and move args, not add_dim.
+	* Array.cc (cat_ra): Speed up implementation by avoiding N-d indexing.
 
 2004-02-24  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
@@ -7628,7 +7628,7 @@
 
 2004-02-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
-	* Array.cc (Array<T>::resize_and_fill (const dim_vector&, const T&)): 
+	* Array.cc (Array<T>::resize_and_fill (const dim_vector&, const T&)):
 	Fix thinko in extending dimensions.
 
 2004-02-20  John W. Eaton  <jwe@bevo.che.wisc.edu>
@@ -7652,7 +7652,7 @@
 
 2004-02-17  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
-	* oct-fftw.cc (convert_packcomplex_1d, convert_packcomplex_Nd): 
+	* oct-fftw.cc (convert_packcomplex_1d, convert_packcomplex_Nd):
 	Sprinkle with OCTAVE_QUIT.
 
 2004-02-16  David Bateman  <dbateman@free.fr>
@@ -7682,7 +7682,7 @@
 	ComplexNDArray::fourierNd, ComplexNDArray::ifouriourNd): New
 	fourier transform functions for complex Nd arrays.
 	* CNArray.h: Provide decls.
-	
+
 2004-02-15  Petter Risholm  <risholm@stud.ntnu.no>
 
 	* Array.cc (Array<T>::insert (const Array<T>&, int, int)):
@@ -7760,7 +7760,7 @@
 	Don't skip reshaping and resizing if RHS is empty.
 
 	* Array.cc (Array<T>::assignN): Simplify loop for array	assignment.
-	Move body of MAYBE_RESIZE_ND_DIMS here since it is only used once.  
+	Move body of MAYBE_RESIZE_ND_DIMS here since it is only used once.
 	Delete unused variables is_colon and is_colon_equiv.
 	Correctly resize for expressions like x(:,:,2) = ones(3,3) when
 	LHS is not yet defined.
@@ -7891,10 +7891,10 @@
 
 2004-01-06  David Bateman  <dbateman@free.fr>
 
- 	* CNDArray.cc (ComplexNDArray::any_element_is_inf_or_nan, 
+ 	* CNDArray.cc (ComplexNDArray::any_element_is_inf_or_nan,
  	ComplexNDArray::all_elements_are_real, ComplexNDArray::all_integers,
  	ComplexNDArray::too_large_for_float): New functions
- 
+
  	* CNDArray.cc (operator <<, operator >>): New IO operators.
  	* CNDArray.h: Provide decls.
  	* dNDArray.cc (operator <<, operator >>): New IO operators.
@@ -8437,7 +8437,7 @@
 	by user.
 
 2003-09-04  John W. Eaton  <jwe@bevo.che.wisc.edu>
- 
+
  	* lo-specfun.cc (xlgamma): Require nonnegative argument.
 
 2003-09-09  John W. Eaton  <jwe@bevo.che.wisc.edu>
@@ -8475,7 +8475,7 @@
 	* Makefile.in (MATRIX_INC): Add ArrayN-inlines.h to the list.
 
 2003-09-03  Petter Risholm  <risholm@stud.ntnu.no>
-	
+
 	* ArrayN-inline.h: New file.
 	(index_in_bounds, increment_index): Move here.
 	* ArrayN.cc: From here.
@@ -8495,7 +8495,7 @@
 
 2003-30-07  Heine Kolltveit  <kolltvei@idi.ntnu.no>
 
-        * ArrayN.cc (operator <<): Corrected output.
+	* ArrayN.cc (operator <<): Corrected output.
 
 2003-07-30  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
@@ -8536,7 +8536,7 @@
 
 	* Array2-idx.h (assign (Array2<LT>&, const Array2<RT>&, const LT&)):
 	Pass true for resize_ok arg to freeze.
-	* Array-idx.h (assign (Array<LT>&, const Array<RT>&, const LT&)): 
+	* Array-idx.h (assign (Array<LT>&, const Array<RT>&, const LT&)):
 	Likewise.
 
 	* idx-vector.cc (IDX_VEC_REP::freeze): New arg, warn_resize;
@@ -8653,7 +8653,7 @@
 
 	* kpse.cc (xclosedir): Don't define or declare for Windows.
 	(READABLE): Now a static function to avoid warnings from MinGW
-	compiler.	
+	compiler.
 
 2003-04-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
@@ -8727,7 +8727,7 @@
 	* base-lu.cc (base_lu::L), base_lu::U, base_lu::P): Likewise.
 
 2002-10-31  John W. Eaton  <jwe@bevo.che.wisc.edu>
-  
+
   	* octave.test/arith/prod-4.m, octave.test/arith/sum-4.m:
 
 2003-02-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
@@ -8736,11 +8736,11 @@
 	Additional compatibility fix.
 
 2003-02-13  Arno Klaassen  <arno@scito.com>
- 
-        * Array2-idx.h, Array2.cc, Array2.h, Array3.cc, Array3.h,
+
+	* Array2-idx.h, Array2.cc, Array2.h, Array3.cc, Array3.h,
 	ArrayN.cc, ArrayN.h, DiagArray2.cc, DiagArray2.h, MDiagArray2.h:
 	Sprinkle with Array<T>:: as necessary for gcc 3.4.
- 
+
 2003-02-13  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Array2-idx.h (Array2<T>::index (idx_vector&, int, const T&)):
@@ -8793,7 +8793,7 @@
 
 	* oct-syscalls.cc (octave_syscalls::kill): New function.
 	* oct-syscalls.h: Provide decl.
-	
+
 
 2003-01-06  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
@@ -8901,7 +8901,7 @@
 	dbleSCHUR.cc, dbleSCHUR.h, dbleSVD.cc, dbleSVD.h, idx-vector.cc,
 	idx-vector.h, oct-alloc.cc, CColVector.cc, DASPK.h, DASPK.cc,
 	ODESSA.h, ODES.h, ODESSA.cc, ODES.cc, chMatrix.h, chMatrix.cc:
-	Use "defined (USE_PRAGMA_INTERFACE_IMPLEMENTATION)" instead of 
+	Use "defined (USE_PRAGMA_INTERFACE_IMPLEMENTATION)" instead of
 	"! defined (NO_PRAGMA_INTERFACE_IMPLEMENTATION)".
 
 2002-11-15  John W. Eaton  <jwe@bevo.che.wisc.edu>
@@ -9285,7 +9285,7 @@
 
 	* DASPK-opts.in, DASPK.h: Move include to .in file.
 	* DASRT-opts.in, DASRT.h: Likewise.
-        * DASSL-opts.in, DASSL.h: Likewise.
+	* DASSL-opts.in, DASSL.h: Likewise.
 	* LSODE-opts.in, LSODE.h: Likewise.
 	* NLEqn-opts.in, NLEqn.h: Likewise.
 	* ODESSA-opts.in, ODESSA.h: Likewise.
@@ -9364,7 +9364,7 @@
 
 2002-07-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
-	* CMatrix.cc (ComplexMatrix::ComplexMatrix (const boolMatrix&)): 
+	* CMatrix.cc (ComplexMatrix::ComplexMatrix (const boolMatrix&)):
 	Get rows and columns right in loop.
 	(ComplexMatrix::ComplexMatrix (const charMatrix&)): Likewise.
 
@@ -9384,7 +9384,7 @@
 	* LSODE.h, Quad.h: Replace options class definitions with included
 	file.
 	* Makefile.in (OPTS_INC_SRC, OPTS_INC): New variables, new rule to
-	create OPTS_INC files from OPTS_INC_SRC files.	
+	create OPTS_INC files from OPTS_INC_SRC files.
 	(stamp-prereq): New target.
 	(libraries): Depend on stamp-prereq.
 	Include stamp-prereq along with $(MAKEDEPS).
@@ -9436,7 +9436,7 @@
 
 	* ODES.h, ODES.cc, ODESFunc.h, ODESSA.h, ODESSA.cc: New files.
 	* Makefile.in: Add them to the appropriate lists.
-	(LIBOCTAVE_CXX_SOURCES): 
+	(LIBOCTAVE_CXX_SOURCES):
 
 2002-07-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
@@ -9538,7 +9538,7 @@
 	* Array2.h (assign (Array2<LT>&, const Array2<RT>&)): Use it.
 	* ArrayN.h (assign (ArrayN<LT>&, const ArrayN<RT>&)): Use it.
 
-2002-05-02  Cai Jianming  <caijianming@yahoo.co.uk> 
+2002-05-02  Cai Jianming  <caijianming@yahoo.co.uk>
 
 	* Array3.h (Array3<T>::checkelem): Improve error message.
 	* ArrayN.h (ArrayN<T>::range_error): Likewise.
@@ -9589,7 +9589,7 @@
 
 2002-04-02  Paul Kienzle  <pkienzle@users.sf.net>
 
-        * CmplxQR.cc (ComplexQR::init): Use economy QR decomposition
+	* CmplxQR.cc (ComplexQR::init): Use economy QR decomposition
 	internally when the user requests it.
 	* CmplxQRP.cc (ComplexQRP::init): Ditto.
 	* dbleQR.cc (QR::init): Ditto.
@@ -9609,7 +9609,7 @@
 
 	* data-conv.cc (LS_DO_READ): Don't do anything unless len > 0.
 	(LS_DO_WRITE): Likewise.
-	
+
 2001-11-16  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* mx-inlines.cc (MX_CUMMULATIVE_OP): New macro.
@@ -9700,9 +9700,9 @@
 
 	* oct-fftw.h, oct-fftw.cc: New files.
 	* Makefile.in (INCLUDES, SOURCES): Add new files.
-	* CMatrix.cc (ComplexMatrix::{fourier, ifourier, fourier2d, 
+	* CMatrix.cc (ComplexMatrix::{fourier, ifourier, fourier2d,
 	ifourier2d}): Use fftw if available.
-	* dMatrix.cc (Matrix::{fourier, ifourier, fourier2d, ifourier2d}): 
+	* dMatrix.cc (Matrix::{fourier, ifourier, fourier2d, ifourier2d}):
 	Likewise.
 
 2001-04-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
@@ -9739,7 +9739,7 @@
 	(octave_rl_get_blink_matching_paren_flag): Delete.
 
 	* lo-mappers.h, lo-mappers.cc (log10 (const Complex&),
-	tanh (const Complex&)): Declare and define if not 
+	tanh (const Complex&)): Declare and define if not
 	CXX_ISO_COMPLIANT_LIBRARY.
 
 2001-02-05  John W. Eaton  <jwe@bevo.che.wisc.edu>
@@ -9756,9 +9756,9 @@
 	archive libraries containing templates.
 
 	* ArrayN-idx.h (freeze, all_ok, any_orig_empty, any_zero_len,
-	get_zero_len_size, all_colon_equiv): Inline. 
+	get_zero_len_size, all_colon_equiv): Inline.
 	(ArrayN<T>::index): Rename idx to arr_idx.
-	* ArrayN.cc (ArrayN<T>::index, ArrayN<T>::compute_index, 
+	* ArrayN.cc (ArrayN<T>::index, ArrayN<T>::compute_index,
 	ArrayN<T>::get_size, ArrayN<T>::range_error, ArrayN<T>::range_error,
 	increment_index, ArrayN<T>::resize, ArrayN<T>::insert): Likewise.
 
@@ -10031,7 +10031,7 @@
 
 	* MArray-defs.h: Many new macros to make declaration and
 	definition of operators more consistent.
-	
+
 	* MArray.h, MArray2.h, dColVector.h, dRowVector.h, CColVector.h,
 	CRowVector.h, dMatrix.h, CMatrix.h: Use them.
 
@@ -10143,7 +10143,7 @@
 
 2000-01-26  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
-	* Array2-idx.h (assign (Array2<LT>& lhs, const Array2<RT>& rhs)): 
+	* Array2-idx.h (assign (Array2<LT>& lhs, const Array2<RT>& rhs)):
 	Allow A(idx) = RHS if idx is a boolean index with the same shape
 	as A, even when do_fortran_indexing is not enabled.
 	(Array2<T>::index (idx_vector& idx) const): Likewise, for A(idx).
@@ -10418,7 +10418,7 @@ Tue Nov 10 07:53:15 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 	* oct-alloc.h (DECLARE_OCTAVE_ALLOCATOR): New macro.
 	(DEFINE_OCTAVE_ALLOCATOR): Ditto.
 
-	* byte-swap.h (swap_bytes, swap_2_bytes, swap_4_bytes, swap_8_bytes): 
+	* byte-swap.h (swap_bytes, swap_2_bytes, swap_4_bytes, swap_8_bytes):
 	Add volatile qualifier to void* arg.
 	Cast volatile void* arg to volatile char*.
 
@@ -10474,7 +10474,7 @@ Tue Oct 13 22:11:08 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 Fri Sep 25 14:26:44 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
-	* oct-env.cc (octave_env::do_get_home_directory): 
+	* oct-env.cc (octave_env::do_get_home_directory):
  	If HOME can't be found, set it to "/".
 	(octave_env::do_get_user_name)
 	If user name can't be found, set it to "unknown".
@@ -10527,7 +10527,7 @@ Thu Jun 18 11:08:23 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* MArray2.cc (MARRAY_A2A2_OP): If operands are empty, make result
 	have the same size as the operands.
-	
+
 Thu May 28 10:41:04 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* DASSL.cc (DASSL::do_integrate): If an exception occurs in the
@@ -10639,7 +10639,7 @@ Fri Jan 30 23:48:43 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 Tue Jan 20 16:30:00 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* dMatrix.cc (Matrix::expm): Skip trace normalization step if the
-	trace is negative. 
+	trace is negative.
 	* CMatrix.cc (ComplexMatrix::expm): Skip trace normalization if
 	the real part of the trace is negative.
 
@@ -10691,7 +10691,7 @@ Thu Nov 13 21:57:16 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 Thu Oct  2 17:13:02 1997  Mumit Khan  <khan@dhaka.xraylith.wisc.edu>
 
-	* CRowVector.cc (linspace): Removed attempt for implicit conversion 
+	* CRowVector.cc (linspace): Removed attempt for implicit conversion
 	to complex<double>(int) instead of complex<double>(double).
 
 	* lo-mappers.cc (atanh): Ditto.
@@ -11048,7 +11048,7 @@ Thu Feb 13 14:35:19 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 	(stamp-shared): Use $(SH_LD) $(SH_LDFLAGS) instead of $(CXX) -shared.
 
 	* Array2-idx.h (Array2<T>::index (idx_vector&, idx_vector&)):
-	Fix typo in last change. 
+	Fix typo in last change.
 
 	* CColVector.cc (ComplexColumnVector::map (d_c_mapper)):
 	Convert from friend (moved from dColVector.cc).
@@ -11269,7 +11269,7 @@ Sun Nov  3 15:45:37 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 	* file-ops.cc (file_stat::is_blk, file_stat::is_chr,
 	file_stat::is_dir, file_stat::is_fifo, file_stat::is_lnk,
 	file_stat::is_reg, file_stat::is_sock): Just return false if the
-	underlying macro is not defined.	
+	underlying macro is not defined.
 
 	* oct-math.h (lgamma, gamma): Delete declarations.
 	(asinh, acosh, atanh, erf, erfc): Declare arg types too.
@@ -11309,7 +11309,7 @@ Fri Oct 25 01:24:51 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 	* Array3.h (Array3::checkelem): Tag bogus return value with
 	GCC_ATTRIBUTE_UNUSED.
 	* Array2.h (Array2::checkelem): Likewise.
-	
+
 Thu Oct 24 19:40:36 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Quad.h (Quad): Define virtual destructor.
@@ -11579,7 +11579,7 @@ Fri Mar  1 08:30:58 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
  	* Array2.cc, Array3.cc, DiagArray2.cc: New files, from Array.cc.
 	* MArray2.h, MDiagArray2.h: New files, extracted from MArray.h.
 	* MArray2.cc, MDiagArray2.cc, MArray-defs.h: New files, from MArray.cc.
-	
+
 	* MArray.h (INSTANTIATE_MARRAY_FRIENDS): New macro.
 	(INSTANTIATE_MARRAY2_FRIENDS): Likewise.
 	(INSTANTIATE_MDIAGARRAY_FRIENDS): Likewise.
@@ -11749,7 +11749,7 @@ Sun Feb  4 03:12:04 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 	NLConst.h, LinConst.h, LSODE.h, LP.h, FEGrid.h, EIG.h, DASSL.h,
 	DAEFunc.h, CollocWt.h, Bounds.h:
 	Clean up constructors, assigment operator.
-	
+
 	* dRowVector.cc (RowVector::transpose): Use magic of reference
 	counting to avoid duplicating the data immediately.
 	* dColVector.cc (ColumnVector::transpose): Likewise.
@@ -12153,7 +12153,7 @@ Tue Sep 26 04:14:23 1995  John Eaton  <jwe@bevo.che.wisc.edu>
 	(ComplexRowVector::operator* (const Complex&, const RowVector&),
 	(ComplexRowVector::operator/ (const Complex&, const RowVector&)):
 	Actually do something.
-	
+
 	* dMatrix.cc (Matrix::lssolve (ComplexMatrix&)): Use dummy vars.
 	(Matrix::lssolve (ComplexMatrix&, int&)): Likewise.
 	(Matrix::lssolve (ComplexMatrix&, int&, int&)): Likewise.
@@ -12161,7 +12161,7 @@ Tue Sep 26 04:14:23 1995  John Eaton  <jwe@bevo.che.wisc.edu>
 	* Quad.cc (Quad_options::Quad_options (double, double)): New function.
 	* (Quad::Quad (integrand_fcn, double, double): Properly initialize
 	tolerances.
-	
+
 	* DAE.cc (ddassl_f, ddassl_j): Remove names of unused parameters.
 	* LPsolve.cc (LPsolve::minimize): Likewise.
 	* NPSOL.cc (NPSOL::option, npsol_confun, npsol_objfun): Likewise.
@@ -12185,7 +12185,7 @@ Tue Aug 22 00:41:06 1995  John Eaton  <jwe@bevo.che.wisc.edu>
 
 	* DAE.cc (dassl_f): Add UNUSED attribute for unused parameters.
 	(dassl_j): Likewise.
-	
+
 	* DAE.cc, NLEqn.cc, NPSOL.cc, ODE.cc, CColVector.cc, CMatrix.cc,
 	dColVector.cc, dMatrix.cc, CmplxLU.cc, dbleLU.cc, QPSOL.cc,
 	Array.cc, CollocWt.cc, FEGrid.h, LinConst.h:

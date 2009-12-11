@@ -129,12 +129,12 @@ Wed Feb  8 10:51:33 1995  John Eaton  <jwe@schoch.che.utexas.edu>
 Fri Feb  3 15:44:03 1995  John Eaton  <jwe@schoch.che.utexas.edu>
 
 	* src/tree-misc.cc
-	(tree_parameter_list::initialize_undefined_elements): New function. 
+	(tree_parameter_list::initialize_undefined_elements): New function.
 	* src/tree-expr.cc (tree_function::eval): Use it to define return
 	values.
 	(tree_simple_assignment_expression:eval): Complain if RHS is undefined.
 	(tree_multi_assignment_expression:eval): Complain if any of the
-	RHS values are undefined. 
+	RHS values are undefined.
 	* src/user-prefs.h (init_user_prefs): New structure element,
 	define_all_return_values.
 	* src/user-prefs.cc (define_all_return_values): New function.
@@ -145,7 +145,7 @@ Fri Feb  3 15:44:03 1995  John Eaton  <jwe@schoch.che.utexas.edu>
 Wed Feb  1 08:02:28 1995  John Eaton  <jwe@schoch.che.utexas.edu>
 
 	* src/parse.y (parse_error): Call yyerror() here.
-	(input): Not here.	
+	(input): Not here.
 
 	* src/lex.l (handle_string): Call have_continuation and
 	have_ellipsis_continuation with 0 arg, to disallow comments after
@@ -249,7 +249,7 @@ Fri Jan 27 08:32:10 1995  John Eaton  <jwe@schoch.che.utexas.edu>
 
 	* configure.in: Don't try to use IEEE floating point on m68k HP
 	systems.
-	
+
 Thu Jan 26 12:57:05 1995  John Eaton  <jwe@schoch.che.utexas.edu>
 
 	* src/lex.l (maybe_unput_comma):  New function, extracted from
@@ -422,7 +422,7 @@ Thu Jan 12 15:25:34 1995  John Eaton  <jwe@schoch.che.utexas.edu>
 	* doc/Makefile.in (FORMATTED): Add refcard.dvi and refcard.ps so
 	that they are distributed along with the other docs.
 	* octMakefile.in (clean-doc-dist-tar): Delete target.
-	(doc-dist): Depend on doc-dist-tar, not	clean-doc-dist-tar. 
+	(doc-dist): Depend on doc-dist-tar, not	clean-doc-dist-tar.
 
 Tue Jan 10 14:29:43 1995  John Eaton  <jwe@schoch.che.utexas.edu>
 
@@ -520,7 +520,7 @@ Fri Dec 16 00:09:01 1994  John Eaton  <jwe@schoch.che.utexas.edu>
 
 Thu Dec 15 00:28:52 1994  John Eaton  <jwe@schoch.che.utexas.edu>
 
-	* src/variables.cc (install_builtin_variables) [default_save_format]: 
+	* src/variables.cc (install_builtin_variables) [default_save_format]:
 	Fix doc string.
 
 	* configure.in: Rework DEFAULT_DOT_O_FROM_DOT_F and
@@ -536,7 +536,7 @@ Thu Dec 15 00:28:52 1994  John Eaton  <jwe@schoch.che.utexas.edu>
 	fcn_file_in_path here.
 	(gobble_leading_white_space): Correctly grab only first set of
 	comments.
-	
+
 Wed Dec 14 11:42:13 1994  John Eaton  <jwe@schoch.che.utexas.edu>
 
 	* src/parse.y (pager_buf): Don't make it a fixed-size array.
@@ -594,7 +594,7 @@ Tue Dec 13 11:07:34 1994  John Eaton  <jwe@schoch.che.utexas.edu>
 	<MATRIX>{SNLCMT}*;{SNLCMT}.  Check nesting level to decide whether
 	to convert newline to semicolon.
 	({NL}, {CCHAR}): Check nesting level to decide whether to eat
-	or return newline. 
+	or return newline.
 	("("): Decrement promptflag.
 	(")"): Increment promptflag.
 
@@ -793,7 +793,7 @@ Mon Nov 14 10:28:23 1994  John Eaton  <jwe@schoch.che.utexas.edu>
 	TC_REP::print_code): Handle all_va_args.
 	* src/tree-misc.cc (tree_argument_list::convert_to_const_vector):
 	Handle all_va_args.
-	* src/tree-expr.cc (tree_index_expression::eval): After call to 
+	* src/tree-expr.cc (tree_index_expression::eval): After call to
 	tree_argument_list::convert_to_const_vector (), check error_state.
 	(tree_simple_assignment_expression::eval): Likewise.
 	(tree_function::octave_all_va_args): New function.
@@ -816,7 +816,7 @@ Mon Nov 14 10:28:23 1994  John Eaton  <jwe@schoch.che.utexas.edu>
 Fri Nov 11 14:17:31 1994  John Eaton  <jwe@schoch.che.utexas.edu>
 
 	* src/load-save.cc (extract_keyword): Allow trailing blanks on the
-	input line. 
+	input line.
 
 Thu Nov 10 09:53:35 1994  John Eaton  <jwe@schoch.che.utexas.edu>
 
@@ -1334,7 +1334,7 @@ Mon Oct  3 10:40:50 1994  John Eaton  <jwe@schoch.che.utexas.edu>
 	default.
 	(uninstall): Now no need to delete it.
 
-	* configure.in (localfcnfilepath, localoctfilepath): Change to 
+	* configure.in (localfcnfilepath, localoctfilepath): Change to
 	match organization of system fcn and oct files, and enable
 	recursive searching in both.  Enable recursive searching in
 	$(octfiledir).
@@ -1362,7 +1362,7 @@ Sun Oct  2 10:14:18 1994  John Eaton  <jwe@schoch.che.utexas.edu>
 
 	* src/data.cc (Fcumprod, Fcumsum, Fprod, Fsum, Fsumsq): Do work here.
 	* src/tc-rep.cc (TC_REP::cumprod, TC_REP::cumsum, TC_REP::prod,
-	TC_REP::sum, TC_REP::sumsq): Not here.  Delete. 
+	TC_REP::sum, TC_REP::sumsq): Not here.  Delete.
 	* src/tc-rep.h (TC_REP::cumprod, TC_REP::cumsum, TC_REP::prod,
 	TC_REP::sum, TC_REP::sumsq): Delete
 	* src/tree-const.h (tree_constant::cumprod, tree_constant::cumsum,
@@ -1441,7 +1441,7 @@ Fri Sep 30 09:52:15 1994  John Eaton  <jwe@schoch.che.utexas.edu>
 	(print_constant): New function.
 	(tree_identifier::eval, tree_indirect_ref::eval): Use it.
 	(
-	
+
 	* src/tree-expr.h (tree_indirect_ref): New class for handling
 	structure references.
 	(tree_expression::is_indirect_ref): New virtual function.
@@ -1728,9 +1728,9 @@ Fri Sep  9 08:46:03 1994  John Eaton  (jwe@schoch.che.utexas.edu)
 	* scripts: Regroup function files in the following directories,
 	each with its own Makefile.in:
 
-           image           plot        signal          control
+	   image           plot        signal          control
 	   linear-algebra  polynomial  special-matrix  general
-           miscellaneous   set         statistics
+	   miscellaneous   set         statistics
 
 	* src/help.cc (simple_help): Use kpathsea functions to find files
 	in path.
@@ -1796,7 +1796,7 @@ Tue Sep  6 16:00:34 1994  John Eaton  (jwe@schoch.che.utexas.edu)
 	base for objects that can produce more than one value when
 	evaluated.
 	(tree_fvc, tree_index_expression, tree_multi_assignment_expression):
-	Use it as a base. 
+	Use it as a base.
 
 	* src/parse.y (make_multi_val_re): New function.
 	(expression): Use it to construct multiple value assignments.
@@ -2066,7 +2066,7 @@ Tue Aug 16 09:55:25 1994  John Eaton  (jwe@schoch.che.utexas.edu)
 	unecessary functions.
 	* src/tc-rep.cc (TC_REP::to_matrix, TC_REP::to_vector,
 	TC_REP::to_scalar): Likewise.  Change all callers to use
-	matrix_value, vector_value, and scalar_value instead. 
+	matrix_value, vector_value, and scalar_value instead.
 
 	* src/tree-const.cc (TC_REP::matrix_value): If at all possible,
 	produce a matrix from the current constant.  Otherwise, print an
@@ -2323,7 +2323,7 @@ Sat Aug  6 18:23:47 1994  John Eaton  (jwe@schoch.che.utexas.edu)
 	for initializing tree_print_code static members.
 	* src/tree-const.cc, src/tc-rep.cc, src/tree-plot.cc,
 	src/tree-expr.cc, src/tree-cmd.cc (all tree classes):
-	Provide print_code() member function. 
+	Provide print_code() member function.
 	* src/tree-misc.cc: Also derive list classes from tree-base.h and
 	provide print_code() member functions.
 
@@ -2871,7 +2871,7 @@ Thu Jul  7 20:54:12 1994  John Eaton  (jwe@schoch.che.utexas.edu)
 
 Wed Jul  6 09:28:28 1994  John Eaton  (jwe@schoch.che.utexas.edu)
 
-	* libocsrc/tree-const.h: 
+	* libocsrc/tree-const.h:
 
 	* src/parse.y (maybe_convert_to_ans_assign,
 	maybe_warn_assign_as_truth_value): Pass tree_expression*, not tree*.
@@ -2905,7 +2905,7 @@ Wed Jul  6 09:28:28 1994  John Eaton  (jwe@schoch.che.utexas.edu)
 	* src/tree-expr.h (tree_matrix): Derive from tree_expression, not tree.
 
 	* src/tree-expr.h (tree_builtin, tree_function, tree_identifier):
-	Derive from tree_fvc, not tree.	
+	Derive from tree_fvc, not tree.
 	* src/tree-const.h (class tree_constant): Likewise.
 
 	* src/tree-expr.h (is_identifier, is_index_expression,
@@ -2929,7 +2929,7 @@ Wed Jul  6 09:28:28 1994  John Eaton  (jwe@schoch.che.utexas.edu)
 
 	* src/tree.cc (eval (int, int)): Merge with eval (int,
 	tree_constant*, int, int) by rearranging order of args and using
-	default arg values.  Change all callers.	
+	default arg values.  Change all callers.
 
 Tue Jul  5 14:33:33 1994  John Eaton  (jwe@schoch.che.utexas.edu)
 
@@ -3121,7 +3121,7 @@ Sun Jun  5 14:35:32 1994  John Eaton  (jwe@schoch.che.utexas.edu)
 
 	* src/f-svd.cc, src/f-schur.cc, src/f-qr.cc, src/f-lu.cc,
 	src/f-hess.cc, src/f-det.cc, src/f-chol.cc, src/f-qzval.cc,
-	src/f-inv.cc, src/f-ifft.cc, src/f-givens.cc, src/f-fft.cc, 
+	src/f-inv.cc, src/f-ifft.cc, src/f-givens.cc, src/f-fft.cc,
 	src/f-balance.cc, src/f-expm.cc, src/f-fsqp.cc, src/f-syl.cc,
 	src/xdiv.cc, src/xpow.cc, src/idx-vector.cc, src/pr-output.cc,
 	src/unwind-prot.cc, src/file-io.cc, liboctave/Bounds.h,
@@ -3211,7 +3211,7 @@ Thu Jun  2 12:08:18 1994  John Eaton  (jwe@schoch.che.utexas.edu)
 	(sysdep_init): Call it.
 	* builtins.cc (initialize_builtins): Don't compute Inf and NaN
 	values here.
-	
+
 Tue May 31 20:06:27 1994  John Eaton  (jwe@schoch.che.utexas.edu)
 
 	* src/variables.cc (identifier_exists): Only return 1 for
@@ -3350,7 +3350,7 @@ Mon May 16 13:31:33 1994  John Eaton  (jwe@schoch.che.utexas.edu)
 Sun May  8 00:49:38 1994  John Eaton  (jwe@schoch.che.utexas.edu)
 
 	* scripts/lqe.m: Correct comment.
-	Transpose k before returning. 
+	Transpose k before returning.
 
 Fri May  6 00:47:24 1994  John Eaton  (jwe@schoch.che.utexas.edu)
 
@@ -3413,7 +3413,7 @@ Sat Apr  9 17:48:07 1994  John Eaton  (jwe@schoch.che.utexas.edu)
 
 	* src/tc-assign.cc (tree_constant_rep::do_matrix_assignment
 	  (int,tree_constant_rep::constant_type)):
-	Allow assignment of complex scalar too. 
+	Allow assignment of complex scalar too.
 	(tree_constant_rep::do_matrix_assignment
 	  (tree_constant_rep::constant_type, int)):
 	Ditto.
@@ -3514,7 +3514,7 @@ Sat Mar  5 13:15:10 1994  John Eaton  (jwe@schoch.che.utexas.edu)
 Thu Mar  3 14:42:00 1994  John Eaton  (jwe@schoch.che.utexas.edu)
 
 	* liboctave/DiagMatrix.cc (operator *): Provide definitions for
-	DiagMatrix * DiagMatrix, ComplexDiagMatrix * ComplexDiagMatrix, 
+	DiagMatrix * DiagMatrix, ComplexDiagMatrix * ComplexDiagMatrix,
 	ComplexDiagMatrix * DiagMatrix, and DiagMatrix * ComplexDiagMatrix.
 
 	* liboctave/ColVector.cc (operator >>): Provide definitions for
@@ -3532,7 +3532,7 @@ Tue Mar  1 13:18:35 1994  John Eaton  (jwe@schoch.che.utexas.edu)
 
 	* src/tree-const.cc (tree_constant::load (istream&)): Don't skip
 	past first type keyword if not global.
-	(tree_constant::load (istream&, tree_constant_rep::constant_type)): 
+	(tree_constant::load (istream&, tree_constant_rep::constant_type)):
 	Allocate storage for reading complex scalar.
 
 Sun Feb 20 14:17:47 1994  John Eaton  (jwe@schoch.che.utexas.edu)
@@ -3704,10 +3704,10 @@ Thu Feb  3 22:08:40 1994  John Eaton  (jwe@schoch.che.utexas.edu)
 	upper_limit, and can_return_complex_for_real_arg to properly
 	handle functions like acos, asin, atanh, and acosh.
 
-	* src/builins.h (struct Mapper_fcn): Rename neg_arg_complex to 
+	* src/builins.h (struct Mapper_fcn): Rename neg_arg_complex to
 	can_return_complex_for_real_arg.  New elements, lower_limit and
 	upper_limit.
-	(struct builtin mappers functions): Rename neg_arg_complex to 
+	(struct builtin mappers functions): Rename neg_arg_complex to
 	can_return_complex_for_real_arg.  New elements, lower_limit and
 	upper_limit.  Delete elements nargin_max and nargout_max.
 	* src/variables.cc (install_builtin_mapper_function): Handle new
@@ -3844,7 +3844,7 @@ Tue Jan 18 11:57:03 1994  John Eaton  (jwe@schoch.che.utexas.edu)
 	* configure.in: Check for stricmp and strnicmp too.
 
 	* doc/Makefile.in: For now, don't format or try to install the
-	liboctave manual. 
+	liboctave manual.
 	Don't distribute formatted copies of liboctave manual.
 
 Mon Jan 17 01:10:54 1994  John Eaton  (jwe@schoch.che.utexas.edu)
@@ -3879,7 +3879,7 @@ Sat Jan 15 15:43:34 1994  John Eaton  (jwe@schoch.che.utexas.edu)
 
 	* configure.in: Don't try to do anything special for readline on
 	NeXT systems.
-	
+
 	* Makeconf.in: Define rules for making .d files here.
 	liboctave/Makefile.in: Not here.
 	src/Makefile.in: Or here.
@@ -3992,7 +3992,7 @@ Mon Jan 10 14:30:13 1994  John Eaton  (jwe@schoch.che.utexas.edu)
 	scripts/ols.m, scripts/skewness.m, scripts/cov.m, scripts/gls.m,
 	scripts/mahalanobis.m, scripts/pinv.m: New script files from Kurt
 	Hornik (hornik@neuro.tuwien.ac.at) and the Department of
-	Probability Theory and Statistics TU Wien, Austria. 
+	Probability Theory and Statistics TU Wien, Austria.
 
 Sun Jan  9 01:11:05 1994  John Eaton  (jwe@schoch.che.utexas.edu)
 
@@ -4613,13 +4613,13 @@ Sat Nov  6 04:38:57 1993  John Eaton  (jwe@schoch.che.utexas.edu)
 	Merge min changes from Bruce Tenison (btenison@eng.auburn.edu) and
 	make the corresponding changes for max.
 
-        * src/tc-extras.cc (min (ComplexMatrix&, ComplexMatrix&)): New
+	* src/tc-extras.cc (min (ComplexMatrix&, ComplexMatrix&)): New
 	function.
 	(max (ComplexMatrix&, ComplexMatrix&)): Ditto.
 	(column_min): Handle complex args and two return values.
 	(column_max): Likewise.
 
-        * liboctave/Matrix.cc (row_min_loc): New function.
+	* liboctave/Matrix.cc (row_min_loc): New function.
 	(row_max_loc): New function.
 	(column_min_loc): Ditto.
 	(column_max_loc): Ditto.
@@ -7091,7 +7091,7 @@ Mon Apr 12 00:31:09 1993  John W. Eaton  (jwe@schoch.che.utexas.edu)
 
 	    plot.m    semilogx.m  semilogy.m  loglog.m   polar.m
 	    title.m   xlabel.m    ylabel.m    grid.m     bar.m
-            stairs.m  mesh.m      meshdom.m   contour.m
+	    stairs.m  mesh.m      meshdom.m   contour.m
 
 	* New internal plotting functions:
 
@@ -7438,11 +7438,11 @@ Tue Mar 16 20:08:23 1993  John W. Eaton  (jwe@schoch.che.utexas.edu)
 	context and split into two cases instead of trying to do the
 	lookahead ourselves.
 
-        * lex.l (do_comma_insert_check): Return the value yyleng had
-        before yyinput() is called.
-        * (DO_COMMA_INSERT_CHECK): New macro.  This avoids the use of
-        unput() in do_comma_insert_check() since there seems to be a bug
-        in flex when calling unput() for '\n'.
+	* lex.l (do_comma_insert_check): Return the value yyleng had
+	before yyinput() is called.
+	* (DO_COMMA_INSERT_CHECK): New macro.  This avoids the use of
+	unput() in do_comma_insert_check() since there seems to be a bug
+	in flex when calling unput() for '\n'.
 
 	Note that this change is necessary if we want to use yyless()
 	since we cant call yyless() from outside of yylex(), because
@@ -9852,8 +9852,8 @@ Sun Aug  9 03:18:38 1992  John W. Eaton  (jwe@schoch.che.utexas.edu)
 	* utils.h utils.cc: New functions from bash for changing and
 	printing the current working directory:
 
-            pathname_backup        make_absolute
-            get_working_directory  change_to_directory
+	    pathname_backup        make_absolute
+	    get_working_directory  change_to_directory
 
 	* utils.h utils.cc (bind_string_variable): New function.
 	(bind_protected_string_variable): Likewise.

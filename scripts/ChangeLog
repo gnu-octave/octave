@@ -408,7 +408,7 @@
 	image/white.m, image/winter.m: Add demos.
 
 2009-10-20  Soren Hauberg  <hauberg@gmail.com>
- 
+
  	* general/interp2.m: improved error checking and support for bicubic
 
 2009-10-19  Soren Hauberg  <hauberg@gmail.com>
@@ -422,7 +422,7 @@
 2009-10-15  David Bateman  <dbateman@free.fr>
 
 	* plot/__go_draw_axes__.m: Allow line and surface markerfacecolor
-	and markeredgecolor properties to be used and set the marker colors 
+	and markeredgecolor properties to be used and set the marker colors
 	appropriately.
 
 2009-10-14  Jaroslav Hajek  <highegg@gmail.com>
@@ -605,7 +605,7 @@
 
 	* geometry/griddata.m: Linearize arrays.
 
-2009-08-04  Pieter Eendebak  <pieter.eendebak@gmail.com> 
+2009-08-04  Pieter Eendebak  <pieter.eendebak@gmail.com>
 
 	* set/setxor.m: Added test for cell arrays of strings.
 
@@ -614,7 +614,7 @@
 	* plot/__gnuplot_get_var__.m: If read fails to return data, sleep
 	before trying again.
 
-2009-08-04  Pieter Eendebak  <pieter.eendebak@gmail.com> 
+2009-08-04  Pieter Eendebak  <pieter.eendebak@gmail.com>
 
 	* set/setxor.m: Support cell arrays of strings.
 
@@ -794,7 +794,7 @@
 
 2009-06-09  David Bateman  <dbateman@free.fr>
 
-	* general/quadgk.m: Add test case and fixed doubly infinite 
+	* general/quadgk.m: Add test case and fixed doubly infinite
 	waypoint transform for x = 0 case.
 
 2009-06-09  Marco Caliari  <marco.caliari@univr.it>
@@ -813,7 +813,7 @@
 
 2009-06-04  Ben Abbott  <bpabbott@mac.com>
 
-	* plot/__go_draw_axes__.m: Change strncmpi(scale,'lo') to 
+	* plot/__go_draw_axes__.m: Change strncmpi(scale,'lo') to
 	strcmp(scale,'log').
 	* plot/__go_draw_axes__.m: For log-scale axes use format '10^{%T}'.
 
@@ -822,7 +822,7 @@
 	* plot/colorbar.m: Colorbar 'handlevisibility' should be 'on'.
 	Add additional demos which illustrate problems with the present
 	implementation.
-	* plot/__gnuplot_has_feature__.m: Change version for 
+	* plot/__gnuplot_has_feature__.m: Change version for
 	"x11_figure_position" from ">=4.3.0" to ">=4.2.5".
 	* plot/__scatter__.m: If the color spec is empty, set using
 	__next_line_color__.
@@ -890,7 +890,7 @@
 
 2009-05-27 S�ren Hauberg  <hauberg@gmail.com>
 
-	* geometry/delaunay.m: Support cellstr's as options. 
+	* geometry/delaunay.m: Support cellstr's as options.
 
 2009-05-27  Jaroslav Hajek  <highegg@gmail.com>
 
@@ -898,7 +898,7 @@
 
 2009-05-26 S�ren Hauberg  <hauberg@gmail.com>
 
-	* help/__makeinfo__.m: Support several @seealso's in one text. 
+	* help/__makeinfo__.m: Support several @seealso's in one text.
 
 2009-05-26  John W. Eaton  <jwe@octave.org>
 
@@ -907,7 +907,7 @@
 2009-05-26 Carlo de Falco  <kingcrimson@tiscali.it>
 
 	* pkg/pkg.m: Add "version" field to the structure returned by "pkg
-	describe". 
+	describe".
 
 2009-05-25  Ben Abbott  <bpabbott@mac.com>
 
@@ -945,7 +945,7 @@
 
 2009-05-17  Rik Wehbring  <rdrider0-list@yahoo.com>
 
-	* *.m: Simplify Texinfo documentation in .m scripts by removing 
+	* *.m: Simplify Texinfo documentation in .m scripts by removing
 	redundant @iftex calls
 
 2009-05-17  Jaroslav Hajek  <highegg@gmail.com>
@@ -976,7 +976,7 @@
 
 2009-04-30  Ben Abbott  <bpabbott@mac.com>
 
-	* plot/__gnuplot_has_feature__.m: Change version for 
+	* plot/__gnuplot_has_feature__.m: Change version for
 	"x11_figure_position", >4.2.4 to >=4.3.0.
 
 2009-04-30  Ben Abbott  <bpabbott@mac.com>
@@ -1029,7 +1029,7 @@
 2009-04-14  David Bateman  <dbateman@free.fr>
 
 	* plot/__patch__.m: Set default facecolor to [0,1,0].
-	
+
 2009-04-12  Aravindh Krishnamoorthy  <aravindh.k.dev@gmail.com>
 
 	* special-matrix/hadamard.m: Fix a documentation mistake.
@@ -1475,7 +1475,7 @@
 2009-02-19  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/gnuplot_drawnow.m: Only send figure position info to gnuplot
-	when the plot stream is first opened. Revert usage of hidden axes 
+	when the plot stream is first opened. Revert usage of hidden axes
 	to store prior figure "position" property.
 
 2009-02-19  John W. Eaton  <jwe@octave.org>
@@ -1608,7 +1608,7 @@
 2009-02-12  Soren Hauberg  <hauberg@gmail.com>
 
 	* help/gen_doc_cache.m: Change API so we only handle one directory per
-        call to this function.
+	call to this function.
 
 2009-02-12  Soren Hauberg  <hauberg@gmail.com>
 
@@ -1659,7 +1659,7 @@
 	* help/which.m: Still print something sensible if type is empty.
 
 2009-02-04  Soren Hauberg  <hauberg@gmail.com>
-            Thomas Treichl  <Thomas.Treichl@gmx.net>
+	    Thomas Treichl  <Thomas.Treichl@gmx.net>
 
 	* miscellaneous/Makefile.in (SOURCES): Add bzip2.m to the list.
 
@@ -1701,13 +1701,13 @@
 	* optimization/fsolve.m: remove redundant line.
 
 2009-02-03  Jaroslav Hajek  <highegg@gmail.com>
-	
+
 	* optimization/Makefile.in: Add missing source.
 
 2009-02-02  Rob Mahurin  <rob@utk.edu>
 
 	* general/interpft.m: Increase tolerance in tests, for FFTPACK.
-	
+
 2009-02-03  Jaroslav Hajek  <highegg@gmail.com>
 
 	* optimization/__all_opts__.m: Yield empty list in recursive calls.
@@ -1751,7 +1751,7 @@
 
 2009-01-29  Kai Habel  <kai.habel@gmx.de>
 
-        * plot/__go_draw_axes__.m: Add support for transparent patches.
+	* plot/__go_draw_axes__.m: Add support for transparent patches.
 
 2009-01-29  S�ren Hauberg  <hauberg@gmail.com>
 
@@ -1762,7 +1762,7 @@
 
 2009-01-29  Kai Habel  <kai.habel@gmx.de>
 
-        * plot/Makefile.in (SOURCES): Include diffuse.m, specular.m, and
+	* plot/Makefile.in (SOURCES): Include diffuse.m, specular.m, and
 	surfl.m in the list.
 
 2009-01-28  Ben Abbott  <bpabbott@mac.com>
@@ -1887,7 +1887,7 @@
 2009-01-18  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
 	* miscellaneous/doc.m: Add test for existence of info file.
-	
+
 2009-01-21  John W. Eaton  <jwe@octave.org>
 
 	* plot/__axis_label__.m: Set properties in existing axis label
@@ -1978,7 +1978,7 @@
 
 2009-01-14  John W. Eaton  <jwe@octave.org>
 
-	* linear-algebra/expm.m: 
+	* linear-algebra/expm.m:
 
 	* optimization/fsolve.m: Doc fix.
 
@@ -2045,7 +2045,7 @@
 
 	* strings/strvcat.m: Remove.
 	* strings/Makefile.in (SOURCES): Remove strvcat.m.
-	
+
 2009-01-12  John W. Eaton  <jwe@octave.org>
 
 	* plot/diffuse.m, plot/surfl.m, plot/specular.m: Style fixes.
@@ -2061,9 +2061,9 @@
 
 2009-01-09  Kai Habel  <kai.habel@gmx.de>
 
-        * plot/surfl.m: New function
-        * plot/diffuse.m: Ditto.
-        * plot/specular.m: Ditto.
+	* plot/surfl.m: New function
+	* plot/diffuse.m: Ditto.
+	* plot/specular.m: Ditto.
 
 2009-01-05  John W. Eaton  <jwe@octave.org>
 
@@ -2072,7 +2072,7 @@
 2009-01-01  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
 	* miscellaneous/__xzip__.m: Fix error messages, add tests.
-	
+
 2008-12-26  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
 	* general/int2str.m, general/num2str.m, strings/base2dec.m,
@@ -2082,12 +2082,12 @@
 	strings/strcat.m, strings/strcmpi.m, strings/strfind.m,
 	strings/strjust.m, strings/strmatch.m, strings/strncmpi.m,
 	strings/strrep.m, strings/strtok.m, strings/strtrim.m,
-	strings/strtrunc.m, strings/strvcat.m, strings/substr.m: 
+	strings/strtrunc.m, strings/strvcat.m, strings/substr.m:
 	Fix documentation strings, add examples, references and tests.
 	* scripts/general/int2str.m: Add missing semicolon.
 	* scripts/strings/regexptranslate.m: add nargin check.
 	* scripts/strings/str2double.m: fix nargin check.
-	
+
 2008-12-29  David Bateman  <dbateman@free.fr>
 
 	* goemetry/voronoi.m: Speed up and handle dense grids.
@@ -2172,19 +2172,19 @@
 
 2008-12-07  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
-        * strings/lower.m: Remove
-        * strings/upper.m: Remove
-        * strings/Makefile.in: Remove lower.m, upper.m
-        
+	* strings/lower.m: Remove
+	* strings/upper.m: Remove
+	* strings/Makefile.in: Remove lower.m, upper.m
+
 2008-12-02  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
-        * strings/str2mat.m: Make it a simple wrapper around
-        char() and move it to scripts/deprecated/str2mat.m, remove
-        obsolete tests, move remaining test to src/strfns.cc (Fchar).
-        * strings/Makefile.in: Remove str2mat.m.
-        * deprecated/Makefile.in: Add str2mat.m.
-        * strings/strvcat.m: Remove reference to str2mat.
-        
+	* strings/str2mat.m: Make it a simple wrapper around
+	char() and move it to scripts/deprecated/str2mat.m, remove
+	obsolete tests, move remaining test to src/strfns.cc (Fchar).
+	* strings/Makefile.in: Remove str2mat.m.
+	* deprecated/Makefile.in: Add str2mat.m.
+	* strings/strvcat.m: Remove reference to str2mat.
+
 2008-11-28  David Bateman  <dbateman@free.fr>
 
 	* plot/__go_draw_axes__.m: Set two point clipping mode to be on.
@@ -2195,12 +2195,12 @@
 
 2008-11-29  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
-        * miscellaneous/gzip.m: Remove @seealso reference to __xzip__,
-          improve tests
-          miscellaneous/bzip2.m: Remove @seealso reference to __xzip__,
-          fix handling of output argument, add test
-          miscellaneous/__xzip__.m: Improve error messages, fix cleanup
-          of temporary directories, remove tab characters
+	* miscellaneous/gzip.m: Remove @seealso reference to __xzip__,
+	  improve tests
+	  miscellaneous/bzip2.m: Remove @seealso reference to __xzip__,
+	  fix handling of output argument, add test
+	  miscellaneous/__xzip__.m: Improve error messages, fix cleanup
+	  of temporary directories, remove tab characters
 
 2008-11-24  Ben Abbott  <bpabbott@mac.com>
 
@@ -2242,18 +2242,18 @@
 
 2008-11-07  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
-        * mkdoc: do not remove white space before @ within @example
-          environment
+	* mkdoc: do not remove white space before @ within @example
+	  environment
 
 2008-11-05  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
-        * plot/subplot.m: fix texi bug
+	* plot/subplot.m: fix texi bug
 
 2008-11-04  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
-        * miscellaneous/unpack.m: return directly after recursive handling
-          of cell-strings
-          
+	* miscellaneous/unpack.m: return directly after recursive handling
+	  of cell-strings
+
 2008-11-03  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/__go_draw_axes__.m: xticklabel should accept a numeric vector.
@@ -2264,7 +2264,7 @@
 	* optimization/__dogleg__.m: New function file.
 	* optimization/fsolve.m: New function file.
 	* optimization/Makefile.in: Include the new sources.
-	
+
 2008-09-28  Jaroslav Hajek  <highegg@gmail.com>
 
 	* optimization/fzero.m: Replace tabs by spaces.
@@ -2292,10 +2292,10 @@
 
 2008-10-25  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
-        * miscellaneous/bzip2.m, miscellaneous/__xzip__.m: new commands.
-        * miscellaneous/gzip.m: change to use __xzip__ for actual compression,
-          add tests.
-                  
+	* miscellaneous/bzip2.m, miscellaneous/__xzip__.m: new commands.
+	* miscellaneous/gzip.m: change to use __xzip__ for actual compression,
+	  add tests.
+
 2008-10-31  David Bateman  <dbateman@free.fr>
 
 	* plot/__contour__.m: Exclude infinite values when calculating contour
@@ -2309,7 +2309,7 @@
 	* plot/legend.m: Add support for the "left" and "right" options.
 	* plot/__go_draw_axes__.m: If the axes property keyreverse is set,
 	reverse the key and labelling text.
-	
+
 	* plot/__clabel__.m, plot/clabel.m: New functions.
 	* plot/Makefile.in (SOURCES): Add them here.
 	* plot/__contour__.m: Rewrite to use contour groups.
@@ -2326,7 +2326,7 @@
 	deprecated/polyinteg.m: Remove "and" from @seealso string.
 	* specfun/betaln.m: Change @seealso reference from deprecated
 	betai to betainc.
-	* plot/plot.m, plot/xlabel.m, plot/ylabel.m, plot/zlabel.m, 
+	* plot/plot.m, plot/xlabel.m, plot/ylabel.m, plot/zlabel.m,
 	plot/plot3.m: Fix @seealso references to ylabel and zlabel.
 	* general/issymmetric.m, image/imagesc.m, specfun/realpow.m,
 	polynomial/polyfit.m, time/eomday.m: Remove @seealso references to
@@ -2363,18 +2363,18 @@
 
 	* plot/__errplot__.m: Add errorbar series objects.
 	* plot/errbar.m: Add some demos.
-	
+
 	* plot/__add_line_series__.m: Remove
 	* plot/Makefile.in (SOURCES): Remove it here too.
 	* plot/__add_datasource__.m: Allow for more than one character in
 	source name.
 	* plot/refreshdata.m: Ditto.
-	* plot/__plt2mm__.m, plot/__plt2mv__.m, plot/__plt2ss__.m, 
-	plot/__plt2sv__.m, plot/__plt2vm__.m, plot/__plt2vv__.m, 
+	* plot/__plt2mm__.m, plot/__plt2mv__.m, plot/__plt2ss__.m,
+	plot/__plt2sv__.m, plot/__plt2vm__.m, plot/__plt2vv__.m,
 	plot/__plt2vs__.m, plot3.m: Remove previous line series changes.
 	* plot/__scatter__.m: Add scatter series objects and data sources.
 	* plot/legend.m: Update type in loop and remove debugging messages.
-	
+
 2008-10-21  Ben Abbott  <bpabbott@mac.com>
 
 	* specfun/legendre.m: Warn once on under/overflow.
@@ -2401,7 +2401,7 @@
 2008-10-20  David Bateman  <dbateman@free.fr>
 
 	* testfun/rundemos.m: Pause between files, as demo itself doesn't.
-	
+
 	* plot/fill.m, plot/quiver.m: Quiet the demos.
 	* plot/stair.m: Treat a line style argument correctly.
 
@@ -2457,12 +2457,12 @@
 	* plot/newplot.m: Don't preserve axes properties here, but rather
 	do it in the graphics handle code so that the preservation can be
 	done after callbacks are executed.
-	
+
 	* plot/__go_draw_axes__.m: If current plot is an image, don't flag
 	the plot as binary, as the binary specification is already in the
 	"usingclause".
-	
-	* plot/__go_draw_figure__.m: Always use multiplot and create an 
+
+	* plot/__go_draw_figure__.m: Always use multiplot and create an
 	enclosing axis to ensure bounding box of postscript is correct.
 
 2008-10-16  Ben Abbott  <bpabbott@mac.com>
@@ -2480,7 +2480,7 @@
 	* plot/__go_draw_axes__.m (do_tics_1): New args, fontname and fontsize.
 	Pass fontspec for tic marks to gnuplot.
 	(do_tics): Pass axes fontname and fontsize to do_tics_1.
-	
+
 	* plot/newplot.m: Perserve fontangle, fontname, fontsize,
 	fontunits, fontweight, position, outerposition, and
 	activepositionproperty axes properties when replacing plot.
@@ -2524,7 +2524,7 @@
 	* plot/subplot.m: Also skip axes that are tagged as being a
 	colorbar. Don't break in search of overlapping axes to delete. Set
 	both the position and the outerposition.
-	
+
 2008-10-09  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/__axis_label__.m: Inherit font properties from axes.
@@ -2533,7 +2533,7 @@
 
 	* general/loadobj.m, general/saveobj.m, general/display: New functions
 	* general/Makefile.in (SOURCES): Add then here.
-	
+
 2008-10-08  John W. Eaton  <jwe@octave.org>
 
 	* miscellaneous/fileparts.m: Handle "/file" properly.
@@ -2664,8 +2664,8 @@
 2008-09-18  Kris Thielemans  <kris.thielemans@csc.mrc.ac.uk>
 
 	* image/imshow.m: Fix for display_range.
-	
-	* general/interpn.m: Fixe for extrapval and documentation of 
+
+	* general/interpn.m: Fixe for extrapval and documentation of
 	extrapval.
 
 2008-09-17  David Bateman  <dbateman@free.fr>
@@ -2700,8 +2700,8 @@
 
 2008-09-08  Kai Habel  <kai.habel@gmx.de>
 
-        * plot/contourf.m: Fix case for equal-sized matrices
-        of X and Y.
+	* plot/contourf.m: Fix case for equal-sized matrices
+	of X and Y.
 
 2008-09-02  David Bateman  <dbateman@free.fr>
 
@@ -2736,7 +2736,7 @@
 	* plot/__add_line_series__.m, plot/ishghandle.m, plot/linkprop.m,
 	plot/refresh.m, plot/refreshdata.m: New functions
 	* Makefile.in (SOURCES): Add them here.
-	
+
 	* plot/__area__.m, plot/__bars__.m, plot/__quiver__.m,
 	plot/__stem__.m, plot/stairs.m, plot/stem.m: Add data sources.
 
@@ -2765,7 +2765,7 @@
 	* plot/area.m: Update documentation to correspond to
 	the area series usage.
 	* plot/__bar.m: Pass the original rather than scaled width to
-	__bars__. 
+	__bars__.
 	* plot/__bars__.m: Convert to use bar series objects.
 	* plot/bar.m, plor/barh.m:  Update documentation to correspond to
 	the bar series usage.
@@ -2782,7 +2782,7 @@
 
 	* image/imwrite.m: Add ras and tiff to the list of accepted formats.
 	Handle parameter-value options.  Untabify.
-	
+
 2008-08-25  David Bateman  <dbateman@free.fr>
 
 	* plot/__stem__.m: Use property inheritance and don't explicitly
@@ -2806,7 +2806,7 @@
 	contain NaN values.
 
 2008-08-21  Thomas Treichl  <Thomas.Treichl@gmx.net>
-	
+
 	* optimization/sqp.m: Increase test script tolerance.
 
 2008-08-21  David Bateman  <dbateman@free.fr>
@@ -2814,7 +2814,7 @@
 	* plot/ezplot.m : New function.
 	* plot/Makefile.in (SOURCES): Add ezplot.m to the list.
 	* plot/__ezplot__.m: Adapt to allow for use with the ezplot function.
-	
+
 2008-08-20  Jaroslav Hajek  <highegg@gmail.com>
 
 	* pkg/pkg.m (configure_make): Pass handle to is_architecture_dependent
@@ -2884,7 +2884,7 @@
 	* plot/contourf.m: Allow X,Y to be unequal vectors.
 
 	* plot/shading.m: Clarify help string.
-	
+
 	* general/genvarname.m: Trivial documentation fix.
 
 2008-07-28  John W. Eaton  <jwe@octave.org>
@@ -2920,7 +2920,7 @@
 
 	* deprecated/loadimage.m: New file.
 	* deprecated/Makefile.in (SOURCES): Add it to the list.
-	* image/loadimage.m: Delete.	
+	* image/loadimage.m: Delete.
 	* image/Makefile.in (SOURCES): Remove it from the list.
 	* image/imread.m: Incorporate loadimage functionality here.
 	Simplify.
@@ -3073,7 +3073,7 @@
 
 2008-04-30  Jaroslav Hajek  <highegg@gmail.com>
 
-	* specfun/log2.m: Delete. 
+	* specfun/log2.m: Delete.
 	* specfun/Makefile.in (SOURCES): Delete it from the list.
 
 2008-04-29  David Bateman  <dbateman@free.fr>
@@ -3107,7 +3107,7 @@
 2008-04-15  David Bateman  <dbateman@free.fr>
 
 	* plot/__patch__.m: Fix for NaN values in faces of patches.
-	
+
 2008-04-14  David Bateman  <dbateman@free.fr>
 
 	* plot/rose.m: Add missing comment mark that causes issues with
@@ -3298,7 +3298,7 @@
 
 	* plot/__go_draw_axes__.m: Conditionally "set pm3d implict" for 2D
 	plot or 3D plots with more than one line.
-	
+
 	* deprecated/splchol.m deprecated/lchol.m deprecated/spfind.m
 	deprecated/spchol.m deprecated/spmin.m deprecated/spmax.m
 	deprecated/spdet.m deprecated/splu.m deprecated/spqr.m
@@ -3327,7 +3327,7 @@
 
 	* sparse/spaugment.m: New function
 	* sparse/Makefile.in (SOURCES): Add it here.
-	
+
 	* plot/__gnuplot_ginput__.m: Use the gnuplot stream itself for
 	communication rather than a chat file if mkfifo is not available.
 	* plot/gnuplot_drawnow.m: Open stream with popen2 to allow two way
@@ -3347,14 +3347,14 @@
 	* plot/__go_draw_axes__.m: Set the tick direction in the main call
 	the set tics rather than separately to avoid issues with multiple
 	ticks in plotyy.
-	
+
 	* plot/gtext.m: New function to place text on a plot.
 	* plot/waitforbuttonpress.m: New function.
 	* plot/Makefile.in (SOURCES): Add them to the list.
 	* plot/__gnuplot_ginput__.m: Bug fix for nargin==1. Workaround for
 	missing mkfifo under Windows.
 	* plot/ginput.m: Eliminate setting of n.
-	
+
 	* plot/ginput.m: New function.
 	* plot/__gnuplot_ginput__.m: New function based on a version of
 	ginput.m from Petr Mikulik <mikulik@physics.muni.cz>.
@@ -3455,7 +3455,7 @@
 	* statistics/base/__quantile__.m, statistics/base/quantile.m,
 	statistics/base/prctile.m: New functions.
 	* statistics/base/Makefile.in (SOURCES): Add them to the list.
- 
+
 2008-03-25  S�ren Hauberg  <hauberg@gmail.com>
 
 	* polynomial/convn.m: New function.
@@ -3465,7 +3465,7 @@
 
 	* image/contrast.m: New function.
 	* image/Makefile.in (SOURCES): Add it to the list.
-	
+
 2008-03-24  Thomas Weber  <thomas.weber.mail@gmail.com>
 
 	* pkg/pkg.m: Allow installation of already extracted packages.
@@ -3516,7 +3516,7 @@
 	* plot/__go_draw_axes__.m: Additional correction for symbol codes.
 
 2008-03-19  Ben Abbott  <bpabbott@mac.com>
-	
+
 	* statistics/base/mode.m: Add NDArray tests.
 
 2008-03-19  Jaroslav Hajek  <highegg@gmail.com>
@@ -3546,8 +3546,8 @@
 
 2008-03-14  Kai Habel  <kai.habel@gmx.de>
 
-        * plot/__go_draw_axes__.m: Expicitly set gnuplot user
-        style to default to avoid wrong mesh color in some cases.
+	* plot/__go_draw_axes__.m: Expicitly set gnuplot user
+	style to default to avoid wrong mesh color in some cases.
 
 2008-03-12  David Bateman  <dbateman@free.fr>
 
@@ -3563,9 +3563,9 @@
 
 2008-03-11  Kai Habel  <kai.habel@gmx.de>
 
-        * plot/__go_draw_axes__.m: Plot surfaces in front of axes.
-        Allow plotting of uniform colored mesh plots with and
-        w/o hidden line removal.
+	* plot/__go_draw_axes__.m: Plot surfaces in front of axes.
+	Allow plotting of uniform colored mesh plots with and
+	w/o hidden line removal.
 
 2008-03-11  David Bateman  <dbateman@free.fr>
 
@@ -3622,7 +3622,7 @@
 	* polynomial/polyfit.m: Modified tests to respect a relative tolerance.
 
 	* plot/print.m: Accept a figure handle as an optional input.
- 
+
 2008-02-29  John W. Eaton  <jwe@octave.org>
 
 	* plot/print.m: Handle gif and jpg devices.
@@ -3635,7 +3635,7 @@
 2008-02-28  Kai Habel  <kai.habel@gmx.de>
 
 	* plot/__go_draw_axes__.m: If facecolor property of a surface is
-	"none", don't use pm3d mode and set linestyle correctly. 
+	"none", don't use pm3d mode and set linestyle correctly.
 
 2008-02-25  Ben Abbott  <bpabbott@mac.com>
 
@@ -3678,7 +3678,7 @@
 
 	* sparse/pcg.m, sparse/spdiags, spstats.m: Remove references to
 	spdiag.
-	
+
 2008-02-22  John W. Eaton  <jwe@octave.org>
 
 	* miscellaneous/fullfile.m: Improve handling of empty args and
@@ -3733,7 +3733,7 @@
 
 	* pkg/pkg.m: Handle 'describe' command.
 	(parse_pkg_idx, print_package_description): New subfunctions.
-	
+
 2008-02-19  Bill Denney  <bill@denney.ws>
 
 	* time/datestr.m: Avoid confusion for datenum vectors that are 6
@@ -3751,7 +3751,7 @@
 2008-02-15  Rolf Fabian  <r.fabian@jacobs-university.de>
 
 	* linear-algebra/cond.m: New optional second argument to
-	specify 1-norm, inf-norm, or frobenius-norm. 
+	specify 1-norm, inf-norm, or frobenius-norm.
 
 2008-02-12  Kostas Poulios  <poulios.konstantinos@googlemail.com>
 
@@ -3816,7 +3816,7 @@
 
 	* general/interpn.m: Compatibility fix. Don't ndgrid vector
 	abscissa.
-	
+
 2008-01-25  David Bateman  <dbateman@free.fr>
 
 	* general/__splinen__.m: Treat mixed orientation vectors.
@@ -3839,7 +3839,7 @@
 
 	* linear-algebra/cond.m, linear-algebra/trace.m:
 	Move tests here from test/test_linalg.m.
-	
+
 	* general/diff.m, general/fliplr.m, general/flipud.m,
 	general/logspace.m, general/rot90.m, general/shift.m, general/tril.m,
 	general/triu.m, linear-algebra/vec.m, linear-algebra/vech.m,
@@ -3847,10 +3847,10 @@
 	special-matrix/invhilb.m, special-matrix/sylvester_matrix.m,
 	special-matrix/toeplitz.m, special-matrix/vander.m:
 	Move tests here from test/test_matrix.m.
-	
+
 	* general/isscalar.m, general/issquare.m, general/isvector.m:
 	Move tests here from test/test_number.m.
-	
+
 	* deprecated/polyinteg.m, polynomial/compan.m, polynomial/conv.m,
 	polynomial/deconv.m, polynomial/poly.m, polynomial/polyderiv.m,
 	polynomial/polyfit.m, polynomial/polyreduce.m, polynomial/polyval.m,
@@ -3908,7 +3908,7 @@
 2008-01-17  Tetsuro KURITA  <tkurita@mac.com>
 
 	* plot/print.m: Handle PDF output.
-	* plot/drawnow.m: Add "PDF" in a list of enhanced_terminals. 
+	* plot/drawnow.m: Add "PDF" in a list of enhanced_terminals.
 
 2008-01-17  John W. Eaton  <jwe@octave.org>
 
@@ -3960,7 +3960,7 @@
 
 2008-01-15  Michael Goffioul  <michael.goffioul@gmail.com>
 
-	* plot/drawnow.m, plot/__go_draw_figure__.m, plot/__go_draw_axes__.m: 
+	* plot/drawnow.m, plot/__go_draw_figure__.m, plot/__go_draw_axes__.m:
 	Call __get__ instead of get.
 
 2008-01-15  Ben Abbott  <bpabbott@mac.com>
@@ -4110,7 +4110,7 @@
 
 2007-12-17  Ben Abbott  <bpabbott@mac.com>
 
-         * miscellaneous/run.m: Replace script with f when looking for
+	 * miscellaneous/run.m: Replace script with f when looking for
 	 file to run.
 
 2007-12-14  David Bateman  <dbateman@free.fr>
@@ -4135,7 +4135,7 @@
 
 	* plot/pie.m: Avoid calling "exist".
 
-	* linear-algebra/condest.m: Use nargin instead of size(varargin,2).	
+	* linear-algebra/condest.m: Use nargin instead of size(varargin,2).
 	Condense argument processing logic.  Allow 6 arguments.
 	Use issquare.  Avoid calling "exist".
 
@@ -4396,11 +4396,11 @@
 	* plot/plotyy.m: New function
 	* plot/Makefile.in (SOURCES): Add it here.
 	* plot/__go_draw_axes__.m: Force axis margins for plotyy. Set text
-	color for {x|y|z}label and {x|y|z}tics. Also force the label of 
+	color for {x|y|z}label and {x|y|z}tics. Also force the label of
 	{x|y}label to respect the axis position.
 	* plot/xlabel.m, plot/ylabel.m, plot/zlabel.m: Accept an axis
 	handle as the first argument.
-	
+
 	* pkg/pkg.m (pkg:install): When loading the installed packages
 	index into installed_pkgs_lst and not descriptions..
 
@@ -4430,7 +4430,7 @@
 	save the real values so that colorbar corresponds to the contour
 	levels.
 
-	* plot/stem.m: Set marker color the same as the line color. Draw 
+	* plot/stem.m: Set marker color the same as the line color. Draw
 	a single discontinous line object for the stems.
 
 	* plot/sphere.m: New function ported from JHandles.
@@ -4449,7 +4449,7 @@
 	rendered in.
 
 	* plot/__patch__.m: Set clim correctly.
-	* plot__go_draw_axes__.m: Allow patch objects to have markers, and 
+	* plot__go_draw_axes__.m: Allow patch objects to have markers, and
 	the marker color is determined by the cmap.
 	* plot/scatter.m: New function to 2D scatter plots.
 	* plot/scatter3.m: New function to 3D scatter plots.
@@ -4477,7 +4477,7 @@
 	* image/gmap40.m: New gnuplot 4.0 specific colormap fucntion.
 	* image/Makefile.in (SOURCES): Include it.
 	* plot/__bar__.h: Allow axis handles to be passed. Set the color
-	of the bars for the colormap. 
+	of the bars for the colormap.
 	* plot/bar.m, plot/barh.m: Document that axis handles can be
 	passed.
 	* plot/__contour.m: Avoid possible divide by zero error.
@@ -4485,7 +4485,7 @@
 	* plot/surface.m: Don't attempt to set additional arguments if
 	there are none.
 	* plot/Makefile.in (SOURCES): Include __bars__.m
-	
+
 2007-11-19  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* plot/__bar__.m: put bar creation code into separate function
@@ -4544,7 +4544,7 @@
 	"none". Allow the edgecolor to be determined by the cdata in the
 	same manner as the facecolor. Fail if facecolor is not "none" and
 	a 3-D plot is desired, rather than ignoring zdata. Make the
-	storage of 3D/4D data consistent between line, surface and patch 
+	storage of 3D/4D data consistent between line, surface and patch
 	objects.
 	* plot/meshc.m: Use new __contour__.m to plot the contours.
 	* plot/surfc.m: Use new __contour__.m to plot the contours.
@@ -4745,7 +4745,7 @@
 	* plot/__go_draw_axes__.m: Fix surfaces for gnuplot 4.0 and for
 	the meshc.m function.
 	* plot/meshc.m: Also use the surface function.
-	
+
 	* plot/meshc.m, plot/quiver.m, plot/surfc.m, : New files.
 	* plot/Makefile.in (SOURCES): Add them to the list.
 	Also add pcolor.m, shading.m, surf.m, and surface.m to the list.
@@ -4851,7 +4851,7 @@
 
 2007-10-22  David Bateman  <dbateman@free.fr>
 
-        * miscellaneous/cputime.m, time/tic.m, time/toc.m: Delete.
+	* miscellaneous/cputime.m, time/tic.m, time/toc.m: Delete.
 	* miscellaneous/Makefile.in (SOURCES): remove cputim.m
 	* time/Makefile.in (SOURCES): Remov tic.m and toc.m
 
@@ -4893,7 +4893,7 @@
 
 2007-10-15  Kim Hansen  i<kimhanse@gmail.com>
 
-	* testfun/assert.m: Correct documentation of absolution versus 
+	* testfun/assert.m: Correct documentation of absolution versus
 	relative error tolerance and add tests.
 
 2007-10-14  David Bateman  <dbateman@free.fr>
@@ -4935,7 +4935,7 @@
 
 2007-10-11  Thomas Treichl  <Thomas.Treichl@gmx.net>
 
-         * toplev.cc (Foctave_config_info): Add field "mac".
+	 * toplev.cc (Foctave_config_info): Add field "mac".
 
 	* miscellaneous/ismac.m: New function.
 	* miscellaneous/Makefile.in (SOURCES): Add it to the list.
@@ -5085,7 +5085,7 @@
 
 2007-10-05  Peter A. Gustafson  <petegus@umich.edu>
 
-	* plot/__go_draw_axes__.m: Add cbrange to the plot stream 
+	* plot/__go_draw_axes__.m: Add cbrange to the plot stream
 	for surface plots.
 
 2007-10-05  John W. Eaton  <jwe@octave.org>
@@ -5120,7 +5120,7 @@
 
 	* miscellaneous/dir.m: Create empty struct with field names.
 	Include datenum in struct.
-	
+
 2007-10-02  David Bateman  <dbateman@free.fr>
 
 	* miscellaneous/ls.m: If nargout return string array of files
@@ -5135,7 +5135,7 @@
 
 	* linear-algebra/norm.m: Inline the isvector(x) calculation for
 	speed with small vectors.
-	* pkg/pkg.m (archprefix): Set using octave_config_info("libexecdir") 
+	* pkg/pkg.m (archprefix): Set using octave_config_info("libexecdir")
 	rather than OCTAVE_HOME().
 
 2007-09-30  Ben Abbott  <bpabbott@mac.com>
@@ -5165,7 +5165,7 @@
 	files to a new location if user is root.
 	(pkg:rm_rf): Check if file or directory exists before removing.
 	(pkg:dirempty): Check if directory exists before checking.
-	
+
 	* plot/___patch__.m: Allow face colors to be passed as strings
 
 	* plot/__plt_get_axis_arg__.m: Treat case of empty "varargin"
@@ -5288,7 +5288,7 @@
 	polyinteg.m.
 	* deprecated/polyinteg.m: Move version here.
 	* deprecated/Makefile.in (SOURCES): Add polyinteg.m.
-	
+
 	* geometry/voronoi.m: Add large box around data to get a good
 	approximation of the rays to infinity.
 
@@ -5317,7 +5317,7 @@
 
 	* geometry/inpolygon.m: New file.
 	* geometry/Makefile.in (SOURCES): Add inpolygon.m.
-	
+
 2007-08-29  Peter A. Gustafson  <petegus@umich.edu>
 
 	* plot/__go_draw_axes__.m: Disable linetype in do_linestyle_command.
@@ -5341,17 +5341,17 @@
 
 2007-08-24  David Bateman  <dbateman@free.fr>
 
-	* geometry/convhull.m, geometry/delaunay.m, geometry/delaunay3.m, 
-        geometry/griddata.m, geometry/voronoi.m, geometry/voronoin.m: New 
-        functions ported from octave-forge.
+	* geometry/convhull.m, geometry/delaunay.m, geometry/delaunay3.m,
+	geometry/griddata.m, geometry/voronoi.m, geometry/voronoin.m: New
+	functions ported from octave-forge.
 	* geometry/delaunayn.m, geometry/dsearch.m, geometry/dsearchn.m,
-        geometry/griddata3.m, geometry/griddatan.m, geometry/trimesh.m, 
-        geometry/triplot.m, geometry/tsearchn.m:
-        New functions.
+	geometry/griddata3.m, geometry/griddatan.m, geometry/trimesh.m,
+	geometry/triplot.m, geometry/tsearchn.m:
+	New functions.
 	* geometry/voronoi.m: Remove duplicate edges from Voronoi diagram.
 	* geometry/Makefile.in (SOURCES): Add functions above.
 	* configure.in (AC_CONFIG_FILES): Add new file geometry/Makefile.
-        
+
 2007-08-23  John W. Eaton  <jwe@octave.org>
 
 	* pkg/pkg.m: Avoid using installed_packages for both function and
@@ -5405,7 +5405,7 @@
 
 	* Makefile.in, audio/Makefile.in, control/Makefile.in,
 	control/base/Makefile.in, control/hinf/Makefile.in,
-	control/obsolete/Makefile.in, control/system/Makefile.in, 
+	control/obsolete/Makefile.in, control/system/Makefile.in,
 	control/util/Makefile.in, deprecated/Makefile.in,
 	elfun/Makefile.in, finance/Makefile.in, general/Makefile.in,
 	image/Makefile.in, io/Makefile.in, linear-algebra/Makefile.in,
@@ -5429,9 +5429,9 @@
 	* image/flag.m: New colormap function.
 	* images/Makefile.in: Include it in SOURCES.
 
-	* image/autumn.m image/bone.m image/cool.m image/copper.m 
-	image/hot.m image/hsv.m image/jet.m image/pink.m image/prism.m 
-	image/rainbow.m image/spring.m image/summer.m image/white.m 
+	* image/autumn.m image/bone.m image/cool.m image/copper.m
+	image/hot.m image/hsv.m image/jet.m image/pink.m image/prism.m
+	image/rainbow.m image/spring.m image/summer.m image/white.m
 	image/winter.m, image/brighten.m: Use isscalar and not is_scalar.
 	* image/gray.m, image/ocean.m: Use the same means of finding the
 	number of colormap elements as the other colormap functions.
@@ -5447,21 +5447,21 @@
 	* general/del2.m: New function for discrete laplacian operator.
 	* general/Makefile.in: Include rat.m and del2.m  in SOURCES.
 
-	 * image/autumn.m image/bone.m image/cool.m image/copper.m 
-	image/hot.m image/hsv.m image/jet.m image/pink.m image/prism.m 
-	image/rainbow.m image/spring.m image/summer.m image/white.m 
+	 * image/autumn.m image/bone.m image/cool.m image/copper.m
+	image/hot.m image/hsv.m image/jet.m image/pink.m image/prism.m
+	image/rainbow.m image/spring.m image/summer.m image/white.m
 	image/winter.m, image/brighten.m: Port image functions from
 	octave-forge.
 	* image/Makefile.in: Add ported functions to SOURCES.
 	* image/gray.m, image/ocean.m: Don't set the colormap for
 	compatibility with matlab.
-	
+
 	* plot/meshc.m, plot/peaks.m: Port plotting function from
 	octave-forge
 	* plot/Makefile.in: Add ported functions to SOURCES.
 	* plot/__go_draw_axes__.m: Set the palette for the surfaces if
 	using gnuplot 4.2 or greater.
-	
+
 2007-07-23  Claudio Belotti  <c.belotti@imperial.ac.uk>
 
 	* general/cart2sph.m: Fix unbalanced paranthesis.
@@ -5497,7 +5497,7 @@
 	compatibility.
 
 	* deprecated/gamma_cdf.m, deprecated/gamma_inv.m,
-	deprecated/gamma_pdf.m, deprecated/gamma_rnd.m,  
+	deprecated/gamma_pdf.m, deprecated/gamma_rnd.m,
 	deprecated/exponential_cdf.m, deprecated/exponential_inv.m,
 	deprecated/exponential_pdf.m, deprecated/exponential_rnd.m:
 	Preserve backward compatibility.
@@ -5509,7 +5509,7 @@
 
 2007-07-06  David Bateman  <dbateman@free.fr>
 
-	* general/accumarray.m: New function to create an array by 
+	* general/accumarray.m: New function to create an array by
 	accumulating the elements.
 
 2007-06-29  Marcus W. Reble  <reble@wisc.edu>
@@ -5565,7 +5565,7 @@
 
 	* statistics/base/var.m: Put N in @math in help text.
 
-	* statistics/base/qqplot.m, statistics/base/ppplot.m, 
+	* statistics/base/qqplot.m, statistics/base/ppplot.m,
 	statistics/tests/kolmogorov_smirnov_test.m:
 	Write about possible values of 'dist' in help text.
 
@@ -5735,7 +5735,7 @@
 	* general/interp3.m: New function for 3-dimensional, linear, nearest
 	and spline interpolation.
 	* polynomial/spline.m: Change examples to use new graphics interface.
-	
+
 2007-06-12  Steve M. Robbins  <steve@sumost.ca>
 
 	* statistics/tests/wilcoxon_test.m: Error if N <= 25.
@@ -5748,7 +5748,7 @@
 
 	* pkg/pkg.m (pkg:installed_packages): truncate start of package
 	directory if need to, so that it fits on a line.
-	
+
 2007-06-07  David Bateman  <dbateman@free.fr>
 
 	* pkg/pkg.m (pkg): For rebuild target, force package order in
@@ -5775,7 +5775,7 @@
 
 	* polynomial/spline.m: Add a small tolerance to spline tests.
 	* pkg/pkg.m: Protect against multiple actions being define.
-	
+
 2007-06-01  David Bateman  <dbateman@free.fr>
 
 	* pkg.m (pkg:is_superuser): Remove function used in one place and
@@ -5785,10 +5785,10 @@
 
 2007-05-31  David Bateman  <dbateman@free.fr>
 
-	* miscellaneous/copyfile.m: Split copying of multiple files to a 
+	* miscellaneous/copyfile.m: Split copying of multiple files to a
 	directory over several copy command to limit the line length.
 	* miscellaneous/movefile.m: Ditto.
-	
+
 	* pkg.m: Add build option to allow binary Octave packages to be
 	built from source packages. Probe absolute path of prefix, global
 	and local lists. Use strcat, rather that [] for strings.
@@ -5809,7 +5809,7 @@
 	* pkg.m (pkg:load_packages): Correctly load a mix of packages
 	with and without architecture dependent directories.
 	(pkg:installed_packages): Probe the global_list file even if it is
-	the same as the local_list. 
+	the same as the local_list.
 
 2007-05-29  John W. Eaton  <jwe@octave.org>
 
@@ -5846,7 +5846,7 @@
 	(rebuild): New subfunction to rebuild package database from
 	installed packages. Also allows changing of autoload status
 	(install): Warn use if attempting to install from non existent
-	file. 
+	file.
 	(issuperuser): Use 'geteuid() == 0' instead of 'strcmp (getenv(
 	"USER", "root"))' for root test.
 
@@ -5854,21 +5854,21 @@
 
 	* miscellaneous/copyfile.m: check for cp.exe on Windows platforms
 	and replace "\" characters with "/".
-	* pkg/pkg.m: Use shell rather than system throughout. Replace "\" 
+	* pkg/pkg.m: Use shell rather than system throughout. Replace "\"
 	characters with "/" throughout.
 	(shell): New subfunction that wraps system and is careful with the
 	shell on windows platforms.
 	(configure_make): Explictly pass complier etc to configure
 	process.
 	(issuperuser): Force default to global install for Windows machines.
-	
+
 2007-05-19  Kristan Onu
 
 	* plot/Makefile.in (SOURCES): Remove hbar.m and add barh.m.
 
 2007-05-18  David Bateman  <dbateman@free.fr>
 
-	* pkg/pkg.m (install): More verbosity. 
+	* pkg/pkg.m (install): More verbosity.
 	(configure_make): Ditto.
 	(create_pkgadddel): Install in architecture dependent directory if
 	it exists to address issues with autoload/mfilename.
@@ -6029,7 +6029,7 @@
 	* bar.m: Convert to use __bar__.
 	* hbar.m: New function
 	* hist.m: Explicitly set the width of the bar plot.
-	
+
 2007-04-17  John W. Eaton  <jwe@octave.org>
 
 	* plot/stem.m (stem_line_spec): Pass false as third arg to __pltopt__.
@@ -6274,7 +6274,7 @@
 
 	* plot/__go_draw_axes__.m: Handle some colors with older gnuplot.
 	* testfun/speed.m: Documentation and example fix.
-	
+
 2007-03-21  John W. Eaton  <jwe@octave.org>
 
 	* plot/subplot.m: If we find an existing subplot region, set
@@ -6399,7 +6399,7 @@
 	* plot/__go_draw_axes__.m: Rename from __uiobject_draw_axes.m.
 	* plot/__go_draw_figure__.m: Rename from __uiobject_draw_figure.m.
 	* plot/Makefile.in (SOURCES_M): Rename in list.
-	
+
 	* image/__img__.m: Use __go_image__ to create image graphics
 	handle.
 
@@ -6567,16 +6567,16 @@
 
 2007-02-23  David Bateman  <dbateman@free.fr>
 
-	* statistics/distributions/discrete_rnd.m, 
-	statistics/distributions/geornd.m, 
-	statistics/distributions/lognnd.m, 
-	statistics/distributions/nbinrnd.m, 
+	* statistics/distributions/discrete_rnd.m,
+	statistics/distributions/geornd.m,
+	statistics/distributions/lognnd.m,
+	statistics/distributions/nbinrnd.m,
 	statistics/distributions/wblrnd.m:  Accelerate distributions.
-	 
-	* statistics/distributions/unidcdf.m, 
-	statistics/distributions/unidinv.m, 
-	statistics/distributions/unidpdf.m, 
-	statistics/distributions/unidrnd.m: New functions based on 
+
+	* statistics/distributions/unidcdf.m,
+	statistics/distributions/unidinv.m,
+	statistics/distributions/unidpdf.m,
+	statistics/distributions/unidrnd.m: New functions based on
 	discrete_cdf, etc.
 
 	* statistics/distributions/pascal_cdf.m,
@@ -6606,13 +6606,13 @@
 
 	* miscellaneous/doc.m: Find doc.info file correctly in user directories.
 
-	* statistics/distributions/frnd.m, statistics/distributions/exprnd.m, 
-	statistics/distributions/gamrnd.m, statistics/distributions/trnd.m, 
+	* statistics/distributions/frnd.m, statistics/distributions/exprnd.m,
+	statistics/distributions/gamrnd.m, statistics/distributions/trnd.m,
 	statistics/distributions/poissrnd.m, statistics/distributions/chi2rnd.m,
 	statistics/distributions/betarnd.m: Convert to use randg, rande
 	and randp to accelerate.
 
-	* pkg/pkg.m (fix_depends): Support > and < operators as well. 
+	* pkg/pkg.m (fix_depends): Support > and < operators as well.
 
 2007-02-22  John W. Eaton  <jwe@octave.org>
 
@@ -6828,7 +6828,7 @@
 2007-01-30  David Bateman  <dbateman@free.fr>
 
 	* pkg/pkg.m (pkg, isautoload, install, load_packages): Add ability
-	to flag a package as to be autoloaded. Add install flags -noauto, 
+	to flag a package as to be autoloaded. Add install flags -noauto,
 	-auto to force autoload behavior.
 	(installed_packages): Make list of installed packages unique.
 
@@ -6910,7 +6910,7 @@
 	horizontalalignment properties.
 
 	* plot/figure.m: Set options for f we just constructed or were
-	given as an argument, not gcf.  Only return handle if nargout > 0.	
+	given as an argument, not gcf.  Only return handle if nargout > 0.
 
 	* plot/drawnow.m: Handle visible field for figure here.
 	* plot/__uiobject_figure_ctor__.m: Set default visible field.
@@ -6979,10 +6979,10 @@
 
 	* include-globals.awk: New file.
 
-	* plot/__uiobject_alloc__.in, plot/__uiobject_figures__.in, 
-	plot/__uiobject_free__.in, plot/__uiobject_get_figure_handle__.in, 
-	plot/__uiobject_get_handle__.in, plot/__uiobject_grow_list__.in, 
-	plot/__uiobject_handle2idx__.in, plot/__uiobject_init_figure__.in, 
+	* plot/__uiobject_alloc__.in, plot/__uiobject_figures__.in,
+	plot/__uiobject_free__.in, plot/__uiobject_get_figure_handle__.in,
+	plot/__uiobject_get_handle__.in, plot/__uiobject_grow_list__.in,
+	plot/__uiobject_handle2idx__.in, plot/__uiobject_init_figure__.in,
 	plot/__uiobject_init_root_figure__.in,
 	plot/__uiobject_make_handle__.in,  plot/get.in, plot/set.in:
 	Rename from corresponding .m files.
@@ -7286,7 +7286,7 @@
 
 	* plot/plot3.m, plot/mesh.m, plot/contour.m: Don't send "set
 	noparametric" to gnuplot..
-	
+
 	* plot/__plotopt__.m, plot/__pltopt1__.m, plot/__plt1__.m,
 	plot/__plt2__.m, plot/__plt2mm__.m, plot/__plt2mv__.m,
 	plot/__plt2ss__.m, plot/__plt2vm__.m, plot/__plt2vv__.m: Accept
@@ -7363,7 +7363,7 @@
 2006-10-25  John W. Eaton  <jwe@octave.org>
 
 	* plot/__gnuplot_version__.m: New function, originally from
-	Daniel J Sebald <daniel.sebald@ieee.org> by way of 
+	Daniel J Sebald <daniel.sebald@ieee.org> by way of
 	Quentin Spencer <qspencer@ieee.org>.
 
 2006-10-25  S�ren Hauberg  <soren@hauberg.org>
@@ -7747,7 +7747,7 @@
 
 2006-09-22  Michael Creel  <michael.creel@uab.es>
 
-	* deprecated/chisquare_pdf.m: Typo in documentation. 
+	* deprecated/chisquare_pdf.m: Typo in documentation.
 
 2006-09-22  S�ren Hauberg  <soren@hauberg.org>
 
@@ -7756,7 +7756,7 @@
 2006-09-22  David Bateman  <dbateman@free.fr>
 
 	* miscellaneous/parseparams.m: Correct texinfo doc.
-	
+
 2006-09-15  David Bateman  <dbateman@free.fr>
 
 	* pkg/pkg.m (prepare_installation): Don't create package
@@ -7822,7 +7822,7 @@
 	(extract_pkg, create_pkg): Generalized versions of deleted functions
 	(copy_files): Install both bin/ and doc/ directories, adding the
 	bin/ to the EXEC_PATH when the package is loaded.
-	
+
 2006-08-24  John W. Eaton  <jwe@octave.org>
 
 	* image/saveimage.m: Use logical indexing instead of
@@ -7851,7 +7851,7 @@
 
 2006-08-22  David Bateman  <dbateman@free.fr>
 
-	* pkg/pkg.m (extract_pkgadd, create_pkgadd): New functions to 
+	* pkg/pkg.m (extract_pkgadd, create_pkgadd): New functions to
 	Search inst/*.m and src/*.m files in the package for
 	PKG_ADD directives and append user supplied PKG_ADD.
 	(pkg): Call create_pkgadd after copying files.
@@ -7891,7 +7891,7 @@
 
 	* sparse/spy.m, control/base/bode.m, control/base/__stepimp__.m,
 	signal/freqz_plot.m: Adapt to new automatic_replot definition.
-	
+
 2006-08-14  S�ren Hauberg  <soren@hauberg.org>
 
 	* pkg/pkg.m: Don't pass function name to print_usage.
@@ -8138,7 +8138,7 @@
 	* general/isequal.m, general/__isequal__.m, general/cell2mat.m,
 	general/isequalwithequalnans.m, general/blkdiag.m,
 	strings/strfind.m, miscellaneous/doc.m: Update FSF address.
-	
+
 2006-03-27  Don Bindner  <dbindner@truman.edu>
 
 	* plot/meshgrid.m: If nargout == 3 and vectors are supplied,
@@ -8337,7 +8337,7 @@
 	* time/toc.m: Move here from miscellaneous/toc.m.
 
 2006-02-26  Keith Goodman  <kwgoodman@gmail.com>
- 
+
  	* miscellaneous/toc.m: Display "Elapsed time is X seconds" if user
 	does not assign output of toc to a variable.
 
@@ -8355,7 +8355,7 @@
 	* control/base/lqe.m: Doc fix.
 
 2006-02-15  Keith Goodman  <kwgoodman@gmail.com>
- 
+
  	* statistics/distributions/gamcdf.m: Doc fix.
  	* statistics/distributions/gaminv.m: Doc fix.
  	* statistics/distributions/gampdf.m: Doc fix.
@@ -8415,7 +8415,7 @@
 
 2006-01-12  David Bateman  <dbateman@free.fr>
 
-	* general/blkdiag.m: Compatible behavior for empty matrices 
+	* general/blkdiag.m: Compatible behavior for empty matrices
 	* statistics/base/unidrnd.m: Documentation buglet.
 
 2005-12-14  David Bateman  <dbateman@free.fr>
@@ -8453,7 +8453,7 @@
 
 2005-12-12  Michael Zeising  <michael@michaels-website.de>
 
-	* audio/wavread.m, audio/wavwrite.m: 
+	* audio/wavread.m, audio/wavwrite.m:
 	Correct scaling for 8-bit linear pcm samples.
 	Improve scaling for all other linear pcm resolutions.
 
@@ -9147,7 +9147,7 @@
 	2005-01-05  David Bateman  <dbateman@free.fr>
 
 	* Makefile.in: include sparse directory in SUBDIRS.
-	
+
 	2004-12-30  John W. Eaton  <jwe@octave.org>
 
 	* sparse/nzmax.m: Delete (there is an nzmax function in
@@ -9155,7 +9155,7 @@
 
 	2004-12-28  John W. Eaton  <jwe@octave.org>
 
-	Merge of sparse code from David Bateman <dbateman@free.fr> and 
+	Merge of sparse code from David Bateman <dbateman@free.fr> and
 	Andy Adler <adler@site.uottawa.ca>.
 
 	* sparse/colperm.m, sparse/nonzeros.m, sparse/nzmax.m,
@@ -9251,7 +9251,7 @@
 
 	* miscellaneous/fileparts.m: Allow filenames with no extension.
 	From Julius Smith <jos@ccrma.stanford.edu>.
- 
+
 2004-11-08  John W. Eaton  <jwe@octave.org>
 
 	* plot/__plt2vm__.m: Delete debugging statement.
@@ -9269,23 +9269,23 @@
 2004-09-22  Federico Zenith  <zenith@chemeng.ntnu.no>
 
 	* control/base/analdemo.m, control/base/are.m, control/base/bddemo.m,
-	control/base/controldemo.m, control/base/damp.m, control/base/dare.m, 
+	control/base/controldemo.m, control/base/damp.m, control/base/dare.m,
 	control/base/dcgain.m, control/base/dgram.m, control/base/dlyap.m,
 	control/base/dre.m, control/base/frdemo.m, control/base/gram.m,
 	control/base/impulse.m, control/base/lqp.m, control/base/obsv.m,
 	control/base/pzmap.m, control/base/rldemo.m, control/hinf/h2norm.m,
 	control/hinf/hinfsyn.m, control/hinf/hinfsyn_ric.m,
-	control/hinf/is_dgkf.m, control/system/c2d.m, 
+	control/hinf/is_dgkf.m, control/system/c2d.m,
 	control/system/is_detectable.m, control/system/is_sample.m,
 	control/system/is_siso.m, control/system/is_stable.m,
 	control/system/ss2sys.m, control/system/ss.m, control/system/sys2ss.m,
-	control/system/sys2tf.m, control/system/sys2zp.m, 
+	control/system/sys2tf.m, control/system/sys2zp.m,
 	control/system/sysappend.m, control/system/sysconnect.m,
 	control/system/sysdisc.m, control/system/sysdup.m,
 	control/system/sysgetsignals.m, control/system/sysmult.m,
 	control/system/syssetsignals.m, control/system/syssub.m,
 	control/system/tf2sys.m, control/system/ugain.m,
-	control/system/zp2ss.m, control/system/zp2sys.m, 
+	control/system/zp2ss.m, control/system/zp2sys.m,
 	control/system/zp2tf.m, control/util/axis2dlim.m, polynomial/roots.m,
 	special-matrix/toeplitz.m: Fix typos in doc strings.
 
@@ -9312,36 +9312,36 @@
 	control/base/obsv.m, control/base/place.m, control/base/pzmap.m,
 	control/base/__stepimp__.m, control/base/step.m, control/base/tzero2.m
 	control/base/tzero.m, control/hinf/dhinfdemo.m, control/hinf/h2norm.m,
-	control/hinf/h2syn.m, control/hinf/hinfdemo.m, 
-	control/hinf/hinfnorm.m, control/hinf/hinfsyn_chk.m, 
-	control/hinf/hinfsyn.m, control/hinf/is_dgkf.m, 
+	control/hinf/h2syn.m, control/hinf/hinfdemo.m,
+	control/hinf/hinfnorm.m, control/hinf/hinfsyn_chk.m,
+	control/hinf/hinfsyn.m, control/hinf/is_dgkf.m,
 	control/obsolete/syschnames.m, control/obsolete/syschnames.m,
-	control/system/c2d.m, control/system/is_abcd.m, 
+	control/system/c2d.m, control/system/is_abcd.m,
 	control/system/is_controllable.m, control/system/is_detectable.m,
 	control/system/is_observable.m, control/system/is_stable.m,
-	control/system/jet707.m, control/system/ord2.m, 
-	control/system/starp.m, control/system/sys2fir.m, 
-	control/system/sys2ss.m, control/system/sys2tf.m, 
-	control/system/sys2zp.m, control/system/syscont.m, 
+	control/system/jet707.m, control/system/ord2.m,
+	control/system/starp.m, control/system/sys2fir.m,
+	control/system/sys2ss.m, control/system/sys2tf.m,
+	control/system/sys2zp.m, control/system/syscont.m,
 	control/system/sysdisc.m, control/system/sysdup.m,
 	control/system/sysgettype.m, control/system/sysgroup.m,
 	control/system/sysmult.m, control/system/sysprune.m,
 	control/system/sysreorder.m, control/system/sysscale.m,
 	control/system/syssetsignals.m, control/system/sysupdate.m,
-	control/system/tf2ss.m, control/system/tf2sys.m, 
-	control/system/zp2ss.m, control/system/zp2sys.m, 
+	control/system/tf2ss.m, control/system/tf2sys.m,
+	control/system/zp2ss.m, control/system/zp2sys.m,
 	control/util/axis2dlim.m, control/util/prompt.m,
-	control/util/zgfmul.m, control/util/zginit.m, 
-	control/util/__zgpbal__.m, control/util/zgscal.m: 
-	Use @var, @strong, @command, @math, @acronym, @table and @cite 
+	control/util/zgfmul.m, control/util/zginit.m,
+	control/util/__zgpbal__.m, control/util/zgscal.m:
+	Use @var, @strong, @command, @math, @acronym, @table and @cite
 	in doc strings.
 
-	* control/base/bode_bounds.m, control/base/ctrb.m, control/base/dre.m, 
+	* control/base/bode_bounds.m, control/base/ctrb.m, control/base/dre.m,
 	control/base/dgram.m, control/base/dlyap.m, control/base/ltifr.m,
 	control/base/nyquist.m, control/base/obsv.m, control/base/tzero.m,
 	control/hinf/dgkfdemo.m, control/hinf/dhinfdemo.m,
 	control/hinf/h2norm.m, control/hinf/h2syn.m, control/hinf/hinf_ctr.m,
-	control/hinf/hinfdemo.m, control/hinf/hinfnorm.m, 
+	control/hinf/hinfdemo.m, control/hinf/hinfnorm.m,
 	control/hinf/hinfsyn_chk.m, control/hinf/hinfsyn.m,
 	control/hinf/wgt1o.m, control/obsolete/syschnames.m,
 	control/system/c2d.m, control/system/fir2sys.m,
@@ -9351,33 +9351,33 @@
 	New @tex section(s) in doc strings for better formating of printed
 	output.
 
-	* control/base/__freqresp__.m, control/base/nyquist.m, 
+	* control/base/__freqresp__.m, control/base/nyquist.m,
 	control/base/__stepimp__.m, control/hinf/hinfdemo.m,
 	control/obsolete/syschnames.m, control/system/sysprune.m:
  	Use proper double quote marks for TeX.
 
 	* control/base/DEMOcontrol.m: Add missing ;
 
-	* control/base/nichols.m, control/base/rlocus.m, 
+	* control/base/nichols.m, control/base/rlocus.m,
 	control/obsolete/minfo.m, control/system/is_digital.m,
-	control/system/ss2zp.m, control/system/sysmin.m, 
-	control/system/tf2zp.m, control/util/sortcom.m: 
+	control/system/ss2zp.m, control/system/sysmin.m,
+	control/system/tf2zp.m, control/util/sortcom.m:
 	Convert documentation to use or more completely use Texinfo.
 
-	* control/base/rlocus.m, control/hinf/dhinfdemo.m, 
-	control/hinf/hinfdemo.m, control/system/ord2.m, 
+	* control/base/rlocus.m, control/hinf/dhinfdemo.m,
+	control/hinf/hinfdemo.m, control/system/ord2.m,
 	control/system/parallel.m, control/system/ss2tf.m,
 	control/system/starp.m: Use "@group ... @end group" to avoid ascii
 	art splitting over a page boundary.
-	
-	* control/hinf/dgkfdemo.m, control/hinf/dhinfdemo.m, 
-	control/hinf/h2norm.m, control/hinf/h2syn.m, control/hinf/hinf_ctr.m, 
-	control/hinf/hinfdemo.m, control/hinf/hinfnorm.m, 
+
+	* control/hinf/dgkfdemo.m, control/hinf/dhinfdemo.m,
+	control/hinf/h2norm.m, control/hinf/h2syn.m, control/hinf/hinf_ctr.m,
+	control/hinf/hinfdemo.m, control/hinf/hinfnorm.m,
 	control/hinf/hinfsyn_chk.m, control/hinf/hinfsyn.m,
 	control/hinf/wgt1o.m, control/system/buildssic.m:
 	Use {\cal H}_\infty for H-infinity and likewise for H-2 to
 	the TeX documentation.
-	
+
 	* control/system/is_stabilizable.m:
 	Add Copyright so that help is displayed correctly.
 
@@ -9388,7 +9388,7 @@
 	* general/rotdim.m: New function for rotation of an N-d array in an
 	arbitrary plane.
 
-	* general/flipdim.m: New function to flip an N-d array about an 
+	* general/flipdim.m: New function to flip an N-d array about an
 	arbitrary axis.
 
 2004-09-15  David Bateman  <dbateman@free.fr>
@@ -9419,7 +9419,7 @@
 
 2004-08-31  David Bateman  <dbateman@free.fr>
 
-	* general/bitcmp.m, general/bitget.m, general/bitset.m: Remove 
+	* general/bitcmp.m, general/bitget.m, general/bitset.m: Remove
 	limitation on the use of int64 and uint64 types, and the use
 	of the eval.
 
@@ -9627,7 +9627,7 @@
 	that results in NaN in places where it should not have had.
 
 	* statistics/distributions/discrete_rnd.m: New argument formats to
-	allow creating arbitrary matrices, compatiable with the other 
+	allow creating arbitrary matrices, compatiable with the other
 	*_rnd.m functions. Maintain compatibility with previous format.
 
 	* statistics/distributions/empirical_rnd.m: New argument formats
@@ -9640,7 +9640,7 @@
 	statistics/distributions/hypergeometric_pdf.m,
 	statistics/distributions/wiener_rnd.m:
 	Error for non-scalar arguments.
-	
+
 	* statistics/distributions/pascal_rnd.m:
 	Correct for n = 1 bug, where all elements were equal.
 
@@ -9690,16 +9690,16 @@
 	statistics/base/moment.m, statistics/base/range.m:
 	Update for N-d arrays.
 	* signal/fftshift.m: Fix dimensioning error.
-	
+
 	* statistics/base/std.m: Use repmat not ones(nr,1)*mean to allow
 	N-d arrays.
-	
+
 	* general/mod.m, general/mod.m: Allow N-d arrays with one scalar arg.
 
 	* signal/fftshift.m: Update for N-d arrays, allow optional dim arg.
-	
+
 	* specfun/erfinv.m, general/repmat.m: Update for N-d arrays.
-	
+
 	* control/base/bode.m, control/base/lqg.m, control/system/ss2sys.m,
 	control/system/cellidx.m, control/system/dmr2d.m control/system/ss.m,
 	control/system/sysprune.m: Doc update for usage of cell arrays.
@@ -9903,7 +9903,7 @@
 2003-11-14  Gabriele Pannocchia  <g.pannocchia@ing.unipi.it>
 
 	* control/base/dare.m: Check positive (semi)definiteness and
-	dimensions of r (and q). 
+	dimensions of r (and q).
 	* control/base/dlqr.m: Check stabilizability of (A,B),
 	detectability of (A,Q), and whether (A,Q) has non minimal modes
 	near unit circle.
@@ -9984,7 +9984,7 @@
 	* miscellaneous/dump_prefs.m: Delete define_all_return_values and
 	default_return_value from the list.
 	Add warn_undefined_return_values to the list.
-	
+
 
 2003-07-13  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
@@ -10019,7 +10019,7 @@
 	control/system/ugain.m, control/util/prompt.m,
 	control/util/run_cmd.m, control/util/zgrownorm.m,
 	control/util/zgshsr.m:
-	Improve conformance to Octave coding style.	
+	Improve conformance to Octave coding style.
 
 	* miscellaneous/dump_prefs.m: Add warn_resize_on_reange_error to
 	the list.
@@ -10165,7 +10165,7 @@
 
 2003-01-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
-	* general/int2str.m: Do a better job with 0, Inf, and NaN, 
+	* general/int2str.m: Do a better job with 0, Inf, and NaN,
 
 2003-01-11  Paul Kienzle  <pkienzle@users.sf.net>
 
@@ -10378,7 +10378,7 @@
 
 	* plot/errorbar.m: Use __errcomm__.m.
 	* plot/__errplot__.m: Minor cleanups.
-	* plot/__pltopt__.m: Handle boxxyerrorbars plot style. 
+	* plot/__pltopt__.m: Handle boxxyerrorbars plot style.
 	* plot/__pltopt1__.m: Likewise.
 
 2002-07-10  John W. Eaton  <jwe@bevo.che.wisc.edu>
@@ -10441,7 +10441,7 @@
 
 	* audio/lin2mu.m: Accept matrices and [-1,1] normalized audio.
 	Use optional parameter to specify the number of bits in the input.
-	* audio/mu2lin.m: Accept matrices, return n-bit integers or 
+	* audio/mu2lin.m: Accept matrices, return n-bit integers or
 	floats in the range [-1,1], 2x speedup.
 
 	* strings/index.m, strings/rindex.m: Vectorize for speed.
@@ -10506,9 +10506,9 @@
 	Code tidying.
 
 2002-03-07  Paul Kienzle  <pkienzle@kienzle.powernet.co.uk>
- 
+
  	* statistics/base/center.m: Accept and return empty matrix.
- 	
+
 2002-02-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* specfun/erfinv.m: Fix usage message.
@@ -10598,7 +10598,7 @@
 2000-12-15  Ben Sapp  <bsapp@lanl.gov>
 
 	* control/system/c2d.m: Allow option of matched pole/zero
-	equivalent for conversion.  
+	equivalent for conversion.
 
 2000-12-15  Matthew W. Roberts  <matt@lehi.tamu.edu>
 
@@ -10679,7 +10679,7 @@
 2000-06-06  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* general/logical.m: Return arg if it is empty.  Better error
-	message for non-numeric types.	
+	message for non-numeric types.
 
 2000-05-31  A. Scottedward Hodel  <a.s.hodel@eng.auburn.edu>
 
@@ -10699,7 +10699,7 @@
 2000-05-13  Paul Kienzle  <pkienzle@kienzle.powernet.co.uk>
 
 	* strings/strrep.m: Avoid for loop for speed.
-	* plot/axis.m: Handle string options for Matlab compatibility. 
+	* plot/axis.m: Handle string options for Matlab compatibility.
 
 2000-04-04  John Smith  <john@arrows.demon.co.uk>
 
@@ -10716,7 +10716,7 @@
 
 2000-03-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
-	* plot/title.m, plot/bottom_title.m, plot/top_title.m: 
+	* plot/title.m, plot/bottom_title.m, plot/top_title.m:
 	Undo string escapes in text twice(!) before sending to gnuplot.
 
 	* image/saveimage.m: Add comment to file saying who created it and
@@ -12095,7 +12095,7 @@ Wed Nov  4 21:51:13 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 Wed Oct 28 11:51:14 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
-	* general/is_square.m: 
+	* general/is_square.m:
 
 	* general/isempty.m, general/is_matrix.m: Delete.
 
@@ -12113,7 +12113,7 @@ Wed Oct 28 11:51:14 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 Fri Oct 23 00:21:55 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in: Add finance/Makefile, statistics/base/Makefile,
-	statistics/distributions/Makefile, statistics/models/Makefile, 
+	statistics/distributions/Makefile, statistics/models/Makefile,
 	and statistics/tests/Makefile to the list of files to create.
 
 	* finance/Makefile.in, statistics/base/Makefile.in,
@@ -12132,7 +12132,7 @@ Fri Oct 23 00:21:55 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 	    ols.m
 	    skewness.m
 	    std.m
-	
+
 	New files, from Kurt Hornik's octave-ci package:
 
 	* finance (new directory):
@@ -12297,7 +12297,7 @@ Fri Oct 23 00:21:55 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 	    weibull_pdf.m
 	    weibull_rnd.m
 	    wiener_rnd.m
-	
+
 	* statistics/models (new directory):
 
 	    logistic_regression.m
@@ -12879,7 +12879,7 @@ Mon Jul 15 16:15:22 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* miscellaneous/bug_report.m: Don't redirect output to /dev/tty in
 	system command.
-	
+
 Fri Jul 12 12:24:29 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* __plr1__.m: Renamed from polar_int_1.m.
@@ -13085,9 +13085,9 @@ Wed Sep 20 00:01:30 1995  John Eaton  <jwe@bevo.che.wisc.edu>
 
 Thu Sep 14 03:56:19 1995  John Eaton  <jwe@bevo.che.wisc.edu>
 
-	* special-matrix/hankel.m: Compatibility fix.  Complain if 
+	* special-matrix/hankel.m: Compatibility fix.  Complain if
 	r(1) != c(nr), not if r(1) != c(1).
-	
+
 	* signal/filter.m: Doc fix.
 
 Wed Sep 13 03:19:05 1995  John Eaton  <jwe@bevo.che.wisc.edu>

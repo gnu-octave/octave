@@ -16,12 +16,12 @@
 
 2009-10-19  Rik  <octdev@nomad.inbox5.com>
 
-	* fntests.m: Remove deprecated functions from list of functions requiring
-	new tests to be written
+	* fntests.m: Remove deprecated functions from list of functions
+	requiring new tests to be written.
 
 2009-10-08  Rik  <octdev@nomad.inbox5.com>
 
-	* fntests.m: Fix typo of an extra space in instructions to user
+	* fntests.m: Fix typo of an extra space in instructions to user.
 
 2009-10-05  Rik  <octdev@nomad.inbox5.com>
 
@@ -64,12 +64,12 @@
 2009-04-12  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
 	* test_contin.m, test_error.m, test_eval-catch.m, test_for.m,
-        test_global.m,  test_if.m, test_index-wfi-f.m,
-        /test_index-wfi-t.m, test_io.m, test_logical-wfi-f.m,
-        test_logical-wfi-t.m, test_prefer.m, test_recursion.m,
-        test_return.m, test_string.m, test_struct.m, test_switch.m,
-        test_system.m, test_transpose.m, test_try.m, test_unwind.m,
-        test_while.m: Remove obsolete comments.
+	test_global.m,  test_if.m, test_index-wfi-f.m,
+	/test_index-wfi-t.m, test_io.m, test_logical-wfi-f.m,
+	test_logical-wfi-t.m, test_prefer.m, test_recursion.m,
+	test_return.m, test_string.m, test_struct.m, test_switch.m,
+	test_system.m, test_transpose.m, test_try.m, test_unwind.m,
+	test_while.m: Remove obsolete comments.
 
 2009-04-07  Carlo de Falco  <kingcrimson@tiscali.it>
 
@@ -100,7 +100,8 @@
 
 2009-03-08  Jason Riedy  <jason@acm.org>
 
-	* test_diag_perm.m: Add tests for preserving sparse structure when scaling.
+	* test_diag_perm.m: Add tests for preserving sparse structure
+	when scaling.
 
 2009-02-25  John W. Eaton  <jwe@octave.org>
 
@@ -176,7 +177,7 @@
 
 2008-05-19  Bill Denney  <bill@denney.ws>
 
-	* test_args.m: Update format to allow running "test test_args" 
+	* test_args.m: Update format to allow running "test test_args"
 	and add default argument tests.
 
 2008-05-09  Rafael Laboissiere  <rafael@debian.org>
@@ -239,7 +240,7 @@
 
 	* build_sparse_tests.sh: Replaced removed sparse functions like
 	spdiag with their generic names. Fix lu tests for modified
-	syntax. Test vector and scaling or LU and chol functions. 
+	syntax. Test vector and scaling or LU and chol functions.
 	* test_linalg.m: Change error message of failing chol/lu test.
 
 2008-02-19  David Bateman  <dbateman@free.fr>
@@ -254,7 +255,7 @@
 2008-01-22  Thomas Weber  <thomas.weber.mail@gmail.com>
 
 	* test_linalg.m, test_matrix.m, test_number.m, test_poly.m,
-	test_signal.m, test_stats.m, test_string.m, test_system.m: 
+	test_signal.m, test_stats.m, test_string.m, test_system.m:
 	Move tests to individual source files.
 
 2008-01-15  Thomas Weber  <thomas.weber.mail@gmail.com>
@@ -433,7 +434,7 @@
 2006-04-03  David Bateman  <dbateman@free.fr>
 
 	* test_number.m: Reverse sense of isscalar and isvector tests
-          for recent changes.
+	  for recent changes.
 
 2006-03-21  John W. Eaton  <jwe@octave.org>
 
@@ -462,12 +463,12 @@
 
 2006-02-09  David Bateman  <dbateman@free.fr>
 
-        * build_sparse_tests.sh: Add tests for sparse QR solvers.
+	* build_sparse_tests.sh: Add tests for sparse QR solvers.
 
 2006-01-21  David Bateman  <dbateman@free.fr>
 
-        * build_sparsetest.sh: Add new un-ordered indexing, assignment and
-        deletion tests.
+	* build_sparsetest.sh: Add new un-ordered indexing, assignment and
+	deletion tests.
 
 2006-01-13  Bill Denney  <bill@givebillmoney.com>
 
@@ -483,7 +484,7 @@
 	(check): Run tests with fntest.m instead of runtest.
 	(test_sparse.m): New target.
 	(clean): Remove fntests.log instead of octave.log and octave.sum.
-	
+
 	* tests/test_args.m, tests/test_infnan.m, tests/test_set.m,
 	tests/test_arith.m, tests/test_io.m, tests/test_signal.m,
 	tests/test_audio.m, tests/test_linalg.m, tests/test_sparse.m,
@@ -498,7 +499,7 @@
 	tests/test_if.m, tests/test_prefer.m, tests/test_unwind.m,
 	tests/test_image.m, tests/test_quad.m, tests/test_while.m,
 	tests/test_index-wfi-f.m, tests/test_recursion.m,
-	tests/test_index-wfi-t.m, tests/test_return.m: Initial of conversion 
+	tests/test_index-wfi-t.m, tests/test_return.m: Initial of conversion
 	of DejaGnu tests to test/assert infrastructure.
 
 2005-05-11  John W. Eaton  <jwe@octave.org>
@@ -521,10 +522,10 @@
 
 2002-09-26  Paul Kienzle  <pkienzle@users.sf.net>
 
-	* octave.test/linalg/qr-7.m: Replace large random matrix tests 
+	* octave.test/linalg/qr-7.m: Replace large random matrix tests
 	of economy QR decomposition with small predictable tests.
 	Include numerically sensitive rosser matrix test.  Don't
-	report the measured norms. 
+	report the measured norms.
 
 2002-04-24  Bill Lash  <lash@tellabs.com>
 
@@ -545,7 +546,7 @@
 
 2002-04-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
-	* octave.test/diffeq/dassl-1.m (tol): Use relative tolerance for test. 
+	* octave.test/diffeq/dassl-1.m (tol): Use relative tolerance for test.
 	* octave.test/diffeq/dassl-2.m (tol): Likewise.
 	* octave.test/diffeq/lsode-1.m (tol): Likewise.
 	* octave.test/diffeq/lsode-2.m (tol): Likewise.
@@ -560,7 +561,7 @@
 
 	* octave.test/linalg/qr-7.m: New test.
 	From Paul Kienzle <pkienzle@jazz.ncnr.nist.gov>.
-	
+
 2001-04-24  Christoph Spiel  <cspiel@hammersmith-consulting.com>
 
 	* Makefile.in (check): Allow user to specify which .exp file to run.

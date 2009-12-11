@@ -107,7 +107,7 @@
 	* acinclude.m4 (OCTAVE_HDF5_HAS_ENFORCED_16_API): New macro that
 	tests whether the HDF5 library has an enforced v1.6 API and detects
 	v1.8 APIs.
-	* configure.m4: Adapt test for HDF5 libraries to support v1.8 
+	* configure.m4: Adapt test for HDF5 libraries to support v1.8
 	HDF5 libraries.
 
 2009-11-29  Jaroslav Hajek  <highegg@gmail.com>
@@ -664,7 +664,7 @@
 
 2009-03-17  Thomas Weber  <thomas.weber.mail at gmail.com>
 
-        * configure.in: fix typo with regards to termios.h
+	* configure.in: fix typo with regards to termios.h
 
 2009-05-25  Jaroslav Hajek  <highegg@gmail.com>
 
@@ -674,7 +674,7 @@
 
 2009-05-24  Benjamin Lindner  <lindnerb@users.sourceforge.net>
 
-	* configure.in: (SCRIPTS_EXE_SUFFIX) Define to ".exe" for 
+	* configure.in: (SCRIPTS_EXE_SUFFIX) Define to ".exe" for
 	mingw32 compilation (similar to msvc)
 
 2009-05-24  Robert T. Short  <octave@phaselockedsystems.com>
@@ -683,10 +683,10 @@
 
 2009-05-22  Marco Atzeri  <marco_atzeri@yahoo.it>
 
-        * src/sysdep.cc: Removed CYGWIN_init 
+	* src/sysdep.cc: Removed CYGWIN_init
 
 2009-05-21  Marco Atzeri  <marco_atzeri@yahoo.it>
-        * configure.in: Correct my mistake in cygwin SHLBINPRE SHLBIN
+	* configure.in: Correct my mistake in cygwin SHLBINPRE SHLBIN
 
 2008-05-21  Michael Goffioul  <michael.goffioul@gmail.com>
 
@@ -944,9 +944,9 @@
 
 2009-01-29  Thomas Treichl  <Thomas.Treichl@gmx.net>
 
-	* aclocal.m4 (OCTAVE_HAVE_FRAMEWORK): Add support for 
+	* aclocal.m4 (OCTAVE_HAVE_FRAMEWORK): Add support for
 	--with-framework-<name> and replace "$ac_safe" by "$1".
-	* configure.in: Change "have_carbon" with 
+	* configure.in: Change "have_carbon" with
 	"have_framework_carbon".
 
 2009-01-28  John W. Eaton  <jwe@octave.org>
@@ -996,7 +996,7 @@
 
 2008-12-23  David Bateman  <dbateman@free.fr>
 
-	* configure.in: Add configuration test for ARPACK. 
+	* configure.in: Add configuration test for ARPACK.
 	* Makeconf.in (ARPACK_LIBS): Add variable with location of ARPACK
 	library.
 	* NEWS: Document that eigs and svds were moved to Octaave.
@@ -1024,8 +1024,8 @@
 
 2008-11-08  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
-        * Makeconf.in: export PERL variable for use in scripts/mkdoc
-        
+	* Makeconf.in: export PERL variable for use in scripts/mkdoc
+
 2008-10-30  David Bateman  <dbateman@free.fr>
 
 	* NEWS: Minor update to document improved indexing code.
@@ -1042,7 +1042,7 @@
 	* examples/Makefile.in: Ditto.
 	* configure.in: Change locate of examples/@polynomial makefile
 	in AC_CONFIG_FILES.
-	
+
 2008-10-16  David Bateman  <dbateman@free.fr>
 
 	* NEWS: Minor update.
@@ -1061,7 +1061,7 @@
 	directory
 	* examples/Makefile.in: Reference the new subdirectory here.
 	* configure.in: Add the new makefile to AC_CONFIG_FILES.
-	
+
 2008-10-01  Jaroslav Hajek  <highegg@gmail.com>
 
 	* configure.in: Check for sizeof (long double) and randl.
@@ -1082,7 +1082,7 @@
 2008-08-28  David Bateman  <dbateman@free.fr>
 
 	* NEWS: Update for some of the graphics changes
-	
+
 2008-08-11  Jaroslav Hajek  <highegg@gmail.com>
 
 	* acx_blas_f77_func.m4, acx_lapack.m4: Update macros from
@@ -1394,7 +1394,7 @@
 
 	* octave-bug.in: Try mailx, then Mail, then /usr/ucb/mail, then
 	/bin/mail.
- 
+
 2007-11-13  John W. Eaton  <jwe@octave.org>
 
 	* configure.in: Only define HAVE_PCRE_H if <pcre.h> has the
@@ -1444,7 +1444,7 @@
 	* octMakefile.in (maintainer-clean distclean): No need to delete
 	Makefrag.f77 and Makerules.f77.
 	* Makeconf.in: Include rules for making .o files from .f files
-	instead of substituting @f77_rules_frag@.  
+	instead of substituting @f77_rules_frag@.
 	* configure.in): Delete handling of --with-f2c and --with-f77
 	options.  No need to call OCTAVE_CHECK_EXCLUSIVE_WITH_OPTIONS.
 	Delete all special cases for f2c.
@@ -1480,7 +1480,7 @@
 
 	* COPYING: Update to GPLv3.
 
-        * run-octave.in: List args explicitly in exec command.
+	* run-octave.in: List args explicitly in exec command.
 
 2007-10-11  John W. Eaton  <jwe@octave.org>
 
@@ -1488,7 +1488,7 @@
 
 2007-10-10  Kim Hansen  <kimhanse@gmail.com>
 
-        * run-octave.in: Use $args.  Eliminate "if [ -n "$args" ]" conditional.
+	* run-octave.in: Use $args.  Eliminate "if [ -n "$args" ]" conditional.
 
 2007-10-09  John W. Eaton  <jwe@octave.org>
 
@@ -1499,7 +1499,7 @@
 
 2007-10-09  Kim Hansen  <kimhanse@gmail.com>
 
-        * run-octave.in: Use gdb with --args, not .gdbinit.
+	* run-octave.in: Use gdb with --args, not .gdbinit.
 
 2007-10-08  John W. Eaton  <jwe@octave.org>
 
@@ -1552,10 +1552,10 @@
 
 2007-08-24  David Bateman  <dbateman@free.fr>
 
-        * configure.in: Probe for the use of Qhull.
-        * aclocal.m4 (AC_CHECK_QHULL_VERSION): Macro to check whether
-        Qhull needs a version number.
-        * Makeconf.in: Add QHULL_LIBS.
+	* configure.in: Probe for the use of Qhull.
+	* aclocal.m4 (AC_CHECK_QHULL_VERSION): Macro to check whether
+	Qhull needs a version number.
+	* Makeconf.in: Add QHULL_LIBS.
 
 2007-08-23  John W. Eaton  <jwe@octave.org>
 
@@ -1578,9 +1578,9 @@
 2007-07-25  David Bateman  <dbateman@free.fr>
 
 	* octMakefile.in, dlfcn/Makefile.in, emacs/Makefile.in,
-	examples/Makefile.in, test/Makefile.in: Adjust DISTFILES to allow 
-	out of tree "make dist" to work.	
-	
+	examples/Makefile.in, test/Makefile.in: Adjust DISTFILES to allow
+	out of tree "make dist" to work.
+
 2007-07-24  Michael Goffioul  <michael.goffioul@swing.be>
 
 	* configure.in (*-*-msdosmsvc): Only add -g to DL_LDFLAGS and
@@ -1643,7 +1643,7 @@
 	* examples/mycell.c, examples/mypow2.c, examples/mysparse.c,
 	examples/mystring.c, examples/mystruct.c: Use mwSize and mwIndex,
 	rather than int for indexing to conform to new mex API.
-	
+
 2007-06-01  John W. Eaton  <jwe@octave.org>
 
 	* configure.in (*-*-darwin*): Fix quoting and construction of
@@ -2191,7 +2191,7 @@
 
 	* Makeconf.in (datarootdir): New variable.
 
-	* acx_lapack.m4 (acx_lapack_ok): 
+	* acx_lapack.m4 (acx_lapack_ok):
 	Use AC_LINK_IFELSE+AC_LANG_PROGRAM instead of AC_TRY_LINK
 
 	* aclocal.m4: Use AC_RUN_IFELSE+AC_LANG_SOURCE instead of AC_TRY_RUN.
@@ -2237,7 +2237,7 @@
 
 2006-05-05  David Bateman  <dbateman@free.fr>
 
-	    * Makeconf.in (do-subst-scripts-vals): Also replace 
+	    * Makeconf.in (do-subst-scripts-vals): Also replace
 	    abs_top_srcdir.
 	    * run-octave.in: Define top_srcdir as an absolute path.
 
@@ -2315,12 +2315,12 @@
 2006-03-08  David Bateman  <dbateman@free.fr>
 
 	* configure.in: Update the test for CXSPARSE for new upstream release.
-	(OCTAVE_VERSION, OCTAVE_HOSTTYPE, OCTAVE_HOME,TEXINFO_UMFPACK, 
-	TEXINFO_COLAMD, TEXINFO_CHOLMOD): New variables for texinfo 
+	(OCTAVE_VERSION, OCTAVE_HOSTTYPE, OCTAVE_HOME,TEXINFO_UMFPACK,
+	TEXINFO_COLAMD, TEXINFO_CHOLMOD): New variables for texinfo
 	documentation.
 	(AC_CONFIG_FILES): Add doc/interpreter/images/Makefile and
 	doc/conf.texi.
-	
+
 2006-03-02  Kurt Hornik  <Kurt.Hornik@wu-wien.ac.at>
 
 	* emacs/octave-mod.el (octave-indent-for-comment): Make the code
@@ -2338,9 +2338,9 @@
 
 2006-02-09  David Bateman  <dbateman@free.fr>
 
-        * configure.in: Fix for probe of colamd, cccolamd and metis. New test
-        for the presence of cxsparse.
-        Makeconf.in: Include CXSPARSE_LIBS.
+	* configure.in: Fix for probe of colamd, cccolamd and metis. New test
+	for the presence of cxsparse.
+	Makeconf.in: Include CXSPARSE_LIBS.
 
 2006-01-19  John W. Eaton  <jwe@octave.org>
 
@@ -2384,7 +2384,7 @@
 
 2005-11-29  Rafael Laboissiere  <rafael@debian.org>
 
-	* emacs/octave-mod.el: Ensure that key bindings for 
+	* emacs/octave-mod.el: Ensure that key bindings for
 	octave-mark-defun and backward-kill-word work in both XEmacs and
 	GNU Emacs.
 
@@ -2438,7 +2438,7 @@
 
 2005-10-23  David Bateman  <dbateman@free.fr>
 
-	* configure.in (OCTAVE_UMFPACK_SEPERATE_SPLIT): Check for metis 
+	* configure.in (OCTAVE_UMFPACK_SEPERATE_SPLIT): Check for metis
 	separately.
 	* PROJECTS: Remove completed sparse matrix tasks.
 
@@ -2516,7 +2516,7 @@
 	(UMFPACK_INCLUDE, AMD_INCLUDE, COLAMD_INCLUDE, CCOLAMD_INCLUDE):
 	AC_SUBST into oct-sparse.h.
 	(LIBGLOB): Probe for external glob/fnmatch, define LIBGLOB.
-	(sepchar): Define path seperation character in system dependent 
+	(sepchar): Define path seperation character in system dependent
 	manner. Use it with OCTAVE_SET_DEFAULT.
 	(SEPCHAR, SEPCHAR_STR): Dpend on sepchar.
 	(DL_LDFLAGS): Define for cygwin and mingw.
@@ -2525,7 +2525,7 @@
 	broken.
 	* Makeconf.in: Don't use ";" as sed seperation to avoid confusion
 	with sepchar.
-	(LIBGLOB, AMD_LIBS, COLAMD_LIBS, CCOLAMD_LIBS, CHOLMOD_LIBS, 
+	(LIBGLOB, AMD_LIBS, COLAMD_LIBS, CCOLAMD_LIBS, CHOLMOD_LIBS,
 	sepchar): Substitute.
 	* octMakefile.in: (CONF_DISTFILES): Add acx_include_dirs.m4 and
 	oct-sparse.h.in
@@ -2608,12 +2608,12 @@
 
 2005-04-06  David Bateman  <dbateman@free.fr>
 
-	* configure.in: Split the HDF5 and zlib detection code, so that zlib 
+	* configure.in: Split the HDF5 and zlib detection code, so that zlib
 	can be used for compressed load/save in the absence of HDF5.
 
 	* Makeconf.in: Define UMFPACK_LIBS.
 
-	* Configure.in: Slightly alter the UMFPACK detection code so that it 
+	* Configure.in: Slightly alter the UMFPACK detection code so that it
 	correctly detects cblas bindings or not.
 
 2005-03-22  John W. Eaton  <jwe@octave.org>
@@ -2787,7 +2787,7 @@
 
 	* configure.in: Use -Wl,-Bsymbolic for MKOCTFILE_DL_LDFLAGS on
 	GNU/Linux systems but not for SH_LDFLAGS.
-    
+
 2004-04-22  John W. Eaton  <jwe@octave.org>
 
 	* configure.in: Add -Wl,-Bsymbolic to SH_LDFLAGS for GNU/Linux
@@ -2901,9 +2901,9 @@
 
 2004-01-14  David Bateman  <dbateman@free.fr>
 
-	* configure.in: Test for the presence of the function 
+	* configure.in: Test for the presence of the function
 	H5Gget_num_objs	in HDF5 library, and define HAVE_H5GGET_NUM_OBJS.
- 	
+
 2004-01-06  Per Persson  <persquare@mac.com>
 
 	* aclocal.m4 (OCTAVE_CXX_PREPENDS_UNDERSCORE): Recognize
@@ -3160,7 +3160,7 @@
 
 	* configure.in: Allow RLD_FLAG to be set using --enable-rpath arg.
 
-	* configure.in: Fix default RLD_FLAG value for *-sgi-*.  From 
+	* configure.in: Fix default RLD_FLAG value for *-sgi-*.  From
 	Paul Kienzle <pkienzle@users.sf.net>.
 
 	* configure.in: Check for long long int and unsigned long long int.
@@ -3188,7 +3188,7 @@
 
 2003-02-13  Arno Klaassen  <arno@scito.com>
 
-        * configure.in: Fix SH_LD and SH_LDFLAGS for -*-*-freebsd*.
+	* configure.in: Fix SH_LD and SH_LDFLAGS for -*-*-freebsd*.
 
 2003-02-13  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
@@ -3268,7 +3268,7 @@
 2002-12-03  Nix  <nix@esperi.demon.co.uk>
 
 	* configure.in: Use AC_CHECK_DECL in conjunction with
-        AC_DECL_SYS_SIGLIST to ensure signal.h is searched.
+	AC_DECL_SYS_SIGLIST to ensure signal.h is searched.
 
 2002-12-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
@@ -3327,7 +3327,7 @@
 2002-11-09  Per Persson  <persquare@mac.com>
 
 	* configure.in: Use $(TOPDIR)/src/octave, not $(bindir)/octave for
-	-bundle-loader argument.	
+	-bundle-loader argument.
 
 	* aclocal.m4 (OCTAVE_CXX_PREPENDS_UNDERSCORE): Force result for OS X.
 
@@ -3426,7 +3426,7 @@
 
 	* Makeconf.in (TERMLIBS): Substitute here.
 
-	* configure.in: Define OCTAVE_USE_WINDOWS_API if 
+	* configure.in: Define OCTAVE_USE_WINDOWS_API if
 	defined (__WIN32__) && ! defined (__CYGWIN__), not if
 	defined (__WIN32__) || ! defined (__CYGWIN__).
 	Also call AC_SUBST for TERMLIBS.
@@ -3482,7 +3482,7 @@
 	* aclocal.m4 (OCTAVE_CXX_PRAGMA_INTERFACE_IMPLEMENTATION): New macro.
 	* configure.in: Use it.
 
-	* configure.in (BUILD_CC, BUILD_CFLAGS, BUILD_CXX, BUILD_CXXFLAGS): 
+	* configure.in (BUILD_CC, BUILD_CFLAGS, BUILD_CXX, BUILD_CXXFLAGS):
 	Set default values if cross compiling.
 
 	* aclocal.m4 (OCTAVE_PROG_NM): Do the right thing for cross compiling.
@@ -3513,12 +3513,12 @@
 	* configure.in: Don't define mkdir here.
 
 2002-09-25  Mumit Khan  <khan@nanotech.wisc.edu>
- 
+
  	* aclocal.m4 (OCTAVE_MKDIR_TAKES_ONE_ARG): New macro to determine if
  	host mkdir accepts only one arg instead of the usual two.
  	* configure.in: Use. Check for direct.h.
  	(mkdir): Define.
- 
+
 2002-09-26  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* configure.in: Check for conio.h.
@@ -3792,7 +3792,7 @@
 
 	* configure.in: Check for getpwnam in libsun only after checking
 	default libraries first.  Check for gethostname in libsocket only
-	after checking default libraries first.	
+	after checking default libraries first.
 
 2001-02-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
@@ -3820,7 +3820,7 @@
 
 	* configure.in (TEMPLATE_AR, TEMPLATE_ARFLAGS): New variables.
 	* Makeconf.in (TEMPLATE_AR, TEMPLATE_ARFLAGS): Likewise.
-	
+
 	* configure.in (XTRA_CXXFLAGS): Use -fno-implicit templates for
 	pre-gcc3 compilers. Remove -fno-rtti and -fno-exceptions.
 	(DEPEND_FLAGS, DEPEND_EXTRA_SED_PATTERN): New macros.
@@ -3874,7 +3874,7 @@
 
 	* missing: New file, modified from the missing script provided by
 	automake (never create files, just exit with failure status).
-	* aclocal.m4 (OCTAVE_PROG_BISON, OCTAVE_PROG_FLEX, OCTAVE_PROG_GPERF): 
+	* aclocal.m4 (OCTAVE_PROG_BISON, OCTAVE_PROG_FLEX, OCTAVE_PROG_GPERF):
 	Use $(top_srcdir)/missing as replacement script.
 
 	* aclocal.m4 (OCTAVE_PROG_FLEX, OCTAVE_PROG_BISON): New macros.
@@ -4239,7 +4239,7 @@ Tue Aug 18 17:02:25 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 Thu Jun 18 20:24:40 1998  Roman Hodek  <Roman.Hodek@informatik.uni-erlangen.de>
 
 	* configure.in (RLD_FLAG): Set correctly for Linux on all
-	architectures.  From 
+	architectures.  From
 
 Thu May 28 10:17:45 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
@@ -4417,7 +4417,7 @@ Sun Jan 25 01:59:47 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 	OCTAVE_PROG_GNUPLOT, OCTAVE_PROG_RUNTEST, OCTAVE_F77_MAIN_FLAG):
 	New macros.
 	* configure.in: Use them in place of in-line code.
-	
+
 Sat Jan 24 00:33:14 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* aclocal.m4 (OCTAVE_HOST_TYPE): Don't set target_host_type.
@@ -4503,9 +4503,9 @@ Fri Oct 17 04:43:27 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 	1997-04-22  Richard Stallman  <rms@psilocin.gnu.ai.mit.edu>
 
 	* octave-mod.el (inferior-octave-output-list): Declare here
-        to avoid compiler warnings.
-        (inferior-octave-output-string): Likewise.
-        (inferior-octave-receive-in-progress): Likewise.
+	to avoid compiler warnings.
+	(inferior-octave-output-string): Likewise.
+	(inferior-octave-receive-in-progress): Likewise.
 
 Tue Oct 14 10:48:28 1997  Kurt Hornik  <Kurt.Hornik@ci.tuwien.ac.at>
 
@@ -4710,7 +4710,7 @@ Wed May 21 16:33:33 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 	Ensure link is made in include directory.
 
 	* configure.in (octlibdir): New variable.
-	* Makeconf.in: Substitute it here.	
+	* Makeconf.in: Substitute it here.
 	(do-subst-config-vals): Add -I${octincludedir} to INCFLAGS.
 	Add -L${octlibdir} to LIBFLAGS.
 
@@ -5227,7 +5227,7 @@ Tue Oct 15 14:40:51 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 	* configure.in: Comment out plplot stuff.
 	In commands to get gxx_version and gcc_version, use simpler sed
 	command to avoid confusing brain-dead vendor-supplied seds.
-	
+
 Mon Oct 14 11:09:12 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* octMakefile.in (maintainer-clean distclean): Remove mkoctfile too.
@@ -5534,7 +5534,7 @@ Thu Feb  8 10:17:55 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 Sat Feb  3 08:53:56 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in: RLD_FLAG should be empty by default, but give it a
-	value for alpha-dec-osf* systems.	
+	value for alpha-dec-osf* systems.
 
 Fri Feb  2 23:03:40 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
@@ -5615,7 +5615,7 @@ Wed Dec 27 14:27:48 1995  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in, Makeconf.in: Use consistent names for WITH_DL,
 	WITH_SHL, OCTAVE_LITE, and SHARED_LIBS
-	
+
 	* config.h.bot: Undo previous change.
 	* acconfig.h: Add #undef for WITH_DYNAMIC_LINKING.
 	* Makeconf.in: Substitute it here too.

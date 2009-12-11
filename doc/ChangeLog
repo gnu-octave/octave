@@ -30,25 +30,25 @@
 
 2009-12-04  Rik <octave@nomad.inbox5.com>
 
-	* interpreter/images.awk: Revert to using Ghostscript for documentation 
+	* interpreter/images.awk: Revert to using Ghostscript for documentation
 	pdf image creation rather than Octave.
 
 2009-12-04  Rik <octave@nomad.inbox5.com>
 
-	* Makefile.am, interpreter/Makefile.am, liboctave/Makefile.am: remove 
+	* Makefile.am, interpreter/Makefile.am, liboctave/Makefile.am: remove
 	  lingering configuration support for conf.texi
 	* liboctave/Makefile.am: distribute .texi files
 
 2009-12-04  Rik <octave@nomad.inbox5.com>
 
 	* interpreter/geometryimages.m, interpreter/interpimages.m,
-	  interpreter/sparseimages.m, interpreter/plotimages.m: 
+	  interpreter/sparseimages.m, interpreter/plotimages.m:
 	  Switch to color output for PostScript documentation images
 
 2009-12-04  Rik <octave@nomad.inbox5.com>
 
 	* interpreter/geometryimages.m, interpreter/interpimages.m,
-	  interpreter/sparseimages.m, interpreter/plotimages.m: 
+	  interpreter/sparseimages.m, interpreter/plotimages.m:
 	  Set default paperorientation to landscape to stop warning message
 
 2009-12-04  Ben Abbott <bpabbott@mac.com>
@@ -195,7 +195,7 @@
 
 2009-11-11  Rik <octave@nomad.inbox5.com>
 
-	* Makefile.am: Add DISTCLEANFILES macro so that generated conf.texi can be 
+	* Makefile.am: Add DISTCLEANFILES macro so that generated conf.texi can be
 	cleaned by automake.
 
 2009-11-10  John W. Eaton  <jwe@octave.org>
@@ -267,7 +267,7 @@
 2009-09-30  Michael D. Godfrey  <godfrey@isl.stanford.edu>
 
 	* interpreter/plot.txi: Document graphics structures.
-	
+
 2009-09-14  John W. Eaton  <jwe@octave.org>
 
 	* interpreter/optim.txi: Document pqpnonneg.
@@ -306,7 +306,7 @@
 	* interpreter/plotimages.m: Correct errorbar plot for docs.  Make hist plot
 	reprodroducible for docs.
 	* interpreter/interpimages.m: Correct typo in legend of interpft plot for
-	docs 
+	docs
 
 2009-06-03  Jaroslav Hajek  <highegg@gmail.com>
 
@@ -418,7 +418,7 @@
 2009-04-17  Rik  <rdrider0-list@yahoo.com>
 
 	* interpreter/basics.txi: Update help text for sections 2.5, 2.6, 2.7
-	of basics.txi 
+	of basics.txi
 
 2009-04-17  Rik  <rdrider0-list@yahoo.com>
 
@@ -427,7 +427,7 @@
 
 2009-04-17  Rik  <rdrider0-list@yahoo.com>
 
-	* interpreter/basics.txi: Update help text for sections 2.2 
+	* interpreter/basics.txi: Update help text for sections 2.2
 	and 2.3 of basics.txi.
 
 2009-04-17  Rik  <rdrider0-list@yahoo.com>
@@ -444,7 +444,7 @@
 
 2009-03-27  Rik  <rdrider0-list@yahoo.com>
 
-	* interpreter/intro.txi: Add new sample section on elementary 
+	* interpreter/intro.txi: Add new sample section on elementary
 	calculations.  Add new example of solving systems of equations
 
 2009-03-27  Jaroslav Hajek  <highegg@gmail.com>
@@ -572,8 +572,8 @@
 	* interpreter/func.txi: Put varargin and varargout in concept index.
 	* interpreter/var.txi: Put ans in concept index.
 	* interpreter/octave.texi: Don't include vr-idx.texi.
-	
-        * interpreter/var.txi: Remove sections on built-in variables.
+
+	* interpreter/var.txi: Remove sections on built-in variables.
 
 2009-01-20  John W. Eaton  <jwe@octave.org>
 
@@ -587,11 +587,11 @@
 2009-01-14  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
 	* interpreter/matrix.txi: Add anchor for doc-postpad.
-	
+
 2008-12-26  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
 	* interpreter/strings.txi: Add space to ischar example.
-	
+
 2008-12-26  Francesco Potortì  <pot@gnu.org>
 
 	* interpreter/matrix.txi (Rearranging Matrices): Add reference
@@ -610,14 +610,14 @@
 
 2008-12-02  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
-        * interpreter/container.txi, interpreter/strings.txi:
-        Remove reference to str2mat.m
-        
+	* interpreter/container.txi, interpreter/strings.txi:
+	Remove reference to str2mat.m
+
 2008-11-15  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
-        * interpreter/strings.txi: Add text around docstrings, change
-        structure of the strings chapter.
-        
+	* interpreter/strings.txi: Add text around docstrings, change
+	structure of the strings chapter.
+
 2008-10-31  John W. Eaton  <jwe@octave.org>
 
 	* interpreter/Makefile.in ($(TEXINFO)): Depend directly on
@@ -634,9 +634,9 @@
 2008-10-30  David Bateman  <dbateman@free.fr>
 
 	* faq/Octave-FAQ.texi: Document improved indexing and add an faq for
-	the compatibility of mldivide/mrdivide for singualr, under- and 
+	the compatibility of mldivide/mrdivide for singualr, under- and
 	over-determined matrices.
-	
+
 	* interpreter/plot.txi: Document contour groups.
 
 2008-10-29  Thorsten Meyer  <thorsten.meyier@gmx.de>
@@ -651,12 +651,12 @@
 
 	* interpreter/munge-texi.cc (extract_docstring): Expand arguments
 	of @seealso{} into Texinfo references.
-          
+
 2008-10-22  David Bateman  <dbateman@free.fr>
 
 	* interprter/plot.txi: Add documentation for error bar series.
 
-	* interprter/plot.txi: Update documentation for line series, Add 
+	* interprter/plot.txi: Update documentation for line series, Add
 	documetation for scatter groups, stem series and surface groups.
 
 	* texinfo.tex: Import new upstream version.
@@ -674,19 +674,19 @@
 	* interpreter/octave.texi: Reference new OOP chapter here.
 	* interpreter/func.txi: Document private directories and function
 	precedence here.
-	
+
 2008-10-16  Thorsten Meyer  <thorsten.meyier@gmx.de>
-        * interpreter/contrib.txi: added recommendation of limited
-          line width in code examples
-          
+	* interpreter/contrib.txi: added recommendation of limited
+	  line width in code examples
+
 2008-10-03  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
 	* interpreter/contrib.txi: added example for mercurial queues
 
 08-10-03  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
-        * interpreter/contrib.txi: correction of the mercurial example
-        * interpreter/container.txi: minor correction of the text
+	* interpreter/contrib.txi: correction of the mercurial example
+	* interpreter/container.txi: minor correction of the text
 
 2008-09-25  S�ren Hauberg  <hauberg@gmail.com>
 
@@ -737,7 +737,7 @@
 2008-08-21  David Bateman  <dbateman@free.fr>
 
 	* interpreter/plot.txi: Document ezplot.
-	
+
 2008-08-19  David Bateman  <dbateman@free.fr>
 
 	* interpreter/numbers.txi: Document intwarning.
@@ -812,7 +812,7 @@
 2008-03-25  David Bateman  <dbateman@free.fr>
 
 	* interpreter/strings.txi: Document hex2num, num2hex.
-	
+
 2008-03-21  David Bateman  <dbateman@free.fr>
 
 	* interpreter/sparse.txi: Document amd function.
@@ -844,10 +844,10 @@
 	spinv and splu.
 
 2008-02-20  David Bateman  <dbateman@free.fr>
- 
+
  	* interpreter/sparse.txi: Remove references to spmin, spmax,
  	spatan2, spfind, spqr and spdet.
- 	
+
 2008-02-19  Carlo de Falco  <kingcrimson@tiscali.it>
 
 	* interpreter/package.txi: Improve INDEX file documentation.
@@ -860,7 +860,7 @@
 2008-02-08  Rafael Laboissiere  <rafael@debian.org>
 
 	* interpreter/octave.1: Dropped unknow LO macro
-	* interpreter/octave-bug.1: Likewise	
+	* interpreter/octave-bug.1: Likewise
 
 2008-02-07  David Bateman  <dbateman@free.fr>
 
@@ -987,7 +987,7 @@
 	interpreter/numbers.txi, interpreter/plot.txi,
 	interpreter/poly.txi, interpreter/set.txi, interpreter/sparse.txi,
 	interpreter/stmt.txi, interpreter/strings.txi,
-	interpreter/testfun.txi, interpreter/tips.txi: Spelling fixes. 
+	interpreter/testfun.txi, interpreter/tips.txi: Spelling fixes.
 
 2007-10-06  John W. Eaton  <jwe@octave.org>
 
@@ -1005,18 +1005,18 @@
 
 2007-09-05  David Bateman  <dbateman@free.fr>
 
-        * interpreter/system.m: Document gzip.
-        * interpreter/container.txi: Document celldisp.
-        * interpreter/matrix.txi: Document bsxfun.
-        * interpreter/data.txi: Document typecast and swapbytes. 
-        * interpreter/container.txi: Document struct2cell.
-        * interpreter/stats.txi: Document mode.
-        * interpreter/eval.txi: Document run.
+	* interpreter/system.m: Document gzip.
+	* interpreter/container.txi: Document celldisp.
+	* interpreter/matrix.txi: Document bsxfun.
+	* interpreter/data.txi: Document typecast and swapbytes.
+	* interpreter/container.txi: Document struct2cell.
+	* interpreter/stats.txi: Document mode.
+	* interpreter/eval.txi: Document run.
 
 2007-09-01  David Bateman  <dbateman@free.fr>
 
 	* interpreter/Makefile.in: Remove stray character from
-	INTERIMAGES_PNG target. 
+	INTERIMAGES_PNG target.
 	* conf.texi.in: Substitute for the variable TEXINFO_QHULL
 	* interpreter/geometryimages.m: Check for the HAVE_QHULL build
 	flag before creating certain figures.
@@ -1025,10 +1025,10 @@
 
 2007-08-31  S�ren Hauberg  <hauberg@gmail.com>
 
-        * interpreter/nonlin.txi: Extended the example.
+	* interpreter/nonlin.txi: Extended the example.
 
-        * interpreter/poly.txi: Sectioning and documentation.
-        * interpreter/octave.texi: Adapt to changes in poly.txi.
+	* interpreter/poly.txi: Sectioning and documentation.
+	* interpreter/octave.texi: Adapt to changes in poly.txi.
 
 2007-08-30  David Bateman  <dbateman@free.fr>
 
@@ -1048,8 +1048,8 @@
 
 2007-08-25  David Bateman  <dbateman@free.fr>
 
-        * interpreter/geometry.txi: Add examples and explanatory text.
-        * interpreter/octave.texi: Update indexing of geometry functions.
+	* interpreter/geometry.txi: Add examples and explanatory text.
+	* interpreter/octave.texi: Update indexing of geometry functions.
 	* interpreter/geometryimage.m: New script to create images for
 	geometry chapter.
 	* interpreter/Makefile.in (SCRIPT_SORCES): add geometryimages.m
@@ -1058,8 +1058,8 @@
 
 2007-08-24  David Bateman  <dbateman@free.fr>
 
-        * interpreter/geometry.txi: Document new functions.
-        * interpreter/octave.texi: Update indexing of geometry items.
+	* interpreter/geometry.txi: Document new functions.
+	* interpreter/octave.texi: Update indexing of geometry items.
 
 2007-07-25  John W. Eaton  <jwe@octave.org>
 
@@ -1067,8 +1067,8 @@
 
 2007-07-25  David Bateman  <dbateman@free.fr>
 
-	* Makefile.in, faq/Makefile.in, interpreter/Makwfile.in, 
-	liboctave/Makefile.in, refcard/Makefile.in:  Adjust DISTFILES 
+	* Makefile.in, faq/Makefile.in, interpreter/Makwfile.in,
+	liboctave/Makefile.in, refcard/Makefile.in:  Adjust DISTFILES
 	to allow out of tree "make dist" to work.
 
 2007-07-23  David Bateman  <dbateman@free.fr>
@@ -1079,9 +1079,9 @@
 	peaks and meshc.
 	* interpreter/octave.texi: Add test plotting section.
 	* interpreter/image.txi: Document the functions autumn, bone,
-	cool, copper, hot, hsv, jet, pink, prism, rainbow, spring, 
+	cool, copper, hot, hsv, jet, pink, prism, rainbow, spring,
 	summer, white and winter.
-	
+
 2007-07-19  David Bateman  <dbateman@free.fr>
 
 	* interpreter/bit.xi: Remove.
@@ -1091,7 +1091,7 @@
 
 2007-07-06  David Bateman  <dbateman@free.fr>
 
-        * interpreter/arith.txi: Add accumarray.
+	* interpreter/arith.txi: Add accumarray.
 
 2007-06-25  John W. Eaton  <jwe@octave.org>
 
@@ -1105,14 +1105,14 @@
 	the continuity of the second derivative of splines.
 	* interpreter/interp.txi: Also change figures here.
 	* interpreter/Makefile.in: and here.
-	
+
 2007-06-18  S�ren Hauberg  <hauberg@gmail.com>
 
-        * interpreter/optim.txi: Added some introductory text to each
+	* interpreter/optim.txi: Added some introductory text to each
 	section.
 
-        * interpreter/set.txi: Added some introductory text.
-        * interpreter/octave.texi: Updated to reflect changes in set.txi.
+	* interpreter/set.txi: Added some introductory text.
+	* interpreter/octave.texi: Updated to reflect changes in set.txi.
 
 2007-06-15  David Bateman  <dbateman@free.fr>
 
@@ -1154,13 +1154,13 @@
 
 2007-06-12  2007-06-10  S�ren Hauberg  <hauberg@gmail.com>
 
-        * interpreter/diffeq.txi: Note that x-dot is the derivative of x.
+	* interpreter/diffeq.txi: Note that x-dot is the derivative of x.
 
 2007-06-03  David Bateman  <dbatemna@free.fr>
 
 	* interpreter/dynamic.txi: Use "mwSize" and "mwIndex" rather than
 	"int" for indexing in mex-files and document them.
-	
+
 2007-05-30  John W. Eaton  <jwe@octave.org>
 
 	* interpreter/Makefile.in (TEXI2DVICOMMAND, TEXI2PDFCOMMAND):
@@ -1182,16 +1182,16 @@
 
 2007-05-28  S�ren Hauberg  <hauberg@gmail.com>
 
-        * interpreter/errors.txi: Add new sections and some more detailed
+	* interpreter/errors.txi: Add new sections and some more detailed
 	descriptions on errors and warnings.
-        * interpreter/octave.texi, interpreter/stmt.txi,
+	* interpreter/octave.texi, interpreter/stmt.txi,
 	interpreter/var.txi: Add references to the new sections in
 	errors.txi.
 
 2007-05-28  S�ren Hauberg  <hauberg@gmail.com>
 
-        * interpreter/io.txi: Rearrange some sections, and add
-        a few examples.
+	* interpreter/io.txi: Rearrange some sections, and add
+	a few examples.
 
 2007-05-28  G. D. McBain  <geordie_mcbain@yahoo.com.au>
 
@@ -1224,19 +1224,19 @@
 
 2007-05-21  S�ren Hauberg  <hauberg@gmail.com>
 
-        * interpreter/expr.txi: Describe +=, -=, *=, and /= operators.
+	* interpreter/expr.txi: Describe +=, -=, *=, and /= operators.
 	Add new example.
 
-        * interpreter/eval.txi: Partition the chapter into sections.
-        Describe evalin and assignin functions using text from Paul
+	* interpreter/eval.txi: Partition the chapter into sections.
+	Describe evalin and assignin functions using text from Paul
 	Kienzle.  Change "See See" to "See".  Use @ref instead of @xref to
 	avoid "See" to be written with a capital letter in the middle of a
 	sentence.
 
-        * interpreter/func.txi: New section describing load path.
-        Improve 'inline' and 'command' sections.
+	* interpreter/func.txi: New section describing load path.
+	Improve 'inline' and 'command' sections.
 
-        * interpreter/stmt.txi: Describe cell array cases for the switch
+	* interpreter/stmt.txi: Describe cell array cases for the switch
 	statement.  Minor layout changes.
 
 2007-05-19  David Bateman  <dbatemna@free.fr>
@@ -1521,7 +1521,7 @@
 
 	* interpreter/images/sparseimages.m: Adapt to new automatic_replot
 	definition.
-	
+
 2006-06-27  John W. Eaton  <jwe@octave.org>
 
 	* interpreter/Makefile.in: Elminate double-colon rules.
@@ -1540,7 +1540,7 @@
 2006-04-03  David Bateman  <dbateman@free.fr>
 
 	* interpreter/matrix.txi: Add rande, randp, randg and update
-          for different random generator behavior.
+	  for different random generator behavior.
 
 2006-03-28  John W. Eaton  <jwe@octave.org>
 
@@ -1607,7 +1607,7 @@
 	* interpreter/images/sparseimages.m: set terminal type to dummy to
 	direct output to terminal rather than X11.
 	* interpreter/sparse.txi: Update docs for new QR solvers.
-	
+
 2006-03-09  David Bateman  <dbateman@free.fr>
 
 	* interpreter/Makefile.in: Change order of commands in HTML/index.html
@@ -1849,7 +1849,7 @@
 2002-11-01  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
  	* interpreter/mkoctfile.1: New file.
-	
+
 2002-10-25  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* interpreter/Makefile.in (octave_toc.html): Use -expandinfo and

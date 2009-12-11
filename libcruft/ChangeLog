@@ -92,7 +92,7 @@
 
 2009-05-07  Marco Atzeri  <marco_atzeri@yahoo.it>
 
-        * Makefile.in: (SHLPRE): Rename from SHLLIBPRE.
+	* Makefile.in: (SHLPRE): Rename from SHLLIBPRE.
 
 2009-03-07  John W. Eaton  <jwe@octave.org>
 
@@ -123,8 +123,8 @@
 
 2008-12-21  Jaroslav Hajek  <highegg@gmail.com>
 
-	* lapack/chegs2.f lapack/chegst.f lapack/chegv.f lapack/dsygs2.f 
-	lapack/dsygst.f lapack/dsygv.f lapack/ssygs2.f lapack/ssygst.f 
+	* lapack/chegs2.f lapack/chegst.f lapack/chegv.f lapack/dsygs2.f
+	lapack/dsygst.f lapack/dsygv.f lapack/ssygs2.f lapack/ssygst.f
 	lapack/ssygv.f lapack/zhegs2.f lapack/zhegst.f lapack/zhegv.f:
 	New sources.
 	* lapack/Makefile.in: Include them.
@@ -145,7 +145,7 @@
 
 	* lapack/icmax1.f: New file.
 	* lapack/Makefile.in (FSRC): Add it to the list.
-	
+
 2008-06-16  David Bateman  <dbateman@free.fr>
 
 	* slatec-fn/xacosh.f, slatec-fn/xasinh.f: Replace xsacosh with
@@ -187,10 +187,10 @@
 
 2008-05-20  Jaroslav Hajek  <highegg@gmail.com>
 
-	* qrupdate/cch1dn.f, qrupdate/cchinx.f, qrupdate/cqhqr.f, 
-	qrupdate/cqrinc.f, qrupdate/cqrinr.f, qrupdate/cqrqhu.f, 
-	qrupdate/cqrqhv.f, qrupdate/sch1dn.f, qrupdate/schinx.f, 
-	qrupdate/sqhqr.f, qrupdate/sqrinc.f, qrupdate/sqrinr.f, 
+	* qrupdate/cch1dn.f, qrupdate/cchinx.f, qrupdate/cqhqr.f,
+	qrupdate/cqrinc.f, qrupdate/cqrinr.f, qrupdate/cqrqhu.f,
+	qrupdate/cqrqhv.f, qrupdate/sch1dn.f, qrupdate/schinx.f,
+	qrupdate/sqhqr.f, qrupdate/sqrinc.f, qrupdate/sqrinr.f,
 	qrupdate/sqrqhu.f: Convert DOUBLE PRECISION constants to REAL.
 	* qrupdate/cqrinr.f, qrupdate/sqrinr.f: Correct EXTERNAL
 	declarations.
@@ -371,7 +371,7 @@
 	slatec-fn/xasinh.f, slatec-fn/xatanh.f, slatec-fn/xbetai.f,
 	slatec-fn/xerf.f, slatec-fn/xerfc.f, slatec-fn/xgamma.f,
 	slatec-fn/xsgmainc.f: New files.
-	* slatec-fn/Makefile.in (FSRC): Add them.	
+	* slatec-fn/Makefile.in (FSRC): Add them.
 
 2008-04-20  Jaroslav Hajek  <highegg@gmail.com>
 
@@ -427,7 +427,7 @@
 
 2008-03-04 Jaroslav Hajek  <highegg@gmail.com>
 
-	* qrupdate/dch1dn.f, qrupdate/dch1up.f, 
+	* qrupdate/dch1dn.f, qrupdate/dch1up.f,
 	qrupdate/zch1dn.f, qrupdate/zch1up.f: New files.
 	* qrupdate/Makefile.in (FSRC): Add them to the list.
 
@@ -488,11 +488,11 @@
 2007-10-26  David Bateman  <dbateman@free.fr>
 
 	* lapack/dgelsd.f, lapack/dlalsd.f, lapack/dlalsa.f,
-	lapack/dlasda.f, lapack/dlasdt.f, lapack/dlasdq.f 
-	lapack/dlamrg.f, lapack/dlasd0.f, lapack/dlasd1.f, 
-	lapack/dlasd2.f, lapack/dlasd3.f, lapack/dlasd4.f, 
-	lapack/dlasd5.f, lapack/dlasd6.f, lapack/dlasd7.f, 
-	lapack/dlasd8.f, lapack/dlaed6.f, lapack/zgelsd.f, 
+	lapack/dlasda.f, lapack/dlasdt.f, lapack/dlasdq.f
+	lapack/dlamrg.f, lapack/dlasd0.f, lapack/dlasd1.f,
+	lapack/dlasd2.f, lapack/dlasd3.f, lapack/dlasd4.f,
+	lapack/dlasd5.f, lapack/dlasd6.f, lapack/dlasd7.f,
+	lapack/dlasd8.f, lapack/dlaed6.f, lapack/zgelsd.f,
 	lapack/zlalsd.f , lapack/zlalsa.f, lapack/zlals0.f: New files.
 	* lapack/Makefile.in (FSRC): Include them here.
 
@@ -529,14 +529,14 @@
 	lapack/dlaqp2.f,  lapack/zgeqp3.f,  lapack/ztzrzf.f,
 	lapack/dlaqps.f,  lapack/zlaic1.f,  lapack/zunmr3.f,
 	lapack/dlarzb.f,  lapack/zlaqp2.f,  lapack/zunmrz.f,
-	lapack/dlarz.f,   lapack/zlaqps.f, lapack/dlarzt.f,  
+	lapack/dlarz.f,   lapack/zlaqps.f, lapack/dlarzt.f,
 	lapack/zlarzb.f: New files
 	* lapack/Makefile.in (FSRC): Add the new files.
 
 2007-07-25  David Bateman  <dbateman@free.fr>
 
 	* Makefile.in, Makerules.in, fftpack/Makefile.in,
-	randlib/Makefile.in: Adjust DISTFILES to allow out of tree "make dist" 
+	randlib/Makefile.in: Adjust DISTFILES to allow out of tree "make dist"
 	to work.
 
 2007-04-23  John W. Eaton  <jwe@octave.org>
@@ -660,7 +660,7 @@
 	octave_throw_interrupt_exception, octave_throw_bad_alloc,
 	octave_signal_hook, octave_interrupt_hook, octave_bad_alloc_hook):
 	Likewise.
-	
+
 2006-10-26  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.in ($(CRUFT_DEFS)): Depend on $(SUBDIRS).
@@ -719,7 +719,7 @@
 
 2006-05-03  David Bateman  <dbateman@free.fr>
 
-	* lapack/dpocon.f, lapack/zpocon.f, lapack/dpotrs.f, 
+	* lapack/dpocon.f, lapack/zpocon.f, lapack/dpotrs.f,
 	lapack/zpotrs.f, lapack/dtrcon.f, lapack/ztrcon.f,
 	lapack/dtrtrs.f, lapack/ztrtrs.f: New files.
 
@@ -783,7 +783,7 @@
 	(win32_sigint_init): Initialize win32 signalling.
 	* quit.h (win32_sigint_init, win32_raise_final, win32_raise,
 	win32_in_main_thread): Declaration.
-	
+
 2005-09-14  Daniel  <durbano@shbano.com>
 
 	* lapack/zbdsqr.f: Fix typo in docs.
@@ -828,10 +828,10 @@
 
 	2005-01-23  David Bateman  <dbateman@free.fr>
 
-	* lapack/dgtsv.f lapack/dpbcon.f lapack/dpbtf2.f lapack/dpbtrf.f 
-	lapack/dpbtrs.f lapack/dptsv.f lapack/dpttrf.f lapack/dpttrs.f 
-	lapack/dptts2.f lapack/zgtsv.f lapack/zpbcon.f lapack/zpbtf2.f 
-	lapack/zpbtrf.f lapack/zpbtrs.f lapack/zptsv.f lapack/zpttrf.f 
+	* lapack/dgtsv.f lapack/dpbcon.f lapack/dpbtf2.f lapack/dpbtrf.f
+	lapack/dpbtrs.f lapack/dptsv.f lapack/dpttrf.f lapack/dpttrs.f
+	lapack/dptts2.f lapack/zgtsv.f lapack/zpbcon.f lapack/zpbtf2.f
+	lapack/zpbtrf.f lapack/zpbtrs.f lapack/zptsv.f lapack/zpttrf.f
 	lapack/zpttrs.f lapck/zptts2.f: New files.
 
 	2004-12-29  John W. Eaton  <jwe@octave.org>
@@ -850,7 +850,7 @@
 	(OCTAVE_QUIT): Check octave_signal_caught, not
 	octave_interrupt_state, and call octave_handle_signal, not
 	octave_throw_interrupt_exception.
-	
+
 2005-02-08  John W. Eaton  <jwe@octave.org>
 
 	* misc/quit.h: Use C-style comments.
@@ -1039,7 +1039,7 @@
 
 	* misc/quit.h, misc/quit.cc [! USE_EXCEPTIONS_FOR_INTERRUPTS]):
 	Always use exceptions for handling interrupts.
-	(BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE): 
+	(BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE):
 
 	* misc/quit.h (OCTAVE_TRY_WITH_INTERRUPTS, OCTAVE_THROW_BAD_ALLOC,
 	OCTAVE_CATCH_INTERRUPTS, SAVE_OCTAVE_INTERRUPT_IMMEDIATELY,
@@ -1066,7 +1066,7 @@
 	New macros.
 
 	* misc/quit.cc (octave_jump_to_enclosing_context): Use siglongjmp
-	if we have it.	
+	if we have it.
 	(octave_save_current_context, octave_restore_current_context): Use
 	octave_jmp_buf type here.
 
@@ -1226,7 +1226,7 @@
 
 2001-05-02  Mumit Khan  <khan@nanotech.wisc.edu>
 
-	* Makefile.in (CRUFT_DIRS): Substitute @FFT_DIR@. 
+	* Makefile.in (CRUFT_DIRS): Substitute @FFT_DIR@.
 
 2001-04-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
@@ -1277,7 +1277,7 @@
 
 2000-03-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
-	* Makefile.in (LIBRARIES): Conditionally define. 	
+	* Makefile.in (LIBRARIES): Conditionally define.
 	(libraries): Depend on $(SUBDIRS) only.
 	Make $(LIBRARIES) using a recursive invocation of make once
 	$(SUBDIRS) are up to date.
@@ -1454,7 +1454,7 @@ Thu Jun  5 01:40:36 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 Wed May 21 16:29:42 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* misc/Makefile.in (install): Ensure include directory link is made.
-	(uninstall): Delete all installed files. 
+	(uninstall): Delete all installed files.
 
 Thu Mar 13 22:31:35 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
@@ -1599,7 +1599,7 @@ Mon Nov  4 10:09:00 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 	New files.
 
 	* Makefile.in (install): Use INSTALL_PROGRAM for shared version of
-	libcruft.	
+	libcruft.
 
 Sun Nov  3 19:37:37 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
@@ -1695,7 +1695,7 @@ Tue Dec 26 00:15:31 1995  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in: Delete references to configure stuff.
 	* configure.in, mkinstalldirs: Delete.
-	
+
 Sun Dec 24 02:42:29 1995  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* linpack/spofa.f: New file.

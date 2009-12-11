@@ -24,8 +24,8 @@ TOPDIR = ..
 include ../common.mk
 
 EXTRA_DIST = \
-  Makefile.am \
   ChangeLog \
+  Makefile.am \
   texinfo.tex \
   texmf.cnf
 

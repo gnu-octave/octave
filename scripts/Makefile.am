@@ -361,26 +361,11 @@ check-m-sources:
 	fi
 .PHONY: check-m-sources
 
-install-data-local: install-images install-startup-files install-pkg-add
+install-data-local: install-startup-files install-pkg-add
 
-uninstall-local: uninstall-images uninstall-startup-files uninstall-pkg-add
+uninstall-local: uninstall-startup-files uninstall-pkg-add
 
-install-images:
-	$(MKDIR_P) $(DESTDIR)$(imagedir)
-	for im in $(IMAGES); do \
-	  f=`echo $$im | $(SED) 's,image/,,'`; \
-	  echo "$(INSTALL_DATA) $(srcdir)/$$im $(DESTDIR)$(imagedir)/$$f"; \
-	  $(INSTALL_DATA) $(srcdir)/$$im $(DESTDIR)$(imagedir)/$$f; \
-	done
-.PHONY: install-images
-
-uninstall-images:
-	for im in $(IMAGES); do \
-	  f=`echo $$im | $(SED) 's,.*/,,'`; \
-	  echo "rm -f $(DESTDIR)$(imagedir)/$$f"; \
-	  rm -f $(DESTDIR)$(imagedir)/$$f; \
-	done
-.PHONY: uninstall-images
+image_DATA = $(IMAGES)
 
 install-startup-files:
 	$(MKDIR_P) $(DESTDIR)$(fcnfiledir)/startup

@@ -150,6 +150,8 @@ BUGS INSTALL.OCTAVE:
 	$(MAKE) -C doc ../$@
 .PHONY: BUGS INSTALL.OCTAVE
 
+octetc_DATA = NEWS
+
 DIRS_TO_MAKE = \
   $(localfcnfiledir) \
   $(localapifcnfiledir) \
@@ -164,20 +166,11 @@ DIRS_TO_MAKE = \
 installdirs-local:
 	$(MKDIR_P) $(addprefix $(DESTDIR), $(DIRS_TO_MAKE))
 
-install-data-local: installdirs-local install-extras
+install-data-local: installdirs-local
 
 install-exec-hook: make-version-links
 
-uninstall-local: remove-version-links uninstall-extras
-
-install-extras:
-	$(MKDIR_P) $(DESTDIR)$(octetcdir)
-	$(INSTALL_DATA) $(srcdir)/NEWS $(DESTDIR)$(octetcdir)/NEWS
-.PHONY: install-extras
-
-uninstall-extras:
-	rm -f $(DESTDIR)$(octetcdir)/NEWS
-.PHONY: uninstall-extras
+uninstall-local: remove-version-links
 
 make-version-links:
 	cd $(DESTDIR)$(bindir) && \

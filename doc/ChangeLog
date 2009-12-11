@@ -1,3 +1,8 @@
+2009-12-11  Rik  <octave@nomad.inbox5.com>
+
+	* interpreter/Makefile.am: remove install-local target and use automake 
+	syntax to install doc-cache file.
+
 2009-12-10  Rik <octave@nomad.inbox5.com>
 
 	* interpreter/Makefile.am: Replace distdir-local with dist-hook rule as it

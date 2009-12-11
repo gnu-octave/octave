@@ -164,13 +164,7 @@ dist-hook:
 	@$(GREP) '#define HAVE_UMFPACK 1' $(top_builddir)/config.h > /dev/null || { echo "Documentation creation requires missing UMFPACK library.  Cannot package distribution!" ; exit 1; }
 	@$(GREP) '#define HAVE_QHULL 1' $(top_builddir)/config.h > /dev/null || { echo "Documentation creation requires missing QHULL library.  Cannot package distribution!" ; exit 1; }
 
-# Install doc-cache of help files
-install-data-local:
-	$(MKDIR_P) $(DESTDIR)$(octetcdir)
-	$(INSTALL_DATA) doc-cache $(DESTDIR)$(octetcdir)/doc-cache
-
-uninstall-local:
-	rm -f $(DESTDIR)$(octetcdir)/doc-cache
+octetc_DATA = doc-cache
 
 DOCSTRING_FILES = $(shell $(srcdir)/find-docstring-files.sh "$(top_srcdir)")
 

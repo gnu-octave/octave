@@ -25,6 +25,7 @@ include ../common.mk
 dist_archlib_SCRIPTS = info-emacs-info info-emacs-octave-help
 
 IMAGE_FILES = octave-sombrero.png
+image_DATA = $(IMAGE_FILES)
 
 EXTRA_DIST = \
   $(IMAGE_FILES) \
@@ -79,33 +80,14 @@ octave.desktop: octave.desktop.in Makefile
 	  -e "s|%OCTAVE_PREFIX%|${prefix}|"
 	mv $@-t $@
 
-install-data-local: install-images install-desktop
-
-uninstall-local: uninstall-images uninstall-desktop
-
-install-images:
-	$(MKDIR_P) $(DESTDIR)$(imagedir)
-	for f in $(IMAGE_FILES); do \
-	  rm -f $(DESTDIR)$(imagedir)/$$f; \
-	  $(INSTALL_DATA) $(srcdir)/$$f $(DESTDIR)$(imagedir)/$$f; \
-	done
-.PHONY: install-images
-
-install-desktop:
+install-data-local:
 	-if test -n "$(DESKTOP_FILE_INSTALL)"; then \
 	  $(DESKTOP_FILE_INSTALL) --dir=$(DESTDIR)$(datadir)/applications \
 	    --vendor www.octave.org octave.desktop; \
 	fi
-.PHONY: install-desktop
 
-uninstall-images:
-	for f in $(IMAGE_FILES); do \
-	  rm -f $(DESTDIR)$(imagedir)/$$f; \
-	done
-.PHONY: uninstall-images
-
-uninstall-desktop:
+uninstall-local:
 	if test -n "$(DESKTOP_FILE_INSTALL)"; then \
 	  rm -f $(DESTDIR)$(datadir)/applications/www.octave.org-octave.desktop; \
 	fi
-.PHONY: uninstall-desktop
+

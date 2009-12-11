@@ -797,7 +797,7 @@
 	(--enable-strict-warning-flags): Rename from --enable-picky-flags.
 	(GXX_STRICT_FLAGS): Remove -Wenum-clash from the list.
 
-2009-03-08  Søren Hauberg  <hauberg@gmail.com>
+2009-03-08  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
 	* NEWS: Mention 'histc'.
 
@@ -1567,7 +1567,7 @@
 	* aclocal.m4 (OCTAVE_PROG_GNUPLOT): Drop check for multiple plot
 	windows.
 
-2007-08-10  Søren Hauberg  <hauberg@gmail.com>
+2007-08-10  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
 	* ROADMAP: Update for current sources.
 
@@ -1888,7 +1888,7 @@
 	* Makeconf.in (simple-move-if-change-rule,
 	(builddir-move-if-change-rule): New macros.
 
-2006-11-11  Søren Hauberg  <hauberg@gmail.com>
+2006-11-11  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
 	* examples/Makefile.in (uninstall): Add missing semicolon.
 
@@ -2098,7 +2098,7 @@
 2006-09-27  John W. Eaton  <jwe@octave.org>
 
 	* mkoctfile.in [--mex]: Include -I. in incflags.
-	From Søren Hauberg <hauberg@gmail.com>.
+	From Sï¿½ren Hauberg <hauberg@gmail.com>.
 
 2006-09-26  John W. Eaton  <jwe@octave.org>
 
@@ -2480,7 +2480,7 @@
 	* configure.in: Use it.
 	* Makeconf.in: Substitute DESKTOP_FILE_INSTALL.
 
-	* octave.desktop.in: New file.  From Søren Hauberg <hauberg@gmail.com>.
+	* octave.desktop.in: New file.  From Sï¿½ren Hauberg <hauberg@gmail.com>.
 	* examples/Makefile.in (SOURCES): Add it to the list.
 	(octave.desktop): New target.
 	(all): Depend on octave.desktop.

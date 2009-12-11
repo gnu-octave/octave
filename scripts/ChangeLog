@@ -1,3 +1,8 @@
+2009-12-09  Rik <octave@nomad.inbox5.com>
+
+	* Makefile.am: remove install-images target and use automake
+	syntax to distribute image data.
+
 2009-12-11  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.am (DOCSTRINGS): Use $(cp_update_rule) instead of

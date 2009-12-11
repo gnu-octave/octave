@@ -1,3 +1,10 @@
+2009-12-11  Rik <octave@nomad.inbox5.com>
+
+	* Makefile.am: remove install-extras target and use automake syntax to
+	distribute NEWS file.
+	* examples/Makefile.am: remove install-images target and use automake
+	syntax to distribute image data.
+
 2009-12-11  John W. Eaton  <jwe@octave.org>
 
 	* .dir-locals.el: Correctly set indent-tabs-mode for ChangeLogs,

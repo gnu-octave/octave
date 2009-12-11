@@ -328,8 +328,8 @@ EXTRA_DIST += \
 
 all-local: $(GEN_FCN_FILES) $(PKG_ADD_FILES) DOCSTRINGS
 
-DOCSTRINGS: mkdoc $(FCN_FILES) $(GEN_FCN_FILES) gethelp$(BUILD_EXEEXT) 
-	@cp -a --update $(srcdir)/$@ $@ ; exit 0;
+DOCSTRINGS: mkdoc $(FCN_FILES) $(GEN_FCN_FILES) gethelp$(BUILD_EXEEXT)
+	$(cp_update_rule)
 	$(srcdir)/mkdoc "$(srcdir)" $(FCN_FILES) -- $(GEN_FCN_FILES) > $@-t
 	$(simple_move_if_change_rule)
 

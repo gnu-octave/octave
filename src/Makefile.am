@@ -629,7 +629,7 @@ DLD-FUNCTIONS/PKG_ADD: $(DLD_DYNAMIC_DEF_FILES) mk-pkg-add
 	mv $@-t $@
 
 DOCSTRINGS: gendoc$(BUILD_EXEEXT)
-	@cp -a --update $(srcdir)/$@ $@ ; exit 0;
+	$(cp_update_rule)
 	./gendoc > $@-t
 	$(simple_move_if_change_rule)
 

@@ -1,3 +1,8 @@
+2009-12-11  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.am (DOCSTRINGS): Use $(cp_update_rule) instead of
+	cp -a --update.
+
 2009-12-10  Rik <octave@nomad.inbox5.com>
 
 	* Makefile.am: distclean symbolic links for OCT_FILES

@@ -435,6 +435,13 @@ else \
 fi
 endef
 
+define cp_update_rule
+if [ "x$(srcdir)" != "x." ] && [ -f $(srcdir)/$@ ] && [ ! -f $@ ]; then \
+  cp $(srcdir)/$@ $@; \
+  touch -r $(srcdir)/$@ $@; \
+fi
+endef
+
 # Yes, the second sed command near the end is needed, to avoid limits
 # in command lengths for some versions of sed.  UGLY_DEFS is often
 # quite large, so it makes sense to split this command there.

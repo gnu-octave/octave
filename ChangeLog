@@ -1,3 +1,7 @@
+2009-12-11  John W. Eaton  <jwe@octave.org>
+
+	* common.mk (cp_update_rule): New macro.
+
 2009-12-10  John W. Eaton  <jwe@octave.org>
 
 	* mkoctfile.in, mkoctfile.cc.in: If output file is specified and

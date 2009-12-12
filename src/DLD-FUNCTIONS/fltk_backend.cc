@@ -269,9 +269,12 @@ public:
 
       // This allows us to have a valid OpenGL context right away.
       canvas->mode (FL_DEPTH | FL_DOUBLE );
-      show ();
-      canvas->show ();
-      canvas->make_current ();
+      if (fp.is_visible ())
+        {
+          show ();
+          canvas->show ();
+          canvas->make_current ();
+        }
     }
     end ();
 
@@ -284,7 +287,8 @@ public:
 
     std::stringstream name;
     name << "octave: figure " << number ();
-    label (name.str ().c_str ());
+    window_label = name.str ();
+    label (window_label.c_str ());
   }
 
   ~plot_window (void)
@@ -316,6 +320,9 @@ public:
   }
 
 private:
+  // window name -- this must exists for the duration of the window's
+  // life
+  std::string window_label;
 
   // Figure properties.
   figure::properties& fp;
@@ -675,6 +682,17 @@ public:
     delete_window (str2idx (idx_str));
   }
 
+  static void toggle_window_visibility (int idx, bool is_visible)
+  {
+    if (instance_ok ())
+      instance->do_toggle_window_visibility (idx, is_visible);
+  }
+
+  static void toggle_window_visibility (std::string idx_str, bool is_visible)
+  {
+    toggle_window_visibility (str2idx (idx_str), is_visible);
+  }
+
   static void mark_modified (int idx)
   {
     if (instance_ok ())
@@ -749,6 +767,20 @@ private:
       {
 	delete win->second;
 	windows.erase (win);
+      }
+  }
+
+  void do_toggle_window_visibility (int idx, bool is_visible)
+  {
+    wm_iterator win;
+    if ((win = windows.find (idx)) != windows.end ())
+      {
+        if (is_visible)
+          win->second->show ();
+        else
+          win->second->hide ();
+
+        win->second->redraw ();
       }
   }
 
@@ -911,10 +943,13 @@ public:
 	
 	if (! ov.is_empty ())
 	  {
+            const figure::properties& fp =
+              dynamic_cast<const figure::properties&> (go.get_properties ());
+            
 	    switch (id)
 	      {
 	      case base_properties::VISIBLE:
-		// FIXME -- something to do here.
+                figure_manager::toggle_window_visibility (ov.string_value(), fp.is_visible ());
 		break;
 	      }
 	  }

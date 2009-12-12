@@ -1,3 +1,12 @@
+2009-12-12  Shai Ayal  <shaiay@users.sourceforge.net>
+
+	* DLD-FUNCTIONS/fltk_backend.cc (plot_window::plot_window):
+	Handle case where window is created but not visible. Cache
+	window label.
+	(figure_manager::toggle_window_visibility,
+	(figure_manager::do_toggle_window_visibility): New methods.
+	(fltk_backend::property_change): Handle figure visibility change.
+
 2009-12-11  John W. Eaton  <jwe@octave.org>
 
 	* graphics.h.in (base_properties::all_dynamic_properties):

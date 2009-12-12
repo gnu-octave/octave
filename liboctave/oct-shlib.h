@@ -75,10 +75,6 @@ public: // FIXME: make this class private?
     std::string file_name (void) const
       { return file; }
 
-    void insert_hook_name (const std::string& name) const;
-
-    void erase_hook_name (const std::string& name) const;
-
     size_t num_fcn_names (void) const { return fcn_names.size (); }
 
     void add_fcn_name (const std::string&);

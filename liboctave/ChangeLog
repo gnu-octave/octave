@@ -1,3 +1,7 @@
+2009-12-12  Jaroslav Hajek  <highegg@gmail.com>
+
+	* oct-shlib.h: Remove stray declarations.
+
 2009-12-11  John W. Eaton  <jwe@octave.org>
 
 	* oct-shlib.cc (octave_dlopen_shlib::octave_dlopen_shlib):

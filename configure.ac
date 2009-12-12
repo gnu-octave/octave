@@ -277,6 +277,10 @@ AC_SUBST(DEPEND_FLAGS)
 AC_SUBST(DEPEND_EXTRA_SED_PATTERN)
 
 ACX_PTHREAD
+### Include pthread libs and flags here in case other tests need them.
+### They seem to be required for the OpenGL tests on Debian systems.
+LIBS="$PTHREAD_LIBS $LIBS"
+CFLAGS="$CFLAGS $PTHREAD_CFLAGS"
 
 AC_PATH_X
 if test "$have_x" = "yes"; then

@@ -365,14 +365,17 @@ private:
   void axis_auto (void)
   {
     octave_value_list args;
-    args(0) = "auto";
-    feval ("axis",args);
+    args(0) = fp.get_currentaxes ().as_octave_value ();
+    args(1) = "auto";
+    feval ("axis", args);
     mark_modified ();
   }
 
   void toggle_grid (void)
   {
-    feval ("grid");
+    octave_value_list args;
+    args(0) = fp.get_currentaxes ().as_octave_value ();
+    feval ("grid", args);
     mark_modified ();
   }
 

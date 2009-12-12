@@ -1,5 +1,10 @@
 2009-12-12  Shai Ayal  <shaiay@users.sourceforge.net>
 
+	* DLD-FUNCTIONS/fltk_backend.cc (plot_window::toggle_grid,
+	plot_window::axis_auto): Modify the axes of the correct figure.
+
+2009-12-12  Shai Ayal  <shaiay@users.sourceforge.net>
+
 	* DLD-FUNCTIONS/fltk_backend.cc (plot_window::plot_window):
 	Handle case where window is created but not visible. Cache
 	window label.

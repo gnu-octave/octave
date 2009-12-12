@@ -200,10 +200,12 @@ octave_dlopen_shlib::octave_dlopen_shlib (const std::string& f)
     {
       const char *msg = dlerror ();
 
-      if (! msg)
-        (*current_liboctave_error_handler) ("%s", msg);
+      if (msg)
+        (*current_liboctave_error_handler) ("%s: failed to load: %s",
+                                            file.c_str (), msg);
       else
-        (*current_liboctave_error_handler) ("%s: failed to load", file.c_str ());
+        (*current_liboctave_error_handler) ("%s: failed to load",
+                                            file.c_str ());
     }
 }
 

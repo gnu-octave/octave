@@ -1,3 +1,9 @@
+2009-12-11  John W. Eaton  <jwe@octave.org>
+
+	* oct-shlib.cc (octave_dlopen_shlib::octave_dlopen_shlib):
+	Print filename along with message from dlerror.
+	Reverse sense of test.
+
 2009-12-09  Jaroslav Hajek  <highegg@gmail.com>
 
 	* oct-shlib.h (octave_shlib): Rewrite.

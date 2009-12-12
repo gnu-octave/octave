@@ -264,12 +264,7 @@ function emit_declarations ()
   if (class_name && ! base)
     emit_common_declarations();
 
-  printf ("public:\n\n\n  static std::set<std::string> core_property_names (void);\n\n  static bool has_core_property (const caseless_str& pname);\n\n  std::set<std::string> all_property_names (");
-  if (base)
-    printf ("const std::string& cname");
-  else
-    printf ("void");
-  printf (") const;\n\n");
+  printf ("public:\n\n\n  static std::set<std::string> core_property_names (void);\n\n  static bool has_core_property (const caseless_str& pname);\n\n  std::set<std::string> all_property_names (void) const;\n\n");
 
   if (! base)
     printf ("  bool has_property (const caseless_str& pname) const;\n\n");
@@ -439,7 +434,7 @@ function emit_source ()
     ## set method
 
     if (base)
-      printf ("void\nbase_properties::set (const caseless_str& pname, const std::string& cname, const octave_value& val)\n{\n");
+      printf ("void\nbase_properties::set (const caseless_str& pname, const octave_value& val)\n{\n");
     else
       printf ("void\n%s::properties::set (const caseless_str& pname_arg, const octave_value& val)\n{\n",
               class_name);
@@ -460,9 +455,9 @@ function emit_source ()
     }
 
     if (base)
-      printf ("  else\n    set_dynamic (pname, cname, val);\n}\n\n");
+      printf ("  else\n    set_dynamic (pname, val);\n}\n\n");
     else
-      printf ("  else\n    base_properties::set (pname, \"%s\", val);\n}\n\n", class_name);
+      printf ("  else\n    base_properties::set (pname, val);\n}\n\n");
 
     ## get "all" method
 
@@ -610,16 +605,11 @@ function emit_source ()
 	printf ("base_properties");
     else
       printf ("%s::properties", class_name);
-    printf ("::all_property_names (");
+    printf ("::all_property_names (void) const\n{\n  static std::set<std::string> all_pnames = core_property_names ();\n\n");
     if (base)
-      printf ("const std::string& cname");
+      printf ("  std::set<std::string> retval = all_pnames;\n  std::set<std::string> dyn_props = dynamic_property_names ();\n  retval.insert (dyn_props.begin (), dyn_props.end ());\n  for (std::map<caseless_str, property, cmp_caseless_str>::const_iterator p = all_props.begin ();\n       p != all_props.end (); p++)\n    retval.insert (p->first);\n\n  return retval;\n}\n\n");
     else
-      printf ("void");
-    printf (") const\n{\n  static std::set<std::string> all_pnames = core_property_names ();\n\n");
-    if (base)
-      printf ("  std::set<std::string> retval = all_pnames;\n  std::set<std::string> dyn_props = dynamic_property_names (cname);\n  retval.insert (dyn_props.begin (), dyn_props.end ());\n  for (std::map<caseless_str, property, cmp_caseless_str>::const_iterator p = all_props.begin ();\n       p != all_props.end (); p++)\n    retval.insert (p->first);\n\n  return retval;\n}\n\n");
-    else
-      printf ("  std::set<std::string> retval = all_pnames;\n  std::set<std::string> base_props = base_properties::all_property_names (\"%s\");\n  retval.insert (base_props.begin (), base_props.end ());\n\n  return retval;\n}\n\n", class_name);
+      printf ("  std::set<std::string> retval = all_pnames;\n  std::set<std::string> base_props = base_properties::all_property_names ();\n  retval.insert (base_props.begin (), base_props.end ());\n\n  return retval;\n}\n\n");
 
     if (! base)
       printf ("bool\n%s::properties::has_property (const caseless_str& pname) const\n{\n  std::set<std::string> pnames = all_property_names ();\n\n  return pnames.find (pname) != pnames.end ();\n}\n\n", class_name);

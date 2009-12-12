@@ -1804,26 +1804,22 @@ base_properties::get_dynamic (bool all) const
   return m;
 }
 
-std::map<std::string, std::set<std::string> > base_properties::all_dynamic_properties;
-
 std::set<std::string>
-base_properties::dynamic_property_names (const std::string& cname)
+base_properties::dynamic_property_names (void) const
 {
-  return all_dynamic_properties[cname];
+  return dynamic_properties;
 }
 
 bool
-base_properties::has_dynamic_property (const std::string& pname,
-				       const std::string& cname)
+base_properties::has_dynamic_property (const std::string& pname)
 {
-  const std::set<std::string>& dynprops = dynamic_property_names (cname);
+  const std::set<std::string>& dynprops = dynamic_property_names ();
 
   return dynprops.find (pname) != dynprops.end ();
 }
 
 void
 base_properties::set_dynamic (const caseless_str& pname,
-			      const std::string& cname,
 			      const octave_value& val)
 {
   std::map<caseless_str, property, cmp_caseless_str>::iterator it = all_props.find (pname);
@@ -1835,7 +1831,7 @@ base_properties::set_dynamic (const caseless_str& pname,
 
   if (! error_state)
     {
-      all_dynamic_properties[cname].insert (pname);
+      dynamic_properties.insert (pname);
 
       mark_modified ();
     }

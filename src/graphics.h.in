@@ -1642,13 +1642,7 @@ public:
       all_props[name] = p;
     }
 
-  virtual void set (const caseless_str&, const octave_value&)
-  {
-    panic_impossible ();
-  }
-
-  void set (const caseless_str& pname, const std::string& cname,
-	    const octave_value& val);
+  virtual void set (const caseless_str&, const octave_value&);
 
   virtual octave_value get (const caseless_str& pname) const;
 
@@ -1744,16 +1738,14 @@ public:
     return ! handlevisibility.is ("off");
   }
 
-  static std::map<std::string, std::set<std::string> > all_dynamic_properties;
- 
-  static std::set<std::string> dynamic_property_names (const std::string& cname);
+  std::set<std::string> dynamic_property_names (void) const;
 
-  static bool has_dynamic_property (const std::string& pname,
-				    const std::string& cname);
+  bool has_dynamic_property (const std::string& pname);
 
 protected:
-  void set_dynamic (const caseless_str& pname, const std::string& cname,
-		    const octave_value& val);
+  std::set<std::string> dynamic_properties;
+ 
+  void set_dynamic (const caseless_str& pname, const octave_value& val);
 
   octave_value get_dynamic (const caseless_str& pname) const;
 

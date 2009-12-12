@@ -1,5 +1,33 @@
 2009-12-11  John W. Eaton  <jwe@octave.org>
 
+	* graphics.h.in (base_properties::all_dynamic_properties):
+	No longer static.
+	(base_properties::set (const caseless_str&, const octave_value&)):
+	Only provide decl, not definition.
+	(base_properties::set (const caseless_str&, const std::string&,
+	const octave_value&)): Delete.
+	(base_properties::dynamic_properties): Rename from
+	all_dynamic_properties.  No longer static.  Now protected.
+	(base_properties::has_dynamic_property,
+	base_properties::dynamic_property_names,
+	base_properties::set_dynamic): Omit class name argument.
+	* graphics.cc (base_properties::all_dynamic_properties):
+	Delete obsolete definition.
+	(base_properties::dynamic_property_names): Now const.
+	Omit class name argument.  Simply return dynamic_properties set.
+	(base_properties::has_dynamic_property): Omit class name argument.
+	Simply return dynamic_properties set.  Don't pass class name to
+	dynamic_property_names function.
+	(base_properties::set_dynamic): Omit class name argument.
+	Dynamic_properties is no longer a map.
+
+	* genprops.awk: Omit class name from arguments of generated
+	base_properties::all_property_names and base_properties::set
+	functions.  Don't pass class name to base_properties::set in
+	generated derived class set functions.
+
+2009-12-11  John W. Eaton  <jwe@octave.org>
+
 	* Makefile.am (DOCSTRINGS): Use $(cp_update_rule) instead of
 	cp -a --update.
 

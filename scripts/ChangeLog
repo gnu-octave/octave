@@ -1,3 +1,9 @@
+2009-12-13  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ppder.m: New function.
+	* ppint.m: New function.
+	* ppjumps.m: New function.
+
 2009-12-09  Rik <octave@nomad.inbox5.com>
 
 	* Makefile.am: remove install-images target and use automake

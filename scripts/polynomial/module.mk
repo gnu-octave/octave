@@ -20,6 +20,9 @@ polynomial_FCN_FILES = \
   polynomial/polyval.m \
   polynomial/polyvalm.m \
   polynomial/ppval.m \
+  polynomial/ppval.m \
+  polynomial/ppint.m \
+  polynomial/ppjumps.m \
   polynomial/residue.m \
   polynomial/roots.m \
   polynomial/spline.m \

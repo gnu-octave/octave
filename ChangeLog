@@ -1,3 +1,7 @@
+2009-12-11  Rik <octave@nomad.inbox5.com>
+
+	* HACKING: Elaborate which DIRNAME to use for --gnulib-srcdir option.
+
 2009-12-11  John W. Eaton  <jwe@octave.org>
 
 	* configure.ac: Add $PTHREAD_LIBS to $LIBS and $PTHREAD_CFLAGS

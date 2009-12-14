@@ -20,7 +20,7 @@ polynomial_FCN_FILES = \
   polynomial/polyval.m \
   polynomial/polyvalm.m \
   polynomial/ppval.m \
-  polynomial/ppval.m \
+  polynomial/ppder.m \
   polynomial/ppint.m \
   polynomial/ppjumps.m \
   polynomial/residue.m \

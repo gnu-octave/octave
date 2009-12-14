@@ -1,3 +1,7 @@
+2009-12-14  Jaroslav Hajek  <highegg@gmail.com>
+
+	* help/__makeinfo__.m: Use P_tmpdir to create temporary file.
+
 2009-12-09  Rik <octave@nomad.inbox5.com>
 
 	* polynomial/module.mk: Correct typo and distribute newly created ppder.m

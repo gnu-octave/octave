@@ -124,7 +124,11 @@ function [retval, status] = __makeinfo__ (text, output_type = "plain text", see_
   
   unwind_protect
     ## Write Texinfo to tmp file
-    [fid, name, msg] = mkstemp ("octave_help_XXXXXX", true);
+    template = "octave_help_XXXXXX";
+    [fid, name, msg] = mkstemp ([P_tmpdir, filesep, template], true);
+    if (fid < 0)
+      error ("__makeinfo__: could not create temporary file");
+    endif
     fwrite (fid, text);
     fclose (fid);
 

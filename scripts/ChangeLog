@@ -1,5 +1,10 @@
 2009-12-14  John W. Eaton  <jwe@octave.org>
 
+	* specfun/isprime.m: Produce logical result.  Error if nargin > 1.
+	New tests.
+
+2009-12-14  John W. Eaton  <jwe@octave.org>
+
 	* help/__makeinfo__.m: Use fullfile to concatenate file name
 	components.  Use hyphens instead of underscores in tmp file name.
 

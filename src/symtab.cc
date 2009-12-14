@@ -1331,6 +1331,39 @@ symbol_table::do_dump (std::ostream& os)
     }
 }
 
+void symbol_table::cleanup (void)
+{
+  // Clear variables in top scope.
+  all_instances[xtop_scope]->clear_all ();
+
+  // Clear function table. This is a hard clear, ignoring mlocked functions.
+  fcn_table.clear ();
+
+  // Clear variables in global scope.
+  // FIXME: are there any?
+  all_instances[xglobal_scope]->clear_all ();
+
+  // Clear global variables.
+  global_table.clear ();
+
+  // Delete all possibly remaining scopes. 
+  for (all_instances_iterator iter = all_instances.begin (); 
+       iter != all_instances.end (); iter++)
+    {
+      scope_id scope = iter->first;
+      if (scope != xglobal_scope && scope != xtop_scope)
+        scope_id_cache::free (scope);
+
+      // First zero the table entry to avoid possible duplicate delete.
+      symbol_table *inst = iter->second;
+      iter->second = 0;
+
+      // Now delete the scope. Note that there may be side effects, such as
+      // deleting other scopes.
+      delete inst;
+    }
+}
+
 DEFUN (ignore_function_time_stamp, args, nargout,
     "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{val} =} ignore_function_time_stamp ()\n\

@@ -1828,6 +1828,8 @@ public:
       inst->curr_fcn = curr_fcn;
     }
 
+  static void cleanup (void);
+
 private:
 
   typedef std::map<std::string, symbol_record>::const_iterator table_const_iterator;

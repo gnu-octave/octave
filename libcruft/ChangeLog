@@ -1,3 +1,8 @@
+2009-12-13  Rik <octave@nomad.inbox5.com>
+
+	* Makefile.am: Use simple_move_if_change_rule for cruft.def to eliminate
+	unnecessary compilations.
+
 2009-12-07  John W. Eaton  <jwe@octave.org>
 
 	* misc/f77-fcn.h, misc/lo-error.h, misc/quit.h,

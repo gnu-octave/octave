@@ -23,9 +23,9 @@ TOPDIR = ..
 
 include ../common.mk
 
-octlib_LTLIBRARIES = libcruft.la
-
 AUTOMAKE_OPTIONS = subdir-objects
+
+octlib_LTLIBRARIES = libcruft.la
 
 libcruft_la_SOURCES =
 
@@ -60,7 +60,8 @@ include slatec-err/module.mk
 include slatec-fn/module.mk
 include villad/module.mk
 
-cruft.def: $(libcruft_la_SOURCES) $(TOPDIR)/libcruft/mkf77def
+cruft.def: $(libcruft_la_SOURCES) mkf77def
 	chmod a+rx mkf77def
 	./mkf77def $(srcdir) $(libcruft_la_SOURCES) > $@-t
-	mv $@-t $@
+	$(simple_move_if_change_rule)
+

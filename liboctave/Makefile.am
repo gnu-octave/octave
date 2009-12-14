@@ -23,8 +23,6 @@ TOPDIR = ..
  
 include ../common.mk
 
-octlib_LTLIBRARIES = liboctave.la
-
 AM_CPPFLAGS = -I$(top_srcdir)/libgnu -I$(top_srcdir)/libcruft/misc
 
 EXTRA_DIST = \
@@ -271,11 +269,6 @@ BUILT_INCS = \
 
 BUILT_SOURCES = $(BUILT_INCS)
 
-## FIXME -- These files don't need to be distributed.  They do need
-## to be installed.  So we need to add them to a list somewhere so
-## that happens correctly.
-BUILT_NODISTFILES = $(BUILT_INCS)
-
 TEMPLATE_SRC = \
   Array.cc \
   DiagArray2.cc \
@@ -403,6 +396,8 @@ MATRIX_SRC = \
   uint32NDArray.cc \
   uint64NDArray.cc \
   uint8NDArray.cc
+
+octlib_LTLIBRARIES = liboctave.la
 
 LIBOCTAVE_CXX_SOURCES = \
   CollocWt.cc \
@@ -537,8 +532,8 @@ octinclude_HEADERS = \
 
 $(OPT_INC) : %.h : %.in $(top_srcdir)/mk-opts.pl
 	@echo making $@ from $<
-	@perl $(top_srcdir)/mk-opts.pl --opt-class-header $< > $@-t
-	@mv $@-t $@
+	@$(PERL) $(top_srcdir)/mk-opts.pl --opt-class-header $< > $@-t
+	$(simple_move_if_change_rule)
 
 $(VX_OP_INC) $(VX_OP_SRC) : $(srcdir)/mk-ops.awk vx-ops
 	$(AWK) -f $(srcdir)/mk-ops.awk prefix=vx $(srcdir)/vx-ops
@@ -553,8 +548,5 @@ mx-ops.h : $(srcdir)/mk-ops.awk mx-ops
 	$(AWK) -f $(srcdir)/mk-ops.awk prefix=mx make_inclusive_header=mx-ops.h $(srcdir)/mx-ops > $@-t
 	$(simple_move_if_change_rule)
 
-distclean-local:
-	rm -f $(BUILT_INCS) $(BUILT_LIBOCTAVE_CXX_SOURCES)
+DISTCLEANFILES = $(BUILT_INCS) $(BUILT_LIBOCTAVE_CXX_SOURCES)
 
-#distclean-local maintainer-clean-local:
-#.PHONY: distclean-local maintainer-clean-local

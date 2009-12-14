@@ -1,3 +1,10 @@
+2009-12-13  Rik <octave@nomad.inbox5.com>
+
+	* Makefile.am: Use DISTCLEANFILES rather than distclean-local rule.
+	Use PERL variable defined by autoconf rather than direct call.  Use
+	simple_move_if_change rule to reduce useless compiles if OPTS_INC have not
+	changed.
+
 2009-12-12  Jaroslav Hajek  <highegg@gmail.com>
 
 	* oct-shlib.h: Remove stray declarations.

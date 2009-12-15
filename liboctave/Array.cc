@@ -767,11 +767,11 @@ Array<T>::index (const idx_vector& i) const
       // As you can see, the behaviour is weird, but the tests end up pretty
       // simple.  Nah, I don't want to suggest that this is ad hoc :)
 
-      if (ndims () == 2 && n != 1)
+      if (ndims () == 2 && n != 1 && rd.is_vector ())
         {
-          if (columns () == 1 && rd(0) == 1)
+          if (columns () == 1)
             rd = dim_vector (il, 1);
-          else if (rows () == 1 && rd(1) == 1)
+          else if (rows () == 1)
             rd = dim_vector (1, il);
         }
 

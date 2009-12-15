@@ -1,5 +1,10 @@
 2009-12-15  Jaroslav Hajek  <highegg@gmail.com>
 
+	* Array.cc (Array<T>::index (const idx_vector&)): Fix determining of
+	result dimensions.
+
+2009-12-15  Jaroslav Hajek  <highegg@gmail.com>
+
 	* Range.cc (Range::elem, Range::checkelem, Range::index):
 	New methods.
 	* Range.h: Declare them.

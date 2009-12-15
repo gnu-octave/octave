@@ -272,7 +272,7 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
 {
   octave_value_list retval;
   int nargin = args.length ();
-  nargout = (nargout < 1 ? 1 : nargout);
+  int nargout1 = (nargout < 1 ? 1 : nargout);
 
   if (nargin < 2)
     {
@@ -509,7 +509,7 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
 
       if (uniform_output)
         {
-          OCTAVE_LOCAL_BUFFER (std::auto_ptr<scalar_col_helper>, retptr, nargout);
+          OCTAVE_LOCAL_BUFFER (std::auto_ptr<scalar_col_helper>, retptr, nargout1);
 
           for (octave_idx_type count = 0; count < k ; count++)
             {
@@ -541,15 +541,20 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
               if (error_state)
                 goto cellfun_err;
 
-              if (tmp.length() < nargout)
+              if (tmp.length () < nargout1)
                 {
-                  error ("cellfun: too many output arguments");
-                  goto cellfun_err;
+                  if (tmp.length () < nargout)
+                    {
+                      error ("cellfun: too many output arguments");
+                      goto cellfun_err;
+                    }
+                  else
+                    nargout1 = 0;
                 }
 
               if (count == 0)
                 {
-                  for (int j = 0; j < nargout; j++)
+                  for (int j = 0; j < nargout1; j++)
                     {
                       octave_value val = tmp(j);
 
@@ -564,7 +569,7 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
                 }
               else
                 {
-                  for (int j = 0; j < nargout; j++)
+                  for (int j = 0; j < nargout1; j++)
                     {
                       octave_value val = tmp(j);
 
@@ -583,8 +588,8 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
                 break;
             }
 
-          retval.resize (nargout);
-          for (int j = 0; j < nargout; j++)
+          retval.resize (nargout1);
+          for (int j = 0; j < nargout1; j++)
             {
               if (retptr[j].get ())
                 retval(j) = retptr[j]->result ();
@@ -594,8 +599,8 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
         }
       else
         {
-          OCTAVE_LOCAL_BUFFER (Cell, results, nargout);
-          for (int j = 0; j < nargout; j++)
+          OCTAVE_LOCAL_BUFFER (Cell, results, nargout1);
+          for (int j = 0; j < nargout1; j++)
             results[j].resize (fdims);
 
           for (octave_idx_type count = 0; count < k ; count++)
@@ -628,19 +633,24 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
               if (error_state)
                 goto cellfun_err;
 
-              if (tmp.length() < nargout)
+              if (tmp.length () < nargout1)
                 {
-                  error ("cellfun: too many output arguments");
-                  goto cellfun_err;
+                  if (tmp.length () < nargout)
+                    {
+                      error ("cellfun: too many output arguments");
+                      goto cellfun_err;
+                    }
+                  else
+                    nargout1 = 0;
                 }
 
 
-              for (int j = 0; j < nargout; j++)
+              for (int j = 0; j < nargout1; j++)
                 results[j](count) = tmp(j);
             }
 
-          retval.resize(nargout);
-          for (int j = 0; j < nargout; j++)
+          retval.resize(nargout1);
+          for (int j = 0; j < nargout1; j++)
             retval(j) = results[j];
         }
 

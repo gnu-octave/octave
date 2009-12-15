@@ -1,3 +1,8 @@
+2009-12-15  Jaroslav Hajek  <highegg@gmail.com>
+
+	* idx-vector.h (idx_vector::loop, idx_vector::bloop): Fix behavior for
+	masks.
+
 2009-12-13  Rik <octave@nomad.inbox5.com>
 
 	* Makefile.am: Use DISTCLEANFILES rather than distclean-local rule.

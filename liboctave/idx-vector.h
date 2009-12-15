@@ -824,8 +824,8 @@ public:
             idx_mask_rep * r = dynamic_cast<idx_mask_rep *> (rep);
             const bool *data = r->get_data ();
             octave_idx_type ext = r->extent (0);
-            for (octave_idx_type i = 0, j = 0; i < ext; i++)
-              if (data[i]) body (j++);
+            for (octave_idx_type i = 0; i < ext; i++)
+              if (data[i]) body (i);
           }
           break;
         default:
@@ -894,8 +894,16 @@ public:
             const bool *data = r->get_data ();
             octave_idx_type ext = r->extent (0), j = 0;
             for (octave_idx_type i = 0; i < ext; i++)
-              if (data[i] && body (j++))
-                break;
+              {
+                if (data[i])
+                  {
+                    if (body (i))
+                      break;
+                    else
+                      j++;
+                  }
+              }
+
             ret = j;
           }
           break;

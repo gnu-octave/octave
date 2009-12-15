@@ -387,7 +387,7 @@ octave_call_stack::do_goto_frame_relative (int nskip, bool verbose)
 
       octave_function *f = elt.fcn;
 
-      if (f && f->is_user_code ())
+      if (frame == 0 || (f && f->is_user_code ()))
 	{
 	  if (nskip > 0)
 	    nskip--;
@@ -403,18 +403,20 @@ octave_call_stack::do_goto_frame_relative (int nskip, bool verbose)
 
 	      if (verbose)
 		{
-		  tree_statement *s = elt.stmt;
-		  int l = -1;
-		  int c = -1;
-		  if (s)
-		    {
-		      l = s->line ();
-		      c = s->column ();
-		    }
+                  std::ostringstream buf;
 
-		  std::ostringstream buf;
-		  buf << f->name () << ": " << " line " << l
-		      << ", column " << c << std::endl;
+                  if (f)
+                    {
+                      tree_statement *s = elt.stmt;
+
+                      int l = s ? s->line () : -1;
+                      int c = s ? s->column () : -1;
+
+                      buf << f->name () << ": " << " line " << l
+                          << ", column " << c << std::endl;
+                    }
+                  else
+                    buf << "at top level" << std::endl;
 
 		  octave_stdout << buf.str ();
 		}

@@ -1,3 +1,8 @@
+2009-12-15  John W. Eaton  <jwe@octave.org>
+
+	* toplev.cc (do_goto_frame_relative): Stop searching at top
+	stack frame even though it is not a function.
+
 2009-12-15  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/cellfun.cc (Fcellfun): Preserve original nargout. Call

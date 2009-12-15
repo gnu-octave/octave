@@ -77,6 +77,21 @@ Range
 
   sortmode is_sorted (sortmode mode = ASCENDING) const;
 
+  // Support for single-index subscripting, without generating matrix cache.
+
+  double checkelem (octave_idx_type i) const;
+
+  double elem (octave_idx_type i) const
+    {
+#if defined (BOUNDS_CHECKING)
+      return checkelem (i);
+#else
+      return rng_base + rng_inc * i;
+#endif
+    }
+
+  Array<double> index (const idx_vector& i) const;
+
   void set_base (double b)
   {
     if (rng_base != b)

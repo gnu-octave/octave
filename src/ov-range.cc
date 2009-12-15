@@ -118,19 +118,28 @@ octave_range::subsref (const std::string& type,
 octave_value
 octave_range::do_index_op (const octave_value_list& idx, bool resize_ok)
 {
-  // FIXME -- this doesn't solve the problem of
-  //
-  //   a = 1:5; a(1, 1, 1)
-  //
-  // and similar constructions.  Hmm...
+  if (idx.length () == 1 && ! resize_ok)
+    {
+      octave_value retval;
 
-  // FIXME -- using this constructor avoids possibly narrowing
-  // the range to a scalar value.  Need a better solution to this
-  // problem.
+      // The range can handle a single subscript.
+      idx_vector i = idx(0).index_vector ();
+      if (! error_state)
+        {
+          if (i.is_scalar () && i(0) < range.nelem ())
+            retval = range.elem (i(0));
+          else
+            retval = range.index (i);
+        }
 
-  octave_value tmp (new octave_matrix (range.matrix_value ()));
+      return retval;
+    }
+  else
+    {
+      octave_value tmp (new octave_matrix (range.matrix_value ()));
 
-  return tmp.do_index_op (idx, resize_ok);
+      return tmp.do_index_op (idx, resize_ok);
+    }
 }
 
 double

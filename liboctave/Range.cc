@@ -81,6 +81,57 @@ Range::matrix_value (void) const
   return cache;
 }
 
+double
+Range::checkelem (octave_idx_type i) const
+{
+  if (i < 0 || i >= rng_nelem)
+    (*current_liboctave_error_handler) ("Range::elem (%d): range error", i);
+
+  return rng_base + rng_inc * i;
+}
+
+struct _rangeidx_helper
+{
+  double *array, base, inc;
+  _rangeidx_helper (double *a, double b, double i) 
+    : array (a), base (b), inc (i) { }
+  void operator () (octave_idx_type i)
+    { *array++ = base + i * inc; }
+};
+
+Array<double> 
+Range::index (const idx_vector& i) const
+{
+  Array<double> retval;
+
+  octave_idx_type n = rng_nelem;
+
+  if (i.is_colon ())
+    {
+      retval = matrix_value ().reshape (dim_vector (rng_nelem, 1));
+    }
+  else if (i.extent (n) != n)
+    {
+      (*current_liboctave_error_handler)
+        ("A(I): Index exceeds matrix dimension.");
+    }
+  else
+    {
+      dim_vector rd = i.orig_dimensions ();
+      octave_idx_type il = i.length (n);
+
+      // taken from Array.cc.
+
+      if (n != 1 && rd.is_vector ())
+        rd = dim_vector (1, il);
+
+      retval.clear (rd);
+
+      i.loop (n, _rangeidx_helper (retval.fortran_vec (), rng_base, rng_inc));
+    }
+
+  return retval;
+}
 
 // NOTE: max and min only return useful values if nelem > 0.
 

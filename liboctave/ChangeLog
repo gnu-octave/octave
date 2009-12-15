@@ -1,5 +1,11 @@
 2009-12-15  Jaroslav Hajek  <highegg@gmail.com>
 
+	* Range.cc (Range::elem, Range::checkelem, Range::index):
+	New methods.
+	* Range.h: Declare them.
+
+2009-12-15  Jaroslav Hajek  <highegg@gmail.com>
+
 	* idx-vector.h (idx_vector::loop, idx_vector::bloop): Fix behavior for
 	masks.
 

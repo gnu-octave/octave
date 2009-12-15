@@ -1,5 +1,10 @@
 2009-12-14  Jaroslav Hajek  <highegg@gmail.com>
 
+	* ov-range.cc (octave_range::do_index_op): Defer single subscript to
+	new Range methods.
+
+2009-12-14  Jaroslav Hajek  <highegg@gmail.com>
+
 	* symtab.cc (symbol_table::cleanup): New static method.
 	* symtab.h: Declare it.
 	* toplev.cc (clean_up_and_exit): Call it here.

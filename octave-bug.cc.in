@@ -99,7 +99,6 @@ main (int argc, char **argv)
   vars["RLD_FLAG"] = %OCTAVE_CONF_RLD_FLAG%;
   vars["LIBS"] = %OCTAVE_CONF_LIBS%;
   vars["LEXLIB"] = %OCTAVE_CONF_LEXLIB%;
-  vars["LIBGLOB"] = %OCTAVE_CONF_LIBGLOB%;
 
   vars["AMD_CPPFLAGS"] = %OCTAVE_CONF_AMD_CPPFLAGS%;
   vars["AMD_LDFLAGS"] = %OCTAVE_CONF_AMD_LDFLAGS%;
@@ -243,7 +242,6 @@ main (int argc, char **argv)
   os << "BLAS_LIBS:         " << vars["BLAS_LIBS"] << endl;
   os << "FFTW_LIBS:         " << vars["FFTW_LIBS"] << endl;
   os << "LEXLIB:            " << vars["LEXLIB"] << endl;
-  os << "LIBGLOB:           " << vars["LIBGLOB"] << endl;
   os << "LIBS:              " << vars["LIBS"] << endl;
   os << "AMD_CPPFLAGS:      " << vars["AMD_CPPFLAGS"] << endl;
   os << "AMD_LDFLAGS:       " << vars["AMD_LDFLAGS"] << endl;

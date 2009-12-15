@@ -148,27 +148,7 @@ Hence the following steps:
     - MSYS:    start <MSYS_install>\bin\rxvt.exe -e /bin/sh --login -i
     - Cygwin:  start <Cygwin_install>\cygwin.bat
 
-1.5 Glob library
-----------------
-
-Octave also requires a filename globbing library.  This library is
-typically part of the C library on UNIX systems, but is not part of
-the Windows or MSVC run-time libraries.  You can find a glob package
-on the Octave website.  This package provides the missing features and
-is intended to be compiled in a fully setup shell with the
-Unix-to-MSVC compilation scripts:
-
-  * download and decompress the sources
-  * run "./configure.vc" (you can edit it to change the installation dir)
-  * run "make"
-  * run "make install"
-
-Then you'll have to tell MSVC where to find the headers and library
-files by adjusting the INCLUDE and LIB environment variables.  This
-can be done before starting the shell, in the "additional setup" step
-(see above).
-
-1.6 Readline library
+1.5 Readline library
 --------------------
 
 While not mandatory to compile Octave, the readline library is very
@@ -184,7 +164,7 @@ As for the glob library, adapt the INCLUDE and LIB environment
 variables.  Note that as Octave will be linked to the readline DLL,
 you should also add the path of readline.dll to your PATH variable.
 
-1.7 F2C
+1.6 F2C
 -------
 
 As there exist no free MSVC-like fortran compiler, the compilation

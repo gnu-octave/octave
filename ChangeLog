@@ -1,3 +1,13 @@
+2009-12-15  John W. Eaton  <jwe@octave.org>
+
+	* README.MSVC: Delete section about obtaining glob library.
+	* bootstrap.conf (gnulib_modules): Add fnmatch and glob to the list.
+	* common.mk (LIBGLOB): Delete variable.
+	(do_subst_config_vals): Don't substitute it.
+	* octave-bug.in, octave-bug.cc.in: Eliminate LIBGLOB variable.
+	* configure.ac: Don't check for glob.h or the glob and fnmatch
+	functions.  Eliminate LIBGLOB variable.
+
 2009-12-11  Rik <octave@nomad.inbox5.com>
 
 	* HACKING: Elaborate which DIRNAME to use for --gnulib-srcdir option.

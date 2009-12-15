@@ -1406,7 +1406,6 @@ have_termios_h=no
 AC_CHECK_HEADERS(termios.h, have_termios_h=yes)
 AC_CHECK_HEADERS(termio.h, have_termio_h=yes, have_termio_h=no)
 AC_CHECK_HEADERS(sgtty.h, have_sgtty_h=yes, have_sgtty_h=no)
-AC_CHECK_HEADERS(glob.h, have_glob_h=yes, have_glob_h=no)
 AC_CHECK_HEADERS(fnmatch.h, have_fnmatch_h=yes, have_fnmatch_h=no)
 AC_CHECK_HEADERS(conio.h, have_conio_h=yes, have_conio_h=no)
 
@@ -1427,23 +1426,6 @@ if test "$have_termios_h" = yes \
   true
 else
   AC_MSG_WARN([I couldn't find termios.h, termio.h, or sgtty.h!])
-fi
-
-LIBGLOB=
-AC_SUBST(LIBGLOB)
-if test "$have_fnmatch_h" = yes && test "$have_glob_h" = yes; then
-  AC_CHECK_FUNCS(fnmatch, have_fnmatch=yes, [
-    AC_CHECK_LIB(glob, fnmatch, [have_fnmatch=yes; LIBGLOB=-lglob],
-      have_fnmatch=no)])
-  AC_CHECK_FUNCS(glob, have_glob=yes, [
-    AC_CHECK_LIB(glob, glob, [have_glob=yes; LIBGLOB=-lglob],
-      have_glob=no)])
-
-  if test "$have_fnmatch" != yes || test "$have_glob" != yes; then
-    AC_MSG_ERROR([You are required to have fnmatch and glob])
-  fi
-else
-  AC_MSG_ERROR([You are required to have fnmatch.h and glob.h])
 fi
 
 ### Checks for functions and variables.
@@ -2163,7 +2145,6 @@ Octave is now configured for $canonical_host_type
   C++ compiler:                $CXX $XTRA_CXXFLAGS $WARN_CXXFLAGS $CXXFLAGS
   Fortran compiler:            $F77 $FFLAGS
   Fortran libraries:           $FLIBS
-  Glob libraries:              $LIBGLOB
   Lex libraries:               $LEXLIB
   LIBS:                        $LIBS
 

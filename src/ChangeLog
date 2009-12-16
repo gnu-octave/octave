@@ -1,3 +1,9 @@
+2009-12-16  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/fltk_backend.cc (F__init_fltk__):
+	Add __remove_fltk__ to the list of atexit functions.
+	(F__remove_fltk__): Wait fltk_maxtime instead of 10 seconds.
+
 2009-12-15  John W. Eaton  <jwe@octave.org>
 
 	* toplev.cc (do_goto_frame_relative): Stop searching at top

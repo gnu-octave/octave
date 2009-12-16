@@ -63,6 +63,7 @@ To initialize:
 #include "gl2ps-renderer.h"
 #include "graphics.h"
 #include "parse.h"
+#include "toplev.h"
 #include "variables.h"
 
 #define FLTK_BACKEND_NAME "fltk"
@@ -1005,6 +1006,8 @@ DEFUN_DLD (__fltk_redraw__, , , "")
 
 DEFUN_DLD (__init_fltk__, , , "")
 {
+  static bool remove_fltk_registered = false;
+
   if (! backend_registered)
     {
       mlock ();
@@ -1015,6 +1018,13 @@ DEFUN_DLD (__init_fltk__, , , "")
       octave_value_list args;
       args(0) = "__fltk_redraw__";
       feval ("add_input_event_hook", args, 0);
+
+      if (! remove_fltk_registered)
+        {
+          octave_add_atexit_function ("__remove_fltk__");
+
+          remove_fltk_registered = true;
+        }
     }
 
   octave_value retval;
@@ -1039,8 +1049,7 @@ DEFUN_DLD (__remove_fltk__, , , "")
       feval ("remove_input_event_hook", args, 0);
 
       // FIXME ???
-      // give FLTK 10 seconds to wrap it up
-      Fl::wait(10);
+      Fl::wait (fltk_maxtime);
     }
 
   octave_value retval;

@@ -1,5 +1,11 @@
 2009-12-16  Jaroslav Hajek  <highegg@gmail.com>
 
+	* DLD-FUNCTIONS/max.cc (do_minmax_red_op<boolNDArray>): New
+	specialization.
+	(do_minmax_body): Handle btyp_bool.
+
+2009-12-16  Jaroslav Hajek  <highegg@gmail.com>
+
 	* symtab.cc (symbol_table::cleanup): Call clear_variables rather than
 	clear_all on the top and global scopes.
 

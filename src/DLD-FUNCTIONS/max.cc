@@ -75,6 +75,37 @@ do_minmax_red_op (const octave_value& arg,
   return retval;
 }
 
+// Specialization for bool arrays.
+template <>
+octave_value_list
+do_minmax_red_op<boolNDArray> (const octave_value& arg,
+                               int nargout, int dim, bool ismin)
+{
+  octave_value_list retval;
+
+  if (nargout <= 1)
+    {
+      // This case can be handled using any/all.
+      boolNDArray array = arg.bool_array_value ();
+
+      if (array.is_empty ())
+        retval(0) = array;
+      else if (ismin)
+        retval(0) = array.all (dim);
+      else
+        retval(0) = array.any (dim);
+    }
+  else
+    {
+      // any/all don't have indexed versions, so do it via a conversion.
+      retval = do_minmax_red_op<int8NDArray> (arg, nargout, dim, ismin);
+      if (! error_state)
+        retval(0) = retval(0).bool_array_value ();
+    }
+
+  return retval;
+}
+
 template <class ArrayType>
 static octave_value
 do_minmax_bin_op (const octave_value& argx, const octave_value& argy,
@@ -210,6 +241,9 @@ do_minmax_body (const octave_value_list& args,
         MAKE_INT_BRANCH (uint32);
         MAKE_INT_BRANCH (uint64);
 #undef MAKE_INT_BRANCH
+        case btyp_bool:
+          retval = do_minmax_red_op<boolNDArray> (arg, nargout, dim, ismin);
+          break;
         default:
           gripe_wrong_type_arg (func, arg);
       }

@@ -1,3 +1,8 @@
+2009-12-16  Jaroslav Hajek  <highegg@gmail.com>
+
+	* symtab.cc (symbol_table::cleanup): Call clear_variables rather than
+	clear_all on the top and global scopes.
+
 2009-12-16  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/fltk_backend.cc (F__init_fltk__):

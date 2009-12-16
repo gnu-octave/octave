@@ -1334,14 +1334,14 @@ symbol_table::do_dump (std::ostream& os)
 void symbol_table::cleanup (void)
 {
   // Clear variables in top scope.
-  all_instances[xtop_scope]->clear_all ();
+  all_instances[xtop_scope]->clear_variables ();
 
   // Clear function table. This is a hard clear, ignoring mlocked functions.
   fcn_table.clear ();
 
   // Clear variables in global scope.
   // FIXME: are there any?
-  all_instances[xglobal_scope]->clear_all ();
+  all_instances[xglobal_scope]->clear_variables ();
 
   // Clear global variables.
   global_table.clear ();

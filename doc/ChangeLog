@@ -1,3 +1,7 @@
+2009-12-17  Rik  <octave@nomad.inbox5.com>
+
+	* interpreter/Makefile.am: use automake syntax to build munge-texi.
+
 2009-12-11  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/Makefile.am: remove install-local target and use automake 

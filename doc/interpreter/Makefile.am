@@ -33,6 +33,10 @@ export TEXINPUTS
 TEXMFCNF := "..$(PATH_SEPARATOR)$(srcdir)/..$(PATH_SEPARATOR)$(TEXMFCNF)$(PATH_SEPARATOR)"
 export TEXMFCNF
 
+## Automake generated rules for documentation are not parallel-safe.
+## Restrict current directory to run serially
+.NOTPARALLEL:
+
 dist_man1_MANS = \
   mkoctfile.1 \
   octave-bug.1 \
@@ -171,10 +175,12 @@ DOCSTRING_FILES = $(shell $(srcdir)/find-docstring-files.sh "$(top_srcdir)")
 doc-cache: $(DOCSTRING_FILES) mk_doc_cache.m
 	$(TOPDIR)/run-octave -f -q -H $(srcdir)/mk_doc_cache.m doc-cache $(DOCSTRING_FILES) || { rm -f doc-cache; exit 1; }
 
-$(MUNGED_TEXI_SRC): $(DOCSTRING_FILES) munge-texi.cc
+## Program compiled only to help build documentation.  No need to install
+noinst_PROGRAMS = munge-texi
 
-munge-texi$(BUILD_EXEEXT): munge-texi.cc
-	$(BUILD_CXX) $(BUILD_CXXFLAGS) -o $@ $^ $(BUILD_LDFLAGS)
+munge_texi_SOURCES = munge-texi.cc
+
+$(MUNGED_TEXI_SRC): $(DOCSTRING_FILES) $(munge_texi_SOURCES)
 
 .txi.texi:
 	@$(MAKE) $(AM_MAKEFLAGS) munge-texi$(BUILD_EXEEXT)
@@ -205,7 +211,6 @@ EXTRA_DIST = \
   images.mk \
   mk_doc_cache.m \
   mkcontrib.awk \
-  munge-texi.cc \
   octave.dvi \
   octave.html \
   octave.pdf \
@@ -214,10 +219,7 @@ EXTRA_DIST = \
   $(IMAGES_SRC) \
   $(TXI_SRC)
 
-DISTCLEANFILES = $(octave_TEXINFOS) doc-cache munge-texi$(BUILD_EXEEXT)
+DISTCLEANFILES = $(octave_TEXINFOS) doc-cache
 
 MAINTAINERCLEANFILES = $(IMAGES)
 
-## Automake generated rules for documentation are not parallel-safe.
-## Restrict current directory to run serially
-.NOTPARALLEL:

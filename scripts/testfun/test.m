@@ -490,6 +490,7 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
 	fflush (__fid);
       endif
       fputs (__fid, __msg);
+      fputs (__fid, "\n");
       fflush (__fid);
       ## Show the variable context.
       if (! strcmp (__type, "error") && ! strcmp (__type, "testif")

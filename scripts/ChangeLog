@@ -1,3 +1,7 @@
+2009-12-17  Rik <octave@nomad.inbox5.com>
+
+	* testfun/test.m: Add newline to message output.
+
 2009-12-14  John W. Eaton  <jwe@octave.org>
 
 	* specfun/isprime.m: Produce logical result.  Error if nargin > 1.

@@ -1,5 +1,9 @@
 2009-12-17  Rik  <octdev@nomad.inbox5.com>
 
+	* config/unix.exp: Remove obsolete file from repository
+
+2009-12-17  Rik  <octdev@nomad.inbox5.com>
+
 	* @Blork/module.mk, @Cork/module.mk, @Dork/module.mk,
 	@Gork/module.mk, @Pork/module.mk, @Sneetch/module.mk,
 	@Snork/module.mk, @Spork/module.mk, Makefile.am: Distribute private

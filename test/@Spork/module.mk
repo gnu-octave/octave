@@ -1,5 +1,3 @@
-FCN_FILE_DIRS += @Spork
-
 at_Spork_FCN_FILES = \
   @Spork/Spork.m \
   @Spork/cack.m \
@@ -9,6 +7,7 @@ at_Spork_FCN_FILES = \
   @Spork/getStash.m \
   @Spork/loadobj.m \
   @Spork/saveobj.m \
-  @Spork/set.m
+  @Spork/set.m \
+  @Spork/private/myStash.m
 
 FCN_FILES += $(at_Spork_FCN_FILES)

@@ -1,5 +1,3 @@
-FCN_FILE_DIRS += @Gork
-
 at_Gork_FCN_FILES = \
   @Gork/Gork.m \
   @Gork/cork.m \

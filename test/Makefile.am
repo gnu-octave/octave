@@ -23,8 +23,6 @@ TOPDIR = ..
 
 include ../common.mk
 
-FCN_FILE_DIRS =
-
 FCN_FILES = \
   fntests.m \
   test_args.m \
@@ -82,3 +80,4 @@ check: test_sparse.m
 
 test_sparse.m: build_sparse_tests.sh
 	$(srcdir)/build_sparse_tests.sh
+

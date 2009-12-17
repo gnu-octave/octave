@@ -1,5 +1,3 @@
-FCN_FILE_DIRS += @Blork
-
 at_Blork_FCN_FILES = \
   @Blork/Blork.m \
   @Blork/bleek.m \

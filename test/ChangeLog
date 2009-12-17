@@ -1,3 +1,10 @@
+2009-12-17  Rik  <octdev@nomad.inbox5.com>
+
+	* @Blork/module.mk, @Cork/module.mk, @Dork/module.mk,
+	@Gork/module.mk, @Pork/module.mk, @Sneetch/module.mk,
+	@Snork/module.mk, @Spork/module.mk, Makefile.am: Distribute private
+	function directories necessary for OOP tests to work in tarballs
+
 2009-12-03  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.am (CLEANFILES, DISTCLEANFILES): New variables.

@@ -1,5 +1,3 @@
-FCN_FILE_DIRS += @Cork
-
 at_Cork_FCN_FILES = \
   @Cork/Cork.m \
   @Cork/click.m \

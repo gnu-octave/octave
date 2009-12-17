@@ -1,3 +1,9 @@
+2009-12-17  John W. Eaton  <jwe@octave.org>
+
+	* glob-match.h, glob-match.cc (glob_match::glob_internal):
+	Rename from glob_match::glob and make private.
+	* glob-match.h (glob_match::glob): Forward to glob_internal.
+
 2009-12-15  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Array.cc (Array<T>::index (const idx_vector&)): Fix determining of

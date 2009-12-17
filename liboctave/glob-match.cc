@@ -81,7 +81,7 @@ single_match_exists (const std::string& file)
 }
 
 string_vector
-glob_match::glob (void)
+glob_match::glob_internal (void)
 {
   string_vector retval;
 

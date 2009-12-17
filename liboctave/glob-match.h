@@ -71,7 +71,10 @@ public:
 
   Array<bool> match (const string_vector&);
 
-  string_vector glob (void);
+  // We forward to glob_internal here to avoid problems with gnulib's
+  // glob.h defining glob to be rpl_glob.
+
+  string_vector glob (void) { return glob_internal (); }
 
 private:
 
@@ -80,6 +83,8 @@ private:
 
   // Option flags.
   unsigned int flags;
+
+  string_vector glob_internal (void);
 };
 
 #endif

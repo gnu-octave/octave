@@ -1,3 +1,7 @@
+2009-12-18  Rik <octave@nomad.inbox5.com>
+
+	* Makefile.am: Use Automake syntax to build helper program gethelp
+
 2009-12-17  Rik <octave@nomad.inbox5.com>
 
 	* testfun/test.m: Add newline to message output.

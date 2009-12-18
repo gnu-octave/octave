@@ -25,13 +25,9 @@ include ../common.mk
 
 AUTOMAKE_OPTIONS = subdir-objects
 
-FCN_FILE_DIRS =
+EXTRA_DIST =
 
-EXTRA_DIST = \
-  DOCSTRINGS \
-  gethelp.cc \
-  mkdoc \
-  mk-pkg-add
+FCN_FILE_DIRS =
 
 FCN_FILES =
 
@@ -43,6 +39,7 @@ DIRSTAMP_FILES =
 
 IMAGES =
 
+## Read subdirs to set all variables above
 include @ftp/module.mk
 include audio/module.mk
 include deprecated/module.mk
@@ -73,14 +70,13 @@ include strings/module.mk
 include testfun/module.mk
 include time/module.mk
 
-DISTCLEANFILES = \
-  DOCSTRINGS \
-  gethelp$(BUILD_EXEEXT) \
-  $(PKG_ADD_FILES) \
-  $(DIRSTAMP_FILES) \
-  $(GEN_FCN_FILES)
-
 nobase_fcnfile_DATA = $(FCN_FILES) $(GEN_FCN_FILES)
+
+image_DATA = $(IMAGES)
+
+FCN_FILES_IN = $(GEN_FCN_FILES:.m=.in)
+
+all-local: $(GEN_FCN_FILES) $(PKG_ADD_FILES) DOCSTRINGS
 
 octave_dirstamp = $(am__leading_dot)dirstamp
 
@@ -318,23 +314,16 @@ time/$(octave_dirstamp):
 	$(MKDIR_P) time
 	: > time/$(octave_dirstamp)
 
-FCN_FILES_IN = $(GEN_FCN_FILES:.m=.in)
+## Program compiled only to help build documentation.  No installation needed.
+noinst_PROGRAMS = gethelp
 
-EXTRA_DIST += \
-  $(IMAGES) \
-  $(FCN_FILES) \
-  $(FCN_FILES_IN) \
-  $(GEN_FCN_FILES)
+gethelp_SOURCES = gethelp.cc
 
-all-local: $(GEN_FCN_FILES) $(PKG_ADD_FILES) DOCSTRINGS
-
-DOCSTRINGS: mkdoc $(FCN_FILES) $(GEN_FCN_FILES) gethelp$(BUILD_EXEEXT)
+DOCSTRINGS: $(FCN_FILES) $(GEN_FCN_FILES) mkdoc $(gethelp_SOURCES)
+	@$(MAKE) $(AM_MAKEFLAGS) gethelp$(BUILD_EXEEXT)
 	$(cp_update_rule)
 	$(srcdir)/mkdoc "$(srcdir)" $(FCN_FILES) -- $(GEN_FCN_FILES) > $@-t
 	$(simple_move_if_change_rule)
-
-gethelp$(BUILD_EXEEXT): gethelp.cc
-	$(BUILD_CXX) $(BUILD_CXXFLAGS) -o $@ $^ $(BUILD_LDFLAGS)
 
 $(GEN_FCN_FILES) : %.m : %.in Makefile
 	$(do_subst_config_vals)
@@ -364,8 +353,6 @@ check-m-sources:
 install-data-local: install-startup-files install-pkg-add
 
 uninstall-local: uninstall-startup-files uninstall-pkg-add
-
-image_DATA = $(IMAGES)
 
 install-startup-files:
 	$(MKDIR_P) $(DESTDIR)$(fcnfiledir)/startup
@@ -409,6 +396,18 @@ uninstall-pkg-add:
 	done
 .PHONY: uninstall-pkg-add
 
-# ## optimization:
+EXTRA_DIST += \
+  $(IMAGES) \
+  $(FCN_FILES) \
+  $(FCN_FILES_IN) \
+  $(GEN_FCN_FILES) \
+  DOCSTRINGS \
+  mkdoc \
+  mk-pkg-add
 
-# EXTRAS = glpktest1 glpktest2
+DISTCLEANFILES = \
+  DOCSTRINGS \
+  $(PKG_ADD_FILES) \
+  $(DIRSTAMP_FILES) \
+  $(GEN_FCN_FILES)
+

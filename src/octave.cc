@@ -784,8 +784,11 @@ octave_main (int argc, char **argv, int embedded)
   // Is input coming from a terminal?  If so, we are probably
   // interactive.
 
-  interactive = (! embedded
-		 && isatty (fileno (stdin)) && isatty (fileno (stdout)));
+  // If stdin is not a tty, then we are reading commands from a pipe or
+  // a redirected file.
+  stdin_is_tty = isatty (fileno (stdin));
+
+  interactive = (! embedded && stdin_is_tty && isatty (fileno (stdout)));
 
   if (! interactive && ! forced_line_editing)
     line_editing = false;

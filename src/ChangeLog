@@ -1,3 +1,13 @@
+2009-12-18  John W. Eaton  <jwe@octave.org>
+
+	* input.cc (get_debug_input): Don't attempt to get user input
+	unless stdin is a tty.  Force interactive input mode when
+	reading debugging input.
+	(octave_gets): Bypass readline if get_input_from_eval_string is true.
+
+	* input.cc, input.h (stdin_is_tty): New variable.
+	* octave.cc (octave_main): Set it to true if stdin is not a tty.
+
 2009-12-16  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/max.cc (do_minmax_red_op<boolNDArray>): New

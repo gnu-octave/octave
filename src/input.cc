@@ -55,6 +55,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "gripes.h"
 #include "help.h"
 #include "input.h"
+#include "lex.h"
 #include "load-path.h"
 #include "oct-map.h"
 #include "oct-hist.h"
@@ -111,6 +112,9 @@ bool input_from_eval_string_pending = false;
 // TRUE means that input is coming from a file that was named on
 // the command line.
 bool input_from_command_line_file = false;
+
+// TRUE means that stdin is a terminal, not a pipe or redirected file.
+bool stdin_is_tty = false;
 
 // TRUE means we're parsing a function file.
 bool reading_fcn_file = false;
@@ -264,6 +268,7 @@ octave_gets (void)
       && (! (reading_fcn_file
 	     || reading_classdef_file
 	     || reading_script_file
+	     || get_input_from_eval_string
 	     || input_from_startup_file
 	     || input_from_command_line_file)))
     {
@@ -686,49 +691,92 @@ get_debug_input (const std::string& prompt)
   unwind_protect::protect_var (VPS1);
   VPS1 = prompt;
 
-  while (Vdebugging)
+  if (stdin_is_tty)
     {
-      reset_error_handler ();
+      if (! (interactive || forced_interactive)
+          || (reading_fcn_file
+              || reading_classdef_file
+              || reading_script_file
+              || get_input_from_eval_string
+              || input_from_startup_file
+              || input_from_command_line_file))
+        {
+          unwind_protect::protect_var (forced_interactive);
+          forced_interactive = true;
 
-      reset_parser ();
+          unwind_protect::protect_var (reading_fcn_file);
+          reading_fcn_file = false;
 
-      // Save current value of global_command.
-      unwind_protect::protect_var (global_command);
+          unwind_protect::protect_var (reading_classdef_file);
+          reading_classdef_file = false;
 
-      // Do this with an unwind-protect cleanup function so that the
-      // forced variables will be unmarked in the event of an interrupt.
-      symbol_table::scope_id scope = symbol_table::top_scope ();
-      unwind_protect::add_fcn (symbol_table::unmark_forced_variables, scope);
+          unwind_protect::protect_var (reading_script_file);
+          reading_script_file = false;
 
-      // This is the same as yyparse in parse.y.
-      int retval = octave_parse ();
+          unwind_protect::protect_var (input_from_startup_file);
+          input_from_startup_file = false;
 
-      if (retval == 0 && global_command)
-	{
-	  global_command->accept (*current_evaluator);
+          unwind_protect::protect_var (input_from_command_line_file);
+          input_from_command_line_file = false;
 
-	  // FIXME -- To avoid a memory leak, global_command should be
-	  // deleted, I think.  But doing that here causes trouble if
-	  // an error occurs while executing a debugging command
-	  // (dbstep, for example). It's not clear to me why that
-	  // happens.
-	  //
-	  // delete global_command;
-	  //
-	  // global_command = 0;
+          unwind_protect::protect_var (get_input_from_eval_string);
+          get_input_from_eval_string = false;
 
-	  if (octave_completion_matches_called)
-	    octave_completion_matches_called = false;
-	}
+          YY_BUFFER_STATE old_buf = current_buffer ();
+          YY_BUFFER_STATE new_buf = create_buffer (get_input_from_stdin ());
 
-      // Unmark forced variables.
-      unwind_protect::run ();
+          unwind_protect::add_fcn (switch_to_buffer, old_buf);
+          unwind_protect::add_fcn (delete_buffer, new_buf);
 
-      // Restore previous value of global_command.
-      unwind_protect::run ();
+          switch_to_buffer (new_buf);
+        }
 
-      OCTAVE_QUIT;
+      while (Vdebugging)
+        {
+          reset_error_handler ();
+
+          reset_parser ();
+
+          // Save current value of global_command.
+          unwind_protect::protect_var (global_command);
+
+          // Do this with an unwind-protect cleanup function so that the
+          // forced variables will be unmarked in the event of an interrupt.
+          symbol_table::scope_id scope = symbol_table::top_scope ();
+          unwind_protect::add_fcn (symbol_table::unmark_forced_variables, scope);
+
+          // This is the same as yyparse in parse.y.
+          int retval = octave_parse ();
+
+          if (retval == 0 && global_command)
+            {
+              global_command->accept (*current_evaluator);
+
+              // FIXME -- To avoid a memory leak, global_command should be
+              // deleted, I think.  But doing that here causes trouble if
+              // an error occurs while executing a debugging command
+              // (dbstep, for example). It's not clear to me why that
+              // happens.
+              //
+              // delete global_command;
+              //
+              // global_command = 0;
+
+              if (octave_completion_matches_called)
+                octave_completion_matches_called = false;
+            }
+
+          // Unmark forced variables.
+          unwind_protect::run ();
+
+          // Restore previous value of global_command.
+          unwind_protect::run ();
+
+          OCTAVE_QUIT;
+        }
     }
+  else
+    warning ("invalid attempt to debug script read from stdin");
 
   unwind_protect::run_frame (uwp_frame);
 }

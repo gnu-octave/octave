@@ -54,6 +54,9 @@ extern bool input_from_eval_string_pending;
 // the command line.
 extern bool input_from_command_line_file;
 
+// TRUE means that stdin is a terminal, not a pipe or redirected file.
+extern bool stdin_is_tty;
+
 // TRUE means we're parsing a function file.
 extern bool reading_fcn_file;
 

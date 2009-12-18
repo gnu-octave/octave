@@ -103,7 +103,7 @@ octave_user_script::subsref (const std::string&,
 {
   octave_value_list retval;
 
-  ::error ("invalid use of script in index expression");
+  ::error ("invalid use of script %s in index expression", file_name.c_str ());
 
   return retval;
 }
@@ -150,7 +150,7 @@ octave_user_script::do_multi_index_op (int nargout,
     	    }
 	}
       else
-	error ("invalid call to script");
+	error ("invalid call to script %s", file_name.c_str ());
     }
 
   unwind_protect::run_frame (uwp_frame);

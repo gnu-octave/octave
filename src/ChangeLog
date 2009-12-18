@@ -1,3 +1,9 @@
+2009-12-18  David Grundberg  <davidg@cs.umu.se>
+
+	* ov-usr-fcn.cc (octave_user_script::do_multi_index_op):
+	Print script filename in script indexing errors.
+	(octave_user_script::subsref): Ditto.
+
 2009-12-18  John W. Eaton  <jwe@octave.org>
 
 	* input.cc (get_debug_input): Don't attempt to get user input

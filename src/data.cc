@@ -2545,7 +2545,7 @@ DEFUN (size_equal, args, ,
 @deftypefn {Built-in Function} {} size_equal (@var{a}, @var{b}, @dots{})\n\
 Return true if the dimensions of all arguments agree.\n\
 Trailing singleton dimensions are ignored.\n\
-Called with a single argument, size_equal returns true.\n\
+Called with a single or no argument, size_equal returns true.\n\
 @seealso{size, numel}\n\
 @end deftypefn")
 {
@@ -2553,10 +2553,10 @@ Called with a single argument, size_equal returns true.\n\
 
   int nargin = args.length ();
 
+  retval = true;
+
   if (nargin >= 1)
     {
-      retval = true;
-
       dim_vector a_dims = args(0).dims ();
 
       for (int i = 1; i < nargin; ++i)
@@ -2570,8 +2570,6 @@ Called with a single argument, size_equal returns true.\n\
 	    }
         }
     }
-  else
-    print_usage ();
 
   return retval;
 }

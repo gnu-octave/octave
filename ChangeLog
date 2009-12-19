@@ -1,6 +1,12 @@
+2009-12-11  Rik <octave@nomad.inbox5.com>
+
+	* Makefile.am: Use M4 quoting for arguments to autoconf macros containing
+	variables
+
 2009-12-19  Jaroslav Hajek  <highegg@gmail.com>
 
 	* data.cc (Fsize_equal): Allow calling with zero arguments.
+	variables
 
 2009-12-15  John W. Eaton  <jwe@octave.org>
 

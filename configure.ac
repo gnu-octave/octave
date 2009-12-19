@@ -172,12 +172,12 @@ if $USE_64_BIT_IDX_T; then
       AC_DEFINE(IDX_TYPE_LONG, 1, [Define to 1 if octave index type is long])
     else
       warn_64_bit="no suitable type found for octave_idx_type so disabling 64-bit features"
-      AC_MSG_WARN($warn_64_bit)
+      AC_MSG_WARN([$warn_64_bit])
       USE_64_BIT_IDX_T=false
     fi
   else
     warn_64_bit="pointers are not 64-bits wide so disabling 64-bit features"
-    AC_MSG_WARN($warn_64_bit)
+    AC_MSG_WARN([$warn_64_bit])
     USE_64_BIT_IDX_T=false
   fi
 fi
@@ -241,7 +241,7 @@ gcc_version=`$CC -v 2>&1 | grep "^.*gcc version" | \
 case "$gcc_version" in
   [12].*)
     warn_gcc_version="gcc version $gcc_version is likely to cause problems"
-    AC_MSG_WARN($warn_gcc_version)
+    AC_MSG_WARN([$warn_gcc_version])
   ;;
 esac
 
@@ -609,18 +609,18 @@ if test "$WITH_PCRE" = yes; then
     AC_DEFINE(HAVE_PCRE, 1, [Define if PCRE library is available.])], [
       REGEX_LIBS=
       warn_pcre="PCRE library not found.  This will result in some loss of functionality for the regular expression matching functions."
-      AC_MSG_WARN($warn_pcre)])
+      AC_MSG_WARN([$warn_pcre])])
   LIBS="$save_LIBS"
 else
   warn_pcre="PCRE library not found.  This will result in some loss of functionality for the regular expression matching functions."
-  AC_MSG_WARN($warn_pcre)
+  AC_MSG_WARN([$warn_pcre])
 fi
 
 AC_CHECK_FUNCS(regexec, [using_regex=yes], [
   AC_CHECK_LIB(regex, regexec, [using_regex=yes
     REGEX_LIBS="-lregex $REGEX_LIBS"], [
       warn_regex="regular expression functions not found.  The regular expression matching functions will be disabled."
-      AC_MSG_WARN($warn_regex)])])
+      AC_MSG_WARN([$warn_regex])])])
 
 if test "$using_regex" = yes; then
   AC_DEFINE(HAVE_REGEX, 1, [Define if regex library is available.])
@@ -821,7 +821,7 @@ else
     ;;
   esac
 
-  AC_MSG_CHECKING(for OpenGL support in FLTK)
+  AC_MSG_CHECKING([for OpenGL support in FLTK])
   cat > conftest.cc <<EOF
   #include <FL/gl.h>
   int nothing=0;
@@ -904,7 +904,7 @@ if test "$octave_qrupdate_ok" = yes; then
   octave_qrupdate_luu=no
   AC_LINK_IFELSE([AC_LANG_CALL([], [slup1up])],
   [octave_qrupdate_luu=yes])
-  AC_MSG_RESULT($octave_qrupdate_luu)
+  AC_MSG_RESULT([$octave_qrupdate_luu])
   if test "$octave_qrupdate_luu" = yes; then
     AC_DEFINE(HAVE_QRUPDATE_LUU, [1], [Define if qrupdate supports LU updates])
   fi
@@ -918,7 +918,7 @@ OCTAVE_CHECK_LIBRARY(amd, AMD,
   [AMD library not found.  This will result in some lack of functionality for sparse matrices.],
   [suitesparse/amd.h ufsparse/amd.h amd/amd.h amd.h],
   [amd_postorder],
-  [], [don't use AMD library, disable some sparse functionality])
+  [], [don't use AMD library, disable some sparse matrix functionality])
 
 # Check for CAMD library
 
@@ -926,7 +926,7 @@ OCTAVE_CHECK_LIBRARY(camd, CAMD,
   [CAMD library not found.  This will result in some lack of functionality for sparse matrices.],
   [suitesparse/camd.h ufsparse/camd.h amd/camd.h camd.h],
   [camd_postorder],
-  [], [don't use CAMD library, disable some sparse functionality])
+  [], [don't use CAMD library, disable some sparse matrix functionality])
 
 # Check for COLAMD library
 
@@ -934,7 +934,7 @@ OCTAVE_CHECK_LIBRARY(colamd, COLAMD,
   [COLAMD library not found.  This will result in some lack of functionality for sparse matrices.],
   [suitesparse/colamd.h ufsparse/colamd.h amd/colamd.h colamd.h],
   [colamd],
-  [], [don't use COLAMD library, disable some sparse functionality])
+  [], [don't use COLAMD library, disable some sparse matrix functionality])
 
 # Check for CCOLAMD library
 
@@ -942,7 +942,7 @@ OCTAVE_CHECK_LIBRARY(ccolamd, CCOLAMD,
   [CCOLAMD library not found.  This will result in some lack of functionality for sparse matrices.],
   [suitesparse/ccolamd.h ufsparse/ccolamd.h amd/ccolamd.h ccolamd.h],
   [ccolamd],
-  [], [don't use CCOLAMD library, disable some sparse functionality])
+  [], [don't use CCOLAMD library, disable some sparse matrix functionality])
 
 # Check for CHOLMOD library.  If your cholmod library requires cblas,
 # then you will need to configure with --with-cholmod="-lcholmod -lcblas".
@@ -953,7 +953,7 @@ OCTAVE_CHECK_LIBRARY(cholmod, CHOLMOD,
   [CHOLMOD library not found.  This will result in some lack of functionality for sparse matrices.],
   [suitesparse/cholmod.h ufsparse/cholmod.h cholmod/cholmod.h cholmod.h],
   [cholmod_start],
-  [], [don't use CHOLMOD library, disable some sparse functionality])
+  [], [don't use CHOLMOD library, disable some sparse matrix functionality])
 LIBS="$save_LIBS"
 
 # Check for CXSparse library
@@ -962,7 +962,7 @@ OCTAVE_CHECK_LIBRARY(cxsparse, CXSparse,
   [CXSparse library not found.  This will result in some lack of functionality for sparse matrices.],
   [suitesparse/cs.h ufsparse/cs.h amd/cs.h cs.h],
   [cs_di_sqr],
-  [C++], [don't use CXSparse library, disable some sparse functionality])
+  [C++], [don't use CXSparse library, disable some sparse matrix functionality])
 
 # Check for UMFPACK library.
 
@@ -974,7 +974,7 @@ OCTAVE_CHECK_LIBRARY(umfpack, UMFPACK,
   [UMFPACK not found.  This will result in some lack of functionality for sparse matrices.],
   [suitesparse/umfpack.h ufsparse/umfpack.h umfpack/umfpack.h umfpack.h],
   [umfpack_zi_get_determinant],
-  [], [don't use UMFPACK, disable some sparse functionality])
+  [], [don't use UMFPACK, disable some sparse matrix functionality])
 CPPFLAGS="$save_CPPFLAGS"
 LIBS="$save_LIBS"
 
@@ -987,7 +987,7 @@ if test -z "$UMFPACK_LIBS"; then
     [UMFPACK not found.  This will result in some lack of functionality for sparse matrices.],
     [suitesparse/umfpack.h ufsparse/umfpack.h umfpack/umfpack.h umfpack.h],
     [umfpack_zi_get_determinant],
-    [], [don't use UMFPACK, disable some sparse functionality])
+    [], [don't use UMFPACK, disable some sparse matrix functionality])
   if test -n "$UMFPACK_LIBS"; then
     UMFPACK_LIBS="$UMFPACK_LIBS -lcblas"
   fi
@@ -1469,7 +1469,7 @@ case "$canonical_host_type" in
   *-*-mingw*)
     ## MinGW does not provide a mkstemp function.  However, it provides
     ## the mkstemps function in libiberty.
-    AC_MSG_CHECKING(for mkstemps in libiberty)
+    AC_MSG_CHECKING([for mkstemps in libiberty])
     save_LIBS="$LIBS"
     LIBS="-liberty $LIBS"
     AC_LINK_IFELSE([
@@ -1640,7 +1640,7 @@ AC_SUBST(LIBCRUFT)
 ### which one (if any) appears in sys/time.h.  These tests are from
 ### Emacs 19.
 
-AC_MSG_CHECKING(for struct timeval)
+AC_MSG_CHECKING([for struct timeval])
 AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#ifdef TIME_WITH_SYS_TIME
 #include <sys/time.h>
 #include <time.h>
@@ -1658,7 +1658,7 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#ifdef TIME_WITH_SYS_TIME
    HAVE_TIMEVAL=no])
 
 if test "x$HAVE_TIMEVAL" = xyes; then
-AC_MSG_CHECKING(whether gettimeofday can't accept two arguments)
+AC_MSG_CHECKING([whether gettimeofday can't accept two arguments])
 AC_LINK_IFELSE([AC_LANG_PROGRAM([[#ifdef TIME_WITH_SYS_TIME
 #include <sys/time.h>
 #include <time.h>
@@ -1745,7 +1745,7 @@ done
 if test "$octave_found_termlib" = no; then
   warn_termlibs="I couldn't find -ltermcap, -lterminfo, -lncurses, -lcurses, o\
 r -ltermlib!"
-  AC_MSG_WARN($warn_termlibs)
+  AC_MSG_WARN([$warn_termlibs])
 fi
 AC_SUBST(TERM_LIBS)
 
@@ -2236,157 +2236,157 @@ if $ENABLE_DYNAMIC_LINKING; then
 fi
 
 if test -n "$gxx_only"; then
-  AC_MSG_WARN($gxx_only)
+  AC_MSG_WARN([$gxx_only])
   warn_msg_printed=true
 fi
 
 if test -n "$warn_gcc_version"; then
-  AC_MSG_WARN($warn_gcc_version)
+  AC_MSG_WARN([$warn_gcc_version])
   warn_msg_printed=true
 fi
 
 if test -n "$warn_gcc_only"; then
-  AC_MSG_WARN($warn_gcc_only)
+  AC_MSG_WARN([$warn_gcc_only])
   warn_msg_printed=true
 fi
 
 if test -n "$warn_readline"; then
-  AC_MSG_WARN($warn_readline)
+  AC_MSG_WARN([$warn_readline])
   warn_msg_printed=true
 fi
 
 if test -n "$warn_termlibs"; then
-  AC_MSG_WARN($warn_termlibs)
+  AC_MSG_WARN([$warn_termlibs])
   warn_msg_printed=true
 fi
 
 if test -n "$warn_gperf"; then
-  AC_MSG_WARN($warn_gperf)
+  AC_MSG_WARN([$warn_gperf])
   warn_msg_printed=true
 fi
 
 if test -n "$warn_flex"; then
-  AC_MSG_WARN($warn_flex)
+  AC_MSG_WARN([$warn_flex])
   warn_msg_printed=true
 fi
 
 if test -n "$warn_bison"; then
-  AC_MSG_WARN($warn_bison)
+  AC_MSG_WARN([$warn_bison])
   warn_msg_printed=true
 fi
 
 if test -n "$warn_less"; then
-  AC_MSG_WARN($warn_less)
+  AC_MSG_WARN([$warn_less])
   warn_msg_printed=true
 fi
 
 if test -n "$warn_umfpack"; then
-  AC_MSG_WARN($warn_umfpack)
+  AC_MSG_WARN([$warn_umfpack])
   warn_msg_printed=true
 fi
 
 if test -n "$warn_qrupdate"; then
-  AC_MSG_WARN($warn_qrupdate)
+  AC_MSG_WARN([$warn_qrupdate])
   warn_msg_printed=true
 fi
 
 if test -n "$warn_amd"; then
-  AC_MSG_WARN($warn_amd)
+  AC_MSG_WARN([$warn_amd])
   warn_msg_printed=true
 fi
 
 if test -n "$warn_colamd"; then
-  AC_MSG_WARN($warn_colamd)
+  AC_MSG_WARN([$warn_colamd])
   warn_msg_printed=true
 fi
 
 if test -n "$warn_ccolamd"; then
-  AC_MSG_WARN($warn_ccolamd)
+  AC_MSG_WARN([$warn_ccolamd])
   warn_msg_printed=true
 fi
 
 if test -n "$warn_cholmod"; then
-  AC_MSG_WARN($warn_cholmod)
+  AC_MSG_WARN([$warn_cholmod])
   warn_msg_printed=true
 fi
 
 if test -n "$warn_cxsparse"; then
-  AC_MSG_WARN($warn_cxsparse)
+  AC_MSG_WARN([$warn_cxsparse])
   warn_msg_printed=true
 fi
 
 if test -n "$warn_arpack"; then
-  AC_MSG_WARN($warn_arpack)
+  AC_MSG_WARN([$warn_arpack])
   warn_msg_printed=true
 fi
 
 if test -n "$warn_curl"; then
-  AC_MSG_WARN($warn_curl)
+  AC_MSG_WARN([$warn_curl])
   warn_msg_printed=true
 fi
 
 if test -n "$warn_fftw"; then
-  AC_MSG_WARN($warn_fftw)
+  AC_MSG_WARN([$warn_fftw])
   warn_msg_printed=true
 fi
 
 if test -n "$warn_glpk"; then
-  AC_MSG_WARN($warn_glpk)
+  AC_MSG_WARN([$warn_glpk])
   warn_msg_printed=true
 fi
 
 if test -n "$warn_magick"; then
-  AC_MSG_WARN($warn_magick)
+  AC_MSG_WARN([$warn_magick])
   warn_msg_printed=true
 fi
 
 if test -n "$warn_hdf5"; then
-  AC_MSG_WARN($warn_hdf5)
+  AC_MSG_WARN([$warn_hdf5])
   warn_msg_printed=true
 fi
 
 if test -n "$warn_regex"; then
-  AC_MSG_WARN($warn_regex)
+  AC_MSG_WARN([$warn_regex])
   warn_msg_printed=true
 fi
 
 if test -n "$warn_pcre"; then
-  AC_MSG_WARN($warn_pcre)
+  AC_MSG_WARN([$warn_pcre])
   warn_msg_printed=true
 fi
 
 if test -n "$warn_qhull"; then
-  AC_MSG_WARN($warn_qhull)
+  AC_MSG_WARN([$warn_qhull])
   warn_msg_printed=true
 fi
 
 if test -n "$warn_zlib"; then
-  AC_MSG_WARN($warn_zlib)
+  AC_MSG_WARN([$warn_zlib])
   warn_msg_printed=true
 fi
 
 if test -n "$warn_ghostscript"; then
-  AC_MSG_WARN($warn_ghostscript)
+  AC_MSG_WARN([$warn_ghostscript])
   warn_msg_printed=true
 fi
 
 if test -n "$warn_makeinfo"; then
-  AC_MSG_WARN($warn_makeinfo)
+  AC_MSG_WARN([$warn_makeinfo])
   warn_msg_printed=true
 fi
 
 if test -n "$warn_texi2dvi"; then
-  AC_MSG_WARN($warn_texi2dvi)
+  AC_MSG_WARN([$warn_texi2dvi])
   warn_msg_printed=true
 fi
 
 if test -n "$warn_texi2pdf"; then
-  AC_MSG_WARN($warn_texi2pdf)
+  AC_MSG_WARN([$warn_texi2pdf])
   warn_msg_printed=true
 fi
 
 if test -n "$warn_64_bit"; then
-  AC_MSG_WARN($warn_64_bit)
+  AC_MSG_WARN([$warn_64_bit])
   warn_msg_printed=true
 fi
 
@@ -2428,25 +2428,25 @@ fi
 
 native_graphics=true
 if test -n "$warn_freetype"; then
-  AC_MSG_WARN("$warn_freetype")
+  AC_MSG_WARN([$warn_freetype])
   native_graphics=false
   warn_msg_printed=true
 fi
 
 if test -n "$warn_fontconfig"; then
-  AC_MSG_WARN("$warn_fontconfig")
+  AC_MSG_WARN([$warn_fontconfig])
   native_graphics=false
   warn_msg_printed=true
 fi
 
 if test -n "$warn_fltk_config"; then
-  AC_MSG_WARN("$warn_fltk_config")
+  AC_MSG_WARN([$warn_fltk_config])
   native_graphics=false
   warn_msg_printed=true
 fi
 
 if test -n "$warn_fltk_opengl"; then
-  AC_MSG_WARN("$warn_fltk_opengl")
+  AC_MSG_WARN([$warn_fltk_opengl])
   native_graphics=false
   warn_msg_printed=true
 fi
@@ -2464,11 +2464,9 @@ else
 fi
 
 if $warn_msg_printed; then
-  AC_MSG_NOTICE([
-
-NOTE: libraries may be skipped if a library is not found OR
-      if the library on your system is missing required features.
-])
+  AC_MSG_NOTICE([])
+  AC_MSG_NOTICE([NOTE: libraries may be skipped if a library is not found OR])
+  AC_MSG_NOTICE([NOTE: if the library on your system is missing required features.])
 fi
 
 ### End of configure.

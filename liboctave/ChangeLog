@@ -1,3 +1,8 @@
+2009-12-19  Rik <octave@nomad.inbox5.com>
+
+	* Makefile.am: Eliminate TOPDIR variable in favor of built-in automake
+	variables of top_builddir and top_srcdir.
+
 2009-12-17  John W. Eaton  <jwe@octave.org>
 
 	* glob-match.h, glob-match.cc (glob_match::glob_internal):

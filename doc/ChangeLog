@@ -1,3 +1,10 @@
+2009-12-19  Rik <octave@nomad.inbox5.com>
+
+	* Makefile.am, faq/Makefile.am, interpreter/Makefile.am,
+	liboctave/Makefile.am, refcard/Makefile.am, interpreter/images.awk: 
+	Eliminate TOPDIR variable in favor of built-in automake variables of 
+	top_builddir and top_srcdir.
+
 2009-12-17  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/Makefile.am: use automake syntax to build munge-texi.

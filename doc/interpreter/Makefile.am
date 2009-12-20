@@ -19,9 +19,11 @@
 # along with Octave; see the file COPYING.  If not, see
 # <http://www.gnu.org/licenses/>.
 
-TOPDIR = ../..
+include $(top_srcdir)/common.mk
 
-include ../../common.mk
+## Automake generated rules for documentation are not parallel-safe.
+## Restrict current directory to run serially
+.NOTPARALLEL:
 
 TEXINFO_TEX = ../texinfo.tex
 
@@ -32,10 +34,6 @@ export TEXINPUTS
 ## Include custom texmf.cnf necessary to run @seealso macro 
 TEXMFCNF := "..$(PATH_SEPARATOR)$(srcdir)/..$(PATH_SEPARATOR)$(TEXMFCNF)$(PATH_SEPARATOR)"
 export TEXMFCNF
-
-## Automake generated rules for documentation are not parallel-safe.
-## Restrict current directory to run serially
-.NOTPARALLEL:
 
 dist_man1_MANS = \
   mkoctfile.1 \
@@ -173,7 +171,7 @@ octetc_DATA = doc-cache
 DOCSTRING_FILES = $(shell $(srcdir)/find-docstring-files.sh "$(top_srcdir)")
 
 doc-cache: $(DOCSTRING_FILES) mk_doc_cache.m
-	$(TOPDIR)/run-octave -f -q -H $(srcdir)/mk_doc_cache.m doc-cache $(DOCSTRING_FILES) || { rm -f doc-cache; exit 1; }
+	$(top_builddir)/run-octave -f -q -H $(srcdir)/mk_doc_cache.m doc-cache $(DOCSTRING_FILES) || { rm -f doc-cache; exit 1; }
 
 ## Program compiled only to help build documentation.  No need to install
 noinst_PROGRAMS = munge-texi

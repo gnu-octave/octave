@@ -19,9 +19,11 @@
 # along with Octave; see the file COPYING.  If not, see
 # <http://www.gnu.org/licenses/>.
 
-TOPDIR = ..
+include $(top_srcdir)/common.mk
 
-include ../common.mk
+## Avoid making multiple subdirs in parallel which can lead 
+## to a confusing error message stream
+.NOTPARALLEL:
 
 EXTRA_DIST = \
   ChangeLog \
@@ -35,4 +37,3 @@ SUBDIRS = faq interpreter liboctave refcard
 	$(MAKE) -C interpreter ../$@
 .PHONY: ../BUGS ../INSTALL.OCTAVE
 
-.NOTPARALLEL:

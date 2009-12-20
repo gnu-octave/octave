@@ -19,9 +19,11 @@
 # along with Octave; see the file COPYING.  If not, see
 # <http://www.gnu.org/licenses/>.
 
-TOPDIR = ../..
+include $(top_srcdir)/common.mk
 
-include ../../common.mk
+## Automake generated rules for documentation are not parallel-safe.
+## Restrict current directory to run serially
+.NOTPARALLEL:
 
 TEXINFO_TEX = ../texinfo.tex
 
@@ -50,10 +52,7 @@ liboctave_TEXINFOS = \
 
 all-local: dvi html pdf ps
 
-EXTRA_DIST = liboctave.dvi liboctave.html liboctave.pdf liboctave.ps
-
 liboctave.info liboctave.dvi liboctave.html liboctave.pdf: $(srcdir)/version.texi
 
-## Automake generated rules for documentation are not parallel-safe.
-## Restrict current directory to run serially
-.NOTPARALLEL:
+EXTRA_DIST = liboctave.dvi liboctave.html liboctave.pdf liboctave.ps
+

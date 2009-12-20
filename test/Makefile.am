@@ -19,9 +19,7 @@
 # along with Octave; see the file COPYING.  If not, see
 # <http://www.gnu.org/licenses/>.
 
-TOPDIR = ..
-
-include ../common.mk
+include $(top_srcdir)/common.mk
 
 FCN_FILES = \
   fntests.m \
@@ -64,6 +62,12 @@ include @Sneetch/module.mk
 include @Snork/module.mk
 include @Spork/module.mk
 
+check: test_sparse.m
+	$(top_builddir)/run-octave --norc --silent --no-history $(srcdir)/fntests.m $(srcdir)
+
+test_sparse.m: build_sparse_tests.sh
+	$(srcdir)/build_sparse_tests.sh
+
 EXTRA_DIST = \
   ChangeLog \
   build_sparse_tests.sh \
@@ -74,10 +78,4 @@ CLEANFILES = \
 
 DISTCLEANFILES = \
   fntests.log
-
-check: test_sparse.m
-	../run-octave --norc --silent --no-history $(srcdir)/fntests.m $(srcdir)
-
-test_sparse.m: build_sparse_tests.sh
-	$(srcdir)/build_sparse_tests.sh
 

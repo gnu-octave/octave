@@ -19,9 +19,11 @@
 # along with Octave; see the file COPYING.  If not, see
 # <http://www.gnu.org/licenses/>.
 
-TOPDIR = ../..
+include $(top_srcdir)/common.mk
 
-include ../../common.mk
+## Automake generated rules for documentation are not parallel-safe.
+## Restrict current directory to run serially
+.NOTPARALLEL:
 
 TEXINFO_TEX = ../texinfo.tex
 
@@ -31,6 +33,3 @@ all-local: dvi html pdf ps
 
 EXTRA_DIST = OctaveFAQ.dvi OctaveFAQ.html OctaveFAQ.pdf OctaveFAQ.ps
 
-## Automake generated rules for documentation are not parallel-safe.
-## Restrict current directory to run serially
-.NOTPARALLEL:

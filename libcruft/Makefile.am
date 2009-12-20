@@ -19,9 +19,7 @@
 # along with Octave; see the file COPYING.  If not, see
 # <http://www.gnu.org/licenses/>.
 
-TOPDIR = ..
-
-include ../common.mk
+include $(top_srcdir)/common.mk
 
 AUTOMAKE_OPTIONS = subdir-objects
 
@@ -40,9 +38,7 @@ libcruft_la_DEPENDENCIES = cruft.def
 
 octinclude_HEADERS =
 
-DISTCLEANFILES = cruft.def
-
-EXTRA_DIST = ChangeLog STOP.patch mkf77def.in
+EXTRA_DIST =
 
 include amos/module.mk
 include blas-xtra/module.mk
@@ -64,4 +60,8 @@ cruft.def: $(libcruft_la_SOURCES) mkf77def
 	chmod a+rx mkf77def
 	./mkf77def $(srcdir) $(libcruft_la_SOURCES) > $@-t
 	$(simple_move_if_change_rule)
+
+EXTRA_DIST += ChangeLog STOP.patch mkf77def.in
+
+DISTCLEANFILES = cruft.def
 

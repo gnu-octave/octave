@@ -18,16 +18,44 @@
 # along with Octave; see the file COPYING.  If not, see
 # <http://www.gnu.org/licenses/>.
 
-TOPDIR = ..
-
-include ../common.mk
+include $(top_srcdir)/common.mk
 
 dist_archlib_SCRIPTS = info-emacs-info info-emacs-octave-help
 
 IMAGE_FILES = octave-sombrero.png
 image_DATA = $(IMAGE_FILES)
 
-EXTRA_DIST = \
+EXTRA_DIST = 
+
+FCN_FILE_DIRS =
+
+FCN_FILES =
+
+include @polynomial/module.mk
+include @FIRfilter/module.mk
+
+all-local: octave.desktop
+
+octave.desktop: octave.desktop.in Makefile
+	echo "making $@ from $<"
+	$(SED) < $< > $@-t \
+	  -e "s|%OCTAVE_IMAGEDIR%|${imagedir}|" \
+	  -e "s|%OCTAVE_PREFIX%|${prefix}|"
+	mv $@-t $@
+
+install-data-local:
+	-if test -n "$(DESKTOP_FILE_INSTALL)"; then \
+	  $(DESKTOP_FILE_INSTALL) --dir=$(DESTDIR)$(datadir)/applications \
+	    --vendor www.octave.org octave.desktop; \
+	fi
+
+uninstall-local:
+	if test -n "$(DESKTOP_FILE_INSTALL)"; then \
+	  rm -f $(DESTDIR)$(datadir)/applications/www.octave.org-octave.desktop; \
+	fi
+
+EXTRA_DIST += \
+  $(FCN_FILES) \
   $(IMAGE_FILES) \
   addtwomatrices.cc \
   celldemo.cc \
@@ -60,34 +88,5 @@ EXTRA_DIST = \
   structdemo.cc \
   unwinddemo.cc
 
-FCN_FILE_DIRS =
-
-FCN_FILES =
-
-include @polynomial/module.mk
-include @FIRfilter/module.mk
-
-EXTRA_DIST += $(FCN_FILES)
-
 CLEANFILES = octave.desktop
-
-all-local: octave.desktop
-
-octave.desktop: octave.desktop.in Makefile
-	echo "making $@ from $<"
-	$(SED) < $< > $@-t \
-	  -e "s|%OCTAVE_IMAGEDIR%|${imagedir}|" \
-	  -e "s|%OCTAVE_PREFIX%|${prefix}|"
-	mv $@-t $@
-
-install-data-local:
-	-if test -n "$(DESKTOP_FILE_INSTALL)"; then \
-	  $(DESKTOP_FILE_INSTALL) --dir=$(DESTDIR)$(datadir)/applications \
-	    --vendor www.octave.org octave.desktop; \
-	fi
-
-uninstall-local:
-	if test -n "$(DESKTOP_FILE_INSTALL)"; then \
-	  rm -f $(DESTDIR)$(datadir)/applications/www.octave.org-octave.desktop; \
-	fi
 

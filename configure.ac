@@ -1091,7 +1091,7 @@ case "$canonical_host_type" in
     RLD_FLAG='-Wl,-rpath -Wl,$(octlibdir)'
   ;;
   *-*-darwin*)
-    DL_LDFLAGS='-bundle -bundle_loader $(TOPDIR)/src/octave $(LDFLAGS)'
+    DL_LDFLAGS='-bundle -bundle_loader $(top_builddir)/src/octave $(LDFLAGS)'
     MKOCTFILE_DL_LDFLAGS='-bundle -bundle_loader $$BINDIR/octave-$$OCTAVE_VERSION$$EXEEXT'
     SH_LDFLAGS='-dynamiclib -single_module $(LDFLAGS)'
     case "$canonical_host_type" in
@@ -1624,9 +1624,9 @@ if $SHARED_LIBS; then
    LIBOCTAVE=-loctave$SHLLINKEXT
    LIBCRUFT=-lcruft$SHLLINKEXT
 else
-  LIBOCTINTERP='$(TOPDIR)/src/liboctinterp.$(LIBEXT)'
-  LIBOCTAVE='$(TOPDIR)/liboctave/liboctave.$(LIBEXT)'
-  LIBCRUFT='$(TOPDIR)/libcruft/libcruft.$(LIBEXT)'
+  LIBOCTINTERP='$(top_builddir)/src/liboctinterp.$(LIBEXT)'
+  LIBOCTAVE='$(top_builddir)/liboctave/liboctave.$(LIBEXT)'
+  LIBCRUFT='$(top_builddir)/libcruft/libcruft.$(LIBEXT)'
 fi
 
 AC_SUBST(LD_CXX)

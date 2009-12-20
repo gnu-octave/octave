@@ -1,4 +1,10 @@
-2009-12-11  Rik <octave@nomad.inbox5.com>
+2009-12-19  Rik <octave@nomad.inbox5.com>
+
+	* Makefile.am, examples/Makefile.am, common.mk, configure.ac: Eliminate
+	TOPDIR variable in favor of built-in automake variables of top_builddir
+	and top_srcdir.
+
+2009-12-19  Rik <octave@nomad.inbox5.com>
 
 	* Makefile.am: Use M4 quoting for arguments to autoconf macros containing
 	variables

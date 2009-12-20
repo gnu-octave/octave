@@ -1,3 +1,8 @@
+2009-12-19  Rik <octave@nomad.inbox5.com>
+
+	* Makefile.am: Eliminate TOPDIR variable in favor of built-in automake
+	variables of top_builddir and top_srcdir.
+
 2009-12-13  Rik <octave@nomad.inbox5.com>
 
 	* Makefile.am: Use simple_move_if_change_rule for cruft.def to eliminate

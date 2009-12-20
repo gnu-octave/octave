@@ -18,9 +18,7 @@
 # along with Octave; see the file COPYING.  If not, see
 # <http://www.gnu.org/licenses/>.
 
-TOPDIR = ../..
-
-include ../../common.mk
+include $(top_srcdir)/common.mk
 
 TEX = \
   refcard.tex \
@@ -38,14 +36,6 @@ FORMATTED = \
   refcard-letter.dvi \
   refcard-letter.ps \
   refcard-letter.pdf
-
-EXTRA_DIST = \
-  $(TEX) \
-  $(FORMATTED)
-
-CLEANFILES = refcard-a4.log refcard-legal.log refcard-letter.log
-
-MAINTAINERCLEANFILES = $(FORMATTED)
 
 all-local: $(FORMATTED)
 
@@ -75,3 +65,12 @@ refcard-letter.ps: refcard-letter.dvi
 
 refcard-letter.pdf: refcard-letter.tex refcard.tex
 	-TEXINPUTS="$(srcdir):$(TEXINPUTS):" pdftex $<
+
+EXTRA_DIST = \
+  $(TEX) \
+  $(FORMATTED)
+
+CLEANFILES = refcard-a4.log refcard-legal.log refcard-letter.log
+
+MAINTAINERCLEANFILES = $(FORMATTED)
+

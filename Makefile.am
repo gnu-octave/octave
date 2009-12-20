@@ -19,9 +19,11 @@
 # along with Octave; see the file COPYING.  If not, see
 # <http://www.gnu.org/licenses/>.
 
-TOPDIR = .
-
 include common.mk
+
+## Avoid making multiple subdirs in parallel which can lead 
+## to a confusing error message stream
+.NOTPARALLEL:
 
 ACLOCAL_AMFLAGS = -I m4
 
@@ -186,58 +188,3 @@ remove-version-links:
 	done
 .PHONY: remove-version-links
 
-# install install-strip ::
-# 	$(MKDIR_P) $(addprefix $(DESTDIR), $(DIRS_TO_MAKE))
-# 	rm -f $(DESTDIR)$(bindir)/octave-bug$(SCRIPTS_EXE_SUFFIX)
-# 	$(INSTALL_SCRIPT) octave-bug$(SCRIPTS_EXE_SUFFIX) \
-# 	    $(DESTDIR)$(bindir)/octave-bug-$(version)$(SCRIPTS_EXE_SUFFIX)
-# 	(cd $(DESTDIR)$(bindir); $(LN_S) octave-bug-$(version)$(SCRIPTS_EXE_SUFFIX) \
-# 	    $(DESTDIR)$(bindir)/octave-bug$(SCRIPTS_EXE_SUFFIX))
-# 	rm -f $(DESTDIR)$(bindir)/octave-config$(SCRIPTS_EXE_SUFFIX)
-# 	$(INSTALL_SCRIPT) \
-# 	  octave-config$(SCRIPTS_EXE_SUFFIX) $(DESTDIR)$(bindir)/octave-config-$(version)$(SCRIPTS_EXE_SUFFIX)
-# 	(cd $(DESTDIR)$(bindir); $(LN_S) octave-config-$(version)$(SCRIPTS_EXE_SUFFIX) \
-# 	    $(DESTDIR)$(bindir)/octave-config$(SCRIPTS_EXE_SUFFIX))
-# 	rm -f $(DESTDIR)$(bindir)/mkoctfile$(SCRIPTS_EXE_SUFFIX)
-# 	$(INSTALL_SCRIPT) mkoctfile$(SCRIPTS_EXE_SUFFIX) \
-# 	    $(DESTDIR)$(bindir)/mkoctfile-$(version)$(SCRIPTS_EXE_SUFFIX)
-# 	(cd $(DESTDIR)$(bindir); $(LN_S) mkoctfile-$(version)$(SCRIPTS_EXE_SUFFIX) \
-# 	    $(DESTDIR)$(bindir)/mkoctfile$(SCRIPTS_EXE_SUFFIX))
-# 	$(INSTALL_DATA) config.h $(DESTDIR)$(octincludedir)/octave/config.h
-
-# uninstall::
-# 	rm -f $(DESTDIR)$(bindir)/octave-bug$(SCRIPTS_EXE_SUFFIX)
-# 	rm -f $(DESTDIR)$(bindir)/octave-bug-$(version)$(SCRIPTS_EXE_SUFFIX)
-# 	rm -f $(DESTDIR)$(bindir)/octave-config$(SCRIPTS_EXE_SUFFIX)
-# 	rm -f $(DESTDIR)$(bindir)/octave-config-$(version)$(SCRIPTS_EXE_SUFFIX)
-# 	rm -f $(DESTDIR)$(bindir)/mkoctfile$(SCRIPTS_EXE_SUFFIX)
-# 	rm -f $(DESTDIR)$(bindir)/mkoctfile-$(version)$(SCRIPTS_EXE_SUFFIX)
-# 	rm -f $(DESTDIR)$(octincludedir)/octave/config.h
-# 	rm -f $(DESTDIR)$(octetcdir)/NEWS
-
-# maintainer-clean::
-# 	@echo ""
-# 	@echo "************************************************************"
-# 	@echo "*                                                          *"
-# 	@echo "* This command is intended for maintainers to use; it      *"
-# 	@echo "* deletes files that may require special tools to rebuild. *"
-# 	@echo "*                                                          *"
-# 	@echo "************************************************************"
-# 	@echo ""
-
-# maintainer-clean distclean::
-# 	rm -f Makefile
-# 	rm -f config.cache config.h config.log config.status
-# 	rm -rf autom4te.cache
-# 	rm -f $(SHELL_FILES)
-# 	rm -f mkoctfile.cc octave-config.cc octave-bug.cc
-# 	rm -f unistd.h
-
-# maintainer-clean::
-# 	rm -f configure config.h.in BUGS INSTALL.OCTAVE
-
-# maintainer-clean distclean clean::
-# 	rm -f mkoctfile$(EXEEXT) octave-config$(EXEEXT) octave-bug$(EXEEXT)
-# 	rm -f mkoctfile.o octave-config.o octave-bug.o
-
-.NOTPARALLEL:

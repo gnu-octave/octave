@@ -19,9 +19,7 @@
 # along with Octave; see the file COPYING.  If not, see
 # <http://www.gnu.org/licenses/>.
 
-TOPDIR = ..
- 
-include ../common.mk
+include $(top_srcdir)/common.mk
 
 AM_CPPFLAGS = -I$(top_srcdir)/libgnu -I$(top_srcdir)/libcruft/misc
 

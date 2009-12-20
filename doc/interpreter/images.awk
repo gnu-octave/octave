@@ -44,7 +44,7 @@ BEGIN {
 	printf ("\tcp $< $@\n");
       }
       printf ("%s.%s: %s\n", $j, ext, script);
-      printf ("\t$(TOPDIR)/run-octave -f -q -H -p $(srcdir) --eval \"%s ('%s', '%s');\"\n",
+      printf ("\t$(top_builddir)/run-octave -f -q -H -p $(srcdir) --eval \"%s ('%s', '%s');\"\n",
 	      basename, $j, ext);
     }
   }

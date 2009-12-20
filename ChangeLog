@@ -1,5 +1,11 @@
 2009-12-19  Rik <octave@nomad.inbox5.com>
 
+	* emacs/module.mk, examples/Makefile.am, info-emacs-info,
+	info-emacs-octave-help: Distribute emacs specific files from emacs
+	directory rather than examples directory
+
+2009-12-19  Rik <octave@nomad.inbox5.com>
+
 	* m4/module.mk, Makefile.am: Redo previous patch with distribution
 	triggered by m4/module.mk.
 

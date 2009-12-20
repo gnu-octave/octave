@@ -20,8 +20,6 @@
 
 include $(top_srcdir)/common.mk
 
-dist_archlib_SCRIPTS = info-emacs-info info-emacs-octave-help
-
 IMAGE_FILES = octave-sombrero.png
 image_DATA = $(IMAGE_FILES)
 

@@ -1,5 +1,10 @@
 2009-12-19  Rik <octave@nomad.inbox5.com>
 
+	* m4/module.mk, Makefile.am: Redo previous patch with distribution
+	triggered by m4/module.mk.
+
+2009-12-19  Rik <octave@nomad.inbox5.com>
+
 	* Makefile.am: Distribute m4/gnulib-cache.m4 per recommendation
 
 2009-12-19  Rik <octave@nomad.inbox5.com>

@@ -319,18 +319,7 @@ public:
 
   void set_name (void)
   {
-    std::stringstream name;
-    std::string sep;
-
-    if (fp.is_numbertitle ()) 
-      {
-        name << "Figure " << number ();
-        sep = ": ";
-      }
-    if (fp.get_name ().size ())
-      name << sep << fp.get_name ();
-
-    window_label = name.str ();
+    window_label = fp.get_title ();
     label (window_label.c_str ());
   }
 

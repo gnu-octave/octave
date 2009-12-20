@@ -52,6 +52,7 @@ EXTRA_DIST = \
   ROADMAP \
   SENDING-PATCHES \
   autogen.sh \
+  m4/gnulib-cache.m4 \
   missing \
   mk-opts.pl \
   mkinstalldirs \

@@ -1,3 +1,9 @@
+2009-12-20  Shai Ayal  <shaiay@users.sourceforge.net>
+
+	* DLD-FUNCTIONS/fltk_backend.cc (plot_sindow::set_name): New method.
+	(figure_manager::set_name, figure_manage::do_set_name): New methods.
+	(fltk_backend::property_changed): Handle change of figure title string.
+
 2009-12-19  Rik <octave@nomad.inbox5.com>
 
 	* Makefile.am: Eliminate TOPDIR variable in favor of built-in automake

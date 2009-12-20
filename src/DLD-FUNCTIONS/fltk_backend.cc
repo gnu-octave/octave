@@ -283,13 +283,10 @@ public:
     autoscale->show ();
     togglegrid->show ();
 
+    set_name ();
     resizable (canvas);
     size_range (4*status_h, 2*status_h);
 
-    std::stringstream name;
-    name << "octave: figure " << number ();
-    window_label = name.str ();
-    label (window_label.c_str ());
   }
 
   ~plot_window (void)
@@ -318,6 +315,23 @@ public:
   {
     damage (FL_DAMAGE_ALL);
     canvas->damage (FL_DAMAGE_ALL);
+  }
+
+  void set_name (void)
+  {
+    std::stringstream name;
+    std::string sep;
+
+    if (fp.is_numbertitle ()) 
+      {
+        name << "Figure " << number ();
+        sep = ": ";
+      }
+    if (fp.get_name ().size ())
+      name << sep << fp.get_name ();
+
+    window_label = name.str ();
+    label (window_label.c_str ());
   }
 
 private:
@@ -708,6 +722,17 @@ public:
     mark_modified (hnd2idx (gh));
   }
 
+  static void set_name (int idx)
+  {
+    if (instance_ok ())
+      instance->do_set_name (idx);
+  }
+
+  static void set_name (std::string idx_str)
+  {
+    set_name (str2idx (idx_str));
+  }
+
   static Matrix get_size (int idx)
   {
     return instance_ok () ? instance->do_get_size (idx) : Matrix ();
@@ -794,6 +819,15 @@ private:
     if ((win = windows.find (idx)) != windows.end ())
       {
 	win->second->mark_modified ();
+      }
+  }
+
+  void do_set_name (int idx)
+  {
+    wm_iterator win;
+    if ((win = windows.find (idx)) != windows.end ())
+      {
+	win->second->set_name ();
       }
   }
 
@@ -953,8 +987,13 @@ public:
 	    switch (id)
 	      {
 	      case base_properties::VISIBLE:
-                figure_manager::toggle_window_visibility (ov.string_value(), fp.is_visible ());
+                figure_manager::toggle_window_visibility (ov.string_value (), fp.is_visible ());
 		break;
+
+              case figure::properties::NAME:
+              case figure::properties::NUMBERTITLE:
+                figure_manager::set_name (ov.string_value ());
+                break;
 	      }
 	  }
       }

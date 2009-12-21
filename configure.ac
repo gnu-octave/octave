@@ -2390,29 +2390,6 @@ if test -n "$warn_64_bit"; then
   warn_msg_printed=true
 fi
 
-if test -n "$warn_gnuplot"; then
-
-  ## If you change this text, be sure to also change the corresponding
-  ## set of warnings above.
-
-  AC_MSG_WARN([])
-  AC_MSG_WARN([I didn't find gnuplot.  It isn't necessary to have gnuplot])
-  AC_MSG_WARN([installed, but you won't be able to use any of Octave's])
-  AC_MSG_WARN([plotting commands without it.])
-  AC_MSG_WARN([])
-  AC_MSG_WARN([If gnuplot is installed but it isn't in your path, you can])
-  AC_MSG_WARN([tell Octave where to find it using the gnuplot_binary])
-  AC_MSG_WARN([function.  For example,])
-  AC_MSG_WARN([])
-  AC_MSG_WARN([gnuplot_binary ("/full/name/of/gnuplot/binary")])
-  AC_MSG_WARN([])
-  AC_MSG_WARN([at the Octave prompt.])
-  AC_MSG_WARN([])
-  AC_MSG_WARN([Setting default value to $GNUPLOT])
-  AC_MSG_WARN([])
-  warn_msg_printed=true
-fi
-
 if $USE_64_BIT_IDX_T; then
   AC_MSG_WARN([])
   AC_MSG_WARN([You used the EXPERIMENTAL --enable-64 option.])
@@ -2456,12 +2433,41 @@ if $native_graphics; then
 else
   AC_MSG_WARN([])
   AC_MSG_WARN([I didn't find the necessary libraries to compile native])
-  AC_MSG_WARN([graphics. It isn't necessary to have native graphics])
-  AC_MSG_WARN([but you will have to use gnuplot or you won't be able])
-  AC_MSG_WARN([to use any of Octave's plotting commands])
+  AC_MSG_WARN([graphics.  It isn't necessary to have native graphics,])
+  AC_MSG_WARN([but you will need to have gnuplot installed or you won't])
+  AC_MSG_WARN([be able to use any of Octave's plotting commands])
   AC_MSG_WARN([])
   warn_msg_printed=true
 fi
+
+if test -n "$warn_gnuplot"; then
+  if $native_graphics; then
+    AC_MSG_WARN([])
+    AC_MSG_WARN([I didn't find gnuplot.  Plotting commands will use the])
+    AC_MSG_WARN([native graphics backend.])
+  else
+    AC_MSG_WARN([I didn't find gnuplot.  It isn't necessary to have gnuplot])
+    AC_MSG_WARN([installed, but you won't be able to use any of Octave's])
+    AC_MSG_WARN([plotting commands without it.])
+  fi
+  AC_MSG_WARN([])
+  AC_MSG_WARN([If gnuplot is installed, but isn't in your path, you can])
+  AC_MSG_WARN([tell Octave where to find it by using the gnuplot_binary])
+  AC_MSG_WARN([function.  For example,])
+  AC_MSG_WARN([])
+  AC_MSG_WARN([gnuplot_binary ("/full/path/and/name/of/gnuplot/binary")])
+  AC_MSG_WARN([])
+  AC_MSG_WARN([at the Octave prompt.])
+  AC_MSG_WARN([])
+  AC_MSG_WARN([Setting default value to $GNUPLOT])
+  AC_MSG_WARN([])
+
+  warn_msg_printed=true
+fi
+
+
+
+
 
 if $warn_msg_printed; then
   AC_MSG_NOTICE([])

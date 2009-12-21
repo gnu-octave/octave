@@ -635,22 +635,9 @@ else
 
     GNUPLOT="$gp_default"
 
-    ## If you change this text, be sure to also copy it to the set of
-    ## warnings at the end of the script
-
-    AC_MSG_WARN([I didn't find gnuplot.  It isn't necessary to have gnuplot])
-    AC_MSG_WARN([installed, but you won't be able to use any of Octave's])
-    AC_MSG_WARN([plotting commands without it.])
-    AC_MSG_WARN([])
-    AC_MSG_WARN([If gnuplot is installed but it isn't in your path, you can])
-    AC_MSG_WARN([tell Octave where to find it using the gnuplot_binary])
-    AC_MSG_WARN([function.  For example,])
-    AC_MSG_WARN([])
-    AC_MSG_WARN([gnuplot_binary ("/full/name/of/gnuplot/binary")])
-    AC_MSG_WARN([])
-    AC_MSG_WARN([at the Octave prompt.])
-    AC_MSG_WARN([])
-    AC_MSG_WARN([Setting default value to $GNUPLOT])
+    AC_MSG_WARN([gnuplot not found.  It isn't necessary to have gnuplot])
+    AC_MSG_WARN([installed, but without native graphics or gnuplot])
+	 AC_MSG_WARN([you won't be able to use any of Octave's plotting commands.])
   fi
 fi
 AC_SUBST(GNUPLOT)

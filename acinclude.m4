@@ -142,7 +142,7 @@ dnl This test program is due to Mike Hibler <mike@cs.utah.edu>.
 dnl We don't actually need to run this if we don't have putenv, but it
 dnl doesn't hurt.
 AC_DEFUN([OCTAVE_SMART_PUTENV],
-[AC_MSG_CHECKING(whether putenv uses malloc)
+[AC_MSG_CHECKING([whether putenv uses malloc])
 AC_CACHE_VAL(octave_cv_func_putenv_malloc,
 [AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #define VAR	"YOW_VAR"
@@ -195,7 +195,7 @@ main ()
   exit (rstr1 == rstr2 ? 0 : 1);
 }]])], octave_cv_func_putenv_malloc=yes, octave_cv_func_putenv_malloc=no,
     octave_cv_func_putenv_malloc=no)])dnl
-AC_MSG_RESULT($octave_cv_func_putenv_malloc)
+AC_MSG_RESULT([$octave_cv_func_putenv_malloc])
 if test $octave_cv_func_putenv_malloc = yes; then
   AC_DEFINE(SMART_PUTENV,1,[To quiet autoheader.])
 fi])
@@ -206,7 +206,7 @@ dnl
 dnl Check type of signal routines (posix, 4.2bsd, 4.1bsd or v7)
 AC_DEFUN([OCTAVE_SIGNAL_CHECK],
 [AC_REQUIRE([AC_TYPE_SIGNAL])
-AC_MSG_CHECKING(for type of signal functions)
+AC_MSG_CHECKING([for type of signal functions])
 AC_CACHE_VAL(octave_cv_signal_vintage,
 [
   AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <signal.h>]],
@@ -232,7 +232,7 @@ AC_CACHE_VAL(octave_cv_signal_vintage,
             sigpause (SIGINT);]])],
           [octave_cv_signal_vintage=svr3],
           [octave_cv_signal_vintage=v7])])])])
-AC_MSG_RESULT($octave_cv_signal_vintage)
+AC_MSG_RESULT([$octave_cv_signal_vintage])
 if test "$octave_cv_signal_vintage" = posix; then
 AC_DEFINE(HAVE_POSIX_SIGNALS, 1, [Define if you have POSIX style signals.])
 elif test "$octave_cv_signal_vintage" = "4.2bsd"; then
@@ -296,7 +296,7 @@ fi)])
 if test "$cross_compiling" = yes; then
   AC_MSG_RESULT([$octave_cv_must_reinstall_sighandlers assumed for cross compilation])
 else
-  AC_MSG_RESULT($octave_cv_must_reinstall_sighandlers)
+  AC_MSG_RESULT([$octave_cv_must_reinstall_sighandlers])
 fi
 if test "$octave_cv_must_reinstall_sighandlers" = yes; then
   AC_DEFINE(MUST_REINSTALL_SIGHANDLERS,1,[Define if signal handlers must be reinstalled after they are called.])
@@ -332,7 +332,7 @@ EOB
       [octave_cv_cxx_new_friend_template_decl=yes])
     AC_LANG_POP(C++)
   ])
-  AC_MSG_RESULT($octave_cv_cxx_new_friend_template_decl)
+  AC_MSG_RESULT([$octave_cv_cxx_new_friend_template_decl])
   if test $octave_cv_cxx_new_friend_template_decl = yes; then
     AC_DEFINE(CXX_NEW_FRIEND_TEMPLATE_DECL,1,[Define if your compiler supports `<>' stuff for template friends.])
   fi
@@ -346,7 +346,7 @@ dnl
 dnl OCTAVE_CC_FLAG
 AC_DEFUN([OCTAVE_CC_FLAG], [
   ac_safe=`echo "$1" | sed 'y%./+-:=%__p___%'`
-  AC_MSG_CHECKING(whether ${CC-cc} accepts $1)
+  AC_MSG_CHECKING([whether ${CC-cc} accepts $1])
   AC_CACHE_VAL(octave_cv_cc_flag_$ac_safe, [
     AC_LANG_PUSH(C)
     XCFLAGS="$CFLAGS"
@@ -376,7 +376,7 @@ dnl
 dnl OCTAVE_CXX_FLAG
 AC_DEFUN([OCTAVE_CXX_FLAG], [
   ac_safe=`echo "$1" | sed 'y%./+-:=%__p___%'`
-  AC_MSG_CHECKING(whether ${CXX-g++} accepts $1)
+  AC_MSG_CHECKING([whether ${CXX-g++} accepts $1])
   AC_CACHE_VAL(octave_cv_cxx_flag_$ac_safe, [
     AC_LANG_PUSH(C++)
     XCXXFLAGS="$CXXFLAGS"
@@ -406,7 +406,7 @@ dnl
 dnl OCTAVE_F77_FLAG
 AC_DEFUN([OCTAVE_F77_FLAG], [
   ac_safe=`echo "$1" | sed 'y%./+-:=%__p___%'`
-  AC_MSG_CHECKING(whether ${F77-g77} accepts $1)
+  AC_MSG_CHECKING([whether ${F77-g77} accepts $1])
   AC_CACHE_VAL(octave_cv_f77_flag_$ac_safe, [
     AC_LANG_PUSH(Fortran 77)
     XFFLAGS="$FFLAGS"
@@ -536,7 +536,7 @@ AC_DEFUN([OCTAVE_CHECK_LIBRARY], [
       AC_MSG_CHECKING([for $5 in $m4_toupper([$1])_LIBS])
       AC_LINK_IFELSE([AC_LANG_CALL([], [$5])],
 	[octave_$1_ok=yes])
-      AC_MSG_RESULT($octave_$1_ok)
+      AC_MSG_RESULT([$octave_$1_ok])
       if test $octave_$1_ok = yes; then
 	m4_ifblank([$8], [
 	  warn_$1=
@@ -553,7 +553,7 @@ AC_DEFUN([OCTAVE_CHECK_LIBRARY], [
   AC_SUBST(m4_toupper([$1])_LIBS)
   AC_SUBST([TEXINFO_]m4_toupper([$1]))
   if test -n "$warn_$1"; then
-    AC_MSG_WARN($warn_$1)
+    AC_MSG_WARN([$warn_$1])
     m4_toupper([$1])_LIBS=
   fi
 ])
@@ -576,7 +576,7 @@ AC_DEFUN([OCTAVE_PROG_FLEX], [
     *)
       LEX='$(top_srcdir)/missing flex'
       warn_flex="I didn't find flex, but it's only a problem if you need to reconstruct lex.cc"
-      AC_MSG_WARN($warn_flex)
+      AC_MSG_WARN([$warn_flex])
     ;;
   esac
   AC_SUBST(LFLAGS)
@@ -592,7 +592,7 @@ AC_DEFUN([OCTAVE_PROG_BISON], [
     *)
       YACC='$(top_srcdir)/missing bison'
       warn_bison="I didn't find bison, but it's only a problem if you need to reconstruct parse.cc"
-      AC_MSG_WARN($warn_bison)
+      AC_MSG_WARN([$warn_bison])
     ;;
   esac
 ])
@@ -602,7 +602,7 @@ dnl
 AC_DEFUN([OCTAVE_PROG_PAGER],
 [if test "$cross_compiling" = yes; then
   DEFAULT_PAGER=less
-  AC_MSG_RESULT(assuming $DEFAULT_PAGER exists on $canonical_host_type host)
+  AC_MSG_RESULT([assuming $DEFAULT_PAGER exists on $canonical_host_type host])
   AC_SUBST(DEFAULT_PAGER)
 else
   octave_possible_pagers="less more page pg"
@@ -615,7 +615,7 @@ else
   AC_CHECK_PROGS(DEFAULT_PAGER, $octave_possible_pagers, [])
   if test -z "$DEFAULT_PAGER"; then
     warn_less="I couldn't find \`less', \`more', \`page', or \`pg'"
-    AC_MSG_WARN($warn_less)
+    AC_MSG_WARN([$warn_less])
   fi
 fi
 ])
@@ -627,9 +627,9 @@ gp_names="gnuplot"
 gp_default="gnuplot"
 if test "$cross_compiling" = yes; then
   GNUPLOT="$gp_default"
-  AC_MSG_RESULT(assuming $GNUPLOT exists on $canonical_host_type host)
+  AC_MSG_RESULT([assuming $GNUPLOT exists on $canonical_host_type host])
 else
-  AC_CHECK_PROGS(GNUPLOT, $gp_names)
+  AC_CHECK_PROGS(GNUPLOT, [$gp_names])
   if test -z "$GNUPLOT"; then
     warn_gnuplot=yes
 
@@ -651,7 +651,7 @@ AC_DEFUN([OCTAVE_PROG_GPERF], [
   if test -z "$GPERF"; then
     GPERF='$(top_srcdir)/missing gperf'
     warn_gperf="I didn't find gperf, but it's only a problem if you need to reconstruct oct-gperf.h"
-    AC_MSG_WARN($warn_gperf)
+    AC_MSG_WARN([$warn_gperf])
   fi
   AC_SUBST(GPERF)
 ])
@@ -668,11 +668,11 @@ AC_DEFUN([OCTAVE_PROG_GHOSTSCRIPT], [
       gs_names="gs"
     ;;
   esac
-  AC_CHECK_PROGS(GHOSTSCRIPT, $gs_names)
+  AC_CHECK_PROGS(GHOSTSCRIPT, [$gs_names])
   if test -z "$GHOSTSCRIPT"; then
     GHOSTSCRIPT='$(top_srcdir)/missing gs'
     warn_ghostscript="I didn't find ghostscript, but it's only a problem if you need to reconstruct figures for the manual"
-    AC_MSG_WARN($warn_ghostscript)
+    AC_MSG_WARN([$warn_ghostscript])
   fi
   AC_SUBST(GHOSTSCRIPT)
 ])
@@ -685,7 +685,7 @@ AC_DEFUN([OCTAVE_PROG_MAKEINFO], [
   if test -z "$MAKEINFO"; then
     MAKEINFO='$(top_srcdir)/missing makeinfo'
     warn_makeinfo="I didn't find makeinfo, but it's only a problem if you need to reconstruct the Info version of the manual"
-    AC_MSG_WARN($warn_makeinfo)
+    AC_MSG_WARN([$warn_makeinfo])
   fi
   AC_SUBST(MAKEINFO)
 ])
@@ -698,7 +698,7 @@ AC_DEFUN([OCTAVE_PROG_TEXI2DVI], [
   if test -z "$TEXI2DVI"; then
     TEXI2DVI='$(top_srcdir)/missing texi2dvi'
     warn_texi2dvi="I didn't find texi2dvi, but it's only a problem if you need to reconstruct the DVI version of the manual"
-    AC_MSG_WARN($warn_texi2dvi)
+    AC_MSG_WARN([$warn_texi2dvi])
   fi
   AC_SUBST(TEXI2DVI)
 ])
@@ -721,7 +721,7 @@ AC_DEFUN([OCTAVE_PROG_TEXI2PDF], [
   if $missing; then
     TEXI2PDF='$(top_srcdir)/missing texi2pdf'
     warn_texi2pdf="I didn't find texi2pdf, but it's only a problem if you need to reconstruct the PDF version of the manual"
-    AC_MSG_WARN($warn_texi2pdf)
+    AC_MSG_WARN([$warn_texi2pdf])
   fi
   AC_SUBST(TEXI2PDF)
 ])
@@ -756,7 +756,7 @@ AC_DEFUN([OCTAVE_CXX_ISO_COMPLIANT_LIBRARY], [
       [octave_cv_cxx_iso_compliant_library=no])
     AC_LANG_POP(C++)
   ])
-  AC_MSG_RESULT($octave_cv_cxx_iso_compliant_library)
+  AC_MSG_RESULT([$octave_cv_cxx_iso_compliant_library])
   if test $octave_cv_cxx_iso_compliant_library = yes; then
     AC_DEFINE(CXX_ISO_COMPLIANT_LIBRARY, 1, [Define if your C++ runtime library is ISO compliant.])
   fi
@@ -954,7 +954,7 @@ main (void)
 if test "$cross_compiling" = yes; then
   AC_MSG_RESULT([$octave_cv_ieee754_data_format assumed for cross compilation])
 else
-  AC_MSG_RESULT($octave_cv_ieee754_data_format)
+  AC_MSG_RESULT([$octave_cv_ieee754_data_format])
 fi
 if test "$octave_cv_ieee754_data_format" = yes; then
   AC_DEFINE(HAVE_IEEE754_DATA_FORMAT, 1, [Define if your system uses IEEE 754 data format.])
@@ -1017,7 +1017,7 @@ int main (void)
 if test "$cross_compiling" = yes; then
   AC_MSG_RESULT([$octave_cv_umfpack_seperate_split assumed for cross compilation])
 else
-  AC_MSG_RESULT($octave_cv_umfpack_seperate_split)
+  AC_MSG_RESULT([$octave_cv_umfpack_seperate_split])
 fi
 if test "$octave_cv_umfpack_seperate_split" = yes; then
   AC_DEFINE(UMFPACK_SEPARATE_SPLIT, 1, [Define if the UMFPACK Complex solver allow matrix and RHS to be split independently])
@@ -1497,7 +1497,7 @@ dnl $4, otherwise do $5.
 dnl
 dnl OCTAVE_HAVE_FRAMEWORK
 AC_DEFUN([OCTAVE_HAVE_FRAMEWORK], [
-  AC_MSG_CHECKING(whether ${LD-ld} accepts -framework $1)
+  AC_MSG_CHECKING([whether ${LD-ld} accepts -framework $1])
   AC_CACHE_VAL(octave_cv_framework_$1, [
     XLDFLAGS="$LDFLAGS"
     LDFLAGS="$LDFLAGS -framework $1"

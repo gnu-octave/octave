@@ -1,5 +1,9 @@
 2009-12-20  Rik <octave@nomad.inbox5.com>
 
+	* acinclude.m4: use M4 quoting for arguments to autoconf macros
+
+2009-12-20  Rik <octave@nomad.inbox5.com>
+
 	* configure.ac, acinclude.m4: Better warnings when gnuplot is not
 	installed but native graphics are available
 

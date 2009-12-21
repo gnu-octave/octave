@@ -1,5 +1,9 @@
 2009-12-19  Rik <octave@nomad.inbox5.com>
 
+	* build_sparse_tests.sh: Use lognrnd instead of deprecated lognormal_rnd
+
+2009-12-19  Rik <octave@nomad.inbox5.com>
+
 	* Makefile.am: Eliminate TOPDIR variable in favor of built-in automake
 	variables of top_builddir and top_srcdir.
 

@@ -21,17 +21,18 @@
 # Some tests are commented out because they are known to be broken!
 # Search for "# fails"   
 
-# ./buildtest.sh preset
+# ./build_sparse_tests.sh preset
 #    creates test_sparse.m with preset tests.
 #    Use "test test_sparse" from octave to run the tests.
 #
-# ./buildtest.sh random
+# ./build_sparse_tests.sh random
 #    Creates test_sprandom.m with randomly generated matrices.
+#    Use "test test_sprandom" from octave to run the tests.
 
-# buildtest.sh generates tests for real and complex sparse matrices.
+# build_sparse_tests.sh generates tests for real and complex sparse matrices.
 # Also, we want to run both fixed tests with known outputs (quick tests)
 # and longer tests with unknown outputs (thorough tests).  This requires
-# two sets of tests --- one which uses preset matrices and another which
+# two sets of tests -- one which uses preset matrices and another which
 # uses randomly generated matrices.
 #
 # The tests are mostly identical for each case but the code is different,
@@ -109,7 +110,7 @@ case $1 in
     random) preset=false ;;
     preset) preset=true ;;
     '') preset=true ;;
-    *) echo "buildtest.sh random|preset" && exit 1 ;;
+    *) echo "build_sparse_tests.sh random|preset" && exit 1 ;;
 esac
 
 if $preset; then
@@ -252,7 +253,7 @@ EOF
 ##  end
 ##  The test log is appended to sprandomtest.log
 function [passes,total] = test_sprandom
-  warning("untested --- fix the source in buildtests.sh");
+  warning("untested --- fix the source in build_sparse_tests.sh");
   disp("appending test output to sprandomtest.log");
   fid = fopen("sprandomtest.log","at");
   test("test_sprandom","normal",fid);
@@ -955,7 +956,7 @@ if $preset; then
 EOF
 else
   cat >>$TESTS <<EOF
-%! n=floor(lognormal_rnd(8,2)+1)'
+%! n=floor(lognrnd(8,2)+1)'
 %! ls = tril(sprandn(8,8,0.2),-1).*alpha + n*speye(8); lf = full(ls);
 %! us = triu(sprandn(8,8,0.2),1).*alpha + n*speye(8); uf = full(us);
 %! ts = spdiags(randn(8,3),-1:1,8,8).*alpha; tf = full(ts);
@@ -1140,8 +1141,8 @@ else
     cat >>$TESTS <<EOF
 %!test
 %! % generate m,n from 1 to <5000
-%! m=floor(lognormal_rnd(8,2)+1);
-%! n=floor(lognormal_rnd(8,2)+1);
+%! m=floor(lognrnd(8,2)+1);
+%! n=floor(lognrnd(8,2)+1);
 %! as=sprandn(m,n,0.3); af = full(as+1i*sprandn(as));
 %! bf = randn;
 EOF
@@ -1157,8 +1158,8 @@ if $preset; then
 else
     cat >>$TESTS <<EOF
 %!test
-%! m=floor(lognormal_rnd(8,2)+1);
-%! n=floor(lognormal_rnd(8,2)+1);
+%! m=floor(lognrnd(8,2)+1);
+%! n=floor(lognrnd(8,2)+1);
 %! as=sprandn(m,n,0.3); af = full(as+1i*sprandn(as));
 %! bs=sprandn(m,n,0.3); bf = full(bs+1i*sprandn(bs));
 EOF
@@ -1190,8 +1191,8 @@ if $preset; then
 else
     cat >>$TESTS <<EOF
 %!test
-%! m=floor(lognormal_rnd(8,2)+1);
-%! n=floor(lognormal_rnd(8,2)+1);
+%! m=floor(lognrnd(8,2)+1);
+%! n=floor(lognrnd(8,2)+1);
 %! as=sprandn(m,n,0.3); af = full(as+1i*sprandn(as));
 %! bs=sprandn(m,n,0.3); bf = full(bs+1i*sprandn(bs));
 EOF
@@ -1225,7 +1226,7 @@ if $preset; then
   echo '%! bs=sparse(bf);' >> $TESTS
 else
   echo '# This has a small chance of failing to create a positive definite matrix' >> $TESTS
-  echo '%!test n=floor(lognormal_rnd(8,2)+1)' >> $TESTS
+  echo '%!test n=floor(lognrnd(8,2)+1)' >> $TESTS
   echo '%! bs = n*speye(n,n) + sprandn(n,n,0.3); bf = full(bs);' >> $TESTS
 fi
 
@@ -1249,8 +1250,8 @@ else
     cat >>$TESTS <<EOF
 %!test
 %! % generate m,n from 1 to <5000
-%! m=floor(lognormal_rnd(8,2)+1);
-%! n=floor(lognormal_rnd(8,2)+1);
+%! m=floor(lognrnd(8,2)+1);
+%! n=floor(lognrnd(8,2)+1);
 %! nz=ceil((m+n)/2);
 %! r=floor(rand(5,nz)*n)+1;
 %! c=floor(rand(5,nn)*m)+1;
@@ -1271,8 +1272,8 @@ else
     cat >>$TESTS <<EOF
 %!test
 %! % generate m,n from 1 to <5000
-%! m=floor(lognormal_rnd(8,2)+1);
-%! n=floor(lognormal_rnd(8,2)+1);
+%! m=floor(lognrnd(8,2)+1);
+%! n=floor(lognrnd(8,2)+1);
 %! as=sprandn(m,n,0.3); af = full(as+1i*sprandn(as));
 %! ridx = ceil(m*rand(1,ceil(rand*m))
 %! cidx = ceil(n*rand(1,ceil(rand*n))

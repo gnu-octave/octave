@@ -1,3 +1,7 @@
+2009-12-21  Rik <octave@nomad.inbox5.com>
+
+	* dlfcn directory: Remove dlfcn directory with leftover code from 1996
+
 2009-12-20  Rik <octave@nomad.inbox5.com>
 
 	* acinclude.m4: use M4 quoting for arguments to autoconf macros

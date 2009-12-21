@@ -1,3 +1,8 @@
+2009-12-20  Rik <octave@nomad.inbox5.com>
+
+	* interpreter/geometryimages.m: Correctly set postscript output when QHULL
+	library does not exist and sombrero image is printed.
+
 2009-12-19  Rik <octave@nomad.inbox5.com>
 
 	* Makefile.am, faq/Makefile.am, interpreter/Makefile.am,

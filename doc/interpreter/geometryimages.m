@@ -140,6 +140,11 @@ function sombreroimage (nm, typ)
   else ## if (!strcmp (typ, "txt"))
 
     hide_output ();
+    if (strcmp (typ, "eps"))
+      d_typ = "-depsc2";
+    else
+      d_typ = cstrcat ("-d", typ);
+    endif
 
     x = y = linspace (-8, 8, 41)';
     [xx, yy] = meshgrid (x, y);

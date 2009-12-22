@@ -543,6 +543,13 @@ do_cumminmax_body (const octave_value_list& args,
         MAKE_INT_BRANCH (uint32);
         MAKE_INT_BRANCH (uint64);
 #undef MAKE_INT_BRANCH
+        case btyp_bool:
+          {
+            retval = do_cumminmax_red_op<int8NDArray> (arg, nargout, dim, ismin);
+            if (retval.length () > 0)
+              retval(0) = retval(0).bool_array_value ();
+            break;
+          }
         default:
           gripe_wrong_type_arg (func, arg);
       }

@@ -1,3 +1,7 @@
+2009-12-16  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/max.cc (do_cumminmax_body): Support also btyp_bool.
+
 2009-12-22  Rob Mahurin  <octave@tertiarysource.net>
 
 	* find-defun-files.sh: Use SED and EGREP as returned by configure.

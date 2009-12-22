@@ -1,6 +1,8 @@
 #! /bin/sh
 
 set -e
+SED=${SED:-sed}
+EGREP=${EGREP:-egrep}
 
 # Some stupid egreps don't like empty elements in alternation patterns,
 # so we have to repeat ourselves because some stupid egreps don't like
@@ -18,7 +20,7 @@ do
   else
     file="$srcdir/$arg"
   fi
-  if [ "`egrep -l "$DEFUN_PATTERN" $file`" ]; then
-    echo "$file" | sed 's,.*/,,; s/\.\(cc\|yy\|ll\)$/.df/';
+  if [ "`$EGREP -l "$DEFUN_PATTERN" $file`" ]; then
+    echo "$file" | $SED 's,.*/,,; s/\.\(cc\|yy\|ll\)$/.df/';
   fi
 done

@@ -1,3 +1,7 @@
+2009-12-22  Rob Mahurin  <octave@tertiarysource.net>
+
+	* find-defun-files.sh: Use SED and EGREP as returned by configure.
+
 2009-12-20  Shai Ayal  <shaiay@users.sourceforge.net>
 
 	* DLD-FUNCTIONS/fltk_backend.cc (plot_sindow::set_name): New method.

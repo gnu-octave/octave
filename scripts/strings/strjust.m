@@ -43,35 +43,69 @@ function x = strjust (x, just)
 
   if (nargin == 1)
     just = "right";
-  endif
-
-  just = tolower (just);
-
-  ## convert nulls to blanks
-  idx = find (toascii (x) == 0);
-  if (! isempty (idx))
-    x(idx) = " ";
-  endif
-
-  ## For all cases, left, right and center, the algorithm is the same.
-  ## Find the number of blanks at the left/right end to determine the
-  ## shift, rotate the row index by using mod with that shift, then
-  ## translate the shifted row index into an array index.
-  [nr, nc] = size (x);
-  idx = (x' != " ");
-  if (strcmp (just, "right"))
-    [N, hi] = max (cumsum (idx));
-    shift = hi;
-  elseif (strcmp (just, "left"))
-    [N, lo] = max (cumsum (flipud (idx)));
-    shift = (nc - lo);
   else
-    [N, hi] = max (cumsum (idx));
-    [N, lo] = max (cumsum (flipud (idx)));
-    shift = ceil (nc - (lo-hi)/2);
+    just = tolower (just);
   endif
-  idx = rem (ones(nr,1)*[0:nc-1] + shift'*ones(1,nc), nc);
-  x = x (idx*nr + [1:nr]'*ones(1,nc));
+
+  if (ndims (x) != 2)
+    error ("needs a string or character matrix");
+  endif
+
+  if (isempty (x))
+    return
+  endif
+
+  if (rows (x) == 1)
+    ## string case
+    nonbl = x != " " & x != char (0);
+    n = length (x);
+    switch (just)
+    case "right"
+      idx = find (nonbl, 1, "last");
+      if (idx < n) # false if idx is empty
+        x = [" "(1, ones (1, n-idx)), x(1:idx)];
+      endif
+    case "left"
+      idx = find (nonbl, 1, "first");
+      if (idx > 1) # false if idx is empty
+        x = [x(idx:n), " "(1, ones (1, idx))];
+      endif
+    case "center"
+      idx = find (nonbl, 1, "first");
+      jdx = find (nonbl, 1, "last");
+      if (idx > 1 || jdx < n)
+        nsp = ((idx - 1) + (n - jdx)) / 2;
+        lpad = " "(1, ones (1, floor (nsp)));
+        rpad = " "(1, ones (1, ceil (nsp)));
+        x = [lpad, x(idx:jdx), rpad];
+      endif
+    otherwise
+      error ("strjust: invalid justify type: %s", just);
+    endswitch
+  else
+    ## char matrix case.
+
+    ## For all cases, left, right and center, the algorithm is the same.
+    ## Find the number of blanks at the left/right end to determine the
+    ## shift, rotate the row index by using mod with that shift, then
+    ## translate the shifted row index into an array index.
+    [nr, nc] = size (x);
+    idx = (x != " " & x != char (0)).';
+    if (strcmp (just, "right"))
+      [N, hi] = max (cumsum (idx));
+      shift = hi;
+    elseif (strcmp (just, "left"))
+      [N, lo] = max (cumsum (flipud (idx)));
+      shift = (nc - lo);
+    else
+      [N, hi] = max (cumsum (idx));
+      [N, lo] = max (cumsum (flipud (idx)));
+      shift = ceil (nc - (lo-hi)/2);
+    endif
+    idx = rem (ones(nr,1)*[0:nc-1] + shift'*ones(1,nc), nc);
+    x = x (idx*nr + [1:nr]'*ones(1,nc));
+
+  endif
 
 endfunction
 

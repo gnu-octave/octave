@@ -1,3 +1,7 @@
+2009-12-23  Jaroslav Hajek  <highegg@gmail.com>
+
+	* strings/strjust.m: Special-case string and empty argument.
+
 2009-12-19  Rik <octave@nomad.inbox5.com>
 
 	* Makefile.am: Eliminate TOPDIR variable in favor of built-in automake

@@ -1,3 +1,7 @@
+2009-12-24  Jaroslav Hajek  <highegg@gmail.com>
+
+	* strings/strjust.m: Rewrite.
+
 2009-12-23  Jaroslav Hajek  <highegg@gmail.com>
 
 	* strings/strjust.m: Special-case string and empty argument.

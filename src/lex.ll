@@ -24,6 +24,12 @@ along with Octave; see the file COPYING.  If not, see
 
 %option prefix = "octave_"
 
+%top {
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+}
+
 %s COMMAND_START
 %s MATRIX_START
 
@@ -31,9 +37,6 @@ along with Octave; see the file COPYING.  If not, see
 %x FUNCTION_FILE_BEGIN
 
 %{
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
 
 #include <cctype>
 #include <cstring>

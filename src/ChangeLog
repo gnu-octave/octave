@@ -1,3 +1,7 @@
+2009-12-23  John W. Eaton  <jwe@octave.org>
+
+	* lex.ll: Use %top block to include config.h.
+
 2009-12-16  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/max.cc (do_cumminmax_body): Support also btyp_bool.

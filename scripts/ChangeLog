@@ -1,5 +1,11 @@
 2009-12-25  Jaroslav Hajek  <highegg@gmail.com>
 
+	* general/issquare.m: Do not check type.
+	* linear-algebra/issymmetric.m: Strengthen test.
+	* linear-algebra/ishermitian.m: Strengthen test.
+
+2009-12-25  Jaroslav Hajek  <highegg@gmail.com>
+
 	* strings/strfind.m: Remove.
 	* strings/module.mk: Update.
 

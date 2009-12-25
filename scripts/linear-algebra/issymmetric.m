@@ -39,7 +39,7 @@ function retval = issymmetric (x, tol = 0)
     print_usage ();
   endif
 
-  retval = issquare (x);
+  retval = isnumeric (x) && issquare (x);
   if (retval)
     if (tol == 0)
       retval = all ((x == x.')(:));

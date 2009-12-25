@@ -30,7 +30,7 @@
 function retval = issquare (x)
 
   if (nargin == 1)
-    if (ismatrix (x) && ndims (x) == 2)
+    if (ndims (x) == 2)
       [r, c] = size (x);
       retval = r == c;
     else
@@ -51,16 +51,16 @@ endfunction
 %!assert(issquare ([1, 2; 3, 4]));
 
 %!test
-%! assert(!(issquare ("t")));
+%! assert(issquare ("t"));
 
 %!assert(!(issquare ("test")));
 
 %!test
-%! assert(!(issquare (["test"; "ing"; "1"; "2"])));
+%! assert(issquare (["test"; "ing"; "1"; "2"]));
 
 %!test
 %! s.a = 1;
-%! assert(!(issquare (s)));
+%! assert(issquare (s));
 
 %!assert(!(issquare ([1, 2; 3, 4; 5, 6])));
 

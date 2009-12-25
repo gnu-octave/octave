@@ -3375,9 +3375,9 @@ Return 1 if @var{a} is a matrix.  Otherwise, return 0.\n\
 %!assert(ismatrix (single([1, 2, 3])));
 %!assert(ismatrix (single([1, 2; 3, 4])));
 
-%!assert(ismatrix ("t"), false);
-%!assert(ismatrix ("test"), false);
-%!assert(ismatrix (["test"; "ing"]), false);
+%!assert(ismatrix ("t"));
+%!assert(ismatrix ("test"));
+%!assert(ismatrix (["test"; "ing"]));
 
 %!test
 %! s.a = 1;

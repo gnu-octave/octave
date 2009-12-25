@@ -1,5 +1,11 @@
 2009-12-25  Jaroslav Hajek  <highegg@gmail.com>
 
+	* ov-str-mat.h (octave_char_matrix_str::is_matrix_type): Remove
+	override.
+	* data.cc (Fismatrix): Update test.
+
+2009-12-25  Jaroslav Hajek  <highegg@gmail.com>
+
 	* DLD-FUNCTIONS/strfind.cc: New source.
 	* DLD-FUNCTIONS/module-files: Add it here.
 

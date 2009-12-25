@@ -1,3 +1,8 @@
+2009-12-25  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/strfind.cc: New source.
+	* DLD-FUNCTIONS/module-files: Add it here.
+
 2009-12-23  John W. Eaton  <jwe@octave.org>
 
 	* lex.ll: Use %top block to include config.h.

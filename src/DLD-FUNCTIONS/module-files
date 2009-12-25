@@ -65,6 +65,7 @@ schur.cc
 sparse.cc
 spparms.cc
 sqrtm.cc
+strfind.cc
 sub2ind.cc
 svd.cc
 syl.cc

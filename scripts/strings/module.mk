@@ -23,7 +23,6 @@ strings_FCN_FILES = \
   strings/cstrcat.m \
   strings/strcmpi.m \
   strings/strchr.m \
-  strings/strfind.m \
   strings/strjust.m \
   strings/strmatch.m \
   strings/strncmpi.m \

@@ -208,7 +208,6 @@ INCS = \
   lo-traits.h \
   lo-utils.h \
   mach-info.h \
-  md5.h \
   oct-alloc.h \
   oct-cmplx.h \
   oct-env.h \
@@ -457,7 +456,6 @@ LIBOCTAVE_C_SOURCES = \
   getopt1.c \
   lo-cieee.c \
   lo-cutils.c \
-  md5.c \
   mkdir.c \
   oct-getopt.c \
   randgamma.c \

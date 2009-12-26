@@ -1,3 +1,7 @@
+2009-12-25  John W. Eaton  <jwe@octave.org>
+
+	* bootstrap.conf (gnulib_modules): Include crypto/md5 in the list.
+
 2009-12-22  Rik <octave@nomad.inbox5.com>
 
 	* configure.ac: Remove second redundant test for nlink_t

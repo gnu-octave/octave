@@ -1,3 +1,13 @@
+2009-12-25  John W. Eaton  <jwe@octave.org>
+
+	* oct-md5.cc (oct_md5_result_to_str): New function.
+	(oct_md5, oct_md5_file): Simplify using gnulib md5 functions and
+	oct_md5_result_to_str.
+
+	* Makefile.am (INCS): Remove md5.h from the list.
+	(LIBOCTAVE_C_SOURCES): Remove md5.c from the list.
+	* md5.c, md5.h: Delete.
+
 2009-12-19  Rik <octave@nomad.inbox5.com>
 
 	* Makefile.am: Eliminate TOPDIR variable in favor of built-in automake

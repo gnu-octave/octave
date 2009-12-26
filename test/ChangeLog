@@ -1,3 +1,8 @@
+2009-12-25  John W. Eaton  <jwe@octave.org>
+
+	* fntests.m (hastests): Use regexp instead of findstr and only
+	match tests that appear as the first thing on a line.
+
 2009-12-19  Rik <octave@nomad.inbox5.com>
 
 	* build_sparse_tests.sh: Use lognrnd instead of deprecated lognormal_rnd

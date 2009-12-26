@@ -87,8 +87,8 @@ function y = hastests (f)
   else
     str = fread (fid, "*char")';
     fclose (fid);
-    y = (findstr (str, "%!test") || findstr (str, "%!assert")
-	 || findstr (str, "%!error") || findstr (str, "%!warning"));
+    y = ! isempty (regexp (str, "^[ \t]*%!(test|assert|error|warning)",
+                           "lineanchors"));
   endif
 endfunction
 
@@ -101,7 +101,7 @@ function [dp, dn, dxf, dsk] = run_test_dir (fid, d);
     nm = lst(i).name;
     if (length (nm) > 5 && strcmp (nm(1:5), "test_")
 	&& strcmp (nm((end-1):end), ".m"))
-      p = n = 0;
+      p = n = xf = sk = 0;
       ffnm = fullfile (d, nm);
       if (hastests (ffnm))
 	print_test_file_name (nm);

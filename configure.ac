@@ -1435,7 +1435,7 @@ AC_CHECK_FUNCS(atexit basename bcopy bzero canonicalize_file_name \
   getegid geteuid getgid getgrent getgrgid getgrnam getpgrp getpid \
   getppid getpwent getpwuid gettimeofday getuid getwd _kbhit kill \
   lgamma lgammaf lgamma_r lgammaf_r link localtime_r log1p log1pf lstat \
-  memmove mkdir mkfifo mkstemp on_exit pipe poll putenv raise readlink \
+  memmove mkfifo mkstemp on_exit pipe poll putenv raise readlink \
   realpath rename resolvepath rindex rmdir roundl select setgrent setlocale \
   setpwent setvbuf sigaction siglongjmp sigpending sigprocmask sigsuspend \
   snprintf stat strcasecmp strdup strerror stricmp strncasecmp \
@@ -1730,9 +1730,6 @@ AC_STRUCT_TIMEZONE
 AC_FUNC_CLOSEDIR_VOID
 
 AC_CHECK_MEMBERS(struct group.gr_passwd)
-
-# mkdir takes a single argument on some systems.
-OCTAVE_MKDIR_TAKES_ONE_ARG
 
 octave_found_termlib=no
 for termlib in ncurses curses termcap terminfo termlib; do

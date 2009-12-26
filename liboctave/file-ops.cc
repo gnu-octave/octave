@@ -108,22 +108,13 @@ file_ops::mkdir (const std::string& name, mode_t mode, std::string& msg)
 
   int status = -1;
 
-#if defined (HAVE_MKDIR)
-
-#if defined (MKDIR_TAKES_ONE_ARG)
-  status = ::mkdir (name.c_str ());
-#else
   status = ::mkdir (name.c_str (), mode);
-#endif
 
   if (status < 0)
     {
       using namespace std;
       msg = ::strerror (errno);
     }
-#else
-  msg = NOT_SUPPORTED ("mkdir");
-#endif
 
   return status;
 }

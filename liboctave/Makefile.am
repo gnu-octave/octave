@@ -456,7 +456,6 @@ LIBOCTAVE_C_SOURCES = \
   getopt1.c \
   lo-cieee.c \
   lo-cutils.c \
-  mkdir.c \
   oct-getopt.c \
   randgamma.c \
   randmtzig.c \

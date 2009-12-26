@@ -1,5 +1,12 @@
 2009-12-25  John W. Eaton  <jwe@octave.org>
 
+	* bootstrap.conf (gnulib_modules): Include mkdir in the list.
+	* configure.ac: Don't check for mkdir.
+	Don't call OCTAVE_MKDIR_TAKES_ONE_ARG.
+	* acinclude.m4 (OCTAVE_MKDIR_TAKES_ONE_ARG): Delete.
+
+2009-12-25  John W. Eaton  <jwe@octave.org>
+
 	* bootstrap.conf (gnulib_modules): Include crypto/md5 in the list.
 
 2009-12-22  Rik <octave@nomad.inbox5.com>

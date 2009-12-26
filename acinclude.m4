@@ -811,28 +811,6 @@ AC_DEFUN([OCTAVE_CXX_BROKEN_REINTERPRET_CAST], [
 fi
   AC_LANG_POP(C++)])
 dnl
-dnl Determine if mkdir accepts only one argument instead dnl of the usual 2.
-dnl
-AC_DEFUN([OCTAVE_MKDIR_TAKES_ONE_ARG], [
-AC_LANG_PUSH(C++)
-AC_CACHE_CHECK([if mkdir takes one argument], octave_cv_mkdir_takes_one_arg,
-[AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <sys/types.h>
-#ifdef HAVE_SYS_STAT_H
-# include <sys/stat.h>
-#endif
-#ifdef HAVE_UNISTD_H
-# include <unistd.h>
-#endif
-#ifdef HAVE_DIRECT_H
-# include <direct.h>
-#endif]], [[mkdir ("foo", 0);]])],
-        octave_cv_mkdir_takes_one_arg=no, octave_cv_mkdir_takes_one_arg=yes)])
-AC_LANG_POP(C++)
-if test $octave_cv_mkdir_takes_one_arg = yes ; then
-  AC_DEFINE(MKDIR_TAKES_ONE_ARG, 1, [Define if host mkdir takes a single argument.])
-fi
-])
-dnl
 dnl Find find.
 dnl
 # Prefer GNU find if found.

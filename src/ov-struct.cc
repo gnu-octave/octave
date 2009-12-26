@@ -448,7 +448,7 @@ octave_struct::subsasgn (const std::string& type,
                               gripe_failed_assignment ();
                           }
                         else if (! error_state)
-                          error ("invalid assignment to cs-list outside multiple assignment.");
+                          gripe_nonbraced_cs_list_assignment ();
                       }
 		  }
 		else

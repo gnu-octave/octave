@@ -30,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "defun.h"
 #include "error.h"
+#include "gripes.h"
 #include "input.h"
 #include "oct-obj.h"
 #include "oct-lvalue.h"
@@ -227,6 +228,9 @@ tree_simple_assignment::rvalue1 (int)
 		}
 
 	      octave_lvalue ult = lhs->lvalue ();
+
+              if (ult.numel () != 1)
+                gripe_nonbraced_cs_list_assignment ();
 
 	      if (! error_state)
 		{

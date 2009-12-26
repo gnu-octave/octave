@@ -139,6 +139,9 @@ extern OCTINTERP_API void
 gripe_indexed_cs_list (void);
 
 extern OCTINTERP_API void
+gripe_nonbraced_cs_list_assignment (void);
+
+extern OCTINTERP_API void
 gripe_warn_complex_cmp (void);
 
 #endif

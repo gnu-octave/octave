@@ -359,7 +359,7 @@ octave_cell::subsasgn (const std::string& type,
               // Regularize a null matrix if stored into a cell.
               octave_base_matrix<Cell>::assign (idxf, Cell (t_rhs.storable_value ()));
             else if (! error_state)
-              error ("invalid assignment to cs-list outside multiple assignment.");
+              gripe_nonbraced_cs_list_assignment ();
 
 	    if (! error_state)
 	      {

@@ -1,3 +1,12 @@
+2009-12-26  Jaroslav Hajek  <highegg@gmail.com>
+
+	* gripes.cc (gripe_nonbraced_cs_list_assignment): New function.
+	* gripes.h: Declare it.
+	* ov-cell.cc (octave_cell::subsasgn): Use it here.
+	* ov-struct.cc (octave_struct::subsasgn): Also here.
+	* pt-idx.cc (tree_simple_assignment::rvalue1): And here. Check for
+	single lhs value.
+
 2009-12-25  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-str-mat.h (octave_char_matrix_str::is_matrix_type): Remove

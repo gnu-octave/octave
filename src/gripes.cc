@@ -272,6 +272,12 @@ gripe_indexed_cs_list (void)
 }
 
 void
+gripe_nonbraced_cs_list_assignment (void)
+{
+  error ("invalid assignment to cs-list outside multiple assignment.");
+}
+
+void
 gripe_warn_complex_cmp (void)
 {
   warning_with_id ("Octave:matlab-incompatible",

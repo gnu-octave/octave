@@ -135,7 +135,10 @@ file_ops::mkfifo (const std::string& name, mode_t mode, std::string& msg)
 
   int status = -1;
 
-#if defined (HAVE_MKFIFO)
+  // With gnulib we will always have mkfifo, but some systems like MinGW
+  // don't have working mkfifo functions.  On those systems, mkfifo will
+  // always return -1 and set errno.
+
   status = ::mkfifo (name.c_str (), mode);
 
   if (status < 0)
@@ -143,9 +146,6 @@ file_ops::mkfifo (const std::string& name, mode_t mode, std::string& msg)
       using namespace std;
       msg = ::strerror (errno);
     }
-#else
-  msg = NOT_SUPPORTED ("mkfifo");
-#endif
 
   return status;
 }

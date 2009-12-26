@@ -39,14 +39,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "file-stat.h"
 #include "statdefs.h"
 
-#if !defined (HAVE_LSTAT)
-static inline int
-lstat (const char *name, struct stat *buf)
-{
-  return stat (name, buf);
-}
-#endif
-
 // FIXME -- the is_* and mode_as_string functions are only valid
 // for initialized objects.  If called for an object that is not
 // initialized, they should throw an exception.
@@ -259,8 +251,6 @@ file_fstat::update_internal (bool force)
       initialized = false;
       fail = false;
 
-#if defined (HAVE_FSTAT)
-
       struct stat buf;
 
       int status = fstat (fid, &buf);
@@ -297,13 +287,6 @@ file_fstat::update_internal (bool force)
 	  fs_blocks = buf.st_blocks;
 #endif
 	}
-
-#else
-
-      fail = true;
-      errmsg = "fstat not available on this system";
-
-#endif
 
       initialized = true;
     }

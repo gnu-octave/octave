@@ -1,3 +1,8 @@
+2009-12-26  John W. Eaton  <jwe@octave.org>
+
+	* file-stat.cc (lstat): Delete replacement function.
+	(file_fstat::update_internal): Assume fstat is available.
+
 2009-12-25  John W. Eaton  <jwe@octave.org>
 
 	* file-ops.cc (file_ops::mkdir): Assume we have an mkdir

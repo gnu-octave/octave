@@ -1431,14 +1431,14 @@ fi
 ### Checks for functions and variables.
 
 AC_CHECK_FUNCS(atexit basename bcopy bzero canonicalize_file_name \
-  chmod dup2 endgrent endpwent execvp expm1 expm1f fcntl fork fstat getcwd \
+  chmod dup2 endgrent endpwent execvp expm1 expm1f fcntl fork getcwd \
   getegid geteuid getgid getgrent getgrgid getgrnam getpgrp getpid \
   getppid getpwent getpwuid gettimeofday getuid getwd _kbhit kill \
-  lgamma lgammaf lgamma_r lgammaf_r link localtime_r log1p log1pf lstat \
+  lgamma lgammaf lgamma_r lgammaf_r link localtime_r log1p log1pf \
   memmove mkstemp on_exit pipe poll putenv raise readlink \
   realpath rename resolvepath rindex rmdir roundl select setgrent setlocale \
   setpwent setvbuf sigaction siglongjmp sigpending sigprocmask sigsuspend \
-  snprintf stat strcasecmp strdup strerror stricmp strncasecmp \
+  snprintf strcasecmp strdup strerror stricmp strncasecmp \
   strnicmp strptime strsignal symlink tempnam tgammaf trunc umask \
   uname unlink usleep utime vfprintf vsprintf vsnprintf waitpid \
   _chmod _snprintf x_utime _utime32)

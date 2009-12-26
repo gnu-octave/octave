@@ -1,3 +1,9 @@
+2009-12-26  John W. Eaton  <jwe@octave.org>
+
+	* bootstrap.conf (gnulib_modules): Include fstat, lstat, and
+	stat in the list.
+	* configure.ac: Don't check for fstat, lstat, or stat.
+
 2009-12-25  John W. Eaton  <jwe@octave.org>
 
 	* bootstrap.conf (gnulib_modules): Include mkdir in the list.

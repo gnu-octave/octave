@@ -33,7 +33,8 @@ function z = xor (x, y)
 
   if (nargin == 2)
     if (isscalar (x) || isscalar (y) || size_equal (x, y))
-      z = logical ((x | y) - (x & y));
+      ## Typecast to logicals is necessary for other numeric types.
+      z = logical (x) != logical (y);
     else
       error ("xor: x and y must be of common size or scalars");
     endif

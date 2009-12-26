@@ -1,3 +1,7 @@
+2009-12-26  Jaroslav Hajek  <highegg@gmail.com>
+
+	* miscellaneous/xor.m: Optimize.
+
 2009-12-25  Jaroslav Hajek  <highegg@gmail.com>
 
 	* general/issquare.m: Do not check type.

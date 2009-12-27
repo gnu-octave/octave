@@ -1,6 +1,7 @@
 ## Copyright (C) 1995, 1996, 1999, 2000, 2002, 2004, 2005, 2007
 ##               Kurt Hornik
 ## Copyright (C) 2009 VZLU Prague
+## Copyright (C) 2009 Jaroslav Hajek
 ##
 ## This file is part of Octave.
 ##
@@ -69,8 +70,15 @@ function [errorcode, varargout] = common_size (varargin)
       if (nargout > 1)
         scal = !nscal;
         varargout = varargin;
-        varargout(scal) = cellfun (@repmat, varargin(scal), {size(varargin{i})}, ...
-                                   "UniformOutput", false);
+        if (any (nscal))
+          ## This could also be achieved by cellfun (@repmat, ...), but repmat is an
+          ## m-function and hence still carries interpreter overhead. Further,
+          ## cellfun is slightly optimized for the case used below.
+          uo = "uniformoutput";
+          dims = size (varargin{find (nscal, 1)});
+          subs = substruct ("()", arrayfun (@ones, 1, dims, uo, false));
+          varargout(scal) = cellfun (@subsref, varargin(scal), {subs}, uo, false);
+        endif
       endif
     endif
   endif

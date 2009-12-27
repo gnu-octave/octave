@@ -1,5 +1,9 @@
 2009-12-27  Jaroslav Hajek  <highegg@gmail.com>
 
+	* general/common_size.m: Optimize.
+
+2009-12-27  Jaroslav Hajek  <highegg@gmail.com>
+
 	* strings/strcat.m: Vectorize.
 
 2009-12-26  Jaroslav Hajek  <highegg@gmail.com>

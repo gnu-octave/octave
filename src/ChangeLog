@@ -1,3 +1,11 @@
+2009-12-27  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov.cc (decode_subscripts): Move to utils.cc.
+	* utils.cc (decode_subscripts): New func.
+	* utils.h: Declare it.
+	* DLD-FUNCTIONS/cellfun.cc (Fcellfun): Optimize the 
+	`cellfun (@subsref, args, {subs}, "uniformoutput", true)' case.
+
 2009-12-26  Jaroslav Hajek  <highegg@gmail.com>
 
 	* gripes.cc (gripe_nonbraced_cs_list_assignment): New function.

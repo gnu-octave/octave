@@ -380,6 +380,32 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
           else
             error ("not enough arguments for `isclass'");
         }
+      else if (name == "subsref" && nargin == 5 && nargout == 1
+               && args(2).numel () == 1 && args(2).is_cell () 
+               && args(3).is_string ()
+               && args(3).xtoupper ().string_value () == "uniformoutput"
+               && args(4).bool_value () && ! error_state)
+        {
+          // This optimizes the case of applying the same index expression to
+          // multiple values. We decode the subscript just once. uniformoutput must
+          // be requested as well.
+
+          const Cell tmpc = args(2).cell_value ();
+          octave_value subs = tmpc(0);
+
+          std::string type;
+          std::list<octave_value_list> idx;
+          decode_subscripts ("subsref", subs, type, idx);
+
+          if (! error_state)
+            {
+              Cell result (f_args.dims ());
+              for (octave_idx_type count = 0; count < k && ! error_state; count++)
+                result(count) = f_args.elem (count).subsref (type, idx);
+
+              retval(0) = result;
+            }
+        }
       else
         {
           if (! valid_identifier (name))

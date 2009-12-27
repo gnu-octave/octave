@@ -1,5 +1,6 @@
 ## Copyright (C) 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2002, 2003,
 ##               2005, 2006, 2007, 2008, 2009 John W. Eaton
+## Copyright (C) 2009 Jaroslav Hajek
 ##
 ## This file is part of Octave.
 ##
@@ -60,50 +61,41 @@ function st = strcat (varargin)
       st = varargin{1};
     elseif (nargin > 1)
       ## Convert to cells of strings
-      numstrs(nargin) = 0;
-      dims{nargin} = [];
-      allchar = true;
-      for nv = 1:nargin
-        if (ischar (varargin{nv}))
-          varargin{nv} = cellstr (varargin{nv});
-        elseif (isreal (varargin{nv}))
-          varargin{nv} = cellstr (char (varargin{nv}));
-        elseif (isempty (varargin{nv}))
-          varargin{nv} = cellstr ('');
-        elseif (iscell (varargin{nv}))
-          allchar = false;
-        else
-          error ("strcat: inputs must be strings or cells of strings");
-        endif
-        dims{nv} = size (varargin{nv});
-        numstrs(nv) = numel (varargin{nv});
-      endfor
+      uo = "UniformOutput";
+      reals = cellfun (@isreal, varargin);
+      if (any (reals))
+        varargin(reals) = cellfun (@char, varargin(reals), uo, false);
+      endif
+      chars = cellfun (@ischar, varargin);
+      allchar = all (chars);
+      varargin(chars) = cellfun (@cellstr, varargin(chars), uo, false);
+      if (! all (cellfun (@iscell, varargin)))
+        error ("strcat: inputs must be strings or cells of strings");
+      endif
 
       ## Set all cells to a common size
-      n = find (numstrs == max (numstrs), 1);
-      maxstrs = numstrs (n);
-      dim = dims{n};
-      for nv = find (numstrs == 1)
-        str = varargin{nv}{1};
-        varargin{nv} = cell (dim);
-        varargin{nv}(:) = {str};
-      endfor
+      [err, varargin{:}] = common_size (varargin{:});
 
-      ## Concatenate the strings
-      st = varargin{1};
-      for ns = 1:maxstrs
-        for nv = 2:nargin
-          if (size_equal (st, varargin{nv}))
-            st{ns} = [st{ns}, varargin{nv}{ns}];
-          else
-            error ("strcat: arguments must be the same size, or be scalars");
-          endif
-        endfor
-      endfor
+      if (err)
+        error ("strcat: arguments must be the same size, or be scalars");
+      endif
+
+      ## Total number of resulting strings.
+      dims = size (varargin{1});
+      nstr = prod (dims);
+      ## Reshape args to column vectors.
+      varargin = cellfun (@reshape, varargin, {[nstr, 1]}, uo, false);
+      ## Concatenate the columns to a cell matrix, and extract rows.
+      strows = num2cell ([varargin{:}], 2);
+      ## Concatenate all the rows.
+      st = cellfun (@cell2mat, strows, uo, false);
 
       if (allchar)
         ## If all inputs were strings, return strings.
         st = char (st);
+      else
+        ## Reshape to original dims
+        st = reshape (st, dims);
       endif
     endif
   else

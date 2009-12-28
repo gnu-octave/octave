@@ -1,3 +1,8 @@
+2009-12-27  John W. Eaton  <jwe@octave.org>
+
+	* configure.ac: Use libtool cache variables to simplify checks
+	for dynamic linking api.
+
 2009-12-26  John W. Eaton  <jwe@octave.org>
 
 	* bootstrap.conf (gnulib_modules): Include fstat, lstat, and

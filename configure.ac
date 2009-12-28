@@ -1527,88 +1527,32 @@ dyld_api=false
 
 if $SHARED_LIBS || $ENABLE_DYNAMIC_LINKING; then
 
-  ## Check for dyld first since OS X can have a non-standard libdl	
-
-  save_LIBS="$LIBS"
-  use_mach_dyld=false
-  AC_ARG_ENABLE(mach-dyld,
-    [AS_HELP_STRING([--enable-mach-dyld], [enable older Mach-O dyld interface])],
-      [if test "x$enableval" = xno; then
-         use_mach_dyld=false;
-       else
-         use_mach_dyld=true;
-       fi], [])
-  if $use_mach_dyld; then
-    AC_CHECK_HEADER(mach-o/dyld.h)
-    if test "$ac_cv_header_mach_o_dyld_h" = yes; then
-      dyld_api=true
-    fi
-  elif test "$dyld_api" = false; then
-    AC_CHECK_LIB(dld, shl_load, [DL_LIBS=-ldld; LIBS="$LIBS $DL_LIBS"])
-    AC_CHECK_FUNCS(shl_load shl_findsym)
-    if test "$ac_cv_func_shl_load" = yes \
-      && test "$ac_cv_func_shl_findsym" = yes; then
+  case "$lt_cv_dlopen" in
+    dlopen)
+      dlopen_api=true
+      DL_API_MSG="(dlopen)"
+      AC_DEFINE(HAVE_DLOPEN_API, 1, [Define if your system has dlopen, dlsym, dlerror, and dlclose for dynamic linking])
+      OCTAVE_CXX_FLAG(-rdynamic, [RDYNAMIC_FLAG=-rdynamic])
+    ;;
+    shl_load)
       shl_load_api=true
-    else
-      AC_CHECK_LIB(wsock32, LoadLibrary, [
-        DL_LIBS=-lwsock32; LIBS="$LIBS $DL_LIBS"])
-      AC_CHECK_FUNCS(LoadLibrary)
-      if test "$ac_cv_func_loadlibrary" = yes; then
-        loadlibrary_api=true
-      else
-        ## With the dlopen option, LT_INIT has already checked for
-	## dlopen and the -ldl library.  So we just look at cache values.
-        if test "x$ac_cv_lib_dl_dlopen" = xyes; then
-	  DL_LIBS=-ldl;
-	  LIBS="$LIBS $DL_LIBS"
-        fi
-	if test "x$ac_cv_func_dlopen" = xyes \
-          || test "x$ac_cv_lib_dl_dlopen" = xyes; then
-          AC_CHECK_FUNCS(dlsym dlerror dlclose)
-          if test "x$ac_cv_func_dlclose" = xyes \
-            && test "x$ac_cv_func_dlerror" = xyes \
-            && test "x$ac_cv_func_dlsym" = xyes; then
-            dlopen_api=true
-          else
-	    case "$canonical_host_type" in
-	      i[[3456]]86-*-sco3.2v5*)
-	        LD_CXX='LD_RUN_PATH=$LD_RUN_PATH:$(octlibdir) $(CXX)'
-	        dlopen_api=
-	      ;;
-	    esac
-          fi
-	fi
-      fi
-    fi
-  fi
-  LIBS="$save_LIBS"
+      DL_API_MSG="(shl_load)"
+      AC_DEFINE(HAVE_SHL_LOAD_API, 1, [Define if your system has shl_load and shl_findsym for dynamic linking])
+    ;;
+    LoadLibrary)
+      loadlibrary_api=true
+      DL_API_MSG="(LoadLibrary)"
+      AC_DEFINE(HAVE_LOADLIBRARY_API, 1, [Define if your system has LoadLibrary for dynamic linking])
+    ;;
+    dyld)
+      dyld_api=true
+      DL_API_MSG="(dyld)"
+      AC_DEFINE(HAVE_DYLD_API, 1, [Define if your system has dyld for dynamic linking])
+    ;;
+  esac
+
+  DL_LIBS="$lt_cv_dlopen_libs"
   AC_SUBST(DL_LIBS)
-
-  ## autoconf test for LoadLibrary appears broken. Bypass for cygwin/mingw 
-  if $dlopen_api || $shl_load_api || $loadlibrary_api || $dyld_api; then
-    true
-  else
-    case "$canonical_host_type" in
-      *-*-cygwin* | *-*-mingw* | *-*-msdosmsvc)
-       loadlibrary_api=true;
-      ;;
-    esac
-  fi
-
-  if $dlopen_api; then
-    DL_API_MSG="(dlopen)"
-    AC_DEFINE(HAVE_DLOPEN_API, 1, [Define if your system has dlopen, dlsym, dlerror, and dlclose for dynamic linking])
-    OCTAVE_CXX_FLAG(-rdynamic, [RDYNAMIC_FLAG=-rdynamic])
-  elif $shl_load_api; then
-    DL_API_MSG="(shl_load)"
-    AC_DEFINE(HAVE_SHL_LOAD_API, 1, [Define if your system has shl_load and shl_findsym for dynamic linking])
-  elif $loadlibrary_api; then
-    DL_API_MSG="(LoadLibrary)"
-    AC_DEFINE(HAVE_LOADLIBRARY_API, 1, [Define if your system has LoadLibrary for dynamic linking])
-  elif $dyld_api; then
-    DL_API_MSG="(dyld)"
-    AC_DEFINE(HAVE_DYLD_API, 1, [Define if your system has dyld for dynamic linking])
-  fi
 
   if $dlopen_api || $shl_load_api || $loadlibrary_api || $dyld_api; then
     ENABLE_DYNAMIC_LINKING=true

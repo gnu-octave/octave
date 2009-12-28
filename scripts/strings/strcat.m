@@ -73,29 +73,20 @@ function st = strcat (varargin)
         error ("strcat: inputs must be strings or cells of strings");
       endif
 
-      ## Set all cells to a common size
-      [err, varargin{:}] = common_size (varargin{:});
+      ## We don't actually need to bring all cells to common size, because
+      ## cellfun can now expand scalar cells.
+      err = common_size (varargin{:});
 
       if (err)
         error ("strcat: arguments must be the same size, or be scalars");
       endif
 
-      ## Total number of resulting strings.
-      dims = size (varargin{1});
-      nstr = prod (dims);
-      ## Reshape args to column vectors.
-      varargin = cellfun (@reshape, varargin, {[nstr, 1]}, uo, false);
-      ## Concatenate the columns to a cell matrix, and extract rows.
-      strows = num2cell ([varargin{:}], 2);
-      ## Concatenate all the rows.
-      st = cellfun (@cell2mat, strows, uo, false);
+      ## Cellfun handles everything for us.
+      st = cellfun (@horzcat, varargin{:}, uo, false);
 
       if (allchar)
         ## If all inputs were strings, return strings.
         st = char (st);
-      else
-        ## Reshape to original dims
-        st = reshape (st, dims);
       endif
     endif
   else

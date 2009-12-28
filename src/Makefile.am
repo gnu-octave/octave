@@ -73,6 +73,7 @@ EXTRA_DIST = \
   DOCSTRINGS \
   find-defun-files.sh \
   genprops.awk \
+  gl2ps.c \
   graphics.h.in \
   mk-errno-list \
   mk-pkg-add \
@@ -394,7 +395,6 @@ DIST_SRC = \
   error.cc \
   file-io.cc \
   gl-render.cc \
-  gl2ps.c \
   gl2ps-renderer.cc \
   graphics.cc \
   gripes.cc \
@@ -444,6 +444,7 @@ DIST_SRC = \
   utils.cc \
   variables.cc \
   xdiv.cc \
+  xgl2ps.c \
   xnorm.cc \
   xpow.cc \
   zfstream.cc \

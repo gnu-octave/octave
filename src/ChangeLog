@@ -1,3 +1,9 @@
+2009-12-27  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.am (xgl2ps.c): New file.
+	(EXTRA_DIST): Include gl2ps.c in the list.
+	(DIST_SRC): Include xgl2ps.c in the list instead of gl2ps.c.
+
 2009-12-27  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov.cc (decode_subscripts): Move to utils.cc.

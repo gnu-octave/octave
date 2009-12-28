@@ -22,13 +22,13 @@ along with Octave; see the file COPYING.  If not, see
 
 // Author: Jaroslav Hajek <highegg@gmail.com>
 
-#include <cctype>
-#include <functional>
-#include <algorithm>
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
+
+#include <cctype>
+#include <functional>
+#include <algorithm>
 
 #include "dNDArray.h"
 #include "CNDArray.h"

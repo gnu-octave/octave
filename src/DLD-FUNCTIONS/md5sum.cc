@@ -21,12 +21,12 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <string>
 #include <vector>
-
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
 
 #include "defun-dld.h"
 #include "file-stat.h"

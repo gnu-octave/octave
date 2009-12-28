@@ -37,11 +37,27 @@ file_ops
 {
 public:
 
-  static int mkdir (const std::string&, mode_t);
-  static int mkdir (const std::string&, mode_t, std::string&);
+  static int mkdir (const std::string& nm, mode_t md)
+  {
+    std::string msg;
+    return mkdir_internal (nm, md, msg);
+  }
 
-  static int mkfifo (const std::string&, mode_t);
-  static int mkfifo (const std::string&, mode_t, std::string&);
+  static int mkdir (const std::string& nm, mode_t md, std::string& msg)
+  {
+    return mkdir_internal (nm, md, msg);
+  }
+
+  static int mkfifo (const std::string& nm, mode_t md)
+  {
+    std::string msg;
+    return mkfifo_internal (nm, md, msg);
+  }
+
+  static int mkfifo (const std::string& nm, mode_t md, std::string& msg)
+  {
+    return mkfifo_internal (nm, md, msg);
+  }
 
   static int link (const std::string&, const std::string&);
   static int link (const std::string&, const std::string&, std::string&);
@@ -123,6 +139,10 @@ public:
   }
 
 private:
+
+  static int mkdir_internal (const std::string&, mode_t, std::string&);
+
+  static int mkfifo_internal (const std::string&, mode_t, std::string&);
 
   // Use a singleton class for these data members instead of just
   // making them static members of the dir_path class so that we can

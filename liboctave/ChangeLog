@@ -1,3 +1,10 @@
+2009-12-28  John W. Eaton  <jwe@octave.org>
+
+	* file-ops.cc (fle_ops::mkdir_internal,
+	file_ops::mkfifo_internal): New private static functions.
+	* file-ops.h (file_ops::mkdir, file_ops::mkdir): Move
+	definitions here from file-ops.cc.  Forward to X_internal functions.
+
 2009-12-26  John W. Eaton  <jwe@octave.org>
 
 	* file-stat.cc (lstat): Delete replacement function.

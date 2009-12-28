@@ -95,14 +95,8 @@ file_ops::static_members::instance_ok (void)
 // We provide a replacement for mkdir().
 
 int
-file_ops::mkdir (const std::string& name, mode_t mode)
-{
-  std::string msg;
-  return mkdir (name, mode, msg);
-}
-
-int
-file_ops::mkdir (const std::string& name, mode_t mode, std::string& msg)
+file_ops::mkdir_internal (const std::string& name, mode_t mode,
+                          std::string& msg)
 {
   msg = std::string ();
 
@@ -122,14 +116,8 @@ file_ops::mkdir (const std::string& name, mode_t mode, std::string& msg)
 // I don't know how to emulate this on systems that don't provide it.
 
 int
-file_ops::mkfifo (const std::string& name, mode_t mode)
-{
-  std::string msg;
-  return mkfifo (name, mode, msg);
-}
-
-int
-file_ops::mkfifo (const std::string& name, mode_t mode, std::string& msg)
+file_ops::mkfifo_internal (const std::string& name, mode_t mode,
+                           std::string& msg)
 {
   msg = std::string ();
 

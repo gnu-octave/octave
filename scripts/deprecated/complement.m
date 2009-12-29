@@ -33,7 +33,16 @@
 
 ## Author: jwe
 
+## Deprecated in version 3.2
+
 function y = complement (a, b)
+
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+             "complement is obsolete and will be removed from a future version of Octave, please use setdiff instead");
+  endif
 
   if (nargin != 2)
     print_usage ();

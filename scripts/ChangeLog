@@ -1,3 +1,7 @@
+2009-12-29  Jaroslav Hajek  <highegg@gmail.com>
+
+	* set/complement.m: Deprecate.
+
 2009-12-28  Jaroslav Hajek  <highegg@gmail.com>
 
 	* strings/strcat.m: Further simplify.

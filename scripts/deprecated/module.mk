@@ -17,6 +17,7 @@ deprecated_FCN_FILES = \
   deprecated/clearplot.m \
   deprecated/clg.m \
   deprecated/com2str.m \
+  deprecated/complement.m \
   deprecated/create_set.m \
   deprecated/dmult.m \
   deprecated/exponential_cdf.m \

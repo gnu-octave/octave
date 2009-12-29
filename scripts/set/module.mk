@@ -1,7 +1,6 @@
 FCN_FILE_DIRS += set
 
 set_FCN_FILES = \
-  set/complement.m \
   set/intersect.m \
   set/ismember.m \
   set/setdiff.m \

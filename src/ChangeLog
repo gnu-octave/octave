@@ -1,3 +1,7 @@
+2009-12-30  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/cellfun.cc (Fcellfun): Fix tests.
+
 2009-12-28  Thomas Treichl  <Thomas.Treichl@gmx.net>
 
 	* DLD-FUNCTIONS/md5sum.cc, DLD-FUNCTIONS/lookup.cc: Include

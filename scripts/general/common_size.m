@@ -77,7 +77,7 @@ function [errorcode, varargout] = common_size (varargin)
           uo = "uniformoutput";
           dims = size (varargin{find (nscal, 1)});
           subs = substruct ("()", arrayfun (@ones, 1, dims, uo, false));
-          varargout(scal) = cellfun (@subsref, varargin(scal), {subs}, uo, false);
+          varargout(scal) = cellfun ("subsref", varargin(scal), {subs}, uo, false);
         endif
       endif
     endif

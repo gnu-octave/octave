@@ -383,12 +383,12 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
       else if (name == "subsref" && nargin == 5 && nargout == 1
                && args(2).numel () == 1 && args(2).is_cell () 
                && args(3).is_string ()
-               && args(3).xtoupper ().string_value () == "uniformoutput"
-               && args(4).bool_value () && ! error_state)
+               && args(3).xtolower ().string_value () == "uniformoutput"
+               && ! args(4).bool_value () && ! error_state)
         {
           // This optimizes the case of applying the same index expression to
           // multiple values. We decode the subscript just once. uniformoutput must
-          // be requested as well.
+          // be set to false.
 
           const Cell tmpc = args(2).cell_value ();
           octave_value subs = tmpc(0);

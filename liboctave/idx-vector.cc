@@ -618,13 +618,14 @@ bool idx_vector::maybe_reduce (octave_idx_type n, const idx_vector& j,
         case class_range:
           {
             // (i:k:end,p:q) reduces to a range if i <= k and k divides n.
+            // (ones (1, m), ones (1, n)) reduces to (ones (1, m*n))
             idx_range_rep * r = dynamic_cast<idx_range_rep *> (rep);
             octave_idx_type s = r->get_start (), l = r->length (n);
             octave_idx_type t = r->get_step ();
             idx_range_rep * rj = dynamic_cast<idx_range_rep *> (j.rep);
             octave_idx_type sj = rj->get_start (), lj = rj->length (nj);
             octave_idx_type tj = rj->get_step ();
-            if (l*t == n && tj == 1)
+            if ((l*t == n && tj == 1) || (t == 0 && tj == 0))
               {
                 *this = new idx_range_rep (s + n * sj, l * lj, t, DIRECT);
                 reduced = true;

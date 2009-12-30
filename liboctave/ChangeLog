@@ -1,3 +1,8 @@
+2009-12-30  Jaroslav Hajek  <highegg@gmail.com>
+
+	* idx-vector.cc (idx_vector::maybe_reduce): Implement reduction rule
+	for subsequent ones () indices.
+
 2009-12-28  John W. Eaton  <jwe@octave.org>
 
 	* file-ops.cc (fle_ops::mkdir_internal,

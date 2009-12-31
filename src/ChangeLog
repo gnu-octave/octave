@@ -1,5 +1,14 @@
 2009-12-30  Jaroslav Hajek  <highegg@gmail.com>
 
+	* DLD-FUNCTIONS/cellfun.cc (scalar_query_helper): Remove.
+	(can_extract): New overloaded helper function.
+	(scalar_col_helper_nda): Rewrite using can_extract and
+	octave_value_extract. Instantiate for integer types.
+	(make_col_helper): Support integer types.
+
+
+2009-12-30  Jaroslav Hajek  <highegg@gmail.com>
+
 	* DLD-FUNCTIONS/cellfun.cc (Fcellfun): Fix tests.
 
 2009-12-28  Thomas Treichl  <Thomas.Treichl@gmx.net>

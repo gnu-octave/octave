@@ -43,6 +43,20 @@ along with Octave; see the file COPYING.  If not, see
 #include "gripes.h"
 #include "utils.h"
 
+#include "ov-scalar.h"
+#include "ov-float.h"
+#include "ov-complex.h"
+#include "ov-flt-complex.h"
+#include "ov-bool.h"
+#include "ov-int8.h"
+#include "ov-int16.h"
+#include "ov-int32.h"
+#include "ov-int64.h"
+#include "ov-uint8.h"
+#include "ov-uint16.h"
+#include "ov-uint32.h"
+#include "ov-uint64.h"
+
 // Rationale:
 // The octave_base_value::subsasgn method carries too much overhead for
 // per-element assignment strategy.
@@ -95,26 +109,41 @@ public:
 };
 
 template <class T>
-struct scalar_query_helper { };
+static bool can_extract (const octave_value& val)
+{ return false; }
 
-#define DEF_QUERY_HELPER(T, TEST, QUERY) \
+#define DEF_CAN_EXTRACT(T, CLASS) \
 template <> \
-struct scalar_query_helper<T> \
-{ \
-  static bool has_value (const octave_value& val) \
-    { return TEST; } \
-  static T get_value (const octave_value& val) \
-    { return QUERY; } \
+bool can_extract<T> (const octave_value& val) \
+{ return val.type_id () == octave_ ## CLASS::static_type_id (); }
+
+DEF_CAN_EXTRACT (double, scalar);
+DEF_CAN_EXTRACT (float, float_scalar);
+DEF_CAN_EXTRACT (bool, bool);
+DEF_CAN_EXTRACT (octave_int8,  int8_scalar);
+DEF_CAN_EXTRACT (octave_int16, int16_scalar);
+DEF_CAN_EXTRACT (octave_int32, int32_scalar);
+DEF_CAN_EXTRACT (octave_int64, int64_scalar);
+DEF_CAN_EXTRACT (octave_uint8,  uint8_scalar);
+DEF_CAN_EXTRACT (octave_uint16, uint16_scalar);
+DEF_CAN_EXTRACT (octave_uint32, uint32_scalar);
+DEF_CAN_EXTRACT (octave_uint64, uint64_scalar);
+
+template <>
+bool can_extract<Complex> (const octave_value& val)
+{ 
+  int t = val.type_id ();
+  return (t == octave_complex::static_type_id () 
+          || t == octave_scalar::static_type_id ());
 }
 
-DEF_QUERY_HELPER (double, val.is_real_scalar (), val.scalar_value ());
-DEF_QUERY_HELPER (Complex, val.is_complex_scalar (), val.complex_value ());
-DEF_QUERY_HELPER (float, val.is_single_type () && val.is_real_scalar (), 
-                  val.float_scalar_value ());
-DEF_QUERY_HELPER (FloatComplex, val.is_single_type () && val.is_complex_scalar (), 
-                  val.float_complex_value ());
-DEF_QUERY_HELPER (bool, val.is_bool_scalar (), val.bool_value ());
-// FIXME: More?
+template <>
+bool can_extract<FloatComplex> (const octave_value& val)
+{ 
+  int t = val.type_id ();
+  return (t == octave_float_complex::static_type_id () 
+          || t == octave_float_scalar::static_type_id ());
+}
 
 // This specializes for collecting elements of a single type, by accessing
 // an array directly. If the scalar is not valid, it returns false.
@@ -128,15 +157,15 @@ public:
   scalar_col_helper_nda (const octave_value& val, const dim_vector& dims)
     : arrayval (dims)
     {
-      arrayval(0) = scalar_query_helper<T>::get_value (val);
+      arrayval(0) = octave_value_extract<T> (val);
     }
   ~scalar_col_helper_nda (void) { }
 
   bool collect (octave_idx_type i, const octave_value& val)
     {
-      bool retval = scalar_query_helper<T>::has_value (val);
+      bool retval = can_extract<T> (val);
       if (retval)
-        arrayval(i) = scalar_query_helper<T>::get_value (val);
+        arrayval(i) = octave_value_extract<T> (val);
       return retval;
     }
   octave_value result (void)
@@ -150,6 +179,14 @@ template class scalar_col_helper_nda<FloatNDArray>;
 template class scalar_col_helper_nda<ComplexNDArray>;
 template class scalar_col_helper_nda<FloatComplexNDArray>;
 template class scalar_col_helper_nda<boolNDArray>;
+template class scalar_col_helper_nda<int8NDArray>;
+template class scalar_col_helper_nda<int16NDArray>;
+template class scalar_col_helper_nda<int32NDArray>;
+template class scalar_col_helper_nda<int64NDArray>;
+template class scalar_col_helper_nda<uint8NDArray>;
+template class scalar_col_helper_nda<uint16NDArray>;
+template class scalar_col_helper_nda<uint32NDArray>;
+template class scalar_col_helper_nda<uint64NDArray>;
 
 // the virtual constructor.
 scalar_col_helper *
@@ -157,24 +194,31 @@ make_col_helper (const octave_value& val, const dim_vector& dims)
 {
   scalar_col_helper *retval;
 
-  if (val.is_bool_scalar ())
-    retval = new scalar_col_helper_nda<boolNDArray> (val, dims);
-  else if (val.is_complex_scalar ())
+  // No need to check numel() here.
+  switch (val.builtin_type ())
     {
-      if (val.is_single_type ())
-        retval = new scalar_col_helper_nda<FloatComplexNDArray> (val, dims);
-      else
-        retval = new scalar_col_helper_nda<ComplexNDArray> (val, dims);
+#define ARRAYCASE(BTYP, ARRAY) \
+    case BTYP: \
+      retval = new scalar_col_helper_nda<ARRAY> (val, dims); \
+      break
+
+    ARRAYCASE (btyp_double, NDArray);
+    ARRAYCASE (btyp_float, FloatNDArray);
+    ARRAYCASE (btyp_complex, ComplexNDArray);
+    ARRAYCASE (btyp_float_complex, FloatComplexNDArray);
+    ARRAYCASE (btyp_bool, boolNDArray);
+    ARRAYCASE (btyp_int8,  int8NDArray);
+    ARRAYCASE (btyp_int16, int16NDArray);
+    ARRAYCASE (btyp_int32, int32NDArray);
+    ARRAYCASE (btyp_int64, int64NDArray);
+    ARRAYCASE (btyp_uint8,  uint8NDArray);
+    ARRAYCASE (btyp_uint16, uint16NDArray);
+    ARRAYCASE (btyp_uint32, uint32NDArray);
+    ARRAYCASE (btyp_uint64, uint64NDArray);
+    default:
+      retval = new scalar_col_helper_def (val, dims);
+      break;
     }
-  else if (val.is_real_scalar ())
-    {
-      if (val.is_single_type ())
-        retval = new scalar_col_helper_nda<FloatNDArray> (val, dims);
-      else
-        retval = new scalar_col_helper_nda<NDArray> (val, dims);
-    }
-  else
-    retval = new scalar_col_helper_def (val, dims);
 
   return retval;
 }

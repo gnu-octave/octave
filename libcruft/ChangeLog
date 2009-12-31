@@ -1,3 +1,8 @@
+2009-12-31  Rik <octave@nomad.inbox5.com>
+
+	* Makefile.am: Reverse using simple_move_if_change_rule for cruft.def
+	which interferes with make timestamp algorithm.
+
 2009-12-19  Rik <octave@nomad.inbox5.com>
 
 	* Makefile.am: Eliminate TOPDIR variable in favor of built-in automake

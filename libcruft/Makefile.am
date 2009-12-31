@@ -59,7 +59,7 @@ include villad/module.mk
 cruft.def: $(libcruft_la_SOURCES) mkf77def
 	chmod a+rx mkf77def
 	./mkf77def $(srcdir) $(libcruft_la_SOURCES) > $@-t
-	$(simple_move_if_change_rule)
+	mv $@-t $@
 
 EXTRA_DIST += ChangeLog STOP.patch mkf77def.in
 

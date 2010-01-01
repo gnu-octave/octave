@@ -3,6 +3,7 @@ FCN_FILE_DIRS += set
 set_FCN_FILES = \
   set/intersect.m \
   set/ismember.m \
+  set/powerset.m \
   set/setdiff.m \
   set/setxor.m \
   set/union.m \

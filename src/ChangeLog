@@ -1,5 +1,6 @@
 2010-01-02  Ben Abbott <bpabbott@mac.com>
 
+	* mappers.cc: Change test tolerance from 1e-16 to eps.
 	* lex.ll: Mac OSX's flex converts EOF to 0.
 
 2009-12-30  Jaroslav Hajek  <highegg@gmail.com>

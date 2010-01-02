@@ -1036,7 +1036,11 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
     int c = text_yyinput ();
 
+#if defined (__APPLE__) && defined (__MACH__)
+    if (! (c == EOF || c == 0))
+#else /* not MacOS X */
     if (c != EOF)
+#endif
       {
 	current_input_column++;
 

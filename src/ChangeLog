@@ -1,3 +1,7 @@
+2010-01-02  Ben Abbott <bpabbott@mac.com>
+
+	* lex.ll: Mac OSX's flex converts EOF to 0.
+
 2009-12-30  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/cellfun.cc (scalar_query_helper): Remove.

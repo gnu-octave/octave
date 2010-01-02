@@ -136,6 +136,8 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
 
   if (ischar (fcn))
     fcn = str2func (fcn, "global");
+  elseif (iscell (fcn))
+    fcn = @(x) make_fcn_jac (x, fcn{1}, fcn{2});
   endif
 
   xsiz = size (x0);
@@ -420,6 +422,13 @@ function [fx, jx] = guarded_eval (fun, x, complexeqn)
     error ("fsolve:notnum", "fsolve: non-numeric value encountered");
   elseif (any (isnan (fx(:))))
     error ("fsolve:isnan", "fsolve: NaN value encountered"); 
+  endif
+endfunction
+
+function [fx, jx] = make_fcn_jac (x, fcn, fjac)
+  fx = fcn (x);
+  if (nargout == 2)
+    jx = fjac (x);
   endif
 endfunction
 

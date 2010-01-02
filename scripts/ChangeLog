@@ -1,3 +1,7 @@
+2010-01-02  Jaroslav Hajek  <highegg@gmail.com>
+
+	* optimization/fsolve.m: Support old style jacobian passing.
+
 2010-01-01  Jaroslav Hajek  <highegg@gmail.com>
 
 	* set/powerset.m: New function.

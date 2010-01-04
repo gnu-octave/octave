@@ -26,7 +26,6 @@ strings_FCN_FILES = \
   strings/strjust.m \
   strings/strmatch.m \
   strings/strncmpi.m \
-  strings/strrep.m \
   strings/strtok.m \
   strings/strtrim.m \
   strings/strtrunc.m \

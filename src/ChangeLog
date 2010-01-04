@@ -1,3 +1,10 @@
+2010-01-04  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/strfind.cc (qs_search): Optionally discard overlaps.
+	Return result as Array<octave_idx_type>.
+	(Fstrfind): Use octave_value (Array<octave_idx_type>) constructor.
+	(Fstrrep): New function.
+
 2010-01-04  John W. Eaton  <jwe@octave.org>
 
 	* lex.ll (can_be_command): New function.

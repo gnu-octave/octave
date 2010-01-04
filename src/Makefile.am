@@ -671,7 +671,7 @@ install-oct:
 	if [ -n "`cat DLD-FUNCTIONS/PKG_ADD`" ]; then \
 	  $(INSTALL_DATA) DLD-FUNCTIONS/PKG_ADD $(DESTDIR)$(octfiledir)/PKG_ADD; \
 	fi
-	cd $(DESTDIR)/$(octlibdir) && \
+	cd $(DESTDIR)$(octlibdir) && \
 	for ltlib in $(DLD_FUNCTIONS_LIBS); do \
 	  f=`echo $$ltlib | $(SED) 's,.*/,,'`; \
 	  dl=`$(SED) -n -e "s/dlname='\([^']*\)'/\1/p" < $$f`; \

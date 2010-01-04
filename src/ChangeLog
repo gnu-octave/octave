@@ -1,3 +1,8 @@
+2010-01-04  Marco Atzeri  <marco_atzeri@yahoo.it>
+
+	* Makefile.am (install-oct): Write $(DESTDIR)$(...), not
+	$(DESTDIR).$(...).
+
 2010-01-02  Ben Abbott <bpabbott@mac.com>
 
 	* mappers.cc: Change test tolerance from 1e-16 to eps.

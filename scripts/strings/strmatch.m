@@ -1,5 +1,6 @@
 ## Copyright (C) 2000, 2005, 2006, 2007, 2009 Paul Kienzle
 ## Copyright (C) 2003 Alois Schloegl
+## Copyright (C) 2010 VZLU Prague
 ##
 ## This file is part of Octave.
 ##
@@ -22,8 +23,9 @@
 ## Return indices of entries of @var{a} that match the string @var{s}.
 ## The second argument @var{a} may be a string matrix or a cell array of
 ## strings.  If the third argument @code{"exact"} is not given, then
-## @var{s} only needs to match @var{a} up to the length of @var{s}.  Nul
-## characters match blanks.  Results are returned as a column vector. 
+## @var{s} only needs to match @var{a} up to the length of @var{s}.
+## Trailing whitespace is ignored.
+## Results are returned as a column vector. 
 ## For example:
 ##
 ## @example
@@ -50,37 +52,49 @@ function idx = strmatch (s, A, exact)
     print_usage ();
   endif
 
-  [nr, nc] = size (A);
-  nel = numel (A);
+  if (! ischar (s))
+    error ("strmatch: first argument must be a string");
+  endif
+  
+  ## Truncate trailing whitespace.
+  s = strtrimr (s);
+
+  len = length (s);
+
+  exact = nargin == 3 && ischar (exact) && strcmp (exact, "exact");
+
   if (iscell (A))
-    match = zeros (nel, 1);
-    if (nargin > 2)
-      for k = 1:nel
-	match(k) = strcmp (s, A{k}); 
-      endfor
+    idx = find (strncmp (s, A, len));
+    if (exact)
+      ## We can't just use strcmp, because we need to ignore whitespace.
+      B = cellfun (@strtrimr, A(idx), "UniformOutput", false);
+      idx = idx (strcmp (s, B));
+    endif
+  elseif (ischar (A))
+    [nr, nc] = size (A);
+    if (len > nc)
+      idx = [];
     else
-      for k = 1:nel
-	match(k) = strncmp (s, A{k}, length (s));
-      endfor
-    endif
-    idx = find (match);
-  elseif (length (s) > nc)
-    idx = [];
-  else
-    if (nargin == 3 && length(s) < nc)
-      s(1,nc) = " ";
-    endif
-    s(s == 0) = " ";
-    A(A == 0) = " ";
-    match = s(ones(size(A,1),1),:) == A(:,1:length(s));
-    if (length (s) == 1)
+      match = all (bsxfun (@eq, A(:,1:len), s), 2);
+      if (exact)
+        AA = A(:,len+1:nc);
+        match &= all (AA == "\0" | AA == " ", 2);
+      endif
       idx = find (match);
-    else
-      idx = find (all (match')');
     endif
+  else
+    error ("strmatch: second argument must be a string or cell array of strings");
   endif
     
 endfunction 
+
+## Removes nuls and blanks from the end of the array
+function s = strtrimr (s)
+  i = find (s == "\0" | s == " ", 1, "last");
+  if (i)
+    s = s(1:i);
+  endif
+endfunction
 
 %!error <Invalid call to strmatch> strmatch();
 %!error <Invalid call to strmatch> strmatch("a", "aaa", "exact", 1);

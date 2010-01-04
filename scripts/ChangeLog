@@ -1,5 +1,9 @@
 2010-01-04  Jaroslav Hajek  <highegg@gmail.com>
 
+	* strings/strmatch.m: Optimize.
+
+2010-01-04  Jaroslav Hajek  <highegg@gmail.com>
+
 	* strings/strrep.m: Remove.
 	* strings/module.mk: Update.
 

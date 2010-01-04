@@ -2833,6 +2833,19 @@ next_token_can_follow_bin_op (void)
 }
 
 static bool
+can_be_command (const std::string& tok)
+{
+  // Don't allow these names to be treated as commands to avoid
+  // surprises when parsing things like "NaN ^2".
+
+  return ! (tok == "e"
+            || tok == "I" || tok == "i"
+            || tok == "J" || tok == "j"
+            || tok == "Inf" || tok == "inf"
+            || tok == "NaN" || tok == "nan");
+}
+
+static bool
 looks_like_command_arg (void)
 {
   bool retval = true;
@@ -3251,7 +3264,8 @@ handle_identifier (void)
 
   if (! is_variable (tok))
     {
-      if (at_bos && spc_gobbled && looks_like_command_arg ())
+      if (at_bos && spc_gobbled && can_be_command (tok)
+          && looks_like_command_arg ())
 	{
 	  BEGIN (COMMAND_START);
 	}

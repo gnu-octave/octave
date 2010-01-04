@@ -1,3 +1,16 @@
+2010-01-04  Thorsten Meyer  <thorsten.meyier@gmx.de>
+
+	* graphics.cc (graphics_object::set (const Octave_map&)): New function.
+	(graphics_object::set (const Array<std::string>&, const Cell&,
+	octave_idx_type)):  New function.
+	(graphics_object::set_value_or_default (const caseless_str&,
+	const octave_value&)): New function.
+	(graphics_object::set (const octave_value_list&)):
+	Call set_value_or_default to set property values.
+	(Fset): Handle struct and cell array arguments.
+	New tests.
+	* graphics.h.in (graphics_objects::set): Provide decls.
+
 2010-01-04  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/strfind.cc (qs_search): Optionally discard overlaps.

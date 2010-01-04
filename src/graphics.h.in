@@ -2059,6 +2059,14 @@ public:
 
   void set (const octave_value_list& args);
 
+  void set (const Array<std::string>& names, const Cell& values,
+            octave_idx_type row);
+
+  void set (const Octave_map& m);
+
+  void set_value_or_default (const caseless_str& name,
+                             const octave_value& val);
+
   void set_defaults (const std::string& mode) { rep->set_defaults (mode); }
 
   octave_value get (bool all = false) const { return rep->get (all); }

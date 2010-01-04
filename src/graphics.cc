@@ -1395,6 +1395,8 @@ graphics_handle::graphics_handle (const octave_value& a)
     }
 }
 
+// Set properties given as a cs-list of name, value pairs.
+
 void
 graphics_object::set (const octave_value_list& args)
 {
@@ -1412,20 +1414,10 @@ graphics_object::set (const octave_value_list& args)
 	    {
 	      octave_value val = args(i+1);
 
-	      if (val.is_string ())
-		{
-		  caseless_str tval = val.string_value ();
-
-		  if (tval.compare ("default"))
-		    val = get_default (name);
-		  else if (tval.compare ("factory"))
-		    val = get_factory_default (name);
-		}
+              set_value_or_default (name, val);
 
 	      if (error_state)
 		break;
-
-	      rep->set (name, val);
 	    }
 	  else
 	    error ("set: expecting argument %d to be a property name", i);
@@ -1434,6 +1426,152 @@ graphics_object::set (const octave_value_list& args)
   else
     error ("set: invalid number of arguments");
 }
+
+/*
+%!# test set with name, value pairs
+%!test
+%!  set(gcf, "visible", "off");
+%!  h = plot (1:10, 10:-1:1);
+%!  set (h, "linewidth", 10, "marker", "x");
+%!  assert (get (h, "linewidth"), 10);
+%!  assert (get (h, "marker"), "x");
+*/
+
+// Set properties given in two cell arrays containing names and values.
+void
+graphics_object::set (const Array<std::string>& names,
+                      const Cell& values, octave_idx_type row)
+{
+  if (names.numel () != values.columns ())
+    {
+      error("set: number of names must match number of value columns (%d != %d)",
+            names.numel (), values.columns ());
+    }
+
+  octave_idx_type k = names.columns ();
+
+  for (octave_idx_type column = 0; column < k; column++)
+    {
+      caseless_str name = names(column);
+      octave_value val  = values(row, column);
+
+      set_value_or_default (name, val);
+
+      if (error_state)
+        break;
+    }
+}
+
+/*
+%!# test set with cell array arguments
+%!test
+%!  set (gcf, "visible", "off");
+%!  h = plot (1:10, 10:-1:1);
+%!  set (h, {"linewidth", "marker"}, {10, "x"});
+%!  assert (get(h, "linewidth"), 10);
+%!  assert (get(h, "marker"), "x");
+
+%!# test set with multiple handles and cell array arguments
+%!test
+%!  set (gcf, "visible", "off");
+%!  h = plot (1:10, 10:-1:1, 1:10, 1:10);
+%!  set (h, {"linewidth", "marker"}, {10, "x"; 5, "o"});
+%!  assert (get (h, "linewidth"), {10; 5});
+%!  assert (get (h, "marker"), {"x"; "o"});
+%!  set (h, {"linewidth", "marker"}, {10, "x"});
+%!  assert (get (h, "linewidth"), {10; 10});
+%!  assert (get (h, "marker"), {"x"; "x"});
+
+%!error <set: number of graphics handles must match number of value rows>
+%!  set (gcf, "visible", "off");
+%!  h = plot (1:10, 10:-1:1, 1:10, 1:10);
+%!  set (h, {"linewidth", "marker"}, {10, "x"; 5, "o"; 7, "."});
+
+%!error <set: number of names must match number of value columns>
+%!  set (gcf, "visible", "off");
+%!  h = plot (1:10, 10:-1:1, 1:10, 1:10);
+%!  set (h, {"linewidth"}, {10, "x"; 5, "o"});
+*/
+
+// Set properties given in a struct array
+void
+graphics_object::set (const Octave_map& m)
+{
+  for (Octave_map::const_iterator p = m.begin ();
+       p != m.end (); p++)
+    {
+      caseless_str name  = m.key (p);
+
+      octave_value val = octave_value (m.contents (p).elem (m.numel () - 1));
+
+      set_value_or_default (name, val);
+
+      if (error_state)
+        break;
+    }
+}
+
+/*
+%!# test set with struct arguments
+%!test
+%!  set (gcf, "visible", "off");
+%!  h = plot (1:10, 10:-1:1);
+%!  set (h, struct ("linewidth", 10, "marker", "x"));
+%!  assert (get (h, "linewidth"), 10);
+%!  assert (get (h, "marker"), "x");
+%!  h = plot (1:10, 10:-1:1, 1:10, 1:10);
+%!  set (h, struct ("linewidth", {5, 10}));
+%!  assert (get(h, "linewidth"), {10; 10});
+*/
+
+// Set a property to a value or to its (factory) default value.
+
+void
+graphics_object::set_value_or_default (const caseless_str& name,
+                                       const octave_value& val)
+{
+  if (val.is_string ())
+    {
+      caseless_str tval = val.string_value ();
+
+      octave_value default_val;
+
+      if (tval.compare ("default"))
+        {
+          default_val = get_default (name);
+
+          if (error_state)
+            return;
+
+          rep->set (name, default_val);
+        }
+      else if (tval.compare ("factory"))
+        {
+          default_val = get_factory_default (name);
+
+          if (error_state)
+            return;
+
+          rep->set (name, default_val);
+        }
+      else
+        rep->set (name, val);
+    }
+  else
+    rep->set (name, val);
+}
+
+/*
+%!# test setting of default values
+%!test
+%!  set (gcf, "visible", "off");
+%!  h = plot (1:10, 10:-1:1);
+%!  set (0, "defaultlinelinewidth", 20);
+%!  set (h, "linewidth", "default");
+%!  assert (get (h, "linewidth"), 20);
+%!  set (h, "linewidth", "factory");
+%!  assert (get (h, "linewidth"), 0.5);
+*/
 
 static double
 make_handle_fraction (void)
@@ -4570,9 +4708,35 @@ Return true if @var{h} is a graphics handle and false otherwise.\n\
 
 DEFUN (set, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} set (@var{h}, @var{p}, @var{v}, @dots{})\n\
-Set the named property value or vector @var{p} to the value @var{v}\n\
-for the graphics handle @var{h}.\n\
+@deftypefn {Built-in Function} {} set (@var{h}, @var{property}, @var{value}, @dots{})\n\
+@deftypefnx {Built-in Function} {} set (@var{h}, @var{properties}, @var{values})\n\
+@deftypefnx {Built-in Function} {} set (@var{h}, @var{pv})\n\
+Set named property values for the graphics handle (or vector of graphics\n\
+handles) @var{h}.\n\
+There are three ways how to give the property names and values:\n\
+\n\
+@itemize\n\
+@item as a comma separated list of @var{property}, @var{value} pairs\n\
+\n\
+Here, each @var{property} is a string containing the property name, each\n\
+@var{value} is a value of the appropriate type for the property.\n\
+@item as a cell array of strings @var{properties} containing property names\n\
+and a cell array @var{values} containing property values.\n\
+\n\
+In this case, the number of columns of @var{values} must match the number of\n\
+elements in @var{properties}.  The first column of @var{values} contains values\n\
+for the first entry in @var{properties} etc..  The number of rows of @var{values}\n\
+must be 1 or match the number of elements of @var{h}. In the first case, each\n\
+handle in @var{h} will be assigned the same values. In the latter case, the\n\
+first handle in @var{h} will be assigned the values from the first row of\n\
+@var{values} and so on.\n\
+@item as a structure array @var{pv}\n\
+\n\
+Here, the field names of @var{pv} represent the property names, and the field\n\
+values give the property values.  In contrast to the previous case, all\n\
+elements of @var{pv} will be set in all handles in @var{h} independent of\n\
+the dimensions of @var{pv}.\n\
+@end itemize\n\
 @end deftypefn")
 {
   gh_manager::autolock guard;
@@ -4583,28 +4747,62 @@ for the graphics handle @var{h}.\n\
 
   if (nargin > 0)
     {
+      // get vector of graphics handles
       ColumnVector hcv (args(0).vector_value ());
 
       if (! error_state)
         {
 	  bool request_drawnow = false;
 
+          // loop over graphics objects
           for (octave_idx_type n = 0; n < hcv.length (); n++) 
             {
               graphics_object obj = gh_manager::get_object (hcv(n));
 
               if (obj)
                 {
-                  obj.set (args.splice (0, 1));
+                  if (nargin == 3 && args(1).is_cellstr ()
+                      && args(2).is_cell ())
+                    {
+                      if (args(2).cell_value ().rows () == 1)
+                        {
+                          obj.set (args(1).cellstr_value (),
+                                   args(2).cell_value (), 0);
+                        }
+                      else if (hcv.length () == args(2).cell_value ().rows ())
+                        {
+                          obj.set (args(1).cellstr_value (),
+                                   args(2).cell_value (), n);
+                        }
+                      else
+                        {
+                          error("set: number of graphics handles must match number of value rows (%d != %d)",
+                                hcv.length (), args(2).cell_value ().rows ());
+                          break;
 
-                  request_drawnow = true;
+                        }
+                    }
+                  else if (nargin == 2 && args(1).is_map ())
+                    {
+                      obj.set (args(1).map_value ());
+                    }
+                  else
+                    {
+                      obj.set (args.splice (0, 1));
+                      request_drawnow = true;
+                    }
                 }
               else
 		{
 		  error ("set: invalid handle (= %g)", hcv(n));
 		  break;
 		}
-            }
+
+              if (error_state)
+                break;
+
+              request_drawnow = true;
+           }
 
 	  if (! error_state && request_drawnow)
 	    Vdrawnow_requested = true;

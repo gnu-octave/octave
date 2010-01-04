@@ -1,3 +1,7 @@
+2009-12-22  Rik <octave@nomad.inbox5.com>
+
+	* WWW/: remove web directory no longer used
+
 2010-01-04  Jaroslav Hajek  <highegg@gmail.com>
 
 	* NEWS: Update.

@@ -1,3 +1,7 @@
+2010-01-04  Jaroslav Hajek  <highegg@gmail.com>
+
+	* NEWS: Update.
+
 2009-12-27  John W. Eaton  <jwe@octave.org>
 
 	* configure.ac: Use libtool cache variables to simplify checks

@@ -175,6 +175,11 @@ Summary of important user-visible changes for version 3.3:
     Optimizations only apply when both operands are of the same built-in class. Mixed real/complex
     and single/double operations will first convert both operands to a common type.
 
+ ** "strfind" and "strrep" now have compiled implementations, facilitating significantly 
+    more efficient searching and replacing in strings, especially with longer patterns.
+    The code of "strcat" has been vectorized and is now much more efficient
+    when lots of strings are concatenated.
+
 Summary of important user-visible changes for version 3.2:
 ---------------------------------------------------------
 

@@ -28,6 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <iosfwd>
 #include <string>
+#include <memory>
 
 #include "mx-base.h"
 #include "oct-alloc.h"
@@ -57,7 +58,7 @@ public:
     : octave_base_matrix<Cell> (c) { }
 
   octave_cell (const Array<std::string>& str)
-    : octave_base_matrix<Cell> (Cell (str)), cellstr_cache (str) { }
+    : octave_base_matrix<Cell> (Cell (str)), cellstr_cache (new Array<std::string> (str)) { }
 
   octave_cell (const octave_cell& c)
     : octave_base_matrix<Cell> (c) { }
@@ -165,11 +166,10 @@ public:
 
 private:
 
-  void clear_cellstr_cache (void) const;
+  void clear_cellstr_cache (void) const
+    { cellstr_cache.reset (); }
 
-  mutable Array<std::string> cellstr_cache;
-
-  void make_cellstr_cache (void) const;
+  mutable std::auto_ptr<Array<std::string> > cellstr_cache;
 
   DECLARE_OCTAVE_ALLOCATOR
 

@@ -109,7 +109,9 @@ Cell::is_cellstr (void) const
 {
   bool retval = true;
 
-  for (int i = 0; i < numel (); i++)
+  octave_idx_type n = numel ();
+
+  for (octave_idx_type i = 0; i < n; i++)
     {
       if (! elem(i).is_string ())
 	{
@@ -117,6 +119,19 @@ Cell::is_cellstr (void) const
 	  break;
 	}
     }
+
+  return retval;
+}
+
+Array<std::string>
+Cell::cellstr_value (void) const
+{
+  Array<std::string> retval (dims ());
+
+  octave_idx_type n = numel ();
+
+  for (octave_idx_type i = 0; i < n; i++)
+    retval.xelem (i) = elem (i).string_value ();
 
   return retval;
 }

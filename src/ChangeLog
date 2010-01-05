@@ -1,3 +1,16 @@
+2010-01-05  Jaroslav Hajek  <highegg@gmail.com>
+
+	* Cell.cc (Cell::cellstr_value): New method.
+	* Cell.h (Cell::cellstr_value): Declare it.
+
+	* ov-cell.h (octave_cell::cellstr_cache): Declare as autopointer.
+	(octave_cell::clear_cellstr_cache): Move here.
+	* ov-cell.cc (octave_cell::is_cellstr): Only allocate the pointer, but
+	don't actually create strings.
+	(octave_cell::cellstr_value): Use cached test, call
+	Cell::cellstr_value.
+	(octave_cell::make_cellstr_cache): Remove.
+
 2010-01-05  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.am (AM_CPPFLAGS): Include -I../libgnu in the list.

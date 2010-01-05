@@ -71,6 +71,8 @@ public:
 
   bool is_cellstr (void) const;
 
+  Array<std::string> cellstr_value (void) const;
+
   Cell index (const octave_value_list& idx, bool resize_ok = false) const;
 
   Cell& delete_elements (const octave_value_list& idx);

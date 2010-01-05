@@ -386,38 +386,18 @@ octave_cell::subsasgn (const std::string& type,
   return retval;
 }
 
-void 
-octave_cell::clear_cellstr_cache (void) const
-{
-  cellstr_cache = Array<std::string> ();
-}
-
-void 
-octave_cell::make_cellstr_cache (void) const
-{
-  cellstr_cache = Array<std::string> (matrix.dims ());
-
-  octave_idx_type n = numel ();
-
-  std::string *dst = cellstr_cache.fortran_vec ();
-  const octave_value *src = matrix.data ();
-
-  for (octave_idx_type i = 0; i < n; i++)
-    dst[i] = src[i].string_value ();
-}
-
 bool 
 octave_cell::is_cellstr (void) const
 {
   bool retval;
-  if (! cellstr_cache.is_empty ())
+  if (cellstr_cache.get ())
     retval = true;
   else
     {
       retval = matrix.is_cellstr ();
-      // force cache to be created here
+      // Allocate empty cache to mark that this is indeed a cellstr.
       if (retval)
-        make_cellstr_cache ();
+        cellstr_cache.reset (new Array<std::string> ());
     }
 
   return retval;
@@ -634,7 +614,10 @@ octave_cell::cellstr_value (void) const
 
   if (is_cellstr ())
     {
-      retval = cellstr_cache;
+      if (cellstr_cache->is_empty ())
+        *cellstr_cache = matrix.cellstr_value ();
+
+      return *cellstr_cache;
     }
   else
     error ("invalid conversion from cell array to array of strings");

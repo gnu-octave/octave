@@ -1,6 +1,10 @@
 2010-01-05  John W. Eaton  <jwe@octave.org>
 
-	* bootstrap.conf (gnulib_modules): Remove nonexistent "fstat" module.
+	* bootstrap.conf (gnulib_modules): Include mkfifo in the list.
+
+2010-01-05  John W. Eaton  <jwe@octave.org>
+
+	* bootstrap.conf (gnulib_modules): Remove nonexistent fstat module.
 
 2009-12-22  Rik <octave@nomad.inbox5.com>
 

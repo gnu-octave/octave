@@ -1,3 +1,8 @@
+2010-01-05  Jaroslav Hajek  <highegg@gmail.com>
+
+	* optimization/qp.m: Supply default values on request and register
+	options.
+
 2010-01-05  John W. Eaton  <jwe@octave.org>
 
 	* qp.m: Allow linear term and constraint arguments to be

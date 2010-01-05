@@ -98,9 +98,16 @@
 ## @end table
 ## @end deftypefn
 
+## PKG_ADD: __all_opts__ ("qp");
+
 function [x, obj, INFO, lambda] = qp (x0, H, varargin)
 
   nargs = nargin;
+
+  if (nargin == 1 && ischar (x0) && strcmp (x0, 'defaults'))
+    x = optimset ("MaxIter", 200);
+    return;
+  endif
 
   if (nargs > 2 && isstruct (varargin{end}))
     options = varargin{end};

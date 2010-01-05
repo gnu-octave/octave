@@ -1,3 +1,7 @@
+2010-01-05  John W. Eaton  <jwe@octave.org>
+
+	* bootstrap.conf (gnulib_modules): Remove nonexistent "fstat" module.
+
 2009-12-22  Rik <octave@nomad.inbox5.com>
 
 	* WWW/: remove web directory no longer used

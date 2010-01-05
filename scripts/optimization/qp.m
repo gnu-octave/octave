@@ -18,7 +18,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{x}, @var{obj}, @var{info}, @var{lambda}] =} qp (@var{x0}, @var{H}, @var{q}, @var{A}, @var{b}, @var{lb}, @var{ub}, @var{A_lb}, @var{A_in}, @var{A_ub})
+## @deftypefn {Function File} {[@var{x}, @var{obj}, @var{info}, @var{lambda}] =} qp (@var{x0}, @var{H})
+## @deftypefnx {Function File} {[@var{x}, @var{obj}, @var{info}, @var{lambda}] =} qp (@var{x0}, @var{H}, @var{q})
+## @deftypefnx {Function File} {[@var{x}, @var{obj}, @var{info}, @var{lambda}] =} qp (@var{x0}, @var{H}, @var{q}, @var{A}, @var{b})
+## @deftypefnx {Function File} {[@var{x}, @var{obj}, @var{info}, @var{lambda}] =} qp (@var{x0}, @var{H}, @var{q}, @var{A}, @var{b}, @var{lb}, @var{ub})
+## @deftypefnx {Function File} {[@var{x}, @var{obj}, @var{info}, @var{lambda}] =} qp (@var{x0}, @var{H}, @var{q}, @var{A}, @var{b}, @var{lb}, @var{ub}, @var{A_lb}, @var{A_in}, @var{A_ub})
+## @deftypefnx {Function File} {[@var{x}, @var{obj}, @var{info}, @var{lambda}] =} qp (@dots{}, @var{options})
 ## Solve the quadratic program
 ## @tex
 ## $$
@@ -59,6 +64,19 @@
 ## @var{A_ub}) may be set to the empty matrix (@code{[]}) if not
 ## present.  If the initial guess is feasible the algorithm is faster.
 ##
+## @table @var
+## @item options
+## An optional structure containing the following
+## parameter(s) used to define the behavior of the solver.  Missing elements
+## in the structure take on default values, so you only need to set the
+## elements that you wish to change from the default.
+##
+## @table @code
+## @item MaxIter (default: 200)
+## Maximum number of iterations.
+## @end table
+## @end table
+##
 ## The value @var{info} is a structure with the following fields:
 ## @table @code
 ## @item solveiter
@@ -80,9 +98,52 @@
 ## @end table
 ## @end deftypefn
 
-function [x, obj, INFO, lambda] = qp (x0, H, q, A, b, lb, ub, A_lb, A_in, A_ub)
+function [x, obj, INFO, lambda] = qp (x0, H, varargin)
 
-  if (nargin == 5 || nargin == 7 || nargin == 10)
+  nargs = nargin;
+
+  if (nargs > 2 && isstruct (varargin{end}))
+    options = varargin{end};
+    nargs--;
+  else
+    options = struct ();
+  endif
+
+  if (nargs >= 3)
+    q = varargin{1};
+  else
+    q = [];
+  endif
+
+  if (nargs >= 5)
+    A = varargin{2};
+    b = varargin{3};
+  else
+    A = [];
+    b = [];
+  endif
+
+  if (nargs >= 7)
+    lb = varargin{4};
+    ub = varargin{5};
+  else
+    lb = [];
+    ub = [];
+  endif
+
+  if (nargs == 10)
+    A_lb = varargin{6};
+    A_in = varargin{7};
+    A_ub = varargin{8};
+  else
+    A_lb = [];
+    A_in = [];
+    A_ub = [];
+  endif
+
+  if (nargs == 2 || nargs == 3 || nargs == 5 || nargs == 7 || nargs == 10)
+
+    maxit = optimget (options, "MaxIter", 200)
 
     ## Checking the quadratic penalty
     if (! issquare (H))
@@ -97,26 +158,28 @@ function [x, obj, INFO, lambda] = qp (x0, H, q, A, b, lb, ub, A_lb, A_in, A_ub)
     ## right dimension and filled with 0)
     if (isempty (x0))
       x0 = zeros (n, 1);
-    elseif (length (x0) != n)
+    elseif (numel (x0) != n)
       error ("qp: the initial guess has incorrect length");
     endif
 
     ## Linear penalty.
-    if (length (q) != n)
+    if (isempty (q))
+      q = zeros (n, 1);
+    elseif (numel (q) != n)
       error ("qp: the linear term has incorrect length");
     endif
 
     ## Equality constraint matrices
-    if (isempty (A) || isempty(b))
+    if (isempty (A) || isempty (b))
+      A = zeros (0, n);
+      b = zeros (0, 1);
       n_eq = 0;
-      A = zeros (n_eq, n);
-      b = zeros (n_eq, 1);
     else
       [n_eq, n1] = size (A);
       if (n1 != n)
 	error ("qp: equality constraint matrix has incorrect column dimension");
       endif
-      if (length (b) != n_eq)
+      if (numel (b) != n_eq)
 	error ("qp: equality constraint matrix and vector have inconsistent dimension");
       endif
     endif
@@ -125,9 +188,9 @@ function [x, obj, INFO, lambda] = qp (x0, H, q, A, b, lb, ub, A_lb, A_in, A_ub)
     Ain = zeros (0, n);
     bin = zeros (0, 1);
     n_in = 0;
-    if (nargin > 5)
+    if (nargs > 5)
       if (! isempty (lb))
-	if (length(lb) != n)
+	if (numel (lb) != n)
 	  error ("qp: lower bound has incorrect length");
 	elseif (isempty (ub))
 	  Ain = [Ain; eye(n)];
@@ -136,7 +199,7 @@ function [x, obj, INFO, lambda] = qp (x0, H, q, A, b, lb, ub, A_lb, A_in, A_ub)
       endif
 
       if (! isempty (ub))
-	if (length (ub) != n)
+	if (numel (ub) != n)
 	  error ("qp: upper bound has incorrect length");
 	elseif (isempty (lb))
 	  Ain = [Ain; -eye(n)];
@@ -166,13 +229,13 @@ function [x, obj, INFO, lambda] = qp (x0, H, q, A, b, lb, ub, A_lb, A_in, A_ub)
     endif
 
     ## Inequality constraints
-    if (nargin > 7)
+    if (nargs > 7)
       [dimA_in, n1] = size (A_in);
       if (n1 != n)
 	error ("qp: inequality constraint matrix has incorrect column dimension");
       else
 	if (! isempty (A_lb))
-	  if (length (A_lb) != dimA_in)
+	  if (numel (A_lb) != dimA_in)
 	    error ("qp: inequality constraint matrix and lower bound vector inconsistent");
 	  elseif (isempty (A_ub))
 	    Ain = [Ain; A_in];
@@ -180,7 +243,7 @@ function [x, obj, INFO, lambda] = qp (x0, H, q, A, b, lb, ub, A_lb, A_in, A_ub)
 	  endif
 	endif
 	if (! isempty (A_ub))
-	  if (length (A_ub) != dimA_in)
+	  if (numel (A_ub) != dimA_in)
 	    error ("qp: inequality constraint matrix and upper bound vector inconsistent");
 	  elseif (isempty (A_lb))
 	    Ain = [Ain; -A_in];
@@ -221,7 +284,7 @@ function [x, obj, INFO, lambda] = qp (x0, H, q, A, b, lb, ub, A_lb, A_in, A_ub)
     bin(idx) = [];
     Ain(idx,:) = [];
 
-    n_in = length (bin);
+    n_in = numel (bin);
 
     ## Check if the initial guess is feasible.
     if (isa (x0, "single") || isa (H, "single") || isa (q, "single") || isa (A, "single")
@@ -307,10 +370,8 @@ function [x, obj, INFO, lambda] = qp (x0, H, q, A, b, lb, ub, A_lb, A_in, A_ub)
     endif
 
     if (info == 0)
-      ## FIXME -- make maxit a user option.
       ## The initial (or computed) guess is feasible.
       ## We call the solver.
-      maxit = 200;
       [x, lambda, info, iter] = __qp__ (x0, H, q, A, b, Ain, bin, maxit);
     else
       iter = 0;

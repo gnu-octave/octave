@@ -1,3 +1,12 @@
+2010-01-05  John W. Eaton  <jwe@octave.org>
+
+	* qp.m: Allow linear term and constraint arguments to be
+	optional.
+
+2010-01-05  Joshua Redstone  <redstone@gmail.com>
+
+	* qp.m: Handle optimset options struct argument.
+
 2010-01-04  Jaroslav Hajek  <highegg@gmail.com>
 
 	* strings/strmatch.m: Optimize.

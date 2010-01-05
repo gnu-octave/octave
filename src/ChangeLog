@@ -1,3 +1,7 @@
+2010-01-05  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.am (AM_CPPFLAGS): Include -I../libgnu in the list.
+
 2010-01-04  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
 	* graphics.cc (graphics_object::set (const Octave_map&)): New function.

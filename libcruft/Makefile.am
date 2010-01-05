@@ -21,6 +21,8 @@
 
 include $(top_srcdir)/common.mk
 
+AM_CPPFLAGS = @CPPFLAGS@ -I../libgnu -I$(top_srcdir)/libgnu
+
 AUTOMAKE_OPTIONS = subdir-objects
 
 octlib_LTLIBRARIES = libcruft.la

@@ -21,7 +21,9 @@
 
 include $(top_srcdir)/common.mk
 
-AM_CPPFLAGS = -I$(top_srcdir)/libgnu -I$(top_srcdir)/libcruft/misc
+AM_CPPFLAGS = \
+  @CPPFLAGS@ -I../libgnu -I$(top_srcdir)/libgnu \
+  -I$(top_srcdir)/libcruft/misc
 
 EXTRA_DIST = \
   ChangeLog \

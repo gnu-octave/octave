@@ -25,7 +25,10 @@ octlib_LTLIBRARIES = \
   liboctinterp.la
 
 AM_CPPFLAGS = \
-  @CPPFLAGS@ -I$(top_srcdir)/libgnu -I$(top_srcdir)/libcruft/misc -I../liboctave -I$(top_srcdir)/liboctave -I. -I$(srcdir) 
+  @CPPFLAGS@ -I../libgnu -I$(top_srcdir)/libgnu \
+  -I$(top_srcdir)/libcruft/misc \
+  -I../liboctave -I$(top_srcdir)/liboctave \
+  -I. -I$(srcdir) 
 
 AUTOMAKE_OPTIONS = subdir-objects
 

@@ -150,7 +150,7 @@ function [x, obj, INFO, lambda] = qp (x0, H, varargin)
 
   if (nargs == 2 || nargs == 3 || nargs == 5 || nargs == 7 || nargs == 10)
 
-    maxit = optimget (options, "MaxIter", 200)
+    maxit = optimget (options, "MaxIter", 200);
 
     ## Checking the quadratic penalty
     if (! issquare (H))

@@ -379,18 +379,18 @@ octave_fcn_handle::load_ascii (std::istream& is)
 
       pos = is.tellg ();
 
-      unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
+      unwind_protect_safe frame;
 
       // Set up temporary scope to use for evaluating the text that
       // defines the anonymous function.
 
       symbol_table::scope_id local_scope = symbol_table::alloc_scope ();
-      unwind_protect::add_fcn (symbol_table::erase_scope, local_scope);
+      frame.add_fcn (symbol_table::erase_scope, local_scope);
 
       symbol_table::set_scope (local_scope);
 
       octave_call_stack::push (local_scope, 0);
-      unwind_protect::add_fcn (octave_call_stack::pop);
+      frame.add_fcn (octave_call_stack::pop);
 
       octave_idx_type len = 0;
 
@@ -450,8 +450,6 @@ octave_fcn_handle::load_ascii (std::istream& is)
 	}
       else
 	success = false;
-
-      unwind_protect::run_frame (uwp_frame);
     }
   else
     success = set_fcn (octaveroot, fpath);
@@ -560,18 +558,18 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
       OCTAVE_LOCAL_BUFFER (char, ctmp2, tmp+1);
       is.get (ctmp2, tmp+1, 0);
 
-      unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
+      unwind_protect_safe frame;
 
       // Set up temporary scope to use for evaluating the text that
       // defines the anonymous function.
 
       symbol_table::scope_id local_scope = symbol_table::alloc_scope ();
-      unwind_protect::add_fcn (symbol_table::erase_scope, local_scope);	      
+      frame.add_fcn (symbol_table::erase_scope, local_scope);	      
 
       symbol_table::set_scope (local_scope);
 
       octave_call_stack::push (local_scope, 0);
-      unwind_protect::add_fcn (octave_call_stack::pop);
+      frame.add_fcn (octave_call_stack::pop);
 
       if (len > 0)
 	{
@@ -620,8 +618,6 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
 	  else
 	    success = false;
 	}
-
-      unwind_protect::run_frame (uwp_frame);
     }
   else
     {
@@ -1057,18 +1053,18 @@ octave_fcn_handle::load_hdf5 (hid_t loc_id, const char *name)
       H5Eset_auto (err_func, err_func_data);
 #endif
 
-      unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
+      unwind_protect_safe frame;
 
       // Set up temporary scope to use for evaluating the text that
       // defines the anonymous function.
 
       symbol_table::scope_id local_scope = symbol_table::alloc_scope ();
-      unwind_protect::add_fcn (symbol_table::erase_scope, local_scope);
+      frame.add_fcn (symbol_table::erase_scope, local_scope);
 
       symbol_table::set_scope (local_scope);
 
       octave_call_stack::push (local_scope, 0);
-      unwind_protect::add_fcn (octave_call_stack::pop);
+      frame.add_fcn (octave_call_stack::pop);
 
       if (len > 0 && success)
 	{
@@ -1132,7 +1128,7 @@ octave_fcn_handle::load_hdf5 (hid_t loc_id, const char *name)
 	    success = false;
 	}
 
-      unwind_protect::run_frame (uwp_frame);
+      frame.run ();
     }
   else
     {

@@ -139,11 +139,11 @@ octave_mex_function::do_multi_index_op (int nargout,
     ::error ("invalid use of colon in function argument list");
   else
     {
-      unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
+      unwind_protect frame;
 
       octave_call_stack::push (this);
 
-      unwind_protect::add_fcn (octave_call_stack::pop);
+      frame.add_fcn (octave_call_stack::pop);
 
       try
 	{
@@ -153,8 +153,6 @@ octave_mex_function::do_multi_index_op (int nargout,
 	{
 	  gripe_library_execution_error ();
 	}
-
-      unwind_protect::run_frame (uwp_frame);
     }
 
   return retval;

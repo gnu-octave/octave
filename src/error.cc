@@ -486,7 +486,8 @@ error_2 (const char *id, const char *fmt, va_list args, bool with_cfn = false)
       && Vdebug_on_error && init_state == 0
       && octave_call_stack::caller_user_code ())
     {
-      unwind_protect::protect_var (Vdebug_on_error);
+      unwind_protect frame;
+      frame.protect_var (Vdebug_on_error);
       Vdebug_on_error = false;
 
       error_state = 0;
@@ -494,8 +495,6 @@ error_2 (const char *id, const char *fmt, va_list args, bool with_cfn = false)
       pr_where ("error");
 
       do_keyboard (octave_value_list ());
-
-      unwind_protect::run ();
     }
 }
 
@@ -677,12 +676,11 @@ warning_1 (const char *id, const char *fmt, va_list args)
 	  && Vdebug_on_warning
 	  && octave_call_stack::caller_user_code ())
 	{
-	  unwind_protect::protect_var (Vdebug_on_warning);
+          unwind_protect frame;
+	  frame.protect_var (Vdebug_on_warning);
 	  Vdebug_on_warning = false;
 
 	  do_keyboard (octave_value_list ());
-
-	  unwind_protect::run ();
 	}
     }
 }
@@ -1524,9 +1522,9 @@ their default values.\n\
   octave_value retval;
   int nargin = args.length();
 
-  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
+  unwind_protect frame;
 
-  unwind_protect::protect_var (error_state);
+  frame.protect_var (error_state);
   error_state = 0;
 
   if (nargin < 2)
@@ -1631,8 +1629,6 @@ their default values.\n\
   else
     print_usage ();
 
-  unwind_protect::run_frame (uwp_frame);
-
   return retval;  
 }
 
@@ -1646,9 +1642,9 @@ also set the last message identifier.\n\
 {
   octave_value_list retval;
 
-  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
+  unwind_protect frame;
 
-  unwind_protect::protect_var (error_state);
+  frame.protect_var (error_state);
   error_state = 0;
 
   int argc = args.length () + 1;
@@ -1679,8 +1675,6 @@ also set the last message identifier.\n\
     }
   else
     print_usage ();
-
-  unwind_protect::run_frame (uwp_frame);
 
   return retval;  
 }

@@ -3038,14 +3038,14 @@ call_mex (bool have_fmex, void *f, const octave_value_list& args,
   for (int i = 0; i < nout; i++)
     argout[i] = 0;
 
-  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
+  unwind_protect_safe frame;
 
   // Save old mex pointer.
-  unwind_protect::protect_var (mex_context);
+  frame.protect_var (mex_context);
 
   mex context (curr_mex_fcn);
 
-  unwind_protect::add (mex::cleanup, static_cast<void *> (&context));
+  frame.add (mex::cleanup, static_cast<void *> (&context));
 
   for (int i = 0; i < nargin; i++)
     argin[i] = context.make_value (args(i));
@@ -3090,7 +3090,7 @@ call_mex (bool have_fmex, void *f, const octave_value_list& args,
     }
 
   // Clean up mex resources.
-  unwind_protect::run_frame (uwp_frame);
+  frame.run ();
 
   return retval;
 }
@@ -3270,7 +3270,7 @@ mexGetVariable (const char *space, const char *name)
     {
       // FIXME -- should this be in variables.cc?
 
-      unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
+      unwind_protect frame;
 
       bool caller = ! strcmp (space, "caller");
       bool base = ! strcmp (space, "base");
@@ -3283,14 +3283,12 @@ mexGetVariable (const char *space, const char *name)
 	    octave_call_stack::goto_base_frame ();
 
 	  if (! error_state)
-	    unwind_protect::add_fcn (octave_call_stack::pop);
+	    frame.add_fcn (octave_call_stack::pop);
 
 	  val = symbol_table::varval (name);
 	}
       else
 	mexErrMsgTxt ("mexGetVariable: symbol table does not exist");
-
-      unwind_protect::run_frame (uwp_frame);
     }
 
   if (val.is_defined ())
@@ -3330,7 +3328,7 @@ mexPutVariable (const char *space, const char *name, mxArray *ptr)
     {
       // FIXME -- should this be in variables.cc?
 
-      unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
+      unwind_protect frame;
 
       bool caller = ! strcmp (space, "caller");
       bool base = ! strcmp (space, "base");
@@ -3343,14 +3341,12 @@ mexPutVariable (const char *space, const char *name, mxArray *ptr)
 	    octave_call_stack::goto_base_frame ();
 
 	  if (! error_state)
-	    unwind_protect::add_fcn (octave_call_stack::pop);
+	    frame.add_fcn (octave_call_stack::pop);
 
 	  symbol_table::varref (name) = mxArray::as_octave_value (ptr);
 	}
       else
 	mexErrMsgTxt ("mexPutVariable: symbol table does not exist");
-
-      unwind_protect::run_frame (uwp_frame);
     }
 
   return 0;

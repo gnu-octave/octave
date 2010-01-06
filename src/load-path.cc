@@ -562,7 +562,8 @@ load_path::do_set (const std::string& p, bool warn)
 
   // Temporarily disable add hook.
 
-  unwind_protect::protect_var (add_hook);
+  unwind_protect frame;
+  frame.protect_var (add_hook);
 
   add_hook = 0;
 
@@ -574,8 +575,7 @@ load_path::do_set (const std::string& p, bool warn)
     do_append (*i, warn);
 
   // Restore add hook and execute for all newly added directories.
-
-  unwind_protect::run ();
+  frame.run_top ();
 
   for (dir_info_list_iterator i = dir_info_list.begin ();
        i != dir_info_list.end ();
@@ -1820,9 +1820,9 @@ execute_pkg_add_or_del (const std::string& dir,
   if (! octave_interpreter_ready)
     return;
 
-  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
+  unwind_protect frame;
 
-  unwind_protect::protect_var (input_from_startup_file);
+  frame.protect_var (input_from_startup_file);
 
   input_from_startup_file = true;
 
@@ -1832,8 +1832,6 @@ execute_pkg_add_or_del (const std::string& dir,
 
   if (fs.exists ())
     source_file (file, "base");
-
-  unwind_protect::run_frame (uwp_frame);
 }
 
 void

@@ -267,20 +267,20 @@ generate_struct_completions (const std::string& text,
 	{
 	  int parse_status;
 
-	  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
+	  unwind_protect frame;
 
-	  unwind_protect::protect_var (error_state);
-	  unwind_protect::protect_var (warning_state);
+	  frame.protect_var (error_state);
+	  frame.protect_var (warning_state);
 
-	  unwind_protect::protect_var (discard_error_messages);
-	  unwind_protect::protect_var (discard_warning_messages);
+	  frame.protect_var (discard_error_messages);
+	  frame.protect_var (discard_warning_messages);
 
 	  discard_error_messages = true;
 	  discard_warning_messages = true;
 
 	  octave_value tmp = eval_string (prefix, true, parse_status);
 
-	  unwind_protect::run_frame (uwp_frame);
+	  frame.run ();
 
 	  if (tmp.is_defined () && tmp.is_map ())
 	    names = tmp.map_keys ();
@@ -309,16 +309,16 @@ looks_like_struct (const std::string& text)
     {
       int parse_status;
 
-      unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
+      unwind_protect frame;
 
-      unwind_protect::protect_var (discard_error_messages);
-      unwind_protect::protect_var (error_state);
+      frame.protect_var (discard_error_messages);
+      frame.protect_var (error_state);
 
       discard_error_messages = true;
 
       octave_value tmp = eval_string (text, true, parse_status);
 
-      unwind_protect::run_frame (uwp_frame);
+      frame.run ();
 
       retval = (tmp.is_defined () && tmp.is_map ());
     }
@@ -383,11 +383,11 @@ safe_symbol_lookup (const std::string& symbol_name)
 {
   octave_value retval;
 
-  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
+  unwind_protect frame;
   
-  unwind_protect::protect_var (buffer_error_messages);
-  unwind_protect::protect_var (Vdebug_on_error);
-  unwind_protect::protect_var (Vdebug_on_warning);
+  frame.protect_var (buffer_error_messages);
+  frame.protect_var (Vdebug_on_error);
+  frame.protect_var (Vdebug_on_warning);
 
   buffer_error_messages++;
   Vdebug_on_error = false;
@@ -396,8 +396,6 @@ safe_symbol_lookup (const std::string& symbol_name)
   retval = symbol_table::find (symbol_name);
 
   error_state = 0;
-
-  unwind_protect::run_frame (uwp_frame);
 
   return retval;
 }
@@ -1425,19 +1423,19 @@ do_who (int argc, const string_vector& argv, bool return_list,
 	    {
 	      std::string nm = argv [i + 1];
 
-	      unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
+	      unwind_protect frame;
 
 	      // Set up temporary scope.
 
 	      symbol_table::scope_id tmp_scope = symbol_table::alloc_scope ();
-	      unwind_protect::add_fcn (symbol_table::erase_scope, tmp_scope);
+	      frame.add_fcn (symbol_table::erase_scope, tmp_scope);
 
 	      symbol_table::set_scope (tmp_scope);
 
 	      octave_call_stack::push (tmp_scope, 0);
-	      unwind_protect::add_fcn (octave_call_stack::pop);
+	      frame.add_fcn (octave_call_stack::pop);
 
-	      unwind_protect::add_fcn (symbol_table::clear_variables);
+	      frame.add_fcn (symbol_table::clear_variables);
 
 	      feval ("load", octave_value (nm), 0);
 
@@ -1448,8 +1446,6 @@ do_who (int argc, const string_vector& argv, bool return_list,
 
 		  retval =  do_who (i, argv, return_list, verbose, newmsg);
 		}
-
-	      unwind_protect::run_frame (uwp_frame);
 	    }
 
 	  return retval;

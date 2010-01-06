@@ -126,6 +126,8 @@ public:
 
   void visit_try_catch_command (tree_try_catch_command&);
 
+  void do_unwind_protect_cleanup_code (tree_statement_list *list);
+
   void visit_unwind_protect_command (tree_unwind_protect_command&);
 
   void visit_while_command (tree_while_command&);

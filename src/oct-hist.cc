@@ -424,6 +424,11 @@ mk_tmp_hist_file (int argc, const string_vector& argv,
   return name;
 }
 
+static void unlink_cleanup (const char *file)
+{
+  unlink (file);
+}
+
 static void
 do_edit_history (int argc, const string_vector& argv)
 {
@@ -480,22 +485,16 @@ do_edit_history (int argc, const string_vector& argv)
   // Turn on command echo, so the output from this will make better
   // sense.
 
-  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
+  unwind_protect frame;
 
-  unwind_protect::protect_var (Vecho_executing_commands);
-  unwind_protect::protect_var (input_from_tmp_history_file);
+  frame.add_fcn (unlink_cleanup, name.c_str ());
+  frame.protect_var (Vecho_executing_commands);
+  frame.protect_var (input_from_tmp_history_file);
 
   Vecho_executing_commands = ECHO_CMD_LINE;
   input_from_tmp_history_file = true;
 
   source_file (name);
-
-  unwind_protect::run_frame (uwp_frame);
-
-  // Delete the temporary file.  Should probably be done with an
-  // unwind_protect.
-
-  unlink (name.c_str ());
 }
 
 static void
@@ -509,23 +508,16 @@ do_run_history (int argc, const string_vector& argv)
   // Turn on command echo so the output from this will make better
   // sense.
 
-  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
+  unwind_protect frame;
 
-  unwind_protect::protect_var (Vecho_executing_commands);
-  unwind_protect::protect_var (input_from_tmp_history_file);
+  frame.add_fcn (unlink_cleanup, name.c_str ());
+  frame.protect_var (Vecho_executing_commands);
+  frame.protect_var (input_from_tmp_history_file);
 
   Vecho_executing_commands = ECHO_CMD_LINE;
   input_from_tmp_history_file = true;
 
   source_file (name);
-
-  unwind_protect::run_frame (uwp_frame);
-
-  // Delete the temporary file.
-
-  // FIXME -- should probably be done using an unwind_protect.
-
-  unlink (name.c_str ());
 }
 
 void

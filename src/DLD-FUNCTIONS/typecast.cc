@@ -49,11 +49,12 @@ static void
 get_data_and_bytesize (const ArrayType& array,
                        const void *& data,
                        octave_idx_type& byte_size,
-                       dim_vector& old_dims)
+                       dim_vector& old_dims,
+                       unwind_protect& frame)
 {
   // The array given may be a temporary, constructed from a scalar or sparse
   // array. This will ensure the data will be deallocated after we exit.
-  unwind_protect::add_delete (new ArrayType (array));
+  frame.add_delete (new ArrayType (array));
 
   data = reinterpret_cast<const void *> (array.data ());
   byte_size = array.byte_size ();
@@ -137,6 +138,7 @@ typecast (@var{x}, 'uint8')\n\
 
   if (args.length () == 2)
     {
+      unwind_protect frame;
       const void *data = 0;
       octave_idx_type byte_size = 0;
       dim_vector old_dims;
@@ -144,43 +146,43 @@ typecast (@var{x}, 'uint8')\n\
       octave_value array = args(0);
 
       if (array.is_bool_type ())
-        get_data_and_bytesize (array.bool_array_value (), data, byte_size, old_dims);
+        get_data_and_bytesize (array.bool_array_value (), data, byte_size, old_dims, frame);
       else if (array.is_string ())
-        get_data_and_bytesize (array.char_array_value (), data, byte_size, old_dims);
+        get_data_and_bytesize (array.char_array_value (), data, byte_size, old_dims, frame);
       else if (array.is_integer_type ())
         {
           if (array.is_int8_type ())
-            get_data_and_bytesize (array.int8_array_value (), data, byte_size, old_dims);
+            get_data_and_bytesize (array.int8_array_value (), data, byte_size, old_dims, frame);
           else if (array.is_int16_type ())
-            get_data_and_bytesize (array.int16_array_value (), data, byte_size, old_dims);
+            get_data_and_bytesize (array.int16_array_value (), data, byte_size, old_dims, frame);
           else if (array.is_int32_type ())
-            get_data_and_bytesize (array.int32_array_value (), data, byte_size, old_dims);
+            get_data_and_bytesize (array.int32_array_value (), data, byte_size, old_dims, frame);
           else if (array.is_int64_type ())
-            get_data_and_bytesize (array.int64_array_value (), data, byte_size, old_dims);
+            get_data_and_bytesize (array.int64_array_value (), data, byte_size, old_dims, frame);
           else if (array.is_uint8_type ())
-            get_data_and_bytesize (array.uint8_array_value (), data, byte_size, old_dims);
+            get_data_and_bytesize (array.uint8_array_value (), data, byte_size, old_dims, frame);
           else if (array.is_uint16_type ())
-            get_data_and_bytesize (array.uint16_array_value (), data, byte_size, old_dims);
+            get_data_and_bytesize (array.uint16_array_value (), data, byte_size, old_dims, frame);
           else if (array.is_uint32_type ())
-            get_data_and_bytesize (array.uint32_array_value (), data, byte_size, old_dims);
+            get_data_and_bytesize (array.uint32_array_value (), data, byte_size, old_dims, frame);
           else if (array.is_uint64_type ())
-            get_data_and_bytesize (array.uint64_array_value (), data, byte_size, old_dims);
+            get_data_and_bytesize (array.uint64_array_value (), data, byte_size, old_dims, frame);
           else
             assert (0);
         }
       else if (array.is_complex_type ())
         {
           if (array.is_single_type ())
-            get_data_and_bytesize (array.float_complex_array_value (), data, byte_size, old_dims);
+            get_data_and_bytesize (array.float_complex_array_value (), data, byte_size, old_dims, frame);
           else
-            get_data_and_bytesize (array.complex_array_value (), data, byte_size, old_dims);
+            get_data_and_bytesize (array.complex_array_value (), data, byte_size, old_dims, frame);
         }
       else if (array.is_real_type ())
         {
           if (array.is_single_type ())
-            get_data_and_bytesize (array.float_array_value (), data, byte_size, old_dims);
+            get_data_and_bytesize (array.float_array_value (), data, byte_size, old_dims, frame);
           else
-            get_data_and_bytesize (array.array_value (), data, byte_size, old_dims);
+            get_data_and_bytesize (array.array_value (), data, byte_size, old_dims, frame);
         }
       else
         error ("typecast: invalid input class: %s", array.class_name ().c_str ());

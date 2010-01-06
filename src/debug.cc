@@ -661,10 +661,10 @@ Show where we are in the code\n\
 
       octave_stdout << name << ":";
 
-      unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
+      unwind_protect frame;
 
-      unwind_protect::add_fcn (octave_call_stack::restore_frame, 
-			       octave_call_stack::current_frame ());
+      frame.add_fcn (octave_call_stack::restore_frame, 
+                     octave_call_stack::current_frame ());
 
       // Skip the frame assigned to the dbwhere function.
       octave_call_stack::goto_frame_relative (0);
@@ -692,8 +692,6 @@ Show where we are in the code\n\
 	}
       else
 	octave_stdout << " (unknown line)\n";
-
-      unwind_protect::run_frame (uwp_frame);
     }
   else
     error ("dbwhere: must be inside of a user function to use dbwhere\n");
@@ -860,7 +858,7 @@ Print or return current stack information.  With optional argument\n\
 {
   octave_value_list retval;
 
-  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
+  unwind_protect frame;
 
   octave_idx_type curr_frame = -1;
 
@@ -923,8 +921,6 @@ Print or return current stack information.  With optional argument\n\
 	  retval(0) = stk;
 	}
     }
-
-  unwind_protect::run_frame (uwp_frame);
 
   return retval;
 }

@@ -804,9 +804,9 @@ urlwrite (\"http://www.google.com/search\", \"search.html\",\n\
       return retval;
     }
 
-  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
+  unwind_protect_safe frame;
 
-  unwind_protect::add_fcn (cleanup_urlwrite, filename);
+  frame.add_fcn (cleanup_urlwrite, filename);
 
   bool res;
   curl_handle curl = curl_handle (url, method, param, ofile, res);
@@ -814,9 +814,9 @@ urlwrite (\"http://www.google.com/search\", \"search.html\",\n\
   ofile.close ();
 
   if (!error_state)
-    unwind_protect::discard_frame (uwp_frame);
+    frame.discard ();
   else
-    unwind_protect::run_frame (uwp_frame);
+    frame.run ();
 
   if (nargout > 0)
     {
@@ -1426,10 +1426,9 @@ mput_directory (const curl_handle& curl, const std::string& base,
 
   if (! error_state)
     {
-      unwind_protect::frame_id_t uwp_frame = 
-	unwind_protect::begin_frame ();
+      unwind_protect_safe frame;
 
-      unwind_protect::add_fcn (reset_path, curl);
+      frame.add_fcn (reset_path, curl);
 
       std::string realdir = base.length() == 0 ? dir : base + 
 			 file_ops::dir_sep_str () + dir;
@@ -1491,8 +1490,6 @@ mput_directory (const curl_handle& curl, const std::string& base,
       else
 	error ("__ftp_mput__: can not read the directory ""%s""", 
 	       realdir.c_str());
-
-      unwind_protect::run_frame (uwp_frame);
     }
 
   return retval;
@@ -1602,12 +1599,11 @@ getallfiles (const curl_handle& curl, const std::string& dir,
 
       if (! error_state)
 	{
-	  unwind_protect::frame_id_t uwp_frame = 
-	    unwind_protect::begin_frame ();
+          unwind_protect_safe frame;
 
-	  unwind_protect::add_fcn (reset_path, curl);
+	  frame.add_fcn (reset_path, curl);
 
-	    string_vector sv = curl.list ();
+          string_vector sv = curl.list ();
 
 	  for (octave_idx_type i = 0; i < sv.length (); i++)
 	    {
@@ -1632,26 +1628,23 @@ getallfiles (const curl_handle& curl, const std::string& dir,
 		      break;
 		    }
 
-		  unwind_protect::frame_id_t uwp_frame2 = 
-		    unwind_protect::begin_frame ();
+                  unwind_protect_safe frame2;
 
-		  unwind_protect::add_fcn (delete_file, realfile);
+		  frame2.add_fcn (delete_file, realfile);
 
 		  curl.get (sv(i), ofile);
 
 		  ofile.close ();
 
 		  if (!error_state)
-		    unwind_protect::discard_frame (uwp_frame2);
+		    frame2.discard ();
 		  else
-		    unwind_protect::run_frame (uwp_frame2);
+		    frame2.run ();
 		}
 
 	      if (error_state)
 		break;
 	    }
-
-	  unwind_protect::run_frame (uwp_frame);
 	}
     }
 }
@@ -1713,19 +1706,18 @@ Undocumented internal function\n\
 			      break;
 			    }
 
-			  unwind_protect::frame_id_t uwp_frame = 
-			    unwind_protect::begin_frame ();
+                          unwind_protect_safe frame;
 
-			  unwind_protect::add_fcn (delete_file, target + sv(i));
+			  frame.add_fcn (delete_file, target + sv(i));
 
 			  curl.get (sv(i), ofile);
 
 			  ofile.close ();
 
 			  if (!error_state)
-			    unwind_protect::discard_frame (uwp_frame);
+			    frame.discard ();
 			  else
-			    unwind_protect::run_frame (uwp_frame);
+			    frame.run ();
 			}
 
 		      if (error_state)

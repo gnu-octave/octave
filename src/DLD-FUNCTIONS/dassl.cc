@@ -153,12 +153,7 @@ dassl_user_jacobian (const ColumnVector& x, const ColumnVector& xdot,
 }
 
 #define DASSL_ABORT() \
-  do \
-    { \
-      unwind_protect::run_frame (uwp_frame); \
-      return retval; \
-    } \
-  while (0)
+  return retval
 
 #define DASSL_ABORT1(msg) \
   do \
@@ -281,9 +276,9 @@ parameters for @code{dassl}.\n\
   warned_fcn_imaginary = false;
   warned_jac_imaginary = false;
 
-  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
+  unwind_protect frame;
 
-  unwind_protect::protect_var (call_depth);
+  frame.protect_var (call_depth);
   call_depth++;
 
   if (call_depth > 1)
@@ -481,8 +476,6 @@ parameters for @code{dassl}.\n\
     }
   else
     print_usage ();
-
-  unwind_protect::run_frame (uwp_frame);
 
   return retval;
 }

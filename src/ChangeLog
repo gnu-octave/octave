@@ -1,3 +1,70 @@
+2010-01-06  Jaroslav Hajek  <highegg@gmail.com>
+
+	* unwind_protect.h, unwind_protect.cc (unwind_protect): Rewrite.
+	Remove obsolete macros. Use a simple linked list.
+
+	* debug.cc (Fdbwhere): Update to new unwind_protect style.
+	* dynamic-ld.cc (octave_dynamic_loader::do_load_oct,
+	  octave_dynamic_loader::do_load_mex): Ditto.
+	* error.cc (Flasterror, Flasterr, error_2, warning_1): Ditto.
+	* graphics.cc (base_graphics_object::remove_all_listeners,
+	  axes::update_axis_limits, gh_manager::do_execute_callback,
+	  Fdrawnow): Ditto.
+	* help.cc (raw_help_from_file): Ditto.
+	* input.cc (do_keyboard, Fkeyboard, get_debug_input): Ditto.
+	* load-path.cc (load_path::do_set, execute_pkg_add_or_del,
+	* ls-mat4.cc (save_mat_binary_data): Ditto.
+	* ls-mat5.cc (read_mat5_binary_element): Ditto.
+	* mex.cc (call_mex, mexGetVariable): Ditto.
+	* oct-hist.cc (do_edit_history, do_run_history): Ditto.
+	* octave.cc (execute_startup_files, execute_eval_option_code, 
+	  execute_command_line_file): Ditto.
+	* ov-builtin.cc (octave_builtin::do_multi_index_op): Ditto.
+	* ov-class.cc (octave_class::subsasgn, octave_class::print_raw):
+	Ditto.
+	* ov-fcn-handle.cc (octave_fcn_handle::load_ascii,
+	octave_fcn_handle::load_binary, octave_fcn_handle::load_hdf5): Ditto.
+	* ov-list.cc (octave_list::print_raw): Ditto.
+	* ov-mex-fcn.cc (octave_mex_function::do_multi_index_op): Ditto.
+	* ov-struct.cc (octave_struct::print_raw): Ditto.
+	* ov-usr-fcn.cc (octave_user_script::do_multi_index_op,
+	  octave_user_function::do_multi_index_op): Ditto.
+	* pager.cc (flush_octave_stdout): Ditto.
+	* pr-output.cc (Frats): Ditto.
+	* pt-arg-list.cc (tree_argument_list::convert_to_const_vector): Ditto.
+
+	* pt-eval.cc (tree_evaluator::visit_simple_for_command,
+	tree_evaluator::visit_complex_for_command,
+	tree_evaluator::visit_while_command,
+	tree_evaluator::visit_do_until_command): Update to new unwind_protect
+	style.
+	(do_catch_code): Remove.
+	(tree_evaluator::visit_try_catch_command): Simplify. Don't register
+	catch code for unwind_protect.
+	(tree_evaluator::do_unwind_protect_cleanup_code): Make a
+	tree_evaluator method. Update to new unwind_protect style.
+	(tree_evaluator::visit_unwind_protect_command): Use explicit try/catch
+	handling rather than inserting unsafe code into unwind_protect.
+
+	* pt-eval.h (tree_evaluator::do_unwind_protect_cleanup_code): New decl.
+	* toplev.cc (main_loop): Update to new unwind_protect style.
+	  (run_command_and_return_output): Ditto.
+	* utils.cc (Fisindex): Ditto.
+	* variables.cc (generate_struct_completions, safe_symbol_lookup,
+	do_who): Ditto.
+
+	* DLD-FUNCTIONS/cellfun.cc (Fcellfun): Ditto.
+	* DLD-FUNCTIONS/daspk.cc (Fdaspk): Ditto.
+	* DLD-FUNCTIONS/dasrt.cc (Fdasrt): Ditto.
+	* DLD-FUNCTIONS/dassl.cc (Fdassl): Ditto.
+	* DLD-FUNCTIONS/eigs.cc (Feigs): Ditto.
+	* DLD-FUNCTIONS/lsode.cc (Flsode): Ditto.
+	* DLD-FUNCTIONS/quad.cc (Fquad): Ditto.
+	* DLD-FUNCTIONS/rand.cc (Frandn, Frande, Frandg, Frandp): Ditto.
+	* DLD-FUNCTIONS/typecast.cc (get_data_and_bytesize, Ftypecast): Ditto.
+	* DLD-FUNCTIONS/urlwrite.cc (Furlwrite, mput_directory, 
+	getallfiles, F__ftp_mget__): Ditto.
+
 2010-01-05  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Cell.cc (Cell::cellstr_value): New method.

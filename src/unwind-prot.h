@@ -2,7 +2,7 @@
 
 Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 2000, 2002, 2004,
               2005, 2006, 2007, 2008 John W. Eaton
-Copyright (C) 2009 VZLU Prague
+Copyright (C) 2009, 2010 VZLU Prague
 
 This file is part of Octave.
 
@@ -28,9 +28,9 @@ along with Octave; see the file COPYING.  If not, see
 #include <cstddef>
 
 #include <string>
-#include <stack>
 #include <memory>
 
+// This class allows registering cleanup actions.
 class
 OCTINTERP_API
 unwind_protect
@@ -38,11 +38,16 @@ unwind_protect
 public:
 
   // A generic unwind_protect element. Knows how to run itself and discard itself.
+  // Also, contains a pointer to the next element.
   class elem
   {
+    elem *next;
+
   public:
     virtual void run (void) { }
     virtual ~elem (void) { }
+
+    friend class unwind_protect;
   };
 
   // An element that merely runs a void (*)(void) function.
@@ -122,152 +127,149 @@ public:
     T *e_ptr;
   };
 
-  typedef size_t frame_id_t;
+  unwind_protect (void) : head () { }
 
-  // Generic. Users may subclass elem to provide their own cleanup.
-  static void add (elem *el)
+  void add (elem *new_elem)
     {
-      elt_list.push (el);
-    }
-
-  static bool empty (void)
-    { return elt_list.empty (); }
-
-  static void run (void)
-    {
-      // Use auto_ptr, so that even if the following run () call throws an
-      // exception, we still clean up the element.
-      std::auto_ptr<elem> elt (elt_list.top ());
-      elt_list.pop ();
-
-      elt->run ();
-    }
-
-  static void discard (void)
-    {
-      // No need to use ato_ptr here.
-      elem *elt = elt_list.top ();
-      elt_list.pop ();
-
-      delete elt;
-    }
-
-  static frame_id_t begin_frame ()
-    {
-      return elt_list.size ();
-    }
-
-  static void run_frame (frame_id_t frame_id)
-    {
-      while (elt_list.size () > frame_id)
-        run ();
-    }
-
-  static void discard_frame (frame_id_t frame_id)
-    {
-      while (elt_list.size () > frame_id)
-        discard ();
-    }
-
-  // String tags are deprecated. Use the above trio.
-
-  static void begin_frame (const std::string& tag) GCC_ATTR_DEPRECATED;
-
-  static void run_frame (const std::string& tag) GCC_ATTR_DEPRECATED;
-
-  static void discard_frame (const std::string& tag) GCC_ATTR_DEPRECATED;
-
-  static void run_all (void)
-    { 
-      run_frame (0);
-      while (! tag_list.empty ())
-        tag_list.pop ();
-    }
-
-  static void discard_all (void)
-    { 
-      discard_frame (0);
-      while (! tag_list.empty ())
-        tag_list.pop ();
+      new_elem->next = head;
+      head = new_elem;
     }
 
   // For backward compatibility.
-  static void add (void (*fcn) (void *), void *ptr = 0)
+  void add (void (*fcn) (void *), void *ptr = 0)
     {
-      elt_list.push (new fcn_arg_elem<void *> (fcn, ptr));
+      add (new fcn_arg_elem<void *> (fcn, ptr));
     }
 
   // Call to void func (void).
-  static void add_fcn (void (*fcn) (void))
+  void add_fcn (void (*fcn) (void))
     {
-      elt_list.push (new fcn_elem (fcn));
+      add (new fcn_elem (fcn));
     }
 
   // Call to void func (T).
   template <class T>
-  static void add_fcn (void (*action) (T), T val)
+  void add_fcn (void (*action) (T), T val)
     {
-      elt_list.push (new fcn_arg_elem<T> (action, val));
+      add (new fcn_arg_elem<T> (action, val));
     }
 
   // Call to T::method (void).
   template <class T>
-  static void add_method (T *obj, void (T::*method) (void))
+  void add_method (T *obj, void (T::*method) (void))
     {
-      elt_list.push (new method_elem<T> (obj, method));
+      add (new method_elem<T> (obj, method));
     }
 
   // Call to delete (T*).
 
   template <class T>
-  static void add_delete (T *obj)
+  void add_delete (T *obj)
     {
-      elt_list.push (new delete_ptr_elem<T> (obj));
+      add (new delete_ptr_elem<T> (obj));
     }
 
   // Protect any variable.
   template <class T>
-  static void protect_var (T& var)
+  void protect_var (T& var)
     {
-      elt_list.push (new restore_var_elem<T> (var, var));
+      add (new restore_var_elem<T> (var, var));
     }
 
   // Protect any variable, value given.
   template <class T>
-  static void protect_var (T& var, const T& val)
+  void protect_var (T& var, const T& val)
     {
-      elt_list.push (new restore_var_elem<T> (var, val));
+      add (new restore_var_elem<T> (var, val));
+    }
+
+  operator bool (void) const 
+    { 
+      return head != 0; 
+    }
+
+  void run_top (void) 
+    { 
+      if (head)
+        {
+          // No leak on exception!
+          std::auto_ptr<elem> ptr (head);
+          head = ptr->next;
+          ptr->run ();
+        }
+    }
+
+  void run_top (int num) 
+    { 
+      while (num-- > 0)
+        run_top ();
+    }
+
+  void discard_top (void)
+    {
+      if (head)
+        {
+          elem *ptr = head;
+          head = ptr->next;
+          delete ptr;
+        }
+    }
+
+  void discard_top (int num) 
+    { 
+      while (num-- > 0)
+        discard_top ();
+    }
+
+  void run (void)
+    {
+      while (head)
+        run_top ();
+    }
+
+  void discard (void)
+    {
+      while (head)
+        discard_top ();
+    }
+
+  // Destructor should not raise an exception, so all actions registered should
+  // be exception-safe (but setting error_state is allowed). If you're not sure,
+  // see unwind_protect_safe.
+  ~unwind_protect (void)
+    {
+      run ();
     }
 
 private:
 
-  static std::stack<elem *> elt_list;
-
-  static std::stack<std::pair <std::string, frame_id_t> > tag_list;
+  elem *head;
 };
 
-// Backward compatibility macros. Avoid them; use protect_var directly.
+// Like unwind_protect, but this one will guard against the possibility of seeing
+// an exception (or interrupt) in the cleanup actions. Not that we can do much about
+// it, but at least we won't crash.
 
-#define unwind_protect_bool(b) \
-  unwind_protect::protect_var (b)
+class unwind_protect_safe : public unwind_protect
+{
+  static void gripe_exception (void);
 
-#define unwind_protect_int(i) \
-  unwind_protect::protect_var (i)
-
-#define unwind_protect_size_t(i) \
-  unwind_protect::protect_var (i)
-
-#define unwind_protect_str(s) \
-  unwind_protect::protect_var (s)
-
-#define unwind_protect_ptr(p) \
-  unwind_protect::protect_var (p)
-
-#define unwind_protect_fptr(p) \
-  unwind_protect::protect_var (p)
-
-#define unwind_protect_const_ptr(p) \
-  unwind_protect::protect_var (p)
+public:
+  ~unwind_protect_safe (void)
+    {
+      while (*this)
+        {
+          try
+            {
+              run_top ();
+            }
+          catch (...) // Yes, the black hole. Remember we're in a dtor.
+            {
+              gripe_exception ();
+            }
+        }
+    }
+};
 
 #endif
 

@@ -580,9 +580,9 @@ octave_struct::print (std::ostream& os, bool) const
 void
 octave_struct::print_raw (std::ostream& os, bool) const
 {
-  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
+  unwind_protect frame;
 
-  unwind_protect::protect_var (Vstruct_levels_to_print);
+  frame.protect_var (Vstruct_levels_to_print);
 
   if (Vstruct_levels_to_print >= 0)
     {
@@ -647,8 +647,6 @@ octave_struct::print_raw (std::ostream& os, bool) const
       os << "<structure>";
       newline (os);
     }
-
-  unwind_protect::run_frame (uwp_frame);
 }
 
 bool

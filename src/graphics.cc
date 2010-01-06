@@ -2290,10 +2290,10 @@ base_graphics_object::remove_all_listeners (void)
       // ask whether it is OK to delete the listener for the given
       // property.  How can we know in advance that it will be OK?
 
-      unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
+      unwind_protect frame;
 
-      unwind_protect::protect_var (discard_error_messages);
-      unwind_protect::protect_var (error_state);
+      frame.protect_var (discard_error_messages);
+      frame.protect_var (error_state);
 
       discard_error_messages = true;
 
@@ -2301,8 +2301,6 @@ base_graphics_object::remove_all_listeners (void)
 
       if (! error_state && p.ok ())
 	p.delete_listener ();
-
-      unwind_protect::run_frame (uwp_frame);
     }
 }
 
@@ -3859,7 +3857,9 @@ axes::update_axis_limits (const std::string& axis_type)
 
     }
 
-  unwind_protect::protect_var (updating_axis_limits);
+  unwind_protect frame;
+  frame.protect_var (updating_axis_limits);
+
   updating_axis_limits = true;
 
   switch (update_type)
@@ -3897,8 +3897,6 @@ axes::update_axis_limits (const std::string& axis_type)
     }
 
   xproperties.update_transform ();
-
-  unwind_protect::run ();
 }
 
 inline
@@ -4501,8 +4499,8 @@ gh_manager::do_execute_callback (const graphics_handle& h,
   else
     args(1) = Matrix ();
 
-  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
-  unwind_protect::add_fcn (gh_manager::restore_gcbo);
+  unwind_protect_safe frame;
+  frame.add_fcn (gh_manager::restore_gcbo);
 
   if (true)
     {
@@ -4551,8 +4549,6 @@ gh_manager::do_execute_callback (const graphics_handle& h,
     feval (fcn, args);
   
   END_INTERRUPT_WITH_EXCEPTIONS;
-
-  unwind_protect::run_frame (uwp_frame);
 }
 
 void
@@ -5381,10 +5377,10 @@ undocumented.\n\
 
   gh_manager::lock ();
 
-  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
-  unwind_protect::protect_var (Vdrawnow_requested, false);
+  unwind_protect frame;
+  frame.protect_var (Vdrawnow_requested, false);
 
-  unwind_protect::protect_var (drawnow_executing);
+  frame.protect_var (drawnow_executing);
 
   if (++drawnow_executing <= 1)
     {
@@ -5518,8 +5514,6 @@ undocumented.\n\
       else
 	print_usage ();
     }
-
-  unwind_protect::run_frame (uwp_frame);
 
   gh_manager::unlock ();
 

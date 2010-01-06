@@ -464,7 +464,7 @@ keyword \"state\" should be used to reset the state of the @code{rand}.\n\
 static std::string current_distribution = octave_rand::distribution ();
 
 static void
-reset_rand_generator (void *)
+reset_rand_generator (void)
 {
   octave_rand::distribution (current_distribution);
 }
@@ -492,23 +492,21 @@ J. Statistical Software, vol 5, 2000,\n\
 
   int nargin = args.length ();
 
-  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
+  unwind_protect frame;
 
   // This relies on the fact that elements are popped from the unwind
   // stack in the reverse of the order they are pushed
   // (i.e. current_distribution will be reset before calling
   // reset_rand_generator()).
 
-  unwind_protect::add (reset_rand_generator, 0);
-  unwind_protect::protect_var (current_distribution);
+  frame.add_fcn (reset_rand_generator);
+  frame.protect_var (current_distribution);
 
   current_distribution = "normal";
 
   octave_rand::distribution (current_distribution);
 
   retval = do_rand (args, nargin, "randn");
-
-  unwind_protect::run_frame (uwp_frame);
 
   return retval;
 }
@@ -565,23 +563,21 @@ J. Statistical Software, vol 5, 2000,\n\
 
   int nargin = args.length ();
 
-  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
+  unwind_protect frame;
 
   // This relies on the fact that elements are popped from the unwind
   // stack in the reverse of the order they are pushed
   // (i.e. current_distribution will be reset before calling
   // reset_rand_generator()).
 
-  unwind_protect::add (reset_rand_generator, 0);
-  unwind_protect::protect_var (current_distribution);
+  frame.add_fcn (reset_rand_generator);
+  frame.protect_var (current_distribution);
 
   current_distribution = "exponential";
 
   octave_rand::distribution (current_distribution);
 
   retval = do_rand (args, nargin, "rande");
-
-  unwind_protect::run_frame (uwp_frame);
 
   return retval;
 }
@@ -697,23 +693,21 @@ r = r / sum (r)\n\
     error ("randg: insufficient arguments");
   else
     {
-      unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
+      unwind_protect frame;
 
       // This relies on the fact that elements are popped from the unwind
       // stack in the reverse of the order they are pushed
       // (i.e. current_distribution will be reset before calling
       // reset_rand_generator()).
 
-      unwind_protect::add (reset_rand_generator, 0);
-      unwind_protect::protect_var (current_distribution);
+      frame.add_fcn (reset_rand_generator);
+      frame.protect_var (current_distribution);
 
       current_distribution = "gamma";
 
       octave_rand::distribution (current_distribution);
 
       retval = do_rand (args, nargin, "randg", true);
-
-      unwind_protect::run_frame (uwp_frame);
     }
 
   return retval;
@@ -911,23 +905,21 @@ D 50 p1284, 1994\n\
     error ("randp: insufficient arguments");
   else
     {
-      unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
+      unwind_protect frame;
 
       // This relies on the fact that elements are popped from the unwind
       // stack in the reverse of the order they are pushed
       // (i.e. current_distribution will be reset before calling
       // reset_rand_generator()).
 
-      unwind_protect::add (reset_rand_generator, 0);
-      unwind_protect::protect_var (current_distribution);
+      frame.add_fcn (reset_rand_generator);
+      frame.protect_var (current_distribution);
 
       current_distribution = "poisson";
 
       octave_rand::distribution (current_distribution);
 
       retval = do_rand (args, nargin, "randp", true);
-
-      unwind_protect::run_frame (uwp_frame);
     }
 
   return retval;

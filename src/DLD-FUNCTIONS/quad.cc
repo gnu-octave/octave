@@ -153,7 +153,6 @@ quad_float_user_function (float x)
     { \
       if (fcn_name.length()) \
 	clear_function (fcn_name); \
-      unwind_protect::run_frame (uwp_frame); \
       return retval; \
     } \
   while (0)
@@ -221,9 +220,9 @@ cannot be called recursively.\n\
 
   warned_imaginary = false;
 
-  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
+  unwind_protect frame;
 
-  unwind_protect::protect_var (call_depth);
+  frame.protect_var (call_depth);
   call_depth++;
 
   if (call_depth > 1)
@@ -470,8 +469,6 @@ cannot be called recursively.\n\
     }
   else
     print_usage ();
-
-  unwind_protect::run_frame (uwp_frame);
 
   return retval;
 }

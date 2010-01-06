@@ -477,8 +477,8 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
   if (func.is_function_handle () || func.is_inline_function ()
       || func.is_function ())
     {
-      unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
-      unwind_protect::protect_var (buffer_error_messages);
+      unwind_protect frame;
+      frame.protect_var (buffer_error_messages);
 
       bool uniform_output = true;
       octave_value error_handler;
@@ -540,14 +540,14 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
       dim_vector fdims (1, 1);
 
       if (error_state)
-        goto cellfun_err;
+        return octave_value_list ();
 
       for (int j = 0; j < nargin; j++)
         {
           if (! args(j+1).is_cell ())
             {
               error ("cellfun: arguments must be cells");
-              goto cellfun_err;
+              return octave_value_list ();
             }
 
           inputs[j] = args(j+1).cell_value ();
@@ -567,7 +567,7 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
                   if (mask[i] && inputs[i].dims () != fdims)
                     {
                       error ("cellfun: Dimensions mismatch.");
-                      goto cellfun_err;
+                      return octave_value_list ();
                     }
                 }
               break;
@@ -605,18 +605,18 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
                   buffer_error_messages++;
 
                   if (error_state)
-                    goto cellfun_err;
+                    return octave_value_list ();
                 }
 
               if (error_state)
-                goto cellfun_err;
+                return octave_value_list ();
 
               if (tmp.length () < nargout1)
                 {
                   if (tmp.length () < nargout)
                     {
                       error ("cellfun: too many output arguments");
-                      goto cellfun_err;
+                      return octave_value_list ();
                     }
                   else
                     nargout1 = 0;
@@ -697,18 +697,18 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
                   buffer_error_messages++;
 
                   if (error_state)
-                    goto cellfun_err;
+                    return octave_value_list ();
                 }
 
               if (error_state)
-                goto cellfun_err;
+                return octave_value_list ();
 
               if (tmp.length () < nargout1)
                 {
                   if (tmp.length () < nargout)
                     {
                       error ("cellfun: too many output arguments");
-                      goto cellfun_err;
+                      return octave_value_list ();
                     }
                   else
                     nargout1 = 0;
@@ -723,12 +723,6 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
           for (int j = 0; j < nargout1; j++)
             retval(j) = results[j];
         }
-
-cellfun_err:
-      if (error_state)
-        retval = octave_value_list();
-
-      unwind_protect::run_frame (uwp_frame);
     }
   else
     error ("cellfun: first argument must be a string or function handle");

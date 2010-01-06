@@ -686,9 +686,9 @@ get_debug_input (const std::string& prompt)
   if (! msg.empty ())
     std::cerr << msg << std::endl;
 
-  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
+  unwind_protect frame;
 
-  unwind_protect::protect_var (VPS1);
+  frame.protect_var (VPS1);
   VPS1 = prompt;
 
   if (stdin_is_tty)
@@ -701,32 +701,33 @@ get_debug_input (const std::string& prompt)
               || input_from_startup_file
               || input_from_command_line_file))
         {
-          unwind_protect::protect_var (forced_interactive);
+          frame.protect_var (forced_interactive);
           forced_interactive = true;
 
-          unwind_protect::protect_var (reading_fcn_file);
+          frame.protect_var (reading_fcn_file);
           reading_fcn_file = false;
 
-          unwind_protect::protect_var (reading_classdef_file);
+          frame.protect_var (reading_classdef_file);
           reading_classdef_file = false;
 
-          unwind_protect::protect_var (reading_script_file);
+          frame.protect_var (reading_script_file);
           reading_script_file = false;
 
-          unwind_protect::protect_var (input_from_startup_file);
+          frame.protect_var (input_from_startup_file);
           input_from_startup_file = false;
 
-          unwind_protect::protect_var (input_from_command_line_file);
+          frame.protect_var (input_from_command_line_file);
           input_from_command_line_file = false;
 
-          unwind_protect::protect_var (get_input_from_eval_string);
+          frame.protect_var (get_input_from_eval_string);
           get_input_from_eval_string = false;
 
           YY_BUFFER_STATE old_buf = current_buffer ();
           YY_BUFFER_STATE new_buf = create_buffer (get_input_from_stdin ());
 
-          unwind_protect::add_fcn (switch_to_buffer, old_buf);
-          unwind_protect::add_fcn (delete_buffer, new_buf);
+          // FIXME: are these safe?
+          frame.add_fcn (switch_to_buffer, old_buf);
+          frame.add_fcn (delete_buffer, new_buf);
 
           switch_to_buffer (new_buf);
         }
@@ -738,12 +739,12 @@ get_debug_input (const std::string& prompt)
           reset_parser ();
 
           // Save current value of global_command.
-          unwind_protect::protect_var (global_command);
+          frame.protect_var (global_command);
 
           // Do this with an unwind-protect cleanup function so that the
           // forced variables will be unmarked in the event of an interrupt.
           symbol_table::scope_id scope = symbol_table::top_scope ();
-          unwind_protect::add_fcn (symbol_table::unmark_forced_variables, scope);
+          frame.add_fcn (symbol_table::unmark_forced_variables, scope);
 
           // This is the same as yyparse in parse.y.
           int retval = octave_parse ();
@@ -767,18 +768,14 @@ get_debug_input (const std::string& prompt)
             }
 
           // Unmark forced variables.
-          unwind_protect::run ();
-
           // Restore previous value of global_command.
-          unwind_protect::run ();
+          frame.run_top (2);
 
           OCTAVE_QUIT;
         }
     }
   else
     warning ("invalid attempt to debug script read from stdin");
-
-  unwind_protect::run_frame (uwp_frame);
 }
 
 // If the user simply hits return, this will produce an empty matrix.
@@ -960,20 +957,20 @@ do_keyboard (const octave_value_list& args)
 
   assert (nargin == 0 || nargin == 1);
 
-  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
+  unwind_protect frame;
 
   // FIXME -- we shouldn't need both the
   // command_history object and the
   // Vsaving_history variable...
   command_history::ignore_entries (false);
 
-  unwind_protect::add_fcn (command_history::ignore_entries, ! Vsaving_history);
+  frame.add_fcn (command_history::ignore_entries, ! Vsaving_history);
 
-  unwind_protect::protect_var (Vsaving_history);
-  unwind_protect::protect_var (Vdebugging);
+  frame.protect_var (Vsaving_history);
+  frame.protect_var (Vdebugging);
 
-  unwind_protect::add_fcn (octave_call_stack::restore_frame, 
-                           octave_call_stack::current_frame ());
+  frame.add_fcn (octave_call_stack::restore_frame, 
+                 octave_call_stack::current_frame ());
 
   // FIXME -- probably we just want to print one line, not the
   // entire statement, which might span many lines...
@@ -990,8 +987,6 @@ do_keyboard (const octave_value_list& args)
 
   if (! error_state)
     get_debug_input (prompt);
-
-  unwind_protect::run_frame (uwp_frame);
 
   return retval;
 }
@@ -1019,15 +1014,14 @@ If @code{keyboard} is invoked without arguments, a default prompt of\n\
 
   if (nargin == 0 || nargin == 1)
     {
-      unwind_protect::add_fcn (octave_call_stack::restore_frame, 
-			       octave_call_stack::current_frame ());
+      unwind_protect frame;
+      frame.add_fcn (octave_call_stack::restore_frame, 
+                     octave_call_stack::current_frame ());
 
       // Skip the frame assigned to the keyboard function.
       octave_call_stack::goto_frame_relative (0);
 
       do_keyboard (args);
-
-      unwind_protect::run ();
     }
   else
     print_usage ();

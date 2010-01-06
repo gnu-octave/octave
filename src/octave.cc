@@ -291,9 +291,9 @@ initialize_version_info (void)
 static void
 execute_startup_files (void)
 {
-  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
+  unwind_protect frame;
 
-  unwind_protect::protect_var (input_from_startup_file);
+  frame.protect_var (input_from_startup_file);
 
   input_from_startup_file = true;
 
@@ -367,28 +367,26 @@ execute_startup_files (void)
 	  source_file (local_rc, context, verbose, require_file);
 	}
     }
-
-  unwind_protect::run_frame (uwp_frame);
 }
 
 static int
 execute_eval_option_code (const std::string& code)
 {
-  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
+  unwind_protect frame;
 
   octave_save_signal_mask ();
 
   can_interrupt = true;
 
   octave_signal_hook = octave_signal_handler;
-  octave_interrupt_hook = unwind_protect::run_all;
-  octave_bad_alloc_hook = unwind_protect::run_all;
+  octave_interrupt_hook = 0;
+  octave_bad_alloc_hook = 0;
 
   octave_catch_interrupts ();
 
   octave_initialized = true;
 
-  unwind_protect::protect_var (interactive);
+  frame.protect_var (interactive);
 
   interactive = false;
 
@@ -411,37 +409,35 @@ execute_eval_option_code (const std::string& code)
 		<< std::endl;
     }
 
-  unwind_protect::run_frame (uwp_frame);
-
   return parse_status;
 }
 
 static void
 execute_command_line_file (const std::string& fname)
 {
-  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
+  unwind_protect frame;
 
   octave_save_signal_mask ();
 
   can_interrupt = true;
 
   octave_signal_hook = octave_signal_handler;
-  octave_interrupt_hook = unwind_protect::run_all;
-  octave_bad_alloc_hook = unwind_protect::run_all;
+  octave_interrupt_hook = 0;
+  octave_bad_alloc_hook = 0;
 
   octave_catch_interrupts ();
 
   octave_initialized = true;
 
-  unwind_protect::protect_var (interactive);
-  unwind_protect::protect_var (reading_script_file);
-  unwind_protect::protect_var (input_from_command_line_file);
+  frame.protect_var (interactive);
+  frame.protect_var (reading_script_file);
+  frame.protect_var (input_from_command_line_file);
 
-  unwind_protect::protect_var (curr_fcn_file_name);
-  unwind_protect::protect_var (curr_fcn_file_full_name);
+  frame.protect_var (curr_fcn_file_name);
+  frame.protect_var (curr_fcn_file_full_name);
 
-  unwind_protect::protect_var (octave_program_invocation_name);
-  unwind_protect::protect_var (octave_program_name);
+  frame.protect_var (octave_program_invocation_name);
+  frame.protect_var (octave_program_name);
 
   interactive = false;
   reading_script_file = true;
@@ -479,8 +475,6 @@ execute_command_line_file (const std::string& fname)
       std::cerr << "error: memory exhausted or requested size too large for range of Octave's index type -- execution of "
 		<< fname << " failed" << std::endl;
     }
- 
-  unwind_protect::run_frame (uwp_frame);
 }
 
 // Usage message with extra help.

@@ -279,9 +279,9 @@ tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
   if (debug_mode)
     do_breakpoint (cmd.is_breakpoint ());
 
-  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
+  unwind_protect frame;
 
-  unwind_protect::protect_var (in_loop_command);
+  frame.protect_var (in_loop_command);
 
   in_loop_command = true;
 
@@ -290,7 +290,7 @@ tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
   octave_value rhs = expr->rvalue1 ();
 
   if (error_state || rhs.is_undefined ())
-    goto cleanup;
+    return;
 
   {
     tree_expression *lhs = cmd.left_hand_side ();
@@ -298,7 +298,7 @@ tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
     octave_lvalue ult = lhs->lvalue ();
 
     if (error_state)
-      goto cleanup;
+      return;
 
     tree_statement_list *loop_body = cmd.body ();
 
@@ -387,9 +387,6 @@ tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
 		 cmd.line (), cmd.column ());
       }
   }
-
- cleanup:
-  unwind_protect::run_frame (uwp_frame);
 }
 
 void
@@ -401,9 +398,9 @@ tree_evaluator::visit_complex_for_command (tree_complex_for_command& cmd)
   if (debug_mode)
     do_breakpoint (cmd.is_breakpoint ());
 
-  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
+  unwind_protect frame;
 
-  unwind_protect::protect_var (in_loop_command);
+  frame.protect_var (in_loop_command);
 
   in_loop_command = true;
 
@@ -412,7 +409,7 @@ tree_evaluator::visit_complex_for_command (tree_complex_for_command& cmd)
   octave_value rhs = expr->rvalue1 ();
 
   if (error_state || rhs.is_undefined ())
-    goto cleanup;
+    return;
 
   if (rhs.is_map ())
     {
@@ -462,9 +459,6 @@ tree_evaluator::visit_complex_for_command (tree_complex_for_command& cmd)
     }
   else
     error ("in statement `for [X, Y] = VAL', VAL must be a structure");
-
- cleanup:
-  unwind_protect::run_frame (uwp_frame);
 }
 
 void
@@ -819,49 +813,14 @@ tree_evaluator::visit_switch_command (tree_switch_command& cmd)
 	     cmd.line (), cmd.column ());
 }
 
-static void
-do_catch_code (tree_statement_list *list)
-{
-  // Is it safe to call OCTAVE_QUIT here?  We are already running
-  // something on the unwind_protect stack, but the element for this
-  // action would have already been popped from the top of the stack,
-  // so we should not be attempting to run it again.
-
-  OCTAVE_QUIT;
-
-  // If we are interrupting immediately, or if an interrupt is in
-  // progress (octave_interrupt_state < 0), then we don't want to run
-  // the catch code (it should only run on errors, not interrupts).
-
-  // If octave_interrupt_state is positive, an interrupt is pending.
-  // The only way that could happen would be for the interrupt to
-  // come in after the OCTAVE_QUIT above and before the if statement
-  // below -- it's possible, but unlikely.  In any case, we should
-  // probably let the catch code throw the exception because we don't
-  // want to skip that and potentially run some other code.  For
-  // example, an error may have originally brought us here for some
-  // cleanup operation and we shouldn't skip that.
-
-  if (octave_interrupt_immediately || octave_interrupt_state < 0)
-    return;
-
-  // Set up for letting the user print any messages from errors that
-  // occurred in the body of the try_catch statement.
-
-  buffer_error_messages--;
-
-  if (list)
-    list->accept (*current_evaluator);
-}
-
 void
 tree_evaluator::visit_try_catch_command (tree_try_catch_command& cmd)
 {
-  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
+  unwind_protect frame;
   
-  unwind_protect::protect_var (buffer_error_messages);
-  unwind_protect::protect_var (Vdebug_on_error);
-  unwind_protect::protect_var (Vdebug_on_warning);
+  frame.protect_var (buffer_error_messages);
+  frame.protect_var (Vdebug_on_error);
+  frame.protect_var (Vdebug_on_warning);
 
   buffer_error_messages++;
   Vdebug_on_error = false;
@@ -869,37 +828,40 @@ tree_evaluator::visit_try_catch_command (tree_try_catch_command& cmd)
 
   tree_statement_list *catch_code = cmd.cleanup ();
 
-  unwind_protect::add_fcn (do_catch_code, catch_code);
+  // The catch code is *not* added to unwind_protect stack; it doesn't need
+  // to be run on interrupts.
 
   tree_statement_list *try_code = cmd.body ();
 
   if (try_code)
-    try_code->accept (*this);
-
-  if (catch_code && error_state)
     {
-      error_state = 0;
-      unwind_protect::run_frame (uwp_frame);
+      try_code->accept (*this);
+      // FIXME: should std::bad_alloc be handled here?
     }
-  else
+
+  if (error_state)
     {
       error_state = 0;
 
-      // Unwind stack elements must be cleared or run in the reverse
-      // order in which they were added to the stack.
+      if (catch_code)
+        {
+          // Set up for letting the user print any messages from errors that
+          // occurred in the body of the try_catch statement.
 
-      // For clearing the do_catch_code cleanup function.
-      unwind_protect::discard ();
+          buffer_error_messages--;
 
-      // Run the rest of the frame.
-      unwind_protect::run_frame (uwp_frame);
+          if (catch_code)
+            catch_code->accept (*this);
+        }
     }
 }
 
-static void
-do_unwind_protect_cleanup_code (tree_statement_list *list)
+void
+tree_evaluator::do_unwind_protect_cleanup_code (tree_statement_list *list)
 {
-  unwind_protect::protect_var (octave_interrupt_state);
+  unwind_protect frame;
+
+  frame.protect_var (octave_interrupt_state);
   octave_interrupt_state = 0;
 
   // We want to run the cleanup code without error_state being set,
@@ -907,7 +869,7 @@ do_unwind_protect_cleanup_code (tree_statement_list *list)
   // in the first part of the unwind_protect are not completely
   // ignored.
 
-  unwind_protect::protect_var (error_state);
+  frame.protect_var (error_state);
   error_state = 0;
 
   // Similarly, if we have seen a return or break statement, allow all
@@ -915,14 +877,14 @@ do_unwind_protect_cleanup_code (tree_statement_list *list)
   // We don't have to worry about continue statements because they can
   // only occur in loops.
 
-  unwind_protect::protect_var (tree_return_command::returning);
+  frame.protect_var (tree_return_command::returning);
   tree_return_command::returning = 0;
 
-  unwind_protect::protect_var (tree_break_command::breaking);
+  frame.protect_var (tree_break_command::breaking);
   tree_break_command::breaking = 0;
 
   if (list)
-    list->accept (*current_evaluator);
+    list->accept (*this);
 
   // The unwind_protects are popped off the stack in the reverse of
   // the order they are pushed on.
@@ -953,13 +915,11 @@ do_unwind_protect_cleanup_code (tree_statement_list *list)
 
   if (tree_break_command::breaking || tree_return_command::returning)
     {
-      unwind_protect::discard ();
-      unwind_protect::discard ();
+      frame.discard_top (2);
     }
   else
     {
-      unwind_protect::run ();
-      unwind_protect::run ();
+      frame.run_top (2);
     }
 
   // We don't want to ignore errors that occur in the cleanup code, so
@@ -967,11 +927,11 @@ do_unwind_protect_cleanup_code (tree_statement_list *list)
   // Otherwise, set it back to what it was before.
 
   if (error_state)
-    unwind_protect::discard ();
+    frame.discard_top ();
   else
-    unwind_protect::run ();
+    frame.run_top ();
 
-  unwind_protect::run ();
+  frame.run ();
 }
 
 void
@@ -979,14 +939,27 @@ tree_evaluator::visit_unwind_protect_command (tree_unwind_protect_command& cmd)
 {
   tree_statement_list *cleanup_code = cmd.cleanup ();
 
-  unwind_protect::add_fcn (do_unwind_protect_cleanup_code, cleanup_code);
-
   tree_statement_list *unwind_protect_code = cmd.body ();
 
   if (unwind_protect_code)
-    unwind_protect_code->accept (*this);
+    {
+      try
+        {
+          unwind_protect_code->accept (*this);
+        }
+      catch (...)
+        {
+          // Run the cleanup code on exceptions, so that it is run even in case
+          // of interrupt or out-of-memory.
+          do_unwind_protect_cleanup_code (cleanup_code);
+          // FIXME: should error_state be checked here?
+          // We want to rethrow the exception, even if error_state is set, so
+          // that interrupts continue.
+          throw;
+        }
 
-  unwind_protect::run ();
+      do_unwind_protect_cleanup_code (cleanup_code);
+    }
 }
 
 void
@@ -995,9 +968,9 @@ tree_evaluator::visit_while_command (tree_while_command& cmd)
   if (error_state)
     return;
 
-  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
+  unwind_protect frame;
 
-  unwind_protect::protect_var (in_loop_command);
+  frame.protect_var (in_loop_command);
 
   in_loop_command = true;
 
@@ -1020,7 +993,7 @@ tree_evaluator::visit_while_command (tree_while_command& cmd)
 	      loop_body->accept (*this);
 
 	      if (error_state)
-		goto cleanup;
+                return;
 	    }
 
 	  if (quit_loop_now ())
@@ -1029,9 +1002,6 @@ tree_evaluator::visit_while_command (tree_while_command& cmd)
       else
 	break;
     }
-
- cleanup:
-  unwind_protect::run_frame (uwp_frame);
 }
 
 void
@@ -1040,9 +1010,9 @@ tree_evaluator::visit_do_until_command (tree_do_until_command& cmd)
   if (error_state)
     return;
 
-  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
+  unwind_protect frame;
 
-  unwind_protect::protect_var (in_loop_command);
+  frame.protect_var (in_loop_command);
 
   in_loop_command = true;
 
@@ -1060,7 +1030,7 @@ tree_evaluator::visit_do_until_command (tree_do_until_command& cmd)
 	  loop_body->accept (*this);
 
 	  if (error_state)
-	    goto cleanup;
+            return;
 	}
 
       if (quit_loop_now ())
@@ -1072,9 +1042,6 @@ tree_evaluator::visit_do_until_command (tree_do_until_command& cmd)
       if (expr->is_logically_true ("do-until"))
 	break;
     }
-
- cleanup:
-  unwind_protect::run_frame (uwp_frame);
 }
 
 void

@@ -492,7 +492,7 @@ save_mat_binary_data (std::ostream& os, const octave_value& tc,
 
   if (tc.is_string ())
     {
-      unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
+      unwind_protect frame;
 
       charMatrix chm = tc.char_matrix_value ();
 
@@ -510,8 +510,6 @@ save_mat_binary_data (std::ostream& os, const octave_value& tc,
 	    buf[j*nrow+i] = static_cast<double> (*s++ & 0x00FF);
        	}
       os.write (reinterpret_cast<char *> (buf), nrow*ncol*sizeof(double));
-      
-      unwind_protect::run_frame (uwp_frame);
     }
   else if (tc.is_range ())
     {

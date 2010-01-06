@@ -1368,9 +1368,9 @@ subsequent indexing will not perform the checking again.\n\
 
   if (! error_state)
     {
-      unwind_protect::frame_id_t uwp = unwind_protect::begin_frame ();
-      unwind_protect::protect_var (error_state);
-      unwind_protect::protect_var (discard_error_messages);
+      unwind_protect frame;
+      frame.protect_var (error_state);
+      frame.protect_var (discard_error_messages);
       discard_error_messages = true;
 
       try
@@ -1390,8 +1390,6 @@ subsequent indexing will not perform the checking again.\n\
         {
           retval = false;
         }
-
-      unwind_protect::run_frame (uwp);
     }
 
   return retval;

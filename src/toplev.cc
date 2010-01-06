@@ -540,8 +540,8 @@ main_loop (void)
   can_interrupt = true;
 
   octave_signal_hook = octave_signal_handler;
-  octave_interrupt_hook = unwind_protect::run_all;
-  octave_bad_alloc_hook = unwind_protect::run_all;
+  octave_interrupt_hook = 0;
+  octave_bad_alloc_hook = 0;
 
   octave_catch_interrupts ();
 
@@ -554,7 +554,7 @@ main_loop (void)
     {
       try
 	{
-	  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
+	  unwind_protect frame;
 
 	  reset_error_handler ();
 
@@ -564,7 +564,7 @@ main_loop (void)
 	  // the forced variables will be unmarked in the event of an
 	  // interrupt.
 	  symbol_table::scope_id scope = symbol_table::top_scope ();
-	  unwind_protect::add_fcn (symbol_table::unmark_forced_variables, scope);
+	  frame.add_fcn (symbol_table::unmark_forced_variables, scope);
 
 	  // This is the same as yyparse in parse.y.
 	  retval = octave_parse ();
@@ -616,8 +616,6 @@ main_loop (void)
 	      else if (parser_end_of_input)
 		break;
 	    }
-
-	  unwind_protect::run_frame (uwp_frame);
 	}
       catch (octave_interrupt_exception)
 	{
@@ -797,7 +795,8 @@ run_command_and_return_output (const std::string& cmd_str)
 
   if (cmd)
     {
-      unwind_protect::add (cleanup_iprocstream, cmd);
+      unwind_protect frame;
+      frame.add (cleanup_iprocstream, cmd);
 
       if (*cmd)
 	{
@@ -835,8 +834,6 @@ run_command_and_return_output (const std::string& cmd_str)
 	  retval(0) = cmd_status;
 	  retval(1) = output_buf.str ();
 	}
-
-      unwind_protect::run ();
     }
   else
     error ("unable to start subprocess for `%s'", cmd_str.c_str ());
@@ -890,7 +887,7 @@ variable @code{status} to the integer @samp{2}.\n\
 {
   octave_value_list retval;
 
-  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
+  unwind_protect frame;
 
   int nargin = args.length ();
 
@@ -992,8 +989,6 @@ variable @code{status} to the integer @samp{2}.\n\
     }
   else
     print_usage ();
-
-  unwind_protect::run_frame (uwp_frame);
 
   return retval;
 }

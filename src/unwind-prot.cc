@@ -33,42 +33,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "unwind-prot.h"
 #include "utils.h"
 
-std::stack<unwind_protect::elem *> unwind_protect::elt_list;
-
-std::stack<std::pair <std::string, unwind_protect::frame_id_t> > unwind_protect::tag_list;
-
-void
-unwind_protect::begin_frame (const std::string& tag)
+void unwind_protect_safe::gripe_exception (void)
 {
-  tag_list.push (std::make_pair (tag, begin_frame ()));
-}
-
-void
-unwind_protect::run_frame (const std::string& tag)
-{
-  while (! tag_list.empty ())
-    {
-      std::pair<std::string, frame_id_t> top = tag_list.top ();
-      tag_list.pop ();
-
-      run_frame (top.second);
-      if (top.first == tag)
-        break;
-    }
-}
-
-void
-unwind_protect::discard_frame (const std::string& tag)
-{
-  while (! tag_list.empty ())
-    {
-      std::pair<std::string, frame_id_t> top = tag_list.top ();
-      tag_list.pop ();
-
-      run_frame (top.second);
-      if (top.first == tag)
-        break;
-    }
+  // FIXME: can this throw an exception?
+  error ("internal: unhandled exception in unwind_protect handler");
 }
 
 /*

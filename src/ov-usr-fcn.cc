@@ -114,7 +114,7 @@ octave_user_script::do_multi_index_op (int nargout,
 {
   octave_value_list retval;
 
-  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
+  unwind_protect frame;
 
   if (! error_state)
     {
@@ -122,16 +122,16 @@ octave_user_script::do_multi_index_op (int nargout,
 	{
 	  if (cmd_list)
 	    {
-	      unwind_protect::protect_var (call_depth);
+	      frame.protect_var (call_depth);
 	      call_depth++;
 
 	      if (call_depth < Vmax_recursion_depth)
 		{
 		  octave_call_stack::push (this);
 
-                  unwind_protect::add_fcn (octave_call_stack::pop);
+                  frame.add_fcn (octave_call_stack::pop);
 
-		  unwind_protect::protect_var (tree_evaluator::in_fcn_or_script_body);
+		  frame.protect_var (tree_evaluator::in_fcn_or_script_body);
 		  tree_evaluator::in_fcn_or_script_body = true;
 
 		  cmd_list->accept (*current_evaluator);
@@ -152,8 +152,6 @@ octave_user_script::do_multi_index_op (int nargout,
       else
 	error ("invalid call to script %s", file_name.c_str ());
     }
-
-  unwind_protect::run_frame (uwp_frame);
 
   return retval;
 }
@@ -334,15 +332,14 @@ octave_user_function::do_multi_index_op (int nargout,
 
   int nargin = args.length ();
 
-  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
+  unwind_protect frame;
 
-  unwind_protect::protect_var (call_depth);
+  frame.protect_var (call_depth);
   call_depth++;
 
   if (call_depth >= Vmax_recursion_depth)
     {
       ::error ("max_recursion_limit exceeded");
-      unwind_protect::run_frame (uwp_frame);
       return retval;
     }
 
@@ -350,13 +347,13 @@ octave_user_function::do_multi_index_op (int nargout,
   // eval_undefined_error().
 
   octave_call_stack::push (this, local_scope, call_depth);
-  unwind_protect::add_fcn (octave_call_stack::pop);
+  frame.add_fcn (octave_call_stack::pop);
 
   if (call_depth > 0)
     {
       symbol_table::push_context ();
 
-      unwind_protect::add_fcn (symbol_table::pop_context);
+      frame.add_fcn (symbol_table::pop_context);
     }
 
   string_vector arg_names = args.name_tags ();
@@ -365,7 +362,7 @@ octave_user_function::do_multi_index_op (int nargout,
     {
       param_list->define_from_arg_vector (args);
       if (error_state)
-	goto abort;
+        return retval;
     }
 
   // Force parameter list to be undefined when this function exits.
@@ -373,16 +370,14 @@ octave_user_function::do_multi_index_op (int nargout,
   // variables that are also named function parameters.
 
   if (param_list)
-    unwind_protect::add_method (param_list, 
-                                &tree_parameter_list::undefine);
+    frame.add_method (param_list, &tree_parameter_list::undefine);
 
   // Force return list to be undefined when this function exits.
   // Doing so decrements the reference counts on the values of local
   // variables that are also named values returned by this function.
 
   if (ret_list)
-    unwind_protect::add_method (ret_list, 
-                                &tree_parameter_list::undefine);
+    frame.add_method (ret_list, &tree_parameter_list::undefine);
 
   if (call_depth == 0)
     {
@@ -396,89 +391,80 @@ octave_user_function::do_multi_index_op (int nargout,
       // declared global will be unmarked as global before they are
       // undefined by the clear_param_list cleanup function.
 
-      unwind_protect::add_fcn (symbol_table::clear_variables);
+      frame.add_fcn (symbol_table::clear_variables);
     }
 
-  // The following code is in a separate scope to avoid warnings from
-  // G++ about `goto abort' crossing the initialization of some
-  // variables.
+  bind_automatic_vars (arg_names, nargin, nargout, all_va_args (args));
 
-  {
-    bind_automatic_vars (arg_names, nargin, nargout, all_va_args (args));
+  bool echo_commands = (Vecho_executing_commands & ECHO_FUNCTIONS);
 
-    bool echo_commands = (Vecho_executing_commands & ECHO_FUNCTIONS);
+  if (echo_commands)
+    print_code_function_header ();
 
-    if (echo_commands)
-      print_code_function_header ();
+  // Evaluate the commands that make up the function.
 
-    // Evaluate the commands that make up the function.
+  frame.protect_var (tree_evaluator::in_fcn_or_script_body);
+  tree_evaluator::in_fcn_or_script_body = true;
 
-    unwind_protect::protect_var (tree_evaluator::in_fcn_or_script_body);
-    tree_evaluator::in_fcn_or_script_body = true;
+  bool special_expr = (is_inline_function ()
+                       || cmd_list->is_anon_function_body ());
 
-    bool special_expr = (is_inline_function ()
-			 || cmd_list->is_anon_function_body ());
+  if (special_expr)
+    {
+      assert (cmd_list->length () == 1);
 
-    if (special_expr)
-      {
-	assert (cmd_list->length () == 1);
+      tree_statement *stmt = 0;
 
-	tree_statement *stmt = 0;
+      if ((stmt = cmd_list->front ())
+          && stmt->is_expression ())
+        {
+          tree_expression *expr = stmt->expression ();
 
-	if ((stmt = cmd_list->front ())
-	    && stmt->is_expression ())
-	  {
-	    tree_expression *expr = stmt->expression ();
+          retval = expr->rvalue (nargout);
+        }
+    }
+  else
+    cmd_list->accept (*current_evaluator);
 
-	    retval = expr->rvalue (nargout);
-	  }
-      }
-    else
-      cmd_list->accept (*current_evaluator);
+  if (echo_commands)
+    print_code_function_trailer ();
 
-    if (echo_commands)
-      print_code_function_trailer ();
+  if (tree_return_command::returning)
+    tree_return_command::returning = 0;
 
-    if (tree_return_command::returning)
-      tree_return_command::returning = 0;
+  if (tree_break_command::breaking)
+    tree_break_command::breaking--;
 
-    if (tree_break_command::breaking)
-      tree_break_command::breaking--;
+  if (error_state)
+    {
+      octave_call_stack::backtrace_error_message ();
+      return retval;
+    }
+  
+  // Copy return values out.
 
-    if (error_state)
-      {
-	octave_call_stack::backtrace_error_message ();
-	goto abort;
-      }
-    
-    // Copy return values out.
+  if (ret_list && ! special_expr)
+    {
+      ret_list->initialize_undefined_elements (my_name, nargout, Matrix ());
 
-    if (ret_list && ! special_expr)
-      {
-	ret_list->initialize_undefined_elements (my_name, nargout, Matrix ());
+      Cell varargout;
 
-	Cell varargout;
+      if (ret_list->takes_varargs ())
+        {
+          octave_value varargout_varval = symbol_table::varval ("varargout");
 
-	if (ret_list->takes_varargs ())
-	  {
-	    octave_value varargout_varval = symbol_table::varval ("varargout");
+          if (varargout_varval.is_defined ())
+            {
+              varargout = varargout_varval.cell_value ();
 
-	    if (varargout_varval.is_defined ())
-	      {
-		varargout = varargout_varval.cell_value ();
+              if (error_state)
+                error ("expecting varargout to be a cell array object");
+            }
+        }
 
-		if (error_state)
-		  error ("expecting varargout to be a cell array object");
-	      }
-	  }
-
-	if (! error_state)
-	  retval = ret_list->convert_to_const_vector (nargout, varargout);
-      }
-  }
-
- abort:
-  unwind_protect::run_frame (uwp_frame);
+      if (! error_state)
+        retval = ret_list->convert_to_const_vector (nargout, varargout);
+    }
 
   return retval;
 }

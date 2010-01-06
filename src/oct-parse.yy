@@ -1806,13 +1806,13 @@ fold (tree_binary_expression *e)
 {
   tree_expression *retval = e;
 
-  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
+  unwind_protect frame;
 
-  unwind_protect::protect_var (error_state);
-  unwind_protect::protect_var (warning_state);
+  frame.protect_var (error_state);
+  frame.protect_var (warning_state);
 
-  unwind_protect::protect_var (discard_error_messages);
-  unwind_protect::protect_var (discard_warning_messages);
+  frame.protect_var (discard_error_messages);
+  frame.protect_var (discard_warning_messages);
 
   discard_error_messages = true;
   discard_warning_messages = true;
@@ -1849,8 +1849,6 @@ fold (tree_binary_expression *e)
 	}
     }
 
-  unwind_protect::run_frame (uwp_frame);
-
   return retval;
 }
 
@@ -1859,13 +1857,13 @@ fold (tree_unary_expression *e)
 {
   tree_expression *retval = e;
 
-  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
+  unwind_protect frame;
 
-  unwind_protect::protect_var (error_state);
-  unwind_protect::protect_var (warning_state);
+  frame.protect_var (error_state);
+  frame.protect_var (warning_state);
 
-  unwind_protect::protect_var (discard_error_messages);
-  unwind_protect::protect_var (discard_warning_messages);
+  frame.protect_var (discard_error_messages);
+  frame.protect_var (discard_warning_messages);
 
   discard_error_messages = true;
   discard_warning_messages = true;
@@ -1895,8 +1893,6 @@ fold (tree_unary_expression *e)
 	}
     }
 
-  unwind_protect::run_frame (uwp_frame);
-
   return retval;
 }
 
@@ -1907,13 +1903,13 @@ finish_colon_expression (tree_colon_expression *e)
 {
   tree_expression *retval = e;
 
-  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
+  unwind_protect frame;
 
-  unwind_protect::protect_var (error_state);
-  unwind_protect::protect_var (warning_state);
+  frame.protect_var (error_state);
+  frame.protect_var (warning_state);
 
-  unwind_protect::protect_var (discard_error_messages);
-  unwind_protect::protect_var (discard_warning_messages);
+  frame.protect_var (discard_error_messages);
+  frame.protect_var (discard_warning_messages);
 
   discard_error_messages = true;
   discard_warning_messages = true;
@@ -1960,8 +1956,6 @@ finish_colon_expression (tree_colon_expression *e)
 	  retval = base;
 	}
     }
-
-  unwind_protect::run_frame (uwp_frame);
 
   return retval;
 }
@@ -3125,13 +3119,13 @@ finish_matrix (tree_matrix *m)
 {
   tree_expression *retval = m;
 
-  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
+  unwind_protect frame;
 
-  unwind_protect::protect_var (error_state);
-  unwind_protect::protect_var (warning_state);
+  frame.protect_var (error_state);
+  frame.protect_var (warning_state);
 
-  unwind_protect::protect_var (discard_error_messages);
-  unwind_protect::protect_var (discard_warning_messages);
+  frame.protect_var (discard_error_messages);
+  frame.protect_var (discard_warning_messages);
 
   discard_error_messages = true;
   discard_warning_messages = true;
@@ -3158,8 +3152,6 @@ finish_matrix (tree_matrix *m)
 	  retval = tc_retval;
 	}
     }
-
-  unwind_protect::run_frame (uwp_frame);
 
   return retval;
 }
@@ -3242,7 +3234,7 @@ append_statement_list (tree_statement_list *list, char sep,
 }
 
 static void
-safe_fclose (void *f)
+safe_fclose (FILE *f)
 {
   // FIXME -- comments at the end of an input file are
   // discarded (otherwise, they would be appended to the next
@@ -3429,7 +3421,7 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
 		bool force_script = false, bool require_file = true,
 		const std::string& warn_for = std::string ())
 {
-  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
+  unwind_protect frame;
 
   octave_function *fcn_ptr = 0;
 
@@ -3437,20 +3429,19 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
 
   FILE *in_stream = command_editor::get_input_stream ();
 
-  unwind_protect::add_fcn (command_editor::set_input_stream,
-                           in_stream);
+  frame.add_fcn (command_editor::set_input_stream, in_stream);
 
-  unwind_protect::protect_var (ff_instream);
+  frame.protect_var (ff_instream);
 
-  unwind_protect::protect_var (input_line_number);
-  unwind_protect::protect_var (current_input_column);
-  unwind_protect::protect_var (reading_fcn_file);
-  unwind_protect::protect_var (line_editing);
-  unwind_protect::protect_var (current_class_name);
-  unwind_protect::protect_var (current_function_depth);
-  unwind_protect::protect_var (max_function_depth);
-  unwind_protect::protect_var (parsing_subfunctions);
-  unwind_protect::protect_var (endfunction_found);
+  frame.protect_var (input_line_number);
+  frame.protect_var (current_input_column);
+  frame.protect_var (reading_fcn_file);
+  frame.protect_var (line_editing);
+  frame.protect_var (current_class_name);
+  frame.protect_var (current_function_depth);
+  frame.protect_var (max_function_depth);
+  frame.protect_var (parsing_subfunctions);
+  frame.protect_var (endfunction_found);
 
   input_line_number = 1;
   current_input_column = 1;
@@ -3463,20 +3454,20 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
   endfunction_found = false;
 
   // The next four lines must be in this order.
-  unwind_protect::add_fcn (command_history::ignore_entries, ! Vsaving_history);
+  frame.add_fcn (command_history::ignore_entries, ! Vsaving_history);
 
   // FIXME -- we shouldn't need both the
   // command_history object and the
   // Vsaving_history variable...
   command_history::ignore_entries ();
 
-  unwind_protect::protect_var (Vsaving_history);
+  frame.protect_var (Vsaving_history);
 
   Vsaving_history = false;
 
   FILE *ffile = get_input_from_file (ff, 0);
 
-  unwind_protect::add (safe_fclose, ffile);
+  frame.add_fcn (safe_fclose, ffile);
 
   if (ffile)
     {
@@ -3488,12 +3479,12 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
 	{
 	  std::string file_type;
 
-	  unwind_protect::protect_var (get_input_from_eval_string);
-	  unwind_protect::protect_var (parser_end_of_input);
-	  unwind_protect::protect_var (reading_fcn_file);
-	  unwind_protect::protect_var (reading_script_file);
-	  unwind_protect::protect_var (reading_classdef_file);
-	  unwind_protect::protect_var (Vecho_executing_commands);
+	  frame.protect_var (get_input_from_eval_string);
+	  frame.protect_var (parser_end_of_input);
+	  frame.protect_var (reading_fcn_file);
+	  frame.protect_var (reading_script_file);
+	  frame.protect_var (reading_classdef_file);
+	  frame.protect_var (Vecho_executing_commands);
 
 
 	  get_input_from_eval_string = false;
@@ -3533,12 +3524,12 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
 	  YY_BUFFER_STATE old_buf = current_buffer ();
 	  YY_BUFFER_STATE new_buf = create_buffer (ffile);
 
-	  unwind_protect::add_fcn (switch_to_buffer, old_buf);
-	  unwind_protect::add_fcn (delete_buffer, new_buf);
+	  frame.add_fcn (switch_to_buffer, old_buf);
+	  frame.add_fcn (delete_buffer, new_buf);
 
 	  switch_to_buffer (new_buf);
 
-	  unwind_protect::protect_var (primary_fcn_ptr);
+	  frame.protect_var (primary_fcn_ptr);
 	  primary_fcn_ptr = 0;
 
 	  reset_parser ();
@@ -3547,7 +3538,7 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
 	  // the forced variables will be unmarked in the event of an
 	  // interrupt. 
 	  symbol_table::scope_id scope = symbol_table::top_scope ();
-	  unwind_protect::add_fcn (symbol_table::unmark_forced_variables, scope);
+	  frame.add_fcn (symbol_table::unmark_forced_variables, scope);
 
 	  if (! help_txt.empty ())
 	    help_buf.push (help_txt);
@@ -3578,8 +3569,6 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
   else if (! warn_for.empty ())
     error ("%s: unable to open file `%s'", warn_for.c_str (), ff.c_str ());    
 
-  unwind_protect::run_frame (uwp_frame);
-
   return fcn_ptr;
 }
 
@@ -3599,7 +3588,8 @@ get_help_from_file (const std::string& nm, bool& symbol_found,
 
       if (fptr)
 	{
-	  unwind_protect::add (safe_fclose, fptr);
+	  unwind_protect frame;
+	  frame.add_fcn (safe_fclose, fptr);
 
 	  bool eof;
 	  retval = gobble_leading_white_space (fptr, eof);
@@ -3615,8 +3605,6 @@ get_help_from_file (const std::string& nm, bool& symbol_found,
 		  delete fcn;
 		}
 	    }
-
-	  unwind_protect::run ();
 	}
     }
 
@@ -3678,7 +3666,7 @@ load_fcn_from_file (const std::string& file_name, const std::string& dir_name,
 {
   octave_function *retval = 0;
 
-  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
+  unwind_protect frame;
 
   std::string nm = file_name;
 
@@ -3686,7 +3674,7 @@ load_fcn_from_file (const std::string& file_name, const std::string& dir_name,
 
   std::string file;
 
-  unwind_protect::protect_var (fcn_file_from_relative_lookup);
+  frame.protect_var (fcn_file_from_relative_lookup);
 
   fcn_file_from_relative_lookup = false;
 
@@ -3702,7 +3690,7 @@ load_fcn_from_file (const std::string& file_name, const std::string& dir_name,
 
   if (autoload)
     {
-      unwind_protect::protect_var (autoloading);
+      frame.protect_var (autoloading);
       autoloading = true;
     }
 
@@ -3725,8 +3713,8 @@ load_fcn_from_file (const std::string& file_name, const std::string& dir_name,
     {
       // These are needed by yyparse.
 
-      unwind_protect::protect_var (curr_fcn_file_name);
-      unwind_protect::protect_var (curr_fcn_file_full_name);
+      frame.protect_var (curr_fcn_file_name);
+      frame.protect_var (curr_fcn_file_full_name);
 
       curr_fcn_file_name = nm;
       curr_fcn_file_full_name = file;
@@ -3745,8 +3733,6 @@ load_fcn_from_file (const std::string& file_name, const std::string& dir_name,
 	  symbol_table::stash_dir_name_for_subfunctions (id, dir_name);
 	}
     }
-
-  unwind_protect::run_frame (uwp_frame);
 
   return retval;
 }
@@ -3862,10 +3848,10 @@ source_file (const std::string& file_name, const std::string& context,
 {
   std::string file_full_name = file_ops::tilde_expand (file_name);
 
-  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
+  unwind_protect frame;
 
-  unwind_protect::protect_var (curr_fcn_file_name);
-  unwind_protect::protect_var (curr_fcn_file_full_name);
+  frame.protect_var (curr_fcn_file_name);
+  frame.protect_var (curr_fcn_file_full_name);
 
   curr_fcn_file_name = file_name;
   curr_fcn_file_full_name = file_full_name;
@@ -3880,7 +3866,7 @@ source_file (const std::string& file_name, const std::string& context,
 	error ("source: context must be \"caller\" or \"base\"");
 
       if (! error_state)
-	unwind_protect::add_fcn (octave_call_stack::pop);
+	frame.add_fcn (octave_call_stack::pop);
     }      
 
   if (! error_state)
@@ -3913,8 +3899,6 @@ source_file (const std::string& file_name, const std::string& context,
 	error ("source: error sourcing file `%s'",
 	       file_full_name.c_str ());
     }
-
-  unwind_protect::run_frame (uwp_frame);
 }
 
 DEFUN (mfilename, args, ,
@@ -4170,19 +4154,19 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
 {
   octave_value_list retval;
 
-  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
+  unwind_protect frame;
 
-  unwind_protect::protect_var (input_line_number);
-  unwind_protect::protect_var (current_input_column);
-  unwind_protect::protect_var (get_input_from_eval_string);
-  unwind_protect::protect_var (input_from_eval_string_pending);
-  unwind_protect::protect_var (parser_end_of_input);
-  unwind_protect::protect_var (line_editing);
-  unwind_protect::protect_var (current_eval_string);
-  unwind_protect::protect_var (current_function_depth);
-  unwind_protect::protect_var (max_function_depth);
-  unwind_protect::protect_var (parsing_subfunctions);
-  unwind_protect::protect_var (endfunction_found);
+  frame.protect_var (input_line_number);
+  frame.protect_var (current_input_column);
+  frame.protect_var (get_input_from_eval_string);
+  frame.protect_var (input_from_eval_string_pending);
+  frame.protect_var (parser_end_of_input);
+  frame.protect_var (line_editing);
+  frame.protect_var (current_eval_string);
+  frame.protect_var (current_function_depth);
+  frame.protect_var (max_function_depth);
+  frame.protect_var (parsing_subfunctions);
+  frame.protect_var (endfunction_found);
 
   input_line_number = 1;
   current_input_column = 1;
@@ -4200,8 +4184,8 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
   YY_BUFFER_STATE old_buf = current_buffer ();
   YY_BUFFER_STATE new_buf = create_buffer (0);
 
-  unwind_protect::add_fcn (switch_to_buffer, old_buf);
-  unwind_protect::add_fcn (delete_buffer, new_buf);
+  frame.add_fcn (switch_to_buffer, old_buf);
+  frame.add_fcn (delete_buffer, new_buf);
 
   switch_to_buffer (new_buf);
 
@@ -4209,23 +4193,21 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
     {
       reset_parser ();
 
-      unwind_protect::protect_var (global_command);
+      frame.protect_var (global_command);
 
       // Do this with an unwind-protect cleanup function so that the
       // forced variables will be unmarked in the event of an
       // interrupt.
       symbol_table::scope_id scope = symbol_table::top_scope ();
-      unwind_protect::add_fcn (symbol_table::unmark_forced_variables, scope);
+      frame.add_fcn (symbol_table::unmark_forced_variables, scope);
 
       parse_status = yyparse ();
 
       tree_statement_list *command_list = global_command;
 
       // Unmark forced variables.
-      unwind_protect::run ();
-
       // Restore previous value of global_command.
-      unwind_protect::run ();
+      frame.run_top (2);
 
       if (parse_status == 0)
         {
@@ -4282,8 +4264,6 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
         }
     }
   while (parse_status == 0);
-
-  unwind_protect::run_frame (uwp_frame);
 
   return retval;
 }
@@ -4348,11 +4328,11 @@ eval ('error (\"This is a bad example\");',\n\
 
   if (nargin > 0)
     {
-      unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
+      unwind_protect frame;
 
       if (nargin > 1)
 	{
-	  unwind_protect::protect_var (buffer_error_messages);
+	  frame.protect_var (buffer_error_messages);
 	  buffer_error_messages++;
 	}
 
@@ -4377,8 +4357,6 @@ eval ('error (\"This is a bad example\");',\n\
 	}
       else if (nargout > 0)
 	retval = tmp;
-
-      unwind_protect::run_frame (uwp_frame);
     }
   else
     print_usage ();
@@ -4486,7 +4464,7 @@ may be either @code{\"base\"} or @code{\"caller\"}.\n\
 
       if (! error_state)
         {
-	  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
+	  unwind_protect frame;
 
 	  if (context == "caller")
 	    octave_call_stack::goto_caller_frame ();
@@ -4497,7 +4475,7 @@ may be either @code{\"base\"} or @code{\"caller\"}.\n\
 
 	  if (! error_state)
 	    {
-	      unwind_protect::add_fcn (octave_call_stack::pop);
+	      frame.add_fcn (octave_call_stack::pop);
 
 	      std::string nm = args(1).string_value ();
 
@@ -4511,8 +4489,6 @@ may be either @code{\"base\"} or @code{\"caller\"}.\n\
 	      else
 		error ("assignin: expecting variable name as second argument");
 	    }
-
-	  unwind_protect::run_frame (uwp_frame);
 	}
       else
         error ("assignin: expecting string as first argument");
@@ -4541,7 +4517,7 @@ context @var{context}, which may be either @code{\"caller\"} or\n\
 
       if (! error_state)
         {
-	  unwind_protect::frame_id_t uwp_frame = unwind_protect::begin_frame ();
+	  unwind_protect frame;
 
 	  if (context == "caller")
 	    octave_call_stack::goto_caller_frame ();
@@ -4552,11 +4528,11 @@ context @var{context}, which may be either @code{\"caller\"} or\n\
 
 	  if (! error_state)
 	    {
-	      unwind_protect::add_fcn (octave_call_stack::pop);
+	      frame.add_fcn (octave_call_stack::pop);
 
 	      if (nargin > 2)
 	        {
-		  unwind_protect::protect_var (buffer_error_messages);
+		  frame.protect_var (buffer_error_messages);
 		  buffer_error_messages++;
 		}
 
@@ -4583,8 +4559,6 @@ context @var{context}, which may be either @code{\"caller\"} or\n\
 		  retval = (nargout > 0) ? tmp : octave_value_list ();
 		}
 	    }
-
-	  unwind_protect::run_frame (uwp_frame);
 	}
       else
         error ("evalin: expecting string as first argument");

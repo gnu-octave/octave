@@ -1,3 +1,7 @@
+2010-01-07  Jaroslav Hajek  <highegg@gmail.com>
+
+	* utils.cc (octave_sleep (double)): Add OCTAVE_QUIT.
+
 2010-01-06  Jaroslav Hajek  <highegg@gmail.com>
 
 	* unwind_protect.h, unwind_protect.cc (unwind_protect): Rewrite.

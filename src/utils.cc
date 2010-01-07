@@ -1344,6 +1344,8 @@ octave_sleep (double seconds)
       // defined in cutils.c.
       octave_sleep (sec);
       octave_usleep (usec);
+
+      OCTAVE_QUIT;
     }
 }
 

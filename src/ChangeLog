@@ -1,3 +1,13 @@
+2010-01-07  John W. Eaton  <jwe@octave.org>
+
+	* variables.cc (get_global_value): Fix function name in error message.
+	(get_top_level_value, set_top_level_value): New functions.
+	* variables.h (get_top_level_value, set_top_level_value):
+	Provide decls.
+
+	* symtab.h (symbol_table::top_level_varref,
+	symbol_table::top_level_varval): New static functions.
+
 2010-01-07  Jaroslav Hajek  <highegg@gmail.com>
 
 	* utils.cc (octave_sleep (double)): Add OCTAVE_QUIT.

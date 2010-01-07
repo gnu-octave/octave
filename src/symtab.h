@@ -1084,6 +1084,18 @@ public:
     return (p != global_table.end ()) ? p->second : octave_value ();
   }
 
+  static octave_value&
+  top_level_varref (const std::string& name)
+  {
+    return varref (name, top_scope (), 0);
+  }
+
+  static octave_value
+  top_level_varval (const std::string& name)
+  {
+    return varval (name, top_scope (), 0);
+  }
+
   static octave_value& persistent_varref (const std::string& name)
   {
     static octave_value foobar;

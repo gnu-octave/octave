@@ -78,7 +78,14 @@ extern OCTINTERP_API octave_value lookup_function_handle (const std::string& nm)
 extern OCTINTERP_API octave_value
 get_global_value (const std::string& nm, bool silent = false);
 
-extern OCTINTERP_API void set_global_value (const std::string& nm, const octave_value& val);
+extern OCTINTERP_API void
+set_global_value (const std::string& nm, const octave_value& val);
+
+extern OCTINTERP_API octave_value
+get_top_level_value (const std::string& nm, bool silent = false);
+
+extern OCTINTERP_API void
+set_top_level_value (const std::string& nm, const octave_value& val);
 
 extern OCTINTERP_API octave_value
 set_internal_variable (bool& var, const octave_value_list& args,

@@ -607,7 +607,7 @@ get_global_value (const std::string& nm, bool silent)
   octave_value val = symbol_table::global_varval (nm);
 
   if (val.is_undefined () && ! silent)
-    error ("get_global_by_name: undefined symbol `%s'", nm.c_str ());
+    error ("get_global_value: undefined symbol `%s'", nm.c_str ());
 
   return val;
 }
@@ -616,6 +616,23 @@ void
 set_global_value (const std::string& nm, const octave_value& val)
 {
   symbol_table::global_varref (nm) = val;
+}
+
+octave_value
+get_top_level_value (const std::string& nm, bool silent)
+{
+  octave_value val = symbol_table::top_level_varval (nm);
+
+  if (val.is_undefined () && ! silent)
+    error ("get_top_level_value: undefined symbol `%s'", nm.c_str ());
+
+  return val;
+}
+
+void
+set_top_level_value (const std::string& nm, const octave_value& val)
+{
+  symbol_table::top_level_varref (nm) = val;
 }
 
 // Variable values.

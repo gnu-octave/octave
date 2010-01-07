@@ -85,91 +85,12 @@ octave_time::ctime (void) const
 void
 octave_time::stamp (void)
 {
-#if defined (HAVE_GETTIMEOFDAY)
-
   struct timeval tp;
 
-#if defined  (GETTIMEOFDAY_NO_TZ)
-  gettimeofday (&tp);
-#else
   gettimeofday (&tp, 0);
-#endif
 
   ot_unix_time = tp.tv_sec;
   ot_usec = tp.tv_usec;
-
-#elif defined (OCTAVE_USE_WINDOWS_API)
-
-  // Loosely based on the code from Cygwin
-  // Copyright 1996, 1997, 1998, 1999, 2000, 2001, 2002 Red Hat, Inc.
-  // Licenced under the GPL.
-
-  const LONGLONG TIME_OFFSET = 0x19db1ded53e8000LL;
-
-  static int init = 1;
-  static LARGE_INTEGER base;
-  static LARGE_INTEGER t0;
-  static double dt;
-
-  if (init)
-    {
-      LARGE_INTEGER ifreq;
-
-      if (QueryPerformanceFrequency (&ifreq))
-        {
-	  // Get clock frequency
-	  dt = (double) 1000000.0 / (double) ifreq.QuadPart;
-
-	  // Get base time as microseconds from Jan 1. 1970
-	  int priority = GetThreadPriority (GetCurrentThread ());
-	  SetThreadPriority (GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL);
-	  if (QueryPerformanceCounter (&base))
-	    {
-	      FILETIME f;
-
-	      GetSystemTimeAsFileTime (&f);
-
-	      t0.HighPart = f.dwHighDateTime;
-	      t0.LowPart = f.dwLowDateTime;
-	      t0.QuadPart -= TIME_OFFSET;
-	      t0.QuadPart /= 10;
-
-	      init = 0;
-	    }
-
-	  SetThreadPriority (GetCurrentThread (), priority);
-	}
-
-      if (! init)
-	{
-	  ot_unix_time = time (0);
-	  ot_usec = 0;
-
-	  return;
-	}
-    }
-
-  LARGE_INTEGER now;
-
-  if (QueryPerformanceCounter (&now))
-    {
-      now.QuadPart = (LONGLONG) (dt * (double)(now.QuadPart - base.QuadPart));
-      now.QuadPart += t0.QuadPart;
-
-      ot_unix_time = now.QuadPart / 1000000LL;
-      ot_usec = now.QuadPart % 1000000LL;
-    }
-  else
-    {
-      ot_unix_time = time (0);
-      ot_usec = 0;
-    }
-
-#else
-
-  ot_unix_time = time (0);
-
-#endif
 }
 
 // From the mktime() manual page:

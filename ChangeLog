@@ -1,3 +1,9 @@
+2010-01-07  John W. Eaton  <jwe@octave.org>
+
+	* configure.ac: Don't check for gettimeofday, or whether
+	gettimeofday accepts one or two arguments.
+	* bootstrap.conf (gnulib_modules): Include gettimeofday in the list.
+
 2010-01-05  John W. Eaton  <jwe@octave.org>
 
 	* bootstrap.conf (gnulib_modules): Include mkfifo in the list.

@@ -1433,7 +1433,7 @@ fi
 AC_CHECK_FUNCS(atexit basename bcopy bzero canonicalize_file_name \
   chmod dup2 endgrent endpwent execvp expm1 expm1f fcntl fork getcwd \
   getegid geteuid getgid getgrent getgrgid getgrnam getpgrp getpid \
-  getppid getpwent getpwuid gettimeofday getuid getwd _kbhit kill \
+  getppid getpwent getpwuid getuid getwd _kbhit kill \
   lgamma lgammaf lgamma_r lgammaf_r link localtime_r log1p log1pf \
   memmove mkstemp on_exit pipe poll putenv raise readlink \
   realpath rename resolvepath rindex rmdir roundl select setgrent setlocale \
@@ -1579,47 +1579,6 @@ AC_SUBST(ENABLE_DYNAMIC_LINKING)
 AC_SUBST(LIBOCTINTERP)
 AC_SUBST(LIBOCTAVE)
 AC_SUBST(LIBCRUFT)
-
-### There is more than one possible prototype for gettimeofday.  See
-### which one (if any) appears in sys/time.h.  These tests are from
-### Emacs 19.
-
-AC_MSG_CHECKING([for struct timeval])
-AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#ifdef TIME_WITH_SYS_TIME
-#include <sys/time.h>
-#include <time.h>
-#else
-#ifdef HAVE_SYS_TIME_H
-#include <sys/time.h>
-#else
-#include <time.h>
-#endif
-#endif]], [[static struct timeval x; x.tv_sec = x.tv_usec;]])],
-  [AC_MSG_RESULT(yes)
-   HAVE_TIMEVAL=yes
-   AC_DEFINE(HAVE_TIMEVAL, 1, [Define if struct timeval is defined.])],
-  [AC_MSG_RESULT(no)
-   HAVE_TIMEVAL=no])
-
-if test "x$HAVE_TIMEVAL" = xyes; then
-AC_MSG_CHECKING([whether gettimeofday can't accept two arguments])
-AC_LINK_IFELSE([AC_LANG_PROGRAM([[#ifdef TIME_WITH_SYS_TIME
-#include <sys/time.h>
-#include <time.h>
-#else
-#ifdef HAVE_SYS_TIME_H
-#include <sys/time.h>
-#else
-#include <time.h>
-#endif
-#endif]], [[struct timeval time;
-  struct timezone dummy;
-  gettimeofday (&time, &dummy);]])],
-  [AC_MSG_RESULT(no)],
-  [AC_MSG_RESULT(yes)
-   AC_DEFINE(GETTIMEOFDAY_NO_TZ, 1,
-     [Define if your system has a single-arg prototype for gettimeofday.])])
-fi
 
 dnl Maybe <cmath> defines the IEEE functions we need.
 

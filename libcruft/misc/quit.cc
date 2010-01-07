@@ -82,7 +82,10 @@ void
 octave_rethrow_exception (void)
 {
   if (octave_interrupt_state)
-    octave_throw_interrupt_exception ();
+    {
+      octave_interrupt_state = -1;
+      octave_throw_interrupt_exception ();
+    }
   else
     {
       switch (octave_exception_state)

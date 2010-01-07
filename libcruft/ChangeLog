@@ -1,3 +1,8 @@
+2010-01-07  Jaroslav Hajek  <highegg@gmail.com>
+
+	* misc/quit.cc (octave_rethrow_exception): Set octave_interrupt_state
+	to -1 when throwing octave_interrupt_exception.
+
 2010-01-05  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.am (AM_CPPFLAGS): New variable.

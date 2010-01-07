@@ -5700,18 +5700,6 @@ CPU time used is nonzero.\n\
   sys = static_cast<double> (seconds) + static_cast<double>(fraction) /
     static_cast<double>(HZ);
 
-#elif defined (__WIN32__)
-
-  HANDLE hProcess = GetCurrentProcess ();
-  FILETIME ftCreation, ftExit, ftUser, ftKernel;
-  GetProcessTimes (hProcess, &ftCreation, &ftExit, &ftKernel, &ftUser);
-
-  int64_t itmp = *(reinterpret_cast<int64_t *> (&ftUser));
-  usr = static_cast<double> (itmp) * 1e-7;
-
-  itmp = *(reinterpret_cast<int64_t *> (&ftKernel));
-  sys = static_cast<double> (itmp) * 1e-7;
-
 #endif
 
   retval (2) = sys;

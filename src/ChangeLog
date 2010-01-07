@@ -1,5 +1,9 @@
 2010-01-07  John W. Eaton  <jwe@octave.org>
 
+	* data.cc (cputime): Eliminate Windows-specific code.
+
+2010-01-07  John W. Eaton  <jwe@octave.org>
+
 	* variables.cc (get_global_value): Fix function name in error message.
 	(get_top_level_value, set_top_level_value): New functions.
 	* variables.h (get_top_level_value, set_top_level_value):

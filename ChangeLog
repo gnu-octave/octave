@@ -1,5 +1,10 @@
 2010-01-07  John W. Eaton  <jwe@octave.org>
 
+	* configure.ac: Don't check for times.
+	* bootstrap.conf (gnulib_modules): Include times in the list.
+
+2010-01-07  John W. Eaton  <jwe@octave.org>
+
 	* configure.ac: Don't check for gettimeofday, or whether
 	gettimeofday accepts one or two arguments.
 	* bootstrap.conf (gnulib_modules): Include gettimeofday in the list.

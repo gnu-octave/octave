@@ -1677,7 +1677,7 @@ fi
 
 ### A system dependent kluge or two.
 
-AC_CHECK_FUNCS(getrusage times)
+AC_CHECK_FUNCS(getrusage)
 case "$canonical_host_type" in
   *-*-cygwin*)
     AC_DEFINE(RUSAGE_TIMES_ONLY, 1, [Define if your struct rusage only has time information.])

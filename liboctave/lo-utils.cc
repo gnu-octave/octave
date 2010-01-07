@@ -41,6 +41,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <unistd.h>
 #endif
 
+#include "quit.h"
+
 #include "lo-error.h"
 #include "lo-ieee.h"
 #include "lo-mappers.h"
@@ -217,6 +219,8 @@ octave_fgets (FILE *f, bool& eof)
 
   if (buf)
     free (buf);
+
+  OCTAVE_QUIT;
 
   return retval;
 }

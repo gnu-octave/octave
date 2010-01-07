@@ -1,3 +1,8 @@
+2010-01-07  Jaroslav Hajek  <highegg@gmail.com>
+
+	* lo-utils.cc (octave_fgets (FILE *, bool&)): Add OCTAVE_QUIT at the
+	end.
+
 2010-01-05  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.am (AM_CPPFLAGS): Include @CPPFLAGS@ and -I../libgnu

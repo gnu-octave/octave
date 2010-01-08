@@ -860,19 +860,17 @@ public:
   find_parent_class (const std::string& parent_class_name)
     { return rep->find_parent_class (parent_class_name); }
 
-  octave_function *function_value (bool silent = false);
+  octave_function *function_value (bool silent = false) const;
 
-  const octave_function *function_value (bool silent = false) const;
+  octave_user_function *user_function_value (bool silent = false) const;
 
-  octave_user_function *user_function_value (bool silent = false);
+  octave_user_script *user_script_value (bool silent = false) const;
 
-  octave_user_script *user_script_value (bool silent = false);
+  octave_user_code *user_code_value (bool silent = false) const;
 
-  octave_user_code *user_code_value (bool silent = false);
+  octave_fcn_handle *fcn_handle_value (bool silent = false) const;
 
-  octave_fcn_handle *fcn_handle_value (bool silent = false);
-
-  octave_fcn_inline *fcn_inline_value (bool silent = false);
+  octave_fcn_inline *fcn_inline_value (bool silent = false) const;
 
   octave_value_list list_value (void) const;
 

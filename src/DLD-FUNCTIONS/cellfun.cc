@@ -445,7 +445,10 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
             {
               Cell result (f_args.dims ());
               for (octave_idx_type count = 0; count < k && ! error_state; count++)
-                result(count) = f_args.elem (count).subsref (type, idx);
+                {
+                  octave_value tmp = f_args.elem (count);
+                  result(count) = tmp.subsref (type, idx);
+                }
 
               retval(0) = result;
             }
@@ -1325,7 +1328,7 @@ mat2cell (reshape(1:16,4,4),[3,1],[3,1])\n\
 		      if (j != 0)
 			n /= new_dv(j-1);
 		    }
-		  ret(i) = args(0).do_index_op(lst, 0);
+		  ret(i) = octave_value(args(0)).do_index_op(lst, 0);
 		  if (error_state)
 		    break;
 		}
@@ -1374,7 +1377,7 @@ mat2cell (reshape(1:16,4,4),[3,1],[3,1])\n\
 		  OCTAVE_QUIT;
 
 		  lst(0) = Range(idx + 1., idx + d(i));
-		  ret(i) = args(0).do_index_op(lst, 0);
+		  ret(i) = octave_value(args(0)).do_index_op(lst, 0);
 		  idx += d(i);
 		  if (error_state)
 		    break;

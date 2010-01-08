@@ -91,8 +91,6 @@ public:
 
   octave_function *function_value (bool = false) { return this; }
 
-  const octave_function *function_value (bool = false) const { return this; }
-
   octave_user_script *user_script_value (bool = false) { return this; }
 
   octave_user_code *user_code_value (bool = false) { return this; }
@@ -180,8 +178,6 @@ public:
   ~octave_user_function (void);
 
   octave_function *function_value (bool = false) { return this; }
-
-  const octave_function *function_value (bool = false) const { return this; }
 
   octave_user_function *user_function_value (bool = false) { return this; }
 

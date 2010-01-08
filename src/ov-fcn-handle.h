@@ -94,9 +94,6 @@ public:
   octave_function *function_value (bool = false)
     { return fcn.function_value (); }
 
-  const octave_function *function_value (bool = false) const
-    { return fcn.function_value (); }
-
   octave_user_function *user_function_value (bool = false)
     { return fcn.user_function_value (); }
 

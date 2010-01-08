@@ -542,8 +542,6 @@ public:
 
   virtual octave_function *function_value (bool silent = false);
 
-  virtual const octave_function *function_value (bool silent = false) const;
-
   virtual octave_user_function *user_function_value (bool silent = false);
 
   virtual octave_user_script *user_script_value (bool silent = false);

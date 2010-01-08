@@ -1,5 +1,23 @@
 2010-01-08  Jaroslav Hajek  <highegg@gmail.com>
 
+	* oct-obj.h (octave_value_list::operator () const,
+	octave_value_list::elem const): Return const octave_value&.
+	* ov.cc (octave_value::function_value,
+	octave_value::user_function_value, octave_value::user_script_value,
+	octave_value::user_code_value, octave_value::fcn_handle_value,
+	octave_value::fcn_inline_value): Declare as const.
+	* ov.h: Likewise.
+	* ov-base.h (octave_value::function_value const): Remove overload.
+	* ov-usr-fcn.h (octave_user_function::function_value const): Likewise.
+	* ov-builtin.h (octave_builtin::function_value const): Likewise.
+	* ov-builtin.h (octave_builtin::function_value const): Likewise.
+
+	* DLD-FUNCTIONS/cellfun.cc (Fcellfun): Take a non-const copy prior to
+	calling non-const functions.
+
+
+2010-01-08  Jaroslav Hajek  <highegg@gmail.com>
+
 	* DLD-FUNCTIONS/strfind.cc (qs_replace): New function.
 	(Fstrrep): Use it here. Allow S to be a cellstr.
 

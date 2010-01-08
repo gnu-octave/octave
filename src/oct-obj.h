@@ -106,7 +106,7 @@ public:
 
   octave_value& operator () (octave_idx_type n) { return elem (n); }
 
-  octave_value operator () (octave_idx_type n) const { return elem (n); }
+  const octave_value& operator () (octave_idx_type n) const { return elem (n); }
 
   octave_idx_type length (void) const { return data.length (); }
 
@@ -165,7 +165,7 @@ private:
       return data(n);
     }
 
-  octave_value elem (octave_idx_type n) const
+  const octave_value& elem (octave_idx_type n) const
     { return data(n); }
 };
 

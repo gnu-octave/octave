@@ -188,16 +188,8 @@ Array<T>::compute_index (const Array<octave_idx_type>& ra_idx) const
 }
 
 template <class T>
-T
-Array<T>::range_error (const char *fcn, octave_idx_type n) const
-{
-  (*current_liboctave_error_handler) ("%s (%d): range error", fcn, n);
-  return T ();
-}
-
-template <class T>
 T&
-Array<T>::range_error (const char *fcn, octave_idx_type n)
+Array<T>::range_error (const char *fcn, octave_idx_type n) const
 {
   (*current_liboctave_error_handler) ("%s (%d): range error", fcn, n);
   static T foo;
@@ -205,71 +197,28 @@ Array<T>::range_error (const char *fcn, octave_idx_type n)
 }
 
 template <class T>
-T
+T&
 Array<T>::range_error (const char *fcn, octave_idx_type i, octave_idx_type j) const
 {
   (*current_liboctave_error_handler)
     ("%s (%d, %d): range error", fcn, i, j);
-  return T ();
-}
-
-template <class T>
-T&
-Array<T>::range_error (const char *fcn, octave_idx_type i, octave_idx_type j)
-{
-  (*current_liboctave_error_handler)
-    ("%s (%d, %d): range error", fcn, i, j);
   static T foo;
   return foo;
 }
 
 template <class T>
-T
+T&
 Array<T>::range_error (const char *fcn, octave_idx_type i, octave_idx_type j, octave_idx_type k) const
 {
   (*current_liboctave_error_handler)
     ("%s (%d, %d, %d): range error", fcn, i, j, k);
-  return T ();
-}
-
-template <class T>
-T&
-Array<T>::range_error (const char *fcn, octave_idx_type i, octave_idx_type j, octave_idx_type k)
-{
-  (*current_liboctave_error_handler)
-    ("%s (%d, %d, %d): range error", fcn, i, j, k);
   static T foo;
   return foo;
 }
 
 template <class T>
-T
-Array<T>::range_error (const char *fcn, const Array<octave_idx_type>& ra_idx) const
-{
-  std::ostringstream buf;
-
-  buf << fcn << " (";
-
-  octave_idx_type n = ra_idx.length ();
-
-  if (n > 0)
-    buf << ra_idx(0);
-
-  for (octave_idx_type i = 1; i < n; i++)
-    buf << ", " << ra_idx(i);
-
-  buf << "): range error";
-
-  std::string buf_str = buf.str ();
-
-  (*current_liboctave_error_handler) (buf_str.c_str ());
-
-  return T ();
-}
-
-template <class T>
 T&
-Array<T>::range_error (const char *fcn, const Array<octave_idx_type>& ra_idx)
+Array<T>::range_error (const char *fcn, const Array<octave_idx_type>& ra_idx) const
 {
   std::ostringstream buf;
 

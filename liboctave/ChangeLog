@@ -1,3 +1,11 @@
+2010-01-08  Jaroslav Hajek  <highegg@gmail.com>
+
+	* Array.h (Array<T>::crefT): New helper typedef.
+	(Array<T>::elem const, Array<T>::xelem const, 
+	Array<T>::checkelem const, Array<T>::operator () const): Return crefT.
+	(Array<T>::range_error const): Remove overloads.
+	* Array.cc (Array<T>::range_error const): Remove overloads.
+
 2010-01-07  John W. Eaton  <jwe@octave.org>
 
 	* oct-time.cc (octave_time::stamp): Assume gettimeofday is

@@ -63,8 +63,6 @@ public:
 
   octave_function *function_value (bool = false) { return this; }
 
-  const octave_function *function_value (bool = false) const { return this; }
-
   bool is_builtin_function (void) const { return true; }
 
   octave_value_list

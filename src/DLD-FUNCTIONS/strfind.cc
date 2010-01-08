@@ -38,12 +38,13 @@ along with Octave; see the file COPYING.  If not, see
 
 // This allows safe indexing with char. In C++, char may be (and often is) signed!
 #define ORD(ch) static_cast<unsigned char>(ch)
+#define TABSIZE (UCHAR_MAX + 1)
 
 // This is the quick search algorithm, as described at
 // http://www-igm.univ-mlv.fr/~lecroq/string/node19.html
 static void 
 qs_preprocess (const Array<char>& needle,
-               octave_idx_type table[UCHAR_MAX])
+               octave_idx_type table[TABSIZE])
 {
   const char *x = needle.data ();
   octave_idx_type m = needle.numel ();
@@ -58,7 +59,7 @@ qs_preprocess (const Array<char>& needle,
 static Array<octave_idx_type> 
 qs_search (const Array<char>& needle,
            const Array<char>& haystack,
-           const octave_idx_type table[UCHAR_MAX],
+           const octave_idx_type table[TABSIZE],
            bool overlaps = true)
 {
   const char *x = needle.data ();
@@ -206,6 +207,45 @@ strfind (@{\"abababa\", \"bebebe\", \"ab\"@}, \"aba\")\n\
 
 */
 
+static Array<char>
+qs_replace (const Array<char>& str, const Array<char>& pat,
+            const Array<char>& rep, 
+            const octave_idx_type table[TABSIZE])
+{
+  Array<char> ret = str;
+
+  octave_idx_type siz = str.numel (), psiz = pat.numel (), rsiz = rep.numel ();
+
+  if (psiz != 0)
+    {
+      // Look up matches, without overlaps.
+      const Array<octave_idx_type> idx = qs_search (pat, str, table, false);
+      octave_idx_type nidx = idx.numel ();
+
+      if (nidx)
+        {
+          // Compute result size.
+          octave_idx_type retsiz = siz + nidx * (rsiz - psiz);
+          ret.clear (dim_vector (1, retsiz));
+          const char *src = str.data (), *reps = rep.data ();
+          char *dest = ret.fortran_vec ();
+
+          octave_idx_type k = 0;
+          for (octave_idx_type i = 0; i < nidx; i++)
+            {
+              octave_idx_type j = idx(i);
+              dest = std::copy (src + k, src + j, dest);
+              dest = std::copy (reps, reps + rsiz, dest);
+              k = j + psiz;
+            }
+
+          std::copy (src + k, src + siz, dest);
+        }
+    }
+
+  return ret;
+}
+
 DEFUN_DLD (strrep, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} strrep (@var{s}, @var{x}, @var{y})\n\
@@ -218,6 +258,9 @@ strrep (\"This is a test string\", \"is\", \"&%$\")\n\
      @result{} \"Th&%$ &%$ a test string\"\n\
 @end group\n\
 @end example\n\
+\n\
+@var{s} may also be a cell array of strings, in which case the replacement is\n\
+done for each element and a cell array is returned.\n\
 @seealso{regexprep, strfind, findstr}\n\
 @end deftypefn")
 {
@@ -227,49 +270,41 @@ strrep (\"This is a test string\", \"is\", \"&%$\")\n\
   if (nargin == 3)
     {
       octave_value argstr = args(0), argp = args(1), argr = args(2);
-      if (argp.is_string () && argp.is_string () && argr.is_string ())
+      if (argp.is_string () && argr.is_string ())
         {
-          const Array<char> str = argstr.char_array_value ();
           const Array<char> pat = argp.char_array_value ();
           const Array<char> rep = argr.char_array_value ();
-          Array<char> ret = str;
 
-          octave_idx_type siz = str.numel (), psiz = pat.numel (), rsiz = rep.numel ();
+          OCTAVE_LOCAL_BUFFER (octave_idx_type, table, UCHAR_MAX);
+          qs_preprocess (pat, table);
 
-          if (psiz != 0)
+          if (argstr.is_string ())
+            retval = qs_replace (argstr.char_array_value (), pat, rep, table);
+          else if (argstr.is_cell ())
             {
-              OCTAVE_LOCAL_BUFFER (octave_idx_type, table, UCHAR_MAX);
-              qs_preprocess (pat, table);
+              const Cell argsc = argstr.cell_value ();
+              Cell retc (argsc.dims ());
+              octave_idx_type ns = argsc.numel ();
 
-              // Look up matches, without overlaps.
-              const Array<octave_idx_type> idx = qs_search (pat, str, table, false);
-              octave_idx_type nidx = idx.numel ();
-
-              if (nidx)
+              for (octave_idx_type i = 0; i < ns; i++)
                 {
-                  // Compute result size.
-                  octave_idx_type retsiz = siz + nidx * (rsiz - psiz);
-                  ret.clear (dim_vector (1, retsiz));
-                  const char *src = str.data (), *reps = rep.data ();
-                  char *dest = ret.fortran_vec ();
-
-                  octave_idx_type k = 0;
-                  for (octave_idx_type i = 0; i < nidx; i++)
+                  octave_value argse = argsc(i);
+                  if (argse.is_string ())
+                    retc(i) = qs_replace (argse.char_array_value (), pat, rep, table);
+                  else
                     {
-                      octave_idx_type j = idx(i);
-                      dest = std::copy (src + k, src + j, dest);
-                      dest = std::copy (reps, reps + rsiz, dest);
-                      k = j + psiz;
+                      error ("strrep: each cell element must be a string");
+                      break;
                     }
-
-                  std::copy (src + k, src + siz, dest);
                 }
-            }
 
-          retval = ret;
+              retval = retc;
+            }
+          else
+            error ("strrep: first argument must be a string or cell array of strings");
         }
       else
-        error ("strrep: all arguments must be strings");
+        error ("strrep: 2rd and 3rd arguments must be strings");
     }
   else
     print_usage ();

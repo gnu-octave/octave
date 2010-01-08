@@ -1,3 +1,8 @@
+2010-01-08  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/strfind.cc (qs_replace): New function.
+	(Fstrrep): Use it here. Allow S to be a cellstr.
+
 2010-01-07  John W. Eaton  <jwe@octave.org>
 
 	* data.cc (cputime): Eliminate Windows-specific code.

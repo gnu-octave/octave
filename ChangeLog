@@ -1,3 +1,8 @@
+2010-01-09  John W. Eaton  <jwe@octave.org>
+
+	* configure.ac: Don't check for nlink_t.
+	(AH_BOTTOM): Don't define nlink_t here.
+
 2010-01-07  John W. Eaton  <jwe@octave.org>
 
 	* configure.ac: Don't check for times.

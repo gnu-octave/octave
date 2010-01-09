@@ -1343,7 +1343,7 @@ AC_TYPE_OFF_T
 AC_TYPE_PID_T
 AC_TYPE_SIZE_T
 AC_TYPE_UID_T
-AC_CHECK_TYPES([dev_t, ino_t, nlink_t])
+AC_CHECK_TYPES([dev_t, ino_t])
 AC_CHECK_TYPES([long long int, unsigned long long int])
 AC_CHECK_TYPES([sigset_t, sig_atomic_t], , , [
 #if defined (HAVE_SYS_TYPES_H)
@@ -1833,10 +1833,6 @@ typedef short dev_t;
 
 #if !defined(HAVE_INO_T)
 typedef unsigned long ino_t;
-#endif
-
-#if !defined(HAVE_NLINK_T)
-typedef short nlink_t;
 #endif
 
 #if !defined(HAVE_SIGSET_T)

@@ -390,7 +390,7 @@ octave_dynamic_loader::do_load_oct (const std::string& fcn_name,
 octave_function *
 octave_dynamic_loader::do_load_mex (const std::string& fcn_name,
 				    const std::string& file_name,
-				    bool relative)
+				    bool /*relative*/)
 {
   octave_function *retval = 0;
 

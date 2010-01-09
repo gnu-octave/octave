@@ -6091,7 +6091,10 @@ Undocumented internal function.\n\
 static sortmode
 get_sort_mode_option (const octave_value& arg, const char *argn)
 {
-  sortmode smode;
+  // FIXME -- we initialize to UNSORTED here to avoid a GCC warning
+  // about possibly using sortmode uninitialized.
+  // FIXME -- shouldn't these modes be scoped inside a class?
+  sortmode smode = UNSORTED;
 
   std::string mode = arg.string_value ();
 

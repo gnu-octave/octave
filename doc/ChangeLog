@@ -1,3 +1,8 @@
+2010-01-09  John W. Eaton  <jwe@octave.org>
+
+	* interpreter/munge-texi.cc: Avoid C-style casts.
+	(main): Call usage if fewer than two arguments.
+
 2009-12-20  Rik <octave@nomad.inbox5.com>
 
 	* interpreter/geometryimages.m: Correctly set postscript output when QHULL

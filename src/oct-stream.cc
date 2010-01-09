@@ -1577,7 +1577,7 @@ do_scanf_conv (std::istream&, const scanf_format_elt&, double*,
     { \
       if (width) \
         { \
-          std::string tmp (width, '\0'); \
+          tmp = std::string (width, '\0'); \
  \
           int c = EOF; \
  \

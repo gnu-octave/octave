@@ -61,8 +61,10 @@ struct icmp_char_gt : public std::binary_function<char, char, bool>
     { return std::toupper (x) > std::toupper (y); }
 };
 
-// FIXME: maybe these should go elsewhere?
+// FIXME -- maybe these should go elsewhere?
+// FIXME -- are they even needed now?
 // case-insensitive ascending comparator
+#if 0
 static bool
 stri_comp_lt (const std::string& a, const std::string& b)
 {
@@ -79,6 +81,7 @@ stri_comp_gt (const std::string& a, const std::string& b)
                                        b.begin (), b.end (),
                                        icmp_char_gt());
 }
+#endif
 
 template <class T>
 inline sortmode 

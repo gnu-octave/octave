@@ -1,3 +1,21 @@
+2010-01-09  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/lookup.cc (stri_comp_lt, stri_comp_gt):
+	Comment out unused functions.
+
+	* oct-stream.cc (BEGIN_S_CONVERSION): Don't declare local tmp
+	variable twice.
+
+	* gl-render.cc (opengl_renderer::draw_image): Avoid shadow
+	declaration warning from GCC.
+
+	* DLD-FUNCTIONS/fltk_backend.cc (base_graphics_backend):
+	Avoid unused parameter warning from GCC.
+	* dynamic-ld.cc (octave_dynamic_loader::do_load_mex): Likewise.
+
+	* data.cc (get_sort_mode_option): Avoid uninitialized variable
+	warning from GCC.
+
 2010-01-08  Jaroslav Hajek  <highegg@gmail.com>
 
 	* oct-obj.h (octave_value_list::operator () const,

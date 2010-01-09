@@ -2716,10 +2716,11 @@ opengl_renderer::draw_image (const image::properties& props)
     }
   else
     {
-      const ColumnVector p1 = xform.transform (x(1) + 1, y(1), 0);
-      pix_dx = p1(0) - p0(0);
+      const ColumnVector p1w = xform.transform (x(1) + 1, y(1), 0);
+      pix_dx = p1w(0) - p0(0);
       nor_dx = 1;
     }
+
   if (h > 1)
     {
       pix_dy = (p1(1) - p0(1))/(h-1);
@@ -2727,8 +2728,8 @@ opengl_renderer::draw_image (const image::properties& props)
     }
   else
     {
-      const ColumnVector p1 = xform.transform (x(1), y(1) + 1, 0);
-      pix_dy = p1(1) - p0(1);
+      const ColumnVector p1h = xform.transform (x(1), y(1) + 1, 0);
+      pix_dy = p1h(1) - p0(1);
       nor_dy = 1;
     }
 

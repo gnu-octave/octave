@@ -60,7 +60,7 @@ extract_symbol_name (std::istream& is)
 
   int c;
   while ((c = is.get ()) != EOF && c != '\n')
-    symbol_name += (char) c;
+    symbol_name += static_cast<char> (c);
 
   return symbol_name;
 }
@@ -78,16 +78,16 @@ extract_docstring (std::istream& is)
         {
           char buf[16];
           int i = 0;
-          buf[i++] = (char) c;
+          buf[i++] = static_cast<char> (c);
           
-          if ((   buf[i++] = (char) is.get ()) == 's'  
-              && (buf[i++] = (char) is.get ()) == 'e'
-              && (buf[i++] = (char) is.get ()) == 'e'
-              && (buf[i++] = (char) is.get ()) == 'a'
-              && (buf[i++] = (char) is.get ()) == 'l'
-              && (buf[i++] = (char) is.get ()) == 's'
-              && (buf[i++] = (char) is.get ()) == 'o'
-              && (buf[i++] = (char) is.get ()) == '{')
+          if ((   buf[i++] = static_cast<char> (is.get ())) == 's'  
+              && (buf[i++] = static_cast<char> (is.get ())) == 'e'
+              && (buf[i++] = static_cast<char> (is.get ())) == 'e'
+              && (buf[i++] = static_cast<char> (is.get ())) == 'a'
+              && (buf[i++] = static_cast<char> (is.get ())) == 'l'
+              && (buf[i++] = static_cast<char> (is.get ())) == 's'
+              && (buf[i++] = static_cast<char> (is.get ())) == 'o'
+              && (buf[i++] = static_cast<char> (is.get ())) == '{')
             {
               doc += "@seealso{";
               
@@ -115,7 +115,7 @@ extract_docstring (std::istream& is)
                   // get function name
 	          std::string function_name;
                   do 
-                    function_name += (char) c;
+                    function_name += static_cast<char> (c);
                   while ((c = is.get ()) != EOF
                           && c != doc_delim
                           && c != ' '
@@ -140,7 +140,7 @@ extract_docstring (std::istream& is)
                     break;
                 }
               if (c == '}')
-                doc += (char) c;
+                doc += static_cast<char> (c);
             }
           else
             {
@@ -149,7 +149,7 @@ extract_docstring (std::istream& is)
             }
         }
       else
-        doc += (char) c;
+        doc += static_cast<char> (c);
     }
   return doc;
 }
@@ -238,7 +238,7 @@ process_example_file (const std::string& file_name, std::ostream& os)
 
       while ((c = infile.get ()) != EOF)
 	{
-	  os << (char) c;
+	  os << static_cast<char> (c);
 	  clast = c;
 	}
 
@@ -267,26 +267,26 @@ process_texi_input_file (std::istream& is, std::ostream& os)
 	    {
 	      char buf[16];
 	      int i = 0;
-	      buf[i++] = (char) c;
+	      buf[i++] = static_cast<char> (c);
 
-	      buf[i++] = c = (char) is.get ();
+	      buf[i++] = c = static_cast<char> (is.get ());
 
 	      if (c == 'D')
 		{
 		  std::string symbol_name;
 
-		  if (   (buf[i++] = (char) is.get ()) == 'O'
-		      && (buf[i++] = (char) is.get ()) == 'C'
-		      && (buf[i++] = (char) is.get ()) == 'S'
-		      && (buf[i++] = (char) is.get ()) == 'T'
-		      && (buf[i++] = (char) is.get ()) == 'R'
-		      && (buf[i++] = (char) is.get ()) == 'I'
-		      && (buf[i++] = (char) is.get ()) == 'N'
-		      && (buf[i++] = (char) is.get ()) == 'G'
-		      && (buf[i++] = (char) is.get ()) == '(')
+		  if (   (buf[i++] = static_cast<char> (is.get ())) == 'O'
+                      && (buf[i++] = static_cast<char> (is.get ())) == 'C'
+                      && (buf[i++] = static_cast<char> (is.get ())) == 'S'
+                      && (buf[i++] = static_cast<char> (is.get ())) == 'T'
+                      && (buf[i++] = static_cast<char> (is.get ())) == 'R'
+                      && (buf[i++] = static_cast<char> (is.get ())) == 'I'
+                      && (buf[i++] = static_cast<char> (is.get ())) == 'N'
+                      && (buf[i++] = static_cast<char> (is.get ())) == 'G'
+                      && (buf[i++] = static_cast<char> (is.get ())) == '(')
 		    {
 		      while ((c = is.get ()) != EOF && c != ')')
-			symbol_name += (char) c;
+			symbol_name += static_cast<char> (c);
 
 		      if (is.eof ())
 			fatal ("end of file while reading @DOCSTRING command");
@@ -343,20 +343,20 @@ process_texi_input_file (std::istream& is, std::ostream& os)
 		{
 		  std::string file_name;
 
-		  if (   (buf[i++] = (char) is.get ()) == 'X'
-		      && (buf[i++] = (char) is.get ()) == 'A'
-		      && (buf[i++] = (char) is.get ()) == 'M'
-		      && (buf[i++] = (char) is.get ()) == 'P'
-		      && (buf[i++] = (char) is.get ()) == 'L'
-		      && (buf[i++] = (char) is.get ()) == 'E'
-		      && (buf[i++] = (char) is.get ()) == 'F'
-		      && (buf[i++] = (char) is.get ()) == 'I'
-		      && (buf[i++] = (char) is.get ()) == 'L'
-		      && (buf[i++] = (char) is.get ()) == 'E'
-		      && (buf[i++] = (char) is.get ()) == '(')
+		  if (   (buf[i++] = static_cast<char> (is.get ())) == 'X'
+                      && (buf[i++] = static_cast<char> (is.get ())) == 'A'
+                      && (buf[i++] = static_cast<char> (is.get ())) == 'M'
+                      && (buf[i++] = static_cast<char> (is.get ())) == 'P'
+                      && (buf[i++] = static_cast<char> (is.get ())) == 'L'
+                      && (buf[i++] = static_cast<char> (is.get ())) == 'E'
+                      && (buf[i++] = static_cast<char> (is.get ())) == 'F'
+                      && (buf[i++] = static_cast<char> (is.get ())) == 'I'
+                      && (buf[i++] = static_cast<char> (is.get ())) == 'L'
+                      && (buf[i++] = static_cast<char> (is.get ())) == 'E'
+                      && (buf[i++] = static_cast<char> (is.get ())) == '(')
 		    {
 		      while ((c = is.get ()) != EOF && c != ')')
-			file_name += (char) c;
+			file_name += static_cast<char> (c);
 
 		      file_name = top_srcdir + "/examples/" + file_name;
 
@@ -369,14 +369,14 @@ process_texi_input_file (std::istream& is, std::ostream& os)
 		bol = recover_from_macro (os, buf, i);
 	    }
 	  else
-	    os.put ((char) c);
+	    os.put (static_cast<char> (c));
 	}
       else
 	{
 	  if (c == '\n')
 	    bol = true;
 
-	  os.put ((char) (c));
+	  os.put (static_cast<char> (c));
 	}
     }
 }
@@ -384,14 +384,26 @@ process_texi_input_file (std::istream& is, std::ostream& os)
 int
 main (int argc, char **argv)
 {
-  top_srcdir = *++argv;
+  int retval = 0;
 
-  while (*++argv)
-    process_doc_file (*argv);
+  if (argc > 1)
+    {
+      top_srcdir = *++argv;
 
-  process_texi_input_file (std::cin, std::cout);
+      while (*++argv)
+        process_doc_file (*argv);
 
-  return 0;
+      process_texi_input_file (std::cin, std::cout);
+    }
+  else
+    {
+      usage ();
+
+      retval = 1;
+    }
+
+  return retval;
+
 }
 
 /*

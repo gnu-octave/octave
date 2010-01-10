@@ -60,30 +60,21 @@ function hg = __scatter__ (varargin)
   else
     s = 6;
   endif
-  if (numel (s) == 1)
-    ss = s;
-    s = repmat (s, numel(x), 1);
-  endif
 
   if (istart < nargin && firstnonnumeric > istart + 1)
     c = varargin{istart + 1};
     if (isvector (c))
-      if (columns (c) == 3)
-	cc = c;
-	c = repmat (c, numel(x), 1);
-      else
+      if (columns (c) != 3)
 	c = c(:);
       endif
     elseif (isempty (c))
-      cc = __next_line_color__();
-      c = repmat (cc, numel(x), 1);
+      c = __next_line_color__();
     endif
   elseif (firstnonnumeric == istart + 1 && ischar (varargin{istart + 1}))
     c = varargin{istart + 1};
     firstnonnumeric++;
   else
-    cc = __next_line_color__();
-    c = repmat (cc, numel(x), 1);
+    c = __next_line_color__();
   endif
 
   newargs = {};
@@ -121,54 +112,80 @@ function hg = __scatter__ (varargin)
   addproperty ("xdata", hg, "data", x);
   addproperty ("ydata", hg, "data", y);
   addproperty ("zdata", hg, "data", z);
-  if (exist ("cc", "var"))
-    addproperty ("cdata", hg, "data", cc);
-  else
-    addproperty ("cdata", hg, "data", c);
-  endif
-  if (exist ("ss", "var"))
-    addproperty ("sizedata", hg, "data", ss);
-  else
-    addproperty ("sizedata", hg, "data", s);
-  endif
+  addproperty ("cdata", hg, "data", c);
+  addproperty ("sizedata", hg, "data", s);
   addlistener (hg, "xdata", @update_data);
   addlistener (hg, "ydata", @update_data);
   addlistener (hg, "zdata", @update_data);
   addlistener (hg, "cdata", @update_data);
   addlistener (hg, "sizedata", @update_data);
 
-  if (ischar (c))
-    for i = 1 : numel (x)
-      h = __go_patch__ (hg, "xdata", x(i), "ydata", y(i), "zdata", z(i,:),
-			"faces", 1, "vertices", [x(i), y(i), z(i,:)], 
-			"facecolor", "none", "edgecolor", c, "marker", marker, 
-			"markersize", s(i), "linestyle", "none");
-      if (filled)
-	set(h, "markerfacecolor", c); 
+  if (numel (x) <= 20)
+
+    ## For small number of points, we'll construct an object for each point.
+
+    if (numel (s) == 1)
+      s = repmat (s, numel(x), 1);
+    endif
+
+    if (ischar (c))
+      for i = 1 : numel (x)
+        h = __go_line__ (hg, "xdata", x(i), "ydata", y(i), "zdata", z(i,:),
+                         "color", c, "marker", marker, 
+                         "markersize", s(i), "linestyle", "none");
+        if (filled)
+          set(h, "markerfacecolor", c); 
+        endif
+      endfor
+    else
+      if (rows (c) == 1)
+        c = repmat (c, numel (x), 1);
       endif
-    endfor
+
+      for i = 1 : numel (x)
+        h = __go_line__ (hg, "xdata", x(i), "ydata", y(i), "zdata", z(i,:),
+                         "color", c(i,:), "marker", marker, 
+                         "markersize", s(i), "linestyle", "none");
+        if (filled)
+          set(h, "markerfacecolor", c(i,:)); 
+        endif
+      endfor
+    endif
+
   else
-    for i = 1 : numel (x)
-      h = __go_patch__ (hg, "xdata", x(i), "ydata", y(i), "zdata", z(i,:),
-			"faces", 1, "vertices", [x(i), y(i), z(i,:)], 
-			"facecolor", "none", "edgecolor", "flat", 
-			"cdata", reshape(c(i,:),[1,size(c)(2:end)]), 
-			"marker", marker, "markersize", s(i), 
-			"linestyle", "none");
-      if (filled)
-	set(h, "markerfacecolor", "flat"); 
+
+    ## For larger numbers of points, we split the points by common color.
+
+    vert = [x, y, z];
+
+    if (ischar (c) || rows (c) == 1)
+      h = render_size_color (hg, vert, s, c, marker, filled); 
+    else
+      [cc, idx] = unique_idx (c, "rows");
+      if (isscalar (s))
+        for i = 1:rows (x)
+          h = render_size_color (hg, vert(idx{i},:), s, cc(i,:), marker, filled);
+        endfor
+      else
+        for i = 1:rows (x)
+          h = render_size_color (hg, vert(idx{i},:), s(idx{i}), cc(i,:), marker, filled);
+        endfor
       endif
-    endfor
-    ax = get (hg, "parent");
-    clim = get (ax, "clim");
-    if (min(c(:)) < clim(1))
-      clim(1) = min(c(:));
-      set (ax, "clim", clim);
     endif
-    if (max(c(:)) > clim(2))
-      set (ax, "clim", [clim(1), max(c(:))]);
-    endif
+
   endif
+
+    if (! ischar (c))
+      ax = get (hg, "parent");
+      clim = get (ax, "clim");
+      if (min(c(:)) < clim(1))
+        clim(1) = min(c(:));
+        set (ax, "clim", clim);
+      endif
+      if (max(c(:)) > clim(2))
+        set (ax, "clim", [clim(1), max(c(:))]);
+      endif
+    endif
 
   addproperty ("linewidth", hg, "patchlinewidth", 0.5);
   addproperty ("marker", hg, "patchmarker", marker);
@@ -179,7 +196,7 @@ function hg = __scatter__ (varargin)
     addproperty ("markerfacecolor", hg, "patchmarkerfacecolor", 
 		 get (h, "markerfacecolor"));
     addproperty ("markeredgecolor", hg, "patchmarkeredgecolor",
-		 get (h, "edgecolor"));
+		 get (h, "color"));
   endif
   addlistener (hg, "linewidth", @update_props); 
   addlistener (hg, "marker", @update_props); 
@@ -190,6 +207,48 @@ function hg = __scatter__ (varargin)
     set (hg, newargs{:})
   endif
 
+endfunction
+
+function [y, idx] =  unique_idx (x, byrows)
+  if (nargin == 2)
+    [xx, idx] = sortrows (x);
+    n = rows (x);
+    jdx = find (any (xx(1:n-1,:) != xx(2:n,:), 2));
+    jdx(n) = n;
+    y = xx(jdx,:);
+  else
+    [xx, idx] = sort (x);
+    n = length (x);
+    jdx = find (xx(1:n-1,:) != xx(2:n,:));
+    jdx(n) = n;
+    y = xx(jdx);
+  endif
+
+  if (nargin == 2 || columns (x) == 1)
+    idx = mat2cell (idx, diff ([0; jdx]), 1);
+  else
+    idx = mat2cell (idx, 1, diff ([0, jdx]));
+  endif
+endfunction
+
+function h = render_size_color(hg, vert, s, c, marker, filled)
+  if (isscalar (s))
+    x = vert(:,1);
+    y = vert(:,2);
+    z = vert(:,3:end);
+    h = __go_line__ (hg, "xdata", x, "ydata", y, "zdata", z,
+                     "color", c, "marker", marker, 
+                     "markersize", s, "linestyle", "none");
+    if (filled)
+      set(h, "markerfacecolor", c); 
+    endif
+  else
+    ## FIXME: round the size to one decimal place. It's not quite right, though.
+    [ss, idx] = unique_idx (ceil (s*10) / 10);
+    for i = 1:rows (ss)
+      h = render_size_color (hg, vert(idx{i},:), ss(i), c, marker, filled);
+    endfor
+  endif
 endfunction
 
 function update_props (h, d)

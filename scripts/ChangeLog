@@ -1,5 +1,9 @@
 2010-01-11  Jaroslav Hajek  <highegg@gmail.com>
 
+	* plot/private/__scatter__.m: Fix typos.
+
+2010-01-11  Jaroslav Hajek  <highegg@gmail.com>
+
 	* io/fileread.m: New source.
 
 2010-01-10  Jaroslav Hajek  <highegg@gmail.com>

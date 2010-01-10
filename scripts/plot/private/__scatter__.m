@@ -214,13 +214,13 @@ function [y, idx] =  unique_idx (x, byrows)
     [xx, idx] = sortrows (x);
     n = rows (x);
     jdx = find (any (xx(1:n-1,:) != xx(2:n,:), 2));
-    jdx(n) = n;
+    jdx(end+1) = n;
     y = xx(jdx,:);
   else
     [xx, idx] = sort (x);
     n = length (x);
     jdx = find (xx(1:n-1,:) != xx(2:n,:));
-    jdx(n) = n;
+    jdx(end+1) = n;
     y = xx(jdx);
   endif
 

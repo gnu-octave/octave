@@ -120,7 +120,7 @@ function hg = __scatter__ (varargin)
   addlistener (hg, "cdata", @update_data);
   addlistener (hg, "sizedata", @update_data);
 
-  if (numel (x) <= 20)
+  if (numel (x) <= 100)
 
     ## For small number of points, we'll construct an object for each point.
 
@@ -130,9 +130,10 @@ function hg = __scatter__ (varargin)
 
     if (ischar (c))
       for i = 1 : numel (x)
-        h = __go_line__ (hg, "xdata", x(i), "ydata", y(i), "zdata", z(i,:),
-                         "color", c, "marker", marker, 
-                         "markersize", s(i), "linestyle", "none");
+        h = __go_patch__ (hg, "xdata", x(i), "ydata", y(i), "zdata", z(i,:),
+                          "faces", 1, "vertices", [x(i), y(i), z(i,:)], 
+                          "facecolor", "none", "edgecolor", c, "marker", marker, 
+                          "markersize", s(i), "linestyle", "none");
         if (filled)
           set(h, "markerfacecolor", c); 
         endif
@@ -143,11 +144,14 @@ function hg = __scatter__ (varargin)
       endif
 
       for i = 1 : numel (x)
-        h = __go_line__ (hg, "xdata", x(i), "ydata", y(i), "zdata", z(i,:),
-                         "color", c(i,:), "marker", marker, 
-                         "markersize", s(i), "linestyle", "none");
+        h = __go_patch__ (hg, "xdata", x(i), "ydata", y(i), "zdata", z(i,:),
+                          "faces", 1, "vertices", [x(i), y(i), z(i,:)], 
+                          "facecolor", "none", "edgecolor", "flat", 
+                          "cdata", c(i,:), 
+                          "marker", marker, "markersize", s(i), 
+                          "linestyle", "none");
         if (filled)
-          set(h, "markerfacecolor", c(i,:)); 
+          set(h, "markerfacecolor", "flat"); 
         endif
       endfor
     endif
@@ -236,11 +240,24 @@ function h = render_size_color(hg, vert, s, c, marker, filled)
     x = vert(:,1);
     y = vert(:,2);
     z = vert(:,3:end);
-    h = __go_line__ (hg, "xdata", x, "ydata", y, "zdata", z,
-                     "color", c, "marker", marker, 
-                     "markersize", s, "linestyle", "none");
-    if (filled)
-      set(h, "markerfacecolor", c); 
+    if (ischar (c))
+      h = __go_patch__ (hg, "xdata", x, "ydata", y, "zdata", z,
+                        "faces", 1, "vertices", vert, 
+                        "facecolor", "none", "edgecolor", c, "marker", marker, 
+                        "markersize", s, "linestyle", "none");
+      if (filled)
+        set(h, "markerfacecolor", c); 
+      endif
+    else
+      h = __go_patch__ (hg, "xdata", x, "ydata", y, "zdata", z,
+                        "faces", 1, "vertices", vert, 
+                        "facecolor", "none", "edgecolor", "flat", 
+                        "cdata", c, 
+                        "marker", marker, "markersize", s, 
+                        "linestyle", "none");
+      if (filled)
+        set(h, "markerfacecolor", "flat"); 
+      endif
     endif
   else
     ## FIXME: round the size to one decimal place. It's not quite right, though.

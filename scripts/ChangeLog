@@ -1,5 +1,10 @@
 2010-01-11  Jaroslav Hajek  <highegg@gmail.com>
 
+	* plot/private/__scatter__.m: Use patch objects instead of lines,
+	switch at 100 points.
+
+2010-01-11  Jaroslav Hajek  <highegg@gmail.com>
+
 	* plot/private/__scatter__.m: Fix typos.
 
 2010-01-11  Jaroslav Hajek  <highegg@gmail.com>

@@ -1,3 +1,8 @@
+2010-01-11  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/urlwrite.cc (curl_handle::lasterror):
+	Avoid using errno as a local variable name.
+
 2010-01-11  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/lu.cc (Fluupdate): Add tests for LU updating.

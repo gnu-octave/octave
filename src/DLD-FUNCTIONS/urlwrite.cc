@@ -251,11 +251,11 @@ public:
 
   std::string lasterror (void) const
     {
-      CURLcode errno;
+      CURLcode errnum;
 
-      curl_easy_getinfo (rep->handle(), CURLINFO_OS_ERRNO, &errno);
+      curl_easy_getinfo (rep->handle(), CURLINFO_OS_ERRNO, &errnum);
       
-      return std::string (curl_easy_strerror (errno));
+      return std::string (curl_easy_strerror (errnum));
     }
 
   void set_ostream (std::ostream& os) const

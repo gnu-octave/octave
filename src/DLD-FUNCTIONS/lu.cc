@@ -761,6 +761,98 @@ the factorization from scratch.\n\
 }
 
 /*
+%!shared A, u, v, Ac, uc, vc
+%! A = [0.091364  0.613038  0.999083;
+%!      0.594638  0.425302  0.603537;
+%!      0.383594  0.291238  0.085574;
+%!      0.265712  0.268003  0.238409;
+%!      0.669966  0.743851  0.445057 ];
+%!
+%! u = [0.85082;  
+%!      0.76426;  
+%!      0.42883;  
+%!      0.53010;  
+%!      0.80683 ];
+%!
+%! v = [0.98810;
+%!      0.24295;
+%!      0.43167 ];
+%!
+%! Ac = [0.620405 + 0.956953i  0.480013 + 0.048806i  0.402627 + 0.338171i;
+%!      0.589077 + 0.658457i  0.013205 + 0.279323i  0.229284 + 0.721929i;
+%!      0.092758 + 0.345687i  0.928679 + 0.241052i  0.764536 + 0.832406i;
+%!      0.912098 + 0.721024i  0.049018 + 0.269452i  0.730029 + 0.796517i;
+%!      0.112849 + 0.603871i  0.486352 + 0.142337i  0.355646 + 0.151496i ];
+%!
+%! uc = [0.20351 + 0.05401i;
+%!      0.13141 + 0.43708i;
+%!      0.29808 + 0.08789i;
+%!      0.69821 + 0.38844i;
+%!      0.74871 + 0.25821i ];
+%!
+%! vc = [0.85839 + 0.29468i;
+%!      0.20820 + 0.93090i;
+%!      0.86184 + 0.34689i ];
+%!
+
+%!test
+%! [L,U,P] = lu(A);
+%! [L,U] = luupdate(L,U,P*u,v);
+%! assert(norm(vec(tril(L)-L),Inf) == 0)
+%! assert(norm(vec(triu(U)-U),Inf) == 0)
+%! assert(norm(vec(P'*L*U - A - u*v.'),Inf) < norm(A)*1e1*eps)
+%! 
+%!test
+%! [L,U,P] = lu(Ac);
+%! [L,U] = luupdate(L,U,P*uc,vc);
+%! assert(norm(vec(tril(L)-L),Inf) == 0)
+%! assert(norm(vec(triu(U)-U),Inf) == 0)
+%! assert(norm(vec(P'*L*U - Ac - uc*vc.'),Inf) < norm(Ac)*1e1*eps)
+
+%!test
+%! [L,U,P] = lu(single(A));
+%! [L,U] = luupdate(L,U,P*single(u),single(v));
+%! assert(norm(vec(tril(L)-L),Inf) == 0)
+%! assert(norm(vec(triu(U)-U),Inf) == 0)
+%! assert(norm(vec(P'*L*U - single(A) - single(u)*single(v).'),Inf) < norm(single(A))*1e1*eps('single'))
+%! 
+%!test
+%! [L,U,P] = lu(single(Ac));
+%! [L,U] = luupdate(L,U,P*single(uc),single(vc));
+%! assert(norm(vec(tril(L)-L),Inf) == 0)
+%! assert(norm(vec(triu(U)-U),Inf) == 0)
+%! assert(norm(vec(P'*L*U - single(Ac) - single(uc)*single(vc).'),Inf) < norm(single(Ac))*1e1*eps('single'))
+
+%!test
+%! [L,U,P] = lu(A);
+%! [L,U,P] = luupdate(L,U,P,u,v);
+%! assert(norm(vec(tril(L)-L),Inf) == 0)
+%! assert(norm(vec(triu(U)-U),Inf) == 0)
+%! assert(norm(vec(P'*L*U - A - u*v.'),Inf) < norm(A)*1e1*eps)
+%! 
+%!test
+%! [L,U,P] = lu(Ac);
+%! [L,U,P] = luupdate(L,U,P,uc,vc);
+%! assert(norm(vec(tril(L)-L),Inf) == 0)
+%! assert(norm(vec(triu(U)-U),Inf) == 0)
+%! assert(norm(vec(P'*L*U - Ac - uc*vc.'),Inf) < norm(Ac)*1e1*eps)
+
+%!test
+%! [L,U,P] = lu(single(A));
+%! [L,U,P] = luupdate(L,U,P,single(u),single(v));
+%! assert(norm(vec(tril(L)-L),Inf) == 0)
+%! assert(norm(vec(triu(U)-U),Inf) == 0)
+%! assert(norm(vec(P'*L*U - single(A) - single(u)*single(v).'),Inf) < norm(single(A))*1e1*eps('single'))
+%! 
+%!test
+%! [L,U,P] = lu(single(Ac));
+%! [L,U,P] = luupdate(L,U,P,single(uc),single(vc));
+%! assert(norm(vec(tril(L)-L),Inf) == 0)
+%! assert(norm(vec(triu(U)-U),Inf) == 0)
+%! assert(norm(vec(P'*L*U - single(Ac) - single(uc)*single(vc).'),Inf) < norm(single(Ac))*1e1*eps('single'))
+*/
+
+/*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
 ;;; End: ***

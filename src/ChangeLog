@@ -1,3 +1,8 @@
+2010-01-11  Tatsuro MATSUOKA  <tmacchant@yahoo.co.jp>
+
+	* Makefile.am (OCTINTERP_LINK_DEPS): Include FT2_LDFLAGS and
+	FT2_LIBS in the list.
+
 2010-01-09  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/lookup.cc (stri_comp_lt, stri_comp_gt):

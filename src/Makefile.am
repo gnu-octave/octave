@@ -535,6 +535,7 @@ OCTINTERP_LINK_DEPS = \
   ../libcruft/libcruft.la \
   ../libgnu/libgnu.la \
   $(FFTW_XLDFLAGS) $(FFTW_XLIBS) \
+  $(FT2_LDFLAGS) $(FT2_LIBS) \
   $(HDF5_LDFLAGS) $(HDF5_LIBS) $(Z_LDFLAGS) $(Z_LIBS) \
   $(OPENGL_LIBS) $(X11_LIBS) $(CARBON_LIBS) \
   $(READLINE_LIBS) $(TERM_LIBS) \

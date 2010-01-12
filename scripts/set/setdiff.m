@@ -24,6 +24,7 @@
 ## Return the elements in @var{a} that are not in @var{b}, sorted in
 ## ascending order.  If @var{a} and @var{b} are both column vectors
 ## return a column vector, otherwise return a row vector.
+## @var{a}, @var{b} may be cell arrays of string(s).
 ##
 ## Given the optional third argument @samp{"rows"}, return the rows in
 ## @var{a} that are not in @var{b}, sorted in ascending order by rows.
@@ -35,25 +36,15 @@
 ## Author: Paul Kienzle
 ## Adapted-by: jwe
 
-function [c, i] = setdiff (a, b, byrows_arg)
+function [c, i] = setdiff (a, b, varargin)
 
   if (nargin < 2 || nargin > 3)
     print_usage ();
   endif
 
-  byrows = false;
+  [a, b] = validargs ("setdiff", a, b, varargin{:});
 
-  if (nargin == 3)
-    if (! strcmpi (byrows_arg, "rows"))
-      error ("expecting third argument to be \"rows\"");
-    elseif (iscell (a) || iscell (b))
-      warning ("setdiff: \"rows\" not valid for cell arrays");
-    else
-      byrows = true;
-    endif
-  endif
-
-  if (byrows)
+  if (nargin > 2)
     if (nargout > 1)
       [c, i] = unique (a, "rows");
     else

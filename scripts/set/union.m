@@ -22,7 +22,8 @@
 ## @deftypefn {Function File} {} union (@var{a}, @var{b})
 ## @deftypefnx{Function File} {} union (@var{a}, @var{b}, "rows")
 ## Return the set of elements that are in either of the sets @var{a} and
-## @var{b}.  For example,
+## @var{b}. @var{a}, @var{b} may be cell arrays of string(s).
+## For example,
 ##
 ## @example
 ## @group
@@ -59,9 +60,7 @@ function [y, ia, ib] = union (a, b, varargin)
     print_usage ();
   endif
 
-  if (nargin == 3 && ! strcmpi (varargin{1}, "rows"))
-    error ("union: if a third input argument is present, it must be the string 'rows'");
-  endif
+  [a, b] = validargs ("union", a, b, varargin{:});
 
   if (nargin == 2)
     y = [a(:); b(:)];
@@ -69,11 +68,9 @@ function [y, ia, ib] = union (a, b, varargin)
     if (size (a, 1) == 1 || size (b, 1) == 1)
       y = y.';
     endif
-  elseif (ndims (a) == 2 && ndims (b) == 2 && columns (a) == columns (b))
+  else
     y = [a; b];
     na = rows (a); nb = rows (b);
-  else
-    error ("union: input arguments must contain the same number of columns when \"rows\" is specified");
   endif
 
   if (nargout == 1)

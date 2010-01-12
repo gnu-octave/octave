@@ -1,3 +1,13 @@
+2010-01-12  Jaroslav Hajek  <highegg@gmail.com>, Ben Barrowes  <benjamin.e.barrowes@usace.army.mil>
+
+	* set/private/validargs.m: New function.
+	* set/module.mk: Add it here.
+	* set/ismember.m: Use it here.
+	* set/intersect.m: Ditto.
+	* set/union.m: Ditto.
+	* set/setdiff.m: Ditto.
+	* set/setxor.m: Ditto.
+
 2010-01-11  Rik <octave@nomad.inbox5.com>
 
 	* Makefile.am: Update DOCSTRINGS rules to avoid simple_move_if_change_rule
@@ -24,6 +34,10 @@
 2010-01-06  Ben Abbott <bpabbott@mac.com>
 
 	* /optimization/qp.m: Add missing semicolon.
+
+2010-01-11  Ben Barrowes  <benjamin.e.barrowes@usace.army.mil>
+
+	* set/: allow set scripts to handle cell inputs
 
 2010-01-05  Jaroslav Hajek  <highegg@gmail.com>
 

@@ -24,6 +24,7 @@
 ## Return the elements exclusive to @var{a} or @var{b}, sorted in ascending
 ## order.  If @var{a} and @var{b} are both column vectors return a column
 ## vector, otherwise return a row vector.
+## @var{a}, @var{b} may be cell arrays of string(s).
 ##
 ## @deftypefnx {Function File} {[@var{c}, @var{ia}, @var{ib}] =} setxor (@var{a}, @var{b})
 ##
@@ -39,9 +40,7 @@ function [c, ia, ib] = setxor (a, b, varargin)
     print_usage ();
   endif
 
-  if (nargin == 3 && ! strcmpi (varargin{1}, "rows"))
-    error ("setxor: if a third input argument is present, it must be the string 'rows'");
-  endif
+  [a, b] = validargs ("setxor", a, b, varargin{:});
 
   ## Form A and B into sets.
   if (nargout > 1)

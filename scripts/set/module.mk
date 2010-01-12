@@ -7,7 +7,8 @@ set_FCN_FILES = \
   set/setdiff.m \
   set/setxor.m \
   set/union.m \
-  set/unique.m
+  set/unique.m \
+  set/private/validargs.m
 
 FCN_FILES += $(set_FCN_FILES)
 

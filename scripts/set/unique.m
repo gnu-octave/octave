@@ -26,6 +26,7 @@
 ## Return the unique elements of @var{x}, sorted in ascending order.
 ## If @var{x} is a row vector, return a row vector, but if @var{x}
 ## is a column vector or a matrix return a column vector.
+## @var{x} can be a cell array of strings.
 ##
 ## If the optional argument @code{"rows"} is supplied, return the unique
 ## rows of @var{x}, sorted in ascending order.

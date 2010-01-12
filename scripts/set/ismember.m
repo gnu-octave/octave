@@ -71,25 +71,15 @@
 ## Adapted-by: jwe
 ## Reimplemented using lookup & unique: Jaroslav Hajek <highegg@gmail.com>
 
-function [tf, a_idx] = ismember (a, s, rows_opt) 
+function [tf, a_idx] = ismember (a, s, varargin) 
+
+  if (nargin < 2 || nargin > 3)
+    print_usage ();
+  endif
+
+  [a, s] = validargs ("ismember", a, s, varargin{:});
 
   if (nargin == 2)
-    ica = iscellstr (a);
-    ics = iscellstr (s);
-    if (ica || ics)
-      if (ica && ischar (s))
-        s = cellstr (s);
-      elseif (ics && ischar (a))
-        a = cellstr (a);
-      elseif (! (ica && ics))
-        error ("ismember: invalid argument types");
-      endif
-    elseif (! isa (a, class (s))) 
-      error ("ismember: both input arguments must be the same type");
-    elseif (! ischar (a) && ! isnumeric (a))
-      error ("ismember: input arguments must be arrays, cell arrays, or strings"); 
-    endif
-
     s = s(:);
     ## We do it this way, because we expect the array to be often sorted.
     if (issorted (s))
@@ -113,19 +103,11 @@ function [tf, a_idx] = ismember (a, s, rows_opt)
       tf = lookup (s, a, "b");
     endif
 
-  elseif (nargin == 3 && strcmpi (rows_opt, "rows"))
-    if (iscell (a) || iscell (s))
-      error ("ismember: cells not supported with ""rows""");
-    elseif (! isa (a, class (s))) 
-      error ("ismember: both input arguments must be the same type");
-    elseif (! ischar (a) && ! isnumeric (a))
-      error ("ismember: input arguments must be arrays, cell arrays, or strings"); 
-    endif
+  else
+
     if (isempty (a) || isempty (s))
       tf = false (rows (a), 1);
       a_idx = zeros (rows (a), 1);
-    elseif (columns (a) != columns (s))
-      error ("ismember: number of columns must match");
     else
 
       ## FIXME: lookup does not support "rows", so we just use unique.
@@ -139,8 +121,6 @@ function [tf, a_idx] = ismember (a, s, rows_opt)
       endif
 
     endif
-  else
-    print_usage ();
   endif
 
 endfunction

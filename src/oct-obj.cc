@@ -188,6 +188,19 @@ octave_value_list::all_scalars (void) const
 }
 
 bool
+octave_value_list::any_cell (void) const
+{
+  bool retval = false;
+  octave_idx_type n = length ();
+
+  for (octave_idx_type i = 0; i < n; i++)
+    if (retval = elem (i).is_cell ())
+      break;
+  
+  return retval;
+}
+
+bool
 octave_value_list::has_magic_colon (void) const
 {
   octave_idx_type n = length ();

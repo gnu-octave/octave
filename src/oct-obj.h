@@ -137,6 +137,8 @@ public:
 
   bool all_scalars (void) const;
 
+  bool any_cell (void) const;
+
   bool has_magic_colon (void) const;
 
   string_vector make_argv (const std::string& = std::string()) const;

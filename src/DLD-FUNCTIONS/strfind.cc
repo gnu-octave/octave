@@ -151,10 +151,10 @@ strfind (@{\"abababa\", \"bebebe\", \"ab\"@}, \"aba\")\n\
 
   if (nargin == 2)
     {
-      octave_value argstr = args(0), argp = args(1);
-      if (argp.is_string ())
+      octave_value argstr = args(0), argpat = args(1);
+      if (argpat.is_string ())
         {
-          Array<char> needle = argp.char_array_value ();
+          Array<char> needle = argpat.char_array_value ();
           OCTAVE_LOCAL_BUFFER (octave_idx_type, table, UCHAR_MAX);
           qs_preprocess (needle, table);
 
@@ -185,8 +185,10 @@ strfind (@{\"abababa\", \"bebebe\", \"ab\"@}, \"aba\")\n\
           else
             error ("strfind: first argument must be a string or cell array of strings");
         }
+      else if (argpat.is_cell ())
+        retval = do_simple_cellfun (Fstrfind, "strfind", args);
       else
-        error ("strfind: pattern must be a string");
+        error ("strfind: pattern must be a string or cell array of strings");
     }
   else
     print_usage ();
@@ -269,11 +271,11 @@ done for each element and a cell array is returned.\n\
 
   if (nargin == 3)
     {
-      octave_value argstr = args(0), argp = args(1), argr = args(2);
-      if (argp.is_string () && argr.is_string ())
+      octave_value argstr = args(0), argpat = args(1), argrep = args(2);
+      if (argpat.is_string () && argrep.is_string ())
         {
-          const Array<char> pat = argp.char_array_value ();
-          const Array<char> rep = argr.char_array_value ();
+          const Array<char> pat = argpat.char_array_value ();
+          const Array<char> rep = argrep.char_array_value ();
 
           OCTAVE_LOCAL_BUFFER (octave_idx_type, table, UCHAR_MAX);
           qs_preprocess (pat, table);
@@ -303,8 +305,10 @@ done for each element and a cell array is returned.\n\
           else
             error ("strrep: first argument must be a string or cell array of strings");
         }
+      else if (argpat.is_cell () || argrep.is_cell ())
+        retval = do_simple_cellfun (Fstrrep, "strrep", args);
       else
-        error ("strrep: 2rd and 3rd arguments must be strings");
+        error ("strrep: x and y arguments must be strings or cell arrays of strings");
     }
   else
     print_usage ();

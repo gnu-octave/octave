@@ -1397,6 +1397,98 @@ subsequent indexing will not perform the checking again.\n\
   return retval;
 }
 
+octave_value_list
+do_simple_cellfun (octave_value_list (*fun) (const octave_value_list&, int),
+                   const char *fun_name, const octave_value_list& args, 
+                   int nargout)
+{
+  octave_value_list new_args = args, retval;
+  int nargin = args.length ();
+  OCTAVE_LOCAL_BUFFER (bool, iscell, nargin);
+  OCTAVE_LOCAL_BUFFER (Cell, cells, nargin);
+  OCTAVE_LOCAL_BUFFER (Cell, rcells, nargout);
+
+  const Cell *ccells = cells;
+
+  octave_idx_type numel = 1;
+  dim_vector dims (1, 1);
+
+  for (int i = 0; i < nargin; i++)
+    {
+      octave_value arg = new_args(i);
+      iscell[i] = arg.is_cell ();
+      if (iscell[i])
+        {
+          cells[i] = arg.cell_value ();
+          octave_idx_type n = ccells[i].numel ();
+          if (n == 1)
+            { 
+              iscell[i] = false;
+              new_args(i) = ccells[i](0);
+            }
+          else if (numel == 1)
+            {
+              numel = n;
+              dims = ccells[i].dims ();
+            } 
+          else if (dims != ccells[i].dims ())
+            {
+              error ("%s: cell arguments must have matching sizes", fun_name);
+              break;
+            }
+        }
+    }
+
+  if (! error_state)
+    {
+      for (int i = 0; i < nargout; i++)
+        rcells[i].clear (dims);
+
+      for (octave_idx_type j = 0; j < numel; j++)
+        {
+          for (int i = 0; i < nargin; i++)
+            if (iscell[i])
+              new_args(i) = ccells[i](j);
+
+          OCTAVE_QUIT;
+
+          const octave_value_list tmp = fun (new_args, nargout);
+
+          if (tmp.length () < nargout)
+            {
+              error ("%s: do_simple_cellfun: internal error", fun_name);
+              break;
+            }
+          else
+            {
+              for (int i = 0; i < nargout; i++)
+                rcells[i](j) = tmp(i);
+            }
+        }
+    }
+
+  if (! error_state)
+    {
+      retval.resize (nargout);
+      for (int i = 0; i < nargout; i++)
+        retval(i) = rcells[i];
+    }
+
+  return retval;
+}
+
+octave_value
+do_simple_cellfun (octave_value_list (*fun) (const octave_value_list&, int),
+                   const char *fun_name, const octave_value_list& args)
+{
+  octave_value retval;
+  const octave_value_list tmp = do_simple_cellfun (fun, fun_name, args, 1);
+  if (tmp.length () > 0)
+    retval = tmp(0);
+
+  return retval;
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

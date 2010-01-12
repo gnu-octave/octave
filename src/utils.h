@@ -126,6 +126,16 @@ extern "C" OCTINTERP_API void octave_usleep (unsigned int useconds);
 extern "C" OCTINTERP_API int
 octave_raw_vsnprintf (char *buf, size_t n, const char *fmt, va_list args);
 
+extern OCTINTERP_API
+octave_value_list
+do_simple_cellfun (octave_value_list (*fun) (const octave_value_list&, int),
+                   const char *fun_name, const octave_value_list& args, 
+                   int nargout);
+
+extern OCTINTERP_API
+octave_value
+do_simple_cellfun (octave_value_list (*fun) (const octave_value_list&, int),
+                   const char *fun_name, const octave_value_list& args);
 #endif
 
 /*

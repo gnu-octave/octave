@@ -1,3 +1,12 @@
+2010-01-12  Jaroslav Hajek  <highegg@gmail.com>
+
+	* oct-obj.cc (octave_value_list::any_cell): New method.
+	* oct-obj.h: Declare it.
+	* utils.cc (do_simple_cellfun): New overloaded function.
+	* utils.h: Declare it.
+	* DLD-FUNCTIONS/strfind.cc (Fstrfind): Call it here.
+	(Fstrrep): Also here.
+
 2010-01-11  Rik <octave@nomad.inbox5.com>
 
 	* Makefile.am: Update DOCSTRINGS rules to avoid simple_move_if_change_rule

@@ -530,7 +530,7 @@ octinclude_HEADERS = \
 $(OPT_INC) : %.h : %.in $(top_srcdir)/mk-opts.pl
 	@echo making $@ from $<
 	@$(PERL) $(top_srcdir)/mk-opts.pl --opt-class-header $< > $@-t
-	$(simple_move_if_change_rule)
+	mv $@-t $@
 
 $(VX_OP_INC) $(VX_OP_SRC) : $(srcdir)/mk-ops.awk vx-ops
 	$(AWK) -f $(srcdir)/mk-ops.awk prefix=vx $(srcdir)/vx-ops
@@ -543,7 +543,7 @@ $(SMX_OP_INC) $(SMX_OP_SRC) : $(srcdir)/sparse-mk-ops.awk sparse-mx-ops
 
 mx-ops.h : $(srcdir)/mk-ops.awk mx-ops
 	$(AWK) -f $(srcdir)/mk-ops.awk prefix=mx make_inclusive_header=mx-ops.h $(srcdir)/mx-ops > $@-t
-	$(simple_move_if_change_rule)
+	mv $@-t $@
 
 DISTCLEANFILES = $(BUILT_INCS) $(BUILT_LIBOCTAVE_CXX_SOURCES)
 

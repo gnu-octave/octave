@@ -74,7 +74,7 @@ image_DATA = $(IMAGES)
 
 FCN_FILES_IN = $(GEN_FCN_FILES:.m=.in)
 
-all-local: $(GEN_FCN_FILES) $(PKG_ADD_FILES) DOCSTRINGS
+all-local: $(GEN_FCN_FILES) $(PKG_ADD_FILES) .DOCSTRINGS
 
 octave_dirstamp = $(am__leading_dot)dirstamp
 
@@ -317,11 +317,15 @@ noinst_PROGRAMS = gethelp
 
 gethelp_SOURCES = gethelp.cc
 
-DOCSTRINGS: $(FCN_FILES) $(GEN_FCN_FILES) mkdoc $(gethelp_SOURCES)
+.DOCSTRINGS: $(FCN_FILES) $(GEN_FCN_FILES) mkdoc $(gethelp_SOURCES) Makefile
 	@$(MAKE) $(AM_MAKEFLAGS) gethelp$(BUILD_EXEEXT)
-	$(cp_update_rule)
-	$(srcdir)/mkdoc "$(srcdir)" $(FCN_FILES) -- $(GEN_FCN_FILES) > $@-t
-	$(simple_move_if_change_rule)
+	if [ "x$(srcdir)" != "x." ] && [ -f $(srcdir)/DOCSTRINGS ] && [ ! -f DOCSTRINGS ]; then \
+		cp $(srcdir)/DOCSTRINGS DOCSTRINGS; \
+		touch -r $(srcdir)/DOCSTRINGS DOCSTRINGS; \
+	fi
+	$(srcdir)/mkdoc "$(srcdir)" $(FCN_FILES) -- $(GEN_FCN_FILES) > $@
+	$(top_srcdir)/move-if-change $@ DOCSTRINGS
+	touch $@
 
 $(GEN_FCN_FILES) : %.m : %.in Makefile
 	$(do_subst_config_vals)

@@ -1,3 +1,8 @@
+2010-01-11  Rik <octave@nomad.inbox5.com>
+
+	* Makefile.am: Update DOCSTRINGS rules to avoid simple_move_if_change_rule
+	and allow Make to update timestamps.
+
 2010-01-11  Jaroslav Hajek  <highegg@gmail.com>
 
 	* plot/private/__scatter__.m: Use patch objects instead of lines,

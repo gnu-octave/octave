@@ -591,7 +591,7 @@ MAINTAINERCLEANFILES = \
 
 octave_LDADD = $(OCTAVE_LIBS)
 
-all-local: $(OCT_FILES) DLD-FUNCTIONS/PKG_ADD DOCSTRINGS
+all-local: $(OCT_FILES) DLD-FUNCTIONS/PKG_ADD .DOCSTRINGS
 
 lex.lo lex.o oct-parse.lo oct-parse.o: \
   AM_CXXFLAGS := $(filter-out -Wold-style-cast, $(AM_CXXFLAGS))
@@ -631,10 +631,14 @@ DLD-FUNCTIONS/PKG_ADD: $(DLD_DYNAMIC_DEF_FILES) mk-pkg-add
 	$(srcdir)/mk-pkg-add $(DLD_DYNAMIC_DEF_FILES) > $@-t
 	mv $@-t $@
 
-DOCSTRINGS: gendoc$(BUILD_EXEEXT)
-	$(cp_update_rule)
-	./gendoc > $@-t
-	$(simple_move_if_change_rule)
+.DOCSTRINGS: gendoc$(BUILD_EXEEXT)
+	if [ "x$(srcdir)" != "x." ] && [ -f $(srcdir)/DOCSTRINGS ] && [ ! -f DOCSTRINGS ]; then \
+		cp $(srcdir)/DOCSTRINGS DOCSTRINGS; \
+		touch -r $(srcdir)/DOCSTRINGS DOCSTRINGS; \
+	fi
+	./gendoc > $@
+	$(top_srcdir)/move-if-change $@ DOCSTRINGS
+	touch $@
 
 doc-files: $(DEF_FILES)
 	echo $(DEF_FILES) > $@-t

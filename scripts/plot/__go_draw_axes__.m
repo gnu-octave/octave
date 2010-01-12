@@ -711,7 +711,9 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
 	   endif
 
            ## patch outline
-	   if (! strncmp (obj.edgecolor, "none", 4))
+	   if (!(strncmp (obj.edgecolor, "none", 4)
+                  && strncmp (obj.markeredgecolor, "none", 4)
+                  && strncmp (obj.markerfacecolor, "none", 4)))
 
 	     data_idx++;
              is_image_data(data_idx) = false;
@@ -797,63 +799,49 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
 	       if (isfield (obj, "marker"))
 		 switch (obj.marker)
 		   case "+"
-		     pt = "pt 1";
+		     pt = pt2 = "pt 1";
 		   case "o"
 		     pt = "pt 6";
+                     pt2 = "pt 7";
 		   case "*"
-		     pt = "pt 3";
+		     pt = pt2 = "pt 3";
 		   case "."
-		     pt = "pt 0";
+		     pt = pt2 = "pt 0";
 		   case "x"
-		     pt = "pt 2";
+		     pt = pt2 = "pt 2";
 		   case {"square", "s"}
-		     pt = "pt 5";
+		     pt = "pt 4";
+		     pt2 = "pt 5";
 		   case {"diamond", "d"}
 		     pt = "pt 13";
+		     pt2 = "pt 14";
 		   case "^"
-		     pt = "pt 9";
-		   case "v"
-		     pt = "pt 11";
-		   case ">"
 		     pt = "pt 8";
-		   case "<"
+		     pt2 = "pt 9";
+		   case "v"
 		     pt = "pt 10";
+		     pt2 = "pt 11";
+		   case ">"
+	             ## FIXME missing point type 
+		     pt = "pt 8";
+		     pt2 = "pt 9";
+		   case "<"
+	             ## FIXME missing point type 
+		     pt = "pt 10";
+		     pt2 = "pt 11";
 		   case {"pentagram", "p"}
-		     pt = "pt 4";
+	             ## FIXME missing point type 
+		     pt = pt2 = "pt 3";
 		   case {"hexagram", "h"}
-		     pt = "pt 12";
+		     pt = pt2 = "pt 3";
 		   case "none"
-		     pt = "";
+		     pt = pt2 = "";
 		   otherwise
-		     pt = "";
+		     pt = pt2 = "";
 		 endswitch
 	       endif
 	     else
 	       pt = "";
-	     endif
-
-	     style = "lines";
-	     if (isempty (lt))
-	       if (! isempty (pt))
-		 style = "points";
-	       endif
-	     elseif (! isempty (pt))
-	       style = "linespoints";
-	     endif
-
-	     if (isfield (obj, "markersize"))
-	       if (length (mdat) == nc)
-		 m = mdat(i);
-	       else
-		 m = mdat;
-	       endif
-	       if (! strcmpi (style, "lines"))
-		 ps = sprintf("pointsize %f", m);
-	       else
-		 ps = "";
-	       endif
-	     else
-	       ps = "";
 	     endif
 
 	     if (mono)
@@ -862,10 +850,133 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
 	       colorspec = sprintf ("lc rgb \"#%02x%02x%02x\"",
 				    round (255*color));
 	     endif
-	     withclause{data_idx} = sprintf ("with %s %s %s %s %s %s",
-					     style, lw, pt, lt, ps, 
-					     colorspec);
 
+             sidx = 1;
+             if (isempty (lt))
+               style = "";
+             else
+               style = "lines";
+             endif
+             tmpwith = {};
+
+             facesame = true;
+             if (! isequal (pt, pt2) && isfield (obj, "markerfacecolor") 
+	         && !strncmp (obj.markerfacecolor, "none", 4))
+               if (strncmp (obj.markerfacecolor, "auto", 4)
+	           || ! isnumeric (obj.markerfacecolor) 
+	           || (isnumeric (obj.markerfacecolor) 
+	               && isequal (color, obj.markerfacecolor)))
+	         style = strcat (style, "points");
+	         if (isfield (obj, "markersize"))
+	           if (length (mdat) == nc)
+		     m = mdat(i);
+	           else
+		     m = mdat;
+	           endif
+		   ps = sprintf("pointsize %f", m / 3);
+                 else
+                   ps = "";
+	         endif
+
+	         tmpwith{sidx} = sprintf ("with %s %s %s %s %s %s",
+					  style, lw, pt2, lt, ps, 
+					  colorspec);
+               else
+	         facesame = false;
+	         if (! isempty (style))	
+	           tmpwith{sidx} = sprintf ("with %s %s %s %s",
+					    style, lw, lt, 
+					    colorspec);
+	           sidx ++;
+	         endif
+	         if (isnumeric (obj.markerfacecolor) && ! mono)
+	           colorspec = sprintf ("lc rgb \"#%02x%02x%02x\"",
+				        round (255*obj.markerfacecolor));
+	         endif
+	         style = "points";
+	         if (isfield (obj, "markersize"))
+	           if (length (mdat) == nc)
+		     m = mdat(i);
+	           else
+		     m = mdat;
+	           endif
+		   ps = sprintf("pointsize %f", m / 3);
+                 else
+                   ps = "";
+	         endif
+	         tmpwith{sidx} = sprintf ("with %s %s %s %s %s %s",
+					  style, lw, pt2, lt, ps, 
+					  colorspec);
+               endif
+             endif
+
+             if (isfield (obj, "markeredgecolor") 
+	         && !strncmp (obj.markeredgecolor, "none", 4))
+               if (facesame && (strncmp (obj.markeredgecolor, "auto", 4)
+		                || ! isnumeric (obj.markeredgecolor) 
+		                || (isnumeric (obj.markeredgecolor) 
+			            && isequal (color, obj.markeredgecolor))))
+	         if (! isequal (pt, pt2) && sidx == 1 
+                     && ((length (style) == 5 
+	                  && strncmp (style, "lines", 5)) 
+                         || isempty (style)))
+	           style = strcat (style, "points");
+	           if (isfield (obj, "markersize"))
+	             if (length (mdat) == nc)
+		       m = mdat(i);
+	             else
+		       m = mdat;
+	             endif
+		     ps = sprintf("pointsize %f", m / 3);
+                   else
+                     ps = "";
+	           endif
+	           tmpwith{sidx} = sprintf ("with %s %s %s %s %s %s",
+					    style, lw, pt, lt, ps, 
+					    colorspec);
+	         endif
+               else
+	         if (!isempty (style))	
+                   if (isempty (tmpwith{sidx}))
+	             tmpwith{sidx} = sprintf ("with %s %s %s %s",
+					      style, lw, lt, 
+					      colorspec);
+                   endif
+	           sidx ++;
+	         endif
+	         if (! mono)
+	           if (strncmp (obj.markeredgecolor, "auto", 4))
+	             colorspec = sprintf ("lc rgb \"#%02x%02x%02x\"",
+				          round (255*color));
+	           elseif (isnumeric (obj.markeredgecolor) && ! mono)
+	             colorspec = sprintf ("lc rgb \"#%02x%02x%02x\"",
+				          round (255*obj.markeredgecolor));
+	           endif
+	         endif
+	         style = "points";
+	         if (isfield (obj, "markersize"))
+	           if (length (mdat) == nc)
+		     m = mdat(i);
+	           else
+		     m = mdat;
+	           endif
+		   ps = sprintf("pointsize %f", m / 3);
+                 else
+                   ps = "";
+	         endif
+	         tmpwith{sidx} = sprintf ("with %s %s %s %s %s %s",
+					  style, lw, pt, lt, ps, 
+					  colorspec);
+               endif
+             endif
+
+             if (isempty (tmpwith))
+               withclause{data_idx} = sprintf ("with %s %s %s %s %s",
+                                               style, lw, pt, lt, 
+                                               colorspec);
+             else
+	       withclause{data_idx} = tmpwith{1};
+             endif
 	     if (nd == 3)
 	       if (! isnan (xcol) && ! isnan (ycol) && ! isnan (zcol))
 		 data{data_idx} = [[xcol; xcol(1)], [ycol; ycol(1)], ...
@@ -881,6 +992,29 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
 		 data{data_idx} = [xcol, ycol]';
 	       endif
 	       usingclause{data_idx} = sprintf ("record=%d using ($1):($2)", columns (data{data_idx}));
+	     endif
+
+	     if (length (tmpwith) > 1)
+	       data_idx++;
+	       is_image_data(data_idx) = is_image_data(data_idx - 1); 
+	       parametric(data_idx) = parametric(data_idx - 1);
+	       have_cdata(data_idx) = have_cdata(data_idx - 1);
+	       have_3d_patch(data_idx) = have_3d_patch(data_idx - 1);
+	       titlespec{data_idx} = "title \"\"";
+	       usingclause{data_idx} = usingclause{data_idx - 1};
+	       data{data_idx} = data{data_idx - 1};
+	       withclause{data_idx} = tmpwith{2};
+	     endif
+	     if (length (tmpwith) > 2)
+	       data_idx++;
+	       is_image_data(data_idx) = is_image_data(data_idx - 1); 
+	       parametric(data_idx) = parametric(data_idx - 1);
+	       have_cdata(data_idx) = have_cdata(data_idx - 1);
+	       have_3d_patch(data_idx) = have_3d_patch(data_idx - 1);
+	       titlespec{data_idx} = "title \"\"";
+	       usingclause{data_idx} = usingclause{data_idx - 1};
+	       data{data_idx} = data{data_idx - 1};
+	       withclause{data_idx} = tmpwith{3};
 	     endif
 	   endif
 	 endfor

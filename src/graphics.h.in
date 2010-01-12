@@ -3299,8 +3299,8 @@ public:
       radio_property linestyle , "{-}|--|:|-.|none"
       double_property linewidth , 0.5
       radio_property marker , "{none}|s|o|x|+|.|*|<|>|v|^|d|p|h"
-      color_property markeredgecolor , "{auto}|none"
-      color_property markerfacecolor , "auto|{none}"
+      color_property markeredgecolor , "{auto}|none|flat"
+      color_property markerfacecolor , "auto|{none}|flat"
       double_property markersize , 6
       string_property keylabel , ""
       radio_property interpreter , "{tex}|none|latex"

@@ -1,3 +1,9 @@
+2010-01-12  David Bateman  <dbateman@free.fr>
+
+	* plot/__go_draw_axes_.m:  Allow patch markerfacecolor and 
+	markeredgecolor properties to be used and set the marker colors
+	appropriately.
+
 2010-01-12  Jaroslav Hajek  <highegg@gmail.com>, Ben Barrowes  <benjamin.e.barrowes@usace.army.mil>
 
 	* set/private/validargs.m: New function.

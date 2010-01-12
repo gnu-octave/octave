@@ -1,3 +1,8 @@
+2010-01-12  David Bateman  <dbateman@free.fr>
+
+	* graphics.h.in (patch::properties): Add "flat" value to
+	markeredgecolor and  markerfacecolor properties.
+
 2010-01-12  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-base.h (builtin_type_t): New enum constants: btyp_cell,

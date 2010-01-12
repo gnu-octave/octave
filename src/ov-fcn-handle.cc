@@ -131,36 +131,24 @@ octave_fcn_handle::do_multi_index_op (int nargout,
       // Possibly overloaded function.
       octave_value ovfcn = fcn;
 
+      // No need to compute built-in class dispatch if we don't have builtin class overloads.
+      bool builtin_class = ! disp->empty ();
       // Get dynamic (class) dispatch type.
-      std::string ddt = get_dispatch_type (args);
+      std::string dt = get_dispatch_type (args, builtin_class);
 
-      if (ddt.empty ())
+      if (! dt.empty ())
         {
-          // Static dispatch (class of 1st arg)?
-          if (! disp->empty ())
-            {
-              std::string sdt = args(0).class_name ();
-              str_ov_map::iterator pos = disp->find (sdt);
-              if (pos != disp->end ())
-                {
-                  out_of_date_check (pos->second, sdt, false);
-                  ovfcn = pos->second;
-                }
-            }
-        }
-      else
-        {
-          str_ov_map::iterator pos = disp->find (ddt);
+          str_ov_map::iterator pos = disp->find (dt);
           if (pos != disp->end ())
             {
-              out_of_date_check (pos->second, ddt, false);
+              out_of_date_check (pos->second, dt, false);
               ovfcn = pos->second;
             }
-          else
+          else if (! builtin_class)
             {
-              octave_value method = symbol_table::find_method (nm, ddt);
+              octave_value method = symbol_table::find_method (nm, dt);
               if (method.is_defined ())
-                (*disp)[ddt] = ovfcn = method;
+                (*disp)[dt] = ovfcn = method;
             }
         }
 
@@ -168,10 +156,10 @@ octave_fcn_handle::do_multi_index_op (int nargout,
         retval = ovfcn.do_multi_index_op (nargout, args);
       else if (fcn.is_undefined ())
         {
-          if (ddt.empty ())
-            ddt = args(0).class_name ();
+          if (dt.empty ())
+            dt = args(0).class_name ();
 
-          error ("no %s method to handle class %s", nm.c_str (), ddt.c_str ());
+          error ("no %s method to handle class %s", nm.c_str (), dt.c_str ());
         }
       else
         error ("invalid function handle");
@@ -1334,40 +1322,6 @@ octave_fcn_handle::print_raw (std::ostream& os, bool pr_as_read_syntax) const
   if (! printed)
     octave_print_internal (os, nm, pr_as_read_syntax,
 			   current_print_indent_level ());
-}
-
-static string_vector
-get_builtin_classes (void)
-{
-  // FIXME: this should really be read from somewhere else.
-  static const char *cnames[15] = {
-      "double",
-      "single",
-      "int8",
-      "int16",
-      "int32",
-      "int64",
-      "uint8",
-      "uint16",
-      "uint32",
-      "uint64",
-      "logical",
-      "char",
-      "cell",
-      "struct",
-      "function_handle"
-  };
-
-  static string_vector retval;
-
-  if (retval.is_empty ())
-    {
-      retval = string_vector (15);
-      for (int i = 0; i < 15; i++)
-        retval(i) = cnames[i];
-    }
-
-  return retval;
 }
 
 octave_value

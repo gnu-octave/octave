@@ -120,6 +120,8 @@ public:
 
   bool is_map (void) const { return true; }
 
+  builtin_type_t builtin_type (void) const { return btyp_struct; }
+
   Octave_map map_value (void) const { return map; }
 
   string_vector map_keys (void) const { return map.keys (); }

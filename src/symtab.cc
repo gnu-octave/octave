@@ -448,9 +448,38 @@ symbol_table::fcn_info::fcn_info_rep::help_for_dispatch (void) const
   return retval;
 }
 
-std::string
-get_dispatch_type (const octave_value_list& args)
+// :-) JWE, can you parse this? Returns a 2D array with second dimension equal
+// to btyp_num_types (static constant). Only the leftmost dimension can be
+// variable in C/C++. Typedefs are boring.
+
+static builtin_type_t (*build_sup_table (void))[btyp_num_types]
 {
+  static builtin_type_t sup_table[btyp_num_types][btyp_num_types];
+  for (int i = 0; i < btyp_num_types; i++)
+    for (int j = 0; j < btyp_num_types; j++)
+      {
+        builtin_type_t ityp = static_cast<builtin_type_t> (i);
+        builtin_type_t jtyp = static_cast<builtin_type_t> (j);
+        // FIXME: Is this really right?
+        bool use_j = 
+          (jtyp == btyp_func_handle || ityp == btyp_bool
+           || (btyp_isarray (ityp) 
+               && (! btyp_isarray (jtyp) 
+                   || (btyp_isinteger (jtyp) && ! btyp_isinteger (ityp))
+                   || ((ityp == btyp_double || ityp == btyp_complex || ityp == btyp_char)
+                       && (jtyp == btyp_float || jtyp == btyp_float_complex)))));
+
+        sup_table[i][j] = use_j ? jtyp : ityp;
+      }
+
+  return sup_table;
+}
+
+std::string
+get_dispatch_type (const octave_value_list& args, 
+                   bool& builtin_class)
+{
+  static builtin_type_t (*sup_table)[btyp_num_types] = build_sup_table ();
   std::string dispatch_type;
 
   int n = args.length ();
@@ -459,37 +488,60 @@ get_dispatch_type (const octave_value_list& args)
     {
       // Find first object, if any.
 
-      int i;
-
-      for (i = 0; i < n; i++)
+      for (int i = 0; i < n; i++)
 	{
 	  octave_value arg = args(i);
 
 	  if (arg.is_object ())
 	    {
 	      dispatch_type = arg.class_name ();
-	      break;
+              for (int j = i+1; j < n; j++)
+                {
+                  octave_value arg1 = args(j);
+
+                  if (arg1.is_object ())
+                    {
+                      std::string cname = arg1.class_name ();
+
+                      // Only switch to type of ARG if it is marked superior
+                      // to the current DISPATCH_TYPE.
+                      if (! symbol_table::is_superiorto (dispatch_type, cname)
+                          && symbol_table::is_superiorto (cname, dispatch_type))
+                        dispatch_type = cname;
+                    }
+                }
+
+              builtin_class = false;
+              break;
 	    }
 	}
 
-      for (int j = i+1; j < n; j++)
-	{
-	  octave_value arg = args(j);
+      // No object.
 
-	  if (arg.is_object ())
-	    {
-	      std::string cname = arg.class_name ();
+      if (builtin_class)
+        {
+          // Use the builtin_type mechanism to do this by one method call per
+          // element. 
 
-	      // Only switch to type of ARG if it is marked superior
-	      // to the current DISPATCH_TYPE.
-	      if (! symbol_table::is_superiorto (dispatch_type, cname)
-		  && symbol_table::is_superiorto (cname, dispatch_type))
-		dispatch_type = cname;
-	    }
-	}
+          builtin_type_t btyp = args(0).builtin_type ();
+          for (int i = 1; i < n; i++)
+            btyp = sup_table[btyp][args(i).builtin_type ()];
+
+          if (btyp != btyp_unknown)
+            dispatch_type = btyp_class_name[btyp];
+          else
+            builtin_class = false;
+        }
     }
 
   return dispatch_type;
+}
+
+std::string
+get_dispatch_type (const octave_value_list& args)
+{
+  bool builtin_class = true;
+  return get_dispatch_type (args, builtin_class);
 }
 
 // Find the definition of NAME according to the following precedence
@@ -638,9 +690,6 @@ symbol_table::fcn_info::fcn_info_rep::xfind (const octave_value_list& args,
   if (! args.empty ())
     {
       std::string dispatch_type = get_dispatch_type (args);
-
-      if (dispatch_type.empty ())
-        dispatch_type = args(0).class_name ();
 
       octave_value fcn = find_method (dispatch_type);
 

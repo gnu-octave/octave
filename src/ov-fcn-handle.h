@@ -87,6 +87,8 @@ public:
 
   bool is_function_handle (void) const { return true; }
 
+  builtin_type_t builtin_type (void) const { return btyp_func_handle; }
+
   bool is_overloaded (void) const { return disp.get () && ! disp->empty (); }
 
   dim_vector dims (void) const { static dim_vector dv (1, 1); return dv; }

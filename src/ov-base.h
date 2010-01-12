@@ -71,12 +71,30 @@ enum builtin_type_t
   btyp_uint64,
   btyp_bool,
   btyp_char,
+  btyp_struct,
+  btyp_cell,
+  btyp_func_handle,
   btyp_unknown,
   btyp_num_types = btyp_unknown
 };
 
+extern OCTINTERP_API std::string 
+btyp_class_name [btyp_num_types];
+
+extern OCTINTERP_API string_vector
+get_builtin_classes (void); 
+
 inline bool btyp_isnumeric (builtin_type_t btyp)
 { return btyp <= btyp_uint64; }
+
+inline bool btyp_isinteger (builtin_type_t btyp)
+{ return btyp >= btyp_int8 && btyp <= btyp_uint64; }
+
+inline bool btyp_isfloat (builtin_type_t btyp)
+{ return btyp <= btyp_float_complex; }
+
+inline bool btyp_isarray (builtin_type_t btyp)
+{ return btyp <= btyp_char; }
 
 // Compute a numeric type for a possibly mixed-type operation, using these rules:
 // bool -> double

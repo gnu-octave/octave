@@ -1,5 +1,20 @@
 2010-01-12  Jaroslav Hajek  <highegg@gmail.com>
 
+	* ov-base.h (builtin_type_t): New enum constants: btyp_cell,
+	btyp_struct and btyp_func_handle.
+	(btyp_isinteger, btyp_isfloat, btyp_isarray): New funcs.
+	(btyp_class_name): New array.
+	(get_builtin_classes): New func.
+	* ov-cell.h (octave_cell::builtin_type): New virtual override.
+	* ov-struct.h (octave_struct::builtin_type): New virtual override.
+	* ov-fcn-handle.h (octave_fcn_handle::builtin_type): New virtual override.
+	* symtab.cc (get_dispatch_type): Rewrite. Add overload.
+	* symtab.h: Update decls.
+	* ov-fcn-handle.cc (octave_fcn_handle::do_multi_index_op): Rewrite.
+	(get_builtin_classes): Remove.
+
+2010-01-12  Jaroslav Hajek  <highegg@gmail.com>
+
 	* oct-obj.cc (octave_value_list::any_cell): New method.
 	* oct-obj.h: Declare it.
 	* utils.cc (do_simple_cellfun): New overloaded function.

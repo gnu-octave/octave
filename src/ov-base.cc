@@ -78,6 +78,36 @@ builtin_type_t btyp_mixed_numeric (builtin_type_t x, builtin_type_t y)
   return retval;
 }
 
+std::string btyp_class_name[btyp_num_types] = 
+{
+  "double", "single", "double", "single",
+  "int8", "int16", "int32", "int64",
+  "uint8", "uint16", "uint32", "uint64",
+  "logical", "char",
+  "struct", "cell", "function_handle"
+};
+
+string_vector
+get_builtin_classes (void)
+{
+  static string_vector retval;
+
+  if (retval.is_empty ())
+    {
+      int n = btyp_num_types - 2;
+      retval = string_vector (n);
+      int j = 0;
+      for (int i = 0; i < btyp_num_types; i++)
+        {
+          builtin_type_t ityp = static_cast<builtin_type_t> (i);
+          if (ityp != btyp_complex && ityp != btyp_float_complex)
+            retval(j++) = btyp_class_name[i];
+        }
+    }
+
+  return retval;
+}
+
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_base_value,
 				     "<unknown type>", "unknown");
 

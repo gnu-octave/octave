@@ -1,3 +1,7 @@
+2010-01-13  Rik <octave@nomad.inbox5.com>
+
+	* build_bc_overload_tests.sh: Correct test syntax (= vs. ==)
+
 2010-01-13  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.am (test_bc_overloads.m): Accept expected results

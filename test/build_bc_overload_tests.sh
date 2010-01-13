@@ -59,7 +59,7 @@ function s = tbcover (x, y)
   s = 'none';
 EOF
 
-if test "$1" == "overloads_only" ; then
+if test "$1" = "overloads_only" ; then
   exit
 fi
 

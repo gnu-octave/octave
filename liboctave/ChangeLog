@@ -1,5 +1,10 @@
 2010-01-13  Jaroslav Hajek  <highegg@gmail.com>
 
+	* Array.cc (Array<T>::compute_index): Generalize to the case of
+	unequal lengths.
+
+2010-01-13  Jaroslav Hajek  <highegg@gmail.com>
+
 	* dim-vector.h (dim_vector::chop_trailing_singletons): Only uniquify
 	if really needed.
 	* Array.h (Array<T>::Array (T*, const dim_vector&)): Call

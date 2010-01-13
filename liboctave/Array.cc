@@ -168,23 +168,18 @@ template <class T>
 octave_idx_type
 Array<T>::compute_index (const Array<octave_idx_type>& ra_idx) const
 {
-  octave_idx_type retval = -1;
+  octave_idx_type retval = 0;
 
-  int n = dimensions.length ();
+  int n = dimensions.length (), ni = ra_idx.length ();
 
-  if (n > 0 && n == ra_idx.length ())
+  while (ni > n)
+    retval += ra_idx(--ni);
+
+  while (ni > 0)
     {
-      retval = ra_idx(--n);
-
-      while (--n >= 0)
-	{
-	  retval *= dimensions(n);
-	  retval += ra_idx(n);
-	}
+      retval *= dimensions(--ni);
+      retval += ra_idx(ni);
     }
-  else
-    (*current_liboctave_error_handler)
-      ("Array<T>::compute_index: invalid ra_idxing operation");
 
   return retval;
 }

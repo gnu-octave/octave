@@ -69,7 +69,7 @@ test_sparse.m: build_sparse_tests.sh
 	$(srcdir)/build_sparse_tests.sh
 
 test_bc_overloads.m: build_bc_overload_tests.sh bc_overloads_expected
-	$(srcdir)/build_bc_overload_tests.sh
+	$(srcdir)/build_bc_overload_tests.sh $(srcdir)/bc_overloads_expected
 
 EXTRA_DIST = \
   ChangeLog \

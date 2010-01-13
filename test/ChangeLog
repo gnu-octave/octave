@@ -1,3 +1,8 @@
+2010-01-13  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.am (test_bc_overloads.m): Accept expected results
+	file as argument.  Style fixes.
+
 2010-01-13  Jaroslav Hajek  <highegg@gmail.com>
 
 	* build_bc_overload_tests.sh: New shell script.

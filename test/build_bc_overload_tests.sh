@@ -1,4 +1,4 @@
-#!/bin/sh
+#! /bin/sh
 
 # Copyright (C) 2010 VZLU Prague
 #
@@ -18,30 +18,52 @@
 # along with Octave; see the file COPYING.  If not, see
 # <http://www.gnu.org/licenses/>.
 
-CLASSES="double single char logical int8 int16 int32 int64 \
-uint8 uint16 uint32 uint64 struct cell function_handle"
+CLASSES="
+  double
+  single
+  char
+  logical
+  int8
+  int16
+  int32
+  int64
+  uint8
+  uint16
+  uint32
+  uint64
+  struct
+  cell
+  function_handle
+"
 
-for class in $CLASSES ; do
-	DIR=\@$class
-	test -d $DIR || mkdir $DIR || { echo "error: could not create $DIR" ; exit ; }
-	cat > $DIR/tbcover.m <<end
+if [ $# -eq 1 ]; then
+  expected_results_file="$1"
+else
+  echo "usage: build_bc_overload_tests.sh expected-results-file" 1>&2
+  exit 1
+fi
+
+for class in $CLASSES; do
+  DIR="@$class"
+  test -d $DIR || mkdir $DIR || { echo "error: could not create $DIR"; exit; }
+  cat > $DIR/tbcover.m << EOF
 % DO NOT EDIT - generated automatically
 function s = tbcover (x, y)
   s = '$class';
-end
+EOF
 done
 
-cat > tbcover.m <<end
+cat > tbcover.m << EOF
 % DO NOT EDIT - generated automatically
 function s = tbcover (x, y)
   s = 'none';
-end
+EOF
 
 if test "$1" == "overloads_only" ; then
-	exit
+  exit
 fi
 
-cat > test_bc_overloads.m <<end
+cat > test_bc_overloads.m << EOF
 ## THIS IS AN AUTOMATICALLY GENERATED FILE --- DO NOT EDIT ---
 ## instead modify build_bc_overload_tests.sh to generate the tests that you want.
 
@@ -62,20 +84,20 @@ cat > test_bc_overloads.m <<end
 %! ex.struct = struct ();
 %! ex.function_handle = @numel;
 
-end
+EOF
 
-cat bc_overloads_expected |\
+cat $expected_results_file | \
 while read cl1 cl2 clr ; do
-	cat >> test_bc_overloads.m <<end
+  cat >> test_bc_overloads.m << EOF
 %% Name call
 %!assert (tbcover (ex.$cl1, ex.$cl2), "$clr")
 %% Handle call
 %!assert ((@tbcover) (ex.$cl1, ex.$cl2), "$clr")
 
-end
+EOF
 done
 
-cat >> test_bc_overloads.m <<end
+cat >> test_bc_overloads.m << EOF
 %%test handles through cellfun
 %!test
 %! f = fieldnames (ex);
@@ -89,4 +111,4 @@ cat >> test_bc_overloads.m <<end
 %!   endfor
 %! endfor
 %! assert (cellfun (@tbcover, c1, c2, "uniformoutput", false), s);
-end
+EOF

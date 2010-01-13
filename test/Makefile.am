@@ -62,19 +62,26 @@ include @Sneetch/module.mk
 include @Snork/module.mk
 include @Spork/module.mk
 
-check: test_sparse.m
+check: test_sparse.m test_bc_overloads.m
 	$(top_builddir)/run-octave --norc --silent --no-history $(srcdir)/fntests.m $(srcdir)
 
 test_sparse.m: build_sparse_tests.sh
 	$(srcdir)/build_sparse_tests.sh
 
+test_bc_overloads.m: build_bc_overload_tests.sh bc_overloads_expected
+	$(srcdir)/build_bc_overload_tests.sh
+
 EXTRA_DIST = \
   ChangeLog \
   build_sparse_tests.sh \
+  build_bc_overload_tests.sh \
+  bc_overloads_expected \
+  build_bc_overloads_expected.m \
   $(FCN_FILES)
 
 CLEANFILES = \
-  test_sparse.m
+  test_sparse.m \
+  test_bc_overloads.m
 
 DISTCLEANFILES = \
   fntests.log

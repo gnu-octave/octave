@@ -150,16 +150,15 @@ public:
 
   void chop_trailing_singletons (void)
     {
-      make_unique ();
       int l = ndims();
-      for (int i = l - 1; i > 1; i--)
+      if (l > 2 && rep[l-1] == 1)
         {
-          if (rep[i] == 1)
+          make_unique ();
+          do
             l--;
-          else
-            break;
+          while (l > 2 && rep[l-1] == 1);
+          ndims() = l;
         }
-      ndims() = l;
     }
 
   void chop_all_singletons (void)

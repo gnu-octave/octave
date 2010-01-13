@@ -64,6 +64,7 @@ Array<T>::Array (const Array<T>& a, const dim_vector& dv)
   // This goes here because if an exception is thrown by the above,
   // destructor will be never called.
   rep->count++;
+  dimensions.chop_trailing_singletons ();
 }
 
 template <class T>
@@ -107,6 +108,7 @@ Array<T>::clear (const dim_vector& dv)
   slice_len = rep->len;
 
   dimensions = dv;
+  dimensions.chop_trailing_singletons ();
 }
 
 template <class T>
@@ -493,8 +495,6 @@ Array<T>::permute (const Array<octave_idx_type>& perm_vec_arg, bool inv) const
       rh.permute (data (), retval.fortran_vec ());
     }
 
-  retval.chop_trailing_singletons ();
-
   return retval;
 }
 
@@ -834,6 +834,7 @@ Array<T>::index (const Array<idx_vector>& ia) const
       else if (all_colons)
         {
           // A(:,:,...,:) produces a shallow copy.
+          dv.chop_trailing_singletons ();
           retval = Array<T> (*this, dv);
         }
       else 
@@ -1329,8 +1330,7 @@ Array<T>::assign (const Array<idx_vector>& ia,
                 }
 
               resize_fill (rdv, rfv);
-              dv = dimensions;
-              chop_trailing_singletons ();
+              dv = rdv;
             }
 
           if (all_colons)

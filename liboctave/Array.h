@@ -145,6 +145,7 @@ protected:
     { 
       slice_data = rep->data;
       slice_len = rep->len;
+      dimensions.chop_trailing_singletons ();
     }
 
   // slice constructor
@@ -155,6 +156,7 @@ protected:
       rep->count++;
       slice_data = a.slice_data + l;
       slice_len = u - l;
+      dimensions.chop_trailing_singletons ();
     }
 
 private:
@@ -231,6 +233,7 @@ public:
     { 
       slice_data = rep->data;
       slice_len = rep->len;
+      dimensions.chop_trailing_singletons ();
     }
 
   Array (const dim_vector& dv, const T& val)
@@ -240,6 +243,7 @@ public:
       slice_data = rep->data;
       slice_len = rep->len;
       fill (val);
+      dimensions.chop_trailing_singletons ();
     }
 
   // Reshape constructor.
@@ -300,7 +304,7 @@ public:
 
   Array<T> squeeze (void) const;
   
-  void chop_trailing_singletons (void) 
+  void chop_trailing_singletons (void) GCC_ATTR_DEPRECATED
   { dimensions.chop_trailing_singletons (); }
   
   octave_idx_type compute_index (const Array<octave_idx_type>& ra_idx) const;

@@ -1,3 +1,19 @@
+2010-01-13  Jaroslav Hajek  <highegg@gmail.com>
+
+	* dim-vector.h (dim_vector::chop_trailing_singletons): Only uniquify
+	if really needed.
+	* Array.h (Array<T>::Array (T*, const dim_vector&)): Call
+	chop_trailing_singletons.
+	(Array<T>::Array (const Array<T>&, const dim_vector&,
+	octave_idx_type...)): Ditto.
+	(Array<T>::Array (const dim_vector&)): Ditto.
+	(Array<T>::Array (const dim_vector&, const T&)): Ditto.
+	(Array<T>::chop_trailing_singletons): Deprecate.
+	* Array.cc (Array::Array(const Array&, const dim_vector&)): Ditto.
+	(Array::index (const Array<idx_vector>&, ...)): Ditto.
+	(Array<T>::permute): Don't call deprecate method here.
+	(Array<T>::assign): Neither here.
+
 2010-01-11  Rik <octave@nomad.inbox5.com>
 
 	* Makefile.am: Remove unnecessary use of simple_move_if_change_rule to allow

@@ -1,3 +1,8 @@
+2010-01-13  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/lu.cc: Avoid test failures if HAVE_QRUPDATE_LUU is
+	not defined.
+
 2010-01-12  David Bateman  <dbateman@free.fr>
 
 	* graphics.h.in (patch::properties): Add "flat" value to

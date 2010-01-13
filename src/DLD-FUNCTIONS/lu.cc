@@ -795,56 +795,56 @@ the factorization from scratch.\n\
 %!      0.86184 + 0.34689i ];
 %!
 
-%!test
+%!testif HAVE_QRUPDATE_LUU
 %! [L,U,P] = lu(A);
 %! [L,U] = luupdate(L,U,P*u,v);
 %! assert(norm(vec(tril(L)-L),Inf) == 0)
 %! assert(norm(vec(triu(U)-U),Inf) == 0)
 %! assert(norm(vec(P'*L*U - A - u*v.'),Inf) < norm(A)*1e1*eps)
 %! 
-%!test
+%!testif HAVE_QRUPDATE_LUU
 %! [L,U,P] = lu(Ac);
 %! [L,U] = luupdate(L,U,P*uc,vc);
 %! assert(norm(vec(tril(L)-L),Inf) == 0)
 %! assert(norm(vec(triu(U)-U),Inf) == 0)
 %! assert(norm(vec(P'*L*U - Ac - uc*vc.'),Inf) < norm(Ac)*1e1*eps)
 
-%!test
+%!testif HAVE_QRUPDATE_LUU
 %! [L,U,P] = lu(single(A));
 %! [L,U] = luupdate(L,U,P*single(u),single(v));
 %! assert(norm(vec(tril(L)-L),Inf) == 0)
 %! assert(norm(vec(triu(U)-U),Inf) == 0)
 %! assert(norm(vec(P'*L*U - single(A) - single(u)*single(v).'),Inf) < norm(single(A))*1e1*eps('single'))
 %! 
-%!test
+%!testif HAVE_QRUPDATE_LUU
 %! [L,U,P] = lu(single(Ac));
 %! [L,U] = luupdate(L,U,P*single(uc),single(vc));
 %! assert(norm(vec(tril(L)-L),Inf) == 0)
 %! assert(norm(vec(triu(U)-U),Inf) == 0)
 %! assert(norm(vec(P'*L*U - single(Ac) - single(uc)*single(vc).'),Inf) < norm(single(Ac))*1e1*eps('single'))
 
-%!test
+%!testif HAVE_QRUPDATE_LUU
 %! [L,U,P] = lu(A);
 %! [L,U,P] = luupdate(L,U,P,u,v);
 %! assert(norm(vec(tril(L)-L),Inf) == 0)
 %! assert(norm(vec(triu(U)-U),Inf) == 0)
 %! assert(norm(vec(P'*L*U - A - u*v.'),Inf) < norm(A)*1e1*eps)
 %! 
-%!test
+%!testif HAVE_QRUPDATE_LUU
 %! [L,U,P] = lu(Ac);
 %! [L,U,P] = luupdate(L,U,P,uc,vc);
 %! assert(norm(vec(tril(L)-L),Inf) == 0)
 %! assert(norm(vec(triu(U)-U),Inf) == 0)
 %! assert(norm(vec(P'*L*U - Ac - uc*vc.'),Inf) < norm(Ac)*1e1*eps)
 
-%!test
+%!testif HAVE_QRUPDATE_LUU
 %! [L,U,P] = lu(single(A));
 %! [L,U,P] = luupdate(L,U,P,single(u),single(v));
 %! assert(norm(vec(tril(L)-L),Inf) == 0)
 %! assert(norm(vec(triu(U)-U),Inf) == 0)
 %! assert(norm(vec(P'*L*U - single(A) - single(u)*single(v).'),Inf) < norm(single(A))*1e1*eps('single'))
 %! 
-%!test
+%!testif HAVE_QRUPDATE_LUU
 %! [L,U,P] = lu(single(Ac));
 %! [L,U,P] = luupdate(L,U,P,single(uc),single(vc));
 %! assert(norm(vec(tril(L)-L),Inf) == 0)

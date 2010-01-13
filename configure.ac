@@ -152,6 +152,19 @@ if $BOUNDS_CHECKING; then
   AC_DEFINE(BOUNDS_CHECKING, 1, [Define to use internal bounds checking.])
 fi
 
+### Make it possible to disable running Make in the doc directory.
+### Useful for building on systems without TeX, for example.
+DOCDIR=doc
+AC_ARG_ENABLE(docs,
+  [AS_HELP_STRING([--enable-docs], [build documentation (default is yes)])],
+  [if test "$enableval" = no; then
+     DOCDIR=
+     warn_docs="building documentation disabled; make dist will fail"
+     AC_MSG_WARN([$warn_docs])
+   fi], [])
+AC_SUBST(DOCDIR)
+AM_CONDITIONAL([AMCOND_BUILD_DOCS], [test -n "$DOCDIR"])
+
 ### If possible, use a 64-bit integer type for array dimensions and indexing.
 
 USE_64_BIT_IDX_T=false
@@ -2278,6 +2291,11 @@ fi
 
 if test -n "$warn_texi2pdf"; then
   AC_MSG_WARN([$warn_texi2pdf])
+  warn_msg_printed=true
+fi
+
+if test -n "$warn_docs"; then
+  AC_MSG_WARN([$warn_docs])
   warn_msg_printed=true
 fi
 

@@ -69,7 +69,13 @@ include emacs/module.mk
 include m4/module.mk
 
 # Subdirectories in which to run `make all'.
-SUBDIRS = libgnu libcruft liboctave src scripts doc examples test
+SUBDIRS = libgnu libcruft liboctave src scripts @DOCDIR@ examples test
+
+if AMCOND_BUILD_DOCS
+else
+dist-hook:
+	echo "Documentation disabled.  Cannot package distribution!" ; exit 1;
+endif
 
 BUILT_SHELL_FILES = \
   mkoctfile$(SCRIPTS_EXE_SUFFIX) \

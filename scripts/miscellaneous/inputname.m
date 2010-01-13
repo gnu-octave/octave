@@ -1,4 +1,4 @@
-## Copyright (C) 2004, 2006, 2007 Paul Kienzle
+## Copyright (C) 2004, 2006, 2007, 2010 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -21,16 +21,22 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} inputname (@var{n})
-## Return the text defining @var{n}-th input to the function.
+## Return the name of the @var{n}-th argument to the calling function.
+## If the argument is not a simple variable name, return an empty string.
 ## @end deftypefn
 
 function s = inputname (n)
 
-  if (nargin != 1)
+  if (nargin == 1)
+    s = evalin ("caller", sprintf ("deblank (argn(%d,:));", n));
+    ## For compatibility with Matlab, return empty string if argument
+    ## name is not a valid identifier.
+    if (isempty (regexp (s, "^[_a-zA-Z][_a-zA-Z0-9]*$")))
+      s = "";
+    endif
+  else
     print_usage ();
   endif
-
-  s = evalin ("caller", sprintf ("deblank (argn(%d,:));", n));
 
 endfunction
 

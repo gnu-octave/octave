@@ -1,5 +1,9 @@
 2010-01-13  John W. Eaton  <jwe@octave.org>
 
+	* miscellaneous/inputname.m: Use isvarname instead of regexp.
+
+2010-01-13  John W. Eaton  <jwe@octave.org>
+
 	* miscellaneous/inputname.m: Return "" if argument name is not a
 	valid identifier.  Update docstring.
 

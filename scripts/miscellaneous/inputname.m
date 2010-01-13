@@ -31,7 +31,7 @@ function s = inputname (n)
     s = evalin ("caller", sprintf ("deblank (argn(%d,:));", n));
     ## For compatibility with Matlab, return empty string if argument
     ## name is not a valid identifier.
-    if (isempty (regexp (s, "^[_a-zA-Z][_a-zA-Z0-9]*$")))
+    if (! isvarname (s))
       s = "";
     endif
   else

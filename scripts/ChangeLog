@@ -1,5 +1,9 @@
 2010-01-14  Jaroslav Hajek  <highegg@gmail.com>
 
+	* io/fileread.m: Add missing semicolon.
+
+2010-01-14  Jaroslav Hajek  <highegg@gmail.com>
+
 	* strings/strcmpi.m: Remove.
 	* strings/strncmpi.m: Remove.
 	* strings/module.mk: Update.

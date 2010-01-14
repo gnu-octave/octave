@@ -1,5 +1,10 @@
 2010-01-14  Jaroslav Hajek  <highegg@gmail.com>
 
+	* Array.cc (Array<T>::insert (const Array<T>&, const
+	Array<octave_idx_type>&): Allow less dimensions than indices.
+
+2010-01-14  Jaroslav Hajek  <highegg@gmail.com>
+
 	* chNDArray.h: Declare relational bsxfun ops.
 	* chNDArray.cc: Define them.
 

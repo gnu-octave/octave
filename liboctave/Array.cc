@@ -1593,17 +1593,17 @@ Array<T>::insert (const Array<T>& a, const Array<octave_idx_type>& ra_idx)
 {
   octave_idx_type n = ra_idx.length ();
 
-  if (n == dimensions.length ())
+  if (n >= dimensions.length ())
     {
-      dim_vector dva = a.dims ();
-      dim_vector dv = dims ();
+      const dim_vector dva = a.dims ();
+      const dim_vector dv = dims ().redim (n);
       int len_a = dva.length ();
       int non_full_dim = 0;
 
       for (octave_idx_type i = 0; i < n; i++)
 	{
 	  if (ra_idx(i) < 0 || (ra_idx(i) + 
-				(i < len_a ? dva(i) : 1)) > dimensions(i))
+				(i < len_a ? dva(i) : 1)) > dv(i))
 	    {
 	      (*current_liboctave_error_handler)
 		("Array<T>::insert: range error for insert");

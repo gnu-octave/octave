@@ -126,8 +126,8 @@ extern "C"
   F77_FUNC (zherk, ZHERK) (F77_CONST_CHAR_ARG_DECL,
 			   F77_CONST_CHAR_ARG_DECL,
 			   const octave_idx_type&, const octave_idx_type&, 
-			   const Complex&, const Complex*, const octave_idx_type&,
-			   const Complex&, Complex*, const octave_idx_type&
+			   const double&, const Complex*, const octave_idx_type&,
+			   const double&, Complex*, const octave_idx_type&
 			   F77_CHAR_ARG_LEN_DECL
 			   F77_CHAR_ARG_LEN_DECL);
 

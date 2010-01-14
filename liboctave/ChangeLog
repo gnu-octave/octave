@@ -1,5 +1,10 @@
 2010-01-14  John W. Eaton  <jwe@octave.org>
 
+	* CMatrix.cc: Fix prototype for zherk.
+	* fCMatrix.cc: Fix prototype for cherk.
+
+2010-01-14  John W. Eaton  <jwe@octave.org>
+
 	* oct-rl-edit.c (octave_rl_set_name): Save arg before setting
 	rl_terminal_name.
 

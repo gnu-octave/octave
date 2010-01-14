@@ -125,8 +125,8 @@ extern "C"
   F77_FUNC (cherk, CHERK) (F77_CONST_CHAR_ARG_DECL,
 			   F77_CONST_CHAR_ARG_DECL,
 			   const octave_idx_type&, const octave_idx_type&, 
-			   const FloatComplex&, const FloatComplex*, const octave_idx_type&,
-			   const FloatComplex&, FloatComplex*, const octave_idx_type&
+			   const float&, const FloatComplex*, const octave_idx_type&,
+			   const float&, FloatComplex*, const octave_idx_type&
 			   F77_CHAR_ARG_LEN_DECL
 			   F77_CHAR_ARG_LEN_DECL);
 

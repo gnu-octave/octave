@@ -1,5 +1,10 @@
 2010-01-13  John W. Eaton  <jwe@octave.org>
 
+	* oct-obj.cc (octave_value_list::any_cell): Avoid assignment in
+	condition of if statement.
+
+2010-01-13  John W. Eaton  <jwe@octave.org>
+
 	* DLD-FUNCTIONS/lu.cc: Avoid test failures if HAVE_QRUPDATE_LUU is
 	not defined.
 

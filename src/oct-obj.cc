@@ -190,14 +190,13 @@ octave_value_list::all_scalars (void) const
 bool
 octave_value_list::any_cell (void) const
 {
-  bool retval = false;
   octave_idx_type n = length ();
 
   for (octave_idx_type i = 0; i < n; i++)
-    if (retval = elem (i).is_cell ())
-      break;
-  
-  return retval;
+    if (elem (i).is_cell ())
+      return true;
+
+  return false;
 }
 
 bool

@@ -1,5 +1,10 @@
 2010-01-13  John W. Eaton  <jwe@octave.org>
 
+	* DLD-FUNCTIONS/__magick_read__.cc (read_indexed_images):
+	No need to explicitly call chop_trailing_singletons now.
+
+2010-01-13  John W. Eaton  <jwe@octave.org>
+
 	* oct-obj.cc (octave_value_list::any_cell): Avoid assignment in
 	condition of if statement.
 

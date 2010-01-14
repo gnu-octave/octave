@@ -104,7 +104,7 @@ read_indexed_images (std::vector<Magick::Image>& imvec,
                   }
               }
           }
-        im.chop_trailing_singletons ();
+
         output(0) = octave_value (im);
       }
       break;
@@ -134,7 +134,7 @@ read_indexed_images (std::vector<Magick::Image>& imvec,
                   }
               }
           }
-        im.chop_trailing_singletons ();
+
         output(0) = octave_value (im);
       }
       break;
@@ -334,8 +334,6 @@ read_images (const std::vector<Magick::Image>& imvec,
       error ("__magick_read__: undefined ImageMagick image type");
       return retval;
     }
-
-  im.chop_trailing_singletons ();
 
   retval(0) = im;
 

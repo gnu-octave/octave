@@ -21,11 +21,9 @@ strings_FCN_FILES = \
   strings/str2num.m \
   strings/strcat.m \
   strings/cstrcat.m \
-  strings/strcmpi.m \
   strings/strchr.m \
   strings/strjust.m \
   strings/strmatch.m \
-  strings/strncmpi.m \
   strings/strtok.m \
   strings/strtrim.m \
   strings/strtrunc.m \

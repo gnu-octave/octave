@@ -321,6 +321,227 @@ Return 1 if @var{a} is a character array.  Otherwise, return 0.\n\
 
  */
 
+static octave_value
+do_strcmp_fun (const octave_value& arg0, const octave_value& arg1,
+               octave_idx_type n, const char *fcn_name,
+               bool (*array_op) (const charNDArray&, const charNDArray&, octave_idx_type),
+               bool (*str_op) (const std::string&, const std::string&, octave_idx_type))
+
+{
+  octave_value retval;
+
+  bool s1_string = arg0.is_string ();
+  bool s1_cell = arg0.is_cell ();
+  bool s2_string = arg1.is_string ();
+  bool s2_cell = arg1.is_cell ();
+
+  if (s1_string && s2_string)
+    retval = array_op (arg0.char_array_value (), arg1.char_array_value (), n);
+  else if ((s1_string && s2_cell) || (s1_cell && s2_string))
+    {
+      octave_value str_val, cell_val;
+
+      if (s1_string)
+        {
+          str_val = arg0;
+          cell_val = arg1;
+        }
+      else
+        {
+          str_val = arg1;
+          cell_val = arg0;
+        }
+
+      const Cell cell = cell_val.cell_value ();
+      const string_vector str = str_val.all_strings ();
+      octave_idx_type r = str.rows ();
+
+      if (r == 0 || r == 1)
+        {
+          // Broadcast the string.
+
+          boolNDArray output (cell_val.dims (), false);
+
+          std::string s = r == 0 ? std::string () : str[0];
+
+          if (cell_val.is_cellstr ())
+            {
+              const Array<std::string> cellstr = cell_val.cellstr_value ();
+              for (octave_idx_type i = 0; i < cellstr.length (); i++)
+                output(i) = str_op (cellstr(i), s, n);
+            }
+          else
+            {
+              // FIXME: should we warn here?
+              for (octave_idx_type i = 0; i < cell.length (); i++)
+                {
+                  if (cell(i).is_string ())
+                    output(i) = str_op (cell(i).string_value (), s, n);
+                }
+            }
+
+          retval = output;
+        }
+      else if (r > 1)
+        {
+          if (cell.length () == 1)
+            {
+              // Broadcast the cell.
+
+              const dim_vector dv (r, 1);
+              boolNDArray output (dv, false);
+
+              if (cell(0).is_string ())
+                {
+                  const std::string str2 = cell(0).string_value ();
+
+                  for (octave_idx_type i = 0; i < r; i++)
+                    output(i) = str_op (str[i], str2, n);
+                }
+
+              retval = output;
+            }
+          else
+            {
+              // Must match in all dimensions.
+
+              boolNDArray output (cell.dims (), false);
+
+              if (cell.length () == r)
+                {
+                  if (cell_val.is_cellstr ())
+                    {
+                      const Array<std::string> cellstr = cell_val.cellstr_value ();
+                      for (octave_idx_type i = 0; i < cellstr.length (); i++)
+                        output(i) = str_op (str[i], cellstr(i), n);
+                    }
+                  else
+                    {
+                      // FIXME: should we warn here?
+                      for (octave_idx_type i = 0; i < r; i++)
+                        {
+                          if (cell(i).is_string ())
+                            output(i) = str_op (str[i], cell(i).string_value (), n);
+                        }
+                    }
+
+                  retval = output;
+                }
+              else
+                retval = false;
+            }
+        }
+    }
+  else if (s1_cell && s2_cell)
+    {
+      octave_value cell1_val, cell2_val;
+      octave_idx_type r1 = arg0.numel (), r2;
+
+      if (r1 == 1)
+        {
+          // Make the singleton cell2.
+
+          cell1_val = arg1;
+          cell2_val = arg0;
+        }
+      else
+        {
+          cell1_val = arg0;
+          cell2_val = arg1;
+        }
+
+      const Cell cell1 = cell1_val.cell_value ();
+      const Cell cell2 = cell2_val.cell_value ();
+      r1 = cell1.numel ();
+      r2 = cell2.numel ();
+
+      const dim_vector size1 = cell1.dims ();
+      const dim_vector size2 = cell2.dims ();
+
+      boolNDArray output (size1, false);
+
+      if (r2 == 1)
+        {
+          // Broadcast cell2.
+
+          if (cell2(0).is_string ())
+            {
+              const std::string str2 = cell2(0).string_value ();
+
+              if (cell1_val.is_cellstr ())
+                {
+                  const Array<std::string> cellstr = cell1_val.cellstr_value ();
+                  for (octave_idx_type i = 0; i < cellstr.length (); i++)
+                    output(i) = str_op (cellstr(i), str2, n);
+                }
+              else
+                {
+                  // FIXME: should we warn here?
+                  for (octave_idx_type i = 0; i < r1; i++)
+                    {
+                      if (cell1(i).is_string ())
+                        {
+                          const std::string str1 = cell1(i).string_value ();
+                          output(i) = str_op (str1, str2, n);
+                        }
+                    }
+                }
+            }
+        }
+      else
+        {
+          if (size1 != size2)
+            {
+              error ("%s: nonconformant cell arrays", fcn_name);
+              return retval;
+            }
+
+          if (cell1.is_cellstr () && cell2.is_cellstr ())
+            {
+              const Array<std::string> cellstr1 = cell1_val.cellstr_value ();
+              const Array<std::string> cellstr2 = cell2_val.cellstr_value ();
+              for (octave_idx_type i = 0; i < r1; i++)
+                output (i) = str_op (cellstr1(i), cellstr2(i), n);
+            }
+          else
+            {
+              // FIXME: should we warn here?
+              for (octave_idx_type i = 0; i < r1; i++)
+                {
+                  if (cell1(i).is_string () && cell2(i).is_string ())
+                    {
+                      const std::string str1 = cell1(i).string_value ();
+                      const std::string str2 = cell2(i).string_value ();
+                      output(i) = str_op (str1, str2, n);
+                    }
+                }
+            }
+        }
+
+      retval = output;
+    }
+  else
+    retval = false;
+
+  return retval;
+}
+
+// If both args are arrays, dimensions may be significant.
+static bool 
+strcmp_array_op (const charNDArray& s1, const charNDArray& s2, octave_idx_type)
+{
+  return (s1.dims () == s2.dims ()
+          && std::equal (s1.data (), s1.data () + s1.numel (), s2.data ()));
+}
+
+// Otherwise, just use strings. 
+static bool
+strcmp_str_op (const std::string& s1, const std::string& s2,
+               octave_idx_type)
+{
+  return s1 == s2;
+}
+
 DEFUN (strcmp, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} strcmp (@var{s1}, @var{s2})\n\
@@ -343,234 +564,8 @@ This is just the opposite of the corresponding C library function.\n\
 
   if (args.length () == 2)
     {
-      bool s1_string = args(0).is_string ();
-      bool s1_cell = args(0).is_cell ();
-      bool s2_string = args(1).is_string ();
-      bool s2_cell = args(1).is_cell ();
-
-      if (s1_string && s2_string)
-	{
-	  // Must match exactly in all dimensions.
-
-	  const dim_vector dv1 = args(0).dims ();
-	  const dim_vector dv2 = args(1).dims ();
-
-	  if (dv1.length () == dv2.length ())
-	    {
-	      for (octave_idx_type i = 0; i < dv1.length (); i++)
-		{
-		  if (dv1(i) != dv2(i))
-		    {
-		      retval = false;
-		      return retval;
-		    }
-		}
-
-	      if (dv1(0) == 0)
-		retval = true;
-	      else
-		{
-		  const charNDArray s1 = args(0).char_array_value ();
-		  const charNDArray s2 = args(1).char_array_value ();
-
-		  for (octave_idx_type i = 0; i < dv1.numel (); i++)
-		    {
-		      if (s1(i) != s2(i))
-			{
-			  retval = false;
-			  return retval;
-			}
-		    }
-
-		  retval = true;
-		}
-	    }
-	}
-      else if ((s1_string && s2_cell) || (s1_cell && s2_string))
-	{
-          octave_value str_val, cell_val;
-
-	  if (s1_string)
-	    {
-	      str_val = args (0);
-              cell_val = args (1);
-	    }
-	  else
-	    {
-	      str_val = args (1);
-              cell_val = args (0);
-	    }
-
-          const Cell cell = cell_val.cell_value ();
-	  const string_vector str = str_val.all_strings ();
-	  octave_idx_type r = str.rows ();
-
-	  if (r == 0 || r == 1)
-	    {
-	      // Broadcast the string.
-
-	      boolNDArray output (cell_val.dims (), false);
-
-	      std::string s = r == 0 ? std::string () : str[0];
-
-              if (cell_val.is_cellstr ())
-                {
-                  const Array<std::string> cellstr = cell_val.cellstr_value ();
-                  for (octave_idx_type i = 0; i < cellstr.length (); i++)
-                    output(i) = cellstr(i) == s;
-                }
-              else
-                {
-                  // FIXME: should we warn here?
-                  for (octave_idx_type i = 0; i < cell.length (); i++)
-                    {
-                      if (cell(i).is_string ())
-                        output(i) = (cell(i).string_value () == s);
-                    }
-                }
-
-	      retval = output;
-	    }
-	  else if (r > 1)
-	    {
-	      if (cell.length () == 1)
-		{
-		  // Broadcast the cell.
-
-		  const dim_vector dv (r, 1);
-		  boolNDArray output (dv, false);
-
-		  if (cell(0).is_string ())
-		    {
-		      const std::string str2 = cell(0).string_value ();
-
-		      for (octave_idx_type i = 0; i < r; i++)
-			output(i) = (str[i] == str2);
-		    }
-
-		  retval = output;
-		}
-	      else
-		{
-		  // Must match in all dimensions.
-
-		  boolNDArray output (cell.dims (), false);
-
-		  if (cell.length () == r)
-		    {
-                      if (cell_val.is_cellstr ())
-                        {
-                          const Array<std::string> cellstr = cell_val.cellstr_value ();
-                          for (octave_idx_type i = 0; i < cellstr.length (); i++)
-                            output(i) = str[i] == cellstr(i);
-                        }
-                      else
-                        {
-                          // FIXME: should we warn here?
-                          for (octave_idx_type i = 0; i < r; i++)
-                            {
-                              if (cell(i).is_string ())
-                                output(i) = (str[i] == cell(i).string_value ());
-                            }
-                        }
-
-		      retval = output;
-		    }
-		  else
-		    retval = false;
-		}
-	    }
-	}
-      else if (s1_cell && s2_cell)
-	{
-          octave_value cell1_val, cell2_val;
-	  octave_idx_type r1 = args(0).numel (), r2;
-
-	  if (r1 == 1)
-	    {
-	      // Make the singleton cell2.
-
-	      cell1_val = args(1);
-	      cell2_val = args(0);
-	    }
-	  else
-	    {
-	      cell1_val = args(0);
-	      cell2_val = args(1);
-	    }
-
-	  const Cell cell1 = cell1_val.cell_value ();
-	  const Cell cell2 = cell2_val.cell_value ();
-          r1 = cell1.numel ();
-          r2 = cell2.numel ();
-
-	  const dim_vector size1 = cell1.dims ();
-	  const dim_vector size2 = cell2.dims ();
-
-	  boolNDArray output (size1, false);
-
-	  if (r2 == 1)
-	    {
-	      // Broadcast cell2.
-
-	      if (cell2(0).is_string ())
-		{
-		  const std::string str2 = cell2(0).string_value ();
-
-                  if (cell1_val.is_cellstr ())
-                    {
-                      const Array<std::string> cellstr = cell1_val.cellstr_value ();
-                      for (octave_idx_type i = 0; i < cellstr.length (); i++)
-                        output(i) = cellstr(i) == str2;
-                    }
-                  else
-                    {
-                      // FIXME: should we warn here?
-                      for (octave_idx_type i = 0; i < r1; i++)
-                        {
-                          if (cell1(i).is_string ())
-                            {
-                              const std::string str1 = cell1(i).string_value ();
-                              output(i) = (str1 == str2);
-                            }
-                        }
-                    }
-		}
-	    }
-	  else
-	    {
-	      if (size1 != size2)
-		{
-		  error ("strcmp: nonconformant cell arrays");
-		  return retval;
-		}
-
-              if (cell1.is_cellstr () && cell2.is_cellstr ())
-                {
-                  const Array<std::string> cellstr1 = cell1_val.cellstr_value ();
-                  const Array<std::string> cellstr2 = cell2_val.cellstr_value ();
-                  for (octave_idx_type i = 0; i < r1; i++)
-                    output (i) = cellstr1(i) == cellstr2(i);
-                }
-              else
-                {
-                  // FIXME: should we warn here?
-                  for (octave_idx_type i = 0; i < r1; i++)
-                    {
-                      if (cell1(i).is_string () && cell2(i).is_string ())
-                        {
-                          const std::string str1 = cell1(i).string_value ();
-                          const std::string str2 = cell2(i).string_value ();
-                          output(i) = (str1 == str2);
-                        }
-                    }
-                }
-	    }
-
-	  retval = output;
-	}
-      else
-	retval = false;
+      retval = do_strcmp_fun (args (0), args (1), 0,
+                              "strcmp", strcmp_array_op, strcmp_str_op);
     }
   else
     print_usage ();
@@ -621,6 +616,26 @@ This is just the opposite of the corresponding C library function.\n\
 %!assert (all (strcmp (y, {'foo'}) == [false; false]));
 */
 
+// Apparently, Matlab ignores the dims with strncmp. It also 
+static bool 
+strncmp_array_op (const charNDArray& s1, const charNDArray& s2, octave_idx_type n)
+{
+  octave_idx_type l1 = s1.numel (), l2 = s2.numel ();
+  return (n > 0 && n <= l1 && n <= l2 
+          && std::equal (s1.data (), s1.data () + n, s2.data ()));
+}
+
+// Otherwise, just use strings. Note that we neither extract substrings (which
+// would mean a copy, at least in GCC), nor use string::compare (which is a
+// 3-way compare).
+static bool
+strncmp_str_op (const std::string& s1, const std::string& s2, octave_idx_type n)
+{
+  octave_idx_type l1 = s1.length (), l2 = s2.length ();
+  return (n > 0 && n <= l1 && n <= l2 
+          && std::equal (s1.data (), s1.data () + n, s2.data ()));
+}
+
 DEFUN (strncmp, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} strncmp (@var{s1}, @var{s2}, @var{n})\n\
@@ -657,229 +672,18 @@ This is just the opposite of the corresponding C library function.\n\
 
   if (args.length () == 3)
     {
-      bool s1_string = args(0).is_string ();
-      bool s1_cell = args(0).is_cell ();
-      bool s2_string = args(1).is_string ();
-      bool s2_cell = args(1).is_cell ();
+      octave_idx_type n = args(2).idx_type_value ();
 
-      // Match only first n strings.
-      int n = args(2).int_value ();
-
-      if (n <= 0)
-	{
-	  error ("strncmp: N must be greater than 0");
-	  return retval;
-	}
-
-      if (s1_string && s2_string)
-	{
-	  // The only restriction here is that each string has equal or 
-	  // greater than n characters
-
-	  const dim_vector dv1 = args(0).dims ();
-	  const dim_vector dv2 = args(1).dims ();
-
-	  if (dv1.numel () >= n && dv2.numel () >= n)
-	    {
-	      // Follow Matlab in the sense that the first n characters of 
-	      // the two strings (in column major order) need to be the same.
-	      charNDArray s1 = args(0).char_array_value ();
-	      charNDArray s2 = args(1).char_array_value ();
-	      
-	      for (int i = 0; i < n; i++)
-		{
-		  if (s1(i) != s2(i))
-		    {
-		      retval = false;
-		      return retval;
-		    }
-		}
-
-	      retval = true;
-	    }
-	  else
-	    retval = false;
-	}
-      else if ((s1_string && s2_cell) || (s1_cell && s2_string))
-	{
-	  string_vector str;
-	  Cell cell;
-	  octave_idx_type r, c;
-
-	  if (s1_string)
-	    {
-	      str = args(0).all_strings ();
-	      r = args(0).rows ();
-	      c = args(0).columns ();
-	      cell = args(1).cell_value ();
-	    }
-	  else
-	    {
-	      str = args(1).all_strings ();
-	      r = args(1).rows ();
-	      c = args(1).columns ();
-	      cell = args(0).cell_value ();
-	    }
-
-	  if (r == 1)
-	    {
-	      // Broadcast the string.
-
-	      boolNDArray output (cell.dims (), false);
-
-	      if (c < n)
-		{
-		  for (octave_idx_type i = 0; i < cell.length (); i++)
-		    output(i) = false;
-		}
-	      else
-		{
-		  for (octave_idx_type i = 0; i < cell.length (); i++)
-		    {
-		      if (cell(i).is_string ())
-			{
-			  const std::string str2 = cell(i).string_value ();
-
-			  if (str2.length () >= n
-			      && str2.compare (0, n, str[0], 0, n) == 0)
-				output(i) = true;
-			}
-		    }
-		}
-
-	      retval = output;
-	    }
-	  else if (r > 1)
-	    {
-	      if (cell.length () == 1)
-		{
-		  // Broadcast the cell.
-
-		  const dim_vector dv (r, 1);
-		  boolNDArray output (dv, false);
-
-		  if (cell(0).is_string () && c >= n)
-		    {
-		      const std::string str2 = cell(0).string_value ();
-		      
-		      if (str2.length () >= n)
-			{
-			  for (octave_idx_type i = 0; i < r; i++)
-			    {
-			      if (str[i].compare (0, n, str2, 0, n) == 0)
-				output(i) = true;
-			    }
-			}
-		    }
-
-		  retval = output;
-		}
-	      else
-		{
-		  // Must match in all dimensions.
-
-		  boolNDArray output (cell.dims (), false);
-
-		  if (cell.numel () == r)
-		    {
-		      for (octave_idx_type i = 0; i < r; i++)
-			{
-			  if (cell(i).is_string () && c >= n)
-			    {
-			      std::string str2 = cell(i).string_value ();
-
-			      if (str2.length () >= n
-				  && str2.compare (0, n, str[i], 0, n) == 0)
-				output(i) = true;
-			    }
-			}
-
-		      retval = output;
-		    }
-		  else
-		    {
-		      error ("strncmp: the number of rows of the string matrix must match the number of elements in the cell");
-		      return retval;
-		    }
-		}
-	    }
-	}
-      else if (s1_cell && s2_cell)
-	{
-	  Cell cell1;
-	  Cell cell2;
-
-	  octave_idx_type r1 = args(0).numel ();
-	  octave_idx_type r2;
-
-	  if (r1 == 1)
-	    {
-	      // Make the singleton cell2.
-
-	      cell1 = args(1).cell_value ();
-	      cell2 = args(0).cell_value ();
-	      r1 = cell1.length ();
-	      r2 = 1;
-	    }
-	  else
-	    {
-	      cell1 = args(0).cell_value ();
-	      cell2 = args(1).cell_value ();
-	      r2 = cell2.length ();
-	    }
-
-	  const dim_vector size1 = cell1.dims ();
-	  const dim_vector size2 = cell2.dims ();
-
-	  boolNDArray output (size1, false);
-
-	  if (r2 == 1)
-	    {
-	      // Broadcast cell2.
-
-	      if (cell2(0).is_string ())
-		{
-		  const std::string str2 = cell2(0).string_value ();
-
-		  for (octave_idx_type i = 0; i < r1; i++)
-		    {
-		      if (cell1(i).is_string ())
-			{
-			  const std::string str1 = cell1(i).string_value ();
-
-			  if (str1.length () >= n && str2.length () >= n
-			      && str1.compare (0, n, str2, 0, n) == 0)
-			    output(i) = true;
-			}
-		    }
-		}
-	    }
-	  else
-	    {
-	      if (size1 != size2)
-		{
-		  error ("strncmp: nonconformant cell arrays");
-		  return retval;
-		}
-
-	      for (octave_idx_type i = 0; i < r1; i++)
-		{
-		  if (cell1(i).is_string () && cell2(i).is_string ())
-		    {
-		      const std::string str1 = cell1(i).string_value ();
-		      const std::string str2 = cell2(i).string_value ();
-
-		      if (str1.length () >= n && str2.length () >= n
-			  && str1.compare (0, n, str2, 0, n) == 0)
-			output(i) = true;
-		    }
-		}
-	    }
-
-	  retval = output;
-	}
-      else
-	retval = false;
+      if (! error_state)
+        {
+          if (n > 0)
+            {
+              retval = do_strcmp_fun (args(0), args(1), n, "strncmp",
+                                      strncmp_array_op, strncmp_str_op);
+            }
+          else
+            error ("strncmp: N must be greater than 0");
+        }
     }
   else
     print_usage ();
@@ -899,6 +703,135 @@ This is just the opposite of the corresponding C library function.\n\
 %!assert (all (strncmp("abc", {"abcd", 10}, 2) == [1, 0]))
 */
 
+// case-insensitive character equality functor
+struct icmp_char_eq : public std::binary_function<char, char, bool>
+{
+  bool operator () (char x, char y) const
+    { return std::toupper (x) == std::toupper (y); }
+};
+
+// strcmpi is equivalent to strcmp in that it checks all dims.
+static bool 
+strcmpi_array_op (const charNDArray& s1, const charNDArray& s2, octave_idx_type)
+{
+  return (s1.dims () == s2.dims ()
+          && std::equal (s1.data (), s1.data () + s1.numel (), s2.data (),
+                         icmp_char_eq ()));
+}
+
+// Ditto for string.
+static bool
+strcmpi_str_op (const std::string& s1, const std::string& s2,
+               octave_idx_type)
+{
+  return (s1.size () == s2.size ()
+          && std::equal (s1.data (), s1.data () + s1.size (), s2.data (),
+                         icmp_char_eq ()));
+}
+
+DEFUN (strcmpi, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} strcmpi (@var{s1}, @var{s2})\n\
+Returns 1 if the character strings @var{s1} and @var{s2} are the same,\n\
+disregarding case of alphabetic characters, and 0 otherwise.\n\
+\n\
+If either @var{s1} or @var{s2} is a cell array of strings, then an array\n\
+of the same size is returned, containing the values described above for\n\
+every member of the cell array.  The other argument may also be a cell\n\
+array of strings (of the same size or with only one element), char matrix\n\
+or character string.\n\
+\n\
+@strong{Caution:} For compatibility with @sc{matlab}, Octave's strcmp\n\
+function returns 1 if the character strings are equal, and 0 otherwise.\n\
+This is just the opposite of the corresponding C library function.\n\
+\n\
+@strong{Caution:} National alphabets are not supported.\n\
+@seealso{strcmp, strncmp, strncmpi}\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  if (args.length () == 2)
+    {
+      retval = do_strcmp_fun (args (0), args (1), 0,
+                              "strcmpi", strcmpi_array_op, strcmpi_str_op);
+    }
+  else
+    print_usage ();
+
+  return retval;
+}
+
+/*
+%!assert (strcmpi("abc123", "ABC123"), logical(1));
+*/
+
+// Like strncmp.
+static bool 
+strncmpi_array_op (const charNDArray& s1, const charNDArray& s2, octave_idx_type n)
+{
+  octave_idx_type l1 = s1.numel (), l2 = s2.numel ();
+  return (n > 0 && n <= l1 && n <= l2 
+          && std::equal (s1.data (), s1.data () + n, s2.data (),
+                         icmp_char_eq ()));
+}
+
+// Ditto.
+static bool
+strncmpi_str_op (const std::string& s1, const std::string& s2, octave_idx_type n)
+{
+  octave_idx_type l1 = s1.length (), l2 = s2.length ();
+  return (n > 0 && n <= l1 && n <= l2 
+          && std::equal (s1.data (), s1.data () + n, s2.data (),
+                         icmp_char_eq ()));
+}
+
+DEFUN (strncmpi, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} strncmp (@var{s1}, @var{s2}, @var{n})\n\
+Returns 1 if the first @var{n} character of @var{s1} and @var{s2} are the same,\n\
+disregarding case of alphabetic characters, and 0 otherwise.\n\
+\n\
+If either @var{s1} or @var{s2} is a cell array of strings, then an array\n\
+of the same size is returned, containing the values described above for\n\
+every member of the cell array.  The other argument may also be a cell\n\
+array of strings (of the same size or with only one element), char matrix\n\
+or character string.\n\
+\n\
+@strong{Caution:} For compatibility with @sc{matlab}, Octave's strncmpi\n\
+function returns 1 if the character strings are equal, and 0 otherwise.\n\
+This is just the opposite of the corresponding C library function.\n\
+\n\
+@strong{Caution:} National alphabets are not supported.\n\
+@seealso{strncmp, strcmp, strcmpi}\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  if (args.length () == 3)
+    {
+      octave_idx_type n = args(2).idx_type_value ();
+
+      if (! error_state)
+        {
+          if (n > 0)
+            {
+              retval = do_strcmp_fun (args(0), args(1), n, "strncmpi",
+                                      strncmpi_array_op, strncmpi_str_op);
+            }
+          else
+            error ("strncmp: N must be greater than 0");
+        }
+    }
+  else
+    print_usage ();
+
+  return retval;
+}
+
+/*
+%!assert (strncmpi("abc123", "ABC456", 3), logical(1));
+*/
 
 DEFUN (list_in_columns, args, ,
   "-*- texinfo -*-\n\

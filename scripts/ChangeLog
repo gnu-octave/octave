@@ -1,3 +1,9 @@
+2010-01-14  Jaroslav Hajek  <highegg@gmail.com>
+
+	* strings/strcmpi.m: Remove.
+	* strings/strncmpi.m: Remove.
+	* strings/module.mk: Update.
+
 2010-01-13  John W. Eaton  <jwe@octave.org>
 
 	* miscellaneous/inputname.m: Use isvarname instead of regexp.

@@ -1,5 +1,15 @@
 2010-01-14  Jaroslav Hajek  <highegg@gmail.com>
 
+	* strfns.cc (do_strcmp_fun, 
+	strcmp_array_op, strcmp_str_op,
+	strcmpi_array_op, strcmpi_str_op,
+	strncmp_array_op, strncmp_str_op,
+	strncmpi_array_op, strncmpi_str_op): New functions.
+	(Fstrcmp, Fstrncmp): Reimplement using do_strcmp_fun.
+	(Fstrcmpi, Fstrncmpi): New defuns.
+
+2010-01-14  Jaroslav Hajek  <highegg@gmail.com>
+
 	* DLD-FUNCTIONS/bsxfun.cc (maybe_fill_table): register relational
 	handlers for char arrays.
 

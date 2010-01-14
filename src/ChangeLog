@@ -1,3 +1,8 @@
+2010-01-14  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-class.cc (octave_class::numel (const octave_value_list&)): Don't
+	attempt to query overloaded size.
+
 2010-01-13  John W. Eaton  <jwe@octave.org>
 
 	* ov-fcn.h (octave_function (const std::string&, const std::string&)):

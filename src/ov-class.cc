@@ -346,40 +346,7 @@ octave_class::numel (const octave_value_list& idx)
         error ("@%s/numel: invalid return value", cn.c_str ());
     }
   else
-    {
-      // If method is not found, calculate using size ().
-      const Matrix mdv = size ();
-      octave_idx_type nmdv = mdv.numel ();
-      dim_vector dv; dv.resize (std::max (nmdv, 2));
-      for (octave_idx_type i = 0; i < nmdv && !error_state; i++)
-        {
-          if (mdv(i) == xround (mdv(i)) && xfinite (mdv(i)) && mdv(i) >= 0)
-            dv(i) = mdv(i);
-          else
-            error ("@%s/numel: expected nonnegative integers from @%s/size",
-                   cn.c_str (), cn.c_str ());
-        }
-
-      if (! error_state)
-        {
-          octave_idx_type len = idx.length ();
-          if (len == 0)
-            retval = dv.numel ();
-          else
-            {
-              dv = dv.redim (len);
-              retval = 1;
-              for (octave_idx_type i = 0; i < len; i++)
-                {
-                  if (idx(i).is_magic_colon ())
-                    retval *= dv(i);
-                  else
-                    retval *= idx(i).numel ();
-                }
-            }
-        }
-
-    }
+    retval = octave_base_value::numel (idx);
 
   return retval;
 }

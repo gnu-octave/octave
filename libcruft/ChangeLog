@@ -1,5 +1,9 @@
 2009-01-13  Rik <octave@nomad.inbox5.com>
 
+	* STOP.patch: Remove unmaintained patch for Fortran code
+
+2009-01-13  Rik <octave@nomad.inbox5.com>
+
 	* ranlib/advnst.f ranlib/genbet.f ranlib/genchi.f ranlib/genexp.f
 	ranlib/genf.f ranlib/gengam.f ranlib/genmul.f ranlib/gennch.f
 	ranlib/gennf.f ranlib/gennor.f ranlib/genunf.f ranlib/getcgn.f

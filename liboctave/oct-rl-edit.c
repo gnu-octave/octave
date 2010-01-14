@@ -346,7 +346,9 @@ octave_rl_add_defun (const char *name, rl_fcn_ptr f, char key)
 void
 octave_rl_set_terminal_name (const char *term)
 {
-  rl_terminal_name = term;
+  OCTAVE_RL_SAVE_STRING (saved_term, term);
+
+  rl_terminal_name = saved_term;
 }
 
 void

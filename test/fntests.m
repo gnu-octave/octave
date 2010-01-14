@@ -139,9 +139,13 @@ function [dp, dn, dxf, dsk] = run_test_script (fid, d);
   endfor
   for i = 1:length (lst)
     nm = lst(i).name;
+    ## Ignore hidden files
+    if (nm(1) == '.')
+      continue
+    endif
     f = fullfile (d, nm);
     if ((length (nm) > 2 && strcmp (nm((end-1):end), ".m")) || 
-        (length (nm) > 3 && strcmp (nm((end-2):end), ".cc") && hasfunctions(f)))
+        (length (nm) > 3 && strcmp (nm((end-2):end), ".cc")))
       p = n = xf = 0;
       ## Only run if it contains %!test, %!assert %!error or %!warning
       if (hastests (f))
@@ -155,7 +159,9 @@ function [dp, dn, dxf, dsk] = run_test_script (fid, d);
 	dxf += xf;
 	dsk += sk;
 	files_with_tests(end+1) = f;
-      else
+      elseif (hasfunctions (f))
+	## To reduce the list length, only mark files that contains
+	## DEFUN definitions.
 	files_with_no_tests(end+1) = f;
       endif
     endif

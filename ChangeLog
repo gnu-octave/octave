@@ -1,3 +1,7 @@
+2010-01-14  Jaroslav Hajek  <highegg@gmail.com>
+
+	* NEWS: Update.
+
 2010-01-13  John W. Eaton  <jwe@octave.org>
 
 	* configure.ac: Handle --enable-docs.  Print warning in summary

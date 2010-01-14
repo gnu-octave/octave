@@ -141,7 +141,8 @@ protected:
 
   octave_function (const std::string& nm,
 		   const std::string& ds = std::string ())
-    : relative (false), my_name (nm), doc (ds) { }
+    : relative (false), locked (false), private_function (false),
+      xdispatch_class (), my_name (nm), my_dir_name (), doc (ds) { }
 
   // TRUE if this function was found from a relative path element.
   bool relative;

@@ -40,7 +40,7 @@ octave_builtin : public octave_function
 {
 public:
 
-  octave_builtin (void) { }
+  octave_builtin (void) : octave_function (), f (0) { }
 
   typedef octave_value_list (*fcn) (const octave_value_list&, int);
 

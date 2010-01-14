@@ -1,3 +1,8 @@
+2010-01-13  John W. Eaton  <jwe@octave.org>
+
+	* idx-vector.cc (idx_vector::idx_scalar_rep::idx_scalar_rep (T x)):
+	Initialize dummy variable.
+
 2010-01-13  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Array.cc (Array<T>::compute_index): Generalize to the case of

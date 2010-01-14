@@ -1,5 +1,13 @@
 2010-01-13  John W. Eaton  <jwe@octave.org>
 
+	* ov-fcn.h (octave_function (const std::string&, const std::string&)):
+	Explicitly initialize all data members.
+
+	* ov-builtin.h (octave_builtin::octave_builtin):
+	Explicitly initialize base class object and data member.
+
+2010-01-13  John W. Eaton  <jwe@octave.org>
+
 	* DLD-FUNCTIONS/__magick_read__.cc (read_indexed_images):
 	No need to explicitly call chop_trailing_singletons now.
 

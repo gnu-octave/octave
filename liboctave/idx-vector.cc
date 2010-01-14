@@ -215,7 +215,7 @@ DEFINE_OCTAVE_ALLOCATOR(idx_vector::idx_scalar_rep);
 template <class T>
 idx_vector::idx_scalar_rep::idx_scalar_rep (T x)
 {
-  octave_idx_type dummy;
+  octave_idx_type dummy = 0;
   data = convert_index (x, err, dummy);
   if (err) gripe_invalid_index ();
 }

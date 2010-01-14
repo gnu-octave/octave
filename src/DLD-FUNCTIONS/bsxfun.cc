@@ -175,6 +175,14 @@ static void maybe_fill_table (void)
   REGISTER_OP_HANDLER (bsxfun_builtin_power, btyp_complex, ComplexNDArray, bsxfun_pow);
   REGISTER_OP_HANDLER (bsxfun_builtin_power, btyp_float_complex, FloatComplexNDArray, bsxfun_pow);
 
+  // For chars, we want just relational handlers.
+  REGISTER_REL_HANDLER (bsxfun_builtin_eq, btyp_char, charNDArray, bsxfun_eq);
+  REGISTER_REL_HANDLER (bsxfun_builtin_ne, btyp_char, charNDArray, bsxfun_ne);
+  REGISTER_REL_HANDLER (bsxfun_builtin_lt, btyp_char, charNDArray, bsxfun_lt);
+  REGISTER_REL_HANDLER (bsxfun_builtin_le, btyp_char, charNDArray, bsxfun_le);
+  REGISTER_REL_HANDLER (bsxfun_builtin_gt, btyp_char, charNDArray, bsxfun_gt);
+  REGISTER_REL_HANDLER (bsxfun_builtin_ge, btyp_char, charNDArray, bsxfun_ge);
+
   filled = true;
 }
 

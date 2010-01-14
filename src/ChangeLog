@@ -1,5 +1,10 @@
 2010-01-14  Jaroslav Hajek  <highegg@gmail.com>
 
+	* DLD-FUNCTIONS/bsxfun.cc (maybe_fill_table): register relational
+	handlers for char arrays.
+
+2010-01-14  Jaroslav Hajek  <highegg@gmail.com>
+
 	* ov-class.cc (octave_class::numel (const octave_value_list&)): Don't
 	attempt to query overloaded size.
 

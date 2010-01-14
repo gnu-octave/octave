@@ -32,6 +32,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-mappers.h"
 #include "mx-op-defs.h"
 
+#include "bsxfun-defs.cc"
+
 // FIXME -- this is not quite the right thing.
 
 boolNDArray
@@ -160,6 +162,8 @@ SND_BOOL_OPS (char, charNDArray)
 
 NDND_CMP_OPS (charNDArray, charNDArray)
 NDND_BOOL_OPS (charNDArray, charNDArray)
+
+BSXFUN_STDREL_DEFS_MXLOOP (charNDArray)
 
 /*
 ;;; Local Variables: ***

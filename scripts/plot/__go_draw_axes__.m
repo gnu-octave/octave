@@ -525,12 +525,8 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
 	  style = do_linestyle_command (obj, obj.color, data_idx, mono, 
 					plot_stream, errbars);
 
-	  if (isempty (style{1}))
-	    withclause{data_idx} = '';
-	  else
-	    withclause{data_idx} = sprintf ("with %s linestyle %d",
-					    style{1}, data_idx);
-	  endif
+          withclause{data_idx} = sprintf ("with %s linestyle %d",
+					  style{1}, data_idx);
 
 	  if (length (style) > 1)
 	    data_idx++;
@@ -916,8 +912,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
 		                || ! isnumeric (obj.markeredgecolor) 
 		                || (isnumeric (obj.markeredgecolor) 
 			            && isequal (color, obj.markeredgecolor))))
-	         if (! isequal (pt, pt2) && sidx == 1 
-                     && ((length (style) == 5 
+	         if (sidx == 1 && ((length (style) == 5 
 	                  && strncmp (style, "lines", 5)) 
                          || isempty (style)))
 	           style = strcat (style, "points");
@@ -1736,7 +1731,7 @@ function style = do_linestyle_command (obj, linecolor, idx, mono,
 		       || ! isnumeric (obj.markeredgecolor) 
 		       || (isnumeric (obj.markeredgecolor) 
 			   && isequal (color, obj.markeredgecolor))))
-	if (! isequal (pt, pt2) && sidx == 1 && ((length (style {sidx}) == 5 
+	if (sidx == 1 && ((length (style {sidx}) == 5 
 	    && strncmp (style {sidx}, "lines", 5)) || isempty (style {sidx})))
 	  style {sidx} = strcat (style{sidx}, "points");
 	  if (! isempty (pt))

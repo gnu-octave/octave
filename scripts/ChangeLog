@@ -1,3 +1,8 @@
+2010-01-14  David Bateman  <dbateman@free.fr>
+
+	* plot/__go_draw_axes__.m:  Fix for markerfacecolor and
+	markeredgecolor for unfillable points like '+'.
+
 2010-01-14  Jaroslav Hajek  <highegg@gmail.com>
 
 	* io/fileread.m: Add missing semicolon.

@@ -52,7 +52,7 @@ C     .. Executable Statements ..
       IF (.NOT. (df.LT.1.0.OR.xnonc.LT.0.0)) GO TO 10
       WRITE (*,*) 'DF < 1 or XNONC < 0 in GENNCH - ABORT'
       WRITE (*,*) 'Value of DF: ',df,' Value of XNONC',xnonc
-      STOP 'DF < 1 or XNONC < 0 in GENNCH - ABORT'
+      CALL XSTOPX ('DF < 1 or XNONC < 0 in GENNCH - ABORT')
 
 C     JJV changed this to call SGAMMA and SNORM directly
 C      gennch = genchi(df-1.0) + gennor(sqrt(xnonc),1.0)**2

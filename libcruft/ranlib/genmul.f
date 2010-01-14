@@ -59,15 +59,15 @@ C     ..
 C     .. Executable Statements ..
 
 C     Check Arguments
-      IF (n.LT.0) STOP 'N < 0 in GENMUL'
-      IF (ncat.LE.1) STOP 'NCAT <= 1 in GENMUL'
+      IF (n.LT.0) CALL XSTOPX ('N < 0 in GENMUL')
+      IF (ncat.LE.1) CALL XSTOPX ('NCAT <= 1 in GENMUL')
       ptot = 0.0
       DO 10,i = 1,ncat - 1
-          IF (p(i).LT.0.0) STOP 'Some P(i) < 0 in GENMUL'
-          IF (p(i).GT.1.0) STOP 'Some P(i) > 1 in GENMUL'
+          IF (p(i).LT.0.0) CALL XSTOPX ('Some P(i) < 0 in GENMUL')
+          IF (p(i).GT.1.0) CALL XSTOPX ('Some P(i) > 1 in GENMUL')
           ptot = ptot + p(i)
    10 CONTINUE
-      IF (ptot.GT.0.99999) STOP 'Sum of P(i) > 1 in GENMUL'
+      IF (ptot.GT.0.99999) CALL XSTOPX ('Sum of P(i) > 1 in GENMUL')
 
 C     Initialize variables
       ntot = n

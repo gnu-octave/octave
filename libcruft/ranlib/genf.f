@@ -47,7 +47,7 @@ C     .. Executable Statements ..
       IF (.NOT. (dfn.LE.0.0.OR.dfd.LE.0.0)) GO TO 10
       WRITE (*,*) 'Degrees of freedom nonpositive in GENF - abort!'
       WRITE (*,*) 'DFN value: ',dfn,'DFD value: ',dfd
-      STOP 'Degrees of freedom nonpositive in GENF - abort!'
+      CALL XSTOPX ('Degrees of freedom nonpositive in GENF - abort!')
 
  10   xnum = 2.0*sgamma(dfn/2.0)/dfn
 

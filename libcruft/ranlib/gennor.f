@@ -53,7 +53,7 @@ C     JJV added check to ensure SD >= 0.0
       IF (sd.GE.0.0) GO TO 10
       WRITE (*,*) 'SD < 0.0 in GENNOR - ABORT'
       WRITE (*,*) 'Value of SD: ',sd
-      STOP 'SD < 0.0 in GENNOR - ABORT'
+      CALL XSTOPX ('SD < 0.0 in GENNOR - ABORT')
 
  10   gennor = sd*snorm() + av
       RETURN

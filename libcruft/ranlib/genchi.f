@@ -39,7 +39,7 @@ C     .. Executable Statements ..
       IF (.NOT. (df.LE.0.0)) GO TO 10
       WRITE (*,*) 'DF <= 0 in GENCHI - ABORT'
       WRITE (*,*) 'Value of DF: ',df
-      STOP 'DF <= 0 in GENCHI - ABORT'
+      CALL XSTOPX ('DF <= 0 in GENCHI - ABORT')
 
 C     JJV changed this to call sgamma directly
 C   10 genchi = 2.0*gengam(1.0,df/2.0)

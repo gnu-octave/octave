@@ -39,7 +39,7 @@ C
       WRITE (*,*) ' A, M, S out of order in MLTMOD - ABORT!'
       WRITE (*,*) ' A = ',a,' S = ',s,' M = ',m
       WRITE (*,*) ' MLTMOD requires: 0 < A < M; 0 < S < M'
-      STOP ' A, M, S out of order in MLTMOD - ABORT!'
+      CALL XSTOPX (' A, M, S out of order in MLTMOD - ABORT!')
 
    10 IF (.NOT. (a.LT.h)) GO TO 20
       a0 = a

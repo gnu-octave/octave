@@ -88,8 +88,8 @@ C     TO ABORT-PROGRAM
   100 WRITE (*,*) ' LOW: ',low,' HIGH: ',high
       WRITE (*,*) ' Abort on Fatal ERROR'
       IF (.NOT. (err.EQ.1)) GO TO 110
-      STOP 'LOW > HIGH in IGNUIN'
+      CALL XSTOPX ('LOW > HIGH in IGNUIN')
 
-  110 STOP ' ( HIGH - LOW ) > 2,147,483,561 in IGNUIN'
+  110 CALL XSTOPX (' ( HIGH - LOW ) > 2,147,483,561 in IGNUIN')
 
   120 END

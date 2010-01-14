@@ -61,7 +61,8 @@ C     JJV added argument value checker
       WRITE (*,*) 'In GENGAM - Either (1) Location param A <= 0.0 or'
       WRITE (*,*) '(2) Shape param R <= 0.0 - ABORT!'
       WRITE (*,*) 'A value: ',a,'R value: ',r
-      STOP 'Location or shape param out of range in GENGAM - ABORT!'
+      CALL XSTOPX
+     + ('Location or shape param out of range in GENGAM - ABORT!')
 C     JJV end addition
 
  10   gengam = sgamma(r)/a

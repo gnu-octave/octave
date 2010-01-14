@@ -66,7 +66,8 @@ C     Abort unless random number generator initialized
       IF (qrgnin()) GO TO 10
       WRITE (*,*) ' INITGN called before random number generator ',
      +  ' initialized -- abort!'
-      STOP ' INITGN called before random number generator initialized'
+      CALL XSTOPX 
+     + (' INITGN called before random number generator initialized')
 
    10 CALL getcgn(g)
       IF ((-1).NE. (isdtyp)) GO TO 20
@@ -83,7 +84,7 @@ C     do nothing
       lg2(g) = mltmod(a2w,lg2(g),m2)
       GO TO 50
 
-   40 STOP 'ISDTYP NOT IN RANGE'
+   40 CALL XSTOPX ('ISDTYP NOT IN RANGE')
 
    50 cg1(g) = lg1(g)
       cg2(g) = lg2(g)

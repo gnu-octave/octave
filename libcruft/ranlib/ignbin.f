@@ -188,12 +188,12 @@ C     JJV added the argument checker - involved only renaming 10
 C     JJV and 20 to the checkers and adding checkers
 C     JJV Only remaining problem - if called initially with the
 C     JJV initial values of psave and nsave, it will hang
- 10   IF (pp.LT.0.0) STOP 'PP < 0.0 in IGNBIN - ABORT!'
-      IF (pp.GT.1.0) STOP 'PP > 1.0 in IGNBIN - ABORT!'
+ 10   IF (pp.LT.0.0) CALL XSTOPX ('PP < 0.0 in IGNBIN - ABORT!')
+      IF (pp.GT.1.0) CALL XSTOPX ('PP > 1.0 in IGNBIN - ABORT!')
       psave = pp
       p = amin1(psave,1.-psave)
       q = 1. - p
- 20   IF (n.LT.0) STOP 'N < 0 in IGNBIN - ABORT!'
+ 20   IF (n.LT.0) CALL XSTOPX ('N < 0 in IGNBIN - ABORT!')
       xnp = n*p
       nsave = n
       IF (xnp.LT.30.) GO TO 140

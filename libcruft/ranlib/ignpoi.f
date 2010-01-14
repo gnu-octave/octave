@@ -237,7 +237,7 @@ C     JJV added argument checker here
       IF (mu.GE.0.0) GO TO 125
       WRITE (*,*) 'MU < 0 in IGNPOI - ABORT'
       WRITE (*,*) 'Value of MU: ',mu
-      STOP 'MU < 0 in IGNPOI - ABORT'
+      CALL XSTOPX ('MU < 0 in IGNPOI - ABORT')
 C     JJV added line label here
  125  muold = mu
       m = max0(1,ifix(mu))

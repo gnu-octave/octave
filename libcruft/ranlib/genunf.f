@@ -33,7 +33,7 @@ C     .. Executable Statements ..
       IF (.NOT. (low.GT.high)) GO TO 10
       WRITE (*,*) 'LOW > HIGH in GENUNF: LOW ',low,' HIGH: ',high
       WRITE (*,*) 'Abort'
-      STOP 'LOW > High in GENUNF - Abort'
+      CALL XSTOPX ('LOW > High in GENUNF - Abort')
 
    10 genunf = low + (high-low)*ranf()
 

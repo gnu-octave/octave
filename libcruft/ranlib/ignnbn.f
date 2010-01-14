@@ -59,9 +59,9 @@ C     ..
 C     .. Executable Statements ..
 C     Check Arguments
 C     JJV changed argumnet checker to abort if N <= 0
-      IF (n.LE.0) STOP 'N <= 0 in IGNNBN'
-      IF (p.LE.0.0) STOP 'P <= 0.0 in IGNNBN'
-      IF (p.GE.1.0) STOP 'P >= 1.0 in IGNNBN'
+      IF (n.LE.0) CALL XSTOPX ('N <= 0 in IGNNBN')
+      IF (p.LE.0.0) CALL XSTOPX ('P <= 0.0 in IGNNBN')
+      IF (p.GE.1.0) CALL XSTOPX ('P >= 1.0 in IGNNBN')
 
 C     Generate Y, a random gamma (n,(1-p)/p) variable
 C     JJV Note: the above parametrization is consistent with Devroye,

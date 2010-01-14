@@ -1,3 +1,13 @@
+2009-01-13  Rik <octave@nomad.inbox5.com>
+
+	* ranlib/advnst.f ranlib/genbet.f ranlib/genchi.f ranlib/genexp.f
+	ranlib/genf.f ranlib/gengam.f ranlib/genmul.f ranlib/gennch.f
+	ranlib/gennf.f ranlib/gennor.f ranlib/genunf.f ranlib/getcgn.f
+	ranlib/getsd.f ranlib/ignbin.f ranlib/ignnbn.f ranlib/ignpoi.f
+	ranlib/ignuin.f ranlib/initgn.f ranlib/mltmod.f ranlib/setant.f
+	ranlib/setgmn.f ranlib/setsd.f: call XSTOPX instead of STOP so Octave's
+	error handler can intercept errors in Fortran code
+
 2010-01-07  Jaroslav Hajek  <highegg@gmail.com>
 
 	* misc/quit.cc (octave_rethrow_exception): Set octave_interrupt_state

@@ -61,7 +61,9 @@ C     JJV in the same way as GENNCH was changed.
       WRITE (*,*) '(3) Noncentrality parameter < 0.0'
       WRITE (*,*) 'DFN value: ',dfn,'DFD value: ',dfd,'XNONC value: ',
      +  xnonc
-      STOP 'Degrees of freedom or noncent param out of range in GENNF'
+
+      CALL XSTOPX
+     + ('Degrees of freedom or noncent param out of range in GENNF')
 
 C      GENNF = ( GENNCH( DFN, XNONC ) / DFN ) / ( GENCHI( DFD ) / DFD )
 C     JJV changed this to call SGAMMA and SNORM directly

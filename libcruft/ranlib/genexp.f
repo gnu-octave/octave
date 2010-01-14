@@ -52,7 +52,7 @@ C     JJV added check to ensure AV >= 0.0
       IF (av.GE.0.0) GO TO 10
       WRITE (*,*) 'AV < 0.0 in GENEXP - ABORT'
       WRITE (*,*) 'Value of AV: ',av
-      STOP 'AV < 0.0 in GENEXP - ABORT'
+      CALL XSTOPX ('AV < 0.0 in GENEXP - ABORT')
 
  10   genexp = sexpo()*av
       RETURN

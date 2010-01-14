@@ -77,7 +77,7 @@ C     JJV added small minimum for small log problem in calc of W
       IF (.NOT. (aa.LT.minlog.OR.bb.LT.minlog)) GO TO 10
       WRITE (*,*) ' AA or BB < ',minlog,' in GENBET - Abort!'
       WRITE (*,*) ' AA: ',aa,' BB ',bb
-      STOP ' AA or BB too small in GENBET - Abort!'
+      CALL XSTOPX (' AA or BB too small in GENBET - Abort!')
 
    10 olda = aa
       oldb = bb

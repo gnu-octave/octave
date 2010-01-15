@@ -69,6 +69,13 @@ function __go_draw_figure__ (h, plot_stream, enhanced, mono, output_to_paper, im
 	fputs (plot_stream, "set autoscale keepfix;\n");
 	fputs (plot_stream, "set origin 0, 0\n");
 	fputs (plot_stream, "set size 1, 1\n");
+        bg = get (h, "color");
+        if (isnumeric (bg))
+          fprintf (plot_stream, "set obj 1 rectangle from screen 0,0 to screen 1,1 behind fc rgb \"#%02x%02x%02x\"\n", 255 * bg);
+          bg_is_set = true;
+        else
+          bg_is_set = false;
+        endif
 	for i = 1:nkids
 	  type = get (kids(i), "type");
 	  switch (type)
@@ -78,6 +85,13 @@ function __go_draw_figure__ (h, plot_stream, enhanced, mono, output_to_paper, im
 	      orig_axes_position = get (kids(i), "position");
 	      unwind_protect
 		set (kids(i), "units", "normalized");
+                fg = get (kids(i), "color");
+                if (isnumeric (fg))
+                  fprintf (plot_stream, "set obj 2 rectangle from graph 0,0 to graph 1,1 behind fc rgb \"#%02x%02x%02x\"\n", 255 * fg);
+                  fg_is_set = true;
+                else
+                  fg_is_set = false;
+                endif
 		if (output_to_paper)
 		  axes_position_on_page = orig_axes_position .* paper_position([3, 4, 3 ,4]);
 		  axes_position_on_page(1:2) = axes_position_on_page(1:2) +  paper_position(1:2);
@@ -90,6 +104,13 @@ function __go_draw_figure__ (h, plot_stream, enhanced, mono, output_to_paper, im
 		unwind_protect_cleanup
 		set (kids(i), "units", orig_axes_units);
 		set (kids(i), "position", orig_axes_position);
+                if (fg_is_set)
+                  fputs (plot_stream, "unset obj 2\n");
+                endif
+                if (bg_is_set)
+                  fputs (plot_stream, "unset obj 1\n");
+                  bg_is_set = false;
+                endif
 	      end_unwind_protect
 	    otherwise
 	      error ("__go_draw_figure__: unknown object class, %s", type);

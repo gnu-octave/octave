@@ -1,3 +1,8 @@
+2010-01-15  David Bateman  <dbateman@free.fr>
+
+	plot/__go_draw_figure__.m: Respect the figure and axes color 
+	properties.
+
 2010-01-14  David Bateman  <dbateman@free.fr>
 
 	* plot/__go_draw_axes__.m:  Fix for markerfacecolor and

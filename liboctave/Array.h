@@ -585,13 +585,14 @@ public:
   // Dispatcher to the above two.
   void delete_elements (const Array<idx_vector>& ia);
 
-  // FIXME -- are these required? What exactly are they supposed to do?.
-
-  Array<T>& insert (const Array<T>& a, octave_idx_type r, octave_idx_type c);
-  Array<T>& insert2 (const Array<T>& a, octave_idx_type r, octave_idx_type c);
-  Array<T>& insertN (const Array<T>& a, octave_idx_type r, octave_idx_type c);
-
+  // Insert an array into another at a specified position.
+  // If size (a) is [d1 d2 ... dN] and idx is [i1 i2 ... iN],
+  // this method is equivalent to
+  // x(i1:i1+d1-1, i2:i2+d2-1, ... , iN:iN+dN-1) = a.
   Array<T>& insert (const Array<T>& a, const Array<octave_idx_type>& idx);
+
+  // This is just a special case for idx = [r c 0 ...]
+  Array<T>& insert (const Array<T>& a, octave_idx_type r, octave_idx_type c);
 
   void maybe_economize (void)
     {

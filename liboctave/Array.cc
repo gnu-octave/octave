@@ -1493,96 +1493,23 @@ Array<T>::delete_elements (const Array<idx_vector>& ia)
 
 }
 
-// FIXME: Remove these methods or implement them using assign.
-
 template <class T>
 Array<T>&
 Array<T>::insert (const Array<T>& a, octave_idx_type r, octave_idx_type c)
 {
+  idx_vector i (r, r + a.rows ());
+  idx_vector j (c, c + a.columns ());
   if (ndims () == 2 && a.ndims () == 2)
-    insert2 (a, r, c);
+    assign (i, j, a);
   else
-    insertN (a, r, c);
-
-  return *this;
-}
-
-
-template <class T>
-Array<T>&
-Array<T>::insert2 (const Array<T>& a, octave_idx_type r, octave_idx_type c)
-{
-  octave_idx_type a_rows = a.rows ();
-  octave_idx_type a_cols = a.cols ();
-
-  if (r < 0 || r + a_rows > rows () || c < 0 || c + a_cols > cols ())
     {
-      (*current_liboctave_error_handler) ("range error for insert");
-      return *this;
+      Array<idx_vector> idx (a.ndims ());
+      idx(0) = i;
+      idx(1) = j;
+      for (int k = 0; k < a.ndims (); k++)
+        idx(k) = idx_vector (0, a.dimensions(k));
+      assign (idx, a);
     }
-
-  for (octave_idx_type j = 0; j < a_cols; j++)
-    for (octave_idx_type i = 0; i < a_rows; i++)
-      elem (r+i, c+j) = a.elem (i, j);
-
-  return *this;
-}
-
-template <class T>
-Array<T>&
-Array<T>::insertN (const Array<T>& a, octave_idx_type r, octave_idx_type c)
-{
-  dim_vector dv = dims ();
-
-  dim_vector a_dv = a.dims ();
-
-  int n = a_dv.length ();
-
-  if (n == dimensions.length ())
-    {
-      Array<octave_idx_type> a_ra_idx (a_dv.length (), 0);
-
-      a_ra_idx.elem (0) = r;
-      a_ra_idx.elem (1) = c;
-
-      for (int i = 0; i < n; i++)
-	{
-	  if (a_ra_idx(i) < 0 || (a_ra_idx(i) + a_dv(i)) > dv(i))
-	    {
-	      (*current_liboctave_error_handler)
-		("Array<T>::insert: range error for insert");
-	      return *this;
-	    }
-	}
-
-      octave_idx_type n_elt = a.numel ();
-      
-      const T *a_data = a.data ();   
-   
-      octave_idx_type iidx = 0;
-	  
-      octave_idx_type a_rows = a_dv(0);
-
-      octave_idx_type this_rows = dv(0);
-	  
-      octave_idx_type numel_page = a_dv(0) * a_dv(1);	  
-
-      octave_idx_type count_pages = 0;
-	  
-      for (octave_idx_type i = 0; i < n_elt; i++)
-	{
-	  if (i != 0 && i % a_rows == 0)
-	    iidx += (this_rows - a_rows);	      
-	  
-	  if (i % numel_page == 0)
-	    iidx = c * dv(0) + r + dv(0) * dv(1) * count_pages++;
-
-	  elem (iidx++) = a_data[i];
-	}
-    }
-  else
-    (*current_liboctave_error_handler)
-      ("Array<T>::insert: invalid indexing operation");
 
   return *this;
 }
@@ -1592,88 +1519,12 @@ Array<T>&
 Array<T>::insert (const Array<T>& a, const Array<octave_idx_type>& ra_idx)
 {
   octave_idx_type n = ra_idx.length ();
+  Array<idx_vector> idx (n);
+  const dim_vector dva = a.dims ().redim (n);
+  for (octave_idx_type k = 0; k < n; k++)
+    idx(k) = idx_vector (ra_idx (k), ra_idx (k) + dva(k));
 
-  if (n >= dimensions.length ())
-    {
-      const dim_vector dva = a.dims ();
-      const dim_vector dv = dims ().redim (n);
-      int len_a = dva.length ();
-      int non_full_dim = 0;
-
-      for (octave_idx_type i = 0; i < n; i++)
-	{
-	  if (ra_idx(i) < 0 || (ra_idx(i) + 
-				(i < len_a ? dva(i) : 1)) > dv(i))
-	    {
-	      (*current_liboctave_error_handler)
-		("Array<T>::insert: range error for insert");
-	      return *this;
-	    }
-
-	  if (dv(i) != (i < len_a ? dva(i) : 1))
-	    non_full_dim++;
-	}
-
-      if (dva.numel ())
-        {
-	  if (non_full_dim < 2)
-	    {
-	      // Special case for fast concatenation
-	      const T *a_data = a.data ();
-	      octave_idx_type numel_to_move = 1;
-	      octave_idx_type skip = 0;
-	      for (int i = 0; i < len_a; i++)
-		if (ra_idx(i) == 0 && dva(i) == dv(i))
-		  numel_to_move *= dva(i);
-		else
-		  {
-		    skip = numel_to_move * (dv(i) - dva(i));
-		    numel_to_move *= dva(i);
-		    break;
-		  }
-
-	      octave_idx_type jidx = ra_idx(n-1);
-	      for (int i = n-2; i >= 0; i--)
-		{
-		  jidx *= dv(i);
-		  jidx += ra_idx(i);
-		}
-
-	      octave_idx_type iidx = 0;
-	      octave_idx_type moves = dva.numel () / numel_to_move;
-	      for (octave_idx_type i = 0; i < moves; i++)
-		{
-		  for (octave_idx_type j = 0; j < numel_to_move; j++)
-		    elem (jidx++) = a_data[iidx++];
-		  jidx += skip;
-		}
-	    }
-	  else
-	    {
-	      // Generic code
-	      const T *a_data = a.data ();
-	      int nel = a.numel ();
-	      Array<octave_idx_type> a_idx (n, 0);
-
-	      for (int i = 0; i < nel; i++)
-		{
-		  int iidx = a_idx(n-1) + ra_idx(n-1);
-		  for (int j = n-2; j >= 0; j--)
-		    {
-		      iidx *= dv(j);
-		      iidx += a_idx(j) + ra_idx(j);
-		    }
-
-		  elem (iidx) = a_data[i];
-
-		  increment_index (a_idx, dva);
-		}
-	    }
-	}
-    }
-  else
-    (*current_liboctave_error_handler)
-      ("Array<T>::insert: invalid indexing operation");
+  assign (idx, a);
 
   return *this;
 }

@@ -1,3 +1,11 @@
+2010-01-15  Jaroslav Hajek  <highegg@gmail.com>
+
+	* pt-mat.cc (SINGLE_TYPE_CONCAT, DO_SINGLE_TYPE_CONCAT,
+	DO_SINGLE_TYPE_CONCAT_NO_MUTATE): Remove macros.
+	(single_type_concat, do_single_type_concat,
+	do_single_type_concat_no_mutate): New template funcs.
+	(tree_matrix::rvalue1): Call them here.
+
 2010-01-14  Jaroslav Hajek  <highegg@gmail.com>
 
 	* strfns.cc (do_strcmp_fun, 

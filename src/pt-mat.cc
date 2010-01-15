@@ -724,66 +724,66 @@ maybe_warn_string_concat (bool all_dq_strings_p, bool all_sq_strings_p)
 		     "concatenation of different character string types may have unintended consequences");
 }
 
-#define SINGLE_TYPE_CONCAT(TYPE, EXTRACTOR) \
-  do \
-    { \
-      int dv_len = dv.length (); \
-      Array<octave_idx_type> ra_idx (dv_len > 1 ? dv_len : 2, 0); \
- \
-      for (tm_const::iterator p = tmp.begin (); p != tmp.end (); p++) \
-	{ \
-          OCTAVE_QUIT; \
- \
-	  tm_row_const row = *p; \
- \
-	  for (tm_row_const::iterator q = row.begin (); \
-	       q != row.end (); \
-	       q++) \
-	    { \
-	      OCTAVE_QUIT; \
- \
-	      TYPE ra = q->EXTRACTOR (); \
- \
-	      if (! error_state) \
-		{ \
-		  result.insert (ra, ra_idx); \
- \
-		  if (! error_state) \
-		    ra_idx(1) += ra.columns (); \
-		  else \
-		    goto done; \
-		} \
-	      else \
-		goto done; \
-	    } \
- \
-	  ra_idx(0) += row.rows (); \
-	  ra_idx(1) = 0; \
-	} \
-    } \
- while (0)
+template<class TYPE>
+static void 
+single_type_concat (TYPE& result,
+                    tm_const& tmp)
+{
+  octave_idx_type r = 0, c = 0;
 
-#define DO_SINGLE_TYPE_CONCAT(TYPE, EXTRACTOR) \
-  do \
-    { \
-      TYPE result (dv); \
- \
-      SINGLE_TYPE_CONCAT (TYPE, EXTRACTOR); \
- \
-      retval = result; \
-    } \
-  while (0)
+  for (tm_const::iterator p = tmp.begin (); p != tmp.end (); p++)
+    {
+      tm_row_const row = *p;
 
-#define DO_SINGLE_TYPE_CONCAT_NO_MUTATE(TYPE, EXTRACTOR, OV_TYPE) \
-  do \
-    { \
-      TYPE result (dv); \
- \
-      SINGLE_TYPE_CONCAT (TYPE, EXTRACTOR); \
- \
-      retval = octave_value (new OV_TYPE (result)); \
-    } \
-  while (0)
+      for (tm_row_const::iterator q = row.begin ();
+           q != row.end ();
+           q++)
+        {
+          OCTAVE_QUIT;
+
+          TYPE ra = octave_value_extract<TYPE> (*q);
+
+          if (! error_state)
+            {
+              result.insert (ra, r, c);
+
+              if (! error_state)
+                c += ra.columns ();
+              else
+                return;
+            }
+          else
+            return;
+        }
+
+      r += row.rows ();
+      c = 0;
+    }
+}
+
+template<class TYPE>
+static octave_value 
+do_single_type_concat (const dim_vector& dv,
+                       tm_const& tmp)
+{
+  TYPE result (dv);
+
+  single_type_concat (result, tmp);
+
+  return result;
+}
+
+template<class TYPE, class OV_TYPE>
+static octave_value 
+do_single_type_concat_no_mutate (const dim_vector& dv,
+                                 tm_const& tmp)
+{
+  TYPE result (dv);
+
+  single_type_concat (result, tmp);
+
+  return new OV_TYPE (result);
+}
 
 octave_value
 tree_matrix::rvalue1 (int)
@@ -885,30 +885,27 @@ tree_matrix::rvalue1 (int)
 	  if (any_sparse_p)
 	    {	    
 	      if (all_real_p)
-		DO_SINGLE_TYPE_CONCAT (SparseMatrix, sparse_matrix_value);
+		retval = do_single_type_concat<SparseMatrix> (dv, tmp);
 	      else
-		DO_SINGLE_TYPE_CONCAT_NO_MUTATE (SparseComplexMatrix,
-						 sparse_complex_matrix_value,
-						 octave_sparse_complex_matrix);
+                retval = do_single_type_concat_no_mutate<SparseComplexMatrix,
+                                octave_sparse_complex_matrix> (dv, tmp);
 	    }
 	  else
 	    {
 	      if (all_real_p)
-		DO_SINGLE_TYPE_CONCAT (NDArray, array_value);
+		retval = do_single_type_concat<NDArray> (dv, tmp);
 	      else
-		DO_SINGLE_TYPE_CONCAT_NO_MUTATE (ComplexNDArray,
-						 complex_array_value,
-						 octave_complex_matrix);
+                retval = do_single_type_concat_no_mutate<ComplexNDArray,
+                                octave_complex_matrix> (dv, tmp);
 	    }
 	}
       else if (result_type == "single")
 	{
 	  if (all_real_p)
-	    DO_SINGLE_TYPE_CONCAT (FloatNDArray, float_array_value);
+	    retval = do_single_type_concat<FloatNDArray> (dv, tmp);
 	  else
-	    DO_SINGLE_TYPE_CONCAT_NO_MUTATE (FloatComplexNDArray,
-					     float_complex_array_value,
-					     octave_float_complex_matrix);
+            retval = do_single_type_concat_no_mutate<FloatComplexNDArray,
+                        octave_float_complex_matrix> (dv, tmp);
 	}
       else if (result_type == "char")
 	{
@@ -918,33 +915,33 @@ tree_matrix::rvalue1 (int)
 
 	  charNDArray result (dv, Vstring_fill_char);
 
-	  SINGLE_TYPE_CONCAT (charNDArray, char_array_value);
+          single_type_concat (result, tmp);
 
 	  retval = octave_value (result, type);
 	}
       else if (result_type == "logical")
 	{
 	  if (any_sparse_p)
-	    DO_SINGLE_TYPE_CONCAT (SparseBoolMatrix, sparse_bool_matrix_value);
+	    retval = do_single_type_concat<SparseBoolMatrix> (dv, tmp);
 	  else
-	    DO_SINGLE_TYPE_CONCAT (boolNDArray, bool_array_value);
+	    retval = do_single_type_concat<boolNDArray> (dv, tmp);
 	}
       else if (result_type == "int8")
-	DO_SINGLE_TYPE_CONCAT (int8NDArray, int8_array_value);
+	retval = do_single_type_concat<int8NDArray> (dv, tmp);
       else if (result_type == "int16")
-	DO_SINGLE_TYPE_CONCAT (int16NDArray, int16_array_value);
+	retval = do_single_type_concat<int16NDArray> (dv, tmp);
       else if (result_type == "int32")
-	DO_SINGLE_TYPE_CONCAT (int32NDArray, int32_array_value);
+	retval = do_single_type_concat<int32NDArray> (dv, tmp);
       else if (result_type == "int64")
-	DO_SINGLE_TYPE_CONCAT (int64NDArray, int64_array_value);
+	retval = do_single_type_concat<int64NDArray> (dv, tmp);
       else if (result_type == "uint8")
-	DO_SINGLE_TYPE_CONCAT (uint8NDArray, uint8_array_value);
+	retval = do_single_type_concat<uint8NDArray> (dv, tmp);
       else if (result_type == "uint16")
-	DO_SINGLE_TYPE_CONCAT (uint16NDArray, uint16_array_value);
+	retval = do_single_type_concat<uint16NDArray> (dv, tmp);
       else if (result_type == "uint32")
-	DO_SINGLE_TYPE_CONCAT (uint32NDArray, uint32_array_value);
+	retval = do_single_type_concat<uint32NDArray> (dv, tmp);
       else if (result_type == "uint64")
-	DO_SINGLE_TYPE_CONCAT (uint64NDArray, uint64_array_value);
+	retval = do_single_type_concat<uint64NDArray> (dv, tmp);
       else
 	{
 	  // The line below might seem crazy, since we take a copy of

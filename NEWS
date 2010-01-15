@@ -80,6 +80,9 @@ Summary of important user-visible changes for version 3.3:
  ** Overloading functions for built-in classes (double, int8, cell etc) is now
     compatible with Matlab.
 
+ ** Performance of concatenation (using []) and the functions cat, horzcat and
+    vertcat has been improved for multidimensional arrays. 
+
  ** The operation-assignment operators +=, -=, *= and /= now behave more
     efficiently in certain cases. For instance, if m is a matrix and s
     a scalar, then the statement

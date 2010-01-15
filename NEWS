@@ -5,49 +5,51 @@ Summary of important user-visible changes for version 3.3:
     subset of the reference BLAS and LAPACK libraries has been removed
     from the Octave sources.
 
- ** The `lookup' function was extended to be more useful for general-purpose
-    binary searching. Using this improvement, the ismember function was
-    rewritten for significantly better performance.
+ ** The `lookup' function was extended to be more useful for
+    general-purpose binary searching.  Using this improvement, the
+    ismember function was rewritten for significantly better
+    performance.
 
  ** Real, integer and logical matrices, when used in indexing, will now
     cache the internal index_vector value (zero-based indices) when
     successfully used as indices, eliminating the conversion penalty for
-    subsequent indexing by the same matrix. In particular, this means it is
-    no longer needed to avoid repeated indexing by logical arrays using
-    `find' for performance reasons.
+    subsequent indexing by the same matrix.  In particular, this means it
+    is no longer needed to avoid repeated indexing by logical arrays
+    using find for performance reasons.
 
- ** Logical matrices are now treated more efficiently when used as indices.
-    Octave will keep the index as a logical mask unless the ratio of true 
-    elements is small enough, using a specialized code. Previously, all logical
-    matrices were always first converted to index vectors. This results in
-    savings in both memory and computing time. 
+ ** Logical matrices are now treated more efficiently when used as
+    indices.  Octave will keep the index as a logical mask unless the
+    ratio of true elements is small enough, using a specialized
+    code.  Previously, all logical matrices were always first converted
+    to index vectors.  This results in savings in both memory and
+    computing time.
 
- ** sub2ind and ind2sub were reimplemented as compiled functions for better
-    performance. These functions are now faster, can deliver more economized
-    results for ranges, and can reuse the index cache mechanism described in
-    previous paragraph.
+ ** The `sub2ind' and `ind2sub' functions were reimplemented as compiled
+    functions for better performance.  These functions are now faster,
+    can deliver more economized results for ranges, and can reuse the
+    index cache mechanism described in previous paragraph.
 
- ** The built-in function equivalents to associative operators (plus, times,
-    mtimes, and, or) have been extended to accept multiple arguments. This
-    is especially useful for summing (multiplying, etc.) lists of objects
-    (of possibly distinct types):
+ ** The built-in function equivalents to associative operators (`plus',
+    `times', `mtimes', `and', and `or') have been extended to accept
+    multiple arguments.  This is especially useful for summing
+    (multiplying, etc.) lists of objects (of possibly distinct types):
    
       matrix_sum = plus (matrix_list{:});
 
- ** An FTP object type based on libcurl has been implemented. These objects
-    allow ftp connections, downloads and uploads to be managed. An example of
-    its use might be
+ ** An FTP object type based on libcurl has been implemented.  These
+    objects allow ftp connections, downloads and uploads to be
+    managed.  For example,
 
-    fp = ftp ("ftp.octave.org);
-    cd (fp, "gnu/octave");
-    mget (fp, "octave-3.2.3.tar.bz2");
-    close (fp);
+      fp = ftp ("ftp.octave.org);
+      cd (fp, "gnu/octave");
+      mget (fp, "octave-3.2.3.tar.bz2");
+      close (fp);
 
- ** The default behavior of assert (observed, expected) has been relaxed
-    to employ less strict checking that does not require the internals
-    of the values to match. This avoids previously valid tests from
-    breaking due to new internal classes introduced in future Octave
-    versions.
+ ** The default behavior of `assert (observed, expected)' has been
+    relaxed to employ less strict checking that does not require the
+    internals of the values to match.  This avoids previously valid
+    tests from breaking due to new internal classes introduced in future
+    Octave versions.
 
     For instance, all of these assertions were true in Octave 3.0.x
     but false in 3.2.x due to new optimizations and improvements:
@@ -56,41 +58,47 @@ Summary of important user-visible changes for version 3.3:
       assert (zeros (0, 0), [])
       assert (2*ones (1, 5), (2) (ones (1,5)))
 
- ** The behavior of library functions ismatrix, issquare and issymmetric has
-    been changed for better consistency.
+ ** The behavior of library functions `ismatrix', `issquare', and
+    `issymmetric' has been changed for better consistency.
     
-    * ismatrix now returns true for all numeric and logical 2d or Nd matrices.
-      Previously, ismatrix returned false if the first or second dimension was 
-      zero. Hence, `ismatrix ([])' was false, while `ismatrix (zeros (1,2,0))'
-      was true.
+    * The `ismatrix' function now returns true for all numeric and
+      logical 2d or Nd matrices.  Previously, `ismatrix' returned false
+      if the first or second dimension was zero.  Hence, `ismatrix ([])'
+      was false, while `ismatrix (zeros (1,2,0))' was true.
 
-    * issquare now returns a logical scalar, and is equivalent to the expression
-      `ismatrix (x) && ndims (x) == 2 && rows (x) == columns (x)'. The dimension
-      is no longer returned. As a result, `issquare ([])' now yields true.
+    * The `issquare' function now returns a logical scalar, and is
+      equivalent to the expression
+
+        ismatrix (x) && ndims (x) == 2 && rows (x) == columns (x)
+
+      The dimension is no longer returned.  As a result, `issquare ([])'
+      now yields true.
     
-    * issymmetric now checks for symmetry instead of hermitianness. For the latter,
-      ishermitian was created. Also, logical scalar is returned rather than the
-      dimension, so `issymmetric ([])' is now true.
+    * The `issymmetric' function now checks for symmetry instead of
+      hermitianness.  For the latter, ishermitian was created.  Also,
+      logical scalar is returned rather than the dimension, so
+      `issymmetric ([])' is now true.
       
+ ** Function handles are now aware of overloaded functions.  If a
+    function is overloaded, the handle determines at the time of its
+    reference which function to call.  A non-overloaded version does not
+    need to exist.
 
- ** Function handles are now aware of overloaded functions. If a function
-    is overloaded, the handle determines at the time of its reference which
-    function to call. A non-overloaded version does not need to exist.
+ ** Overloading functions for built-in classes (double, int8, cell,
+    etc.) is now compatible with Matlab.
 
- ** Overloading functions for built-in classes (double, int8, cell etc) is now
-    compatible with Matlab.
-
- ** Performance of concatenation (using []) and the functions cat, horzcat and
-    vertcat has been improved for multidimensional arrays. 
+ ** Performance of concatenation (using []) and the functions `cat',
+    `horzcat', and `vertcat' has been improved for multidimensional
+    arrays.
 
  ** The operation-assignment operators +=, -=, *= and /= now behave more
-    efficiently in certain cases. For instance, if m is a matrix and s
-    a scalar, then the statement
+    efficiently in certain cases.  For instance, if M is a matrix and S a
+    scalar, then the statement
 
-      m += s;
+      M += S;
  
-    will operate on m's data in-place if it is not shared by another variable,
-    usually increasing both time and memory efficiency.
+    will operate on M's data in-place if it is not shared by another
+    variable, usually increasing both time and memory efficiency.
     
     Only selected common combinations are affected, namely:
     
@@ -107,47 +115,54 @@ Summary of important user-visible changes for version 3.3:
       logical matrix |= logical matrix
       logical matrix &= logical matrix
 
-    where matrix and scalar belong to the same class. The left-hand side must be
-    a simple variable reference.
+    where matrix and scalar belong to the same class.  The left-hand
+    side must be a simple variable reference.
 
-    Moreover, when unary operators occur in expressions, Octave will also try to do
-    the operation in-place if it's argument is a temporary expresssion.
+    Moreover, when unary operators occur in expressions, Octave will
+    also try to do the operation in-place if it's argument is a
+    temporary expresssion.
 
- ** The effect of comparison operators (<,>,<=,>=) when applied to complex numbers 
-    has changed to be consistent with the strict ordering defined by max, min and sort.
-    More specifically, complex numbers are compared by lexicographical comparison of
-    the pairs [abs(z), arg(z)]. Previously, only real parts were compared; this can be
-    trivially achieved by wrapping the operands in real().
+ ** The effect of comparison operators (<, >, <=, and >=) applied to
+    complex numbers has changed to be consistent with the strict
+    ordering defined by the `max', `min', and `sort' functions.  More
+    specifically, complex numbers are compared by lexicographical
+    comparison of the pairs `[abs(z), arg(z)]'.  Previously, only real
+    parts were compared; this can be trivially achieved by wrapping the
+    operands in real().
 
- ** The automatic simplification of complex computation results has changed. Octave will
-    now simplify any complex number with a zero imaginary part or any complex matrix
-    with all elements having zero imaginary part to a real value. Previously, this was done
-    only for positive zeros.
-    Note that the behavior of the `complex' function is unchanged and it still
-    produces a complex value even if the imaginary part is zero.
+ ** The automatic simplification of complex computation results has
+    changed.  Octave will now simplify any complex number with a zero
+    imaginary part or any complex matrix with all elements having zero
+    imaginary part to a real value.  Previously, this was done only for
+    positive zeros.  Note that the behavior of the complex function is
+    unchanged and it still produces a complex value even if the
+    imaginary part is zero.
 
- ** As a side effect of code refactoring in liboctave, the binary logical operations
-    are now more easily amenable to compiler optimizations and are thus significantly
-    faster.
+ ** As a side effect of code refactoring in liboctave, the binary
+    logical operations are now more easily amenable to compiler
+    optimizations and are thus significantly faster.
 
- ** Octave now allows user-defined subsasgn methods to optimize out redundant copies.
-    For more information, see the manual.
+ ** Octave now allows user-defined `subsasgn' methods to optimize out
+    redundant copies.  For more information, see the manual.
 
- ** More efficient matrix division handling. Octave is now able to handle the expressions
+ ** More efficient matrix division handling. Octave is now able to
+    handle the expressions
     
-       M' \ v
-       M.' \ v
-       v / M 
+       M' \ V
+       M.' \ V
+       V / M 
 
-    (M is a matrix and v is a vector) more efficiently in certain cases. 
-    In particular, if M is triangular, all three expressions will be handled by a single call to 
-    xTRTRS, with appropriate flags. Previously, all three expressions required a physical transpose
-    of M.
+    (M is a matrix and V is a vector) more efficiently in certain cases.
+    In particular, if M is triangular, all three expressions will be
+    handled by a single call to xTRTRS (from LAPACK), with appropriate
+    flags. Previously, all three expressions required a physical
+    transpose of M.
 
- ** More efficient handling of certain mixed real-complex matrix operations.
-    For instance, if RM is a real matrix and CM a complex matrix,
+ ** More efficient handling of certain mixed real-complex matrix
+    operations.  For instance, if RM is a real matrix and CM a complex
+    matrix,
     
-      RM * CM 
+      RM * CM
 
     can now be evaluated either as
 
@@ -157,35 +172,43 @@ Summary of important user-visible changes for version 3.3:
 
       complex (RM) * CM,
 
-    depending on the dimensions. The 1st form requires more temporaries and copying,
-    but halves the count of FLOPs, which normally brings better performance if
-    RM has enough rows. Previously, the 2nd form was always used.
+    depending on the dimensions.  The first form requires more temporaries
+    and copying, but halves the FLOP count, which normally brings better
+    performance if RM has enough rows.  Previously, the second form was
+    always used.
 
     Matrix division is similarly affected. 
 
- ** More efficient handling of triangular matrix factors returned from factorizations.
-    The functions for computing QR, LU and Cholesky factorizations will now automatically
-    return the triangular matrix factors with proper internal matrix_type set, so that it
-    won't need to be computed when the matrix is used for division.
+ ** More efficient handling of triangular matrix factors returned from
+    factorizations.  The functions for computing QR, LU and Cholesky
+    factorizations will now automatically return the triangular matrix
+    factors with proper internal matrix_type set, so that it won't need
+    to be computed when the matrix is used for division.
 
- ** The built-in "sum" function now handles the non-native summation (i.e. double precision
-    sum of single or integer inputs) more efficiently, avoiding a temporary conversion of
-    the whole input array to doubles. Further, "sum" can now accept an "extra" option argument,
-    using a compensated summation algorithm rather than a straightforward sum, which significantly
-    improves precision if lots of cancellation occurs in the summation.
+ ** The built-in `sum' function now handles the non-native summation
+    (i.e., double precision sum of single or integer inputs) more
+    efficiently, avoiding a temporary conversion of the whole input
+    array to doubles.  Further, `sum' can now accept an extra option
+    argument, using a compensated summation algorithm rather than a
+    straightforward sum, which significantly improves precision if lots
+    of cancellation occurs in the summation.
 
- ** The built-in "bsxfun" function now uses optimized code for certain cases where built-in
-    operator handles are passed in. Namely, the optimizations concern the operators
-    plus, minus, times, ldivide, rdivide, power, and, or (for logical arrays), the relational
-    operators eq, ne, lt, le, gt, ge, and the functions min and max.
-    Optimizations only apply when both operands are of the same built-in class. Mixed real/complex
-    and single/double operations will first convert both operands to a common type.
+ ** The built-in `bsxfun' function now uses optimized code for certain
+    cases where built-in operator handles are passed in.  Namely, the
+    optimizations concern the operators `plus', `minus', `times',
+    `ldivide', `rdivide', `power', `and', `or' (for logical arrays),
+    the relational operators `eq', `ne', `lt', `le', `gt', `ge', and the
+    functions `min' and `max'.  Optimizations only apply when both
+    operands are of the same built-in class.  Mixed real/complex and
+    single/double operations will first convert both operands to a
+    common type.
 
- ** "strfind" and "strrep" now have compiled implementations, facilitating significantly 
-    more efficient searching and replacing in strings, especially with longer patterns.
-    The code of "strcat" has been vectorized and is now much more efficient
-    when lots of strings are concatenated. "strcmpi" and "strncmpi" are now built-in functions,
-    providing better performance.
+ ** The `strfind' and `strrep' functions now have compiled
+    implementations, facilitating significantly more efficient searching
+    and replacing in strings, especially with longer patterns.  The code
+    of `strcat' has been vectorized and is now much more efficient when
+    many strings are concatenated.  The `strcmpi' and `strncmpi'
+    functions are now built-in functions, providing better performance.
 
 Summary of important user-visible changes for version 3.2:
 ---------------------------------------------------------

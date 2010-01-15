@@ -1,3 +1,9 @@
+2010-01-15  Jaroslav Hajek  <highegg@gmail.com>
+
+	* Array-b.cc: Inline ascending and descending sort.
+	(do_bool_partition): New helper template function.
+	(octave_sort<bool>::sort): Provide specializations.
+	
 2010-01-14  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Array.cc (Array<T>::insert (const Array<T>&, const

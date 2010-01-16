@@ -177,10 +177,6 @@ function [options, valid] = __pltopt1__ (caller, opt, err_on_invalid)
 	      || topt == ">" || topt == "<" || topt == "p"
 	      || topt == "h" || topt == "@")
 	have_marker = true;
-	## Backward compatibility.  Leave undocumented.
-	if (topt == "@")
-	  topt = "+";
-	endif
 	options.marker = topt;
 ### Numeric color specs for backward compatibility.  Leave undocumented.
       elseif (topt == "k" || topt == "0")

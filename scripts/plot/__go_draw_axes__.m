@@ -90,6 +90,10 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
     fputs (plot_stream, "unset x2tics;\n");
     fputs (plot_stream, "unset x2tics;\n");
 
+    # Reset next marker calculation
+    markerorder = axis_obj.markerorder;
+    next_marker (0);
+
     if (! isempty (axis_obj.title))
       t = get (axis_obj.title);
       if (isempty (t.string))
@@ -523,7 +527,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
 	  endif
 
 	  style = do_linestyle_command (obj, obj.color, data_idx, mono, 
-					plot_stream, errbars);
+					plot_stream, markerorder, errbars);
 
           withclause{data_idx} = sprintf ("with %s linestyle %d",
 					  style{1}, data_idx);
@@ -794,6 +798,8 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
 	     if (isfield (obj, "marker"))
 	       if (isfield (obj, "marker"))
 		 switch (obj.marker)
+                   case "@"
+                     [pt, pt2] = next_marker (markerorder);
 		   case "+"
 		     pt = pt2 = "pt 1";
 		   case "o"
@@ -1025,7 +1031,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
 	    have_3d_patch(data_idx) = false;
 	    style = do_linestyle_command (obj, obj.edgecolor,
 					  data_idx, mono, 
-					  plot_stream);
+					  plot_stream, markerorder);
 	    if (isempty (obj.keylabel))
 	      titlespec{data_idx} = "title \"\"";
 	    else
@@ -1567,7 +1573,7 @@ function fontspec = create_fontspec (f, s, gp_term)
 endfunction
 
 function style = do_linestyle_command (obj, linecolor, idx, mono,
-				       plot_stream, errbars = "")
+				       plot_stream, markerorder, errbars = "")
   style = {};
 
   fprintf (plot_stream, "set style line %d default;\n", idx);
@@ -1627,6 +1633,8 @@ function style = do_linestyle_command (obj, linecolor, idx, mono,
 
   if (isfield (obj, "marker"))
     switch (obj.marker)
+      case "@"
+        [pt, pt2] = next_marker (markerorder);
       case "+"
 	pt = pt2 = "1";
       case "o"
@@ -1782,6 +1790,57 @@ function style = do_linestyle_command (obj, linecolor, idx, mono,
 
   fputs (plot_stream, ";\n");
 
+endfunction
+
+function [pt, pt2] = next_marker (__set__)
+  persistent __next_marker__ = 0;
+
+  if (isnumeric (__set__))
+    __next_marker__ = __set__;
+  else
+
+    __marker__ = __set__ (rem (__next_marker__ ++, length (__set__)) + 1);
+    switch (__marker__)
+      case "+"
+	pt = pt2 = "1";
+      case "o"
+	pt = "6";
+	pt2 = "7";
+      case "*"
+	pt = pt2 = "3";
+      case "."
+	pt = pt2 = "0";
+      case "x"
+	pt = pt2 = "2";
+      case "s"
+	pt = "4";
+	pt2 = "5";
+      case "d"
+	pt = "13";
+	pt2 = "14";
+      case "^"
+	pt = "8";
+	pt2 = "9";
+      case "v"
+	pt = "10";
+	pt2 = "11";
+      case ">"
+	## FIXME missing point type 
+	pt = "8";
+	pt2 = "9";
+      case "<"
+	## FIXME missing point type 
+	pt = "10";
+	pt2 = "11";
+      case "p"
+	## FIXME missing point type 
+	pt = pt2 = "3";
+      case "h"
+	pt = pt2 = "3";
+      otherwise
+	pt = pt2 = "";
+    endswitch
+  endif
 endfunction
 
 function nd = __calc_dimensions__ (obj)

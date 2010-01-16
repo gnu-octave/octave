@@ -130,6 +130,9 @@
 ## @itemx ^
 ## Used in combination with the points or linespoints styles, set the point
 ## style.
+##
+## @item @@
+## Select the next unused point style.
 ## @end table
 ##
 ## The @var{fmt} argument may also be used to assign key titles.

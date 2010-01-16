@@ -1,3 +1,10 @@
+2010-01-16  David Bateman  <dbateman@free.fr>
+
+	* graphics.h.in (line::properties, surface::properties,
+	patch::properties): Allow the use of a "@" marker.
+	(axes::properties): Add markerorder properties to set the
+	order of the marker styles for the "@" marker.
+
 2010-01-15  Jaroslav Hajek  <highegg@gmail.com>
 
 	* pt-mat.cc (SINGLE_TYPE_CONCAT, DO_SINGLE_TYPE_CONCAT,

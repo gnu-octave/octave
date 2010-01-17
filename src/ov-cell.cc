@@ -1339,7 +1339,30 @@ DEFUN (struct2cell, args, ,
 Create a new cell array from the objects stored in the struct object.\n\
 If @var{f} is the number of fields in the structure, the resulting\n\
 cell array will have a dimension vector corresponding to\n\
-@code{[@var{F} size(@var{S})]}.\n\
+@code{[@var{F} size(@var{S})]}. For example:\n\
+\n\
+@example\n\
+@group\n\
+  s = struct('name', @{'Peter', 'Hannah', 'Robert'@}, 'age', @{23, 16, 3@});\n\
+  c = struct2cell(s)\n\
+     @result{} c = @{1x1x3 Cell Array@}\n\
+  c(1,1,:)(:)\n\
+     @result{} ans =\n\
+        @{\n\
+          [1,1] = Peter\n\
+          [2,1] = Hannah\n\
+          [3,1] = Robert\n\
+        @}\n\
+  c(2,1,:)(:)\n\
+     @result{} ans =\n\
+        @{\n\
+          [1,1] = 23\n\
+          [2,1] = 16\n\
+          [3,1] = 3\n\
+        @}\n\
+@end group\n\
+@end example\n\
+\n\
 @seealso{cell2struct, fieldnames}\n\
 @end deftypefn")
 {
@@ -1401,6 +1424,18 @@ cell array will have a dimension vector corresponding to\n\
 
   return retval;
 }
+
+/*
+%!test
+%!  keys = cellstr (char (floor (rand (11,10)*24+65)))';
+%!  vals = cellfun(@(x) mat2cell(rand (19,1), ones (19,1), 1), ...
+%!           mat2cell([1:11]', ones(11,1), 1), "uniformoutput", false)';
+%!  s = struct ([keys; vals]{:});
+%!  t = cell2struct ([vals{:}], keys, 2);
+%!  assert (s, t);
+%!  assert (struct2cell (s), [vals{:}]');
+%!  assert (fieldnames (s), keys');
+*/
 
 mxArray *
 octave_cell::as_mxArray (void) const

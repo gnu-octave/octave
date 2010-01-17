@@ -837,7 +837,8 @@ If the argument is an object, return the underlying struct.\n\
 DEFUN (isstruct, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} isstruct (@var{expr})\n\
-Return 1 if the value of the expression @var{expr} is a structure.\n\
+Return 1 if the value of the expression @var{expr} is a structure\n\
+(or a structure array).\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -885,6 +886,13 @@ argument that is not a structure.\n\
 
   return retval;
 }
+
+/*
+%!# test preservation of fieldname order
+%!test
+%!  x(3).d=1; x(2).a=2; x(1).b=3; x(2).c=3;
+%!  assert(fieldnames(x), {"d"; "a"; "b"; "c"});
+*/
 
 DEFUN (isfield, args, ,
   "-*- texinfo -*-\n\
@@ -939,6 +947,18 @@ Return the number of fields of the structure @var{s}.\n\
 
   return retval;
 }
+
+/*
+%!# test isfield
+%!test
+%!  x(3).d=1; x(2).a=2; x(1).b=3; x(2).c=3;
+%!  assert (isfield (x, "b"));
+%!assert( isfield( struct("a", "1"), "a"));
+%!assert( isfield( {1}, "c"), logical (0));
+%!assert( isfield( struct("a", "1"), 10), logical (0));
+%!assert( isfield( struct("a", "b"), "a "), logical (0));
+
+*/
 
 // Check that the dimensions of the input arguments are correct.
 
@@ -1014,11 +1034,11 @@ A = cell2struct (@{'Peter', 'Hannah', 'Robert';\n\
                    185, 170, 168@},\n\
                  @{'Name','Height'@}, 1);\n\
 A(1)\n\
-@result{} ans =\n\
-      @{\n\
-        Height = 185\n\
-        Name   = Peter\n\
-      @}\n\
+     @result{} ans =\n\
+        @{\n\
+          Name   = Peter\n\
+          Height = 185\n\
+        @}\n\
 \n\
 @end group\n\
 @end example\n\
@@ -1187,14 +1207,27 @@ A(1)\n\
   return retval;
 }
 
+/*
+%!# test cell2struct versus struct2cell
+%!test
+%!  keys = cellstr (char (floor (rand (100,10)*24+65)))';
+%!  vals = mat2cell(rand (100,1), ones (100,1), 1)';
+%!  s = struct ([keys; vals]{:});
+%!  t = cell2struct (vals, keys, 2);
+%!  assert (s, t);
+%!  assert (struct2cell (s), vals');
+%!  assert (fieldnames (s), keys');
+*/
+
+
 // So we can call Fcellstr directly.
 extern octave_value_list Fcellstr (const octave_value_list& args, int);
 
 DEFUN (rmfield, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} rmfield (@var{s}, @var{f})\n\
-Remove field @var{f} from the structure @var{s}.  If @var{f} is a\n\
-cell array of character strings or a character array, remove the\n\
+Return a copy of the structure (array) @var{s} with the field @var{f} removed.\n\
+If @var{f} is a cell array of strings or a character array, remove the\n\
 named fields.\n\
 @seealso{cellstr, iscellstr, setfield}\n\
 @end deftypefn")
@@ -1237,6 +1270,15 @@ named fields.\n\
 
   return retval;
 }
+
+/*
+%!# test rmfield
+%!test
+%!  x(3).d=1; x(2).a=2; x(1).b=3; x(2).c=3; x(6).f="abc123";
+%!  y = rmfield (x, {"a", "f"});
+%!  assert (fieldnames (y), {"d"; "b"; "c"});
+%!  assert (size (y), [1, 6]);
+*/
 
 bool
 octave_struct::save_ascii (std::ostream& os)

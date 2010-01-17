@@ -17,15 +17,70 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{t}, @var{p}] =} orderfields (@var{s1}, @var{s2})
-## Return a struct with fields arranged alphabetically or as specified
-## by @var{s2} and a corresponding permutation vector.
+## @deftypefn {Function File} {[@var{t}, @var{p}] =} orderfields (@var{s1}[, @var{s2}])
+## Return a copy of @var{s1} with fields arranged alphabetically or
+## as specified by @var{s2}.
 ##
 ## Given one struct, arrange field names in @var{s1} alphabetically.
 ##
-## Given two structs, arrange field names in @var{s1} as they appear
-## in @var{s2}.  The second argument may also specify the order in
-## a permutation vector or a cell array of strings.
+## If the second argument is a struct, arrange field names in @var{s1}
+## as they appear in @var{s2}.  The second argument may also specify the
+## order in a permutation vector or a cell array of strings containing
+## the fieldnames of @var{s1} in the desired order.
+##
+## The optional second output argument @var{p} is assigned the permutation vector
+## which converts the original name order into the new name order.
+##
+## Examples:
+##
+## @example
+## @group
+## s = struct("d", 4, "b", 2, "a", 1, "c", 3);
+## t1 = orderfields(s)
+##      @result{} t1 = 
+##         @{
+##           a =  1
+##           b =  2
+##           c =  3
+##           d =  4
+##         @}
+## @end group
+## @group
+## t = struct("d", @{@}, "c", @{@}, "b", "a", @{@});
+## t2 = orderfields(s, t)
+##      @result{} t2 =
+##         @{
+##           d =  4
+##           c =  3
+##           b =  2
+##           a =  1
+##         @}
+## @end group
+## @group
+## t3 = orderfields(s, [3, 2, 4, 1]);
+##      @result{} t3 =
+##         @{
+##           a =  1
+##           b =  2
+##           c =  3
+##           d =  4
+##         @}
+## @end group
+## @group
+## [t4, p] = orderfields(s, @{"d", "c", "b", "a"@})
+##      @result{} t4 = @{
+##           d =  4
+##           c =  3
+##           b =  2
+##           a =  1
+##         @}
+##      p =
+##         1
+##         4
+##         2
+##         3
+## @end group
+## @end example
 ##
 ## @seealso{getfield, rmfield, isfield, isstruct, fieldnames, struct}
 ## @end deftypefn
@@ -113,9 +168,10 @@ endfunction
 %! assert (a(2).foo, 5)
 %! assert (a(2).bar, 6)
 %!test
-%! a(2) = orderfields (b, [2 1]);
+%! [a(2), p] = orderfields (b, [2 1]);
 %! assert (a(2).foo, 5)
 %! assert (a(2).bar, 6)
+%! assert (p, [2; 1]);
 %!test
 %! a(2) = orderfields (b, fieldnames (a));
 %! assert (a(2).foo, 5)

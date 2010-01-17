@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} structfun (@var{func}, @var{s})
-## @deftypefnx {Function File} {[@var{a}, @var{b}] =} structfun (@dots{})
+## @deftypefnx {Function File} {[@var{a}, @dots{}] =} structfun (@dots{})
 ## @deftypefnx {Function File} {} structfun (@dots{}, "ErrorHandler", @var{errfunc})
 ## @deftypefnx {Function File} {} structfun (@dots{}, "UniformOutput", @var{val})
 ## 
@@ -35,7 +35,7 @@
 ##
 ## If the parameter "UniformOutput" is set to true (the default), then the function
 ## must return a single element which will be concatenated into the
-## return value.  If "UniformOutput" is false, the outputs placed in a structure
+## return value.  If "UniformOutput" is false, the outputs are placed into a structure
 ## with the same fieldnames as the input structure.
 ## 
 ## @example
@@ -44,10 +44,15 @@
 ## s.name2 = "Jill Jones"; 
 ## structfun (@@(x) regexp (x, '(\w+)$', "matches")@{1@}, s, 
 ##            "UniformOutput", false)
+##     @result{}
+##    @{
+##      name1 = Smith
+##      name2 = Jones
+##    @} 
 ## @end group
 ## @end example
 ## 
-## Given the parameter "ErrorHandler", then @var{errfunc} defines a function to
+## Given the parameter "ErrorHandler", @var{errfunc} defines a function to
 ## call in case @var{func} generates an error.  The form of the function is
 ## 
 ## @example
@@ -58,7 +63,9 @@
 ## @var{func}, given by @var{se}.  This is a structure with the elements
 ## "identifier", "message" and "index", giving respectively the error
 ## identifier, the error message, and the index into the input arguments
-## of the element that caused the error.
+## of the element that caused the error.  For an example on how to use
+## an error handler, @pxref{doc-cellfun, @code{cellfun}}. 
+##
 ## @seealso{cellfun, arrayfun}
 ## @end deftypefn
 

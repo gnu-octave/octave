@@ -1,3 +1,12 @@
+2010-01-17  Thorsten Meyer  <thorsten.meyier@gmx.de>
+
+	* ov-cell.cc (Fstruct2cell): Add example, add test.
+	* DLD-FUNCTIONS/cellfun.cc (Fcellfun, Fnum2cell), ov-struct.cc
+	(Fisstruct): Fix docstring.
+	* DLD-FUNCTIONS/cellfun.cc (Fcellslices, Fisfield, Ffieldnames,
+	Frmfield): Add test.
+        * ov-struct.cc (Fcell2struct): Fix docstring, add test.
+
 2010-01-16  David Bateman  <dbateman@free.fr>
 
 	* graphics.h.in (line::properties, surface::properties,

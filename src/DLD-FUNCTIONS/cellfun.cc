@@ -230,7 +230,7 @@ DEFUN_DLD (cellfun, args, nargout,
 @deftypefnx {Loadable Function} {} cellfun (\"isclass\", @var{c}, @var{class})\n\
 @deftypefnx {Loadable Function} {} cellfun (@var{func}, @var{c})\n\
 @deftypefnx {Loadable Function} {} cellfun (@var{func}, @var{c}, @var{d})\n\
-@deftypefnx {Loadable Function} {[@var{a}, @var{b}] =} cellfun (@dots{})\n\
+@deftypefnx {Loadable Function} {[@var{a}, @dots{}] =} cellfun (@dots{})\n\
 @deftypefnx {Loadable Function} {} cellfun (@dots{}, 'ErrorHandler', @var{errfunc})\n\
 @deftypefnx {Loadable Function} {} cellfun (@dots{}, 'UniformOutput', @var{val})\n\
 \n\
@@ -268,19 +268,37 @@ can return one or more output arguments.  For example\n\
 @example\n\
 @group\n\
 cellfun (@@atan2, @{1, 0@}, @{0, 1@})\n\
-@result{}ans = [1.57080   0.00000]\n\
+     @result{}ans = [1.57080   0.00000]\n\
 @end group\n\
 @end example\n\
 \n\
-Note that the default output argument is an array of the same size as the\n\
+The number of output arguments of @code{cellfun} matches the number of output\n\
+arguments of the function.  The outputs of the function will be collected into the\n\
+output arguments of @code{cellfun} like this:\n\
+\n\
+@example\n\
+@group\n\
+function [a, b] = twoouts (x)\n\
+  a = x;\n\
+  b = x*x;\n\
+endfunction\n\
+[aa, bb] = cellfun(@@twoouts, @{1, 2, 3@})\n\
+     @result{}\n\
+        aa = \n\
+           1 2 3\n\
+        bb =\n\
+           1 4 9\n\
+@end group\n\
+@end example\n\
+Note that per default the output argument(s) are arrays of the same size as the\n\
 input arguments.\n\
 Input arguments that are singleton (1x1) cells will be automatically expanded\n\
 to the size of the other arguments.\n\
 \n\
 If the parameter 'UniformOutput' is set to true (the default), then the function\n\
-must return a single element which will be concatenated into the\n\
-return value.  If 'UniformOutput' is false, the outputs are concatenated in\n\
-a cell array.  For example\n\
+must return scalars which will be concatenated into the\n\
+return array(s).  If 'UniformOutput' is false, the outputs are concatenated into\n\
+a cell array (or cell arrays).  For example\n\
 \n\
 @example\n\
 @group\n\
@@ -1084,7 +1102,31 @@ DEFUN_DLD (num2cell, args, ,
 @deftypefnx {Loadable Function} {@var{c} =} num2cell (@var{m}, @var{dim})\n\
 Convert the matrix @var{m} to a cell array.  If @var{dim} is defined, the\n\
 value @var{c} is of dimension 1 in this dimension and the elements of\n\
-@var{m} are placed in slices in @var{c}.\n\
+@var{m} are placed into @var{c} in slices.  For example:\n\
+\n\
+@example\n\
+@group\n\
+num2cell([1,2;3,4])\n\
+     @result{} ans =\n\
+        @{\n\
+          [1,1] =  1\n\
+          [2,1] =  3\n\
+          [1,2] =  2\n\
+          [2,2] =  4\n\
+        @}\n\
+num2cell([1,2;3,4],1)\n\
+     @result{} ans =\n\
+        @{\n\
+          [1,1] =\n\
+             1\n\
+             3\n\
+          [1,2] =\n\
+             2\n\
+             4\n\
+        @}\n\
+@end group\n\
+@end example\n\
+\n\
 @seealso{mat2cell}\n\
 @end deftypefn") 
 {
@@ -1538,7 +1580,14 @@ If @var{X} is a matrix or array, indexing is done along the last dimension.\n\
 
   return retval;
 }
-	  
+
+/*
+%!test
+%! m = [1, 2, 3, 4; 5, 6, 7, 8; 9, 10, 11, 12];
+%! c = cellslices (m, [1, 2], [2, 3]);
+%! assert (c, {[1, 2; 5, 6; 9, 10], [2, 3; 6, 7; 10, 11]});
+*/
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

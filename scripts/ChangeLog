@@ -1,3 +1,11 @@
+2010-01-17  Thorsten Meyer  <thorsten.meyier@gmx.de>
+
+	* general/celldisp.m: Add example, add demo.
+
+	* general/structfun.m, miscellaneous/getfield.m,
+	miscellaneous/orderfields.m, miscellaneous/setfield.m,
+	miscellaneous/substruct.m: Update documentation string. 
+
 2010-01-16  David Bateman  <dbateman@free.fr>
 
 	* plot/__go_draw_axes__.m (next_marker):  New function to find a

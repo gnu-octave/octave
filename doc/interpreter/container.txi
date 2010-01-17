@@ -628,11 +628,13 @@ object, such as @ref{doc-length, @code{length}}, @ref{doc-numel,
 
 As an alternative to creating empty cell arrays, and then filling them, it
 is possible to convert numerical arrays into cell arrays using the
-@code{num2cell} and @code{mat2cell} functions.
+@code{num2cell}, @code{mat2cell} and @code{cellslices} functions.
 
 @DOCSTRING(num2cell)
 
 @DOCSTRING(mat2cell)
+
+@DOCSTRING(cellslices)
 
 @node Indexing Cell Arrays
 @subsection Indexing Cell Arrays

@@ -19,23 +19,24 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{k1}, @dots{}, @var{v1}] =} setfield (@var{s}, @var{k1}, @var{v1}, @dots{})
-## Set field members in a structure.
+## Set a field member in a (nested) structure array.  For example:
 ##
 ## @example
 ## @group
 ## oo(1,1).f0 = 1;
 ## oo = setfield (oo, @{1,2@}, "fd", @{3@}, "b", 6);
 ## oo(1,2).fd(3).b == 6
-## @result{} ans = 1
+##      @result{} ans = 1
 ## @end group
 ## @end example
 ##
-## Note that this function could be written
+## Note that the same result as in the above example could be achieved by:
 ##
 ## @example
 ## @group
 ## i1 = @{1,2@}; i2 = "fd"; i3 = @{3@}; i4 = "b";
-## oo(i1@{:@}).(i2)(i3@{:@}).(i4) == 6;
+## oo(i1@{:@}).(i2)(i3@{:@}).(i4) == 6
+##      @result{} ans = 1
 ## @end group
 ## @end example
 ## @seealso{getfield, rmfield, isfield, isstruct, fieldnames, struct}

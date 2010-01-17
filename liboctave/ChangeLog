@@ -1,3 +1,8 @@
+2010-01-17  Jaroslav Hajek  <highegg@gmail.com>
+
+	* CMatrix.cc (xgemm): Use octave_idx_type rather than int.
+	* fCMatrix.cc (xgemm): Ditto.
+
 2010-01-16  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* oct-time.cc: Avoid to include nonneeded headers from Win32 API,

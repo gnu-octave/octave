@@ -3788,8 +3788,8 @@ xgemm (const ComplexMatrix& a, const ComplexMatrix& b,
                                        a.data (), lda, 0.0, c, a_nr
                                        F77_CHAR_ARG_LEN (1)
                                        F77_CHAR_ARG_LEN (1)));
-              for (int j = 0; j < a_nr; j++)
-                for (int i = 0; i < j; i++)
+              for (octave_idx_type j = 0; j < a_nr; j++)
+                for (octave_idx_type i = 0; i < j; i++)
                   retval.xelem (j,i) = std::conj (retval.xelem (i,j));
             }
           else
@@ -3800,8 +3800,8 @@ xgemm (const ComplexMatrix& a, const ComplexMatrix& b,
                                        a.data (), lda, 0.0, c, a_nr
                                        F77_CHAR_ARG_LEN (1)
                                        F77_CHAR_ARG_LEN (1)));
-              for (int j = 0; j < a_nr; j++)
-                for (int i = 0; i < j; i++)
+              for (octave_idx_type j = 0; j < a_nr; j++)
+                for (octave_idx_type i = 0; i < j; i++)
                   retval.xelem (j,i) = retval.xelem (i,j);
 
             }

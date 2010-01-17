@@ -1,3 +1,9 @@
+2010-01-16  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* oct-time.cc: Avoid to include nonneeded headers from Win32 API,
+	especially winsock.h. Include <sys/time.h> unconditionally, as it is
+	now provided by gnulib, in order to get gettimeofday defined.
+
 2010-01-15  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Array.cc (Array<T>::insert): Rewrite using assign.

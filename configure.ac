@@ -74,6 +74,22 @@ esac
 
 AC_USE_SYSTEM_EXTENSIONS
 
+### Check for MSVC
+have_msvc=no
+case "$canonical_host_type" in
+  *-*-msdosmsvc)
+    have_msvc=yes
+  ;;
+  *-*-mingw*)
+    AC_MSG_CHECKING([for MSVC compiler])
+    AC_PREPROC_IFELSE([
+#ifndef _MSC_VER
+#error "Not MSVC compiler"
+#endif], have_msvc=yes, have_msvc=no)
+    AC_MSG_RESULT([$have_msvc])
+  ;;
+esac
+
 ### Path separator.
 sepchar=:
 AC_ARG_WITH(sepchar,
@@ -280,6 +296,11 @@ else
     ;;
     *-*-msdosmsvc)
     ;;
+    *-*-mingw*)
+      if test "$have_msvc" = "no"; then
+	INCLUDE_DEPS=false
+      fi
+    ;;
     *)
       INCLUDE_DEPS=false
     ;;
@@ -349,10 +370,6 @@ ieee_fp_flag=
 case "$canonical_host_type" in
   ## Keep this pattern first, so that it is preferred over the
   ## following pattern for x86.
-  *-*-msdosmsvc)
-    CXXFLAGS="$CXXFLAGS -EHs -MD"
-    CFLAGS="$CFLAGS -MD"
-  ;;
   i[[3456789]]86-*-*)
     if test "$GCC" = yes; then
       OCTAVE_CC_FLAG(-mieee-fp, [
@@ -660,11 +677,9 @@ OCTAVE_CHECK_LIBRARY(hdf5, HDF5,
    OCTAVE_HDF5_HAS_ENFORCED_16_API
    TEXINFO_HDF5="@set HAVE_HDF5"
    AC_DEFINE(HAVE_HDF5, 1, [Define if HDF5 is available and newer than version 1.6.])
-   case "$canonical_host_type" in
-     *-*-msdosmsvc)
-       OCTAVE_HDF5_DLL
-       ;;
-   esac
+   if test "$have_msvc" = "yes"; then
+     OCTAVE_HDF5_DLL
+   fi
    ])
 CPPFLAGS="$save_CPPFLAGS"
 LIBS="$save_LIBS"
@@ -880,12 +895,10 @@ else
 fi
 
 XTRA_CRUFT_SH_LDFLAGS=
-case "$canonical_host_type" in
-  *-*-msdosmsvc)
-    FLIBS="$FLIBS -lkernel32"
-    XTRA_CRUFT_SH_LDFLAGS="-Wl,-def:cruft.def"
-  ;;
-esac
+if test "$have_msvc" = "yes"; then
+  FLIBS="$FLIBS -lkernel32"
+  XTRA_CRUFT_SH_LDFLAGS="-Wl,-def:cruft.def"
+fi
 AC_SUBST(XTRA_CRUFT_SH_LDFLAGS)
 
 ### Checks for BLAS and LAPACK libraries:
@@ -1138,17 +1151,45 @@ case "$canonical_host_type" in
     ldpreloadsep=":"
   ;;
   *-*-mingw*)
-    CPICFLAG=
-    CXXPICFLAG=
-    FPICFLAG=
-    SHLEXT=dll
-    SHLLIB=dll.a
-    SHLBIN=dll
-    DL_LDFLAGS="-shared -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-runtime-pseudo-reloc"
-    SH_LDFLAGS="-shared -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-auto-image-base"
-    SONAME_FLAGS='-Wl,--out-implib=$@.a'
-    library_path_var=PATH
-    SCRIPTS_EXE_SUFFIX='$(EXEEXT)'
+    if test "$have_msvc" = "yes"; then
+      DL_LDFLAGS="-shared"
+      CPICFLAG=
+      CXXPICFLAG=
+      FPICFLAG=
+      SHLEXT=dll
+      SHLLIB=lib
+      SHLBIN=dll
+      LIBPRE=
+      SHLPRE=
+      SHLLIBPRE=
+      SHLBINPRE=
+      SH_LDFLAGS="-shared"
+      if test -n "`echo $CFLAGS | grep -e '-g'`" -o -n "`echo $CXXFLAGS | grep -e '-g'`"; then
+        DL_LDFLAGS="$DL_LDFLAGS -g"
+        SH_LDFLAGS="$SH_LDFLAGS -g"
+      fi
+      NO_OCT_FILE_STRIP=true
+      library_path_var=PATH
+      NO_OCT_FILE_STRIP=true
+      ## Extra compilation flags.
+      CRUFT_DLL_DEFS="-DCRUFT_DLL"
+      OCTAVE_DLL_DEFS="-DOCTAVE_DLL"
+      OCTINTERP_DLL_DEFS="-DOCTINTERP_DLL"
+      OCTGRAPHICS_DLL_DEFS="-DOCTGRAPHICS_DLL"
+      SCRIPTS_EXE_SUFFIX='$(EXEEXT)'
+    else
+      CPICFLAG=
+      CXXPICFLAG=
+      FPICFLAG=
+      SHLEXT=dll
+      SHLLIB=dll.a
+      SHLBIN=dll
+      DL_LDFLAGS="-shared -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-runtime-pseudo-reloc"
+      SH_LDFLAGS="-shared -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-auto-image-base"
+      SONAME_FLAGS='-Wl,--out-implib=$@.a'
+      library_path_var=PATH
+      SCRIPTS_EXE_SUFFIX='$(EXEEXT)'
+    fi
   ;;
 
   *-*-msdosmsvc)
@@ -1164,7 +1205,7 @@ case "$canonical_host_type" in
     SHLLIBPRE=
     SHLBINPRE=
     SH_LDFLAGS="-shared"
-      if test -n "`echo $CFLAGS | grep -e '-g'`" -o -n "`echo $CXXFLAGS | grep -e '-g'`"; then
+    if test -n "`echo $CFLAGS | grep -e '-g'`" -o -n "`echo $CXXFLAGS | grep -e '-g'`"; then
       DL_LDFLAGS="$DL_LDFLAGS -g"
       SH_LDFLAGS="$SH_LDFLAGS -g"
     fi
@@ -1342,8 +1383,21 @@ case "$canonical_host_type" in
    AC_CHECK_LIB(wsock32, gethostname)
    LIBS="$LIBS -lwsock32"
   ;;
-  *-*-msdosmsvc* | *-*-mingw*)
+  *-*-mingw*)
+    if test "$have_msvc" = "yes"; then
+      AC_CHECK_LIB(dirent, opendir)
+      LIBS="$LIBS -ladvapi32 -lgdi32 -lws2_32 -luser32 -lkernel32"
+      NO_UNDEFINED_LDFLAG=-no-undefined
+    else
+      LIBS="$LIBS -lgdi32 -lws2_32 -luser32 -lkernel32"
+      NO_UNDEFINED_LDFLAG=-no-undefined
+    fi
     LIBS="$LIBS -lgdi32 -lws2_32 -luser32 -lkernel32"
+    NO_UNDEFINED_LDFLAG=-no-undefined
+  ;;
+  *-*-msdosmsvc*)
+    AC_CHECK_LIB(dirent, opendir)
+    LIBS="$LIBS -ladvapi32 -lgdi32 -lws2_32 -luser32 -lkernel32"
     NO_UNDEFINED_LDFLAG=-no-undefined
   ;;
 esac

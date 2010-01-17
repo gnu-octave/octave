@@ -35,11 +35,13 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #if defined (OCTAVE_USE_WINDOWS_API)
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #undef min
 #undef max
 #endif
 
+#include <sys/time.h>
 #include "strftime.h"
 
 #include "lo-error.h"

@@ -1,3 +1,9 @@
+2010-01-17  Michael Goffioul <michael.goffioul@gmail.com>
+
+	* bootstrap.conf: Add round module.
+	* configure.ac: Allow to use MSVC with *mingw* build host. Check for
+	opendir in -ldirent. Add -ladvapi32 to LIBS.
+
 2010-01-15  John W. Eaton  <jwe@octave.org>
 
 	* NEWS: Edit.

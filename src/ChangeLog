@@ -1,3 +1,8 @@
+2010-01-17  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/cellfun.cc (Fcellslices): Support dim argument, make
+	consistent with rest of functions.
+
 2010-01-17  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
 	* ov-cell.cc (Fstruct2cell): Add example, add test.

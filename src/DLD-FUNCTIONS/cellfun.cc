@@ -1454,27 +1454,32 @@ template <class NDA>
 static Cell 
 do_cellslices_nda (const NDA& array, 
                    const Array<octave_idx_type>& lb, 
-                   const Array<octave_idx_type>& ub)
+                   const Array<octave_idx_type>& ub,
+                   int dim = -1)
 {
   octave_idx_type n = lb.length ();
   Cell retval (1, n);
-  if (array.is_vector ())
+  if (array.is_vector () && (dim == -1 
+                             || (dim == 0 && array.columns () == 1) 
+                             || (dim == 1 && array.rows () == 1)))
     {
       for (octave_idx_type i = 0; i < n && ! error_state; i++)
         retval(i) = array.index (idx_vector (lb(i) - 1, ub(i)));
     }
   else
     {
-      dim_vector dv = array.dims ();
-      octave_idx_type nl = 1;
-      for (int i = 0; i < dv.length () - 1; i++) nl *= dv(i);
+      const dim_vector dv = array.dims ();
+      int ndims = dv.length ();
+      if (dim < 0)
+        dim = dv.first_non_singleton ();
+      ndims = std::max (ndims, dim + 1);
+
+      Array<idx_vector> idx (ndims, idx_vector::colon);
+
       for (octave_idx_type i = 0; i < n && ! error_state; i++)
         {
-          // Do it with a single index to speed things up.
-          dv = array.dims ();
-          dv(dv.length () - 1) = ub(i) + 1 - lb(i);
-          dv.chop_trailing_singletons ();
-          retval(i) = array.index (idx_vector (nl*(lb(i) - 1), nl*ub(i))).reshape (dv);
+          idx(dim) = idx_vector (lb(i) - 1, ub(i));
+          retval(i) = array.index (idx);
         }
     }
 
@@ -1483,8 +1488,8 @@ do_cellslices_nda (const NDA& array,
 
 DEFUN_DLD (cellslices, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{sl} =} cellslices (@var{x}, @var{lb}, @var{ub})\n\
-Given a vector @var{x}, this function produces a cell array of slices from the vector\n\
+@deftypefn {Loadable Function} {@var{sl} =} cellslices (@var{x}, @var{lb}, @var{ub}, @var{dim})\n\
+Given an array @var{x}, this function produces a cell array of slices from the array\n\
 determined by the index vectors @var{lb}, @var{ub}, for lower and upper bounds, respectively.\n\
 In other words, it is equivalent to the following code:\n\
 \n\
@@ -1493,22 +1498,30 @@ In other words, it is equivalent to the following code:\n\
 n = length (lb);\n\
 sl = cell (1, n);\n\
 for i = 1:length (lb)\n\
-  sl@{i@} = x(lb(i):ub(i));\n\
+  sl@{i@} = x(:,@dots{},lb(i):ub(i),@dots{},:);\n\
 endfor\n\
 @end group\n\
 @end example\n\
 \n\
-If @var{X} is a matrix or array, indexing is done along the last dimension.\n\
-@seealso{mat2cell}\n\
+The position of the index is determined by @var{dim}. If not specified, slicing\n\
+is done along the first non-singleton dimension.\n\
 @end deftypefn")
 {
   octave_value retval;
   int nargin = args.length ();
-  if (nargin == 3)
+  if (nargin == 3 || nargin == 4)
     {
       octave_value x = args(0);
       Array<octave_idx_type> lb = args(1).octave_idx_type_vector_value ();
       Array<octave_idx_type> ub = args(2).octave_idx_type_vector_value ();
+      int dim = -1;
+      if (nargin == 4)
+        {
+          dim = args(3).int_value () - 1;
+          if (dim < 0)
+            error ("cellslices: dim must be a valid dimension");
+        }
+
       if (! error_state)
         {
           if (lb.length () != ub.length ())
@@ -1520,41 +1533,41 @@ If @var{X} is a matrix or array, indexing is done along the last dimension.\n\
                 {
                   // specialize for some dense arrays.
                   if (x.is_bool_type ())
-                    retcell = do_cellslices_nda (x.bool_array_value (), lb, ub);
+                    retcell = do_cellslices_nda (x.bool_array_value (), lb, ub, dim);
                   else if (x.is_char_matrix ())
-                    retcell = do_cellslices_nda (x.char_array_value (), lb, ub);
+                    retcell = do_cellslices_nda (x.char_array_value (), lb, ub, dim);
                   else if (x.is_integer_type ())
                     {
                       if (x.is_int8_type ())
-                        retcell = do_cellslices_nda (x.int8_array_value (), lb, ub);
+                        retcell = do_cellslices_nda (x.int8_array_value (), lb, ub, dim);
                       else if (x.is_int16_type ())
-                        retcell = do_cellslices_nda (x.int16_array_value (), lb, ub);
+                        retcell = do_cellslices_nda (x.int16_array_value (), lb, ub, dim);
                       else if (x.is_int32_type ())
-                        retcell = do_cellslices_nda (x.int32_array_value (), lb, ub);
+                        retcell = do_cellslices_nda (x.int32_array_value (), lb, ub, dim);
                       else if (x.is_int64_type ())
-                        retcell = do_cellslices_nda (x.int64_array_value (), lb, ub);
+                        retcell = do_cellslices_nda (x.int64_array_value (), lb, ub, dim);
                       else if (x.is_uint8_type ())
-                        retcell = do_cellslices_nda (x.uint8_array_value (), lb, ub);
+                        retcell = do_cellslices_nda (x.uint8_array_value (), lb, ub, dim);
                       else if (x.is_uint16_type ())
-                        retcell = do_cellslices_nda (x.uint16_array_value (), lb, ub);
+                        retcell = do_cellslices_nda (x.uint16_array_value (), lb, ub, dim);
                       else if (x.is_uint32_type ())
-                        retcell = do_cellslices_nda (x.uint32_array_value (), lb, ub);
+                        retcell = do_cellslices_nda (x.uint32_array_value (), lb, ub, dim);
                       else if (x.is_uint64_type ())
-                        retcell = do_cellslices_nda (x.uint64_array_value (), lb, ub);
+                        retcell = do_cellslices_nda (x.uint64_array_value (), lb, ub, dim);
                     }
                   else if (x.is_complex_type ())
                     {
                       if (x.is_single_type ())
-                        retcell = do_cellslices_nda (x.float_complex_array_value (), lb, ub);
+                        retcell = do_cellslices_nda (x.float_complex_array_value (), lb, ub, dim);
                       else
-                        retcell = do_cellslices_nda (x.complex_array_value (), lb, ub);
+                        retcell = do_cellslices_nda (x.complex_array_value (), lb, ub, dim);
                     }
                   else
                     {
                       if (x.is_single_type ())
-                        retcell = do_cellslices_nda (x.float_array_value (), lb, ub);
+                        retcell = do_cellslices_nda (x.float_array_value (), lb, ub, dim);
                       else
-                        retcell = do_cellslices_nda (x.array_value (), lb, ub);
+                        retcell = do_cellslices_nda (x.array_value (), lb, ub, dim);
                     }
                 }
               else
@@ -1562,11 +1575,15 @@ If @var{X} is a matrix or array, indexing is done along the last dimension.\n\
                   // generic code.
                   octave_idx_type n = lb.length ();
                   retcell = Cell (1, n);
-                  octave_idx_type nind = x.dims ().is_vector () ? 1 : x.ndims ();
-                  octave_value_list idx (nind, octave_value::magic_colon_t);
+                  const dim_vector dv = x.dims ();
+                  int ndims = dv.length ();
+                  if (dim < 0)
+                    dim = dv.first_non_singleton ();
+                  ndims = std::max (ndims, dim + 1);
+                  octave_value_list idx (ndims, octave_value::magic_colon_t);
                   for (octave_idx_type i = 0; i < n && ! error_state; i++)
                     {
-                      idx(nind-1) = Range (lb(i), ub(i));
+                      idx(dim) = Range (lb(i), ub(i));
                       retcell(i) = x.do_index_op (idx);
                     }
                 }
@@ -1584,7 +1601,7 @@ If @var{X} is a matrix or array, indexing is done along the last dimension.\n\
 /*
 %!test
 %! m = [1, 2, 3, 4; 5, 6, 7, 8; 9, 10, 11, 12];
-%! c = cellslices (m, [1, 2], [2, 3]);
+%! c = cellslices (m, [1, 2], [2, 3], 2);
 %! assert (c, {[1, 2; 5, 6; 9, 10], [2, 3; 6, 7; 10, 11]});
 */
 

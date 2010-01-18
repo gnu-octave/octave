@@ -1,3 +1,10 @@
+2010-01-18  John W. Eaton  <jwe@octave.org>
+
+	* oct-parse.yy (fcn_end): Allow EOF as end of function if
+	reading from eval string.
+	(eval_string): Protect and set reading_fcn_file,
+	reading_script_file, and reading_classdef_file.
+
 2010-01-18  Jaroslav Hajek  <highegg@gmail.com>
 
 	* xpow.cc (xpow (const NDArray&, double), xpow (const FloatNDArray&,

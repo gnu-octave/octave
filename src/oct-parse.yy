@@ -1399,7 +1399,8 @@ function_end	: END
 			YYABORT;
 		      }
 
-		    if (! reading_fcn_file && ! reading_script_file)
+		    if (! (reading_fcn_file || reading_script_file
+                           || get_input_from_eval_string))
 		      {
 			yyerror ("function body open at end of input");
 			YYABORT;
@@ -4167,6 +4168,9 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
   frame.protect_var (max_function_depth);
   frame.protect_var (parsing_subfunctions);
   frame.protect_var (endfunction_found);
+  frame.protect_var (reading_fcn_file);
+  frame.protect_var (reading_script_file);
+  frame.protect_var (reading_classdef_file);
 
   input_line_number = 1;
   current_input_column = 1;
@@ -4178,6 +4182,9 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
   max_function_depth = 0;
   parsing_subfunctions = false;
   endfunction_found = false;
+  reading_fcn_file = false;
+  reading_script_file = false;
+  reading_classdef_file = false;
 
   current_eval_string = s;
 

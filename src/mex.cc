@@ -3250,13 +3250,15 @@ mexWarnMsgIdAndTxt (const char *id, const char *fmt, ...)
     }
 }
 
-void
+int
 mexPrintf (const char *fmt, ...)
 {
+  int retval;
   va_list args;
   va_start (args, fmt);
-  octave_vformat (octave_stdout, fmt, args);
+  retval = octave_vformat (octave_stdout, fmt, args);
   va_end (args);
+  return retval;
 }
 
 mxArray *

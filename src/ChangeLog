@@ -1,5 +1,10 @@
 2010-01-18  David Grundberg  <davidg@cs.umu.se>
 
+	* mex.cc (mexPrintf): Change signature.
+	* mexproto.h (mexPrintf): Dito.
+
+2010-01-18  David Grundberg  <davidg@cs.umu.se>
+
 	* mexproto.h (mxSetDimensions): Change signature.
 	* mex.cc (mxSetDimensions): Dito.
 

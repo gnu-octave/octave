@@ -2791,9 +2791,11 @@ mxSetN (mxArray *ptr, mwSize n)
 }
 
 void
-mxSetDimensions (mxArray *ptr, mwSize *dims, mwSize ndims)
+mxSetDimensions (mxArray *ptr, const mwSize *dims, mwSize ndims)
 {
-  ptr->set_dimensions (static_cast<mwSize *> (maybe_unmark (dims)), ndims);
+  ptr->set_dimensions (static_cast<mwSize *> (
+			 maybe_unmark (const_cast<mwSize *> (dims))),
+		       ndims);
 }
   
 // Data extractors.

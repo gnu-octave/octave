@@ -182,7 +182,7 @@ extern OCTINTERP_API size_t mxGetNumberOfElements (const mxArray *ptr);
 /* Dimension setters.  */
 extern OCTINTERP_API void mxSetM (mxArray *ptr, mwSize M);
 extern OCTINTERP_API void mxSetN (mxArray *ptr, mwSize N);
-extern OCTINTERP_API void mxSetDimensions (mxArray *ptr, mwSize *dims, mwSize ndims);
+extern OCTINTERP_API void mxSetDimensions (mxArray *ptr, const mwSize *dims, mwSize ndims);
   
 /* Data extractors.  */
 extern OCTINTERP_API double *mxGetPi (const mxArray *ptr);

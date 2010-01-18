@@ -348,7 +348,7 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
 			 __signal_fail);
       else
         __name = __block(__name_position(1):__name_position(2));
-        __code = __block;
+        __code = [__block "\nendfunction"];
         try
           eval(__code); ## Define the function
           __clear = sprintf ("%sclear %s;\n", __clear, __name);

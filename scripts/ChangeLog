@@ -1,3 +1,7 @@
+2010-01-18  David Grundberg  <davidg@cs.umu.se>
+
+	* testfun/test.m: Fix !function test blocks.
+
 2010-01-17  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
 	* general/celldisp.m: Add example, add demo.

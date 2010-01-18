@@ -1200,18 +1200,23 @@ elem_xpow (const NDArray& a, double b)
     }
   else
     {
-      NDArray result (a.dims ());
+      NoAlias<NDArray> result (a.dims ());
 
       int ib = static_cast<int> (b);
       if (ib == 2)
         {
           for (octave_idx_type i = 0; i < a.length (); i++)
-            result.xelem (i) = a(i) * a(i);
+            result(i) = a(i) * a(i);
+        }
+      else if (ib == 3)
+        {
+          for (octave_idx_type i = 0; i < a.length (); i++)
+            result(i) = a(i) * a(i) * a(i);
         }
       else if (ib == -1)
         {
           for (octave_idx_type i = 0; i < a.length (); i++)
-            result.xelem (i) = 1.0 / a(i);
+            result(i) = 1.0 / a(i);
         }
       else
         {
@@ -2515,18 +2520,23 @@ elem_xpow (const FloatNDArray& a, float b)
     }
   else
     {
-      FloatNDArray result (a.dims ());
+      NoAlias<FloatNDArray> result (a.dims ());
 
       int ib = static_cast<int> (b);
       if (ib == 2)
         {
           for (octave_idx_type i = 0; i < a.length (); i++)
-            result.xelem (i) = a(i) * a(i);
+            result(i) = a(i) * a(i);
+        }
+      else if (ib == 3)
+        {
+          for (octave_idx_type i = 0; i < a.length (); i++)
+            result(i) = a(i) * a(i) * a(i);
         }
       else if (ib == -1)
         {
           for (octave_idx_type i = 0; i < a.length (); i++)
-            result.xelem (i) = 1.0f / a(i);
+            result(i) = 1.0f / a(i);
         }
       else
         {

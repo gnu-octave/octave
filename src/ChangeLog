@@ -1,3 +1,8 @@
+2010-01-18  Jaroslav Hajek  <highegg@gmail.com>
+
+	* xpow.cc (xpow (const NDArray&, double), xpow (const FloatNDArray&,
+	float)): Optimize also the x.^3 case.
+
 2010-01-18  David Grundberg  <davidg@cs.umu.se>
 
 	* mex.cc (mexPrintf): Change signature.

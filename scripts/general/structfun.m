@@ -1,4 +1,5 @@
 ## Copyright (C) 2007, 2008, 2009 David Bateman
+## Copyright (C) 2010 VZLU Prague
 ##
 ## This file is part of Octave.
 ##
@@ -74,11 +75,21 @@ function varargout = structfun (fun, s, varargin);
     print_usage ();
   endif
 
+  uniform_output = true;
+  uo_str = "uniformoutput";
+
+  nargs = length (varargin);
+  if (nargs >= 2 && strcmpi (varargin{1}, uo_str))
+    uniform_output =varargin{2};
+  elseif (nargs >= 4 && strcmpi (varargin{3}, uo_str))
+    uniform_output =varargin{4};
+  endif
+
   varargout = cell (max ([nargout, 1]), 1);
   [varargout{:}] = cellfun (fun, struct2cell (s), varargin{:});
 
-  if (iscell (varargout{1}))
-    [varargout{:}] = cell2struct (varargout{1}, fieldnames(s), 1);
+  if (! uniform_output)
+    varargout = cellfun (@cell2struct, varargout, {fieldnames(s)}, {1}, uo_str, false);
   endif
 endfunction
 
@@ -91,3 +102,27 @@ endfunction
 %! o = structfun (@(x) regexp (x, '(\w+)$', "matches"){1}, s, 
 %!		  "UniformOutput", false);
 %! assert (o, l);
+
+%!function [a, b] = twoouts (x)
+%! a = x + x;
+%! b = x * x;
+
+%!test
+%! s = struct ("a", {1, 2, 3}, "b", {4, 5, 6});
+%! c(1:2, 1, 1) = [2; 8];
+%! c(1:2, 1, 2) = [4; 10];
+%! c(1:2, 1, 3) = [6; 12];
+%! d(1:2, 1, 1) = [1; 16];
+%! d(1:2, 1, 2) = [4; 25];
+%! d(1:2, 1, 3) = [9; 36];
+%! [aa, bb] = structfun(@twoouts, s);
+%! assert(aa, c);
+%! assert(bb, d);
+
+%!test
+%! s = struct ("a", {1, 2, 3}, "b", {4, 5, 6});
+%! c = struct ("a", {2, 4, 6}, "b", {8, 10, 12});
+%! d = struct ("a", {1, 4, 9}, "b", {16, 25, 36});
+%! [aa, bb] = structfun(@twoouts, s, "uniformoutput", false);
+%! assert(aa, c);
+%! assert(bb, d);

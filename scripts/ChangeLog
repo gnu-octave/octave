@@ -1,3 +1,8 @@
+2010-01-19  Jaroslav Hajek  <highegg@gmail.com>, Thorsten Meyer <thorsten.meyier@gmx.de>
+
+	* general/structfun.m: Correctly support multiple arguments with
+	non-uniform output. Correct test for non-uniform output.
+
 2010-01-19  Jaroslav Hajek  <highegg@gmail.com>
 
 	* help/print_usage.m: Try determining whether called from top level.

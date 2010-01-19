@@ -70,8 +70,38 @@ qs_search (const Array<char>& needle,
   // We'll use deque because it typically has the most favorable properties for
   // the operation we need.
   std::deque<octave_idx_type> accum;
-  if (n >= m)
+  if (m == 1)
     {
+      // Looking for a single character.
+      for (octave_idx_type i = 0; i < n; i++)
+        {
+          if (y[i] == x[0])
+            accum.push_back (i);
+        }
+    }
+  else if (m == 2)
+    {
+      // Two characters.
+      if (overlaps)
+        {
+          for (octave_idx_type i = 0; i < n-1; i++)
+            {
+              if (y[i] == x[0] && y[i+1] == x[1])
+                accum.push_back (i);
+            }
+        }
+      else
+        {
+          for (octave_idx_type i = 0; i < n-1; i++)
+            {
+              if (y[i] == x[0] && y[i+1] == x[1])
+                accum.push_back (i++);
+            }
+        }
+    }
+  else if (n >= m)
+    {
+      // General case.
       octave_idx_type j = 0;
 
       if (overlaps)

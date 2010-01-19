@@ -1,3 +1,7 @@
+2010-01-19  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/strfind.cc: Optimize searching for 1 or 2 characters.
+
 2010-01-18  John W. Eaton  <jwe@octave.org>
 
 	* oct-parse.yy (fcn_end): Allow EOF as end of function if

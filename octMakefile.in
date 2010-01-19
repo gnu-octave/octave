@@ -37,7 +37,7 @@ INSTALL_DATA = @INSTALL_DATA@
 
 CONF_DISTFILES = Makefile octMakefile.in Makeconf.in \
 	configure configure.in config.guess config.sub aclocal.m4 \
-	acx_blas.m4 acx_lapack.m4 acx_blas_f77_func.m4 \
+	acx_blas.m4 acx_lapack.m4 acx_blas_f77_func.m4 acx_pthread.m4 \
 	config.h.in install-sh autogen.sh
 
 BUILT_DISTFILES = BUGS INSTALL.OCTAVE

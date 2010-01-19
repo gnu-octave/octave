@@ -1,3 +1,7 @@
+2010-01-19  Jaroslav Hajek  <highegg@gmail.com>
+
+	* general/structfun.m: Error when invalid options are specified.
+
 2010-01-19  Jaroslav Hajek  <highegg@gmail.com>, Thorsten Meyer <thorsten.meyier@gmx.de>
 
 	* general/structfun.m: Correctly support multiple arguments with

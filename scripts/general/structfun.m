@@ -71,18 +71,32 @@
 ## @end deftypefn
 
 function varargout = structfun (fun, s, varargin);
+
   if (nargin < 2)
     print_usage ();
   endif
 
-  uniform_output = true;
-  uo_str = "uniformoutput";
-
   nargs = length (varargin);
-  if (nargs >= 2 && strcmpi (varargin{1}, uo_str))
-    uniform_output =varargin{2};
-  elseif (nargs >= 4 && strcmpi (varargin{3}, uo_str))
-    uniform_output =varargin{4};
+
+  recognized_opts = {"UniformOutput", "ErrorHandler"};
+  uo_str = recognized_opts{1};
+
+  uniform_output = true;
+
+  while (nargs >= 2)
+    opt_match = strcmpi (varargin{nargs-1}, recognized_opts);
+    if (opt_match(1))
+      uniform_output = varargin{nargs};
+    endif
+    if (any (opt_match))
+      nargs -= 2;
+    else
+      break;
+    endif
+  endwhile
+
+  if (nargs > 0)
+    error ("structfun: invalid options");
   endif
 
   varargout = cell (max ([nargout, 1]), 1);

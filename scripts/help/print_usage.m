@@ -24,10 +24,10 @@
 ## @end deftypefn
 
 function print_usage (name)
+  x = dbstack ();
   ## Handle input
   if (nargin == 0)
     ## Determine the name of the calling function
-    x = dbstack ();
     if (numel (x) > 1)
       name = x (2).name;
     else
@@ -43,6 +43,9 @@ function print_usage (name)
     fullname = name;
   endif
   
+  ## Determine if we're called from top level.
+  at_toplev = length (x) < 2 || (length (x) == 2 && strcmp (x(2).name, name));
+
   ## Do the actual work
   [text, format] = get_help_text (fullname);
   max_len = 80;
@@ -67,8 +70,21 @@ function print_usage (name)
     warning ("print_usage: raw Texinfo source of help text follows...\n");
   endif
 
-  error ("Invalid call to %s.  Correct usage is:\n\n%s\n%s",
-	 name, usage_string, __additional_help_message__ ());
+  if (at_toplev)
+    error ("Invalid call to %s.  Correct usage is:\n\n%s\n%s",
+           name, usage_string, __additional_help_message__ ());
+  else
+    msg = sprintf ("Invalid call to %s.  Correct usage is:\n\n%s",
+                   name, usage_string);
+    ## Ensure that the error doesn't end up with a newline, as that disables
+    ## backtraces.
+    if (msg(end) == "\n")
+      msg(end) = " ";
+    endif
+
+    error (msg);
+  endif
+
 endfunction
 
 function [retval, status] = get_usage_plain_text (help_text, max_len)

@@ -118,7 +118,7 @@ get_lines_and_columns (std::istream& is, const std::string& filename, octave_idx
 
   while (is && ! error_state)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
 
       std::string buf = get_mat_data_input_line (is);
 
@@ -235,7 +235,7 @@ read_mat_ascii_data (std::istream& is, const std::string& filename,
 
       get_lines_and_columns (is, filename, nr, nc);
 
-      OCTAVE_QUIT;
+      octave_quit ();
 
       if (! error_state && nr > 0 && nc > 0)
 	{
@@ -254,7 +254,7 @@ read_mat_ascii_data (std::istream& is, const std::string& filename,
 
 		  for (octave_idx_type j = 0; j < nc; j++)
 		    {
-		      OCTAVE_QUIT;
+		      octave_quit ();
 
 		      d = octave_read_value<double> (tmp_stream);
 

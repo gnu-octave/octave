@@ -219,7 +219,7 @@ octave_sparse_matrix::convert_to_str_internal (bool, bool, char type) const
 	for (octave_idx_type i = matrix.cidx(j); 
 	     i < matrix.cidx(j+1); i++)
 	  {
-	    OCTAVE_QUIT;
+	    octave_quit ();
 
 	    double d = matrix.data (i);
 
@@ -307,14 +307,14 @@ octave_sparse_matrix::save_binary (std::ostream& os, bool&save_as_floats)
   // zero-based to one-based arrays
    for (int i = 0; i < nc+1; i++)  
      {
-       OCTAVE_QUIT;
+       octave_quit ();
        itmp = matrix.cidx(i);
        os.write (reinterpret_cast<char *> (&itmp), 4);
      }
 
    for (int i = 0; i < nz; i++) 
      {
-       OCTAVE_QUIT;
+       octave_quit ();
        itmp = matrix.ridx(i); 
        os.write (reinterpret_cast<char *> (&itmp), 4);
      }
@@ -362,7 +362,7 @@ octave_sparse_matrix::load_binary (std::istream& is, bool swap,
 
   for (int i = 0; i < nc+1; i++) 
     {
-      OCTAVE_QUIT;
+      octave_quit ();
       if (! is.read (reinterpret_cast<char *> (&tmp), 4))
 	return false;
       if (swap)
@@ -372,7 +372,7 @@ octave_sparse_matrix::load_binary (std::istream& is, bool swap,
 
   for (int i = 0; i < nz; i++) 
     {
-      OCTAVE_QUIT;
+      octave_quit ();
       if (! is.read (reinterpret_cast<char *> (&tmp), 4))
 	return false;
       if (swap)

@@ -117,7 +117,7 @@ do_bsxfun_op (const XNDA& x, const YNDA& y,
       OCTAVE_LOCAL_BUFFER_INIT (octave_idx_type, idx, nd, 0);
       for (octave_idx_type iter = 0; iter < niter; iter++)
         {
-          OCTAVE_QUIT;
+          octave_quit ();
 
           // Compute indices. 
           // FIXME: performance impact noticeable?

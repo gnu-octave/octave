@@ -249,7 +249,7 @@ elem_xpow (double a, const SparseMatrix& b)
 	{
 	  for (octave_idx_type i = 0; i < nr; i++)
 	    {
-	      OCTAVE_QUIT;
+	      octave_quit ();
 	      result (i, j) = std::pow (atmp, b(i,j));
 	    }
 	}
@@ -264,7 +264,7 @@ elem_xpow (double a, const SparseMatrix& b)
 	{
 	  for (octave_idx_type i = 0; i < nr; i++)
 	    {
-	      OCTAVE_QUIT;
+	      octave_quit ();
 	      result (i, j) = std::pow (a, b(i,j));
 	    }
 	}
@@ -289,7 +289,7 @@ elem_xpow (double a, const SparseComplexMatrix& b)
     {
       for (octave_idx_type i = 0; i < nr; i++)
 	{
-	  OCTAVE_QUIT;
+	  octave_quit ();
 	  result (i, j) = std::pow (atmp, b(i,j));
 	}
     }
@@ -325,7 +325,7 @@ elem_xpow (const SparseMatrix& a, double b)
 	  for (octave_idx_type j = 0; j < nc; j++)
 	    for (octave_idx_type i = a.cidx(j); i < a.cidx(j+1); i++)
 	      {
-		OCTAVE_QUIT;
+		octave_quit ();
 	      
 		Complex atmp (a.data (i));
 		
@@ -341,7 +341,7 @@ elem_xpow (const SparseMatrix& a, double b)
 	  for (octave_idx_type j = 0; j < nc; j++)
 	    for (octave_idx_type i = a.cidx(j); i < a.cidx(j+1); i++)
 	      {
-		OCTAVE_QUIT;
+		octave_quit ();
 		result (a.ridx(i), j) = std::pow (a.data (i), b);
 	      }
 
@@ -354,7 +354,7 @@ elem_xpow (const SparseMatrix& a, double b)
 
       for (octave_idx_type i = 0; i < nz; i++)
 	{
-	  OCTAVE_QUIT;
+	  octave_quit ();
 
 	  // FIXME -- avoid apparent GNU libm bug by
 	  // converting A and B to complex instead of just A.
@@ -375,7 +375,7 @@ elem_xpow (const SparseMatrix& a, double b)
 
       for (octave_idx_type i = 0; i < nz; i++)
 	{
-	  OCTAVE_QUIT;
+	  octave_quit ();
 	  result.data (i) = std::pow (a.data (i), b);
 	}
 
@@ -435,7 +435,7 @@ done:
 	{
 	  for (octave_idx_type i = a.cidx(j); i < a.cidx(j+1); i++)
 	    {
-	      OCTAVE_QUIT;
+	      octave_quit ();
 	      complex_result.xelem(a.ridx(i), j) =
 		std::pow (Complex(a.data(i)), Complex(b(a.ridx(i), j)));
 	    }
@@ -451,7 +451,7 @@ done:
 	{
 	  for (octave_idx_type i = a.cidx(j); i < a.cidx(j+1); i++)
 	    {
-	      OCTAVE_QUIT;
+	      octave_quit ();
 	      result.xelem(a.ridx(i), j) = std::pow (a.data(i), 
 						     b (a.ridx(i), j));
 	    }
@@ -479,7 +479,7 @@ elem_xpow (const SparseMatrix& a, const Complex& b)
       
       for (octave_idx_type i = 0; i < nz; i++)
 	{
-	  OCTAVE_QUIT;
+	  octave_quit ();
 	  result.data (i) = std::pow (Complex (a.data (i)), b);
 	}
   
@@ -512,7 +512,7 @@ elem_xpow (const SparseMatrix& a, const SparseComplexMatrix& b)
     {
       for (octave_idx_type i = a.cidx(j); i < a.cidx(j+1); i++)
 	{
-	  OCTAVE_QUIT;
+	  octave_quit ();
 	  result.xelem(a.ridx(i), j) = std::pow (a.data(i), b (a.ridx(i), j));
 	}
     }
@@ -535,7 +535,7 @@ elem_xpow (const Complex& a, const SparseMatrix& b)
     {
       for (octave_idx_type i = 0; i < nr; i++)
 	{
-	  OCTAVE_QUIT;
+	  octave_quit ();
 	  double btmp = b (i, j);
 	  if (xisint (btmp))
 	    result (i, j) = std::pow (a, static_cast<int> (btmp));
@@ -558,7 +558,7 @@ elem_xpow (const Complex& a, const SparseComplexMatrix& b)
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
       {
-	OCTAVE_QUIT;
+	octave_quit ();
 	result (i, j) = std::pow (a, b (i, j));
       }
 
@@ -583,7 +583,7 @@ elem_xpow (const SparseComplexMatrix& a, double b)
 	  for (octave_idx_type j = 0; j < nc; j++)
 	    for (octave_idx_type i = a.cidx(j); i < a.cidx(j+1); i++)
 	      {
-		OCTAVE_QUIT;
+		octave_quit ();
 		result (a.ridx(i), j) = 
 		  std::pow (a.data (i), static_cast<int> (b));
 	      }
@@ -593,7 +593,7 @@ elem_xpow (const SparseComplexMatrix& a, double b)
 	  for (octave_idx_type j = 0; j < nc; j++)
 	    for (octave_idx_type i = a.cidx(j); i < a.cidx(j+1); i++)
 	      {
-		OCTAVE_QUIT;
+		octave_quit ();
 		result (a.ridx(i), j) = std::pow (a.data (i), b);
 	      }
 	}  
@@ -610,7 +610,7 @@ elem_xpow (const SparseComplexMatrix& a, double b)
 	{
 	  for (octave_idx_type i = 0; i < nz; i++)
 	    {
-	      OCTAVE_QUIT;
+	      octave_quit ();
 	      result.data (i) = std::pow (a.data (i), static_cast<int> (b));
 	    }
 	}
@@ -618,7 +618,7 @@ elem_xpow (const SparseComplexMatrix& a, double b)
 	{
 	  for (octave_idx_type i = 0; i < nz; i++)
 	    {
-	      OCTAVE_QUIT;
+	      octave_quit ();
 	      result.data (i) = std::pow (a.data (i), b);
 	    }
 	}  
@@ -652,7 +652,7 @@ elem_xpow (const SparseComplexMatrix& a, const SparseMatrix& b)
     {
       for (octave_idx_type i = a.cidx(j); i < a.cidx(j+1); i++)
 	{
-	  OCTAVE_QUIT;
+	  octave_quit ();
 	  double btmp = b (a.ridx(i), j);
 	  Complex tmp;
 
@@ -687,7 +687,7 @@ elem_xpow (const SparseComplexMatrix& a, const Complex& b)
 
       for (octave_idx_type i = 0; i < nz; i++)
 	{
-	  OCTAVE_QUIT;
+	  octave_quit ();
 	  result.data (i) = std::pow (a.data (i), b);
 	}
 
@@ -720,7 +720,7 @@ elem_xpow (const SparseComplexMatrix& a, const SparseComplexMatrix& b)
     {
       for (octave_idx_type i = a.cidx(j); i < a.cidx(j+1); i++)
 	{
-	  OCTAVE_QUIT;
+	  octave_quit ();
 	  result.xelem(a.ridx(i), j) = std::pow (a.data (i), b (a.ridx(i), j));
 	}
     }

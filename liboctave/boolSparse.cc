@@ -169,7 +169,7 @@ operator << (std::ostream& os, const SparseBoolMatrix& a)
    //  zero-based to one-based arrays
    for (octave_idx_type j = 0; j < nc; j++)  
      {
-       OCTAVE_QUIT;
+       octave_quit ();
        for (octave_idx_type i = a.cidx(j); i < a.cidx(j+1); i++)
 	 os << a.ridx(i) + 1 << " "  << j + 1 << " " << a.data(i) << "\n";
      }

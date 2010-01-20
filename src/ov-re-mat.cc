@@ -284,7 +284,7 @@ octave_matrix::convert_to_str_internal (bool, bool, char type) const
 
   for (octave_idx_type i = 0; i < nel; i++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
 
       double d = matrix (i);
 
@@ -727,7 +727,7 @@ do_rc_map (const NDArray& a, Complex (&fcn) (double))
 
   for (octave_idx_type i = 0; i < n; i++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
 
       Complex tmp = fcn (a(i));
       if (tmp.imag () == 0.0)
@@ -743,7 +743,7 @@ do_rc_map (const NDArray& a, Complex (&fcn) (double))
 
           for (octave_idx_type j = i+1; j < n; j++)
             {
-              OCTAVE_QUIT;
+              octave_quit ();
 
               rc(j) = fcn (a(j));
             }

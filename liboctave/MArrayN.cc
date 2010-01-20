@@ -63,7 +63,7 @@ MArrayN<T>::idx_add (const idx_vector& idx, T val)
       n = ext;
     }
 
-  OCTAVE_QUIT;
+  octave_quit ();
 
   octave_idx_type len = idx.length (n);
   idx.loop (len, _idxadds_helper<T> (this->fortran_vec (), val));
@@ -81,7 +81,7 @@ MArrayN<T>::idx_add (const idx_vector& idx, const MArrayN<T>& vals)
       n = ext;
     }
 
-  OCTAVE_QUIT;
+  octave_quit ();
 
   octave_idx_type len = std::min (idx.length (n), vals.length ());
   idx.loop (len, _idxadda_helper<T> (this->fortran_vec (), vals.data ()));

@@ -1016,7 +1016,7 @@ Matrix::fourier (void) const
 
   for (octave_idx_type j = 0; j < nsamples; j++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
 
       F77_FUNC (zfftf, ZFFTF) (npts, &tmp_data[npts*j], pwsave);
     }
@@ -1057,7 +1057,7 @@ Matrix::ifourier (void) const
 
   for (octave_idx_type j = 0; j < nsamples; j++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
 
       F77_FUNC (zfftb, ZFFTB) (npts, &tmp_data[npts*j], pwsave);
     }
@@ -1101,7 +1101,7 @@ Matrix::fourier2d (void) const
 
   for (octave_idx_type j = 0; j < nsamples; j++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
 
       F77_FUNC (zfftf, ZFFTF) (npts, &tmp_data[npts*j], pwsave);
     }
@@ -1120,7 +1120,7 @@ Matrix::fourier2d (void) const
 
   for (octave_idx_type j = 0; j < nsamples; j++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
 
       for (octave_idx_type i = 0; i < npts; i++)
 	prow[i] = tmp_data[i*nr + j];
@@ -1167,7 +1167,7 @@ Matrix::ifourier2d (void) const
 
   for (octave_idx_type j = 0; j < nsamples; j++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
 
       F77_FUNC (zfftb, ZFFTB) (npts, &tmp_data[npts*j], pwsave);
     }
@@ -1189,7 +1189,7 @@ Matrix::ifourier2d (void) const
 
   for (octave_idx_type j = 0; j < nsamples; j++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
 
       for (octave_idx_type i = 0; i < npts; i++)
 	prow[i] = tmp_data[i*nr + j];
@@ -3296,7 +3296,7 @@ min (double d, const Matrix& m)
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
       {
-	OCTAVE_QUIT;
+	octave_quit ();
 	result (i, j) = xmin (d, m (i, j));
       }
 
@@ -3316,7 +3316,7 @@ min (const Matrix& m, double d)
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
       {
-	OCTAVE_QUIT;
+	octave_quit ();
 	result (i, j) = xmin (m (i, j), d);
       }
 
@@ -3343,7 +3343,7 @@ min (const Matrix& a, const Matrix& b)
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
       {
-	OCTAVE_QUIT;
+	octave_quit ();
 	result (i, j) = xmin (a (i, j), b (i, j));
       }
 
@@ -3363,7 +3363,7 @@ max (double d, const Matrix& m)
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
       {
-	OCTAVE_QUIT;
+	octave_quit ();
 	result (i, j) = xmax (d, m (i, j));
       }
 
@@ -3383,7 +3383,7 @@ max (const Matrix& m, double d)
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
       {
-	OCTAVE_QUIT;
+	octave_quit ();
 	result (i, j) = xmax (m (i, j), d);
       }
 
@@ -3410,7 +3410,7 @@ max (const Matrix& a, const Matrix& b)
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
       {
-	OCTAVE_QUIT;
+	octave_quit ();
 	result (i, j) = xmax (a (i, j), b (i, j));
       }
 

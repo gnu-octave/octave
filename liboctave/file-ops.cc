@@ -330,7 +330,7 @@ file_ops::recursive_rmdir (const std::string& name, std::string& msg)
 
       for (octave_idx_type i = 0; i < dirlist.length (); i++)
 	{
-	  OCTAVE_QUIT;
+	  octave_quit ();
 
 	  std::string nm = dirlist[i];
 

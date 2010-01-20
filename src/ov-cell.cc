@@ -659,7 +659,7 @@ octave_cell::print_raw (std::ostream& os, bool) const
 	    {
 	      for (octave_idx_type i = 0; i < nr; i++)
 		{
-		  OCTAVE_QUIT;
+		  octave_quit ();
 
 		  std::ostringstream buf;
 		  buf << "[" << i+1 << "," << j+1 << "]";

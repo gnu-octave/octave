@@ -276,7 +276,7 @@ octave_float_matrix::convert_to_str_internal (bool, bool, char type) const
 
   for (octave_idx_type i = 0; i < nel; i++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
 
       float d = matrix (i);
 
@@ -698,7 +698,7 @@ do_rc_map (const FloatNDArray& a, FloatComplex (&fcn) (float))
 
   for (octave_idx_type i = 0; i < n; i++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
 
       FloatComplex tmp = fcn (a(i));
       if (tmp.imag () == 0.0)
@@ -714,7 +714,7 @@ do_rc_map (const FloatNDArray& a, FloatComplex (&fcn) (float))
 
           for (octave_idx_type j = i+1; j < n; j++)
             {
-              OCTAVE_QUIT;
+              octave_quit ();
 
               rc(j) = fcn (a(j));
             }

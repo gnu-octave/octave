@@ -405,11 +405,11 @@ along with Octave; see the file COPYING.  If not, see
             \
             for (octave_idx_type j = 0 ; j < m2_nc ; j++) \
               { \
-                OCTAVE_QUIT; \
+                octave_quit (); \
                 octave_idx_type idxj = j * m2_nr; \
                 for (octave_idx_type i = m2.cidx(j) ; i < m2.cidx(j+1) ; i++) \
                   { \
-                    OCTAVE_QUIT; \
+                    octave_quit (); \
                     r.data(idxj + m2.ridx(i)) = m1.data(0) OP m2.data(i); \
 		  } \
               } \
@@ -426,11 +426,11 @@ along with Octave; see the file COPYING.  If not, see
             \
             for (octave_idx_type j = 0 ; j < m1_nc ; j++) \
               { \
-                OCTAVE_QUIT; \
+                octave_quit (); \
                 octave_idx_type idxj = j * m1_nr; \
                 for (octave_idx_type i = m1.cidx(j) ; i < m1.cidx(j+1) ; i++) \
                   { \
-                    OCTAVE_QUIT; \
+                    octave_quit (); \
                     r.data(idxj + m1.ridx(i)) = m1.data(i) OP m2.data(0); \
 		  } \
               } \
@@ -457,7 +457,7 @@ along with Octave; see the file COPYING.  If not, see
             \
             while (ja_lt_max || jb_lt_max ) \
               { \
-                OCTAVE_QUIT; \
+                octave_quit (); \
                 if ((! jb_lt_max) || \
                       (ja_lt_max && (m1.ridx(ja) < m2.ridx(jb)))) \
                   { \
@@ -522,7 +522,7 @@ along with Octave; see the file COPYING.  If not, see
             \
             for (octave_idx_type i = 0 ; i < m2_nnz ; i++) \
               { \
-                OCTAVE_QUIT; \
+                octave_quit (); \
                 r.data (i) = m1.data(0) OP r.data(i); \
               } \
             r.maybe_compress (); \
@@ -539,7 +539,7 @@ along with Octave; see the file COPYING.  If not, see
             \
             for (octave_idx_type i = 0 ; i < m1_nnz ; i++) \
               { \
-                OCTAVE_QUIT; \
+                octave_quit (); \
                 r.data (i) = r.data(i) OP m2.data(0); \
               } \
             r.maybe_compress (); \
@@ -565,7 +565,7 @@ along with Octave; see the file COPYING.  If not, see
             \
             while (ja_lt_max || jb_lt_max ) \
               { \
-                OCTAVE_QUIT; \
+                octave_quit (); \
                 if ((! jb_lt_max) || \
                       (ja_lt_max && (m1.ridx(ja) < m2.ridx(jb)))) \
                   { \
@@ -624,11 +624,11 @@ along with Octave; see the file COPYING.  If not, see
             r = R (m2_nr, m2_nc, m1.elem(0,0) OP Complex ()); \
             for (octave_idx_type j = 0 ; j < m2_nc ; j++) \
               { \
-                OCTAVE_QUIT; \
+                octave_quit (); \
                 octave_idx_type idxj = j * m2_nr; \
                 for (octave_idx_type i = m2.cidx(j) ; i < m2.cidx(j+1) ; i++) \
                   { \
-                    OCTAVE_QUIT; \
+                    octave_quit (); \
                     r.data(idxj + m2.ridx(i)) = m1.elem(0,0) OP m2.data(i); \
 		  } \
               } \
@@ -650,11 +650,11 @@ along with Octave; see the file COPYING.  If not, see
             r = R (m1_nr, m1_nc, Complex() OP m2.elem(0,0)); \
             for (octave_idx_type j = 0 ; j < m1_nc ; j++) \
               { \
-                OCTAVE_QUIT; \
+                octave_quit (); \
                 octave_idx_type idxj = j * m1_nr; \
                 for (octave_idx_type i = m1.cidx(j) ; i < m1.cidx(j+1) ; i++) \
                   { \
-                    OCTAVE_QUIT; \
+                    octave_quit (); \
                     r.data(idxj + m1.ridx(i)) = m1.data(i) OP m2.elem(0,0); \
 		  } \
               } \
@@ -681,7 +681,7 @@ along with Octave; see the file COPYING.  If not, see
             \
             while (ja_lt_max || jb_lt_max ) \
               { \
-                OCTAVE_QUIT; \
+                octave_quit (); \
                 if ((! jb_lt_max) || \
                       (ja_lt_max && (m1.ridx(ja) < m2.ridx(jb)))) \
                   { \
@@ -1849,13 +1849,13 @@ along with Octave; see the file COPYING.  If not, see
      \
      for (octave_idx_type i = 0; i < nz; i++) \
        { \
-         OCTAVE_QUIT; \
+         octave_quit (); \
 	 r.data(i) = s * a.data(i); \
 	 r.ridx(i) = a.ridx(i); \
        } \
      for (octave_idx_type i = 0; i < a_nc + 1; i++) \
        { \
-         OCTAVE_QUIT; \
+         octave_quit (); \
          r.cidx(i) = a.cidx(i); \
        } \
      \
@@ -1870,13 +1870,13 @@ along with Octave; see the file COPYING.  If not, see
      \
      for (octave_idx_type i = 0; i < nz; i++) \
        { \
-         OCTAVE_QUIT; \
+         octave_quit (); \
 	 r.data(i) = m.data(i) * s; \
 	 r.ridx(i) = m.ridx(i); \
        } \
      for (octave_idx_type i = 0; i < nc + 1; i++) \
        { \
-         OCTAVE_QUIT; \
+         octave_quit (); \
          r.cidx(i) = m.cidx(i); \
        } \
      \
@@ -1910,7 +1910,7 @@ along with Octave; see the file COPYING.  If not, see
 		      w[m.ridx(k)] = i + 1; \
 		      nel++; \
 		    } \
-	          OCTAVE_QUIT; \
+	          octave_quit (); \
 		} \
 	    } \
           retval.xcidx(i+1) = nel; \
@@ -1954,7 +1954,7 @@ along with Octave; see the file COPYING.  If not, see
 		      for (octave_idx_type k = m.cidx(col) ; \
 			   k < m.cidx(col+1); k++) \
 			{ \
-			  OCTAVE_QUIT; \
+			  octave_quit (); \
 			  octave_idx_type row = m.ridx(k); \
 			  if (w[row] < i + 1) \
 			    { \
@@ -1981,7 +1981,7 @@ along with Octave; see the file COPYING.  If not, see
 		      for (octave_idx_type k = m.cidx(col) ; \
 			  k < m.cidx(col+1); k++) \
 			{ \
-			  OCTAVE_QUIT; \
+			  octave_quit (); \
 			  octave_idx_type row = m.ridx(k); \
 			  if (w[row] < i + 1) \
 			    { \
@@ -2028,7 +2028,7 @@ along with Octave; see the file COPYING.  If not, see
         { \
           for (octave_idx_type j = 0; j < a_nr; j++) \
             { \
-              OCTAVE_QUIT; \
+              octave_quit (); \
               \
               EL_TYPE tmpval = a.elem(j,i); \
               for (octave_idx_type k = m.cidx(j) ; k < m.cidx(j+1); k++) \
@@ -2063,7 +2063,7 @@ along with Octave; see the file COPYING.  If not, see
         { \
           for (octave_idx_type j = 0; j < nc; j++) \
             { \
-              OCTAVE_QUIT; \
+              octave_quit (); \
               \
               EL_TYPE acc = ZERO; \
               for (octave_idx_type k = m.cidx(j) ; k < m.cidx(j+1); k++) \
@@ -2097,7 +2097,7 @@ along with Octave; see the file COPYING.  If not, see
       \
       for (octave_idx_type i = 0; i < a_nc ; i++) \
         { \
-          OCTAVE_QUIT; \
+          octave_quit (); \
           for (octave_idx_type j = a.cidx(i); j < a.cidx(i+1); j++) \
             { \
               octave_idx_type col = a.ridx(j); \
@@ -2133,7 +2133,7 @@ along with Octave; see the file COPYING.  If not, see
       \
       for (octave_idx_type i = 0; i < a_nc ; i++) \
         { \
-          OCTAVE_QUIT; \
+          octave_quit (); \
           for (octave_idx_type j = a.cidx(i); j < a.cidx(i+1); j++) \
             { \
               octave_idx_type col = a.ridx(j); \

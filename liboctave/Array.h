@@ -659,7 +659,7 @@ public:
     octave_idx_type i;
     for (i = 0; i < len - 3; i += 4)
       {
-	OCTAVE_QUIT;
+	octave_quit ();
 
         p[i] = fcn (m[i]);
         p[i+1] = fcn (m[i+1]);
@@ -667,7 +667,7 @@ public:
         p[i+3] = fcn (m[i+3]);
       }
 
-    OCTAVE_QUIT;
+    octave_quit ();
 
     for (; i < len; i++)
       p[i] = fcn (m[i]);

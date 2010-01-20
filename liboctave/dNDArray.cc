@@ -279,7 +279,7 @@ NDArray::fourier (int dim) const
     {
       for (octave_idx_type j = 0; j < howmany; j++)
 	{
-	  OCTAVE_QUIT;
+	  octave_quit ();
 
 	  for (octave_idx_type i = 0; i < npts; i++)
 	    tmp[i] = elem((i + k*npts)*stride + j*dist);
@@ -326,7 +326,7 @@ NDArray::ifourier (int dim) const
     {
       for (octave_idx_type j = 0; j < howmany; j++)
 	{
-	  OCTAVE_QUIT;
+	  octave_quit ();
 
 	  for (octave_idx_type i = 0; i < npts; i++)
 	    tmp[i] = elem((i + k*npts)*stride + j*dist);
@@ -372,7 +372,7 @@ NDArray::fourier2d (void) const
 	{
 	  for (octave_idx_type j = 0; j < howmany; j++)
 	    {
-	      OCTAVE_QUIT;
+	      octave_quit ();
 
 	      for (octave_idx_type l = 0; l < npts; l++)
 		prow[l] = retval ((l + k*npts)*stride + j*dist);
@@ -420,7 +420,7 @@ NDArray::ifourier2d (void) const
 	{
 	  for (octave_idx_type j = 0; j < howmany; j++)
 	    {
-	      OCTAVE_QUIT;
+	      octave_quit ();
 
 	      for (octave_idx_type l = 0; l < npts; l++)
 		prow[l] = retval ((l + k*npts)*stride + j*dist);
@@ -468,7 +468,7 @@ NDArray::fourierNd (void) const
 	{
 	  for (octave_idx_type j = 0; j < howmany; j++)
 	    {
-	      OCTAVE_QUIT;
+	      octave_quit ();
 
 	      for (octave_idx_type l = 0; l < npts; l++)
 		prow[l] = retval ((l + k*npts)*stride + j*dist);
@@ -515,7 +515,7 @@ NDArray::ifourierNd (void) const
 	{
 	  for (octave_idx_type j = 0; j < howmany; j++)
 	    {
-	      OCTAVE_QUIT;
+	      octave_quit ();
 
 	      for (octave_idx_type l = 0; l < npts; l++)
 		prow[l] = retval ((l + k*npts)*stride + j*dist);
@@ -1000,7 +1000,7 @@ min (double d, const NDArray& m)
 
   for (octave_idx_type i = 0; i < nel; i++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
       result (i) = xmin (d, m (i));
     }
 
@@ -1019,7 +1019,7 @@ min (const NDArray& m, double d)
 
   for (octave_idx_type i = 0; i < nel; i++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
       result (i) = xmin (d, m (i));
     }
 
@@ -1045,7 +1045,7 @@ min (const NDArray& a, const NDArray& b)
 
   for (octave_idx_type i = 0; i < nel; i++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
       result (i) = xmin (a (i), b (i));
     }
 
@@ -1064,7 +1064,7 @@ max (double d, const NDArray& m)
 
   for (octave_idx_type i = 0; i < nel; i++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
       result (i) = xmax (d, m (i));
     }
 
@@ -1083,7 +1083,7 @@ max (const NDArray& m, double d)
 
   for (octave_idx_type i = 0; i < nel; i++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
       result (i) = xmax (d, m (i));
     }
 
@@ -1109,7 +1109,7 @@ max (const NDArray& a, const NDArray& b)
 
   for (octave_idx_type i = 0; i < nel; i++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
       result (i) = xmax (a (i), b (i));
     }
 

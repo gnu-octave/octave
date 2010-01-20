@@ -68,7 +68,7 @@ operator += (MSparse<T>& a, const MSparse<T>& b)
            
             while (ja_lt_max || jb_lt_max )
               {
-                OCTAVE_QUIT;
+                octave_quit ();
                 if ((! jb_lt_max) ||
                       (ja_lt_max && (a.ridx(ja) < b.ridx(jb))))
                   {
@@ -141,7 +141,7 @@ operator -= (MSparse<T>& a, const MSparse<T>& b)
            
             while (ja_lt_max || jb_lt_max )
               {
-                OCTAVE_QUIT;
+                octave_quit ();
                 if ((! jb_lt_max) ||
                       (ja_lt_max && (a.ridx(ja) < b.ridx(jb))))
                   {
@@ -299,11 +299,11 @@ SPARSE_SA2_OP_2 (/)
             \
             for (octave_idx_type j = 0 ; j < b_nc ; j++) \
               { \
-                OCTAVE_QUIT; \
+                octave_quit (); \
                 octave_idx_type idxj = j * b_nr; \
                 for (octave_idx_type i = b.cidx(j) ; i < b.cidx(j+1) ; i++) \
                   { \
-                   OCTAVE_QUIT; \
+                   octave_quit (); \
                    r.data(idxj + b.ridx(i)) = a.data(0) OP b.data(i); \
 		  } \
               } \
@@ -320,11 +320,11 @@ SPARSE_SA2_OP_2 (/)
             \
             for (octave_idx_type j = 0 ; j < a_nc ; j++) \
               { \
-                OCTAVE_QUIT; \
+                octave_quit (); \
                 octave_idx_type idxj = j * a_nr; \
                 for (octave_idx_type i = a.cidx(j) ; i < a.cidx(j+1) ; i++) \
                   { \
-                    OCTAVE_QUIT; \
+                    octave_quit (); \
                     r.data(idxj + a.ridx(i)) = a.data(i) OP b.data(0); \
 		  } \
               } \
@@ -351,7 +351,7 @@ SPARSE_SA2_OP_2 (/)
             \
             while (ja_lt_max || jb_lt_max ) \
               { \
-                OCTAVE_QUIT; \
+                octave_quit (); \
                 if ((! jb_lt_max) || \
                       (ja_lt_max && (a.ridx(ja) < b.ridx(jb)))) \
                   { \
@@ -417,7 +417,7 @@ SPARSE_SA2_OP_2 (/)
             \
             for (octave_idx_type i = 0 ; i < b_nnz ; i++) \
               { \
-                OCTAVE_QUIT; \
+                octave_quit (); \
                 r.data (i) = a.data(0) OP r.data(i); \
               } \
             r.maybe_compress (); \
@@ -434,7 +434,7 @@ SPARSE_SA2_OP_2 (/)
             \
             for (octave_idx_type i = 0 ; i < a_nnz ; i++) \
               { \
-                OCTAVE_QUIT; \
+                octave_quit (); \
                 r.data (i) = r.data(i) OP b.data(0); \
               } \
             r.maybe_compress (); \
@@ -460,7 +460,7 @@ SPARSE_SA2_OP_2 (/)
             \
             while (ja_lt_max || jb_lt_max ) \
               { \
-                OCTAVE_QUIT; \
+                octave_quit (); \
                 if ((! jb_lt_max) || \
                       (ja_lt_max && (a.ridx(ja) < b.ridx(jb)))) \
                   { \
@@ -523,11 +523,11 @@ SPARSE_SA2_OP_2 (/)
             r = MSparse<T> (b_nr, b_nc, fill); \
             for (octave_idx_type j = 0 ; j < b_nc ; j++) \
               { \
-                OCTAVE_QUIT; \
+                octave_quit (); \
                 octave_idx_type idxj = j * b_nr; \
                 for (octave_idx_type i = b.cidx(j) ; i < b.cidx(j+1) ; i++) \
                   { \
-                    OCTAVE_QUIT; \
+                    octave_quit (); \
                     r.data(idxj + b.ridx(i)) = val OP b.data(i); \
 		  } \
               } \
@@ -551,11 +551,11 @@ SPARSE_SA2_OP_2 (/)
             r = MSparse<T> (a_nr, a_nc, fill); \
             for (octave_idx_type j = 0 ; j < a_nc ; j++) \
               { \
-                OCTAVE_QUIT; \
+                octave_quit (); \
                 octave_idx_type idxj = j * a_nr; \
                 for (octave_idx_type i = a.cidx(j) ; i < a.cidx(j+1) ; i++) \
                   { \
-                    OCTAVE_QUIT; \
+                    octave_quit (); \
                     r.data(idxj + a.ridx(i)) = a.data(i) OP val; \
 		  } \
               } \
@@ -580,7 +580,7 @@ SPARSE_SA2_OP_2 (/)
             \
             while (ja_lt_max || jb_lt_max ) \
               { \
-                OCTAVE_QUIT; \
+                octave_quit (); \
                 if ((! jb_lt_max) || \
                       (ja_lt_max && (a.ridx(ja) < b.ridx(jb)))) \
                   { \

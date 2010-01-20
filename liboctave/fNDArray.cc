@@ -237,7 +237,7 @@ FloatNDArray::fourier (int dim) const
     {
       for (octave_idx_type j = 0; j < howmany; j++)
 	{
-	  OCTAVE_QUIT;
+	  octave_quit ();
 
 	  for (octave_idx_type i = 0; i < npts; i++)
 	    tmp[i] = elem((i + k*npts)*stride + j*dist);
@@ -284,7 +284,7 @@ FloatNDArray::ifourier (int dim) const
     {
       for (octave_idx_type j = 0; j < howmany; j++)
 	{
-	  OCTAVE_QUIT;
+	  octave_quit ();
 
 	  for (octave_idx_type i = 0; i < npts; i++)
 	    tmp[i] = elem((i + k*npts)*stride + j*dist);
@@ -330,7 +330,7 @@ FloatNDArray::fourier2d (void) const
 	{
 	  for (octave_idx_type j = 0; j < howmany; j++)
 	    {
-	      OCTAVE_QUIT;
+	      octave_quit ();
 
 	      for (octave_idx_type l = 0; l < npts; l++)
 		prow[l] = retval ((l + k*npts)*stride + j*dist);
@@ -378,7 +378,7 @@ FloatNDArray::ifourier2d (void) const
 	{
 	  for (octave_idx_type j = 0; j < howmany; j++)
 	    {
-	      OCTAVE_QUIT;
+	      octave_quit ();
 
 	      for (octave_idx_type l = 0; l < npts; l++)
 		prow[l] = retval ((l + k*npts)*stride + j*dist);
@@ -426,7 +426,7 @@ FloatNDArray::fourierNd (void) const
 	{
 	  for (octave_idx_type j = 0; j < howmany; j++)
 	    {
-	      OCTAVE_QUIT;
+	      octave_quit ();
 
 	      for (octave_idx_type l = 0; l < npts; l++)
 		prow[l] = retval ((l + k*npts)*stride + j*dist);
@@ -473,7 +473,7 @@ FloatNDArray::ifourierNd (void) const
 	{
 	  for (octave_idx_type j = 0; j < howmany; j++)
 	    {
-	      OCTAVE_QUIT;
+	      octave_quit ();
 
 	      for (octave_idx_type l = 0; l < npts; l++)
 		prow[l] = retval ((l + k*npts)*stride + j*dist);
@@ -958,7 +958,7 @@ min (float d, const FloatNDArray& m)
 
   for (octave_idx_type i = 0; i < nel; i++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
       result (i) = xmin (d, m (i));
     }
 
@@ -977,7 +977,7 @@ min (const FloatNDArray& m, float d)
 
   for (octave_idx_type i = 0; i < nel; i++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
       result (i) = xmin (d, m (i));
     }
 
@@ -1003,7 +1003,7 @@ min (const FloatNDArray& a, const FloatNDArray& b)
 
   for (octave_idx_type i = 0; i < nel; i++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
       result (i) = xmin (a (i), b (i));
     }
 
@@ -1022,7 +1022,7 @@ max (float d, const FloatNDArray& m)
 
   for (octave_idx_type i = 0; i < nel; i++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
       result (i) = xmax (d, m (i));
     }
 
@@ -1041,7 +1041,7 @@ max (const FloatNDArray& m, float d)
 
   for (octave_idx_type i = 0; i < nel; i++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
       result (i) = xmax (d, m (i));
     }
 
@@ -1067,7 +1067,7 @@ max (const FloatNDArray& a, const FloatNDArray& b)
 
   for (octave_idx_type i = 0; i < nel; i++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
       result (i) = xmax (a (i), b (i));
     }
 

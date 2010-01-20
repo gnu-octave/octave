@@ -683,7 +683,7 @@ static inline void
 convert_packcomplex_1d (T *out, size_t nr, size_t nc,
 			octave_idx_type stride, octave_idx_type dist)
 {
-  OCTAVE_QUIT;
+  octave_quit ();
 
   // Fill in the missing data.
 
@@ -691,7 +691,7 @@ convert_packcomplex_1d (T *out, size_t nr, size_t nc,
     for (size_t j = nc/2+1; j < nc; j++)
       out[j*stride + i*dist] = conj(out[(nc - j)*stride + i*dist]);
 
-  OCTAVE_QUIT;
+  octave_quit ();
 }
 
 template <class T>
@@ -704,7 +704,7 @@ convert_packcomplex_Nd (T *out, const dim_vector &dv)
   size_t nrp = nr * np;
   T *ptr1, *ptr2;
 
-  OCTAVE_QUIT;
+  octave_quit ();
 
   // Create space for the missing elements.
 
@@ -716,7 +716,7 @@ convert_packcomplex_Nd (T *out, const dim_vector &dv)
 	*ptr2++ = *ptr1++;
     }
 
-  OCTAVE_QUIT;
+  octave_quit ();
 
   // Fill in the missing data for the rank = 2 case directly for speed.
 
@@ -730,7 +730,7 @@ convert_packcomplex_Nd (T *out, const dim_vector &dv)
 	out[j + i*nr*nc] = conj(out[(i*nr+1)*nc - j]);
     }
 
-  OCTAVE_QUIT;
+  octave_quit ();
 
   // Now do the permutations needed for rank > 2 cases.
 
@@ -754,7 +754,7 @@ convert_packcomplex_Nd (T *out, const dim_vector &dv)
       jstart = jmax;
     }
 
-  OCTAVE_QUIT;
+  octave_quit ();
 }
 
 int

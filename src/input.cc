@@ -198,7 +198,7 @@ do_input_echo (const std::string& input_string)
 std::string
 gnu_readline (const std::string& s, bool force_readline)
 {
-  OCTAVE_QUIT;
+  octave_quit ();
 
   std::string retval;
 
@@ -258,7 +258,7 @@ interactive_input (const std::string& s, bool force_readline = false)
 static std::string
 octave_gets (void)
 {
-  OCTAVE_QUIT;
+  octave_quit ();
 
   std::string retval;
 
@@ -334,7 +334,7 @@ octave_gets (void)
 static std::string
 get_user_input (void)
 {
-  OCTAVE_QUIT;
+  octave_quit ();
 
   std::string retval;
 
@@ -771,7 +771,7 @@ get_debug_input (const std::string& prompt)
           // Restore previous value of global_command.
           frame.run_top (2);
 
-          OCTAVE_QUIT;
+          octave_quit ();
         }
     }
   else

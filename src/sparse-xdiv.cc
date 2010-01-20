@@ -313,7 +313,7 @@ RT do_rightdiv_sm_dm (const SM& a, const DM& d)
   octave_idx_type k_result = 0;
   for (octave_idx_type j = 0; j < nc; ++j)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
       const DM_elt_type s = d.dgelem (j);
       const octave_idx_type colend = a.cidx (j+1);
       r.xcidx (j) = k_result;
@@ -386,7 +386,7 @@ x_el_div (double a, const SparseMatrix& b)
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = b.cidx(j); i < b.cidx(j+1); i++)
       {
-	OCTAVE_QUIT;
+	octave_quit ();
 	result.elem (b.ridx(i), j) = a / b.data (i);
       }
 
@@ -404,7 +404,7 @@ x_el_div (double a, const SparseComplexMatrix& b)
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = b.cidx(j); i < b.cidx(j+1); i++)
       {
-	OCTAVE_QUIT;
+	octave_quit ();
 	result.elem (b.ridx(i), j) = a / b.data (i);
       }
 
@@ -422,7 +422,7 @@ x_el_div (const Complex a, const SparseMatrix& b)
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = b.cidx(j); i < b.cidx(j+1); i++)
       {
-	OCTAVE_QUIT;
+	octave_quit ();
 	result.elem (b.ridx(i), j) = a / b.data (i);
       }
 
@@ -440,7 +440,7 @@ x_el_div (const Complex a, const SparseComplexMatrix& b)
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = b.cidx(j); i < b.cidx(j+1); i++)
       {
-	OCTAVE_QUIT;
+	octave_quit ();
 	result.elem (b.ridx(i), j) = a / b.data (i);
       }
 
@@ -580,7 +580,7 @@ RT do_leftdiv_dm_sm (const DM& d, const SM& a)
   octave_idx_type k_result = 0;
   for (octave_idx_type j = 0; j < a_nc; ++j)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
       const octave_idx_type colend = a.cidx (j+1);
       r.xcidx (j) = k_result;
       for (octave_idx_type k = a.cidx (j); k < colend; ++k)

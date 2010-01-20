@@ -36,7 +36,7 @@ SM octinternal_do_mul_colpm_sm (const octave_idx_type *pcol, const SM& a)
 
   for (octave_idx_type k = 0; k < nent; ++k)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
       r.xridx (k) = pcol[a.ridx (k)];
       r.xdata (k) = a.data (k);
     }
@@ -94,7 +94,7 @@ SM octinternal_do_mul_sm_rowpm (const SM& a, const octave_idx_type *prow)
   octave_idx_type k_src = 0;
   for (octave_idx_type j_src = 0; j_src < nc; ++j_src)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
       const octave_idx_type j = prow[j_src];
       const octave_idx_type kend_src = a.cidx (j_src + 1);
       for (k = r.xcidx (j); k_src < kend_src; ++k, ++k_src)
@@ -129,7 +129,7 @@ SM octinternal_do_mul_sm_colpm (const SM& a, const octave_idx_type *pcol)
   octave_idx_type k = 0;
   for (octave_idx_type j = 0; j < nc; ++j)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
       const octave_idx_type j_src = pcol[j];
       octave_idx_type k_src;
       const octave_idx_type kend_src = a.cidx (j_src + 1);

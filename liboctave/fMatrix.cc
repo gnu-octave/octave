@@ -1015,7 +1015,7 @@ FloatMatrix::fourier (void) const
 
   for (octave_idx_type j = 0; j < nsamples; j++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
 
       F77_FUNC (cfftf, CFFTF) (npts, &tmp_data[npts*j], pwsave);
     }
@@ -1056,7 +1056,7 @@ FloatMatrix::ifourier (void) const
 
   for (octave_idx_type j = 0; j < nsamples; j++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
 
       F77_FUNC (cfftb, CFFTB) (npts, &tmp_data[npts*j], pwsave);
     }
@@ -1100,7 +1100,7 @@ FloatMatrix::fourier2d (void) const
 
   for (octave_idx_type j = 0; j < nsamples; j++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
 
       F77_FUNC (cfftf, CFFTF) (npts, &tmp_data[npts*j], pwsave);
     }
@@ -1119,7 +1119,7 @@ FloatMatrix::fourier2d (void) const
 
   for (octave_idx_type j = 0; j < nsamples; j++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
 
       for (octave_idx_type i = 0; i < npts; i++)
 	prow[i] = tmp_data[i*nr + j];
@@ -1166,7 +1166,7 @@ FloatMatrix::ifourier2d (void) const
 
   for (octave_idx_type j = 0; j < nsamples; j++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
 
       F77_FUNC (cfftb, CFFTB) (npts, &tmp_data[npts*j], pwsave);
     }
@@ -1188,7 +1188,7 @@ FloatMatrix::ifourier2d (void) const
 
   for (octave_idx_type j = 0; j < nsamples; j++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
 
       for (octave_idx_type i = 0; i < npts; i++)
 	prow[i] = tmp_data[i*nr + j];
@@ -3295,7 +3295,7 @@ min (float d, const FloatMatrix& m)
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
       {
-	OCTAVE_QUIT;
+	octave_quit ();
 	result (i, j) = xmin (d, m (i, j));
       }
 
@@ -3315,7 +3315,7 @@ min (const FloatMatrix& m, float d)
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
       {
-	OCTAVE_QUIT;
+	octave_quit ();
 	result (i, j) = xmin (m (i, j), d);
       }
 
@@ -3342,7 +3342,7 @@ min (const FloatMatrix& a, const FloatMatrix& b)
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
       {
-	OCTAVE_QUIT;
+	octave_quit ();
 	result (i, j) = xmin (a (i, j), b (i, j));
       }
 
@@ -3362,7 +3362,7 @@ max (float d, const FloatMatrix& m)
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
       {
-	OCTAVE_QUIT;
+	octave_quit ();
 	result (i, j) = xmax (d, m (i, j));
       }
 
@@ -3382,7 +3382,7 @@ max (const FloatMatrix& m, float d)
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
       {
-	OCTAVE_QUIT;
+	octave_quit ();
 	result (i, j) = xmax (m (i, j), d);
       }
 
@@ -3409,7 +3409,7 @@ max (const FloatMatrix& a, const FloatMatrix& b)
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
       {
-	OCTAVE_QUIT;
+	octave_quit ();
 	result (i, j) = xmax (a (i, j), b (i, j));
       }
 

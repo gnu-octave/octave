@@ -1576,7 +1576,7 @@ octave_print_internal (std::ostream& os, const Matrix& m,
 	{
 	  for (octave_idx_type j = 0; j < nc; j++)
 	    {
-	      OCTAVE_QUIT;
+	      octave_quit ();
 
 	      pr_plus_format (os, m(i,j));
 	    }
@@ -1634,7 +1634,7 @@ octave_print_internal (std::ostream& os, const Matrix& m,
 
 		  for (octave_idx_type j = col; j < lim; j++)
 		    {
-		      OCTAVE_QUIT;
+		      octave_quit ();
 
 		      if (i == 0 && j == 0)
 			os << "[ ";
@@ -1680,7 +1680,7 @@ octave_print_internal (std::ostream& os, const Matrix& m,
 
 		  for (octave_idx_type j = col; j < lim; j++)
 		    {
-		      OCTAVE_QUIT;
+		      octave_quit ();
 
 		      os << "  ";
 
@@ -1710,7 +1710,7 @@ octave_print_internal (std::ostream& os, const DiagMatrix& m,
 	{
 	  for (octave_idx_type j = 0; j < nc; j++)
 	    {
-	      OCTAVE_QUIT;
+	      octave_quit ();
 
 	      pr_plus_format (os, m(i,j));
 	    }
@@ -1768,7 +1768,7 @@ octave_print_internal (std::ostream& os, const DiagMatrix& m,
 
               for (octave_idx_type j = col; j < lim; j++)
                 {
-                  OCTAVE_QUIT;
+                  octave_quit ();
 
                   if (j == 0)
                     os << "[ ";
@@ -1819,7 +1819,7 @@ octave_print_internal (std::ostream& os, const DiagMatrix& m,
 
 		  for (octave_idx_type j = col; j < lim; j++)
 		    {
-		      OCTAVE_QUIT;
+		      octave_quit ();
 
 		      os << "  ";
 
@@ -1861,7 +1861,7 @@ octave_print_internal (std::ostream& os, const DiagMatrix& m,
  \
           for (octave_idx_type i = 0; i < m; i++) \
             { \
-	      OCTAVE_QUIT; \
+	      octave_quit (); \
  \
               std::string nm = "ans"; \
  \
@@ -1975,7 +1975,7 @@ octave_print_internal (std::ostream& os, const ComplexMatrix& cm,
 	{
 	  for (octave_idx_type j = 0; j < nc; j++)
 	    {
-	      OCTAVE_QUIT;
+	      octave_quit ();
 
 	      pr_plus_format (os, cm(i,j));
 	    }
@@ -2035,7 +2035,7 @@ octave_print_internal (std::ostream& os, const ComplexMatrix& cm,
 
 		  for (octave_idx_type j = col; j < lim; j++)
 		    {
-		      OCTAVE_QUIT;
+		      octave_quit ();
 
 		      if (i == 0 && j == 0)
 			os << "[ ";
@@ -2081,7 +2081,7 @@ octave_print_internal (std::ostream& os, const ComplexMatrix& cm,
 
 		  for (octave_idx_type j = col; j < lim; j++)
 		    {
-		      OCTAVE_QUIT;
+		      octave_quit ();
 
 		      os << "  ";
 
@@ -2111,7 +2111,7 @@ octave_print_internal (std::ostream& os, const ComplexDiagMatrix& cm,
 	{
 	  for (octave_idx_type j = 0; j < nc; j++)
 	    {
-	      OCTAVE_QUIT;
+	      octave_quit ();
 
 	      pr_plus_format (os, cm(i,j));
 	    }
@@ -2171,7 +2171,7 @@ octave_print_internal (std::ostream& os, const ComplexDiagMatrix& cm,
 
               for (octave_idx_type j = col; j < lim; j++)
                 {
-                  OCTAVE_QUIT;
+                  octave_quit ();
 
                   if (j == 0)
                     os << "[ ";
@@ -2222,7 +2222,7 @@ octave_print_internal (std::ostream& os, const ComplexDiagMatrix& cm,
 
 		  for (octave_idx_type j = col; j < lim; j++)
 		    {
-		      OCTAVE_QUIT;
+		      octave_quit ();
 
 		      os << "  ";
 
@@ -2255,7 +2255,7 @@ octave_print_internal (std::ostream& os, const PermMatrix& m,
 	{
 	  for (octave_idx_type j = 0; j < nc; j++)
 	    {
-	      OCTAVE_QUIT;
+	      octave_quit ();
 
 	      pr_plus_format (os, m(i,j));
 	    }
@@ -2315,7 +2315,7 @@ octave_print_internal (std::ostream& os, const PermMatrix& m,
 
               for (octave_idx_type j = col; j < lim; j++)
                 {
-                  OCTAVE_QUIT;
+                  octave_quit ();
 
                   if (j == 0)
                     os << "[ ";
@@ -2357,7 +2357,7 @@ octave_print_internal (std::ostream& os, const PermMatrix& m,
 
 		  for (octave_idx_type j = col; j < lim; j++)
 		    {
-		      OCTAVE_QUIT;
+		      octave_quit ();
 
 		      os << "  ";
 
@@ -2466,7 +2466,7 @@ octave_print_internal (std::ostream& os, const Range& r,
     {
       for (octave_idx_type i = 0; i < num_elem; i++)
 	{
-	  OCTAVE_QUIT;
+	  octave_quit ();
 
 	  double val = base + i * increment;
 
@@ -2539,7 +2539,7 @@ octave_print_internal (std::ostream& os, const Range& r,
 
 	      for (octave_idx_type i = col; i < lim; i++)
 		{
-		  OCTAVE_QUIT;
+		  octave_quit ();
 
 		  double val = base + i * increment;
 
@@ -2608,7 +2608,7 @@ octave_print_internal (std::ostream& os, const charMatrix& chm,
 	{
 	  for (octave_idx_type i = 0; i < nstr; i++)
 	    {
-	      OCTAVE_QUIT;
+	      octave_quit ();
 
 	      std::string row = chm.row_as_string (i);
 
@@ -2999,7 +2999,7 @@ octave_print_internal_template (std::ostream& os, const intNDArray<T>& nda,
 	    {
 	      for (octave_idx_type jj = 0; jj < nc; jj++)
 		{
-		  OCTAVE_QUIT;
+		  octave_quit ();
 
 		  pr_plus_format (os, page(ii,jj));
 		}
@@ -3109,7 +3109,7 @@ octave_print_internal_template (std::ostream& os, const intNDArray<T>& nda,
 		{
 		  for (octave_idx_type jj = 0; jj < nc; jj++)
 		    {
-		      OCTAVE_QUIT;
+		      octave_quit ();
 		      os << "  ";
 		      os << typename octave_print_conv<T>::print_conv_type (page(ii,jj));
 		    }
@@ -3137,7 +3137,7 @@ octave_print_internal_template (std::ostream& os, const intNDArray<T>& nda,
 		      
 		      for (octave_idx_type jj = col; jj < lim; jj++)
 			{
-			  OCTAVE_QUIT;
+			  octave_quit ();
 			  os << "  ";
 			  pr_int (os, page(ii,jj), fw);
 			}

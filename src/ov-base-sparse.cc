@@ -297,7 +297,7 @@ octave_base_sparse<T>::print_raw (std::ostream& os,
     {
       for (octave_idx_type j = 0; j < nc; j++)
 	{
-	  OCTAVE_QUIT;
+	  octave_quit ();
 
 	  // FIXME -- is there an easy way to get the max row
 	  // and column indices so we can set the width appropriately

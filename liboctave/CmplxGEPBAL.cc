@@ -97,7 +97,7 @@ ComplexGEPBALANCE::init (const ComplexMatrix& a, const ComplexMatrix& b,
   balancing_mat2 = Matrix (n, n, 0.0);
   for (octave_idx_type i = 0; i < n; i++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
       balancing_mat.elem (i ,i) = 1.0;
       balancing_mat2.elem (i ,i) = 1.0;
     }

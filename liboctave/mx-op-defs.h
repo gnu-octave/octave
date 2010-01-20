@@ -560,7 +560,7 @@ FCN (octave_ ## T d, const T ## NDArray& m) \
 \
   for (octave_idx_type i = 0; i < nel; i++) \
     { \
-      OCTAVE_QUIT; \
+      octave_quit (); \
       result (i) = d OP m (i) ? d : m(i); \
     } \
 \
@@ -581,7 +581,7 @@ FCN (const T ## NDArray& m, octave_ ## T d) \
 \
   for (octave_idx_type i = 0; i < nel; i++) \
     { \
-      OCTAVE_QUIT; \
+      octave_quit (); \
       result (i) = m (i) OP d ? m(i) : d; \
     } \
 \
@@ -609,7 +609,7 @@ FCN (const T ## NDArray& a, const T ## NDArray& b) \
 \
   for (octave_idx_type i = 0; i < nel; i++) \
     { \
-      OCTAVE_QUIT; \
+      octave_quit (); \
       result (i) = a(i) OP b(i) ? a(i) : b(i); \
     } \
 \

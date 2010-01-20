@@ -240,7 +240,7 @@ tree_evaluator::visit_decl_init_list (tree_decl_init_list&)
 static inline bool
 quit_loop_now (void)
 {
-  OCTAVE_QUIT;
+  octave_quit ();
 
   // Maybe handle `continue N' someday...
 
@@ -720,7 +720,7 @@ tree_evaluator::visit_statement_list (tree_statement_list& lst)
 
 	  if (elt)
 	    {
-	      OCTAVE_QUIT;
+	      octave_quit ();
 
 	      elt->accept (*this);
 

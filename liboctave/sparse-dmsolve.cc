@@ -58,7 +58,7 @@ dmsolve_extract (const MSparse<T> &A, const octave_idx_type *Pinv,
 	  B.xcidx (j - cst) = nz;
 	  for (octave_idx_type p = A.cidx(qq) ; p < A.cidx (qq+1) ; p++)
 	    {
-	      OCTAVE_QUIT;
+	      octave_quit ();
 	      octave_idx_type r = (Pinv ? Pinv [A.ridx (p)] : A.ridx (p));
 	      if (r >= rst && r < rend)
 		{
@@ -81,7 +81,7 @@ dmsolve_extract (const MSparse<T> &A, const octave_idx_type *Pinv,
 	  B.xcidx (j - cst) = nz;
 	  for (octave_idx_type p = A.cidx(qq) ; p < A.cidx (qq+1) ; p++)
 	    {
-	      OCTAVE_QUIT;
+	      octave_quit ();
 	      octave_idx_type r = (Pinv ? Pinv [A.ridx (p)] : A.ridx (p));
 	      if (r >= rst && r < rend)
 		{
@@ -169,7 +169,7 @@ dmsolve_insert (MArray2<T> &a, const MArray2<T> &b, const octave_idx_type *Q,
       octave_idx_type boff = j * nr;
       for (octave_idx_type i = 0; i < nr; i++)
 	{
-	  OCTAVE_QUIT;
+	  octave_quit ();
 	  ax [Q [r + i] + aoff] = bx [i + boff];
 	}
     }
@@ -228,7 +228,7 @@ dmsolve_insert (MSparse<T> &a, const MSparse<T> &b, const octave_idx_type *Q,
 
   for (octave_idx_type i = c; i < c + b_cols; i++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
 
       for (octave_idx_type j = tmp.xcidx(i); j < tmp.xcidx(i+1); j++)
 	if (Qinv [tmp.xridx(j)] < r || 	Qinv [tmp.xridx(j)] >= r + b_rows)
@@ -237,7 +237,7 @@ dmsolve_insert (MSparse<T> &a, const MSparse<T> &b, const octave_idx_type *Q,
 	    a.xridx(ii++) = tmp.xridx(j);
 	  }
 
-      OCTAVE_QUIT;
+      octave_quit ();
 
       for (octave_idx_type j = b.cidx(i-c); j < b.cidx(i-c+1); j++)
 	{
@@ -286,7 +286,7 @@ dmsolve_permute (MArray2<RT> &a, const MArray2<T>& b, const octave_idx_type *p)
       octave_idx_type off = j * b_nr;
       for (octave_idx_type i = 0; i < b_nr; i++)
 	{
-	  OCTAVE_QUIT;
+	  octave_quit ();
 	  Btx [p [i] + off] = Bx [ i + off];
 	}
     }
@@ -323,7 +323,7 @@ dmsolve_permute (MSparse<RT> &a, const MSparse<T>& b, const octave_idx_type *p)
     {
       for (octave_idx_type i = b.cidx(j); i < b.cidx(j+1); i++)
 	{
-	  OCTAVE_QUIT;
+	  octave_quit ();
 	  octave_idx_type r = p [b.ridx (i)];
 	  X [r] = b.data (i);
 	  a.xridx(nz++) = p [b.ridx (i)];
@@ -331,7 +331,7 @@ dmsolve_permute (MSparse<RT> &a, const MSparse<T>& b, const octave_idx_type *p)
       sort.sort (ri + a.xcidx (j), nz - a.xcidx (j));
       for (octave_idx_type i = a.cidx (j); i < nz; i++)
 	{
-	  OCTAVE_QUIT;
+	  octave_quit ();
 	  a.xdata (i) = X [a.xridx (i)]; 
 	}
       a.xcidx(j+1) = nz;

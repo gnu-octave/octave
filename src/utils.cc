@@ -1345,7 +1345,7 @@ octave_sleep (double seconds)
       octave_sleep (sec);
       octave_usleep (usec);
 
-      OCTAVE_QUIT;
+      octave_quit ();
     }
 }
 
@@ -1450,7 +1450,7 @@ do_simple_cellfun (octave_value_list (*fun) (const octave_value_list&, int),
             if (iscell[i])
               new_args(i) = ccells[i](j);
 
-          OCTAVE_QUIT;
+          octave_quit ();
 
           const octave_value_list tmp = fun (new_args, nargout);
 

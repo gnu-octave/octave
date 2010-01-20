@@ -824,7 +824,7 @@ SparseComplexMatrix::tinverse (MatrixType &mattyp, octave_idx_type& info,
 
 	      for (octave_idx_type i = 0; i < nr; i++)
 		{
-		  OCTAVE_QUIT;
+		  octave_quit ();
 		  // place the 1 in the identity position
 		  octave_idx_type cx_colstart = cx;
 	  
@@ -857,7 +857,7 @@ SparseComplexMatrix::tinverse (MatrixType &mattyp, octave_idx_type& info,
 
 		      do
 			{
-			  OCTAVE_QUIT;
+			  octave_quit ();
 			  rpX = retval.xridx(colXp);
 			  rpU = ridx(colUp);
 
@@ -948,7 +948,7 @@ SparseComplexMatrix::tinverse (MatrixType &mattyp, octave_idx_type& info,
 
 	      for (octave_idx_type i = 0; i < nr; i++)
 		{
-		  OCTAVE_QUIT;
+		  octave_quit ();
 		  octave_idx_type iidx = rperm[i];
 
 		  for (octave_idx_type j = 0; j < nr; j++)
@@ -966,7 +966,7 @@ SparseComplexMatrix::tinverse (MatrixType &mattyp, octave_idx_type& info,
 		      for (octave_idx_type k = cidx(jidx); 
 			   k < cidx(jidx+1); k++)
 			{
-			  OCTAVE_QUIT;
+			  octave_quit ();
 			  v -= work[ridx(k)] * data(k);
 			}
 
@@ -7431,7 +7431,7 @@ operator << (std::ostream& os, const SparseComplexMatrix& a)
    // add one to the printed indices to go from
    //  zero-based to one-based arrays
    for (octave_idx_type j = 0; j < nc; j++)  {
-      OCTAVE_QUIT;
+      octave_quit ();
       for (octave_idx_type i = a.cidx(j); i < a.cidx(j+1); i++) {
 	os << a.ridx(i) + 1 << " "  << j + 1 << " ";
 	octave_write_complex (os, a.data(i));
@@ -7711,7 +7711,7 @@ min (const SparseComplexMatrix& a, const SparseComplexMatrix& b)
            
 	      while (ja_lt_max || jb_lt_max )
 		{
-		  OCTAVE_QUIT;
+		  octave_quit ();
 		  if ((! jb_lt_max) ||
                       (ja_lt_max && (a.ridx(ja) < b.ridx(jb))))
 		    {
@@ -7835,7 +7835,7 @@ max (const SparseComplexMatrix& a, const SparseComplexMatrix& b)
            
 	      while (ja_lt_max || jb_lt_max )
 		{
-		  OCTAVE_QUIT;
+		  octave_quit ();
 		  if ((! jb_lt_max) ||
                       (ja_lt_max && (a.ridx(ja) < b.ridx(jb))))
 		    {

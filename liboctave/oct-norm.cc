@@ -413,7 +413,7 @@ R higham (const MatrixT& m, R p, R tol, int maxiter,
   RR lambda = 0, mu = 0;
   for (octave_idx_type k = 0; k < m.columns (); k++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
       VectorT col (m.column (k));
       if (k > 0)
         higham_subp (y, col, 4*k, p, lambda, mu);
@@ -431,7 +431,7 @@ R higham (const MatrixT& m, R p, R tol, int maxiter,
   int iter = 0;
   while (iter < maxiter)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
       y = m*x;
       gamma1 = gamma;
       gamma = vector_norm (y, p);

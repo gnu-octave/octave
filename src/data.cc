@@ -202,7 +202,7 @@ map_d_m (d_dd_fcn f, double x, const NDArray& y)
 
   for (octave_idx_type i = 0; i < nel; i++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
       r_data[i] = f (x, y_data[i]);
     }
 
@@ -221,7 +221,7 @@ map_f_fm (f_ff_fcn f, float x, const FloatNDArray& y)
 
   for (octave_idx_type i = 0; i < nel; i++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
       r_data[i] = f (x, y_data[i]);
     }
 
@@ -240,7 +240,7 @@ map_m_d (d_dd_fcn f, const NDArray& x, double y)
 
   for (octave_idx_type i = 0; i < nel; i++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
       r_data[i] = f (x_data[i], y);
     }
 
@@ -259,7 +259,7 @@ map_fm_f (f_ff_fcn f, const FloatNDArray& x, float y)
 
   for (octave_idx_type i = 0; i < nel; i++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
       r_data[i] = f (x_data[i], y);
     }
 
@@ -281,7 +281,7 @@ map_m_m (d_dd_fcn f, const NDArray& x, const NDArray& y)
 
   for (octave_idx_type i = 0; i < nel; i++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
       r_data[i] = f (x_data[i], y_data[i]);
     }
 
@@ -303,7 +303,7 @@ map_fm_fm (f_ff_fcn f, const FloatNDArray& x, const FloatNDArray& y)
 
   for (octave_idx_type i = 0; i < nel; i++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
       r_data[i] = f (x_data[i], y_data[i]);
     }
 
@@ -325,7 +325,7 @@ map_d_s (d_dd_fcn f, double x, const SparseMatrix& y)
       for (octave_idx_type j = 0; j < nc; j++)
 	for (octave_idx_type i = y.cidx (j); i < y.cidx (j+1); i++)
 	  {
-	    OCTAVE_QUIT;
+	    octave_quit ();
 	    retval.data (y.ridx(i) + j * nr) = f (x, y.data (i));
 	  } 
 
@@ -342,7 +342,7 @@ map_d_s (d_dd_fcn f, double x, const SparseMatrix& y)
 	{
 	  for (octave_idx_type i = y.cidx (j); i < y.cidx (j+1); i++)
 	    {
-	      OCTAVE_QUIT;
+	      octave_quit ();
 	      double val = f (x, y.data (i));
 
 	      if (val != 0.0)
@@ -375,7 +375,7 @@ map_s_d (d_dd_fcn f, const SparseMatrix& x, double y)
       for (octave_idx_type j = 0; j < nc; j++)
 	for (octave_idx_type i = x.cidx (j); i < x.cidx (j+1); i++)
 	  {
-	    OCTAVE_QUIT;
+	    octave_quit ();
 	    retval.data (x.ridx(i) + j * nr) = f (x.data (i), y);
 	  } 
 
@@ -392,7 +392,7 @@ map_s_d (d_dd_fcn f, const SparseMatrix& x, double y)
 	{
 	  for (octave_idx_type i = x.cidx (j); i < x.cidx (j+1); i++)
 	    {
-	      OCTAVE_QUIT;
+	      octave_quit ();
 	      double val = f (x.data (i), y);
 
 	      if (val != 0.0)
@@ -433,7 +433,7 @@ map_s_s (d_dd_fcn f, const SparseMatrix& x, const SparseMatrix& y)
 	{
 	  while (k1 < x.cidx(j+1) && k2 < y.cidx(j+1))
 	    {
-	      OCTAVE_QUIT;
+	      octave_quit ();
 	      if (k1 >= x.cidx(j+1))
 		{
 		  retval.data (y.ridx(k2) + j * nr) = f (0.0, y.data (k2));
@@ -483,7 +483,7 @@ map_s_s (d_dd_fcn f, const SparseMatrix& x, const SparseMatrix& y)
 	{
 	  while (k1 < x.cidx(j+1) && k2 < y.cidx(j+1))
 	    {
-	      OCTAVE_QUIT;
+	      octave_quit ();
 	      double val;
 	      octave_idx_type r;
 	      if (k1 >= x.cidx(j+1))
@@ -1889,7 +1889,7 @@ omitted, it defaults to the first non-singleton dimension.\n\
       \
       for (int j = 1; j < n_args; j++) \
 	{ \
-	  OCTAVE_QUIT; \
+	  octave_quit (); \
 	  \
 	  TYPE ra = args(j).EXTRACTOR ();	\
 	  \

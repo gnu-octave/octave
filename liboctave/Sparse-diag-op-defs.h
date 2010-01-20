@@ -132,7 +132,7 @@ RT inner_do_add_sm_dm (const SM& a, const DM& d, OpA opa, OpD opd)
 
   for (octave_idx_type j = 0; j < nc; ++j)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
       const octave_idx_type colend = a.cidx (j+1);
       r.xcidx (j) = k;
       octave_idx_type k_src = a.cidx (j), k_split;

@@ -377,7 +377,7 @@ tm_row_const::tm_row_const_rep::init (const tree_argument_list& row)
        p != row.end ();
        p++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
 
       tree_expression *elt = *p;
 
@@ -393,7 +393,7 @@ tm_row_const::tm_row_const_rep::init (const tree_argument_list& row)
 
 	      for (octave_idx_type i = 0; i < tlst.length (); i++)
 		{
-		  OCTAVE_QUIT;
+		  octave_quit ();
 
 		  if (! do_init_element (elt, tlst(i), first_elem))
 		    goto done;
@@ -523,7 +523,7 @@ tm_const::init (const tree_matrix& tm)
 
   for (tree_matrix::const_iterator p = tm.begin (); p != tm.end (); p++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
 
       tree_argument_list *elt = *p;
 
@@ -568,7 +568,7 @@ tm_const::init (const tree_matrix& tm)
     {
       for (iterator p = begin (); p != end (); p++)
 	{
-	  OCTAVE_QUIT;
+	  octave_quit ();
 
 	  tm_row_const elt = *p;
 
@@ -676,7 +676,7 @@ tree_matrix::has_magic_end (void) const
 {
   for (const_iterator p = begin (); p != end (); p++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
 
       tree_argument_list *elt = *p;
 
@@ -692,7 +692,7 @@ tree_matrix::all_elements_are_constant (void) const
 {
   for (const_iterator p = begin (); p != end (); p++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
 
       tree_argument_list *elt = *p;
 
@@ -739,7 +739,7 @@ single_type_concat (TYPE& result,
            q != row.end ();
            q++)
         {
-          OCTAVE_QUIT;
+          octave_quit ();
 
           TYPE ra = octave_value_extract<TYPE> (*q);
 
@@ -826,7 +826,7 @@ tree_matrix::rvalue1 (int)
 	  int j = 0;
 	  for (tm_const::iterator p = tmp.begin (); p != tmp.end (); p++)
 	    {
-	      OCTAVE_QUIT;
+	      octave_quit ();
 
 	      tm_row_const row = *p;
 
@@ -978,14 +978,14 @@ tree_matrix::rvalue1 (int)
 	    {
 	      for (tm_const::iterator p = tmp.begin (); p != tmp.end (); p++)
 		{
-		  OCTAVE_QUIT;
+		  octave_quit ();
 
 		  tm_row_const row = *p;
 
 		  for (tm_row_const::iterator q = row.begin (); 
 		       q != row.end (); q++)
 		    {
-		      OCTAVE_QUIT;
+		      octave_quit ();
 
 		      ctmp = *q;
 
@@ -1012,7 +1012,7 @@ tree_matrix::rvalue1 (int)
 
 	      for (tm_const::iterator p = tmp.begin (); p != tmp.end (); p++)
 		{
-		  OCTAVE_QUIT;
+		  octave_quit ();
 
 		  tm_row_const row = *p;
 
@@ -1020,7 +1020,7 @@ tree_matrix::rvalue1 (int)
 		       q != row.end ();
 		       q++)
 		    {
-		      OCTAVE_QUIT;
+		      octave_quit ();
 
 		      octave_value elt = *q;
 

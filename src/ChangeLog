@@ -1,5 +1,30 @@
 2010-01-20  Jaroslav Hajek  <highegg@gmail.com>
 
+	* data.cc: Substitute OCTAVE_QUIT -> octave_quit ().
+	* input.cc: Ditto.
+	* ls-mat-ascii.cc: Ditto.
+	* oct-stream.cc: Ditto.
+	* ov-base-int.cc: Ditto.
+	* ov-base-sparse.cc: Ditto.
+	* ov-bool-sparse.cc: Ditto.
+	* ov-cell.cc: Ditto.
+	* ov-cx-sparse.cc: Ditto.
+	* ov-flt-re-mat.cc: Ditto.
+	* ov-re-mat.cc: Ditto.
+	* ov-re-sparse.cc: Ditto.
+	* pr-output.cc: Ditto.
+	* pt-eval.cc: Ditto.
+	* pt-mat.cc: Ditto.
+	* sighandlers.cc: Ditto.
+	* sparse-xdiv.cc: Ditto.
+	* sparse-xpow.cc: Ditto.
+	* toplev.cc: Ditto.
+	* utils.cc: Ditto.
+	* xdiv.cc: Ditto.
+	* xpow.cc: Ditto.
+
+2010-01-20  Jaroslav Hajek  <highegg@gmail.com>
+
 	* DLD-FUNCTIONS/bsxfun.cc: New tests.
 
 2010-01-20  David Bateman  <dbateman@free.fr>

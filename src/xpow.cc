@@ -649,7 +649,7 @@ elem_xpow (double a, const Matrix& b)
       for (octave_idx_type j = 0; j < nc; j++)
 	for (octave_idx_type i = 0; i < nr; i++)
 	  {
-	    OCTAVE_QUIT;
+	    octave_quit ();
 	    result (i, j) = std::pow (atmp, b (i, j));
 	  }
 
@@ -662,7 +662,7 @@ elem_xpow (double a, const Matrix& b)
       for (octave_idx_type j = 0; j < nc; j++)
 	for (octave_idx_type i = 0; i < nr; i++)
 	  {
-	    OCTAVE_QUIT;
+	    octave_quit ();
 	    result (i, j) = std::pow (a, b (i, j));
 	  }
 
@@ -685,7 +685,7 @@ elem_xpow (double a, const ComplexMatrix& b)
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
       {
-	OCTAVE_QUIT;
+	octave_quit ();
 	result (i, j) = std::pow (atmp, b (i, j));
       }
 
@@ -752,7 +752,7 @@ elem_xpow (const Matrix& a, double b)
       for (octave_idx_type j = 0; j < nc; j++)
 	for (octave_idx_type i = 0; i < nr; i++)
 	  {
-	    OCTAVE_QUIT; 
+	    octave_quit (); 
       
 	    Complex atmp (a (i, j));
 
@@ -768,7 +768,7 @@ elem_xpow (const Matrix& a, double b)
       for (octave_idx_type j = 0; j < nc; j++)
 	for (octave_idx_type i = 0; i < nr; i++)
 	  {
-	    OCTAVE_QUIT;
+	    octave_quit ();
 	    result (i, j) = std::pow (a (i, j), b);
 	  }
 
@@ -800,7 +800,7 @@ elem_xpow (const Matrix& a, const Matrix& b)
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
       {
-	OCTAVE_QUIT;
+	octave_quit ();
 	double atmp = a (i, j);
 	double btmp = b (i, j);
 	if (atmp < 0.0 && static_cast<int> (btmp) != btmp)
@@ -819,7 +819,7 @@ done:
       for (octave_idx_type j = 0; j < nc; j++)
 	for (octave_idx_type i = 0; i < nr; i++)
 	  {
-	    OCTAVE_QUIT;
+	    octave_quit ();
 	    Complex atmp (a (i, j));
 	    Complex btmp (b (i, j));
 	    complex_result (i, j) = std::pow (atmp, btmp);
@@ -834,7 +834,7 @@ done:
       for (octave_idx_type j = 0; j < nc; j++)
 	for (octave_idx_type i = 0; i < nr; i++)
 	  {
-	    OCTAVE_QUIT;
+	    octave_quit ();
 	    result (i, j) = std::pow (a (i, j), b (i, j));
 	  }
 
@@ -856,7 +856,7 @@ elem_xpow (const Matrix& a, const Complex& b)
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
       {
-	OCTAVE_QUIT;
+	octave_quit ();
 	result (i, j) = std::pow (Complex (a (i, j)), b);
       }
 
@@ -884,7 +884,7 @@ elem_xpow (const Matrix& a, const ComplexMatrix& b)
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
       {
-	OCTAVE_QUIT;
+	octave_quit ();
 	result (i, j) = std::pow (Complex (a (i, j)), b (i, j));
       }
 
@@ -903,7 +903,7 @@ elem_xpow (const Complex& a, const Matrix& b)
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
       {
-	OCTAVE_QUIT;
+	octave_quit ();
 	double btmp = b (i, j);
 	if (xisint (btmp))
 	  result (i, j) = std::pow (a, static_cast<int> (btmp));
@@ -926,7 +926,7 @@ elem_xpow (const Complex& a, const ComplexMatrix& b)
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
       {
-	OCTAVE_QUIT;
+	octave_quit ();
 	result (i, j) = std::pow (a, b (i, j));
       }
 
@@ -987,7 +987,7 @@ elem_xpow (const ComplexMatrix& a, double b)
       for (octave_idx_type j = 0; j < nc; j++)
 	for (octave_idx_type i = 0; i < nr; i++)
 	  {
-	    OCTAVE_QUIT;
+	    octave_quit ();
 	    result (i, j) = std::pow (a (i, j), static_cast<int> (b));
 	  }
     }
@@ -996,7 +996,7 @@ elem_xpow (const ComplexMatrix& a, double b)
       for (octave_idx_type j = 0; j < nc; j++)
 	for (octave_idx_type i = 0; i < nr; i++)
 	  {
-	    OCTAVE_QUIT;
+	    octave_quit ();
 	    result (i, j) = std::pow (a (i, j), b);
 	  }
     }
@@ -1025,7 +1025,7 @@ elem_xpow (const ComplexMatrix& a, const Matrix& b)
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
       {
-	OCTAVE_QUIT;
+	octave_quit ();
 	double btmp = b (i, j);
 	if (xisint (btmp))
 	  result (i, j) = std::pow (a (i, j), static_cast<int> (btmp));
@@ -1048,7 +1048,7 @@ elem_xpow (const ComplexMatrix& a, const Complex& b)
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
       {
-	OCTAVE_QUIT;
+	octave_quit ();
 	result (i, j) = std::pow (a (i, j), b);
       }
 
@@ -1076,7 +1076,7 @@ elem_xpow (const ComplexMatrix& a, const ComplexMatrix& b)
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
       {
-	OCTAVE_QUIT;
+	octave_quit ();
 	result (i, j) = std::pow (a (i, j), b (i, j));
       }
 
@@ -1126,7 +1126,7 @@ elem_xpow (double a, const NDArray& b)
       ComplexNDArray result (b.dims ());
       for (octave_idx_type i = 0; i < b.length (); i++)
 	{
-	  OCTAVE_QUIT;
+	  octave_quit ();
 	  result(i) = std::pow (atmp, b(i));
 	}
 
@@ -1137,7 +1137,7 @@ elem_xpow (double a, const NDArray& b)
       NDArray result (b.dims ());
       for (octave_idx_type i = 0; i < b.length (); i++)
 	{
-	  OCTAVE_QUIT;
+	  octave_quit ();
 	  result (i) = std::pow (a, b(i));
 	}
 
@@ -1156,7 +1156,7 @@ elem_xpow (double a, const ComplexNDArray& b)
 
   for (octave_idx_type i = 0; i < b.length (); i++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
       result(i) = std::pow (atmp, b(i));
     }
 
@@ -1177,7 +1177,7 @@ elem_xpow (const NDArray& a, double b)
 
           for (octave_idx_type i = 0; i < a.length (); i++)
             {
-              OCTAVE_QUIT;
+              octave_quit ();
 
               Complex atmp (a (i));
 
@@ -1191,7 +1191,7 @@ elem_xpow (const NDArray& a, double b)
           NDArray result (a.dims ());
           for (octave_idx_type i = 0; i < a.length (); i++)
             {
-              OCTAVE_QUIT;
+              octave_quit ();
               result(i) = std::pow (a(i), b);
             }
 
@@ -1222,7 +1222,7 @@ elem_xpow (const NDArray& a, double b)
         {
           for (octave_idx_type i = 0; i < a.length (); i++)
             {
-              OCTAVE_QUIT;
+              octave_quit ();
               result(i) = std::pow (a(i), ib);
             }
         }
@@ -1254,7 +1254,7 @@ elem_xpow (const NDArray& a, const NDArray& b)
 
   for (octave_idx_type i = 0; i < len; i++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
       double atmp = a(i);
       double btmp = b(i);
       if (atmp < 0.0 && static_cast<int> (btmp) != btmp)
@@ -1272,7 +1272,7 @@ done:
 
       for (octave_idx_type i = 0; i < len; i++)
 	{
-	  OCTAVE_QUIT;
+	  octave_quit ();
 	  Complex atmp (a(i));
 	  Complex btmp (b(i));
 	  complex_result(i) = std::pow (atmp, btmp);
@@ -1286,7 +1286,7 @@ done:
 
       for (octave_idx_type i = 0; i < len; i++)
 	{
-	  OCTAVE_QUIT;
+	  octave_quit ();
 	  result(i) = std::pow (a(i), b(i));
 	}
 
@@ -1304,7 +1304,7 @@ elem_xpow (const NDArray& a, const Complex& b)
 
   for (octave_idx_type i = 0; i < a.length (); i++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
       result(i) = std::pow (Complex (a(i)), b);
     }
 
@@ -1328,7 +1328,7 @@ elem_xpow (const NDArray& a, const ComplexNDArray& b)
 
   for (octave_idx_type i = 0; i < a.length (); i++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
       result(i) = std::pow (Complex (a(i)), b(i));
     }
 
@@ -1343,7 +1343,7 @@ elem_xpow (const Complex& a, const NDArray& b)
 
   for (octave_idx_type i = 0; i < b.length (); i++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
       double btmp = b(i);
       if (xisint (btmp))
 	result(i) = std::pow (a, static_cast<int> (btmp));
@@ -1362,7 +1362,7 @@ elem_xpow (const Complex& a, const ComplexNDArray& b)
 
   for (octave_idx_type i = 0; i < b.length (); i++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
       result(i) = std::pow (a, b(i));
     }
 
@@ -1386,7 +1386,7 @@ elem_xpow (const ComplexNDArray& a, double b)
         {
           for (octave_idx_type i = 0; i < a.length (); i++)
             {
-              OCTAVE_QUIT;
+              octave_quit ();
               result(i) = std::pow (a(i), static_cast<int> (b));
             }
         }
@@ -1395,7 +1395,7 @@ elem_xpow (const ComplexNDArray& a, double b)
     {
       for (octave_idx_type i = 0; i < a.length (); i++)
 	{
-	  OCTAVE_QUIT;
+	  octave_quit ();
 	  result(i) = std::pow (a(i), b);
 	}
     }
@@ -1420,7 +1420,7 @@ elem_xpow (const ComplexNDArray& a, const NDArray& b)
 
   for (octave_idx_type i = 0; i < a.length (); i++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
       double btmp = b(i);
       if (xisint (btmp))
 	result(i) = std::pow (a(i), static_cast<int> (btmp));
@@ -1439,7 +1439,7 @@ elem_xpow (const ComplexNDArray& a, const Complex& b)
 
   for (octave_idx_type i = 0; i < a.length (); i++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
       result(i) = std::pow (a(i), b);
     }
 
@@ -1463,7 +1463,7 @@ elem_xpow (const ComplexNDArray& a, const ComplexNDArray& b)
 
   for (octave_idx_type i = 0; i < a.length (); i++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
       result(i) = std::pow (a(i), b(i));
     }
 
@@ -2053,7 +2053,7 @@ elem_xpow (float a, const FloatMatrix& b)
       for (octave_idx_type j = 0; j < nc; j++)
 	for (octave_idx_type i = 0; i < nr; i++)
 	  {
-	    OCTAVE_QUIT;
+	    octave_quit ();
 	    result (i, j) = std::pow (atmp, b (i, j));
 	  }
 
@@ -2066,7 +2066,7 @@ elem_xpow (float a, const FloatMatrix& b)
       for (octave_idx_type j = 0; j < nc; j++)
 	for (octave_idx_type i = 0; i < nr; i++)
 	  {
-	    OCTAVE_QUIT;
+	    octave_quit ();
 	    result (i, j) = std::pow (a, b (i, j));
 	  }
 
@@ -2089,7 +2089,7 @@ elem_xpow (float a, const FloatComplexMatrix& b)
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
       {
-	OCTAVE_QUIT;
+	octave_quit ();
 	result (i, j) = std::pow (atmp, b (i, j));
       }
 
@@ -2112,7 +2112,7 @@ elem_xpow (const FloatMatrix& a, float b)
       for (octave_idx_type j = 0; j < nc; j++)
 	for (octave_idx_type i = 0; i < nr; i++)
 	  {
-	    OCTAVE_QUIT; 
+	    octave_quit (); 
       
 	    FloatComplex atmp (a (i, j));
 
@@ -2128,7 +2128,7 @@ elem_xpow (const FloatMatrix& a, float b)
       for (octave_idx_type j = 0; j < nc; j++)
 	for (octave_idx_type i = 0; i < nr; i++)
 	  {
-	    OCTAVE_QUIT;
+	    octave_quit ();
 	    result (i, j) = std::pow (a (i, j), b);
 	  }
 
@@ -2160,7 +2160,7 @@ elem_xpow (const FloatMatrix& a, const FloatMatrix& b)
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
       {
-	OCTAVE_QUIT;
+	octave_quit ();
 	float atmp = a (i, j);
 	float btmp = b (i, j);
 	if (atmp < 0.0 && static_cast<int> (btmp) != btmp)
@@ -2179,7 +2179,7 @@ done:
       for (octave_idx_type j = 0; j < nc; j++)
 	for (octave_idx_type i = 0; i < nr; i++)
 	  {
-	    OCTAVE_QUIT;
+	    octave_quit ();
 	    FloatComplex atmp (a (i, j));
 	    FloatComplex btmp (b (i, j));
 	    complex_result (i, j) = std::pow (atmp, btmp);
@@ -2194,7 +2194,7 @@ done:
       for (octave_idx_type j = 0; j < nc; j++)
 	for (octave_idx_type i = 0; i < nr; i++)
 	  {
-	    OCTAVE_QUIT;
+	    octave_quit ();
 	    result (i, j) = std::pow (a (i, j), b (i, j));
 	  }
 
@@ -2216,7 +2216,7 @@ elem_xpow (const FloatMatrix& a, const FloatComplex& b)
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
       {
-	OCTAVE_QUIT;
+	octave_quit ();
 	result (i, j) = std::pow (FloatComplex (a (i, j)), b);
       }
 
@@ -2244,7 +2244,7 @@ elem_xpow (const FloatMatrix& a, const FloatComplexMatrix& b)
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
       {
-	OCTAVE_QUIT;
+	octave_quit ();
 	result (i, j) = std::pow (FloatComplex (a (i, j)), b (i, j));
       }
 
@@ -2263,7 +2263,7 @@ elem_xpow (const FloatComplex& a, const FloatMatrix& b)
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
       {
-	OCTAVE_QUIT;
+	octave_quit ();
 	float btmp = b (i, j);
 	if (xisint (btmp))
 	  result (i, j) = std::pow (a, static_cast<int> (btmp));
@@ -2286,7 +2286,7 @@ elem_xpow (const FloatComplex& a, const FloatComplexMatrix& b)
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
       {
-	OCTAVE_QUIT;
+	octave_quit ();
 	result (i, j) = std::pow (a, b (i, j));
       }
 
@@ -2307,7 +2307,7 @@ elem_xpow (const FloatComplexMatrix& a, float b)
       for (octave_idx_type j = 0; j < nc; j++)
 	for (octave_idx_type i = 0; i < nr; i++)
 	  {
-	    OCTAVE_QUIT;
+	    octave_quit ();
 	    result (i, j) = std::pow (a (i, j), static_cast<int> (b));
 	  }
     }
@@ -2316,7 +2316,7 @@ elem_xpow (const FloatComplexMatrix& a, float b)
       for (octave_idx_type j = 0; j < nc; j++)
 	for (octave_idx_type i = 0; i < nr; i++)
 	  {
-	    OCTAVE_QUIT;
+	    octave_quit ();
 	    result (i, j) = std::pow (a (i, j), b);
 	  }
     }
@@ -2345,7 +2345,7 @@ elem_xpow (const FloatComplexMatrix& a, const FloatMatrix& b)
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
       {
-	OCTAVE_QUIT;
+	octave_quit ();
 	float btmp = b (i, j);
 	if (xisint (btmp))
 	  result (i, j) = std::pow (a (i, j), static_cast<int> (btmp));
@@ -2368,7 +2368,7 @@ elem_xpow (const FloatComplexMatrix& a, const FloatComplex& b)
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
       {
-	OCTAVE_QUIT;
+	octave_quit ();
 	result (i, j) = std::pow (a (i, j), b);
       }
 
@@ -2396,7 +2396,7 @@ elem_xpow (const FloatComplexMatrix& a, const FloatComplexMatrix& b)
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
       {
-	OCTAVE_QUIT;
+	octave_quit ();
 	result (i, j) = std::pow (a (i, j), b (i, j));
       }
 
@@ -2446,7 +2446,7 @@ elem_xpow (float a, const FloatNDArray& b)
       FloatComplexNDArray result (b.dims ());
       for (octave_idx_type i = 0; i < b.length (); i++)
 	{
-	  OCTAVE_QUIT;
+	  octave_quit ();
 	  result(i) = std::pow (atmp, b(i));
 	}
 
@@ -2457,7 +2457,7 @@ elem_xpow (float a, const FloatNDArray& b)
       FloatNDArray result (b.dims ());
       for (octave_idx_type i = 0; i < b.length (); i++)
 	{
-	  OCTAVE_QUIT;
+	  octave_quit ();
 	  result (i) = std::pow (a, b(i));
 	}
 
@@ -2476,7 +2476,7 @@ elem_xpow (float a, const FloatComplexNDArray& b)
 
   for (octave_idx_type i = 0; i < b.length (); i++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
       result(i) = std::pow (atmp, b(i));
     }
 
@@ -2497,7 +2497,7 @@ elem_xpow (const FloatNDArray& a, float b)
 
           for (octave_idx_type i = 0; i < a.length (); i++)
             {
-              OCTAVE_QUIT;
+              octave_quit ();
 
               FloatComplex atmp (a (i));
 
@@ -2511,7 +2511,7 @@ elem_xpow (const FloatNDArray& a, float b)
           FloatNDArray result (a.dims ());
           for (octave_idx_type i = 0; i < a.length (); i++)
             {
-              OCTAVE_QUIT;
+              octave_quit ();
               result(i) = std::pow (a(i), b);
             }
 
@@ -2542,7 +2542,7 @@ elem_xpow (const FloatNDArray& a, float b)
         {
           for (octave_idx_type i = 0; i < a.length (); i++)
             {
-              OCTAVE_QUIT;
+              octave_quit ();
               result(i) = std::pow (a(i), ib);
             }
         }
@@ -2574,7 +2574,7 @@ elem_xpow (const FloatNDArray& a, const FloatNDArray& b)
 
   for (octave_idx_type i = 0; i < len; i++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
       float atmp = a(i);
       float btmp = b(i);
       if (atmp < 0.0 && static_cast<int> (btmp) != btmp)
@@ -2592,7 +2592,7 @@ done:
 
       for (octave_idx_type i = 0; i < len; i++)
 	{
-	  OCTAVE_QUIT;
+	  octave_quit ();
 	  FloatComplex atmp (a(i));
 	  FloatComplex btmp (b(i));
 	  complex_result(i) = std::pow (atmp, btmp);
@@ -2606,7 +2606,7 @@ done:
 
       for (octave_idx_type i = 0; i < len; i++)
 	{
-	  OCTAVE_QUIT;
+	  octave_quit ();
 	  result(i) = std::pow (a(i), b(i));
 	}
 
@@ -2624,7 +2624,7 @@ elem_xpow (const FloatNDArray& a, const FloatComplex& b)
 
   for (octave_idx_type i = 0; i < a.length (); i++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
       result(i) = std::pow (FloatComplex (a(i)), b);
     }
 
@@ -2648,7 +2648,7 @@ elem_xpow (const FloatNDArray& a, const FloatComplexNDArray& b)
 
   for (octave_idx_type i = 0; i < a.length (); i++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
       result(i) = std::pow (FloatComplex (a(i)), b(i));
     }
 
@@ -2663,7 +2663,7 @@ elem_xpow (const FloatComplex& a, const FloatNDArray& b)
 
   for (octave_idx_type i = 0; i < b.length (); i++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
       float btmp = b(i);
       if (xisint (btmp))
 	result(i) = std::pow (a, static_cast<int> (btmp));
@@ -2682,7 +2682,7 @@ elem_xpow (const FloatComplex& a, const FloatComplexNDArray& b)
 
   for (octave_idx_type i = 0; i < b.length (); i++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
       result(i) = std::pow (a, b(i));
     }
 
@@ -2706,7 +2706,7 @@ elem_xpow (const FloatComplexNDArray& a, float b)
         {
           for (octave_idx_type i = 0; i < a.length (); i++)
             {
-              OCTAVE_QUIT;
+              octave_quit ();
               result(i) = std::pow (a(i), static_cast<int> (b));
             }
         }
@@ -2715,7 +2715,7 @@ elem_xpow (const FloatComplexNDArray& a, float b)
     {
       for (octave_idx_type i = 0; i < a.length (); i++)
 	{
-	  OCTAVE_QUIT;
+	  octave_quit ();
 	  result(i) = std::pow (a(i), b);
 	}
     }
@@ -2740,7 +2740,7 @@ elem_xpow (const FloatComplexNDArray& a, const FloatNDArray& b)
 
   for (octave_idx_type i = 0; i < a.length (); i++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
       float btmp = b(i);
       if (xisint (btmp))
 	result(i) = std::pow (a(i), static_cast<int> (btmp));
@@ -2759,7 +2759,7 @@ elem_xpow (const FloatComplexNDArray& a, const FloatComplex& b)
 
   for (octave_idx_type i = 0; i < a.length (); i++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
       result(i) = std::pow (a(i), b);
     }
 
@@ -2783,7 +2783,7 @@ elem_xpow (const FloatComplexNDArray& a, const FloatComplexNDArray& b)
 
   for (octave_idx_type i = 0; i < a.length (); i++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
       result(i) = std::pow (a(i), b(i));
     }
 

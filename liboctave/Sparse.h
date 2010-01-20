@@ -531,7 +531,7 @@ public:
 	for (octave_idx_type j = 0; j < nc; j++)
 	  for (octave_idx_type i = cidx(j); i < cidx (j+1); i++)
 	    {
-	      OCTAVE_QUIT;
+	      octave_quit ();
 	      /* Use data instead of elem for better performance.  */
 	      result.data (ridx (i) + j * nr) = fcn (data(i));
 	    }
@@ -558,7 +558,7 @@ public:
 		    result.data (ii) = val;
 		    result.ridx (ii++) = ridx (i);
 		  }
-		OCTAVE_QUIT;
+		octave_quit ();
 	      }
 	    result.cidx (j+1) = ii;
 	  }

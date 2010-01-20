@@ -579,7 +579,7 @@ main_loop (void)
 
 		  global_command = 0;
 
-		  OCTAVE_QUIT;
+		  octave_quit ();
 
 		  if (! (interactive || forced_interactive))
 		    {

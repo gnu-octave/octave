@@ -238,7 +238,7 @@ ComplexNDArray::fourier (int dim) const
     {
       for (octave_idx_type j = 0; j < howmany; j++)
 	{
-	  OCTAVE_QUIT;
+	  octave_quit ();
 
 	  for (octave_idx_type i = 0; i < npts; i++)
 	    tmp[i] = elem((i + k*npts)*stride + j*dist);
@@ -285,7 +285,7 @@ ComplexNDArray::ifourier (int dim) const
     {
       for (octave_idx_type j = 0; j < howmany; j++)
 	{
-	  OCTAVE_QUIT;
+	  octave_quit ();
 
 	  for (octave_idx_type i = 0; i < npts; i++)
 	    tmp[i] = elem((i + k*npts)*stride + j*dist);
@@ -331,7 +331,7 @@ ComplexNDArray::fourier2d (void) const
 	{
 	  for (octave_idx_type j = 0; j < howmany; j++)
 	    {
-	      OCTAVE_QUIT;
+	      octave_quit ();
 
 	      for (octave_idx_type l = 0; l < npts; l++)
 		prow[l] = retval ((l + k*npts)*stride + j*dist);
@@ -379,7 +379,7 @@ ComplexNDArray::ifourier2d (void) const
 	{
 	  for (octave_idx_type j = 0; j < howmany; j++)
 	    {
-	      OCTAVE_QUIT;
+	      octave_quit ();
 
 	      for (octave_idx_type l = 0; l < npts; l++)
 		prow[l] = retval ((l + k*npts)*stride + j*dist);
@@ -427,7 +427,7 @@ ComplexNDArray::fourierNd (void) const
 	{
 	  for (octave_idx_type j = 0; j < howmany; j++)
 	    {
-	      OCTAVE_QUIT;
+	      octave_quit ();
 
 	      for (octave_idx_type l = 0; l < npts; l++)
 		prow[l] = retval ((l + k*npts)*stride + j*dist);
@@ -474,7 +474,7 @@ ComplexNDArray::ifourierNd (void) const
 	{
 	  for (octave_idx_type j = 0; j < howmany; j++)
 	    {
-	      OCTAVE_QUIT;
+	      octave_quit ();
 
 	      for (octave_idx_type l = 0; l < npts; l++)
 		prow[l] = retval ((l + k*npts)*stride + j*dist);
@@ -933,7 +933,7 @@ min (const Complex& c, const ComplexNDArray& m)
 
   for (int i = 0; i < nel; i++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
       result (i) = xmin (c, m (i));
     }
 
@@ -952,7 +952,7 @@ min (const ComplexNDArray& m, const Complex& c)
 
   for (int i = 0; i < nel; i++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
       result (i) = xmin (c, m (i));
     }
 
@@ -978,7 +978,7 @@ min (const ComplexNDArray& a, const ComplexNDArray& b)
 
   for (int i = 0; i < nel; i++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
       result (i) = xmin (a (i), b (i));
     }
 
@@ -997,7 +997,7 @@ max (const Complex& c, const ComplexNDArray& m)
 
   for (int i = 0; i < nel; i++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
       result (i) = xmax (c, m (i));
     }
 
@@ -1016,7 +1016,7 @@ max (const ComplexNDArray& m, const Complex& c)
 
   for (int i = 0; i < nel; i++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
       result (i) = xmax (c, m (i));
     }
 
@@ -1042,7 +1042,7 @@ max (const ComplexNDArray& a, const ComplexNDArray& b)
 
   for (int i = 0; i < nel; i++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
       result (i) = xmax (a (i), b (i));
     }
 

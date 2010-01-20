@@ -101,7 +101,7 @@ static bool Vsigterm_dumps_octave_core = true;
 // List of signals we have caught since last call to octave_signal_handler.
 static bool octave_signals_caught[NSIG];
 
-// Called from OCTAVE_QUIT to actually do something about the signals
+// Called from octave_quit () to actually do something about the signals
 // we have caught.
 
 void

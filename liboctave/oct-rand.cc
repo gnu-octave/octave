@@ -562,7 +562,7 @@ octave_rand::switch_to_generator (int dist)
       double val; \
       for (volatile octave_idx_type i = 0; i < len; i++) \
 	{ \
-	  OCTAVE_QUIT; \
+	  octave_quit (); \
 	  RAND_FUNC (val); \
 	  v[i] = val; \
 	} \

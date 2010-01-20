@@ -1,5 +1,41 @@
 2010-01-20  Jaroslav Hajek  <highegg@gmail.com>
 
+	* Array.h: Substitute OCTAVE_QUIT -> octave_quit ().
+	* CMatrix.cc: Ditto.
+	* CNDArray.cc: Ditto.
+	* CSparse.cc: Ditto.
+	* CmplxGEPBAL.cc: Ditto.
+	* MArrayN.cc: Ditto.
+	* MSparse.cc: Ditto.
+	* Sparse-diag-op-defs.h: Ditto.
+	* Sparse-op-defs.h: Ditto.
+	* Sparse-perm-op-defs.h: Ditto.
+	* Sparse.cc: Ditto.
+	* Sparse.h: Ditto.
+	* SparseCmplxQR.cc: Ditto.
+	* SparseQR.cc: Ditto.
+	* boolSparse.cc: Ditto.
+	* bsxfun-defs.cc: Ditto.
+	* dMatrix.cc: Ditto.
+	* dNDArray.cc: Ditto.
+	* dSparse.cc: Ditto.
+	* dbleGEPBAL.cc: Ditto.
+	* fCMatrix.cc: Ditto.
+	* fCNDArray.cc: Ditto.
+	* fCmplxGEPBAL.cc: Ditto.
+	* fMatrix.cc: Ditto.
+	* fNDArray.cc: Ditto.
+	* file-ops.cc: Ditto.
+	* floatGEPBAL.cc: Ditto.
+	* lo-utils.cc: Ditto.
+	* mx-op-defs.h: Ditto.
+	* oct-fftw.cc: Ditto.
+	* oct-norm.cc: Ditto.
+	* oct-rand.cc: Ditto.
+	* sparse-dmsolve.cc: Ditto.
+
+2010-01-20  Jaroslav Hajek  <highegg@gmail.com>
+
 	* bsxfun-defs.cc (BSXFUN_STDOP_DEFS_MXLOOP): Fix reversed min/max
 	defs.
 

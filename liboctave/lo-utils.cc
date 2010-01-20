@@ -220,7 +220,7 @@ octave_fgets (FILE *f, bool& eof)
   if (buf)
     free (buf);
 
-  OCTAVE_QUIT;
+  octave_quit ();
 
   return retval;
 }

@@ -1,3 +1,8 @@
+2010-01-20  Jaroslav Hajek  <highegg@gmail.com>
+
+	* misc/quit.h: Define inline-function variant of OCTAVE_QUIT in C++
+	mode.
+
 2009-01-13  Rik <octave@nomad.inbox5.com>
 
 	* STOP.patch: Remove unmaintained patch for Fortran code

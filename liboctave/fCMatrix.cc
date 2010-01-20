@@ -1346,7 +1346,7 @@ FloatComplexMatrix::fourier (void) const
 
   for (octave_idx_type j = 0; j < nsamples; j++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
 
       F77_FUNC (cfftf, CFFTF) (npts, &tmp_data[npts*j], pwsave);
     }
@@ -1387,7 +1387,7 @@ FloatComplexMatrix::ifourier (void) const
 
   for (octave_idx_type j = 0; j < nsamples; j++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
 
       F77_FUNC (cfftb, CFFTB) (npts, &tmp_data[npts*j], pwsave);
     }
@@ -1431,7 +1431,7 @@ FloatComplexMatrix::fourier2d (void) const
 
   for (octave_idx_type j = 0; j < nsamples; j++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
 
       F77_FUNC (cfftf, CFFTF) (npts, &tmp_data[npts*j], pwsave);
     }
@@ -1450,7 +1450,7 @@ FloatComplexMatrix::fourier2d (void) const
 
   for (octave_idx_type j = 0; j < nsamples; j++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
 
       for (octave_idx_type i = 0; i < npts; i++)
 	prow[i] = tmp_data[i*nr + j];
@@ -1497,7 +1497,7 @@ FloatComplexMatrix::ifourier2d (void) const
 
   for (octave_idx_type j = 0; j < nsamples; j++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
 
       F77_FUNC (cfftb, CFFTB) (npts, &tmp_data[npts*j], pwsave);
     }
@@ -1519,7 +1519,7 @@ FloatComplexMatrix::ifourier2d (void) const
 
   for (octave_idx_type j = 0; j < nsamples; j++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
 
       for (octave_idx_type i = 0; i < npts; i++)
 	prow[i] = tmp_data[i*nr + j];
@@ -3879,7 +3879,7 @@ min (const FloatComplex& c, const FloatComplexMatrix& m)
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
       {
-	OCTAVE_QUIT;
+	octave_quit ();
 	result (i, j) = xmin (c, m (i, j));
       }
 
@@ -3899,7 +3899,7 @@ min (const FloatComplexMatrix& m, const FloatComplex& c)
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
       {
-	OCTAVE_QUIT;
+	octave_quit ();
 	result (i, j) = xmin (m (i, j), c);
       }
 
@@ -3928,7 +3928,7 @@ min (const FloatComplexMatrix& a, const FloatComplexMatrix& b)
       int columns_are_real_only = 1;
       for (octave_idx_type i = 0; i < nr; i++)
 	{
-	  OCTAVE_QUIT;
+	  octave_quit ();
 	  if (std::imag (a (i, j)) != 0.0 || std::imag (b (i, j)) != 0.0)
 	    {
 	      columns_are_real_only = 0;
@@ -3945,7 +3945,7 @@ min (const FloatComplexMatrix& a, const FloatComplexMatrix& b)
 	{
 	  for (octave_idx_type i = 0; i < nr; i++)
 	    {
-	      OCTAVE_QUIT;
+	      octave_quit ();
 	      result (i, j) = xmin (a (i, j), b (i, j));
 	    }
 	}
@@ -3967,7 +3967,7 @@ max (const FloatComplex& c, const FloatComplexMatrix& m)
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
       {
-	OCTAVE_QUIT;
+	octave_quit ();
 	result (i, j) = xmax (c, m (i, j));
       }
 
@@ -3987,7 +3987,7 @@ max (const FloatComplexMatrix& m, const FloatComplex& c)
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
       {
-	OCTAVE_QUIT;
+	octave_quit ();
 	result (i, j) = xmax (m (i, j), c);
       }
 
@@ -4016,7 +4016,7 @@ max (const FloatComplexMatrix& a, const FloatComplexMatrix& b)
       int columns_are_real_only = 1;
       for (octave_idx_type i = 0; i < nr; i++)
 	{
-	  OCTAVE_QUIT;
+	  octave_quit ();
 	  if (std::imag (a (i, j)) != 0.0 || std::imag (b (i, j)) != 0.0)
 	    {
 	      columns_are_real_only = 0;
@@ -4028,7 +4028,7 @@ max (const FloatComplexMatrix& a, const FloatComplexMatrix& b)
 	{
 	  for (octave_idx_type i = 0; i < nr; i++)
 	    {
-	      OCTAVE_QUIT;
+	      octave_quit ();
 	      result (i, j) = xmax (std::real (a (i, j)), std::real (b (i, j)));
 	    }
 	}
@@ -4036,7 +4036,7 @@ max (const FloatComplexMatrix& a, const FloatComplexMatrix& b)
 	{
 	  for (octave_idx_type i = 0; i < nr; i++)
 	    {
-	      OCTAVE_QUIT;
+	      octave_quit ();
 	      result (i, j) = xmax (a (i, j), b (i, j));
 	    }
 	}

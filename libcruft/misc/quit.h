@@ -114,6 +114,20 @@ CRUFT_API extern void octave_throw_bad_alloc (void) GCC_ATTR_NORETURN;
 
 CRUFT_API extern void octave_rethrow_exception (void);
 
+#ifdef __cplusplus
+inline void octave_quit (void)
+{
+  if (octave_signal_caught)
+    {
+      octave_signal_caught = 0;
+      octave_handle_signal ();
+    }
+};
+
+#define OCTAVE_QUIT octave_quit ()
+
+#else
+
 #define OCTAVE_QUIT \
   do \
     { \
@@ -124,6 +138,7 @@ CRUFT_API extern void octave_rethrow_exception (void);
         } \
     } \
   while (0)
+#endif
 
 /* Normally, you just want to use
 

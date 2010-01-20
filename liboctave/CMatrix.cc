@@ -1352,7 +1352,7 @@ ComplexMatrix::fourier (void) const
 
   for (octave_idx_type j = 0; j < nsamples; j++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
 
       F77_FUNC (zfftf, ZFFTF) (npts, &tmp_data[npts*j], pwsave);
     }
@@ -1393,7 +1393,7 @@ ComplexMatrix::ifourier (void) const
 
   for (octave_idx_type j = 0; j < nsamples; j++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
 
       F77_FUNC (zfftb, ZFFTB) (npts, &tmp_data[npts*j], pwsave);
     }
@@ -1437,7 +1437,7 @@ ComplexMatrix::fourier2d (void) const
 
   for (octave_idx_type j = 0; j < nsamples; j++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
 
       F77_FUNC (zfftf, ZFFTF) (npts, &tmp_data[npts*j], pwsave);
     }
@@ -1456,7 +1456,7 @@ ComplexMatrix::fourier2d (void) const
 
   for (octave_idx_type j = 0; j < nsamples; j++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
 
       for (octave_idx_type i = 0; i < npts; i++)
 	prow[i] = tmp_data[i*nr + j];
@@ -1503,7 +1503,7 @@ ComplexMatrix::ifourier2d (void) const
 
   for (octave_idx_type j = 0; j < nsamples; j++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
 
       F77_FUNC (zfftb, ZFFTB) (npts, &tmp_data[npts*j], pwsave);
     }
@@ -1525,7 +1525,7 @@ ComplexMatrix::ifourier2d (void) const
 
   for (octave_idx_type j = 0; j < nsamples; j++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
 
       for (octave_idx_type i = 0; i < npts; i++)
 	prow[i] = tmp_data[i*nr + j];
@@ -3886,7 +3886,7 @@ min (const Complex& c, const ComplexMatrix& m)
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
       {
-	OCTAVE_QUIT;
+	octave_quit ();
 	result (i, j) = xmin (c, m (i, j));
       }
 
@@ -3906,7 +3906,7 @@ min (const ComplexMatrix& m, const Complex& c)
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
       {
-	OCTAVE_QUIT;
+	octave_quit ();
 	result (i, j) = xmin (m (i, j), c);
       }
 
@@ -3935,7 +3935,7 @@ min (const ComplexMatrix& a, const ComplexMatrix& b)
       int columns_are_real_only = 1;
       for (octave_idx_type i = 0; i < nr; i++)
 	{
-	  OCTAVE_QUIT;
+	  octave_quit ();
 	  if (std::imag (a (i, j)) != 0.0 || std::imag (b (i, j)) != 0.0)
 	    {
 	      columns_are_real_only = 0;
@@ -3952,7 +3952,7 @@ min (const ComplexMatrix& a, const ComplexMatrix& b)
 	{
 	  for (octave_idx_type i = 0; i < nr; i++)
 	    {
-	      OCTAVE_QUIT;
+	      octave_quit ();
 	      result (i, j) = xmin (a (i, j), b (i, j));
 	    }
 	}
@@ -3974,7 +3974,7 @@ max (const Complex& c, const ComplexMatrix& m)
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
       {
-	OCTAVE_QUIT;
+	octave_quit ();
 	result (i, j) = xmax (c, m (i, j));
       }
 
@@ -3994,7 +3994,7 @@ max (const ComplexMatrix& m, const Complex& c)
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
       {
-	OCTAVE_QUIT;
+	octave_quit ();
 	result (i, j) = xmax (m (i, j), c);
       }
 
@@ -4023,7 +4023,7 @@ max (const ComplexMatrix& a, const ComplexMatrix& b)
       int columns_are_real_only = 1;
       for (octave_idx_type i = 0; i < nr; i++)
 	{
-	  OCTAVE_QUIT;
+	  octave_quit ();
 	  if (std::imag (a (i, j)) != 0.0 || std::imag (b (i, j)) != 0.0)
 	    {
 	      columns_are_real_only = 0;
@@ -4035,7 +4035,7 @@ max (const ComplexMatrix& a, const ComplexMatrix& b)
 	{
 	  for (octave_idx_type i = 0; i < nr; i++)
 	    {
-	      OCTAVE_QUIT;
+	      octave_quit ();
 	      result (i, j) = xmax (std::real (a (i, j)), std::real (b (i, j)));
 	    }
 	}
@@ -4043,7 +4043,7 @@ max (const ComplexMatrix& a, const ComplexMatrix& b)
 	{
 	  for (octave_idx_type i = 0; i < nr; i++)
 	    {
-	      OCTAVE_QUIT;
+	      octave_quit ();
 	      result (i, j) = xmax (a (i, j), b (i, j));
 	    }
 	}

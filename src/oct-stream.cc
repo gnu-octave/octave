@@ -1806,7 +1806,7 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 
       for (;;)
 	{
-	  OCTAVE_QUIT;
+	  octave_quit ();
 
 	  if (elt)
 	    {
@@ -2623,7 +2623,7 @@ octave_base_stream::do_printf (printf_format_list& fmt_list,
 
       for (;;)
 	{
-	  OCTAVE_QUIT;
+	  octave_quit ();
 
 	  if (elt)
 	    {

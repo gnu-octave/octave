@@ -28,12 +28,14 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <cstddef>
 #include <cmath>
+#include <memory>
 
 #include "quit.h"
 
 #include "oct-cmplx.h"
 #include "oct-locbuf.h"
 #include "oct-inttypes.h"
+#include "Array-util.h"
 #include "Array-util.h"
 
 // Provides some commonly repeated, basic loop templates.
@@ -244,6 +246,30 @@ inline void F (size_t n, T *r, T x, const T *y) \
 
 DEFMXMAPPER2 (mx_inline_xmin, xmin)
 DEFMXMAPPER2 (mx_inline_xmax, xmax)
+
+// Specialize array-scalar max/min
+#define DEFMINMAXSPEC(T, F, OP) \
+template <> \
+inline void F<T> (size_t n, T *r, const T *x, T y) \
+{ \
+  if (xisnan (y)) \
+    std::memcpy (r, x, n * sizeof (T)); \
+  else \
+    for (size_t i = 0; i < n; i++) r[i] = (x[i] OP y) ? x[i] : y; \
+} \
+template <> \
+inline void F<T> (size_t n, T *r, T x, const T *y) \
+{ \
+  if (xisnan (x)) \
+    std::memcpy (r, y, n * sizeof (T)); \
+  else \
+    for (size_t i = 0; i < n; i++) r[i] = (y[i] OP x) ? y[i] : x; \
+}
+
+DEFMINMAXSPEC (double, mx_inline_xmin, <=) 
+DEFMINMAXSPEC (double, mx_inline_xmax, >=) 
+DEFMINMAXSPEC (float, mx_inline_xmin, <=) 
+DEFMINMAXSPEC (float, mx_inline_xmax, >=) 
 
 // Pairwise power
 #define DEFMXMAPPER2X(F, FUN) \

@@ -69,8 +69,13 @@ extern OCTAVE_API bool xisinf (double x);
 extern OCTAVE_API bool octave_is_NA (double x);
 extern OCTAVE_API bool octave_is_NaN_or_NA (double x) GCC_ATTR_DEPRECATED;
 
-extern OCTAVE_API double xmin (double x, double y);
-extern OCTAVE_API double xmax (double x, double y);
+// This form is favorable. GCC will translate (x <= y ? x : y) without a jump,
+// hence the only conditional jump involved will be the first (xisnan), infrequent
+// and hence friendly to branch prediction.
+inline double xmin (double x, double y)
+{ return xisnan (y) ? x : (x <= y ? x : y);; }
+inline double xmax (double x, double y)
+{ return xisnan (y) ? x : (x >= y ? x : y);; }
 
 extern OCTAVE_API Complex acos (const Complex& x);
 extern OCTAVE_API Complex acosh (const Complex& x);
@@ -141,8 +146,10 @@ extern OCTAVE_API bool xisinf (float x);
 extern OCTAVE_API bool octave_is_NA (float x);
 extern OCTAVE_API bool octave_is_NaN_or_NA (float x) GCC_ATTR_DEPRECATED;
 
-extern OCTAVE_API float xmin (float x, float y);
-extern OCTAVE_API float xmax (float x, float y);
+inline float xmin (float x, float y)
+{ return xisnan (y) ? x : (x <= y ? x : y);; }
+inline float xmax (float x, float y)
+{ return xisnan (y) ? x : (x >= y ? x : y);; }
 
 extern OCTAVE_API FloatComplex acos (const FloatComplex& x);
 extern OCTAVE_API FloatComplex acosh (const FloatComplex& x);

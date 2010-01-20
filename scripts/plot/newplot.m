@@ -27,6 +27,7 @@ function newplot ()
 
   if (nargin == 0)
     __next_line_color__ (true);
+    __next_line_style__ (true);
     cf = gcf ();
     fnp = get (cf, "nextplot");
     switch (fnp)

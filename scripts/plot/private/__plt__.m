@@ -246,14 +246,19 @@ function retval = __plt2mm__ (h, x, y, options, properties)
 	if (! isempty (tkey))
 	  set (h, "key", "on");
 	endif
+        linestyle = options(i).linestyle;
+        marker = options(i).marker;
+	if (isempty (marker) && isempty (linestyle))
+	   [linestyle, marker] = __next_line_style__ ();
+	endif
 	color = options(i).color;
 	if (isempty (color))
 	  color = __next_line_color__ ();
 	endif
 
 	retval(i) = line (x(:,i), y(:,i), "keylabel", tkey, "color", color,
-			  "linestyle", options(i).linestyle,
-			  "marker", options(i).marker, properties{:});
+			  "linestyle", linestyle,
+			  "marker", marker, properties{:});
       endfor
     else
       error ("__plt2mm__: arguments must be a matrices");
@@ -309,14 +314,19 @@ function retval = __plt2mv__ (h, x, y, options, properties)
       if (! isempty (tkey))
 	set (h, "key", "on");
       endif
+      linestyle = options(i).linestyle;
+      marker = options(i).marker;
+      if (isempty (marker) && isempty (linestyle))
+	[linestyle, marker] = __next_line_style__ ();
+      endif
       color = options(i).color;
       if (isempty (color))
 	color = __next_line_color__ ();
       endif
 
       retval(i) = line (x(:,i), y, "keylabel", tkey, "color", color,
-			"linestyle", options(i).linestyle,
-			"marker", options(i).marker, properties{:});
+			"linestyle", linestyle,
+			"marker", marker, properties{:});
     endfor
   else
     error ("__plt2mv__: arguments must be a matrices");
@@ -350,14 +360,19 @@ function retval = __plt2ss__ (h, x, y, options, properties)
     if (! isempty (key))
       set (h, "key", "on");
     endif
+    linestyle = options.linestyle;
+    marker = options.marker;
+    if (isempty (marker) && isempty (linestyle))
+      [linestyle, marker] = __next_line_style__ ();
+    endif
     color = options.color;
     if (isempty (color))
       color = __next_line_color__ ();
     endif
 
     retval = line (x, y, "keylabel", key, "color", color,
-		   "linestyle", options.linestyle,
-		   "marker", options.marker, properties{:});
+		   "linestyle", linestyle,
+		   "marker", marker, properties{:});
   else
     error ("__plt2ss__: arguments must be scalars");
   endif
@@ -389,14 +404,19 @@ function retval = __plt2sv__ (h, x, y, options, properties)
       if (! isempty (tkey))
 	set (h, "key", "on");
       endif
+      linestyle = options(i).linestyle;
+      marker = options(i).marker;
+      if (isempty (marker) && isempty (linestyle))
+        [linestyle, marker] = __next_line_style__ ();
+      endif
       color = options(i).color;
       if (isempty (color))
 	color = __next_line_color__ ();
       endif
 
       retval(i) = line (x, y(i), "keylabel", tkey, "color", color,
-			"linestyle", options(i).linestyle,
-			"marker", options(i).marker, properties{:});
+			"linestyle", linestyle,
+			"marker", marker, properties{:});
     endfor
   else
     error ("__plt2sv__: first arg must be scalar, second arg must be vector");
@@ -449,14 +469,19 @@ function retval = __plt2vm__ (h, x, y, options, properties)
       if (! isempty (tkey))
 	set (h, "key", "on");
       endif
+      linestyle = options(i).linestyle;
+      marker = options(i).marker;
+      if (isempty (marker) && isempty (linestyle))
+        [linestyle, marker] = __next_line_style__ ();
+      endif
       color = options(i).color;
       if (isempty (color))
 	color = __next_line_color__ ();
       endif
 
       retval(i) = line (x, y(:,i), "keylabel", tkey, "color", color,
-			"linestyle", options(i).linestyle,
-			"marker", options(i).marker, properties{:});
+			"linestyle", linestyle,
+			"marker", marker, properties{:});
     endfor
   else
     error ("__plt2vm__: arguments must be a matrices");
@@ -489,14 +514,19 @@ function retval = __plt2vs__ (h, x, y, options, properties)
       if (! isempty (tkey))
 	set (h, "key", "on");
       endif
+      linestyle = options(i).linestyle;
+      marker = options(i).marker;
+      if (isempty (marker) && isempty (linestyle))
+        [linestyle, marker] = __next_line_style__ ();
+      endif
       color = options(i).color;
       if (isempty (color))
 	color = __next_line_color__ ();
       endif
 
       retval(i) = line (x(i), y, "keylabel", tkey, "color", color,
-			"linestyle", options(i).linestyle,
-			"marker", options(i).marker, properties{:});
+			"linestyle", linestyle,
+			"marker", marker, properties{:});
     endfor
   else
     error ("__plt2vs__: first arg must be vector, second arg must be scalar");
@@ -544,14 +574,19 @@ function retval = __plt2vv__ (h, x, y, options, properties)
     if (! isempty (key))
       set (h, "key", "on");
     endif
+    linestyle = options.linestyle;
+    marker = options.marker;
+    if (isempty (marker) && isempty (linestyle))
+      [linestyle, marker] = __next_line_style__ ();
+    endif
     color = options.color;
     if (isempty (color))
       color = __next_line_color__ ();
     endif
 
     retval = line (x, y, "keylabel", key, "color", color,
-	      "linestyle", options.linestyle,
-	      "marker", options.marker, properties{:});
+	      "linestyle", linestyle,
+	      "marker", marker, properties{:});
   else
     error ("__plt2vv__: vector lengths must match");
   endif

@@ -1,3 +1,10 @@
+2010-01-20  David Bateman  <dbateman@free.fr>
+
+	* graphics.h.in (string_array_property): New property.
+	(axes::properties): Use it here for the linestyleorder property.
+	Remove the markerorder property.
+	* genprops.awk: Emit string_array_property
+
 2010-01-19  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/strfind.cc: Optimize searching for 1 or 2 characters.

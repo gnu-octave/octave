@@ -177,15 +177,19 @@ function retval = plot3 (varargin)
       endif
 
       for i = 1 : columns (x)
+        linestyle = options.linestyle;
+        marker = options.marker;
+	if (isempty (marker) && isempty (linestyle))
+	   [linestyle, marker] = __next_line_style__ ();
+	endif
 	color = options.color;
 	if (isempty (options.color))
 	  color = __next_line_color__ ();
 	endif
 
 	tmp(++idx) = line (x(:, i), y(:, i), z(:, i),  "keylabel", key,
-			   "color", color,
-			   "linestyle", options.linestyle,
-			   "marker", options.marker, properties{:});
+			   "color", color, "linestyle", linestyle,
+			   "marker", marker, properties{:});
       endfor
 
       x_set = 0;
@@ -226,15 +230,19 @@ function retval = plot3 (varargin)
       endif
 
       for i = 1 : columns (x)
+        linestyle = options.linestyle;
+        marker = options.marker;
+	if (isempty (marker) && isempty (linestyle))
+	   [linestyle, marker] = __next_line_style__ ();
+	endif
 	color = options.color;
 	if (isempty (color))
 	  color = __next_line_color__ ();
 	endif
 
 	tmp(++idx) = line (x(:, i), y(:, i), z(:, i),  "keylabel", key,
-			   "color", color,
-			   "linestyle", options.linestyle,
-			   "marker", options.marker, properties{:});
+			   "color", color, "linestyle", linestyle,
+			   "marker", marker, properties{:});
       endfor
 
       x = new;
@@ -294,15 +302,19 @@ function retval = plot3 (varargin)
     endif
 
     for i = 1 : columns (x)
+      linestyle = options.linestyle;
+      marker = options.marker;
+      if (isempty (marker) && isempty (linestyle))
+	[linestyle, marker] = __next_line_style__ ();
+      endif
       color = options.color;
       if (isempty (color))
 	color = __next_line_color__ ();
       endif
 
       tmp(++idx) = line (x(:, i), y(:, i), z(:, i),  "keylabel", key, 
-			 "color", color,
-			 "linestyle", options.linestyle,
-			 "marker", options.marker, properties{:});
+			 "color", color, "linestyle", linestyle,
+			 "marker", marker, properties{:});
     endfor
   endif
 

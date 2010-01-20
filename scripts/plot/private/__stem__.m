@@ -443,8 +443,14 @@ function [lc, ls, mc, ms] = stem_line_spec (caller, str)
       mc = lc = cur_props(i).color;
     elseif (isfield (cur_props(i), "linestyle"))
       ls = cur_props(i).linestyle;
+      if (isempty (ls))
+        ls = __next_line_style__ ();
+      endif
     elseif (isfield (cur_props(i), "marker") && ! strcmpi (cur_props(i).marker, "none"))
       ms = cur_props(i).marker;
+      if (isempty (ms))
+        [dummy, ms] = __next_line_style__ ();
+      endif
     endif
   endfor
 endfunction

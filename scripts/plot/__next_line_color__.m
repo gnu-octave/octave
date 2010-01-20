@@ -40,6 +40,7 @@ function rgb = __next_line_color__ (reset)
       rgb = color_rotation(color_index,:);
       if (++color_index > num_colors)
 	color_index = 1;
+        __next_line_style__ ("incr");
       endif
     else
       error ("__next_line_color__: color_rotation not initialized");

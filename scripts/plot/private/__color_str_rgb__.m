@@ -1,4 +1,4 @@
-## Copyright (C) 2007, 2009 John W. Eaton
+## Copyright (C) 2010 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,17 +17,34 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{options} =} __default_plot_options__ ()
+## @deftypefn {Function File} {@var{rgb} =} __scatter__ (@var{str})
 ## Undocumented internal function.
 ## @end deftypefn
 
-## Author: jwe
+function rgb = __color_str_rgb__ (str)
 
-function options = __default_plot_options__ ()
+  if (ischar (str))
+    if (strncmpi (str, "black", 5))
+      rgb = [0, 0, 0];
+    elseif (strncmpi (str, "red", 3))
+      rgb = [1, 0, 0];
+    elseif (strncmpi (str, "green", 5))
+      rgb = [0, 1, 0];
+    elseif (strncmpi (str, "blue", 4))
+      rgb = [0, 0, 1];
 
-  options.key = "";
-  options.color = [];
-  options.linestyle = [];
-  options.marker = [];
-
+    elseif (strncmpi (str, "yellow", 6))
+      rgb = [1, 1, 0];
+    elseif (strncmpi (str, "magenta", 7))
+      rgb = [1, 0, 1];
+    elseif (strncmpi (str, "cyan", 4))
+      rgb = [0, 1, 1];
+    elseif (strncmpi (str, "white", 5))
+      rgb = [1, 1, 1];
+    else
+      rgb = [0, 0, 0];
+    endif
+  else
+    error ("expecting a string argument");
+  endif
 endfunction

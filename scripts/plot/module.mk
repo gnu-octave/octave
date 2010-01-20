@@ -12,6 +12,7 @@ plot_PRIVATE_FCN_FILES = \
   plot/private/__axis_label__.m \
   plot/private/__bar__.m \
   plot/private/__clabel__.m \
+  plot/private/__color_str_rgb__.m \
   plot/private/__contour__.m \
   plot/private/__default_plot_options__.m \
   plot/private/__errcomm__.m \
@@ -37,6 +38,7 @@ plot_FCN_FILES = \
   plot/__go_draw_figure__.m \
   plot/__marching_cube__.m \
   plot/__next_line_color__.m \
+  plot/__next_line_style__.m \
   plot/__plt_get_axis_arg__.m \
   plot/allchild.m \
   plot/ancestor.m \

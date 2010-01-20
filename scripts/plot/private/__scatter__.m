@@ -52,7 +52,7 @@ function hg = __scatter__ (varargin)
     endif
   endfor
 
-  if (istart < nargin && firstnonnumeric > istart)
+  if (istart <= nargin)
     s = varargin{istart};
     if (isempty (s))
       s = 6;
@@ -67,14 +67,12 @@ function hg = __scatter__ (varargin)
       if (columns (c) != 3)
 	c = c(:);
       endif
-    elseif (isempty (c))
-      c = __next_line_color__();
     endif
   elseif (firstnonnumeric == istart + 1 && ischar (varargin{istart + 1}))
     c = varargin{istart + 1};
     firstnonnumeric++;
   else
-    c = __next_line_color__();
+    c = [];
   endif
 
   newargs = {};
@@ -93,6 +91,8 @@ function hg = __scatter__ (varargin)
 	marker = linespec.marker;
 	if (strncmp (marker, "none", 4))
 	  marker = "o";
+        elseif (isempty (marker))
+          [dummy, marker] = __next_line_style__ ();
 	endif
       else
 	error ("%s: invalid linespec", fcn);
@@ -105,6 +105,10 @@ function hg = __scatter__ (varargin)
     endif
   endwhile
 
+  if (isempty (c))
+    c = __next_line_color__();
+  endif
+
   hg = hggroup ();
   newargs = __add_datasource__ (fcn, hg, {"x", "y", "z", "c", "size"}, 
 			     newargs{:});
@@ -112,7 +116,11 @@ function hg = __scatter__ (varargin)
   addproperty ("xdata", hg, "data", x);
   addproperty ("ydata", hg, "data", y);
   addproperty ("zdata", hg, "data", z);
-  addproperty ("cdata", hg, "data", c);
+  if (ischar (c))
+    addproperty ("cdata", hg, "data", __color_str_rgb__ (c));
+  else
+    addproperty ("cdata", hg, "data", c);
+  endif
   addproperty ("sizedata", hg, "data", s);
   addlistener (hg, "xdata", @update_data);
   addlistener (hg, "ydata", @update_data);
@@ -128,30 +136,43 @@ function hg = __scatter__ (varargin)
       s = repmat (s, numel(x), 1);
     endif
 
-    if (ischar (c))
+    if (ischar (c) || rows(c) == 1)
       for i = 1 : numel (x)
-        h = __go_patch__ (hg, "xdata", x(i), "ydata", y(i), "zdata", z(i,:),
-                          "faces", 1, "vertices", [x(i), y(i), z(i,:)], 
-                          "facecolor", "none", "edgecolor", c, "marker", marker, 
-                          "markersize", s(i), "linestyle", "none");
         if (filled)
-          set(h, "markerfacecolor", c); 
+          h = __go_patch__ (hg, "xdata", x(i), "ydata", y(i), "zdata", z(i,:),
+                            "faces", 1, "vertices", [x(i), y(i), z(i,:)], 
+                            "facecolor", "none", "edgecolor", "none", 
+                            "marker", marker,  "markersize", s(i), 
+                            "markeredgecolor", none, "markerfacecolor", c,
+                            "linestyle", "none");
+        else
+          h = __go_patch__ (hg, "xdata", x(i), "ydata", y(i), "zdata", z(i,:),
+                            "faces", 1, "vertices", [x(i), y(i), z(i,:)], 
+                            "facecolor", "none", "edgecolor", "none", 
+                            "marker", marker,  "markersize", s(i), 
+                            "markeredgecolor", c, "markerfacecolor", "none",
+                            "linestyle", "none");
         endif
       endfor
     else
-      if (rows (c) == 1)
-        c = repmat (c, numel (x), 1);
-      endif
-
       for i = 1 : numel (x)
-        h = __go_patch__ (hg, "xdata", x(i), "ydata", y(i), "zdata", z(i,:),
-                          "faces", 1, "vertices", [x(i), y(i), z(i,:)], 
-                          "facecolor", "none", "edgecolor", "flat", 
-                          "cdata", c(i,:), 
-                          "marker", marker, "markersize", s(i), 
-                          "linestyle", "none");
         if (filled)
-          set(h, "markerfacecolor", "flat"); 
+          h = __go_patch__ (hg, "xdata", x(i), "ydata", y(i), "zdata", z(i,:),
+                            "faces", 1, "vertices", [x(i), y(i), z(i,:)], 
+                            "facecolor", "none", "edgecolor", "none", 
+                            "marker", marker, "markersize", s(i), 
+                            "markeredgecolor", "none", 
+                            "markerfacecolor", "flat",
+                            "cdata", c(i,:), "linestyle", "none");
+        else
+          h = __go_patch__ (hg, "xdata", x(i), "ydata", y(i), "zdata", z(i,:),
+                            "faces", 1, "vertices", [x(i), y(i), z(i,:)], 
+                            "facecolor", "none", "edgecolor", "none", 
+                            "marker", marker, "markersize", s(i), 
+                            "markeredgecolor", "flat", 
+                            "markerfacecolor", "none",
+                            "cdata", c(i,:), "linestyle", "none");
+
         endif
       endfor
     endif
@@ -163,44 +184,52 @@ function hg = __scatter__ (varargin)
     vert = [x, y, z];
 
     if (ischar (c) || rows (c) == 1)
-      h = render_size_color (hg, vert, s, c, marker, filled); 
+      h = render_size_color (hg, vert, s, c, marker, filled, false); 
     else
       [cc, idx] = unique_idx (c, "rows");
       if (isscalar (s))
         for i = 1:rows (x)
-          h = render_size_color (hg, vert(idx{i},:), s, cc(i,:), marker, filled);
+          h = render_size_color (hg, vert(idx{i},:), s, cc(i,:), 
+                                 marker, filled, true);
         endfor
       else
         for i = 1:rows (x)
-          h = render_size_color (hg, vert(idx{i},:), s(idx{i}), cc(i,:), marker, filled);
+          h = render_size_color (hg, vert(idx{i},:), s(idx{i}), cc(i,:), 
+                                 marker, filled, true);
         endfor
       endif
     endif
 
   endif
 
-    if (! ischar (c))
-      ax = get (hg, "parent");
-      clim = get (ax, "clim");
-      if (min(c(:)) < clim(1))
-        clim(1) = min(c(:));
-        set (ax, "clim", clim);
-      endif
-      if (max(c(:)) > clim(2))
-        set (ax, "clim", [clim(1), max(c(:))]);
-      endif
+  if (! ischar (c) && rows (c) > 1)
+    ax = get (hg, "parent");
+    clim = get (ax, "clim");
+    if (min(c(:)) < clim(1))
+      clim(1) = min(c(:));
+      set (ax, "clim", clim);
     endif
+    if (max(c(:)) > clim(2))
+      set (ax, "clim", [clim(1), max(c(:))]);
+    endif
+  endif
 
   addproperty ("linewidth", hg, "patchlinewidth", 0.5);
   addproperty ("marker", hg, "patchmarker", marker);
-  if (numel (x) > 0)
-    addproperty ("markerfacecolor", hg, "patchmarkerfacecolor", "none");
+  if (filled)
     addproperty ("markeredgecolor", hg, "patchmarkeredgecolor", "none");
+    if (ischar (c) || rows (c) == 1)
+      addproperty ("markerfacecolor", hg, "patchmarkerfacecolor", c);
+    else
+      addproperty ("markerfacecolor", hg, "patchmarkerfacecolor", "flat");
+    endif
   else
-    addproperty ("markerfacecolor", hg, "patchmarkerfacecolor", 
-		 get (h, "markerfacecolor"));
-    addproperty ("markeredgecolor", hg, "patchmarkeredgecolor",
-		 get (h, "color"));
+    addproperty ("markerfacecolor", hg, "patchmarkerfacecolor", "none");
+    if (ischar (c) || rows (c) == 1)
+      addproperty ("markeredgecolor", hg, "patchmarkeredgecolor", c);
+    else
+      addproperty ("markeredgecolor", hg, "patchmarkeredgecolor", "flat");
+    endif
   endif
   addlistener (hg, "linewidth", @update_props); 
   addlistener (hg, "marker", @update_props); 
@@ -235,35 +264,54 @@ function [y, idx] =  unique_idx (x, byrows)
   endif
 endfunction
 
-function h = render_size_color(hg, vert, s, c, marker, filled)
+function h = render_size_color(hg, vert, s, c, marker, filled, isflat)
   if (isscalar (s))
     x = vert(:,1);
     y = vert(:,2);
     z = vert(:,3:end);
-    if (ischar (c))
-      h = __go_patch__ (hg, "xdata", x, "ydata", y, "zdata", z,
-                        "faces", 1, "vertices", vert, 
-                        "facecolor", "none", "edgecolor", c, "marker", marker, 
-                        "markersize", s, "linestyle", "none");
+    if (ischar (c) || !isflat)
       if (filled)
-        set(h, "markerfacecolor", c); 
+        h = __go_patch__ (hg, "xdata", x, "ydata", y, "zdata", z,
+                          "faces", 1, "vertices", vert, 
+                          "facecolor", "none", "edgecolor", "none", 
+                          "marker", marker, 
+                          "markeredgecolor", "none", 
+                          "markerfacecolor", c,
+                          "markersize", s, "linestyle", "none");
+      else
+        h = __go_patch__ (hg, "xdata", x, "ydata", y, "zdata", z,
+                          "faces", 1, "vertices", vert, 
+                          "facecolor", "none", "edgecolor", "none", 
+                          "marker", marker, 
+                          "markeredgecolor", c, 
+                          "markerfacecolor", "none",
+                          "markersize", s, "linestyle", "none");
       endif
     else
-      h = __go_patch__ (hg, "xdata", x, "ydata", y, "zdata", z,
-                        "faces", 1, "vertices", vert, 
-                        "facecolor", "none", "edgecolor", "flat", 
-                        "cdata", c, 
-                        "marker", marker, "markersize", s, 
-                        "linestyle", "none");
       if (filled)
-        set(h, "markerfacecolor", "flat"); 
+        h = __go_patch__ (hg, "xdata", x, "ydata", y, "zdata", z,
+                          "faces", 1, "vertices", vert,
+                          "facecolor", "none", "edgecolor", "none", 
+                          "marker", marker, "markersize", s, 
+                          "markeredgecolor", "none", 
+                          "markerfacecolor", "flat",
+                          "cdata", c, "linestyle", "none");
+      else
+        h = __go_patch__ (hg, "xdata", x, "ydata", y, "zdata", z,
+                          "faces", 1, "vertices", vert,
+                          "facecolor", "none", "edgecolor", "none", 
+                          "marker", marker, "markersize", s, 
+                          "markeredgecolor", "flat", 
+                          "markerfacecolor", "none",
+                          "cdata", c, "linestyle", "none");
       endif
     endif
   else
     ## FIXME: round the size to one decimal place. It's not quite right, though.
     [ss, idx] = unique_idx (ceil (s*10) / 10);
     for i = 1:rows (ss)
-      h = render_size_color (hg, vert(idx{i},:), ss(i), c, marker, filled);
+      h = render_size_color (hg, vert(idx{i},:), ss(i), c, 
+                             marker, filled, isflat);
     endfor
   endif
 endfunction

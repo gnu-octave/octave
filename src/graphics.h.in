@@ -514,6 +514,166 @@ private:
 
 // ---------------------------------------------------------------------
 
+class string_array_property : public base_property
+{
+public:
+  enum desired_enum { string_t, cell_t };
+
+  string_array_property (const std::string& s, const graphics_handle& h,
+		  const std::string& val = "", const char& sep = '|', 
+		  const desired_enum& typ = string_t)
+    : base_property (s, h), desired_type (typ), separator (sep)
+    { 
+      size_t pos = 0;
+
+      while (true)
+	{
+	  size_t new_pos = val.find_first_of (separator, pos);
+
+	  if (new_pos == std::string::npos)
+	    {
+	      str.append (val.substr (pos));
+	      break;
+	    }
+	  else
+	    str.append (val.substr (pos, new_pos - pos));
+
+	  pos = new_pos + 1;
+	}
+    }
+
+  string_array_property (const std::string& s, const graphics_handle& h, 
+		  const Cell& c, const char& sep = '|', 
+		  const desired_enum& typ = string_t)
+    : base_property (s, h), desired_type (typ), separator (sep)
+    { 
+      if (c.is_cellstr ())
+	{
+	  string_vector strings (c.numel ());
+
+	  for (octave_idx_type i = 0; i < c.numel (); i++)
+	    strings (i) = c(i).string_value ();
+
+	  str = strings;
+	}
+      else
+        error ("set: invalid order property value for \"%s\"",
+               get_name ().c_str ());
+    }
+
+  string_array_property (const string_array_property& p)
+    : base_property (p), desired_type (p.desired_type),
+      separator (p.separator), str (p.str) { }
+
+  octave_value get (void) const
+    { 
+      if (desired_type == string_t)
+	return octave_value (string_value ());
+      else
+	return octave_value (cell_value ());
+    }
+
+  std::string string_value (void) const 
+    { 
+      std::string _str;
+
+      for (octave_idx_type i = 0; i < str.length (); i++)
+	{
+	  _str += str(i);
+	  if (i != str.length() - 1)
+	    _str += separator;
+	}
+
+      return _str;
+    }
+
+  Cell cell_value (void) const {return Cell (str);}
+
+  string_array_property& operator = (const octave_value& val)
+    {
+      set (val);
+      return *this;
+    }
+
+  base_property* clone (void) const { return new string_array_property (*this); }
+
+protected:
+  bool do_set (const octave_value& val)
+    {
+      if (val.is_string ())
+	{
+	  bool replace = false;
+	  std::string new_str = val.string_value ();
+	  string_vector strings;
+	  size_t pos = 0;
+
+	  while (pos != std::string::npos)
+	    {
+	      size_t new_pos = new_str.find_first_of (separator, pos);
+
+	      if (new_pos == std::string::npos)
+		{
+		  strings.append (new_str.substr (pos));
+		  break;
+		}
+	      else
+		strings.append (new_str.substr (pos, new_pos - pos));
+
+	      pos = new_pos + 1;
+	    }
+
+	  if (str.numel () == strings.numel ())
+	    {
+	      for (octave_idx_type i = 0; i < str.numel (); i++)
+		if (strings (i) != str(i))
+		  {
+		    replace = true;
+		    break;
+		  }
+	    }
+	  else
+	    replace = true;
+
+	  if (replace)
+	    {
+	      str = strings;
+	      return true;
+	    }
+	}
+      else if (val.is_cellstr ())
+	{
+	  bool replace = false;
+	  Cell new_cell = val.cell_value ();
+
+	  string_vector strings (new_cell.numel ());
+
+	  for (octave_idx_type i = 0; i < new_cell.numel (); i++)
+	    {
+	      strings (i) = new_cell(i).string_value ();
+	      if (strings (i) != str (i))
+		replace = true;
+	    }
+
+	  if (replace)
+	    {
+	      str = strings;
+	      return true;
+	    }
+	}
+      else
+        error ("set: invalid string property value for \"%s\"",
+               get_name ().c_str ());
+      return false;
+    }
+
+private:
+  desired_enum desired_type;
+  char separator;
+  string_vector str;
+};
+
+// ---------------------------------------------------------------------
+
 class radio_values
 {
 public:
@@ -2761,11 +2921,8 @@ public:
       radio_property fontunits , "{points}|normalized|inches|centimeters|pixels"
       radio_property fontweight , "{normal}|light|demi|bold"
       radio_property gridlinestyle , "-|--|{:}|-.|none"
-      // FIXME -- should be kind of string array.
-      string_property linestyleorder , "-"
+      string_array_property linestyleorder , "-"
       double_property linewidth , 0.5
-      // FIXME -- should be kind of string array.
-      string_property markerorder , "+o*xsd^vh."
       radio_property minorgridlinestyle , "-|--|{:}|-.|none"
       array_property plotboxaspectratio m , Matrix (1, 3, 1.0)
       radio_property plotboxaspectratiomode , "{auto}|manual"

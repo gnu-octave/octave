@@ -1,3 +1,26 @@
+2010-01-20  David Bateman  <dbateman@free.fr>
+
+	* plot/__go_draw_axes__.m (next_marker):  Remove and all uses of
+	this function.
+	Partially respect the markeredgecolor and markerfacecolor properties.
+	* plot/private/__color__str_rgb__.m: New function
+	* plot/module.mk: Add it here.
+	* plot/__next_line_style__.m: New function selected next line style
+	using the axes linestyleorder property.
+	* plot/__next_line_color.m: Increment next line style here.
+	* plot/newplot.m: Reset next line style here.
+	* plot/module.mk: Add __next_line_style__.m here.
+	* plot/plot3.m: Use __next_line_style__ here.
+	* plot/private/plt.m: And here.
+	* plot/private/stem.m: And here.
+	* plot/private/scatter.m: And here. Correctly handle nargin == 3. Use
+	matlab compatible edgecolor, markeredgecolor and markerfacecolor
+	property values.
+	* plot/private/pltopt.m: Remove "@" marker as an option.
+	* plot/private/__default_plot_options__.m: Default plot options
+	are empty signalling that __next_line_color__ and
+	__next_line_style should be used.
+
 2010-01-19  Jaroslav Hajek  <highegg@gmail.com>
 
 	* general/structfun.m: Error when invalid options are specified.

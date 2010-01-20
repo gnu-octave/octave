@@ -90,10 +90,6 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
     fputs (plot_stream, "unset x2tics;\n");
     fputs (plot_stream, "unset x2tics;\n");
 
-    # Reset next marker calculation
-    markerorder = axis_obj.markerorder;
-    next_marker (0);
-
     if (! isempty (axis_obj.title))
       t = get (axis_obj.title);
       if (isempty (t.string))
@@ -527,7 +523,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
 	  endif
 
 	  style = do_linestyle_command (obj, obj.color, data_idx, mono, 
-					plot_stream, markerorder, errbars);
+					plot_stream, errbars);
 
           withclause{data_idx} = sprintf ("with %s linestyle %d",
 					  style{1}, data_idx);
@@ -728,8 +724,24 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
 	     endif
 
              if (isfield (obj, "edgecolor"))
-	       if ((strncmp (obj.edgecolor, "flat", 4)
-		    || strncmp (obj.edgecolor, "interp", 6))
+               ## FIXME
+               ## This is the wrong thing to do as edgecolor, markeredgecolor
+               ## and markerfacecolor can have different values and we should
+               ## treat them seperately. However, the below allow the scatter
+               ## functions to work as expected, where only one of these values
+               ## is set
+	       if (strncmp (obj.edgecolor, "none", 4))
+                 if (strncmp (obj.markeredgecolor, "none", 4))
+                   ec = obj.markerfacecolor;
+                 else
+                   ec = obj.markeredgecolor;
+                 endif
+               else
+                 ec = obj.edgecolor;
+               endif
+
+	       if ((strncmp (ec, "flat", 4)
+		    || strncmp (ec, "interp", 6))
 		   && isfield (obj, "cdata"))
 		 if (ndims (obj.cdata) == 2
 		     && (size (obj.cdata, 2) == nc
@@ -746,7 +758,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
 		 else
 		   ccol = cdat;
 		 endif
-		 if (strncmp (obj.edgecolor, "flat", 4))
+		 if (strncmp (ec, "flat", 4))
 		   if (numel(ccol) == 3)
 		     color = ccol;
 		   else
@@ -755,14 +767,14 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
 		     r = max (1, min (r, size (cmap, 1)));
 		     color = cmap(r, :);
 		   endif
-		 elseif (strncmp (obj.edgecolor, "interp", 6))
+		 elseif (strncmp (ec, "interp", 6))
 		   warning ("\"interp\" not supported, using 1st entry of cdata");
 		   r = 1 + round ((size (cmap, 1) - 1) * ccol(1));
 		   r = max (1, min (r, size (cmap, 1)));
 		   color = cmap(r,:);
 		 endif
-	       elseif (isnumeric (obj.edgecolor))
-		 color = obj.edgecolor;
+	       elseif (isnumeric (ec))
+		 color = ec;
 	       else
 		 color = [0, 0, 0];
 	       endif
@@ -798,8 +810,6 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
 	     if (isfield (obj, "marker"))
 	       if (isfield (obj, "marker"))
 		 switch (obj.marker)
-                   case "@"
-                     [pt, pt2] = next_marker (markerorder);
 		   case "+"
 		     pt = pt2 = "pt 1";
 		   case "o"
@@ -843,7 +853,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
 		 endswitch
 	       endif
 	     else
-	       pt = "";
+	       pt = pt2 = "";
 	     endif
 
 	     if (mono)
@@ -1031,7 +1041,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
 	    have_3d_patch(data_idx) = false;
 	    style = do_linestyle_command (obj, obj.edgecolor,
 					  data_idx, mono, 
-					  plot_stream, markerorder);
+					  plot_stream);
 	    if (isempty (obj.keylabel))
 	      titlespec{data_idx} = "title \"\"";
 	    else
@@ -1573,7 +1583,7 @@ function fontspec = create_fontspec (f, s, gp_term)
 endfunction
 
 function style = do_linestyle_command (obj, linecolor, idx, mono,
-				       plot_stream, markerorder, errbars = "")
+				       plot_stream, errbars = "")
   style = {};
 
   fprintf (plot_stream, "set style line %d default;\n", idx);
@@ -1633,8 +1643,6 @@ function style = do_linestyle_command (obj, linecolor, idx, mono,
 
   if (isfield (obj, "marker"))
     switch (obj.marker)
-      case "@"
-        [pt, pt2] = next_marker (markerorder);
       case "+"
 	pt = pt2 = "1";
       case "o"
@@ -1699,9 +1707,9 @@ function style = do_linestyle_command (obj, linecolor, idx, mono,
 	  || ! isnumeric (obj.markerfacecolor) 
 	  || (isnumeric (obj.markerfacecolor) 
 	      && isequal (color, obj.markerfacecolor)))
-	style {sidx} = strcat (style{sidx}, "points");
 	if (! isempty (pt2))
 	  fprintf (plot_stream, " pointtype %s", pt2);
+	  style {sidx} = strcat (style{sidx}, "points");
 	endif
 	if (isfield (obj, "markersize"))
 	  fprintf (plot_stream, " pointsize %f", obj.markersize / 3);
@@ -1724,8 +1732,8 @@ function style = do_linestyle_command (obj, linecolor, idx, mono,
 	  fprintf (plot_stream, " linecolor rgb \"#%02x%02x%02x\"",
 		   round (255*obj.markerfacecolor));
 	endif
-	style {sidx} = "points";
 	if (! isempty (pt2))
+	  style {sidx} = "points";
 	  fprintf (plot_stream, " pointtype %s", pt2);
 	endif
 	if (isfield (obj, "markersize"))
@@ -1741,8 +1749,8 @@ function style = do_linestyle_command (obj, linecolor, idx, mono,
 			   && isequal (color, obj.markeredgecolor))))
 	if (sidx == 1 && ((length (style {sidx}) == 5 
 	    && strncmp (style {sidx}, "lines", 5)) || isempty (style {sidx})))
-	  style {sidx} = strcat (style{sidx}, "points");
 	  if (! isempty (pt))
+	    style {sidx} = strcat (style{sidx}, "points");
 	    fprintf (plot_stream, " pointtype %s", pt);
 	  endif
 	  if (isfield (obj, "markersize"))
@@ -1771,8 +1779,8 @@ function style = do_linestyle_command (obj, linecolor, idx, mono,
 		     round (255*obj.markeredgecolor));
 	  endif
 	endif
-	style {sidx} = "points";
 	if (! isempty (pt))
+	  style {sidx} = "points";
 	  fprintf (plot_stream, " pointtype %s", pt);
 	endif
 	if (isfield (obj, "markersize"))
@@ -1790,57 +1798,6 @@ function style = do_linestyle_command (obj, linecolor, idx, mono,
 
   fputs (plot_stream, ";\n");
 
-endfunction
-
-function [pt, pt2] = next_marker (__set__)
-  persistent __next_marker__ = 0;
-
-  if (isnumeric (__set__))
-    __next_marker__ = __set__;
-  else
-
-    __marker__ = __set__ (rem (__next_marker__ ++, length (__set__)) + 1);
-    switch (__marker__)
-      case "+"
-	pt = pt2 = "1";
-      case "o"
-	pt = "6";
-	pt2 = "7";
-      case "*"
-	pt = pt2 = "3";
-      case "."
-	pt = pt2 = "0";
-      case "x"
-	pt = pt2 = "2";
-      case "s"
-	pt = "4";
-	pt2 = "5";
-      case "d"
-	pt = "13";
-	pt2 = "14";
-      case "^"
-	pt = "8";
-	pt2 = "9";
-      case "v"
-	pt = "10";
-	pt2 = "11";
-      case ">"
-	## FIXME missing point type 
-	pt = "8";
-	pt2 = "9";
-      case "<"
-	## FIXME missing point type 
-	pt = "10";
-	pt2 = "11";
-      case "p"
-	## FIXME missing point type 
-	pt = pt2 = "3";
-      case "h"
-	pt = pt2 = "3";
-      otherwise
-	pt = pt2 = "";
-    endswitch
-  endif
 endfunction
 
 function nd = __calc_dimensions__ (obj)

@@ -155,9 +155,9 @@ function [options, valid] = __pltopt1__ (caller, opt, err_on_invalid)
 	    || strncmp (opt, "#", 1))
       n = 1;
     endif
-      options.linestyle = opt(1:n);
-      opt(1:n) = [];
-      have_linestyle = true;
+    options.linestyle = opt(1:n);
+    opt(1:n) = [];
+    have_linestyle = true;
   endif
 
   while (! isempty (opt))
@@ -177,6 +177,10 @@ function [options, valid] = __pltopt1__ (caller, opt, err_on_invalid)
 	      || topt == ">" || topt == "<" || topt == "p"
 	      || topt == "h" || topt == "@")
 	have_marker = true;
+        ## Backward compatibility.  Leave undocumented.
+	if (topt == "@")
+	  topt = "+";
+	endif
 	options.marker = topt;
 ### Numeric color specs for backward compatibility.  Leave undocumented.
       elseif (topt == "k" || topt == "0")
@@ -224,8 +228,12 @@ function [options, valid] = __pltopt1__ (caller, opt, err_on_invalid)
     opt(1:n) = [];
   endwhile
 
-  if (have_marker && ! have_linestyle)
+  if (! have_linestyle && have_marker)
     options.linestyle = "none";
+  endif
+
+  if (have_linestyle && ! have_marker)
+    options.marker = "none";
   endif
 
 endfunction

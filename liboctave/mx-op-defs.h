@@ -550,70 +550,21 @@ operator * (const DM& dm, const M& m) \
 T ## NDArray \
 FCN (octave_ ## T d, const T ## NDArray& m) \
 { \
-  dim_vector dv = m.dims (); \
-  octave_idx_type nel = dv.numel (); \
-\
-  if (nel == 0)	\
-    return T ## NDArray (dv); \
-\
-  T ## NDArray result (dv); \
-\
-  for (octave_idx_type i = 0; i < nel; i++) \
-    { \
-      octave_quit (); \
-      result (i) = d OP m (i) ? d : m(i); \
-    } \
-\
-  return result; \
+  return do_sm_binary_op<T##NDArray, octave_##T, T##NDArray> (d, m, mx_inline_x##FCN); \
 }
 
 #define NDS_MINMAX_FCN(FCN, OP, T) \
 T ## NDArray \
 FCN (const T ## NDArray& m, octave_ ## T d) \
 { \
-  dim_vector dv = m.dims (); \
-  octave_idx_type nel = dv.numel (); \
-\
-  if (nel == 0)	\
-    return T ## NDArray (dv); \
-\
-  T ## NDArray result (dv); \
-\
-  for (octave_idx_type i = 0; i < nel; i++) \
-    { \
-      octave_quit (); \
-      result (i) = m (i) OP d ? m(i) : d; \
-    } \
-\
-  return result; \
+  return do_ms_binary_op<T##NDArray, T##NDArray, octave_##T> (m, d, mx_inline_x##FCN); \
 }
 
 #define NDND_MINMAX_FCN(FCN, OP, T) \
 T ## NDArray \
 FCN (const T ## NDArray& a, const T ## NDArray& b) \
 { \
-  dim_vector dv = a.dims (); \
-  octave_idx_type nel = dv.numel (); \
-\
-  if (dv != b.dims ()) \
-    { \
-      (*current_liboctave_error_handler) \
-	("two-arg min expecting args of same size"); \
-      return T ## NDArray (); \
-    } \
-\
-  if (nel == 0)	\
-    return T ## NDArray (dv); \
-\
-  T ## NDArray result (dv); \
-\
-  for (octave_idx_type i = 0; i < nel; i++) \
-    { \
-      octave_quit (); \
-      result (i) = a(i) OP b(i) ? a(i) : b(i); \
-    } \
-\
-  return result; \
+  return do_mm_binary_op<T##NDArray, T##NDArray, T##NDArray> (a, b, mx_inline_x##FCN, #FCN); \
 }
 
 #define MINMAX_FCNS(T) \

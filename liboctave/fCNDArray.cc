@@ -909,139 +909,40 @@ operator >> (std::istream& is, FloatComplexNDArray& a)
   return is;
 }
 
-// FIXME -- it would be nice to share code among the min/max
-// functions below.
-
-#define EMPTY_RETURN_CHECK(T) \
-  if (nel == 0)	\
-    return T (dv);
-
 FloatComplexNDArray
-min (const FloatComplex& c, const FloatComplexNDArray& m)
+min (const FloatComplex& s, const FloatComplexNDArray& m)
 {
-  dim_vector dv = m.dims ();
-  int nel = dv.numel ();
-
-  EMPTY_RETURN_CHECK (FloatComplexNDArray);
-
-  FloatComplexNDArray result (dv);
-
-  for (int i = 0; i < nel; i++)
-    {
-      octave_quit ();
-      result (i) = xmin (c, m (i));
-    }
-
-  return result;
+  return do_sm_binary_op<FloatComplexNDArray> (s, m, mx_inline_xmin);
 }
 
 FloatComplexNDArray
-min (const FloatComplexNDArray& m, const FloatComplex& c)
+min (const FloatComplexNDArray& m, const FloatComplex& s)
 {
-  dim_vector dv = m.dims ();
-  int nel = dv.numel ();
-
-  EMPTY_RETURN_CHECK (FloatComplexNDArray);
-
-  FloatComplexNDArray result (dv);
-
-  for (int i = 0; i < nel; i++)
-    {
-      octave_quit ();
-      result (i) = xmin (c, m (i));
-    }
-
-  return result;
+  return do_ms_binary_op<FloatComplexNDArray> (m, s, mx_inline_xmin);
 }
 
 FloatComplexNDArray
 min (const FloatComplexNDArray& a, const FloatComplexNDArray& b)
 {
-  dim_vector dv = a.dims ();
-  int nel = dv.numel ();
-
-  if (dv != b.dims ())
-    {
-      (*current_liboctave_error_handler)
-	("two-arg min expecting args of same size");
-      return FloatComplexNDArray ();
-    }
-
-  EMPTY_RETURN_CHECK (FloatComplexNDArray);
-
-  FloatComplexNDArray result (dv);
-
-  for (int i = 0; i < nel; i++)
-    {
-      octave_quit ();
-      result (i) = xmin (a (i), b (i));
-    }
-
-  return result;
+  return do_mm_binary_op<FloatComplexNDArray> (a, b, mx_inline_xmin, "min");
 }
 
 FloatComplexNDArray
-max (const FloatComplex& c, const FloatComplexNDArray& m)
+max (const FloatComplex& s, const FloatComplexNDArray& m)
 {
-  dim_vector dv = m.dims ();
-  int nel = dv.numel ();
-
-  EMPTY_RETURN_CHECK (FloatComplexNDArray);
-
-  FloatComplexNDArray result (dv);
-
-  for (int i = 0; i < nel; i++)
-    {
-      octave_quit ();
-      result (i) = xmax (c, m (i));
-    }
-
-  return result;
+  return do_sm_binary_op<FloatComplexNDArray> (s, m, mx_inline_xmax);
 }
 
 FloatComplexNDArray
-max (const FloatComplexNDArray& m, const FloatComplex& c)
+max (const FloatComplexNDArray& m, const FloatComplex& s)
 {
-  dim_vector dv = m.dims ();
-  int nel = dv.numel ();
-
-  EMPTY_RETURN_CHECK (FloatComplexNDArray);
-
-  FloatComplexNDArray result (dv);
-
-  for (int i = 0; i < nel; i++)
-    {
-      octave_quit ();
-      result (i) = xmax (c, m (i));
-    }
-
-  return result;
+  return do_ms_binary_op<FloatComplexNDArray> (m, s, mx_inline_xmax);
 }
 
 FloatComplexNDArray
 max (const FloatComplexNDArray& a, const FloatComplexNDArray& b)
 {
-  dim_vector dv = a.dims ();
-  int nel = dv.numel ();
-
-  if (dv != b.dims ())
-    {
-      (*current_liboctave_error_handler)
-	("two-arg max expecting args of same size");
-      return FloatComplexNDArray ();
-    }
-
-  EMPTY_RETURN_CHECK (FloatComplexNDArray);
-
-  FloatComplexNDArray result (dv);
-
-  for (int i = 0; i < nel; i++)
-    {
-      octave_quit ();
-      result (i) = xmax (a (i), b (i));
-    }
-
-  return result;
+  return do_mm_binary_op<FloatComplexNDArray> (a, b, mx_inline_xmax, "max");
 }
 
 NDS_CMP_OPS (FloatComplexNDArray, FloatComplex)

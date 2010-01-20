@@ -939,139 +939,40 @@ operator >> (std::istream& is, FloatNDArray& a)
   return is;
 }
 
-// FIXME -- it would be nice to share code among the min/max
-// functions below.
-
-#define EMPTY_RETURN_CHECK(T) \
-  if (nel == 0)	\
-    return T (dv);
-
 FloatNDArray
-min (float d, const FloatNDArray& m)
+min (float s, const FloatNDArray& m)
 {
-  dim_vector dv = m.dims ();
-  octave_idx_type nel = dv.numel ();
-
-  EMPTY_RETURN_CHECK (FloatNDArray);
-
-  FloatNDArray result (dv);
-
-  for (octave_idx_type i = 0; i < nel; i++)
-    {
-      octave_quit ();
-      result (i) = xmin (d, m (i));
-    }
-
-  return result;
+  return do_sm_binary_op<FloatNDArray> (s, m, mx_inline_xmin);
 }
 
 FloatNDArray
-min (const FloatNDArray& m, float d)
+min (const FloatNDArray& m, float s)
 {
-  dim_vector dv = m.dims ();
-  octave_idx_type nel = dv.numel ();
-
-  EMPTY_RETURN_CHECK (FloatNDArray);
-
-  FloatNDArray result (dv);
-
-  for (octave_idx_type i = 0; i < nel; i++)
-    {
-      octave_quit ();
-      result (i) = xmin (d, m (i));
-    }
-
-  return result;
+  return do_ms_binary_op<FloatNDArray> (m, s, mx_inline_xmin);
 }
 
 FloatNDArray
 min (const FloatNDArray& a, const FloatNDArray& b)
 {
-  dim_vector dv = a.dims ();
-  octave_idx_type nel = dv.numel ();
-
-  if (dv != b.dims ())
-    {
-      (*current_liboctave_error_handler)
-	("two-arg min expecting args of same size");
-      return FloatNDArray ();
-    }
-
-  EMPTY_RETURN_CHECK (FloatNDArray);
-
-  FloatNDArray result (dv);
-
-  for (octave_idx_type i = 0; i < nel; i++)
-    {
-      octave_quit ();
-      result (i) = xmin (a (i), b (i));
-    }
-
-  return result;
+  return do_mm_binary_op<FloatNDArray> (a, b, mx_inline_xmin, "min");
 }
 
 FloatNDArray
-max (float d, const FloatNDArray& m)
+max (float s, const FloatNDArray& m)
 {
-  dim_vector dv = m.dims ();
-  octave_idx_type nel = dv.numel ();
-
-  EMPTY_RETURN_CHECK (FloatNDArray);
-
-  FloatNDArray result (dv);
-
-  for (octave_idx_type i = 0; i < nel; i++)
-    {
-      octave_quit ();
-      result (i) = xmax (d, m (i));
-    }
-
-  return result;
+  return do_sm_binary_op<FloatNDArray> (s, m, mx_inline_xmax);
 }
 
 FloatNDArray
-max (const FloatNDArray& m, float d)
+max (const FloatNDArray& m, float s)
 {
-  dim_vector dv = m.dims ();
-  octave_idx_type nel = dv.numel ();
-
-  EMPTY_RETURN_CHECK (FloatNDArray);
-
-  FloatNDArray result (dv);
-
-  for (octave_idx_type i = 0; i < nel; i++)
-    {
-      octave_quit ();
-      result (i) = xmax (d, m (i));
-    }
-
-  return result;
+  return do_ms_binary_op<FloatNDArray> (m, s, mx_inline_xmax);
 }
 
 FloatNDArray
 max (const FloatNDArray& a, const FloatNDArray& b)
 {
-  dim_vector dv = a.dims ();
-  octave_idx_type nel = dv.numel ();
-
-  if (dv != b.dims ())
-    {
-      (*current_liboctave_error_handler)
-	("two-arg max expecting args of same size");
-      return FloatNDArray ();
-    }
-
-  EMPTY_RETURN_CHECK (FloatNDArray);
-
-  FloatNDArray result (dv);
-
-  for (octave_idx_type i = 0; i < nel; i++)
-    {
-      octave_quit ();
-      result (i) = xmax (a (i), b (i));
-    }
-
-  return result;
+  return do_mm_binary_op<FloatNDArray> (a, b, mx_inline_xmax, "max");
 }
 
 NDS_CMP_OPS (FloatNDArray, float)

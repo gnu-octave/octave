@@ -1,5 +1,14 @@
 2010-01-20  Jaroslav Hajek  <highegg@gmail.com>
 
+	* mx-op-defs.h (SND_MINMAX_FCN, NDS_MINMAX_FCN, NDND_MINMAX_FCN):
+	Simplify using mx_inlines machinery. 
+	* dNDArray (min, max): Simplify.
+	* fNDArray (min, max): Simplify.
+	* CNDArray (min, max): Simplify.
+	* fCNDArray (min, max): Simplify.
+
+2010-01-20  Jaroslav Hajek  <highegg@gmail.com>
+
 	* Array.h: Substitute OCTAVE_QUIT -> octave_quit ().
 	* CMatrix.cc: Ditto.
 	* CNDArray.cc: Ditto.

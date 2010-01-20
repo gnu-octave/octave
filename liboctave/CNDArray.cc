@@ -914,139 +914,40 @@ operator >> (std::istream& is, ComplexNDArray& a)
   return is;
 }
 
-// FIXME -- it would be nice to share code among the min/max
-// functions below.
-
-#define EMPTY_RETURN_CHECK(T) \
-  if (nel == 0)	\
-    return T (dv);
-
 ComplexNDArray
-min (const Complex& c, const ComplexNDArray& m)
+min (const Complex& s, const ComplexNDArray& m)
 {
-  dim_vector dv = m.dims ();
-  int nel = dv.numel ();
-
-  EMPTY_RETURN_CHECK (ComplexNDArray);
-
-  ComplexNDArray result (dv);
-
-  for (int i = 0; i < nel; i++)
-    {
-      octave_quit ();
-      result (i) = xmin (c, m (i));
-    }
-
-  return result;
+  return do_sm_binary_op<ComplexNDArray> (s, m, mx_inline_xmin);
 }
 
 ComplexNDArray
-min (const ComplexNDArray& m, const Complex& c)
+min (const ComplexNDArray& m, const Complex& s)
 {
-  dim_vector dv = m.dims ();
-  int nel = dv.numel ();
-
-  EMPTY_RETURN_CHECK (ComplexNDArray);
-
-  ComplexNDArray result (dv);
-
-  for (int i = 0; i < nel; i++)
-    {
-      octave_quit ();
-      result (i) = xmin (c, m (i));
-    }
-
-  return result;
+  return do_ms_binary_op<ComplexNDArray> (m, s, mx_inline_xmin);
 }
 
 ComplexNDArray
 min (const ComplexNDArray& a, const ComplexNDArray& b)
 {
-  dim_vector dv = a.dims ();
-  int nel = dv.numel ();
-
-  if (dv != b.dims ())
-    {
-      (*current_liboctave_error_handler)
-	("two-arg min expecting args of same size");
-      return ComplexNDArray ();
-    }
-
-  EMPTY_RETURN_CHECK (ComplexNDArray);
-
-  ComplexNDArray result (dv);
-
-  for (int i = 0; i < nel; i++)
-    {
-      octave_quit ();
-      result (i) = xmin (a (i), b (i));
-    }
-
-  return result;
+  return do_mm_binary_op<ComplexNDArray> (a, b, mx_inline_xmin, "min");
 }
 
 ComplexNDArray
-max (const Complex& c, const ComplexNDArray& m)
+max (const Complex& s, const ComplexNDArray& m)
 {
-  dim_vector dv = m.dims ();
-  int nel = dv.numel ();
-
-  EMPTY_RETURN_CHECK (ComplexNDArray);
-
-  ComplexNDArray result (dv);
-
-  for (int i = 0; i < nel; i++)
-    {
-      octave_quit ();
-      result (i) = xmax (c, m (i));
-    }
-
-  return result;
+  return do_sm_binary_op<ComplexNDArray> (s, m, mx_inline_xmax);
 }
 
 ComplexNDArray
-max (const ComplexNDArray& m, const Complex& c)
+max (const ComplexNDArray& m, const Complex& s)
 {
-  dim_vector dv = m.dims ();
-  int nel = dv.numel ();
-
-  EMPTY_RETURN_CHECK (ComplexNDArray);
-
-  ComplexNDArray result (dv);
-
-  for (int i = 0; i < nel; i++)
-    {
-      octave_quit ();
-      result (i) = xmax (c, m (i));
-    }
-
-  return result;
+  return do_ms_binary_op<ComplexNDArray> (m, s, mx_inline_xmax);
 }
 
 ComplexNDArray
 max (const ComplexNDArray& a, const ComplexNDArray& b)
 {
-  dim_vector dv = a.dims ();
-  int nel = dv.numel ();
-
-  if (dv != b.dims ())
-    {
-      (*current_liboctave_error_handler)
-	("two-arg max expecting args of same size");
-      return ComplexNDArray ();
-    }
-
-  EMPTY_RETURN_CHECK (ComplexNDArray);
-
-  ComplexNDArray result (dv);
-
-  for (int i = 0; i < nel; i++)
-    {
-      octave_quit ();
-      result (i) = xmax (a (i), b (i));
-    }
-
-  return result;
+  return do_mm_binary_op<ComplexNDArray> (a, b, mx_inline_xmax, "max");
 }
 
 NDS_CMP_OPS (ComplexNDArray, Complex)

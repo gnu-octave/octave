@@ -1747,10 +1747,11 @@ function style = do_linestyle_command (obj, linecolor, idx, mono,
     endif
     if (isfield (obj, "markeredgecolor") 
 	&& !strncmp (obj.markeredgecolor, "none", 4))
-      if (facesame && (strncmp (obj.markeredgecolor, "auto", 4)
-		       || ! isnumeric (obj.markeredgecolor) 
-		       || (isnumeric (obj.markeredgecolor) 
-			   && isequal (color, obj.markeredgecolor))))
+      if (facesame && !isempty (pt)
+          && (strncmp (obj.markeredgecolor, "auto", 4)
+	      || ! isnumeric (obj.markeredgecolor) 
+	      || (isnumeric (obj.markeredgecolor) 
+		  && isequal (color, obj.markeredgecolor))))
 	if (sidx == 1 && ((length (style {sidx}) == 5 
 	    && strncmp (style {sidx}, "lines", 5)) || isempty (style {sidx})))
 	  if (! isempty (pt))

@@ -36,6 +36,9 @@ function [c, hg] = __contour__ (varargin)
       if (isempty (linespec.color))
 	linespec.color = "auto";
       endif
+      if (isempty (linespec.linestyle))
+	linespec.linestyle = "-";
+      endif
       if (valid)
 	have_line_spec = true;
 	varargin(i) = [];

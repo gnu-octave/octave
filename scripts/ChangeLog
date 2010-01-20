@@ -1,3 +1,8 @@
+2010-01-20  David Bateman  <dbateman@free.fr>
+
+	* plot/private/__contour__.m: Set default linestyle if pltopt returns
+	an empty style.
+
 2010-01-20  John W. Eaton  <jwe@octave.org>
 
 	* time/datetick.m: Make form arg optional.
@@ -7,7 +12,6 @@
 
 	* plot/__go_draw_axes__.m: Correct an error in drawing of patch
 	objects where unrequested markers were drawn.
-
 
 	* plot/__go_draw_figure__.m: Also plot white foreground and
 	background colors.

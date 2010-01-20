@@ -63,7 +63,7 @@ cruft.def: $(libcruft_la_SOURCES) mkf77def
 	./mkf77def $(srcdir) $(libcruft_la_SOURCES) > $@-t
 	mv $@-t $@
 
-EXTRA_DIST += ChangeLog STOP.patch mkf77def.in
+EXTRA_DIST += ChangeLog mkf77def.in
 
 DISTCLEANFILES = cruft.def
 

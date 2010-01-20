@@ -1,3 +1,8 @@
+2010-01-20  Jaroslav Hajek  <highegg@gmail.com>
+
+	* bsxfun-defs.cc (BSXFUN_STDOP_DEFS_MXLOOP): Fix reversed min/max
+	defs.
+
 2010-01-20  John W. Eaton  <jwe@octave.org>
 
 	* glob-match.h: Update copyright.

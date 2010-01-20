@@ -215,7 +215,6 @@ INCS = \
   oct-env.h \
   oct-fftw.h \
   oct-getopt.h \
-  oct-glob.h \
   oct-group.h \
   oct-inttypes.h \
   oct-locbuf.h \
@@ -250,6 +249,9 @@ INCS = \
   systime.h \
   syswait.h \
   $(MATRIX_INC)
+
+PRIVATE_INCS = \
+  oct-glob.h
 
 OTHER_INC = \
   intNDArray.cc \
@@ -505,7 +507,8 @@ LINK_DEPS = \
 liboctave_la_SOURCES = \
   $(LIBOCTAVE_SOURCES) \
   $(LIBOCT_READLINE_SOURCES) \
-  $(LIBOCT_PATHSEARCH_SOURCES)
+  $(LIBOCT_PATHSEARCH_SOURCES) \
+  $(PRIVATE_INCS)
 
 liboctave_la_LIBADD = $(LINK_DEPS)
 

@@ -26,7 +26,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 
 #include "Array.h"
-#include "oct-glob.h"
 #include "str-vec.h"
 
 class
@@ -69,12 +68,9 @@ public:
 
   void set_pattern (const string_vector& p) { pat = p; }
 
-  bool match (const std::string& str)
-  {
-    return octave_fnmatch (pat, str, fnmatch_flags);
-  }
+  bool match (const std::string& str) const;
 
-  Array<bool> match (const string_vector& str)
+  Array<bool> match (const string_vector& str) const
   {
     int n = str.length ();
 
@@ -89,7 +85,7 @@ public:
   // We forward to glob_internal here to avoid problems with gnulib's
   // glob.h defining glob to be rpl_glob.
 
-  string_vector glob (void) { return octave_glob (pat); }
+  string_vector glob (void) const;
 
 private:
 

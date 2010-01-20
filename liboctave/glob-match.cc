@@ -27,6 +27,19 @@ along with Octave; see the file COPYING.  If not, see
 #include <fnmatch.h>
 
 #include "glob-match.h"
+#include "oct-glob.h"
+
+bool
+glob_match::match (const std::string& str) const
+{
+  return octave_fnmatch (pat, str, fnmatch_flags);
+}
+
+string_vector
+glob_match::glob (void) const
+{
+  return octave_glob (pat);
+}
 
 int
 glob_match::opts_to_fnmatch_flags (unsigned int xopts) const

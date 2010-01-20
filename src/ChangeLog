@@ -1,3 +1,7 @@
+2010-01-20  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/bsxfun.cc: New tests.
+
 2010-01-20  David Bateman  <dbateman@free.fr>
 
 	* graphics.h.in (string_array_property): New property.

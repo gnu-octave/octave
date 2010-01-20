@@ -742,4 +742,26 @@ dimensionality as the other matrix.\n\
 %% The below is a very hard case to treat
 %!assert(bsxfun (f, ones([4, 1, 4, 1]), ones([1, 4, 1, 4])), zeros([4, 4, 4, 4]));
 
+%!shared a, b, aa, bb
+%! a = randn (3, 1, 3);
+%! aa = a(:, ones (1, 3), :, ones (1, 3));
+%! b = randn (1, 3, 3, 3);
+%! bb = b(ones (1, 3), :, :, :);
+%!assert (bsxfun (@plus, a, b), aa + bb);
+%!assert (bsxfun (@minus, a, b), aa - bb);
+%!assert (bsxfun (@times, a, b), aa .* bb);
+%!assert (bsxfun (@rdivide, a, b), aa ./ bb);
+%!assert (bsxfun (@ldivide, a, b), aa .\ bb);
+%!assert (bsxfun (@power, a, b), aa .^ bb);
+%!assert (bsxfun (@power, abs (a), b), abs (aa) .^ bb);
+%!assert (bsxfun (@eq, round (a), round (b)), round (aa) == round (bb));
+%!assert (bsxfun (@ne, round (a), round (b)), round (aa) != round (bb));
+%!assert (bsxfun (@lt, a, b), aa < bb);
+%!assert (bsxfun (@le, a, b), aa <= bb);
+%!assert (bsxfun (@gt, a, b), aa > bb);
+%!assert (bsxfun (@ge, a, b), aa >= bb);
+%!assert (bsxfun (@min, a, b), min (aa, bb));
+%!assert (bsxfun (@max, a, b), max (aa, bb));
+%!assert (bsxfun (@and, a > 0, b > 0), (aa > 0) & (bb > 0));
+%!assert (bsxfun (@or, a > 0, b > 0), (aa > 0) | (bb > 0));
 */

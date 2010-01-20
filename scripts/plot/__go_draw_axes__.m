@@ -924,10 +924,11 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
 
              if (isfield (obj, "markeredgecolor") 
 	         && !strncmp (obj.markeredgecolor, "none", 4))
-               if (facesame && (strncmp (obj.markeredgecolor, "auto", 4)
-		                || ! isnumeric (obj.markeredgecolor) 
-		                || (isnumeric (obj.markeredgecolor) 
-			            && isequal (color, obj.markeredgecolor))))
+               if (facesame && !isempty (pt) 
+                   && (strncmp (obj.markeredgecolor, "auto", 4)
+		       || ! isnumeric (obj.markeredgecolor) 
+		       || (isnumeric (obj.markeredgecolor) 
+			   && isequal (color, obj.markeredgecolor))))
 	         if (sidx == 1 && ((length (style) == 5 
 	                  && strncmp (style, "lines", 5)) 
                          || isempty (style)))
@@ -948,36 +949,39 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
 	         endif
                else
 	         if (!isempty (style))	
-                   if (isempty (tmpwith{sidx}))
+                   if (length(tmpwith) < sidx || isempty (tmpwith{sidx}))
 	             tmpwith{sidx} = sprintf ("with %s %s %s %s",
 					      style, lw, lt, 
 					      colorspec);
                    endif
 	           sidx ++;
 	         endif
-	         if (! mono)
-	           if (strncmp (obj.markeredgecolor, "auto", 4))
-	             colorspec = sprintf ("lc rgb \"#%02x%02x%02x\"",
-				          round (255*color));
-	           elseif (isnumeric (obj.markeredgecolor) && ! mono)
-	             colorspec = sprintf ("lc rgb \"#%02x%02x%02x\"",
-				          round (255*obj.markeredgecolor));
+
+                 if (!isempty (pt)) 
+	           if (! mono)
+	             if (strncmp (obj.markeredgecolor, "auto", 4))
+	               colorspec = sprintf ("lc rgb \"#%02x%02x%02x\"",
+				            round (255*color));
+	             elseif (isnumeric (obj.markeredgecolor) && ! mono)
+	               colorspec = sprintf ("lc rgb \"#%02x%02x%02x\"",
+				            round (255*obj.markeredgecolor));
+	             endif
 	           endif
-	         endif
-	         style = "points";
-	         if (isfield (obj, "markersize"))
-	           if (length (mdat) == nc)
-		     m = mdat(i);
-	           else
-		     m = mdat;
+	           style = "points";
+	           if (isfield (obj, "markersize"))
+	             if (length (mdat) == nc)
+		       m = mdat(i);
+	             else
+		       m = mdat;
+	             endif
+		     ps = sprintf("pointsize %f", m / 3);
+                   else
+                     ps = "";
 	           endif
-		   ps = sprintf("pointsize %f", m / 3);
-                 else
-                   ps = "";
-	         endif
-	         tmpwith{sidx} = sprintf ("with %s %s %s %s %s %s",
-					  style, lw, pt, lt, ps, 
-					  colorspec);
+	           tmpwith{sidx} = sprintf ("with %s %s %s %s %s %s",
+					    style, lw, pt, lt, ps, 
+					    colorspec);
+                 endif
                endif
              endif
 

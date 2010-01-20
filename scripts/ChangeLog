@@ -1,5 +1,9 @@
 2010-01-20  David Bateman  <dbateman@free.fr>
 
+	* plot/__go_draw_axes__.m: Correct an error in drawing of patch
+	objects where unrequested markers were drawn.
+
+
 	* plot/__go_draw_figure__.m: Also plot white foreground and
 	background colors.
 	* plot/plotyy.m: Set axes colors to "none".

@@ -553,6 +553,12 @@ OP_RED_FCN2 (mx_inline_prod, T, T, OP_RED_PROD, 1)
 OP_RED_FCN2 (mx_inline_sumsq, T, T, OP_RED_SUMSQ, 0)
 OP_RED_FCN2 (mx_inline_sumsq, std::complex<T>, T, OP_RED_SUMSQC, 0)
 
+#define OP_RED_ANYR(ac, el) ac |= xis_true (el)
+#define OP_RED_ALLR(ac, el) ac &= xis_true (el)
+
+OP_RED_FCN2 (mx_inline_any_r, T, bool, OP_RED_ANYR, false)
+OP_RED_FCN2 (mx_inline_all_r, T, bool, OP_RED_ALLR, true)
+
 // Using the general code for any/all would sacrifice short-circuiting.
 // OTOH, going by rows would sacrifice cache-coherence. The following algorithm
 // will achieve both, at the cost of a temporary octave_idx_type array.
@@ -562,6 +568,9 @@ template <class T> \
 inline void \
 F (const T* v, bool *r, octave_idx_type m, octave_idx_type n) \
 { \
+  if (n <= 8) \
+    return F ## _r (v, r, m, n); \
+  \
   /* FIXME: it may be sub-optimal to allocate the buffer here. */ \
   OCTAVE_LOCAL_BUFFER (octave_idx_type, iact, m); \
   for (octave_idx_type i = 0; i < m; i++) iact[i] = i; \

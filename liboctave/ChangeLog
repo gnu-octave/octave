@@ -1,5 +1,12 @@
 2010-01-20  Jaroslav Hajek  <highegg@gmail.com>
 
+	* mx-inlines.cc (mx_inline_any_r, mx_inline_all_r): New helper
+	reductors. 
+	(mx_inline_any, mx_inline_all): Call the here in row-wise reduction
+	with few enough columns.
+
+2010-01-20  Jaroslav Hajek  <highegg@gmail.com>
+
 	* lo-mappers.h (xmin (double, double), xmax (double, double),
 	xmin (float, float), xmax (float, float)): Inline definitions.
 	* lo-mappers.cc (xmin (double, double), xmax (double, double),

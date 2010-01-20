@@ -1,5 +1,9 @@
 2010-01-20  John W. Eaton  <jwe@octave.org>
 
+	* glob-match.h: Update copyright.
+
+2010-01-20  John W. Eaton  <jwe@octave.org>
+
 	* Makefile.am (INCS): Include oct-glob.h in the list.
 	(LIBOCTAVE_CXX_SOURCES): Include oct-glob.cc in the list.
 	* oct-glob.h, oct-glob.cc: New files.

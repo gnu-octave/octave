@@ -1,5 +1,9 @@
 2010-01-20  David Bateman  <dbateman@free.fr>
 
+	* plot/__go_draw_figure__.m: Also plot white foreground and
+	background colors.
+	* plot/plotyy.m: Set axes colors to "none".
+
 	* plot/__go_draw_axes__.m (next_marker):  Remove and all uses of
 	this function.
 	Partially respect the markeredgecolor and markerfacecolor properties.

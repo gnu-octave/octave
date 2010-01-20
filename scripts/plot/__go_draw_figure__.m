@@ -70,7 +70,7 @@ function __go_draw_figure__ (h, plot_stream, enhanced, mono, output_to_paper, im
 	fputs (plot_stream, "set origin 0, 0\n");
 	fputs (plot_stream, "set size 1, 1\n");
         bg = get (h, "color");
-        if (isnumeric (bg) && !isequal (bg, [1,1,1]))
+        if (isnumeric (bg))
           fprintf (plot_stream, "set obj 1 rectangle from screen 0,0 to screen 1,1 behind fc rgb \"#%02x%02x%02x\"\n", 255 * bg);
           bg_is_set = true;
         else
@@ -86,7 +86,7 @@ function __go_draw_figure__ (h, plot_stream, enhanced, mono, output_to_paper, im
 	      unwind_protect
 		set (kids(i), "units", "normalized");
                 fg = get (kids(i), "color");
-                if (isnumeric (fg) && !isequal (fg, [1,1,1]))
+                if (isnumeric (fg))
                   fprintf (plot_stream, "set obj 2 rectangle from graph 0,0 to graph 1,1 behind fc rgb \"#%02x%02x%02x\"\n", 255 * fg);
                   fg_is_set = true;
                 else

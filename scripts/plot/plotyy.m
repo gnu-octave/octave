@@ -145,6 +145,7 @@ function [ax, h1, h2] = __plotyy__ (ax, x1, y1, x2, y2, varargin)
 
   set (ax(1), "ycolor", getcolor (h1(1)));
   set (ax(1), "xlim", xlim);
+  set (ax(1), "color", "none");
 
   cf = gcf ();
   set (cf, "nextplot", "add");

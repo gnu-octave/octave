@@ -37,9 +37,3 @@ typedef symbol_record* symbol_record_ptr;
 NO_INSTANTIATE_ARRAY_SORT (symbol_record_ptr);
 
 INSTANTIATE_ARRAY (symbol_record_ptr, OCTINTERP_API);
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

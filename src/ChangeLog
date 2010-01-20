@@ -1,3 +1,8 @@
+2010-01-20  John W. Eaton  <jwe@octave.org>
+
+	* TEMPLATE-INST/Array-os.cc, TEMPLATE-INST/Array-tc.cc,
+	TEMPLATE-INST/Array-sym.cc: Delete Emacs local-variable settings.
+
 2010-01-20  Jaroslav Hajek  <highegg@gmail.com>
 
 	* xpow.cc (xpow, elem_xpow): Don't do redundant real->complex

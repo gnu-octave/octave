@@ -45,9 +45,3 @@ INSTANTIATE_ARRAY (printf_format_elt_ptr, OCTINTERP_API);
 
 NO_INSTANTIATE_ARRAY_SORT (octave_stream);
 INSTANTIATE_ARRAY (octave_stream, OCTINTERP_API);
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

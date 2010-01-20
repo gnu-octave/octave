@@ -60,7 +60,7 @@ static int call_depth = 0;
 
 ColumnVector
 daspk_user_function (const ColumnVector& x, const ColumnVector& xdot,
-		     double t, octave_idx_type& ires)
+                     double t, octave_idx_type& ires)
 {
   ColumnVector retval;
 
@@ -77,30 +77,30 @@ daspk_user_function (const ColumnVector& x, const ColumnVector& xdot,
       octave_value_list tmp = daspk_fcn->do_multi_index_op (1, args);
 
       if (error_state)
-	{
-	  gripe_user_supplied_eval ("daspk");
-	  return retval;
-	}
+        {
+          gripe_user_supplied_eval ("daspk");
+          return retval;
+        }
 
       int tlen = tmp.length ();
       if (tlen > 0 && tmp(0).is_defined ())
-	{
-	  if (! warned_fcn_imaginary && tmp(0).is_complex_type ())
-	    {
-	      warning ("daspk: ignoring imaginary part returned from user-supplied function");
-	      warned_fcn_imaginary = true;
-	    }
+        {
+          if (! warned_fcn_imaginary && tmp(0).is_complex_type ())
+            {
+              warning ("daspk: ignoring imaginary part returned from user-supplied function");
+              warned_fcn_imaginary = true;
+            }
 
-	  retval = ColumnVector (tmp(0).vector_value ());
+          retval = ColumnVector (tmp(0).vector_value ());
 
-	  if (tlen > 1)
-	    ires = tmp(1).int_value ();
+          if (tlen > 1)
+            ires = tmp(1).int_value ();
 
-	  if (error_state || retval.length () == 0)
-	    gripe_user_supplied_eval ("daspk");
-	}
+          if (error_state || retval.length () == 0)
+            gripe_user_supplied_eval ("daspk");
+        }
       else
-	gripe_user_supplied_eval ("daspk");
+        gripe_user_supplied_eval ("daspk");
     }
 
   return retval;
@@ -108,7 +108,7 @@ daspk_user_function (const ColumnVector& x, const ColumnVector& xdot,
 
 Matrix
 daspk_user_jacobian (const ColumnVector& x, const ColumnVector& xdot,
-		     double t, double cj)
+                     double t, double cj)
 {
   Matrix retval;
 
@@ -126,27 +126,27 @@ daspk_user_jacobian (const ColumnVector& x, const ColumnVector& xdot,
       octave_value_list tmp = daspk_jac->do_multi_index_op (1, args);
 
       if (error_state)
-	{
-	  gripe_user_supplied_eval ("daspk");
-	  return retval;
-	}
+        {
+          gripe_user_supplied_eval ("daspk");
+          return retval;
+        }
 
       int tlen = tmp.length ();
       if (tlen > 0 && tmp(0).is_defined ())
-	{
-	  if (! warned_jac_imaginary && tmp(0).is_complex_type ())
-	    {
-	      warning ("daspk: ignoring imaginary part returned from user-supplied jacobian function");
-	      warned_jac_imaginary = true;
-	    }
+        {
+          if (! warned_jac_imaginary && tmp(0).is_complex_type ())
+            {
+              warning ("daspk: ignoring imaginary part returned from user-supplied jacobian function");
+              warned_jac_imaginary = true;
+            }
 
-	  retval = tmp(0).matrix_value ();
+          retval = tmp(0).matrix_value ();
 
-	  if (error_state || retval.length () == 0)
-	    gripe_user_supplied_eval ("daspk");
-	}
+          if (error_state || retval.length () == 0)
+            gripe_user_supplied_eval ("daspk");
+        }
       else
-	gripe_user_supplied_eval ("daspk");
+        gripe_user_supplied_eval ("daspk");
     }
 
   return retval;
@@ -294,145 +294,145 @@ parameters for @code{daspk}.\n\
       octave_value f_arg = args(0);
 
       if (f_arg.is_cell ())
-  	{
-	  Cell c = f_arg.cell_value ();
-	  if (c.length() == 1)
-	    f_arg = c(0);
-	  else if (c.length() == 2)
-	    {
-	      if (c(0).is_function_handle () || c(0).is_inline_function ())
-		daspk_fcn = c(0).function_value ();
-	      else
-		{
-		  fcn_name = unique_symbol_name ("__daspk_fcn__");
-		  fname = "function y = ";
-		  fname.append (fcn_name);
-		  fname.append (" (x, xdot, t) y = ");
-		  daspk_fcn = extract_function
-		    (c(0), "daspk", fcn_name, fname, "; endfunction");
-		}
-	      
-	      if (daspk_fcn)
-		{
-		  if (c(1).is_function_handle () || c(1).is_inline_function ())
-		    daspk_jac = c(1).function_value ();
-		  else
-		    {
-		      jac_name = unique_symbol_name ("__daspk_jac__");
-		      jname = "function jac = ";
-		      jname.append(jac_name);
-		      jname.append (" (x, xdot, t, cj) jac = ");
-		      daspk_jac = extract_function
-			(c(1), "daspk", jac_name, jname, "; endfunction");
+        {
+          Cell c = f_arg.cell_value ();
+          if (c.length() == 1)
+            f_arg = c(0);
+          else if (c.length() == 2)
+            {
+              if (c(0).is_function_handle () || c(0).is_inline_function ())
+                daspk_fcn = c(0).function_value ();
+              else
+                {
+                  fcn_name = unique_symbol_name ("__daspk_fcn__");
+                  fname = "function y = ";
+                  fname.append (fcn_name);
+                  fname.append (" (x, xdot, t) y = ");
+                  daspk_fcn = extract_function
+                    (c(0), "daspk", fcn_name, fname, "; endfunction");
+                }
+              
+              if (daspk_fcn)
+                {
+                  if (c(1).is_function_handle () || c(1).is_inline_function ())
+                    daspk_jac = c(1).function_value ();
+                  else
+                    {
+                      jac_name = unique_symbol_name ("__daspk_jac__");
+                      jname = "function jac = ";
+                      jname.append(jac_name);
+                      jname.append (" (x, xdot, t, cj) jac = ");
+                      daspk_jac = extract_function
+                        (c(1), "daspk", jac_name, jname, "; endfunction");
 
-		      if (!daspk_jac)
-			{
-			  if (fcn_name.length())
-			    clear_function (fcn_name);
-			  daspk_fcn = 0;
-			}
-		    }
-		}
-	    }
-	  else
-	    DASPK_ABORT1 ("incorrect number of elements in cell array");
-	}
+                      if (!daspk_jac)
+                        {
+                          if (fcn_name.length())
+                            clear_function (fcn_name);
+                          daspk_fcn = 0;
+                        }
+                    }
+                }
+            }
+          else
+            DASPK_ABORT1 ("incorrect number of elements in cell array");
+        }
 
       if (!daspk_fcn && ! f_arg.is_cell())
-	{
-	  if (f_arg.is_function_handle () || f_arg.is_inline_function ())
-	    daspk_fcn = f_arg.function_value ();
-	  else
-	    {
-	      switch (f_arg.rows ())
-		{
-		case 1:
-		  do
-		    {
-		      fcn_name = unique_symbol_name ("__daspk_fcn__");
-		      fname = "function y = ";
-		      fname.append (fcn_name);
-		      fname.append (" (x, xdot, t) y = ");
-		      daspk_fcn = extract_function
-			(f_arg, "daspk", fcn_name, fname, "; endfunction");
-		    }
-		  while (0);
-		  break;
+        {
+          if (f_arg.is_function_handle () || f_arg.is_inline_function ())
+            daspk_fcn = f_arg.function_value ();
+          else
+            {
+              switch (f_arg.rows ())
+                {
+                case 1:
+                  do
+                    {
+                      fcn_name = unique_symbol_name ("__daspk_fcn__");
+                      fname = "function y = ";
+                      fname.append (fcn_name);
+                      fname.append (" (x, xdot, t) y = ");
+                      daspk_fcn = extract_function
+                        (f_arg, "daspk", fcn_name, fname, "; endfunction");
+                    }
+                  while (0);
+                  break;
 
-		case 2:
-		  {
-		    string_vector tmp = f_arg.all_strings ();
+                case 2:
+                  {
+                    string_vector tmp = f_arg.all_strings ();
 
-		    if (! error_state)
-		      {
-			fcn_name = unique_symbol_name ("__daspk_fcn__");
-			fname = "function y = ";
-			fname.append (fcn_name);
-			fname.append (" (x, xdot, t) y = ");
-			daspk_fcn = extract_function
-			  (tmp(0), "daspk", fcn_name, fname, "; endfunction");
+                    if (! error_state)
+                      {
+                        fcn_name = unique_symbol_name ("__daspk_fcn__");
+                        fname = "function y = ";
+                        fname.append (fcn_name);
+                        fname.append (" (x, xdot, t) y = ");
+                        daspk_fcn = extract_function
+                          (tmp(0), "daspk", fcn_name, fname, "; endfunction");
 
-			if (daspk_fcn)
-			  {
-			    jac_name = unique_symbol_name ("__daspk_jac__");
-			    jname = "function jac = ";
-			    jname.append(jac_name);
-			    jname.append (" (x, xdot, t, cj) jac = ");
-			    daspk_jac = extract_function
-			      (tmp(1), "daspk", jac_name, jname,
-			       "; endfunction");
+                        if (daspk_fcn)
+                          {
+                            jac_name = unique_symbol_name ("__daspk_jac__");
+                            jname = "function jac = ";
+                            jname.append(jac_name);
+                            jname.append (" (x, xdot, t, cj) jac = ");
+                            daspk_jac = extract_function
+                              (tmp(1), "daspk", jac_name, jname,
+                               "; endfunction");
 
-			    if (!daspk_jac)
-			      {
-				if (fcn_name.length())
-				  clear_function (fcn_name);
-				daspk_fcn = 0;
-			      }
-			  }
-		      }
-		  }
-		}
-	    }
-	}
+                            if (!daspk_jac)
+                              {
+                                if (fcn_name.length())
+                                  clear_function (fcn_name);
+                                daspk_fcn = 0;
+                              }
+                          }
+                      }
+                  }
+                }
+            }
+        }
 
       if (error_state || ! daspk_fcn)
-	DASPK_ABORT ();
+        DASPK_ABORT ();
 
       ColumnVector state = ColumnVector (args(1).vector_value ());
 
       if (error_state)
-	DASPK_ABORT1 ("expecting state vector as second argument");
+        DASPK_ABORT1 ("expecting state vector as second argument");
 
       ColumnVector deriv (args(2).vector_value ());
 
       if (error_state)
-	DASPK_ABORT1 ("expecting derivative vector as third argument");
+        DASPK_ABORT1 ("expecting derivative vector as third argument");
 
       ColumnVector out_times (args(3).vector_value ());
 
       if (error_state)
-	DASPK_ABORT1 ("expecting output time vector as fourth argument");
+        DASPK_ABORT1 ("expecting output time vector as fourth argument");
 
       ColumnVector crit_times;
       int crit_times_set = 0;
       if (nargin > 4)
-	{
-	  crit_times = ColumnVector (args(4).vector_value ());
+        {
+          crit_times = ColumnVector (args(4).vector_value ());
 
-	  if (error_state)
-	    DASPK_ABORT1 ("expecting critical time vector as fifth argument");
+          if (error_state)
+            DASPK_ABORT1 ("expecting critical time vector as fifth argument");
 
-	  crit_times_set = 1;
-	}
+          crit_times_set = 1;
+        }
 
       if (state.capacity () != deriv.capacity ())
-	DASPK_ABORT1 ("x and xdot must have the same size");
+        DASPK_ABORT1 ("x and xdot must have the same size");
 
       double tzero = out_times (0);
 
       DAEFunc func (daspk_user_function);
       if (daspk_jac)
-	func.set_jacobian_function (daspk_user_jacobian);
+        func.set_jacobian_function (daspk_user_jacobian);
 
       DASPK dae (state, deriv, tzero, func);
       dae.set_options (daspk_opts);
@@ -441,36 +441,36 @@ parameters for @code{daspk}.\n\
       Matrix deriv_output;
 
       if (crit_times_set)
-	output = dae.integrate (out_times, deriv_output, crit_times);
+        output = dae.integrate (out_times, deriv_output, crit_times);
       else
-	output = dae.integrate (out_times, deriv_output);
+        output = dae.integrate (out_times, deriv_output);
 
       if (fcn_name.length())
-	clear_function (fcn_name);
+        clear_function (fcn_name);
       if (jac_name.length())
-	clear_function (jac_name);
+        clear_function (jac_name);
 
       if (! error_state)
-	{
-	  std::string msg = dae.error_message ();
+        {
+          std::string msg = dae.error_message ();
 
-	  retval(3) = msg;
-	  retval(2) = static_cast<double> (dae.integration_state ());
+          retval(3) = msg;
+          retval(2) = static_cast<double> (dae.integration_state ());
 
-	  if (dae.integration_ok ())
-	    {
-	      retval(1) = deriv_output;
-	      retval(0) = output;
-	    }
-	  else
-	    {
-	      retval(1) = Matrix ();
-	      retval(0) = Matrix ();
+          if (dae.integration_ok ())
+            {
+              retval(1) = deriv_output;
+              retval(0) = output;
+            }
+          else
+            {
+              retval(1) = Matrix ();
+              retval(0) = Matrix ();
 
-	      if (nargout < 3)
-		error ("daspk: %s", msg.c_str ());
-	    }
-	}
+              if (nargout < 3)
+                error ("daspk: %s", msg.c_str ());
+            }
+        }
     }
   else
     print_usage ();

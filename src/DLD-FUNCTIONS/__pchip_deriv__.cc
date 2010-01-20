@@ -36,13 +36,13 @@ extern "C"
 {
   F77_RET_T
   F77_FUNC (dpchim, DPCHIM) (const octave_idx_type& n, const double *x, const double *f,
-			     double *d, const octave_idx_type &incfd,
-			     octave_idx_type *ierr);
+                             double *d, const octave_idx_type &incfd,
+                             octave_idx_type *ierr);
 
   F77_RET_T
   F77_FUNC (pchim, PCHIM) (const octave_idx_type& n, const float *x, const float *f,
-			   float *d, const octave_idx_type &incfd,
-			   octave_idx_type *ierr);
+                           float *d, const octave_idx_type &incfd,
+                           octave_idx_type *ierr);
 }
 
 // Wrapper for SLATEC/PCHIP function DPCHIM to calculate the derivates
@@ -62,85 +62,85 @@ Undocumented internal function.\n\
   if (nargin >= 2)
     {
       if (args(0).is_single_type () || args(1).is_single_type ())
-	{
-	  FloatColumnVector xvec (args(0).float_vector_value ());
-	  FloatMatrix ymat (args(1).float_matrix_value ());
+        {
+          FloatColumnVector xvec (args(0).float_vector_value ());
+          FloatMatrix ymat (args(1).float_matrix_value ());
 
-	  octave_idx_type nx = xvec.length ();
-	  octave_idx_type nyr = ymat.rows ();
-	  octave_idx_type nyc = ymat.columns ();
+          octave_idx_type nx = xvec.length ();
+          octave_idx_type nyr = ymat.rows ();
+          octave_idx_type nyc = ymat.columns ();
 
           if (nx != (rows ? nyc : nyr))
-	    {
+            {
               error ("__pchip_deriv__: dimension mismatch");
-	      return retval;
-	    }
+              return retval;
+            }
 
           const float *yvec = ymat.data ();
-	  FloatMatrix dmat (nyr, nyc);
+          FloatMatrix dmat (nyr, nyc);
           float *dvec = dmat.fortran_vec ();
 
-	  octave_idx_type ierr;
+          octave_idx_type ierr;
           const octave_idx_type incfd = rows ? nyr : 1;
           const octave_idx_type inc = rows ? 1 : nyr;
 
           for (octave_idx_type i = (rows ? nyr : nyc); i > 0; i--)
-	    {
+            {
               F77_FUNC (pchim, PCHIM) (nx, xvec.data (), 
                                        yvec, dvec, incfd, &ierr);
 
               yvec += inc;
               dvec += inc;
 
-	      if (ierr < 0)
-		{
-		  error ("PCHIM error: %i\n", ierr);
-		  return retval;
-		}
-	    }
+              if (ierr < 0)
+                {
+                  error ("PCHIM error: %i\n", ierr);
+                  return retval;
+                }
+            }
 
-	  retval = dmat;
-	}
+          retval = dmat;
+        }
       else
-	{
-	  ColumnVector xvec (args(0).vector_value ());
-	  Matrix ymat (args(1).matrix_value ());
+        {
+          ColumnVector xvec (args(0).vector_value ());
+          Matrix ymat (args(1).matrix_value ());
 
-	  octave_idx_type nx = xvec.length ();
-	  octave_idx_type nyr = ymat.rows ();
-	  octave_idx_type nyc = ymat.columns ();
+          octave_idx_type nx = xvec.length ();
+          octave_idx_type nyr = ymat.rows ();
+          octave_idx_type nyc = ymat.columns ();
 
           if (nx != (rows ? nyc : nyr))
-	    {
+            {
               error ("__pchip_deriv__: dimension mismatch");
-	      return retval;
-	    }
+              return retval;
+            }
 
           const double *yvec = ymat.data ();
-	  Matrix dmat (nyr, nyc);
+          Matrix dmat (nyr, nyc);
           double *dvec = dmat.fortran_vec ();
 
-	  octave_idx_type ierr;
+          octave_idx_type ierr;
           const octave_idx_type incfd = rows ? nyr : 1;
           const octave_idx_type inc = rows ? 1 : nyr;
 
           for (octave_idx_type i = (rows ? nyr : nyc); i > 0; i--)
-	    {
+            {
               F77_FUNC (dpchim, DPCHIM) (nx, xvec.data (), 
                                          yvec, dvec, incfd, &ierr);
 
               yvec += inc;
               dvec += inc;
 
-	      if (ierr < 0)
-		{
-		  error ("DPCHIM error: %i\n", ierr);
-		  return retval;
-		}
-	    }
+              if (ierr < 0)
+                {
+                  error ("DPCHIM error: %i\n", ierr);
+                  return retval;
+                }
+            }
 
-	  retval = dmat;
-	}
+          retval = dmat;
+        }
     }
 
   return retval;

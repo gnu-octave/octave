@@ -129,378 +129,378 @@ classification of the matrix.\n\
         }
 
       if (args(0).is_scalar_type())
-	{
-	  if (nargin == 1)
-	    retval = octave_value ("Diagonal");
-	  else
-	    retval = args(0);
-	}
+        {
+          if (nargin == 1)
+            retval = octave_value ("Diagonal");
+          else
+            retval = args(0);
+        }
       else if (args(0).is_sparse_type ())
-	{
-	  if (nargin == 1)
-	    {
-	      MatrixType mattyp;
+        {
+          if (nargin == 1)
+            {
+              MatrixType mattyp;
 
-	      if (args(0).is_complex_type ()) 
-		{
-		  mattyp = args(0).matrix_type ();
+              if (args(0).is_complex_type ()) 
+                {
+                  mattyp = args(0).matrix_type ();
 
-		  if (mattyp.is_unknown () && autocomp )
-		    {
-		      SparseComplexMatrix m = 
-			args(0).sparse_complex_matrix_value ();
-		      if (!error_state)
-			{
-			  mattyp = MatrixType (m);
-			  args(0).matrix_type (mattyp);
-			}
-		    }
-		}
-	      else
-		{
-		  mattyp = args(0).matrix_type ();
+                  if (mattyp.is_unknown () && autocomp )
+                    {
+                      SparseComplexMatrix m = 
+                        args(0).sparse_complex_matrix_value ();
+                      if (!error_state)
+                        {
+                          mattyp = MatrixType (m);
+                          args(0).matrix_type (mattyp);
+                        }
+                    }
+                }
+              else
+                {
+                  mattyp = args(0).matrix_type ();
 
-		  if (mattyp.is_unknown () && autocomp)
-		    {
-		      SparseMatrix m = args(0).sparse_matrix_value ();
-		      if (!error_state)
-			{
-			  mattyp = MatrixType (m);
-			  args(0).matrix_type (mattyp);
-			}
-		    }
-		}
+                  if (mattyp.is_unknown () && autocomp)
+                    {
+                      SparseMatrix m = args(0).sparse_matrix_value ();
+                      if (!error_state)
+                        {
+                          mattyp = MatrixType (m);
+                          args(0).matrix_type (mattyp);
+                        }
+                    }
+                }
 
-	      int typ = mattyp.type ();
+              int typ = mattyp.type ();
 
-	      if (typ == MatrixType::Diagonal)
-		retval = octave_value ("Diagonal");
-	      else if (typ == MatrixType::Permuted_Diagonal)
-		retval = octave_value ("Permuted Diagonal");
-	      else if (typ == MatrixType::Upper)
-		retval = octave_value ("Upper");
-	      else if (typ == MatrixType::Permuted_Upper)
-		retval = octave_value ("Permuted Upper");
-	      else if (typ == MatrixType::Lower)
-		retval = octave_value ("Lower");
-	      else if (typ == MatrixType::Permuted_Lower)
-		retval = octave_value ("Permuted Lower");
-	      else if (typ == MatrixType::Banded)
-		retval = octave_value ("Banded");
-	      else if (typ == MatrixType::Banded_Hermitian)
-		retval = octave_value ("Banded Positive Definite");
-	      else if (typ == MatrixType::Tridiagonal)
-		retval = octave_value ("Tridiagonal");
-	      else if (typ == MatrixType::Tridiagonal_Hermitian)
-		retval = octave_value ("Tridiagonal Positive Definite");
-	      else if (typ == MatrixType::Hermitian)
-		retval = octave_value ("Positive Definite");
-	      else if (typ == MatrixType::Rectangular)
-		{
-		  if (args(0).rows() == args(0).columns())
-		    retval = octave_value ("Singular");
-		  else
-		    retval = octave_value ("Rectangular");
-		}
-	      else if (typ == MatrixType::Full)
-		retval = octave_value ("Full");
-	      else
-		retval = octave_value ("Unknown");
-	    }
-	  else
-	    {
-	      // Ok, we're changing the matrix type
-	      std::string str_typ = args(1).string_value ();
+              if (typ == MatrixType::Diagonal)
+                retval = octave_value ("Diagonal");
+              else if (typ == MatrixType::Permuted_Diagonal)
+                retval = octave_value ("Permuted Diagonal");
+              else if (typ == MatrixType::Upper)
+                retval = octave_value ("Upper");
+              else if (typ == MatrixType::Permuted_Upper)
+                retval = octave_value ("Permuted Upper");
+              else if (typ == MatrixType::Lower)
+                retval = octave_value ("Lower");
+              else if (typ == MatrixType::Permuted_Lower)
+                retval = octave_value ("Permuted Lower");
+              else if (typ == MatrixType::Banded)
+                retval = octave_value ("Banded");
+              else if (typ == MatrixType::Banded_Hermitian)
+                retval = octave_value ("Banded Positive Definite");
+              else if (typ == MatrixType::Tridiagonal)
+                retval = octave_value ("Tridiagonal");
+              else if (typ == MatrixType::Tridiagonal_Hermitian)
+                retval = octave_value ("Tridiagonal Positive Definite");
+              else if (typ == MatrixType::Hermitian)
+                retval = octave_value ("Positive Definite");
+              else if (typ == MatrixType::Rectangular)
+                {
+                  if (args(0).rows() == args(0).columns())
+                    retval = octave_value ("Singular");
+                  else
+                    retval = octave_value ("Rectangular");
+                }
+              else if (typ == MatrixType::Full)
+                retval = octave_value ("Full");
+              else
+                retval = octave_value ("Unknown");
+            }
+          else
+            {
+              // Ok, we're changing the matrix type
+              std::string str_typ = args(1).string_value ();
 
-	      // FIXME -- why do I have to explicitly call the constructor?
-	      MatrixType mattyp = MatrixType ();
+              // FIXME -- why do I have to explicitly call the constructor?
+              MatrixType mattyp = MatrixType ();
 
-	      octave_idx_type nl = 0;
-	      octave_idx_type nu = 0;
-	      
-	      if (error_state)
-		error ("Matrix type must be a string");
-	      else
-		{
-		  // Use STL function to convert to lower case
-		  std::transform (str_typ.begin (), str_typ.end (),
-				  str_typ.begin (), tolower);
+              octave_idx_type nl = 0;
+              octave_idx_type nu = 0;
+              
+              if (error_state)
+                error ("Matrix type must be a string");
+              else
+                {
+                  // Use STL function to convert to lower case
+                  std::transform (str_typ.begin (), str_typ.end (),
+                                  str_typ.begin (), tolower);
 
-		  if (str_typ == "diagonal")
-		    mattyp.mark_as_diagonal ();
-		  if (str_typ == "permuted diagonal")
-		    mattyp.mark_as_permuted_diagonal ();
-		  else if (str_typ == "upper")
-		    mattyp.mark_as_upper_triangular ();
-		  else if (str_typ == "lower")
-		    mattyp.mark_as_lower_triangular ();
-		  else if (str_typ == "banded" || str_typ == "banded positive definite")
-		    {
-		      if (nargin != 4)
-			error ("matrix_type: banded matrix type requires 4 arguments");
-		      else
-			{
-			  nl = args(2).nint_value ();
-			  nu = args(3).nint_value ();
+                  if (str_typ == "diagonal")
+                    mattyp.mark_as_diagonal ();
+                  if (str_typ == "permuted diagonal")
+                    mattyp.mark_as_permuted_diagonal ();
+                  else if (str_typ == "upper")
+                    mattyp.mark_as_upper_triangular ();
+                  else if (str_typ == "lower")
+                    mattyp.mark_as_lower_triangular ();
+                  else if (str_typ == "banded" || str_typ == "banded positive definite")
+                    {
+                      if (nargin != 4)
+                        error ("matrix_type: banded matrix type requires 4 arguments");
+                      else
+                        {
+                          nl = args(2).nint_value ();
+                          nu = args(3).nint_value ();
 
-			  if (error_state)
-			    error ("matrix_type: band size must be integer");
-			  else
-			    {
-			      if (nl == 1 && nu == 1)
-				mattyp.mark_as_tridiagonal ();
-			      else
-				mattyp.mark_as_banded (nu, nl);
-			      
-			      if (str_typ == "banded positive definite")
-				mattyp.mark_as_symmetric ();
-			    }
-			}
-		    }
-		  else if (str_typ == "positive definite")
-		    {
-		      mattyp.mark_as_full ();
-		      mattyp.mark_as_symmetric ();
-		    }
-		  else if (str_typ == "singular")
-		    mattyp.mark_as_rectangular ();
-		  else if (str_typ == "full")
-		    mattyp.mark_as_full ();
-		  else if (str_typ == "unknown")
-		    mattyp.invalidate_type ();
-		  else
-		    error ("matrix_type: Unknown matrix type %s", str_typ.c_str());
+                          if (error_state)
+                            error ("matrix_type: band size must be integer");
+                          else
+                            {
+                              if (nl == 1 && nu == 1)
+                                mattyp.mark_as_tridiagonal ();
+                              else
+                                mattyp.mark_as_banded (nu, nl);
+                              
+                              if (str_typ == "banded positive definite")
+                                mattyp.mark_as_symmetric ();
+                            }
+                        }
+                    }
+                  else if (str_typ == "positive definite")
+                    {
+                      mattyp.mark_as_full ();
+                      mattyp.mark_as_symmetric ();
+                    }
+                  else if (str_typ == "singular")
+                    mattyp.mark_as_rectangular ();
+                  else if (str_typ == "full")
+                    mattyp.mark_as_full ();
+                  else if (str_typ == "unknown")
+                    mattyp.invalidate_type ();
+                  else
+                    error ("matrix_type: Unknown matrix type %s", str_typ.c_str());
 
-		  if (! error_state)
-		    {
-		      if (nargin == 3 && (str_typ == "upper" || str_typ == "lower"))
-			{
-			  const ColumnVector perm = 
-			    ColumnVector (args (2).vector_value ());
+                  if (! error_state)
+                    {
+                      if (nargin == 3 && (str_typ == "upper" || str_typ == "lower"))
+                        {
+                          const ColumnVector perm = 
+                            ColumnVector (args (2).vector_value ());
 
-			  if (error_state)
-			    error ("matrix_type: Invalid permutation vector");
-			  else
-			    {
-			      octave_idx_type len = perm.length ();
-			      dim_vector dv = args(0).dims ();
-			      
-			      if (len != dv(0))
-				error ("matrix_type: Invalid permutation vector");
-			      else
-				{
-				  OCTAVE_LOCAL_BUFFER (octave_idx_type, p, len);
+                          if (error_state)
+                            error ("matrix_type: Invalid permutation vector");
+                          else
+                            {
+                              octave_idx_type len = perm.length ();
+                              dim_vector dv = args(0).dims ();
+                              
+                              if (len != dv(0))
+                                error ("matrix_type: Invalid permutation vector");
+                              else
+                                {
+                                  OCTAVE_LOCAL_BUFFER (octave_idx_type, p, len);
 
-				  for (octave_idx_type i = 0; i < len; i++)
-				    p[i] = static_cast<octave_idx_type> (perm (i)) - 1; 
+                                  for (octave_idx_type i = 0; i < len; i++)
+                                    p[i] = static_cast<octave_idx_type> (perm (i)) - 1; 
 
-				  if (str_typ == "upper")
-				    mattyp.mark_as_permuted (len, p);
-				  else
-				    mattyp.mark_as_permuted (len, p);
-				}
-			    }
-			}
-		      else if (nargin != 2 && str_typ != "banded positive definite" &&
-			       str_typ != "banded")
-			error ("matrix_type: Invalid number of arguments");
+                                  if (str_typ == "upper")
+                                    mattyp.mark_as_permuted (len, p);
+                                  else
+                                    mattyp.mark_as_permuted (len, p);
+                                }
+                            }
+                        }
+                      else if (nargin != 2 && str_typ != "banded positive definite" &&
+                               str_typ != "banded")
+                        error ("matrix_type: Invalid number of arguments");
 
-		      if (! error_state)
-			{
-			  // Set the matrix type
-			  if (args(0).is_complex_type ())
-			    retval = 
-			      octave_value (args(0).sparse_complex_matrix_value (), 
-					    mattyp);
-			  else
-			    retval = octave_value (args(0).sparse_matrix_value (), 
-						   mattyp);
-			}
-		    }
-		}
-	    }
-	}
+                      if (! error_state)
+                        {
+                          // Set the matrix type
+                          if (args(0).is_complex_type ())
+                            retval = 
+                              octave_value (args(0).sparse_complex_matrix_value (), 
+                                            mattyp);
+                          else
+                            retval = octave_value (args(0).sparse_matrix_value (), 
+                                                   mattyp);
+                        }
+                    }
+                }
+            }
+        }
       else
-	{
-	  if (nargin == 1)
-	    {
-	      MatrixType mattyp;
+        {
+          if (nargin == 1)
+            {
+              MatrixType mattyp;
 
-	      if (args(0).is_complex_type ())
-		{
-		  mattyp = args(0).matrix_type ();
+              if (args(0).is_complex_type ())
+                {
+                  mattyp = args(0).matrix_type ();
 
-		  if (mattyp.is_unknown () && autocomp)
-		    {
-		      if (args(0).is_single_type ())
-			{
-			  FloatComplexMatrix m = args(0).float_complex_matrix_value ();
-			  if (!error_state)
-			    {
-			      mattyp = MatrixType (m);
-			      args(0).matrix_type (mattyp);
-			    }
-			}
-		      else
-			{
-			  ComplexMatrix m = args(0).complex_matrix_value ();
-			  if (!error_state)
-			    {
-			      mattyp = MatrixType (m);
-			      args(0).matrix_type (mattyp);
-			    }
-			}
-		    }
-		}
-	      else
-		{
-		  mattyp = args(0).matrix_type ();
+                  if (mattyp.is_unknown () && autocomp)
+                    {
+                      if (args(0).is_single_type ())
+                        {
+                          FloatComplexMatrix m = args(0).float_complex_matrix_value ();
+                          if (!error_state)
+                            {
+                              mattyp = MatrixType (m);
+                              args(0).matrix_type (mattyp);
+                            }
+                        }
+                      else
+                        {
+                          ComplexMatrix m = args(0).complex_matrix_value ();
+                          if (!error_state)
+                            {
+                              mattyp = MatrixType (m);
+                              args(0).matrix_type (mattyp);
+                            }
+                        }
+                    }
+                }
+              else
+                {
+                  mattyp = args(0).matrix_type ();
 
-		  if (mattyp.is_unknown () && autocomp)
-		    {
-		      if (args(0).is_single_type ())
-			{
-			  FloatMatrix m = args(0).float_matrix_value ();
-			  if (!error_state)
-			    {
-			      mattyp = MatrixType (m);
-			      args(0).matrix_type (mattyp);
-			    }
-			}
-		      else
-			{
-			  Matrix m = args(0).matrix_value ();
-			  if (!error_state)
-			    {
-			      mattyp = MatrixType (m);
-			      args(0).matrix_type (mattyp);
-			    }
-			}
-		    }
-		}
+                  if (mattyp.is_unknown () && autocomp)
+                    {
+                      if (args(0).is_single_type ())
+                        {
+                          FloatMatrix m = args(0).float_matrix_value ();
+                          if (!error_state)
+                            {
+                              mattyp = MatrixType (m);
+                              args(0).matrix_type (mattyp);
+                            }
+                        }
+                      else
+                        {
+                          Matrix m = args(0).matrix_value ();
+                          if (!error_state)
+                            {
+                              mattyp = MatrixType (m);
+                              args(0).matrix_type (mattyp);
+                            }
+                        }
+                    }
+                }
 
-	      int typ = mattyp.type ();
+              int typ = mattyp.type ();
 
-	      if (typ == MatrixType::Upper)
-		retval = octave_value ("Upper");
-	      else if (typ == MatrixType::Permuted_Upper)
-		retval = octave_value ("Permuted Upper");
-	      else if (typ == MatrixType::Lower)
-		retval = octave_value ("Lower");
-	      else if (typ == MatrixType::Permuted_Lower)
-		retval = octave_value ("Permuted Lower");
-	      else if (typ == MatrixType::Hermitian)
-		retval = octave_value ("Positive Definite");
-	      else if (typ == MatrixType::Rectangular)
-		{
-		  if (args(0).rows() == args(0).columns())
-		    retval = octave_value ("Singular");
-		  else
-		    retval = octave_value ("Rectangular");
-		}
-	      else if (typ == MatrixType::Full)
-		retval = octave_value ("Full");
-	      else
-		retval = octave_value ("Unknown");
-	    }
-	  else
-	    {
-	      // Ok, we're changing the matrix type
-	      std::string str_typ = args(1).string_value ();
+              if (typ == MatrixType::Upper)
+                retval = octave_value ("Upper");
+              else if (typ == MatrixType::Permuted_Upper)
+                retval = octave_value ("Permuted Upper");
+              else if (typ == MatrixType::Lower)
+                retval = octave_value ("Lower");
+              else if (typ == MatrixType::Permuted_Lower)
+                retval = octave_value ("Permuted Lower");
+              else if (typ == MatrixType::Hermitian)
+                retval = octave_value ("Positive Definite");
+              else if (typ == MatrixType::Rectangular)
+                {
+                  if (args(0).rows() == args(0).columns())
+                    retval = octave_value ("Singular");
+                  else
+                    retval = octave_value ("Rectangular");
+                }
+              else if (typ == MatrixType::Full)
+                retval = octave_value ("Full");
+              else
+                retval = octave_value ("Unknown");
+            }
+          else
+            {
+              // Ok, we're changing the matrix type
+              std::string str_typ = args(1).string_value ();
 
-	      // FIXME -- why do I have to explicitly call the constructor?
-	      MatrixType mattyp = MatrixType (MatrixType::Unknown, true);
+              // FIXME -- why do I have to explicitly call the constructor?
+              MatrixType mattyp = MatrixType (MatrixType::Unknown, true);
 
-	      if (error_state)
-		error ("Matrix type must be a string");
-	      else
-		{
-		  // Use STL function to convert to lower case
-		  std::transform (str_typ.begin (), str_typ.end (),
-				  str_typ.begin (), tolower);
+              if (error_state)
+                error ("Matrix type must be a string");
+              else
+                {
+                  // Use STL function to convert to lower case
+                  std::transform (str_typ.begin (), str_typ.end (),
+                                  str_typ.begin (), tolower);
 
-		  if (str_typ == "upper")
-		    mattyp.mark_as_upper_triangular ();
-		  else if (str_typ == "lower")
-		    mattyp.mark_as_lower_triangular ();
-		  else if (str_typ == "positive definite")
-		    {
-		      mattyp.mark_as_full ();
-		      mattyp.mark_as_symmetric ();
-		    }
-		  else if (str_typ == "singular")
-		    mattyp.mark_as_rectangular ();
-		  else if (str_typ == "full")
-		    mattyp.mark_as_full ();
-		  else if (str_typ == "unknown")
-		    mattyp.invalidate_type ();
-		  else
-		    error ("matrix_type: Unknown matrix type %s", str_typ.c_str());
+                  if (str_typ == "upper")
+                    mattyp.mark_as_upper_triangular ();
+                  else if (str_typ == "lower")
+                    mattyp.mark_as_lower_triangular ();
+                  else if (str_typ == "positive definite")
+                    {
+                      mattyp.mark_as_full ();
+                      mattyp.mark_as_symmetric ();
+                    }
+                  else if (str_typ == "singular")
+                    mattyp.mark_as_rectangular ();
+                  else if (str_typ == "full")
+                    mattyp.mark_as_full ();
+                  else if (str_typ == "unknown")
+                    mattyp.invalidate_type ();
+                  else
+                    error ("matrix_type: Unknown matrix type %s", str_typ.c_str());
 
-		  if (! error_state)
-		    {
-		      if (nargin == 3 && (str_typ == "upper" 
-					  || str_typ == "lower"))
-			{
-			  const ColumnVector perm = 
-			    ColumnVector (args (2).vector_value ());
+                  if (! error_state)
+                    {
+                      if (nargin == 3 && (str_typ == "upper" 
+                                          || str_typ == "lower"))
+                        {
+                          const ColumnVector perm = 
+                            ColumnVector (args (2).vector_value ());
 
-			  if (error_state)
-			    error ("matrix_type: Invalid permutation vector");
-			  else
-			    {
-			      octave_idx_type len = perm.length ();
-			      dim_vector dv = args(0).dims ();
-			      
-			      if (len != dv(0))
-				error ("matrix_type: Invalid permutation vector");
-			      else
-				{
-				  OCTAVE_LOCAL_BUFFER (octave_idx_type, p, len);
+                          if (error_state)
+                            error ("matrix_type: Invalid permutation vector");
+                          else
+                            {
+                              octave_idx_type len = perm.length ();
+                              dim_vector dv = args(0).dims ();
+                              
+                              if (len != dv(0))
+                                error ("matrix_type: Invalid permutation vector");
+                              else
+                                {
+                                  OCTAVE_LOCAL_BUFFER (octave_idx_type, p, len);
 
-				  for (octave_idx_type i = 0; i < len; i++)
-				    p[i] = static_cast<octave_idx_type> (perm (i)) - 1; 
+                                  for (octave_idx_type i = 0; i < len; i++)
+                                    p[i] = static_cast<octave_idx_type> (perm (i)) - 1; 
 
-				  if (str_typ == "upper")
-				    mattyp.mark_as_permuted (len, p);
-				  else
-				    mattyp.mark_as_permuted (len, p);
-				}
-			    }
-			}
-		      else if (nargin != 2)
-			error ("matrix_type: Invalid number of arguments");
+                                  if (str_typ == "upper")
+                                    mattyp.mark_as_permuted (len, p);
+                                  else
+                                    mattyp.mark_as_permuted (len, p);
+                                }
+                            }
+                        }
+                      else if (nargin != 2)
+                        error ("matrix_type: Invalid number of arguments");
 
-		      if (! error_state)
-			{
-			  // Set the matrix type
-			  if (args(0).is_single_type ())
-			    {
-			      if (args(0).is_complex_type())
-				retval = octave_value 
-				  (args(0).float_complex_matrix_value (), 
-				   mattyp);
-			      else
-				retval = octave_value 
-				  (args(0).float_matrix_value (), 
-				   mattyp);
-			    }
-			  else
-			    {
-			      if (args(0).is_complex_type())
-				retval = octave_value 
-				  (args(0).complex_matrix_value (), 
-				   mattyp);
-			      else
-				retval = octave_value 
-				  (args(0).matrix_value (), 
-				   mattyp);
-			    }
-			}
-		    }
-		}
-	    }
-	}
+                      if (! error_state)
+                        {
+                          // Set the matrix type
+                          if (args(0).is_single_type ())
+                            {
+                              if (args(0).is_complex_type())
+                                retval = octave_value 
+                                  (args(0).float_complex_matrix_value (), 
+                                   mattyp);
+                              else
+                                retval = octave_value 
+                                  (args(0).float_matrix_value (), 
+                                   mattyp);
+                            }
+                          else
+                            {
+                              if (args(0).is_complex_type())
+                                retval = octave_value 
+                                  (args(0).complex_matrix_value (), 
+                                   mattyp);
+                              else
+                                retval = octave_value 
+                                  (args(0).matrix_value (), 
+                                   mattyp);
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
   return retval;

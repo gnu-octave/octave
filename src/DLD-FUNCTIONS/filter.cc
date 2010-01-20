@@ -56,7 +56,7 @@ filter (MArray<FloatComplex>&, MArray<FloatComplex>&, MArrayN<FloatComplex>&, in
 template <class T>
 MArrayN<T>
 filter (MArray<T>& b, MArray<T>& a, MArrayN<T>& x, MArrayN<T>& si, 
-	int dim = 0)
+        int dim = 0)
 {
   MArrayN<T> y;
 
@@ -105,16 +105,16 @@ filter (MArray<T>& b, MArray<T>& a, MArrayN<T>& x, MArrayN<T>& si,
   for (octave_idx_type i = 0; i < x_dims.length (); i++)
     {
       if (i == dim)
-	continue;
+        continue;
      
       if (x_dims(i) == 1)
-	continue;
+        continue;
  
       if (si_dims(++si_dim) != x_dims(i))
-	{
-	  error ("filter: dimensionality of si and x must agree");
-	  return y;
-	}
+        {
+          error ("filter: dimensionality of si and x must agree");
+          return y;
+        }
     }
 
   if (norm != static_cast<T>(1.0))
@@ -137,87 +137,87 @@ filter (MArray<T>& b, MArray<T>& a, MArrayN<T>& x, MArrayN<T>& si,
     {
       octave_idx_type x_offset;
       if (x_stride == 1)
-	x_offset = num * x_len;
+        x_offset = num * x_len;
       else
-	{
-	  octave_idx_type x_offset2 = 0;
-	  x_offset = num;
-	  while (x_offset >= x_stride)
-	    {
-	      x_offset -= x_stride;
-	      x_offset2++;
-	    }
-	  x_offset += x_offset2 * x_stride * x_len;
-	}
+        {
+          octave_idx_type x_offset2 = 0;
+          x_offset = num;
+          while (x_offset >= x_stride)
+            {
+              x_offset -= x_stride;
+              x_offset2++;
+            }
+          x_offset += x_offset2 * x_stride * x_len;
+        }
       octave_idx_type si_offset = num * si_len;
 
       if (a_len > 1)
-	{
-	  T *py = y.fortran_vec ();
-	  T *psi = si.fortran_vec ();
+        {
+          T *py = y.fortran_vec ();
+          T *psi = si.fortran_vec ();
 
-	  const T *pa = a.data ();
-	  const T *pb = b.data ();
-	  const T *px = x.data ();
+          const T *pa = a.data ();
+          const T *pb = b.data ();
+          const T *px = x.data ();
 
-	  psi += si_offset;
+          psi += si_offset;
 
-	  for (octave_idx_type i = 0, idx = x_offset; i < x_len; i++, idx += x_stride)
-	    {
-	      py[idx] = psi[0] + pb[0] * px[idx];
+          for (octave_idx_type i = 0, idx = x_offset; i < x_len; i++, idx += x_stride)
+            {
+              py[idx] = psi[0] + pb[0] * px[idx];
 
-	      if (si_len > 0)
-		{
-		  for (octave_idx_type j = 0; j < si_len - 1; j++)
-		    {
-		      OCTAVE_QUIT;
+              if (si_len > 0)
+                {
+                  for (octave_idx_type j = 0; j < si_len - 1; j++)
+                    {
+                      OCTAVE_QUIT;
 
-		      psi[j] = psi[j+1] - pa[j+1] * py[idx] + pb[j+1] * px[idx];
-		    }
+                      psi[j] = psi[j+1] - pa[j+1] * py[idx] + pb[j+1] * px[idx];
+                    }
 
-		  psi[si_len-1] = pb[si_len] * px[idx] - pa[si_len] * py[idx];
-		}
-	      else
-		{
-		  OCTAVE_QUIT;
+                  psi[si_len-1] = pb[si_len] * px[idx] - pa[si_len] * py[idx];
+                }
+              else
+                {
+                  OCTAVE_QUIT;
 
-		  psi[0] = pb[si_len] * px[idx] - pa[si_len] * py[idx];
-		}
-	    }
-	}
+                  psi[0] = pb[si_len] * px[idx] - pa[si_len] * py[idx];
+                }
+            }
+        }
       else if (si_len > 0)
-	{
-	  T *py = y.fortran_vec ();
-	  T *psi = si.fortran_vec ();
+        {
+          T *py = y.fortran_vec ();
+          T *psi = si.fortran_vec ();
 
-	  const T *pb = b.data ();
-	  const T *px = x.data ();
+          const T *pb = b.data ();
+          const T *px = x.data ();
 
-	  psi += si_offset;
+          psi += si_offset;
 
-	  for (octave_idx_type i = 0, idx = x_offset; i < x_len; i++, idx += x_stride)
-	    {
-	      py[idx] = psi[0] + pb[0] * px[idx];
+          for (octave_idx_type i = 0, idx = x_offset; i < x_len; i++, idx += x_stride)
+            {
+              py[idx] = psi[0] + pb[0] * px[idx];
 
-	      if (si_len > 1)
-		{
-		  for (octave_idx_type j = 0; j < si_len - 1; j++)
-		    {
-		      OCTAVE_QUIT;
+              if (si_len > 1)
+                {
+                  for (octave_idx_type j = 0; j < si_len - 1; j++)
+                    {
+                      OCTAVE_QUIT;
 
-		      psi[j] = psi[j+1] + pb[j+1] * px[idx];
-		    }
+                      psi[j] = psi[j+1] + pb[j+1] * px[idx];
+                    }
 
-		  psi[si_len-1] = pb[si_len] * px[idx];
-		}
-	      else
-		{
-		  OCTAVE_QUIT;
+                  psi[si_len-1] = pb[si_len] * px[idx];
+                }
+              else
+                {
+                  OCTAVE_QUIT;
 
-		  psi[0] = pb[1] * px[idx];
-		}
-	    }
-	}
+                  psi[0] = pb[1] * px[idx];
+                }
+            }
+        }
     }
   
   return y;
@@ -226,19 +226,19 @@ filter (MArray<T>& b, MArray<T>& a, MArrayN<T>& x, MArrayN<T>& si,
 #if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
 extern MArrayN<double>
 filter (MArray<double>&, MArray<double>&, MArrayN<double>&,
-	MArrayN<double>&, int dim);
+        MArrayN<double>&, int dim);
 
 extern MArrayN<Complex>
 filter (MArray<Complex>&, MArray<Complex>&, MArrayN<Complex>&,
-	MArrayN<Complex>&, int dim);
+        MArrayN<Complex>&, int dim);
 
 extern MArrayN<float>
 filter (MArray<float>&, MArray<float>&, MArrayN<float>&,
-	MArrayN<float>&, int dim);
+        MArrayN<float>&, int dim);
 
 extern MArrayN<FloatComplex>
 filter (MArray<FloatComplex>&, MArray<FloatComplex>&, MArrayN<FloatComplex>&,
-	MArrayN<FloatComplex>&, int dim);
+        MArrayN<FloatComplex>&, int dim);
 #endif
 
 template <class T>
@@ -251,17 +251,17 @@ filter (MArray<T>& b, MArray<T>& a, MArrayN<T>& x, int dim = -1)
     {
       // Find first non-singleton dimension
       while (dim < x_dims.length () && x_dims(dim) <= 1)
-	dim++;
+        dim++;
   
       // All dimensions singleton, pick first dimension
       if (dim == x_dims.length ())
-	dim = 0;
+        dim = 0;
     }
   else
     if (dim < 0 || dim > x_dims.length ())
       {
-	error ("filter: filtering over invalid dimension");
-	return MArrayN<T> ();
+        error ("filter: filtering over invalid dimension");
+        return MArrayN<T> ();
       }
 
   octave_idx_type a_len = a.length ();
@@ -388,27 +388,27 @@ $$\n\
     {
       dim = args(4).nint_value() - 1;
       if (dim < 0 || dim >= x_dims.length ())
-	{
-	  error ("filter: filtering over invalid dimension");
-	  return retval;
-	}
+        {
+          error ("filter: filtering over invalid dimension");
+          return retval;
+        }
     }
   else
     {
       // Find first non-singleton dimension
       dim = 0;
       while (dim < x_dims.length () && x_dims(dim) <= 1)
-	dim++;
+        dim++;
   
       // All dimensions singleton, pick first dimension
       if (dim == x_dims.length ())
-	dim = 0;
+        dim = 0;
     }
 
   bool isfloat = (args(0).is_single_type ()
-		  || args(1).is_single_type ()
-		  || args(2).is_single_type ()
-		  || (nargin >= 4 && args(3).is_single_type ()));
+                  || args(1).is_single_type ()
+                  || args(2).is_single_type ()
+                  || (nargin >= 4 && args(3).is_single_type ()));
     
   if (args(0).is_complex_type ()
       || args(1).is_complex_type ()
@@ -416,236 +416,236 @@ $$\n\
       || (nargin >= 4 && args(3).is_complex_type ()))
     {
       if (isfloat)
-	{
-	  FloatComplexColumnVector b (args(0).float_complex_vector_value ());
-	  FloatComplexColumnVector a (args(1).float_complex_vector_value ());
+        {
+          FloatComplexColumnVector b (args(0).float_complex_vector_value ());
+          FloatComplexColumnVector a (args(1).float_complex_vector_value ());
 
-	  FloatComplexNDArray x (args(2).float_complex_array_value ());
+          FloatComplexNDArray x (args(2).float_complex_array_value ());
 
-	  if (! error_state)
-	    {
-	      FloatComplexNDArray si;
+          if (! error_state)
+            {
+              FloatComplexNDArray si;
 
-	      if (nargin == 3 || args(3).is_empty ())
-		{
-		  octave_idx_type a_len = a.length ();
-		  octave_idx_type b_len = b.length ();
+              if (nargin == 3 || args(3).is_empty ())
+                {
+                  octave_idx_type a_len = a.length ();
+                  octave_idx_type b_len = b.length ();
 
-		  octave_idx_type si_len = (a_len > b_len ? a_len : b_len) - 1;
+                  octave_idx_type si_len = (a_len > b_len ? a_len : b_len) - 1;
 
-		  dim_vector si_dims = x.dims ();
-		  for (int i = dim; i > 0; i--)
-		    si_dims(i) = si_dims(i-1);
-		  si_dims(0) = si_len;
+                  dim_vector si_dims = x.dims ();
+                  for (int i = dim; i > 0; i--)
+                    si_dims(i) = si_dims(i-1);
+                  si_dims(0) = si_len;
 
-		  si.resize (si_dims, 0.0);
-		}
-	      else
-		{
-		  dim_vector si_dims = args (3).dims ();
-		  bool si_is_vector = true;
-		  for (int i = 0; i < si_dims.length (); i++)
-		    if (si_dims(i) != 1 && si_dims(i) < si_dims.numel ())
-		      {
-			si_is_vector = false;
-			break;
-		      }
+                  si.resize (si_dims, 0.0);
+                }
+              else
+                {
+                  dim_vector si_dims = args (3).dims ();
+                  bool si_is_vector = true;
+                  for (int i = 0; i < si_dims.length (); i++)
+                    if (si_dims(i) != 1 && si_dims(i) < si_dims.numel ())
+                      {
+                        si_is_vector = false;
+                        break;
+                      }
 
-		  si = args(3).float_complex_array_value ();
+                  si = args(3).float_complex_array_value ();
 
-		  if (si_is_vector)
-		    si = si.reshape (dim_vector (si.numel (), 1));
-		}
+                  if (si_is_vector)
+                    si = si.reshape (dim_vector (si.numel (), 1));
+                }
 
-	      if (! error_state)
-		{
-		  FloatComplexNDArray y (filter (b, a, x, si, dim));
+              if (! error_state)
+                {
+                  FloatComplexNDArray y (filter (b, a, x, si, dim));
 
-		  if (nargout == 2)
-		    retval(1) = si;
+                  if (nargout == 2)
+                    retval(1) = si;
 
-		  retval(0) = y;
-		}
-	      else
-		error (errmsg);
-	    }
-	  else
-	    error (errmsg);
-	}
+                  retval(0) = y;
+                }
+              else
+                error (errmsg);
+            }
+          else
+            error (errmsg);
+        }
       else
-	{
-	  ComplexColumnVector b (args(0).complex_vector_value ());
-	  ComplexColumnVector a (args(1).complex_vector_value ());
+        {
+          ComplexColumnVector b (args(0).complex_vector_value ());
+          ComplexColumnVector a (args(1).complex_vector_value ());
 
-	  ComplexNDArray x (args(2).complex_array_value ());
+          ComplexNDArray x (args(2).complex_array_value ());
 
-	  if (! error_state)
-	    {
-	      ComplexNDArray si;
+          if (! error_state)
+            {
+              ComplexNDArray si;
 
-	      if (nargin == 3 || args(3).is_empty ())
-		{
-		  octave_idx_type a_len = a.length ();
-		  octave_idx_type b_len = b.length ();
+              if (nargin == 3 || args(3).is_empty ())
+                {
+                  octave_idx_type a_len = a.length ();
+                  octave_idx_type b_len = b.length ();
 
-		  octave_idx_type si_len = (a_len > b_len ? a_len : b_len) - 1;
+                  octave_idx_type si_len = (a_len > b_len ? a_len : b_len) - 1;
 
-		  dim_vector si_dims = x.dims ();
-		  for (int i = dim; i > 0; i--)
-		    si_dims(i) = si_dims(i-1);
-		  si_dims(0) = si_len;
+                  dim_vector si_dims = x.dims ();
+                  for (int i = dim; i > 0; i--)
+                    si_dims(i) = si_dims(i-1);
+                  si_dims(0) = si_len;
 
-		  si.resize (si_dims, 0.0);
-		}
-	      else
-		{
-		  dim_vector si_dims = args (3).dims ();
-		  bool si_is_vector = true;
-		  for (int i = 0; i < si_dims.length (); i++)
-		    if (si_dims(i) != 1 && si_dims(i) < si_dims.numel ())
-		      {
-			si_is_vector = false;
-			break;
-		      }
+                  si.resize (si_dims, 0.0);
+                }
+              else
+                {
+                  dim_vector si_dims = args (3).dims ();
+                  bool si_is_vector = true;
+                  for (int i = 0; i < si_dims.length (); i++)
+                    if (si_dims(i) != 1 && si_dims(i) < si_dims.numel ())
+                      {
+                        si_is_vector = false;
+                        break;
+                      }
 
-		  si = args(3).complex_array_value ();
+                  si = args(3).complex_array_value ();
 
-		  if (si_is_vector)
-		    si = si.reshape (dim_vector (si.numel (), 1));
-		}
+                  if (si_is_vector)
+                    si = si.reshape (dim_vector (si.numel (), 1));
+                }
 
-	      if (! error_state)
-		{
-		  ComplexNDArray y (filter (b, a, x, si, dim));
+              if (! error_state)
+                {
+                  ComplexNDArray y (filter (b, a, x, si, dim));
 
-		  if (nargout == 2)
-		    retval(1) = si;
+                  if (nargout == 2)
+                    retval(1) = si;
 
-		  retval(0) = y;
-		}
-	      else
-		error (errmsg);
-	    }
-	  else
-	    error (errmsg);
-	}
+                  retval(0) = y;
+                }
+              else
+                error (errmsg);
+            }
+          else
+            error (errmsg);
+        }
     }
   else
     {
       if (isfloat)
-	{
-	  FloatColumnVector b (args(0).float_vector_value ());
-	  FloatColumnVector a (args(1).float_vector_value ());
+        {
+          FloatColumnVector b (args(0).float_vector_value ());
+          FloatColumnVector a (args(1).float_vector_value ());
 
-	  FloatNDArray x (args(2).float_array_value ());
+          FloatNDArray x (args(2).float_array_value ());
 
-	  if (! error_state)
-	    {
-	      FloatNDArray si;
+          if (! error_state)
+            {
+              FloatNDArray si;
 
-	      if (nargin == 3 || args(3).is_empty ())
-		{
-		  octave_idx_type a_len = a.length ();
-		  octave_idx_type b_len = b.length ();
+              if (nargin == 3 || args(3).is_empty ())
+                {
+                  octave_idx_type a_len = a.length ();
+                  octave_idx_type b_len = b.length ();
 
-		  octave_idx_type si_len = (a_len > b_len ? a_len : b_len) - 1;
+                  octave_idx_type si_len = (a_len > b_len ? a_len : b_len) - 1;
 
-		  dim_vector si_dims = x.dims ();
-		  for (int i = dim; i > 0; i--)
-		    si_dims(i) = si_dims(i-1);
-		  si_dims(0) = si_len;
+                  dim_vector si_dims = x.dims ();
+                  for (int i = dim; i > 0; i--)
+                    si_dims(i) = si_dims(i-1);
+                  si_dims(0) = si_len;
 
-		  si.resize (si_dims, 0.0);
-		}
-	      else
-		{
-		  dim_vector si_dims = args (3).dims ();
-		  bool si_is_vector = true;
-		  for (int i = 0; i < si_dims.length (); i++)
-		    if (si_dims(i) != 1 && si_dims(i) < si_dims.numel ())
-		      {
-			si_is_vector = false;
-			break;
-		      }
+                  si.resize (si_dims, 0.0);
+                }
+              else
+                {
+                  dim_vector si_dims = args (3).dims ();
+                  bool si_is_vector = true;
+                  for (int i = 0; i < si_dims.length (); i++)
+                    if (si_dims(i) != 1 && si_dims(i) < si_dims.numel ())
+                      {
+                        si_is_vector = false;
+                        break;
+                      }
 
-		  si = args(3).float_array_value ();
+                  si = args(3).float_array_value ();
 
-		  if (si_is_vector)
-		    si = si.reshape (dim_vector (si.numel (), 1));
-		}
+                  if (si_is_vector)
+                    si = si.reshape (dim_vector (si.numel (), 1));
+                }
 
-	      if (! error_state)
-		{
-		  FloatNDArray y (filter (b, a, x, si, dim));
+              if (! error_state)
+                {
+                  FloatNDArray y (filter (b, a, x, si, dim));
 
-		  if (nargout == 2)
-		    retval(1) = si;
+                  if (nargout == 2)
+                    retval(1) = si;
 
-		  retval(0) = y;
-		}
-	      else
-		error (errmsg);
-	    }
-	  else
-	    error (errmsg);
-	}
+                  retval(0) = y;
+                }
+              else
+                error (errmsg);
+            }
+          else
+            error (errmsg);
+        }
       else
-	{
-	  ColumnVector b (args(0).vector_value ());
-	  ColumnVector a (args(1).vector_value ());
+        {
+          ColumnVector b (args(0).vector_value ());
+          ColumnVector a (args(1).vector_value ());
 
-	  NDArray x (args(2).array_value ());
+          NDArray x (args(2).array_value ());
 
-	  if (! error_state)
-	    {
-	      NDArray si;
+          if (! error_state)
+            {
+              NDArray si;
 
-	      if (nargin == 3 || args(3).is_empty ())
-		{
-		  octave_idx_type a_len = a.length ();
-		  octave_idx_type b_len = b.length ();
+              if (nargin == 3 || args(3).is_empty ())
+                {
+                  octave_idx_type a_len = a.length ();
+                  octave_idx_type b_len = b.length ();
 
-		  octave_idx_type si_len = (a_len > b_len ? a_len : b_len) - 1;
+                  octave_idx_type si_len = (a_len > b_len ? a_len : b_len) - 1;
 
-		  dim_vector si_dims = x.dims ();
-		  for (int i = dim; i > 0; i--)
-		    si_dims(i) = si_dims(i-1);
-		  si_dims(0) = si_len;
+                  dim_vector si_dims = x.dims ();
+                  for (int i = dim; i > 0; i--)
+                    si_dims(i) = si_dims(i-1);
+                  si_dims(0) = si_len;
 
-		  si.resize (si_dims, 0.0);
-		}
-	      else
-		{
-		  dim_vector si_dims = args (3).dims ();
-		  bool si_is_vector = true;
-		  for (int i = 0; i < si_dims.length (); i++)
-		    if (si_dims(i) != 1 && si_dims(i) < si_dims.numel ())
-		      {
-			si_is_vector = false;
-			break;
-		      }
+                  si.resize (si_dims, 0.0);
+                }
+              else
+                {
+                  dim_vector si_dims = args (3).dims ();
+                  bool si_is_vector = true;
+                  for (int i = 0; i < si_dims.length (); i++)
+                    if (si_dims(i) != 1 && si_dims(i) < si_dims.numel ())
+                      {
+                        si_is_vector = false;
+                        break;
+                      }
 
-		  si = args(3).array_value ();
+                  si = args(3).array_value ();
 
-		  if (si_is_vector)
-		    si = si.reshape (dim_vector (si.numel (), 1));
-		}
+                  if (si_is_vector)
+                    si = si.reshape (dim_vector (si.numel (), 1));
+                }
 
-	      if (! error_state)
-		{
-		  NDArray y (filter (b, a, x, si, dim));
+              if (! error_state)
+                {
+                  NDArray y (filter (b, a, x, si, dim));
 
-		  if (nargout == 2)
-		    retval(1) = si;
+                  if (nargout == 2)
+                    retval(1) = si;
 
-		  retval(0) = y;
-		}
-	      else
-		error (errmsg);
-	    }
-	  else
-	    error (errmsg);
-	}
+                  retval(0) = y;
+                }
+              else
+                error (errmsg);
+            }
+          else
+            error (errmsg);
+        }
     }
 
   return retval;
@@ -653,28 +653,28 @@ $$\n\
 
 template MArrayN<double>
 filter (MArray<double>&, MArray<double>&, MArrayN<double>&,
-	MArrayN<double>&, int dim);
+        MArrayN<double>&, int dim);
 
 template MArrayN<double>
 filter (MArray<double>&, MArray<double>&, MArrayN<double>&, int dim);
 
 template MArrayN<Complex>
 filter (MArray<Complex>&, MArray<Complex>&, MArrayN<Complex>&,
-	MArrayN<Complex>&, int dim);
+        MArrayN<Complex>&, int dim);
 
 template MArrayN<Complex>
 filter (MArray<Complex>&, MArray<Complex>&, MArrayN<Complex>&, int dim);
 
 template MArrayN<float>
 filter (MArray<float>&, MArray<float>&, MArrayN<float>&,
-	MArrayN<float>&, int dim);
+        MArrayN<float>&, int dim);
 
 template MArrayN<float>
 filter (MArray<float>&, MArray<float>&, MArrayN<float>&, int dim);
 
 template MArrayN<FloatComplex>
 filter (MArray<FloatComplex>&, MArray<FloatComplex>&, MArrayN<FloatComplex>&,
-	MArrayN<FloatComplex>&, int dim);
+        MArrayN<FloatComplex>&, int dim);
 
 template MArrayN<FloatComplex>
 filter (MArray<FloatComplex>&, MArray<FloatComplex>&, MArrayN<FloatComplex>&, int dim);

@@ -129,34 +129,34 @@ to have a common size.\n\
        octave_value arg = args (0);
 
        if (arg.is_sparse_type ())
-	 {
-	   if (use_complex) 
-	     {
-	       SparseComplexMatrix sm = arg.sparse_complex_matrix_value ();
-	       retval = new octave_sparse_complex_matrix (sm);
-	     }
-	   else if (use_bool) 
-	     {
-	       SparseBoolMatrix sm = arg.sparse_bool_matrix_value ();
-	       retval = new octave_sparse_bool_matrix (sm);
-	     }
-	   else
-	     {
-	       SparseMatrix sm = arg.sparse_matrix_value ();
-	       retval = new octave_sparse_matrix (sm);
-	     }
-	 }
+         {
+           if (use_complex) 
+             {
+               SparseComplexMatrix sm = arg.sparse_complex_matrix_value ();
+               retval = new octave_sparse_complex_matrix (sm);
+             }
+           else if (use_bool) 
+             {
+               SparseBoolMatrix sm = arg.sparse_bool_matrix_value ();
+               retval = new octave_sparse_bool_matrix (sm);
+             }
+           else
+             {
+               SparseMatrix sm = arg.sparse_matrix_value ();
+               retval = new octave_sparse_matrix (sm);
+             }
+         }
        else if (arg.is_diag_matrix ())
          {
            if (arg.is_complex_type ())
              {
-	       SparseComplexMatrix sm = arg.sparse_complex_matrix_value ();
-	       retval = new octave_sparse_complex_matrix (sm);
+               SparseComplexMatrix sm = arg.sparse_complex_matrix_value ();
+               retval = new octave_sparse_complex_matrix (sm);
              }
            else
              {
-	       SparseMatrix sm = arg.sparse_matrix_value ();
-	       retval = new octave_sparse_matrix (sm);
+               SparseMatrix sm = arg.sparse_matrix_value ();
+               retval = new octave_sparse_matrix (sm);
              }
          }
        else if (arg.is_perm_matrix ())
@@ -165,203 +165,203 @@ to have a common size.\n\
            retval = new octave_sparse_matrix (sm);
          }
        else
-	 {
-	   if (use_complex) 
-	     {
-	       SparseComplexMatrix sm (args (0).complex_matrix_value ());
-	       if (error_state) 
-		 return retval;
-	       retval = new octave_sparse_complex_matrix (sm);
-	     } 
-	   else if (use_bool) 
-	     {
-	       SparseBoolMatrix sm (args (0).bool_matrix_value ());
-	       if (error_state) 
-		 return retval;
-	       retval = new octave_sparse_bool_matrix (sm);
-	     } 
-	   else 
-	     {
-	       SparseMatrix sm (args (0).matrix_value ());
-	       if (error_state) 
-		 return retval;
-	       retval = new octave_sparse_matrix (sm);
-	     }
-	 }
+         {
+           if (use_complex) 
+             {
+               SparseComplexMatrix sm (args (0).complex_matrix_value ());
+               if (error_state) 
+                 return retval;
+               retval = new octave_sparse_complex_matrix (sm);
+             } 
+           else if (use_bool) 
+             {
+               SparseBoolMatrix sm (args (0).bool_matrix_value ());
+               if (error_state) 
+                 return retval;
+               retval = new octave_sparse_bool_matrix (sm);
+             } 
+           else 
+             {
+               SparseMatrix sm (args (0).matrix_value ());
+               if (error_state) 
+                 return retval;
+               retval = new octave_sparse_matrix (sm);
+             }
+         }
      }
    else 
      {
        octave_idx_type m = 1, n = 1;
        if (nargin == 2) 
-	 {
-	   if (args(0).numel () == 1 && args(1).numel () == 1)
-	     {
-	       m = args(0).int_value();
-	       n = args(1).int_value();
-	       if (error_state) return retval;
+         {
+           if (args(0).numel () == 1 && args(1).numel () == 1)
+             {
+               m = args(0).int_value();
+               n = args(1).int_value();
+               if (error_state) return retval;
 
-	       if (use_complex) 
-		 retval = new octave_sparse_complex_matrix 
-		   (SparseComplexMatrix (m, n));
-	       else if (use_bool) 
-		 retval = new octave_sparse_bool_matrix 
-		   (SparseBoolMatrix (m, n));
-	       else
-		 retval = new octave_sparse_matrix 
-		   (SparseMatrix (m, n));
-	     }
-	   else
-	     error ("sparse: expecting scalar values");
-	 }
+               if (use_complex) 
+                 retval = new octave_sparse_complex_matrix 
+                   (SparseComplexMatrix (m, n));
+               else if (use_bool) 
+                 retval = new octave_sparse_bool_matrix 
+                   (SparseBoolMatrix (m, n));
+               else
+                 retval = new octave_sparse_matrix 
+                   (SparseMatrix (m, n));
+             }
+           else
+             error ("sparse: expecting scalar values");
+         }
        else 
-	 {
-	   if (args(0).is_empty () || args (1).is_empty () 
-	       || args(2).is_empty ())
-	     {
-	       if (nargin > 4)
-		 {
-		   m = args(3).int_value();
-		   n = args(4).int_value();
-		 }
+         {
+           if (args(0).is_empty () || args (1).is_empty () 
+               || args(2).is_empty ())
+             {
+               if (nargin > 4)
+                 {
+                   m = args(3).int_value();
+                   n = args(4).int_value();
+                 }
 
-	       if (use_bool)
-		 retval = new octave_sparse_bool_matrix 
-		   (SparseBoolMatrix (m, n));
-	       else
-		 retval = new octave_sparse_matrix (SparseMatrix (m, n));
-	     }
-	   else
-	     {
+               if (use_bool)
+                 retval = new octave_sparse_bool_matrix 
+                   (SparseBoolMatrix (m, n));
+               else
+                 retval = new octave_sparse_matrix (SparseMatrix (m, n));
+             }
+           else
+             {
 // 
 //  I use this clumsy construction so that we can use
 //  any orientation of args
-	       ColumnVector ridxA = ColumnVector (args(0).vector_value 
-					      (false, true));
-	       ColumnVector cidxA = ColumnVector (args(1).vector_value 
-						  (false, true));
-	       ColumnVector coefA;
-	       boolNDArray coefAB;
-	       ComplexColumnVector coefAC;
-	       bool assemble_do_sum = true; // this is the default in matlab6
+               ColumnVector ridxA = ColumnVector (args(0).vector_value 
+                                              (false, true));
+               ColumnVector cidxA = ColumnVector (args(1).vector_value 
+                                                  (false, true));
+               ColumnVector coefA;
+               boolNDArray coefAB;
+               ComplexColumnVector coefAC;
+               bool assemble_do_sum = true; // this is the default in matlab6
 
-	       if (use_complex) 
-		 {
-		   if (args(2).is_empty ())
-		     coefAC = ComplexColumnVector (0);
-		   else
-		     coefAC = ComplexColumnVector 
-		       (args(2).complex_vector_value (false, true));
-		 }
-	       else if (use_bool)
-		 {
-		   if (args(2).is_empty ())
-		     coefAB = boolNDArray (dim_vector (1, 0));
-		   else
-		     coefAB = args(2).bool_array_value ();
-		   dim_vector AB_dims = coefAB.dims ();
-		   if (AB_dims.length() > 2 || (AB_dims(0) != 1 && 
-						AB_dims(1) != 1))
-		     error ("sparse: vector arguments required");
-		 }
-	       else 
-		 if (args(2).is_empty ())
-		   coefA = ColumnVector (0);
-		 else
-		   coefA = ColumnVector (args(2).vector_value (false, true));
+               if (use_complex) 
+                 {
+                   if (args(2).is_empty ())
+                     coefAC = ComplexColumnVector (0);
+                   else
+                     coefAC = ComplexColumnVector 
+                       (args(2).complex_vector_value (false, true));
+                 }
+               else if (use_bool)
+                 {
+                   if (args(2).is_empty ())
+                     coefAB = boolNDArray (dim_vector (1, 0));
+                   else
+                     coefAB = args(2).bool_array_value ();
+                   dim_vector AB_dims = coefAB.dims ();
+                   if (AB_dims.length() > 2 || (AB_dims(0) != 1 && 
+                                                AB_dims(1) != 1))
+                     error ("sparse: vector arguments required");
+                 }
+               else 
+                 if (args(2).is_empty ())
+                   coefA = ColumnVector (0);
+                 else
+                   coefA = ColumnVector (args(2).vector_value (false, true));
 
-	       if (error_state)
-		 return retval;
+               if (error_state)
+                 return retval;
 
-	       // Confirm that i,j,s all have the same number of elements
-	       octave_idx_type ns;
-	       if (use_complex) 
-		 ns = coefAC.length();
-	       else if (use_bool) 
-		 ns = coefAB.length();
-	       else 
-		 ns = coefA.length();
+               // Confirm that i,j,s all have the same number of elements
+               octave_idx_type ns;
+               if (use_complex) 
+                 ns = coefAC.length();
+               else if (use_bool) 
+                 ns = coefAB.length();
+               else 
+                 ns = coefA.length();
 
-	       octave_idx_type ni = ridxA.length();
-	       octave_idx_type nj = cidxA.length();
-	       octave_idx_type nnz = (ni > nj ? ni : nj);
-	       if ((ns != 1 && ns != nnz) ||
-		   (ni != 1 && ni != nnz) ||
-		   (nj != 1 && nj != nnz)) 
-		 {
-		   error ("sparse i, j and s must have the same length");
-		   return retval;
-		 }
+               octave_idx_type ni = ridxA.length();
+               octave_idx_type nj = cidxA.length();
+               octave_idx_type nnz = (ni > nj ? ni : nj);
+               if ((ns != 1 && ns != nnz) ||
+                   (ni != 1 && ni != nnz) ||
+                   (nj != 1 && nj != nnz)) 
+                 {
+                   error ("sparse i, j and s must have the same length");
+                   return retval;
+                 }
 
-	       if (nargin == 3 || nargin == 4) 
-		 {
-		   m = static_cast<octave_idx_type> (ridxA.max());
-		   n = static_cast<octave_idx_type> (cidxA.max());
+               if (nargin == 3 || nargin == 4) 
+                 {
+                   m = static_cast<octave_idx_type> (ridxA.max());
+                   n = static_cast<octave_idx_type> (cidxA.max());
 
-		   // if args(3) is not string, then ignore the value
-		   // otherwise check for summation or unique
-		   if (nargin == 4 && args(3).is_string())
-		     {
-		       std::string vv= args(3).string_value();
-		       if (error_state) return retval;
-		       
-		       if ( vv == "summation" ||
-			    vv == "sum" ) 
-			 assemble_do_sum = true;
-		       else
-			 if ( vv == "unique" )
-			   assemble_do_sum = false;
-			 else {
-			   error("sparse repeat flag must be 'sum' or 'unique'");
-			   return retval;
-			 }
-		     }
-		 } 
-	       else 
-		 {
-		   m = args(3).int_value();
-		   n = args(4).int_value();
-		   if (error_state) 
-		     return retval;
+                   // if args(3) is not string, then ignore the value
+                   // otherwise check for summation or unique
+                   if (nargin == 4 && args(3).is_string())
+                     {
+                       std::string vv= args(3).string_value();
+                       if (error_state) return retval;
+                       
+                       if ( vv == "summation" ||
+                            vv == "sum" ) 
+                         assemble_do_sum = true;
+                       else
+                         if ( vv == "unique" )
+                           assemble_do_sum = false;
+                         else {
+                           error("sparse repeat flag must be 'sum' or 'unique'");
+                           return retval;
+                         }
+                     }
+                 } 
+               else 
+                 {
+                   m = args(3).int_value();
+                   n = args(4).int_value();
+                   if (error_state) 
+                     return retval;
 
-		   // if args(5) is not string, then ignore the value
-		   // otherwise check for summation or unique
-		   if (nargin >= 6 && args(5).is_string())
-		     {
-		       std::string vv= args(5).string_value();
-		       if (error_state) return retval;
-		       
-		       if ( vv == "summation" ||
-			    vv == "sum" ) 
-			 assemble_do_sum = true;
-		       else
-			 if ( vv == "unique" )
-			   assemble_do_sum = false;
-			 else {
-			   error("sparse repeat flag must be 'sum' or 'unique'");
-			   return retval;
-			 }
-		     }
-		   
-		 }
+                   // if args(5) is not string, then ignore the value
+                   // otherwise check for summation or unique
+                   if (nargin >= 6 && args(5).is_string())
+                     {
+                       std::string vv= args(5).string_value();
+                       if (error_state) return retval;
+                       
+                       if ( vv == "summation" ||
+                            vv == "sum" ) 
+                         assemble_do_sum = true;
+                       else
+                         if ( vv == "unique" )
+                           assemble_do_sum = false;
+                         else {
+                           error("sparse repeat flag must be 'sum' or 'unique'");
+                           return retval;
+                         }
+                     }
+                   
+                 }
 
-	       // Convert indexing to zero-indexing used internally
-	       ridxA -= 1.;
-	       cidxA -= 1.;
+               // Convert indexing to zero-indexing used internally
+               ridxA -= 1.;
+               cidxA -= 1.;
 
-	       if (use_complex) 
-		 retval = new octave_sparse_complex_matrix 
-		   (SparseComplexMatrix (coefAC, ridxA, cidxA, m, n, 
-					 assemble_do_sum));
-	       else if (use_bool) 
-		 retval = new octave_sparse_bool_matrix 
-		   (SparseBoolMatrix (coefAB, ridxA, cidxA, m, n, 
-				      assemble_do_sum));
-	       else
-		 retval = new octave_sparse_matrix 
-		   (SparseMatrix (coefA, ridxA, cidxA, m, n, 
-				  assemble_do_sum));
-	     }
-	 }
+               if (use_complex) 
+                 retval = new octave_sparse_complex_matrix 
+                   (SparseComplexMatrix (coefAC, ridxA, cidxA, m, n, 
+                                         assemble_do_sum));
+               else if (use_bool) 
+                 retval = new octave_sparse_bool_matrix 
+                   (SparseBoolMatrix (coefAB, ridxA, cidxA, m, n, 
+                                      assemble_do_sum));
+               else
+                 retval = new octave_sparse_matrix 
+                   (SparseMatrix (coefA, ridxA, cidxA, m, n, 
+                                  assemble_do_sum));
+             }
+         }
      }
 
    return retval;

@@ -127,135 +127,135 @@ they will not be efficient and the point of calculating the wisdom is lost.\n\
       std::string arg0 = args(0).string_value ();
 
       if (!error_state)
-	{
-	  // Use STL function to convert to lower case
-	  std::transform (arg0.begin (), arg0.end (), arg0.begin (), tolower);
-	  
-	  if (nargin == 2)
-	    {
-	      std::string arg1 = args(1).string_value ();
-	      if (!error_state)
-		{
-		  if (arg0 == "planner")
-		    {
-		      std::transform (arg1.begin (), arg1.end (), 
-				      arg1.begin (), tolower);
-		      octave_fftw_planner::FftwMethod meth
-			= octave_fftw_planner::UNKNOWN;
-		      octave_float_fftw_planner::FftwMethod methf
-			= octave_float_fftw_planner::UNKNOWN;
+        {
+          // Use STL function to convert to lower case
+          std::transform (arg0.begin (), arg0.end (), arg0.begin (), tolower);
+          
+          if (nargin == 2)
+            {
+              std::string arg1 = args(1).string_value ();
+              if (!error_state)
+                {
+                  if (arg0 == "planner")
+                    {
+                      std::transform (arg1.begin (), arg1.end (), 
+                                      arg1.begin (), tolower);
+                      octave_fftw_planner::FftwMethod meth
+                        = octave_fftw_planner::UNKNOWN;
+                      octave_float_fftw_planner::FftwMethod methf
+                        = octave_float_fftw_planner::UNKNOWN;
 
-		      if (arg1 == "estimate")
-			{
-			  meth = octave_fftw_planner::ESTIMATE;
-			  methf = octave_float_fftw_planner::ESTIMATE;
-			}
-		      else if (arg1 == "measure")
-			{
-			  meth = octave_fftw_planner::MEASURE;
-			  methf = octave_float_fftw_planner::MEASURE;
-			}
-		      else if (arg1 == "patient")
-			{
-			  meth = octave_fftw_planner::PATIENT;
-			  methf = octave_float_fftw_planner::PATIENT;
-			}
-		      else if (arg1 == "exhaustive")
-			{
-			  meth = octave_fftw_planner::EXHAUSTIVE;
-			  methf = octave_float_fftw_planner::EXHAUSTIVE;
-			}
-		      else if (arg1 == "hybrid")
-			{
-			  meth = octave_fftw_planner::HYBRID;
-			  methf = octave_float_fftw_planner::HYBRID;
-			}
-		      else
-			error ("unrecognized planner method");
+                      if (arg1 == "estimate")
+                        {
+                          meth = octave_fftw_planner::ESTIMATE;
+                          methf = octave_float_fftw_planner::ESTIMATE;
+                        }
+                      else if (arg1 == "measure")
+                        {
+                          meth = octave_fftw_planner::MEASURE;
+                          methf = octave_float_fftw_planner::MEASURE;
+                        }
+                      else if (arg1 == "patient")
+                        {
+                          meth = octave_fftw_planner::PATIENT;
+                          methf = octave_float_fftw_planner::PATIENT;
+                        }
+                      else if (arg1 == "exhaustive")
+                        {
+                          meth = octave_fftw_planner::EXHAUSTIVE;
+                          methf = octave_float_fftw_planner::EXHAUSTIVE;
+                        }
+                      else if (arg1 == "hybrid")
+                        {
+                          meth = octave_fftw_planner::HYBRID;
+                          methf = octave_float_fftw_planner::HYBRID;
+                        }
+                      else
+                        error ("unrecognized planner method");
 
-		      if (!error_state)
-			{
-			  meth = octave_fftw_planner::method (meth);
-			  octave_float_fftw_planner::method (methf);
+                      if (!error_state)
+                        {
+                          meth = octave_fftw_planner::method (meth);
+                          octave_float_fftw_planner::method (methf);
 
-			  if (meth == octave_fftw_planner::MEASURE)
-			    retval = octave_value ("measure");
-			  else if (meth == octave_fftw_planner::PATIENT)
-			    retval = octave_value ("patient");
-			  else if (meth == octave_fftw_planner::EXHAUSTIVE)
-			    retval = octave_value ("exhaustive");
-			  else if (meth == octave_fftw_planner::HYBRID)
-			    retval = octave_value ("hybrid");
-			  else
-			    retval = octave_value ("estimate");
-			}
-		    }
-		  else if (arg0 == "dwisdom")
-		    {
-		      char *str = fftw_export_wisdom_to_string ();
+                          if (meth == octave_fftw_planner::MEASURE)
+                            retval = octave_value ("measure");
+                          else if (meth == octave_fftw_planner::PATIENT)
+                            retval = octave_value ("patient");
+                          else if (meth == octave_fftw_planner::EXHAUSTIVE)
+                            retval = octave_value ("exhaustive");
+                          else if (meth == octave_fftw_planner::HYBRID)
+                            retval = octave_value ("hybrid");
+                          else
+                            retval = octave_value ("estimate");
+                        }
+                    }
+                  else if (arg0 == "dwisdom")
+                    {
+                      char *str = fftw_export_wisdom_to_string ();
 
-		      if (arg1.length() < 1)
-			fftw_forget_wisdom ();
-		      else if (! fftw_import_wisdom_from_string (arg1.c_str()))
-			error ("could not import supplied wisdom");
+                      if (arg1.length() < 1)
+                        fftw_forget_wisdom ();
+                      else if (! fftw_import_wisdom_from_string (arg1.c_str()))
+                        error ("could not import supplied wisdom");
 
-		      if (!error_state)
-			retval = octave_value (std::string (str));
+                      if (!error_state)
+                        retval = octave_value (std::string (str));
 
-		      free (str);
-		    }
-		  else if (arg0 == "swisdom")
-		    {
-		      char *str = fftwf_export_wisdom_to_string ();
+                      free (str);
+                    }
+                  else if (arg0 == "swisdom")
+                    {
+                      char *str = fftwf_export_wisdom_to_string ();
 
-		      if (arg1.length() < 1)
-			fftwf_forget_wisdom ();
-		      else if (! fftwf_import_wisdom_from_string (arg1.c_str()))
-			error ("could not import supplied wisdom");
+                      if (arg1.length() < 1)
+                        fftwf_forget_wisdom ();
+                      else if (! fftwf_import_wisdom_from_string (arg1.c_str()))
+                        error ("could not import supplied wisdom");
 
-		      if (!error_state)
-			retval = octave_value (std::string (str));
+                      if (!error_state)
+                        retval = octave_value (std::string (str));
 
-		      free (str);
-		    }
-		  else
-		    error ("unrecognized argument");
-		}
-	    }
-	  else
-	    {
-	      if (arg0 == "planner")
-		{
-		  octave_fftw_planner::FftwMethod meth = 
-		    octave_fftw_planner::method ();
+                      free (str);
+                    }
+                  else
+                    error ("unrecognized argument");
+                }
+            }
+          else
+            {
+              if (arg0 == "planner")
+                {
+                  octave_fftw_planner::FftwMethod meth = 
+                    octave_fftw_planner::method ();
 
-		  if (meth == octave_fftw_planner::MEASURE)
-		    retval = octave_value ("measure");
-		  else if (meth == octave_fftw_planner::PATIENT)
-		    retval = octave_value ("patient");
-		  else if (meth == octave_fftw_planner::EXHAUSTIVE)
-		    retval = octave_value ("exhaustive");
-		  else if (meth == octave_fftw_planner::HYBRID)
-		    retval = octave_value ("hybrid");
-		  else
-		    retval = octave_value ("estimate");
-		}
-	      else if (arg0 == "dwisdom")
-		{
-		  char *str = fftw_export_wisdom_to_string ();
-		  retval = octave_value (std::string (str));
-		  free (str);
-		}
-	      else if (arg0 == "swisdom")
-		{
-		  char *str = fftwf_export_wisdom_to_string ();
-		  retval = octave_value (std::string (str));
-		  free (str);
-		}
-	      else
-		error ("unrecognized argument");
-	    }
-	}
+                  if (meth == octave_fftw_planner::MEASURE)
+                    retval = octave_value ("measure");
+                  else if (meth == octave_fftw_planner::PATIENT)
+                    retval = octave_value ("patient");
+                  else if (meth == octave_fftw_planner::EXHAUSTIVE)
+                    retval = octave_value ("exhaustive");
+                  else if (meth == octave_fftw_planner::HYBRID)
+                    retval = octave_value ("hybrid");
+                  else
+                    retval = octave_value ("estimate");
+                }
+              else if (arg0 == "dwisdom")
+                {
+                  char *str = fftw_export_wisdom_to_string ();
+                  retval = octave_value (std::string (str));
+                  free (str);
+                }
+              else if (arg0 == "swisdom")
+                {
+                  char *str = fftwf_export_wisdom_to_string ();
+                  retval = octave_value (std::string (str));
+                  free (str);
+                }
+              else
+                error ("unrecognized argument");
+            }
+        }
     }
 #else
 

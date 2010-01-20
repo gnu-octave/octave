@@ -54,33 +54,33 @@ lookup (const T *x, octave_idx_type n, T y)
       // increasing x
 
       if (y > x[n-1] || y < x[0])
-	return -1;
+        return -1;
 
 #ifdef EXHAUSTIF
       for (j = 0; j < n - 1; j++)
-	{
-	  if (x[j] <= y && y <= x[j+1])
-	    return j;
-	}
+        {
+          if (x[j] <= y && y <= x[j+1])
+            return j;
+        }
 #else
       octave_idx_type j0 = 0;
       octave_idx_type j1 = n - 1;
 
       while (true)
-	{
-	  j = (j0+j1)/2;
+        {
+          j = (j0+j1)/2;
 
-	  if (y <= x[j+1])
-	    {
-	      if (x[j] <= y)
-		return j;
+          if (y <= x[j+1])
+            {
+              if (x[j] <= y)
+                return j;
 
-	      j1 = j;
-	    }
+              j1 = j;
+            }
 
-	  if (x[j] <= y)
-	    j0 = j;
-	}
+          if (x[j] <= y)
+            j0 = j;
+        }
 #endif
     }
   else
@@ -89,33 +89,33 @@ lookup (const T *x, octave_idx_type n, T y)
       // previous code with x -> -x and y -> -y
 
       if (y > x[0] || y < x[n-1])
-	return -1;
+        return -1;
 
 #ifdef EXHAUSTIF
       for (j = 0; j < n - 1; j++)
-	{
-	  if (x[j+1] <= y && y <= x[j])
-	    return j;
-	}
+        {
+          if (x[j+1] <= y && y <= x[j])
+            return j;
+        }
 #else
       octave_idx_type j0 = 0;
       octave_idx_type j1 = n - 1;
 
       while (true)
-	{
-	  j = (j0+j1)/2;
+        {
+          j = (j0+j1)/2;
 
-	  if (y >= x[j+1])
-	    {
-	      if (x[j] >= y)
-		return j;
+          if (y >= x[j+1])
+            {
+              if (x[j] >= y)
+                return j;
 
-	      j1 = j;
-	    }
+              j1 = j;
+            }
 
-	  if (x[j] >= y)
-	    j0 = j;
-	}
+          if (x[j] >= y)
+            j0 = j;
+        }
 #endif
     }
 }
@@ -125,8 +125,8 @@ lookup (const T *x, octave_idx_type n, T y)
 template <class T>
 void
 lin_interpn (int n, const octave_idx_type *size, const octave_idx_type *scale,
-	     octave_idx_type Ni, T extrapval, const T **x,
-	     const T *v, const T **y, T *vi)
+             octave_idx_type Ni, T extrapval, const T **x,
+             const T *v, const T **y, T *vi)
 {
   bool out = false;
   int bit;
@@ -139,45 +139,45 @@ lin_interpn (int n, const octave_idx_type *size, const octave_idx_type *scale,
     {
       // loop over all dimensions
       for (int i = 0; i < n; i++)
-	{
+        {
           index[i] = lookup (x[i], size[i], y[i][m]);
-	  out = index[i] == -1;
+          out = index[i] == -1;
 
-	  if (out)
-	    break;
-	  else
+          if (out)
+            break;
+          else
             {
-	      octave_idx_type j = index[i];
-	      coef[2*i+1] = (y[i][m] - x[i][j])/(x[i][j+1] - x[i][j]);
-	      coef[2*i] = 1 - coef[2*i+1];
-	    }
-	}
+              octave_idx_type j = index[i];
+              coef[2*i+1] = (y[i][m] - x[i][j])/(x[i][j+1] - x[i][j]);
+              coef[2*i] = 1 - coef[2*i+1];
+            }
+        }
 
 
       if (out)
-	vi[m] = extrapval;
+        vi[m] = extrapval;
       else
-	{
-	  vi[m] = 0;
+        {
+          vi[m] = 0;
 
-	  // loop over all corners of hypercube (1<<n = 2^n)
-	  for (int i = 0; i < (1 << n); i++)
-	    {
-	      T c = 1;
-	      octave_idx_type l = 0;
+          // loop over all corners of hypercube (1<<n = 2^n)
+          for (int i = 0; i < (1 << n); i++)
+            {
+              T c = 1;
+              octave_idx_type l = 0;
 
-	      // loop over all dimensions
-	      for (int j = 0; j < n; j++)
-		{
-		  // test if the jth bit in i is set
-		  bit = i >> j & 1;
-		  l += scale[j] * (index[j] + bit);
-		  c *= coef[2*j+bit];
-		}
+              // loop over all dimensions
+              for (int j = 0; j < n; j++)
+                {
+                  // test if the jth bit in i is set
+                  bit = i >> j & 1;
+                  l += scale[j] * (index[j] + bit);
+                  c *= coef[2*j+bit];
+                }
 
-	      vi[m] += c * v[l];
-	    }
-	}
+              vi[m] += c * v[l];
+            }
+        }
     }
 }
 
@@ -220,33 +220,33 @@ lin_interpn (int n, M *X, const M V, M *Y)
   if (! isvector (X[0]))
     {
       for (int i = 0; i < n; i++)
-	{
-	  if (X[i].dims () != V.dims ())
-	    {
-	      error ("interpn: incompatible size of argument number %d", i+1);
-	      return retval;
-	    }
-	  else
-	    {
+        {
+          if (X[i].dims () != V.dims ())
+            {
+              error ("interpn: incompatible size of argument number %d", i+1);
+              return retval;
+            }
+          else
+            {
               M tmp = M (dim_vector (size[i], 1));
 
-	      for (octave_idx_type j = 0; j < size[i]; j++)
-		tmp(j) =  X[i](scale[i]*j);
+              for (octave_idx_type j = 0; j < size[i]; j++)
+                tmp(j) =  X[i](scale[i]*j);
 
               X[i] = tmp;
-	    }
-	}
+            }
+        }
     }
 
   for (int i = 0; i < n; i++)
     {
       if (! isvector (X[i]) && X[i].numel () != size[i])
-	{
-	  error ("interpn: incompatible size of argument number %d", i+1);
-	  return retval;
-	}
+        {
+          error ("interpn: incompatible size of argument number %d", i+1);
+          return retval;
+        }
       else
-	x[i] = X[i].data ();
+        x[i] = X[i].data ();
     }
 
   lin_interpn (n, size, scale, Ni, extrapval, x, v, y, vi);
@@ -294,28 +294,28 @@ Undocumented internal function.\n\
       const FloatNDArray V = args(n).float_array_value ();
 
       if (error_state)
-	{
-	  print_usage ();
-	  return retval;
-	}
+        {
+          print_usage ();
+          return retval;
+        }
 
       for (int i = 0; i < n; i++)
-	{
-	  X[i] = args(i).float_array_value ();
-	  Y[i] = args(n+i+1).float_array_value ();
+        {
+          X[i] = args(i).float_array_value ();
+          Y[i] = args(n+i+1).float_array_value ();
 
-	  if (error_state)
-	    {
-	      print_usage ();
-	      return retval;
-	    }
+          if (error_state)
+            {
+              print_usage ();
+              return retval;
+            }
 
-	  if (Y[0].dims () != Y[i].dims ())
-	    {
-	      error ("interpn: incompatible size of argument number %d", n+i+2);
-	      return retval;
-	    }
-	}
+          if (Y[0].dims () != Y[i].dims ())
+            {
+              error ("interpn: incompatible size of argument number %d", n+i+2);
+              return retval;
+            }
+        }
 
       retval = lin_interpn<float, FloatNDArray> (n, X, V, Y);
     }
@@ -327,28 +327,28 @@ Undocumented internal function.\n\
       const NDArray V = args(n).array_value ();
 
       if (error_state)
-	{
-	  print_usage ();
-	  return retval;
-	}
+        {
+          print_usage ();
+          return retval;
+        }
 
       for (int i = 0; i < n; i++)
-	{
-	  X[i] = args(i).array_value ();
-	  Y[i] = args(n+i+1).array_value ();
+        {
+          X[i] = args(i).array_value ();
+          Y[i] = args(n+i+1).array_value ();
 
-	  if (error_state)
-	    {
-	      print_usage ();
-	      return retval;
-	    }
+          if (error_state)
+            {
+              print_usage ();
+              return retval;
+            }
 
-	  if (Y[0].dims () != Y[i].dims ())
-	    {
-	      error ("interpn: incompatible size of argument number %d", n+i+2);
-	      return retval;
-	    }
-	}
+          if (Y[0].dims () != Y[i].dims ())
+            {
+              error ("interpn: incompatible size of argument number %d", n+i+2);
+              return retval;
+            }
+        }
       
       retval = lin_interpn<double, NDArray> (n, X, V, Y);
     }

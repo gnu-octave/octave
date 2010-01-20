@@ -84,36 +84,36 @@ Polynomial Approximation}.\n\
   for (int i = 1; i < nargin; i++)
     {
       if (args(i).is_defined ())
-	{
-	  if (! args(i).is_string ())
-	    {
-	      error ("colloc: expecting string argument");
-	      return retval;
-	    }
+        {
+          if (! args(i).is_string ())
+            {
+              error ("colloc: expecting string argument");
+              return retval;
+            }
 
-	  std::string s = args(i).string_value ();
+          std::string s = args(i).string_value ();
 
-	  if ((s.length () == 1 && (s[0] == 'R' || s[0] == 'r'))
-	      || s == "right")
-	    {
-	      right = 1;
-	    }
-	  else if ((s.length () == 1 && (s[0] == 'L' || s[0] == 'l'))
-		   || s == "left")
-	    {
-	      left = 1;
-	    }
-	  else
-	    {
-	      error ("colloc: unrecognized argument");
-	      return retval;
-	    }
-	}
+          if ((s.length () == 1 && (s[0] == 'R' || s[0] == 'r'))
+              || s == "right")
+            {
+              right = 1;
+            }
+          else if ((s.length () == 1 && (s[0] == 'L' || s[0] == 'l'))
+                   || s == "left")
+            {
+              left = 1;
+            }
+          else
+            {
+              error ("colloc: unrecognized argument");
+              return retval;
+            }
+        }
       else
-	{
-	  error ("colloc: unexpected empty argument");
-	  return retval;
-	}
+        {
+          error ("colloc: unexpected empty argument");
+          return retval;
+        }
     }
 
   ntot += left + right;

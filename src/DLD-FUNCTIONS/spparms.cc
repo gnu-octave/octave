@@ -95,68 +95,68 @@ time.\n\
   if (nargin == 0)
     {
       if (nargout == 0)
-	octave_sparse_params::print_info (octave_stdout, "");
+        octave_sparse_params::print_info (octave_stdout, "");
       else if (nargout == 1)
-	retval(0) =  octave_sparse_params::get_vals ();
+        retval(0) =  octave_sparse_params::get_vals ();
       else if (nargout == 2)
-	{
-	  retval (0) = octave_sparse_params::get_keys ();
-	  retval (1) = octave_sparse_params::get_vals ();
-	}
+        {
+          retval (0) = octave_sparse_params::get_keys ();
+          retval (1) = octave_sparse_params::get_vals ();
+        }
       else
-	error ("spparms: too many output arguments"); 
+        error ("spparms: too many output arguments"); 
     }
   else if (nargin == 1)
     {
       if (args(0).is_string ())
-	{
-	  std::string str = args(0).string_value ();
-	  int len = str.length ();
-	  for (int i = 0; i < len; i++)
-	    str [i] = tolower (str [i]);
+        {
+          std::string str = args(0).string_value ();
+          int len = str.length ();
+          for (int i = 0; i < len; i++)
+            str [i] = tolower (str [i]);
 
-	  if (str == "defaults")
-	    octave_sparse_params::defaults ();
-	  else if (str == "tight")
-	    octave_sparse_params::tight ();
-	  else
-	    {
-	      double val = octave_sparse_params::get_key (str);
-	      if (xisnan (val))
-		error ("spparams: unrecognized key");
-	      else
-		retval (0) = val;
-	    }
-	}
+          if (str == "defaults")
+            octave_sparse_params::defaults ();
+          else if (str == "tight")
+            octave_sparse_params::tight ();
+          else
+            {
+              double val = octave_sparse_params::get_key (str);
+              if (xisnan (val))
+                error ("spparams: unrecognized key");
+              else
+                retval (0) = val;
+            }
+        }
       else
-	{
-	  NDArray vals = args(0).array_value ();
+        {
+          NDArray vals = args(0).array_value ();
 
-	  if (error_state)
-	    error ("spparms: input must be a string or a vector");
-	  else if (vals.numel () > OCTAVE_SPARSE_CONTROLS_SIZE)
-	    error ("spparams: too many elements in values vector");
-	  else
-	    octave_sparse_params::set_vals (vals);
-	}
+          if (error_state)
+            error ("spparms: input must be a string or a vector");
+          else if (vals.numel () > OCTAVE_SPARSE_CONTROLS_SIZE)
+            error ("spparams: too many elements in values vector");
+          else
+            octave_sparse_params::set_vals (vals);
+        }
     }
   else if (nargin == 2)
     {
       if (args(0).is_string ())
-	{
-	  std::string str = args(0).string_value ();
-	  
-	  double val = args(1).double_value ();
+        {
+          std::string str = args(0).string_value ();
+          
+          double val = args(1).double_value ();
 
-	  if (error_state)
-	    error ("spparms: second argument must be a real scalar");
+          if (error_state)
+            error ("spparms: second argument must be a real scalar");
           else if (str == "umfpack")
-	    warning ("spparms: request to disable umfpack solvers ignored");
-	  else if (!octave_sparse_params::set_key (str, val))
-	    error ("spparms: key not found");
-	}
+            warning ("spparms: request to disable umfpack solvers ignored");
+          else if (!octave_sparse_params::set_key (str, val))
+            error ("spparms: key not found");
+        }
       else
-	error ("spparms: first argument must be a string");
+        error ("spparms: first argument must be a string");
     }
   else
     error ("spparms: too many input arguments");

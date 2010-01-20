@@ -64,24 +64,24 @@ do_fftn (const octave_value_list &args, const char *fcn, int type)
     {
       Matrix val = args(1).matrix_value ();
       if (val.rows () > val.columns ())
-	val = val.transpose ();
+        val = val.transpose ();
 
       if (error_state || val.columns () != dims.length () || val.rows () != 1)
-	error ("%s: second argument must be a vector of length dim", fcn);
+        error ("%s: second argument must be a vector of length dim", fcn);
       else
-	{
-	  for (int i = 0; i < dims.length (); i++)
-	    {
-	      if (xisnan (val(i,0)))
-		error ("%s: NaN is invalid as a dimension", fcn);
-	      else if (NINTbig (val(i,0)) < 0)
-		error ("%s: all dimension must be greater than zero", fcn);
-	      else
-		{
-		  dims(i) = NINTbig(val(i,0));
-		}
-	    }
-	}
+        {
+          for (int i = 0; i < dims.length (); i++)
+            {
+              if (xisnan (val(i,0)))
+                error ("%s: NaN is invalid as a dimension", fcn);
+              else if (NINTbig (val(i,0)) < 0)
+                error ("%s: all dimension must be greater than zero", fcn);
+              else
+                {
+                  dims(i) = NINTbig(val(i,0));
+                }
+            }
+        }
     }
 
   if (error_state)
@@ -90,60 +90,60 @@ do_fftn (const octave_value_list &args, const char *fcn, int type)
   if (dims.all_zero ())
     {
       if (arg.is_single_type ())
-	return octave_value (FloatMatrix ());
+        return octave_value (FloatMatrix ());
       else
-	return octave_value (Matrix ());
+        return octave_value (Matrix ());
     }
 
   if (arg.is_single_type ())
     {
       if (arg.is_real_type ())
-	{
-	  FloatNDArray nda = arg.float_array_value ();
+        {
+          FloatNDArray nda = arg.float_array_value ();
 
-	  if (! error_state)
-	    {
-	      nda.resize (dims, 0.0);
-	      retval = (type != 0 ? nda.ifourierNd () : nda.fourierNd ());
-	    }
-	}
+          if (! error_state)
+            {
+              nda.resize (dims, 0.0);
+              retval = (type != 0 ? nda.ifourierNd () : nda.fourierNd ());
+            }
+        }
       else
-	{
-	  FloatComplexNDArray cnda = arg.float_complex_array_value ();
+        {
+          FloatComplexNDArray cnda = arg.float_complex_array_value ();
 
-	  if (! error_state)
-	    {
-	      cnda.resize (dims, 0.0);
-	      retval = (type != 0 ? cnda.ifourierNd () : cnda.fourierNd ());
-	    }
-	}
+          if (! error_state)
+            {
+              cnda.resize (dims, 0.0);
+              retval = (type != 0 ? cnda.ifourierNd () : cnda.fourierNd ());
+            }
+        }
     }
   else
     {
       if (arg.is_real_type ())
-	{
-	  NDArray nda = arg.array_value ();
+        {
+          NDArray nda = arg.array_value ();
 
-	  if (! error_state)
-	    {
-	      nda.resize (dims, 0.0);
-	      retval = (type != 0 ? nda.ifourierNd () : nda.fourierNd ());
-	    }
-	}
+          if (! error_state)
+            {
+              nda.resize (dims, 0.0);
+              retval = (type != 0 ? nda.ifourierNd () : nda.fourierNd ());
+            }
+        }
       else if (arg.is_complex_type ())
-	{
-	  ComplexNDArray cnda = arg.complex_array_value ();
+        {
+          ComplexNDArray cnda = arg.complex_array_value ();
 
-	  if (! error_state)
-	    {
-	      cnda.resize (dims, 0.0);
-	      retval = (type != 0 ? cnda.ifourierNd () : cnda.fourierNd ());
-	    }
-	}
+          if (! error_state)
+            {
+              cnda.resize (dims, 0.0);
+              retval = (type != 0 ? cnda.ifourierNd () : cnda.fourierNd ());
+            }
+        }
       else
-	{
-	  gripe_wrong_type_arg (fcn, arg);
-	}
+        {
+          gripe_wrong_type_arg (fcn, arg);
+        }
     }
 
   return retval;

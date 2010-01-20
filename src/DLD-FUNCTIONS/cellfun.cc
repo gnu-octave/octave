@@ -1281,154 +1281,154 @@ mat2cell (reshape(1:16,4,4),[3,1],[3,1])\n\
       new_dv.resize(dv.length());
       
       if (nargin > 2)
-	{
-	  octave_idx_type nmax = -1;
+        {
+          octave_idx_type nmax = -1;
 
-	  if (nargin - 1 != dv.length())
-	    error ("mat2cell: Incorrect number of dimensions");
-	  else
-	    {
-	      for (octave_idx_type j = 0; j < dv.length(); j++)
-		{
-		  ColumnVector d = ColumnVector (args(j+1).vector_value 
-						 (false, true));
+          if (nargin - 1 != dv.length())
+            error ("mat2cell: Incorrect number of dimensions");
+          else
+            {
+              for (octave_idx_type j = 0; j < dv.length(); j++)
+                {
+                  ColumnVector d = ColumnVector (args(j+1).vector_value 
+                                                 (false, true));
 
-		  if (d.length() < 1)
-		    {
-		      error ("mat2cell: dimension can not be empty");
-		      break;
-		    }
-		  else
-		    {
-		      if (nmax < d.length())
-			nmax = d.length();
+                  if (d.length() < 1)
+                    {
+                      error ("mat2cell: dimension can not be empty");
+                      break;
+                    }
+                  else
+                    {
+                      if (nmax < d.length())
+                        nmax = d.length();
 
-		      for (octave_idx_type i = 1; i < d.length(); i++)
-			{
-			  OCTAVE_QUIT;
+                      for (octave_idx_type i = 1; i < d.length(); i++)
+                        {
+                          OCTAVE_QUIT;
 
-			  if (d(i) >= 0)
-			    d(i) += d(i-1);
-			  else
-			    {
-			      error ("mat2cell: invalid dimensional argument");
-			      break;
-			    }
-			}
+                          if (d(i) >= 0)
+                            d(i) += d(i-1);
+                          else
+                            {
+                              error ("mat2cell: invalid dimensional argument");
+                              break;
+                            }
+                        }
 
-		      if (d(0) < 0)
-			error ("mat2cell: invalid dimensional argument");
-		      
-		      if (d(d.length() - 1) != dv(j))
-			error ("mat2cell: inconsistent dimensions");
+                      if (d(0) < 0)
+                        error ("mat2cell: invalid dimensional argument");
+                      
+                      if (d(d.length() - 1) != dv(j))
+                        error ("mat2cell: inconsistent dimensions");
 
-		      if (error_state)
-			break;
+                      if (error_state)
+                        break;
 
-		      new_dv(j) = d.length();
-		    }
-		}
-	    }
+                      new_dv(j) = d.length();
+                    }
+                }
+            }
 
-	  if (! error_state)
-	    {
-	      // Construct a matrix with the index values
-	      Matrix dimargs(nmax, new_dv.length());
-	      for (octave_idx_type j = 0; j < new_dv.length(); j++)
-		{
-		  OCTAVE_QUIT;
+          if (! error_state)
+            {
+              // Construct a matrix with the index values
+              Matrix dimargs(nmax, new_dv.length());
+              for (octave_idx_type j = 0; j < new_dv.length(); j++)
+                {
+                  OCTAVE_QUIT;
 
-		  ColumnVector d = ColumnVector (args(j+1).vector_value 
-						 (false, true));
+                  ColumnVector d = ColumnVector (args(j+1).vector_value 
+                                                 (false, true));
 
-		  dimargs(0,j) = d(0);
-		  for (octave_idx_type i = 1; i < d.length(); i++)
-		    dimargs(i,j) = dimargs(i-1,j) + d(i);
-		}
+                  dimargs(0,j) = d(0);
+                  for (octave_idx_type i = 1; i < d.length(); i++)
+                    dimargs(i,j) = dimargs(i-1,j) + d(i);
+                }
 
 
-	      octave_value_list lst (new_dv.length(), octave_value());
-	      Cell ret (new_dv);
-	      octave_idx_type nel = new_dv.numel();
-	      octave_idx_type ntot = 1;
+              octave_value_list lst (new_dv.length(), octave_value());
+              Cell ret (new_dv);
+              octave_idx_type nel = new_dv.numel();
+              octave_idx_type ntot = 1;
 
-	      for (int j = 0; j < new_dv.length()-1; j++)
-		ntot *= new_dv(j);
+              for (int j = 0; j < new_dv.length()-1; j++)
+                ntot *= new_dv(j);
 
-	      for (octave_idx_type i = 0; i <  nel; i++)
-		{
-		  octave_idx_type n = ntot;
-		  octave_idx_type ii = i;
-		  for (octave_idx_type j =  new_dv.length() - 1;  j >= 0; j--)
-		    {
-		      OCTAVE_QUIT;
-		  
-		      octave_idx_type idx = ii / n;
-		      lst (j) = Range((idx == 0 ? 1. : dimargs(idx-1,j)+1.),
-				      dimargs(idx,j));
-		      ii = ii % n;
-		      if (j != 0)
-			n /= new_dv(j-1);
-		    }
-		  ret(i) = octave_value(args(0)).do_index_op(lst, 0);
-		  if (error_state)
-		    break;
-		}
-	  
-	      if (!error_state)
-		retval = ret;
-	    }
-	}
+              for (octave_idx_type i = 0; i <  nel; i++)
+                {
+                  octave_idx_type n = ntot;
+                  octave_idx_type ii = i;
+                  for (octave_idx_type j =  new_dv.length() - 1;  j >= 0; j--)
+                    {
+                      OCTAVE_QUIT;
+                  
+                      octave_idx_type idx = ii / n;
+                      lst (j) = Range((idx == 0 ? 1. : dimargs(idx-1,j)+1.),
+                                      dimargs(idx,j));
+                      ii = ii % n;
+                      if (j != 0)
+                        n /= new_dv(j-1);
+                    }
+                  ret(i) = octave_value(args(0)).do_index_op(lst, 0);
+                  if (error_state)
+                    break;
+                }
+          
+              if (!error_state)
+                retval = ret;
+            }
+        }
       else
-	{
-	  ColumnVector d = ColumnVector (args(1).vector_value 
-					 (false, true));
+        {
+          ColumnVector d = ColumnVector (args(1).vector_value 
+                                         (false, true));
 
-	  double sumd = 0.;
-	  for (octave_idx_type i = 0; i < d.length(); i++)
-	    {
-	      OCTAVE_QUIT;
+          double sumd = 0.;
+          for (octave_idx_type i = 0; i < d.length(); i++)
+            {
+              OCTAVE_QUIT;
 
-	      if (d(i) >= 0)
-		sumd += d(i);
-	      else
-		{
-		  error ("mat2cell: invalid dimensional argument");
-		  break;
-		}
-	    }
+              if (d(i) >= 0)
+                sumd += d(i);
+              else
+                {
+                  error ("mat2cell: invalid dimensional argument");
+                  break;
+                }
+            }
 
-	  if (sumd != dv(0))
-	    error ("mat2cell: inconsistent dimensions");
+          if (sumd != dv(0))
+            error ("mat2cell: inconsistent dimensions");
 
-	  new_dv(0) = d.length();
-	  for (octave_idx_type i = 1; i < dv.length(); i++)
-	    new_dv(i) = 1;
+          new_dv(0) = d.length();
+          for (octave_idx_type i = 1; i < dv.length(); i++)
+            new_dv(i) = 1;
 
-	  if (! error_state)
-	    {
-	      octave_value_list lst (new_dv.length(), octave_value());
-	      Cell ret (new_dv);
+          if (! error_state)
+            {
+              octave_value_list lst (new_dv.length(), octave_value());
+              Cell ret (new_dv);
 
-	      for (octave_idx_type i = 1; i < new_dv.length(); i++)
-		lst (i) = Range (1., static_cast<double>(dv(i)));
-	      
-	      double idx = 0.;
-	      for (octave_idx_type i = 0; i <  new_dv(0); i++)
-		{
-		  OCTAVE_QUIT;
+              for (octave_idx_type i = 1; i < new_dv.length(); i++)
+                lst (i) = Range (1., static_cast<double>(dv(i)));
+              
+              double idx = 0.;
+              for (octave_idx_type i = 0; i <  new_dv(0); i++)
+                {
+                  OCTAVE_QUIT;
 
-		  lst(0) = Range(idx + 1., idx + d(i));
-		  ret(i) = octave_value(args(0)).do_index_op(lst, 0);
-		  idx += d(i);
-		  if (error_state)
-		    break;
-		}
-	  
-	      if (!error_state)
-		retval = ret;
-	    }
-	}
+                  lst(0) = Range(idx + 1., idx + d(i));
+                  ret(i) = octave_value(args(0)).do_index_op(lst, 0);
+                  idx += d(i);
+                  if (error_state)
+                    break;
+                }
+          
+              if (!error_state)
+                retval = ret;
+            }
+        }
     }
 
   return retval;

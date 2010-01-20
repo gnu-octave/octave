@@ -86,27 +86,27 @@ calculated.\n\n\
   if (nargin == 2) 
     {
       if (args (1).is_string ()) 
-	options = args(1).string_value ();
+        options = args(1).string_value ();
       else if (args(1).is_cell ())
-	{
-	  Cell c = args(1).cell_value ();
-	  options = "";
-	  for (octave_idx_type i = 0; i < c.numel (); i++)
-	    {
-	      if (! c.elem(i).is_string ())
-		{
-		  error ("convhulln: second argument must be a string or cell array of strings");
-		  return retval;
-		}
+        {
+          Cell c = args(1).cell_value ();
+          options = "";
+          for (octave_idx_type i = 0; i < c.numel (); i++)
+            {
+              if (! c.elem(i).is_string ())
+                {
+                  error ("convhulln: second argument must be a string or cell array of strings");
+                  return retval;
+                }
 
-	      options = options + c.elem(i).string_value() + " ";
-	    }
-	}
+              options = options + c.elem(i).string_value() + " ";
+            }
+        }
       else
-	{
-	  error ("convhulln: second argument must be a string or cell array of strings");
-	  return retval;
-	}
+        {
+          error ("convhulln: second argument must be a string or cell array of strings");
+          return retval;
+        }
     }
   else
     // turn on some consistency checks
@@ -142,37 +142,37 @@ calculated.\n\n\
 
       octave_idx_type j, i = 0;
       FORALLfacets 
-	{
-	  j = 0;
-	  if (! facet->simplicial)
-	    // should never happen with QJ
-	    error ("convhulln: non-simplicial facet");
+        {
+          j = 0;
+          if (! facet->simplicial)
+            // should never happen with QJ
+            error ("convhulln: non-simplicial facet");
 
-	  if (dim == 3) 
-	    {
-	      vertices = qh_facet3vertex (facet);
-	      FOREACHvertex_ (vertices)
-		idx(i, j++) = 1 + qh_pointid(vertex->point);
-	      qh_settempfree (&vertices);
-	    } 
-	  else 
-	    {
-	      if (facet->toporient ^ qh_ORIENTclock) 
-		{
-		  FOREACHvertex_ (facet->vertices)
-		    idx(i, j++) = 1 + qh_pointid(vertex->point);
-		} 
-	      else 
-		{
-		  FOREACHvertexreverse12_ (facet->vertices)
-		    idx(i, j++) = 1 + qh_pointid(vertex->point);
-		}
-	    }
-	  if (j < dim)
-	    // likewise but less fatal
-	    warning ("facet %d only has %d vertices", i, j);
-	  i++;
-	}
+          if (dim == 3) 
+            {
+              vertices = qh_facet3vertex (facet);
+              FOREACHvertex_ (vertices)
+                idx(i, j++) = 1 + qh_pointid(vertex->point);
+              qh_settempfree (&vertices);
+            } 
+          else 
+            {
+              if (facet->toporient ^ qh_ORIENTclock) 
+                {
+                  FOREACHvertex_ (facet->vertices)
+                    idx(i, j++) = 1 + qh_pointid(vertex->point);
+                } 
+              else 
+                {
+                  FOREACHvertexreverse12_ (facet->vertices)
+                    idx(i, j++) = 1 + qh_pointid(vertex->point);
+                }
+            }
+          if (j < dim)
+            // likewise but less fatal
+            warning ("facet %d only has %d vertices", i, j);
+          i++;
+        }
 
       if (nargout == 2)
         // calculate volume of convex hull
@@ -182,28 +182,28 @@ calculated.\n\n\
           realT dist;
 
           FORALLfacets
-	    {
-	      if (! facet->normal)
-		continue;
+            {
+              if (! facet->normal)
+                continue;
 
-	      if (facet->upperdelaunay && qh ATinfinity)
-		continue;
+              if (facet->upperdelaunay && qh ATinfinity)
+                continue;
 
-	      facet->f.area = area = qh_facetarea (facet);
-	      facet->isarea = True;
+              facet->f.area = area = qh_facetarea (facet);
+              facet->isarea = True;
 
-	      if (qh DELAUNAY)
-		{
-		  if (facet->upperdelaunay == qh UPPERdelaunay)
-		    qh totarea += area;
-		}
-	      else
-		{
-		  qh totarea += area;
-		  qh_distplane (qh interior_point, facet, &dist);
-		  qh totvol += -dist * area/ qh hull_dim;
-		}
-	    }
+              if (qh DELAUNAY)
+                {
+                  if (facet->upperdelaunay == qh UPPERdelaunay)
+                    qh totarea += area;
+                }
+              else
+                {
+                  qh totarea += area;
+                  qh_distplane (qh interior_point, facet, &dist);
+                  qh totvol += -dist * area/ qh hull_dim;
+                }
+            }
 
           retval(1) = octave_value (qh totvol);
         }
@@ -220,7 +220,7 @@ calculated.\n\n\
 
   if (curlong || totlong) 
     warning ("convhulln: did not free %d bytes of long memory (%d pieces)",
-	    totlong, curlong);
+            totlong, curlong);
 #else
   error ("convhulln: not available in this version of Octave");
 #endif

@@ -51,7 +51,7 @@ along with Octave; see the file COPYING.  If not, see
 
 static octave_value
 do_rand (const octave_value_list& args, int nargin, const char *fcn,
-	 bool additional_arg = false)
+         bool additional_arg = false)
 {
   octave_value retval;
   NDArray a;
@@ -61,219 +61,219 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
   if (additional_arg)
     {
       if (nargin == 0)
-	{
-	  error ("%s: expecting at least one argument", fcn);
-	  goto done;
-	}
+        {
+          error ("%s: expecting at least one argument", fcn);
+          goto done;
+        }
       else if (args(0).is_string())
-	additional_arg = false;
+        additional_arg = false;
       else
-	{
-	  a = args(0).array_value ();
-	  if (error_state)
-	    {
-	      error ("%s: expecting scalar or matrix arguments", fcn);
-	      goto done;
-	    }
-	  idx++;
-	  nargin--;
-	}
+        {
+          a = args(0).array_value ();
+          if (error_state)
+            {
+              error ("%s: expecting scalar or matrix arguments", fcn);
+              goto done;
+            }
+          idx++;
+          nargin--;
+        }
     }
 
   switch (nargin)
     {
     case 0:
       {
-	if (additional_arg)
-	  dims = a.dims ();
-	else
-	  {
-	    dims.resize (2);
+        if (additional_arg)
+          dims = a.dims ();
+        else
+          {
+            dims.resize (2);
 
-	    dims(0) = 1;
-	    dims(1) = 1;
-	  }
-	goto gen_matrix;
+            dims(0) = 1;
+            dims(1) = 1;
+          }
+        goto gen_matrix;
       }
       break;
 
     case 1:
       {
-	octave_value tmp = args(idx);
+        octave_value tmp = args(idx);
 
-	if (tmp.is_string ())
-	  {
-	    std::string s_arg = tmp.string_value ();
+        if (tmp.is_string ())
+          {
+            std::string s_arg = tmp.string_value ();
 
-	    if (s_arg == "dist")
-	      {
-		retval = octave_rand::distribution ();
-	      }
-	    else if (s_arg == "seed")
-	      {
-		retval = octave_rand::seed ();
-	      }
-	    else if (s_arg == "state" || s_arg == "twister")
-	      {
-		retval = octave_rand::state (fcn);
-	      }
-	    else if (s_arg == "uniform")
-	      {
-		octave_rand::uniform_distribution ();
-	      }
-	    else if (s_arg == "normal")
-	      {
-		octave_rand::normal_distribution ();
-	      }
-	    else if (s_arg == "exponential")
-	      {
-		octave_rand::exponential_distribution ();
-	      }
-	    else if (s_arg == "poisson")
-	      {
-		octave_rand::poisson_distribution ();
-	      }
-	    else if (s_arg == "gamma")
-	      {
-		octave_rand::gamma_distribution ();
-	      }
-	    else
-	      error ("%s: unrecognized string argument", fcn);
-	  }
-	else if (tmp.is_scalar_type ())
-	  {
-	    double dval = tmp.double_value ();
+            if (s_arg == "dist")
+              {
+                retval = octave_rand::distribution ();
+              }
+            else if (s_arg == "seed")
+              {
+                retval = octave_rand::seed ();
+              }
+            else if (s_arg == "state" || s_arg == "twister")
+              {
+                retval = octave_rand::state (fcn);
+              }
+            else if (s_arg == "uniform")
+              {
+                octave_rand::uniform_distribution ();
+              }
+            else if (s_arg == "normal")
+              {
+                octave_rand::normal_distribution ();
+              }
+            else if (s_arg == "exponential")
+              {
+                octave_rand::exponential_distribution ();
+              }
+            else if (s_arg == "poisson")
+              {
+                octave_rand::poisson_distribution ();
+              }
+            else if (s_arg == "gamma")
+              {
+                octave_rand::gamma_distribution ();
+              }
+            else
+              error ("%s: unrecognized string argument", fcn);
+          }
+        else if (tmp.is_scalar_type ())
+          {
+            double dval = tmp.double_value ();
 
-	    if (xisnan (dval))
-	      {
-		error ("%s: NaN is invalid a matrix dimension", fcn);
-	      }
-	    else
-	      {
-		dims.resize (2);
+            if (xisnan (dval))
+              {
+                error ("%s: NaN is invalid a matrix dimension", fcn);
+              }
+            else
+              {
+                dims.resize (2);
 
-		dims(0) = NINTbig (tmp.double_value ());
-		dims(1) = NINTbig (tmp.double_value ());
+                dims(0) = NINTbig (tmp.double_value ());
+                dims(1) = NINTbig (tmp.double_value ());
 
-		if (! error_state)
-		  goto gen_matrix;
-	      }
-	  }
-	else if (tmp.is_range ())
-	  {
-	    Range r = tmp.range_value ();
+                if (! error_state)
+                  goto gen_matrix;
+              }
+          }
+        else if (tmp.is_range ())
+          {
+            Range r = tmp.range_value ();
 
-	    if (r.all_elements_are_ints ())
-	      {
-		octave_idx_type n = r.nelem ();
+            if (r.all_elements_are_ints ())
+              {
+                octave_idx_type n = r.nelem ();
 
-		dims.resize (n);
+                dims.resize (n);
 
-		octave_idx_type base = NINTbig (r.base ());
-		octave_idx_type incr = NINTbig (r.inc ());
-		octave_idx_type lim = NINTbig (r.limit ());
+                octave_idx_type base = NINTbig (r.base ());
+                octave_idx_type incr = NINTbig (r.inc ());
+                octave_idx_type lim = NINTbig (r.limit ());
 
-		if (base < 0 || lim < 0)
-		  error ("%s: all dimensions must be nonnegative", fcn);
-		else
-		  {
-		    for (octave_idx_type i = 0; i < n; i++)
-		      {
-			dims(i) = base;
-			base += incr;
-		      }
+                if (base < 0 || lim < 0)
+                  error ("%s: all dimensions must be nonnegative", fcn);
+                else
+                  {
+                    for (octave_idx_type i = 0; i < n; i++)
+                      {
+                        dims(i) = base;
+                        base += incr;
+                      }
 
-		    goto gen_matrix;
-		  }
-	      }
-	    else
-	      error ("%s: expecting all elements of range to be integers",
-		     fcn);
-	  }
-	else if (tmp.is_matrix_type ())
-	  {
-	    Array<int> iv = tmp.int_vector_value (true);
+                    goto gen_matrix;
+                  }
+              }
+            else
+              error ("%s: expecting all elements of range to be integers",
+                     fcn);
+          }
+        else if (tmp.is_matrix_type ())
+          {
+            Array<int> iv = tmp.int_vector_value (true);
 
-	    if (! error_state)
-	      {
-		octave_idx_type len = iv.length ();
+            if (! error_state)
+              {
+                octave_idx_type len = iv.length ();
 
-		dims.resize (len);
+                dims.resize (len);
 
-		for (octave_idx_type i = 0; i < len; i++)
-		  {
-		    octave_idx_type elt = iv(i);
+                for (octave_idx_type i = 0; i < len; i++)
+                  {
+                    octave_idx_type elt = iv(i);
 
-		    if (elt < 0)
-		      {
-			error ("%s: all dimensions must be nonnegative", fcn);
-			goto done;
-		      }
+                    if (elt < 0)
+                      {
+                        error ("%s: all dimensions must be nonnegative", fcn);
+                        goto done;
+                      }
 
-		    dims(i) = iv(i);
-		  }
+                    dims(i) = iv(i);
+                  }
 
-		goto gen_matrix;
-	      }
-	    else
-	      error ("%s: expecting integer vector", fcn);
-	  }
-	else
-	  {
-	    gripe_wrong_type_arg ("rand", tmp);
-	    return retval;
-	  }
+                goto gen_matrix;
+              }
+            else
+              error ("%s: expecting integer vector", fcn);
+          }
+        else
+          {
+            gripe_wrong_type_arg ("rand", tmp);
+            return retval;
+          }
       }
       break;
 
     default:
       {
-	octave_value tmp = args(idx);
+        octave_value tmp = args(idx);
 
-	if (nargin == 2 && tmp.is_string ())
-	  {
-	    std::string ts = tmp.string_value ();
+        if (nargin == 2 && tmp.is_string ())
+          {
+            std::string ts = tmp.string_value ();
 
-	    if (ts == "seed")
-	      {
-		if (args(idx+1).is_real_scalar ())
-		  {
-		    double d = args(idx+1).double_value ();
+            if (ts == "seed")
+              {
+                if (args(idx+1).is_real_scalar ())
+                  {
+                    double d = args(idx+1).double_value ();
 
-		    if (! error_state)
-		      octave_rand::seed (d);
-		  }
-		else
-		  error ("%s: seed must be a real scalar", fcn);
-	      }
-	    else if (ts == "state" || ts == "twister")
-	      {
-		ColumnVector s = 
-		  ColumnVector (args(idx+1).vector_value(false, true));
+                    if (! error_state)
+                      octave_rand::seed (d);
+                  }
+                else
+                  error ("%s: seed must be a real scalar", fcn);
+              }
+            else if (ts == "state" || ts == "twister")
+              {
+                ColumnVector s = 
+                  ColumnVector (args(idx+1).vector_value(false, true));
 
-		if (! error_state)
-		  octave_rand::state (s, fcn);
-	      }
-	    else
-	      error ("%s: unrecognized string argument", fcn);
-	  }
-	else
-	  {
-	    dims.resize (nargin);
+                if (! error_state)
+                  octave_rand::state (s, fcn);
+              }
+            else
+              error ("%s: unrecognized string argument", fcn);
+          }
+        else
+          {
+            dims.resize (nargin);
 
-	    for (int i = 0; i < nargin; i++)
-	      {
-		dims(i) = args(idx+i).int_value ();
+            for (int i = 0; i < nargin; i++)
+              {
+                dims(i) = args(idx+i).int_value ();
 
-		if (error_state)
-		  {
-		    error ("%s: expecting integer arguments", fcn);
-		    goto done;
-		  }
-	      }
+                if (error_state)
+                  {
+                    error ("%s: expecting integer arguments", fcn);
+                    goto done;
+                  }
+              }
 
-	    goto gen_matrix;
-	  }
+            goto gen_matrix;
+          }
       }
       break;
     }
@@ -289,21 +289,21 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
   if (additional_arg)
     {
       if (a.length() == 1)
-	return octave_rand::nd_array (dims, a(0));
+        return octave_rand::nd_array (dims, a(0));
       else
-	{
-	  if (a.dims() != dims)
-	    {
-	      error ("%s: mismatch in argument size", fcn);
-	      return retval;
-	    }
-	  octave_idx_type len = a.length ();
-	  NDArray m (dims);
-	  double *v = m.fortran_vec ();
-	  for (octave_idx_type i = 0; i < len; i++)
-	    v[i] = octave_rand::scalar (a(i));
-	  return m;
-	}
+        {
+          if (a.dims() != dims)
+            {
+              error ("%s: mismatch in argument size", fcn);
+              return retval;
+            }
+          octave_idx_type len = a.length ();
+          NDArray m (dims);
+          double *v = m.fortran_vec ();
+          for (octave_idx_type i = 0; i < len; i++)
+            v[i] = octave_rand::scalar (a(i));
+          return m;
+        }
     }
   else
     return octave_rand::nd_array (dims);

@@ -65,7 +65,7 @@ inline double min(double a, double b, double c)
 // method to traverse it
 
 DEFUN_DLD (tsearch, args, ,
-	"-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{idx} =} tsearch (@var{x}, @var{y}, @var{t}, @var{xi}, @var{yi})\n\
 Searches for the enclosing Delaunay convex hull.  For @code{@var{t} =\n\
 delaunay (@var{x}, @var{y})}, finds the index in @var{t} containing the\n\
@@ -119,49 +119,49 @@ points @code{(@var{xi}, @var{yi})}.  For points outside the convex hull,\n\
     
       // check if last triangle contains the next point
       if (k < nelem) 
-	{ 
-	  const double dx1 = xt - x0;
-	  const double dx2 = yt - y0;
-	  const double c1 = (a22 * dx1 - a21 * dx2) / det;
-	  const double c2 = (-a12 * dx1 + a11 * dx2) / det;
-	  if ( c1 >= -eps && c2 >= -eps && (c1 + c2) <= (1 + eps)) 
-	    {
-	      values(kp) = double(k+1);
-	      continue;
-	    }
-	}
+        { 
+          const double dx1 = xt - x0;
+          const double dx2 = yt - y0;
+          const double c1 = (a22 * dx1 - a21 * dx2) / det;
+          const double c2 = (-a12 * dx1 + a11 * dx2) / det;
+          if ( c1 >= -eps && c2 >= -eps && (c1 + c2) <= (1 + eps)) 
+            {
+              values(kp) = double(k+1);
+              continue;
+            }
+        }
     
       // it doesn't, so go through all elements
       for (k = 0; k < nelem; k++) 
-	{ 
-	  OCTAVE_QUIT;
-	  if (xt >= minx(k) && xt <= maxx(k) && 
-	      yt >= miny(k) && yt <= maxy(k) )
-	    {
-	      // element inside the minimum rectangle: examine it closely
-	      x0  = REF(x,k,0);
-	      y0  = REF(y,k,0);
-	      a11 = REF(x,k,1)-x0;
-	      a12 = REF(y,k,1)-y0;
-	      a21 = REF(x,k,2)-x0;
-	      a22 = REF(y,k,2)-y0;
-	      det = a11 * a22 - a21 * a12;
-	
-	      // solve the system
-	      const double dx1 = xt - x0;
-	      const double dx2 = yt - y0;
-	      const double c1 = (a22 * dx1 - a21 * dx2) / det;
-	      const double c2 = (-a12 * dx1 + a11 * dx2) / det;
-	      if ((c1 >= -eps) && (c2 >= -eps) && ((c1 + c2) <= (1 + eps))) 
-		{
-		  values(kp) = double(k+1);
-		  break;
-		}
-	    } //endif # examine this element closely
-	} //endfor # each element
+        { 
+          OCTAVE_QUIT;
+          if (xt >= minx(k) && xt <= maxx(k) && 
+              yt >= miny(k) && yt <= maxy(k) )
+            {
+              // element inside the minimum rectangle: examine it closely
+              x0  = REF(x,k,0);
+              y0  = REF(y,k,0);
+              a11 = REF(x,k,1)-x0;
+              a12 = REF(y,k,1)-y0;
+              a21 = REF(x,k,2)-x0;
+              a22 = REF(y,k,2)-y0;
+              det = a11 * a22 - a21 * a12;
+        
+              // solve the system
+              const double dx1 = xt - x0;
+              const double dx2 = yt - y0;
+              const double c1 = (a22 * dx1 - a21 * dx2) / det;
+              const double c2 = (-a12 * dx1 + a11 * dx2) / det;
+              if ((c1 >= -eps) && (c2 >= -eps) && ((c1 + c2) <= (1 + eps))) 
+                {
+                  values(kp) = double(k+1);
+                  break;
+                }
+            } //endif # examine this element closely
+        } //endfor # each element
 
       if (k == nelem) 
-	values(kp) = lo_ieee_nan_value ();
+        values(kp) = lo_ieee_nan_value ();
     
     } //endfor # kp
   

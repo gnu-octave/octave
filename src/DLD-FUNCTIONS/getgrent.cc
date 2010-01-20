@@ -112,19 +112,19 @@ Return the first entry from the group database with the group ID\n\
       double dval = args(0).double_value ();
 
       if (! error_state)
-	{
-	  if (D_NINT (dval) == dval)
-	    {
-	      gid_t gid = static_cast<gid_t> (dval);
+        {
+          if (D_NINT (dval) == dval)
+            {
+              gid_t gid = static_cast<gid_t> (dval);
 
-	      std::string msg;
+              std::string msg;
 
-	      retval(0) = mk_gr_map (octave_group::getgrgid (gid, msg));
-	      retval(1) = msg;
-	    }
-	  else
-	    error ("getgrgid: argument must be an integer");
-	}
+              retval(0) = mk_gr_map (octave_group::getgrgid (gid, msg));
+              retval(1) = msg;
+            }
+          else
+            error ("getgrgid: argument must be an integer");
+        }
     }
   else
     print_usage ();
@@ -152,12 +152,12 @@ Return the first entry from the group database with the group name\n\
       std::string s = args(0).string_value ();
 
       if (! error_state)
-	{
-	  std::string msg;
+        {
+          std::string msg;
 
-	  retval(0) = mk_gr_map (octave_group::getgrnam (s.c_str (), msg));
-	  retval(1) = msg;
-	}
+          retval(0) = mk_gr_map (octave_group::getgrnam (s.c_str (), msg));
+          retval(1) = msg;
+        }
     }
   else
     print_usage ();

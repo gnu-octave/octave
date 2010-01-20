@@ -415,13 +415,13 @@ Instead you should use @code{imread}.\n\
     {
       unsigned int depth = imvec[0].modulusDepth ();
       if (depth > 1)
-	{
-	  --depth;
-	  int i = 1;
-	  while (depth >>= 1)
+        {
+          --depth;
+          int i = 1;
+          while (depth >>= 1)
             i++;
-	  depth = 1 << i;
-	}
+          depth = 1 << i;
+        }
       
       switch (depth)
         {

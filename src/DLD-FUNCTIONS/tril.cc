@@ -199,7 +199,7 @@ do_trilu (const std::string& name,
       k = args(1).int_value (true);
       
       if (error_state)
-	return retval;
+        return retval;
     }
 
   if (nargin < 1 || nargin > 2)

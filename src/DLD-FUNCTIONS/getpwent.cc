@@ -116,19 +116,19 @@ database, @code{getpwuid} returns 0.\n\
       double dval = args(0).double_value ();
 
       if (! error_state)
-	{
-	  if (D_NINT (dval) == dval)
-	    {
-	      uid_t uid = static_cast<uid_t> (dval);
+        {
+          if (D_NINT (dval) == dval)
+            {
+              uid_t uid = static_cast<uid_t> (dval);
 
-	      std::string msg;
+              std::string msg;
 
-	      retval(0) = mk_pw_map (octave_passwd::getpwuid (uid, msg));
-	      retval(1) = msg;
-	    }
-	  else
-	    error ("getpwuid: argument must be an integer");
-	}
+              retval(0) = mk_pw_map (octave_passwd::getpwuid (uid, msg));
+              retval(1) = msg;
+            }
+          else
+            error ("getpwuid: argument must be an integer");
+        }
     }
   else
     print_usage ();
@@ -156,12 +156,12 @@ database, @code{getpwname} returns 0.\n\
       std::string s = args(0).string_value ();
 
       if (! error_state)
-	{
-	  std::string msg;
+        {
+          std::string msg;
 
-	  retval(0) = mk_pw_map (octave_passwd::getpwnam (s, msg));
-	  retval(1) = msg;
-	}
+          retval(0) = mk_pw_map (octave_passwd::getpwnam (s, msg));
+          retval(1) = msg;
+        }
     }
   else
     print_usage ();

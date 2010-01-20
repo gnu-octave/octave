@@ -156,37 +156,37 @@ information.\n\
   while (n < nargin && ! error_state)
     {
       if (args (n).is_string ())
-	{
-	  std::string tmp = args(n++).string_value ();
+        {
+          std::string tmp = args(n++).string_value ();
 
-	  if (! error_state )
-	    {
-	      if (tmp.compare ("vector") == 0)
-		vecout = true;
-	      else
-		error ("lu: unrecognized string argument");
-	    }
-	}
+          if (! error_state )
+            {
+              if (tmp.compare ("vector") == 0)
+                vecout = true;
+              else
+                error ("lu: unrecognized string argument");
+            }
+        }
       else
-	{
-	  Matrix tmp = args(n++).matrix_value ();
+        {
+          Matrix tmp = args(n++).matrix_value ();
 
-	  if (! error_state )
-	    {
-	      if (!issparse)
-		error ("lu: can not define pivoting threshold for full matrices");
-	      else if (tmp.nelem () == 1)
-		{
-		  thres.resize(1,2);
-		  thres(0) = tmp(0);
-		  thres(1) = tmp(0);
-		}
-	      else if (tmp.nelem () == 2)
-		thres = tmp;
-	      else
-		error ("lu: expecting 2 element vector for thres");
-	    }
-	}
+          if (! error_state )
+            {
+              if (!issparse)
+                error ("lu: can not define pivoting threshold for full matrices");
+              else if (tmp.nelem () == 1)
+                {
+                  thres.resize(1,2);
+                  thres(0) = tmp(0);
+                  thres(1) = tmp(0);
+                }
+              else if (tmp.nelem () == 2)
+                thres = tmp;
+              else
+                error ("lu: expecting 2 element vector for thres");
+            }
+        }
     }
 
   octave_value arg = args(0);
@@ -199,328 +199,328 @@ information.\n\
   if (issparse)
     {
       if (arg_is_empty < 0)
-	return retval;
+        return retval;
       else if (arg_is_empty > 0)
-	return octave_value_list (5, SparseMatrix ());
+        return octave_value_list (5, SparseMatrix ());
 
       ColumnVector Qinit;
       if (nargout < 4)
-	{
-	  Qinit.resize (nc);
-	  for (octave_idx_type i = 0; i < nc; i++)
-	    Qinit (i) = i;
-	}
+        {
+          Qinit.resize (nc);
+          for (octave_idx_type i = 0; i < nc; i++)
+            Qinit (i) = i;
+        }
 
       if (arg.is_real_type ())
-	{
-	  SparseMatrix m = arg.sparse_matrix_value ();
+        {
+          SparseMatrix m = arg.sparse_matrix_value ();
 
-	  switch (nargout)
-	    {
-	    case 0:
-	    case 1:
-	    case 2:
-	      {
-		SparseLU fact (m, Qinit, thres, false, true);
+          switch (nargout)
+            {
+            case 0:
+            case 1:
+            case 2:
+              {
+                SparseLU fact (m, Qinit, thres, false, true);
 
-		if (nargout < 2)
-		  retval (0) = fact.Y ();
-		else
-		  {
-		    PermMatrix P = fact.Pr_mat ();
-		    SparseMatrix L = P.transpose () * fact.L ();
-		    retval(1) = octave_value (fact.U (), 
-					      MatrixType (MatrixType::Upper));
+                if (nargout < 2)
+                  retval (0) = fact.Y ();
+                else
+                  {
+                    PermMatrix P = fact.Pr_mat ();
+                    SparseMatrix L = P.transpose () * fact.L ();
+                    retval(1) = octave_value (fact.U (), 
+                                              MatrixType (MatrixType::Upper));
 
-		    retval(0) = octave_value (L, 
-			MatrixType (MatrixType::Permuted_Lower, 
-				    nr, fact.row_perm ()));
-		  }
-	      }
-	      break;
+                    retval(0) = octave_value (L, 
+                        MatrixType (MatrixType::Permuted_Lower, 
+                                    nr, fact.row_perm ()));
+                  }
+              }
+              break;
 
-	    case 3:
-	      {
-		SparseLU fact (m, Qinit, thres, false, true);
+            case 3:
+              {
+                SparseLU fact (m, Qinit, thres, false, true);
 
-		if (vecout)
-		  retval (2) = fact.Pr_vec ();
-		else
-		  retval(2) = fact.Pr_mat ();
+                if (vecout)
+                  retval (2) = fact.Pr_vec ();
+                else
+                  retval(2) = fact.Pr_mat ();
 
-		retval(1) = octave_value (fact.U (), 
-					  MatrixType (MatrixType::Upper));
-		retval(0) = octave_value (fact.L (), 
-					  MatrixType (MatrixType::Lower));
-	      }
-	      break;
+                retval(1) = octave_value (fact.U (), 
+                                          MatrixType (MatrixType::Upper));
+                retval(0) = octave_value (fact.L (), 
+                                          MatrixType (MatrixType::Lower));
+              }
+              break;
 
-	    case 4:
-	    default:
-	      {
-		SparseLU fact (m, thres, scale);
+            case 4:
+            default:
+              {
+                SparseLU fact (m, thres, scale);
 
-		if (scale)
-		  retval(4) = fact.R ();
+                if (scale)
+                  retval(4) = fact.R ();
 
-		if (vecout)
-		  {
-		    retval(3) = fact.Pc_vec ();
-		    retval(2) = fact.Pr_vec ();
-		  }
-		else
-		  {
-		    retval(3) = fact.Pc_mat ();
-		    retval(2) = fact.Pr_mat ();
-		  }
-		retval(1) = octave_value (fact.U (), 
-					  MatrixType (MatrixType::Upper));
-		retval(0) = octave_value (fact.L (), 
-					  MatrixType (MatrixType::Lower));
-	      }
-	      break;
-	    }
-	}
+                if (vecout)
+                  {
+                    retval(3) = fact.Pc_vec ();
+                    retval(2) = fact.Pr_vec ();
+                  }
+                else
+                  {
+                    retval(3) = fact.Pc_mat ();
+                    retval(2) = fact.Pr_mat ();
+                  }
+                retval(1) = octave_value (fact.U (), 
+                                          MatrixType (MatrixType::Upper));
+                retval(0) = octave_value (fact.L (), 
+                                          MatrixType (MatrixType::Lower));
+              }
+              break;
+            }
+        }
       else if (arg.is_complex_type ())
-	{
-	  SparseComplexMatrix m = arg.sparse_complex_matrix_value ();
+        {
+          SparseComplexMatrix m = arg.sparse_complex_matrix_value ();
 
-	  switch (nargout)
-	    {
-	    case 0:
-	    case 1:
-	    case 2:
-	      {
-		SparseComplexLU fact (m, Qinit, thres, false, true);
+          switch (nargout)
+            {
+            case 0:
+            case 1:
+            case 2:
+              {
+                SparseComplexLU fact (m, Qinit, thres, false, true);
 
-		if (nargout < 2)
-		  retval (0) = fact.Y ();
-		else
-		  {
-		    PermMatrix P = fact.Pr_mat ();
-		    SparseComplexMatrix L = P.transpose () * fact.L ();
-		    retval(1) = octave_value (fact.U (), 
-					      MatrixType (MatrixType::Upper));
+                if (nargout < 2)
+                  retval (0) = fact.Y ();
+                else
+                  {
+                    PermMatrix P = fact.Pr_mat ();
+                    SparseComplexMatrix L = P.transpose () * fact.L ();
+                    retval(1) = octave_value (fact.U (), 
+                                              MatrixType (MatrixType::Upper));
 
-		    retval(0) = octave_value (L, 
-			MatrixType (MatrixType::Permuted_Lower, 
-				    nr, fact.row_perm ()));
-		  }
-	      }
-	      break;
+                    retval(0) = octave_value (L, 
+                        MatrixType (MatrixType::Permuted_Lower, 
+                                    nr, fact.row_perm ()));
+                  }
+              }
+              break;
 
-	    case 3:
-	      {
-		SparseComplexLU fact (m, Qinit, thres, false, true);
+            case 3:
+              {
+                SparseComplexLU fact (m, Qinit, thres, false, true);
 
-		if (vecout)
-		  retval (2) = fact.Pr_vec ();
-		else
-		  retval(2) = fact.Pr_mat ();
+                if (vecout)
+                  retval (2) = fact.Pr_vec ();
+                else
+                  retval(2) = fact.Pr_mat ();
 
-		retval(1) = octave_value (fact.U (), 
-					  MatrixType (MatrixType::Upper));
-		retval(0) = octave_value (fact.L (), 
-					  MatrixType (MatrixType::Lower));
-	      }
-	      break;
+                retval(1) = octave_value (fact.U (), 
+                                          MatrixType (MatrixType::Upper));
+                retval(0) = octave_value (fact.L (), 
+                                          MatrixType (MatrixType::Lower));
+              }
+              break;
 
-	    case 4:
-	    default:
-	      {
-		SparseComplexLU fact (m, thres, scale);
+            case 4:
+            default:
+              {
+                SparseComplexLU fact (m, thres, scale);
 
-		if (scale)
-		  retval(4) = fact.R ();
+                if (scale)
+                  retval(4) = fact.R ();
 
-		if (vecout)
-		  {
-		    retval(3) = fact.Pc_vec ();
-		    retval(2) = fact.Pr_vec ();
-		  }
-		else
-		  {
-		    retval(3) = fact.Pc_mat ();
-		    retval(2) = fact.Pr_mat ();
-		  }
-		retval(1) = octave_value (fact.U (), 
-					  MatrixType (MatrixType::Upper));
-		retval(0) = octave_value (fact.L (), 
-					  MatrixType (MatrixType::Lower));
-	      }
-	      break;
-	    }
-	}
+                if (vecout)
+                  {
+                    retval(3) = fact.Pc_vec ();
+                    retval(2) = fact.Pr_vec ();
+                  }
+                else
+                  {
+                    retval(3) = fact.Pc_mat ();
+                    retval(2) = fact.Pr_mat ();
+                  }
+                retval(1) = octave_value (fact.U (), 
+                                          MatrixType (MatrixType::Upper));
+                retval(0) = octave_value (fact.L (), 
+                                          MatrixType (MatrixType::Lower));
+              }
+              break;
+            }
+        }
       else
-	gripe_wrong_type_arg ("lu", arg);
+        gripe_wrong_type_arg ("lu", arg);
     }
   else
     {
       if (arg_is_empty < 0)
-	return retval;
+        return retval;
       else if (arg_is_empty > 0)
-	return octave_value_list (3, Matrix ());
+        return octave_value_list (3, Matrix ());
 
       if (arg.is_real_type ())
-	{
-	  if (arg.is_single_type ())
-	    {
-	      FloatMatrix m = arg.float_matrix_value ();
+        {
+          if (arg.is_single_type ())
+            {
+              FloatMatrix m = arg.float_matrix_value ();
 
-	      if (! error_state)
-		{
-		  FloatLU fact (m);
+              if (! error_state)
+                {
+                  FloatLU fact (m);
 
-		  switch (nargout)
-		    {
-		    case 0:
-		    case 1:
-		      retval(0) = fact.Y ();
-		      break;
+                  switch (nargout)
+                    {
+                    case 0:
+                    case 1:
+                      retval(0) = fact.Y ();
+                      break;
 
-		    case 2:
-		      {
-			PermMatrix P = fact.P ();
-			FloatMatrix L = P.transpose () * fact.L ();
-			retval(1) = get_lu_u (fact);
-			retval(0) = L;
-		      }
-		      break;
+                    case 2:
+                      {
+                        PermMatrix P = fact.P ();
+                        FloatMatrix L = P.transpose () * fact.L ();
+                        retval(1) = get_lu_u (fact);
+                        retval(0) = L;
+                      }
+                      break;
 
-		    case 3:
-		    default:
-		      {
-			if (vecout)
-			  retval(2) = fact.P_vec ();
-			else
-			  retval(2) = fact.P ();
-			retval(1) = get_lu_u (fact);
-			retval(0) = get_lu_l (fact);
-		      }
-		      break;
-		    }
-		}
-	    }
-	  else
-	    {
-	      Matrix m = arg.matrix_value ();
+                    case 3:
+                    default:
+                      {
+                        if (vecout)
+                          retval(2) = fact.P_vec ();
+                        else
+                          retval(2) = fact.P ();
+                        retval(1) = get_lu_u (fact);
+                        retval(0) = get_lu_l (fact);
+                      }
+                      break;
+                    }
+                }
+            }
+          else
+            {
+              Matrix m = arg.matrix_value ();
 
-	      if (! error_state)
-		{
-		  LU fact (m);
+              if (! error_state)
+                {
+                  LU fact (m);
 
-		  switch (nargout)
-		    {
-		    case 0:
-		    case 1:
-		      retval(0) = fact.Y ();
-		      break;
+                  switch (nargout)
+                    {
+                    case 0:
+                    case 1:
+                      retval(0) = fact.Y ();
+                      break;
 
-		    case 2:
-		      {
-			PermMatrix P = fact.P ();
-			Matrix L = P.transpose () * fact.L ();
-			retval(1) = get_lu_u (fact);
-			retval(0) = L;
-		      }
-		      break;
+                    case 2:
+                      {
+                        PermMatrix P = fact.P ();
+                        Matrix L = P.transpose () * fact.L ();
+                        retval(1) = get_lu_u (fact);
+                        retval(0) = L;
+                      }
+                      break;
 
-		    case 3:
-		    default:
-		      {
-			if (vecout)
-			  retval(2) = fact.P_vec ();
-			else
-			  retval(2) = fact.P ();
-			retval(1) = get_lu_u (fact);
-			retval(0) = get_lu_l (fact);
-		      }
-		      break;
-		    }
-		}
-	    }
-	}
+                    case 3:
+                    default:
+                      {
+                        if (vecout)
+                          retval(2) = fact.P_vec ();
+                        else
+                          retval(2) = fact.P ();
+                        retval(1) = get_lu_u (fact);
+                        retval(0) = get_lu_l (fact);
+                      }
+                      break;
+                    }
+                }
+            }
+        }
       else if (arg.is_complex_type ())
-	{
-	  if (arg.is_single_type ())
-	    {
-	      FloatComplexMatrix m = arg.float_complex_matrix_value ();
+        {
+          if (arg.is_single_type ())
+            {
+              FloatComplexMatrix m = arg.float_complex_matrix_value ();
 
-	      if (! error_state)
-		{
-		  FloatComplexLU fact (m);
+              if (! error_state)
+                {
+                  FloatComplexLU fact (m);
 
-		  switch (nargout)
-		    {
-		    case 0:
-		    case 1:
-		      retval(0) = fact.Y ();
-		      break;
+                  switch (nargout)
+                    {
+                    case 0:
+                    case 1:
+                      retval(0) = fact.Y ();
+                      break;
 
-		    case 2:
-		      {
-			PermMatrix P = fact.P ();
-			FloatComplexMatrix L = P.transpose () * fact.L ();
-			retval(1) = get_lu_u (fact);
-			retval(0) = L;
-		      }
-		      break;
+                    case 2:
+                      {
+                        PermMatrix P = fact.P ();
+                        FloatComplexMatrix L = P.transpose () * fact.L ();
+                        retval(1) = get_lu_u (fact);
+                        retval(0) = L;
+                      }
+                      break;
 
-		    case 3:
-		    default:
-		      {
-			if (vecout)
-			  retval(2) = fact.P_vec ();
-			else
-			  retval(2) = fact.P ();
-			retval(1) = get_lu_u (fact);
-			retval(0) = get_lu_l (fact);
-		      }
-		      break;
-		    }
-		}
-	    }
-	  else
-	    {
-	      ComplexMatrix m = arg.complex_matrix_value ();
+                    case 3:
+                    default:
+                      {
+                        if (vecout)
+                          retval(2) = fact.P_vec ();
+                        else
+                          retval(2) = fact.P ();
+                        retval(1) = get_lu_u (fact);
+                        retval(0) = get_lu_l (fact);
+                      }
+                      break;
+                    }
+                }
+            }
+          else
+            {
+              ComplexMatrix m = arg.complex_matrix_value ();
 
-	      if (! error_state)
-		{
-		  ComplexLU fact (m);
+              if (! error_state)
+                {
+                  ComplexLU fact (m);
 
-		  switch (nargout)
-		    {
-		    case 0:
-		    case 1:
-		      retval(0) = fact.Y ();
-		      break;
+                  switch (nargout)
+                    {
+                    case 0:
+                    case 1:
+                      retval(0) = fact.Y ();
+                      break;
 
-		    case 2:
-		      {
-			PermMatrix P = fact.P ();
-			ComplexMatrix L = P.transpose () * fact.L ();
-			retval(1) = get_lu_u (fact);
-			retval(0) = L;
-		      }
-		      break;
+                    case 2:
+                      {
+                        PermMatrix P = fact.P ();
+                        ComplexMatrix L = P.transpose () * fact.L ();
+                        retval(1) = get_lu_u (fact);
+                        retval(0) = L;
+                      }
+                      break;
 
-		    case 3:
-		    default:
-		      {
-			if (vecout)
-			  retval(2) = fact.P_vec ();
-			else
-			  retval(2) = fact.P ();
-			retval(1) = get_lu_u (fact);
-			retval(0) = get_lu_l (fact);
-		      }
-		      break;
-		    }
-		}
-	    }
-	}
+                    case 3:
+                    default:
+                      {
+                        if (vecout)
+                          retval(2) = fact.P_vec ();
+                        else
+                          retval(2) = fact.P ();
+                        retval(1) = get_lu_u (fact);
+                        retval(0) = get_lu_l (fact);
+                      }
+                      break;
+                    }
+                }
+            }
+        }
       else
-	gripe_wrong_type_arg ("lu", arg);
+        gripe_wrong_type_arg ("lu", arg);
     }
 
   return retval;
@@ -662,22 +662,22 @@ the factorization from scratch.\n\
                           : PermMatrix::eye (argl.rows ()));
 
           if (argl.is_real_type () 
-	      && argu.is_real_type () 
-	      && argx.is_real_type () 
-	      && argy.is_real_type ())
+              && argu.is_real_type () 
+              && argx.is_real_type () 
+              && argy.is_real_type ())
             {
-	      // all real case
-	      if (argl.is_single_type () 
-		  || argu.is_single_type () 
-		  || argx.is_single_type () 
-		  || argy.is_single_type ())
-		{
-		  FloatMatrix L = argl.float_matrix_value ();
-		  FloatMatrix U = argu.float_matrix_value ();
-		  FloatMatrix x = argx.float_matrix_value ();
-		  FloatMatrix y = argy.float_matrix_value ();
+              // all real case
+              if (argl.is_single_type () 
+                  || argu.is_single_type () 
+                  || argx.is_single_type () 
+                  || argy.is_single_type ())
+                {
+                  FloatMatrix L = argl.float_matrix_value ();
+                  FloatMatrix U = argu.float_matrix_value ();
+                  FloatMatrix x = argx.float_matrix_value ();
+                  FloatMatrix y = argy.float_matrix_value ();
 
-		  FloatLU fact (L, U, P);
+                  FloatLU fact (L, U, P);
                   if (pivoted)
                     fact.update_piv (x, y);
                   else
@@ -685,17 +685,17 @@ the factorization from scratch.\n\
 
                   if (pivoted)
                     retval(2) = fact.P ();
-		  retval(1) = get_lu_u (fact);
-		  retval(0) = get_lu_l (fact);
-		}
-	      else
-		{
-		  Matrix L = argl.matrix_value ();
-		  Matrix U = argu.matrix_value ();
-		  Matrix x = argx.matrix_value ();
-		  Matrix y = argy.matrix_value ();
+                  retval(1) = get_lu_u (fact);
+                  retval(0) = get_lu_l (fact);
+                }
+              else
+                {
+                  Matrix L = argl.matrix_value ();
+                  Matrix U = argu.matrix_value ();
+                  Matrix x = argx.matrix_value ();
+                  Matrix y = argy.matrix_value ();
 
-		  LU fact (L, U, P);
+                  LU fact (L, U, P);
                   if (pivoted)
                     fact.update_piv (x, y);
                   else
@@ -703,24 +703,24 @@ the factorization from scratch.\n\
 
                   if (pivoted)
                     retval(2) = fact.P ();
-		  retval(1) = get_lu_u (fact);
-		  retval(0) = get_lu_l (fact);
-		}
+                  retval(1) = get_lu_u (fact);
+                  retval(0) = get_lu_l (fact);
+                }
             }
           else
             {
               // complex case
-	      if (argl.is_single_type () 
-		  || argu.is_single_type () 
-		  || argx.is_single_type () 
-		  || argy.is_single_type ())
-		{
-		  FloatComplexMatrix L = argl.float_complex_matrix_value ();
-		  FloatComplexMatrix U = argu.float_complex_matrix_value ();
-		  FloatComplexMatrix x = argx.float_complex_matrix_value ();
-		  FloatComplexMatrix y = argy.float_complex_matrix_value ();
+              if (argl.is_single_type () 
+                  || argu.is_single_type () 
+                  || argx.is_single_type () 
+                  || argy.is_single_type ())
+                {
+                  FloatComplexMatrix L = argl.float_complex_matrix_value ();
+                  FloatComplexMatrix U = argu.float_complex_matrix_value ();
+                  FloatComplexMatrix x = argx.float_complex_matrix_value ();
+                  FloatComplexMatrix y = argy.float_complex_matrix_value ();
 
-		  FloatComplexLU fact (L, U, P);
+                  FloatComplexLU fact (L, U, P);
                   if (pivoted)
                     fact.update_piv (x, y);
                   else
@@ -728,17 +728,17 @@ the factorization from scratch.\n\
               
                   if (pivoted)
                     retval(2) = fact.P ();
-		  retval(1) = get_lu_u (fact);
-		  retval(0) = get_lu_l (fact);
-		}
-	      else
-		{
-		  ComplexMatrix L = argl.complex_matrix_value ();
-		  ComplexMatrix U = argu.complex_matrix_value ();
-		  ComplexMatrix x = argx.complex_matrix_value ();
-		  ComplexMatrix y = argy.complex_matrix_value ();
+                  retval(1) = get_lu_u (fact);
+                  retval(0) = get_lu_l (fact);
+                }
+              else
+                {
+                  ComplexMatrix L = argl.complex_matrix_value ();
+                  ComplexMatrix U = argu.complex_matrix_value ();
+                  ComplexMatrix x = argx.complex_matrix_value ();
+                  ComplexMatrix y = argy.complex_matrix_value ();
 
-		  ComplexLU fact (L, U, P);
+                  ComplexLU fact (L, U, P);
                   if (pivoted)
                     fact.update_piv (x, y);
                   else
@@ -746,13 +746,13 @@ the factorization from scratch.\n\
               
                   if (pivoted)
                     retval(2) = fact.P ();
-		  retval(1) = get_lu_u (fact);
-		  retval(0) = get_lu_l (fact);
-		}
+                  retval(1) = get_lu_u (fact);
+                  retval(0) = get_lu_l (fact);
+                }
             }
         }
       else
-	error ("luupdate: dimensions mismatch");
+        error ("luupdate: dimensions mismatch");
     }
   else
     error ("luupdate: expecting numeric arguments");

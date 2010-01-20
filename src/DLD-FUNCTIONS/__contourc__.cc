@@ -93,8 +93,8 @@ start_contour (double lvl, double x, double y)
 
 static void
 drawcn (const RowVector& X, const RowVector& Y, const Matrix& Z,
-	double lvl, int r, int c, double ct_x, double ct_y,
-	unsigned int start_edge, bool first, charMatrix& mark)
+        double lvl, int r, int c, double ct_x, double ct_y,
+        unsigned int start_edge, bool first, charMatrix& mark)
 {
   double px[4], py[4], pz[4], tmp;
   unsigned int stop_edge, next_edge, pt[2];
@@ -150,10 +150,10 @@ drawcn (const RowVector& X, const RowVector& Y, const Matrix& Z,
       if (xisnan (tmp))
         ct_x = ct_y = 0.5;
       else
-	{
-	  ct_x = px[pt[0]] + (px[pt[1]] - px[pt[0]])/(1 + tmp);
-	  ct_y = py[pt[0]] + (py[pt[1]] - py[pt[0]])/(1 + tmp);
-	}
+        {
+          ct_x = px[pt[0]] + (px[pt[1]] - px[pt[0]])/(1 + tmp);
+          ct_y = py[pt[0]] + (py[pt[1]] - py[pt[0]])/(1 + tmp);
+        }
 
       start_contour (lvl, ct_x, ct_y);
     }
@@ -233,10 +233,10 @@ mark_facets (const Matrix& Z, charMatrix& mark, double lvl)
             f[i] = DBL_EPSILON;
 
         if (f[1] * f[2] < 0)
-	  mark(r, c) += 2;
+          mark(r, c) += 2;
 
         if (f[0] * f[3] < 0)
-	  mark(r, c) += 8;
+          mark(r, c) += 8;
       }
 
   for (unsigned int r = 0; r < nr; r++)
@@ -252,10 +252,10 @@ mark_facets (const Matrix& Z, charMatrix& mark, double lvl)
             f[i] = DBL_EPSILON;
 
         if (f[0] * f[1] < 0)
-	  mark(r, c) += 1;
+          mark(r, c) += 1;
 
         if (f[2] * f[3] < 0)
-	  mark(r, c) += 4;
+          mark(r, c) += 4;
       }
 }
 
@@ -279,7 +279,7 @@ cntr (const RowVector& X, const RowVector& Y, const Matrix& Z, double lvl)
 
       // Bottom.
       if (mark(nr - 2, c) & 4)
-	drawcn (X, Y, Z, lvl, nr - 2, c, 0.0, 0.0, 2, true, mark);
+        drawcn (X, Y, Z, lvl, nr - 2, c, 0.0, 0.0, 2, true, mark);
     }
 
   for (unsigned int r = 0; r < nr - 1; r++)
@@ -315,18 +315,18 @@ Undocumented internal function.\n\
       RowVector L = args (3).row_vector_value ();
 
       if (! error_state)
-	{
-	  contourc.resize (2, 0);
+        {
+          contourc.resize (2, 0);
 
-	  for (int i = 0; i < L.length (); i++)
-	    cntr (X, Y, Z, L (i));
+          for (int i = 0; i < L.length (); i++)
+            cntr (X, Y, Z, L (i));
 
-	  end_contour ();
+          end_contour ();
 
-	  retval = contourc;
-	}
+          retval = contourc;
+        }
       else
-	error ("__contourc__: invalid argument values");
+        error ("__contourc__: invalid argument values");
     }
   else
     print_usage ();

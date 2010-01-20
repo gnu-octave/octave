@@ -1,5 +1,45 @@
 2010-01-20  John W. Eaton  <jwe@octave.org>
 
+	* DLD-FUNCTIONS/__contourc__.cc, DLD-FUNCTIONS/__convn__.cc,
+	DLD-FUNCTIONS/__delaunayn__.cc, DLD-FUNCTIONS/__dsearchn__.cc,
+	DLD-FUNCTIONS/__glpk__.cc, DLD-FUNCTIONS/__lin_interpn__.cc,
+	DLD-FUNCTIONS/__magick_read__.cc,
+	DLD-FUNCTIONS/__pchip_deriv__.cc, DLD-FUNCTIONS/__qp__.cc,
+	DLD-FUNCTIONS/__voronoi__.cc, DLD-FUNCTIONS/amd.cc,
+	DLD-FUNCTIONS/balance.cc, DLD-FUNCTIONS/besselj.cc,
+	DLD-FUNCTIONS/betainc.cc, DLD-FUNCTIONS/bsxfun.cc,
+	DLD-FUNCTIONS/ccolamd.cc, DLD-FUNCTIONS/cellfun.cc,
+	DLD-FUNCTIONS/chol.cc, DLD-FUNCTIONS/colamd.cc,
+	DLD-FUNCTIONS/colloc.cc, DLD-FUNCTIONS/conv2.cc,
+	DLD-FUNCTIONS/convhulln.cc, DLD-FUNCTIONS/daspk.cc,
+	DLD-FUNCTIONS/dasrt.cc, DLD-FUNCTIONS/dassl.cc,
+	DLD-FUNCTIONS/det.cc, DLD-FUNCTIONS/dispatch.cc,
+	DLD-FUNCTIONS/dlmread.cc, DLD-FUNCTIONS/dmperm.cc,
+	DLD-FUNCTIONS/eig.cc, DLD-FUNCTIONS/eigs.cc,
+	DLD-FUNCTIONS/fft.cc, DLD-FUNCTIONS/fft2.cc,
+	DLD-FUNCTIONS/fftn.cc, DLD-FUNCTIONS/fftw.cc,
+	DLD-FUNCTIONS/filter.cc, DLD-FUNCTIONS/find.cc,
+	DLD-FUNCTIONS/fltk_backend.cc, DLD-FUNCTIONS/gammainc.cc,
+	DLD-FUNCTIONS/gcd.cc, DLD-FUNCTIONS/getgrent.cc,
+	DLD-FUNCTIONS/getpwent.cc, DLD-FUNCTIONS/givens.cc,
+	DLD-FUNCTIONS/hess.cc, DLD-FUNCTIONS/hex2num.cc,
+	DLD-FUNCTIONS/inv.cc, DLD-FUNCTIONS/kron.cc,
+	DLD-FUNCTIONS/lookup.cc, DLD-FUNCTIONS/lsode.cc,
+	DLD-FUNCTIONS/lu.cc, DLD-FUNCTIONS/luinc.cc,
+	DLD-FUNCTIONS/matrix_type.cc, DLD-FUNCTIONS/md5sum.cc,
+	DLD-FUNCTIONS/pinv.cc, DLD-FUNCTIONS/qr.cc,
+	DLD-FUNCTIONS/quad.cc, DLD-FUNCTIONS/qz.cc,
+	DLD-FUNCTIONS/rand.cc, DLD-FUNCTIONS/rcond.cc,
+	DLD-FUNCTIONS/regexp.cc, DLD-FUNCTIONS/schur.cc,
+	DLD-FUNCTIONS/sparse.cc, DLD-FUNCTIONS/spparms.cc,
+	DLD-FUNCTIONS/sqrtm.cc, DLD-FUNCTIONS/svd.cc,
+	DLD-FUNCTIONS/syl.cc, DLD-FUNCTIONS/symbfact.cc,
+	DLD-FUNCTIONS/symrcm.cc, DLD-FUNCTIONS/time.cc,
+	DLD-FUNCTIONS/tril.cc, DLD-FUNCTIONS/tsearch.cc,
+	DLD-FUNCTIONS/urlwrite.cc: Untabify.
+
+2010-01-20  John W. Eaton  <jwe@octave.org>
+
 	* TEMPLATE-INST/Array-os.cc, TEMPLATE-INST/Array-tc.cc,
 	TEMPLATE-INST/Array-sym.cc: Delete Emacs local-variable settings.
 

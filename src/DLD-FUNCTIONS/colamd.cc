@@ -56,7 +56,7 @@ along with Octave; see the file COPYING.  If not, see
 // Copyright given elsewhere in this file.
 static void
 symetree (const octave_idx_type *ridx, const octave_idx_type *cidx, 
-	  octave_idx_type *Parent, octave_idx_type *P, octave_idx_type n)
+          octave_idx_type *Parent, octave_idx_type *P, octave_idx_type n)
 {
   OCTAVE_LOCAL_BUFFER (octave_idx_type, Flag, n);
   OCTAVE_LOCAL_BUFFER (octave_idx_type, Pinv, (P ? n : 0));
@@ -68,26 +68,26 @@ symetree (const octave_idx_type *ridx, const octave_idx_type *cidx,
   for (octave_idx_type k = 0 ; k < n ; k++)
     {
       // L(k,:) pattern: all nodes reachable in etree from nz in A(0:k-1,k)
-      Parent [k] = n ;	              // parent of k is not yet known 
-      Flag [k] = k ;		      // mark node k as visited 
+      Parent [k] = n ;                // parent of k is not yet known 
+      Flag [k] = k ;                  // mark node k as visited 
       octave_idx_type kk = (P) ? (P [k]) : (k) ;  // kth original, or permuted, column
       octave_idx_type p2 = cidx [kk+1] ;
       for (octave_idx_type p = cidx [kk] ; p < p2 ; p++)
-	{
-	  // A (i,k) is nonzero (original or permuted A)
-	  octave_idx_type i = (Pinv) ? (Pinv [ridx [p]]) : (ridx [p]) ;
-	  if (i < k)
-	    {
-	      // follow path from i to root of etree, stop at flagged node 
-	      for ( ; Flag [i] != k ; i = Parent [i])
-		{
-		  // find parent of i if not yet determined
-		  if (Parent [i] == n)
-		    Parent [i] = k ;
-		  Flag [i] = k ;	// mark i as visited
-		}
-	    }
-	}
+        {
+          // A (i,k) is nonzero (original or permuted A)
+          octave_idx_type i = (Pinv) ? (Pinv [ridx [p]]) : (ridx [p]) ;
+          if (i < k)
+            {
+              // follow path from i to root of etree, stop at flagged node 
+              for ( ; Flag [i] != k ; i = Parent [i])
+                {
+                  // find parent of i if not yet determined
+                  if (Parent [i] == n)
+                    Parent [i] = k ;
+                  Flag [i] = k ;        // mark i as visited
+                }
+            }
+        }
     }
 }
 
@@ -140,7 +140,7 @@ etdfs (octave_idx_type v, octave_idx_type *first_kid,
 
 static void
 tree_postorder (octave_idx_type n, octave_idx_type *parent,
-		octave_idx_type *post)
+                octave_idx_type *post)
 {
   // Allocate storage for working arrays and results
   OCTAVE_LOCAL_BUFFER (octave_idx_type, first_kid, n+1);
@@ -163,8 +163,8 @@ tree_postorder (octave_idx_type n, octave_idx_type *parent,
 
 static void
 coletree (const octave_idx_type *ridx, const octave_idx_type *colbeg,
-	  octave_idx_type *colend, octave_idx_type *parent, 
-	  octave_idx_type nr, octave_idx_type nc)
+          octave_idx_type *colend, octave_idx_type *parent, 
+          octave_idx_type nr, octave_idx_type nc)
 {
   OCTAVE_LOCAL_BUFFER (octave_idx_type, root, nc);
   OCTAVE_LOCAL_BUFFER (octave_idx_type, pp, nc);
@@ -177,9 +177,9 @@ coletree (const octave_idx_type *ridx, const octave_idx_type *colbeg,
   for (octave_idx_type col = 0; col < nc; col++) 
     for (octave_idx_type p = colbeg[col]; p < colend[col]; p++) 
       {
-	octave_idx_type row = ridx[p];
-	if (firstcol[row] > col)
-	  firstcol[row] = col;
+        octave_idx_type row = ridx[p];
+        if (firstcol[row] > col)
+          firstcol[row] = col;
       }
 
   // Compute etree by Liu's algorithm for symmetric matrices,
@@ -192,19 +192,19 @@ coletree (const octave_idx_type *ridx, const octave_idx_type *colbeg,
       root[cset] = col;
       parent[col] = nc; 
       for (octave_idx_type p = colbeg[col]; p < colend[col]; p++) 
-	{
-	  octave_idx_type row = firstcol[ridx[p]];
-	  if (row >= col) 
-	    continue;
-	  octave_idx_type rset = find (row, pp);
-	  octave_idx_type rroot = root[rset];
-	  if (rroot != col) 
-	    {
-	      parent[rroot] = col;
-	      cset = link (cset, rset, pp);
-	      root[cset] = col;
-	    }
-	}
+        {
+          octave_idx_type row = firstcol[ridx[p]];
+          if (row >= col) 
+            continue;
+          octave_idx_type rset = find (row, pp);
+          octave_idx_type rroot = root[rset];
+          if (rroot != col) 
+            {
+              parent[rroot] = col;
+              cset = link (cset, rset, pp);
+              root[cset] = col;
+            }
+        }
     }
 }
 
@@ -293,47 +293,47 @@ Ng, Oak Ridge National Laboratory.  (see\n\
 
       // Check for user-passed knobs
       if (nargin == 2)
-	{
-	  NDArray User_knobs = args(1).array_value ();
-	  int nel_User_knobs = User_knobs.length ();
-	  
-	  if (nel_User_knobs > 0) 
-	    knobs [COLAMD_DENSE_ROW] = User_knobs (0);
-	  if (nel_User_knobs > 1) 
-	    knobs [COLAMD_DENSE_COL] = User_knobs (1) ;
-	  if (nel_User_knobs > 2) 
-	    spumoni = static_cast<int> (User_knobs (2));
+        {
+          NDArray User_knobs = args(1).array_value ();
+          int nel_User_knobs = User_knobs.length ();
+          
+          if (nel_User_knobs > 0) 
+            knobs [COLAMD_DENSE_ROW] = User_knobs (0);
+          if (nel_User_knobs > 1) 
+            knobs [COLAMD_DENSE_COL] = User_knobs (1) ;
+          if (nel_User_knobs > 2) 
+            spumoni = static_cast<int> (User_knobs (2));
 
-	  // print knob settings if spumoni is set
-	  if (spumoni)
-	    {
+          // print knob settings if spumoni is set
+          if (spumoni)
+            {
 
-	      octave_stdout << "\ncolamd version " << COLAMD_MAIN_VERSION << "."
-			    <<  COLAMD_SUB_VERSION << ", " << COLAMD_DATE << ":\n";
+              octave_stdout << "\ncolamd version " << COLAMD_MAIN_VERSION << "."
+                            <<  COLAMD_SUB_VERSION << ", " << COLAMD_DATE << ":\n";
 
-	      if (knobs [COLAMD_DENSE_ROW] >= 0)
-		octave_stdout << "knobs(1): " << User_knobs (0) 
-			      << ", rows with > max(16,"
-			      << knobs [COLAMD_DENSE_ROW] << "*sqrt(size(A,2)))"
-			      << " entries removed\n";
-	      else
-		octave_stdout << "knobs(1): " << User_knobs (0)
-			      << ", only completely dense rows removed\n";
+              if (knobs [COLAMD_DENSE_ROW] >= 0)
+                octave_stdout << "knobs(1): " << User_knobs (0) 
+                              << ", rows with > max(16,"
+                              << knobs [COLAMD_DENSE_ROW] << "*sqrt(size(A,2)))"
+                              << " entries removed\n";
+              else
+                octave_stdout << "knobs(1): " << User_knobs (0)
+                              << ", only completely dense rows removed\n";
 
-	      if (knobs [COLAMD_DENSE_COL] >= 0)
-		octave_stdout << "knobs(2): " << User_knobs (1) 
-			      << ", cols with > max(16,"
-			      << knobs [COLAMD_DENSE_COL] << "*sqrt(size(A)))"
-			      << " entries removed\n";
-	      else
-		octave_stdout << "knobs(2): " << User_knobs (1)
-			      << ", only completely dense columns removed\n";
+              if (knobs [COLAMD_DENSE_COL] >= 0)
+                octave_stdout << "knobs(2): " << User_knobs (1) 
+                              << ", cols with > max(16,"
+                              << knobs [COLAMD_DENSE_COL] << "*sqrt(size(A)))"
+                              << " entries removed\n";
+              else
+                octave_stdout << "knobs(2): " << User_knobs (1)
+                              << ", only completely dense columns removed\n";
 
-	      octave_stdout << "knobs(3): " << User_knobs (2) 
-			    << ", statistics and knobs printed\n";
+              octave_stdout << "knobs(3): " << User_knobs (2) 
+                            << ", statistics and knobs printed\n";
 
-	    }
-	}
+            }
+        }
       
       octave_idx_type n_row, n_col, nnz;
       octave_idx_type *ridx, *cidx;
@@ -341,59 +341,59 @@ Ng, Oak Ridge National Laboratory.  (see\n\
       SparseMatrix sm;
 
       if (args(0).is_sparse_type ())
-	{
-	  if (args(0).is_complex_type ())
-	    {
-	      scm = args(0). sparse_complex_matrix_value ();
-	      n_row = scm.rows ();
-	      n_col = scm.cols ();
-	      nnz = scm.nzmax ();
-	      ridx = scm.xridx ();
-	      cidx = scm.xcidx ();
-	    }
-	  else
-	    {
-	      sm = args(0).sparse_matrix_value ();
+        {
+          if (args(0).is_complex_type ())
+            {
+              scm = args(0). sparse_complex_matrix_value ();
+              n_row = scm.rows ();
+              n_col = scm.cols ();
+              nnz = scm.nzmax ();
+              ridx = scm.xridx ();
+              cidx = scm.xcidx ();
+            }
+          else
+            {
+              sm = args(0).sparse_matrix_value ();
 
-	      n_row = sm.rows ();
-	      n_col = sm.cols ();
-	      nnz = sm.nzmax ();
-	      ridx = sm.xridx ();
-	      cidx = sm.xcidx ();
-	    }
-	}
+              n_row = sm.rows ();
+              n_col = sm.cols ();
+              nnz = sm.nzmax ();
+              ridx = sm.xridx ();
+              cidx = sm.xcidx ();
+            }
+        }
       else
-	{
-	  if (args(0).is_complex_type ())
-	    sm = SparseMatrix (real (args(0).complex_matrix_value ()));
-	  else
-	    sm = SparseMatrix (args(0).matrix_value ());
+        {
+          if (args(0).is_complex_type ())
+            sm = SparseMatrix (real (args(0).complex_matrix_value ()));
+          else
+            sm = SparseMatrix (args(0).matrix_value ());
 
-	  n_row = sm.rows ();
-	  n_col = sm.cols ();
-	  nnz = sm.nzmax ();
-	  ridx = sm.xridx ();
-	  cidx = sm.xcidx ();
-	}
+          n_row = sm.rows ();
+          n_col = sm.cols ();
+          nnz = sm.nzmax ();
+          ridx = sm.xridx ();
+          cidx = sm.xcidx ();
+        }
 
       // Allocate workspace for colamd
       OCTAVE_LOCAL_BUFFER (octave_idx_type, p, n_col+1);
       for (octave_idx_type i = 0; i < n_col+1; i++)
-	p[i] = cidx [i];
+        p[i] = cidx [i];
 
       octave_idx_type Alen = COLAMD_NAME (_recommended) (nnz, n_row, n_col);
       OCTAVE_LOCAL_BUFFER (octave_idx_type, A, Alen);
       for (octave_idx_type i = 0; i < nnz; i++)
-	A[i] = ridx [i];
+        A[i] = ridx [i];
 
       // Order the columns (destroys A)
       OCTAVE_LOCAL_BUFFER (octave_idx_type, stats, COLAMD_STATS);
       if (! COLAMD_NAME () (n_row, n_col, Alen, A, p, knobs, stats))
-	{
-	  COLAMD_NAME (_report) (stats) ;
-	  error ("colamd: internal error!");
-	  return retval;
-	}
+        {
+          COLAMD_NAME (_report) (stats) ;
+          error ("colamd: internal error!");
+          return retval;
+        }
 
       // column elimination tree post-ordering (reuse variables)
       OCTAVE_LOCAL_BUFFER (octave_idx_type, colbeg, n_col + 1);
@@ -401,10 +401,10 @@ Ng, Oak Ridge National Laboratory.  (see\n\
       OCTAVE_LOCAL_BUFFER (octave_idx_type, etree, n_col + 1);
 
       for (octave_idx_type i = 0; i < n_col; i++)
-	{
-	  colbeg[i] = cidx[p[i]];
-	  colend[i] = cidx[p[i]+1];
-	}
+        {
+          colbeg[i] = cidx[p[i]];
+          colend[i] = cidx[p[i]+1];
+        }
 
       coletree (ridx, colbeg, colend, etree, n_row, n_col);
 
@@ -414,28 +414,28 @@ Ng, Oak Ridge National Laboratory.  (see\n\
       // return the permutation vector
       NDArray out_perm (dim_vector (1, n_col));
       for (octave_idx_type i = 0; i < n_col; i++)
-	out_perm(i) = p [colbeg [i]] + 1;
+        out_perm(i) = p [colbeg [i]] + 1;
 
       retval(0) = out_perm;
 
       // print stats if spumoni > 0
       if (spumoni > 0)
-	COLAMD_NAME (_report) (stats) ;
+        COLAMD_NAME (_report) (stats) ;
 
       // Return the stats vector
       if (nargout == 2)
-	{
-	  NDArray out_stats (dim_vector (1, COLAMD_STATS));
-	  for (octave_idx_type i = 0 ; i < COLAMD_STATS ; i++)
-	    out_stats (i) = stats [i] ;
-	  retval(1) = out_stats;
+        {
+          NDArray out_stats (dim_vector (1, COLAMD_STATS));
+          for (octave_idx_type i = 0 ; i < COLAMD_STATS ; i++)
+            out_stats (i) = stats [i] ;
+          retval(1) = out_stats;
 
-	  // fix stats (5) and (6), for 1-based information on 
-	  // jumbled matrix.  note that this correction doesn't 
-	  // occur if symamd returns FALSE
-	  out_stats (COLAMD_INFO1) ++ ; 
-	  out_stats (COLAMD_INFO2) ++ ; 
-	}
+          // fix stats (5) and (6), for 1-based information on 
+          // jumbled matrix.  note that this correction doesn't 
+          // occur if symamd returns FALSE
+          out_stats (COLAMD_INFO1) ++ ; 
+          out_stats (COLAMD_INFO2) ++ ; 
+        }
     }
 
 #else
@@ -529,20 +529,20 @@ Ng, Oak Ridge National Laboratory.  (see\n\
 
       // Check for user-passed knobs
       if (nargin == 2)
-	{
-	  NDArray User_knobs = args(1).array_value ();
-	  int nel_User_knobs = User_knobs.length ();
-	  
-	  if (nel_User_knobs > 0) 
-	    knobs [COLAMD_DENSE_ROW] = User_knobs (COLAMD_DENSE_ROW);
-	  if (nel_User_knobs > 1) 
-	    spumoni = static_cast<int> (User_knobs (1));
-	}
+        {
+          NDArray User_knobs = args(1).array_value ();
+          int nel_User_knobs = User_knobs.length ();
+          
+          if (nel_User_knobs > 0) 
+            knobs [COLAMD_DENSE_ROW] = User_knobs (COLAMD_DENSE_ROW);
+          if (nel_User_knobs > 1) 
+            spumoni = static_cast<int> (User_knobs (1));
+        }
 
       // print knob settings if spumoni is set
       if (spumoni > 0)
-	octave_stdout << "symamd: dense row/col fraction: " 
-		      << knobs [COLAMD_DENSE_ROW] << std::endl;
+        octave_stdout << "symamd: dense row/col fraction: " 
+                      << knobs [COLAMD_DENSE_ROW] << std::endl;
       
       octave_idx_type n_row, n_col, nnz;
       octave_idx_type *ridx, *cidx;
@@ -550,55 +550,55 @@ Ng, Oak Ridge National Laboratory.  (see\n\
       SparseComplexMatrix scm;
 
       if (args(0).is_sparse_type ())
-	{
-	  if (args(0).is_complex_type ())
-	    {
-	      scm = args(0).sparse_complex_matrix_value ();
-	      n_row = scm.rows ();
-	      n_col = scm.cols ();
-	      nnz = scm.nzmax ();
-	      ridx = scm.xridx ();
-	      cidx = scm.xcidx ();
-	    }
-	  else
-	    {
-	      sm = args(0).sparse_matrix_value ();
-	      n_row = sm.rows ();
-	      n_col = sm.cols ();
-	      nnz = sm.nzmax ();
-	      ridx = sm.xridx ();
-	      cidx = sm.xcidx ();
-	    }
-	}
+        {
+          if (args(0).is_complex_type ())
+            {
+              scm = args(0).sparse_complex_matrix_value ();
+              n_row = scm.rows ();
+              n_col = scm.cols ();
+              nnz = scm.nzmax ();
+              ridx = scm.xridx ();
+              cidx = scm.xcidx ();
+            }
+          else
+            {
+              sm = args(0).sparse_matrix_value ();
+              n_row = sm.rows ();
+              n_col = sm.cols ();
+              nnz = sm.nzmax ();
+              ridx = sm.xridx ();
+              cidx = sm.xcidx ();
+            }
+        }
       else
-	{
-	  if (args(0).is_complex_type ())
-	    sm = SparseMatrix (real (args(0).complex_matrix_value ()));
-	  else
-	    sm = SparseMatrix (args(0).matrix_value ());
-	  
-	  n_row = sm.rows ();
-	  n_col = sm.cols ();
-	  nnz = sm.nzmax ();
-	  ridx = sm.xridx ();
-	  cidx = sm.xcidx ();
-	}
+        {
+          if (args(0).is_complex_type ())
+            sm = SparseMatrix (real (args(0).complex_matrix_value ()));
+          else
+            sm = SparseMatrix (args(0).matrix_value ());
+          
+          n_row = sm.rows ();
+          n_col = sm.cols ();
+          nnz = sm.nzmax ();
+          ridx = sm.xridx ();
+          cidx = sm.xcidx ();
+        }
 
       if (n_row != n_col)
-	{
-	  error ("symamd: matrix must be square");
-	  return retval;
-	}
+        {
+          error ("symamd: matrix must be square");
+          return retval;
+        }
 
       // Allocate workspace for symamd
       OCTAVE_LOCAL_BUFFER (octave_idx_type, perm, n_col+1);
       OCTAVE_LOCAL_BUFFER (octave_idx_type, stats, COLAMD_STATS);
       if (!SYMAMD_NAME () (n_col, ridx, cidx, perm, knobs, stats, &calloc, &free))
-	{
-	  SYMAMD_NAME (_report) (stats) ;
-	  error ("symamd: internal error!") ;
-	  return retval;
-	}
+        {
+          SYMAMD_NAME (_report) (stats) ;
+          error ("symamd: internal error!") ;
+          return retval;
+        }
 
       // column elimination tree post-ordering
       OCTAVE_LOCAL_BUFFER (octave_idx_type, etree, n_col + 1);
@@ -611,28 +611,28 @@ Ng, Oak Ridge National Laboratory.  (see\n\
       // return the permutation vector
       NDArray out_perm (dim_vector (1, n_col));
       for (octave_idx_type i = 0; i < n_col; i++)
-	out_perm(i) = perm [post [i]] + 1;
+        out_perm(i) = perm [post [i]] + 1;
 
       retval(0) = out_perm;
 
       // print stats if spumoni > 0
       if (spumoni > 0)
-	SYMAMD_NAME (_report) (stats) ;
+        SYMAMD_NAME (_report) (stats) ;
 
       // Return the stats vector
       if (nargout == 2)
-	{
-	  NDArray out_stats (dim_vector (1, COLAMD_STATS));
-	  for (octave_idx_type i = 0 ; i < COLAMD_STATS ; i++)
-	    out_stats (i) = stats [i] ;
-	  retval(1) = out_stats;
+        {
+          NDArray out_stats (dim_vector (1, COLAMD_STATS));
+          for (octave_idx_type i = 0 ; i < COLAMD_STATS ; i++)
+            out_stats (i) = stats [i] ;
+          retval(1) = out_stats;
 
-	  // fix stats (5) and (6), for 1-based information on 
-	  // jumbled matrix.  note that this correction doesn't 
-	  // occur if symamd returns FALSE
-	  out_stats (COLAMD_INFO1) ++ ; 
-	  out_stats (COLAMD_INFO2) ++ ; 
-	}
+          // fix stats (5) and (6), for 1-based information on 
+          // jumbled matrix.  note that this correction doesn't 
+          // occur if symamd returns FALSE
+          out_stats (COLAMD_INFO1) ++ ; 
+          out_stats (COLAMD_INFO2) ++ ; 
+        }
     }
 
 #else
@@ -675,98 +675,98 @@ permutations on the tree.\n\
       SparseComplexMatrix scm;
 
       if (args(0).is_sparse_type ())
-	{
-	  if (args(0).is_complex_type ())
-	    {
-	      scm = args(0).sparse_complex_matrix_value ();
-	      n_row = scm.rows ();
-	      n_col = scm.cols ();
-	      nnz = scm.nzmax ();
-	      ridx = scm.xridx ();
-	      cidx = scm.xcidx ();
-	    }
-	  else
-	    {
-	      sm = args(0).sparse_matrix_value ();
-	      n_row = sm.rows ();
-	      n_col = sm.cols ();
-	      nnz = sm.nzmax ();
-	      ridx = sm.xridx ();
-	      cidx = sm.xcidx ();
-	    }
+        {
+          if (args(0).is_complex_type ())
+            {
+              scm = args(0).sparse_complex_matrix_value ();
+              n_row = scm.rows ();
+              n_col = scm.cols ();
+              nnz = scm.nzmax ();
+              ridx = scm.xridx ();
+              cidx = scm.xcidx ();
+            }
+          else
+            {
+              sm = args(0).sparse_matrix_value ();
+              n_row = sm.rows ();
+              n_col = sm.cols ();
+              nnz = sm.nzmax ();
+              ridx = sm.xridx ();
+              cidx = sm.xcidx ();
+            }
 
-	}
+        }
       else
-	{
-	  error ("etree: must be called with a sparse matrix");
-	  return retval;
-	}
+        {
+          error ("etree: must be called with a sparse matrix");
+          return retval;
+        }
 
       if (nargin == 2)
-	{
-	  if (args(1).is_string ())
-	    {
-	      std::string str = args(1).string_value ();
-	      if (str.find ("C") == 0 || str.find ("c") == 0)
-		is_sym = false;
-	    }
-	  else
-	    {
-	      error ("etree: second argument must be a string");
-	      return retval;
-	    }
-	}
+        {
+          if (args(1).is_string ())
+            {
+              std::string str = args(1).string_value ();
+              if (str.find ("C") == 0 || str.find ("c") == 0)
+                is_sym = false;
+            }
+          else
+            {
+              error ("etree: second argument must be a string");
+              return retval;
+            }
+        }
 
       // column elimination tree post-ordering (reuse variables)
       OCTAVE_LOCAL_BUFFER (octave_idx_type, etree, n_col + 1);
 
       if (is_sym)
-	{
-	  if (n_row != n_col)
-	    {
-	      error ("etree: matrix is marked as symmetric, but not square");
-	      return retval;
-	    }
+        {
+          if (n_row != n_col)
+            {
+              error ("etree: matrix is marked as symmetric, but not square");
+              return retval;
+            }
 
-	  symetree (ridx, cidx, etree, 0, n_col);
-	}
+          symetree (ridx, cidx, etree, 0, n_col);
+        }
       else
-	{
-	  OCTAVE_LOCAL_BUFFER (octave_idx_type, colbeg, n_col);
-	  OCTAVE_LOCAL_BUFFER (octave_idx_type, colend, n_col);
+        {
+          OCTAVE_LOCAL_BUFFER (octave_idx_type, colbeg, n_col);
+          OCTAVE_LOCAL_BUFFER (octave_idx_type, colend, n_col);
 
-	  for (octave_idx_type i = 0; i < n_col; i++)
-	    {
-	      colbeg[i] = cidx[i];
-	      colend[i] = cidx[i+1];
-	    }
+          for (octave_idx_type i = 0; i < n_col; i++)
+            {
+              colbeg[i] = cidx[i];
+              colend[i] = cidx[i+1];
+            }
 
-	  coletree (ridx, colbeg, colend, etree, n_row, n_col);
-	}
+          coletree (ridx, colbeg, colend, etree, n_row, n_col);
+        }
 
       NDArray tree (dim_vector (1, n_col));
       for (octave_idx_type i = 0; i < n_col; i++)
-	// We flag a root with n_col while Matlab does it with zero
-	// Convert for matlab compatiable output
-	if (etree[i] == n_col)
-	  tree(i) = 0;
-	else
-	  tree(i) = etree[i] + 1;
+        // We flag a root with n_col while Matlab does it with zero
+        // Convert for matlab compatiable output
+        if (etree[i] == n_col)
+          tree(i) = 0;
+        else
+          tree(i) = etree[i] + 1;
 
       retval(0) = tree;
 
       if (nargout == 2)
-	{
-	  // Calculate the tree post-ordering
-	  OCTAVE_LOCAL_BUFFER (octave_idx_type, post, n_col + 1);
-	  tree_postorder (n_col, etree, post);
+        {
+          // Calculate the tree post-ordering
+          OCTAVE_LOCAL_BUFFER (octave_idx_type, post, n_col + 1);
+          tree_postorder (n_col, etree, post);
 
-	  NDArray postorder (dim_vector (1, n_col));
-	  for (octave_idx_type i = 0; i < n_col; i++)
-	    postorder(i) = post[i] + 1;
+          NDArray postorder (dim_vector (1, n_col));
+          for (octave_idx_type i = 0; i < n_col; i++)
+            postorder(i) = post[i] + 1;
 
-	  retval(1) = postorder;
-	}
+          retval(1) = postorder;
+        }
     }
 
   return retval;

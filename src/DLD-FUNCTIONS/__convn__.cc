@@ -82,7 +82,7 @@ convn (const MTa& a, const MTb& b)
   dim_vector out_size (a_size);
   for (octave_idx_type n = 0; n < ndims; n++)
     out_size(n) = std::max (a_size(n) - b_size(n) + 1,
-			    static_cast<octave_idx_type> (0));
+                            static_cast<octave_idx_type> (0));
 
   typedef typename octave_convn_traits<MTa, MTb>::TR MTout;
 
@@ -139,99 +139,99 @@ Undocumented internal function.\n\
   if (args.length () == 2)
     {
       if (args(0).is_single_type() || args(1).is_single_type())
-	{
-	  if (args(0).is_real_type ())
-	    {
-	      if (args(1).is_real_type ())
-		{
-		  const FloatNDArray a = args (0).float_array_value ();
-		  const FloatNDArray b = args (1).float_array_value ();
+        {
+          if (args(0).is_real_type ())
+            {
+              if (args(1).is_real_type ())
+                {
+                  const FloatNDArray a = args (0).float_array_value ();
+                  const FloatNDArray b = args (1).float_array_value ();
 
-		  if (! error_state)
-		    retval = convn (a, b);
-		}
-	      else if (args(1).is_complex_type ())
-		{
-		  const FloatNDArray a = args (0).float_array_value ();
-		  const FloatComplexNDArray b = args (1).float_complex_array_value ();
+                  if (! error_state)
+                    retval = convn (a, b);
+                }
+              else if (args(1).is_complex_type ())
+                {
+                  const FloatNDArray a = args (0).float_array_value ();
+                  const FloatComplexNDArray b = args (1).float_complex_array_value ();
 
-		  if (! error_state)
-		    retval = convn (a, b);
-		}
-	      else
-		error ("__convn__: invalid call");
-	    }
-	  else if (args(0).is_complex_type ())
-	    {
-	      if (args(1).is_complex_type ())
-		{
-		  const FloatComplexNDArray a = args (0).float_complex_array_value ();
-		  const FloatComplexNDArray b = args (1).float_complex_array_value ();
+                  if (! error_state)
+                    retval = convn (a, b);
+                }
+              else
+                error ("__convn__: invalid call");
+            }
+          else if (args(0).is_complex_type ())
+            {
+              if (args(1).is_complex_type ())
+                {
+                  const FloatComplexNDArray a = args (0).float_complex_array_value ();
+                  const FloatComplexNDArray b = args (1).float_complex_array_value ();
 
-		  if (! error_state)
-		    retval = convn (a, b);
-		}
-	      else if (args(1).is_real_type ())
-		{
-		  const FloatComplexNDArray a = args (0).float_complex_array_value ();
-		  const FloatNDArray b = args (1).float_array_value ();
+                  if (! error_state)
+                    retval = convn (a, b);
+                }
+              else if (args(1).is_real_type ())
+                {
+                  const FloatComplexNDArray a = args (0).float_complex_array_value ();
+                  const FloatNDArray b = args (1).float_array_value ();
 
-		  if (! error_state)
-		    retval = convn (a, b);
-		}
-	      else
-		error ("__convn__: invalid call");
-	    }
-	  else
-	    error ("__convn__: invalid call");
-	}
+                  if (! error_state)
+                    retval = convn (a, b);
+                }
+              else
+                error ("__convn__: invalid call");
+            }
+          else
+            error ("__convn__: invalid call");
+        }
       else
-	{
-	  if (args(0).is_real_type ())
-	    {
-	      if (args(1).is_real_type ())
-		{
-		  const NDArray a = args (0).array_value ();
-		  const NDArray b = args (1).array_value ();
+        {
+          if (args(0).is_real_type ())
+            {
+              if (args(1).is_real_type ())
+                {
+                  const NDArray a = args (0).array_value ();
+                  const NDArray b = args (1).array_value ();
 
-		  if (! error_state)
-		    retval = convn (a, b);
-		}
-	      else if (args(1).is_complex_type ())
-		{
-		  const NDArray a = args (0).array_value ();
-		  const ComplexNDArray b = args (1).complex_array_value ();
+                  if (! error_state)
+                    retval = convn (a, b);
+                }
+              else if (args(1).is_complex_type ())
+                {
+                  const NDArray a = args (0).array_value ();
+                  const ComplexNDArray b = args (1).complex_array_value ();
 
-		  if (! error_state)
-		    retval = convn (a, b);
-		}
-	      else
-		error ("__convn__: invalid call");
-	    }
-	  else if (args(0).is_complex_type ())
-	    {
-	      if (args(1).is_complex_type ())
-		{
-		  const ComplexNDArray a = args (0).complex_array_value ();
-		  const ComplexNDArray b = args (1).complex_array_value ();
+                  if (! error_state)
+                    retval = convn (a, b);
+                }
+              else
+                error ("__convn__: invalid call");
+            }
+          else if (args(0).is_complex_type ())
+            {
+              if (args(1).is_complex_type ())
+                {
+                  const ComplexNDArray a = args (0).complex_array_value ();
+                  const ComplexNDArray b = args (1).complex_array_value ();
 
-		  if (! error_state)
-		    retval = convn (a, b);
-		}
-	      else if (args(1).is_real_type ())
-		{
-		  const ComplexNDArray a = args (0).complex_array_value ();
-		  const NDArray b = args (1).array_value ();
+                  if (! error_state)
+                    retval = convn (a, b);
+                }
+              else if (args(1).is_real_type ())
+                {
+                  const ComplexNDArray a = args (0).complex_array_value ();
+                  const NDArray b = args (1).array_value ();
 
-		  if (! error_state)
-		    retval = convn (a, b);
-		}
-	      else
-		error ("__convn__: invalid call");
-	    }
-	  else
-	    error ("__convn__: invalid call");
-	}
+                  if (! error_state)
+                    retval = convn (a, b);
+                }
+              else
+                error ("__convn__: invalid call");
+            }
+          else
+            error ("__convn__: invalid call");
+        }
     }
   else
     print_usage ();

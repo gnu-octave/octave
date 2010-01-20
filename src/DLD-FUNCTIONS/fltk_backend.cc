@@ -132,23 +132,23 @@ private:
   {
     if (! valid ())
       {
-	valid (1);
-	setup_viewport (w (), h ());
+        valid (1);
+        setup_viewport (w (), h ());
       }
 
     if (! print_filename.empty ())
       {
-	opengl_renderer *rend = new glps_renderer (print_filename);
-	rend->draw (gh_manager::lookup (number));
-	print_filename = "";
-	delete rend;
+        opengl_renderer *rend = new glps_renderer (print_filename);
+        rend->draw (gh_manager::lookup (number));
+        print_filename = "";
+        delete rend;
       }
     else
       {
-	renderer.draw (gh_manager::lookup (number));
+        renderer.draw (gh_manager::lookup (number));
 
-	if (zoom ())
-	  overlay ();
+        if (zoom ())
+          overlay ();
       }
   }
 
@@ -204,12 +204,12 @@ private:
     switch (event)
       {
       case FL_ENTER:
-	window ()->cursor (FL_CURSOR_CROSS);
-	return 1;
+        window ()->cursor (FL_CURSOR_CROSS);
+        return 1;
 
       case FL_LEAVE:
-	window ()->cursor (FL_CURSOR_DEFAULT);
-	return 1;
+        window ()->cursor (FL_CURSOR_DEFAULT);
+        return 1;
       }
 
     return retval;
@@ -230,37 +230,37 @@ public:
     begin ();
     {
       canvas = new
-	OpenGL_fltk (0, 0, _w , _h - status_h, number ());
+        OpenGL_fltk (0, 0, _w , _h - status_h, number ());
 
       autoscale = new
-	Fl_Button (0,
-		   _h - status_h,
-		   status_h,
-		   status_h,
-		   "A");
+        Fl_Button (0,
+                   _h - status_h,
+                   status_h,
+                   status_h,
+                   "A");
       autoscale->callback (button_callback, static_cast<void*> (this));
 
       togglegrid = new
-	Fl_Button (status_h,
-		   _h - status_h,
-		   status_h,
-		   status_h,
-		   "G");
+        Fl_Button (status_h,
+                   _h - status_h,
+                   status_h,
+                   status_h,
+                   "G");
       togglegrid->callback (button_callback, static_cast<void*> (this));
 
       help = new
-	Fl_Button (2*status_h,
-		   _h - status_h,
-		   status_h,
-		   status_h,
-		   "?");
+        Fl_Button (2*status_h,
+                   _h - status_h,
+                   status_h,
+                   status_h,
+                   "?");
       help->callback (button_callback, static_cast<void*> (this));
 
       status = new
-	Fl_Output (3*status_h,
-		   _h - status_h,
-		   _w > 2*status_h ? _w - status_h : 0,
-		   status_h, "");
+        Fl_Output (3*status_h,
+                   _h - status_h,
+                   _w > 2*status_h ? _w - status_h : 0,
+                   status_h, "");
 
       status->textcolor (FL_BLACK);
       status->color (FL_GRAY);
@@ -394,11 +394,11 @@ private:
   {
     if (ax && ax.isa ("axes"))
       {
-	axes::properties& ap =
-	  dynamic_cast<axes::properties&> (ax.get_properties ());
-	ColumnVector pp = ap.pixel2coord (px, py);
-	xx = pp(0);
-	yy = pp(1);
+        axes::properties& ap =
+          dynamic_cast<axes::properties&> (ax.get_properties ());
+        ColumnVector pp = ap.pixel2coord (px, py);
+        xx = pp(0);
+        yy = pp(1);
       }
   }
 
@@ -409,35 +409,35 @@ private:
 
     for (int k = 0; k < len; k++)
       {
-	graphics_handle hnd = gh_manager::lookup (kids(k));
+        graphics_handle hnd = gh_manager::lookup (kids(k));
 
-	if (hnd.ok ())
-	  {
-	    graphics_object kid = gh_manager::get_object (hnd);
+        if (hnd.ok ())
+          {
+            graphics_object kid = gh_manager::get_object (hnd);
 
-	    if (kid.valid_object () && kid.isa ("axes"))
-	      {
-		Matrix bb = kid.get_properties ().get_boundingbox (true);
+            if (kid.valid_object () && kid.isa ("axes"))
+              {
+                Matrix bb = kid.get_properties ().get_boundingbox (true);
 
-		if (bb(0) <= px && px < (bb(0)+bb(2))
-		    && bb(1) <= py && py < (bb(1)+bb(3)))
-		  {
-		    return hnd;
-		  }
-	      }
-	  }
+                if (bb(0) <= px && px < (bb(0)+bb(2))
+                    && bb(1) <= py && py < (bb(1)+bb(3)))
+                  {
+                    return hnd;
+                  }
+              }
+          }
       }
     return fp.get_currentaxes ();
   }
   
   void pixel2status (graphics_handle ax, int px0, int py0,
-		     int px1 = -1, int py1 = -1)
+                     int px1 = -1, int py1 = -1)
   {
     pixel2status (gh_manager::get_object (ax), px0, py0, px1, py1);
   }
 
   void pixel2status (graphics_object ax, int px0, int py0,
-		     int px1 = -1, int py1 = -1)
+                     int px1 = -1, int py1 = -1)
   {
     double x0, y0, x1, y1;
     std::stringstream cbuf;
@@ -446,8 +446,8 @@ private:
     cbuf << "[" << x0 << ", " << y0 << "]";
     if (px1 >= 0)
       {
-	pixel2pos (ax, px1, py1, x1, y1);
-	cbuf << " -> ["<< x1 << ", " << y1 << "]";
+        pixel2pos (ax, px1, py1, x1, y1);
+        cbuf << " -> ["<< x1 << ", " << y1 << "]";
       }
 
     status->value (cbuf.str ().c_str ());
@@ -490,43 +490,43 @@ private:
     switch (event)
       {
       case FL_KEYDOWN:
-	switch(Fl::event_key ())
-	  {
-	  case 'a':
-	  case 'A':
-	    axis_auto ();
-	    break;
+        switch(Fl::event_key ())
+          {
+          case 'a':
+          case 'A':
+            axis_auto ();
+            break;
 
-	  case 'g':
-	  case 'G':
-	    toggle_grid ();
-	    break;
-	  }
-	break;
+          case 'g':
+          case 'G':
+            toggle_grid ();
+            break;
+          }
+        break;
 
       case FL_MOVE:
-	pixel2status (pixel2axes_or_ca (Fl::event_x (), Fl::event_y ()),
-		      Fl::event_x (), Fl::event_y ());
-	break;
+        pixel2status (pixel2axes_or_ca (Fl::event_x (), Fl::event_y ()),
+                      Fl::event_x (), Fl::event_y ());
+        break;
 
       case FL_PUSH:
-	if (Fl::event_button () == 1 || Fl::event_button () == 3)
-	  {
-	    px0 = Fl::event_x ();
-	    py0 = Fl::event_y ();
-	    ax0 = gh_manager::get_object (pixel2axes_or_ca (px0, py0));
-	    return 1;
-	  }
-	break;
+        if (Fl::event_button () == 1 || Fl::event_button () == 3)
+          {
+            px0 = Fl::event_x ();
+            py0 = Fl::event_y ();
+            ax0 = gh_manager::get_object (pixel2axes_or_ca (px0, py0));
+            return 1;
+          }
+        break;
 
       case FL_DRAG:
-	pixel2status (ax0, px0, py0, Fl::event_x (), Fl::event_y ());
-	if (Fl::event_button () == 1)
-	  {
+        pixel2status (ax0, px0, py0, Fl::event_x (), Fl::event_y ());
+        if (Fl::event_button () == 1)
+          {
             if (ax0 && ax0.isa ("axes"))
               {
                 axes::properties& ap = 
-		  dynamic_cast<axes::properties&> (ax0.get_properties ());
+                  dynamic_cast<axes::properties&> (ax0.get_properties ());
               
                 double x0, y0, x1, y1;
                 pixel2pos (ax0, px0, py0, x0, y0);
@@ -537,35 +537,35 @@ private:
                 ap.translate_view (x0 - x1, y0 - y1);
                 mark_modified ();
               }
-	    return 1;
-	  }
-	else if (Fl::event_button () == 3)
-	  {
-	    Matrix zoom_box (1,4,0);
-	    zoom_box (0) = px0;
-	    zoom_box (1) = py0;
-	    zoom_box (2) =  Fl::event_x ();
-	    zoom_box (3) =  Fl::event_y ();
-	    canvas->set_zoom_box (zoom_box);
-	    canvas->zoom (true);
-	    canvas->redraw ();
-	  }
+            return 1;
+          }
+        else if (Fl::event_button () == 3)
+          {
+            Matrix zoom_box (1,4,0);
+            zoom_box (0) = px0;
+            zoom_box (1) = py0;
+            zoom_box (2) =  Fl::event_x ();
+            zoom_box (3) =  Fl::event_y ();
+            canvas->set_zoom_box (zoom_box);
+            canvas->zoom (true);
+            canvas->redraw ();
+          }
 
-	break;
+        break;
 
       case FL_MOUSEWHEEL:
         {
-	  graphics_object ax = 
-	    gh_manager::get_object (pixel2axes_or_ca (Fl::event_x (), 
-						      Fl::event_y ()));                                                                      
+          graphics_object ax = 
+            gh_manager::get_object (pixel2axes_or_ca (Fl::event_x (), 
+                                                      Fl::event_y ()));                                                                      
           if (ax && ax.isa ("axes"))
             {
               axes::properties& ap = 
-		dynamic_cast<axes::properties&> (ax.get_properties ());
+                dynamic_cast<axes::properties&> (ax.get_properties ());
               
               // Determine if we're zooming in or out.
               const double factor = 
-		(Fl::event_dy () > 0) ? 1.0 + wheel_zoom_speed : 1.0 - wheel_zoom_speed;
+                (Fl::event_dy () > 0) ? 1.0 + wheel_zoom_speed : 1.0 - wheel_zoom_speed;
               
               // Get the point we're zooming about.
               double x1, y1;
@@ -574,66 +574,66 @@ private:
               ap.zoom_about_point (x1, y1, factor, false);
               mark_modified ();
             }
-	}
+        }
       return 1;
 
       case FL_RELEASE:
-	if (Fl::event_button () == 1)
-	  {
-	    if ( Fl::event_clicks () == 1)
-	      {
-		if (ax0 && ax0.isa ("axes"))
-		  {
-		    axes::properties& ap =
-		      dynamic_cast<axes::properties&> (ax0.get_properties ());
-		    ap.set_xlimmode("auto");
-		    ap.set_ylimmode("auto");
-		    ap.set_zlimmode("auto");
-		    mark_modified ();
-		  }
-	      }
-	  }
-	if (Fl::event_button () == 3)
-	  {
-	    // End of drag -- zoom.
-	    if (canvas->zoom ())
-	      {
-		canvas->zoom (false);
-		double x0,y0,x1,y1;
-		if (ax0 && ax0.isa ("axes"))
-		  {
-		    axes::properties& ap =
-		      dynamic_cast<axes::properties&> (ax0.get_properties ());
-		    pixel2pos (ax0, px0, py0, x0, y0);
-		    pixel2pos (ax0, Fl::event_x (), Fl::event_y (), x1, y1);
-		    Matrix xl (1,2,0);
-		    Matrix yl (1,2,0);
-		    if (x0 < x1)
-		      {
-			xl(0) = x0;
-			xl(1) = x1;
-		      }
-		    else
-		      {
-			xl(0) = x1;
-			xl(1) = x0;
-		      }
-		    if (y0 < y1)
-		      {
-			yl(0) = y0;
-			yl(1) = y1;
-		      }
-		    else
-		      {
-			yl(0) = y1;
-			yl(1) = y0;
-		      }
-		    ap.zoom (xl, yl);
-		    mark_modified ();
-		  }
-	      }
-	  }
-	break;
+        if (Fl::event_button () == 1)
+          {
+            if ( Fl::event_clicks () == 1)
+              {
+                if (ax0 && ax0.isa ("axes"))
+                  {
+                    axes::properties& ap =
+                      dynamic_cast<axes::properties&> (ax0.get_properties ());
+                    ap.set_xlimmode("auto");
+                    ap.set_ylimmode("auto");
+                    ap.set_zlimmode("auto");
+                    mark_modified ();
+                  }
+              }
+          }
+        if (Fl::event_button () == 3)
+          {
+            // End of drag -- zoom.
+            if (canvas->zoom ())
+              {
+                canvas->zoom (false);
+                double x0,y0,x1,y1;
+                if (ax0 && ax0.isa ("axes"))
+                  {
+                    axes::properties& ap =
+                      dynamic_cast<axes::properties&> (ax0.get_properties ());
+                    pixel2pos (ax0, px0, py0, x0, y0);
+                    pixel2pos (ax0, Fl::event_x (), Fl::event_y (), x1, y1);
+                    Matrix xl (1,2,0);
+                    Matrix yl (1,2,0);
+                    if (x0 < x1)
+                      {
+                        xl(0) = x0;
+                        xl(1) = x1;
+                      }
+                    else
+                      {
+                        xl(0) = x1;
+                        xl(1) = x0;
+                      }
+                    if (y0 < y1)
+                      {
+                        yl(0) = y0;
+                        yl(1) = y1;
+                      }
+                    else
+                      {
+                        yl(0) = y1;
+                        yl(1) = y0;
+                      }
+                    ap.zoom (xl, yl);
+                    mark_modified ();
+                  }
+              }
+          }
+        break;
       }
 
     return retval;
@@ -653,9 +653,9 @@ public:
 
     if (! instance)
       {
-	::error ("unable to create figure_manager object!");
+        ::error ("unable to create figure_manager object!");
 
-	retval = false;
+        retval = false;
       }
 
     return retval;
@@ -772,9 +772,9 @@ private:
     int idx = figprops2idx (fp);
     if (idx >= 0 && windows.find (idx) == windows.end ())
       {
-	default_size (x, y, w, h);
-	idx2figprops (curr_index , fp);
-	windows[curr_index++] = new plot_window (x, y, w, h, fp);
+        default_size (x, y, w, h);
+        idx2figprops (curr_index , fp);
+        windows[curr_index++] = new plot_window (x, y, w, h, fp);
       }
   }
 
@@ -783,8 +783,8 @@ private:
     wm_iterator win;
     if ((win = windows.find (idx)) != windows.end ())
       {
-	delete win->second;
-	windows.erase (win);
+        delete win->second;
+        windows.erase (win);
       }
   }
 
@@ -807,7 +807,7 @@ private:
     wm_iterator win;
     if ((win = windows.find (idx)) != windows.end ())
       {
-	win->second->mark_modified ();
+        win->second->mark_modified ();
       }
   }
 
@@ -816,7 +816,7 @@ private:
     wm_iterator win;
     if ((win = windows.find (idx)) != windows.end ())
       {
-	win->second->set_name ();
+        win->second->set_name ();
       }
   }
 
@@ -827,8 +827,8 @@ private:
     wm_iterator win;
     if ((win = windows.find (idx)) != windows.end ())
       {
-	sz(0) = win->second->w ();
-	sz(1) = win->second->h ();
+        sz(0) = win->second->w ();
+        sz(1) = win->second->h ();
       }
 
     return sz;
@@ -839,7 +839,7 @@ private:
     wm_iterator win;
     if ((win = windows.find (idx)) != windows.end ())
       {
-	win->second->print (filename);
+        win->second->print (filename);
       }
   }
 
@@ -857,9 +857,9 @@ private:
     int ind;
     if (clstr.find (fltk_idx_header,0) == 0)
       {
-	std::istringstream istr (clstr.substr (fltk_idx_header.size ()));
-	if (istr >> ind)
-	  return ind;
+        std::istringstream istr (clstr.substr (fltk_idx_header.size ()));
+        if (istr >> ind)
+          return ind;
       }
     error ("fltk_backend: could not recognize fltk index");
     return -1;
@@ -876,11 +876,11 @@ private:
   {
     if (fp.get___backend__ () == FLTK_BACKEND_NAME)
       {
-	octave_value ps = fp.get___plot_stream__ ();
-	if (ps.is_string ())
-	  return str2idx (ps.string_value ());
-	else
-	  return 0;
+        octave_value ps = fp.get___plot_stream__ ();
+        if (ps.is_string ())
+          return str2idx (ps.string_value ());
+        else
+          return 0;
       }
     error ("fltk_backend:: figure is not fltk");
     return -1;
@@ -891,9 +891,9 @@ private:
     graphics_object fobj = gh_manager::get_object (h);
     if (fobj &&  fobj.isa ("figure"))
       {
-	figure::properties& fp =
-	  dynamic_cast<figure::properties&> (fobj.get_properties ());
-	return figprops2idx (fp);
+        figure::properties& fp =
+          dynamic_cast<figure::properties&> (fobj.get_properties ());
+        return figprops2idx (fp);
       }
     error ("fltk_backend:: not a figure");
     return -1;
@@ -920,22 +920,22 @@ __fltk_redraw__ (void)
       // we scan all figures and add those which use FLTK as a backend
       graphics_object obj = gh_manager::get_object (0);
       if (obj && obj.isa ("root"))
-	{
-	  base_properties& props = obj.get_properties ();
-	  Matrix children = props.get_children ();
+        {
+          base_properties& props = obj.get_properties ();
+          Matrix children = props.get_children ();
 
-	  for (octave_idx_type n = 0; n < children.numel (); n++)
-	    {
-	      graphics_object fobj = gh_manager::get_object (children (n));
-	      if (fobj && fobj.isa ("figure"))
-		{
-		  figure::properties& fp =
-		      dynamic_cast<figure::properties&> (fobj.get_properties ());
-		  if (fp.get___backend__ () == FLTK_BACKEND_NAME)
-		    figure_manager::new_window (fp);
-		}
-	    }
-	}
+          for (octave_idx_type n = 0; n < children.numel (); n++)
+            {
+              graphics_object fobj = gh_manager::get_object (children (n));
+              if (fobj && fobj.isa ("figure"))
+                {
+                  figure::properties& fp =
+                      dynamic_cast<figure::properties&> (fobj.get_properties ());
+                  if (fp.get___backend__ () == FLTK_BACKEND_NAME)
+                    figure_manager::new_window (fp);
+                }
+            }
+        }
 
       Fl::wait (fltk_maxtime);
     }
@@ -957,8 +957,8 @@ public:
   {
     if (go.isa ("figure"))
       {
-	octave_value ov = go.get (caseless_str ("__plot_stream__"));
-	figure_manager::delete_window (ov.string_value ());
+        octave_value ov = go.get (caseless_str ("__plot_stream__"));
+        figure_manager::delete_window (ov.string_value ());
       }
   }
 
@@ -966,25 +966,25 @@ public:
   {
     if (go.isa ("figure"))
       {
-	octave_value ov = go.get (caseless_str ("__plot_stream__"));
-	
-	if (! ov.is_empty ())
-	  {
+        octave_value ov = go.get (caseless_str ("__plot_stream__"));
+        
+        if (! ov.is_empty ())
+          {
             const figure::properties& fp =
               dynamic_cast<const figure::properties&> (go.get_properties ());
             
-	    switch (id)
-	      {
-	      case base_properties::VISIBLE:
+            switch (id)
+              {
+              case base_properties::VISIBLE:
                 figure_manager::toggle_window_visibility (ov.string_value (), fp.is_visible ());
-		break;
+                break;
 
               case figure::properties::NAME:
               case figure::properties::NUMBERTITLE:
                 figure_manager::set_name (ov.string_value ());
                 break;
-	      }
-	  }
+              }
+          }
       }
   }
 
@@ -996,9 +996,9 @@ public:
   }
 
   void print_figure (const graphics_object& go,
-		     const std::string& /*term*/,
-		     const std::string& file, bool /*mono*/,
-		     const std::string& /*debug_file*/) const 
+                     const std::string& /*term*/,
+                     const std::string& file, bool /*mono*/,
+                     const std::string& /*debug_file*/) const 
   { 
     figure_manager::print (go.get_handle (), file);
   }
@@ -1081,7 +1081,7 @@ DEFUN_DLD (__remove_fltk__, , , "")
     }
 
   octave_value retval;
-  return retval;	
+  return retval;        
 }
 
 DEFUN_DLD (__fltk_maxtime__, args, ,"")

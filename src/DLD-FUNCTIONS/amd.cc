@@ -97,111 +97,111 @@ University of Florida (see @url{http://www.cise.ufl.edu/research/sparse/amd}).\n
       SparseComplexMatrix scm;
 
       if (args(0).is_sparse_type ())
-	{
-	  if (args(0).is_complex_type ())
-	    {
-	      scm = args(0).sparse_complex_matrix_value ();
-	      n_row = scm.rows ();
-	      n_col = scm.cols ();
-	      nnz = scm.nzmax ();
-	      ridx = scm.xridx ();
-	      cidx = scm.xcidx ();
-	    }
-	  else
-	    {
-	      sm = args(0).sparse_matrix_value ();
-	      n_row = sm.rows ();
-	      n_col = sm.cols ();
-	      nnz = sm.nzmax ();
-	      ridx = sm.xridx ();
-	      cidx = sm.xcidx ();
-	    }
-	}
+        {
+          if (args(0).is_complex_type ())
+            {
+              scm = args(0).sparse_complex_matrix_value ();
+              n_row = scm.rows ();
+              n_col = scm.cols ();
+              nnz = scm.nzmax ();
+              ridx = scm.xridx ();
+              cidx = scm.xcidx ();
+            }
+          else
+            {
+              sm = args(0).sparse_matrix_value ();
+              n_row = sm.rows ();
+              n_col = sm.cols ();
+              nnz = sm.nzmax ();
+              ridx = sm.xridx ();
+              cidx = sm.xcidx ();
+            }
+        }
       else
-	{
-	  if (args(0).is_complex_type ())
-	    sm = SparseMatrix (real (args(0).complex_matrix_value ()));
-	  else
-	    sm = SparseMatrix (args(0).matrix_value ());
-	  
-	  n_row = sm.rows ();
-	  n_col = sm.cols ();
-	  nnz = sm.nzmax ();
-	  ridx = sm.xridx ();
-	  cidx = sm.xcidx ();
-	}
+        {
+          if (args(0).is_complex_type ())
+            sm = SparseMatrix (real (args(0).complex_matrix_value ()));
+          else
+            sm = SparseMatrix (args(0).matrix_value ());
+          
+          n_row = sm.rows ();
+          n_col = sm.cols ();
+          nnz = sm.nzmax ();
+          ridx = sm.xridx ();
+          cidx = sm.xcidx ();
+        }
 
       if (!error_state && n_row != n_col)
-	error ("amd: input matrix must be square");
+        error ("amd: input matrix must be square");
 
       if (!error_state)
-	{
-	  OCTAVE_LOCAL_BUFFER (double, Control, AMD_CONTROL);
-	  AMD_NAME (_defaults) (Control) ;
-	  if (nargin > 1)
-	    {
-	      Octave_map arg1 = args(1).map_value ();
-	  
-	      if (!error_state)
-		{
-		  if (arg1.contains ("dense"))
-		    {
-		      Cell c = arg1.contents ("dense");
-		      if (c.length() == 1)
-			Control[AMD_DENSE] = c.elem(0).double_value ();
-		      else
-			error ("amd: invalid options structure");
-		    }
-		  if (arg1.contains ("aggressive"))
-		    {
-		      Cell c = arg1.contents ("aggressive");
-		      if (c.length() == 1)
-			Control[AMD_AGGRESSIVE] = c.elem(0).double_value ();
-		      else
-			error ("amd: invalid options structure");
-		    }
-		}
-	    }
+        {
+          OCTAVE_LOCAL_BUFFER (double, Control, AMD_CONTROL);
+          AMD_NAME (_defaults) (Control) ;
+          if (nargin > 1)
+            {
+              Octave_map arg1 = args(1).map_value ();
+          
+              if (!error_state)
+                {
+                  if (arg1.contains ("dense"))
+                    {
+                      Cell c = arg1.contents ("dense");
+                      if (c.length() == 1)
+                        Control[AMD_DENSE] = c.elem(0).double_value ();
+                      else
+                        error ("amd: invalid options structure");
+                    }
+                  if (arg1.contains ("aggressive"))
+                    {
+                      Cell c = arg1.contents ("aggressive");
+                      if (c.length() == 1)
+                        Control[AMD_AGGRESSIVE] = c.elem(0).double_value ();
+                      else
+                        error ("amd: invalid options structure");
+                    }
+                }
+            }
 
-	  if (!error_state)
-	    {
-	      OCTAVE_LOCAL_BUFFER (octave_idx_type, P, n_col);
-	      Matrix xinfo (AMD_INFO, 1);
-	      double *Info = xinfo.fortran_vec ();
+          if (!error_state)
+            {
+              OCTAVE_LOCAL_BUFFER (octave_idx_type, P, n_col);
+              Matrix xinfo (AMD_INFO, 1);
+              double *Info = xinfo.fortran_vec ();
 
-	      // FIXME -- how can we manage the memory allocation of
-	      // amd in a cleaner manner? 
-	      amd_malloc = malloc;
-	      amd_free = free;
-	      amd_calloc = calloc;
-	      amd_realloc = realloc;
-	      amd_printf = printf;
+              // FIXME -- how can we manage the memory allocation of
+              // amd in a cleaner manner? 
+              amd_malloc = malloc;
+              amd_free = free;
+              amd_calloc = calloc;
+              amd_realloc = realloc;
+              amd_printf = printf;
 
-	      octave_idx_type result = AMD_NAME (_order) (n_col, cidx, ridx, P,
-							  Control, Info);
+              octave_idx_type result = AMD_NAME (_order) (n_col, cidx, ridx, P,
+                                                          Control, Info);
 
-	      switch (result)
-		{
-		case AMD_OUT_OF_MEMORY:
-		  error ("amd: out of memory");
-		  break;
-		case AMD_INVALID:
-		  error ("amd: input matrix is corrupted");
-		  break;
-		default:
-		  {
-		    if (nargout > 1)
-		      retval(1) = xinfo;
+              switch (result)
+                {
+                case AMD_OUT_OF_MEMORY:
+                  error ("amd: out of memory");
+                  break;
+                case AMD_INVALID:
+                  error ("amd: input matrix is corrupted");
+                  break;
+                default:
+                  {
+                    if (nargout > 1)
+                      retval(1) = xinfo;
 
-		    Matrix Pout (1, n_col);
-		    for (octave_idx_type i = 0; i < n_col; i++)
-		      Pout.xelem (i) = P[i] + 1;
+                    Matrix Pout (1, n_col);
+                    for (octave_idx_type i = 0; i < n_col; i++)
+                      Pout.xelem (i) = P[i] + 1;
 
-		    retval (0) = Pout;
-		  }
-		}
-	    }
-	}
+                    retval (0) = Pout;
+                  }
+                }
+            }
+        }
     }
 #else
 

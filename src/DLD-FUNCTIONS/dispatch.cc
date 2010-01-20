@@ -57,17 +57,17 @@ some other function for the given type signature.\n\
       const std::string name (args(0).string_value ());
  
       if (! error_state)
-	{
-	  octave_value fcn = symbol_table::builtin_find (name);
+        {
+          octave_value fcn = symbol_table::builtin_find (name);
 
-	  if (fcn.is_defined ())
-	    retval = feval (fcn.function_value (), args.splice (0, 1),
-			    nargout);
-	  else
-	    error ("builtin: lookup for symbol `%s' failed", name.c_str ());
-	}
+          if (fcn.is_defined ())
+            retval = feval (fcn.function_value (), args.splice (0, 1),
+                            nargout);
+          else
+            error ("builtin: lookup for symbol `%s' failed", name.c_str ());
+        }
       else
-	error ("builtin: expecting function name as first argument");
+        error ("builtin: expecting function name as first argument");
     }
   else
     print_usage ();
@@ -101,78 +101,78 @@ for @var{f}.\n\
   if (nargin > 0 && nargin < 4)
     {
       if (nargin > 0)
-	{
-	  f = args(0).string_value ();
+        {
+          f = args(0).string_value ();
 
-	  if (error_state)
-	    {
-	      error ("dispatch: expecting first argument to be function name");
-	      return retval;
-	    }
-	}
+          if (error_state)
+            {
+              error ("dispatch: expecting first argument to be function name");
+              return retval;
+            }
+        }
 
       if (nargin > 1)
-	{
-	  r = args(1).string_value ();
+        {
+          r = args(1).string_value ();
 
-	  if (error_state)
-	    {
-	      error ("dispatch: expecting second argument to be function name");
-	      return retval;
-	    }
-	}
+          if (error_state)
+            {
+              error ("dispatch: expecting second argument to be function name");
+              return retval;
+            }
+        }
 
       if (nargin > 2)
-	{
-	  t = args(2).string_value ();
+        {
+          t = args(2).string_value ();
 
-	  if (error_state)
-	    {
-	      error ("dispatch: expecting third argument to be type name");
-	      return retval;
-	    }
-	}
+          if (error_state)
+            {
+              error ("dispatch: expecting third argument to be type name");
+              return retval;
+            }
+        }
 
       if (nargin == 1)
-	{
-	  if (nargout > 0)
-	    {
-	      symbol_table::fcn_info::dispatch_map_type dm
-		= symbol_table::get_dispatch (f);
+        {
+          if (nargout > 0)
+            {
+              symbol_table::fcn_info::dispatch_map_type dm
+                = symbol_table::get_dispatch (f);
 
-	      size_t len = dm.size ();
+              size_t len = dm.size ();
 
-	      Cell type_field (len, 1);
-	      Cell name_field (len, 1);
+              Cell type_field (len, 1);
+              Cell name_field (len, 1);
 
-	      symbol_table::fcn_info::dispatch_map_type::const_iterator p
-		= dm.begin ();
+              symbol_table::fcn_info::dispatch_map_type::const_iterator p
+                = dm.begin ();
 
-	      for (size_t i = 0; i < len; i++)
-		{
-		  type_field(i) = p->first;
-		  name_field(i) = p->second;
+              for (size_t i = 0; i < len; i++)
+                {
+                  type_field(i) = p->first;
+                  name_field(i) = p->second;
 
-		  p++;
-		}
+                  p++;
+                }
 
-	      Octave_map m;
+              Octave_map m;
 
-	      m.assign ("type", type_field);
-	      m.assign ("name", name_field);
+              m.assign ("type", type_field);
+              m.assign ("name", name_field);
 
-	      retval = m;
-	    }
-	  else
-	    symbol_table::print_dispatch (octave_stdout, f);
-	}
+              retval = m;
+            }
+          else
+            symbol_table::print_dispatch (octave_stdout, f);
+        }
       else if (nargin == 2)
-	{
-	  t = r;
-	  symbol_table::clear_dispatch (f, t);
-	}
+        {
+          t = r;
+          symbol_table::clear_dispatch (f, t);
+        }
       else
-	symbol_table::add_dispatch (f, t, r);
+        symbol_table::add_dispatch (f, t, r);
     }
   else
     print_usage ();

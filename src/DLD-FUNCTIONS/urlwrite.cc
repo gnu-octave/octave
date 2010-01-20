@@ -91,55 +91,55 @@ private:
     curl_handle_rep (void) : count (1), valid (true), ascii (false)
       {
         curl = curl_easy_init ();
-	if (!curl)
-	  error ("can not create curl handle");
+        if (!curl)
+          error ("can not create curl handle");
       }
 
     ~curl_handle_rep (void)
       {
-	if (curl)
-	  curl_easy_cleanup (curl);
+        if (curl)
+          curl_easy_cleanup (curl);
       }
 
     bool is_valid (void) const
       {
-	return valid;
+        return valid;
       }
 
     bool perform (bool curlerror) const
       {
-	bool retval = false;
-	if (!error_state)
-	  {
-	    BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+        bool retval = false;
+        if (!error_state)
+          {
+            BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
-	    CURLcode res = curl_easy_perform (curl);
-	    if (res != CURLE_OK)
-	      {
-		if (curlerror)
-		  error ("%s", curl_easy_strerror (res));
-	      }
-	    else
-	      retval = true;
+            CURLcode res = curl_easy_perform (curl);
+            if (res != CURLE_OK)
+              {
+                if (curlerror)
+                  error ("%s", curl_easy_strerror (res));
+              }
+            else
+              retval = true;
 
-	    END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-	  }
-	return retval;
+            END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+          }
+        return retval;
       }
 
     CURL* handle (void) const
       {
-	return curl;
+        return curl;
       }
 
     bool is_ascii (void) const
       {
-	return ascii;
+        return ascii;
       }
 
     bool is_binary (void) const
       {
-	return !ascii;
+        return !ascii;
       }
 
     size_t count;
@@ -175,7 +175,7 @@ public:
     }
 
   curl_handle (const std::string& _host, const std::string& user, 
-	       const std::string& passwd) :
+               const std::string& passwd) :
     rep (new curl_handle_rep ())
     {
       rep->host = _host;
@@ -186,11 +186,11 @@ public:
 
       // Setup the link, with no transfer
       if (!error_state)
-	perform ();
+        perform ();
     }
 
   curl_handle (const std::string& url, const std::string& method, 
-	       const Cell& param, std::ostream& os, bool& retval) :
+               const Cell& param, std::ostream& os, bool& retval) :
     rep (new curl_handle_rep ())
     {
       retval = false;
@@ -204,20 +204,20 @@ public:
       std::string query_string = form_query_string (param);
 
       if (method == "get")
-	{
-	  query_string = url + "?" + query_string;
-	  setopt (CURLOPT_URL, query_string.c_str ());
-	}
+        {
+          query_string = url + "?" + query_string;
+          setopt (CURLOPT_URL, query_string.c_str ());
+        }
       else if (method == "post")
-	{
-	  setopt (CURLOPT_URL, url.c_str ());
-	  setopt (CURLOPT_POSTFIELDS, query_string.c_str ());
-	}
+        {
+          setopt (CURLOPT_URL, url.c_str ());
+          setopt (CURLOPT_POSTFIELDS, query_string.c_str ());
+        }
       else
-	setopt (CURLOPT_URL, url.c_str());
+        setopt (CURLOPT_URL, url.c_str());
 
       if (!error_state)
-	retval = perform (false);
+        retval = perform (false);
     }
 
   curl_handle (const curl_handle& h) : rep (h.rep)
@@ -228,19 +228,19 @@ public:
   ~curl_handle (void)
     {
       if (--rep->count == 0)
-	delete rep;
+        delete rep;
     }
 
   curl_handle& operator = (const curl_handle& h)
     {
       if (this != &h)
-	{
-	  if (--rep->count == 0)
-	    delete rep;
+        {
+          if (--rep->count == 0)
+            delete rep;
 
-	  rep = h.rep;
-	  rep->count++;
-	}
+          rep = h.rep;
+          rep->count++;
+        }
       return *this;
     }
 
@@ -297,7 +297,7 @@ public:
       slist = curl_slist_append (slist, cmd.c_str());
       setopt (CURLOPT_POSTQUOTE, slist);
       if (! error_state)
-	perform ();
+        perform ();
       setopt (CURLOPT_POSTQUOTE, 0);
       curl_slist_free_all (slist);
     }
@@ -309,7 +309,7 @@ public:
       slist = curl_slist_append (slist, cmd.c_str());
       setopt (CURLOPT_POSTQUOTE, slist);
       if (! error_state)
-	perform ();
+        perform ();
       setopt (CURLOPT_POSTQUOTE, 0);
       curl_slist_free_all (slist);
     }
@@ -321,7 +321,7 @@ public:
       slist = curl_slist_append (slist, cmd.c_str());
       setopt (CURLOPT_POSTQUOTE, slist);
       if (! error_state)
-	perform ();
+        perform ();
       setopt (CURLOPT_POSTQUOTE, 0);
       curl_slist_free_all (slist);
     }
@@ -334,7 +334,7 @@ public:
       slist = curl_slist_append (slist, cmd.c_str());
       setopt (CURLOPT_POSTQUOTE, slist);
       if (! error_state)
-	retval = perform (curlerror);
+        retval = perform (curlerror);
       setopt (CURLOPT_POSTQUOTE, 0);
       curl_slist_free_all (slist);
       return retval;
@@ -349,7 +349,7 @@ public:
       slist = curl_slist_append (slist, cmd.c_str());
       setopt (CURLOPT_POSTQUOTE, slist);
       if (! error_state)
-	perform ();
+        perform ();
       setopt (CURLOPT_POSTQUOTE, 0);
       curl_slist_free_all (slist);
     }
@@ -362,7 +362,7 @@ public:
       setopt (CURLOPT_NOBODY, 0);
       set_istream (is);
       if (! error_state)
-	perform ();
+        perform ();
       set_istream (std::cin);
       setopt (CURLOPT_NOBODY, 1);
       setopt (CURLOPT_UPLOAD, 0);
@@ -377,7 +377,7 @@ public:
       setopt (CURLOPT_NOBODY, 0);
       set_ostream (os);
       if (! error_state)
-	perform ();
+        perform ();
       set_ostream (octave_stdout);
       setopt (CURLOPT_NOBODY, 1);
       url = "ftp://" + rep->host;
@@ -390,7 +390,7 @@ public:
       setopt (CURLOPT_URL, url.c_str());
       setopt (CURLOPT_NOBODY, 0);
       if (! error_state)
-	perform ();
+        perform ();
       setopt (CURLOPT_NOBODY, 1);
       url = "ftp://" + rep->host;
       setopt (CURLOPT_URL, url.c_str());
@@ -405,7 +405,7 @@ public:
       setopt (CURLOPT_DIRLISTONLY, 1);
       setopt (CURLOPT_NOBODY, 0);
       if (! error_state)
-	perform ();
+        perform ();
       setopt (CURLOPT_NOBODY, 1);
       url = "ftp://" + rep->host;
       setopt (CURLOPT_WRITEDATA, static_cast<void*> (&octave_stdout));
@@ -417,29 +417,29 @@ public:
       octave_idx_type n = 0;
       size_t pos = 0;
       while (true)
-	{
-	  pos = str.find_first_of('\n', pos);
-	  if (pos == std::string::npos)
-	    break;
-	  pos++;
-	  n++;
-	}
+        {
+          pos = str.find_first_of('\n', pos);
+          if (pos == std::string::npos)
+            break;
+          pos++;
+          n++;
+        }
       string_vector retval (n);
       pos = 0;
       for (octave_idx_type i = 0; i < n; i++)
-	{
-	  size_t newpos = str.find_first_of('\n', pos);
-	  if (newpos == std::string::npos)
-	    break;
+        {
+          size_t newpos = str.find_first_of('\n', pos);
+          if (newpos == std::string::npos)
+            break;
 
-	  retval(i) = str.substr(pos, newpos - pos);
-	  pos = newpos + 1;
-	}
+          retval(i) = str.substr(pos, newpos - pos);
+          pos = newpos + 1;
+        }
       return retval;
     }
 
   void get_fileinfo (const std::string& filename, double& filesize, 
-		     time_t& filetime, bool& fileisdir) const
+                     time_t& filetime, bool& fileisdir) const
     {
       std::string path = pwd();
 
@@ -454,25 +454,25 @@ public:
       // so this is a means of testing for directories. It also means
       // I can't get the date of directories!
       if (! error_state)
-	{
-	  if (! perform (false))
-	    {
-	      fileisdir = true;
-	      filetime = -1;
-	      filesize = 0;
-	    }
-	  else
-	    {
-	      fileisdir = false;
-	      time_t ft;
-	      curl_easy_getinfo(rep->handle (), CURLINFO_FILETIME, &ft);
-	      filetime = ft;
-	      double fs;
-	      curl_easy_getinfo(rep->handle (), 
-				CURLINFO_CONTENT_LENGTH_DOWNLOAD, &fs);
-	      filesize = fs;
-	    }
-	}
+        {
+          if (! perform (false))
+            {
+              fileisdir = true;
+              filetime = -1;
+              filesize = 0;
+            }
+          else
+            {
+              fileisdir = false;
+              time_t ft;
+              curl_easy_getinfo(rep->handle (), CURLINFO_FILETIME, &ft);
+              filetime = ft;
+              double fs;
+              curl_easy_getinfo(rep->handle (), 
+                                CURLINFO_CONTENT_LENGTH_DOWNLOAD, &fs);
+              filesize = fs;
+            }
+        }
 
       setopt (CURLOPT_WRITEFUNCTION, write_data);
       setopt (CURLOPT_HEADERFUNCTION, 0);
@@ -499,15 +499,15 @@ public:
       setopt (CURLOPT_WRITEHEADER, static_cast<void *>(&buf));
 
       if (! error_state)
-	{
-	  perform ();
-	  retval = buf.str();
+        {
+          perform ();
+          retval = buf.str();
 
-	  // Can I assume that the path is alway in "" on the last line
-	  size_t pos2 = retval.rfind ('"');
-	  size_t pos1 = retval.rfind ('"', pos2 - 1);
-	  retval = retval.substr(pos1 + 1, pos2 - pos1 - 1);
-	}
+          // Can I assume that the path is alway in "" on the last line
+          size_t pos2 = retval.rfind ('"');
+          size_t pos1 = retval.rfind ('"', pos2 - 1);
+          retval = retval.substr(pos1 + 1, pos2 - pos1 - 1);
+        }
       setopt (CURLOPT_HEADERFUNCTION, 0);
       setopt (CURLOPT_WRITEHEADER, 0);
       setopt (CURLOPT_POSTQUOTE, 0);
@@ -529,24 +529,24 @@ private:
       std::ostringstream query;
 
       for (int i = 0; i < param.numel (); i += 2)
-	{
-	  std::string name = param(i).string_value ();
-	  std::string text = param(i+1).string_value ();
+        {
+          std::string name = param(i).string_value ();
+          std::string text = param(i+1).string_value ();
 
-	  // Encode strings.
-	  char *enc_name = curl_easy_escape (rep->handle(), name.c_str (), 
-					     name.length ());
-	  char *enc_text = curl_easy_escape (rep->handle(), text.c_str (), 
-					     text.length ());
+          // Encode strings.
+          char *enc_name = curl_easy_escape (rep->handle(), name.c_str (), 
+                                             name.length ());
+          char *enc_text = curl_easy_escape (rep->handle(), text.c_str (), 
+                                             text.length ());
 
-	  query << enc_name << "=" << enc_text;
+          query << enc_name << "=" << enc_text;
 
-	  curl_free (enc_name);
-	  curl_free (enc_text);
+          curl_free (enc_name);
+          curl_free (enc_text);
 
-	  if (i < param.numel()-1)
-	    query << "&";
-	}
+          if (i < param.numel()-1)
+            query << "&";
+        }
 
       query.flush ();
 
@@ -554,7 +554,7 @@ private:
     }
 
   void init (const std::string& user, const std::string& passwd, 
-	     std::istream& is, std::ostream& os) 
+             std::istream& is, std::ostream& os) 
     {
       // No data transfer by default
       setopt (CURLOPT_NOBODY, 1);
@@ -562,7 +562,7 @@ private:
       // Set the username and password
       std::string userpwd = user;
       if (! passwd.empty ())
-	userpwd += ":" + passwd;
+        userpwd += ":" + passwd;
       setopt (CURLOPT_USERPWD, userpwd.c_str ());
 
       // Define our callback to get called when there's data to be written.
@@ -613,7 +613,7 @@ public:
       // Remove the elements of the map explicitly as they should
       // be deleted before the call to curl_global_cleanup
       for (iterator pa = begin (); pa != end (); pa++)
-	map.erase (pa);
+        map.erase (pa);
 
       curl_global_cleanup ();
     }
@@ -651,7 +651,7 @@ public:
       iterator p = map.find (k);
 
       if (p != map.end ())
-	map.erase (p);
+        map.erase (p);
     }
 
 private:
@@ -769,25 +769,25 @@ urlwrite (\"http://www.google.com/search\", \"search.html\",\n\
         }
 
       if (method != "get" && method != "post")
-	{
-	  error ("urlwrite: method can only be \"get\" or \"post\"");
-	  return retval;
-	}
+        {
+          error ("urlwrite: method can only be \"get\" or \"post\"");
+          return retval;
+        }
 
       param = args(3).cell_value();
 
       if (error_state)
-	{
-	  error ("urlwrite: parameters for get and post requests must be given as a cell");
-	  return retval;
-	}
+        {
+          error ("urlwrite: parameters for get and post requests must be given as a cell");
+          return retval;
+        }
 
 
       if (param.numel () % 2 == 1 )
-	{
-	  error ("urlwrite: number of elements in param must be even");
-	  return retval;
-	}
+        {
+          error ("urlwrite: number of elements in param must be even");
+          return retval;
+        }
     }
 
   // The file should only be deleted if it doesn't initially exist, we
@@ -821,17 +821,17 @@ urlwrite (\"http://www.google.com/search\", \"search.html\",\n\
   if (nargout > 0)
     {
       if (res)
-	{
-	  retval(2) = std::string ();
-	  retval(1) = true;
-	  retval(0) = octave_env::make_absolute (filename, octave_env::getcwd ());
-	}
+        {
+          retval(2) = std::string ();
+          retval(1) = true;
+          retval(0) = octave_env::make_absolute (filename, octave_env::getcwd ());
+        }
       else
-	{
-	  retval(2) = curl.lasterror ();
-	  retval(1) = false;
-	  retval(0) = std::string ();
-	}
+        {
+          retval(2) = curl.lasterror ();
+          retval(1) = false;
+          retval(0) = std::string ();
+        }
     }
 
   if (nargout < 2 && res)
@@ -914,30 +914,30 @@ s = urlread (\"http://www.google.com/search\", \"get\",\n\
       method = args(1).string_value();
 
       if (error_state)
-	{
-	  error ("urlread: method can only be \"get\" or \"post\"");
-	  return retval;
-	}
+        {
+          error ("urlread: method can only be \"get\" or \"post\"");
+          return retval;
+        }
 
       if (method != "get" && method != "post")
-	{
-	  error ("urlread: method can only be \"get\" or \"post\"");
-	  return retval;
-	}
+        {
+          error ("urlread: method can only be \"get\" or \"post\"");
+          return retval;
+        }
 
       param = args(2).cell_value();
 
       if (error_state)
-	{
-	  error ("urlread: parameters for get and post requests must be given as a cell");
-	  return retval;
-	}
+        {
+          error ("urlread: parameters for get and post requests must be given as a cell");
+          return retval;
+        }
 
       if (param.numel () % 2 == 1 )
-	{
-	  error ("urlread: number of elements in param must be even");
-	  return retval;
-	}
+        {
+          error ("urlread: number of elements in param must be even");
+          return retval;
+        }
     }
 
   std::ostringstream buf;
@@ -985,18 +985,18 @@ Undocumented internal function\n\
       host = args(1).string_value ();
   
       if (nargin > 1)
-	user = args(2).string_value ();
+        user = args(2).string_value ();
 
       if (nargin > 2)
-	passwd = args(3).string_value ();
+        passwd = args(3).string_value ();
   
       if (!error_state)
-	{
-	  handles.contents (handle) = curl_handle (host, user, passwd);
-	  
-	  if (error_state)
-	    handles.del (handle);
-	}
+        {
+          handles.contents (handle) = curl_handle (host, user, passwd);
+          
+          if (error_state)
+            handles.del (handle);
+        }
     }
 #else
   error ("__ftp__: not available in this version of Octave");
@@ -1022,14 +1022,14 @@ Undocumented internal function\n\
       std::string handle = args(0).string_value ();
 
       if (!error_state)
-	{
-	  const curl_handle curl = handles.contents (handle);
+        {
+          const curl_handle curl = handles.contents (handle);
 
-	  if (curl.is_valid ())
-	    retval = curl.pwd ();
-	  else
-	    error ("__ftp_pwd__: invalid ftp handle");
-	}
+          if (curl.is_valid ())
+            retval = curl.pwd ();
+          else
+            error ("__ftp_pwd__: invalid ftp handle");
+        }
     }
 #else
   error ("__ftp_pwd__: not available in this version of Octave");
@@ -1055,17 +1055,17 @@ Undocumented internal function\n\
       std::string path = "";
 
       if (nargin > 1)
-	path  = args(1).string_value ();
+        path  = args(1).string_value ();
 
       if (!error_state)
-	{
-	  const curl_handle curl = handles.contents (handle);
+        {
+          const curl_handle curl = handles.contents (handle);
 
-	  if (curl.is_valid ())
-	    curl.cwd (path);
-	  else
-	    error ("__ftp_cwd__: invalid ftp handle");
-	}
+          if (curl.is_valid ())
+            curl.cwd (path);
+          else
+            error ("__ftp_cwd__: invalid ftp handle");
+        }
     }
 #else
   error ("__ftp_cwd__: not available in this version of Octave");
@@ -1091,61 +1091,61 @@ Undocumented internal function\n\
       std::string handle = args(0).string_value ();
 
       if (!error_state)
-	{
-	  const curl_handle curl = handles.contents (handle);
+        {
+          const curl_handle curl = handles.contents (handle);
 
-	  if (curl.is_valid ())
-	    {
-	      if (nargout == 0)
-		curl.dir ();
-	      else
-		{
-		  string_vector sv = curl.list ();
-		  octave_idx_type n = sv.length ();
-		  if (n == 0)
-		    {
-		      string_vector flds (5);
-		      flds(0) = "name";
-		      flds(1) = "date";
-		      flds(2) = "bytes";
-		      flds(3) = "isdir";
-		      flds(4) = "datenum";
-		      retval = Octave_map (flds); 
-		    }
-		  else
-		    {
-		      Octave_map st;
-		      Cell filectime (dim_vector (n, 1));
-		      Cell filesize (dim_vector (n, 1));
-		      Cell fileisdir (dim_vector (n, 1));
-		      Cell filedatenum (dim_vector (n, 1));
-		    
-		      st.assign ("name", Cell (sv));
+          if (curl.is_valid ())
+            {
+              if (nargout == 0)
+                curl.dir ();
+              else
+                {
+                  string_vector sv = curl.list ();
+                  octave_idx_type n = sv.length ();
+                  if (n == 0)
+                    {
+                      string_vector flds (5);
+                      flds(0) = "name";
+                      flds(1) = "date";
+                      flds(2) = "bytes";
+                      flds(3) = "isdir";
+                      flds(4) = "datenum";
+                      retval = Octave_map (flds); 
+                    }
+                  else
+                    {
+                      Octave_map st;
+                      Cell filectime (dim_vector (n, 1));
+                      Cell filesize (dim_vector (n, 1));
+                      Cell fileisdir (dim_vector (n, 1));
+                      Cell filedatenum (dim_vector (n, 1));
+                    
+                      st.assign ("name", Cell (sv));
 
-		      for (octave_idx_type i = 0; i < n; i++)
-			{
-			  time_t ftime;
-			  bool fisdir;
-			  double fsize;
-		      
-			  curl.get_fileinfo (sv(i), fsize, ftime, fisdir);
+                      for (octave_idx_type i = 0; i < n; i++)
+                        {
+                          time_t ftime;
+                          bool fisdir;
+                          double fsize;
+                      
+                          curl.get_fileinfo (sv(i), fsize, ftime, fisdir);
 
-			  fileisdir (i) = fisdir;
-			  filectime (i) = ctime (&ftime);
-			  filesize (i) = fsize;
-			  filedatenum (i) = double (ftime);
-			}
-		      st.assign ("date", filectime);
-		      st.assign ("bytes", filesize);
-		      st.assign ("isdir", fileisdir);
-		      st.assign ("datenum", filedatenum);
-		      retval = st;
-		    }
-		}
-	    }
-	  else
-	    error ("__ftp_dir__: invalid ftp handle");
-	}
+                          fileisdir (i) = fisdir;
+                          filectime (i) = ctime (&ftime);
+                          filesize (i) = fsize;
+                          filedatenum (i) = double (ftime);
+                        }
+                      st.assign ("date", filectime);
+                      st.assign ("bytes", filesize);
+                      st.assign ("isdir", fileisdir);
+                      st.assign ("datenum", filedatenum);
+                      retval = st;
+                    }
+                }
+            }
+          else
+            error ("__ftp_dir__: invalid ftp handle");
+        }
     }
 #else
   error ("__ftp_dir__: not available in this version of Octave");
@@ -1170,14 +1170,14 @@ Undocumented internal function\n\
       std::string handle = args(0).string_value ();
 
       if (!error_state)
-	{
-	  const curl_handle curl = handles.contents (handle);
+        {
+          const curl_handle curl = handles.contents (handle);
 
-	  if (curl.is_valid ())
-	    curl.ascii ();
-	  else
-	    error ("__ftp_ascii__: invalid ftp handle");
-	}
+          if (curl.is_valid ())
+            curl.ascii ();
+          else
+            error ("__ftp_ascii__: invalid ftp handle");
+        }
     }
 #else
   error ("__ftp_ascii__: not available in this version of Octave");
@@ -1202,14 +1202,14 @@ Undocumented internal function\n\
       std::string handle = args(0).string_value ();
 
       if (!error_state)
-	{
-	  const curl_handle curl = handles.contents (handle);
+        {
+          const curl_handle curl = handles.contents (handle);
 
-	  if (curl.is_valid ())
-	    curl.binary ();
-	  else
-	    error ("__ftp_binary__: invalid ftp handle");
-	}
+          if (curl.is_valid ())
+            curl.binary ();
+          else
+            error ("__ftp_binary__: invalid ftp handle");
+        }
     }
 #else
   error ("__ftp_binary__: not available in this version of Octave");
@@ -1234,7 +1234,7 @@ DEFUN_DLD (__ftp_close__, args, ,
        std::string handle = args(0).string_value ();
 
        if (!error_state)
-	 handles.del (handle);
+         handles.del (handle);
      }
  #else
    error ("__ftp_close__: not available in this version of Octave");
@@ -1261,14 +1261,14 @@ DEFUN_DLD (__ftp_mode__, args, ,
 
 
       if (!error_state)
-	{
-	  const curl_handle curl = handles.contents (handle);
+        {
+          const curl_handle curl = handles.contents (handle);
 
-	  if (curl.is_valid ())
-	    retval = (curl.is_ascii() ? "ascii" : "binary");
-	  else
-	    error ("__ftp_binary__: invalid ftp handle");
-	}
+          if (curl.is_valid ())
+            retval = (curl.is_ascii() ? "ascii" : "binary");
+          else
+            error ("__ftp_binary__: invalid ftp handle");
+        }
      }
  #else
    error ("__ftp_mode__: not available in this version of Octave");
@@ -1294,14 +1294,14 @@ Undocumented internal function\n\
       std::string file = args(1).string_value ();
 
       if (!error_state)
-	{
-	  const curl_handle curl = handles.contents (handle);
+        {
+          const curl_handle curl = handles.contents (handle);
 
-	  if (curl.is_valid ())
-	    curl.del (file);
-	  else
-	    error ("__ftp_delete__: invalid ftp handle");
-	}
+          if (curl.is_valid ())
+            curl.del (file);
+          else
+            error ("__ftp_delete__: invalid ftp handle");
+        }
     }
 #else
   error ("__ftp_delete__: not available in this version of Octave");
@@ -1327,14 +1327,14 @@ Undocumented internal function\n\
       std::string dir = args(1).string_value ();
 
       if (!error_state)
-	{
-	  const curl_handle curl = handles.contents (handle);
+        {
+          const curl_handle curl = handles.contents (handle);
 
-	  if (curl.is_valid ())
-	    curl.rmdir (dir);
-	  else
-	    error ("__ftp_rmdir__: invalid ftp handle");
-	}
+          if (curl.is_valid ())
+            curl.rmdir (dir);
+          else
+            error ("__ftp_rmdir__: invalid ftp handle");
+        }
     }
 #else
   error ("__ftp_rmdir__: not available in this version of Octave");
@@ -1360,14 +1360,14 @@ Undocumented internal function\n\
       std::string dir = args(1).string_value ();
 
       if (!error_state)
-	{
-	  const curl_handle curl = handles.contents (handle);
+        {
+          const curl_handle curl = handles.contents (handle);
 
-	  if (curl.is_valid ())
-	    curl.mkdir (dir);
-	  else
-	    error ("__ftp_mkdir__: invalid ftp handle");
-	}
+          if (curl.is_valid ())
+            curl.mkdir (dir);
+          else
+            error ("__ftp_mkdir__: invalid ftp handle");
+        }
     }
 #else
   error ("__ftp_mkdir__: not available in this version of Octave");
@@ -1394,14 +1394,14 @@ Undocumented internal function\n\
       std::string newname = args(2).string_value ();
 
       if (!error_state)
-	{
-	  const curl_handle curl = handles.contents (handle);
+        {
+          const curl_handle curl = handles.contents (handle);
 
-	  if (curl.is_valid ())
-	    curl.rename (oldname, newname);
-	  else
-	    error ("__ftp_rename__: invalid ftp handle");
-	}
+          if (curl.is_valid ())
+            curl.rename (oldname, newname);
+          else
+            error ("__ftp_rename__: invalid ftp handle");
+        }
     }
 #else
   error ("__ftp_rename__: not available in this version of Octave");
@@ -1413,14 +1413,14 @@ Undocumented internal function\n\
 #ifdef HAVE_CURL
 static string_vector
 mput_directory (const curl_handle& curl, const std::string& base,
-		const std::string& dir)
+                const std::string& dir)
 {
   string_vector retval;
 
   if (! curl.mkdir (dir, false))
     warning ("__ftp_mput__: can not create the remote directory ""%s""",
-	     (base.length() == 0 ? dir : base + 
-	      file_ops::dir_sep_str () + dir).c_str ());
+             (base.length() == 0 ? dir : base + 
+              file_ops::dir_sep_str () + dir).c_str ());
 
   curl.cwd (dir);
 
@@ -1431,65 +1431,65 @@ mput_directory (const curl_handle& curl, const std::string& base,
       frame.add_fcn (reset_path, curl);
 
       std::string realdir = base.length() == 0 ? dir : base + 
-			 file_ops::dir_sep_str () + dir;
+                         file_ops::dir_sep_str () + dir;
 
       dir_entry dirlist (realdir);
 
       if (dirlist)
-	{
-	  string_vector files = dirlist.read ();
+        {
+          string_vector files = dirlist.read ();
 
-	  for (octave_idx_type i = 0; i < files.length (); i++)
-	    {
-	      std::string file = files (i);
+          for (octave_idx_type i = 0; i < files.length (); i++)
+            {
+              std::string file = files (i);
 
-	      if (file == "." || file == "..")
-		continue;
+              if (file == "." || file == "..")
+                continue;
 
-	      std::string realfile = realdir + file_ops::dir_sep_str () + file;
-	      file_stat fs (realfile);
+              std::string realfile = realdir + file_ops::dir_sep_str () + file;
+              file_stat fs (realfile);
 
-	      if (! fs.exists ())
-		{
-		  error ("__ftp__mput: file ""%s"" does not exist", 
-			 realfile.c_str ());
-		  break;
-		}
+              if (! fs.exists ())
+                {
+                  error ("__ftp__mput: file ""%s"" does not exist", 
+                         realfile.c_str ());
+                  break;
+                }
 
-	      if (fs.is_dir ())
-		{
-		  retval.append (mput_directory (curl, realdir, file));
+              if (fs.is_dir ())
+                {
+                  retval.append (mput_directory (curl, realdir, file));
 
-		  if (error_state)
-		    break;
-		}
-	      else
-		{
-		  // FIXME Does ascii mode need to be flagged here?
-		  std::ifstream ifile (realfile.c_str(), std::ios::in | 
-				       std::ios::binary);
+                  if (error_state)
+                    break;
+                }
+              else
+                {
+                  // FIXME Does ascii mode need to be flagged here?
+                  std::ifstream ifile (realfile.c_str(), std::ios::in | 
+                                       std::ios::binary);
 
-		  if (! ifile.is_open ())
-		    {
-		      error ("__ftp_mput__: unable to open file ""%s""", 
-			     realfile.c_str ());
-		      break;
-		    }
+                  if (! ifile.is_open ())
+                    {
+                      error ("__ftp_mput__: unable to open file ""%s""", 
+                             realfile.c_str ());
+                      break;
+                    }
 
-		  curl.put (file, ifile);
+                  curl.put (file, ifile);
 
-		  ifile.close ();
+                  ifile.close ();
 
-		  if (error_state)
-		    break;
+                  if (error_state)
+                    break;
 
-		  retval.append (realfile);
-		}
-	    }
-	}
+                  retval.append (realfile);
+                }
+            }
+        }
       else
-	error ("__ftp_mput__: can not read the directory ""%s""", 
-	       realdir.c_str());
+        error ("__ftp_mput__: can not read the directory ""%s""", 
+               realdir.c_str());
     }
 
   return retval;
@@ -1515,58 +1515,58 @@ Undocumented internal function\n\
       std::string pat = args(1).string_value ();
 
       if (!error_state)
-	{
-	  const curl_handle curl = handles.contents (handle);
+        {
+          const curl_handle curl = handles.contents (handle);
 
-	  if (curl.is_valid ())
-	    {
-	      glob_match pattern (file_ops::tilde_expand (pat));
-	      string_vector files = pattern.glob ();
+          if (curl.is_valid ())
+            {
+              glob_match pattern (file_ops::tilde_expand (pat));
+              string_vector files = pattern.glob ();
 
-	      for (octave_idx_type i = 0; i < files.length (); i++)
-		{
-		  std::string file = files (i);
+              for (octave_idx_type i = 0; i < files.length (); i++)
+                {
+                  std::string file = files (i);
 
-		  file_stat fs (file);
+                  file_stat fs (file);
 
-		  if (! fs.exists ())
-		    {
-		      error ("__ftp__mput: file does not exist");
-		      break;
-		    }
+                  if (! fs.exists ())
+                    {
+                      error ("__ftp__mput: file does not exist");
+                      break;
+                    }
 
-		  if (fs.is_dir ())
-		    {
-		      retval.append (mput_directory (curl, "", file));
-		      if (error_state)
-			break;
-		    }
-		  else
-		    {
-		      // FIXME Does ascii mode need to be flagged here?
-		      std::ifstream ifile (file.c_str(), std::ios::in | 
-					   std::ios::binary);
+                  if (fs.is_dir ())
+                    {
+                      retval.append (mput_directory (curl, "", file));
+                      if (error_state)
+                        break;
+                    }
+                  else
+                    {
+                      // FIXME Does ascii mode need to be flagged here?
+                      std::ifstream ifile (file.c_str(), std::ios::in | 
+                                           std::ios::binary);
 
-		      if (! ifile.is_open ())
-			{
-			  error ("__ftp_mput__: unable to open file");
-			  break;
-			}
+                      if (! ifile.is_open ())
+                        {
+                          error ("__ftp_mput__: unable to open file");
+                          break;
+                        }
 
-		      curl.put (file, ifile);
+                      curl.put (file, ifile);
 
-		      ifile.close ();
+                      ifile.close ();
 
-		      if (error_state)
-			break;
+                      if (error_state)
+                        break;
 
-		      retval.append (file);
-		    }
-		}
-	    }
-	  else
-	    error ("__ftp_mput__: invalid ftp handle");
-	}
+                      retval.append (file);
+                    }
+                }
+            }
+          else
+            error ("__ftp_mput__: invalid ftp handle");
+        }
     }
 #else
   error ("__ftp_mput__: not available in this version of Octave");
@@ -1578,7 +1578,7 @@ Undocumented internal function\n\
 #ifdef HAVE_CURL
 static void
 getallfiles (const curl_handle& curl, const std::string& dir, 
-	     const std::string& target)
+             const std::string& target)
 {
   std::string sep = file_ops::dir_sep_str ();
   file_stat fs (dir);
@@ -1589,8 +1589,8 @@ getallfiles (const curl_handle& curl, const std::string& dir,
       int status = file_ops::mkdir (dir, 0777, msg);
 
       if (status < 0)
-	error ("__ftp_mget__: can't create directory %s%s%s. %s", 
-	       target.c_str(), sep.c_str(), dir.c_str(), msg.c_str());
+        error ("__ftp_mget__: can't create directory %s%s%s. %s", 
+               target.c_str(), sep.c_str(), dir.c_str(), msg.c_str());
     }
 
   if (! error_state)
@@ -1598,54 +1598,54 @@ getallfiles (const curl_handle& curl, const std::string& dir,
       curl.cwd (dir);
 
       if (! error_state)
-	{
+        {
           unwind_protect_safe frame;
 
-	  frame.add_fcn (reset_path, curl);
+          frame.add_fcn (reset_path, curl);
 
           string_vector sv = curl.list ();
 
-	  for (octave_idx_type i = 0; i < sv.length (); i++)
-	    {
-	      time_t ftime;
-	      bool fisdir;
-	      double fsize;
-		      
-	      curl.get_fileinfo (sv(i), fsize, ftime, fisdir);
+          for (octave_idx_type i = 0; i < sv.length (); i++)
+            {
+              time_t ftime;
+              bool fisdir;
+              double fsize;
+                      
+              curl.get_fileinfo (sv(i), fsize, ftime, fisdir);
 
-	      if (fisdir)
-		getallfiles (curl, sv(i), target + dir + sep);
-	      else
-		{
-		  std::string realfile = target + dir + sep + sv(i);
-		  std::ofstream ofile (realfile.c_str(), 
-				       std::ios::out | 
-				       std::ios::binary);
+              if (fisdir)
+                getallfiles (curl, sv(i), target + dir + sep);
+              else
+                {
+                  std::string realfile = target + dir + sep + sv(i);
+                  std::ofstream ofile (realfile.c_str(), 
+                                       std::ios::out | 
+                                       std::ios::binary);
 
-		  if (! ofile.is_open ())
-		    {
-		      error ("__ftp_mget__: unable to open file");
-		      break;
-		    }
+                  if (! ofile.is_open ())
+                    {
+                      error ("__ftp_mget__: unable to open file");
+                      break;
+                    }
 
                   unwind_protect_safe frame2;
 
-		  frame2.add_fcn (delete_file, realfile);
+                  frame2.add_fcn (delete_file, realfile);
 
-		  curl.get (sv(i), ofile);
+                  curl.get (sv(i), ofile);
 
-		  ofile.close ();
+                  ofile.close ();
 
-		  if (!error_state)
-		    frame2.discard ();
-		  else
-		    frame2.run ();
-		}
+                  if (!error_state)
+                    frame2.discard ();
+                  else
+                    frame2.run ();
+                }
 
-	      if (error_state)
-		break;
-	    }
-	}
+              if (error_state)
+                break;
+            }
+        }
     }
 }
 #endif
@@ -1668,66 +1668,66 @@ Undocumented internal function\n\
       std::string target;
 
       if (nargin == 3)
-	target = args(2).string_value () + file_ops::dir_sep_str ();
+        target = args(2).string_value () + file_ops::dir_sep_str ();
 
       if (! error_state)
-	{
-	  const curl_handle curl = handles.contents (handle);
+        {
+          const curl_handle curl = handles.contents (handle);
 
-	  if (curl.is_valid ())
-	    {
-	      string_vector sv = curl.list ();
-	      octave_idx_type n = 0;
-	      glob_match pattern (file);
+          if (curl.is_valid ())
+            {
+              string_vector sv = curl.list ();
+              octave_idx_type n = 0;
+              glob_match pattern (file);
 
-	      for (octave_idx_type i = 0; i < sv.length (); i++)
-		{
-		  if (pattern.match (sv(i)))
-		    {
-		      n++;
+              for (octave_idx_type i = 0; i < sv.length (); i++)
+                {
+                  if (pattern.match (sv(i)))
+                    {
+                      n++;
 
-		      time_t ftime;
-		      bool fisdir;
-		      double fsize;
-		      
-		      curl.get_fileinfo (sv(i), fsize, ftime, fisdir);
+                      time_t ftime;
+                      bool fisdir;
+                      double fsize;
+                      
+                      curl.get_fileinfo (sv(i), fsize, ftime, fisdir);
 
-		      if (fisdir)
-			getallfiles (curl, sv(i), target);
-		      else
-			{
-			  std::ofstream ofile ((target + sv(i)).c_str(),
-					       std::ios::out | 
-					       std::ios::binary);
+                      if (fisdir)
+                        getallfiles (curl, sv(i), target);
+                      else
+                        {
+                          std::ofstream ofile ((target + sv(i)).c_str(),
+                                               std::ios::out | 
+                                               std::ios::binary);
 
-			  if (! ofile.is_open ())
-			    {
-			      error ("__ftp_mget__: unable to open file");
-			      break;
-			    }
+                          if (! ofile.is_open ())
+                            {
+                              error ("__ftp_mget__: unable to open file");
+                              break;
+                            }
 
                           unwind_protect_safe frame;
 
-			  frame.add_fcn (delete_file, target + sv(i));
+                          frame.add_fcn (delete_file, target + sv(i));
 
-			  curl.get (sv(i), ofile);
+                          curl.get (sv(i), ofile);
 
-			  ofile.close ();
+                          ofile.close ();
 
-			  if (!error_state)
-			    frame.discard ();
-			  else
-			    frame.run ();
-			}
+                          if (!error_state)
+                            frame.discard ();
+                          else
+                            frame.run ();
+                        }
 
-		      if (error_state)
-			break;
-		    }
-		}
-	      if (n == 0)
-		error ("__ftp_mget__: file not found");
-	    }
-	}
+                      if (error_state)
+                        break;
+                    }
+                }
+              if (n == 0)
+                error ("__ftp_mget__: file not found");
+            }
+        }
     }
 #else
   error ("__ftp_mget__: not available in this version of Octave");

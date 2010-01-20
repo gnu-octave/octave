@@ -63,13 +63,13 @@ do_fft2 (const octave_value_list &args, const char *fcn, int type)
     {
       double dval = args(1).double_value ();
       if (xisnan (dval))
-	error ("%s: NaN is invalid as the N_ROWS", fcn);
+        error ("%s: NaN is invalid as the N_ROWS", fcn);
       else
-	{
-	  n_rows = NINTbig (dval);
-	  if (n_rows < 0)
-	    error ("%s: number of rows must be greater than zero", fcn);
-	}
+        {
+          n_rows = NINTbig (dval);
+          if (n_rows < 0)
+            error ("%s: number of rows must be greater than zero", fcn);
+        }
     }
 
   if (error_state)
@@ -80,13 +80,13 @@ do_fft2 (const octave_value_list &args, const char *fcn, int type)
     {
       double dval = args(2).double_value ();
       if (xisnan (dval))
-	error ("%s: NaN is invalid as the N_COLS", fcn);
+        error ("%s: NaN is invalid as the N_COLS", fcn);
       else
-	{
-	  n_cols = NINTbig (dval);
-	  if (n_cols < 0)
-	    error ("%s: number of columns must be greater than zero", fcn);
-	}
+        {
+          n_cols = NINTbig (dval);
+          if (n_cols < 0)
+            error ("%s: number of columns must be greater than zero", fcn);
+        }
     }
 
   if (error_state)
@@ -109,60 +109,60 @@ do_fft2 (const octave_value_list &args, const char *fcn, int type)
   if (dims.all_zero () || n_rows == 0 || n_cols == 0)
     {
       if (arg.is_single_type ())
-	return octave_value (FloatMatrix ());
+        return octave_value (FloatMatrix ());
       else
-	return octave_value (Matrix ());
+        return octave_value (Matrix ());
     }
 
   if (arg.is_single_type ())
     {
       if (arg.is_real_type ())
-	{
-	  FloatNDArray nda = arg.float_array_value ();
+        {
+          FloatNDArray nda = arg.float_array_value ();
 
-	  if (! error_state)
-	    {
-	      nda.resize (dims, 0.0);
-	      retval = (type != 0 ? nda.ifourier2d () : nda.fourier2d ());
-	    }
-	}
+          if (! error_state)
+            {
+              nda.resize (dims, 0.0);
+              retval = (type != 0 ? nda.ifourier2d () : nda.fourier2d ());
+            }
+        }
       else
-	{
-	  FloatComplexNDArray cnda = arg.float_complex_array_value ();
+        {
+          FloatComplexNDArray cnda = arg.float_complex_array_value ();
 
-	  if (! error_state)
-	    {
-	      cnda.resize (dims, 0.0);
-	      retval = (type != 0 ? cnda.ifourier2d () : cnda.fourier2d ());
-	    }
-	}
+          if (! error_state)
+            {
+              cnda.resize (dims, 0.0);
+              retval = (type != 0 ? cnda.ifourier2d () : cnda.fourier2d ());
+            }
+        }
     }
   else
     {
       if (arg.is_real_type ())
-	{
-	  NDArray nda = arg.array_value ();
+        {
+          NDArray nda = arg.array_value ();
 
-	  if (! error_state)
-	    {
-	      nda.resize (dims, 0.0);
-	      retval = (type != 0 ? nda.ifourier2d () : nda.fourier2d ());
-	    }
-	}
+          if (! error_state)
+            {
+              nda.resize (dims, 0.0);
+              retval = (type != 0 ? nda.ifourier2d () : nda.fourier2d ());
+            }
+        }
       else if (arg.is_complex_type ())
-	{
-	  ComplexNDArray cnda = arg.complex_array_value ();
+        {
+          ComplexNDArray cnda = arg.complex_array_value ();
 
-	  if (! error_state)
-	    {
-	      cnda.resize (dims, 0.0);
-	      retval = (type != 0 ? cnda.ifourier2d () : cnda.fourier2d ());
-	    }
-	}
+          if (! error_state)
+            {
+              cnda.resize (dims, 0.0);
+              retval = (type != 0 ? cnda.ifourier2d () : cnda.fourier2d ());
+            }
+        }
       else
-	{
-	  gripe_wrong_type_arg (fcn, arg);
-	}
+        {
+          gripe_wrong_type_arg (fcn, arg);
+        }
     }
 
   return retval;

@@ -61,7 +61,7 @@ char qh_version[] = "__delaunayn__.oct 2007-08-21";
 #endif
 
 DEFUN_DLD (__delaunayn__, args, ,
-	   "-*- texinfo -*-\n\
+           "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{T} =} __delaunayn__ (@var{P}[, @var{opt}])\n\
 Undocumented internal function.\n\
 @end deftypefn")
@@ -96,34 +96,34 @@ Undocumented internal function.\n\
     {
     if (args(1).is_empty ())
       {
-	// keep default options
+        // keep default options
       }
     else if (args(1).is_string ()) 
       {
-	// option string is directly provided
-	options = args(1).string_value ();
+        // option string is directly provided
+        options = args(1).string_value ();
       }
     else if (args(1).is_cell ()) 
       {
-	options = "";
+        options = "";
 
-	Cell c = args(1).cell_value ();
-	for (octave_idx_type i = 0; i < c.numel (); i++)
-	  {
+        Cell c = args(1).cell_value ();
+        for (octave_idx_type i = 0; i < c.numel (); i++)
+          {
 
-	    if (! c.elem(i).is_string ()) 
-	      {
-		error ("__delaunayn__: all options must be strings");
-		return retval;
-	      }
+            if (! c.elem(i).is_string ()) 
+              {
+                error ("__delaunayn__: all options must be strings");
+                return retval;
+              }
 
-	    options = options + c.elem(i).string_value () + " ";
-	  }
+            options = options + c.elem(i).string_value () + " ";
+          }
       }
     else 
       {
-	error ("__delaunayn__: second argument must be a string, cell of stringsor empty");
-	return retval;
+        error ("__delaunayn__: second argument must be a string, cell of stringsor empty");
+        return retval;
       }
     } 
 
@@ -146,67 +146,67 @@ Undocumented internal function.\n\
       FILE *errfile = stderr;
 
       if (! qh_new_qhull (dim, n, pt_array, ismalloc, flags, outfile, errfile))
-	{
-	  // triangulate non-simplicial facets
-	  qh_triangulate (); 
+        {
+          // triangulate non-simplicial facets
+          qh_triangulate (); 
 
-	  facetT *facet;
-	  vertexT *vertex, **vertexp;
-	  octave_idx_type nf = 0, i = 0;
+          facetT *facet;
+          vertexT *vertex, **vertexp;
+          octave_idx_type nf = 0, i = 0;
 
-	  FORALLfacets
-	    {
-	      if (! facet->upperdelaunay)
-		nf++;
+          FORALLfacets
+            {
+              if (! facet->upperdelaunay)
+                nf++;
 
-	      // Double check
-	      if (! facet->simplicial) 
-		{
-		  error ("__delaunayn__: Qhull returned non-simplicial facets -- try delaunayn with different options");
-		  break;
-		}
-	    }
+              // Double check
+              if (! facet->simplicial) 
+                {
+                  error ("__delaunayn__: Qhull returned non-simplicial facets -- try delaunayn with different options");
+                  break;
+                }
+            }
 
-	  Matrix simpl (nf, dim+1);
+          Matrix simpl (nf, dim+1);
 
-	  FORALLfacets
-	    {
-	      if (! facet->upperdelaunay) 
-		{
-		  octave_idx_type j = 0;
+          FORALLfacets
+            {
+              if (! facet->upperdelaunay) 
+                {
+                  octave_idx_type j = 0;
 
-		  FOREACHvertex_ (facet->vertices)
-		    {
-		      // if delaunayn crashes, enable this check
+                  FOREACHvertex_ (facet->vertices)
+                    {
+                      // if delaunayn crashes, enable this check
 #if 0
-		      if (j > dim)
-			{
-			  error ("__delaunayn__: internal error. Qhull returned non-simplicial facets");
-			  return retval;
-			}
+                      if (j > dim)
+                        {
+                          error ("__delaunayn__: internal error. Qhull returned non-simplicial facets");
+                          return retval;
+                        }
 #endif
 
-		      simpl(i, j++) = 1 + qh_pointid(vertex->point);
-		    }
-		  i++;
-		}
-	    }
+                      simpl(i, j++) = 1 + qh_pointid(vertex->point);
+                    }
+                  i++;
+                }
+            }
 
-	  retval(0) = simpl;
+          retval(0) = simpl;
 
-	  // free long memory
-	  qh_freeqhull (! qh_ALL);
+          // free long memory
+          qh_freeqhull (! qh_ALL);
 
-	  // free short memory and memory allocator
-	  int curlong, totlong;
-	  qh_memfreeshort (&curlong, &totlong);
+          // free short memory and memory allocator
+          int curlong, totlong;
+          qh_memfreeshort (&curlong, &totlong);
 
-	  if (curlong || totlong)
-	    warning ("__delaunay__: did not free %d bytes of long memory (%d pieces)",
-		     totlong, curlong);
-	}
+          if (curlong || totlong)
+            warning ("__delaunay__: did not free %d bytes of long memory (%d pieces)",
+                     totlong, curlong);
+        }
       else
-	error ("__delaunayn__: qhull failed.");
+        error ("__delaunayn__: qhull failed.");
     }
   else if (n == dim + 1) 
     {
@@ -214,7 +214,7 @@ Undocumented internal function.\n\
       // I will look at this later.
       RowVector vec (n);
       for (octave_idx_type i = 0; i < n; i++) 
-	vec(i) = i + 1.0;
+        vec(i) = i + 1.0;
 
       retval(0) = vec;
     }

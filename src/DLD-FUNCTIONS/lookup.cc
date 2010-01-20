@@ -45,7 +45,7 @@ bool
 contains_char (const std::string& str, char c)
 {
   return (str.find (c) != std::string::npos 
-	  || str.find (std::toupper (c)) != std::string::npos);
+          || str.find (std::toupper (c)) != std::string::npos);
 }
 
 // case-insensitive character comparison functors

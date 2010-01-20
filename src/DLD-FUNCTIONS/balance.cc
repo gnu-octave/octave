@@ -114,7 +114,7 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
     (! AEPcase && args(1).is_single_type()); 
 
   bool complex_case = (args(0).is_complex_type () || 
-		       (! AEPcase && args(1).is_complex_type ()));
+                       (! AEPcase && args(1).is_complex_type ()));
 
   // Extract argument 1 parameter for both AEP and GEP.
   Matrix aa;
@@ -125,16 +125,16 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
   if (isfloat)
     {
       if (complex_case)
-	fcaa = args(0).float_complex_matrix_value ();
+        fcaa = args(0).float_complex_matrix_value ();
       else
-	faa = args(0).float_matrix_value ();
+        faa = args(0).float_matrix_value ();
     }
   else
     {
       if (complex_case)
-	caa = args(0).complex_matrix_value ();
+        caa = args(0).complex_matrix_value ();
       else
-	aa = args(0).matrix_value ();
+        aa = args(0).matrix_value ();
     }
 
   if (error_state)
@@ -154,18 +154,18 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
 
       // balance the AEP
       if (isfloat)
-	{
-	  if (complex_case)
-	    {
-	      FloatComplexAEPBALANCE result (fcaa, noperm, noscal);
+        {
+          if (complex_case)
+            {
+              FloatComplexAEPBALANCE result (fcaa, noperm, noscal);
 
-	      if (nargout == 0 || nargout == 1)
-		retval(0) = result.balanced_matrix ();
-	      else if (nargout == 2)
-		{
-		  retval(1) = result.balanced_matrix ();
-		  retval(0) = result.balancing_matrix ();
-		}
+              if (nargout == 0 || nargout == 1)
+                retval(0) = result.balanced_matrix ();
+              else if (nargout == 2)
+                {
+                  retval(1) = result.balanced_matrix ();
+                  retval(0) = result.balancing_matrix ();
+                }
               else
                 {
                   retval(2) = result.balanced_matrix ();
@@ -173,88 +173,88 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
                   retval(1) = result.permuting_vector ();
                 }
 
-	    }
-	  else
-	    {
-	      FloatAEPBALANCE result (faa, noperm, noscal);
+            }
+          else
+            {
+              FloatAEPBALANCE result (faa, noperm, noscal);
 
-	      if (nargout == 0 || nargout == 1)
-		retval(0) = result.balanced_matrix ();
-	      else if (nargout == 2)
-		{
-		  retval(1) = result.balanced_matrix ();
-		  retval(0) = result.balancing_matrix ();
-		}
+              if (nargout == 0 || nargout == 1)
+                retval(0) = result.balanced_matrix ();
+              else if (nargout == 2)
+                {
+                  retval(1) = result.balanced_matrix ();
+                  retval(0) = result.balancing_matrix ();
+                }
               else
                 {
                   retval(2) = result.balanced_matrix ();
                   retval(0) = result.scaling_vector ();
                   retval(1) = result.permuting_vector ();
                 }
-	    }
-	}
+            }
+        }
       else
-	{
-	  if (complex_case)
-	    {
-	      ComplexAEPBALANCE result (caa, noperm, noscal);
+        {
+          if (complex_case)
+            {
+              ComplexAEPBALANCE result (caa, noperm, noscal);
 
-	      if (nargout == 0 || nargout == 1)
-		retval(0) = result.balanced_matrix ();
-	      else if (nargout == 2)
-		{
-		  retval(1) = result.balanced_matrix ();
-		  retval(0) = result.balancing_matrix ();
-		}
+              if (nargout == 0 || nargout == 1)
+                retval(0) = result.balanced_matrix ();
+              else if (nargout == 2)
+                {
+                  retval(1) = result.balanced_matrix ();
+                  retval(0) = result.balancing_matrix ();
+                }
               else
                 {
                   retval(2) = result.balanced_matrix ();
                   retval(0) = result.scaling_vector ();
                   retval(1) = result.permuting_vector ();
                 }
-	    }
-	  else
-	    {
-	      AEPBALANCE result (aa, noperm, noscal);
+            }
+          else
+            {
+              AEPBALANCE result (aa, noperm, noscal);
 
-	      if (nargout == 0 || nargout == 1)
-		retval(0) = result.balanced_matrix ();
-	      else if (nargout == 2)
-		{
-		  retval(1) = result.balanced_matrix ();
-		  retval(0) = result.balancing_matrix ();
-		}
+              if (nargout == 0 || nargout == 1)
+                retval(0) = result.balanced_matrix ();
+              else if (nargout == 2)
+                {
+                  retval(1) = result.balanced_matrix ();
+                  retval(0) = result.balancing_matrix ();
+                }
               else
                 {
                   retval(2) = result.balanced_matrix ();
                   retval(0) = result.scaling_vector ();
                   retval(1) = result.permuting_vector ();
                 }
-	    }
-	}
+            }
+        }
     }
   else
     {
       std::string bal_job;
       if (nargout == 1)
-	warning ("balance: used GEP, should have two output arguments");
+        warning ("balance: used GEP, should have two output arguments");
 
       // Generalized eigenvalue problem.
       if (nargin == 2)
-	bal_job = "B";
+        bal_job = "B";
       else if (args(2).is_string ())
-	bal_job = args(2).string_value ();
+        bal_job = args(2).string_value ();
       else
-	{
-	  error ("balance: GEP argument 3 must be a string");
-	  return retval;
-	}
+        {
+          error ("balance: GEP argument 3 must be a string");
+          return retval;
+        }
 
       if ((nn != args(1).columns ()) || (nn != args(1).rows ()))
-	{
-	  gripe_nonconformant ();
-	  return retval;
-	}
+        {
+          gripe_nonconformant ();
+          return retval;
+        }
 
       Matrix bb;
       ComplexMatrix cbb;
@@ -262,127 +262,127 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
       FloatComplexMatrix fcbb;
 
       if (isfloat)
-	{
-	  if (complex_case)
-	    fcbb = args(1).float_complex_matrix_value ();
-	  else
-	    fbb = args(1).float_matrix_value ();
-	}
+        {
+          if (complex_case)
+            fcbb = args(1).float_complex_matrix_value ();
+          else
+            fbb = args(1).float_matrix_value ();
+        }
       else
-	{
-	  if (complex_case)
-	    cbb = args(1).complex_matrix_value ();
-	  else
-	    bb = args(1).matrix_value ();
-	}
+        {
+          if (complex_case)
+            cbb = args(1).complex_matrix_value ();
+          else
+            bb = args(1).matrix_value ();
+        }
 
       // balance the GEP
       if (isfloat)
-	{
-	  if (complex_case)
-	    {
-	      FloatComplexGEPBALANCE result (fcaa, fcbb, bal_job);
+        {
+          if (complex_case)
+            {
+              FloatComplexGEPBALANCE result (fcaa, fcbb, bal_job);
 
-	      switch (nargout)
-		{
-		case 4:
-		  retval(3) = result.balanced_matrix2 ();
-		  // fall through
-		case 3:
-		  retval(2) = result.balanced_matrix ();
-		  retval(1) = result.balancing_matrix2 ();
-		  retval(0) = result.balancing_matrix ();
-		  break;
-		case 2:
-		  retval(1) = result.balancing_matrix2 ();
-		  // fall through
-		case 1:
-		  retval(0) = result.balancing_matrix ();
-		  break;
-		default:
-		  error ("balance: invalid number of output arguments");
-		  break;
-		}
-	    }
-	  else
-	    {
-	      FloatGEPBALANCE result (faa, fbb, bal_job);
+              switch (nargout)
+                {
+                case 4:
+                  retval(3) = result.balanced_matrix2 ();
+                  // fall through
+                case 3:
+                  retval(2) = result.balanced_matrix ();
+                  retval(1) = result.balancing_matrix2 ();
+                  retval(0) = result.balancing_matrix ();
+                  break;
+                case 2:
+                  retval(1) = result.balancing_matrix2 ();
+                  // fall through
+                case 1:
+                  retval(0) = result.balancing_matrix ();
+                  break;
+                default:
+                  error ("balance: invalid number of output arguments");
+                  break;
+                }
+            }
+          else
+            {
+              FloatGEPBALANCE result (faa, fbb, bal_job);
 
-	      switch (nargout)
-		{
-		case 4:
-		  retval(3) = result.balanced_matrix2 ();
-		  // fall through
-		case 3:
-		  retval(2) = result.balanced_matrix ();
-		  retval(1) = result.balancing_matrix2 ();
-		  retval(0) = result.balancing_matrix ();
-		  break;
-		case 2:
-		  retval(1) = result.balancing_matrix2 ();
-		  // fall through
-		case 1:
-		  retval(0) = result.balancing_matrix ();
-		  break;
-		default:
-		  error ("balance: invalid number of output arguments");
-		  break;
-		}
-	    }
-	}
+              switch (nargout)
+                {
+                case 4:
+                  retval(3) = result.balanced_matrix2 ();
+                  // fall through
+                case 3:
+                  retval(2) = result.balanced_matrix ();
+                  retval(1) = result.balancing_matrix2 ();
+                  retval(0) = result.balancing_matrix ();
+                  break;
+                case 2:
+                  retval(1) = result.balancing_matrix2 ();
+                  // fall through
+                case 1:
+                  retval(0) = result.balancing_matrix ();
+                  break;
+                default:
+                  error ("balance: invalid number of output arguments");
+                  break;
+                }
+            }
+        }
       else
-	{
-	  if (complex_case)
-	    {
-	      ComplexGEPBALANCE result (caa, cbb, bal_job);
+        {
+          if (complex_case)
+            {
+              ComplexGEPBALANCE result (caa, cbb, bal_job);
 
-	      switch (nargout)
-		{
-		case 4:
-		  retval(3) = result.balanced_matrix2 ();
-		  // fall through
-		case 3:
-		  retval(2) = result.balanced_matrix ();
-		  retval(1) = result.balancing_matrix2 ();
-		  retval(0) = result.balancing_matrix ();
-		  break;
-		case 2:
-		  retval(1) = result.balancing_matrix2 ();
-		  // fall through
-		case 1:
-		  retval(0) = result.balancing_matrix ();
-		  break;
-		default:
-		  error ("balance: invalid number of output arguments");
-		  break;
-		}
-	    }
-	  else
-	    {
-	      GEPBALANCE result (aa, bb, bal_job);
+              switch (nargout)
+                {
+                case 4:
+                  retval(3) = result.balanced_matrix2 ();
+                  // fall through
+                case 3:
+                  retval(2) = result.balanced_matrix ();
+                  retval(1) = result.balancing_matrix2 ();
+                  retval(0) = result.balancing_matrix ();
+                  break;
+                case 2:
+                  retval(1) = result.balancing_matrix2 ();
+                  // fall through
+                case 1:
+                  retval(0) = result.balancing_matrix ();
+                  break;
+                default:
+                  error ("balance: invalid number of output arguments");
+                  break;
+                }
+            }
+          else
+            {
+              GEPBALANCE result (aa, bb, bal_job);
 
-	      switch (nargout)
-		{
-		case 4:
-		  retval(3) = result.balanced_matrix2 ();
-		  // fall through
-		case 3:
-		  retval(2) = result.balanced_matrix ();
-		  retval(1) = result.balancing_matrix2 ();
-		  retval(0) = result.balancing_matrix ();
-		  break;
-		case 2:
-		  retval(1) = result.balancing_matrix2 ();
-		  // fall through
-		case 1:
-		  retval(0) = result.balancing_matrix ();
-		  break;
-		default:
-		  error ("balance: invalid number of output arguments");
-		  break;
-		}
-	    }
-	}
+              switch (nargout)
+                {
+                case 4:
+                  retval(3) = result.balanced_matrix2 ();
+                  // fall through
+                case 3:
+                  retval(2) = result.balanced_matrix ();
+                  retval(1) = result.balancing_matrix2 ();
+                  retval(0) = result.balancing_matrix ();
+                  break;
+                case 2:
+                  retval(1) = result.balancing_matrix2 ();
+                  // fall through
+                case 1:
+                  retval(0) = result.balancing_matrix ();
+                  break;
+                default:
+                  error ("balance: invalid number of output arguments");
+                  break;
+                }
+            }
+        }
     }
 
   return retval;

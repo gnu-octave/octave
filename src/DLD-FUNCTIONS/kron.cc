@@ -60,13 +60,13 @@ kron (const Array2<T>& A, const Array2<T>& B, Array2<T>& C)
   for (Ac = Cc = 0; Ac < A.columns (); Ac++, Cc += B.columns ())
     for (Ar = Cr = 0; Ar < A.rows (); Ar++, Cr += B.rows ())
       {
-	const T v = A (Ar, Ac);
-	for (octave_idx_type Bc = 0; Bc < B.columns (); Bc++)
-	  for (octave_idx_type Br = 0; Br < B.rows (); Br++)
-	    {
-	      OCTAVE_QUIT;
-	      C.xelem (Cr+Br, Cc+Bc) = v * B.elem (Br, Bc);
-	    }
+        const T v = A (Ar, Ac);
+        for (octave_idx_type Bc = 0; Bc < B.columns (); Bc++)
+          for (octave_idx_type Br = 0; Br < B.rows (); Br++)
+            {
+              OCTAVE_QUIT;
+              C.xelem (Cr+Br, Cc+Bc) = v * B.elem (Br, Bc);
+            }
       }
 }
 
@@ -97,26 +97,26 @@ kron (const Sparse<T>& A, const Sparse<T>& B, Sparse<T>& C)
 {
   octave_idx_type idx = 0;
   C = Sparse<T> (A.rows () * B.rows (), A.columns () * B.columns (), 
-		 A.nzmax () * B.nzmax ());
+                 A.nzmax () * B.nzmax ());
 
   C.cidx (0) = 0;
 
   for (octave_idx_type Aj = 0; Aj < A.columns (); Aj++)
     for (octave_idx_type Bj = 0; Bj < B.columns (); Bj++)
       {
-	for (octave_idx_type Ai = A.cidx (Aj); Ai < A.cidx (Aj+1); Ai++)
-	  {
-	    octave_idx_type Ci = A.ridx(Ai) * B.rows ();
-	    const T v = A.data (Ai);
+        for (octave_idx_type Ai = A.cidx (Aj); Ai < A.cidx (Aj+1); Ai++)
+          {
+            octave_idx_type Ci = A.ridx(Ai) * B.rows ();
+            const T v = A.data (Ai);
 
-	    for (octave_idx_type Bi = B.cidx (Bj); Bi < B.cidx (Bj+1); Bi++)
-	      {
-		OCTAVE_QUIT;
-		C.data (idx) = v * B.data (Bi);
-		C.ridx (idx++) = Ci + B.ridx (Bi);
-	      }
-	  }
-	C.cidx (Aj * B.columns () + Bj + 1) = idx;
+            for (octave_idx_type Bi = B.cidx (Bj); Bi < B.cidx (Bj+1); Bi++)
+              {
+                OCTAVE_QUIT;
+                C.data (idx) = v * B.data (Bi);
+                C.ridx (idx++) = Ci + B.ridx (Bi);
+              }
+          }
+        C.cidx (Aj * B.columns () + Bj + 1) = idx;
       }
 }
 
@@ -158,86 +158,86 @@ kron (1:4, ones (3, 1))\n\
   else if (args(0).is_sparse_type () || args(1).is_sparse_type ())
     {
       if (args(0).is_complex_type () || args(1).is_complex_type ())
-	{
-	  SparseComplexMatrix a (args(0).sparse_complex_matrix_value());
-	  SparseComplexMatrix b (args(1).sparse_complex_matrix_value());
+        {
+          SparseComplexMatrix a (args(0).sparse_complex_matrix_value());
+          SparseComplexMatrix b (args(1).sparse_complex_matrix_value());
 
-	  if (! error_state)
-	    {
-	      SparseComplexMatrix c;
-	      kron (a, b, c);
-	      retval(0) = c;
-	    }
-	}
+          if (! error_state)
+            {
+              SparseComplexMatrix c;
+              kron (a, b, c);
+              retval(0) = c;
+            }
+        }
       else
-	{
-	  SparseMatrix a (args(0).sparse_matrix_value ());
-	  SparseMatrix b (args(1).sparse_matrix_value ());
+        {
+          SparseMatrix a (args(0).sparse_matrix_value ());
+          SparseMatrix b (args(1).sparse_matrix_value ());
 
-	  if (! error_state)
-	    {
-	      SparseMatrix c;
-	      kron (a, b, c);
-	      retval (0) = c;
-	    }
-	}
+          if (! error_state)
+            {
+              SparseMatrix c;
+              kron (a, b, c);
+              retval (0) = c;
+            }
+        }
     }
   else 
     {
       if (args(0).is_single_type () || args(1).is_single_type ())
-	{
-	  if (args(0).is_complex_type () || args(1).is_complex_type ())
-	    {
-	      FloatComplexMatrix a (args(0).float_complex_matrix_value());
-	      FloatComplexMatrix b (args(1).float_complex_matrix_value());
+        {
+          if (args(0).is_complex_type () || args(1).is_complex_type ())
+            {
+              FloatComplexMatrix a (args(0).float_complex_matrix_value());
+              FloatComplexMatrix b (args(1).float_complex_matrix_value());
 
-	      if (! error_state)
-		{
-		  FloatComplexMatrix c;
-		  kron (a, b, c);
-		  retval(0) = c;
-		}
-	    }
-	  else
-	    {
-	      FloatMatrix a (args(0).float_matrix_value ());
-	      FloatMatrix b (args(1).float_matrix_value ());
+              if (! error_state)
+                {
+                  FloatComplexMatrix c;
+                  kron (a, b, c);
+                  retval(0) = c;
+                }
+            }
+          else
+            {
+              FloatMatrix a (args(0).float_matrix_value ());
+              FloatMatrix b (args(1).float_matrix_value ());
 
-	      if (! error_state)
-		{
-		  FloatMatrix c;
-		  kron (a, b, c);
-		  retval (0) = c;
-		}
-	    }
-	}
+              if (! error_state)
+                {
+                  FloatMatrix c;
+                  kron (a, b, c);
+                  retval (0) = c;
+                }
+            }
+        }
       else
-	{
-	  if (args(0).is_complex_type () || args(1).is_complex_type ())
-	    {
-	      ComplexMatrix a (args(0).complex_matrix_value());
-	      ComplexMatrix b (args(1).complex_matrix_value());
+        {
+          if (args(0).is_complex_type () || args(1).is_complex_type ())
+            {
+              ComplexMatrix a (args(0).complex_matrix_value());
+              ComplexMatrix b (args(1).complex_matrix_value());
 
-	      if (! error_state)
-		{
-		  ComplexMatrix c;
-		  kron (a, b, c);
-		  retval(0) = c;
-		}
-	    }
-	  else
-	    {
-	      Matrix a (args(0).matrix_value ());
-	      Matrix b (args(1).matrix_value ());
+              if (! error_state)
+                {
+                  ComplexMatrix c;
+                  kron (a, b, c);
+                  retval(0) = c;
+                }
+            }
+          else
+            {
+              Matrix a (args(0).matrix_value ());
+              Matrix b (args(1).matrix_value ());
 
-	      if (! error_state)
-		{
-		  Matrix c;
-		  kron (a, b, c);
-		  retval (0) = c;
-		}
-	    }
-	}
+              if (! error_state)
+                {
+                  Matrix c;
+                  kron (a, b, c);
+                  retval (0) = c;
+                }
+            }
+        }
     }
 
   return retval;

@@ -59,7 +59,7 @@ static int call_depth = 0;
 
 static ColumnVector
 dasrt_user_f (const ColumnVector& x, const ColumnVector& xdot,
-	      double t, octave_idx_type&)
+              double t, octave_idx_type&)
 {
   ColumnVector retval;
 
@@ -76,26 +76,26 @@ dasrt_user_f (const ColumnVector& x, const ColumnVector& xdot,
       octave_value_list tmp = dasrt_f->do_multi_index_op (1, args);
 
       if (error_state)
-	{
-	  gripe_user_supplied_eval ("dasrt");
-	  return retval;
-	}
+        {
+          gripe_user_supplied_eval ("dasrt");
+          return retval;
+        }
 
       if (tmp.length () > 0 && tmp(0).is_defined ())
-	{
-	  if (! warned_fcn_imaginary && tmp(0).is_complex_type ())
-	    {
-	      warning ("dasrt: ignoring imaginary part returned from user-supplied function");
-	      warned_fcn_imaginary = true;
-	    }
+        {
+          if (! warned_fcn_imaginary && tmp(0).is_complex_type ())
+            {
+              warning ("dasrt: ignoring imaginary part returned from user-supplied function");
+              warned_fcn_imaginary = true;
+            }
 
-	  retval = ColumnVector (tmp(0).vector_value ());
+          retval = ColumnVector (tmp(0).vector_value ());
 
-	  if (error_state || retval.length () == 0)
-	    gripe_user_supplied_eval ("dasrt");
-	}
+          if (error_state || retval.length () == 0)
+            gripe_user_supplied_eval ("dasrt");
+        }
       else
-	gripe_user_supplied_eval ("dasrt");
+        gripe_user_supplied_eval ("dasrt");
     }
 
   return retval;
@@ -116,26 +116,26 @@ dasrt_user_cf (const ColumnVector& x, double t)
       octave_value_list tmp = dasrt_cf->do_multi_index_op (1, args);
 
       if (error_state)
-	{
-	  gripe_user_supplied_eval ("dasrt");
-	  return retval;
-	}
+        {
+          gripe_user_supplied_eval ("dasrt");
+          return retval;
+        }
 
       if (tmp.length () > 0 && tmp(0).is_defined ())
-	{
-	  if (! warned_cf_imaginary && tmp(0).is_complex_type ())
-	    {
-	      warning ("dasrt: ignoring imaginary part returned from user-supplied constraint function");
-	      warned_cf_imaginary = true;
-	    }
+        {
+          if (! warned_cf_imaginary && tmp(0).is_complex_type ())
+            {
+              warning ("dasrt: ignoring imaginary part returned from user-supplied constraint function");
+              warned_cf_imaginary = true;
+            }
 
-	  retval = ColumnVector (tmp(0).vector_value ());
+          retval = ColumnVector (tmp(0).vector_value ());
 
-	  if (error_state || retval.length () == 0)
-	    gripe_user_supplied_eval ("dasrt");
-	}
+          if (error_state || retval.length () == 0)
+            gripe_user_supplied_eval ("dasrt");
+        }
       else
-	gripe_user_supplied_eval ("dasrt");
+        gripe_user_supplied_eval ("dasrt");
     }
 
   return retval;
@@ -143,7 +143,7 @@ dasrt_user_cf (const ColumnVector& x, double t)
 
 static Matrix
 dasrt_user_j (const ColumnVector& x, const ColumnVector& xdot,
-	      double t, double cj)
+              double t, double cj)
 {
   Matrix retval;
 
@@ -161,27 +161,27 @@ dasrt_user_j (const ColumnVector& x, const ColumnVector& xdot,
       octave_value_list tmp = dasrt_j->do_multi_index_op (1, args);
 
       if (error_state)
-	{
-	  gripe_user_supplied_eval ("dasrt");
-	  return retval;
-	}
+        {
+          gripe_user_supplied_eval ("dasrt");
+          return retval;
+        }
 
       int tlen = tmp.length ();
       if (tlen > 0 && tmp(0).is_defined ())
-	{
-	  if (! warned_jac_imaginary && tmp(0).is_complex_type ())
-	    {
-	      warning ("dasrt: ignoring imaginary part returned from user-supplied jacobian function");
-	      warned_jac_imaginary = true;
-	    }
+        {
+          if (! warned_jac_imaginary && tmp(0).is_complex_type ())
+            {
+              warning ("dasrt: ignoring imaginary part returned from user-supplied jacobian function");
+              warned_jac_imaginary = true;
+            }
 
-	  retval = tmp(0).matrix_value ();
+          retval = tmp(0).matrix_value ();
 
-	  if (error_state || retval.length () == 0)
-	    gripe_user_supplied_eval ("dasrt");
-	}
+          if (error_state || retval.length () == 0)
+            gripe_user_supplied_eval ("dasrt");
+        }
       else
-	gripe_user_supplied_eval ("dasrt");
+        gripe_user_supplied_eval ("dasrt");
     }
 
   return retval;
@@ -381,98 +381,98 @@ parameters for @code{dasrt}.\n\
     {
       Cell c = f_arg.cell_value ();
       if (c.length() == 1)
-	f_arg = c(0);
+        f_arg = c(0);
       else if (c.length() == 2)
-	{
-	  if (c(0).is_function_handle () || c(0).is_inline_function ())
-	    dasrt_f = c(0).function_value ();
-	  else
-	    {
-	      fcn_name = unique_symbol_name ("__dasrt_fcn__");
-	      fname = "function y = ";
-	      fname.append (fcn_name);
-	      fname.append (" (x, xdot, t) y = ");
-	      dasrt_f = extract_function
-		(c(0), "dasrt", fcn_name, fname, "; endfunction");
-	    }
+        {
+          if (c(0).is_function_handle () || c(0).is_inline_function ())
+            dasrt_f = c(0).function_value ();
+          else
+            {
+              fcn_name = unique_symbol_name ("__dasrt_fcn__");
+              fname = "function y = ";
+              fname.append (fcn_name);
+              fname.append (" (x, xdot, t) y = ");
+              dasrt_f = extract_function
+                (c(0), "dasrt", fcn_name, fname, "; endfunction");
+            }
 
-	  if (dasrt_f)
-	    {
-	      if (c(1).is_function_handle () || c(1).is_inline_function ())
-		dasrt_j = c(1).function_value ();
-	      else
-		{
-		  jac_name = unique_symbol_name ("__dasrt_jac__");
-		  jname = "function jac = ";
-		  jname.append(jac_name);
-		  jname.append (" (x, xdot, t, cj) jac = ");
-		  dasrt_j = extract_function
-		    (c(1), "dasrt", jac_name, jname, "; endfunction");
+          if (dasrt_f)
+            {
+              if (c(1).is_function_handle () || c(1).is_inline_function ())
+                dasrt_j = c(1).function_value ();
+              else
+                {
+                  jac_name = unique_symbol_name ("__dasrt_jac__");
+                  jname = "function jac = ";
+                  jname.append(jac_name);
+                  jname.append (" (x, xdot, t, cj) jac = ");
+                  dasrt_j = extract_function
+                    (c(1), "dasrt", jac_name, jname, "; endfunction");
 
-		  if (!dasrt_j)
-		    {
-		      if (fcn_name.length())
-			clear_function (fcn_name);
-		      dasrt_f = 0;
-		    }
-		}
-	    }
-	}
+                  if (!dasrt_j)
+                    {
+                      if (fcn_name.length())
+                        clear_function (fcn_name);
+                      dasrt_f = 0;
+                    }
+                }
+            }
+        }
       else
-	DASRT_ABORT1 ("incorrect number of elements in cell array");
+        DASRT_ABORT1 ("incorrect number of elements in cell array");
     }
 
   if (!dasrt_f && ! f_arg.is_cell())
     {
       if (f_arg.is_function_handle () || f_arg.is_inline_function ())
-	dasrt_f = f_arg.function_value ();
+        dasrt_f = f_arg.function_value ();
       else
-	{
-	  switch (f_arg.rows ())
-	    {
-	    case 1:
-	      fcn_name = unique_symbol_name ("__dasrt_fcn__");
-	      fname = "function y = ";
-	      fname.append (fcn_name);
-	      fname.append (" (x, xdot, t) y = ");
-	      dasrt_f = extract_function
-		(f_arg, "dasrt", fcn_name, fname, "; endfunction");
-	      break;
+        {
+          switch (f_arg.rows ())
+            {
+            case 1:
+              fcn_name = unique_symbol_name ("__dasrt_fcn__");
+              fname = "function y = ";
+              fname.append (fcn_name);
+              fname.append (" (x, xdot, t) y = ");
+              dasrt_f = extract_function
+                (f_arg, "dasrt", fcn_name, fname, "; endfunction");
+              break;
       
-	    case 2:
-	      {
-		string_vector tmp = args(0).all_strings ();
-	
-		if (! error_state)
-		  {
-		    fcn_name = unique_symbol_name ("__dasrt_fcn__");
-		    fname = "function y = ";
-		    fname.append (fcn_name);
-		    fname.append (" (x, xdot, t) y = ");
-		    dasrt_f = extract_function
-		      (tmp(0), "dasrt", fcn_name, fname, "; endfunction");
-	    
-		    if (dasrt_f)
-		      {
-			jac_name = unique_symbol_name ("__dasrt_jac__");
-			jname = "function jac = ";
-			jname.append(jac_name);
-			jname.append (" (x, xdot, t, cj) jac = ");
-			dasrt_j = extract_function
-			  (tmp(1), "dasrt", jac_name, jname, "; endfunction");
+            case 2:
+              {
+                string_vector tmp = args(0).all_strings ();
+        
+                if (! error_state)
+                  {
+                    fcn_name = unique_symbol_name ("__dasrt_fcn__");
+                    fname = "function y = ";
+                    fname.append (fcn_name);
+                    fname.append (" (x, xdot, t) y = ");
+                    dasrt_f = extract_function
+                      (tmp(0), "dasrt", fcn_name, fname, "; endfunction");
+            
+                    if (dasrt_f)
+                      {
+                        jac_name = unique_symbol_name ("__dasrt_jac__");
+                        jname = "function jac = ";
+                        jname.append(jac_name);
+                        jname.append (" (x, xdot, t, cj) jac = ");
+                        dasrt_j = extract_function
+                          (tmp(1), "dasrt", jac_name, jname, "; endfunction");
 
-			if (! dasrt_j)
-			  dasrt_f = 0;
-		      }
-		  }
-	      }
-	      break;
+                        if (! dasrt_j)
+                          dasrt_f = 0;
+                      }
+                  }
+              }
+              break;
       
-	    default:
-	      DASRT_ABORT1
-		("first arg should be a string or 2-element string array");
-	    }
-	}
+            default:
+              DASRT_ABORT1
+                ("first arg should be a string or 2-element string array");
+            }
+        }
     }
   
   if (error_state || (! dasrt_f))
@@ -487,7 +487,7 @@ parameters for @code{dasrt}.\n\
       dasrt_cf = args(1).function_value();
 
       if (! dasrt_cf)
-	DASRT_ABORT1 ("expecting function name as argument 2");
+        DASRT_ABORT1 ("expecting function name as argument 2");
 
       argp++;
 
@@ -497,7 +497,7 @@ parameters for @code{dasrt}.\n\
     {
       dasrt_cf = is_valid_function (args(1), "dasrt", true);
       if (! dasrt_cf)
-	DASRT_ABORT1 ("expecting function name as argument 2");
+        DASRT_ABORT1 ("expecting function name as argument 2");
 
       argp++;
 
@@ -519,7 +519,7 @@ parameters for @code{dasrt}.\n\
 
   if (error_state)
     DASRT_ABORT2
-	("expecting output time vector as %s argument %d", argp);
+        ("expecting output time vector as %s argument %d", argp);
 
   double tzero = out_times (0);
 
@@ -532,8 +532,8 @@ parameters for @code{dasrt}.\n\
       crit_times = ColumnVector (args(argp++).vector_value ());
 
       if (error_state)
-	DASRT_ABORT2
-	  ("expecting critical time vector as argument %d", argp);
+        DASRT_ABORT2
+          ("expecting critical time vector as argument %d", argp);
 
       crit_times_set = true;
     }
@@ -565,20 +565,20 @@ parameters for @code{dasrt}.\n\
       retval(3) = static_cast<double> (dae.integration_state ());
 
       if (dae.integration_ok ())
-	{
-	  retval(2) = output.times ();
-	  retval(1) = output.deriv ();
-	  retval(0) = output.state ();
-	}
+        {
+          retval(2) = output.times ();
+          retval(1) = output.deriv ();
+          retval(0) = output.state ();
+        }
       else
-	{
-	  retval(2) = Matrix ();
-	  retval(1) = Matrix ();
-	  retval(0) = Matrix ();
+        {
+          retval(2) = Matrix ();
+          retval(1) = Matrix ();
+          retval(0) = Matrix ();
 
-	  if (nargout < 4)
-	    error ("dasrt: %s", msg.c_str ());
-	}
+          if (nargout < 4)
+            error ("dasrt: %s", msg.c_str ());
+        }
     }
 
   return retval;

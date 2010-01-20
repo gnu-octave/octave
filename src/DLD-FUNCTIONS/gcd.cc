@@ -113,215 +113,215 @@ all of the values of @var{v1}, @dots{} is acceptable.\n\
   for (int i = 0; i < nargin; i++)
     {
       if (! args(i).is_scalar_type ())
-	{
-	  if (! args(i).is_matrix_type ())
-	    {
-	      error ("gcd: invalid argument type");
-	      return retval;
-	    }
+        {
+          if (! args(i).is_matrix_type ())
+            {
+              error ("gcd: invalid argument type");
+              return retval;
+            }
 
-	  if (all_args_scalar)
-	    {
-	      all_args_scalar = false;
-	      dv = args(i).dims ();
-	    }
-	  else
-	    {
-	      if (dv != args(i).dims ())
-		{
-		  error ("gcd: all arguments must be the same size or scalar");
-		  return retval;
-		}
-	    }
-	}
+          if (all_args_scalar)
+            {
+              all_args_scalar = false;
+              dv = args(i).dims ();
+            }
+          else
+            {
+              if (dv != args(i).dims ())
+                {
+                  error ("gcd: all arguments must be the same size or scalar");
+                  return retval;
+                }
+            }
+        }
       if (!any_single && args(i).is_single_type ())
-	any_single = true;
+        any_single = true;
     }
 
   if (any_single)
     {
       if (nargin == 1)
-	{
-	  FloatNDArray gg = args(0).float_array_value ();
+        {
+          FloatNDArray gg = args(0).float_array_value ();
 
-	  int nel = dv.numel ();
+          int nel = dv.numel ();
 
-	  FloatNDArray v (dv);
+          FloatNDArray v (dv);
 
-	  FloatRowVector x (3);
-	  FloatRowVector y (3);
+          FloatRowVector x (3);
+          FloatRowVector y (3);
 
-	  float g = std::abs (gg(0));
+          float g = std::abs (gg(0));
 
-	  if (! is_integer_value (g))
-	    {
-	      error ("gcd: all arguments must be integer");
-	      return retval;
-	    }
+          if (! is_integer_value (g))
+            {
+              error ("gcd: all arguments must be integer");
+              return retval;
+            }
 
-	  v(0) = signum (gg(0));
+          v(0) = signum (gg(0));
       
-	  for (int k = 1; k < nel; k++)
-	    {
-	      x(0) = g;
-	      x(1) = 1;
-	      x(2) = 0;
+          for (int k = 1; k < nel; k++)
+            {
+              x(0) = g;
+              x(1) = 1;
+              x(2) = 0;
 
-	      y(0) = std::abs (gg(k));
-	      y(1) = 0;
-	      y(2) = 1;
+              y(0) = std::abs (gg(k));
+              y(1) = 0;
+              y(2) = 1;
 
-	      if (! is_integer_value (y(0)))
-		{
-		  error ("gcd: all arguments must be integer");
-		  return retval;
-		}
+              if (! is_integer_value (y(0)))
+                {
+                  error ("gcd: all arguments must be integer");
+                  return retval;
+                }
 
-	      while (y(0) > 0)
-		{
-		  FloatRowVector r = x - y * std::floor (x(0) / y(0));
-		  x = y;
-		  y = r;
-		}
+              while (y(0) > 0)
+                {
+                  FloatRowVector r = x - y * std::floor (x(0) / y(0));
+                  x = y;
+                  y = r;
+                }
 
-	      g = x(0);
+              g = x(0);
 
-	      for (int i = 0; i < k; i++) 
-		v(i) *= x(1);
+              for (int i = 0; i < k; i++) 
+                v(i) *= x(1);
 
-	      v(k) = x(2) * signum (gg(k));
-	    }
+              v(k) = x(2) * signum (gg(k));
+            }
 
-	  retval (1) = v;
-	  retval (0) = g;
-	}
+          retval (1) = v;
+          retval (0) = g;
+        }
       else if (all_args_scalar && nargout < 3)
-	{
-	  float g = args(0).float_value ();
+        {
+          float g = args(0).float_value ();
 
-	  if (error_state || ! is_integer_value (g))
-	    {
-	      error ("gcd: all arguments must be integer");
-	      return retval;
-	    }
+          if (error_state || ! is_integer_value (g))
+            {
+              error ("gcd: all arguments must be integer");
+              return retval;
+            }
 
-	  FloatRowVector v (nargin, 0);
-	  FloatRowVector x (3);
-	  FloatRowVector y (3);
+          FloatRowVector v (nargin, 0);
+          FloatRowVector x (3);
+          FloatRowVector y (3);
 
-	  v(0) = signum (g);
+          v(0) = signum (g);
 
-	  g = std::abs(g);
+          g = std::abs(g);
       
-	  for (int k = 1; k < nargin; k++)
-	    {
-	      x(0) = g;
-	      x(1) = 1;
-	      x(2) = 0;
+          for (int k = 1; k < nargin; k++)
+            {
+              x(0) = g;
+              x(1) = 1;
+              x(2) = 0;
 
-	      y(0) = args(k).float_value ();
-	      y(1) = 0;
-	      y(2) = 1;
+              y(0) = args(k).float_value ();
+              y(1) = 0;
+              y(2) = 1;
 
-	      float sgn = signum (y(0));
+              float sgn = signum (y(0));
 
-	      y(0) = std::abs (y(0));
+              y(0) = std::abs (y(0));
 
-	      if (error_state || ! is_integer_value (g))
-		{
-		  error ("gcd: all arguments must be integer");
-		  return retval;
-		}
+              if (error_state || ! is_integer_value (g))
+                {
+                  error ("gcd: all arguments must be integer");
+                  return retval;
+                }
 
-	      while (y(0) > 0)
-		{
-		  FloatRowVector r = x - y * std::floor (x(0) / y(0));
-		  x = y;
-		  y = r;
-		}
+              while (y(0) > 0)
+                {
+                  FloatRowVector r = x - y * std::floor (x(0) / y(0));
+                  x = y;
+                  y = r;
+                }
 
-	      g = x(0);
+              g = x(0);
 
-	      for (int i = 0; i < k; i++) 
-		v(i) *= x(1);
+              for (int i = 0; i < k; i++) 
+                v(i) *= x(1);
 
-	      v(k) = x(2) * sgn;
-	    }
+              v(k) = x(2) * sgn;
+            }
 
-	  retval (1) = v;
-	  retval (0) = g;
-	}
+          retval (1) = v;
+          retval (0) = g;
+        }
       else
-	{
-	  // FIXME -- we need to handle a possible mixture of scalar and
-	  // array values here.
+        {
+          // FIXME -- we need to handle a possible mixture of scalar and
+          // array values here.
 
-	  FloatNDArray g = args(0).float_array_value ();
+          FloatNDArray g = args(0).float_array_value ();
 
-	  OCTAVE_LOCAL_BUFFER (FloatNDArray, v, nargin);
+          OCTAVE_LOCAL_BUFFER (FloatNDArray, v, nargin);
 
-	  int nel = dv.numel ();
+          int nel = dv.numel ();
 
-	  v[0].resize(dv);
+          v[0].resize(dv);
 
-	  for (int i = 0; i < nel; i++)
-	    {
-	      v[0](i) = signum (g(i));
-	      g(i) = std::abs (g(i));
+          for (int i = 0; i < nel; i++)
+            {
+              v[0](i) = signum (g(i));
+              g(i) = std::abs (g(i));
 
-	      if (! is_integer_value (g(i)))
-		{
-		  error ("gcd: all arguments must be integer");
-		  return retval;
-		}
-	    }
+              if (! is_integer_value (g(i)))
+                {
+                  error ("gcd: all arguments must be integer");
+                  return retval;
+                }
+            }
 
-	  FloatRowVector x (3);
-	  FloatRowVector y (3);
+          FloatRowVector x (3);
+          FloatRowVector y (3);
 
-	  for (int k = 1; k < nargin; k++)
-	    {
-	      FloatNDArray gnew = args(k).float_array_value ();
+          for (int k = 1; k < nargin; k++)
+            {
+              FloatNDArray gnew = args(k).float_array_value ();
 
-	      v[k].resize(dv);
+              v[k].resize(dv);
 
-	      for (int n = 0; n < nel; n++)
-		{
-		  x(0) = g(n);
-		  x(1) = 1;
-		  x(2) = 0;
+              for (int n = 0; n < nel; n++)
+                {
+                  x(0) = g(n);
+                  x(1) = 1;
+                  x(2) = 0;
 
-		  y(0) = std::abs (gnew(n));
-		  y(1) = 0;
-		  y(2) = 1; 
+                  y(0) = std::abs (gnew(n));
+                  y(1) = 0;
+                  y(2) = 1; 
 
-		  if (! is_integer_value (y(0)))
-		    {
-		      error ("gcd: all arguments must be integer");
-		      return retval;
-		    }
+                  if (! is_integer_value (y(0)))
+                    {
+                      error ("gcd: all arguments must be integer");
+                      return retval;
+                    }
 
-		  while (y(0) > 0)
-		    {
-		      FloatRowVector r = x - y * std::floor (x(0) / y(0));
-		      x = y;
-		      y = r;
-		    }
+                  while (y(0) > 0)
+                    {
+                      FloatRowVector r = x - y * std::floor (x(0) / y(0));
+                      x = y;
+                      y = r;
+                    }
 
-		  g(n) = x(0);
+                  g(n) = x(0);
 
-		  for (int i = 0; i < k; i++) 
-		    v[i](n) *= x(1);
+                  for (int i = 0; i < k; i++) 
+                    v[i](n) *= x(1);
 
-		  v[k](n) = x(2) * signum (gnew(n));
-		}
-	    }
+                  v[k](n) = x(2) * signum (gnew(n));
+                }
+            }
 
-	  for (int k = 0; k < nargin; k++)
-	    retval(1+k) = v[k];
+          for (int k = 0; k < nargin; k++)
+            retval(1+k) = v[k];
 
-	  retval (0) = g;
-	}
+          retval (0) = g;
+        }
     }
   else if (nargin == 1)
     {
@@ -337,43 +337,43 @@ all of the values of @var{v1}, @dots{} is acceptable.\n\
       double g = std::abs (gg(0));
 
       if (! is_integer_value (g))
-	{
-	  error ("gcd: all arguments must be integer");
-	  return retval;
-	}
+        {
+          error ("gcd: all arguments must be integer");
+          return retval;
+        }
 
       v(0) = signum (gg(0));
       
       for (int k = 1; k < nel; k++)
-	{
-	  x(0) = g;
-	  x(1) = 1;
-	  x(2) = 0;
+        {
+          x(0) = g;
+          x(1) = 1;
+          x(2) = 0;
 
-	  y(0) = std::abs (gg(k));
-	  y(1) = 0;
-	  y(2) = 1;
+          y(0) = std::abs (gg(k));
+          y(1) = 0;
+          y(2) = 1;
 
-	  if (! is_integer_value (y(0)))
-	    {
-	      error ("gcd: all arguments must be integer");
-	      return retval;
-	    }
+          if (! is_integer_value (y(0)))
+            {
+              error ("gcd: all arguments must be integer");
+              return retval;
+            }
 
-	  while (y(0) > 0)
-	    {
-	      RowVector r = x - y * std::floor (x(0) / y(0));
-	      x = y;
-	      y = r;
-	    }
+          while (y(0) > 0)
+            {
+              RowVector r = x - y * std::floor (x(0) / y(0));
+              x = y;
+              y = r;
+            }
 
-	  g = x(0);
+          g = x(0);
 
-	  for (int i = 0; i < k; i++) 
-	    v(i) *= x(1);
+          for (int i = 0; i < k; i++) 
+            v(i) *= x(1);
 
-	  v(k) = x(2) * signum (gg(k));
-	}
+          v(k) = x(2) * signum (gg(k));
+        }
 
       retval (1) = v;
       retval (0) = g;
@@ -383,10 +383,10 @@ all of the values of @var{v1}, @dots{} is acceptable.\n\
       double g = args(0).double_value ();
 
       if (error_state || ! is_integer_value (g))
-	{
-	  error ("gcd: all arguments must be integer");
-	  return retval;
-	}
+        {
+          error ("gcd: all arguments must be integer");
+          return retval;
+        }
 
       RowVector v (nargin, 0);
       RowVector x (3);
@@ -397,39 +397,39 @@ all of the values of @var{v1}, @dots{} is acceptable.\n\
       g = std::abs(g);
       
       for (int k = 1; k < nargin; k++)
-	{
-	  x(0) = g;
-	  x(1) = 1;
-	  x(2) = 0;
+        {
+          x(0) = g;
+          x(1) = 1;
+          x(2) = 0;
 
-	  y(0) = args(k).double_value ();
-	  y(1) = 0;
-	  y(2) = 1;
+          y(0) = args(k).double_value ();
+          y(1) = 0;
+          y(2) = 1;
 
-	  double sgn = signum (y(0));
+          double sgn = signum (y(0));
 
-	  y(0) = std::abs (y(0));
+          y(0) = std::abs (y(0));
 
-	  if (error_state || ! is_integer_value (g))
-	    {
-	      error ("gcd: all arguments must be integer");
-	      return retval;
-	    }
+          if (error_state || ! is_integer_value (g))
+            {
+              error ("gcd: all arguments must be integer");
+              return retval;
+            }
 
-	  while (y(0) > 0)
-	    {
-	      RowVector r = x - y * std::floor (x(0) / y(0));
-	      x = y;
-	      y = r;
-	    }
+          while (y(0) > 0)
+            {
+              RowVector r = x - y * std::floor (x(0) / y(0));
+              x = y;
+              y = r;
+            }
 
-	  g = x(0);
+          g = x(0);
 
-	  for (int i = 0; i < k; i++) 
-	    v(i) *= x(1);
+          for (int i = 0; i < k; i++) 
+            v(i) *= x(1);
 
-	  v(k) = x(2) * sgn;
-	}
+          v(k) = x(2) * sgn;
+        }
 
       retval (1) = v;
       retval (0) = g;
@@ -448,60 +448,60 @@ all of the values of @var{v1}, @dots{} is acceptable.\n\
       v[0].resize(dv);
 
       for (int i = 0; i < nel; i++)
-	{
-	  v[0](i) = signum (g(i));
-	  g(i) = std::abs (g(i));
+        {
+          v[0](i) = signum (g(i));
+          g(i) = std::abs (g(i));
 
-	  if (! is_integer_value (g(i)))
-	    {
-	      error ("gcd: all arguments must be integer");
-	      return retval;
-	    }
-	}
+          if (! is_integer_value (g(i)))
+            {
+              error ("gcd: all arguments must be integer");
+              return retval;
+            }
+        }
 
       RowVector x (3);
       RowVector y (3);
 
       for (int k = 1; k < nargin; k++)
-	{
-	  NDArray gnew = args(k).array_value ();
+        {
+          NDArray gnew = args(k).array_value ();
 
-	  v[k].resize(dv);
+          v[k].resize(dv);
 
-	  for (int n = 0; n < nel; n++)
-	    {
-	      x(0) = g(n);
-	      x(1) = 1;
-	      x(2) = 0;
+          for (int n = 0; n < nel; n++)
+            {
+              x(0) = g(n);
+              x(1) = 1;
+              x(2) = 0;
 
-	      y(0) = std::abs (gnew(n));
-	      y(1) = 0;
-	      y(2) = 1; 
+              y(0) = std::abs (gnew(n));
+              y(1) = 0;
+              y(2) = 1; 
 
-	      if (! is_integer_value (y(0)))
-		{
-		  error ("gcd: all arguments must be integer");
-		  return retval;
-		}
+              if (! is_integer_value (y(0)))
+                {
+                  error ("gcd: all arguments must be integer");
+                  return retval;
+                }
 
-	      while (y(0) > 0)
-		{
-		  RowVector r = x - y * std::floor (x(0) / y(0));
-		  x = y;
-		  y = r;
-		}
+              while (y(0) > 0)
+                {
+                  RowVector r = x - y * std::floor (x(0) / y(0));
+                  x = y;
+                  y = r;
+                }
 
-	      g(n) = x(0);
+              g(n) = x(0);
 
-	      for (int i = 0; i < k; i++) 
-		v[i](n) *= x(1);
+              for (int i = 0; i < k; i++) 
+                v[i](n) *= x(1);
 
-	      v[k](n) = x(2) * signum (gnew(n));
-	    }
-	}
+              v[k](n) = x(2) * signum (gnew(n));
+            }
+        }
 
       for (int k = 0; k < nargin; k++)
-	retval(1+k) = v[k];
+        retval(1+k) = v[k];
 
       retval (0) = g;
     }

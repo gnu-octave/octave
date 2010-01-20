@@ -102,69 +102,69 @@ where @code{sigma_max (@var{x})} is the maximal singular value of @var{x}.\n\
     {
       float tol = 0.0;
       if (nargin == 2)
-	tol = args(1).float_value ();
+        tol = args(1).float_value ();
 
       if (error_state)
-	return retval;
+        return retval;
 
       if (tol < 0.0)
-	{
-	  error ("pinv: tol must be greater than zero");
-	  return retval;
-	}
+        {
+          error ("pinv: tol must be greater than zero");
+          return retval;
+        }
 
       if (arg.is_real_type ())
-	{
-	  FloatMatrix m = arg.float_matrix_value ();
+        {
+          FloatMatrix m = arg.float_matrix_value ();
 
-	  if (! error_state)
-	    retval = m.pseudo_inverse (tol);
-	}
+          if (! error_state)
+            retval = m.pseudo_inverse (tol);
+        }
       else if (arg.is_complex_type ())
-	{
-	  FloatComplexMatrix m = arg.float_complex_matrix_value ();
+        {
+          FloatComplexMatrix m = arg.float_complex_matrix_value ();
 
-	  if (! error_state)
-	    retval = m.pseudo_inverse (tol);
-	}
+          if (! error_state)
+            retval = m.pseudo_inverse (tol);
+        }
       else
-	{
-	  gripe_wrong_type_arg ("pinv", arg);
-	}
+        {
+          gripe_wrong_type_arg ("pinv", arg);
+        }
     }
   else
     {
       double tol = 0.0;
       if (nargin == 2)
-	tol = args(1).double_value ();
+        tol = args(1).double_value ();
 
       if (error_state)
-	return retval;
+        return retval;
 
       if (tol < 0.0)
-	{
-	  error ("pinv: tol must be greater than zero");
-	  return retval;
-	}
+        {
+          error ("pinv: tol must be greater than zero");
+          return retval;
+        }
 
       if (arg.is_real_type ())
-	{
-	  Matrix m = arg.matrix_value ();
+        {
+          Matrix m = arg.matrix_value ();
 
-	  if (! error_state)
-	    retval = m.pseudo_inverse (tol);
-	}
+          if (! error_state)
+            retval = m.pseudo_inverse (tol);
+        }
       else if (arg.is_complex_type ())
-	{
-	  ComplexMatrix m = arg.complex_matrix_value ();
+        {
+          ComplexMatrix m = arg.complex_matrix_value ();
 
-	  if (! error_state)
-	    retval = m.pseudo_inverse (tol);
-	}
+          if (! error_state)
+            retval = m.pseudo_inverse (tol);
+        }
       else
-	{
-	  gripe_wrong_type_arg ("pinv", arg);
-	}
+        {
+          gripe_wrong_type_arg ("pinv", arg);
+        }
     }
 
   return retval;

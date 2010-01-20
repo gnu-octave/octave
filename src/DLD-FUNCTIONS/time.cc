@@ -136,7 +136,7 @@ gmtime (time ())\n\
       double tmp = args(0).double_value ();
 
       if (! error_state)
-	retval = octave_value (mk_tm_map (octave_gmtime (tmp)));
+        retval = octave_value (mk_tm_map (octave_gmtime (tmp)));
     }
   else
     print_usage ();
@@ -200,7 +200,7 @@ localtime (time ())\n\
       double tmp = args(0).double_value ();
 
       if (! error_state)
-	retval = octave_value (mk_tm_map (octave_localtime (tmp)));
+        retval = octave_value (mk_tm_map (octave_localtime (tmp)));
     }
   else
     print_usage ();
@@ -252,16 +252,16 @@ mktime (localtime (time ()))\n\
       Octave_map map = args(0).map_value ();
 
       if (! error_state)
-	{
-	  octave_base_tm tm = extract_tm (map);
+        {
+          octave_base_tm tm = extract_tm (map);
 
-	  if (! error_state)
-	    retval = octave_time (tm);
-	  else
-	    error ("mktime: invalid TMSTRUCT argument");
-	}
+          if (! error_state)
+            retval = octave_time (tm);
+          else
+            error ("mktime: invalid TMSTRUCT argument");
+        }
       else
-	error ("mktime: expecting structure argument");
+        error ("mktime: expecting structure argument");
     }
   else
     print_usage ();
@@ -441,23 +441,23 @@ Year (1970-).\n\
       std::string fmt = args(0).string_value ();
 
       if (! error_state)
-	{
-	  Octave_map map = args(1).map_value ();
+        {
+          Octave_map map = args(1).map_value ();
 
-	  if (! error_state)
-	    {
-	      octave_base_tm tm = extract_tm (map);
+          if (! error_state)
+            {
+              octave_base_tm tm = extract_tm (map);
 
-	      if (! error_state)
-		retval = tm.strftime (fmt);
-	      else
-		error ("strftime: invalid TMSTRUCT argument");
-	    }
-	  else
-	    error ("strftime: expecting structure as second argument");
-	}
+              if (! error_state)
+                retval = tm.strftime (fmt);
+              else
+                error ("strftime: invalid TMSTRUCT argument");
+            }
+          else
+            error ("strftime: expecting structure as second argument");
+        }
       else
-	error ("strftime: expecting format string as first argument");
+        error ("strftime: expecting format string as first argument");
     }
   else
     print_usage ();
@@ -498,21 +498,21 @@ you're absolutely sure the date string will be parsed correctly.\n\
       std::string str = args(0).string_value ();
 
       if (! error_state)
-	{
-	  std::string fmt = args(1).string_value ();
+        {
+          std::string fmt = args(1).string_value ();
 
-	  if (! error_state)
-	    {
-	      octave_strptime t (str, fmt);
+          if (! error_state)
+            {
+              octave_strptime t (str, fmt);
 
-	      retval(1) = t.characters_converted ();
-	      retval(0) = octave_value (mk_tm_map (t));
-	    }
-	  else
-	    error ("strptime: expecting format string as second argument");
-	}
+              retval(1) = t.characters_converted ();
+              retval(0) = octave_value (mk_tm_map (t));
+            }
+          else
+            error ("strptime: expecting format string as second argument");
+        }
       else
-	error ("strptime: expecting string as first argument");
+        error ("strptime: expecting string as first argument");
     }
   else
     print_usage ();

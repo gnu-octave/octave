@@ -54,19 +54,19 @@ instead.\n\
   else if (args(0).is_single_type ())
     {
       if (args(0).is_complex_type ())
-	{
-	  FloatComplexMatrix m = args(0).float_complex_matrix_value ();
-	  MatrixType mattyp;
-	  retval = m.rcond (mattyp);
-	  args(0).matrix_type (mattyp);
-	}
+        {
+          FloatComplexMatrix m = args(0).float_complex_matrix_value ();
+          MatrixType mattyp;
+          retval = m.rcond (mattyp);
+          args(0).matrix_type (mattyp);
+        }
       else
-	{
-	  FloatMatrix m = args(0).float_matrix_value ();
-	  MatrixType mattyp;
-	  retval = m.rcond (mattyp);
-	  args(0).matrix_type (mattyp);
-	}
+        {
+          FloatMatrix m = args(0).float_matrix_value ();
+          MatrixType mattyp;
+          retval = m.rcond (mattyp);
+          args(0).matrix_type (mattyp);
+        }
     }
   else if (args(0).is_complex_type ())
     {

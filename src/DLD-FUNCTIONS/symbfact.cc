@@ -148,7 +148,7 @@ factorization as determined by @var{typ}.\n\
       A->xtype = CHOLMOD_REAL;
 
       if (a.rows() > 0 && a.cols() > 0)
-	A->x = a.data();
+        A->x = a.data();
     }
   else if (args(0).is_complex_type ())
     {
@@ -161,7 +161,7 @@ factorization as determined by @var{typ}.\n\
       A->xtype = CHOLMOD_COMPLEX;
 
       if (a.rows() > 0 && a.cols() > 0)
-	A->x = a.data();
+        A->x = a.data();
     }
   else
     gripe_wrong_type_arg ("symbfact", args(0));
@@ -175,19 +175,19 @@ factorization as determined by @var{typ}.\n\
       std::string str = args(1).string_value();
       ch = tolower (str.c_str()[0]);
       if (ch == 'r')
-	A->stype = 0;
+        A->stype = 0;
       else if (ch == 'c')
-	{
-	  n = A->ncol;
-	  coletree = true;
-	  A->stype = 0;
-	}
+        {
+          n = A->ncol;
+          coletree = true;
+          A->stype = 0;
+        }
       else if (ch == 's')
-	A->stype = 1;
+        A->stype = 1;
       else if (ch == 's')
-	A->stype = -1;
+        A->stype = -1;
       else
-	error ("Unrecognized typ in symbolic factorization");
+        error ("Unrecognized typ in symbolic factorization");
     }
 
   if (A->stype && A->nrow != A->ncol)
@@ -205,148 +205,148 @@ factorization as determined by @var{typ}.\n\
       cholmod_sparse *Aup, *Alo;
 
       if (A->stype == 1 || coletree)
-	{
-	  Aup = A ;
-	  Alo = F ;
-	}
+        {
+          Aup = A ;
+          Alo = F ;
+        }
       else
-	{
-	  Aup = F ;
-	  Alo = A ;
-	}
+        {
+          Aup = F ;
+          Alo = A ;
+        }
 
       CHOLMOD_NAME(etree) (Aup, Parent, cm);
 
       if (cm->status < CHOLMOD_OK)
-	{
-	  error("matrix corrupted");
-	  goto symbfact_error;
-	}
+        {
+          error("matrix corrupted");
+          goto symbfact_error;
+        }
 
       if (CHOLMOD_NAME(postorder) (Parent, n, 0, Post, cm) != n)
-	{
-	  error("postorder failed");
-	  goto symbfact_error;
-	}
+        {
+          error("postorder failed");
+          goto symbfact_error;
+        }
 
       CHOLMOD_NAME(rowcolcounts) (Alo, 0, 0, Parent, Post, 0,
-				  ColCount, First, Level, cm);
+                                  ColCount, First, Level, cm);
 
       if (cm->status < CHOLMOD_OK)
-	{
-	  error("matrix corrupted");
-	  goto symbfact_error;
-	}
+        {
+          error("matrix corrupted");
+          goto symbfact_error;
+        }
 
       if (nargout > 4)
-	{
-	  cholmod_sparse *A1, *A2;
+        {
+          cholmod_sparse *A1, *A2;
 
-	  if (A->stype == 1)
-	    {
-	      A1 = A;
-	      A2 = 0;
-	    }
-	  else if (A->stype == -1)
-	    {
-	      A1 = F;
-	      A2 = 0;
-	    }
-	  else if (coletree)
-	    {
-	      A1 = F;
-	      A2 = A;
-	    }
-	  else
-	    {
-	      A1 = A;
-	      A2 = F;
-	    }
+          if (A->stype == 1)
+            {
+              A1 = A;
+              A2 = 0;
+            }
+          else if (A->stype == -1)
+            {
+              A1 = F;
+              A2 = 0;
+            }
+          else if (coletree)
+            {
+              A1 = F;
+              A2 = A;
+            }
+          else
+            {
+              A1 = A;
+              A2 = F;
+            }
 
-	  // count the total number of entries in L
-	  octave_idx_type lnz = 0 ;
-	  for (octave_idx_type j = 0 ; j < n ; j++)
-	    lnz += ColCount [j] ;
-	
+          // count the total number of entries in L
+          octave_idx_type lnz = 0 ;
+          for (octave_idx_type j = 0 ; j < n ; j++)
+            lnz += ColCount [j] ;
+        
 
-	  // allocate the output matrix L (pattern-only)
-	  SparseBoolMatrix L (n, n, lnz);
+          // allocate the output matrix L (pattern-only)
+          SparseBoolMatrix L (n, n, lnz);
 
-	  // initialize column pointers
-	  lnz = 0;
-	  for (octave_idx_type j = 0 ; j < n ; j++)
-	    {
-	      L.xcidx(j) = lnz;
-	      lnz += ColCount [j];
-	    }
-	  L.xcidx(n) = lnz;
-
-
-	  /* create a copy of the column pointers */
-	  octave_idx_type *W = First;
-	  for (octave_idx_type j = 0 ; j < n ; j++)
-	    W [j] = L.xcidx(j);
-
-	  // get workspace for computing one row of L
-	  cholmod_sparse *R = cholmod_allocate_sparse (n, 1, n, false, true, 
-						       0, CHOLMOD_PATTERN, cm);
-	  octave_idx_type *Rp = static_cast<octave_idx_type *>(R->p);
-	  octave_idx_type *Ri = static_cast<octave_idx_type *>(R->i);
-
-	  // compute L one row at a time
-	  for (octave_idx_type k = 0 ; k < n ; k++)
-	    {
-	      // get the kth row of L and store in the columns of L
-	      CHOLMOD_NAME (row_subtree) (A1, A2, k, Parent, R, cm) ;
-	      for (octave_idx_type p = 0 ; p < Rp [1] ; p++)
-		L.xridx (W [Ri [p]]++) = k ;
-
-	      // add the diagonal entry
-	      L.xridx (W [k]++) = k ;
-	    }
-
-	  // free workspace
-	  cholmod_free_sparse (&R, cm) ;
+          // initialize column pointers
+          lnz = 0;
+          for (octave_idx_type j = 0 ; j < n ; j++)
+            {
+              L.xcidx(j) = lnz;
+              lnz += ColCount [j];
+            }
+          L.xcidx(n) = lnz;
 
 
-	  // transpose L to get R, or leave as is
-	  if (nargin < 3)
-	    L = L.transpose ();
+          /* create a copy of the column pointers */
+          octave_idx_type *W = First;
+          for (octave_idx_type j = 0 ; j < n ; j++)
+            W [j] = L.xcidx(j);
 
-	  // fill numerical values of L with one's
-	  for (octave_idx_type p = 0 ; p < lnz ; p++)
-	    L.xdata(p) = true;
+          // get workspace for computing one row of L
+          cholmod_sparse *R = cholmod_allocate_sparse (n, 1, n, false, true, 
+                                                       0, CHOLMOD_PATTERN, cm);
+          octave_idx_type *Rp = static_cast<octave_idx_type *>(R->p);
+          octave_idx_type *Ri = static_cast<octave_idx_type *>(R->i);
 
-	  retval(4) = L;
-	}
+          // compute L one row at a time
+          for (octave_idx_type k = 0 ; k < n ; k++)
+            {
+              // get the kth row of L and store in the columns of L
+              CHOLMOD_NAME (row_subtree) (A1, A2, k, Parent, R, cm) ;
+              for (octave_idx_type p = 0 ; p < Rp [1] ; p++)
+                L.xridx (W [Ri [p]]++) = k ;
+
+              // add the diagonal entry
+              L.xridx (W [k]++) = k ;
+            }
+
+          // free workspace
+          cholmod_free_sparse (&R, cm) ;
+
+
+          // transpose L to get R, or leave as is
+          if (nargin < 3)
+            L = L.transpose ();
+
+          // fill numerical values of L with one's
+          for (octave_idx_type p = 0 ; p < lnz ; p++)
+            L.xdata(p) = true;
+
+          retval(4) = L;
+        }
 
       ColumnVector tmp (n);
       if (nargout > 3)
-	{
-	  for (octave_idx_type i = 0; i < n; i++)
-	    tmp(i) = Post[i] + 1;
-	  retval(3) = tmp;
-	}
+        {
+          for (octave_idx_type i = 0; i < n; i++)
+            tmp(i) = Post[i] + 1;
+          retval(3) = tmp;
+        }
 
       if (nargout > 2)
-	{
-	  for (octave_idx_type i = 0; i < n; i++)
-	    tmp(i) = Parent[i] + 1;
-	  retval(2) = tmp;
-	}
+        {
+          for (octave_idx_type i = 0; i < n; i++)
+            tmp(i) = Parent[i] + 1;
+          retval(2) = tmp;
+        }
 
       if (nargout > 1)
-	{
-	  /* compute the elimination tree height */
-	  octave_idx_type height = 0 ;
-	  for (int i = 0 ; i < n ; i++)
-	    height = (height > Level[i] ? height : Level[i]);
-	  height++ ;
-	  retval(1) = static_cast<double> (height);
-	}
+        {
+          /* compute the elimination tree height */
+          octave_idx_type height = 0 ;
+          for (int i = 0 ; i < n ; i++)
+            height = (height > Level[i] ? height : Level[i]);
+          height++ ;
+          retval(1) = static_cast<double> (height);
+        }
 
       for (octave_idx_type i = 0; i < n; i++)
-	tmp(i) = ColCount[i];
+        tmp(i) = ColCount[i];
       retval(0) = tmp;
     }
 

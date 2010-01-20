@@ -71,33 +71,33 @@ quad_user_function (double x)
       octave_value_list tmp = quad_fcn->do_multi_index_op (1, args);
 
       if (error_state)
-	{
-	  quad_integration_error = 1;  // FIXME
-	  gripe_user_supplied_eval ("quad");
-	  return retval;
-	}
+        {
+          quad_integration_error = 1;  // FIXME
+          gripe_user_supplied_eval ("quad");
+          return retval;
+        }
 
       if (tmp.length () && tmp(0).is_defined ())
-	{
-	  if (! warned_imaginary && tmp(0).is_complex_type ())
-	    {
-	      warning ("quad: ignoring imaginary part returned from user-supplied function");
-	      warned_imaginary = true;
-	    }
+        {
+          if (! warned_imaginary && tmp(0).is_complex_type ())
+            {
+              warning ("quad: ignoring imaginary part returned from user-supplied function");
+              warned_imaginary = true;
+            }
 
-	  retval = tmp(0).double_value ();
+          retval = tmp(0).double_value ();
 
-	  if (error_state)
-	    {
-	      quad_integration_error = 1;  // FIXME
-	      gripe_user_supplied_eval ("quad");
-	    }
-	}
+          if (error_state)
+            {
+              quad_integration_error = 1;  // FIXME
+              gripe_user_supplied_eval ("quad");
+            }
+        }
       else
-	{
-	  quad_integration_error = 1;  // FIXME
-	  gripe_user_supplied_eval ("quad");
-	}
+        {
+          quad_integration_error = 1;  // FIXME
+          gripe_user_supplied_eval ("quad");
+        }
     }
 
   return retval;
@@ -116,33 +116,33 @@ quad_float_user_function (float x)
       octave_value_list tmp = quad_fcn->do_multi_index_op (1, args);
 
       if (error_state)
-	{
-	  quad_integration_error = 1;  // FIXME
-	  gripe_user_supplied_eval ("quad");
-	  return retval;
-	}
+        {
+          quad_integration_error = 1;  // FIXME
+          gripe_user_supplied_eval ("quad");
+          return retval;
+        }
 
       if (tmp.length () && tmp(0).is_defined ())
-	{
-	  if (! warned_imaginary && tmp(0).is_complex_type ())
-	    {
-	      warning ("quad: ignoring imaginary part returned from user-supplied function");
-	      warned_imaginary = true;
-	    }
+        {
+          if (! warned_imaginary && tmp(0).is_complex_type ())
+            {
+              warning ("quad: ignoring imaginary part returned from user-supplied function");
+              warned_imaginary = true;
+            }
 
-	  retval = tmp(0).float_value ();
+          retval = tmp(0).float_value ();
 
-	  if (error_state)
-	    {
-	      quad_integration_error = 1;  // FIXME
-	      gripe_user_supplied_eval ("quad");
-	    }
-	}
+          if (error_state)
+            {
+              quad_integration_error = 1;  // FIXME
+              gripe_user_supplied_eval ("quad");
+            }
+        }
       else
-	{
-	  quad_integration_error = 1;  // FIXME
-	  gripe_user_supplied_eval ("quad");
-	}
+        {
+          quad_integration_error = 1;  // FIXME
+          gripe_user_supplied_eval ("quad");
+        }
     }
 
   return retval;
@@ -152,7 +152,7 @@ quad_float_user_function (float x)
   do \
     { \
       if (fcn_name.length()) \
-	clear_function (fcn_name); \
+        clear_function (fcn_name); \
       return retval; \
     } \
   while (0)
@@ -233,239 +233,239 @@ cannot be called recursively.\n\
   if (nargin > 2 && nargin < 6 && nargout < 5)
     {
       if (args(0).is_function_handle () || args(0).is_inline_function ())
-	quad_fcn = args(0).function_value ();
+        quad_fcn = args(0).function_value ();
       else
-	{
-	  fcn_name = unique_symbol_name ("__quad_fcn_");
-	  std::string fname = "function y = ";
-	  fname.append (fcn_name);
-	  fname.append ("(x) y = ");
-	  quad_fcn = extract_function (args(0), "quad", fcn_name, fname,
-				       "; endfunction");
-	}
+        {
+          fcn_name = unique_symbol_name ("__quad_fcn_");
+          std::string fname = "function y = ";
+          fname.append (fcn_name);
+          fname.append ("(x) y = ");
+          quad_fcn = extract_function (args(0), "quad", fcn_name, fname,
+                                       "; endfunction");
+        }
 
       if (! quad_fcn)
-	QUAD_ABORT ();
+        QUAD_ABORT ();
 
       if (args(1).is_single_type () || args(2).is_single_type ())
-	{
-	  float a = args(1).float_value ();
+        {
+          float a = args(1).float_value ();
 
-	  if (error_state)
-	    QUAD_ABORT1 ("expecting second argument to be a scalar");
+          if (error_state)
+            QUAD_ABORT1 ("expecting second argument to be a scalar");
 
-	  float b = args(2).float_value ();
+          float b = args(2).float_value ();
 
-	  if (error_state)
-	    QUAD_ABORT1 ("expecting third argument to be a scalar");
+          if (error_state)
+            QUAD_ABORT1 ("expecting third argument to be a scalar");
 
-	  int indefinite = 0;
-	  FloatIndefQuad::IntegralType indef_type = FloatIndefQuad::doubly_infinite;
-	  float bound = 0.0;
-	  if (xisinf (a) && xisinf (b))
-	    {
-	      indefinite = 1;
-	      indef_type = FloatIndefQuad::doubly_infinite;
-	    }
-	  else if (xisinf (a))
-	    {
-	      indefinite = 1;
-	      bound = b;
-	      indef_type = FloatIndefQuad::neg_inf_to_bound;
-	    }
-	  else if (xisinf (b))
-	    {
-	      indefinite = 1;
-	      bound = a;
-	      indef_type = FloatIndefQuad::bound_to_inf;
-	    }
+          int indefinite = 0;
+          FloatIndefQuad::IntegralType indef_type = FloatIndefQuad::doubly_infinite;
+          float bound = 0.0;
+          if (xisinf (a) && xisinf (b))
+            {
+              indefinite = 1;
+              indef_type = FloatIndefQuad::doubly_infinite;
+            }
+          else if (xisinf (a))
+            {
+              indefinite = 1;
+              bound = b;
+              indef_type = FloatIndefQuad::neg_inf_to_bound;
+            }
+          else if (xisinf (b))
+            {
+              indefinite = 1;
+              bound = a;
+              indef_type = FloatIndefQuad::bound_to_inf;
+            }
 
-	  octave_idx_type ier = 0;
-	  octave_idx_type nfun = 0;
-	  float abserr = 0.0;
-	  float val = 0.0;
-	  bool have_sing = false;
-	  FloatColumnVector sing;
-	  FloatColumnVector tol;
+          octave_idx_type ier = 0;
+          octave_idx_type nfun = 0;
+          float abserr = 0.0;
+          float val = 0.0;
+          bool have_sing = false;
+          FloatColumnVector sing;
+          FloatColumnVector tol;
 
-	  switch (nargin)
-	    {
-	    case 5:
-	      if (indefinite)
-		QUAD_ABORT1 ("singularities not allowed on infinite intervals");
+          switch (nargin)
+            {
+            case 5:
+              if (indefinite)
+                QUAD_ABORT1 ("singularities not allowed on infinite intervals");
 
-	      have_sing = true;
+              have_sing = true;
 
-	      sing = FloatColumnVector (args(4).float_vector_value ());
+              sing = FloatColumnVector (args(4).float_vector_value ());
 
-	      if (error_state)
-		QUAD_ABORT1 ("expecting vector of singularities as fourth argument");
+              if (error_state)
+                QUAD_ABORT1 ("expecting vector of singularities as fourth argument");
 
-	    case 4:
-	      tol = FloatColumnVector (args(3).float_vector_value ());
+            case 4:
+              tol = FloatColumnVector (args(3).float_vector_value ());
 
-	      if (error_state)
-		QUAD_ABORT1 ("expecting vector of tolerances as fifth argument");
+              if (error_state)
+                QUAD_ABORT1 ("expecting vector of tolerances as fifth argument");
 
-	      switch (tol.capacity ())
-		{
-		case 2:
-		  quad_opts.set_single_precision_relative_tolerance (tol (1));
+              switch (tol.capacity ())
+                {
+                case 2:
+                  quad_opts.set_single_precision_relative_tolerance (tol (1));
 
-		case 1:
-		  quad_opts.set_single_precision_absolute_tolerance (tol (0));
-		  break;
+                case 1:
+                  quad_opts.set_single_precision_absolute_tolerance (tol (0));
+                  break;
 
-		default:
-		  QUAD_ABORT1 ("expecting tol to contain no more than two values");
-		}
+                default:
+                  QUAD_ABORT1 ("expecting tol to contain no more than two values");
+                }
 
-	    case 3:
-	      if (indefinite)
-		{
-		  FloatIndefQuad iq (quad_float_user_function, bound, 
-				     indef_type);
-		  iq.set_options (quad_opts);
-		  val = iq.float_integrate (ier, nfun, abserr);
-		}
-	      else
-		{
-		  if (have_sing)
-		    {
-		      FloatDefQuad dq (quad_float_user_function, a, b, sing);
-		      dq.set_options (quad_opts);
-		      val = dq.float_integrate (ier, nfun, abserr);
-		    }
-		  else
-		    {
-		      FloatDefQuad dq (quad_float_user_function, a, b);
-		      dq.set_options (quad_opts);
-		      val = dq.float_integrate (ier, nfun, abserr);
-		    }
-		}
-	      break;
+            case 3:
+              if (indefinite)
+                {
+                  FloatIndefQuad iq (quad_float_user_function, bound, 
+                                     indef_type);
+                  iq.set_options (quad_opts);
+                  val = iq.float_integrate (ier, nfun, abserr);
+                }
+              else
+                {
+                  if (have_sing)
+                    {
+                      FloatDefQuad dq (quad_float_user_function, a, b, sing);
+                      dq.set_options (quad_opts);
+                      val = dq.float_integrate (ier, nfun, abserr);
+                    }
+                  else
+                    {
+                      FloatDefQuad dq (quad_float_user_function, a, b);
+                      dq.set_options (quad_opts);
+                      val = dq.float_integrate (ier, nfun, abserr);
+                    }
+                }
+              break;
 
-	    default:
-	      panic_impossible ();
-	      break;
-	    }
+            default:
+              panic_impossible ();
+              break;
+            }
 
-	  retval(3) = abserr;
-	  retval(2) = nfun;
-	  retval(1) = ier;
-	  retval(0) = val;
+          retval(3) = abserr;
+          retval(2) = nfun;
+          retval(1) = ier;
+          retval(0) = val;
 
-	}
+        }
       else
-	{
-	  double a = args(1).double_value ();
+        {
+          double a = args(1).double_value ();
 
-	  if (error_state)
-	    QUAD_ABORT1 ("expecting second argument to be a scalar");
+          if (error_state)
+            QUAD_ABORT1 ("expecting second argument to be a scalar");
 
-	  double b = args(2).double_value ();
+          double b = args(2).double_value ();
 
-	  if (error_state)
-	    QUAD_ABORT1 ("expecting third argument to be a scalar");
+          if (error_state)
+            QUAD_ABORT1 ("expecting third argument to be a scalar");
 
-	  int indefinite = 0;
-	  IndefQuad::IntegralType indef_type = IndefQuad::doubly_infinite;
-	  double bound = 0.0;
-	  if (xisinf (a) && xisinf (b))
-	    {
-	      indefinite = 1;
-	      indef_type = IndefQuad::doubly_infinite;
-	    }
-	  else if (xisinf (a))
-	    {
-	      indefinite = 1;
-	      bound = b;
-	      indef_type = IndefQuad::neg_inf_to_bound;
-	    }
-	  else if (xisinf (b))
-	    {
-	      indefinite = 1;
-	      bound = a;
-	      indef_type = IndefQuad::bound_to_inf;
-	    }
+          int indefinite = 0;
+          IndefQuad::IntegralType indef_type = IndefQuad::doubly_infinite;
+          double bound = 0.0;
+          if (xisinf (a) && xisinf (b))
+            {
+              indefinite = 1;
+              indef_type = IndefQuad::doubly_infinite;
+            }
+          else if (xisinf (a))
+            {
+              indefinite = 1;
+              bound = b;
+              indef_type = IndefQuad::neg_inf_to_bound;
+            }
+          else if (xisinf (b))
+            {
+              indefinite = 1;
+              bound = a;
+              indef_type = IndefQuad::bound_to_inf;
+            }
 
-	  octave_idx_type ier = 0;
-	  octave_idx_type nfun = 0;
-	  double abserr = 0.0;
-	  double val = 0.0;
-	  bool have_sing = false;
-	  ColumnVector sing;
-	  ColumnVector tol;
+          octave_idx_type ier = 0;
+          octave_idx_type nfun = 0;
+          double abserr = 0.0;
+          double val = 0.0;
+          bool have_sing = false;
+          ColumnVector sing;
+          ColumnVector tol;
 
-	  switch (nargin)
-	    {
-	    case 5:
-	      if (indefinite)
-		QUAD_ABORT1 ("singularities not allowed on infinite intervals");
+          switch (nargin)
+            {
+            case 5:
+              if (indefinite)
+                QUAD_ABORT1 ("singularities not allowed on infinite intervals");
 
-	      have_sing = true;
+              have_sing = true;
 
-	      sing = ColumnVector (args(4).vector_value ());
+              sing = ColumnVector (args(4).vector_value ());
 
-	      if (error_state)
-		QUAD_ABORT1 ("expecting vector of singularities as fourth argument");
+              if (error_state)
+                QUAD_ABORT1 ("expecting vector of singularities as fourth argument");
 
-	    case 4:
-	      tol = ColumnVector (args(3).vector_value ());
+            case 4:
+              tol = ColumnVector (args(3).vector_value ());
 
-	      if (error_state)
-		QUAD_ABORT1 ("expecting vector of tolerances as fifth argument");
+              if (error_state)
+                QUAD_ABORT1 ("expecting vector of tolerances as fifth argument");
 
-	      switch (tol.capacity ())
-		{
-		case 2:
-		  quad_opts.set_relative_tolerance (tol (1));
+              switch (tol.capacity ())
+                {
+                case 2:
+                  quad_opts.set_relative_tolerance (tol (1));
 
-		case 1:
-		  quad_opts.set_absolute_tolerance (tol (0));
-		  break;
+                case 1:
+                  quad_opts.set_absolute_tolerance (tol (0));
+                  break;
 
-		default:
-		  QUAD_ABORT1 ("expecting tol to contain no more than two values");
-		}
+                default:
+                  QUAD_ABORT1 ("expecting tol to contain no more than two values");
+                }
 
-	    case 3:
-	      if (indefinite)
-		{
-		  IndefQuad iq (quad_user_function, bound, indef_type);
-		  iq.set_options (quad_opts);
-		  val = iq.integrate (ier, nfun, abserr);
-		}
-	      else
-		{
-		  if (have_sing)
-		    {
-		      DefQuad dq (quad_user_function, a, b, sing);
-		      dq.set_options (quad_opts);
-		      val = dq.integrate (ier, nfun, abserr);
-		    }
-		  else
-		    {
-		      DefQuad dq (quad_user_function, a, b);
-		      dq.set_options (quad_opts);
-		      val = dq.integrate (ier, nfun, abserr);
-		    }
-		}
-	      break;
+            case 3:
+              if (indefinite)
+                {
+                  IndefQuad iq (quad_user_function, bound, indef_type);
+                  iq.set_options (quad_opts);
+                  val = iq.integrate (ier, nfun, abserr);
+                }
+              else
+                {
+                  if (have_sing)
+                    {
+                      DefQuad dq (quad_user_function, a, b, sing);
+                      dq.set_options (quad_opts);
+                      val = dq.integrate (ier, nfun, abserr);
+                    }
+                  else
+                    {
+                      DefQuad dq (quad_user_function, a, b);
+                      dq.set_options (quad_opts);
+                      val = dq.integrate (ier, nfun, abserr);
+                    }
+                }
+              break;
 
-	    default:
-	      panic_impossible ();
-	      break;
-	    }
+            default:
+              panic_impossible ();
+              break;
+            }
 
-	  retval(3) = abserr;
-	  retval(2) = nfun;
-	  retval(1) = ier;
-	  retval(0) = val;
-	}
+          retval(3) = abserr;
+          retval(2) = nfun;
+          retval(1) = ier;
+          retval(0) = val;
+        }
 
       if (fcn_name.length())
-	clear_function (fcn_name);
+        clear_function (fcn_name);
     }
   else
     print_usage ();

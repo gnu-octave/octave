@@ -223,10 +223,10 @@ $S$.\n\
       ord = args(1).string_value (); 
 
       if (error_state)
-	{
-	  error ("schur: expecting string as second argument");
-	  return retval;
-	}
+        {
+          error ("schur: expecting string as second argument");
+          return retval;
+        }
     }
 
   char ord_char = ord.empty () ? 'U' : ord[0];
@@ -235,7 +235,7 @@ $S$.\n\
       && ord_char != 'u' && ord_char != 'a' && ord_char != 'd')
     {
       warning ("schur: incorrect ordered schur argument `%c'",
-	       ord.c_str ());
+               ord.c_str ());
       return retval;
     }
 
@@ -258,90 +258,90 @@ $S$.\n\
   if (arg.is_single_type ())
     {
       if (arg.is_real_type ())
-	{
-	  FloatMatrix tmp = arg.float_matrix_value ();
+        {
+          FloatMatrix tmp = arg.float_matrix_value ();
 
-	  if (! error_state)
-	    {
-	      if (nargout == 0 || nargout == 1)
-		{
-		  FloatSCHUR result (tmp, ord, false);
-		  retval(0) = result.schur_matrix ();
-		}
-	      else
-		{
-		  FloatSCHUR result (tmp, ord, true);
-		  retval(1) = result.schur_matrix ();
-		  retval(0) = result.unitary_matrix ();
-		}
-	    }
-	}
+          if (! error_state)
+            {
+              if (nargout == 0 || nargout == 1)
+                {
+                  FloatSCHUR result (tmp, ord, false);
+                  retval(0) = result.schur_matrix ();
+                }
+              else
+                {
+                  FloatSCHUR result (tmp, ord, true);
+                  retval(1) = result.schur_matrix ();
+                  retval(0) = result.unitary_matrix ();
+                }
+            }
+        }
       else if (arg.is_complex_type ())
-	{
-	  FloatComplexMatrix ctmp = arg.float_complex_matrix_value ();
+        {
+          FloatComplexMatrix ctmp = arg.float_complex_matrix_value ();
 
-	  if (! error_state)
-	    {
+          if (! error_state)
+            {
  
-	      if (nargout == 0 || nargout == 1)
-		{
-		  FloatComplexSCHUR result (ctmp, ord, false);
-		  retval(0) = result.schur_matrix ();
-		}
-	      else
-		{
-		  FloatComplexSCHUR result (ctmp, ord, true);
-		  retval(1) = result.schur_matrix ();
-		  retval(0) = result.unitary_matrix ();
-		}
-	    }
-	}
+              if (nargout == 0 || nargout == 1)
+                {
+                  FloatComplexSCHUR result (ctmp, ord, false);
+                  retval(0) = result.schur_matrix ();
+                }
+              else
+                {
+                  FloatComplexSCHUR result (ctmp, ord, true);
+                  retval(1) = result.schur_matrix ();
+                  retval(0) = result.unitary_matrix ();
+                }
+            }
+        }
     }
   else
     {
       if (arg.is_real_type ())
-	{
-	  Matrix tmp = arg.matrix_value ();
+        {
+          Matrix tmp = arg.matrix_value ();
 
-	  if (! error_state)
-	    {
-	      if (nargout == 0 || nargout == 1)
-		{
-		  SCHUR result (tmp, ord, false);
-		  retval(0) = result.schur_matrix ();
-		}
-	      else
-		{
-		  SCHUR result (tmp, ord, true);
-		  retval(1) = result.schur_matrix ();
-		  retval(0) = result.unitary_matrix ();
-		}
-	    }
-	}
+          if (! error_state)
+            {
+              if (nargout == 0 || nargout == 1)
+                {
+                  SCHUR result (tmp, ord, false);
+                  retval(0) = result.schur_matrix ();
+                }
+              else
+                {
+                  SCHUR result (tmp, ord, true);
+                  retval(1) = result.schur_matrix ();
+                  retval(0) = result.unitary_matrix ();
+                }
+            }
+        }
       else if (arg.is_complex_type ())
-	{
-	  ComplexMatrix ctmp = arg.complex_matrix_value ();
+        {
+          ComplexMatrix ctmp = arg.complex_matrix_value ();
 
-	  if (! error_state)
-	    {
+          if (! error_state)
+            {
  
-	      if (nargout == 0 || nargout == 1)
-		{
-		  ComplexSCHUR result (ctmp, ord, false);
-		  retval(0) = result.schur_matrix ();
-		}
-	      else
-		{
-		  ComplexSCHUR result (ctmp, ord, true);
-		  retval(1) = result.schur_matrix ();
-		  retval(0) = result.unitary_matrix ();
-		}
-	    }
-	}
+              if (nargout == 0 || nargout == 1)
+                {
+                  ComplexSCHUR result (ctmp, ord, false);
+                  retval(0) = result.schur_matrix ();
+                }
+              else
+                {
+                  ComplexSCHUR result (ctmp, ord, true);
+                  retval(1) = result.schur_matrix ();
+                  retval(0) = result.unitary_matrix ();
+                }
+            }
+        }
       else
-	{
-	  gripe_wrong_type_arg ("schur", arg);
-	}
+        {
+          gripe_wrong_type_arg ("schur", arg);
+        }
     }
  
   return retval; 

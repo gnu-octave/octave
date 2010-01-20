@@ -1,5 +1,10 @@
 2010-01-20  John W. Eaton  <jwe@octave.org>
 
+	* dim-vector.h: Style fixes.  Remove Emacs local variables block.
+	Untabify.
+
+2010-01-20  John W. Eaton  <jwe@octave.org>
+
 	* Makefile.am (PRIVATE_INCS): New variable.  List oct-glob.h
 	here instead of in INCS.
 	(liboctave_la_SOURCES): Include $(PRIVATE_INCS) in the list.

@@ -17,7 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} datetick (@var{form})
+## @deftypefn {Function File} {} datetick ()
+## @deftypefnx {Function File} {} datetick (@var{form})
 ## @deftypefnx {Function File} {} datetick (@var{axis}, @var{form})
 ## @deftypefnx {Function File} {} datetick (@dots{}, "keeplimits")
 ## @deftypefnx {Function File} {} datetick (@dots{}, "keepticks")
@@ -35,17 +36,14 @@ function datetick (varargin)
 
   [h, varargin, nargin] = __plt_get_axis_arg__ ("datetick", varargin{:});
 
-  if (nargin < 1)
-    print_usage ();
-  else
-    oldh = gca ();
-    unwind_protect
-      axes (h);
-      __datetick__ (varargin{:});
-    unwind_protect_cleanup
-      axes (oldh);
-    end_unwind_protect
-  endif
+  oldh = gca ();
+  unwind_protect
+    axes (h);
+    __datetick__ (varargin{:});
+  unwind_protect_cleanup
+    axes (oldh);
+  end_unwind_protect
+
 endfunction
 
 %!demo
@@ -104,12 +102,14 @@ function __datetick__ (varargin)
     startdate = [];
   endif
 
-  if (isnumeric (form))
-    if (! isscalar (form) || floor (form) != form || form < 0)
-      error ("datetick: expecting form argument to be a positive integer");
+  if (! isempty (form))
+    if (isnumeric (form))
+      if (! isscalar (form) || floor (form) != form || form < 0)
+        error ("datetick: expecting form argument to be a positive integer");
+      endif
+    elseif (! ischar (form))
+      error ("datetick: expecting valid date format string");
     endif
-  elseif (! ischar (form) && !isempty (form))
-    error ("datetick: expecting valid date format string");
   endif
 
   if (keeptick)
@@ -192,6 +192,8 @@ function __datetick__ (varargin)
       ## days
       form = 8;
     elseif r < 365
+      ## FIXME -- FORM should be 19 for European users who use dd/mm
+      ## instead of mm/dd.  How can that be determined automatically?
       ## months
       form = 6;
     elseif r < 90*12

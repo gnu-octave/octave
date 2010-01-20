@@ -182,9 +182,3 @@ is resized and padded with zeros.\n\
 {
   return do_fftn (args, "ifftn", 1);
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

@@ -339,9 +339,3 @@ then of size @code{[m,n,@dots{}]} and is computed as follows:\n\
 
   return retval;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

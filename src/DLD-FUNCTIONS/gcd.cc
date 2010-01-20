@@ -522,10 +522,4 @@ all of the values of @var{v1}, @dots{} is acceptable.\n\
 %! s.a = 1;
 %! fail("gcd (s)");
 
- */
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
 */

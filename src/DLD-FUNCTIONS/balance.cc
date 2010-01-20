@@ -387,9 +387,3 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
 
   return retval;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

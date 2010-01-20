@@ -429,9 +429,3 @@ conv2 (MArray<Complex>&, MArray<Complex>&, MArray2<Complex>&, Shape);
 
 template MArray2<Complex>
 conv2 (MArray2<Complex>&, MArray2<Complex>&, Shape);
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

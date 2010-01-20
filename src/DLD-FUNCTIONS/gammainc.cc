@@ -192,10 +192,3 @@ If neither @var{x} nor @var{a} is scalar, the sizes of @var{x} and\n\
 %! assert(v1, v3, sqrt(eps('single')));
 
 */
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/
-

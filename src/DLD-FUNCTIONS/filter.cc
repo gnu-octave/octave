@@ -735,10 +735,4 @@ filter (MArray<FloatComplex>&, MArray<FloatComplex>&, MArrayN<FloatComplex>&, in
 
 %%  Should put some tests of the "DIM" parameter in here.
 
- */
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/  
+*/

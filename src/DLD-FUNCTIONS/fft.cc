@@ -314,9 +314,3 @@ dimension of the matrix along which the inverse FFT is performed\n\
 %! assert(ifft(S), s, 4*N*eps('single'));
 
 */
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

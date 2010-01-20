@@ -638,9 +638,3 @@ but computed in a much faster manner.\n\
 {
   return do_cumminmax_body (args, nargout, false);
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

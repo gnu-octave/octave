@@ -560,9 +560,3 @@ parameters for @code{dassl}.\n\
 %!error <Invalid call to dassl_options.*> dassl_options ("foo", 1, 2);
 
 */
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

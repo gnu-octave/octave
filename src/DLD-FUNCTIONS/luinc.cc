@@ -366,9 +366,3 @@ Given the string argument 'vector', @dfn{luinc} returns the values of @var{p}\n\
 %! assert(l*u, sparse([1i,2,0,0;0,1,2,0;0,0,3,0;0,0,0,1]),1e-10);
 
 */
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

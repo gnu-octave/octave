@@ -169,9 +169,3 @@ where @code{sigma_max (@var{x})} is the maximal singular value of @var{x}.\n\
 
   return retval;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

@@ -519,9 +519,3 @@ you're absolutely sure the date string will be parsed correctly.\n\
 
   return retval;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

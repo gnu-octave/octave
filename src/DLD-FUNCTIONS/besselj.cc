@@ -914,9 +914,3 @@ return @code{NaN}.\n\
 %!assert(besselh(-alpha,1,x,1), -I*(jx + I*yx)*exp(-I*x), 100*eps)
 %!assert(besselh(-alpha,2,x,1), I*(jx - I*yx)*exp(I*x), 100*eps)
 */
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

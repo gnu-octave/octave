@@ -614,9 +614,3 @@ classification of the matrix.\n\
 %! assert(matrix_type(a),"Singular");
 
 */
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

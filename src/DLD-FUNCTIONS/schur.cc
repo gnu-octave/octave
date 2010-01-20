@@ -365,11 +365,4 @@ $S$.\n\
 %!error <Invalid call to schur.*> schur ();
 %!error schur ([1, 2, 3; 4, 5, 6]);
 
- */
-
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
 */

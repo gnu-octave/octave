@@ -366,9 +366,3 @@ to have a common size.\n\
 
    return retval;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

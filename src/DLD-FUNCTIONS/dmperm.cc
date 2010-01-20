@@ -229,8 +229,3 @@ rank (@var{s})}.\n\
 %! assert(sprank([1,0,2,0;2,0,4,0]),2)
 
 */
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

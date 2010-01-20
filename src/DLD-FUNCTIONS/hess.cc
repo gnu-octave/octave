@@ -168,9 +168,3 @@ is upper Hessenberg (@code{i >= j+1 => h (i, j) = 0}).\n\
 %!error hess ([1, 2; 3, 4; 5, 6]);
 
 */
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

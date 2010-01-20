@@ -1121,9 +1121,3 @@ value.\n\
 }
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

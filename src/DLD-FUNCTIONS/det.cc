@@ -245,9 +245,3 @@ if requested.\n\
 %!error det ([1, 2; 3, 4; 5, 6]);
 
 */
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

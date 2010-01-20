@@ -333,10 +333,4 @@ The eigenvalues returned by @code{eig} are not ordered.\n\
 %!error eig ([1 2 ; 2 3], "abcd");
 %!error eig (false, [1 2 ; 2 3]);
 
- */
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
 */

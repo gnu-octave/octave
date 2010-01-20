@@ -137,10 +137,3 @@ Polynomial Approximation}.\n\
 
   return retval;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/
-

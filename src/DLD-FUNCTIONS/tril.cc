@@ -416,9 +416,3 @@ See tril.\n\
 %!error tril ();
 
 */
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

@@ -987,9 +987,3 @@ Order of output arguments was selected for compatibility with @sc{matlab}\n\
 
   return retval;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

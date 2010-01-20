@@ -378,9 +378,3 @@ For string lookup, 'i' indicates case-insensitive comparison.\n\
 %!assert (lookup({"apple","lemon","orange"}, "potato"), 3)
 %!assert (lookup({"orange","lemon","apple"}, "potato"), 0)
 */
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

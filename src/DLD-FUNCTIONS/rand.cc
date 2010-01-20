@@ -1093,9 +1093,3 @@ All permutations are equally likely.\n\
 %!assert(sort(randperm(20)),1:20)
 %!assert(sort(randperm(20,50),2),repmat(1:20,50,1))
 */
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

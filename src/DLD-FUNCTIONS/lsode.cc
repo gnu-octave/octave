@@ -542,9 +542,3 @@ parameters for @code{lsode}.\n\
 %!error <Invalid call to lsode_options.*> lsode_options ("foo", 1, 2);
 
 */
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

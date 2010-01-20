@@ -506,9 +506,3 @@ cannot be called recursively.\n\
 %!error <Invalid call to quad_options.*> quad_options (1, 2, 3);
 
 */
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

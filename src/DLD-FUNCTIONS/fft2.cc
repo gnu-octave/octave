@@ -291,9 +291,3 @@ of @var{a} is treated separately\n\
 %! assert(s, answer, 30*eps('single'));
 
 */
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

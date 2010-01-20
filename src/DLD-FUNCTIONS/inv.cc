@@ -242,9 +242,3 @@ See inv.\n\
 {
   return Finv (args, nargout);
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

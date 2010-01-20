@@ -247,9 +247,3 @@ elements @code{sec} (seconds) @code{usec} (microseconds).\n\
 
   return octave_value (m);
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

@@ -359,10 +359,4 @@ decomposition, eliminating the unnecessary rows or columns of @var{u} or\n\
 %!error <Invalid call to svd.*> svd ([1, 2; 4, 5], 2, 3);
 %!error <Invalid call to svd.*> [u, v] = svd ([1, 2; 3, 4]);
 
- */
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
 */

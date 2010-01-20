@@ -458,9 +458,3 @@ Manchester, England, January 1999.\n\
 
   return retval;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

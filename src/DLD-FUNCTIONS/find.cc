@@ -653,10 +653,4 @@ b = sparse(i, j, v, sz(1), sz(2));\n\
 
 %!error <Invalid call to find.*> find ();
 
- */
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
 */

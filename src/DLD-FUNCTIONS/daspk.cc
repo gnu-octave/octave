@@ -477,9 +477,3 @@ parameters for @code{daspk}.\n\
 
   return retval;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

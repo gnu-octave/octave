@@ -963,11 +963,3 @@ not be using this function.  Instead you should use @code{imfinfo}.\n\
 }
 
 #undef GET_PARAM
-      
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; indent-tabs-mode: nil ***
-;;; End: ***
-*/

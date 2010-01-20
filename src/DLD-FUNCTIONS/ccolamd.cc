@@ -580,9 +580,3 @@ colamd, symamd, and other related orderings.\n\
 
   return retval;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

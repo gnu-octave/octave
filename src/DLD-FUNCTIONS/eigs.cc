@@ -1500,9 +1500,3 @@ K Maschhoff, D Sorensen and C Yang.  For more information see\n\
 %! endfor
 
 */
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

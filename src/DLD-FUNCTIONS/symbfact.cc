@@ -357,10 +357,3 @@ factorization as determined by @var{typ}.\n\
 
   return retval;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/
-

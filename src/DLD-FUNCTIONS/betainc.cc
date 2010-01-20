@@ -328,10 +328,3 @@ compatible dimensions.\n\
 %!error <Invalid call to betainc.*> betainc(1,2);
 
 */
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/
-

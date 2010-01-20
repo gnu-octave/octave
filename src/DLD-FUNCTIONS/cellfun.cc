@@ -1604,9 +1604,3 @@ is done along the first non-singleton dimension.\n\
 %! c = cellslices (m, [1, 2], [2, 3], 2);
 %! assert (c, {[1, 2; 5, 6; 9, 10], [2, 3; 6, 7; 10, 11]});
 */
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

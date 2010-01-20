@@ -1,5 +1,10 @@
 2010-01-20  Jaroslav Hajek  <highegg@gmail.com>
 
+	* xpow.cc (xpow, elem_xpow): Don't do redundant real->complex
+	conversions.
+
+2010-01-20  Jaroslav Hajek  <highegg@gmail.com>
+
 	* data.cc: Substitute OCTAVE_QUIT -> octave_quit ().
 	* input.cc: Ditto.
 	* ls-mat-ascii.cc: Ditto.

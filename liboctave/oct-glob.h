@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996, 1997, 2000, 2005, 2006, 2007, 2009, 2010 John W. Eaton
+Copyright (C) 2010 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,34 +20,16 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if !defined (octave_glob_h)
+#define octave_glob_h 1
+
+#include "str-vec.h"
+
+extern bool
+octave_fnmatch (const string_vector& pat, const std::string& str,
+                int fnmatch_flags);
+
+extern string_vector
+octave_glob (const string_vector&);
+
 #endif
-
-#include <fnmatch.h>
-
-#include "glob-match.h"
-
-int
-glob_match::opts_to_fnmatch_flags (unsigned int xopts) const
-{
-  int retval = 0;
-
-  if (xopts & pathname)
-    retval |= FNM_PATHNAME;
-
-  if (xopts & noescape)
-    retval |= FNM_NOESCAPE;
-
-  if (xopts & period)
-    retval |= FNM_PERIOD;
-
-  return retval;
-}
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/
-

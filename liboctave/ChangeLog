@@ -1,3 +1,23 @@
+2010-01-20  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.am (INCS): Include oct-glob.h in the list.
+	(LIBOCTAVE_CXX_SOURCES): Include oct-glob.cc in the list.
+	* oct-glob.h, oct-glob.cc: New files.
+	* glob-match.cc: (glob_match::match): Move internals to oct-glob.cc.
+	(glob_match::glob_internal): Move internals to oct-glob.cc.
+	(single_match_exists): Move to oct-glob.cc.
+	(glob_match::opts_to_fnmatch_flags): New function.
+	* glob-match.h Include oct-glob.h.
+	(glob_match::glob): Call octave_glob to do the real work.
+	(glob_match::glob_internal): Delete decl.
+	(glob_match::match (const string_vector&)): Move here from
+	glob-match.cc.
+	(glob_match::match (const std::string&)): Call octave_fnmatch to
+	do the real work.
+	(glob_match::fnmatch_flags): Rename from flags.
+	(glob_match::opts_to_fnmatch_flags): New function.
+	(glob_match::glob_match): Use it.
+
 2010-01-17  Jaroslav Hajek  <highegg@gmail.com>
 
 	* CMatrix.cc (xgemm): Use octave_idx_type rather than int.

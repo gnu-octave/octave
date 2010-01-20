@@ -215,6 +215,7 @@ INCS = \
   oct-env.h \
   oct-fftw.h \
   oct-getopt.h \
+  oct-glob.h \
   oct-group.h \
   oct-inttypes.h \
   oct-locbuf.h \
@@ -422,6 +423,7 @@ LIBOCTAVE_CXX_SOURCES = \
   oct-alloc.cc \
   oct-env.cc \
   oct-fftw.cc \
+  oct-glob.cc \
   oct-group.cc \
   oct-locbuf.cc \
   oct-md5.cc \

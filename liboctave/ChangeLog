@@ -1,5 +1,11 @@
 2010-01-20  Jaroslav Hajek  <highegg@gmail.com>
 
+	* oct-norm.cc (norm_accumulator_p::accum, norm_accumulator_mp::accum):
+	Call octave_quit here.
+	(higham_subp): Also here.
+
+2010-01-20  Jaroslav Hajek  <highegg@gmail.com>
+
 	* mx-op-defs.h (SND_MINMAX_FCN, NDS_MINMAX_FCN, NDND_MINMAX_FCN):
 	Simplify using mx_inlines machinery. 
 	* dNDArray (min, max): Simplify.

@@ -73,6 +73,7 @@ public:
   template<class U> 
   void accum (U val)
     {
+      octave_quit ();
       R t = std::abs (val);
       if (scl == t) // we need this to handle Infs properly
         sum += 1;
@@ -100,6 +101,7 @@ public:
   template<class U> 
   void accum (U val)
     {
+      octave_quit ();
       R t = 1 / std::abs (val);
       if (scl == t)
         sum += 1;
@@ -324,6 +326,7 @@ higham_subp (const ColVectorT& y, const ColVectorT& col,
   R nrm = 0;
   for (octave_idx_type i = 0; i < nsamp; i++)
     {
+      octave_quit ();
       R fi = i*M_PI/nsamp, lambda1 = cos (fi), mu1 = sin (fi);
       R lmnr = std::pow (std::pow (std::abs (lambda1), p) + 
                          std::pow (std::abs (mu1), p), 1/p);
@@ -354,6 +357,7 @@ higham_subp (const ColVectorT& y, const ColVectorT& col,
   // Probe magnitudes
   for (octave_idx_type i = 0; i < nsamp; i++)
     {
+      octave_quit ();
       R fi = i*M_PI/nsamp, lambda1 = cos (fi), mu1 = sin (fi);
       R lmnr = std::pow (std::pow (std::abs (lambda1), p) + 
                          std::pow (std::abs (mu1), p), 1/p);
@@ -370,6 +374,7 @@ higham_subp (const ColVectorT& y, const ColVectorT& col,
   // Probe orientation
   for (octave_idx_type i = 0; i < nsamp; i++)
     {
+      octave_quit ();
       R fi = i*M_PI/nsamp;
       lamcu = CR (cos (fi), sin (fi));
       R nrm1 = vector_norm (lama * lamcu * y + mu * col, p);

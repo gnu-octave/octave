@@ -320,9 +320,3 @@ __lo_ieee_float_signbit (float x)
   return x < 0;
 #endif
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

@@ -120,9 +120,3 @@ HESS::init (const Matrix& a)
 
   return info;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

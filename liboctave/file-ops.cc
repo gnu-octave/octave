@@ -857,9 +857,3 @@ file_ops::concat (const std::string& dir, const std::string& file)
        ? dir + file
        : dir + file_ops::dir_sep_char () + file);
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

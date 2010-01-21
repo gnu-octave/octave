@@ -949,9 +949,3 @@ INSTANTIATE_SCALAR_VECTOR_REP_CONST (octave_uint8)
 INSTANTIATE_SCALAR_VECTOR_REP_CONST (octave_uint16)
 INSTANTIATE_SCALAR_VECTOR_REP_CONST (octave_uint32)
 INSTANTIATE_SCALAR_VECTOR_REP_CONST (octave_uint64)
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

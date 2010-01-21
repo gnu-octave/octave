@@ -1211,9 +1211,3 @@ write_floats (std::ostream& os, const float *data, save_type type, int len)
       break;
     }
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

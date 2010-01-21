@@ -430,9 +430,3 @@ MM_BOOL_OP_DECLS (FloatComplexMatrix, FloatComplexMatrix, OCTAVE_API)
 MARRAY_FORWARD_DEFS (MArray2, FloatComplexMatrix, FloatComplex)
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

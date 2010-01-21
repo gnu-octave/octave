@@ -455,10 +455,3 @@ SparseLU::SparseLU (const SparseMatrix& a, const ColumnVector& Qinit,
   (*current_liboctave_error_handler) ("UMFPACK not installed");
 #endif
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/
-

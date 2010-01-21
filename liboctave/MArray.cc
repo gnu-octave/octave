@@ -206,9 +206,3 @@ operator - (const MArray<T>& a)
 {
   return do_mx_unary_op<MArray<T>, MArray<T> > (a, mx_inline_uminus); 
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

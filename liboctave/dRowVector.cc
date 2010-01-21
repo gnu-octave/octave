@@ -337,9 +337,3 @@ operator * (const RowVector& v, const ComplexColumnVector& a)
   ComplexRowVector tmp (v);
   return tmp * a;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

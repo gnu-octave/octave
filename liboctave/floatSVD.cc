@@ -169,9 +169,3 @@ operator << (std::ostream& os, const FloatSVD& a)
 
   return os;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

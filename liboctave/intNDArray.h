@@ -130,9 +130,3 @@ template <class T>
 std::istream& operator >> (std::istream& is, intNDArray<T>& a);
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

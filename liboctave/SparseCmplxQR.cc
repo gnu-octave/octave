@@ -894,9 +894,3 @@ qrsolve (const SparseComplexMatrix &a, const MArray2<Complex> &b,
 {
   return qrsolve (a, ComplexMatrix (b), info);
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

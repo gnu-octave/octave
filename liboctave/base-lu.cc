@@ -183,9 +183,3 @@ base_lu<lu_type>::regular (void) const
 
   return true;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

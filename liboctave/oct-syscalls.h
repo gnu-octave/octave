@@ -74,9 +74,3 @@ octave_syscalls
 };
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

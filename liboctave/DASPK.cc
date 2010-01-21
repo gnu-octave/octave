@@ -772,9 +772,3 @@ DASPK::error_message (void) const
 
   return retval;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

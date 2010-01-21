@@ -35,9 +35,3 @@ along with Octave; see the file COPYING.  If not, see
 INSTANTIATE_ARRAY_SORT (std::string);
 
 INSTANTIATE_ARRAY (std::string, OCTAVE_API);
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

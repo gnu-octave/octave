@@ -245,9 +245,3 @@ FloatIndefQuad : public Quad
 };
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

@@ -164,9 +164,3 @@ NDND_CMP_OPS (charNDArray, charNDArray)
 NDND_BOOL_OPS (charNDArray, charNDArray)
 
 BSXFUN_STDREL_DEFS_MXLOOP (charNDArray)
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

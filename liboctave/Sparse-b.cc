@@ -35,9 +35,3 @@ INSTANTIATE_SPARSE_AND_ASSIGN (bool, OCTAVE_API);
 #if 0
 template std::ostream& operator << (std::ostream&, const Sparse<bool>&);
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

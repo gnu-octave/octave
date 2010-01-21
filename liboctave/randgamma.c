@@ -141,9 +141,3 @@ oct_randg (double a)
   oct_fill_randg(a,1,&ret);
   return ret;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C ***
-;;; End: ***
-*/

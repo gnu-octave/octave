@@ -697,9 +697,3 @@ void warn_qrupdate_once (void)
 }
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

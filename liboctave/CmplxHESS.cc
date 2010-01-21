@@ -119,9 +119,3 @@ ComplexHESS::init (const ComplexMatrix& a)
 
   return info;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

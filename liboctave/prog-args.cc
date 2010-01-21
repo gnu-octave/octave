@@ -60,9 +60,3 @@ prog_args::init (void)
 {
   ::optind = 0;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

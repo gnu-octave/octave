@@ -169,9 +169,3 @@ dir_path::init (void)
 
   initialized = true;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

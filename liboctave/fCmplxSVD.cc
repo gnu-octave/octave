@@ -165,9 +165,3 @@ FloatComplexSVD::init (const FloatComplexMatrix& a, SVD::type svd_type)
 
   return info;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

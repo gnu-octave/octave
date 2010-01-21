@@ -131,9 +131,3 @@ extern OCTAVE_API int __lo_ieee_float_signbit (float);
 			  __lo_ieee_float_signbit (x) : __lo_ieee_signbit (x))
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

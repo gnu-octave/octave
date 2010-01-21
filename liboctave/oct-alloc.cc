@@ -103,9 +103,3 @@ octave_allocator::grow (void)
 
   return retval;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

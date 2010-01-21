@@ -149,9 +149,3 @@ extern char octave_rl_meta (char);
 #endif
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

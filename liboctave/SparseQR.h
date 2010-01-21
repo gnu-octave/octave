@@ -162,9 +162,3 @@ extern SparseComplexMatrix qrsolve (const SparseMatrix &a,
 				    octave_idx_type &info);
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

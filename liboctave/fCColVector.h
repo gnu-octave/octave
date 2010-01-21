@@ -132,9 +132,3 @@ private:
 MARRAY_FORWARD_DEFS (MArray, FloatComplexColumnVector, FloatComplex)
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

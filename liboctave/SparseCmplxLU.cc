@@ -477,10 +477,3 @@ SparseComplexLU::SparseComplexLU (const SparseComplexMatrix& a,
   (*current_liboctave_error_handler) ("UMFPACK not installed");
 #endif
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/
-

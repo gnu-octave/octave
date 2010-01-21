@@ -105,9 +105,3 @@ MM_BOOL_OP_DECLS (charMatrix, charMatrix, OCTAVE_API)
 MARRAY_FORWARD_DEFS (MArray2, charMatrix, char)
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

@@ -211,9 +211,3 @@ along with Octave; see the file COPYING.  If not, see
 // Now we have all the definitions we need.
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

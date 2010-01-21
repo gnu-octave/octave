@@ -120,9 +120,3 @@ FloatHESS::init (const FloatMatrix& a)
 
   return info;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

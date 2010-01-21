@@ -860,9 +860,3 @@ FloatEIG::hermitian_init (const FloatComplexMatrix& a, const FloatComplexMatrix&
 
   return info;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

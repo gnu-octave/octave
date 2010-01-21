@@ -580,9 +580,3 @@ operator << (std::ostream& os, const ComplexDiagMatrix& a)
     }
   return os;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

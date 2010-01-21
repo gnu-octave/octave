@@ -431,9 +431,3 @@ MM_BOOL_OP_DECLS (ComplexMatrix, ComplexMatrix, OCTAVE_API)
 MARRAY_FORWARD_DEFS (MArray2, ComplexMatrix, Complex)
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

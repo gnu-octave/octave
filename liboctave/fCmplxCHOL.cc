@@ -439,9 +439,3 @@ chol2inv (const FloatComplexMatrix& r)
 {
   return chol2inv_internal (r);
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

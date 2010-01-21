@@ -208,9 +208,3 @@ void FloatComplexLU::update_piv (const FloatComplexMatrix&, const FloatComplexMa
 }
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

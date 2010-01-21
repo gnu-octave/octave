@@ -2678,9 +2678,3 @@ operator << (std::ostream& os, const Array<T>& a)
 
   return os;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

@@ -7900,9 +7900,3 @@ SPARSE_SSM_BOOL_OPS (Complex, SparseComplexMatrix, 0.0)
 SPARSE_SMSM_CMP_OPS (SparseComplexMatrix, 0.0, real, SparseComplexMatrix, 
 		     0.0, real)
 SPARSE_SMSM_BOOL_OPS (SparseComplexMatrix, SparseComplexMatrix, 0.0)
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

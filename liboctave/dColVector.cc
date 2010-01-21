@@ -320,9 +320,3 @@ operator >> (std::istream& is, ColumnVector& a)
     }
   return is;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

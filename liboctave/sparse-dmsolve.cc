@@ -510,9 +510,3 @@ extern SparseComplexMatrix
 dmsolve (const SparseComplexMatrix &a, const SparseComplexMatrix &b, 
 	 octave_idx_type &info);
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

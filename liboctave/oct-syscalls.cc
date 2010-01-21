@@ -451,9 +451,3 @@ octave_syscalls::popen2 (const std::string& cmd, const string_vector& args,
   return -1;
 #endif
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

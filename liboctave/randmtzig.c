@@ -701,9 +701,3 @@ oct_fill_rande (octave_idx_type n, double *p)
   for (i = 0; i < n; i++) 
     p[i] = oct_rande();
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C ***
-;;; End: ***
-*/

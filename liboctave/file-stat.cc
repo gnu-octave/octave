@@ -291,9 +291,3 @@ file_fstat::update_internal (bool force)
       initialized = true;
     }
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

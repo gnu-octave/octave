@@ -165,9 +165,3 @@ ComplexSVD::init (const ComplexMatrix& a, SVD::type svd_type)
 
   return info;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

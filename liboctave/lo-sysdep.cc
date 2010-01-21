@@ -241,9 +241,3 @@ readdir (DIR *d)
 }
 
 #endif
- 
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

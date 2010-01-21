@@ -124,9 +124,3 @@ OCTAVE_API ComplexRowVector linspace (const Complex& x1, const Complex& x2, octa
 MARRAY_FORWARD_DEFS (MArray, ComplexRowVector, Complex)
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

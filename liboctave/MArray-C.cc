@@ -66,9 +66,3 @@ INSTANTIATE_MARRAYN_FRIENDS (Complex, OCTAVE_API)
 template class OCTAVE_API MDiagArray2<Complex>;
 
 INSTANTIATE_MDIAGARRAY2_FRIENDS (Complex, OCTAVE_API)
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

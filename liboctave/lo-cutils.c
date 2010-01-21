@@ -125,9 +125,3 @@ octave_waitpid (pid_t pid, int *status, int options)
 {
   return WAITPID (pid, status, options);
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

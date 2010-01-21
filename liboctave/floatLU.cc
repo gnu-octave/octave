@@ -208,9 +208,3 @@ void FloatLU::update_piv (const FloatMatrix&, const FloatMatrix&)
 }
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

@@ -651,9 +651,3 @@ INSTANTIATE_INTTYPE (uint64_t);
 %!assert((int64(2**62)+1)**1, int64(2**62)+1)
 %!assert((int64(2**30)+1)**2, int64(2**60+2**31) + 1)
 */
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

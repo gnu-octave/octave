@@ -223,9 +223,3 @@ octave_group::gripe_invalid (void) const
 {
   (*current_liboctave_error_handler) ("invalid group object");
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

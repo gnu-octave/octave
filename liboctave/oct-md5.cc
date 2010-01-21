@@ -76,9 +76,3 @@ oct_md5_file (const std::string file)
 
   return retval;
 }
-	  
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

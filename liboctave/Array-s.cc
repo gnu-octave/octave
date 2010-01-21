@@ -46,9 +46,3 @@ template class Array2<short>;
 #include "DiagArray2.cc"
 
 template class DiagArray2<short>;
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

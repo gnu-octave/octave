@@ -91,9 +91,3 @@ private:
 ComplexMatrix OCTAVE_API chol2inv (const ComplexMatrix& r);
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

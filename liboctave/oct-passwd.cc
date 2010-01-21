@@ -229,9 +229,3 @@ octave_passwd::gripe_invalid (void) const
 {
   (*current_liboctave_error_handler) ("invalid password object");
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

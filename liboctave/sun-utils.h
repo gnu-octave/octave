@@ -60,10 +60,3 @@ assign_double (double *unaligned_ptr, double value)
 
 #endif
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C ***
-;;; page-delimiter: "^/\\*" ***
-;;; End: ***
-*/

@@ -235,10 +235,3 @@ SPARSE_SSM_BOOL_OPS (bool, SparseBoolMatrix, false)
 
 SPARSE_SMSM_EQNE_OPS (SparseBoolMatrix, false, , SparseBoolMatrix, false, )
 SPARSE_SMSM_BOOL_OPS (SparseBoolMatrix, SparseBoolMatrix, false)
-
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

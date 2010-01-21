@@ -123,9 +123,3 @@ GEPBALANCE::init (const Matrix& a, const Matrix& b,
 
   return info;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

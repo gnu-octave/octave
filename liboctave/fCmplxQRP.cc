@@ -103,9 +103,3 @@ FloatComplexQRP::Pvec (void) const
   FloatColumnVector pv (MArray<float> (pa) + 1.0f);
   return pv;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

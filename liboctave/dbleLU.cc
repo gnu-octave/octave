@@ -208,9 +208,3 @@ void LU::update_piv (const Matrix&, const Matrix&)
 }
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

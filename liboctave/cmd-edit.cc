@@ -1552,9 +1552,3 @@ command_editor::error (const std::string& s)
 {
   current_liboctave_error_handler ("%s", s.c_str ());
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

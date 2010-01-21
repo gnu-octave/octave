@@ -123,9 +123,3 @@ ComplexGEPBALANCE::init (const ComplexMatrix& a, const ComplexMatrix& b,
 
   return info;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

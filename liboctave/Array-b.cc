@@ -118,9 +118,3 @@ template OCTAVE_API std::ostream& operator << (std::ostream&, const Array<bool>&
 #include "DiagArray2.cc"
 
 template class OCTAVE_API DiagArray2<bool>;
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

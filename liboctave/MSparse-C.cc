@@ -33,9 +33,3 @@ along with Octave; see the file COPYING.  If not, see
 template class OCTAVE_API MSparse<Complex>;
 
 INSTANTIATE_SPARSE_FRIENDS (Complex, OCTAVE_API);
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

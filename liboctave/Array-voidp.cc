@@ -42,9 +42,3 @@ template class OCTAVE_API Array2<void *>;
 #include "Array3.h"
 
 template class OCTAVE_API Array3<void *>;
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

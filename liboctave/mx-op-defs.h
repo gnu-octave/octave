@@ -633,10 +633,3 @@ M operator * (const M& x, const PM& p) \
   return retval;
 
 #endif
-
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

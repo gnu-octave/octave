@@ -689,9 +689,3 @@ ComplexQR::shift_cols (octave_idx_type i, octave_idx_type j)
 }
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

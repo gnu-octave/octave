@@ -36,9 +36,3 @@ extern void oct_fill_randg (double a, octave_idx_type n, double *p);
 }
 #endif
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C ***
-;;; End: ***
-*/

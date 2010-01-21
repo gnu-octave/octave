@@ -23,9 +23,3 @@ along with Octave; see the file COPYING.  If not, see
 extern OCTAVE_API std::string oct_md5 (const std::string str);
 
 extern OCTAVE_API std::string oct_md5_file (const std::string file);
-	  
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

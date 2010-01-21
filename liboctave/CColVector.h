@@ -132,9 +132,3 @@ private:
 MARRAY_FORWARD_DEFS (MArray, ComplexColumnVector, Complex)
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

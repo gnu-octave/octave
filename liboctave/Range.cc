@@ -509,9 +509,3 @@ Range::nelem_internal (void) const
 
   return retval;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

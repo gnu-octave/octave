@@ -134,9 +134,3 @@ FloatComplexSCHUR::init (const FloatComplexMatrix& a, const std::string& ord,
 
   return info;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

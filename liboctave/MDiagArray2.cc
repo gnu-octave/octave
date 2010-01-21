@@ -125,9 +125,3 @@ operator - (const MDiagArray2<T>& a)
 {
   return do_mx_unary_op<MDiagArray2<T>, MDiagArray2<T> > (a, mx_inline_uminus); 
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

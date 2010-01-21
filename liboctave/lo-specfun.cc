@@ -3172,9 +3172,3 @@ float erfinv (float x)
 {
   return do_erfinv (x, false); 
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

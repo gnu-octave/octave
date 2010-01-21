@@ -523,9 +523,3 @@ operator >> (std::istream& is, ComplexColumnVector& a)
     }
   return is;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

@@ -63,9 +63,3 @@ extern const char *octave_basename (const char *name);
 #endif
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C ***
-;;; End: ***
-*/

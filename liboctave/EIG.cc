@@ -862,9 +862,3 @@ EIG::hermitian_init (const ComplexMatrix& a, const ComplexMatrix& b, bool calc_e
 
   return info;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

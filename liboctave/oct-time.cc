@@ -305,9 +305,3 @@ octave_strptime::init (const std::string& str, const std::string& fmt)
   delete [] ps;
 #endif
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

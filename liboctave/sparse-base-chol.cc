@@ -289,9 +289,3 @@ sparse_base_chol<chol_type, chol_elt, p_type>::inverse (void) const
 #endif
   return retval;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

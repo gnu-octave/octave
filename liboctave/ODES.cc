@@ -42,9 +42,3 @@ ODES::initialize (const ColumnVector& xx, double tt,
   xdot = ColumnVector (xx.length (), 0.0);
   theta = xtheta;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

@@ -255,9 +255,3 @@ oct_mach_info::float_format_as_string (float_format flt_fmt)
 
   return retval;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

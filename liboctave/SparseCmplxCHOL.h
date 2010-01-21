@@ -96,9 +96,3 @@ public:
 SparseComplexMatrix OCTAVE_API chol2inv (const SparseComplexMatrix& r);
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

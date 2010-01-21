@@ -115,9 +115,3 @@ MARRAY_FORWARD_DEFS (MArrayN, charNDArray, char)
 BSXFUN_STDREL_DECLS (charNDArray, OCTAVE_API)
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

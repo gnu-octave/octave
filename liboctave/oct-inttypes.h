@@ -1107,9 +1107,3 @@ xmin (const octave_int<T>& x, const octave_int<T>& y)
 }
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

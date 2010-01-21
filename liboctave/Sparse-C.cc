@@ -64,9 +64,3 @@ INSTANTIATE_SPARSE_ASSIGN (Complex, double, OCTAVE_API);
 #if 0
 template std::ostream& operator << (std::ostream&, const Sparse<Complex>&);
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

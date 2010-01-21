@@ -696,9 +696,3 @@ read_sparse_matrix (std::istream& is, Sparse<T>& a,
   INSTANTIATE_SPARSE_ASSIGN (T, T, API)
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

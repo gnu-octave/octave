@@ -56,9 +56,3 @@ octave_uname::init (void)
     }
 #endif
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

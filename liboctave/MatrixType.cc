@@ -1269,10 +1269,3 @@ MatrixType::transpose (void) const
 
   return retval;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/
-

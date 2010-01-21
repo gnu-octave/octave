@@ -519,9 +519,3 @@ octave_shlib::shlib_rep::new_instance (const std::string& f)
   return new shlib_rep ();
 #endif
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

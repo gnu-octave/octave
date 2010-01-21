@@ -651,9 +651,3 @@ gripe_nonconformant (const char *op, dim_vector& op1_dims,
     ("%s: nonconformant arguments (op1 is %s, op2 is %s)",
      op, op1_dims_str.c_str (), op2_dims_str.c_str ());
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

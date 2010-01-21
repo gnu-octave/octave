@@ -730,9 +730,3 @@ std::ostream&
 operator << (std::ostream& os, const Array<T>& a);
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

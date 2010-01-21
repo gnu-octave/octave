@@ -95,9 +95,3 @@ swap_bytes<1> (volatile void *, int)
 }
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

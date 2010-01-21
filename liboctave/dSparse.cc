@@ -8033,9 +8033,3 @@ SPARSE_SSM_BOOL_OPS (double, SparseMatrix, 0.0)
 
 SPARSE_SMSM_CMP_OPS (SparseMatrix, 0.0, , SparseMatrix, 0.0, )
 SPARSE_SMSM_BOOL_OPS (SparseMatrix, SparseMatrix, 0.0)
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

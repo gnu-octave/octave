@@ -657,9 +657,3 @@ octave_rand::fill (octave_idx_type len, double *v, double a)
 
   return;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

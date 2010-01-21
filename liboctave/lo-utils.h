@@ -115,9 +115,3 @@ extern "C" OCTAVE_API void * octave_w32_library_search (HINSTANCE handle, const 
 #endif
 
 extern "C" OCTAVE_API pid_t octave_waitpid (pid_t pid, int *status, int options);
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

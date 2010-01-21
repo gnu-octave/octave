@@ -201,9 +201,3 @@ extern OCTAVE_API Complex rc_sqrt (double);
 extern OCTAVE_API FloatComplex rc_sqrt (float);
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

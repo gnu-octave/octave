@@ -97,9 +97,3 @@ INSTANTIATE_MARRAYN_FRIENDS (octave_uint64, OCTAVE_API)
 template class OCTAVE_API MDiagArray2<int>;
 
 INSTANTIATE_MDIAGARRAY2_FRIENDS (int, OCTAVE_API)
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

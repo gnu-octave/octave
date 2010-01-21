@@ -463,9 +463,3 @@ oct_randp (double L)
   }
   return ret;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C ***
-;;; End: ***
-*/

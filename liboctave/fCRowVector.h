@@ -124,9 +124,3 @@ OCTAVE_API FloatComplexRowVector linspace (const FloatComplex& x1, const FloatCo
 MARRAY_FORWARD_DEFS (MArray, FloatComplexRowVector, FloatComplex)
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

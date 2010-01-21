@@ -134,9 +134,3 @@ ComplexSCHUR::init (const ComplexMatrix& a, const std::string& ord,
 
   return info;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

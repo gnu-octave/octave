@@ -91,9 +91,3 @@ private:
 FloatComplexMatrix OCTAVE_API chol2inv (const FloatComplexMatrix& r);
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

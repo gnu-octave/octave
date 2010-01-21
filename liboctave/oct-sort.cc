@@ -1953,9 +1953,3 @@ octave_sort<T>::descending_compare (typename ref_param<T>::type x,
 {
   return x > y;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

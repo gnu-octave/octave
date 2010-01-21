@@ -144,9 +144,3 @@ sparse_base_lu <lu_type, lu_elt_type, p_type, p_elt_type> :: Pc_mat (void) const
 {
   return PermMatrix (Q, true);
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

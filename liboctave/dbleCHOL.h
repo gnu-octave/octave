@@ -88,9 +88,3 @@ private:
 Matrix OCTAVE_API chol2inv (const Matrix& r);
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

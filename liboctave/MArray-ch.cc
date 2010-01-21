@@ -46,9 +46,3 @@ INSTANTIATE_MARRAY2_FRIENDS (char, OCTAVE_API)
 template class OCTAVE_API MDiagArray2<char>;
 
 INSTANTIATE_MDIAGARRAY2_FRIENDS (char, OCTAVE_API)
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

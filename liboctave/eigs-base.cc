@@ -3832,9 +3832,3 @@ utsolve (const Matrix&, const ColumnVector&, const Matrix&);
 #endif
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

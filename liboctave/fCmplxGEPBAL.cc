@@ -123,9 +123,3 @@ FloatComplexGEPBALANCE::init (const FloatComplexMatrix& a, const FloatComplexMat
 
   return info;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

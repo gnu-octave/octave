@@ -194,9 +194,3 @@ BSXFUN_OP2_DECL (pow, FloatComplexNDArray, FloatComplexNDArray,
                  FloatNDArray, OCTAVE_API)
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

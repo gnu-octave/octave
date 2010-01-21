@@ -176,9 +176,3 @@ DiagArray2<T>::operator Array2<T> (void) const
 
   return result;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

@@ -52,9 +52,3 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

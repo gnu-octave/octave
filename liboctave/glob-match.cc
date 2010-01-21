@@ -57,10 +57,3 @@ glob_match::opts_to_fnmatch_flags (unsigned int xopts) const
 
   return retval;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/
-

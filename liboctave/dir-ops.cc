@@ -111,9 +111,3 @@ dir_entry::copy (const dir_entry& de)
   fail = de.fail;
   errmsg = de.errmsg;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

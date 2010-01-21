@@ -1385,9 +1385,3 @@ mx_inline_xsum (const T *v, T *r,
 OP_RED_FCNN (mx_inline_xsum, T, T)
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

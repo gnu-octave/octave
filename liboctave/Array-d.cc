@@ -172,9 +172,3 @@ template OCTAVE_API std::ostream& operator << (std::ostream&, const Array<double
 template class OCTAVE_API DiagArray2<double>::Proxy;
 #endif
 template class OCTAVE_API DiagArray2<double>;
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

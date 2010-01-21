@@ -88,9 +88,3 @@ private:
   octave_allocator t::allocator (sizeof (t), s)
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

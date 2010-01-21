@@ -148,9 +148,3 @@ operator << (std::ostream& os, const SCHUR& a)
 
   return os;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

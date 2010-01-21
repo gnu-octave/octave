@@ -587,10 +587,3 @@ extern OCTAVE_API double erfinv (double x);
 extern OCTAVE_API float erfinv (float x);
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C ***
-;;; page-delimiter: "^/\\*" ***
-;;; End: ***
-*/

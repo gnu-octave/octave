@@ -68,9 +68,3 @@ chol2inv (const SparseComplexMatrix& r)
 
   return retval;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

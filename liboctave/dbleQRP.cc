@@ -101,9 +101,3 @@ QRP::Pvec (void) const
   ColumnVector pv (MArray<double> (pa) + 1.0);
   return pv;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

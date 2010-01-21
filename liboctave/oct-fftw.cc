@@ -1020,10 +1020,3 @@ octave_fftw::ifftNd (const FloatComplex *in, FloatComplex *out, const int rank,
 }
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/
-

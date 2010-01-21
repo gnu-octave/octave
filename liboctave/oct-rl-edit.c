@@ -382,9 +382,3 @@ octave_rl_meta (char c)
 }
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

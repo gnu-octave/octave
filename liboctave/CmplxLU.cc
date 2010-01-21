@@ -208,9 +208,3 @@ void ComplexLU::update_piv (const ComplexMatrix&, const ComplexMatrix&)
 }
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

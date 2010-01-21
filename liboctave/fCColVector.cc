@@ -523,9 +523,3 @@ operator >> (std::istream& is, FloatComplexColumnVector& a)
     }
   return is;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

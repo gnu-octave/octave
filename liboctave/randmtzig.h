@@ -91,10 +91,3 @@ extern void oct_fill_rande (octave_idx_type n, double *p);
 }
 #endif
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C ***
-;;; End: ***
-*/
-

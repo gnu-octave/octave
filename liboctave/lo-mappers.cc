@@ -731,9 +731,3 @@ FloatComplex rc_sqrt (float x)
 {
   return x < 0.0f ? FloatComplex (0.0f, sqrtf (-x)) : FloatComplex (sqrtf (x));
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

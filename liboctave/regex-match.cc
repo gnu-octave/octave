@@ -147,11 +147,3 @@ regex_match::match (const string_vector& s)
 
   return retval;
 }
-
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/
-

@@ -46,9 +46,3 @@ INSTANTIATE_MARRAY2_FRIENDS (short, OCTAVE_API)
 template class OCTAVE_API MDiagArray2<short>;
 
 INSTANTIATE_MDIAGARRAY2_FRIENDS (short, OCTAVE_API)
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

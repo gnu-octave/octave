@@ -38,10 +38,3 @@ octave_getopt_long (int argc, char *const *argv, const char *options,
 {
   return getopt_long (argc, argv, options, long_options, opt_index);
 }
-
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

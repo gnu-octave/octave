@@ -3457,9 +3457,3 @@ SM_BOOL_OPS (float, FloatMatrix)
 
 MM_CMP_OPS (FloatMatrix, FloatMatrix)
 MM_BOOL_OPS (FloatMatrix, FloatMatrix)
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

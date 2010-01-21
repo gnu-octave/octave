@@ -123,9 +123,3 @@ FloatGEPBALANCE::init (const FloatMatrix& a, const FloatMatrix& b,
 
   return info;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

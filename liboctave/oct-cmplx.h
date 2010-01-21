@@ -81,9 +81,3 @@ DEF_COMPLEXR_COMP (<=, <)
 DEF_COMPLEXR_COMP (>=, >)
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

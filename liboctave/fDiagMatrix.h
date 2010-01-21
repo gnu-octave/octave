@@ -124,9 +124,3 @@ operator * (const FloatDiagMatrix& a, const FloatDiagMatrix& b);
 MDIAGARRAY2_FORWARD_DEFS (MDiagArray2, FloatDiagMatrix, float)
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

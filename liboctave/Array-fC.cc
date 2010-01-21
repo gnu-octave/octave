@@ -106,9 +106,3 @@ template OCTAVE_API std::ostream& operator << (std::ostream&, const Array<FloatC
 template class OCTAVE_API DiagArray2<FloatComplex>::Proxy;
 #endif
 template class OCTAVE_API DiagArray2<FloatComplex>;
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

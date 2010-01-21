@@ -119,9 +119,3 @@ FloatComplexHESS::init (const FloatComplexMatrix& a)
 
   return info;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

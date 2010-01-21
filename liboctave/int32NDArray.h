@@ -47,9 +47,3 @@ BSXFUN_STDOP_DECLS (int32NDArray, OCTAVE_API)
 BSXFUN_STDREL_DECLS (int32NDArray, OCTAVE_API)
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

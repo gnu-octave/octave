@@ -63,9 +63,3 @@ extern struct direct *readdir (DIR *d);
 #endif
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

@@ -295,9 +295,3 @@ FloatIndefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval, floa
 
   return result;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

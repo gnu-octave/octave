@@ -3696,9 +3696,3 @@ Sparse<T>::print_info (std::ostream& os, const std::string& prefix) const
      << prefix << "rep->cidx:   " << static_cast<void *> (rep->c) << "\n"
      << prefix << "rep->count:  " << rep->count << "\n";
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

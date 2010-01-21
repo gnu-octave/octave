@@ -99,9 +99,3 @@ AEPBALANCE::balancing_matrix (void) const
 
   return balancing_mat;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

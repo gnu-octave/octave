@@ -185,9 +185,3 @@ operator << (std::ostream& os, const CollocWt& a)
 
   return os;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

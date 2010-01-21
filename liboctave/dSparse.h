@@ -484,9 +484,3 @@ SPARSE_FORWARD_DEFS (MSparse, SparseMatrix, Matrix, double)
 #endif
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

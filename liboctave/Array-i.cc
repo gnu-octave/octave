@@ -76,9 +76,3 @@ template class OCTAVE_API Array2<int>;
 #include "DiagArray2.cc"
 
 template class OCTAVE_API DiagArray2<int>;
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

@@ -169,9 +169,3 @@ octave_ieee_init (void)
       abort ();
     }
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

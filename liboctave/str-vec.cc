@@ -263,9 +263,3 @@ string_vector::list_in_columns (std::ostream& os, int width) const
 
   return os;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

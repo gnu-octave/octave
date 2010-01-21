@@ -117,9 +117,3 @@ sparse_indices_ok (octave_idx_type *r, octave_idx_type *c,
 
   return true;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

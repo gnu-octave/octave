@@ -54,9 +54,3 @@ MINMAX_FCNS (uint8)
 
 BSXFUN_STDOP_DEFS_MXLOOP (uint8NDArray)
 BSXFUN_STDREL_DEFS_MXLOOP (uint8NDArray)
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

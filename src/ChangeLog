@@ -1,5 +1,10 @@
 2010-01-20  John W. Eaton  <jwe@octave.org>
 
+	* defaults.h.in, graphics.h.in, oct-conf.h.in, oct-errno.cc.in,
+	version.h.in: Delete Emacs local-variable settings.
+
+2010-01-20  John W. Eaton  <jwe@octave.org>
+
 	* cutils.c, main.c, matherr.c, siglist.c, Cell.cc, bitfcns.cc,
 	c-file-ptr-stream.cc, comment-list.cc, data.cc, debug.cc,
 	defaults.cc, defun.cc, dirfns.cc, display.cc, dynamic-ld.cc,

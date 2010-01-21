@@ -4144,9 +4144,3 @@ OCTINTERP_API graphics_handle gcf (void);
 OCTINTERP_API graphics_handle gca (void);
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

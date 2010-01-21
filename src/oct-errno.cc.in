@@ -336,10 +336,3 @@ octave_errno::do_list (void)
 
   return retval;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
-;;; End: ***
-*/

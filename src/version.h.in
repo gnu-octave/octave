@@ -93,9 +93,3 @@ http://www.octave.org/bugs.html to learn how to write a helpful report)."
   "For information about changes from previous versions, type `news'."
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

@@ -213,10 +213,3 @@ extern void set_exec_path (const std::string& path = std::string ());
 extern void set_image_path (const std::string& path = std::string ());
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
-;;; End: ***
-*/

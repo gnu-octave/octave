@@ -1,5 +1,9 @@
 2010-01-20  John W. Eaton  <jwe@octave.org>
 
+	* misc/quit.cc: Untabify.
+
+2010-01-20  John W. Eaton  <jwe@octave.org>
+
 	* Makefile.am (EXTRA_DIST): Remove STOP.patch from the list.
 
 2010-01-20  Jaroslav Hajek  <highegg@gmail.com>

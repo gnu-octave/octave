@@ -89,17 +89,17 @@ octave_rethrow_exception (void)
   else
     {
       switch (octave_exception_state)
-	{
-	case octave_exec_exception:
-	  octave_throw_execution_exception ();
-	  break;
+        {
+        case octave_exec_exception:
+          octave_throw_execution_exception ();
+          break;
 
-	case octave_alloc_exception:
-	  octave_throw_bad_alloc ();
-	  break;
+        case octave_alloc_exception:
+          octave_throw_bad_alloc ();
+          break;
 
-	default:
-	  break;
-	}
+        default:
+          break;
+        }
     }
 }

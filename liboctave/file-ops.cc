@@ -195,18 +195,13 @@ file_ops::symlink (const std::string& old_name,
 
   int status = -1;
 
-#if defined (HAVE_SYMLINK)
-
-  status = ::symlink (old_name.c_str (), new_name.c_str ());
+  status = octave_symlink (old_name.c_str (), new_name.c_str ());
 
   if (status < 0)
     {
       using namespace std;
       msg = ::strerror (errno);
     }
-#else
-  msg = NOT_SUPPORTED ("symlink");
-#endif
 
   return status;
 }

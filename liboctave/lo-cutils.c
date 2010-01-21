@@ -84,7 +84,7 @@ octave_mkfifo (const char *name, mode_t mode)
 
 OCTAVE_API void
 octave_qsort (void *base, size_t n, size_t size,
-	      int (*cmp) (const void *, const void *))
+              int (*cmp) (const void *, const void *))
 {
   qsort (base, n, size, cmp);
 }

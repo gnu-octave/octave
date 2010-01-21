@@ -79,7 +79,7 @@ file_ops::static_members::instance_ok (void)
   if (! instance)
     {
       (*current_liboctave_error_handler)
-	("unable to create file_ops::static_members object!");
+        ("unable to create file_ops::static_members object!");
 
       retval = false;
     }
@@ -156,7 +156,7 @@ file_ops::link (const std::string& old_name, const std::string& new_name)
 
 int
 file_ops::link (const std::string& old_name,
-		const std::string& new_name, std::string& msg)
+                const std::string& new_name, std::string& msg)
 {
   msg = std::string ();
 
@@ -184,7 +184,7 @@ file_ops::symlink (const std::string& old_name, const std::string& new_name)
 
 int
 file_ops::symlink (const std::string& old_name,
-		   const std::string& new_name, std::string& msg)
+                   const std::string& new_name, std::string& msg)
 {
   msg = std::string ();
 
@@ -212,7 +212,7 @@ file_ops::readlink (const std::string& path, std::string& result)
 
 int
 file_ops::readlink (const std::string& path, std::string& result,
-		    std::string& msg)
+                    std::string& msg)
 {
   int status = -1;
 
@@ -248,7 +248,7 @@ file_ops::rename (const std::string& from, const std::string& to)
 
 int
 file_ops::rename (const std::string& from, const std::string& to,
-		  std::string& msg)
+                  std::string& msg)
 {
   int status = -1;
 
@@ -315,49 +315,49 @@ file_ops::recursive_rmdir (const std::string& name, std::string& msg)
       string_vector dirlist = dir.read ();
 
       for (octave_idx_type i = 0; i < dirlist.length (); i++)
-	{
-	  octave_quit ();
+        {
+          octave_quit ();
 
-	  std::string nm = dirlist[i];
+          std::string nm = dirlist[i];
 
-	  // Skip current directory and parent.
-	  if (nm == "." || nm == "..")
-	    continue;
+          // Skip current directory and parent.
+          if (nm == "." || nm == "..")
+            continue;
 
-	  std::string fullnm = name + file_ops::dir_sep_str () + nm;
+          std::string fullnm = name + file_ops::dir_sep_str () + nm;
 
-	  // Get info about the file.  Don't follow links.
-	  file_stat fs (fullnm, false);
+          // Get info about the file.  Don't follow links.
+          file_stat fs (fullnm, false);
 
-	  if (fs)
-	    {
-	      if (fs.is_dir ())
-		{
-		  status = recursive_rmdir (fullnm, msg);
+          if (fs)
+            {
+              if (fs.is_dir ())
+                {
+                  status = recursive_rmdir (fullnm, msg);
 
-		  if (status < 0)
-		    break;
-		}
-	      else
-		{
-		  status = unlink (fullnm, msg);
+                  if (status < 0)
+                    break;
+                }
+              else
+                {
+                  status = unlink (fullnm, msg);
 
-		  if (status < 0)
-		    break;
-		}
-	    }
-	  else
-	    {
-	      msg = fs.error ();
-	      break;
-	    }
-	}
+                  if (status < 0)
+                    break;
+                }
+            }
+          else
+            {
+              msg = fs.error ();
+              break;
+            }
+        }
 
       if (status >= 0)
-	{
-	  dir.close ();
-	  status = file_ops::rmdir (name, msg);
-	}
+        {
+          dir.close ();
+          status = file_ops::rmdir (name, msg);
+        }
     }
   else
     {
@@ -425,16 +425,16 @@ extern int errno;
       OCTAVE_LOCAL_BUFFER (char, resolved, resolved_size);
 
       int resolved_len
-	= ::resolvepath (absolute_name.c_str (), resolved, resolved_size);
+        = ::resolvepath (absolute_name.c_str (), resolved, resolved_size);
 
       if (resolved_len < 0)
-	break;
+        break;
 
       if (resolved_len < resolved_size)
-	{
-	  retval = resolved;
-	  break;
-	}
+        {
+          retval = resolved;
+          break;
+        }
     }
 
 #elif defined (__WIN32__)
@@ -452,13 +452,13 @@ extern int errno;
       else if (status < n)
         {
           win_path.resize (status);
-	  retval = win_path;
-	  break;
+          retval = win_path;
+          break;
         }
       else
         {
           n *= 2;
-	  win_path.resize (n);
+          win_path.resize (n);
         }
     }
 
@@ -506,7 +506,7 @@ file_ops::tempnam (const std::string& dir, const std::string& pfx)
 
 std::string
 file_ops::tempnam (const std::string& dir, const std::string& pfx,
-		   std::string& msg)
+                   std::string& msg)
 {
   msg = std::string ();
 
@@ -590,18 +590,18 @@ tilde_find_prefix (const std::string& s, size_t& len)
   if (! prefixes.empty ())
     {
       for (size_t i = 0; i < s_len; i++)
-	{
-	  for (int j = 0; j < prefixes.length (); j++)
-	    {
-	      size_t pfx_len = prefixes[j].length ();
+        {
+          for (int j = 0; j < prefixes.length (); j++)
+            {
+              size_t pfx_len = prefixes[j].length ();
 
-	      if (prefixes[j].compare (s.substr (i, pfx_len)) == 0)
-		{
-		  len = pfx_len - 1;
-		  return i + len;
-		}
-	    }
-	}
+              if (prefixes[j].compare (s.substr (i, pfx_len)) == 0)
+                {
+                  len = pfx_len - 1;
+                  return i + len;
+                }
+            }
+        }
     }
 
   return s_len;
@@ -622,18 +622,18 @@ tilde_find_suffix (const std::string& s)
   for ( ; i < s_len; i++)
     {
       if (file_ops::is_dir_sep (s[i]))
-	break;
+        break;
 
       if (! suffixes.empty ())
-	{
-	  for (int j = 0; j < suffixes.length (); j++)
-	    {
-	      size_t sfx_len = suffixes[j].length ();
+        {
+          for (int j = 0; j < suffixes.length (); j++)
+            {
+              size_t sfx_len = suffixes[j].length ();
 
-	      if (suffixes[j].compare (s.substr (i, sfx_len)) == 0)
-		return i;
-	    }
-	}
+              if (suffixes[j].compare (s.substr (i, sfx_len)) == 0)
+                return i;
+            }
+        }
     }
 
   return i;
@@ -681,10 +681,10 @@ tilde_expand_word (const std::string& filename)
   if (file_ops::tilde_expansion_preexpansion_hook)
     {
       std::string expansion
-	= file_ops::tilde_expansion_preexpansion_hook (username);
+        = file_ops::tilde_expansion_preexpansion_hook (username);
 
       if (! expansion.empty ())
-	return expansion + filename.substr (user_len+1);
+        return expansion + filename.substr (user_len+1);
     }
 
   // No preexpansion hook, or the preexpansion hook failed.  Look in the
@@ -698,19 +698,19 @@ tilde_expand_word (const std::string& filename)
       // and we couldn't find a standard expansion, then let them try.
 
       if (file_ops::tilde_expansion_failure_hook)
-	{
-	  std::string expansion
-	    = file_ops::tilde_expansion_failure_hook (username);
+        {
+          std::string expansion
+            = file_ops::tilde_expansion_failure_hook (username);
 
-	  if (! expansion.empty ())
-	    dirname = expansion + filename.substr (user_len+1);
-	}
+          if (! expansion.empty ())
+            dirname = expansion + filename.substr (user_len+1);
+        }
 
       // If we don't have a failure hook, or if the failure hook did not
       // expand the tilde, return a copy of what we were passed.
 
       if (dirname.length () == 0)
-	dirname = filename;
+        dirname = filename;
     }
   else
     dirname = pw.dir () + filename.substr (user_len+1);
@@ -737,42 +737,42 @@ file_ops::tilde_expand (const std::string& name)
       size_t pos = 0;
 
       while (1)
-	{
-	  if (pos > name_len)
-	    break;
+        {
+          if (pos > name_len)
+            break;
 
-	  size_t len;
+          size_t len;
 
-	  // Make START point to the tilde which starts the expansion.
+          // Make START point to the tilde which starts the expansion.
 
-	  size_t start = tilde_find_prefix (name.substr (pos), len);
+          size_t start = tilde_find_prefix (name.substr (pos), len);
 
-	  result.append (name.substr (pos, start));
+          result.append (name.substr (pos, start));
 
-	  // Advance STRING to the starting tilde.
+          // Advance STRING to the starting tilde.
 
-	  pos += start;
+          pos += start;
 
-	  // Make FINI be the index of one after the last character of the
-	  // username.
+          // Make FINI be the index of one after the last character of the
+          // username.
 
-	  size_t fini = tilde_find_suffix (name.substr (pos));
+          size_t fini = tilde_find_suffix (name.substr (pos));
 
-	  // If both START and FINI are zero, we are all done.
+          // If both START and FINI are zero, we are all done.
 
-	  if (! (start || fini))
-	    break;
+          if (! (start || fini))
+            break;
 
-	  // Expand the entire tilde word, and copy it into RESULT.
+          // Expand the entire tilde word, and copy it into RESULT.
 
-	  std::string tilde_word = name.substr (pos, fini);
+          std::string tilde_word = name.substr (pos, fini);
 
-	  pos += fini;
+          pos += fini;
 
-	  std::string expansion = tilde_expand_word (tilde_word);
+          std::string expansion = tilde_expand_word (tilde_word);
 
-	  result.append (expansion);
-	}
+          result.append (expansion);
+        }
 
       return result;
     }

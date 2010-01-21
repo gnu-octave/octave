@@ -1,5 +1,7 @@
 2010-01-21  John W. Eaton  <jwe@octave.org>
 
+	* file-ops.h, file-ops.cc, lo-utils.h, lo-cutils.c: Untabify.
+
 	* file-ops.cc: Don't include unistd.h.
 	(NOT_SUPPORTED): Delete unused macro.
 

@@ -66,7 +66,7 @@ public:
 
   static std::string tempnam (const std::string&, const std::string&);
   static std::string tempnam (const std::string&, const std::string&,
-			      std::string&);
+                              std::string&);
 
   typedef std::string (*tilde_expansion_hook) (const std::string&);
 

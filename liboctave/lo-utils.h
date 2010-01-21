@@ -41,7 +41,8 @@ extern OCTAVE_API float F_NINT (float x);
 
 extern OCTAVE_API char *strsave (const char *);
 
-extern OCTAVE_API void octave_putenv (const std::string&, const std::string&);
+extern OCTAVE_API void
+octave_putenv (const std::string&, const std::string&);
 
 extern OCTAVE_API std::string octave_fgets (std::FILE *);
 extern OCTAVE_API std::string octave_fgetl (std::FILE *);
@@ -60,23 +61,29 @@ octave_symlink (const char *old_name, const char *new_name);
 extern "C" OCTAVE_API int
 octave_readlink (const char *name, char *buf, size_t size);
 
-extern "C" OCTAVE_API int octave_mkdir (const char *name, mode_t mode);
+extern "C" OCTAVE_API int
+octave_mkdir (const char *name, mode_t mode);
 
-extern "C" OCTAVE_API int octave_mkfifo (const char *name, mode_t mode);
+extern "C" OCTAVE_API int
+octave_mkfifo (const char *name, mode_t mode);
 
-extern "C" OCTAVE_API void octave_qsort (void *base, size_t n, size_t size,
-			      int (*cmp) (const void *, const void *));
+extern "C" OCTAVE_API void
+octave_qsort (void *base, size_t n, size_t size,
+              int (*cmp) (const void *, const void *));
 
 extern "C" OCTAVE_API int octave_rmdir (const char *name);
 
-extern "C" OCTAVE_API int octave_rename (const char *from, const char *to);
+extern "C" OCTAVE_API int
+octave_rename (const char *from, const char *to);
 
-extern "C" OCTAVE_API char *oct_strptime (const char *buf, const char *format,
-                                          struct tm *tm);
+extern "C" OCTAVE_API char *
+oct_strptime (const char *buf, const char *format, struct tm *tm);
 
-extern "C" OCTINTERP_API int octave_strcasecmp (const char *s1, const char *s2);
+extern "C" OCTAVE_API int
+octave_strcasecmp (const char *s1, const char *s2);
 
-extern "C" OCTINTERP_API int octave_strncasecmp (const char *s1, const char *s2, size_t n);
+extern "C" OCTAVE_API int
+octave_strncasecmp (const char *s1, const char *s2, size_t n);
 
 extern "C" OCTAVE_API char *
 octave_tempnam (const char *pdir, const char *ppfx);
@@ -124,18 +131,26 @@ octave_read_float_complex (std::istream& is)
   return octave_read_value<FloatComplex> (is);
 }
 
-extern OCTAVE_API void octave_write_double (std::ostream& os, double dval);
-extern OCTAVE_API void octave_write_complex (std::ostream& os, const Complex& cval);
+extern OCTAVE_API void
+octave_write_double (std::ostream& os, double dval);
 
-extern OCTAVE_API void octave_write_float (std::ostream& os, float dval);
-extern OCTAVE_API void octave_write_float_complex (std::ostream& os, const FloatComplex& cval);
+extern OCTAVE_API void
+octave_write_complex (std::ostream& os, const Complex& cval);
+
+extern OCTAVE_API void
+octave_write_float (std::ostream& os, float dval);
+
+extern OCTAVE_API void
+octave_write_float_complex (std::ostream& os, const FloatComplex& cval);
 
 #ifdef HAVE_LOADLIBRARY_API
 #include <windows.h>
-extern "C" OCTAVE_API void * octave_w32_library_search (HINSTANCE handle, const char *name);
+extern "C" OCTAVE_API void *
+octave_w32_library_search (HINSTANCE handle, const char *name);
 #undef min
 #undef max
 #endif
 #endif
 
-extern "C" OCTAVE_API pid_t octave_waitpid (pid_t pid, int *status, int options);
+extern "C" OCTAVE_API pid_t
+octave_waitpid (pid_t pid, int *status, int options);

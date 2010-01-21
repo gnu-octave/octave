@@ -51,6 +51,9 @@ extern OCTAVE_API std::string octave_fgetl (std::FILE *, bool& eof);
 
 extern "C" OCTAVE_API int octave_gethostname (char *, int);
 
+extern "C" OCTAVE_API int
+octave_link (const char *old_name, const char *new_name);
+
 extern "C" OCTAVE_API int octave_mkdir (const char *name, mode_t mode);
 
 extern "C" OCTAVE_API int octave_mkfifo (const char *name, mode_t mode);

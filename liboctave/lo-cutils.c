@@ -53,6 +53,12 @@ Software Foundation, Inc.
 #include "syswait.h"
 
 OCTAVE_API int
+octave_link (const char *old_name, const char *new_name)
+{
+  return link (old_name, new_name);
+}
+
+OCTAVE_API int
 octave_mkdir (const char *name, mode_t mode)
 {
   return mkdir (name, mode);

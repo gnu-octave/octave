@@ -167,17 +167,13 @@ file_ops::link (const std::string& old_name,
 
   int status = -1;
 
-#if defined (HAVE_LINK)
-  status = ::link (old_name.c_str (), new_name.c_str ());
+  status = octave_link (old_name.c_str (), new_name.c_str ());
 
   if (status < 0)
     {
       using namespace std;
       msg = ::strerror (errno);
     }
-#else
-  msg = NOT_SUPPORTED ("link");
-#endif
 
   return status;
 }

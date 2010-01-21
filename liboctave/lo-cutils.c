@@ -138,6 +138,12 @@ octave_umask (mode_t mode)
 }
 
 OCTAVE_API int
+octave_unlink (const char *name)
+{
+  return unlink (name);
+}
+
+OCTAVE_API int
 octave_gethostname (char *name, int namelen)
 {
   return gethostname (name, namelen);

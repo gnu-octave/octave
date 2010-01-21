@@ -1,5 +1,11 @@
 2010-01-21  John W. Eaton  <jwe@octave.org>
 
+	* lo-cutils.c (octave_unlink): New funtion.
+	* lo-utils.h: Provide decl.
+	* file-ops.cc (file_ops::unlink): Call octave_unlink.
+
+2010-01-21  John W. Eaton  <jwe@octave.org>
+
 	* lo-cutils.c (octave_umask): New funtion.
 	* lo-utils.h: Provide decl.
 	* file-ops.cc (file_ops::umask): Call octave_umask.

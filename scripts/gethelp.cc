@@ -153,11 +153,11 @@ main (int argc, char **argv)
   if (! help_text.empty ())
     {
       std::cout << "" << name << "\n"
-        	<< "@c " << file_name << "\n"
-		<< help_text;
+                << "@c " << file_name << "\n"
+                << help_text;
 
       if (help_text[help_text.length () - 1] != '\n')
-	std::cout << "\n";
+        std::cout << "\n";
     }
 
   return 0;

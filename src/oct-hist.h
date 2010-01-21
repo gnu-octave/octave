@@ -40,9 +40,3 @@ extern bool input_from_tmp_history_file;
 extern bool Vsaving_history;
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

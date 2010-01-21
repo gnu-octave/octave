@@ -170,9 +170,3 @@ glps_renderer::draw_pixels (GLsizei w, GLsizei h, GLenum format,
 }
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

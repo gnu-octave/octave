@@ -398,9 +398,3 @@ octave_base_sparse<T>::map (octave_base_value::unary_mapper_t umap) const
 
   return retval;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

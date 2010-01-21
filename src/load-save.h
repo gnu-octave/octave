@@ -89,9 +89,3 @@ extern void
 write_header (std::ostream& os, load_save_format format);
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

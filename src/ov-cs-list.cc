@@ -42,9 +42,3 @@ octave_cs_list::octave_cs_list (const Cell& c)
   : octave_base_value (), lst (c)
 {
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

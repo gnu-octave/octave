@@ -261,9 +261,3 @@ extern bool Vprint_empty_dimensions;
 extern OCTINTERP_API int Vstruct_levels_to_print;
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

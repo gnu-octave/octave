@@ -151,9 +151,3 @@ extern octave_value make_fcn_handle (const std::string& nm,
                                      bool local_funcs = true);
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

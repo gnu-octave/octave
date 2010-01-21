@@ -86,9 +86,3 @@ tree_return_command::accept (tree_walker& tw)
 {
   tw.visit_return_command (*this);
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

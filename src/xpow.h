@@ -157,9 +157,3 @@ extern octave_value elem_xpow (const FloatComplexNDArray& a, const FloatComplex&
 extern octave_value elem_xpow (const FloatComplexNDArray& a, const FloatComplexNDArray& b);
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

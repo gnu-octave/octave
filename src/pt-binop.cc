@@ -207,9 +207,3 @@ tree_boolean_expression::dup (symbol_table::scope_id scope,
 
   return new_be;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

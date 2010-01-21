@@ -136,9 +136,3 @@ extern OCTINTERP_API void clear_variable (const std::string& nm);
 extern OCTINTERP_API void clear_symbol (const std::string& nm);
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

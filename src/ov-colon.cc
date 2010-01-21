@@ -47,9 +47,3 @@ octave_magic_colon::print_raw (std::ostream& os, bool) const
 {
   os << ":";
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

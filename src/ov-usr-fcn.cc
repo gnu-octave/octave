@@ -691,9 +691,3 @@ subsasgn method of a user-defined class.\n\
 {
   return SET_INTERNAL_VARIABLE (optimize_subsasgn_calls);
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

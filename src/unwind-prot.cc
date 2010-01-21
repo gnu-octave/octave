@@ -38,9 +38,3 @@ void unwind_protect_safe::gripe_exception (void)
   // FIXME: can this throw an exception?
   error ("internal: unhandled exception in unwind_protect handler");
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

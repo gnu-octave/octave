@@ -276,9 +276,3 @@ extern OCTINTERP_API size_t mxGetElementSize (const mxArray *ptr);
 #endif
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C ***
-;;; End: ***
-*/

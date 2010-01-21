@@ -914,9 +914,3 @@ whos ans\n\
 %!  result = "abc     mnop  \ndef     qrs   \nghijkl  tuv   \n";
 %!  assert (list_in_columns (input, 20) == result);
 */
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

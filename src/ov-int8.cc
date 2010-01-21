@@ -82,9 +82,3 @@ Convert @var{x} to 8-bit integer type.\n\
 {
   OCTAVE_TYPE_CONV_BODY (int8);
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

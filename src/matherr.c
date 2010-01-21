@@ -51,9 +51,3 @@ matherr (struct exception *x)
   return 1;
 }
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C ***
-;;; End: ***
-*/

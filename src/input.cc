@@ -1526,9 +1526,3 @@ will set a breakpoint at the first line of the subfunction @code{mysubfunc}.\n\
 
   return retval;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

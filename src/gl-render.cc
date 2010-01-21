@@ -3261,9 +3261,3 @@ opengl_renderer::render_text (const std::string& txt,
 }
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

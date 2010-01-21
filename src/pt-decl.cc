@@ -146,9 +146,3 @@ tree_static_command::accept (tree_walker& tw)
 {
   tw.visit_static_command (*this);
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

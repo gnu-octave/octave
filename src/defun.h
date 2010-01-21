@@ -65,9 +65,3 @@ along with Octave; see the file COPYING.  If not, see
   DEFALIAS_INTERNAL (alias, name)
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

@@ -759,9 +759,3 @@ private:
 extern bool Vsparse_auto_mutate;
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

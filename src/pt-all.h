@@ -53,9 +53,3 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-walk.h"
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

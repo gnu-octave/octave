@@ -81,9 +81,3 @@ tree_expression::original_text (void) const
 {
   return std::string ();
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

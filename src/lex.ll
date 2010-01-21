@@ -3677,9 +3677,3 @@ Undocumented internal function.\n\
 
   return retval;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

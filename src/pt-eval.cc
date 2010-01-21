@@ -1135,9 +1135,3 @@ within a function body that are not terminated with a semicolon.\n\
 {
   return SET_INTERNAL_VARIABLE (silent_functions);
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

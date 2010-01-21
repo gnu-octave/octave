@@ -58,9 +58,3 @@ get_save_type (double /* max_val */, double /* min_val */)
 
   return st;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

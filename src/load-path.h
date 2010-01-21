@@ -530,10 +530,3 @@ extern void execute_pkg_add (const std::string& dir);
 extern void execute_pkg_del (const std::string& dir);
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
-;;; End: ***
-*/

@@ -88,9 +88,3 @@ octave_ostream::create (std::ostream *arg, const std::string& n)
 {
   return octave_stream (new octave_ostream (arg, n));
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

@@ -38,9 +38,3 @@ extern std::string get_working_directory (const std::string&);
 extern octave_time Vlast_chdir_time;
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

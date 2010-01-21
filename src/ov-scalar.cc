@@ -339,9 +339,3 @@ octave_scalar::map (unary_mapper_t umap) const
         return octave_base_value::map (umap);
     }
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

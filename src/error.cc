@@ -1818,9 +1818,3 @@ last_warning_id (void)
 {
   return Vlast_warning_id;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

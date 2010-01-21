@@ -209,9 +209,3 @@ typedef c_file_ptr_stream<std::iostream, gzFile, c_zfile_ptr_buf> io_c_zfile_ptr
 #endif
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

@@ -69,9 +69,3 @@ octave_oprocstream::~octave_oprocstream (void)
 {
   do_close ();
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

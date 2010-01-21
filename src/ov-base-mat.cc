@@ -459,9 +459,3 @@ octave_base_matrix<MT>::print_info (std::ostream& os,
 {
   matrix.print_info (os, prefix);
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

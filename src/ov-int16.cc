@@ -82,9 +82,3 @@ Convert @var{x} to 16-bit integer type.\n\
 {
   OCTAVE_TYPE_CONV_BODY (int16);
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

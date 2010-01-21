@@ -173,9 +173,3 @@ extern bool parser_end_of_input;
 extern lexical_feedback lexer_flags;
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

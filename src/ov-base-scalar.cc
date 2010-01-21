@@ -140,9 +140,3 @@ octave_base_scalar<ST>::print_name_tag (std::ostream& os,
   os << name << " = ";
   return false;    
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

@@ -44,9 +44,3 @@ octave_function::empty_clone (void) const
   panic_impossible ();
   return 0;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

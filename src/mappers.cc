@@ -1762,9 +1762,3 @@ DEFALIAS (upper, toupper);
 DEFALIAS (gammaln, lgamma);
 
 DEFALIAS (isfinite, finite);
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

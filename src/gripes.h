@@ -145,9 +145,3 @@ extern OCTINTERP_API void
 gripe_warn_complex_cmp (void);
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

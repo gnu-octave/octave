@@ -1608,9 +1608,3 @@ DEFUN (variable_value, args, , "VALUE = variable_value (NAME)")
   return retval;
 }
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

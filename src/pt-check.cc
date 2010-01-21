@@ -555,9 +555,3 @@ tree_checker::gripe (const std::string& msg, int line)
   else
     error ("%s: %d: %s", curr_fcn_file_name.c_str (), line, msg.c_str ());
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

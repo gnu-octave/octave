@@ -533,9 +533,3 @@ Octave_map::index (const octave_value_list& idx, bool resize_ok) const
 %!  x(1, 1).d = 10; x(4, 6).a = "b"; x(2, 4).f = 27;
 %!  assert (fieldnames (x([1, 2], [2:5])), {"d"; "a"; "f"});
 */
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

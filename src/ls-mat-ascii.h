@@ -32,10 +32,3 @@ save_mat_ascii_data (std::ostream& os, const octave_value& val_arg,
 		     int precision, bool tabs = false);
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/
-

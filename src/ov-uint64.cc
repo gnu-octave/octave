@@ -82,9 +82,3 @@ Convert @var{x} to unsigned 64-bit integer type.\n\
 {
   OCTAVE_TYPE_CONV_BODY (uint64);
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

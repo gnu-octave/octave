@@ -111,9 +111,3 @@ typedef octave_tstdiostream<c_zfile_ptr_buf, io_c_zfile_ptr_stream, gzFile> octa
 #endif
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

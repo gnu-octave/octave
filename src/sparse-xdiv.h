@@ -91,9 +91,3 @@ extern SparseComplexMatrix xleftdiv (const ComplexDiagMatrix&, const SparseCompl
 				     MatrixType&);
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

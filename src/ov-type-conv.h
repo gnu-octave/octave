@@ -107,9 +107,3 @@ octave_type_conv_body (const octave_value &arg, const std::string& name, int t_r
 			  octave_ ## NAME ## _scalar)
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

@@ -5813,9 +5813,3 @@ set_property_in_handle (double handle, const std::string& property,
 
   return ret;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

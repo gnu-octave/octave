@@ -49,9 +49,3 @@ tree::str_print_code (void)
 
   return retval;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

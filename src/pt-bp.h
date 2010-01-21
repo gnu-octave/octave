@@ -168,9 +168,3 @@ tree_breakpoint : public tree_walker
 extern bool octave_debug_on_interrupt_state;
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

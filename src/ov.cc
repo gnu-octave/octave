@@ -2802,9 +2802,3 @@ Note that this is the same as writing @code{val(:,1:2) = 0}.\n\
 
   return retval;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

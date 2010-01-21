@@ -568,9 +568,3 @@ octave_range::as_mxArray (void) const
 
   return retval;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

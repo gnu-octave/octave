@@ -959,9 +959,3 @@ Return the last component of the value returned by\n\
 
   return retval;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

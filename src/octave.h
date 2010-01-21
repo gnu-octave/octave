@@ -34,9 +34,3 @@ extern OCTINTERP_API int octave_main (int argc, char **argv, int embedded);
 #endif
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

@@ -221,9 +221,3 @@ octave_procbuf::close (void)
 
 #endif
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

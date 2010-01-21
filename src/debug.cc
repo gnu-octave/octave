@@ -1126,9 +1126,3 @@ Return true if debug mode is on, otherwise false.\n\
 
   return retval;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

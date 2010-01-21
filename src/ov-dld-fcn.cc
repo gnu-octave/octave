@@ -89,9 +89,3 @@ octave_dld_function::create (octave_builtin::fcn ff, const octave_shlib& shl,
 {
   return new octave_dld_function (ff, shl, nm, ds);
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

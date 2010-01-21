@@ -201,9 +201,3 @@ tree_postfix_expression::accept (tree_walker& tw)
 {
   tw.visit_postfix_expression (*this);
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

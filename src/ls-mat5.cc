@@ -2259,10 +2259,3 @@ save_mat5_binary_element (std::ostream& os,
 
   return false;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/
-

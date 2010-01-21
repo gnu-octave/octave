@@ -69,9 +69,3 @@ procstreambase::close (void)
 
   return status;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

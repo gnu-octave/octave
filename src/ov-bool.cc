@@ -239,9 +239,3 @@ octave_bool::as_mxArray (void) const
 
   return retval;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

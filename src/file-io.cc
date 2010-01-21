@@ -2280,9 +2280,3 @@ pager.  It is useful for error messages and prompts.\n\
 {
   return const_value ("stderr", args, stderr_file);
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

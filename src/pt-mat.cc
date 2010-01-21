@@ -1093,9 +1093,3 @@ string_fill_char (\"X\");\n\
 {
   return SET_INTERNAL_VARIABLE (string_fill_char);
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

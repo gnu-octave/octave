@@ -2044,9 +2044,3 @@ This function may only be called from a class constructor.\n\
 
   return retval;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

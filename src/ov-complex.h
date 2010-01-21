@@ -198,9 +198,3 @@ private:
 typedef octave_complex octave_complex_scalar;
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

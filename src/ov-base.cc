@@ -1506,9 +1506,3 @@ typeinfo (s)\n\
 {
   return SET_INTERNAL_VARIABLE (sparse_auto_mutate);
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

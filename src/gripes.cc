@@ -283,9 +283,3 @@ gripe_warn_complex_cmp (void)
   warning_with_id ("Octave:matlab-incompatible",
                    "potential Matlab compatibility problem: comparing complex numbers");
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

@@ -756,9 +756,3 @@ octave_char_matrix_str::load_hdf5 (hid_t loc_id, const char *name)
 }
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

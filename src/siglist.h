@@ -45,9 +45,3 @@ extern char *strsignal (int);
 #endif
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

@@ -1904,9 +1904,3 @@ signal.\n\
 {
   return const_value (args, WCONTINUE);
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

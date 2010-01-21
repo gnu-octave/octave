@@ -27,9 +27,3 @@ extern save_type
 get_save_type (double max_val, double min_val);
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

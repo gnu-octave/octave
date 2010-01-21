@@ -376,10 +376,3 @@ save_mat_ascii_data (std::ostream& os, const octave_value& val,
 
   return (os && success);
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/
-

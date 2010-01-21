@@ -1837,9 +1837,3 @@ default value is\n\
 {
   return SET_INTERNAL_VARIABLE (save_header_format_string);
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

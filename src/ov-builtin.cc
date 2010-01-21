@@ -117,9 +117,3 @@ octave_builtin::do_multi_index_op (int nargout, const octave_value_list& args)
 
   return retval;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

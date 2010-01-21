@@ -506,10 +506,3 @@ setcompression(int l, int s = Z_DEFAULT_STRATEGY)
 #endif // HAVE_ZLIB
 
 #endif // ZFSTREAM_H
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/
-

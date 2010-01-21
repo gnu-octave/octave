@@ -1473,9 +1473,3 @@ __builtin_delete (void *ptr)
 }
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

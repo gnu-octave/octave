@@ -1488,9 +1488,3 @@ do_simple_cellfun (octave_value_list (*fun) (const octave_value_list&, int),
 
   return retval;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

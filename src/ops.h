@@ -402,9 +402,3 @@ extern void install_ops (void);
   return octave_value ()
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

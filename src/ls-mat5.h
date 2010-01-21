@@ -59,10 +59,3 @@ save_mat5_binary_element (std::ostream& os,
 			  bool save_as_floats, bool compressing = false);
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/
-

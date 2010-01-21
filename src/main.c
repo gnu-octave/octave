@@ -34,9 +34,3 @@ main (int argc, char **argv)
 {
   return octave_main (argc, argv, 0);
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

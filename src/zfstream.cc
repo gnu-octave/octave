@@ -623,9 +623,3 @@ gzofstream::close()
 }
 
 #endif // HAVE_ZLIB
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

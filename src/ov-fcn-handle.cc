@@ -1717,9 +1717,3 @@ are ignored in the lookup.\n\
 %!test
 %! assert (testrecursionfunc (@(x) x, 1), 8);
 */
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

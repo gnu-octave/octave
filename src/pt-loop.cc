@@ -141,9 +141,3 @@ tree_complex_for_command::accept (tree_walker& tw)
 {
   tw.visit_complex_for_command (*this);
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

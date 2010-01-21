@@ -718,9 +718,3 @@ will ask for confirmation before recursively removing a directory tree.\n\
 {
   return SET_INTERNAL_VARIABLE (confirm_recursive_rmdir);
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

@@ -1037,9 +1037,3 @@ a terminate signal.\n\
 {
   return SET_INTERNAL_VARIABLE (sigterm_dumps_octave_core);
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

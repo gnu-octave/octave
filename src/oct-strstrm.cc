@@ -65,9 +65,3 @@ octave_ostrstream::create (std::ios::openmode arg_md,
 {
   return octave_stream (new octave_ostrstream (arg_md, flt_fmt));
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

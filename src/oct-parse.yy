@@ -4593,9 +4593,3 @@ Undocumented internal function.\n\
 
   return retval;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: text ***
-;;; End: ***
-*/

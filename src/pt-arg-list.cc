@@ -278,9 +278,3 @@ tree_argument_list::accept (tree_walker& tw)
 {
   tw.visit_argument_list (*this);
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

@@ -483,9 +483,3 @@ Return the version number of Octave, as a string.\n\
 
   return retval;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

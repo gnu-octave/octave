@@ -575,9 +575,3 @@ Convert @var{x} to logical type.\n\
 
   return retval;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

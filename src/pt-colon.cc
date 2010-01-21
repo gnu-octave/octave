@@ -284,9 +284,3 @@ tree_colon_expression::accept (tree_walker& tw)
 {
   tw.visit_colon_expression (*this);
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

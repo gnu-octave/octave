@@ -115,9 +115,3 @@ extern OCTINTERP_API octave_value
 eval_string (const std::string&, bool silent, int& parse_status);
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

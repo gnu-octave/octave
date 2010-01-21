@@ -26,9 +26,3 @@ along with Octave; see the file COPYING.  If not, see
 extern OCTINTERP_API void install_builtins (void);
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

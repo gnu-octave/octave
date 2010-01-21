@@ -55,9 +55,3 @@ extern void MINGW_signal_cleanup (void);
 extern OCTINTERP_API bool same_file_internal (const std::string&, const std::string&);
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

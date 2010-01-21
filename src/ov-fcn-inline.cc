@@ -936,9 +936,3 @@ by replacing all occurrences of @code{*}, @code{/}, etc., with\n\
 
   return retval;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

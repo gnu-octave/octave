@@ -1142,9 +1142,3 @@ the @code{help} command and usage messages for built-in commands.\n\
 {
   return SET_INTERNAL_VARIABLE (suppress_verbose_help_message);
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

@@ -879,9 +879,3 @@ DEFUN (extproc, , ,
 DEFALIAS (EXTPROC, extproc);
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

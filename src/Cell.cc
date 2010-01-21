@@ -299,9 +299,3 @@ Cell::diag (octave_idx_type k) const
 {
   return Array<octave_value>::diag (k);
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

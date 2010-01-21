@@ -98,9 +98,3 @@ octave_comment_buffer::do_get_comment (void)
 
   return retval;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

@@ -606,9 +606,3 @@ octave_base_int_scalar<T>::load_hdf5 (hid_t loc_id, const char *name)
 }
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

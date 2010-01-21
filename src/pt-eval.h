@@ -171,9 +171,3 @@ private:
 extern tree_evaluator *current_evaluator;
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

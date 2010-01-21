@@ -87,9 +87,3 @@ octave_lvalue::value (void)
 
   return retval;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

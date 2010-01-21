@@ -3844,9 +3844,3 @@ structure levels to display.\n\
   return SET_INTERNAL_VARIABLE_WITH_LIMITS (struct_levels_to_print,
 					    -1, INT_MAX);
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

@@ -419,10 +419,3 @@ digits to keep when saving data in text format.\n\
 {
   return SET_INTERNAL_VARIABLE_WITH_LIMITS (save_precision, -1, INT_MAX);
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/
-

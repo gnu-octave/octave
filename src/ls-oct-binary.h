@@ -35,10 +35,3 @@ read_binary_data (std::istream& is, bool swap,
 		  octave_value& tc, std::string& doc);
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/
-

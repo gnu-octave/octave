@@ -6743,9 +6743,3 @@ then an empty matrix is returned.\n\
 %!error diff (1, 2, 3, 4);
 
 */
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

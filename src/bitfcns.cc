@@ -652,9 +652,3 @@ The default for @var{type} is @code{uint32}.\n\
 
   return retval;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

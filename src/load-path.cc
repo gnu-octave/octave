@@ -2151,9 +2151,3 @@ Remove @var{dir1}, @dots{} from the current function search path.\n\
 
   return retval;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

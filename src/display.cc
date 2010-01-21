@@ -149,9 +149,3 @@ display_info::instance_ok (bool query)
 
   return retval;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

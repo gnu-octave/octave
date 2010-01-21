@@ -230,9 +230,3 @@ strsignal (int code)
 }
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C ***
-;;; End: ***
-*/

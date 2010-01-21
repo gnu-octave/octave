@@ -941,10 +941,3 @@ octave_sparse_matrix::map (unary_mapper_t umap) const
       return octave_base_sparse<SparseMatrix>::map (umap);
     }
 }
-
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

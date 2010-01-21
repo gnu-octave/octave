@@ -343,9 +343,3 @@ c_zfile_ptr_buf::close (void)
 }
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

@@ -2376,9 +2376,3 @@ The default format is\n\
 {
   return SET_INTERNAL_VARIABLE (whos_line_format);
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

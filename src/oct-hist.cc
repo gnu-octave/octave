@@ -732,9 +732,3 @@ on the command line are saved in the history file.\n\
 
   return retval;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

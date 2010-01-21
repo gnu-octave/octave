@@ -54,9 +54,3 @@ along with Octave; see the file COPYING.  If not, see
 #undef OCTAVE_INT_BTYP
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

@@ -837,9 +837,3 @@ Convert @var{x} to single precision type.\n\
 
   return octave_value ();
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

@@ -117,9 +117,3 @@ octave_fstream::output_stream (void)
 
   return retval;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

@@ -179,9 +179,3 @@ typedef octave_function * (*octave_dld_fcn_getter) (const octave_shlib&, bool re
 #endif /* ! MAKE_BUILTINS */
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

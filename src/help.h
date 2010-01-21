@@ -48,9 +48,3 @@ extern std::string Vinfo_program;
 extern std::string do_which (const std::string& name);
 
 #endif
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

@@ -76,7 +76,7 @@ function __go_draw_figure__ (h, plot_stream, enhanced, mono, output_to_paper, im
         else
           bg_is_set = false;
         endif
-	for i = 1:nkids
+	for i = nkids:-1:1
 	  type = get (kids(i), "type");
 	  switch (type)
 	    case "axes"

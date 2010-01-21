@@ -1,3 +1,7 @@
+2010-01-20  Ben Abbott <bpabbot@mac.com>
+
+	* /plot/__go_draw_figure__.m: Reverse order axes are drawn.
+
 2010-01-20  David Bateman  <dbateman@free.fr>
 
 	* plot/private/__contour__.m: Set default linestyle if pltopt returns

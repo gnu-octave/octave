@@ -1,5 +1,9 @@
 2010-01-21  John W. Eaton  <jwe@octave.org>
 
+	* bootstrap.conf (gnulib_modules): Include strptime in the list.
+
+2010-01-21  John W. Eaton  <jwe@octave.org>
+
 	* bootstrap.conf (gnulib_modules): Include rename in the list.
 
 2010-01-21  John W. Eaton  <jwe@octave.org>

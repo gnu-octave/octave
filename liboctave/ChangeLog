@@ -1,5 +1,10 @@
 2010-01-21  John W. Eaton  <jwe@octave.org>
 
+	* Makefile.am (LIBOCTAVE_C_SOURCES): Remove strptime.c from the list.
+	* strptime.c: Delete.
+
+2010-01-21  John W. Eaton  <jwe@octave.org>
+
 	* lo-cutils.c (octave_rename): New funtion.
 	* lo-utils.h: Provide decl.
 	* file-ops.cc (file_ops::rename): Call octave_rename.

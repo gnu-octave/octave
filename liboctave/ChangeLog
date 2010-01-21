@@ -1,3 +1,9 @@
+2010-01-21  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.am (INCS): Remove getopt.h from the list.
+	(LIBOCTAVE_C_SOURCES): Remove getopt.c and getopt1.c from the list.
+	* getopt.c, getopt1.c, getopt.h: Delete.
+
 2010-01-20  John W. Eaton  <jwe@octave.org>
 
 	* Array-C.cc, Array-b.cc, Array-ch.cc, Array-d.cc, Array-f.cc,

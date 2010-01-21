@@ -198,7 +198,6 @@ INCS = \
   file-ops.h \
   file-stat.h \
   functor.h \
-  getopt.h \
   glob-match.h \
   idx-vector.h \
   kpse-xfns.h \
@@ -458,8 +457,6 @@ BUILT_LIBOCTAVE_CXX_SOURCES = \
 LIBOCTAVE_C_SOURCES = \
   f2c-main.c \
   filemode.c \
-  getopt.c \
-  getopt1.c \
   lo-cieee.c \
   lo-cutils.c \
   oct-getopt.c \

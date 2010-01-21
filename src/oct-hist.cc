@@ -43,12 +43,8 @@ Software Foundation, Inc.
 
 #include <fstream>
 
-#ifdef HAVE_UNISTD_H
-#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
-#endif
 #include <unistd.h>
-#endif
 
 #include "cmd-hist.h"
 #include "file-ops.h"

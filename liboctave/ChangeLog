@@ -1,5 +1,15 @@
 2010-01-21  John W. Eaton  <jwe@octave.org>
 
+	* CMatrix.cc, fCMatrix.cc, cmd-edit.cc, cmd-hist.cc,
+	file-ops.cc, file-ops.h, file-stat.cc, file-stat.h, filemode.c,
+	kpse.cc, lo-cutils.c, lo-sysdep.cc, lo-utils.cc, oct-env.cc,
+	oct-group.cc, oct-group.h, oct-passwd.cc, oct-passwd.h,
+	oct-time.cc, oct-syscalls.cc, oct-syscalls.h, statdefs.h,
+	sysdir.h, syswait.h, tempname.c, regex-match.h:
+	Assume sys/types.h and unistd.h are present (gnulib provides them).
+
+2010-01-21  John W. Eaton  <jwe@octave.org>
+
 	* file-ops.h, file-ops.cc, lo-utils.h, lo-cutils.c: Untabify.
 
 	* file-ops.cc: Don't include unistd.h.

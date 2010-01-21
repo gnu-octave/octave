@@ -29,9 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #if defined (__MINGW32__)
 #define __restrict
 #endif
-#if defined (HAVE_SYS_TYPES_H)
 #include <sys/types.h>
-#endif
 #include <regex.h>
 #endif
 

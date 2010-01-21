@@ -24,9 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_statdefs_h)
 #define octave_statdefs_h 1
 
-#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
-#endif
 
 #ifdef HAVE_SYS_STAT_H
 #include <sys/stat.h>

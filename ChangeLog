@@ -1,5 +1,10 @@
 2010-01-21  John W. Eaton  <jwe@octave.org>
 
+	* bootstrap.conf (gnulib_modules): Include sys_stat in the list.
+	* configure.ac: Don't check for sys/types.h or unistd.h.
+
+2010-01-21  John W. Eaton  <jwe@octave.org>
+
 	* bootstrap.conf (gnulib_modules): Include unistd in the list.
 	Keep list sorted.
 

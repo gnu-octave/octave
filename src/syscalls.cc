@@ -33,12 +33,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <cstdio>
 #include <cstring>
 
-#ifdef HAVE_UNISTD_H
-#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
-#endif
 #include <unistd.h>
-#endif
 
 #ifdef HAVE_FCNTL_H
 #include <fcntl.h>

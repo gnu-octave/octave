@@ -28,9 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 
 class string_vector;
 
-#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
-#endif
 
 struct
 OCTAVE_API

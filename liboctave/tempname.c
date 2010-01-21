@@ -28,12 +28,8 @@ Fifth Floor, Boston, MA  02110-1301, USA.  */
 #include <stdlib.h>
 #include <string.h>
 
-#ifdef HAVE_UNISTD_H
-#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
-#endif
 #include <unistd.h>
-#endif
 
 #include <fcntl.h>
 

@@ -25,9 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <string>
 
-#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
-#endif
 
 #include "str-vec.h"
 

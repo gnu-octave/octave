@@ -28,12 +28,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <cerrno>
 #include <cstring>
 
-#ifdef HAVE_UNISTD_H
-#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
-#endif
 #include <unistd.h>
-#endif
 
 #include "file-ops.h"
 #include "file-stat.h"

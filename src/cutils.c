@@ -35,12 +35,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #else
 
-#ifdef HAVE_UNISTD_H
-#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
-#endif
 #include <unistd.h>
-#endif
 
 #include "systime.h"
 

@@ -34,9 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <vector>
 
 // FIXME
-#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
-#endif
 
 #include "Array-util.h"
 #include "CMatrix.h"

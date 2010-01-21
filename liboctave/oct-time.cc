@@ -27,12 +27,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <climits>
 #include <ctime>
 
-#ifdef HAVE_UNISTD_H
-#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
-#endif
 #include <unistd.h>
-#endif
 
 #if defined (OCTAVE_USE_WINDOWS_API)
 #define WIN32_LEAN_AND_MEAN

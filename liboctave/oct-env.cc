@@ -47,12 +47,8 @@ Free Software Foundation, Inc.
 
 #include <string>
 
-#ifdef HAVE_UNISTD_H
-#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
-#endif
 #include <unistd.h>
-#endif
 
 #include "file-ops.h"
 #include "lo-error.h"

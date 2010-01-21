@@ -29,12 +29,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <iostream>
 
-#ifdef HAVE_UNISTD_H
-#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
-#endif
 #include <unistd.h>
-#endif
 
 #include "lo-mappers.h"
 #include "lo-utils.h"

@@ -46,12 +46,8 @@ command_history *command_history::instance = 0;
 #include <fcntl.h>
 #endif
 
-#ifdef HAVE_UNISTD_H
-#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
-#endif
 #include <unistd.h>
-#endif
 
 #include "oct-rl-hist.h"
 

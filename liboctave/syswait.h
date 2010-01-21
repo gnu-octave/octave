@@ -29,9 +29,7 @@ extern "C" {
 
 /* This mess suggested by the autoconf manual.  */
 
-#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
-#endif
 
 #if defined (NeXT) && ! defined (_POSIX_SOURCE)
 #define HAVE_SYS_WAIT_H

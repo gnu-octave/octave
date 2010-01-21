@@ -1,3 +1,13 @@
+2010-01-21  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/getrusage.cc, DLD-FUNCTIONS/getgrent.cc,
+	DLD-FUNCTIONS/getpwent.cc, DLD-FUNCTIONS/regexp.cc, lex.ll,
+	cutils.c, data.cc, defaults.cc, dirfns.cc, file-io.cc, help.cc,
+	input.cc, oct-hist.cc, oct-procbuf.cc, oct-procbuf.h, octave.cc,
+	pager.h, procstream.h, sighandlers.cc, toplev.cc, syscalls.cc,
+	sysdep.cc, utils.cc: Assume sys/types.h and unistd.h are present
+	(gnulib provides them).
+
 2010-01-21  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-base.h (octave_base_value::dim_vector): Return 0x0 by default.

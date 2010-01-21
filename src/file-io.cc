@@ -47,12 +47,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <stack>
 #include <vector>
 
-#ifdef HAVE_UNISTD_H
-#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
-#endif
 #include <unistd.h>
-#endif
 
 #ifdef HAVE_ZLIB_H
 #include <zlib.h>

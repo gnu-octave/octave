@@ -28,9 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "oct-time.h"
 
-#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
-#endif
 
 class
 OCTAVE_API

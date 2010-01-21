@@ -1,3 +1,10 @@
+2010-01-21  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-builtin.cc (octave_builtin::do_multi_index_op): Partially undo
+	previous change.
+	* ov-type-conv.h (octave_type_conv_body): Undo previous change.
+	* ov-dld-fcn.cc (octave_dld_function::do_multi_index_op): Ditto.
+
 2010-01-21  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/getrusage.cc, DLD-FUNCTIONS/getgrent.cc,

@@ -32,7 +32,7 @@ octave_type_conv_body (const octave_value &arg, const std::string& name, int t_r
 
   if (t_arg == t_result || arg.class_name () == name)
     {
-      retval = arg.storable_value ();
+      retval = arg;
     }
   else
     {

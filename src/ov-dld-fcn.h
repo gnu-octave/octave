@@ -75,9 +75,6 @@ public:
   octave_shlib get_shlib (void) const
     { return sh_lib; }
 
-  octave_value_list
-  do_multi_index_op (int nargout, const octave_value_list& args);
-
 private:
 
   octave_shlib sh_lib;

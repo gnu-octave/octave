@@ -1456,12 +1456,12 @@ AC_HEADER_SYS_WAIT
 
 ### C headers
 
-AC_CHECK_HEADERS(assert.h curses.h direct.h dlfcn.h fcntl.h float.h \
-  floatingpoint.h grp.h ieeefp.h inttypes.h limits.h locale.h memory.h nan.h \
-  ncurses.h poll.h pthread.h pwd.h stdint.h stdlib.h string.h sunmath.h sys/ioctl.h \
+AC_CHECK_HEADERS(curses.h direct.h dlfcn.h fcntl.h \
+  floatingpoint.h grp.h ieeefp.h inttypes.h locale.h memory.h nan.h \
+  ncurses.h poll.h pthread.h pwd.h stdint.h sunmath.h sys/ioctl.h \
   sys/param.h sys/poll.h sys/resource.h sys/select.h sys/stat.h \
   sys/time.h sys/times.h sys/utsname.h sys/utime.h termcap.h \
-  utime.h varargs.h)
+  utime.h)
 
 ### C++ headers
 

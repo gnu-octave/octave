@@ -1,5 +1,15 @@
 2010-01-21  John W. Eaton  <jwe@octave.org>
 
+	* file-ops.h (file_ops::mkdir): Move definitions to file-ops.cc.
+	(file_ops::mkfifo): Move definitions to file-ops.cc.
+	(file_ops::mkdir_internal, file_ops::mkfifo_internal): Delete decls.
+	* file-ops.cc (file_ops::mkdir): Call octave_mkdir.
+	(file_ops::mkfifo): Call octave_mkfifo.
+	* lo-cutils.c (octave_mkdir, octave_mkfifo): New functions.
+	* lo-utils.h: Provide decls.
+
+2010-01-21  John W. Eaton  <jwe@octave.org>
+
 	* Makefile.am (LIBOCTAVE_C_SOURCES): Remove strptime.c from the list.
 	* strptime.c: Delete.
 

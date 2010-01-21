@@ -52,6 +52,18 @@ Software Foundation, Inc.
 
 #include "syswait.h"
 
+OCTAVE_API int
+octave_mkdir (const char *name, mode_t mode)
+{
+  return mkdir (name, mode);
+}
+
+OCTAVE_API int
+octave_mkfifo (const char *name, mode_t mode)
+{
+  return mkfifo (name, mode);
+}
+
 OCTAVE_API void
 octave_qsort (void *base, size_t n, size_t size,
 	      int (*cmp) (const void *, const void *))

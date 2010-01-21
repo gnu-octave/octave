@@ -37,27 +37,11 @@ file_ops
 {
 public:
 
-  static int mkdir (const std::string& nm, mode_t md)
-  {
-    std::string msg;
-    return mkdir_internal (nm, md, msg);
-  }
+  static int mkdir (const std::string& nm, mode_t md);
+  static int mkdir (const std::string& nm, mode_t md, std::string& msg);
 
-  static int mkdir (const std::string& nm, mode_t md, std::string& msg)
-  {
-    return mkdir_internal (nm, md, msg);
-  }
-
-  static int mkfifo (const std::string& nm, mode_t md)
-  {
-    std::string msg;
-    return mkfifo_internal (nm, md, msg);
-  }
-
-  static int mkfifo (const std::string& nm, mode_t md, std::string& msg)
-  {
-    return mkfifo_internal (nm, md, msg);
-  }
+  static int mkfifo (const std::string& nm, mode_t md);
+  static int mkfifo (const std::string& nm, mode_t md, std::string& msg);
 
   static int link (const std::string&, const std::string&);
   static int link (const std::string&, const std::string&, std::string&);

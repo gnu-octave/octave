@@ -95,14 +95,20 @@ file_ops::static_members::instance_ok (void)
 // We provide a replacement for mkdir().
 
 int
-file_ops::mkdir_internal (const std::string& name, mode_t mode,
-                          std::string& msg)
+file_ops::mkdir (const std::string& nm, mode_t md)
+{
+  std::string msg;
+  return mkdir (nm, md, msg);
+}
+
+int
+file_ops::mkdir (const std::string& name, mode_t mode, std::string& msg)
 {
   msg = std::string ();
 
   int status = -1;
 
-  status = ::mkdir (name.c_str (), mode);
+  status = octave_mkdir (name.c_str (), mode);
 
   if (status < 0)
     {
@@ -116,8 +122,14 @@ file_ops::mkdir_internal (const std::string& name, mode_t mode,
 // I don't know how to emulate this on systems that don't provide it.
 
 int
-file_ops::mkfifo_internal (const std::string& name, mode_t mode,
-                           std::string& msg)
+file_ops::mkfifo (const std::string& nm, mode_t md)
+{
+  std::string msg;
+  return mkfifo (nm, md, msg);
+}
+
+int
+file_ops::mkfifo (const std::string& name, mode_t mode, std::string& msg)
 {
   msg = std::string ();
 
@@ -127,7 +139,7 @@ file_ops::mkfifo_internal (const std::string& name, mode_t mode,
   // don't have working mkfifo functions.  On those systems, mkfifo will
   // always return -1 and set errno.
 
-  status = ::mkfifo (name.c_str (), mode);
+  status = octave_mkfifo (name.c_str (), mode);
 
   if (status < 0)
     {

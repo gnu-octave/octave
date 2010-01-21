@@ -65,6 +65,12 @@ octave_symlink (const char *old_name, const char *new_name)
 }
 
 OCTAVE_API int
+octave_readlink (const char *name, char *buf, size_t size)
+{
+  return readlink (name, buf, size);
+}
+
+OCTAVE_API int
 octave_mkdir (const char *name, mode_t mode)
 {
   return mkdir (name, mode);

@@ -37,6 +37,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <sys/types.h>
 #endif
 
+#incluede <pathmax.h>
+
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
@@ -206,7 +208,7 @@ file_ops::symlink (const std::string& old_name,
   return status;
 }
 
-// We provide a replacement for rename().
+// We provide a replacement for readlink().
 
 int
 file_ops::readlink (const std::string& path, std::string& result)
@@ -223,10 +225,9 @@ file_ops::readlink (const std::string& path, std::string& result,
 
   msg = std::string ();
 
-#if defined (HAVE_READLINK)
   char buf[MAXPATHLEN+1];
 
-  status = ::readlink (path.c_str (), buf, MAXPATHLEN);
+  status = octave_readlink (path.c_str (), buf, MAXPATHLEN);
 
   if (status < 0)
     {
@@ -239,9 +240,6 @@ file_ops::readlink (const std::string& path, std::string& result,
       result = std::string (buf);
       status = 0;
     }
-#else
-  msg = NOT_SUPPORTED ("rename");
-#endif
 
   return status;
 }

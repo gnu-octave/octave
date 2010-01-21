@@ -56,6 +56,8 @@ extern "C" OCTAVE_API void octave_qsort (void *base, size_t n, size_t size,
 
 extern "C" OCTAVE_API int octave_rmdir (const char *name);
 
+extern "C" OCTAVE_API int octave_rename (const char *from, const char *to);
+
 extern "C" OCTAVE_API char *oct_strptime (const char *buf, const char *format,
 			       struct tm *tm);
 

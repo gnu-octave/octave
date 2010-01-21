@@ -463,7 +463,6 @@ LIBOCTAVE_C_SOURCES = \
   randgamma.c \
   randmtzig.c \
   randpoisson.c \
-  rename.c \
   strptime.c \
   tempnam.c \
   tempname.c

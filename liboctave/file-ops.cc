@@ -260,17 +260,13 @@ file_ops::rename (const std::string& from, const std::string& to,
 
   msg = std::string ();
 
-#if defined (HAVE_RENAME)
-  status = ::rename (from.c_str (), to.c_str ());
+  status = octave_rename (from.c_str (), to.c_str ());
 
   if (status < 0)
     {
       using namespace std;
       msg = ::strerror (errno);
     }
-#else
-  msg = NOT_SUPPORTED ("rename");
-#endif
 
   return status;
 }

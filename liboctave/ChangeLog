@@ -1,5 +1,13 @@
 2010-01-21  John W. Eaton  <jwe@octave.org>
 
+	* lo-cutils.c (octave_rename): New funtion.
+	* lo-utils.h: Provide decl.
+	* file-ops.cc (file_ops::rename): Call octave_rename.
+	* Makefile.am (LIBOCTAVE_C_SOURCES): Remove rename.c from the list.
+	* rename.c: Delete.
+
+2010-01-21  John W. Eaton  <jwe@octave.org>
+
 	* lo-cutils.c (octave_rmdir): New function.
 	* lo-utils.h: Provide decl.
 	* file-ops.cc (file_ops::rmdir): Call octave_rmdir.

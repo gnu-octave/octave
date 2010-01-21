@@ -98,6 +98,12 @@ octave_rmdir (const char *name)
 }
 
 OCTAVE_API int
+octave_rename (const char *from, const char *to)
+{
+  return rename (from, to);
+}
+
+OCTAVE_API int
 octave_strcasecmp (const char *s1, const char *s2)
 {
   return strcasecmp (s1, s2);

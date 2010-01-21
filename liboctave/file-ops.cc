@@ -816,11 +816,7 @@ file_ops::tilde_expand (const string_vector& names)
 int
 file_ops::umask (mode_t mode)
 {
-#if defined (HAVE_UMASK)
-  return ::umask (mode);
-#else
-  return 0;
-#endif
+  return octave_umask (mode);
 }
 
 int

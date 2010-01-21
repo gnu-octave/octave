@@ -127,6 +127,16 @@ octave_strncasecmp (const char *s1, const char *s2, size_t n)
   return strncasecmp (s1, s2, n);
 }
 
+OCTAVE_API mode_t
+octave_umask (mode_t mode)
+{
+#if defined (HAVE_UMASK)
+  return umask (mode);
+#else
+  return 0;
+#endif
+}
+
 OCTAVE_API int
 octave_gethostname (char *name, int namelen)
 {

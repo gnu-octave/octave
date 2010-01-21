@@ -1,5 +1,11 @@
 2010-01-21  John W. Eaton  <jwe@octave.org>
 
+	* lo-cutils.c (octave_umask): New funtion.
+	* lo-utils.h: Provide decl.
+	* file-ops.cc (file_ops::umask): Call octave_umask.
+
+2010-01-21  John W. Eaton  <jwe@octave.org>
+
 	* file-ops.h (file_ops::mkdir): Move definitions to file-ops.cc.
 	(file_ops::mkfifo): Move definitions to file-ops.cc.
 	(file_ops::mkdir_internal, file_ops::mkfifo_internal): Delete decls.

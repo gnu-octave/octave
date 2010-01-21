@@ -69,6 +69,8 @@ extern "C" OCTINTERP_API int octave_strcasecmp (const char *s1, const char *s2);
 
 extern "C" OCTINTERP_API int octave_strncasecmp (const char *s1, const char *s2, size_t n);
 
+extern "C" OCTAVE_API mode_t octave_umask (mode_t);
+
 template <typename T>
 T
 octave_read_value (std::istream& is)

@@ -1,5 +1,10 @@
 2010-01-21  John W. Eaton  <jwe@octave.org>
 
+	* file-ops.cc: Don't include unistd.h.
+	(NOT_SUPPORTED): Delete unused macro.
+
+2010-01-21  John W. Eaton  <jwe@octave.org>
+
 	* lo-cutils.c (octave_tempnam): New funtion.
 	* lo-utils.h: Provide decl.
 	* file-ops.cc (file_ops::tempnam): Call octave_tempnam.

@@ -1501,13 +1501,12 @@ AC_CHECK_FUNCS(atexit basename bcopy bzero canonicalize_file_name \
   chmod dup2 endgrent endpwent execvp expm1 expm1f fcntl fork getcwd \
   getegid geteuid getgid getgrent getgrgid getgrnam getpgrp getpid \
   getppid getpwent getpwuid getuid getwd _kbhit kill \
-  lgamma lgammaf lgamma_r lgammaf_r link localtime_r log1p log1pf \
-  memmove mkstemp on_exit pipe poll putenv raise readlink \
-  realpath rename resolvepath rindex rmdir roundl select setgrent setlocale \
+  lgamma lgammaf lgamma_r lgammaf_r localtime_r log1p log1pf \
+  memmove mkstemp on_exit pipe poll putenv raise \
+  realpath resolvepath rindex roundl select setgrent setlocale \
   setpwent setvbuf sigaction siglongjmp sigpending sigprocmask sigsuspend \
-  snprintf strcasecmp strdup strerror stricmp strncasecmp \
-  strnicmp strptime strsignal symlink tempnam tgammaf trunc umask \
-  uname unlink usleep utime vfprintf vsprintf vsnprintf waitpid \
+  snprintf strdup strerror strsignal tempnam tgammaf trunc umask \
+  uname usleep utime vfprintf vsprintf vsnprintf waitpid \
   _chmod _snprintf x_utime _utime32)
 
 AC_LANG_PUSH(C++)

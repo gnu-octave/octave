@@ -37,11 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <sys/types.h>
 #endif
 
-#incluede <pathmax.h>
-
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
+#include <pathmax.h>
 
 #include "dir-ops.h"
 #include "file-ops.h"
@@ -90,9 +86,6 @@ file_ops::static_members::instance_ok (void)
 
   return retval;
 }
-
-#define NOT_SUPPORTED(nm) \
-  nm ": not supported on this system"
 
 // We provide a replacement for mkdir().
 

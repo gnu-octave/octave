@@ -523,7 +523,7 @@ file_ops::tempnam (const std::string& dir, const std::string& pfx,
 
   const char *ppfx = pfx.empty () ? 0 : pfx.c_str ();
 
-  char *tmp = ::tempnam (pdir, ppfx);
+  char *tmp = octave_tempnam (pdir, ppfx);
 
   if (tmp)
     {

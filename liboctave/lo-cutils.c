@@ -145,6 +145,12 @@ octave_strncasecmp (const char *s1, const char *s2, size_t n)
   return strncasecmp (s1, s2, n);
 }
 
+OCTAVE_API char *
+octave_tempnam (const char *pdir, const char *ppfx)
+{
+  return tempnam (pdir, ppfx);
+}
+
 OCTAVE_API mode_t
 octave_umask (mode_t mode)
 {

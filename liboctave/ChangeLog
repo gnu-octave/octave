@@ -1,5 +1,11 @@
 2010-01-21  John W. Eaton  <jwe@octave.org>
 
+	* lo-cutils.c (octave_tempnam): New funtion.
+	* lo-utils.h: Provide decl.
+	* file-ops.cc (file_ops::tempnam): Call octave_tempnam.
+
+2010-01-21  John W. Eaton  <jwe@octave.org>
+
 	* lo-cutils.c (octave_readlink): New funtion.
 	* lo-utils.h: Provide decl.
 	* file-ops.cc (file_ops::readlink): Call octave_readlink.

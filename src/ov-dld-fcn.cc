@@ -89,3 +89,14 @@ octave_dld_function::create (octave_builtin::fcn ff, const octave_shlib& shl,
 {
   return new octave_dld_function (ff, shl, nm, ds);
 }
+
+octave_value_list
+octave_dld_function::do_multi_index_op (int nargout, const octave_value_list& args)
+{
+  octave_value_list retval = this->octave_builtin::do_multi_index_op (nargout, args);
+  // Guard against the possibility of null values leaking from user DLD functions.
+  // FIXME: is this needed?
+  retval.make_storable_values ();
+
+  return retval;
+}

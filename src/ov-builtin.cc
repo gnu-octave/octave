@@ -105,9 +105,16 @@ octave_builtin::do_multi_index_op (int nargout, const octave_value_list& args)
       try
 	{
 	  retval = (*f) (args, nargout);
-          // Do not allow null values to be returned from functions.
-          // FIXME -- perhaps true builtins should be allowed?
-          retval.make_storable_values ();
+          // We don't check for null values here, builtins should handle that
+          // possibility themselves.
+          // Fix the case of a single undefined value.
+          // This happens when a compiled function uses
+          //   octave_value retval;
+          // instead of
+          //   octave_value_list retval;
+          // the idiom is very common, so we solve that here.
+          if (retval.length () == 1 && retval.xelem (0).is_undefined ())
+            retval.clear ();
 	}
       catch (octave_execution_exception)
 	{

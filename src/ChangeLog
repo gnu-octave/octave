@@ -1,3 +1,15 @@
+2010-01-21  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-base.h (octave_base_value::dim_vector): Return 0x0 by default.
+	* oct-obj.h (octave_value_list::xelem, octave_value_list::clear): New
+	methods.
+	* ov-builtin.cc (octave_builtin::do_multi_index_op): Don't call
+	make_storable_values. Chop a potential single undefined value.
+	* ov-type-conv.h (octave_type_conv_body): Ensure storable value.
+	* ov-dld-fcn.cc (octave_dld_function::do_multi_index_op): New method.
+	* DLD-FUNCTIONS/cellfun.cc (get_output_list): New helper function.
+	(Fcellfun): Call it here. Optimize.
+
 2010-01-20  John W. Eaton  <jwe@octave.org>
 
 	* defaults.h.in, graphics.h.in, oct-conf.h.in, oct-errno.cc.in,

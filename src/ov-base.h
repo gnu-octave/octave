@@ -272,7 +272,7 @@ public:
 
   virtual idx_vector index_vector (void) const;
 
-  virtual dim_vector dims (void) const { return dim_vector (-1, -1); }
+  virtual dim_vector dims (void) const { return dim_vector (); }
 
   octave_idx_type rows (void) const
     {

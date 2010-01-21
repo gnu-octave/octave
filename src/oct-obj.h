@@ -149,6 +149,16 @@ public:
 
   void make_storable_values (void);
 
+  octave_value& xelem (octave_idx_type i)
+    {
+      return data.xelem (i);
+    }
+
+  void clear (void)
+    {
+      data.clear ();
+    }
+
 private:
 
   static octave_allocator allocator;

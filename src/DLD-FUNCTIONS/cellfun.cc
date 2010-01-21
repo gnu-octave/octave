@@ -223,6 +223,39 @@ make_col_helper (const octave_value& val, const dim_vector& dims)
   return retval;
 }
 
+static octave_value_list 
+get_output_list (octave_idx_type count, octave_idx_type nargout,
+                 const octave_value_list& inputlist,
+                 octave_value& func,
+                 octave_value& error_handler)
+{
+  octave_value_list tmp = func.do_multi_index_op (nargout, inputlist);
+
+  if (error_state)
+    {
+      if (error_handler.is_defined ())
+        {
+          Octave_map msg;
+          msg.assign ("identifier", last_error_id ());
+          msg.assign ("message", last_error_message ());
+          msg.assign ("index", octave_value(double (count + static_cast<octave_idx_type>(1))));
+          octave_value_list errlist = inputlist;
+          errlist.prepend (msg);
+          buffer_error_messages--;
+          error_state = 0;
+          tmp = error_handler.do_multi_index_op (nargout, errlist);
+          buffer_error_messages++;
+
+          if (error_state)
+            tmp.clear ();
+        }
+      else
+        tmp.clear ();
+    }
+
+  return tmp;
+}
+
 DEFUN_DLD (cellfun, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} cellfun (@var{name}, @var{c})\n\
@@ -607,30 +640,14 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
               for (int j = 0; j < nargin; j++)
                 {
                   if (mask[j])
-                    inputlist(j) = cinputs[j](count);
+                    inputlist.xelem (j) = cinputs[j](count);
                 }
 
-              octave_value_list tmp = func.do_multi_index_op (nargout, inputlist);
-
-              if (error_state && error_handler.is_defined ())
-                {
-                  Octave_map msg;
-                  msg.assign ("identifier", last_error_id ());
-                  msg.assign ("message", last_error_message ());
-                  msg.assign ("index", octave_value(double (count + static_cast<octave_idx_type>(1))));
-                  octave_value_list errlist = inputlist;
-                  errlist.prepend (msg);
-                  buffer_error_messages--;
-                  error_state = 0;
-                  tmp = error_handler.do_multi_index_op (nargout, errlist);
-                  buffer_error_messages++;
-
-                  if (error_state)
-                    return octave_value_list ();
-                }
+              const octave_value_list tmp = get_output_list (count, nargout, inputlist,
+                                                             func, error_handler);
 
               if (error_state)
-                return octave_value_list ();
+                return retval;
 
               if (tmp.length () < nargout1)
                 {
@@ -699,30 +716,14 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
               for (int j = 0; j < nargin; j++)
                 {
                   if (mask[j])
-                    inputlist(j) = cinputs[j](count);
+                    inputlist.xelem (j) = cinputs[j](count);
                 }
 
-              octave_value_list tmp = func.do_multi_index_op (nargout, inputlist);
-
-              if (error_state && error_handler.is_defined ())
-                {
-                  Octave_map msg;
-                  msg.assign ("identifier", last_error_id ());
-                  msg.assign ("message", last_error_message ());
-                  msg.assign ("index", octave_value(double (count + static_cast<octave_idx_type>(1))));
-                  octave_value_list errlist = inputlist;
-                  errlist.prepend (msg);
-                  buffer_error_messages--;
-                  error_state = 0;
-                  tmp = error_handler.do_multi_index_op (nargout, errlist);
-                  buffer_error_messages++;
-
-                  if (error_state)
-                    return octave_value_list ();
-                }
+              const octave_value_list tmp = get_output_list (count, nargout, inputlist,
+                                                             func, error_handler);
 
               if (error_state)
-                return octave_value_list ();
+                return retval;
 
               if (tmp.length () < nargout1)
                 {

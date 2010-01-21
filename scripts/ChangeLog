@@ -1,3 +1,7 @@
+2010-01-20  John W. Eaton  <jwe@octave.org>
+
+	* gethelp.cc: Untabfy.
+
 2010-01-20  Ben Abbott <bpabbot@mac.com>
 
 	* /plot/__go_draw_figure__.m: Reverse order axes are drawn.

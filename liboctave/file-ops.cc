@@ -291,17 +291,13 @@ file_ops::rmdir (const std::string& name, std::string& msg)
 
   int status = -1;
 
-#if defined (HAVE_RMDIR)
-  status = ::rmdir (name.c_str ());
+  status = octave_rmdir (name.c_str ());
 
   if (status < 0)
     {
       using namespace std;
       msg = ::strerror (errno);
     }
-#else
-  msg = NOT_SUPPORTED ("rmdir");
-#endif
 
   return status;
 }

@@ -92,6 +92,12 @@ gethostname (char *name, int namelen)
 #endif
 
 OCTAVE_API int
+octave_rmdir (const char *name)
+{
+  return rmdir (name);
+}
+
+OCTAVE_API int
 octave_strcasecmp (const char *s1, const char *s2)
 {
   return strcasecmp (s1, s2);

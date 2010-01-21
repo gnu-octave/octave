@@ -1,5 +1,13 @@
 2010-01-21  John W. Eaton  <jwe@octave.org>
 
+	* lo-cutils.c (octave_rmdir): New function.
+	* lo-utils.h: Provide decl.
+	* file-ops.cc (file_ops::rmdir): Call octave_rmdir.
+	* Makefile.am (LIBOCTAVE_C_SOURCES): Remove rmdir.c from the list.
+	* rmdir.c: Delete.
+
+2010-01-21  John W. Eaton  <jwe@octave.org>
+
 	* Makefile.am (LIBOCTAVE_C_SOURCES): Remove strcasecmp.c and
 	strncase.c from the list.
 	* strcasecmp.c, strncase.c: Delete.

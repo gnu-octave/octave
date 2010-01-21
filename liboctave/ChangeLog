@@ -1,5 +1,11 @@
 2010-01-21  John W. Eaton  <jwe@octave.org>
 
+	* Makefile.am (LIBOCTAVE_C_SOURCES): Remove strcasecmp.c and
+	strncase.c from the list.
+	* strcasecmp.c, strncase.c: Delete.
+
+2010-01-21  John W. Eaton  <jwe@octave.org>
+
 	* Makefile.am (INCS): Remove getopt.h from the list.
 	(LIBOCTAVE_C_SOURCES): Remove getopt.c and getopt1.c from the list.
 	* getopt.c, getopt1.c, getopt.h: Delete.

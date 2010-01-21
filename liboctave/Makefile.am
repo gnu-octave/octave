@@ -465,8 +465,6 @@ LIBOCTAVE_C_SOURCES = \
   randpoisson.c \
   rename.c \
   rmdir.c \
-  strcasecmp.c \
-  strncase.c \
   strptime.c \
   tempnam.c \
   tempname.c

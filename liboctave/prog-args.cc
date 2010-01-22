@@ -29,7 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "prog-args.h"
 
 int
-prog_args::get_option (void) const
+prog_args::get_option (void)
 {
   if (long_opts)
     return ::octave_getopt_long
@@ -40,13 +40,13 @@ prog_args::get_option (void) const
 }
 
 const char *
-prog_args::option_argument (void) const
+prog_args::option_argument (void)
 {
   return ::optarg;
 }
 
 int
-prog_args::option_index (void) const
+prog_args::option_index (void)
 {
   return ::optind;
 }

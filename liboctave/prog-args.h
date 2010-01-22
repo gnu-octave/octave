@@ -55,11 +55,11 @@ public:
 
   ~prog_args (void) { }
 
-  int get_option (void) const;
+  int get_option (void);
 
-  const char *option_argument (void) const;
+  const char *option_argument (void);
 
-  int option_index (void) const;
+  int option_index (void);
 
 private:
 

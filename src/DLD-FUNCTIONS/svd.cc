@@ -134,39 +134,61 @@ decomposition, eliminating the unnecessary rows or columns of @var{u} or\n\
   octave_idx_type nr = arg.rows ();
   octave_idx_type nc = arg.columns ();
 
+  if (arg.ndims () != 2)
+    {
+      error ("svd: only valid for matrices");
+      return retval;
+    }
+
   bool isfloat = arg.is_single_type ();
+
+  SVD::type type = ((nargout == 0 || nargout == 1)
+                    ? SVD::sigma_only
+                    : (nargin == 2) ? SVD::economy : SVD::std);
 
   if (nr == 0 || nc == 0)
     {
       if (isfloat)
         {
-          if (nargout == 3)
+          switch (type)
             {
-              retval(3) = float_identity_matrix (nr, nr);
-              retval(2) = FloatMatrix (nr, nc);
-              retval(1) = float_identity_matrix (nc, nc);
+            case SVD::std:
+              retval(2) = FloatDiagMatrix (nc, nc, 1.0f);
+              retval(1) = FloatMatrix (nr, nc);
+              retval(0) = FloatDiagMatrix (nr, nr, 1.0f);
+              break;
+            case SVD::economy:
+              retval(2) = FloatDiagMatrix (0, nc, 1.0f);
+              retval(1) = FloatMatrix (0, 0);
+              retval(0) = FloatDiagMatrix (nr, 0, 1.0f);
+              break;
+            case SVD::sigma_only: default:
+              retval(0) = FloatMatrix (0, 1);
+              break;
             }
-          else
-            retval(0) = FloatMatrix (0, 1);
         }
       else
         {
-          if (nargout == 3)
+          switch (type)
             {
-              retval(3) = identity_matrix (nr, nr);
-              retval(2) = Matrix (nr, nc);
-              retval(1) = identity_matrix (nc, nc);
+            case SVD::std:
+              retval(2) = DiagMatrix (nc, nc, 1.0);
+              retval(1) = Matrix (nr, nc);
+              retval(0) = DiagMatrix (nr, nr, 1.0);
+              break;
+            case SVD::economy:
+              retval(2) = DiagMatrix (0, nc, 1.0);
+              retval(1) = Matrix (0, 0);
+              retval(0) = DiagMatrix (nr, 0, 1.0);
+              break;
+            case SVD::sigma_only: default:
+              retval(0) = Matrix (0, 1);
+              break;
             }
-          else
-            retval(0) = Matrix (0, 1);
         }
     }
   else
     {
-      SVD::type type = ((nargout == 0 || nargout == 1)
-                        ? SVD::sigma_only
-                        : (nargin == 2) ? SVD::economy : SVD::std);
-
       if (isfloat)
         {
           if (arg.is_real_type ())
@@ -354,6 +376,20 @@ decomposition, eliminating the unnecessary rows or columns of @var{u} or\n\
 %! a = single([1, 2; 3, 4; 5, 6]);
 %! [u, s, v] = svd (a, 1);
 %! assert (u * s * v', a, sqrt (eps('single')));
+
+%!test
+%! a = zeros (0, 5);
+%! [u, s, v] = svd (a);
+%! assert (size (u), [0, 0]);
+%! assert (size (s), [0, 5]);
+%! assert (size (v), [5, 5]);
+
+%!test
+%! a = zeros (5, 0);
+%! [u, s, v] = svd (a, 1);
+%! assert (size (u), [5, 0]);
+%! assert (size (s), [0, 0]);
+%! assert (size (v), [0, 0]);
 
 %!error <Invalid call to svd.*> svd ();
 %!error <Invalid call to svd.*> svd ([1, 2; 4, 5], 2, 3);

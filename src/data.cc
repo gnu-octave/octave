@@ -5061,14 +5061,7 @@ column norms are computed.\n\
     {
       octave_value x_arg = args(0);
 
-      if (x_arg.is_empty ())
-	{
-	  if (x_arg.is_single_type ())
-	    retval(0) = static_cast<float>(0.0);
-	  else
-	    retval(0) = 0.0;
-	}
-      else if (x_arg.ndims () == 2)
+      if (x_arg.ndims () == 2)
 	{
           enum { sfmatrix, sfcols, sfrows, sffrob, sfinf } strflag = sfmatrix;
           if (nargin > 1 && args(nargin-1).is_string ())

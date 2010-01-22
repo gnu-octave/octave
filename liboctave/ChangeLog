@@ -1,3 +1,10 @@
+2010-01-22  Jaroslav Hajek  <highegg@gmail.com>
+
+	* dbleSVD.cc (SVD::init): Ensure LD* arguments >= 1.
+	* floatSVD.cc (FloatSVD::init): Likewise.
+	* CmplxSVD.cc (ComplexSVD::init): Likewise.
+	* fCmplxSVD.cc (FloatComplexSVD::init): Likewise.
+
 2010-01-21  John W. Eaton  <jwe@octave.org>
 
 	* CMatrix.cc, fCMatrix.cc, cmd-edit.cc, cmd-hist.cc,

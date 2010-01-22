@@ -137,10 +137,12 @@ SVD::init (const Matrix& a, SVD::type svd_type)
 
   Array<double> work (1);
 
+  octave_idx_type m1 = std::max (m, 1), nrow_vt1 = std::max (nrow_vt, 1);
+
   F77_XFCN (dgesvd, DGESVD, (F77_CONST_CHAR_ARG2 (&jobu, 1),
 			     F77_CONST_CHAR_ARG2 (&jobv, 1),
-			     m, n, tmp_data, m, s_vec, u, m, vt,
-			     nrow_vt, work.fortran_vec (), lwork, info
+			     m, n, tmp_data, m1, s_vec, u, m1, vt,
+			     nrow_vt1, work.fortran_vec (), lwork, info
 			     F77_CHAR_ARG_LEN (1)
 			     F77_CHAR_ARG_LEN (1)));
 
@@ -149,8 +151,8 @@ SVD::init (const Matrix& a, SVD::type svd_type)
 
   F77_XFCN (dgesvd, DGESVD, (F77_CONST_CHAR_ARG2 (&jobu, 1),
 			     F77_CONST_CHAR_ARG2 (&jobv, 1),
-			     m, n, tmp_data, m, s_vec, u, m, vt,
-			     nrow_vt, work.fortran_vec (), lwork, info
+			     m, n, tmp_data, m1, s_vec, u, m1, vt,
+			     nrow_vt1, work.fortran_vec (), lwork, info
 			     F77_CHAR_ARG_LEN (1)
 			     F77_CHAR_ARG_LEN (1)));
 

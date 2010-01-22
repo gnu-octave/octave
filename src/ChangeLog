@@ -1,3 +1,8 @@
+2010-01-22  Jaroslav Hajek  <highegg@gmail.com>
+
+	* data.cc (Fnorm): Don't special-case empty matrix.
+	* DLD-FUNCTIONS/svd.cc (Fsvd): Fix empty matrix case. Add tests.
+
 2010-01-21  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-builtin.cc (octave_builtin::do_multi_index_op): Partially undo

@@ -35,29 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <Magick++.h>
 
-template <class P, unsigned int depth, unsigned int quantumdepth>
-inline P
-scale_quantum_to_depth (const Magick::Quantum& quantum)
-{
-  return (static_cast<P> (static_cast<double> (quantum)
-                                     / MaxRGB * ((1 << depth) - 1)));
-}
-
-template <>
-inline octave_uint8
-scale_quantum_to_depth<octave_uint8, 8, 8> (const Magick::Quantum& quantum)
-{
-  return static_cast<octave_uint8> (quantum);
-}
-
-template <>
-inline octave_uint16
-scale_quantum_to_depth<octave_uint16, 16, 16> (const Magick::Quantum& quantum)
-{
-  return static_cast<octave_uint16> (quantum);
-}
-
-inline unsigned int
+unsigned int
 scale_quantum_to_depth (const Magick::Quantum& quantum, unsigned int depth)
 {
   return (static_cast<unsigned int> (static_cast<double> (quantum)
@@ -212,7 +190,7 @@ read_indexed_images (std::vector<Magick::Image>& imvec,
   return output;
 }
 
-template <class T, class P, unsigned int D>
+template <class T>
 octave_value_list
 read_images (const std::vector<Magick::Image>& imvec,
              const Array<int>& frameidx, unsigned int depth)
@@ -291,41 +269,31 @@ read_images (const std::vector<Magick::Image>& imvec,
 
     case Magick::PaletteType:
     case Magick::TrueColorType:
-      {
-        idim(2) = 3;
-        im = T (idim);
-        P *vec = reinterpret_cast<P *> (im.fortran_vec ());
+      idim(2) = 3;
+      im = T (idim);
+      for (int frame = 0; frame < nframes; frame++)
+        {
+          const Magick::PixelPacket *pix
+            = imvec[frameidx(frame)].getConstPixels (0, 0, columns, rows);
 
-        for (int frame = 0; frame < nframes; frame++)
-          {
-            const Magick::PixelPacket *pix
-              = imvec[frameidx(frame)].getConstPixels (0, 0, columns, rows);
+          int i = 0;
+          idx(3) = frame;
 
-            int i = 0;
-            P *rbuf, *gbuf, *bbuf;
-            rbuf = vec;
-            gbuf = vec + rows * columns;
-            bbuf = vec + rows * columns * 2;
-            for (int y = 0; y < rows; y++)
-              {
-                for (int x = 0; x < columns; x++)
-                  {
-                    *rbuf = scale_quantum_to_depth<P, D, QuantumDepth> (pix[i].red);
-                    *gbuf = scale_quantum_to_depth<P, D, QuantumDepth> (pix[i].green);
-                    *bbuf = scale_quantum_to_depth<P, D, QuantumDepth> (pix[i].blue);
-                    i++;
-                    rbuf += rows;
-                    gbuf += rows;
-                    bbuf += rows;
-                  }
-                rbuf -= rows * columns - 1;
-                gbuf -= rows * columns - 1;
-                bbuf -= rows * columns - 1;
-              }
-
-            // Next frame.
-            vec += rows * columns * 3;
-          }
+          for (int y = 0; y < rows; y++)
+            {
+              idx(0) = y;
+              for (int x = 0; x < columns; x++)
+                {
+                  idx(1) = x;
+                  idx(2) = 0;
+                  im(idx) = scale_quantum_to_depth (pix[i].red, depth);
+                  idx(2) = 1;
+                  im(idx) = scale_quantum_to_depth (pix[i].green, depth);
+                  idx(2) = 2;
+                  im(idx) = scale_quantum_to_depth (pix[i].blue, depth);
+                  i++;
+                }
+            }
         }
       break;
 
@@ -458,23 +426,17 @@ Instead you should use @code{imread}.\n\
       switch (depth)
         {
         case 1:
-          output = read_images<boolNDArray, bool, 1> (imvec, frameidx, depth);
+          output = read_images<boolNDArray> (imvec, frameidx, depth);
           break;
 
         case 2:
-          output = read_images<uint8NDArray, octave_uint8, 2> (imvec, frameidx, depth) ;
-          break;
-
         case 4:
-          output = read_images<uint8NDArray, octave_uint8, 4> (imvec, frameidx, depth) ;
-          break;
-
         case 8:
-          output = read_images<uint8NDArray, octave_uint8, 8> (imvec, frameidx, depth) ;
+          output = read_images<uint8NDArray> (imvec, frameidx, depth) ;
           break;
 
         case 16:
-          output = read_images<uint16NDArray, octave_uint16, 16> (imvec, frameidx, depth);
+          output = read_images<uint16NDArray> (imvec, frameidx, depth);
           break;
 
         case 32:

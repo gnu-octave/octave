@@ -1,5 +1,28 @@
 2010-01-22  John W. Eaton  <jwe@octave.org>
 
+	* oct-stream.cc (octave_base_stream::do_scanf): Don't skip
+	whitespace, literal text, and %% elements at the end of the
+	format spec.  Correctly process formats containing only literal text.
+	(scanf_format_list::finish_conversion): Don't increment nconv
+	for literal % characters.
+	(scanf_format_list::length, scanf_format_list::num_conversions):
+	Return octave_idx_type, not int.
+	(scanf_format_list::nconv, scanf_format_list::curr_idx):
+	Now octave_idx_type, not int.  Change all uses.
+	(printf_format_list::length): Return octave_idx_type, not int.
+	(scanf_format_list::nconv, scanf_format_list::curr_idx):
+	Now octave_idx_type, not int.  Change all uses.
+	(scanf_format_list::add_elt_to_list,
+	scanf_format_list::process_conversion,
+	scanf_format_list::finish_conversion,
+	printf_format_list::add_elt_to_list,
+	printf_format_list::process_conversion,
+	printf_format_list::finish_conversion):
+	Use size_t instead of int as appropriate.
+	* oct-stream.h: Update decls.
+
+2010-01-22  John W. Eaton  <jwe@octave.org>
+
 	* debug.cc (Fdbcont, Fdbquit): Call reset_debug_state.
 	(Fdbquit): Set Vdebugging to false.
 	* input.cc (Fkeyboard): Set tree_evaluator::debug_state to true.

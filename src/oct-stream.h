@@ -108,14 +108,14 @@ public:
 
   ~scanf_format_list (void);
 
-  int num_conversions (void) { return nconv; }
+  octave_idx_type num_conversions (void) { return nconv; }
 
   // The length can be different than the number of conversions.
   // For example, "x %d y %d z" has 2 conversions but the length of
   // the list is 3 because of the characters that appear after the
   // last conversion.
 
-  int length (void) { return list.length (); }
+  octave_idx_type length (void) { return list.length (); }
 
   const scanf_format_elt *first (void)
     {
@@ -154,10 +154,10 @@ private:
 
   // Number of conversions specified by this format string, or -1 if
   // invalid conversions have been found.
-  int nconv;
+  octave_idx_type nconv;
 
   // Index to current element;
-  int curr_idx;
+  octave_idx_type curr_idx;
 
   // List of format elements.
   Array<scanf_format_elt*> list;
@@ -166,16 +166,16 @@ private:
   std::ostringstream *buf;
 
   void add_elt_to_list (int width, bool discard, char type, char modifier,
-			int& num_elts,
+			octave_idx_type& num_elts,
 			const std::string& char_class = std::string ()); 
 
-  void process_conversion (const std::string& s, int& i, int n, int& width,
-			   bool& discard, char& type, char& modifier,
-			   int& num_elts);
+  void process_conversion (const std::string& s, size_t& i, size_t n,
+                           int& width, bool& discard, char& type,
+                           char& modifier, octave_idx_type& num_elts);
 
-  int finish_conversion (const std::string& s, int& i, int n, int& width,
-			 bool discard, char& type, char modifier,
-			 int& num_elts);
+  int finish_conversion (const std::string& s, size_t& i, size_t n,
+                         int& width, bool discard, char& type,
+                         char modifier, octave_idx_type& num_elts);
   // No copying!
 
   scanf_format_list (const scanf_format_list&);
@@ -249,7 +249,7 @@ public:
 
   ~printf_format_list (void);
 
-  int num_conversions (void) { return nconv; }
+  octave_idx_type num_conversions (void) { return nconv; }
 
   const printf_format_elt *first (void)
     {
@@ -287,10 +287,10 @@ private:
 
   // Number of conversions specified by this format string, or -1 if
   // invalid conversions have been found.
-  int nconv;
+  octave_idx_type nconv;
 
   // Index to current element;
-  int curr_idx;
+  octave_idx_type curr_idx;
 
   // List of format elements.
   Array<printf_format_elt*> list;
@@ -300,16 +300,17 @@ private:
 
   void add_elt_to_list (int args, const std::string& flags, int fw,
 			int prec, char type, char modifier,
- 			int& num_elts);
+ 			octave_idx_type& num_elts);
  
-  void process_conversion (const std::string& s, int& i, int n,
+  void process_conversion (const std::string& s, size_t& i, size_t n,
 			   int& args, std::string& flags, int& fw,
 			   int& prec, char& modifier, char& type,
-			   int& num_elts); 
+			   octave_idx_type& num_elts); 
  
-  void finish_conversion (const std::string& s, int& i, int args,
+  void finish_conversion (const std::string& s, size_t& i, int args,
 			  const std::string& flags, int fw, int prec,
-			  char modifier, char& type, int& num_elts);
+			  char modifier, char& type,
+                          octave_idx_type& num_elts);
 
   // No copying!
 

@@ -44,7 +44,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-passwd.h"
 #include "pathlen.h"
 #include "quit.h"
-#include "statdefs.h"
 #include "str-vec.h"
 #include "oct-locbuf.h"
 

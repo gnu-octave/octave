@@ -1,5 +1,9 @@
 2010-01-22  John W. Eaton  <jwe@octave.org>
 
+	* octave.cc: Don't include sys/types.h, unistd.h, or fstream.
+
+2010-01-22  John W. Eaton  <jwe@octave.org>
+
 	* oct-parse.yy (make_break_command, make_continue_command,
 	make_return_command): Don't examine evaluator state here.
 	* pt-eval.cc (tree_evaluator::visit_break_command): Don't set

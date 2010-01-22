@@ -31,6 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <fstream>
 #include <typeinfo>
 
+#include "debug.h"
 #include "defun.h"
 #include "error.h"
 #include "gripes.h"
@@ -104,6 +105,14 @@ tree_evaluator::visit_continue_command (tree_continue_command&)
 {
   if (! error_state)
     tree_continue_command::continuing = 1;
+}
+
+void
+tree_evaluator::reset_debug_state (void)
+{
+  debug_mode = bp_table::have_breakpoints ();
+
+  dbstep_flag = 0;
 }
 
 static inline void

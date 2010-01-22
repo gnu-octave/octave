@@ -134,6 +134,8 @@ public:
 
   void visit_do_until_command (tree_do_until_command&);
 
+  static void reset_debug_state (void);
+
   // If > 0, stop executing at the (N-1)th stopping point, counting
   //         from the the current execution point in the current frame.
   //

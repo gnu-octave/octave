@@ -556,6 +556,9 @@ main_loop (void)
 
 	  reset_parser ();
 
+          if (symbol_table::at_top_level ())
+            tree_evaluator::reset_debug_state ();
+
 	  // Do this with an unwind-protect cleanup function so that
 	  // the forced variables will be unmarked in the event of an
 	  // interrupt.

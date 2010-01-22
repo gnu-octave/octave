@@ -1075,7 +1075,7 @@ In debugging mode, quit debugging mode and continue execution.\n\
 	{
 	  Vdebugging = false;
 
-	  tree_evaluator::dbstep_flag = 0;
+          tree_evaluator::reset_debug_state ();
 	}
       else
 	print_usage ();
@@ -1097,7 +1097,9 @@ In debugging mode, quit debugging mode and return to the top level.\n\
     {
       if (args.length () == 0)
 	{
-	  tree_evaluator::dbstep_flag = 0;
+	  Vdebugging = false;
+
+          tree_evaluator::reset_debug_state ();
 
 	  octave_throw_interrupt_exception ();
 	}

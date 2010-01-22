@@ -1011,11 +1011,16 @@ If @code{keyboard} is invoked without arguments, a default prompt of\n\
   if (nargin == 0 || nargin == 1)
     {
       unwind_protect frame;
+
       frame.add_fcn (octave_call_stack::restore_frame, 
                      octave_call_stack::current_frame ());
 
       // Skip the frame assigned to the keyboard function.
       octave_call_stack::goto_frame_relative (0);
+
+      tree_evaluator::debug_mode = true;
+
+      tree_evaluator::current_frame = octave_call_stack::current_frame ();
 
       do_keyboard (args);
     }

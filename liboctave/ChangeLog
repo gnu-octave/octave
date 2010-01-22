@@ -1,5 +1,11 @@
 2010-01-22  John W. Eaton  <jwe@octave.org>
 
+	* prog-args.h (prog_args::get_option): Rename from getopt. Now const.
+	(prog_args::option_argument): Rename from optarg.  Now const.
+	(prog_args::option_index): Rename from optind.  Now const.
+
+2010-01-22  John W. Eaton  <jwe@octave.org>
+
 	* file-ops.cc: Don't include statdefs.h.
 
 2010-01-22  Jaroslav Hajek  <highegg@gmail.com>

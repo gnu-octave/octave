@@ -1,5 +1,10 @@
 2010-01-22  John W. Eaton  <jwe@octave.org>
 
+	* octave.cc (octave_main): Use new names for prog_args member
+	functions.
+
+2010-01-22  John W. Eaton  <jwe@octave.org>
+
 	* octave.cc: Don't include sys/types.h, unistd.h, or fstream.
 
 2010-01-22  John W. Eaton  <jwe@octave.org>

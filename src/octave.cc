@@ -634,7 +634,7 @@ octave_main (int argc, char **argv, int embedded)
   bool read_history_file = true;
 
   int optc;
-  while ((optc = args.getopt ()) != EOF)
+  while ((optc = args.get_option ()) != EOF)
     {
       switch (optc)
 	{
@@ -667,8 +667,8 @@ octave_main (int argc, char **argv, int embedded)
 	  break;
 
 	case 'p':
-	  if (args.optarg ())
-	    load_path::set_command_line_path (args.optarg ());
+	  if (args.option_argument ())
+	    load_path::set_command_line_path (args.option_argument ());
 	  break;
 
 	case 'q':
@@ -687,38 +687,38 @@ octave_main (int argc, char **argv, int embedded)
 	  break;
 
 	case DOC_CACHE_FILE_OPTION:
-	  if (args.optarg ())
-	    bind_internal_variable ("doc_cache_file", args.optarg ());
+	  if (args.option_argument ())
+	    bind_internal_variable ("doc_cache_file", args.option_argument ());
 	  break;
 
 	case EVAL_OPTION:
-	  if (args.optarg ())
+	  if (args.option_argument ())
 	    {
 	      if (code_to_eval.empty ())
-		code_to_eval = args.optarg ();
+		code_to_eval = args.option_argument ();
 	      else
-		code_to_eval += std::string (" ") + args.optarg ();
+		code_to_eval += std::string (" ") + args.option_argument ();
 	    }
 	  break;
 
 	case EXEC_PATH_OPTION:
-	  if (args.optarg ())
-	    set_exec_path (args.optarg ());
+	  if (args.option_argument ())
+	    set_exec_path (args.option_argument ());
 	  break;
 
 	case IMAGE_PATH_OPTION:
-	  if (args.optarg ())
-	    set_image_path (args.optarg ());
+	  if (args.option_argument ())
+	    set_image_path (args.option_argument ());
 	  break;
 
 	case INFO_FILE_OPTION:
-	  if (args.optarg ())
-	    bind_internal_variable ("info_file", args.optarg ());
+	  if (args.option_argument ())
+	    bind_internal_variable ("info_file", args.option_argument ());
 	  break;
 
 	case INFO_PROG_OPTION:
-	  if (args.optarg ())
-	    bind_internal_variable ("info_program", args.optarg ());
+	  if (args.option_argument ())
+	    bind_internal_variable ("info_program", args.option_argument ());
 	  break;
 
 	case LINE_EDITING_OPTION:
@@ -817,7 +817,7 @@ octave_main (int argc, char **argv, int embedded)
   // Additional arguments are taken as command line options for the
   // script.
 
-  int last_arg_idx = args.optind ();
+  int last_arg_idx = args.option_index ();
 
   int remaining_args = argc - last_arg_idx;
 

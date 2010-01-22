@@ -1,3 +1,7 @@
+2010-01-22  Jaroslav Hajek  <highegg@gmail.com>
+
+	Version 3.2.4 released.
+
 2009-10-11  Rik <octave@nomad.inbox5.com>
 
 	* intepreter/Makefile.in: Fix broken command to create octave.dvi

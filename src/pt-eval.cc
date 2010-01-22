@@ -90,7 +90,9 @@ tree_evaluator::visit_break_command (tree_break_command& cmd)
       if (debug_mode)
 	do_breakpoint (cmd.is_breakpoint ());
 
-      tree_break_command::breaking = 1;
+      if (tree_evaluator::in_fcn_or_script_body
+          || tree_evaluator::in_loop_command)
+        tree_break_command::breaking = 1;
     }
 }
 
@@ -101,10 +103,17 @@ tree_evaluator::visit_colon_expression (tree_colon_expression&)
 }
 
 void
-tree_evaluator::visit_continue_command (tree_continue_command&)
+tree_evaluator::visit_continue_command (tree_continue_command& cmd)
 {
   if (! error_state)
-    tree_continue_command::continuing = 1;
+    {
+      if (debug_mode)
+	do_breakpoint (cmd.is_breakpoint ());
+
+      if (tree_evaluator::in_fcn_or_script_body
+          || tree_evaluator::in_loop_command)
+        tree_continue_command::continuing = 1;
+    }
 }
 
 void
@@ -631,7 +640,18 @@ tree_evaluator::visit_return_command (tree_return_command& cmd)
       if (debug_mode)
 	do_breakpoint (cmd.is_breakpoint ());
 
-      tree_return_command::returning = 1;
+      // Act like dbcont.
+
+      if (Vdebugging
+          && octave_call_stack::current_frame () == current_frame)
+        {
+          Vdebugging = false;
+
+          reset_debug_state;
+        }
+      else if (tree_evaluator::in_fcn_or_script_body
+               || tree_evaluator::in_loop_command)
+        tree_return_command::returning = 1;
     }
 }
 

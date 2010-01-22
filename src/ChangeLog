@@ -1,5 +1,18 @@
 2010-01-22  John W. Eaton  <jwe@octave.org>
 
+	* oct-parse.yy (make_break_command, make_continue_command,
+	make_return_command): Don't examine evaluator state here.
+	* pt-eval.cc (tree_evaluator::visit_break_command): Don't set
+	tree_break_command::breaking unless inside function or script
+	body, or inside a looping command.
+	(tree_evaluator::visit_continue_command): Likewise, for
+	tree_continue_command::continuing.
+	(tree_evaluator::visit_return_command): Likewise, for
+	tree_return_command::returning.  Act like dbcont if debugging
+	and in the top-level debugging stack frame.
+
+2010-01-22  John W. Eaton  <jwe@octave.org>
+
 	* oct-stream.cc (octave_base_stream::do_scanf): Don't skip
 	whitespace, literal text, and %% elements at the end of the
 	format spec.  Correctly process formats containing only literal text.

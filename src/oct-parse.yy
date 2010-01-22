@@ -2488,16 +2488,7 @@ make_break_command (token *break_tok)
   int l = break_tok->line ();
   int c = break_tok->column ();
 
-  // We check to see if we are evaluating a function, script, or loop
-  // so that we don't turn eval ("break;") inside a function, script,
-  // or loop into a no-op command.
-
-  if (lexer_flags.looping || current_function_depth > 0
-      || reading_script_file || tree_evaluator::in_fcn_or_script_body
-      || tree_evaluator::in_loop_command)
-    retval = new tree_break_command (l, c);
-  else
-    retval = new tree_no_op_command ("break", l, c);
+  retval = new tree_break_command (l, c);
 
   return retval;
 }
@@ -2512,13 +2503,7 @@ make_continue_command (token *continue_tok)
   int l = continue_tok->line ();
   int c = continue_tok->column ();
 
-  // We check to see if we are evaluating a loop so that we don't turn
-  // eval ("continue;") into a no-op command inside a loop.
-
-  if (lexer_flags.looping || tree_evaluator::in_loop_command)
-    retval = new tree_continue_command (l, c);
-  else
-    retval = new tree_no_op_command ("continue", l, c);
+  retval = new tree_continue_command (l, c);
 
   return retval;
 }
@@ -2533,24 +2518,7 @@ make_return_command (token *return_tok)
   int l = return_tok->line ();
   int c = return_tok->column ();
 
-  if (Vdebugging)
-    {
-      Vdebugging = false;
-
-      retval = new tree_no_op_command ("return", l, c);
-    }
-  else
-    {
-      // We check to see if we are evaluating a function or script so
-      // that we don't turn eval ("return;") inside a function, script,
-      // or loop into a no-op command.
-
-      if (current_function_depth > 0 || reading_script_file
-          || tree_evaluator::in_fcn_or_script_body)
-        retval = new tree_return_command (l, c);
-      else
-        retval = new tree_no_op_command ("return", l, c);
-    }
+  retval = new tree_return_command (l, c);
 
   return retval;
 }

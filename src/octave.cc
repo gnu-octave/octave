@@ -34,6 +34,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <iostream>
 
+#include <getopt.h>
+
 #include "cmd-edit.h"
 #include "f77-fcn.h"
 #include "file-ops.h"
@@ -60,7 +62,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "toplev.h"
 #include "parse.h"
 #include "procstream.h"
-#include "prog-args.h"
 #include "sighandlers.h"
 #include "sysdep.h"
 #include "ov.h"
@@ -151,35 +152,35 @@ static bool persist = false;
 #define NO_WINDOW_SYSTEM_OPTION 12
 #define PERSIST_OPTION 13
 #define TRADITIONAL_OPTION 14
-long_options long_opts[] =
+struct option long_opts[] =
   {
-    { "braindead",        prog_args::no_arg,       0, TRADITIONAL_OPTION },
-    { "debug",            prog_args::no_arg,       0, 'd' },
-    { "doc-cache-file",   prog_args::required_arg, 0, DOC_CACHE_FILE_OPTION },
-    { "echo-commands",    prog_args::no_arg,       0, 'x' },
-    { "eval",             prog_args::required_arg, 0, EVAL_OPTION },
-    { "exec-path",        prog_args::required_arg, 0, EXEC_PATH_OPTION },
-    { "help",             prog_args::no_arg,       0, 'h' },
-    { "image-path",       prog_args::required_arg, 0, IMAGE_PATH_OPTION },
-    { "info-file",        prog_args::required_arg, 0, INFO_FILE_OPTION },
-    { "info-program",     prog_args::required_arg, 0, INFO_PROG_OPTION },
-    { "interactive",      prog_args::no_arg,       0, 'i' },
-    { "line-editing",     prog_args::no_arg,       0, LINE_EDITING_OPTION },
-    { "no-history",       prog_args::no_arg,       0, 'H' },
-    { "no-init-file",     prog_args::no_arg,       0, NO_INIT_FILE_OPTION },
-    { "no-init-path",     prog_args::no_arg,       0, NO_INIT_PATH_OPTION },
-    { "no-line-editing",  prog_args::no_arg,       0, NO_LINE_EDITING_OPTION },
-    { "no-site-file",     prog_args::no_arg,       0, NO_SITE_FILE_OPTION },
-    { "no-window-system", prog_args::no_arg,       0, NO_WINDOW_SYSTEM_OPTION },
-    { "norc",             prog_args::no_arg,       0, 'f' },
-    { "path",             prog_args::required_arg, 0, 'p' },
-    { "persist",          prog_args::no_arg,       0, PERSIST_OPTION },
-    { "quiet",            prog_args::no_arg,       0, 'q' },
-    { "silent",           prog_args::no_arg,       0, 'q' },
-    { "traditional",      prog_args::no_arg,       0, TRADITIONAL_OPTION },
-    { "verbose",          prog_args::no_arg,       0, 'V' },
-    { "version",          prog_args::no_arg,       0, 'v' },
-    { 0,                  0,                       0, 0 }
+    { "braindead",        no_argument,       0, TRADITIONAL_OPTION },
+    { "debug",            no_argument,       0, 'd' },
+    { "doc-cache-file",   required_argument, 0, DOC_CACHE_FILE_OPTION },
+    { "echo-commands",    no_argument,       0, 'x' },
+    { "eval",             required_argument, 0, EVAL_OPTION },
+    { "exec-path",        required_argument, 0, EXEC_PATH_OPTION },
+    { "help",             no_argument,       0, 'h' },
+    { "image-path",       required_argument, 0, IMAGE_PATH_OPTION },
+    { "info-file",        required_argument, 0, INFO_FILE_OPTION },
+    { "info-program",     required_argument, 0, INFO_PROG_OPTION },
+    { "interactive",      no_argument,       0, 'i' },
+    { "line-editing",     no_argument,       0, LINE_EDITING_OPTION },
+    { "no-history",       no_argument,       0, 'H' },
+    { "no-init-file",     no_argument,       0, NO_INIT_FILE_OPTION },
+    { "no-init-path",     no_argument,       0, NO_INIT_PATH_OPTION },
+    { "no-line-editing",  no_argument,       0, NO_LINE_EDITING_OPTION },
+    { "no-site-file",     no_argument,       0, NO_SITE_FILE_OPTION },
+    { "no-window-system", no_argument,       0, NO_WINDOW_SYSTEM_OPTION },
+    { "norc",             no_argument,       0, 'f' },
+    { "path",             required_argument, 0, 'p' },
+    { "persist",          no_argument,       0, PERSIST_OPTION },
+    { "quiet",            no_argument,       0, 'q' },
+    { "silent",           no_argument,       0, 'q' },
+    { "traditional",      no_argument,       0, TRADITIONAL_OPTION },
+    { "verbose",          no_argument,       0, 'V' },
+    { "version",          no_argument,       0, 'v' },
+    { 0,                  0,                 0, 0 }
   };
 
 // Store the command-line options for later use.
@@ -627,15 +628,19 @@ octave_main (int argc, char **argv, int embedded)
 
   install_builtins ();
 
-  prog_args args (argc, argv, short_opts, long_opts);
-
   bool forced_line_editing = false;
 
   bool read_history_file = true;
 
-  int optc;
-  while ((optc = args.get_option ()) != EOF)
+  while (true)
     {
+      int long_idx;
+
+      int optc = getopt_long (argc, argv, short_opts, long_opts, &long_idx);
+
+      if (optc < 0)
+        break;
+
       switch (optc)
 	{
 	case 'H':
@@ -667,8 +672,8 @@ octave_main (int argc, char **argv, int embedded)
 	  break;
 
 	case 'p':
-	  if (args.option_argument ())
-	    load_path::set_command_line_path (args.option_argument ());
+	  if (optarg)
+	    load_path::set_command_line_path (optarg);
 	  break;
 
 	case 'q':
@@ -687,38 +692,38 @@ octave_main (int argc, char **argv, int embedded)
 	  break;
 
 	case DOC_CACHE_FILE_OPTION:
-	  if (args.option_argument ())
-	    bind_internal_variable ("doc_cache_file", args.option_argument ());
+	  if (optarg)
+	    bind_internal_variable ("doc_cache_file", optarg);
 	  break;
 
 	case EVAL_OPTION:
-	  if (args.option_argument ())
+	  if (optarg)
 	    {
 	      if (code_to_eval.empty ())
-		code_to_eval = args.option_argument ();
+		code_to_eval = optarg;
 	      else
-		code_to_eval += std::string (" ") + args.option_argument ();
+		code_to_eval += std::string (" ") + optarg;
 	    }
 	  break;
 
 	case EXEC_PATH_OPTION:
-	  if (args.option_argument ())
-	    set_exec_path (args.option_argument ());
+	  if (optarg)
+	    set_exec_path (optarg);
 	  break;
 
 	case IMAGE_PATH_OPTION:
-	  if (args.option_argument ())
-	    set_image_path (args.option_argument ());
+	  if (optarg)
+	    set_image_path (optarg);
 	  break;
 
 	case INFO_FILE_OPTION:
-	  if (args.option_argument ())
-	    bind_internal_variable ("info_file", args.option_argument ());
+	  if (optarg)
+	    bind_internal_variable ("info_file", optarg);
 	  break;
 
 	case INFO_PROG_OPTION:
-	  if (args.option_argument ())
-	    bind_internal_variable ("info_program", args.option_argument ());
+	  if (optarg)
+	    bind_internal_variable ("info_program", optarg);
 	  break;
 
 	case LINE_EDITING_OPTION:
@@ -817,7 +822,7 @@ octave_main (int argc, char **argv, int embedded)
   // Additional arguments are taken as command line options for the
   // script.
 
-  int last_arg_idx = args.option_index ();
+  int last_arg_idx = optind;
 
   int remaining_args = argc - last_arg_idx;
 

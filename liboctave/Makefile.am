@@ -213,7 +213,6 @@ INCS = \
   oct-cmplx.h \
   oct-env.h \
   oct-fftw.h \
-  oct-getopt.h \
   oct-group.h \
   oct-inttypes.h \
   oct-locbuf.h \
@@ -234,7 +233,6 @@ INCS = \
   oct-uname.h \
   pathlen.h \
   pathsearch.h \
-  prog-args.h \
   randgamma.h \
   randmtzig.h \
   randpoisson.h \
@@ -437,7 +435,6 @@ LIBOCTAVE_CXX_SOURCES = \
   oct-syscalls.cc \
   oct-time.cc \
   oct-uname.cc \
-  prog-args.cc \
   regex-match.cc \
   sparse-sort.cc \
   sparse-util.cc \
@@ -459,7 +456,6 @@ LIBOCTAVE_C_SOURCES = \
   filemode.c \
   lo-cieee.c \
   lo-cutils.c \
-  oct-getopt.c \
   randgamma.c \
   randmtzig.c \
   randpoisson.c \

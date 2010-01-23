@@ -1,3 +1,10 @@
+2010-01-23  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.am (LIBOCTAVE_C_SOURCES): Remove oct-getopt.c from the list.
+	(LIBOCTAVE_CXX_SOURCES): Remove prog-args.c from the list.
+	(INCS): Remove prog-args.h and oct-getopt.h from the list.
+	* prog-args.cc, prog-args.h, oct-getopt.c, oct-getopt.h: Delete.
+
 2010-01-22  John W. Eaton  <jwe@octave.org>
 
 	* prog-args.h, prog-args.cc (prog_args::get_option,

@@ -1,5 +1,11 @@
 2010-01-23  John W. Eaton  <jwe@octave.org>
 
+	* octave.cc (octave_main): Use getopt directly instead of using
+	the (mostly useless) prog_args wrapper class.
+	Include <getopt.h>, not "prog-args.h".
+
+2010-01-23  John W. Eaton  <jwe@octave.org>
+
 	* sighandlers.cc (user_abort): Also set debug_mode if Vdebugging.
 	* debug.cc (bp_table::do_add_breakpoint, do_remove_all_breakpoints,
 	bp_table::do_remove_breakpoint,	do_remove_all_breakpoints_in_file):

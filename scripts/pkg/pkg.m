@@ -664,7 +664,7 @@ function install (files, handle_deps, autoload, prefix, archprefix, verbose,
     error_text = "";
     for i = 1:length (descriptions)
       desc = descriptions{i};
-      idx2 = complement (i, 1:length(descriptions));
+      idx2 = setdiff (1:length(descriptions), i);
       if (global_install)
 	## Global installation is not allowed to have dependencies on locally
 	## installed packages.
@@ -781,12 +781,12 @@ function install (files, handle_deps, autoload, prefix, archprefix, verbose,
   ## Add the packages to the package list.
   try
     if (global_install)
-      idx = complement (packages_to_uninstall, 1:length(global_packages));
+      idx = setdiff (1:length(global_packages), packages_to_uninstall);
       global_packages = save_order ({global_packages{idx}, descriptions{:}});
       save (global_list, "global_packages");
       installed_pkgs_lst = {local_packages{:}, global_packages{:}};
     else
-      idx = complement (packages_to_uninstall, 1:length(local_packages));
+      idx = setdiff (1:length(local_packages), packages_to_uninstall);
       local_packages = save_order ({local_packages{idx}, descriptions{:}});
       save (local_list, "local_packages");
       installed_pkgs_lst = {local_packages{:}, global_packages{:}};
@@ -880,7 +880,7 @@ function uninstall (pkgnames, handle_deps, verbose, local_list,
   endif
 
   ## Compute the packages that will remain installed.
-  idx = complement (delete_idx, 1:num_packages);
+  idx = setdiff (1:num_packages, delete_idx);
   remaining_packages = {installed_pkgs_lst{idx}};
 
   ## Check dependencies.

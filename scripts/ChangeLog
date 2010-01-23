@@ -1,3 +1,7 @@
+2010-01-23  Jaroslav Hajek  <highegg@gmail.com>
+
+	* pkg/pkg.m: Use setdiff rather than complement.
+
 2010-01-20  John W. Eaton  <jwe@octave.org>
 
 	* gethelp.cc: Untabfy.

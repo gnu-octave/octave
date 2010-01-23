@@ -287,7 +287,7 @@ bp_table::do_add_breakpoint (const std::string& fname,
   else
     error ("add_breakpoint: unable to find the function requested\n");
 
-  tree_evaluator::debug_mode = bp_table::have_breakpoints ();
+  tree_evaluator::debug_mode = bp_table::have_breakpoints () || Vdebugging;
 
   return retval;
 }
@@ -343,7 +343,7 @@ bp_table::do_remove_breakpoint (const std::string& fname,
 	error ("remove_breakpoint: unable to find the function requested\n");
     }
 
-  tree_evaluator::debug_mode = bp_table::have_breakpoints ();
+  tree_evaluator::debug_mode = bp_table::have_breakpoints () || Vdebugging;
 
   return retval;
 }
@@ -382,7 +382,7 @@ bp_table::do_remove_all_breakpoints_in_file (const std::string& fname,
     error ("remove_all_breakpoint_in_file: "
 	   "unable to find the function requested\n");
 
-  tree_evaluator::debug_mode = bp_table::have_breakpoints ();
+  tree_evaluator::debug_mode = bp_table::have_breakpoints () || Vdebugging;
 
   return retval;
 }
@@ -394,7 +394,7 @@ bp_table::do_remove_all_breakpoints (void)
     remove_all_breakpoints_in_file (*it);
 
 
-  tree_evaluator::debug_mode = bp_table::have_breakpoints ();
+  tree_evaluator::debug_mode = bp_table::have_breakpoints () || Vdebugging;
 }
 
 std::string 

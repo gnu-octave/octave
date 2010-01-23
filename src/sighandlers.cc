@@ -40,6 +40,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "debug.h"
 #include "defun.h"
 #include "error.h"
+#include "input.h"
 #include "load-save.h"
 #include "oct-map.h"
 #include "pager.h"
@@ -375,7 +376,8 @@ user_abort (const char *sig_name, int sig_number)
 	    {
 	      // Clear the flag and do normal interrupt stuff.
 
-	      tree_evaluator::debug_mode = bp_table::have_breakpoints ();
+	      tree_evaluator::debug_mode
+                = bp_table::have_breakpoints () || Vdebugging;
 	      octave_debug_on_interrupt_state = false;
 	    }
 	}

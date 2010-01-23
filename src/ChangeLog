@@ -1,3 +1,12 @@
+2010-01-23  John W. Eaton  <jwe@octave.org>
+
+	* sighandlers.cc (user_abort): Also set debug_mode if Vdebugging.
+	* debug.cc (bp_table::do_add_breakpoint, do_remove_all_breakpoints,
+	bp_table::do_remove_breakpoint,	do_remove_all_breakpoints_in_file):
+	Also set debug_mode if Vdebugging.
+	* pt-eval.cc (visit_return_command): Actually call reset_debug_state.
+	(reset_debug_state): Also set debug_mode if Vdebugging.
+
 2010-01-22  John W. Eaton  <jwe@octave.org>
 
 	* octave.cc (octave_main): Use new names for prog_args member

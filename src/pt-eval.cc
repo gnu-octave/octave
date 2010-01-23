@@ -119,7 +119,7 @@ tree_evaluator::visit_continue_command (tree_continue_command& cmd)
 void
 tree_evaluator::reset_debug_state (void)
 {
-  debug_mode = bp_table::have_breakpoints ();
+  debug_mode = bp_table::have_breakpoints () || Vdebugging;
 
   dbstep_flag = 0;
 }
@@ -647,7 +647,7 @@ tree_evaluator::visit_return_command (tree_return_command& cmd)
         {
           Vdebugging = false;
 
-          reset_debug_state;
+          reset_debug_state ();
         }
       else if (tree_evaluator::in_fcn_or_script_body
                || tree_evaluator::in_loop_command)

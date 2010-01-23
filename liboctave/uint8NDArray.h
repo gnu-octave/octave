@@ -39,7 +39,7 @@ SND_BOOL_OP_DECLS (octave_uint8, uint8NDArray, OCTAVE_API)
 NDND_CMP_OP_DECLS (uint8NDArray, uint8NDArray, OCTAVE_API)
 NDND_BOOL_OP_DECLS (uint8NDArray, uint8NDArray, OCTAVE_API)
 
-MARRAY_FORWARD_DEFS (MArrayN, uint8NDArray, octave_uint8)
+MARRAY_FORWARD_DEFS (MArray, uint8NDArray, octave_uint8)
 
 MINMAX_DECLS (uint8NDArray, octave_uint8, OCTAVE_API)
 

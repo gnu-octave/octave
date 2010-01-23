@@ -58,20 +58,6 @@ along with Octave; see the file COPYING.  If not, see
   MARRAY_UNOP_DEFS (MArray, T, API) \
   MARRAY_BINOP_DEFS (MArray, T, API)
 
-// Instantiate all the MArray2 friends for MArray2 element type T.
-#define INSTANTIATE_MARRAY2_FRIENDS(T, API) \
-  MARRAY_OP_ASSIGN_DEFS1 (MArray2, T, T, API) \
-  MARRAY_OP_ASSIGN_DEFS (MArray2, T, MArray2<T>, API) \
-  MARRAY_UNOP_DEFS (MArray2, T, API) \
-  MARRAY_BINOP_DEFS (MArray2, T, API)
-
-// Instantiate all the MArrayN friends for MArrayN element type T.
-#define INSTANTIATE_MARRAYN_FRIENDS(T, API) \
-  MARRAY_OP_ASSIGN_DEFS1 (MArrayN, T, T, API) \
-  MARRAY_OP_ASSIGN_DEFS (MArrayN, T, MArrayN<T>, API) \
-  MARRAY_UNOP_DEFS (MArrayN, T, API) \
-  MARRAY_BINOP_DEFS (MArrayN, T, API)
-
 // Instantiate all the MDiagArray2 friends for MDiagArray2 element type T.
 #define INSTANTIATE_MDIAGARRAY2_FRIENDS(T, API) \
   MARRAY_UNOP_DEFS (MDiagArray2, T, API) \

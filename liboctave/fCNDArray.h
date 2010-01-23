@@ -23,7 +23,7 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_FloatComplexNDArray_h)
 #define octave_FloatComplexNDArray_h 1
 
-#include "MArrayN.h"
+#include "MArray.h"
 #include "fCMatrix.h"
 
 #include "mx-defs.h"
@@ -32,34 +32,34 @@ along with Octave; see the file COPYING.  If not, see
 
 class
 OCTAVE_API
-FloatComplexNDArray : public MArrayN<FloatComplex>
+FloatComplexNDArray : public MArray<FloatComplex>
 {
 public:
 
   typedef FloatComplexMatrix matrix_type;
 
-  FloatComplexNDArray (void) : MArrayN<FloatComplex> () { }
+  FloatComplexNDArray (void) : MArray<FloatComplex> () { }
 
-  FloatComplexNDArray (const dim_vector& dv) : MArrayN<FloatComplex> (dv) { }
+  FloatComplexNDArray (const dim_vector& dv) : MArray<FloatComplex> (dv) { }
 
   FloatComplexNDArray (const dim_vector& dv, const FloatComplex& val)
-    : MArrayN<FloatComplex> (dv, val) { }
+    : MArray<FloatComplex> (dv, val) { }
   
-  FloatComplexNDArray (const FloatComplexNDArray& a) : MArrayN<FloatComplex> (a) { }
+  FloatComplexNDArray (const FloatComplexNDArray& a) : MArray<FloatComplex> (a) { }
 
-  FloatComplexNDArray (const FloatComplexMatrix& a) : MArrayN<FloatComplex> (a) { }
-
-  template <class U>
-  FloatComplexNDArray (const MArrayN<U>& a) : MArrayN<FloatComplex> (a) { }
+  FloatComplexNDArray (const FloatComplexMatrix& a) : MArray<FloatComplex> (a) { }
 
   template <class U>
-  FloatComplexNDArray (const Array<U>& a) : MArrayN<FloatComplex> (a) { }
+  FloatComplexNDArray (const MArray<U>& a) : MArray<FloatComplex> (a) { }
+
+  template <class U>
+  FloatComplexNDArray (const Array<U>& a) : MArray<FloatComplex> (a) { }
 
   FloatComplexNDArray (const charNDArray&); 
 
   FloatComplexNDArray& operator = (const FloatComplexNDArray& a)
     {
-      MArrayN<FloatComplex>::operator = (a);
+      MArray<FloatComplex>::operator = (a);
       return *this;
     }
 
@@ -121,7 +121,7 @@ public:
 
   FloatComplexMatrix matrix_value (void) const;
 
-  FloatComplexNDArray squeeze (void) const { return MArrayN<FloatComplex>::squeeze (); }
+  FloatComplexNDArray squeeze (void) const { return MArray<FloatComplex>::squeeze (); }
 
   static void increment_index (Array<octave_idx_type>& ra_idx,
                                const dim_vector& dimensions,
@@ -144,14 +144,14 @@ public:
 
   FloatComplexNDArray& changesign (void) 
     { 
-      MArrayN<FloatComplex>::changesign (); 
+      MArray<FloatComplex>::changesign (); 
       return *this; 
     }
 
 private:
 
   FloatComplexNDArray (FloatComplex *d, const dim_vector& dv)
-    : MArrayN<FloatComplex> (d, dv) { }
+    : MArray<FloatComplex> (d, dv) { }
 };
 
 extern OCTAVE_API FloatComplexNDArray conj (const FloatComplexNDArray& a);
@@ -167,7 +167,7 @@ SND_BOOL_OP_DECLS (FloatComplex, FloatComplexNDArray, OCTAVE_API)
 NDND_CMP_OP_DECLS (FloatComplexNDArray, FloatComplexNDArray, OCTAVE_API)
 NDND_BOOL_OP_DECLS (FloatComplexNDArray, FloatComplexNDArray, OCTAVE_API)
 
-MARRAY_FORWARD_DEFS (MArrayN, FloatComplexNDArray, FloatComplex)
+MARRAY_FORWARD_DEFS (MArray, FloatComplexNDArray, FloatComplex)
 
 extern OCTAVE_API FloatComplexNDArray& operator *= (FloatComplexNDArray& a, float s);
 extern OCTAVE_API FloatComplexNDArray& operator /= (FloatComplexNDArray& a, float s);

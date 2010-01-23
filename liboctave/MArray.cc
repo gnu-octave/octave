@@ -31,27 +31,119 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-error.h"
 
 #include "MArray-defs.h"
-
-// One dimensional array with math ops.
+#include "mx-inlines.cc"
 
 template <class T>
-double
-MArray<T>::norm (double) const
+struct _idxadds_helper
 {
-  (*current_liboctave_error_handler)
-    ("norm: only implemented for double and complex values");
+  T *array;
+  T val;
+  _idxadds_helper (T *a, T v) : array (a), val (v) { }
+  void operator () (octave_idx_type i)
+    { array[i] += val; }
+};
 
-  return 0;
+template <class T>
+struct _idxadda_helper
+{
+  T *array;
+  const T *vals;
+  _idxadda_helper (T *a, const T *v) : array (a), vals (v) { }
+  void operator () (octave_idx_type i)
+    { array[i] += *vals++; }
+};
+
+template <class T>
+void
+MArray<T>::idx_add (const idx_vector& idx, T val)
+{
+  octave_idx_type n = this->length ();
+  octave_idx_type ext = idx.extent (n);
+  if (ext > n)
+    {
+      this->resize1 (ext);
+      n = ext;
+    }
+
+  octave_quit ();
+
+  octave_idx_type len = idx.length (n);
+  idx.loop (len, _idxadds_helper<T> (this->fortran_vec (), val));
 }
 
 template <class T>
-float
-MArray<T>::norm (float) const
+void
+MArray<T>::idx_add (const idx_vector& idx, const MArray<T>& vals)
 {
-  (*current_liboctave_error_handler)
-    ("norm: only implemented for double and complex values");
+  octave_idx_type n = this->length ();
+  octave_idx_type ext = idx.extent (n);
+  if (ext > n)
+    {
+      this->resize1 (ext);
+      n = ext;
+    }
 
-  return 0;
+  octave_quit ();
+
+  octave_idx_type len = std::min (idx.length (n), vals.length ());
+  idx.loop (len, _idxadda_helper<T> (this->fortran_vec (), vals.data ()));
+}
+
+template <class T, T op (typename ref_param<T>::type, typename ref_param<T>::type)>
+struct _idxbinop_helper
+{
+  T *array;
+  const T *vals;
+  _idxbinop_helper (T *a, const T *v) : array (a), vals (v) { }
+  void operator () (octave_idx_type i)
+    { array[i] = op (array[i], *vals++); }
+};
+
+template <class T>
+void
+MArray<T>::idx_min (const idx_vector& idx, const MArray<T>& vals)
+{
+  octave_idx_type n = this->length ();
+  octave_idx_type ext = idx.extent (n);
+  if (ext > n)
+    {
+      this->resize1 (ext);
+      n = ext;
+    }
+
+  octave_quit ();
+
+  octave_idx_type len = std::min (idx.length (n), vals.length ());
+  idx.loop (len, _idxbinop_helper<T, xmin> (this->fortran_vec (), vals.data ()));
+}
+
+template <class T>
+void
+MArray<T>::idx_max (const idx_vector& idx, const MArray<T>& vals)
+{
+  octave_idx_type n = this->length ();
+  octave_idx_type ext = idx.extent (n);
+  if (ext > n)
+    {
+      this->resize1 (ext);
+      n = ext;
+    }
+
+  octave_quit ();
+
+  octave_idx_type len = std::min (idx.length (n), vals.length ());
+  idx.loop (len, _idxbinop_helper<T, xmax> (this->fortran_vec (), vals.data ()));
+}
+
+// N-dimensional array with math ops.
+template <class T>
+void
+MArray<T>::changesign (void)
+{
+  if (Array<T>::is_shared ())
+    *this = - *this;
+  else
+    do_mx_inplace_op<MArray<T> > (*this, mx_inline_uminus2);
 }
 
 // Element by element MArray by scalar ops.
@@ -124,6 +216,7 @@ operator -= (MArray<T>& a, const MArray<T>& b)
   return a;
 }
 
+
 template <class T>
 MArray<T>&
 product_eq (MArray<T>& a, const MArray<T>& b)
@@ -148,7 +241,7 @@ quotient_eq (MArray<T>& a, const MArray<T>& b)
 
 // Element by element MArray by scalar ops.
 
-#define MARRAY_AS_OP(OP, FN) \
+#define MARRAY_NDS_OP(OP, FN) \
   template <class T> \
   MArray<T> \
   operator OP (const MArray<T>& a, const T& s) \
@@ -156,14 +249,14 @@ quotient_eq (MArray<T>& a, const MArray<T>& b)
     return do_ms_binary_op<MArray<T>, MArray<T>, T> (a, s, FN); \
   }
 
-MARRAY_AS_OP (+, mx_inline_add)
-MARRAY_AS_OP (-, mx_inline_sub)
-MARRAY_AS_OP (*, mx_inline_mul)
-MARRAY_AS_OP (/, mx_inline_div)
+MARRAY_NDS_OP (+, mx_inline_add)
+MARRAY_NDS_OP (-, mx_inline_sub)
+MARRAY_NDS_OP (*, mx_inline_mul)
+MARRAY_NDS_OP (/, mx_inline_div)
 
 // Element by element scalar by MArray ops.
 
-#define MARRAY_SA_OP(OP, FN) \
+#define MARRAY_SND_OP(OP, FN) \
   template <class T> \
   MArray<T> \
   operator OP (const T& s, const MArray<T>& a) \
@@ -171,14 +264,14 @@ MARRAY_AS_OP (/, mx_inline_div)
     return do_sm_binary_op<MArray<T>, T, MArray<T> > (s, a, FN); \
   }
 
-MARRAY_SA_OP(+, mx_inline_add)
-MARRAY_SA_OP(-, mx_inline_sub)
-MARRAY_SA_OP(*, mx_inline_mul)
-MARRAY_SA_OP(/, mx_inline_div)
+MARRAY_SND_OP (+, mx_inline_add)
+MARRAY_SND_OP (-, mx_inline_sub)
+MARRAY_SND_OP (*, mx_inline_mul)
+MARRAY_SND_OP (/, mx_inline_div)
 
 // Element by element MArray by MArray ops.
 
-#define MARRAY_AA_OP(FCN, OP, FN) \
+#define MARRAY_NDND_OP(FCN, OP, FN) \
   template <class T> \
   MArray<T> \
   FCN (const MArray<T>& a, const MArray<T>& b) \
@@ -186,12 +279,10 @@ MARRAY_SA_OP(/, mx_inline_div)
     return do_mm_binary_op<MArray<T>, MArray<T>, MArray<T> > (a, b, FN, #FCN); \
   }
 
-MARRAY_AA_OP (operator +, +, mx_inline_add)
-MARRAY_AA_OP (operator -, -, mx_inline_sub)
-MARRAY_AA_OP (product,    *, mx_inline_mul)
-MARRAY_AA_OP (quotient,   /, mx_inline_div)
-
-// Unary MArray ops.
+MARRAY_NDND_OP (operator +, +, mx_inline_add)
+MARRAY_NDND_OP (operator -, -, mx_inline_sub)
+MARRAY_NDND_OP (product,    *, mx_inline_mul)
+MARRAY_NDND_OP (quotient,   /, mx_inline_div)
 
 template <class T>
 MArray<T>

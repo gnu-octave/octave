@@ -80,17 +80,17 @@ FloatHESS::init (const FloatMatrix& a)
   hess_mat = a;
   float *h = hess_mat.fortran_vec ();
 
-  Array<float> scale (n);
+  Array<float> scale (n, 1);
   float *pscale = scale.fortran_vec ();
 
   F77_XFCN (sgebal, SGEBAL, (F77_CONST_CHAR_ARG2 (&job, 1),
                              n, h, n, ilo, ihi, pscale, info
                              F77_CHAR_ARG_LEN (1)));
 
-  Array<float> tau (n-1);
+  Array<float> tau (n-1, 1);
   float *ptau = tau.fortran_vec ();
 
-  Array<float> work (lwork);
+  Array<float> work (lwork, 1);
   float *pwork = work.fortran_vec ();
 
   F77_XFCN (sgehrd, SGEHRD, (n, ilo, ihi, h, n, ptau, pwork,

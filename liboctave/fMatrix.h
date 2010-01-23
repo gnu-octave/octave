@@ -24,7 +24,8 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_FloatMatrix_int_h)
 #define octave_FloatMatrix_int_h 1
 
-#include "MArray2.h"
+#include "Array2.h"
+#include "MArray.h"
 #include "MDiagArray2.h"
 #include "MatrixType.h"
 
@@ -34,7 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 
 class
 OCTAVE_API
-FloatMatrix : public MArray2<float>
+FloatMatrix : public MArray<float>
 {
 public:
 
@@ -43,26 +44,26 @@ public:
 
   typedef void (*solve_singularity_handler) (float rcon);
 
-  FloatMatrix (void) : MArray2<float> () { }
+  FloatMatrix (void) : MArray<float> () { }
 
-  FloatMatrix (octave_idx_type r, octave_idx_type c) : MArray2<float> (r, c) { }
+  FloatMatrix (octave_idx_type r, octave_idx_type c) : MArray<float> (r, c) { }
 
-  FloatMatrix (octave_idx_type r, octave_idx_type c, float val) : MArray2<float> (r, c, val) { }
+  FloatMatrix (octave_idx_type r, octave_idx_type c, float val) : MArray<float> (r, c, val) { }
 
-  FloatMatrix (const dim_vector& dv) : MArray2<float> (dv) { }
+  FloatMatrix (const dim_vector& dv) : MArray<float> (dv.redim (2)) { }
 
-  FloatMatrix (const dim_vector& dv, float val) : MArray2<float> (dv, val) { }
+  FloatMatrix (const dim_vector& dv, float val) : MArray<float> (dv.redim (2), val) { }
 
-  FloatMatrix (const FloatMatrix& a) : MArray2<float> (a) { }
-
-  template <class U>
-  FloatMatrix (const MArray2<U>& a) : MArray2<float> (a) { }
+  FloatMatrix (const FloatMatrix& a) : MArray<float> (a) { }
 
   template <class U>
-  FloatMatrix (const Array2<U>& a) : MArray2<float> (a) { }
+  FloatMatrix (const MArray<U>& a) : MArray<float> (a.as_matrix ()) { }
 
   template <class U>
-  FloatMatrix (const Array<U>& a) : MArray2<float> (a) { }
+  FloatMatrix (const Array2<U>& a) : MArray<float> (a) { }
+
+  template <class U>
+  FloatMatrix (const Array<U>& a) : MArray<float> (a.as_matrix ()) { }
 
   explicit FloatMatrix (const FloatRowVector& rv);
 
@@ -79,7 +80,7 @@ public:
 
   FloatMatrix& operator = (const FloatMatrix& a)
     {
-      MArray2<float>::operator = (a);
+      MArray<float>::operator = (a);
       return *this;
     }
 
@@ -113,7 +114,7 @@ public:
 
   friend class FloatComplexMatrix;
 
-  FloatMatrix transpose (void) const { return MArray2<float>::transpose (); }
+  FloatMatrix transpose (void) const { return MArray<float>::transpose (); }
 
   // resize is the destructive equivalent for this one
 
@@ -331,7 +332,7 @@ public:
 
 private:
 
-  FloatMatrix (float *d, octave_idx_type r, octave_idx_type c) : MArray2<float> (d, r, c) { }
+  FloatMatrix (float *d, octave_idx_type r, octave_idx_type c) : MArray<float> (d, r, c) { }
 };
 
 // Publish externally used friend functions.
@@ -377,7 +378,7 @@ SM_BOOL_OP_DECLS (float, FloatMatrix, OCTAVE_API)
 MM_CMP_OP_DECLS (FloatMatrix, FloatMatrix, OCTAVE_API)
 MM_BOOL_OP_DECLS (FloatMatrix, FloatMatrix, OCTAVE_API)
 
-MARRAY_FORWARD_DEFS (MArray2, FloatMatrix, float)
+MARRAY_FORWARD_DEFS (MArray, FloatMatrix, float)
 
 template <class T>
 void read_int (std::istream& is, bool swap_bytes, T& val);

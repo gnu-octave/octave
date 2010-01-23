@@ -494,7 +494,7 @@ Octave_map::index (const octave_value_list& idx, bool resize_ok) const
 
   if (n_idx > 0)
     {
-      Array<idx_vector> ra_idx (n_idx);
+      Array<idx_vector> ra_idx (n_idx, 1);
 
       for (octave_idx_type i = 0; i < n_idx; i++)
         {

@@ -876,9 +876,10 @@ static void gripe_invalid_resize (void)
 // The default fill value.  Override if you want a different one.
 
 template <class T>
-T Array<T>::resize_fill_value ()
+const T& Array<T>::resize_fill_value ()
 {
-  return T ();
+  static T zero = T ();
+  return zero;
 }
 
 // Yes, we could do resize using index & assign.  However, that would
@@ -886,7 +887,7 @@ T Array<T>::resize_fill_value ()
 
 template <class T>
 void
-Array<T>::resize_fill (octave_idx_type n, const T& rfv)
+Array<T>::resize1 (octave_idx_type n, const T& rfv)
 {
   if (n >= 0 && ndims () == 2)
     {
@@ -931,7 +932,7 @@ Array<T>::resize_fill (octave_idx_type n, const T& rfv)
                 {
                   static const octave_idx_type max_stack_chunk = 1024;
                   octave_idx_type nn = n + std::min (nx, max_stack_chunk);
-                  Array<T> tmp (Array<T> (nn), dv, 0, n);
+                  Array<T> tmp (Array<T> (nn, 1), dv, 0, n);
                   T *dest = tmp.fortran_vec ();
 
                   copy_or_memcpy (nx, data (), dest);
@@ -959,7 +960,7 @@ Array<T>::resize_fill (octave_idx_type n, const T& rfv)
 
 template <class T>
 void
-Array<T>::resize_fill (octave_idx_type r, octave_idx_type c, const T& rfv)
+Array<T>::resize (octave_idx_type r, octave_idx_type c, const T& rfv)
 {
   if (r >= 0 && c >= 0 && ndims () == 2)
     {
@@ -1001,7 +1002,7 @@ Array<T>::resize_fill (octave_idx_type r, octave_idx_type c, const T& rfv)
 
 template<class T>
 void
-Array<T>::resize_fill (const dim_vector& dv, const T& rfv)
+Array<T>::resize (const dim_vector& dv, const T& rfv)
 {
   int dvl = dv.length ();
   if (dvl == 2)
@@ -1034,9 +1035,9 @@ Array<T>::index (const idx_vector& i, bool resize_ok, const T& rfv) const
       if (n != nx)
         {
           if (i.is_scalar ())
-            return Array<T> (1, rfv);
+            return Array<T> (1, 1, rfv);
           else
-            tmp.resize_fill (nx, rfv);
+            tmp.resize1 (nx, rfv);
         }
 
       if (tmp.numel () != nx)
@@ -1060,9 +1061,9 @@ Array<T>::index (const idx_vector& i, const idx_vector& j,
       if (r != rx || c != cx)
         {
           if (i.is_scalar () && j.is_scalar ())
-            return Array<T> (1, rfv);
+            return Array<T> (1, 1, rfv);
           else
-            tmp.resize_fill (rx, cx, rfv);
+            tmp.resize (rx, cx, rfv);
         }
 
       if (tmp.rows () != rx || tmp.columns () != cx)
@@ -1090,9 +1091,9 @@ Array<T>::index (const Array<idx_vector>& ia,
           for (int i = 0; i < ial; i++) 
             all_scalars = all_scalars && ia(i).is_scalar ();
           if (all_scalars)
-            return Array<T> (1, rfv);
+            return Array<T> (1, 1, rfv);
           else
-            tmp.resize_fill (dvx, rfv);
+            tmp.resize (dvx, rfv);
         }
 
       if (tmp.dimensions != dvx)
@@ -1140,7 +1141,7 @@ Array<T>::assign (const idx_vector& i, const Array<T>& rhs, const T& rfv)
               return;
             }
 
-          resize_fill (nx, rfv);      
+          resize1 (nx, rfv);      
           n = numel ();
         }
 
@@ -1325,7 +1326,7 @@ Array<T>::assign (const Array<idx_vector>& ia,
                   return;
                 }
 
-              resize_fill (rdv, rfv);
+              resize (rdv, rfv);
               dv = rdv;
             }
 
@@ -1376,7 +1377,7 @@ Array<T>::delete_elements (const idx_vector& i)
       if (i.is_scalar () && i(0) == n-1)
         {
           // Stack "pop" operation.
-          resize (n-1);
+          resize1 (n-1);
         }
       else if (i.is_cont_range (n, l, u))
         {
@@ -1449,7 +1450,7 @@ Array<T>::delete_elements (int dim, const idx_vector& i)
       else
         {
           // Use index.
-          Array<idx_vector> ia (ndims (), idx_vector::colon);
+          Array<idx_vector> ia (ndims (), 1, idx_vector::colon);
           ia (dim) = i.complement (n);
           *this = index (ia);
         }
@@ -1504,7 +1505,7 @@ Array<T>::insert (const Array<T>& a, octave_idx_type r, octave_idx_type c)
     assign (i, j, a);
   else
     {
-      Array<idx_vector> idx (a.ndims ());
+      Array<idx_vector> idx (a.ndims (), 1);
       idx(0) = i;
       idx(1) = j;
       for (int k = 0; k < a.ndims (); k++)
@@ -1520,7 +1521,7 @@ Array<T>&
 Array<T>::insert (const Array<T>& a, const Array<octave_idx_type>& ra_idx)
 {
   octave_idx_type n = ra_idx.length ();
-  Array<idx_vector> idx (n);
+  Array<idx_vector> idx (n, 1);
   const dim_vector dva = a.dims ().redim (n);
   for (octave_idx_type k = 0; k < n; k++)
     idx(k) = idx_vector (ra_idx (k), ra_idx (k) + dva(k));
@@ -2042,7 +2043,7 @@ Array<T>::sort_rows_idx (sortmode mode) const
 
   octave_idx_type r = rows (), c = cols ();
 
-  idx = Array<octave_idx_type> (r);
+  idx = Array<octave_idx_type> (r, 1);
 
   lsort.sort_rows (data (), idx.fortran_vec (), r, c);
 
@@ -2202,7 +2203,7 @@ Array<T>::find (octave_idx_type n, bool backward) const
       for (octave_idx_type i = 0; i < nel; i++)
         cnt += src[i] != zero;
 
-      retval = Array<octave_idx_type> (cnt);
+      retval.clear (cnt, 1);
       octave_idx_type *dest = retval.fortran_vec ();
       for (octave_idx_type i = 0; i < nel; i++)
         if (src[i] != zero) *dest++ = i;
@@ -2212,7 +2213,7 @@ Array<T>::find (octave_idx_type n, bool backward) const
       // We want a fixed max number of elements, usually small. So be
       // optimistic, alloc the array in advance, and then resize if
       // needed.
-      retval = Array<octave_idx_type> (n);
+      retval.clear (n, 1);
       if (backward)
         {
           // Do the search as a series of successive single-element searches.
@@ -2226,7 +2227,7 @@ Array<T>::find (octave_idx_type n, bool backward) const
                 break;
             }
           if (k < n)
-            retval.resize (k);
+            retval.resize (k, 1);
           octave_idx_type *rdata = retval.fortran_vec ();
           std::reverse (rdata, rdata + k);
         }
@@ -2243,7 +2244,7 @@ Array<T>::find (octave_idx_type n, bool backward) const
                 break;
             }
           if (k < n)
-            retval.resize (k);
+            retval.resize (k, 1);
         }
     }
 
@@ -2599,7 +2600,7 @@ operator << (std::ostream& os, const Array<T>& a)
     {
       os << "data:";
 
-      Array<octave_idx_type> ra_idx (n_dims, 0);
+      Array<octave_idx_type> ra_idx (n_dims, 1, 0);
 
       // Number of times the first 2d-array is to be displayed.
 

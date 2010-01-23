@@ -34,17 +34,18 @@ FloatRowVector : public MArray<float>
 {
 public:
 
-  FloatRowVector (void) : MArray<float> () { }
+  FloatRowVector (void) : MArray<float> (1, 0) { }
 
-  explicit FloatRowVector (octave_idx_type n) : MArray<float> (n) { }
+  explicit FloatRowVector (octave_idx_type n) : MArray<float> (1, n) { }
 
-  explicit FloatRowVector (const dim_vector& dv) : MArray<float> (dv) { }
+  explicit FloatRowVector (const dim_vector& dv) : MArray<float> (dv.as_row ()) { }
 
-  FloatRowVector (octave_idx_type n, float val) : MArray<float> (n, val) { }
+  FloatRowVector (octave_idx_type n, float val) : MArray<float> (1, n, val) { }
 
   FloatRowVector (const FloatRowVector& a) : MArray<float> (a) { }
 
-  FloatRowVector (const MArray<float>& a) : MArray<float> (a) { }
+  FloatRowVector (const MArray<float>& a) : MArray<float> (a.as_row ()) { }
+  FloatRowVector (const Array<float>& a) : MArray<float> (a.as_row ()) { }
 
   FloatRowVector& operator = (const FloatRowVector& a)
     {
@@ -89,9 +90,15 @@ public:
   friend OCTAVE_API std::ostream& operator << (std::ostream& os, const FloatRowVector& a);
   friend OCTAVE_API std::istream& operator >> (std::istream& is, FloatRowVector& a);
 
+  void resize (octave_idx_type n, const float& rfv = Array<float>::resize_fill_value ())
+    { Array<float>::resize (1, n, rfv); }
+
+  void clear (octave_idx_type n)
+    { Array<float>::clear (1, n); }
+
 private:
 
-  FloatRowVector (float *d, octave_idx_type l) : MArray<float> (d, l) { }
+  FloatRowVector (float *d, octave_idx_type l) : MArray<float> (d, 1, l) { }
 };
 
 // row vector by column vector -> scalar

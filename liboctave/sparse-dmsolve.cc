@@ -26,7 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <vector>
 
-#include "MArray2.h"
+#include "MArray.h"
 #include "MSparse.h"
 #include "SparseQR.h"
 #include "SparseCmplxQR.h"
@@ -116,8 +116,8 @@ dmsolve_extract (const MSparse<Complex> &A, const octave_idx_type *Pinv,
 #endif
 
 template <class T>
-static MArray2<T>
-dmsolve_extract (const MArray2<T> &m, const octave_idx_type *, 
+static MArray<T>
+dmsolve_extract (const MArray<T> &m, const octave_idx_type *, 
                  const octave_idx_type *, octave_idx_type r1, 
                  octave_idx_type r2, octave_idx_type c1, 
                  octave_idx_type c2)
@@ -130,7 +130,7 @@ dmsolve_extract (const MArray2<T> &m, const octave_idx_type *,
   octave_idx_type new_r = r2 - r1 + 1;
   octave_idx_type new_c = c2 - c1 + 1;
 
-  MArray2<T> result (new_r, new_c);
+  MArray<T> result (new_r, new_c);
 
   for (octave_idx_type j = 0; j < new_c; j++)
     for (octave_idx_type i = 0; i < new_r; i++)
@@ -140,14 +140,14 @@ dmsolve_extract (const MArray2<T> &m, const octave_idx_type *,
 }
 
 #if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
-static MArray2<double>
-dmsolve_extract (const MArray2<double> &m, const octave_idx_type *, 
+static MArray<double>
+dmsolve_extract (const MArray<double> &m, const octave_idx_type *, 
                  const octave_idx_type *, octave_idx_type r1, 
                  octave_idx_type r2, octave_idx_type c1, 
                  octave_idx_type c2)
 
-static MArray2<Complex>
-dmsolve_extract (const MArray2<Complex> &m, const octave_idx_type *, 
+static MArray<Complex>
+dmsolve_extract (const MArray<Complex> &m, const octave_idx_type *, 
                  const octave_idx_type *, octave_idx_type r1, 
                  octave_idx_type r2, octave_idx_type c1, 
                  octave_idx_type c2)
@@ -155,7 +155,7 @@ dmsolve_extract (const MArray2<Complex> &m, const octave_idx_type *,
 
 template <class T>
 static void
-dmsolve_insert (MArray2<T> &a, const MArray2<T> &b, const octave_idx_type *Q,
+dmsolve_insert (MArray<T> &a, const MArray<T> &b, const octave_idx_type *Q,
                octave_idx_type r, octave_idx_type c)
 {
   T *ax = a.fortran_vec();
@@ -177,11 +177,11 @@ dmsolve_insert (MArray2<T> &a, const MArray2<T> &b, const octave_idx_type *Q,
 
 #if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
 static void
-dmsolve_insert (MArray2<double> &a, const MArray2<double> &b, 
+dmsolve_insert (MArray<double> &a, const MArray<double> &b, 
                const octave_idx_type *Q, octave_idx_type r, octave_idx_type c);
 
 static void
-dmsolve_insert (MArray2<Complex> &a, const MArray2<Complex> &b,
+dmsolve_insert (MArray<Complex> &a, const MArray<Complex> &b,
                const octave_idx_type *Q, octave_idx_type r, octave_idx_type c);
 #endif
 
@@ -274,7 +274,7 @@ dmsolve_insert (MSparse<Complex> &a, const MSparse<Complex> &b,
 
 template <class T, class RT>
 static void
-dmsolve_permute (MArray2<RT> &a, const MArray2<T>& b, const octave_idx_type *p)
+dmsolve_permute (MArray<RT> &a, const MArray<T>& b, const octave_idx_type *p)
 {
   octave_idx_type b_nr = b.rows ();
   octave_idx_type b_nc = b.cols ();
@@ -294,15 +294,15 @@ dmsolve_permute (MArray2<RT> &a, const MArray2<T>& b, const octave_idx_type *p)
 
 #if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
 static void
-dmsolve_permute (MArray2<double> &a, const MArray2<double>& b,
+dmsolve_permute (MArray<double> &a, const MArray<double>& b,
                  const octave_idx_type *p);
 
 static void
-dmsolve_permute (MArray2<Complex> &a, const MArray2<double>& b,
+dmsolve_permute (MArray<Complex> &a, const MArray<double>& b,
                  const octave_idx_type *p);
 
 static void
-dmsolve_permute (MArray2<Complex> &a, const MArray2<Complex>& b,
+dmsolve_permute (MArray<Complex> &a, const MArray<Complex>& b,
                  const octave_idx_type *p);
 #endif
 

@@ -1030,7 +1030,7 @@ do_num2cell_helper (const dim_vector& dv,
 
   OCTAVE_LOCAL_BUFFER_INIT (bool, sing, maxd, false);
 
-  perm.clear (maxd);
+  perm.clear (maxd, 1);
   for (int i = 0; i < dvl; i++)
     {
       int k = dimv(i) - 1;
@@ -1475,7 +1475,7 @@ do_cellslices_nda (const NDA& array,
         dim = dv.first_non_singleton ();
       ndims = std::max (ndims, dim + 1);
 
-      Array<idx_vector> idx (ndims, idx_vector::colon);
+      Array<idx_vector> idx (ndims, 1, idx_vector::colon);
 
       for (octave_idx_type i = 0; i < n && ! error_state; i++)
         {

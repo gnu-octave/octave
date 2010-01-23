@@ -26,7 +26,6 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_MDiagArray2_h 1
 
 #include "DiagArray2.h"
-#include "MArray2.h"
 #include "MArray.h"
 
 // Two dimensional diagonal array with math ops.
@@ -72,7 +71,7 @@ public:
       return *this;
     }
 
-  operator MArray2<T> () const
+  operator MArray<T> () const
     {
       return DiagArray2<T>::operator Array2<T> ();
     }

@@ -84,7 +84,7 @@ octave_base_sparse<T>::do_index_op (const octave_value_list& idx,
           }
         else
           {
-            Array<idx_vector> idx_vec (n_idx);
+            Array<idx_vector> idx_vec (n_idx, 1);
 
             for (octave_idx_type i = 0; i < n_idx; i++)
               {
@@ -200,7 +200,7 @@ octave_base_sparse<MT>::delete_elements (const octave_value_list& idx)
 {
   octave_idx_type len = idx.length ();
 
-  Array<idx_vector> ra_idx (len);
+  Array<idx_vector> ra_idx (len, 1);
 
   for (octave_idx_type i = 0; i < len; i++)
     ra_idx(i) = idx(i).index_vector ();

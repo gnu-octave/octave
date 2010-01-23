@@ -27,7 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "Array.h"
 
-// One dimensional array with math ops.
+// N-dimensional array with math ops.
 
 // But first, some preprocessor abuse...
 
@@ -41,22 +41,29 @@ MArray : public Array<T>
 {
 protected:
 
-  MArray (T *d, octave_idx_type l) : Array<T> (d, l) { }
+  MArray (T *d, octave_idx_type m, octave_idx_type n) : Array<T> (d, m, n) { }
+  MArray (T *d, const dim_vector& dv) : Array<T> (d, dv) { }
 
 public:
   
-  MArray (void) : Array<T> () { }
+  MArray (void) : Array<T> () {}
+  
+  explicit MArray (octave_idx_type m, octave_idx_type n) 
+    : Array<T> (m, n) { }
 
-  explicit MArray (octave_idx_type n) : Array<T> (n) { }
+  explicit MArray (octave_idx_type m, octave_idx_type n, const T& val) 
+    : Array<T> (m, n, val) { }
 
-  MArray (octave_idx_type n, const T& val) : Array<T> (n, val) { }
+  explicit MArray (const dim_vector& dv) 
+    : Array<T> (dv) { }
+  
+  explicit MArray (const dim_vector& dv, const T& val) 
+    : Array<T> (dv, val) { }
 
   MArray (const MArray<T>& a) : Array<T> (a) { }
 
-  // FIXME: kluge.
-  MArray (const Array<T>& a) : Array<T> (a, dim_vector (a.length ())) { }
-
-  MArray (const dim_vector& dv) : Array<T> (dv) { }
+  template <class U>
+  MArray (const Array<U>& a) : Array<T> (a) { }
 
   ~MArray (void) { }
 
@@ -66,31 +73,35 @@ public:
       return *this;
     }
 
-  // FIXME: kluge again. This design really sucks.
-  void resize (octave_idx_type n, const T& val = Array<T>::resize_fill_value ())
-    { Array<T>::resize_fill (n, 1, val); }
+  MArray<T> reshape (const dim_vector& new_dims) const
+    { return Array<T>::reshape (new_dims); }
 
-  MArray<T> transpose (void) const { return Array<T>::transpose (); }
-  MArray<T> hermitian (T (*fcn) (const T&) = 0) const { return Array<T>::hermitian (fcn); }
+  MArray<T> permute (const Array<octave_idx_type>& vec, 
+                      bool inv = false) const
+    { return Array<T>::permute (vec, inv); }
 
-  double norm (double p) const;
-  float norm (float p) const;
+  MArray<T> ipermute (const Array<octave_idx_type>& vec) const
+    { return Array<T>::ipermute (vec); }
 
-  // FIXME: should go away.
-  template <class U>
-  MArray<U>
-  map (U (&fcn) (T)) const
-  { return Array<T>::template map<U> (fcn); }
+  MArray squeeze (void) const { return Array<T>::squeeze (); }
 
-  template <class U>
-  MArray<U>
-  map (U (&fcn) (const T&)) const
-  { return Array<T>::template map<U> (fcn); }
+  MArray<T> transpose (void) const
+    { return Array<T>::transpose (); }
 
-  // Currently, the OPS functions don't need to be friends, but that
-  // may change.
+  MArray<T> hermitian (T (*fcn) (const T&) = 0) const
+    { return Array<T>::hermitian (fcn); }
 
-  // MARRAY_OPS_FRIEND_DECLS (MArray)
+  // Performs indexed accumulative addition.
+
+  void idx_add (const idx_vector& idx, T val);
+
+  void idx_add (const idx_vector& idx, const MArray<T>& vals);
+
+  void idx_min (const idx_vector& idx, const MArray<T>& vals);
+
+  void idx_max (const idx_vector& idx, const MArray<T>& vals);
+
+  void changesign (void);
 };
 
 #endif

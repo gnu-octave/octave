@@ -898,14 +898,14 @@ qrsolve(const SparseMatrix&a, const SparseComplexMatrix &b, octave_idx_type &inf
 }
 
 Matrix 
-qrsolve(const SparseMatrix &a, const MArray2<double> &b, 
+qrsolve(const SparseMatrix &a, const MArray<double> &b, 
         octave_idx_type &info)
 { 
   return qrsolve (a, Matrix (b), info); 
 }
 
 ComplexMatrix 
-qrsolve(const SparseMatrix &a, const MArray2<Complex> &b, 
+qrsolve(const SparseMatrix &a, const MArray<Complex> &b, 
         octave_idx_type &info)
 { 
   return qrsolve (a, ComplexMatrix (b), info);

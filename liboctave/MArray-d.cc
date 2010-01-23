@@ -28,34 +28,10 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "MArray.h"
 #include "MArray.cc"
-template <> OCTAVE_API double MArray<double>::norm (double p) const;
-#include "dColVector.h"
-#include "oct-norm.h"
-
-template <>
-OCTAVE_API double
-MArray<double>::norm (double p) const
-{
-  return xnorm (ColumnVector (*this), p);
-}
 
 template class OCTAVE_API MArray<double>;
 
 INSTANTIATE_MARRAY_FRIENDS (double, OCTAVE_API)
-
-#include "MArray2.h"
-#include "MArray2.cc"
-
-template class OCTAVE_API MArray2<double>;
-
-INSTANTIATE_MARRAY2_FRIENDS (double, OCTAVE_API)
-
-#include "MArrayN.h"
-#include "MArrayN.cc"
-
-template class OCTAVE_API MArrayN<double>;
-
-INSTANTIATE_MARRAYN_FRIENDS (double, OCTAVE_API)
 
 #include "MDiagArray2.h"
 #include "MDiagArray2.cc"

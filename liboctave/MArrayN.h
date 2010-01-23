@@ -25,79 +25,12 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_MArrayN_h)
 #define octave_MArrayN_h 1
 
-#include "Array.h"
-#include "MArray2.h"
-#include "dim-vector.h"
+#include "MArray.h"
+#define MArrayN MArray
 
-// N-dimensional array with math ops.
-
-// But first, some preprocessor abuse...
-
-#include "MArray-decl.h"
-
-MARRAY_OPS_FORWARD_DECLS (MArrayN, )
-
-template <class T>
-class
-MArrayN : public Array<T>
-{
-protected:
-
-  MArrayN (T *d, const dim_vector& dv) : Array<T> (d, dv) { }
-
-public:
-  
-  MArrayN (void) : Array<T> () {}
-  
-  MArrayN (const dim_vector& dv) : Array<T> (dv) { }
-  
-  MArrayN (const dim_vector& dv, const T& val) : Array<T> (dv, val) { }
-
-  template <class U>
-  explicit MArrayN (const Array2<U>& a) : Array<T> (a) { }
-
-  template <class U>
-  MArrayN (const Array<U>& a) : Array<T> (a) { }
-
-  template <class U>
-  MArrayN (const MArrayN<U>& a) : Array<T> (a) { }
-
-  ~MArrayN (void) { }
-
-  MArrayN<T>& operator = (const MArrayN<T>& a)
-    {
-      Array<T>::operator = (a);
-      return *this;
-    }
-
-  MArrayN<T> reshape (const dim_vector& new_dims) const
-    { return Array<T>::reshape (new_dims); }
-
-  MArrayN<T> permute (const Array<octave_idx_type>& vec, 
-                      bool inv = false) const
-    { return Array<T>::permute (vec, inv); }
-
-  MArrayN<T> ipermute (const Array<octave_idx_type>& vec) const
-    { return Array<T>::ipermute (vec); }
-
-  MArrayN squeeze (void) const { return Array<T>::squeeze (); }
-
-  MArrayN<T> diag (octave_idx_type k) const
-  {
-    return Array<T>::diag (k);
-  }
-
-  // Performs indexed accumulative addition.
-
-  void idx_add (const idx_vector& idx, T val);
-
-  void idx_add (const idx_vector& idx, const MArrayN<T>& vals);
-
-  void idx_min (const idx_vector& idx, const MArrayN<T>& vals);
-
-  void idx_max (const idx_vector& idx, const MArrayN<T>& vals);
-
-  void changesign (void);
-};
+// If we're with GNU C++, issue a warning.
+#ifdef __GNUC__
+#warning Using MArrayN<T> is deprecated. Use MArray<T>.
+#endif
 
 #endif

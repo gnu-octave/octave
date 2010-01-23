@@ -39,7 +39,7 @@ SND_BOOL_OP_DECLS (octave_int32, int32NDArray, OCTAVE_API)
 NDND_CMP_OP_DECLS (int32NDArray, int32NDArray, OCTAVE_API)
 NDND_BOOL_OP_DECLS (int32NDArray, int32NDArray, OCTAVE_API)
 
-MARRAY_FORWARD_DEFS (MArrayN, int32NDArray, octave_int32)
+MARRAY_FORWARD_DEFS (MArray, int32NDArray, octave_int32)
 
 MINMAX_DECLS (int32NDArray, octave_int32, OCTAVE_API)
 

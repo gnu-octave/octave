@@ -23,39 +23,39 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_intNDArray_h)
 #define octave_intNDArray_h 1
 
-#include "MArrayN.h"
+#include "MArray.h"
 #include "boolNDArray.h"
 class NDArray;
 
 template <class T>
 class
-intNDArray : public MArrayN<T>
+intNDArray : public MArray<T>
 {
 public:
 
-  using MArrayN<T>::element_type;
+  using MArray<T>::element_type;
   
-  intNDArray (void) : MArrayN<T> () { }
+  intNDArray (void) : MArray<T> () { }
 
-  intNDArray (T val) : MArrayN<T> (dim_vector (1, 1), val) { }
+  intNDArray (T val) : MArray<T> (dim_vector (1, 1), val) { }
 
-  intNDArray (const dim_vector& dv) : MArrayN<T> (dv) { }
+  intNDArray (const dim_vector& dv) : MArray<T> (dv) { }
   
   intNDArray (const dim_vector& dv, T val)
-    : MArrayN<T> (dv, val) { }
+    : MArray<T> (dv, val) { }
   
   template <class U>
-  explicit intNDArray (const Array<U>& a) : MArrayN<T> (a) { }
+  intNDArray (const Array<U>& a) : MArray<T> (a) { }
 
   template <class U>
-  intNDArray (const MArrayN<U>& a) : MArrayN<T> (a) { }
+  intNDArray (const MArray<U>& a) : MArray<T> (a) { }
 
   template <class U>
-  intNDArray (const intNDArray<U>& a) : MArrayN<T> (a) { }
+  intNDArray (const intNDArray<U>& a) : MArray<T> (a) { }
 
   intNDArray& operator = (const intNDArray<T>& a)
     {
-      MArrayN<T>::operator = (a);
+      MArray<T>::operator = (a);
       return *this;
     }
 
@@ -68,7 +68,7 @@ public:
 
   intNDArray& changesign (void) 
     { 
-      MArrayN<T>::changesign (); 
+      MArray<T>::changesign (); 
       return *this; 
     }
 
@@ -97,10 +97,10 @@ public:
   intNDArray signum (void) const;
 
   intNDArray squeeze (void) const
-    { return intNDArray<T> (MArrayN<T>::squeeze ()); }
+    { return intNDArray<T> (MArray<T>::squeeze ()); }
 
   intNDArray transpose (void) const
-    { return intNDArray<T> (MArrayN<T>::transpose ()); }
+    { return intNDArray<T> (MArray<T>::transpose ()); }
 
   intNDArray concat (const intNDArray<T>& rb, const Array<octave_idx_type>& ra_idx);
 
@@ -118,7 +118,7 @@ public:
 
 protected:
 
-  intNDArray (T *d, dim_vector& dv) : MArrayN<T> (d, dv) { }
+  intNDArray (T *d, dim_vector& dv) : MArray<T> (d, dv) { }
 };
 
 // i/o

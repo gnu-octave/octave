@@ -184,7 +184,7 @@ along with Octave; see the file COPYING.  If not, see
   /* SPARSE_OP_ASSIGN_DEFS (MSparse, T, T) */ \
   SPARSE_OP_ASSIGN_DEFS (MSparse, T, MSparse<T>, API) \
   SPARSE_UNOP_DEFS (MSparse, T, API) \
-  SPARSE_BINOP_DEFS (MSparse, MArray2, T, API)
+  SPARSE_BINOP_DEFS (MSparse, MArray, T, API)
 
 // Define all the MSparse forwarding functions for return type R and
 // MSparse element type T

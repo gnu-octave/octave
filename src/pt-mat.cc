@@ -1008,7 +1008,7 @@ tree_matrix::rvalue1 (int)
               // insert them in the result matrix.
 
               int dv_len = dv.length ();
-              Array<octave_idx_type> ra_idx (dv_len > 1 ? dv_len : 2, 0);
+              Array<octave_idx_type> ra_idx (dv_len > 1 ? dv_len : 2, 1, 0);
 
               for (tm_const::iterator p = tmp.begin (); p != tmp.end (); p++)
                 {

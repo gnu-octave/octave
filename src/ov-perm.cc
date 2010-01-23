@@ -277,7 +277,6 @@ octave_perm_matrix::load_ascii (std::istream& is)
       && extract_keyword (is, "orient", orient, true))
     {
       bool colp = orient == 'c';
-      dim_vector dv (n);
       ColumnVector tmp (n);
       is >> tmp;
       if (!is) 
@@ -287,7 +286,7 @@ octave_perm_matrix::load_ascii (std::istream& is)
         }
       else
         {
-          Array<octave_idx_type> pvec (n);
+          Array<octave_idx_type> pvec (n, 1);
           for (octave_idx_type i = 0; i < n; i++) pvec(i) = tmp(i) - 1;
           matrix = PermMatrix (pvec, colp);
 
@@ -327,7 +326,7 @@ octave_perm_matrix::load_binary (std::istream& is, bool swap,
          && is.read (reinterpret_cast<char *> (&colp), 1)))
     return false;
 
-  MArray<octave_idx_type> m (sz);
+  MArray<octave_idx_type> m (sz, 1);
 
   if (! is.read (reinterpret_cast<char *> (m.fortran_vec ()), m.byte_size ()))
     return false;

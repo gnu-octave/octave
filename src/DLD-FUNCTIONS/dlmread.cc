@@ -304,9 +304,9 @@ a spreadsheet style range such as 'A2..Q15'.  The lowest index value is zero.\n\
                   // Use resize_and_fill for the case of not-equal
                   // length rows.
                   if (iscmplx)
-                    cdata.resize_fill (r, c, 0);
+                    cdata.resize (r, c, 0);
                   else
-                    rdata.resize_fill (r, c, 0);
+                    rdata.resize (r, c, 0);
                   rmax = r;
                   cmax = c;
                 }

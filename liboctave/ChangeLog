@@ -1,3 +1,133 @@
+2010-02-23  Jaroslav Hajek  <highegg@gmail.com>
+
+	* Array.h (Array): Define 2D constructors. Remove conflicting 1D
+	initialized constructor. Deprecate 1D constructor. Deprecate 1D resize. 
+	Add 2D resize, resize1. Remove resize_fill. Make resize_fill_value
+	return a reference. Remove 1D clear.
+	
+	* MArray.h (MArray): Merge with MArrayN. Define 2D constructors, sync
+	with Array changes.
+
+	* MArrayN.h, MArray2.h: Deprecate headers, use compatibility #defines.
+	* MArrayN.cc, MArray2.cc: Remove sources.
+	* Makefile.am: Update.
+
+	* fCMatrix.h (FloatComplexMatrix): Rebase on MArray.
+	* fMatrix.h (FloatMatrix): Ditto.
+	* dMatrix.h (Matrix): Ditto.
+	* CMatrix.h (ComplexMatrix): Ditto.
+	* fCNDArray.h (FloatComplexNDArray): Rebase on MArray.
+	* fNDArray.h (FloatNDArray): Ditto.
+	* dNDArray.h (NDArray): Ditto.
+	* CNDArray.h (ComplexNDArray): Ditto.
+
+	* Array-util.cc: Update.
+	* Array.cc: Ditto.
+	* Array2.h: Ditto.
+	* Array3.h: Ditto.
+	* CColVector.cc: Ditto.
+	* CColVector.h: Ditto.
+	* CMatrix.cc: Ditto.
+	* CNDArray.cc: Ditto.
+	* CRowVector.cc: Ditto.
+	* CSparse.cc: Ditto.
+	* ChangeLog: Ditto.
+	* CmplxCHOL.cc: Ditto.
+	* CmplxHESS.cc: Ditto.
+	* CmplxLU.cc: Ditto.
+	* CmplxQRP.cc: Ditto.
+	* CmplxSCHUR.cc: Ditto.
+	* CmplxSVD.cc: Ditto.
+	* CollocWt.cc: Ditto.
+	* DASPK-opts.in: Ditto.
+	* DASPK.cc: Ditto.
+	* DASRT-opts.in: Ditto.
+	* DASRT.cc: Ditto.
+	* DASSL-opts.in: Ditto.
+	* DASSL.cc: Ditto.
+	* DiagArray2.cc: Ditto.
+	* DiagArray2.h: Ditto.
+	* EIG.cc: Ditto.
+	* LSODE-opts.in: Ditto.
+	* LSODE.cc: Ditto.
+	* MArray-C.cc: Ditto.
+	* MArray-d.cc: Ditto.
+	* MArray-defs.h: Ditto.
+	* MArray-f.cc: Ditto.
+	* MArray-fC.cc: Ditto.
+	* MArray-i.cc: Ditto.
+	* MArray-s.cc: Ditto.
+	* MArray.cc: Ditto.
+	* MDiagArray2.h: Ditto.
+	* MSparse-defs.h: Ditto.
+	* MSparse.cc: Ditto.
+	* MSparse.h: Ditto.
+	* Makefile.am: Ditto.
+	* MatrixType.cc: Ditto.
+	* PermMatrix.cc: Ditto.
+	* Quad.cc: Ditto.
+	* SparseCmplxLU.cc: Ditto.
+	* SparseCmplxQR.cc: Ditto.
+	* SparseCmplxQR.h: Ditto.
+	* SparseQR.cc: Ditto.
+	* SparseQR.h: Ditto.
+	* SparsedbleLU.cc: Ditto.
+	* base-lu.cc: Ditto.
+	* dColVector.h: Ditto.
+	* dMatrix.cc: Ditto.
+	* dNDArray.cc: Ditto.
+	* dRowVector.h: Ditto.
+	* dSparse.cc: Ditto.
+	* dbleCHOL.cc: Ditto.
+	* dbleHESS.cc: Ditto.
+	* dbleLU.cc: Ditto.
+	* dbleQRP.cc: Ditto.
+	* dbleSCHUR.cc: Ditto.
+	* dbleSVD.cc: Ditto.
+	* dim-vector.h: Ditto.
+	* eigs-base.cc: Ditto.
+	* fCColVector.cc: Ditto.
+	* fCColVector.h: Ditto.
+	* fCMatrix.cc: Ditto.
+	* fCNDArray.cc: Ditto.
+	* fCRowVector.cc: Ditto.
+	* fCRowVector.h: Ditto.
+	* fCmplxCHOL.cc: Ditto.
+	* fCmplxHESS.cc: Ditto.
+	* fCmplxLU.cc: Ditto.
+	* fCmplxQRP.cc: Ditto.
+	* fCmplxSCHUR.cc: Ditto.
+	* fCmplxSVD.cc: Ditto.
+	* fColVector.h: Ditto.
+	* fEIG.cc: Ditto.
+	* fMatrix.cc: Ditto.
+	* fNDArray.cc: Ditto.
+	* fRowVector.h: Ditto.
+	* floatCHOL.cc: Ditto.
+	* floatHESS.cc: Ditto.
+	* floatLU.cc: Ditto.
+	* floatQRP.cc: Ditto.
+	* floatSCHUR.cc: Ditto.
+	* floatSVD.cc: Ditto.
+	* glob-match.h: Ditto.
+	* int16NDArray.h: Ditto.
+	* int32NDArray.h: Ditto.
+	* int64NDArray.h: Ditto.
+	* int8NDArray.h: Ditto.
+	* intNDArray.cc: Ditto.
+	* intNDArray.h: Ditto.
+	* oct-fftw.cc: Ditto.
+	* oct-norm.cc: Ditto.
+	* oct-rand.cc: Ditto.
+	* regex-match.cc: Ditto.
+	* sparse-dmsolve.cc: Ditto.
+	* str-vec.cc: Ditto.
+	* str-vec.h: Ditto.
+	* uint16NDArray.h: Ditto.
+	* uint32NDArray.h: Ditto.
+	* uint64NDArray.h: Ditto.
+	* uint8NDArray.h: Ditto.
+
 2010-02-22  John W. Eaton  <jwe@octave.org>
 
 	* data-conv.cc, data-conv.h (read_floats, read_doubles,

@@ -175,7 +175,7 @@ Cell::index (const octave_value_list& idx_arg, bool resize_ok) const
 
     default:
       {
-        Array<idx_vector> iv (n);
+        Array<idx_vector> iv (n, 1);
 
         for (octave_idx_type i = 0; i < n; i++)
           {
@@ -202,7 +202,7 @@ Cell::assign (const octave_value_list& idx_arg, const Cell& rhs,
 {
   octave_idx_type len = idx_arg.length ();
 
-  Array<idx_vector> ra_idx (len);
+  Array<idx_vector> ra_idx (len, 1);
 
   for (octave_idx_type i = 0; i < len; i++)
     ra_idx(i) = idx_arg(i).index_vector ();
@@ -218,7 +218,7 @@ Cell::delete_elements (const octave_value_list& idx_arg)
 {
   octave_idx_type len = idx_arg.length ();
 
-  Array<idx_vector> ra_idx (len);
+  Array<idx_vector> ra_idx (len, 1);
 
   for (octave_idx_type i = 0; i < len; i++)
     ra_idx.xelem (i) = idx_arg(i).index_vector ();

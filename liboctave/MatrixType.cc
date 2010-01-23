@@ -58,7 +58,7 @@ MatrixType::MatrixType (const MatrixType &a)
 
 template<class T> 
 MatrixType::matrix_type 
-matrix_real_probe (const MArray2<T>& a)
+matrix_real_probe (const MArray<T>& a)
 {
   MatrixType::matrix_type typ;
   octave_idx_type nrows = a.rows ();
@@ -115,7 +115,7 @@ matrix_real_probe (const MArray2<T>& a)
 
 template<class T> 
 MatrixType::matrix_type 
-matrix_complex_probe (const MArray2<T>& a)
+matrix_complex_probe (const MArray<T>& a)
 {
   MatrixType::matrix_type typ;
   octave_idx_type nrows = a.rows ();

@@ -132,8 +132,8 @@ protected:
   T* slice_data;
   octave_idx_type slice_len;
 
-  Array (T *d, octave_idx_type n)
-    : rep (new typename Array<T>::ArrayRep (d, n)), dimensions (n) 
+  Array (T *d, octave_idx_type m, octave_idx_type n)
+    : rep (new typename Array<T>::ArrayRep (d, m*n)), dimensions (m, n) 
     { 
       slice_data = rep->data;
       slice_len = rep->len;
@@ -183,6 +183,8 @@ private:
 
 public:
 
+  // Empty ctor (0x0).
+
   Array (void)
     : rep (nil_rep ()), dimensions () 
     { 
@@ -191,20 +193,56 @@ public:
       slice_len = rep->len;
     }
 
-  explicit Array (octave_idx_type n)
-    : rep (new typename Array<T>::ArrayRep (n)), dimensions (n) 
+  // Obsolete 1D ctor (there are no 1D arrays).
+  explicit Array (octave_idx_type n) GCC_ATTR_DEPRECATED
+    : rep (new typename Array<T>::ArrayRep (n)), dimensions (n, 1) 
     { 
       slice_data = rep->data;
       slice_len = rep->len;
     }
 
-  explicit Array (octave_idx_type n, const T& val)
-    : rep (new typename Array<T>::ArrayRep (n)), dimensions (n)
-    {
+  // 2D uninitialized ctor.
+  explicit Array (octave_idx_type m, octave_idx_type n)
+    : rep (), dimensions (m, n) 
+    { 
+      rep = new typename Array<T>::ArrayRep (dimensions.safe_numel ());
+      slice_data = rep->data;
+      slice_len = rep->len;
+    }
+
+  // 2D initialized ctor.
+  explicit Array (octave_idx_type m, octave_idx_type n, const T& val)
+    : rep (), dimensions (m, n) 
+    { 
+      rep = new typename Array<T>::ArrayRep (dimensions.safe_numel ());
       slice_data = rep->data;
       slice_len = rep->len;
       fill (val);
     }
+
+  // nD uninitialized ctor.
+  explicit Array (const dim_vector& dv)
+    : rep (new typename Array<T>::ArrayRep (dv.safe_numel ())),
+      dimensions (dv) 
+    { 
+      slice_data = rep->data;
+      slice_len = rep->len;
+      dimensions.chop_trailing_singletons ();
+    }
+
+  // nD initialized ctor.
+  explicit Array (const dim_vector& dv, const T& val)
+    : rep (new typename Array<T>::ArrayRep (dv.safe_numel ())),
+      dimensions (dv)
+    {
+      slice_data = rep->data;
+      slice_len = rep->len;
+      fill (val);
+      dimensions.chop_trailing_singletons ();
+    }
+
+  // Reshape constructor.
+  Array (const Array<T>& a, const dim_vector& dv);
 
   // Type conversion case.
   template <class U>
@@ -226,28 +264,6 @@ public:
     }
 
 public:
-
-  Array (const dim_vector& dv)
-    : rep (new typename Array<T>::ArrayRep (dv.safe_numel ())),
-      dimensions (dv) 
-    { 
-      slice_data = rep->data;
-      slice_len = rep->len;
-      dimensions.chop_trailing_singletons ();
-    }
-
-  Array (const dim_vector& dv, const T& val)
-    : rep (new typename Array<T>::ArrayRep (dv.safe_numel ())),
-      dimensions (dv)
-    {
-      slice_data = rep->data;
-      slice_len = rep->len;
-      fill (val);
-      dimensions.chop_trailing_singletons ();
-    }
-
-  // Reshape constructor.
-  Array (const Array<T>& a, const dim_vector& dv);
 
   ~Array (void)
     {
@@ -277,8 +293,6 @@ public:
 
   void clear (void);
   void clear (const dim_vector& dv);
-  void clear (octave_idx_type n)
-    { clear (dim_vector (n)); }
 
   void clear (octave_idx_type r, octave_idx_type c)
     { clear (dim_vector (r, c)); }
@@ -291,6 +305,36 @@ public:
   octave_idx_type dim1 (void) const { return dimensions(0); }
   octave_idx_type dim2 (void) const { return dimensions(1); }
   octave_idx_type dim3 (void) const { return dimensions(2); }
+
+  // Return the array as a column vector.
+  Array<T> as_column (void) const
+    {
+      Array<T> retval (*this);
+      if (dimensions.length () != 2 || dimensions(1) != 1)
+        retval.dimensions = dim_vector (numel (), 1);
+
+      return retval;
+    }
+
+  // Return the array as a row vector.
+  Array<T> as_row (void) const
+    {
+      Array<T> retval (*this);
+      if (dimensions.length () != 2 || dimensions(0) != 1)
+        retval.dimensions = dim_vector (1, numel ());
+
+      return retval;
+    }
+
+  // Return the array as a matrix.
+  Array<T> as_matrix (void) const
+    {
+      Array<T> retval (*this);
+      if (dimensions.length () != 2)
+        retval.dimensions = dimensions.redim (2);
+
+      return retval;
+    }
 
   octave_idx_type rows (void) const { return dim1 (); }
   octave_idx_type cols (void) const { return dim2 (); }
@@ -505,50 +549,19 @@ public:
 
   Array<T> index (const Array<idx_vector>& ia) const;
 
-  static T resize_fill_value (); 
+  static const T& resize_fill_value (); 
 
   // Resizing (with fill).
 
-  void resize_fill (octave_idx_type n, const T& rfv);
+  void resize1 (octave_idx_type n, const T& rfv = resize_fill_value ());
 
-  void resize_fill (octave_idx_type nr, octave_idx_type nc, const T& rfv);
+  void resize (octave_idx_type n) GCC_ATTR_DEPRECATED
+    { resize1 (n); }
 
-  void resize_fill (const dim_vector& dv, const T& rfv);
+  void resize (octave_idx_type nr, octave_idx_type nc, 
+               const T& rfv = resize_fill_value ());
 
-  // Resizing with default fill.
-  // Rationale: 
-  // These use the default fill value rather than leaving memory uninitialized.
-  // Resizing without fill leaves the resulting array in a rather weird state,
-  // where part of the data is initialized an part isn't.
-
-  void resize (octave_idx_type n)
-    { resize_fill (n, resize_fill_value ()); }
-
-  // FIXME -- this method cannot be defined here because it would
-  // clash with
-  //
-  //   void resize (octave_idx_type, const T&)
-  //
-  // (these become indistinguishable when T = octave_idx_type).
-  // In the future, I think the resize (.., const T& rfv) overloads
-  // should go away in favor of using resize_fill.
-
-  // void resize (octave_idx_type nr, octave_idx_type nc)
-  //  { resize_fill (nr, nc, resize_fill_value ()); }
-
-  void resize (dim_vector dv)
-    { resize_fill (dv, resize_fill_value ()); }
-
-  // FIXME -- these are here for backward compatibility. They should
-  // go away in favor of using resize_fill directly.
-  void resize (octave_idx_type n, const T& rfv)
-    { resize_fill (n, static_cast<T> (rfv)); }
-
-  void resize (octave_idx_type nr, octave_idx_type nc, const T& rfv)
-    { resize_fill (nr, nc, rfv); }
-
-  void resize (dim_vector dv, const T& rfv)
-    { resize_fill (dv, rfv); }
+  void resize (const dim_vector& dv, const T& rfv = resize_fill_value ());
 
   // Indexing with possible resizing and fill
   // FIXME -- this is really a corner case, that should better be

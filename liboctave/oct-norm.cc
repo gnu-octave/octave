@@ -224,9 +224,9 @@ inline void vector_norm (const Array<T>& v, R& res, ACC acc)
 
 // dense versions
 template <class T, class R, class ACC>
-void column_norms (const MArray2<T>& m, MArray<R>& res, ACC acc)
+void column_norms (const MArray<T>& m, MArray<R>& res, ACC acc)
 {
-  res = MArray2<R> (1, m.columns ());
+  res = MArray<R> (1, m.columns ());
   for (octave_idx_type j = 0; j < m.columns (); j++)
     {
       ACC accj = acc;
@@ -238,9 +238,9 @@ void column_norms (const MArray2<T>& m, MArray<R>& res, ACC acc)
 }
 
 template <class T, class R, class ACC>
-void row_norms (const MArray2<T>& m, MArray<R>& res, ACC acc)
+void row_norms (const MArray<T>& m, MArray<R>& res, ACC acc)
 {
-  res = MArray2<R> (m.rows (), 1);
+  res = MArray<R> (m.rows (), 1);
   std::vector<ACC> acci (m.rows (), acc); 
   for (octave_idx_type j = 0; j < m.columns (); j++)
     {
@@ -256,7 +256,7 @@ void row_norms (const MArray2<T>& m, MArray<R>& res, ACC acc)
 template <class T, class R, class ACC>
 void column_norms (const MSparse<T>& m, MArray<R>& res, ACC acc)
 {
-  res = MArray2<R> (1, m.columns ());
+  res = MArray<R> (1, m.columns ());
   for (octave_idx_type j = 0; j < m.columns (); j++)
     {
       ACC accj = acc;
@@ -270,7 +270,7 @@ void column_norms (const MSparse<T>& m, MArray<R>& res, ACC acc)
 template <class T, class R, class ACC>
 void row_norms (const MSparse<T>& m, MArray<R>& res, ACC acc)
 {
-  res = MArray2<R> (m.rows (), 1);
+  res = MArray<R> (m.rows (), 1);
   std::vector<ACC> acci (m.rows (), acc); 
   for (octave_idx_type j = 0; j < m.columns (); j++)
     {
@@ -309,9 +309,8 @@ RES_TYPE FUNC_NAME (const ARG_TYPE& v, R p) \
 }
 
 DEFINE_DISPATCHER (vector_norm, MArray<T>, R)
-DEFINE_DISPATCHER (vector_norm, MArray2<T>, R)
-DEFINE_DISPATCHER (column_norms, MArray2<T>, MArray<R>)
-DEFINE_DISPATCHER (row_norms, MArray2<T>, MArray<R>)
+DEFINE_DISPATCHER (column_norms, MArray<T>, MArray<R>)
+DEFINE_DISPATCHER (row_norms, MArray<T>, MArray<R>)
 DEFINE_DISPATCHER (column_norms, MSparse<T>, MArray<R>)
 DEFINE_DISPATCHER (row_norms, MSparse<T>, MArray<R>)
 

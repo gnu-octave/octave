@@ -81,17 +81,17 @@ ComplexHESS::init (const ComplexMatrix& a)
   hess_mat = a;
   Complex *h = hess_mat.fortran_vec ();
 
-  Array<double> scale (n);
+  Array<double> scale (n, 1);
   double *pscale = scale.fortran_vec ();
 
   F77_XFCN (zgebal, ZGEBAL, (F77_CONST_CHAR_ARG2 (&job, 1),
                              n, h, n, ilo, ihi, pscale, info
                              F77_CHAR_ARG_LEN (1)));
 
-  Array<Complex> tau (n-1);
+  Array<Complex> tau (n-1, 1);
   Complex *ptau = tau.fortran_vec ();
 
-  Array<Complex> work (lwork);
+  Array<Complex> work (lwork, 1);
   Complex *pwork = work.fortran_vec ();
 
   F77_XFCN (zgehrd, ZGEHRD, (n, ilo, ihi, h, n, ptau, pwork, lwork, info));

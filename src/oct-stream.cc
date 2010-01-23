@@ -155,7 +155,7 @@ get_size (const Array<double>& size, octave_idx_type& nr, octave_idx_type& nc, b
 }
 
 scanf_format_list::scanf_format_list (const std::string& s)
-  : nconv (0), curr_idx (0), list (16), buf (0)
+  : nconv (0), curr_idx (0), list (16, 1), buf (0)
 {
   octave_idx_type num_elts = 0;
 
@@ -228,7 +228,7 @@ scanf_format_list::scanf_format_list (const std::string& s)
   if (have_more)
     add_elt_to_list (width, discard, type, modifier, num_elts);
 
-  list.resize (num_elts);
+  list.resize (num_elts, 1);
 
   delete buf;
 }
@@ -260,7 +260,7 @@ scanf_format_list::add_elt_to_list (int width, bool discard, char type,
                                     modifier, char_class);
 
           if (num_elts == list.length ())
-            list.resize (2 * num_elts);
+            list.resize (2 * num_elts, 1);
 
           list(num_elts++) = elt;
         }
@@ -575,7 +575,7 @@ scanf_format_list::all_numeric_conversions (void)
 // Ugh again.
 
 printf_format_list::printf_format_list (const std::string& s)
-  : nconv (0), curr_idx (0), list (16), buf (0)
+  : nconv (0), curr_idx (0), list (16, 1), buf (0)
 {
   octave_idx_type num_elts = 0;
 
@@ -600,7 +600,7 @@ printf_format_list::printf_format_list (const std::string& s)
 
       list(num_elts++) = elt;
 
-      list.resize (num_elts);
+      list.resize (num_elts, 1);
     }
   else
     {
@@ -655,7 +655,7 @@ printf_format_list::printf_format_list (const std::string& s)
       if (have_more)
         add_elt_to_list (args, flags, fw, prec, type, modifier, num_elts);
 
-      list.resize (num_elts);
+      list.resize (num_elts, 1);
 
       delete buf;
     }
@@ -688,7 +688,7 @@ printf_format_list::add_elt_to_list (int args, const std::string& flags,
                                      type, modifier);
 
           if (num_elts == list.length ())
-            list.resize (2 * num_elts);
+            list.resize (2 * num_elts, 1);
 
           list(num_elts++) = elt;
         }

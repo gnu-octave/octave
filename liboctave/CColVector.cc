@@ -51,10 +51,8 @@ extern "C"
 // Complex Column Vector class
 
 ComplexColumnVector::ComplexColumnVector (const ColumnVector& a)
-   : MArray<Complex> (a.length ())
+   : MArray<Complex> (a)
 {
-  for (octave_idx_type i = 0; i < length (); i++)
-    elem (i) = a.elem (i);
 }
 
 bool

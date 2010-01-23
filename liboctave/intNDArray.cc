@@ -66,7 +66,7 @@ template <class T>
 intNDArray<T>
 intNDArray<T>::diag (octave_idx_type k) const
 {
-  return MArrayN<T>::diag (k);
+  return MArray<T>::diag (k);
 }
 
 // FIXME -- this is not quite the right thing.

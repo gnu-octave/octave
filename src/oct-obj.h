@@ -51,13 +51,13 @@ public:
     : data (dim_vector (1, n), val) { }
 
   octave_value_list (const octave_value& tc)
-    : data (1, tc) { }
+    : data (1, 1, tc) { }
 
   octave_value_list (const Array<octave_value>& d)
-    : data (d.reshape (dim_vector (1, d.numel ()))) { }
+    : data (d.as_row ()) { }
 
   octave_value_list (const Cell& tc)
-    : data (tc.reshape (dim_vector (1, tc.numel ()))) { }
+    : data (tc.as_row ()) { }
 
   octave_value_list (const octave_value_list& obj)
     : data (obj.data), names (obj.names) { }
@@ -112,10 +112,9 @@ public:
 
   bool empty (void) const { return length () == 0; }
 
-  void resize (octave_idx_type n) { data.resize (n); }
-
-  void resize (octave_idx_type n, const octave_value& val)
-    { data.resize (n, val); }
+  void resize (octave_idx_type n, const octave_value& rfv 
+               = Array<octave_value>::resize_fill_value ()) 
+    { data.resize (1, n, rfv); }
 
   octave_value_list& prepend (const octave_value& val);
 

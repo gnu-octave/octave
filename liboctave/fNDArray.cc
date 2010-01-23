@@ -46,7 +46,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "bsxfun-defs.cc"
 
 FloatNDArray::FloatNDArray (const charNDArray& a)
-  : MArrayN<float> (a.dims ())
+  : MArray<float> (a.dims ())
 {
   octave_idx_type n = a.numel ();
   for (octave_idx_type i = 0; i < n; i++)
@@ -898,7 +898,7 @@ FloatNDArray::compute_index (Array<octave_idx_type>& ra_idx,
 FloatNDArray
 FloatNDArray::diag (octave_idx_type k) const
 {
-  return MArrayN<float>::diag (k);
+  return MArray<float>::diag (k);
 }
 
 // This contains no information on the array structure !!!

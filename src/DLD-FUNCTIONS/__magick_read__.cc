@@ -56,7 +56,7 @@ read_indexed_images (std::vector<Magick::Image>& imvec,
   idim(2) = 1;
   idim(3) = nframes;
 
-  Array<int> idx (dim_vector (4));
+  Array<int> idx (dim_vector (4, 1));
 
   Magick::ImageType type = imvec[0].type ();
 
@@ -396,7 +396,7 @@ Instead you should use @code{imread}.\n\
     frameidx = args(1).int_vector_value();
   else
     {
-      frameidx = Array<int> (1);
+      frameidx = Array<int> (1, 1);
       frameidx(0) = 1;
     }
 
@@ -534,7 +534,7 @@ encode_bool_image (std::vector<Magick::Image>& imvec, const octave_value& img)
   if (dsizes.length () == 4)
     nframes = dsizes(3);
 
-  Array<octave_idx_type> idx (dsizes.length ());
+  Array<octave_idx_type> idx (dsizes.length (), 1);
 
   octave_idx_type rows = m.rows ();
   octave_idx_type columns = m.columns ();
@@ -593,7 +593,7 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
   bool is_color = ((dsizes.length () > 2) && (dsizes(2) > 2));
   bool has_alpha = (dsizes.length () > 2 && (dsizes(2) == 2 || dsizes(2) == 4));
 
-  Array<octave_idx_type> idx (dsizes.length ());
+  Array<octave_idx_type> idx (dsizes.length (), 1);
   octave_idx_type rows = m.rows ();
   octave_idx_type columns = m.columns ();
 

@@ -46,7 +46,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "bsxfun-defs.cc"
 
 ComplexNDArray::ComplexNDArray (const charNDArray& a)
-  : MArrayN<Complex> (a.dims ())
+  : MArray<Complex> (a.dims ())
 {
   octave_idx_type n = a.numel ();
   for (octave_idx_type i = 0; i < n; i++)
@@ -217,7 +217,7 @@ ComplexNDArray::fourier (int dim) const
   ComplexNDArray retval (dv);
   octave_idx_type npts = dv(dim);
   octave_idx_type nn = 4*npts+15;
-  Array<Complex> wsave (nn);
+  Array<Complex> wsave (nn, 1);
   Complex *pwsave = wsave.fortran_vec ();
 
   OCTAVE_LOCAL_BUFFER (Complex, tmp, npts);
@@ -264,7 +264,7 @@ ComplexNDArray::ifourier (int dim) const
   ComplexNDArray retval (dv);
   octave_idx_type npts = dv(dim);
   octave_idx_type nn = 4*npts+15;
-  Array<Complex> wsave (nn);
+  Array<Complex> wsave (nn, 1);
   Complex *pwsave = wsave.fortran_vec ();
 
   OCTAVE_LOCAL_BUFFER (Complex, tmp, npts);
@@ -314,9 +314,9 @@ ComplexNDArray::fourier2d (void) const
     {
       octave_idx_type npts = dv2(i);
       octave_idx_type nn = 4*npts+15;
-      Array<Complex> wsave (nn);
+      Array<Complex> wsave (nn, 1);
       Complex *pwsave = wsave.fortran_vec ();
-      Array<Complex> row (npts);
+      Array<Complex> row (npts, 1);
       Complex *prow = row.fortran_vec ();
 
       octave_idx_type howmany = numel () / npts;
@@ -362,9 +362,9 @@ ComplexNDArray::ifourier2d (void) const
     {
       octave_idx_type npts = dv2(i);
       octave_idx_type nn = 4*npts+15;
-      Array<Complex> wsave (nn);
+      Array<Complex> wsave (nn, 1);
       Complex *pwsave = wsave.fortran_vec ();
-      Array<Complex> row (npts);
+      Array<Complex> row (npts, 1);
       Complex *prow = row.fortran_vec ();
 
       octave_idx_type howmany = numel () / npts;
@@ -410,9 +410,9 @@ ComplexNDArray::fourierNd (void) const
     {
       octave_idx_type npts = dv(i);
       octave_idx_type nn = 4*npts+15;
-      Array<Complex> wsave (nn);
+      Array<Complex> wsave (nn, 1);
       Complex *pwsave = wsave.fortran_vec ();
-      Array<Complex> row (npts);
+      Array<Complex> row (npts, 1);
       Complex *prow = row.fortran_vec ();
 
       octave_idx_type howmany = numel () / npts;
@@ -457,9 +457,9 @@ ComplexNDArray::ifourierNd (void) const
     {
       octave_idx_type npts = dv(i);
       octave_idx_type nn = 4*npts+15;
-      Array<Complex> wsave (nn);
+      Array<Complex> wsave (nn, 1);
       Complex *pwsave = wsave.fortran_vec ();
-      Array<Complex> row (npts);
+      Array<Complex> row (npts, 1);
       Complex *prow = row.fortran_vec ();
 
       octave_idx_type howmany = numel () / npts;
@@ -786,7 +786,7 @@ ComplexNDArray::insert (const NDArray& a, octave_idx_type r, octave_idx_type c)
   
   if (n == dimensions.length ())
     {
-      Array<octave_idx_type> a_ra_idx (a_dv.length (), 0);
+      Array<octave_idx_type> a_ra_idx (a_dv.length (), 1, 0);
       
       a_ra_idx.elem (0) = r;
       a_ra_idx.elem (1) = c;
@@ -873,7 +873,7 @@ ComplexNDArray::compute_index (Array<octave_idx_type>& ra_idx,
 ComplexNDArray
 ComplexNDArray::diag (octave_idx_type k) const
 {
-  return MArrayN<Complex>::diag (k);
+  return MArray<Complex>::diag (k);
 }
 
 // This contains no information on the array structure !!!

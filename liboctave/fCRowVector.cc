@@ -54,13 +54,6 @@ extern "C"
 
 // FloatComplex Row Vector class
 
-FloatComplexRowVector::FloatComplexRowVector (const FloatRowVector& a)
-  : MArray<FloatComplex> (a.length ())
-{
-  for (octave_idx_type i = 0; i < length (); i++)
-    elem (i) = a.elem (i);
-}
-
 bool
 FloatComplexRowVector::operator == (const FloatComplexRowVector& a) const
 {

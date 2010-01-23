@@ -1,3 +1,39 @@
+2010-02-23  Jaroslav Hajek  <highegg@gmail.com>
+
+	* Cell.cc: Reflect Array API changes.
+	* DLD-FUNCTIONS/__convn__.cc: Ditto.
+	* DLD-FUNCTIONS/__glpk__.cc: Ditto.
+	* DLD-FUNCTIONS/__magick_read__.cc: Ditto.
+	* DLD-FUNCTIONS/bsxfun.cc: Ditto.
+	* DLD-FUNCTIONS/cellfun.cc: Ditto.
+	* DLD-FUNCTIONS/conv2.cc: Ditto.
+	* DLD-FUNCTIONS/dlmread.cc: Ditto.
+	* DLD-FUNCTIONS/filter.cc: Ditto.
+	* DLD-FUNCTIONS/kron.cc: Ditto.
+	* DLD-FUNCTIONS/qz.cc: Ditto.
+	* DLD-FUNCTIONS/regexp.cc: Ditto.
+	* DLD-FUNCTIONS/sub2ind.cc: Ditto.
+	* data.cc: Ditto.
+	* file-io.cc: Ditto.
+	* gl-render.cc: Ditto.
+	* ls-mat5.cc: Ditto.
+	* oct-map.cc: Ditto.
+	* oct-obj.h: Ditto.
+	* oct-parse.yy: Ditto.
+	* oct-stream.cc: Ditto.
+	* ov-base-mat.cc: Ditto.
+	* ov-base-sparse.cc: Ditto.
+	* ov-perm.cc: Ditto.
+	* ov-struct.cc: Ditto.
+	* ov-typeinfo.cc: Ditto.
+	* ov-typeinfo.h: Ditto.
+	* ov.cc: Ditto.
+	* pr-output.cc: Ditto.
+	* pt-mat.cc: Ditto.
+	* strfns.cc: Ditto.
+	* txt-eng-ft.cc: Ditto.
+	* variables.cc: Ditto.
+
 2010-02-22  John W. Eaton  <jwe@octave.org>
 
 	* ls-mat5.cc: Use numel instead of nelem consistently and where

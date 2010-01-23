@@ -37,18 +37,20 @@ friend class FloatComplexRowVector;
 
 public:
 
-  FloatComplexColumnVector (void) : MArray<FloatComplex> () { }
+  FloatComplexColumnVector (void) : MArray<FloatComplex> (0, 1) { }
 
-  explicit FloatComplexColumnVector (octave_idx_type n) : MArray<FloatComplex> (n) { }
+  explicit FloatComplexColumnVector (octave_idx_type n) : MArray<FloatComplex> (n, 1) { }
 
-  explicit FloatComplexColumnVector (const dim_vector& dv) : MArray<FloatComplex> (dv) { }
+  explicit FloatComplexColumnVector (const dim_vector& dv) 
+    : MArray<FloatComplex> (dv.as_column ()) { }
 
   FloatComplexColumnVector (octave_idx_type n, const FloatComplex& val)
-    : MArray<FloatComplex> (n, val) { }
+    : MArray<FloatComplex> (n, 1, val) { }
 
   FloatComplexColumnVector (const FloatComplexColumnVector& a) : MArray<FloatComplex> (a) { }
 
-  FloatComplexColumnVector (const MArray<FloatComplex>& a) : MArray<FloatComplex> (a) { }
+  FloatComplexColumnVector (const MArray<FloatComplex>& a) : MArray<FloatComplex> (a.as_column ()) { }
+  FloatComplexColumnVector (const Array<FloatComplex>& a) : MArray<FloatComplex> (a.as_column ()) { }
 
   explicit FloatComplexColumnVector (const FloatColumnVector& a);
 
@@ -124,9 +126,15 @@ public:
   friend OCTAVE_API std::ostream& operator << (std::ostream& os, const FloatComplexColumnVector& a);
   friend OCTAVE_API std::istream& operator >> (std::istream& is, FloatComplexColumnVector& a);
 
+  void resize (octave_idx_type n, const FloatComplex& rfv = Array<FloatComplex>::resize_fill_value ())
+    { Array<FloatComplex>::resize (n, 1, rfv); }
+
+  void clear (octave_idx_type n)
+    { Array<FloatComplex>::clear (n, 1); }
+
 private:
 
-  FloatComplexColumnVector (FloatComplex *d, octave_idx_type l) : MArray<FloatComplex> (d, l) { }
+  FloatComplexColumnVector (FloatComplex *d, octave_idx_type l) : MArray<FloatComplex> (d, l, 1) { }
 };
 
 MARRAY_FORWARD_DEFS (MArray, FloatComplexColumnVector, FloatComplex)

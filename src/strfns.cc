@@ -354,7 +354,7 @@ do_strcmp_fun (const octave_value& arg0, const octave_value& arg1,
 
       const Cell cell = cell_val.cell_value ();
       const string_vector str = str_val.all_strings ();
-      octave_idx_type r = str.rows ();
+      octave_idx_type r = str.length ();
 
       if (r == 0 || r == 1)
         {

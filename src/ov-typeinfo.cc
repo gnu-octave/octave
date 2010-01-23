@@ -193,9 +193,9 @@ octave_value_typeinfo::do_register_type (const std::string& t_name,
     {
       len *= 2;
 
-      types.resize (len, std::string ());
+      types.resize (len, 1, std::string ());
 
-      vals.resize (len, octave_value ());
+      vals.resize (len, 1, octave_value ());
 
       unary_ops.resize (static_cast<int> (octave_value::num_unary_ops), len, 0);
 

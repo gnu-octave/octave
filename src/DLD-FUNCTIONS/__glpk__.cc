@@ -520,8 +520,8 @@ Undocumented internal function.\n\
       mrowsA = A.rows ();
       octave_idx_type Anc = A.cols ();
       octave_idx_type Anz = A.nzmax ();
-      rn.resize (Anz+1);
-      cn.resize (Anz+1);
+      rn.resize (Anz+1, 1);
+      cn.resize (Anz+1, 1);
       a.resize (Anz+1, 0.0);
 
       if (Anc != mrowsc)
@@ -550,8 +550,8 @@ Undocumented internal function.\n\
         }
 
       mrowsA = A.rows ();
-      rn.resize (mrowsA*mrowsc+1);
-      cn.resize (mrowsA*mrowsc+1);
+      rn.resize (mrowsA*mrowsc+1, 1);
+      cn.resize (mrowsA*mrowsc+1, 1);
       a.resize (mrowsA*mrowsc+1, 0.0);
 
       for (int i = 0; i < mrowsA; i++)
@@ -595,7 +595,7 @@ Undocumented internal function.\n\
   double *lb = LB.fortran_vec ();
 
   //-- LB argument, default: Free
-  Array<int> freeLB (mrowsc);
+  Array<int> freeLB (mrowsc, 1);
   for (int i = 0; i < mrowsc; i++)
      {
        if (xisinf (lb[i]))
@@ -619,7 +619,7 @@ Undocumented internal function.\n\
 
   double *ub = UB.fortran_vec ();
 
-  Array<int> freeUB (mrowsc);
+  Array<int> freeUB (mrowsc, 1);
   for (int i = 0; i < mrowsc; i++)
     {
       if (xisinf (ub[i]))
@@ -652,7 +652,7 @@ Undocumented internal function.\n\
       return retval;
     }
 
-  Array<int> vartype (mrowsc);
+  Array<int> vartype (mrowsc, 1);
   volatile int isMIP = 0;
   for (int i = 0; i < mrowsc ; i++)
     {

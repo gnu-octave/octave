@@ -31,34 +31,10 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "MArray.h"
 #include "MArray.cc"
-template <> OCTAVE_API double MArray<Complex>::norm (double p) const;
-#include "CColVector.h"
-#include "oct-norm.h"
-
-template <>
-OCTAVE_API double
-MArray<Complex>::norm (double p) const
-{
-  return xnorm (ComplexColumnVector (*this), p);
-}
 
 template class OCTAVE_API MArray<Complex>;
 
 INSTANTIATE_MARRAY_FRIENDS (Complex, OCTAVE_API)
-
-#include "MArray2.h"
-#include "MArray2.cc"
-
-template class OCTAVE_API MArray2<Complex>;
-
-INSTANTIATE_MARRAY2_FRIENDS (Complex, OCTAVE_API)
-
-#include "MArrayN.h"
-#include "MArrayN.cc"
-
-template class OCTAVE_API MArrayN<Complex>;
-
-INSTANTIATE_MARRAYN_FRIENDS (Complex, OCTAVE_API)
 
 #include "MDiagArray2.h"
 #include "MDiagArray2.cc"

@@ -24,7 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_NDArray_h)
 #define octave_NDArray_h 1
 
-#include "MArrayN.h"
+#include "MArray.h"
 #include "dMatrix.h"
 #include "intNDArray.h"
 
@@ -34,40 +34,40 @@ along with Octave; see the file COPYING.  If not, see
 
 class
 OCTAVE_API
-NDArray : public MArrayN<double>
+NDArray : public MArray<double>
 {
 public:
 
   typedef Matrix matrix_type;
 
-  NDArray (void) : MArrayN<double> () { }
+  NDArray (void) : MArray<double> () { }
 
-  NDArray (const dim_vector& dv) : MArrayN<double> (dv) { }
+  NDArray (const dim_vector& dv) : MArray<double> (dv) { }
 
   NDArray (const dim_vector& dv, double val)
-    : MArrayN<double> (dv, val) { }
+    : MArray<double> (dv, val) { }
   
-  NDArray (const NDArray& a) : MArrayN<double> (a) { }
+  NDArray (const NDArray& a) : MArray<double> (a) { }
 
-  NDArray (const Matrix& a) : MArrayN<double> (a) { }
+  NDArray (const Matrix& a) : MArray<double> (a) { }
 
   NDArray (const Array<octave_idx_type>& a, bool zero_based = false, 
            bool negative_to_nan = false);
 
   template <class U>
-  NDArray (const MArrayN<U>& a) : MArrayN<double> (a) { }
+  NDArray (const MArray<U>& a) : MArray<double> (a) { }
 
   template <class U>
-  NDArray (const Array<U>& a) : MArrayN<double> (a) { }
+  NDArray (const Array<U>& a) : MArray<double> (a) { }
 
   template <class U>
-  explicit NDArray (const intNDArray<U>& a) : MArrayN<double> (a) { }
+  explicit NDArray (const intNDArray<U>& a) : MArray<double> (a) { }
 
   NDArray (const charNDArray&); 
 
   NDArray& operator = (const NDArray& a)
     {
-      MArrayN<double>::operator = (a);
+      MArray<double>::operator = (a);
       return *this;
     }
 
@@ -136,7 +136,7 @@ public:
 
   Matrix matrix_value (void) const;
 
-  NDArray squeeze (void) const { return MArrayN<double>::squeeze (); }
+  NDArray squeeze (void) const { return MArray<double>::squeeze (); }
 
   static void increment_index (Array<octave_idx_type>& ra_idx,
                                const dim_vector& dimensions,
@@ -156,13 +156,13 @@ public:
 
   NDArray& changesign (void) 
     { 
-      MArrayN<double>::changesign (); 
+      MArray<double>::changesign (); 
       return *this; 
     }
 
 private:
 
-  NDArray (double *d, const dim_vector& dv) : MArrayN<double> (d, dv) { }
+  NDArray (double *d, const dim_vector& dv) : MArray<double> (d, dv) { }
 };
 
 // Publish externally used friend functions.
@@ -181,7 +181,7 @@ SND_BOOL_OP_DECLS (double, NDArray, OCTAVE_API)
 NDND_CMP_OP_DECLS (NDArray, NDArray, OCTAVE_API)
 NDND_BOOL_OP_DECLS (NDArray, NDArray, OCTAVE_API)
 
-MARRAY_FORWARD_DEFS (MArrayN, NDArray, double)
+MARRAY_FORWARD_DEFS (MArray, NDArray, double)
 
 BSXFUN_STDOP_DECLS (NDArray, OCTAVE_API)
 BSXFUN_STDREL_DECLS (NDArray, OCTAVE_API)

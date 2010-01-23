@@ -24,7 +24,8 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_Matrix_int_h)
 #define octave_Matrix_int_h 1
 
-#include "MArray2.h"
+#include "MArray.h"
+#include "Array2.h"
 #include "MDiagArray2.h"
 #include "MatrixType.h"
 
@@ -34,7 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 
 class
 OCTAVE_API
-Matrix : public MArray2<double>
+Matrix : public MArray<double>
 {
 public:
 
@@ -43,26 +44,26 @@ public:
 
   typedef void (*solve_singularity_handler) (double rcon);
 
-  Matrix (void) : MArray2<double> () { }
+  Matrix (void) : MArray<double> () { }
 
-  Matrix (octave_idx_type r, octave_idx_type c) : MArray2<double> (r, c) { }
+  Matrix (octave_idx_type r, octave_idx_type c) : MArray<double> (r, c) { }
 
-  Matrix (octave_idx_type r, octave_idx_type c, double val) : MArray2<double> (r, c, val) { }
+  Matrix (octave_idx_type r, octave_idx_type c, double val) : MArray<double> (r, c, val) { }
 
-  Matrix (const dim_vector& dv) : MArray2<double> (dv) { }
+  Matrix (const dim_vector& dv) : MArray<double> (dv.redim (2)) { }
 
-  Matrix (const dim_vector& dv, double val) : MArray2<double> (dv, val) { }
+  Matrix (const dim_vector& dv, double val) : MArray<double> (dv.redim (2), val) { }
 
-  Matrix (const Matrix& a) : MArray2<double> (a) { }
-
-  template <class U>
-  Matrix (const MArray2<U>& a) : MArray2<double> (a) { }
+  Matrix (const Matrix& a) : MArray<double> (a) { }
 
   template <class U>
-  Matrix (const Array2<U>& a) : MArray2<double> (a) { }
+  Matrix (const MArray<U>& a) : MArray<double> (a.as_matrix ()) { }
 
   template <class U>
-  Matrix (const Array<U>& a) : MArray2<double> (a) { }
+  Matrix (const Array2<U>& a) : MArray<double> (a) { }
+
+  template <class U>
+  Matrix (const Array<U>& a) : MArray<double> (a.as_matrix ()) { }
 
   explicit Matrix (const RowVector& rv);
 
@@ -78,7 +79,7 @@ public:
 
   Matrix& operator = (const Matrix& a)
     {
-      MArray2<double>::operator = (a);
+      MArray<double>::operator = (a);
       return *this;
     }
 
@@ -112,7 +113,7 @@ public:
 
   friend class ComplexMatrix;
 
-  Matrix transpose (void) const { return MArray2<double>::transpose (); }
+  Matrix transpose (void) const { return MArray<double>::transpose (); }
 
   // resize is the destructive equivalent for this one
 
@@ -331,7 +332,7 @@ public:
 
 private:
 
-  Matrix (double *d, octave_idx_type r, octave_idx_type c) : MArray2<double> (d, r, c) { }
+  Matrix (double *d, octave_idx_type r, octave_idx_type c) : MArray<double> (d, r, c) { }
 };
 
 // Publish externally used friend functions.
@@ -376,7 +377,7 @@ SM_BOOL_OP_DECLS (double, Matrix, OCTAVE_API)
 MM_CMP_OP_DECLS (Matrix, Matrix, OCTAVE_API)
 MM_BOOL_OP_DECLS (Matrix, Matrix, OCTAVE_API)
 
-MARRAY_FORWARD_DEFS (MArray2, Matrix, double)
+MARRAY_FORWARD_DEFS (MArray, Matrix, double)
 
 template <class T>
 void read_int (std::istream& is, bool swap_bytes, T& val);

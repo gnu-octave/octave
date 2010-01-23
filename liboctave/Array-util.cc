@@ -202,7 +202,7 @@ compute_index (const Array<octave_idx_type>& ra_idx, const dim_vector& dims)
 Array<octave_idx_type>
 conv_to_int_array (const Array<idx_vector>& a)
 {
-  Array<octave_idx_type> retval (a.length ());
+  Array<octave_idx_type> retval (a.dims ());
 
   for (octave_idx_type i = 0; i < a.length (); i++)
     retval (i) = a(i).elem (0);
@@ -213,7 +213,7 @@ conv_to_int_array (const Array<idx_vector>& a)
 Array<idx_vector>
 conv_to_array (const idx_vector *tmp, const octave_idx_type len)
 {
-  Array<idx_vector> retval (len);
+  Array<idx_vector> retval (len, 1);
 
   for (octave_idx_type i = 0; i < len; i++)
       retval (i) = tmp[i];
@@ -347,7 +347,7 @@ get_elt_idx (const Array<idx_vector>& ra_idx,
 {
   octave_idx_type n = ra_idx.length ();
 
-  Array<octave_idx_type> retval (n);
+  Array<octave_idx_type> retval (n, 1);
 
   for (octave_idx_type i = 0; i < n; i++)
     retval(i) = ra_idx(i).elem (result_idx(i));
@@ -362,7 +362,7 @@ get_ra_idx (octave_idx_type idx, const dim_vector& dims)
 
   int n_dims = dims.length ();
 
-  retval.resize (n_dims);
+  retval.resize (n_dims, 1);
 
   for (int i = 0; i < n_dims; i++)
     retval(i) = 0;
@@ -564,7 +564,7 @@ idx_vector sub2ind (const dim_vector& dv, const Array<idx_vector>& idxa)
 Array<idx_vector> ind2sub (const dim_vector& dv, const idx_vector& idx)
 {
   octave_idx_type len = idx.length (0), n = dv.length ();
-  Array<idx_vector> retval(n);
+  Array<idx_vector> retval(n, 1);
   octave_idx_type numel = dv.numel ();
 
   if (idx.extent (numel) > numel)

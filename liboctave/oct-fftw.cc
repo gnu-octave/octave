@@ -763,7 +763,7 @@ octave_fftw::fft (const double *in, Complex *out, size_t npts,
 {
   dist = (dist < 0 ? npts : dist);
 
-  dim_vector dv (npts);
+  dim_vector dv (npts, 1);
   fftw_plan plan = octave_fftw_planner::create_plan (1, dv, nsamples,
                                                      stride, dist, in, out);
 
@@ -783,7 +783,7 @@ octave_fftw::fft (const Complex *in, Complex *out, size_t npts,
 {
   dist = (dist < 0 ? npts : dist);
 
-  dim_vector dv (npts);
+  dim_vector dv (npts, 1);
   fftw_plan plan = octave_fftw_planner::create_plan (FFTW_FORWARD, 1, dv,
                                                      nsamples, stride,
                                                      dist, in, out);
@@ -801,7 +801,7 @@ octave_fftw::ifft (const Complex *in, Complex *out, size_t npts,
 {
   dist = (dist < 0 ? npts : dist);
 
-  dim_vector dv (npts);
+  dim_vector dv (npts, 1);
   fftw_plan plan = octave_fftw_planner::create_plan (FFTW_BACKWARD, 1, dv,
                                                      nsamples, stride,
                                                      dist, in, out);
@@ -891,7 +891,7 @@ octave_fftw::fft (const float *in, FloatComplex *out, size_t npts,
 {
   dist = (dist < 0 ? npts : dist);
 
-  dim_vector dv (npts);
+  dim_vector dv (npts, 1);
   fftwf_plan plan = octave_float_fftw_planner::create_plan (1, dv, nsamples,
                                                             stride, dist,
                                                             in, out);
@@ -912,7 +912,7 @@ octave_fftw::fft (const FloatComplex *in, FloatComplex *out, size_t npts,
 {
   dist = (dist < 0 ? npts : dist);
 
-  dim_vector dv (npts);
+  dim_vector dv (npts, 1);
   fftwf_plan plan = octave_float_fftw_planner::create_plan (FFTW_FORWARD, 1,
                                                             dv, nsamples,
                                                             stride, dist,
@@ -931,7 +931,7 @@ octave_fftw::ifft (const FloatComplex *in, FloatComplex *out, size_t npts,
 {
   dist = (dist < 0 ? npts : dist);
 
-  dim_vector dv (npts);
+  dim_vector dv (npts, 1);
   fftwf_plan plan = octave_float_fftw_planner::create_plan (FFTW_BACKWARD, 1,
                                                             dv, nsamples,
                                                             stride, dist,

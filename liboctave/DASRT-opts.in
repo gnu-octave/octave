@@ -30,13 +30,13 @@ tolerance must also be a vector of the same length.
   TYPE = "Array<double>"
   SET_ARG_TYPE = "const $TYPE&"
   INIT_BODY
-    $OPTVAR.resize (1);
+    $OPTVAR.resize (1, 1);
     $OPTVAR(0) = ::sqrt (DBL_EPSILON);
   END_INIT_BODY
   SET_CODE
     void set_$OPT (double val)
       {
-        $OPTVAR.resize (1);
+        $OPTVAR.resize (1, 1);
         $OPTVAR(0) = (val > 0.0) ? val : ::sqrt (DBL_EPSILON);
         reset = true;
       }
@@ -64,13 +64,13 @@ The local error test applied at each integration step is
   TYPE = "Array<double>"
   SET_ARG_TYPE = "const $TYPE&"
   INIT_BODY
-    $OPTVAR.resize (1);
+    $OPTVAR.resize (1, 1);
     $OPTVAR(0) = ::sqrt (DBL_EPSILON);
   END_INIT_BODY
   SET_CODE
     void set_$OPT (double val)
       {
-        $OPTVAR.resize (1);
+        $OPTVAR.resize (1, 1);
         $OPTVAR(0) = (val > 0.0) ? val : ::sqrt (DBL_EPSILON);
         reset = true;
       }

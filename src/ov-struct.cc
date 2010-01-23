@@ -65,7 +65,7 @@ octave_struct::dotref (const octave_value_list& idx, bool auto_add)
   if (p != map.end ())
     retval = map.contents (p);
   else if (auto_add)
-    retval = (numel () == 0) ? Cell (dim_vector (1)) : Cell (dims ());
+    retval = (numel () == 0) ? Cell (dim_vector (1, 1)) : Cell (dims ());
   else 
     error ("structure has no member `%s'", nm.c_str ());
 
@@ -1133,8 +1133,8 @@ A(1)\n\
 
                           Cell c_value (value_dv);
 
-                          Array<octave_idx_type> value_idx (value_dv.length (), 0);
-                          Array<octave_idx_type> c_idx (c_dv_length, 0);
+                          Array<octave_idx_type> value_idx (value_dv.length (), 1, 0);
+                          Array<octave_idx_type> c_idx (c_dv_length, 1, 0);
 
                           for (octave_idx_type j = 0; j < value_dv.numel (); j++)
                             {

@@ -33,13 +33,6 @@ template class OCTAVE_API MArray<short>;
 
 INSTANTIATE_MARRAY_FRIENDS (short, OCTAVE_API)
 
-#include "MArray2.h"
-#include "MArray2.cc"
-
-template class OCTAVE_API MArray2<short>;
-
-INSTANTIATE_MARRAY2_FRIENDS (short, OCTAVE_API)
-
 #include "MDiagArray2.h"
 #include "MDiagArray2.cc"
 

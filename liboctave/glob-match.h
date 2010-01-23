@@ -74,7 +74,7 @@ public:
   {
     int n = str.length ();
 
-    Array<bool> retval (n);
+    Array<bool> retval (n, 1);
 
     for (int i = 0; i < n; i++)
       retval(i) = match (str[i]);

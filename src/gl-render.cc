@@ -2394,7 +2394,7 @@ opengl_renderer::draw_patch (const patch::properties &props)
       clip(i) = is_nan_or_inf (v(i,0), v(i,1), 0);
 
   boolMatrix clip_f (1, nf, false);
-  Array<int> count_f (nf, 0);
+  Array<int> count_f (nf, 1, 0);
 
   for (int i = 0; i < nf; i++)
     {

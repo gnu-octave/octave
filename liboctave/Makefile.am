@@ -271,8 +271,6 @@ TEMPLATE_SRC = \
   Array.cc \
   DiagArray2.cc \
   MArray.cc \
-  MArray2.cc \
-  MArrayN.cc \
   MDiagArray2.cc \
   base-lu.cc \
   base-qr.cc \

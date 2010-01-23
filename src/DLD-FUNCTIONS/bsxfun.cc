@@ -439,7 +439,7 @@ dimensionality as the other matrix.\n\
                   octave_value_list idxB;
                   octave_value C;
                   octave_value_list inputs;
-                  Array<int> ra_idx (dvc.length(), 0);
+                  Array<int> ra_idx (dvc.length(), 1, 0);
 
 
                   for (octave_idx_type i = 0; i < ncount; i++)

@@ -133,7 +133,7 @@ private:
 
 public:
 
-  explicit dim_vector (octave_idx_type n)
+  explicit dim_vector (octave_idx_type n) GCC_ATTR_DEPRECATED
     : rep (newrep (2))
   {
     rep[0] = n;
@@ -553,6 +553,22 @@ public:
 
           return retval;
         }
+    }
+
+  dim_vector as_column (void) const
+    {
+      if (length () == 2 && elem (1) == 1)
+        return *this;
+      else
+        return dim_vector (numel (), 1);
+    }
+
+  dim_vector as_row (void) const
+    {
+      if (length () == 2 && elem (0) == 1)
+        return *this;
+      else
+        return dim_vector (1, numel ());
     }
 
   bool is_vector (void) const

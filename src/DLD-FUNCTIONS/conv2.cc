@@ -35,22 +35,22 @@ along with Octave; see the file COPYING.  If not, see
 enum Shape { SHAPE_FULL, SHAPE_SAME, SHAPE_VALID };
 
 #if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
-extern MArray2<double>
-conv2 (MArray<double>&, MArray<double>&, MArray2<double>&, Shape);
+extern MArray<double>
+conv2 (MArray<double>&, MArray<double>&, MArray<double>&, Shape);
 
-extern MArray2<Complex>
-conv2 (MArray<Complex>&, MArray<Complex>&, MArray2<Complex>&, Shape);
+extern MArray<Complex>
+conv2 (MArray<Complex>&, MArray<Complex>&, MArray<Complex>&, Shape);
 
-extern MArray2<float>
-conv2 (MArray<float>&, MArray<float>&, MArray2<float>&, Shape);
+extern MArray<float>
+conv2 (MArray<float>&, MArray<float>&, MArray<float>&, Shape);
 
-extern MArray2<FloatComplex>
-conv2 (MArray<FloatComplex>&, MArray<FloatComplex>&, MArray2<FloatComplex>&, Shape);
+extern MArray<FloatComplex>
+conv2 (MArray<FloatComplex>&, MArray<FloatComplex>&, MArray<FloatComplex>&, Shape);
 #endif
 
 template <class T>
-MArray2<T>
-conv2 (MArray<T>& R, MArray<T>& C, MArray2<T>& A, Shape ishape)
+MArray<T>
+conv2 (MArray<T>& R, MArray<T>& C, MArray<T>& A, Shape ishape)
 {
   octave_idx_type  Rn =  R.length ();
   octave_idx_type  Cm =  C.length ();
@@ -98,14 +98,14 @@ conv2 (MArray<T>& R, MArray<T>& C, MArray2<T>& A, Shape ishape)
         error ("conv2: invalid value of parameter ishape");
     }
 
-  MArray2<T> O (outM, outN);
+  MArray<T> O (outM, outN);
 
   // X accumulates the 1-D conv for each row, before calculating
   //    the convolution in the other direction
   // There is no efficiency advantage to doing it in either direction
   //     first
 
-  MArray<T> X (An);
+  MArray<T> X (An, 1);
 
   for (octave_idx_type oi = 0; oi < outM; oi++)
     {
@@ -143,22 +143,22 @@ conv2 (MArray<T>& R, MArray<T>& C, MArray2<T>& A, Shape ishape)
 }
 
 #if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
-extern MArray2<double>
-conv2 (MArray2<double>&, MArray2<double>&, Shape);
+extern MArray<double>
+conv2 (MArray<double>&, MArray<double>&, Shape);
 
-extern MArray2<Complex>
-conv2 (MArray2<Complex>&, MArray2<Complex>&, Shape);
+extern MArray<Complex>
+conv2 (MArray<Complex>&, MArray<Complex>&, Shape);
 
-extern MArray2<float>
-conv2 (MArray2<float>&, MArray2<float>&, Shape);
+extern MArray<float>
+conv2 (MArray<float>&, MArray<float>&, Shape);
 
-extern MArray2<FloatComplex>
-conv2 (MArray2<FloatComplex>&, MArray2<FloatComplex>&, Shape);
+extern MArray<FloatComplex>
+conv2 (MArray<FloatComplex>&, MArray<FloatComplex>&, Shape);
 #endif
 
 template <class T>
-MArray2<T>
-conv2 (MArray2<T>&A, MArray2<T>&B, Shape ishape)
+MArray<T>
+conv2 (MArray<T>&A, MArray<T>&B, Shape ishape)
 {
   // Convolution works fastest if we choose the A matrix to be
   // the largest.
@@ -208,7 +208,7 @@ conv2 (MArray2<T>&A, MArray2<T>&B, Shape ishape)
         break;
     }
 
-  MArray2<T> O (outM, outN);
+  MArray<T> O (outM, outN);
 
   for (octave_idx_type oi = 0; oi < outM; oi++)
     {
@@ -418,14 +418,14 @@ in the column direction and by vector @var{v2} in the row direction\n\
    return retval;
 }
 
-template MArray2<double>
-conv2 (MArray<double>&, MArray<double>&, MArray2<double>&, Shape);
+template MArray<double>
+conv2 (MArray<double>&, MArray<double>&, MArray<double>&, Shape);
 
-template MArray2<double>
-conv2 (MArray2<double>&, MArray2<double>&, Shape);
+template MArray<double>
+conv2 (MArray<double>&, MArray<double>&, Shape);
 
-template MArray2<Complex>
-conv2 (MArray<Complex>&, MArray<Complex>&, MArray2<Complex>&, Shape);
+template MArray<Complex>
+conv2 (MArray<Complex>&, MArray<Complex>&, MArray<Complex>&, Shape);
 
-template MArray2<Complex>
-conv2 (MArray2<Complex>&, MArray2<Complex>&, Shape);
+template MArray<Complex>
+conv2 (MArray<Complex>&, MArray<Complex>&, Shape);

@@ -90,7 +90,7 @@ protected:
   octave_idx_type d1, d2;
 
   DiagArray2 (T *d, octave_idx_type r, octave_idx_type c) 
-    : Array<T> (d, std::min (r, c)), d1 (r), d2 (c) { }
+    : Array<T> (d, std::min (r, c), 1), d1 (r), d2 (c) { }
 
 public:
 
@@ -100,20 +100,20 @@ public:
     : Array<T> (), d1 (0), d2 (0) { }
 
   DiagArray2 (octave_idx_type r, octave_idx_type c) 
-    : Array<T> (std::min (r, c)), d1 (r), d2 (c) { }
+    : Array<T> (std::min (r, c), 1), d1 (r), d2 (c) { }
 
   DiagArray2 (octave_idx_type r, octave_idx_type c, const T& val) 
-    : Array<T> (std::min (r, c), val), d1 (r), d2 (c) { }
+    : Array<T> (std::min (r, c), 1, val), d1 (r), d2 (c) { }
 
   DiagArray2 (const dim_vector& dv)
-    : Array<T> (std::min (dv(0), dv(1))), d1 (dv(0)), d2 (dv(0))
+    : Array<T> (std::min (dv(0), dv(1)), 1), d1 (dv(0)), d2 (dv(0))
     {
       if (dv.length () != 2)
         (*current_liboctave_error_handler) ("too many dimensions");
     }
 
   DiagArray2 (const Array<T>& a) 
-    : Array<T> (a), d1 (a.numel ()), d2 (a.numel ()) { }
+    : Array<T> (a.as_column ()), d1 (a.numel ()), d2 (a.numel ()) { }
 
   DiagArray2 (const DiagArray2<T>& a) 
     : Array<T> (a), d1 (a.d1), d2 (a.d2) { }
@@ -213,8 +213,8 @@ public:
   T dgxelem (octave_idx_type i) const
     { return Array<T>::xelem (i); }
 
-  void resize (octave_idx_type n, octave_idx_type m);
-  void resize_fill (octave_idx_type n, octave_idx_type m, const T& val);
+  void resize (octave_idx_type n, octave_idx_type m, 
+               const T& rfv = Array<T>::resize_fill_value ());
 
   DiagArray2<T> transpose (void) const;
   DiagArray2<T> hermitian (T (*fcn) (const T&) = 0) const;

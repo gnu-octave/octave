@@ -150,7 +150,7 @@ extern ComplexMatrix qrsolve (const SparseComplexMatrix &a, const Matrix &b,
                               octave_idx_type &info);
 
 extern ComplexMatrix qrsolve (const SparseComplexMatrix &a, 
-                              const MArray2<double> &b, 
+                              const MArray<double> &b, 
                               octave_idx_type &info);
 
 extern SparseComplexMatrix qrsolve (const SparseComplexMatrix &a, 
@@ -162,7 +162,7 @@ extern ComplexMatrix qrsolve (const SparseComplexMatrix &a,
                               octave_idx_type &info);
 
 extern ComplexMatrix qrsolve (const SparseComplexMatrix &a, 
-                              const MArray2<Complex> &b, 
+                              const MArray<Complex> &b, 
                               octave_idx_type &info);
 
 extern SparseComplexMatrix qrsolve (const SparseComplexMatrix &a, 

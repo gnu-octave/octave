@@ -57,40 +57,6 @@ INSTANTIATE_MARRAY_FRIENDS (octave_uint16, OCTAVE_API)
 INSTANTIATE_MARRAY_FRIENDS (octave_uint32, OCTAVE_API)
 INSTANTIATE_MARRAY_FRIENDS (octave_uint64, OCTAVE_API)
 
-#include "MArray2.h"
-#include "MArray2.cc"
-
-template class OCTAVE_API MArray2<int>;
-
-INSTANTIATE_MARRAY2_FRIENDS (int, OCTAVE_API)
-
-#include "MArrayN.h"
-#include "MArrayN.cc"
-
-template class OCTAVE_API MArrayN<int>;
-
-INSTANTIATE_MARRAYN_FRIENDS (int, OCTAVE_API)
-
-template class OCTAVE_API MArrayN<octave_int8>;
-template class OCTAVE_API MArrayN<octave_int16>;
-template class OCTAVE_API MArrayN<octave_int32>;
-template class OCTAVE_API MArrayN<octave_int64>;
-
-INSTANTIATE_MARRAYN_FRIENDS (octave_int8, OCTAVE_API)
-INSTANTIATE_MARRAYN_FRIENDS (octave_int16, OCTAVE_API)
-INSTANTIATE_MARRAYN_FRIENDS (octave_int32, OCTAVE_API)
-INSTANTIATE_MARRAYN_FRIENDS (octave_int64, OCTAVE_API)
-
-template class OCTAVE_API MArrayN<octave_uint8>;
-template class OCTAVE_API MArrayN<octave_uint16>;
-template class OCTAVE_API MArrayN<octave_uint32>;
-template class OCTAVE_API MArrayN<octave_uint64>;
-
-INSTANTIATE_MARRAYN_FRIENDS (octave_uint8, OCTAVE_API)
-INSTANTIATE_MARRAYN_FRIENDS (octave_uint16, OCTAVE_API)
-INSTANTIATE_MARRAYN_FRIENDS (octave_uint32, OCTAVE_API)
-INSTANTIATE_MARRAYN_FRIENDS (octave_uint64, OCTAVE_API)
-
 #include "MDiagArray2.h"
 #include "MDiagArray2.cc"
 

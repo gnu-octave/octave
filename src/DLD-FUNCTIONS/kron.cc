@@ -36,22 +36,22 @@ along with Octave; see the file COPYING.  If not, see
 
 #if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
 extern void
-kron (const Array2<double>&, const Array2<double>&, Array2<double>&);
+kron (const Array<double>&, const Array<double>&, Array<double>&);
 
 extern void
-kron (const Array2<Complex>&, const Array2<Complex>&, Array2<Complex>&);
+kron (const Array<Complex>&, const Array<Complex>&, Array<Complex>&);
 
 extern void
-kron (const Array2<float>&, const Array2<float>&, Array2<float>&);
+kron (const Array<float>&, const Array<float>&, Array<float>&);
 
 extern void
-kron (const Array2<FlaotComplex>&, const Array2<FloatComplex>&, 
-      Array2<FloatComplex>&);
+kron (const Array<FlaotComplex>&, const Array<FloatComplex>&, 
+      Array<FloatComplex>&);
 #endif
 
 template <class T>
 void
-kron (const Array2<T>& A, const Array2<T>& B, Array2<T>& C)
+kron (const Array<T>& A, const Array<T>& B, Array<T>& C)
 {
   C.resize (A.rows () * B.rows (), A.columns () * B.columns ());
 
@@ -71,17 +71,17 @@ kron (const Array2<T>& A, const Array2<T>& B, Array2<T>& C)
 }
 
 template void
-kron (const Array2<double>&, const Array2<double>&, Array2<double>&);
+kron (const Array<double>&, const Array<double>&, Array<double>&);
 
 template void
-kron (const Array2<Complex>&, const Array2<Complex>&, Array2<Complex>&);
+kron (const Array<Complex>&, const Array<Complex>&, Array<Complex>&);
 
 template void
-kron (const Array2<float>&, const Array2<float>&, Array2<float>&);
+kron (const Array<float>&, const Array<float>&, Array<float>&);
 
 template void
-kron (const Array2<FloatComplex>&, const Array2<FloatComplex>&, 
-      Array2<FloatComplex>&);
+kron (const Array<FloatComplex>&, const Array<FloatComplex>&, 
+      Array<FloatComplex>&);
 
 #if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
 extern void

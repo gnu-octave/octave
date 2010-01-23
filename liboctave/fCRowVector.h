@@ -25,6 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_FloatComplexRowVector_h 1
 
 #include "MArray.h"
+#include "fRowVector.h"
 
 #include "mx-defs.h"
 
@@ -36,19 +37,21 @@ friend class FloatComplexColumnVector;
 
 public:
 
-  FloatComplexRowVector (void) : MArray<FloatComplex> () { }
+  FloatComplexRowVector (void) : MArray<FloatComplex> (1, 0) { }
 
-  explicit FloatComplexRowVector (octave_idx_type n) : MArray<FloatComplex> (n) { }
+  explicit FloatComplexRowVector (octave_idx_type n) : MArray<FloatComplex> (1, n) { }
 
-  explicit FloatComplexRowVector (const dim_vector& dv) : MArray<FloatComplex> (dv) { }
+  explicit FloatComplexRowVector (const dim_vector& dv) : MArray<FloatComplex> (dv.as_row ()) { }
 
-  FloatComplexRowVector (octave_idx_type n, const FloatComplex& val) : MArray<FloatComplex> (n, val) { }
+  FloatComplexRowVector (octave_idx_type n, const FloatComplex& val) 
+    : MArray<FloatComplex> (1, n, val) { }
 
   FloatComplexRowVector (const FloatComplexRowVector& a) : MArray<FloatComplex> (a) { }
 
-  FloatComplexRowVector (const MArray<FloatComplex>& a) : MArray<FloatComplex> (a) { }
+  FloatComplexRowVector (const MArray<FloatComplex>& a) : MArray<FloatComplex> (a.as_row ()) { }
+  FloatComplexRowVector (const Array<FloatComplex>& a) : MArray<FloatComplex> (a.as_row ()) { }
 
-  explicit FloatComplexRowVector (const FloatRowVector& a);
+  explicit FloatComplexRowVector (const FloatRowVector& a) : MArray<FloatComplex> (a) { }
 
   FloatComplexRowVector& operator = (const FloatComplexRowVector& a)
     {
@@ -106,9 +109,15 @@ public:
   friend std::ostream& operator << (std::ostream& os, const FloatComplexRowVector& a);
   friend std::istream& operator >> (std::istream& is, FloatComplexRowVector& a);
 
+  void resize (octave_idx_type n, const FloatComplex& rfv = Array<FloatComplex>::resize_fill_value ())
+    { Array<FloatComplex>::resize (1, n, rfv); }
+
+  void clear (octave_idx_type n)
+    { Array<FloatComplex>::clear (1, n); }
+
 private:
 
-  FloatComplexRowVector (FloatComplex *d, octave_idx_type l) : MArray<FloatComplex> (d, l) { }
+  FloatComplexRowVector (FloatComplex *d, octave_idx_type l) : MArray<FloatComplex> (d, 1, l) { }
 };
 
 // row vector by column vector -> scalar

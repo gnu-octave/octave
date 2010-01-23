@@ -425,7 +425,7 @@ octave_rand::do_vector (octave_idx_type n, double a)
 
   if (n > 0)
     {
-      retval.clear (n);
+      retval.clear (n, 1);
 
       fill (retval.capacity (), retval.fortran_vec (), a);
     }

@@ -701,7 +701,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
         NDArray re;
         if (imag)
           {
-            re = NDArray (dim_vector (nnz));
+            re = NDArray (dim_vector (nnz, 1));
             data = re.fortran_vec ();
           }
 
@@ -720,7 +720,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
         // imaginary data subelement
         if (imag)
           {
-            NDArray im (dim_vector (static_cast<int> (nnz)));
+            NDArray im (dim_vector (static_cast<int> (nnz), 1));
           
             if (read_mat5_tag (is, swap, type, len))
               {

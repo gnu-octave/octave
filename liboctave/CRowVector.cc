@@ -54,13 +54,6 @@ extern "C"
 
 // Complex Row Vector class
 
-ComplexRowVector::ComplexRowVector (const RowVector& a)
-  : MArray<Complex> (a.length ())
-{
-  for (octave_idx_type i = 0; i < length (); i++)
-    elem (i) = a.elem (i);
-}
-
 bool
 ComplexRowVector::operator == (const ComplexRowVector& a) const
 {

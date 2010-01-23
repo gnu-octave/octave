@@ -34,17 +34,18 @@ RowVector : public MArray<double>
 {
 public:
 
-  RowVector (void) : MArray<double> () { }
+  RowVector (void) : MArray<double> (1, 0) { }
 
-  explicit RowVector (octave_idx_type n) : MArray<double> (n) { }
+  explicit RowVector (octave_idx_type n) : MArray<double> (1, n) { }
 
-  explicit RowVector (const dim_vector& dv) : MArray<double> (dv) { }
+  explicit RowVector (const dim_vector& dv) : MArray<double> (dv.as_row ()) { }
 
-  RowVector (octave_idx_type n, double val) : MArray<double> (n, val) { }
+  RowVector (octave_idx_type n, double val) : MArray<double> (1, n, val) { }
 
   RowVector (const RowVector& a) : MArray<double> (a) { }
 
-  RowVector (const MArray<double>& a) : MArray<double> (a) { }
+  RowVector (const MArray<double>& a) : MArray<double> (a.as_row ()) { }
+  RowVector (const Array<double>& a) : MArray<double> (a.as_row ()) { }
 
   RowVector& operator = (const RowVector& a)
     {
@@ -89,9 +90,15 @@ public:
   friend OCTAVE_API std::ostream& operator << (std::ostream& os, const RowVector& a);
   friend OCTAVE_API std::istream& operator >> (std::istream& is, RowVector& a);
 
+  void resize (octave_idx_type n, const double& rfv = Array<double>::resize_fill_value ())
+    { Array<double>::resize (1, n, rfv); }
+
+  void clear (octave_idx_type n)
+    { Array<double>::clear (1, n); }
+
 private:
 
-  RowVector (double *d, octave_idx_type l) : MArray<double> (d, l) { }
+  RowVector (double *d, octave_idx_type l) : MArray<double> (d, 1, l) { }
 };
 
 // row vector by column vector -> scalar

@@ -39,11 +39,11 @@ public:
 
   string_vector (void) : Array<std::string> () { }
 
-  explicit string_vector (octave_idx_type n) : Array<std::string> (n) { }
+  explicit string_vector (octave_idx_type n) : Array<std::string> (1, n) { }
 
-  string_vector (const char *s) : Array<std::string> (1, s) { }
+  string_vector (const char *s) : Array<std::string> (1, 1, s) { }
 
-  string_vector (const std::string& s) : Array<std::string> (1, s) { }
+  string_vector (const std::string& s) : Array<std::string> (1, 1, s) { }
 
   string_vector (const string_vector& s) : Array<std::string> (s) { }
 
@@ -82,6 +82,9 @@ public:
 
     return longest;
   }
+
+  void resize (octave_idx_type n, const std::string& rfv = resize_fill_value ())
+    { Array<std::string>::resize (1, n, rfv); }
 
   std::string& operator[] (octave_idx_type i) { return Array<std::string>::elem (i); }
 

@@ -34,17 +34,19 @@ FloatColumnVector : public MArray<float>
 {
 public:
 
-  FloatColumnVector (void) : MArray<float> () { }
+  FloatColumnVector (void) : MArray<float> (0, 1) { }
 
-  explicit FloatColumnVector (octave_idx_type n) : MArray<float> (n) { }
+  explicit FloatColumnVector (octave_idx_type n) : MArray<float> (n, 1) { }
 
-  explicit FloatColumnVector (const dim_vector& dv) : MArray<float> (dv) { }
+  explicit FloatColumnVector (const dim_vector& dv) 
+    : MArray<float> (dv.as_column ()) { }
 
-  FloatColumnVector (octave_idx_type n, float val) : MArray<float> (n, val) { }
+  FloatColumnVector (octave_idx_type n, float val) : MArray<float> (n, 1, val) { }
 
   FloatColumnVector (const FloatColumnVector& a) : MArray<float> (a) { }
 
-  FloatColumnVector (const MArray<float>& a) : MArray<float> (a) { }
+  FloatColumnVector (const MArray<float>& a) : MArray<float> (a.as_column ()) { }
+  FloatColumnVector (const Array<float>& a) : MArray<float> (a.as_column ()) { }
 
   FloatColumnVector& operator = (const FloatColumnVector& a)
     {
@@ -93,9 +95,15 @@ public:
   friend OCTAVE_API std::ostream& operator << (std::ostream& os, const FloatColumnVector& a);
   friend OCTAVE_API std::istream& operator >> (std::istream& is, FloatColumnVector& a);
 
+  void resize (octave_idx_type n, const float& rfv = Array<float>::resize_fill_value ())
+    { Array<float>::resize (n, 1, rfv); }
+
+  void clear (octave_idx_type n)
+    { Array<float>::clear (n, 1); }
+
 private:
 
-  FloatColumnVector (float *d, octave_idx_type l) : MArray<float> (d, l) { }
+  FloatColumnVector (float *d, octave_idx_type l) : MArray<float> (d, l, 1) { }
 };
 
 // Publish externally used friend functions.

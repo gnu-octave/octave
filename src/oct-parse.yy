@@ -3782,8 +3782,8 @@ With no arguments, return a structure containing the current autoload map.\n\
 
   if (nargin == 0)
     {
-      Cell func_names (dim_vector (autoload_map.size ()), 1);
-      Cell file_names (dim_vector (autoload_map.size ()), 1);
+      Cell func_names (dim_vector (autoload_map.size (), 1));
+      Cell file_names (dim_vector (autoload_map.size (), 1));
 
       octave_idx_type i = 0;
       typedef std::map<std::string, std::string>::const_iterator am_iter;

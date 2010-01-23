@@ -24,7 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_FloatComplexMatrix_h)
 #define octave_FloatComplexMatrix_h 1
 
-#include "MArray2.h"
+#include "MArray.h"
 #include "MDiagArray2.h"
 #include "MatrixType.h"
 
@@ -35,7 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 
 class
 OCTAVE_API
-FloatComplexMatrix : public MArray2<FloatComplex>
+FloatComplexMatrix : public MArray<FloatComplex>
 {
 public:
  
@@ -44,28 +44,28 @@ public:
 
   typedef void (*solve_singularity_handler) (float rcon);
 
-  FloatComplexMatrix (void) : MArray2<FloatComplex> () { }
+  FloatComplexMatrix (void) : MArray<FloatComplex> () { }
 
-  FloatComplexMatrix (octave_idx_type r, octave_idx_type c) : MArray2<FloatComplex> (r, c) { }
+  FloatComplexMatrix (octave_idx_type r, octave_idx_type c) : MArray<FloatComplex> (r, c) { }
 
   FloatComplexMatrix (octave_idx_type r, octave_idx_type c, const FloatComplex& val)
-    : MArray2<FloatComplex> (r, c, val) { }
+    : MArray<FloatComplex> (r, c, val) { }
 
-  FloatComplexMatrix (const dim_vector& dv) : MArray2<FloatComplex> (dv) { }
+  FloatComplexMatrix (const dim_vector& dv) : MArray<FloatComplex> (dv.redim (2)) { }
 
   FloatComplexMatrix (const dim_vector& dv, const FloatComplex& val) 
-    : MArray2<FloatComplex> (dv, val) { }
+    : MArray<FloatComplex> (dv.redim (2), val) { }
 
-  FloatComplexMatrix (const FloatComplexMatrix& a) : MArray2<FloatComplex> (a) { }
-
-  template <class U>
-  FloatComplexMatrix (const MArray2<U>& a) : MArray2<FloatComplex> (a) { }
+  FloatComplexMatrix (const FloatComplexMatrix& a) : MArray<FloatComplex> (a) { }
 
   template <class U>
-  FloatComplexMatrix (const Array2<U>& a) : MArray2<FloatComplex> (a) { }
+  FloatComplexMatrix (const MArray<U>& a) : MArray<FloatComplex> (a.as_matrix ()) { }
 
   template <class U>
-  FloatComplexMatrix (const Array<U>& a) : MArray2<FloatComplex> (a) { }
+  FloatComplexMatrix (const Array2<U>& a) : MArray<FloatComplex> (a) { }
+
+  template <class U>
+  FloatComplexMatrix (const Array<U>& a) : MArray<FloatComplex> (a.as_matrix ()) { }
 
   explicit FloatComplexMatrix (const FloatMatrix& a);
 
@@ -89,7 +89,7 @@ public:
 
   FloatComplexMatrix& operator = (const FloatComplexMatrix& a)
     {
-      MArray2<FloatComplex>::operator = (a);
+      MArray<FloatComplex>::operator = (a);
       return *this;
     }
 
@@ -136,9 +136,9 @@ public:
   FloatComplexMatrix stack (const FloatComplexDiagMatrix& a) const;
 
   FloatComplexMatrix hermitian (void) const
-    { return MArray2<FloatComplex>::hermitian (std::conj); }
+    { return MArray<FloatComplex>::hermitian (std::conj); }
   FloatComplexMatrix transpose (void) const
-    { return MArray2<FloatComplex>::transpose (); }
+    { return MArray<FloatComplex>::transpose (); }
 
   friend OCTAVE_API FloatComplexMatrix conj (const FloatComplexMatrix& a);
 
@@ -378,7 +378,7 @@ public:
 
 private:
 
-  FloatComplexMatrix (FloatComplex *d, octave_idx_type r, octave_idx_type c) : MArray2<FloatComplex> (d, r, c) { }
+  FloatComplexMatrix (FloatComplex *d, octave_idx_type r, octave_idx_type c) : MArray<FloatComplex> (d, r, c) { }
 };
 
 extern OCTAVE_API FloatComplexMatrix conj (const FloatComplexMatrix& a);
@@ -430,6 +430,6 @@ SM_BOOL_OP_DECLS (FloatComplex, FloatComplexMatrix, OCTAVE_API)
 MM_CMP_OP_DECLS (FloatComplexMatrix, FloatComplexMatrix, OCTAVE_API)
 MM_BOOL_OP_DECLS (FloatComplexMatrix, FloatComplexMatrix, OCTAVE_API)
 
-MARRAY_FORWARD_DEFS (MArray2, FloatComplexMatrix, FloatComplex)
+MARRAY_FORWARD_DEFS (MArray, FloatComplexMatrix, FloatComplex)
 
 #endif

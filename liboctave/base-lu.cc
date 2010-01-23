@@ -122,7 +122,7 @@ base_lu <lu_type> :: getp (void) const
     {
       octave_idx_type a_nr = a_fact.rows ();
 
-      Array<octave_idx_type> pvt (a_nr);
+      Array<octave_idx_type> pvt (a_nr, 1);
 
       for (octave_idx_type i = 0; i < a_nr; i++)
         pvt.xelem (i) = i;

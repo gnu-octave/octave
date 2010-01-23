@@ -72,7 +72,7 @@ public:
     { Array<T>::resize (dim_vector (r, c, p)); }
 
   void resize (octave_idx_type r, octave_idx_type c, octave_idx_type p, const T& val)
-    { Array<T>::resize_fill (dim_vector (r, c, p), val); }
+    { Array<T>::resize (dim_vector (r, c, p), val); }
 
   Array3<T> sort (octave_idx_type dim = 0, sortmode mode = ASCENDING) const
     {

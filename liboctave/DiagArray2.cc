@@ -74,9 +74,9 @@ DiagArray2<T>::diag (octave_idx_type k) const
     // The main diagonal is shallow-copied.
     d = *this;
   else if (k > 0 && k < cols ())
-    d = Array<T> (std::min (cols () - k, rows ()), T ());
+    d = Array<T> (std::min (cols () - k, rows ()), 1, T ());
   else if (k < 0 && -k < rows ())
-    d = Array<T> (std::min (rows () + k, cols ()), T ());
+    d = Array<T> (std::min (rows () + k, cols ()), 1, T ());
   else
     (*current_liboctave_error_handler)
       ("diag: requested diagonal out of range");
@@ -135,7 +135,8 @@ DiagArray2<T>::checkelem (octave_idx_type r, octave_idx_type c)
 
 template <class T>
 void
-DiagArray2<T>::resize (octave_idx_type r, octave_idx_type c)
+DiagArray2<T>::resize (octave_idx_type r, octave_idx_type c,
+                       const T& rfv)
 {
   if (r < 0 || c < 0)
     {
@@ -145,24 +146,7 @@ DiagArray2<T>::resize (octave_idx_type r, octave_idx_type c)
 
   if (r != dim1 () || c != dim2 ())
     {
-      Array<T>::resize (std::min (r, c));
-      d1 = r; d2 = c;
-    }
-}
-
-template <class T>
-void
-DiagArray2<T>::resize_fill (octave_idx_type r, octave_idx_type c, const T& val)
-{
-  if (r < 0 || c < 0)
-    {
-      (*current_liboctave_error_handler) ("can't resize to negative dimensions");
-      return;
-    }
-
-  if (r != dim1 () || c != dim2 ())
-    {
-      Array<T>::resize_fill (std::min (r, c), val);
+      Array<T>::resize (std::min (r, c), 1, rfv);
       d1 = r; d2 = c;
     }
 }

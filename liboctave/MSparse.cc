@@ -27,7 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "quit.h"
 #include "lo-error.h"
-#include "MArray2.h"
+#include "MArray.h"
 #include "Array-util.h"
 
 #include "MSparse.h"
@@ -187,13 +187,13 @@ operator -= (MSparse<T>& a, const MSparse<T>& b)
 
 #define SPARSE_A2S_OP_1(OP) \
   template <class T> \
-  MArray2<T> \
+  MArray<T> \
   operator OP (const MSparse<T>& a, const T& s) \
   { \
     octave_idx_type nr = a.rows (); \
     octave_idx_type nc = a.cols (); \
  \
-    MArray2<T> r (nr, nc, (0.0 OP s));  \
+    MArray<T> r (nr, nc, (0.0 OP s));  \
  \
     for (octave_idx_type j = 0; j < nc; j++) \
       for (octave_idx_type i = a.cidx(j); i < a.cidx(j+1); i++) \
@@ -233,13 +233,13 @@ SPARSE_A2S_OP_2 (/)
 
 #define SPARSE_SA2_OP_1(OP) \
   template <class T> \
-  MArray2<T> \
+  MArray<T> \
   operator OP (const T& s, const MSparse<T>& a) \
   { \
     octave_idx_type nr = a.rows (); \
     octave_idx_type nc = a.cols (); \
  \
-    MArray2<T> r (nr, nc, (s OP 0.0));  \
+    MArray<T> r (nr, nc, (s OP 0.0));  \
  \
     for (octave_idx_type j = 0; j < nc; j++) \
       for (octave_idx_type i = a.cidx(j); i < a.cidx(j+1); i++) \

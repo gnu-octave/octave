@@ -24,7 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_MSparse_h)
 #define octave_MSparse_h 1
 
-#include "MArray2.h"
+#include "MArray.h"
 
 #include "Sparse.h"
 
@@ -34,7 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "MSparse-defs.h"
 
-SPARSE_OPS_FORWARD_DECLS (MSparse, MArray2, )
+SPARSE_OPS_FORWARD_DECLS (MSparse, MArray, )
 
 template <class T>
 class
@@ -131,7 +131,7 @@ public:
   // Currently, the OPS functions don't need to be friends, but that
   // may change.
 
-  // SPARSE_OPS_FRIEND_DECLS (MSparse, MArray2)
+  // SPARSE_OPS_FRIEND_DECLS (MSparse, MArray)
 };
 
 #endif

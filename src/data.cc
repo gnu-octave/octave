@@ -1892,7 +1892,7 @@ omitted, it defaults to the first non-singleton dimension.\n\
   do \
     { \
       int dv_len = dv.length (); \
-      Array<octave_idx_type> ra_idx (dv_len > 1 ? dv_len : 2, 0); \
+      Array<octave_idx_type> ra_idx (dv_len > 1 ? dv_len : 2, 1, 0); \
       \
       for (int j = 1; j < n_args; j++) \
         { \
@@ -2073,7 +2073,7 @@ do_cat (const octave_value_list& args, std::string fname)
                 return retval;
 
               int dv_len = dv.length ();
-              Array<octave_idx_type> ra_idx (dv_len, 0);
+              Array<octave_idx_type> ra_idx (dv_len, 1, 0);
 
               for (int j = 1; j < n_args; j++)
                 {
@@ -4835,7 +4835,7 @@ by an empty argument.\n\
     new_size = args(1).int_vector_value ();
   else if (nargin > 2)
     {
-      new_size.resize (nargin-1);
+      new_size.resize (1, nargin-1);
       int empty_dim = -1;
       
       for (int i = 1; i < nargin; i++)
@@ -4903,8 +4903,6 @@ by an empty argument.\n\
       else
         break;
     }
-
-  new_size.resize (n);
 
   if (n < 2)
     {
@@ -6368,8 +6366,8 @@ do_accumarray_minmax (const idx_vector& idx, const NDT& vals,
   NDT retval (dim_vector (n, 1), zero_val);
 
   // Pick minimizer or maximizer.
-  void (MArrayN<T>::*op) (const idx_vector&, const MArrayN<T>&) = 
-    ismin ? (&MArrayN<T>::idx_min) : (&MArrayN<T>::idx_max);
+  void (MArray<T>::*op) (const idx_vector&, const MArray<T>&) = 
+    ismin ? (&MArray<T>::idx_min) : (&MArray<T>::idx_max);
 
   octave_idx_type l = idx.length (n);
   if (vals.numel () == 1)

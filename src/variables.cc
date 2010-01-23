@@ -913,7 +913,7 @@ get_dims_str (const octave_value& val)
 
   Matrix sz = tmp.size ();
 
-  dim_vector dv (sz.numel ());
+  dim_vector dv = dim_vector::alloc (sz.numel ());
 
   for (octave_idx_type i = 0; i < dv.length (); i++)
     dv(i) = sz(i);

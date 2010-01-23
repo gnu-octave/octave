@@ -24,7 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_FloatNDArray_h)
 #define octave_FloatNDArray_h 1
 
-#include "MArrayN.h"
+#include "MArray.h"
 #include "fMatrix.h"
 #include "intNDArray.h"
 
@@ -34,37 +34,37 @@ along with Octave; see the file COPYING.  If not, see
 
 class
 OCTAVE_API
-FloatNDArray : public MArrayN<float>
+FloatNDArray : public MArray<float>
 {
 public:
 
   typedef FloatMatrix matrix_type;
 
-  FloatNDArray (void) : MArrayN<float> () { }
+  FloatNDArray (void) : MArray<float> () { }
 
-  FloatNDArray (const dim_vector& dv) : MArrayN<float> (dv) { }
+  FloatNDArray (const dim_vector& dv) : MArray<float> (dv) { }
 
   FloatNDArray (const dim_vector& dv, float val)
-    : MArrayN<float> (dv, val) { }
+    : MArray<float> (dv, val) { }
   
-  FloatNDArray (const FloatNDArray& a) : MArrayN<float> (a) { }
+  FloatNDArray (const FloatNDArray& a) : MArray<float> (a) { }
 
-  FloatNDArray (const FloatMatrix& a) : MArrayN<float> (a) { }
-
-  template <class U>
-  FloatNDArray (const MArrayN<U>& a) : MArrayN<float> (a) { }
+  FloatNDArray (const FloatMatrix& a) : MArray<float> (a) { }
 
   template <class U>
-  FloatNDArray (const Array<U>& a) : MArrayN<float> (a) { }
+  FloatNDArray (const MArray<U>& a) : MArray<float> (a) { }
 
   template <class U>
-  explicit FloatNDArray (const intNDArray<U>& a) : MArrayN<float> (a) { }
+  FloatNDArray (const Array<U>& a) : MArray<float> (a) { }
+
+  template <class U>
+  explicit FloatNDArray (const intNDArray<U>& a) : MArray<float> (a) { }
 
   FloatNDArray (const charNDArray&); 
 
   FloatNDArray& operator = (const FloatNDArray& a)
     {
-      MArrayN<float>::operator = (a);
+      MArray<float>::operator = (a);
       return *this;
     }
 
@@ -133,7 +133,7 @@ public:
 
   FloatMatrix matrix_value (void) const;
 
-  FloatNDArray squeeze (void) const { return MArrayN<float>::squeeze (); }
+  FloatNDArray squeeze (void) const { return MArray<float>::squeeze (); }
 
   static void increment_index (Array<octave_idx_type>& ra_idx,
                                const dim_vector& dimensions,
@@ -153,13 +153,13 @@ public:
 
   FloatNDArray& changesign (void) 
     { 
-      MArrayN<float>::changesign (); 
+      MArray<float>::changesign (); 
       return *this; 
     }
 
 private:
 
-  FloatNDArray (float *d, const dim_vector& dv) : MArrayN<float> (d, dv) { }
+  FloatNDArray (float *d, const dim_vector& dv) : MArray<float> (d, dv) { }
 };
 
 // Publish externally used friend functions.
@@ -178,7 +178,7 @@ SND_BOOL_OP_DECLS (float, FloatNDArray, OCTAVE_API)
 NDND_CMP_OP_DECLS (FloatNDArray, FloatNDArray, OCTAVE_API)
 NDND_BOOL_OP_DECLS (FloatNDArray, FloatNDArray, OCTAVE_API)
 
-MARRAY_FORWARD_DEFS (MArrayN, FloatNDArray, float)
+MARRAY_FORWARD_DEFS (MArray, FloatNDArray, float)
 
 BSXFUN_STDOP_DECLS (FloatNDArray, OCTAVE_API)
 BSXFUN_STDREL_DECLS (FloatNDArray, OCTAVE_API)

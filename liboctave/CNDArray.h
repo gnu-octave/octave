@@ -23,7 +23,7 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_ComplexNDArray_h)
 #define octave_ComplexNDArray_h 1
 
-#include "MArrayN.h"
+#include "MArray.h"
 #include "CMatrix.h"
 
 #include "mx-defs.h"
@@ -32,34 +32,34 @@ along with Octave; see the file COPYING.  If not, see
 
 class
 OCTAVE_API
-ComplexNDArray : public MArrayN<Complex>
+ComplexNDArray : public MArray<Complex>
 {
 public:
 
   typedef ComplexMatrix matrix_type;
 
-  ComplexNDArray (void) : MArrayN<Complex> () { }
+  ComplexNDArray (void) : MArray<Complex> () { }
 
-  ComplexNDArray (const dim_vector& dv) : MArrayN<Complex> (dv) { }
+  ComplexNDArray (const dim_vector& dv) : MArray<Complex> (dv) { }
 
   ComplexNDArray (const dim_vector& dv, const Complex& val)
-    : MArrayN<Complex> (dv, val) { }
+    : MArray<Complex> (dv, val) { }
   
-  ComplexNDArray (const ComplexNDArray& a) : MArrayN<Complex> (a) { }
+  ComplexNDArray (const ComplexNDArray& a) : MArray<Complex> (a) { }
 
-  ComplexNDArray (const ComplexMatrix& a) : MArrayN<Complex> (a) { }
-
-  template <class U>
-  ComplexNDArray (const MArrayN<U>& a) : MArrayN<Complex> (a) { }
+  ComplexNDArray (const ComplexMatrix& a) : MArray<Complex> (a) { }
 
   template <class U>
-  ComplexNDArray (const Array<U>& a) : MArrayN<Complex> (a) { }
+  ComplexNDArray (const MArray<U>& a) : MArray<Complex> (a) { }
+
+  template <class U>
+  ComplexNDArray (const Array<U>& a) : MArray<Complex> (a) { }
 
   ComplexNDArray (const charNDArray&); 
 
   ComplexNDArray& operator = (const ComplexNDArray& a)
     {
-      MArrayN<Complex>::operator = (a);
+      MArray<Complex>::operator = (a);
       return *this;
     }
 
@@ -121,7 +121,7 @@ public:
 
   ComplexMatrix matrix_value (void) const;
 
-  ComplexNDArray squeeze (void) const { return MArrayN<Complex>::squeeze (); }
+  ComplexNDArray squeeze (void) const { return MArray<Complex>::squeeze (); }
 
   static void increment_index (Array<octave_idx_type>& ra_idx,
                                const dim_vector& dimensions,
@@ -144,14 +144,14 @@ public:
 
   ComplexNDArray& changesign (void) 
     { 
-      MArrayN<Complex>::changesign (); 
+      MArray<Complex>::changesign (); 
       return *this; 
     }
 
 private:
 
   ComplexNDArray (Complex *d, const dim_vector& dv)
-    : MArrayN<Complex> (d, dv) { }
+    : MArray<Complex> (d, dv) { }
 };
 
 extern OCTAVE_API ComplexNDArray conj (const ComplexNDArray& a);
@@ -167,7 +167,7 @@ SND_BOOL_OP_DECLS (Complex, ComplexNDArray, OCTAVE_API)
 NDND_CMP_OP_DECLS (ComplexNDArray, ComplexNDArray, OCTAVE_API)
 NDND_BOOL_OP_DECLS (ComplexNDArray, ComplexNDArray, OCTAVE_API)
 
-MARRAY_FORWARD_DEFS (MArrayN, ComplexNDArray, Complex)
+MARRAY_FORWARD_DEFS (MArray, ComplexNDArray, Complex)
 
 extern OCTAVE_API ComplexNDArray& operator *= (ComplexNDArray& a, double s);
 extern OCTAVE_API ComplexNDArray& operator /= (ComplexNDArray& a, double s);

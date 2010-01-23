@@ -1849,7 +1849,7 @@ octave_print_internal (std::ostream& os, const DiagMatrix& m,
  \
           dim_vector dims = nda.dims (); \
  \
-          Array<octave_idx_type> ra_idx (ndims, 0); \
+          Array<octave_idx_type> ra_idx (ndims, 1, 0); \
  \
           octave_idx_type m = 1; \
  \
@@ -1884,7 +1884,7 @@ octave_print_internal (std::ostream& os, const DiagMatrix& m,
                   nm += buf.str (); \
                 } \
  \
-              Array<idx_vector> idx (ndims); \
+              Array<idx_vector> idx (ndims, 1); \
  \
               idx(0) = idx_vector (':'); \
               idx(1) = idx_vector (':'); \
@@ -2685,7 +2685,7 @@ octave_print_internal (std::ostream& os, const Array<std::string>& nda,
 
       dim_vector dims = nda.dims ();
 
-      Array<octave_idx_type> ra_idx (ndims, 0);
+      Array<octave_idx_type> ra_idx (ndims, 1, 0);
 
       octave_idx_type m = 1;
 
@@ -2718,7 +2718,7 @@ octave_print_internal (std::ostream& os, const Array<std::string>& nda,
               nm += buf.str ();
             }
 
-          Array<idx_vector> idx (ndims);
+          Array<idx_vector> idx (ndims, 1);
 
           idx(0) = idx_vector (':');
           idx(1) = idx_vector (':');
@@ -2950,7 +2950,7 @@ octave_print_internal_template (std::ostream& os, const intNDArray<T>& nda,
     {
       int ndims = nda.ndims ();
 
-      Array<octave_idx_type> ra_idx (ndims, 0);
+      Array<octave_idx_type> ra_idx (ndims, 1, 0);
 
       dim_vector dims = nda.dims ();
 
@@ -2985,7 +2985,7 @@ octave_print_internal_template (std::ostream& os, const intNDArray<T>& nda,
               os << nm << " =\n\n";
             }
 
-          Array<idx_vector> idx (ndims);
+          Array<idx_vector> idx (ndims, 1);
 
           idx(0) = idx_vector (':');
           idx(1) = idx_vector (':');
@@ -3021,7 +3021,7 @@ octave_print_internal_template (std::ostream& os, const intNDArray<T>& nda,
 
       dim_vector dims = nda.dims ();
 
-      Array<octave_idx_type> ra_idx (ndims, 0);
+      Array<octave_idx_type> ra_idx (ndims, 1, 0);
 
       octave_idx_type m = 1;
 
@@ -3090,7 +3090,7 @@ octave_print_internal_template (std::ostream& os, const intNDArray<T>& nda,
               os << nm << " =\n\n";
             }
 
-          Array<idx_vector> idx (ndims);
+          Array<idx_vector> idx (ndims, 1);
 
           idx(0) = idx_vector (':');
           idx(1) = idx_vector (':');

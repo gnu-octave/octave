@@ -109,17 +109,17 @@ FloatComplexSCHUR::init (const FloatComplexMatrix& a, const std::string& ord,
   FloatComplex *s = schur_mat.fortran_vec ();
   FloatComplex *q = unitary_mat.fortran_vec ();
 
-  Array<float> rwork (n);
+  Array<float> rwork (n, 1);
   float *prwork = rwork.fortran_vec ();
 
-  Array<FloatComplex> w (n);
+  Array<FloatComplex> w (n, 1);
   FloatComplex *pw = w.fortran_vec ();
 
-  Array<FloatComplex> work (lwork);
+  Array<FloatComplex> work (lwork, 1);
   FloatComplex *pwork = work.fortran_vec ();
 
   // BWORK is not referenced for non-ordered Schur.
-  Array<octave_idx_type> bwork ((ord_char == 'N' || ord_char == 'n') ? 0 : n);
+  Array<octave_idx_type> bwork ((ord_char == 'N' || ord_char == 'n') ? 0 : n, 1);
   octave_idx_type *pbwork = bwork.fortran_vec ();
 
   F77_XFCN (cgeesx, CGEESX, (F77_CONST_CHAR_ARG2 (&jobvs, 1),

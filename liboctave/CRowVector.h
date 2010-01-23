@@ -25,6 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_ComplexRowVector_h 1
 
 #include "MArray.h"
+#include "dRowVector.h"
 
 #include "mx-defs.h"
 
@@ -36,19 +37,20 @@ friend class ComplexColumnVector;
 
 public:
 
-  ComplexRowVector (void) : MArray<Complex> () { }
+  ComplexRowVector (void) : MArray<Complex> (1, 0) { }
 
-  explicit ComplexRowVector (octave_idx_type n) : MArray<Complex> (n) { }
+  explicit ComplexRowVector (octave_idx_type n) : MArray<Complex> (1, n) { }
 
   explicit ComplexRowVector (const dim_vector& dv) : MArray<Complex> (dv) { }
 
-  ComplexRowVector (octave_idx_type n, const Complex& val) : MArray<Complex> (n, val) { }
+  ComplexRowVector (octave_idx_type n, const Complex& val) : MArray<Complex> (1, n, val) { }
 
   ComplexRowVector (const ComplexRowVector& a) : MArray<Complex> (a) { }
 
-  ComplexRowVector (const MArray<Complex>& a) : MArray<Complex> (a) { }
+  ComplexRowVector (const MArray<Complex>& a) : MArray<Complex> (a.as_row ()) { }
+  ComplexRowVector (const Array<Complex>& a) : MArray<Complex> (a.as_row ()) { }
 
-  explicit ComplexRowVector (const RowVector& a);
+  explicit ComplexRowVector (const RowVector& a) : MArray<Complex> (a) { }
 
   ComplexRowVector& operator = (const ComplexRowVector& a)
     {
@@ -106,9 +108,15 @@ public:
   friend std::ostream& operator << (std::ostream& os, const ComplexRowVector& a);
   friend std::istream& operator >> (std::istream& is, ComplexRowVector& a);
 
+  void resize (octave_idx_type n, const Complex& rfv = Array<Complex>::resize_fill_value ())
+    { Array<Complex>::resize (1, n, rfv); }
+
+  void clear (octave_idx_type n)
+    { Array<Complex>::clear (1, n); }
+
 private:
 
-  ComplexRowVector (Complex *d, octave_idx_type l) : MArray<Complex> (d, l) { }
+  ComplexRowVector (Complex *d, octave_idx_type l) : MArray<Complex> (d, 1, l) { }
 };
 
 // row vector by column vector -> scalar

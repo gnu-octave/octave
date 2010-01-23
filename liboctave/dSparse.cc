@@ -349,7 +349,7 @@ SparseMatrix::max (Array<octave_idx_type>& idx_arg, int dim) const
     }
   else
     {
-      idx_arg.resize_fill (nr, 1, 0);
+      idx_arg.resize (nr, 1, 0);
 
       for (octave_idx_type i = cidx(0); i < cidx(1); i++)
         idx_arg.elem(ridx(i)) = -1;
@@ -498,7 +498,7 @@ SparseMatrix::min (Array<octave_idx_type>& idx_arg, int dim) const
     }
   else
     {
-      idx_arg.resize_fill (nr, 1, 0);
+      idx_arg.resize (nr, 1, 0);
 
       for (octave_idx_type i = cidx(0); i < cidx(1); i++)
         idx_arg.elem(ridx(i)) = -1;
@@ -4019,7 +4019,7 @@ SparseMatrix::trisolve (MatrixType &mattype, const SparseMatrix& b,
           OCTAVE_LOCAL_BUFFER (double, DU, nr - 1);
           OCTAVE_LOCAL_BUFFER (double, D, nr);
           OCTAVE_LOCAL_BUFFER (double, DL, nr - 1);
-          Array<octave_idx_type> ipvt (nr);
+          Array<octave_idx_type> ipvt (nr, 1);
           octave_idx_type *pipvt = ipvt.fortran_vec ();
 
           if (mattype.is_dense ())
@@ -4318,7 +4318,7 @@ SparseMatrix::trisolve (MatrixType &mattype, const SparseComplexMatrix& b,
           OCTAVE_LOCAL_BUFFER (double, DU, nr - 1);
           OCTAVE_LOCAL_BUFFER (double, D, nr);
           OCTAVE_LOCAL_BUFFER (double, DL, nr - 1);
-          Array<octave_idx_type> ipvt (nr);
+          Array<octave_idx_type> ipvt (nr, 1);
           octave_idx_type *pipvt = ipvt.fortran_vec ();
 
           if (mattype.is_dense ())
@@ -4533,9 +4533,9 @@ SparseMatrix::bsolve (MatrixType &mattype, const Matrix& b,
             {
               if (calc_cond)
                 {
-                  Array<double> z (3 * nr);
+                  Array<double> z (3 * nr, 1);
                   double *pz = z.fortran_vec ();
-                  Array<octave_idx_type> iz (nr);
+                  Array<octave_idx_type> iz (nr, 1);
                   octave_idx_type *piz = iz.fortran_vec ();
 
                   F77_XFCN (dpbcon, DPBCON, 
@@ -4627,7 +4627,7 @@ SparseMatrix::bsolve (MatrixType &mattype, const Matrix& b,
                 }
             }
 
-          Array<octave_idx_type> ipvt (nr);
+          Array<octave_idx_type> ipvt (nr, 1);
           octave_idx_type *pipvt = ipvt.fortran_vec ();
 
           F77_XFCN (dgbtrf, DGBTRF, (nr, nr, n_lower, n_upper, tmp_data, 
@@ -4655,9 +4655,9 @@ SparseMatrix::bsolve (MatrixType &mattype, const Matrix& b,
               if (calc_cond)
                 {
                   char job = '1';
-                  Array<double> z (3 * nr);
+                  Array<double> z (3 * nr, 1);
                   double *pz = z.fortran_vec ();
-                  Array<octave_idx_type> iz (nr);
+                  Array<octave_idx_type> iz (nr, 1);
                   octave_idx_type *piz = iz.fortran_vec ();
 
                   F77_XFCN (dgbcon, DGBCON, 
@@ -4781,9 +4781,9 @@ SparseMatrix::bsolve (MatrixType &mattype, const SparseMatrix& b,
             {
               if (calc_cond)
                 {
-                  Array<double> z (3 * nr);
+                  Array<double> z (3 * nr, 1);
                   double *pz = z.fortran_vec ();
-                  Array<octave_idx_type> iz (nr);
+                  Array<octave_idx_type> iz (nr, 1);
                   octave_idx_type *piz = iz.fortran_vec ();
 
                   F77_XFCN (dpbcon, DPBCON, 
@@ -4910,7 +4910,7 @@ SparseMatrix::bsolve (MatrixType &mattype, const SparseMatrix& b,
                 }
             }
 
-          Array<octave_idx_type> ipvt (nr);
+          Array<octave_idx_type> ipvt (nr, 1);
           octave_idx_type *pipvt = ipvt.fortran_vec ();
 
           F77_XFCN (dgbtrf, DGBTRF, (nr, nr, n_lower, n_upper, tmp_data, 
@@ -4936,9 +4936,9 @@ SparseMatrix::bsolve (MatrixType &mattype, const SparseMatrix& b,
               if (calc_cond)
                 {
                   char job = '1';
-                  Array<double> z (3 * nr);
+                  Array<double> z (3 * nr, 1);
                   double *pz = z.fortran_vec ();
-                  Array<octave_idx_type> iz (nr);
+                  Array<octave_idx_type> iz (nr, 1);
                   octave_idx_type *piz = iz.fortran_vec ();
 
                   F77_XFCN (dgbcon, DGBCON, 
@@ -5101,9 +5101,9 @@ SparseMatrix::bsolve (MatrixType &mattype, const ComplexMatrix& b,
             {
               if (calc_cond)
                 {
-                  Array<double> z (3 * nr);
+                  Array<double> z (3 * nr, 1);
                   double *pz = z.fortran_vec ();
-                  Array<octave_idx_type> iz (nr);
+                  Array<octave_idx_type> iz (nr, 1);
                   octave_idx_type *piz = iz.fortran_vec ();
 
                   F77_XFCN (dpbcon, DPBCON, 
@@ -5226,7 +5226,7 @@ SparseMatrix::bsolve (MatrixType &mattype, const ComplexMatrix& b,
                 }
             }
 
-          Array<octave_idx_type> ipvt (nr);
+          Array<octave_idx_type> ipvt (nr, 1);
           octave_idx_type *pipvt = ipvt.fortran_vec ();
 
           F77_XFCN (dgbtrf, DGBTRF, (nr, nr, n_lower, n_upper, tmp_data, 
@@ -5252,9 +5252,9 @@ SparseMatrix::bsolve (MatrixType &mattype, const ComplexMatrix& b,
               if (calc_cond)
                 {
                   char job = '1';
-                  Array<double> z (3 * nr);
+                  Array<double> z (3 * nr, 1);
                   double *pz = z.fortran_vec ();
-                  Array<octave_idx_type> iz (nr);
+                  Array<octave_idx_type> iz (nr, 1);
                   octave_idx_type *piz = iz.fortran_vec ();
 
                   F77_XFCN (dpbcon, DPBCON, 
@@ -5401,9 +5401,9 @@ SparseMatrix::bsolve (MatrixType &mattype, const SparseComplexMatrix& b,
             {
               if (calc_cond)
                 {
-                  Array<double> z (3 * nr);
+                  Array<double> z (3 * nr, 1);
                   double *pz = z.fortran_vec ();
-                  Array<octave_idx_type> iz (nr);
+                  Array<octave_idx_type> iz (nr, 1);
                   octave_idx_type *piz = iz.fortran_vec ();
 
                   F77_XFCN (dpbcon, DPBCON, 
@@ -5556,7 +5556,7 @@ SparseMatrix::bsolve (MatrixType &mattype, const SparseComplexMatrix& b,
                 }
             }
 
-          Array<octave_idx_type> ipvt (nr);
+          Array<octave_idx_type> ipvt (nr, 1);
           octave_idx_type *pipvt = ipvt.fortran_vec ();
 
           F77_XFCN (dgbtrf, DGBTRF, (nr, nr, n_lower, n_upper, tmp_data, 
@@ -5582,9 +5582,9 @@ SparseMatrix::bsolve (MatrixType &mattype, const SparseComplexMatrix& b,
               if (calc_cond)
                 {
                   char job = '1';
-                  Array<double> z (3 * nr);
+                  Array<double> z (3 * nr, 1);
                   double *pz = z.fortran_vec ();
-                  Array<octave_idx_type> iz (nr);
+                  Array<octave_idx_type> iz (nr, 1);
                   octave_idx_type *piz = iz.fortran_vec ();
 
                   F77_XFCN (dgbcon, DGBCON, 

@@ -40,34 +40,34 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-obj.h"
 
 #if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
-extern MArrayN<double>
-filter (MArray<double>&, MArray<double>&, MArrayN<double>&, int dim);
+extern MArray<double>
+filter (MArray<double>&, MArray<double>&, MArray<double>&, int dim);
 
-extern MArrayN<Complex>
-filter (MArray<Complex>&, MArray<Complex>&, MArrayN<Complex>&, int dim);
+extern MArray<Complex>
+filter (MArray<Complex>&, MArray<Complex>&, MArray<Complex>&, int dim);
 
-extern MArrayN<float>
-filter (MArray<float>&, MArray<float>&, MArrayN<float>&, int dim);
+extern MArray<float>
+filter (MArray<float>&, MArray<float>&, MArray<float>&, int dim);
 
-extern MArrayN<FloatComplex>
-filter (MArray<FloatComplex>&, MArray<FloatComplex>&, MArrayN<FloatComplex>&, int dim);
+extern MArray<FloatComplex>
+filter (MArray<FloatComplex>&, MArray<FloatComplex>&, MArray<FloatComplex>&, int dim);
 #endif
 
 template <class T>
-MArrayN<T>
-filter (MArray<T>& b, MArray<T>& a, MArrayN<T>& x, MArrayN<T>& si, 
+MArray<T>
+filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si, 
         int dim = 0)
 {
-  MArrayN<T> y;
+  MArray<T> y;
 
   octave_idx_type a_len  = a.length ();
   octave_idx_type b_len  = b.length ();
 
   octave_idx_type ab_len = a_len > b_len ? a_len : b_len;
 
-  b.resize (ab_len, 0.0);
+  b.resize (ab_len, 1, 0.0);
   if (a_len > 1)
-    a.resize (ab_len, 0.0);
+    a.resize (ab_len, 1, 0.0);
 
   T norm = a (0);
 
@@ -227,26 +227,26 @@ filter (MArray<T>& b, MArray<T>& a, MArrayN<T>& x, MArrayN<T>& si,
 }
 
 #if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
-extern MArrayN<double>
-filter (MArray<double>&, MArray<double>&, MArrayN<double>&,
-        MArrayN<double>&, int dim);
+extern MArray<double>
+filter (MArray<double>&, MArray<double>&, MArray<double>&,
+        MArray<double>&, int dim);
 
-extern MArrayN<Complex>
-filter (MArray<Complex>&, MArray<Complex>&, MArrayN<Complex>&,
-        MArrayN<Complex>&, int dim);
+extern MArray<Complex>
+filter (MArray<Complex>&, MArray<Complex>&, MArray<Complex>&,
+        MArray<Complex>&, int dim);
 
-extern MArrayN<float>
-filter (MArray<float>&, MArray<float>&, MArrayN<float>&,
-        MArrayN<float>&, int dim);
+extern MArray<float>
+filter (MArray<float>&, MArray<float>&, MArray<float>&,
+        MArray<float>&, int dim);
 
-extern MArrayN<FloatComplex>
-filter (MArray<FloatComplex>&, MArray<FloatComplex>&, MArrayN<FloatComplex>&,
-        MArrayN<FloatComplex>&, int dim);
+extern MArray<FloatComplex>
+filter (MArray<FloatComplex>&, MArray<FloatComplex>&, MArray<FloatComplex>&,
+        MArray<FloatComplex>&, int dim);
 #endif
 
 template <class T>
-MArrayN<T>
-filter (MArray<T>& b, MArray<T>& a, MArrayN<T>& x, int dim = -1)
+MArray<T>
+filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, int dim = -1)
 {
   dim_vector x_dims = x.dims();
 
@@ -264,7 +264,7 @@ filter (MArray<T>& b, MArray<T>& a, MArrayN<T>& x, int dim = -1)
     if (dim < 0 || dim > x_dims.length ())
       {
         error ("filter: filtering over invalid dimension");
-        return MArrayN<T> ();
+        return MArray<T> ();
       }
 
   octave_idx_type a_len = a.length ();
@@ -276,7 +276,7 @@ filter (MArray<T>& b, MArray<T>& a, MArrayN<T>& x, int dim = -1)
     si_dims(i) = si_dims(i-1);
   si_dims(0) = si_len;
   
-  MArrayN<T> si (si_dims, T (0.0));
+  MArray<T> si (si_dims, T (0.0));
 
   return filter (b, a, x, si, dim);
 }
@@ -654,33 +654,33 @@ $$\n\
   return retval;
 }
 
-template MArrayN<double>
-filter (MArray<double>&, MArray<double>&, MArrayN<double>&,
-        MArrayN<double>&, int dim);
+template MArray<double>
+filter (MArray<double>&, MArray<double>&, MArray<double>&,
+        MArray<double>&, int dim);
 
-template MArrayN<double>
-filter (MArray<double>&, MArray<double>&, MArrayN<double>&, int dim);
+template MArray<double>
+filter (MArray<double>&, MArray<double>&, MArray<double>&, int dim);
 
-template MArrayN<Complex>
-filter (MArray<Complex>&, MArray<Complex>&, MArrayN<Complex>&,
-        MArrayN<Complex>&, int dim);
+template MArray<Complex>
+filter (MArray<Complex>&, MArray<Complex>&, MArray<Complex>&,
+        MArray<Complex>&, int dim);
 
-template MArrayN<Complex>
-filter (MArray<Complex>&, MArray<Complex>&, MArrayN<Complex>&, int dim);
+template MArray<Complex>
+filter (MArray<Complex>&, MArray<Complex>&, MArray<Complex>&, int dim);
 
-template MArrayN<float>
-filter (MArray<float>&, MArray<float>&, MArrayN<float>&,
-        MArrayN<float>&, int dim);
+template MArray<float>
+filter (MArray<float>&, MArray<float>&, MArray<float>&,
+        MArray<float>&, int dim);
 
-template MArrayN<float>
-filter (MArray<float>&, MArray<float>&, MArrayN<float>&, int dim);
+template MArray<float>
+filter (MArray<float>&, MArray<float>&, MArray<float>&, int dim);
 
-template MArrayN<FloatComplex>
-filter (MArray<FloatComplex>&, MArray<FloatComplex>&, MArrayN<FloatComplex>&,
-        MArrayN<FloatComplex>&, int dim);
+template MArray<FloatComplex>
+filter (MArray<FloatComplex>&, MArray<FloatComplex>&, MArray<FloatComplex>&,
+        MArray<FloatComplex>&, int dim);
 
-template MArrayN<FloatComplex>
-filter (MArray<FloatComplex>&, MArray<FloatComplex>&, MArrayN<FloatComplex>&, int dim);
+template MArray<FloatComplex>
+filter (MArray<FloatComplex>&, MArray<FloatComplex>&, MArray<FloatComplex>&, int dim);
 
 /*
 %!shared a, b, x, r

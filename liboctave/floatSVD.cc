@@ -135,7 +135,7 @@ FloatSVD::init (const FloatMatrix& a, SVD::type svd_type)
 
   octave_idx_type lwork = -1;
 
-  Array<float> work (1);
+  Array<float> work (1, 1);
 
   octave_idx_type one = 1;
   octave_idx_type m1 = std::max (m, one), nrow_vt1 = std::max (nrow_vt, one);
@@ -148,7 +148,7 @@ FloatSVD::init (const FloatMatrix& a, SVD::type svd_type)
                              F77_CHAR_ARG_LEN (1)));
 
   lwork = static_cast<octave_idx_type> (work(0));
-  work.resize (lwork);
+  work.resize (lwork, 1);
 
   F77_XFCN (sgesvd, SGESVD, (F77_CONST_CHAR_ARG2 (&jobu, 1),
                              F77_CONST_CHAR_ARG2 (&jobv, 1),

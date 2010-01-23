@@ -51,10 +51,8 @@ extern "C"
 // FloatComplex Column Vector class
 
 FloatComplexColumnVector::FloatComplexColumnVector (const FloatColumnVector& a)
-   : MArray<FloatComplex> (a.length ())
+   : MArray<FloatComplex> (a)
 {
-  for (octave_idx_type i = 0; i < length (); i++)
-    elem (i) = a.elem (i);
 }
 
 bool

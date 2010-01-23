@@ -24,7 +24,8 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_ComplexMatrix_h)
 #define octave_ComplexMatrix_h 1
 
-#include "MArray2.h"
+#include "Array2.h"
+#include "MArray.h"
 #include "MDiagArray2.h"
 #include "MatrixType.h"
 
@@ -35,7 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 
 class
 OCTAVE_API
-ComplexMatrix : public MArray2<Complex>
+ComplexMatrix : public MArray<Complex>
 {
 public:
  
@@ -44,28 +45,28 @@ public:
 
   typedef void (*solve_singularity_handler) (double rcon);
 
-  ComplexMatrix (void) : MArray2<Complex> () { }
+  ComplexMatrix (void) : MArray<Complex> () { }
 
-  ComplexMatrix (octave_idx_type r, octave_idx_type c) : MArray2<Complex> (r, c) { }
+  ComplexMatrix (octave_idx_type r, octave_idx_type c) : MArray<Complex> (r, c) { }
 
   ComplexMatrix (octave_idx_type r, octave_idx_type c, const Complex& val)
-    : MArray2<Complex> (r, c, val) { }
+    : MArray<Complex> (r, c, val) { }
 
-  ComplexMatrix (const dim_vector& dv) : MArray2<Complex> (dv) { }
+  ComplexMatrix (const dim_vector& dv) : MArray<Complex> (dv.redim (2)) { }
 
   ComplexMatrix (const dim_vector& dv, const Complex& val) 
-    : MArray2<Complex> (dv, val) { }
+    : MArray<Complex> (dv.redim (2), val) { }
 
-  ComplexMatrix (const ComplexMatrix& a) : MArray2<Complex> (a) { }
-
-  template <class U>
-  ComplexMatrix (const MArray2<U>& a) : MArray2<Complex> (a) { }
+  ComplexMatrix (const ComplexMatrix& a) : MArray<Complex> (a) { }
 
   template <class U>
-  ComplexMatrix (const Array2<U>& a) : MArray2<Complex> (a) { }
+  ComplexMatrix (const MArray<U>& a) : MArray<Complex> (a.as_matrix ()) { }
 
   template <class U>
-  ComplexMatrix (const Array<U>& a) : MArray2<Complex> (a) { }
+  ComplexMatrix (const Array2<U>& a) : MArray<Complex> (a) { }
+
+  template <class U>
+  ComplexMatrix (const Array<U>& a) : MArray<Complex> (a.as_matrix ()) { }
 
   ComplexMatrix (const Matrix& re, const Matrix& im);
 
@@ -89,7 +90,7 @@ public:
 
   ComplexMatrix& operator = (const ComplexMatrix& a)
     {
-      MArray2<Complex>::operator = (a);
+      MArray<Complex>::operator = (a);
       return *this;
     }
 
@@ -136,9 +137,9 @@ public:
   ComplexMatrix stack (const ComplexDiagMatrix& a) const;
 
   ComplexMatrix hermitian (void) const
-    { return MArray2<Complex>::hermitian (std::conj); }
+    { return MArray<Complex>::hermitian (std::conj); }
   ComplexMatrix transpose (void) const
-    { return MArray2<Complex>::transpose (); }
+    { return MArray<Complex>::transpose (); }
 
   friend OCTAVE_API ComplexMatrix conj (const ComplexMatrix& a);
 
@@ -378,7 +379,7 @@ public:
 
 private:
 
-  ComplexMatrix (Complex *d, octave_idx_type r, octave_idx_type c) : MArray2<Complex> (d, r, c) { }
+  ComplexMatrix (Complex *d, octave_idx_type r, octave_idx_type c) : MArray<Complex> (d, r, c) { }
 };
 
 extern OCTAVE_API ComplexMatrix conj (const ComplexMatrix& a);
@@ -431,6 +432,6 @@ SM_BOOL_OP_DECLS (Complex, ComplexMatrix, OCTAVE_API)
 MM_CMP_OP_DECLS (ComplexMatrix, ComplexMatrix, OCTAVE_API)
 MM_BOOL_OP_DECLS (ComplexMatrix, ComplexMatrix, OCTAVE_API)
 
-MARRAY_FORWARD_DEFS (MArray2, ComplexMatrix, Complex)
+MARRAY_FORWARD_DEFS (MArray, ComplexMatrix, Complex)
 
 #endif

@@ -111,20 +111,20 @@ SCHUR::init (const Matrix& a, const std::string& ord, bool calc_unitary)
   double *s = schur_mat.fortran_vec ();
   double *q = unitary_mat.fortran_vec ();
 
-  Array<double> wr (n);
+  Array<double> wr (n, 1);
   double *pwr = wr.fortran_vec ();
 
-  Array<double> wi (n);
+  Array<double> wi (n, 1);
   double *pwi = wi.fortran_vec ();
 
-  Array<double> work (lwork);
+  Array<double> work (lwork, 1);
   double *pwork = work.fortran_vec ();
 
   // BWORK is not referenced for the non-ordered Schur routine.
-  Array<octave_idx_type> bwork ((ord_char == 'N' || ord_char == 'n') ? 0 : n);
+  Array<octave_idx_type> bwork ((ord_char == 'N' || ord_char == 'n') ? 0 : n, 1);
   octave_idx_type *pbwork = bwork.fortran_vec ();
 
-  Array<octave_idx_type> iwork (liwork);
+  Array<octave_idx_type> iwork (liwork, 1);
   octave_idx_type *piwork = iwork.fortran_vec ();
 
   F77_XFCN (dgeesx, DGEESX, (F77_CONST_CHAR_ARG2 (&jobvs, 1),

@@ -160,7 +160,7 @@ DASPK::do_integrate (double tout)
 
       initialized = true;
 
-      info.resize (20);
+      info.resize (20, 1);
 
       for (octave_idx_type i = 0; i < 20; i++)
         info(i) = 0;
@@ -231,8 +231,8 @@ DASPK::do_integrate (double tout)
       if (eavfet == 1)
         lrw += n;
 
-      iwork.resize (liw);
-      rwork.resize (lrw);
+      iwork.resize (liw, 1);
+      rwork.resize (lrw, 1);
 
       piwork = iwork.fortran_vec ();
       prwork = rwork.fortran_vec ();

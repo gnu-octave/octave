@@ -91,7 +91,7 @@ convn (const MTa& a, const MTb& b)
   const octave_idx_type out_numel = out.numel ();
   
   // Iterate over every element of 'out'.
-  dim_vector idx_dim (ndims);
+  dim_vector idx_dim (ndims, 1);
 
   Array<octave_idx_type> a_idx (idx_dim);
   Array<octave_idx_type> b_idx (idx_dim);

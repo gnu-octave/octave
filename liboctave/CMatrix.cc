@@ -233,46 +233,39 @@ static const Complex Complex_NaN_result (octave_NaN, octave_NaN);
 // Complex Matrix class
 
 ComplexMatrix::ComplexMatrix (const Matrix& a)
-  : MArray2<Complex> (a.rows (), a.cols ())
+  : MArray<Complex> (a)
 {
-  for (octave_idx_type j = 0; j < cols (); j++)
-    for (octave_idx_type i = 0; i < rows (); i++)
-      elem (i, j) = a.elem (i, j);
 }
 
 ComplexMatrix::ComplexMatrix (const RowVector& rv)
-  : MArray2<Complex> (1, rv.length (), 0.0)
+  : MArray<Complex> (rv)
 {
-  for (octave_idx_type i = 0; i < rv.length (); i++)
-    elem (0, i) = rv.elem (i);
 }
 
 ComplexMatrix::ComplexMatrix (const ColumnVector& cv)
-  : MArray2<Complex> (cv.length (), 1, 0.0)
+  : MArray<Complex> (cv)
 {
-  for (octave_idx_type i = 0; i < cv.length (); i++)
-    elem (i, 0) = cv.elem (i);
 }
 
 ComplexMatrix::ComplexMatrix (const DiagMatrix& a)
-  : MArray2<Complex> (a.rows (), a.cols (), 0.0)
+  : MArray<Complex> (a.rows (), a.cols (), 0.0)
 {
   for (octave_idx_type i = 0; i < a.length (); i++)
     elem (i, i) = a.elem (i, i);
 }
 
 ComplexMatrix::ComplexMatrix (const ComplexRowVector& rv)
-  : MArray2<Complex> (Array2<Complex> (rv, 1, rv.length ()))
+  : MArray<Complex> (rv)
 {
 }
 
 ComplexMatrix::ComplexMatrix (const ComplexColumnVector& cv)
-  : MArray2<Complex> (Array2<Complex> (cv, cv.length (), 1))
+  : MArray<Complex> (cv)
 {
 }
 
 ComplexMatrix::ComplexMatrix (const ComplexDiagMatrix& a)
-  : MArray2<Complex> (a.rows (), a.cols (), 0.0)
+  : MArray<Complex> (a.rows (), a.cols (), 0.0)
 {
   for (octave_idx_type i = 0; i < a.length (); i++)
     elem (i, i) = a.elem (i, i);
@@ -282,15 +275,12 @@ ComplexMatrix::ComplexMatrix (const ComplexDiagMatrix& a)
 // here?
 
 ComplexMatrix::ComplexMatrix (const boolMatrix& a)
-  : MArray2<Complex> (a.rows (), a.cols (), 0.0)
+  : MArray<Complex> (a)
 {
-  for (octave_idx_type i = 0; i < a.rows (); i++)
-    for (octave_idx_type j = 0; j < a.cols (); j++)
-      elem (i, j) = a.elem (i, j);
 }
 
 ComplexMatrix::ComplexMatrix (const charMatrix& a)
-  : MArray2<Complex> (a.rows (), a.cols (), 0.0)
+  : MArray<Complex> (a.rows (), a.cols (), 0.0)
 {
   for (octave_idx_type i = 0; i < a.rows (); i++)
     for (octave_idx_type j = 0; j < a.cols (); j++)
@@ -298,7 +288,7 @@ ComplexMatrix::ComplexMatrix (const charMatrix& a)
 }
 
 ComplexMatrix::ComplexMatrix (const Matrix& re, const Matrix& im)
-  : MArray2<Complex> (re.rows (), re.cols ())
+  : MArray<Complex> (re.rows (), re.cols ())
 {
   if (im.rows () != rows () || im.cols () != cols ())
     (*current_liboctave_error_handler) ("complex: internal error");
@@ -442,7 +432,7 @@ ComplexMatrix::insert (const DiagMatrix& a, octave_idx_type r, octave_idx_type c
 ComplexMatrix&
 ComplexMatrix::insert (const ComplexMatrix& a, octave_idx_type r, octave_idx_type c)
 {
-  Array2<Complex>::insert (a, r, c);
+  Array<Complex>::insert (a, r, c);
   return *this;
 }
 
@@ -943,13 +933,13 @@ ComplexMatrix::extract_n (octave_idx_type r1, octave_idx_type c1, octave_idx_typ
 ComplexRowVector
 ComplexMatrix::row (octave_idx_type i) const
 {
-  return MArray<Complex> (index (idx_vector (i), idx_vector::colon));
+  return index (idx_vector (i), idx_vector::colon);
 }
 
 ComplexColumnVector
 ComplexMatrix::column (octave_idx_type i) const
 {
-  return MArray<Complex> (index (idx_vector::colon, idx_vector (i)));
+  return index (idx_vector::colon, idx_vector (i));
 }
 
 ComplexMatrix
@@ -1062,13 +1052,13 @@ ComplexMatrix::finverse (MatrixType &mattype, octave_idx_type& info,
     (*current_liboctave_error_handler) ("inverse requires square matrix");
   else
     {
-      Array<octave_idx_type> ipvt (nr);
+      Array<octave_idx_type> ipvt (nr, 1);
       octave_idx_type *pipvt = ipvt.fortran_vec ();
 
       retval = *this;
       Complex *tmp_data = retval.fortran_vec ();
 
-      Array<Complex> z(1);
+      Array<Complex> z(1, 1);
       octave_idx_type lwork = -1;
 
       // Query the optimum work array size.
@@ -1078,7 +1068,7 @@ ComplexMatrix::finverse (MatrixType &mattype, octave_idx_type& info,
 
       lwork = static_cast<octave_idx_type> (std::real(z(0)));
       lwork = (lwork <  2 *nc ? 2*nc : lwork);
-      z.resize (lwork);
+      z.resize (lwork, 1);
       Complex *pz = z.fortran_vec ();
 
       info = 0;
@@ -1099,7 +1089,7 @@ ComplexMatrix::finverse (MatrixType &mattype, octave_idx_type& info,
           // Now calculate the condition number for non-singular matrix.
           octave_idx_type zgecon_info = 0;
           char job = '1';
-          Array<double> rz (2 * nc);
+          Array<double> rz (2 * nc, 1);
           double *prz = rz.fortran_vec ();
           F77_XFCN (zgecon, ZGECON, (F77_CONST_CHAR_ARG2 (&job, 1),
                                      nc, tmp_data, nr, anorm, 
@@ -1340,7 +1330,7 @@ ComplexMatrix::fourier (void) const
 
   octave_idx_type nn = 4*npts+15;
 
-  Array<Complex> wsave (nn);
+  Array<Complex> wsave (nn, 1);
   Complex *pwsave = wsave.fortran_vec ();
 
   retval = *this;
@@ -1381,7 +1371,7 @@ ComplexMatrix::ifourier (void) const
 
   octave_idx_type nn = 4*npts+15;
 
-  Array<Complex> wsave (nn);
+  Array<Complex> wsave (nn, 1);
   Complex *pwsave = wsave.fortran_vec ();
 
   retval = *this;
@@ -1425,7 +1415,7 @@ ComplexMatrix::fourier2d (void) const
 
   octave_idx_type nn = 4*npts+15;
 
-  Array<Complex> wsave (nn);
+  Array<Complex> wsave (nn, 1);
   Complex *pwsave = wsave.fortran_vec ();
 
   retval = *this;
@@ -1444,10 +1434,10 @@ ComplexMatrix::fourier2d (void) const
   nsamples = nr;
   nn = 4*npts+15;
 
-  wsave.resize (nn);
+  wsave.resize (nn, 1);
   pwsave = wsave.fortran_vec ();
 
-  Array<Complex> tmp (npts);
+  Array<Complex> tmp (npts, 1);
   Complex *prow = tmp.fortran_vec ();
 
   F77_FUNC (zffti, ZFFTI) (npts, pwsave);
@@ -1491,7 +1481,7 @@ ComplexMatrix::ifourier2d (void) const
 
   octave_idx_type nn = 4*npts+15;
 
-  Array<Complex> wsave (nn);
+  Array<Complex> wsave (nn, 1);
   Complex *pwsave = wsave.fortran_vec ();
 
   retval = *this;
@@ -1513,10 +1503,10 @@ ComplexMatrix::ifourier2d (void) const
   nsamples = nr;
   nn = 4*npts+15;
 
-  wsave.resize (nn);
+  wsave.resize (nn, 1);
   pwsave = wsave.fortran_vec ();
 
-  Array<Complex> tmp (npts);
+  Array<Complex> tmp (npts, 1);
   Complex *prow = tmp.fortran_vec ();
 
   F77_FUNC (zffti, ZFFTI) (npts, pwsave);
@@ -1614,9 +1604,9 @@ ComplexMatrix::determinant (MatrixType& mattype,
             }
           else 
             {
-              Array<Complex> z (2 * nc);
+              Array<Complex> z (2 * nc, 1);
               Complex *pz = z.fortran_vec ();
-              Array<double> rz (nc);
+              Array<double> rz (nc, 1);
               double *prz = rz.fortran_vec ();
 
               F77_XFCN (zpocon, ZPOCON, (F77_CONST_CHAR_ARG2 (&job, 1),
@@ -1638,7 +1628,7 @@ ComplexMatrix::determinant (MatrixType& mattype,
 
       if (typ == MatrixType::Full)
         {
-          Array<octave_idx_type> ipvt (nr);
+          Array<octave_idx_type> ipvt (nr, 1);
           octave_idx_type *pipvt = ipvt.fortran_vec ();
 
           ComplexMatrix atmp = *this;
@@ -1665,9 +1655,9 @@ ComplexMatrix::determinant (MatrixType& mattype,
                 {
                   // Now calc the condition number for non-singular matrix.
                   char job = '1';
-                  Array<Complex> z (2 * nc);
+                  Array<Complex> z (2 * nc, 1);
                   Complex *pz = z.fortran_vec ();
-                  Array<double> rz (2 * nc);
+                  Array<double> rz (2 * nc, 1);
                   double *prz = rz.fortran_vec ();
 
                   F77_XFCN (zgecon, ZGECON, (F77_CONST_CHAR_ARG2 (&job, 1),
@@ -1730,9 +1720,9 @@ ComplexMatrix::rcond (MatrixType &mattype) const
           char uplo = 'U';
           char dia = 'N';
 
-          Array<Complex> z (2 * nc);
+          Array<Complex> z (2 * nc, 1);
           Complex *pz = z.fortran_vec ();
-          Array<double> rz (nc);
+          Array<double> rz (nc, 1);
           double *prz = rz.fortran_vec ();
 
           F77_XFCN (ztrcon, ZTRCON, (F77_CONST_CHAR_ARG2 (&norm, 1), 
@@ -1758,9 +1748,9 @@ ComplexMatrix::rcond (MatrixType &mattype) const
           char uplo = 'L';
           char dia = 'N';
 
-          Array<Complex> z (2 * nc);
+          Array<Complex> z (2 * nc, 1);
           Complex *pz = z.fortran_vec ();
-          Array<double> rz (nc);
+          Array<double> rz (nc, 1);
           double *prz = rz.fortran_vec ();
 
           F77_XFCN (ztrcon, ZTRCON, (F77_CONST_CHAR_ARG2 (&norm, 1), 
@@ -1804,9 +1794,9 @@ ComplexMatrix::rcond (MatrixType &mattype) const
                 }
               else 
                 {
-                  Array<Complex> z (2 * nc);
+                  Array<Complex> z (2 * nc, 1);
                   Complex *pz = z.fortran_vec ();
-                  Array<double> rz (nc);
+                  Array<double> rz (nc, 1);
                   double *prz = rz.fortran_vec ();
 
                   F77_XFCN (zpocon, ZPOCON, (F77_CONST_CHAR_ARG2 (&job, 1),
@@ -1824,16 +1814,16 @@ ComplexMatrix::rcond (MatrixType &mattype) const
             {
               octave_idx_type info = 0;
 
-              Array<octave_idx_type> ipvt (nr);
+              Array<octave_idx_type> ipvt (nr, 1);
               octave_idx_type *pipvt = ipvt.fortran_vec ();
 
               if(anorm < 0.)
                 anorm = atmp.abs().sum().
                   row(static_cast<octave_idx_type>(0)).max();
 
-              Array<Complex> z (2 * nc);
+              Array<Complex> z (2 * nc, 1);
               Complex *pz = z.fortran_vec ();
-              Array<double> rz (2 * nc);
+              Array<double> rz (2 * nc, 1);
               double *prz = rz.fortran_vec ();
 
               F77_XFCN (zgetrf, ZGETRF, (nr, nr, tmp_data, nr, pipvt, info));
@@ -1905,9 +1895,9 @@ ComplexMatrix::utsolve (MatrixType &mattype, const ComplexMatrix& b,
                   char uplo = 'U';
                   char dia = 'N';
 
-                  Array<Complex> z (2 * nc);
+                  Array<Complex> z (2 * nc, 1);
                   Complex *pz = z.fortran_vec ();
-                  Array<double> rz (nc);
+                  Array<double> rz (nc, 1);
                   double *prz = rz.fortran_vec ();
 
                   F77_XFCN (ztrcon, ZTRCON, (F77_CONST_CHAR_ARG2 (&norm, 1), 
@@ -2006,9 +1996,9 @@ ComplexMatrix::ltsolve (MatrixType &mattype, const ComplexMatrix& b,
                   char uplo = 'L';
                   char dia = 'N';
 
-                  Array<Complex> z (2 * nc);
+                  Array<Complex> z (2 * nc, 1);
                   Complex *pz = z.fortran_vec ();
-                  Array<double> rz (nc);
+                  Array<double> rz (nc, 1);
                   double *prz = rz.fortran_vec ();
 
                   F77_XFCN (ztrcon, ZTRCON, (F77_CONST_CHAR_ARG2 (&norm, 1), 
@@ -2114,9 +2104,9 @@ ComplexMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
             {
               if (calc_cond)
                 {
-                  Array<Complex> z (2 * nc);
+                  Array<Complex> z (2 * nc, 1);
                   Complex *pz = z.fortran_vec ();
-                  Array<double> rz (nc);
+                  Array<double> rz (nc, 1);
                   double *prz = rz.fortran_vec ();
 
                   F77_XFCN (zpocon, ZPOCON, (F77_CONST_CHAR_ARG2 (&job, 1),
@@ -2166,15 +2156,15 @@ ComplexMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
         {
           info = 0;
 
-          Array<octave_idx_type> ipvt (nr);
+          Array<octave_idx_type> ipvt (nr, 1);
           octave_idx_type *pipvt = ipvt.fortran_vec ();
 
           ComplexMatrix atmp = *this;
           Complex *tmp_data = atmp.fortran_vec ();
 
-          Array<Complex> z (2 * nc);
+          Array<Complex> z (2 * nc, 1);
           Complex *pz = z.fortran_vec ();
-          Array<double> rz (2 * nc);
+          Array<double> rz (2 * nc, 1);
           double *prz = rz.fortran_vec ();
 
           // Calculate the norm of the matrix, for later use.
@@ -2620,13 +2610,13 @@ ComplexMatrix::lssolve (const ComplexMatrix& b, octave_idx_type& info,
       Complex *tmp_data = atmp.fortran_vec ();
 
       Complex *pretval = retval.fortran_vec ();
-      Array<double> s (minmn);
+      Array<double> s (minmn, 1);
       double *ps = s.fortran_vec ();
 
       // Ask ZGELSD what the dimension of WORK should be.
       octave_idx_type lwork = -1;
 
-      Array<Complex> work (1);
+      Array<Complex> work (1, 1);
 
       octave_idx_type smlsiz;
       F77_FUNC (xilaenv, XILAENV) (9, F77_CONST_CHAR_ARG2 ("ZGELSD", 6),
@@ -2660,13 +2650,13 @@ ComplexMatrix::lssolve (const ComplexMatrix& b, octave_idx_type& info,
         + 3*smlsiz*nrhs + (smlsiz+1)*(smlsiz+1);
       if (lrwork < 1)
         lrwork = 1;
-      Array<double> rwork (lrwork);
+      Array<double> rwork (lrwork, 1);
       double *prwork = rwork.fortran_vec ();
 
       octave_idx_type liwork = 3 * minmn * nlvl + 11 * minmn;
       if (liwork < 1)
         liwork = 1;
-      Array<octave_idx_type> iwork (liwork);
+      Array<octave_idx_type> iwork (liwork, 1);
       octave_idx_type* piwork = iwork.fortran_vec ();
 
       F77_XFCN (zgelsd, ZGELSD, (m, n, nrhs, tmp_data, m, pretval, maxmn,
@@ -2704,7 +2694,7 @@ ComplexMatrix::lssolve (const ComplexMatrix& b, octave_idx_type& info,
         }
 
       lwork = static_cast<octave_idx_type> (std::real (work(0)));
-      work.resize (lwork);
+      work.resize (lwork, 1);
 
       F77_XFCN (zgelsd, ZGELSD, (m, n, nrhs, tmp_data, m, pretval,
                                  maxmn, ps, rcon, rank,
@@ -2821,13 +2811,13 @@ ComplexMatrix::lssolve (const ComplexColumnVector& b, octave_idx_type& info,
       Complex *tmp_data = atmp.fortran_vec ();
 
       Complex *pretval = retval.fortran_vec ();
-      Array<double> s (minmn);
+      Array<double> s (minmn, 1);
       double *ps = s.fortran_vec ();
 
       // Ask ZGELSD what the dimension of WORK should be.
       octave_idx_type lwork = -1;
 
-      Array<Complex> work (1);
+      Array<Complex> work (1, 1);
 
       octave_idx_type smlsiz;
       F77_FUNC (xilaenv, XILAENV) (9, F77_CONST_CHAR_ARG2 ("ZGELSD", 6),
@@ -2854,13 +2844,13 @@ ComplexMatrix::lssolve (const ComplexColumnVector& b, octave_idx_type& info,
         + 3*smlsiz*nrhs + (smlsiz+1)*(smlsiz+1);
       if (lrwork < 1)
         lrwork = 1;
-      Array<double> rwork (lrwork);
+      Array<double> rwork (lrwork, 1);
       double *prwork = rwork.fortran_vec ();
 
       octave_idx_type liwork = 3 * minmn * nlvl + 11 * minmn;
       if (liwork < 1)
         liwork = 1;
-      Array<octave_idx_type> iwork (liwork);
+      Array<octave_idx_type> iwork (liwork, 1);
       octave_idx_type* piwork = iwork.fortran_vec ();
 
       F77_XFCN (zgelsd, ZGELSD, (m, n, nrhs, tmp_data, m, pretval, maxmn,
@@ -2868,9 +2858,9 @@ ComplexMatrix::lssolve (const ComplexColumnVector& b, octave_idx_type& info,
                                  lwork, prwork, piwork, info));
 
       lwork = static_cast<octave_idx_type> (std::real (work(0)));
-      work.resize (lwork);
-      rwork.resize (static_cast<octave_idx_type> (rwork(0)));
-      iwork.resize (iwork(0));
+      work.resize (lwork, 1);
+      rwork.resize (static_cast<octave_idx_type> (rwork(0)), 1);
+      iwork.resize (iwork(0), 1);
 
       F77_XFCN (zgelsd, ZGELSD, (m, n, nrhs, tmp_data, m, pretval,
                                  maxmn, ps, rcon, rank,
@@ -3259,7 +3249,7 @@ Matrix ComplexMatrix::abs (void) const
 ComplexMatrix
 ComplexMatrix::diag (octave_idx_type k) const
 {
-  return MArray2<Complex>::diag (k);
+  return MArray<Complex>::diag (k);
 }
 
 bool
@@ -3318,7 +3308,7 @@ ComplexMatrix::row_min (Array<octave_idx_type>& idx_arg) const
   if (nr > 0 && nc > 0)
     {
       result.resize (nr);
-      idx_arg.resize (nr);
+      idx_arg.resize (nr, 1);
 
       for (octave_idx_type i = 0; i < nr; i++)
         {
@@ -3392,7 +3382,7 @@ ComplexMatrix::row_max (Array<octave_idx_type>& idx_arg) const
   if (nr > 0 && nc > 0)
     {
       result.resize (nr);
-      idx_arg.resize (nr);
+      idx_arg.resize (nr, 1);
 
       for (octave_idx_type i = 0; i < nr; i++)
         {
@@ -3466,7 +3456,7 @@ ComplexMatrix::column_min (Array<octave_idx_type>& idx_arg) const
   if (nr > 0 && nc > 0)
     {
       result.resize (nc);
-      idx_arg.resize (nc);
+      idx_arg.resize (1, nc);
 
       for (octave_idx_type j = 0; j < nc; j++)
         {
@@ -3540,7 +3530,7 @@ ComplexMatrix::column_max (Array<octave_idx_type>& idx_arg) const
   if (nr > 0 && nc > 0)
     {
       result.resize (nc);
-      idx_arg.resize (nc);
+      idx_arg.resize (1, nc);
 
       for (octave_idx_type j = 0; j < nc; j++)
         {

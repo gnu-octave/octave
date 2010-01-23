@@ -37,18 +37,20 @@ friend class ComplexRowVector;
 
 public:
 
-  ComplexColumnVector (void) : MArray<Complex> () { }
+  ComplexColumnVector (void) : MArray<Complex> (0, 1) { }
 
-  explicit ComplexColumnVector (octave_idx_type n) : MArray<Complex> (n) { }
+  explicit ComplexColumnVector (octave_idx_type n) : MArray<Complex> (n, 1) { }
 
-  explicit ComplexColumnVector (const dim_vector& dv) : MArray<Complex> (dv) { }
+  explicit ComplexColumnVector (const dim_vector& dv) 
+    : MArray<Complex> (dv.as_column ()) { }
 
   ComplexColumnVector (octave_idx_type n, const Complex& val)
-    : MArray<Complex> (n, val) { }
+    : MArray<Complex> (n, 1, val) { }
 
   ComplexColumnVector (const ComplexColumnVector& a) : MArray<Complex> (a) { }
 
-  ComplexColumnVector (const MArray<Complex>& a) : MArray<Complex> (a) { }
+  ComplexColumnVector (const MArray<Complex>& a) : MArray<Complex> (a.as_column ()) { }
+  ComplexColumnVector (const Array<Complex>& a) : MArray<Complex> (a.as_column ()) { }
 
   explicit ComplexColumnVector (const ColumnVector& a);
 
@@ -124,9 +126,15 @@ public:
   friend OCTAVE_API std::ostream& operator << (std::ostream& os, const ComplexColumnVector& a);
   friend OCTAVE_API std::istream& operator >> (std::istream& is, ComplexColumnVector& a);
 
+  void resize (octave_idx_type n, const Complex& rfv = Array<Complex>::resize_fill_value ())
+    { Array<Complex>::resize (n, 1, rfv); }
+
+  void clear (octave_idx_type n)
+    { Array<Complex>::clear (n, 1); }
+
 private:
 
-  ComplexColumnVector (Complex *d, octave_idx_type l) : MArray<Complex> (d, l) { }
+  ComplexColumnVector (Complex *d, octave_idx_type l) : MArray<Complex> (d, l, 1) { }
 };
 
 MARRAY_FORWARD_DEFS (MArray, ComplexColumnVector, Complex)

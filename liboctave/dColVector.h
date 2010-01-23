@@ -34,17 +34,19 @@ ColumnVector : public MArray<double>
 {
 public:
 
-  ColumnVector (void) : MArray<double> () { }
+  ColumnVector (void) : MArray<double> (0, 1) { }
 
-  explicit ColumnVector (octave_idx_type n) : MArray<double> (n) { }
+  explicit ColumnVector (octave_idx_type n) : MArray<double> (n, 1) { }
 
-  explicit ColumnVector (const dim_vector& dv) : MArray<double> (dv) { }
+  explicit ColumnVector (const dim_vector& dv) 
+    : MArray<double> (dv.as_column ()) { }
 
-  ColumnVector (octave_idx_type n, double val) : MArray<double> (n, val) { }
+  ColumnVector (octave_idx_type n, double val) : MArray<double> (n, 1, val) { }
 
   ColumnVector (const ColumnVector& a) : MArray<double> (a) { }
 
-  ColumnVector (const MArray<double>& a) : MArray<double> (a) { }
+  ColumnVector (const MArray<double>& a) : MArray<double> (a.as_column ()) { }
+  ColumnVector (const Array<double>& a) : MArray<double> (a.as_column ()) { }
 
   ColumnVector& operator = (const ColumnVector& a)
     {
@@ -93,9 +95,15 @@ public:
   friend OCTAVE_API std::ostream& operator << (std::ostream& os, const ColumnVector& a);
   friend OCTAVE_API std::istream& operator >> (std::istream& is, ColumnVector& a);
 
+  void resize (octave_idx_type n, const double& rfv = Array<double>::resize_fill_value ())
+    { Array<double>::resize (n, 1, rfv); }
+
+  void clear (octave_idx_type n)
+    { Array<double>::clear (n, 1); }
+
 private:
 
-  ColumnVector (double *d, octave_idx_type l) : MArray<double> (d, l) { }
+  ColumnVector (double *d, octave_idx_type l) : MArray<double> (d, l, 1) { }
 };
 
 // Publish externally used friend functions.

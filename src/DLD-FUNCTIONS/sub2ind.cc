@@ -89,7 +89,7 @@ linear_index = sub2ind ([3, 3], 2, 3)\n\
   else
     {
       dim_vector dv = get_dim_vector (args(0), "sub2ind");
-      Array<idx_vector> idxa (nargin - 1);
+      Array<idx_vector> idxa (nargin - 1, 1);
 
       if (! error_state)
         {

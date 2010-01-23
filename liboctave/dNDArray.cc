@@ -88,7 +88,7 @@ NDArray::NDArray (const Array<octave_idx_type>& a, bool zero_based,
 }
 
 NDArray::NDArray (const charNDArray& a)
-  : MArrayN<double> (a.dims ())
+  : MArray<double> (a.dims ())
 {
   octave_idx_type n = a.numel ();
   for (octave_idx_type i = 0; i < n; i++)
@@ -940,7 +940,7 @@ NDArray::compute_index (Array<octave_idx_type>& ra_idx,
 NDArray
 NDArray::diag (octave_idx_type k) const
 {
-  return MArrayN<double>::diag (k);
+  return MArray<double>::diag (k);
 }
 
 // This contains no information on the array structure !!!

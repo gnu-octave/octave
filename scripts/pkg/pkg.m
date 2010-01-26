@@ -668,13 +668,11 @@ function install (files, handle_deps, autoload, prefix, archprefix, verbose,
       if (global_install)
 	## Global installation is not allowed to have dependencies on locally
 	## installed packages.
-	idx1 = complement (packages_to_uninstall, 
-			   1:length(global_packages));
+	idx1 = setdiff (1:length(global_packages), packages_to_uninstall);
 	pseudo_installed_packages = {global_packages{idx1}, ...
 				     descriptions{idx2}};
       else
-	idx1 = complement (packages_to_uninstall, 
-			   1:length(local_packages));
+	idx1 = setdiff (1:length(local_packages), packages_to_uninstall);
 	pseudo_installed_packages = {local_packages{idx1}, ... 
 				     global_packages{:}, ...
 				     descriptions{idx2}};

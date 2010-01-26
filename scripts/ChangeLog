@@ -1,3 +1,7 @@
+2010-01-26  Jaroslav Hajek  <highegg@gmail.com>
+
+	* pkg/pkg.m: More complement -> setdiff changes.
+
 2010-01-23  Jaroslav Hajek  <highegg@gmail.com>
 
 	* pkg/pkg.m: Use setdiff rather than complement.

@@ -485,14 +485,14 @@ extern int errno;
   return retval;
 }
 
-OCTAVE_API int
+int
 octave_mkdir (const std::string& nm, mode_t md)
 {
   std::string msg;
   return octave_mkdir (nm, md, msg);
 }
 
-OCTAVE_API int
+int
 octave_mkdir (const std::string& name, mode_t mode, std::string& msg)
 {
   msg = std::string ();
@@ -510,14 +510,14 @@ octave_mkdir (const std::string& name, mode_t mode, std::string& msg)
   return status;
 }
 
-OCTAVE_API int
+int
 octave_mkfifo (const std::string& nm, mode_t md)
 {
   std::string msg;
   return octave_mkfifo (nm, md, msg);
 }
 
-OCTAVE_API int
+int
 octave_mkfifo (const std::string& name, mode_t mode, std::string& msg)
 {
   msg = std::string ();
@@ -539,14 +539,14 @@ octave_mkfifo (const std::string& name, mode_t mode, std::string& msg)
   return status;
 }
 
-OCTAVE_API int
+int
 octave_link (const std::string& old_name, const std::string& new_name)
 {
   std::string msg;
   return octave_link (old_name, new_name, msg);
 }
 
-OCTAVE_API int
+int
 octave_link (const std::string& old_name,
                 const std::string& new_name, std::string& msg)
 {
@@ -565,14 +565,14 @@ octave_link (const std::string& old_name,
   return status;
 }
 
-OCTAVE_API int
+int
 octave_symlink (const std::string& old_name, const std::string& new_name)
 {
   std::string msg;
   return octave_symlink (old_name, new_name, msg);
 }
 
-OCTAVE_API int
+int
 octave_symlink (const std::string& old_name,
                    const std::string& new_name, std::string& msg)
 {
@@ -591,14 +591,14 @@ octave_symlink (const std::string& old_name,
   return status;
 }
 
-OCTAVE_API int
+int
 octave_readlink (const std::string& path, std::string& result)
 {
   std::string msg;
   return octave_readlink (path, result, msg);
 }
 
-OCTAVE_API int
+int
 octave_readlink (const std::string& path, std::string& result,
                     std::string& msg)
 {
@@ -625,14 +625,14 @@ octave_readlink (const std::string& path, std::string& result,
   return status;
 }
 
-OCTAVE_API int
+int
 octave_rename (const std::string& from, const std::string& to)
 {
   std::string msg;
   return octave_rename (from, to, msg);
 }
 
-OCTAVE_API int
+int
 octave_rename (const std::string& from, const std::string& to,
                   std::string& msg)
 {
@@ -651,14 +651,14 @@ octave_rename (const std::string& from, const std::string& to,
   return status;
 }
 
-OCTAVE_API int
+int
 octave_rmdir (const std::string& name)
 {
   std::string msg;
   return octave_rmdir (name, msg);
 }
 
-OCTAVE_API int
+int
 octave_rmdir (const std::string& name, std::string& msg)
 {
   msg = std::string ();
@@ -678,14 +678,14 @@ octave_rmdir (const std::string& name, std::string& msg)
 
 // And a version that works recursively.
 
-OCTAVE_API int
+int
 octave_recursive_rmdir (const std::string& name)
 {
   std::string msg;
   return octave_recursive_rmdir (name, msg);
 }
 
-OCTAVE_API int
+int
 octave_recursive_rmdir (const std::string& name, std::string& msg)
 {
   msg = std::string ();
@@ -753,7 +753,7 @@ octave_recursive_rmdir (const std::string& name, std::string& msg)
   return status;
 }
 
-OCTAVE_API int
+int
 octave_umask (mode_t mode)
 {
 #if defined (HAVE_UMASK)
@@ -763,14 +763,14 @@ octave_umask (mode_t mode)
 #endif
 }
 
-OCTAVE_API int
+int
 octave_unlink (const std::string& name)
 {
   std::string msg;
   return octave_unlink (name, msg);
 }
 
-OCTAVE_API int
+int
 octave_unlink (const std::string& name, std::string& msg)
 {
   msg = std::string ();
@@ -788,14 +788,14 @@ octave_unlink (const std::string& name, std::string& msg)
   return status;
 }
 
-OCTAVE_API std::string
+std::string
 octave_tempnam (const std::string& dir, const std::string& pfx)
 {
   std::string msg;
   return octave_tempnam (dir, pfx, msg);
 }
 
-OCTAVE_API std::string
+std::string
 octave_tempnam (const std::string& dir, const std::string& pfx,
                 std::string& msg)
 {

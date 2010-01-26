@@ -1,5 +1,9 @@
 2010-01-26  John W. Eaton  <jwe@octave.org>
 
+	* file-ops.cc: Don't tag functions with OCTAVE_API in source file.
+
+2010-01-26  John W. Eaton  <jwe@octave.org>
+
 	* lo-cutils.c, lo-utils.h (octave_link, octave_symlink,
 	octave_readlink, octave_mkdir, octave_mkfifo, octave_rmdir,
 	octave_rename, octave_tempnam, octave_umask, octave_unlink):

@@ -165,7 +165,11 @@ function [x, minval, exitflag, output, lambda] = pqpnonneg (c, d, x = [], option
     p = [p(1:jdx-1), zidx, p(jdx:end)];
     if (usechol)
       ## insert the column into the Cholesky factorization.
-      r = cholinsert (r, jdx, c(p,zidx));
+      [r, bad] = cholinsert (r, jdx, c(p,zidx));
+      if (bad)
+        ## If the insertion failed, we switch off updates and go on.
+        usechol = false;
+      endif
     endif
 
   endwhile

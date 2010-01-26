@@ -48,36 +48,6 @@ Software Foundation, Inc.
 
 #include "syswait.h"
 
-OCTAVE_API int
-octave_link (const char *old_name, const char *new_name)
-{
-  return link (old_name, new_name);
-}
-
-OCTAVE_API int
-octave_symlink (const char *old_name, const char *new_name)
-{
-  return symlink (old_name, new_name);
-}
-
-OCTAVE_API int
-octave_readlink (const char *name, char *buf, size_t size)
-{
-  return readlink (name, buf, size);
-}
-
-OCTAVE_API int
-octave_mkdir (const char *name, mode_t mode)
-{
-  return mkdir (name, mode);
-}
-
-OCTAVE_API int
-octave_mkfifo (const char *name, mode_t mode)
-{
-  return mkfifo (name, mode);
-}
-
 OCTAVE_API void
 octave_qsort (void *base, size_t n, size_t size,
               int (*cmp) (const void *, const void *))
@@ -118,18 +88,6 @@ gethostname (char *name, int namelen)
 #endif
 
 OCTAVE_API int
-octave_rmdir (const char *name)
-{
-  return rmdir (name);
-}
-
-OCTAVE_API int
-octave_rename (const char *from, const char *to)
-{
-  return rename (from, to);
-}
-
-OCTAVE_API int
 octave_strcasecmp (const char *s1, const char *s2)
 {
   return strcasecmp (s1, s2);
@@ -139,28 +97,6 @@ OCTAVE_API int
 octave_strncasecmp (const char *s1, const char *s2, size_t n)
 {
   return strncasecmp (s1, s2, n);
-}
-
-OCTAVE_API char *
-octave_tempnam (const char *pdir, const char *ppfx)
-{
-  return tempnam (pdir, ppfx);
-}
-
-OCTAVE_API mode_t
-octave_umask (mode_t mode)
-{
-#if defined (HAVE_UMASK)
-  return umask (mode);
-#else
-  return 0;
-#endif
-}
-
-OCTAVE_API int
-octave_unlink (const char *name)
-{
-  return unlink (name);
 }
 
 OCTAVE_API int

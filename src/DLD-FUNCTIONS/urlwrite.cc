@@ -660,21 +660,22 @@ private:
 
 static curl_handles handles;
 
-static void 
+static void
 cleanup_urlwrite (std::string filename)
 {
-  file_ops::unlink (filename);
+  octave_unlink (filename);
 }
 
-static void 
+static void
 reset_path (const curl_handle curl)
 {
   curl.cwd ("..");
 }
 
-void delete_file (std::string file)
+static void
+delete_file (std::string file)
 {
-  file_ops::unlink (file);
+  octave_unlink (file);
 }
 #endif
 
@@ -1586,7 +1587,7 @@ getallfiles (const curl_handle& curl, const std::string& dir,
   if (!fs || !fs.is_dir ())
     { 
       std::string msg;
-      int status = file_ops::mkdir (dir, 0777, msg);
+      int status = octave_mkdir (dir, 0777, msg);
 
       if (status < 0)
         error ("__ftp_mget__: can't create directory %s%s%s. %s", 

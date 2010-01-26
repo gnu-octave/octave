@@ -202,7 +202,7 @@ system-dependent error message.\n\
 // FIXME -- should maybe also allow second arg to specify
 // mode?  OTOH, that might cause trouble with compatibility later...
 
-DEFUN (mkdir, args, ,
+DEFUNX ("mkdir", Fmkdir, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{status}, @var{msg}, @var{msgid}] =} mkdir (@var{dir})\n\
 @deftypefnx {Built-in Function} {[@var{status}, @var{msg}, @var{msgid}] =} mkdir (@var{parent}, @var{dir})\n\
@@ -268,7 +268,7 @@ message identifier.\n\
 	}
       else
 	{
-	  int status = file_ops::mkdir (dirname, 0777, msg);
+	  int status = octave_mkdir (dirname, 0777, msg);
 
 	  if (status < 0)
 	    {
@@ -285,7 +285,7 @@ message identifier.\n\
   return retval;
 }
 
-DEFUN (rmdir, args, ,
+DEFUNX ("rmdir", Frmdir, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{status}, @var{msg}, @var{msgid}] =} rmdir (@var{dir})\n\
 @deftypefnx {Built-in Function} {[@var{status}, @var{msg}, @var{msgid}] =} rmdir (@var{dir}, @code{\"s\"})\n\
@@ -336,13 +336,13 @@ recursively remove all subdirectories as well.\n\
 		    }
 
 		  if (doit)
-		    status = file_ops::recursive_rmdir (fulldir, msg);
+		    status = octave_recursive_rmdir (fulldir, msg);
 		}
 	      else
 		error ("rmdir: expecting second argument to be \"s\"");
 	    }
 	  else
-	    status = file_ops::rmdir (fulldir, msg);
+	    status = octave_rmdir (fulldir, msg);
 
 	  if (status < 0)
 	    {
@@ -359,7 +359,7 @@ recursively remove all subdirectories as well.\n\
   return retval;
 }
 
-DEFUN (link, args, ,
+DEFUNX ("link", Flink, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{err}, @var{msg}] =} link (@var{old}, @var{new})\n\
 Create a new link (also known as a hard link) to an existing file.\n\
@@ -391,7 +391,7 @@ system-dependent error message.\n\
 	    {
 	      std::string msg;
 
-	      int status = file_ops::link (from, to, msg);
+	      int status = octave_link (from, to, msg);
 
 	      retval(0) = status;
 
@@ -406,7 +406,7 @@ system-dependent error message.\n\
   return retval;
 }
 
-DEFUN (symlink, args, ,
+DEFUNX ("symlink", Fsymlink, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{err}, @var{msg}] =} symlink (@var{old}, @var{new})\n\
 Create a symbolic link @var{new} which contains the string @var{old}.\n\
@@ -438,7 +438,7 @@ system-dependent error message.\n\
 	    {
 	      std::string msg;
 
-	      int status = file_ops::symlink (from, to, msg);
+	      int status = octave_symlink (from, to, msg);
 
 	      retval(0) = status;
 
@@ -453,7 +453,7 @@ system-dependent error message.\n\
   return retval;
 }
 
-DEFUN (readlink, args, ,
+DEFUNX ("readlink", Freadlink, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{result}, @var{err}, @var{msg}] =} readlink (@var{symlink})\n\
 Read the value of the symbolic link @var{symlink}.\n\
@@ -482,7 +482,7 @@ system-dependent error message.\n\
 	  std::string result;
 	  std::string msg;
 
-	  int status = file_ops::readlink (symlink, result, msg);
+	  int status = octave_readlink (symlink, result, msg);
 
 	  retval(0) = result;
 
@@ -498,7 +498,7 @@ system-dependent error message.\n\
   return retval;
 }
 
-DEFUN (rename, args, ,
+DEFUNX ("rename", Frename, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{err}, @var{msg}] =} rename (@var{old}, @var{new})\n\
 Change the name of file @var{old} to @var{new}.\n\
@@ -530,7 +530,7 @@ system-dependent error message.\n\
 	    {
 	      std::string msg;
 
-	      int status = file_ops::rename (from, to, msg);
+	      int status = octave_rename (from, to, msg);
 
 	      retval(0) = status;
 

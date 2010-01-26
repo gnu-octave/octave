@@ -1852,7 +1852,7 @@ use @code{fclose} for the same purpose.\n\
   return retval;
 }
 
-DEFUN (tmpnam, args, ,
+DEFUNX ("tmpnam", Ftmpnam, args, ,
  "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} tmpnam (@var{dir}, @var{prefix})\n\
 Return a unique temporary file name as a string.\n\
@@ -1880,7 +1880,7 @@ that it will not be available by the time your program attempts to open it.\n\
 	    = len > 1 ? args(1).string_value () : std::string ("oct-");
 
 	  if (! error_state)
-	    retval = file_ops::tempnam (dir, pfx);
+	    retval = octave_tempnam (dir, pfx);
 	  else
 	    ::error ("expecting second argument to be a string");
 	}
@@ -2098,7 +2098,7 @@ convert (int x, int ibase, int obase)
   return retval;
 }
 
-DEFUN (umask, args, ,
+DEFUNX ("umask", Fumask, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} umask (@var{mask})\n\
 Set the permission mask for file creation.  The parameter @var{mask}\n\
@@ -2127,7 +2127,7 @@ interpreted as an octal number); otherwise an error message is printed.\n\
 	      int oct_mask = convert (mask, 8, 10);
 
 	      if (! error_state)
-		status = convert (file_ops::umask (oct_mask), 10, 8);
+		status = convert (octave_umask (oct_mask), 10, 8);
 	    }
 	}
       else

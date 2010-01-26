@@ -796,7 +796,7 @@ See stat.\n\
 
 
 
-DEFUN (mkfifo, args, ,
+DEFUNX ("mkfifo", Fmkfifo, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{err}, @var{msg}] =} mkfifo (@var{name}, @var{mode})\n\
 Create a @var{fifo} special file named @var{name} with file mode @var{mode}\n\
@@ -827,7 +827,7 @@ system-dependent error message.\n\
 		{
 		  std::string msg;
 
-		  int status = file_ops::mkfifo (name, mode, msg);
+		  int status = octave_mkfifo (name, mode, msg);
 
 		  retval(0) = status;
 
@@ -1247,7 +1247,7 @@ system-dependent error message.\n\
   return retval;
 }
 
-DEFUN (unlink, args, ,
+DEFUNX ("unlink", Funlink, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{err}, @var{msg}] =} unlink (@var{file})\n\
 Delete the file named @var{file}.\n\
@@ -1272,7 +1272,7 @@ system-dependent error message.\n\
 
 	  std::string msg;
 
-	  int status = file_ops::unlink (name, msg);
+	  int status = octave_unlink (name, msg);
 
 	  retval(0) = status;
 	  retval(1) = msg;	    

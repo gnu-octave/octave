@@ -1,3 +1,16 @@
+2010-01-26  John W. Eaton  <jwe@octave.org>
+
+	* lo-cutils.c, lo-utils.h (octave_link, octave_symlink,
+	octave_readlink, octave_mkdir, octave_mkfifo, octave_rmdir,
+	octave_rename, octave_tempnam, octave_umask, octave_unlink):
+	Delete.
+	* file-io.h, file-io.cc (octave_mkdir,  octave_mkfifo,
+	octave_link, octave_symlink, octave_readlink, octave_rename,
+	octave_rmdir, octave_recursive_rmdir, octave_umask,
+	octave_unlink, octave_tempnam): Rename from file_ops::X to
+	octave_X.  Change all uses.
+	(file_ops::static_members): Incorporate directly into file_ops class.
+
 2010-01-23  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.am (LIBOCTAVE_C_SOURCES): Remove oct-getopt.c from the list.

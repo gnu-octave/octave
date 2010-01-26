@@ -33,7 +33,9 @@ along with Octave; see the file COPYING.  If not, see
 #include <iostream>
 #include <vector>
 
+#include <sys/stat.h>
 #include <sys/types.h>
+#include <unistd.h>
 
 #include <pathmax.h>
 
@@ -47,484 +49,38 @@ along with Octave; see the file COPYING.  If not, see
 #include "str-vec.h"
 #include "oct-locbuf.h"
 
-file_ops::static_members *file_ops::static_members::instance = 0;
-
-file_ops::static_members::static_members (void)
-  :
-#if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
-  xdir_sep_char ('\\'),
-  xdir_sep_str ("\\"),
-#else
-  xdir_sep_char ('/'),
-  xdir_sep_str ("/"), 
-#endif
-#if defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM)
-  xdir_sep_chars ("/\\")
-#else
-  xdir_sep_chars (xdir_sep_str)
-#endif
-{ }
+file_ops *file_ops::instance = 0;
 
 bool
-file_ops::static_members::instance_ok (void)
+file_ops::instance_ok (void)
 {
   bool retval = true;
 
   if (! instance)
-    instance = new static_members ();
-
-  if (! instance)
     {
-      (*current_liboctave_error_handler)
-        ("unable to create file_ops::static_members object!");
-
-      retval = false;
-    }
-
-  return retval;
-}
-
-// We provide a replacement for mkdir().
-
-int
-file_ops::mkdir (const std::string& nm, mode_t md)
-{
-  std::string msg;
-  return mkdir (nm, md, msg);
-}
-
-int
-file_ops::mkdir (const std::string& name, mode_t mode, std::string& msg)
-{
-  msg = std::string ();
-
-  int status = -1;
-
-  status = octave_mkdir (name.c_str (), mode);
-
-  if (status < 0)
-    {
-      using namespace std;
-      msg = ::strerror (errno);
-    }
-
-  return status;
-}
-
-// I don't know how to emulate this on systems that don't provide it.
-
-int
-file_ops::mkfifo (const std::string& nm, mode_t md)
-{
-  std::string msg;
-  return mkfifo (nm, md, msg);
-}
-
-int
-file_ops::mkfifo (const std::string& name, mode_t mode, std::string& msg)
-{
-  msg = std::string ();
-
-  int status = -1;
-
-  // With gnulib we will always have mkfifo, but some systems like MinGW
-  // don't have working mkfifo functions.  On those systems, mkfifo will
-  // always return -1 and set errno.
-
-  status = octave_mkfifo (name.c_str (), mode);
-
-  if (status < 0)
-    {
-      using namespace std;
-      msg = ::strerror (errno);
-    }
-
-  return status;
-}
-
-// I don't know how to emulate this on systems that don't provide it.
-
-int
-file_ops::link (const std::string& old_name, const std::string& new_name)
-{
-  std::string msg;
-  return link (old_name, new_name, msg);
-}
-
-int
-file_ops::link (const std::string& old_name,
-                const std::string& new_name, std::string& msg)
-{
-  msg = std::string ();
-
-  int status = -1;
-
-  status = octave_link (old_name.c_str (), new_name.c_str ());
-
-  if (status < 0)
-    {
-      using namespace std;
-      msg = ::strerror (errno);
-    }
-
-  return status;
-}
-
-// I don't know how to emulate this on systems that don't provide it.
-
-int
-file_ops::symlink (const std::string& old_name, const std::string& new_name)
-{
-  std::string msg;
-  return symlink (old_name, new_name, msg);
-}
-
-int
-file_ops::symlink (const std::string& old_name,
-                   const std::string& new_name, std::string& msg)
-{
-  msg = std::string ();
-
-  int status = -1;
-
-  status = octave_symlink (old_name.c_str (), new_name.c_str ());
-
-  if (status < 0)
-    {
-      using namespace std;
-      msg = ::strerror (errno);
-    }
-
-  return status;
-}
-
-// We provide a replacement for readlink().
-
-int
-file_ops::readlink (const std::string& path, std::string& result)
-{
-  std::string msg;
-  return readlink (path, result, msg);
-}
-
-int
-file_ops::readlink (const std::string& path, std::string& result,
-                    std::string& msg)
-{
-  int status = -1;
-
-  msg = std::string ();
-
-  char buf[MAXPATHLEN+1];
-
-  status = octave_readlink (path.c_str (), buf, MAXPATHLEN);
-
-  if (status < 0)
-    {
-      using namespace std;
-      msg = ::strerror (errno);
-    }
-  else
-    {
-      buf[status] = '\0';
-      result = std::string (buf);
-      status = 0;
-    }
-
-  return status;
-}
-
-// We provide a replacement for rename().
-
-int
-file_ops::rename (const std::string& from, const std::string& to)
-{
-  std::string msg;
-  return rename (from, to, msg);
-}
-
-int
-file_ops::rename (const std::string& from, const std::string& to,
-                  std::string& msg)
-{
-  int status = -1;
-
-  msg = std::string ();
-
-  status = octave_rename (from.c_str (), to.c_str ());
-
-  if (status < 0)
-    {
-      using namespace std;
-      msg = ::strerror (errno);
-    }
-
-  return status;
-}
-
-// We provide a replacement for rmdir().
-
-int
-file_ops::rmdir (const std::string& name)
-{
-  std::string msg;
-  return rmdir (name, msg);
-}
-
-int
-file_ops::rmdir (const std::string& name, std::string& msg)
-{
-  msg = std::string ();
-
-  int status = -1;
-
-  status = octave_rmdir (name.c_str ());
-
-  if (status < 0)
-    {
-      using namespace std;
-      msg = ::strerror (errno);
-    }
-
-  return status;
-}
-
-// And a version that works recursively.
-
-int
-file_ops::recursive_rmdir (const std::string& name)
-{
-  std::string msg;
-  return recursive_rmdir (name, msg);
-}
-
-int
-file_ops::recursive_rmdir (const std::string& name, std::string& msg)
-{
-  msg = std::string ();
-
-  int status = 0;
-
-  dir_entry dir (name);
-
-  if (dir)
-    {
-      string_vector dirlist = dir.read ();
-
-      for (octave_idx_type i = 0; i < dirlist.length (); i++)
-        {
-          octave_quit ();
-
-          std::string nm = dirlist[i];
-
-          // Skip current directory and parent.
-          if (nm == "." || nm == "..")
-            continue;
-
-          std::string fullnm = name + file_ops::dir_sep_str () + nm;
-
-          // Get info about the file.  Don't follow links.
-          file_stat fs (fullnm, false);
-
-          if (fs)
-            {
-              if (fs.is_dir ())
-                {
-                  status = recursive_rmdir (fullnm, msg);
-
-                  if (status < 0)
-                    break;
-                }
-              else
-                {
-                  status = unlink (fullnm, msg);
-
-                  if (status < 0)
-                    break;
-                }
-            }
-          else
-            {
-              msg = fs.error ();
-              break;
-            }
-        }
-
-      if (status >= 0)
-        {
-          dir.close ();
-          status = file_ops::rmdir (name, msg);
-        }
-    }
-  else
-    {
-      status = -1;
-
-      msg = dir.error ();
-    }
-
-  return status;
-}
-
-std::string
-file_ops::canonicalize_file_name (const std::string& name)
-{
-  std::string msg;
-  return canonicalize_file_name (name, msg);
-}
-
-std::string
-file_ops::canonicalize_file_name (const std::string& name, std::string& msg)
-{
-  msg = std::string ();
-
-  std::string retval;
-
-#if defined (HAVE_CANONICALIZE_FILE_NAME)
-
-  char *tmp = ::canonicalize_file_name (name.c_str ());
-
-  if (tmp)
-    {
-      retval = tmp;
-      ::free (tmp);
-    }
-
-#elif defined (HAVE_RESOLVEPATH)
-
-#if !defined (errno)
-extern int errno;
-#endif
-
-#if !defined (__set_errno)
-# define __set_errno(Val) errno = (Val)
-#endif
-
-  if (name.empty ())
-    {
-      __set_errno (ENOENT);
-      return retval;
-    }
-
-  // All known hosts with resolvepath (e.g. Solaris 7) don't turn
-  // relative names into absolute ones, so prepend the working
-  // directory if the path is not absolute.
-
-  std::string absolute_name
-    = octave_env::make_absolute (name, octave_env::getcwd ());
-
-  size_t resolved_size = absolute_name.length ();
-
-  while (true)
-    {
-      resolved_size = 2 * resolved_size + 1;
-
-      OCTAVE_LOCAL_BUFFER (char, resolved, resolved_size);
-
-      int resolved_len
-        = ::resolvepath (absolute_name.c_str (), resolved, resolved_size);
-
-      if (resolved_len < 0)
-        break;
-
-      if (resolved_len < resolved_size)
-        {
-          retval = resolved;
-          break;
-        }
-    }
-
-#elif defined (__WIN32__)
-
-  int n = 1024;
-
-  std::string win_path (n, '\0');
-
-  while (true)
-    {
-      int status = GetFullPathName (name.c_str (), n, &win_path[0], 0);
-
-      if (status == 0)
-        break;
-      else if (status < n)
-        {
-          win_path.resize (status);
-          retval = win_path;
-          break;
-        }
-      else
-        {
-          n *= 2;
-          win_path.resize (n);
-        }
-    }
-
-#elif defined (HAVE_REALPATH)
-
-#if !defined (__set_errno)
-# define __set_errno(Val) errno = (Val)
-#endif
-
-  if (name.empty ())
-    {
-      __set_errno (ENOENT);
-      return retval;
-    }
-
-  OCTAVE_LOCAL_BUFFER (char, buf, PATH_MAX);
-
-  if (::realpath (name.c_str (), buf))
-    retval = buf;
-
+#if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
+      char system_dir_sep_char = '\\';
+      std::string system_dir_sep_str = "\\";
 #else
-
-  // FIXME -- provide replacement here...
-  retval = name;
-
+      char system_dir_sep_char = '/';
+      std::string system_dir_sep_str = "/";
+#endif
+#if defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM)
+      std::string system_dir_sep_chars = "/\\";
+#else
+      std::string system_dir_sep_chars = system_dir_sep_str;
 #endif
 
-  if (retval.empty ())
-    {
-      using namespace std;
-      msg = ::strerror (errno);
-    }
+      instance = new file_ops (system_dir_sep_char, system_dir_sep_str,
+                               system_dir_sep_chars);
 
-  return retval;
-}
+      if (! instance)
+        {
+          (*current_liboctave_error_handler)
+            ("unable to create file_ops object!");
 
-// We provide a replacement for tempnam().
-
-std::string
-file_ops::tempnam (const std::string& dir, const std::string& pfx)
-{
-  std::string msg;
-  return tempnam (dir, pfx, msg);
-}
-
-std::string
-file_ops::tempnam (const std::string& dir, const std::string& pfx,
-                   std::string& msg)
-{
-  msg = std::string ();
-
-  std::string retval;
-  
-  const char *pdir = dir.empty () ? 0 : dir.c_str ();
-
-  const char *ppfx = pfx.empty () ? 0 : pfx.c_str ();
-
-  char *tmp = octave_tempnam (pdir, ppfx);
-
-  if (tmp)
-    {
-      retval = tmp;
-
-      ::free (tmp);
-    }
-  else
-    {
-      using namespace std;
-      msg = ::strerror (errno);
+          retval = false;
+        }
     }
 
   return retval;
@@ -787,40 +343,9 @@ file_ops::tilde_expand (const string_vector& names)
   retval.resize (n);
 
   for (int i = 0; i < n; i++)
-    retval[i] = file_ops::tilde_expand (names[i]);
+    retval[i] = tilde_expand (names[i]);
 
   return retval;
-}
-
-int
-file_ops::umask (mode_t mode)
-{
-  return octave_umask (mode);
-}
-
-int
-file_ops::unlink (const std::string& name)
-{
-  std::string msg;
-  return unlink (name, msg);
-}
-
-int
-file_ops::unlink (const std::string& name, std::string& msg)
-{
-  msg = std::string ();
-
-  int status = -1;
-
-  status = octave_unlink (name.c_str ());
-
-  if (status < 0)
-    {
-      using namespace std;
-      msg = ::strerror (errno);
-    }
-
-  return status;
 }
 
 std::string
@@ -830,5 +355,471 @@ file_ops::concat (const std::string& dir, const std::string& file)
     ? file
     : (is_dir_sep (dir[dir.length()-1])
        ? dir + file
-       : dir + file_ops::dir_sep_char () + file);
+       : dir + dir_sep_char () + file);
+}
+
+
+std::string
+file_ops::canonicalize_file_name (const std::string& name)
+{
+  std::string msg;
+  return canonicalize_file_name (name, msg);
+}
+
+std::string
+file_ops::canonicalize_file_name (const std::string& name, std::string& msg)
+{
+  msg = std::string ();
+
+  std::string retval;
+
+#if defined (HAVE_CANONICALIZE_FILE_NAME)
+
+  char *tmp = ::canonicalize_file_name (name.c_str ());
+
+  if (tmp)
+    {
+      retval = tmp;
+      free (tmp);
+    }
+
+#elif defined (HAVE_RESOLVEPATH)
+
+#if !defined (errno)
+extern int errno;
+#endif
+
+#if !defined (__set_errno)
+# define __set_errno(Val) errno = (Val)
+#endif
+
+  if (name.empty ())
+    {
+      __set_errno (ENOENT);
+      return retval;
+    }
+
+  // All known hosts with resolvepath (e.g. Solaris 7) don't turn
+  // relative names into absolute ones, so prepend the working
+  // directory if the path is not absolute.
+
+  std::string absolute_name
+    = octave_env::make_absolute (name, octave_env::getcwd ());
+
+  size_t resolved_size = absolute_name.length ();
+
+  while (true)
+    {
+      resolved_size = 2 * resolved_size + 1;
+
+      OCTAVE_LOCAL_BUFFER (char, resolved, resolved_size);
+
+      int resolved_len
+        = resolvepath (absolute_name.c_str (), resolved, resolved_size);
+
+      if (resolved_len < 0)
+        break;
+
+      if (resolved_len < resolved_size)
+        {
+          retval = resolved;
+          break;
+        }
+    }
+
+#elif defined (__WIN32__)
+
+  int n = 1024;
+
+  std::string win_path (n, '\0');
+
+  while (true)
+    {
+      int status = GetFullPathName (name.c_str (), n, &win_path[0], 0);
+
+      if (status == 0)
+        break;
+      else if (status < n)
+        {
+          win_path.resize (status);
+          retval = win_path;
+          break;
+        }
+      else
+        {
+          n *= 2;
+          win_path.resize (n);
+        }
+    }
+
+#elif defined (HAVE_REALPATH)
+
+#if !defined (__set_errno)
+# define __set_errno(Val) errno = (Val)
+#endif
+
+  if (name.empty ())
+    {
+      __set_errno (ENOENT);
+      return retval;
+    }
+
+  OCTAVE_LOCAL_BUFFER (char, buf, PATH_MAX);
+
+  if (::realpath (name.c_str (), buf))
+    retval = buf;
+
+#else
+
+  // FIXME -- provide replacement here...
+  retval = name;
+
+#endif
+
+  if (retval.empty ())
+    {
+      using namespace std;
+      msg = strerror (errno);
+    }
+
+  return retval;
+}
+
+OCTAVE_API int
+octave_mkdir (const std::string& nm, mode_t md)
+{
+  std::string msg;
+  return octave_mkdir (nm, md, msg);
+}
+
+OCTAVE_API int
+octave_mkdir (const std::string& name, mode_t mode, std::string& msg)
+{
+  msg = std::string ();
+
+  int status = -1;
+
+  status = mkdir (name.c_str (), mode);
+
+  if (status < 0)
+    {
+      using namespace std;
+      msg = strerror (errno);
+    }
+
+  return status;
+}
+
+OCTAVE_API int
+octave_mkfifo (const std::string& nm, mode_t md)
+{
+  std::string msg;
+  return octave_mkfifo (nm, md, msg);
+}
+
+OCTAVE_API int
+octave_mkfifo (const std::string& name, mode_t mode, std::string& msg)
+{
+  msg = std::string ();
+
+  int status = -1;
+
+  // With gnulib we will always have mkfifo, but some systems like MinGW
+  // don't have working mkfifo functions.  On those systems, mkfifo will
+  // always return -1 and set errno.
+
+  status = mkfifo (name.c_str (), mode);
+
+  if (status < 0)
+    {
+      using namespace std;
+      msg = strerror (errno);
+    }
+
+  return status;
+}
+
+OCTAVE_API int
+octave_link (const std::string& old_name, const std::string& new_name)
+{
+  std::string msg;
+  return octave_link (old_name, new_name, msg);
+}
+
+OCTAVE_API int
+octave_link (const std::string& old_name,
+                const std::string& new_name, std::string& msg)
+{
+  msg = std::string ();
+
+  int status = -1;
+
+  status = link (old_name.c_str (), new_name.c_str ());
+
+  if (status < 0)
+    {
+      using namespace std;
+      msg = strerror (errno);
+    }
+
+  return status;
+}
+
+OCTAVE_API int
+octave_symlink (const std::string& old_name, const std::string& new_name)
+{
+  std::string msg;
+  return octave_symlink (old_name, new_name, msg);
+}
+
+OCTAVE_API int
+octave_symlink (const std::string& old_name,
+                   const std::string& new_name, std::string& msg)
+{
+  msg = std::string ();
+
+  int status = -1;
+
+  status = symlink (old_name.c_str (), new_name.c_str ());
+
+  if (status < 0)
+    {
+      using namespace std;
+      msg = strerror (errno);
+    }
+
+  return status;
+}
+
+OCTAVE_API int
+octave_readlink (const std::string& path, std::string& result)
+{
+  std::string msg;
+  return octave_readlink (path, result, msg);
+}
+
+OCTAVE_API int
+octave_readlink (const std::string& path, std::string& result,
+                    std::string& msg)
+{
+  int status = -1;
+
+  msg = std::string ();
+
+  char buf[MAXPATHLEN+1];
+
+  status = readlink (path.c_str (), buf, MAXPATHLEN);
+
+  if (status < 0)
+    {
+      using namespace std;
+      msg = strerror (errno);
+    }
+  else
+    {
+      buf[status] = '\0';
+      result = std::string (buf);
+      status = 0;
+    }
+
+  return status;
+}
+
+OCTAVE_API int
+octave_rename (const std::string& from, const std::string& to)
+{
+  std::string msg;
+  return octave_rename (from, to, msg);
+}
+
+OCTAVE_API int
+octave_rename (const std::string& from, const std::string& to,
+                  std::string& msg)
+{
+  int status = -1;
+
+  msg = std::string ();
+
+  status = rename (from.c_str (), to.c_str ());
+
+  if (status < 0)
+    {
+      using namespace std;
+      msg = strerror (errno);
+    }
+
+  return status;
+}
+
+OCTAVE_API int
+octave_rmdir (const std::string& name)
+{
+  std::string msg;
+  return octave_rmdir (name, msg);
+}
+
+OCTAVE_API int
+octave_rmdir (const std::string& name, std::string& msg)
+{
+  msg = std::string ();
+
+  int status = -1;
+
+  status = rmdir (name.c_str ());
+
+  if (status < 0)
+    {
+      using namespace std;
+      msg = strerror (errno);
+    }
+
+  return status;
+}
+
+// And a version that works recursively.
+
+OCTAVE_API int
+octave_recursive_rmdir (const std::string& name)
+{
+  std::string msg;
+  return octave_recursive_rmdir (name, msg);
+}
+
+OCTAVE_API int
+octave_recursive_rmdir (const std::string& name, std::string& msg)
+{
+  msg = std::string ();
+
+  int status = 0;
+
+  dir_entry dir (name);
+
+  if (dir)
+    {
+      string_vector dirlist = dir.read ();
+
+      for (octave_idx_type i = 0; i < dirlist.length (); i++)
+        {
+          octave_quit ();
+
+          std::string nm = dirlist[i];
+
+          // Skip current directory and parent.
+          if (nm == "." || nm == "..")
+            continue;
+
+          std::string fullnm = name + file_ops::dir_sep_str () + nm;
+
+          // Get info about the file.  Don't follow links.
+          file_stat fs (fullnm, false);
+
+          if (fs)
+            {
+              if (fs.is_dir ())
+                {
+                  status = octave_recursive_rmdir (fullnm, msg);
+
+                  if (status < 0)
+                    break;
+                }
+              else
+                {
+                  status = octave_unlink (fullnm, msg);
+
+                  if (status < 0)
+                    break;
+                }
+            }
+          else
+            {
+              msg = fs.error ();
+              break;
+            }
+        }
+
+      if (status >= 0)
+        {
+          dir.close ();
+          status = octave_rmdir (name, msg);
+        }
+    }
+  else
+    {
+      status = -1;
+
+      msg = dir.error ();
+    }
+
+  return status;
+}
+
+OCTAVE_API int
+octave_umask (mode_t mode)
+{
+#if defined (HAVE_UMASK)
+  return umask (mode);
+#else
+  return 0;
+#endif
+}
+
+OCTAVE_API int
+octave_unlink (const std::string& name)
+{
+  std::string msg;
+  return octave_unlink (name, msg);
+}
+
+OCTAVE_API int
+octave_unlink (const std::string& name, std::string& msg)
+{
+  msg = std::string ();
+
+  int status = -1;
+
+  status = unlink (name.c_str ());
+
+  if (status < 0)
+    {
+      using namespace std;
+      msg = strerror (errno);
+    }
+
+  return status;
+}
+
+OCTAVE_API std::string
+octave_tempnam (const std::string& dir, const std::string& pfx)
+{
+  std::string msg;
+  return octave_tempnam (dir, pfx, msg);
+}
+
+OCTAVE_API std::string
+octave_tempnam (const std::string& dir, const std::string& pfx,
+                std::string& msg)
+{
+  msg = std::string ();
+
+  std::string retval;
+  
+  const char *pdir = dir.empty () ? 0 : dir.c_str ();
+
+  const char *ppfx = pfx.empty () ? 0 : pfx.c_str ();
+
+  char *tmp = tempnam (pdir, ppfx);
+
+  if (tmp)
+    {
+      retval = tmp;
+
+      free (tmp);
+    }
+  else
+    {
+      using namespace std;
+      msg = strerror (errno);
+    }
+
+  return retval;
 }

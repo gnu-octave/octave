@@ -393,7 +393,7 @@ mk_tmp_hist_file (int argc, const string_vector& argv,
       reverse = 1;
     }
 
-  std::string name = file_ops::tempnam ("", "oct-");
+  std::string name = octave_tempnam ("", "oct-");
 
   std::fstream file (name.c_str (), std::ios::out);
 

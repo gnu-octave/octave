@@ -1,3 +1,11 @@
+2010-01-26  John W. Eaton  <jwe@octave.org>
+
+	* dirfns.cc (Fmkdir, Frmdir, Flink, Fsymlink, Freadlink,
+	Frename, Ftmpnam, Fumask): Use DEFUNX instead of DEFUN.
+	* syscall.scc (Fmkfifo, Funlink): Ditto.
+	* DLD-FUNCTIONS/urlwrite.cc (cleanup_urlwrite, reset_path,
+	delete_file): Now static.
+
 2010-01-23  John W. Eaton  <jwe@octave.org>
 
 	* octave.cc (octave_main): Use getopt directly instead of using

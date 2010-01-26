@@ -35,36 +35,15 @@ file_ops
 {
 public:
 
-  static int mkdir (const std::string& nm, mode_t md);
-  static int mkdir (const std::string& nm, mode_t md, std::string& msg);
+  // Use a singleton class for dir_sep data members instead of just
+  // making them static members of the dir_path class so that we can
+  // ensure proper initialization.
 
-  static int mkfifo (const std::string& nm, mode_t md);
-  static int mkfifo (const std::string& nm, mode_t md, std::string& msg);
-
-  static int link (const std::string&, const std::string&);
-  static int link (const std::string&, const std::string&, std::string&);
-
-  static int symlink (const std::string&, const std::string&);
-  static int symlink (const std::string&, const std::string&, std::string&);
-
-  static int readlink (const std::string&, std::string&);
-  static int readlink (const std::string&, std::string&, std::string&);
-
-  static int rename (const std::string&, const std::string&);
-  static int rename (const std::string&, const std::string&, std::string&);
-
-  static int rmdir (const std::string&);
-  static int rmdir (const std::string&, std::string&);
-
-  static int recursive_rmdir (const std::string&);
-  static int recursive_rmdir (const std::string&, std::string&);
-
-  static std::string canonicalize_file_name (const std::string&);
-  static std::string canonicalize_file_name (const std::string&, std::string&);
-
-  static std::string tempnam (const std::string&, const std::string&);
-  static std::string tempnam (const std::string&, const std::string&,
-                              std::string&);
+  file_ops (char dir_sep_char_arg = 0,
+            const std::string& dir_sep_str_arg = std::string ("/"),
+            const std::string& dir_sep_chars_arg = std::string ("/"))
+    : xdir_sep_char (dir_sep_char_arg), xdir_sep_str (dir_sep_str_arg),
+      xdir_sep_chars (dir_sep_chars_arg) { }
 
   typedef std::string (*tilde_expansion_hook) (const std::string&);
 
@@ -76,13 +55,20 @@ public:
 
   static string_vector tilde_additional_suffixes;
 
-  static std::string tilde_expand (const std::string&);
-  static string_vector tilde_expand (const string_vector&);
+  static char dir_sep_char (void)
+  {
+    return instance_ok () ? instance->xdir_sep_char : 0;
+  }
 
-  static int umask (mode_t);
+  static std::string dir_sep_str (void)
+  {
+    return instance_ok () ? instance->xdir_sep_str : std::string ();
+  }
 
-  static int unlink (const std::string&);
-  static int unlink (const std::string&, std::string&);
+  static std::string dir_sep_chars (void)
+  {
+    return instance_ok () ? instance->xdir_sep_chars : std::string ();
+  }
 
   static bool is_dir_sep (char c)
   {
@@ -90,25 +76,14 @@ public:
     return tmp.find (c) != std::string::npos;
   }
 
+  static std::string tilde_expand (const std::string&);
+
+  static string_vector tilde_expand (const string_vector&);
+
   static std::string concat (const std::string&, const std::string&);
 
-  static char dir_sep_char (void)
-  {
-    return static_members::dir_sep_char ();
-  }
-
-  static std::string dir_sep_str (void)
-  {
-    return static_members::dir_sep_str ();
-  }
-
-  static std::string dir_sep_chars (void)
-  {
-    return static_members::dir_sep_chars ();
-  }
-
-  // Return the tail member of a path.
-  static std::string tail (std::string path)
+  // Return the tail member of a file name.
+  static std::string tail (const std::string& path)
   {
     size_t ipos = path.find_last_of (dir_sep_chars ());
 
@@ -120,54 +95,92 @@ public:
     return path.substr (ipos);
   }
 
+  static std::string canonicalize_file_name (const std::string&);
+
+  static std::string canonicalize_file_name (const std::string&, std::string&);
+
 private:
 
-  static int mkdir_internal (const std::string&, mode_t, std::string&);
+  static file_ops *instance;
 
-  static int mkfifo_internal (const std::string&, mode_t, std::string&);
+  // No copying!
 
-  // Use a singleton class for these data members instead of just
-  // making them static members of the dir_path class so that we can
-  // ensure proper initialization.
+  file_ops (const file_ops&);
 
-  class static_members
-  {
-  public:
+  file_ops& operator = (const file_ops&);
 
-    static_members (void);
+  static bool instance_ok (void);
 
-    static char dir_sep_char (void)
-    {
-      return instance_ok () ? instance->xdir_sep_char : 0;
-    }
-
-    static std::string dir_sep_str (void)
-    {
-      return instance_ok () ? instance->xdir_sep_str : std::string ();
-    }
-
-    static std::string dir_sep_chars (void)
-    {
-      return instance_ok () ? instance->xdir_sep_chars : std::string ();
-    }
-
-  private:
-
-    // The real thing.
-    static static_members *instance;
-
-    // No copying!
-
-    static_members (const static_members&);
-
-    static_members& operator = (const static_members&);
-
-    static bool instance_ok (void);
-
-    char xdir_sep_char;
-    std::string xdir_sep_str;
-    std::string xdir_sep_chars;
-  };
+  char xdir_sep_char;
+  std::string xdir_sep_str;
+  std::string xdir_sep_chars;
 };
+
+// We don't have these in the file_ops class with their simple names
+// (i.e., mkdir instead of octave_mdir) because function names in
+// standard headers may be #defined.
+
+extern OCTAVE_API int
+octave_mkdir (const std::string& nm, mode_t md);
+
+extern OCTAVE_API int
+octave_mkdir (const std::string& nm, mode_t md, std::string& msg);
+
+extern OCTAVE_API int
+octave_mkfifo (const std::string& nm, mode_t md);
+
+extern OCTAVE_API int
+octave_mkfifo (const std::string& nm, mode_t md, std::string& msg);
+
+extern OCTAVE_API int
+octave_link (const std::string&, const std::string&);
+
+extern OCTAVE_API int
+octave_link (const std::string&, const std::string&, std::string&);
+
+extern OCTAVE_API int
+octave_symlink (const std::string&, const std::string&);
+
+extern OCTAVE_API int
+octave_symlink (const std::string&, const std::string&, std::string&);
+
+extern OCTAVE_API int
+octave_readlink (const std::string&, std::string&);
+
+extern OCTAVE_API int
+octave_readlink (const std::string&, std::string&, std::string&);
+
+extern OCTAVE_API int
+octave_rename (const std::string&, const std::string&);
+
+extern OCTAVE_API int
+octave_rename (const std::string&, const std::string&, std::string&);
+
+extern OCTAVE_API int
+octave_rmdir (const std::string&);
+
+extern OCTAVE_API int
+octave_rmdir (const std::string&, std::string&);
+
+extern OCTAVE_API int
+octave_recursive_rmdir (const std::string&);
+
+extern OCTAVE_API int
+octave_recursive_rmdir (const std::string&, std::string&);
+
+extern OCTAVE_API int
+octave_umask (mode_t);
+
+extern OCTAVE_API int
+octave_unlink (const std::string&);
+
+extern OCTAVE_API int
+octave_unlink (const std::string&, std::string&);
+
+extern OCTAVE_API std::string
+octave_tempnam (const std::string&, const std::string&);
+
+extern OCTAVE_API std::string
+octave_tempnam (const std::string&, const std::string&, std::string&);
 
 #endif

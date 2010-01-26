@@ -32,7 +32,8 @@
 ## Currently, @code{fminunc} recognizes these options:
 ## @code{"FunValCheck"}, @code{"OutputFcn"}, @code{"TolX"},
 ## @code{"TolFun"}, @code{"MaxIter"}, @code{"MaxFunEvals"}, 
-## @code{"GradObj"}, @code{"FinDiffType"}.
+## @code{"GradObj"}, @code{"FinDiffType"},
+## @code{"TypicalX"}, @code{"AutoScaling"}.
 ##
 ## If @code{"GradObj"} is @code{"on"}, it specifies that @var{fcn},
 ## called with 2 output arguments, also returns the Jacobian matrix
@@ -76,9 +77,10 @@ function [x, fval, info, output, grad, hess] = fminunc (fcn, x0, options = struc
   ## Get default options if requested.
   if (nargin == 1 && ischar (fcn) && strcmp (fcn, 'defaults'))
     x = optimset ("MaxIter", 400, "MaxFunEvals", Inf, \
-    "GradObj", "off", "TolX", 1.5e-8, "TolFun", 1.5e-8,
+    "GradObj", "off", "TolX", 1e-7, "TolFun", 1e-7,
     "OutputFcn", [], "FunValCheck", "off",
-    "FinDiffType", "central");
+    "FinDiffType", "central",
+    "TypicalX", [], "AutoScaling", "off");
     return;
   endif
 
@@ -99,6 +101,17 @@ function [x, fval, info, output, grad, hess] = fminunc (fcn, x0, options = struc
   maxfev = optimget (options, "MaxFunEvals", Inf);
   outfcn = optimget (options, "OutputFcn");
 
+  ## Get scaling matrix using the TypicalX option. If set to "auto", the
+  ## scaling matrix is estimated using the jacobian.
+  typicalx = optimget (options, "TypicalX");
+  if (isempty (typicalx))
+    typicalx = ones (n, 1);
+  endif
+  autoscale = strcmpi (optimget (options, "AutoScaling", "off"), "on");
+  if (! autoscale)
+    dg = 1 ./ typicalx;
+  endif
+
   funvalchk = strcmpi (optimget (options, "FunValCheck", "off"), "on");
 
   if (funvalchk)
@@ -111,8 +124,8 @@ function [x, fval, info, output, grad, hess] = fminunc (fcn, x0, options = struc
 
   macheps = eps (class (x0));
 
-  tolx = optimget (options, "TolX", sqrt (macheps));
-  tolf = optimget (options, "TolFun", sqrt (macheps));
+  tolx = optimget (options, "TolX", 1e-7);
+  tolf = optimget (options, "TolFun", 1e-7);
 
   factor = 0.1;
   ## FIXME: TypicalX corresponds to user scaling (???)
@@ -157,7 +170,7 @@ function [x, fval, info, output, grad, hess] = fminunc (fcn, x0, options = struc
       grad = grad(:);
       nfev ++;
     else
-      grad = __fdjac__ (fcn, reshape (x, xsiz), fval, cdif)(:);
+      grad = __fdjac__ (fcn, reshape (x, xsiz), fval, typicalx, cdif)(:);
       nfev += (1 + cdif) * length (x);
     endif
 
@@ -179,17 +192,22 @@ function [x, fval, info, output, grad, hess] = fminunc (fcn, x0, options = struc
       endif
     endif
 
-    ## Second derivatives approximate the hessian.
-    d2f = norm (hesr, 'columns').';
+    if (autoscale)
+      ## Second derivatives approximate the hessian.
+      d2f = norm (hesr, 'columns').';
+      if (niter == 1)
+        dg = d2f;
+      else
+        ## FIXME: maybe fixed lower and upper bounds?
+        dg = max (0.1*dg, d2f);
+      endif
+    endif
+
     if (niter == 1)
-      dg = d2f;
       xn = norm (dg .* x);
       ## FIXME: something better?
       delta = factor * max (xn, 1);
     endif
-
-    ## FIXME: maybe fixed lower and upper bounds?
-    dg = max (0.1*dg, d2f);
 
     ## FIXME -- why tolf*n*xn? If abs (e) ~ abs(x) * eps is a vector
     ## of perturbations of x, then norm (hesr*e) <= eps*xn, i.e. by

@@ -21,10 +21,10 @@
 ## Undocumented internal function.
 ## @end deftypefn
 
-function fjac = __fdjac__ (fcn, x, fvec, cdif, err = 0)
+function fjac = __fdjac__ (fcn, x, fvec, typicalx, cdif, err = 0)
   if (cdif)
     err = (max (eps, err)) ^ (1/3);
-    h = max (abs (x), 1)*err; # FIXME?
+    h = typicalx*err;
     fjac = zeros (length (fvec), numel (x));
     for i = 1:numel (x)
       x1 = x2 = x;
@@ -34,7 +34,7 @@ function fjac = __fdjac__ (fcn, x, fvec, cdif, err = 0)
     endfor
   else
     err = sqrt (max (eps, err));
-    h = max (abs (x), 1)*err; # FIXME?
+    h = typicalx*err;
     fjac = zeros (length (fvec), numel (x));
     for i = 1:numel (x)
       x1 = x;

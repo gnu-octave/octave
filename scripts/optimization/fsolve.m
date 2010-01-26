@@ -33,7 +33,8 @@
 ## Currently, @code{fsolve} recognizes these options:
 ## @code{"FunValCheck"}, @code{"OutputFcn"}, @code{"TolX"},
 ## @code{"TolFun"}, @code{"MaxIter"}, @code{"MaxFunEvals"}, 
-## @code{"Jacobian"}, @code{"Updating"} and @code{"ComplexEqn"}.
+## @code{"Jacobian"}, @code{"Updating"}, @code{"ComplexEqn"}
+## @code{"TypicalX"}, @code{"AutoScaling"} and @code{"FinDiffType"}.
 ##
 ## If @code{"Jacobian"} is @code{"on"}, it specifies that @var{fcn},
 ## called with 2 output arguments, also returns the Jacobian matrix
@@ -41,6 +42,12 @@
 ## the termination tolerance in the unknown variables, while 
 ## @code{"TolFun"} is a tolerance for equations.  Default is @code{1e-7}
 ## for both @code{"TolX"} and @code{"TolFun"}.
+##
+## If @code{"AutoScaling"} is on, the variables will be automatically scaled
+## according to the column norms of the (estimated) Jacobian. As a result,
+## TolF becomes scaling-independent. By default, this option is off, because
+## it may sometimes deliver unexpected (though mathematically correct) results.
+## 
 ## If @code{"Updating"} is "on", the function will attempt to use Broyden
 ## updates to update the Jacobian, in order to reduce the amount of jacobian
 ## calculations.
@@ -124,9 +131,10 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
   ## Get default options if requested.
   if (nargin == 1 && ischar (fcn) && strcmp (fcn, 'defaults'))
     x = optimset ("MaxIter", 400, "MaxFunEvals", Inf, \
-    "Jacobian", "off", "TolX", 1.5e-8, "TolFun", 1.5e-8,
+    "Jacobian", "off", "TolX", 1e-7, "TolFun", 1e-7,
     "OutputFcn", [], "Updating", "on", "FunValCheck", "off",
-    "ComplexEqn", "off", "FinDiffType", "central");
+    "ComplexEqn", "off", "FinDiffType", "central",
+    "TypicalX", [], "AutoScaling", "off");
     return;
   endif
 
@@ -151,6 +159,17 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
   updating = strcmpi (optimget (options, "Updating", "on"), "on");
   complexeqn = strcmpi (optimget (options, "ComplexEqn", "off"), "on");
 
+  ## Get scaling matrix using the TypicalX option. If set to "auto", the
+  ## scaling matrix is estimated using the jacobian.
+  typicalx = optimget (options, "TypicalX");
+  if (isempty (typicalx))
+    typicalx = ones (n, 1);
+  endif
+  autoscale = strcmpi (optimget (options, "AutoScaling", "off"), "on");
+  if (! autoscale)
+    dg = 1 ./ typicalx;
+  endif
+
   funvalchk = strcmpi (optimget (options, "FunValCheck", "off"), "on");
 
   if (funvalchk)
@@ -163,8 +182,8 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
 
   macheps = eps (class (x0));
 
-  tolx = optimget (options, "TolX", sqrt (macheps));
-  tolf = optimget (options, "TolFun", sqrt (macheps));
+  tolx = optimget (options, "TolX", 1e-7);
+  tolf = optimget (options, "TolFun", 1e-7);
 
   factor = 1;
 
@@ -211,7 +230,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
       fvec = fvec(:);
       nfev ++;
     else
-      fjac = __fdjac__ (fcn, reshape (x, xsiz), fvec, cdif);
+      fjac = __fdjac__ (fcn, reshape (x, xsiz), fvec, typicalx, cdif);
       nfev += (1 + cdif) * length (x);
     endif
 
@@ -229,25 +248,30 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
       [q, r] = qr (fjac, 0);
     endif
 
-    ## Get column norms, use them as scaling factors.
-    jcn = norm (fjac, 'columns').';
+    if (autoscale)
+      ## Get column norms, use them as scaling factors.
+      jcn = norm (fjac, 'columns').';
+      if (niter == 1)
+        dg = jcn;
+        dg(dg == 0) = 1;
+      else
+        ## Rescale adaptively.
+        ## FIXME: the original minpack used the following rescaling strategy:
+        ##   dg = max (dg, jcn);
+        ## but it seems not good if we start with a bad guess yielding jacobian
+        ## columns with large norms that later decrease, because the corresponding
+        ## variable will still be overscaled. So instead, we only give the old
+        ## scaling a small momentum, but do not honor it.
+
+        dg = max (0.1*dg, jcn);
+      endif
+    endif
+
     if (niter == 1)
-      dg = jcn;
-      dg(dg == 0) = 1;
       xn = norm (dg .* x);
       ## FIXME: something better?
       delta = factor * max (xn, 1);
     endif
-
-    ## Rescale adaptively.
-    ## FIXME: the original minpack used the following rescaling strategy:
-    ##   dg = max (dg, jcn);
-    ## but it seems not good if we start with a bad guess yielding jacobian
-    ## columns with large norms that later decrease, because the corresponding
-    ## variable will still be overscaled. So instead, we only give the old
-    ## scaling a small momentum, but do not honor it.
-
-    dg = max (0.1*dg, jcn);
 
     ## It also seems that in the case of fast (and inhomogeneously) changing
     ## jacobian, the Broyden updates are of little use, so maybe we could

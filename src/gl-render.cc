@@ -2669,7 +2669,7 @@ opengl_renderer::draw_text (const text::properties& props)
   set_color (props.get_color_rgb ());
 
   // FIXME: take "units" into account
-  const Matrix pos = props.get_position ().matrix_value ();
+  const Matrix pos = xform.scale (props.get_position ().matrix_value ());
   int halign = 0, valign = 0;
 
   if (props.horizontalalignment_is ("center"))

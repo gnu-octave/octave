@@ -1,5 +1,10 @@
 2010-01-27  Jaroslav Hajek  <highegg@gmail.com>
 
+	* oct-parse.yy (validate_matrix_row): New static helper func.
+	(cell_or_matrix_row): Call it here.
+
+2010-01-27  Jaroslav Hajek  <highegg@gmail.com>
+
 	* oct-lvalue.h (octave_lvalue::is_black_hole): New method.
 	(octave_lvalue::black_hole): New field.
 	(octave_lvalue::is_defined, octave_lvalue::is_undefined,

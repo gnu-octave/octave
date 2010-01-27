@@ -315,6 +315,10 @@ make_indirect_ref (tree_expression *expr, tree_expression *field);
 static tree_decl_command *
 make_decl_command (int tok, token *tok_val, tree_decl_init_list *lst);
 
+// Validate argument list forming a matrix or cell row.
+static tree_argument_list *
+validate_matrix_row (tree_argument_list *row);
+
 // Finish building a matrix list.
 static tree_expression *
 finish_matrix (tree_matrix *m);
@@ -714,9 +718,9 @@ cell_rows1	: cell_or_matrix_row
 
 cell_or_matrix_row
 		: arg_list
-		  { $$ = $1; }
+		  { $$ = validate_matrix_row ($1); }
 		| arg_list ','	// Ignore trailing comma.
-		  { $$ = $1; }
+		  { $$ = validate_matrix_row ($1); }
 		;
 
 fcn_handle	: '@' FCN_HANDLE
@@ -3102,6 +3106,14 @@ make_decl_command (int tok, token *tok_val, tree_decl_init_list *lst)
     }
 
   return retval;
+}
+
+static tree_argument_list *
+validate_matrix_row (tree_argument_list *row)
+{
+  if (row && row->has_magic_tilde ())
+    yyerror ("invalid use of tilde (~) in matrix expression");
+  return row;
 }
 
 // Finish building a matrix list.

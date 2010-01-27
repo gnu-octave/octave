@@ -992,6 +992,21 @@ following will produce an error.
 @end group
 @end example
 
+The symbol @code{~} may be used as a placeholder in the list of lvalues,
+indicating that the corresponding return value should be ignored and not stored
+anywhere:
+
+@example
+@group
+[~, s, v] = svd (a);
+@end group
+@end example
+
+This is cleaner and more efficient than using a dummy variable.
+It is not recommended, however, to reuse such an assignment statement as a right-hand side
+in another expression. Currently, this works as expected, but may cease to work in future
+releases of Octave. The @code{nargout} value for the right-hand side expression is not affected.
+
 @opindex +=
 A very common programming pattern is to increment an existing variable
 with a given value, like this

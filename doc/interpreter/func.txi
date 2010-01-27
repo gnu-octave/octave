@@ -32,6 +32,7 @@ like built-in functions.
 * Defining Functions::          
 * Multiple Return Values::      
 * Variable-length Argument Lists::  
+* Ignoring Arguments::  
 * Variable-length Return Lists::  
 * Returning From a Function::   
 * Default Arguments::   
@@ -435,6 +436,23 @@ print_arguments (1, "two", 3);
 @end example
 
 @DOCSTRING(parseparams)
+
+@node Ignoring Arguments
+@section Ignoring Arguments
+
+In the formal argument list, it is possible to use the dummy placeholder @code{~}
+instead of a name. This indicates that the corresponding argument value should be ignored
+and not stored to any variable.
+
+@example
+@group
+function val = pick2nd (~, arg2)
+  val = arg2;
+endfunction
+@end group
+@end example
+
+The value of @code{nargin} is not affected by using this declaration.
 
 @node Variable-length Return Lists
 @section Variable-length Return Lists

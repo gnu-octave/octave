@@ -1,3 +1,8 @@
+2010-01-27  Jaroslav Hajek  <highegg@gmail.com>
+
+	* interpreter/expr.txi: Document using dummy outputs.
+	* interpreter/func.txi: Document using dummy inputs.
+
 2010-01-20  John W. Eaton  <jwe@octave.org>
 
 	* interpreter/munge-texi.cc: Delete Emacs local-variable settings.

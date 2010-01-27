@@ -1,3 +1,8 @@
+2010-01-27  Thorsten Meyer  <thorsten.meyier@gmx.de>
+
+	* plot/gnuplot_drawnow.m: Add "emf" to the list of enhanced
+	terminals for the gnuplot backend.
+
 2010-01-26  John W. Eaton  <jwe@octave.org>
 
 	* general/chop.m: New function.

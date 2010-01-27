@@ -391,7 +391,8 @@ function have_enhanced = gnuplot_is_enhanced_term (term)
     ## Don't include pstex, pslatex or epslatex here as the TeX commands
     ## should not be interpreted in that case.
     enhanced_terminals = {"aqua", "dumb", "png", "jpeg", "gif", "pm", ...
-                          "windows", "wxt", "svg", "postscript", "x11", "pdf"};
+                          "windows", "wxt", "svg", "postscript", "x11", ...
+                          "pdf", "emf"};
   endif
   if (nargin < 1)
     ## Determine the default gnuplot terminal.

@@ -463,7 +463,7 @@ make_statement (T *arg)
 %type <tree_expression_type> matrix cell
 %type <tree_expression_type> primary_expr postfix_expr prefix_expr binary_expr
 %type <tree_expression_type> simple_expr colon_expr assign_expr expression
-%type <tree_identifier_type> identifier fcn_name
+%type <tree_identifier_type> identifier fcn_name magic_tilde
 %type <tree_identifier_type> superclass_identifier meta_identifier
 %type <octave_user_function_type> function1 function2 classdef1
 %type <tree_index_expression_type> word_list_cmd
@@ -755,11 +755,24 @@ magic_colon	: ':'
 		  }
 		;
 
+magic_tilde	: EXPR_NOT
+		  {
+		    $$ = new tree_black_hole ();
+		  }
+		;
+
 arg_list	: expression
 		  { $$ = new tree_argument_list ($1); }
 		| magic_colon
 		  { $$ = new tree_argument_list ($1); }
+		| magic_tilde
+		  { $$ = new tree_argument_list ($1); }
 		| arg_list ',' magic_colon
+		  {
+		    $1->append ($3);
+		    $$ = $1;
+		  }
+		| arg_list ',' magic_tilde
 		  {
 		    $1->append ($3);
 		    $$ = $1;
@@ -1005,6 +1018,10 @@ decl2		: identifier
 		    lexer_flags.looking_at_initializer_expression = false;
 		    $$ = new tree_decl_elt ($1, $4);
 		  }
+                | magic_tilde
+                  {
+                    $$ = new tree_decl_elt ($1);
+                  }
 		;
 
 // ====================
@@ -2972,6 +2989,12 @@ make_index_expression (tree_expression *expr, tree_argument_list *args,
 		       char type)
 {
   tree_index_expression *retval = 0;
+  
+  if (args && args->has_magic_tilde ())
+    {
+      yyerror ("invalid use of empty argument (~) in index expression");
+      return retval;
+    }
 
   int l = expr->line ();
   int c = expr->column ();

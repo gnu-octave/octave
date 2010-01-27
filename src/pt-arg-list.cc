@@ -39,6 +39,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "parse.h"
 #include "pt-arg-list.h"
 #include "pt-exp.h"
+#include "pt-id.h"
 #include "pt-pr-code.h"
 #include "pt-walk.h"
 #include "toplev.h"
@@ -77,6 +78,12 @@ tree_argument_list::append (const element_type& s)
 
   if (! list_includes_magic_end && s && s->has_magic_end ())
     list_includes_magic_end = true;
+
+  if (! list_includes_magic_tilde && s && s->is_identifier ())
+    {
+      tree_identifier *id = dynamic_cast<tree_identifier *> (s);
+      list_includes_magic_tilde = id && id->is_black_hole ();
+    }
 }
 
 bool

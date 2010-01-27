@@ -1,3 +1,29 @@
+2010-01-27  Jaroslav Hajek  <highegg@gmail.com>
+
+	* oct-lvalue.h (octave_lvalue::is_black_hole): New method.
+	(octave_lvalue::black_hole): New field.
+	(octave_lvalue::is_defined, octave_lvalue::is_undefined,
+	octave_lvalue::is_map): Make const.
+	(octave_lvalue::index_set): Remove field.
+	(octave_lvalue::octave_lvalue, octave_lvalue::operator =): Correctly
+	handle black holes. Update.
+	(dummy_value): Remove.
+	* pt-id.h (tree_identifier::is_black_hole): New method.
+	(tree_identifier::is_variable): Make virtual.
+	(tree_black_hole): New class.
+	* oct-parse.yy (magic_tilde): New terminal.
+	(param_list): Allow magic_tilde.
+	(arg_list): Allow magic_tilde.
+	* pt-misc.cc (tree_parameter_list::validate): Handle black holes.
+	* pt-idx.cc (tree_index_expression::append): Gripe if arguments
+	contain magic tilde.
+	* pt-arg-list.h (tree_argument_list::has_magic_tilde): New method
+	decl.
+	(tree_argument_list::list_includes_magic_tilde): New field.
+	(tree_argument_list::tree_argument_list): Initialize it in ctors.
+	* pt-arg-list.cc (tree_argument_list::has_magic_tilde): New method.
+	(tree_argument_list::append): Update list_includes_magic_tilde.
+
 2010-01-27  Judd Storrs  <jstorrs@gmail.com>
 
 	* ov-class.cc (octave_class::print_with_name) Add default case for

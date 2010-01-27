@@ -76,7 +76,12 @@ tree_parameter_list::validate (in_or_out type)
 	{
 	  std::string name = id->name ();
 
-	  if (dict.find (name) != dict.end ())
+          if (id->is_black_hole ())
+            {
+              if (type != in)
+                error ("invalid use of ~ in output list");
+            }
+          else if (dict.find (name) != dict.end ())
 	    {
 	      retval = false;
 	      error ("`%s' appears more than once in parameter list",

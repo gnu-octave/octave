@@ -81,6 +81,9 @@ tree_index_expression::append (tree_argument_list *lst, char t)
   type.append (1, t);
   arg_nm.push_back (lst ? lst->get_arg_names () : string_vector ());
   dyn_field.push_back (static_cast<tree_expression *> (0));
+
+  if (lst && lst->has_magic_tilde ())
+    error ("invalid use of empty argument (~) in index expression");
 }
 
 void

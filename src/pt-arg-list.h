@@ -46,15 +46,20 @@ public:
   typedef tree_expression* element_type;
 
   tree_argument_list (void)
-    : list_includes_magic_end (false), simple_assign_lhs (false) { }
+    : list_includes_magic_end (false), list_includes_magic_tilde (false),
+    simple_assign_lhs (false) { }
 
   tree_argument_list (tree_expression *t)
-    : list_includes_magic_end (false), simple_assign_lhs (false)
+    : list_includes_magic_end (false), list_includes_magic_tilde (false),
+    simple_assign_lhs (false)
   { append (t); }
 
   ~tree_argument_list (void);
 
   bool has_magic_end (void) const;
+
+  bool has_magic_tilde (void) const
+    { return list_includes_magic_tilde; }
 
   tree_expression *remove_front (void)
     {
@@ -86,6 +91,8 @@ public:
 private:
 
   bool list_includes_magic_end;
+
+  bool list_includes_magic_tilde;
 
   bool simple_assign_lhs;
 

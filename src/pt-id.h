@@ -66,7 +66,9 @@ public:
 
   bool is_defined (void) { return xsym().is_defined (); }
 
-  bool is_variable (void) { return xsym().is_variable (); }
+  virtual bool is_variable (void) { return xsym().is_variable (); }
+
+  virtual bool is_black_hole (void) { return false; }
 
   // Try to find a definition for an identifier.  Here's how:
   //
@@ -141,6 +143,28 @@ private:
   tree_identifier (const tree_identifier&);
 
   tree_identifier& operator = (const tree_identifier&);
+};
+
+class tree_black_hole : public tree_identifier
+{
+public:
+
+  tree_black_hole (int l = -1, int c = -1)
+    : tree_identifier (l, c) { }
+
+  std::string name (void) const { return "~"; }
+
+  bool is_variable (void) { return false; }
+
+  bool is_black_hole (void) { return true; }
+
+  tree_black_hole *dup (void) const
+    { return new tree_black_hole; }
+
+  octave_lvalue lvalue (void)
+    {
+      return octave_lvalue (0); // black hole lvalue
+    }
 };
 
 #endif

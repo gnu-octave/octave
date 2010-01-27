@@ -972,7 +972,7 @@ octave_class::print_name_tag (std::ostream& os, const std::string& name) const
 }
 
 void
-octave_class::print_with_name (std::ostream&, const std::string& name, 
+octave_class::print_with_name (std::ostream& os, const std::string& name, 
 			       bool)
 {
   octave_value fcn = symbol_table::find_method ("display", class_name ());
@@ -991,6 +991,12 @@ octave_class::print_with_name (std::ostream&, const std::string& name,
       args.stash_name_tags (arg_names);
 
       feval (fcn.function_value (), args);
+    }
+  else
+    {
+      indent (os);
+      os << name << " = <class " << class_name () << ">";
+      newline (os);
     }
 }
 

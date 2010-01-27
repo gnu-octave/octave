@@ -1,3 +1,8 @@
+2010-01-27  Judd Storrs  <jstorrs@gmail.com>
+
+	* ov-class.cc (octave_class::print_with_name) Add default case for
+	classes that don't define a display method.
+
 2010-01-26  Shai Ayal  <shaiay@users.sourceforge.net>
 
 	* gl-render.cc (draw_text): scale position.

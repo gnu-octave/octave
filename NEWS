@@ -209,6 +209,10 @@ Summary of important user-visible changes for version 3.3:
     of `strcat' has been vectorized and is now much more efficient when
     many strings are concatenated.  The `strcmpi' and `strncmpi'
     functions are now built-in functions, providing better performance.
+ 
+ ** Matlab-style ignoring input and output function arguments using tilde (~)
+    is now supported. For more details, consult the manual.
+    
 
 Summary of important user-visible changes for version 3.2:
 ---------------------------------------------------------

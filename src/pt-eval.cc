@@ -901,6 +901,11 @@ tree_evaluator::do_unwind_protect_cleanup_code (tree_statement_list *list)
   frame.protect_var (error_state);
   error_state = 0;
 
+  // We want to preserve the last statement indicator for possible
+  // backtracking.
+  frame.add_fcn (octave_call_stack::set_statement, 
+                 octave_call_stack::current_statement ());
+
   // Similarly, if we have seen a return or break statement, allow all
   // the cleanup code to run before returning or handling the break.
   // We don't have to worry about continue statements because they can
@@ -956,9 +961,9 @@ tree_evaluator::do_unwind_protect_cleanup_code (tree_statement_list *list)
   // Otherwise, set it back to what it was before.
 
   if (error_state)
-    frame.discard_top ();
+    frame.discard_top (2);
   else
-    frame.run_top ();
+    frame.run_top (2);
 
   frame.run ();
 }

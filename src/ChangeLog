@@ -1,5 +1,10 @@
 2010-01-27  Jaroslav Hajek  <highegg@gmail.com>
 
+	* pt-eval.cc (do_unwind_protect_cleanup_code): Save
+	current_statement and restore it after cleanup block.
+
+2010-01-27  Jaroslav Hajek  <highegg@gmail.com>
+
 	* oct-parse.yy (validate_matrix_row): New static helper func.
 	(cell_or_matrix_row): Call it here.
 

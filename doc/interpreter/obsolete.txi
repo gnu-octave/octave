@@ -53,7 +53,6 @@ as the obsolete function, but should provide equivalent functionality.
 @item @code{chisquare_pdf} @tab @code{chi2pdf} @tab 3.4.0
 @item @code{chisquare_rnd} @tab @code{chi2rnd} @tab 3.4.0
 @item @code{clearplot} @tab @code{clf} @tab 3.4.0
-@item @code{clg} @tab @code{clf} @tab 3.4.0
 @item @code{com2str} @tab @code{num2str} @tab 3.4.0
 @item @code{exponential_cdf} @tab @code{expcdf} @tab 3.4.0
 @item @code{exponential_inv} @tab @code{expinv} @tab 3.4.0
@@ -86,7 +85,6 @@ as the obsolete function, but should provide equivalent functionality.
 @item @code{is_struct} @tab @code{isstruct} @tab 3.4.0
 @item @code{is_symmetric} @tab @code{issymmetric} @tab 3.4.0
 @item @code{is_vector} @tab @code{isvector} @tab 3.4.0
-@item @code{isstr} @tab @code{ischar} @tab 3.4.0
 @item @code{lognormal_cdf} @tab @code{logncdf} @tab 3.4.0
 @item @code{lognormal_inv} @tab @code{logninv} @tab 3.4.0
 @item @code{lognormal_pdf} @tab @code{lognpdf} @tab 3.4.0
@@ -105,7 +103,6 @@ as the obsolete function, but should provide equivalent functionality.
 @item @code{poisson_pdf} @tab @code{poisspdf} @tab 3.4.0
 @item @code{poisson_rnd} @tab @code{poissrnd} @tab 3.4.0
 @item @code{polyinteg} @tab @code{polyint} @tab 3.4.0
-@item @code{setstr} @tab @code{char} @tab 3.4.0
 @item @code{struct_contains} @tab @code{isfield} @tab 3.4.0
 @item @code{struct_elements} @tab @code{fieldnames} @tab 3.4.0
 @item @code{t_cdf} @tab @code{tcdf} @tab 3.4.0

@@ -1,3 +1,9 @@
+2010-01-28  John W. Eaton  <jwe@octave.org>
+
+	* deprecated/isstr.m, deprecated/clg.m, deprecated/setstr.m:
+	Note that Matlab still has these functions, so they probabl
+	should not be removed with other functions deprecated in 3.0.0.
+
 2010-01-27  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
 	* plot/gnuplot_drawnow.m: Add "emf" to the list of enhanced

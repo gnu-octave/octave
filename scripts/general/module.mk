@@ -16,6 +16,7 @@ general_FCN_FILES = \
   general/cart2sph.m \
   general/cell2mat.m \
   general/celldisp.m \
+  general/chop.m \
   general/circshift.m \
   general/colon.m \
   general/common_size.m \

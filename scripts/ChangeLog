@@ -1,5 +1,9 @@
 2010-01-28  John W. Eaton  <jwe@octave.org>
 
+	* general/Makefile.am (general_FCN_FILES): Add chop.m to the list.
+
+2010-01-28  John W. Eaton  <jwe@octave.org>
+
 	* deprecated/isstr.m, deprecated/clg.m, deprecated/setstr.m:
 	Note that Matlab still has these functions, so they probabl
 	should not be removed with other functions deprecated in 3.0.0.

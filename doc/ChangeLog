@@ -1,3 +1,10 @@
+2010-01-28  John W. Eaton  <jwe@octave.org>
+
+	* interpreter/obsolete.txi: New file.
+	* interpreter/Makefile.am (MUNGED_TEXI_SRC): Add it to the list.
+	* interpreter/octave.texi (Obsolete Functions): New menu item.
+	Include obsolete.texi.
+
 2010-01-27  Jaroslav Hajek  <highegg@gmail.com>
 
 	* interpreter/expr.txi: Document using dummy outputs.

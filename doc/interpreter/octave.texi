@@ -187,6 +187,7 @@ It corresponds to GNU Octave version @value{VERSION}.
 * Test and Demo Functions::
 * Tips and Standards::                        
 * Contributing Guidelines::
+* Obsolete Functions::
 * Trouble::                     If you have trouble installing Octave.
 * Installation::                How to configure, compile and install Octave.
 * Emacs Octave Support::                       
@@ -863,6 +864,7 @@ Emacs Octave Support
 @include testfun.texi
 @include tips.texi
 @include contrib.texi
+@include obsolete.texi
 @include bugs.texi
 @include install.texi
 @include emacs.texi

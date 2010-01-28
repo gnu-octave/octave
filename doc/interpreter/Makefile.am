@@ -119,6 +119,7 @@ MUNGED_TEXI_SRC = \
   matrix.texi \
   nonlin.texi \
   numbers.texi \
+  obsolete.texi \
   oop.texi \
   op-idx.texi \
   optim.texi \

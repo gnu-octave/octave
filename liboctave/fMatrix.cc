@@ -1241,8 +1241,14 @@ FloatMatrix::determinant (MatrixType& mattype,
     {
       volatile int typ = mattype.type ();
 
+      // Even though the matrix is marked as singular (Rectangular), we may
+      // still get a useful number from the LU factorization, because it always
+      // completes.
+
       if (typ == MatrixType::Unknown)
         typ = mattype.type (*this);
+      else if (typ == MatrixType::Rectangular)
+        typ = MatrixType::Full;
 
       if (typ == MatrixType::Lower || typ == MatrixType::Upper)
         {

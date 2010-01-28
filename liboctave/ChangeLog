@@ -1,3 +1,11 @@
+2010-01-28  Jaroslav Hajek  <highegg@gmail.com>
+
+	* dMatrix.cc (Matrix::determinant): Treat matrices marked as singular
+	normally.
+	* fMatrix.cc (FloatMatrix::determinant): Ditto.
+	* CMatrix.cc (ComplexMatrix::determinant): Ditto.
+	* fCMatrix.cc (FloatComplexMatrix::determinant): Ditto.
+
 2010-01-26  John W. Eaton  <jwe@octave.org>
 
 	* file-ops.cc: Don't tag functions with OCTAVE_API in source file.

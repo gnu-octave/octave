@@ -1,3 +1,9 @@
+2010-01-28  Jaroslav Hajek  <highegg@gmail.com>
+
+	* toplev.cc (run_command_and_return_output): Fix testing of failed
+	process creation, simplify.
+	(cleanup_iprocstream): Remove.
+
 2010-01-27  Jaroslav Hajek  <highegg@gmail.com>
 
 	* pt-eval.cc (do_unwind_protect_cleanup_code): Save

@@ -753,16 +753,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.\n\
 
 // Execute a shell command.
 
-static void
-cleanup_iprocstream (void *p)
-{
-  iprocstream *cmd = static_cast<iprocstream *> (p);
-
-  octave_child_list::remove (cmd->pid ());
-
-  delete cmd;
-}
-
 static int
 wait_for_input (int fid)
 {
@@ -789,50 +779,48 @@ static octave_value_list
 run_command_and_return_output (const std::string& cmd_str)
 {
   octave_value_list retval;
+  unwind_protect frame;
 
   iprocstream *cmd = new iprocstream (cmd_str.c_str ());
 
-  if (cmd)
+  frame.add_delete (cmd);
+  frame.add_fcn (octave_child_list::remove, cmd->pid ());
+
+  if (*cmd)
     {
-      unwind_protect frame;
-      frame.add (cleanup_iprocstream, cmd);
+      int fid = cmd->file_number ();
 
-      if (*cmd)
-	{
-	  int fid = cmd->file_number ();
+      std::ostringstream output_buf;
 
-	  std::ostringstream output_buf;
+      char ch;
 
-	  char ch;
+      for (;;)
+        {
+          if (cmd->get (ch))
+            output_buf.put (ch);
+          else
+            {
+              if (! cmd->eof () && errno == EAGAIN)
+                {
+                  cmd->clear ();
 
-	  for (;;)
-	    {
-	      if (cmd->get (ch))
-		output_buf.put (ch);
-	      else
-		{
-		  if (! cmd->eof () && errno == EAGAIN)
-		    {
-		      cmd->clear ();
+                  if (wait_for_input (fid) != 1)
+                    break;			
+                }
+              else
+                break;
+            }
+        }
 
-		      if (wait_for_input (fid) != 1)
-			break;			
-		    }
-		  else
-		    break;
-		}
-	    }
+      int cmd_status = cmd->close ();
 
-	  int cmd_status = cmd->close ();
+      if (WIFEXITED (cmd_status))
+        cmd_status = WEXITSTATUS (cmd_status);
+      else
+        cmd_status = 127;
 
-	  if (WIFEXITED (cmd_status))
-	    cmd_status = WEXITSTATUS (cmd_status);
-	  else
-	    cmd_status = 127;
-
-	  retval(0) = cmd_status;
-	  retval(1) = output_buf.str ();
-	}
+      retval(0) = cmd_status;
+      retval(1) = output_buf.str ();
     }
   else
     error ("unable to start subprocess for `%s'", cmd_str.c_str ());

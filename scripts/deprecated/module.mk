@@ -1,88 +1,25 @@
 FCN_FILE_DIRS += deprecated
 
 deprecated_FCN_FILES = \
-  deprecated/beta_cdf.m \
-  deprecated/beta_inv.m \
-  deprecated/beta_pdf.m \
-  deprecated/beta_rnd.m \
-  deprecated/binomial_cdf.m \
-  deprecated/binomial_inv.m \
-  deprecated/binomial_pdf.m \
-  deprecated/binomial_rnd.m \
   deprecated/cellidx.m \
-  deprecated/chisquare_cdf.m \
-  deprecated/chisquare_inv.m \
-  deprecated/chisquare_pdf.m \
-  deprecated/chisquare_rnd.m \
-  deprecated/clearplot.m \
   deprecated/clg.m \
-  deprecated/com2str.m \
   deprecated/complement.m \
   deprecated/create_set.m \
   deprecated/dmult.m \
-  deprecated/exponential_cdf.m \
-  deprecated/exponential_inv.m \
-  deprecated/exponential_pdf.m \
-  deprecated/exponential_rnd.m \
-  deprecated/f_cdf.m \
-  deprecated/f_inv.m \
-  deprecated/f_pdf.m \
-  deprecated/f_rnd.m \
-  deprecated/gamma_cdf.m \
-  deprecated/gamma_inv.m \
-  deprecated/gamma_pdf.m \
-  deprecated/gamma_rnd.m \
-  deprecated/geometric_cdf.m \
-  deprecated/geometric_inv.m \
-  deprecated/geometric_pdf.m \
-  deprecated/geometric_rnd.m \
-  deprecated/hypergeometric_cdf.m \
-  deprecated/hypergeometric_inv.m \
-  deprecated/hypergeometric_pdf.m \
-  deprecated/hypergeometric_rnd.m \
-  deprecated/intersection.m \
-  deprecated/is_bool.m \
-  deprecated/is_complex.m \
-  deprecated/is_list.m \
-  deprecated/is_matrix.m \
-  deprecated/is_scalar.m \
-  deprecated/is_square.m \
-  deprecated/is_stream.m \
-  deprecated/is_struct.m \
-  deprecated/is_symmetric.m \
-  deprecated/is_vector.m \
   deprecated/iscommand.m \
   deprecated/israwcommand.m \
   deprecated/isstr.m \
   deprecated/lchol.m \
   deprecated/loadimage.m \
-  deprecated/lognormal_cdf.m \
-  deprecated/lognormal_inv.m \
-  deprecated/lognormal_pdf.m \
-  deprecated/lognormal_rnd.m \
   deprecated/mark_as_command.m \
   deprecated/mark_as_rawcommand.m \
-  deprecated/meshdom.m \
-  deprecated/normal_cdf.m \
-  deprecated/normal_inv.m \
-  deprecated/normal_pdf.m \
-  deprecated/normal_rnd.m \
-  deprecated/pascal_cdf.m \
-  deprecated/pascal_inv.m \
-  deprecated/pascal_pdf.m \
-  deprecated/pascal_rnd.m \
-  deprecated/poisson_cdf.m \
-  deprecated/poisson_inv.m \
-  deprecated/poisson_pdf.m \
-  deprecated/poisson_rnd.m \
-  deprecated/polyinteg.m \
   deprecated/setstr.m \
   deprecated/spatan2.m \
+  deprecated/spchol.m \
   deprecated/spchol2inv.m \
   deprecated/spcholinv.m \
   deprecated/spcumprod.m \
   deprecated/spcumsum.m \
-  deprecated/spchol.m \
   deprecated/spdet.m \
   deprecated/spdiag.m \
   deprecated/spfind.m \
@@ -97,28 +34,13 @@ deprecated_FCN_FILES = \
   deprecated/spqr.m \
   deprecated/spsum.m \
   deprecated/spsumsq.m \
-  deprecated/struct_contains.m \
-  deprecated/struct_elements.m \
-  deprecated/t_cdf.m \
-  deprecated/t_inv.m \
-  deprecated/t_pdf.m \
-  deprecated/t_rnd.m \
-  deprecated/uniform_cdf.m \
-  deprecated/uniform_inv.m \
-  deprecated/uniform_pdf.m \
-  deprecated/uniform_rnd.m \
+  deprecated/str2mat.m \
   deprecated/unmark_command.m \
   deprecated/unmark_rawcommand.m \
   deprecated/weibcdf.m \
   deprecated/weibinv.m \
   deprecated/weibpdf.m \
-  deprecated/weibrnd.m \
-  deprecated/weibull_cdf.m \
-  deprecated/weibull_inv.m \
-  deprecated/weibull_pdf.m \
-  deprecated/weibull_rnd.m \
-  deprecated/wiener_rnd.m \
-  deprecated/str2mat.m
+  deprecated/weibrnd.m
 
 FCN_FILES += $(deprecated_FCN_FILES)
 

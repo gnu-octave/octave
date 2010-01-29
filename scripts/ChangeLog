@@ -1,5 +1,8 @@
 2010-01-29  John W. Eaton  <jwe@octave.org>
 
+	* deprecated/module.mk (deprecated_FCN_FILES):
+	Remove delete files from the list.
+
 	* deprecated/beta_cdf.m, deprecated/beta_inv.m,
 	deprecated/beta_pdf.m, deprecated/beta_rnd.m,
 	deprecated/binomial_cdf.m, deprecated/binomial_inv.m,

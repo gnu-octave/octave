@@ -69,13 +69,20 @@ function print_pass_fail (n, p)
 endfunction
 
 function y = hasfunctions (f)
-  fid = fopen (f);
-  if (fid < 0)
-    error ("fopen failed: %s", f);
+  n = length (f);
+  if (n > 3 && strcmp (f((end-2):end), ".cc"))
+    fid = fopen (f);
+    if (fid < 0)
+      error ("fopen failed: %s", f);
+    else
+      str = fread (fid, "*char")';
+      fclose (fid);
+      y = ! isempty (regexp (str,'^(DEFUN|DEFUN_DLD)\b', "lineanchors"));
+    endif
+  elseif (n > 2 && strcmp (f((end-1):end), ".m"))
+    y = true;
   else
-    str = fread (fid, "*char")';
-    fclose (fid);
-    y = regexp (str,'^(DEFUN|DEFUN_DLD)\b', "lineanchors");
+    y = false;
   endif
 endfunction
 
@@ -160,7 +167,7 @@ function [dp, dn, dxf, dsk] = run_test_script (fid, d);
 	dsk += sk;
 	files_with_tests(end+1) = f;
       elseif (hasfunctions (f))
-	## To reduce the list length, only mark files that contains
+	## To reduce the list length, only mark .cc files that contain
 	## DEFUN definitions.
 	files_with_no_tests(end+1) = f;
       endif

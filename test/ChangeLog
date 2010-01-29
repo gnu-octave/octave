@@ -1,3 +1,8 @@
+2010-01-29  John W. Eaton  <jwe@octave.org>
+
+	* fntests.m (hasfunctions): Only check for DEFUN in .cc files.
+	Return true for all .m files.
+
 2010-01-14  David Grundberg  <davidg@cs.umu.se>
 
 	* fntests.m (run_test_script): Check all *.cc files for tests.

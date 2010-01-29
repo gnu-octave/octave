@@ -1,5 +1,12 @@
 2010-01-29  John W. Eaton  <jwe@octave.org>
 
+	* polynomial/compan.m, polynomial/conv.m, polynomial/deconv.m,
+	polynomial/mpoles.m, polynomial/polyderiv.m,
+	polynomial/polygcd.m, polynomial/polyout.m,
+	polynomial/polyreduce.m, polynomial/polyval.m,
+	polynomial/polyvalm.m, polynomial/residue.m:
+	Point to polyint in @seealso, not polyinteg.
+
 	* deprecated/module.mk (deprecated_FCN_FILES):
 	Remove delete files from the list.
 

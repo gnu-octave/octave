@@ -26,7 +26,7 @@
 ## is given @var{b} and @var{a}, the derivative of the product is
 ## returned in @var{q}, or the quotient numerator in @var{q} and the
 ## quotient denominator in @var{r}.
-## @seealso{poly, polyinteg, polyreduce, roots, conv, deconv, residue,
+## @seealso{poly, polyint, polyreduce, roots, conv, deconv, residue,
 ## filter, polygcd, polyval, polyvalm}
 ## @end deftypefn
 

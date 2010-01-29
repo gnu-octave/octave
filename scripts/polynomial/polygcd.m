@@ -39,7 +39,7 @@
 ## @result{} [ 0, 0, 0 ]
 ## @end group
 ## @end example
-## @seealso{poly, polyinteg, polyderiv, polyreduce, roots, conv, deconv,
+## @seealso{poly, polyint, polyderiv, polyreduce, roots, conv, deconv,
 ## residue, filter, polyval, polyvalm}
 ## @end deftypefn
 

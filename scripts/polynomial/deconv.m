@@ -27,7 +27,7 @@
 ## If @var{y} and @var{a} are polynomial coefficient vectors, @var{b} will
 ## contain the coefficients of the polynomial quotient and @var{r} will be
 ## a remainder polynomial of lowest order.
-## @seealso{conv, poly, roots, residue, polyval, polyderiv, polyinteg}
+## @seealso{conv, poly, roots, residue, polyval, polyderiv, polyint}
 ## @end deftypefn
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>

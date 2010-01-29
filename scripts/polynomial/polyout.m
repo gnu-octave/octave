@@ -32,7 +32,7 @@
 ##  @var{nargout} is zero).
 ##  @var{x} defaults to the string @code{"s"}.
 ## @seealso{polyval, polyvalm, poly, roots, conv, deconv, residue,
-## filter, polyderiv, polyinteg}
+## filter, polyderiv, polyint}
 ## @end deftypefn
 
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>

@@ -123,8 +123,6 @@ area = polyval(integral, 3) - polyval(integral, 0)
 
 @DOCSTRING(polyder)
 
-@DOCSTRING(polyinteg)
-
 @DOCSTRING(polyint)
 
 @node Polynomial Interpolation

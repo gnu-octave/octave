@@ -51,7 +51,7 @@
 ## The eigenvalues of the companion matrix are equal to the roots of the
 ## polynomial.
 ## @seealso{poly, roots, residue, conv, deconv, polyval, polyderiv,
-## polyinteg}
+## polyint}
 ## @end deftypefn
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>

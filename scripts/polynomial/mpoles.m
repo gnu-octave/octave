@@ -44,7 +44,7 @@
 ## @end group
 ## @end example
 ##
-## @seealso{poly, roots, conv, deconv, polyval, polyderiv, polyinteg, residue}
+## @seealso{poly, roots, conv, deconv, polyval, polyderiv, polyint, residue}
 ## @end deftypefn
 
 ## Author: Ben Abbott <bpabbott@mac.com>

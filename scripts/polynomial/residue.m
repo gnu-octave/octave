@@ -136,7 +136,7 @@
 ## @end group
 ## @end example
 ## @end ifnottex
-## @seealso{poly, roots, conv, deconv, mpoles, polyval, polyderiv, polyinteg}
+## @seealso{poly, roots, conv, deconv, mpoles, polyval, polyderiv, polyint}
 ## @end deftypefn
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>

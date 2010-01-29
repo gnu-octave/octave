@@ -1,5 +1,8 @@
 2010-01-29  John W. Eaton  <jwe@octave.org>
 
+	* interpreter/poly.txi (Derivatives and Integrals):
+	Don't include docstring for polyinteg.
+
 	* interpreter/obsolete.txi (Obsolete Functions):
 	Remove weibcdf, weibinv, weibpdf, and weibrnd from the table.
 

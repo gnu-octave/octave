@@ -1155,6 +1155,17 @@ tree_evaluator::do_breakpoint (bool is_breakpoint,
 
   if (break_on_this_statement)
     do_keyboard ();
+
+}
+
+// ARGS is currently unused, but since the do_keyboard function in
+// input.cc accepts an argument list, we preserve it here so that the
+// interface won't have to change if we decide to use it in the future.
+
+octave_value
+tree_evaluator::do_keyboard (const octave_value_list& args) const
+{
+  return ::do_keyboard (args);
 }
 
 DEFUN (silent_functions, args, nargout,

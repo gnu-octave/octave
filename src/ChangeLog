@@ -1,3 +1,8 @@
+2010-01-29  Ryan Rusaw  <rrusaw@gmail.com>
+
+	* pt-eval.h, pt-eval.cc (tree_evaluator::do_keyboard):
+	New virtual function.
+
 2010-01-28  Jaroslav Hajek  <highegg@gmail.com>
 
 	* toplev.cc (run_command_and_return_output): Fix testing of failed

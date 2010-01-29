@@ -163,6 +163,9 @@ private:
   void do_breakpoint (bool is_breakpoint,
 		      bool is_end_of_fcn_or_script = false) const;
 
+  virtual octave_value
+  do_keyboard (const octave_value_list& args = octave_value_list ()) const;
+
   // No copying!
 
   tree_evaluator (const tree_evaluator&);

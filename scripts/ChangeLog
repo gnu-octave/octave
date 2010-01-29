@@ -1,3 +1,7 @@
+2010-01-28  Ben Abbott <bpabbot@mac.com>
+
+	* plot/daspect.m, plot/pbaspect.m: New functions.
+
 2010-01-28  John W. Eaton  <jwe@octave.org>
 
 	* general/Makefile.am (general_FCN_FILES): Add chop.m to the list.

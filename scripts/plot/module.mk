@@ -63,6 +63,7 @@ plot_FCN_FILES = \
   plot/contourc.m \
   plot/contourf.m \
   plot/cylinder.m \
+  plot/daspect.m \
   plot/diffuse.m \
   plot/ellipsoid.m \
   plot/errorbar.m \
@@ -113,6 +114,7 @@ plot_FCN_FILES = \
   plot/orient.m \
   plot/pareto.m \
   plot/patch.m \
+  plot/pbaspect.m \
   plot/pcolor.m \
   plot/peaks.m \
   plot/pie.m \

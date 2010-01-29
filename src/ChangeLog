@@ -1,3 +1,8 @@
+2010-01-29  David Grundberg  <davidg@cs.umu.se>
+
+	* mex.cc (mex::realloc): Allocate new memory if the argument is
+	NULL.
+
 2010-01-29  Ryan Rusaw  <rrusaw@gmail.com>
 
 	* pt-eval.h, pt-eval.cc (tree_evaluator::do_keyboard):

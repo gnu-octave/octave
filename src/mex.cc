@@ -2154,27 +2154,35 @@ public:
     return ptr;
   }
 
-  // Reallocate a pointer obtained from malloc or calloc.  We don't
-  // need an "unmarked" version of this.
+  // Reallocate a pointer obtained from malloc or calloc. If the
+  // pointer is NULL, allocate using malloc.  We don't need an
+  // "unmarked" version of this.
   void *realloc (void *ptr, size_t n)
   {
-    void *v = ::realloc (ptr, n);
+    void *v;
 
-    std::set<void *>::iterator p = memlist.find (ptr);
-
-    if (v && p != memlist.end ())
+    if (ptr)
       {
-	memlist.erase (p);
-	memlist.insert (v);
+	v = ::realloc (ptr, n);
+	
+	std::set<void *>::iterator p = memlist.find (ptr);
+	
+	if (v && p != memlist.end ())
+	  {
+	    memlist.erase (p);
+	    memlist.insert (v);
+	  }
+	
+	p = global_memlist.find (ptr);
+	
+	if (v && p != global_memlist.end ())
+	  {
+	    global_memlist.erase (p);
+	    global_memlist.insert (v);
+	  }
       }
-
-    p = global_memlist.find (ptr);
-
-    if (v && p != global_memlist.end ())
-      {
-	global_memlist.erase (p);
-	global_memlist.insert (v);
-      }
+    else
+      v = malloc (n);
 
     return v;
   }

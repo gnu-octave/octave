@@ -24,6 +24,7 @@
 ## @end deftypefn
 
 ## Deprecated in version 3.0
+## Matlab still has this function, so don't remove just yet.
 
 function inv = weibinv (varargin)
 

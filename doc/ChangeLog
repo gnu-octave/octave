@@ -1,3 +1,8 @@
+2010-01-29  John W. Eaton  <jwe@octave.org>
+
+	* interpreter/obsolete.txi (Obsolete Functions):
+	Remove weibcdf, weibinv, weibpdf, and weibrnd from the table.
+
 2010-01-28  John W. Eaton  <jwe@octave.org>
 
 	* interpreter/obsolete.txi: New file.

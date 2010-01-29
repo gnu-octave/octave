@@ -113,10 +113,6 @@ as the obsolete function, but should provide equivalent functionality.
 @item @code{uniform_inv} @tab @code{unifinv} @tab 3.4.0
 @item @code{uniform_pdf} @tab @code{unifpdf} @tab 3.4.0
 @item @code{uniform_rnd} @tab @code{unifrnd} @tab 3.4.0
-@item @code{weibcdf} @tab @code{wblcdf} @tab 3.4.0
-@item @code{weibinv} @tab @code{wblinv} @tab 3.4.0
-@item @code{weibpdf} @tab @code{wblpdf} @tab 3.4.0
-@item @code{weibrnd} @tab @code{wblrnd} @tab 3.4.0
 @item @code{weibull_cdf} @tab @code{wblcdf} @tab 3.4.0
 @item @code{weibull_inv} @tab @code{wblinv} @tab 3.4.0
 @item @code{weibull_pdf} @tab @code{wblpdf} @tab 3.4.0

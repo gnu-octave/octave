@@ -1,3 +1,12 @@
+2010-01-29  Ben Abbott  <bpabbott@mac.com>
+
+	* plot/axis.m, plot/__go_draw_axes__.m, plot/colorbar.m,
+	plot/isocolors.m, plot/isonormals.m, plot/isosurface.m,
+	plot/plotyy.m, plot/polar.m, plot/surfl.m, 
+	plot/private/__actual_axis_position.m:
+	Replace dataaspectratio and dataaspectratiomode properties with
+	plotboxaspectratio and plotboxaspectratio properties.
+
 2010-01-29  John W. Eaton  <jwe@octave.org>
 
 	* polynomial/compan.m, polynomial/conv.m, polynomial/deconv.m,

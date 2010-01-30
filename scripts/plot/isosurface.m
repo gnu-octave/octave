@@ -78,13 +78,13 @@
 ## subplot (2, 2, 1); view (-38, 20); 
 ## [f, v] = isosurface (x, y, z, c, iso);
 ## p = patch ("Faces", f, "Vertices", v, "EdgeColor", "none");
-## set (gca, "DataAspectRatioMode","manual", "DataAspectRatio", [1 1 1]);
+## set (gca, "PlotBoxAspectRatioMode","manual", "PlotBoxAspectRatio", [1 1 1]);
 ## # set (p, "FaceColor", "green", "FaceLighting", "phong");
 ## # light ("Position", [1 1 5]); ## Available with the JHandles package
 ##
 ## subplot (2, 2, 2); view (-38, 20);
 ## p = patch ("Faces", f, "Vertices", v, "EdgeColor", "blue");
-## set (gca, "DataAspectRatioMode","manual", "DataAspectRatio", [1 1 1]);
+## set (gca, "PlotBoxAspectRatioMode","manual", "PlotBoxAspectRatio", [1 1 1]);
 ## # set (p, "FaceColor", "none", "FaceLighting", "phong");
 ## # light ("Position", [1 1 5]);
 ##
@@ -92,14 +92,14 @@
 ## [f, v, c] = isosurface (x, y, z, c, iso, y);
 ## p = patch ("Faces", f, "Vertices", v, "FaceVertexCData", c, \
 ##            "FaceColor", "interp", "EdgeColor", "none");
-## set (gca, "DataAspectRatioMode","manual", "DataAspectRatio", [1 1 1]);
+## set (gca, "PlotBoxAspectRatioMode","manual", "PlotBoxAspectRatio", [1 1 1]);
 ## # set (p, "FaceLighting", "phong");
 ## # light ("Position", [1 1 5]);
 ##
 ## subplot (2, 2, 4); view (-38, 20);
 ## p = patch ("Faces", f, "Vertices", v, "FaceVertexCData", c, \
 ##            "FaceColor", "interp", "EdgeColor", "blue");
-## set (gca, "DataAspectRatioMode","manual", "DataAspectRatio", [1 1 1]);
+## set (gca, "PlotBoxAspectRatioMode","manual", "PlotBoxAspectRatio", [1 1 1]);
 ## # set (p, "FaceLighting", "phong");
 ## # light ("Position", [1 1 5]);
 ## @end example

@@ -183,8 +183,8 @@ function [ax, h1, h2] = __plotyy__ (ax, x1, y1, x2, y2, varargin)
   addlistener (ax(2), "position", {@update_position, ax(1)});
   addlistener (ax(1), "view", {@update_position, ax(2)});
   addlistener (ax(2), "view", {@update_position, ax(1)});
-  addlistener (ax(1), "dataaspectratio", {@update_position, ax(2)});
-  addlistener (ax(2), "dataaspectratio", {@update_position, ax(1)});
+  addlistener (ax(1), "plotboxaspectratio", {@update_position, ax(2)});
+  addlistener (ax(2), "plotboxaspectratio", {@update_position, ax(1)});
 
   ## Tag the plotyy axes, so we can use that information
   ## not to mirror the y axis tick marks
@@ -237,19 +237,19 @@ function update_position (h, d, ax2)
       recursion = true;
       position = get (h, "position");
       view = get (h, "view");
-      dataaspectratio = get (h, "dataaspectratio");
-      dataaspectratiomode = get (h, "dataaspectratiomode");
+      plotboxaspectratio = get (h, "plotboxaspectratio");
+      plotboxaspectratiomode = get (h, "plotboxaspectratiomode");
       oldposition = get (ax2, "position");
       oldview = get (ax2, "view");
-      olddataaspectratio = get (ax2, "dataaspectratio");
-      olddataaspectratiomode = get (ax2, "dataaspectratiomode");
+      oldplotboxaspectratio = get (ax2, "plotboxaspectratio");
+      oldplotboxaspectratiomode = get (ax2, "plotboxaspectratiomode");
       if (! (isequal (position, oldposition) && isequal (view, oldview)))
 	set (ax2, "position", position, "view", view)
       endif
-      if (! (isequal (dataaspectratio, olddataaspectratio) 
-	     && isequal (dataaspectratiomode, olddataaspectratiomode)))
-	set (ax2, "dataaspectratio", dataaspectratio);
-	set (ax2, "dataaspectratiomode", dataaspectratiomode);
+      if (! (isequal (plotboxaspectratio, oldplotboxaspectratio) 
+	     && isequal (plotboxaspectratiomode, oldplotboxaspectratiomode)))
+	set (ax2, "plotboxaspectratio", plotboxaspectratio);
+	set (ax2, "plotboxaspectratiomode", plotboxaspectratiomode);
       endif
     unwind_protect_cleanup
       recursion = false;

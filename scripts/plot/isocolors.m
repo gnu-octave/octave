@@ -46,8 +46,8 @@
 ## For example,
 ## @example
 ## function [] = isofinish (p)
-##   set (gca, "DataAspectRatioMode", "manual", \
-##        "DataAspectRatio", [1 1 1]);
+##   set (gca, "PlotBoxAspectRatioMode", "manual", \
+##        "PlotBoxAspectRatio", [1 1 1]);
 ##   set (p, "FaceColor", "interp");
 ##   ## set (p, "FaceLighting", "flat");
 ##   ## light ("Position", [1 1 5]); ## Available with JHandles

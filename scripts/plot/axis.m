@@ -165,22 +165,22 @@ function curr_axis = __axis__ (ca, ax, varargin)
       __do_tight_option__ (ca);
     elseif (strcmpi (ax, "square"))
       if (__gnuplot_has_feature__ ("screen_coordinates_for_{lrtb}margin"))
-        set (ca, "dataaspectratio", [1, 1, 1]);
+        set (ca, "plotboxaspectratio", [1, 1, 1]);
       else
         x = xlim;
         y = ylim;
-        set (ca, "dataaspectratio", [(y(2)-y(1)), (x(2)-x(1)), 1]);
+        set (ca, "plotboxaspectratio", [(y(2)-y(1)), (x(2)-x(1)), 1]);
       endif
     elseif  (strcmp (ax, "equal"))
       if (__gnuplot_has_feature__ ("screen_coordinates_for_{lrtb}margin"))
         x = xlim;
         y = ylim;
-        set (ca, "dataaspectratio", [(x(2)-x(1)), (y(2)-y(1)), 1]);
+        set (ca, "plotboxaspectratio", [(x(2)-x(1)), (y(2)-y(1)), 1]);
       else
-        set (ca, "dataaspectratio", [1, 1, 1]);
+        set (ca, "plotboxaspectratio", [1, 1, 1]);
       endif
     elseif (strcmpi (ax, "normal"))
-      set (ca, "dataaspectratiomode", "auto");
+      set (ca, "plotboxaspectratiomode", "auto");
 
       ## axis limits
     elseif (len >= 4 && strcmpi (ax(1:4), "auto"))

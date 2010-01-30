@@ -70,7 +70,7 @@ function retval = polar (varargin)
 
     set (h, "xlim", [-maxr, maxr], "ylim", [-maxr, maxr],
 	 "xaxislocation", "zero", "yaxislocation", "zero",
-	 "dataaspectratio", [1, 1, 1]); 
+	 "plotboxaspectratio", [1, 1, 1]); 
 
     if (nargout > 0)
       retval = tmp;

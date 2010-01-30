@@ -138,7 +138,7 @@ function retval = surfl (varargin)
     endif
 
     vn = get (tmp, "vertexnormals");
-    dar = get (h, "dataaspectratio");
+    dar = get (h, "plotboxaspectratio");
     vn(:,:,1) *= dar(1);
     vn(:,:,2) *= dar(2);
     vn(:,:,3) *= dar(3);

@@ -146,7 +146,7 @@ function h = colorbar (varargin)
     endif
 
     if (! isnan (aspect))
-      set (cax, "dataaspectratio", aspect);
+      set (cax, "plotboxaspectratio", aspect);
     endif
 
     ctext = text (0, 0, "", "tag", "colorbar","visible", "off", 
@@ -157,7 +157,7 @@ function h = colorbar (varargin)
     set (cax, "deletefcn", {@resetaxis, orig_pos, orig_opos});
 
     addlistener (ax, "clim", {@update_colorbar_clim, hi, vertical})
-    addlistener (ax, "dataaspectratio", {@update_colorbar_axis, cax})
+    addlistener (ax, "plotboxaspectratio", {@update_colorbar_axis, cax})
     addlistener (ax, "position", {@update_colorbar_axis, cax})
 
   endif
@@ -236,7 +236,7 @@ function update_colorbar_axis (h, d, cax)
     endif
 
     if (! isnan (aspect))
-      set (cax, "dataaspectratio", aspect);
+      set (cax, "plotboxaspectratio", aspect);
     endif
   endif
 endfunction
@@ -247,8 +247,8 @@ function [pos, cpos, vertical, mirr, aspect] = __position_colorbox__ (cbox, obj,
   sz = pos(3:4);
 
   off = 0;
-  if (strcmpi (obj.dataaspectratiomode, "manual"))
-    r = obj.dataaspectratio;
+  if (strcmpi (obj.plotboxaspectratiomode, "manual"))
+    r = obj.plotboxaspectratio;
     if (pos(3) > pos(4))
       switch (cbox)
 	case {"east", "eastoutside", "west", "westoutside"}
@@ -324,7 +324,7 @@ function [pos, cpos, vertical, mirr, aspect] = __position_colorbox__ (cbox, obj,
 
   cpos = [origin, sz];
 
-  if (strcmpi (obj.dataaspectratiomode, "manual"))
+  if (strcmpi (obj.plotboxaspectratiomode, "manual"))
     if (__gnuplot_has_feature__ ("screen_coordinates_for_{lrtb}margin"))
       obj.position = pos;
       actual_pos = __actual_axis_position__ (obj);

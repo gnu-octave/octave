@@ -1002,10 +1002,10 @@ anywhere:
 @end group
 @end example
 
-This is cleaner and more efficient than using a dummy variable.
-It is not recommended, however, to reuse such an assignment statement as a right-hand side
-in another expression. Currently, this works as expected, but may cease to work in future
-releases of Octave. The @code{nargout} value for the right-hand side expression is not affected.
+This is cleaner and more memory efficient than using a dummy variable.
+The @code{nargout} value for the right-hand side expression is not affected.
+If the assignment is used as an expression, the return value is a comma-separated list
+with the ignored values dropped.
 
 @opindex +=
 A very common programming pattern is to increment an existing variable

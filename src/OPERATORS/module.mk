@@ -81,7 +81,6 @@ OPERATORS_SRC = \
   OPERATORS/op-i8-i8.cc \
   OPERATORS/op-int-concat.cc \
   OPERATORS/op-int-conv.cc \
-  OPERATORS/op-list.cc \
   OPERATORS/op-m-cdm.cc \
   OPERATORS/op-m-cm.cc \
   OPERATORS/op-m-cs.cc \

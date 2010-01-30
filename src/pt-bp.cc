@@ -25,7 +25,6 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "ov-usr-fcn.h"
-#include "ov-list.h"
 #include "pager.h"
 #include "pt-all.h"
 

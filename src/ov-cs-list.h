@@ -35,7 +35,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "oct-alloc.h"
 #include "oct-obj.h"
-#include "ov-list.h"
 #include "ov-typeinfo.h"
 
 class tree_walker;

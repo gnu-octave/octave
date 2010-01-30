@@ -65,7 +65,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-range.h"
 #include "ov-struct.h"
 #include "ov-class.h"
-#include "ov-list.h"
 #include "ov-cs-list.h"
 #include "ov-colon.h"
 #include "ov-builtin.h"
@@ -1110,10 +1109,8 @@ octave_value::octave_value (const Octave_map& m, const std::string& id)
 {
 }
 
-octave_value::octave_value (const octave_value_list& l, bool is_csl)
-  : rep (is_csl
-	 ? dynamic_cast<octave_base_value *> (new octave_cs_list (l))
-	 : dynamic_cast<octave_base_value *> (new octave_list (l)))
+octave_value::octave_value (const octave_value_list& l, bool)
+  : rep (new octave_cs_list (l))
 {
 }
 
@@ -2639,7 +2636,6 @@ install_types (void)
   octave_sparse_complex_matrix::register_type ();
   octave_struct::register_type ();
   octave_class::register_type ();
-  octave_list::register_type ();
   octave_cs_list::register_type ();
   octave_magic_colon::register_type ();
   octave_builtin::register_type ();

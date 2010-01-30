@@ -32,7 +32,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "gripes.h"
 #include "oct-lvalue.h"
-#include "ov-list.h"
 #include "ov-struct.h"
 #include "unwind-prot.h"
 #include "utils.h"

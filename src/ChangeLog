@@ -1,3 +1,17 @@
+2010-01-30  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-list.h, ov-list.cc, OPERATORS/op-list.cc: Remove.
+
+	* Makefile.am, OPERATORS/module.mk: Update.
+	* debug.cc: Remove #include.
+	* ov-base.cc: Ditto.
+	* ov-cs-list.h: Ditto.
+	* ov-struct.cc: Ditto.
+	* pt-bp.cc: Ditto.
+	* ov.cc (octave_value::octave_value (const octave_value_list&)):
+	Simplify.
+	(install_types): Omit octave_list.
+
 2010-01-30  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
 	* DLD-FUNCTIONS/time.cc: Replace struct_contains by isfield.

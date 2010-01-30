@@ -937,7 +937,9 @@ __fltk_redraw__ (void)
             }
         }
 
-      Fl::wait (fltk_maxtime);
+      // it seems that we have to call Fl::check twice to get everything drawn
+      Fl::check ();
+      Fl::check ();
     }
 
   return 0;

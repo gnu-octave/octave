@@ -1,3 +1,8 @@
+2010-01-30  Shai Ayal  <shaiay@users.sourceforge.net>
+
+	* DLD-FUNCTIONS/fltk_backend.cc (__fltk_redraw__): call
+	Fl::check twice to ensure all pending draws are shown on screen
+
 2010-01-30  Jaroslav Hajek  <highegg@gmail.com>
 
 	* oct-lvalue.h (octave_lvalue::black_hole): Remove field.

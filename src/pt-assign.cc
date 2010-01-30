@@ -300,8 +300,8 @@ tree_simple_assignment::accept (tree_walker& tw)
 
 tree_multi_assignment::tree_multi_assignment
   (tree_argument_list *lst, tree_expression *r,
-   bool plhs, int l, int c, octave_value::assign_op t)
-    : tree_expression (l, c), lhs (lst), rhs (r), preserve (plhs), etype (t),
+   bool plhs, int l, int c)
+    : tree_expression (l, c), lhs (lst), rhs (r), preserve (plhs),
       first_execution (true) { }
 
 tree_multi_assignment::~tree_multi_assignment (void)
@@ -393,25 +393,16 @@ tree_multi_assignment::rvalue (int)
             {
               if (k + nel <= n)
                 {
-                  if (etype == octave_value::op_asn_eq)
+                  // This won't do a copy.
+                  octave_value_list ovl  = rhs_val.slice (k, nel);
+
+                  ult.assign (octave_value::op_asn_eq, octave_value (ovl, true));
+
+                  if (! error_state)
                     {
-                      // This won't do a copy.
-                      octave_value_list ovl  = rhs_val.slice (k, nel);
+                      retval_list.push_back (ovl);
 
-                      ult.assign (etype, octave_value (ovl, true));
-
-                      if (! error_state)
-                        {
-                          retval_list.push_back (ovl);
-
-                          k += nel;
-                        }
-                    }
-                  else
-                    {
-                      std::string op = octave_value::assign_op_as_string (etype);
-                      error ("operator %s unsupported for comma-separated list assignment",
-                             op.c_str ());
+                      k += nel;
                     }
                 }
               else
@@ -421,7 +412,7 @@ tree_multi_assignment::rvalue (int)
             {
               if (k < n)
                 {
-                  ult.assign (etype, rhs_val(k));
+                  ult.assign (octave_value::op_asn_eq, rhs_val(k));
 
                   if (ult.is_black_hole ())
                     {
@@ -430,10 +421,7 @@ tree_multi_assignment::rvalue (int)
                     }
                   else if (! error_state)
                     {
-                      if (etype == octave_value::op_asn_eq)
-                        retval_list.push_back (rhs_val(k));
-                      else
-                        retval_list.push_back (ult.value ());
+                      retval_list.push_back (rhs_val(k));
 
                       k++;
                     }
@@ -478,7 +466,7 @@ tree_multi_assignment::rvalue (int)
 std::string
 tree_multi_assignment::oper (void) const
 {
-  return octave_value::assign_op_as_string (etype);
+  return octave_value::assign_op_as_string (op_type ());
 }
 
 tree_expression *
@@ -488,7 +476,7 @@ tree_multi_assignment::dup (symbol_table::scope_id scope,
   tree_multi_assignment *new_ma
     = new tree_multi_assignment (lhs ? lhs->dup (scope, context) : 0,
 				 rhs ? rhs->dup (scope, context) : 0,
-				 preserve, etype);
+				 preserve);
 
   new_ma->copy_base (*this);
 

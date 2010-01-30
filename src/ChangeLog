@@ -1,3 +1,14 @@
+2010-01-30  Jaroslav Hajek  <highegg@gmail.com>
+
+	* pt-assign.h (tree_multi_assignment::etype): Remove.
+	(tree_multi_assignment::tree_multi_assignment): Update.
+	(tree_multi_assignment::op_type): Update.
+	* pt-assign.cc (tree_multi_assignment::tree_multi_assignment): Update.
+	(tree_multi_assignment::rvalue): Update.
+	(tree_multi_assignment::dup): Update.
+	* oct=parse.yy (make_assign_op): Don't allow computed multiple
+	assignments.
+
 2010-01-30  Shai Ayal  <shaiay@users.sourceforge.net>
 
 	* DLD-FUNCTIONS/fltk_backend.cc (__fltk_redraw__): call

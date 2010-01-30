@@ -118,14 +118,12 @@ tree_multi_assignment : public tree_expression
 {
 public:
 
-  tree_multi_assignment (bool plhs = false, int l = -1, int c = -1,
-			 octave_value::assign_op t = octave_value::op_asn_eq)
-    : tree_expression (l, c), lhs (0), rhs (0), preserve (plhs), etype(t),
+  tree_multi_assignment (bool plhs = false, int l = -1, int c = -1)
+    : tree_expression (l, c), lhs (0), rhs (0), preserve (plhs),
       first_execution (true) { }
 
   tree_multi_assignment (tree_argument_list *lst, tree_expression *r,
-			 bool plhs = false, int l = -1, int c = -1,
-			 octave_value::assign_op t = octave_value::op_asn_eq);
+			 bool plhs = false, int l = -1, int c = -1);
 
   ~tree_multi_assignment (void);
 
@@ -150,7 +148,7 @@ public:
 
   void accept (tree_walker& tw);
   
-  octave_value::assign_op op_type (void) const { return etype; }
+  octave_value::assign_op op_type (void) const { return octave_value::op_asn_eq; }
 
 private:
 
@@ -162,9 +160,6 @@ private:
 
   // True if we should not delete the lhs.
   bool preserve;
-
-  // The type of the expression.
-  octave_value::assign_op etype;
 
   // true only on first rvalue() call.
   bool first_execution;

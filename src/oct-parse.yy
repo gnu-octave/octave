@@ -2737,8 +2737,10 @@ make_assign_op (int op, tree_argument_list *lhs, token *eq_tok,
 
       delete lhs;
     }
+  else if (t == octave_value::op_asn_eq)
+    return new tree_multi_assignment (lhs, rhs, false, l, c);
   else
-    return new tree_multi_assignment (lhs, rhs, false, l, c, t);
+    yyerror ("computed multiple assignment not allowed");
 
   return retval;
 }

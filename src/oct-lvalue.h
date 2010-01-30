@@ -39,16 +39,11 @@ public:
 
   octave_lvalue (octave_value *v = 0)
     : val (v), type (), idx (), nel (1) 
-    {
-      if (! v)
-        val = &black_hole;
-    }
+    { }
 
   octave_lvalue (const octave_lvalue& vr)
     : val (vr.val), type (vr.type), idx (vr.idx), nel (vr.nel) 
     { 
-      if (vr.is_black_hole ())
-        val = &black_hole;
     }
 
   octave_lvalue& operator = (const octave_lvalue& vr)
@@ -56,8 +51,6 @@ public:
       if (this != &vr)
 	{
 	  val = vr.val;
-          if (vr.is_black_hole ())
-            val = &black_hole;
 	  type = vr.type;
 	  idx = vr.idx;
 	  nel = vr.nel;
@@ -68,15 +61,19 @@ public:
 
   ~octave_lvalue (void) { }
 
-  bool is_black_hole (void) const { return val == &black_hole; }
+  bool is_black_hole (void) const { return val == 0; }
 
-  bool is_defined (void) const { return val->is_defined (); }
+  bool is_defined (void) const { return val && val->is_defined (); }
 
-  bool is_undefined (void) const { return val->is_undefined (); }
+  bool is_undefined (void) const { return ! val || val->is_undefined (); }
 
-  bool is_map (void) const { return val->is_map (); }
+  bool is_map (void) const { return val && val->is_map (); }
 
-  void define (const octave_value& v) { *val = v; }
+  void define (const octave_value& v) 
+    { 
+      if (val)
+        *val = v; 
+    }
 
   void assign (octave_value::assign_op, const octave_value&);
 
@@ -103,8 +100,6 @@ private:
   std::list<octave_value_list> idx;
 
   octave_idx_type nel;
-
-  octave_value black_hole;
 };
 
 #endif

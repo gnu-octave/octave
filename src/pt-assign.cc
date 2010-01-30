@@ -423,7 +423,12 @@ tree_multi_assignment::rvalue (int)
                 {
                   ult.assign (etype, rhs_val(k));
 
-                  if (! error_state)
+                  if (ult.is_black_hole ())
+                    {
+                      k++;
+                      continue;
+                    }
+                  else if (! error_state)
                     {
                       if (etype == octave_value::op_asn_eq)
                         retval_list.push_back (rhs_val(k));

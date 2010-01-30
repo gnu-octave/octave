@@ -1,3 +1,9 @@
+2010-01-30  Jaroslav Hajek  <highegg@gmail.com>
+
+	* oct-lvalue.h (octave_lvalue::black_hole): Remove field.
+	(octave_lvalue::(all methods)): Update.
+	* oct-lvalue.cc: Ditto.
+
 2010-01-29  David Grundberg  <davidg@cs.umu.se>
 
 	* mex.cc (mex::realloc): Allocate new memory if the argument is

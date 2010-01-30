@@ -1,3 +1,8 @@
+2010-01-30  Thorsten Meyer  <thorsten.meyier@gmx.de>
+
+	* statistics/tests/kruskal_wallis_test.m: Replace chisquare_cdf
+	by chi2cdf.
+
 2010-01-29  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/axis.m, plot/__go_draw_axes__.m, plot/colorbar.m,

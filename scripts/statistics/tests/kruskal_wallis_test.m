@@ -87,7 +87,7 @@ function [pval, k, df] = kruskal_wallis_test (varargin)
   k = k / (1 - sum_ties / (n^3 - n));
 
   df = m - 1;
-  pval = 1 - chisquare_cdf (k, df);
+  pval = 1 - chi2cdf (k, df);
 
   if (nargout == 0)
     printf ("pval: %g\n", pval);

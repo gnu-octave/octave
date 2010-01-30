@@ -149,16 +149,16 @@ gmtime (time ())\n\
 %!test
 %! ts = gmtime (time ());
 %! assert((isstruct (ts)
-%! && struct_contains (ts, "usec")
-%! && struct_contains (ts, "year")
-%! && struct_contains (ts, "mon")
-%! && struct_contains (ts, "mday")
-%! && struct_contains (ts, "sec")
-%! && struct_contains (ts, "min")
-%! && struct_contains (ts, "wday")
-%! && struct_contains (ts, "hour")
-%! && struct_contains (ts, "isdst")
-%! && struct_contains (ts, "yday")));
+%! && isfield (ts, "usec")
+%! && isfield (ts, "year")
+%! && isfield (ts, "mon")
+%! && isfield (ts, "mday")
+%! && isfield (ts, "sec")
+%! && isfield (ts, "min")
+%! && isfield (ts, "wday")
+%! && isfield (ts, "hour")
+%! && isfield (ts, "isdst")
+%! && isfield (ts, "yday")));
 
 %!error <Invalid call to gmtime.*> gmtime ();
 
@@ -213,16 +213,16 @@ localtime (time ())\n\
 %!test
 %! ts = localtime (time ());
 %! assert((isstruct (ts)
-%! && struct_contains (ts, "usec")
-%! && struct_contains (ts, "year")
-%! && struct_contains (ts, "mon")
-%! && struct_contains (ts, "mday")
-%! && struct_contains (ts, "sec")
-%! && struct_contains (ts, "min")
-%! && struct_contains (ts, "wday")
-%! && struct_contains (ts, "hour")
-%! && struct_contains (ts, "isdst")
-%! && struct_contains (ts, "yday")));
+%! && isfield (ts, "usec")
+%! && isfield (ts, "year")
+%! && isfield (ts, "mon")
+%! && isfield (ts, "mday")
+%! && isfield (ts, "sec")
+%! && isfield (ts, "min")
+%! && isfield (ts, "wday")
+%! && isfield (ts, "hour")
+%! && isfield (ts, "isdst")
+%! && isfield (ts, "yday")));
 
 %!error <Invalid call to localtime.*> localtime ();
 

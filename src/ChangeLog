@@ -1,3 +1,7 @@
+2010-01-30  Thorsten Meyer  <thorsten.meyier@gmx.de>
+
+	* DLD-FUNCTIONS/time.cc: Replace struct_contains by isfield.
+
 2010-01-30  Jaroslav Hajek  <highegg@gmail.com>
 
 	* pt-assign.h (tree_multi_assignment::etype): Remove.

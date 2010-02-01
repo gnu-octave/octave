@@ -1777,7 +1777,6 @@ OCTAVE_PROG_PAGER
 OCTAVE_PROG_GPERF
 
 OCTAVE_PROG_GHOSTSCRIPT
-OCTAVE_PROG_MAKEINFO
 OCTAVE_PROG_TEXI2DVI
 OCTAVE_PROG_TEXI2PDF
 
@@ -2329,11 +2328,6 @@ fi
 
 if test -n "$warn_ghostscript"; then
   AC_MSG_WARN([$warn_ghostscript])
-  warn_msg_printed=true
-fi
-
-if test -n "$warn_makeinfo"; then
-  AC_MSG_WARN([$warn_makeinfo])
   warn_msg_printed=true
 fi
 

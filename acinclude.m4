@@ -677,19 +677,6 @@ AC_DEFUN([OCTAVE_PROG_GHOSTSCRIPT], [
   AC_SUBST(GHOSTSCRIPT)
 ])
 dnl
-dnl Is makeinfo installed?
-dnl
-dnl OCTAVE_PROG_MAKEINFO
-AC_DEFUN([OCTAVE_PROG_MAKEINFO], [
-  AC_CHECK_PROG(MAKEINFO, makeinfo, makeinfo, [])
-  if test -z "$MAKEINFO"; then
-    MAKEINFO='$(top_srcdir)/missing makeinfo'
-    warn_makeinfo="I didn't find makeinfo, but it's only a problem if you need to reconstruct the Info version of the manual"
-    AC_MSG_WARN([$warn_makeinfo])
-  fi
-  AC_SUBST(MAKEINFO)
-])
-dnl
 dnl Is texi2dvi installed?
 dnl
 dnl OCTAVE_PROG_TEXI2DVI

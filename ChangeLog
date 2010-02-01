@@ -1,3 +1,9 @@
+2010-02-01  John W. Eaton  <jwe@octave.org>
+
+	* acinclude.m4 (OCTAVE_PROG_MAKEINFO): Delete macro.
+	* configure.ac: Don't call it.  Don't issue warning about
+	makeinfo in summary.
+
 2010-01-31  Jaroslav Hajek  <highegg@gmail.com>
 
 	* NEWS: Update.

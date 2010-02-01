@@ -2472,25 +2472,3 @@ function retval = __do_enhanced_option__ (enhanced, obj)
     endif
   endif
 endfunction
-
-function typ = get_old_gnuplot_color (color)
-  if (isequal (color, [0, 0, 0]))
-    typ = -1;
-  elseif (isequal (color, [1, 0, 0]))
-    typ = 1;
-  elseif (isequal (color, [0, 1, 0]))
-    typ = 2;
-  elseif (isequal (color, [0, 0, 1]))
-    typ = 3;
-  elseif (isequal (color, [1, 0, 1]))
-    typ = 4;
-  elseif (isequal (color, [0, 1, 1]))
-    typ = 5;
-  elseif (isequal (color, [1, 1, 1]))
-    typ = -1;
-  elseif (isequal (color, [1, 1, 0]))
-    typ = 7;
-  else
-    typ = -1;
-  endif
-endfunction

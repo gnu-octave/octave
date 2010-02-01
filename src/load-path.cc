@@ -500,13 +500,17 @@ load_path::do_initialize (bool set_initial_path)
   if (tpath.empty ())
     tpath = octave_env::getenv ("OCTAVE_PATH");
 
-  std::string xpath = ".";
+  std::string xpath;
 
   if (! tpath.empty ())
-    xpath += dir_path::path_sep_str () + tpath;
+    {
+      xpath = tpath;
 
-  if (! sys_path.empty ())
-    xpath += dir_path::path_sep_str () + sys_path;
+      if (! sys_path.empty ())
+        xpath += dir_path::path_sep_str () + sys_path;
+    }
+  else
+    xpath = sys_path;
 
   do_set (xpath, false);
 }
@@ -518,8 +522,6 @@ load_path::do_clear (void)
   fcn_map.clear ();
   private_fcn_map.clear ();
   method_map.clear ();
-
-  do_append (".", false);
 }
 
 static std::list<std::string>
@@ -584,6 +586,9 @@ load_path::do_set (const std::string& p, bool warn)
       if (add_hook)
 	add_hook (i->dir_name);
     }
+
+  // Always prepend current directory.
+  do_prepend (".", warn);
 }
 
 void
@@ -632,11 +637,11 @@ load_path::do_add (const std::string& dir_arg, bool at_end, bool warn)
 		  else
 		    dir_info_list.push_front (di);
 
-		  add_to_fcn_map (di, true);
+		  add_to_fcn_map (di, at_end);
 
 		  add_to_private_fcn_map (di);
 
-		  add_to_method_map (di, true);
+		  add_to_method_map (di, at_end);
 
 		  if (add_hook)
 		    add_hook (dir);
@@ -658,8 +663,6 @@ load_path::do_add (const std::string& dir_arg, bool at_end, bool warn)
 
   if (i != dir_info_list.end ())
     move (i, false);
-  else
-    panic_impossible ();
 }
 
 void
@@ -1672,7 +1675,29 @@ load_path::add_to_fcn_map (const dir_info& di, bool at_end) const
 	  if (at_end)
 	    file_info_list.push_back (fi);
 	  else
-	    file_info_list.push_front (fi);
+            {
+              // Warn if a built-in or library function is being shadowed.
+              if (! file_info_list.empty ())
+                {
+                  file_info& old = file_info_list.front ();
+                  if (sys_path.find (old.dir_name) != std::string::npos)
+                    {
+                      std::string fcn_path = file_ops::concat (dir_name, fname);
+                      warning_with_id ("Octave:shadowed-function",
+                                       "function %s shadows a core library function", 
+                                       fcn_path.c_str ());
+                    }
+                }
+              else if (symbol_table::is_built_in_function_name (base))
+                {
+                  std::string fcn_path = file_ops::concat (dir_name, fname);
+                  warning_with_id ("Octave:shadowed-function",
+                                   "function %s shadows a built-in function", 
+                                   fcn_path.c_str ());
+                }
+
+              file_info_list.push_front (fi);
+            }
 	}
       else
 	{

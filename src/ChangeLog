@@ -1,3 +1,13 @@
+2010-02-01  Jaroslav Hajek  <highegg@gmail.com>
+
+	* load-path.cc (load_path::add_to_fcn_map): Warn when core library or
+	built-in functions are being shadowed. 
+	(load_path::do_add): Pass at_end to add_to_fcn_map, add_to_method_map.
+	Don't abort when "." not yet included.
+	(load_path::do_clear): Don't append "." here.
+	(load_path::do_set): Always prepend "." here.
+	(load_path::initialize): Don't explicitly include "." here.
+
 2010-02-02  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/filter.cc (filter (MArray<T>&, MArray<T>&,

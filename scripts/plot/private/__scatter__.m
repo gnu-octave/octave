@@ -185,6 +185,8 @@ function hg = __scatter__ (varargin)
 
     if (ischar (c) || rows (c) == 1)
       h = render_size_color (hg, vert, s, c, marker, filled, false); 
+    elseif (columns (c) == 1)
+      h = render_size_color (hg, vert, s, c, marker, filled, true); 
     else
       [cc, idx] = unique_idx (c, "rows");
       if (isscalar (s))
@@ -199,7 +201,6 @@ function hg = __scatter__ (varargin)
         endfor
       endif
     endif
-
   endif
 
   if (! ischar (c) && rows (c) > 1)

@@ -762,16 +762,23 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
 		   if (numel(ccol) == 3)
 		     color = ccol;
 		   else
-		     r = 1 + round ((size (cmap, 1) - 1)
-				    * (ccol - clim(1))/(clim(2) - clim(1)));
-		     r = max (1, min (r, size (cmap, 1)));
-		     color = cmap(r, :);
+                     if (isscalar (ccol))
+                       ccol = repmat(ccol, numel (xcol), 1);
+                     endif
+                     color = "flat";
+	             have_cdata(data_idx) = true;
 		   endif
 		 elseif (strncmp (ec, "interp", 6))
-		   warning ("\"interp\" not supported, using 1st entry of cdata");
-		   r = 1 + round ((size (cmap, 1) - 1) * ccol(1));
-		   r = max (1, min (r, size (cmap, 1)));
-		   color = cmap(r,:);
+		   if (numel(ccol) == 3)
+		     warning ("\"interp\" not supported, using 1st entry of cdata");
+		     color = ccol(1,:);
+		   else
+                     if (isscalar (ccol))
+                       ccol = repmat(ccol, numel (xcol), 1);
+                     endif
+                     color = "interp";
+	             have_cdata(data_idx) = true;
+                   endif
 		 endif
 	       elseif (isnumeric (ec))
 		 color = ec;
@@ -859,8 +866,12 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
 	     if (mono)
 	       colorspec = "";
 	     else
-	       colorspec = sprintf ("lc rgb \"#%02x%02x%02x\"",
-				    round (255*color));
+               if (ischar (color))
+                 colorspec = "palette";
+               else
+	         colorspec = sprintf ("lc rgb \"#%02x%02x%02x\"",
+				      round (255*color));
+               endif
 	     endif
 
              sidx = 1;
@@ -993,20 +1004,40 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
 	       withclause{data_idx} = tmpwith{1};
              endif
 	     if (nd == 3)
-	       if (! isnan (xcol) && ! isnan (ycol) && ! isnan (zcol))
-		 data{data_idx} = [[xcol; xcol(1)], [ycol; ycol(1)], ...
-				   [zcol; zcol(1)]]';
-	       else
-		 data{data_idx} = [xcol, ycol, zcol]';
-	       endif
-	       usingclause{data_idx} = sprintf ("record=%d using ($1):($2):($3)", columns (data{data_idx}));
+               if (ischar (color))
+	         if (! isnan (xcol) && ! isnan (ycol) && ! isnan (zcol))
+		   data{data_idx} = [[xcol; xcol(1)], [ycol; ycol(1)], ...
+				     [zcol; zcol(1)], [ccol; ccol(1)]]';
+	         else
+		   data{data_idx} = [xcol, ycol, zcol, ccol]';
+	         endif
+	         usingclause{data_idx} = sprintf ("record=%d using ($1):($2):($3):($4)", columns (data{data_idx}));
+               else
+	         if (! isnan (xcol) && ! isnan (ycol) && ! isnan (zcol))
+		   data{data_idx} = [[xcol; xcol(1)], [ycol; ycol(1)], ...
+				     [zcol; zcol(1)]]';
+	         else
+		   data{data_idx} = [xcol, ycol, zcol]';
+	         endif
+	         usingclause{data_idx} = sprintf ("record=%d using ($1):($2):($3)", columns (data{data_idx}));
+               endif
 	     else
-	       if (! isnan (xcol) && ! isnan (ycol))
-		 data{data_idx} = [[xcol; xcol(1)], [ycol; ycol(1)]]';
-	       else
-		 data{data_idx} = [xcol, ycol]';
-	       endif
-	       usingclause{data_idx} = sprintf ("record=%d using ($1):($2)", columns (data{data_idx}));
+               if (ischar (color))
+	         if (! isnan (xcol) && ! isnan (ycol))
+		   data{data_idx} = [[xcol; xcol(1)], [ycol; ycol(1)], ...
+                                     [ccol; ccol(1)]]';
+	         else
+		   data{data_idx} = [xcol, ycol, ccol]';
+	         endif
+	         usingclause{data_idx} = sprintf ("record=%d using ($1):($2):($3)", columns (data{data_idx}));
+               else
+	         if (! isnan (xcol) && ! isnan (ycol))
+		   data{data_idx} = [[xcol; xcol(1)], [ycol; ycol(1)]]';
+	         else
+		   data{data_idx} = [xcol, ycol]';
+	         endif
+	         usingclause{data_idx} = sprintf ("record=%d using ($1):($2)", columns (data{data_idx}));
+               endif
 	     endif
 
 	     if (length (tmpwith) > 1)

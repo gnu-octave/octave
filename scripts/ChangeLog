@@ -1,3 +1,10 @@
+2010-02-01  David Bateman  <dbateman@free.fr>
+
+	* plot/private/__scatter__.m: Treat "flat" colored patches as
+	a single patch.
+	* plot/__go_draw_axes__.m: If a patch object is flat, treat its
+	outline with the gnuplot "palette".
+
 2010-01-30  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
 	* statistics/tests/kruskal_wallis_test.m: Replace chisquare_cdf

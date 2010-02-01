@@ -788,7 +788,7 @@ strncmpi_str_op (const std::string& s1, const std::string& s2, octave_idx_type n
 
 DEFUN (strncmpi, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} strncmp (@var{s1}, @var{s2}, @var{n})\n\
+@deftypefn {Built-in Function} {} strncmpi (@var{s1}, @var{s2}, @var{n})\n\
 Returns 1 if the first @var{n} character of @var{s1} and @var{s2} are the same,\n\
 disregarding case of alphabetic characters, and 0 otherwise.\n\
 \n\

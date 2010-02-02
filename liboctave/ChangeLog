@@ -1,5 +1,14 @@
 2010-02-02  John W. Eaton  <jwe@octave.org>
 
+	* oct-time.h: Include <ctime>, not "systime.h".
+	* oct-time.cc: Include <strftime.h>, not "strftime.h".
+	Don't include <windows.h>.
+
+	* systime.h: Delete.
+	* Makefile.am (INCS): Remove it from the list.
+
+2010-02-02  John W. Eaton  <jwe@octave.org>
+
 	* lo-utils.h, lo-cutils.c (oct_strptime): Delete.
 	* oct-time.cc (octave_strptime::init): Call strptime, not oct_strptime.
 

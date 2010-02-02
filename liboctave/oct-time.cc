@@ -27,18 +27,11 @@ along with Octave; see the file COPYING.  If not, see
 #include <climits>
 #include <ctime>
 
+#include <sys/time.h>
 #include <sys/types.h>
 #include <unistd.h>
 
-#if defined (OCTAVE_USE_WINDOWS_API)
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-#undef min
-#undef max
-#endif
-
-#include <sys/time.h>
-#include "strftime.h"
+#include <strftime.h>
 
 #include "lo-error.h"
 #include "lo-math.h"

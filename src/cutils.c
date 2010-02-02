@@ -35,10 +35,9 @@ along with Octave; see the file COPYING.  If not, see
 
 #else
 
+#include <sys/time.h>
 #include <sys/types.h>
 #include <unistd.h>
-
-#include "systime.h"
 
 #ifdef HAVE_POLL_H
 #include <poll.h>

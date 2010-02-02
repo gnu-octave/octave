@@ -27,8 +27,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#include "systime.h"
-
 #include <sys/types.h>
 
 #ifdef HAVE_SYS_RESOURCE_H
@@ -41,6 +39,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "lo-ieee.h"
 #include "lo-math.h"
+#include "oct-time.h"
 #include "str-vec.h"
 #include "quit.h"
 #include "mx-base.h"
@@ -5667,7 +5666,7 @@ CPU time used is nonzero.\n\
   sys = static_cast<double> (ru.ru_stime.tv_sec) +
     static_cast<double> (ru.ru_stime.tv_usec) * 1e-6;
 
-#elif defined (HAVE_TIMES) && defined (HAVE_SYS_TIMES_H)
+#else
 
   struct tms t;
 

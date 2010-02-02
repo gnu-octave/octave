@@ -23,10 +23,10 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_time_h)
 #define octave_time_h 1
 
+#include <ctime>
 #include <string>
 
 #include "lo-math.h"
-#include "systime.h"
 
 class octave_base_tm;
 

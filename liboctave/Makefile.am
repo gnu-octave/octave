@@ -243,7 +243,6 @@ INCS = \
   str-vec.h \
   sun-utils.h \
   sysdir.h \
-  systime.h \
   syswait.h \
   $(MATRIX_INC)
 

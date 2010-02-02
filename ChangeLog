@@ -1,5 +1,13 @@
 2010-02-02  John W. Eaton  <jwe@octave.org>
 
+	* bootstrap.conf (gnulib_modules): Include sys_time, sys_times,
+	and time in the list.
+	* configure.ac: Don't check for sys/time.h, sys/times.h,
+	sys/stat.h, sys/utimes, or utimes.h.
+	Don't call AC_HEADER_TIME.
+
+2010-02-02  John W. Eaton  <jwe@octave.org>
+
 	* acinclue.m4 (OCTAVE_STRPTIME_BROKEN): Delete.
 	* configure.ac: Don't call it.
 

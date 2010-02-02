@@ -1451,7 +1451,6 @@ AC_CHECK_SIZEOF(long double)
 
 AC_HEADER_STDC
 AC_HEADER_DIRENT
-AC_HEADER_TIME
 AC_HEADER_SYS_WAIT
 
 ### C headers
@@ -1459,9 +1458,8 @@ AC_HEADER_SYS_WAIT
 AC_CHECK_HEADERS(curses.h direct.h dlfcn.h fcntl.h \
   floatingpoint.h grp.h ieeefp.h inttypes.h locale.h memory.h nan.h \
   ncurses.h poll.h pthread.h pwd.h stdint.h sunmath.h sys/ioctl.h \
-  sys/param.h sys/poll.h sys/resource.h sys/select.h sys/stat.h \
-  sys/time.h sys/times.h sys/utsname.h sys/utime.h termcap.h \
-  utime.h)
+  sys/param.h sys/poll.h sys/resource.h sys/select.h \
+  sys/utsname.h termcap.h)
 
 ### C++ headers
 

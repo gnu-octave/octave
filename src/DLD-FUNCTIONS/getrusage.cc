@@ -25,28 +25,24 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#include "systime.h"
-
+#include <sys/time.h>
+#include <sys/times.h>
 #include <sys/types.h>
 
 #ifdef HAVE_SYS_RESOURCE_H
 #include <sys/resource.h>
 #endif
 
-#if defined (__WIN32__)
-#include <windows.h>
-#ifdef min
-#undef min
-#undef max
-#endif
-#endif
-
-#if defined (HAVE_TIMES) && defined (HAVE_SYS_TIMES_H)
-
 #if defined (HAVE_SYS_PARAM_H)
 #include <sys/param.h>
 #endif
-#include <sys/times.h>
+
+#include "defun-dld.h"
+#include "oct-map.h"
+#include "sysdep.h"
+#include "ov.h"
+#include "oct-obj.h"
+#include "utils.h"
 
 #if !defined (HZ)
 #if defined (CLK_TCK)
@@ -57,15 +53,6 @@ along with Octave; see the file COPYING.  If not, see
 #define HZ 60
 #endif
 #endif
-
-#endif
-
-#include "defun-dld.h"
-#include "oct-map.h"
-#include "sysdep.h"
-#include "ov.h"
-#include "oct-obj.h"
-#include "utils.h"
 
 #ifndef RUSAGE_SELF
 #define RUSAGE_SELF 0
@@ -172,7 +159,6 @@ elements @code{sec} (seconds) @code{usec} (microseconds).\n\
 #endif
 
 #else
-#if defined (HAVE_TIMES) && defined (HAVE_SYS_TIMES_H)
 
   struct tms t;
 
@@ -197,32 +183,6 @@ elements @code{sec} (seconds) @code{usec} (microseconds).\n\
   tv_tmp.assign ("sec", static_cast<double> (seconds));
   tv_tmp.assign ("usec", static_cast<double> (fraction * 1e6 / HZ));
   m.assign ("stime", octave_value (tv_tmp));
-
-#elif defined (__WIN32__)
-  HANDLE hProcess = GetCurrentProcess ();
-  FILETIME ftCreation, ftExit, ftUser, ftKernel;
-  GetProcessTimes (hProcess, &ftCreation, &ftExit, &ftKernel, &ftUser);
-
-  int64_t itmp = *(reinterpret_cast<int64_t *> (&ftUser));
-  tv_tmp.assign ("sec", static_cast<double> (itmp / 10000000U));
-  tv_tmp.assign ("usec", static_cast<double> (itmp % 10000000U) / 10.);
-  m.assign ("utime", octave_value (tv_tmp));
-
-  itmp = *(reinterpret_cast<int64_t *> (&ftKernel));
-  tv_tmp.assign ("sec", static_cast<double> (itmp / 10000000U));
-  tv_tmp.assign ("usec", static_cast<double> (itmp % 10000000U) / 10.);
-  m.assign ("stime", octave_value (tv_tmp));
-#else
-
-  tv_tmp.assign ("sec", 0);
-  tv_tmp.assign ("usec", 0);
-  m.assign ("utime", octave_value (tv_tmp));
-
-  tv_tmp.assign ("sec", 0);
-  tv_tmp.assign ("usec", 0);
-  m.assign ("stime", octave_value (tv_tmp));
-
-#endif
 
   double tmp = lo_ieee_nan_value ();
 

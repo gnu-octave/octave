@@ -1495,12 +1495,12 @@ fi
 
 ### Checks for functions and variables.
 
-AC_CHECK_FUNCS(atexit basename bcopy bzero canonicalize_file_name \
+AC_CHECK_FUNCS(atexit basename canonicalize_file_name \
   chmod dup2 endgrent endpwent execvp expm1 expm1f fcntl fork getcwd \
   getegid geteuid getgid getgrent getgrgid getgrnam getpgrp getpid \
   getppid getpwent getpwuid getuid getwd _kbhit kill \
   lgamma lgammaf lgamma_r lgammaf_r localtime_r log1p log1pf \
-  memmove mkstemp on_exit pipe poll putenv raise \
+  mkstemp on_exit pipe poll putenv raise \
   realpath resolvepath rindex roundl select setgrent setlocale \
   setpwent setvbuf sigaction siglongjmp sigpending sigprocmask sigsuspend \
   snprintf strdup strerror strsignal tempnam tgammaf trunc umask \

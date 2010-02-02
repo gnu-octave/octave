@@ -1598,7 +1598,7 @@ child process was resumed by delivery of @code{SIGCONT}.\n\
   return retval;
 }
 
-DEFUN (canonicalize_file_name, args, ,
+DEFUNX ("canonicalize_file_name", Fcanonicalize_file_name, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{cname}, @var{status}, @var{msg}]} canonicalize_file_name (@var{name})\n\
 Return the canonical name of file @var{name}.\n\

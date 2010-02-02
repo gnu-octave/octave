@@ -1412,11 +1412,6 @@ AC_TYPE_SIZE_T
 AC_TYPE_UID_T
 AC_CHECK_TYPES([dev_t, ino_t])
 AC_CHECK_TYPES([long long int, unsigned long long int])
-AC_CHECK_TYPES([sigset_t, sig_atomic_t], , , [
-#if defined (HAVE_SYS_TYPES_H)
-#include <sys/types.h>
-#endif
-#include <signal.h>])
 
 ### How big are ints and how are they oriented?  These could probably
 ### be eliminated in favor of run-time checks.
@@ -1886,14 +1881,6 @@ typedef short dev_t;
 
 #if !defined(HAVE_INO_T)
 typedef unsigned long ino_t;
-#endif
-
-#if !defined(HAVE_SIGSET_T)
-typedef int sigset_t;
-#endif
-
-#if !defined(HAVE_SIG_ATOMIC_T)
-typedef int sig_atomic_t;
 #endif
 
 #if defined (_MSC_VER)

@@ -1,5 +1,9 @@
 2010-02-02  John W. Eaton  <jwe@octave.org>
 
+	* configure.ac: Assume signal.h provides sigset_t and sig_atomic_t.
+
+2010-02-02  John W. Eaton  <jwe@octave.org>
+
 	* configure.ac: Don't call OCTAVE_SIGNAL_CHECK,
 	OCTAVE_REINSTALL_SIGHANDLERS, AC_C_CONST, AC_HEADER_STDC, or
 	AC_STRUCT_TM, AC_TYPE_SIGNAL.
